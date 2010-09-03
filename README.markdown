@@ -135,3 +135,36 @@ To save article with its translations:
     $em->persist($article);
     $em->flush();
     
+Update in other locale:
+
+    $article->setTitle('my title in de');
+    $article->setContent('my content in de');
+    $article->setTranslatableLocale('de_de');
+    $this->_em->persist($article);
+    $this->_em->flush();
+    
+Now then you load your article, it will be translated in used locale:
+
+    $article = $em->getRepository('Entities\Article')->find(1/* id of article */);
+    echo $article->getTitle();
+    // prints: "my title in en"
+    
+All translations can be loaded by TranslationRepository:
+
+    $repository = $em->getRepository('DoctrineExtensions\Translatable\Entity\Translation');
+    $translations = $repository->findTranslations($article);
+    // $translations contains:
+    Array (
+        [de_de] => Array
+            (
+                [title] => my title in de
+                [content] => my content in de
+            )
+    
+        [en_us] => Array
+            (
+                [title] => my title in en
+                [content] => my content in en
+            )
+    )
+    
