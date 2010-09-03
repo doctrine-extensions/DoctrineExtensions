@@ -1,6 +1,6 @@
 # Some Doctrine 2 Extensions
 
-This package contains several extensions to Doctrine 2 that hook into the facilities of Doctrine and
+This package contains extensions for Doctrine 2 that hook into the facilities of Doctrine and
 offer new functionality or tools to use Doctrine 2 more efficently.
 
 ## Including DoctrineExtensions
@@ -26,19 +26,14 @@ the Translatable extension Translation entity:
 
     $chainDriverImpl = new Doctrine\ORM\Mapping\Driver\DriverChain();
     $yourDefaultDriverImpl = new Doctrine\ORM\Mapping\Driver\YamlDriver('/yml/mapping/files');
-    $translatableDriverImpl = $doctrineOrmConfig->newDefaultAnnotationDriver(
-        'path/to/extensions/DoctrineExtensions/Translatable/Entity'
-    );
+    $translatableDriverImpl = $doctrineOrmConfig->newDefaultAnnotationDriver('path/to/extensions/DoctrineExtensions/Translatable/Entity');
     $chainDriverImpl->addDriver($yourDefaultDriverImpl, 'Entities');
     $chainDriverImpl->addDriver($translatableDriverImpl, 'DoctrineExtensions/Translatable');
     $doctrineOrmConfig->setMetadataDriverImpl($chainDriverImpl);
 
 2. Another path for Annotation driver:
 
-    $driverImpl = $doctrineOrmConfig->newDefaultAnnotationDriver(array(
-        'default/annotation/entities/path',
-        'path/to/extensions/DoctrineExtensions/Translatable/Entity'
-    ));
+    $driverImpl = $doctrineOrmConfig->newDefaultAnnotationDriver(array('default/annotation/entities/path', 'path/to/extensions/DoctrineExtensions/Translatable/Entity'));
 
 To attach the Translatable listener to your event system and to set the translation locale
 to use in global scope for all entities:
@@ -113,7 +108,7 @@ Article Entity:
         
         public function getTranslatableFields()
         {
-            return array('title');
+            return array('title', 'content');
         }
         
         public function setTranslatableLocale($locale)
@@ -131,9 +126,7 @@ To save article with its translations:
 
     $article = new Entities\Article;
     $article->setTitle('my title in en');
-    $article->setContent('my content');
+    $article->setContent('my content in en');
     $em->persist($article);
     $em->flush();
     
-**Notice:** current implementation is in alfa version supports only one field translation
-for now. Working on fix to support list of fields

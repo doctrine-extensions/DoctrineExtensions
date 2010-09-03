@@ -27,4 +27,9 @@ class Exception extends \Exception
     	$type = gettype($id);
         return new self("Currently there is only integer identifiers supported, [{$type}] is given.");
     }
+    
+    static public function pendingInserts()
+    {
+        return new self("Unit of work has pending inserts, cannot request query execute");
+    }
 }

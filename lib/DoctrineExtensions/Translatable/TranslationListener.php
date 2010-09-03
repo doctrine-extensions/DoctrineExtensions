@@ -46,7 +46,16 @@ class TranslationListener implements EventSubscriber
 	 * 
 	 * @var array
 	 */
-	protected $_pendingTranslations = array();
+	protected $_pendingTranslationInserts = array();
+
+	/**
+	 * Translations which should be inserted during
+	 * update must be sheduled for later persisting
+	 * to avoid query while insert is pending
+	 * 
+	 * @var array
+	 */
+	protected $_pendingTranslationUpdates = array();
 	
 	/**
 	 * Specifies the events to listen
@@ -108,6 +117,13 @@ class TranslationListener implements EventSubscriber
                 $this->_handleTranslatableEntityUpdate($em, $entity, false);
             }
         }
+        
+        // all translations which should have been inserted are processed now
+        $translationMetadata = $em->getClassMetadata(self::TRANSLATION_ENTITY_CLASS);
+        foreach ($this->_pendingTranslationUpdates as $translation) {
+        	$em->persist($translation);
+            $uow->computeChangeSet($translationMetadata, $translation);
+        }
     }
     
     /**
@@ -122,11 +138,11 @@ class TranslationListener implements EventSubscriber
         $em = $args->getEntityManager();
         $entity = $args->getEntity();
         // check if entity is Translatable and without foreign key
-        if ($entity instanceof Translatable && count($this->_pendingTranslations)) {
+        if ($entity instanceof Translatable && count($this->_pendingTranslationInserts)) {
         	$oid = spl_object_hash($entity);
-        	if (array_key_exists($oid, $this->_pendingTranslations)) {
+        	if (array_key_exists($oid, $this->_pendingTranslationInserts)) {
                 // load the pending translations without key
-        		$translations = $this->_pendingTranslations[$oid];
+        		$translations = $this->_pendingTranslationInserts[$oid];
         		foreach ($translations as $translation) {
 	                // schedule an extra update for the foreign key
 	                $uow = $em->getUnitOfWork();
@@ -143,7 +159,7 @@ class TranslationListener implements EventSubscriber
      * by currently used locale
      * 
      * @param LifecycleEventArgs $args
-     * @throws TranslatableException if locale is not valid
+     * @throws Translatable\Exception if locale is not valid
      * @return void
      */
     public function postLoad(LifecycleEventArgs $args)
@@ -180,7 +196,7 @@ class TranslationListener implements EventSubscriber
      * @param EntityManager $em
      * @param object $entity
      * @param boolean $isInsert
-     * @throws TranslatableException if locale is not valid, or
+     * @throws Translatable\Exception if locale is not valid, or
      *      primary key is composite, missing or invalid
      * @return void
      */
@@ -223,26 +239,33 @@ class TranslationListener implements EventSubscriber
                 );
         	}
             // create new translation
+            $scheduleUpdate = false;
             if (!$translation) {
                 $translation = new Translation;
                 $translation->setLocale($locale);
 	            $translation->setField($field);
 	            $translation->setEntity($entityClass);
 	            $translation->setForeignKey($entityId);
+	            $scheduleUpdate = !$isInsert;
             }
             
             // set the translated field, take value using getter
             $fnc = 'get' . ucfirst($field);
             $translation->setContent($entity->$fnc());
             
-            // persist and compute change set for translation
-            $em->persist($translation);
-            $uow = $em->getUnitOfWork();
-            $uow->computeChangeSet($translationMetadata, $translation);
+            if ($scheduleUpdate) {
+                // need to shedule new Translation insert to avoid query on pending insert
+                $this->_pendingTranslationUpdates[] = $translation;
+            } else {
+            	// persist and compute change set for translation
+                $em->persist($translation);
+                $uow = $em->getUnitOfWork();
+                $uow->computeChangeSet($translationMetadata, $translation);
+            }
             // if we do not have the primary key yet available
             // keep this translation in memory for later update
             if ($isInsert && is_null($entityId)) {
-            	$this->_pendingTranslations[spl_object_hash($entity)][$field] = $translation;
+            	$this->_pendingTranslationInserts[spl_object_hash($entity)][$field] = $translation;
             }
         }
     }
@@ -257,10 +280,17 @@ class TranslationListener implements EventSubscriber
      * @param string $locale
      * @param string $field
      * @param boolean $contentOnly - true if field translation only
+     * @throws Translatable\Exception if unit of work has pending inserts
+     *      to avoid infinite loop
      * @return mixed - null if nothing is found
      */
     protected function _findTranslation(EntityManager $em, $entityId, $entityClass, $locale, $field, $contentOnly = false)
     {
+    	// @TODO: cannot use query if doctrine has pending inserts, this is annoying
+    	if ($em->getUnitOfWork()->hasPendingInsertions()) {
+    		throw Exception::pendingInserts();
+    	}
+    	
         $qb = $em->createQueryBuilder();
         $qb->select('trans')
             ->from(self::TRANSLATION_ENTITY_CLASS, 'trans')
@@ -290,7 +320,7 @@ class TranslationListener implements EventSubscriber
      * Validates the given locale
      * 
      * @param string $locale - locale to validate
-     * @throws TranslatableException if locale is not valid
+     * @throws Translatable\Exception if locale is not valid
      * @return void
      */
     protected function _validateLocale($locale)
