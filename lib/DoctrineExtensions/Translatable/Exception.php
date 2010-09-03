@@ -10,7 +10,7 @@ namespace DoctrineExtensions\Translatable;
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class TranslatableException extends \Exception
+class Exception extends \Exception
 {
     static public function undefinedLocale()
     {

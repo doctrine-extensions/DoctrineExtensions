@@ -37,7 +37,7 @@ class TranslationListener implements EventSubscriber
 	 *  
 	 * @var string
 	 */
-	protected $_locale = 'en-us';
+	protected $_locale = 'en_us';
 	
 	/**
 	 * List of translations which do not have the foreign
@@ -125,13 +125,15 @@ class TranslationListener implements EventSubscriber
         if ($entity instanceof Translatable && count($this->_pendingTranslations)) {
         	$oid = spl_object_hash($entity);
         	if (array_key_exists($oid, $this->_pendingTranslations)) {
-                // load the pending translation without key
-        		$translation = $this->_pendingTranslations[$oid];
-                // schedule an extra update for the foreign key
-                $uow = $em->getUnitOfWork();
-                $uow->scheduleExtraUpdate($translation, array(
-                    'foreignKey' => array(null, $entity->getId())
-                ));
+                // load the pending translations without key
+        		$translations = $this->_pendingTranslations[$oid];
+        		foreach ($translations as $translation) {
+	                // schedule an extra update for the foreign key
+	                $uow = $em->getUnitOfWork();
+	                $uow->scheduleExtraUpdate($translation, array(
+	                    'foreignKey' => array(null, $entity->getId())
+	                ));
+        		}
             }
         }
     }
@@ -148,7 +150,7 @@ class TranslationListener implements EventSubscriber
     {
     	$em = $args->getEntityManager();
     	$entity = $args->getEntity();
-    	
+
     	$entityClass = get_class($entity);
     	if ($entity instanceof Translatable && count($entity->getTranslatableFields())) {
             $locale = strtolower($this->getTranslatableLocale($entity));
@@ -196,12 +198,12 @@ class TranslationListener implements EventSubscriber
         } elseif ($isInsert) {
             $entityId = null;
         } else {
-            throw TranslatableException::singleIdentifierRequired($entityClass);
+            throw Exception::singleIdentifierRequired($entityClass);
         }
         
         // @todo: add support for string type identifier also 
-        if (!is_int($entityId)) {
-        	throw TranslatableException::invalidIdentifierType($entityId);
+        if (!is_int($entityId) && !is_null($entityId)) {
+        	throw Exception::invalidIdentifierType($entityId);
         }
         
         // load the currently used locale
@@ -240,7 +242,7 @@ class TranslationListener implements EventSubscriber
             // if we do not have the primary key yet available
             // keep this translation in memory for later update
             if ($isInsert && is_null($entityId)) {
-            	$this->_pendingTranslations[spl_object_hash($entity)] = $translation;
+            	$this->_pendingTranslations[spl_object_hash($entity)][$field] = $translation;
             }
         }
     }
@@ -273,6 +275,7 @@ class TranslationListener implements EventSubscriber
             compact('field', 'locale', 'entityId', 'entityClass'),
             $contentOnly ? Query::HYDRATE_ARRAY : Query::HYDRATE_OBJECT
         );
+        
         if ($result && is_array($result) && count($result)) {
             $result = array_shift($result);
             if ($contentOnly) {
@@ -293,7 +296,7 @@ class TranslationListener implements EventSubscriber
     protected function _validateLocale($locale)
     {
     	if (!strlen($locale)) {
-    		throw TranslatableException::undefinedLocale();
+    		throw Exception::undefinedLocale();
     	}
     }
 }
