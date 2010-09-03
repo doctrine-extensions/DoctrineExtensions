@@ -22,18 +22,23 @@ table and translation entity available. To configure the it correctly you can ei
 driver into driver chain or 2) if you allready are using the annotation driver, simply add the path to
 the Translatable extension Translation entity:
 
-1. Annotation driver mapped into driver chain
+### Annotation driver mapped into driver chain
 
     $chainDriverImpl = new Doctrine\ORM\Mapping\Driver\DriverChain();
     $yourDefaultDriverImpl = new Doctrine\ORM\Mapping\Driver\YamlDriver('/yml/mapping/files');
-    $translatableDriverImpl = $doctrineOrmConfig->newDefaultAnnotationDriver('path/to/extensions/DoctrineExtensions/Translatable/Entity');
+    $translatableDriverImpl = $doctrineOrmConfig->newDefaultAnnotationDriver(
+        'path/to/extensions/DoctrineExtensions/Translatable/Entity'
+    );
     $chainDriverImpl->addDriver($yourDefaultDriverImpl, 'Entities');
     $chainDriverImpl->addDriver($translatableDriverImpl, 'DoctrineExtensions/Translatable');
     $doctrineOrmConfig->setMetadataDriverImpl($chainDriverImpl);
 
-2. Another path for Annotation driver:
+### Another path for Annotation driver:
 
-    $driverImpl = $doctrineOrmConfig->newDefaultAnnotationDriver(array('default/annotation/entities/path', 'path/to/extensions/DoctrineExtensions/Translatable/Entity'));
+    $driverImpl = $doctrineOrmConfig->newDefaultAnnotationDriver(array(
+        'default/annotation/entities/path', 
+        'path/to/extensions/DoctrineExtensions/Translatable/Entity'
+    ));
 
 To attach the Translatable listener to your event system and to set the translation locale
 to use in global scope for all entities:
