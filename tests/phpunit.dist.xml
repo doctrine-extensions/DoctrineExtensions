@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit bootstrap="./bootstrap.php">
+    <testsuites>
+        <testsuite name="Translatable Extension">
+            <directory>./DoctrineExtensions/Translatable/</directory>
+        </testsuite>
+    </testsuites>
+    <php>
+        <const name="DOCTRINE_LIBRARY_PATH" value="/path/to/library/where/Doctrine/located"/>
+    </php>
+</phpunit>

@@ -58,6 +58,16 @@ class TranslationListener implements EventSubscriber
 	protected $_pendingTranslationUpdates = array();
 	
 	/**
+	 * Default locale, this changes behavior
+     * to not update the original record field if locale
+     * which is used for updating is not default
+	 * 
+	 * @var string
+	 * @internal not used yet
+	 */
+	private $_defaultLocale = '';
+	
+	/**
 	 * Specifies the events to listen
 	 * 
 	 * @return array - list of events to listen
@@ -94,6 +104,20 @@ class TranslationListener implements EventSubscriber
 		return $entity->getTranslatableLocale() ?: $this->_locale;
 	}
     
+	/**
+	 * Sets the default locale, this changes behavior
+	 * to not update the original record field if locale
+	 * which is used for updating is not default
+	 * 
+	 * @param string $locale
+	 * @return void
+	 * @internal not used yet
+	 */
+	public function setDefaultLocale($locale)
+	{
+		$this->_defaultLocale = $locale;
+	}
+	
 	/**
 	 * Looks for translatable entities being inserted or updated
 	 * for further processing
@@ -167,9 +191,8 @@ class TranslationListener implements EventSubscriber
     	$em = $args->getEntityManager();
     	$entity = $args->getEntity();
 
-    	$entityClass = get_class($entity);
     	if ($entity instanceof Translatable && count($entity->getTranslatableFields())) {
-            $locale = strtolower($this->getTranslatableLocale($entity));
+    		$locale = strtolower($this->getTranslatableLocale($entity));
 	    	$this->_validateLocale($locale);
             
 	    	// load translated content for all translatable fields
@@ -177,12 +200,13 @@ class TranslationListener implements EventSubscriber
             	$content = $this->_findTranslation(
             	    $em,
             	    $entity->getId(),
-            	    $entityClass,
+            	    get_class($entity),
                     $locale,
             	    $field,
             	    true
             	);
-            	if ($content !== null) {
+            	// update translation only if it has it
+            	if (strlen($content)) {
             		$fnc = 'set' . ucfirst($field);
             		$entity->$fnc($content);
             	}
