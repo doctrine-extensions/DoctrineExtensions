@@ -60,7 +60,9 @@ class TranslationListener implements EventSubscriber
 	/**
 	 * Default locale, this changes behavior
      * to not update the original record field if locale
-     * which is used for updating is not default
+     * which is used for updating is not default. This
+     * will load the default translation in other locales
+     * if record is not translated yet
 	 * 
 	 * @var string
 	 * @internal not used yet
@@ -250,7 +252,9 @@ class TranslationListener implements EventSubscriber
         $locale = strtolower($this->getTranslatableLocale($entity));
         $this->_validateLocale($locale);
 
-        foreach ($entity->getTranslatableFields() as $field) {
+        $uow = $em->getUnitOfWork();
+        $translatableFields = $entity->getTranslatableFields();
+        foreach ($translatableFields as $field) {
         	$translation = null;
         	// check if translation allready is created
         	if (!$isInsert) {
@@ -283,7 +287,6 @@ class TranslationListener implements EventSubscriber
             } else {
             	// persist and compute change set for translation
                 $em->persist($translation);
-                $uow = $em->getUnitOfWork();
                 $uow->computeChangeSet($translationMetadata, $translation);
             }
             // if we do not have the primary key yet available
@@ -291,6 +294,24 @@ class TranslationListener implements EventSubscriber
             if ($isInsert && is_null($entityId)) {
             	$this->_pendingTranslationInserts[spl_object_hash($entity)][$field] = $translation;
             }
+        }
+        // check if we have default translation and need to reset the translation
+        if (!$isInsert && strlen($this->_defaultLocale)) {
+        	$this->_validateLocale($this->_defaultLocale);
+        	$changeSet = $uow->getEntityChangeSet($entity);
+        	$needsUpdate = false;
+        	foreach ($changeSet as $field => $changes) {
+        		if (in_array($field, $translatableFields)) {
+        			if ($locale != $this->_defaultLocale && strlen($changes[0])) {
+        				$setter = 'set' . ucfirst($field);
+        				$entity->$setter($changes[0]);
+        				$needsUpdate = true;
+        			}
+        		}
+        	}
+        	if ($needsUpdate) {
+        		$uow->recomputeSingleEntityChangeSet($entityClassMetadata, $entity);
+        	}
         }
     }
     

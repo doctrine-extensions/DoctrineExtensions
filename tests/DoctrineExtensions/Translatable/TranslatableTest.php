@@ -15,7 +15,63 @@ use Doctrine\Common\Util\Debug;
 class TranslatableTest extends \PHPUnit_Framework_TestCase
 {
     private $articleId;
-    private $_translatableListener;
+    private $translatableListener;
+    /**
+     * @var EntityManager
+     */
+    private $em;
+
+    public function setUp()
+    {
+        $config = new \Doctrine\ORM\Configuration();
+        $config->setMetadataCacheImpl(new \Doctrine\Common\Cache\ArrayCache);
+        $config->setQueryCacheImpl(new \Doctrine\Common\Cache\ArrayCache);
+        $config->setProxyDir(__DIR__ . '/temp');
+        $config->setProxyNamespace('DoctrineExtensions\Translatable\Proxies');
+        $config->setMetadataDriverImpl($config->newDefaultAnnotationDriver());
+
+        $conn = array(
+            'driver' => 'pdo_sqlite',
+            'memory' => true,
+        );
+
+        //$config->setSQLLogger(new \Doctrine\DBAL\Logging\EchoSQLLogger());
+        
+        $evm = new \Doctrine\Common\EventManager();
+        $this->translatableListener = new TranslationListener();
+        $this->translatableListener->setTranslatableLocale('en_us');
+        $evm->addEventSubscriber($this->translatableListener);
+        $this->em = \Doctrine\ORM\EntityManager::create($conn, $config, $evm);
+
+        $schemaTool = new \Doctrine\ORM\Tools\SchemaTool($this->em);
+        $schemaTool->createSchema(array(
+            $this->em->getClassMetadata('DoctrineExtensions\Translatable\Article'),
+            $this->em->getClassMetadata('DoctrineExtensions\Translatable\Comment'),
+            $this->em->getClassMetadata('DoctrineExtensions\Translatable\Entity\Translation'),
+        ));
+
+        $article = new Article();
+        $article->setTitle('title in en');
+        $article->setContent('content in en');
+        
+        $comment1 = new Comment();
+        $comment1->setSubject('subject1 in en');
+        $comment1->setMessage('message1 in en');
+        
+        $comment2 = new Comment();
+        $comment2->setSubject('subject2 in en');
+        $comment2->setMessage('message2 in en');
+        
+        $article->addComment($comment1);
+        $article->addComment($comment2);
+
+        $this->em->persist($article);
+        $this->em->persist($comment1);
+        $this->em->persist($comment2);
+        $this->em->flush();
+        $this->articleId = $article->getId();
+        $this->em->clear();
+    }
     
     public function testFixtureGeneratedTranslations()
     {
@@ -55,15 +111,54 @@ class TranslatableTest extends \PHPUnit_Framework_TestCase
         }
     }
 
-    /**
-     * @depends testFixtureGeneratedTranslations
-     */
+    public function testDefaultLocale()
+    {
+    	$this->translatableListener->setDefaultLocale('en_us');
+    	$article = $this->em->find(
+            'DoctrineExtensions\Translatable\Article', 
+            $this->articleId
+        );
+        $article->setTranslatableLocale('de_de');
+        $article->setContent('content in de');
+        $article->setTitle('title in de');
+        
+        $this->em->persist($article);
+        $this->em->flush();
+        $this->em->clear();
+        
+        $qb = $this->em->createQueryBuilder();
+        $qb->select('art')
+            ->from(get_class($article), 'art')
+            ->where('art.id = :id');
+        $q = $qb->getQuery();
+        $result = $q->execute(
+            array('id' => $article->getId()),
+            \Doctrine\ORM\Query::HYDRATE_ARRAY
+        );
+        $this->assertEquals(1, count($result));
+        $this->assertEquals($result[0]['title'], 'title in en');
+        $this->assertEquals($result[0]['content'], 'content in en');
+        
+        $repo = $this->em->getRepository('DoctrineExtensions\Translatable\Entity\Translation');
+        $translations = $repo->findTranslations($article);
+        $this->assertEquals(count($translations), 2);
+        $this->assertArrayHasKey('de_de', $translations);
+        
+        $this->assertArrayHasKey('content', $translations['de_de']);
+        $this->assertEquals('content in de', $translations['de_de']['content']);
+        
+        $this->assertArrayHasKey('title', $translations['de_de']);
+        $this->assertEquals('title in de', $translations['de_de']['title']);
+        $this->translatableListener->setDefaultLocale('');
+    }
+    
     public function testSecondTranslations()
     {
         $article = $this->em->find(
             'DoctrineExtensions\Translatable\Article', 
             $this->articleId
         );
+        $this->translatableListener->setDefaultLocale('en_us');
         $article->setTranslatableLocale('de_de');
         $article->setContent('content in de');
         $article->setTitle('title in de');
@@ -110,7 +205,7 @@ class TranslatableTest extends \PHPUnit_Framework_TestCase
             $this->assertEquals($expected, $translations['de_de']['message']);
         }
         
-        $this->_translatableListener->setTranslatableLocale('en_us');
+        $this->translatableListener->setTranslatableLocale('en_us');
         $article = $this->em->find(
             'DoctrineExtensions\Translatable\Article', 
             $this->articleId
@@ -125,62 +220,6 @@ class TranslatableTest extends \PHPUnit_Framework_TestCase
             $this->assertEquals($comment->getSubject(), "subject{$number} in en");
             $this->assertEquals($comment->getMessage(), "message{$number} in en");
         }
-    }
-    /**
-     * @var EntityManager
-     */
-    private $em;
-
-    public function setUp()
-    {
-        $config = new \Doctrine\ORM\Configuration();
-        $config->setMetadataCacheImpl(new \Doctrine\Common\Cache\ArrayCache);
-        $config->setQueryCacheImpl(new \Doctrine\Common\Cache\ArrayCache);
-        $config->setProxyDir(__DIR__ . '/temp');
-        $config->setProxyNamespace('DoctrineExtensions\Translatable\Proxies');
-        $config->setMetadataDriverImpl($config->newDefaultAnnotationDriver());
-
-        $conn = array(
-            'driver' => 'pdo_sqlite',
-            'memory' => true,
-        );
-
-        //$config->setSQLLogger(new \Doctrine\DBAL\Logging\EchoSQLLogger());
-        
-        $evm = new \Doctrine\Common\EventManager();
-        $this->_translatableListener = new TranslationListener();
-        $this->_translatableListener->setTranslatableLocale('en_us');
-        $evm->addEventSubscriber($this->_translatableListener);
-        $this->em = \Doctrine\ORM\EntityManager::create($conn, $config, $evm);
-
-        $schemaTool = new \Doctrine\ORM\Tools\SchemaTool($this->em);
-        $schemaTool->createSchema(array(
-            $this->em->getClassMetadata('DoctrineExtensions\Translatable\Article'),
-            $this->em->getClassMetadata('DoctrineExtensions\Translatable\Comment'),
-            $this->em->getClassMetadata('DoctrineExtensions\Translatable\Entity\Translation'),
-        ));
-
-        $article = new Article();
-        $article->setTitle('title in en');
-        $article->setContent('content in en');
-        
-        $comment1 = new Comment();
-        $comment1->setSubject('subject1 in en');
-        $comment1->setMessage('message1 in en');
-        
-        $comment2 = new Comment();
-        $comment2->setSubject('subject2 in en');
-        $comment2->setMessage('message2 in en');
-        
-        $article->addComment($comment1);
-        $article->addComment($comment2);
-
-        $this->em->persist($article);
-        $this->em->persist($comment1);
-        $this->em->persist($comment2);
-        $this->em->flush();
-        $this->articleId = $article->getId();
-        $this->em->clear();
     }
 }
 

@@ -167,4 +167,17 @@ All translations can be loaded by TranslationRepository:
                 [content] => my content in en
             )
     )
+Setting the default locale, which will prevent the original value from update
+to new one and let the default translation to be available if record does not
+have translation on currently used locale.
+
+    $translationListener->setDefaultLocale('en_us');
+    $article->setTitle('my title in ru');
+    $article->setContent('my content in ru');
+    $article->setTranslatableLocale('ru_ru');
+    $this->_em->persist($article);
+    $this->_em->flush();
     
+After these changes translations will be generated, but article in database
+will not change it`s title to "my title in ru". Nevertheless translations in
+ru_ru locale will be available to it.
