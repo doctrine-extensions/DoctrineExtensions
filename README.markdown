@@ -181,3 +181,112 @@ have translation on currently used locale.
 After these changes translations will be generated, but article in database
 will not change it`s title to "my title in ru". Nevertheless translations in
 ru_ru locale will be available to it.
+
+## Sluggable
+
+**Sluggable** behavior will build the slug of predefined fields on a given field
+which should store the slug. Also this behavior can be nested with **Translatable**
+behavior to translate the generated slugs into diferent languages.
+
+Entities which should behave like **Sluggable** must implement the **Sluggable interface**.
+
+To attach the **SluggableListener** to your event system use:
+
+    $evm = new Doctrine\Common\EventManager();
+    $sluggableListener = new SluggableListener();
+    $evm->addEventSubscriber($sluggableListener);
+    // now this event manager should be passed to entity manager constructor
+
+If you want to attach **TranslationListener** also add it to EventManager after
+the **SluggableListener**. It is important because slug must be generated first
+before the creation of it`s translation.
+
+    $evm = new Doctrine\Common\EventManager();
+    $sluggableListener = new SluggableListener();
+    $evm->addEventSubscriber($sluggableListener);
+    $translatableListener = new DoctrineExtensions\Translatable\TranslationListener();
+    $translatableListener->setTranslatableLocale('en_us');
+    $evm->addEventSubscriber($translatableListener);
+    // now this event manager should be passed to entity manager constructor
+    
+#### An Usage Example
+
+    /**
+     * @Entity
+     */
+    class Article implements Sluggable
+    {
+        /** @Id @GeneratedValue @Column(type="integer") */
+        private $id;
+    
+        /**
+         * @Column(name="title", type="string", length=64)
+         */
+        private $title;
+    
+        /**
+         * @Column(name="code", type="string", length=16)
+         */
+        private $code;
+        
+        /**
+         * @Column(name="slug", type="string", length=128)
+         */
+        private $slug;
+    
+        public function getId()
+        {
+            return $this->id;
+        }
+        
+        public function setTitle($title)
+        {
+            $this->title = $title;
+        }
+    
+        public function getTitle()
+        {
+            return $this->title;
+        }
+    
+        public function setCode($code)
+        {
+            $this->code = $code;
+        }
+    
+        public function getCode()
+        {
+            return $this->code;
+        }
+        
+        public function getSluggableConfiguration()
+        {
+            $config = new Configuration();
+            $config->setSluggableFields(array('title', 'code'));
+            $config->setSlugField('slug');
+            $config->setLength(64);
+            return $config;
+        }
+        
+        public function getSlug()
+        {
+            return $this->slug;
+        }
+        
+        public function setSlug($slug)
+        {
+            $this->slug = $slug;
+        }
+    }
+
+To save **Article** and generate slug simply use:
+
+    $article = new Article();
+    $article->setTitle('the title');
+    $article->setCode('my code');    
+    $this->em->persist($article);
+    $this->em->flush();
+
+    echo $article->getSlug();
+    // prints: the-title-my-slug
+    

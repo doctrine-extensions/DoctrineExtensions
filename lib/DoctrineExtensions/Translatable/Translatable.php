@@ -8,6 +8,7 @@ namespace DoctrineExtensions\Translatable;
  * 
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  * @package DoctrineExtensions.Translatable
+ * @subpackage Translatable
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */

@@ -20,6 +20,7 @@ use Doctrine\Common\EventSubscriber,
  * 
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  * @package DoctrineExtensions.Translatable
+ * @subpackage TranslationListener
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
@@ -65,14 +66,13 @@ class TranslationListener implements EventSubscriber
      * if record is not translated yet
 	 * 
 	 * @var string
-	 * @internal not used yet
 	 */
 	private $_defaultLocale = '';
 	
 	/**
-	 * Specifies the events to listen
+	 * Specifies the list of events to listen
 	 * 
-	 * @return array - list of events to listen
+	 * @return array
 	 */
     public function getSubscribedEvents()
     {
@@ -98,8 +98,8 @@ class TranslationListener implements EventSubscriber
 	 * Gets the locale to use for translation. Loads entity
 	 * defined locale first..
 	 * 
-	 * @param Translatable $entity - entity being translated
-	 * @return string - locale to use
+	 * @param Translatable $entity
+	 * @return string
 	 */
 	public function getTranslatableLocale(Translatable $entity)
 	{
@@ -113,7 +113,6 @@ class TranslationListener implements EventSubscriber
 	 * 
 	 * @param string $locale
 	 * @return void
-	 * @internal not used yet
 	 */
 	public function setDefaultLocale($locale)
 	{
@@ -145,6 +144,7 @@ class TranslationListener implements EventSubscriber
         }
         
         // all translations which should have been inserted are processed now
+        // this prevents new pending insertions during sheduled updates process
         $translationMetadata = $em->getClassMetadata(self::TRANSLATION_ENTITY_CLASS);
         foreach ($this->_pendingTranslationUpdates as $translation) {
         	$em->persist($translation);
@@ -209,8 +209,8 @@ class TranslationListener implements EventSubscriber
             	);
             	// update translation only if it has it
             	if (strlen($content)) {
-            		$fnc = 'set' . ucfirst($field);
-            		$entity->$fnc($content);
+            		$setter = 'set' . ucfirst($field);
+            		$entity->{$setter}($content);
             	}
             }	
     	}
@@ -220,13 +220,13 @@ class TranslationListener implements EventSubscriber
      * Creates the translation for entity being flushed
      * 
      * @param EntityManager $em
-     * @param object $entity
+     * @param Translatable $entity
      * @param boolean $isInsert
      * @throws Translatable\Exception if locale is not valid, or
      *      primary key is composite, missing or invalid
      * @return void
      */
-    protected function _handleTranslatableEntityUpdate(EntityManager $em, $entity, $isInsert)
+    protected function _handleTranslatableEntityUpdate(EntityManager $em, Translatable $entity, $isInsert)
     {
     	$entityClass = get_class($entity);
     	// no need cache, metadata is loaded only once in MetadataFactoryClass
@@ -278,8 +278,8 @@ class TranslationListener implements EventSubscriber
             }
             
             // set the translated field, take value using getter
-            $fnc = 'get' . ucfirst($field);
-            $translation->setContent($entity->$fnc());
+            $getter = 'get' . ucfirst($field);
+            $translation->setContent($entity->{$getter}());
             
             if ($scheduleUpdate) {
                 // need to shedule new Translation insert to avoid query on pending insert
@@ -304,7 +304,7 @@ class TranslationListener implements EventSubscriber
         		if (in_array($field, $translatableFields)) {
         			if ($locale != $this->_defaultLocale && strlen($changes[0])) {
         				$setter = 'set' . ucfirst($field);
-        				$entity->$setter($changes[0]);
+        				$entity->{$setter}($changes[0]);
         				$needsUpdate = true;
         			}
         		}
@@ -327,7 +327,7 @@ class TranslationListener implements EventSubscriber
      * @param boolean $contentOnly - true if field translation only
      * @throws Translatable\Exception if unit of work has pending inserts
      *      to avoid infinite loop
-     * @return mixed - null if nothing is found
+     * @return mixed - null if nothing is found, Translation otherwise
      */
     protected function _findTranslation(EntityManager $em, $entityId, $entityClass, $locale, $field, $contentOnly = false)
     {
