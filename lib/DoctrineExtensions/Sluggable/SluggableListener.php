@@ -106,11 +106,10 @@ class SluggableListener implements EventSubscriber
     {
         $em = $args->getEntityManager();
         $uow = $em->getUnitOfWork();
-        $entity = $args->getEntity();
 
         // there can be other entities being inserted because
         // unitofwork does inserts by class ordered chunks
-        if ($entity instanceof Sluggable) {
+        if (!$uow->hasPendingInsertions()) {
 	        while ($entity = array_shift($this->_pendingEntities)) {
 	        	$config = $this->getConfiguration($entity);
 	        	if ($config->isUnique()) {

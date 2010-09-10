@@ -49,7 +49,9 @@ class TranslatableSlugTest extends \PHPUnit_Framework_TestCase
         $schemaTool = new \Doctrine\ORM\Tools\SchemaTool($this->em);
         $schemaTool->createSchema(array(
             $this->em->getClassMetadata(self::TEST_CLASS),
-            $this->em->getClassMetadata('DoctrineExtensions\Translatable\Entity\Translation')
+            $this->em->getClassMetadata('DoctrineExtensions\Translatable\Entity\Translation'),
+            $this->em->getClassMetadata('DoctrineExtensions\Sluggable\Page'),
+            $this->em->getClassMetadata('DoctrineExtensions\Sluggable\Comment')
         ));
 
         $article = new TranslatableArticle();
@@ -110,6 +112,41 @@ class TranslatableSlugTest extends \PHPUnit_Framework_TestCase
         $this->assertArrayHasKey('slug', $translations['de_de']);
         $this->assertEquals('title-in-de-code-in-de', $translations['de_de']['slug']);
     }
+    
+    public function testConcurentChanges()
+    {
+    	$page = new Page;
+    	$page->setContent('cont test');
+    	
+    	$article1 = new TranslatableArticle();
+        $article1->setTitle('art1 test');
+        $article1->setCode('cd1 test');
+        
+        $article2 = new TranslatableArticle();
+        $article2->setTitle('art2 test');
+        $article2->setCode('cd2 test');
+        
+        $page->addArticle($article1);
+        $page->addArticle($article2);
+        
+        $comment1 = new Comment;
+        $comment1->setMessage('mes1-test');
+        $comment2 = new Comment;
+        $comment2->setMessage('mes2 test');
+        
+        $article1->addComment($comment1);
+        $article2->addComment($comment2);
+        
+        $this->em->persist($page);
+        $this->em->persist($article1);
+        $this->em->persist($article2);
+        $this->em->persist($comment1);
+        $this->em->persist($comment2);
+        $this->em->flush();
+        $this->em->clear();
+        
+        $this->assertEquals($page->getSlug(), 'Cont_Test');
+    }
 }
 
 /**
@@ -135,11 +172,37 @@ class TranslatableArticle implements Sluggable, Translatable
      */
     private $slug;
     
+    /**
+     * @OneToMany(targetEntity="Comment", mappedBy="article")
+     */
+    private $comments;
+    
+    /**
+     * @ManyToOne(targetEntity="Page", inversedBy="articles")
+     */
+    private $page;
+    
     /*
      * Used locale to override Translation listener`s locale
      */
     private $_locale;
 
+    public function addComment(Comment $comment)
+    {
+        $comment->setArticle($this);
+        $this->comments[] = $comment;
+    }
+
+    public function getComments()
+    {
+        return $this->comments;
+    }
+    
+    public function setPage($page)
+    {
+        $this->page = $page;
+    }
+    
     public function getId()
     {
         return $this->id;
@@ -196,5 +259,114 @@ class TranslatableArticle implements Sluggable, Translatable
     public function getTranslatableLocale()
     {
         return $this->_locale;
+    }
+}
+
+/**
+ * @Entity
+ */
+class Comment
+{
+    /** @Id @GeneratedValue @Column(type="integer") */
+    private $id;
+
+    /**
+     * @Column(name="message", type="text")
+     */
+    private $message;
+    
+    /**
+     * @ManyToOne(targetEntity="TranslatableArticle", inversedBy="comments")
+     */
+    private $article;
+
+    public function setArticle(TranslatableArticle $article)
+    {
+        $this->article = $article;
+    }
+
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    public function setMessage($message)
+    {
+        $this->message = $message;
+    }
+
+    public function getMessage()
+    {
+        return $this->message;
+    }
+}
+
+/**
+ * @Entity
+ */
+class Page implements Sluggable
+{
+	/** @Id @GeneratedValue @Column(type="integer") */
+    private $id;
+
+    /**
+     * @Column(name="content", type="text")
+     */
+    private $content;
+    
+    /**
+     * @Column(name="slug", type="string", length=128)
+     */
+    private $slug;
+    
+    /**
+     * @OneToMany(targetEntity="TranslatableArticle", mappedBy="page")
+     */
+    private $articles;
+    
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    public function addArticle(TranslatableArticle $article)
+    {
+        $article->setPage($this);
+        $this->articles[] = $article;
+    }
+
+    public function getArticles()
+    {
+        return $this->articles;
+    }
+
+    public function setContent($content)
+    {
+        $this->content = $content;
+    }
+
+    public function getContent()
+    {
+        return $this->content;
+    }
+    
+    public function getSluggableConfiguration()
+    {
+        $config = new Configuration();
+        $config->setSluggableFields(array('content'));
+        $config->setSlugField('slug');
+        $config->setSlugStyle(Configuration::SLUG_STYLE_CAMEL);
+        $config->setSeparator('_');
+        return $config;
+    }
+    
+    public function getSlug()
+    {
+        return $this->slug;
+    }
+    
+    public function setSlug($slug)
+    {
+        $this->slug = $slug;
     }
 }

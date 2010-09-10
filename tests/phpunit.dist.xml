@@ -2,7 +2,10 @@
 <phpunit bootstrap="./bootstrap.php">
     <testsuites>
         <testsuite name="Translatable Extension">
-            <directory>./DoctrineExtensions/Translatable/</directory>
+            <directory suffix=".php">./DoctrineExtensions/Translatable/</directory>
+        </testsuite>
+        <testsuite name="Sluggable Extension">
+            <directory suffix=".php">./DoctrineExtensions/Sluggable/</directory>
         </testsuite>
     </testsuites>
     <php>
