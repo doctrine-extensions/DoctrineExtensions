@@ -113,10 +113,25 @@ class TranslatableSlugTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('title-in-de-code-in-de', $translations['de_de']['slug']);
     }
     
-    public function testConcurentChanges()
+    public function testConcurrentChanges()
     {
     	$page = new Page;
     	$page->setContent('cont test');
+    	
+    	$a0Page = new Page;
+    	$a0Page->setContent('bi vv');
+    	
+    	$article0 = $this->em->find(self::TEST_CLASS, $this->articleId);
+    	$article0->setCode('cell');
+    	$article0->setTitle('xx gg');
+    	$a0Page->addArticle($article0);
+    	
+    	$a0Comment = new Comment;
+    	$a0Comment->setMessage('the xx message');
+    	$article0->addComment($a0Comment);
+    	$this->em->persist($a0Comment);
+    	$this->em->persist($article0);
+    	$this->em->persist($a0Page);
     	
     	$article1 = new TranslatableArticle();
         $article1->setTitle('art1 test');

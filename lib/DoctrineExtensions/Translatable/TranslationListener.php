@@ -331,7 +331,7 @@ class TranslationListener implements EventSubscriber
      */
     protected function _findTranslation(EntityManager $em, $entityId, $entityClass, $locale, $field, $contentOnly = false)
     {
-    	// @TODO: cannot use query if doctrine has pending inserts, this is annoying
+    	// @TODO: cannot use query if doctrine has pending inserts
     	if ($em->getUnitOfWork()->hasPendingInsertions()) {
     		throw Exception::pendingInserts();
     	}

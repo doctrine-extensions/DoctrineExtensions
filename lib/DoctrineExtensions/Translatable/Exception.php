@@ -31,6 +31,8 @@ class Exception extends \Exception
     
     static public function pendingInserts()
     {
-        return new self("Unit of work has pending inserts, cannot request query execute");
+        return new self("UnitOfWork has pending inserts, cannot request query execution.
+            TranslationListener does not support Concurrent inserts and updates together,
+            on Doctrine 2 Beta4 yet. Try flushing only inserts or updates");
     }
 }
