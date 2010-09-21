@@ -142,14 +142,6 @@ class TranslationListener implements EventSubscriber
                 $this->_handleTranslatableEntityUpdate($em, $entity, false);
             }
         }
-        
-        // all translations which should have been inserted are processed now
-        // this prevents new pending insertions during sheduled updates process
-        $translationMetadata = $em->getClassMetadata(self::TRANSLATION_ENTITY_CLASS);
-        foreach ($this->_pendingTranslationUpdates as $translation) {
-        	$em->persist($translation);
-            $uow->computeChangeSet($translationMetadata, $translation);
-        }
     }
     
     /**
@@ -163,6 +155,7 @@ class TranslationListener implements EventSubscriber
     {
         $em = $args->getEntityManager();
         $entity = $args->getEntity();
+        $uow = $em->getUnitOfWork();
         // check if entity is Translatable and without foreign key
         if ($entity instanceof Translatable && count($this->_pendingTranslationInserts)) {
         	$oid = spl_object_hash($entity);
@@ -170,13 +163,31 @@ class TranslationListener implements EventSubscriber
                 // load the pending translations without key
         		$translations = $this->_pendingTranslationInserts[$oid];
         		foreach ($translations as $translation) {
-	                // schedule an extra update for the foreign key
-	                $uow = $em->getUnitOfWork();
-	                $uow->scheduleExtraUpdate($translation, array(
-	                    'foreignKey' => array(null, $entity->getId())
-	                ));
+	                $translation->setForeignKey($entity->getId());
+	                $this->_insertTranslationRecord($em, $translation);
         		}
             }
+        }
+        // all translations which should have been inserted are processed now
+        // this prevents new pending insertions during sheduled updates process
+        // and twice queries
+        if (!$uow->hasPendingInsertions() && count($this->_pendingTranslationUpdates)) {
+        	foreach ($this->_pendingTranslationUpdates as $candidate) {
+        		$translation = $this->_findTranslation(
+                    $em,
+                    $candidate->getForeignKey(),
+                    $candidate->getEntity(),
+                    $candidate->getLocale(),
+                    $candidate->getField()
+                );
+                if (!$translation) {
+                	$this->_insertTranslationRecord($em, $candidate);
+                } else {
+                	$uow->scheduleExtraUpdate($translation, array(
+                        'content' => array(null, $candidate->getContent())
+                    ));
+                }
+        	}
         }
     }
     
@@ -256,8 +267,9 @@ class TranslationListener implements EventSubscriber
         $translatableFields = $entity->getTranslatableFields();
         foreach ($translatableFields as $field) {
         	$translation = null;
+        	$scheduleUpdate = false;
         	// check if translation allready is created
-        	if (!$isInsert) {
+        	if (!$isInsert && !$uow->hasPendingInsertions()) {
                 $translation = $this->_findTranslation(
                     $em,
                     $entityId,
@@ -267,7 +279,6 @@ class TranslationListener implements EventSubscriber
                 );
         	}
             // create new translation
-            $scheduleUpdate = false;
             if (!$translation) {
                 $translation = new Translation;
                 $translation->setLocale($locale);
@@ -280,19 +291,17 @@ class TranslationListener implements EventSubscriber
             // set the translated field, take value using getter
             $getter = 'get' . ucfirst($field);
             $translation->setContent($entity->{$getter}());
-            
-            if ($scheduleUpdate) {
+            if ($scheduleUpdate && $uow->hasPendingInsertions()) {
                 // need to shedule new Translation insert to avoid query on pending insert
                 $this->_pendingTranslationUpdates[] = $translation;
+            } elseif ($isInsert && is_null($entityId)) {
+                // if we do not have the primary key yet available
+                // keep this translation in memory to insert it later with foreign key
+                $this->_pendingTranslationInserts[spl_object_hash($entity)][$field] = $translation;
             } else {
             	// persist and compute change set for translation
                 $em->persist($translation);
                 $uow->computeChangeSet($translationMetadata, $translation);
-            }
-            // if we do not have the primary key yet available
-            // keep this translation in memory for later update
-            if ($isInsert && is_null($entityId)) {
-            	$this->_pendingTranslationInserts[spl_object_hash($entity)][$field] = $translation;
             }
         }
         // check if we have default translation and need to reset the translation
@@ -373,5 +382,23 @@ class TranslationListener implements EventSubscriber
     	if (!strlen($locale)) {
     		throw Exception::undefinedLocale();
     	}
+    }
+    
+    private function _insertTranslationRecord(EntityManager $em, $translation)
+    {
+        $translationMetadata = $em->getClassMetadata(self::TRANSLATION_ENTITY_CLASS);
+        
+        $data = array(
+            'locale' => $translation->getLocale(),
+            'foreign_key' => $translation->getForeignKey(),
+            'entity' => $translation->getEntity(),
+            'field' => $translation->getField(),
+            'content' => $translation->getContent()
+        );
+        
+        $table = $translationMetadata->getTableName();
+        if (!$em->getConnection()->insert($table, $data)) {
+            throw Exception::failedToInsert();
+        }
     }
 }

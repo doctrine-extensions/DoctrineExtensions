@@ -9,7 +9,7 @@ To include the DoctrineExtensions should fire up an autoloader, for example:
 
     $classLoader = new \Doctrine\Common\ClassLoader('DoctrineExtensions', "/path/to/extensions");
     $classLoader->register();
-    
+
 ## Translatable
 
 **Translatable** behavior offers a very handy solution for translating specific record fields
@@ -182,9 +182,9 @@ After these changes translations will be generated, but article in database
 will not change it`s title to "my title in ru". Nevertheless translations in
 ru_ru locale will be available to it.
 
-**Notice:** Using **Translatable** behavior on concurrent updates and inserts flush may
-result in exception. In that case try flushing only inserts and then updates. The test
-case is in unit tests;
+**Translatable** behavior now works on concurent update and insert flush nested
+together with **Sluggable** behavior. That means you can persist whatever you
+want and on flush everything magicaly will be created and updated..
 
 ## Sluggable
 

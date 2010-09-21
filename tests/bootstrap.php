@@ -13,21 +13,27 @@
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 
-if (!defined('DOCTRINE_LIBRARY_PATH') || !strlen(DOCTRINE_LIBRARY_PATH)) {
-	die('path to doctrine library must be defined in phpunit.xml configuration');
+if (!defined('DOCTRINE_LIBRARY_PATH')) {
+    die('path to doctrine library must be defined in phpunit.xml configuration');
 }
 
-set_include_path(implode(PATH_SEPARATOR, array(
-    realpath(DOCTRINE_LIBRARY_PATH),
-    get_include_path(),
-)));
+// if empty string given, assume its in include path allready
+if (strlen(DOCTRINE_LIBRARY_PATH)) {
+    set_include_path(implode(PATH_SEPARATOR, array(
+        realpath(DOCTRINE_LIBRARY_PATH),
+        get_include_path(),
+    )));
+}
 
 !defined('DS') && define('DS', DIRECTORY_SEPARATOR);
 !defined('TESTS_PATH') && define('TESTS_PATH', __DIR__);
 
-$classLoaderFile = DOCTRINE_LIBRARY_PATH . DS . 'Doctrine/Common/ClassLoader.php';
-if (!file_exists($classLoaderFile)) {
-	die('cannot find doctrine classloader, check the library path');
+$classLoaderFile = 'Doctrine/Common/ClassLoader.php';
+if (strlen(DOCTRINE_LIBRARY_PATH)) {
+    $classLoaderFile = DOCTRINE_LIBRARY_PATH . DS . $classLoaderFile;
+    if (!file_exists($classLoaderFile)) {
+        die('cannot find doctrine classloader, check the library path');
+    }
 }
 require_once $classLoaderFile;
 $classLoader = new Doctrine\Common\ClassLoader('Doctrine');
