@@ -23,10 +23,10 @@ is not found for a globally used locale.
 **Translatable** behavior offers a very handy solution for translating specific record fields
 in diferent languages. Further more, it loads the translations automatically for a locale
 currently used, which can be set to **Translatable Listener** on it`s initialization or later
-for other cases through the entity itself.
+for other cases through the **Entity** itself.
 
 This behavior requires an additional metadata path to be specified in order to have a translation
-table and translation entity available. To configure the it correctly you can either 1) add annotation
+table and translation Entity available. To configure it correctly you can either 1) add new annotation
 driver into driver chain or 2) if you allready are using the annotation driver, simply add the path to
 the Translatable extension Translation entity:
 
@@ -41,15 +41,15 @@ the Translatable extension Translation entity:
     $chainDriverImpl->addDriver($translatableDriverImpl, 'DoctrineExtensions/Translatable');
     $doctrineOrmConfig->setMetadataDriverImpl($chainDriverImpl);
 
-### Another path for Annotation driver:
+### Additional metadata mapping path for existing Annotation driver:
 
     $driverImpl = $doctrineOrmConfig->newDefaultAnnotationDriver(array(
         'default/annotation/entities/path', 
         'path/to/extensions/DoctrineExtensions/Translatable/Entity'
     ));
 
-To attach the Translatable listener to your event system and to set the translation locale
-to use in global scope for all entities:
+To attach the **Translatable Listener** to your event system and to set the translation locale
+to be used in global scope for all Entities do:
 
     $evm = new Doctrine\Common\EventManager();
     $translatableListener = new DoctrineExtensions\Translatable\TranslationListener();
@@ -157,7 +157,7 @@ Now then you load your article, it will be translated in used locale:
     echo $article->getTitle();
     // prints: "my title in en"
     
-All translations can be loaded by TranslationRepository:
+All translations can be loaded using TranslationRepository:
 
     $repository = $em->getRepository('DoctrineExtensions\Translatable\Entity\Translation');
     $translations = $repository->findTranslations($article);
@@ -175,7 +175,7 @@ All translations can be loaded by TranslationRepository:
                 [content] => my content in en
             )
     )
-Setting the default locale, which will prevent the original value from update
+Setting the __default locale__, which will prevent the original value from updating
 to new one and let the default translation to be available if record does not
 have translation on currently used locale.
 
