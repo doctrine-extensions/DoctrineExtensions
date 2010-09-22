@@ -32,7 +32,7 @@ class TranslationListener implements EventSubscriber
 	const TRANSLATION_ENTITY_CLASS = 'DoctrineExtensions\Translatable\Entity\Translation';
 	
 	/**
-	 * Default locale which is set on this listener.
+	 * Locale which is set on this listener.
 	 * If Entity being translated has locale defined it
 	 * will override this one
 	 *  
@@ -159,18 +159,22 @@ class TranslationListener implements EventSubscriber
         // check if entity is Translatable and without foreign key
         if ($entity instanceof Translatable && count($this->_pendingTranslationInserts)) {
         	$oid = spl_object_hash($entity);
+        	$entityClass = get_class($entity);
+            $entityClassMetadata = $em->getClassMetadata($entityClass);
+            // there should be single identifier
+            $identifierField = $entityClassMetadata->getSingleIdentifierFieldName();
+            $identifierGetter = 'get' . ucfirst($identifierField);
         	if (array_key_exists($oid, $this->_pendingTranslationInserts)) {
                 // load the pending translations without key
         		$translations = $this->_pendingTranslationInserts[$oid];
         		foreach ($translations as $translation) {
-	                $translation->setForeignKey($entity->getId());
+	                $translation->setForeignKey($entity->{$identifierGetter}());
 	                $this->_insertTranslationRecord($em, $translation);
         		}
             }
         }
         // all translations which should have been inserted are processed now
         // this prevents new pending insertions during sheduled updates process
-        // and twice queries
         if (!$uow->hasPendingInsertions() && count($this->_pendingTranslationUpdates)) {
         	foreach ($this->_pendingTranslationUpdates as $candidate) {
         		$translation = $this->_findTranslation(
@@ -208,11 +212,16 @@ class TranslationListener implements EventSubscriber
     		$locale = strtolower($this->getTranslatableLocale($entity));
 	    	$this->_validateLocale($locale);
             
+	    	$entityClass = get_class($entity);
+	    	$entityClassMetadata = $em->getClassMetadata($entityClass);
+	    	// there should be single identifier
+	    	$identifierField = $entityClassMetadata->getSingleIdentifierFieldName();
+	    	$identifierGetter = 'get' . ucfirst($identifierField);
 	    	// load translated content for all translatable fields
             foreach ($entity->getTranslatableFields() as $field) {
             	$content = $this->_findTranslation(
             	    $em,
-            	    $entity->getId(),
+            	    $entity->{$identifierGetter}(),
             	    get_class($entity),
                     $locale,
             	    $field,
@@ -252,11 +261,6 @@ class TranslationListener implements EventSubscriber
             $entityId = null;
         } else {
             throw Exception::singleIdentifierRequired($entityClass);
-        }
-        
-        // @todo: add support for string type identifier also 
-        if (!is_int($entityId) && !is_null($entityId)) {
-        	throw Exception::invalidIdentifierType($entityId);
         }
         
         // load the currently used locale
@@ -384,6 +388,14 @@ class TranslationListener implements EventSubscriber
     	}
     }
     
+    /**
+     * Does the standard insert. Which is not managed by entity manager.
+     * 
+     * @param EntityManager $em
+     * @param object $translation
+     * @throws Translatable\Exception if insert fails
+     * @return void
+     */
     private function _insertTranslationRecord(EntityManager $em, $translation)
     {
         $translationMetadata = $em->getClassMetadata(self::TRANSLATION_ENTITY_CLASS);

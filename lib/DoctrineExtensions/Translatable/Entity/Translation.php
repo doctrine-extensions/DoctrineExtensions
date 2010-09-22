@@ -43,9 +43,9 @@ class Translation
     private $field;
 
     /**
-     * @var integer $foreignKey
+     * @var string $foreignKey
      *
-     * @Column(name="foreign_key", type="integer", nullable=true)
+     * @Column(name="foreign_key", type="string", length="64")
      */
     private $foreignKey;
 
@@ -129,7 +129,7 @@ class Translation
     /**
      * Set foreignKey
      *
-     * @param integer $foreignKey
+     * @param string $foreignKey
      */
     public function setForeignKey($foreignKey)
     {
@@ -139,7 +139,7 @@ class Translation
     /**
      * Get foreignKey
      *
-     * @return integer $foreignKey
+     * @return string $foreignKey
      */
     public function getForeignKey()
     {

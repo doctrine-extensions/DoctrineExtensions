@@ -41,11 +41,6 @@ class TranslationRepository extends EntityRepository
 	        } else {
 	            throw Exception::singleIdentifierRequired($entityClass);
 	        }
-	
-	        // @todo: add support for string type identifier also 
-	        if (!is_int($entityId)) {
-	            throw Exception::invalidIdentifierType($entityId);
-	        }
 	        
 	        $qb = $this->_em->createQueryBuilder();
 	        $qb->select('trans.content, trans.field, trans.locale')

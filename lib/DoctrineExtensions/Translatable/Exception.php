@@ -23,12 +23,6 @@ class Exception extends \Exception
         return new self("Only a single identifier column is required for the Translatable extension, entity: {$entityClass}.");
     }
     
-    static public function invalidIdentifierType($id)
-    {
-    	$type = gettype($id);
-        return new self("Currently there is only integer identifiers supported, [{$type}] is given.");
-    }
-    
     static public function pendingInserts()
     {
         return new self("UnitOfWork has pending inserts, cannot request query execution. TranslationListener does not support Concurrent inserts and updates together, on Doctrine 2 Beta4 yet. Try flushing only inserts or updates");

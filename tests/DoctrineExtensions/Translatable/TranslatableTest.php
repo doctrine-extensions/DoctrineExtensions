@@ -49,7 +49,10 @@ class TranslatableTest extends \PHPUnit_Framework_TestCase
             $this->em->getClassMetadata('DoctrineExtensions\Translatable\Comment'),
             $this->em->getClassMetadata('DoctrineExtensions\Translatable\Entity\Translation'),
         ));
-
+    }
+    
+    public function testFixtureGeneratedTranslations()
+    {
         $article = new Article();
         $article->setTitle('title in en');
         $article->setContent('content in en');
@@ -71,10 +74,7 @@ class TranslatableTest extends \PHPUnit_Framework_TestCase
         $this->em->flush();
         $this->articleId = $article->getId();
         $this->em->clear();
-    }
-    
-    public function testFixtureGeneratedTranslations()
-    {
+        
     	$repo = $this->em->getRepository('DoctrineExtensions\Translatable\Entity\Translation');
     	$this->assertTrue($repo instanceof Repository\TranslationRepository);
     	
@@ -109,10 +109,7 @@ class TranslatableTest extends \PHPUnit_Framework_TestCase
 	        $expected = "message{$number} in en";
 	        $this->assertEquals($expected, $translations['en_us']['message']);
         }
-    }
-
-    public function testDefaultLocale()
-    {
+        // test default locale
     	$this->translatableListener->setDefaultLocale('en_us');
     	$article = $this->em->find(
             'DoctrineExtensions\Translatable\Article', 
@@ -150,10 +147,7 @@ class TranslatableTest extends \PHPUnit_Framework_TestCase
         $this->assertArrayHasKey('title', $translations['de_de']);
         $this->assertEquals('title in de', $translations['de_de']['title']);
         $this->translatableListener->setDefaultLocale('');
-    }
-    
-    public function testSecondTranslations()
-    {
+        // test second translations
         $article = $this->em->find(
             'DoctrineExtensions\Translatable\Article', 
             $this->articleId
