@@ -12,6 +12,14 @@ To include the DoctrineExtensions should fire up an autoloader, for example:
 
 ## Translatable
 
+### Recent Updates
+
+- Added support for string primary keys, now translations can use integer and string foreign keys.
+- Added support for multiple updates and inserts during single flush.
+- Implemented the default locale functionality. Now you can set the default locale to be used then translation
+is not found for a globally used locale.
+- Added support for multiple field translations for a single Entity.
+
 **Translatable** behavior offers a very handy solution for translating specific record fields
 in diferent languages. Further more, it loads the translations automatically for a locale
 currently used, which can be set to **Translatable Listener** on it`s initialization or later
@@ -187,6 +195,12 @@ together with **Sluggable** behavior. That means you can persist whatever you
 want and on flush everything magicaly will be created and updated..
 
 ## Sluggable
+
+### Recent Updates
+
+- Implemented slug type case and separator configuration. Example camel cased and underscored
+slug: Example_Slug, default: example-slug.
+- Added support for a limited unique slug generation.
 
 **Sluggable** behavior will build the slug of predefined fields on a given field
 which should store the slug. Also this behavior can be nested with **Translatable**
