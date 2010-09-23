@@ -256,11 +256,6 @@ class TranslatableArticle implements Sluggable, Translatable
         return $this->slug;
     }
     
-    public function setSlug($slug)
-    {
-        $this->slug = $slug;
-    }
-    
     public function getTranslatableFields()
     {
         return array('title', 'code', 'slug');
@@ -378,10 +373,5 @@ class Page implements Sluggable
     public function getSlug()
     {
         return $this->slug;
-    }
-    
-    public function setSlug($slug)
-    {
-        $this->slug = $slug;
     }
 }

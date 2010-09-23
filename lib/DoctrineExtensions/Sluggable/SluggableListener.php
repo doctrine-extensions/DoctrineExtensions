@@ -182,9 +182,7 @@ class SluggableListener implements EventSubscriber
         	if (isset($changeSet[$sluggableField])) {
         		$needToChangeSlug = true;
         	}
-        	$getter = 'get' . ucfirst($sluggableField);
-        	$slug .= $entity->{$getter}() . ' ';
-        	
+        	$slug .= $entityClassMetadata->getReflectionProperty($sluggableField)->getValue($entity) . ' ';
         }
         // if slug is not changed, no need further processing
         if (!$needToChangeSlug) {
@@ -216,15 +214,14 @@ class SluggableListener implements EventSubscriber
         }
         
         // set the slug
-        $setter = 'set' . ucfirst($slugField);
-        $entity->{$setter}($slug);
+        $entityClassMetadata->getReflectionProperty($slugField)->setValue($entity, $slug);
         if ($config->isUnique() && ($isInsert || $uow->hasPendingInsertions())) {
         	// leave for further processing after insertion
             $this->_pendingEntities[spl_object_hash($entity)] = $entity;
         } elseif ($config->isUnique()) {
         	// make slug unique
             $slug = $this->_makeUniqueSlug($em, $entity);
-        	$entity->{$setter}($slug);
+        	$entityClassMetadata->getReflectionProperty($slugField)->setValue($entity, $slug);
         }
         // update the changset
         $uow->recomputeSingleEntityChangeSet($entityClassMetadata, $entity);
@@ -245,12 +242,13 @@ class SluggableListener implements EventSubscriber
         	throw Exception::pendingInserts();
         }
     	
+        $entityClass = get_class($entity);
+        $entityClassMetadata = $em->getClassMetadata($entityClass);
+        
     	$config = $this->getConfiguration($entity);
     	$slugField = $config->getSlugField();
-    	
-    	$getter = 'get' . ucfirst($slugField);
-        $preferedSlug = $entity->{$getter}();
-        $entityClass = get_class($entity);
+        $preferedSlug = $entityClassMetadata->getReflectionProperty($slugField)->getValue($entity);
+        
         // @todo: optimize
         // search for similar slug
         $qb = $em->createQueryBuilder();
@@ -261,7 +259,6 @@ class SluggableListener implements EventSubscriber
                 $qb->expr()->literal($preferedSlug . '%'))
             );
         // include identifiers
-        $entityClassMetadata = $em->getClassMetadata($entityClass);
         $entityIdentifiers = $entityClassMetadata->getIdentifierValues($entity);
         foreach ($entityIdentifiers as $field => $value) {
         	$qb->where('rec.' . $field . ' <> ' . $value);
@@ -298,8 +295,7 @@ class SluggableListener implements EventSubscriber
                 $generatedSlug .= $separator . $i;
             }
             
-            $setter = 'set' . ucfirst($slugField);
-            $entity->{$setter}($generatedSlug);
+            $entityClassMetadata->getReflectionProperty($slugField)->setValue($entity, $generatedSlug);
             if ($needRecursion) {
             	$generatedSlug = $this->_makeUniqueSlug($em, $entity);
             }

@@ -185,9 +185,4 @@ class Article implements Sluggable
     {
     	return $this->slug;
     }
-    
-    public function setSlug($slug)
-    {
-    	$this->slug = $slug;
-    }
 }

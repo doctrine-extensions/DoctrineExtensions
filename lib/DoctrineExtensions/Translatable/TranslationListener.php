@@ -163,12 +163,13 @@ class TranslationListener implements EventSubscriber
             $entityClassMetadata = $em->getClassMetadata($entityClass);
             // there should be single identifier
             $identifierField = $entityClassMetadata->getSingleIdentifierFieldName();
-            $identifierGetter = 'get' . ucfirst($identifierField);
         	if (array_key_exists($oid, $this->_pendingTranslationInserts)) {
                 // load the pending translations without key
         		$translations = $this->_pendingTranslationInserts[$oid];
         		foreach ($translations as $translation) {
-	                $translation->setForeignKey($entity->{$identifierGetter}());
+	                $translation->setForeignKey(
+                        $entityClassMetadata->getReflectionProperty($identifierField)->getValue($entity)
+                    );
 	                $this->_insertTranslationRecord($em, $translation);
         		}
             }
@@ -216,12 +217,11 @@ class TranslationListener implements EventSubscriber
 	    	$entityClassMetadata = $em->getClassMetadata($entityClass);
 	    	// there should be single identifier
 	    	$identifierField = $entityClassMetadata->getSingleIdentifierFieldName();
-	    	$identifierGetter = 'get' . ucfirst($identifierField);
 	    	// load translated content for all translatable fields
             foreach ($entity->getTranslatableFields() as $field) {
             	$content = $this->_findTranslation(
             	    $em,
-            	    $entity->{$identifierGetter}(),
+            	    $entityClassMetadata->getReflectionProperty($identifierField)->getValue($entity),
             	    get_class($entity),
                     $locale,
             	    $field,
@@ -229,8 +229,7 @@ class TranslationListener implements EventSubscriber
             	);
             	// update translation only if it has it
             	if (strlen($content)) {
-            		$setter = 'set' . ucfirst($field);
-            		$entity->{$setter}($content);
+            		$entityClassMetadata->getReflectionProperty($field)->setValue($entity, $content);
             	}
             }	
     	}
@@ -292,9 +291,8 @@ class TranslationListener implements EventSubscriber
 	            $scheduleUpdate = !$isInsert;
             }
             
-            // set the translated field, take value using getter
-            $getter = 'get' . ucfirst($field);
-            $translation->setContent($entity->{$getter}());
+            // set the translated field, take value using reflection
+            $translation->setContent($entityClassMetadata->getReflectionProperty($field)->getValue($entity));
             if ($scheduleUpdate && $uow->hasPendingInsertions()) {
                 // need to shedule new Translation insert to avoid query on pending insert
                 $this->_pendingTranslationUpdates[] = $translation;
@@ -316,8 +314,7 @@ class TranslationListener implements EventSubscriber
         	foreach ($changeSet as $field => $changes) {
         		if (in_array($field, $translatableFields)) {
         			if ($locale != $this->_defaultLocale && strlen($changes[0])) {
-        				$setter = 'set' . ucfirst($field);
-        				$entity->{$setter}($changes[0]);
+        				$entityClassMetadata->getReflectionProperty($field)->setValue($entity, $changes[0]);
         				$needsUpdate = true;
         			}
         		}
@@ -398,15 +395,14 @@ class TranslationListener implements EventSubscriber
      */
     private function _insertTranslationRecord(EntityManager $em, $translation)
     {
-        $translationMetadata = $em->getClassMetadata(self::TRANSLATION_ENTITY_CLASS);
-        
-        $data = array(
-            'locale' => $translation->getLocale(),
-            'foreign_key' => $translation->getForeignKey(),
-            'entity' => $translation->getEntity(),
-            'field' => $translation->getField(),
-            'content' => $translation->getContent()
-        );
+        $translationMetadata = $em->getClassMetadata(self::TRANSLATION_ENTITY_CLASS);        
+        $data = array();
+
+        foreach ($translationMetadata->getReflectionProperties() as $fieldName => $reflProp) {
+            if (!$translationMetadata->isIdentifier($fieldName)) {
+                $data[$translationMetadata->getColumnName($fieldName)] = $reflProp->getValue($translation);
+            }
+        }
         
         $table = $translationMetadata->getTableName();
         if (!$em->getConnection()->insert($table, $data)) {

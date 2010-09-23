@@ -14,6 +14,7 @@ To include the DoctrineExtensions should fire up an autoloader, for example:
 
 ### Recent Updates
 
+- Implemented more abstracted functionality for getting and setting field properties.
 - Added support for string primary keys, now translations can use integer and string foreign keys.
 - Added support for multiple updates and inserts during single flush.
 - Implemented the default locale functionality. Now you can set the default locale to be used then translation
@@ -198,6 +199,7 @@ want and on flush everything magicaly will be created and updated..
 
 ### Recent Updates
 
+- Implemented more abstracted functionality for getting and setting field properties.
 - Implemented slug type case and separator configuration. Example camel cased and underscored
 slug: Example_Slug, default: example-slug.
 - Added support for a limited unique slug generation.
@@ -289,11 +291,6 @@ before the creation of it`s translation.
         public function getSlug()
         {
             return $this->slug;
-        }
-        
-        public function setSlug($slug)
-        {
-            $this->slug = $slug;
         }
     }
 
