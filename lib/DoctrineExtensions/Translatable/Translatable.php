@@ -29,4 +29,14 @@ interface Translatable
 	 * @return string - locale to use
 	 */
 	public function getTranslatableLocale();
+	
+	/**
+	 * Specify the entity class for translation generation
+	 * for this entity.
+	 * If empty string or null is given, then the default
+	 * will be used
+	 * 
+	 * @return string - name of translation entity class
+	 */
+	public function getTranslationEntity();
 }

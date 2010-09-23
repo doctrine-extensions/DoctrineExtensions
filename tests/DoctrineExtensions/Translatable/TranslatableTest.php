@@ -295,6 +295,11 @@ class Article implements Translatable
     {
         return $this->_locale;
     }
+    
+    public function getTranslationEntity()
+    {
+        return null;
+    }
 }
 
 /**
@@ -368,5 +373,10 @@ class Comment implements Translatable
     public function getTranslatableLocale()
     {
         return $this->_locale;
+    }
+    
+    public function getTranslationEntity()
+    {
+        return null;
     }
 }

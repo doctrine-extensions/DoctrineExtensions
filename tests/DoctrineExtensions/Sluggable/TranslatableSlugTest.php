@@ -270,6 +270,11 @@ class TranslatableArticle implements Sluggable, Translatable
     {
         return $this->_locale;
     }
+    
+    public function getTranslationEntity()
+    {
+        return null;
+    }
 }
 
 /**

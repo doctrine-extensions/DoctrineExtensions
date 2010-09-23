@@ -14,6 +14,7 @@ To include the DoctrineExtensions should fire up an autoloader, for example:
 
 ### Recent Updates
 
+- Added support for diferent translation tables for single entity.
 - Implemented more abstracted functionality for getting and setting field properties.
 - Added support for string primary keys, now translations can use integer and string foreign keys.
 - Added support for multiple updates and inserts during single flush.
@@ -133,6 +134,11 @@ Article Entity:
         public function getTranslatableLocale()
         {
             return $this->_locale;
+        }
+        
+        public function getTranslationEntity()
+        {
+            return null; // we use default translation Entity
         }
     }    
 

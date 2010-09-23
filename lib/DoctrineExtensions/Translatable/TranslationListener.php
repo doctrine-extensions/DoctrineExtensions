@@ -59,6 +59,14 @@ class TranslationListener implements EventSubscriber
 	protected $_pendingTranslationUpdates = array();
 	
 	/**
+     * List of translation entity classes which
+     * should be used to store translations
+     * 
+     * @var array
+     */
+	protected $_entityTranslationClasses = array();
+	
+	/**
 	 * Default locale, this changes behavior
      * to not update the original record field if locale
      * which is used for updating is not default. This
@@ -83,6 +91,39 @@ class TranslationListener implements EventSubscriber
         );
     }
 	
+    /**
+     * Get the entity translation class to be used
+     * for the given Entity
+     * 
+     * @param mixed $entity
+     *      case string: entity class
+     *      case object: Translatable $entity object
+     * @return string
+     */
+    public function getTranslationClass($entity)
+    {
+        $entityClass = $entity;
+        if (!is_string($entityClass)) {
+            if (is_object($entity) || $entity instanceof Translatable) {
+                $entityClass = get_class($entity);
+            } else {
+                throw Exception::translationClassLoaderArgumentInvalid(gettype($entity));
+            }
+        } else {
+            if (!isset($this->_entityTranslationClasses[$entityClass])) {
+                throw Exception::translationClassNotFound();
+            }
+        }
+        if (!isset($this->_entityTranslationClasses[$entityClass])) {
+            $translationEntity = $entity->getTranslationEntity();
+            if (!strlen($translationEntity) || !class_exists($translationEntity)) {
+                $translationEntity = self::TRANSLATION_ENTITY_CLASS;
+            }
+            $this->_entityTranslationClasses[$entityClass] = $translationEntity;
+        }
+        return $this->_entityTranslationClasses[$entityClass];
+    }
+    
     /**
      * Set the locale to use for translation listener
      * 
@@ -249,7 +290,7 @@ class TranslationListener implements EventSubscriber
     {
     	$entityClass = get_class($entity);
     	// no need cache, metadata is loaded only once in MetadataFactoryClass
-        $translationMetadata = $em->getClassMetadata(self::TRANSLATION_ENTITY_CLASS);
+        $translationMetadata = $em->getClassMetadata($this->getTranslationClass($entity));
         $entityClassMetadata = $em->getClassMetadata($entityClass);
         
         // check for the availability of the primary key
@@ -267,6 +308,7 @@ class TranslationListener implements EventSubscriber
         $this->_validateLocale($locale);
 
         $uow = $em->getUnitOfWork();
+        $translationClass = $this->getTranslationClass($entity);
         $translatableFields = $entity->getTranslatableFields();
         foreach ($translatableFields as $field) {
         	$translation = null;
@@ -283,7 +325,7 @@ class TranslationListener implements EventSubscriber
         	}
             // create new translation
             if (!$translation) {
-                $translation = new Translation;
+                $translation = new $translationClass();
                 $translation->setLocale($locale);
 	            $translation->setField($field);
 	            $translation->setEntity($entityClass);
@@ -348,7 +390,7 @@ class TranslationListener implements EventSubscriber
     	
         $qb = $em->createQueryBuilder();
         $qb->select('trans')
-            ->from(self::TRANSLATION_ENTITY_CLASS, 'trans')
+            ->from($this->getTranslationClass($entityClass), 'trans')
             ->where(
                 'trans.foreignKey = :entityId',
                 'trans.locale = :locale',
@@ -395,7 +437,7 @@ class TranslationListener implements EventSubscriber
      */
     private function _insertTranslationRecord(EntityManager $em, $translation)
     {
-        $translationMetadata = $em->getClassMetadata(self::TRANSLATION_ENTITY_CLASS);        
+        $translationMetadata = $em->getClassMetadata(get_class($translation));        
         $data = array();
 
         foreach ($translationMetadata->getReflectionProperties() as $fieldName => $reflProp) {

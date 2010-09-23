@@ -32,4 +32,14 @@ class Exception extends \Exception
     {
     	return new self("Failed to insert new Translation record");
     }
+    
+    static public function translationClassLoaderArgumentInvalid($type)
+    {
+        return new self("Invalid argument [{$type}] given for translation class retrieval.");
+    }
+    
+    static public function translationClassNotFound()
+    {
+        return new self("The translation class must be available at this moment.");
+    }
 }
