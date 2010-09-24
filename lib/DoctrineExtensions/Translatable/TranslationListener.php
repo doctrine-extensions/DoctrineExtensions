@@ -204,11 +204,13 @@ class TranslationListener implements EventSubscriber
             $entityClassMetadata = $em->getClassMetadata($entityClass);
             // there should be single identifier
             $identifierField = $entityClassMetadata->getSingleIdentifierFieldName();
+            $translationClassMetadata = $em->getClassMetadata($this->getTranslationClass($entity));
         	if (array_key_exists($oid, $this->_pendingTranslationInserts)) {
                 // load the pending translations without key
         		$translations = $this->_pendingTranslationInserts[$oid];
         		foreach ($translations as $translation) {
-	                $translation->setForeignKey(
+	                $translationClassMetadata->getReflectionProperty('foreignKey')->setValue(
+                        $translation,
                         $entityClassMetadata->getReflectionProperty($identifierField)->getValue($entity)
                     );
 	                $this->_insertTranslationRecord($em, $translation);
@@ -326,15 +328,20 @@ class TranslationListener implements EventSubscriber
             // create new translation
             if (!$translation) {
                 $translation = new $translationClass();
-                $translation->setLocale($locale);
-	            $translation->setField($field);
-	            $translation->setEntity($entityClass);
-	            $translation->setForeignKey($entityId);
+                $translationMetadata->getReflectionProperty('locale')
+                    ->setValue($translation, $locale);
+                $translationMetadata->getReflectionProperty('field')
+                    ->setValue($translation, $field);
+                $translationMetadata->getReflectionProperty('entity')
+                    ->setValue($translation, $entityClass);
+                $translationMetadata->getReflectionProperty('foreignKey')
+                    ->setValue($translation, $entityId);
 	            $scheduleUpdate = !$isInsert;
             }
             
             // set the translated field, take value using reflection
-            $translation->setContent($entityClassMetadata->getReflectionProperty($field)->getValue($entity));
+            $translationMetadata->getReflectionProperty('content')
+                    ->setValue($translation, $entityClassMetadata->getReflectionProperty($field)->getValue($entity));
             if ($scheduleUpdate && $uow->hasPendingInsertions()) {
                 // need to shedule new Translation insert to avoid query on pending insert
                 $this->_pendingTranslationUpdates[] = $translation;
