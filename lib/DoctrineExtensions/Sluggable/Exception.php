@@ -45,6 +45,11 @@ class Exception extends \Exception
     
     static public function slugFieldIsUnique($slugField)
     {
-        return new self("SluggableListener cannot support unique slug field '{$slugField}' yet, make an index on it.");
+        return new self("SluggableListener cannot support unique slug field '{$slugField}' during concurent updates, make an index on it.");
+    }
+    
+    static public function slugIsEmpty()
+    {
+    	return new self("SluggableListener was unable to find any non empty sluggable fields, make sure they have something at least.");
     }
 }

@@ -205,6 +205,8 @@ want and on flush everything magicaly will be created and updated..
 
 ### Recent Updates
 
+- Optimized to support unique index on slug, except concurent update flush. Now it takes less
+ queries to perform the slug operations.
 - Implemented more abstracted functionality for getting and setting field properties.
 - Implemented slug type case and separator configuration. Example camel cased and underscored
 slug: Example_Slug, default: example-slug.

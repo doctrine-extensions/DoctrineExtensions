@@ -143,7 +143,7 @@ class Article implements Sluggable
     private $code;
     
     /**
-     * @Column(name="slug", type="string", length=128)
+     * @Column(name="slug", type="string", length=128, unique=true)
      */
     private $slug;
 

@@ -32,12 +32,12 @@ class SluggableListener implements EventSubscriber
 	protected $_configurations = array();
 	
 	/**
-	 * List of entities which needs to be processed
-	 * after the insertion operations, because
-	 * query executions will be needed
-	 * 
-	 * @var array
-	 */
+     * List of entities which needs to be processed
+     * after the insertion operations, because
+     * query executions will be needed
+     * 
+     * @var array
+     */
 	protected $_pendingEntities = array();
 	
 	/**
@@ -48,8 +48,9 @@ class SluggableListener implements EventSubscriber
     public function getSubscribedEvents()
     {
         return array(
-            Events::onFlush,
-            Events::postPersist
+            Events::prePersist,
+            Events::postPersist,
+            Events::onFlush
         );
     }
 		
@@ -67,32 +68,20 @@ class SluggableListener implements EventSubscriber
 		}
 		return $this->_configurations[$entityClass];
 	}
-	
-	/**
-	 * Looks for Sluggable entities being inserted or updated
-	 * for further processing
-	 * 
-	 * @param OnFlushEventArgs $args
-	 * @return void
-	 */
-    public function onFlush(OnFlushEventArgs $args)
+    
+    /**
+     * Checks for persisted entity to specify slug
+     * 
+     * @param LifecycleEventArgs $args
+     * @return void
+     */
+    public function prePersist(LifecycleEventArgs $args)
     {
         $em = $args->getEntityManager();
-        $uow = $em->getUnitOfWork();
-        // check all scheduled inserts for Translatable entities
-        foreach ($uow->getScheduledEntityInsertions() as $entity) {
-            if ($entity instanceof Sluggable) {
-                $this->_generateSlug($em, $entity, true);
-            }
-        }
-        // check all scheduled updates for Translatable entities
-        foreach ($uow->getScheduledEntityUpdates() as $entity) {
-            if ($entity instanceof Sluggable) {
-            	$config = $this->getConfiguration($entity);
-            	if ($config->isUpdatable()) {
-                    $this->_generateSlug($em, $entity, false);
-            	}
-            }
+        $entity = $args->getEntity();
+
+        if ($entity instanceof Sluggable) {
+		    $this->_generateSlug($em, $entity, false);
         }
     }
     
@@ -110,16 +99,40 @@ class SluggableListener implements EventSubscriber
         // there can be other entities being inserted because
         // unitofwork does inserts by class ordered chunks
         if (!$uow->hasPendingInsertions()) {
-	        while ($entity = array_shift($this->_pendingEntities)) {
-	        	$config = $this->getConfiguration($entity);
-	        	if ($config->isUnique()) {
-		            $slugField = $config->getSlugField();
-		        	$slug = $this->_makeUniqueSlug($em, $entity);
-		        	$uow->scheduleExtraUpdate($entity, array(
-			            $slugField => array(null, $slug)
-			        ));
-	        	}
-	        }
+            while ($entity = array_shift($this->_pendingEntities)) {
+            	// we know that this slug must be unique and
+            	// it was preprocessed allready
+                $config = $this->getConfiguration($entity);
+                $slugField = $config->getSlugField();
+                $slug = $this->_makeUniqueSlug($em, $entity);
+                $uow->scheduleExtraUpdate($entity, array(
+                    $slugField => array(null, $slug)
+                ));
+            }
+        }
+    }
+    
+    /**
+     * Generate slug on entities being updated during flush
+     * if they require changing
+     * 
+     * @param OnFlushEventArgs $args
+     * @return void
+     */
+    public function onFlush(OnFlushEventArgs $args)
+    {
+        $em = $args->getEntityManager();
+        $uow = $em->getUnitOfWork();
+        
+        // we use onFlush and not preUpdate event to let other
+        // event listeners be nested together
+        foreach ($uow->getScheduledEntityUpdates() as $entity) {
+            if ($entity instanceof Sluggable) {
+            	$config = $this->getConfiguration($entity);
+            	if ($config->isUpdatable()) {
+                    $this->_generateSlug($em, $entity, $uow->getEntityChangeSet($entity));
+            	}
+            }
         }
     }
     
@@ -128,32 +141,24 @@ class SluggableListener implements EventSubscriber
      * 
      * @param EntityManager $em
      * @param Sluggable $entity
-     * @param boolean $isInsert
+     * @param mixed $changeSet
+     *      case array: the change set array
+     *      case boolean(false): entity is not managed
      * @throws Sluggable\Exception if parameters are missing
      *      or invalid
      * @return void
      */
-    protected function _generateSlug(EntityManager $em, Sluggable $entity, $isInsert)
+    protected function _generateSlug(EntityManager $em, Sluggable $entity, $changeSet)
     {
     	$entityClass = get_class($entity);
     	$uow = $em->getUnitOfWork();
         $entityClassMetadata = $em->getClassMetadata($entityClass);
         $config = $this->getConfiguration($entity);
         
-        // if entity is not updatable and it is update, no need processing
-        if (!$isInsert && !$config->isUpdatable()) {
-        	return; // nothing to do
-        }
-        
         // check if slug field exists
         $slugField = $config->getSlugField();
         if (!$entityClassMetadata->hasField($slugField)) {
         	throw Exception::cannotFindSlugField($slugField);
-        }
-        
-        // @todo: make support for unique field metadata
-        if ($entityClassMetadata->isUniqueField($slugField)) {
-        	throw Exception::slugFieldIsUnique($slugField);
         }
         
         // check if slug metadata is valid
@@ -174,12 +179,11 @@ class SluggableListener implements EventSubscriber
         // collect the slug from fields
         $slug = '';
         $needToChangeSlug = false;
-        $changeSet = $uow->getEntityChangeSet($entity);
         foreach ($sluggableFields as $sluggableField) {
         	if (!$entityClassMetadata->hasField($sluggableField)) {
         		throw Exception::cannotFindFieldToSlug($sluggableField);
         	}
-        	if (isset($changeSet[$sluggableField])) {
+        	if ($changeSet === false || isset($changeSet[$sluggableField])) {
         		$needToChangeSlug = true;
         	}
         	$slug .= $entityClassMetadata->getReflectionProperty($sluggableField)->getValue($entity) . ' ';
@@ -188,6 +192,11 @@ class SluggableListener implements EventSubscriber
         if (!$needToChangeSlug) {
         	return; // nothing to do
         }
+        
+        if (!strlen(trim($slug))) {
+            throw Exception::slugIsEmpty();
+        }
+        
         // build the slug
         $builder = $config->getSlugBuilder();
         $separator = $config->getSeparator();
@@ -206,25 +215,35 @@ class SluggableListener implements EventSubscriber
                     $slug
                 );
                 break;
+                
+        	default:
+        	    // leave it as is
+        	    break;
         }
         
         // cut slug if exceeded in length
         if ($preferedLength && strlen($slug) > $preferedLength) {
             $slug = substr($slug, 0, $preferedLength);
         }
-        
-        // set the slug
-        $entityClassMetadata->getReflectionProperty($slugField)->setValue($entity, $slug);
-        if ($config->isUnique() && ($isInsert || $uow->hasPendingInsertions())) {
-        	// leave for further processing after insertion
-            $this->_pendingEntities[spl_object_hash($entity)] = $entity;
-        } elseif ($config->isUnique()) {
-        	// make slug unique
-            $slug = $this->_makeUniqueSlug($em, $entity);
+
+        // make unique slug if requested
+        if ($config->isUnique() && !$uow->hasPendingInsertions()) {
+        	// set the slug for further processing
         	$entityClassMetadata->getReflectionProperty($slugField)->setValue($entity, $slug);
+            $slug = $this->_makeUniqueSlug($em, $entity);
         }
-        // update the changset
-        $uow->recomputeSingleEntityChangeSet($entityClassMetadata, $entity);
+        // set the final slug
+        $entityClassMetadata->getReflectionProperty($slugField)->setValue($entity, $slug);
+        // recompute changeset if entity is managed
+        if ($changeSet !== false) {
+            $uow->recomputeSingleEntityChangeSet($entityClassMetadata, $entity);
+        } elseif ($config->isUnique() && $uow->hasPendingInsertions()) {
+            // @todo: make support for unique field metadata
+            if ($entityClassMetadata->isUniqueField($slugField)) {
+                throw Exception::slugFieldIsUnique($slugField);
+            }
+            $this->_pendingEntities[] = $entity;
+        }
     }
     
     /**
