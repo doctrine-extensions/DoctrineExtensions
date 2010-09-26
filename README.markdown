@@ -311,6 +311,6 @@ To save **Article** and generate slug simply use:
     $this->em->flush();
 
     echo $article->getSlug();
-    // prints: the-title-my-slug
+    // prints: the-title-my-code
     
     

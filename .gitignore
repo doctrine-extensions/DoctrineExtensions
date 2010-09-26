@@ -1,2 +1,3 @@
 tests/phpunit.xml
 build/
+scripts/

@@ -280,7 +280,9 @@ class SluggableListener implements EventSubscriber
         // include identifiers
         $entityIdentifiers = $entityClassMetadata->getIdentifierValues($entity);
         foreach ($entityIdentifiers as $field => $value) {
-        	$qb->where('rec.' . $field . ' <> ' . $value);
+        	if (strlen($value)) {
+                $qb->where('rec.' . $field . ' <> ' . $value);
+        	}
         }
         $q = $qb->getQuery();
         $q->setHydrationMode(Query::HYDRATE_ARRAY);
