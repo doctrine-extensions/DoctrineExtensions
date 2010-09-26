@@ -260,6 +260,7 @@ class TranslationListener implements EventSubscriber
 	    	$entityClassMetadata = $em->getClassMetadata($entityClass);
 	    	// there should be single identifier
 	    	$identifierField = $entityClassMetadata->getSingleIdentifierFieldName();
+	    	$this->getTranslationClass($entity); // must have class loaded
 	    	// load translated content for all translatable fields
             foreach ($entity->getTranslatableFields() as $field) {
             	$content = $this->_findTranslation(
