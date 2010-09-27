@@ -60,7 +60,7 @@ class TranslatableIdentifierTest extends \PHPUnit_Framework_TestCase
         $this->em->clear();
         $this->testObjectId = $object->getUid();
         
-    	$repo = $this->em->getRepository(self::TRANSLATION_CLASS);
+        $repo = $this->em->getRepository(self::TRANSLATION_CLASS);
         $object = $this->em->find(self::TEST_ENTITY_CLASS, $this->testObjectId);
         $this->assertTrue($object instanceof Translatable);
         

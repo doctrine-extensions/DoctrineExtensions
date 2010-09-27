@@ -55,7 +55,7 @@ class SluggableConfigurationTest extends \PHPUnit_Framework_TestCase
     
     public function testInsertedNewSlug()
     {
-    	$article = $this->em->find(
+        $article = $this->em->find(
             'DoctrineExtensions\Sluggable\ArticleTest', 
             $this->articleId
         );
@@ -66,22 +66,22 @@ class SluggableConfigurationTest extends \PHPUnit_Framework_TestCase
     
     public function testNonUniqueSlugGeneration()
     {
-    	for ($i = 0; $i < 5; $i++) {
-	    	$article = new ArticleTest();
-	        $article->setTitle('the title');
-	        $article->setCode('my code');
-	        
-	        $this->em->persist($article);
-	        $this->em->flush();
-	        $this->em->clear();
-	        $this->assertEquals($article->getSlug(), 'the-title-my-code');
-    	}
+        for ($i = 0; $i < 5; $i++) {
+            $article = new ArticleTest();
+            $article->setTitle('the title');
+            $article->setCode('my code');
+            
+            $this->em->persist($article);
+            $this->em->flush();
+            $this->em->clear();
+            $this->assertEquals($article->getSlug(), 'the-title-my-code');
+        }
     }
     
     public function testSlugLimit()
     {
-    	$long = 'the title the title the title the title the';
-    	$article = new ArticleTest();
+        $long = 'the title the title the title the title the';
+        $article = new ArticleTest();
         $article->setTitle($long);
         $article->setCode('my code');
             
@@ -89,13 +89,13 @@ class SluggableConfigurationTest extends \PHPUnit_Framework_TestCase
         $this->em->flush();
         $this->em->clear();
 
-	    $shorten = $article->getSlug();
-	    $this->assertEquals(strlen($shorten), 32);
+        $shorten = $article->getSlug();
+        $this->assertEquals(strlen($shorten), 32);
     }
     
     public function testNonUpdatableSlug()
     {
-    	$article = $this->em->find(
+        $article = $this->em->find(
             'DoctrineExtensions\Sluggable\ArticleTest', 
             $this->articleId
         );
@@ -169,11 +169,11 @@ class ArticleTest implements Sluggable
     
     public function getSlug()
     {
-    	return $this->slug;
+        return $this->slug;
     }
     
     public function setSlug($slug)
     {
-    	$this->slug = $slug;
+        $this->slug = $slug;
     }
 }

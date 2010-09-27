@@ -73,9 +73,9 @@ class TranslatableTest extends \PHPUnit_Framework_TestCase
         $this->articleId = $article->getId();
         $this->em->clear();
         
-    	$repo = $this->em->getRepository('DoctrineExtensions\Translatable\Entity\Translation');
-    	$this->assertTrue($repo instanceof Repository\TranslationRepository);
-    	
+        $repo = $this->em->getRepository('DoctrineExtensions\Translatable\Entity\Translation');
+        $this->assertTrue($repo instanceof Repository\TranslationRepository);
+        
         $article = $this->em->find('DoctrineExtensions\Translatable\Article', $this->articleId);
         $this->assertTrue($article instanceof Translatable);
         
@@ -92,24 +92,24 @@ class TranslatableTest extends \PHPUnit_Framework_TestCase
         $comments = $article->getComments();
         $this->assertEquals(count($comments), 2);
         foreach ($comments as $num => $comment) {
-        	$this->assertTrue($comment instanceof Translatable);
-        	$translations = $repo->findTranslations($comment);
-        	
-        	$this->assertEquals(count($translations), 1);
-	        $this->assertArrayHasKey('en_us', $translations);
-	        
-	        $number = $num + 1;
-	        $this->assertArrayHasKey('subject', $translations['en_us']);
-	        $expected = "subject{$number} in en";
-	        $this->assertEquals($expected, $translations['en_us']['subject']);
-	        
-	        $this->assertArrayHasKey('message', $translations['en_us']);
-	        $expected = "message{$number} in en";
-	        $this->assertEquals($expected, $translations['en_us']['message']);
+            $this->assertTrue($comment instanceof Translatable);
+            $translations = $repo->findTranslations($comment);
+            
+            $this->assertEquals(count($translations), 1);
+            $this->assertArrayHasKey('en_us', $translations);
+            
+            $number = $num + 1;
+            $this->assertArrayHasKey('subject', $translations['en_us']);
+            $expected = "subject{$number} in en";
+            $this->assertEquals($expected, $translations['en_us']['subject']);
+            
+            $this->assertArrayHasKey('message', $translations['en_us']);
+            $expected = "message{$number} in en";
+            $this->assertEquals($expected, $translations['en_us']['message']);
         }
         // test default locale
-    	$this->translatableListener->setDefaultLocale('en_us');
-    	$article = $this->em->find(
+        $this->translatableListener->setDefaultLocale('en_us');
+        $article = $this->em->find(
             'DoctrineExtensions\Translatable\Article', 
             $this->articleId
         );

@@ -14,11 +14,11 @@ namespace DoctrineExtensions\Sluggable;
  */
 interface Sluggable
 {
-	/**
-	 * Specifies the configuration for slug generation
-	 * 
-	 * @see Sluggable\Configuration for options available
-	 * @return Sluggable\Configuration
-	 */
-	public function getSluggableConfiguration();
+    /**
+     * Specifies the configuration for slug generation
+     * 
+     * @see Sluggable\Configuration for options available
+     * @return Sluggable\Configuration
+     */
+    public function getSluggableConfiguration();
 }

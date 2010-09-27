@@ -30,7 +30,7 @@ class Exception extends \Exception
     
     static public function failedToInsert()
     {
-    	return new self("Failed to insert new Translation record");
+        return new self("Failed to insert new Translation record");
     }
     
     static public function translationClassLoaderArgumentInvalid($type)

@@ -59,7 +59,7 @@ class SluggableTest extends \PHPUnit_Framework_TestCase
     
     public function testInsertedNewSlug()
     {
-    	$article = $this->em->find(
+        $article = $this->em->find(
             'DoctrineExtensions\Sluggable\Article', 
             $this->articleId
         );
@@ -70,48 +70,48 @@ class SluggableTest extends \PHPUnit_Framework_TestCase
     
     public function testUniqueSlugGeneration()
     {
-    	for ($i = 0; $i < 12; $i++) {
-	    	$article = new Article();
-	        $article->setTitle('the title');
-	        $article->setCode('my code');
-	        
-	        $this->em->persist($article);
-	        $this->em->flush();
-	        $this->em->clear();
-	        $this->assertEquals($article->getSlug(), 'the-title-my-code-' . ($i + 1));
-    	}
+        for ($i = 0; $i < 12; $i++) {
+            $article = new Article();
+            $article->setTitle('the title');
+            $article->setCode('my code');
+            
+            $this->em->persist($article);
+            $this->em->flush();
+            $this->em->clear();
+            $this->assertEquals($article->getSlug(), 'the-title-my-code-' . ($i + 1));
+        }
     }
     
     public function testUniqueSlugLimit()
     {
-    	$long = 'the title the title the title the title the title the title the title';
-    	$article = new Article();
+        $long = 'the title the title the title the title the title the title the title';
+        $article = new Article();
         $article->setTitle($long);
         $article->setCode('my code');
             
         $this->em->persist($article);
         $this->em->flush();
         $this->em->clear();
-    	for ($i = 0; $i < 12; $i++) {
-	    	$article = new Article();
-	        $article->setTitle($long);
-	        $article->setCode('my code');
-	        
-	        $this->em->persist($article);
-	        $this->em->flush();
-	        $this->em->clear();
-	        
-	        $shorten = $article->getSlug();
-	        $this->assertEquals(strlen($shorten), 64);
-	        $expected = 'the-title-the-title-the-title-the-title-the-title-the-title-the-';
-	        $expected = substr($expected, 0, 64 - (strlen($i+1) + 1)) . '-' . ($i+1);
-	        $this->assertEquals($shorten, $expected);
-    	}
+        for ($i = 0; $i < 12; $i++) {
+            $article = new Article();
+            $article->setTitle($long);
+            $article->setCode('my code');
+            
+            $this->em->persist($article);
+            $this->em->flush();
+            $this->em->clear();
+            
+            $shorten = $article->getSlug();
+            $this->assertEquals(strlen($shorten), 64);
+            $expected = 'the-title-the-title-the-title-the-title-the-title-the-title-the-';
+            $expected = substr($expected, 0, 64 - (strlen($i+1) + 1)) . '-' . ($i+1);
+            $this->assertEquals($shorten, $expected);
+        }
     }
     
     public function testUpdatableSlug()
     {
-    	$article = $this->em->find(
+        $article = $this->em->find(
             'DoctrineExtensions\Sluggable\Article', 
             $this->articleId
         );
@@ -183,6 +183,6 @@ class Article implements Sluggable
     
     public function getSlug()
     {
-    	return $this->slug;
+        return $this->slug;
     }
 }

@@ -66,10 +66,10 @@ class TranslatableSlugTest extends \PHPUnit_Framework_TestCase
     
     public function testSlugAndTranslation()
     {
-    	$article = $this->em->find(self::TEST_CLASS, $this->articleId);
-    	$this->assertTrue($article instanceof Translatable && $article instanceof Sluggable);
-    	$this->assertEquals($article->getSlug(), 'the-title-my-code');
-    	$repo = $this->em->getRepository('DoctrineExtensions\Translatable\Entity\Translation');        
+        $article = $this->em->find(self::TEST_CLASS, $this->articleId);
+        $this->assertTrue($article instanceof Translatable && $article instanceof Sluggable);
+        $this->assertEquals($article->getSlug(), 'the-title-my-code');
+        $repo = $this->em->getRepository('DoctrineExtensions\Translatable\Entity\Translation');        
         
         $translations = $repo->findTranslations($article);
         $this->assertEquals(count($translations), 1);
@@ -88,7 +88,7 @@ class TranslatableSlugTest extends \PHPUnit_Framework_TestCase
     
     public function testSecondTranslations()
     {
-    	$article = $this->em->find(self::TEST_CLASS, $this->articleId);
+        $article = $this->em->find(self::TEST_CLASS, $this->articleId);
         $article->setTranslatableLocale('de_de');
         $article->setCode('code in de');
         $article->setTitle('title in de');
@@ -115,25 +115,25 @@ class TranslatableSlugTest extends \PHPUnit_Framework_TestCase
     
     public function testConcurrentChanges()
     {
-    	$page = new Page;
-    	$page->setContent('cont test');
-    	
-    	$a0Page = new Page;
-    	$a0Page->setContent('bi vv');
-    	
-    	$article0 = $this->em->find(self::TEST_CLASS, $this->articleId);
-    	$article0->setCode('cell');
-    	$article0->setTitle('xx gg');
-    	$a0Page->addArticle($article0);
-    	
-    	$a0Comment = new Comment;
-    	$a0Comment->setMessage('the xx message');
-    	$article0->addComment($a0Comment);
-    	$this->em->persist($a0Comment);
-    	$this->em->persist($article0);
-    	$this->em->persist($a0Page);
-    	
-    	$article1 = new TranslatableArticle();
+        $page = new Page;
+        $page->setContent('cont test');
+        
+        $a0Page = new Page;
+        $a0Page->setContent('bi vv');
+        
+        $article0 = $this->em->find(self::TEST_CLASS, $this->articleId);
+        $article0->setCode('cell');
+        $article0->setTitle('xx gg');
+        $a0Page->addArticle($article0);
+        
+        $a0Comment = new Comment;
+        $a0Comment->setMessage('the xx message');
+        $article0->addComment($a0Comment);
+        $this->em->persist($a0Comment);
+        $this->em->persist($article0);
+        $this->em->persist($a0Page);
+        
+        $article1 = new TranslatableArticle();
         $article1->setTitle('art1 test');
         $article1->setCode('cd1 test');
         
@@ -321,7 +321,7 @@ class Comment
  */
 class Page implements Sluggable
 {
-	/** @Id @GeneratedValue @Column(type="integer") */
+    /** @Id @GeneratedValue @Column(type="integer") */
     private $id;
 
     /**

@@ -20,12 +20,12 @@ class Exception extends \Exception
     
     static public function cannotFindSlugField($slugField)
     {
-    	return new self("SluggableListener was unable to find [{$slugField}] in the Sluggable entity");
+        return new self("SluggableListener was unable to find [{$slugField}] in the Sluggable entity");
     }
     
     static public function noFieldsToSlug()
     {
-    	return new self("SluggableListener was unable to find sluggable fields specified for Sluggable entity");
+        return new self("SluggableListener was unable to find sluggable fields specified for Sluggable entity");
     }
     
     static public function cannotFindFieldToSlug($sluggableField)
@@ -50,6 +50,6 @@ class Exception extends \Exception
     
     static public function slugIsEmpty()
     {
-    	return new self("SluggableListener was unable to find any non empty sluggable fields, make sure they have something at least.");
+        return new self("SluggableListener was unable to find any non empty sluggable fields, make sure they have something at least.");
     }
 }
