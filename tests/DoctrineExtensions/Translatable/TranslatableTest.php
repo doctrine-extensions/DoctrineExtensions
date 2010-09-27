@@ -14,11 +14,9 @@ use Doctrine\Common\Util\Debug;
  */
 class TranslatableTest extends \PHPUnit_Framework_TestCase
 {
+    const TEST_ENTITY_CLASS = 'DoctrineExtensions\Translatable\Article';
     private $articleId;
     private $translatableListener;
-    /**
-     * @var EntityManager
-     */
     private $em;
 
     public function setUp()
@@ -214,6 +212,14 @@ class TranslatableTest extends \PHPUnit_Framework_TestCase
             $this->assertEquals($comment->getSubject(), "subject{$number} in en");
             $this->assertEquals($comment->getMessage(), "message{$number} in en");
         }
+        // test deletion
+        $article = $this->em->find(self::TEST_ENTITY_CLASS, $this->articleId);
+        $this->em->remove($article);
+        $this->em->flush();
+        $this->em->clear();
+
+        $translations = $repo->findTranslationsByEntityId($this->articleId);
+        $this->assertEquals(count($translations), 0);
     }
 }
 

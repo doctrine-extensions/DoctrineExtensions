@@ -30,6 +30,9 @@ class TranslationRepository extends EntityRepository
 	{
 	    $result = array();
         if ($entity instanceof Translatable) {
+            if ($this->_em->getUnitOfWork()->getEntityState($entity) == \Doctrine\ORM\UnitOfWork::STATE_NEW) {
+                return $result;
+            }
 	        $entityClass = get_class($entity);
 	        // no need cache, metadata is loaded only once in MetadataFactoryClass
 	        //$translationMetadata = $em->getClassMetadata(self::TRANSLATION_ENTITY_CLASS);
@@ -58,6 +61,37 @@ class TranslationRepository extends EntityRepository
 	            	$result[$row['locale']][$row['field']] = $row['content'];
 	            }
 	        }
+        }
+        return $result;
+	}
+	
+	/**
+	 * Loads all translations with all translatable
+     * fields by a given entity primary key
+	 *
+	 * @param mixed $id - primary key value of an entity
+	 * @return array
+	 */
+	public function findTranslationsByEntityId($id)
+	{
+	    $result = array();
+        if ($id) {            
+            $qb = $this->_em->createQueryBuilder();
+            $qb->select('trans.content, trans.field, trans.locale')
+                ->from($this->_entityName, 'trans')
+                ->where('trans.foreignKey = :entityId')
+                ->orderBy('trans.locale');
+            $q = $qb->getQuery();
+            $data = $q->execute(
+                array('entityId' => $id),
+                Query::HYDRATE_ARRAY
+            );
+            
+            if ($data && is_array($data) && count($data)) {
+                foreach ($data as $row) {
+                    $result[$row['locale']][$row['field']] = $row['content'];
+                }
+            }
         }
         return $result;
 	}

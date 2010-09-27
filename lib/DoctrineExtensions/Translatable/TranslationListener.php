@@ -87,6 +87,7 @@ class TranslationListener implements EventSubscriber
         return array(
             Events::postLoad,
             Events::postPersist,
+            Events::preRemove,
             Events::onFlush
         );
     }
@@ -181,6 +182,39 @@ class TranslationListener implements EventSubscriber
         foreach ($uow->getScheduledEntityUpdates() as $entity) {
             if ($entity instanceof Translatable && count($entity->getTranslatableFields())) {
                 $this->_handleTranslatableEntityUpdate($em, $entity, false);
+            }
+        }
+    }
+    
+    /**
+     * Removes associated translations
+     * 
+     * @param LifecycleEventArgs $args
+     * @return void
+     */
+    public function preRemove(LifecycleEventArgs $args)
+    {
+        $em = $args->getEntityManager();
+        $entity = $args->getEntity();
+        
+        if ($entity instanceof Translatable) {
+            $uow = $em->getUnitOfWork();
+            
+            $entityClassMetadata = $em->getClassMetadata(get_class($entity));
+            $identifierField = $entityClassMetadata->getSingleIdentifierFieldName();
+            
+            $qb = $em->createQueryBuilder();
+            $qb->select('trans')
+                ->from($this->getTranslationClass($entity), 'trans')
+                ->where('trans.foreignKey = :entityId');
+            $q = $qb->getQuery();
+            $result = $q->execute(
+                array('entityId' => $entityClassMetadata->getReflectionProperty($identifierField)->getValue($entity)),
+                Query::HYDRATE_OBJECT
+            );
+            
+            foreach ((array)$result as $translation) {
+                $uow->scheduleForDelete($translation);
             }
         }
     }
