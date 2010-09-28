@@ -3,6 +3,8 @@
 This package contains extensions for Doctrine 2 that hook into the facilities of Doctrine and
 offer new functionality or tools to use Doctrine 2 more efficently.
 
+You can test these extensions on [my blog](http://gediminasm.org/test/ "Test doctrine behavior extensions").
+
 ## Including DoctrineExtensions
 
 To include the DoctrineExtensions should fire up an autoloader, for example:
