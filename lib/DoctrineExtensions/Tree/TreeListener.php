@@ -160,15 +160,17 @@ class TreeListener implements EventSubscriber
 			}
 			$diff = $rightValue - $leftValue + 1;
 			if ($diff > 2) {
-				// @TODO: implement scheduled deletes to let other behaviors do their job
-				$field = $config->getLeftField();
-				$dql = "DELETE {$entityClass} node";
-				$dql .= " WHERE node.{$field} BETWEEN :left AND :right";
-				
+				$leftField = $config->getLeftField();
+				$dql = "SELECT node FROM {$entityClass} node";
+				$dql .= " WHERE node.{$leftField} BETWEEN :left AND :right";
 				$q = $em->createQuery($dql);
+				// get nodes for deletion
 				$q->setParameter('left', $leftValue + 1);
 				$q->setParameter('right', $rightValue - 1);
-				$q->getSingleScalarResult();
+				$nodes = $q->getResult();
+				foreach ($nodes as $node) {
+					$uow->scheduleForDelete($node);
+				}
 			}
 			$this->_sync($em, $entity, $diff, '-', '> ' . $rightValue);
         }

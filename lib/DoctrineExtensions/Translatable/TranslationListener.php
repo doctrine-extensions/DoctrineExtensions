@@ -59,6 +59,16 @@ class TranslationListener implements EventSubscriber
     protected $_pendingTranslationUpdates = array();
     
     /**
+     * Entities which are sheduled for delete and
+     * cannot delete its translations now because
+     * inserts are pending. They will be processed
+     * after inserts are done
+     * 
+     * @var array
+     */
+    protected $_pendingEntityDeletions = array();
+    
+    /**
      * List of translation entity classes which
      * should be used to store translations
      * 
@@ -87,7 +97,6 @@ class TranslationListener implements EventSubscriber
         return array(
             Events::postLoad,
             Events::postPersist,
-            Events::preRemove,
             Events::onFlush
         );
     }
@@ -184,38 +193,20 @@ class TranslationListener implements EventSubscriber
                 $this->_handleTranslatableEntityUpdate($em, $entity, false);
             }
         }
-    }
-    
-    /**
-     * Removes associated translations
-     * 
-     * @param LifecycleEventArgs $args
-     * @return void
-     */
-    public function preRemove(LifecycleEventArgs $args)
-    {
-        $em = $args->getEntityManager();
-        $entity = $args->getEntity();
-        
-        if ($entity instanceof Translatable) {
-            $uow = $em->getUnitOfWork();
-            
-            $entityClassMetadata = $em->getClassMetadata(get_class($entity));
-            $identifierField = $entityClassMetadata->getSingleIdentifierFieldName();
-            
-            $qb = $em->createQueryBuilder();
-            $qb->select('trans')
-                ->from($this->getTranslationClass($entity), 'trans')
-                ->where('trans.foreignKey = :entityId');
-            $q = $qb->getQuery();
-            $result = $q->execute(
-                array('entityId' => $entityClassMetadata->getReflectionProperty($identifierField)->getValue($entity)),
-                Query::HYDRATE_OBJECT
-            );
-            
-            foreach ((array)$result as $translation) {
-                $uow->scheduleForDelete($translation);
-            }
+        // check scheduled deletions for Translatable entities
+        foreach ($uow->getScheduledEntityDeletions() as $entity) {
+        	if ($entity instanceof Translatable && count($entity->getTranslatableFields())) {
+        		$meta = $em->getClassMetadata(get_class($entity));
+            	$identifierField = $meta->getSingleIdentifierFieldName();
+            	$entityId = $meta->getReflectionProperty($identifierField)->getValue($entity);
+        		
+            	$transClass = $this->getTranslationClass($entity);
+            	if ($uow->hasPendingInsertions()) {
+        			$this->_pendingEntityDeletions[$transClass] = $entityId;
+        		} else {
+        			$this->_removeAssociatedTranslations($em, $entityId, $transClass);
+        		}
+        	}
         }
     }
     
@@ -251,9 +242,10 @@ class TranslationListener implements EventSubscriber
                 }
             }
         }
-        // all translations which should have been inserted are processed now
-        // this prevents new pending insertions during sheduled updates process
-        if (!$uow->hasPendingInsertions() && count($this->_pendingTranslationUpdates)) {
+
+        if (!$uow->hasPendingInsertions()) {
+        	// all translations which should have been inserted are processed now
+        	// this prevents new pending insertions during sheduled updates process
             foreach ($this->_pendingTranslationUpdates as $candidate) {
                 $translation = $this->_findTranslation(
                     $em,
@@ -269,6 +261,11 @@ class TranslationListener implements EventSubscriber
                         'content' => array(null, $candidate->getContent())
                     ));
                 }
+            }
+            
+            // run all pending deletions
+            foreach ($this->_pendingEntityDeletions as $transClass => $id) {
+            	$this->_removeAssociatedTranslations($em, $id, $transClass);
             }
         }
     }
@@ -425,7 +422,6 @@ class TranslationListener implements EventSubscriber
      */
     protected function _findTranslation(EntityManager $em, $entityId, $entityClass, $locale, $field, $contentOnly = false)
     {
-        // @TODO: cannot use query if doctrine has pending inserts
         if ($em->getUnitOfWork()->hasPendingInsertions()) {
             throw Exception::pendingInserts();
         }
@@ -467,6 +463,24 @@ class TranslationListener implements EventSubscriber
         if (!strlen($locale)) {
             throw Exception::undefinedLocale();
         }
+    }
+    
+    /**
+     * Removes all associated translations
+     * 
+     * @param EntityManager $em
+     * @param mixed $entityId
+     * @param string $translationClass
+     * @return integer
+     */
+    protected function _removeAssociatedTranslations(EntityManager $em, $entityId, $translationClass)
+    {
+    	$dql = 'DELETE ' . $translationClass . ' trans';
+        $dql .= ' WHERE trans.foreignKey = :entityId';
+            
+        $q = $em->createQuery($dql);
+        $q->setParameters(compact('entityId'));
+        return $q->getSingleScalarResult();
     }
     
     /**
