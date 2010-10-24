@@ -101,13 +101,12 @@ class TreeNodeRepository extends EntityRepository
      */
     public function children($node = null, $direct = false)
     {
-    	$children = null;
     	$meta = $this->_em->getClassMetadata($this->_entityName);
+    	$qb = $this->_em->createQueryBuilder();
+	    $qb->select('node')
+	    	->from($this->_entityName, 'node');
     	if ($node instanceof Node) {
     		$config = $node->getTreeConfiguration();
-	    	$qb = $this->_em->createQueryBuilder();
-	    	$qb->select('node')
-	    		->from($this->_entityName, 'node');
     		if ($direct) {
     			$nodeId = $meta->getSingleIdentifierFieldName();
     			$id = $meta->getReflectionProperty($nodeId)->getValue($node);
@@ -122,13 +121,15 @@ class TreeNodeRepository extends EntityRepository
 	    				->andWhere('node.' . $config->getLeftField() . " > {$left}");
 	    		}
 	    	}
-	    	$qb->orderBy('node.' . $config->getLeftField(), 'ASC');
-	    	$q = $qb->getQuery();
-	    	$children = $q->getResult(Query::HYDRATE_OBJECT);
     	} else {
-    		$q = $this->_em->createQuery("SELECT node FROM {$this->_entityName} node");
-    		$children = $q->getResult(Query::HYDRATE_OBJECT);
+    		$node = new $this->_entityName();
+    		$config = $node->getTreeConfiguration();
+    		if ($direct) {
+    			$qb->where('node.' . $config->getParentField() . ' IS NULL');
+    		}
     	}
-    	return $children;
+    	$qb->orderBy('node.' . $config->getLeftField(), 'ASC');
+	    $q = $qb->getQuery();
+	    return $q->getResult(Query::HYDRATE_OBJECT);
     }
 }

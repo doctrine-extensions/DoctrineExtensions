@@ -23,12 +23,12 @@ class Category implements Node
     private $title;
 
     /**
-     * @Column(name="lft", type="integer", nullable=true)
+     * @Column(name="lft", type="integer")
      */
     private $lft;
     
     /**
-     * @Column(name="rgt", type="integer", nullable=true)
+     * @Column(name="rgt", type="integer")
      */
     private $rgt;
     

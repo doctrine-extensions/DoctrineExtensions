@@ -101,7 +101,10 @@ class Record
         foreach ($class->associationMappings as $fieldName => $mapping) {
             if ($class->isSingleValuedAssociation($fieldName)) {
                 $reflectionProperty = $class->reflFields[$fieldName];
-                $data[$fieldName] = $reflectionProperty->getValue($this)->getId();
+                $relation = $reflectionProperty->getValue($this);
+                if ($relation) {
+                	$data[$fieldName] = $relation->getId();
+                }
             }
         }
         
