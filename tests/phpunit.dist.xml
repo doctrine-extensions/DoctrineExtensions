@@ -7,6 +7,9 @@
         <testsuite name="Sluggable Extension">
             <directory suffix=".php">./DoctrineExtensions/Sluggable/</directory>
         </testsuite>
+        <testsuite name="Tree Extension">
+            <directory suffix=".php">./DoctrineExtensions/Tree/</directory>
+        </testsuite>
     </testsuites>
     <php>
         <const name="DOCTRINE_LIBRARY_PATH" value="/path/to/library/where/Doctrine/located"/>

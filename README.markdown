@@ -5,6 +5,8 @@ offer new functionality or tools to use Doctrine 2 more efficently.
 
 You can test these extensions on [my blog](http://gediminasm.org/test/ "Test doctrine behavior extensions").
 
+All tutorials for basic usage examples are on [my blog](http://gediminasm.org "Tutorials for extensions") also.
+
 ## Including DoctrineExtensions
 
 To include the DoctrineExtensions should fire up an autoloader, for example:
@@ -315,4 +317,24 @@ To save **Article** and generate slug simply use:
     echo $article->getSlug();
     // prints: the-title-my-code
     
+## Tree - NestedSet
+
+### Recent Updates
+
+- Tree repository has all handy functions required for tree behavior
+- No need for manager to control your tree nodes
+
+**Tree** behavior implements the NestedSet functionality through Doctrine 2
+event listener. Which makes usability as easy as it gets. Plus it supports
+concurrent entity updates and inserts in one flush and nesting with other
+behaviors. Example **Tree** can be nested with **Translatable** and **Sluggable**
+extensions.
+
+To attach the **TreeListener** to your event system do:
+
+    $evm = new Doctrine\Common\EventManager();
+    $evm->addEventSubscriber(new DoctrineExtensions\Tree\TreeListener());
+    // now this event manager should be passed to entity manager constructor
+    
+Your entities should implement **Node** interface.
     
