@@ -34,14 +34,6 @@ class TreeTest extends \PHPUnit_Framework_TestCase
             'driver' => 'pdo_sqlite',
             'memory' => true,
         );
-        
-        /*$conn = array(
-            'driver' => 'pdo_mysql',
-            'host' => '127.0.0.1',
-        	'user' => 'root',
-        	'password' => 'nimda',
-        	'dbname' => 'zend'
-        );*/
 
         //$config->setSQLLogger(new \Doctrine\DBAL\Logging\EchoSQLLogger());
         

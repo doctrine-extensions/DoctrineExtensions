@@ -86,7 +86,13 @@ class TreeNodeRepository extends EntityRepository
 	    		}
 	    	}
     	} else {
-    		$q = $this->_em->createQuery("SELECT COUNT(node.{$nodeId}) FROM {$this->_entityName} node");
+    		$dql = "SELECT COUNT(node.{$nodeId}) FROM {$this->_entityName} node";
+    		if ($direct) {
+    			$node = new $this->_entityName();
+    			$config = $node->getTreeConfiguration();
+    			$dql .= ' WHERE node.' . $config->getParentField() . ' IS NULL';
+    		}
+    		$q = $this->_em->createQuery($dql);
     		$count = intval($q->getSingleScalarResult());
     	}
     	return $count;

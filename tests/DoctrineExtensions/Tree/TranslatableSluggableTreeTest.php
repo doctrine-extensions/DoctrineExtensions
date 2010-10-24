@@ -45,14 +45,7 @@ class TranslatableSluggableTreeTest extends \PHPUnit_Framework_TestCase
             'memory' => true,
         );
 
-        /*$conn = array(
-            'driver' => 'pdo_mysql',
-            'host' => '127.0.0.1',
-        	'user' => 'root',
-        	'password' => 'nimda',
-        	'dbname' => 'test'
-        );*/
-        $config->setSQLLogger(new \Doctrine\DBAL\Logging\EchoSQLLogger());
+        //$config->setSQLLogger(new \Doctrine\DBAL\Logging\EchoSQLLogger());
         
         $evm = new \Doctrine\Common\EventManager();
         $treeListener = new TreeListener();
