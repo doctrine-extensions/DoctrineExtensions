@@ -10,6 +10,9 @@
         <testsuite name="Tree Extension">
             <directory suffix=".php">./DoctrineExtensions/Tree/</directory>
         </testsuite>
+        <testsuite name="Timestampable Extension">
+            <directory suffix=".php">./DoctrineExtensions/Timestampable/</directory>
+        </testsuite>
     </testsuites>
     <php>
         <const name="DOCTRINE_LIBRARY_PATH" value="/path/to/library/where/Doctrine/located"/>
