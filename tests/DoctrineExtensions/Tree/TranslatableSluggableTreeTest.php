@@ -3,12 +3,12 @@
 namespace DoctrineExtensions\Tree;
 
 use Doctrine\Common\Util\Debug,
-	Tree\Fixture\BehavioralCategory,
-	Tree\Fixture\Article,
-	Tree\Fixture\Comment,
-	DoctrineExtensions\Translatable\TranslationListener,
-	DoctrineExtensions\Translatable\Entity\Translation,
-	DoctrineExtensions\Sluggable\SluggableListener;
+    Tree\Fixture\BehavioralCategory,
+    Tree\Fixture\Article,
+    Tree\Fixture\Comment,
+    DoctrineExtensions\Translatable\TranslationListener,
+    DoctrineExtensions\Translatable\Entity\Translation,
+    DoctrineExtensions\Sluggable\SluggableListener;
 
 /**
  * These are tests for Tree behavior
@@ -20,19 +20,19 @@ use Doctrine\Common\Util\Debug,
  */
 class TranslatableSluggableTreeTest extends \PHPUnit_Framework_TestCase
 {
-	const TEST_ENTITY_CATEGORY = "Tree\Fixture\BehavioralCategory";
-	const TEST_ENTITY_ARTICLE = "Tree\Fixture\Article";
-	const TEST_ENTITY_COMMENT = "Tree\Fixture\Comment";
-	const TEST_ENTITY_TRANSLATION = "DoctrineExtensions\Translatable\Entity\Translation";
+    const TEST_ENTITY_CATEGORY = "Tree\Fixture\BehavioralCategory";
+    const TEST_ENTITY_ARTICLE = "Tree\Fixture\Article";
+    const TEST_ENTITY_COMMENT = "Tree\Fixture\Comment";
+    const TEST_ENTITY_TRANSLATION = "DoctrineExtensions\Translatable\Entity\Translation";
     
-	private $em;
+    private $em;
     private $translationListener;
 
     public function setUp()
     {
-    	$classLoader = new \Doctrine\Common\ClassLoader('Tree\Fixture', __DIR__ . '/../');
-		$classLoader->register();
-    	
+        $classLoader = new \Doctrine\Common\ClassLoader('Tree\Fixture', __DIR__ . '/../');
+        $classLoader->register();
+        
         $config = new \Doctrine\ORM\Configuration();
         $config->setMetadataCacheImpl(new \Doctrine\Common\Cache\ArrayCache);
         $config->setQueryCacheImpl(new \Doctrine\Common\Cache\ArrayCache);
@@ -70,36 +70,36 @@ class TranslatableSluggableTreeTest extends \PHPUnit_Framework_TestCase
     
     public function testNestedBehaviors()
     {
-    	$vegies = $this->em->getRepository(self::TEST_ENTITY_CATEGORY)
-    		->findOneByTitle('Vegitables');
-    	
-    	$childCount = $this->em->getRepository(self::TEST_ENTITY_CATEGORY)
-    		->childCount($vegies);
-    	$this->assertEquals(2, $childCount);
-    	
-    	// test slug
-    	
-    	$this->assertEquals('vegitables', $vegies->getSlug());
-    	
-    	// run second translation test
-    	
-    	$this->translationListener->setTranslatableLocale('de_de');
-    	$vegies->setTitle('Deutschebles');
-    	$this->em->persist($vegies);
-    	$this->em->flush();
-    	$this->em->clear();
-    	
-    	$this->translationListener->setTranslatableLocale('en_us');
-    	
-    	$vegies = $this->em->getRepository(self::TEST_ENTITY_CATEGORY)
-    		->find($vegies->getId());
-    		
-    	$translations = $this->em->getRepository(self::TEST_ENTITY_TRANSLATION)
-    		->findTranslations($vegies);
-    		
-    	$this->assertEquals(2, count($translations));
-    	$this->assertArrayHasKey('de_de', $translations);
-    	$this->assertArrayHasKey('en_us', $translations);
+        $vegies = $this->em->getRepository(self::TEST_ENTITY_CATEGORY)
+            ->findOneByTitle('Vegitables');
+        
+        $childCount = $this->em->getRepository(self::TEST_ENTITY_CATEGORY)
+            ->childCount($vegies);
+        $this->assertEquals(2, $childCount);
+        
+        // test slug
+        
+        $this->assertEquals('vegitables', $vegies->getSlug());
+        
+        // run second translation test
+        
+        $this->translationListener->setTranslatableLocale('de_de');
+        $vegies->setTitle('Deutschebles');
+        $this->em->persist($vegies);
+        $this->em->flush();
+        $this->em->clear();
+        
+        $this->translationListener->setTranslatableLocale('en_us');
+        
+        $vegies = $this->em->getRepository(self::TEST_ENTITY_CATEGORY)
+            ->find($vegies->getId());
+            
+        $translations = $this->em->getRepository(self::TEST_ENTITY_TRANSLATION)
+            ->findTranslations($vegies);
+            
+        $this->assertEquals(2, count($translations));
+        $this->assertArrayHasKey('de_de', $translations);
+        $this->assertArrayHasKey('en_us', $translations);
         
         $this->assertArrayHasKey('title', $translations['de_de']);
         $this->assertEquals('Deutschebles', $translations['de_de']['title']);
@@ -116,7 +116,7 @@ class TranslatableSluggableTreeTest extends \PHPUnit_Framework_TestCase
     
     protected function _populate()
     {
-    	$root = new BehavioralCategory();
+        $root = new BehavioralCategory();
         $root->setTitle("Food");
         
         $root2 = new BehavioralCategory();

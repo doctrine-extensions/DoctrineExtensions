@@ -103,7 +103,7 @@ class Record
                 $reflectionProperty = $class->reflFields[$fieldName];
                 $relation = $reflectionProperty->getValue($this);
                 if ($relation) {
-                	$data[$fieldName] = $relation->getId();
+                    $data[$fieldName] = $relation->getId();
                 }
             }
         }
@@ -119,6 +119,6 @@ class Record
      */
     protected function getEntityManager()
     {
-    	return \Zend_Registry::get('em');
+        return \Zend_Registry::get('em');
     }
 }

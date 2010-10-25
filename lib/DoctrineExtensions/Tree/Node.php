@@ -14,7 +14,7 @@ namespace DoctrineExtensions\Tree;
  */
 interface Node
 {
-	/**
+    /**
      * Specifies the configuration for tree
      * 
      * @see Tree\Configuration for options available

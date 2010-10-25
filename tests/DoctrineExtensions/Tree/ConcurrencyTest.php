@@ -3,9 +3,9 @@
 namespace DoctrineExtensions\Tree;
 
 use Doctrine\Common\Util\Debug,
-	Tree\Fixture\Category,
-	Tree\Fixture\Article,
-	Tree\Fixture\Comment;
+    Tree\Fixture\Category,
+    Tree\Fixture\Article,
+    Tree\Fixture\Comment;
 
 /**
  * These are tests for Tree behavior
@@ -17,16 +17,16 @@ use Doctrine\Common\Util\Debug,
  */
 class ConcurrencyTest extends \PHPUnit_Framework_TestCase
 {
-	const TEST_ENTITY_CATEGORY = "Tree\Fixture\Category";
-	const TEST_ENTITY_ARTICLE = "Tree\Fixture\Article";
-	const TEST_ENTITY_COMMENT = "Tree\Fixture\Comment";
+    const TEST_ENTITY_CATEGORY = "Tree\Fixture\Category";
+    const TEST_ENTITY_ARTICLE = "Tree\Fixture\Article";
+    const TEST_ENTITY_COMMENT = "Tree\Fixture\Comment";
     private $em;
 
     public function setUp()
     {
-    	$classLoader = new \Doctrine\Common\ClassLoader('Tree\Fixture', __DIR__ . '/../');
-		$classLoader->register();
-    	
+        $classLoader = new \Doctrine\Common\ClassLoader('Tree\Fixture', __DIR__ . '/../');
+        $classLoader->register();
+        
         $config = new \Doctrine\ORM\Configuration();
         $config->setMetadataCacheImpl(new \Doctrine\Common\Cache\ArrayCache);
         $config->setQueryCacheImpl(new \Doctrine\Common\Cache\ArrayCache);
@@ -58,53 +58,53 @@ class ConcurrencyTest extends \PHPUnit_Framework_TestCase
     
     public function testConcurrentEntitiesInOneFlush()
     {
-    	$sport = $this->em->getRepository(self::TEST_ENTITY_CATEGORY)->find(2);
-    	$sport->setTitle('Sport');
-    	
-    	$skiing = new Category();
-    	$skiing->setTitle('Skiing');
-    	$skiing->setParent($sport);
-    	
-    	$articleAboutSkiing = new Article();
-    	$articleAboutSkiing->setCategory($skiing);
-    	$articleAboutSkiing->setTitle('About Skiing');
-    	
-    	$aboutSkiingArticleComment = new Comment();
-    	$aboutSkiingArticleComment->setArticle($articleAboutSkiing);
-    	$aboutSkiingArticleComment->setMessage('hello');
-    	
-    	$carRacing = new Category();
-    	$carRacing->setParent($sport);
-    	$carRacing->setTitle('Car Racing');
-    	
-    	$articleCarRacing = new Article();
-    	$articleCarRacing->setCategory($carRacing);
-    	$articleCarRacing->setTitle('Car racing madness');
-    	
-    	$olympicSkiing = new Category();
-    	$olympicSkiing->setParent($skiing);
-    	$olympicSkiing->setTitle('Olympic Skiing Championship 2011');
+        $sport = $this->em->getRepository(self::TEST_ENTITY_CATEGORY)->find(2);
+        $sport->setTitle('Sport');
+        
+        $skiing = new Category();
+        $skiing->setTitle('Skiing');
+        $skiing->setParent($sport);
+        
+        $articleAboutSkiing = new Article();
+        $articleAboutSkiing->setCategory($skiing);
+        $articleAboutSkiing->setTitle('About Skiing');
+        
+        $aboutSkiingArticleComment = new Comment();
+        $aboutSkiingArticleComment->setArticle($articleAboutSkiing);
+        $aboutSkiingArticleComment->setMessage('hello');
+        
+        $carRacing = new Category();
+        $carRacing->setParent($sport);
+        $carRacing->setTitle('Car Racing');
+        
+        $articleCarRacing = new Article();
+        $articleCarRacing->setCategory($carRacing);
+        $articleCarRacing->setTitle('Car racing madness');
+        
+        $olympicSkiing = new Category();
+        $olympicSkiing->setParent($skiing);
+        $olympicSkiing->setTitle('Olympic Skiing Championship 2011');
 
-    	$this->em->persist($sport);
-    	$this->em->persist($skiing);
-    	$this->em->persist($articleAboutSkiing);
-    	$this->em->persist($aboutSkiingArticleComment);
-    	$this->em->persist($carRacing);
-    	$this->em->persist($articleCarRacing);
-    	$this->em->persist($olympicSkiing);
-    	$this->em->flush();
-    	$this->em->clear();
-    	
-    	$meta = $this->em->getClassMetadata(self::TEST_ENTITY_CATEGORY);
-    	$sport = $this->em->getRepository(self::TEST_ENTITY_CATEGORY)->find(2);
-    	$left = $meta->getReflectionProperty('lft')->getValue($sport);
+        $this->em->persist($sport);
+        $this->em->persist($skiing);
+        $this->em->persist($articleAboutSkiing);
+        $this->em->persist($aboutSkiingArticleComment);
+        $this->em->persist($carRacing);
+        $this->em->persist($articleCarRacing);
+        $this->em->persist($olympicSkiing);
+        $this->em->flush();
+        $this->em->clear();
+        
+        $meta = $this->em->getClassMetadata(self::TEST_ENTITY_CATEGORY);
+        $sport = $this->em->getRepository(self::TEST_ENTITY_CATEGORY)->find(2);
+        $left = $meta->getReflectionProperty('lft')->getValue($sport);
         $right = $meta->getReflectionProperty('rgt')->getValue($sport);
         
         $this->assertEquals($left, 9);
         $this->assertEquals($right, 16);
         
         $skiing = $this->em->getRepository(self::TEST_ENTITY_CATEGORY)->find(6);
-    	$left = $meta->getReflectionProperty('lft')->getValue($skiing);
+        $left = $meta->getReflectionProperty('lft')->getValue($skiing);
         $right = $meta->getReflectionProperty('rgt')->getValue($skiing);
         
         $this->assertEquals($left, 10);
@@ -112,8 +112,8 @@ class ConcurrencyTest extends \PHPUnit_Framework_TestCase
     }
     
     public function testConcurrentTree()
-    {    	
-    	$meta = $this->em->getClassMetadata(self::TEST_ENTITY_CATEGORY);
+    {        
+        $meta = $this->em->getClassMetadata(self::TEST_ENTITY_CATEGORY);
         
         $root = $this->em->getRepository(self::TEST_ENTITY_CATEGORY)->find(1);
         $left = $meta->getReflectionProperty('lft')->getValue($root);
@@ -147,7 +147,7 @@ class ConcurrencyTest extends \PHPUnit_Framework_TestCase
     
     protected function _populate()
     {
-    	$root = new Category();
+        $root = new Category();
         $root->setTitle("Root");
         
         $root2 = new Category();

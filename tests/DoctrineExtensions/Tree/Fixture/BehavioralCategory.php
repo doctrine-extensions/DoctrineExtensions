@@ -3,10 +3,10 @@
 namespace Tree\Fixture;
 
 use DoctrineExtensions\Tree\Node,
-	DoctrineExtensions\Tree\Configuration as TreeConfiguration,
-	DoctrineExtensions\Translatable\Translatable,
-	DoctrineExtensions\Sluggable\Sluggable,
-	DoctrineExtensions\Sluggable\Configuration as SlugConfiguration;
+    DoctrineExtensions\Tree\Configuration as TreeConfiguration,
+    DoctrineExtensions\Translatable\Translatable,
+    DoctrineExtensions\Sluggable\Sluggable,
+    DoctrineExtensions\Sluggable\Configuration as SlugConfiguration;
 
 /**
  * @Entity(repositoryClass="Tree\Fixture\Repository\BehavioralCategoryRepository")
@@ -55,7 +55,7 @@ class BehavioralCategory implements Node, Translatable, Sluggable
         return $this->id;
     }
     
-	public function getSlug()
+    public function getSlug()
     {
         return $this->slug;
     }
@@ -72,12 +72,12 @@ class BehavioralCategory implements Node, Translatable, Sluggable
     
     public function setParent(BehavioralCategory $parent)
     {
-    	$this->parent = $parent;	
+        $this->parent = $parent;    
     }
     
-	public function getParent()
+    public function getParent()
     {
-    	return $this->parent;	
+        return $this->parent;    
     }
     
     public function getTreeConfiguration()
@@ -85,7 +85,7 @@ class BehavioralCategory implements Node, Translatable, Sluggable
         return new TreeConfiguration();
     }
     
-	public function getSluggableConfiguration()
+    public function getSluggableConfiguration()
     {
         $config = new SlugConfiguration();
         $config->setSluggableFields(array('title'));
@@ -93,12 +93,12 @@ class BehavioralCategory implements Node, Translatable, Sluggable
         return $config;
     }
     
-	public function getTranslatableFields()
+    public function getTranslatableFields()
     {
         return array('title', 'slug');
     }
     
-	public function getTranslatableLocale()
+    public function getTranslatableLocale()
     {
         return null;
     }

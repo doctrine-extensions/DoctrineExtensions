@@ -195,18 +195,18 @@ class TranslationListener implements EventSubscriber
         }
         // check scheduled deletions for Translatable entities
         foreach ($uow->getScheduledEntityDeletions() as $entity) {
-        	if ($entity instanceof Translatable && count($entity->getTranslatableFields())) {
-        		$meta = $em->getClassMetadata(get_class($entity));
-            	$identifierField = $meta->getSingleIdentifierFieldName();
-            	$entityId = $meta->getReflectionProperty($identifierField)->getValue($entity);
-        		
-            	$transClass = $this->getTranslationClass($entity);
-            	if ($uow->hasPendingInsertions()) {
-        			$this->_pendingEntityDeletions[$transClass] = $entityId;
-        		} else {
-        			$this->_removeAssociatedTranslations($em, $entityId, $transClass);
-        		}
-        	}
+            if ($entity instanceof Translatable && count($entity->getTranslatableFields())) {
+                $meta = $em->getClassMetadata(get_class($entity));
+                $identifierField = $meta->getSingleIdentifierFieldName();
+                $entityId = $meta->getReflectionProperty($identifierField)->getValue($entity);
+                
+                $transClass = $this->getTranslationClass($entity);
+                if ($uow->hasPendingInsertions()) {
+                    $this->_pendingEntityDeletions[$transClass] = $entityId;
+                } else {
+                    $this->_removeAssociatedTranslations($em, $entityId, $transClass);
+                }
+            }
         }
     }
     
@@ -244,8 +244,8 @@ class TranslationListener implements EventSubscriber
         }
 
         if (!$uow->hasPendingInsertions()) {
-        	// all translations which should have been inserted are processed now
-        	// this prevents new pending insertions during sheduled updates process
+            // all translations which should have been inserted are processed now
+            // this prevents new pending insertions during sheduled updates process
             foreach ($this->_pendingTranslationUpdates as $candidate) {
                 $translation = $this->_findTranslation(
                     $em,
@@ -265,7 +265,7 @@ class TranslationListener implements EventSubscriber
             
             // run all pending deletions
             foreach ($this->_pendingEntityDeletions as $transClass => $id) {
-            	$this->_removeAssociatedTranslations($em, $id, $transClass);
+                $this->_removeAssociatedTranslations($em, $id, $transClass);
             }
         }
     }
@@ -475,7 +475,7 @@ class TranslationListener implements EventSubscriber
      */
     protected function _removeAssociatedTranslations(EntityManager $em, $entityId, $translationClass)
     {
-    	$dql = 'DELETE ' . $translationClass . ' trans';
+        $dql = 'DELETE ' . $translationClass . ' trans';
         $dql .= ' WHERE trans.foreignKey = :entityId';
             
         $q = $em->createQuery($dql);

@@ -29,7 +29,7 @@ class Article
         return $this->id;
     }
 
-	public function setCategory($category)
+    public function setCategory($category)
     {
         $this->category = $category;
     }

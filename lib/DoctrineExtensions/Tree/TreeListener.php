@@ -28,7 +28,7 @@ use Doctrine\Common\EventSubscriber,
  */
 class TreeListener implements EventSubscriber
 {
-	/**
+    /**
      * List of cached entity configurations
      *  
      * @var array
@@ -68,7 +68,7 @@ class TreeListener implements EventSubscriber
      */
     protected $_validatedNodeClasses = array();
     
-	/**
+    /**
      * Get the configuration for entity
      * 
      * @param Node $entity
@@ -92,7 +92,7 @@ class TreeListener implements EventSubscriber
     {
         return array(
             Events::prePersist,
-        	Events::postPersist,
+            Events::postPersist,
             Events::preRemove,
             Events::onFlush
         );
@@ -112,19 +112,19 @@ class TreeListener implements EventSubscriber
         // check all scheduled updates for TreeNodes
         foreach ($uow->getScheduledEntityUpdates() as $entity) {
             if ($entity instanceof Node) {
-            	$config = $this->getConfiguration($entity);
-        		$meta = $em->getClassMetadata(get_class($entity));
-            	$changeSet = $uow->getEntityChangeSet($entity);
-            	if (array_key_exists($config->getParentField(), $changeSet)) {
-            		$this->_validateNodeClass($entity, $em);
-            		if ($uow->hasPendingInsertions()) {
-            			$this->_pendingNodeUpdates[] = $entity;
-            		} else {
-            			$parent = $meta->getReflectionProperty($config->getParentField())
-            				->getValue($entity);
-            			$this->_adjustNodeWithParent($parent, $entity, $em);
-            		}
-            	}
+                $config = $this->getConfiguration($entity);
+                $meta = $em->getClassMetadata(get_class($entity));
+                $changeSet = $uow->getEntityChangeSet($entity);
+                if (array_key_exists($config->getParentField(), $changeSet)) {
+                    $this->_validateNodeClass($entity, $em);
+                    if ($uow->hasPendingInsertions()) {
+                        $this->_pendingNodeUpdates[] = $entity;
+                    } else {
+                        $parent = $meta->getReflectionProperty($config->getParentField())
+                            ->getValue($entity);
+                        $this->_adjustNodeWithParent($parent, $entity, $em);
+                    }
+                }
             }
         }
         // reset the tree edge
@@ -143,7 +143,7 @@ class TreeListener implements EventSubscriber
         $entity = $args->getEntity();
         
         if ($entity instanceof Node) {
-        	$this->_validateNodeClass($entity, $em);
+            $this->_validateNodeClass($entity, $em);
             $uow = $em->getUnitOfWork();
             
             $config = $this->getConfiguration($entity);
@@ -151,32 +151,32 @@ class TreeListener implements EventSubscriber
             $meta = $em->getClassMetadata($entityClass);
             
             $leftValue = $meta->getReflectionProperty($config->getLeftField())
-            	->getValue($entity);
-        	$rightValue = $meta->getReflectionProperty($config->getRightField())
-     			->getValue($entity);
+                ->getValue($entity);
+            $rightValue = $meta->getReflectionProperty($config->getRightField())
+                 ->getValue($entity);
             
-	        if (!$leftValue || !$rightValue) {
-				return;
-			}
-			$diff = $rightValue - $leftValue + 1;
-			if ($diff > 2) {
-				$leftField = $config->getLeftField();
-				$dql = "SELECT node FROM {$entityClass} node";
-				$dql .= " WHERE node.{$leftField} BETWEEN :left AND :right";
-				$q = $em->createQuery($dql);
-				// get nodes for deletion
-				$q->setParameter('left', $leftValue + 1);
-				$q->setParameter('right', $rightValue - 1);
-				$nodes = $q->getResult();
-				foreach ($nodes as $node) {
-					$uow->scheduleForDelete($node);
-				}
-			}
-			$this->_sync($em, $entity, $diff, '-', '> ' . $rightValue);
+            if (!$leftValue || !$rightValue) {
+                return;
+            }
+            $diff = $rightValue - $leftValue + 1;
+            if ($diff > 2) {
+                $leftField = $config->getLeftField();
+                $dql = "SELECT node FROM {$entityClass} node";
+                $dql .= " WHERE node.{$leftField} BETWEEN :left AND :right";
+                $q = $em->createQuery($dql);
+                // get nodes for deletion
+                $q->setParameter('left', $leftValue + 1);
+                $q->setParameter('right', $rightValue - 1);
+                $nodes = $q->getResult();
+                foreach ($nodes as $node) {
+                    $uow->scheduleForDelete($node);
+                }
+            }
+            $this->_sync($em, $entity, $diff, '-', '> ' . $rightValue);
         }
     }
     
-	/**
+    /**
      * Checks for pending Nodes to fully synchronize
      * the tree
      * 
@@ -191,16 +191,16 @@ class TreeListener implements EventSubscriber
         
         if (!$uow->hasPendingInsertions()) {
             while ($entity = array_shift($this->_pendingChildNodeInserts)) {
-            	$this->_processPendingNode($em, $entity);
+                $this->_processPendingNode($em, $entity);
             }
             
-        	while ($entity = array_shift($this->_pendingNodeUpdates)) {
-            	$this->_processPendingNode($em, $entity);
+            while ($entity = array_shift($this->_pendingNodeUpdates)) {
+                $this->_processPendingNode($em, $entity);
             }
         }
     }
     
-	/**
+    /**
      * Checks for persisted Nodes
      * 
      * @param LifecycleEventArgs $args
@@ -213,19 +213,19 @@ class TreeListener implements EventSubscriber
         $uow = $em->getUnitOfWork();
         
         if ($entity instanceof Node) {
-        	$this->_validateNodeClass($entity, $em);
-        	$config = $this->getConfiguration($entity);
-        	$meta = $em->getClassMetadata(get_class($entity));
-        	$parent = $meta->getReflectionProperty($config->getParentField())->getValue($entity);
-        	if ($parent === null) { // instanceof Node
-        		$this->_prepareRoot($em, $entity);
-        	} else {
-        		$meta->getReflectionProperty($config->getLeftField())
-        			->setValue($entity, 0);
-    			$meta->getReflectionProperty($config->getRightField())
-    				->setValue($entity, 0);
-        		$this->_pendingChildNodeInserts[] = $entity;
-        	}
+            $this->_validateNodeClass($entity, $em);
+            $config = $this->getConfiguration($entity);
+            $meta = $em->getClassMetadata(get_class($entity));
+            $parent = $meta->getReflectionProperty($config->getParentField())->getValue($entity);
+            if ($parent === null) { // instanceof Node
+                $this->_prepareRoot($em, $entity);
+            } else {
+                $meta->getReflectionProperty($config->getLeftField())
+                    ->setValue($entity, 0);
+                $meta->getReflectionProperty($config->getRightField())
+                    ->setValue($entity, 0);
+                $this->_pendingChildNodeInserts[] = $entity;
+            }
         }
     }
     
@@ -239,7 +239,7 @@ class TreeListener implements EventSubscriber
      */
     protected function _validateNodeClass(Node $entity, EntityManager $em)
     {
-    	$entityClass = get_class($entity);
+        $entityClass = get_class($entity);
         if (isset($this->_validatedNodeClasses[$entityClass])) {
             return;
         }
@@ -248,24 +248,24 @@ class TreeListener implements EventSubscriber
         
         // left field
         if (!isset($meta->reflFields[$config->getLeftField()])) {
-        	throw Exception::cannotFindLeftField($config->getLeftField(), $entityClass);
+            throw Exception::cannotFindLeftField($config->getLeftField(), $entityClass);
         }
         
-    	// right field
+        // right field
         if (!isset($meta->reflFields[$config->getRightField()])) {
-        	throw Exception::cannotFindRightField($config->getRightField(), $entityClass);
+            throw Exception::cannotFindRightField($config->getRightField(), $entityClass);
         }
         
         // parent field
         $parent = $config->getParentField();
-    	if (!isset($meta->reflFields[$parent])) {
-        	throw Exception::cannotFindParentField($parent, $entityClass);
+        if (!isset($meta->reflFields[$parent])) {
+            throw Exception::cannotFindParentField($parent, $entityClass);
         }
         
         if (!isset($meta->associationMappings[$parent]) ||
-        	$meta->associationMappings[$parent]['targetEntity'] != $entityClass
+            $meta->associationMappings[$parent]['targetEntity'] != $entityClass
         ) {
-        	throw Exception::parentFieldNotRelated($parent, $entityClass);
+            throw Exception::parentFieldNotRelated($parent, $entityClass);
         }
         
         $this->_validatedNodeClasses[$entityClass] = null;
@@ -278,9 +278,9 @@ class TreeListener implements EventSubscriber
      * @param Node $entity
      * @return void
      */
-	private function _processPendingNode(EntityManager $em, Node $entity)
+    private function _processPendingNode(EntityManager $em, Node $entity)
     {
-    	$config = $this->getConfiguration($entity);
+        $config = $this->getConfiguration($entity);
         $meta = $em->getClassMetadata(get_class($entity));
         $parent = $meta->getReflectionProperty($config->getParentField())->getValue($entity);
         $this->_adjustNodeWithParent($parent, $entity, $em);
@@ -295,17 +295,17 @@ class TreeListener implements EventSubscriber
      */
     private function _prepareRoot(EntityManager $em, Node $entity)
     {
-    	$config = $this->getConfiguration($entity);
-    	$edge = $this->_treeEdge ?: $this->_getTreeEdge($em, $entity);
-    	$meta = $em->getClassMetadata(get_class($entity));
-    	
-    	$meta->getReflectionProperty($config->getLeftField())
-    		->setValue($entity, $edge + 1);
-    		
-    	$meta->getReflectionProperty($config->getRightField())
-    		->setValue($entity, $edge + 2);
-    		
-    	$this->_treeEdge = $edge + 2;
+        $config = $this->getConfiguration($entity);
+        $edge = $this->_treeEdge ?: $this->_getTreeEdge($em, $entity);
+        $meta = $em->getClassMetadata(get_class($entity));
+        
+        $meta->getReflectionProperty($config->getLeftField())
+            ->setValue($entity, $edge + 1);
+            
+        $meta->getReflectionProperty($config->getRightField())
+            ->setValue($entity, $edge + 2);
+            
+        $this->_treeEdge = $edge + 2;
     }
     
     /**
@@ -318,57 +318,57 @@ class TreeListener implements EventSubscriber
      */
     private function _adjustNodeWithParent($parent, Node $entity, EntityManager $em)
     {
-    	$config = $this->getConfiguration($entity);
-    	$edge = $this->_getTreeEdge($em, $entity);
-    	$meta = $em->getClassMetadata(get_class($entity));
-    	$leftValue = $meta->getReflectionProperty($config->getLeftField())->getValue($entity);
+        $config = $this->getConfiguration($entity);
+        $edge = $this->_getTreeEdge($em, $entity);
+        $meta = $em->getClassMetadata(get_class($entity));
+        $leftValue = $meta->getReflectionProperty($config->getLeftField())->getValue($entity);
         $rightValue = $meta->getReflectionProperty($config->getRightField())->getValue($entity);
         if ($parent === null) {
-    		$this->_sync($em, $entity, $edge - $leftValue + 1, '+', 'BETWEEN ' . $leftValue . ' AND ' . $rightValue);
-			$this->_sync($em, $entity, $rightValue - $leftValue + 1, '-', '> ' . $leftValue);
-    	} else {
-    		// need to refresh the parent to get up to date left and right
-    		$em->refresh($parent);
-    		$parentLeftValue = $meta->getReflectionProperty($config->getLeftField())->getValue($parent);
-    		$parentRightValue = $meta->getReflectionProperty($config->getRightField())->getValue($parent);
-    		if ($leftValue < $parentLeftValue && $parentRightValue < $rightValue) {
-    			return;
-    		}
-    		if (empty($leftValue) && empty($rightValue)) {
-    			$this->_sync($em, $entity, 2, '+', '>= ' . $parentRightValue);
-    			$entityClass = get_class($entity);
-    			// cannot schedule this update if other Nodes pending
-    			$qb = $em->createQueryBuilder();
-    			$qb->update($entityClass, 'node')
-    				->set('node.' . $config->getLeftField(), $parentRightValue)
-    				->set('node.' . $config->getRightField(), $parentRightValue + 1);
-    			$entityIdentifiers = $meta->getIdentifierValues($entity);
-		        foreach ($entityIdentifiers as $field => $value) {
-		            if (strlen($value)) {
-		                $qb->where('node.' . $field . ' = ' . $value);
-		            }
-		        }
-		        $q = $qb->getQuery();
-		        $q->getSingleScalarResult();
-    		} else {
-    			$this->_sync($em, $entity, $edge - $leftValue + 1, '+', 'BETWEEN ' . $leftValue . ' AND ' . $rightValue);
-    			$diff = $rightValue - $leftValue + 1;
-    			
-    			if ($leftValue > $parentLeftValue) {
-    				if ($rightValue < $parentRightValue) {
-    					$this->_sync($em, $entity, $diff, '-', 'BETWEEN ' . $rightValue . ' AND ' . ($parentRightValue - 1));
-    					$this->_sync($em, $entity, $edge - $parentRightValue + $diff + 1, '-', '> ' . $edge);
-    				} else {
-						$this->_sync($em, $entity, $diff, '+', 'BETWEEN ' . $parentRightValue . ' AND ' . $rightValue);
-						$this->_sync($em, $entity, $edge - $parentRightValue + 1, '-', '> ' . $edge);
-					}
-    			} else {
-					$this->_sync($em, $entity, $diff, '-', 'BETWEEN ' . $rightValue . ' AND ' . ($parentRightValue - 1));
-					$this->_sync($em, $entity, $edge - $parentRightValue + $diff + 1, '-', '> ' . $edge);
-				}
-    		}
-    	}
-    	return true;
+            $this->_sync($em, $entity, $edge - $leftValue + 1, '+', 'BETWEEN ' . $leftValue . ' AND ' . $rightValue);
+            $this->_sync($em, $entity, $rightValue - $leftValue + 1, '-', '> ' . $leftValue);
+        } else {
+            // need to refresh the parent to get up to date left and right
+            $em->refresh($parent);
+            $parentLeftValue = $meta->getReflectionProperty($config->getLeftField())->getValue($parent);
+            $parentRightValue = $meta->getReflectionProperty($config->getRightField())->getValue($parent);
+            if ($leftValue < $parentLeftValue && $parentRightValue < $rightValue) {
+                return;
+            }
+            if (empty($leftValue) && empty($rightValue)) {
+                $this->_sync($em, $entity, 2, '+', '>= ' . $parentRightValue);
+                $entityClass = get_class($entity);
+                // cannot schedule this update if other Nodes pending
+                $qb = $em->createQueryBuilder();
+                $qb->update($entityClass, 'node')
+                    ->set('node.' . $config->getLeftField(), $parentRightValue)
+                    ->set('node.' . $config->getRightField(), $parentRightValue + 1);
+                $entityIdentifiers = $meta->getIdentifierValues($entity);
+                foreach ($entityIdentifiers as $field => $value) {
+                    if (strlen($value)) {
+                        $qb->where('node.' . $field . ' = ' . $value);
+                    }
+                }
+                $q = $qb->getQuery();
+                $q->getSingleScalarResult();
+            } else {
+                $this->_sync($em, $entity, $edge - $leftValue + 1, '+', 'BETWEEN ' . $leftValue . ' AND ' . $rightValue);
+                $diff = $rightValue - $leftValue + 1;
+                
+                if ($leftValue > $parentLeftValue) {
+                    if ($rightValue < $parentRightValue) {
+                        $this->_sync($em, $entity, $diff, '-', 'BETWEEN ' . $rightValue . ' AND ' . ($parentRightValue - 1));
+                        $this->_sync($em, $entity, $edge - $parentRightValue + $diff + 1, '-', '> ' . $edge);
+                    } else {
+                        $this->_sync($em, $entity, $diff, '+', 'BETWEEN ' . $parentRightValue . ' AND ' . $rightValue);
+                        $this->_sync($em, $entity, $edge - $parentRightValue + 1, '-', '> ' . $edge);
+                    }
+                } else {
+                    $this->_sync($em, $entity, $diff, '-', 'BETWEEN ' . $rightValue . ' AND ' . ($parentRightValue - 1));
+                    $this->_sync($em, $entity, $edge - $parentRightValue + $diff + 1, '-', '> ' . $edge);
+                }
+            }
+        }
+        return true;
     }
     
     /**
@@ -384,18 +384,18 @@ class TreeListener implements EventSubscriber
      */
     private function _sync(EntityManager $em, Node $entity, $shift, $dir, $conditions, $field = 'both')
     {
-    	$config = $this->getConfiguration($entity);
-    	if ($field == 'both') {
-    		$this->_sync($em, $entity, $shift, $dir, $conditions, $config->getLeftField());
-    		$field = $config->getRightField();
-    	}
-    	$entityClass = get_class($entity);
-    	
-    	$dql = "UPDATE {$entityClass} node";
-    	$dql .= " SET node.{$field} = node.{$field} {$dir} {$shift}";
-    	$dql .= " WHERE node.{$field} {$conditions}";
-    	$query = $em->createQuery($dql);
-    	return $query->getSingleScalarResult();
+        $config = $this->getConfiguration($entity);
+        if ($field == 'both') {
+            $this->_sync($em, $entity, $shift, $dir, $conditions, $config->getLeftField());
+            $field = $config->getRightField();
+        }
+        $entityClass = get_class($entity);
+        
+        $dql = "UPDATE {$entityClass} node";
+        $dql .= " SET node.{$field} = node.{$field} {$dir} {$shift}";
+        $dql .= " WHERE node.{$field} {$conditions}";
+        $query = $em->createQuery($dql);
+        return $query->getSingleScalarResult();
     }
     
     /**
@@ -407,11 +407,11 @@ class TreeListener implements EventSubscriber
      */
     private function _getTreeEdge(EntityManager $em, Node $entity)
     {
-    	$config = $this->getConfiguration($entity);
-    	$entityClass = get_class($entity);
-    	$right = $config->getRightField();
-    	$query = $em->createQuery("SELECT MAX(node.{$right}) FROM {$entityClass} node");
-		$right = $query->getSingleScalarResult();
-    	return intval($right);
+        $config = $this->getConfiguration($entity);
+        $entityClass = get_class($entity);
+        $right = $config->getRightField();
+        $query = $em->createQuery("SELECT MAX(node.{$right}) FROM {$entityClass} node");
+        $right = $query->getSingleScalarResult();
+        return intval($right);
     }
 }

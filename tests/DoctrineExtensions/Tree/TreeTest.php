@@ -15,14 +15,14 @@ use Tree\Fixture\Category;
  */
 class TreeTest extends \PHPUnit_Framework_TestCase
 {
-	const TEST_ENTITY_CLASS = "Tree\Fixture\Category";
+    const TEST_ENTITY_CLASS = "Tree\Fixture\Category";
     private $em;
 
     public function setUp()
     {
-    	$classLoader = new \Doctrine\Common\ClassLoader('Tree\Fixture', __DIR__ . '/../');
-		$classLoader->register();
-    	
+        $classLoader = new \Doctrine\Common\ClassLoader('Tree\Fixture', __DIR__ . '/../');
+        $classLoader->register();
+        
         $config = new \Doctrine\ORM\Configuration();
         $config->setMetadataCacheImpl(new \Doctrine\Common\Cache\ArrayCache);
         $config->setQueryCacheImpl(new \Doctrine\Common\Cache\ArrayCache);
@@ -50,9 +50,9 @@ class TreeTest extends \PHPUnit_Framework_TestCase
     }
     
     public function testTheTree()
-    {    	
-    	$meta = $this->em->getClassMetadata(self::TEST_ENTITY_CLASS);
-    	
+    {        
+        $meta = $this->em->getClassMetadata(self::TEST_ENTITY_CLASS);
+        
         $root = new Category();
         $root->setTitle("Root");
         $this->assertTrue($root instanceof Node);

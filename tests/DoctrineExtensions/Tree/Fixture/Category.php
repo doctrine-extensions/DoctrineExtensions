@@ -3,7 +3,7 @@
 namespace Tree\Fixture;
 
 use DoctrineExtensions\Tree\Node,
-	DoctrineExtensions\Tree\Configuration;
+    DoctrineExtensions\Tree\Configuration;
 
 /**
  * @Entity(repositoryClass="DoctrineExtensions\Tree\Repository\TreeNodeRepository")
@@ -64,12 +64,12 @@ class Category implements Node
     
     public function setParent(Category $parent)
     {
-    	$this->parent = $parent;	
+        $this->parent = $parent;    
     }
     
-	public function getParent()
+    public function getParent()
     {
-    	return $this->parent;	
+        return $this->parent;    
     }
     
     public function getTreeConfiguration()

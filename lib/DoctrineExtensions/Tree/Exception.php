@@ -23,12 +23,12 @@ class Exception extends \Exception
         return new self("TreeListener was unable to find 'left' - [{$field}] in the Node class - {$class}");
     }
     
-	static public function cannotFindRightField($field, $class)
+    static public function cannotFindRightField($field, $class)
     {
         return new self("TreeListener was unable to find 'right' - [{$field}] in the Node class - {$class}");
     }
     
-	static public function cannotFindParentField($field, $class)
+    static public function cannotFindParentField($field, $class)
     {
         return new self("TreeListener was unable to find 'parent' - [{$field}] in the Node class - {$class}");
     }
