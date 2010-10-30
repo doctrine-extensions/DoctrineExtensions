@@ -2,7 +2,8 @@
 
 namespace DoctrineExtensions\Sluggable;
 
-use Doctrine\Common\Util\Debug;
+use Doctrine\Common\Util\Debug,
+    Sluggable\Fixture\Article;
 
 /**
  * These are tests for translatable behavior
@@ -14,6 +15,7 @@ use Doctrine\Common\Util\Debug;
  */
 class SluggableTest extends \PHPUnit_Framework_TestCase
 {
+    const TEST_ENTITY_CLASS = 'Sluggable\Fixture\Article';
     private $articleId;
     
     /**
@@ -23,6 +25,9 @@ class SluggableTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
+        $classLoader = new \Doctrine\Common\ClassLoader('Sluggable\Fixture', __DIR__ . '/../');
+        $classLoader->register();
+        
         $config = new \Doctrine\ORM\Configuration();
         $config->setMetadataCacheImpl(new \Doctrine\Common\Cache\ArrayCache);
         $config->setQueryCacheImpl(new \Doctrine\Common\Cache\ArrayCache);
@@ -43,8 +48,9 @@ class SluggableTest extends \PHPUnit_Framework_TestCase
         $this->em = \Doctrine\ORM\EntityManager::create($conn, $config, $evm);
 
         $schemaTool = new \Doctrine\ORM\Tools\SchemaTool($this->em);
+        $schemaTool->dropSchema(array());
         $schemaTool->createSchema(array(
-            $this->em->getClassMetadata('DoctrineExtensions\Sluggable\Article')
+            $this->em->getClassMetadata(self::TEST_ENTITY_CLASS)
         ));
 
         $article = new Article();
@@ -60,7 +66,7 @@ class SluggableTest extends \PHPUnit_Framework_TestCase
     public function testInsertedNewSlug()
     {
         $article = $this->em->find(
-            'DoctrineExtensions\Sluggable\Article', 
+            self::TEST_ENTITY_CLASS, 
             $this->articleId
         );
         
@@ -112,7 +118,7 @@ class SluggableTest extends \PHPUnit_Framework_TestCase
     public function testUpdatableSlug()
     {
         $article = $this->em->find(
-            'DoctrineExtensions\Sluggable\Article', 
+            self::TEST_ENTITY_CLASS, 
             $this->articleId
         );
         $article->setTitle('the title updated');
@@ -121,68 +127,5 @@ class SluggableTest extends \PHPUnit_Framework_TestCase
         $this->em->clear();
         
         $this->assertEquals($article->getSlug(), 'the-title-updated-my-code');
-    }
-}
-
-/**
- * @Entity
- */
-class Article implements Sluggable
-{
-    /** @Id @GeneratedValue @Column(type="integer") */
-    private $id;
-
-    /**
-     * @Column(name="title", type="string", length=64)
-     */
-    private $title;
-
-    /**
-     * @Column(name="code", type="string", length=16)
-     */
-    private $code;
-    
-    /**
-     * @Column(name="slug", type="string", length=128, unique=true)
-     */
-    private $slug;
-
-    public function getId()
-    {
-        return $this->id;
-    }
-    
-    public function setTitle($title)
-    {
-        $this->title = $title;
-    }
-
-    public function getTitle()
-    {
-        return $this->title;
-    }
-
-    public function setCode($code)
-    {
-        $this->code = $code;
-    }
-
-    public function getCode()
-    {
-        return $this->code;
-    }
-    
-    public function getSluggableConfiguration()
-    {
-        $config = new Configuration();
-        $config->setSluggableFields(array('title', 'code'));
-        $config->setSlugField('slug');
-        $config->setLength(64);
-        return $config;
-    }
-    
-    public function getSlug()
-    {
-        return $this->slug;
     }
 }

@@ -7,7 +7,7 @@ use Doctrine\Common\Util\Debug,
     Timestampable\Fixture\Comment;
 
 /**
- * These are tests for Tree behavior
+ * These are tests for Timestampable behavior
  * 
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  * @package DoctrineExtensions.Tree

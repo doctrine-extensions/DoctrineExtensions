@@ -2,7 +2,9 @@
 
 namespace DoctrineExtensions\Translatable;
 
-use Doctrine\Common\Util\Debug;
+use Doctrine\Common\Util\Debug,
+    Translatable\Fixture\Article,
+    Translatable\Fixture\Comment;
 
 /**
  * These are tests for translatable behavior
@@ -14,13 +16,17 @@ use Doctrine\Common\Util\Debug;
  */
 class TranslatableTest extends \PHPUnit_Framework_TestCase
 {
-    const TEST_ENTITY_CLASS = 'DoctrineExtensions\Translatable\Article';
+    const TEST_ENTITY_CLASS_ARTICLE = 'Translatable\Fixture\Article';
+    const TEST_ENTITY_CLASS_COMMENT = 'Translatable\Fixture\Comment';
     private $articleId;
     private $translatableListener;
     private $em;
 
     public function setUp()
     {
+        $classLoader = new \Doctrine\Common\ClassLoader('Translatable\Fixture', __DIR__ . '/../');
+        $classLoader->register();
+        
         $config = new \Doctrine\ORM\Configuration();
         $config->setMetadataCacheImpl(new \Doctrine\Common\Cache\ArrayCache);
         $config->setQueryCacheImpl(new \Doctrine\Common\Cache\ArrayCache);
@@ -42,9 +48,10 @@ class TranslatableTest extends \PHPUnit_Framework_TestCase
         $this->em = \Doctrine\ORM\EntityManager::create($conn, $config, $evm);
 
         $schemaTool = new \Doctrine\ORM\Tools\SchemaTool($this->em);
+        $schemaTool->dropSchema(array());
         $schemaTool->createSchema(array(
-            $this->em->getClassMetadata('DoctrineExtensions\Translatable\Article'),
-            $this->em->getClassMetadata('DoctrineExtensions\Translatable\Comment'),
+            $this->em->getClassMetadata(self::TEST_ENTITY_CLASS_ARTICLE),
+            $this->em->getClassMetadata(self::TEST_ENTITY_CLASS_COMMENT),
             $this->em->getClassMetadata('DoctrineExtensions\Translatable\Entity\Translation'),
         ));
     }
@@ -76,7 +83,7 @@ class TranslatableTest extends \PHPUnit_Framework_TestCase
         $repo = $this->em->getRepository('DoctrineExtensions\Translatable\Entity\Translation');
         $this->assertTrue($repo instanceof Repository\TranslationRepository);
         
-        $article = $this->em->find('DoctrineExtensions\Translatable\Article', $this->articleId);
+        $article = $this->em->find(self::TEST_ENTITY_CLASS_ARTICLE, $this->articleId);
         $this->assertTrue($article instanceof Translatable);
         
         $translations = $repo->findTranslations($article);
@@ -110,7 +117,7 @@ class TranslatableTest extends \PHPUnit_Framework_TestCase
         // test default locale
         $this->translatableListener->setDefaultLocale('en_us');
         $article = $this->em->find(
-            'DoctrineExtensions\Translatable\Article', 
+            self::TEST_ENTITY_CLASS_ARTICLE, 
             $this->articleId
         );
         $article->setTranslatableLocale('de_de');
@@ -147,7 +154,7 @@ class TranslatableTest extends \PHPUnit_Framework_TestCase
         $this->translatableListener->setDefaultLocale('');
         // test second translations
         $article = $this->em->find(
-            'DoctrineExtensions\Translatable\Article', 
+            self::TEST_ENTITY_CLASS_ARTICLE, 
             $this->articleId
         );
         $this->translatableListener->setDefaultLocale('en_us');
@@ -199,7 +206,7 @@ class TranslatableTest extends \PHPUnit_Framework_TestCase
         
         $this->translatableListener->setTranslatableLocale('en_us');
         $article = $this->em->find(
-            'DoctrineExtensions\Translatable\Article', 
+            self::TEST_ENTITY_CLASS_ARTICLE, 
             $this->articleId
         );
         $this->assertEquals($article->getTitle(), 'title in en');
@@ -213,176 +220,12 @@ class TranslatableTest extends \PHPUnit_Framework_TestCase
             $this->assertEquals($comment->getMessage(), "message{$number} in en");
         }
         // test deletion
-        $article = $this->em->find(self::TEST_ENTITY_CLASS, $this->articleId);
+        $article = $this->em->find(self::TEST_ENTITY_CLASS_ARTICLE, $this->articleId);
         $this->em->remove($article);
         $this->em->flush();
         $this->em->clear();
 
         $translations = $repo->findTranslationsByEntityId($this->articleId);
         $this->assertEquals(count($translations), 0);
-    }
-}
-
-/**
- * @Entity
- */
-class Article implements Translatable
-{
-    /** @Id @GeneratedValue @Column(type="integer") */
-    private $id;
-
-    /**
-     * @Column(name="title", type="string", length=128)
-     */
-    private $title;
-
-    /**
-     * @Column(name="content", type="text")
-     */
-    private $content;
-    
-    /*
-     * Used locale to override Translation listener`s locale
-     */
-    private $_locale;
-    
-    /**
-     * @OneToMany(targetEntity="Comment", mappedBy="article")
-     */
-    private $comments;
-
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    public function addComment(Comment $comment)
-    {
-        $comment->setArticle($this);
-        $this->comments[] = $comment;
-    }
-
-    public function getComments()
-    {
-        return $this->comments;
-    }
-    
-    public function setTitle($title)
-    {
-        $this->title = $title;
-    }
-
-    public function getTitle()
-    {
-        return $this->title;
-    }
-
-    public function setContent($content)
-    {
-        $this->content = $content;
-    }
-
-    public function getContent()
-    {
-        return $this->content;
-    }
-    
-    public function getTranslatableFields()
-    {
-        return array('title', 'content');
-    }
-    
-    public function setTranslatableLocale($locale)
-    {
-        $this->_locale = $locale;
-    }
-    
-    public function getTranslatableLocale()
-    {
-        return $this->_locale;
-    }
-    
-    public function getTranslationEntity()
-    {
-        return null;
-    }
-}
-
-/**
- * @Entity
- */
-class Comment implements Translatable
-{
-    /** @Id @GeneratedValue @Column(type="integer") */
-    private $id;
-
-    /**
-     * @Column(name="subject", type="string", length=128)
-     */
-    private $subject;
-
-    /**
-     * @Column(name="message", type="text")
-     */
-    private $message;
-    
-    /**
-     * @ManyToOne(targetEntity="Article", inversedBy="comments")
-     */
-    private $article;
-    
-    /*
-     * Used locale to override Translation listener`s locale
-     */
-    private $_locale;
-
-    public function setArticle($article)
-    {
-        $this->article = $article;
-    }
-
-    public function getId()
-    {
-        return $this->id;
-    }
-    
-    public function setSubject($subject)
-    {
-        $this->subject = $subject;
-    }
-
-    public function getSubject()
-    {
-        return $this->subject;
-    }
-
-    public function setMessage($message)
-    {
-        $this->message = $message;
-    }
-
-    public function getMessage()
-    {
-        return $this->message;
-    }
-    
-    public function getTranslatableFields()
-    {
-        return array('subject', 'message');
-    }
-    
-    public function setTranslatableLocale($locale)
-    {
-        $this->_locale = $locale;
-    }
-    
-    public function getTranslatableLocale()
-    {
-        return $this->_locale;
-    }
-    
-    public function getTranslationEntity()
-    {
-        return null;
     }
 }

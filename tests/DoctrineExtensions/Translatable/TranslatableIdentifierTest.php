@@ -2,7 +2,8 @@
 
 namespace DoctrineExtensions\Translatable;
 
-use Doctrine\Common\Util\Debug;
+use Doctrine\Common\Util\Debug,
+    Translatable\Fixture\StringIdentifier;
 
 /**
  * These are tests for translatable behavior
@@ -14,7 +15,7 @@ use Doctrine\Common\Util\Debug;
  */
 class TranslatableIdentifierTest extends \PHPUnit_Framework_TestCase
 {
-    const TEST_ENTITY_CLASS = 'DoctrineExtensions\Translatable\StringIdentifier';
+    const TEST_ENTITY_CLASS = 'Translatable\Fixture\StringIdentifier';
     const TRANSLATION_CLASS = 'DoctrineExtensions\Translatable\Entity\Translation';
     private $testObjectId;
     private $translationListener;
@@ -22,6 +23,9 @@ class TranslatableIdentifierTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
+        $classLoader = new \Doctrine\Common\ClassLoader('Translatable\Fixture', __DIR__ . '/../');
+        $classLoader->register();
+        
         $config = new \Doctrine\ORM\Configuration();
         $config->setMetadataCacheImpl(new \Doctrine\Common\Cache\ArrayCache);
         $config->setQueryCacheImpl(new \Doctrine\Common\Cache\ArrayCache);
@@ -43,6 +47,7 @@ class TranslatableIdentifierTest extends \PHPUnit_Framework_TestCase
         $this->em = \Doctrine\ORM\EntityManager::create($conn, $config, $evm);
 
         $schemaTool = new \Doctrine\ORM\Tools\SchemaTool($this->em);
+        $schemaTool->dropSchema(array());
         $schemaTool->createSchema(array(
             $this->em->getClassMetadata(self::TEST_ENTITY_CLASS),
             $this->em->getClassMetadata(self::TRANSLATION_CLASS),
@@ -89,7 +94,7 @@ class TranslatableIdentifierTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('title in de', $translations['de_de']['title']);
 
         // dql test object hydration
-        $q = $this->em->createQuery('SELECT si FROM DoctrineExtensions\Translatable\StringIdentifier si WHERE si.uid = :id');
+        $q = $this->em->createQuery('SELECT si FROM ' . self::TEST_ENTITY_CLASS . ' si WHERE si.uid = :id');
         $data = $q->execute(
             array('id' => $this->testObjectId),
             \Doctrine\ORM\Query::HYDRATE_OBJECT
@@ -99,7 +104,7 @@ class TranslatableIdentifierTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('title in en', $object->getTitle());
         
         $this->translationListener->setTranslatableLocale('de_de');
-        $q = $this->em->createQuery('SELECT si FROM DoctrineExtensions\Translatable\StringIdentifier si WHERE si.uid = :id');
+        $q = $this->em->createQuery('SELECT si FROM ' . self::TEST_ENTITY_CLASS . ' si WHERE si.uid = :id');
         $data = $q->execute(
             array('id' => $this->testObjectId),
             \Doctrine\ORM\Query::HYDRATE_OBJECT
@@ -107,67 +112,5 @@ class TranslatableIdentifierTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(count($data), 1);
         $object = $data[0];
         $this->assertEquals('title in de', $object->getTitle());
-    }
-}
-
-/**
- * @Entity
- */
-class StringIdentifier implements Translatable
-{
-    /** 
-     * @Id 
-     * @Column(name="uid", type="string", length=32)
-     */
-    private $uid;
-
-    /**
-     * @Column(name="title", type="string", length=128)
-     */
-    private $title;
-    
-    /*
-     * Used locale to override Translation listener`s locale
-     */
-    private $_locale;
-
-    public function getUid()
-    {
-        return $this->uid;
-    }
-    
-    public function setUid($uid)
-    {
-        $this->uid = $uid;
-    }
-    
-    public function setTitle($title)
-    {
-        $this->title = $title;
-    }
-
-    public function getTitle()
-    {
-        return $this->title;
-    }
-    
-    public function getTranslatableFields()
-    {
-        return array('title');
-    }
-    
-    public function setTranslatableLocale($locale)
-    {
-        $this->_locale = $locale;
-    }
-    
-    public function getTranslatableLocale()
-    {
-        return $this->_locale;
-    }
-    
-    public function getTranslationEntity()
-    {
-        return null;
     }
 }

@@ -2,7 +2,8 @@
 
 namespace DoctrineExtensions\Sluggable;
 
-use Doctrine\Common\Util\Debug;
+use Doctrine\Common\Util\Debug,
+    Sluggable\Fixture\ConfigurationArticle;
 
 /**
  * These are tests for translatable behavior
@@ -14,11 +15,16 @@ use Doctrine\Common\Util\Debug;
  */
 class SluggableConfigurationTest extends \PHPUnit_Framework_TestCase
 {
+    const TEST_ENTITY_CLASS = 'Sluggable\Fixture\ConfigurationArticle';
+    
     private $articleId;
     private $em;
 
     public function setUp()
     {
+        $classLoader = new \Doctrine\Common\ClassLoader('Sluggable\Fixture', __DIR__ . '/../');
+        $classLoader->register();
+        
         $config = new \Doctrine\ORM\Configuration();
         $config->setMetadataCacheImpl(new \Doctrine\Common\Cache\ArrayCache);
         $config->setQueryCacheImpl(new \Doctrine\Common\Cache\ArrayCache);
@@ -39,11 +45,12 @@ class SluggableConfigurationTest extends \PHPUnit_Framework_TestCase
         $this->em = \Doctrine\ORM\EntityManager::create($conn, $config, $evm);
 
         $schemaTool = new \Doctrine\ORM\Tools\SchemaTool($this->em);
+        $schemaTool->dropSchema(array());
         $schemaTool->createSchema(array(
-            $this->em->getClassMetadata('DoctrineExtensions\Sluggable\ArticleTest')
+            $this->em->getClassMetadata(self::TEST_ENTITY_CLASS)
         ));
 
-        $article = new ArticleTest();
+        $article = new ConfigurationArticle();
         $article->setTitle('the title');
         $article->setCode('my code');
         
@@ -56,7 +63,7 @@ class SluggableConfigurationTest extends \PHPUnit_Framework_TestCase
     public function testInsertedNewSlug()
     {
         $article = $this->em->find(
-            'DoctrineExtensions\Sluggable\ArticleTest', 
+            self::TEST_ENTITY_CLASS, 
             $this->articleId
         );
         
@@ -67,7 +74,7 @@ class SluggableConfigurationTest extends \PHPUnit_Framework_TestCase
     public function testNonUniqueSlugGeneration()
     {
         for ($i = 0; $i < 5; $i++) {
-            $article = new ArticleTest();
+            $article = new ConfigurationArticle();
             $article->setTitle('the title');
             $article->setCode('my code');
             
@@ -81,7 +88,7 @@ class SluggableConfigurationTest extends \PHPUnit_Framework_TestCase
     public function testSlugLimit()
     {
         $long = 'the title the title the title the title the';
-        $article = new ArticleTest();
+        $article = new ConfigurationArticle();
         $article->setTitle($long);
         $article->setCode('my code');
             
@@ -96,7 +103,7 @@ class SluggableConfigurationTest extends \PHPUnit_Framework_TestCase
     public function testNonUpdatableSlug()
     {
         $article = $this->em->find(
-            'DoctrineExtensions\Sluggable\ArticleTest', 
+            self::TEST_ENTITY_CLASS, 
             $this->articleId
         );
         $article->setTitle('the title updated');
@@ -108,72 +115,3 @@ class SluggableConfigurationTest extends \PHPUnit_Framework_TestCase
     }
 }
 
-/**
- * @Entity
- */
-class ArticleTest implements Sluggable
-{
-    /** @Id @GeneratedValue @Column(type="integer") */
-    private $id;
-
-    /**
-     * @Column(name="title", type="string", length=64)
-     */
-    private $title;
-
-    /**
-     * @Column(name="code", type="string", length=16)
-     */
-    private $code;
-    
-    /**
-     * @Column(name="slug", type="string", length=128)
-     */
-    private $slug;
-
-    public function getId()
-    {
-        return $this->id;
-    }
-    
-    public function setTitle($title)
-    {
-        $this->title = $title;
-    }
-
-    public function getTitle()
-    {
-        return $this->title;
-    }
-
-    public function setCode($code)
-    {
-        $this->code = $code;
-    }
-
-    public function getCode()
-    {
-        return $this->code;
-    }
-    
-    public function getSluggableConfiguration()
-    {
-        $config = new Configuration();
-        $config->setSluggableFields(array('title', 'code'));
-        $config->setSlugField('slug');
-        $config->setIsUpdatable(false);
-        $config->setIsUnique(false);
-        $config->setLength(32);
-        return $config;
-    }
-    
-    public function getSlug()
-    {
-        return $this->slug;
-    }
-    
-    public function setSlug($slug)
-    {
-        $this->slug = $slug;
-    }
-}

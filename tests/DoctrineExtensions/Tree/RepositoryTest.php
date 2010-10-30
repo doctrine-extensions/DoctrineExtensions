@@ -3,9 +3,7 @@
 namespace DoctrineExtensions\Tree;
 
 use Doctrine\Common\Util\Debug,
-    Tree\Fixture\Category,
-    Tree\Fixture\Article,
-    Tree\Fixture\Comment;
+    Tree\Fixture\Category;
 
 /**
  * These are tests for Tree behavior
@@ -18,8 +16,7 @@ use Doctrine\Common\Util\Debug,
 class RepositoryTest extends \PHPUnit_Framework_TestCase
 {
     const TEST_ENTITY_CATEGORY = "Tree\Fixture\Category";
-    const TEST_ENTITY_ARTICLE = "Tree\Fixture\Article";
-    const TEST_ENTITY_COMMENT = "Tree\Fixture\Comment";
+    
     private $em;
 
     public function setUp()
@@ -49,9 +46,7 @@ class RepositoryTest extends \PHPUnit_Framework_TestCase
         $schemaTool = new \Doctrine\ORM\Tools\SchemaTool($this->em);
         $schemaTool->dropSchema(array());
         $schemaTool->createSchema(array(
-            $this->em->getClassMetadata(self::TEST_ENTITY_CATEGORY),
-            $this->em->getClassMetadata(self::TEST_ENTITY_ARTICLE),
-            $this->em->getClassMetadata(self::TEST_ENTITY_COMMENT)
+            $this->em->getClassMetadata(self::TEST_ENTITY_CATEGORY)
         ));
         $this->_populate();
     }
@@ -131,6 +126,190 @@ class RepositoryTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('Food', $path[0]->getTitle());
         $this->assertEquals('Vegitables', $path[1]->getTitle());
         $this->assertEquals('Carrots', $path[2]->getTitle());
+    }
+    
+    public function testAdvancedFunctions()
+    {
+        $this->_populateMore();
+        $onions = $this->em->getRepository(self::TEST_ENTITY_CATEGORY)
+            ->findOneByTitle('Onions');
+        $repo = $this->em->getRepository(self::TEST_ENTITY_CATEGORY);
+        $meta = $this->em->getClassMetadata(self::TEST_ENTITY_CATEGORY);
+        
+        $left = $meta->getReflectionProperty('lft')->getValue($onions);
+        $right = $meta->getReflectionProperty('rgt')->getValue($onions);
+        
+        $this->assertEquals($left, 11);
+        $this->assertEquals($right, 12);
+        
+        // move up onions by one position
+        
+        $repo->moveUp($onions, 1);
+        $this->em->refresh($onions);
+        
+        $left = $meta->getReflectionProperty('lft')->getValue($onions);
+        $right = $meta->getReflectionProperty('rgt')->getValue($onions);
+        
+        $this->assertEquals($left, 9);
+        $this->assertEquals($right, 10);
+        
+        // move down onions by one position
+        $repo->moveDown($onions, 1);
+        $this->em->refresh($onions);
+        
+        $left = $meta->getReflectionProperty('lft')->getValue($onions);
+        $right = $meta->getReflectionProperty('rgt')->getValue($onions);
+        
+        $this->assertEquals($left, 11);
+        $this->assertEquals($right, 12);
+        
+        // move to the up onions on this level
+        
+        $repo->moveUp($onions, true);
+        $this->em->refresh($onions);
+        
+        $left = $meta->getReflectionProperty('lft')->getValue($onions);
+        $right = $meta->getReflectionProperty('rgt')->getValue($onions);
+        
+        $this->assertEquals($left, 5);
+        $this->assertEquals($right, 6);
+        
+        // test tree reordering
+        
+        $this->em->clear(); // clear all cached nodes
+        
+        // reorder tree by title
+        
+        $repo->reorder(null, 'title');
+        $this->em->clear(); // clear all cached nodes
+        
+        $node = $this->em->getRepository(self::TEST_ENTITY_CATEGORY)
+            ->findOneByTitle('Cabbages');
+        $left = $meta->getReflectionProperty('lft')->getValue($node);
+        $right = $meta->getReflectionProperty('rgt')->getValue($node);
+        
+        $this->assertEquals($left, 5);
+        $this->assertEquals($right, 6);
+
+        $node = $this->em->getRepository(self::TEST_ENTITY_CATEGORY)
+            ->findOneByTitle('Carrots');
+        $left = $meta->getReflectionProperty('lft')->getValue($node);
+        $right = $meta->getReflectionProperty('rgt')->getValue($node);
+        
+        $this->assertEquals($left, 7);
+        $this->assertEquals($right, 8);
+        
+        $node = $this->em->getRepository(self::TEST_ENTITY_CATEGORY)
+            ->findOneByTitle('Onions');
+        $left = $meta->getReflectionProperty('lft')->getValue($node);
+        $right = $meta->getReflectionProperty('rgt')->getValue($node);
+        
+        $this->assertEquals($left, 9);
+        $this->assertEquals($right, 10);
+        
+        $node = $this->em->getRepository(self::TEST_ENTITY_CATEGORY)
+            ->findOneByTitle('Potatoes');
+        $left = $meta->getReflectionProperty('lft')->getValue($node);
+        $right = $meta->getReflectionProperty('rgt')->getValue($node);
+        
+        $this->assertEquals($left, 11);
+        $this->assertEquals($right, 12);
+        
+        // test removal with reparenting
+        
+        $this->em->clear(); // clear all cached nodes
+        $vegies = $this->em->getRepository(self::TEST_ENTITY_CATEGORY)
+            ->findOneByTitle('Vegitables');
+            
+        $repo->removeFromTree($vegies);
+        
+        $this->em->clear(); // clear all cached nodes
+        
+        $vegies = $this->em->getRepository(self::TEST_ENTITY_CATEGORY)
+            ->findOneByTitle('Vegitables');
+            
+        $this->assertTrue($vegies === null);
+        
+        $node = $this->em->getRepository(self::TEST_ENTITY_CATEGORY)
+            ->findOneByTitle('Fruits');
+        $left = $meta->getReflectionProperty('lft')->getValue($node);
+        $right = $meta->getReflectionProperty('rgt')->getValue($node);
+        
+        $this->assertEquals($left, 2);
+        $this->assertEquals($right, 3);
+        $this->assertEquals('Food', $node->getParent()->getTitle());
+        
+        $node = $this->em->getRepository(self::TEST_ENTITY_CATEGORY)
+            ->findOneByTitle('Cabbages');
+        $left = $meta->getReflectionProperty('lft')->getValue($node);
+        $right = $meta->getReflectionProperty('rgt')->getValue($node);
+        
+        $this->assertEquals($left, 4);
+        $this->assertEquals($right, 5);
+        $this->assertEquals('Food', $node->getParent()->getTitle());
+    }
+    
+    public function testVerificationAndRecover()
+    {
+        $repo = $this->em->getRepository(self::TEST_ENTITY_CATEGORY);
+        $meta = $this->em->getClassMetadata(self::TEST_ENTITY_CATEGORY);
+        $this->_populateMore();
+        // test verification of tree
+        
+        $this->assertTrue($repo->verify());
+        
+        // now lets brake something
+        
+        $dql = 'UPDATE ' . self::TEST_ENTITY_CATEGORY . ' node';
+        $dql .= ' SET node.lft = 1';
+        $dql .= ' WHERE node.id = 8';
+        $q = $this->em->createQuery($dql);
+        $q->getSingleScalarResult();
+        
+        $this->em->clear(); // must clear cached entities
+        
+        // verify again
+        
+        $result = $repo->verify();
+        $this->assertTrue(is_array($result));
+        
+        $this->assertArrayHasKey(0, $result);
+        $this->assertArrayHasKey(1, $result);
+        $this->assertArrayHasKey(2, $result);
+        
+        $duplicate = $result[0];
+        $missing = $result[1];
+        $invalidLeft = $result[2];
+        
+        $this->assertEquals('index [1], duplicate', $duplicate);
+        $this->assertEquals('index [11], missing', $missing);
+        $this->assertEquals('node [8] left is less than parent`s [4] left value', $invalidLeft);
+        
+        // test recover functionality
+        
+        $repo->recover();
+        $this->em->clear(); // must clear cached entities
+        
+        $this->assertTrue($repo->verify());
+    }
+    
+    protected function _populateMore()
+    {
+        $vegies = $this->em->getRepository(self::TEST_ENTITY_CATEGORY)
+            ->findOneByTitle('Vegitables');
+            
+        $cabbages = new Category();
+        $cabbages->setParent($vegies);
+        $cabbages->setTitle('Cabbages');
+        
+        $onions = new Category();
+        $onions->setParent($vegies);
+        $onions->setTitle('Onions');
+        
+        $this->em->persist($cabbages);
+        $this->em->persist($onions);
+        $this->em->flush();
+        $this->em->clear();
     }
     
     protected function _populate()

@@ -2,9 +2,7 @@
 
 namespace Tree\Fixture\Repository;
 
-use Doctrine\ORM\EntityRepository,
-    DoctrineExtensions\Tree\Repository\TreeNodeRepository,
-    Doctrine\ORM\Query;
+use DoctrineExtensions\Tree\Repository\TreeNodeRepository;
     
 class BehavioralCategoryRepository extends TreeNodeRepository
 {

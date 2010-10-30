@@ -2,7 +2,9 @@
 
 namespace DoctrineExtensions\Translatable;
 
-use Doctrine\Common\Util\Debug;
+use Doctrine\Common\Util\Debug,
+    Translatable\Fixture\PersonTranslation,
+    Translatable\Fixture\Person;
 
 /**
  * These are tests for translatable behavior
@@ -14,15 +16,17 @@ use Doctrine\Common\Util\Debug;
  */
 class EntityTranslationTableTest extends \PHPUnit_Framework_TestCase
 {
-    const TEST_ENTITY_CLASS = 'DoctrineExtensions\Translatable\Person';
-    const TEST_ENTITY_TRANSLATION = 'DoctrineExtensions\Translatable\PersonTranslation';
-    const TRANSLATION_CLASS = 'DoctrineExtensions\Translatable\Entity\Translation';
+    const TEST_ENTITY_CLASS = 'Translatable\Fixture\Person';
+    const TEST_ENTITY_TRANSLATION = 'Translatable\Fixture\PersonTranslation';
     
     private $translatableListener;
     private $em;
 
     public function setUp()
     {
+        $classLoader = new \Doctrine\Common\ClassLoader('Translatable\Fixture', __DIR__ . '/../');
+        $classLoader->register();
+        
         $config = new \Doctrine\ORM\Configuration();
         $config->setMetadataCacheImpl(new \Doctrine\Common\Cache\ArrayCache);
         $config->setQueryCacheImpl(new \Doctrine\Common\Cache\ArrayCache);
@@ -44,10 +48,10 @@ class EntityTranslationTableTest extends \PHPUnit_Framework_TestCase
         $this->em = \Doctrine\ORM\EntityManager::create($conn, $config, $evm);
 
         $schemaTool = new \Doctrine\ORM\Tools\SchemaTool($this->em);
+        $schemaTool->dropSchema(array());
         $schemaTool->createSchema(array(
             $this->em->getClassMetadata(self::TEST_ENTITY_CLASS),
-            $this->em->getClassMetadata(self::TEST_ENTITY_TRANSLATION),
-            $this->em->getClassMetadata(self::TRANSLATION_CLASS)
+            $this->em->getClassMetadata(self::TEST_ENTITY_TRANSLATION)
         ));
     }
     
@@ -87,105 +91,4 @@ class EntityTranslationTableTest extends \PHPUnit_Framework_TestCase
         
         $this->translatableListener->setTranslatableLocale('en_us');
     }
-}
-
-/**
- * @Entity
- */
-class Person implements Translatable
-{
-    /** 
-     * @Id 
-     * @GeneratedValue 
-     * @Column(type="integer")
-     */
-    private $id;
-
-    /**
-     * @Column(name="name", type="string", length=128)
-     */
-    private $name;
-
-    public function getId()
-    {
-        return $this->id;
-    }
-    
-    public function setName($name)
-    {
-        $this->name = $name;
-    }
-
-    public function getName()
-    {
-        return $this->name;
-    }
-    
-    public function getTranslatableFields()
-    {
-        return array('name');
-    }
-    
-    public function getTranslatableLocale()
-    {
-        return null;
-    }
-    
-    public function getTranslationEntity()
-    {
-        return 'DoctrineExtensions\Translatable\PersonTranslation';
-    }
-}
-
-/**
- * @Table(name="person_translations", indexes={
- *      @index(name="person_translation_idx", columns={"locale", "entity", "foreign_key", "field"})
- * })
- * @Entity(repositoryClass="DoctrineExtensions\Translatable\Repository\TranslationRepository")
- */
-class PersonTranslation
-{
-    /**
-     * @var integer $id
-     *
-     * @Column(name="id", type="integer")
-     * @Id
-     * @GeneratedValue(strategy="IDENTITY")
-     */
-    private $id;
-
-    /**
-     * @var string $locale
-     *
-     * @Column(name="locale", type="string", length=8)
-     */
-    private $locale;
-
-    /**
-     * @var string $entity
-     *
-     * @Column(name="entity", type="string", length=255)
-     */
-    private $entity;
-
-    /**
-     * @var string $field
-     *
-     * @Column(name="field", type="string", length=32)
-     */
-    private $field;
-
-    /**
-     * @var string $foreignKey
-     *
-     * @Column(name="foreign_key", type="string", length="64")
-     */
-    private $foreignKey;
-
-    /**
-     * @var text $content
-     *
-     * @Column(name="content", type="text", nullable=true)
-     */
-    private $content;
 }
