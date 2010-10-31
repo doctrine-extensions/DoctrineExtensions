@@ -86,6 +86,24 @@ class TranslatableIdentifierTest extends \PHPUnit_Framework_TestCase
         
         $repo = $this->em->getRepository(self::TRANSLATION_CLASS);
         
+        // test the entity load by translated title
+        $object = $repo->findEntityByTranslatedField(
+        	'title',
+        	'title in en',
+        	self::TEST_ENTITY_CLASS
+        );
+        
+        $this->assertTrue($object instanceof Translatable);
+        $this->assertEquals($this->testObjectId, $object->getUid());
+        
+        $object = $repo->findEntityByTranslatedField(
+        	'title',
+        	'title in de',
+        	self::TEST_ENTITY_CLASS
+        );
+        
+        $this->assertEquals($this->testObjectId, $object->getUid());
+        
         $translations = $repo->findTranslations($object);
         $this->assertEquals(count($translations), 2);
         $this->assertArrayHasKey('de_de', $translations);

@@ -34,16 +34,9 @@ class TranslationRepository extends EntityRepository
                 return $result;
             }
             $entityClass = get_class($entity);
-            // no need cache, metadata is loaded only once in MetadataFactoryClass
-            //$translationMetadata = $em->getClassMetadata(self::TRANSLATION_ENTITY_CLASS);
-            $entityClassMetadata = $this->_em->getClassMetadata($entityClass);
-            // check for the availability of the primary key
-            $entityId = $entityClassMetadata->getIdentifierValues($entity);
-            if (count($entityId) == 1 && current($entityId)) {
-                $entityId = current($entityId);
-            } else {
-                throw Exception::singleIdentifierRequired($entityClass);
-            }
+            $meta = $this->_em->getClassMetadata($entityClass);
+            $identifier = $meta->getSingleIdentifierFieldName();
+            $entityId = $meta->getReflectionProperty($identifier)->getValue($entity);
             
             $qb = $this->_em->createQueryBuilder();
             $qb->select('trans.content, trans.field, trans.locale')
@@ -63,6 +56,37 @@ class TranslationRepository extends EntityRepository
             }
         }
         return $result;
+    }
+    
+    /**
+     * Find the entity $class by the translated field.
+     * Result is the first occurence of translated field
+     * 
+     * @param string $field
+     * @param string $value
+     * @param string $class
+     * @return object - instance of $class or null if not found
+     */
+    public function findEntityByTranslatedField($field, $value, $class)
+    {
+    	$entity = null;
+    	$meta = $this->_em->getClassMetadata($class);
+    	if ($meta->hasField($field)) {
+    		$dql = "SELECT trans.foreignKey FROM {$this->_entityName} trans";
+    		$dql .= ' WHERE trans.entity = :class';
+    		$dql .= ' AND trans.field = :field';
+    		$dql .= ' AND trans.content = :value';
+    		$q = $this->_em->createQuery($dql);
+        	$q->setParameters(compact('class', 'field', 'value'));
+    		$q->setMaxResults(1);
+    		$result = $q->getArrayResult();
+    		$id = count($result) ? $result[0]['foreignKey'] : null;
+    			
+    		if ($id) {
+    			$entity = $this->_em->find($class, $id);
+    		}
+    	}
+    	return $entity;
     }
     
     /**
