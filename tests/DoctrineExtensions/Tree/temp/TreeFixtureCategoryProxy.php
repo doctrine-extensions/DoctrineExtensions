@@ -66,6 +66,6 @@ class TreeFixtureCategoryProxy extends \Tree\Fixture\Category implements \Doctri
 
     public function __sleep()
     {
-        return array('__isInitialized__', 'id', 'title', 'lft', 'rgt', 'parent', 'children', 'comments');
+        return array('__isInitialized__', 'id', 'title', 'rgt', 'parent', 'children', 'comments', 'lft');
     }
 }

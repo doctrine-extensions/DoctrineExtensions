@@ -69,24 +69,24 @@ class TranslationRepository extends EntityRepository
      */
     public function findEntityByTranslatedField($field, $value, $class)
     {
-    	$entity = null;
-    	$meta = $this->_em->getClassMetadata($class);
-    	if ($meta->hasField($field)) {
-    		$dql = "SELECT trans.foreignKey FROM {$this->_entityName} trans";
-    		$dql .= ' WHERE trans.entity = :class';
-    		$dql .= ' AND trans.field = :field';
-    		$dql .= ' AND trans.content = :value';
-    		$q = $this->_em->createQuery($dql);
-        	$q->setParameters(compact('class', 'field', 'value'));
-    		$q->setMaxResults(1);
-    		$result = $q->getArrayResult();
-    		$id = count($result) ? $result[0]['foreignKey'] : null;
-    			
-    		if ($id) {
-    			$entity = $this->_em->find($class, $id);
-    		}
-    	}
-    	return $entity;
+        $entity = null;
+        $meta = $this->_em->getClassMetadata($class);
+        if ($meta->hasField($field)) {
+            $dql = "SELECT trans.foreignKey FROM {$this->_entityName} trans";
+            $dql .= ' WHERE trans.entity = :class';
+            $dql .= ' AND trans.field = :field';
+            $dql .= ' AND trans.content = :value';
+            $q = $this->_em->createQuery($dql);
+            $q->setParameters(compact('class', 'field', 'value'));
+            $q->setMaxResults(1);
+            $result = $q->getArrayResult();
+            $id = count($result) ? $result[0]['foreignKey'] : null;
+                
+            if ($id) {
+                $entity = $this->_em->find($class, $id);
+            }
+        }
+        return $entity;
     }
     
     /**

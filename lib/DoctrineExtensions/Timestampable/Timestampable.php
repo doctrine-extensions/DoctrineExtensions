@@ -14,5 +14,16 @@ namespace DoctrineExtensions\Timestampable;
  */
 interface Timestampable
 {
-    // timestampable expects, fields: modified, created or updated
+    // timestampable expects annotations on properties
+    
+    // Timestampable:OnCreate - dates which should be updated on creation
+    // Timestampable:OnUpdate - dates which should be updated on update
+    
+    /**
+     * example
+     * 
+     * @Timestampable:OnCreate
+     * @Column(type="date")
+     */
+    //$created
 }

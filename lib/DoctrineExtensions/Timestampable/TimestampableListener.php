@@ -6,7 +6,10 @@ use Doctrine\Common\EventSubscriber,
     Doctrine\ORM\Events,
     Doctrine\ORM\Event\LifecycleEventArgs,
     Doctrine\ORM\Event\OnFlushEventArgs,
-    Doctrine\ORM\EntityManager;
+    Doctrine\ORM\Event\LoadClassMetadataEventArgs,
+    Doctrine\ORM\EntityManager,
+    Doctrine\ORM\Mapping\ClassMetadata,
+    Doctrine\Common\Annotations\AnnotationReader;
 
 /**
  * The Timestampable listener handles the update of
@@ -20,6 +23,14 @@ use Doctrine\Common\EventSubscriber,
  */
 class TimestampableListener implements EventSubscriber
 {   
+    /**
+     * List of metadata configurations for Timestampable
+     * classes, from annotations
+     * 
+     * @var array
+     */
+    protected $_configurations = array();
+    
     /**
      * List of types which are valid for timestamp
      * 
@@ -40,8 +51,50 @@ class TimestampableListener implements EventSubscriber
     {
         return array(
             Events::prePersist,
-            Events::onFlush
+            Events::onFlush,
+            Events::loadClassMetadata
         );
+    }
+    
+    public function loadClassMetadata(LoadClassMetadataEventArgs $eventArgs)
+    {
+        $meta = $eventArgs->getClassMetadata();
+        $class = $meta->getReflectionClass();
+        if ($class->implementsInterface('DoctrineExtensions\Timestampable\Timestampable')) {
+            require_once __DIR__ . '/Mapping/Annotations.php';
+            $reader = new AnnotationReader();
+            $reader->setAnnotationNamespaceAlias(
+                'DoctrineExtensions\Timestampable\Mapping\\', 'Timestampable'
+            );
+    
+            // property annotations
+            foreach ($class->getProperties() as $property) {
+                // on create
+                $onCreate = $reader->getPropertyAnnotation(
+                    $property, 
+                    'DoctrineExtensions\Timestampable\Mapping\OnCreate'
+                );
+                if ($onCreate) {
+                    $field = $property->getName();
+                    if (!$this->_isValidField($meta, $field)) {
+                        throw Exception::notValidFieldType($field, $meta->name);
+                    }
+                    $this->_configurations[$meta->name]['onCreate'][] = $field;
+                }
+                // on update
+                $onUpdate = $reader->getPropertyAnnotation(
+                    $property, 
+                    'DoctrineExtensions\Timestampable\Mapping\OnUpdate'
+                );
+                if ($onUpdate) {
+                    $field = $property->getName();
+                    if (!$this->_isValidField($meta, $field)) {
+                        throw Exception::notValidFieldType($field, $meta->name);
+                    }
+                    $this->_configurations[$meta->name]['onUpdate'][] = $field;
+                }
+            }
+        }
     }
     
     /**
@@ -58,15 +111,16 @@ class TimestampableListener implements EventSubscriber
         // check all scheduled updates
         foreach ($uow->getScheduledEntityUpdates() as $entity) {
             if ($entity instanceof Timestampable) {
-                $meta = $em->getClassMetadata(get_class($entity));
+                $entityClass = get_class($entity);
+                $meta = $em->getClassMetadata($entityClass);
                 $needChanges = false;
                 
-                if ($this->_isFieldAvailable($em, $entity, 'updated')) {
+                if (isset($this->_configurations[$entityClass]['onUpdate'])) {
                     $needChanges = true;
-                    $meta->getReflectionProperty('updated')->setValue($entity, new \DateTime('now'));
-                } elseif ($this->_isFieldAvailable($em, $entity, 'modified')) {
-                    $needChanges = true;
-                    $meta->getReflectionProperty('modified')->setValue($entity, new \DateTime('now'));
+                    foreach ($this->_configurations[$entityClass]['onUpdate'] as $field) {
+                        $meta->getReflectionProperty($field)
+                            ->setValue($entity, new \DateTime('now'));
+                    }
                 }
                 
                 if ($needChanges) {
@@ -90,14 +144,21 @@ class TimestampableListener implements EventSubscriber
         $uow = $em->getUnitOfWork();
         
         if ($entity instanceof Timestampable) {
-            $meta = $em->getClassMetadata(get_class($entity));
-            if ($this->_isFieldAvailable($em, $entity, 'created')) {
-                $meta->getReflectionProperty('created')->setValue($entity, new \DateTime('now'));
+            $entityClass = get_class($entity);
+            $meta = $em->getClassMetadata($entityClass);
+                
+            if (isset($this->_configurations[$entityClass]['onUpdate'])) {
+                foreach ($this->_configurations[$entityClass]['onUpdate'] as $field) {
+                    $meta->getReflectionProperty($field)
+                        ->setValue($entity, new \DateTime('now'));
+                }
             }
-            if ($this->_isFieldAvailable($em, $entity, 'updated')) {
-                $meta->getReflectionProperty('updated')->setValue($entity, new \DateTime('now'));
-            } elseif ($this->_isFieldAvailable($em, $entity, 'modified')) {
-                $meta->getReflectionProperty('modified')->setValue($entity, new \DateTime('now'));
+            
+            if (isset($this->_configurations[$entityClass]['onCreate'])) {
+                foreach ($this->_configurations[$entityClass]['onCreate'] as $field) {
+                    $meta->getReflectionProperty($field)
+                        ->setValue($entity, new \DateTime('now'));
+                }
             }
         }
     }
@@ -106,17 +167,12 @@ class TimestampableListener implements EventSubscriber
      * Checks if $field exists on entity and
      * if it is in right type
      * 
-     * @param EntityManager $em
-     * @param Timestampable $entity
+     * @param ClassMetadata $meta
      * @param string $field
      * @return boolean
      */
-    protected function _isFieldAvailable(EntityManager $em, Timestampable $entity, $field)
+    protected function _isValidField(ClassMetadata $meta, $field)
     {
-        $meta = $em->getClassMetadata(get_class($entity));
-        if ($meta->hasField($field) && in_array($meta->getTypeOfField($field), $this->_validTypes)) {
-            return true;
-        }
-        return false;
+        return in_array($meta->getTypeOfField($field), $this->_validTypes);
     }
 }

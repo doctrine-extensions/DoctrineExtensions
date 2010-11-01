@@ -26,6 +26,7 @@ class Comment implements Timestampable
      * @var datetime $modified
      *
      * @Column(name="modified", type="time")
+     * @Timestampable:OnUpdate
      */
     private $modified;
 

@@ -23,7 +23,8 @@ class Article implements Timestampable
     
     /**
      * @var datetime $created
-     *
+     * 
+     * @Timestampable:OnCreate
      * @Column(name="created", type="date")
      */
     private $created;
@@ -32,6 +33,7 @@ class Article implements Timestampable
      * @var datetime $updated
      *
      * @Column(name="updated", type="datetime")
+     * @Timestampable:OnUpdate
      */
     private $updated;
 
