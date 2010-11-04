@@ -43,6 +43,14 @@ class TimestampableListener implements EventSubscriber
     );
     
     /**
+     * If set to true it will check only Timestampable
+     * entities for annotations
+     * 
+     * @var boolean
+     */
+    private $_requireInterface = true;
+    
+    /**
      * Specifies the list of events to listen
      * 
      * @return array
@@ -56,11 +64,29 @@ class TimestampableListener implements EventSubscriber
         );
     }
     
+    /**
+     * If set to false it will scan all entities
+     * for timestampable annotations
+     * 
+     * @param boolean $bool
+     * @return void
+     */
+    public function setRequiresInterface($bool)
+    {
+        $this->_requireInterface = (boolean)$bool;
+    }
+    
+    /**
+     * Scans the entities for Timestampable annotations
+     * 
+     * @param LoadClassMetadataEventArgs $eventArgs
+     * @return void
+     */
     public function loadClassMetadata(LoadClassMetadataEventArgs $eventArgs)
     {
         $meta = $eventArgs->getClassMetadata();
         $class = $meta->getReflectionClass();
-        if ($class->implementsInterface('DoctrineExtensions\Timestampable\Timestampable')) {
+        if ($class->implementsInterface('DoctrineExtensions\Timestampable\Timestampable') || !$this->_requireInterface) {
             require_once __DIR__ . '/Mapping/Annotations.php';
             $reader = new AnnotationReader();
             $reader->setAnnotationNamespaceAlias(
@@ -93,6 +119,27 @@ class TimestampableListener implements EventSubscriber
                     }
                     $this->_configurations[$meta->name]['onUpdate'][] = $field;
                 }
+                
+                // on change
+                $onChange = $reader->getPropertyAnnotation(
+                    $property, 
+                    'DoctrineExtensions\Timestampable\Mapping\OnChange'
+                );
+                if ($onChange) {
+                    $field = $property->getName();
+                    if (!$this->_isValidField($meta, $field)) {
+                        throw Exception::notValidFieldType($field, $meta->name);
+                    }
+                    if (isset($onChange->field) && isset($onChange->value)) {
+                        $this->_configurations[$meta->name]['onChange'][] = array(
+                            'field' => $field,
+                            'trackedField' => $onChange->field,
+                            'value' => $onChange->value 
+                        );
+                    } else {
+                        throw Exception::parametersMissing($meta->name);
+                    }
+                }
             }
         }
     }
@@ -110,7 +157,7 @@ class TimestampableListener implements EventSubscriber
         $uow = $em->getUnitOfWork();
         // check all scheduled updates
         foreach ($uow->getScheduledEntityUpdates() as $entity) {
-            if ($entity instanceof Timestampable) {
+            if ($entity instanceof Timestampable || !$this->_requireInterface) {
                 $entityClass = get_class($entity);
                 $meta = $em->getClassMetadata($entityClass);
                 $needChanges = false;
@@ -120,6 +167,39 @@ class TimestampableListener implements EventSubscriber
                     foreach ($this->_configurations[$entityClass]['onUpdate'] as $field) {
                         $meta->getReflectionProperty($field)
                             ->setValue($entity, new \DateTime('now'));
+                    }
+                }
+                
+                if (isset($this->_configurations[$entityClass]['onChange'])) {
+                    $changeSet = $uow->getEntityChangeSet($entity);
+                    foreach ($this->_configurations[$entityClass]['onChange'] as $options) {
+                        $tracked = $options['trackedField'];
+                        $trackedChild = null;
+                        $parts = explode('.', $tracked);
+                        if (isset($parts[1])) {
+                            $tracked = $parts[0];
+                            $trackedChild = $parts[1];
+                        }
+                        
+                        if (isset($changeSet[$tracked])) {
+                            $changes = $changeSet[$tracked];
+                            if (isset($trackedChild)) {
+                                $object = $changes[1];
+                                if (!is_object($object)) {
+                                    throw Exception::objectExpected($tracked, $meta->name);
+                                }
+                                $objectMeta = $em->getClassMetadata(get_class($object));
+                                $value = $objectMeta->getReflectionProperty($trackedChild)
+                                    ->getValue($object);
+                            } else {
+                                $value = $changes[1];
+                            }
+                            if ($options['value'] == $value) {
+                                $needChanges = true;
+                                $meta->getReflectionProperty($options['field'])
+                                    ->setValue($entity, new \DateTime('now'));
+                            }
+                        }
                     }
                 }
                 
@@ -143,7 +223,7 @@ class TimestampableListener implements EventSubscriber
         $entity = $args->getEntity();
         $uow = $em->getUnitOfWork();
         
-        if ($entity instanceof Timestampable) {
+        if ($entity instanceof Timestampable || !$this->_requireInterface) {
             $entityClass = get_class($entity);
             $meta = $em->getClassMetadata($entityClass);
                 
@@ -164,8 +244,7 @@ class TimestampableListener implements EventSubscriber
     }
     
     /**
-     * Checks if $field exists on entity and
-     * if it is in right type
+     * Checks if $field type is valid
      * 
      * @param ClassMetadata $meta
      * @param string $field

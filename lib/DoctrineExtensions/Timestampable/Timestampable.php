@@ -18,6 +18,7 @@ interface Timestampable
     
     // Timestampable:OnCreate - dates which should be updated on creation
     // Timestampable:OnUpdate - dates which should be updated on update
+    // Timestampable:OnChange(field="field", value="value") - dates which should be updated on changed property to value
     
     /**
      * example

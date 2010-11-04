@@ -36,6 +36,24 @@ class Article implements Timestampable
      * @Timestampable:OnUpdate
      */
     private $updated;
+    
+    /**
+     * @var datetime $published
+     *
+     * @Column(name="published", type="datetime", nullable=true)
+     * @Timestampable:OnChange(field="type.title", value="Published")
+     */
+    private $published;
+    
+    /**
+     * @ManyToOne(targetEntity="Type", inversedBy="articles")
+     */
+    private $type;
+    
+    public function setType($type)
+    {
+        $this->type = $type;
+    }
 
     public function getId()
     {
@@ -71,6 +89,11 @@ class Article implements Timestampable
     public function getCreated()
     {
         return $this->created;
+    }
+    
+    public function getPublished()
+    {
+        return $this->published;
     }
     
     /**

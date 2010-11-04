@@ -23,6 +23,19 @@ class Comment implements Timestampable
     private $article;
     
     /**
+     * @Column(type="integer")
+     */
+    private $status;
+    
+    /**
+     * @var datetime $closed
+     *
+     * @Column(name="closed", type="datetime", nullable=true)
+     * @Timestampable:OnChange(field="status", value=1)
+     */
+    private $closed;
+    
+    /**
      * @var datetime $modified
      *
      * @Column(name="modified", type="time")
@@ -40,6 +53,16 @@ class Comment implements Timestampable
         return $this->id;
     }
 
+    public function setStatus($status)
+    {
+        $this->status = $status;
+    }
+
+    public function getStatus()
+    {
+        return $this->status;
+    }
+    
     public function setMessage($message)
     {
         $this->message = $message;
@@ -50,13 +73,13 @@ class Comment implements Timestampable
         return $this->message;
     }
     
-    /**
-     * Get modified
-     *
-     * @return datetime $modified
-     */
     public function getModified()
     {
         return $this->modified;
+    }
+    
+    public function getClosed()
+    {
+        return $this->closed;
     }
 }
