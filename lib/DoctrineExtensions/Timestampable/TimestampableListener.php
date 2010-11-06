@@ -77,6 +77,28 @@ class TimestampableListener implements EventSubscriber
     }
     
     /**
+     * Get the configuration for specific entity class
+     * if cache driver is present it scans it also
+     * 
+     * @param EntityManager $em
+     * @param string $class
+     * @return array
+     */
+    public function getConfiguration(EntityManager $em, $class) {
+        $config = array();
+        if (isset($this->_configurations[$class])) {
+            $config = $this->_configurations[$class];
+        } else {
+            $cacheDriver = $em->getMetadataFactory()->getCacheDriver();
+            if (($cached = $cacheDriver->fetch("{$class}\$TIMESTAMPABLE_CLASSMETADATA")) !== false) {
+                $this->_configurations[$class] = $cached;
+                $config = $cached;
+            }
+        }
+        return $config;
+    }
+    
+    /**
      * Scans the entities for Timestampable annotations
      * 
      * @param LoadClassMetadataEventArgs $eventArgs
@@ -84,7 +106,13 @@ class TimestampableListener implements EventSubscriber
      */
     public function loadClassMetadata(LoadClassMetadataEventArgs $eventArgs)
     {
+        if (!method_exists($eventArgs, 'getEntityManager')) {
+            throw new RuntimeException('TimestampableListener: update to latest ORM version, minimal RC1 from github');
+        }
+        $em = $eventArgs->getEntityManager();
+        $cacheDriver = $em->getMetadataFactory()->getCacheDriver();      
         $meta = $eventArgs->getClassMetadata();
+        
         $class = $meta->getReflectionClass();
         if ($class->implementsInterface('DoctrineExtensions\Timestampable\Timestampable') || !$this->_requireInterface) {
             require_once __DIR__ . '/Mapping/Annotations.php';
@@ -142,6 +170,13 @@ class TimestampableListener implements EventSubscriber
                 }
             }
         }
+        if ($cacheDriver && isset($this->_configurations[$meta->name])) {
+            $cacheDriver->save(
+                "{$meta->name}\$TIMESTAMPABLE_CLASSMETADATA", 
+                $this->_configurations[$meta->name],
+                null
+            );
+        }
     }
     
     /**
@@ -162,17 +197,18 @@ class TimestampableListener implements EventSubscriber
                 $meta = $em->getClassMetadata($entityClass);
                 $needChanges = false;
                 
-                if (isset($this->_configurations[$entityClass]['onUpdate'])) {
+                $config = $this->getConfiguration($em, $entityClass);
+                if (isset($config['onUpdate'])) {
                     $needChanges = true;
-                    foreach ($this->_configurations[$entityClass]['onUpdate'] as $field) {
+                    foreach ($config['onUpdate'] as $field) {
                         $meta->getReflectionProperty($field)
                             ->setValue($entity, new \DateTime('now'));
                     }
                 }
                 
-                if (isset($this->_configurations[$entityClass]['onChange'])) {
+                if (isset($config['onChange'])) {
                     $changeSet = $uow->getEntityChangeSet($entity);
-                    foreach ($this->_configurations[$entityClass]['onChange'] as $options) {
+                    foreach ($config['onChange'] as $options) {
                         $tracked = $options['trackedField'];
                         $trackedChild = null;
                         $parts = explode('.', $tracked);
@@ -226,16 +262,17 @@ class TimestampableListener implements EventSubscriber
         if ($entity instanceof Timestampable || !$this->_requireInterface) {
             $entityClass = get_class($entity);
             $meta = $em->getClassMetadata($entityClass);
-                
-            if (isset($this->_configurations[$entityClass]['onUpdate'])) {
-                foreach ($this->_configurations[$entityClass]['onUpdate'] as $field) {
+
+            $config = $this->getConfiguration($em, $entityClass);
+            if (isset($config['onUpdate'])) {
+                foreach ($config['onUpdate'] as $field) {
                     $meta->getReflectionProperty($field)
                         ->setValue($entity, new \DateTime('now'));
                 }
             }
             
-            if (isset($this->_configurations[$entityClass]['onCreate'])) {
-                foreach ($this->_configurations[$entityClass]['onCreate'] as $field) {
+            if (isset($config['onCreate'])) {
+                foreach ($config['onCreate'] as $field) {
                     $meta->getReflectionProperty($field)
                         ->setValue($entity, new \DateTime('now'));
                 }
