@@ -67,7 +67,6 @@ class TranslatableIdentifierTest extends \PHPUnit_Framework_TestCase
         
         $repo = $this->em->getRepository(self::TRANSLATION_CLASS);
         $object = $this->em->find(self::TEST_ENTITY_CLASS, $this->testObjectId);
-        $this->assertTrue($object instanceof Translatable);
         
         $translations = $repo->findTranslations($object);
         $this->assertEquals(count($translations), 1);
@@ -93,7 +92,6 @@ class TranslatableIdentifierTest extends \PHPUnit_Framework_TestCase
             self::TEST_ENTITY_CLASS
         );
         
-        $this->assertTrue($object instanceof Translatable);
         $this->assertEquals($this->testObjectId, $object->getUid());
         
         $object = $repo->findEntityByTranslatedField(

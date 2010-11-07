@@ -173,16 +173,19 @@ class TranslatableArticle implements Sluggable, Translatable
     private $id;
 
     /**
+     * @Translatable
      * @Column(name="title", type="string", length=64)
      */
     private $title;
 
     /**
+     * @Translatable
      * @Column(name="code", type="string", length=16)
      */
     private $code;
     
     /**
+     * @Translatable
      * @Column(name="slug", type="string", length=128)
      */
     private $slug;
@@ -197,10 +200,11 @@ class TranslatableArticle implements Sluggable, Translatable
      */
     private $page;
     
-    /*
+    /**
+     * @Locale
      * Used locale to override Translation listener`s locale
      */
-    private $_locale;
+    private $locale;
 
     public function addComment(Comment $comment)
     {
@@ -256,24 +260,9 @@ class TranslatableArticle implements Sluggable, Translatable
         return $this->slug;
     }
     
-    public function getTranslatableFields()
-    {
-        return array('title', 'code', 'slug');
-    }
-    
     public function setTranslatableLocale($locale)
     {
-        $this->_locale = $locale;
-    }
-    
-    public function getTranslatableLocale()
-    {
-        return $this->_locale;
-    }
-    
-    public function getTranslationEntity()
-    {
-        return null;
+        $this->locale = $locale;
     }
 }
 

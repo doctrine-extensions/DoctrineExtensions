@@ -2,12 +2,10 @@
 
 namespace Translatable\Fixture;
 
-use DoctrineExtensions\Translatable\Translatable;
-
 /**
  * @Entity
  */
-class StringIdentifier implements Translatable
+class StringIdentifier
 {
     /** 
      * @Id 
@@ -16,14 +14,16 @@ class StringIdentifier implements Translatable
     private $uid;
 
     /**
+     * @Translatable
      * @Column(name="title", type="string", length=128)
      */
     private $title;
     
-    /*
+    /**
      * Used locale to override Translation listener`s locale
+     * @Locale
      */
-    private $_locale;
+    private $locale;
 
     public function getUid()
     {
@@ -45,23 +45,8 @@ class StringIdentifier implements Translatable
         return $this->title;
     }
     
-    public function getTranslatableFields()
-    {
-        return array('title');
-    }
-    
     public function setTranslatableLocale($locale)
     {
-        $this->_locale = $locale;
-    }
-    
-    public function getTranslatableLocale()
-    {
-        return $this->_locale;
-    }
-    
-    public function getTranslationEntity()
-    {
-        return null;
+        $this->locale = $locale;
     }
 }

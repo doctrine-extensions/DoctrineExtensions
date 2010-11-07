@@ -15,6 +15,7 @@ use Doctrine\ORM\EntityRepository,
  * @package DoctrineExtensions.Translatable.Repository
  * @subpackage TranslationRepository
  * @link http://www.gediminasm.org
+ * @version 2.0.0
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class TranslationRepository extends EntityRepository
@@ -29,7 +30,7 @@ class TranslationRepository extends EntityRepository
     public function findTranslations($entity)
     {
         $result = array();
-        if ($entity instanceof Translatable) {
+        if ($entity) {
             if ($this->_em->getUnitOfWork()->getEntityState($entity) == \Doctrine\ORM\UnitOfWork::STATE_NEW) {
                 return $result;
             }

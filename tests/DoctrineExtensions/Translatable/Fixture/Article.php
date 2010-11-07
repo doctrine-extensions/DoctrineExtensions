@@ -13,19 +13,22 @@ class Article implements Translatable
     private $id;
 
     /**
+     * @Translatable
      * @Column(name="title", type="string", length=128)
      */
     private $title;
 
     /**
+     * @Translatable
      * @Column(name="content", type="text")
      */
     private $content;
     
-    /*
+    /**
      * Used locale to override Translation listener`s locale
+     * @Locale
      */
-    private $_locale;
+    private $locale;
     
     /**
      * @OneToMany(targetEntity="Comment", mappedBy="article")
@@ -68,23 +71,8 @@ class Article implements Translatable
         return $this->content;
     }
     
-    public function getTranslatableFields()
-    {
-        return array('title', 'content');
-    }
-    
     public function setTranslatableLocale($locale)
     {
-        $this->_locale = $locale;
-    }
-    
-    public function getTranslatableLocale()
-    {
-        return $this->_locale;
-    }
-    
-    public function getTranslationEntity()
-    {
-        return null;
+        $this->locale = $locale;
     }
 }

@@ -2,22 +2,22 @@
 
 namespace Translatable\Fixture;
 
-use DoctrineExtensions\Translatable\Translatable;
-
 /**
  * @Entity
  */
-class Comment implements Translatable
+class Comment
 {
     /** @Id @GeneratedValue @Column(type="integer") */
     private $id;
 
     /**
+     * @Translatable
      * @Column(name="subject", type="string", length=128)
      */
     private $subject;
 
     /**
+     * @Translatable
      * @Column(name="message", type="text")
      */
     private $message;
@@ -27,10 +27,11 @@ class Comment implements Translatable
      */
     private $article;
     
-    /*
+    /**
      * Used locale to override Translation listener`s locale
+     * @Language
      */
-    private $_locale;
+    private $locale;
 
     public function setArticle($article)
     {
@@ -62,23 +63,8 @@ class Comment implements Translatable
         return $this->message;
     }
     
-    public function getTranslatableFields()
-    {
-        return array('subject', 'message');
-    }
-    
     public function setTranslatableLocale($locale)
     {
-        $this->_locale = $locale;
-    }
-    
-    public function getTranslatableLocale()
-    {
-        return $this->_locale;
-    }
-    
-    public function getTranslationEntity()
-    {
-        return null;
+        $this->locale = $locale;
     }
 }

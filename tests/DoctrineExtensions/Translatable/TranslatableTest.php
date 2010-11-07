@@ -99,7 +99,6 @@ class TranslatableTest extends \PHPUnit_Framework_TestCase
         $comments = $article->getComments();
         $this->assertEquals(count($comments), 2);
         foreach ($comments as $num => $comment) {
-            $this->assertTrue($comment instanceof Translatable);
             $translations = $repo->findTranslations($comment);
             
             $this->assertEquals(count($translations), 1);
@@ -188,7 +187,6 @@ class TranslatableTest extends \PHPUnit_Framework_TestCase
         $comments = $article->getComments();
         $this->assertEquals(count($comments), 2);
         foreach ($comments as $comment) {
-            $this->assertTrue($comment instanceof Translatable);
             $translations = $repo->findTranslations($comment);
             
             $this->assertEquals(count($translations), 2);

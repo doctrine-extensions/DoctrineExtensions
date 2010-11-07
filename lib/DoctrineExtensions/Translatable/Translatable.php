@@ -3,40 +3,22 @@
 namespace DoctrineExtensions\Translatable;
 
 /**
- * This interface must be implemented for all entities
- * to active the Translatable behavior
+ * This interface is not necessary but can be implemented for
+ * Entities which in some cases needs to be identified as
+ * Translatable
  * 
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  * @package DoctrineExtensions.Translatable
  * @subpackage Translatable
  * @link http://www.gediminasm.org
+ * @version 2.0.0
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 interface Translatable
 {
-    /**
-     * Specifies the fields which should be translated.
-     * example: array('field1', 'field2')
-     * 
-     * @return array - list of translatable fields
-     */
-    public function getTranslatableFields();
+    // use now annotations instead of predifined methods, this interface is not necessary
     
-    /**
-     * Specifies the locale to be used for translation.
-     * example: en_us or lt_lt
-     * 
-     * @return string - locale to use
-     */
-    public function getTranslatableLocale();
-    
-    /**
-     * Specify the entity class for translation generation
-     * for this entity.
-     * If empty string or null is given, then the default
-     * will be used
-     * 
-     * @return string - name of translation entity class
-     */
-    public function getTranslationEntity();
+    // to mark the field as translatable use property annotation @Translatable
+    // to specify custom translation class use class annotation @TranslationEntity(class="your\class")
+    // to mark the field as locale used to override global use property annotation @Locale or @Language
 }

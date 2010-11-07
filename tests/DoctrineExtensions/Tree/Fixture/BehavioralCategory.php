@@ -21,6 +21,7 @@ class BehavioralCategory implements Node, Translatable, Sluggable
     private $id;
 
     /**
+     * @Translatable
      * @Column(name="title", type="string", length=64)
      */
     private $title;
@@ -46,6 +47,7 @@ class BehavioralCategory implements Node, Translatable, Sluggable
     private $children;
     
     /**
+     * @Translatable
      * @Column(name="slug", type="string", length=128)
      */
     private $slug;
@@ -91,20 +93,5 @@ class BehavioralCategory implements Node, Translatable, Sluggable
         $config->setSluggableFields(array('title'));
         $config->setSlugField('slug');
         return $config;
-    }
-    
-    public function getTranslatableFields()
-    {
-        return array('title', 'slug');
-    }
-    
-    public function getTranslatableLocale()
-    {
-        return null;
-    }
-    
-    public function getTranslationEntity()
-    {
-        return null;
     }
 }

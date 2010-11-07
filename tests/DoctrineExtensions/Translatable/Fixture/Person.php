@@ -2,12 +2,11 @@
 
 namespace Translatable\Fixture;
 
-use DoctrineExtensions\Translatable\Translatable;
-
 /**
  * @Entity
+ * @TranslationEntity(class="Translatable\Fixture\PersonTranslation")
  */
-class Person implements Translatable
+class Person
 {
     /** 
      * @Id 
@@ -17,6 +16,7 @@ class Person implements Translatable
     private $id;
 
     /**
+     * @Translatable
      * @Column(name="name", type="string", length=128)
      */
     private $name;
@@ -34,20 +34,5 @@ class Person implements Translatable
     public function getName()
     {
         return $this->name;
-    }
-    
-    public function getTranslatableFields()
-    {
-        return array('name');
-    }
-    
-    public function getTranslatableLocale()
-    {
-        return null;
-    }
-    
-    public function getTranslationEntity()
-    {
-        return 'Translatable\Fixture\PersonTranslation';
     }
 }

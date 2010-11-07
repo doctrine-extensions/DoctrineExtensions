@@ -6,8 +6,11 @@ use Doctrine\Common\EventSubscriber,
     Doctrine\ORM\Events,
     Doctrine\ORM\Event\LifecycleEventArgs,
     Doctrine\ORM\Event\OnFlushEventArgs,
+    Doctrine\ORM\Event\LoadClassMetadataEventArgs,
     Doctrine\ORM\EntityManager,
     Doctrine\ORM\Query,
+    Doctrine\ORM\Mapping\ClassMetadata,
+    Doctrine\Common\Annotations\AnnotationReader,
     DoctrineExtensions\Translatable\Entity\Translation;
 
 /**
@@ -18,10 +21,15 @@ use Doctrine\Common\EventSubscriber,
  * This behavior can inpact the performance of your application
  * since it does an additional query for each field to translate.
  * 
+ * Nevertheless the annotation metadata is properly cached and
+ * it is not a big overhead to lookup all entity annotations since
+ * the caching is activated for metadata
+ * 
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  * @package DoctrineExtensions.Translatable
  * @subpackage TranslationListener
  * @link http://www.gediminasm.org
+ * @version 2.0.0
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class TranslationListener implements EventSubscriber
@@ -30,6 +38,29 @@ class TranslationListener implements EventSubscriber
      * The translation entity class used to store the translations
      */
     const TRANSLATION_ENTITY_CLASS = 'DoctrineExtensions\Translatable\Entity\Translation';
+    
+    /**
+     * Annotation to identity translation entity to be used for translation storage
+     */
+    const ANNOTATION_ENTITY_CLASS = 'DoctrineExtensions\Translatable\Mapping\TranslationEntity';
+    
+    /**
+     * Annotation to identify field as translatable 
+     */
+    const ANNOTATION_TRANSLATABLE = 'DoctrineExtensions\Translatable\Mapping\Translatable';
+    
+    /**
+     * Annotation to identify field which can store used locale or language
+     * alias is ANNOTATION_LANGUAGE
+     */
+    const ANNOTATION_LOCALE = 'DoctrineExtensions\Translatable\Mapping\Locale';
+    
+    /**
+     * Annotation to identify field which can store used locale or language
+     * alias is ANNOTATION_LOCALE
+     */
+    const ANNOTATION_LANGUAGE = 'DoctrineExtensions\Translatable\Mapping\Language';
+    
     
     /**
      * Locale which is set on this listener.
@@ -88,6 +119,24 @@ class TranslationListener implements EventSubscriber
     private $_defaultLocale = '';
     
     /**
+     * List of metadata configurations for Translatable
+     * classes, from annotations
+     * 
+     * @var array
+     */
+    protected $_configurations = array();
+    
+    /**
+     * List of types which are valid for translation
+     * 
+     * @var array
+     */
+    private $_validTypes = array(
+        'string',
+        'text'
+    );
+    
+    /**
      * Specifies the list of events to listen
      * 
      * @return array
@@ -97,41 +146,45 @@ class TranslationListener implements EventSubscriber
         return array(
             Events::postLoad,
             Events::postPersist,
-            Events::onFlush
+            Events::onFlush,
+            Events::loadClassMetadata
         );
     }
     
     /**
-     * Get the entity translation class to be used
-     * for the given Entity
+     * Get the configuration for specific entity class
+     * if cache driver is present it scans it also
      * 
-     * @param mixed $entity
-     *      case string: entity class
-     *      case object: Translatable $entity object
+     * @param EntityManager $em
+     * @param string $class
+     * @return array
+     */
+    public function getConfiguration(EntityManager $em, $class) {
+        $config = array();
+        if (isset($this->_configurations[$class])) {
+            $config = $this->_configurations[$class];
+        } else {
+            $cacheDriver = $em->getMetadataFactory()->getCacheDriver();
+            if (($cached = $cacheDriver->fetch("{$class}\$TRANSLATABLE_CLASSMETADATA")) !== false) {
+                $this->_configurations[$class] = $cached;
+                $config = $cached;
+            }
+        }
+        return $config;
+    }
+    
+    /**
+     * Get the entity translation class to be used
+     * for the entity $class
+     * 
+     * @param string $class
      * @return string
      */
-    public function getTranslationClass($entity)
+    public function getTranslationClass($class)
     {
-        $entityClass = $entity;
-        if (!is_string($entityClass)) {
-            if (is_object($entity) || $entity instanceof Translatable) {
-                $entityClass = get_class($entity);
-            } else {
-                throw Exception::translationClassLoaderArgumentInvalid(gettype($entity));
-            }
-        } else {
-            if (!isset($this->_entityTranslationClasses[$entityClass])) {
-                throw Exception::translationClassNotFound();
-            }
-        }
-        if (!isset($this->_entityTranslationClasses[$entityClass])) {
-            $translationEntity = $entity->getTranslationEntity();
-            if (!strlen($translationEntity) || !class_exists($translationEntity)) {
-                $translationEntity = self::TRANSLATION_ENTITY_CLASS;
-            }
-            $this->_entityTranslationClasses[$entityClass] = $translationEntity;
-        }
-        return $this->_entityTranslationClasses[$entityClass];
+        return isset($this->_configurations[$class]['translationClass']) ?
+            $this->_configurations[$class]['translationClass'] : 
+            self::TRANSLATION_ENTITY_CLASS;
     }
     
     /**
@@ -149,12 +202,23 @@ class TranslationListener implements EventSubscriber
      * Gets the locale to use for translation. Loads entity
      * defined locale first..
      * 
-     * @param Translatable $entity
+     * @param object $entity
+     * @param ClassMetadata $meta
      * @return string
      */
-    public function getTranslatableLocale(Translatable $entity)
+    public function getTranslatableLocale($entity, ClassMetadata $meta)
     {
-        return $entity->getTranslatableLocale() ?: $this->_locale;
+        $locale = $this->_locale;
+        if (isset($this->_configurations[$meta->name]['locale'])) {
+            $class = $meta->getReflectionClass();
+            $reflectionProperty = $class->getProperty($this->_configurations[$meta->name]['locale']);
+            $reflectionProperty->setAccessible(true);
+            $value = $reflectionProperty->getValue($entity);
+            if (is_string($value) && strlen($value)) {
+                $locale = $value;
+            }
+        }
+        return $locale;
     }
     
     /**
@@ -171,6 +235,65 @@ class TranslationListener implements EventSubscriber
     }
     
     /**
+     * Scans the entities for Translatable annotations
+     * 
+     * @param LoadClassMetadataEventArgs $eventArgs
+     * @return void
+     */
+    public function loadClassMetadata(LoadClassMetadataEventArgs $eventArgs)
+    {
+        if (!method_exists($eventArgs, 'getEntityManager')) {
+            throw new RuntimeException('TranslatableListener: update to latest ORM version, minimal RC1 from github');
+        }
+        $em = $eventArgs->getEntityManager();
+        $cacheDriver = $em->getMetadataFactory()->getCacheDriver();      
+        $meta = $eventArgs->getClassMetadata();
+        
+        require_once __DIR__ . '/Mapping/Annotations.php';
+        $reader = new AnnotationReader();
+        $reader->setDefaultAnnotationNamespace(
+            'DoctrineExtensions\Translatable\Mapping\\'
+        );
+    
+        $class = $meta->getReflectionClass();
+        // class annotations
+        $classAnnotations = $reader->getClassAnnotations($class);
+        if (isset($classAnnotations[self::ANNOTATION_ENTITY_CLASS])) {
+            $annot = $classAnnotations[self::ANNOTATION_ENTITY_CLASS];
+            if (!class_exists($annot->class)) {
+                throw Exception::translationClassNotFound($annot->class);
+            }
+            $this->_configurations[$meta->name]['translationClass'] = $annot->class;
+        }
+        
+        // property annotations
+        foreach ($class->getProperties() as $property) {
+            // translatable property
+            if ($translatable = $reader->getPropertyAnnotation($property, self::ANNOTATION_TRANSLATABLE)) {
+                $field = $property->getName();
+                if (!$this->_isValidField($meta, $field)) {
+                    throw Exception::notValidFieldType($field, $meta->name);
+                }
+                $this->_configurations[$meta->name]['fields'][] = $field;
+            }
+            // locale property
+            if ($locale = $reader->getPropertyAnnotation($property, self::ANNOTATION_LOCALE)) {
+                $this->_configurations[$meta->name]['locale'] = $property->getName();
+            } elseif ($language = $reader->getPropertyAnnotation($property, self::ANNOTATION_LANGUAGE)) {
+                $this->_configurations[$meta->name]['locale'] = $property->getName();
+            }
+        }
+        // cache the metadata
+        if ($cacheDriver && isset($this->_configurations[$meta->name])) {
+            $cacheDriver->save(
+                "{$meta->name}\$TRANSLATABLE_CLASSMETADATA", 
+                $this->_configurations[$meta->name],
+                null
+            );
+        }
+    }
+    
+    /**
      * Looks for translatable entities being inserted or updated
      * for further processing
      * 
@@ -183,24 +306,28 @@ class TranslationListener implements EventSubscriber
         $uow = $em->getUnitOfWork();
         // check all scheduled inserts for Translatable entities
         foreach ($uow->getScheduledEntityInsertions() as $entity) {
-            if ($entity instanceof Translatable && count($entity->getTranslatableFields())) {
+            $config = $this->getConfiguration($em, get_class($entity));
+            if (isset($config['fields'])) {
                 $this->_handleTranslatableEntityUpdate($em, $entity, true);
             }
         }
         // check all scheduled updates for Translatable entities
         foreach ($uow->getScheduledEntityUpdates() as $entity) {
-            if ($entity instanceof Translatable && count($entity->getTranslatableFields())) {
+            $config = $this->getConfiguration($em, get_class($entity));
+            if (isset($config['fields'])) {
                 $this->_handleTranslatableEntityUpdate($em, $entity, false);
             }
         }
         // check scheduled deletions for Translatable entities
         foreach ($uow->getScheduledEntityDeletions() as $entity) {
-            if ($entity instanceof Translatable && count($entity->getTranslatableFields())) {
-                $meta = $em->getClassMetadata(get_class($entity));
+            $entityClass = get_class($entity);
+            $config = $this->getConfiguration($em, $entityClass);
+            if (isset($config['fields'])) {
+                $meta = $em->getClassMetadata($entityClass);
                 $identifierField = $meta->getSingleIdentifierFieldName();
                 $entityId = $meta->getReflectionProperty($identifierField)->getValue($entity);
                 
-                $transClass = $this->getTranslationClass($entity);
+                $transClass = $this->getTranslationClass($entityClass);
                 if ($uow->hasPendingInsertions()) {
                     $this->_pendingEntityDeletions[$transClass] = $entityId;
                 } else {
@@ -222,21 +349,22 @@ class TranslationListener implements EventSubscriber
         $em = $args->getEntityManager();
         $entity = $args->getEntity();
         $uow = $em->getUnitOfWork();
-        // check if entity is Translatable and without foreign key
-        if ($entity instanceof Translatable && count($this->_pendingTranslationInserts)) {
+        $entityClass = get_class($entity);
+        // check if entity is tracked by translatable and without foreign key
+        if (array_key_exists($entityClass, $this->_configurations) && count($this->_pendingTranslationInserts)) {
             $oid = spl_object_hash($entity);
-            $entityClass = get_class($entity);
-            $entityClassMetadata = $em->getClassMetadata($entityClass);
+            
+            $meta = $em->getClassMetadata($entityClass);
             // there should be single identifier
-            $identifierField = $entityClassMetadata->getSingleIdentifierFieldName();
-            $translationClassMetadata = $em->getClassMetadata($this->getTranslationClass($entity));
+            $identifierField = $meta->getSingleIdentifierFieldName();
+            $translationMeta = $em->getClassMetadata($this->getTranslationClass($entityClass));
             if (array_key_exists($oid, $this->_pendingTranslationInserts)) {
                 // load the pending translations without key
                 $translations = $this->_pendingTranslationInserts[$oid];
                 foreach ($translations as $translation) {
-                    $translationClassMetadata->getReflectionProperty('foreignKey')->setValue(
+                    $translationMeta->getReflectionProperty('foreignKey')->setValue(
                         $translation,
-                        $entityClassMetadata->getReflectionProperty($identifierField)->getValue($entity)
+                        $meta->getReflectionProperty($identifierField)->getValue($entity)
                     );
                     $this->_insertTranslationRecord($em, $translation);
                 }
@@ -247,18 +375,22 @@ class TranslationListener implements EventSubscriber
             // all translations which should have been inserted are processed now
             // this prevents new pending insertions during sheduled updates process
             foreach ($this->_pendingTranslationUpdates as $candidate) {
+                $meta = $em->getClassMetadata(get_class($candidate));
                 $translation = $this->_findTranslation(
                     $em,
-                    $candidate->getForeignKey(),
-                    $candidate->getEntity(),
-                    $candidate->getLocale(),
-                    $candidate->getField()
+                    $meta->getReflectionProperty('foreignKey')->getValue($candidate),
+                    $meta->getReflectionProperty('entity')->getValue($candidate),
+                    $meta->getReflectionProperty('locale')->getValue($candidate),
+                    $meta->getReflectionProperty('field')->getValue($candidate)
                 );
                 if (!$translation) {
                     $this->_insertTranslationRecord($em, $candidate);
                 } else {
                     $uow->scheduleExtraUpdate($translation, array(
-                        'content' => array(null, $candidate->getContent())
+                        'content' => array(
+                            null, 
+                            $meta->getReflectionProperty('content')->getValue($candidate)
+                        )
                     ));
                 }
             }
@@ -282,29 +414,29 @@ class TranslationListener implements EventSubscriber
     {
         $em = $args->getEntityManager();
         $entity = $args->getEntity();
+        $entityClass = get_class($entity);
+        $config = $this->getConfiguration($em, $entityClass);
 
-        if ($entity instanceof Translatable && count($entity->getTranslatableFields())) {
-            $locale = strtolower($this->getTranslatableLocale($entity));
+        if (isset($config['fields'])) {
+            $meta = $em->getClassMetadata($entityClass);
+            $locale = strtolower($this->getTranslatableLocale($entity, $meta));
             $this->_validateLocale($locale);
             
-            $entityClass = get_class($entity);
-            $entityClassMetadata = $em->getClassMetadata($entityClass);
             // there should be single identifier
-            $identifierField = $entityClassMetadata->getSingleIdentifierFieldName();
-            $this->getTranslationClass($entity); // must have class loaded
+            $identifierField = $meta->getSingleIdentifierFieldName();
             // load translated content for all translatable fields
-            foreach ($entity->getTranslatableFields() as $field) {
+            foreach ($config['fields'] as $field) {
                 $content = $this->_findTranslation(
                     $em,
-                    $entityClassMetadata->getReflectionProperty($identifierField)->getValue($entity),
-                    get_class($entity),
+                    $meta->getReflectionProperty($identifierField)->getValue($entity),
+                    $entityClass,
                     $locale,
                     $field,
                     true
                 );
                 // update translation only if it has it
                 if (strlen($content)) {
-                    $entityClassMetadata->getReflectionProperty($field)->setValue($entity, $content);
+                    $meta->getReflectionProperty($field)->setValue($entity, $content);
                 }
             }    
         }
@@ -314,21 +446,21 @@ class TranslationListener implements EventSubscriber
      * Creates the translation for entity being flushed
      * 
      * @param EntityManager $em
-     * @param Translatable $entity
+     * @param object $entity
      * @param boolean $isInsert
      * @throws Translatable\Exception if locale is not valid, or
      *      primary key is composite, missing or invalid
      * @return void
      */
-    protected function _handleTranslatableEntityUpdate(EntityManager $em, Translatable $entity, $isInsert)
+    protected function _handleTranslatableEntityUpdate(EntityManager $em, $entity, $isInsert)
     {
         $entityClass = get_class($entity);
         // no need cache, metadata is loaded only once in MetadataFactoryClass
-        $translationMetadata = $em->getClassMetadata($this->getTranslationClass($entity));
-        $entityClassMetadata = $em->getClassMetadata($entityClass);
+        $translationMetadata = $em->getClassMetadata($this->getTranslationClass($entityClass));
+        $meta = $em->getClassMetadata($entityClass);
         
         // check for the availability of the primary key
-        $entityId = $entityClassMetadata->getIdentifierValues($entity);
+        $entityId = $meta->getIdentifierValues($entity);
         if (count($entityId) == 1 && current($entityId)) {
             $entityId = current($entityId);
         } elseif ($isInsert) {
@@ -338,12 +470,13 @@ class TranslationListener implements EventSubscriber
         }
         
         // load the currently used locale
-        $locale = strtolower($this->getTranslatableLocale($entity));
+        $locale = strtolower($this->getTranslatableLocale($entity, $meta));
         $this->_validateLocale($locale);
 
         $uow = $em->getUnitOfWork();
-        $translationClass = $this->getTranslationClass($entity);
-        $translatableFields = $entity->getTranslatableFields();
+        $translationClass = $this->getTranslationClass($entityClass);
+        $config = $this->getConfiguration($em, $entityClass);
+        $translatableFields = $config['fields'];
         foreach ($translatableFields as $field) {
             $translation = null;
             $scheduleUpdate = false;
@@ -373,7 +506,7 @@ class TranslationListener implements EventSubscriber
             
             // set the translated field, take value using reflection
             $translationMetadata->getReflectionProperty('content')
-                    ->setValue($translation, $entityClassMetadata->getReflectionProperty($field)->getValue($entity));
+                    ->setValue($translation, $meta->getReflectionProperty($field)->getValue($entity));
             if ($scheduleUpdate && $uow->hasPendingInsertions()) {
                 // need to shedule new Translation insert to avoid query on pending insert
                 $this->_pendingTranslationUpdates[] = $translation;
@@ -395,13 +528,13 @@ class TranslationListener implements EventSubscriber
             foreach ($changeSet as $field => $changes) {
                 if (in_array($field, $translatableFields)) {
                     if ($locale != $this->_defaultLocale && strlen($changes[0])) {
-                        $entityClassMetadata->getReflectionProperty($field)->setValue($entity, $changes[0]);
+                        $meta->getReflectionProperty($field)->setValue($entity, $changes[0]);
                         $needsUpdate = true;
                     }
                 }
             }
             if ($needsUpdate) {
-                $uow->recomputeSingleEntityChangeSet($entityClassMetadata, $entity);
+                $uow->recomputeSingleEntityChangeSet($meta, $entity);
             }
         }
     }
@@ -460,7 +593,7 @@ class TranslationListener implements EventSubscriber
      */
     protected function _validateLocale($locale)
     {
-        if (!strlen($locale)) {
+        if (!is_string($locale) || !strlen($locale)) {
             throw Exception::undefinedLocale();
         }
     }
@@ -481,6 +614,18 @@ class TranslationListener implements EventSubscriber
         $q = $em->createQuery($dql);
         $q->setParameters(compact('entityId'));
         return $q->getSingleScalarResult();
+    }
+    
+    /**
+     * Checks if $field type is valid as Translatable field
+     * 
+     * @param ClassMetadata $meta
+     * @param string $field
+     * @return boolean
+     */
+    protected function _isValidField(ClassMetadata $meta, $field)
+    {
+        return in_array($meta->getTypeOfField($field), $this->_validTypes);
     }
     
     /**

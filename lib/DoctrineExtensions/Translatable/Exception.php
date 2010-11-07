@@ -9,37 +9,43 @@ namespace DoctrineExtensions\Translatable;
  * @package DoctrineExtensions.Translatable
  * @subpackage Exception
  * @link http://www.gediminasm.org
+ * @version 2.0.0
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class Exception extends \Exception
 {
     static public function undefinedLocale()
     {
-        return new self("Locale cannot be empty and must be set in Translatable\Listener or in the entity");
+        return new self("Translatable: locale or language cannot be empty and must be set in Translatable\Listener or in the entity");
     }
 
     static public function singleIdentifierRequired($entityClass)
     {
-        return new self("Only a single identifier column is required for the Translatable extension, entity: {$entityClass}.");
+        return new self("Translatable: only a single identifier column is required for the Translatable extension, entity: {$entityClass}.");
     }
     
     static public function pendingInserts()
     {
-        return new self("UnitOfWork has pending inserts, cannot request query execution. TranslationListener does not support Concurrent inserts and updates together, on Doctrine 2 Beta4 yet. Try flushing only inserts or updates");
+        return new self("Translatable: UnitOfWork has pending inserts, cannot request query execution. TranslationListener does not support Concurrent inserts and updates together, on Doctrine 2 Beta4 yet. Try flushing only inserts or updates");
     }
     
     static public function failedToInsert()
     {
-        return new self("Failed to insert new Translation record");
+        return new self("Translatable: failed to insert new Translation record");
     }
     
     static public function translationClassLoaderArgumentInvalid($type)
     {
-        return new self("Invalid argument [{$type}] given for translation class retrieval.");
+        return new self("Translatable: invalid argument [{$type}] given for translation class retrieval.");
     }
     
-    static public function translationClassNotFound()
+    static public function translationClassNotFound($class)
     {
-        return new self("The translation class must be available at this moment.");
+        return new self("Translatable: the translation entity class: {$class} was not found.");
+    }
+    
+    static public function notValidFieldType($field, $class)
+    {
+        return new self("Translatable: cannot translate field - [{$field}] type is not valid and must be 'string' or 'text' in class - {$class}");
     }
 }
