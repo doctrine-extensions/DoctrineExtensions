@@ -39,7 +39,6 @@ class NoInterfaceTest extends \PHPUnit_Framework_TestCase
         
         $evm = new \Doctrine\Common\EventManager();
         $timestampableListener = new TimestampableListener();
-        $timestampableListener->setRequiresInterface(false);
         $evm->addEventSubscriber($timestampableListener);
         $this->em = \Doctrine\ORM\EntityManager::create($conn, $config, $evm);
 

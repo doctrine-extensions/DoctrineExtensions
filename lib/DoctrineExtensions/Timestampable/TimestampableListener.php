@@ -43,14 +43,6 @@ class TimestampableListener implements EventSubscriber
     );
     
     /**
-     * If set to true it will check only Timestampable
-     * entities for annotations
-     * 
-     * @var boolean
-     */
-    private $_requireInterface = true;
-    
-    /**
      * Specifies the list of events to listen
      * 
      * @return array
@@ -62,18 +54,6 @@ class TimestampableListener implements EventSubscriber
             Events::onFlush,
             Events::loadClassMetadata
         );
-    }
-    
-    /**
-     * If set to false it will scan all entities
-     * for timestampable annotations
-     * 
-     * @param boolean $bool
-     * @return void
-     */
-    public function setRequiresInterface($bool)
-    {
-        $this->_requireInterface = (boolean)$bool;
     }
     
     /**
@@ -114,59 +94,56 @@ class TimestampableListener implements EventSubscriber
         $meta = $eventArgs->getClassMetadata();
         
         $class = $meta->getReflectionClass();
-        if ($class->implementsInterface('DoctrineExtensions\Timestampable\Timestampable') || !$this->_requireInterface) {
-            require_once __DIR__ . '/Mapping/Annotations.php';
-            $reader = new AnnotationReader();
-            $reader->setAnnotationNamespaceAlias(
-                'DoctrineExtensions\Timestampable\Mapping\\', 'Timestampable'
-            );
+        require_once __DIR__ . '/Mapping/Annotations.php';
+        $reader = new AnnotationReader();
+        $reader->setAnnotationNamespaceAlias(
+            'DoctrineExtensions\Timestampable\Mapping\\', 'Timestampable'
+        );
     
-            // property annotations
-            foreach ($class->getProperties() as $property) {
-                // on create
-                $onCreate = $reader->getPropertyAnnotation(
-                    $property, 
-                    'DoctrineExtensions\Timestampable\Mapping\OnCreate'
-                );
-                if ($onCreate) {
-                    $field = $property->getName();
-                    if (!$this->_isValidField($meta, $field)) {
-                        throw Exception::notValidFieldType($field, $meta->name);
-                    }
-                    $this->_configurations[$meta->name]['onCreate'][] = $field;
+        // property annotations
+        foreach ($class->getProperties() as $property) {
+            // on create
+            $onCreate = $reader->getPropertyAnnotation(
+                $property, 
+                'DoctrineExtensions\Timestampable\Mapping\OnCreate'
+            );
+            if ($onCreate) {
+                $field = $property->getName();
+                if (!$this->_isValidField($meta, $field)) {
+                    throw Exception::notValidFieldType($field, $meta->name);
                 }
-                // on update
-                $onUpdate = $reader->getPropertyAnnotation(
-                    $property, 
-                    'DoctrineExtensions\Timestampable\Mapping\OnUpdate'
-                );
-                if ($onUpdate) {
-                    $field = $property->getName();
-                    if (!$this->_isValidField($meta, $field)) {
-                        throw Exception::notValidFieldType($field, $meta->name);
-                    }
-                    $this->_configurations[$meta->name]['onUpdate'][] = $field;
+                $this->_configurations[$meta->name]['onCreate'][] = $field;
+            }
+            // on update
+            $onUpdate = $reader->getPropertyAnnotation(
+                $property, 
+                'DoctrineExtensions\Timestampable\Mapping\OnUpdate'
+            );
+            if ($onUpdate) {
+                $field = $property->getName();
+                if (!$this->_isValidField($meta, $field)) {
+                    throw Exception::notValidFieldType($field, $meta->name);
                 }
-                
-                // on change
-                $onChange = $reader->getPropertyAnnotation(
-                    $property, 
-                    'DoctrineExtensions\Timestampable\Mapping\OnChange'
-                );
-                if ($onChange) {
-                    $field = $property->getName();
-                    if (!$this->_isValidField($meta, $field)) {
-                        throw Exception::notValidFieldType($field, $meta->name);
-                    }
-                    if (isset($onChange->field) && isset($onChange->value)) {
-                        $this->_configurations[$meta->name]['onChange'][] = array(
-                            'field' => $field,
-                            'trackedField' => $onChange->field,
-                            'value' => $onChange->value 
-                        );
-                    } else {
-                        throw Exception::parametersMissing($meta->name);
-                    }
+                $this->_configurations[$meta->name]['onUpdate'][] = $field;
+            }    
+            // on change
+            $onChange = $reader->getPropertyAnnotation(
+                $property, 
+                'DoctrineExtensions\Timestampable\Mapping\OnChange'
+            );
+            if ($onChange) {
+                $field = $property->getName();
+                if (!$this->_isValidField($meta, $field)) {
+                    throw Exception::notValidFieldType($field, $meta->name);
+                }
+                if (isset($onChange->field) && isset($onChange->value)) {
+                    $this->_configurations[$meta->name]['onChange'][] = array(
+                        'field' => $field,
+                        'trackedField' => $onChange->field,
+                        'value' => $onChange->value 
+                    );
+                } else {
+                    throw Exception::parametersMissing($meta->name);
                 }
             }
         }
@@ -192,12 +169,11 @@ class TimestampableListener implements EventSubscriber
         $uow = $em->getUnitOfWork();
         // check all scheduled updates
         foreach ($uow->getScheduledEntityUpdates() as $entity) {
-            if ($entity instanceof Timestampable || !$this->_requireInterface) {
-                $entityClass = get_class($entity);
+            $entityClass = get_class($entity);
+            if ($config = $this->getConfiguration($em, $entityClass)) {
                 $meta = $em->getClassMetadata($entityClass);
                 $needChanges = false;
                 
-                $config = $this->getConfiguration($em, $entityClass);
                 if (isset($config['onUpdate'])) {
                     $needChanges = true;
                     foreach ($config['onUpdate'] as $field) {
@@ -257,10 +233,9 @@ class TimestampableListener implements EventSubscriber
     {
         $em = $args->getEntityManager();
         $entity = $args->getEntity();
-        $uow = $em->getUnitOfWork();
         
-        if ($entity instanceof Timestampable || !$this->_requireInterface) {
-            $entityClass = get_class($entity);
+        $entityClass = get_class($entity);
+        if ($config = $this->getConfiguration($em, $entityClass)) {
             $meta = $em->getClassMetadata($entityClass);
 
             $config = $this->getConfiguration($em, $entityClass);

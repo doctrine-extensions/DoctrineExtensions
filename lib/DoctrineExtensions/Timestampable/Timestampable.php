@@ -3,8 +3,9 @@
 namespace DoctrineExtensions\Timestampable;
 
 /**
- * This interface must be implemented for all entities
- * to activate the Timestampable behavior
+ * This interface is not necessary but can be implemented for
+ * Entities which in some cases needs to be identified as
+ * Timestampable
  * 
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  * @package DoctrineExtensions.Timestampable
