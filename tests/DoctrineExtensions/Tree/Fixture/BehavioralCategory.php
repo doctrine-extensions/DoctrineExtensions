@@ -4,14 +4,12 @@ namespace Tree\Fixture;
 
 use DoctrineExtensions\Tree\Node,
     DoctrineExtensions\Tree\Configuration as TreeConfiguration,
-    DoctrineExtensions\Translatable\Translatable,
-    DoctrineExtensions\Sluggable\Sluggable,
-    DoctrineExtensions\Sluggable\Configuration as SlugConfiguration;
+    DoctrineExtensions\Translatable\Translatable;
 
 /**
  * @Entity(repositoryClass="Tree\Fixture\Repository\BehavioralCategoryRepository")
  */
-class BehavioralCategory implements Node, Translatable, Sluggable
+class BehavioralCategory implements Node
 {
     /**
      * @Column(name="id", type="integer")
@@ -22,6 +20,7 @@ class BehavioralCategory implements Node, Translatable, Sluggable
 
     /**
      * @Translatable
+     * @Sluggable
      * @Column(name="title", type="string", length=64)
      */
     private $title;
@@ -48,6 +47,7 @@ class BehavioralCategory implements Node, Translatable, Sluggable
     
     /**
      * @Translatable
+     * @Slug
      * @Column(name="slug", type="string", length=128)
      */
     private $slug;
@@ -85,13 +85,5 @@ class BehavioralCategory implements Node, Translatable, Sluggable
     public function getTreeConfiguration()
     {
         return new TreeConfiguration();
-    }
-    
-    public function getSluggableConfiguration()
-    {
-        $config = new SlugConfiguration();
-        $config->setSluggableFields(array('title'));
-        $config->setSlugField('slug');
-        return $config;
     }
 }

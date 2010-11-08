@@ -6,8 +6,11 @@ use Doctrine\Common\EventSubscriber,
     Doctrine\ORM\Events,
     Doctrine\ORM\Event\LifecycleEventArgs,
     Doctrine\ORM\Event\OnFlushEventArgs,
+    Doctrine\ORM\Event\LoadClassMetadataEventArgs,
     Doctrine\ORM\EntityManager,
-    Doctrine\ORM\Query;
+    Doctrine\ORM\Query,
+    Doctrine\ORM\Mapping\ClassMetadata,
+    Doctrine\Common\Annotations\AnnotationReader;
 
 /**
  * The SluggableListener handles the generation of slugs
@@ -23,7 +26,18 @@ use Doctrine\Common\EventSubscriber,
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class SluggableListener implements EventSubscriber
-{    
+{   
+    /**
+     * Annotation to mark field as sluggable and include it in slug building
+     */
+    const ANNOTATION_SLUGGABLE = 'DoctrineExtensions\Sluggable\Mapping\Sluggable';
+    
+    /**
+     * Annotation to identify field as one which holds the slug
+     * together with slug options
+     */
+    const ANNOTATION_SLUG = 'DoctrineExtensions\Sluggable\Mapping\Slug';
+     
     /**
      * List of cached entity configurations
      *  
@@ -41,6 +55,15 @@ class SluggableListener implements EventSubscriber
     protected $_pendingEntities = array();
     
     /**
+     * List of types which are valid for slug and sluggable fields
+     * 
+     * @var array
+     */
+    private $_validTypes = array(
+        'string'
+    );
+    
+    /**
      * Specifies the list of events to listen
      * 
      * @return array
@@ -50,23 +73,99 @@ class SluggableListener implements EventSubscriber
         return array(
             Events::prePersist,
             Events::postPersist,
-            Events::onFlush
+            Events::onFlush,
+            Events::loadClassMetadata
         );
     }
-        
+
     /**
-     * Get the configuration for entity
+     * Get the configuration for specific entity class
+     * if cache driver is present it scans it also
      * 
-     * @param Sluggable $entity
-     * @return Configuration
+     * @param EntityManager $em
+     * @param string $class
+     * @return array
      */
-    public function getConfiguration(Sluggable $entity)
-    {
-        $entityClass = get_class($entity);
-        if (!isset($this->_configurations[$entityClass])) {
-            $this->_configurations[$entityClass] = $entity->getSluggableConfiguration();
+    public function getConfiguration(EntityManager $em, $class) {
+        $config = array();
+        if (isset($this->_configurations[$class])) {
+            $config = $this->_configurations[$class];
+        } else {
+            $cacheDriver = $em->getMetadataFactory()->getCacheDriver();
+            if (($cached = $cacheDriver->fetch("{$class}\$SLUGGABLE_CLASSMETADATA")) !== false) {
+                $this->_configurations[$class] = $cached;
+                $config = $cached;
+            }
         }
-        return $this->_configurations[$entityClass];
+        return $config;
+    }
+    
+    /**
+     * Scans the entities for Sluggable annotations
+     * 
+     * @param LoadClassMetadataEventArgs $eventArgs
+     * @return void
+     */
+    public function loadClassMetadata(LoadClassMetadataEventArgs $eventArgs)
+    {
+        if (!method_exists($eventArgs, 'getEntityManager')) {
+            throw new \RuntimeException('SluggableListener: update to latest ORM version, minimal RC1 from github');
+        }
+        $em = $eventArgs->getEntityManager();
+        $cacheDriver = $em->getMetadataFactory()->getCacheDriver();      
+        $meta = $eventArgs->getClassMetadata();
+        
+        require_once __DIR__ . '/Mapping/Annotations.php';
+        $reader = new AnnotationReader();
+        $reader->setDefaultAnnotationNamespace(
+            'DoctrineExtensions\Sluggable\Mapping\\'
+        );
+    
+        $class = $meta->getReflectionClass();        
+        // property annotations
+        foreach ($class->getProperties() as $property) {
+            // sluggable property
+            if ($sluggable = $reader->getPropertyAnnotation($property, self::ANNOTATION_SLUGGABLE)) {
+                $field = $property->getName();
+                if (!$meta->hasField($field)) {
+                    throw Exception::fieldMustBeMapped($field, $meta->name);
+                }
+                if (!$this->_isValidField($meta, $field)) {
+                    throw Exception::notValidFieldType($field, $meta->name);
+                }
+                $this->_configurations[$meta->name]['fields'][] = $field;
+            }
+            // slug property
+            if ($slug = $reader->getPropertyAnnotation($property, self::ANNOTATION_SLUG)) {
+                $field = $property->getName();
+                if (!$meta->hasField($field)) {
+                    throw Exception::slugFieldMustBeMapped($field, $meta->name);
+                }
+                if (!$this->_isValidField($meta, $field)) {
+                    throw Exception::notValidFieldType($field, $meta->name);
+                } 
+                if (isset($this->_configurations[$meta->name]['slug'])) {
+                    throw Exception::slugFieldIsDuplicate($field, $meta->name);
+                }
+                
+                $this->_configurations[$meta->name]['slug'] = $field;
+                $this->_configurations[$meta->name]['style'] = $slug->style;
+                $this->_configurations[$meta->name]['updatable'] = $slug->updatable;
+                $this->_configurations[$meta->name]['unique'] = $slug->unique;
+                $this->_configurations[$meta->name]['separator'] = $slug->separator;
+            }
+        }
+        if (isset($this->_configurations[$meta->name]) && !isset($this->_configurations[$meta->name]['fields'])) {
+            throw Exception::noFieldsToSlug($meta->name);
+        }
+        // cache the metadata
+        if ($cacheDriver && isset($this->_configurations[$meta->name])) {
+            $cacheDriver->save(
+                "{$meta->name}\$SLUGGABLE_CLASSMETADATA", 
+                $this->_configurations[$meta->name],
+                null
+            );
+        }
     }
     
     /**
@@ -79,8 +178,8 @@ class SluggableListener implements EventSubscriber
     {
         $em = $args->getEntityManager();
         $entity = $args->getEntity();
-
-        if ($entity instanceof Sluggable) {
+        
+        if ($config = $this->getConfiguration($em, get_class($entity))) {
             $this->_generateSlug($em, $entity, false);
         }
     }
@@ -102,11 +201,10 @@ class SluggableListener implements EventSubscriber
             while ($entity = array_shift($this->_pendingEntities)) {
                 // we know that this slug must be unique and
                 // it was preprocessed allready
-                $config = $this->getConfiguration($entity);
-                $slugField = $config->getSlugField();
+                $config = $this->getConfiguration($em, get_class($entity));
                 $slug = $this->_makeUniqueSlug($em, $entity);
                 $uow->scheduleExtraUpdate($entity, array(
-                    $slugField => array(null, $slug)
+                    $config['slug'] => array(null, $slug)
                 ));
             }
         }
@@ -127,9 +225,8 @@ class SluggableListener implements EventSubscriber
         // we use onFlush and not preUpdate event to let other
         // event listeners be nested together
         foreach ($uow->getScheduledEntityUpdates() as $entity) {
-            if ($entity instanceof Sluggable) {
-                $config = $this->getConfiguration($entity);
-                if ($config->isUpdatable()) {
+            if ($config = $this->getConfiguration($em, get_class($entity))) {
+                if ($config['updatable']) {
                     $this->_generateSlug($em, $entity, $uow->getEntityChangeSet($entity));
                 }
             }
@@ -140,7 +237,7 @@ class SluggableListener implements EventSubscriber
      * Creates the slug for entity being flushed
      * 
      * @param EntityManager $em
-     * @param Sluggable $entity
+     * @param object $entity
      * @param mixed $changeSet
      *      case array: the change set array
      *      case boolean(false): entity is not managed
@@ -148,45 +245,21 @@ class SluggableListener implements EventSubscriber
      *      or invalid
      * @return void
      */
-    protected function _generateSlug(EntityManager $em, Sluggable $entity, $changeSet)
+    protected function _generateSlug(EntityManager $em, $entity, $changeSet)
     {
         $entityClass = get_class($entity);
         $uow = $em->getUnitOfWork();
-        $entityClassMetadata = $em->getClassMetadata($entityClass);
-        $config = $this->getConfiguration($entity);
-        
-        // check if slug field exists
-        $slugField = $config->getSlugField();
-        if (!$entityClassMetadata->hasField($slugField)) {
-            throw Exception::cannotFindSlugField($slugField);
-        }
-        
-        // check if slug metadata is valid
-        $preferedLength = $config->getLength();
-        $mapping = $entityClassMetadata->getFieldMapping($slugField);
-        if ($mapping['type'] != 'string') {
-            throw Exception::invalidSlugType($mapping['type']);
-        } elseif ($preferedLength > $mapping['length']) {
-            throw Exception::invalidSlugLength($mapping['length'], $preferedLength);
-        }
-        
-        // check if there are fields to be slugged
-        $sluggableFields = $config->getSluggableFields();
-        if (!count($sluggableFields)) {
-            throw Exception::noFieldsToSlug();
-        }
+        $meta = $em->getClassMetadata($entityClass);
+        $config = $this->getConfiguration($em, $entityClass);
         
         // collect the slug from fields
         $slug = '';
         $needToChangeSlug = false;
-        foreach ($sluggableFields as $sluggableField) {
-            if (!$entityClassMetadata->hasField($sluggableField)) {
-                throw Exception::cannotFindFieldToSlug($sluggableField);
-            }
+        foreach ($config['fields'] as $sluggableField) {
             if ($changeSet === false || isset($changeSet[$sluggableField])) {
                 $needToChangeSlug = true;
             }
-            $slug .= $entityClassMetadata->getReflectionProperty($sluggableField)->getValue($entity) . ' ';
+            $slug .= $meta->getReflectionProperty($sluggableField)->getValue($entity) . ' ';
         }
         // if slug is not changed, no need further processing
         if (!$needToChangeSlug) {
@@ -198,19 +271,16 @@ class SluggableListener implements EventSubscriber
         }
         
         // build the slug
-        $builder = $config->getSlugBuilder();
-        $separator = $config->getSeparator();
         $slug = call_user_func_array(
-            $builder, 
-            array($slug, $separator, $entity)
+            array('DoctrineExtensions\Sluggable\Util\Urlizer', 'urlize'), 
+            array($slug, $config['separator'], $entity)
         );
 
         // stylize the slug
-        $style = $config->getSlugStyle();
-        switch ($style) {
-            case Configuration::SLUG_STYLE_CAMEL:
+        switch ($config['style']) {
+            case 'camel':
                 $slug = preg_replace_callback(
-                    '@^[a-z]|' . $separator . '[a-z]@smi', 
+                    '@^[a-z]|' . $config['separator'] . '[a-z]@smi', 
                     create_function('$m', 'return strtoupper($m[0]);'), 
                     $slug
                 );
@@ -222,25 +292,26 @@ class SluggableListener implements EventSubscriber
         }
         
         // cut slug if exceeded in length
-        if ($preferedLength && strlen($slug) > $preferedLength) {
-            $slug = substr($slug, 0, $preferedLength);
+        $mapping = $meta->getFieldMapping($config['slug']);
+        if (strlen($slug) > $mapping['length']) {
+            $slug = substr($slug, 0, $mapping['length']);
         }
 
         // make unique slug if requested
-        if ($config->isUnique() && !$uow->hasPendingInsertions()) {
+        if ($config['unique'] && !$uow->hasPendingInsertions()) {
             // set the slug for further processing
-            $entityClassMetadata->getReflectionProperty($slugField)->setValue($entity, $slug);
+            $meta->getReflectionProperty($config['slug'])->setValue($entity, $slug);
             $slug = $this->_makeUniqueSlug($em, $entity);
         }
         // set the final slug
-        $entityClassMetadata->getReflectionProperty($slugField)->setValue($entity, $slug);
+        $meta->getReflectionProperty($config['slug'])->setValue($entity, $slug);
         // recompute changeset if entity is managed
         if ($changeSet !== false) {
-            $uow->recomputeSingleEntityChangeSet($entityClassMetadata, $entity);
-        } elseif ($config->isUnique() && $uow->hasPendingInsertions()) {
-            // @todo: make support for unique field metadata
-            if ($entityClassMetadata->isUniqueField($slugField)) {
-                throw Exception::slugFieldIsUnique($slugField);
+            $uow->recomputeSingleEntityChangeSet($meta, $entity);
+        } elseif ($config['unique'] && $uow->hasPendingInsertions()) {
+            // @todo: make support for unique field metadata on concurrent operations
+            if ($meta->isUniqueField($config['slug'])) {
+                throw Exception::slugFieldIsUnique($config['slug']);
             }
             $this->_pendingEntities[] = $entity;
         }
@@ -250,38 +321,36 @@ class SluggableListener implements EventSubscriber
      * Generates the unique slug
      * 
      * @param EntityManager $em
-     * @param Sluggable $entity
+     * @param object $entity
      * @throws Sluggable\Exception if unit of work has pending inserts
      *      to avoid infinite loop
      * @return string - unique slug
      */
-    private function _makeUniqueSlug(EntityManager $em, Sluggable $entity)
+    protected function _makeUniqueSlug(EntityManager $em, $entity)
     {
         if ($em->getUnitOfWork()->hasPendingInsertions()) {
             throw Exception::pendingInserts();
         }
         
         $entityClass = get_class($entity);
-        $entityClassMetadata = $em->getClassMetadata($entityClass);
-        
-        $config = $this->getConfiguration($entity);
-        $slugField = $config->getSlugField();
-        $preferedSlug = $entityClassMetadata->getReflectionProperty($slugField)->getValue($entity);
+        $meta = $em->getClassMetadata($entityClass);
+        $config = $this->getConfiguration($em, $entityClass);
+        $preferedSlug = $meta->getReflectionProperty($config['slug'])->getValue($entity);
         
         // @todo: optimize
         // search for similar slug
         $qb = $em->createQueryBuilder();
-        $qb->select('rec.' . $slugField)
+        $qb->select('rec.' . $config['slug'])
             ->from($entityClass, 'rec')
-            ->where($qb->expr()->like(
-                'rec.' . $slugField, 
+            ->add('where', $qb->expr()->like(
+                'rec.' . $config['slug'], 
                 $qb->expr()->literal($preferedSlug . '%'))
             );
         // include identifiers
-        $entityIdentifiers = $entityClassMetadata->getIdentifierValues($entity);
+        $entityIdentifiers = $meta->getIdentifierValues($entity);
         foreach ($entityIdentifiers as $field => $value) {
             if (strlen($value)) {
-                $qb->where('rec.' . $field . ' <> ' . $value);
+                $qb->add('where', 'rec.' . $field . ' <> ' . $value);
             }
         }
         $q = $qb->getQuery();
@@ -295,33 +364,44 @@ class SluggableListener implements EventSubscriber
                 $sameSlugs[] = $list['slug'];
             }
 
-            $separator = $config->getSeparator();
             $i = 0;
-            if (preg_match("@{$separator}\d+$@sm", $generatedSlug, $m)) {
+            if (preg_match("@{$config['separator']}\d+$@sm", $generatedSlug, $m)) {
                 $i = abs(intval($m[0]));
             }
             while (in_array($generatedSlug, $sameSlugs)) {
-                $generatedSlug = $preferedSlug . $separator . ++$i;
+                $generatedSlug = $preferedSlug . $config['separator'] . ++$i;
             }
             
-            $preferedLength = $config->getLength();
+            $mapping = $meta->getFieldMapping($config['slug']);
             $needRecursion = false;
-            if ($preferedLength && strlen($generatedSlug) > $preferedLength) {
+            if (strlen($generatedSlug) > $mapping['length']) {
                 $needRecursion = true;
                 $generatedSlug = substr(
                     $generatedSlug, 
                     0, 
-                    $preferedLength - (strlen($i) + strlen($separator))
+                    $mapping['length'] - (strlen($i) + strlen($config['separator']))
                 );
-                $generatedSlug .= $separator . $i;
+                $generatedSlug .= $config['separator'] . $i;
             }
             
-            $entityClassMetadata->getReflectionProperty($slugField)->setValue($entity, $generatedSlug);
+            $meta->getReflectionProperty($config['slug'])->setValue($entity, $generatedSlug);
             if ($needRecursion) {
                 $generatedSlug = $this->_makeUniqueSlug($em, $entity);
             }
             $preferedSlug = $generatedSlug;
         }
         return $preferedSlug;
+    }
+    
+    /**
+     * Checks if $field type is valid as Sluggable or Slug field
+     * 
+     * @param ClassMetadata $meta
+     * @param string $field
+     * @return boolean
+     */
+    protected function _isValidField(ClassMetadata $meta, $field)
+    {
+        return in_array($meta->getTypeOfField($field), $this->_validTypes);
     }
 }

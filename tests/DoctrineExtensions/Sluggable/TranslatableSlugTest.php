@@ -174,18 +174,21 @@ class TranslatableArticle implements Sluggable, Translatable
 
     /**
      * @Translatable
+     * @Sluggable
      * @Column(name="title", type="string", length=64)
      */
     private $title;
 
     /**
      * @Translatable
+     * @Sluggable
      * @Column(name="code", type="string", length=16)
      */
     private $code;
     
     /**
      * @Translatable
+     * @Slug
      * @Column(name="slug", type="string", length=128)
      */
     private $slug;
@@ -247,14 +250,6 @@ class TranslatableArticle implements Sluggable, Translatable
         return $this->code;
     }
     
-    public function getSluggableConfiguration()
-    {
-        $config = new Configuration();
-        $config->setSluggableFields(array('title', 'code'));
-        $config->setSlugField('slug');
-        return $config;
-    }
-    
     public function getSlug()
     {
         return $this->slug;
@@ -308,17 +303,19 @@ class Comment
 /**
  * @Entity
  */
-class Page implements Sluggable
+class Page
 {
     /** @Id @GeneratedValue @Column(type="integer") */
     private $id;
 
     /**
-     * @Column(name="content", type="text")
+     * @Sluggable
+     * @Column(name="content", type="string", length=255)
      */
     private $content;
     
     /**
+     * @Slug(style="camel", separator="_")
      * @Column(name="slug", type="string", length=128)
      */
     private $slug;
@@ -352,16 +349,6 @@ class Page implements Sluggable
     public function getContent()
     {
         return $this->content;
-    }
-    
-    public function getSluggableConfiguration()
-    {
-        $config = new Configuration();
-        $config->setSluggableFields(array('content'));
-        $config->setSlugField('slug');
-        $config->setSlugStyle(Configuration::SLUG_STYLE_CAMEL);
-        $config->setSeparator('_');
-        return $config;
     }
     
     public function getSlug()

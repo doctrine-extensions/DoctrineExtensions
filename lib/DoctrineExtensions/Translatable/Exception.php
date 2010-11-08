@@ -48,4 +48,14 @@ class Exception extends \Exception
     {
         return new self("Translatable: cannot translate field - [{$field}] type is not valid and must be 'string' or 'text' in class - {$class}");
     }
+    
+    static public function fieldMustBeMapped($field, $class)
+    {
+        return new self("Translatable: was unable to find [{$field}] as mapped property in entity - {$class}");
+    }
+    
+    static public function fieldMustNotBeMapped($field, $class)
+    {
+        return new self("Translatable: field [{$field}] should not be mapped as column property in entity - {$class}, since it makes no sence");
+    }
 }

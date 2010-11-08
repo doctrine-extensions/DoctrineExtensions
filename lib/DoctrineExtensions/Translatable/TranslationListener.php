@@ -243,7 +243,7 @@ class TranslationListener implements EventSubscriber
     public function loadClassMetadata(LoadClassMetadataEventArgs $eventArgs)
     {
         if (!method_exists($eventArgs, 'getEntityManager')) {
-            throw new RuntimeException('TranslatableListener: update to latest ORM version, minimal RC1 from github');
+            throw new \RuntimeException('TranslatableListener: update to latest ORM version, minimal RC1 from github');
         }
         $em = $eventArgs->getEntityManager();
         $cacheDriver = $em->getMetadataFactory()->getCacheDriver();      
@@ -271,6 +271,9 @@ class TranslationListener implements EventSubscriber
             // translatable property
             if ($translatable = $reader->getPropertyAnnotation($property, self::ANNOTATION_TRANSLATABLE)) {
                 $field = $property->getName();
+                if (!$meta->hasField($field)) {
+                    throw Exception::fieldMustBeMapped($field, $meta->name);
+                }
                 if (!$this->_isValidField($meta, $field)) {
                     throw Exception::notValidFieldType($field, $meta->name);
                 }
@@ -278,9 +281,17 @@ class TranslationListener implements EventSubscriber
             }
             // locale property
             if ($locale = $reader->getPropertyAnnotation($property, self::ANNOTATION_LOCALE)) {
-                $this->_configurations[$meta->name]['locale'] = $property->getName();
+                $field = $property->getName();
+                if ($meta->hasField($field)) {
+                    throw Exception::fieldMustNotBeMapped($field, $meta->name);
+                }
+                $this->_configurations[$meta->name]['locale'] = $field;
             } elseif ($language = $reader->getPropertyAnnotation($property, self::ANNOTATION_LANGUAGE)) {
-                $this->_configurations[$meta->name]['locale'] = $property->getName();
+                $field = $property->getName();
+                if ($meta->hasField($field)) {
+                    throw Exception::fieldMustNotBeMapped($field, $meta->name);
+                }
+                $this->_configurations[$meta->name]['locale'] = $field;
             }
         }
         // cache the metadata

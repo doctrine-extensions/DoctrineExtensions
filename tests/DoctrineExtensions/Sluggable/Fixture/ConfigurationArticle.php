@@ -2,8 +2,7 @@
 
 namespace Sluggable\Fixture;
 
-use DoctrineExtensions\Sluggable\Sluggable,
-    DoctrineExtensions\Sluggable\Configuration;
+use DoctrineExtensions\Sluggable\Sluggable;
 
 /**
  * @Entity
@@ -14,17 +13,20 @@ class ConfigurationArticle implements Sluggable
     private $id;
 
     /**
+     * @Sluggable
      * @Column(name="title", type="string", length=64)
      */
     private $title;
 
     /**
+     * @Sluggable
      * @Column(name="code", type="string", length=16)
      */
     private $code;
     
     /**
-     * @Column(name="slug", type="string", length=128)
+     * @Slug(updatable=false, unique=false)
+     * @Column(name="slug", type="string", length=32)
      */
     private $slug;
 
@@ -53,24 +55,8 @@ class ConfigurationArticle implements Sluggable
         return $this->code;
     }
     
-    public function getSluggableConfiguration()
-    {
-        $config = new Configuration();
-        $config->setSluggableFields(array('title', 'code'));
-        $config->setSlugField('slug');
-        $config->setIsUpdatable(false);
-        $config->setIsUnique(false);
-        $config->setLength(32);
-        return $config;
-    }
-    
     public function getSlug()
     {
         return $this->slug;
-    }
-    
-    public function setSlug($slug)
-    {
-        $this->slug = $slug;
     }
 }

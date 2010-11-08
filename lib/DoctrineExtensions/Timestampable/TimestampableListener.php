@@ -87,7 +87,7 @@ class TimestampableListener implements EventSubscriber
     public function loadClassMetadata(LoadClassMetadataEventArgs $eventArgs)
     {
         if (!method_exists($eventArgs, 'getEntityManager')) {
-            throw new RuntimeException('TimestampableListener: update to latest ORM version, minimal RC1 from github');
+            throw new \RuntimeException('TimestampableListener: update to latest ORM version, minimal RC1 from github');
         }
         $em = $eventArgs->getEntityManager();
         $cacheDriver = $em->getMetadataFactory()->getCacheDriver();      
@@ -109,6 +109,9 @@ class TimestampableListener implements EventSubscriber
             );
             if ($onCreate) {
                 $field = $property->getName();
+                if (!$meta->hasField($field)) {
+                    throw Exception::fieldMustBeMapped($field, $meta->name);
+                }
                 if (!$this->_isValidField($meta, $field)) {
                     throw Exception::notValidFieldType($field, $meta->name);
                 }
@@ -121,6 +124,9 @@ class TimestampableListener implements EventSubscriber
             );
             if ($onUpdate) {
                 $field = $property->getName();
+                if (!$meta->hasField($field)) {
+                    throw Exception::fieldMustBeMapped($field, $meta->name);
+                }
                 if (!$this->_isValidField($meta, $field)) {
                     throw Exception::notValidFieldType($field, $meta->name);
                 }
@@ -133,6 +139,9 @@ class TimestampableListener implements EventSubscriber
             );
             if ($onChange) {
                 $field = $property->getName();
+                if (!$meta->hasField($field)) {
+                    throw Exception::fieldMustBeMapped($field, $meta->name);
+                }
                 if (!$this->_isValidField($meta, $field)) {
                     throw Exception::notValidFieldType($field, $meta->name);
                 }
