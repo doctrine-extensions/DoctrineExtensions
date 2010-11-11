@@ -13,23 +13,23 @@ namespace DoctrineExtensions\Tree;
  */
 class Exception extends \Exception
 {    
-    static public function parentFieldNotRelated($field, $class)
+    static public function parentFieldNotMappedOrRelated($field, $class)
     {
-        return new self("TreeListener was unable to find parent child relation through parent field - [{$field}] in Node class - {$class}");
+        return new self("Tree: was unable to find ancestor/parent child relation through ancestor field - [{$field}] in class - {$class}");
     }
     
-    static public function cannotFindLeftField($field, $class)
+    static public function missingMetaProperties($fields, $class)
     {
-        return new self("TreeListener was unable to find 'left' - [{$field}] in the Node class - {$class}");
+        return new self("Tree: has detected missing properties: " . explode(', ', $fields) . " in class - {$class}");
     }
     
-    static public function cannotFindRightField($field, $class)
+    static public function notValidFieldType($field, $class)
     {
-        return new self("TreeListener was unable to find 'right' - [{$field}] in the Node class - {$class}");
+        return new self("Tree: field - [{$field}] type is not valid and must be 'integer', 'smallint' or 'bigint' in class - {$class}");
     }
     
-    static public function cannotFindParentField($field, $class)
+    static public function fieldMustBeMapped($field, $class)
     {
-        return new self("TreeListener was unable to find 'parent' - [{$field}] in the Node class - {$class}");
+        return new self("Tree: was unable to find [{$field}] as mapped property in entity - {$class}");
     }
 }

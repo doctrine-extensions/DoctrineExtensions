@@ -4,8 +4,7 @@ namespace DoctrineExtensions\Tree\Repository;
 
 use Doctrine\ORM\EntityRepository,
     Doctrine\ORM\Query,
-    DoctrineExtensions\Tree\Node,
-    DoctrineExtensions\Tree\Configuration;
+    DoctrineExtensions\Tree\Node;
 
 /**
  * The TreeNodeRepository has some useful functions
@@ -23,28 +22,33 @@ use Doctrine\ORM\EntityRepository,
 class TreeNodeRepository extends EntityRepository
 {   
     /**
+     * List of cached entity configurations
+     *  
+     * @var array
+     */
+    protected $_configurations = array();
+    
+    /**
      * Get the Tree path of Nodes by given $node
      * 
-     * @param Node $node
+     * @param object $node
      * @return array - list of Nodes in path
      */
-    public function getPath(Node $node)
+    public function getPath($node)
     {
         $result = array();
-        $meta = $this->_em->getClassMetadata($this->_entityName);
-        $config = $node->getTreeConfiguration();
-        
-        $left = $meta->getReflectionProperty($config->getLeftField())
-            ->getValue($node);
-        $right = $meta->getReflectionProperty($config->getRightField())
-            ->getValue($node);
-        if (!empty($left) && !empty($right)) {
+        $meta = $this->getClassMetadata();
+        $config = $this->getConfiguration();
+            
+        $left = $meta->getReflectionProperty($config['left'])->getValue($node);
+        $right = $meta->getReflectionProperty($config['right'])->getValue($node);
+        if ($left && $right) {
             $qb = $this->_em->createQueryBuilder();
             $qb->select('node')
                 ->from($this->_entityName, 'node')
-                ->where('node.' . $config->getLeftField() . " <= :left")
-                ->andWhere('node.' . $config->getRightField() . " >= :right")
-                ->orderBy('node.' . $config->getLeftField(), 'ASC');
+                ->where('node.' . $config['left'] . " <= :left")
+                ->andWhere('node.' . $config['right'] . " >= :right")
+                ->orderBy('node.' . $config['left'], 'ASC');
             $q = $qb->getQuery();
             $result = $q->execute(
                 compact('left', 'right'),
@@ -57,41 +61,37 @@ class TreeNodeRepository extends EntityRepository
     /**
      * Counts the children of given TreeNode
      * 
-     * @param Node $node - if null counts all records in tree
+     * @param object $node - if null counts all records in tree
      * @param boolean $direct - true to count only direct children
      * @return integer
      */ 
     public function childCount($node = null, $direct = false)
     {
         $count = 0;
-        $meta = $this->_em->getClassMetadata($this->_entityName);
+        $meta = $this->getClassMetadata();
         $nodeId = $meta->getSingleIdentifierFieldName();
-        if ($node instanceof Node) {
-            $config = $node->getTreeConfiguration();
+        $config = $this->getConfiguration();
+        if (null !== $node) {
             if ($direct) {
                 $id = $meta->getReflectionProperty($nodeId)->getValue($node);
                 $qb = $this->_em->createQueryBuilder();
                 $qb->select('COUNT(node.' . $nodeId . ')')
                     ->from($this->_entityName, 'node')
-                    ->where('node.' . $config->getParentField() . ' = ' . $id);
+                    ->where('node.' . $config['parent'] . ' = ' . $id);
                     
                 $q = $qb->getQuery();
                 $count = intval($q->getSingleScalarResult());
             } else {
-                $left = $meta->getReflectionProperty($config->getLeftField())
-                    ->getValue($node);
-                $right = $meta->getReflectionProperty($config->getRightField())
-                    ->getValue($node);
-                if (!empty($left) && !empty($right)) {
+                $left = $meta->getReflectionProperty($config['left'])->getValue($node);
+                $right = $meta->getReflectionProperty($config['right'])->getValue($node);
+                if ($left && $right) {
                     $count = ($right - $left - 1) / 2;
                 }
             }
         } else {
             $dql = "SELECT COUNT(node.{$nodeId}) FROM {$this->_entityName} node";
             if ($direct) {
-                $node = new $this->_entityName();
-                $config = $node->getTreeConfiguration();
-                $dql .= ' WHERE node.' . $config->getParentField() . ' IS NULL';
+                $dql .= ' WHERE node.' . $config['parent'] . ' IS NULL';
             }
             $q = $this->_em->createQuery($dql);
             $count = intval($q->getSingleScalarResult());
@@ -102,7 +102,7 @@ class TreeNodeRepository extends EntityRepository
     /**
      * Get list of children followed by given $node
      * 
-     * @param Node $node - if null, all tree nodes will be taken
+     * @param object $node - if null, all tree nodes will be taken
      * @param boolean $direct - true to take only direct children
      * @param string $sortByField - field name to sort by
      * @param string $direction - sort direction : "ASC" or "DESC"
@@ -110,40 +110,37 @@ class TreeNodeRepository extends EntityRepository
      */
     public function children($node = null, $direct = false, $sortByField = null, $direction = 'ASC')
     {
-        $meta = $this->_em->getClassMetadata($this->_entityName);
+        $meta = $this->getClassMetadata();
+        $config = $this->getConfiguration();
+             
         $qb = $this->_em->createQueryBuilder();
         $qb->select('node')
             ->from($this->_entityName, 'node');
-        if ($node instanceof Node) {
-            $config = $node->getTreeConfiguration();
+        if ($node !== null) {
             if ($direct) {
                 $nodeId = $meta->getSingleIdentifierFieldName();
                 $id = $meta->getReflectionProperty($nodeId)->getValue($node);
-                $qb->where('node.' . $config->getParentField() . ' = ' . $id);
+                $qb->where('node.' . $config['parent'] . ' = ' . $id);
             } else {
-                $left = $meta->getReflectionProperty($config->getLeftField())
-                    ->getValue($node);
-                $right = $meta->getReflectionProperty($config->getRightField())
-                    ->getValue($node);
-                if (!empty($left) && !empty($right)) {
-                    $qb->where('node.' . $config->getRightField() . " < {$right}")
-                        ->andWhere('node.' . $config->getLeftField() . " > {$left}");
+                $left = $meta->getReflectionProperty($config['left'])->getValue($node);
+                $right = $meta->getReflectionProperty($config['right'])->getValue($node);
+                if ($left && $right) {
+                    $qb->where('node.' . $config['right'] . " < {$right}")
+                        ->andWhere('node.' . $config['left'] . " > {$left}");
                 }
             }
         } else {
-            $node = new $this->_entityName();
-            $config = $node->getTreeConfiguration();
             if ($direct) {
-                $qb->where('node.' . $config->getParentField() . ' IS NULL');
+                $qb->where('node.' . $config['parent'] . ' IS NULL');
             }
         }
         if (!$sortByField) {
-            $qb->orderBy('node.' . $config->getLeftField(), 'ASC');
+            $qb->orderBy('node.' . $config['left'], 'ASC');
         } else {
             if ($meta->hasField($sortByField) && in_array(strtolower($direction), array('asc', 'desc'))) {
                 $qb->orderBy('node.' . $sortByField, $direction);
             } else {
-                throw RuntimeException("Invalid sort options specified: field - {$sortByField}, direction - {$direction}");
+                throw new \RuntimeException("Invalid sort options specified: field - {$sortByField}, direction - {$direction}");
             }
         }
         $q = $qb->getQuery();
@@ -155,36 +152,33 @@ class TreeNodeRepository extends EntityRepository
     /**
      * Move the node down in the same level
      * 
-     * @param Node $node
+     * @param object $node
      * @param mixed $number
      *         integer - number of positions to shift
      *         boolean - true shift till last position
      * @throws Exception if something fails in transaction
      * @return boolean - true if shifted
      */
-    public function moveDown(Node $node, $number = 1)
+    public function moveDown($node, $number = 1)
     {
+        $meta = $this->getClassMetadata();
+        $config = $this->getConfiguration();
         if (!$number) {
             return false;
         }
         
-        $meta = $this->_em->getClassMetadata($this->_entityName);
-        $config = $node->getTreeConfiguration();
-        $parent = $meta->getReflectionProperty($config->getParentField())
-            ->getValue($node);
-        $right = $meta->getReflectionProperty($config->getRightField())
-            ->getValue($node);
+        $parent = $meta->getReflectionProperty($config['parent'])->getValue($node);
+        $right = $meta->getReflectionProperty($config['right'])->getValue($node);
         
         if ($parent) {
             $this->_em->refresh($parent);
-            $parentRight = $meta->getReflectionProperty($config->getRightField())
-                ->getValue($parent);
+            $parentRight = $meta->getReflectionProperty($config['right'])->getValue($parent);
             if (($right + 1) == $parentRight) {
                 return false;
             }
         }
         $dql = "SELECT node FROM {$this->_entityName} node";
-        $dql .= ' WHERE node.' . $config->getLeftField() . ' = ' . ($right + 1);
+        $dql .= ' WHERE node.' . $config['left'] . ' = ' . ($right + 1);
         $q = $this->_em->createQuery($dql);
         $q->setMaxResults(1);
         $result = $q->getResult(Query::HYDRATE_OBJECT);
@@ -198,12 +192,9 @@ class TreeNodeRepository extends EntityRepository
         // it loads node from memory without refresh
         $this->_em->refresh($nextSiblingNode);
         
-        $left = $meta->getReflectionProperty($config->getLeftField())
-            ->getValue($node);
-        $nextLeft = $meta->getReflectionProperty($config->getLeftField())
-            ->getValue($nextSiblingNode);
-        $nextRight = $meta->getReflectionProperty($config->getRightField())
-            ->getValue($nextSiblingNode);
+        $left = $meta->getReflectionProperty($config['left'])->getValue($node);
+        $nextLeft = $meta->getReflectionProperty($config['left'])->getValue($nextSiblingNode);
+        $nextRight = $meta->getReflectionProperty($config['right'])->getValue($nextSiblingNode);
         $edge = $this->_getTreeEdge($config);
         // process updates in transaction
         $this->_em->getConnection()->beginTransaction();
@@ -230,37 +221,33 @@ class TreeNodeRepository extends EntityRepository
     /**
      * Move the node up in the same level
      * 
-     * @param Node $node
+     * @param object $node
      * @param mixed $number
      *         integer - number of positions to shift
      *         boolean - true shift till first position
      * @throws Exception if something fails in transaction
      * @return boolean - true if shifted
      */
-    public function moveUp(Node $node, $number = 1)
+    public function moveUp($node, $number = 1)
     {
+        $meta = $this->getClassMetadata();
+        $config = $this->getConfiguration();
         if (!$number) {
             return false;
         }
         
-        $meta = $this->_em->getClassMetadata($this->_entityName);
-        $config = $node->getTreeConfiguration();
-        $parent = $meta->getReflectionProperty($config->getParentField())
-            ->getValue($node);
-            
-        $left = $meta->getReflectionProperty($config->getLeftField())
-            ->getValue($node);
+        $parent = $meta->getReflectionProperty($config['parent'])->getValue($node);            
+        $left = $meta->getReflectionProperty($config['left'])->getValue($node);
         if ($parent) {
             $this->_em->refresh($parent);
-            $parentLeft = $meta->getReflectionProperty($config->getLeftField())
-                ->getValue($parent);
+            $parentLeft = $meta->getReflectionProperty($config['left'])->getValue($parent);
             if (($left - 1) == $parentLeft) {
                 return false;
             }
         }
         
         $dql = "SELECT node FROM {$this->_entityName} node";
-        $dql .= ' WHERE node.' . $config->getRightField() . ' = ' . ($left - 1);
+        $dql .= ' WHERE node.' . $config['right'] . ' = ' . ($left - 1);
         $q = $this->_em->createQuery($dql);
         $q->setMaxResults(1);
         $result = $q->getResult(Query::HYDRATE_OBJECT);
@@ -273,12 +260,9 @@ class TreeNodeRepository extends EntityRepository
         // it loads node from memory without refresh
         $this->_em->refresh($previousSiblingNode);
         
-        $right = $meta->getReflectionProperty($config->getRightField())
-            ->getValue($node);
-        $previousLeft = $meta->getReflectionProperty($config->getLeftField())
-            ->getValue($previousSiblingNode);
-        $previousRight = $meta->getReflectionProperty($config->getRightField())
-            ->getValue($previousSiblingNode);
+        $right = $meta->getReflectionProperty($config['right'])->getValue($node);
+        $previousLeft = $meta->getReflectionProperty($config['left'])->getValue($previousSiblingNode);
+        $previousRight = $meta->getReflectionProperty($config['right'])->getValue($previousSiblingNode);
         $edge = $this->_getTreeEdge($config);
         // process updates in transaction
         $this->_em->getConnection()->beginTransaction();
@@ -306,7 +290,7 @@ class TreeNodeRepository extends EntityRepository
      * Reorders the sibling nodes and child nodes by given $node,
      * according to the $sortByField and $direction specified
      * 
-     * @param Node $node - null to reorder all tree
+     * @param object $node - null to reorder all tree
      * @param string $sortByField - field name to sort by
      * @param string $direction - sort direction : "ASC" or "DESC"
      * @param boolean $verify - true to verify tree first
@@ -314,20 +298,18 @@ class TreeNodeRepository extends EntityRepository
      */
     public function reorder($node = null, $sortByField = null, $direction = 'ASC', $verify = true)
     {
+        $meta = $this->getClassMetadata();
+        $config = $this->getConfiguration();
         if ($verify && is_array($this->verify())) {
             return false;
         }
-        
-        $meta = $this->_em->getClassMetadata($this->_entityName);        
+               
         $nodes = $this->children($node, true, $sortByField, $direction);
         foreach ($nodes as $node) {
-            if (!isset($config)) {
-                $config = $node->getTreeConfiguration();
-            }
             // this is overhead but had to be refreshed
             $this->_em->refresh($node);
-            $right = $meta->getReflectionProperty($config->getRightField())->getValue($node);
-            $left = $meta->getReflectionProperty($config->getLeftField())->getValue($node);
+            $right = $meta->getReflectionProperty($config['right'])->getValue($node);
+            $left = $meta->getReflectionProperty($config['left'])->getValue($node);
             $this->moveDown($node, true);
             if ($left != ($right - 1)) {
                 $this->reorder($node, $sortByField, $direction, false);
@@ -345,15 +327,12 @@ class TreeNodeRepository extends EntityRepository
      */
     public function removeFromTree(Node $node)
     {
-        $meta = $this->_em->getClassMetadata($this->_entityName);
-        $config = $node->getTreeConfiguration();
+        $meta = $this->getClassMetadata();
+        $config = $this->getConfiguration();
         
-        $right = $meta->getReflectionProperty($config->getRightField())
-            ->getValue($node);
-        $left = $meta->getReflectionProperty($config->getLeftField())
-            ->getValue($node);
-        $parent = $meta->getReflectionProperty($config->getParentField())
-            ->getValue($node);
+        $right = $meta->getReflectionProperty($config['right'])->getValue($node);
+        $left = $meta->getReflectionProperty($config['left'])->getValue($node);
+        $parent = $meta->getReflectionProperty($config['parent'])->getValue($node);
             
         if ($right == $left + 1) {
             $this->_em->remove($node);
@@ -369,8 +348,8 @@ class TreeNodeRepository extends EntityRepository
             $nodeId = $meta->getReflectionProperty($pk)->getValue($node);
             
             $dql = "UPDATE {$this->_entityName} node";
-            $dql .= ' SET node.' . $config->getParentField() . ' = ' . $parentId;
-            $dql .= ' WHERE node.' . $config->getParentField() . ' = ' . $nodeId;
+            $dql .= ' SET node.' . $config['parent'] . ' = ' . $parentId;
+            $dql .= ' WHERE node.' . $config['parent'] . ' = ' . $nodeId;
             $q = $this->_em->createQuery($dql);
             $q->getSingleScalarResult();
             
@@ -378,9 +357,9 @@ class TreeNodeRepository extends EntityRepository
             $this->_sync($config, 2, '-', '> ' . $right);
             
             $dql = "UPDATE {$this->_entityName} node";
-            $dql .= ' SET node.' . $config->getParentField() . ' = NULL,';
-            $dql .= ' node.' . $config->getLeftField() . ' = 0,';
-            $dql .= ' node.' . $config->getRightField() . ' = 0';
+            $dql .= ' SET node.' . $config['parent'] . ' = NULL,';
+            $dql .= ' node.' . $config['left'] . ' = 0,';
+            $dql .= ' node.' . $config['right'] . ' = 0';
             $dql .= ' WHERE node.' . $pk . ' = ' . $nodeId;
             $q = $this->_em->createQuery($dql);
             $q->getSingleScalarResult();
@@ -410,13 +389,12 @@ class TreeNodeRepository extends EntityRepository
             return true; // tree is empty
         }
         $errors = array();
-        $meta = $this->_em->getClassMetadata($this->_entityName);
-        $node = new $this->_entityName();
-        $config = $node->getTreeConfiguration();
+        $meta = $this->getClassMetadata();
+        $config = $this->getConfiguration();
         $identifier = $meta->getSingleIdentifierFieldName();
-        $leftField = $config->getLeftField();
-        $rightField = $config->getRightField();
-        $parentField = $config->getParentField();
+        $leftField = $config['left'];
+        $rightField = $config['right'];
+        $parentField = $config['parent'];
         
         $q = $this->_em->createQuery("SELECT MIN(node.{$leftField}) FROM {$this->_entityName} node");
         
@@ -506,14 +484,13 @@ class TreeNodeRepository extends EntityRepository
             return;
         }
         
-        $meta = $this->_em->getClassMetadata($this->_entityName);
-        $node = new $this->_entityName();
-        $config = $node->getTreeConfiguration();
+        $meta = $this->getClassMetadata();
+        $config = $this->getConfiguration();
         
         $identifier = $meta->getSingleIdentifierFieldName();
-        $leftField = $config->getLeftField();
-        $rightField = $config->getRightField();
-        $parentField = $config->getParentField();
+        $leftField = $config['left'];
+        $rightField = $config['right'];
+        $parentField = $config['parent'];
         
         $count = 1;
         $dql = "SELECT node.{$identifier} FROM {$this->_entityName} node";
@@ -548,15 +525,37 @@ class TreeNodeRepository extends EntityRepository
     }
     
     /**
+     * Generally loads configuration from cache
+     * 
+     * @throws RuntimeException if no configuration for class found
+     * @return array
+     */
+    public function getConfiguration() {
+        $config = array();
+        if (isset($this->_configurations[$this->_entityName])) {
+            $config = $this->_configurations[$this->_entityName];
+        } else {
+            $cacheDriver = $this->_em->getMetadataFactory()->getCacheDriver();
+            if (($cached = $cacheDriver->fetch("{$this->_entityName}\$TREE_CLASSMETADATA")) !== false) {
+                $this->_configurations[$this->_entityName] = $cached;
+                $config = $cached;
+            }
+        }
+        if (!$config) {
+            throw new \RuntimeException("TreeNodeRepository: this repository cannot be used on {$this->_entityName} without Tree metadata");
+        }
+        return $config;
+    }
+    
+    /**
      * Get the edge of tree
      *
-     * @param Configuration $config
+     * @param array $config
      * @return integer
      */
-    protected function _getTreeEdge(Configuration $config)
+    protected function _getTreeEdge($config)
     {
-        $right = $config->getRightField();
-        $q = $this->_em->createQuery("SELECT MAX(node.{$right}) FROM {$this->_entityName} node");
+        $q = $this->_em->createQuery("SELECT MAX(node.{$config['right']}) FROM {$this->_entityName} node");
         $q->useResultCache(false);
         $q->useQueryCache(false);
         $right = $q->getSingleScalarResult();
@@ -566,18 +565,18 @@ class TreeNodeRepository extends EntityRepository
     /**
      * Synchronize the tree with given conditions
      * 
-     * @param Configuration $config
+     * @param array $config
      * @param integer $shift
      * @param string $dir
      * @param string $conditions
      * @param string $field
      * @return void
      */
-    protected function _sync(Configuration $config, $shift, $dir, $conditions, $field = 'both')
+    protected function _sync($config, $shift, $dir, $conditions, $field = 'both')
     {
         if ($field == 'both') {
-            $this->_sync($config, $shift, $dir, $conditions, $config->getLeftField());
-            $field = $config->getRightField();
+            $this->_sync($config, $shift, $dir, $conditions, $config['left']);
+            $field = $config['right'];
         }
         
         $dql = "UPDATE {$this->_entityName} node";
@@ -590,18 +589,18 @@ class TreeNodeRepository extends EntityRepository
     /**
      * Synchronize tree according to Node`s parent Node
      * 
-     * @param Configuration $config
+     * @param array $config
      * @param Node $parent
      * @param Node $node
      * @return void
      */
-    protected function _adjustNodeWithParent(Configuration $config, $parent, Node $node)
+    protected function _adjustNodeWithParent($config, $parent, Node $node)
     {
         $edge = $this->_getTreeEdge($config);
-        $meta = $this->_em->getClassMetadata($this->_entityName);
-        $leftField = $config->getLeftField();
-        $rightField = $config->getRightField();
-        $parentField = $config->getParentField();
+        $meta = $this->getClassMetadata();
+        $leftField = $config['left'];
+        $rightField = $config['right'];
+        $parentField = $config['parent'];
         
         $leftValue = $meta->getReflectionProperty($leftField)->getValue($node);
         $rightValue = $meta->getReflectionProperty($rightField)->getValue($node);

@@ -268,6 +268,12 @@ class TranslationListener implements EventSubscriber
         
         // property annotations
         foreach ($class->getProperties() as $property) {
+            if ($meta->isMappedSuperclass && !$property->isPrivate() ||
+                $meta->isInheritedField($property->name) ||
+                $meta->isInheritedAssociation($property->name)
+            ) {
+                continue;
+            }
             // translatable property
             if ($translatable = $reader->getPropertyAnnotation($property, self::ANNOTATION_TRANSLATABLE)) {
                 $field = $property->getName();

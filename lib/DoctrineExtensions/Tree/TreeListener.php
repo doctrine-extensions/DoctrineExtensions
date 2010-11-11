@@ -6,8 +6,11 @@ use Doctrine\Common\EventSubscriber,
     Doctrine\ORM\Events,
     Doctrine\ORM\Event\LifecycleEventArgs,
     Doctrine\ORM\Event\OnFlushEventArgs,
+    Doctrine\ORM\Event\LoadClassMetadataEventArgs,
     Doctrine\ORM\EntityManager,
-    Doctrine\ORM\Query;
+    Doctrine\ORM\Query,
+    Doctrine\ORM\Mapping\ClassMetadata,
+    Doctrine\Common\Annotations\AnnotationReader;
 
 /**
  * The tree listener handles the synchronization of
@@ -28,6 +31,21 @@ use Doctrine\Common\EventSubscriber,
  */
 class TreeListener implements EventSubscriber
 {
+    /**
+     * Annotation to mark field as one which will store left value
+     */
+    const ANNOTATION_LEFT = 'DoctrineExtensions\Tree\Mapping\Left';
+    
+    /**
+     * Annotation to mark field as one which will store right value
+     */
+    const ANNOTATION_RIGHT = 'DoctrineExtensions\Tree\Mapping\Right';
+    
+    /**
+     * Annotation to mark relative parent field
+     */
+    const ANNOTATION_ANCESTOR = 'DoctrineExtensions\Tree\Mapping\Ancestor';
+    
     /**
      * List of cached entity configurations
      *  
@@ -62,26 +80,15 @@ class TreeListener implements EventSubscriber
     protected $_pendingNodeUpdates = array();
     
     /**
-     * List of valid Node entity classes
+     * List of types which are valid for timestamp
      * 
      * @var array
      */
-    protected $_validatedNodeClasses = array();
-    
-    /**
-     * Get the configuration for entity
-     * 
-     * @param Node $entity
-     * @return Configuration
-     */
-    public function getConfiguration(Node $entity)
-    {
-        $entityClass = get_class($entity);
-        if (!isset($this->_configurations[$entityClass])) {
-            $this->_configurations[$entityClass] = $entity->getTreeConfiguration();
-        }
-        return $this->_configurations[$entityClass];
-    }
+    private $_validTypes = array(
+        'integer',
+        'smallint',
+        'bigint'
+    );
     
     /**
      * Specifies the list of events to listen
@@ -94,12 +101,121 @@ class TreeListener implements EventSubscriber
             Events::prePersist,
             Events::postPersist,
             Events::preRemove,
-            Events::onFlush
+            Events::onFlush,
+            Events::loadClassMetadata
         );
     }
     
     /**
-     * Looks for Node entities being updated
+     * Get the configuration for specific entity class
+     * if cache driver is present it scans it also
+     * 
+     * @param EntityManager $em
+     * @param string $class
+     * @return array
+     */
+    public function getConfiguration(EntityManager $em, $class) {
+        $config = array();
+        if (isset($this->_configurations[$class])) {
+            $config = $this->_configurations[$class];
+        } else {
+            $cacheDriver = $em->getMetadataFactory()->getCacheDriver();
+            if (($cached = $cacheDriver->fetch("{$class}\$TREE_CLASSMETADATA")) !== false) {
+                $this->_configurations[$class] = $cached;
+                $config = $cached;
+            }
+        }
+        return $config;
+    }
+    
+    /**
+     * Scans the entities for Tree annotations
+     * 
+     * @param LoadClassMetadataEventArgs $eventArgs
+     * @return void
+     */
+    public function loadClassMetadata(LoadClassMetadataEventArgs $eventArgs)
+    {
+        if (!method_exists($eventArgs, 'getEntityManager')) {
+            throw new \RuntimeException('Tree: update to latest ORM version, minimal RC1 from github');
+        }
+        $em = $eventArgs->getEntityManager();
+        $cacheDriver = $em->getMetadataFactory()->getCacheDriver();      
+        $meta = $eventArgs->getClassMetadata();
+        
+        $class = $meta->getReflectionClass();
+        require_once __DIR__ . '/Mapping/Annotations.php';
+        $reader = new AnnotationReader();
+        $reader->setAnnotationNamespaceAlias(
+            'DoctrineExtensions\Tree\Mapping\\', 'Tree'
+        );
+    
+        // property annotations
+        foreach ($class->getProperties() as $property) {
+            if ($meta->isMappedSuperclass && !$property->isPrivate() ||
+                $meta->isInheritedField($property->name) ||
+                $meta->isInheritedAssociation($property->name)
+            ) {
+                continue;
+            }
+            // left
+            if ($left = $reader->getPropertyAnnotation($property, self::ANNOTATION_LEFT)) {
+                $field = $property->getName();
+                if (!$meta->hasField($field)) {
+                    throw Exception::fieldMustBeMapped($field, $meta->name);
+                }
+                if (!$this->_isValidField($meta, $field)) {
+                    throw Exception::notValidFieldType($field, $meta->name);
+                }
+                $this->_configurations[$meta->name]['left'] = $field;
+            }
+            if ($right = $reader->getPropertyAnnotation($property, self::ANNOTATION_RIGHT)) {
+                $field = $property->getName();
+                if (!$meta->hasField($field)) {
+                    throw Exception::fieldMustBeMapped($field, $meta->name);
+                }
+                if (!$this->_isValidField($meta, $field)) {
+                    throw Exception::notValidFieldType($field, $meta->name);
+                }
+                $this->_configurations[$meta->name]['right'] = $field;
+            }
+            // ancestor/parent
+            if ($parent = $reader->getPropertyAnnotation($property, self::ANNOTATION_ANCESTOR)) {
+                $field = $property->getName();
+                if (!$meta->isSingleValuedAssociation($field)) {
+                    throw Exception::parentFieldNotMappedOrRelated($field, $meta->name);
+                }
+                $this->_configurations[$meta->name]['parent'] = $field;
+            }
+        }
+        // check if all required metadata is present
+        if (isset($this->_configurations[$meta->name])) {
+            $missingFields = array();
+            if (!isset($this->_configurations[$meta->name]['parent'])) {
+                $missingFields[] = 'ancestor';
+            }
+            if (!isset($this->_configurations[$meta->name]['left'])) {
+                $missingFields[] = 'left';
+            }
+            if (!isset($this->_configurations[$meta->name]['right'])) {
+                $missingFields[] = 'right';
+            }
+            if ($missingFields) {
+                throw Exception::missingMetaProperties($missingFields, $meta->name);
+            }
+        }
+        // store to cache
+        if ($cacheDriver && isset($this->_configurations[$meta->name])) {
+            $cacheDriver->save(
+                "{$meta->name}\$TREE_CLASSMETADATA", 
+                $this->_configurations[$meta->name],
+                null
+            );
+        }
+    }
+    
+    /**
+     * Looks for Tree entities being updated
      * for further processing
      * 
      * @param OnFlushEventArgs $args
@@ -111,16 +227,15 @@ class TreeListener implements EventSubscriber
         $uow = $em->getUnitOfWork();
         // check all scheduled updates for TreeNodes
         foreach ($uow->getScheduledEntityUpdates() as $entity) {
-            if ($entity instanceof Node) {
-                $config = $this->getConfiguration($entity);
-                $meta = $em->getClassMetadata(get_class($entity));
+            $entityClass = get_class($entity);
+            if ($config = $this->getConfiguration($em, $entityClass)) {
+                $meta = $em->getClassMetadata($entityClass);
                 $changeSet = $uow->getEntityChangeSet($entity);
-                if (array_key_exists($config->getParentField(), $changeSet)) {
-                    $this->_validateNodeClass($entity, $em);
+                if (array_key_exists($config['parent'], $changeSet)) {
                     if ($uow->hasPendingInsertions()) {
                         $this->_pendingNodeUpdates[] = $entity;
                     } else {
-                        $parent = $meta->getReflectionProperty($config->getParentField())
+                        $parent = $meta->getReflectionProperty($config['parent'])
                             ->getValue($entity);
                         $this->_adjustNodeWithParent($parent, $entity, $em);
                     }
@@ -141,28 +256,22 @@ class TreeListener implements EventSubscriber
     {
         $em = $args->getEntityManager();
         $entity = $args->getEntity();
+        $entityClass = get_class($entity);
         
-        if ($entity instanceof Node) {
-            $this->_validateNodeClass($entity, $em);
+        if ($config = $this->getConfiguration($em, $entityClass)) {
             $uow = $em->getUnitOfWork();
-            
-            $config = $this->getConfiguration($entity);
-            $entityClass = get_class($entity);
             $meta = $em->getClassMetadata($entityClass);
             
-            $leftValue = $meta->getReflectionProperty($config->getLeftField())
-                ->getValue($entity);
-            $rightValue = $meta->getReflectionProperty($config->getRightField())
-                 ->getValue($entity);
+            $leftValue = $meta->getReflectionProperty($config['left'])->getValue($entity);
+            $rightValue = $meta->getReflectionProperty($config['right'])->getValue($entity);
             
             if (!$leftValue || !$rightValue) {
                 return;
             }
             $diff = $rightValue - $leftValue + 1;
             if ($diff > 2) {
-                $leftField = $config->getLeftField();
                 $dql = "SELECT node FROM {$entityClass} node";
-                $dql .= " WHERE node.{$leftField} BETWEEN :left AND :right";
+                $dql .= " WHERE node.{$config['left']} BETWEEN :left AND :right";
                 $q = $em->createQuery($dql);
                 // get nodes for deletion
                 $q->setParameter('left', $leftValue + 1);
@@ -210,79 +319,46 @@ class TreeListener implements EventSubscriber
     {
         $em = $args->getEntityManager();
         $entity = $args->getEntity();
-        $uow = $em->getUnitOfWork();
+        $entityClass = get_class($entity);
         
-        if ($entity instanceof Node) {
-            $this->_validateNodeClass($entity, $em);
-            $config = $this->getConfiguration($entity);
-            $meta = $em->getClassMetadata(get_class($entity));
-            $parent = $meta->getReflectionProperty($config->getParentField())->getValue($entity);
-            if ($parent === null) { // instanceof Node
+        if ($config = $this->getConfiguration($em, $entityClass)) {
+            $meta = $em->getClassMetadata($entityClass);
+            $parent = $meta->getReflectionProperty($config['parent'])->getValue($entity);
+            if ($parent === null) {
                 $this->_prepareRoot($em, $entity);
             } else {
-                $meta->getReflectionProperty($config->getLeftField())
-                    ->setValue($entity, 0);
-                $meta->getReflectionProperty($config->getRightField())
-                    ->setValue($entity, 0);
+                $meta->getReflectionProperty($config['left'])->setValue($entity, 0);
+                $meta->getReflectionProperty($config['right'])->setValue($entity, 0);
                 $this->_pendingChildNodeInserts[] = $entity;
             }
         }
     }
     
     /**
-     * Validates the given Node entity class
+     * Checks if $field type is valid
      * 
-     * @param Node $entity
-     * @param EntityManager $em
-     * @throws Tree\Exception if configuration is invalid
-     * @return void
+     * @param ClassMetadata $meta
+     * @param string $field
+     * @return boolean
      */
-    protected function _validateNodeClass(Node $entity, EntityManager $em)
+    protected function _isValidField(ClassMetadata $meta, $field)
     {
-        $entityClass = get_class($entity);
-        if (isset($this->_validatedNodeClasses[$entityClass])) {
-            return;
-        }
-        $config = $this->getConfiguration($entity);
-        $meta = $em->getClassMetadata($entityClass);
-        
-        // left field
-        if (!isset($meta->reflFields[$config->getLeftField()])) {
-            throw Exception::cannotFindLeftField($config->getLeftField(), $entityClass);
-        }
-        
-        // right field
-        if (!isset($meta->reflFields[$config->getRightField()])) {
-            throw Exception::cannotFindRightField($config->getRightField(), $entityClass);
-        }
-        
-        // parent field
-        $parent = $config->getParentField();
-        if (!isset($meta->reflFields[$parent])) {
-            throw Exception::cannotFindParentField($parent, $entityClass);
-        }
-        
-        if (!isset($meta->associationMappings[$parent]) ||
-            $meta->associationMappings[$parent]['targetEntity'] != $entityClass
-        ) {
-            throw Exception::parentFieldNotRelated($parent, $entityClass);
-        }
-        
-        $this->_validatedNodeClasses[$entityClass] = null;
+        return in_array($meta->getTypeOfField($field), $this->_validTypes);
     }
     
     /**
      * Synchronize tree with Node parent
      * 
      * @param EntityManager $em
-     * @param Node $entity
+     * @param object $entity
      * @return void
      */
-    private function _processPendingNode(EntityManager $em, Node $entity)
+    private function _processPendingNode(EntityManager $em, $entity)
     {
-        $config = $this->getConfiguration($entity);
-        $meta = $em->getClassMetadata(get_class($entity));
-        $parent = $meta->getReflectionProperty($config->getParentField())->getValue($entity);
+        $entityClass = get_class($entity);
+        $config = $this->getConfiguration($em, $entityClass);
+        $meta = $em->getClassMetadata($entityClass);
+        $parent = $meta->getReflectionProperty($config['parent'])->getValue($entity);
         $this->_adjustNodeWithParent($parent, $entity, $em);
     }
     
@@ -290,20 +366,19 @@ class TreeListener implements EventSubscriber
      * If Node does not have parent set it as root
      * 
      * @param EntityManager $em
-     * @param Node $entity
+     * @param object $entity
      * @return void
      */
-    private function _prepareRoot(EntityManager $em, Node $entity)
+    private function _prepareRoot(EntityManager $em, $entity)
     {
-        $config = $this->getConfiguration($entity);
-        $edge = $this->_treeEdge ?: $this->_getTreeEdge($em, $entity);
-        $meta = $em->getClassMetadata(get_class($entity));
+        $entityClass = get_class($entity);
+        $config = $this->getConfiguration($em, $entityClass);
         
-        $meta->getReflectionProperty($config->getLeftField())
-            ->setValue($entity, $edge + 1);
-            
-        $meta->getReflectionProperty($config->getRightField())
-            ->setValue($entity, $edge + 2);
+        $edge = $this->_treeEdge ?: $this->_getTreeEdge($em, $entity);
+        $meta = $em->getClassMetadata($entityClass);
+        
+        $meta->getReflectionProperty($config['left'])->setValue($entity, $edge + 1);
+        $meta->getReflectionProperty($config['right'])->setValue($entity, $edge + 2);
             
         $this->_treeEdge = $edge + 2;
     }
@@ -312,36 +387,37 @@ class TreeListener implements EventSubscriber
      * Synchronize tree according to Node`s parent Node
      * 
      * @param Node $parent
-     * @param Node $entity
+     * @param object $entity
      * @param EntityManager $em
      * @return void
      */
-    private function _adjustNodeWithParent($parent, Node $entity, EntityManager $em)
+    private function _adjustNodeWithParent($parent, $entity, EntityManager $em)
     {
-        $config = $this->getConfiguration($entity);
+        $entityClass = get_class($entity);
+        $config = $this->getConfiguration($em, $entityClass);
         $edge = $this->_getTreeEdge($em, $entity);
-        $meta = $em->getClassMetadata(get_class($entity));
-        $leftValue = $meta->getReflectionProperty($config->getLeftField())->getValue($entity);
-        $rightValue = $meta->getReflectionProperty($config->getRightField())->getValue($entity);
+        $meta = $em->getClassMetadata($entityClass);
+        
+        $leftValue = $meta->getReflectionProperty($config['left'])->getValue($entity);
+        $rightValue = $meta->getReflectionProperty($config['right'])->getValue($entity);
         if ($parent === null) {
             $this->_sync($em, $entity, $edge - $leftValue + 1, '+', 'BETWEEN ' . $leftValue . ' AND ' . $rightValue);
             $this->_sync($em, $entity, $rightValue - $leftValue + 1, '-', '> ' . $leftValue);
         } else {
             // need to refresh the parent to get up to date left and right
             $em->refresh($parent);
-            $parentLeftValue = $meta->getReflectionProperty($config->getLeftField())->getValue($parent);
-            $parentRightValue = $meta->getReflectionProperty($config->getRightField())->getValue($parent);
+            $parentLeftValue = $meta->getReflectionProperty($config['left'])->getValue($parent);
+            $parentRightValue = $meta->getReflectionProperty($config['right'])->getValue($parent);
             if ($leftValue < $parentLeftValue && $parentRightValue < $rightValue) {
                 return;
             }
             if (empty($leftValue) && empty($rightValue)) {
                 $this->_sync($em, $entity, 2, '+', '>= ' . $parentRightValue);
-                $entityClass = get_class($entity);
                 // cannot schedule this update if other Nodes pending
                 $qb = $em->createQueryBuilder();
                 $qb->update($entityClass, 'node')
-                    ->set('node.' . $config->getLeftField(), $parentRightValue)
-                    ->set('node.' . $config->getRightField(), $parentRightValue + 1);
+                    ->set('node.' . $config['left'], $parentRightValue)
+                    ->set('node.' . $config['right'], $parentRightValue + 1);
                 $entityIdentifiers = $meta->getIdentifierValues($entity);
                 foreach ($entityIdentifiers as $field => $value) {
                     if (strlen($value)) {
@@ -375,42 +451,42 @@ class TreeListener implements EventSubscriber
      * Synchronize the tree with given conditions
      * 
      * @param EntityManager $em
-     * @param Node $entity
+     * @param object $entity
      * @param integer $shift
      * @param string $dir
      * @param string $conditions
      * @param string $field
      * @return void
      */
-    private function _sync(EntityManager $em, Node $entity, $shift, $dir, $conditions, $field = 'both')
+    private function _sync(EntityManager $em, $entity, $shift, $dir, $conditions, $field = 'both')
     {
-        $config = $this->getConfiguration($entity);
-        if ($field == 'both') {
-            $this->_sync($em, $entity, $shift, $dir, $conditions, $config->getLeftField());
-            $field = $config->getRightField();
-        }
         $entityClass = get_class($entity);
+        $config = $this->getConfiguration($em, $entityClass);
+        if ($field == 'both') {
+            $this->_sync($em, $entity, $shift, $dir, $conditions, $config['left']);
+            $field = $config['right'];
+        }
         
         $dql = "UPDATE {$entityClass} node";
         $dql .= " SET node.{$field} = node.{$field} {$dir} {$shift}";
         $dql .= " WHERE node.{$field} {$conditions}";
-        $query = $em->createQuery($dql);
-        return $query->getSingleScalarResult();
+        $q = $em->createQuery($dql);
+        return $q->getSingleScalarResult();
     }
     
     /**
      * Get the edge of tree
      * 
      * @param EntityManager $em
-     * @param Node $entity
+     * @param object $entity
      * @return integer
      */
-    private function _getTreeEdge(EntityManager $em, Node $entity)
+    private function _getTreeEdge(EntityManager $em, $entity)
     {
-        $config = $this->getConfiguration($entity);
         $entityClass = get_class($entity);
-        $right = $config->getRightField();
-        $query = $em->createQuery("SELECT MAX(node.{$right}) FROM {$entityClass} node");
+        $config = $this->getConfiguration($em, $entityClass);
+        
+        $query = $em->createQuery("SELECT MAX(node.{$config['right']}) FROM {$entityClass} node");
         $right = $query->getSingleScalarResult();
         return intval($right);
     }

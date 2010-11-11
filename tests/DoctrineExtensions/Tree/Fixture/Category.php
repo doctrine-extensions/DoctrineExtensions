@@ -2,8 +2,7 @@
 
 namespace Tree\Fixture;
 
-use DoctrineExtensions\Tree\Node,
-    DoctrineExtensions\Tree\Configuration;
+use DoctrineExtensions\Tree\Node;
 
 /**
  * @Entity(repositoryClass="DoctrineExtensions\Tree\Repository\TreeNodeRepository")
@@ -23,16 +22,19 @@ class Category implements Node
     private $title;
 
     /**
+     * @Tree:Left
      * @Column(name="lft", type="integer")
      */
     private $lft;
     
     /**
+     * @Tree:Right
      * @Column(name="rgt", type="integer")
      */
     private $rgt;
     
     /**
+     * @Tree:Ancestor
      * @ManyToOne(targetEntity="Tree\Fixture\Category", inversedBy="children")
      */
     private $parent;
@@ -70,10 +72,5 @@ class Category implements Node
     public function getParent()
     {
         return $this->parent;    
-    }
-    
-    public function getTreeConfiguration()
-    {
-        return new Configuration();
     }
 }

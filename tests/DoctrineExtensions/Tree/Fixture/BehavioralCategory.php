@@ -2,14 +2,10 @@
 
 namespace Tree\Fixture;
 
-use DoctrineExtensions\Tree\Node,
-    DoctrineExtensions\Tree\Configuration as TreeConfiguration,
-    DoctrineExtensions\Translatable\Translatable;
-
 /**
  * @Entity(repositoryClass="Tree\Fixture\Repository\BehavioralCategoryRepository")
  */
-class BehavioralCategory implements Node
+class BehavioralCategory
 {
     /**
      * @Column(name="id", type="integer")
@@ -26,16 +22,19 @@ class BehavioralCategory implements Node
     private $title;
 
     /**
+     * @Tree:Left
      * @Column(name="lft", type="integer", nullable=true)
      */
     private $lft;
     
     /**
+     * @Tree:Right
      * @Column(name="rgt", type="integer", nullable=true)
      */
     private $rgt;
     
     /**
+     * @Tree:Ancestor
      * @ManyToOne(targetEntity="Tree\Fixture\BehavioralCategory", inversedBy="children")
      */
     private $parent;
@@ -80,10 +79,5 @@ class BehavioralCategory implements Node
     public function getParent()
     {
         return $this->parent;    
-    }
-    
-    public function getTreeConfiguration()
-    {
-        return new TreeConfiguration();
     }
 }

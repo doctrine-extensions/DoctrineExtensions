@@ -124,6 +124,12 @@ class SluggableListener implements EventSubscriber
         $class = $meta->getReflectionClass();        
         // property annotations
         foreach ($class->getProperties() as $property) {
+            if ($meta->isMappedSuperclass && !$property->isPrivate() ||
+                $meta->isInheritedField($property->name) ||
+                $meta->isInheritedAssociation($property->name)
+            ) {
+                continue;
+            }
             // sluggable property
             if ($sluggable = $reader->getPropertyAnnotation($property, self::ANNOTATION_SLUGGABLE)) {
                 $field = $property->getName();
