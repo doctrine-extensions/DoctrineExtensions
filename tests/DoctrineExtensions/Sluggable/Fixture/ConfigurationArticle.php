@@ -13,19 +13,19 @@ class ConfigurationArticle implements Sluggable
     private $id;
 
     /**
-     * @Sluggable
+     * @Sluggable:Field
      * @Column(name="title", type="string", length=64)
      */
     private $title;
 
     /**
-     * @Sluggable
+     * @Sluggable:Field
      * @Column(name="code", type="string", length=16)
      */
     private $code;
     
     /**
-     * @Slug(updatable=false, unique=false)
+     * @Sluggable:Slug(updatable=false, unique=false)
      * @Column(name="slug", type="string", length=32)
      */
     private $slug;

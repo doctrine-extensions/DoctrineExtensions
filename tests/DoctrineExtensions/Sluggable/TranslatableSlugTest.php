@@ -173,22 +173,22 @@ class TranslatableArticle implements Sluggable, Translatable
     private $id;
 
     /**
-     * @Translatable
-     * @Sluggable
+     * @Translatable:Field
+     * @Sluggable:Field
      * @Column(name="title", type="string", length=64)
      */
     private $title;
 
     /**
-     * @Translatable
-     * @Sluggable
+     * @Translatable:Field
+     * @Sluggable:Field
      * @Column(name="code", type="string", length=16)
      */
     private $code;
     
     /**
-     * @Translatable
-     * @Slug
+     * @Translatable:Field
+     * @Sluggable:Slug
      * @Column(name="slug", type="string", length=128)
      */
     private $slug;
@@ -204,7 +204,7 @@ class TranslatableArticle implements Sluggable, Translatable
     private $page;
     
     /**
-     * @Locale
+     * @Translatable:Locale
      * Used locale to override Translation listener`s locale
      */
     private $locale;
@@ -309,13 +309,13 @@ class Page
     private $id;
 
     /**
-     * @Sluggable
+     * @Sluggable:Field
      * @Column(name="content", type="string", length=255)
      */
     private $content;
     
     /**
-     * @Slug(style="camel", separator="_")
+     * @Sluggable:Slug(style="camel", separator="_")
      * @Column(name="slug", type="string", length=128)
      */
     private $slug;

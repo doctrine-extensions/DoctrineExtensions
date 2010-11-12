@@ -18,7 +18,21 @@ interface Translatable
 {
     // use now annotations instead of predifined methods, this interface is not necessary
     
-    // to mark the field as translatable use property annotation @Translatable
-    // to specify custom translation class use class annotation @TranslationEntity(class="your\class")
-    // to mark the field as locale used to override global use property annotation @Locale or @Language
+    /**
+     * @Translatable:Entity
+     * to specify custom translation class use 
+     * class annotation @Translatable:Entity(class="your\class")
+     */
+    
+    /**
+     * @Translatable:Field
+     * to mark the field as translatable, 
+     * these fields will be translated
+     */
+    
+    /**
+     * @Translatable:Locale OR @Translatable:Language
+     * to mark the field as locale used to override global
+     * locale settings from TranslationListener
+     */
 }

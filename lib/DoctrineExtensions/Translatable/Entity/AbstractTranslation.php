@@ -3,11 +3,11 @@
 namespace DoctrineExtensions\Translatable\Entity;
 
 /**
-* DoctrineExtensions\Translatable\Entity\TranslationTemplate
+* DoctrineExtensions\Translatable\Entity\AbstractTranslation
 *
 * @MappedSuperclass
 */
-class TranslationTemplate
+abstract class AbstractTranslation
 {
     /**
      * @var integer $id

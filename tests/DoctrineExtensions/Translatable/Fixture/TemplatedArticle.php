@@ -17,7 +17,7 @@ class TemplatedArticle extends ArticleTemplate
     private $id;
     
     /**
-     * @Translatable
+     * @Translatable:Field
      * @Column(type="string", length=128)
      */
     private $name;

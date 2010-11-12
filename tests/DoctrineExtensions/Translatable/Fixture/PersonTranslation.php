@@ -2,7 +2,7 @@
 
 namespace Translatable\Fixture;
 
-use DoctrineExtensions\Translatable\Entity\TranslationTemplate;
+use DoctrineExtensions\Translatable\Entity\AbstractTranslation;
 
 /**
  * @Table(name="person_translations", indexes={
@@ -10,7 +10,7 @@ use DoctrineExtensions\Translatable\Entity\TranslationTemplate;
  * })
  * @Entity(repositoryClass="DoctrineExtensions\Translatable\Repository\TranslationRepository")
  */
-class PersonTranslation extends TranslationTemplate
+class PersonTranslation extends AbstractTranslation
 {
     
 }

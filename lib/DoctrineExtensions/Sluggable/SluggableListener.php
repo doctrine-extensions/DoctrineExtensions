@@ -30,7 +30,7 @@ class SluggableListener implements EventSubscriber
     /**
      * Annotation to mark field as sluggable and include it in slug building
      */
-    const ANNOTATION_SLUGGABLE = 'DoctrineExtensions\Sluggable\Mapping\Sluggable';
+    const ANNOTATION_FIELD = 'DoctrineExtensions\Sluggable\Mapping\Field';
     
     /**
      * Annotation to identify field as one which holds the slug
@@ -109,7 +109,7 @@ class SluggableListener implements EventSubscriber
     public function loadClassMetadata(LoadClassMetadataEventArgs $eventArgs)
     {
         if (!method_exists($eventArgs, 'getEntityManager')) {
-            throw new \RuntimeException('SluggableListener: update to latest ORM version, minimal RC1 from github');
+            throw new \RuntimeException('Sluggable: update to latest ORM version, minimal RC1 from github');
         }
         $em = $eventArgs->getEntityManager();
         $cacheDriver = $em->getMetadataFactory()->getCacheDriver();      
@@ -117,8 +117,8 @@ class SluggableListener implements EventSubscriber
         
         require_once __DIR__ . '/Mapping/Annotations.php';
         $reader = new AnnotationReader();
-        $reader->setDefaultAnnotationNamespace(
-            'DoctrineExtensions\Sluggable\Mapping\\'
+        $reader->setAnnotationNamespaceAlias(
+            'DoctrineExtensions\Sluggable\Mapping\\', 'Sluggable'
         );
     
         $class = $meta->getReflectionClass();        
@@ -131,7 +131,7 @@ class SluggableListener implements EventSubscriber
                 continue;
             }
             // sluggable property
-            if ($sluggable = $reader->getPropertyAnnotation($property, self::ANNOTATION_SLUGGABLE)) {
+            if ($sluggable = $reader->getPropertyAnnotation($property, self::ANNOTATION_FIELD)) {
                 $field = $property->getName();
                 if (!$meta->hasField($field)) {
                     throw Exception::fieldMustBeMapped($field, $meta->name);

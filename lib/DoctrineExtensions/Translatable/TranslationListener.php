@@ -42,12 +42,12 @@ class TranslationListener implements EventSubscriber
     /**
      * Annotation to identity translation entity to be used for translation storage
      */
-    const ANNOTATION_ENTITY_CLASS = 'DoctrineExtensions\Translatable\Mapping\TranslationEntity';
+    const ANNOTATION_ENTITY_CLASS = 'DoctrineExtensions\Translatable\Mapping\Entity';
     
     /**
      * Annotation to identify field as translatable 
      */
-    const ANNOTATION_TRANSLATABLE = 'DoctrineExtensions\Translatable\Mapping\Translatable';
+    const ANNOTATION_FIELD = 'DoctrineExtensions\Translatable\Mapping\Field';
     
     /**
      * Annotation to identify field which can store used locale or language
@@ -243,7 +243,7 @@ class TranslationListener implements EventSubscriber
     public function loadClassMetadata(LoadClassMetadataEventArgs $eventArgs)
     {
         if (!method_exists($eventArgs, 'getEntityManager')) {
-            throw new \RuntimeException('TranslatableListener: update to latest ORM version, minimal RC1 from github');
+            throw new \RuntimeException('Translatable: update to latest ORM version, minimal RC1 from github');
         }
         $em = $eventArgs->getEntityManager();
         $cacheDriver = $em->getMetadataFactory()->getCacheDriver();      
@@ -251,8 +251,8 @@ class TranslationListener implements EventSubscriber
         
         require_once __DIR__ . '/Mapping/Annotations.php';
         $reader = new AnnotationReader();
-        $reader->setDefaultAnnotationNamespace(
-            'DoctrineExtensions\Translatable\Mapping\\'
+        $reader->setAnnotationNamespaceAlias(
+            'DoctrineExtensions\Translatable\Mapping\\', 'Translatable'
         );
     
         $class = $meta->getReflectionClass();
@@ -275,7 +275,7 @@ class TranslationListener implements EventSubscriber
                 continue;
             }
             // translatable property
-            if ($translatable = $reader->getPropertyAnnotation($property, self::ANNOTATION_TRANSLATABLE)) {
+            if ($translatable = $reader->getPropertyAnnotation($property, self::ANNOTATION_FIELD)) {
                 $field = $property->getName();
                 if (!$meta->hasField($field)) {
                     throw Exception::fieldMustBeMapped($field, $meta->name);

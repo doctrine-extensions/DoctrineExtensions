@@ -14,9 +14,9 @@ use Doctrine\Common\Annotations\Annotation;
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-final class Translatable extends Annotation {}
+final class Field extends Annotation {}
 final class Locale extends Annotation {}
 final class Language extends Annotation {}
-final class TranslationEntity extends Annotation {
+final class Entity extends Annotation {
     public $class;
 }

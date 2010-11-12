@@ -11,13 +11,13 @@ class Comment
     private $id;
 
     /**
-     * @Translatable
+     * @Translatable:Field
      * @Column(name="subject", type="string", length=128)
      */
     private $subject;
 
     /**
-     * @Translatable
+     * @Translatable:Field
      * @Column(name="message", type="text")
      */
     private $message;
@@ -29,7 +29,7 @@ class Comment
     
     /**
      * Used locale to override Translation listener`s locale
-     * @Language
+     * @Translatable:Language
      */
     private $locale;
 

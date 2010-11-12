@@ -8,20 +8,20 @@ namespace Translatable\Fixture\Template;
 class ArticleTemplate
 {
     /**
-     * @Translatable
+     * @Translatable:Field
      * @Column(name="title", type="string", length=128)
      */
     protected $title;
 
     /**
-     * @Translatable
+     * @Translatable:Field
      * @Column(name="content", type="text")
      */
     protected $content;
     
     /**
      * Used locale to override Translation listener`s locale
-     * @Locale
+     * @Translatable:Locale
      */
     protected $locale;
     

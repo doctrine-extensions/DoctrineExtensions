@@ -18,11 +18,13 @@ interface Sluggable
     // use now annotations instead of predifined methods, this interface is not necessary
     
     /**
-     * to mark the field as sluggable use property annotation @Sluggable this field will be included in slug
+     * @Sluggable:Field
+     * to mark the field as sluggable use property annotation @Sluggable:Field
+     * this field will be included in slug
      */
     
     /**
-     * to mark property which will hold slug use annotation @Slug
+     * @Sluggable:Slug - to mark property which will hold slug use annotation @Sluggable:Slug
      * available options:
      *         updatable (optional, default=true) - true to update the slug on sluggable field changes, false - otherwise
      *         unique (optional, default=true) - true if slug should be unique and if identical it will be prefixed, false - otherwise
@@ -31,7 +33,7 @@ interface Sluggable
      * 
      * example:
      * 
-     * @Slug(style="camel", separator="_", updatable=false, unique=false)
+     * @Sluggable:Slug(style="camel", separator="_", updatable=false, unique=false)
      * $property
      */
 }

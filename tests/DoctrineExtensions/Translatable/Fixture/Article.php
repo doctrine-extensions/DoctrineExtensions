@@ -13,20 +13,20 @@ class Article implements Translatable
     private $id;
 
     /**
-     * @Translatable
+     * @Translatable:Field
      * @Column(name="title", type="string", length=128)
      */
     private $title;
 
     /**
-     * @Translatable
+     * @Translatable:Field
      * @Column(name="content", type="text")
      */
     private $content;
     
     /**
      * Used locale to override Translation listener`s locale
-     * @Locale
+     * @Translatable:Locale
      */
     private $locale;
     

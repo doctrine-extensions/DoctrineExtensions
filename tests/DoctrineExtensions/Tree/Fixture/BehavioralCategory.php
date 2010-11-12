@@ -15,8 +15,8 @@ class BehavioralCategory
     private $id;
 
     /**
-     * @Translatable
-     * @Sluggable
+     * @Translatable:Field
+     * @Sluggable:Field
      * @Column(name="title", type="string", length=64)
      */
     private $title;
@@ -45,8 +45,8 @@ class BehavioralCategory
     private $children;
     
     /**
-     * @Translatable
-     * @Slug
+     * @Translatable:Field
+     * @Sluggable:Slug
      * @Column(name="slug", type="string", length=128)
      */
     private $slug;

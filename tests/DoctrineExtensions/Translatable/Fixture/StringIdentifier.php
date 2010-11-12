@@ -14,14 +14,14 @@ class StringIdentifier
     private $uid;
 
     /**
-     * @Translatable
+     * @Translatable:Field
      * @Column(name="title", type="string", length=128)
      */
     private $title;
     
     /**
      * Used locale to override Translation listener`s locale
-     * @Locale
+     * @Translatable:Locale
      */
     private $locale;
 

@@ -17,15 +17,27 @@ interface Timestampable
 {
     // timestampable expects annotations on properties
     
-    // Timestampable:OnCreate - dates which should be updated on creation
-    // Timestampable:OnUpdate - dates which should be updated on update
-    // Timestampable:OnChange(field="field", value="value") - dates which should be updated on changed property to value
+    /**
+     * @Timestampable:OnCreate
+     * dates which should be updated on insert only
+     */
+    
+    /**
+     * @Timestampable:OnUpdate
+     * dates which should be updated on update and insert
+     */
+    
+    /**
+     * @Timestampable:OnChange(field="field", value="value")
+     * dates which should be updated on changed "property" 
+     * value and become equal to given "value"
+     */
     
     /**
      * example
      * 
      * @Timestampable:OnCreate
      * @Column(type="date")
+     * $created
      */
-    //$created
 }

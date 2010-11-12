@@ -4,7 +4,7 @@ namespace Translatable\Fixture;
 
 /**
  * @Entity
- * @TranslationEntity(class="Translatable\Fixture\PersonTranslation")
+ * @Translatable:Entity(class="Translatable\Fixture\PersonTranslation")
  */
 class Person
 {
@@ -16,7 +16,7 @@ class Person
     private $id;
 
     /**
-     * @Translatable
+     * @Translatable:Field
      * @Column(name="name", type="string", length=128)
      */
     private $name;

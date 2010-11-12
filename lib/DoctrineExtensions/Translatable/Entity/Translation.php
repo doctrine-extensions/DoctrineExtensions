@@ -10,9 +10,9 @@ namespace DoctrineExtensions\Translatable\Entity;
  * })
  * @Entity(repositoryClass="DoctrineExtensions\Translatable\Repository\TranslationRepository")
  */
-class Translation extends TranslationTemplate
+class Translation extends AbstractTranslation
 {
     /**
-     * All required columns are mapped through inhered superclass
+     * All required columns are mapped through inherited superclass
      */
 }
