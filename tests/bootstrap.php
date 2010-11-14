@@ -8,7 +8,7 @@
  *      /Common
  * 
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @package DoctrineExtensions.Translatable
+ * @package Gedmo.Tests
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
@@ -39,5 +39,5 @@ require_once $classLoaderFile;
 $classLoader = new Doctrine\Common\ClassLoader('Doctrine');
 $classLoader->register();
       
-$classLoader = new Doctrine\Common\ClassLoader('DoctrineExtensions', __DIR__ . '/../lib');
+$classLoader = new Doctrine\Common\ClassLoader('Gedmo', __DIR__ . '/../lib');
 $classLoader->register();

@@ -2,16 +2,16 @@
 <phpunit bootstrap="./bootstrap.php">
     <testsuites>
         <testsuite name="Translatable Extension">
-            <directory suffix=".php">./DoctrineExtensions/Translatable/</directory>
+            <directory suffix=".php">./Gedmo/Translatable/</directory>
         </testsuite>
         <testsuite name="Sluggable Extension">
-            <directory suffix=".php">./DoctrineExtensions/Sluggable/</directory>
+            <directory suffix=".php">./Gedmo/Sluggable/</directory>
         </testsuite>
         <testsuite name="Tree Extension">
-            <directory suffix=".php">./DoctrineExtensions/Tree/</directory>
+            <directory suffix=".php">./Gedmo/Tree/</directory>
         </testsuite>
         <testsuite name="Timestampable Extension">
-            <directory suffix=".php">./DoctrineExtensions/Timestampable/</directory>
+            <directory suffix=".php">./Gedmo/Timestampable/</directory>
         </testsuite>
     </testsuites>
     <php>
