@@ -13,6 +13,8 @@ records being flushed in the behavioral way. List of extensions:
 All these extensions can be nested together. And most allready use only annotations without interface requirement
 to not to aggregate the entity itself and has implemented proper caching for metadata.
 
+There is a post introducing to these extensions on [doctrine project](http://www.doctrine-project.org/blog/doctrine2-behavioral-extensions "Doctrine2 behavior extensions")
+
 You can test these extensions on [my blog](http://gediminasm.org/test/ "Test doctrine behavior extensions").
 
 All tutorials for basic usage examples are on [my blog](http://gediminasm.org "Tutorials for extensions") also.
