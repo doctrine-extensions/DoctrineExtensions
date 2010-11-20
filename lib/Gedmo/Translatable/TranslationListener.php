@@ -190,7 +190,7 @@ class TranslationListener implements EventSubscriber
     {
         return isset($this->_configurations[$class]['translationClass']) ?
             $this->_configurations[$class]['translationClass'] : 
-            self::$this->_defaultTranslationEntity;
+            $this->_defaultTranslationEntity;
     }
     
     /**
