@@ -40,11 +40,6 @@ class TranslationListener implements EventSubscriber
     const ANNOTATION_NAMESPACE = 'gedmo';
     
     /**
-     * The translation entity class used to store the translations
-     */
-    const TRANSLATION_ENTITY_CLASS = 'Gedmo\Translatable\Entity\Translation';
-    
-    /**
      * Annotation to identity translation entity to be used for translation storage
      */
     const ANNOTATION_ENTITY_CLASS = 'Gedmo\Translatable\Mapping\TranslationEntity';
@@ -66,6 +61,12 @@ class TranslationListener implements EventSubscriber
      */
     const ANNOTATION_LANGUAGE = 'Gedmo\Translatable\Mapping\Language';
     
+    /**
+     * The translation entity class used to store the translations
+     * 
+     * @var string 
+     */
+    protected $_defaultTranslationEntity = 'Gedmo\Translatable\Entity\Translation';
     
     /**
      * Locale which is set on this listener.
@@ -189,7 +190,7 @@ class TranslationListener implements EventSubscriber
     {
         return isset($this->_configurations[$class]['translationClass']) ?
             $this->_configurations[$class]['translationClass'] : 
-            self::TRANSLATION_ENTITY_CLASS;
+            self::$this->_defaultTranslationEntity;
     }
     
     /**
