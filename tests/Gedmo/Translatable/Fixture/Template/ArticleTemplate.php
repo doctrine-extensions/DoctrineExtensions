@@ -11,13 +11,13 @@ class ArticleTemplate
      * @gedmo:Translatable
      * @Column(name="title", type="string", length=128)
      */
-    protected $title;
+    private $title;
 
     /**
      * @gedmo:Translatable
      * @Column(name="content", type="text")
      */
-    protected $content;
+    private $content;
     
     /**
      * Used locale to override Translation listener`s locale

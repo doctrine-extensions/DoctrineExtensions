@@ -17,6 +17,8 @@ class InheritanceTest extends \PHPUnit_Framework_TestCase
 {
     const TEST_ENTITY_CLASS = 'Translatable\Fixture\TemplatedArticle';
     const TRANSLATION_CLASS = 'Gedmo\Translatable\Entity\Translation';
+    const TEST_FILE_CLASS = 'Translatable\Fixture\File';
+    const TEST_IMAGE_CLASS = 'Translatable\Fixture\Image';
     
     private $translatableListener;
     private $em;
@@ -50,7 +52,9 @@ class InheritanceTest extends \PHPUnit_Framework_TestCase
         $schemaTool->dropSchema(array());
         $schemaTool->createSchema(array(
             $this->em->getClassMetadata(self::TEST_ENTITY_CLASS),
-            $this->em->getClassMetadata(self::TRANSLATION_CLASS)
+            $this->em->getClassMetadata(self::TRANSLATION_CLASS),
+            $this->em->getClassMetadata(self::TEST_FILE_CLASS),
+            $this->em->getClassMetadata(self::TEST_IMAGE_CLASS)
         ));
     }
     
@@ -106,5 +110,69 @@ class InheritanceTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('content in de', $translations['de_de']['content']);
         
         $this->translatableListener->setTranslatableLocale('en_us');
+    }
+    
+    public function testInheritedTable()
+    {
+        $file = new \Translatable\Fixture\File;
+        $file->setSize(500);
+        $file->setName('file en');
+        
+        $image = new \Translatable\Fixture\Image;
+        $image->setMime('mime en');
+        $image->setName('image en');
+        $image->setSize(445);
+        
+        $this->em->persist($file);
+        $this->em->persist($image);
+        $this->em->flush();
+        $this->em->clear();
+        
+        $this->translatableListener->setTranslatableLocale('de_de');
+        $file = $this->em->getRepository(self::TEST_FILE_CLASS)->findOneByName('file en');
+        $file->setName('file de');
+        
+        $image = $this->em->getRepository(self::TEST_IMAGE_CLASS)->findOneByName('image en');
+        $image->setName('image de');
+        $image->setMime('mime de');
+        
+        $this->em->persist($file);
+        $this->em->persist($image);
+        $this->em->flush();
+        $this->em->clear();
+        $this->translatableListener->setTranslatableLocale('en_us');
+        
+        $repo = $this->em->getRepository(self::TRANSLATION_CLASS);
+        $this->assertTrue($repo instanceof Repository\TranslationRepository);
+        
+        $translations = $repo->findTranslations($file);
+        $this->assertEquals(2, count($translations));
+        
+        $this->assertArrayHasKey('de_de', $translations);
+        
+        $this->assertArrayHasKey('name', $translations['de_de']);
+        $this->assertEquals('file de', $translations['de_de']['name']);
+        
+        $this->assertArrayHasKey('en_us', $translations);
+        
+        $this->assertArrayHasKey('name', $translations['en_us']);
+        $this->assertEquals('file en', $translations['en_us']['name']);
+        
+        $translations = $repo->findTranslations($image);
+        $this->assertEquals(2, count($translations));
+        
+        $this->assertArrayHasKey('de_de', $translations);
+        
+        $this->assertArrayHasKey('name', $translations['de_de']);
+        $this->assertEquals('image de', $translations['de_de']['name']);
+        $this->assertArrayHasKey('mime', $translations['de_de']);
+        $this->assertEquals('mime de', $translations['de_de']['mime']);
+        
+        $this->assertArrayHasKey('en_us', $translations);
+        
+        $this->assertArrayHasKey('name', $translations['en_us']);
+        $this->assertEquals('image en', $translations['en_us']['name']);
+        $this->assertArrayHasKey('mime', $translations['en_us']);
+        $this->assertEquals('mime en', $translations['en_us']['mime']);
     }
 }
