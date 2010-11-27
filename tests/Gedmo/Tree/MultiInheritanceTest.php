@@ -40,8 +40,12 @@ class MultiInheritanceTest extends \PHPUnit_Framework_TestCase
         //$config->setSQLLogger(new \Doctrine\DBAL\Logging\EchoSQLLogger());
         
         $evm = new \Doctrine\Common\EventManager();
-        $treeListener = new TreeListener();
-        $evm->addEventSubscriber($treeListener);
+        $evm->addEventSubscriber(new \Gedmo\Timestampable\TimestampableListener());
+        $evm->addEventSubscriber(new \Gedmo\Sluggable\SluggableListener());
+        $evm->addEventSubscriber(new \Gedmo\Tree\TreeListener());
+        $translationListener = new \Gedmo\Translatable\TranslationListener();
+        $translationListener->setTranslatableLocale('en_us');
+        $evm->addEventSubscriber($translationListener);
         $this->em = \Doctrine\ORM\EntityManager::create($conn, $config, $evm);
 
         $schemaTool = new \Doctrine\ORM\Tools\SchemaTool($this->em);
@@ -57,8 +61,24 @@ class MultiInheritanceTest extends \PHPUnit_Framework_TestCase
     }
     
     public function testInheritance()
-    {        
+    {
+        $meta = $this->em->getClassMetadata(self::TEST_ENTITY_CLASS);
+        $repo = $this->em->getRepository(self::TEST_ENTITY_CLASS);
         
+        $food = $repo->findOneByIdentifier('food');
+        $left = $meta->getReflectionProperty('lft')->getValue($food);
+        $right = $meta->getReflectionProperty('rgt')->getValue($food);
+        
+        $this->assertEquals(1, $left);
+        $this->assertTrue($food->getCreated() !== null);
+        $this->assertTrue($food->getUpdated() !== null);
+        
+        $translationRepo = $this->em->getRepository(self::TEST_ENTITY_TRANSLATION);
+        $translations = $translationRepo->findTranslations($food);
+        
+        $this->assertEquals(1, count($translations));
+        $this->assertEquals('food', $food->getSlug());
+        $this->assertEquals(2, count($translations['en_us']));
     }
     
     private function _populate()

@@ -20,7 +20,7 @@ class Exception extends \Exception
     
     static public function missingMetaProperties($fields, $class)
     {
-        return new self("Tree: has detected missing properties: " . explode(', ', $fields) . " in class - {$class}");
+        return new self("Tree: has detected missing properties: " . implode(', ', $fields) . " in class - {$class}");
     }
     
     static public function notValidFieldType($field, $class)
