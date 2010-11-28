@@ -249,7 +249,13 @@ class TimestampableListener implements EventSubscriber
     
         $class = $meta->getReflectionClass();
         // property annotations
-        foreach ($class->getProperties() as $property) {            
+        foreach ($class->getProperties() as $property) {
+            if ($meta->isMappedSuperclass && !$property->isPrivate() ||
+                $meta->isInheritedField($property->name) ||
+                $meta->isInheritedAssociation($property->name)
+            ) {
+                continue;
+            }
             if ($timestampable = $reader->getPropertyAnnotation($property, self::ANNOTATION_TIMESTAMPABLE)) {
                 $field = $property->getName();
                 if (!$meta->hasField($field)) {

@@ -343,6 +343,12 @@ class TreeListener implements EventSubscriber
         $class = $meta->getReflectionClass();
         // property annotations
         foreach ($class->getProperties() as $property) {
+            if ($meta->isMappedSuperclass && !$property->isPrivate() ||
+                $meta->isInheritedField($property->name) ||
+                $meta->isInheritedAssociation($property->name)
+            ) {
+                continue;
+            }
             // left
             if ($left = $reader->getPropertyAnnotation($property, self::ANNOTATION_LEFT)) {
                 $field = $property->getName();
