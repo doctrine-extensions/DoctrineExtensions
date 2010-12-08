@@ -148,6 +148,35 @@ class TreeNodeRepository extends EntityRepository
         $q->useQueryCache(false);
         return $q->getResult(Query::HYDRATE_OBJECT);
     }
+
+    /**
+     * Get list of leaf nodes of the tree
+     *
+     * @param string $sortByField - field name to sort by
+     * @param string $direction - sort direction : "ASC" or "DESC"
+     * @return array - list of given $node children, null on failure
+     */
+    public function getLeafs($sortByField = null, $direction = 'ASC')
+    {
+        $meta = $this->getClassMetadata();
+        $config = $this->getConfiguration();
+
+        $qb = $this->_em->createQueryBuilder();
+        $qb->select('node')
+            ->from($this->_entityName, 'node')
+            ->where('node.' . $config['right'] . ' = 1 + node.' . $config['left']);
+        if (!$sortByField) {
+            $qb->orderBy('node.' . $config['left'], 'ASC');
+        } else {
+            if ($meta->hasField($sortByField) && in_array(strtolower($direction), array('asc', 'desc'))) {
+                $qb->orderBy('node.' . $sortByField, $direction);
+            } else {
+                throw new \RuntimeException("Invalid sort options specified: field - {$sortByField}, direction - {$direction}");
+            }
+        }
+        $q = $qb->getQuery();
+        return $q->getResult(Query::HYDRATE_OBJECT);
+    }
     
     /**
      * Move the node down in the same level
