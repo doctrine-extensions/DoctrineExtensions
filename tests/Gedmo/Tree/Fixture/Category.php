@@ -40,6 +40,12 @@ class Category implements Node
     private $parent;
     
     /**
+     * @gedmo:TreeLevel
+     * @Column(name="lvl", type="integer")
+     */
+     private $level;
+    
+    /**
      * @OneToMany(targetEntity="Category", mappedBy="parent")
      */
     private $children;

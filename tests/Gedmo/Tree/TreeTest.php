@@ -79,16 +79,20 @@ class TreeTest extends \PHPUnit_Framework_TestCase
         $root = $this->em->getRepository(self::TEST_ENTITY_CLASS)->find(1);
         $left = $meta->getReflectionProperty('lft')->getValue($root);
         $right = $meta->getReflectionProperty('rgt')->getValue($root);
+        $level = $meta->getReflectionProperty('level')->getValue($root);
         
         $this->assertEquals($left, 1);
         $this->assertEquals($right, 4);
+        $this->assertEquals($level, 0);
         
         $child = $this->em->getRepository(self::TEST_ENTITY_CLASS)->find(2);
         $left = $meta->getReflectionProperty('lft')->getValue($child);
         $right = $meta->getReflectionProperty('rgt')->getValue($child);
+        $level = $meta->getReflectionProperty('level')->getValue($child);
         
         $this->assertEquals($left, 2);
         $this->assertEquals($right, 3);
+        $this->assertEquals($level, 1);
         
         $child2 = new Category();
         $child2->setTitle("child2");
@@ -101,16 +105,20 @@ class TreeTest extends \PHPUnit_Framework_TestCase
         $root = $this->em->getRepository(self::TEST_ENTITY_CLASS)->find(1);
         $left = $meta->getReflectionProperty('lft')->getValue($root);
         $right = $meta->getReflectionProperty('rgt')->getValue($root);
+        $level = $meta->getReflectionProperty('level')->getValue($root);
         
         $this->assertEquals($left, 1);
         $this->assertEquals($right, 6);
+        $this->assertEquals($level, 0);
         
         $child2 = $this->em->getRepository(self::TEST_ENTITY_CLASS)->find(3);
         $left = $meta->getReflectionProperty('lft')->getValue($child2);
         $right = $meta->getReflectionProperty('rgt')->getValue($child2);
+        $level = $meta->getReflectionProperty('level')->getValue($child2);
         
         $this->assertEquals($left, 4);
         $this->assertEquals($right, 5);
+        $this->assertEquals($level, 1);
         
         $childsChild = new Category();
         $childsChild->setTitle("childs2_child");
@@ -123,9 +131,15 @@ class TreeTest extends \PHPUnit_Framework_TestCase
         $child2 = $this->em->getRepository(self::TEST_ENTITY_CLASS)->find(3);
         $left = $meta->getReflectionProperty('lft')->getValue($child2);
         $right = $meta->getReflectionProperty('rgt')->getValue($child2);
+        $level = $meta->getReflectionProperty('level')->getValue($child2);
         
         $this->assertEquals($left, 4);
         $this->assertEquals($right, 7);
+        $this->assertEquals($level, 1);
+
+        $level = $meta->getReflectionProperty('level')->getValue($childsChild);
+
+        $this->assertEquals($level, 2);
         
         // test updates to nodes, parent changes
         
@@ -141,9 +155,11 @@ class TreeTest extends \PHPUnit_Framework_TestCase
         $child = $this->em->getRepository(self::TEST_ENTITY_CLASS)->find(2);
         $left = $meta->getReflectionProperty('lft')->getValue($child);
         $right = $meta->getReflectionProperty('rgt')->getValue($child);
+        $level = $meta->getReflectionProperty('level')->getValue($child);
         
         $this->assertEquals($left, 2);
         $this->assertEquals($right, 5);
+        $this->assertEquals($level, 1);
         
         // test deletion
         

@@ -34,4 +34,9 @@ interface Node
      * in every tree there should be link to parent. To identify a relation
      * as parent relation to child use @Tree:Ancestor annotation on the related property
      */
+
+    /**
+     * @gedmo:TreeLevel
+     * level of node.
+     */
 }

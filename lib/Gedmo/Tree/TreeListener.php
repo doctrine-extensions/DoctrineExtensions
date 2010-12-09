@@ -53,6 +53,11 @@ class TreeListener implements EventSubscriber
     const ANNOTATION_PARENT = 'Gedmo\Tree\Mapping\TreeParent';
     
     /**
+     * Annotation to mark node level
+     */
+    const ANNOTATION_LEVEL = 'Gedmo\Tree\Mapping\TreeLevel';
+    
+    /**
      * List of cached entity configurations
      *  
      * @var array
@@ -301,9 +306,18 @@ class TreeListener implements EventSubscriber
             $parent = $meta->getReflectionProperty($config['parent'])->getValue($entity);
             if ($parent === null) {
                 $this->_prepareRoot($em, $entity);
+                if (isset($config['level'])) {
+                    $meta->getReflectionProperty($config['level'])->setValue($entity, 0);
+                }
             } else {
                 $meta->getReflectionProperty($config['left'])->setValue($entity, 0);
                 $meta->getReflectionProperty($config['right'])->setValue($entity, 0);
+                if (isset($config['level'])) {
+                    $meta->getReflectionProperty($config['level'])->setValue(
+                        $entity,
+                        $meta->getReflectionProperty($config['level'])->getValue($parent) + 1
+                    );
+                }
                 $this->_pendingChildNodeInserts[] = $entity;
             }
         }
@@ -360,6 +374,7 @@ class TreeListener implements EventSubscriber
                 }
                 $config['left'] = $field;
             }
+            // right
             if ($right = $reader->getPropertyAnnotation($property, self::ANNOTATION_RIGHT)) {
                 $field = $property->getName();
                 if (!$meta->hasField($field)) {
@@ -377,6 +392,17 @@ class TreeListener implements EventSubscriber
                     throw Exception::parentFieldNotMappedOrRelated($field, $meta->name);
                 }
                 $config['parent'] = $field;
+            }
+            // level
+            if ($parent = $reader->getPropertyAnnotation($property, self::ANNOTATION_LEVEL)) {
+                $field = $property->getName();
+                if (!$meta->hasField($field)) {
+                    throw Exception::fieldMustBeMapped($field, $meta->name);
+                }
+                if (!$this->_isValidField($meta, $field)) {
+                    throw Exception::notValidFieldType($field, $meta->name);
+                }
+                $config['level'] = $field;
             }
         }
     }
@@ -414,7 +440,7 @@ class TreeListener implements EventSubscriber
         
         $meta->getReflectionProperty($config['left'])->setValue($entity, $edge + 1);
         $meta->getReflectionProperty($config['right'])->setValue($entity, $edge + 2);
-            
+        
         $this->_treeEdge = $edge + 2;
     }
     
