@@ -126,6 +126,17 @@ class RepositoryTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('Food', $path[0]->getTitle());
         $this->assertEquals('Vegitables', $path[1]->getTitle());
         $this->assertEquals('Carrots', $path[2]->getTitle());
+        
+        // leafs
+        
+        $leafs = $this->em->getRepository(self::TEST_ENTITY_CATEGORY)
+            ->getLeafs();
+
+        $this->assertEquals(4, count($leafs));
+        $this->assertEquals('Fruits', $leafs[0]->getTitle());
+        $this->assertEquals('Carrots', $leafs[1]->getTitle());
+        $this->assertEquals('Potatoes', $leafs[2]->getTitle());
+        $this->assertEquals('Sports', $leafs[3]->getTitle());
     }
     
     public function testAdvancedFunctions()
