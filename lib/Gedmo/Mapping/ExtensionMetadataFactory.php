@@ -116,7 +116,11 @@ class ExtensionMetadataFactory
             // create driver instance
             $driverClassName = $this->_extensionNamespace . '\Mapping\Driver\\' . $driverName;
             if (!class_exists($driverClassName)) {
-                throw DriverException::extensionDriverNotSupported($driverClassName, $driverName);
+                // @TODO: implement XML driver also
+                $driverClassName = $this->_extensionNamespace . '\Mapping\Driver\Annotation';
+                if (!class_exists($driverClassName)) {
+                    throw DriverException::extensionDriverNotSupported($driverClassName, $driverName);
+                }
             }
             $driver = new $driverClassName();
             if ($driver instanceof \Gedmo\Mapping\Driver\File) {
