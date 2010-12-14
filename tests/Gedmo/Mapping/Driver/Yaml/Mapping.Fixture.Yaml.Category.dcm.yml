@@ -1,0 +1,48 @@
+---
+Mapping\Fixture\Yaml\Category:
+  type: entity
+  table: categories
+  id:
+    id:
+      type: integer
+      generator:
+        strategy: AUTO
+  gedmo:
+    translatable:
+      entity: Translatable\Fixture\CategoryTranslation
+      locale: localeField
+  fields:
+    title:
+      type: string
+      length: 64
+      gedmo:
+        - translatable
+        - sluggable
+    slug:
+      type: string
+      length: 64
+      gedmo:
+        - translatable
+        slug:
+          separator: _
+          style: camel
+    changed:
+      type: date
+      gedmo:
+        timestampable:
+          on: change
+          field: title
+          value: Test
+  manyToOne:
+    parent:
+      targetEntity: Mapping\Fixture\Yaml\Category
+      inversedBy: children
+      gedmo:
+        tree: parent
+  oneToMany:
+    children:
+      targetEntity: Mapping\Fixture\Yaml\Category
+      mappedBy: parent
+  indexes:
+    search_idx:
+      columns: title

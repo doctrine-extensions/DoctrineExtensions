@@ -10,6 +10,9 @@ records being flushed in the behavioral way. List of extensions:
 - Sluggable - urlizes your specified fields into single unique slug
 - Timestampable - updates date fields on create, update and even property change.
 
+Currently these extensions support **Yaml** and **Annotation** mapping. Additional mapping drivers
+can be easy implemented using Mapping extension to handle the additional metadata mapping.
+
 All these extensions can be nested together. And most allready use only annotations without interface requirement
 to not to aggregate the entity itself and has implemented proper caching for metadata.
 

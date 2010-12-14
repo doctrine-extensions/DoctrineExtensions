@@ -38,6 +38,9 @@ if (strlen(DOCTRINE_LIBRARY_PATH)) {
 require_once $classLoaderFile;
 $classLoader = new Doctrine\Common\ClassLoader('Doctrine');
 $classLoader->register();
+
+$classLoader = new Doctrine\Common\ClassLoader('Symfony', 'Doctrine');
+$classLoader->register();
       
 $classLoader = new Doctrine\Common\ClassLoader('Gedmo', __DIR__ . '/../lib');
 $classLoader->register();

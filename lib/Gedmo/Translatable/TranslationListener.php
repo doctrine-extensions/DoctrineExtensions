@@ -11,8 +11,8 @@ use Doctrine\Common\EventSubscriber,
     Doctrine\ORM\Query,
     Doctrine\ORM\Mapping\ClassMetadata,
     Doctrine\ORM\Mapping\ClassMetadataInfo,
-    Doctrine\Common\Annotations\AnnotationReader,
-    Gedmo\Translatable\Entity\Translation;
+    Gedmo\Translatable\Entity\Translation,
+    Gedmo\Mapping\ExtensionMetadataFactory;
 
 /**
  * The translation listener handles the generation and
@@ -30,50 +30,10 @@ use Doctrine\Common\EventSubscriber,
  * @package Gedmo.Translatable
  * @subpackage TranslationListener
  * @link http://www.gediminasm.org
- * @version 2.0.0
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class TranslationListener implements EventSubscriber
-{
-    /**
-     * The namespace of annotations for this extension
-     */
-    const ANNOTATION_NAMESPACE = 'gedmo';
-    
-    /**
-     * Annotation to identity translation entity to be used for translation storage
-     */
-    const ANNOTATION_ENTITY_CLASS = 'Gedmo\Translatable\Mapping\TranslationEntity';
-    
-    /**
-     * Annotation to identify field as translatable 
-     */
-    const ANNOTATION_TRANSLATABLE = 'Gedmo\Translatable\Mapping\Translatable';
-    
-    /**
-     * Annotation to identify field which can store used locale or language
-     * alias is ANNOTATION_LANGUAGE
-     */
-    const ANNOTATION_LOCALE = 'Gedmo\Translatable\Mapping\Locale';
-    
-    /**
-     * Annotation to identify field which can store used locale or language
-     * alias is ANNOTATION_LOCALE
-     */
-    const ANNOTATION_LANGUAGE = 'Gedmo\Translatable\Mapping\Language';
-    
-    /**
-     * List of types which are valid for translation,
-     * this property is public and you can add some
-     * other types in case it needs translation
-     * 
-     * @var array
-     */
-    public $validTypes = array(
-        'string',
-        'text'
-    );
-    
+{    
     /**
      * The translation entity class used to store the translations
      * 
@@ -91,32 +51,20 @@ class TranslationListener implements EventSubscriber
     protected $_locale = 'en_us';
     
     /**
-     * List of translations which do not have the foreign
-     * key generated yet - MySQL case. These translations
-     * will be updated with new keys on postPersist event
+     * ExtensionMetadataFactory used to read the extension
+     * metadata
      * 
-     * @var array
+     * @var Gedmo\Mapping\ExtensionMetadataFactory
      */
-    protected $_pendingTranslationInserts = array();
-
-    /**
-     * Translations which should be inserted during
-     * update must be sheduled for later persisting
-     * to avoid query while insert is pending
-     * 
-     * @var array
-     */
-    protected $_pendingTranslationUpdates = array();
+    protected $_extensionMetadataFactory = null;
     
     /**
-     * Entities which are sheduled for delete and
-     * cannot delete its translations now because
-     * inserts are pending. They will be processed
-     * after inserts are done
+     * List of metadata configurations for Translatable
+     * classes, from annotations
      * 
      * @var array
      */
-    protected $_pendingEntityDeletions = array();
+    protected $_configurations = array();
     
     /**
      * Default locale, this changes behavior
@@ -130,12 +78,32 @@ class TranslationListener implements EventSubscriber
     private $_defaultLocale = '';
     
     /**
-     * List of metadata configurations for Translatable
-     * classes, from annotations
+     * List of translations which do not have the foreign
+     * key generated yet - MySQL case. These translations
+     * will be updated with new keys on postPersist event
      * 
      * @var array
      */
-    protected $_configurations = array();
+    private $_pendingTranslationInserts = array();
+
+    /**
+     * Translations which should be inserted during
+     * update must be sheduled for later persisting
+     * to avoid query while insert is pending
+     * 
+     * @var array
+     */
+    private $_pendingTranslationUpdates = array();
+    
+    /**
+     * Entities which are sheduled for delete and
+     * cannot delete its translations now because
+     * inserts are pending. They will be processed
+     * after inserts are done
+     * 
+     * @var array
+     */
+    private $_pendingEntityDeletions = array();
     
     /**
      * Specifies the list of events to listen
@@ -166,7 +134,8 @@ class TranslationListener implements EventSubscriber
             $config = $this->_configurations[$class];
         } else {
             $cacheDriver = $em->getMetadataFactory()->getCacheDriver();
-            if (($cached = $cacheDriver->fetch("{$class}\$GEDMO_TRANSLATABLE_CLASSMETADATA")) !== false) {
+            $cacheId = ExtensionMetadataFactory::getCacheId($class, __NAMESPACE__);
+            if (($cached = $cacheDriver->fetch($cacheId)) !== false) {
                 $this->_configurations[$class] = $cached;
                 $config = $cached;
             }
@@ -213,6 +182,12 @@ class TranslationListener implements EventSubscriber
         if (isset($this->_configurations[$meta->name]['locale'])) {
             $class = $meta->getReflectionClass();
             $reflectionProperty = $class->getProperty($this->_configurations[$meta->name]['locale']);
+            if (!$reflectionProperty) {
+                throw Exception::entityMissingLocaleProperty(
+                    $this->_configurations[$meta->name]['locale'],
+                    $meta->name
+                );
+            }
             $reflectionProperty->setAccessible(true);
             $value = $reflectionProperty->getValue($entity);
             if (is_string($value) && strlen($value)) {
@@ -236,42 +211,34 @@ class TranslationListener implements EventSubscriber
     }
     
     /**
-     * Scans the entities for Translatable annotations
+     * Get metadata mapping reader
+     * 
+     * @param EntityManager $em
+     * @return Gedmo\Mapping\MetadataReader
+     */
+    public function getExtensionMetadataFactory(EntityManager $em)
+    {
+        if (null === $this->_extensionMetadataFactory) {
+            $this->_extensionMetadataFactory = new ExtensionMetadataFactory($em, __NAMESPACE__);
+        }
+        return $this->_extensionMetadataFactory;
+    }
+    
+    /**
+     * Scans the entities for Translatable extension metadata
      * 
      * @param LoadClassMetadataEventArgs $eventArgs
-     * @throws RuntimeException if ORM version is old 
+     * @throws RuntimeException if metadata driver is invalid
      * @return void
      */
     public function loadClassMetadata(LoadClassMetadataEventArgs $eventArgs)
-    {
-        if (!method_exists($eventArgs, 'getEntityManager')) {
-            throw new \RuntimeException('Translatable: update to latest ORM version, checkout latest ORM from master branch on github');
-        }
+    {   
         $meta = $eventArgs->getClassMetadata();
-        if ($meta->isMappedSuperclass) {
-            return; // ignore mappedSuperclasses for now
-        }
-        
         $em = $eventArgs->getEntityManager();
-        $config = array();
-        // collect metadata from inherited classes
-        foreach (array_reverse(class_parents($meta->name)) as $parentClass) {
-            // read only inherited mapped classes
-            if ($em->getMetadataFactory()->hasMetadataFor($parentClass)) {
-                $this->_readAnnotations($em->getClassMetadata($parentClass), $config);
-            }
-        }
-        $this->_readAnnotations($meta, $config);
+        $factory = $this->getExtensionMetadataFactory($em);
+        $config = $factory->getExtensionMetadata($meta);
         if ($config) {
             $this->_configurations[$meta->name] = $config;
-            // cache the metadata
-            if ($cacheDriver = $em->getMetadataFactory()->getCacheDriver()) {
-                $cacheDriver->save(
-                    "{$meta->name}\$GEDMO_TRANSLATABLE_CLASSMETADATA", 
-                    $this->_configurations[$meta->name],
-                    null
-                );
-            }
         }
     }
     
@@ -597,85 +564,6 @@ class TranslationListener implements EventSubscriber
         $q = $em->createQuery($dql);
         $q->setParameters(compact('entityId'));
         return $q->getSingleScalarResult();
-    }
-    
-    /**
-     * Checks if $field type is valid as Translatable field
-     * 
-     * @param ClassMetadata $meta
-     * @param string $field
-     * @return boolean
-     */
-    protected function _isValidField(ClassMetadataInfo $meta, $field)
-    {
-        return in_array($meta->getTypeOfField($field), $this->validTypes);
-    }
-    
-    /**
-     * Reads the translatable annotations from the given class
-     * And collects or ovverides the configuration
-     * Returns configuration options or empty array if none found
-     * 
-     * @param ClassMetadataInfo $meta
-     * @param array $config
-     * @throws Translatable\Exception if any mapping data is invalid
-     * @return void
-     */
-    protected function _readAnnotations(ClassMetadataInfo $meta, array &$config)
-    {        
-        require_once __DIR__ . '/Mapping/Annotations.php';
-        $reader = new AnnotationReader();
-        $reader->setAnnotationNamespaceAlias(
-            'Gedmo\Translatable\Mapping\\',
-            self::ANNOTATION_NAMESPACE
-        );
-    
-        $class = $meta->getReflectionClass();
-        // class annotations
-        $classAnnotations = $reader->getClassAnnotations($class);
-        if (isset($classAnnotations[self::ANNOTATION_ENTITY_CLASS])) {
-            $annot = $classAnnotations[self::ANNOTATION_ENTITY_CLASS];
-            if (!class_exists($annot->class)) {
-                throw Exception::translationClassNotFound($annot->class);
-            }
-            $config['translationClass'] = $annot->class;
-        }
-        
-        // property annotations
-        foreach ($class->getProperties() as $property) {
-            if ($meta->isMappedSuperclass && !$property->isPrivate() ||
-                $meta->isInheritedField($property->name) ||
-                $meta->isInheritedAssociation($property->name)
-            ) {
-                continue;
-            }
-            // translatable property
-            if ($translatable = $reader->getPropertyAnnotation($property, self::ANNOTATION_TRANSLATABLE)) {
-                $field = $property->getName();
-                if (!$meta->hasField($field)) {
-                    throw Exception::fieldMustBeMapped($field, $meta->name);
-                }
-                if (!$this->_isValidField($meta, $field)) {
-                    throw Exception::notValidFieldType($field, $meta->name);
-                }
-                // fields cannot be overrided and throws mapping exception
-                $config['fields'][] = $field;
-            }
-            // locale property
-            if ($locale = $reader->getPropertyAnnotation($property, self::ANNOTATION_LOCALE)) {
-                $field = $property->getName();
-                if ($meta->hasField($field)) {
-                    throw Exception::fieldMustNotBeMapped($field, $meta->name);
-                }
-                $config['locale'] = $field;
-            } elseif ($language = $reader->getPropertyAnnotation($property, self::ANNOTATION_LANGUAGE)) {
-                $field = $property->getName();
-                if ($meta->hasField($field)) {
-                    throw Exception::fieldMustNotBeMapped($field, $meta->name);
-                }
-                $config['locale'] = $field;
-            }
-        }
     }
     
     /**

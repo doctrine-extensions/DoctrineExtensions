@@ -11,7 +11,7 @@ use Doctrine\Common\EventSubscriber,
     Doctrine\ORM\Query,
     Doctrine\ORM\Mapping\ClassMetadata,
     Doctrine\ORM\Mapping\ClassMetadataInfo,
-    Doctrine\Common\Annotations\AnnotationReader;
+    Gedmo\Mapping\ExtensionMetadataFactory;
 
 /**
  * The tree listener handles the synchronization of
@@ -31,32 +31,7 @@ use Doctrine\Common\EventSubscriber,
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class TreeListener implements EventSubscriber
-{
-    /**
-     * The namespace of annotations for this extension
-     */
-    const ANNOTATION_NAMESPACE = 'gedmo';
-    
-    /**
-     * Annotation to mark field as one which will store left value
-     */
-    const ANNOTATION_LEFT = 'Gedmo\Tree\Mapping\TreeLeft';
-    
-    /**
-     * Annotation to mark field as one which will store right value
-     */
-    const ANNOTATION_RIGHT = 'Gedmo\Tree\Mapping\TreeRight';
-    
-    /**
-     * Annotation to mark relative parent field
-     */
-    const ANNOTATION_PARENT = 'Gedmo\Tree\Mapping\TreeParent';
-    
-    /**
-     * Annotation to mark node level
-     */
-    const ANNOTATION_LEVEL = 'Gedmo\Tree\Mapping\TreeLevel';
-    
+{    
     /**
      * List of cached entity configurations
      *  
@@ -91,15 +66,12 @@ class TreeListener implements EventSubscriber
     protected $_pendingNodeUpdates = array();
     
     /**
-     * List of types which are valid for timestamp
+     * ExtensionMetadataFactory used to read the extension
+     * metadata
      * 
-     * @var array
+     * @var Gedmo\Mapping\ExtensionMetadataFactory
      */
-    private $_validTypes = array(
-        'integer',
-        'smallint',
-        'bigint'
-    );
+    protected $_extensionMetadataFactory = null;
     
     /**
      * Specifies the list of events to listen
@@ -131,12 +103,27 @@ class TreeListener implements EventSubscriber
             $config = $this->_configurations[$class];
         } else {
             $cacheDriver = $em->getMetadataFactory()->getCacheDriver();
-            if (($cached = $cacheDriver->fetch("{$class}\$GEDMO_TREE_CLASSMETADATA")) !== false) {
+            $cacheId = ExtensionMetadataFactory::getCacheId($class, __NAMESPACE__);
+            if (($cached = $cacheDriver->fetch($cacheId)) !== false) {
                 $this->_configurations[$class] = $cached;
                 $config = $cached;
             }
         }
         return $config;
+    }
+    
+    /**
+     * Get metadata mapping reader
+     * 
+     * @param EntityManager $em
+     * @return Gedmo\Mapping\MetadataReader
+     */
+    public function getExtensionMetadataFactory(EntityManager $em)
+    {
+        if (null === $this->_extensionMetadataFactory) {
+            $this->_extensionMetadataFactory = new ExtensionMetadataFactory($em, __NAMESPACE__);
+        }
+        return $this->_extensionMetadataFactory;
     }
     
     /**
@@ -149,48 +136,12 @@ class TreeListener implements EventSubscriber
      */
     public function loadClassMetadata(LoadClassMetadataEventArgs $eventArgs)
     {
-        if (!method_exists($eventArgs, 'getEntityManager')) {
-            throw new \RuntimeException('Tree: update to latest ORM version, checkout latest ORM from master branch on github');
-        }
         $meta = $eventArgs->getClassMetadata();
-        if ($meta->isMappedSuperclass) {
-            return; // ignore mappedSuperclasses for now
-        }
-        
         $em = $eventArgs->getEntityManager();
-        $config = array();
-        // collect metadata from inherited classes
-        foreach (array_reverse(class_parents($meta->name)) as $parentClass) {
-            // read only inherited mapped classes
-            if ($em->getMetadataFactory()->hasMetadataFor($parentClass)) {
-                $this->_readAnnotations($em->getClassMetadata($parentClass), $config);
-            }
-        }
-        $this->_readAnnotations($meta, $config);
-        // check if all required metadata is present
+        $factory = $this->getExtensionMetadataFactory($em);
+        $config = $factory->getExtensionMetadata($meta);
         if ($config) {
-            $missingFields = array();
-            if (!isset($config['parent'])) {
-                $missingFields[] = 'ancestor';
-            }
-            if (!isset($config['left'])) {
-                $missingFields[] = 'left';
-            }
-            if (!isset($config['right'])) {
-                $missingFields[] = 'right';
-            }
-            if ($missingFields) {
-                throw Exception::missingMetaProperties($missingFields, $meta->name);
-            }
             $this->_configurations[$meta->name] = $config;
-            // cache the metadata
-            if ($cacheDriver = $em->getMetadataFactory()->getCacheDriver()) {
-                $cacheDriver->save(
-                    "{$meta->name}\$GEDMO_TREE_CLASSMETADATA", 
-                    $this->_configurations[$meta->name],
-                    null
-                );
-            }
         }
     }
     
@@ -333,78 +284,6 @@ class TreeListener implements EventSubscriber
     protected function _isValidField(ClassMetadata $meta, $field)
     {
         return in_array($meta->getTypeOfField($field), $this->_validTypes);
-    }
-    
-    /**
-     * Reads the Tree annotations from the given class
-     * And collects or ovverides the configuration
-     * Returns configuration options or empty array if none found
-     * 
-     * @param ClassMetadataInfo $meta
-     * @param array $config
-     * @throws Tree\Exception if any mapping data is invalid
-     * @return void
-     */
-    protected function _readAnnotations(ClassMetadataInfo $meta, array &$config)
-    {        
-        require_once __DIR__ . '/Mapping/Annotations.php';
-        $reader = new AnnotationReader();
-        $reader->setAnnotationNamespaceAlias(
-            'Gedmo\Tree\Mapping\\',
-            self::ANNOTATION_NAMESPACE
-        );
-    
-        $class = $meta->getReflectionClass();
-        // property annotations
-        foreach ($class->getProperties() as $property) {
-            if ($meta->isMappedSuperclass && !$property->isPrivate() ||
-                $meta->isInheritedField($property->name) ||
-                $meta->isInheritedAssociation($property->name)
-            ) {
-                continue;
-            }
-            // left
-            if ($left = $reader->getPropertyAnnotation($property, self::ANNOTATION_LEFT)) {
-                $field = $property->getName();
-                if (!$meta->hasField($field)) {
-                    throw Exception::fieldMustBeMapped($field, $meta->name);
-                }
-                if (!$this->_isValidField($meta, $field)) {
-                    throw Exception::notValidFieldType($field, $meta->name);
-                }
-                $config['left'] = $field;
-            }
-            // right
-            if ($right = $reader->getPropertyAnnotation($property, self::ANNOTATION_RIGHT)) {
-                $field = $property->getName();
-                if (!$meta->hasField($field)) {
-                    throw Exception::fieldMustBeMapped($field, $meta->name);
-                }
-                if (!$this->_isValidField($meta, $field)) {
-                    throw Exception::notValidFieldType($field, $meta->name);
-                }
-                $config['right'] = $field;
-            }
-            // ancestor/parent
-            if ($parent = $reader->getPropertyAnnotation($property, self::ANNOTATION_PARENT)) {
-                $field = $property->getName();
-                if (!$meta->isSingleValuedAssociation($field)) {
-                    throw Exception::parentFieldNotMappedOrRelated($field, $meta->name);
-                }
-                $config['parent'] = $field;
-            }
-            // level
-            if ($parent = $reader->getPropertyAnnotation($property, self::ANNOTATION_LEVEL)) {
-                $field = $property->getName();
-                if (!$meta->hasField($field)) {
-                    throw Exception::fieldMustBeMapped($field, $meta->name);
-                }
-                if (!$this->_isValidField($meta, $field)) {
-                    throw Exception::notValidFieldType($field, $meta->name);
-                }
-                $config['level'] = $field;
-            }
-        }
     }
     
     /**

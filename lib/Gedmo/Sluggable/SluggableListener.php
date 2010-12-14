@@ -11,7 +11,7 @@ use Doctrine\Common\EventSubscriber,
     Doctrine\ORM\Query,
     Doctrine\ORM\Mapping\ClassMetadata,
     Doctrine\ORM\Mapping\ClassMetadataInfo,
-    Doctrine\Common\Annotations\AnnotationReader;
+    Gedmo\Mapping\ExtensionMetadataFactory;
 
 /**
  * The SluggableListener handles the generation of slugs
@@ -27,23 +27,7 @@ use Doctrine\Common\EventSubscriber,
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class SluggableListener implements EventSubscriber
-{   
-    /**
-     * The namespace of annotations for this extension
-     */
-    const ANNOTATION_NAMESPACE = 'gedmo';
-    
-    /**
-     * Annotation to mark field as sluggable and include it in slug building
-     */
-    const ANNOTATION_SLUGGABLE = 'Gedmo\Sluggable\Mapping\Sluggable';
-    
-    /**
-     * Annotation to identify field as one which holds the slug
-     * together with slug options
-     */
-    const ANNOTATION_SLUG = 'Gedmo\Sluggable\Mapping\Slug';
-    
+{    
     /**
      * List of cached entity configurations
      *  
@@ -61,13 +45,12 @@ class SluggableListener implements EventSubscriber
     protected $_pendingEntities = array();
     
     /**
-     * List of types which are valid for slug and sluggable fields
+     * ExtensionMetadataFactory used to read the extension
+     * metadata
      * 
-     * @var array
+     * @var Gedmo\Mapping\ExtensionMetadataFactory
      */
-    private $_validTypes = array(
-        'string'
-    );
+    protected $_extensionMetadataFactory = null;
     
     /**
      * Specifies the list of events to listen
@@ -98,12 +81,27 @@ class SluggableListener implements EventSubscriber
             $config = $this->_configurations[$class];
         } else {
             $cacheDriver = $em->getMetadataFactory()->getCacheDriver();
-            if (($cached = $cacheDriver->fetch("{$class}\$GEDMO_SLUGGABLE_CLASSMETADATA")) !== false) {
+            $cacheId = ExtensionMetadataFactory::getCacheId($class, __NAMESPACE__);
+            if (($cached = $cacheDriver->fetch($cacheId)) !== false) {
                 $this->_configurations[$class] = $cached;
                 $config = $cached;
             }
         }
         return $config;
+    }
+    
+    /**
+     * Get metadata mapping reader
+     * 
+     * @param EntityManager $em
+     * @return Gedmo\Mapping\MetadataReader
+     */
+    public function getExtensionMetadataFactory(EntityManager $em)
+    {
+        if (null === $this->_extensionMetadataFactory) {
+            $this->_extensionMetadataFactory = new ExtensionMetadataFactory($em, __NAMESPACE__);
+        }
+        return $this->_extensionMetadataFactory;
     }
     
     /**
@@ -116,38 +114,12 @@ class SluggableListener implements EventSubscriber
      */
     public function loadClassMetadata(LoadClassMetadataEventArgs $eventArgs)
     {
-        if (!method_exists($eventArgs, 'getEntityManager')) {
-            throw new \RuntimeException('Sluggable: update to latest ORM version, checkout latest ORM from master branch on github');
-        }
         $meta = $eventArgs->getClassMetadata();
-        if ($meta->isMappedSuperclass) {
-            return; // ignore mappedSuperclasses for now
-        }
-        
         $em = $eventArgs->getEntityManager();
-        $config = array();
-        // collect metadata from inherited classes
-        foreach (array_reverse(class_parents($meta->name)) as $parentClass) {
-            // read only inherited mapped classes
-            if ($em->getMetadataFactory()->hasMetadataFor($parentClass)) {
-                $this->_readAnnotations($em->getClassMetadata($parentClass), $config);
-            }
-        }
-        $this->_readAnnotations($meta, $config);
-        if ($config && !isset($config['fields'])) {
-            throw Exception::noFieldsToSlug($meta->name);
-        }
-        // cache the metadata
+        $factory = $this->getExtensionMetadataFactory($em);
+        $config = $factory->getExtensionMetadata($meta);
         if ($config) {
             $this->_configurations[$meta->name] = $config;
-            // cache the metadata
-            if ($cacheDriver = $em->getMetadataFactory()->getCacheDriver()) {
-                $cacheDriver->save(
-                    "{$meta->name}\$GEDMO_SLUGGABLE_CLASSMETADATA", 
-                    $this->_configurations[$meta->name],
-                    null
-                );
-            }
         }
     }
     
@@ -310,11 +282,7 @@ class SluggableListener implements EventSubscriber
      * @return string - unique slug
      */
     protected function _makeUniqueSlug(EntityManager $em, $entity)
-    {
-        if ($em->getUnitOfWork()->hasPendingInsertions()) {
-            throw Exception::pendingInserts();
-        }
-        
+    {        
         $entityClass = get_class($entity);
         $meta = $em->getClassMetadata($entityClass);
         $config = $this->getConfiguration($em, $entityClass);
@@ -374,78 +342,5 @@ class SluggableListener implements EventSubscriber
             $preferedSlug = $generatedSlug;
         }
         return $preferedSlug;
-    }
-    
-    /**
-     * Reads the Sluggable annotations from the given class
-     * And collects or ovverides the configuration
-     * Returns configuration options or empty array if none found
-     * 
-     * @param ClassMetadataInfo $meta
-     * @param array $config
-     * @throws Sluggable\Exception if any mapping data is invalid
-     * @return void
-     */
-    protected function _readAnnotations(ClassMetadataInfo $meta, array &$config)
-    {        
-        require_once __DIR__ . '/Mapping/Annotations.php';
-        $reader = new AnnotationReader();
-        $reader->setAnnotationNamespaceAlias(
-            'Gedmo\Sluggable\Mapping\\',
-            self::ANNOTATION_NAMESPACE
-        );
-    
-        $class = $meta->getReflectionClass();
-        // property annotations
-        foreach ($class->getProperties() as $property) {
-            if ($meta->isMappedSuperclass && !$property->isPrivate() ||
-                $meta->isInheritedField($property->name) ||
-                $meta->isInheritedAssociation($property->name)
-            ) {
-                continue;
-            }
-            // sluggable property
-            if ($sluggable = $reader->getPropertyAnnotation($property, self::ANNOTATION_SLUGGABLE)) {
-                $field = $property->getName();
-                if (!$meta->hasField($field)) {
-                    throw Exception::fieldMustBeMapped($field, $meta->name);
-                }
-                if (!$this->_isValidField($meta, $field)) {
-                    throw Exception::notValidFieldType($field, $meta->name);
-                }
-                $config['fields'][] = $field;
-            }
-            // slug property
-            if ($slug = $reader->getPropertyAnnotation($property, self::ANNOTATION_SLUG)) {
-                $field = $property->getName();
-                if (!$meta->hasField($field)) {
-                    throw Exception::slugFieldMustBeMapped($field, $meta->name);
-                }
-                if (!$this->_isValidField($meta, $field)) {
-                    throw Exception::notValidFieldType($field, $meta->name);
-                } 
-                if (isset($config['slug'])) {
-                    throw Exception::slugFieldIsDuplicate($field, $meta->name);
-                }
-                
-                $config['slug'] = $field;
-                $config['style'] = $slug->style;
-                $config['updatable'] = $slug->updatable;
-                $config['unique'] = $slug->unique;
-                $config['separator'] = $slug->separator;
-            }
-        }
-    }
-    
-    /**
-     * Checks if $field type is valid as Sluggable or Slug field
-     * 
-     * @param ClassMetadata $meta
-     * @param string $field
-     * @return boolean
-     */
-    protected function _isValidField(ClassMetadata $meta, $field)
-    {
-        return in_array($meta->getTypeOfField($field), $this->_validTypes);
     }
 }

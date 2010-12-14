@@ -13,6 +13,9 @@
         <testsuite name="Timestampable Extension">
             <directory suffix=".php">./Gedmo/Timestampable/</directory>
         </testsuite>
+        <testsuite name="Mapping Extension">
+            <directory suffix=".php">./Gedmo/Mapping/</directory>
+        </testsuite>
     </testsuites>
     <php>
         <const name="DOCTRINE_LIBRARY_PATH" value="/path/to/library/where/Doctrine/located"/>

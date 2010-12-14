@@ -8,9 +8,7 @@ use Doctrine\Common\EventSubscriber,
     Doctrine\ORM\Event\OnFlushEventArgs,
     Doctrine\ORM\Event\LoadClassMetadataEventArgs,
     Doctrine\ORM\EntityManager,
-    Doctrine\ORM\Mapping\ClassMetadata,
-    Doctrine\ORM\Mapping\ClassMetadataInfo,
-    Doctrine\Common\Annotations\AnnotationReader;
+    Gedmo\Mapping\ExtensionMetadataFactory;
 
 /**
  * The Timestampable listener handles the update of
@@ -23,17 +21,7 @@ use Doctrine\Common\EventSubscriber,
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class TimestampableListener implements EventSubscriber
-{   
-    /**
-     * The namespace of annotations for this extension
-     */
-    const ANNOTATION_NAMESPACE = 'gedmo';
-    
-    /**
-     * Annotation field is timestampable
-     */
-    const ANNOTATION_TIMESTAMPABLE = 'Gedmo\Timestampable\Mapping\Timestampable';
-    
+{
     /**
      * List of metadata configurations for Timestampable
      * classes, from annotations
@@ -43,15 +31,12 @@ class TimestampableListener implements EventSubscriber
     protected $_configurations = array();
     
     /**
-     * List of types which are valid for timestamp
+     * ExtensionMetadataFactory used to read the extension
+     * metadata
      * 
-     * @var array
+     * @var Gedmo\Mapping\ExtensionMetadataFactory
      */
-    private $_validTypes = array(
-        'date',
-        'time',
-        'datetime'
-    );
+    protected $_extensionMetadataFactory = null;
     
     /**
      * Specifies the list of events to listen
@@ -81,12 +66,27 @@ class TimestampableListener implements EventSubscriber
             $config = $this->_configurations[$class];
         } else {
             $cacheDriver = $em->getMetadataFactory()->getCacheDriver();
-            if (($cached = $cacheDriver->fetch("{$class}\$GEDMO_TIMESTAMPABLE_CLASSMETADATA")) !== false) {
+            $cacheId = ExtensionMetadataFactory::getCacheId($class, __NAMESPACE__);
+            if (($cached = $cacheDriver->fetch($cacheId)) !== false) {
                 $this->_configurations[$class] = $cached;
                 $config = $cached;
             }
         }
         return $config;
+    }
+    
+    /**
+     * Get metadata mapping reader
+     * 
+     * @param EntityManager $em
+     * @return Gedmo\Mapping\MetadataReader
+     */
+    public function getExtensionMetadataFactory(EntityManager $em)
+    {
+        if (null === $this->_extensionMetadataFactory) {
+            $this->_extensionMetadataFactory = new ExtensionMetadataFactory($em, __NAMESPACE__);
+        }
+        return $this->_extensionMetadataFactory;
     }
     
     /**
@@ -98,34 +98,12 @@ class TimestampableListener implements EventSubscriber
      */
     public function loadClassMetadata(LoadClassMetadataEventArgs $eventArgs)
     {
-        if (!method_exists($eventArgs, 'getEntityManager')) {
-            throw new \RuntimeException('Timestampable: update to latest ORM version, checkout latest ORM from master branch on github');
-        }
         $meta = $eventArgs->getClassMetadata();
-        if ($meta->isMappedSuperclass) {
-            return; // ignore mappedSuperclasses for now
-        }
-        
         $em = $eventArgs->getEntityManager();
-        $config = array();
-        // collect metadata from inherited classes
-        foreach (array_reverse(class_parents($meta->name)) as $parentClass) {
-            // read only inherited mapped classes
-            if ($em->getMetadataFactory()->hasMetadataFor($parentClass)) {
-                $this->_readAnnotations($em->getClassMetadata($parentClass), $config);
-            }
-        }
-        $this->_readAnnotations($meta, $config);
+        $factory = $this->getExtensionMetadataFactory($em);
+        $config = $factory->getExtensionMetadata($meta);
         if ($config) {
             $this->_configurations[$meta->name] = $config;
-            // cache the metadata
-            if ($cacheDriver = $em->getMetadataFactory()->getCacheDriver()) {
-                $cacheDriver->save(
-                    "{$meta->name}\$GEDMO_TIMESTAMPABLE_CLASSMETADATA", 
-                    $this->_configurations[$meta->name],
-                    null
-                );
-            }
         }
     }
     
@@ -226,72 +204,5 @@ class TimestampableListener implements EventSubscriber
                 }
             }
         }
-    }
-    
-    /**
-     * Reads the Timestampable annotations from the given class
-     * And collects or ovverides the configuration
-     * Returns configuration options or empty array if none found
-     * 
-     * @param ClassMetadataInfo $meta
-     * @param array $config
-     * @throws Timestampable\Exception if any mapping data is invalid
-     * @return void
-     */
-    protected function _readAnnotations(ClassMetadataInfo $meta, array &$config)
-    {        
-        require_once __DIR__ . '/Mapping/Annotations.php';
-        $reader = new AnnotationReader();
-        $reader->setAnnotationNamespaceAlias(
-            'Gedmo\Timestampable\Mapping\\',
-            self::ANNOTATION_NAMESPACE
-        );
-    
-        $class = $meta->getReflectionClass();
-        // property annotations
-        foreach ($class->getProperties() as $property) {
-            if ($meta->isMappedSuperclass && !$property->isPrivate() ||
-                $meta->isInheritedField($property->name) ||
-                $meta->isInheritedAssociation($property->name)
-            ) {
-                continue;
-            }
-            if ($timestampable = $reader->getPropertyAnnotation($property, self::ANNOTATION_TIMESTAMPABLE)) {
-                $field = $property->getName();
-                if (!$meta->hasField($field)) {
-                    throw Exception::fieldMustBeMapped($field, $meta->name);
-                }
-                if (!$this->_isValidField($meta, $field)) {
-                    throw Exception::notValidFieldType($field, $meta->name);
-                }
-                if (!in_array($timestampable->on, array('update', 'create', 'change'))) {
-                    throw Exception::triggerTypeInvalid($field, $meta->name);
-                }
-                if ($timestampable->on == 'change') {
-                    if (!isset($timestampable->field) || !isset($timestampable->value)) {
-                        throw Exception::parametersMissing($field, $meta->name);
-                    }
-                    $field = array(
-                        'field' => $field,
-                        'trackedField' => $timestampable->field,
-                        'value' => $timestampable->value 
-                    );
-                }
-                // properties are unique and mapper checks that, no risk here
-                $config[$timestampable->on][] = $field;
-            }
-        }
-    }
-    
-    /**
-     * Checks if $field type is valid
-     * 
-     * @param ClassMetadata $meta
-     * @param string $field
-     * @return boolean
-     */
-    protected function _isValidField(ClassMetadata $meta, $field)
-    {
-        return in_array($meta->getTypeOfField($field), $this->_validTypes);
     }
 }

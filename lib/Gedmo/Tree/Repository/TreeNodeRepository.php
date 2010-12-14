@@ -565,7 +565,11 @@ class TreeNodeRepository extends EntityRepository
             $config = $this->_configurations[$this->_entityName];
         } else {
             $cacheDriver = $this->_em->getMetadataFactory()->getCacheDriver();
-            if (($cached = $cacheDriver->fetch("{$this->_entityName}\$GEDMO_TREE_CLASSMETADATA")) !== false) {
+            $cacheId = \Gedmo\Mapping\ExtensionMetadataFactory::getCacheId(
+                $this->_entityName, 
+                'Gedmo\Tree'
+            );
+            if (($cached = $cacheDriver->fetch($cacheId)) !== false) {
                 $this->_configurations[$this->_entityName] = $cached;
                 $config = $cached;
             }
