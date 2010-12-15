@@ -53,6 +53,11 @@ class BaseNode extends ANode
         $this->parent = $parent;    
     }
     
+    public function getChildren()
+    {
+        return $this->children;
+    }
+    
     public function getParent()
     {
         return $this->parent;    

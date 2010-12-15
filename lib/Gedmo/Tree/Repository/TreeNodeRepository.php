@@ -4,6 +4,7 @@ namespace Gedmo\Tree\Repository;
 
 use Doctrine\ORM\EntityRepository,
     Doctrine\ORM\Query,
+    Doctrine\ORM\Mapping\ClassMetadataInfo,
     Gedmo\Tree\Node;
 
 /**
@@ -76,7 +77,7 @@ class TreeNodeRepository extends EntityRepository
                 $id = $meta->getReflectionProperty($nodeId)->getValue($node);
                 $qb = $this->_em->createQueryBuilder();
                 $qb->select('COUNT(node.' . $nodeId . ')')
-                    ->from($this->_entityName, 'node')
+                    ->from($this->_getBaseEntityClass($meta), 'node')
                     ->where('node.' . $config['parent'] . ' = ' . $id);
                     
                 $q = $qb->getQuery();
@@ -89,7 +90,7 @@ class TreeNodeRepository extends EntityRepository
                 }
             }
         } else {
-            $dql = "SELECT COUNT(node.{$nodeId}) FROM {$this->_entityName} node";
+            $dql = "SELECT COUNT(node.{$nodeId}) FROM " . $this->_getBaseEntityClass($meta) . " node";
             if ($direct) {
                 $dql .= ' WHERE node.' . $config['parent'] . ' IS NULL';
             }
@@ -681,5 +682,30 @@ class TreeNodeRepository extends EntityRepository
                 }
             }
         }
+    }
+    
+    /**
+     * If entity is mapped through table inheritance
+     * SINGLE_TABLE or JOINED this function checks
+     * recursively for base class in order to produce
+     * correct results
+     * 
+     * @param ClassMetadataInfo $meta
+     * @return string
+     */
+    private function _getBaseEntityClass(ClassMetadataInfo $meta)
+    {
+        $className = $meta->name;
+        if ($meta->discriminatorMap) {
+            // lookup for base class in discriminator map
+            $reflClass = $meta->getReflectionClass();
+            if ($reflParent = $reflClass->getParentClass()) {
+                if (in_array($reflParent->getName(), $meta->discriminatorMap)) {
+                    $meta = $this->_em->getClassMetadata($reflParent->getName());
+                    $className = $this->_getBaseEntityClass($meta);
+                }
+            }
+        }
+        return $className;
     }
 }
