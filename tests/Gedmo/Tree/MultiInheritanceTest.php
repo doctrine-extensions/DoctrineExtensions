@@ -81,6 +81,29 @@ class MultiInheritanceTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(2, count($translations['en_us']));
     }
     
+    /**
+     * Test case for github issue#7
+     * Child count is invalid resulting in SINGLE_TABLE and JOINED 
+     * inheritance mapping
+     */
+    public function testCaseGithubIssue7()
+    {
+        $repo = $this->em->getRepository(self::TEST_ENTITY_CLASS);
+        $vegies = $repo->findOneByTitle('Vegitables');
+        
+        $count = $repo->childCount($vegies, true/*direct*/);
+        $this->assertEquals(3, $count);
+        
+        $children = $vegies->getChildren();
+        //$children = $repo->children($vegies, true); // fails
+        $this->assertEquals(3, count($children));
+        
+        // @todo: $repo->children will fail
+        // also. Structural changes needed. Maybe
+        // persistentCollection usage instead of query builder
+        // $repo->getPath should also fail
+    }
+    
     private function _populate()
     {
         $root = new \Tree\Fixture\Node();
