@@ -21,4 +21,9 @@ There is a post introducing to these extensions on [doctrine project](http://www
 You can test these extensions on [my blog](http://gediminasm.org/test/ "Test doctrine behavior extensions").
 
 All tutorials for basic usage examples are on [my blog](http://gediminasm.org "Tutorials for extensions") also.
-    
+
+Thanks for contributions to:
+
+- Christophe Coevoet [stof](http://github.com/stof)
+- Kudryashov Konstantin [everzet](http://github.com/everzet)
+- Klein Florian [docteurklein](http://github.com/docteurklein)
