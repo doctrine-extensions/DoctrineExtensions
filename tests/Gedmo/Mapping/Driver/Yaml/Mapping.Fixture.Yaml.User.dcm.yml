@@ -2,7 +2,7 @@
 Mapping\Fixture\Yaml\User:
   type: entity
   gedmo:
-    translatable:
+    translation:
       entity: Translatable\Fixture\PersonTranslation
       locale: localeField
   table: users

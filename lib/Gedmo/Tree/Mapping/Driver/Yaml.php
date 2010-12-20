@@ -70,19 +70,18 @@ class Yaml extends File implements Driver
         $mapping = $yaml[$meta->name];
         if (isset($mapping['fields'])) {
             foreach ($mapping['fields'] as $field => $fieldMapping) {
-                if (isset($fieldMapping['gedmo']['tree'])) {
-                    $mappingProperty = $fieldMapping['gedmo']['tree'];
-                    if ($mappingProperty == 'left') {
+                if (isset($fieldMapping['gedmo'])) {
+                    if (in_array('treeLeft', $fieldMapping['gedmo'])) {
                         if (!$this->_isValidField($meta, $field)) {
                             throw MappingException::notValidFieldType($field, $meta->name);
                         }
                         $config['left'] = $field;
-                    } elseif ($mappingProperty == 'right') {
+                    } elseif (in_array('treeRight', $fieldMapping['gedmo'])) {
                         if (!$this->_isValidField($meta, $field)) {
                             throw MappingException::notValidFieldType($field, $meta->name);
                         }
                         $config['right'] = $field;
-                    } elseif ($mappingProperty == 'level') {
+                    } elseif (in_array('treeLevel', $fieldMapping['gedmo'])) {
                         if (!$this->_isValidField($meta, $field)) {
                             throw MappingException::notValidFieldType($field, $meta->name);
                         }
@@ -93,9 +92,8 @@ class Yaml extends File implements Driver
         }
         if (isset($mapping['manyToOne'])) {
             foreach ($mapping['manyToOne'] as $field => $relationMapping) {
-                if (isset($relationMapping['gedmo']['tree'])) {
-                    $mappingProperty = $relationMapping['gedmo']['tree'];
-                    if ($mappingProperty == 'parent') {
+                if (isset($relationMapping['gedmo'])) {
+                    if (in_array('treeParent', $relationMapping['gedmo'])) {
                         if ($relationMapping['targetEntity'] != $meta->name) {
                             throw MappingException::parentFieldNotMappedOrRelated($field, $meta->name);
                         }

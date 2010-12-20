@@ -23,10 +23,7 @@ class ConcurrencyTest extends \PHPUnit_Framework_TestCase
     private $em;
 
     public function setUp()
-    {
-        $classLoader = new \Doctrine\Common\ClassLoader('Tree\Fixture', __DIR__ . '/../');
-        $classLoader->register();
-        
+    {        
         $config = new \Doctrine\ORM\Configuration();
         $config->setMetadataCacheImpl(new \Doctrine\Common\Cache\ArrayCache);
         $config->setQueryCacheImpl(new \Doctrine\Common\Cache\ArrayCache);

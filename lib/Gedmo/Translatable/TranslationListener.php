@@ -389,8 +389,12 @@ class TranslationListener implements EventSubscriber
                 foreach ((array)$result as $entry) {
                     if ($entry['field'] == $field && strlen($entry['content'])) {
                         // update translation only if it has it
-                        $meta->getReflectionProperty($field)
-                            ->setValue($entity, $entry['content']);
+                        $meta->getReflectionProperty($field)->setValue($entity, $entry['content']);
+                        $em->getUnitOfWork()->setOriginalEntityProperty(
+                            spl_object_hash($entity), 
+                            $field, 
+                            $entry['content']
+                        );
                     }
                 }
             }    
@@ -478,18 +482,24 @@ class TranslationListener implements EventSubscriber
         // check if we have default translation and need to reset the translation
         if (!$isInsert && strlen($this->_defaultLocale)) {
             $this->_validateLocale($this->_defaultLocale);
-            $changeSet = $uow->getEntityChangeSet($entity);
-            $needsUpdate = false;
+            $changeSet = $modifiedChangeSet = $uow->getEntityChangeSet($entity);
             foreach ($changeSet as $field => $changes) {
                 if (in_array($field, $translatableFields)) {
                     if ($locale != $this->_defaultLocale && strlen($changes[0])) {
                         $meta->getReflectionProperty($field)->setValue($entity, $changes[0]);
-                        $needsUpdate = true;
+                        $uow->setOriginalEntityProperty(spl_object_hash($entity), $field, $changes[0]);
+                        unset($modifiedChangeSet[$field]);
                     }
                 }
             }
-            if ($needsUpdate) {
-                $uow->recomputeSingleEntityChangeSet($meta, $entity);
+            // cleanup current changeset
+            $uow->clearEntityChangeSet(spl_object_hash($entity));
+            // recompute changeset only if there are changes other than reverted translations
+            if ($modifiedChangeSet) {
+                foreach ($modifiedChangeSet as $field => $changes) {
+                    $uow->setOriginalEntityProperty(spl_object_hash($entity), $field, $changes[0]);
+                }
+                $uow->computeChangeSet($meta, $entity);
             }
         }
     }

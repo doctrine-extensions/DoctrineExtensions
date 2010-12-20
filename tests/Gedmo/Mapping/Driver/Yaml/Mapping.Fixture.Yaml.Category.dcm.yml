@@ -8,7 +8,7 @@ Mapping\Fixture\Yaml\Category:
       generator:
         strategy: AUTO
   gedmo:
-    translatable:
+    translation:
       entity: Translatable\Fixture\CategoryTranslation
       locale: localeField
   fields:
@@ -38,7 +38,7 @@ Mapping\Fixture\Yaml\Category:
       targetEntity: Mapping\Fixture\Yaml\Category
       inversedBy: children
       gedmo:
-        tree: parent
+        - treeParent
   oneToMany:
     children:
       targetEntity: Mapping\Fixture\Yaml\Category

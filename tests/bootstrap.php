@@ -44,3 +44,19 @@ $classLoader->register();
       
 $classLoader = new Doctrine\Common\ClassLoader('Gedmo', __DIR__ . '/../lib');
 $classLoader->register();
+
+// fixture autoloaders
+$classLoader = new Doctrine\Common\ClassLoader('Translatable\Fixture', __DIR__ . '/Gedmo');
+$classLoader->register();
+
+$classLoader = new Doctrine\Common\ClassLoader('Tree\Fixture', __DIR__ . '/Gedmo');
+$classLoader->register();
+
+$classLoader = new Doctrine\Common\ClassLoader('Timestampable\Fixture', __DIR__ . '/Gedmo');
+$classLoader->register();
+
+$classLoader = new Doctrine\Common\ClassLoader('Sluggable\Fixture', __DIR__ . '/Gedmo');
+$classLoader->register();
+
+$classLoader = new Doctrine\Common\ClassLoader('Mapping\Fixture', __DIR__ . '/Gedmo');
+$classLoader->register();

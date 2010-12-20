@@ -58,17 +58,17 @@ class Yaml extends File implements Driver
         
         if (isset($mapping['gedmo'])) {
             $classMapping = $mapping['gedmo'];
-            if (isset($classMapping['translatable']['entity'])) {
-                $translationEntity = $classMapping['translatable']['entity'];
+            if (isset($classMapping['translation']['entity'])) {
+                $translationEntity = $classMapping['translation']['entity'];
                 if (!class_exists($translationEntity)) {
                     throw MappingException::translationClassNotFound($translationEntity);
                 }
                 $config['translationClass'] = $translationEntity;
             }
-            if (isset($classMapping['translatable']['locale'])) {
-                $config['locale'] = $classMapping['translatable']['locale'];
-            } elseif (isset($classMapping['translatable']['language'])) {
-                $config['locale'] = $classMapping['translatable']['language'];
+            if (isset($classMapping['translation']['locale'])) {
+                $config['locale'] = $classMapping['translation']['locale'];
+            } elseif (isset($classMapping['translation']['language'])) {
+                $config['locale'] = $classMapping['translation']['language'];
             }
         }
         if (isset($mapping['fields'])) {

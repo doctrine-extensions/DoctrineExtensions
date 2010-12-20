@@ -5,15 +5,15 @@ Mapping\Fixture\Yaml\BaseCategory:
     lft:
       type: integer
       gedmo:
-        tree: left
+        - treeLeft
     rgt:
       type: integer
       gedmo:
-        tree: right
+        - treeRight
     lvl:
       type: integer
       gedmo:
-        tree: level
+        - treeLevel
     created:
       type: datetime
       gedmo:
