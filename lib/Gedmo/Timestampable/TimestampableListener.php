@@ -6,7 +6,7 @@ use Doctrine\Common\EventSubscriber,
     Doctrine\ORM\Events,
     Doctrine\ORM\Event\LifecycleEventArgs,
     Doctrine\ORM\Event\OnFlushEventArgs,
-    Doctrine\ORM\Event\LoadClassMetadataEventArgs,
+    Gedmo\Mapping\MappedEventSubscriber,
     Doctrine\ORM\EntityManager,
     Gedmo\Mapping\ExtensionMetadataFactory;
 
@@ -20,24 +20,8 @@ use Doctrine\Common\EventSubscriber,
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class TimestampableListener implements EventSubscriber
+class TimestampableListener extends MappedEventSubscriber implements EventSubscriber
 {
-    /**
-     * List of metadata configurations for Timestampable
-     * classes, from annotations
-     * 
-     * @var array
-     */
-    protected $_configurations = array();
-    
-    /**
-     * ExtensionMetadataFactory used to read the extension
-     * metadata
-     * 
-     * @var Gedmo\Mapping\ExtensionMetadataFactory
-     */
-    protected $_extensionMetadataFactory = null;
-    
     /**
      * Specifies the list of events to listen
      * 
@@ -52,59 +36,15 @@ class TimestampableListener implements EventSubscriber
         );
     }
     
-    /**
-     * Get the configuration for specific entity class
-     * if cache driver is present it scans it also
+	/**
+     * Get the namespace of extension event subscriber.
+     * used to load mapping drivers and cache
      * 
-     * @param EntityManager $em
-     * @param string $class
-     * @return array
+     * @return string
      */
-    public function getConfiguration(EntityManager $em, $class) {
-        $config = array();
-        if (isset($this->_configurations[$class])) {
-            $config = $this->_configurations[$class];
-        } else {
-            $cacheDriver = $em->getMetadataFactory()->getCacheDriver();
-            $cacheId = ExtensionMetadataFactory::getCacheId($class, __NAMESPACE__);
-            if (($cached = $cacheDriver->fetch($cacheId)) !== false) {
-                $this->_configurations[$class] = $cached;
-                $config = $cached;
-            }
-        }
-        return $config;
-    }
-    
-    /**
-     * Get metadata mapping reader
-     * 
-     * @param EntityManager $em
-     * @return Gedmo\Mapping\MetadataReader
-     */
-    public function getExtensionMetadataFactory(EntityManager $em)
+    protected function _getNamespace()
     {
-        if (null === $this->_extensionMetadataFactory) {
-            $this->_extensionMetadataFactory = new ExtensionMetadataFactory($em, __NAMESPACE__);
-        }
-        return $this->_extensionMetadataFactory;
-    }
-    
-    /**
-     * Scans the entities for Timestampable annotations
-     * 
-     * @param LoadClassMetadataEventArgs $eventArgs
-     * @throws RuntimeException if ORM version is old
-     * @return void
-     */
-    public function loadClassMetadata(LoadClassMetadataEventArgs $eventArgs)
-    {
-        $meta = $eventArgs->getClassMetadata();
-        $em = $eventArgs->getEntityManager();
-        $factory = $this->getExtensionMetadataFactory($em);
-        $config = $factory->getExtensionMetadata($meta);
-        if ($config) {
-            $this->_configurations[$meta->name] = $config;
-        }
+        return __NAMESPACE__;
     }
     
     /**
