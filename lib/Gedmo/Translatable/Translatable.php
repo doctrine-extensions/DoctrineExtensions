@@ -11,7 +11,6 @@ namespace Gedmo\Translatable;
  * @package Gedmo.Translatable
  * @subpackage Translatable
  * @link http://www.gediminasm.org
- * @version 2.0.0
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 interface Translatable

@@ -36,15 +36,6 @@ class SluggableListener implements EventSubscriber
     protected $_configurations = array();
     
     /**
-     * List of entities which needs to be processed
-     * after the insertion operations, because
-     * query executions will be needed
-     * 
-     * @var array
-     */
-    protected $_pendingEntities = array();
-    
-    /**
      * ExtensionMetadataFactory used to read the extension
      * metadata
      * 
@@ -61,7 +52,6 @@ class SluggableListener implements EventSubscriber
     {
         return array(
             Events::prePersist,
-            Events::postPersist,
             Events::onFlush,
             Events::loadClassMetadata
         );
@@ -136,32 +126,6 @@ class SluggableListener implements EventSubscriber
         
         if ($config = $this->getConfiguration($em, get_class($entity))) {
             $this->_generateSlug($em, $entity, false);
-        }
-    }
-    
-    /**
-     * Checks for inserted entities to update their slugs
-     * 
-     * @param LifecycleEventArgs $args
-     * @return void
-     */
-    public function postPersist(LifecycleEventArgs $args)
-    {
-        $em = $args->getEntityManager();
-        $uow = $em->getUnitOfWork();
-
-        // there can be other entities being inserted because
-        // unitofwork does inserts by class ordered chunks
-        if (!$uow->hasPendingInsertions()) {
-            while ($entity = array_shift($this->_pendingEntities)) {
-                // we know that this slug must be unique and
-                // it was preprocessed allready
-                $config = $this->getConfiguration($em, get_class($entity));
-                $slug = $this->_makeUniqueSlug($em, $entity);
-                $uow->scheduleExtraUpdate($entity, array(
-                    $config['slug'] => array(null, $slug)
-                ));
-            }
         }
     }
     
@@ -253,7 +217,7 @@ class SluggableListener implements EventSubscriber
         }
 
         // make unique slug if requested
-        if ($config['unique'] && !$uow->hasPendingInsertions()) {
+        if ($config['unique']) {
             // set the slug for further processing
             $meta->getReflectionProperty($config['slug'])->setValue($entity, $slug);
             $slug = $this->_makeUniqueSlug($em, $entity);
@@ -263,12 +227,6 @@ class SluggableListener implements EventSubscriber
         // recompute changeset if entity is managed
         if ($changeSet !== false) {
             $uow->recomputeSingleEntityChangeSet($meta, $entity);
-        } elseif ($config['unique'] && $uow->hasPendingInsertions()) {
-            // @todo: make support for unique field metadata on concurrent operations
-            if ($meta->isUniqueField($config['slug'])) {
-                throw Exception::slugFieldIsUnique($config['slug']);
-            }
-            $this->_pendingEntities[] = $entity;
         }
     }
     
@@ -288,7 +246,6 @@ class SluggableListener implements EventSubscriber
         $config = $this->getConfiguration($em, $entityClass);
         $preferedSlug = $meta->getReflectionProperty($config['slug'])->getValue($entity);
         
-        // @todo: optimize
         // search for similar slug
         $qb = $em->createQueryBuilder();
         $qb->select('rec.' . $config['slug'])

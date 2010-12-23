@@ -15,7 +15,6 @@ use Doctrine\ORM\EntityRepository,
  * @package Gedmo.Translatable.Repository
  * @subpackage TranslationRepository
  * @link http://www.gediminasm.org
- * @version 2.0.0
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class TranslationRepository extends EntityRepository
@@ -39,9 +38,10 @@ class TranslationRepository extends EntityRepository
             $identifier = $meta->getSingleIdentifierFieldName();
             $entityId = $meta->getReflectionProperty($identifier)->getValue($entity);
             
+            $translationMeta = $this->getClassMetadata(); // table inheritance support
             $qb = $this->_em->createQueryBuilder();
             $qb->select('trans.content, trans.field, trans.locale')
-                ->from($this->_entityName, 'trans')
+                ->from($translationMeta->rootEntityName, 'trans')
                 ->where('trans.foreignKey = :entityId', 'trans.entity = :entityClass')
                 ->orderBy('trans.locale');
             $q = $qb->getQuery();
@@ -74,8 +74,9 @@ class TranslationRepository extends EntityRepository
     {
         $entity = null;
         $meta = $this->_em->getClassMetadata($class);
+        $translationMeta = $this->getClassMetadata(); // table inheritance support
         if ($meta->hasField($field)) {
-            $dql = "SELECT trans.foreignKey FROM {$this->_entityName} trans";
+            $dql = "SELECT trans.foreignKey FROM {$translationMeta->rootEntityName} trans";
             $dql .= ' WHERE trans.entity = :class';
             $dql .= ' AND trans.field = :field';
             $dql .= ' AND trans.content = :value';
@@ -102,10 +103,11 @@ class TranslationRepository extends EntityRepository
     public function findTranslationsByEntityId($id)
     {
         $result = array();
-        if ($id) {            
+        if ($id) {
+            $translationMeta = $this->getClassMetadata(); // table inheritance support            
             $qb = $this->_em->createQueryBuilder();
             $qb->select('trans.content, trans.field, trans.locale')
-                ->from($this->_entityName, 'trans')
+                ->from($translationMeta->rootEntityName, 'trans')
                 ->where('trans.foreignKey = :entityId')
                 ->orderBy('trans.locale');
             $q = $qb->getQuery();

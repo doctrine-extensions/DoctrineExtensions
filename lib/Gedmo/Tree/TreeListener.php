@@ -58,14 +58,6 @@ class TreeListener implements EventSubscriber
     protected $_pendingChildNodeInserts = array();
     
     /**
-     * List of pending Nodes, which needs to wait
-     * till all inserts are processed first
-     * 
-     * @var array
-     */
-    protected $_pendingNodeUpdates = array();
-    
-    /**
      * ExtensionMetadataFactory used to read the extension
      * metadata
      * 
@@ -163,13 +155,8 @@ class TreeListener implements EventSubscriber
                 $meta = $em->getClassMetadata($entityClass);
                 $changeSet = $uow->getEntityChangeSet($entity);
                 if (array_key_exists($config['parent'], $changeSet)) {
-                    if ($uow->hasPendingInsertions()) {
-                        $this->_pendingNodeUpdates[] = $entity;
-                    } else {
-                        $parent = $meta->getReflectionProperty($config['parent'])
-                            ->getValue($entity);
-                        $this->_adjustNodeWithParent($parent, $entity, $em);
-                    }
+                    $parent = $meta->getReflectionProperty($config['parent'])->getValue($entity);
+                    $this->_adjustNodeWithParent($parent, $entity, $em);
                 }
             }
         }
@@ -231,10 +218,6 @@ class TreeListener implements EventSubscriber
         
         if (!$uow->hasPendingInsertions()) {
             while ($entity = array_shift($this->_pendingChildNodeInserts)) {
-                $this->_processPendingNode($em, $entity);
-            }
-            
-            while ($entity = array_shift($this->_pendingNodeUpdates)) {
                 $this->_processPendingNode($em, $entity);
             }
         }

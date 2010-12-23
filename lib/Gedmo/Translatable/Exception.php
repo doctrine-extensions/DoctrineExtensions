@@ -9,7 +9,6 @@ namespace Gedmo\Translatable;
  * @package Gedmo.Translatable
  * @subpackage Exception
  * @link http://www.gediminasm.org
- * @version 2.0.0
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class Exception extends \Exception
@@ -22,11 +21,6 @@ class Exception extends \Exception
     static public function singleIdentifierRequired($entityClass)
     {
         return new self("Translatable: only a single identifier column is required for the Translatable extension, entity: {$entityClass}.");
-    }
-    
-    static public function pendingInserts()
-    {
-        return new self("Translatable: UnitOfWork has pending inserts, cannot request query execution. TranslationListener does not support Concurrent inserts and updates together, on Doctrine 2 Beta4 yet. Try flushing only inserts or updates");
     }
     
     static public function entityMissingLocaleProperty($field, $className)

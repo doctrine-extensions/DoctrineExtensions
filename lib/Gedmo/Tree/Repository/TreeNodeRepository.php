@@ -46,7 +46,7 @@ class TreeNodeRepository extends EntityRepository
         if ($left && $right) {
             $qb = $this->_em->createQueryBuilder();
             $qb->select('node')
-                ->from($this->_entityName, 'node')
+                ->from($meta->rootEntityName, 'node')
                 ->where('node.' . $config['left'] . " <= :left")
                 ->andWhere('node.' . $config['right'] . " >= :right")
                 ->orderBy('node.' . $config['left'], 'ASC');
@@ -77,7 +77,7 @@ class TreeNodeRepository extends EntityRepository
                 $id = $meta->getReflectionProperty($nodeId)->getValue($node);
                 $qb = $this->_em->createQueryBuilder();
                 $qb->select('COUNT(node.' . $nodeId . ')')
-                    ->from($this->_getBaseEntityClass($meta), 'node')
+                    ->from($meta->rootEntityName, 'node')
                     ->where('node.' . $config['parent'] . ' = ' . $id);
                     
                 $q = $qb->getQuery();
@@ -90,7 +90,7 @@ class TreeNodeRepository extends EntityRepository
                 }
             }
         } else {
-            $dql = "SELECT COUNT(node.{$nodeId}) FROM " . $this->_getBaseEntityClass($meta) . " node";
+            $dql = "SELECT COUNT(node.{$nodeId}) FROM " . $meta->rootEntityName . " node";
             if ($direct) {
                 $dql .= ' WHERE node.' . $config['parent'] . ' IS NULL';
             }
@@ -116,7 +116,7 @@ class TreeNodeRepository extends EntityRepository
              
         $qb = $this->_em->createQueryBuilder();
         $qb->select('node')
-            ->from($this->_entityName, 'node');
+            ->from($meta->rootEntityName, 'node');
         if ($node !== null) {
             if ($direct) {
                 $nodeId = $meta->getSingleIdentifierFieldName();
@@ -164,7 +164,7 @@ class TreeNodeRepository extends EntityRepository
 
         $qb = $this->_em->createQueryBuilder();
         $qb->select('node')
-            ->from($this->_entityName, 'node')
+            ->from($meta->rootEntityName, 'node')
             ->where('node.' . $config['right'] . ' = 1 + node.' . $config['left']);
         if (!$sortByField) {
             $qb->orderBy('node.' . $config['left'], 'ASC');
@@ -207,7 +207,7 @@ class TreeNodeRepository extends EntityRepository
                 return false;
             }
         }
-        $dql = "SELECT node FROM {$this->_entityName} node";
+        $dql = "SELECT node FROM {$meta->rootEntityName} node";
         $dql .= ' WHERE node.' . $config['left'] . ' = ' . ($right + 1);
         $q = $this->_em->createQuery($dql);
         $q->setMaxResults(1);
@@ -276,7 +276,7 @@ class TreeNodeRepository extends EntityRepository
             }
         }
         
-        $dql = "SELECT node FROM {$this->_entityName} node";
+        $dql = "SELECT node FROM {$meta->rootEntityName} node";
         $dql .= ' WHERE node.' . $config['right'] . ' = ' . ($left - 1);
         $q = $this->_em->createQuery($dql);
         $q->setMaxResults(1);
@@ -377,7 +377,7 @@ class TreeNodeRepository extends EntityRepository
             $parentId = $meta->getReflectionProperty($pk)->getValue($parent);
             $nodeId = $meta->getReflectionProperty($pk)->getValue($node);
             
-            $dql = "UPDATE {$this->_entityName} node";
+            $dql = "UPDATE {$meta->rootEntityName} node";
             $dql .= ' SET node.' . $config['parent'] . ' = ' . $parentId;
             $dql .= ' WHERE node.' . $config['parent'] . ' = ' . $nodeId;
             $q = $this->_em->createQuery($dql);
@@ -386,7 +386,7 @@ class TreeNodeRepository extends EntityRepository
             $this->_sync($config, 1, '-', 'BETWEEN ' . ($left + 1) . ' AND ' . ($right - 1));
             $this->_sync($config, 2, '-', '> ' . $right);
             
-            $dql = "UPDATE {$this->_entityName} node";
+            $dql = "UPDATE {$meta->rootEntityName} node";
             $dql .= ' SET node.' . $config['parent'] . ' = NULL,';
             $dql .= ' node.' . $config['left'] . ' = 0,';
             $dql .= ' node.' . $config['right'] . ' = 0';
@@ -426,12 +426,12 @@ class TreeNodeRepository extends EntityRepository
         $rightField = $config['right'];
         $parentField = $config['parent'];
         
-        $q = $this->_em->createQuery("SELECT MIN(node.{$leftField}) FROM {$this->_entityName} node");
+        $q = $this->_em->createQuery("SELECT MIN(node.{$leftField}) FROM {$meta->rootEntityName} node");
         
         $min = intval($q->getSingleScalarResult());
         $edge = $this->_getTreeEdge($config);
         for ($i = $min; $i <= $edge; $i++) {
-            $dql = "SELECT COUNT(node.{$identifier}) FROM {$this->_entityName} node";
+            $dql = "SELECT COUNT(node.{$identifier}) FROM {$meta->rootEntityName} node";
             $dql .= " WHERE (node.{$leftField} = {$i} OR node.{$rightField} = {$i})";
             $q = $this->_em->createQuery($dql);
             $count = intval($q->getSingleScalarResult());
@@ -445,7 +445,7 @@ class TreeNodeRepository extends EntityRepository
         }
         
         // check for missing parents
-        $dql = "SELECT c FROM {$this->_entityName} c";
+        $dql = "SELECT c FROM {$meta->rootEntityName} c";
         $dql .= " LEFT JOIN c.{$parentField} p";
         $dql .= " WHERE c.{$parentField} IS NOT NULL";
         $dql .= " AND p.{$identifier} IS NULL";
@@ -458,7 +458,7 @@ class TreeNodeRepository extends EntityRepository
             return $errors; // loading broken relation can cause infinite loop
         }
         
-        $dql = "SELECT node FROM {$this->_entityName} node";
+        $dql = "SELECT node FROM {$meta->rootEntityName} node";
         $dql .= " WHERE node.{$rightField} < node.{$leftField}";
         $q = $this->_em->createQuery($dql);
         $q->setMaxResults(1);
@@ -490,7 +490,7 @@ class TreeNodeRepository extends EntityRepository
                     $errors[] = "node [{$id}] right is greater than parent`s [{$parentId}] right value";
                 }
             } else {
-                $dql = "SELECT COUNT(node.{$identifier}) FROM {$this->_entityName} node";
+                $dql = "SELECT COUNT(node.{$identifier}) FROM {$meta->rootEntityName} node";
                 $dql .= " WHERE node.{$leftField} < {$left}";
                 $dql .= " AND node.{$rightField} > {$right}";
                 $q = $this->_em->createQuery($dql);
@@ -523,7 +523,7 @@ class TreeNodeRepository extends EntityRepository
         $parentField = $config['parent'];
         
         $count = 1;
-        $dql = "SELECT node.{$identifier} FROM {$this->_entityName} node";
+        $dql = "SELECT node.{$identifier} FROM {$meta->rootEntityName} node";
         $dql .= " ORDER BY node.{$leftField} ASC";
         $q = $this->_em->createQuery($dql);
         $nodes = $q->getArrayResult();
@@ -533,7 +533,7 @@ class TreeNodeRepository extends EntityRepository
             foreach ($nodes as $node) {
                 $left = $count++;
                 $right = $count++;
-                $dql = "UPDATE {$this->_entityName} node";
+                $dql = "UPDATE {$meta->rootEntityName} node";
                 $dql .= " SET node.{$leftField} = {$left},";
                 $dql .= " node.{$rightField} = {$right}";
                 $dql .= " WHERE node.{$identifier} = {$node[$identifier]}";
@@ -589,7 +589,8 @@ class TreeNodeRepository extends EntityRepository
      */
     protected function _getTreeEdge($config)
     {
-        $q = $this->_em->createQuery("SELECT MAX(node.{$config['right']}) FROM {$this->_entityName} node");
+        $meta = $this->getClassMetadata();
+        $q = $this->_em->createQuery("SELECT MAX(node.{$config['right']}) FROM {$meta->rootEntityName} node");
         $q->useResultCache(false);
         $q->useQueryCache(false);
         $right = $q->getSingleScalarResult();
@@ -613,7 +614,8 @@ class TreeNodeRepository extends EntityRepository
             $field = $config['right'];
         }
         
-        $dql = "UPDATE {$this->_entityName} node";
+        $meta = $this->getClassMetadata();
+        $dql = "UPDATE {$meta->rootEntityName} node";
         $dql .= " SET node.{$field} = node.{$field} {$dir} {$shift}";
         $dql .= " WHERE node.{$field} {$conditions}";
         $q = $this->_em->createQuery($dql);
@@ -682,30 +684,5 @@ class TreeNodeRepository extends EntityRepository
                 }
             }
         }
-    }
-    
-    /**
-     * If entity is mapped through table inheritance
-     * SINGLE_TABLE or JOINED this function checks
-     * recursively for base class in order to produce
-     * correct results
-     * 
-     * @param ClassMetadataInfo $meta
-     * @return string
-     */
-    private function _getBaseEntityClass(ClassMetadataInfo $meta)
-    {
-        $className = $meta->name;
-        if ($meta->discriminatorMap) {
-            // lookup for base class in discriminator map
-            $reflClass = $meta->getReflectionClass();
-            if ($reflParent = $reflClass->getParentClass()) {
-                if (in_array($reflParent->getName(), $meta->discriminatorMap)) {
-                    $meta = $this->_em->getClassMetadata($reflParent->getName());
-                    $className = $this->_getBaseEntityClass($meta);
-                }
-            }
-        }
-        return $className;
     }
 }
