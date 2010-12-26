@@ -7,8 +7,7 @@ use Doctrine\Common\EventSubscriber,
     Doctrine\ORM\Event\LifecycleEventArgs,
     Doctrine\ORM\Event\OnFlushEventArgs,
     Gedmo\Mapping\MappedEventSubscriber,
-    Doctrine\ORM\EntityManager,
-    Gedmo\Mapping\ExtensionMetadataFactory;
+    Doctrine\ORM\EntityManager;
 
 /**
  * The Timestampable listener handles the update of

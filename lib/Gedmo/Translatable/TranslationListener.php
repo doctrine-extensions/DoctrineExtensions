@@ -9,10 +9,8 @@ use Doctrine\Common\EventSubscriber,
     Gedmo\Mapping\MappedEventSubscriber,
     Doctrine\ORM\EntityManager,
     Doctrine\ORM\Query,
-    Doctrine\ORM\Mapping\ClassMetadata,
     Doctrine\ORM\Mapping\ClassMetadataInfo,
-    Gedmo\Translatable\Entity\Translation,
-    Gedmo\Mapping\ExtensionMetadataFactory;
+    Gedmo\Translatable\Entity\Translation;
 
 /**
  * The translation listener handles the generation and
@@ -126,10 +124,10 @@ class TranslationListener extends MappedEventSubscriber implements EventSubscrib
      * defined locale first..
      * 
      * @param object $entity
-     * @param ClassMetadata $meta
+     * @param ClassMetadataInfo $meta
      * @return string
      */
-    public function getTranslatableLocale($entity, ClassMetadata $meta)
+    public function getTranslatableLocale($entity, ClassMetadataInfo $meta)
     {
         $locale = $this->_locale;
         if (isset($this->_configurations[$meta->name]['locale'])) {

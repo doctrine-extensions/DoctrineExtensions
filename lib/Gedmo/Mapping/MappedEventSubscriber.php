@@ -62,7 +62,7 @@ abstract class MappedEventSubscriber
         } else {
             $cacheDriver = $em->getMetadataFactory()->getCacheDriver();
             $cacheId = ExtensionMetadataFactory::getCacheId($class, $this->_getNamespace());
-            if (($cached = $cacheDriver->fetch($cacheId)) !== false) {
+            if ($cacheDriver && ($cached = $cacheDriver->fetch($cacheId)) !== false) {
                 $this->_configurations[$class] = $cached;
                 $config = $cached;
             }

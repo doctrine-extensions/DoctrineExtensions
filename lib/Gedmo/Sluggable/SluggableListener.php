@@ -8,9 +8,7 @@ use Doctrine\Common\EventSubscriber,
     Doctrine\ORM\Event\OnFlushEventArgs,
     Gedmo\Mapping\MappedEventSubscriber,
     Doctrine\ORM\EntityManager,
-    Doctrine\ORM\Query,
-    Doctrine\ORM\Mapping\ClassMetadata,
-    Doctrine\ORM\Mapping\ClassMetadataInfo;
+    Doctrine\ORM\Query;
 
 /**
  * The SluggableListener handles the generation of slugs

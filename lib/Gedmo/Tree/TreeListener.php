@@ -9,9 +9,7 @@ use Doctrine\Common\EventSubscriber,
     Gedmo\Mapping\MappedEventSubscriber,
     Doctrine\ORM\EntityManager,
     Doctrine\ORM\Query,
-    Doctrine\ORM\Mapping\ClassMetadata,
-    Doctrine\ORM\Mapping\ClassMetadataInfo,
-    Gedmo\Mapping\ExtensionMetadataFactory;
+    Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 /**
  * The tree listener handles the synchronization of
@@ -200,11 +198,11 @@ class TreeListener extends MappedEventSubscriber implements EventSubscriber
     /**
      * Checks if $field type is valid
      * 
-     * @param ClassMetadata $meta
+     * @param ClassMetadataInfo $meta
      * @param string $field
      * @return boolean
      */
-    protected function _isValidField(ClassMetadata $meta, $field)
+    protected function _isValidField(ClassMetadataInfo $meta, $field)
     {
         return in_array($meta->getTypeOfField($field), $this->_validTypes);
     }
