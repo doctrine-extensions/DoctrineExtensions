@@ -51,32 +51,11 @@ class TranslatableTest extends \PHPUnit_Framework_TestCase
             $this->em->getClassMetadata(self::TEST_ENTITY_CLASS_COMMENT),
             $this->em->getClassMetadata('Gedmo\Translatable\Entity\Translation'),
         ));
+        $this->populate();
     }
     
     public function testFixtureGeneratedTranslations()
     {
-        $article = new Article();
-        $article->setTitle('title in en');
-        $article->setContent('content in en');
-        
-        $comment1 = new Comment();
-        $comment1->setSubject('subject1 in en');
-        $comment1->setMessage('message1 in en');
-        
-        $comment2 = new Comment();
-        $comment2->setSubject('subject2 in en');
-        $comment2->setMessage('message2 in en');
-        
-        $article->addComment($comment1);
-        $article->addComment($comment2);
-
-        $this->em->persist($article);
-        $this->em->persist($comment1);
-        $this->em->persist($comment2);
-        $this->em->flush();
-        $this->articleId = $article->getId();
-        $this->em->clear();
-        
         $repo = $this->em->getRepository('Gedmo\Translatable\Entity\Translation');
         $this->assertTrue($repo instanceof Repository\TranslationRepository);
         
@@ -222,5 +201,54 @@ class TranslatableTest extends \PHPUnit_Framework_TestCase
 
         $translations = $repo->findTranslationsByEntityId($this->articleId);
         $this->assertEquals(count($translations), 0);
+    }
+    
+    /**
+     * Translation fallback, related to issue #9 on github
+     */
+    public function testTranslationFallback()
+    {
+        $this->translatableListener->setTranslationFallback(false);
+        $this->translatableListener->setTranslatableLocale('ru_RU');
+        
+        $article = $this->em->find(self::TEST_ENTITY_CLASS_ARTICLE, $this->articleId);
+        $this->assertFalse((bool)$article->getTitle());
+        $this->assertFalse((bool)$article->getContent());
+        
+        foreach ($article->getComments() as $comment) {
+            $this->assertFalse((bool)$comment->getSubject());
+            $this->assertFalse((bool)$comment->getMessage());
+        }
+        $this->em->clear();
+        $this->translatableListener->setTranslationFallback(true);
+        $article = $this->em->find(self::TEST_ENTITY_CLASS_ARTICLE, $this->articleId);
+        
+        $this->assertEquals($article->getTitle(), 'title in en');
+        $this->assertEquals($article->getContent(), 'content in en');
+    }
+    
+    private function populate()
+    {
+        $article = new Article();
+        $article->setTitle('title in en');
+        $article->setContent('content in en');
+        
+        $comment1 = new Comment();
+        $comment1->setSubject('subject1 in en');
+        $comment1->setMessage('message1 in en');
+        
+        $comment2 = new Comment();
+        $comment2->setSubject('subject2 in en');
+        $comment2->setMessage('message2 in en');
+        
+        $article->addComment($comment1);
+        $article->addComment($comment2);
+
+        $this->em->persist($article);
+        $this->em->persist($comment1);
+        $this->em->persist($comment2);
+        $this->em->flush();
+        $this->articleId = $article->getId();
+        $this->em->clear();
     }
 }

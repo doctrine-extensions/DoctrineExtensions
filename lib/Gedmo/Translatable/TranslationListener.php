@@ -60,6 +60,15 @@ class TranslationListener extends MappedEventSubscriber implements EventSubscrib
     private $_defaultLocale = '';
     
     /**
+     * If this is set to false, when if entity does
+     * not have a translation for requested locale
+     * it will show a blank value
+     * 
+     * @var boolean
+     */
+    private $_translationFallback = true;
+    
+    /**
      * List of translations which do not have the foreign
      * key generated yet - MySQL case. These translations
      * will be updated with new keys on postPersist event
@@ -92,6 +101,18 @@ class TranslationListener extends MappedEventSubscriber implements EventSubscrib
     protected function _getNamespace()
     {
         return __NAMESPACE__;
+    }
+    
+    /**
+     * Enable or disable translation fallback
+     * to original record value
+     * 
+     * @param boolean $bool
+     * @return void
+     */
+    public function setTranslationFallback($bool)
+    {
+        $this->_translationFallback = (bool)$bool;
     }
     
     /**
@@ -272,16 +293,21 @@ class TranslationListener extends MappedEventSubscriber implements EventSubscrib
             $result = $q->getArrayResult();
             // translate entity translatable properties
             foreach ($config['fields'] as $field) {
+                $translated = '';
                 foreach ((array)$result as $entry) {
-                    if ($entry['field'] == $field && strlen($entry['content'])) {
-                        // update translation only if it has it
-                        $meta->getReflectionProperty($field)->setValue($entity, $entry['content']);
-                        $em->getUnitOfWork()->setOriginalEntityProperty(
-                            spl_object_hash($entity), 
-                            $field, 
-                            $entry['content']
-                        );
+                    if ($entry['field'] == $field) {
+                        $translated = $entry['content'];
+                        break;
                     }
+                }
+                // update translation
+                if (strlen($translated) || !$this->_translationFallback) {
+                    $meta->getReflectionProperty($field)->setValue($entity, $translated);
+                    $em->getUnitOfWork()->setOriginalEntityProperty(
+                        spl_object_hash($entity), 
+                        $field, 
+                        $translated
+                    );
                 }
             }    
         }
