@@ -45,16 +45,14 @@ class Chain implements Driver
     }
     
     /**
-     * (non-PHPdoc)
-     * @see Gedmo\Mapping.Driver::validateFullMetadata()
+     * {@inheritDoc}
      */
     public function validateFullMetadata(ClassMetadataInfo $meta, array $config)
     {
     }
     
     /**
-     * (non-PHPdoc)
-     * @see Gedmo\Mapping.Driver::readExtendedMetadata()
+     * {@inheritDoc}
      */
     public function readExtendedMetadata(ClassMetadataInfo $meta, array &$config)
     {

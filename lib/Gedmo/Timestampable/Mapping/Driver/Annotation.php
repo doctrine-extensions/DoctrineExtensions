@@ -38,8 +38,7 @@ class Annotation implements Driver
     );
     
     /**
-     * (non-PHPdoc)
-     * @see Gedmo\Mapping.Driver::validateFullMetadata()
+     * {@inheritDoc}
      */
     public function validateFullMetadata(ClassMetadataInfo $meta, array $config)
     {
@@ -47,8 +46,7 @@ class Annotation implements Driver
     }
     
     /**
-     * (non-PHPdoc)
-     * @see Gedmo\Mapping.Driver::readExtendedMetadata()
+     * {@inheritDoc}
      */
     public function readExtendedMetadata(ClassMetadataInfo $meta, array &$config) {
         require_once __DIR__ . '/../Annotations.php';

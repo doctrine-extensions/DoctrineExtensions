@@ -39,8 +39,7 @@ class Yaml extends File implements Driver
     );
     
     /**
-     * (non-PHPdoc)
-     * @see Gedmo\Mapping.Driver::validateFullMetadata()
+     * {@inheritDoc}
      */
     public function validateFullMetadata(ClassMetadataInfo $meta, array $config)
     {
@@ -48,8 +47,7 @@ class Yaml extends File implements Driver
     }
     
     /**
-     * (non-PHPdoc)
-     * @see Gedmo\Mapping.Driver::readExtendedMetadata()
+     * {@inheritDoc}
      */
     public function readExtendedMetadata(ClassMetadataInfo $meta, array &$config) {
         $yaml = $this->_loadMappingFile($this->_findMappingFile($meta->name));
@@ -83,8 +81,7 @@ class Yaml extends File implements Driver
     }
     
     /**
-     * (non-PHPdoc)
-     * @see Gedmo\Mapping\Driver.File::_loadMappingFile()
+     * {@inheritDoc}
      */
     protected function _loadMappingFile($file)
     {

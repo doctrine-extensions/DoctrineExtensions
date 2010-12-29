@@ -37,7 +37,7 @@ class Category implements Node
      * @gedmo:TreeParent
      * @ManyToOne(targetEntity="Category", inversedBy="children")
      */
-    private $parent;
+    private $parentId;
     
     /**
      * @gedmo:TreeLevel
@@ -72,11 +72,11 @@ class Category implements Node
     
     public function setParent(Category $parent)
     {
-        $this->parent = $parent;    
+        $this->parentId = $parent;    
     }
     
     public function getParent()
     {
-        return $this->parent;    
+        return $this->parentId;    
     }
 }

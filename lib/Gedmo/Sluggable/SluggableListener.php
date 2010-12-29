@@ -40,10 +40,7 @@ class SluggableListener extends MappedEventSubscriber implements EventSubscriber
     }
     
     /**
-     * Get the namespace of extension event subscriber.
-     * used to load mapping drivers and cache
-     * 
-     * @return string
+     * {@inheritDoc}
      */
     protected function _getNamespace()
     {

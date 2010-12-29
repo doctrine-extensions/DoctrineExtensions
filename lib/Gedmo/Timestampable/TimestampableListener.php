@@ -36,10 +36,7 @@ class TimestampableListener extends MappedEventSubscriber implements EventSubscr
     }
     
 	/**
-     * Get the namespace of extension event subscriber.
-     * used to load mapping drivers and cache
-     * 
-     * @return string
+     * {@inheritDoc}
      */
     protected function _getNamespace()
     {
