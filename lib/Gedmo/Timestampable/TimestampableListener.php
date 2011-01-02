@@ -121,11 +121,8 @@ class TimestampableListener extends MappedEventSubscriber implements EventSubscr
         $em = $args->getEntityManager();
         $entity = $args->getEntity();
         
-        $entityClass = get_class($entity);
-        if ($config = $this->getConfiguration($em, $entityClass)) {
-            $meta = $em->getClassMetadata($entityClass);
-
-            $config = $this->getConfiguration($em, $entityClass);
+        $meta = $em->getClassMetadata(get_class($entity));
+        if ($config = $this->getConfiguration($em, $meta->name)) {
             if (isset($config['update'])) {
                 foreach ($config['update'] as $field) {
                     $meta->getReflectionProperty($field)
