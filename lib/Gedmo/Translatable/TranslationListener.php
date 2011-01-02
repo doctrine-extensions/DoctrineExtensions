@@ -201,7 +201,15 @@ class TranslationListener extends MappedEventSubscriber implements EventSubscrib
         foreach ($uow->getScheduledEntityUpdates() as $entity) {
             $config = $this->getConfiguration($em, get_class($entity));
             if (isset($config['fields'])) {
-                $this->_handleTranslatableEntityUpdate($em, $entity, false);
+                // check if there are translation changes
+                $changeSet = $uow->getEntityChangeSet($entity);
+                foreach ($config['fields'] as $field) {
+                    if (array_key_exists($field, $changeSet)) {
+                        // needs handling
+                        $this->_handleTranslatableEntityUpdate($em, $entity, false);
+                        break;
+                    }
+                }
             }
         }
         // check scheduled deletions for Translatable entities
@@ -324,7 +332,8 @@ class TranslationListener extends MappedEventSubscriber implements EventSubscrib
     {
         $entityClass = get_class($entity);
         // no need cache, metadata is loaded only once in MetadataFactoryClass
-        $translationMetadata = $em->getClassMetadata($this->getTranslationClass($entityClass));
+        $translationClass = $this->getTranslationClass($entityClass);
+        $translationMetadata = $em->getClassMetadata($translationClass);
         $meta = $em->getClassMetadata($entityClass);
         
         // check for the availability of the primary key
@@ -342,7 +351,6 @@ class TranslationListener extends MappedEventSubscriber implements EventSubscrib
         $this->_validateLocale($locale);
 
         $uow = $em->getUnitOfWork();
-        $translationClass = $this->getTranslationClass($entityClass);
         $config = $this->getConfiguration($em, $entityClass);
         $translatableFields = $config['fields'];
         foreach ($translatableFields as $field) {
