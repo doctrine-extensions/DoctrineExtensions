@@ -123,7 +123,7 @@ class TreeListener extends MappedEventSubscriber implements EventSubscriber
             }
             $diff = $rightValue - $leftValue + 1;
             if ($diff > 2) {
-                $dql = "SELECT node FROM {$entityClass} node";
+                $dql = "SELECT node FROM {$meta->rootEntityName} node";
                 $dql .= " WHERE node.{$config['left']} BETWEEN :left AND :right";
                 $q = $em->createQuery($dql);
                 // get nodes for deletion
@@ -213,9 +213,8 @@ class TreeListener extends MappedEventSubscriber implements EventSubscriber
      */
     private function _processPendingNode(EntityManager $em, $entity)
     {
-        $entityClass = get_class($entity);
-        $config = $this->getConfiguration($em, $entityClass);
-        $meta = $em->getClassMetadata($entityClass);
+        $meta = $em->getClassMetadata(get_class($entity));
+        $config = $this->getConfiguration($em, $meta->name);
         $parent = $meta->getReflectionProperty($config['parent'])->getValue($entity);
         $this->_adjustNodeWithParent($parent, $entity, $em);
     }
@@ -229,11 +228,10 @@ class TreeListener extends MappedEventSubscriber implements EventSubscriber
      */
     private function _prepareRoot(EntityManager $em, $entity)
     {
-        $entityClass = get_class($entity);
-        $config = $this->getConfiguration($em, $entityClass);
+        $meta = $em->getClassMetadata(get_class($entity));
+        $config = $this->getConfiguration($em, $meta->name);
         
         $edge = $this->_treeEdge ?: $this->_getTreeEdge($em, $entity);
-        $meta = $em->getClassMetadata($entityClass);
         
         $meta->getReflectionProperty($config['left'])->setValue($entity, $edge + 1);
         $meta->getReflectionProperty($config['right'])->setValue($entity, $edge + 2);
@@ -251,10 +249,10 @@ class TreeListener extends MappedEventSubscriber implements EventSubscriber
      */
     private function _adjustNodeWithParent($parent, $entity, EntityManager $em)
     {
-        $entityClass = get_class($entity);
-        $config = $this->getConfiguration($em, $entityClass);
+        $meta = $em->getClassMetadata(get_class($entity));
+        $config = $this->getConfiguration($em, $meta->name);
         $edge = $this->_getTreeEdge($em, $entity);
-        $meta = $em->getClassMetadata($entityClass);
+        
         
         $leftValue = $meta->getReflectionProperty($config['left'])->getValue($entity);
         $rightValue = $meta->getReflectionProperty($config['right'])->getValue($entity);
@@ -273,7 +271,7 @@ class TreeListener extends MappedEventSubscriber implements EventSubscriber
                 $this->_sync($em, $entity, 2, '+', '>= ' . $parentRightValue);
                 // cannot schedule this update if other Nodes pending
                 $qb = $em->createQueryBuilder();
-                $qb->update($entityClass, 'node')
+                $qb->update($meta->rootEntityName, 'node')
                     ->set('node.' . $config['left'], $parentRightValue)
                     ->set('node.' . $config['right'], $parentRightValue + 1);
                 $entityIdentifiers = $meta->getIdentifierValues($entity);
@@ -318,14 +316,14 @@ class TreeListener extends MappedEventSubscriber implements EventSubscriber
      */
     private function _sync(EntityManager $em, $entity, $shift, $dir, $conditions, $field = 'both')
     {
-        $entityClass = get_class($entity);
-        $config = $this->getConfiguration($em, $entityClass);
+        $meta = $em->getClassMetadata(get_class($entity));
+        $config = $this->getConfiguration($em, $meta->name);
         if ($field == 'both') {
             $this->_sync($em, $entity, $shift, $dir, $conditions, $config['left']);
             $field = $config['right'];
         }
         
-        $dql = "UPDATE {$entityClass} node";
+        $dql = "UPDATE {$meta->rootEntityName} node";
         $dql .= " SET node.{$field} = node.{$field} {$dir} {$shift}";
         $dql .= " WHERE node.{$field} {$conditions}";
         $q = $em->createQuery($dql);
@@ -341,10 +339,10 @@ class TreeListener extends MappedEventSubscriber implements EventSubscriber
      */
     private function _getTreeEdge(EntityManager $em, $entity)
     {
-        $entityClass = get_class($entity);
-        $config = $this->getConfiguration($em, $entityClass);
+        $meta = $em->getClassMetadata(get_class($entity));
+        $config = $this->getConfiguration($em, $meta->name);
         
-        $query = $em->createQuery("SELECT MAX(node.{$config['right']}) FROM {$entityClass} node");
+        $query = $em->createQuery("SELECT MAX(node.{$config['right']}) FROM {$meta->rootEntityName} node");
         $right = $query->getSingleScalarResult();
         return intval($right);
     }
