@@ -5,7 +5,7 @@ namespace Gedmo\Translatable\Mapping\Driver;
 use Gedmo\Mapping\Driver,
     Doctrine\Common\Annotations\AnnotationReader,
     Doctrine\ORM\Mapping\ClassMetadataInfo,
-    Gedmo\Translatable\Mapping\MappingException;
+    Gedmo\Exception\InvalidArgumentException;
 
 /**
  * This is an annotation mapping driver for Translatable
@@ -77,7 +77,7 @@ class Annotation implements Driver
         if (isset($classAnnotations[self::ANNOTATION_ENTITY_CLASS])) {
             $annot = $classAnnotations[self::ANNOTATION_ENTITY_CLASS];
             if (!class_exists($annot->class)) {
-                throw MappingException::translationClassNotFound($annot->class);
+                throw new InvalidArgumentException("Translation entity class: {$annot->class} does not exist.");
             }
             $config['translationClass'] = $annot->class;
         }
@@ -94,10 +94,10 @@ class Annotation implements Driver
             if ($translatable = $reader->getPropertyAnnotation($property, self::ANNOTATION_TRANSLATABLE)) {
                 $field = $property->getName();
                 if (!$meta->hasField($field)) {
-                    throw MappingException::fieldMustBeMapped($field, $meta->name);
+                    throw new InvalidArgumentException("Unable to find translatable [{$field}] as mapped property in entity - {$meta->name}");
                 }
                 if (!$this->_isValidField($meta, $field)) {
-                    throw MappingException::notValidFieldType($field, $meta->name);
+                    throw new InvalidArgumentException("Translatable field - [{$field}] type is not valid and must be 'string' or 'text' in class - {$meta->name}");
                 }
                 // fields cannot be overrided and throws mapping exception
                 $config['fields'][] = $field;
@@ -106,13 +106,13 @@ class Annotation implements Driver
             if ($locale = $reader->getPropertyAnnotation($property, self::ANNOTATION_LOCALE)) {
                 $field = $property->getName();
                 if ($meta->hasField($field)) {
-                    throw MappingException::fieldMustNotBeMapped($field, $meta->name);
+                    throw new InvalidArgumentException("Locale field [{$field}] should not be mapped as column property in entity - {$meta->name}, since it makes no sence");
                 }
                 $config['locale'] = $field;
             } elseif ($language = $reader->getPropertyAnnotation($property, self::ANNOTATION_LANGUAGE)) {
                 $field = $property->getName();
                 if ($meta->hasField($field)) {
-                    throw MappingException::fieldMustNotBeMapped($field, $meta->name);
+                    throw new InvalidArgumentException("Language field [{$field}] should not be mapped as column property in entity - {$meta->name}, since it makes no sence");
                 }
                 $config['locale'] = $field;
             }

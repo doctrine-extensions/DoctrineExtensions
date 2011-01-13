@@ -77,7 +77,6 @@ abstract class File
                 return $path . DIRECTORY_SEPARATOR . $fileName;
             }
         }
-
-        throw \Gedmo\Mapping\DriverException::mappingFileNotFound($fileName, $className);
+        throw new \Gedmo\Exception\UnexpectedValueException("No mapping file found named '$fileName' for class '$className'.");
     }
 }

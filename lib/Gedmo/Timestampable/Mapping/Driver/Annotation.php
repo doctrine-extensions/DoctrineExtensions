@@ -5,7 +5,7 @@ namespace Gedmo\Timestampable\Mapping\Driver;
 use Gedmo\Mapping\Driver,
     Doctrine\Common\Annotations\AnnotationReader,
     Doctrine\ORM\Mapping\ClassMetadataInfo,
-    Gedmo\Timestampable\Mapping\MappingException;
+    Gedmo\Exception\InvalidArgumentException;
 
 /**
  * This is an annotation mapping driver for Timestampable
@@ -65,17 +65,17 @@ class Annotation implements Driver
             if ($timestampable = $reader->getPropertyAnnotation($property, self::ANNOTATION_TIMESTAMPABLE)) {
                 $field = $property->getName();
                 if (!$meta->hasField($field)) {
-                    throw MappingException::fieldMustBeMapped($field, $meta->name);
+                    throw new InvalidArgumentException("Unable to find timestampable [{$field}] as mapped property in entity - {$meta->name}");
                 }
                 if (!$this->_isValidField($meta, $field)) {
-                    throw MappingException::notValidFieldType($field, $meta->name);
+                    throw new InvalidArgumentException("Field - [{$field}] type is not valid and must be 'date', 'datetime' or 'time' in class - {$meta->name}");
                 }
                 if (!in_array($timestampable->on, array('update', 'create', 'change'))) {
-                    throw MappingException::triggerTypeInvalid($field, $meta->name);
+                    throw new InvalidArgumentException("Field - [{$field}] trigger 'on' is not one of [update, create, change] in class - {$meta->name}");
                 }
                 if ($timestampable->on == 'change') {
                     if (!isset($timestampable->field) || !isset($timestampable->value)) {
-                        throw MappingException::parametersMissing($field, $meta->name);
+                        throw new InvalidArgumentException("Missing parameters on property - {$field}, field and value must be set on [change] trigger in class - {$meta->name}");
                     }
                     $field = array(
                         'field' => $field,

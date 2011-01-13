@@ -5,7 +5,7 @@ namespace Gedmo\Tree\Mapping\Driver;
 use Gedmo\Mapping\Driver,
     Doctrine\Common\Annotations\AnnotationReader,
     Doctrine\ORM\Mapping\ClassMetadataInfo,
-    Gedmo\Tree\Mapping\MappingException;
+    Gedmo\Exception\InvalidArgumentException;
 
 /**
  * This is an annotation mapping driver for Tree
@@ -69,7 +69,7 @@ class Annotation implements Driver
                 $missingFields[] = 'right';
             }
             if ($missingFields) {
-                throw MappingException::missingMetaProperties($missingFields, $meta->name);
+                throw new InvalidArgumentException("Missing properties: " . implode(', ', $missingFields) . " in class - {$meta->name}");
             }
         }
     }
@@ -95,10 +95,10 @@ class Annotation implements Driver
             if ($left = $reader->getPropertyAnnotation($property, self::ANNOTATION_LEFT)) {
                 $field = $property->getName();
                 if (!$meta->hasField($field)) {
-                    throw MappingException::fieldMustBeMapped($field, $meta->name);
+                    throw new InvalidArgumentException("Unable to find 'left' - [{$field}] as mapped property in entity - {$meta->name}");
                 }
                 if (!$this->_isValidField($meta, $field)) {
-                    throw MappingException::notValidFieldType($field, $meta->name);
+                    throw new InvalidArgumentException("Tree left field - [{$field}] type is not valid and must be 'integer' in class - {$meta->name}");
                 }
                 $config['left'] = $field;
             }
@@ -106,10 +106,10 @@ class Annotation implements Driver
             if ($right = $reader->getPropertyAnnotation($property, self::ANNOTATION_RIGHT)) {
                 $field = $property->getName();
                 if (!$meta->hasField($field)) {
-                    throw MappingException::fieldMustBeMapped($field, $meta->name);
+                    throw new InvalidArgumentException("Unable to find 'right' - [{$field}] as mapped property in entity - {$meta->name}");
                 }
                 if (!$this->_isValidField($meta, $field)) {
-                    throw MappingException::notValidFieldType($field, $meta->name);
+                    throw new InvalidArgumentException("Tree right field - [{$field}] type is not valid and must be 'integer' in class - {$meta->name}");
                 }
                 $config['right'] = $field;
             }
@@ -117,7 +117,7 @@ class Annotation implements Driver
             if ($parent = $reader->getPropertyAnnotation($property, self::ANNOTATION_PARENT)) {
                 $field = $property->getName();
                 if (!$meta->isSingleValuedAssociation($field)) {
-                    throw MappingException::parentFieldNotMappedOrRelated($field, $meta->name);
+                    throw new InvalidArgumentException("Unable to find ancestor/parent child relation through ancestor field - [{$field}] in class - {$meta->name}");
                 }
                 $config['parent'] = $field;
             }
@@ -125,10 +125,10 @@ class Annotation implements Driver
             if ($parent = $reader->getPropertyAnnotation($property, self::ANNOTATION_LEVEL)) {
                 $field = $property->getName();
                 if (!$meta->hasField($field)) {
-                    throw MappingException::fieldMustBeMapped($field, $meta->name);
+                    throw new InvalidArgumentException("Unable to find 'level' - [{$field}] as mapped property in entity - {$meta->name}");
                 }
                 if (!$this->_isValidField($meta, $field)) {
-                    throw MappingException::notValidFieldType($field, $meta->name);
+                    throw new InvalidArgumentException("Tree level field - [{$field}] type is not valid and must be 'integer' in class - {$meta->name}");
                 }
                 $config['level'] = $field;
             }

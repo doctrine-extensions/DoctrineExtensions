@@ -120,7 +120,7 @@ class SluggableListener extends MappedEventSubscriber implements EventSubscriber
         }
         
         if (!strlen(trim($slug))) {
-            throw Exception::slugIsEmpty();
+            throw new \Gedmo\Exception\UnexpectedValueException('Unable to find any non empty sluggable fields, make sure they have something at least.');
         }
         
         // build the slug

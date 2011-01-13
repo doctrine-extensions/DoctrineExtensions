@@ -5,7 +5,7 @@ namespace Gedmo\Tree\Mapping\Driver;
 use Gedmo\Mapping\Driver\File,
     Gedmo\Mapping\Driver,
     Doctrine\ORM\Mapping\ClassMetadataInfo,
-    Gedmo\Tree\Mapping\MappingException;
+    Gedmo\Exception\InvalidArgumentException;
 
 /**
  * This is a yaml mapping driver for Tree
@@ -55,7 +55,7 @@ class Yaml extends File implements Driver
                 $missingFields[] = 'right';
             }
             if ($missingFields) {
-                throw MappingException::missingMetaProperties($missingFields, $meta->name);
+                throw new InvalidArgumentException("Missing properties: " . implode(', ', $missingFields) . " in class - {$meta->name}");
             }
         }
     }
@@ -71,17 +71,17 @@ class Yaml extends File implements Driver
                 if (isset($fieldMapping['gedmo'])) {
                     if (in_array('treeLeft', $fieldMapping['gedmo'])) {
                         if (!$this->_isValidField($meta, $field)) {
-                            throw MappingException::notValidFieldType($field, $meta->name);
+                            throw new InvalidArgumentException("Tree left field - [{$field}] type is not valid and must be 'integer' in class - {$meta->name}");
                         }
                         $config['left'] = $field;
                     } elseif (in_array('treeRight', $fieldMapping['gedmo'])) {
                         if (!$this->_isValidField($meta, $field)) {
-                            throw MappingException::notValidFieldType($field, $meta->name);
+                            throw new InvalidArgumentException("Tree right field - [{$field}] type is not valid and must be 'integer' in class - {$meta->name}");
                         }
                         $config['right'] = $field;
                     } elseif (in_array('treeLevel', $fieldMapping['gedmo'])) {
                         if (!$this->_isValidField($meta, $field)) {
-                            throw MappingException::notValidFieldType($field, $meta->name);
+                            throw new InvalidArgumentException("Tree level field - [{$field}] type is not valid and must be 'integer' in class - {$meta->name}");
                         }
                         $config['level'] = $field;
                     }
@@ -93,7 +93,7 @@ class Yaml extends File implements Driver
                 if (isset($relationMapping['gedmo'])) {
                     if (in_array('treeParent', $relationMapping['gedmo'])) {
                         if ($relationMapping['targetEntity'] != $meta->name) {
-                            throw MappingException::parentFieldNotMappedOrRelated($field, $meta->name);
+                            throw new InvalidArgumentException("Unable to find ancestor/parent child relation through ancestor field - [{$field}] in class - {$meta->name}");
                         }
                         $config['parent'] = $field;
                     }

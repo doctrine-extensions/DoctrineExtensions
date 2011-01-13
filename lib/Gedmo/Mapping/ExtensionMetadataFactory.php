@@ -119,7 +119,7 @@ class ExtensionMetadataFactory
                 // @TODO: implement XML driver also
                 $driverClassName = $this->_extensionNamespace . '\Mapping\Driver\Annotation';
                 if (!class_exists($driverClassName)) {
-                    throw DriverException::extensionDriverNotSupported($driverClassName, $driverName);
+                    throw new \Gedmo\Exception\RuntimeException("Failed to fallback to annotation driver: ({$driverClassName}), extension driver was not found.");
                 }
             }
             $driver = new $driverClassName();

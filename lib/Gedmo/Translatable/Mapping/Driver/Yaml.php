@@ -5,7 +5,7 @@ namespace Gedmo\Translatable\Mapping\Driver;
 use Gedmo\Mapping\Driver\File,
     Gedmo\Mapping\Driver,
     Doctrine\ORM\Mapping\ClassMetadataInfo,
-    Gedmo\Translatable\Mapping\MappingException;
+    Gedmo\Exception\InvalidArgumentException;
 
 /**
  * This is a yaml mapping driver for Translatable
@@ -59,7 +59,7 @@ class Yaml extends File implements Driver
             if (isset($classMapping['translation']['entity'])) {
                 $translationEntity = $classMapping['translation']['entity'];
                 if (!class_exists($translationEntity)) {
-                    throw MappingException::translationClassNotFound($translationEntity);
+                    throw new InvalidArgumentException("Translation entity class: {$translationEntity} does not exist.");
                 }
                 $config['translationClass'] = $translationEntity;
             }
@@ -74,7 +74,7 @@ class Yaml extends File implements Driver
                 if (isset($fieldMapping['gedmo'])) {
                     if (in_array('translatable', $fieldMapping['gedmo'])) {
                         if (!$this->_isValidField($meta, $field)) {
-                            throw MappingException::notValidFieldType($field, $meta->name);
+                            throw new InvalidArgumentException("Translatable field - [{$field}] type is not valid and must be 'string' or 'text' in class - {$meta->name}");
                         }
                         // fields cannot be overrided and throws mapping exception
                         $config['fields'][] = $field;

@@ -107,6 +107,7 @@ class TreeNodeRepository extends EntityRepository
      * @param boolean $direct - true to take only direct children
      * @param string $sortByField - field name to sort by
      * @param string $direction - sort direction : "ASC" or "DESC"
+     * @throws InvalidArgumentException - if sort options are invalid
      * @return array - list of given $node children, null on failure
      */
     public function children($node = null, $direct = false, $sortByField = null, $direction = 'ASC')
@@ -141,7 +142,7 @@ class TreeNodeRepository extends EntityRepository
             if ($meta->hasField($sortByField) && in_array(strtolower($direction), array('asc', 'desc'))) {
                 $qb->orderBy('node.' . $sortByField, $direction);
             } else {
-                throw new \RuntimeException("Invalid sort options specified: field - {$sortByField}, direction - {$direction}");
+                throw new \Gedmo\Exception\InvalidArgumentException("Invalid sort options specified: field - {$sortByField}, direction - {$direction}");
             }
         }
         $q = $qb->getQuery();
@@ -155,6 +156,7 @@ class TreeNodeRepository extends EntityRepository
      *
      * @param string $sortByField - field name to sort by
      * @param string $direction - sort direction : "ASC" or "DESC"
+     * @throws InvalidArgumentException - if sort options are invalid
      * @return array - list of given $node children, null on failure
      */
     public function getLeafs($sortByField = null, $direction = 'ASC')
@@ -172,7 +174,7 @@ class TreeNodeRepository extends EntityRepository
             if ($meta->hasField($sortByField) && in_array(strtolower($direction), array('asc', 'desc'))) {
                 $qb->orderBy('node.' . $sortByField, $direction);
             } else {
-                throw new \RuntimeException("Invalid sort options specified: field - {$sortByField}, direction - {$direction}");
+                throw new \Gedmo\Exception\InvalidArgumentException("Invalid sort options specified: field - {$sortByField}, direction - {$direction}");
             }
         }
         $q = $qb->getQuery();
@@ -186,7 +188,7 @@ class TreeNodeRepository extends EntityRepository
      * @param mixed $number
      *         integer - number of positions to shift
      *         boolean - true shift till last position
-     * @throws Exception if something fails in transaction
+     * @throws RuntimeException - if something fails in transaction
      * @return boolean - true if shifted
      */
     public function moveDown($node, $number = 1)
@@ -236,7 +238,7 @@ class TreeNodeRepository extends EntityRepository
         } catch (\Exception $e) {
             $this->_em->close();
             $this->_em->getConnection()->rollback();
-            throw $e;
+            throw new \Gedmo\Exception\RuntimeException('Transaction failed', null, $e);
         }
         if (is_int($number)) {
             $number--;
@@ -255,7 +257,7 @@ class TreeNodeRepository extends EntityRepository
      * @param mixed $number
      *         integer - number of positions to shift
      *         boolean - true shift till first position
-     * @throws Exception if something fails in transaction
+     * @throws RuntimeException - if something fails in transaction
      * @return boolean - true if shifted
      */
     public function moveUp($node, $number = 1)
@@ -304,7 +306,7 @@ class TreeNodeRepository extends EntityRepository
         } catch (\Exception $e) {
             $this->_em->close();
             $this->_em->getConnection()->rollback();
-            throw $e;
+            throw new \Gedmo\Exception\RuntimeException('Transaction failed', null, $e);
         }
         if (is_int($number)) {
             $number--;
@@ -352,7 +354,7 @@ class TreeNodeRepository extends EntityRepository
      * Removes given $node from the tree and reparents its descendants
      * 
      * @param Node $node
-     * @throws Exception if something fails in transaction
+     * @throws RuntimeException - if something fails in transaction
      * @return void
      */
     public function removeFromTree(Node $node)
@@ -397,7 +399,7 @@ class TreeNodeRepository extends EntityRepository
         } catch (\Exception $e) {
             $this->_em->close();
             $this->_em->getConnection()->rollback();
-            throw $e;
+            throw new \Gedmo\Exception\RuntimeException('Transaction failed', null, $e);
         }
         $this->_em->refresh($node);
         $this->_em->remove($node);
@@ -505,7 +507,7 @@ class TreeNodeRepository extends EntityRepository
     /**
      * Tries to recover the tree
      * 
-     * @throws Exception if something fails in transaction
+     * @throws RuntimeException - if something fails in transaction
      * @return void
      */
     public function recover()
@@ -550,14 +552,14 @@ class TreeNodeRepository extends EntityRepository
         } catch (\Exception $e) {
             $this->_em->close();
             $this->_em->getConnection()->rollback();
-            throw $e;
+            throw new \Gedmo\Exception\RuntimeException('Transaction failed', null, $e);
         }
     }
     
     /**
      * Generally loads configuration from cache
      * 
-     * @throws RuntimeException if no configuration for class found
+     * @throws RuntimeException - if no configuration for class found
      * @return array
      */
     public function getConfiguration() {
@@ -576,7 +578,7 @@ class TreeNodeRepository extends EntityRepository
             }
         }
         if (!$config) {
-            throw new \RuntimeException("TreeNodeRepository: this repository cannot be used on {$this->_entityName} without Tree metadata");
+            throw new \Gedmo\Exception\RuntimeException("TreeNodeRepository: this repository cannot be used on {$this->_entityName} without Tree metadata");
         }
         return $config;
     }

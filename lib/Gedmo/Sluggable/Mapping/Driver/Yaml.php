@@ -5,7 +5,7 @@ namespace Gedmo\Sluggable\Mapping\Driver;
 use Gedmo\Mapping\Driver\File,
     Gedmo\Mapping\Driver,
     Doctrine\ORM\Mapping\ClassMetadataInfo,
-    Gedmo\Sluggable\Mapping\MappingException;
+    Gedmo\Exception\InvalidArgumentException;
 
 /**
  * This is a yaml mapping driver for Sluggable
@@ -42,7 +42,7 @@ class Yaml extends File implements Driver
     public function validateFullMetadata(ClassMetadataInfo $meta, array $config)
     {
         if ($config && !isset($config['fields'])) {
-            throw MappingException::noFieldsToSlug($meta->name);
+            throw new InvalidArgumentException("Unable to find any sluggable fields specified for Sluggable entity - {$meta->name}");
         }
     }
     
@@ -58,16 +58,16 @@ class Yaml extends File implements Driver
                 if (isset($fieldMapping['gedmo'])) {
                     if (in_array('sluggable', $fieldMapping['gedmo'])) {
                         if (!$this->_isValidField($meta, $field)) {
-                            throw MappingException::notValidFieldType($field, $meta->name);
+                            throw new InvalidArgumentException("Cannot slug field - [{$field}] type is not valid and must be 'string' in class - {$meta->name}");
                         }
                         $config['fields'][] = $field;
                     } elseif (isset($fieldMapping['gedmo']['slug']) || in_array('slug', $fieldMapping['gedmo'])) {
                         $slug = $fieldMapping['gedmo']['slug'];
                         if (!$this->_isValidField($meta, $field)) {
-                            throw MappingException::notValidFieldType($field, $meta->name);
+                            throw new InvalidArgumentException("Cannot use field - [{$field}] for slug storage, type is not valid and must be 'string' in class - {$meta->name}");
                         } 
                         if (isset($config['slug'])) {
-                            throw MappingException::slugFieldIsDuplicate($field, $meta->name);
+                            throw new InvalidArgumentException("There cannot be two slug fields: [{$slugField}] and [{$config['slug']}], in class - {$meta->name}.");
                         }
                         
                         $config['slug'] = $field;

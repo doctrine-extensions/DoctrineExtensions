@@ -143,6 +143,8 @@ class TranslationListener extends MappedEventSubscriber implements EventSubscrib
      * 
      * @param object $entity
      * @param ClassMetadataInfo $meta
+     * @throws RuntimeException - if language or locale property is not
+     * 		found in entity
      * @return string
      */
     public function getTranslatableLocale($entity, ClassMetadataInfo $meta)
@@ -152,10 +154,8 @@ class TranslationListener extends MappedEventSubscriber implements EventSubscrib
             $class = $meta->getReflectionClass();
             $reflectionProperty = $class->getProperty($this->_configurations[$meta->name]['locale']);
             if (!$reflectionProperty) {
-                throw Exception::entityMissingLocaleProperty(
-                    $this->_configurations[$meta->name]['locale'],
-                    $meta->name
-                );
+                $column = $this->_configurations[$meta->name]['locale'];
+                throw new \Gedmo\Exception\RuntimeException("There is no locale or language property ({$column}) found on entity: {$meta->name}");
             }
             $reflectionProperty->setAccessible(true);
             $value = $reflectionProperty->getValue($entity);
@@ -267,7 +267,6 @@ class TranslationListener extends MappedEventSubscriber implements EventSubscrib
      * by currently used locale
      * 
      * @param LifecycleEventArgs $args
-     * @throws Translatable\Exception if locale is not valid
      * @return void
      */
     public function postLoad(LifecycleEventArgs $args)
@@ -324,7 +323,7 @@ class TranslationListener extends MappedEventSubscriber implements EventSubscrib
      * @param EntityManager $em
      * @param object $entity
      * @param boolean $isInsert
-     * @throws Translatable\Exception if locale is not valid, or
+     * @throws UnexpectedValueException - if locale is not valid, or
      *      primary key is composite, missing or invalid
      * @return void
      */
@@ -343,7 +342,7 @@ class TranslationListener extends MappedEventSubscriber implements EventSubscrib
         } elseif ($isInsert) {
             $entityId = null;
         } else {
-            throw Exception::singleIdentifierRequired($entityClass);
+            throw new \Gedmo\Exception\UnexpectedValueException("Only a single identifier column is required for the Translatable extension, entity: {$entityClass}.");
         }
         
         // load the currently used locale
@@ -426,8 +425,6 @@ class TranslationListener extends MappedEventSubscriber implements EventSubscrib
      * @param string $entityClass
      * @param string $locale
      * @param string $field
-     * @throws Translatable\Exception if unit of work has pending inserts
-     *      to avoid infinite loop
      * @return mixed - null if nothing is found, Translation otherwise
      */
     protected function _findTranslation(EntityManager $em, $entityId, $entityClass, $locale, $field)
@@ -457,13 +454,13 @@ class TranslationListener extends MappedEventSubscriber implements EventSubscrib
      * Validates the given locale
      * 
      * @param string $locale - locale to validate
-     * @throws Translatable\Exception if locale is not valid
+     * @throws InvalidArgumentException if locale is not valid
      * @return void
      */
     protected function _validateLocale($locale)
     {
         if (!is_string($locale) || !strlen($locale)) {
-            throw Exception::undefinedLocale();
+            throw new \Gedmo\Exception\InvalidArgumentException('Locale or language cannot be empty and must be set through Listener or Entity');
         }
     }
     
@@ -490,7 +487,7 @@ class TranslationListener extends MappedEventSubscriber implements EventSubscrib
      * 
      * @param EntityManager $em
      * @param object $translation
-     * @throws Translatable\Exception if insert fails
+     * @throws RuntimeException if insert fails
      * @return void
      */
     private function _insertTranslationRecord(EntityManager $em, $translation)
@@ -506,7 +503,7 @@ class TranslationListener extends MappedEventSubscriber implements EventSubscrib
         
         $table = $translationMetadata->getTableName();
         if (!$em->getConnection()->insert($table, $data)) {
-            throw Exception::failedToInsert();
+            throw new \Gedmo\Exception\RuntimeException('Failed to insert new Translation record');
         }
     }
 }

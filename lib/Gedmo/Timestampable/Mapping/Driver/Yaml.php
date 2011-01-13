@@ -5,7 +5,7 @@ namespace Gedmo\Timestampable\Mapping\Driver;
 use Gedmo\Mapping\Driver\File,
     Gedmo\Mapping\Driver,
     Doctrine\ORM\Mapping\ClassMetadataInfo,
-    Gedmo\Timestampable\Mapping\MappingException;
+    Gedmo\Exception\InvalidArgumentException;
 
 /**
  * This is a yaml mapping driver for Timestampable
@@ -58,15 +58,15 @@ class Yaml extends File implements Driver
                 if (isset($fieldMapping['gedmo']['timestampable'])) {
                     $mappingProperty = $fieldMapping['gedmo']['timestampable'];
                     if (!$this->_isValidField($meta, $field)) {
-                        throw MappingException::notValidFieldType($field, $meta->name);
+                        throw new InvalidArgumentException("Field - [{$field}] type is not valid and must be 'date', 'datetime' or 'time' in class - {$meta->name}");
                     }
                     if (!isset($mappingProperty['on']) || !in_array($mappingProperty['on'], array('update', 'create', 'change'))) {
-                        throw MappingException::triggerTypeInvalid($field, $meta->name);
+                        throw new InvalidArgumentException("Field - [{$field}] trigger 'on' is not one of [update, create, change] in class - {$meta->name}");
                     }
                     
                     if ($mappingProperty['on'] == 'change') {
                         if (!isset($mappingProperty['field']) || !isset($mappingProperty['value'])) {
-                            throw MappingException::parametersMissing($field, $meta->name);
+                            throw new InvalidArgumentException("Missing parameters on property - {$field}, field and value must be set on [change] trigger in class - {$meta->name}");
                         }
                         $field = array(
                             'field' => $field,

@@ -85,7 +85,7 @@ class TimestampableListener extends MappedEventSubscriber implements EventSubscr
                             if (isset($trackedChild)) {
                                 $object = $changes[1];
                                 if (!is_object($object)) {
-                                    throw Exception::objectExpected($tracked, $meta->name);
+                                    throw new \Gedmo\Exception\UnexpectedValueException("Field - [{$field}] is expected to be object in class - {$meta->name}");
                                 }
                                 $objectMeta = $em->getClassMetadata(get_class($object));
                                 $value = $objectMeta->getReflectionProperty($trackedChild)
