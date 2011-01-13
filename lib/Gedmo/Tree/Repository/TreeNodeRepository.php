@@ -657,7 +657,7 @@ class TreeNodeRepository extends EntityRepository
                 $this->_sync($config, 2, '+', '>= ' . $parentRightValue);
                 // cannot schedule this update if other Nodes pending
                 $qb = $this->_em->createQueryBuilder();
-                $qb->update($this->_entityName, 'node')
+                $qb->update($meta->rootEntityName, 'node')
                     ->set('node.' . $leftField, $parentRightValue)
                     ->set('node.' . $rightField, $parentRightValue + 1);
                 $entityIdentifiers = $meta->getIdentifierValues($node);
