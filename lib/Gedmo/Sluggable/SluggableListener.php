@@ -26,6 +26,14 @@ use Doctrine\Common\EventSubscriber,
 class SluggableListener extends MappedEventSubscriber implements EventSubscriber
 {
     /**
+     * The power exponent to jump
+     * the slug unique number by tens.
+     * 
+     * @var integer
+     */
+    private $exponent = 0;
+    
+    /**
      * Specifies the list of events to listen
      * 
      * @return array
@@ -94,7 +102,7 @@ class SluggableListener extends MappedEventSubscriber implements EventSubscriber
      * @param mixed $changeSet
      *      case array: the change set array
      *      case boolean(false): entity is not managed
-     * @throws Sluggable\Exception if parameters are missing
+     * @throws UnexpectedValueException - if parameters are missing
      *      or invalid
      * @return void
      */
@@ -152,9 +160,8 @@ class SluggableListener extends MappedEventSubscriber implements EventSubscriber
 
         // make unique slug if requested
         if ($config['unique']) {
-            // set the slug for further processing
-            $meta->getReflectionProperty($config['slug'])->setValue($entity, $slug);
-            $slug = $this->_makeUniqueSlug($em, $entity);
+            $this->exponent = 0;
+            $slug = $this->_makeUniqueSlug($em, $entity, $slug);
         }
         // set the final slug
         $meta->getReflectionProperty($config['slug'])->setValue($entity, $slug);
@@ -169,22 +176,20 @@ class SluggableListener extends MappedEventSubscriber implements EventSubscriber
      * 
      * @param EntityManager $em
      * @param object $entity
-     * @throws Sluggable\Exception if unit of work has pending inserts
-     *      to avoid infinite loop
+     * @param string $preferedSlug
      * @return string - unique slug
      */
-    protected function _makeUniqueSlug(EntityManager $em, $entity)
+    protected function _makeUniqueSlug(EntityManager $em, $entity, $preferedSlug)
     {        
         $entityClass = get_class($entity);
         $meta = $em->getClassMetadata($entityClass);
         $config = $this->getConfiguration($em, $entityClass);
-        $preferedSlug = $meta->getReflectionProperty($config['slug'])->getValue($entity);
         
         // search for similar slug
         $qb = $em->createQueryBuilder();
         $qb->select('rec.' . $config['slug'])
             ->from($entityClass, 'rec')
-            ->add('where', $qb->expr()->like(
+            ->where($qb->expr()->like(
                 'rec.' . $config['slug'], 
                 $qb->expr()->literal($preferedSlug . '%'))
             );
@@ -192,28 +197,25 @@ class SluggableListener extends MappedEventSubscriber implements EventSubscriber
         $entityIdentifiers = $meta->getIdentifierValues($entity);
         foreach ($entityIdentifiers as $field => $value) {
             if (strlen($value)) {
-                $qb->add('where', 'rec.' . $field . ' <> ' . $value);
+                $qb->andWhere('rec.' . $field . ' <> ' . $value);
             }
         }
         $q = $qb->getQuery();
         $q->setHydrationMode(Query::HYDRATE_ARRAY);
         $result = $q->execute();
-        
-        if (is_array($result) && count($result)) {
+
+        if ($result) {
             $generatedSlug = $preferedSlug;
             $sameSlugs = array();
-            foreach ($result as $list) {
-                $sameSlugs[] = $list['slug'];
+            foreach ((array)$result as $list) {
+                $sameSlugs[] = $list[$config['slug']];
             }
 
-            $i = 0;
-            if (preg_match("@{$config['separator']}\d+$@sm", $generatedSlug, $m)) {
-                $i = abs(intval($m[0]));
-            }
-            while (in_array($generatedSlug, $sameSlugs)) {
-                $generatedSlug = $preferedSlug . $config['separator'] . ++$i;
-            }
-            
+            $i = pow(10, $this->exponent);
+            do {
+                $generatedSlug = $preferedSlug . $config['separator'] . $i++;
+            } while (in_array($generatedSlug, $sameSlugs));
+
             $mapping = $meta->getFieldMapping($config['slug']);
             $needRecursion = false;
             if (strlen($generatedSlug) > $mapping['length']) {
@@ -223,12 +225,11 @@ class SluggableListener extends MappedEventSubscriber implements EventSubscriber
                     0, 
                     $mapping['length'] - (strlen($i) + strlen($config['separator']))
                 );
-                $generatedSlug .= $config['separator'] . $i;
+                $this->exponent = strlen($i) - 1;
             }
             
-            $meta->getReflectionProperty($config['slug'])->setValue($entity, $generatedSlug);
             if ($needRecursion) {
-                $generatedSlug = $this->_makeUniqueSlug($em, $entity);
+                $generatedSlug = $this->_makeUniqueSlug($em, $entity, $generatedSlug);
             }
             $preferedSlug = $generatedSlug;
         }

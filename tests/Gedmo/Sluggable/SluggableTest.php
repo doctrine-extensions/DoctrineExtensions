@@ -112,6 +112,26 @@ class SluggableTest extends \PHPUnit_Framework_TestCase
         }
     }
     
+    public function testUniqueNumberedSlug()
+    {
+        $article = new Article();
+        $article->setTitle('the title');
+        $article->setCode('my code 123');
+            
+        $this->em->persist($article);
+        $this->em->flush();
+        for ($i = 0; $i < 12; $i++) {
+            $article = new Article();
+            $article->setTitle('the title');
+            $article->setCode('my code 123');
+            
+            $this->em->persist($article);
+            $this->em->flush();
+            $this->em->clear();
+            $this->assertEquals($article->getSlug(), 'the-title-my-code-123-' . ($i + 1));
+        }
+    }
+    
     public function testUpdatableSlug()
     {
         $article = $this->em->find(
