@@ -353,11 +353,11 @@ class TreeNodeRepository extends EntityRepository
     /**
      * Removes given $node from the tree and reparents its descendants
      * 
-     * @param Node $node
+     * @param object $node
      * @throws RuntimeException - if something fails in transaction
      * @return void
      */
-    public function removeFromTree(Node $node)
+    public function removeFromTree($node)
     {
         $meta = $this->getClassMetadata();
         $config = $this->getConfiguration();
