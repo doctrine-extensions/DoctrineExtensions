@@ -3,8 +3,8 @@
 namespace Gedmo\Mapping;
 
 use Gedmo\Mapping\ExtensionMetadataFactory,
-    Doctrine\ORM\EntityManager,
-    Doctrine\ORM\Event\LoadClassMetadataEventArgs;
+    Doctrine\Common\EventSubscriber,
+    Doctrine\Common\EventArgs;
 
 /**
  * This is extension of event subscriber class and is
@@ -21,8 +21,8 @@ use Gedmo\Mapping\ExtensionMetadataFactory,
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-abstract class MappedEventSubscriber
-{
+abstract class MappedEventSubscriber implements EventSubscriber
+{    
     /**
      * List of cached object configurations
      *  
@@ -38,29 +38,20 @@ abstract class MappedEventSubscriber
      */
     protected $_extensionMetadataFactory = null;
     
-    /**
-     * Get the namespace of extension event subscriber.
-     * used for loading mapping drivers and cache of
-     * extensions
-     * 
-     * @return string
-     */
-    abstract protected function _getNamespace();
-    
 	/**
      * Get the configuration for specific object class
      * if cache driver is present it scans it also
      * 
-     * @param EntityManager $em
+     * @param object $objectManager
      * @param string $class
      * @return array
      */
-    public function getConfiguration(EntityManager $em, $class) {
+    public function getConfiguration($objectManager, $class) {
         $config = array();
         if (isset($this->_configurations[$class])) {
             $config = $this->_configurations[$class];
         } else {
-            $cacheDriver = $em->getMetadataFactory()->getCacheDriver();
+            $cacheDriver = $objectManager->getMetadataFactory()->getCacheDriver();
             $cacheId = ExtensionMetadataFactory::getCacheId($class, $this->_getNamespace());
             if ($cacheDriver && ($cached = $cacheDriver->fetch($cacheId)) !== false) {
                 $this->_configurations[$class] = $cached;
@@ -73,32 +64,40 @@ abstract class MappedEventSubscriber
 	/**
      * Get extended metadata mapping reader
      * 
-     * @param EntityManager $em
+     * @param object $objectManager
      * @return Gedmo\Mapping\ExtensionMetadataFactory
      */
-    public function getExtensionMetadataFactory(EntityManager $em)
+    public function getExtensionMetadataFactory($objectManager)
     {
         if (null === $this->_extensionMetadataFactory) {
-            $this->_extensionMetadataFactory = new ExtensionMetadataFactory($em, $this->_getNamespace());
+            $this->_extensionMetadataFactory = new ExtensionMetadataFactory($objectManager, $this->_getNamespace());
         }
         return $this->_extensionMetadataFactory;
     }
     
-	/**
+    /**
      * Scans the objects for extended annotations
      * event subscribers must subscribe to loadClassMetadata event
      * 
-     * @param LoadClassMetadataEventArgs $eventArgs
+     * @param object $objectManager
+     * @param object $metadata
      * @return void
      */
-    public function loadClassMetadata(LoadClassMetadataEventArgs $eventArgs)
+    public function loadMetadataForObjectClass($objectManager, $metadata)
     {
-        $meta = $eventArgs->getClassMetadata();
-        $em = $eventArgs->getEntityManager();
-        $factory = $this->getExtensionMetadataFactory($em);
-        $config = $factory->getExtensionMetadata($meta);
+        $factory = $this->getExtensionMetadataFactory($objectManager);
+        $config = $factory->getExtensionMetadata($metadata);
         if ($config) {
-            $this->_configurations[$meta->name] = $config;
+            $this->_configurations[$metadata->name] = $config;
         }
     }
+    
+    /**
+     * Get the namespace of extension event subscriber.
+     * used for loading mapping drivers and cache of
+     * extensions
+     * 
+     * @return string
+     */
+    abstract protected function _getNamespace();
 }

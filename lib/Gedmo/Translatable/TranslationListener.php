@@ -2,10 +2,10 @@
 
 namespace Gedmo\Translatable;
 
-use Doctrine\Common\EventSubscriber,
-    Doctrine\ORM\Events,
+use Doctrine\ORM\Events,
     Doctrine\ORM\Event\LifecycleEventArgs,
     Doctrine\ORM\Event\OnFlushEventArgs,
+    Doctrine\ORM\Event\LoadClassMetadataEventArgs,
     Gedmo\Mapping\MappedEventSubscriber,
     Doctrine\ORM\EntityManager,
     Doctrine\ORM\Query,
@@ -30,7 +30,7 @@ use Doctrine\Common\EventSubscriber,
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class TranslationListener extends MappedEventSubscriber implements EventSubscriber
+class TranslationListener extends MappedEventSubscriber
 {    
     /**
      * The translation entity class used to store the translations
@@ -93,11 +93,14 @@ class TranslationListener extends MappedEventSubscriber implements EventSubscrib
     }
     
 	/**
-     * {@inheritDoc}
+     * Mapps additional metadata for the Entity
+     * 
+     * @param LoadClassMetadataEventArgs $eventArgs
+     * @return void
      */
-    protected function _getNamespace()
+    public function loadClassMetadata(LoadClassMetadataEventArgs $eventArgs)
     {
-        return __NAMESPACE__;
+        $this->loadMetadataForObjectClass($eventArgs->getEntityManager(), $eventArgs->getClassMetadata());
     }
     
     /**
@@ -315,6 +318,14 @@ class TranslationListener extends MappedEventSubscriber implements EventSubscrib
                 }
             }    
         }
+    }
+    
+	/**
+     * {@inheritDoc}
+     */
+    protected function _getNamespace()
+    {
+        return __NAMESPACE__;
     }
     
     /**

@@ -2,8 +2,7 @@
 
 namespace Gedmo\Mapping\Driver;
 
-use Gedmo\Mapping\Driver,
-    Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Gedmo\Mapping\Driver;
 
 /**
  * The chain mapping driver enables chained
@@ -47,14 +46,12 @@ class Chain implements Driver
     /**
      * {@inheritDoc}
      */
-    public function validateFullMetadata(ClassMetadataInfo $meta, array $config)
-    {
-    }
+    public function validateFullMetadata($meta, array $config) {}
     
     /**
      * {@inheritDoc}
      */
-    public function readExtendedMetadata(ClassMetadataInfo $meta, array &$config)
+    public function readExtendedMetadata($meta, array &$config)
     {
         foreach ($this->_drivers as $namespace => $driver) {
             if (strpos($meta->name, $namespace) === 0) {

@@ -2,8 +2,6 @@
 
 namespace Gedmo\Mapping;
 
-use Doctrine\ORM\Mapping\ClassMetadataInfo;
-
 /**
  * The mapping driver abstract class, defines the
  * metadata extraction function common among
@@ -21,20 +19,20 @@ interface Driver
      * Read extended metadata configuration for
      * a single mapped class
      * 
-     * @param ClassMetadataInfo $meta
+     * @param object $meta - ClassMetadata
      * @param array $config
      * @return void
      */
-    public function readExtendedMetadata(ClassMetadataInfo $meta, array &$config);
+    public function readExtendedMetadata($meta, array &$config);
     
     /**
      * Callback triggered from driver then metadata is
      * fully formed from inherited classes if there were
      * any.
      * 
-     * @param ClassMetadataInfo $meta
+     * @param object $meta - ClassMetadata
      * @param array $config
      * @return void
      */
-    public function validateFullMetadata(ClassMetadataInfo $meta, array $config);
+    public function validateFullMetadata($meta, array $config);
 }

@@ -1,21 +1,20 @@
 <?php
 
-namespace Gedmo\Sluggable;
+namespace Gedmo\Sluggable\ODM\MongoDB;
 
-use Doctrine\ORM\Events,
-    Doctrine\Common\EventArgs,
-    Doctrine\ORM\Query;
+use Doctrine\ODM\MongoDB\Events,
+    Doctrine\Common\EventArgs;
 
 /**
  * The SluggableListener handles the generation of slugs
- * for entities which implements the Sluggable interface.
+ * for documents.
  * 
  * This behavior can inpact the performance of your application
- * since it does some additional calculations on persisted entities.
+ * since it does some additional calculations on persisted documents.
  * 
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  * @subpackage SluggableListener
- * @package Gedmo.Sluggable
+ * @package Gedmo.Sluggable.ODM.MongoDB
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
@@ -40,7 +39,7 @@ class SluggableListener extends AbstractSluggableListener
      */
     public function getObjectManager(EventArgs $args)
     {
-        return $args->getEntityManager();
+        return $args->getDocumentManager();
     }
     
     /**
@@ -48,7 +47,7 @@ class SluggableListener extends AbstractSluggableListener
      */
     public function getObject(EventArgs $args)
     {
-        return $args->getEntity();
+        return $args->getDocument();
     }
     
     /**
@@ -56,7 +55,7 @@ class SluggableListener extends AbstractSluggableListener
      */
     public function getObjectChangeSet($uow, $object)
     {
-        return $uow->getEntityChangeSet($object);
+        return $uow->getDocumentChangeSet($object);
     }
     
     /**
@@ -64,7 +63,7 @@ class SluggableListener extends AbstractSluggableListener
      */
     public function recomputeSingleObjectChangeSet($uow, $meta, $object)
     {
-        $uow->recomputeSingleEntityChangeSet($meta, $object);
+        $uow->recomputeSingleDocumentChangeSet($meta, $object);
     }
     
     /**
@@ -72,7 +71,7 @@ class SluggableListener extends AbstractSluggableListener
      */
     public function getScheduledObjectUpdates($uow)
     {
-        return $uow->getScheduledEntityUpdates();
+        return $uow->getScheduledDocumentUpdates();
     }
     
     /**
@@ -80,22 +79,6 @@ class SluggableListener extends AbstractSluggableListener
      */
     protected function getUniqueSlugResult($om, $object, $meta, array $config, $preferedSlug)
     {
-        $qb = $om->createQueryBuilder();
-        $qb->select('rec.' . $config['slug'])
-            ->from($meta->name, 'rec')
-            ->where($qb->expr()->like(
-                'rec.' . $config['slug'], 
-                $qb->expr()->literal($preferedSlug . '%'))
-            );
-        // include identifiers
-        $entityIdentifiers = $meta->getIdentifierValues($object);
-        foreach ($entityIdentifiers as $field => $value) {
-            if (strlen($value)) {
-                $qb->andWhere('rec.' . $field . ' <> ' . $value);
-            }
-        }
-        $q = $qb->getQuery();
-        $q->setHydrationMode(Query::HYDRATE_ARRAY);
-        return $q->execute();
+        return array();
     }
 }

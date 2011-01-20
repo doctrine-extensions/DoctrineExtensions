@@ -2,10 +2,10 @@
 
 namespace Gedmo\Timestampable;
 
-use Doctrine\Common\EventSubscriber,
-    Doctrine\ORM\Events,
+use Doctrine\ORM\Events,
     Doctrine\ORM\Event\LifecycleEventArgs,
     Doctrine\ORM\Event\OnFlushEventArgs,
+    Doctrine\ORM\Event\LoadClassMetadataEventArgs,
     Gedmo\Mapping\MappedEventSubscriber,
     Doctrine\ORM\EntityManager;
 
@@ -19,7 +19,7 @@ use Doctrine\Common\EventSubscriber,
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class TimestampableListener extends MappedEventSubscriber implements EventSubscriber
+class TimestampableListener extends MappedEventSubscriber
 {
     /**
      * Specifies the list of events to listen
@@ -36,11 +36,14 @@ class TimestampableListener extends MappedEventSubscriber implements EventSubscr
     }
     
 	/**
-     * {@inheritDoc}
+     * Mapps additional metadata for the Entity
+     * 
+     * @param LoadClassMetadataEventArgs $eventArgs
+     * @return void
      */
-    protected function _getNamespace()
+    public function loadClassMetadata(LoadClassMetadataEventArgs $eventArgs)
     {
-        return __NAMESPACE__;
+        $this->loadMetadataForObjectClass($eventArgs->getEntityManager(), $eventArgs->getClassMetadata());
     }
     
     /**
@@ -137,5 +140,13 @@ class TimestampableListener extends MappedEventSubscriber implements EventSubscr
                 }
             }
         }
+    }
+    
+	/**
+     * {@inheritDoc}
+     */
+    protected function _getNamespace()
+    {
+        return __NAMESPACE__;
     }
 }

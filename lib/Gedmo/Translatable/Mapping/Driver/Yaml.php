@@ -4,7 +4,6 @@ namespace Gedmo\Translatable\Mapping\Driver;
 
 use Gedmo\Mapping\Driver\File,
     Gedmo\Mapping\Driver,
-    Doctrine\ORM\Mapping\ClassMetadataInfo,
     Gedmo\Exception\InvalidArgumentException;
 
 /**
@@ -42,7 +41,7 @@ class Yaml extends File implements Driver
     /**
      * {@inheritDoc}
      */
-    public function validateFullMetadata(ClassMetadataInfo $meta, array $config)
+    public function validateFullMetadata($meta, array $config)
     {
 
     }
@@ -50,7 +49,7 @@ class Yaml extends File implements Driver
     /**
      * {@inheritDoc}
      */
-    public function readExtendedMetadata(ClassMetadataInfo $meta, array &$config) {
+    public function readExtendedMetadata($meta, array &$config) {
         $yaml = $this->_loadMappingFile($this->_findMappingFile($meta->name));
         $mapping = $yaml[$meta->name];
         
@@ -95,11 +94,11 @@ class Yaml extends File implements Driver
     /**
      * Checks if $field type is valid as Translatable field
      * 
-     * @param ClassMetadataInfo $meta
+     * @param ClassMetadata $meta
      * @param string $field
      * @return boolean
      */
-    protected function _isValidField(ClassMetadataInfo $meta, $field)
+    protected function _isValidField($meta, $field)
     {
         return in_array($meta->getTypeOfField($field), $this->validTypes);
     }

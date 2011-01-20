@@ -4,7 +4,6 @@ namespace Gedmo\Timestampable\Mapping\Driver;
 
 use Gedmo\Mapping\Driver,
     Doctrine\Common\Annotations\AnnotationReader,
-    Doctrine\ORM\Mapping\ClassMetadataInfo,
     Gedmo\Exception\InvalidArgumentException;
 
 /**
@@ -40,7 +39,7 @@ class Annotation implements Driver
     /**
      * {@inheritDoc}
      */
-    public function validateFullMetadata(ClassMetadataInfo $meta, array $config)
+    public function validateFullMetadata($meta, array $config)
     {
 
     }
@@ -48,7 +47,7 @@ class Annotation implements Driver
     /**
      * {@inheritDoc}
      */
-    public function readExtendedMetadata(ClassMetadataInfo $meta, array &$config) {
+    public function readExtendedMetadata($meta, array &$config) {
         require_once __DIR__ . '/../Annotations.php';
         $reader = new AnnotationReader();
         $reader->setAnnotationNamespaceAlias('Gedmo\Timestampable\Mapping\\', 'gedmo');
@@ -92,11 +91,11 @@ class Annotation implements Driver
     /**
      * Checks if $field type is valid
      * 
-     * @param ClassMetadataInfo $meta
+     * @param ClassMetadata $meta
      * @param string $field
      * @return boolean
      */
-    protected function _isValidField(ClassMetadataInfo $meta, $field)
+    protected function _isValidField($meta, $field)
     {
         return in_array($meta->getTypeOfField($field), $this->_validTypes);
     }

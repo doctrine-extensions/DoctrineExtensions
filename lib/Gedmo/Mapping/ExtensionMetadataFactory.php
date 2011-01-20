@@ -2,10 +2,6 @@
 
 namespace Gedmo\Mapping;
 
-use Doctrine\ORM\Mapping\ClassMetadataInfo,
-    Doctrine\ORM\EntityManager,
-    Doctrine\ORM\Mapping\Driver\Driver as ORMDriver;
-
 /**
  * The extension metadata factory is responsible for extension driver
  * initialization and fully reading the extension metadata
@@ -25,10 +21,10 @@ class ExtensionMetadataFactory
     protected $_driver;
     
     /**
-     * Entity manager
-     * @var Doctrine\ORM\EntityManager
+     * Object manager, entity or document
+     * @var object
      */
-    private $_em;
+    private $_objectManager;
     
     /**
      * Extension namespace
@@ -39,24 +35,24 @@ class ExtensionMetadataFactory
     /**
      * Initializes extension driver
      * 
-     * @param EntityManager $em
+     * @param object $objectManager
      * @param string $extensionNamespace
      */
-    public function __construct(EntityManager $em, $extensionNamespace)
+    public function __construct($objectManager, $extensionNamespace)
     {
-        $this->_em = $em;
+        $this->_objectManager = $objectManager;
         $this->_extensionNamespace = $extensionNamespace;
-        $ormDriver = $em->getConfiguration()->getMetadataDriverImpl();
-        $this->_driver = $this->_getDriver($ormDriver);
+        $omDriver = $objectManager->getConfiguration()->getMetadataDriverImpl();
+        $this->_driver = $this->_getDriver($omDriver);
     }
     
     /**
      * Reads extension metadata
      * 
-     * @param ClassMetadataInfo $meta
+     * @param object $meta
      * @return array - the metatada configuration
      */
-    public function getExtensionMetadata(ClassMetadataInfo $meta)
+    public function getExtensionMetadata($meta)
     {
         if ($meta->isMappedSuperclass) {
             return; // ignore mappedSuperclasses for now
@@ -65,8 +61,8 @@ class ExtensionMetadataFactory
         // collect metadata from inherited classes
         foreach (array_reverse(class_parents($meta->name)) as $parentClass) {
             // read only inherited mapped classes
-            if ($this->_em->getMetadataFactory()->hasMetadataFor($parentClass)) {
-                $this->_driver->readExtendedMetadata($this->_em->getClassMetadata($parentClass), $config);
+            if ($this->_objectManager->getMetadataFactory()->hasMetadataFor($parentClass)) {
+                $this->_driver->readExtendedMetadata($this->_objectManager->getClassMetadata($parentClass), $config);
             }
         }
         $this->_driver->readExtendedMetadata($meta, $config);
@@ -74,7 +70,7 @@ class ExtensionMetadataFactory
         if ($config) {
             // cache the metadata
             $cacheId = self::getCacheId($meta->name, $this->_extensionNamespace);
-            if ($cacheDriver = $this->_em->getMetadataFactory()->getCacheDriver()) {
+            if ($cacheDriver = $this->_objectManager->getMetadataFactory()->getCacheDriver()) {
                 $cacheDriver->save($cacheId, $config, null);
             }
         }
@@ -97,21 +93,21 @@ class ExtensionMetadataFactory
      * Get the extended driver instance which will
      * read the metadata required by extension
      * 
-     * @param ORMDriver $ormDriver
+     * @param object $omDriver
      * @throws DriverException if driver was not found in extension
      * @return Gedmo\Mapping\Driver
      */
-    private function _getDriver(ORMDriver $ormDriver)
+    private function _getDriver($omDriver)
     {
         $driver = null;
-        if ($ormDriver instanceof \Doctrine\ORM\Mapping\Driver\DriverChain) {
+        $className = get_class($omDriver);
+        $driverName = substr($className, strrpos($className, '\\') + 1);
+        if ($driverName == 'DriverChain') {
             $driver = new Driver\Chain();
-            foreach ($ormDriver->getDrivers() as $namespace => $nestedOrmDriver) {
-                $driver->addDriver($this->_getDriver($nestedOrmDriver), $namespace);
+            foreach ($omDriver->getDrivers() as $namespace => $nestedOmDriver) {
+                $driver->addDriver($this->_getDriver($nestedOmDriver), $namespace);
             }
         } else {
-            $className = get_class($ormDriver);
-            $driverName = substr($className, strrpos($className, '\\') + 1);
             $driverName = substr($driverName, 0, strpos($driverName, 'Driver'));
             // create driver instance
             $driverClassName = $this->_extensionNamespace . '\Mapping\Driver\\' . $driverName;
@@ -124,7 +120,7 @@ class ExtensionMetadataFactory
             }
             $driver = new $driverClassName();
             if ($driver instanceof \Gedmo\Mapping\Driver\File) {
-                $driver->setPaths($ormDriver->getPaths());
+                $driver->setPaths($omDriver->getPaths());
             }
         }
         return $driver;
