@@ -41,7 +41,13 @@ $classLoader->register();
 
 $classLoader = new Doctrine\Common\ClassLoader('Symfony', 'Doctrine');
 $classLoader->register();
-      
+
+$classLoader = new Doctrine\Common\ClassLoader('Doctrine\ODM', 'Doctrine');
+$classLoader->register();
+
+$classLoader = new Doctrine\Common\ClassLoader('Doctrine\MongoDB', 'Doctrine');
+$classLoader->register();
+
 $classLoader = new Doctrine\Common\ClassLoader('Gedmo', __DIR__ . '/../lib');
 $classLoader->register();
 

@@ -198,7 +198,7 @@ abstract class AbstractSluggableListener extends MappedEventSubscriber
         
         // cut slug if exceeded in length
         $mapping = $meta->getFieldMapping($config['slug']);
-        if (strlen($slug) > $mapping['length']) {
+        if (isset($mapping['length']) && strlen($slug) > $mapping['length']) {
             $slug = substr($slug, 0, $mapping['length']);
         }
 

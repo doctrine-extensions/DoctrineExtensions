@@ -3,7 +3,8 @@
 namespace Gedmo\Sluggable\ODM\MongoDB;
 
 use Doctrine\ODM\MongoDB\Events,
-    Doctrine\Common\EventArgs;
+    Doctrine\Common\EventArgs,
+    Gedmo\Sluggable\AbstractSluggableListener;
 
 /**
  * The SluggableListener handles the generation of slugs
