@@ -4,6 +4,7 @@ namespace Gedmo\Sluggable\ODM\MongoDB;
 
 use Doctrine\ODM\MongoDB\Events,
     Doctrine\Common\EventArgs,
+    Doctrine\ODM\MongoDB\Cursor,
     Gedmo\Sluggable\AbstractSluggableListener;
 
 /**
@@ -14,6 +15,7 @@ use Doctrine\ODM\MongoDB\Events,
  * since it does some additional calculations on persisted documents.
  * 
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
+ * @author Klein Florian <florian.klein@free.fr>
  * @subpackage SluggableListener
  * @package Gedmo.Sluggable.ODM.MongoDB
  * @link http://www.gediminasm.org
@@ -80,6 +82,19 @@ class SluggableListener extends AbstractSluggableListener
      */
     protected function getUniqueSlugResult($om, $object, $meta, array $config, $preferedSlug)
     {
-        return array();
+        $qb = $om->createQueryBuilder($meta->name);
+        $identifier = $meta->getIdentifierValue($object);
+        $q = $qb->field($meta->identifier)->notEqual($identifier)
+            ->where("function() {
+            	return this.{$config['slug']}.indexOf('{$preferedSlug}') == 0;
+        	}")->getQuery();
+        $q->setHydrate(false);
+        
+        $result = $q->execute();
+        if ($result instanceof Cursor) {
+            $result = $result->toArray();
+        }
+        
+        return $result;
     }
 }

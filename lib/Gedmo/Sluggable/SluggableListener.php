@@ -14,6 +14,7 @@ use Doctrine\ORM\Events,
  * since it does some additional calculations on persisted entities.
  * 
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
+ * @author Klein Florian <florian.klein@free.fr>
  * @subpackage SluggableListener
  * @package Gedmo.Sluggable
  * @link http://www.gediminasm.org

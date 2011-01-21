@@ -51,27 +51,55 @@ class SluggableDocumentTest extends \PHPUnit_Framework_TestCase
             $evm
         );
         
+        $this->populate();
     }
     
-    public function testSluggable()
+    public function testSlugGeneration()
     {
+        // test insert
+        $repo = $this->dm->getRepository(self::TEST_ENTITY_CLASS);
+        $article = $repo->findOneByTitle('My Title');
+        
+        $this->assertEquals('my-title-the-code', $article->getSlug());
+        
+        // test update
+        $article->setTitle('New Title');
+        
+        $this->dm->persist($article);
+        $this->dm->flush();
+        $this->dm->clear();
+        
+        $article = $repo->findOneByTitle('New Title');
+        $this->assertEquals('new-title-the-code', $article->getSlug());
+    }
+    
+    public function testUniqueSlugGeneration()
+    {
+        for ($i = 0; $i < 12; $i++) {
+            $article = new Article();
+            $article->setTitle('My Title');
+            $article->setCode('The Code');
+            
+            $this->dm->persist($article);
+            $this->dm->flush();
+            $this->dm->clear();
+            $this->assertEquals($article->getSlug(), 'my-title-the-code-' . ($i + 1));
+        }
+    }
+    
+    private function populate()
+    {
+        $qb = $this->dm->createQueryBuilder(self::TEST_ENTITY_CLASS);
+        $q = $qb->remove()
+            ->getQuery();
+        $q->execute();
+        
         $art0 = new Article();
-        $art0->setTitle('hello');
-        $art0->setCode('code');
+        $art0->setTitle('My Title');
+        $art0->setCode('The Code');
         
         $this->dm->persist($art0);
         $this->dm->flush();
-        
-        $this->assertEquals('hello-code', $art0->getSlug());
-        
-        $repo = $this->dm->getRepository(self::TEST_ENTITY_CLASS);
-        $art = $repo->findOneByTitle('hello');
-        $art->setTitle('New Title');
-        
-        $this->dm->persist($art);
-        $this->dm->flush();
-        
-        $art = $repo->findOneByTitle('New Title');
-        $this->assertEquals('new-title-code', $art->getSlug());
+        $this->dm->clear();
     }
 }

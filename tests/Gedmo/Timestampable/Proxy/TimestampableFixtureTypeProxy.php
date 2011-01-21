@@ -48,6 +48,6 @@ class TimestampableFixtureTypeProxy extends \Timestampable\Fixture\Type implemen
 
     public function __sleep()
     {
-        return array('__isInitialized__', 'id', 'title', 'comments');
+        return array('__isInitialized__', 'id', 'title', 'articles');
     }
 }

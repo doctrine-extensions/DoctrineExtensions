@@ -27,6 +27,12 @@ class TimestampableFixtureArticleProxy extends \Timestampable\Fixture\Article im
     }
 
     
+    public function setType($type)
+    {
+        $this->_load();
+        return parent::setType($type);
+    }
+
     public function getId()
     {
         $this->_load();
@@ -63,6 +69,12 @@ class TimestampableFixtureArticleProxy extends \Timestampable\Fixture\Article im
         return parent::getCreated();
     }
 
+    public function getPublished()
+    {
+        $this->_load();
+        return parent::getPublished();
+    }
+
     public function getUpdated()
     {
         $this->_load();
@@ -72,6 +84,6 @@ class TimestampableFixtureArticleProxy extends \Timestampable\Fixture\Article im
 
     public function __sleep()
     {
-        return array('__isInitialized__', 'id', 'title', 'comments', 'created', 'updated');
+        return array('__isInitialized__', 'id', 'title', 'comments', 'created', 'updated', 'published', 'type');
     }
 }

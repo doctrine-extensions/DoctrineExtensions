@@ -11,6 +11,7 @@ use Doctrine\Common\EventArgs,
  * object managers.
  * 
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
+ * @author Klein Florian <florian.klein@free.fr>
  * @subpackage AbstractSluggableListener
  * @package Gedmo.Sluggable
  * @link http://www.gediminasm.org
@@ -246,7 +247,7 @@ abstract class AbstractSluggableListener extends MappedEventSubscriber
 
             $mapping = $meta->getFieldMapping($config['slug']);
             $needRecursion = false;
-            if (strlen($generatedSlug) > $mapping['length']) {
+            if (isset($mapping['length']) && strlen($generatedSlug) > $mapping['length']) {
                 $needRecursion = true;
                 $generatedSlug = substr(
                     $generatedSlug, 
