@@ -39,10 +39,7 @@ class Annotation implements Driver
     /**
      * {@inheritDoc}
      */
-    public function validateFullMetadata($meta, array $config)
-    {
-
-    }
+    public function validateFullMetadata($meta, array $config) {}
     
     /**
      * {@inheritDoc}
@@ -57,7 +54,7 @@ class Annotation implements Driver
         foreach ($class->getProperties() as $property) {
             if ($meta->isMappedSuperclass && !$property->isPrivate() ||
                 $meta->isInheritedField($property->name) ||
-                $meta->isInheritedAssociation($property->name)
+                isset($meta->associationMappings[$property->name]['inherited'])
             ) {
                 continue;
             }
@@ -97,6 +94,7 @@ class Annotation implements Driver
      */
     protected function _isValidField($meta, $field)
     {
-        return in_array($meta->getTypeOfField($field), $this->_validTypes);
+        $mapping = $meta->getFieldMapping($field);
+        return $mapping && in_array($mapping['type'], $this->_validTypes);
     }
 }

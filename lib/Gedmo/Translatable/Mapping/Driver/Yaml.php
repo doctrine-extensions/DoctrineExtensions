@@ -33,7 +33,7 @@ class Yaml extends File implements Driver
      * 
      * @var array
      */
-    public $validTypes = array(
+    protected $_validTypes = array(
         'string',
         'text'
     );
@@ -41,10 +41,7 @@ class Yaml extends File implements Driver
     /**
      * {@inheritDoc}
      */
-    public function validateFullMetadata($meta, array $config)
-    {
-
-    }
+    public function validateFullMetadata($meta, array $config) {}
     
     /**
      * {@inheritDoc}
@@ -100,6 +97,7 @@ class Yaml extends File implements Driver
      */
     protected function _isValidField($meta, $field)
     {
-        return in_array($meta->getTypeOfField($field), $this->validTypes);
+        $mapping = $meta->getFieldMapping($field);
+        return $mapping && in_array($mapping['type'], $this->_validTypes);
     }
 }

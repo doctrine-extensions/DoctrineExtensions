@@ -45,13 +45,22 @@ class SluggableDocumentTest extends \PHPUnit_Framework_TestCase
         $evm = new \Doctrine\Common\EventManager();
         $sluggableListener = new ODM\MongoDB\SluggableListener();
         $evm->addEventSubscriber($sluggableListener);
-        $this->dm = \Doctrine\ODM\MongoDB\DocumentManager::create(
-            new \Doctrine\MongoDB\Connection(),
-            $config, 
-            $evm
-        );
         
-        $this->populate();
+        if (!class_exists('Mongo')) {
+            $this->markTestSkipped('Missing Mongo extension.');
+        }
+        
+        try {
+            $this->dm = \Doctrine\ODM\MongoDB\DocumentManager::create(
+                new \Doctrine\MongoDB\Connection(),
+                $config, 
+                $evm
+            );
+        
+            $this->populate();
+        } catch (\MongoException $e) {
+            $this->markTestSkipped('Doctrine MongoDB ODM connection problem.');
+        }
     }
     
     public function testSlugGeneration()
