@@ -62,7 +62,7 @@ class EntityTranslationTableTest extends \PHPUnit_Framework_TestCase
         $this->em->clear();
         
         $repo = $this->em->getRepository(self::TEST_ENTITY_TRANSLATION);
-        $this->assertTrue($repo instanceof Repository\TranslationRepository);
+        $this->assertTrue($repo instanceof Entity\Repository\TranslationRepository);
         
         $translations = $repo->findTranslations($person);
         $this->assertEquals(count($translations), 1);

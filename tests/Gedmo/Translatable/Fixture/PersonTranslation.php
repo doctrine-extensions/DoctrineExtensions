@@ -14,7 +14,7 @@ use Gedmo\Translatable\Entity\AbstractTranslation;
  *             "locale", "entity", "foreign_key", "field"
  *         })}
  * )
- * @Entity(repositoryClass="Gedmo\Translatable\Repository\TranslationRepository")
+ * @Entity(repositoryClass="Gedmo\Translatable\Entity\Repository\TranslationRepository")
  */
 class PersonTranslation extends AbstractTranslation
 {

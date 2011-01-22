@@ -14,7 +14,7 @@ namespace Gedmo\Translatable\Entity;
  *             "locale", "entity", "foreign_key", "field"
  *         })}
  * )
- * @Entity(repositoryClass="Gedmo\Translatable\Repository\TranslationRepository")
+ * @Entity(repositoryClass="Gedmo\Translatable\Entity\Repository\TranslationRepository")
  */
 class Translation extends AbstractTranslation
 {

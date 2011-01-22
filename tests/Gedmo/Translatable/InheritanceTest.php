@@ -67,7 +67,7 @@ class InheritanceTest extends \PHPUnit_Framework_TestCase
         $this->em->clear();
         
         $repo = $this->em->getRepository(self::TRANSLATION_CLASS);
-        $this->assertTrue($repo instanceof Repository\TranslationRepository);
+        $this->assertTrue($repo instanceof Entity\Repository\TranslationRepository);
         
         $translations = $repo->findTranslations($article);
         $this->assertEquals(1, count($translations));
@@ -140,7 +140,7 @@ class InheritanceTest extends \PHPUnit_Framework_TestCase
         $this->translatableListener->setTranslatableLocale('en_us');
         
         $repo = $this->em->getRepository(self::TRANSLATION_CLASS);
-        $this->assertTrue($repo instanceof Repository\TranslationRepository);
+        $this->assertTrue($repo instanceof Entity\Repository\TranslationRepository);
         
         $translations = $repo->findTranslations($file);
         $this->assertEquals(2, count($translations));

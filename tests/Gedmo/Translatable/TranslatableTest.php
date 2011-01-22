@@ -57,7 +57,7 @@ class TranslatableTest extends \PHPUnit_Framework_TestCase
     public function testFixtureGeneratedTranslations()
     {
         $repo = $this->em->getRepository('Gedmo\Translatable\Entity\Translation');
-        $this->assertTrue($repo instanceof Repository\TranslationRepository);
+        $this->assertTrue($repo instanceof Entity\Repository\TranslationRepository);
         
         $article = $this->em->find(self::TEST_ENTITY_CLASS_ARTICLE, $this->articleId);
         $this->assertTrue($article instanceof Translatable);
