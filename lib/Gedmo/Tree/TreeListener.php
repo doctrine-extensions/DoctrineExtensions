@@ -64,7 +64,7 @@ class TreeListener extends MappedEventSubscriber
         );
     }
     
-	/**
+    /**
      * Mapps additional metadata for the Entity
      * 
      * @param LoadClassMetadataEventArgs $eventArgs
@@ -195,7 +195,7 @@ class TreeListener extends MappedEventSubscriber
         }
     }
     
-	/**
+    /**
      * {@inheritDoc}
      */
     protected function _getNamespace()

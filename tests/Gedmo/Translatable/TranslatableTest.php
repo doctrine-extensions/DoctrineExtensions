@@ -18,6 +18,7 @@ class TranslatableTest extends \PHPUnit_Framework_TestCase
 {
     const TEST_ENTITY_CLASS_ARTICLE = 'Translatable\Fixture\Article';
     const TEST_ENTITY_CLASS_COMMENT = 'Translatable\Fixture\Comment';
+    
     private $articleId;
     private $translatableListener;
     private $em;
@@ -199,8 +200,8 @@ class TranslatableTest extends \PHPUnit_Framework_TestCase
         $this->em->flush();
         $this->em->clear();
 
-        $translations = $repo->findTranslationsByEntityId($this->articleId);
-        $this->assertEquals(count($translations), 0);
+        $translations = $repo->findTranslationsByObjectId($this->articleId);
+        $this->assertEquals(0, count($translations));
     }
     
     /**

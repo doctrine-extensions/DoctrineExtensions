@@ -26,11 +26,11 @@ abstract class AbstractTranslation
     private $locale;
 
     /**
-     * @var string $entity
+     * @var string $objectClass
      *
-     * @Column(name="entity", type="string", length=255)
+     * @Column(name="object_class", type="string", length=255)
      */
-    private $entity;
+    private $objectClass;
 
     /**
      * @var string $field
@@ -104,23 +104,23 @@ abstract class AbstractTranslation
     }
 
     /**
-     * Set entity
+     * Set object class
      *
-     * @param string $entity
+     * @param string $objectClass
      */
-    public function setEntity($entity)
+    public function setObjectClass($objectClass)
     {
-        $this->entity = $entity;
+        $this->objectClass = $objectClass;
     }
 
     /**
-     * Get entity
+     * Get objectClass
      *
-     * @return string $entity
+     * @return string $objectClass
      */
-    public function getEntity()
+    public function getObjectClass()
     {
-        return $this->entity;
+        return $this->objectClass;
     }
     
     /**

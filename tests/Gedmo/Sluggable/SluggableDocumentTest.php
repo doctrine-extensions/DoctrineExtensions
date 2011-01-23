@@ -14,7 +14,7 @@ use Sluggable\Fixture\Document\Article;
  */
 class SluggableDocumentTest extends \PHPUnit_Framework_TestCase
 {
-    const TEST_ENTITY_CLASS = 'Sluggable\Fixture\Document\Article';
+    const TEST_CLASS_ARTICLE = 'Sluggable\Fixture\Document\Article';
     
     /**
      * @var DocumentManager
@@ -28,7 +28,7 @@ class SluggableDocumentTest extends \PHPUnit_Framework_TestCase
         $config->setProxyNamespace('Gedmo\Sluggable\Proxies');
         $config->setHydratorDir(__DIR__ . '/Hydrator');
         $config->setHydratorNamespace('Hydrator');
-        $config->setDefaultDB('doctrine_odm_sluggable_tests');
+        $config->setDefaultDB('gedmo_sluggable_tests');
         
         
         $config->setLoggerCallable(function(array $log) {
@@ -66,7 +66,7 @@ class SluggableDocumentTest extends \PHPUnit_Framework_TestCase
     public function testSlugGeneration()
     {
         // test insert
-        $repo = $this->dm->getRepository(self::TEST_ENTITY_CLASS);
+        $repo = $this->dm->getRepository(self::TEST_CLASS_ARTICLE);
         $article = $repo->findOneByTitle('My Title');
         
         $this->assertEquals('my-title-the-code', $article->getSlug());
@@ -98,7 +98,7 @@ class SluggableDocumentTest extends \PHPUnit_Framework_TestCase
     
     private function populate()
     {
-        $qb = $this->dm->createQueryBuilder(self::TEST_ENTITY_CLASS);
+        $qb = $this->dm->createQueryBuilder(self::TEST_CLASS_ARTICLE);
         $q = $qb->remove()
             ->getQuery();
         $q->execute();

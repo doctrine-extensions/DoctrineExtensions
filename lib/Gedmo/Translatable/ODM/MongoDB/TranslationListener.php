@@ -1,15 +1,15 @@
 <?php
 
-namespace Gedmo\Translatable;
+namespace Gedmo\Translatable\ODM\MongoDB;
 
-use Doctrine\ORM\Events,
+use Doctrine\ODM\MongoDB\Events,
     Doctrine\Common\EventArgs,
-    Doctrine\ORM\Query;
+    Doctrine\ODM\MongoDB\Cursor,
+    Gedmo\Translatable\AbstractTranslationListener;
 
 /**
  * The translation listener handles the generation and
- * loading of translations for entities which implements
- * the Translatable interface.
+ * loading of translations for documents.
  * 
  * This behavior can inpact the performance of your application
  * since it does an additional query for each field to translate.
@@ -19,7 +19,7 @@ use Doctrine\ORM\Events,
  * the caching is activated for metadata
  * 
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @package Gedmo.Translatable
+ * @package Gedmo.Translatable.ODM.MongoDB
  * @subpackage TranslationListener
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
@@ -31,7 +31,7 @@ class TranslationListener extends AbstractTranslationListener
      * 
      * @var string
      */
-    protected $_defaultTranslationEntity = 'Gedmo\Translatable\Entity\Translation';
+    protected $defaultTranslationDocument = 'Gedmo\Translatable\Document\Translation';
     
     /**
      * Specifies the list of events to listen
@@ -53,7 +53,7 @@ class TranslationListener extends AbstractTranslationListener
      */
     protected function getDefaultTranslationClass()
     {
-        return $this->_defaultTranslationEntity;
+        return $this->defaultTranslationDocument;
     }
     
     /**
@@ -61,7 +61,7 @@ class TranslationListener extends AbstractTranslationListener
      */
     protected function getObjectManager(EventArgs $args)
     {
-        return $args->getEntityManager();
+        return $args->getDocumentManager();
     }
     
     /**
@@ -69,7 +69,7 @@ class TranslationListener extends AbstractTranslationListener
      */
     protected function getObject(EventArgs $args)
     {
-        return $args->getEntity();
+        return $args->getDocument();
     }
     
     /**
@@ -77,7 +77,7 @@ class TranslationListener extends AbstractTranslationListener
      */
     protected function getObjectChangeSet($uow, $object)
     {
-        return $uow->getEntityChangeSet($object);
+        return $uow->getDocumentChangeSet($object);
     }
     
     /**
@@ -85,7 +85,7 @@ class TranslationListener extends AbstractTranslationListener
      */
     protected function getScheduledObjectUpdates($uow)
     {
-        return $uow->getScheduledEntityUpdates();
+        return $uow->getScheduledDocumentUpdates();
     }
     
     /**
@@ -93,7 +93,7 @@ class TranslationListener extends AbstractTranslationListener
      */
     protected function getScheduledObjectInsertions($uow)
     {
-        return $uow->getScheduledEntityInsertions();
+        return $uow->getScheduledDocumentInsertions();
     }
     
     /**
@@ -101,7 +101,7 @@ class TranslationListener extends AbstractTranslationListener
      */
     protected function getScheduledObjectDeletions($uow)
     {
-        return $uow->getScheduledEntityDeletions();
+        return $uow->getScheduledDocumentDeletions();
     }
     
     /**
@@ -109,7 +109,23 @@ class TranslationListener extends AbstractTranslationListener
      */
     protected function getSingleIdentifierFieldName($meta)
     {
-        return $meta->getSingleIdentifierFieldName();
+        return $meta->identifier;
+    }
+    
+    /**
+     * {@inheritdoc}
+     */
+    protected function setOriginalObjectProperty($uow, $oid, $property, $value)
+    {
+        $uow->setOriginalDocumentProperty($oid, $property, $value);
+    }
+    
+    /**
+     * {@inheritdoc}
+     */
+    protected function clearObjectChangeSet($uow, $oid)
+    {
+        $uow->clearDocumentChangeSet($oid);
     }
     
     /**
@@ -117,12 +133,11 @@ class TranslationListener extends AbstractTranslationListener
      */
     protected function removeAssociatedTranslations($om, $objectId, $transClass)
     {
-        $dql = 'DELETE ' . $transClass . ' trans';
-        $dql .= ' WHERE trans.foreignKey = :objectId';
-            
-        $q = $om->createQuery($dql);
-        $q->setParameters(compact('objectId'));
-        return $q->getSingleScalarResult();
+        $qb = $om->createQueryBuilder($transClass);
+        $q = $qb->remove()
+            ->field('foreignKey')->equals($objectId)
+            ->getQuery();
+        return $q->execute();
     }
     
     /**
@@ -131,16 +146,16 @@ class TranslationListener extends AbstractTranslationListener
     protected function insertTranslationRecord($om, $translation)
     {
         $meta = $om->getClassMetadata(get_class($translation));        
+        $collection = $om->getDocumentCollection($meta->name);
         $data = array();
 
         foreach ($meta->getReflectionProperties() as $fieldName => $reflProp) {
             if (!$meta->isIdentifier($fieldName)) {
-                $data[$meta->getColumnName($fieldName)] = $reflProp->getValue($translation);
+                $data[$meta->fieldMappings[$fieldName]['name']] = $reflProp->getValue($translation);
             }
         }
-        
-        $table = $meta->getTableName();
-        if (!$om->getConnection()->insert($table, $data)) {
+
+        if (!$collection->insert($data)) {
             throw new \Gedmo\Exception\RuntimeException('Failed to insert new Translation record');
         }
     }
@@ -150,41 +165,18 @@ class TranslationListener extends AbstractTranslationListener
      */
     protected function findTranslation($om, $objectId, $objectClass, $locale, $field)
     {
-        $qb = $om->createQueryBuilder();
-        $qb->select('trans')
-            ->from($this->getTranslationClass($objectClass), 'trans')
-            ->where(
-                'trans.foreignKey = :objectId',
-                'trans.locale = :locale',
-                'trans.field = :field',
-                'trans.objectClass = :objectClass'
-            );
-        $q = $qb->getQuery();
-        $result = $q->execute(
-            compact('field', 'locale', 'objectId', 'objectClass'),
-            Query::HYDRATE_OBJECT
-        );
+        $qb = $om->createQueryBuilder($objectClass);
+        $q = $qb->field('foreignKey')->equals($objectId)
+            ->field('locale')->equals($locale)
+            ->field('field')->equals($field)
+            ->field('objectClass')->equals($objectClass)
+            ->getQuery();
         
-        if ($result) {
-            return array_shift($result);
+        $result = $q->execute();
+        if ($result instanceof Cursor) {
+            $result = current($result->toArray());
         }
-        return null;
-    }
-    
-    /**
-     * {@inheritdoc}
-     */
-    protected function setOriginalObjectProperty($uow, $oid, $property, $value)
-    {
-        $uow->setOriginalEntityProperty($oid, $property, $value);
-    }
-    
-    /**
-     * {@inheritdoc}
-     */
-    protected function clearObjectChangeSet($uow, $oid)
-    {
-        $uow->clearEntityChangeSet($oid);
+        return $result;
     }
     
     /**
@@ -197,19 +189,21 @@ class TranslationListener extends AbstractTranslationListener
         $locale = strtolower($this->getTranslatableLocale($object, $meta));
         $this->_validateLocale($locale);
         
-        // there should be single identifier
-        $identifierField = $this->getSingleIdentifierFieldName($meta);
         // load translated content for all translatable fields
         $translationClass = $this->getTranslationClass($objectClass);
-        $objectId = $meta->getReflectionProperty($identifierField)->getValue($object);
+        $identifier = $meta->getIdentifierValue($object);
         // construct query
-        $dql = 'SELECT t.content, t.field FROM ' . $translationClass . ' t';
-        $dql .= ' WHERE t.foreignKey = :objectId';
-        $dql .= ' AND t.locale = :locale';
-        $dql .= ' AND t.objectClass = :objectClass';
-        // fetch results
-        $q = $om->createQuery($dql);
-        $q->setParameters(compact('objectId', 'locale', 'objectClass'));
-        return $q->getArrayResult();
+        $qb = $om->createQueryBuilder($translationClass);
+        $q = $qb->field('foreignKey')->equals($identifier)
+            ->field('locale')->equals($locale)
+            ->field('objectClass')->equals($objectClass)
+            ->getQuery();
+            
+        $q->setHydrate(false);
+        $result = $q->execute();
+        if ($result instanceof Cursor) {
+            $result = $result->toArray();
+        }
+        return $result;
     }
 }

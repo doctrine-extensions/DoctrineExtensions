@@ -38,7 +38,7 @@ abstract class MappedEventSubscriber implements EventSubscriber
      */
     protected $_extensionMetadataFactory = null;
     
-	/**
+    /**
      * Get the configuration for specific object class
      * if cache driver is present it scans it also
      * 
@@ -61,7 +61,7 @@ abstract class MappedEventSubscriber implements EventSubscriber
         return $config;
     }
     
-	/**
+    /**
      * Get extended metadata mapping reader
      * 
      * @param object $objectManager

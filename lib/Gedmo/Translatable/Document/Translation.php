@@ -5,20 +5,18 @@ namespace Gedmo\Translatable\Document;
 /**
  * Gedmo\Translatable\Document\Translation
  *
- * @Document
- * @Indexes(
- * 	@UniqueIndex(name="lookup_unique_idx", keys={
- * 		"locale"="asc",
- * 		"entity"="asc",
- * 		"foreign_key"="asc",
- * 		"field"="asc"
- *  }),
- *  @Index(name="translations_lookup_idx", keys={
- *  	"locale", 
- *  	"entity", 
- *  	"foreign_key"
- *  })
- * )
+ * @Document(repositoryClass="Gedmo\Translatable\Document\Repository\TranslationRepository")
+ * @UniqueIndex(name="lookup_unique_idx", keys={
+ *         "locale",
+ *         "object_class",
+ *         "foreign_key",
+ *         "field"
+ * })
+ * @Index(name="translations_lookup_idx", keys={
+ *      "locale", 
+ *      "object_class", 
+ *      "foreign_key"
+ * })
  */
 class Translation extends AbstractTranslation
 {

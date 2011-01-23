@@ -81,7 +81,7 @@ abstract class AbstractSluggableListener extends MappedEventSubscriber
      */
     abstract protected function getUniqueSlugResult($om, $object, $meta, array $config, $preferedSlug);
     
-	/**
+    /**
      * Mapps additional metadata
      * 
      * @param EventArgs $eventArgs
@@ -131,7 +131,7 @@ abstract class AbstractSluggableListener extends MappedEventSubscriber
         }
     }
     
-	/**
+    /**
      * {@inheritDoc}
      */
     protected function _getNamespace()

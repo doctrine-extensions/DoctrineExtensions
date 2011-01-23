@@ -42,7 +42,7 @@ class TranslationRepository extends EntityRepository
             $qb = $this->_em->createQueryBuilder();
             $qb->select('trans.content, trans.field, trans.locale')
                 ->from($translationMeta->rootEntityName, 'trans')
-                ->where('trans.foreignKey = :entityId', 'trans.entity = :entityClass')
+                ->where('trans.foreignKey = :entityId', 'trans.objectClass = :entityClass')
                 ->orderBy('trans.locale');
             $q = $qb->getQuery();
             $data = $q->execute(
@@ -70,14 +70,14 @@ class TranslationRepository extends EntityRepository
      * @param string $class
      * @return object - instance of $class or null if not found
      */
-    public function findEntityByTranslatedField($field, $value, $class)
+    public function findObjectByTranslatedField($field, $value, $class)
     {
         $entity = null;
         $meta = $this->_em->getClassMetadata($class);
         $translationMeta = $this->getClassMetadata(); // table inheritance support
         if ($meta->hasField($field)) {
             $dql = "SELECT trans.foreignKey FROM {$translationMeta->rootEntityName} trans";
-            $dql .= ' WHERE trans.entity = :class';
+            $dql .= ' WHERE trans.objectClass = :class';
             $dql .= ' AND trans.field = :field';
             $dql .= ' AND trans.content = :value';
             $q = $this->_em->createQuery($dql);
@@ -100,7 +100,7 @@ class TranslationRepository extends EntityRepository
      * @param mixed $id - primary key value of an entity
      * @return array
      */
-    public function findTranslationsByEntityId($id)
+    public function findTranslationsByObjectId($id)
     {
         $result = array();
         if ($id) {

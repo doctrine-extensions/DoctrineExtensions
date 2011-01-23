@@ -13,6 +13,16 @@ records being flushed in the behavioral way. List of extensions:
 Currently these extensions support **Yaml** and **Annotation** mapping. Additional mapping drivers
 can be easy implemented using Mapping extension to handle the additional metadata mapping.
 
+### ODM MongoDB support
+
+There is a plan to port all extensions for different object manager support and now
+half of extensions can be used with ODM also.
+
+- Translatable
+- Sluggable
+
+Are allready ported to support ODM MongoDB
+
 All these extensions can be nested together. And most allready use only annotations without interface requirement
 to not to aggregate the entity itself and has implemented proper caching for metadata.
 
@@ -22,7 +32,7 @@ You can test these extensions on [my blog](http://gediminasm.org/test/ "Test doc
 
 All tutorials for basic usage examples are on [my blog](http://gediminasm.org "Tutorials for extensions") also.
 
-Thanks for contributions to:
+### Thanks for contributions to:
 
 - Christophe Coevoet [stof](http://github.com/stof)
 - Kudryashov Konstantin [everzet](http://github.com/everzet)

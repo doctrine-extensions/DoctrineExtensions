@@ -6,16 +6,9 @@ use Doctrine\Common\EventArgs,
     Gedmo\Mapping\MappedEventSubscriber;
 
 /**
- * The translation listener handles the generation and
- * loading of translations for entities which implements
- * the Translatable interface.
- * 
- * This behavior can inpact the performance of your application
- * since it does an additional query for each field to translate.
- * 
- * Nevertheless the annotation metadata is properly cached and
- * it is not a big overhead to lookup all entity annotations since
- * the caching is activated for metadata
+ * The AbstractTranslationListener is an abstract class
+ * of translation listener in order to support diferent
+ * object managers.
  * 
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  * @package Gedmo.Translatable
@@ -63,7 +56,7 @@ abstract class AbstractTranslationListener extends MappedEventSubscriber
      */
     private $_pendingTranslationInserts = array();
     
-	/**
+    /**
      * Mapps additional metadata
      * 
      * @param EventArgs $eventArgs
@@ -74,7 +67,7 @@ abstract class AbstractTranslationListener extends MappedEventSubscriber
         $this->loadMetadataForObjectClass($this->getObjectManager($eventArgs), $eventArgs->getClassMetadata());
     }
     
-	/**
+    /**
      * Enable or disable translation fallback
      * to original record value
      * 
@@ -100,7 +93,7 @@ abstract class AbstractTranslationListener extends MappedEventSubscriber
             $this->getDefaultTranslationClass();
     }
     
-	/**
+    /**
      * Set the locale to use for translation listener
      * 
      * @param string $locale
@@ -118,7 +111,7 @@ abstract class AbstractTranslationListener extends MappedEventSubscriber
      * @param object $object
      * @param ClassMetadata $meta
      * @throws RuntimeException - if language or locale property is not
-     * 		found in entity
+     *         found in entity
      * @return string
      */
     public function getTranslatableLocale($object, $meta)
@@ -140,7 +133,7 @@ abstract class AbstractTranslationListener extends MappedEventSubscriber
         return $locale;
     }
     
-	/**
+    /**
      * Looks for translatable objects being inserted or updated
      * for further processing
      * 
@@ -188,7 +181,7 @@ abstract class AbstractTranslationListener extends MappedEventSubscriber
         }
     }
     
- 	/**
+     /**
      * Checks for inserted object to update their translation
      * foreign keys
      * 
@@ -223,7 +216,7 @@ abstract class AbstractTranslationListener extends MappedEventSubscriber
         }
     }
     
-	/**
+    /**
      * After object is loaded, listener updates the translations
      * by currently used locale
      * 
@@ -278,7 +271,7 @@ abstract class AbstractTranslationListener extends MappedEventSubscriber
         $this->_defaultLocale = $locale;
     }
     
-	/**
+    /**
      * {@inheritDoc}
      */
     protected function _getNamespace()
@@ -337,7 +330,7 @@ abstract class AbstractTranslationListener extends MappedEventSubscriber
                     ->setValue($translation, $locale);
                 $translationMetadata->getReflectionProperty('field')
                     ->setValue($translation, $field);
-                $translationMetadata->getReflectionProperty('entity')
+                $translationMetadata->getReflectionProperty('objectClass')
                     ->setValue($translation, $objectClass);
                 $translationMetadata->getReflectionProperty('foreignKey')
                     ->setValue($translation, $objectId);
@@ -382,7 +375,7 @@ abstract class AbstractTranslationListener extends MappedEventSubscriber
         }
     }
     
-	/**
+    /**
      * Validates the given locale
      * 
      * @param string $locale - locale to validate
@@ -428,7 +421,7 @@ abstract class AbstractTranslationListener extends MappedEventSubscriber
      */
     abstract protected function getObjectChangeSet($uow, $object);
     
-	/**
+    /**
      * Get the scheduled object updates from a UnitOfWork
      *
      * @param UnitOfWork $uow

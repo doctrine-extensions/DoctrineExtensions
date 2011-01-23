@@ -35,7 +35,7 @@ class TimestampableListener extends MappedEventSubscriber
         );
     }
     
-	/**
+    /**
      * Mapps additional metadata for the Entity
      * 
      * @param LoadClassMetadataEventArgs $eventArgs
@@ -142,7 +142,7 @@ class TimestampableListener extends MappedEventSubscriber
         }
     }
     
-	/**
+    /**
      * {@inheritDoc}
      */
     protected function _getNamespace()

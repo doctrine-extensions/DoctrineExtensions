@@ -84,17 +84,19 @@ class SluggableListener extends AbstractSluggableListener
     {
         $qb = $om->createQueryBuilder($meta->name);
         $identifier = $meta->getIdentifierValue($object);
-        $q = $qb->field($meta->identifier)->notEqual($identifier)
-            ->where("function() {
-            	return this.{$config['slug']}.indexOf('{$preferedSlug}') == 0;
-        	}")->getQuery();
+        if ($identifier) {
+            $qb->field($meta->identifier)->notEqual($identifier);
+        }
+        $qb->where("function() {
+            return this.{$config['slug']}.indexOf('{$preferedSlug}') == 0;
+        }");
+        $q = $qb->getQuery();
         $q->setHydrate(false);
         
         $result = $q->execute();
         if ($result instanceof Cursor) {
             $result = $result->toArray();
         }
-        
         return $result;
     }
 }

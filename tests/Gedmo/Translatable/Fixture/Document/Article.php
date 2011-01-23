@@ -1,6 +1,6 @@
 <?php
 
-namespace Sluggable\Fixture\Document;
+namespace Translatable\Fixture\Document;
 
 /** 
  * @Document(collection="articles")
@@ -12,18 +12,21 @@ class Article
 
     /**
      * @gedmo:Sluggable
+     * @gedmo:Translatable
      * @String
      */
     private $title;
 
     /**
      * @gedmo:Sluggable
+     * @gedmo:Translatable
      * @String
      */
     private $code;
     
     /**
      * @gedmo:Slug
+     * @gedmo:Translatable
      * @String
      */
     private $slug;

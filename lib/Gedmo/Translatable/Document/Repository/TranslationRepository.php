@@ -1,55 +1,50 @@
 <?php
 
-namespace Gedmo\Translatable\Entity\Repository;
+namespace Gedmo\Translatable\Document\Repository;
 
-use Doctrine\ORM\EntityRepository,
-    Doctrine\ORM\Query,
-    Gedmo\Translatable\Exception,
-    Gedmo\Translatable\Translatable;
+use Doctrine\ODM\MongoDB\DocumentRepository,
+    Doctrine\ODM\MongoDB\Cursor;
 
 /**
  * The TranslationRepository has some useful functions
  * to interact with translations.
  * 
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @package Gedmo.Translatable.Entity.Repository
+ * @package Gedmo.Translatable.Document.Repository
  * @subpackage TranslationRepository
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class TranslationRepository extends EntityRepository
+class TranslationRepository extends DocumentRepository
 {    
     /**
      * Loads all translations with all translatable
      * fields from the given entity
      * 
-     * @param object $entity Must implement Translatable
+     * @param object $document
      * @return array list of translations in locale groups
      */
-    public function findTranslations($entity)
+    public function findTranslations($document)
     {
         $result = array();
-        if ($entity) {
-            if ($this->_em->getUnitOfWork()->getEntityState($entity) == \Doctrine\ORM\UnitOfWork::STATE_NEW) {
-                return $result;
-            }
-            $entityClass = get_class($entity);
-            $meta = $this->_em->getClassMetadata($entityClass);
-            $identifier = $meta->getSingleIdentifierFieldName();
-            $entityId = $meta->getReflectionProperty($identifier)->getValue($entity);
+        if ($document) {
+            $documentClass = get_class($document);
+            $meta = $this->dm->getClassMetadata($documentClass);
+            $identifier = $meta->identifier;
+            $documentId = $meta->getReflectionProperty($identifier)->getValue($document);
             
-            $translationMeta = $this->getClassMetadata(); // table inheritance support
-            $qb = $this->_em->createQueryBuilder();
-            $qb->select('trans.content, trans.field, trans.locale')
-                ->from($translationMeta->rootEntityName, 'trans')
-                ->where('trans.foreignKey = :entityId', 'trans.entity = :entityClass')
-                ->orderBy('trans.locale');
-            $q = $qb->getQuery();
-            $data = $q->execute(
-                compact('entityId', 'entityClass'),
-                Query::HYDRATE_ARRAY
-            );
+            $translationMeta = $this->getClassMetadata();
+            $qb = $this->createQueryBuilder();
+            $q = $qb->field('foreignKey')->equals($documentId)
+                ->field('objectClass')->equals($documentClass)
+                ->sort('locale', 'asc')
+                ->getQuery();
             
+            $q->setHydrate(false);
+            $data = $q->execute();
+            if ($data instanceof Cursor) {
+                $data = $data->toArray();
+            }            
             if ($data && is_array($data) && count($data)) {
                 foreach ($data as $row) {
                     $result[$row['locale']][$row['field']] = $row['content'];
@@ -60,7 +55,7 @@ class TranslationRepository extends EntityRepository
     }
     
     /**
-     * Find the entity $class by the translated field.
+     * Find the object $class by the translated field.
      * Result is the first occurence of translated field.
      * Query can be slow, since there are no indexes on such
      * columns
@@ -70,24 +65,26 @@ class TranslationRepository extends EntityRepository
      * @param string $class
      * @return object - instance of $class or null if not found
      */
-    public function findEntityByTranslatedField($field, $value, $class)
+    public function findObjectByTranslatedField($field, $value, $class)
     {
-        $entity = null;
-        $meta = $this->_em->getClassMetadata($class);
-        $translationMeta = $this->getClassMetadata(); // table inheritance support
+        $document = null;
+        $meta = $this->dm->getClassMetadata($class);
+        $translationMeta = $this->getClassMetadata();
         if ($meta->hasField($field)) {
-            $dql = "SELECT trans.foreignKey FROM {$translationMeta->rootEntityName} trans";
-            $dql .= ' WHERE trans.entity = :class';
-            $dql .= ' AND trans.field = :field';
-            $dql .= ' AND trans.content = :value';
-            $q = $this->_em->createQuery($dql);
-            $q->setParameters(compact('class', 'field', 'value'));
-            $q->setMaxResults(1);
-            $result = $q->getArrayResult();
+            $qb = $this->createQueryBuilder();
+            $q = $qb->field('field')->equals($field)
+                ->field('objectClass')->equals($meta->name)
+                ->field('content')->equals($value)
+                ->getQuery();
+            
+            $q->setHydrate(false);
+            $result = $q->execute();
+            if ($result instanceof Cursor) {
+                $result = $data->toArray();
+            }
             $id = count($result) ? $result[0]['foreignKey'] : null;
-                
             if ($id) {
-                $entity = $this->_em->find($class, $id);
+                $document = $this->dm->find($class, $id);
             }
         }
         return $entity;
@@ -95,27 +92,27 @@ class TranslationRepository extends EntityRepository
     
     /**
      * Loads all translations with all translatable
-     * fields by a given entity primary key
+     * fields by a given document primary key
      *
-     * @param mixed $id - primary key value of an entity
+     * @param mixed $id - primary key value of document
      * @return array
      */
-    public function findTranslationsByEntityId($id)
+    public function findTranslationsByObjectId($id)
     {
         $result = array();
         if ($id) {
-            $translationMeta = $this->getClassMetadata(); // table inheritance support            
-            $qb = $this->_em->createQueryBuilder();
-            $qb->select('trans.content, trans.field, trans.locale')
-                ->from($translationMeta->rootEntityName, 'trans')
-                ->where('trans.foreignKey = :entityId')
-                ->orderBy('trans.locale');
-            $q = $qb->getQuery();
-            $data = $q->execute(
-                array('entityId' => $id),
-                Query::HYDRATE_ARRAY
-            );
+            $translationMeta = $this->getClassMetadata();
+            $qb = $this->createQueryBuilder();
+            $q = $qb->field('foreignKey')->equals($id)
+                ->sort('locale', 'asc')
+                ->getQuery();
             
+            $q->setHydrate(false);
+            $data = $q->execute();
+                       
+            if ($data instanceof Cursor) {
+                $data = $data->toArray();
+            }            
             if ($data && is_array($data) && count($data)) {
                 foreach ($data as $row) {
                     $result[$row['locale']][$row['field']] = $row['content'];

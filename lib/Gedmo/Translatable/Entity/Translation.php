@@ -8,10 +8,10 @@ namespace Gedmo\Translatable\Entity;
  * @Table(
  *         name="ext_translations", 
  *         indexes={@index(name="translations_lookup_idx", columns={
- *             "locale", "entity", "foreign_key"
+ *             "locale", "object_class", "foreign_key"
  *         })},
  *         uniqueConstraints={@UniqueConstraint(name="lookup_unique_idx", columns={
- *             "locale", "entity", "foreign_key", "field"
+ *             "locale", "object_class", "foreign_key", "field"
  *         })}
  * )
  * @Entity(repositoryClass="Gedmo\Translatable\Entity\Repository\TranslationRepository")
