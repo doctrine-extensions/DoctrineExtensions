@@ -88,7 +88,7 @@ class SluggableListener extends AbstractSluggableListener
             $qb->field($meta->identifier)->notEqual($identifier);
         }
         $qb->where("function() {
-            return this.{$config['slug']}.indexOf('{$preferedSlug}') == 0;
+            return this.{$config['slug']}.indexOf('{$preferedSlug}') === 0;
         }");
         $q = $qb->getQuery();
         $q->setHydrate(false);

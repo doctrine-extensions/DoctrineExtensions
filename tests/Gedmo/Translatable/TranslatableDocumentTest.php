@@ -128,6 +128,17 @@ class TranslatableDocumentTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('Code EN', $article->getCode());
         $this->assertEquals('title-en-code-en', $article->getSlug());
         
+        // test translation update
+        $article->setTitle('Title EN Updated');
+        $article->setCode('Code EN Updated');
+        $this->dm->persist($article);
+        $this->dm->flush();
+        $this->dm->clear();
+        
+        $article = $repo->find($this->articleId);
+        $this->assertEquals('Title EN Updated', $article->getTitle());
+        $this->assertEquals('Code EN Updated', $article->getCode());
+        
         // test removal of translations
         $this->dm->remove($article);
         $this->dm->flush();

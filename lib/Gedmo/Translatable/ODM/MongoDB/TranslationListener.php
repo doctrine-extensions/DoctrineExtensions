@@ -12,10 +12,10 @@ use Doctrine\ODM\MongoDB\Events,
  * loading of translations for documents.
  * 
  * This behavior can inpact the performance of your application
- * since it does an additional query for each field to translate.
+ * since it does an additional query for fields to be translated.
  * 
  * Nevertheless the annotation metadata is properly cached and
- * it is not a big overhead to lookup all entity annotations since
+ * it is not a big overhead to lookup all document annotations since
  * the caching is activated for metadata
  * 
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
@@ -165,7 +165,8 @@ class TranslationListener extends AbstractTranslationListener
      */
     protected function findTranslation($om, $objectId, $objectClass, $locale, $field)
     {
-        $qb = $om->createQueryBuilder($objectClass);
+        $translationClass = $this->getTranslationClass($objectClass);
+        $qb = $om->createQueryBuilder($translationClass);
         $q = $qb->field('foreignKey')->equals($objectId)
             ->field('locale')->equals($locale)
             ->field('field')->equals($field)
@@ -176,6 +177,7 @@ class TranslationListener extends AbstractTranslationListener
         if ($result instanceof Cursor) {
             $result = current($result->toArray());
         }
+        $q->setHydrate(false);
         return $result;
     }
     
