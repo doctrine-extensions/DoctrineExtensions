@@ -20,6 +20,7 @@ half of extensions can be used with ODM also.
 
 - Translatable
 - Sluggable
+- Timestampable
 
 Are allready ported to support ODM MongoDB
 

@@ -34,7 +34,8 @@ class Yaml extends File implements Driver
     private $_validTypes = array(
         'date',
         'time',
-        'datetime'
+        'datetime',
+        'timestamp'
     );
     
     /**
