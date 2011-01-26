@@ -121,4 +121,43 @@ class TimestampableTest extends \PHPUnit_Framework_TestCase
             $sport->getPublished()->format('Y-m-d H:i:s')
         );
     }
-}
+
+    public function testForcedValues()
+    {
+        $sport = new Article();
+        $sport->setTitle('sport forced');
+        $sport->setCreated(new \DateTime('2000-01-01'));
+        $sport->setUpdated(new \DateTime('2000-01-01 12:00:00'));
+        
+        $this->em->persist($sport);
+        $this->em->flush();
+        $this->em->clear();
+        
+        $repo = $this->em->getRepository(self::TEST_ENTITY_ARTICLE);
+        $sport = $repo->findOneByTitle('sport forced');
+        $this->assertEquals(
+            '2000-01-01', 
+            $sport->getCreated()->format('Y-m-d')
+        );
+        $this->assertEquals(
+            '2000-01-01 12:00:00', 
+            $sport->getUpdated()->format('Y-m-d H:i:s')
+        );
+        
+        $published = new Type();
+        $published->setTitle('Published');
+        
+        $sport->setType($published);
+        $sport->setPublished(new \DateTime('2000-01-01 12:00:00'));
+        $this->em->persist($sport);
+        $this->em->persist($published);
+        $this->em->flush();
+        $this->em->clear();
+        
+        $sport = $repo->findOneByTitle('sport forced');
+        $this->assertEquals(
+            '2000-01-01 12:00:00', 
+            $sport->getPublished()->format('Y-m-d H:i:s')
+        );
+    }
+}    

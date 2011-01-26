@@ -45,19 +45,24 @@ abstract class AbstractTimestampableListener extends MappedEventSubscriber
             $objectClass = get_class($object);
             if ($config = $this->getConfiguration($om, $objectClass)) {
                 $meta = $om->getClassMetadata($objectClass);
+                $changeSet = $this->getObjectChangeSet($uow, $object);
                 $needChanges = false;
 
                 if (isset($config['update'])) {
-                    $needChanges = true;
                     foreach ($config['update'] as $field) {
-                        $meta->getReflectionProperty($field)
-                            ->setValue($object, $this->getDateValue($meta, $field));
+                        if (!isset($changeSet[$field])) { // let manual values
+                            $needChanges = true;
+                            $meta->getReflectionProperty($field)->setValue($object, $this->getDateValue($meta, $field));
+                        }
                     }
                 }
                 
                 if (isset($config['change'])) {
-                    $changeSet = $this->getObjectChangeSet($uow, $object);
                     foreach ($config['change'] as $options) {
+                        if (isset($changeSet[$options['field']])) {
+                            continue; // value was set manually
+                        }
+                        
                         $tracked = $options['trackedField'];
                         $trackedChild = null;
                         $parts = explode('.', $tracked);
@@ -112,15 +117,17 @@ abstract class AbstractTimestampableListener extends MappedEventSubscriber
         if ($config = $this->getConfiguration($om, $meta->name)) {
             if (isset($config['update'])) {
                 foreach ($config['update'] as $field) {
-                    $meta->getReflectionProperty($field)
-                        ->setValue($object, $this->getDateValue($meta, $field));
+                    if ($meta->getReflectionProperty($field)->getValue($object) === null) { // let manual values
+                        $meta->getReflectionProperty($field)->setValue($object, $this->getDateValue($meta, $field));
+                    }
                 }
             }
             
             if (isset($config['create'])) {
                 foreach ($config['create'] as $field) {
-                    $meta->getReflectionProperty($field)
-                        ->setValue($object, $this->getDateValue($meta, $field));
+                    if ($meta->getReflectionProperty($field)->getValue($object) === null) { // let manual values
+                        $meta->getReflectionProperty($field)->setValue($object, $this->getDateValue($meta, $field));
+                    }
                 }
             }
         }

@@ -83,4 +83,19 @@ class Article
     {
         return $this->type;
     }
+    
+    public function setCreated($created)
+    {
+        $this->created = $created;
+    }
+    
+    public function setPublished(\DateTime $published)
+    {
+        $this->published = $published;
+    }
+    
+    public function setUpdated(\DateTime $updated)
+    {
+        $this->updated = $updated;
+    }
 }

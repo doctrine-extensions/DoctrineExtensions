@@ -91,9 +91,19 @@ class Article implements Timestampable
         return $this->created;
     }
     
+    public function setCreated(\DateTime $created)
+    {
+        $this->created = $created;
+    }
+    
     public function getPublished()
     {
         return $this->published;
+    }
+    
+    public function setPublished(\DateTime $published)
+    {
+        $this->published = $published;
     }
     
     /**
@@ -104,5 +114,10 @@ class Article implements Timestampable
     public function getUpdated()
     {
         return $this->updated;
+    }
+    
+    public function setUpdated(\DateTime $updated)
+    {
+        $this->updated = $updated;
     }
 }
