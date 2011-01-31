@@ -2,7 +2,7 @@
 
 namespace Tree\Fixture\Repository;
 
-use Gedmo\Tree\Repository\TreeNodeRepository;
+use Gedmo\Tree\Entity\Repository\TreeNodeRepository;
     
 class BehavioralCategoryRepository extends TreeNodeRepository
 {

@@ -5,7 +5,7 @@ namespace Tree\Fixture;
 use Gedmo\Tree\Node;
 
 /**
- * @Entity(repositoryClass="Gedmo\Tree\Repository\TreeNodeRepository")
+ * @Entity(repositoryClass="Gedmo\Tree\Entity\Repository\TreeNodeRepository")
  */
 class Category implements Node
 {

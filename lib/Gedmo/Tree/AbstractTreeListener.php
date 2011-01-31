@@ -8,9 +8,14 @@ use Doctrine\Common\EventArgs,
 abstract class AbstractTreeListener extends MappedEventSubscriber
 {
     /**
-     * Nested Tree type
+     * NestedSet Tree type
      */
     const TYPE_NESTED = 'nested';
+    
+    /**
+     * Closure Tree type
+     */
+    //const TYPE_CLOSURE = 'closure'; not yet
     
     /**
      * Tree processing strategy
@@ -39,7 +44,7 @@ abstract class AbstractTreeListener extends MappedEventSubscriber
         return $this->strategy;
     }
     
-	/**
+    /**
      * Looks for Tree objects being updated
      * for further processing
      * 
@@ -60,7 +65,7 @@ abstract class AbstractTreeListener extends MappedEventSubscriber
         $this->strategy->onFlushEnd($om);
     }
     
-	/**
+    /**
      * Updates tree on Node removal
      * 
      * @param EventArgs $args
@@ -77,7 +82,7 @@ abstract class AbstractTreeListener extends MappedEventSubscriber
         }
     }
     
-	/**
+    /**
      * Checks for persisted Nodes
      * 
      * @param EventArgs $args
@@ -94,7 +99,7 @@ abstract class AbstractTreeListener extends MappedEventSubscriber
         }
     }
     
-	/**
+    /**
      * Checks for pending Nodes to fully synchronize
      * the tree
      * 
@@ -112,7 +117,7 @@ abstract class AbstractTreeListener extends MappedEventSubscriber
         }
     }
     
-	/**
+    /**
      * Mapps additional metadata
      * 
      * @param EventArgs $eventArgs
@@ -123,7 +128,7 @@ abstract class AbstractTreeListener extends MappedEventSubscriber
         $this->loadMetadataForObjectClass($this->getObjectManager($eventArgs), $eventArgs->getClassMetadata());
     }
     
-	/**
+    /**
      * {@inheritDoc}
      */
     protected function _getNamespace()

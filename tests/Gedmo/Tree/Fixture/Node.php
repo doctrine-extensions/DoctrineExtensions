@@ -3,7 +3,7 @@
 namespace Tree\Fixture;
 
 /**
- * @Entity(repositoryClass="Gedmo\Tree\Repository\TreeNodeRepository")
+ * @Entity(repositoryClass="Gedmo\Tree\Entity\Repository\TreeNodeRepository")
  */
 class Node extends BaseNode
 {

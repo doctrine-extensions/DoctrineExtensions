@@ -1,23 +1,24 @@
 <?php
 
-namespace Gedmo\Timestampable\ODM\MongoDB;
+namespace Gedmo\Tree;
 
 use Doctrine\ODM\MongoDB\Events,
     Doctrine\Common\EventArgs,
-    Gedmo\Timestampable\AbstractTimestampableListener;
+    Gedmo\Tree\AbstractTreeListener;
 
 /**
- * The Timestampable listener handles the update of
- * dates on creation and update of entity.
+ * The tree listener handles the synchronization of
+ * tree nodes for documents. Can implement diferent
+ * strategies on handling the tree.
  * 
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @package Gedmo.Timestampable.ODM.MongoDB
- * @subpackage TimestampableListener
+ * @package Gedmo.Tree.ODM.MongoDB
+ * @subpackage TreeListener
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class TimestampableListener extends AbstractTimestampableListener
-{    
+class TreeListener extends AbstractTreeListener
+{   
     /**
      * Specifies the list of events to listen
      * 
@@ -27,9 +28,23 @@ class TimestampableListener extends AbstractTimestampableListener
     {
         return array(
             Events::prePersist,
+            Events::postPersist,
+            Events::preRemove,
             Events::onFlush,
             Events::loadClassMetadata
         );
+    }
+    
+    /**
+     * {@inheritdoc}
+     */
+    protected function loadStrategy($type)
+    {
+        $class = $this->_getNamespace() . '\Strategy\ODM\\' . ucfirst($type);
+        if (!class_exists($class)) {
+            throw new \Gedmo\Exception\InvalidArgumentException("ODM TreeListener does not support tree type: {$type}");
+        }
+        return new $class($this);
     }
     
     /**
@@ -62,25 +77,5 @@ class TimestampableListener extends AbstractTimestampableListener
     protected function getScheduledObjectUpdates($uow)
     {
         return $uow->getScheduledDocumentUpdates();
-    }
-    
-    /**
-     * {@inheritdoc}
-     */
-    protected function recomputeSingleObjectChangeSet($uow, $meta, $object)
-    {
-        $uow->recomputeSingleDocumentChangeSet($meta, $object);
-    }
-    
-    /**
-     * {@inheritdoc}
-     */
-    protected function getDateValue($meta, $field)
-    {
-        $mapping = $meta->getFieldMapping($field);
-        if (isset($mapping['type']) && $mapping['type'] === 'timestamp') {
-            return time();
-        }
-        return new \DateTime();
     }
 }

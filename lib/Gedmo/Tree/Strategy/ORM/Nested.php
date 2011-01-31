@@ -6,6 +6,22 @@ use Gedmo\Tree\StrategyInterface,
     Doctrine\ORM\EntityManager,
     Gedmo\Tree\AbstractTreeListener;
 
+/**
+ * This strategy makes tree act like
+ * nested set.
+ * 
+ * This behavior can inpact the performance of your application
+ * since nested set trees are slow on inserts and updates.
+ * 
+ * Some Tree logic is copied from -
+ * CakePHP: Rapid Development Framework (http://cakephp.org)
+ * 
+ * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
+ * @package Gedmo.Tree.Strategy.ORM
+ * @subpackage Nested
+ * @link http://www.gediminasm.org
+ * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
+ */
 class Nested implements StrategyInterface
 {
     /**
@@ -149,7 +165,7 @@ class Nested implements StrategyInterface
         $this->treeEdge = 0;
     }
     
-	/**
+    /**
      * Synchronize tree according to Node`s parent Node
      * 
      * @param object $parent
@@ -257,7 +273,7 @@ class Nested implements StrategyInterface
         return intval($right);
     }
     
-	/**
+    /**
      * If Node does not have parent set it as root
      * 
      * @param EntityManager $em

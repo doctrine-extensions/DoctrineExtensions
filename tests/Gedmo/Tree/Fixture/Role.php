@@ -4,7 +4,7 @@ namespace Tree\Fixture;
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
- * @Entity(repositoryClass="Gedmo\Tree\Repository\TreeNodeRepository")
+ * @Entity(repositoryClass="Gedmo\Tree\Entity\Repository\TreeNodeRepository")
  * @Table(name="`role`")
  * @InheritanceType("JOINED")
  * @DiscriminatorColumn(name="discr", type="string")

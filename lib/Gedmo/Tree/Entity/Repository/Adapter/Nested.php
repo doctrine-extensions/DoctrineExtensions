@@ -8,27 +8,57 @@ use Gedmo\Tree\RepositoryAdapterInterface,
     Doctrine\ORM\Mapping\ClassMetadata,
     Doctrine\ORM\EntityManager;
 
+/**
+ * This adapter makes tree repository compatible
+ * to nested set strategy on tree.
+ * 
+ * Some Tree logic is copied from -
+ * CakePHP: Rapid Development Framework (http://cakephp.org)
+ * 
+ * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
+ * @package Gedmo.Tree.Entity.Repository.Adapter
+ * @subpackage Nested
+ * @link http://www.gediminasm.org
+ * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
+ */
 class Nested implements RepositoryAdapterInterface
 {
+    /**
+     * Tree listener on event manager
+     * 
+     * @var AbstractTreeListener
+     */
     private $listener = null;
+    
+    /**
+     * The metadata for this adapter
+     * 
+     * @var ClassMetadata
+     */
     private $meta = null;
+    
+    /**
+     * Entity manager
+     * 
+     * @var EntityManager
+     */
     private $em = null;
     
     /**
+     * Initialize the nested set adapter
      * 
-     * Enter description here ...
-     * @param unknown_type $listener
-     * @param unknown_type $meta
-     * @param unknown_type $em
+     * @param AbstractTreeListener $listener
+     * @param ClassMetadata $meta
+     * @param EntityManager $em
      */
-	public function __construct(AbstractTreeListener $listener, ClassMetadata $meta, EntityManager $em)
-	{
-	    $this->listener = $listener;
-	    $this->meta = $meta;
-	    $this->em = $em;
-	}
-	
-	/**
+    public function __construct(AbstractTreeListener $listener, ClassMetadata $meta, EntityManager $em)
+    {
+        $this->listener = $listener;
+        $this->meta = $meta;
+        $this->em = $em;
+    }
+    
+    /**
      * {@inheritdoc}
      */
     public function getNodePathInTree($node)
@@ -195,13 +225,13 @@ class Nested implements RepositoryAdapterInterface
         $left = $this->meta->getReflectionProperty($config['left'])->getValue($node);
         $nextLeft = $this->meta->getReflectionProperty($config['left'])->getValue($nextSiblingNode);
         $nextRight = $this->meta->getReflectionProperty($config['right'])->getValue($nextSiblingNode);
-        $edge = $this->listener->getStrategy()->getTreeEdge();
+        $edge = $this->listener->getStrategy()->getTreeEdge($this->em, $node);
         // process updates in transaction
         $this->em->getConnection()->beginTransaction();
         try {            
-            $this->listener->getStrategy()->synchronize($em, $node, $edge - $left + 1, '+', 'BETWEEN ' . $left . ' AND ' . $right);
-            $this->listener->getStrategy()->synchronize($em, $node, $nextLeft - $left, '-', 'BETWEEN ' . $nextLeft . ' AND ' . $nextRight);
-            $this->listener->getStrategy()->synchronize($em, $node, $edge - $left - ($nextRight - $nextLeft), '-', ' > ' . $edge);
+            $this->listener->getStrategy()->synchronize($this->em, $node, $edge - $left + 1, '+', 'BETWEEN ' . $left . ' AND ' . $right);
+            $this->listener->getStrategy()->synchronize($this->em, $node, $nextLeft - $left, '-', 'BETWEEN ' . $nextLeft . ' AND ' . $nextRight);
+            $this->listener->getStrategy()->synchronize($this->em, $node, $edge - $left - ($nextRight - $nextLeft), '-', ' > ' . $edge);
             $this->em->getConnection()->commit();
         } catch (\Exception $e) {
             $this->em->close();
@@ -255,13 +285,13 @@ class Nested implements RepositoryAdapterInterface
         $right = $this->meta->getReflectionProperty($config['right'])->getValue($node);
         $previousLeft = $this->meta->getReflectionProperty($config['left'])->getValue($previousSiblingNode);
         $previousRight = $this->meta->getReflectionProperty($config['right'])->getValue($previousSiblingNode);
-        $edge = $this->listener->getStrategy()->getTreeEdge();
+        $edge = $this->listener->getStrategy()->getTreeEdge($this->em, $node);
         // process updates in transaction
         $this->em->getConnection()->beginTransaction();
         try {
-            $this->listener->getStrategy()->synchronize($em, $node, $edge - $previousLeft +1, '+', 'BETWEEN ' . $previousLeft . ' AND ' . $previousRight);
-            $this->listener->getStrategy()->synchronize($em, $node, $left - $previousLeft, '-', 'BETWEEN ' .$left . ' AND ' . $right);
-            $this->listener->getStrategy()->synchronize($em, $node, $edge - $previousLeft - ($right - $left), '-', '> ' . $edge);
+            $this->listener->getStrategy()->synchronize($this->em, $node, $edge - $previousLeft +1, '+', 'BETWEEN ' . $previousLeft . ' AND ' . $previousRight);
+            $this->listener->getStrategy()->synchronize($this->em, $node, $left - $previousLeft, '-', 'BETWEEN ' .$left . ' AND ' . $right);
+            $this->listener->getStrategy()->synchronize($this->em, $node, $edge - $previousLeft - ($right - $left), '-', '> ' . $edge);
             $this->em->getConnection()->commit();
         } catch (\Exception $e) {
             $this->em->close();
@@ -284,7 +314,7 @@ class Nested implements RepositoryAdapterInterface
     public function reorder($node, $sortByField, $direction, $verify)
     {
         $config = $this->listener->getConfiguration($this->em, $this->meta->name);
-        if ($verify && is_array($this->verify())) {
+        if ($verify && is_array($this->verifyTreeConsistence())) {
             return false;
         }
                
@@ -332,8 +362,8 @@ class Nested implements RepositoryAdapterInterface
             $q = $this->em->createQuery($dql);
             $q->getSingleScalarResult();
             
-            $this->listener->getStrategy()->synchronize($em, $node, 1, '-', 'BETWEEN ' . ($left + 1) . ' AND ' . ($right - 1));
-            $this->listener->getStrategy()->synchronize($em, $node, 2, '-', '> ' . $right);
+            $this->listener->getStrategy()->synchronize($this->em, $node, 1, '-', 'BETWEEN ' . ($left + 1) . ' AND ' . ($right - 1));
+            $this->listener->getStrategy()->synchronize($this->em, $node, 2, '-', '> ' . $right);
             
             $dql = "UPDATE {$this->meta->rootEntityName} node";
             $dql .= ' SET node.' . $config['parent'] . ' = NULL,';
@@ -358,7 +388,7 @@ class Nested implements RepositoryAdapterInterface
      */
     public function verifyTreeConsistence()
     {
-        if (!$this->childCount()) {
+        if (!$this->countChildren(null, false)) {
             return true; // tree is empty
         }
         $errors = array();
@@ -371,7 +401,7 @@ class Nested implements RepositoryAdapterInterface
         $q = $this->em->createQuery("SELECT MIN(node.{$leftField}) FROM {$this->meta->rootEntityName} node");
         
         $min = intval($q->getSingleScalarResult());
-        $edge = $this->listener->getStrategy()->getTreeEdge();
+        $edge = $this->listener->getStrategy()->getTreeEdge($this->em, new $this->meta->name());
         for ($i = $min; $i <= $edge; $i++) {
             $dql = "SELECT COUNT(node.{$identifier}) FROM {$this->meta->rootEntityName} node";
             $dql .= " WHERE (node.{$leftField} = {$i} OR node.{$rightField} = {$i})";
@@ -412,7 +442,11 @@ class Nested implements RepositoryAdapterInterface
             $errors[] = "node [{$id}], left is greater than right";
         }
         
-        foreach ($this->findAll() as $node) {
+        $dql = "SELECT node FROM {$this->meta->rootEntityName} node";
+        $q = $this->em->createQuery($dql);
+        $nodes = $q->getResult(Query::HYDRATE_OBJECT);
+        
+        foreach ($nodes as $node) {
             $right = $this->meta->getReflectionProperty($rightField)->getValue($node);
             $left = $this->meta->getReflectionProperty($leftField)->getValue($node);
             $id = $this->meta->getReflectionProperty($identifier)->getValue($node);
@@ -449,7 +483,7 @@ class Nested implements RepositoryAdapterInterface
      */
     public function recoverTree()
     {
-        if ($this->verify() === true) {
+        if ($this->verifyTreeConsistence() === true) {
             return;
         }
         
@@ -482,7 +516,7 @@ class Nested implements RepositoryAdapterInterface
                 $node = $this->em->getReference($this->meta->name, $node[$identifier]);
                 $this->em->refresh($node);
                 $parent = $this->meta->getReflectionProperty($parentField)->getValue($node);
-                $this->listener->getStrategy()->adjustNodeWithParent($parent, $node, $em);
+                $this->listener->getStrategy()->adjustNodeWithParent($parent, $node, $this->em);
             }
             $this->em->getConnection()->commit();
         } catch (\Exception $e) {

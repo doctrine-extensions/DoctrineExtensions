@@ -4,7 +4,7 @@ namespace Tree\Fixture;
 /**
  * Group entity
  * 
- * @Entity(repositoryClass="Gedmo\Tree\Repository\TreeNodeRepository")
+ * @Entity(repositoryClass="Gedmo\Tree\Entity\Repository\TreeNodeRepository")
  * @Table(name="`user_group`")
  */
 class UserGroup extends Role {

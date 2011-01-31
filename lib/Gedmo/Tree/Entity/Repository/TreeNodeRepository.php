@@ -8,13 +8,12 @@ use Doctrine\ORM\EntityRepository,
 
 /**
  * The TreeNodeRepository has some useful functions
- * to interact with tree.
- * 
- * Some Tree logic is copied from -
- * CakePHP: Rapid Development Framework (http://cakephp.org)
+ * to interact with tree. Repository automaticaly
+ * detects the stratage used and uses its adapter
+ * accordingly
  * 
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @package Gedmo.Tree.Repository
+ * @package Gedmo.Tree.Entity.Repository
  * @subpackage TreeNodeRepository
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
@@ -28,7 +27,7 @@ class TreeNodeRepository extends EntityRepository
      */ 
     protected $adapter = null;
     
-	/**
+    /**
      * {@inheritdoc}
      */
     public function __construct(EntityManager $em, ClassMetadata $class)
@@ -36,10 +35,12 @@ class TreeNodeRepository extends EntityRepository
         parent::__construct($em, $class);
         $evm = $em->getEventManager();
         $treeListener = null;
-        foreach ($evm->getListeners() as $listener) {
-            if ($listener instanceof \Gedmo\Tree\TreeListener) {
-                $treeListener = $listener;
-                break;
+        foreach ($evm->getListeners() as $event => $listeners) {
+            foreach ($listeners as $hash => $listener) {
+                if ($listener instanceof \Gedmo\Tree\TreeListener) {
+                    $treeListener = $listener;
+                    break;
+                }
             }
         }
         
@@ -144,7 +145,7 @@ class TreeNodeRepository extends EntityRepository
      * @param boolean $verify - true to verify tree first
      * @return boolean - true on success
      */
-    public function reorder($node, $sortByField, $direction, $verify)
+    public function reorder($node = null, $sortByField = null, $direction = 'ASC', $verify = true)
     {
         return $this->adapter->reorder($node, $sortByField, $direction, $verify);
     }

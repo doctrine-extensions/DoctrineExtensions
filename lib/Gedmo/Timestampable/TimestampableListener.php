@@ -31,7 +31,7 @@ class TimestampableListener extends AbstractTimestampableListener
         );
     }
     
-	/**
+    /**
      * {@inheritdoc}
      */
     protected function getObjectManager(EventArgs $args)
@@ -55,7 +55,7 @@ class TimestampableListener extends AbstractTimestampableListener
         return $uow->getEntityChangeSet($object);
     }
     
-	/**
+    /**
      * {@inheritdoc}
      */
     protected function getScheduledObjectUpdates($uow)
@@ -63,7 +63,7 @@ class TimestampableListener extends AbstractTimestampableListener
         return $uow->getScheduledEntityUpdates();
     }
     
-	/**
+    /**
      * {@inheritdoc}
      */
     public function recomputeSingleObjectChangeSet($uow, $meta, $object)
@@ -71,7 +71,7 @@ class TimestampableListener extends AbstractTimestampableListener
         $uow->recomputeSingleEntityChangeSet($meta, $object);
     }
     
-	/**
+    /**
      * {@inheritdoc}
      */
     protected function getDateValue($meta, $field)

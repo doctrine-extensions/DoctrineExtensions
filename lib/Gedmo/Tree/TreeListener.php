@@ -7,14 +7,8 @@ use Doctrine\ORM\Events,
 
 /**
  * The tree listener handles the synchronization of
- * tree nodes for entities which implements
- * the Node interface.
- * 
- * This behavior can inpact the performance of your application
- * since nested set trees are slow on inserts and updates.
- * 
- * Some Tree logic is copied from -
- * CakePHP: Rapid Development Framework (http://cakephp.org)
+ * tree nodes for entities. Can implement diferent
+ * strategies on handling the tree.
  * 
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  * @package Gedmo.Tree
@@ -52,7 +46,7 @@ class TreeListener extends AbstractTreeListener
         return new $class($this);
     }
     
-	/**
+    /**
      * {@inheritdoc}
      */
     protected function getObjectManager(EventArgs $args)
