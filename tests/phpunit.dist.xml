@@ -17,7 +17,4 @@
             <directory suffix=".php">./Gedmo/Mapping/</directory>
         </testsuite>
     </testsuites>
-    <php>
-        <const name="DOCTRINE_LIBRARY_PATH" value="/path/to/library/where/Doctrine/located"/>
-    </php>
 </phpunit>

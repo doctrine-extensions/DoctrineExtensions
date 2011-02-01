@@ -33,6 +33,19 @@ You can test these extensions on [my blog](http://gediminasm.org/test/ "Test doc
 
 All tutorials for basic usage examples are on [my blog](http://gediminasm.org "Tutorials for extensions") also.
 
+### Running the tests:
+
+PHPUnit 3.4 or newer is required.
+To setup and run tests follow these steps:
+
+- go to the root directory of extensions
+- run: **git submodule init**
+- run: **git submodule update**
+- go to tests directory: **cd tests**
+- run: **phpunit**
+- optional - you can **cp phpunit.dist.xml phpunit.xml** for additional modifications
+- optional - run mongodb in background to complete all tests 
+
 ### Thanks for contributions to:
 
 - Christophe Coevoet [stof](http://github.com/stof)
