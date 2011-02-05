@@ -4,6 +4,7 @@ namespace Tree\Fixture;
 
 /**
  * @Entity(repositoryClass="Tree\Fixture\Repository\BehavioralCategoryRepository")
+ * @gedmo:Tree(type="nested")
  */
 class BehavioralCategory
 {

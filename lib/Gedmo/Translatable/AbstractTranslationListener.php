@@ -25,7 +25,7 @@ abstract class AbstractTranslationListener extends MappedEventSubscriber
      *  
      * @var string
      */
-    protected $_locale = 'en_us';
+    protected $locale = 'en_us';
     
     /**
      * Default locale, this changes behavior
@@ -36,7 +36,7 @@ abstract class AbstractTranslationListener extends MappedEventSubscriber
      * 
      * @var string
      */
-    private $_defaultLocale = '';
+    private $defaultLocale = '';
     
     /**
      * If this is set to false, when if entity does
@@ -45,7 +45,7 @@ abstract class AbstractTranslationListener extends MappedEventSubscriber
      * 
      * @var boolean
      */
-    private $_translationFallback = true;
+    private $translationFallback = true;
     
     /**
      * List of translations which do not have the foreign
@@ -54,7 +54,7 @@ abstract class AbstractTranslationListener extends MappedEventSubscriber
      * 
      * @var array
      */
-    private $_pendingTranslationInserts = array();
+    private $pendingTranslationInserts = array();
     
     /**
      * Mapps additional metadata
@@ -76,7 +76,7 @@ abstract class AbstractTranslationListener extends MappedEventSubscriber
      */
     public function setTranslationFallback($bool)
     {
-        $this->_translationFallback = (bool)$bool;
+        $this->translationFallback = (bool)$bool;
     }
     
     /**
@@ -88,8 +88,8 @@ abstract class AbstractTranslationListener extends MappedEventSubscriber
      */
     public function getTranslationClass($class)
     {
-        return isset($this->_configurations[$class]['translationClass']) ?
-            $this->_configurations[$class]['translationClass'] : 
+        return isset($this->configurations[$class]['translationClass']) ?
+            $this->configurations[$class]['translationClass'] : 
             $this->getDefaultTranslationClass();
     }
     
@@ -101,7 +101,7 @@ abstract class AbstractTranslationListener extends MappedEventSubscriber
      */
     public function setTranslatableLocale($locale)
     {
-        $this->_locale = $locale;
+        $this->locale = $locale;
     }
     
     /**
@@ -116,12 +116,12 @@ abstract class AbstractTranslationListener extends MappedEventSubscriber
      */
     public function getTranslatableLocale($object, $meta)
     {
-        $locale = $this->_locale;
-        if (isset($this->_configurations[$meta->name]['locale'])) {
+        $locale = $this->locale;
+        if (isset($this->configurations[$meta->name]['locale'])) {
             $class = $meta->getReflectionClass();
-            $reflectionProperty = $class->getProperty($this->_configurations[$meta->name]['locale']);
+            $reflectionProperty = $class->getProperty($this->configurations[$meta->name]['locale']);
             if (!$reflectionProperty) {
-                $column = $this->_configurations[$meta->name]['locale'];
+                $column = $this->configurations[$meta->name]['locale'];
                 throw new \Gedmo\Exception\RuntimeException("There is no locale or language property ({$column}) found on object: {$meta->name}");
             }
             $reflectionProperty->setAccessible(true);
@@ -195,16 +195,16 @@ abstract class AbstractTranslationListener extends MappedEventSubscriber
         $uow = $om->getUnitOfWork();
         $objectClass = get_class($object);
         // check if entity is tracked by translatable and without foreign key
-        if (array_key_exists($objectClass, $this->_configurations) && count($this->_pendingTranslationInserts)) {
+        if (array_key_exists($objectClass, $this->configurations) && count($this->pendingTranslationInserts)) {
             $oid = spl_object_hash($object);
             
             $meta = $om->getClassMetadata($objectClass);
             // there should be single identifier
             $identifierField = $this->getSingleIdentifierFieldName($meta);
             $translationMeta = $om->getClassMetadata($this->getTranslationClass($objectClass));
-            if (array_key_exists($oid, $this->_pendingTranslationInserts)) {
+            if (array_key_exists($oid, $this->pendingTranslationInserts)) {
                 // load the pending translations without key
-                $translations = $this->_pendingTranslationInserts[$oid];
+                $translations = $this->pendingTranslationInserts[$oid];
                 foreach ($translations as $translation) {
                     $translationMeta->getReflectionProperty('foreignKey')->setValue(
                         $translation,
@@ -244,7 +244,7 @@ abstract class AbstractTranslationListener extends MappedEventSubscriber
                     }
                 }
                 // update translation
-                if (strlen($translated) || !$this->_translationFallback) {
+                if (strlen($translated) || !$this->translationFallback) {
                     $meta->getReflectionProperty($field)->setValue($object, $translated);
                     // ensure clean changeset
                     $this->setOriginalObjectProperty(
@@ -268,13 +268,13 @@ abstract class AbstractTranslationListener extends MappedEventSubscriber
      */
     public function setDefaultLocale($locale)
     {
-        $this->_defaultLocale = $locale;
+        $this->defaultLocale = $locale;
     }
     
     /**
      * {@inheritDoc}
      */
-    protected function _getNamespace()
+    protected function getNamespace()
     {
         return __NAMESPACE__;
     }
@@ -306,7 +306,7 @@ abstract class AbstractTranslationListener extends MappedEventSubscriber
         
         // load the currently used locale
         $locale = strtolower($this->getTranslatableLocale($object, $meta));
-        $this->_validateLocale($locale);
+        $this->validateLocale($locale);
 
         $uow = $om->getUnitOfWork();
         $config = $this->getConfiguration($om, $objectClass);
@@ -343,7 +343,7 @@ abstract class AbstractTranslationListener extends MappedEventSubscriber
             if ($isInsert && is_null($objectId)) {
                 // if we do not have the primary key yet available
                 // keep this translation in memory to insert it later with foreign key
-                $this->_pendingTranslationInserts[spl_object_hash($object)][$field] = $translation;
+                $this->pendingTranslationInserts[spl_object_hash($object)][$field] = $translation;
             } else {
                 // persist and compute change set for translation
                 $om->persist($translation);
@@ -351,12 +351,12 @@ abstract class AbstractTranslationListener extends MappedEventSubscriber
             }
         }
         // check if we have default translation and need to reset the translation
-        if (!$isInsert && strlen($this->_defaultLocale)) {
-            $this->_validateLocale($this->_defaultLocale);
+        if (!$isInsert && strlen($this->defaultLocale)) {
+            $this->validateLocale($this->defaultLocale);
             $changeSet = $modifiedChangeSet = $this->getObjectChangeSet($uow, $object);
             foreach ($changeSet as $field => $changes) {
                 if (in_array($field, $translatableFields)) {
-                    if ($locale != $this->_defaultLocale && strlen($changes[0])) {
+                    if ($locale != $this->defaultLocale && strlen($changes[0])) {
                         $meta->getReflectionProperty($field)->setValue($object, $changes[0]);
                         $this->setOriginalObjectProperty($uow, spl_object_hash($object), $field, $changes[0]);
                         unset($modifiedChangeSet[$field]);
@@ -382,7 +382,7 @@ abstract class AbstractTranslationListener extends MappedEventSubscriber
      * @throws InvalidArgumentException if locale is not valid
      * @return void
      */
-    protected function _validateLocale($locale)
+    protected function validateLocale($locale)
     {
         if (!is_string($locale) || !strlen($locale)) {
             throw new \Gedmo\Exception\InvalidArgumentException('Locale or language cannot be empty and must be set through Listener or Entity');

@@ -195,7 +195,7 @@ class TranslationListener extends AbstractTranslationListener
         $objectClass = get_class($object);
         $meta = $om->getClassMetadata($objectClass);
         $locale = strtolower($this->getTranslatableLocale($object, $meta));
-        $this->_validateLocale($locale);
+        $this->validateLocale($locale);
         
         // there should be single identifier
         $identifierField = $this->getSingleIdentifierFieldName($meta);

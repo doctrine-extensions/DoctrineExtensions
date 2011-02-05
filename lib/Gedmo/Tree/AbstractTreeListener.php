@@ -6,42 +6,49 @@ use Doctrine\Common\EventArgs,
     Gedmo\Mapping\MappedEventSubscriber;
 
 abstract class AbstractTreeListener extends MappedEventSubscriber
-{
+{    
     /**
-     * NestedSet Tree type
-     */
-    const TYPE_NESTED = 'nested';
-    
-    /**
-     * Closure Tree type
-     */
-    //const TYPE_CLOSURE = 'closure'; not yet
-    
-    /**
-     * Tree processing strategy
+     * Tree processing strategies for object classes
      * 
-     * @var StrategyInterface
+     * @var array
      */
-    protected $strategy = null;
+    private $strategies = array();
     
     /**
-     * Initialize tree listener
+     * List of strategy instances
      * 
-     * @param string $type
+     * @var array
      */
-    public function __construct($type = 'nested')
-    {
-        $this->strategy = $this->loadStrategy($type);
-    }
+    private $strategyInstances = array();
+    
+    /**
+     * List of object classes in post persist 
+     * 
+     * @var array
+     */
+    private $postPersistClasses = array();
     
     /**
      * Get the used strategy for tree processing
      * 
+     * @param object $om - object manager
+     * @param string $class
      * @return StrategyInterface
      */
-    public function getStrategy()
+    public function getStrategy($om, $class)
     {
-        return $this->strategy;
+        if (!isset($this->strategies[$class])) {
+            $config = $this->getConfiguration($om, $class);
+            if (!$config) {
+                throw new \Gedmo\Exception\UnexpectedValueException("Tree object class: {$class} must have tree metadata at this point");
+            }
+            // current listener can be only ODM or ORM
+            if (!isset($this->strategyInstances[$config['strategy']])) {
+                $this->strategyInstances[$config['strategy']] = $this->loadStrategy($config['strategy']);
+            }
+            $this->strategies[$class] = $config['strategy'];
+        }
+        return $this->strategyInstances[$this->strategies[$class]];
     }
     
     /**
@@ -56,13 +63,18 @@ abstract class AbstractTreeListener extends MappedEventSubscriber
         $om = $this->getObjectManager($args);
         $uow = $om->getUnitOfWork();
         // check all scheduled updates for TreeNodes
+        $usedClasses = array();
         foreach ($this->getScheduledObjectUpdates($uow) as $object) {
             $objectClass = get_class($object);
             if ($config = $this->getConfiguration($om, $objectClass)) {
-                $this->strategy->processScheduledUpdate($om, $object);
+                $usedClasses[$objectClass] = null;
+                $this->getStrategy($om, $objectClass)->processScheduledUpdate($om, $object);
             }
         }
-        $this->strategy->onFlushEnd($om);
+        foreach ($this->getStrategiesUsedForObjects($usedClasses) as $strategy) {
+            $strategy->onFlushEnd($om);
+        }
+        $this->postPersistClasses = array();
     }
     
     /**
@@ -78,7 +90,7 @@ abstract class AbstractTreeListener extends MappedEventSubscriber
         $objectClass = get_class($object);
         
         if ($config = $this->getConfiguration($om, $objectClass)) {
-            $this->strategy->processScheduledDelete($om, $object);
+            $this->getStrategy($om, $objectClass)->processScheduledDelete($om, $object);
         }
     }
     
@@ -95,7 +107,7 @@ abstract class AbstractTreeListener extends MappedEventSubscriber
         $objectClass = get_class($object);
         
         if ($config = $this->getConfiguration($om, $objectClass)) {
-            $this->strategy->processPrePersist($om, $object);
+            $this->getStrategy($om, $objectClass)->processPrePersist($om, $object);
         }
     }
     
@@ -111,9 +123,17 @@ abstract class AbstractTreeListener extends MappedEventSubscriber
         $om = $this->getObjectManager($args);
         $uow = $om->getUnitOfWork();
         $object = $this->getObject($args);
+        $objectClass = get_class($object);
+        
+        if ($config = $this->getConfiguration($om, $objectClass)) {
+            $this->getStrategy($om, $objectClass)->processPostPersist($om, $object);
+            $this->postPersistClasses[$objectClass] = null;
+        }
         
         if (!$uow->hasPendingInsertions()) {
-            $this->strategy->processPostPersist($om, $object);
+            foreach ($this->getStrategiesUsedForObjects($this->postPersistClasses) as $strategy) {
+                $strategy->processPendingInserts($om);
+            }
         }
     }
     
@@ -131,7 +151,7 @@ abstract class AbstractTreeListener extends MappedEventSubscriber
     /**
      * {@inheritDoc}
      */
-    protected function _getNamespace()
+    protected function getNamespace()
     {
         return __NAMESPACE__;
     }
@@ -167,4 +187,22 @@ abstract class AbstractTreeListener extends MappedEventSubscriber
      * @return StrategyInterface
      */
     abstract protected function loadStrategy($type);
+    
+    /**
+     * Get the list of strategy instances used for
+     * given object classes
+     * 
+     * @param array $classes
+     * @return array
+     */
+    private function getStrategiesUsedForObjects(array $classes)
+    {
+        $strategies = array();
+        foreach ($classes as $name => $opt) {
+            if (isset($this->strategies[$name]) && !isset($strategies[$this->strategies[$name]])) {
+                $strategies[$this->strategies[$name]] = $this->strategyInstances[$this->strategies[$name]];
+            }
+        }
+        return $strategies;
+    }
 }

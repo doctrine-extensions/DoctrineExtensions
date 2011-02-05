@@ -40,7 +40,7 @@ class TreeListener extends AbstractTreeListener
      */
     protected function loadStrategy($type)
     {
-        $class = $this->_getNamespace() . '\Strategy\ODM\\' . ucfirst($type);
+        $class = $this->getNamespace() . '\Strategy\ODM\\' . ucfirst($type);
         if (!class_exists($class)) {
             throw new \Gedmo\Exception\InvalidArgumentException("ODM TreeListener does not support tree type: {$type}");
         }

@@ -15,6 +15,12 @@ use Doctrine\Common\Annotations\Annotation;
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
+
+final class Tree extends Annotation
+{
+    public $type = 'nested';
+}
+
 final class TreeLeft extends Annotation {}
 final class TreeRight extends Annotation {}
 final class TreeParent extends Annotation {}

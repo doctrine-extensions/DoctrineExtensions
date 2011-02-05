@@ -6,6 +6,7 @@ use Gedmo\Tree\Node;
 
 /**
  * @Entity(repositoryClass="Gedmo\Tree\Entity\Repository\TreeNodeRepository")
+ * @gedmo:Tree(type="nested")
  */
 class Category implements Node
 {

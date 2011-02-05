@@ -39,7 +39,7 @@ class TreeListener extends AbstractTreeListener
      */
     protected function loadStrategy($type)
     {
-        $class = $this->_getNamespace() . '\Strategy\ORM\\' . ucfirst($type);
+        $class = $this->getNamespace() . '\Strategy\ORM\\' . ucfirst($type);
         if (!class_exists($class)) {
             throw new \Gedmo\Exception\InvalidArgumentException("ORM TreeListener does not support tree type: {$type}");
         }

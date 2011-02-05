@@ -9,6 +9,7 @@ use Doctrine\Common\Collections\ArrayCollection;
  * @InheritanceType("JOINED")
  * @DiscriminatorColumn(name="discr", type="string")
  * @DiscriminatorMap({"user" = "User", "usergroup" = "UserGroup"})
+ * @gedmo:Tree(type="nested")
  */
 abstract class Role {
 

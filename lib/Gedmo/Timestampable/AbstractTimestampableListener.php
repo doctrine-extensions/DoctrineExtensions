@@ -136,7 +136,7 @@ abstract class AbstractTimestampableListener extends MappedEventSubscriber
     /**
      * {@inheritDoc}
      */
-    protected function _getNamespace()
+    protected function getNamespace()
     {
         return __NAMESPACE__;
     }

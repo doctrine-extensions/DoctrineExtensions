@@ -104,7 +104,7 @@ abstract class AbstractSluggableListener extends MappedEventSubscriber
         $object = $this->getObject($args);
         
         if ($config = $this->getConfiguration($om, get_class($object))) {
-            $this->_generateSlug($om, $object, false);
+            $this->generateSlug($om, $object, false);
         }
     }
     
@@ -125,7 +125,7 @@ abstract class AbstractSluggableListener extends MappedEventSubscriber
         foreach ($this->getScheduledObjectUpdates($uow) as $object) {
             if ($config = $this->getConfiguration($om, get_class($object))) {
                 if ($config['updatable']) {
-                    $this->_generateSlug($om, $object, $this->getObjectChangeSet($uow, $object));
+                    $this->generateSlug($om, $object, $this->getObjectChangeSet($uow, $object));
                 }
             }
         }
@@ -134,7 +134,7 @@ abstract class AbstractSluggableListener extends MappedEventSubscriber
     /**
      * {@inheritDoc}
      */
-    protected function _getNamespace()
+    protected function getNamespace()
     {
         return __NAMESPACE__;
     }
@@ -151,7 +151,7 @@ abstract class AbstractSluggableListener extends MappedEventSubscriber
      *      or invalid
      * @return void
      */
-    protected function _generateSlug($om, $object, $changeSet)
+    protected function generateSlug($om, $object, $changeSet)
     {
         $objectClass = get_class($object);
         $uow = $om->getUnitOfWork();
@@ -206,7 +206,7 @@ abstract class AbstractSluggableListener extends MappedEventSubscriber
         // make unique slug if requested
         if ($config['unique']) {
             $this->exponent = 0;
-            $slug = $this->_makeUniqueSlug($om, $object, $slug);
+            $slug = $this->makeUniqueSlug($om, $object, $slug);
         }
         // set the final slug
         $meta->getReflectionProperty($config['slug'])->setValue($object, $slug);
@@ -224,7 +224,7 @@ abstract class AbstractSluggableListener extends MappedEventSubscriber
      * @param string $preferedSlug
      * @return string - unique slug
      */
-    protected function _makeUniqueSlug($om, $object, $preferedSlug)
+    protected function makeUniqueSlug($om, $object, $preferedSlug)
     {   
         $objectClass = get_class($object);
         $meta = $om->getClassMetadata($objectClass);
@@ -258,7 +258,7 @@ abstract class AbstractSluggableListener extends MappedEventSubscriber
             }
             
             if ($needRecursion) {
-                $generatedSlug = $this->_makeUniqueSlug($om, $object, $generatedSlug);
+                $generatedSlug = $this->makeUniqueSlug($om, $object, $generatedSlug);
             }
             $preferedSlug = $generatedSlug;
         }

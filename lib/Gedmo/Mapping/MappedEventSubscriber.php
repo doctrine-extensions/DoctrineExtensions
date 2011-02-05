@@ -28,7 +28,7 @@ abstract class MappedEventSubscriber implements EventSubscriber
      *  
      * @var array
      */
-    protected $_configurations = array();
+    protected $configurations = array();
     
     /**
      * ExtensionMetadataFactory used to read the extension
@@ -36,7 +36,7 @@ abstract class MappedEventSubscriber implements EventSubscriber
      * 
      * @var Gedmo\Mapping\ExtensionMetadataFactory
      */
-    protected $_extensionMetadataFactory = null;
+    protected $extensionMetadataFactory = null;
     
     /**
      * Get the configuration for specific object class
@@ -48,13 +48,13 @@ abstract class MappedEventSubscriber implements EventSubscriber
      */
     public function getConfiguration($objectManager, $class) {
         $config = array();
-        if (isset($this->_configurations[$class])) {
-            $config = $this->_configurations[$class];
+        if (isset($this->configurations[$class])) {
+            $config = $this->configurations[$class];
         } else {
             $cacheDriver = $objectManager->getMetadataFactory()->getCacheDriver();
-            $cacheId = ExtensionMetadataFactory::getCacheId($class, $this->_getNamespace());
+            $cacheId = ExtensionMetadataFactory::getCacheId($class, $this->getNamespace());
             if ($cacheDriver && ($cached = $cacheDriver->fetch($cacheId)) !== false) {
-                $this->_configurations[$class] = $cached;
+                $this->configurations[$class] = $cached;
                 $config = $cached;
             }
         }
@@ -69,10 +69,13 @@ abstract class MappedEventSubscriber implements EventSubscriber
      */
     public function getExtensionMetadataFactory($objectManager)
     {
-        if (null === $this->_extensionMetadataFactory) {
-            $this->_extensionMetadataFactory = new ExtensionMetadataFactory($objectManager, $this->_getNamespace());
+        if (null === $this->extensionMetadataFactory) {
+            $this->extensionMetadataFactory = new ExtensionMetadataFactory(
+                $objectManager,
+                $this->getNamespace()
+            );
         }
-        return $this->_extensionMetadataFactory;
+        return $this->extensionMetadataFactory;
     }
     
     /**
@@ -88,16 +91,15 @@ abstract class MappedEventSubscriber implements EventSubscriber
         $factory = $this->getExtensionMetadataFactory($objectManager);
         $config = $factory->getExtensionMetadata($metadata);
         if ($config) {
-            $this->_configurations[$metadata->name] = $config;
+            $this->configurations[$metadata->name] = $config;
         }
     }
     
     /**
      * Get the namespace of extension event subscriber.
-     * used for loading mapping drivers and cache of
-     * extensions
+     * used for cache id of extensions
      * 
      * @return string
      */
-    abstract protected function _getNamespace();
+    abstract protected function getNamespace();
 }

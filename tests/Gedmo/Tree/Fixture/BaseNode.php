@@ -7,6 +7,7 @@ namespace Tree\Fixture;
  * @InheritanceType("SINGLE_TABLE")
  * @DiscriminatorColumn(name="discriminator", type="string")
  * @DiscriminatorMap({"base" = "BaseNode", "node" = "Node"})
+ * @gedmo:Tree(type="nested")
  */
 class BaseNode extends ANode
 {

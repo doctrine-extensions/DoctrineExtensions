@@ -24,27 +24,27 @@ if (!file_exists($classLoaderFile)) {
 
 require_once $classLoaderFile;
 $classLoader = new Doctrine\Common\ClassLoader(
-	'Doctrine\ORM', 'doctrine-orm/lib' 
+    'Doctrine\ORM', 'doctrine-orm/lib' 
 );
 $classLoader->register();
 
 $classLoader = new Doctrine\Common\ClassLoader(
-	'Doctrine\DBAL', 'doctrine-dbal/lib' 
+    'Doctrine\DBAL', 'doctrine-dbal/lib' 
 );
 $classLoader->register();
 
 $classLoader = new Doctrine\Common\ClassLoader(
-	'Doctrine\MongoDB', 'doctrine-mongodb/lib' 
+    'Doctrine\MongoDB', 'doctrine-mongodb/lib' 
 );
 $classLoader->register();
 
 $classLoader = new Doctrine\Common\ClassLoader(
-	'Doctrine\ODM', 'doctrine-mongodb-odm/lib' 
+    'Doctrine\ODM', 'doctrine-mongodb-odm/lib' 
 );
 $classLoader->register();
 
 $classLoader = new Doctrine\Common\ClassLoader(
-	'Doctrine', 'doctrine-common/lib' 
+    'Doctrine', 'doctrine-common/lib' 
 );
 $classLoader->register();
 

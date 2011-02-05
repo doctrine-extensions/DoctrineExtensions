@@ -62,4 +62,12 @@ interface StrategyInterface
      * @return void
      */
     function onFlushEnd($om);
+    
+    /**
+     * Operations on tree pending insertions
+     * 
+     * @param object $om - object manager
+     * @return void
+     */
+    function processPendingInserts($om);
 }

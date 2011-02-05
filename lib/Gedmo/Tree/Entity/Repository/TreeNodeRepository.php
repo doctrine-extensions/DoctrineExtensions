@@ -48,7 +48,7 @@ class TreeNodeRepository extends EntityRepository
             throw new \Gedmo\Exception\RuntimeException('Cannot find ORM tree listener attached');
         }
         
-        $type = $treeListener->getStrategy()->getName();
+        $type = $treeListener->getStrategy($em, $class->name)->getName();
         $repositoryAdapter = 'Gedmo\Tree\Entity\Repository\Adapter\\' . ucfirst($type);
         
         $this->adapter = new $repositoryAdapter($treeListener, $class, $em); 

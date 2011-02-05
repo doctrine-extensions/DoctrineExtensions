@@ -3,3 +3,7 @@ tests/Gedmo/*/Proxy/*
 tests/Gedmo/*/Hydrator/*
 build/
 scripts/
+.project
+.settings
+.build.xml
+.buildpath

@@ -225,13 +225,16 @@ class Nested implements RepositoryAdapterInterface
         $left = $this->meta->getReflectionProperty($config['left'])->getValue($node);
         $nextLeft = $this->meta->getReflectionProperty($config['left'])->getValue($nextSiblingNode);
         $nextRight = $this->meta->getReflectionProperty($config['right'])->getValue($nextSiblingNode);
-        $edge = $this->listener->getStrategy()->getTreeEdge($this->em, $node);
+        $edge = $this->listener->getStrategy($this->em, $this->meta->name)->getTreeEdge($this->em, $node);
         // process updates in transaction
         $this->em->getConnection()->beginTransaction();
         try {            
-            $this->listener->getStrategy()->synchronize($this->em, $node, $edge - $left + 1, '+', 'BETWEEN ' . $left . ' AND ' . $right);
-            $this->listener->getStrategy()->synchronize($this->em, $node, $nextLeft - $left, '-', 'BETWEEN ' . $nextLeft . ' AND ' . $nextRight);
-            $this->listener->getStrategy()->synchronize($this->em, $node, $edge - $left - ($nextRight - $nextLeft), '-', ' > ' . $edge);
+            $this->listener->getStrategy($this->em, $this->meta->name)
+                ->synchronize($this->em, $node, $edge - $left + 1, '+', 'BETWEEN ' . $left . ' AND ' . $right);
+            $this->listener->getStrategy($this->em, $this->meta->name)
+                ->synchronize($this->em, $node, $nextLeft - $left, '-', 'BETWEEN ' . $nextLeft . ' AND ' . $nextRight);
+            $this->listener->getStrategy($this->em, $this->meta->name)
+                ->synchronize($this->em, $node, $edge - $left - ($nextRight - $nextLeft), '-', ' > ' . $edge);
             $this->em->getConnection()->commit();
         } catch (\Exception $e) {
             $this->em->close();
@@ -285,13 +288,16 @@ class Nested implements RepositoryAdapterInterface
         $right = $this->meta->getReflectionProperty($config['right'])->getValue($node);
         $previousLeft = $this->meta->getReflectionProperty($config['left'])->getValue($previousSiblingNode);
         $previousRight = $this->meta->getReflectionProperty($config['right'])->getValue($previousSiblingNode);
-        $edge = $this->listener->getStrategy()->getTreeEdge($this->em, $node);
+        $edge = $this->listener->getStrategy($this->em, $this->meta->name)->getTreeEdge($this->em, $node);
         // process updates in transaction
         $this->em->getConnection()->beginTransaction();
         try {
-            $this->listener->getStrategy()->synchronize($this->em, $node, $edge - $previousLeft +1, '+', 'BETWEEN ' . $previousLeft . ' AND ' . $previousRight);
-            $this->listener->getStrategy()->synchronize($this->em, $node, $left - $previousLeft, '-', 'BETWEEN ' .$left . ' AND ' . $right);
-            $this->listener->getStrategy()->synchronize($this->em, $node, $edge - $previousLeft - ($right - $left), '-', '> ' . $edge);
+            $this->listener->getStrategy($this->em, $this->meta->name)
+                ->synchronize($this->em, $node, $edge - $previousLeft +1, '+', 'BETWEEN ' . $previousLeft . ' AND ' . $previousRight);
+            $this->listener->getStrategy($this->em, $this->meta->name)
+                ->synchronize($this->em, $node, $left - $previousLeft, '-', 'BETWEEN ' .$left . ' AND ' . $right);
+            $this->listener->getStrategy($this->em, $this->meta->name)
+                ->synchronize($this->em, $node, $edge - $previousLeft - ($right - $left), '-', '> ' . $edge);
             $this->em->getConnection()->commit();
         } catch (\Exception $e) {
             $this->em->close();
@@ -362,8 +368,10 @@ class Nested implements RepositoryAdapterInterface
             $q = $this->em->createQuery($dql);
             $q->getSingleScalarResult();
             
-            $this->listener->getStrategy()->synchronize($this->em, $node, 1, '-', 'BETWEEN ' . ($left + 1) . ' AND ' . ($right - 1));
-            $this->listener->getStrategy()->synchronize($this->em, $node, 2, '-', '> ' . $right);
+            $this->listener->getStrategy($this->em, $this->meta->name)
+                ->synchronize($this->em, $node, 1, '-', 'BETWEEN ' . ($left + 1) . ' AND ' . ($right - 1));
+            $this->listener->getStrategy($this->em, $this->meta->name)
+                ->synchronize($this->em, $node, 2, '-', '> ' . $right);
             
             $dql = "UPDATE {$this->meta->rootEntityName} node";
             $dql .= ' SET node.' . $config['parent'] . ' = NULL,';
@@ -401,7 +409,7 @@ class Nested implements RepositoryAdapterInterface
         $q = $this->em->createQuery("SELECT MIN(node.{$leftField}) FROM {$this->meta->rootEntityName} node");
         
         $min = intval($q->getSingleScalarResult());
-        $edge = $this->listener->getStrategy()->getTreeEdge($this->em, new $this->meta->name());
+        $edge = $this->listener->getStrategy($this->em, $this->meta->name)->getTreeEdge($this->em, new $this->meta->name());
         for ($i = $min; $i <= $edge; $i++) {
             $dql = "SELECT COUNT(node.{$identifier}) FROM {$this->meta->rootEntityName} node";
             $dql .= " WHERE (node.{$leftField} = {$i} OR node.{$rightField} = {$i})";
@@ -516,7 +524,8 @@ class Nested implements RepositoryAdapterInterface
                 $node = $this->em->getReference($this->meta->name, $node[$identifier]);
                 $this->em->refresh($node);
                 $parent = $this->meta->getReflectionProperty($parentField)->getValue($node);
-                $this->listener->getStrategy()->adjustNodeWithParent($parent, $node, $this->em);
+                $this->listener->getStrategy($this->em, $this->meta->name)
+                    ->adjustNodeWithParent($parent, $node, $this->em);
             }
             $this->em->getConnection()->commit();
         } catch (\Exception $e) {

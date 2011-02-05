@@ -18,19 +18,20 @@ class ExtensionMetadataFactory
      * Extension driver
      * @var Gedmo\Mapping\Driver
      */
-    protected $_driver;
+    protected $driver;
     
     /**
      * Object manager, entity or document
      * @var object
      */
-    private $_objectManager;
+    private $objectManager;
     
     /**
      * Extension namespace
+     * 
      * @var string
      */
-    private $_extensionNamespace;
+    private $extensionNamespace;
     
     /**
      * Initializes extension driver
@@ -40,10 +41,10 @@ class ExtensionMetadataFactory
      */
     public function __construct($objectManager, $extensionNamespace)
     {
-        $this->_objectManager = $objectManager;
-        $this->_extensionNamespace = $extensionNamespace;
+        $this->objectManager = $objectManager;
+        $this->extensionNamespace = $extensionNamespace;
         $omDriver = $objectManager->getConfiguration()->getMetadataDriverImpl();
-        $this->_driver = $this->_getDriver($omDriver);
+        $this->driver = $this->getDriver($omDriver);
     }
     
     /**
@@ -61,16 +62,16 @@ class ExtensionMetadataFactory
         // collect metadata from inherited classes
         foreach (array_reverse(class_parents($meta->name)) as $parentClass) {
             // read only inherited mapped classes
-            if ($this->_objectManager->getMetadataFactory()->hasMetadataFor($parentClass)) {
-                $this->_driver->readExtendedMetadata($this->_objectManager->getClassMetadata($parentClass), $config);
+            if ($this->objectManager->getMetadataFactory()->hasMetadataFor($parentClass)) {
+                $this->driver->readExtendedMetadata($this->objectManager->getClassMetadata($parentClass), $config);
             }
         }
-        $this->_driver->readExtendedMetadata($meta, $config);
-        $this->_driver->validateFullMetadata($meta, $config);
+        $this->driver->readExtendedMetadata($meta, $config);
+        $this->driver->validateFullMetadata($meta, $config);
         if ($config) {
             // cache the metadata
-            $cacheId = self::getCacheId($meta->name, $this->_extensionNamespace);
-            if ($cacheDriver = $this->_objectManager->getMetadataFactory()->getCacheDriver()) {
+            $cacheId = self::getCacheId($meta->name, $this->extensionNamespace);
+            if ($cacheDriver = $this->objectManager->getMetadataFactory()->getCacheDriver()) {
                 $cacheDriver->save($cacheId, $config, null);
             }
         }
@@ -97,7 +98,7 @@ class ExtensionMetadataFactory
      * @throws DriverException if driver was not found in extension
      * @return Gedmo\Mapping\Driver
      */
-    private function _getDriver($omDriver)
+    private function getDriver($omDriver)
     {
         $driver = null;
         $className = get_class($omDriver);
@@ -105,15 +106,15 @@ class ExtensionMetadataFactory
         if ($driverName == 'DriverChain') {
             $driver = new Driver\Chain();
             foreach ($omDriver->getDrivers() as $namespace => $nestedOmDriver) {
-                $driver->addDriver($this->_getDriver($nestedOmDriver), $namespace);
+                $driver->addDriver($this->getDriver($nestedOmDriver), $namespace);
             }
         } else {
             $driverName = substr($driverName, 0, strpos($driverName, 'Driver'));
             // create driver instance
-            $driverClassName = $this->_extensionNamespace . '\Mapping\Driver\\' . $driverName;
+            $driverClassName = $this->extensionNamespace . '\Mapping\Driver\\' . $driverName;
             if (!class_exists($driverClassName)) {
                 // @TODO: implement XML driver also
-                $driverClassName = $this->_extensionNamespace . '\Mapping\Driver\Annotation';
+                $driverClassName = $this->extensionNamespace . '\Mapping\Driver\Annotation';
                 if (!class_exists($driverClassName)) {
                     throw new \Gedmo\Exception\RuntimeException("Failed to fallback to annotation driver: ({$driverClassName}), extension driver was not found.");
                 }

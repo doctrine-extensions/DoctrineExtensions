@@ -112,8 +112,8 @@ class Nested implements StrategyInterface
     /**
      * {@inheritdoc}
      */
-    public function processPostPersist($em, $entity)
-    {        
+    public function processPendingInserts($em)
+    {
         if (count($this->pendingChildNodeInserts)) {
             while ($entity = array_shift($this->pendingChildNodeInserts)) {
                 $meta = $em->getClassMetadata(get_class($entity));
@@ -123,6 +123,11 @@ class Nested implements StrategyInterface
             }
         }
     }
+    
+    /**
+     * {@inheritdoc}
+     */
+    public function processPostPersist($em, $entity) {}
     
     /**
      * {@inheritdoc}

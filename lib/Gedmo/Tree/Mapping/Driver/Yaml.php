@@ -4,7 +4,7 @@ namespace Gedmo\Tree\Mapping\Driver;
 
 use Gedmo\Mapping\Driver\File,
     Gedmo\Mapping\Driver,
-    Gedmo\Exception\InvalidArgumentException;
+    Gedmo\Exception\InvalidMappingException;
 
 /**
  * This is a yaml mapping driver for Tree
@@ -38,24 +38,24 @@ class Yaml extends File implements Driver
     );
     
     /**
+     * List of tree strategies available
+     * 
+     * @var array
+     */
+    private $strategies = array(
+        'nested'
+    );
+    
+    /**
      * {@inheritDoc}
      */
     public function validateFullMetadata($meta, array $config)
     {
-        if ($config) {
-            $missingFields = array();
-            if (!isset($config['parent'])) {
-                $missingFields[] = 'ancestor';
-            }
-            if (!isset($config['left'])) {
-                $missingFields[] = 'left';
-            }
-            if (!isset($config['right'])) {
-                $missingFields[] = 'right';
-            }
-            if ($missingFields) {
-                throw new InvalidArgumentException("Missing properties: " . implode(', ', $missingFields) . " in class - {$meta->name}");
-            }
+        if (isset($config['strategy'])) {
+            $method = 'validate' . ucfirst($config['strategy']) . 'TreeMetadata';
+            $this->$method($meta, $config);
+        } elseif ($config) {
+            throw new InvalidMappingException("Cannot find Tree type for class: {$meta->name}");
         }
     }
     
@@ -65,22 +65,33 @@ class Yaml extends File implements Driver
     public function readExtendedMetadata($meta, array &$config) {
         $yaml = $this->_loadMappingFile($this->_findMappingFile($meta->name));
         $mapping = $yaml[$meta->name];
+        
+        if (isset($mapping['gedmo'])) {
+            $classMapping = $mapping['gedmo'];
+            if (isset($classMapping['tree']['type'])) {
+                $strategy = $classMapping['tree']['type'];
+                if (!in_array($annot->type, $this->strategies)) {
+                    throw new InvalidMappingException("Tree type: {$annot->type} is not available.");
+                }
+                $config['strategy'] = $annot->type;
+            }
+        }
         if (isset($mapping['fields'])) {
             foreach ($mapping['fields'] as $field => $fieldMapping) {
                 if (isset($fieldMapping['gedmo'])) {
                     if (in_array('treeLeft', $fieldMapping['gedmo'])) {
                         if (!$this->_isValidField($meta, $field)) {
-                            throw new InvalidArgumentException("Tree left field - [{$field}] type is not valid and must be 'integer' in class - {$meta->name}");
+                            throw new InvalidMappingException("Tree left field - [{$field}] type is not valid and must be 'integer' in class - {$meta->name}");
                         }
                         $config['left'] = $field;
                     } elseif (in_array('treeRight', $fieldMapping['gedmo'])) {
                         if (!$this->_isValidField($meta, $field)) {
-                            throw new InvalidArgumentException("Tree right field - [{$field}] type is not valid and must be 'integer' in class - {$meta->name}");
+                            throw new InvalidMappingException("Tree right field - [{$field}] type is not valid and must be 'integer' in class - {$meta->name}");
                         }
                         $config['right'] = $field;
                     } elseif (in_array('treeLevel', $fieldMapping['gedmo'])) {
                         if (!$this->_isValidField($meta, $field)) {
-                            throw new InvalidArgumentException("Tree level field - [{$field}] type is not valid and must be 'integer' in class - {$meta->name}");
+                            throw new InvalidMappingException("Tree level field - [{$field}] type is not valid and must be 'integer' in class - {$meta->name}");
                         }
                         $config['level'] = $field;
                     }
@@ -92,7 +103,7 @@ class Yaml extends File implements Driver
                 if (isset($relationMapping['gedmo'])) {
                     if (in_array('treeParent', $relationMapping['gedmo'])) {
                         if ($relationMapping['targetEntity'] != $meta->name) {
-                            throw new InvalidArgumentException("Unable to find ancestor/parent child relation through ancestor field - [{$field}] in class - {$meta->name}");
+                            throw new InvalidMappingException("Unable to find ancestor/parent child relation through ancestor field - [{$field}] in class - {$meta->name}");
                         }
                         $config['parent'] = $field;
                     }
@@ -120,5 +131,30 @@ class Yaml extends File implements Driver
     {
         $mapping = $meta->getFieldMapping($field);
         return $mapping && in_array($mapping['type'], $this->_validTypes);
+    }
+    
+    /**
+     * Validates metadata for nested type tree
+     * 
+     * @param ClassMetadataInfo $meta
+     * @param array $config
+     * @throws InvalidMappingException
+     * @return void
+     */
+    private function validateNestedTreeMetadata($meta, array $config)
+    {
+        $missingFields = array();
+        if (!isset($config['parent'])) {
+            $missingFields[] = 'ancestor';
+        }
+        if (!isset($config['left'])) {
+            $missingFields[] = 'left';
+        }
+        if (!isset($config['right'])) {
+            $missingFields[] = 'right';
+        }
+        if ($missingFields) {
+            throw new InvalidMappingException("Missing properties: " . implode(', ', $missingFields) . " in class - {$meta->name}");
+        }
     }
 }
