@@ -13,6 +13,15 @@ records being flushed in the behavioral way. List of extensions:
 Currently these extensions support **Yaml** and **Annotation** mapping. Additional mapping drivers
 can be easy implemented using Mapping extension to handle the additional metadata mapping.
 
+### Latest updates
+
+**2011-02-08**
+
+- Refactored [Tree] to support diferent strategies
+- Refactored [Tree][NestedSet] strategy to support roots
+- Changed the [Tree] repository name, relevant to strategy used
+- **Notice:** now any tree entity should have class annotation specifying the tree strategy - **@gedmo:Tree(type="nested")**
+
 ### ODM MongoDB support
 
 There is a plan to port all extensions for different object manager support and now

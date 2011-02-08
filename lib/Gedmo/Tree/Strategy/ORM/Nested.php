@@ -2,9 +2,10 @@
 
 namespace Gedmo\Tree\Strategy\ORM;
 
-use Gedmo\Tree\StrategyInterface,
+use Gedmo\Tree\Strategy,
     Doctrine\ORM\EntityManager,
-    Gedmo\Tree\AbstractTreeListener;
+    Gedmo\Tree\AbstractTreeListener,
+    Doctrine\ORM\Query;
 
 /**
  * This strategy makes tree act like
@@ -13,25 +14,33 @@ use Gedmo\Tree\StrategyInterface,
  * This behavior can inpact the performance of your application
  * since nested set trees are slow on inserts and updates.
  * 
- * Some Tree logic is copied from -
- * CakePHP: Rapid Development Framework (http://cakephp.org)
- * 
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  * @package Gedmo.Tree.Strategy.ORM
  * @subpackage Nested
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class Nested implements StrategyInterface
+class Nested implements Strategy
 {
     /**
-     * The max number of "right" field of the
-     * tree in case few root nodes will be persisted
-     * on one flush
-     * 
-     * @var integer
+     * Previous sibling position
      */
-    protected $treeEdge = 0;
+    const PREV_SIBLING = 'prevSibling';
+    
+    /**
+     * Next sibling position
+     */
+    const NEXT_SIBLING = 'nextSibling';
+    
+    /**
+     * Last child position
+     */
+    const LAST_CHILD = 'lastChild';
+    
+    /**
+     * First child position
+     */
+    const FIRST_CHILD = 'firstChild';
     
     /**
      * TreeListener
@@ -41,13 +50,39 @@ class Nested implements StrategyInterface
     protected $listener = null;
     
     /**
+     * The max number of "right" field of the
+     * tree in case few root nodes will be persisted
+     * on one flush for node classes
+     * 
+     * @var array
+     */
+    private $treeEdges = array();
+    
+    /**
      * List of pending Nodes, which needs to
      * be post processed because of having a parent Node
      * which requires some additional calculations
      * 
      * @var array
      */
-    protected $pendingChildNodeInserts = array();
+    private $pendingChildNodeInserts = array();
+    
+    /**
+     * List of persisted nodes for specific
+     * class to know when to process pending
+     * inserts
+     * 
+     * @var array
+     */
+    private $persistedNodes = array();
+    
+    /**
+     * Number of updates for specific
+     * classes to know if refresh is necessary
+     * 
+     * @var array
+     */
+    private $updatesOnNodeClasses = array();
     
     /**
      * {@inheritdoc}
@@ -62,103 +97,100 @@ class Nested implements StrategyInterface
      */
     public function getName()
     {
-        return 'nested';
+        return Strategy::NESTED;
     }
     
     /**
      * {@inheritdoc}
      */
-    public function processScheduledUpdate($em, $entity)
+    public function processScheduledUpdate($em, $node)
     {
-        $entityClass = get_class($entity);
-        $config = $this->listener->getConfiguration($em, $entityClass);
-        $meta = $em->getClassMetadata($entityClass);
+        $meta = $em->getClassMetadata(get_class($node));
+        $config = $this->listener->getConfiguration($em, $meta->name);
         $uow = $em->getUnitOfWork();
-        $changeSet = $uow->getEntityChangeSet($entity);
-        if (array_key_exists($config['parent'], $changeSet)) {
-            $parent = $meta->getReflectionProperty($config['parent'])->getValue($entity);
-            $this->adjustNodeWithParent($parent, $entity, $em);
-        }
-    }
-    
-    /**
-     * {@inheritdoc}
-     */
-    public function processPrePersist($em, $entity)
-    {
-        $entityClass = get_class($entity);
-        $config = $this->listener->getConfiguration($em, $entityClass);
-        $meta = $em->getClassMetadata($entityClass);
         
-        $parent = $meta->getReflectionProperty($config['parent'])->getValue($entity);
-        if ($parent === null) {
-            $this->prepareRoot($em, $entity);
-            if (isset($config['level'])) {
-                $meta->getReflectionProperty($config['level'])->setValue($entity, 0);
-            }
-        } else {
-            $meta->getReflectionProperty($config['left'])->setValue($entity, 0);
-            $meta->getReflectionProperty($config['right'])->setValue($entity, 0);
-            if (isset($config['level'])) {
-                $meta->getReflectionProperty($config['level'])->setValue(
-                    $entity,
-                    $meta->getReflectionProperty($config['level'])->getValue($parent) + 1
-                );
-            }
-            $this->pendingChildNodeInserts[] = $entity;
+        $changeSet = $uow->getEntityChangeSet($node);
+        if (isset($config['root']) && isset($changeSet[$config['root']])) {
+            throw new \Gedmo\Exception\UnexpectedValueException("Root cannot be changed manualy, change parent instead");
+        }
+        if (isset($changeSet[$config['parent']])) {
+            $this->updatesOnNodeClasses[$meta->name] = isset($this->updatesOnNodeClasses[$meta->name]) ?
+                $this->updatesOnNodeClasses[$meta->name]+1 : 1;
+            $this->updateNode($em, $node, $changeSet[$config['parent']][1]);
         }
     }
     
     /**
      * {@inheritdoc}
      */
-    public function processPendingInserts($em)
+    public function processPostPersist($em, $node) 
     {
-        if (count($this->pendingChildNodeInserts)) {
-            while ($entity = array_shift($this->pendingChildNodeInserts)) {
-                $meta = $em->getClassMetadata(get_class($entity));
-                $config = $this->listener->getConfiguration($em, $meta->name);
-                $parent = $meta->getReflectionProperty($config['parent'])->getValue($entity);
-                $this->adjustNodeWithParent($parent, $entity, $em);
+        $meta = $em->getClassMetadata(get_class($node));
+        $config = $this->listener->getConfiguration($em, $meta->name);
+
+        if (isset($config['root'])) {
+            $parent = $meta->getReflectionProperty($config['parent'])->getValue($node);
+        
+            $identifierField = $meta->getSingleIdentifierFieldName();
+            $nodeId = $meta->getReflectionProperty($identifierField)->getValue($node);
+            if ($parent) {
+                $rootId = $meta->getReflectionProperty($config['root'])->getValue($parent);
+            } else {
+                $rootId = $nodeId;
             }
+            $meta->getReflectionProperty($config['root'])->setValue($node, $rootId);
+            $dql = "UPDATE {$meta->rootEntityName} node";
+            $dql .= " SET node.{$config['root']} = {$rootId}";
+            $dql .= " WHERE node.{$identifierField} = {$nodeId}";
+            $em->createQuery($dql)->getSingleScalarResult();
+        }
+        unset($this->persistedNodes[spl_object_hash($node)]);
+        
+        if (!$this->persistedNodes && $this->pendingChildNodeInserts) {
+            $pendingChildNodeInserts = $this->pendingChildNodeInserts;
+            foreach ($pendingChildNodeInserts as $class => &$nodes) {
+                while ($entity = array_shift($nodes)) {
+                    $this->insertChild($em, $entity);
+                }
+            }
+            $this->pendingChildNodeInserts = array();
         }
     }
     
     /**
      * {@inheritdoc}
      */
-    public function processPostPersist($em, $entity) {}
-    
-    /**
-     * {@inheritdoc}
-     */
-    public function processScheduledDelete($em, $entity)
+    public function processScheduledDelete($em, $node)
     {
-        $entityClass = get_class($entity);
-        $config = $this->listener->getConfiguration($em, $entityClass);
+        $meta = $em->getClassMetadata(get_class($node));
+        $config = $this->listener->getConfiguration($em, $meta->name);
         $uow = $em->getUnitOfWork();
-        $meta = $em->getClassMetadata($entityClass);
         
-        $leftValue = $meta->getReflectionProperty($config['left'])->getValue($entity);
-        $rightValue = $meta->getReflectionProperty($config['right'])->getValue($entity);
+        $leftValue = $meta->getReflectionProperty($config['left'])->getValue($node);
+        $rightValue = $meta->getReflectionProperty($config['right'])->getValue($node);
         
         if (!$leftValue || !$rightValue) {
             return;
         }
+        $rootId = isset($config['root']) ? $meta->getReflectionProperty($config['root'])->getValue($node) : null;
         $diff = $rightValue - $leftValue + 1;
         if ($diff > 2) {
             $dql = "SELECT node FROM {$meta->rootEntityName} node";
             $dql .= " WHERE node.{$config['left']} BETWEEN :left AND :right";
+            if (isset($config['root'])) {
+                $dql .= " AND node.{$config['root']} = {$rootId}";
+            }
             $q = $em->createQuery($dql);
             // get nodes for deletion
             $q->setParameter('left', $leftValue + 1);
             $q->setParameter('right', $rightValue - 1);
             $nodes = $q->getResult();
-            foreach ((array)$nodes as $node) {
-                $uow->scheduleForDelete($node);
+            foreach ((array)$nodes as $removalNode) {
+                $uow->scheduleForDelete($removalNode);
             }
         }
-        $this->synchronize($em, $entity, $diff, '-', '> ' . $rightValue);
+        
+        $this->shiftRL($em, $meta->rootEntityName, $rightValue + 1, -$diff, $rootId);
     }
     
     /**
@@ -166,134 +198,307 @@ class Nested implements StrategyInterface
      */
     public function onFlushEnd($em)
     {
-        // reset the tree edge
-        $this->treeEdge = 0;
+        // reset values
+        $this->treeEdges = array();
+        $this->updatesOnNodeClasses = array();
     }
     
     /**
-     * Synchronize tree according to Node`s parent Node
-     * 
-     * @param object $parent
-     * @param object $entity
-     * @param EntityManager $em
-     * @return void
+     * {@inheritdoc}
      */
-    public function adjustNodeWithParent($parent, $entity, EntityManager $em)
+    public function processPrePersist($em, $node)
     {
-        $meta = $em->getClassMetadata(get_class($entity));
+        $meta = $em->getClassMetadata(get_class($node));
         $config = $this->listener->getConfiguration($em, $meta->name);
-        $edge = $this->getTreeEdge($em, $entity);
         
-        
-        $leftValue = $meta->getReflectionProperty($config['left'])->getValue($entity);
-        $rightValue = $meta->getReflectionProperty($config['right'])->getValue($entity);
+        $parent = $meta->getReflectionProperty($config['parent'])->getValue($node);
         if ($parent === null) {
-            $this->synchronize($em, $entity, $edge - $leftValue + 1, '+', 'BETWEEN ' . $leftValue . ' AND ' . $rightValue);
-            $this->synchronize($em, $entity, $rightValue - $leftValue + 1, '-', '> ' . $leftValue);
+            $this->prepareRoot($em, $node);
+            if (isset($config['level'])) {
+                $meta->getReflectionProperty($config['level'])->setValue($node, 0);
+            }
         } else {
-            // need to refresh the parent to get up to date left and right
-            $em->refresh($parent);
-            $parentLeftValue = $meta->getReflectionProperty($config['left'])->getValue($parent);
-            $parentRightValue = $meta->getReflectionProperty($config['right'])->getValue($parent);
-            if ($leftValue < $parentLeftValue && $parentRightValue < $rightValue) {
-                return;
+            $meta->getReflectionProperty($config['left'])->setValue($node, 0);
+            $meta->getReflectionProperty($config['right'])->setValue($node, 0);
+            if (isset($config['level'])) {
+                $meta->getReflectionProperty($config['level'])->setValue(
+                    $node,
+                    $meta->getReflectionProperty($config['level'])->getValue($parent) + 1
+                );
             }
-            if (empty($leftValue) && empty($rightValue)) {
-                $this->synchronize($em, $entity, 2, '+', '>= ' . $parentRightValue);
-                // cannot schedule this update if other Nodes pending
-                $qb = $em->createQueryBuilder();
-                $qb->update($meta->rootEntityName, 'node')
-                    ->set('node.' . $config['left'], $parentRightValue)
-                    ->set('node.' . $config['right'], $parentRightValue + 1);
-                $entityIdentifiers = $meta->getIdentifierValues($entity);
-                foreach ($entityIdentifiers as $field => $value) {
-                    if (strlen($value)) {
-                        $qb->where('node.' . $field . ' = ' . $value);
-                    }
-                }
-                $q = $qb->getQuery();
-                $q->getSingleScalarResult();
-            } else {
-                $this->synchronize($em, $entity, $edge - $leftValue + 1, '+', 'BETWEEN ' . $leftValue . ' AND ' . $rightValue);
-                $diff = $rightValue - $leftValue + 1;
-                
-                if ($leftValue > $parentLeftValue) {
-                    if ($rightValue < $parentRightValue) {
-                        $this->synchronize($em, $entity, $diff, '-', 'BETWEEN ' . $rightValue . ' AND ' . ($parentRightValue - 1));
-                        $this->synchronize($em, $entity, $edge - $parentRightValue + $diff + 1, '-', '> ' . $edge);
-                    } else {
-                        $this->synchronize($em, $entity, $diff, '+', 'BETWEEN ' . $parentRightValue . ' AND ' . $rightValue);
-                        $this->synchronize($em, $entity, $edge - $parentRightValue + 1, '-', '> ' . $edge);
-                    }
-                } else {
-                    $this->synchronize($em, $entity, $diff, '-', 'BETWEEN ' . $rightValue . ' AND ' . ($parentRightValue - 1));
-                    $this->synchronize($em, $entity, $edge - $parentRightValue + $diff + 1, '-', '> ' . $edge);
-                }
-            }
+            $this->pendingChildNodeInserts[$meta->name][] = $node;
         }
-        return true;
+        $this->persistedNodes[spl_object_hash($node)] = null;
     }
     
     /**
-     * Synchronize the tree with given conditions
+     * Insert a node which requires
+     * parent synchronization
      * 
      * @param EntityManager $em
-     * @param object $entity
-     * @param integer $shift
-     * @param string $dir
-     * @param string $conditions
-     * @param string $field
+     * @param object $node
      * @return void
      */
-    public function synchronize(EntityManager $em, $entity, $shift, $dir, $conditions, $field = 'both')
+    public function insertChild(EntityManager $em, $node)
     {
-        $meta = $em->getClassMetadata(get_class($entity));
+        $meta = $em->getClassMetadata(get_class($node));
         $config = $this->listener->getConfiguration($em, $meta->name);
-        if ($field == 'both') {
-            $this->synchronize($em, $entity, $shift, $dir, $conditions, $config['left']);
-            $field = $config['right'];
+        
+        $parent = $meta->getReflectionProperty($config['parent'])->getValue($node);
+        $identifierField = $meta->getSingleIdentifierFieldName();
+        $nodeId = $meta->getReflectionProperty($identifierField)->getValue($node);
+        
+        if (isset($this->pendingChildNodeInserts[$meta->name]) && count($this->pendingChildNodeInserts[$meta->name]) > 1) {
+            $em->refresh($parent);
+        }
+        $rootId = isset($config['root']) ? $meta->getReflectionProperty($config['root'])->getValue($parent) : null;
+        $parentRight = $meta->getReflectionProperty($config['right'])->getValue($parent);
+        $this->shiftRL($em, $meta->rootEntityName, $parentRight, 2, $rootId);
+        
+        $meta->getReflectionProperty($config['left'])->setValue($node, $parentRight);
+        $meta->getReflectionProperty($config['right'])->setValue($node, $parentRight + 1);
+        $dql = "UPDATE {$meta->rootEntityName} node";
+        $dql .= " SET node.{$config['left']} = " . ($parentRight) . ', ';
+        $dql .= " node.{$config['right']} = " . ($parentRight + 1);
+        $dql .= " WHERE node.{$identifierField} = {$nodeId}";
+        $em->createQuery($dql)->getSingleScalarResult();
+    }
+    
+    /**
+     * Update the $node with a diferent $parent
+     * destination
+     * 
+     * @todo consider $position configurable through listener
+     * @param EntityManager $em
+     * @param object $node - target node
+     * @param object $parent - destination node
+     * @param string $position
+     * @throws Gedmo\Exception\UnexpectedValueException
+     * @return void
+     */
+    public function updateNode(EntityManager $em, $node, $parent, $position = 'firstChild')
+    {
+        $meta = $em->getClassMetadata(get_class($node));
+        $config = $this->listener->getConfiguration($em, $meta->name);
+        
+        // if there is more than one update, need to refresh node
+        if (!isset($this->updatesOnNodeClasses[$meta->name]) || $this->updatesOnNodeClasses[$meta->name] > 1) {
+            $em->refresh($node);
+        }
+        $rootId = isset($config['root']) ? $meta->getReflectionProperty($config['root'])->getValue($node) : null;
+        $identifierField = $meta->getSingleIdentifierFieldName();
+        $nodeId = $meta->getReflectionProperty($identifierField)->getValue($node); 
+        
+        $left = $meta->getReflectionProperty($config['left'])->getValue($node);
+        $right = $meta->getReflectionProperty($config['right'])->getValue($node);
+        
+        $level = 0;
+        $treeSize = $right - $left + 1;
+        $newRootId = null;
+        if ($parent) {
+            if (!isset($this->updatesOnNodeClasses[$meta->name]) || $this->updatesOnNodeClasses[$meta->name] > 1) {
+                $em->refresh($parent);
+            }
+            $parentRootId = isset($config['root']) ? $meta->getReflectionProperty($config['root'])->getValue($parent) : null;
+            $parentLeft = $meta->getReflectionProperty($config['left'])->getValue($parent);
+            $parentRight = $meta->getReflectionProperty($config['right'])->getValue($parent);
+            if ($rootId === $parentRootId && $parentLeft >= $left && $parentRight <= $right) {
+                throw new \Gedmo\Exception\UnexpectedValueException("Cannot set child as parent to node: {$nodeId}");
+            }
+            if (isset($config['level'])) {
+                $level = $meta->getReflectionProperty($config['level'])->getValue($parent);
+            }
+            switch ($position) {
+                case self::PREV_SIBLING:
+                    $start = $parentLeft;
+                    break;
+                    
+                case self::NEXT_SIBLING:
+                    $start = $parentRight + 1;
+                    break;
+                    
+                case self::LAST_CHILD:
+                    $start = $parentRight;
+                    $level++;
+                    
+                case self::FIRST_CHILD:
+                default:
+                    $start = $parentLeft + 1;
+                    $level++;
+                    break;
+            }
+            $this->shiftRL($em, $meta->rootEntityName, $start, $treeSize, $parentRootId);
+            if ($rootId === $parentRootId && $left >= $start) {
+                $left += $treeSize;
+                $meta->getReflectionProperty($config['left'])->setValue($node, $left);
+            }
+            if ($rootId === $parentRootId && $right >= $start) {
+                $right += $treeSize;
+                $meta->getReflectionProperty($config['right'])->setValue($node, $right);
+            }
+            $newRootId = $parentRootId;
+        } elseif (!isset($config['root'])) {
+            $start = $this->max($em, $meta->rootEntityName);
+        } else {
+            $start = 1;
+            $newRootId = $nodeId;
         }
         
-        $dql = "UPDATE {$meta->rootEntityName} node";
-        $dql .= " SET node.{$field} = node.{$field} {$dir} {$shift}";
-        $dql .= " WHERE node.{$field} {$conditions}";
-        $q = $em->createQuery($dql);
-        return $q->getSingleScalarResult();
+        $diff = $start - $left;
+        $qb = $em->createQueryBuilder();
+        $qb->update($meta->rootEntityName, 'node');
+        if (isset($config['root'])) {
+            $qb->set('node.' . $config['root'], $newRootId);
+        }
+        if (isset($config['level'])) {
+            $qb->set('node.' . $config['level'], $level);
+        }
+        if ($treeSize > 2) {
+            $levelDiff = isset($config['level']) ? $level - $meta->getReflectionProperty($config['level'])->getValue($node) : null;
+            $this->shiftRangeRL(
+                $em, 
+                $meta->rootEntityName, 
+                $left, 
+                $right, 
+                $diff,
+                $rootId,
+                $newRootId,
+                $levelDiff
+            );
+        } else {
+            $qb->set('node.' . $config['left'], $left + $diff);
+            $qb->set('node.' . $config['right'], $right + $diff);
+        }
+        
+        $qb->where("node.{$identifierField} = {$nodeId}");
+        $qb->getQuery()->getSingleScalarResult();
+        $this->shiftRL($em, $meta->rootEntityName, $left, -$treeSize, $rootId);
     }
     
     /**
      * Get the edge of tree
      * 
      * @param EntityManager $em
-     * @param object $entity
+     * @param string $class
+     * @param integer $rootId
      * @return integer
      */
-    public function getTreeEdge(EntityManager $em, $entity)
+    public function max(EntityManager $em, $class, $rootId = 0)
     {
-        $meta = $em->getClassMetadata(get_class($entity));
+        $meta = $em->getClassMetadata($class);
         $config = $this->listener->getConfiguration($em, $meta->name);
         
-        $query = $em->createQuery("SELECT MAX(node.{$config['right']}) FROM {$meta->rootEntityName} node");
+        $dql = "SELECT MAX(node.{$config['right']}) FROM {$meta->rootEntityName} node";
+        if (isset($config['root']) && $rootId) {
+            $dql .= " WHERE node.{$config['root']} = {$rootId}";
+        }
+        
+        $query = $em->createQuery($dql);
         $right = $query->getSingleScalarResult();
         return intval($right);
     }
     
     /**
-     * If Node does not have parent set it as root
+     * Shift tree left and right values by delta
+     * 
+     * @param EntityManager $em
+     * @param string $class
+     * @param integer $first
+     * @param integer $delta
+     * @param integer $rootId
+     * @return void
+     */
+    public function shiftRL(EntityManager $em, $class, $first, $delta, $rootId = null) 
+    {
+        $meta = $em->getClassMetadata($class);
+        $config = $this->listener->getConfiguration($em, $class);
+        
+        $sign = ($delta >= 0) ? ' + ' : ' - ';
+        $delta = abs($delta);
+        
+        $dql = "UPDATE {$meta->rootEntityName} node";
+        $dql .= " SET node.{$config['left']} = node.{$config['left']} {$sign} {$delta}";
+        $dql .= " WHERE node.{$config['left']} >= {$first}";
+        if (isset($config['root'])) {
+            $dql .= " AND node.{$config['root']} = {$rootId}";
+        }
+        $q = $em->createQuery($dql);
+        $q->getSingleScalarResult();
+        
+        $dql = "UPDATE {$meta->rootEntityName} node";
+        $dql .= " SET node.{$config['right']} = node.{$config['right']} {$sign} {$delta}";
+        $dql .= " WHERE node.{$config['right']} >= {$first}";
+        if (isset($config['root'])) {
+            $dql .= " AND node.{$config['root']} = {$rootId}";
+        }
+        $q = $em->createQuery($dql);
+        $q->getSingleScalarResult();
+    }
+    
+    /**
+     * Shift range of right and left values on tree
+     * depending on tree level diference also
+     * 
+     * @param EntityManager $em
+     * @param string $class
+     * @param integer $first
+     * @param integer $last
+     * @param integer $delta
+     * @param integer $rootId
+     * @param integer $destRootId
+     * @param integer $levelDelta
+     * @return void
+     */
+    public function shiftRangeRL(EntityManager $em, $class, $first, $last, $delta, $rootId = null, $destRootId = null, $levelDelta = null)
+    {
+        $meta = $em->getClassMetadata($class);
+        $config = $this->listener->getConfiguration($em, $class);
+        
+        $sign = ($delta >= 0) ? ' + ' : ' - ';
+        $delta = abs($delta);
+        $levelSign = ($levelDelta >= 0) ? ' + ' : ' - ';
+        $levelDelta = abs($levelDelta);
+        
+        $dql = "UPDATE {$meta->rootEntityName} node";
+        $dql .= " SET node.{$config['left']} = node.{$config['left']} {$sign} {$delta}";
+        $dql .= ", node.{$config['right']} = node.{$config['right']} {$sign} {$delta}";
+        if (isset($config['root'])) {
+            $dql .= ", node.{$config['root']} = {$destRootId}";
+        }
+        if (isset($config['level'])) {
+            $dql .= ", node.{$config['level']} = node.{$config['level']} {$levelSign} {$levelDelta}";
+        }
+        $dql .= " WHERE node.{$config['left']} >= {$first}";
+        $dql .= " AND node.{$config['right']} <= {$last}";
+        if (isset($config['root'])) {
+            $dql .= " AND node.{$config['root']} = {$rootId}";
+        }
+        $q = $em->createQuery($dql);
+        $q->getSingleScalarResult();
+    }
+    
+    /**
+     * If Node does not have parent, set it as root
      * 
      * @param EntityManager $em
      * @param object $entity
      * @return void
      */
-    private function prepareRoot(EntityManager $em, $entity)
+    private function prepareRoot(EntityManager $em, $node)
     {
-        $meta = $em->getClassMetadata(get_class($entity));
+        $meta = $em->getClassMetadata(get_class($node));
         $config = $this->listener->getConfiguration($em, $meta->name);
         
-        $edge = $this->treeEdge ?: $this->getTreeEdge($em, $entity);
-
-        $meta->getReflectionProperty($config['left'])->setValue($entity, $edge + 1);
-        $meta->getReflectionProperty($config['right'])->setValue($entity, $edge + 2);
-        $this->treeEdge = $edge + 2;
+        if (isset($config['root'])) {
+            $meta->getReflectionProperty($config['root'])->setValue($node, null);
+            $meta->getReflectionProperty($config['left'])->setValue($node, 1);
+            $meta->getReflectionProperty($config['right'])->setValue($node, 2);
+        } else {
+            $edge = isset($this->treeEdges[$meta->name]) ? 
+                $this->treeEdges[$meta->name] : $this->max($em, $meta->rootEntityName);
+            $meta->getReflectionProperty($config['left'])->setValue($node, $edge + 1);
+            $meta->getReflectionProperty($config['right'])->setValue($node, $edge + 2);
+            $this->treeEdges[$meta->name] = $edge + 2;
+        }
     }
 }

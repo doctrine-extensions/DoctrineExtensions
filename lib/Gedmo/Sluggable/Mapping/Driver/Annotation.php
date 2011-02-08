@@ -4,7 +4,7 @@ namespace Gedmo\Sluggable\Mapping\Driver;
 
 use Gedmo\Mapping\Driver,
     Doctrine\Common\Annotations\AnnotationReader,
-    Gedmo\Exception\InvalidArgumentException;
+    Gedmo\Exception\InvalidMappingException;
 
 /**
  * This is an annotation mapping driver for Sluggable
@@ -46,7 +46,7 @@ class Annotation implements Driver
     public function validateFullMetadata($meta, array $config)
     {
         if ($config && !isset($config['fields'])) {
-            throw new InvalidArgumentException("Unable to find any sluggable fields specified for Sluggable entity - {$meta->name}");
+            throw new InvalidMappingException("Unable to find any sluggable fields specified for Sluggable entity - {$meta->name}");
         }
     }
     
@@ -71,10 +71,10 @@ class Annotation implements Driver
             if ($sluggable = $reader->getPropertyAnnotation($property, self::ANNOTATION_SLUGGABLE)) {
                 $field = $property->getName();
                 if (!$meta->hasField($field)) {
-                    throw new InvalidArgumentException("Unable to find sluggable [{$field}] as mapped property in entity - {$meta->name}");
+                    throw new InvalidMappingException("Unable to find sluggable [{$field}] as mapped property in entity - {$meta->name}");
                 }
                 if (!$this->_isValidField($meta, $field)) {
-                    throw new InvalidArgumentException("Cannot slug field - [{$field}] type is not valid and must be 'string' in class - {$meta->name}");
+                    throw new InvalidMappingException("Cannot slug field - [{$field}] type is not valid and must be 'string' in class - {$meta->name}");
                 }
                 $config['fields'][] = $field;
             }
@@ -82,13 +82,13 @@ class Annotation implements Driver
             if ($slug = $reader->getPropertyAnnotation($property, self::ANNOTATION_SLUG)) {
                 $field = $property->getName();
                 if (!$meta->hasField($field)) {
-                    throw new InvalidArgumentException("Unable to find slug [{$field}] as mapped property in entity - {$meta->name}");
+                    throw new InvalidMappingException("Unable to find slug [{$field}] as mapped property in entity - {$meta->name}");
                 }
                 if (!$this->_isValidField($meta, $field)) {
-                    throw new InvalidArgumentException("Cannot use field - [{$field}] for slug storage, type is not valid and must be 'string' in class - {$meta->name}");
+                    throw new InvalidMappingException("Cannot use field - [{$field}] for slug storage, type is not valid and must be 'string' in class - {$meta->name}");
                 } 
                 if (isset($config['slug'])) {
-                    throw new InvalidArgumentException("There cannot be two slug fields: [{$slugField}] and [{$config['slug']}], in class - {$meta->name}.");
+                    throw new InvalidMappingException("There cannot be two slug fields: [{$slugField}] and [{$config['slug']}], in class - {$meta->name}.");
                 }
                 
                 $config['slug'] = $field;

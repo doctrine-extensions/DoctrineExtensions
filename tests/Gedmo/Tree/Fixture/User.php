@@ -2,7 +2,7 @@
 namespace Tree\Fixture;
 
 /**
- * @Entity(repositoryClass="Gedmo\Tree\Entity\Repository\TreeNodeRepository")
+ * @Entity(repositoryClass="Gedmo\Tree\Entity\Repository\NestedTreeRepository")
  * @Table(name="`user`")
  */
 class User extends Role {

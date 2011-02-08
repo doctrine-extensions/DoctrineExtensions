@@ -192,15 +192,14 @@ class TranslationListener extends AbstractTranslationListener
      */
     protected function loadTranslations($om, $object)
     {
-        $objectClass = get_class($object);
-        $meta = $om->getClassMetadata($objectClass);
+        $meta = $om->getClassMetadata(get_class($object));
         $locale = strtolower($this->getTranslatableLocale($object, $meta));
         $this->validateLocale($locale);
         
         // there should be single identifier
         $identifierField = $this->getSingleIdentifierFieldName($meta);
         // load translated content for all translatable fields
-        $translationClass = $this->getTranslationClass($objectClass);
+        $translationClass = $this->getTranslationClass($meta->name);
         $objectId = $meta->getReflectionProperty($identifierField)->getValue($object);
         // construct query
         $dql = 'SELECT t.content, t.field FROM ' . $translationClass . ' t';
@@ -208,6 +207,7 @@ class TranslationListener extends AbstractTranslationListener
         $dql .= ' AND t.locale = :locale';
         $dql .= ' AND t.objectClass = :objectClass';
         // fetch results
+        $objectClass = $meta->name;
         $q = $om->createQuery($dql);
         $q->setParameters(compact('objectId', 'locale', 'objectClass'));
         return $q->getArrayResult();

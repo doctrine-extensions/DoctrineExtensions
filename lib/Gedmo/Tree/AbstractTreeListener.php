@@ -5,6 +5,15 @@ namespace Gedmo\Tree;
 use Doctrine\Common\EventArgs,
     Gedmo\Mapping\MappedEventSubscriber;
 
+/**
+ * The base tree listener model.
+ * 
+ * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
+ * @package Gedmo.Tree
+ * @subpackage AbstractTreeListener
+ * @link http://www.gediminasm.org
+ * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
+ */
 abstract class AbstractTreeListener extends MappedEventSubscriber
 {    
     /**
@@ -20,13 +29,6 @@ abstract class AbstractTreeListener extends MappedEventSubscriber
      * @var array
      */
     private $strategyInstances = array();
-    
-    /**
-     * List of object classes in post persist 
-     * 
-     * @var array
-     */
-    private $postPersistClasses = array();
     
     /**
      * Get the used strategy for tree processing
@@ -64,17 +66,17 @@ abstract class AbstractTreeListener extends MappedEventSubscriber
         $uow = $om->getUnitOfWork();
         // check all scheduled updates for TreeNodes
         $usedClasses = array();
+        
         foreach ($this->getScheduledObjectUpdates($uow) as $object) {
-            $objectClass = get_class($object);
-            if ($config = $this->getConfiguration($om, $objectClass)) {
-                $usedClasses[$objectClass] = null;
-                $this->getStrategy($om, $objectClass)->processScheduledUpdate($om, $object);
+            $meta = $om->getClassMetadata(get_class($object));
+            if ($config = $this->getConfiguration($om, $meta->name)) {
+                $usedClasses[$meta->name] = null;
+                $this->getStrategy($om, $meta->name)->processScheduledUpdate($om, $object);
             }
         }
         foreach ($this->getStrategiesUsedForObjects($usedClasses) as $strategy) {
             $strategy->onFlushEnd($om);
         }
-        $this->postPersistClasses = array();
     }
     
     /**
@@ -87,10 +89,10 @@ abstract class AbstractTreeListener extends MappedEventSubscriber
     {
         $om = $this->getObjectManager($args);
         $object = $this->getObject($args);
-        $objectClass = get_class($object);
+        $meta = $om->getClassMetadata(get_class($object));
         
-        if ($config = $this->getConfiguration($om, $objectClass)) {
-            $this->getStrategy($om, $objectClass)->processScheduledDelete($om, $object);
+        if ($config = $this->getConfiguration($om, $meta->name)) {
+            $this->getStrategy($om, $meta->name)->processScheduledDelete($om, $object);
         }
     }
     
@@ -104,10 +106,10 @@ abstract class AbstractTreeListener extends MappedEventSubscriber
     {
         $om = $this->getObjectManager($args);
         $object = $this->getObject($args);
-        $objectClass = get_class($object);
+        $meta = $om->getClassMetadata(get_class($object));
         
-        if ($config = $this->getConfiguration($om, $objectClass)) {
-            $this->getStrategy($om, $objectClass)->processPrePersist($om, $object);
+        if ($config = $this->getConfiguration($om, $meta->name)) {
+            $this->getStrategy($om, $meta->name)->processPrePersist($om, $object);
         }
     }
     
@@ -121,19 +123,11 @@ abstract class AbstractTreeListener extends MappedEventSubscriber
     public function postPersist(EventArgs $args)
     {
         $om = $this->getObjectManager($args);
-        $uow = $om->getUnitOfWork();
         $object = $this->getObject($args);
-        $objectClass = get_class($object);
+        $meta = $om->getClassMetadata(get_class($object));
         
-        if ($config = $this->getConfiguration($om, $objectClass)) {
-            $this->getStrategy($om, $objectClass)->processPostPersist($om, $object);
-            $this->postPersistClasses[$objectClass] = null;
-        }
-        
-        if (!$uow->hasPendingInsertions()) {
-            foreach ($this->getStrategiesUsedForObjects($this->postPersistClasses) as $strategy) {
-                $strategy->processPendingInserts($om);
-            }
+        if ($config = $this->getConfiguration($om, $meta->name)) {
+            $this->getStrategy($om, $meta->name)->processPostPersist($om, $object);
         }
     }
     

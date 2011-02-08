@@ -2,13 +2,11 @@
 
 namespace Tree\Fixture;
 
-use Gedmo\Tree\Node;
-
 /**
  * @Entity(repositoryClass="Gedmo\Tree\Entity\Repository\NestedTreeRepository")
  * @gedmo:Tree(type="nested")
  */
-class Category implements Node
+class RootCategory
 {
     /**
      * @Column(name="id", type="integer")
@@ -36,9 +34,15 @@ class Category implements Node
     
     /**
      * @gedmo:TreeParent
-     * @ManyToOne(targetEntity="Category", inversedBy="children")
+     * @ManyToOne(targetEntity="RootCategory", inversedBy="children")
      */
-    private $parentId;
+    private $parent;
+    
+    /**
+     * @gedmo:TreeRoot
+     * @Column(type="integer", nullable=true)
+     */
+    private $root;
     
     /**
      * @gedmo:TreeLevel
@@ -47,14 +51,9 @@ class Category implements Node
      private $level;
     
     /**
-     * @OneToMany(targetEntity="Category", mappedBy="parent")
+     * @OneToMany(targetEntity="RootCategory", mappedBy="parent")
      */
     private $children;
-    
-    /**
-     * @OneToMany(targetEntity="Article", mappedBy="category")
-     */
-    private $comments;
 
     public function getId()
     {
@@ -71,13 +70,33 @@ class Category implements Node
         return $this->title;
     }
     
-    public function setParent(Category $parent)
+    public function setParent($parent)
     {
-        $this->parentId = $parent;    
+        $this->parent = $parent;    
     }
     
     public function getParent()
     {
-        return $this->parentId;    
+        return $this->parent;    
+    }
+    
+    public function getRoot()
+    {
+        return $this->root;    
+    }
+    
+    public function getLeft()
+    {
+        return $this->lft;
+    }
+    
+    public function getRight()
+    {
+        return $this->rgt;
+    }
+    
+    public function getLevel()
+    {
+        return $this->level;
     }
 }

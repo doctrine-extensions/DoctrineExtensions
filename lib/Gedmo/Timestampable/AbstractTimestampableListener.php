@@ -42,9 +42,8 @@ abstract class AbstractTimestampableListener extends MappedEventSubscriber
         $uow = $om->getUnitOfWork();
         // check all scheduled updates
         foreach ($this->getScheduledObjectUpdates($uow) as $object) {
-            $objectClass = get_class($object);
-            if ($config = $this->getConfiguration($om, $objectClass)) {
-                $meta = $om->getClassMetadata($objectClass);
+            $meta = $om->getClassMetadata(get_class($object));
+            if ($config = $this->getConfiguration($om, $meta->name)) {
                 $changeSet = $this->getObjectChangeSet($uow, $object);
                 $needChanges = false;
 

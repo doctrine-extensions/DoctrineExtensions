@@ -33,8 +33,8 @@ class TranslationRepository extends EntityRepository
             if ($this->_em->getUnitOfWork()->getEntityState($entity) == \Doctrine\ORM\UnitOfWork::STATE_NEW) {
                 return $result;
             }
-            $entityClass = get_class($entity);
-            $meta = $this->_em->getClassMetadata($entityClass);
+            $meta = $this->_em->getClassMetadata(get_class($entity));
+            $entityClass = $meta->name;
             $identifier = $meta->getSingleIdentifierFieldName();
             $entityId = $meta->getReflectionProperty($identifier)->getValue($entity);
             

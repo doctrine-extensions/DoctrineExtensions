@@ -2,8 +2,13 @@
 
 namespace Gedmo\Tree;
 
-interface StrategyInterface
+interface Strategy
 {
+    /**
+     * NestedSet strategy
+     */
+    const NESTED = 'nested';
+    
     /**
      * Get the name of strategy
      * 
@@ -12,7 +17,7 @@ interface StrategyInterface
     function getName();
     
     /**
-     * Builds an adapter
+     * Initialize strategy with tree listener
      * 
      * @param AbstractTreeListener $listener
      * @return void
@@ -62,12 +67,4 @@ interface StrategyInterface
      * @return void
      */
     function onFlushEnd($om);
-    
-    /**
-     * Operations on tree pending insertions
-     * 
-     * @param object $om - object manager
-     * @return void
-     */
-    function processPendingInserts($om);
 }

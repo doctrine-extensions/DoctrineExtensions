@@ -186,19 +186,18 @@ class TranslationListener extends AbstractTranslationListener
      */
     protected function loadTranslations($om, $object)
     {
-        $objectClass = get_class($object);
-        $meta = $om->getClassMetadata($objectClass);
+        $meta = $om->getClassMetadata(get_class($object));
         $locale = strtolower($this->getTranslatableLocale($object, $meta));
         $this->validateLocale($locale);
         
         // load translated content for all translatable fields
-        $translationClass = $this->getTranslationClass($objectClass);
+        $translationClass = $this->getTranslationClass($meta->name);
         $identifier = $meta->getIdentifierValue($object);
         // construct query
         $qb = $om->createQueryBuilder($translationClass);
         $q = $qb->field('foreignKey')->equals($identifier)
             ->field('locale')->equals($locale)
-            ->field('objectClass')->equals($objectClass)
+            ->field('objectClass')->equals($meta->name)
             ->getQuery();
             
         $q->setHydrate(false);

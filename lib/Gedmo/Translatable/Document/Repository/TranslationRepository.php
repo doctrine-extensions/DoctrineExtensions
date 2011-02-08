@@ -28,15 +28,14 @@ class TranslationRepository extends DocumentRepository
     {
         $result = array();
         if ($document) {
-            $documentClass = get_class($document);
-            $meta = $this->dm->getClassMetadata($documentClass);
+            $meta = $this->dm->getClassMetadata(get_class($document));
             $identifier = $meta->identifier;
             $documentId = $meta->getReflectionProperty($identifier)->getValue($document);
             
             $translationMeta = $this->getClassMetadata();
             $qb = $this->createQueryBuilder();
             $q = $qb->field('foreignKey')->equals($documentId)
-                ->field('objectClass')->equals($documentClass)
+                ->field('objectClass')->equals($meta->name)
                 ->sort('locale', 'asc')
                 ->getQuery();
             

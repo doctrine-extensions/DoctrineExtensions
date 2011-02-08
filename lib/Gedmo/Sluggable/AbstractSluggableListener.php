@@ -102,8 +102,9 @@ abstract class AbstractSluggableListener extends MappedEventSubscriber
     {
         $om = $this->getObjectManager($args);
         $object = $this->getObject($args);
+        $meta = $om->getClassMetadata(get_class($object));
         
-        if ($config = $this->getConfiguration($om, get_class($object))) {
+        if ($config = $this->getConfiguration($om, $meta->name)) {
             $this->generateSlug($om, $object, false);
         }
     }
@@ -123,7 +124,8 @@ abstract class AbstractSluggableListener extends MappedEventSubscriber
         // we use onFlush and not preUpdate event to let other
         // event listeners be nested together
         foreach ($this->getScheduledObjectUpdates($uow) as $object) {
-            if ($config = $this->getConfiguration($om, get_class($object))) {
+            $meta = $om->getClassMetadata(get_class($object));
+            if ($config = $this->getConfiguration($om, $meta->name)) {
                 if ($config['updatable']) {
                     $this->generateSlug($om, $object, $this->getObjectChangeSet($uow, $object));
                 }
@@ -153,10 +155,9 @@ abstract class AbstractSluggableListener extends MappedEventSubscriber
      */
     protected function generateSlug($om, $object, $changeSet)
     {
-        $objectClass = get_class($object);
+        $meta = $om->getClassMetadata(get_class($object));
         $uow = $om->getUnitOfWork();
-        $meta = $om->getClassMetadata($objectClass);
-        $config = $this->getConfiguration($om, $objectClass);
+        $config = $this->getConfiguration($om, $meta->name);
         
         // collect the slug from fields
         $slug = '';
@@ -226,9 +227,8 @@ abstract class AbstractSluggableListener extends MappedEventSubscriber
      */
     protected function makeUniqueSlug($om, $object, $preferedSlug)
     {   
-        $objectClass = get_class($object);
-        $meta = $om->getClassMetadata($objectClass);
-        $config = $this->getConfiguration($om, $objectClass);
+        $meta = $om->getClassMetadata(get_class($object));
+        $config = $this->getConfiguration($om, $meta->name);
         
         // search for similar slug
         $result = $this->getUniqueSlugResult($om, $object, $meta, $config, $preferedSlug);

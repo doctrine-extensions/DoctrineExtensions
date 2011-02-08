@@ -8,7 +8,8 @@ use Doctrine\Common\Util\Debug,
     Tree\Fixture\Comment,
     Gedmo\Translatable\TranslationListener,
     Gedmo\Translatable\Entity\Translation,
-    Gedmo\Sluggable\SluggableListener;
+    Gedmo\Sluggable\SluggableListener,
+    Doctrine\ORM\Proxy\Proxy;
 
 /**
  * These are tests for Tree behavior
@@ -109,6 +110,45 @@ class TranslatableSluggableTreeTest extends \PHPUnit_Framework_TestCase
         
         $this->assertArrayHasKey('slug', $translations['en_us']);
         $this->assertEquals('vegitables', $translations['en_us']['slug']);
+    }
+    
+    public function testTranslations()
+    {
+        $this->populateDeTranslations();
+        $repo = $this->em->getRepository(self::TEST_ENTITY_CATEGORY);
+        $vegies = $repo->find(4);
+        
+        $this->assertEquals('Vegitables', $vegies->getTitle());
+        $food = $vegies->getParent();
+        // test if proxy triggers postLoad event
+        $this->assertTrue($food instanceof Proxy);
+        $this->assertEquals('Food', $food->getTitle());
+        
+        $this->em->clear();
+        $this->translationListener->setTranslatableLocale('de_de');
+        
+        $vegies = $repo->find(4);
+        $this->assertEquals('Gemüse', $vegies->getTitle());
+        $food = $vegies->getParent();
+        $this->assertTrue($food instanceof Proxy);
+        $this->assertEquals('Lebensmittel', $food->getTitle());
+    }
+    
+    private function populateDeTranslations()
+    {
+        $this->translationListener->setTranslatableLocale('de_de');
+        $repo = $this->em->getRepository(self::TEST_ENTITY_CATEGORY);
+        $food = $repo->findOneByTitle('Food');
+        $food->setTitle('Lebensmittel');
+        
+        $vegies = $repo->findOneByTitle('Vegitables');
+        $vegies->setTitle('Gemüse');
+        
+        $this->em->persist($food);
+        $this->em->persist($vegies);
+        $this->em->flush();
+        $this->em->clear();
+        $this->translationListener->setTranslatableLocale('en_us');
     }
     
     protected function _populate()

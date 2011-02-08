@@ -146,14 +146,16 @@ abstract class AbstractTranslationListener extends MappedEventSubscriber
         $uow = $om->getUnitOfWork();
         // check all scheduled inserts for Translatable objects
         foreach ($this->getScheduledObjectInsertions($uow) as $object) {
-            $config = $this->getConfiguration($om, get_class($object));
+            $meta = $om->getClassMetadata(get_class($object));
+            $config = $this->getConfiguration($om, $meta->name);
             if (isset($config['fields'])) {
                 $this->handleTranslatableObjectUpdate($om, $object, true);
             }
         }
         // check all scheduled updates for Translatable entities
         foreach ($this->getScheduledObjectUpdates($uow) as $object) {
-            $config = $this->getConfiguration($om, get_class($object));
+            $meta = $om->getClassMetadata(get_class($object));
+            $config = $this->getConfiguration($om, $meta->name);
             if (isset($config['fields'])) {
                 // check if there are translation changes
                 $changeSet = $this->getObjectChangeSet($uow, $object);
@@ -168,14 +170,13 @@ abstract class AbstractTranslationListener extends MappedEventSubscriber
         }
         // check scheduled deletions for Translatable entities
         foreach ($this->getScheduledObjectDeletions($uow) as $object) {
-            $objectClass = get_class($object);
-            $config = $this->getConfiguration($om, $objectClass);
+            $meta = $om->getClassMetadata(get_class($object));
+            $config = $this->getConfiguration($om, $meta->name);
             if (isset($config['fields'])) {
-                $meta = $om->getClassMetadata($objectClass);
                 $identifierField = $this->getSingleIdentifierFieldName($meta);
                 $objectId = $meta->getReflectionProperty($identifierField)->getValue($object);
                 
-                $transClass = $this->getTranslationClass($objectClass);
+                $transClass = $this->getTranslationClass($meta->name);
                 $this->removeAssociatedTranslations($om, $objectId, $transClass);
             }
         }
@@ -193,15 +194,14 @@ abstract class AbstractTranslationListener extends MappedEventSubscriber
         $om = $this->getObjectManager($args);
         $object = $this->getObject($args);
         $uow = $om->getUnitOfWork();
-        $objectClass = get_class($object);
+        $meta = $om->getClassMetadata(get_class($object));
         // check if entity is tracked by translatable and without foreign key
-        if (array_key_exists($objectClass, $this->configurations) && count($this->pendingTranslationInserts)) {
+        if (array_key_exists($meta->name, $this->configurations) && count($this->pendingTranslationInserts)) {
             $oid = spl_object_hash($object);
             
-            $meta = $om->getClassMetadata($objectClass);
             // there should be single identifier
             $identifierField = $this->getSingleIdentifierFieldName($meta);
-            $translationMeta = $om->getClassMetadata($this->getTranslationClass($objectClass));
+            $translationMeta = $om->getClassMetadata($this->getTranslationClass($meta->name));
             if (array_key_exists($oid, $this->pendingTranslationInserts)) {
                 // load the pending translations without key
                 $translations = $this->pendingTranslationInserts[$oid];
@@ -227,11 +227,10 @@ abstract class AbstractTranslationListener extends MappedEventSubscriber
     {
         $om = $this->getObjectManager($args);
         $object = $this->getObject($args);
-        $objectClass = get_class($object);
-        $config = $this->getConfiguration($om, $objectClass);
+        $meta = $om->getClassMetadata(get_class($object));
+        $config = $this->getConfiguration($om, $meta->name);
 
         if (isset($config['fields'])) {
-            $meta = $om->getClassMetadata($objectClass);
             // fetch translations
             $result = $this->loadTranslations($om, $object);
             // translate object's translatable properties
@@ -291,11 +290,10 @@ abstract class AbstractTranslationListener extends MappedEventSubscriber
      */
     protected function handleTranslatableObjectUpdate($om, $object, $isInsert)
     {
-        $objectClass = get_class($object);
+        $meta = $om->getClassMetadata(get_class($object));
         // no need cache, metadata is loaded only once in MetadataFactoryClass
-        $translationClass = $this->getTranslationClass($objectClass);
+        $translationClass = $this->getTranslationClass($meta->name);
         $translationMetadata = $om->getClassMetadata($translationClass);
-        $meta = $om->getClassMetadata($objectClass);
         
         // check for the availability of the primary key
         $identifierField = $this->getSingleIdentifierFieldName($meta);
@@ -309,7 +307,7 @@ abstract class AbstractTranslationListener extends MappedEventSubscriber
         $this->validateLocale($locale);
 
         $uow = $om->getUnitOfWork();
-        $config = $this->getConfiguration($om, $objectClass);
+        $config = $this->getConfiguration($om, $meta->name);
         $translatableFields = $config['fields'];
         foreach ($translatableFields as $field) {
             $translation = null;
@@ -318,7 +316,7 @@ abstract class AbstractTranslationListener extends MappedEventSubscriber
                 $translation = $this->findTranslation(
                     $om,
                     $objectId,
-                    $objectClass,
+                    $meta->name,
                     $locale,
                     $field
                 );
@@ -331,7 +329,7 @@ abstract class AbstractTranslationListener extends MappedEventSubscriber
                 $translationMetadata->getReflectionProperty('field')
                     ->setValue($translation, $field);
                 $translationMetadata->getReflectionProperty('objectClass')
-                    ->setValue($translation, $objectClass);
+                    ->setValue($translation, $meta->name);
                 $translationMetadata->getReflectionProperty('foreignKey')
                     ->setValue($translation, $objectId);
                 $scheduleUpdate = !$isInsert;

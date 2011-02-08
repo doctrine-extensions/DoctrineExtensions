@@ -25,3 +25,4 @@ final class TreeLeft extends Annotation {}
 final class TreeRight extends Annotation {}
 final class TreeParent extends Annotation {}
 final class TreeLevel extends Annotation {}
+final class TreeRoot extends Annotation {}

@@ -46,6 +46,11 @@ class Annotation implements Driver
     const ANNOTATION_LEVEL = 'Gedmo\Tree\Mapping\TreeLevel';
     
     /**
+     * Annotation to mark field as tree root
+     */
+    const ANNOTATION_ROOT = 'Gedmo\Tree\Mapping\TreeRoot';
+    
+    /**
      * List of types which are valid for tree fields
      * 
      * @var array
@@ -134,6 +139,17 @@ class Annotation implements Driver
                     throw new InvalidMappingException("Unable to find ancestor/parent child relation through ancestor field - [{$field}] in class - {$meta->name}");
                 }
                 $config['parent'] = $field;
+            }
+            // root
+            if ($root = $reader->getPropertyAnnotation($property, self::ANNOTATION_ROOT)) {
+                $field = $property->getName();
+                if (!$meta->hasField($field)) {
+                    throw new InvalidMappingException("Unable to find 'root' - [{$field}] as mapped property in entity - {$meta->name}");
+                }
+                if (!$this->isValidField($meta, $field)) {
+                    throw new InvalidMappingException("Tree root field - [{$field}] type is not valid and must be 'integer' in class - {$meta->name}");
+                }
+                $config['root'] = $field;
             }
             // level
             if ($parent = $reader->getPropertyAnnotation($property, self::ANNOTATION_LEVEL)) {
