@@ -28,6 +28,27 @@ abstract class AbstractSluggableListener extends MappedEventSubscriber
     private $exponent = 0;
     
     /**
+     * Transliteration callback for slugs
+     * 
+     * @var array
+     */
+    private $transliterator = array('Gedmo\Sluggable\Util\Urlizer', 'urlize');
+    
+    /**
+     * Set the transliteration callable method
+     * to transliterate slugs
+     * 
+     * @param mixed $callable
+     */
+    public function setTransliterator($callable)
+    {
+        if (!is_callable($callable)) {
+            throw new \Gedmo\Exception\InvalidArgumentException('Invalid transliterator callable parameter given');
+        }
+        $this->transliterator = $callable;
+    }
+    
+    /**
      * Get the ObjectManager from EventArgs
      *
      * @param EventArgs $args
@@ -179,7 +200,7 @@ abstract class AbstractSluggableListener extends MappedEventSubscriber
         
         // build the slug
         $slug = call_user_func_array(
-            array('Gedmo\Sluggable\Util\Urlizer', 'urlize'), 
+            $this->transliterator, 
             array($slug, $config['separator'], $object)
         );
 

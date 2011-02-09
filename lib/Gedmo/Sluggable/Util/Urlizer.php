@@ -10,6 +10,9 @@ namespace Gedmo\Sluggable\Util;
  * across several different php projects and several different authors. The
  * original author names and emails are not known
  *
+ * Uses 3rd party libraries and functions:
+ *         http://sourceforge.net/projects/phputf8
+ *
  * @package     Gedmo.Sluggable.Util
  * @subpackage  Urlizer
  * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
@@ -18,6 +21,7 @@ namespace Gedmo\Sluggable\Util;
  * @version     $Revision: 3189 $
  * @author      Konsta Vesterinen <kvesteri@cc.hut.fi>
  * @author      Jonathan H. Wage <jonwage@gmail.com>
+ * @author         <hsivonen@iki.fi>
  */
 class Urlizer
 {
@@ -191,6 +195,126 @@ class Urlizer
     }
 
     /**
+     * Convert any passed string to a url friendly string
+     *
+     * @param  string $text  Text to urlize
+     * @return string $text  Urlized text
+     */
+    public static function _urlize($text, $separator = '-')
+    {
+        $clean = preg_replace("/[^a-zA-Z0-9\/_|+ -]/", '', $text);
+        $clean = strtolower(trim($clean, '-'));
+        $clean = preg_replace("/[\/_|+ -]+/", '-', $clean);
+        
+    }
+    
+    /**
+    * US-ASCII transliterations of Unicode text
+    * Ported Sean M. Burke's Text::Unidecode Perl module (He did all the hard work!)
+    * Warning: you should only pass this well formed UTF-8!
+    * Be aware it works by making a copy of the input string which it appends transliterated
+    * characters to - it uses a PHP output buffer to do this - it means, memory use will increase,
+    * requiring up to the same amount again as the input string
+    * 
+    * @see http://search.cpan.org/~sburke/Text-Unidecode-0.04/lib/Text/Unidecode.pm
+    * @param string UTF-8 string to convert
+    * @author <hsivonen@iki.fi>
+    * @param string (default = ?) Character use if character unknown
+    * @return string US-ASCII string
+    */
+    public static function utf8ToAscii($str, $unknown = '?') {
+        
+        # The database for transliteration stored here
+        static $UTF8_TO_ASCII = array();
+        
+        # Variable lookups faster than accessing constants
+        $UTF8_TO_ASCII_DB = __DIR__ . '/data';
+        
+        if (strlen($str) == 0) {
+            return '';
+        }
+        
+        $len = strlen($str);
+        $i = 0;
+        
+        # Use an output buffer to copy the transliterated string
+        # This is done for performance vs. string concatenation - on my system, drops
+        # the average request time for the example from ~0.46ms to 0.41ms
+        # See http://phplens.com/lens/php-book/optimizing-debugging-php.php
+        # Section  "High Return Code Optimizations"
+        ob_start();
+        
+        while ($i < $len) {
+            $ord = NULL;
+            $increment = 1;
+            
+            $ord0 = ord($str{$i});
+            
+            # Much nested if /else - PHP fn calls expensive, no block scope...
+            # 1 byte - ASCII
+            if ($ord0 >= 0 && $ord0 <= 127) {
+                $ord = $ord0;
+                $increment = 1;
+            } else {
+                # 2 bytes
+                $ord1 = ord($str{$i+1});
+                if ($ord0 >= 192 && $ord0 <= 223) {
+                    $ord = ($ord0 - 192) * 64 + ($ord1 - 128);
+                    $increment = 2;
+                } else {
+                    # 3 bytes
+                    $ord2 = ord($str{$i+2});
+                    if ($ord0 >= 224 && $ord0 <= 239) {
+                        $ord = ($ord0-224)*4096 + ($ord1-128)*64 + ($ord2-128);
+                        $increment = 3;
+                    } else {
+                        # 4 bytes
+                        $ord3 = ord($str{$i+3});
+                        if ($ord0>=240 && $ord0<=247) {
+                            $ord = ($ord0-240)*262144 + ($ord1-128)*4096 
+                                + ($ord2-128)*64 + ($ord3-128);
+                            $increment = 4;
+                        } else {
+                            ob_end_clean();
+                            throw new \Gedmo\Exception\UnexpectedValueException('Unidentified ut8 character was present, pure utf8 required');
+                        }
+                    }
+                }
+            }
+            
+            $bank = $ord >> 8;
+            
+            # If we haven't used anything from this bank before, need to load it...
+            if (!array_key_exists($bank, $UTF8_TO_ASCII)) {
+                $bankfile = $UTF8_TO_ASCII_DB. '/'. sprintf("x%02x", $bank).'.php';
+                
+                if (file_exists($bankfile)) {
+                    # Load the appropriate database
+                    if (!include $bankfile) {
+                        ob_end_clean();
+                        throw new \Gedmo\Exception\RuntimeException('Cannot find character bank file: ' . $bankfile);
+                    }
+                } else {
+                    # Some banks are deliberately empty
+                    $UTF8_TO_ASCII[$bank] = array();
+                }
+            }
+
+            $newchar = $ord & 255;            
+            if (array_key_exists($newchar, $UTF8_TO_ASCII[$bank])) {
+                echo $UTF8_TO_ASCII[$bank][$newchar];
+            } else {
+                echo $unknown;
+            }
+            $i += $increment;
+        }
+        
+        $str = ob_get_contents();
+        ob_end_clean();
+        return $str;
+    }
+    
+    /**
      * Convert any passed string to a url friendly string. Converts 'My first blog post' to 'my-first-blog-post'
      *
      * @param  string $text  Text to urlize
@@ -199,7 +323,11 @@ class Urlizer
     public static function urlize($text, $separator = '-')
     {
         // Remove all non url friendly characters with the unaccent function
-        $text = self::unaccent($text);
+        if (self::validUtf8($text)) {
+            $text = self::utf8ToAscii($text);
+        } else {
+            $text = self::unaccent($text);
+        }
 
         if (function_exists('mb_strtolower')) {
             $text = mb_strtolower($text);
@@ -217,5 +345,139 @@ class Urlizer
                            preg_replace('/::/', '/', $text)))));
 
         return trim($text, $separator);
+    }
+    
+    /**
+    * Tests a string as to whether it's valid UTF-8 and supported by the
+    * Unicode standard
+    * Note: this function has been modified to simple return true or false
+    * @author <hsivonen@iki.fi>
+    * @param string UTF-8 encoded string
+    * @return boolean true if valid
+    * @see http://hsivonen.iki.fi/php-utf8/
+    */
+    public static function validUtf8($str) {
+        
+        $mState = 0;     // cached expected number of octets after the current octet
+                         // until the beginning of the next UTF8 character sequence
+        $mUcs4  = 0;     // cached Unicode character
+        $mBytes = 1;     // cached expected number of octets in the current sequence
+        
+        $len = strlen($str);
+        
+        for($i = 0; $i < $len; $i++) {
+            
+            $in = ord($str{$i});
+            
+            if ( $mState == 0) {
+                
+                // When mState is zero we expect either a US-ASCII character or a
+                // multi-octet sequence.
+                if (0 == (0x80 & ($in))) {
+                    // US-ASCII, pass straight through.
+                    $mBytes = 1;
+                    
+                } else if (0xC0 == (0xE0 & ($in))) {
+                    // First octet of 2 octet sequence
+                    $mUcs4 = ($in);
+                    $mUcs4 = ($mUcs4 & 0x1F) << 6;
+                    $mState = 1;
+                    $mBytes = 2;
+                    
+                } else if (0xE0 == (0xF0 & ($in))) {
+                    // First octet of 3 octet sequence
+                    $mUcs4 = ($in);
+                    $mUcs4 = ($mUcs4 & 0x0F) << 12;
+                    $mState = 2;
+                    $mBytes = 3;
+                    
+                } else if (0xF0 == (0xF8 & ($in))) {
+                    // First octet of 4 octet sequence
+                    $mUcs4 = ($in);
+                    $mUcs4 = ($mUcs4 & 0x07) << 18;
+                    $mState = 3;
+                    $mBytes = 4;
+                    
+                } else if (0xF8 == (0xFC & ($in))) {
+                    /* First octet of 5 octet sequence.
+                    *
+                    * This is illegal because the encoded codepoint must be either
+                    * (a) not the shortest form or
+                    * (b) outside the Unicode range of 0-0x10FFFF.
+                    * Rather than trying to resynchronize, we will carry on until the end
+                    * of the sequence and let the later error handling code catch it.
+                    */
+                    $mUcs4 = ($in);
+                    $mUcs4 = ($mUcs4 & 0x03) << 24;
+                    $mState = 4;
+                    $mBytes = 5;
+                    
+                } else if (0xFC == (0xFE & ($in))) {
+                    // First octet of 6 octet sequence, see comments for 5 octet sequence.
+                    $mUcs4 = ($in);
+                    $mUcs4 = ($mUcs4 & 1) << 30;
+                    $mState = 5;
+                    $mBytes = 6;
+                    
+                } else {
+                    /* Current octet is neither in the US-ASCII range nor a legal first
+                     * octet of a multi-octet sequence.
+                     */
+                    return FALSE;
+                    
+                }
+            
+            } else {
+                
+                // When mState is non-zero, we expect a continuation of the multi-octet
+                // sequence
+                if (0x80 == (0xC0 & ($in))) {
+                    
+                    // Legal continuation.
+                    $shift = ($mState - 1) * 6;
+                    $tmp = $in;
+                    $tmp = ($tmp & 0x0000003F) << $shift;
+                    $mUcs4 |= $tmp;
+                
+                    /**
+                    * End of the multi-octet sequence. mUcs4 now contains the final
+                    * Unicode codepoint to be output
+                    */
+                    if (0 == --$mState) {
+                        
+                        /*
+                        * Check for illegal sequences and codepoints.
+                        */
+                        // From Unicode 3.1, non-shortest form is illegal
+                        if (((2 == $mBytes) && ($mUcs4 < 0x0080)) ||
+                            ((3 == $mBytes) && ($mUcs4 < 0x0800)) ||
+                            ((4 == $mBytes) && ($mUcs4 < 0x10000)) ||
+                            (4 < $mBytes) ||
+                            // From Unicode 3.2, surrogate characters are illegal
+                            (($mUcs4 & 0xFFFFF800) == 0xD800) ||
+                            // Codepoints outside the Unicode range are illegal
+                            ($mUcs4 > 0x10FFFF)) {
+                            
+                            return FALSE;
+                            
+                        }
+                        
+                        //initialize UTF8 cache
+                        $mState = 0;
+                        $mUcs4  = 0;
+                        $mBytes = 1;
+                    }
+                
+                } else {
+                    /**
+                    *((0xC0 & (*in) != 0x80) && (mState != 0))
+                    * Incomplete multi-octet sequence.
+                    */
+                    
+                    return FALSE;
+                }
+            }
+        }
+        return TRUE;
     }
 }
