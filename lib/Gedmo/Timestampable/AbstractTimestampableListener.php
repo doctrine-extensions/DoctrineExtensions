@@ -3,7 +3,8 @@
 namespace Gedmo\Timestampable;
 
 use Doctrine\Common\EventArgs,
-    Gedmo\Mapping\MappedEventSubscriber;
+    Gedmo\Mapping\MappedEventSubscriber,
+    Doctrine\ORM\Proxy\Proxy;
 
 /**
  * The AbstractTimestampableListener is an abstract class
@@ -78,6 +79,7 @@ abstract class AbstractTimestampableListener extends MappedEventSubscriber
                                     throw new \Gedmo\Exception\UnexpectedValueException("Field - [{$field}] is expected to be object in class - {$meta->name}");
                                 }
                                 $objectMeta = $om->getClassMetadata(get_class($changingObject));
+                                $trackedChild instanceof Proxy && $om->refresh($trackedChild);
                                 $value = $objectMeta->getReflectionProperty($trackedChild)
                                     ->getValue($changingObject);
                             } else {

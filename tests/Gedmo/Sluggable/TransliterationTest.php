@@ -59,8 +59,11 @@ class TransliterationTest extends \PHPUnit_Framework_TestCase
         $lithuanian = $repo->findOneByCode('lt');
         $this->assertEquals('transliteration-test-usage-uz-lt', $lithuanian->getSlug());
         
-        $cyrilic = $repo->findOneByCode('ru');
-        $this->assertEquals('tova-ie-tiestovo-zaghlaviie-ru', $cyrilic->getSlug());
+        $bulgarian = $repo->findOneByCode('bg');
+        $this->assertEquals('tova-ie-tiestovo-zaghlaviie-bg', $bulgarian->getSlug());
+        
+        $russian = $repo->findOneByCode('ru');
+        $this->assertEquals('eto-tiestovyi-zagholovok-ru', $russian->getSlug());
         
         $german = $repo->findOneByCode('de');
         $this->assertEquals('fuhren-aktivitaten-haglofs-de', $german->getSlug());
@@ -72,16 +75,21 @@ class TransliterationTest extends \PHPUnit_Framework_TestCase
         $lithuanian->setTitle('trąnslįteration tėst ųsąge ūž');
         $lithuanian->setCode('lt');
         
-        $cyrilic = new Article;
-        $cyrilic->setTitle('това е тестово заглавие');
-        $cyrilic->setCode('ru');
+        $bulgarian = new Article;
+        $bulgarian->setTitle('това е тестово заглавие');
+        $bulgarian->setCode('bg');
+        
+        $russian = new Article;
+        $russian->setTitle('это тестовый заголовок');
+        $russian->setCode('ru');
         
         $german = new Article;
         $german->setTitle('führen Aktivitäten Haglöfs');
         $german->setCode('de');
         
         $this->em->persist($lithuanian);
-        $this->em->persist($cyrilic);
+        $this->em->persist($bulgarian);
+        $this->em->persist($russian);
         $this->em->persist($german);
         $this->em->flush();
         $this->em->clear();
