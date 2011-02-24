@@ -70,10 +70,10 @@ class Yaml extends File implements Driver
             $classMapping = $mapping['gedmo'];
             if (isset($classMapping['tree']['type'])) {
                 $strategy = $classMapping['tree']['type'];
-                if (!in_array($annot->type, $this->strategies)) {
-                    throw new InvalidMappingException("Tree type: {$annot->type} is not available.");
+                if (!in_array($strategy, $this->strategies)) {
+                    throw new InvalidMappingException("Tree type: $strategy is not available.");
                 }
-                $config['strategy'] = $annot->type;
+                $config['strategy'] = $strategy;
             }
         }
         if (isset($mapping['fields'])) {
