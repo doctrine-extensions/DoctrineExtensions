@@ -301,7 +301,7 @@ class Urlizer
             }
 
             $newchar = $ord & 255;            
-            if (array_key_exists($newchar, $UTF8_TO_ASCII[$bank])) {
+            if (isset($UTF8_TO_ASCII[$bank]) && array_key_exists($newchar, $UTF8_TO_ASCII[$bank])) {
                 echo $UTF8_TO_ASCII[$bank][$newchar];
             } else {
                 echo $unknown;
