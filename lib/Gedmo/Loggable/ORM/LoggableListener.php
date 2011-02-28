@@ -22,7 +22,7 @@ class LoggableListener extends AbstractLoggableListener
      *
      * @var string
      */
-    protected $defaultLoggableEntity = 'Gedmo\Loggable\Entity\Log';
+    protected $defaultLoggableEntity = 'Gedmo\Loggable\Entity\HistoryLog';
 
     protected $logger;
 

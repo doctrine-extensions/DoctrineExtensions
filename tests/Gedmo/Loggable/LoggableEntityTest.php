@@ -50,7 +50,7 @@ class LoggableEntityTest extends \PHPUnit_Framework_TestCase
         $schemaTool->createSchema(array(
             $this->em->getClassMetadata(self::TEST_ENTITY_CLASS_ARTICLE),
             $this->em->getClassMetadata(self::TEST_ENTITY_CLASS_COMMENT),
-            $this->em->getClassMetadata('Gedmo\Loggable\Entity\Log'),
+            $this->em->getClassMetadata('Gedmo\Loggable\Entity\HistoryLog'),
         ));
 
         $this->clearLogs();
@@ -58,7 +58,7 @@ class LoggableEntityTest extends \PHPUnit_Framework_TestCase
 
     public function testLoggableAllActions()
     {
-        $repo = $this->em->getRepository('Gedmo\Loggable\Entity\Log');
+        $repo = $this->em->getRepository('Gedmo\Loggable\Entity\HistoryLog');
 
         $this->assertEquals(0, count($repo->findAll()));
 
@@ -80,7 +80,7 @@ class LoggableEntityTest extends \PHPUnit_Framework_TestCase
 
     public function testLoggableNotAllowedAction()
     {
-        $repo = $this->em->getRepository('Gedmo\Loggable\Entity\Log');
+        $repo = $this->em->getRepository('Gedmo\Loggable\Entity\HistoryLog');
 
         $comment = new Comment();
         $comment->setTitle('My Title');
@@ -99,7 +99,7 @@ class LoggableEntityTest extends \PHPUnit_Framework_TestCase
 
     private function clearLogs()
     {
-        $meta = $this->em->getClassMetadata('Gedmo\Loggable\Entity\Log');
+        $meta = $this->em->getClassMetadata('Gedmo\Loggable\Entity\HistoryLog');
         $this->em->getConnection()->delete($meta->getTableName(), array('object' => 'My Title'));
     }
 }

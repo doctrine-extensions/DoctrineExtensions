@@ -12,7 +12,7 @@ namespace Gedmo\Loggable;
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-abstract class Log
+abstract class HistoryLog
 {
     public function __construct()
     {

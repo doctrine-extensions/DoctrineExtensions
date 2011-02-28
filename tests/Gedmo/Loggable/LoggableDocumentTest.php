@@ -69,7 +69,7 @@ class LoggableDocumentTest extends \PHPUnit_Framework_TestCase
 
     public function testLogGeneration()
     {
-        $collection = $this->dm->getDocumentCollection('Gedmo\Loggable\Document\Log');
+        $collection = $this->dm->getDocumentCollection('Gedmo\Loggable\Document\HistoryLog');
 
         $this->assertEquals(0, $collection->count());
 
@@ -79,7 +79,7 @@ class LoggableDocumentTest extends \PHPUnit_Framework_TestCase
         $this->dm->persist($art0);
         $this->dm->flush();
 
-        $log = $this->dm->getRepository('Gedmo\Loggable\Document\Log')->findOneBy(array());
+        $log = $this->dm->getRepository('Gedmo\Loggable\Document\HistoryLog')->findOneBy(array());
         $this->assertNotEquals(null, $log);
         
         $this->assertEquals('create', $log->getAction());
@@ -91,6 +91,6 @@ class LoggableDocumentTest extends \PHPUnit_Framework_TestCase
 
     private function clearLogs()
     {
-        $this->dm->getDocumentCollection('Gedmo\Loggable\Document\Log')->drop();
+        $this->dm->getDocumentCollection('Gedmo\Loggable\Document\HistoryLog')->drop();
     }
 }

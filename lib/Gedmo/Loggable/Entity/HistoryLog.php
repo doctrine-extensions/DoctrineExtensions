@@ -2,13 +2,13 @@
 
 namespace Gedmo\Loggable\Entity;
 
-use Gedmo\Loggable\Log as BaseLog;
+use Gedmo\Loggable\HistoryLog as BaseHistoryLog;
 
 /**
  * @Entity
  * @gedmo:Loggable
  */
-class Log extends BaseLog
+class HistoryLog extends BaseHistoryLog
 {
     /**
      * @var integer $id

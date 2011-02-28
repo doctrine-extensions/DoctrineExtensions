@@ -2,12 +2,12 @@
 
 namespace Gedmo\Loggable\Document;
 
-use Gedmo\Loggable\Log as BaseLog;
+use Gedmo\Loggable\HistoryLog as BaseHistoryLog;
 
 /**
  * @Document
  */
-class Log extends BaseLog
+class HistoryLog extends BaseHistoryLog
 {
     /**
      * @Id
