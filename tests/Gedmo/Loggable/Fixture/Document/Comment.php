@@ -3,16 +3,17 @@
 namespace Loggable\Fixture\Document;
 
 /**
- * @Document(collection="articles")
- * @gedmo:Loggable
+ * @Document
+ * @gedmo:Loggable(actions={"create", "delete"})
  */
-class Article
+class Comment
 {
-    /** @Id */
+    /**
+     * @Id
+     */
     private $id;
 
     /**
-     * @gedmo:Sluggable
      * @String
      */
     private $title;

@@ -20,16 +20,16 @@ use Doctrine\Common\EventArgs,
  */
 abstract class AbstractLoggableListener extends MappedEventSubscriber
 {
-    protected static $user;
-
     /**
-     * Set the current user
-     * @param $user string
+     * List of logs which do not have the foreign
+     * key generated yet - MySQL case. These logs
+     * will be updated with new keys on postPersist event
+     *
+     * @var array
      */
-    public static function setUser($user)
-    {
-        self::$user = $user; 
-    }
+    protected $pendingLogInserts = array();
+
+    protected static $user;
 
     /**
      * Mapps additional metadata
@@ -40,6 +40,22 @@ abstract class AbstractLoggableListener extends MappedEventSubscriber
     public function loadClassMetadata(EventArgs $eventArgs)
     {
         $this->loadMetadataForObjectClass($this->getObjectManager($eventArgs), $eventArgs->getClassMetadata());
+    }
+
+    /**
+     * @param $user string
+     */
+    public static function setUser($user)
+    {
+        self::$user = $user;
+    }
+
+    /**
+     * @return string
+     */
+    protected function getUser()
+    {
+        return self::$user;
     }
 
     /**
@@ -55,18 +71,51 @@ abstract class AbstractLoggableListener extends MappedEventSubscriber
         $uow = $om->getUnitOfWork();
 
         foreach ($this->getScheduledObjectInsertions($uow) as $object) {
-            if ($this->isAllowed('create', $object, $om)) {
-                $this->createLog('create', $object, $om);
+            if ($this->isObjectLoggableForAction($om, $object, 'create')) {
+                $this->handleObjectLogging($om, $object, 'create', true);
             }
         }
+
         foreach ($this->getScheduledObjectUpdates($uow) as $object) {
-            if ($this->isAllowed('update', $object, $om)) {
-                $this->createLog('update', $object, $om);
+            if ($this->isObjectLoggableForAction($om, $object, 'update')) {
+                $this->handleObjectLogging($om, $object, 'update', false);
             }
         }
+
         foreach ($this->getScheduledObjectDeletions($uow) as $object) {
-            if ($this->isAllowed('delete', $object, $om)) {
-                $this->createLog('delete', $object, $om);
+            if ($this->isObjectLoggableForAction($om, $object, 'delete')) {
+                $this->handleObjectLogging($om, $object, 'delete', false);
+            }
+        }
+    }
+
+    /**
+     * Checks for inserted object to update their log
+     * foreign keys
+     *
+     * @param EventArgs $args
+     * @return void
+     */
+    public function postPersist(EventArgs $args)
+    {
+        $om = $this->getObjectManager($args);
+        $object = $this->getObject($args);
+        $meta = $om->getClassMetadata(get_class($object));
+        // check if entity is tracked by loggable and without foreign key
+        if (array_key_exists($meta->name, $this->configurations) && count($this->pendingLogInserts)) {
+            $oid = spl_object_hash($object);
+
+            // there should be single identifier
+            $identifierField = $this->getSingleIdentifierFieldName($meta);
+            $logMeta = $om->getClassMetadata($this->getLogClass($meta->name));
+            if (array_key_exists($oid, $this->pendingLogInserts)) {
+                // load the pending logs without key
+                $log = $this->pendingLogInserts[$oid];
+                $logMeta->getReflectionProperty('foreignKey')->setValue(
+                    $log,
+                    $meta->getReflectionProperty($identifierField)->getValue($object)
+                );
+                $this->insertLogRecord($om, $log);
             }
         }
     }
@@ -79,14 +128,16 @@ abstract class AbstractLoggableListener extends MappedEventSubscriber
      * @param  $object
      * @return bool
      */
-    private function isAllowed($action, $object, $om)
+    protected function isObjectLoggableForAction($om, $object, $action)
     {
         $config = $this->getConfiguration($om, get_class($object));
 
+        // if object hasn't mapping informations
         if (!isset($config['actions'])) {
             return false;
         }
 
+        // if object action isn't allowed
         if (!in_array($action, $config['actions'])) {
             return false;
         }
@@ -102,18 +153,39 @@ abstract class AbstractLoggableListener extends MappedEventSubscriber
      * @param  $object
      * @return Log
      */
-    private function createLog($action, $object, $om)
+    protected function handleObjectLogging($om, $object, $action, $isInsert)
     {
-        $class = $this->getObjectClass();
-        $log = new $class();
-        
-        $log->setAction($action);
-        $log->setUser(self::$user);
-        $log->setObject($object);
+        $meta = $om->getClassMetadata(get_class($object));
+        // no need cache, metadata is loaded only once in MetadataFactoryClass
+        $logClass = $this->getLogClass($meta->name);
+        $logMetadata = $om->getClassMetadata($logClass);
 
-        $this->insertLogRecord($om, $log);
+        // check for the availability of the primary key
+        $identifierField = $this->getSingleIdentifierFieldName($meta);
+        $objectId = $meta->getReflectionProperty($identifierField)->getValue($object);
+        if (!$object && $isInsert) {
+            $objectId = null;
+        }
 
-        return $log;
+        $user = $this->getUser();
+
+        // create new log
+        $log = new $logClass();
+        $logMetadata->getReflectionProperty('action')->setValue($log, $action);
+        $logMetadata->getReflectionProperty('user')->setValue($log, $user);
+        $logMetadata->getReflectionProperty('objectClass')->setValue($log, $meta->name);
+        $logMetadata->getReflectionProperty('foreignKey')->setValue($log, $objectId);
+
+        // set the logged field, take value using reflection
+        //$logMetadata->getReflectionProperty('content')->setValue($log, $meta->getReflectionProperty($field)->getValue($object));
+
+        if ($isInsert && null === $objectId) {
+            // if we do not have the primary key yet available
+            // keep this log in memory to insert it later with foreign key
+            $this->pendingLogInserts[spl_object_hash($object)] = $log;
+        } else {
+            $this->insertLogRecord($om, $log);
+        }
     }
 
     /**
@@ -140,8 +212,16 @@ abstract class AbstractLoggableListener extends MappedEventSubscriber
      * @param EventArgs $args
      * @return object
      */
-    abstract protected function getObjectClass();
+    abstract protected function getLogClass();
 
+    /**
+     * Get the Object from EventArgs
+     *
+     * @param EventArgs $args
+     * @return object
+     */
+    abstract protected function getObject(EventArgs $args);
+        
     /**
      * Get the ObjectManager from EventArgs
      *
@@ -173,4 +253,14 @@ abstract class AbstractLoggableListener extends MappedEventSubscriber
      * @return array
      */
     abstract protected function getScheduledObjectDeletions($uow);
+
+    /**
+     * Get the single identifier field name
+     *
+     * @param ClassMetadata $meta
+     * @throws MappingException - if identifier is composite
+     * @return string
+     */
+    abstract protected function getSingleIdentifierFieldName($meta);
+
 }

@@ -12,33 +12,21 @@ namespace Gedmo\Loggable;
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-abstract class HistoryLog
+abstract class AbstractHistoryLog
 {
     public function __construct()
     {
         $this->actualizeDate();
     }
 
-    public function __toString()
+    public function getId()
     {
-        return sprintf('%s %s %s %s',
-            $this->user,
-            $this->action,
-            $this->object,
-            $this->date->format('Y-m-d H:i:s')
-        );
+        return $this->id;
     }
-
-    abstract function actualizeDate();
 
     public function getDate()
     {
         return $this->date;
-    }
-
-    public function setDate(\DateTime $date)
-    {
-        $this->date = $date;
     }
 
     public function getUser()
@@ -61,13 +49,25 @@ abstract class HistoryLog
         $this->action = $action;
     }
 
-    public function getObject()
+    public function getObjectClass()
     {
-        return $this->object;
+        return $this->objectClass;
     }
 
-    public function setObject($object)
+    public function setObjectClass($objectClass)
     {
-        $this->object = (string) $object;
+        $this->objectClass = $objectClass;
     }
+
+    public function setForeignKey($foreignKey)
+    {
+        $this->foreignKey = $foreignKey;
+    }
+
+    public function getForeignKey()
+    {
+        return $this->foreignKey;
+    }
+
+    abstract protected function actualizeDate();
 }

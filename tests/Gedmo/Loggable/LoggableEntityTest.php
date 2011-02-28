@@ -52,54 +52,104 @@ class LoggableEntityTest extends \PHPUnit_Framework_TestCase
             $this->em->getClassMetadata(self::TEST_ENTITY_CLASS_COMMENT),
             $this->em->getClassMetadata('Gedmo\Loggable\Entity\HistoryLog'),
         ));
+    }
 
+    protected function tearDown()
+    {
         $this->clearLogs();
     }
 
     public function testLoggableAllActions()
     {
-        $repo = $this->em->getRepository('Gedmo\Loggable\Entity\HistoryLog');
-
-        $this->assertEquals(0, count($repo->findAll()));
-
         $art0 = new Article();
+
+        // action create
+
         $art0->setTitle('My Title');
-        
         $this->em->persist($art0);
         $this->em->flush();
 
-        $log = $repo->findOneBy(array());
-        
+        $logs = $this->getLogs();
+        $this->assertEquals(1, count($logs), 'a log is created');
+        $log = $logs[0];
         $this->assertNotEquals(null, $log);
+        $this->assertTrue($log instanceof Entity\HistoryLog, 'a log instance of Entity\HistoryLog');
+
         $this->assertEquals('create', $log->getAction());
-        $this->assertEquals((string) $art0, $log->getObject());
+        $this->assertEquals(get_class($art0), $log->getObjectClass());
+        $this->assertEquals($art0->getId(), $log->getForeignKey());
         $this->assertEquals('jules', $log->getUser());
 
         $this->clearLogs();
+
+        // action update
+
+        $art0->setTitle('Another Title');
+        $this->em->persist($art0);
+        $this->em->flush();
+
+        $logs = $this->getLogs();
+        $this->assertEquals(1, count($logs), 'a log is created');
+        $log = $logs[0];
+        $this->assertNotEquals(null, $log);
+        $this->assertTrue($log instanceof Entity\HistoryLog, 'a log instance of Entity\HistoryLog');
+
+        $this->assertEquals('update', $log->getAction());
+        $this->assertEquals(get_class($art0), $log->getObjectClass());
+        $this->assertEquals($art0->getId(), $log->getForeignKey());
+        $this->assertEquals('jules', $log->getUser());
+
+        $this->clearLogs();
+
+        // action delete
+
+        $articleId = $art0->getId();
+        $this->em->remove($art0);
+        $this->em->flush();
+
+        $logs = $this->getLogs();
+        $this->assertEquals(1, count($logs), 'a log is created');
+        $log = $logs[0];
+        $this->assertNotEquals(null, $log);
+        $this->assertTrue($log instanceof Entity\HistoryLog, 'a log instance of Entity\HistoryLog');
+
+        $this->assertEquals('delete', $log->getAction());
+        $this->assertEquals(get_class($art0), $log->getObjectClass());
+        $this->assertEquals($articleId, $log->getForeignKey());
+        $this->assertEquals('jules', $log->getUser());
     }
 
     public function testLoggableNotAllowedAction()
     {
-        $repo = $this->em->getRepository('Gedmo\Loggable\Entity\HistoryLog');
-
         $comment = new Comment();
         $comment->setTitle('My Title');
 
         $this->em->persist($comment);
         $this->em->flush();
-
-        $this->assertEquals(1, count($repo->findAll()));
+        $this->assertEquals(1, count($this->getLogs()));
         $this->clearLogs();
-
+        
         $this->em->remove($comment);
         $this->em->flush();
+        $this->assertEquals(0, count($this->getLogs()));
+    }
 
-        $this->assertEquals(0, count($repo->findAll()));
+    private function getLogs()
+    {
+        return $this->em->createQueryBuilder()
+            ->select('log')
+            ->from('Gedmo\Loggable\Entity\HistoryLog', 'log')
+            ->getQuery()
+            ->execute(array())
+        ;
     }
 
     private function clearLogs()
     {
-        $meta = $this->em->getClassMetadata('Gedmo\Loggable\Entity\HistoryLog');
-        $this->em->getConnection()->delete($meta->getTableName(), array('object' => 'My Title'));
+        $this->em->createQueryBuilder()
+            ->delete('Gedmo\Loggable\Entity\HistoryLog', 'log')
+            ->getQuery()
+            ->execute()
+        ;
     }
 }

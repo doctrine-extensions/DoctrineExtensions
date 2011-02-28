@@ -2,13 +2,13 @@
 
 namespace Gedmo\Loggable\Entity;
 
-use Gedmo\Loggable\HistoryLog as BaseHistoryLog;
+use Gedmo\Loggable\AbstractHistoryLog;
 
 /**
  * @Entity
  * @gedmo:Loggable
  */
-class HistoryLog extends BaseHistoryLog
+class HistoryLog extends AbstractHistoryLog
 {
     /**
      * @var integer $id
@@ -22,23 +22,30 @@ class HistoryLog extends BaseHistoryLog
     /**
      * @var string $user
      *
-     * @Column(name="user", type="string", length=8)
+     * @Column(name="user", type="string", length=128)
      */
     protected $user;
 
     /**
      * @var string $action
      *
-     * @Column(name="action", type="string", length=8)
+     * @Column(type="string", length=64)
      */
     protected $action;
 
     /**
-     * @var string $object
+     * @var string $objectClass
      *
-     * @Column(name="object", type="string", length=8)
+     * @Column(name="object_class", type="string", length=255)
      */
-    protected $object;
+    protected $objectClass;
+
+    /**
+     * @var string $foreignKey
+     *
+     * @Column(name="foreign_key", type="string", length=64)
+     */
+    protected $foreignKey;
 
     /**
      * @var string $date
@@ -47,7 +54,7 @@ class HistoryLog extends BaseHistoryLog
      */
     protected $date;
 
-    public function actualizeDate()
+    protected function actualizeDate()
     {
         $this->date = new \DateTime();
     }

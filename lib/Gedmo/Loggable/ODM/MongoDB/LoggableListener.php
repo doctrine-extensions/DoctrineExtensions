@@ -2,10 +2,9 @@
 
 namespace Gedmo\Loggable\ODM\MongoDB;
 
-use Gedmo\Loggable\AbstractLoggableListener;
-
-use Doctrine\ODM\MongoDB\Events;
-use Doctrine\Common\EventArgs;
+use Gedmo\Loggable\AbstractLoggableListener,
+    Doctrine\Common\EventArgs,
+    Doctrine\ODM\MongoDB\Events;
 
 /**
  * @author Boussekeyt Jules <jules.boussekeyt@gmail.com>
@@ -28,7 +27,7 @@ class LoggableListener extends AbstractLoggableListener
 
     public function getSubscribedEvents()
     {
-        return array(Events::onFlush, Events::loadClassMetadata);
+        return array(Events::onFlush, Events::postPersist, Events::loadClassMetadata);
     }
 
     /**
@@ -54,9 +53,17 @@ class LoggableListener extends AbstractLoggableListener
     /**
      * {@inheritdoc}
      */
-    protected function getObjectClass()
+    protected function getLogClass()
     {
         return $this->defaultLoggableDocument;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getObject(EventArgs $args)
+    {
+        return $args->getDocument();
     }
 
     /**
@@ -89,5 +96,13 @@ class LoggableListener extends AbstractLoggableListener
     protected function getScheduledObjectDeletions($uow)
     {
         return $uow->getScheduledDocumentDeletions();
-    } 
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getSingleIdentifierFieldName($meta)
+    {
+        return $meta->identifier;
+    }
 }

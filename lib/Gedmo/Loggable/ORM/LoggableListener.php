@@ -28,7 +28,7 @@ class LoggableListener extends AbstractLoggableListener
 
     public function getSubscribedEvents()
     {
-        return array(Events::onFlush, Events::loadClassMetadata);
+        return array(Events::onFlush, Events::postPersist, Events::loadClassMetadata);
     }
 
     /**
@@ -59,9 +59,17 @@ class LoggableListener extends AbstractLoggableListener
     /**
      * {@inheritdoc}
      */
-    protected function getObjectClass()
+    protected function getLogClass()
     {
         return $this->defaultLoggableEntity;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getObject(EventArgs $args)
+    {
+        return $args->getEntity();
     }
 
     /**
@@ -94,5 +102,13 @@ class LoggableListener extends AbstractLoggableListener
     protected function getScheduledObjectDeletions($uow)
     {
         return $uow->getScheduledEntityDeletions();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getSingleIdentifierFieldName($meta)
+    {
+        return $meta->getSingleIdentifierFieldName();
     }
 }

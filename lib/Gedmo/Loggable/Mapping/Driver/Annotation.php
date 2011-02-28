@@ -51,10 +51,6 @@ class Annotation implements Driver
         if (isset($config['actions']) && !is_array($config['actions'])) {
             throw new InvalidMappingException("Actions for class: {$meta->name} should be an array");
         }
-
-        if (!method_exists($meta->getReflectionClass(), '__toString')) {
-            throw new InvalidMappingException("class: {$meta->name} should implement __toString() method");
-        }
     }
 
     /**

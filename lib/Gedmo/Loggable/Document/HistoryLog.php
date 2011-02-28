@@ -2,41 +2,56 @@
 
 namespace Gedmo\Loggable\Document;
 
-use Gedmo\Loggable\HistoryLog as BaseHistoryLog;
+use Gedmo\Loggable\AbstractHistoryLog;
 
 /**
  * @Document
  */
-class HistoryLog extends BaseHistoryLog
+class HistoryLog extends AbstractHistoryLog
 {
     /**
+     * @var string $id
+     *
      * @Id
      */
     protected $id;
 
     /**
+     * @var string $user
+     *
      * @String
      */
     protected $user;
 
     /**
+     * @var string $action
+     *
      * @String
      */
     protected $action;
 
     /**
-     * The return value of __toString
+     * @var string $objectClass
      *
-     * @String
+     * @String(name="object_class")
      */
-    protected $object;
+    protected $objectClass;
 
     /**
+     * @var string $foreignKey
+     *
+     * @String(name="foreign_key")
+     */
+    protected $foreignKey;
+
+    /**
+     * @var MongoData $date 
+     *
      * @Date
      */
     protected $date;
 
-    public function actualizeDate()
+    protected function actualizeDate()
     {
         $this->date = new \MongoDate();
     }

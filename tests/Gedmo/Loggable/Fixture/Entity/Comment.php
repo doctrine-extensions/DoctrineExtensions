@@ -20,12 +20,6 @@ class Comment
      */
     private $title;
 
-
-    public function __toString()
-    {
-        return $this->title;
-    }
-
     public function getId()
     {
         return $this->id;
