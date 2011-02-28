@@ -46,7 +46,7 @@ class LoggableDocumentTest extends \PHPUnit_Framework_TestCase
 
         $evm = new \Doctrine\Common\EventManager();
         $loggableListener = new ODM\MongoDB\LoggableListener();
-        $loggableListener::setUser('jules');
+        Configuration::setUser('jules');
         $evm->addEventSubscriber($loggableListener);
 
         if (!class_exists('Mongo')) {
