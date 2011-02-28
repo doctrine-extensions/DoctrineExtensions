@@ -41,7 +41,7 @@ class LoggableEntityTest extends \PHPUnit_Framework_TestCase
 
         $evm = new \Doctrine\Common\EventManager();
         $this->LoggableListener = new ORM\LoggableListener();
-        Configuration::setUser('jules');
+        $this->LoggableListener->setUser('jules');
         $evm->addEventSubscriber($this->LoggableListener);
         $this->em = \Doctrine\ORM\EntityManager::create($conn, $config, $evm);
 

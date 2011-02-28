@@ -20,6 +20,17 @@ use Doctrine\Common\EventArgs,
  */
 abstract class AbstractLoggableListener extends MappedEventSubscriber
 {
+    protected static $user;
+
+    /**
+     * Set the current user
+     * @param $user string
+     */
+    public static function setUser($user)
+    {
+        self::$user = $user; 
+    }
+
     /**
      * Mapps additional metadata
      *
@@ -95,10 +106,9 @@ abstract class AbstractLoggableListener extends MappedEventSubscriber
     {
         $class = $this->getObjectClass();
         $log = new $class();
-        $user = Configuration::getUser();
-
+        
         $log->setAction($action);
-        $log->setUser($user);
+        $log->setUser(self::$user);
         $log->setObject($object);
 
         $this->insertLogRecord($om, $log);
