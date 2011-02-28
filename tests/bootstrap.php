@@ -69,3 +69,6 @@ $classLoader->register();
 
 $classLoader = new Doctrine\Common\ClassLoader('Mapping\Fixture', __DIR__ . '/Gedmo');
 $classLoader->register();
+
+$classLoader = new Doctrine\Common\ClassLoader('Loggable\Fixture', __DIR__ . '/Gedmo');
+$classLoader->register();
