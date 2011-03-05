@@ -16,5 +16,8 @@
         <testsuite name="Mapping Extension">
             <directory suffix=".php">./Gedmo/Mapping/</directory>
         </testsuite>
+        <testsuite name="Loggable Extension">
+            <directory suffix=".php">./Gedmo/Loggable/</directory>
+        </testsuite>
     </testsuites>
 </phpunit>

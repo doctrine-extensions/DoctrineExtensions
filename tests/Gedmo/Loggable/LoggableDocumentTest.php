@@ -3,6 +3,7 @@
 namespace Gedmo\Loggable;
 
 use Loggable\Fixture\Document\Article,
+    Loggable\Fixture\Document\RelatedArticle,
     Loggable\Fixture\Document\Comment;
 
 /**
@@ -19,6 +20,8 @@ class LoggableDocumentTest extends \PHPUnit_Framework_TestCase
 {
     const TEST_CLASS_ARTICLE = 'Loggable\Fixture\Document\Article';
     const TEST_CLASS_COMMENT = 'Loggable\Fixture\Document\Comment';
+    const TEST_CLASS_RELATED_ARTICLE = 'Loggable\Fixture\Document\RelatedArticle';
+    const TEST_CLASS_LOG_COMMENT = 'Loggable\Fixture\Document\Log\Comment';
 
     /**
      * @var DocumentManager
@@ -26,7 +29,7 @@ class LoggableDocumentTest extends \PHPUnit_Framework_TestCase
     private $dm;
 
     public function setUp()
-    {
+    {        
         $config = new \Doctrine\ODM\MongoDB\Configuration();
         $config->setProxyDir(__DIR__ . '/Proxy');
         $config->setProxyNamespace('Gedmo\Loggable\Proxies');
@@ -34,9 +37,11 @@ class LoggableDocumentTest extends \PHPUnit_Framework_TestCase
         $config->setHydratorNamespace('Hydrator');
         $config->setDefaultDB('gedmo_loggable_tests');
 
+
         $config->setLoggerCallable(function(array $log) {
             print_r($log);
         });
+
 
         $reader = new \Doctrine\Common\Annotations\AnnotationReader();
         $reader->setDefaultAnnotationNamespace('Doctrine\ODM\MongoDB\Mapping\\');
@@ -46,7 +51,7 @@ class LoggableDocumentTest extends \PHPUnit_Framework_TestCase
 
         $evm = new \Doctrine\Common\EventManager();
         $loggableListener = new ODM\MongoDB\LoggableListener();
-        $loggableListener::setUser('jules');
+        $loggableListener->setUsername('jules');
         $evm->addEventSubscriber($loggableListener);
 
         if (!class_exists('Mongo')) {
@@ -59,108 +64,130 @@ class LoggableDocumentTest extends \PHPUnit_Framework_TestCase
                 $config,
                 $evm
             );
+            
+            // if previous test failed, also checks connection
+            $this->clear();
         } catch (\MongoException $e) {
             $this->markTestSkipped('Doctrine MongoDB ODM connection problem.');
         }
     }
 
-    protected function tearDown()
+    public function testLogGeneration()
     {
-        $this->clearLogs();
-    }
+        $logRepo = $this->dm->getRepository('Gedmo\Loggable\Document\LogEntry');
+        $articleRepo = $this->dm->getRepository(self::TEST_CLASS_ARTICLE);
+        $this->assertEquals(0, count($logRepo->findAll()));
 
-    public function testLoggableAllActions()
-    {
         $art0 = new Article();
-
-        // action create
-
-        $art0->setTitle('My Title');
+        $art0->setTitle('Title');
+        
         $this->dm->persist($art0);
         $this->dm->flush();
 
-        $logs = $this->getLogs();
-        $this->assertEquals(1, count($logs), 'a log is created');
-        $log = $logs->getSingleResult();
-
+        $log = $logRepo->findOneByObjectId($art0->getId());
+        
         $this->assertNotEquals(null, $log);
-        $this->assertTrue($log instanceof Document\HistoryLog, 'a log instance of Document\HistoryLog');
-
         $this->assertEquals('create', $log->getAction());
         $this->assertEquals(get_class($art0), $log->getObjectClass());
-        $this->assertEquals($art0->getId(), $log->getForeignKey());
-        $this->assertEquals('jules', $log->getUser());
-
-        $this->clearLogs();
-
-        // action update
-
-        $art0->setTitle('Another Title');
-        $this->dm->persist($art0);
+        $this->assertEquals('jules', $log->getUsername());
+        $this->assertEquals(1, $log->getVersion());
+        $data = $log->getData();
+        $this->assertEquals(1, count($data));
+        $this->assertArrayHasKey('title', $data);
+        $this->assertEquals($data['title'], 'Title');
+        
+        // test update
+        $article = $articleRepo->findOneByTitle('Title');
+        $article->setTitle('New');
+        $this->dm->persist($article);
         $this->dm->flush();
-
-        $logs = $this->getLogs();
-        $this->assertEquals(1, count($logs), 'a log is created');
-        $log = $logs->getSingleResult();
-        $this->assertNotEquals(null, $log);
-        $this->assertTrue($log instanceof Document\HistoryLog, 'a log instance of Document\HistoryLog');
-
+        $this->dm->clear();
+        
+        $log = $logRepo->findOneBy(array('version' => 2, 'objectId' => $article->getId()));
         $this->assertEquals('update', $log->getAction());
-        $this->assertEquals(get_class($art0), $log->getObjectClass());
-        $this->assertEquals($art0->getId(), $log->getForeignKey());
-        $this->assertEquals('jules', $log->getUser());
-
-        $this->clearLogs();
-
-        // action delete
-
-        $articleId = $art0->getId();
-        $this->dm->remove($art0);
+        
+        // test delete
+        $article = $articleRepo->findOneByTitle('New');
+        $this->dm->remove($article);
         $this->dm->flush();
-
-        $logs = $this->getLogs();
-        $this->assertEquals(1, count($logs), 'a log is created');
-        $log = $logs->getSingleResult();
-        $this->assertNotEquals(null, $log);
-        $this->assertTrue($log instanceof Document\HistoryLog, 'a log instance of Document\HistoryLog');
-
-        $this->assertEquals('delete', $log->getAction());
-        $this->assertEquals(get_class($art0), $log->getObjectClass());
-        $this->assertEquals($articleId, $log->getForeignKey());
-        $this->assertEquals('jules', $log->getUser());
+        $this->dm->clear();
+        
+        $log = $logRepo->findOneBy(array('version' => 3, 'objectId' => $article->getId()));
+        $this->assertEquals('remove', $log->getAction());
+        $this->assertEquals(null, $log->getData());
     }
-
-    public function testLoggableNotAllowedAction()
+    
+    public function testVersionControl()
     {
-        $comment = new Comment();
-        $comment->setTitle('My Title');
-
+        $this->populate();
+        $commentLogRepo = $this->dm->getRepository(self::TEST_CLASS_LOG_COMMENT);
+        $commentRepo = $this->dm->getRepository(self::TEST_CLASS_COMMENT);
+        
+        $comment = $commentRepo->findOneByMessage('m-v5');
+        $commentId = $comment->getId();
+        $this->assertEquals('m-v5', $comment->getMessage());
+        $this->assertEquals('s-v3', $comment->getSubject());
+        $this->assertEquals('a2-t-v1', $comment->getArticle()->getTitle());
+        
+        // test revert
+        $commentLogRepo->revert($comment, 3);
+        $this->assertEquals('s-v3', $comment->getSubject());
+        $this->assertEquals('m-v2', $comment->getMessage());
+        $this->assertEquals('a1-t-v1', $comment->getArticle()->getTitle());
         $this->dm->persist($comment);
         $this->dm->flush();
-        $this->assertEquals(1, $this->getLogs()->count());
-        $this->clearLogs();
 
-        $comment->setTitle('Another Title');
+        // test get log entries
+        $logEntries = $commentLogRepo->getLogEntries($comment);
+        $this->assertEquals(6, count($logEntries));
+        $latest = array_shift($logEntries);
+        $this->assertEquals('update', $latest->getAction());
+    }
+    
+    private function populate()
+    {
+        $article = new RelatedArticle;
+        $article->setTitle('a1-t-v1');
+        $article->setContent('a1-c-v1');
+        
+        $comment = new Comment;
+        $comment->setArticle($article);
+        $comment->setMessage('m-v1');
+        $comment->setSubject('s-v1');
+        
+        $this->dm->persist($article);
         $this->dm->persist($comment);
         $this->dm->flush();
-        $this->assertEquals(0, $this->getLogs()->count());
+        
+        $comment->setMessage('m-v2');
+        $this->dm->persist($comment);
+        $this->dm->flush();
+        
+        $comment->setSubject('s-v3');
+        $this->dm->persist($comment);
+        $this->dm->flush();
+        
+        $article2 = new RelatedArticle;
+        $article2->setTitle('a2-t-v1');
+        $article2->setContent('a2-c-v1');
+        
+        $comment->setArticle($article2);
+        $this->dm->persist($article2);
+        $this->dm->persist($comment);
+        $this->dm->flush();
+        
+        $comment->setMessage('m-v5');
+        $this->dm->persist($comment);
+        $this->dm->flush();
+        $this->dm->clear();
     }
 
-    private function getLogs()
+    private function clear()
     {
-        return $this->dm->createQueryBuilder('Gedmo\Loggable\Document\HistoryLog')
-            ->select()
-            ->getQuery()
-            ->execute()
-        ;
-    }
-
-    private function clearLogs()
-    {
-        $this->dm->createQueryBuilder('Gedmo\Loggable\Document\HistoryLog')
-            ->remove()
-            ->getQuery()
-            ->execute()
-        ;
+        $this->dm->getDocumentCollection('Gedmo\Loggable\Document\LogEntry')->drop();
+        $this->dm->getDocumentCollection(self::TEST_CLASS_ARTICLE)->drop();
+        $this->dm->getDocumentCollection(self::TEST_CLASS_RELATED_ARTICLE)->drop();
+        $this->dm->getDocumentCollection(self::TEST_CLASS_COMMENT)->drop();
+        $this->dm->getDocumentCollection(self::TEST_CLASS_LOG_COMMENT)->drop();
     }
 }

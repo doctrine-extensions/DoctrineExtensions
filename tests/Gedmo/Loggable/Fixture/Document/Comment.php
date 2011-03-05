@@ -4,7 +4,7 @@ namespace Loggable\Fixture\Document;
 
 /**
  * @Document
- * @gedmo:Loggable(actions={"create", "delete"})
+ * @gedmo:Loggable(logEntryClass="Loggable\Fixture\Document\Log\Comment")
  */
 class Comment
 {
@@ -16,20 +16,50 @@ class Comment
     /**
      * @String
      */
-    private $title;
+    private $subject;
+
+    /**
+     * @String
+     */
+    private $message;
+    
+    /**
+     * @ReferenceOne(targetDocument="RelatedArticle", inversedBy="comments")
+     */
+    private $article;
+
+    public function setArticle($article)
+    {
+        $this->article = $article;
+    }
+    
+    public function getArticle()
+    {
+        return $this->article;
+    }
 
     public function getId()
     {
         return $this->id;
     }
-
-    public function setTitle($title)
+    
+    public function setSubject($subject)
     {
-        $this->title = $title;
+        $this->subject = $subject;
     }
 
-    public function getTitle()
+    public function getSubject()
     {
-        return $this->title;
+        return $this->subject;
+    }
+
+    public function setMessage($message)
+    {
+        $this->message = $message;
+    }
+
+    public function getMessage()
+    {
+        return $this->message;
     }
 }

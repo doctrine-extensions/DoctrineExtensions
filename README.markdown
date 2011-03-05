@@ -9,18 +9,17 @@ records being flushed in the behavioral way. List of extensions:
 - Translatable - gives you a very handy solution for translating records into diferent languages. Easy to setup, easier to use.
 - Sluggable - urlizes your specified fields into single unique slug
 - Timestampable - updates date fields on create, update and even property change.
+- Loggable - helps tracking changes and history of objects, also supports version managment.
 
 Currently these extensions support **Yaml** and **Annotation** mapping. Additional mapping drivers
 can be easy implemented using Mapping extension to handle the additional metadata mapping.
 
 ### Latest updates
 
-**2011-02-08**
+**2011-03-05**
 
-- Refactored [Tree] to support diferent strategies
-- Refactored [Tree][NestedSet] strategy to support roots
-- Changed the [Tree] repository name, relevant to strategy used
-- **Notice:** now any tree entity should have class annotation specifying the tree strategy - **@gedmo:Tree(type="nested")**
+- Merged Boussekeyt Jules pull request for Loggable extension, tweeked to support versioning
+- Added typehints for object manager and classmetadata in all extensions
 
 ### ODM MongoDB support
 
@@ -30,6 +29,7 @@ half of extensions can be used with ODM also.
 - Translatable
 - Sluggable
 - Timestampable
+- Loggable
 
 Are allready ported to support ODM MongoDB
 
@@ -51,12 +51,13 @@ To setup and run tests follow these steps:
 - run: **git submodule init**
 - run: **git submodule update**
 - go to tests directory: **cd tests**
+- run **cp phpunit.dist.xml phpunit.xml**
 - run: **phpunit**
-- optional - you can **cp phpunit.dist.xml phpunit.xml** for additional modifications
 - optional - run mongodb in background to complete all tests 
 
-### Thanks for contributions to:
+### Contributors:
 
+- Boussekeyt Jules [gordonslondon](http://github.com/gordonslondon)
 - Christophe Coevoet [stof](http://github.com/stof)
 - Kudryashov Konstantin [everzet](http://github.com/everzet)
 - Klein Florian [docteurklein](http://github.com/docteurklein)

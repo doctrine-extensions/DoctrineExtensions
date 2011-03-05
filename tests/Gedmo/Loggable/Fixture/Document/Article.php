@@ -12,10 +12,14 @@ class Article
     private $id;
 
     /**
-     * @gedmo:Sluggable
      * @String
      */
     private $title;
+
+    public function __toString()
+    {
+        return $this->title;
+    }
 
     public function getId()
     {
