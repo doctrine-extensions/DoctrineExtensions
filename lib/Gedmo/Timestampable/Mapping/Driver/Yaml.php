@@ -4,6 +4,7 @@ namespace Gedmo\Timestampable\Mapping\Driver;
 
 use Gedmo\Mapping\Driver\File,
     Gedmo\Mapping\Driver,
+    Doctrine\Common\Persistence\Mapping\ClassMetadata,
     Gedmo\Exception\InvalidMappingException;
 
 /**
@@ -31,7 +32,7 @@ class Yaml extends File implements Driver
      * 
      * @var array
      */
-    private $_validTypes = array(
+    private $validTypes = array(
         'date',
         'time',
         'datetime',
@@ -41,12 +42,12 @@ class Yaml extends File implements Driver
     /**
      * {@inheritDoc}
      */
-    public function validateFullMetadata($meta, array $config) {}
+    public function validateFullMetadata(ClassMetadata $meta, array $config) {}
     
     /**
      * {@inheritDoc}
      */
-    public function readExtendedMetadata($meta, array &$config) {
+    public function readExtendedMetadata(ClassMetadata $meta, array &$config) {
         $yaml = $this->_loadMappingFile($this->_findMappingFile($meta->name));
         $mapping = $yaml[$meta->name];
         
@@ -54,7 +55,7 @@ class Yaml extends File implements Driver
             foreach ($mapping['fields'] as $field => $fieldMapping) {
                 if (isset($fieldMapping['gedmo']['timestampable'])) {
                     $mappingProperty = $fieldMapping['gedmo']['timestampable'];
-                    if (!$this->_isValidField($meta, $field)) {
+                    if (!$this->isValidField($meta, $field)) {
                         throw new InvalidMappingException("Field - [{$field}] type is not valid and must be 'date', 'datetime' or 'time' in class - {$meta->name}");
                     }
                     if (!isset($mappingProperty['on']) || !in_array($mappingProperty['on'], array('update', 'create', 'change'))) {
@@ -92,9 +93,9 @@ class Yaml extends File implements Driver
      * @param string $field
      * @return boolean
      */
-    protected function _isValidField($meta, $field)
+    protected function isValidField(ClassMetadata $meta, $field)
     {
         $mapping = $meta->getFieldMapping($field);
-        return $mapping && in_array($mapping['type'], $this->_validTypes);
+        return $mapping && in_array($mapping['type'], $this->validTypes);
     }
 }

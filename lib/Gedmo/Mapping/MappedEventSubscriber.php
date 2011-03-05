@@ -4,6 +4,8 @@ namespace Gedmo\Mapping;
 
 use Gedmo\Mapping\ExtensionMetadataFactory,
     Doctrine\Common\EventSubscriber,
+    Doctrine\Common\Persistence\ObjectManager,
+    Doctrine\Common\Persistence\Mapping\ClassMetadata,
     Doctrine\Common\EventArgs;
 
 /**
@@ -42,11 +44,11 @@ abstract class MappedEventSubscriber implements EventSubscriber
      * Get the configuration for specific object class
      * if cache driver is present it scans it also
      * 
-     * @param object $objectManager
+     * @param ObjectManager $objectManager
      * @param string $class
      * @return array
      */
-    public function getConfiguration($objectManager, $class) {
+    public function getConfiguration(ObjectManager $objectManager, $class) {
         $config = array();
         if (isset($this->configurations[$class])) {
             $config = $this->configurations[$class];
@@ -64,10 +66,10 @@ abstract class MappedEventSubscriber implements EventSubscriber
     /**
      * Get extended metadata mapping reader
      * 
-     * @param object $objectManager
+     * @param ObjectManager $objectManager
      * @return Gedmo\Mapping\ExtensionMetadataFactory
      */
-    public function getExtensionMetadataFactory($objectManager)
+    public function getExtensionMetadataFactory(ObjectManager $objectManager)
     {
         if (null === $this->extensionMetadataFactory) {
             $this->extensionMetadataFactory = new ExtensionMetadataFactory(
@@ -82,11 +84,11 @@ abstract class MappedEventSubscriber implements EventSubscriber
      * Scans the objects for extended annotations
      * event subscribers must subscribe to loadClassMetadata event
      * 
-     * @param object $objectManager
-     * @param object $metadata
+     * @param ObjectManager $objectManager
+     * @param ClassMetadata $metadata
      * @return void
      */
-    public function loadMetadataForObjectClass($objectManager, $metadata)
+    public function loadMetadataForObjectClass(ObjectManager $objectManager, ClassMetadata $metadata)
     {
         $factory = $this->getExtensionMetadataFactory($objectManager);
         $config = $factory->getExtensionMetadata($metadata);

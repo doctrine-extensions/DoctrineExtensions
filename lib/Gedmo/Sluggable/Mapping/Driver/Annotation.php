@@ -4,6 +4,7 @@ namespace Gedmo\Sluggable\Mapping\Driver;
 
 use Gedmo\Mapping\Driver,
     Doctrine\Common\Annotations\AnnotationReader,
+    Doctrine\Common\Persistence\Mapping\ClassMetadata,
     Gedmo\Exception\InvalidMappingException;
 
 /**
@@ -36,14 +37,14 @@ class Annotation implements Driver
      * 
      * @var array
      */
-    private $_validTypes = array(
+    private $validTypes = array(
         'string'
     );
     
     /**
      * {@inheritDoc}
      */
-    public function validateFullMetadata($meta, array $config)
+    public function validateFullMetadata(ClassMetadata $meta, array $config)
     {
         if ($config && !isset($config['fields'])) {
             throw new InvalidMappingException("Unable to find any sluggable fields specified for Sluggable entity - {$meta->name}");
@@ -53,7 +54,7 @@ class Annotation implements Driver
     /**
      * {@inheritDoc}
      */
-    public function readExtendedMetadata($meta, array &$config) {
+    public function readExtendedMetadata(ClassMetadata $meta, array &$config) {
         require_once __DIR__ . '/../Annotations.php';
         $reader = new AnnotationReader();
         $reader->setAnnotationNamespaceAlias('Gedmo\Sluggable\Mapping\\', 'gedmo');
@@ -73,7 +74,7 @@ class Annotation implements Driver
                 if (!$meta->hasField($field)) {
                     throw new InvalidMappingException("Unable to find sluggable [{$field}] as mapped property in entity - {$meta->name}");
                 }
-                if (!$this->_isValidField($meta, $field)) {
+                if (!$this->isValidField($meta, $field)) {
                     throw new InvalidMappingException("Cannot slug field - [{$field}] type is not valid and must be 'string' in class - {$meta->name}");
                 }
                 $config['fields'][] = $field;
@@ -84,7 +85,7 @@ class Annotation implements Driver
                 if (!$meta->hasField($field)) {
                     throw new InvalidMappingException("Unable to find slug [{$field}] as mapped property in entity - {$meta->name}");
                 }
-                if (!$this->_isValidField($meta, $field)) {
+                if (!$this->isValidField($meta, $field)) {
                     throw new InvalidMappingException("Cannot use field - [{$field}] for slug storage, type is not valid and must be 'string' in class - {$meta->name}");
                 } 
                 if (isset($config['slug'])) {
@@ -107,9 +108,9 @@ class Annotation implements Driver
      * @param string $field
      * @return boolean
      */
-    protected function _isValidField($meta, $field)
+    protected function isValidField(ClassMetadata $meta, $field)
     {
         $mapping = $meta->getFieldMapping($field);
-        return $mapping && in_array($mapping['type'], $this->_validTypes);
+        return $mapping && in_array($mapping['type'], $this->validTypes);
     }
 }

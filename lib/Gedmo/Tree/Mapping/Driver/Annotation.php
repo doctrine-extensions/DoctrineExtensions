@@ -4,6 +4,7 @@ namespace Gedmo\Tree\Mapping\Driver;
 
 use Gedmo\Mapping\Driver,
     Doctrine\Common\Annotations\AnnotationReader,
+    Doctrine\Common\Persistence\Mapping\ClassMetadata,
     Gedmo\Exception\InvalidMappingException;
 
 /**
@@ -73,7 +74,7 @@ class Annotation implements Driver
     /**
      * {@inheritDoc}
      */
-    public function validateFullMetadata($meta, array $config)
+    public function validateFullMetadata(ClassMetadata $meta, array $config)
     {        
         if (isset($config['strategy'])) {
             $method = 'validate' . ucfirst($config['strategy']) . 'TreeMetadata';
@@ -86,7 +87,7 @@ class Annotation implements Driver
     /**
      * {@inheritDoc}
      */
-    public function readExtendedMetadata($meta, array &$config) {
+    public function readExtendedMetadata(ClassMetadata $meta, array &$config) {
         require_once __DIR__ . '/../Annotations.php';
         $reader = new AnnotationReader();
         $reader->setAnnotationNamespaceAlias('Gedmo\Tree\Mapping\\', 'gedmo');
@@ -168,11 +169,11 @@ class Annotation implements Driver
     /**
      * Checks if $field type is valid
      * 
-     * @param ClassMetadataInfo $meta
+     * @param ClassMetadata $meta
      * @param string $field
      * @return boolean
      */
-    protected function isValidField($meta, $field)
+    protected function isValidField(ClassMetadata $meta, $field)
     {
         $mapping = $meta->getFieldMapping($field);
         return $mapping && in_array($mapping['type'], $this->validTypes);
@@ -181,12 +182,12 @@ class Annotation implements Driver
     /**
      * Validates metadata for nested type tree
      * 
-     * @param ClassMetadataInfo $meta
+     * @param ClassMetadata $meta
      * @param array $config
      * @throws InvalidMappingException
      * @return void
      */
-    private function validateNestedTreeMetadata($meta, array $config)
+    private function validateNestedTreeMetadata(ClassMetadata $meta, array $config)
     {
         $missingFields = array();
         if (!isset($config['parent'])) {

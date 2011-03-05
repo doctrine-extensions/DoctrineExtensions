@@ -4,6 +4,7 @@ namespace Gedmo\Timestampable\ODM\MongoDB;
 
 use Doctrine\ODM\MongoDB\Events,
     Doctrine\Common\EventArgs,
+    Doctrine\Common\Persistence\Mapping\ClassMetadata,
     Gedmo\Timestampable\AbstractTimestampableListener;
 
 /**
@@ -67,7 +68,7 @@ class TimestampableListener extends AbstractTimestampableListener
     /**
      * {@inheritdoc}
      */
-    protected function recomputeSingleObjectChangeSet($uow, $meta, $object)
+    protected function recomputeSingleObjectChangeSet($uow, ClassMetadata $meta, $object)
     {
         $uow->recomputeSingleDocumentChangeSet($meta, $object);
     }
@@ -75,7 +76,7 @@ class TimestampableListener extends AbstractTimestampableListener
     /**
      * {@inheritdoc}
      */
-    protected function getDateValue($meta, $field)
+    protected function getDateValue(ClassMetadata $meta, $field)
     {
         $mapping = $meta->getFieldMapping($field);
         if (isset($mapping['type']) && $mapping['type'] === 'timestamp') {

@@ -3,6 +3,7 @@
 namespace Gedmo\Translatable\Mapping\Driver;
 
 use Gedmo\Mapping\Driver,
+    Doctrine\Common\Persistence\Mapping\ClassMetadata,
     Doctrine\Common\Annotations\AnnotationReader,
     Gedmo\Exception\InvalidMappingException;
 
@@ -49,7 +50,7 @@ class Annotation implements Driver
      * 
      * @var array
      */
-    protected $_validTypes = array(
+    protected $validTypes = array(
         'string',
         'text'
     );
@@ -57,12 +58,12 @@ class Annotation implements Driver
     /**
      * {@inheritDoc}
      */
-    public function validateFullMetadata($meta, array $config) {}
+    public function validateFullMetadata(ClassMetadata $meta, array $config) {}
     
     /**
      * {@inheritDoc}
      */
-    public function readExtendedMetadata($meta, array &$config) {
+    public function readExtendedMetadata(ClassMetadata $meta, array &$config) {
         require_once __DIR__ . '/../Annotations.php';
         $reader = new AnnotationReader();
         $reader->setAnnotationNamespaceAlias('Gedmo\Translatable\Mapping\\', 'gedmo');
@@ -73,7 +74,7 @@ class Annotation implements Driver
         if (isset($classAnnotations[self::ANNOTATION_ENTITY_CLASS])) {
             $annot = $classAnnotations[self::ANNOTATION_ENTITY_CLASS];
             if (!class_exists($annot->class)) {
-                throw new InvalidMappingException("Translation entity class: {$annot->class} does not exist.");
+                throw new InvalidMappingException("Translation class: {$annot->class} does not exist.");
             }
             $config['translationClass'] = $annot->class;
         }
@@ -92,7 +93,7 @@ class Annotation implements Driver
                 if (!$meta->hasField($field)) {
                     throw new InvalidMappingException("Unable to find translatable [{$field}] as mapped property in entity - {$meta->name}");
                 }
-                if (!$this->_isValidField($meta, $field)) {
+                if (!$this->isValidField($meta, $field)) {
                     throw new InvalidMappingException("Translatable field - [{$field}] type is not valid and must be 'string' or 'text' in class - {$meta->name}");
                 }
                 // fields cannot be overrided and throws mapping exception
@@ -122,9 +123,9 @@ class Annotation implements Driver
      * @param string $field
      * @return boolean
      */
-    protected function _isValidField($meta, $field)
+    protected function isValidField(ClassMetadata $meta, $field)
     {
         $mapping = $meta->getFieldMapping($field);
-        return $mapping && in_array($mapping['type'], $this->_validTypes);
+        return $mapping && in_array($mapping['type'], $this->validTypes);
     }
 }

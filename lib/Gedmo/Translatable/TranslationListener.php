@@ -4,6 +4,8 @@ namespace Gedmo\Translatable;
 
 use Doctrine\ORM\Events,
     Doctrine\Common\EventArgs,
+    Doctrine\Common\Persistence\ObjectManager,
+    Doctrine\Common\Persistence\Mapping\ClassMetadata,
     Doctrine\ORM\Query;
 
 /**
@@ -107,7 +109,7 @@ class TranslationListener extends AbstractTranslationListener
     /**
      * {@inheritdoc}
      */
-    protected function getSingleIdentifierFieldName($meta)
+    protected function getSingleIdentifierFieldName(ClassMetadata $meta)
     {
         return $meta->getSingleIdentifierFieldName();
     }
@@ -115,7 +117,7 @@ class TranslationListener extends AbstractTranslationListener
     /**
      * {@inheritdoc}
      */
-    protected function removeAssociatedTranslations($om, $objectId, $transClass)
+    protected function removeAssociatedTranslations(ObjectManager $om, $objectId, $transClass)
     {
         $dql = 'DELETE ' . $transClass . ' trans';
         $dql .= ' WHERE trans.foreignKey = :objectId';
@@ -128,7 +130,7 @@ class TranslationListener extends AbstractTranslationListener
     /**
      * {@inheritdoc}
      */
-    protected function insertTranslationRecord($om, $translation)
+    protected function insertTranslationRecord(ObjectManager $om, $translation)
     {
         $meta = $om->getClassMetadata(get_class($translation));        
         $data = array();
@@ -148,7 +150,7 @@ class TranslationListener extends AbstractTranslationListener
     /**
      * {@inheritdoc}
      */
-    protected function findTranslation($om, $objectId, $objectClass, $locale, $field)
+    protected function findTranslation(ObjectManager $om, $objectId, $objectClass, $locale, $field)
     {
         $qb = $om->createQueryBuilder();
         $qb->select('trans')
@@ -190,7 +192,7 @@ class TranslationListener extends AbstractTranslationListener
     /**
      * {@inheritdoc}
      */
-    protected function loadTranslations($om, $object)
+    protected function loadTranslations(ObjectManager $om, $object)
     {
         $meta = $om->getClassMetadata(get_class($object));
         $locale = strtolower($this->getTranslatableLocale($object, $meta));

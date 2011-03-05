@@ -3,6 +3,7 @@
 namespace Gedmo\Timestampable;
 
 use Doctrine\ORM\Events,
+    Doctrine\Common\Persistence\Mapping\ClassMetadata,
     Doctrine\Common\EventArgs;
 
 /**
@@ -66,7 +67,7 @@ class TimestampableListener extends AbstractTimestampableListener
     /**
      * {@inheritdoc}
      */
-    public function recomputeSingleObjectChangeSet($uow, $meta, $object)
+    public function recomputeSingleObjectChangeSet($uow, ClassMetadata $meta, $object)
     {
         $uow->recomputeSingleEntityChangeSet($meta, $object);
     }
@@ -74,7 +75,7 @@ class TimestampableListener extends AbstractTimestampableListener
     /**
      * {@inheritdoc}
      */
-    protected function getDateValue($meta, $field)
+    protected function getDateValue(ClassMetadata $meta, $field)
     {
         return new \DateTime();
     }

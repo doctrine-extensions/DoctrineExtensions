@@ -4,6 +4,7 @@ namespace Gedmo\Timestampable;
 
 use Doctrine\Common\EventArgs,
     Gedmo\Mapping\MappedEventSubscriber,
+    Doctrine\Common\Persistence\Mapping\ClassMetadata,
     Doctrine\ORM\Proxy\Proxy;
 
 /**
@@ -146,7 +147,7 @@ abstract class AbstractTimestampableListener extends MappedEventSubscriber
      * Get the ObjectManager from EventArgs
      *
      * @param EventArgs $args
-     * @return object
+     * @return ObjectManager
      */
     abstract protected function getObjectManager(EventArgs $args);
     
@@ -179,10 +180,11 @@ abstract class AbstractTimestampableListener extends MappedEventSubscriber
      * Recompute the single object changeset from a UnitOfWork
      *
      * @param UnitOfWork $uow
+     * @param ClassMetadata $meta
      * @param Object $object
      * @return void
      */
-    abstract protected function recomputeSingleObjectChangeSet($uow, $meta, $object);
+    abstract protected function recomputeSingleObjectChangeSet($uow, ClassMetadata $meta, $object);
     
     /**
      * Get the date value
@@ -191,5 +193,5 @@ abstract class AbstractTimestampableListener extends MappedEventSubscriber
      * @param string $field
      * @return mixed
      */
-    abstract protected function getDateValue($meta, $field);
+    abstract protected function getDateValue(ClassMetadata $meta, $field);
 }

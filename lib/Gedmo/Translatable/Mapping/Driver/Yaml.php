@@ -4,6 +4,7 @@ namespace Gedmo\Translatable\Mapping\Driver;
 
 use Gedmo\Mapping\Driver\File,
     Gedmo\Mapping\Driver,
+    Doctrine\Common\Persistence\Mapping\ClassMetadata,
     Gedmo\Exception\InvalidMappingException;
 
 /**
@@ -33,7 +34,7 @@ class Yaml extends File implements Driver
      * 
      * @var array
      */
-    protected $_validTypes = array(
+    protected $validTypes = array(
         'string',
         'text'
     );
@@ -41,12 +42,12 @@ class Yaml extends File implements Driver
     /**
      * {@inheritDoc}
      */
-    public function validateFullMetadata($meta, array $config) {}
+    public function validateFullMetadata(ClassMetadata $meta, array $config) {}
     
     /**
      * {@inheritDoc}
      */
-    public function readExtendedMetadata($meta, array &$config) {
+    public function readExtendedMetadata(ClassMetadata $meta, array &$config) {
         $yaml = $this->_loadMappingFile($this->_findMappingFile($meta->name));
         $mapping = $yaml[$meta->name];
         
@@ -69,7 +70,7 @@ class Yaml extends File implements Driver
             foreach ($mapping['fields'] as $field => $fieldMapping) {
                 if (isset($fieldMapping['gedmo'])) {
                     if (in_array('translatable', $fieldMapping['gedmo'])) {
-                        if (!$this->_isValidField($meta, $field)) {
+                        if (!$this->isValidField($meta, $field)) {
                             throw new InvalidMappingException("Translatable field - [{$field}] type is not valid and must be 'string' or 'text' in class - {$meta->name}");
                         }
                         // fields cannot be overrided and throws mapping exception
@@ -95,9 +96,9 @@ class Yaml extends File implements Driver
      * @param string $field
      * @return boolean
      */
-    protected function _isValidField($meta, $field)
+    protected function isValidField(ClassMetadata $meta, $field)
     {
         $mapping = $meta->getFieldMapping($field);
-        return $mapping && in_array($mapping['type'], $this->_validTypes);
+        return $mapping && in_array($mapping['type'], $this->validTypes);
     }
 }

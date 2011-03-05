@@ -3,6 +3,8 @@
 namespace Gedmo\Sluggable;
 
 use Doctrine\Common\EventArgs,
+    Doctrine\Common\Persistence\ObjectManager,
+    Doctrine\Common\Persistence\Mapping\ClassMetadata,
     Gedmo\Mapping\MappedEventSubscriber;
 
 /**
@@ -47,60 +49,6 @@ abstract class AbstractSluggableListener extends MappedEventSubscriber
         }
         $this->transliterator = $callable;
     }
-    
-    /**
-     * Get the ObjectManager from EventArgs
-     *
-     * @param EventArgs $args
-     * @return object
-     */
-    abstract public function getObjectManager(EventArgs $args);
-    
-    /**
-     * Get the Object from EventArgs
-     *
-     * @param EventArgs $args
-     * @return object
-     */
-    abstract public function getObject(EventArgs $args);
-    
-    /**
-     * Get the object changeset from a UnitOfWork
-     *
-     * @param UnitOfWork $uow
-     * @param Object $object
-     * @return array
-     */
-    abstract public function getObjectChangeSet($uow, $object);
-    
-    /**
-     * Recompute the single object changeset from a UnitOfWork
-     *
-     * @param UnitOfWork $uow
-     * @param Object $object
-     * @return void
-     */
-    abstract public function recomputeSingleObjectChangeSet($uow, $meta, $object);
-    
-    /**
-     * Get the scheduled object updates from a UnitOfWork
-     *
-     * @param UnitOfWork $uow
-     * @return array
-     */
-    abstract public function getScheduledObjectUpdates($uow);
-    
-    /**
-     * Loads the similar slugs
-     * 
-     * @param object $om
-     * @param object $object
-     * @param ClassMetadata $meta
-     * @param array $config
-     * @param string $preferedSlug
-     * @return array
-     */
-    abstract protected function getUniqueSlugResult($om, $object, $meta, array $config, $preferedSlug);
     
     /**
      * Mapps additional metadata
@@ -165,7 +113,7 @@ abstract class AbstractSluggableListener extends MappedEventSubscriber
     /**
      * Creates the slug for object being flushed
      * 
-     * @param object $om
+     * @param ObjectManager $om
      * @param object $object
      * @param mixed $changeSet
      *      case array: the change set array
@@ -174,7 +122,7 @@ abstract class AbstractSluggableListener extends MappedEventSubscriber
      *      or invalid
      * @return void
      */
-    protected function generateSlug($om, $object, $changeSet)
+    protected function generateSlug(ObjectManager $om, $object, $changeSet)
     {
         $meta = $om->getClassMetadata(get_class($object));
         $uow = $om->getUnitOfWork();
@@ -241,12 +189,12 @@ abstract class AbstractSluggableListener extends MappedEventSubscriber
     /**
      * Generates the unique slug
      * 
-     * @param object $om
+     * @param ObjectManager $om
      * @param object $object
      * @param string $preferedSlug
      * @return string - unique slug
      */
-    protected function makeUniqueSlug($om, $object, $preferedSlug)
+    protected function makeUniqueSlug(ObjectManager $om, $object, $preferedSlug)
     {   
         $meta = $om->getClassMetadata(get_class($object));
         $config = $this->getConfiguration($om, $meta->name);
@@ -267,22 +215,72 @@ abstract class AbstractSluggableListener extends MappedEventSubscriber
             } while (in_array($generatedSlug, $sameSlugs));
 
             $mapping = $meta->getFieldMapping($config['slug']);
-            $needRecursion = false;
             if (isset($mapping['length']) && strlen($generatedSlug) > $mapping['length']) {
-                $needRecursion = true;
                 $generatedSlug = substr(
                     $generatedSlug, 
                     0, 
                     $mapping['length'] - (strlen($i) + strlen($config['separator']))
                 );
                 $this->exponent = strlen($i) - 1;
-            }
-            
-            if ($needRecursion) {
                 $generatedSlug = $this->makeUniqueSlug($om, $object, $generatedSlug);
             }
             $preferedSlug = $generatedSlug;
         }
         return $preferedSlug;
     }
+    
+    /**
+     * Get the ObjectManager from EventArgs
+     *
+     * @param EventArgs $args
+     * @return ObjectManager
+     */
+    abstract protected function getObjectManager(EventArgs $args);
+    
+    /**
+     * Get the Object from EventArgs
+     *
+     * @param EventArgs $args
+     * @return object
+     */
+    abstract protected function getObject(EventArgs $args);
+    
+    /**
+     * Get the object changeset from a UnitOfWork
+     *
+     * @param UnitOfWork $uow
+     * @param Object $object
+     * @return array
+     */
+    abstract protected function getObjectChangeSet($uow, $object);
+    
+    /**
+     * Recompute the single object changeset from a UnitOfWork
+     *
+     * @param UnitOfWork $uow
+     * @param ClassMetadata $meta
+     * @param Object $object
+     * @return void
+     */
+    abstract protected function recomputeSingleObjectChangeSet($uow, ClassMetadata $meta, $object);
+    
+    /**
+     * Get the scheduled object updates from a UnitOfWork
+     *
+     * @param UnitOfWork $uow
+     * @return array
+     */
+    abstract protected function getScheduledObjectUpdates($uow);
+    
+    /**
+     * Loads the similar slugs
+     * 
+     * @param ObjectManager $om
+     * @param object $object
+     * @param ClassMetadata $meta
+     * @param array $config
+     * @param string $preferedSlug
+     * @return array
+     */
+    abstract protected function getUniqueSlugResult(ObjectManager $om, $object, ClassMetadata $meta, array $config, $preferedSlug);
 }

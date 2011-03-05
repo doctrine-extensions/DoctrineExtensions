@@ -2,6 +2,9 @@
 
 namespace Gedmo\Mapping;
 
+use Doctrine\Common\Persistence\ObjectManager,
+    Doctrine\Common\Persistence\Mapping\ClassMetadata;
+
 /**
  * The extension metadata factory is responsible for extension driver
  * initialization and fully reading the extension metadata
@@ -36,10 +39,10 @@ class ExtensionMetadataFactory
     /**
      * Initializes extension driver
      * 
-     * @param object $objectManager
+     * @param ObjectManager $objectManager
      * @param string $extensionNamespace
      */
-    public function __construct($objectManager, $extensionNamespace)
+    public function __construct(ObjectManager $objectManager, $extensionNamespace)
     {
         $this->objectManager = $objectManager;
         $this->extensionNamespace = $extensionNamespace;
@@ -50,10 +53,10 @@ class ExtensionMetadataFactory
     /**
      * Reads extension metadata
      * 
-     * @param object $meta
+     * @param ClassMetadata $meta
      * @return array - the metatada configuration
      */
-    public function getExtensionMetadata($meta)
+    public function getExtensionMetadata(ClassMetadata $meta)
     {
         if ($meta->isMappedSuperclass) {
             return; // ignore mappedSuperclasses for now

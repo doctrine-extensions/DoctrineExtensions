@@ -3,6 +3,8 @@
 namespace Gedmo\Translatable;
 
 use Doctrine\Common\EventArgs,
+    Doctrine\Common\Persistence\ObjectManager,
+    Doctrine\Common\Persistence\Mapping\ClassMetadata,
     Gedmo\Mapping\MappedEventSubscriber;
 
 /**
@@ -114,7 +116,7 @@ abstract class AbstractTranslationListener extends MappedEventSubscriber
      *         found in entity
      * @return string
      */
-    public function getTranslatableLocale($object, $meta)
+    public function getTranslatableLocale($object, ClassMetadata $meta)
     {
         $locale = $this->locale;
         if (isset($this->configurations[$meta->name]['locale'])) {
@@ -212,6 +214,7 @@ abstract class AbstractTranslationListener extends MappedEventSubscriber
                     );
                     $this->insertTranslationRecord($om, $translation);
                 }
+                unset($this->pendingTranslationInserts[$oid]);
             }
         }
     }
@@ -281,14 +284,14 @@ abstract class AbstractTranslationListener extends MappedEventSubscriber
     /**
      * Creates the translation for object being flushed
      * 
-     * @param object $om - object manager
+     * @param ObjectManager $om
      * @param object $object
      * @param boolean $isInsert
      * @throws UnexpectedValueException - if locale is not valid, or
      *      primary key is composite, missing or invalid
      * @return void
      */
-    protected function handleTranslatableObjectUpdate($om, $object, $isInsert)
+    protected function handleTranslatableObjectUpdate(ObjectManager $om, $object, $isInsert)
     {
         $meta = $om->getClassMetadata(get_class($object));
         // no need cache, metadata is loaded only once in MetadataFactoryClass
@@ -398,7 +401,7 @@ abstract class AbstractTranslationListener extends MappedEventSubscriber
      * Get the ObjectManager from EventArgs
      *
      * @param EventArgs $args
-     * @return object
+     * @return ObjectManager
      */
     abstract protected function getObjectManager(EventArgs $args);
     
@@ -450,38 +453,38 @@ abstract class AbstractTranslationListener extends MappedEventSubscriber
      * @throws MappingException - if identifier is composite
      * @return string
      */
-    abstract protected function getSingleIdentifierFieldName($meta);
+    abstract protected function getSingleIdentifierFieldName(ClassMetadata $meta);
     
     /**
      * Removes all associated translations for given object
      * 
-     * @param object $om - object manager
+     * @param ObjectManager $om
      * @param mixed $objectId
      * @param string $transClass
      * @return void
      */
-    abstract protected function removeAssociatedTranslations($om, $objectId, $transClass);
+    abstract protected function removeAssociatedTranslations(ObjectManager $om, $objectId, $transClass);
     
     /**
      * Inserts the translation record
      * 
-     * @param object $om - object manager
+     * @param ObjectManager $om
      * @param object $translation
      * @return void
      */
-    abstract protected function insertTranslationRecord($om, $translation);
+    abstract protected function insertTranslationRecord(ObjectManager $om, $translation);
     
     /**
      * Search for existing translation record
      * 
-     * @param object $om - object manager
+     * @param ObjectManager $om
      * @param mixed $objectId
      * @param string $objectClass
      * @param string $locale
      * @param string $field
      * @return mixed - null if nothing is found, Translation otherwise
      */
-    abstract protected function findTranslation($om, $objectId, $objectClass, $locale, $field);
+    abstract protected function findTranslation(ObjectManager $om, $objectId, $objectClass, $locale, $field);
     
     /**
      * Sets a property value of the original data array of an object 
@@ -505,9 +508,9 @@ abstract class AbstractTranslationListener extends MappedEventSubscriber
     /**
      * Load the translations for a given object
      * 
-     * @param object $om - object manager
+     * @param ObjectManager $om
      * @param object $object
      * @return array
      */
-    abstract protected function loadTranslations($om, $object);
+    abstract protected function loadTranslations(ObjectManager $om, $object);
 }

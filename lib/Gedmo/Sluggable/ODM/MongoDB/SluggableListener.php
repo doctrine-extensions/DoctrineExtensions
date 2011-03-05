@@ -4,6 +4,8 @@ namespace Gedmo\Sluggable\ODM\MongoDB;
 
 use Doctrine\ODM\MongoDB\Events,
     Doctrine\Common\EventArgs,
+    Doctrine\Common\Persistence\ObjectManager,
+    Doctrine\Common\Persistence\Mapping\ClassMetadata,
     Doctrine\ODM\MongoDB\Cursor,
     Gedmo\Sluggable\AbstractSluggableListener;
 
@@ -64,7 +66,7 @@ class SluggableListener extends AbstractSluggableListener
     /**
      * {@inheritdoc}
      */
-    public function recomputeSingleObjectChangeSet($uow, $meta, $object)
+    public function recomputeSingleObjectChangeSet($uow, ClassMetadata $meta, $object)
     {
         $uow->recomputeSingleDocumentChangeSet($meta, $object);
     }
@@ -80,7 +82,7 @@ class SluggableListener extends AbstractSluggableListener
     /**
      * {@inheritdoc}
      */
-    protected function getUniqueSlugResult($om, $object, $meta, array $config, $preferedSlug)
+    protected function getUniqueSlugResult(ObjectManager $om, $object, ClassMetadata $meta, array $config, $preferedSlug)
     {
         $qb = $om->createQueryBuilder($meta->name);
         $identifier = $meta->getIdentifierValue($object);

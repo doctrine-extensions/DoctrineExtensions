@@ -4,6 +4,7 @@ namespace Gedmo\Tree\Mapping\Driver;
 
 use Gedmo\Mapping\Driver\File,
     Gedmo\Mapping\Driver,
+    Doctrine\Common\Persistence\Mapping\ClassMetadata,
     Gedmo\Exception\InvalidMappingException;
 
 /**
@@ -31,7 +32,7 @@ class Yaml extends File implements Driver
      * 
      * @var array
      */
-    private $_validTypes = array(
+    private $validTypes = array(
         'integer',
         'smallint',
         'bigint'
@@ -49,7 +50,7 @@ class Yaml extends File implements Driver
     /**
      * {@inheritDoc}
      */
-    public function validateFullMetadata($meta, array $config)
+    public function validateFullMetadata(ClassMetadata $meta, array $config)
     {
         if (isset($config['strategy'])) {
             $method = 'validate' . ucfirst($config['strategy']) . 'TreeMetadata';
@@ -62,7 +63,7 @@ class Yaml extends File implements Driver
     /**
      * {@inheritDoc}
      */
-    public function readExtendedMetadata($meta, array &$config) {
+    public function readExtendedMetadata(ClassMetadata $meta, array &$config) {
         $yaml = $this->_loadMappingFile($this->_findMappingFile($meta->name));
         $mapping = $yaml[$meta->name];
         
@@ -80,22 +81,22 @@ class Yaml extends File implements Driver
             foreach ($mapping['fields'] as $field => $fieldMapping) {
                 if (isset($fieldMapping['gedmo'])) {
                     if (in_array('treeLeft', $fieldMapping['gedmo'])) {
-                        if (!$this->_isValidField($meta, $field)) {
+                        if (!$this->isValidField($meta, $field)) {
                             throw new InvalidMappingException("Tree left field - [{$field}] type is not valid and must be 'integer' in class - {$meta->name}");
                         }
                         $config['left'] = $field;
                     } elseif (in_array('treeRight', $fieldMapping['gedmo'])) {
-                        if (!$this->_isValidField($meta, $field)) {
+                        if (!$this->isValidField($meta, $field)) {
                             throw new InvalidMappingException("Tree right field - [{$field}] type is not valid and must be 'integer' in class - {$meta->name}");
                         }
                         $config['right'] = $field;
                     } elseif (in_array('treeLevel', $fieldMapping['gedmo'])) {
-                        if (!$this->_isValidField($meta, $field)) {
+                        if (!$this->isValidField($meta, $field)) {
                             throw new InvalidMappingException("Tree level field - [{$field}] type is not valid and must be 'integer' in class - {$meta->name}");
                         }
                         $config['level'] = $field;
                     } elseif (in_array('treeRoot', $fieldMapping['gedmo'])) {
-                        if (!$this->_isValidField($meta, $field)) {
+                        if (!$this->isValidField($meta, $field)) {
                             throw new InvalidMappingException("Tree root field - [{$field}] type is not valid and must be 'integer' in class - {$meta->name}");
                         }
                         $config['root'] = $field;
@@ -132,21 +133,21 @@ class Yaml extends File implements Driver
      * @param string $field
      * @return boolean
      */
-    protected function _isValidField($meta, $field)
+    protected function isValidField(ClassMetadata $meta, $field)
     {
         $mapping = $meta->getFieldMapping($field);
-        return $mapping && in_array($mapping['type'], $this->_validTypes);
+        return $mapping && in_array($mapping['type'], $this->validTypes);
     }
     
     /**
      * Validates metadata for nested type tree
      * 
-     * @param ClassMetadataInfo $meta
+     * @param ClassMetadata $meta
      * @param array $config
      * @throws InvalidMappingException
      * @return void
      */
-    private function validateNestedTreeMetadata($meta, array $config)
+    private function validateNestedTreeMetadata(ClassMetadata $meta, array $config)
     {
         $missingFields = array();
         if (!isset($config['parent'])) {

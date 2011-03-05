@@ -3,6 +3,7 @@
 namespace Gedmo\Tree;
 
 use Doctrine\Common\EventArgs,
+    Doctrine\Common\Persistence\ObjectManager,
     Gedmo\Mapping\MappedEventSubscriber;
 
 /**
@@ -33,11 +34,11 @@ abstract class AbstractTreeListener extends MappedEventSubscriber
     /**
      * Get the used strategy for tree processing
      * 
-     * @param object $om - object manager
+     * @param ObjectManager $om
      * @param string $class
      * @return StrategyInterface
      */
-    public function getStrategy($om, $class)
+    public function getStrategy(ObjectManager $om, $class)
     {
         if (!isset($this->strategies[$class])) {
             $config = $this->getConfiguration($om, $class);

@@ -4,6 +4,8 @@ namespace Gedmo\Translatable\ODM\MongoDB;
 
 use Doctrine\ODM\MongoDB\Events,
     Doctrine\Common\EventArgs,
+    Doctrine\Common\Persistence\ObjectManager,
+    Doctrine\Common\Persistence\Mapping\ClassMetadata,
     Doctrine\ODM\MongoDB\Cursor,
     Gedmo\Translatable\AbstractTranslationListener;
 
@@ -107,7 +109,7 @@ class TranslationListener extends AbstractTranslationListener
     /**
      * {@inheritdoc}
      */
-    protected function getSingleIdentifierFieldName($meta)
+    protected function getSingleIdentifierFieldName(ClassMetadata $meta)
     {
         return $meta->identifier;
     }
@@ -131,7 +133,7 @@ class TranslationListener extends AbstractTranslationListener
     /**
      * {@inheritdoc}
      */
-    protected function removeAssociatedTranslations($om, $objectId, $transClass)
+    protected function removeAssociatedTranslations(ObjectManager $om, $objectId, $transClass)
     {
         $qb = $om->createQueryBuilder($transClass);
         $q = $qb->remove()
@@ -143,7 +145,7 @@ class TranslationListener extends AbstractTranslationListener
     /**
      * {@inheritdoc}
      */
-    protected function insertTranslationRecord($om, $translation)
+    protected function insertTranslationRecord(ObjectManager $om, $translation)
     {
         $meta = $om->getClassMetadata(get_class($translation));        
         $collection = $om->getDocumentCollection($meta->name);
@@ -163,7 +165,7 @@ class TranslationListener extends AbstractTranslationListener
     /**
      * {@inheritdoc}
      */
-    protected function findTranslation($om, $objectId, $objectClass, $locale, $field)
+    protected function findTranslation(ObjectManager $om, $objectId, $objectClass, $locale, $field)
     {
         $translationClass = $this->getTranslationClass($objectClass);
         $qb = $om->createQueryBuilder($translationClass);
@@ -184,7 +186,7 @@ class TranslationListener extends AbstractTranslationListener
     /**
      * {@inheritdoc}
      */
-    protected function loadTranslations($om, $object)
+    protected function loadTranslations(ObjectManager $om, $object)
     {
         $meta = $om->getClassMetadata(get_class($object));
         $locale = strtolower($this->getTranslatableLocale($object, $meta));
