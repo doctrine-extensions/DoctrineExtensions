@@ -4,6 +4,7 @@ namespace Gedmo\Loggable\Mapping\Driver;
 
 use Gedmo\Mapping\Driver\File,
     Gedmo\Mapping\Driver,
+    Doctrine\Common\Persistence\Mapping\ClassMetadata,
     Gedmo\Exception\InvalidMappingException;
 
 /**
@@ -28,45 +29,31 @@ class Yaml extends File implements Driver
     protected $_extension = '.dcm.yml';
 
     /**
-     * List of tree strategies available
-     *
-     * @var array
-     */
-    private $actions = array(
-        'create', 'update', 'delete'
-    );
-
-    /**
      * {@inheritDoc}
      */
-    public function validateFullMetadata($meta, array $config)
+    public function validateFullMetadata(ClassMetadata $meta, array $config)
     {
-        if (isset($config['actions']) && is_array($config['actions'])) {
-            foreach ($config['actions'] as $action) {
-                if (!in_array($this->actions, $action)) {
-                    throw new InvalidMappingException("Action {$action} for class: {$meta->name} is invalid");
-                }
-            }
-        }
-
-        if (isset($config['actions']) && !is_array($config['actions'])) {
-            throw new InvalidMappingException("Actions for class: {$meta->name} should be an array");
-        }
+        
     }
 
     /**
      * {@inheritDoc}
      */
-    public function readExtendedMetadata($meta, array &$config)
+    public function readExtendedMetadata(ClassMetadata $meta, array &$config)
     {
         $yaml = $this->_loadMappingFile($this->_findMappingFile($meta->name));
         $mapping = $yaml[$meta->name];
 
         if (isset($mapping['gedmo'])) {
             $classMapping = $mapping['gedmo'];
-            if (isset($classMapping['loggable']['actions'])) {
-                $actions = $classMapping['loggable']['actions'];
-                $config['actions'] = $actions;
+            if (isset($classMapping['loggable'])) {
+                $config['loggable'] = true;
+                if (isset ($classMapping['loggable']['logEntryClass'])) {
+                    if (!class_exists($classMapping['loggable']['logEntryClass'])) {
+                        throw new InvalidMappingException("LogEntry class: {$classMapping['loggable']['logEntryClass']} does not exist.");
+                    }
+                    $config['logEntryClass'] = $classMapping['loggable']['logEntryClass'];
+                }
             }
         }
     }

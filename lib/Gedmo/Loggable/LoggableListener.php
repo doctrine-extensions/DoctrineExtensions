@@ -1,19 +1,17 @@
 <?php
 
-namespace Gedmo\Loggable\ODM\MongoDB;
+namespace Gedmo\Loggable;
 
 use Gedmo\Loggable\AbstractLoggableListener,
-    Doctrine\ODM\MongoDB\Events,
     Doctrine\Common\Persistence\ObjectManager,
     Doctrine\Common\Persistence\Mapping\ClassMetadata,
-    Doctrine\ODM\MongoDB\Cursor,
-    Doctrine\ODM\MongoDB\Proxy\Proxy,
+    Doctrine\ORM\Events,
     Doctrine\Common\EventArgs;
 
 /**
  * @author Boussekeyt Jules <jules.boussekeyt@gmail.com>
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @package Gedmo.Loggable.ODM.MongoDB
+ * @package Gedmo.Loggable
  * @subpackage LoggableListener
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
@@ -25,7 +23,7 @@ class LoggableListener extends AbstractLoggableListener
      *
      * @var string
      */
-    protected $defaultLogEntryDocument = 'Gedmo\Loggable\Document\LogEntry';
+    protected $defaultLogEntryEntity = 'Gedmo\Loggable\Entity\LogEntry';
 
     /**
      * {@inheritdoc}
@@ -46,7 +44,7 @@ class LoggableListener extends AbstractLoggableListener
     {
         return isset($this->configurations[$class]['logEntryClass']) ?
             $this->configurations[$class]['logEntryClass'] : 
-            $this->defaultLogEntryDocument;
+            $this->defaultLogEntryEntity;
     }
 
     /**
@@ -54,7 +52,7 @@ class LoggableListener extends AbstractLoggableListener
      */
     protected function isTransient($logEntry)
     {
-        return !$logEntry instanceof \Gedmo\Loggable\Document\AbstractLogEntry;
+        return !$logEntry instanceof Entity\AbstractLogEntry;
     }
     
     /**
@@ -62,7 +60,7 @@ class LoggableListener extends AbstractLoggableListener
      */
     protected function getObjectManager(EventArgs $args)
     {
-        return $args->getDocumentManager();
+        return $args->getEntityManager();
     }
 
     /**
@@ -70,7 +68,7 @@ class LoggableListener extends AbstractLoggableListener
      */
     protected function getScheduledObjectUpdates($uow)
     {
-        return $uow->getScheduledDocumentUpdates();
+        return $uow->getScheduledEntityUpdates();
     }
 
     /**
@@ -78,7 +76,7 @@ class LoggableListener extends AbstractLoggableListener
      */
     protected function getScheduledObjectInsertions($uow)
     {
-        return $uow->getScheduledDocumentInsertions();
+        return $uow->getScheduledEntityInsertions();
     }
 
     /**
@@ -86,7 +84,7 @@ class LoggableListener extends AbstractLoggableListener
      */
     protected function getScheduledObjectDeletions($uow)
     {
-        return $uow->getScheduledDocumentDeletions();
+        return $uow->getScheduledEntityDeletions();
     }
     
     /**
@@ -94,7 +92,7 @@ class LoggableListener extends AbstractLoggableListener
      */
     protected function getObjectChangeSet($uow, $object)
     {
-        return $uow->getDocumentChangeSet($object);
+        return $uow->getEntityChangeSet($object);
     }
     
     /**
@@ -102,7 +100,7 @@ class LoggableListener extends AbstractLoggableListener
      */
     protected function getSingleIdentifierFieldName(ClassMetadata $meta)
     {
-        return $meta->identifier;
+        return $meta->getSingleIdentifierFieldName();
     }
     
     /**
@@ -110,7 +108,7 @@ class LoggableListener extends AbstractLoggableListener
      */
     protected function getObject(EventArgs $args)
     {
-        return $args->getDocument();
+        return $args->getEntity();
     }
     
     /**
@@ -122,19 +120,15 @@ class LoggableListener extends AbstractLoggableListener
         $identifierField = $this->getSingleIdentifierFieldName($objectMeta);
         $objectId = $objectMeta->getReflectionProperty($identifierField)->getValue($object);
         
-        $qb = $om->createQueryBuilder($meta->name);
-        $qb->select('version');
-        $qb->field('objectId')->equals($objectId);
-        $qb->field('objectClass')->equals($objectMeta->name);
-        $qb->sort('version', 'DESC');
-        $qb->limit(1);
-        $q = $qb->getQuery();
-        $q->setHydrate(false);
+        $dql = "SELECT MAX(log.version) FROM {$meta->name} log";
+        $dql .= " WHERE log.objectId = :objectId";
+        $dql .= " AND log.objectClass = :objectClass";
         
-        $result = $q->getSingleResult();
-        if ($result) {
-            $result = $result['version'] + 1;
-        }
-        return $result;
+        $q = $om->createQuery($dql);
+        $q->setParameters(array(
+            'objectId' => $objectId,
+            'objectClass' => $objectMeta->name
+        ));
+        return $q->getSingleScalarResult() + 1;
     }
 }

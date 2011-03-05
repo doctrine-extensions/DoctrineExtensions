@@ -4,6 +4,7 @@ namespace Gedmo\Loggable\Mapping\Driver;
 
 use Gedmo\Mapping\Driver,
     Doctrine\Common\Annotations\AnnotationReader,
+    Doctrine\Common\Persistence\Mapping\ClassMetadata,
     Gedmo\Exception\InvalidMappingException;
 
 /**
@@ -22,41 +23,22 @@ use Gedmo\Mapping\Driver,
 class Annotation implements Driver
 {
     /**
-     * Annotation to define the tree type
+     * Annotation to define that this object is loggable
      */
     const ANNOTATION_LOGGABLE = 'Gedmo\Loggable\Mapping\Loggable';
 
     /**
-     * List of tree strategies available
-     *
-     * @var array
-     */
-    private $actions = array(
-        'create', 'update', 'delete'
-    );
-
-    /**
      * {@inheritDoc}
      */
-    public function validateFullMetadata($meta, array $config)
+    public function validateFullMetadata(ClassMetadata $meta, array $config)
     {
-        if (isset($config['actions']) && is_array($config['actions'])) {
-            foreach ($config['actions'] as $action) {
-                if (!in_array($action, $this->actions)) {
-                    throw new InvalidMappingException("Action {$action} for class: {$meta->name} is invalid");   
-                }
-            }
-        }
-
-        if (isset($config['actions']) && !is_array($config['actions'])) {
-            throw new InvalidMappingException("Actions for class: {$meta->name} should be an array");
-        }
+        
     }
 
     /**
      * {@inheritDoc}
      */
-    public function readExtendedMetadata($meta, array &$config)
+    public function readExtendedMetadata(ClassMetadata $meta, array &$config)
     {
         require_once __DIR__ . '/../Annotations.php';
         $reader = new AnnotationReader();
@@ -66,8 +48,14 @@ class Annotation implements Driver
         // class annotations
         $classAnnotations = $reader->getClassAnnotations($class);
         if (isset($classAnnotations[self::ANNOTATION_LOGGABLE])) {
+            $config['loggable'] = true;
             $annot = $classAnnotations[self::ANNOTATION_LOGGABLE];
-            $config['actions'] = $annot->actions;
+            if ($annot->logEntryClass) {
+                if (!class_exists($annot->logEntryClass)) {
+                    throw new InvalidMappingException("LogEntry class: {$annot->logEntryClass} does not exist.");
+                }
+                $config['logEntryClass'] = $annot->logEntryClass;
+            }
         }
     }
 }
