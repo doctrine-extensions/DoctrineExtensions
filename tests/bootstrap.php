@@ -54,6 +54,9 @@ $classLoader->register();
 $classLoader = new Doctrine\Common\ClassLoader('Gedmo', __DIR__ . '/../lib');
 $classLoader->register();
 
+$classLoader = new Doctrine\Common\ClassLoader('Tool', __DIR__ . '/Gedmo');
+$classLoader->register();
+
 // fixture autoloaders
 $classLoader = new Doctrine\Common\ClassLoader('Translatable\Fixture', __DIR__ . '/Gedmo');
 $classLoader->register();
