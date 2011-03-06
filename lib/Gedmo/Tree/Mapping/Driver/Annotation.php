@@ -52,6 +52,11 @@ class Annotation implements Driver
     const ANNOTATION_ROOT = 'Gedmo\Tree\Mapping\TreeRoot';
     
     /**
+     * Annotation to specify closure tree class
+     */
+    const ANNOTATION_CLOSURE = 'Gedmo\Tree\Mapping\TreeClosure';
+    
+    /**
      * List of types which are valid for tree fields
      * 
      * @var array
@@ -68,7 +73,8 @@ class Annotation implements Driver
      * @var array
      */
     private $strategies = array(
-        'nested'
+        'nested',
+        'closure'
     );
     
     /**
@@ -101,6 +107,13 @@ class Annotation implements Driver
                 throw new InvalidMappingException("Tree type: {$annot->type} is not available.");
             }
             $config['strategy'] = $annot->type;
+        }
+        if (isset($classAnnotations[self::ANNOTATION_CLOSURE])) {
+            $annot = $classAnnotations[self::ANNOTATION_CLOSURE];
+            if (!class_exists($annot->class)) {
+                throw new InvalidMappingException("Tree closure class: {$annot->class} does not exist.");
+            }
+            $config['closure'] = $annot->class;
         }
         
         // property annotations
@@ -198,6 +211,32 @@ class Annotation implements Driver
         }
         if (!isset($config['right'])) {
             $missingFields[] = 'right';
+        }
+        if ($missingFields) {
+            throw new InvalidMappingException("Missing properties: " . implode(', ', $missingFields) . " in class - {$meta->name}");
+        }
+    }
+    
+	/**
+     * Validates metadata for closure type tree
+     * 
+     * @param ClassMetadata $meta
+     * @param array $config
+     * @throws InvalidMappingException
+     * @return void
+     */
+    private function validateClosureTreeMetadata(ClassMetadata $meta, array $config)
+    {
+        if (is_array($meta->identifier) && count($meta->identifier) > 1) {
+            throw new InvalidMappingException("Tree does not support composite indentifiers in class - {$meta->name}");
+        }
+        
+        $missingFields = array();
+        if (!isset($config['parent'])) {
+            $missingFields[] = 'ancestor';
+        }
+        if (!isset($config['closure'])) {
+            $missingFields[] = 'closure class';
         }
         if ($missingFields) {
             throw new InvalidMappingException("Missing properties: " . implode(', ', $missingFields) . " in class - {$meta->name}");

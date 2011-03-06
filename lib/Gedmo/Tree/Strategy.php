@@ -10,6 +10,11 @@ interface Strategy
     const NESTED = 'nested';
     
     /**
+     * Closure strategy
+     */
+    const CLOSURE = 'closure';
+    
+    /**
      * Get the name of strategy
      * 
      * @return string

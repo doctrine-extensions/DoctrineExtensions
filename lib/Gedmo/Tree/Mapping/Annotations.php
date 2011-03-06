@@ -4,7 +4,6 @@ namespace Gedmo\Tree\Mapping;
 
 use Doctrine\Common\Annotations\Annotation;
 
-
 /**
  * These are Tree extension annotations which should be used
  * on proper Tree Node Entity to activate the Tree listener
@@ -26,3 +25,7 @@ final class TreeRight extends Annotation {}
 final class TreeParent extends Annotation {}
 final class TreeLevel extends Annotation {}
 final class TreeRoot extends Annotation {}
+final class TreeClosure extends Annotation
+{
+    public $class; 
+}
