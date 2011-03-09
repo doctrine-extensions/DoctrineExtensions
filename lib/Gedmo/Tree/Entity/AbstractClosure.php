@@ -8,13 +8,18 @@ namespace Gedmo\Tree\Entity;
 abstract class AbstractClosure
 {
     /**
-     * @Id
+	 * @Id
+	 * @Column(type="integer")
+	 * @GeneratedValue(strategy="IDENTITY")
+	 */
+	private $id;
+	
+	/**
      * @Column(type="integer")
      */
     private $ancestor;
     
     /**
-     * @Id
      * @Column(type="integer")
      */
     private $descendant;

@@ -68,4 +68,21 @@ class TreeFixtureBehavioralCategoryProxy extends \Tree\Fixture\BehavioralCategor
     {
         return array('__isInitialized__', 'id', 'title', 'lft', 'rgt', 'parent', 'children', 'slug');
     }
+
+    public function __clone()
+    {
+        if (!$this->__isInitialized__ && $this->_entityPersister) {
+            $this->__isInitialized__ = true;
+            $class = $this->_entityPersister->getClassMetadata();
+            $original = $this->_entityPersister->load($this->_identifier);
+            if ($original === null) {
+                throw new \Doctrine\ORM\EntityNotFoundException();
+            }
+            foreach ($class->reflFields AS $field => $reflProperty) {
+                $reflProperty->setValue($this, $reflProperty->getValue($original));
+            }
+            unset($this->_entityPersister, $this->_identifier);
+        }
+        
+    }
 }
