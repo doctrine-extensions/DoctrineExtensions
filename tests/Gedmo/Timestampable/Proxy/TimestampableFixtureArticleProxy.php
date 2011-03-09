@@ -69,10 +69,22 @@ class TimestampableFixtureArticleProxy extends \Timestampable\Fixture\Article im
         return parent::getCreated();
     }
 
+    public function setCreated(\DateTime $created)
+    {
+        $this->_load();
+        return parent::setCreated($created);
+    }
+
     public function getPublished()
     {
         $this->_load();
         return parent::getPublished();
+    }
+
+    public function setPublished(\DateTime $published)
+    {
+        $this->_load();
+        return parent::setPublished($published);
     }
 
     public function getUpdated()
@@ -81,9 +93,32 @@ class TimestampableFixtureArticleProxy extends \Timestampable\Fixture\Article im
         return parent::getUpdated();
     }
 
+    public function setUpdated(\DateTime $updated)
+    {
+        $this->_load();
+        return parent::setUpdated($updated);
+    }
+
 
     public function __sleep()
     {
         return array('__isInitialized__', 'id', 'title', 'comments', 'created', 'updated', 'published', 'type');
+    }
+
+    public function __clone()
+    {
+        if (!$this->__isInitialized__ && $this->_entityPersister) {
+            $this->__isInitialized__ = true;
+            $class = $this->_entityPersister->getClassMetadata();
+            $original = $this->_entityPersister->load($this->_identifier);
+            if ($original === null) {
+                throw new \Doctrine\ORM\EntityNotFoundException();
+            }
+            foreach ($class->reflFields AS $field => $reflProperty) {
+                $reflProperty->setValue($this, $reflProperty->getValue($original));
+            }
+            unset($this->_entityPersister, $this->_identifier);
+        }
+        
     }
 }
