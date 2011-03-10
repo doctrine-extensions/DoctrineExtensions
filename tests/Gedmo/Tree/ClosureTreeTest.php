@@ -8,7 +8,8 @@ use Tool\Logging\DBAL\QueryAnalyzer;
 
 /**
  * These are tests for Tree behavior
- * 
+ *
+ * @author Gustavo Adrian <comfortablynumb84@gmail.com> 
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  * @package Gedmo.Tree
  * @link http://www.gediminasm.org

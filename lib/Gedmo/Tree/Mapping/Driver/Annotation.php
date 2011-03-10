@@ -228,7 +228,7 @@ class Annotation implements Driver
     private function validateClosureTreeMetadata(ClassMetadata $meta, array $config)
     {
         if (is_array($meta->identifier) && count($meta->identifier) > 1) {
-            throw new InvalidMappingException("Tree does not support composite indentifiers in class - {$meta->name}");
+            throw new InvalidMappingException("Tree does not support composite identifiers in class - {$meta->name}");
         }
         
         $missingFields = array();

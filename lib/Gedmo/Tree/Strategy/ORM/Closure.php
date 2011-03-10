@@ -9,17 +9,15 @@ use Gedmo\Tree\Strategy,
 
 /**
  * This strategy makes tree act like
- * nested set.
- * 
- * This behavior can inpact the performance of your application
- * since nested set trees are slow on inserts and updates.
+ * a closure table.
  * 
  * Some Tree logic is copied from -
  * CakePHP: Rapid Development Framework (http://cakephp.org)
  * 
+ * @author Gustavo Adrian <comfortablynumb84@gmail.com>
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  * @package Gedmo.Tree.Strategy.ORM
- * @subpackage Nested
+ * @subpackage Closure
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
@@ -75,18 +73,14 @@ class Closure implements Strategy
     /**
      * {@inheritdoc}
      */
-    public function processPostPersist($em, $entity)
+    public function processPostPersist( $em, $entity )
     {        
-        if (count($this->pendingChildNodeInserts)) {
-            while ($entity = array_shift($this->pendingChildNodeInserts)) {
-                $this->insertNode($em, $entity);
+        if ( count( $this->pendingChildNodeInserts ) ) 
+		{
+            while ( $entity = array_shift( $this->pendingChildNodeInserts ) ) 
+			{
+                $this->insertNode( $em, $entity );
             }
-            
-            //$meta = $em->getClassMetadata(get_class($entity));
-            //$config = $this->listener->getConfiguration($em, $meta->name);
-            //$closureMeta = $em->getClassMetadata($config['closure']);
-            
-            
         }
     }
     
@@ -99,19 +93,20 @@ class Closure implements Strategy
         $closureMeta = $em->getClassMetadata($config['closure']);
         $entries = array();
 		
-		// If node has children it means it already has a self referencing row, so we skip the insert of it
+		// If node has children it means it already has a self referencing row, so we skip its insertion
 		if ( $addNodeChildrenToAncestors === false )
 		{
 			$entries[] = array(
-				'ancestor' => $id,
-				'descendant' => $id,
-				'depth' => 0
+				'ancestor'		=> $id,
+				'descendant' 	=> $id,
+				'depth' 		=> 0
 			);
 		}
 		
-        $parent = $meta->getReflectionProperty($config['parent'])->getValue($entity);
+        $parent = $meta->getReflectionProperty( $config[ 'parent' ] )->getValue( $entity );
 		
-        if ($parent) {
+        if ( $parent ) 
+		{
             $parentId = $meta->getReflectionProperty($identifier)->getValue($parent);
             $dql = "SELECT c.ancestor, c.depth FROM {$closureMeta->name} c";
             $dql .= " WHERE c.descendant = {$parentId}";
@@ -168,15 +163,15 @@ class Closure implements Strategy
     
     public function updateNode(EntityManager $em, $entity, array $change)
     {
-        $meta = $em->getClassMetadata(get_class($entity));
-        $config = $this->listener->getConfiguration($em, $meta->name);
-        $closureMeta = $em->getClassMetadata($config['closure']);
-        $oldParent = $change[0];
-        $nodeId = $this->extractIdentifier($em, $entity);
-        //$oldParentId = $this->extractIdentifier($em, $oldParent);
-        
-        $table = $closureMeta->getTableName();
-        if ($oldParent) {
+        $meta 			= $em->getClassMetadata(get_class($entity));
+        $config 		= $this->listener->getConfiguration($em, $meta->name);
+        $closureMeta 	= $em->getClassMetadata($config['closure']);
+        $oldParent 		= $change[ 0 ];
+        $nodeId 		= $this->extractIdentifier($em, $entity);
+        $table 			= $closureMeta->getTableName();
+		
+        if ( $oldParent ) 
+		{
             $this->removeClosurePathsOfNodeID( $em, $table, $nodeId );
 			
 			$this->insertNode( $em, $entity, true );
@@ -189,19 +184,9 @@ class Closure implements Strategy
 	/**
      * {@inheritdoc}
      */
-    public function processScheduledDelete($em, $entity)
+    public function processScheduledDelete( $em, $entity )
     {
 		$this->removeNode( $em, $entity );
-	}
-	
-	public function postRemove( EventArgs $args )
-	{
-		$em = $this->getObjectManager($args);
-		
-		foreach ( $this->pendingNodesForRemove as $node )
-		{
-			$this->removeNode( $em, $node );
-		}
 	}
 	
 	public function removeNode( EntityManager $em, $entity, $maintainSelfReferencingRow = false, $maintainSelfReferencingRowOfChildren = false )
