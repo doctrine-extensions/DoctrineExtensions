@@ -25,23 +25,19 @@ class ClosureTreeRepository extends AbstractTreeRepository
     /**
      * Counts the children of given TreeNode
      * 
-     * @param object $node - if null counts all records in tree
+     * @param object $node - The node from which we'll count its children
      * @param boolean $direct - true to count only direct children
      * @return integer
      */ 
-    public function childCount( $node = null, $direct = false )
+    public function childCount( $node, $direct = false )
     {
-        $meta 			= $this->getClassMetadata();
-		$qb 			= $this->_em->createQueryBuilder();
-		$config 		= $this->listener->getConfiguration( $this->_em, $meta->name );
-		$closureMeta	= $this->_em->getClassMetadata( $config[ 'closure' ] );
-		$table			= $closureMeta->getTableName();
-		$nodeID 		= $meta->getSingleIdentifierFieldName();
-		$id				= $meta->getReflectionProperty( $nodeID )->getValue( $node );
-		
+		$meta 	= $this->getClassMetadata();
+		$id		= $this->getIdFromEntity( $node );
+		$qb 	= $this->getQueryBuilder();
 		$qb->select( 'COUNT( c.id )' )
-			->from( $table, 'c' )
-			->where( 'c.ancestor = :node_id' );
+			->from( $meta->rootEntityName, 'c' )
+			->where( 'c.ancestor = :node_id' )
+			->andWhere( 'c.ancestor != c.descendant' );
 		
 		if ( $direct === true )
 		{
@@ -53,11 +49,30 @@ class ClosureTreeRepository extends AbstractTreeRepository
         return $qb->getQuery()->getSingleScalarResult();
     }
 	
+	
+	protected function getQueryBuilder()
+	{
+		$qb = $this->_em->createQueryBuilder();
+		
+		return $qb;
+	}
+	
+	protected function getIdFromEntity( $node )
+	{
+		$meta 		= $this->_em->getClassMetadata( get_class( $node ) );
+		$nodeID 	= $meta->getSingleIdentifierFieldName();
+		$refProp	= $meta->getReflectionProperty( $nodeID );
+		$id 		= $refProp->getValue( $node );
+		
+		return $id;
+	}
+	
 	/**
      * {@inheritdoc}
      */
     protected function validates()
     {
-        return $this->listener->getStrategy($this->_em, $this->getClassMetadata()->name)->getName() === Strategy::CLOSURE;
+        // Temporarily solution to validation problem with this class
+		return true;
     }
 }

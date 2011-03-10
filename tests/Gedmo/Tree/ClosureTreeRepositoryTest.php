@@ -68,12 +68,22 @@ class ClosureTreeRepositoryTest extends \PHPUnit_Framework_TestCase
     
     public function test_childCount_returnsNumberOfChilds()
     {        
-        $repo 		= $this->em->getRepository( self::TEST_ENTITY_CLASS );
-        $food 		= $repo->findOneByTitle( 'Food' );
-        die( var_dump( get_class( $repo ) ) );
-        $childCount = $repo->childCount( $food );
+        $repo 			= $this->em->getRepository( self::TEST_ENTITY_CLASS );
+        $food 			= $repo->findOneByTitle( 'Food' );
+		$closureRepo	= $this->em->getRepository( self::TEST_CLOSURE_CLASS );
+        $childCount 	= $closureRepo->childCount( $food );
 		
 		$this->assertEquals( $childCount, 4 );
+    }
+	
+	public function test_childCount_returnsNumberOfDirectChilds()
+    {        
+        $repo 			= $this->em->getRepository( self::TEST_ENTITY_CLASS );
+        $food 			= $repo->findOneByTitle( 'Food' );
+		$closureRepo	= $this->em->getRepository( self::TEST_CLOSURE_CLASS );
+        $childCount 	= $closureRepo->childCount( $food, true );
+		
+		$this->assertEquals( $childCount, 2 );
     }
     
     
