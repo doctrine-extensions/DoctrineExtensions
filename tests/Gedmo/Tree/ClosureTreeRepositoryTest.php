@@ -31,18 +31,18 @@ class ClosureTreeRepositoryTest extends \PHPUnit_Framework_TestCase
         $config->setProxyNamespace('Gedmo\Tree\Proxies');
         $config->setMetadataDriverImpl($config->newDefaultAnnotationDriver());
 
-        /*$conn = array(
+        $conn = array(
             'driver' => 'pdo_sqlite',
             'memory' => true,
-        );*/
+        );
         
-        $conn = array(
+        /*$conn = array(
             'driver' => 'pdo_mysql',
             'host' => '127.0.0.1',
             'dbname' => 'closure',
             'user' => 'root',
-            'password' => 'B9jt12h0'
-        );
+            'password' => ''
+        );*/
         
         $evm = new \Doctrine\Common\EventManager();
         $treeListener = new TreeListener(TreeListener::TYPE_CLOSURE);
