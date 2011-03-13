@@ -48,14 +48,6 @@ class LoggableListener extends AbstractLoggableListener
             $this->configurations[$class]['logEntryClass'] : 
             $this->defaultLogEntryDocument;
     }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function isTransient($logEntry)
-    {
-        return !$logEntry instanceof \Gedmo\Loggable\Document\AbstractLogEntry;
-    }
     
     /**
      * {@inheritdoc}

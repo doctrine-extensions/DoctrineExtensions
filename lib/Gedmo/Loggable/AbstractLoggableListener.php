@@ -165,16 +165,7 @@ abstract class AbstractLoggableListener extends MappedEventSubscriber
     {
         return __NAMESPACE__;
     }
-    
-    /**
-     * Check if LogEntry object is not instance of
-     * LogEntry
-     * 
-     * @param object $logEntry
-     * @return bool
-     */
-    abstract protected function isTransient($logEntry);
-    
+
     /**
      * Get the LogEntry class
      *
@@ -289,10 +280,6 @@ abstract class AbstractLoggableListener extends MappedEventSubscriber
         if ($config = $this->getConfiguration($om, $meta->name)) {
             $logEntryClass = $this->getLogEntryClass($config, $meta->name);
             $logEntry = new $logEntryClass;
-            
-            if ($this->isTransient($logEntry)) {
-                throw new \Gedmo\Exception\InvalidMappingException('LogEntry class: ' . get_class($logEntry) . ' must extend AbstractLogEntry mappedsuperclass');
-            }
             
             $logEntry->setAction($action);
             $logEntry->setUsername($this->username);
