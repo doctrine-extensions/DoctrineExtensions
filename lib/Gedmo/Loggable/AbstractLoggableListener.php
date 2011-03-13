@@ -101,8 +101,8 @@ abstract class AbstractLoggableListener extends MappedEventSubscriber
         $object = $this->getObject($args);
         $om = $this->getObjectManager($args);
         $oid = spl_object_hash($object);
+        $uow = $om->getUnitOfWork();
         if ($this->pendingLogEntryInserts && array_key_exists($oid, $this->pendingLogEntryInserts)) {            
-            $uow = $om->getUnitOfWork();
             $meta = $om->getClassMetadata(get_class($object));
             $config = $this->getConfiguration($om, $meta->name);
             // there should be single identifier
