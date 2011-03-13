@@ -92,12 +92,17 @@ class SluggableListener extends AbstractSluggableListener
             );
         // include identifiers
         $entityIdentifiers = $meta->getIdentifierValues($object);
+        $parameters = array();
         foreach ($entityIdentifiers as $field => $value) {
             if (strlen($value)) {
-                $qb->andWhere('rec.' . $field . ' <> ' . $value);
+                $qb->andWhere('rec.' . $field . ' <> :' . $field);
+                $parameters[$field] = $value;
             }
         }
         $q = $qb->getQuery();
+        if ($parameters) {
+            $q->setParameters($parameters);
+        }
         $q->setHydrationMode(Query::HYDRATE_ARRAY);
         return $q->execute();
     }
