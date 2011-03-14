@@ -54,6 +54,11 @@ class Yaml extends File implements Driver
                     }
                     $config['logEntryClass'] = $classMapping['loggable']['logEntryClass'];
                 }
+                if (!isset($classMapping['loggable']['versionable'])) {
+                    $classMapping['loggable']['versionable'] = true;
+                }
+
+                $config['versionable'] = $classMapping['loggable']['versionable'];
             }
         }
     }

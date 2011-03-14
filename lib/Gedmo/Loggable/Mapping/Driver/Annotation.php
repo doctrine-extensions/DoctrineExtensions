@@ -56,6 +56,7 @@ class Annotation implements Driver
                 }
                 $config['logEntryClass'] = $annot->logEntryClass;
             }
+            $config['versionable'] = $annot->versionable;
         }
     }
 }

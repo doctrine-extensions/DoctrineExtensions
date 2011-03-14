@@ -77,6 +77,11 @@ abstract class AbstractLoggableListener extends MappedEventSubscriber
             throw new \Gedmo\Exception\InvalidArgumentException("Username must be a string, or object should have method: getUsername");
         }
     }
+
+    public function isVersionable($class)
+    {
+        return $this->configurations[$class]['versionable'];
+    }
     
     /**
      * Mapps additional metadata
@@ -104,7 +109,6 @@ abstract class AbstractLoggableListener extends MappedEventSubscriber
         $uow = $om->getUnitOfWork();
         if ($this->pendingLogEntryInserts && array_key_exists($oid, $this->pendingLogEntryInserts)) {            
             $meta = $om->getClassMetadata(get_class($object));
-            $config = $this->getConfiguration($om, $meta->name);
             // there should be single identifier
             $identifierField = $this->getSingleIdentifierFieldName($meta);
             $logEntry = $this->pendingLogEntryInserts[$oid];
@@ -117,7 +121,9 @@ abstract class AbstractLoggableListener extends MappedEventSubscriber
             ));
             unset($this->pendingLogEntryInserts[$oid]);
         }
-        if ($this->pendingRelatedObjects && array_key_exists($oid, $this->pendingRelatedObjects)) {
+        if ($this->isVersionable(get_class($object)) && $this->pendingRelatedObjects
+                && array_key_exists($oid, $this->pendingRelatedObjects))
+        {
             $identifiers = $this->extractIdentifiers($om, $object);
             $props = $this->pendingRelatedObjects[$oid];
             
@@ -294,7 +300,7 @@ abstract class AbstractLoggableListener extends MappedEventSubscriber
             }
             $uow = $om->getUnitOfWork();
             $logEntry->setObjectId($objectId);
-            if ($action !== self::ACTION_REMOVE) {
+            if ($this->isVersionable(get_class($object)) && $action !== self::ACTION_REMOVE) {
                 $newValues = array();
                 foreach ($this->getObjectChangeSet($uow, $object) as $field => $changes) {
                     $value = $changes[1];
