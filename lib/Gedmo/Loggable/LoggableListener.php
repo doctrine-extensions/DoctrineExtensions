@@ -50,14 +50,6 @@ class LoggableListener extends AbstractLoggableListener
     /**
      * {@inheritdoc}
      */
-    protected function isTransient($logEntry)
-    {
-        return !$logEntry instanceof Entity\AbstractLogEntry;
-    }
-    
-    /**
-     * {@inheritdoc}
-     */
     protected function getObjectManager(EventArgs $args)
     {
         return $args->getEntityManager();
