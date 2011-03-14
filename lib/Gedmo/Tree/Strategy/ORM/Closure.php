@@ -73,18 +73,18 @@ class Closure implements Strategy
     /**
      * {@inheritdoc}
      */
-    public function processPostPersist( $em, $entity )
+    public function processPostPersist($em, $entity)
     {        
-        if ( count( $this->pendingChildNodeInserts ) ) 
+        if (count($this->pendingChildNodeInserts)) 
 		{
-            while ( $entity = array_shift( $this->pendingChildNodeInserts ) ) 
-			{
-                $this->insertNode( $em, $entity );
+            while ($entity = array_shift($this->pendingChildNodeInserts)) 
+            {
+                $this->insertNode($em, $entity);
             }
         }
     }
     
-    public function insertNode(EntityManager $em, $entity, $addNodeChildrenToAncestors = false )
+    public function insertNode(EntityManager $em, $entity, $addNodeChildrenToAncestors = false)
     {
         $meta = $em->getClassMetadata(get_class($entity));
         $config = $this->listener->getConfiguration($em, $meta->name);
@@ -94,19 +94,17 @@ class Closure implements Strategy
         $entries = array();
 		
 		// If node has children it means it already has a self referencing row, so we skip its insertion
-		if ( $addNodeChildrenToAncestors === false )
-		{
-			$entries[] = array(
-				'ancestor'		=> $id,
-				'descendant' 	=> $id,
-				'depth' 		=> 0
-			);
-		}
+		if ($addNodeChildrenToAncestors === false) {
+            $entries[] = array(
+                'ancestor'		=> $id,
+                'descendant' 	=> $id,
+                'depth' 		=> 0
+            );
+        }
 		
-        $parent = $meta->getReflectionProperty( $config[ 'parent' ] )->getValue( $entity );
+        $parent = $meta->getReflectionProperty($config['parent'])->getValue($entity);
 		
-        if ( $parent ) 
-		{
+        if ( $parent ) {
             $parentId = $meta->getReflectionProperty($identifier)->getValue($parent);
             $dql = "SELECT c.ancestor, c.depth FROM {$closureMeta->name} c";
             $dql .= " WHERE c.descendant = {$parentId}";
@@ -114,27 +112,26 @@ class Closure implements Strategy
             //echo count($ancestors);
             foreach ($ancestors as $ancestor) {
                 $entries[] = array(
-                	'ancestor' => $ancestor['ancestor'],
+                    'ancestor' => $ancestor['ancestor'],
                     'descendant' => $id,
                     'depth' => $ancestor['depth'] + 1
                 );
 				
-				if ( $addNodeChildrenToAncestors === true )
-				{
-					$dql 		= "SELECT c.descendant, c.depth FROM {$closureMeta->name} c";
-					$dql 		.= " WHERE c.ancestor = {$id} AND c.ancestor != c.descendant";
-					$children 	= $em->createQuery( $dql )
-						->getArrayResult();
-					
-					foreach ( $children as $child )
-					{
-						$entries[] = array(
-							'ancestor'		=> $ancestor[ 'ancestor' ],
-							'descendant'	=> $child[ 'descendant' ],
-							'depth'			=> $child[ 'depth' ] + 1
-						);
-					}
-				}
+                if ($addNodeChildrenToAncestors === true) {
+                    $dql 		= "SELECT c.descendant, c.depth FROM {$closureMeta->name} c";
+                    $dql 		.= " WHERE c.ancestor = {$id} AND c.ancestor != c.descendant";
+                    $children 	= $em->createQuery($dql)
+                        ->getArrayResult();
+                    
+                    foreach ($children as $child)
+                    {
+                        $entries[] = array(
+                            'ancestor'		=> $ancestor['ancestor'],
+                            'descendant'	=> $child['descendant'],
+                            'depth'			=> $child['depth'] + 1
+                        );
+                    }
+                }
             }	
         }
         
@@ -163,18 +160,18 @@ class Closure implements Strategy
     
     public function updateNode(EntityManager $em, $entity, array $change)
     {
-        $meta 			= $em->getClassMetadata(get_class($entity));
-        $config 		= $this->listener->getConfiguration($em, $meta->name);
-        $closureMeta 	= $em->getClassMetadata($config['closure']);
-        $oldParent 		= $change[ 0 ];
-        $nodeId 		= $this->extractIdentifier($em, $entity);
-        $table 			= $closureMeta->getTableName();
+        $meta = $em->getClassMetadata(get_class($entity));
+        $config = $this->listener->getConfiguration($em, $meta->name);
+        $closureMeta = $em->getClassMetadata($config['closure']);
+        $oldParent = $change[0];
+        $nodeId = $this->extractIdentifier($em, $entity);
+        $table = $closureMeta->getTableName();
 		
-        if ( $oldParent ) 
+        if ($oldParent) 
 		{
-            $this->removeClosurePathsOfNodeID( $em, $table, $nodeId );
-			
-			$this->insertNode( $em, $entity, true );
+            $this->removeClosurePathsOfNodeID($em, $table, $nodeId);
+            
+            $this->insertNode($em, $entity, true);
         }
         
         //\Doctrine\Common\Util\Debug::dump($oldParent);
@@ -184,44 +181,44 @@ class Closure implements Strategy
 	/**
      * {@inheritdoc}
      */
-    public function processScheduledDelete( $em, $entity )
+    public function processScheduledDelete($em, $entity)
     {
-		$this->removeNode( $em, $entity );
-	}
+        $this->removeNode($em, $entity);
+    }
 	
-	public function removeNode( EntityManager $em, $entity, $maintainSelfReferencingRow = false, $maintainSelfReferencingRowOfChildren = false )
+    public function removeNode(EntityManager $em, $entity, $maintainSelfReferencingRow = false, $maintainSelfReferencingRowOfChildren = false)
 	{
-		$meta 			= $em->getClassMetadata( get_class( $entity ) );
-        $config 		= $this->listener->getConfiguration( $em, $meta->name );
-        $closureMeta 	= $em->getClassMetadata( $config[ 'closure' ] );
-		
-		$this->removeClosurePathsOfNodeID( $em, $closureMeta->getTableName(), $entity->getId(), $maintainSelfReferencingRow, $maintainSelfReferencingRowOfChildren );
+        $meta = $em->getClassMetadata(get_class($entity));
+        $config = $this->listener->getConfiguration($em, $meta->name);
+        $closureMeta = $em->getClassMetadata($config['closure']);
+        
+        $this->removeClosurePathsOfNodeID($em, $closureMeta->getTableName(), $entity->getId(), $maintainSelfReferencingRow, $maintainSelfReferencingRowOfChildren);
 	}
-	
-	public function removeClosurePathsOfNodeID( EntityManager $em, $table, $nodeId, $maintainSelfReferencingRow = true, $maintainSelfReferencingRowOfChildren = true )
+    
+	public function removeClosurePathsOfNodeID(EntityManager $em, $table, $nodeId, $maintainSelfReferencingRow = true, $maintainSelfReferencingRowOfChildren = true)
 	{
-		$subquery = "SELECT c1.id FROM {$table} c1 ";
-		$subquery .= "WHERE c1.descendant IN ( SELECT c2.descendant FROM {$table} c2 WHERE c2.ancestor = :id ) ";
-		$subquery .= "AND ( c1.ancestor IN ( SELECT c3.ancestor FROM {$table} c3 WHERE c3.descendant = :id ";
-
-		if ( $maintainSelfReferencingRow === true )
-		{
-			$subquery .= "AND c3.descendant != c3.ancestor ";
-		}
+        $subquery = "SELECT c1.id FROM {$table} c1 ";
+        $subquery .= "WHERE c1.descendant IN ( SELECT c2.descendant FROM {$table} c2 WHERE c2.ancestor = :id ) ";
+        $subquery .= "AND ( c1.ancestor IN ( SELECT c3.ancestor FROM {$table} c3 WHERE c3.descendant = :id ";
+        
+		if ($maintainSelfReferencingRow === true)
+        {
+            $subquery .= "AND c3.descendant != c3.ancestor ";
+        }
+        
+        if ( $maintainSelfReferencingRowOfChildren === false )
+        {
+            $subquery .= " OR c1.descendant = c1.ancestor ";
+        }
+        
+        $subquery .= " ) ) ";
 		
-		if ( $maintainSelfReferencingRowOfChildren === false )
-		{
-			$subquery .= " OR c1.descendant = c1.ancestor ";
-		}
+        $subquery = "DELETE FROM {$table} WHERE {$table}.id IN ( SELECT temp_table.id FROM ( {$subquery} ) temp_table )";
 		
-		$subquery .= " ) ) ";
-		
-		$subquery = "DELETE FROM {$table} WHERE {$table}.id IN ( SELECT temp_table.id FROM ( {$subquery} ) temp_table )";
-		
-		if (!$em->getConnection()->executeQuery($subquery, array('id' => $nodeId))) {
-			throw new \Gedmo\Exception\RuntimeException('Failed to delete old Closure records');
-		}
-	}
+        if (!$em->getConnection()->executeQuery($subquery, array('id' => $nodeId))) {
+            throw new \Gedmo\Exception\RuntimeException('Failed to delete old Closure records');
+        }
+    }
     
     private function extractIdentifier($em, $entity, $single = true)
     {

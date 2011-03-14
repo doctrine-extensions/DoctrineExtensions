@@ -49,7 +49,7 @@ class ClosureTreeRepositoryTest extends \PHPUnit_Framework_TestCase
         $evm->addEventSubscriber($treeListener);
         $this->em = \Doctrine\ORM\EntityManager::create($conn, $config, $evm);
         
-		$schema	= array(
+        $schema	= array(
             $this->em->getClassMetadata(self::TEST_BASE_CLOSURE_CLASS),
             $this->em->getClassMetadata(self::TEST_CLOSURE_CLASS),
             $this->em->getClassMetadata(self::TEST_ENTITY_CLASS),
@@ -62,28 +62,28 @@ class ClosureTreeRepositoryTest extends \PHPUnit_Framework_TestCase
             $this->em->getConnection()->getDatabasePlatform()
         );
         $config->setSQLLogger($this->analyzer);
-		
-		$this->populate();
+        
+        $this->populate();
     }
     
     public function test_childCount_returnsNumberOfChilds()
     {        
-        $repo 			= $this->em->getRepository( self::TEST_ENTITY_CLASS );
-        $food 			= $repo->findOneByTitle( 'Food' );
-		$closureRepo	= $this->em->getRepository( self::TEST_CLOSURE_CLASS );
-        $childCount 	= $closureRepo->childCount( $food );
-		
-		$this->assertEquals( $childCount, 4 );
+        $repo = $this->em->getRepository( self::TEST_ENTITY_CLASS );
+        $food = $repo->findOneByTitle( 'Food' );
+		$closureRepo = $this->em->getRepository( self::TEST_CLOSURE_CLASS );
+        $childCount = $closureRepo->childCount( $food );
+        
+        $this->assertEquals( $childCount, 4 );
     }
 	
-	public function test_childCount_returnsNumberOfDirectChilds()
+    public function test_childCount_returnsNumberOfDirectChilds()
     {        
-        $repo 			= $this->em->getRepository( self::TEST_ENTITY_CLASS );
-        $food 			= $repo->findOneByTitle( 'Food' );
-		$closureRepo	= $this->em->getRepository( self::TEST_CLOSURE_CLASS );
-        $childCount 	= $closureRepo->childCount( $food, true );
+        $repo = $this->em->getRepository(self::TEST_ENTITY_CLASS);
+        $food = $repo->findOneByTitle('Food');
+		$closureRepo = $this->em->getRepository(self::TEST_CLOSURE_CLASS);
+        $childCount = $closureRepo->childCount($food, true);
 		
-		$this->assertEquals( $childCount, 2 );
+		$this->assertEquals($childCount, 2);
     }
     
     
@@ -92,31 +92,31 @@ class ClosureTreeRepositoryTest extends \PHPUnit_Framework_TestCase
     {
         $root = new Category();
         $root->setTitle("Food");
-		$this->food = $root;
+        $this->food = $root;
         
         $root2 = new Category();
         $root2->setTitle("Sports");
-		$this->sports = $root2;
+        $this->sports = $root2;
         
         $child = new Category();
         $child->setTitle("Fruits");
         $child->setParent($root);
-		$this->fruits = $child;
+        $this->fruits = $child;
         
         $child2 = new Category();
         $child2->setTitle("Vegitables");
         $child2->setParent($root);
-		$this->vegitables = $child2;
+        $this->vegitables = $child2;
         
         $childsChild = new Category();
         $childsChild->setTitle("Carrots");
         $childsChild->setParent($child2);
-		$this->carrots = $childsChild;
+        $this->carrots = $childsChild;
         
         $potatoes = new Category();
         $potatoes->setTitle("Potatoes");
         $potatoes->setParent($child2);
-		$this->potatoes = $potatoes;
+        $this->potatoes = $potatoes;
         
         $this->em->persist($this->food);
         $this->em->persist($this->sports);
@@ -126,6 +126,6 @@ class ClosureTreeRepositoryTest extends \PHPUnit_Framework_TestCase
         $this->em->persist($this->potatoes);
 		
         $this->em->flush();
-		$this->em->clear();
+        $this->em->clear();
     }
 }
