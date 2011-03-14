@@ -42,7 +42,25 @@ class LogEntryRepository extends DocumentRepository
         }
         return $result;
     }
-    
+
+    /**
+     * Loads all log entries sorted by date
+     * 
+     * @return array
+     */
+    public function getAllLogEntries()
+    {
+        $qb = $this->createQueryBuilder();
+        $qb->sort('loggedAt', 'DESC');
+        $q = $qb->getQuery();
+
+        $result = $q->execute();
+        if ($result instanceof Cursor) {
+            $result = $result->toArray();
+        }
+        return $result;
+    }
+
     /**
      * Reverts given $document to $revision by
      * restoring all fields from that $revision.

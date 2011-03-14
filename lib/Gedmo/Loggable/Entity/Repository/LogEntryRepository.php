@@ -41,7 +41,22 @@ class LogEntryRepository extends EntityRepository
         
         return $q->getResult();
     }
-    
+
+    /**
+     * Loads all log entries sorted by date
+     *
+     * @return array
+     */
+    public function getAllLogEntries()
+    {
+        $meta = $this->getClassMetadata();
+        $dql = "SELECT log FROM {$meta->name} log";
+        $dql .= " ORDER BY log.loggedAt DESC";
+
+        $q = $this->_em->createQuery($dql);
+        return $q->getResult();
+    }
+
     /**
      * Reverts given $entity to $revision by
      * restoring all fields from that $revision.
