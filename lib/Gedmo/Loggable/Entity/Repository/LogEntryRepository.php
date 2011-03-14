@@ -43,6 +43,16 @@ class LogEntryRepository extends EntityRepository
     }
 
     /**
+     * Get object associated to a log entry
+     *
+     * @param EntryLog $entryLog
+     */
+    public function getLogObject($entryLog)
+    {
+        return $this->em->getRepository($entryLog->getObjectClass())->find($entryLog->getObjectID());
+    }
+
+    /**
      * Loads all log entries sorted by date
      *
      * @return array

@@ -62,6 +62,16 @@ class LogEntryRepository extends DocumentRepository
     }
 
     /**
+     * Get object associated to a log entry
+     *
+     * @param EntryLog $entryLog
+     */
+    public function getLogObject($entryLog)
+    {
+        return $this->dm->getRepository($entryLog->getObjectClass())->find($entryLog->getObjectID());
+    }
+
+    /**
      * Reverts given $document to $revision by
      * restoring all fields from that $revision.
      * After this operation you will need to
