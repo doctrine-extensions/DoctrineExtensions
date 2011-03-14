@@ -29,22 +29,21 @@ class ClosureTreeRepository extends AbstractTreeRepository
      * @param boolean $direct - true to count only direct children
      * @return integer
      */ 
-    public function childCount( $node, $direct = false )
+    public function childCount($node, $direct = false)
     {
-		$meta 	= $this->getClassMetadata();
-		$id		= $this->getIdFromEntity( $node );
-		$qb 	= $this->getQueryBuilder();
-		$qb->select( 'COUNT( c.id )' )
-			->from( $meta->rootEntityName, 'c' )
-			->where( 'c.ancestor = :node_id' )
-			->andWhere( 'c.ancestor != c.descendant' );
-		
-		if ( $direct === true )
-		{
-			$qb->andWhere( 'c.depth = 1' );
-		}
-		
-		$qb->setParameter( 'node_id', $id );
+        $meta = $this->getClassMetadata();
+        $id	= $this->getIdFromEntity($node);
+        $qb = $this->getQueryBuilder();
+        $qb->select('COUNT( c.id )')
+            ->from($meta->rootEntityName, 'c')
+            ->where('c.ancestor = :node_id')
+            ->andWhere('c.ancestor != c.descendant');
+        
+		if ($direct === true) {
+			$qb->andWhere('c.depth = 1');
+        }
+        
+        $qb->setParameter('node_id', $id);
 		
         return $qb->getQuery()->getSingleScalarResult();
     }
@@ -52,19 +51,19 @@ class ClosureTreeRepository extends AbstractTreeRepository
 	
 	protected function getQueryBuilder()
 	{
-		$qb = $this->_em->createQueryBuilder();
-		
-		return $qb;
+        $qb = $this->_em->createQueryBuilder();
+        
+        return $qb;
 	}
 	
 	protected function getIdFromEntity( $node )
 	{
-		$meta 		= $this->_em->getClassMetadata( get_class( $node ) );
-		$nodeID 	= $meta->getSingleIdentifierFieldName();
-		$refProp	= $meta->getReflectionProperty( $nodeID );
-		$id 		= $refProp->getValue( $node );
-		
-		return $id;
+        $meta = $this->_em->getClassMetadata(get_class($node));
+        $nodeID = $meta->getSingleIdentifierFieldName();
+        $refProp = $meta->getReflectionProperty($nodeID);
+        $id = $refProp->getValue($node);
+        
+        return $id;
 	}
 	
 	/**
@@ -73,6 +72,6 @@ class ClosureTreeRepository extends AbstractTreeRepository
     protected function validates()
     {
         // Temporarily solution to validation problem with this class
-		return true;
+        return true;
     }
 }
