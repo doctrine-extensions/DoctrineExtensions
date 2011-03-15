@@ -82,12 +82,6 @@ class ClosureTreeTest extends \PHPUnit_Framework_TestCase
         $this->populate();
     }
     
-    public function tearDown()
-    {
-        $this->analyzer->dumpResult();
-        $this->em->clear();
-    }
-    
     public function test_insertNodes_verifyClosurePaths()
     {        
         // We check the inserted nodes fields from the closure table
@@ -149,8 +143,25 @@ class ClosureTreeTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals( $rows[ 11 ][ 'descendant' ], $this->potatoes->getId() );
         $this->assertEquals( $rows[ 11 ][ 'depth' ], 0 );
     }
+    
+    public function test_childcount_afterInsertingNodesChildCountIsCalculated()
+    {
+        $this->em->refresh( $this->food );
+        $this->em->refresh( $this->sports );
+        $this->em->refresh( $this->fruits );
+        $this->em->refresh( $this->vegitables );
+        $this->em->refresh( $this->carrots );
+        $this->em->refresh( $this->potatoes );
+        
+        $this->assertEquals( $this->food->getChildCount(), 4 );
+        $this->assertEquals( $this->sports->getChildCount(), 0 );
+        $this->assertEquals( $this->fruits->getChildCount(), 0 );
+        $this->assertEquals( $this->vegitables->getChildCount(), 2 );
+        $this->assertEquals( $this->carrots->getChildCount(), 0 );
+        $this->assertEquals( $this->potatoes->getChildCount(), 0 );
+    }
 	
-    public function test_updateNodes_moveASubtreeAndVerifyTreeClosurePaths()
+    public function test_updateNodes_moveASubtreeVerifyTreeClosurePathsAndVerifyChildCountField()
     {
         // We change a subtree's location
         $vegitables = $this->em->getRepository( self::TEST_ENTITY_CLASS )
@@ -220,6 +231,22 @@ class ClosureTreeTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals( $rows[ 11 ][ 'ancestor' ], $this->potatoes->getId() );
         $this->assertEquals( $rows[ 11 ][ 'descendant' ], $this->potatoes->getId() );
         $this->assertEquals( $rows[ 11 ][ 'depth' ], 0 );
+        
+        
+        // We check the childCount field
+        $this->em->refresh( $this->food );
+        $this->em->refresh( $this->sports );
+        $this->em->refresh( $this->fruits );
+        $this->em->refresh( $this->vegitables );
+        $this->em->refresh( $this->carrots );
+        $this->em->refresh( $this->potatoes );
+        
+        $this->assertEquals( $this->food->getChildCount(), 1 );
+        $this->assertEquals( $this->sports->getChildCount(), 3 );
+        $this->assertEquals( $this->fruits->getChildCount(), 0 );
+        $this->assertEquals( $this->vegitables->getChildCount(), 2 );
+        $this->assertEquals( $this->carrots->getChildCount(), 0 );
+        $this->assertEquals( $this->potatoes->getChildCount(), 0 );
     }
     
     public function test_removeNode_removesClosurePathsOfNodeAndVerifyTree()
@@ -253,6 +280,16 @@ class ClosureTreeTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals( $rows[ 3 ][ 'ancestor' ], $this->fruits->getId() );
         $this->assertEquals( $rows[ 3 ][ 'descendant' ], $this->fruits->getId() );
         $this->assertEquals( $rows[ 3 ][ 'depth' ], 0 );
+        
+        
+        // We check the childCount field
+        $this->em->refresh( $this->food );
+        $this->em->refresh( $this->sports );
+        $this->em->refresh( $this->fruits );
+        
+        $this->assertEquals( $this->food->getChildCount(), 1 );
+        $this->assertEquals( $this->sports->getChildCount(), 0 );
+        $this->assertEquals( $this->fruits->getChildCount(), 0 );
     }
     
     private function populate()
@@ -293,6 +330,5 @@ class ClosureTreeTest extends \PHPUnit_Framework_TestCase
         $this->em->persist($this->potatoes);
         
         $this->em->flush();
-        $this->em->clear();
     }
 }
