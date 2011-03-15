@@ -32,6 +32,12 @@ class Category
      * @OneToMany(targetEntity="Category", mappedBy="parent", cascade={"persist"})
      */
     private $children;
+    
+    /**
+     * @gedmo:TreeChildCount
+     * @Column(type="integer", nullable="true")
+     */
+    private $childCount;
 
     public function getId()
     {
@@ -56,5 +62,10 @@ class Category
     public function getParent()
     {
         return $this->parent;    
+    }
+    
+    public function getChildCount()
+    {
+        return $this->childCount;
     }
 }
