@@ -35,7 +35,7 @@ class Category
     
     /**
      * @gedmo:TreeChildCount
-     * @Column(type="integer", nullable="true")
+     * @Column(type="integer")
      */
     private $childCount;
 
