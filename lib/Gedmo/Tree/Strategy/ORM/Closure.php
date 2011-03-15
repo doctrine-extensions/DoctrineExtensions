@@ -68,6 +68,14 @@ class Closure implements Strategy
     public function processPrePersist($em, $entity)
     {
         $this->pendingChildNodeInserts[] = $entity;
+        
+        $meta = $em->getClassMetadata(get_class($entity));
+        $config = $this->listener->getConfiguration($em, $meta->name);
+        
+        if (isset( $config['childCount'])) {
+            // We set by default 0 on insertions for childCount field
+            $meta->getReflectionProperty($config['childCount'])->setValue($entity, 0);
+        }
     }
     
     /**
@@ -284,5 +292,6 @@ class Closure implements Strategy
      * {@inheritdoc}
      */
     public function onFlushEnd($em)
-    {}
+    {
+    }
 }
