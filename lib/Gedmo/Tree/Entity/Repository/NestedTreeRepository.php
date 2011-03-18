@@ -26,7 +26,7 @@ class NestedTreeRepository extends AbstractTreeRepository
      * 
      * @return array
      */
-    public function getRoodNodes()
+    public function getRootNodes()
     {
         $meta = $this->getClassMetadata();
         $config = $this->listener->getConfiguration($this->_em, $meta->name);
@@ -490,7 +490,7 @@ class NestedTreeRepository extends AbstractTreeRepository
         $meta = $this->getClassMetadata();
         $config = $this->listener->getConfiguration($this->_em, $meta->name);
         if (isset($config['root'])) {
-            $trees = $this->getRoodNodes();
+            $trees = $this->getRootNodes();
             foreach ($trees as $tree) {
                 $this->verifyTree($errors, $tree);
             }
