@@ -39,34 +39,34 @@ class ClosureTreeRepository extends AbstractTreeRepository
             ->where('c.ancestor = :node_id')
             ->andWhere('c.ancestor != c.descendant');
         
-		if ($direct === true) {
-			$qb->andWhere('c.depth = 1');
+        if ($direct === true) {
+            $qb->andWhere('c.depth = 1');
         }
         
         $qb->setParameter('node_id', $id);
-		
+        
         return $qb->getQuery()->getSingleScalarResult();
     }
-	
-	
-	protected function getQueryBuilder()
-	{
+
+
+    protected function getQueryBuilder()
+    {
         $qb = $this->_em->createQueryBuilder();
         
         return $qb;
-	}
-	
-	protected function getIdFromEntity( $node )
-	{
+    }
+    
+    protected function getIdFromEntity( $node )
+    {
         $meta = $this->_em->getClassMetadata(get_class($node));
         $nodeID = $meta->getSingleIdentifierFieldName();
         $refProp = $meta->getReflectionProperty($nodeID);
         $id = $refProp->getValue($node);
         
         return $id;
-	}
-	
-	/**
+    }
+    
+    /**
      * {@inheritdoc}
      */
     protected function validates()
