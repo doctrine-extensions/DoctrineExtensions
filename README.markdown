@@ -5,7 +5,7 @@ offer new functionality or tools to use Doctrine 2 more efficently. This package
 used behaviors which can be easily attached to your event system of Doctrine 2 and handle the
 records being flushed in the behavioral way. List of extensions:
 
-- Tree - this extension automates the tree handling process and adds some tree specific functions on repository.
+- Tree - this extension automates the tree handling process and adds some tree specific functions on repository. (closure or nestedset)
 - Translatable - gives you a very handy solution for translating records into diferent languages. Easy to setup, easier to use.
 - Sluggable - urlizes your specified fields into single unique slug
 - Timestampable - updates date fields on create, update and even property change.
@@ -28,10 +28,10 @@ If you are using windows, there is **msysgit** tool available.
 
 ### Latest updates
 
-**2011-03-05**
+**2011-03-27**
 
-- Merged Boussekeyt Jules pull request for Loggable extension, tweeked to support versioning
-- Added typehints for object manager and classmetadata in all extensions
+- Merged Gustavo Adrian pull request for **Tree-closure** adapter
+- Now tree extension supports nestedset or closure strategies, it can be used on same manager. Keep in mind that closure adapter is not stable yet
 
 ### ODM MongoDB support
 
@@ -69,6 +69,7 @@ To setup and run tests follow these steps:
 
 ### Contributors:
 
+- Gustavo Adrian [comfortablynumb](http://github.com/comfortablynumb)
 - Boussekeyt Jules [gordonslondon](http://github.com/gordonslondon)
 - Christophe Coevoet [stof](http://github.com/stof)
 - Kudryashov Konstantin [everzet](http://github.com/everzet)
