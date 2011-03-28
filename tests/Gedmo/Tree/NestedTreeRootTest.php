@@ -102,6 +102,23 @@ class NestedTreeRootTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(8, $node->getRight());
     }
     
+    public function testSetParentToNull()
+    {
+        $repo = $this->em->getRepository(self::TEST_ENTITY_CLASS);
+        $node = $repo->findOneByTitle('Vegitables');
+        $node->setParent(null);
+        
+        $this->em->persist($node);
+        $this->em->flush();
+        $this->em->clear();
+        
+        $node = $repo->findOneByTitle('Vegitables');
+        $this->assertEquals(4, $node->getRoot());
+        $this->assertEquals(1, $node->getLeft());
+        $this->assertEquals(6, $node->getRight());
+        $this->assertEquals(0, $node->getLevel());
+    }
+    
     public function testTreeUpdateShiftToNextBranch()
     {
         $repo = $this->em->getRepository(self::TEST_ENTITY_CLASS);

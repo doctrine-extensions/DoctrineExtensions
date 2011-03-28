@@ -70,7 +70,7 @@ class RootCategory
         return $this->title;
     }
     
-    public function setParent($parent)
+    public function setParent(RootCategory $parent = null)
     {
         $this->parent = $parent;    
     }
