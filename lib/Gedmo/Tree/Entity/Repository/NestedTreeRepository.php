@@ -71,7 +71,7 @@ class NestedTreeRepository extends AbstractTreeRepository
                 );
             }
         } else {
-            throw \Gedmo\Exception\InvalidArgumentException("Node is not related to this repository");
+            throw new \Gedmo\Exception\InvalidArgumentException("Node is not related to this repository");
         }
         return $result;
     }
