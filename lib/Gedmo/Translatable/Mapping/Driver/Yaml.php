@@ -28,18 +28,6 @@ class Yaml extends File implements Driver
     protected $_extension = '.dcm.yml';
     
     /**
-     * List of types which are valid for translation,
-     * this property is public and you can add some
-     * other types in case it needs translation
-     * 
-     * @var array
-     */
-    protected $validTypes = array(
-        'string',
-        'text'
-    );
-    
-    /**
      * {@inheritDoc}
      */
     public function validateFullMetadata(ClassMetadata $meta, array $config) {}
@@ -70,9 +58,6 @@ class Yaml extends File implements Driver
             foreach ($mapping['fields'] as $field => $fieldMapping) {
                 if (isset($fieldMapping['gedmo'])) {
                     if (in_array('translatable', $fieldMapping['gedmo'])) {
-                        if (!$this->isValidField($meta, $field)) {
-                            throw new InvalidMappingException("Translatable field - [{$field}] type is not valid and must be 'string' or 'text' in class - {$meta->name}");
-                        }
                         // fields cannot be overrided and throws mapping exception
                         $config['fields'][] = $field;
                     }
@@ -87,18 +72,5 @@ class Yaml extends File implements Driver
     protected function _loadMappingFile($file)
     {
         return \Symfony\Component\Yaml\Yaml::load($file);
-    }
-    
-    /**
-     * Checks if $field type is valid as Translatable field
-     * 
-     * @param ClassMetadata $meta
-     * @param string $field
-     * @return boolean
-     */
-    protected function isValidField(ClassMetadata $meta, $field)
-    {
-        $mapping = $meta->getFieldMapping($field);
-        return $mapping && in_array($mapping['type'], $this->validTypes);
     }
 }
