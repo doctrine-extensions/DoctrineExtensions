@@ -26,6 +26,18 @@ class LogEntryRepository extends EntityRepository
      */ 
     public function getLogEntries($entity)
     {
+        $q = $this->getLogEntriesQuery($entity);
+        return $q->getResult();
+    }
+    
+    /**
+     * Get the query for loading of log entries
+     * 
+     * @param object $entity
+     * @return Query
+     */
+    public function getLogEntriesQuery($entity)
+    {
         $objectClass = get_class($entity);
         $objectMeta = $this->_em->getClassMetadata($objectClass);
         $meta = $this->getClassMetadata();
@@ -38,8 +50,7 @@ class LogEntryRepository extends EntityRepository
         $objectId = $objectMeta->getReflectionProperty($identifierField)->getValue($entity);
         $q = $this->_em->createQuery($dql);
         $q->setParameters(compact('objectId', 'objectClass', 'order'));
-        
-        return $q->getResult();
+        return $q;
     }
 
     /**

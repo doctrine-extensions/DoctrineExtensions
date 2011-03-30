@@ -37,14 +37,14 @@ abstract class AbstractLogEntry
      *
      * @Column(name="object_id", length=32, nullable=true)
      */
-    private $objectId;
+    protected $objectId;
     
     /**
      * @var string $objectClass
      *
      * @Column(name="object_class", type="string", length=255)
      */
-    private $objectClass;
+    protected $objectClass;
     
     /**
      * @var integer $version
@@ -56,16 +56,16 @@ abstract class AbstractLogEntry
     /** 
      * @var text $data
      * 
-     * @Column(type="text", nullable=true) 
+     * @Column(type="array", nullable=true) 
      */
-    private $data;
+    protected $data;
     
     /** 
      * @var text $data
      * 
      * @Column(length=255, nullable=true) 
      */
-    private $username;
+    protected $username;
     
     /**
      * Get action
@@ -170,11 +170,11 @@ abstract class AbstractLogEntry
     /**
      * Get data
      * 
-     * @return array or null
+     * @return array
      */
     public function getData()
     {
-        return is_string($this->data) ? unserialize($this->data) : null;
+        return $this->data;
     }
 
     /**
@@ -184,11 +184,7 @@ abstract class AbstractLogEntry
      */
     public function setData($data)
     {
-        if (is_array($data)) {
-            $this->data = serialize($data);
-        } else {
-            $this->data = $data;
-        }
+        $this->data = $data;
     }
     
     /**
