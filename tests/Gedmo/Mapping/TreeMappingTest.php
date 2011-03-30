@@ -19,6 +19,7 @@ use Doctrine\Common\Util\Debug,
 class TreeMappingTest extends \PHPUnit_Framework_TestCase
 {
     const TEST_YAML_ENTITY_CLASS = 'Mapping\Fixture\Yaml\Category';
+    const YAML_CLOSURE_CATEGORY = 'Mapping\Fixture\Yaml\ClosureCategory';
     private $em;
 
     public function setUp()
@@ -45,15 +46,9 @@ class TreeMappingTest extends \PHPUnit_Framework_TestCase
         $evm = new \Doctrine\Common\EventManager();
         $evm->addEventSubscriber(new TreeListener());
         $this->em = \Doctrine\ORM\EntityManager::create($conn, $config, $evm);
-
-        $schemaTool = new \Doctrine\ORM\Tools\SchemaTool($this->em);
-        $schemaTool->dropSchema(array());
-        $schemaTool->createSchema(array(
-            $this->em->getClassMetadata(self::TEST_YAML_ENTITY_CLASS)
-        ));
     }
     
-    public function testYamlMapping()
+    public function testYamlNestedMapping()
     {
         $meta = $this->em->getClassMetadata(self::TEST_YAML_ENTITY_CLASS);
         $cacheId = ExtensionMetadataFactory::getCacheId(
@@ -69,5 +64,25 @@ class TreeMappingTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('parent', $config['parent']);
         $this->assertArrayHasKey('level', $config);
         $this->assertEquals('lvl', $config['level']);
+        $this->assertArrayHasKey('root', $config);
+        $this->assertEquals('root', $config['root']);
+        $this->assertArrayHasKey('strategy', $config);
+        $this->assertEquals('nested', $config['strategy']);
+    }
+    
+    public function testYamlClosureMapping()
+    {
+        $meta = $this->em->getClassMetadata(self::YAML_CLOSURE_CATEGORY);
+        $cacheId = ExtensionMetadataFactory::getCacheId(self::YAML_CLOSURE_CATEGORY, 'Gedmo\Tree');
+        $config = $this->em->getMetadataFactory()->getCacheDriver()->fetch($cacheId);
+        
+        $this->assertArrayHasKey('parent', $config);
+        $this->assertEquals('parent', $config['parent']);
+        $this->assertArrayHasKey('strategy', $config);
+        $this->assertEquals('closure', $config['strategy']);
+        $this->assertArrayHasKey('closure', $config);
+        $this->assertEquals('Mapping\\Fixture\\Yaml\\BaseCategory', $config['closure']);
+        $this->assertArrayHasKey('childCount', $config);
+        $this->assertEquals('childCount', $config['childCount']);
     }
 }

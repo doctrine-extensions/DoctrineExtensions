@@ -27,6 +27,13 @@ class BaseCategory
      * @Column(name="lvl", type="integer")
      */
     private $lvl;
+    
+    /**
+     * @var integer $root
+     *
+     * @Column(name="root", type="integer")
+     */
+    private $root;
 
     /**
      * @var datetime $created
