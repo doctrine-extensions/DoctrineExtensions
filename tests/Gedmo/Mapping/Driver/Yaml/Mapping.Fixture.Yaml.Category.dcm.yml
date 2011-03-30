@@ -13,6 +13,8 @@ Mapping\Fixture\Yaml\Category:
       locale: localeField
     tree:
       type: nested
+    loggable:
+      logEntryClass: Gedmo\Loggable\Entity\LogEntry
   fields:
     title:
       type: string
