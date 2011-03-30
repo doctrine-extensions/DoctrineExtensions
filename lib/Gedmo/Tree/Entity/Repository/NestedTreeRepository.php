@@ -6,6 +6,7 @@ use Gedmo\Tree\AbstractTreeRepository,
     Doctrine\ORM\Query,
     Gedmo\Tree\Strategy,
     Gedmo\Tree\Strategy\ORM\Nested,
+    Gedmo\Exception\InvalidArgumentException,
     Doctrine\ORM\Proxy\Proxy;
 
 /**
@@ -71,7 +72,7 @@ class NestedTreeRepository extends AbstractTreeRepository
                 );
             }
         } else {
-            throw new \Gedmo\Exception\InvalidArgumentException("Node is not related to this repository");
+            throw new InvalidArgumentException("Node is not related to this repository");
         }
         return $result;
     }
@@ -108,7 +109,7 @@ class NestedTreeRepository extends AbstractTreeRepository
                     }
                 }
             } else {
-                throw \Gedmo\Exception\InvalidArgumentException("Node is not related to this repository");
+                throw new InvalidArgumentException("Node is not related to this repository");
             }
         } else {
             $dql = "SELECT COUNT(node.{$nodeId}) FROM " . $meta->rootEntityName . " node";
@@ -154,7 +155,7 @@ class NestedTreeRepository extends AbstractTreeRepository
                     }
                 }
             } else {
-                throw \Gedmo\Exception\InvalidArgumentException("Node is not related to this repository");
+                throw new \InvalidArgumentException("Node is not related to this repository");
             }
         } else {
             if ($direct) {
@@ -167,7 +168,7 @@ class NestedTreeRepository extends AbstractTreeRepository
             if ($meta->hasField($sortByField) && in_array(strtolower($direction), array('asc', 'desc'))) {
                 $qb->orderBy('node.' . $sortByField, $direction);
             } else {
-                throw new \Gedmo\Exception\InvalidArgumentException("Invalid sort options specified: field - {$sortByField}, direction - {$direction}");
+                throw new InvalidArgumentException("Invalid sort options specified: field - {$sortByField}, direction - {$direction}");
             }
         }
         $q = $qb->getQuery();
@@ -189,7 +190,7 @@ class NestedTreeRepository extends AbstractTreeRepository
         $config = $this->listener->getConfiguration($this->_em, $meta->name);
 
         if (isset($config['root']) && is_null($root)) {
-            throw \Gedmo\Exception\InvalidArgumentException("If tree has root, getLiefs method requires root node");
+            throw new InvalidArgumentException("If tree has root, getLiefs method requires root node");
         }
         
         $qb = $this->_em->createQueryBuilder();
@@ -201,7 +202,7 @@ class NestedTreeRepository extends AbstractTreeRepository
                 $rootId = $meta->getReflectionProperty($config['root'])->getValue($root);
                 $qb->andWhere("node.{$config['root']} = {$rootId}");
             } else {
-                throw \Gedmo\Exception\InvalidArgumentException("Node is not related to this repository");
+                throw new InvalidArgumentException("Node is not related to this repository");
             }
         }
         if (!$sortByField) {
@@ -210,7 +211,7 @@ class NestedTreeRepository extends AbstractTreeRepository
             if ($meta->hasField($sortByField) && in_array(strtolower($direction), array('asc', 'desc'))) {
                 $qb->orderBy('node.' . $sortByField, $direction);
             } else {
-                throw new \Gedmo\Exception\InvalidArgumentException("Invalid sort options specified: field - {$sortByField}, direction - {$direction}");
+                throw new InvalidArgumentException("Invalid sort options specified: field - {$sortByField}, direction - {$direction}");
             }
         }
         $q = $qb->getQuery();
@@ -234,7 +235,7 @@ class NestedTreeRepository extends AbstractTreeRepository
             $config = $this->listener->getConfiguration($this->_em, $meta->name);
             $parent = $meta->getReflectionProperty($config['parent'])->getValue($node);
             if (!$parent) {
-                throw new \Gedmo\Exception\InvalidArgumentException("Cannot get siblings from tree root node");
+                throw new InvalidArgumentException("Cannot get siblings from tree root node");
             }
             $identifierField = $meta->getSingleIdentifierFieldName();
             if ($parent instanceof Proxy) {
@@ -251,7 +252,7 @@ class NestedTreeRepository extends AbstractTreeRepository
             $dql .= " ORDER BY node.{$config['left']} ASC";
             $result = $this->_em->createQuery($dql)->getResult(Query::HYDRATE_OBJECT);
         } else {
-            throw \Gedmo\Exception\InvalidArgumentException("Node is not related to this repository");
+            throw new InvalidArgumentException("Node is not related to this repository");
         }
         return $result;
     }
@@ -273,7 +274,7 @@ class NestedTreeRepository extends AbstractTreeRepository
             $config = $this->listener->getConfiguration($this->_em, $meta->name);
             $parent = $meta->getReflectionProperty($config['parent'])->getValue($node);
             if (!$parent) {
-                throw new \Gedmo\Exception\InvalidArgumentException("Cannot get siblings from tree root node");
+                throw new InvalidArgumentException("Cannot get siblings from tree root node");
             }
             $identifierField = $meta->getSingleIdentifierFieldName();
             if ($parent instanceof Proxy) {
@@ -290,7 +291,7 @@ class NestedTreeRepository extends AbstractTreeRepository
             $dql .= " ORDER BY node.{$config['left']} ASC";
             $result = $this->_em->createQuery($dql)->getResult(Query::HYDRATE_OBJECT);
         } else {
-            throw \Gedmo\Exception\InvalidArgumentException("Node is not related to this repository");
+            throw new InvalidArgumentException("Node is not related to this repository");
         }
         return $result;
     }
@@ -324,7 +325,7 @@ class NestedTreeRepository extends AbstractTreeRepository
                     ->updateNode($this->_em, $node, $nextSiblings[$number - 1], Nested::NEXT_SIBLING);
             }
         } else {
-            throw \Gedmo\Exception\InvalidArgumentException("Node is not related to this repository");
+            throw new InvalidArgumentException("Node is not related to this repository");
         }
         return $result;
     }
@@ -358,7 +359,7 @@ class NestedTreeRepository extends AbstractTreeRepository
                     ->updateNode($this->_em, $node, $prevSiblings[$number - 1], Nested::PREV_SIBLING);
             }
         } else {
-            throw \Gedmo\Exception\InvalidArgumentException("Node is not related to this repository");
+            throw new InvalidArgumentException("Node is not related to this repository");
         }
         return $result;
     }
@@ -430,7 +431,7 @@ class NestedTreeRepository extends AbstractTreeRepository
             $this->_em->remove($node);
             $autoFlush && $this->_em->flush();
         } else {
-            throw \Gedmo\Exception\InvalidArgumentException("Node is not related to this repository");
+            throw new InvalidArgumentException("Node is not related to this repository");
         }
     }
     
@@ -467,7 +468,7 @@ class NestedTreeRepository extends AbstractTreeRepository
                 }
             }
         } else {
-            throw \Gedmo\Exception\InvalidArgumentException("Node is not related to this repository");
+            throw new InvalidArgumentException("Node is not related to this repository");
         }
     }
     
