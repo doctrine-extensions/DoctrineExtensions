@@ -44,7 +44,8 @@ class Yaml extends File implements Driver
      * @var array
      */
     private $strategies = array(
-        'nested'
+        'nested',
+        'closure'
     );
     
     /**
@@ -76,6 +77,13 @@ class Yaml extends File implements Driver
                 }
                 $config['strategy'] = $strategy;
             }
+            if (isset($classMapping['tree']['closure'])) {
+                $class = $classMapping['tree']['closure'];
+                if (!class_exists($class)) {
+                    throw new InvalidMappingException("Tree closure class: {$class} does not exist.");
+                }
+                $config['closure'] = $class;
+            }
         }
         if (isset($mapping['fields'])) {
             foreach ($mapping['fields'] as $field => $fieldMapping) {
@@ -100,6 +108,11 @@ class Yaml extends File implements Driver
                             throw new InvalidMappingException("Tree root field - [{$field}] type is not valid and must be 'integer' in class - {$meta->name}");
                         }
                         $config['root'] = $field;
+                    } elseif (in_array('treeChildCount', $fieldMapping['gedmo'])) {
+                        if (!$this->isValidField($meta, $field)) {
+                            throw new InvalidMappingException("Tree child count field - [{$field}] type is not valid and must be 'integer' in class - {$meta->name}");
+                        }
+                        $config['childCount'] = $field;
                     }
                 }
             }
@@ -158,6 +171,32 @@ class Yaml extends File implements Driver
         }
         if (!isset($config['right'])) {
             $missingFields[] = 'right';
+        }
+        if ($missingFields) {
+            throw new InvalidMappingException("Missing properties: " . implode(', ', $missingFields) . " in class - {$meta->name}");
+        }
+    }
+    
+	/**
+     * Validates metadata for closure type tree
+     * 
+     * @param ClassMetadata $meta
+     * @param array $config
+     * @throws InvalidMappingException
+     * @return void
+     */
+    private function validateClosureTreeMetadata(ClassMetadata $meta, array $config)
+    {
+        if (is_array($meta->identifier) && count($meta->identifier) > 1) {
+            throw new InvalidMappingException("Tree does not support composite identifiers in class - {$meta->name}");
+        }
+        
+        $missingFields = array();
+        if (!isset($config['parent'])) {
+            $missingFields[] = 'ancestor';
+        }
+        if (!isset($config['closure'])) {
+            $missingFields[] = 'closure class';
         }
         if ($missingFields) {
             throw new InvalidMappingException("Missing properties: " . implode(', ', $missingFields) . " in class - {$meta->name}");
