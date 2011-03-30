@@ -1,6 +1,5 @@
 tests/phpunit.xml
-tests/Gedmo/*/Proxy/*
-tests/Gedmo/*/Hydrator/*
+tests/temp/*.php
 build/
 scripts/
 .project

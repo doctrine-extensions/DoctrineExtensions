@@ -25,7 +25,7 @@ class MappingTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {        
         $config = new \Doctrine\ORM\Configuration();
-        $config->setProxyDir(__DIR__ . '/Proxy');
+        $config->setProxyDir(TESTS_TEMP_DIR);
         $config->setProxyNamespace('Gedmo\Mapping\Proxy');
         $config->setMetadataDriverImpl($config->newDefaultAnnotationDriver());
 

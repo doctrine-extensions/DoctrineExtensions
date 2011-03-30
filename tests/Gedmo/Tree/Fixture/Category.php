@@ -2,13 +2,13 @@
 
 namespace Tree\Fixture;
 
-use Gedmo\Tree\Node;
+use Gedmo\Tree\Node as NodeInterface;
 
 /**
  * @Entity(repositoryClass="Gedmo\Tree\Entity\Repository\NestedTreeRepository")
  * @gedmo:Tree(type="nested")
  */
-class Category implements Node
+class Category implements NodeInterface
 {
     /**
      * @Column(name="id", type="integer")

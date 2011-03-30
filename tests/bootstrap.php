@@ -10,6 +10,7 @@
  */
 
 define('TESTS_PATH', __DIR__);
+define('TESTS_TEMP_DIR', __DIR__.'/temp');
 define('VENDOR_PATH', realpath(__DIR__ . '/../vendor'));
 
 set_include_path(implode(PATH_SEPARATOR, array(
