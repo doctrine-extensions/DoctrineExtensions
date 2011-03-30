@@ -28,7 +28,7 @@ class InheritanceTest extends \PHPUnit_Framework_TestCase
         $config = new \Doctrine\ORM\Configuration();
         $config->setMetadataCacheImpl(new \Doctrine\Common\Cache\ArrayCache);
         $config->setQueryCacheImpl(new \Doctrine\Common\Cache\ArrayCache);
-        $config->setProxyDir(__DIR__ . '/Proxy');
+        $config->setProxyDir(TESTS_TEMP_DIR);
         $config->setProxyNamespace('Gedmo\Translatable\Proxies');
         $config->setMetadataDriverImpl($config->newDefaultAnnotationDriver());
 

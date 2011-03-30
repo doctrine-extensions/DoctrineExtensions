@@ -24,9 +24,9 @@ class SluggableDocumentTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $config = new \Doctrine\ODM\MongoDB\Configuration();
-        $config->setProxyDir(__DIR__ . '/Proxy');
+        $config->setProxyDir(TESTS_TEMP_DIR);
         $config->setProxyNamespace('Gedmo\Sluggable\Proxies');
-        $config->setHydratorDir(__DIR__ . '/Hydrator');
+        $config->setHydratorDir(TESTS_TEMP_DIR);
         $config->setHydratorNamespace('Hydrator');
         $config->setDefaultDB('gedmo_sluggable_tests');
         
