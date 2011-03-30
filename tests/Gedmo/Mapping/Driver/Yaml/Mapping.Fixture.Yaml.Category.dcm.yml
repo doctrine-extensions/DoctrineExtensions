@@ -11,6 +11,8 @@ Mapping\Fixture\Yaml\Category:
     translation:
       entity: Translatable\Fixture\CategoryTranslation
       locale: localeField
+    tree:
+      type: nested
   fields:
     title:
       type: string
