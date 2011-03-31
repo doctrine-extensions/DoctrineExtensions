@@ -236,13 +236,7 @@ class Urlizer
         
         $len = strlen($str);
         $i = 0;
-        
-        # Use an output buffer to copy the transliterated string
-        # This is done for performance vs. string concatenation - on my system, drops
-        # the average request time for the example from ~0.46ms to 0.41ms
-        # See http://phplens.com/lens/php-book/optimizing-debugging-php.php
-        # Section  "High Return Code Optimizations"
-        ob_start();
+        $result = '';
         
         while ($i < $len) {
             $ord = NULL;
@@ -275,7 +269,6 @@ class Urlizer
                                 + ($ord2-128)*64 + ($ord3-128);
                             $increment = 4;
                         } else {
-                            ob_end_clean();
                             throw new \Gedmo\Exception\UnexpectedValueException('Unidentified ut8 character was present, pure utf8 required');
                         }
                     }
@@ -291,7 +284,6 @@ class Urlizer
                 if (file_exists($bankfile)) {
                     # Load the appropriate database
                     if (!include $bankfile) {
-                        ob_end_clean();
                         throw new \Gedmo\Exception\RuntimeException('Cannot find character bank file: ' . $bankfile);
                     }
                 } else {
@@ -302,16 +294,14 @@ class Urlizer
 
             $newchar = $ord & 255;            
             if (isset($UTF8_TO_ASCII[$bank]) && array_key_exists($newchar, $UTF8_TO_ASCII[$bank])) {
-                echo $UTF8_TO_ASCII[$bank][$newchar];
+                $result .= $UTF8_TO_ASCII[$bank][$newchar];
             } else {
-                echo $unknown;
+                $result .= $unknown;
             }
             $i += $increment;
         }
         
-        $str = ob_get_contents();
-        ob_end_clean();
-        return $str;
+        return $result;
     }
     
     /**
@@ -356,8 +346,8 @@ class Urlizer
     * @return boolean true if valid
     * @see http://hsivonen.iki.fi/php-utf8/
     */
-    public static function validUtf8($str) {
-        
+    public static function validUtf8($str) 
+    {    
         $mState = 0;     // cached expected number of octets after the current octet
                          // until the beginning of the next UTF8 character sequence
         $mUcs4  = 0;     // cached Unicode character
@@ -365,11 +355,11 @@ class Urlizer
         
         $len = strlen($str);
         
-        for($i = 0; $i < $len; $i++) {
+        for ($i = 0; $i < $len; $i++) {
             
             $in = ord($str{$i});
             
-            if ( $mState == 0) {
+            if ($mState == 0) {
                 
                 // When mState is zero we expect either a US-ASCII character or a
                 // multi-octet sequence.
@@ -377,28 +367,28 @@ class Urlizer
                     // US-ASCII, pass straight through.
                     $mBytes = 1;
                     
-                } else if (0xC0 == (0xE0 & ($in))) {
+                } elseif (0xC0 == (0xE0 & ($in))) {
                     // First octet of 2 octet sequence
                     $mUcs4 = ($in);
                     $mUcs4 = ($mUcs4 & 0x1F) << 6;
                     $mState = 1;
                     $mBytes = 2;
                     
-                } else if (0xE0 == (0xF0 & ($in))) {
+                } elseif (0xE0 == (0xF0 & ($in))) {
                     // First octet of 3 octet sequence
                     $mUcs4 = ($in);
                     $mUcs4 = ($mUcs4 & 0x0F) << 12;
                     $mState = 2;
                     $mBytes = 3;
                     
-                } else if (0xF0 == (0xF8 & ($in))) {
+                } elseif (0xF0 == (0xF8 & ($in))) {
                     // First octet of 4 octet sequence
                     $mUcs4 = ($in);
                     $mUcs4 = ($mUcs4 & 0x07) << 18;
                     $mState = 3;
                     $mBytes = 4;
                     
-                } else if (0xF8 == (0xFC & ($in))) {
+                } elseif (0xF8 == (0xFC & ($in))) {
                     /* First octet of 5 octet sequence.
                     *
                     * This is illegal because the encoded codepoint must be either
@@ -412,7 +402,7 @@ class Urlizer
                     $mState = 4;
                     $mBytes = 5;
                     
-                } else if (0xFC == (0xFE & ($in))) {
+                } elseif (0xFC == (0xFE & ($in))) {
                     // First octet of 6 octet sequence, see comments for 5 octet sequence.
                     $mUcs4 = ($in);
                     $mUcs4 = ($mUcs4 & 1) << 30;
@@ -444,7 +434,6 @@ class Urlizer
                     * Unicode codepoint to be output
                     */
                     if (0 == --$mState) {
-                        
                         /*
                         * Check for illegal sequences and codepoints.
                         */
@@ -456,10 +445,9 @@ class Urlizer
                             // From Unicode 3.2, surrogate characters are illegal
                             (($mUcs4 & 0xFFFFF800) == 0xD800) ||
                             // Codepoints outside the Unicode range are illegal
-                            ($mUcs4 > 0x10FFFF)) {
-                            
+                            ($mUcs4 > 0x10FFFF)
+                        ) {
                             return FALSE;
-                            
                         }
                         
                         //initialize UTF8 cache
