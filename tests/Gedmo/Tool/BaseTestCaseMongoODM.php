@@ -70,6 +70,7 @@ abstract class BaseTestCaseMongoODM extends \PHPUnit_Framework_TestCase
 
         try {
             $this->dm = DocumentManager::create($conn, $config, $evm ?: $this->getEventManager());
+            $this->dm->getConnection()->connect();
         } catch (\MongoException $e) {
             $this->markTestSkipped('Doctrine MongoDB ODM failed to connect');
         }
