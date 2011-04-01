@@ -2,69 +2,63 @@
 
 namespace Gedmo\Tree;
 
+use Doctrine\Common\EventManager;
+use Tool\BaseTestCaseORM;
+use Gedmo\Translatable\TranslationListener;
+use Gedmo\Timestampable\TimestampableListener;
 use Doctrine\Common\Util\Debug;
+use Timestampable\Fixture\SupperClassExtension;
 
 /**
  * These are tests for Timestampable behavior
- * 
+ *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  * @package Gedmo.Tree
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class ProtectedPropertySupperclassTest extends \PHPUnit_Framework_TestCase
+class ProtectedPropertySupperclassTest extends BaseTestCaseORM
 {
-    const TEST_ENTITY_CLASS = "Timestampable\Fixture\SupperClassExtension";
-    const TEST_ENTITY_TRANSLATION = "Gedmo\Translatable\Entity\Translation";
-    private $em;
+    const SUPERCLASS = "Timestampable\\Fixture\\SupperClassExtension";
+    const TRANSLATION = "Gedmo\\Translatable\\Entity\\Translation";
 
-    public function setUp()
-    {        
-        $config = new \Doctrine\ORM\Configuration();
-        $config->setMetadataCacheImpl(new \Doctrine\Common\Cache\ArrayCache);
-        $config->setQueryCacheImpl(new \Doctrine\Common\Cache\ArrayCache);
-        $config->setProxyDir(TESTS_TEMP_DIR);
-        $config->setProxyNamespace('Gedmo\Timestampable\Proxies');
-        $config->setMetadataDriverImpl($config->newDefaultAnnotationDriver());
+    protected function setUp()
+    {
+        parent::setUp();
 
-        $conn = array(
-            'driver' => 'pdo_sqlite',
-            'memory' => true,
-        );
-
-        //$config->setSQLLogger(new \Doctrine\DBAL\Logging\EchoSQLLogger());
-        
-        $evm = new \Doctrine\Common\EventManager();
-        $evm->addEventSubscriber(new \Gedmo\Timestampable\TimestampableListener());
-        $translationListener = new \Gedmo\Translatable\TranslationListener();
+        $evm = new EventManager;
+        $translationListener = new TranslationListener;
         $translationListener->setTranslatableLocale('en_us');
         $evm->addEventSubscriber($translationListener);
-        $this->em = \Doctrine\ORM\EntityManager::create($conn, $config, $evm);
+        $evm->addEventSubscriber(new TimestampableListener);
 
-        $schemaTool = new \Doctrine\ORM\Tools\SchemaTool($this->em);
-        $schemaTool->dropSchema(array());
-        $schemaTool->createSchema(array(
-            $this->em->getClassMetadata(self::TEST_ENTITY_CLASS),
-            $this->em->getClassMetadata(self::TEST_ENTITY_TRANSLATION)
-        ));
+        $this->getMockSqliteEntityManager($evm);
     }
-    
+
     public function testProtectedProperty()
     {
-        $test = new \Timestampable\Fixture\SupperClassExtension;
+        $test = new SupperClassExtension;
         $test->setName('name');
         $test->setTitle('title');
-        
+
         $this->em->persist($test);
         $this->em->flush();
         $this->em->clear();
-        
-        $repo = $this->em->getRepository(self::TEST_ENTITY_TRANSLATION);
+
+        $repo = $this->em->getRepository(self::TRANSLATION);
         $translations = $repo->findTranslations($test);
         $this->assertEquals(1, count($translations));
         $this->assertArrayHasKey('en_us', $translations);
         $this->assertEquals(2, count($translations['en_us']));
-        
+
         $this->assertTrue($test->getCreatedAt() !== null);
+    }
+
+    protected function getUsedEntityFixtures()
+    {
+        return array(
+            self::TRANSLATION,
+            self::SUPERCLASS
+        );
     }
 }

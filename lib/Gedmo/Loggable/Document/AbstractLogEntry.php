@@ -15,14 +15,14 @@ abstract class AbstractLogEntry
      * @Id
      */
     private $id;
-    
+
     /**
      * @var string $action
      *
      * @String
      */
     private $action;
-    
+
     /**
      * @var datetime $loggedAt
      *
@@ -30,47 +30,47 @@ abstract class AbstractLogEntry
      * @Date
      */
     private $loggedAt;
-    
+
     /**
      * @var string $objectId
      *
      * @String(nullable=true)
      */
-    private $objectId;
-    
+    protected $objectId;
+
     /**
      * @var string $objectClass
      *
      * @Index
      * @String
      */
-    private $objectClass;
-    
+    protected $objectClass;
+
     /**
      * @var integer $version
-     *  
+     *
      * @Int
      */
     private $version;
-    
-    /** 
+
+    /**
      * @var text $data
-     * 
-     * @String(nullable=true)
+     *
+     * @Hash(nullable=true)
      */
-    private $data;
-    
-    /** 
+    protected $data;
+
+    /**
      * @var string $data
-     * 
+     *
      * @Index
      * @String(nullable=true)
      */
-    private $username;
-    
+    protected $username;
+
     /**
      * Get action
-     * 
+     *
      * @return string
      */
     public function getAction()
@@ -87,10 +87,10 @@ abstract class AbstractLogEntry
     {
         $this->action = $action;
     }
-    
+
     /**
      * Get object class
-     * 
+     *
      * @return string
      */
     public function getObjectClass()
@@ -100,17 +100,17 @@ abstract class AbstractLogEntry
 
     /**
      * Set object class
-     * 
+     *
      * @param string $objectClass
      */
     public function setObjectClass($objectClass)
     {
         $this->objectClass = $objectClass;
     }
-    
+
     /**
      * Get object id
-     * 
+     *
      * @return string
      */
     public function getObjectId()
@@ -120,17 +120,17 @@ abstract class AbstractLogEntry
 
     /**
      * Set object id
-     * 
+     *
      * @param string $objectId
      */
     public function setObjectId($objectId)
     {
         $this->objectId = $objectId;
     }
-    
+
     /**
      * Get username
-     * 
+     *
      * @return string
      */
     public function getUsername()
@@ -140,17 +140,17 @@ abstract class AbstractLogEntry
 
     /**
      * Set username
-     * 
+     *
      * @param string $username
      */
     public function setUsername($username)
     {
         $this->username = $username;
     }
-    
+
     /**
      * Get loggedAt
-     * 
+     *
      * @return datetime
      */
     public function getLoggedAt()
@@ -160,51 +160,47 @@ abstract class AbstractLogEntry
 
     /**
      * Set loggedAt
-     * 
+     *
      * @param string $loggedAt
      */
     public function setLoggedAt()
     {
         $this->loggedAt = new \DateTime();
     }
-    
+
     /**
      * Get data
-     * 
+     *
      * @return array or null
      */
     public function getData()
     {
-        return is_string($this->data) ? unserialize($this->data) : null;
+        return $this->data;
     }
 
     /**
      * Set data
-     * 
+     *
      * @param array $data
      */
     public function setData($data)
     {
-        if (is_array($data)) {
-            $this->data = serialize($data);
-        } else {
-            $this->data = $data;
-        }
+        $this->data = $data;
     }
-    
+
     /**
      * Set current version
-     *  
+     *
      * @param integer $version
      */
     public function setVersion($version)
     {
         $this->version = $version;
     }
-    
+
     /**
      * Get current version
-     *  
+     *
      * @return integer
      */
     public function getVersion()

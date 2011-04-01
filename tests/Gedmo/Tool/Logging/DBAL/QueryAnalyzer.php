@@ -17,36 +17,36 @@ class QueryAnalyzer implements SQLLogger
 {
     /**
      * Used database platform
-     * 
+     *
      * @var AbstractPlatform
      */
     protected $platform;
-    
+
     /**
      * Start time of currently executed query
-     * 
+     *
      * @var integer
      */
     private $queryStartTime = null;
-    
+
     /**
      * Total execution time of all queries
-     * 
+     *
      * @var integer
      */
     private $totalExecutionTime = 0;
-    
+
     /**
      * List of queries executed
-     * 
+     *
      * @var array
      */
     private $queries = array();
-    
+
     /**
      * Query execution times indexed
      * in same order as queries
-     * 
+     *
      * @var array
      */
     private $queryExecutionTimes = array();
@@ -55,14 +55,14 @@ class QueryAnalyzer implements SQLLogger
      * Initialize log listener with database
      * platform, which is needed for parameter
      * conversion
-     * 
+     *
      * @param AbstractPlatform $platform
      */
     public function __construct(AbstractPlatform $platform)
     {
         $this->platform = $platform;
     }
-    
+
     /**
      * {@inheritdoc}
      */
@@ -71,7 +71,7 @@ class QueryAnalyzer implements SQLLogger
         $this->queryStartTime = microtime(true);
         $this->queries[] = $this->generateSql($sql, $params, $types);
     }
-    
+
     /**
      * {@inheritdoc}
      */
@@ -81,26 +81,27 @@ class QueryAnalyzer implements SQLLogger
         $this->queryExecutionTimes[] = $ms;
         $this->totalExecutionTime += $ms;
     }
-    
+
     /**
      * Dump the statistics of executed queries
-     * 
+     *
      * @return void
      */
-    public function dumpResult()
+    public function getOutput()
     {
-        echo 'Platform: ' . $this->platform->getName() . PHP_EOL;
-        echo 'Executed queries: ' . count($this->queries) . ', total time: ' . $this->totalExecutionTime . ' ms' . PHP_EOL;
+        $output = 'Platform: ' . $this->platform->getName() . PHP_EOL;
+        $output .= 'Executed queries: ' . count($this->queries) . ', total time: ' . $this->totalExecutionTime . ' ms' . PHP_EOL;
         foreach ($this->queries as $index => $sql) {
-            echo 'Query(' . ($index+1) . ') - ' . $this->queryExecutionTimes[$index] . ' ms' . PHP_EOL;
-            echo $sql . PHP_EOL;
+            $output .= 'Query(' . ($index+1) . ') - ' . $this->queryExecutionTimes[$index] . ' ms' . PHP_EOL;
+            $output .= $sql . PHP_EOL;
         }
-        echo PHP_EOL;
+        $output .= PHP_EOL;
+        return $output;
     }
-    
+
     /**
      * Index of the slowest query executed
-     * 
+     *
      * @return integer
      */
     public function getSlowestQueryIndex()
@@ -115,27 +116,27 @@ class QueryAnalyzer implements SQLLogger
         }
         return $index;
     }
-    
+
     /**
      * Get total execution time of queries
-     * 
+     *
      * @return integer
      */
     public function getTotalExecutionTime()
     {
         return $this->totalExecutionTime;
     }
-    
+
     /**
      * Get all queries
-     * 
+     *
      * @return array
      */
     public function getExecutedQueries()
     {
         return $this->queries;
     }
-    
+
     /**
      * Get all query execution times
      *
@@ -145,7 +146,7 @@ class QueryAnalyzer implements SQLLogger
     {
         return $this->queryExecutionTimes;
     }
-    
+
     /**
      * Create the SQL with mapped parameters
      *
@@ -155,7 +156,7 @@ class QueryAnalyzer implements SQLLogger
      * @return sql
      */
     private function generateSql($sql, $params, $types)
-    {        
+    {
         if (!count($params)) {
             return $sql;
         }
@@ -165,10 +166,10 @@ class QueryAnalyzer implements SQLLogger
             return $converted[$index++];
         }, $sql);
     }
-    
+
     /**
      * Get the converted parameter list
-     * 
+     *
      * @param array $params
      * @param array $types
      * @return array

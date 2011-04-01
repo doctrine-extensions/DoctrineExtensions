@@ -25,43 +25,43 @@ abstract class AbstractLoggableListener extends MappedEventSubscriber
      * Create action
      */
     const ACTION_CREATE = 'create';
-    
+
     /**
      * Update action
      */
     const ACTION_UPDATE = 'update';
-    
+
     /**
      * Remove action
      */
     const ACTION_REMOVE = 'remove';
-    
+
     /**
      * Username for identification
-     * 
+     *
      * @var string
      */
     protected $username;
-    
+
     /**
      * List of log entries which do not have the foreign
      * key generated yet - MySQL case. These entries
      * will be updated with new keys on postPersist event
-     * 
+     *
      * @var array
      */
     private $pendingLogEntryInserts = array();
-    
+
     /**
      * For log of changed relations we use
      * its identifiers to avoid storing serialized Proxies.
      * These are pending relations in case it does not
      * have an identifier yet
-     * 
+     *
      * @var array
      */
     private $pendingRelatedObjects = array();
-    
+
     /**
      * Set username for identification
      *
@@ -77,7 +77,7 @@ abstract class AbstractLoggableListener extends MappedEventSubscriber
             throw new \Gedmo\Exception\InvalidArgumentException("Username must be a string, or object should have method: getUsername");
         }
     }
-    
+
     /**
      * Mapps additional metadata
      *
@@ -92,7 +92,7 @@ abstract class AbstractLoggableListener extends MappedEventSubscriber
     /**
      * Checks for inserted object to update its logEntry
      * foreign key
-     * 
+     *
      * @param EventArgs $args
      * @return void
      */
@@ -102,14 +102,14 @@ abstract class AbstractLoggableListener extends MappedEventSubscriber
         $om = $this->getObjectManager($args);
         $oid = spl_object_hash($object);
         $uow = $om->getUnitOfWork();
-        if ($this->pendingLogEntryInserts && array_key_exists($oid, $this->pendingLogEntryInserts)) {            
+        if ($this->pendingLogEntryInserts && array_key_exists($oid, $this->pendingLogEntryInserts)) {
             $meta = $om->getClassMetadata(get_class($object));
             $config = $this->getConfiguration($om, $meta->name);
             // there should be single identifier
             $identifierField = $this->getSingleIdentifierFieldName($meta);
             $logEntry = $this->pendingLogEntryInserts[$oid];
             $logEntryMeta = $om->getClassMetadata(get_class($logEntry));
-            
+
             $id = $meta->getReflectionProperty($identifierField)->getValue($object);
             $logEntryMeta->getReflectionProperty('objectId')->setValue($logEntry, $id);
             $uow->scheduleExtraUpdate($logEntry, array(
@@ -120,21 +120,20 @@ abstract class AbstractLoggableListener extends MappedEventSubscriber
         if ($this->pendingRelatedObjects && array_key_exists($oid, $this->pendingRelatedObjects)) {
             $identifiers = $this->extractIdentifiers($om, $object);
             $props = $this->pendingRelatedObjects[$oid];
-            
+
             $logEntry = $props['log'];
             $logEntryMeta = $om->getClassMetadata(get_class($logEntry));
-            $serialized = $logEntryMeta->getReflectionProperty('data')->getValue($logEntry);
-            $data = $logEntry->getData();
+            $oldData = $data = $logEntry->getData();
             $data[$props['field']] = $identifiers;
             $logEntry->setData($data);
-            
+
             $uow->scheduleExtraUpdate($logEntry, array(
-                'data' => array($serialized, serialize($data))
+                'data' => array($oldData, $data)
             ));
             unset($this->pendingRelatedObjects[$oid]);
         }
     }
-    
+
     /**
      * Looks for loggable objects being inserted or updated
      * for further processing
@@ -157,7 +156,7 @@ abstract class AbstractLoggableListener extends MappedEventSubscriber
             $this->createLogEntry(self::ACTION_REMOVE, $object, $om);
         }
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -206,7 +205,7 @@ abstract class AbstractLoggableListener extends MappedEventSubscriber
      * @return array
      */
     abstract protected function getScheduledObjectDeletions($uow);
-    
+
     /**
      * Get the object changeset from a UnitOfWork
      *
@@ -215,7 +214,7 @@ abstract class AbstractLoggableListener extends MappedEventSubscriber
      * @return array
      */
     abstract protected function getObjectChangeSet($uow, $object);
-    
+
     /**
      * Get the single identifier field name
      *
@@ -224,7 +223,7 @@ abstract class AbstractLoggableListener extends MappedEventSubscriber
      * @return string
      */
     abstract protected function getSingleIdentifierFieldName(ClassMetadata $meta);
-    
+
     /**
      * Get the Object from EventArgs
      *
@@ -232,7 +231,7 @@ abstract class AbstractLoggableListener extends MappedEventSubscriber
      * @return object
      */
     abstract protected function getObject(EventArgs $args);
-    
+
     /**
      * Get the Object from EventArgs
      *
@@ -242,7 +241,7 @@ abstract class AbstractLoggableListener extends MappedEventSubscriber
      * @return integer
      */
     abstract protected function getNewVersion(ClassMetadata $meta, ObjectManager $om, $object);
-    
+
     /**
      * Extracts all identifiers from the object,
      * if there are no identifiers yet, returns
@@ -265,7 +264,7 @@ abstract class AbstractLoggableListener extends MappedEventSubscriber
         }
         return $identifier;
     }
-    
+
     /**
      * Create a new Log instance
      *
@@ -280,12 +279,12 @@ abstract class AbstractLoggableListener extends MappedEventSubscriber
         if ($config = $this->getConfiguration($om, $meta->name)) {
             $logEntryClass = $this->getLogEntryClass($config, $meta->name);
             $logEntry = new $logEntryClass;
-            
+
             $logEntry->setAction($action);
             $logEntry->setUsername($this->username);
             $logEntry->setObjectClass($meta->name);
             $logEntry->setLoggedAt();
-            
+
             // check for the availability of the primary key
             $identifierField = $this->getSingleIdentifierFieldName($meta);
             $objectId = $meta->getReflectionProperty($identifierField)->getValue($object);
@@ -320,7 +319,7 @@ abstract class AbstractLoggableListener extends MappedEventSubscriber
                 $version = $this->getNewVersion($logEntryMeta, $om, $object);
             }
             $logEntry->setVersion($version);
-            
+
             $om->persist($logEntry);
             $uow->computeChangeSet($logEntryMeta, $logEntry);
         }

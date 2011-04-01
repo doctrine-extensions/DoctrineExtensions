@@ -2,93 +2,65 @@
 
 namespace Gedmo\Sluggable;
 
+use Doctrine\Common\EventManager;
+use Tool\BaseTestCaseORM;
 use Doctrine\Common\Util\Debug,
     Sluggable\Fixture\ConfigurationArticle;
 
 /**
- * These are tests for translatable behavior
- * 
+ * These are tests for Sluggable behavior
+ *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @package Gedmo.Translatable
+ * @package Gedmo.Sluggable
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class SluggableConfigurationTest extends \PHPUnit_Framework_TestCase
+class SluggableConfigurationTest extends BaseTestCaseORM
 {
-    const TEST_ENTITY_CLASS = 'Sluggable\Fixture\ConfigurationArticle';
-    
+    const ARTICLE = 'Sluggable\\Fixture\\ConfigurationArticle';
+
     private $articleId;
-    private $em;
 
-    public function setUp()
-    {        
-        $config = new \Doctrine\ORM\Configuration();
-        $config->setMetadataCacheImpl(new \Doctrine\Common\Cache\ArrayCache);
-        $config->setQueryCacheImpl(new \Doctrine\Common\Cache\ArrayCache);
-        $config->setProxyDir(TESTS_TEMP_DIR);
-        $config->setProxyNamespace('Gedmo\Sluggable\Proxies');
-        $config->setMetadataDriverImpl($config->newDefaultAnnotationDriver());
+    protected function setUp()
+    {
+        parent::setUp();
 
-        $conn = array(
-            'driver' => 'pdo_sqlite',
-            'memory' => true,
-        );
+        $evm = new EventManager;
+        $evm->addEventSubscriber(new SluggableListener);
 
-        //$config->setSQLLogger(new \Doctrine\DBAL\Logging\EchoSQLLogger());
-        
-        $evm = new \Doctrine\Common\EventManager();
-        $sluggableListener = new SluggableListener();
-        $evm->addEventSubscriber($sluggableListener);
-        $this->em = \Doctrine\ORM\EntityManager::create($conn, $config, $evm);
-
-        $schemaTool = new \Doctrine\ORM\Tools\SchemaTool($this->em);
-        $schemaTool->dropSchema(array());
-        $schemaTool->createSchema(array(
-            $this->em->getClassMetadata(self::TEST_ENTITY_CLASS)
-        ));
-
-        $article = new ConfigurationArticle();
-        $article->setTitle('the title');
-        $article->setCode('my code');
-        
-        $this->em->persist($article);
-        $this->em->flush();
-        $this->em->clear();
-        $this->articleId = $article->getId();
+        $this->getMockSqliteEntityManager($evm);
+        $this->populate();
     }
-    
+
     public function testInsertedNewSlug()
     {
-        $article = $this->em->find(
-            self::TEST_ENTITY_CLASS, 
-            $this->articleId
-        );
-        
+        $article = $this->em->find(self::ARTICLE, $this->articleId);
+
         $this->assertTrue($article instanceof Sluggable);
         $this->assertEquals($article->getSlug(), 'the-title-my-code');
     }
-    
+
     public function testNonUniqueSlugGeneration()
     {
         for ($i = 0; $i < 5; $i++) {
             $article = new ConfigurationArticle();
             $article->setTitle('the title');
             $article->setCode('my code');
-            
+
             $this->em->persist($article);
             $this->em->flush();
             $this->em->clear();
             $this->assertEquals($article->getSlug(), 'the-title-my-code');
         }
     }
-    
+
     public function testSlugLimit()
     {
         $long = 'the title the title the title the title the';
         $article = new ConfigurationArticle();
         $article->setTitle($long);
         $article->setCode('my code');
-            
+
         $this->em->persist($article);
         $this->em->flush();
         $this->em->clear();
@@ -96,19 +68,35 @@ class SluggableConfigurationTest extends \PHPUnit_Framework_TestCase
         $shorten = $article->getSlug();
         $this->assertEquals(strlen($shorten), 32);
     }
-    
+
     public function testNonUpdatableSlug()
     {
-        $article = $this->em->find(
-            self::TEST_ENTITY_CLASS, 
-            $this->articleId
-        );
+        $article = $this->em->find(self::ARTICLE, $this->articleId);
         $article->setTitle('the title updated');
         $this->em->persist($article);
         $this->em->flush();
         $this->em->clear();
-        
+
         $this->assertEquals($article->getSlug(), 'the-title-my-code');
+    }
+
+    protected function getUsedEntityFixtures()
+    {
+        return array(
+            self::ARTICLE,
+        );
+    }
+
+    private function populate()
+    {
+        $article = new ConfigurationArticle();
+        $article->setTitle('the title');
+        $article->setCode('my code');
+
+        $this->em->persist($article);
+        $this->em->flush();
+        $this->em->clear();
+        $this->articleId = $article->getId();
     }
 }
 
