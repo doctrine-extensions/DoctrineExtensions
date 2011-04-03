@@ -8,7 +8,7 @@ use Doctrine\ODM\MongoDB\DocumentRepository,
 /**
  * The LogEntryRepository has some useful functions
  * to interact with log entries.
- * 
+ *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  * @package Gedmo\Loggable\Document\Repository
  * @subpackage LogEntryRepository
@@ -16,14 +16,14 @@ use Doctrine\ODM\MongoDB\DocumentRepository,
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class LogEntryRepository extends DocumentRepository
-{    
+{
     /**
      * Loads all log entries for the
      * given $document
-     * 
+     *
      * @param object $document
      * @return array
-     */ 
+     */
     public function getLogEntries($document)
     {
         $objectClass = get_class($document);
@@ -42,7 +42,7 @@ class LogEntryRepository extends DocumentRepository
         }
         return $result;
     }
-    
+
     /**
      * Reverts given $document to $revision by
      * restoring all fields from that $revision.
@@ -60,14 +60,14 @@ class LogEntryRepository extends DocumentRepository
         $objectMeta = $this->dm->getClassMetadata($objectClass);
         $meta = $this->getClassMetadata();
         $objectId = $objectMeta->getReflectionProperty($objectMeta->identifier)->getValue($document);
-        
+
         $qb = $this->createQueryBuilder();
         $qb->field('objectId')->equals($objectId);
         $qb->field('objectClass')->equals($objectMeta->name);
         $qb->field('version')->lte($version);
         $qb->sort('version', 'ASC');
         $q = $qb->getQuery();
-        
+
         $logs = $q->execute();
         if ($logs instanceof Cursor) {
             $logs = $logs->toArray();

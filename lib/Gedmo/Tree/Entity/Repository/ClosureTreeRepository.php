@@ -70,7 +70,6 @@ class ClosureTreeRepository extends AbstractTreeRepository
      */
     protected function validates()
     {
-        // Temporarily solution to validation problem with this class
-        return true;
+        return $this->listener->getStrategy($this->_em, $this->getClassMetadata()->name)->getName() === Strategy::CLOSURE;
     }
 }

@@ -230,9 +230,10 @@ class LoggableListener extends MappedEventSubscriber
                         continue;
                     }
                     if ($meta->isSingleValuedAssociation($field) && $value) {
+                        $oid = spl_object_hash($value);
                         $value = $ea->extractIdentifier($om, $value, false);
                         if (!is_array($value)) {
-                            $this->pendingRelatedObjects[$value] = array(
+                            $this->pendingRelatedObjects[$oid] = array(
                                 'log' => $logEntry,
                                 'field' => $field
                             );

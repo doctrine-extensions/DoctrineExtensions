@@ -35,7 +35,7 @@ final class ORM extends BaseAdapterORM implements SluggableAdapter
         // include identifiers
         $entityIdentifiers = $this->extractIdentifier($em, $object, false);
         $parameters = array();
-        foreach ($entityIdentifiers as $field => $value) {
+        foreach ((array)$entityIdentifiers as $field => $value) {
             if (strlen($value)) {
                 $qb->andWhere('rec.' . $field . ' <> :' . $field);
                 $parameters[$field] = $value;
