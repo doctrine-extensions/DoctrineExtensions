@@ -1,5 +1,10 @@
 # Some Doctrine 2 Extensions
 
+Notice: **This branch is compatible with Doctrine2.0.x versions**
+and will be maintained only to support 2.0.x branch. All latest features and
+functionality updates are on **master** branch and compatible with upcomming
+releases of Doctrine2.1 
+
 This package contains extensions for Doctrine 2 that hook into the facilities of Doctrine and
 offer new functionality or tools to use Doctrine 2 more efficently. This package contains mostly
 used behaviors which can be easily attached to your event system of Doctrine 2 and handle the
@@ -13,18 +18,6 @@ records being flushed in the behavioral way. List of extensions:
 
 Currently these extensions support **Yaml** and **Annotation** mapping. Additional mapping drivers
 can be easy implemented using Mapping extension to handle the additional metadata mapping.
-
-## Important
-
-Recently where was a change for type hinting on object manager and other. These changes
-**requires doctrine2 from master branch**. Example:
-
-    git clone git://github.com/doctrine/doctrine2.git myproject/library/doctrine
-    git clone git://github.com/doctrine/common.git myproject/library/doctrine-common
-
-To autoload these libraries use same class loader from doctrine common package for instance.
-    
-If you are using windows, there is **msysgit** tool available.
 
 ### Latest updates
 
