@@ -23,7 +23,7 @@ class Category
     
     /**
      * @gedmo:TreeParent
-	 * @JoinColumn(name="parent_id", referencedColumnName="id", onDelete="CASCADE")
+     * @JoinColumn(name="parent_id", referencedColumnName="id", onDelete="CASCADE")
      * @ManyToOne(targetEntity="Category", inversedBy="children", cascade={"persist"})
      */
     private $parent;
