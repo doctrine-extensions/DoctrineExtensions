@@ -24,7 +24,7 @@ class TimestampableDocumentTest extends BaseTestCaseMongoODM
     {
         parent::setUp();
         $evm = new EventManager();
-        $evm->addEventSubscriber(new ODM\MongoDB\TimestampableListener);
+        $evm->addEventSubscriber(new TimestampableListener);
 
         $this->getMockDocumentManager($evm);
         $this->populate();
