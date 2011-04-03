@@ -19,24 +19,18 @@ records being flushed in the behavioral way. List of extensions:
 Currently these extensions support **Yaml** and **Annotation** mapping. Additional mapping drivers
 can be easy implemented using Mapping extension to handle the additional metadata mapping.
 
-### Latest updates
-
-**2011-03-27**
-
-- Merged Gustavo Adrian pull request for **Tree-closure** adapter
-- Now tree extension supports nestedset or closure strategies, it can be used on same manager. Keep in mind that closure adapter is not stable yet
+**Notice:** from now on there is only one listener per extension which supports ODM
+and ORM adapters to deal with objects. Only one instance of listener is required, and can be attached
+to many different type object managers, currently supported (ORM or ODM) 
 
 ### ODM MongoDB support
 
-There is a plan to port all extensions for different object manager support and now
-half of extensions can be used with ODM also.
+Extensions which fully supports ODM:
 
 - Translatable
 - Sluggable
 - Timestampable
 - Loggable
-
-Are allready ported to support ODM MongoDB
 
 All these extensions can be nested together. And most allready use only annotations without interface requirement
 to not to aggregate the entity itself and has implemented proper caching for metadata.
