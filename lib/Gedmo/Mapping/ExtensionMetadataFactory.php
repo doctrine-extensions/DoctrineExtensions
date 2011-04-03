@@ -67,8 +67,8 @@ class ExtensionMetadataFactory
             }
         }
         $this->driver->readExtendedMetadata($meta, $config);
-        $this->driver->validateFullMetadata($meta, $config);
         if ($config) {
+            $this->driver->validateFullMetadata($meta, $config);
             // cache the metadata
             $cacheId = self::getCacheId($meta->name, $this->extensionNamespace);
             if ($cacheDriver = $this->objectManager->getMetadataFactory()->getCacheDriver()) {

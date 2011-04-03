@@ -53,6 +53,9 @@ class Yaml extends File implements Driver
     public function validateFullMetadata($meta, array $config)
     {
         if (isset($config['strategy'])) {
+            if (is_array($meta->identifier) && count($meta->identifier) > 1) {
+                throw new InvalidMappingException("Tree does not support composite identifiers in class - {$meta->name}");
+            }
             $method = 'validate' . ucfirst($config['strategy']) . 'TreeMetadata';
             $this->$method($meta, $config);
         } elseif ($config) {
@@ -186,10 +189,6 @@ class Yaml extends File implements Driver
      */
     private function validateClosureTreeMetadata($meta, array $config)
     {
-        if (is_array($meta->identifier) && count($meta->identifier) > 1) {
-            throw new InvalidMappingException("Tree does not support composite identifiers in class - {$meta->name}");
-        }
-
         $missingFields = array();
         if (!isset($config['parent'])) {
             $missingFields[] = 'ancestor';

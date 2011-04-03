@@ -29,7 +29,7 @@ class LoggableDocumentTest extends BaseTestCaseMongoODM
     {
         parent::setUp();
         $evm = new EventManager();
-        $loggableListener = new ODM\MongoDB\LoggableListener();
+        $loggableListener = new LoggableListener();
         $loggableListener->setUsername('jules');
         $evm->addEventSubscriber($loggableListener);
 
