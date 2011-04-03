@@ -12,7 +12,7 @@ use Gedmo\Mapping\Driver\File,
  * behavioral extension. Used for extraction of extended
  * metadata from yaml specificaly for Translatable
  * extension.
- * 
+ *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  * @package Gedmo.Translatable.Mapping.Driver
  * @subpackage Yaml
@@ -26,19 +26,24 @@ class Yaml extends File implements Driver
      * @var string
      */
     protected $_extension = '.dcm.yml';
-    
+
     /**
      * {@inheritDoc}
      */
-    public function validateFullMetadata(ClassMetadata $meta, array $config) {}
-    
+    public function validateFullMetadata(ClassMetadata $meta, array $config)
+    {
+        if (is_array($meta->identifier) && count($meta->identifier) > 1) {
+            throw new InvalidMappingException("Translatable does not support composite identifiers in class - {$meta->name}");
+        }
+    }
+
     /**
      * {@inheritDoc}
      */
     public function readExtendedMetadata(ClassMetadata $meta, array &$config) {
         $yaml = $this->_loadMappingFile($this->_findMappingFile($meta->name));
         $mapping = $yaml[$meta->name];
-        
+
         if (isset($mapping['gedmo'])) {
             $classMapping = $mapping['gedmo'];
             if (isset($classMapping['translation']['entity'])) {
@@ -65,7 +70,7 @@ class Yaml extends File implements Driver
             }
         }
     }
-    
+
     /**
      * {@inheritDoc}
      */
