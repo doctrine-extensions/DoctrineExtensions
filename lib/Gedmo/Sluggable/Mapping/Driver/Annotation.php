@@ -12,7 +12,7 @@ use Gedmo\Mapping\Driver,
  * behavioral extension. Used for extraction of extended
  * metadata from Annotations specificaly for Sluggable
  * extension.
- * 
+ *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  * @package Gedmo.Sluggable.Mapping.Driver
  * @subpackage Annotation
@@ -25,32 +25,32 @@ class Annotation implements Driver
      * Annotation to mark field as sluggable and include it in slug building
      */
     const ANNOTATION_SLUGGABLE = 'Gedmo\Sluggable\Mapping\Sluggable';
-    
+
     /**
      * Annotation to identify field as one which holds the slug
      * together with slug options
      */
     const ANNOTATION_SLUG = 'Gedmo\Sluggable\Mapping\Slug';
-    
+
     /**
      * List of types which are valid for slug and sluggable fields
-     * 
+     *
      * @var array
      */
     private $validTypes = array(
         'string'
     );
-    
+
     /**
      * {@inheritDoc}
      */
     public function validateFullMetadata(ClassMetadata $meta, array $config)
     {
-        if ($config && !isset($config['fields'])) {
+        if (!isset($config['fields'])) {
             throw new InvalidMappingException("Unable to find any sluggable fields specified for Sluggable entity - {$meta->name}");
         }
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -58,8 +58,8 @@ class Annotation implements Driver
         require_once __DIR__ . '/../Annotations.php';
         $reader = new AnnotationReader();
         $reader->setAnnotationNamespaceAlias('Gedmo\Sluggable\Mapping\\', 'gedmo');
-        
-        $class = $meta->getReflectionClass();        
+
+        $class = $meta->getReflectionClass();
         // property annotations
         foreach ($class->getProperties() as $property) {
             if ($meta->isMappedSuperclass && !$property->isPrivate() ||
@@ -87,11 +87,11 @@ class Annotation implements Driver
                 }
                 if (!$this->isValidField($meta, $field)) {
                     throw new InvalidMappingException("Cannot use field - [{$field}] for slug storage, type is not valid and must be 'string' in class - {$meta->name}");
-                } 
+                }
                 if (isset($config['slug'])) {
                     throw new InvalidMappingException("There cannot be two slug fields: [{$slugField}] and [{$config['slug']}], in class - {$meta->name}.");
                 }
-                
+
                 $config['slug'] = $field;
                 $config['style'] = $slug->style;
                 $config['updatable'] = $slug->updatable;
@@ -100,10 +100,10 @@ class Annotation implements Driver
             }
         }
     }
-    
+
     /**
      * Checks if $field type is valid as Sluggable field
-     * 
+     *
      * @param ClassMetadata $meta
      * @param string $field
      * @return boolean

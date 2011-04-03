@@ -12,7 +12,7 @@ use Gedmo\Mapping\Driver,
  * behavioral extension. Used for extraction of extended
  * metadata from Annotations specificaly for Translatable
  * extension.
- * 
+ *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  * @package Gedmo.Translatable.Mapping.Driver
  * @subpackage Annotation
@@ -25,29 +25,34 @@ class Annotation implements Driver
      * Annotation to identity translation entity to be used for translation storage
      */
     const ANNOTATION_ENTITY_CLASS = 'Gedmo\Translatable\Mapping\TranslationEntity';
-    
+
     /**
-     * Annotation to identify field as translatable 
+     * Annotation to identify field as translatable
      */
     const ANNOTATION_TRANSLATABLE = 'Gedmo\Translatable\Mapping\Translatable';
-    
+
     /**
      * Annotation to identify field which can store used locale or language
      * alias is ANNOTATION_LANGUAGE
      */
     const ANNOTATION_LOCALE = 'Gedmo\Translatable\Mapping\Locale';
-    
+
     /**
      * Annotation to identify field which can store used locale or language
      * alias is ANNOTATION_LOCALE
      */
     const ANNOTATION_LANGUAGE = 'Gedmo\Translatable\Mapping\Language';
-    
+
     /**
      * {@inheritDoc}
      */
-    public function validateFullMetadata(ClassMetadata $meta, array $config) {}
-    
+    public function validateFullMetadata(ClassMetadata $meta, array $config)
+    {
+        if (is_array($meta->identifier) && count($meta->identifier) > 1) {
+            throw new InvalidMappingException("Translatable does not support composite identifiers in class - {$meta->name}");
+        }
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -55,7 +60,7 @@ class Annotation implements Driver
         require_once __DIR__ . '/../Annotations.php';
         $reader = new AnnotationReader();
         $reader->setAnnotationNamespaceAlias('Gedmo\Translatable\Mapping\\', 'gedmo');
-        
+
         $class = $meta->getReflectionClass();
         // class annotations
         $classAnnotations = $reader->getClassAnnotations($class);
@@ -66,7 +71,7 @@ class Annotation implements Driver
             }
             $config['translationClass'] = $annot->class;
         }
-        
+
         // property annotations
         foreach ($class->getProperties() as $property) {
             if ($meta->isMappedSuperclass && !$property->isPrivate() ||

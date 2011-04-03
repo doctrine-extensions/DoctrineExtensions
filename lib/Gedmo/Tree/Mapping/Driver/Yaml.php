@@ -12,7 +12,7 @@ use Gedmo\Mapping\Driver\File,
  * behavioral extension. Used for extraction of extended
  * metadata from yaml specificaly for Tree
  * extension.
- * 
+ *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  * @package Gedmo.Tree.Mapping.Driver
  * @subpackage Yaml
@@ -26,10 +26,10 @@ class Yaml extends File implements Driver
      * @var string
      */
     protected $_extension = '.dcm.yml';
-    
+
     /**
      * List of types which are valid for timestamp
-     * 
+     *
      * @var array
      */
     private $validTypes = array(
@@ -37,37 +37,40 @@ class Yaml extends File implements Driver
         'smallint',
         'bigint'
     );
-    
+
     /**
      * List of tree strategies available
-     * 
+     *
      * @var array
      */
     private $strategies = array(
         'nested',
         'closure'
     );
-    
+
     /**
      * {@inheritDoc}
      */
     public function validateFullMetadata(ClassMetadata $meta, array $config)
     {
         if (isset($config['strategy'])) {
+            if (is_array($meta->identifier) && count($meta->identifier) > 1) {
+                throw new InvalidMappingException("Tree does not support composite identifiers in class - {$meta->name}");
+            }
             $method = 'validate' . ucfirst($config['strategy']) . 'TreeMetadata';
             $this->$method($meta, $config);
         } elseif ($config) {
             throw new InvalidMappingException("Cannot find Tree type for class: {$meta->name}");
         }
     }
-    
+
     /**
      * {@inheritDoc}
      */
     public function readExtendedMetadata(ClassMetadata $meta, array &$config) {
         $yaml = $this->_loadMappingFile($this->_findMappingFile($meta->name));
         $mapping = $yaml[$meta->name];
-        
+
         if (isset($mapping['gedmo'])) {
             $classMapping = $mapping['gedmo'];
             if (isset($classMapping['tree']['type'])) {
@@ -130,7 +133,7 @@ class Yaml extends File implements Driver
             }
         }
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -138,10 +141,10 @@ class Yaml extends File implements Driver
     {
         return \Symfony\Component\Yaml\Yaml::load($file);
     }
-    
+
     /**
      * Checks if $field type is valid
-     * 
+     *
      * @param ClassMetadata $meta
      * @param string $field
      * @return boolean
@@ -151,10 +154,10 @@ class Yaml extends File implements Driver
         $mapping = $meta->getFieldMapping($field);
         return $mapping && in_array($mapping['type'], $this->validTypes);
     }
-    
+
     /**
      * Validates metadata for nested type tree
-     * 
+     *
      * @param ClassMetadata $meta
      * @param array $config
      * @throws InvalidMappingException
@@ -176,10 +179,10 @@ class Yaml extends File implements Driver
             throw new InvalidMappingException("Missing properties: " . implode(', ', $missingFields) . " in class - {$meta->name}");
         }
     }
-    
+
     /**
      * Validates metadata for closure type tree
-     * 
+     *
      * @param ClassMetadata $meta
      * @param array $config
      * @throws InvalidMappingException
@@ -187,10 +190,6 @@ class Yaml extends File implements Driver
      */
     private function validateClosureTreeMetadata(ClassMetadata $meta, array $config)
     {
-        if (is_array($meta->identifier) && count($meta->identifier) > 1) {
-            throw new InvalidMappingException("Tree does not support composite identifiers in class - {$meta->name}");
-        }
-        
         $missingFields = array();
         if (!isset($config['parent'])) {
             $missingFields[] = 'ancestor';
