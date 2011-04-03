@@ -3,7 +3,7 @@
 namespace Gedmo\Translatable;
 
 use Tool\BaseTestCaseMongoODM;
-use Gedmo\Sluggable\ODM\MongoDB\SluggableListener;
+use Gedmo\Sluggable\SluggableListener;
 use Doctrine\Common\EventManager;
 use Translatable\Fixture\Document\Article;
 
@@ -27,7 +27,7 @@ class TranslatableDocumentTest extends BaseTestCaseMongoODM
     {
         parent::setUp();
         $evm = new EventManager();
-        $this->translationListener = new ODM\MongoDB\TranslationListener;
+        $this->translationListener = new TranslationListener;
         $this->translationListener->setTranslatableLocale('en_us');
         $evm->addEventSubscriber(new SluggableListener);
         $evm->addEventSubscriber($this->translationListener);
