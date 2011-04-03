@@ -3,9 +3,9 @@
 namespace Gedmo\Sluggable\Mapping\Event\Adapter;
 
 use Gedmo\Mapping\Event\Adapter\ORM as BaseAdapterORM;
-use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 use Doctrine\ORM\Query;
+use Gedmo\Sluggable\Mapping\Event\SluggableAdapter;
 
 /**
  * Doctrine event adapter for ORM adapted
@@ -17,20 +17,14 @@ use Doctrine\ORM\Query;
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-final class ORM extends BaseAdapterORM
+final class ORM extends BaseAdapterORM implements SluggableAdapter
 {
     /**
-     * Loads the similar slugs
-     *
-     * @param EntityManager $em
-     * @param object $object
-     * @param ClassMetadataInfo $meta
-     * @param array $config
-     * @param string $slug
-     * @return array
+     * {@inheritDoc}
      */
-    public function getSimilarSlugs(EntityManager $em, $object, ClassMetadataInfo $meta, array $config, $slug)
+    public function getSimilarSlugs($object, ClassMetadata $meta, array $config, $slug)
     {
+        $em = $this->getObjectManager();
         $qb = $em->createQueryBuilder();
         $qb->select('rec.' . $config['slug'])
             ->from($meta->name, 'rec')

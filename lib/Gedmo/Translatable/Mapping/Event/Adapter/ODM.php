@@ -6,6 +6,7 @@ use Gedmo\Mapping\Event\Adapter\ODM as BaseAdapterODM;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Doctrine\ODM\MongoDB\Mapping\ClassMetadataInfo;
 use Doctrine\ODM\MongoDB\Cursor;
+use Gedmo\Translatable\Mapping\Event\TranslatableAdapter;
 
 /**
  * Doctrine event adapter for ODM adapted
@@ -17,12 +18,10 @@ use Doctrine\ODM\MongoDB\Cursor;
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-final class ODM extends BaseAdapterODM
+final class ODM extends BaseAdapterODM implements TranslatableAdapter
 {
     /**
-     * Get default LogEntry class used to store the logs
-     *
-     * @return string
+     * {@inheritDoc}
      */
     public function getDefaultTranslationClass()
     {
@@ -30,12 +29,7 @@ final class ODM extends BaseAdapterODM
     }
 
     /**
-     * Load the translations for a given object
-     *
-     * @param object $object
-     * @param string $translationClass
-     * @param string $locale
-     * @return array
+     * {@inheritDoc}
      */
     public function loadTranslations($object, $translationClass, $locale)
     {
@@ -60,14 +54,7 @@ final class ODM extends BaseAdapterODM
     }
 
     /**
-     * Search for existing translation record
-     *
-     * @param mixed $objectId
-     * @param string $objectClass
-     * @param string $locale
-     * @param string $field
-     * @param string $translationClass
-     * @return mixed - null if nothing is found, Translation otherwise
+     * {@inheritDoc}
      */
     public function findTranslation($objectId, $objectClass, $locale, $field, $translationClass)
     {
@@ -88,11 +75,7 @@ final class ODM extends BaseAdapterODM
     }
 
     /**
-     * Removes all associated translations for given object
-     *
-     * @param mixed $objectId
-     * @param string $transClass
-     * @return void
+     * {@inheritDoc}
      */
     public function removeAssociatedTranslations($objectId, $transClass)
     {
@@ -105,10 +88,7 @@ final class ODM extends BaseAdapterODM
     }
 
     /**
-     * Inserts the translation record
-     *
-     * @param object $translation
-     * @return void
+     * {@inheritDoc}
      */
     public function insertTranslationRecord($translation)
     {

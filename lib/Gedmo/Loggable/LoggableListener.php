@@ -5,7 +5,7 @@ namespace Gedmo\Loggable;
 use Doctrine\Common\Persistence\ObjectManager,
     Doctrine\Common\Persistence\Mapping\ClassMetadata,
     Gedmo\Mapping\MappedEventSubscriber,
-    Gedmo\Mapping\Event\AdapterInterface,
+    Gedmo\Loggable\Mapping\Event\LoggableAdapter,
     Doctrine\Common\EventArgs;
 
 /**
@@ -92,11 +92,11 @@ class LoggableListener extends MappedEventSubscriber
     /**
      * Get the LogEntry class
      *
-     * @param AdapterInterface $ea
+     * @param LoggableAdapter $ea
      * @param string $class
      * @return string
      */
-    protected function getLogEntryClass(AdapterInterface $ea, $class)
+    protected function getLogEntryClass(LoggableAdapter $ea, $class)
     {
         return isset($this->configurations[$class]['logEntryClass']) ?
             $this->configurations[$class]['logEntryClass'] :
@@ -198,10 +198,10 @@ class LoggableListener extends MappedEventSubscriber
      *
      * @param string $action
      * @param object $object
-     * @param AdapterInterface $ea
+     * @param LoggableAdapter $ea
      * @return void
      */
-    private function createLogEntry($action, $object, AdapterInterface $ea)
+    private function createLogEntry($action, $object, LoggableAdapter $ea)
     {
         $om = $ea->getObjectManager();
         $meta = $om->getClassMetadata(get_class($object));
@@ -245,7 +245,7 @@ class LoggableListener extends MappedEventSubscriber
             $version = 1;
             $logEntryMeta = $om->getClassMetadata($logEntryClass);
             if ($action !== self::ACTION_CREATE) {
-                $version = $ea->getNewVersion($logEntryMeta, $om, $object);
+                $version = $ea->getNewVersion($logEntryMeta, $object);
             }
             $logEntry->setVersion($version);
 

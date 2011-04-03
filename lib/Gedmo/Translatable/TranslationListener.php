@@ -6,7 +6,7 @@ use Doctrine\Common\EventArgs,
     Doctrine\Common\Persistence\ObjectManager,
     Doctrine\Common\Persistence\Mapping\ClassMetadata,
     Gedmo\Mapping\MappedEventSubscriber,
-    Gedmo\Mapping\Event\AdapterInterface;
+    Gedmo\Translatable\Mapping\Event\TranslatableAdapter;
 
 /**
  * The translation listener handles the generation and
@@ -109,11 +109,11 @@ class TranslationListener extends MappedEventSubscriber
      * Get the translation class to be used
      * for the object $class
      *
-     * @param AdapterInterface $ea
+     * @param TranslatableAdapter $ea
      * @param string $class
      * @return string
      */
-    public function getTranslationClass(AdapterInterface $ea, $class)
+    public function getTranslationClass(TranslatableAdapter $ea, $class)
     {
         return isset($this->configurations[$class]['translationClass']) ?
             $this->configurations[$class]['translationClass'] :
@@ -317,14 +317,14 @@ class TranslationListener extends MappedEventSubscriber
     /**
      * Creates the translation for object being flushed
      *
-     * @param AdapterInterface $ea
+     * @param TranslatableAdapter $ea
      * @param object $object
      * @param boolean $isInsert
      * @throws UnexpectedValueException - if locale is not valid, or
      *      primary key is composite, missing or invalid
      * @return void
      */
-    protected function handleTranslatableObjectUpdate(AdapterInterface $ea, $object, $isInsert)
+    protected function handleTranslatableObjectUpdate(TranslatableAdapter $ea, $object, $isInsert)
     {
         $om = $ea->getObjectManager();
         $meta = $om->getClassMetadata(get_class($object));

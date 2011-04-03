@@ -3,8 +3,8 @@
 namespace Gedmo\Loggable\Mapping\Event\Adapter;
 
 use Gedmo\Mapping\Event\Adapter\ORM as BaseAdapterORM;
-use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Doctrine\Common\Persistence\Mapping\ClassMetadata;
+use Gedmo\Loggable\Mapping\Event\LoggableAdapter;
 
 /**
  * Doctrine event adapter for ORM adapted
@@ -16,12 +16,10 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-final class ORM extends BaseAdapterORM
+final class ORM extends BaseAdapterORM implements LoggableAdapter
 {
     /**
-     * Get default LogEntry class used to store the logs
-     *
-     * @return string
+     * {@inheritDoc}
      */
     public function getDefaultLogEntryClass()
     {
@@ -29,15 +27,11 @@ final class ORM extends BaseAdapterORM
     }
 
     /**
-     * Get new version number
-     *
-     * @param ClassMetadataInfo $meta
-     * @param EntityManager $em
-     * @param object $object
-     * @return integer
+     * {@inheritDoc}
      */
-    public function getNewVersion(ClassMetadataInfo $meta, EntityManager $em, $object)
+    public function getNewVersion(ClassMetadata $meta, $object)
     {
+        $em = $this->getObjectManager();
         $objectMeta = $em->getClassMetadata(get_class($object));
         $identifierField = $this->getSingleIdentifierFieldName($objectMeta);
         $objectId = $objectMeta->getReflectionProperty($identifierField)->getValue($object);

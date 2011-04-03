@@ -6,6 +6,7 @@ use Gedmo\Mapping\Event\Adapter\ODM as BaseAdapterODM;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Doctrine\ODM\MongoDB\Mapping\ClassMetadataInfo;
 use Doctrine\ODM\MongoDB\Cursor;
+use Gedmo\Tree\Mapping\Event\TreeAdapter;
 
 /**
  * Doctrine event adapter for ODM adapted
@@ -17,7 +18,7 @@ use Doctrine\ODM\MongoDB\Cursor;
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-final class ODM extends BaseAdapterODM
+final class ODM extends BaseAdapterODM implements TreeAdapter
 {
     // Nothing specific yet
 }

@@ -6,7 +6,7 @@ use Doctrine\Common\EventArgs,
     Doctrine\Common\Persistence\ObjectManager,
     Doctrine\Common\Persistence\Mapping\ClassMetadata,
     Gedmo\Mapping\MappedEventSubscriber,
-    Gedmo\Mapping\Event\AdapterInterface;
+    Gedmo\Sluggable\Mapping\Event\SluggableAdapter;
 
 /**
  * The SluggableListener handles the generation of slugs
@@ -133,7 +133,7 @@ class SluggableListener extends MappedEventSubscriber
     /**
      * Creates the slug for object being flushed
      *
-     * @param AdapterInterface $ea
+     * @param SluggableAdapter $ea
      * @param object $object
      * @param mixed $changeSet
      *      case array: the change set array
@@ -142,7 +142,7 @@ class SluggableListener extends MappedEventSubscriber
      *      or invalid
      * @return void
      */
-    protected function generateSlug(AdapterInterface $ea, $object, $changeSet)
+    protected function generateSlug(SluggableAdapter $ea, $object, $changeSet)
     {
         $om = $ea->getObjectManager();
         $meta = $om->getClassMetadata(get_class($object));
@@ -210,19 +210,19 @@ class SluggableListener extends MappedEventSubscriber
     /**
      * Generates the unique slug
      *
-     * @param AdapterInterface $ea
+     * @param SluggableAdapter $ea
      * @param object $object
      * @param string $preferedSlug
      * @return string - unique slug
      */
-    protected function makeUniqueSlug(AdapterInterface $ea, $object, $preferedSlug)
+    protected function makeUniqueSlug(SluggableAdapter $ea, $object, $preferedSlug)
     {
         $om = $ea->getObjectManager();
         $meta = $om->getClassMetadata(get_class($object));
         $config = $this->getConfiguration($om, $meta->name);
 
         // search for similar slug
-        $result = $ea->getSimilarSlugs($om, $object, $meta, $config, $preferedSlug);
+        $result = $ea->getSimilarSlugs($object, $meta, $config, $preferedSlug);
 
         if ($result) {
             $generatedSlug = $preferedSlug;
