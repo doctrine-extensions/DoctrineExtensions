@@ -1,6 +1,6 @@
 <?php
 
-namespace Gedmo\Tree;
+namespace Gedmo\Tree\ODM\MongoDB;
 
 use Doctrine\ODM\MongoDB\Events,
     Doctrine\Common\EventArgs,
