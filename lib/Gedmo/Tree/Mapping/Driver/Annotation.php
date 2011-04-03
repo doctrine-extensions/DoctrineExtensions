@@ -55,8 +55,8 @@ class Annotation implements Driver
      * Annotation to specify closure tree class
      */
     const ANNOTATION_CLOSURE = 'Gedmo\Tree\Mapping\TreeClosure';
-	
-	/**
+    
+    /**
      * Annotation to mark field as child count
      */
     const ANNOTATION_CHILD_COUNT = 'Gedmo\Tree\Mapping\TreeChildCount';
@@ -233,7 +233,7 @@ class Annotation implements Driver
         }
     }
     
-	/**
+    /**
      * Validates metadata for closure type tree
      * 
      * @param ClassMetadata $meta

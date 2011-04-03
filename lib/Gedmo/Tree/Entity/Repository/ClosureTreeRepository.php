@@ -32,7 +32,7 @@ class ClosureTreeRepository extends AbstractTreeRepository
     public function childCount($node, $direct = false)
     {
         $meta = $this->getClassMetadata();
-        $id	= $this->getIdFromEntity($node);
+        $id    = $this->getIdFromEntity($node);
         $qb = $this->getQueryBuilder();
         $qb->select('COUNT( c.id )')
             ->from($meta->rootEntityName, 'c')

@@ -177,7 +177,7 @@ class Yaml extends File implements Driver
         }
     }
     
-	/**
+    /**
      * Validates metadata for closure type tree
      * 
      * @param ClassMetadata $meta
