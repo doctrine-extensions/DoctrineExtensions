@@ -4,7 +4,6 @@ namespace Gedmo\Tree\Mapping\Driver;
 
 use Gedmo\Mapping\Driver,
     Doctrine\Common\Annotations\AnnotationReader,
-    Doctrine\Common\Persistence\Mapping\ClassMetadata,
     Gedmo\Exception\InvalidMappingException;
 
 /**
@@ -12,7 +11,7 @@ use Gedmo\Mapping\Driver,
  * behavioral extension. Used for extraction of extended
  * metadata from Annotations specificaly for Tree
  * extension.
- * 
+ *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  * @package Gedmo.Tree.Mapping.Driver
  * @subpackage Annotation
@@ -25,45 +24,45 @@ class Annotation implements Driver
      * Annotation to define the tree type
      */
     const ANNOTATION_TREE = 'Gedmo\Tree\Mapping\Tree';
-    
+
     /**
      * Annotation to mark field as one which will store left value
      */
     const ANNOTATION_LEFT = 'Gedmo\Tree\Mapping\TreeLeft';
-    
+
     /**
      * Annotation to mark field as one which will store right value
      */
     const ANNOTATION_RIGHT = 'Gedmo\Tree\Mapping\TreeRight';
-    
+
     /**
      * Annotation to mark relative parent field
      */
     const ANNOTATION_PARENT = 'Gedmo\Tree\Mapping\TreeParent';
-    
+
     /**
      * Annotation to mark node level
      */
     const ANNOTATION_LEVEL = 'Gedmo\Tree\Mapping\TreeLevel';
-    
+
     /**
      * Annotation to mark field as tree root
      */
     const ANNOTATION_ROOT = 'Gedmo\Tree\Mapping\TreeRoot';
-    
+
     /**
      * Annotation to specify closure tree class
      */
     const ANNOTATION_CLOSURE = 'Gedmo\Tree\Mapping\TreeClosure';
-	
-	/**
+
+    /**
      * Annotation to mark field as child count
      */
     const ANNOTATION_CHILD_COUNT = 'Gedmo\Tree\Mapping\TreeChildCount';
-    
+
     /**
      * List of types which are valid for tree fields
-     * 
+     *
      * @var array
      */
     private $validTypes = array(
@@ -71,22 +70,22 @@ class Annotation implements Driver
         'smallint',
         'bigint'
     );
-    
+
     /**
      * List of tree strategies available
-     * 
+     *
      * @var array
      */
     private $strategies = array(
         'nested',
         'closure'
     );
-    
+
     /**
      * {@inheritDoc}
      */
-    public function validateFullMetadata(ClassMetadata $meta, array $config)
-    {        
+    public function validateFullMetadata($meta, array $config)
+    {
         if (isset($config['strategy'])) {
             $method = 'validate' . ucfirst($config['strategy']) . 'TreeMetadata';
             $this->$method($meta, $config);
@@ -94,15 +93,15 @@ class Annotation implements Driver
             throw new InvalidMappingException("Cannot find Tree type for class: {$meta->name}");
         }
     }
-    
+
     /**
      * {@inheritDoc}
      */
-    public function readExtendedMetadata(ClassMetadata $meta, array &$config) {
+    public function readExtendedMetadata($meta, array &$config) {
         require_once __DIR__ . '/../Annotations.php';
         $reader = new AnnotationReader();
         $reader->setAnnotationNamespaceAlias('Gedmo\Tree\Mapping\\', 'gedmo');
-        
+
         $class = $meta->getReflectionClass();
         // class annotations
         $classAnnotations = $reader->getClassAnnotations($class);
@@ -120,7 +119,7 @@ class Annotation implements Driver
             }
             $config['closure'] = $annot->class;
         }
-        
+
         // property annotations
         foreach ($class->getProperties() as $property) {
             if ($meta->isMappedSuperclass && !$property->isPrivate() ||
@@ -194,29 +193,29 @@ class Annotation implements Driver
             }
         }
     }
-    
+
     /**
      * Checks if $field type is valid
-     * 
+     *
      * @param ClassMetadata $meta
      * @param string $field
      * @return boolean
      */
-    protected function isValidField(ClassMetadata $meta, $field)
+    protected function isValidField($meta, $field)
     {
         $mapping = $meta->getFieldMapping($field);
         return $mapping && in_array($mapping['type'], $this->validTypes);
     }
-    
+
     /**
      * Validates metadata for nested type tree
-     * 
+     *
      * @param ClassMetadata $meta
      * @param array $config
      * @throws InvalidMappingException
      * @return void
      */
-    private function validateNestedTreeMetadata(ClassMetadata $meta, array $config)
+    private function validateNestedTreeMetadata($meta, array $config)
     {
         $missingFields = array();
         if (!isset($config['parent'])) {
@@ -232,21 +231,21 @@ class Annotation implements Driver
             throw new InvalidMappingException("Missing properties: " . implode(', ', $missingFields) . " in class - {$meta->name}");
         }
     }
-    
-	/**
+
+    /**
      * Validates metadata for closure type tree
-     * 
+     *
      * @param ClassMetadata $meta
      * @param array $config
      * @throws InvalidMappingException
      * @return void
      */
-    private function validateClosureTreeMetadata(ClassMetadata $meta, array $config)
+    private function validateClosureTreeMetadata($meta, array $config)
     {
         if (is_array($meta->identifier) && count($meta->identifier) > 1) {
             throw new InvalidMappingException("Tree does not support composite identifiers in class - {$meta->name}");
         }
-        
+
         $missingFields = array();
         if (!isset($config['parent'])) {
             $missingFields[] = 'ancestor';

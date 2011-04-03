@@ -4,17 +4,15 @@ namespace Gedmo\Sluggable;
 
 use Doctrine\ORM\Events,
     Doctrine\Common\EventArgs,
-    Doctrine\Common\Persistence\ObjectManager,
-    Doctrine\Common\Persistence\Mapping\ClassMetadata,
     Doctrine\ORM\Query;
 
 /**
  * The SluggableListener handles the generation of slugs
  * for entities which implements the Sluggable interface.
- * 
+ *
  * This behavior can inpact the performance of your application
  * since it does some additional calculations on persisted entities.
- * 
+ *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  * @author Klein Florian <florian.klein@free.fr>
  * @subpackage SluggableListener
@@ -23,10 +21,10 @@ use Doctrine\ORM\Events,
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class SluggableListener extends AbstractSluggableListener
-{   
+{
     /**
      * Specifies the list of events to listen
-     * 
+     *
      * @return array
      */
     public function getSubscribedEvents()
@@ -37,7 +35,7 @@ class SluggableListener extends AbstractSluggableListener
             Events::loadClassMetadata
         );
     }
-    
+
     /**
      * {@inheritdoc}
      */
@@ -45,7 +43,7 @@ class SluggableListener extends AbstractSluggableListener
     {
         return $args->getEntityManager();
     }
-    
+
     /**
      * {@inheritdoc}
      */
@@ -53,7 +51,7 @@ class SluggableListener extends AbstractSluggableListener
     {
         return $args->getEntity();
     }
-    
+
     /**
      * {@inheritdoc}
      */
@@ -61,15 +59,15 @@ class SluggableListener extends AbstractSluggableListener
     {
         return $uow->getEntityChangeSet($object);
     }
-    
+
     /**
      * {@inheritdoc}
      */
-    public function recomputeSingleObjectChangeSet($uow, ClassMetadata $meta, $object)
+    public function recomputeSingleObjectChangeSet($uow, $meta, $object)
     {
         $uow->recomputeSingleEntityChangeSet($meta, $object);
     }
-    
+
     /**
      * {@inheritdoc}
      */
@@ -77,17 +75,17 @@ class SluggableListener extends AbstractSluggableListener
     {
         return $uow->getScheduledEntityUpdates();
     }
-    
+
     /**
      * {@inheritdoc}
      */
-    protected function getUniqueSlugResult(ObjectManager $om, $object, ClassMetadata $meta, array $config, $preferedSlug)
+    protected function getUniqueSlugResult($om, $object, $meta, array $config, $preferedSlug)
     {
         $qb = $om->createQueryBuilder();
         $qb->select('rec.' . $config['slug'])
             ->from($meta->name, 'rec')
             ->where($qb->expr()->like(
-                'rec.' . $config['slug'], 
+                'rec.' . $config['slug'],
                 $qb->expr()->literal($preferedSlug . '%'))
             );
         // include identifiers

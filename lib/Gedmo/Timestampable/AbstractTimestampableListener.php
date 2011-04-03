@@ -4,14 +4,13 @@ namespace Gedmo\Timestampable;
 
 use Doctrine\Common\EventArgs,
     Gedmo\Mapping\MappedEventSubscriber,
-    Doctrine\Common\Persistence\Mapping\ClassMetadata,
     Doctrine\ORM\Proxy\Proxy;
 
 /**
  * The AbstractTimestampableListener is an abstract class
  * of timestampable listener in order to support diferent
  * object managers.
- * 
+ *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  * @package Gedmo.Timestampable
  * @subpackage AbstractTimestampableListener
@@ -22,7 +21,7 @@ abstract class AbstractTimestampableListener extends MappedEventSubscriber
 {
     /**
      * Mapps additional metadata for the Entity
-     * 
+     *
      * @param EventArgs $eventArgs
      * @return void
      */
@@ -30,11 +29,11 @@ abstract class AbstractTimestampableListener extends MappedEventSubscriber
     {
         $this->loadMetadataForObjectClass($this->getObjectManager($eventArgs), $eventArgs->getClassMetadata());
     }
-    
+
     /**
      * Looks for Timestampable objects being updated
      * to update modification date
-     * 
+     *
      * @param EventArgs $args
      * @return void
      */
@@ -57,13 +56,13 @@ abstract class AbstractTimestampableListener extends MappedEventSubscriber
                         }
                     }
                 }
-                
+
                 if (isset($config['change'])) {
                     foreach ($config['change'] as $options) {
                         if (isset($changeSet[$options['field']])) {
                             continue; // value was set manually
                         }
-                        
+
                         $tracked = $options['trackedField'];
                         $trackedChild = null;
                         $parts = explode('.', $tracked);
@@ -71,7 +70,7 @@ abstract class AbstractTimestampableListener extends MappedEventSubscriber
                             $tracked = $parts[0];
                             $trackedChild = $parts[1];
                         }
-                        
+
                         if (isset($changeSet[$tracked])) {
                             $changes = $changeSet[$tracked];
                             if (isset($trackedChild)) {
@@ -86,7 +85,7 @@ abstract class AbstractTimestampableListener extends MappedEventSubscriber
                             } else {
                                 $value = $changes[1];
                             }
-                            
+
                             if ($options['value'] == $value) {
                                 $needChanges = true;
                                 $meta->getReflectionProperty($options['field'])
@@ -95,18 +94,18 @@ abstract class AbstractTimestampableListener extends MappedEventSubscriber
                         }
                     }
                 }
-                
+
                 if ($needChanges) {
                     $this->recomputeSingleObjectChangeSet($uow, $meta, $object);
                 }
             }
         }
     }
-    
+
     /**
      * Checks for persisted Timestampable objects
      * to update creation and modification dates
-     * 
+     *
      * @param EventArgs $args
      * @return void
      */
@@ -114,7 +113,7 @@ abstract class AbstractTimestampableListener extends MappedEventSubscriber
     {
         $om = $this->getObjectManager($args);
         $object = $this->getObject($args);
-        
+
         $meta = $om->getClassMetadata(get_class($object));
         if ($config = $this->getConfiguration($om, $meta->name)) {
             if (isset($config['update'])) {
@@ -124,7 +123,7 @@ abstract class AbstractTimestampableListener extends MappedEventSubscriber
                     }
                 }
             }
-            
+
             if (isset($config['create'])) {
                 foreach ($config['create'] as $field) {
                     if ($meta->getReflectionProperty($field)->getValue($object) === null) { // let manual values
@@ -134,7 +133,7 @@ abstract class AbstractTimestampableListener extends MappedEventSubscriber
             }
         }
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -142,7 +141,7 @@ abstract class AbstractTimestampableListener extends MappedEventSubscriber
     {
         return __NAMESPACE__;
     }
-    
+
     /**
      * Get the ObjectManager from EventArgs
      *
@@ -150,7 +149,7 @@ abstract class AbstractTimestampableListener extends MappedEventSubscriber
      * @return ObjectManager
      */
     abstract protected function getObjectManager(EventArgs $args);
-    
+
     /**
      * Get the Object from EventArgs
      *
@@ -158,7 +157,7 @@ abstract class AbstractTimestampableListener extends MappedEventSubscriber
      * @return object
      */
     abstract protected function getObject(EventArgs $args);
-    
+
     /**
      * Get the scheduled object updates from a UnitOfWork
      *
@@ -166,7 +165,7 @@ abstract class AbstractTimestampableListener extends MappedEventSubscriber
      * @return array
      */
     abstract protected function getScheduledObjectUpdates($uow);
-    
+
     /**
      * Get the object changeset from a UnitOfWork
      *
@@ -175,7 +174,7 @@ abstract class AbstractTimestampableListener extends MappedEventSubscriber
      * @return array
      */
     abstract protected function getObjectChangeSet($uow, $object);
-    
+
     /**
      * Recompute the single object changeset from a UnitOfWork
      *
@@ -184,14 +183,14 @@ abstract class AbstractTimestampableListener extends MappedEventSubscriber
      * @param Object $object
      * @return void
      */
-    abstract protected function recomputeSingleObjectChangeSet($uow, ClassMetadata $meta, $object);
-    
+    abstract protected function recomputeSingleObjectChangeSet($uow, $meta, $object);
+
     /**
      * Get the date value
-     * 
+     *
      * @param ClassMetadata $meta
      * @param string $field
      * @return mixed
      */
-    abstract protected function getDateValue(ClassMetadata $meta, $field);
+    abstract protected function getDateValue($meta, $field);
 }

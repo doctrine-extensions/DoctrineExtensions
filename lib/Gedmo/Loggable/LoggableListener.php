@@ -3,8 +3,6 @@
 namespace Gedmo\Loggable;
 
 use Gedmo\Loggable\AbstractLoggableListener,
-    Doctrine\Common\Persistence\ObjectManager,
-    Doctrine\Common\Persistence\Mapping\ClassMetadata,
     Doctrine\ORM\Events,
     Doctrine\Common\EventArgs;
 
@@ -31,7 +29,7 @@ class LoggableListener extends AbstractLoggableListener
     public function getSubscribedEvents()
     {
         return array(
-            Events::onFlush, 
+            Events::onFlush,
             Events::loadClassMetadata,
             Events::postPersist
         );
@@ -43,7 +41,7 @@ class LoggableListener extends AbstractLoggableListener
     protected function getLogEntryClass(array $config, $class)
     {
         return isset($this->configurations[$class]['logEntryClass']) ?
-            $this->configurations[$class]['logEntryClass'] : 
+            $this->configurations[$class]['logEntryClass'] :
             $this->defaultLogEntryEntity;
     }
 
@@ -78,7 +76,7 @@ class LoggableListener extends AbstractLoggableListener
     {
         return $uow->getScheduledEntityDeletions();
     }
-    
+
     /**
      * {@inheritdoc}
      */
@@ -86,15 +84,15 @@ class LoggableListener extends AbstractLoggableListener
     {
         return $uow->getEntityChangeSet($object);
     }
-    
+
     /**
      * {@inheritdoc}
      */
-    protected function getSingleIdentifierFieldName(ClassMetadata $meta)
+    protected function getSingleIdentifierFieldName($meta)
     {
         return $meta->getSingleIdentifierFieldName();
     }
-    
+
     /**
      * {@inheritdoc}
      */
@@ -102,20 +100,20 @@ class LoggableListener extends AbstractLoggableListener
     {
         return $args->getEntity();
     }
-    
+
     /**
      * {@inheritdoc}
      */
-    protected function getNewVersion(ClassMetadata $meta, ObjectManager $om, $object)
+    protected function getNewVersion($meta, $om, $object)
     {
         $objectMeta = $om->getClassMetadata(get_class($object));
         $identifierField = $this->getSingleIdentifierFieldName($objectMeta);
         $objectId = $objectMeta->getReflectionProperty($identifierField)->getValue($object);
-        
+
         $dql = "SELECT MAX(log.version) FROM {$meta->name} log";
         $dql .= " WHERE log.objectId = :objectId";
         $dql .= " AND log.objectClass = :objectClass";
-        
+
         $q = $om->createQuery($dql);
         $q->setParameters(array(
             'objectId' => $objectId,

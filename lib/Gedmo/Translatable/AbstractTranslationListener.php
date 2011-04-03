@@ -3,15 +3,13 @@
 namespace Gedmo\Translatable;
 
 use Doctrine\Common\EventArgs,
-    Doctrine\Common\Persistence\ObjectManager,
-    Doctrine\Common\Persistence\Mapping\ClassMetadata,
     Gedmo\Mapping\MappedEventSubscriber;
 
 /**
  * The AbstractTranslationListener is an abstract class
  * of translation listener in order to support diferent
  * object managers.
- * 
+ *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  * @package Gedmo.Translatable
  * @subpackage AbstractTranslationListener
@@ -24,43 +22,43 @@ abstract class AbstractTranslationListener extends MappedEventSubscriber
      * Locale which is set on this listener.
      * If Entity being translated has locale defined it
      * will override this one
-     *  
+     *
      * @var string
      */
     protected $locale = 'en_us';
-    
+
     /**
      * Default locale, this changes behavior
      * to not update the original record field if locale
      * which is used for updating is not default. This
      * will load the default translation in other locales
      * if record is not translated yet
-     * 
+     *
      * @var string
      */
     private $defaultLocale = '';
-    
+
     /**
      * If this is set to false, when if entity does
      * not have a translation for requested locale
      * it will show a blank value
-     * 
+     *
      * @var boolean
      */
     private $translationFallback = true;
-    
+
     /**
      * List of translations which do not have the foreign
      * key generated yet - MySQL case. These translations
      * will be updated with new keys on postPersist event
-     * 
+     *
      * @var array
      */
     private $pendingTranslationInserts = array();
-    
+
     /**
      * Mapps additional metadata
-     * 
+     *
      * @param EventArgs $eventArgs
      * @return void
      */
@@ -68,11 +66,11 @@ abstract class AbstractTranslationListener extends MappedEventSubscriber
     {
         $this->loadMetadataForObjectClass($this->getObjectManager($eventArgs), $eventArgs->getClassMetadata());
     }
-    
+
     /**
      * Enable or disable translation fallback
      * to original record value
-     * 
+     *
      * @param boolean $bool
      * @return void
      */
@@ -80,24 +78,24 @@ abstract class AbstractTranslationListener extends MappedEventSubscriber
     {
         $this->translationFallback = (bool)$bool;
     }
-    
+
     /**
      * Get the translation class to be used
      * for the object $class
-     * 
+     *
      * @param string $class
      * @return string
      */
     public function getTranslationClass($class)
     {
         return isset($this->configurations[$class]['translationClass']) ?
-            $this->configurations[$class]['translationClass'] : 
+            $this->configurations[$class]['translationClass'] :
             $this->getDefaultTranslationClass();
     }
-    
+
     /**
      * Set the locale to use for translation listener
-     * 
+     *
      * @param string $locale
      * @return void
      */
@@ -105,18 +103,18 @@ abstract class AbstractTranslationListener extends MappedEventSubscriber
     {
         $this->locale = $locale;
     }
-    
+
     /**
      * Gets the locale to use for translation. Loads object
      * defined locale first..
-     * 
+     *
      * @param object $object
      * @param ClassMetadata $meta
      * @throws RuntimeException - if language or locale property is not
      *         found in entity
      * @return string
      */
-    public function getTranslatableLocale($object, ClassMetadata $meta)
+    public function getTranslatableLocale($object, $meta)
     {
         $locale = $this->locale;
         if (isset($this->configurations[$meta->name]['locale'])) {
@@ -134,11 +132,11 @@ abstract class AbstractTranslationListener extends MappedEventSubscriber
         }
         return $locale;
     }
-    
+
     /**
      * Looks for translatable objects being inserted or updated
      * for further processing
-     * 
+     *
      * @param EventArgs $args
      * @return void
      */
@@ -177,17 +175,17 @@ abstract class AbstractTranslationListener extends MappedEventSubscriber
             if (isset($config['fields'])) {
                 $identifierField = $this->getSingleIdentifierFieldName($meta);
                 $objectId = $meta->getReflectionProperty($identifierField)->getValue($object);
-                
+
                 $transClass = $this->getTranslationClass($meta->name);
                 $this->removeAssociatedTranslations($om, $objectId, $transClass);
             }
         }
     }
-    
+
      /**
      * Checks for inserted object to update their translation
      * foreign keys
-     * 
+     *
      * @param EventArgs $args
      * @return void
      */
@@ -200,7 +198,7 @@ abstract class AbstractTranslationListener extends MappedEventSubscriber
         // check if entity is tracked by translatable and without foreign key
         if (array_key_exists($meta->name, $this->configurations) && count($this->pendingTranslationInserts)) {
             $oid = spl_object_hash($object);
-            
+
             // there should be single identifier
             $identifierField = $this->getSingleIdentifierFieldName($meta);
             $translationMeta = $om->getClassMetadata($this->getTranslationClass($meta->name));
@@ -218,11 +216,11 @@ abstract class AbstractTranslationListener extends MappedEventSubscriber
             }
         }
     }
-    
+
     /**
      * After object is loaded, listener updates the translations
      * by currently used locale
-     * 
+     *
      * @param EventArgs $args
      * @return void
      */
@@ -250,21 +248,21 @@ abstract class AbstractTranslationListener extends MappedEventSubscriber
                     $meta->getReflectionProperty($field)->setValue($object, $translated);
                     // ensure clean changeset
                     $this->setOriginalObjectProperty(
-                        $om->getUnitOfWork(), 
-                        spl_object_hash($object), 
-                        $field, 
+                        $om->getUnitOfWork(),
+                        spl_object_hash($object),
+                        $field,
                         $translated
                     );
                 }
-            }    
+            }
         }
     }
-    
+
     /**
      * Sets the default locale, this changes behavior
      * to not update the original record field if locale
      * which is used for updating is not default
-     * 
+     *
      * @param string $locale
      * @return void
      */
@@ -272,7 +270,7 @@ abstract class AbstractTranslationListener extends MappedEventSubscriber
     {
         $this->defaultLocale = $locale;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -280,10 +278,10 @@ abstract class AbstractTranslationListener extends MappedEventSubscriber
     {
         return __NAMESPACE__;
     }
-    
+
     /**
      * Creates the translation for object being flushed
-     * 
+     *
      * @param ObjectManager $om
      * @param object $object
      * @param boolean $isInsert
@@ -291,20 +289,20 @@ abstract class AbstractTranslationListener extends MappedEventSubscriber
      *      primary key is composite, missing or invalid
      * @return void
      */
-    protected function handleTranslatableObjectUpdate(ObjectManager $om, $object, $isInsert)
+    protected function handleTranslatableObjectUpdate($om, $object, $isInsert)
     {
         $meta = $om->getClassMetadata(get_class($object));
         // no need cache, metadata is loaded only once in MetadataFactoryClass
         $translationClass = $this->getTranslationClass($meta->name);
         $translationMetadata = $om->getClassMetadata($translationClass);
-        
+
         // check for the availability of the primary key
         $identifierField = $this->getSingleIdentifierFieldName($meta);
         $objectId = $meta->getReflectionProperty($identifierField)->getValue($object);
         if (!$object && $isInsert) {
             $objectId = null;
         }
-        
+
         // load the currently used locale
         $locale = strtolower($this->getTranslatableLocale($object, $meta));
         $this->validateLocale($locale);
@@ -337,7 +335,7 @@ abstract class AbstractTranslationListener extends MappedEventSubscriber
                     ->setValue($translation, $objectId);
                 $scheduleUpdate = !$isInsert;
             }
-            
+
             // set the translated field, take value using reflection
             $translationMetadata->getReflectionProperty('content')
                 ->setValue($translation, $meta->getReflectionProperty($field)->getValue($object));
@@ -375,10 +373,10 @@ abstract class AbstractTranslationListener extends MappedEventSubscriber
             }
         }
     }
-    
+
     /**
      * Validates the given locale
-     * 
+     *
      * @param string $locale - locale to validate
      * @throws InvalidArgumentException if locale is not valid
      * @return void
@@ -389,14 +387,14 @@ abstract class AbstractTranslationListener extends MappedEventSubscriber
             throw new \Gedmo\Exception\InvalidArgumentException('Locale or language cannot be empty and must be set through Listener or Entity');
         }
     }
-    
+
     /**
      * Get translation class used to store the translations
-     * 
+     *
      * @return string
      */
     abstract protected function getDefaultTranslationClass();
-    
+
     /**
      * Get the ObjectManager from EventArgs
      *
@@ -404,7 +402,7 @@ abstract class AbstractTranslationListener extends MappedEventSubscriber
      * @return ObjectManager
      */
     abstract protected function getObjectManager(EventArgs $args);
-    
+
     /**
      * Get the Object from EventArgs
      *
@@ -412,7 +410,7 @@ abstract class AbstractTranslationListener extends MappedEventSubscriber
      * @return object
      */
     abstract protected function getObject(EventArgs $args);
-    
+
     /**
      * Get the object changeset from a UnitOfWork
      *
@@ -421,7 +419,7 @@ abstract class AbstractTranslationListener extends MappedEventSubscriber
      * @return array
      */
     abstract protected function getObjectChangeSet($uow, $object);
-    
+
     /**
      * Get the scheduled object updates from a UnitOfWork
      *
@@ -429,7 +427,7 @@ abstract class AbstractTranslationListener extends MappedEventSubscriber
      * @return array
      */
     abstract protected function getScheduledObjectUpdates($uow);
-    
+
     /**
      * Get the scheduled object insertions from a UnitOfWork
      *
@@ -437,7 +435,7 @@ abstract class AbstractTranslationListener extends MappedEventSubscriber
      * @return array
      */
     abstract protected function getScheduledObjectInsertions($uow);
-    
+
     /**
      * Get the scheduled object deletions from a UnitOfWork
      *
@@ -445,7 +443,7 @@ abstract class AbstractTranslationListener extends MappedEventSubscriber
      * @return array
      */
     abstract protected function getScheduledObjectDeletions($uow);
-    
+
     /**
      * Get the single identifier field name
      *
@@ -453,30 +451,30 @@ abstract class AbstractTranslationListener extends MappedEventSubscriber
      * @throws MappingException - if identifier is composite
      * @return string
      */
-    abstract protected function getSingleIdentifierFieldName(ClassMetadata $meta);
-    
+    abstract protected function getSingleIdentifierFieldName($meta);
+
     /**
      * Removes all associated translations for given object
-     * 
+     *
      * @param ObjectManager $om
      * @param mixed $objectId
      * @param string $transClass
      * @return void
      */
-    abstract protected function removeAssociatedTranslations(ObjectManager $om, $objectId, $transClass);
-    
+    abstract protected function removeAssociatedTranslations($om, $objectId, $transClass);
+
     /**
      * Inserts the translation record
-     * 
+     *
      * @param ObjectManager $om
      * @param object $translation
      * @return void
      */
-    abstract protected function insertTranslationRecord(ObjectManager $om, $translation);
-    
+    abstract protected function insertTranslationRecord($om, $translation);
+
     /**
      * Search for existing translation record
-     * 
+     *
      * @param ObjectManager $om
      * @param mixed $objectId
      * @param string $objectClass
@@ -484,10 +482,10 @@ abstract class AbstractTranslationListener extends MappedEventSubscriber
      * @param string $field
      * @return mixed - null if nothing is found, Translation otherwise
      */
-    abstract protected function findTranslation(ObjectManager $om, $objectId, $objectClass, $locale, $field);
-    
+    abstract protected function findTranslation($om, $objectId, $objectClass, $locale, $field);
+
     /**
-     * Sets a property value of the original data array of an object 
+     * Sets a property value of the original data array of an object
      *
      * @param UnitOfWork $uow
      * @param string $oid
@@ -496,7 +494,7 @@ abstract class AbstractTranslationListener extends MappedEventSubscriber
      * @return void
      */
     abstract protected function setOriginalObjectProperty($uow, $oid, $property, $value);
-    
+
     /**
      * Clears the property changeset of the object with the given OID.
      *
@@ -504,13 +502,13 @@ abstract class AbstractTranslationListener extends MappedEventSubscriber
      * @param string $oid The object's OID.
      */
     abstract protected function clearObjectChangeSet($uow, $oid);
-    
+
     /**
      * Load the translations for a given object
-     * 
+     *
      * @param ObjectManager $om
      * @param object $object
      * @return array
      */
-    abstract protected function loadTranslations(ObjectManager $om, $object);
+    abstract protected function loadTranslations($om, $object);
 }

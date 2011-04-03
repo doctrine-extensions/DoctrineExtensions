@@ -4,22 +4,20 @@ namespace Gedmo\Translatable\ODM\MongoDB;
 
 use Doctrine\ODM\MongoDB\Events,
     Doctrine\Common\EventArgs,
-    Doctrine\Common\Persistence\ObjectManager,
-    Doctrine\Common\Persistence\Mapping\ClassMetadata,
     Doctrine\ODM\MongoDB\Cursor,
     Gedmo\Translatable\AbstractTranslationListener;
 
 /**
  * The translation listener handles the generation and
  * loading of translations for documents.
- * 
+ *
  * This behavior can inpact the performance of your application
  * since it does an additional query for fields to be translated.
- * 
+ *
  * Nevertheless the annotation metadata is properly cached and
  * it is not a big overhead to lookup all document annotations since
  * the caching is activated for metadata
- * 
+ *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  * @package Gedmo.Translatable.ODM.MongoDB
  * @subpackage TranslationListener
@@ -27,17 +25,17 @@ use Doctrine\ODM\MongoDB\Events,
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class TranslationListener extends AbstractTranslationListener
-{    
+{
     /**
      * The translation entity class used to store the translations
-     * 
+     *
      * @var string
      */
     protected $defaultTranslationDocument = 'Gedmo\Translatable\Document\Translation';
-    
+
     /**
      * Specifies the list of events to listen
-     * 
+     *
      * @return array
      */
     public function getSubscribedEvents()
@@ -49,7 +47,7 @@ class TranslationListener extends AbstractTranslationListener
             Events::loadClassMetadata
         );
     }
-    
+
     /**
      * {@inheritdoc}
      */
@@ -57,7 +55,7 @@ class TranslationListener extends AbstractTranslationListener
     {
         return $this->defaultTranslationDocument;
     }
-    
+
     /**
      * {@inheritdoc}
      */
@@ -65,7 +63,7 @@ class TranslationListener extends AbstractTranslationListener
     {
         return $args->getDocumentManager();
     }
-    
+
     /**
      * {@inheritdoc}
      */
@@ -73,7 +71,7 @@ class TranslationListener extends AbstractTranslationListener
     {
         return $args->getDocument();
     }
-    
+
     /**
      * {@inheritdoc}
      */
@@ -81,7 +79,7 @@ class TranslationListener extends AbstractTranslationListener
     {
         return $uow->getDocumentChangeSet($object);
     }
-    
+
     /**
      * {@inheritdoc}
      */
@@ -89,7 +87,7 @@ class TranslationListener extends AbstractTranslationListener
     {
         return $uow->getScheduledDocumentUpdates();
     }
-    
+
     /**
      * {@inheritdoc}
      */
@@ -97,7 +95,7 @@ class TranslationListener extends AbstractTranslationListener
     {
         return $uow->getScheduledDocumentInsertions();
     }
-    
+
     /**
      * {@inheritdoc}
      */
@@ -105,15 +103,15 @@ class TranslationListener extends AbstractTranslationListener
     {
         return $uow->getScheduledDocumentDeletions();
     }
-    
+
     /**
      * {@inheritdoc}
      */
-    protected function getSingleIdentifierFieldName(ClassMetadata $meta)
+    protected function getSingleIdentifierFieldName($meta)
     {
         return $meta->identifier;
     }
-    
+
     /**
      * {@inheritdoc}
      */
@@ -121,7 +119,7 @@ class TranslationListener extends AbstractTranslationListener
     {
         $uow->setOriginalDocumentProperty($oid, $property, $value);
     }
-    
+
     /**
      * {@inheritdoc}
      */
@@ -129,11 +127,11 @@ class TranslationListener extends AbstractTranslationListener
     {
         $uow->clearDocumentChangeSet($oid);
     }
-    
+
     /**
      * {@inheritdoc}
      */
-    protected function removeAssociatedTranslations(ObjectManager $om, $objectId, $transClass)
+    protected function removeAssociatedTranslations($om, $objectId, $transClass)
     {
         $qb = $om->createQueryBuilder($transClass);
         $q = $qb->remove()
@@ -141,13 +139,13 @@ class TranslationListener extends AbstractTranslationListener
             ->getQuery();
         return $q->execute();
     }
-    
+
     /**
      * {@inheritdoc}
      */
-    protected function insertTranslationRecord(ObjectManager $om, $translation)
+    protected function insertTranslationRecord($om, $translation)
     {
-        $meta = $om->getClassMetadata(get_class($translation));        
+        $meta = $om->getClassMetadata(get_class($translation));
         $collection = $om->getDocumentCollection($meta->name);
         $data = array();
 
@@ -161,11 +159,11 @@ class TranslationListener extends AbstractTranslationListener
             throw new \Gedmo\Exception\RuntimeException('Failed to insert new Translation record');
         }
     }
-    
+
     /**
      * {@inheritdoc}
      */
-    protected function findTranslation(ObjectManager $om, $objectId, $objectClass, $locale, $field)
+    protected function findTranslation($om, $objectId, $objectClass, $locale, $field)
     {
         $translationClass = $this->getTranslationClass($objectClass);
         $qb = $om->createQueryBuilder($translationClass);
@@ -174,7 +172,7 @@ class TranslationListener extends AbstractTranslationListener
             ->field('field')->equals($field)
             ->field('objectClass')->equals($objectClass)
             ->getQuery();
-        
+
         $result = $q->execute();
         if ($result instanceof Cursor) {
             $result = current($result->toArray());
@@ -182,16 +180,16 @@ class TranslationListener extends AbstractTranslationListener
         $q->setHydrate(false);
         return $result;
     }
-    
+
     /**
      * {@inheritdoc}
      */
-    protected function loadTranslations(ObjectManager $om, $object)
+    protected function loadTranslations($om, $object)
     {
         $meta = $om->getClassMetadata(get_class($object));
         $locale = strtolower($this->getTranslatableLocale($object, $meta));
         $this->validateLocale($locale);
-        
+
         // load translated content for all translatable fields
         $translationClass = $this->getTranslationClass($meta->name);
         $identifier = $meta->getIdentifierValue($object);
@@ -201,7 +199,7 @@ class TranslationListener extends AbstractTranslationListener
             ->field('locale')->equals($locale)
             ->field('objectClass')->equals($meta->name)
             ->getQuery();
-            
+
         $q->setHydrate(false);
         $result = $q->execute();
         if ($result instanceof Cursor) {

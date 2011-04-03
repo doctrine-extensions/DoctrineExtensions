@@ -4,7 +4,6 @@ namespace Gedmo\Translatable\Mapping\Driver;
 
 use Gedmo\Mapping\Driver\File,
     Gedmo\Mapping\Driver,
-    Doctrine\Common\Persistence\Mapping\ClassMetadata,
     Gedmo\Exception\InvalidMappingException;
 
 /**
@@ -12,7 +11,7 @@ use Gedmo\Mapping\Driver\File,
  * behavioral extension. Used for extraction of extended
  * metadata from yaml specificaly for Translatable
  * extension.
- * 
+ *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  * @package Gedmo.Translatable.Mapping.Driver
  * @subpackage Yaml
@@ -26,19 +25,19 @@ class Yaml extends File implements Driver
      * @var string
      */
     protected $_extension = '.dcm.yml';
-    
+
     /**
      * {@inheritDoc}
      */
-    public function validateFullMetadata(ClassMetadata $meta, array $config) {}
-    
+    public function validateFullMetadata($meta, array $config) {}
+
     /**
      * {@inheritDoc}
      */
-    public function readExtendedMetadata(ClassMetadata $meta, array &$config) {
+    public function readExtendedMetadata($meta, array &$config) {
         $yaml = $this->_loadMappingFile($this->_findMappingFile($meta->name));
         $mapping = $yaml[$meta->name];
-        
+
         if (isset($mapping['gedmo'])) {
             $classMapping = $mapping['gedmo'];
             if (isset($classMapping['translation']['entity'])) {
@@ -65,7 +64,7 @@ class Yaml extends File implements Driver
             }
         }
     }
-    
+
     /**
      * {@inheritDoc}
      */

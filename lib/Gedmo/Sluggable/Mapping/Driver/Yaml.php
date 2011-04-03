@@ -4,7 +4,6 @@ namespace Gedmo\Sluggable\Mapping\Driver;
 
 use Gedmo\Mapping\Driver\File,
     Gedmo\Mapping\Driver,
-    Doctrine\Common\Persistence\Mapping\ClassMetadata,
     Gedmo\Exception\InvalidMappingException;
 
 /**
@@ -12,7 +11,7 @@ use Gedmo\Mapping\Driver\File,
  * behavioral extension. Used for extraction of extended
  * metadata from yaml specificaly for Sluggable
  * extension.
- * 
+ *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  * @package Gedmo.Sluggable.Mapping.Driver
  * @subpackage Yaml
@@ -26,33 +25,33 @@ class Yaml extends File implements Driver
      * @var string
      */
     protected $_extension = '.dcm.yml';
-    
+
     /**
      * List of types which are valid for slug and sluggable fields
-     * 
+     *
      * @var array
      */
     private $validTypes = array(
         'string'
     );
-    
+
     /**
      * {@inheritDoc}
      */
-    public function validateFullMetadata(ClassMetadata $meta, array $config)
+    public function validateFullMetadata($meta, array $config)
     {
         if ($config && !isset($config['fields'])) {
             throw new InvalidMappingException("Unable to find any sluggable fields specified for Sluggable entity - {$meta->name}");
         }
     }
-    
+
     /**
      * {@inheritDoc}
      */
-    public function readExtendedMetadata(ClassMetadata $meta, array &$config) {
+    public function readExtendedMetadata($meta, array &$config) {
         $yaml = $this->_loadMappingFile($this->_findMappingFile($meta->name));
         $mapping = $yaml[$meta->name];
-        
+
         if (isset($mapping['fields'])) {
             foreach ($mapping['fields'] as $field => $fieldMapping) {
                 if (isset($fieldMapping['gedmo'])) {
@@ -65,29 +64,29 @@ class Yaml extends File implements Driver
                         $slug = $fieldMapping['gedmo']['slug'];
                         if (!$this->isValidField($meta, $field)) {
                             throw new InvalidMappingException("Cannot use field - [{$field}] for slug storage, type is not valid and must be 'string' in class - {$meta->name}");
-                        } 
+                        }
                         if (isset($config['slug'])) {
                             throw new InvalidMappingException("There cannot be two slug fields: [{$slugField}] and [{$config['slug']}], in class - {$meta->name}.");
                         }
-                        
+
                         $config['slug'] = $field;
-                        $config['style'] = isset($slug['style']) ? 
+                        $config['style'] = isset($slug['style']) ?
                             (string)$slug['style'] : 'default';
-                        
-                        $config['updatable'] = isset($slug['updatable']) ? 
+
+                        $config['updatable'] = isset($slug['updatable']) ?
                             (bool)$slug['updatable'] : true;
-                            
-                        $config['unique'] = isset($slug['unique']) ? 
+
+                        $config['unique'] = isset($slug['unique']) ?
                             (bool)$slug['unique'] : true;
-                            
-                        $config['separator'] = isset($slug['separator']) ? 
+
+                        $config['separator'] = isset($slug['separator']) ?
                             (string)$slug['separator'] : '-';
                     }
                 }
             }
         }
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -95,15 +94,15 @@ class Yaml extends File implements Driver
     {
         return \Symfony\Component\Yaml\Yaml::load($file);
     }
-    
+
     /**
      * Checks if $field type is valid as Sluggable field
-     * 
+     *
      * @param ClassMetadata $meta
      * @param string $field
      * @return boolean
      */
-    protected function isValidField(ClassMetadata $meta, $field)
+    protected function isValidField($meta, $field)
     {
         $mapping = $meta->getFieldMapping($field);
         return $mapping && in_array($mapping['type'], $this->validTypes);

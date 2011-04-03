@@ -3,13 +3,12 @@
 namespace Gedmo\Timestampable;
 
 use Doctrine\ORM\Events,
-    Doctrine\Common\Persistence\Mapping\ClassMetadata,
     Doctrine\Common\EventArgs;
 
 /**
  * The Timestampable listener handles the update of
  * dates on creation and update of entity.
- * 
+ *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  * @package Gedmo.Timestampable
  * @subpackage TimestampableListener
@@ -20,7 +19,7 @@ class TimestampableListener extends AbstractTimestampableListener
 {
     /**
      * Specifies the list of events to listen
-     * 
+     *
      * @return array
      */
     public function getSubscribedEvents()
@@ -31,7 +30,7 @@ class TimestampableListener extends AbstractTimestampableListener
             Events::loadClassMetadata
         );
     }
-    
+
     /**
      * {@inheritdoc}
      */
@@ -39,7 +38,7 @@ class TimestampableListener extends AbstractTimestampableListener
     {
         return $args->getEntityManager();
     }
-    
+
     /**
      * {@inheritdoc}
      */
@@ -47,7 +46,7 @@ class TimestampableListener extends AbstractTimestampableListener
     {
         return $args->getEntity();
     }
-    
+
     /**
      * {@inheritdoc}
      */
@@ -55,7 +54,7 @@ class TimestampableListener extends AbstractTimestampableListener
     {
         return $uow->getEntityChangeSet($object);
     }
-    
+
     /**
      * {@inheritdoc}
      */
@@ -63,19 +62,19 @@ class TimestampableListener extends AbstractTimestampableListener
     {
         return $uow->getScheduledEntityUpdates();
     }
-    
+
     /**
      * {@inheritdoc}
      */
-    public function recomputeSingleObjectChangeSet($uow, ClassMetadata $meta, $object)
+    public function recomputeSingleObjectChangeSet($uow, $meta, $object)
     {
         $uow->recomputeSingleEntityChangeSet($meta, $object);
     }
-    
+
     /**
      * {@inheritdoc}
      */
-    protected function getDateValue(ClassMetadata $meta, $field)
+    protected function getDateValue($meta, $field)
     {
         return new \DateTime();
     }

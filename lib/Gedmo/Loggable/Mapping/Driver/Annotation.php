@@ -4,7 +4,6 @@ namespace Gedmo\Loggable\Mapping\Driver;
 
 use Gedmo\Mapping\Driver,
     Doctrine\Common\Annotations\AnnotationReader,
-    Doctrine\Common\Persistence\Mapping\ClassMetadata,
     Gedmo\Exception\InvalidMappingException;
 
 /**
@@ -30,15 +29,15 @@ class Annotation implements Driver
     /**
      * {@inheritDoc}
      */
-    public function validateFullMetadata(ClassMetadata $meta, array $config)
+    public function validateFullMetadata($meta, array $config)
     {
-        
+
     }
 
     /**
      * {@inheritDoc}
      */
-    public function readExtendedMetadata(ClassMetadata $meta, array &$config)
+    public function readExtendedMetadata($meta, array &$config)
     {
         require_once __DIR__ . '/../Annotations.php';
         $reader = new AnnotationReader();

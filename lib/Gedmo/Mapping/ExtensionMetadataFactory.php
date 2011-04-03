@@ -2,13 +2,10 @@
 
 namespace Gedmo\Mapping;
 
-use Doctrine\Common\Persistence\ObjectManager,
-    Doctrine\Common\Persistence\Mapping\ClassMetadata;
-
 /**
  * The extension metadata factory is responsible for extension driver
  * initialization and fully reading the extension metadata
- * 
+ *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  * @package Gedmo.Mapping
  * @subpackage ExtensionMetadataFactory
@@ -22,41 +19,41 @@ class ExtensionMetadataFactory
      * @var Gedmo\Mapping\Driver
      */
     protected $driver;
-    
+
     /**
      * Object manager, entity or document
      * @var object
      */
     private $objectManager;
-    
+
     /**
      * Extension namespace
-     * 
+     *
      * @var string
      */
     private $extensionNamespace;
-    
+
     /**
      * Initializes extension driver
-     * 
+     *
      * @param ObjectManager $objectManager
      * @param string $extensionNamespace
      */
-    public function __construct(ObjectManager $objectManager, $extensionNamespace)
+    public function __construct($objectManager, $extensionNamespace)
     {
         $this->objectManager = $objectManager;
         $this->extensionNamespace = $extensionNamespace;
         $omDriver = $objectManager->getConfiguration()->getMetadataDriverImpl();
         $this->driver = $this->getDriver($omDriver);
     }
-    
+
     /**
      * Reads extension metadata
-     * 
+     *
      * @param ClassMetadata $meta
      * @return array - the metatada configuration
      */
-    public function getExtensionMetadata(ClassMetadata $meta)
+    public function getExtensionMetadata($meta)
     {
         if ($meta->isMappedSuperclass) {
             return; // ignore mappedSuperclasses for now
@@ -80,10 +77,10 @@ class ExtensionMetadataFactory
         }
         return $config;
     }
-    
+
     /**
      * Get the cache id
-     * 
+     *
      * @param string $className
      * @param string $extensionNamespace
      * @return string
@@ -92,11 +89,11 @@ class ExtensionMetadataFactory
     {
         return $className . '\\$' . strtoupper(str_replace('\\', '_', $extensionNamespace)) . '_CLASSMETADATA';
     }
-    
+
     /**
      * Get the extended driver instance which will
      * read the metadata required by extension
-     * 
+     *
      * @param object $omDriver
      * @throws DriverException if driver was not found in extension
      * @return Gedmo\Mapping\Driver

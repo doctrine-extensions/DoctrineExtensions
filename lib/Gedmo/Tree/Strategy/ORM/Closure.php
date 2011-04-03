@@ -222,7 +222,7 @@ class Closure implements Strategy
             $this->recalculateChildCountForEntities($em, get_class( $entity ));
         }
     }
-	
+    
     /**
      * Remove node and associated closures
      * 
@@ -239,18 +239,18 @@ class Closure implements Strategy
         $id = $this->extractIdentifier($em, $entity);
         
         $this->removeClosurePathsOfNodeID($em, $closureMeta->getTableName(), $id, $maintainSelfReferencingRow, $maintainSelfReferencingRowOfChildren);
-	}
+    }
     
-	/**
-	 * Remove closures for node $nodeId
-	 * 
-	 * @param EntityManager $em
-	 * @param string $table
-	 * @param integer $nodeId
-	 * @param bool $maintainSelfReferencingRow
-	 * @param bool $maintainSelfReferencingRowOfChildren
-	 * @throws \Gedmo\Exception\RuntimeException - if deletion of closures fails
-	 */
+    /**
+     * Remove closures for node $nodeId
+     * 
+     * @param EntityManager $em
+     * @param string $table
+     * @param integer $nodeId
+     * @param bool $maintainSelfReferencingRow
+     * @param bool $maintainSelfReferencingRowOfChildren
+     * @throws \Gedmo\Exception\RuntimeException - if deletion of closures fails
+     */
     public function removeClosurePathsOfNodeID(EntityManager $em, $table, $nodeId, $maintainSelfReferencingRow = true, $maintainSelfReferencingRowOfChildren = true)
     {
         $subquery = "SELECT c1.id FROM {$table} c1 ";

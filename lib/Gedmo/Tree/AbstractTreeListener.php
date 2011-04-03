@@ -3,12 +3,11 @@
 namespace Gedmo\Tree;
 
 use Doctrine\Common\EventArgs,
-    Doctrine\Common\Persistence\ObjectManager,
     Gedmo\Mapping\MappedEventSubscriber;
 
 /**
  * The base tree listener model.
- * 
+ *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  * @package Gedmo.Tree
  * @subpackage AbstractTreeListener
@@ -16,29 +15,29 @@ use Doctrine\Common\EventArgs,
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 abstract class AbstractTreeListener extends MappedEventSubscriber
-{    
+{
     /**
      * Tree processing strategies for object classes
-     * 
+     *
      * @var array
      */
     private $strategies = array();
-    
+
     /**
      * List of strategy instances
-     * 
+     *
      * @var array
      */
     private $strategyInstances = array();
-    
+
     /**
      * Get the used strategy for tree processing
-     * 
+     *
      * @param ObjectManager $om
      * @param string $class
      * @return StrategyInterface
      */
-    public function getStrategy(ObjectManager $om, $class)
+    public function getStrategy($om, $class)
     {
         if (!isset($this->strategies[$class])) {
             $config = $this->getConfiguration($om, $class);
@@ -53,11 +52,11 @@ abstract class AbstractTreeListener extends MappedEventSubscriber
         }
         return $this->strategyInstances[$this->strategies[$class]];
     }
-    
+
     /**
      * Looks for Tree objects being updated
      * for further processing
-     * 
+     *
      * @param EventArgs $args
      * @return void
      */
@@ -67,7 +66,7 @@ abstract class AbstractTreeListener extends MappedEventSubscriber
         $uow = $om->getUnitOfWork();
         // check all scheduled updates for TreeNodes
         $usedClasses = array();
-        
+
         foreach ($this->getScheduledObjectUpdates($uow) as $object) {
             $meta = $om->getClassMetadata(get_class($object));
             if ($config = $this->getConfiguration($om, $meta->name)) {
@@ -79,10 +78,10 @@ abstract class AbstractTreeListener extends MappedEventSubscriber
             $strategy->onFlushEnd($om);
         }
     }
-    
+
     /**
      * Updates tree on Node removal
-     * 
+     *
      * @param EventArgs $args
      * @return void
      */
@@ -91,15 +90,15 @@ abstract class AbstractTreeListener extends MappedEventSubscriber
         $om = $this->getObjectManager($args);
         $object = $this->getObject($args);
         $meta = $om->getClassMetadata(get_class($object));
-        
+
         if ($config = $this->getConfiguration($om, $meta->name)) {
             $this->getStrategy($om, $meta->name)->processScheduledDelete($om, $object);
         }
     }
-    
+
     /**
      * Checks for persisted Nodes
-     * 
+     *
      * @param EventArgs $args
      * @return void
      */
@@ -108,16 +107,16 @@ abstract class AbstractTreeListener extends MappedEventSubscriber
         $om = $this->getObjectManager($args);
         $object = $this->getObject($args);
         $meta = $om->getClassMetadata(get_class($object));
-        
+
         if ($config = $this->getConfiguration($om, $meta->name)) {
             $this->getStrategy($om, $meta->name)->processPrePersist($om, $object);
         }
     }
-    
+
     /**
      * Checks for pending Nodes to fully synchronize
      * the tree
-     * 
+     *
      * @param EventArgs $args
      * @return void
      */
@@ -126,15 +125,15 @@ abstract class AbstractTreeListener extends MappedEventSubscriber
         $om = $this->getObjectManager($args);
         $object = $this->getObject($args);
         $meta = $om->getClassMetadata(get_class($object));
-        
+
         if ($config = $this->getConfiguration($om, $meta->name)) {
             $this->getStrategy($om, $meta->name)->processPostPersist($om, $object);
         }
     }
-    
+
     /**
      * Mapps additional metadata
-     * 
+     *
      * @param EventArgs $eventArgs
      * @return void
      */
@@ -142,7 +141,7 @@ abstract class AbstractTreeListener extends MappedEventSubscriber
     {
         $this->loadMetadataForObjectClass($this->getObjectManager($eventArgs), $eventArgs->getClassMetadata());
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -150,7 +149,7 @@ abstract class AbstractTreeListener extends MappedEventSubscriber
     {
         return __NAMESPACE__;
     }
-    
+
     /**
      * Get the ObjectManager from EventArgs
      *
@@ -158,7 +157,7 @@ abstract class AbstractTreeListener extends MappedEventSubscriber
      * @return object
      */
     abstract protected function getObjectManager(EventArgs $args);
-    
+
     /**
      * Get the Object from EventArgs
      *
@@ -166,7 +165,7 @@ abstract class AbstractTreeListener extends MappedEventSubscriber
      * @return object
      */
     abstract protected function getObject(EventArgs $args);
-    
+
     /**
      * Get the scheduled object updates from a UnitOfWork
      *
@@ -174,19 +173,19 @@ abstract class AbstractTreeListener extends MappedEventSubscriber
      * @return array
      */
     abstract protected function getScheduledObjectUpdates($uow);
-    
+
     /**
      * Loads an adapter for tree processing
-     * 
+     *
      * @param string $type
      * @return StrategyInterface
      */
     abstract protected function loadStrategy($type);
-    
+
     /**
      * Get the list of strategy instances used for
      * given object classes
-     * 
+     *
      * @param array $classes
      * @return array
      */

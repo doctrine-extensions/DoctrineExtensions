@@ -3,8 +3,6 @@
 namespace Gedmo\Loggable;
 
 use Doctrine\Common\EventArgs,
-    Doctrine\Common\Persistence\ObjectManager,
-    Doctrine\Common\Persistence\Mapping\ClassMetadata,
     Gedmo\Mapping\MappedEventSubscriber;
 
 /**
@@ -222,7 +220,7 @@ abstract class AbstractLoggableListener extends MappedEventSubscriber
      * @throws MappingException - if identifier is composite
      * @return string
      */
-    abstract protected function getSingleIdentifierFieldName(ClassMetadata $meta);
+    abstract protected function getSingleIdentifierFieldName($meta);
 
     /**
      * Get the Object from EventArgs
@@ -240,7 +238,7 @@ abstract class AbstractLoggableListener extends MappedEventSubscriber
      * @param object $object
      * @return integer
      */
-    abstract protected function getNewVersion(ClassMetadata $meta, ObjectManager $om, $object);
+    abstract protected function getNewVersion($meta, $om, $object);
 
     /**
      * Extracts all identifiers from the object,
@@ -251,7 +249,7 @@ abstract class AbstractLoggableListener extends MappedEventSubscriber
      * @param object $object
      * @return array
      */
-    private function extractIdentifiers(ObjectManager $om, $object)
+    private function extractIdentifiers($om, $object)
     {
         $meta = $om->getClassMetadata(get_class($object));
         $identifier = array();
@@ -273,7 +271,7 @@ abstract class AbstractLoggableListener extends MappedEventSubscriber
      * @param ObjectManager $om
      * @return void
      */
-    private function createLogEntry($action, $object, ObjectManager $om)
+    private function createLogEntry($action, $object, $om)
     {
         $meta = $om->getClassMetadata(get_class($object));
         if ($config = $this->getConfiguration($om, $meta->name)) {

@@ -3,7 +3,6 @@
 namespace Gedmo\Timestampable\Mapping\Driver;
 
 use Gedmo\Mapping\Driver,
-    Doctrine\Common\Persistence\Mapping\ClassMetadata,
     Doctrine\Common\Annotations\AnnotationReader,
     Gedmo\Exception\InvalidMappingException;
 
@@ -12,7 +11,7 @@ use Gedmo\Mapping\Driver,
  * behavioral extension. Used for extraction of extended
  * metadata from Annotations specificaly for Timestampable
  * extension.
- * 
+ *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  * @package Gedmo.Translatable.Mapping.Driver
  * @subpackage Annotation
@@ -25,10 +24,10 @@ class Annotation implements Driver
      * Annotation field is timestampable
      */
     const ANNOTATION_TIMESTAMPABLE = 'Gedmo\Timestampable\Mapping\Timestampable';
-    
+
     /**
      * List of types which are valid for timestamp
-     * 
+     *
      * @var array
      */
     private $validTypes = array(
@@ -37,20 +36,20 @@ class Annotation implements Driver
         'datetime',
         'timestamp'
     );
-    
+
     /**
      * {@inheritDoc}
      */
-    public function validateFullMetadata(ClassMetadata $meta, array $config) {}
-    
+    public function validateFullMetadata($meta, array $config) {}
+
     /**
      * {@inheritDoc}
      */
-    public function readExtendedMetadata(ClassMetadata $meta, array &$config) {
+    public function readExtendedMetadata($meta, array &$config) {
         require_once __DIR__ . '/../Annotations.php';
         $reader = new AnnotationReader();
         $reader->setAnnotationNamespaceAlias('Gedmo\Timestampable\Mapping\\', 'gedmo');
-        
+
         $class = $meta->getReflectionClass();
         // property annotations
         foreach ($class->getProperties() as $property) {
@@ -78,7 +77,7 @@ class Annotation implements Driver
                     $field = array(
                         'field' => $field,
                         'trackedField' => $timestampable->field,
-                        'value' => $timestampable->value 
+                        'value' => $timestampable->value
                     );
                 }
                 // properties are unique and mapper checks that, no risk here
@@ -86,15 +85,15 @@ class Annotation implements Driver
             }
         }
     }
-    
+
     /**
      * Checks if $field type is valid
-     * 
+     *
      * @param ClassMetadata $meta
      * @param string $field
      * @return boolean
      */
-    protected function isValidField(ClassMetadata $meta, $field)
+    protected function isValidField($meta, $field)
     {
         $mapping = $meta->getFieldMapping($field);
         return $mapping && in_array($mapping['type'], $this->validTypes);

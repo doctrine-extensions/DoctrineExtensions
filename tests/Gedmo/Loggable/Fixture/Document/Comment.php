@@ -22,9 +22,9 @@ class Comment
      * @String
      */
     private $message;
-    
+
     /**
-     * @ReferenceOne(targetDocument="RelatedArticle", inversedBy="comments")
+     * @ReferenceOne(targetDocument="RelatedArticle")
      */
     private $article;
 
@@ -32,7 +32,7 @@ class Comment
     {
         $this->article = $article;
     }
-    
+
     public function getArticle()
     {
         return $this->article;
@@ -42,7 +42,7 @@ class Comment
     {
         return $this->id;
     }
-    
+
     public function setSubject($subject)
     {
         $this->subject = $subject;

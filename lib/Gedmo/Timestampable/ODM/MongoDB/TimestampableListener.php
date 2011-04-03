@@ -4,13 +4,12 @@ namespace Gedmo\Timestampable\ODM\MongoDB;
 
 use Doctrine\ODM\MongoDB\Events,
     Doctrine\Common\EventArgs,
-    Doctrine\Common\Persistence\Mapping\ClassMetadata,
     Gedmo\Timestampable\AbstractTimestampableListener;
 
 /**
  * The Timestampable listener handles the update of
  * dates on creation and update of entity.
- * 
+ *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  * @package Gedmo.Timestampable.ODM.MongoDB
  * @subpackage TimestampableListener
@@ -18,10 +17,10 @@ use Doctrine\ODM\MongoDB\Events,
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class TimestampableListener extends AbstractTimestampableListener
-{    
+{
     /**
      * Specifies the list of events to listen
-     * 
+     *
      * @return array
      */
     public function getSubscribedEvents()
@@ -32,7 +31,7 @@ class TimestampableListener extends AbstractTimestampableListener
             Events::loadClassMetadata
         );
     }
-    
+
     /**
      * {@inheritdoc}
      */
@@ -40,7 +39,7 @@ class TimestampableListener extends AbstractTimestampableListener
     {
         return $args->getDocumentManager();
     }
-    
+
     /**
      * {@inheritdoc}
      */
@@ -48,7 +47,7 @@ class TimestampableListener extends AbstractTimestampableListener
     {
         return $args->getDocument();
     }
-    
+
     /**
      * {@inheritdoc}
      */
@@ -56,7 +55,7 @@ class TimestampableListener extends AbstractTimestampableListener
     {
         return $uow->getDocumentChangeSet($object);
     }
-    
+
     /**
      * {@inheritdoc}
      */
@@ -64,19 +63,19 @@ class TimestampableListener extends AbstractTimestampableListener
     {
         return $uow->getScheduledDocumentUpdates();
     }
-    
+
     /**
      * {@inheritdoc}
      */
-    protected function recomputeSingleObjectChangeSet($uow, ClassMetadata $meta, $object)
+    protected function recomputeSingleObjectChangeSet($uow, $meta, $object)
     {
         $uow->recomputeSingleDocumentChangeSet($meta, $object);
     }
-    
+
     /**
      * {@inheritdoc}
      */
-    protected function getDateValue(ClassMetadata $meta, $field)
+    protected function getDateValue($meta, $field)
     {
         $mapping = $meta->getFieldMapping($field);
         if (isset($mapping['type']) && $mapping['type'] === 'timestamp') {

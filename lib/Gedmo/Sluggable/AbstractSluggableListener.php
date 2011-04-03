@@ -3,15 +3,13 @@
 namespace Gedmo\Sluggable;
 
 use Doctrine\Common\EventArgs,
-    Doctrine\Common\Persistence\ObjectManager,
-    Doctrine\Common\Persistence\Mapping\ClassMetadata,
     Gedmo\Mapping\MappedEventSubscriber;
 
 /**
  * The AbstractSluggableListener is an abstract class
  * of sluggable listener in order to support diferent
  * object managers.
- * 
+ *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  * @author Klein Florian <florian.klein@free.fr>
  * @subpackage AbstractSluggableListener
@@ -24,22 +22,22 @@ abstract class AbstractSluggableListener extends MappedEventSubscriber
     /**
      * The power exponent to jump
      * the slug unique number by tens.
-     * 
+     *
      * @var integer
      */
     private $exponent = 0;
-    
+
     /**
      * Transliteration callback for slugs
-     * 
+     *
      * @var array
      */
     private $transliterator = array('Gedmo\Sluggable\Util\Urlizer', 'urlize');
-    
+
     /**
      * Set the transliteration callable method
      * to transliterate slugs
-     * 
+     *
      * @param mixed $callable
      */
     public function setTransliterator($callable)
@@ -49,10 +47,10 @@ abstract class AbstractSluggableListener extends MappedEventSubscriber
         }
         $this->transliterator = $callable;
     }
-    
+
     /**
      * Mapps additional metadata
-     * 
+     *
      * @param EventArgs $eventArgs
      * @return void
      */
@@ -60,10 +58,10 @@ abstract class AbstractSluggableListener extends MappedEventSubscriber
     {
         $this->loadMetadataForObjectClass($this->getObjectManager($eventArgs), $eventArgs->getClassMetadata());
     }
-    
+
     /**
      * Checks for persisted object to specify slug
-     * 
+     *
      * @param EventArgs $args
      * @return void
      */
@@ -72,16 +70,16 @@ abstract class AbstractSluggableListener extends MappedEventSubscriber
         $om = $this->getObjectManager($args);
         $object = $this->getObject($args);
         $meta = $om->getClassMetadata(get_class($object));
-        
+
         if ($config = $this->getConfiguration($om, $meta->name)) {
             $this->generateSlug($om, $object, false);
         }
     }
-    
+
     /**
      * Generate slug on objects being updated during flush
      * if they require changing
-     * 
+     *
      * @param EventArgs $args
      * @return void
      */
@@ -89,7 +87,7 @@ abstract class AbstractSluggableListener extends MappedEventSubscriber
     {
         $om = $this->getObjectManager($args);
         $uow = $om->getUnitOfWork();
-        
+
         // we use onFlush and not preUpdate event to let other
         // event listeners be nested together
         foreach ($this->getScheduledObjectUpdates($uow) as $object) {
@@ -101,7 +99,7 @@ abstract class AbstractSluggableListener extends MappedEventSubscriber
             }
         }
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -109,10 +107,10 @@ abstract class AbstractSluggableListener extends MappedEventSubscriber
     {
         return __NAMESPACE__;
     }
-    
+
     /**
      * Creates the slug for object being flushed
-     * 
+     *
      * @param ObjectManager $om
      * @param object $object
      * @param mixed $changeSet
@@ -122,12 +120,12 @@ abstract class AbstractSluggableListener extends MappedEventSubscriber
      *      or invalid
      * @return void
      */
-    protected function generateSlug(ObjectManager $om, $object, $changeSet)
+    protected function generateSlug($om, $object, $changeSet)
     {
         $meta = $om->getClassMetadata(get_class($object));
         $uow = $om->getUnitOfWork();
         $config = $this->getConfiguration($om, $meta->name);
-        
+
         // collect the slug from fields
         $slug = '';
         $needToChangeSlug = false;
@@ -141,14 +139,14 @@ abstract class AbstractSluggableListener extends MappedEventSubscriber
         if (!$needToChangeSlug) {
             return; // nothing to do
         }
-        
+
         if (!strlen(trim($slug))) {
             throw new \Gedmo\Exception\UnexpectedValueException('Unable to find any non empty sluggable fields, make sure they have something at least.');
         }
-        
+
         // build the slug
         $slug = call_user_func_array(
-            $this->transliterator, 
+            $this->transliterator,
             array($slug, $config['separator'], $object)
         );
 
@@ -156,17 +154,17 @@ abstract class AbstractSluggableListener extends MappedEventSubscriber
         switch ($config['style']) {
             case 'camel':
                 $slug = preg_replace_callback(
-                    '@^[a-z]|' . $config['separator'] . '[a-z]@smi', 
-                    create_function('$m', 'return strtoupper($m[0]);'), 
+                    '@^[a-z]|' . $config['separator'] . '[a-z]@smi',
+                    create_function('$m', 'return strtoupper($m[0]);'),
                     $slug
                 );
                 break;
-                
+
             default:
                 // leave it as is
                 break;
         }
-        
+
         // cut slug if exceeded in length
         $mapping = $meta->getFieldMapping($config['slug']);
         if (isset($mapping['length']) && strlen($slug) > $mapping['length']) {
@@ -185,20 +183,20 @@ abstract class AbstractSluggableListener extends MappedEventSubscriber
             $this->recomputeSingleObjectChangeSet($uow, $meta, $object);
         }
     }
-    
+
     /**
      * Generates the unique slug
-     * 
+     *
      * @param ObjectManager $om
      * @param object $object
      * @param string $preferedSlug
      * @return string - unique slug
      */
-    protected function makeUniqueSlug(ObjectManager $om, $object, $preferedSlug)
-    {   
+    protected function makeUniqueSlug($om, $object, $preferedSlug)
+    {
         $meta = $om->getClassMetadata(get_class($object));
         $config = $this->getConfiguration($om, $meta->name);
-        
+
         // search for similar slug
         $result = $this->getUniqueSlugResult($om, $object, $meta, $config, $preferedSlug);
 
@@ -217,8 +215,8 @@ abstract class AbstractSluggableListener extends MappedEventSubscriber
             $mapping = $meta->getFieldMapping($config['slug']);
             if (isset($mapping['length']) && strlen($generatedSlug) > $mapping['length']) {
                 $generatedSlug = substr(
-                    $generatedSlug, 
-                    0, 
+                    $generatedSlug,
+                    0,
                     $mapping['length'] - (strlen($i) + strlen($config['separator']))
                 );
                 $this->exponent = strlen($i) - 1;
@@ -228,7 +226,7 @@ abstract class AbstractSluggableListener extends MappedEventSubscriber
         }
         return $preferedSlug;
     }
-    
+
     /**
      * Get the ObjectManager from EventArgs
      *
@@ -236,7 +234,7 @@ abstract class AbstractSluggableListener extends MappedEventSubscriber
      * @return ObjectManager
      */
     abstract protected function getObjectManager(EventArgs $args);
-    
+
     /**
      * Get the Object from EventArgs
      *
@@ -244,7 +242,7 @@ abstract class AbstractSluggableListener extends MappedEventSubscriber
      * @return object
      */
     abstract protected function getObject(EventArgs $args);
-    
+
     /**
      * Get the object changeset from a UnitOfWork
      *
@@ -253,7 +251,7 @@ abstract class AbstractSluggableListener extends MappedEventSubscriber
      * @return array
      */
     abstract protected function getObjectChangeSet($uow, $object);
-    
+
     /**
      * Recompute the single object changeset from a UnitOfWork
      *
@@ -262,8 +260,8 @@ abstract class AbstractSluggableListener extends MappedEventSubscriber
      * @param Object $object
      * @return void
      */
-    abstract protected function recomputeSingleObjectChangeSet($uow, ClassMetadata $meta, $object);
-    
+    abstract protected function recomputeSingleObjectChangeSet($uow, $meta, $object);
+
     /**
      * Get the scheduled object updates from a UnitOfWork
      *
@@ -271,10 +269,10 @@ abstract class AbstractSluggableListener extends MappedEventSubscriber
      * @return array
      */
     abstract protected function getScheduledObjectUpdates($uow);
-    
+
     /**
      * Loads the similar slugs
-     * 
+     *
      * @param ObjectManager $om
      * @param object $object
      * @param ClassMetadata $meta
@@ -282,5 +280,5 @@ abstract class AbstractSluggableListener extends MappedEventSubscriber
      * @param string $preferedSlug
      * @return array
      */
-    abstract protected function getUniqueSlugResult(ObjectManager $om, $object, ClassMetadata $meta, array $config, $preferedSlug);
+    abstract protected function getUniqueSlugResult($om, $object, $meta, array $config, $preferedSlug);
 }

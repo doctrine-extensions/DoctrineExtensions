@@ -4,8 +4,6 @@ namespace Gedmo\Loggable\ODM\MongoDB;
 
 use Gedmo\Loggable\AbstractLoggableListener,
     Doctrine\ODM\MongoDB\Events,
-    Doctrine\Common\Persistence\ObjectManager,
-    Doctrine\Common\Persistence\Mapping\ClassMetadata,
     Doctrine\ODM\MongoDB\Cursor,
     Doctrine\ODM\MongoDB\Proxy\Proxy,
     Doctrine\Common\EventArgs;
@@ -33,7 +31,7 @@ class LoggableListener extends AbstractLoggableListener
     public function getSubscribedEvents()
     {
         return array(
-            Events::onFlush, 
+            Events::onFlush,
             Events::loadClassMetadata,
             Events::postPersist
         );
@@ -45,10 +43,10 @@ class LoggableListener extends AbstractLoggableListener
     protected function getLogEntryClass(array $config, $class)
     {
         return isset($this->configurations[$class]['logEntryClass']) ?
-            $this->configurations[$class]['logEntryClass'] : 
+            $this->configurations[$class]['logEntryClass'] :
             $this->defaultLogEntryDocument;
     }
-    
+
     /**
      * {@inheritdoc}
      */
@@ -80,7 +78,7 @@ class LoggableListener extends AbstractLoggableListener
     {
         return $uow->getScheduledDocumentDeletions();
     }
-    
+
     /**
      * {@inheritdoc}
      */
@@ -88,15 +86,15 @@ class LoggableListener extends AbstractLoggableListener
     {
         return $uow->getDocumentChangeSet($object);
     }
-    
+
     /**
      * {@inheritdoc}
      */
-    protected function getSingleIdentifierFieldName(ClassMetadata $meta)
+    protected function getSingleIdentifierFieldName($meta)
     {
         return $meta->identifier;
     }
-    
+
     /**
      * {@inheritdoc}
      */
@@ -104,16 +102,16 @@ class LoggableListener extends AbstractLoggableListener
     {
         return $args->getDocument();
     }
-    
+
     /**
      * {@inheritdoc}
      */
-    protected function getNewVersion(ClassMetadata $meta, ObjectManager $om, $object)
+    protected function getNewVersion($meta, $om, $object)
     {
         $objectMeta = $om->getClassMetadata(get_class($object));
         $identifierField = $this->getSingleIdentifierFieldName($objectMeta);
         $objectId = $objectMeta->getReflectionProperty($identifierField)->getValue($object);
-        
+
         $qb = $om->createQueryBuilder($meta->name);
         $qb->select('version');
         $qb->field('objectId')->equals($objectId);
@@ -122,7 +120,7 @@ class LoggableListener extends AbstractLoggableListener
         $qb->limit(1);
         $q = $qb->getQuery();
         $q->setHydrate(false);
-        
+
         $result = $q->getSingleResult();
         if ($result) {
             $result = $result['version'] + 1;

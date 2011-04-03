@@ -46,17 +46,16 @@ abstract class BaseTestCaseMongoODM extends \PHPUnit_Framework_TestCase
     protected function tearDown()
     {
         if ($this->dm) {
-            foreach ($this->dm->getDocumentDatabases() as $db) {
-                foreach ($db->listCollections() as $collection) {
-                    $collection->drop();
-                }
+            $db = $this->dm->getDatabase();
+            foreach ($db->listCollections() as $collection) {
+                $collection->drop();
             }
             $this->dm->getConnection()->close();
             $this->dm = null;
         }
     }
 
-	/**
+    /**
      * DocumentManager mock object together with
      * annotation mapping driver and database
      *
@@ -69,7 +68,7 @@ abstract class BaseTestCaseMongoODM extends \PHPUnit_Framework_TestCase
         $config = $this->getMockAnnotatedConfig();
 
         try {
-            $this->dm = DocumentManager::create($conn, $config, $evm ?: $this->getEventManager());
+            $this->dm = DocumentManager::create($conn, 'gedmo_extensions_test', $config, $evm ?: $this->getEventManager());
             $this->dm->getConnection()->connect();
         } catch (\MongoException $e) {
             $this->markTestSkipped('Doctrine MongoDB ODM failed to connect');
@@ -89,7 +88,7 @@ abstract class BaseTestCaseMongoODM extends \PHPUnit_Framework_TestCase
         $conn = $this->getMock('Doctrine\\MongoDB\\Connection');
         $config = $this->getMockAnnotatedConfig();
 
-        $this->dm = DocumentManager::create($conn, $config, $evm ?: $this->getEventManager());
+        $this->dm = DocumentManager::create($conn, 'gedmo_extensions_test', $config, $evm ?: $this->getEventManager());
         return $this->dm;
     }
 
@@ -131,10 +130,6 @@ abstract class BaseTestCaseMongoODM extends \PHPUnit_Framework_TestCase
         $config->expects($this->once())
             ->method('getHydratorNamespace')
             ->will($this->returnValue('Hydrator'));
-
-        $config->expects($this->any())
-            ->method('getDefaultDB')
-            ->will($this->returnValue('gedmo_extensions_test'));
 
         $config->expects($this->once())
             ->method('getAutoGenerateProxyClasses')
