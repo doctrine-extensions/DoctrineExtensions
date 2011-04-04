@@ -279,14 +279,14 @@ class TranslationListener extends MappedEventSubscriber
                     }
                 }
                 // update translation
-                if (strlen($translated) || !$this->translationFallback) {
-                    $meta->getReflectionProperty($field)->setValue($object, $translated);
+                if ($translated || !$this->translationFallback) {
+                    $ea->setTranslationValue($object, $field, $translated);
                     // ensure clean changeset
                     $ea->setOriginalObjectProperty(
                         $om->getUnitOfWork(),
                         spl_object_hash($object),
                         $field,
-                        $translated
+                        $meta->getReflectionProperty($field)->getValue($object)
                     );
                 }
             }
@@ -367,7 +367,8 @@ class TranslationListener extends MappedEventSubscriber
             }
 
             // set the translated field, take value using reflection
-            $translation->setContent($meta->getReflectionProperty($field)->getValue($object));
+            $value = $meta->getReflectionProperty($field)->getValue($object);
+            $translation->setContent($ea->getTranslationValue($object, $field));
             if ($isInsert && is_null($objectId)) {
                 // if we do not have the primary key yet available
                 // keep this translation in memory to insert it later with foreign key
