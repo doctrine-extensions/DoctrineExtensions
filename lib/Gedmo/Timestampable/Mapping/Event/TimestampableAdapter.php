@@ -2,6 +2,8 @@
 
 namespace Gedmo\Timestampable\Mapping\Event;
 
+use Gedmo\Mapping\Event\AdapterInterface;
+
 /**
  * Doctrine event adapter interface
  * for Timestampable behavior
@@ -12,7 +14,7 @@ namespace Gedmo\Timestampable\Mapping\Event;
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-interface TimestampableAdapter
+interface TimestampableAdapter extends AdapterInterface
 {
     /**
      * Get the date value

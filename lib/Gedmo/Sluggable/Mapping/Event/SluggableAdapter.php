@@ -2,6 +2,8 @@
 
 namespace Gedmo\Sluggable\Mapping\Event;
 
+use Gedmo\Mapping\Event\AdapterInterface;
+
 /**
  * Doctrine event adapter interface
  * for Sluggable behavior
@@ -12,7 +14,7 @@ namespace Gedmo\Sluggable\Mapping\Event;
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-interface SluggableAdapter
+interface SluggableAdapter extends AdapterInterface
 {
     /**
      * Loads the similar slugs
