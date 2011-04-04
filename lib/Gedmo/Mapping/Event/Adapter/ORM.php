@@ -67,8 +67,13 @@ class ORM implements AdapterInterface
             $id = array();
             foreach ($meta->identifier as $name) {
                 $id[$name] = $meta->getReflectionProperty($name)->getValue($object);
+                // return null if one of identifiers is missing
+                if (!$id[$name]) {
+                    return null;
+                }
             }
         }
+
         if ($single) {
             $id = current($id);
         }

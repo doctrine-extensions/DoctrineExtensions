@@ -179,7 +179,7 @@ class Yaml extends File implements Driver
             throw new InvalidMappingException("Missing properties: " . implode(', ', $missingFields) . " in class - {$meta->name}");
         }
     }
-    
+
     /**
      * Validates metadata for closure type tree
      *

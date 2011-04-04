@@ -3,8 +3,8 @@
 namespace Gedmo\Loggable\Mapping\Event\Adapter;
 
 use Gedmo\Mapping\Event\Adapter\ODM as BaseAdapterODM;
-use Doctrine\ODM\MongoDB\DocumentManager;
-use Doctrine\ODM\MongoDB\Mapping\ClassMetadataInfo;
+use Doctrine\Common\Persistence\Mapping\ClassMetadata;
+use Gedmo\Loggable\Mapping\Event\LoggableAdapter;
 
 /**
  * Doctrine event adapter for ODM adapted
@@ -16,12 +16,10 @@ use Doctrine\ODM\MongoDB\Mapping\ClassMetadataInfo;
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-final class ODM extends BaseAdapterODM
+final class ODM extends BaseAdapterODM implements LoggableAdapter
 {
     /**
-     * Get default LogEntry class used to store the logs
-     *
-     * @return string
+     * {@inheritDoc}
      */
     public function getDefaultLogEntryClass()
     {
@@ -29,15 +27,11 @@ final class ODM extends BaseAdapterODM
     }
 
     /**
-     * Get new version number
-     *
-     * @param ClassMetadataInfo $meta
-     * @param DocumentManager $dm
-     * @param object $object
-     * @return integer
+     * {@inheritDoc}
      */
-    public function getNewVersion(ClassMetadataInfo $meta, DocumentManager $dm, $object)
+    public function getNewVersion(ClassMetadata $meta, $object)
     {
+        $dm = $this->getObjectManager();
         $objectMeta = $dm->getClassMetadata(get_class($object));
         $identifierField = $this->getSingleIdentifierFieldName($objectMeta);
         $objectId = $objectMeta->getReflectionProperty($identifierField)->getValue($object);

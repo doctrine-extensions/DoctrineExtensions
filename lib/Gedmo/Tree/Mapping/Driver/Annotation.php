@@ -55,7 +55,7 @@ class Annotation implements Driver
      * Annotation to specify closure tree class
      */
     const ANNOTATION_CLOSURE = 'Gedmo\Tree\Mapping\TreeClosure';
-    
+
     /**
      * Annotation to mark field as child count
      */
@@ -235,7 +235,7 @@ class Annotation implements Driver
             throw new InvalidMappingException("Missing properties: " . implode(', ', $missingFields) . " in class - {$meta->name}");
         }
     }
-    
+
     /**
      * Validates metadata for closure type tree
      *

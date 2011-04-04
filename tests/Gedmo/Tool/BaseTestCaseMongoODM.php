@@ -7,10 +7,10 @@ use Doctrine\ODM\MongoDB\Mapping\Driver\AnnotationDriver;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Doctrine\Common\EventManager;
 use Doctrine\MongoDB\Connection;
-use Gedmo\Translatable\ODM\MongoDB\TranslationListener;
-use Gedmo\Sluggable\ODM\MongoDB\SluggableListener;
-use Gedmo\Timestampable\ODM\MongoDB\TimestampableListener;
-use Gedmo\Loggable\ODM\MongoDB\LoggableListener;
+use Gedmo\Translatable\TranslationListener;
+use Gedmo\Sluggable\SluggableListener;
+use Gedmo\Timestampable\TimestampableListener;
+use Gedmo\Loggable\LoggableListener;
 
 /**
  * Base test case contains common mock objects

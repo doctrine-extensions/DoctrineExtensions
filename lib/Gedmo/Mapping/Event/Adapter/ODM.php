@@ -60,13 +60,14 @@ class ODM implements AdapterInterface
      */
     public function extractIdentifier(DocumentManager $dm, $object, $single = true)
     {
+        $meta = $dm->getClassMetadata(get_class($object));
         if ($object instanceof Proxy) {
             $id = $dm->getUnitOfWork()->getDocumentIdentifier($object);
         } else {
-            $meta = $dm->getClassMetadata(get_class($object));
             $id = $meta->getReflectionProperty($meta->identifier)->getValue($object);
         }
-        if ($single) {
+
+        if ($single || !$id) {
             return $id;
         } else {
             return array($meta->identifier => $id);

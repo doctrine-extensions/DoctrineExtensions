@@ -22,7 +22,7 @@ class SluggableDocumentTest extends BaseTestCaseMongoODM
     {
         parent::setUp();
         $evm = new EventManager();
-        $evm->addEventSubscriber(new ODM\MongoDB\SluggableListener);
+        $evm->addEventSubscriber(new SluggableListener);
 
         $this->getMockDocumentManager($evm);
         $this->populate();

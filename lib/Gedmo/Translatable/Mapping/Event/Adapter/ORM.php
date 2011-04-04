@@ -6,6 +6,7 @@ use Gedmo\Mapping\Event\Adapter\ORM as BaseAdapterORM;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Doctrine\ORM\Query;
+use Gedmo\Translatable\Mapping\Event\TranslatableAdapter;
 
 /**
  * Doctrine event adapter for ORM adapted
@@ -17,12 +18,10 @@ use Doctrine\ORM\Query;
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-final class ORM extends BaseAdapterORM
+final class ORM extends BaseAdapterORM implements TranslatableAdapter
 {
     /**
-     * Get default LogEntry class used to store the logs
-     *
-     * @return string
+     * {@inheritDoc}
      */
     public function getDefaultTranslationClass()
     {
@@ -30,12 +29,7 @@ final class ORM extends BaseAdapterORM
     }
 
     /**
-     * Load the translations for a given object
-     *
-     * @param object $object
-     * @param string $translationClass
-     * @param string $locale
-     * @return array
+     * {@inheritDoc}
      */
     public function loadTranslations($object, $translationClass, $locale)
     {
@@ -56,14 +50,7 @@ final class ORM extends BaseAdapterORM
     }
 
     /**
-     * Search for existing translation record
-     *
-     * @param mixed $objectId
-     * @param string $objectClass
-     * @param string $locale
-     * @param string $field
-     * @param string $translationClass
-     * @return mixed - null if nothing is found, Translation otherwise
+     * {@inheritDoc}
      */
     public function findTranslation($objectId, $objectClass, $locale, $field, $translationClass)
     {
@@ -90,11 +77,7 @@ final class ORM extends BaseAdapterORM
     }
 
     /**
-     * Removes all associated translations for given object
-     *
-     * @param mixed $objectId
-     * @param string $transClass
-     * @return void
+     * {@inheritDoc}
      */
     public function removeAssociatedTranslations($objectId, $transClass)
     {
@@ -108,10 +91,7 @@ final class ORM extends BaseAdapterORM
     }
 
     /**
-     * Inserts the translation record
-     *
-     * @param object $translation
-     * @return void
+     * {@inheritDoc}
      */
     public function insertTranslationRecord($translation)
     {
