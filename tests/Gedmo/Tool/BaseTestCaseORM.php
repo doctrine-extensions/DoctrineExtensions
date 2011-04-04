@@ -74,6 +74,30 @@ abstract class BaseTestCaseORM extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * EntityManager mock object together with
+     * annotation mapping driver and custom
+     * connection
+     *
+     * @param array $conn
+     * @param EventManager $evm
+     * @return EntityManager
+     */
+    protected function getMockCustomEntityManager(array $conn, EventManager $evm = null)
+    {
+        $config = $this->getMockAnnotatedConfig();
+        $em = EntityManager::create($conn, $config, $evm ?: $this->getEventManager());
+
+        $schema = array_map(function($class) use ($em) {
+            return $em->getClassMetadata($class);
+        }, (array)$this->getUsedEntityFixtures());
+
+        $schemaTool = new SchemaTool($em);
+        $schemaTool->dropSchema(array());
+        $schemaTool->createSchema($schema);
+        return $this->em = $em;
+    }
+
+    /**
      * EntityManager mock object with
      * annotation mapping driver
      *
