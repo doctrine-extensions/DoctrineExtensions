@@ -14,36 +14,29 @@ records being flushed in the behavioral way. List of extensions:
 Currently these extensions support **Yaml** and **Annotation** mapping. Additional mapping drivers
 can be easy implemented using Mapping extension to handle the additional metadata mapping.
 
+Notice: from now on there is only one listener per extension which supports ODM and ORM adapters to deal with objects. Only one instance of listener is 
+required, and can be attached to many different type object managers, currently supported (ORM or ODM)
+
 ## Important
 
 Recently where was a change for type hinting on object manager and other. These changes
-**requires doctrine2 from master branch**. Example:
-
-    git clone git://github.com/doctrine/doctrine2.git myproject/library/doctrine
-    git clone git://github.com/doctrine/common.git myproject/library/doctrine-common
-
-To autoload these libraries use same class loader from doctrine common package for instance.
-    
-If you are using windows, there is **msysgit** tool available.
+**requires doctrine2 from master branch**. If you do not want to update your doctrine libraries
+use these extensions from separate branch **doctrine2.0.x** or simply checkout to this branch.
 
 ### Latest updates
 
-**2011-03-27**
+**2011-04-04**
 
-- Merged Gustavo Adrian pull request for **Tree-closure** adapter
-- Now tree extension supports nestedset or closure strategies, it can be used on same manager. Keep in mind that closure adapter is not stable yet
+- Extensions now use only one listener instance for different object managers
 
 ### ODM MongoDB support
 
-There is a plan to port all extensions for different object manager support and now
-half of extensions can be used with ODM also.
+List of extensions which support ODM
 
 - Translatable
 - Sluggable
 - Timestampable
 - Loggable
-
-Are allready ported to support ODM MongoDB
 
 All these extensions can be nested together. And most allready use only annotations without interface requirement
 to not to aggregate the entity itself and has implemented proper caching for metadata.
