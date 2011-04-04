@@ -2,6 +2,8 @@
 
 namespace Gedmo\Translatable\Mapping\Event;
 
+use Gedmo\Mapping\Event\AdapterInterface;
+
 /**
  * Doctrine event adapter interface
  * for Translatable behavior
@@ -12,7 +14,7 @@ namespace Gedmo\Translatable\Mapping\Event;
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-interface TranslatableAdapter
+interface TranslatableAdapter extends AdapterInterface
 {
     /**
      * Get default LogEntry class used to store the logs
