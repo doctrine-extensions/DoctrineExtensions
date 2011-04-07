@@ -24,13 +24,13 @@ class Annotation implements Driver
     /**
      * Annotation to mark field as sluggable and include it in slug building
      */
-    const ANNOTATION_SLUGGABLE = 'Gedmo\Sluggable\Mapping\Sluggable';
+    const SLUGGABLE = 'Gedmo\\Mapping\\Annotation\\Sluggable';
 
     /**
      * Annotation to identify field as one which holds the slug
      * together with slug options
      */
-    const ANNOTATION_SLUG = 'Gedmo\Sluggable\Mapping\Slug';
+    const SLUG = 'Gedmo\\Mapping\\Annotation\\Slug';
 
     /**
      * List of types which are valid for slug and sluggable fields
@@ -55,9 +55,9 @@ class Annotation implements Driver
      * {@inheritDoc}
      */
     public function readExtendedMetadata(ClassMetadata $meta, array &$config) {
-        require_once __DIR__ . '/../Annotations.php';
         $reader = new AnnotationReader();
-        $reader->setAnnotationNamespaceAlias('Gedmo\Sluggable\Mapping\\', 'gedmo');
+        $reader->setAnnotationNamespaceAlias('Gedmo\\Mapping\\Annotation\\', 'gedmo');
+        $reader->setAutoloadAnnotations(true);
 
         $class = $meta->getReflectionClass();
         // property annotations
@@ -69,7 +69,7 @@ class Annotation implements Driver
                 continue;
             }
             // sluggable property
-            if ($sluggable = $reader->getPropertyAnnotation($property, self::ANNOTATION_SLUGGABLE)) {
+            if ($sluggable = $reader->getPropertyAnnotation($property, self::SLUGGABLE)) {
                 $field = $property->getName();
                 if (!$meta->hasField($field)) {
                     throw new InvalidMappingException("Unable to find sluggable [{$field}] as mapped property in entity - {$meta->name}");
@@ -80,7 +80,7 @@ class Annotation implements Driver
                 $config['fields'][] = $field;
             }
             // slug property
-            if ($slug = $reader->getPropertyAnnotation($property, self::ANNOTATION_SLUG)) {
+            if ($slug = $reader->getPropertyAnnotation($property, self::SLUG)) {
                 $field = $property->getName();
                 if (!$meta->hasField($field)) {
                     throw new InvalidMappingException("Unable to find slug [{$field}] as mapped property in entity - {$meta->name}");

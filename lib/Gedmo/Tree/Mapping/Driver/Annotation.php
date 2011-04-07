@@ -24,42 +24,42 @@ class Annotation implements Driver
     /**
      * Annotation to define the tree type
      */
-    const ANNOTATION_TREE = 'Gedmo\Tree\Mapping\Tree';
+    const TREE = 'Gedmo\\Mapping\\Annotation\\Tree';
 
     /**
      * Annotation to mark field as one which will store left value
      */
-    const ANNOTATION_LEFT = 'Gedmo\Tree\Mapping\TreeLeft';
+    const LEFT = 'Gedmo\\Mapping\\Annotation\\TreeLeft';
 
     /**
      * Annotation to mark field as one which will store right value
      */
-    const ANNOTATION_RIGHT = 'Gedmo\Tree\Mapping\TreeRight';
+    const RIGHT = 'Gedmo\\Mapping\\Annotation\\TreeRight';
 
     /**
      * Annotation to mark relative parent field
      */
-    const ANNOTATION_PARENT = 'Gedmo\Tree\Mapping\TreeParent';
+    const PARENT = 'Gedmo\\Mapping\\Annotation\\TreeParent';
 
     /**
      * Annotation to mark node level
      */
-    const ANNOTATION_LEVEL = 'Gedmo\Tree\Mapping\TreeLevel';
+    const LEVEL = 'Gedmo\\Mapping\\Annotation\\TreeLevel';
 
     /**
      * Annotation to mark field as tree root
      */
-    const ANNOTATION_ROOT = 'Gedmo\Tree\Mapping\TreeRoot';
+    const ROOT = 'Gedmo\\Mapping\\Annotation\\TreeRoot';
 
     /**
      * Annotation to specify closure tree class
      */
-    const ANNOTATION_CLOSURE = 'Gedmo\Tree\Mapping\TreeClosure';
+    const CLOSURE = 'Gedmo\\Mapping\\Annotation\\TreeClosure';
 
     /**
      * Annotation to mark field as child count
      */
-    const ANNOTATION_CHILD_COUNT = 'Gedmo\Tree\Mapping\TreeChildCount';
+    const CHILD_COUNT = 'Gedmo\\Mapping\\Annotation\\TreeChildCount';
 
     /**
      * List of types which are valid for tree fields
@@ -102,22 +102,22 @@ class Annotation implements Driver
      * {@inheritDoc}
      */
     public function readExtendedMetadata(ClassMetadata $meta, array &$config) {
-        require_once __DIR__ . '/../Annotations.php';
         $reader = new AnnotationReader();
-        $reader->setAnnotationNamespaceAlias('Gedmo\Tree\Mapping\\', 'gedmo');
+        $reader->setAnnotationNamespaceAlias('Gedmo\\Mapping\\Annotation\\', 'gedmo');
+        $reader->setAutoloadAnnotations(true);
 
         $class = $meta->getReflectionClass();
         // class annotations
         $classAnnotations = $reader->getClassAnnotations($class);
-        if (isset($classAnnotations[self::ANNOTATION_TREE])) {
-            $annot = $classAnnotations[self::ANNOTATION_TREE];
+        if (isset($classAnnotations[self::TREE])) {
+            $annot = $classAnnotations[self::TREE];
             if (!in_array($annot->type, $this->strategies)) {
                 throw new InvalidMappingException("Tree type: {$annot->type} is not available.");
             }
             $config['strategy'] = $annot->type;
         }
-        if (isset($classAnnotations[self::ANNOTATION_CLOSURE])) {
-            $annot = $classAnnotations[self::ANNOTATION_CLOSURE];
+        if (isset($classAnnotations[self::CLOSURE])) {
+            $annot = $classAnnotations[self::CLOSURE];
             if (!class_exists($annot->class)) {
                 throw new InvalidMappingException("Tree closure class: {$annot->class} does not exist.");
             }
@@ -133,7 +133,7 @@ class Annotation implements Driver
                 continue;
             }
             // left
-            if ($left = $reader->getPropertyAnnotation($property, self::ANNOTATION_LEFT)) {
+            if ($left = $reader->getPropertyAnnotation($property, self::LEFT)) {
                 $field = $property->getName();
                 if (!$meta->hasField($field)) {
                     throw new InvalidMappingException("Unable to find 'left' - [{$field}] as mapped property in entity - {$meta->name}");
@@ -144,7 +144,7 @@ class Annotation implements Driver
                 $config['left'] = $field;
             }
             // right
-            if ($right = $reader->getPropertyAnnotation($property, self::ANNOTATION_RIGHT)) {
+            if ($right = $reader->getPropertyAnnotation($property, self::RIGHT)) {
                 $field = $property->getName();
                 if (!$meta->hasField($field)) {
                     throw new InvalidMappingException("Unable to find 'right' - [{$field}] as mapped property in entity - {$meta->name}");
@@ -155,7 +155,7 @@ class Annotation implements Driver
                 $config['right'] = $field;
             }
             // ancestor/parent
-            if ($parent = $reader->getPropertyAnnotation($property, self::ANNOTATION_PARENT)) {
+            if ($parent = $reader->getPropertyAnnotation($property, self::PARENT)) {
                 $field = $property->getName();
                 if (!$meta->isSingleValuedAssociation($field)) {
                     throw new InvalidMappingException("Unable to find ancestor/parent child relation through ancestor field - [{$field}] in class - {$meta->name}");
@@ -163,7 +163,7 @@ class Annotation implements Driver
                 $config['parent'] = $field;
             }
             // root
-            if ($root = $reader->getPropertyAnnotation($property, self::ANNOTATION_ROOT)) {
+            if ($root = $reader->getPropertyAnnotation($property, self::ROOT)) {
                 $field = $property->getName();
                 if (!$meta->hasField($field)) {
                     throw new InvalidMappingException("Unable to find 'root' - [{$field}] as mapped property in entity - {$meta->name}");
@@ -174,7 +174,7 @@ class Annotation implements Driver
                 $config['root'] = $field;
             }
             // level
-            if ($parent = $reader->getPropertyAnnotation($property, self::ANNOTATION_LEVEL)) {
+            if ($parent = $reader->getPropertyAnnotation($property, self::LEVEL)) {
                 $field = $property->getName();
                 if (!$meta->hasField($field)) {
                     throw new InvalidMappingException("Unable to find 'level' - [{$field}] as mapped property in entity - {$meta->name}");
@@ -185,7 +185,7 @@ class Annotation implements Driver
                 $config['level'] = $field;
             }
             // child count
-            if ($childCount = $reader->getPropertyAnnotation($property, self::ANNOTATION_CHILD_COUNT)) {
+            if ($childCount = $reader->getPropertyAnnotation($property, self::CHILD_COUNT)) {
                $field = $property->getName();
                if (!$meta->hasField($field)) {
                     throw new InvalidMappingException("Unable to find 'childCount' - [{$field}] as mapped property in entity - {$meta->name}");

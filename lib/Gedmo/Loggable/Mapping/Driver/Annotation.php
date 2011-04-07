@@ -25,7 +25,7 @@ class Annotation implements Driver
     /**
      * Annotation to define that this object is loggable
      */
-    const ANNOTATION_LOGGABLE = 'Gedmo\Loggable\Mapping\Loggable';
+    const LOGGABLE = 'Gedmo\\Mapping\\Annotation\\Loggable';
 
     /**
      * {@inheritDoc}
@@ -42,16 +42,16 @@ class Annotation implements Driver
      */
     public function readExtendedMetadata(ClassMetadata $meta, array &$config)
     {
-        require_once __DIR__ . '/../Annotations.php';
         $reader = new AnnotationReader();
-        $reader->setAnnotationNamespaceAlias('Gedmo\Loggable\Mapping\\', 'gedmo');
+        $reader->setAnnotationNamespaceAlias('Gedmo\\Mapping\\Annotation\\', 'gedmo');
+        $reader->setAutoloadAnnotations(true);
 
         $class = $meta->getReflectionClass();
         // class annotations
         $classAnnotations = $reader->getClassAnnotations($class);
-        if (isset($classAnnotations[self::ANNOTATION_LOGGABLE])) {
+        if (isset($classAnnotations[self::LOGGABLE])) {
             $config['loggable'] = true;
-            $annot = $classAnnotations[self::ANNOTATION_LOGGABLE];
+            $annot = $classAnnotations[self::LOGGABLE];
             if ($annot->logEntryClass) {
                 if (!class_exists($annot->logEntryClass)) {
                     throw new InvalidMappingException("LogEntry class: {$annot->logEntryClass} does not exist.");

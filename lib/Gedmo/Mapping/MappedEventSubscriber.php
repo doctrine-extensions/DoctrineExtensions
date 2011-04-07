@@ -6,6 +6,7 @@ use Gedmo\Mapping\ExtensionMetadataFactory,
     Doctrine\Common\EventSubscriber,
     Doctrine\Common\Persistence\ObjectManager,
     Doctrine\Common\Persistence\Mapping\ClassMetadata,
+    Doctrine\Common\ClassLoader,
     Doctrine\Common\EventArgs;
 
 /**
@@ -61,7 +62,7 @@ abstract class MappedEventSubscriber implements EventSubscriber
         if (preg_match('@Doctrine\\\([^\\\]+)@', $class, $m) && in_array($m[1], array('ODM', 'ORM'))) {
             if (!isset($this->adapters[$m[1]])) {
                 $adapterClass = $this->getNamespace() . '\\Mapping\\Event\\Adapter\\' . $m[1];
-                if (!class_exists($adapterClass)) {
+                if (!ClassLoader::classExists($adapterClass)) {
                     $adapterClass = 'Gedmo\\Mapping\\Event\\Adapter\\'.$m[1];
                 }
                 $this->adapters[$m[1]] = new $adapterClass;

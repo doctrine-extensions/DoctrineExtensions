@@ -3,6 +3,7 @@
 namespace Gedmo\Mapping;
 
 use Doctrine\Common\Persistence\ObjectManager,
+    Doctrine\Common\ClassLoader,
     Doctrine\Common\Persistence\Mapping\ClassMetadata;
 
 /**
@@ -115,10 +116,10 @@ class ExtensionMetadataFactory
             $driverName = substr($driverName, 0, strpos($driverName, 'Driver'));
             // create driver instance
             $driverClassName = $this->extensionNamespace . '\Mapping\Driver\\' . $driverName;
-            if (!class_exists($driverClassName)) {
+            if (!ClassLoader::classExists($driverClassName)) {
                 // @TODO: implement XML driver also
                 $driverClassName = $this->extensionNamespace . '\Mapping\Driver\Annotation';
-                if (!class_exists($driverClassName)) {
+                if (!ClassLoader::classExists($driverClassName)) {
                     throw new \Gedmo\Exception\RuntimeException("Failed to fallback to annotation driver: ({$driverClassName}), extension driver was not found.");
                 }
             }
