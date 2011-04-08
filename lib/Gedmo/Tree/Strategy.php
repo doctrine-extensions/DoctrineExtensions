@@ -54,7 +54,7 @@ interface Strategy
      * @param object $object - node
      * @return void
      */
-    function processPrePersist($om, $object);
+    function processScheduledInsert($om, $object);
 
     /**
      * Operations on tree node insertions

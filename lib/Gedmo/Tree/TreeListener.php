@@ -41,9 +41,7 @@ class TreeListener extends MappedEventSubscriber
     public function getSubscribedEvents()
     {
         return array(
-            'prePersist',
             'postPersist',
-            'preRemove',
             'onFlush',
             'loadClassMetadata'
         );
@@ -93,54 +91,39 @@ class TreeListener extends MappedEventSubscriber
         $ea = $this->getEventAdapter($args);
         $om = $ea->getObjectManager();
         $uow = $om->getUnitOfWork();
+
+        //process all new nodes to tree
+        foreach ($uow->getScheduledEntityInsertions() as $object) {
+            $meta = $om->getClassMetadata(get_class($object));
+            if ($config = $this->getConfiguration($om, $meta->name)) {
+                $usedClasses[$meta->name] = null;
+                $this->getStrategy($om, $meta->name)->processScheduledInsert($om, $object);
+                $uow->recomputeSingleEntityChangeSet($meta, $object);
+            }
+        }
+
         // check all scheduled updates for TreeNodes
         $usedClasses = array();
 
-        foreach ($ea->getScheduledObjectUpdates($uow) as $object) {
+        foreach ($uow->getScheduledEntityUpdates() as $object) {
             $meta = $om->getClassMetadata(get_class($object));
             if ($config = $this->getConfiguration($om, $meta->name)) {
                 $usedClasses[$meta->name] = null;
                 $this->getStrategy($om, $meta->name)->processScheduledUpdate($om, $object);
             }
         }
+
+        foreach ($uow->getScheduledEntityDeletions() as $object) {
+            $meta = $om->getClassMetadata(get_class($object));
+            if ($config = $this->getConfiguration($om, $meta->name)) {
+                $usedClasses[$meta->name] = null;
+                $this->getStrategy($om, $meta->name)->processScheduledDelete($om, $object);
+                $uow->recomputeSingleEntityChangeSet($meta, $object);
+            }
+        }
+
         foreach ($this->getStrategiesUsedForObjects($usedClasses) as $strategy) {
             $strategy->onFlushEnd($om);
-        }
-    }
-
-    /**
-     * Updates tree on Node removal
-     *
-     * @param EventArgs $args
-     * @return void
-     */
-    public function preRemove(EventArgs $args)
-    {
-        $ea = $this->getEventAdapter($args);
-        $om = $ea->getObjectManager();
-        $object = $ea->getObject();
-        $meta = $om->getClassMetadata(get_class($object));
-
-        if ($config = $this->getConfiguration($om, $meta->name)) {
-            $this->getStrategy($om, $meta->name)->processScheduledDelete($om, $object);
-        }
-    }
-
-    /**
-     * Checks for persisted Nodes
-     *
-     * @param EventArgs $args
-     * @return void
-     */
-    public function prePersist(EventArgs $args)
-    {
-        $ea = $this->getEventAdapter($args);
-        $om = $ea->getObjectManager();
-        $object = $ea->getObject();
-        $meta = $om->getClassMetadata(get_class($object));
-
-        if ($config = $this->getConfiguration($om, $meta->name)) {
-            $this->getStrategy($om, $meta->name)->processPrePersist($om, $object);
         }
     }
 
