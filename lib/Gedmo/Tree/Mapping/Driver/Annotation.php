@@ -171,6 +171,10 @@ class Annotation implements Driver
                 if (!$this->isValidField($meta, $field)) {
                     throw new InvalidMappingException("Tree root field - [{$field}] type is not valid and must be 'integer' in class - {$meta->name}");
                 }
+                $mapping = $meta->getFieldMapping($field);
+                if (!$mapping['nullable']) {
+                    throw new InvalidMappingException("Tree root field - [{$field}] must be nullable in class - {$meta->name}");
+                }
                 $config['root'] = $field;
             }
             // level
@@ -186,8 +190,8 @@ class Annotation implements Driver
             }
             // child count
             if ($childCount = $reader->getPropertyAnnotation($property, self::CHILD_COUNT)) {
-               $field = $property->getName();
-               if (!$meta->hasField($field)) {
+                $field = $property->getName();
+                if (!$meta->hasField($field)) {
                     throw new InvalidMappingException("Unable to find 'childCount' - [{$field}] as mapped property in entity - {$meta->name}");
                 }
                 if (!$this->isValidField($meta, $field)) {
