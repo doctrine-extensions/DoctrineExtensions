@@ -135,7 +135,6 @@ class RepositoryTest extends BaseTestCaseORM
         // move up onions by one position
 
         $repo->moveUp($onions, 1);
-        $this->em->refresh($onions);
 
         $left = $meta->getReflectionProperty('lft')->getValue($onions);
         $right = $meta->getReflectionProperty('rgt')->getValue($onions);
@@ -145,7 +144,6 @@ class RepositoryTest extends BaseTestCaseORM
 
         // move down onions by one position
         $repo->moveDown($onions, 1);
-        $this->em->refresh($onions);
 
         $left = $meta->getReflectionProperty('lft')->getValue($onions);
         $right = $meta->getReflectionProperty('rgt')->getValue($onions);
@@ -156,7 +154,6 @@ class RepositoryTest extends BaseTestCaseORM
         // move to the up onions on this level
 
         $repo->moveUp($onions, true);
-        $this->em->refresh($onions);
 
         $left = $meta->getReflectionProperty('lft')->getValue($onions);
         $right = $meta->getReflectionProperty('rgt')->getValue($onions);
@@ -165,14 +162,10 @@ class RepositoryTest extends BaseTestCaseORM
         $this->assertEquals($right, 6);
 
         // test tree reordering
-
-        $this->em->clear(); // clear all cached nodes
-
         // reorder tree by title
 
         $food = $repo->findOneByTitle('Food');
         $repo->reorder($food, 'title');
-        $this->em->clear(); // clear all cached nodes
 
         $node = $this->em->getRepository(self::CATEGORY)
             ->findOneByTitle('Cabbages');
@@ -208,7 +201,6 @@ class RepositoryTest extends BaseTestCaseORM
 
         // test removal with reparenting
 
-        $this->em->clear(); // clear all cached nodes
         $vegies = $this->em->getRepository(self::CATEGORY)
             ->findOneByTitle('Vegitables');
 
@@ -238,6 +230,36 @@ class RepositoryTest extends BaseTestCaseORM
         $this->assertEquals($left, 4);
         $this->assertEquals($right, 5);
         $this->assertEquals('Food', $node->getParent()->getTitle());
+    }
+
+    public function testRootRemoval()
+    {
+        $repo = $this->em->getRepository(self::CATEGORY);
+        $meta = $this->em->getClassMetadata(self::CATEGORY);
+        $this->populateMore();
+
+        $food = $repo->findOneByTitle('Food');
+        $repo->removeFromTree($food);
+        $this->em->clear();
+
+        $food = $repo->findOneByTitle('Food');
+        $this->assertTrue(is_null($food));
+
+        $node = $repo->findOneByTitle('Fruits');
+        $left = $meta->getReflectionProperty('lft')->getValue($node);
+        $right = $meta->getReflectionProperty('rgt')->getValue($node);
+
+        $this->assertEquals($left, 1);
+        $this->assertEquals($right, 2);
+        $this->assertTrue(is_null($node->getParent()));
+
+        $node = $repo->findOneByTitle('Vegitables');
+        $left = $meta->getReflectionProperty('lft')->getValue($node);
+        $right = $meta->getReflectionProperty('rgt')->getValue($node);
+
+        $this->assertEquals($left, 3);
+        $this->assertEquals($right, 12);
+        $this->assertTrue(is_null($node->getParent()));
     }
 
     public function testVerificationAndRecover()

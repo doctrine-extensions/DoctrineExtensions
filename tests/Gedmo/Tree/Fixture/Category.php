@@ -27,30 +27,33 @@ class Category implements NodeInterface
      * @Column(name="lft", type="integer")
      */
     private $lft;
-    
+
     /**
      * @gedmo:TreeRight
      * @Column(name="rgt", type="integer")
      */
     private $rgt;
-    
+
     /**
      * @gedmo:TreeParent
      * @ManyToOne(targetEntity="Category", inversedBy="children")
+     * @JoinColumns({
+     *   @JoinColumn(name="parent_id", referencedColumnName="id", onDelete="SET NULL")
+     * })
      */
     private $parentId;
-    
+
     /**
      * @gedmo:TreeLevel
      * @Column(name="lvl", type="integer")
      */
      private $level;
-    
+
     /**
      * @OneToMany(targetEntity="Category", mappedBy="parent")
      */
     private $children;
-    
+
     /**
      * @OneToMany(targetEntity="Article", mappedBy="category")
      */
@@ -60,7 +63,7 @@ class Category implements NodeInterface
     {
         return $this->id;
     }
-    
+
     public function setTitle($title)
     {
         $this->title = $title;
@@ -70,14 +73,14 @@ class Category implements NodeInterface
     {
         return $this->title;
     }
-    
+
     public function setParent(Category $parent)
     {
-        $this->parentId = $parent;    
+        $this->parentId = $parent;
     }
-    
+
     public function getParent()
     {
-        return $this->parentId;    
+        return $this->parentId;
     }
 }

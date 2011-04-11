@@ -159,6 +159,7 @@ class TreeTest extends BaseTestCaseORM
         $this->em->persist($yetAnotherChild);
         $yetAnotherChild->setTitle("yetanotherchild");
         $yetAnotherChild->setParent($root);
+        //$this->em->persist($yetAnotherChild);
         $this->em->flush();
         $this->em->clear();
 
@@ -169,6 +170,54 @@ class TreeTest extends BaseTestCaseORM
         $this->assertEquals($left, 4);
         $this->assertEquals($right, 5);
         $this->assertEquals($level, 1);
+    }
+
+    public function testIssue33()
+    {
+        $repo = $this->em->getRepository(self::CATEGORY);
+
+        $root = new Category;
+        $root->setTitle('root');
+
+        $node1 = new Category;
+        $node1->setTitle('node1');
+        $node1->setParent($root);
+
+        $node2 = new Category;
+        $node2->setTitle('node2');
+        $node2->setParent($root);
+
+        $subNode = new Category;
+        $subNode->setTitle('sub-node');
+        $subNode->setParent($node2);
+
+        $this->em->persist($root);
+        $this->em->persist($node1);
+        $this->em->persist($node2);
+        $this->em->persist($subNode);
+        $this->em->flush();
+        $this->em->clear();
+
+        $subNode = $repo->findOneByTitle('sub-node');
+        $node1 = $repo->findOneByTitle('node1');
+        $subNode->setParent($node1);
+
+        $this->em->persist($subNode);
+        $this->em->flush();
+        $this->em->clear();
+
+        $meta = $this->em->getClassMetadata(self::CATEGORY);
+        $subNode = $repo->findOneByTitle('sub-node');
+        $left = $meta->getReflectionProperty('lft')->getValue($subNode);
+        $right = $meta->getReflectionProperty('rgt')->getValue($subNode);
+        $this->assertEquals($left, 3);
+        $this->assertEquals($right, 4);
+
+        $node1 = $repo->findOneByTitle('node1');
+        $left = $meta->getReflectionProperty('lft')->getValue($node1);
+        $right = $meta->getReflectionProperty('rgt')->getValue($node1);
+        $this->assertEquals($left, 2);
+        $this->assertEquals($right, 5);
     }
 
     protected function getUsedEntityFixtures()

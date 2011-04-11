@@ -30,6 +30,33 @@ class NestedTreeRootRepositoryTest extends BaseTestCaseORM
         $this->populate();
     }
 
+    public function testRootRemoval()
+    {
+        $repo = $this->em->getRepository(self::CATEGORY);
+        $this->populateMore();
+
+        $food = $repo->findOneByTitle('Food');
+        $repo->removeFromTree($food);
+        $this->em->clear();
+
+        $food = $repo->findOneByTitle('Food');
+        $this->assertTrue(is_null($food));
+
+        $node = $repo->findOneByTitle('Fruits');
+
+        $this->assertEquals(1, $node->getLeft());
+        $this->assertEquals(2, $node->getRight());
+        $this->assertEquals(3, $node->getRoot());
+        $this->assertTrue(is_null($node->getParent()));
+
+        $node = $repo->findOneByTitle('Vegitables');
+
+        $this->assertEquals(1, $node->getLeft());
+        $this->assertEquals(10, $node->getRight());
+        $this->assertEquals(4, $node->getRoot());
+        $this->assertTrue(is_null($node->getParent()));
+    }
+
     public function testRepository()
     {
         $repo = $this->em->getRepository(self::CATEGORY);
@@ -82,10 +109,10 @@ class NestedTreeRootRepositoryTest extends BaseTestCaseORM
         $this->em->createQuery($dql)->getSingleScalarResult();
 
         //@todo implement
-        /*$this->em->clear();
-        $repo->recover();
-        $this->em->clear();
-        $this->assertTrue($repo->verify());*/
+        //$this->em->clear();
+        //$repo->recover();
+        //$this->em->clear();
+        //$this->assertTrue($repo->verify());
 
         $this->em->clear();
         $onions = $repo->findOneByTitle('Onions');
@@ -96,13 +123,11 @@ class NestedTreeRootRepositoryTest extends BaseTestCaseORM
         // move up
 
         $repo->moveUp($onions);
-        $this->em->refresh($onions);
 
         $this->assertEquals(9, $onions->getLeft());
         $this->assertEquals(10, $onions->getRight());
 
         $repo->moveUp($onions, true);
-        $this->em->refresh($onions);
 
         $this->assertEquals(5, $onions->getLeft());
         $this->assertEquals(6, $onions->getRight());
@@ -110,18 +135,14 @@ class NestedTreeRootRepositoryTest extends BaseTestCaseORM
         // move down
 
         $repo->moveDown($onions, 2);
-        $this->em->refresh($onions);
 
         $this->assertEquals(9, $onions->getLeft());
         $this->assertEquals(10, $onions->getRight());
 
         // reorder
 
-        $this->em->clear();
         $node = $repo->findOneByTitle('Food');
         $repo->reorder($node, 'title', 'ASC', false);
-
-        $this->em->clear();
 
         $node = $repo->findOneByTitle('Cabbages');
 
@@ -155,7 +176,6 @@ class NestedTreeRootRepositoryTest extends BaseTestCaseORM
 
         // remove
 
-        $this->em->clear();
         $node = $repo->findOneByTitle('Fruits');
         $id = $node->getId();
         $repo->removeFromTree($node);
@@ -198,7 +218,6 @@ class NestedTreeRootRepositoryTest extends BaseTestCaseORM
         $this->em->persist($cabbages);
         $this->em->persist($onions);
         $this->em->flush();
-        $this->em->clear();
     }
 
     private function populate()
@@ -232,6 +251,5 @@ class NestedTreeRootRepositoryTest extends BaseTestCaseORM
         $this->em->persist($childsChild);
         $this->em->persist($potatoes);
         $this->em->flush();
-        $this->em->clear();
     }
 }

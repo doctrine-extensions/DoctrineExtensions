@@ -2,9 +2,11 @@
 
 namespace Gedmo\Tree\Strategy\ORM;
 
+use Doctrine\ORM\Proxy\Proxy;
 use Gedmo\Tree\Strategy,
     Doctrine\ORM\EntityManager,
     Gedmo\Tree\TreeListener,
+    Doctrine\ORM\Mapping\ClassMetadataInfo,
     Doctrine\ORM\Query;
 
 /**
@@ -77,14 +79,6 @@ class Nested implements Strategy
     private $persistedNodes = array();
 
     /**
-     * Number of updates for specific
-     * classes to know if refresh is necessary
-     *
-     * @var array
-     */
-    private $updatesOnNodeClasses = array();
-
-    /**
      * {@inheritdoc}
      */
     public function __construct(TreeListener $listener)
@@ -103,6 +97,37 @@ class Nested implements Strategy
     /**
      * {@inheritdoc}
      */
+    public function processScheduledInsertion($em, $node)
+    {
+        $meta = $em->getClassMetadata(get_class($node));
+        $config = $this->listener->getConfiguration($em, $meta->name);
+
+        $parent = $meta->getReflectionProperty($config['parent'])->getValue($node);
+        if ($parent instanceof Proxy && !$parent->__isInitialized__) {
+            $em->refresh($parent);
+        }
+        if ($parent === null) {
+            $this->prepareRoot($em, $node);
+            if (isset($config['level'])) {
+                $meta->getReflectionProperty($config['level'])->setValue($node, 0);
+            }
+        } else {
+            $meta->getReflectionProperty($config['left'])->setValue($node, 0);
+            $meta->getReflectionProperty($config['right'])->setValue($node, 0);
+            if (isset($config['level'])) {
+                $meta->getReflectionProperty($config['level'])->setValue(
+                    $node,
+                    $meta->getReflectionProperty($config['level'])->getValue($parent) + 1
+                );
+            }
+            $this->pendingChildNodeInserts[$meta->name][] = $node;
+        }
+        $this->persistedNodes[spl_object_hash($node)] = null;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function processScheduledUpdate($em, $node)
     {
         $meta = $em->getClassMetadata(get_class($node));
@@ -114,8 +139,6 @@ class Nested implements Strategy
             throw new \Gedmo\Exception\UnexpectedValueException("Root cannot be changed manualy, change parent instead");
         }
         if (isset($changeSet[$config['parent']])) {
-            $this->updatesOnNodeClasses[$meta->name] = isset($this->updatesOnNodeClasses[$meta->name]) ?
-                $this->updatesOnNodeClasses[$meta->name]+1 : 1;
             $this->updateNode($em, $node, $changeSet[$config['parent']][1]);
         }
     }
@@ -130,6 +153,9 @@ class Nested implements Strategy
 
         if (isset($config['root'])) {
             $parent = $meta->getReflectionProperty($config['parent'])->getValue($node);
+            if ($parent instanceof Proxy && !$parent->__isInitialized__) {
+                $em->refresh($parent);
+            }
 
             $identifierField = $meta->getSingleIdentifierFieldName();
             $nodeId = $meta->getReflectionProperty($identifierField)->getValue($node);
@@ -139,6 +165,8 @@ class Nested implements Strategy
                 $rootId = $nodeId;
             }
             $meta->getReflectionProperty($config['root'])->setValue($node, $rootId);
+            $oid = spl_object_hash($node);
+            $em->getUnitOfWork()->setOriginalEntityProperty($oid, $config['root'], $rootId);
             $dql = "UPDATE {$meta->rootEntityName} node";
             $dql .= " SET node.{$config['root']} = {$rootId}";
             $dql .= " WHERE node.{$identifierField} = {$nodeId}";
@@ -149,8 +177,8 @@ class Nested implements Strategy
         if (!$this->persistedNodes && $this->pendingChildNodeInserts) {
             $pendingChildNodeInserts = $this->pendingChildNodeInserts;
             foreach ($pendingChildNodeInserts as $class => &$nodes) {
-                while ($entity = array_shift($nodes)) {
-                    $this->insertChild($em, $entity);
+                while ($node = array_shift($nodes)) {
+                    $this->insertChild($em, $node);
                 }
             }
             $this->pendingChildNodeInserts = array();
@@ -206,43 +234,15 @@ class Nested implements Strategy
     /**
      * {@inheritdoc}
      */
+    public function processPreRemove($em, $node)
+    {}
+
+    /**
+     * {@inheritdoc}
+     */
     public function processPrePersist($em, $node)
     {
-    }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function processPreRemove($em, $node)
-    {
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function processScheduledInsertion($em, $node)
-    {
-        $meta = $em->getClassMetadata(get_class($node));
-        $config = $this->listener->getConfiguration($em, $meta->name);
-
-        $parent = $meta->getReflectionProperty($config['parent'])->getValue($node);
-        if ($parent === null) {
-            $this->prepareRoot($em, $node);
-            if (isset($config['level'])) {
-                $meta->getReflectionProperty($config['level'])->setValue($node, 0);
-            }
-        } else {
-            $meta->getReflectionProperty($config['left'])->setValue($node, 0);
-            $meta->getReflectionProperty($config['right'])->setValue($node, 0);
-            if (isset($config['level'])) {
-                $meta->getReflectionProperty($config['level'])->setValue(
-                    $node,
-                    $meta->getReflectionProperty($config['level'])->getValue($parent) + 1
-                );
-            }
-            $this->pendingChildNodeInserts[$meta->name][] = $node;
-        }
-        $this->persistedNodes[spl_object_hash($node)] = null;
     }
 
     /**
@@ -251,20 +251,26 @@ class Nested implements Strategy
      *
      * @param EntityManager $em
      * @param object $node
+     * @param string $position
      * @return void
      */
-    public function insertChild(EntityManager $em, $node)
+    public function insertChild(EntityManager $em, $node, $position = 'firstChild')
     {
         $meta = $em->getClassMetadata(get_class($node));
         $config = $this->listener->getConfiguration($em, $meta->name);
 
         $parent = $meta->getReflectionProperty($config['parent'])->getValue($node);
+
+        if ($parent instanceof Proxy && !$parent->__isInitialized__) {
+            $em->refresh($parent);
+        }
+        if (isset($config['level'])) {
+            $level = $parent ? ($meta->getReflectionProperty($config['level'])->getValue($parent) + 1) : 0;
+            $meta->getReflectionProperty($config['level'])->setValue($node, $level);
+        }
         $identifierField = $meta->getSingleIdentifierFieldName();
         $nodeId = $meta->getReflectionProperty($identifierField)->getValue($node);
 
-        if (isset($this->pendingChildNodeInserts[$meta->name]) && count($this->pendingChildNodeInserts[$meta->name]) > 1) {
-            $em->refresh($parent);
-        }
         $rootId = isset($config['root']) ? $meta->getReflectionProperty($config['root'])->getValue($parent) : null;
         $parentRight = $meta->getReflectionProperty($config['right'])->getValue($parent);
         $this->shiftRL($em, $meta->rootEntityName, $parentRight, 2, $rootId);
@@ -274,6 +280,9 @@ class Nested implements Strategy
         $dql = "UPDATE {$meta->rootEntityName} node";
         $dql .= " SET node.{$config['left']} = " . ($parentRight) . ', ';
         $dql .= " node.{$config['right']} = " . ($parentRight + 1);
+        if (isset($level)) {
+            $dql .= ", node.{$config['level']} = " . $level;
+        }
         $dql .= " WHERE node.{$identifierField} = {$nodeId}";
         $em->createQuery($dql)->getSingleScalarResult();
     }
@@ -295,10 +304,6 @@ class Nested implements Strategy
         $meta = $em->getClassMetadata(get_class($node));
         $config = $this->listener->getConfiguration($em, $meta->name);
 
-        // if there is more than one update, need to refresh node
-        if (!isset($this->updatesOnNodeClasses[$meta->name]) || $this->updatesOnNodeClasses[$meta->name] > 1) {
-            $em->refresh($node);
-        }
         $rootId = isset($config['root']) ? $meta->getReflectionProperty($config['root'])->getValue($node) : null;
         $identifierField = $meta->getSingleIdentifierFieldName();
         $nodeId = $meta->getReflectionProperty($identifierField)->getValue($node);
@@ -310,9 +315,10 @@ class Nested implements Strategy
         $treeSize = $right - $left + 1;
         $newRootId = null;
         if ($parent) {
-            if (!isset($this->updatesOnNodeClasses[$meta->name]) || $this->updatesOnNodeClasses[$meta->name] > 1) {
+            if ($parent instanceof Proxy && !$parent->__isInitialized__) {
                 $em->refresh($parent);
             }
+
             $parentRootId = isset($config['root']) ? $meta->getReflectionProperty($config['root'])->getValue($parent) : null;
             $parentLeft = $meta->getReflectionProperty($config['left'])->getValue($parent);
             $parentRight = $meta->getReflectionProperty($config['right'])->getValue($parent);
@@ -359,15 +365,15 @@ class Nested implements Strategy
         }
 
         $diff = $start - $left;
-        $qb = $em->createQueryBuilder();
+        /*$qb = $em->createQueryBuilder();
         $qb->update($meta->rootEntityName, 'node');
         if (isset($config['root'])) {
-            $qb->set('node.' . $config['root'], $newRootId);
+            //$qb->set('node.' . $config['root'], $newRootId);
         }
         if (isset($config['level'])) {
             $qb->set('node.' . $config['level'], $level);
         }
-        if ($treeSize > 2) {
+        if ($treeSize > 2 && !$isNewNode) {*/
             $levelDiff = isset($config['level']) ? $level - $meta->getReflectionProperty($config['level'])->getValue($node) : null;
             $this->shiftRangeRL(
                 $em,
@@ -379,14 +385,13 @@ class Nested implements Strategy
                 $newRootId,
                 $levelDiff
             );
-        } else {
+            $this->shiftRL($em, $meta->rootEntityName, $left, -$treeSize, $rootId);
+        /*} else {
             $qb->set('node.' . $config['left'], $left + $diff);
             $qb->set('node.' . $config['right'], $right + $diff);
-        }
-
-        $qb->where("node.{$identifierField} = {$nodeId}");
-        $qb->getQuery()->getSingleScalarResult();
-        $this->shiftRL($em, $meta->rootEntityName, $left, -$treeSize, $rootId);
+            $qb->where("node.{$identifierField} = {$nodeId}");
+            $qb->getQuery()->getSingleScalarResult();
+        }*/
     }
 
     /**
@@ -428,10 +433,10 @@ class Nested implements Strategy
         $config = $this->listener->getConfiguration($em, $class);
 
         $sign = ($delta >= 0) ? ' + ' : ' - ';
-        $delta = abs($delta);
+        $absDelta = abs($delta);
 
         $dql = "UPDATE {$meta->rootEntityName} node";
-        $dql .= " SET node.{$config['left']} = node.{$config['left']} {$sign} {$delta}";
+        $dql .= " SET node.{$config['left']} = node.{$config['left']} {$sign} {$absDelta}";
         $dql .= " WHERE node.{$config['left']} >= {$first}";
         if (isset($config['root'])) {
             $dql .= " AND node.{$config['root']} = {$rootId}";
@@ -440,13 +445,39 @@ class Nested implements Strategy
         $q->getSingleScalarResult();
 
         $dql = "UPDATE {$meta->rootEntityName} node";
-        $dql .= " SET node.{$config['right']} = node.{$config['right']} {$sign} {$delta}";
+        $dql .= " SET node.{$config['right']} = node.{$config['right']} {$sign} {$absDelta}";
         $dql .= " WHERE node.{$config['right']} >= {$first}";
         if (isset($config['root'])) {
             $dql .= " AND node.{$config['root']} = {$rootId}";
         }
         $q = $em->createQuery($dql);
         $q->getSingleScalarResult();
+        // update in memory nodes increases performance, saves some IO
+        foreach ($em->getUnitOfWork()->getIdentityMap() as $className => $nodes) {
+            if ($className !== $meta->name && !$this->inDistriminatorMap($meta, $className)) {
+                continue;
+            }
+            if ($className !== $meta->name) {
+                $meta = $em->getClassMetadata($className);
+            }
+            foreach ($nodes as $node) {
+                if ($node instanceof Proxy && !$node->__isInitialized__) {
+                    continue;
+                }
+                $oid = spl_object_hash($node);
+                $left = $meta->getReflectionProperty($config['left'])->getValue($node);
+                $root = isset($config['root']) ? $meta->getReflectionProperty($config['root'])->getValue($node) : null;
+                if ($root === $rootId && $left >= $first) {
+                    $meta->getReflectionProperty($config['left'])->setValue($node, $left + $delta);
+                    $em->getUnitOfWork()->setOriginalEntityProperty($oid, $config['left'], $left + $delta);
+                }
+                $right = $meta->getReflectionProperty($config['right'])->getValue($node);
+                if ($root === $rootId && $right >= $first) {
+                    $meta->getReflectionProperty($config['right'])->setValue($node, $right + $delta);
+                    $em->getUnitOfWork()->setOriginalEntityProperty($oid, $config['right'], $right + $delta);
+                }
+            }
+        }
     }
 
     /**
@@ -469,18 +500,18 @@ class Nested implements Strategy
         $config = $this->listener->getConfiguration($em, $class);
 
         $sign = ($delta >= 0) ? ' + ' : ' - ';
-        $delta = abs($delta);
+        $absDelta = abs($delta);
         $levelSign = ($levelDelta >= 0) ? ' + ' : ' - ';
-        $levelDelta = abs($levelDelta);
+        $absLevelDelta = abs($levelDelta);
 
         $dql = "UPDATE {$meta->rootEntityName} node";
-        $dql .= " SET node.{$config['left']} = node.{$config['left']} {$sign} {$delta}";
-        $dql .= ", node.{$config['right']} = node.{$config['right']} {$sign} {$delta}";
+        $dql .= " SET node.{$config['left']} = node.{$config['left']} {$sign} {$absDelta}";
+        $dql .= ", node.{$config['right']} = node.{$config['right']} {$sign} {$absDelta}";
         if (isset($config['root'])) {
             $dql .= ", node.{$config['root']} = {$destRootId}";
         }
         if (isset($config['level'])) {
-            $dql .= ", node.{$config['level']} = node.{$config['level']} {$levelSign} {$levelDelta}";
+            $dql .= ", node.{$config['level']} = node.{$config['level']} {$levelSign} {$absLevelDelta}";
         }
         $dql .= " WHERE node.{$config['left']} >= {$first}";
         $dql .= " AND node.{$config['right']} <= {$last}";
@@ -489,6 +520,58 @@ class Nested implements Strategy
         }
         $q = $em->createQuery($dql);
         $q->getSingleScalarResult();
+        // update in memory nodes increases performance, saves some IO
+        foreach ($em->getUnitOfWork()->getIdentityMap() as $className => $nodes) {
+            if ($className !== $meta->name && !$this->inDistriminatorMap($meta, $className)) {
+                continue;
+            }
+            if ($className !== $meta->name) {
+                $meta = $em->getClassMetadata($className);
+            }
+            foreach ($nodes as $node) {
+                if ($node instanceof Proxy && !$node->__isInitialized__) {
+                    continue;
+                }
+                $left = $meta->getReflectionProperty($config['left'])->getValue($node);
+                $right = $meta->getReflectionProperty($config['right'])->getValue($node);
+                $root = isset($config['root']) ? $meta->getReflectionProperty($config['root'])->getValue($node) : null;
+                if ($root === $rootId && $left >= $first && $right <= $last) {
+                    $oid = spl_object_hash($node);
+                    $uow = $em->getUnitOfWork();
+
+                    $meta->getReflectionProperty($config['left'])->setValue($node, $left + $delta);
+                    $uow->setOriginalEntityProperty($oid, $config['left'], $left + $delta);
+                    $meta->getReflectionProperty($config['right'])->setValue($node, $right + $delta);
+                    $uow->setOriginalEntityProperty($oid, $config['right'], $right + $delta);
+                    if (isset($config['root'])) {
+                        $meta->getReflectionProperty($config['root'])->setValue($node, $destRootId);
+                        $uow->setOriginalEntityProperty($oid, $config['root'], $destRootId);
+                    }
+                    if (isset($config['level'])) {
+                        $level = $meta->getReflectionProperty($config['level'])->getValue($node);
+                        $meta->getReflectionProperty($config['level'])->setValue($node, $level + $levelDelta);
+                        $uow->setOriginalEntityProperty($oid, $config['level'], $level + $levelDelta);
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Check if given class is in inheritance discriminator map
+     *
+     * @param ClassMetadataInfo $meta
+     * @param string $className
+     * @return boolean
+     */
+    public function inDistriminatorMap(ClassMetadataInfo $meta, $className)
+    {
+        foreach ($meta->discriminatorMap as $class) {
+            if ($className === $class) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -509,7 +592,7 @@ class Nested implements Strategy
             $meta->getReflectionProperty($config['right'])->setValue($node, 2);
         } else {
             $edge = isset($this->treeEdges[$meta->name]) ?
-                $this->treeEdges[$meta->name] : $this->max($em, $meta->rootEntityName);
+            $this->treeEdges[$meta->name] : $this->max($em, $meta->rootEntityName);
             $meta->getReflectionProperty($config['left'])->setValue($node, $edge + 1);
             $meta->getReflectionProperty($config['right'])->setValue($node, $edge + 2);
             $this->treeEdges[$meta->name] = $edge + 2;
