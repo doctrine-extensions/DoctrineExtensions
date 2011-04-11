@@ -21,6 +21,10 @@ Thanks for contributions to:
 - **[everzet](http://github.com/everzet) Kudryashov Konstantin** for TreeLevel implementation
 - **[stof](http://github.com/stof) Christophe Coevoet** for getTreeLeafs function
 
+Update **2011-04-11**
+
+- Made in memory node synchronization, this change does not require clearing the cached nodes after any updates
+to nodes, except **recover, verify and removeFromTree** operations.
 
 Update **2011-02-08**
 
@@ -33,11 +37,6 @@ Update **2011-02-02**
 
 - Refactored the Tree to the ability on supporting diferent tree models
 - Changed the repository location in order to support future updates
-
-Update **2010-12-23**
-
-- Optimized for concurrent updates, changed some yaml mapping definitions
-- Table inheritance mapping now is fully supported by tree repository functions
 
 **Notice:**
 
@@ -147,7 +146,7 @@ cache is activated
         
         /**
          * @gedmo:TreeRoot
-         * @Column(name="root", type="integer")
+         * @Column(name="root", type="integer", nullable=true)
          */
         private $root;
         
@@ -229,6 +228,7 @@ Yaml mapped Category: **/mapping/yaml/Entity.Category.dcm.yml**
             - treeRight
         root:
           type: integer
+          nullable: true
           gedmo:
             - treeRoot
         lvl:
@@ -310,6 +310,7 @@ The result after flush will generate the food tree:
     // single node removal
     $vegies = $repo->findOneByTitle('Vegitables');
     $repo->removeFromTree($vegies);
+    $em->clear(); // clear cached nodes
     // it will remove this node from tree and reparent all children
     
     // reordering the tree
@@ -359,11 +360,9 @@ Tree after moving the Carrots down:
             /Carrots &lt;- moved down to the end
         /Fruits
 
-**Notice:** tree repository functions like: **reorder, verify**. 
+**Notice:** tree repository functions: **verify, recover, removeFromTree**. 
 Will require to clear the cache of Entity Manager because left-right values will differ.
-So after that use $em->clear(); if you will continue using the nodes after these operations.
-After using **moveUp, moveDown** it is also recommended to refresh the node
-using $em->refresh($node);
+So after that use `$em->clear();` if you will continue using the nodes after these operations.
 
 ### If you need a repository for your TreeNode Entity simply extend it
 

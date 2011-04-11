@@ -55,12 +55,11 @@ PHPUnit 3.4 or newer is required.
 To setup and run tests follow these steps:
 
 - go to the root directory of extensions
-- run: **git submodule init**
-- run: **git submodule update**
+- run: **git submodule update --init**
 - go to tests directory: **cd tests**
 - run **cp phpunit.dist.xml phpunit.xml**
 - run: **phpunit**
-- optional - run mongodb in background to complete all tests 
+- optional - run mongodb in background to complete all tests
 
 ### Contributors:
 
