@@ -48,6 +48,15 @@ interface Strategy
     function processScheduledUpdate($om, $object);
 
     /**
+     * Operations on tree node delete
+     *
+     * @param object $om - object manager
+     * @param object $object - node
+     * @return void
+     */
+    function processScheduledDelete($om, $object);
+
+    /**
      * Operations on tree node removal
      *
      * @param object $om - object manager
