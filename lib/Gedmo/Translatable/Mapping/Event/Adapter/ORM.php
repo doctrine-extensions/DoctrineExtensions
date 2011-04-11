@@ -5,6 +5,7 @@ namespace Gedmo\Translatable\Mapping\Event\Adapter;
 use Gedmo\Mapping\Event\Adapter\ORM as BaseAdapterORM;
 use Doctrine\ORM\Query;
 use Gedmo\Translatable\Mapping\Event\TranslatableAdapter;
+use Doctrine\DBAL\Types\Type;
 
 /**
  * Doctrine event adapter for ORM adapted
@@ -107,5 +108,29 @@ final class ORM extends BaseAdapterORM implements TranslatableAdapter
         if (!$em->getConnection()->insert($table, $data)) {
             throw new \Gedmo\Exception\RuntimeException('Failed to insert new Translation record');
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getTranslationValue($object, $field)
+    {
+        $em = $this->getObjectManager();
+        $meta = $em->getClassMetadata(get_class($object));
+        $type = Type::getType($meta->getTypeOfField($field));
+        $value = $meta->getReflectionProperty($field)->getValue($object);
+        return $type->convertToDatabaseValue($value, $em->getConnection()->getDatabasePlatform());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setTranslationValue($object, $field, $value)
+    {
+        $em = $this->getObjectManager();
+        $meta = $em->getClassMetadata(get_class($object));
+        $type = Type::getType($meta->getTypeOfField($field));
+        $value = $type->convertToPHPValue($value, $em->getConnection()->getDatabasePlatform());
+        $meta->getReflectionProperty($field)->setValue($object, $value);
     }
 }

@@ -5,6 +5,7 @@ namespace Gedmo\Translatable\Mapping\Event\Adapter;
 use Gedmo\Mapping\Event\Adapter\ODM as BaseAdapterODM;
 use Doctrine\ODM\MongoDB\Cursor;
 use Gedmo\Translatable\Mapping\Event\TranslatableAdapter;
+use Doctrine\ODM\MongoDB\Mapping\Types\Type;
 
 /**
  * Doctrine event adapter for ODM adapted
@@ -104,5 +105,33 @@ final class ODM extends BaseAdapterODM implements TranslatableAdapter
         if (!$collection->insert($data)) {
             throw new \Gedmo\Exception\RuntimeException('Failed to insert new Translation record');
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getTranslationValue($object, $field)
+    {
+        $dm = $this->getObjectManager();
+        $meta = $dm->getClassMetadata(get_class($object));
+        $mapping = $meta->getFieldMapping($field);
+        $type = Type::getType($mapping['type']);
+
+        $value = $meta->getReflectionProperty($field)->getValue($object);
+        return $type->convertToDatabaseValue($value);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setTranslationValue($object, $field, $value)
+    {
+        $dm = $this->getObjectManager();
+        $meta = $dm->getClassMetadata(get_class($object));
+        $mapping = $meta->getFieldMapping($field);
+        $type = Type::getType($mapping['type']);
+
+        $value = $type->convertToPHPValue($value);
+        $meta->getReflectionProperty($field)->setValue($object, $value);
     }
 }

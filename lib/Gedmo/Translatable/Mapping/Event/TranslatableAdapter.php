@@ -61,4 +61,24 @@ interface TranslatableAdapter extends AdapterInterface
      * @return void
      */
     function insertTranslationRecord($translation);
+
+    /**
+     * Get the transformed value for translation
+     * storage
+     *
+     * @param object $object
+     * @param string $field
+     * @return mixed
+     */
+    function getTranslationValue($object, $field);
+
+    /**
+     * Transform the value from database
+     * for translation
+     *
+     * @param object $object
+     * @param string $field
+     * @param mixed $value
+     */
+    function setTranslationValue($object, $field, $value);
 }
