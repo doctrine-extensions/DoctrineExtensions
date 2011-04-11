@@ -27,7 +27,8 @@ use these extensions from separate branch **doctrine2.0.x** or simply checkout t
 
 **2011-04-11**
 
-- **Tree nestedset** was improved, now all in memory nodes are synchronized and do not require `$em->clear()` all the time
+- **Tree nestedset** was improved, now all in memory nodes are synchronized and do not require `$em->clear()` all the time.
+If you have any problems with new feature, open an issue.
 - Extensions now use only one listener instance for different object managers
 
 ### ODM MongoDB support
@@ -63,6 +64,7 @@ To setup and run tests follow these steps:
 
 ### Contributors:
 
+- [xanf](http://github.com/xanf)
 - Gustavo Adrian [comfortablynumb](http://github.com/comfortablynumb)
 - Boussekeyt Jules [gordonslondon](http://github.com/gordonslondon)
 - Christophe Coevoet [stof](http://github.com/stof)
