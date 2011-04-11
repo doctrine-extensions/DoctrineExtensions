@@ -208,6 +208,20 @@ class Nested implements Strategy
      */
     public function processPrePersist($em, $node)
     {
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function processPreRemove($em, $node)
+    {
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function processScheduledInsertion($em, $node)
+    {
         $meta = $em->getClassMetadata(get_class($node));
         $config = $this->listener->getConfiguration($em, $meta->name);
 

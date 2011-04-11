@@ -62,7 +62,21 @@ class Closure implements Strategy
     /**
      * {@inheritdoc}
      */
-    public function processPrePersist($em, $entity)
+    public function processPrePersist($em, $node)
+    {
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function processPreRemove($em, $node)
+    {
+    }
+
+     /**
+     * {@inheritdoc}
+     */
+    public function processScheduledInsertion($em, $entity)
     {
         $this->pendingChildNodeInserts[] = $entity;
 

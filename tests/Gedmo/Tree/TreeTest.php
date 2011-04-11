@@ -153,6 +153,22 @@ class TreeTest extends BaseTestCaseORM
 
         $this->assertEquals($left, 1);
         $this->assertEquals($right, 4);
+
+        // test persisting in any time
+        $yetAnotherChild = new Category();
+        $this->em->persist($yetAnotherChild);
+        $yetAnotherChild->setTitle("yetanotherchild");
+        $yetAnotherChild->setParent($root);
+        $this->em->flush();
+        $this->em->clear();
+
+        $left = $meta->getReflectionProperty('lft')->getValue($yetAnotherChild);
+        $right = $meta->getReflectionProperty('rgt')->getValue($yetAnotherChild);
+        $level = $meta->getReflectionProperty('level')->getValue($yetAnotherChild);
+
+        $this->assertEquals($left, 4);
+        $this->assertEquals($right, 5);
+        $this->assertEquals($level, 1);
     }
 
     protected function getUsedEntityFixtures()

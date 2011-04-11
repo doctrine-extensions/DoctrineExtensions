@@ -30,6 +30,15 @@ interface Strategy
     function __construct(TreeListener $listener);
 
     /**
+     * Operations on tree node insertion
+     *
+     * @param object $om - object manager
+     * @param object $object - node
+     * @return void
+     */
+    function processScheduledInsertion($om, $object);
+
+    /**
      * Operations on tree node updates
      *
      * @param object $om - object manager
@@ -39,13 +48,13 @@ interface Strategy
     function processScheduledUpdate($om, $object);
 
     /**
-     * Operations on tree node deletions
+     * Operations on tree node removal
      *
      * @param object $om - object manager
      * @param object $object - node
      * @return void
      */
-    function processScheduledDelete($om, $object);
+    function processPreRemove($om, $object);
 
     /**
      * Operations on tree node persist
