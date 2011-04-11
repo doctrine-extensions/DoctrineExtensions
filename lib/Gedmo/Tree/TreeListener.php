@@ -95,6 +95,15 @@ class TreeListener extends MappedEventSubscriber
         // check all scheduled updates for TreeNodes
         $usedClasses = array();
 
+        foreach ($ea->getScheduledObjectInsertions($uow) as $object) {
+            $meta = $om->getClassMetadata(get_class($object));
+            if ($config = $this->getConfiguration($om, $meta->name)) {
+                $usedClasses[$meta->name] = null;
+                $this->getStrategy($om, $meta->name)->processScheduledInsertion($om, $object);
+                $uow->recomputeSingleEntityChangeSet($meta, $object);
+            }
+        }
+
         foreach ($ea->getScheduledObjectUpdates($uow) as $object) {
             $meta = $om->getClassMetadata(get_class($object));
             if ($config = $this->getConfiguration($om, $meta->name)) {
@@ -102,6 +111,15 @@ class TreeListener extends MappedEventSubscriber
                 $this->getStrategy($om, $meta->name)->processScheduledUpdate($om, $object);
             }
         }
+
+        foreach ($ea->getScheduledObjectDeletions($uow) as $object) {
+            $meta = $om->getClassMetadata(get_class($object));
+            if ($config = $this->getConfiguration($om, $meta->name)) {
+                $usedClasses[$meta->name] = null;
+                $this->getStrategy($om, $meta->name)->processScheduledDelete($om, $object);
+            }
+        }
+
         foreach ($this->getStrategiesUsedForObjects($usedClasses) as $strategy) {
             $strategy->onFlushEnd($om);
         }
@@ -121,7 +139,7 @@ class TreeListener extends MappedEventSubscriber
         $meta = $om->getClassMetadata(get_class($object));
 
         if ($config = $this->getConfiguration($om, $meta->name)) {
-            $this->getStrategy($om, $meta->name)->processScheduledDelete($om, $object);
+            $this->getStrategy($om, $meta->name)->processPreRemove($om, $object);
         }
     }
 

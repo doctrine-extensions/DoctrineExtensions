@@ -236,11 +236,7 @@ class NestedTreeRepository extends AbstractTreeRepository
             if (!$parent) {
                 throw new InvalidArgumentException("Cannot get siblings from tree root node");
             }
-            $identifierField = $meta->getSingleIdentifierFieldName();
-            if ($parent instanceof Proxy) {
-                $this->_em->refresh($parent);
-            }
-            $parentId = $meta->getReflectionProperty($identifierField)->getValue($parent);
+            $parentId = current($this->_em->getUnitOfWork()->getEntityIdentifier($parent));
 
             $left = $meta->getReflectionProperty($config['left'])->getValue($node);
             $sign = $includeSelf ? '>=' : '>';
@@ -275,11 +271,7 @@ class NestedTreeRepository extends AbstractTreeRepository
             if (!$parent) {
                 throw new InvalidArgumentException("Cannot get siblings from tree root node");
             }
-            $identifierField = $meta->getSingleIdentifierFieldName();
-            if ($parent instanceof Proxy) {
-                $this->_em->refresh($parent);
-            }
-            $parentId = $meta->getReflectionProperty($identifierField)->getValue($parent);
+            $parentId = current($this->_em->getUnitOfWork()->getEntityIdentifier($parent));
 
             $left = $meta->getReflectionProperty($config['left'])->getValue($node);
             $sign = $includeSelf ? '<=' : '<';
@@ -367,11 +359,10 @@ class NestedTreeRepository extends AbstractTreeRepository
      * Removes given $node from the tree and reparents its descendants
      *
      * @param object $node
-     * @param bool $autoFlush - flush after removing
      * @throws RuntimeException - if something fails in transaction
      * @return void
      */
-    public function removeFromTree($node, $autoFlush = true)
+    public function removeFromTree($node)
     {
         $meta = $this->getClassMetadata();
         if ($node instanceof $meta->rootEntityName) {
@@ -380,55 +371,85 @@ class NestedTreeRepository extends AbstractTreeRepository
             $left = $meta->getReflectionProperty($config['left'])->getValue($node);
 
             if ($right == $left + 1) {
-                $this->_em->remove($node);
-                $autoFlush && $this->_em->flush();
-                return;
+                $this->removeSingle($node);
+                return; // node was a leaf
             }
             // process updates in transaction
             $this->_em->getConnection()->beginTransaction();
             try {
                 $parent = $meta->getReflectionProperty($config['parent'])->getValue($node);
-                if ($parent instanceof Proxy) {
-                    $this->_em->refresh($parent);
+                $parentId = 'NULL';
+                if ($parent) {
+                    $parentId = current($this->_em->getUnitOfWork()->getEntityIdentifier($parent));
                 }
                 $pk = $meta->getSingleIdentifierFieldName();
-                $parentId = $meta->getReflectionProperty($pk)->getValue($parent);
                 $nodeId = $meta->getReflectionProperty($pk)->getValue($node);
-
-                $dql = "UPDATE {$meta->rootEntityName} node";
-                $dql .= ' SET node.' . $config['parent'] . ' = ' . $parentId;
-                $dql .= ' WHERE node.' . $config['parent'] . ' = ' . $nodeId;
                 $rootId = isset($config['root']) ? $meta->getReflectionProperty($config['root'])->getValue($node) : null;
-                if (isset($config['root'])) {
-                    $dql .= ' AND node.' . $config['root'] . ' = ' . $rootId;
+                $shift = -1;
+
+                // in case if root node is removed, childs become roots
+                if (isset($config['root']) && !$parent) {
+                    $dql = "SELECT node.{$pk}, node.{$config['left']}, node.{$config['right']} FROM {$meta->rootEntityName} node";
+                    $dql .= " WHERE node.{$config['parent']} = {$nodeId}";
+                    $nodes = $this->_em->createQuery($dql)->getArrayResult();
+
+                    foreach ($nodes as $newRoot) {
+                        $left = $newRoot[$config['left']];
+                        $right = $newRoot[$config['right']];
+                        $rootId = $newRoot[$pk];
+                        $shift = -($left - 1);
+
+                        $dql = "UPDATE {$meta->rootEntityName} node";
+                        $dql .= ' SET node.' . $config['root'] . ' = :rootId';
+                        $dql .= ' WHERE node.' . $config['root'] . ' = :nodeId';
+                        $dql .= " AND node.{$config['left']} >= :left";
+                        $dql .= " AND node.{$config['right']} <= :right";
+
+                        $q = $this->_em->createQuery($dql);
+                        $q->setParameters(compact('rootId', 'left', 'right', 'nodeId'));
+                        $q->getSingleScalarResult();
+
+                        $dql = "UPDATE {$meta->rootEntityName} node";
+                        $dql .= ' SET node.' . $config['parent'] . ' = ' . $parentId;
+                        $dql .= ' WHERE node.' . $config['parent'] . ' = ' . $nodeId;
+                        $dql .= ' AND node.' . $config['root'] . ' = ' . $rootId;
+
+                        $q = $this->_em->createQuery($dql);
+                        $q->getSingleScalarResult();
+
+                        $this->listener
+                            ->getStrategy($this->_em, $meta->name)
+                            ->shiftRangeRL($this->_em, $meta->rootEntityName, $left, $right, $shift, $rootId, $rootId, - 1);
+                        $this->listener
+                            ->getStrategy($this->_em, $meta->name)
+                            ->shiftRL($this->_em, $meta->rootEntityName, $right, -2, $rootId);
+                    }
+                } else {
+                    $dql = "UPDATE {$meta->rootEntityName} node";
+                    $dql .= ' SET node.' . $config['parent'] . ' = ' . $parentId;
+                    $dql .= ' WHERE node.' . $config['parent'] . ' = ' . $nodeId;
+                    if (isset($config['root'])) {
+                        $dql .= ' AND node.' . $config['root'] . ' = ' . $rootId;
+                    }
+                    // @todo: update in memory nodes
+                    $q = $this->_em->createQuery($dql);
+                    $q->getSingleScalarResult();
+
+                    $this->listener
+                        ->getStrategy($this->_em, $meta->name)
+                        ->shiftRangeRL($this->_em, $meta->rootEntityName, $left, $right, $shift, $rootId, $rootId, - 1);
+
+                    $this->listener
+                        ->getStrategy($this->_em, $meta->name)
+                        ->shiftRL($this->_em, $meta->rootEntityName, $right, -2, $rootId);
                 }
-                $q = $this->_em->createQuery($dql);
-                $q->getSingleScalarResult();
-
-                $this->listener
-                    ->getStrategy($this->_em, $meta->name)
-                    ->shiftRangeRL($this->_em, $meta->rootEntityName, $left, $right, -1, $rootId, $rootId, - 1);
-
-                $this->listener
-                    ->getStrategy($this->_em, $meta->name)
-                    ->shiftRL($this->_em, $meta->rootEntityName, $right, -2, $rootId);
-
-                $dql = "UPDATE {$meta->rootEntityName} node";
-                $dql .= ' SET node.' . $config['parent'] . ' = NULL,';
-                $dql .= ' node.' . $config['left'] . ' = 0,';
-                $dql .= ' node.' . $config['right'] . ' = 0';
-                $dql .= ' WHERE node.' . $pk . ' = ' . $nodeId;
-                $q = $this->_em->createQuery($dql);
-                $q->getSingleScalarResult();
+                $this->removeSingle($node);
                 $this->_em->getConnection()->commit();
             } catch (\Exception $e) {
                 $this->_em->close();
                 $this->_em->getConnection()->rollback();
                 throw new \Gedmo\Exception\RuntimeException('Transaction failed', null, $e);
             }
-            $this->_em->refresh($node);
-            $this->_em->remove($node);
-            $autoFlush && $this->_em->flush();
         } else {
             throw new InvalidArgumentException("Node is not related to this repository");
         }
@@ -456,7 +477,7 @@ class NestedTreeRepository extends AbstractTreeRepository
             $nodes = $this->children($node, true, $sortByField, $direction);
             foreach ($nodes as $node) {
                 // this is overhead but had to be refreshed
-                if ($node instanceof Proxy) {
+                if ($node instanceof Proxy && !$node->__isInitialized__) {
                     $this->_em->refresh($node);
                 }
                 $right = $meta->getReflectionProperty($config['right'])->getValue($node);
@@ -513,6 +534,7 @@ class NestedTreeRepository extends AbstractTreeRepository
         if ($this->verify() === true) {
             return;
         }
+        // not yet implemented
     }
 
     /**
@@ -609,7 +631,9 @@ class NestedTreeRepository extends AbstractTreeRepository
             } elseif ($right == $left) {
                 $errors[] = "node [{$id}] has identical left and right values";
             } elseif ($parent) {
-                $parent instanceof Proxy && $this->_em->refresh($parent);
+                if ($parent instanceof Proxy && !$parent->__isInitialized__) {
+                    $this->_em->refresh($parent);
+                }
                 $parentRight = $meta->getReflectionProperty($config['right'])->getValue($parent);
                 $parentLeft = $meta->getReflectionProperty($config['left'])->getValue($parent);
                 $parentId = $meta->getReflectionProperty($identifier)->getValue($parent);
@@ -631,5 +655,36 @@ class NestedTreeRepository extends AbstractTreeRepository
                 }
             }
         }
+    }
+
+    /**
+     * Removes single node without touching children
+     *
+     * @internal
+     * @param object $node
+     * @return void
+     */
+    private function removeSingle($node)
+    {
+        $meta = $this->getClassMetadata();
+        $config = $this->listener->getConfiguration($this->_em, $meta->name);
+
+        $pk = $meta->getSingleIdentifierFieldName();
+        $nodeId = $meta->getReflectionProperty($pk)->getValue($node);
+
+        // prevent from deleting whole branch
+        $dql = "UPDATE {$meta->rootEntityName} node";
+        $dql .= ' SET node.' . $config['left'] . ' = 0,';
+        $dql .= ' node.' . $config['right'] . ' = 0';
+        $dql .= ' WHERE node.' . $pk . ' = ' . $nodeId;
+        $this->_em->createQuery($dql)->getSingleScalarResult();
+
+        // remove the node from database
+        $dql = "DELETE {$meta->rootEntityName} node";
+        $dql .= " WHERE node.{$pk} = {$nodeId}";
+        $this->_em->createQuery($dql)->getSingleScalarResult();
+
+        // remove from identity map
+        $this->_em->getUnitOfWork()->removeFromIdentityMap($node);
     }
 }

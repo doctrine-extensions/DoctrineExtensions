@@ -27,24 +27,27 @@ class BehavioralCategory
      * @Column(name="lft", type="integer", nullable=true)
      */
     private $lft;
-    
+
     /**
      * @gedmo:TreeRight
      * @Column(name="rgt", type="integer", nullable=true)
      */
     private $rgt;
-    
+
     /**
      * @gedmo:TreeParent
      * @ManyToOne(targetEntity="BehavioralCategory", inversedBy="children")
+     * @JoinColumns({
+     *   @JoinColumn(name="parent_id", referencedColumnName="id", onDelete="SET NULL")
+     * })
      */
     private $parent;
-    
+
     /**
      * @OneToMany(targetEntity="BehavioralCategory", mappedBy="parent")
      */
     private $children;
-    
+
     /**
      * @gedmo:Translatable
      * @gedmo:Slug
@@ -56,12 +59,12 @@ class BehavioralCategory
     {
         return $this->id;
     }
-    
+
     public function getSlug()
     {
         return $this->slug;
     }
-    
+
     public function setTitle($title)
     {
         $this->title = $title;
@@ -71,14 +74,14 @@ class BehavioralCategory
     {
         return $this->title;
     }
-    
+
     public function setParent(BehavioralCategory $parent)
     {
-        $this->parent = $parent;    
+        $this->parent = $parent;
     }
-    
+
     public function getParent()
     {
-        return $this->parent;    
+        return $this->parent;
     }
 }
