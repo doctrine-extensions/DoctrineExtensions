@@ -16,6 +16,7 @@
             <file>./Gedmo/Tree/RepositoryTest.php</file>
             <file>./Gedmo/Tree/TranslatableSluggableTreeTest.php</file>
             <file>./Gedmo/Tree/TreeTest.php</file>
+            <file>./Gedmo/Tree/InMemoryUpdatesTest.php</file>
         </testsuite>
         <testsuite name="Timestampable Extension">
             <directory suffix=".php">./Gedmo/Timestampable/</directory>

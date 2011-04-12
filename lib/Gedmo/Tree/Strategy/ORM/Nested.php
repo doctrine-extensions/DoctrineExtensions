@@ -277,11 +277,15 @@ class Nested implements Strategy
 
         $meta->getReflectionProperty($config['left'])->setValue($node, $parentRight);
         $meta->getReflectionProperty($config['right'])->setValue($node, $parentRight + 1);
+        $oid = spl_object_hash($node);
+        $em->getUnitOfWork()->setOriginalEntityProperty($oid, $config['left'], $parentRight);
+        $em->getUnitOfWork()->setOriginalEntityProperty($oid, $config['right'], $parentRight + 1);
         $dql = "UPDATE {$meta->rootEntityName} node";
         $dql .= " SET node.{$config['left']} = " . ($parentRight) . ', ';
         $dql .= " node.{$config['right']} = " . ($parentRight + 1);
         if (isset($level)) {
             $dql .= ", node.{$config['level']} = " . $level;
+            $em->getUnitOfWork()->setOriginalEntityProperty($oid, $config['level'], $level);
         }
         $dql .= " WHERE node.{$identifierField} = {$nodeId}";
         $em->createQuery($dql)->getSingleScalarResult();
