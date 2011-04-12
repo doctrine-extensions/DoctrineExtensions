@@ -41,12 +41,11 @@ Update **2011-02-02**
 **Notice:**
 
 - You can [test live][blog_test] on this blog
-- After using a NestedTreeRepository functions it is recommended to clear EntityManager cache
-because nodes may have changed values in database but not in memory. Flushing dirty nodes can
-lead to unexpected behaviour.
+- After using a NestedTreeRepository functions: **verify, recover, removeFromTree** it is recommended to clear EntityManager cache
+because nodes may have changed values in database but not in memory. Flushing dirty nodes can lead to unexpected behaviour.
 - Closure tree implementation is experimental and not fully functional, so far not documented either
 - Public [Tree repository](http://github.com/l3pp4rd/DoctrineExtensions "Tree extension on Github") is available on github
-- Last update date: **2011-04-04**
+- Last update date: **2011-04-12**
 
 **Portability:**
 
@@ -153,6 +152,7 @@ cache is activated
         /**
          * @gedmo:TreeParent
          * @ManyToOne(targetEntity="Category", inversedBy="children")
+         * @JoinColumn(name="parent_id", referencedColumnName="id", onDelete="SET NULL")
          */
         private $parent;
         
@@ -239,6 +239,10 @@ Yaml mapped Category: **/mapping/yaml/Entity.Category.dcm.yml**
         parent:
           targetEntity: Entity\Category
           inversedBy: children
+          joinColumn:
+            name: parent_id
+            referencedColumnName: id
+            onDelete: SET NULL
           gedmo:
             - treeParent
       oneToMany:
@@ -449,6 +453,7 @@ And the Entity should look like:
         /**
          * @gedmo:TreeParent
          * @ManyToOne(targetEntity="Category", inversedBy="children")
+         * @JoinColumn(name="parent_id", referencedColumnName="id", onDelete="SET NULL")
          */
         private $parent;
         
@@ -538,6 +543,10 @@ Yaml mapped Category: **/mapping/yaml/Entity.Category.dcm.yml**
         parent:
           targetEntity: Entity\Category
           inversedBy: children
+          joinColumn:
+            name: parent_id
+            referencedColumnName: id
+            onDelete: SET NULL
           gedmo:
             - treeParent
       oneToMany:
