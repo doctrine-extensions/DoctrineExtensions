@@ -8,7 +8,15 @@
             <directory suffix=".php">./Gedmo/Sluggable/</directory>
         </testsuite>
         <testsuite name="Tree Extension">
-            <directory suffix=".php">./Gedmo/Tree/</directory>
+            <file>./Gedmo/Tree/ConcurrencyTest.php</file>
+            <file>./Gedmo/Tree/MultiInheritanceTest.php</file>
+            <file>./Gedmo/Tree/MultiInheritanceTest2.php</file>
+            <file>./Gedmo/Tree/NestedTreeRootRepositoryTest.php</file>
+            <file>./Gedmo/Tree/NestedTreeRootTest.php</file>
+            <file>./Gedmo/Tree/RepositoryTest.php</file>
+            <file>./Gedmo/Tree/TranslatableSluggableTreeTest.php</file>
+            <file>./Gedmo/Tree/TreeTest.php</file>
+            <file>./Gedmo/Tree/InMemoryUpdatesTest.php</file>
         </testsuite>
         <testsuite name="Timestampable Extension">
             <directory suffix=".php">./Gedmo/Timestampable/</directory>
