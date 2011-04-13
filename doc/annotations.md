@@ -209,7 +209,12 @@ table map to create correct ascii slugs.
 
 **property** annotation
 
-Includes the marked **string** type property into generation of slug.
+Includes the marked **string** type property into generation of slug. Can be built from diferent fields,
+**position** option specifies the order in slug concatenation
+
+**options:**
+
+- **position** - (integer) _optional_ default: **0**
 
 example:
 
