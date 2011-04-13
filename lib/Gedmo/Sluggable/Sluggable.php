@@ -19,8 +19,21 @@ interface Sluggable
     
     /**
      * @gedmo:Sluggable
+     * available options:
+     *          position(optional, default=0) - the position of the property in the slug
      * to mark the field as sluggable use property annotation @gedmo:Sluggable
      * this field value will be included in built slug
+     * 
+     * example:
+     * 
+     * @gedmo:Sluggable(position=1)
+     * @Column(type="string", length=64)
+     * $property
+     * 
+     * @gedmo:Sluggable(position=0)
+     * @Column(type="string", length=64)
+     * $property2
+     * 
      */
     
     /**

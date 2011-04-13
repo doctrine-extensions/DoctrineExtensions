@@ -76,7 +76,7 @@ class Annotation implements Driver
                 if (!$this->isValidField($meta, $field)) {
                     throw new InvalidMappingException("Cannot slug field - [{$field}] type is not valid and must be 'string' in class - {$meta->name}");
                 }
-                $config['fields'][] = $field;
+                $config['fields'][] = array('field' => $field, 'position' => $sluggable->position);
             }
             // slug property
             if ($slug = $reader->getPropertyAnnotation($property, self::ANNOTATION_SLUG)) {

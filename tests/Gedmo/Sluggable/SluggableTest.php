@@ -5,6 +5,7 @@ namespace Gedmo\Sluggable;
 use Doctrine\Common\EventManager;
 use Tool\BaseTestCaseORM;
 use Doctrine\Common\Util\Debug,
+    Sluggable\Fixture\Post,
     Sluggable\Fixture\Article;
 
 /**
@@ -18,6 +19,8 @@ use Doctrine\Common\Util\Debug,
 class SluggableTest extends BaseTestCaseORM
 {
     const ARTICLE = 'Sluggable\\Fixture\\Article';
+    const POST    = 'Sluggable\\Fixture\\Post';
+    
     private $articleId;
 
     protected function setUp()
@@ -51,6 +54,18 @@ class SluggableTest extends BaseTestCaseORM
             $this->em->clear();
             $this->assertEquals($article->getSlug(), 'the-title-my-code-' . ($i + 1));
         }
+    }
+    
+    public function testPositionedSlugGeneration()
+    {
+         $post = new Post();
+         $post->setTitle('the title');
+         $post->setCode('my code');
+         
+         $this->em->persist($post);
+         $this->em->flush();
+         $this->em->clear();
+         $this->assertEquals($post->getSlug(), 'my-code-the-title');
     }
 
     public function testUniqueSlugLimit()
@@ -115,6 +130,7 @@ class SluggableTest extends BaseTestCaseORM
     {
         return array(
             self::ARTICLE,
+            self::POST
         );
     }
 
