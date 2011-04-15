@@ -10,7 +10,7 @@ use Doctrine\Common\Util\Debug,
 
 /**
  * These are mapping tests for sluggable extension
- * 
+ *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  * @package Gedmo.Mapping
  * @link http://www.gediminasm.org
@@ -22,7 +22,7 @@ class SluggableMappingTest extends \PHPUnit_Framework_TestCase
     private $em;
 
     public function setUp()
-    {        
+    {
         $config = new \Doctrine\ORM\Configuration();
         $config->setMetadataCacheImpl(new \Doctrine\Common\Cache\ArrayCache);
         $config->setQueryCacheImpl(new \Doctrine\Common\Cache\ArrayCache);
@@ -30,7 +30,7 @@ class SluggableMappingTest extends \PHPUnit_Framework_TestCase
         $config->setProxyNamespace('Gedmo\Mapping\Proxy');
         $chainDriverImpl = new DriverChain;
         $chainDriverImpl->addDriver(
-            new YamlDriver(array(__DIR__ . '/Driver/Yaml')), 
+            new YamlDriver(array(__DIR__ . '/Driver/Yaml')),
             'Mapping\Fixture\Yaml'
         );
         $config->setMetadataDriverImpl($chainDriverImpl);
@@ -41,7 +41,7 @@ class SluggableMappingTest extends \PHPUnit_Framework_TestCase
         );
 
         //$config->setSQLLogger(new \Doctrine\DBAL\Logging\EchoSQLLogger());
-        
+
         $evm = new \Doctrine\Common\EventManager();
         $evm->addEventSubscriber(new SluggableListener());
         $this->em = \Doctrine\ORM\EntityManager::create($conn, $config, $evm);
@@ -52,12 +52,12 @@ class SluggableMappingTest extends \PHPUnit_Framework_TestCase
             $this->em->getClassMetadata(self::TEST_YAML_ENTITY_CLASS)
         ));
     }
-    
+
     public function testYamlMapping()
     {
         $meta = $this->em->getClassMetadata(self::TEST_YAML_ENTITY_CLASS);
         $cacheId = ExtensionMetadataFactory::getCacheId(
-            self::TEST_YAML_ENTITY_CLASS, 
+            self::TEST_YAML_ENTITY_CLASS,
             'Gedmo\Sluggable'
         );
         $config = $this->em->getMetadataFactory()->getCacheDriver()->fetch($cacheId);
@@ -65,7 +65,7 @@ class SluggableMappingTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('slug', $config['slug']);
         $this->assertArrayHasKey('fields', $config);
         $this->assertEquals(1, count($config['fields']));
-        $this->assertEquals('title', $config['fields'][0]);
+        $this->assertEquals('title', $config['fields'][0]['field']);
         $this->assertArrayHasKey('style', $config);
         $this->assertEquals('camel', $config['style']);
         $this->assertArrayHasKey('separator', $config);

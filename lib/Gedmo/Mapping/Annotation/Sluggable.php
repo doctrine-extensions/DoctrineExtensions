@@ -15,6 +15,6 @@ use Doctrine\Common\Annotations\Annotation;
  */
 final class Sluggable extends Annotation
 {
-
+    public $position = 0;
 }
 

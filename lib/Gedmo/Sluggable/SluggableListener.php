@@ -149,14 +149,23 @@ class SluggableListener extends MappedEventSubscriber
         $uow = $om->getUnitOfWork();
         $config = $this->getConfiguration($om, $meta->name);
 
+        // sort sluggable fields by position
+        $fields = $config['fields'];
+        usort($fields, function($a, $b) {
+            if ($a['position'] == $b['position']) {
+                return 1;
+            }
+            return ($a['position'] < $b['position']) ? -1 : 1;
+        });
+
         // collect the slug from fields
         $slug = '';
         $needToChangeSlug = false;
-        foreach ($config['fields'] as $sluggableField) {
-            if ($changeSet === false || isset($changeSet[$sluggableField])) {
+        foreach ($fields as $sluggableField) {
+            if ($changeSet === false || isset($changeSet[$sluggableField['field']])) {
                 $needToChangeSlug = true;
             }
-            $slug .= $meta->getReflectionProperty($sluggableField)->getValue($object) . ' ';
+            $slug .= $meta->getReflectionProperty($sluggableField['field'])->getValue($object) . ' ';
         }
         // if slug is not changed, no need further processing
         if (!$needToChangeSlug) {
