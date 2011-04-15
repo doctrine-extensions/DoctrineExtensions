@@ -152,13 +152,15 @@ class SluggableListener extends MappedEventSubscriber
         $needToChangeSlug = false;
         $fields = $config['fields'];
 
-        usort($fields, function($a, $b){
+        // sort sluggable fields by position
+        usort($fields, function($a, $b) {
             if ($a['position'] == $b['position']) {
                 return 1;
             }
             return ($a['position'] < $b['position']) ? -1 : 1;
         });
 
+        // concatenate all sluggable fields
         foreach ($fields as $sluggableField) {
             if ($changeSet === false || isset($changeSet[$sluggableField['field']])) {
                 $needToChangeSlug = true;

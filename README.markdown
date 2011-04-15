@@ -63,7 +63,8 @@ To setup and run tests follow these steps:
 
 ### Contributors:
 
-- [xanf](http://github.com/xanf)
+- Clément JOBEILI [dator](http://github.com/dator)
+- Illya Klymov [xanf](http://github.com/xanf)
 - Gustavo Adrian [comfortablynumb](http://github.com/comfortablynumb)
 - Boussekeyt Jules [gordonslondon](http://github.com/gordonslondon)
 - Christophe Coevoet [stof](http://github.com/stof)
