@@ -70,7 +70,7 @@ class ExtensionORMTest extends BaseTestCaseORM
             $this->encoderListener,
             $loadClassMetadataEventArgs
         );
-        $this->assertEquals('Gedmo\\Mapping\\Event\\Adapter\\ORM', get_class($eventAdapter));
+        $this->assertEquals('Gedmo\\Mapping\\Mock\\Extension\\Encoder\\Mapping\\Event\\Adapter\\ORM', get_class($eventAdapter));
     }
 
     protected function getUsedEntityFixtures()

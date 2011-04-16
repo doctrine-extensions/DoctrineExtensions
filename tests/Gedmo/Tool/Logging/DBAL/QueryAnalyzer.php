@@ -83,17 +83,36 @@ class QueryAnalyzer implements SQLLogger
     }
 
     /**
+     * Clean all collected data
+     *
+     * @return QueryAnalyzer
+     */
+    public function cleanUp()
+    {
+        $this->queries = array();
+        $this->queryExecutionTimes = array();
+        $this->totalExecutionTime = 0;
+        return $this;
+    }
+
+    /**
      * Dump the statistics of executed queries
      *
+     * @param boolean $dumpOnlySql
      * @return void
      */
-    public function getOutput()
+    public function getOutput($dumpOnlySql = false)
     {
-        $output = 'Platform: ' . $this->platform->getName() . PHP_EOL;
-        $output .= 'Executed queries: ' . count($this->queries) . ', total time: ' . $this->totalExecutionTime . ' ms' . PHP_EOL;
+        $output = '';
+        if (!$dumpOnlySql) {
+            $output .= 'Platform: ' . $this->platform->getName() . PHP_EOL;
+            $output .= 'Executed queries: ' . count($this->queries) . ', total time: ' . $this->totalExecutionTime . ' ms' . PHP_EOL;
+        }
         foreach ($this->queries as $index => $sql) {
-            $output .= 'Query(' . ($index+1) . ') - ' . $this->queryExecutionTimes[$index] . ' ms' . PHP_EOL;
-            $output .= $sql . PHP_EOL;
+            if (!$dumpOnlySql) {
+                $output .= 'Query(' . ($index+1) . ') - ' . $this->queryExecutionTimes[$index] . ' ms' . PHP_EOL;
+            }
+            $output .= $sql . ';' . PHP_EOL;
         }
         $output .= PHP_EOL;
         return $output;
@@ -135,6 +154,16 @@ class QueryAnalyzer implements SQLLogger
     public function getExecutedQueries()
     {
         return $this->queries;
+    }
+
+    /**
+     * Get number of executed queries
+     *
+     * @return integer
+     */
+    public function getNumExecutedQueries()
+    {
+        return count($this->queries);
     }
 
     /**

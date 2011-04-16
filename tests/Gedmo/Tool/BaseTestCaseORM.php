@@ -35,7 +35,7 @@ abstract class BaseTestCaseORM extends \PHPUnit_Framework_TestCase
     /**
      * @var QueryAnalyzer
      */
-    private $queryAnalyzer;
+    protected $queryAnalyzer;
 
     /**
      * {@inheritdoc}
@@ -143,13 +143,14 @@ abstract class BaseTestCaseORM extends \PHPUnit_Framework_TestCase
      * Stops query statistic log and outputs
      * the data to screen or file
      *
+     * @param boolean $dumpOnlySql
      * @param boolean $writeToLog
      * @throws \RuntimeException
      */
-    protected function stopQueryLog($writeToLog = false)
+    protected function stopQueryLog($dumpOnlySql = false, $writeToLog = false)
     {
         if ($this->queryAnalyzer) {
-            $output = $this->queryAnalyzer->getOutput();
+            $output = $this->queryAnalyzer->getOutput($dumpOnlySql);
             if ($writeToLog) {
                 $fileName = __DIR__.'/../../temp/query_debug_'.time().'.log';
                 if (($file = fopen($fileName, 'w+')) !== false) {
@@ -161,7 +162,6 @@ abstract class BaseTestCaseORM extends \PHPUnit_Framework_TestCase
             } else {
                 echo $output;
             }
-            $this->queryAnalyzer = null;
         }
     }
 
