@@ -35,7 +35,7 @@ abstract class BaseTestCaseORM extends \PHPUnit_Framework_TestCase
     /**
      * @var QueryAnalyzer
      */
-    private $queryAnalyzer;
+    protected $queryAnalyzer;
 
     /**
      * {@inheritdoc}
@@ -60,6 +60,30 @@ abstract class BaseTestCaseORM extends \PHPUnit_Framework_TestCase
             'memory' => true,
         );
 
+        $config = $this->getMockAnnotatedConfig();
+        $em = EntityManager::create($conn, $config, $evm ?: $this->getEventManager());
+
+        $schema = array_map(function($class) use ($em) {
+            return $em->getClassMetadata($class);
+        }, (array)$this->getUsedEntityFixtures());
+
+        $schemaTool = new SchemaTool($em);
+        $schemaTool->dropSchema(array());
+        $schemaTool->createSchema($schema);
+        return $this->em = $em;
+    }
+
+    /**
+     * EntityManager mock object together with
+     * annotation mapping driver and custom
+     * connection
+     *
+     * @param array $conn
+     * @param EventManager $evm
+     * @return EntityManager
+     */
+    protected function getMockCustomEntityManager(array $conn, EventManager $evm = null)
+    {
         $config = $this->getMockAnnotatedConfig();
         $em = EntityManager::create($conn, $config, $evm ?: $this->getEventManager());
 
@@ -119,13 +143,14 @@ abstract class BaseTestCaseORM extends \PHPUnit_Framework_TestCase
      * Stops query statistic log and outputs
      * the data to screen or file
      *
+     * @param boolean $dumpOnlySql
      * @param boolean $writeToLog
      * @throws \RuntimeException
      */
-    protected function stopQueryLog($writeToLog = false)
+    protected function stopQueryLog($dumpOnlySql = false, $writeToLog = false)
     {
         if ($this->queryAnalyzer) {
-            $output = $this->queryAnalyzer->getOutput();
+            $output = $this->queryAnalyzer->getOutput($dumpOnlySql);
             if ($writeToLog) {
                 $fileName = __DIR__.'/../../temp/query_debug_'.time().'.log';
                 if (($file = fopen($fileName, 'w+')) !== false) {
@@ -137,7 +162,6 @@ abstract class BaseTestCaseORM extends \PHPUnit_Framework_TestCase
             } else {
                 echo $output;
             }
-            $this->queryAnalyzer = null;
         }
     }
 
