@@ -25,6 +25,12 @@ to many different type object managers, currently supported (ORM or ODM)
 
 ### Latest updates
 
+**2011-04-16**
+
+- Translation **query walker** is a killer feature for translatable extension. It lets to
+translate any query components and filter or order by translated fields. I recommmend you
+to use it extensively since it is very performative also.
+
 **2011-04-11**
 
 - Tree nestedset was improved, now all in memory nodes are synchronized and do not require $em->clear() all the time.

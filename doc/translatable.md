@@ -10,10 +10,18 @@ Features:
 - Automatic storage of translations in database
 - ORM and ODM support using same listener -Automatic translation of Entity or
 Document fields then loaded
+- ORM query can use **hint** to translate all records without issuing additional queries
 - Can be nested with other behaviors
 - Annotation and Yaml mapping support for extensions
 
 [blog_test]: http://gediminasm.org/test "Test extensions on this blog"
+
+Update **2011-04-16**
+- Made an ORM query **hint** to hook into any select type query, which will join the translations
+and let you **filter, order or search** by translated fields directly. It also will translate
+all selected **collections or simple components** without issuing additional queries. It also
+supports translation fallbacks
+- For performance reasons, translation fallbacks are disabled by default
 
 Update **2011-04-04**
 - Made single listener, one instance can be used for any object manager
@@ -25,7 +33,7 @@ and any number of them
 - Public [Translatable repository](http://github.com/l3pp4rd/DoctrineExtensions "Translatable extension on Github") is available on github
 - Using other extensions on the same Entity fields may result in unexpected way
 - May inpact your application performace since it does an additional query for translation
-- Last update date: **2011-04-04**
+- Last update date: **2011-04-16**
 
 **Portability:**
 
@@ -42,6 +50,7 @@ Content:
 - Document [example](#document)
 - [Yaml](#yaml) mapping example
 - Basic usage [examples](#basic-examples)
+- Using ORM query [hint](#orm-query-hint)
 - Advanced usage [examples](#advanced-examples)
 
 ## Setup and autoloading {#including-extension}
@@ -327,6 +336,56 @@ Lets try to load it and it should be translated in English
     // prints: "my title in en"
     echo $article->getContent();
     // prints: "my content in en"
+
+## Using ORM query hint {#orm-query-hint}
+
+By default, behind the scenes, when you load a record - translatable hooks into **postLoad**
+event and issues additional query to translate all fields. Imagine that when you load a collection,
+when it issues a lot of queries just to translate those fields. Also if you want to hydrate
+result as an **array**, it is not possible to hook any **postLoad** event since it is not an
+entity being hydrated. These are the main reason why **TranslationWalker** was born.
+
+**TranslationWalker** uses a query **hint** to hook into any **select type query**,
+and when you execute the query, no matter which hydration method you use, it automatically
+joins the translations for all fields, so you could use ordering filtering or whatever you
+want on **translations of the fields** instead of original record fields.
+
+And in result there is only one query for all this happyness.
+
+If you use translation [fallbacks](#advanced-examples) it will be also in the same single
+query and during the hydration process it will replace the empty fields in case if they
+do not have a translation in currently used locale.
+
+Now enough talking, here is an example:
+
+    $dql = "SELECT a, c, u FROM Article a "
+         . "LEFT JOIN a.comments c "
+         . "JOIN c.author u "
+         . "WHERE a.title LIKE '%translated_title%' "
+         . "ORDER BY a.title";
+    
+    $query = $em->createQuery($dql);
+    // set the translation query hint
+    $query->setHint(
+        \Doctrine\ORM\Query::HINT_CUSTOM_OUTPUT_WALKER,
+        'Gedmo\\Translatable\\Query\\TreeWalker\\TranslationWalker'
+    );
+    
+    $articles = $query->getResult(); // object hydration
+    $articles = $query->getArrayResult(); // array hydration
+
+Theres no need for any words anymore.. right?
+I recommend you to use it extensively since it is a way better performance, even in
+cases where you need a single object query.
+
+Notice: Even in **COUNT** select statements translations are joined to leave a
+possibility to filter by translated field, if you do not need it, just do not set
+the **hint**. Also take into account that it is not possibble to translate components
+in **JOIN WITH** statement, example `JOIN a.comments c WITH c.message LIKE '%will_not_be_translated%'`
+
+Notice: any **find** related method calls cannot hook this hint automagically, we
+will use a different approach when **persister overriding feature** will be
+available in **Doctrine** 
 
 ## Advanced examples: {#advanced-examples}
 
