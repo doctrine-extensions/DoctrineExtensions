@@ -322,6 +322,30 @@ The result after flush will generate the food tree:
     $repo->reorder($food, 'title');
     // it will reorder all "Food" tree node left-right values by the title
 
+### Inserting node in different positions
+
+    $food = new Category();
+    $food->setTitle('Food');
+    
+    $fruits = new Category();
+    $fruits->setTitle('Fruits');
+    
+    $vegetables = new Category();
+    $vegetables->setTitle('Vegetables');
+    
+    $carrots = new Category();
+    $carrots->setTitle('Carrots');
+    
+    $treeRepository
+        ->persistAsFirstChild($food)
+        ->persistAsFirstChildOf($fruits, $food)
+        ->persistAsLastChildOf($vegitables, $food)
+        ->persistAsNextSiblingOf($carrots, $fruits);
+    
+    $em->flush();
+
+For more details you can check the **NestedTreeRepository** __call function
+
 Moving up and down the nodes in same level:
 
 Tree example:

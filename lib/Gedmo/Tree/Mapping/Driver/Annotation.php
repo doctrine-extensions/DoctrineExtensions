@@ -171,10 +171,6 @@ class Annotation implements Driver
                 if (!$this->isValidField($meta, $field)) {
                     throw new InvalidMappingException("Tree root field - [{$field}] type is not valid and must be 'integer' in class - {$meta->name}");
                 }
-                $mapping = $meta->getFieldMapping($field);
-                if (!$mapping['nullable']) {
-                    throw new InvalidMappingException("Tree root field - [{$field}] must be nullable in class - {$meta->name}");
-                }
                 $config['root'] = $field;
             }
             // level
