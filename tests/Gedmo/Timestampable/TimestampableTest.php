@@ -71,8 +71,6 @@ class TimestampableTest extends BaseTestCaseORM
         );
         $this->assertEquals(null, $sportComment->getClosed());
 
-        sleep(1);
-
         $sportComment->setStatus(1);
         $published = new Type();
         $published->setTitle('Published');
