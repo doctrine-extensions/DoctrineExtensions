@@ -83,4 +83,19 @@ class Category implements NodeInterface
     {
         return $this->parentId;
     }
+
+    public function getLeft()
+    {
+        return $this->lft;
+    }
+
+    public function getRight()
+    {
+        return $this->rgt;
+    }
+
+    public function getLevel()
+    {
+        return $this->level;
+    }
 }

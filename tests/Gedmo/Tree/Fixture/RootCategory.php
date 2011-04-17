@@ -43,7 +43,7 @@ class RootCategory
 
     /**
      * @gedmo:TreeRoot
-     * @Column(type="integer", nullable=true)
+     * @Column(type="integer")
      */
     private $root;
 
