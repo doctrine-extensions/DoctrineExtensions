@@ -39,6 +39,57 @@ class NestedTreeRepository extends AbstractTreeRepository
     }
 
     /**
+     * Allows the following 'virtual' methods:
+     * - persistAsFirstChild($node)
+     * - persistAsFirstChildOf($node, $parent)
+     * - persistAsLastChild($node)
+     * - persistAsLastChildOf($node, $parent)
+     * - persistAsNextSibling($node)
+     * - persistAsNextSiblingOf($node, $sibling)
+     * - persistAsPrevSibling($node)
+     * - persistAsPrevSiblingOf($node, $sibling)
+     * Inherited virtual methods:
+     * - find*
+     *
+     * @see \Doctrine\ORM\EntityRepository
+     * @throws BadMethodCallException  If the method called is an invalid find* or persistAs* method
+     *                                 or no find* either persistAs* method at all and therefore an invalid
+     *                                 method call.
+     * @return mixed - TreeNestedRepository if persistAs* is called
+     */
+    public function __call($method, $args)
+    {
+        if (substr($method, 0, 9) === 'persistAs') {
+            if (!isset($args[0])) {
+                throw new \Gedmo\Exception\InvalidArgumentException('Node to persist must be available as first argument');
+            }
+            $node = $args[0];
+            if ($this->_em->getUnitOfWork()->isInIdentityMap($node)) {
+                throw new \Gedmo\Exception\InvalidArgumentException('Node cannot be persisted before calling this method');
+            }
+            $meta = $this->getClassMetadata();
+            $config = $this->listener->getConfiguration($this->_em, $meta->name);
+            $position = substr($method, 9);
+            if (substr($method, -2) === 'Of') {
+                if (!isset($args[1])) {
+                    throw new \Gedmo\Exception\InvalidArgumentException('If "Of" is specified you must provide parent or sibling as the second argument');
+                }
+                $parent = $args[1];
+                $meta->getReflectionProperty($config['parent'])->setValue($node, $parent);
+                $position = substr($position, 0, -2);
+            }
+            $oid = spl_object_hash($node);
+            $this->listener
+                ->getStrategy($this->_em, $meta->name)
+                ->setNodePosition($oid, $position);
+
+            $this->_em->persist($node);
+            return $this;
+        }
+        return parent::__call($method, $args);
+    }
+
+    /**
      * Get the Tree path of Nodes by given $node
      *
      * @param object $node
