@@ -51,7 +51,7 @@ class SluggableListener extends MappedEventSubscriber
      *
      * @var array
      */
-    private $transliterator = array('Gedmo\Sluggable\Util\Urlizer', 'urlize');
+    private $transliterator = array('Gedmo\Sluggable\Util\Urlizer', 'transliterate');
 
     /**
      * Set the transliteration callable method

@@ -50,7 +50,7 @@ class Urlizer
         }
         return true;
     }
-    
+
     /**
      * Remove any illegal characters, accents, etc.
      *
@@ -195,27 +195,13 @@ class Urlizer
     }
 
     /**
-     * Convert any passed string to a url friendly string
-     *
-     * @param  string $text  Text to urlize
-     * @return string $text  Urlized text
-     */
-    public static function _urlize($text, $separator = '-')
-    {
-        $clean = preg_replace("/[^a-zA-Z0-9\/_|+ -]/", '', $text);
-        $clean = strtolower(trim($clean, '-'));
-        $clean = preg_replace("/[\/_|+ -]+/", '-', $clean);
-        
-    }
-    
-    /**
     * US-ASCII transliterations of Unicode text
     * Ported Sean M. Burke's Text::Unidecode Perl module (He did all the hard work!)
     * Warning: you should only pass this well formed UTF-8!
     * Be aware it works by making a copy of the input string which it appends transliterated
     * characters to - it uses a PHP output buffer to do this - it means, memory use will increase,
     * requiring up to the same amount again as the input string
-    * 
+    *
     * @see http://search.cpan.org/~sburke/Text-Unidecode-0.04/lib/Text/Unidecode.pm
     * @param string UTF-8 string to convert
     * @author <hsivonen@iki.fi>
@@ -223,27 +209,27 @@ class Urlizer
     * @return string US-ASCII string
     */
     public static function utf8ToAscii($str, $unknown = '?') {
-        
+
         # The database for transliteration stored here
         static $UTF8_TO_ASCII = array();
-        
+
         # Variable lookups faster than accessing constants
         $UTF8_TO_ASCII_DB = __DIR__ . '/data';
-        
+
         if (strlen($str) == 0) {
             return '';
         }
-        
+
         $len = strlen($str);
         $i = 0;
         $result = '';
-        
+
         while ($i < $len) {
             $ord = NULL;
             $increment = 1;
-            
+
             $ord0 = ord($str{$i});
-            
+
             # Much nested if /else - PHP fn calls expensive, no block scope...
             # 1 byte - ASCII
             if ($ord0 >= 0 && $ord0 <= 127) {
@@ -265,7 +251,7 @@ class Urlizer
                         # 4 bytes
                         $ord3 = ord($str{$i+3});
                         if ($ord0>=240 && $ord0<=247) {
-                            $ord = ($ord0-240)*262144 + ($ord1-128)*4096 
+                            $ord = ($ord0-240)*262144 + ($ord1-128)*4096
                                 + ($ord2-128)*64 + ($ord3-128);
                             $increment = 4;
                         } else {
@@ -274,13 +260,13 @@ class Urlizer
                     }
                 }
             }
-            
+
             $bank = $ord >> 8;
-            
+
             # If we haven't used anything from this bank before, need to load it...
             if (!array_key_exists($bank, $UTF8_TO_ASCII)) {
                 $bankfile = $UTF8_TO_ASCII_DB. '/'. sprintf("x%02x", $bank).'.php';
-                
+
                 if (file_exists($bankfile)) {
                     # Load the appropriate database
                     if (!include $bankfile) {
@@ -292,7 +278,7 @@ class Urlizer
                 }
             }
 
-            $newchar = $ord & 255;            
+            $newchar = $ord & 255;
             if (isset($UTF8_TO_ASCII[$bank]) && array_key_exists($newchar, $UTF8_TO_ASCII[$bank])) {
                 $result .= $UTF8_TO_ASCII[$bank][$newchar];
             } else {
@@ -300,43 +286,38 @@ class Urlizer
             }
             $i += $increment;
         }
-        
+
         return $result;
     }
-    
+
     /**
-     * Convert any passed string to a url friendly string. Converts 'My first blog post' to 'my-first-blog-post'
+     * Does not transliterate correctly eastern languages
      *
-     * @param  string $text  Text to urlize
-     * @return string $text  Urlized text
+     * @param string $text
+     * @param string $separator
+     * @return string
      */
     public static function urlize($text, $separator = '-')
     {
-        // Remove all non url friendly characters with the unaccent function
-        if (self::validUtf8($text)) {
-            $text = self::utf8ToAscii($text);
-        } else {
-            $text = self::unaccent($text);
-        }
-
-        if (function_exists('mb_strtolower')) {
-            $text = mb_strtolower($text);
-        } else {
-            $text = strtolower($text);
-        }
-
-        // Remove all none word characters
-        $text = preg_replace('/\W/', ' ', $text);
-
-        // More stripping. Replace spaces with dashes
-        $text = strtolower(preg_replace('/[^A-Z^a-z^0-9^\/]+/', $separator,
-                           preg_replace('/([a-z\d])([A-Z])/', '\1_\2',
-                           preg_replace('/([A-Z]+)([A-Z][a-z])/', '\1_\2',
-                           preg_replace('/::/', '/', $text)))));
-
-        return trim($text, $separator);
+        $text = self::unaccent($text);
+        return self::postProcessText($text, $separator);
     }
-    
+
+    /**
+     * Uses transliteration tables to convert any kind of utf8 character
+     *
+     * @param string $text
+     * @param string $separator
+     * @return string $text
+     */
+    public static function transliterate($text, $separator = '-')
+    {
+        if (preg_match('/[\x80-\xff]/', $text) && self::validUtf8($text)) {
+            $text = self::utf8ToAscii($text);
+        }
+        return self::postProcessText($text, $separator);
+    }
+
     /**
     * Tests a string as to whether it's valid UTF-8 and supported by the
     * Unicode standard
@@ -346,48 +327,40 @@ class Urlizer
     * @return boolean true if valid
     * @see http://hsivonen.iki.fi/php-utf8/
     */
-    public static function validUtf8($str) 
-    {    
+    public static function validUtf8($str)
+    {
         $mState = 0;     // cached expected number of octets after the current octet
                          // until the beginning of the next UTF8 character sequence
         $mUcs4  = 0;     // cached Unicode character
         $mBytes = 1;     // cached expected number of octets in the current sequence
-        
+
         $len = strlen($str);
-        
         for ($i = 0; $i < $len; $i++) {
-            
             $in = ord($str{$i});
-            
             if ($mState == 0) {
-                
                 // When mState is zero we expect either a US-ASCII character or a
                 // multi-octet sequence.
                 if (0 == (0x80 & ($in))) {
                     // US-ASCII, pass straight through.
                     $mBytes = 1;
-                    
                 } elseif (0xC0 == (0xE0 & ($in))) {
                     // First octet of 2 octet sequence
                     $mUcs4 = ($in);
                     $mUcs4 = ($mUcs4 & 0x1F) << 6;
                     $mState = 1;
                     $mBytes = 2;
-                    
                 } elseif (0xE0 == (0xF0 & ($in))) {
                     // First octet of 3 octet sequence
                     $mUcs4 = ($in);
                     $mUcs4 = ($mUcs4 & 0x0F) << 12;
                     $mState = 2;
                     $mBytes = 3;
-                    
                 } elseif (0xF0 == (0xF8 & ($in))) {
                     // First octet of 4 octet sequence
                     $mUcs4 = ($in);
                     $mUcs4 = ($mUcs4 & 0x07) << 18;
                     $mState = 3;
                     $mBytes = 4;
-                    
                 } elseif (0xF8 == (0xFC & ($in))) {
                     /* First octet of 5 octet sequence.
                     *
@@ -401,34 +374,27 @@ class Urlizer
                     $mUcs4 = ($mUcs4 & 0x03) << 24;
                     $mState = 4;
                     $mBytes = 5;
-                    
                 } elseif (0xFC == (0xFE & ($in))) {
                     // First octet of 6 octet sequence, see comments for 5 octet sequence.
                     $mUcs4 = ($in);
                     $mUcs4 = ($mUcs4 & 1) << 30;
                     $mState = 5;
                     $mBytes = 6;
-                    
                 } else {
                     /* Current octet is neither in the US-ASCII range nor a legal first
                      * octet of a multi-octet sequence.
                      */
-                    return FALSE;
-                    
+                    return false;
                 }
-            
             } else {
-                
                 // When mState is non-zero, we expect a continuation of the multi-octet
                 // sequence
                 if (0x80 == (0xC0 & ($in))) {
-                    
                     // Legal continuation.
                     $shift = ($mState - 1) * 6;
                     $tmp = $in;
                     $tmp = ($tmp & 0x0000003F) << $shift;
                     $mUcs4 |= $tmp;
-                
                     /**
                     * End of the multi-octet sequence. mUcs4 now contains the final
                     * Unicode codepoint to be output
@@ -447,25 +413,49 @@ class Urlizer
                             // Codepoints outside the Unicode range are illegal
                             ($mUcs4 > 0x10FFFF)
                         ) {
-                            return FALSE;
+                            return false;
                         }
-                        
                         //initialize UTF8 cache
                         $mState = 0;
                         $mUcs4  = 0;
                         $mBytes = 1;
                     }
-                
                 } else {
                     /**
                     *((0xC0 & (*in) != 0x80) && (mState != 0))
                     * Incomplete multi-octet sequence.
                     */
-                    
-                    return FALSE;
+                    return false;
                 }
             }
         }
-        return TRUE;
+        return true;
+    }
+
+    /**
+     * Cleans up the text and adds separator
+     *
+     * @param string $text
+     * @param string $separator
+     * @return string
+     */
+    private static function postProcessText($text, $separator)
+    {
+        if (function_exists('mb_strtolower')) {
+            $text = mb_strtolower($text);
+        } else {
+            $text = strtolower($text);
+        }
+
+        // Remove all none word characters
+        $text = preg_replace('/\W/', ' ', $text);
+
+        // More stripping. Replace spaces with dashes
+        $text = strtolower(preg_replace('/[^A-Z^a-z^0-9^\/]+/', $separator,
+                           preg_replace('/([a-z\d])([A-Z])/', '\1_\2',
+                           preg_replace('/([A-Z]+)([A-Z][a-z])/', '\1_\2',
+                           preg_replace('/::/', '/', $text)))));
+
+        return trim($text, $separator);
     }
 }
