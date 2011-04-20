@@ -62,7 +62,7 @@ abstract class MappedEventSubscriber implements EventSubscriber
         if (preg_match('@Doctrine\\\([^\\\]+)@', $class, $m) && in_array($m[1], array('ODM', 'ORM'))) {
             if (!isset($this->adapters[$m[1]])) {
                 $adapterClass = $this->getNamespace() . '\\Mapping\\Event\\Adapter\\' . $m[1];
-                if (!/*ClassLoader::classExists*/class_exists($adapterClass)) {
+                if (!class_exists($adapterClass)) {
                     $adapterClass = 'Gedmo\\Mapping\\Event\\Adapter\\'.$m[1];
                 }
                 $this->adapters[$m[1]] = new $adapterClass;

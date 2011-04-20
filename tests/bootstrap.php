@@ -13,69 +13,27 @@ define('TESTS_PATH', __DIR__);
 define('TESTS_TEMP_DIR', __DIR__.'/temp');
 define('VENDOR_PATH', realpath(__DIR__ . '/../vendor'));
 
-set_include_path(implode(PATH_SEPARATOR, array(
-    VENDOR_PATH,
-    get_include_path(),
-)));
-
-$classLoaderFile = VENDOR_PATH . '/doctrine-common/lib/Doctrine/Common/ClassLoader.php';
-if (!file_exists($classLoaderFile)) {
-    die('cannot find vendor, git submodule init && git submodule update');
-}
+$classLoaderFile = VENDOR_PATH . '/Symfony/Component/ClassLoader/UniversalClassLoader.php';
 
 require_once $classLoaderFile;
-$classLoader = new Doctrine\Common\ClassLoader(
-    'Doctrine\ORM', 'doctrine-orm/lib'
-);
-$classLoader->register();
+$loader = new Symfony\Component\ClassLoader\UniversalClassLoader;
+$loader->registerNamespaces(array(
+    'Symfony'                    => VENDOR_PATH,
+    'Doctrine\\MongoDB'          => VENDOR_PATH.'/doctrine-mongodb/lib',
+    'Doctrine\\ODM\\MongoDB'     => VENDOR_PATH.'/doctrine-mongodb-odm/lib',
+    'Doctrine\\Common'           => VENDOR_PATH.'/doctrine-common/lib',
+    'Doctrine\\DBAL'             => VENDOR_PATH.'/doctrine-dbal/lib',
+    'Doctrine\\ORM'              => VENDOR_PATH.'/doctrine-orm/lib',
+    'Gedmo\\Mapping\\Mock'       => __DIR__,
+    'Gedmo'                      => __DIR__.'/../lib',
+    'Tool'                       => __DIR__.'/Gedmo',
+    // fixture namespaces
+    'Translatable\\Fixture'      => __DIR__.'/Gedmo',
+    'Timestampable\\Fixture'     => __DIR__.'/Gedmo',
+    'Tree\\Fixture'              => __DIR__.'/Gedmo',
+    'Sluggable\\Fixture'         => __DIR__.'/Gedmo',
+    'Mapping\\Fixture'           => __DIR__.'/Gedmo',
+    'Loggable\\Fixture'          => __DIR__.'/Gedmo',
+));
+$loader->register();
 
-$classLoader = new Doctrine\Common\ClassLoader(
-    'Doctrine\DBAL', 'doctrine-dbal/lib'
-);
-$classLoader->register();
-
-$classLoader = new Doctrine\Common\ClassLoader(
-    'Doctrine\MongoDB', 'doctrine-mongodb/lib'
-);
-$classLoader->register();
-
-$classLoader = new Doctrine\Common\ClassLoader(
-    'Doctrine\ODM', 'doctrine-mongodb-odm/lib'
-);
-$classLoader->register();
-
-$classLoader = new Doctrine\Common\ClassLoader(
-    'Doctrine', 'doctrine-common/lib'
-);
-$classLoader->register();
-
-$classLoader = new Doctrine\Common\ClassLoader('Gedmo\Mapping\Mock', __DIR__);
-$classLoader->register();
-
-$classLoader = new Doctrine\Common\ClassLoader('Symfony');
-$classLoader->register();
-
-$classLoader = new Doctrine\Common\ClassLoader('Gedmo', __DIR__ . '/../lib');
-$classLoader->register();
-
-$classLoader = new Doctrine\Common\ClassLoader('Tool', __DIR__ . '/Gedmo');
-$classLoader->register();
-
-// fixture autoloaders
-$classLoader = new Doctrine\Common\ClassLoader('Translatable\Fixture', __DIR__ . '/Gedmo');
-$classLoader->register();
-
-$classLoader = new Doctrine\Common\ClassLoader('Tree\Fixture', __DIR__ . '/Gedmo');
-$classLoader->register();
-
-$classLoader = new Doctrine\Common\ClassLoader('Timestampable\Fixture', __DIR__ . '/Gedmo');
-$classLoader->register();
-
-$classLoader = new Doctrine\Common\ClassLoader('Sluggable\Fixture', __DIR__ . '/Gedmo');
-$classLoader->register();
-
-$classLoader = new Doctrine\Common\ClassLoader('Mapping\Fixture', __DIR__ . '/Gedmo');
-$classLoader->register();
-
-$classLoader = new Doctrine\Common\ClassLoader('Loggable\Fixture', __DIR__ . '/Gedmo');
-$classLoader->register();
