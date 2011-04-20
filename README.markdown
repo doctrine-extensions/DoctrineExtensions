@@ -55,6 +55,11 @@ You can test these extensions on [my blog](http://gediminasm.org/test/ "Test doc
 
 All tutorials for basic usage examples are on [my blog](http://gediminasm.org "Tutorials for extensions") also.
 
+### Recommendations
+
+- Use Symfony/Component/ClassLoader/UniversalClassLoader for autoloading these extensions, it will help
+to avoid triggering fatal error during the check of **class_exists**
+
 ### Running the tests:
 
 PHPUnit 3.4 or newer is required.
