@@ -68,9 +68,10 @@ interface TranslatableAdapter extends AdapterInterface
      *
      * @param object $object
      * @param string $field
+     * @param mixed $value
      * @return mixed
      */
-    function getTranslationValue($object, $field);
+    function getTranslationValue($object, $field, $value = false);
 
     /**
      * Transform the value from database

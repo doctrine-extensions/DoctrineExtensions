@@ -2,15 +2,14 @@
 
 namespace Gedmo\Translatable\Entity\Repository;
 
-use Doctrine\ORM\EntityRepository,
-    Doctrine\ORM\Query,
-    Gedmo\Translatable\Exception,
-    Gedmo\Translatable\Translatable;
+use Gedmo\Translatable\TranslationListener;
+use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\Query;
 
 /**
  * The TranslationRepository has some useful functions
  * to interact with translations.
- * 
+ *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  * @package Gedmo.Translatable.Entity.Repository
  * @subpackage TranslationRepository
@@ -18,11 +17,40 @@ use Doctrine\ORM\EntityRepository,
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class TranslationRepository extends EntityRepository
-{    
+{
+    /**
+     * Current TranslationListener instance used
+     * in EntityManager
+     *
+     * @var TranslationListener
+     */
+    private $listener;
+
+    /**
+     * Makes additional translation of $entity $field into $locale
+     * using $value
+     *
+     * @param object $entity
+     * @param string $field
+     * @param string $locale
+     * @param mixed $value
+     * @return TranslationRepository
+     */
+    public function translate($entity, $field, $locale, $value)
+    {
+        $meta = $this->_em->getClassMetadata(get_class($entity));
+        $config = $this->getTranslationListener()->getConfiguration($this->_em, $meta->name);
+        if (!isset($config['fields']) || !in_array($field, $config['fields'])) {
+            throw new \Gedmo\Exception\InvalidArgumentException("Entity: {$meta->name} does not translate - {$field}");
+        }
+        $oid = spl_object_hash($entity);
+        $this->listener->addTranslation($oid, $field, $locale, $value);
+        return $this;
+    }
     /**
      * Loads all translations with all translatable
      * fields from the given entity
-     * 
+     *
      * @param object $entity Must implement Translatable
      * @return array list of translations in locale groups
      */
@@ -37,7 +65,7 @@ class TranslationRepository extends EntityRepository
             $entityClass = $meta->name;
             $identifier = $meta->getSingleIdentifierFieldName();
             $entityId = $meta->getReflectionProperty($identifier)->getValue($entity);
-            
+
             $translationMeta = $this->getClassMetadata(); // table inheritance support
             $qb = $this->_em->createQueryBuilder();
             $qb->select('trans.content, trans.field, trans.locale')
@@ -49,7 +77,7 @@ class TranslationRepository extends EntityRepository
                 compact('entityId', 'entityClass'),
                 Query::HYDRATE_ARRAY
             );
-            
+
             if ($data && is_array($data) && count($data)) {
                 foreach ($data as $row) {
                     $result[$row['locale']][$row['field']] = $row['content'];
@@ -58,13 +86,13 @@ class TranslationRepository extends EntityRepository
         }
         return $result;
     }
-    
+
     /**
      * Find the entity $class by the translated field.
      * Result is the first occurence of translated field.
      * Query can be slow, since there are no indexes on such
      * columns
-     * 
+     *
      * @param string $field
      * @param string $value
      * @param string $class
@@ -85,14 +113,14 @@ class TranslationRepository extends EntityRepository
             $q->setMaxResults(1);
             $result = $q->getArrayResult();
             $id = count($result) ? $result[0]['foreignKey'] : null;
-                
+
             if ($id) {
                 $entity = $this->_em->find($class, $id);
             }
         }
         return $entity;
     }
-    
+
     /**
      * Loads all translations with all translatable
      * fields by a given entity primary key
@@ -104,7 +132,7 @@ class TranslationRepository extends EntityRepository
     {
         $result = array();
         if ($id) {
-            $translationMeta = $this->getClassMetadata(); // table inheritance support            
+            $translationMeta = $this->getClassMetadata(); // table inheritance support
             $qb = $this->_em->createQueryBuilder();
             $qb->select('trans.content, trans.field, trans.locale')
                 ->from($translationMeta->rootEntityName, 'trans')
@@ -115,7 +143,7 @@ class TranslationRepository extends EntityRepository
                 array('entityId' => $id),
                 Query::HYDRATE_ARRAY
             );
-            
+
             if ($data && is_array($data) && count($data)) {
                 foreach ($data as $row) {
                     $result[$row['locale']][$row['field']] = $row['content'];
@@ -123,5 +151,33 @@ class TranslationRepository extends EntityRepository
             }
         }
         return $result;
+    }
+
+    /**
+     * Get the currently used TranslationListener
+     *
+     * @throws \Gedmo\Exception\RuntimeException - if listener is not found
+     * @return TranslationListener
+     */
+    private function getTranslationListener()
+    {
+        if (!$this->listener) {
+            foreach ($this->_em->getEventManager()->getListeners() as $event => $listeners) {
+                foreach ($listeners as $hash => $listener) {
+                    if ($listener instanceof TranslationListener) {
+                        $this->listener = $listener;
+                        break;
+                    }
+                }
+                if ($this->listener) {
+                    break;
+                }
+            }
+
+            if (is_null($this->listener)) {
+                throw new \Gedmo\Exception\RuntimeException('The translation listener could not be found');
+            }
+        }
+        return $this->listener;
     }
 }
