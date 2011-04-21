@@ -112,14 +112,15 @@ final class ODM extends BaseAdapterODM implements TranslatableAdapter
     /**
      * {@inheritDoc}
      */
-    public function getTranslationValue($object, $field)
+    public function getTranslationValue($object, $field, $value = false)
     {
         $dm = $this->getObjectManager();
         $meta = $dm->getClassMetadata(get_class($object));
         $mapping = $meta->getFieldMapping($field);
         $type = Type::getType($mapping['type']);
-
-        $value = $meta->getReflectionProperty($field)->getValue($object);
+        if ($value === false) {
+            $value = $meta->getReflectionProperty($field)->getValue($object);
+        }
         return $type->convertToDatabaseValue($value);
     }
 

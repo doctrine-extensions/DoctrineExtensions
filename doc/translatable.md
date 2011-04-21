@@ -1,4 +1,4 @@
-<h1>Translatable behavior extension for Doctrine 2</h1>
+# Translatable behavior extension for Doctrine 2
 
 **Translatable** behavior offers a very handy solution for translating specific record fields
 in diferent languages. Further more, it loads the translations automatically for a locale
@@ -16,7 +16,12 @@ Document fields then loaded
 
 [blog_test]: http://gediminasm.org/test "Test extensions on this blog"
 
+Update **2011-04-21**
+
+- Implemented multiple translation persistense through repository
+
 Update **2011-04-16**
+
 - Made an ORM query **hint** to hook into any select type query, which will join the translations
 and let you **filter, order or search** by translated fields directly. It also will translate
 all selected **collections or simple components** without issuing additional queries. It also
@@ -24,6 +29,7 @@ supports translation fallbacks
 - For performance reasons, translation fallbacks are disabled by default
 
 Update **2011-04-04**
+
 - Made single listener, one instance can be used for any object manager
 and any number of them
 
@@ -33,7 +39,7 @@ and any number of them
 - Public [Translatable repository](http://github.com/l3pp4rd/DoctrineExtensions "Translatable extension on Github") is available on github
 - Using other extensions on the same Entity fields may result in unexpected way
 - May inpact your application performace since it does an additional query for translation
-- Last update date: **2011-04-16**
+- Last update date: **2011-04-21**
 
 **Portability:**
 
@@ -50,6 +56,7 @@ Content:
 - Document [example](#document)
 - [Yaml](#yaml) mapping example
 - Basic usage [examples](#basic-examples)
+- [Persisting](#multi-translations) multiple translations
 - Using ORM query [hint](#orm-query-hint)
 - Advanced usage [examples](#advanced-examples)
 
@@ -336,6 +343,35 @@ Lets try to load it and it should be translated in English
     // prints: "my title in en"
     echo $article->getContent();
     // prints: "my content in en"
+
+## Persisting multiple translations {#multi-translations}
+
+Usually it is more convinient to persist more translations when creating
+or updating a record. **Translatable** allows to do that through translation repository.
+All additional translations will be tracked by listener and when the flush will be executed,
+it will update or persist all additional translations.
+
+**Notice:** these translations will not be processed as ordinary fields of your object,
+in case if you translate a **slug** additional translation will not know how to generate
+the slug, so the value as an additional translation should be processed when creating it.
+
+### Example of multiple translations:
+
+    // persisting multiple translations, assume default locale is EN
+    $repo = $em->getRepository('Gedmo\\Translatable\\Entity\\Translation');
+    // it works for ODM also
+    $article = new Article;
+    $article->setTitle('My article en');
+    $article->setContent('content en');
+
+    $repo
+        ->translate($article, 'title', 'de', 'my article de')
+        ->translate($article, 'content', 'de', 'content de')
+        ->translate($article, 'title', 'ru', 'my article ru')
+        ->translate($article, 'content', 'ru', 'content ru');
+
+    $em->persist($article);
+    $em->flush();
 
 ## Using ORM query hint {#orm-query-hint}
 

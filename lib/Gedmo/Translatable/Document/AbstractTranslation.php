@@ -50,7 +50,7 @@ abstract class AbstractTranslation
      * @String
      */
     private $content;
-    
+
     /**
      * Get id
      *
@@ -65,10 +65,12 @@ abstract class AbstractTranslation
      * Set locale
      *
      * @param string $locale
+     * @return AbstractTranslation
      */
     public function setLocale($locale)
     {
         $this->locale = $locale;
+        return $this;
     }
 
     /**
@@ -85,10 +87,12 @@ abstract class AbstractTranslation
      * Set field
      *
      * @param string $field
+     * @return AbstractTranslation
      */
     public function setField($field)
     {
         $this->field = $field;
+        return $this;
     }
 
     /**
@@ -105,10 +109,12 @@ abstract class AbstractTranslation
      * Set object class
      *
      * @param string $objectClass
+     * @return AbstractTranslation
      */
     public function setObjectClass($objectClass)
     {
         $this->objectClass = $objectClass;
+        return $this;
     }
 
     /**
@@ -120,15 +126,17 @@ abstract class AbstractTranslation
     {
         return $this->objectClass;
     }
-    
+
     /**
      * Set foreignKey
      *
      * @param string $foreignKey
+     * @return AbstractTranslation
      */
     public function setForeignKey($foreignKey)
     {
         $this->foreignKey = $foreignKey;
+        return $this;
     }
 
     /**
@@ -140,15 +148,17 @@ abstract class AbstractTranslation
     {
         return $this->foreignKey;
     }
-    
+
     /**
      * Set content
      *
      * @param text $content
+     * @return AbstractTranslation
      */
     public function setContent($content)
     {
         $this->content = $content;
+        return $this;
     }
 
     /**

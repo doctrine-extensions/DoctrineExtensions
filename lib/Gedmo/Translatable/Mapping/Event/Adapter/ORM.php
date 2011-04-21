@@ -115,12 +115,14 @@ final class ORM extends BaseAdapterORM implements TranslatableAdapter
     /**
      * {@inheritDoc}
      */
-    public function getTranslationValue($object, $field)
+    public function getTranslationValue($object, $field, $value = false)
     {
         $em = $this->getObjectManager();
         $meta = $em->getClassMetadata(get_class($object));
         $type = Type::getType($meta->getTypeOfField($field));
-        $value = $meta->getReflectionProperty($field)->getValue($object);
+        if ($value === false) {
+            $value = $meta->getReflectionProperty($field)->getValue($object);
+        }
         return $type->convertToDatabaseValue($value, $em->getConnection()->getDatabasePlatform());
     }
 

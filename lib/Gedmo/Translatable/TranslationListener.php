@@ -75,6 +75,14 @@ class TranslationListener extends MappedEventSubscriber
     private $skipOnLoad = false;
 
     /**
+     * List of additional translations for object
+     * hash key
+     *
+     * @var array
+     */
+    private $additionalTranslations = array();
+
+    /**
      * Specifies the list of events to listen
      *
      * @return array
@@ -98,6 +106,21 @@ class TranslationListener extends MappedEventSubscriber
     public function setSkipOnLoad($bool)
     {
         $this->skipOnLoad = (bool)$bool;
+        return $this;
+    }
+
+    /**
+     * Add additional translation for $oid object
+     *
+     * @param string $oid
+     * @param string $field
+     * @param string $locale
+     * @param mixed $value
+     * @return TranslationListener
+     */
+    public function addTranslation($oid, $field, $locale, $value)
+    {
+        $this->additionalTranslations[$oid][$field][$locale] = $value;
         return $this;
     }
 
@@ -239,6 +262,28 @@ class TranslationListener extends MappedEventSubscriber
             if (isset($config['fields'])) {
                 $this->handleTranslatableObjectUpdate($ea, $object, true);
             }
+            $oid = spl_object_hash($object);
+            // check for additional translations
+            if (isset($this->additionalTranslations[$oid])) {
+                $objectId = $ea->extractIdentifier($om, $object);
+                $transClass = $this->getTranslationClass($ea, $meta->name);
+                foreach ($this->additionalTranslations[$oid] as $field => $translations) {
+                    foreach ($translations as $locale => $content) {
+                        $trans = new $transClass;
+                        $trans
+                            ->setField($field)
+                            ->setObjectClass($meta->name)
+                            ->setForeignKey($objectId)
+                            ->setLocale($locale);
+                        $trans->setContent($ea->getTranslationValue($object, $field, $content));
+                        if (!$objectId) {
+                            $this->pendingTranslationInserts[spl_object_hash($object)][] = $trans;
+                        } else {
+                            $ea->insertTranslationRecord($trans);
+                        }
+                    }
+                }
+            }
         }
         // check all scheduled updates for Translatable entities
         foreach ($ea->getScheduledObjectUpdates($uow) as $object) {
@@ -252,6 +297,33 @@ class TranslationListener extends MappedEventSubscriber
                         // needs handling
                         $this->handleTranslatableObjectUpdate($ea, $object, false);
                         break;
+                    }
+                }
+            }
+            $oid = spl_object_hash($object);
+            // check for additional translations
+            if (isset($this->additionalTranslations[$oid])) {
+                $objectId = $ea->extractIdentifier($om, $object);
+                $transClass = $this->getTranslationClass($ea, $meta->name);
+                foreach ($this->additionalTranslations[$oid] as $field => $translations) {
+                    foreach ($translations as $locale => $content) {
+                        $trans = $ea->findTranslation($objectId, $meta->name, $locale, $field, $transClass);
+                        if (!$trans) {
+                            $trans = new $transClass;
+                            $trans
+                                ->setField($field)
+                                ->setObjectClass($meta->name)
+                                ->setForeignKey($objectId)
+                                ->setLocale($locale);
+                        }
+                        $trans->setContent($ea->getTranslationValue($object, $field, $content));
+                        if ($trans->getId()) {
+                            $om->persist($trans);
+                            $transMeta = $om->getClassMetadata($transClass);
+                            $uow->computeChangeSet($transMeta, $trans);
+                        } else {
+                            $ea->insertTranslationRecord($trans);
+                        }
                     }
                 }
             }
@@ -284,16 +356,11 @@ class TranslationListener extends MappedEventSubscriber
         // check if entity is tracked by translatable and without foreign key
         if (array_key_exists($meta->name, $this->configurations) && count($this->pendingTranslationInserts)) {
             $oid = spl_object_hash($object);
-
-            $translationMeta = $om->getClassMetadata($this->getTranslationClass($ea, $meta->name));
             if (array_key_exists($oid, $this->pendingTranslationInserts)) {
                 // load the pending translations without key
-                $translations = $this->pendingTranslationInserts[$oid];
-                foreach ($translations as $translation) {
-                    $translationMeta->getReflectionProperty('foreignKey')->setValue(
-                        $translation,
-                        $ea->extractIdentifier($om, $object)
-                    );
+                $objectId = $ea->extractIdentifier($om, $object);
+                foreach ($this->pendingTranslationInserts[$oid] as $translation) {
+                    $translation->setForeignKey($objectId);
                     $ea->insertTranslationRecord($translation);
                 }
                 unset($this->pendingTranslationInserts[$oid]);
@@ -426,7 +493,7 @@ class TranslationListener extends MappedEventSubscriber
             if ($isInsert && is_null($objectId)) {
                 // if we do not have the primary key yet available
                 // keep this translation in memory to insert it later with foreign key
-                $this->pendingTranslationInserts[spl_object_hash($object)][$field] = $translation;
+                $this->pendingTranslationInserts[spl_object_hash($object)][] = $translation;
             } else {
                 // persist and compute change set for translation
                 $om->persist($translation);

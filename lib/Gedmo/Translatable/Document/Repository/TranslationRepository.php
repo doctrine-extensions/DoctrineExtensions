@@ -2,8 +2,9 @@
 
 namespace Gedmo\Translatable\Document\Repository;
 
-use Doctrine\ODM\MongoDB\DocumentRepository,
-    Doctrine\ODM\MongoDB\Cursor;
+use Gedmo\Translatable\TranslationListener;
+use Doctrine\ODM\MongoDB\DocumentRepository;
+use Doctrine\ODM\MongoDB\Cursor;
 
 /**
  * The TranslationRepository has some useful functions
@@ -17,6 +18,36 @@ use Doctrine\ODM\MongoDB\DocumentRepository,
  */
 class TranslationRepository extends DocumentRepository
 {
+	/**
+     * Current TranslationListener instance used
+     * in EntityManager
+     *
+     * @var TranslationListener
+     */
+    private $listener;
+
+    /**
+     * Makes additional translation of $document $field into $locale
+     * using $value
+     *
+     * @param object $document
+     * @param string $field
+     * @param string $locale
+     * @param mixed $value
+     * @return TranslationRepository
+     */
+    public function translate($document, $field, $locale, $value)
+    {
+        $meta = $this->dm->getClassMetadata(get_class($document));
+        $config = $this->getTranslationListener()->getConfiguration($this->dm, $meta->name);
+        if (!isset($config['fields']) || !in_array($field, $config['fields'])) {
+            throw new \Gedmo\Exception\InvalidArgumentException("Document: {$meta->name} does not translate - {$field}");
+        }
+        $oid = spl_object_hash($document);
+        $this->listener->addTranslation($oid, $field, $locale, $value);
+        return $this;
+    }
+
     /**
      * Loads all translations with all translatable
      * fields from the given entity
@@ -119,5 +150,33 @@ class TranslationRepository extends DocumentRepository
             }
         }
         return $result;
+    }
+
+	/**
+     * Get the currently used TranslationListener
+     *
+     * @throws \Gedmo\Exception\RuntimeException - if listener is not found
+     * @return TranslationListener
+     */
+    private function getTranslationListener()
+    {
+        if (!$this->listener) {
+            foreach ($this->dm->getEventManager()->getListeners() as $event => $listeners) {
+                foreach ($listeners as $hash => $listener) {
+                    if ($listener instanceof TranslationListener) {
+                        $this->listener = $listener;
+                        break;
+                    }
+                }
+                if ($this->listener) {
+                    break;
+                }
+            }
+
+            if (is_null($this->listener)) {
+                throw new \Gedmo\Exception\RuntimeException('The translation listener could not be found');
+            }
+        }
+        return $this->listener;
     }
 }
