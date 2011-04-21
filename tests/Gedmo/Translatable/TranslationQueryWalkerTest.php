@@ -71,37 +71,6 @@ class TranslationQueryWalkerTest extends BaseTestCaseORM
         $this->assertEquals('good', $comments[0]['subject']);
     }
 
-    public function testSelectWithTranslationFallbackOnSimpleObjectHydration()
-    {
-        $this->em
-            ->getConfiguration()
-            ->expects($this->any())
-            ->method('getCustomHydrationMode')
-            ->with(TranslationWalker::HYDRATE_SIMPLE_OBJECT_TRANSLATION)
-            ->will($this->returnValue('Gedmo\\Translatable\\Hydrator\\ORM\\SimpleObjectHydrator'));
-
-        $dql = 'SELECT a FROM ' . self::ARTICLE . ' a';
-        $q = $this->em->createQuery($dql);
-        $q->setHint(Query::HINT_CUSTOM_OUTPUT_WALKER, self::TREE_WALKER_TRANSLATION);
-
-        $this->translationListener->setTranslatableLocale('ru_ru');
-        $this->translationListener->setTranslationFallback(false);
-
-        // simple object hydration
-        $this->startQueryLog();
-        $result = $q->getResult(Query::HYDRATE_SIMPLEOBJECT);
-        $this->assertEquals(1, $this->queryAnalyzer->getNumExecutedQueries());
-        $this->assertEquals('', $result[0]->getTitle());
-        $this->assertEquals('', $result[0]->getContent());
-
-        $this->translationListener->setTranslationFallback(true);
-        $this->queryAnalyzer->cleanUp();
-        $result = $q->getResult(Query::HYDRATE_SIMPLEOBJECT);
-        $this->assertEquals(1, $this->queryAnalyzer->getNumExecutedQueries());
-        $this->assertEquals('Maistas', $result[0]->getTitle());
-        $this->assertEquals('apie maista', $result[0]->getContent());
-    }
-
     public function testSelectWithTranslationFallbackOnArrayHydration()
     {
         $this->em

@@ -49,11 +49,6 @@ class TranslationWalker extends SqlWalker
     const HYDRATE_ARRAY_TRANSLATION = 'array_translation_hydrator';
 
     /**
-     * Customized object hydrator name
-     */
-    const HYDRATE_SIMPLE_OBJECT_TRANSLATION = 'simple_object_translation_hydrator';
-
-    /**
      * Stores all component references from select clause
      *
      * @var array
@@ -150,13 +145,6 @@ class TranslationWalker extends SqlWalker
             $this->getEntityManager()->getConfiguration()->addCustomHydrationMode(
                 self::HYDRATE_OBJECT_TRANSLATION,
                 'Gedmo\\Translatable\\Hydrator\\ORM\\ObjectHydrator'
-            );
-            $this->getQuery()->setHint(Query::HINT_REFRESH, true);
-        } elseif ($hydrationMode === Query::HYDRATE_SIMPLEOBJECT) {
-            $this->getQuery()->setHydrationMode(self::HYDRATE_SIMPLE_OBJECT_TRANSLATION);
-            $this->getEntityManager()->getConfiguration()->addCustomHydrationMode(
-                self::HYDRATE_SIMPLE_OBJECT_TRANSLATION,
-                'Gedmo\\Translatable\\Hydrator\\ORM\\SimpleObjectHydrator'
             );
             $this->getQuery()->setHint(Query::HINT_REFRESH, true);
         }
