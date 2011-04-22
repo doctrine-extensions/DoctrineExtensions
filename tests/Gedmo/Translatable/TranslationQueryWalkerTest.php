@@ -36,23 +36,53 @@ class TranslationQueryWalkerTest extends BaseTestCaseORM
         $this->translationListener->setTranslatableLocale('en_us');
         $evm->addEventSubscriber($this->translationListener);
 
-        $conn = array(
-            'driver' => 'pdo_mysql',
-            'host' => '127.0.0.1',
-            'dbname' => 'test',
-            'user' => 'root',
-            'password' => 'nimda'
-        );
-        //$this->getMockCustomEntityManager($conn, $evm);
         $this->getMockSqliteEntityManager($evm);
         $this->populate();
+    }
+
+    public function testSubselectByTranslatedField()
+    {
+        $this->populateMore();
+        $dql = 'SELECT a FROM ' . self::ARTICLE . ' a';
+        $subSelect = 'SELECT a2.title FROM ' . self::ARTICLE . ' a2';
+        $subSelect .= " WHERE a2.title LIKE '%ab%'";
+        $dql .= " WHERE a.title IN ({$subSelect})";
+        $dql .= ' ORDER BY a.title';
+        $q = $this->em->createQuery($dql);
+        $q->setHint(Query::HINT_CUSTOM_OUTPUT_WALKER, self::TREE_WALKER_TRANSLATION);
+
+        // array hydration
+        $this->translationListener->setTranslatableLocale('en_us');
+        $result = $q->getArrayResult();
+        $this->assertEquals(2, count($result));
+        $this->assertEquals('Alfabet', $result[0]['title']);
+        $this->assertEquals('Cabbages', $result[1]['title']);
+    }
+
+    public function testSubselectStatements()
+    {
+        $this->populateMore();
+        $dql = 'SELECT a FROM ' . self::ARTICLE . ' a';
+        $subSelect = 'SELECT a2.id FROM ' . self::ARTICLE . ' a2';
+        $subSelect .= " WHERE a2.title LIKE '%ab%'";
+        $dql .= " WHERE a.id IN ({$subSelect})";
+        $dql .= ' ORDER BY a.title';
+        $q = $this->em->createQuery($dql);
+        $q->setHint(Query::HINT_CUSTOM_OUTPUT_WALKER, self::TREE_WALKER_TRANSLATION);
+
+        // array hydration
+        $this->translationListener->setTranslatableLocale('en_us');
+        $result = $q->getArrayResult();
+        $this->assertEquals(2, count($result));
+        $this->assertEquals('Alfabet', $result[0]['title']);
+        $this->assertEquals('Cabbages', $result[1]['title']);
     }
 
     public function testJoinedWithStatements()
     {
         $this->populateMore();
         $dql = 'SELECT a, c FROM ' . self::ARTICLE . ' a';
-        //@todo: its imposible to support translated values in WITH statement
+        //@todo: its impossible to support translated values in WITH statement
         $dql .= ' LEFT JOIN a.comments c WITH c.subject LIKE :lookup';
         $dql .= ' WHERE a.title LIKE :filter';
         $dql .= ' ORDER BY a.title';

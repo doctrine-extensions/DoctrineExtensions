@@ -94,9 +94,16 @@ class TranslationWalker extends SqlWalker
      * Translation joins on current query
      * components
      *
-     * @var string
+     * @var array
      */
-    private $translationJoinSql;
+    private $translationJoinSql = array();
+
+    /**
+     * Processed subselect number
+     *
+     * @var integer
+     */
+    private $processedNestingLevel = 0;
 
     /**
      * {@inheritDoc}
@@ -197,7 +204,7 @@ class TranslationWalker extends SqlWalker
     public function walkFromClause($fromClause)
     {
         $result = parent::walkFromClause($fromClause);
-        $result .= $this->translationJoinSql;
+        $result .= $this->translationJoinSql[0];
         return $result;
     }
 
@@ -241,6 +248,41 @@ class TranslationWalker extends SqlWalker
     }
 
     /**
+     * {@inheritDoc}
+     */
+    public function walkSubselect($subselect)
+    {
+        $this->processedNestingLevel++;
+        $result = parent::walkSubselect($subselect);
+        return $result;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function walkSubselectFromClause($subselectFromClause)
+    {
+        $result = parent::walkSubselectFromClause($subselectFromClause);
+        if (isset($this->translationJoinSql[$this->processedNestingLevel])) {
+            $result .= $this->translationJoinSql[$this->processedNestingLevel];
+        }
+        return $result;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function walkSimpleSelectClause($simpleSelectClause)
+    {
+        $result = parent::walkSimpleSelectClause($simpleSelectClause);
+        return str_replace(
+            array_keys($this->replacements),
+            array_values($this->replacements),
+            $result
+        );
+    }
+
+    /**
      * Creates a left join list for translations
      * on used query components
      *
@@ -249,12 +291,15 @@ class TranslationWalker extends SqlWalker
      */
     private function getTranslationJoinsSql()
     {
-        $result = '';
+        $result = array();
         $em = $this->getEntityManager();
         $ea = new TranslatableEventAdapter;
         $locale = $this->listener->getListenerLocale();
 
         foreach ($this->translatedComponents as $dqlAlias => $comp) {
+            if (!isset($result[$comp['nestingLevel']])) {
+                $result[$comp['nestingLevel']] = '';
+            }
             $meta = $comp['metadata'];
             $config = $this->listener->getConfiguration($em, $meta->name);
             $transClass = $this->listener->getTranslationClass($ea, $meta->name);
@@ -276,7 +321,7 @@ class TranslationWalker extends SqlWalker
                 $colAlias = $this->getSQLColumnAlias($colName);
                 $sql .= ' AND '.$tblAlias.'.'.$transMeta->getQuotedColumnName('foreignKey', $this->platform)
                     .' = '.$compTblAlias.'.'.$colName;
-                $result .= $sql;
+                $result[$comp['nestingLevel']] .= $sql;
                 $this->replacements[$compTblAlias.'.'.$meta->getQuotedColumnName($field, $this->platform)]
                     = $tblAlias.'.'.$transMeta->getQuotedColumnName('content', $this->platform);
             }
