@@ -410,9 +410,27 @@ Now enough talking, here is an example:
     $articles = $query->getResult(); // object hydration
     $articles = $query->getArrayResult(); // array hydration
 
+And even a subselect:
+
+    $subSelect = "SELECT a2.id FROM Article a2 "
+        . "WHERE a2.title LIKE '%something_translated%'";
+    $dql = "SELECT a, c, u FROM Article a "
+        . "LEFT JOIN a.comments c "
+        . "JOIN c.author u "
+        . "WHERE a.id IN ({$subSelect}) "
+        . "ORDER BY a.title";
+    
+    $query = $em->createQuery($dql);
+    $query->setHint(
+        \Doctrine\ORM\Query::HINT_CUSTOM_OUTPUT_WALKER,
+        'Gedmo\\Translatable\\Query\\TreeWalker\\TranslationWalker'
+    );
+    
+    $articles = $query->getResult(); // object hydration
+
 Theres no need for any words anymore.. right?
 I recommend you to use it extensively since it is a way better performance, even in
-cases where you need a single object query.
+cases where you need to load single translated entity.
 
 Notice: Even in **COUNT** select statements translations are joined to leave a
 possibility to filter by translated field, if you do not need it, just do not set
