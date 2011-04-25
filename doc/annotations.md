@@ -247,6 +247,8 @@ date manualy it will not update it.
 
 ### @gedmo:Timestampable (required)
 
+**property** annotation
+
 Marks a **date, datetime or time** field as timestampable.
 
 **options:**
@@ -275,4 +277,52 @@ example:
      * @ManyToOne(targetEntity="Status")
      */
     private $status;
+
+## Loggable annotations {#loggable}
+
+Loggable is used to log all actions made on annotated object class, it logs insert, update
+and remove actions for a username which currently is logged in for instance.
+Further more, it stores all **Versioned** property changes in the log which allows
+a version management implementation for this object.
+
+### @gedmo:Loggable (required)
+
+**class** annotation
+
+This class annotation marks object as being loggable and logs all actions being done to
+this class records.
+
+**options:**
+
+- **logEntryClass** - (string) _optional_ personal log storage class
+
+example:
+
+    /**
+     * @gedmo:Loggable(logEntryClass="Entity\ProductLogEntry")
+     * @Entity
+     */
+    class Product ...
+
+### @gedmo:Versioned (optional)
+
+**property** annotation
+
+Tracks the marked property for changes to be logged, can be set to single valued associations
+but not for collections. Using these log entries as revisions, objects can be reverted to
+a specific version.
+
+example:
+
+    /**
+     * @gedmo:Versioned
+     * @Column(type="text")
+     */
+    private $content;
+    
+    /**
+     * @gedmo:Versioned
+     * @ManyToOne(targetEntity="Article", inversedBy="comments")
+     */
+    private $article;
 

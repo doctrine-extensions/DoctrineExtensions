@@ -2,6 +2,7 @@
 
 namespace Gedmo\Loggable\Document\Repository;
 
+use Gedmo\Loggable\LoggableListener;
 use Doctrine\ODM\MongoDB\DocumentRepository,
     Doctrine\ODM\MongoDB\Cursor;
 
@@ -17,6 +18,13 @@ use Doctrine\ODM\MongoDB\DocumentRepository,
  */
 class LogEntryRepository extends DocumentRepository
 {
+    /**
+     * Currently used loggable listener
+     *
+     * @var LoggableListener
+     */
+    private $listener;
+
     /**
      * Loads all log entries for the
      * given $document
@@ -73,14 +81,8 @@ class LogEntryRepository extends DocumentRepository
             $logs = $logs->toArray();
         }
         if ($logs) {
-            $fields = array();
-            foreach ($objectMeta->fieldMappings as $mapping) {
-                if ($objectMeta->identifier !== $mapping['fieldName'] &&
-                    !$objectMeta->isCollectionValuedAssociation($mapping['fieldName'])
-                ) {
-                    $fields[] = $mapping['fieldName'];
-                }
-            }
+            $config = $this->getLoggableListener()->getConfiguration($this->dm, $objectMeta->name);
+            $fields = $config['versioned'];
             $filled = false;
             while (($log = array_pop($logs)) && !$filled) {
                 if ($data = $log->getData()) {
@@ -88,7 +90,7 @@ class LogEntryRepository extends DocumentRepository
                         if (in_array($field, $fields)) {
                             if ($objectMeta->isSingleValuedAssociation($field)) {
                                 $mapping = $objectMeta->getFieldMapping($field);
-                                $value = $this->dm->getReference($mapping['targetDocument'], current($value));
+                                $value = $value ? $this->dm->getReference($mapping['targetDocument'], current($value)) : null;
                             }
                             $objectMeta->getReflectionProperty($field)->setValue($document, $value);
                             unset($fields[array_search($field, $fields)]);
@@ -103,5 +105,33 @@ class LogEntryRepository extends DocumentRepository
         } else {
             throw new \Gedmo\Exception\UnexpectedValueException('Count not find any log entries under version: '.$version);
         }
+    }
+
+    /**
+     * Get the currently used LoggableListener
+     *
+     * @throws \Gedmo\Exception\RuntimeException - if listener is not found
+     * @return LoggableListener
+     */
+    private function getLoggableListener()
+    {
+        if (is_null($this->listener)) {
+            foreach ($this->dm->getEventManager()->getListeners() as $event => $listeners) {
+                foreach ($listeners as $hash => $listener) {
+                    if ($listener instanceof LoggableListener) {
+                        $this->listener = $listener;
+                        break;
+                    }
+                }
+                if ($this->listener) {
+                    break;
+                }
+            }
+
+            if (is_null($this->listener)) {
+                throw new \Gedmo\Exception\RuntimeException('The loggable listener could not be found');
+            }
+        }
+        return $this->listener;
     }
 }

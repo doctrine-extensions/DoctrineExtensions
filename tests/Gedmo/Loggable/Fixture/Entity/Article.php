@@ -16,6 +16,7 @@ class Article
     private $id;
 
     /**
+     * @gedmo:Versioned
      * @Column(name="title", type="string", length=8)
      */
     private $title;

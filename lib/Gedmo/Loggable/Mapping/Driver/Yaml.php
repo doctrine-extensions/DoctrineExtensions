@@ -33,8 +33,11 @@ class Yaml extends File implements Driver
      */
     public function validateFullMetadata(ClassMetadata $meta, array $config)
     {
-        if (is_array($meta->identifier) && count($meta->identifier) > 1) {
+        if ($config && is_array($meta->identifier) && count($meta->identifier) > 1) {
             throw new InvalidMappingException("Loggable does not support composite identifiers in class - {$meta->name}");
+        }
+        if (isset($config['versioned']) && !isset($config['loggable'])) {
+            throw new InvalidMappingException("Class must be annoted with Loggable annotation in order to track versioned fields in class - {$meta->name}");
         }
     }
 
@@ -55,6 +58,19 @@ class Yaml extends File implements Driver
                         throw new InvalidMappingException("LogEntry class: {$classMapping['loggable']['logEntryClass']} does not exist.");
                     }
                     $config['logEntryClass'] = $classMapping['loggable']['logEntryClass'];
+                }
+            }
+        }
+        if (isset($mapping['fields'])) {
+            foreach ($mapping['fields'] as $field => $fieldMapping) {
+                if (isset($fieldMapping['gedmo'])) {
+                    if (in_array('versioned', $fieldMapping['gedmo'])) {
+                        if ($meta->isCollectionValuedAssociation($field)) {
+                            throw new InvalidMappingException("Cannot versioned [{$field}] as it is collection in object - {$meta->name}");
+                        }
+                        // fields cannot be overrided and throws mapping exception
+                        $config['versioned'][] = $field;
+                    }
                 }
             }
         }

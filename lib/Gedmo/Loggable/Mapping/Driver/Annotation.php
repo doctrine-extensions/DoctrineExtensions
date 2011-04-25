@@ -28,12 +28,20 @@ class Annotation implements Driver
     const LOGGABLE = 'Gedmo\\Mapping\\Annotation\\Loggable';
 
     /**
+     * Annotation to define that this property is versioned
+     */
+    const VERSIONED = 'Gedmo\\Mapping\\Annotation\\Versioned';
+
+    /**
      * {@inheritDoc}
      */
     public function validateFullMetadata(ClassMetadata $meta, array $config)
     {
-        if (is_array($meta->identifier) && count($meta->identifier) > 1) {
+        if ($config && is_array($meta->identifier) && count($meta->identifier) > 1) {
             throw new InvalidMappingException("Loggable does not support composite identifiers in class - {$meta->name}");
+        }
+        if (isset($config['versioned']) && !isset($config['loggable'])) {
+            throw new InvalidMappingException("Class must be annoted with Loggable annotation in order to track versioned fields in class - {$meta->name}");
         }
     }
 
@@ -57,6 +65,24 @@ class Annotation implements Driver
                     throw new InvalidMappingException("LogEntry class: {$annot->logEntryClass} does not exist.");
                 }
                 $config['logEntryClass'] = $annot->logEntryClass;
+            }
+        }
+        // property annotations
+        foreach ($class->getProperties() as $property) {
+            if ($meta->isMappedSuperclass && !$property->isPrivate() ||
+                $meta->isInheritedField($property->name) ||
+                isset($meta->associationMappings[$property->name]['inherited'])
+            ) {
+                continue;
+            }
+            // versioned property
+            if ($versioned = $reader->getPropertyAnnotation($property, self::VERSIONED)) {
+                $field = $property->getName();
+                if ($meta->isCollectionValuedAssociation($field)) {
+                    throw new InvalidMappingException("Cannot versioned [{$field}] as it is collection in object - {$meta->name}");
+                }
+                // fields cannot be overrided and throws mapping exception
+                $config['versioned'][] = $field;
             }
         }
     }

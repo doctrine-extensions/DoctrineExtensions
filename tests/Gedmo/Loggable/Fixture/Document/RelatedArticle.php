@@ -8,21 +8,23 @@ namespace Loggable\Fixture\Document;
  */
 class RelatedArticle
 {
-    /** 
+    /**
      * @Id
      */
     private $id;
 
     /**
+     * @gedmo:Versioned
      * @String
      */
     private $title;
 
     /**
+     * @gedmo:Versioned
      * @String
      */
     private $content;
-    
+
     /**
      * @ReferenceMany(targetDocument="Comment", mappedBy="article")
      */
@@ -43,7 +45,7 @@ class RelatedArticle
     {
         return $this->comments;
     }
-    
+
     public function setTitle($title)
     {
         $this->title = $title;

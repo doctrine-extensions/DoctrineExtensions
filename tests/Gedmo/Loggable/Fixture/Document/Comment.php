@@ -14,16 +14,19 @@ class Comment
     private $id;
 
     /**
+     * @gedmo:Versioned
      * @String
      */
     private $subject;
 
     /**
+     * @gedmo:Versioned
      * @String
      */
     private $message;
-    
+
     /**
+     * @gedmo:Versioned
      * @ReferenceOne(targetDocument="RelatedArticle", inversedBy="comments")
      */
     private $article;
@@ -32,7 +35,7 @@ class Comment
     {
         $this->article = $article;
     }
-    
+
     public function getArticle()
     {
         return $this->article;
@@ -42,7 +45,7 @@ class Comment
     {
         return $this->id;
     }
-    
+
     public function setSubject($subject)
     {
         $this->subject = $subject;

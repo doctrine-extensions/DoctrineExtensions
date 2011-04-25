@@ -142,21 +142,24 @@ class LoggableListener extends MappedEventSubscriber
             $uow->scheduleExtraUpdate($logEntry, array(
                 'objectId' => array(null, $id)
             ));
+            $ea->setOriginalObjectProperty($uow, spl_object_hash($logEntry), 'objectId', $id);
             unset($this->pendingLogEntryInserts[$oid]);
         }
         if ($this->pendingRelatedObjects && array_key_exists($oid, $this->pendingRelatedObjects)) {
             $identifiers = $ea->extractIdentifier($om, $object, false);
-            $props = $this->pendingRelatedObjects[$oid];
+            foreach ($this->pendingRelatedObjects[$oid] as $props) {
+                $logEntry = $props['log'];
+                $logEntryMeta = $om->getClassMetadata(get_class($logEntry));
+                $oldData = $data = $logEntry->getData();
+                $data[$props['field']] = $identifiers;
+                $logEntry->setData($data);
 
-            $logEntry = $props['log'];
-            $logEntryMeta = $om->getClassMetadata(get_class($logEntry));
-            $oldData = $data = $logEntry->getData();
-            $data[$props['field']] = $identifiers;
-            $logEntry->setData($data);
 
-            $uow->scheduleExtraUpdate($logEntry, array(
-                'data' => array($oldData, $data)
-            ));
+                $uow->scheduleExtraUpdate($logEntry, array(
+                    'data' => array($oldData, $data)
+                ));
+                $ea->setOriginalObjectProperty($uow, spl_object_hash($logEntry), 'data', $data);
+            }
             unset($this->pendingRelatedObjects[$oid]);
         }
     }
@@ -222,18 +225,18 @@ class LoggableListener extends MappedEventSubscriber
             }
             $uow = $om->getUnitOfWork();
             $logEntry->setObjectId($objectId);
-            if ($action !== self::ACTION_REMOVE) {
+            if ($action !== self::ACTION_REMOVE && isset($config['versioned'])) {
                 $newValues = array();
                 foreach ($ea->getObjectChangeSet($uow, $object) as $field => $changes) {
-                    $value = $changes[1];
-                    if ($meta->isCollectionValuedAssociation($field)) {
+                    if (!in_array($field, $config['versioned'])) {
                         continue;
                     }
+                    $value = $changes[1];
                     if ($meta->isSingleValuedAssociation($field) && $value) {
                         $oid = spl_object_hash($value);
                         $value = $ea->extractIdentifier($om, $value, false);
                         if (!is_array($value)) {
-                            $this->pendingRelatedObjects[$oid] = array(
+                            $this->pendingRelatedObjects[$oid][] = array(
                                 'log' => $logEntry,
                                 'field' => $field
                             );
