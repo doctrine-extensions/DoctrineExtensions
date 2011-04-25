@@ -3,7 +3,6 @@
 namespace Gedmo\Mapping;
 
 use Doctrine\Common\Persistence\ObjectManager,
-    Doctrine\Common\ClassLoader,
     Doctrine\Common\Persistence\Mapping\ClassMetadata;
 
 /**
@@ -62,17 +61,30 @@ class ExtensionMetadataFactory
         if ($meta->isMappedSuperclass) {
             return; // ignore mappedSuperclasses for now
         }
-        $config = array();
+        $config = $supperclass = array();
+        $useObjectName = $meta->name;
         // collect metadata from inherited classes
         foreach (array_reverse(class_parents($meta->name)) as $parentClass) {
             // read only inherited mapped classes
             if ($this->objectManager->getMetadataFactory()->hasMetadataFor($parentClass)) {
-                $this->driver->readExtendedMetadata($this->objectManager->getClassMetadata($parentClass), $config);
+                $class = $this->objectManager->getClassMetadata($parentClass);
+                $partial = array();
+                $this->driver->readExtendedMetadata($class, $partial);
+                if ($class->isMappedSuperclass) {
+                    $supperclass += $partial;
+                } elseif (!$class->isInheritanceTypeNone()) {
+                    $this->driver->validateFullMetadata($class, $supperclass + $partial);
+                    if ($partial) {
+                        $useObjectName = $class->name;
+                    }
+                }
+                $config += $partial;
             }
         }
         $this->driver->readExtendedMetadata($meta, $config);
         if ($config) {
             $this->driver->validateFullMetadata($meta, $config);
+            $config['useObjectClass'] = $useObjectName;
             // cache the metadata
             $cacheId = self::getCacheId($meta->name, $this->extensionNamespace);
             if ($cacheDriver = $this->objectManager->getMetadataFactory()->getCacheDriver()) {

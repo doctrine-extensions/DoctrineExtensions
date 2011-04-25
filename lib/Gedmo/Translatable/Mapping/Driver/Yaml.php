@@ -32,7 +32,7 @@ class Yaml extends File implements Driver
      */
     public function validateFullMetadata(ClassMetadata $meta, array $config)
     {
-        if (is_array($meta->identifier) && count($meta->identifier) > 1) {
+        if ($config && is_array($meta->identifier) && count($meta->identifier) > 1) {
             throw new InvalidMappingException("Translatable does not support composite identifiers in class - {$meta->name}");
         }
     }

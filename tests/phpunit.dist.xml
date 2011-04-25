@@ -11,6 +11,7 @@
             <file>./Gedmo/Tree/ConcurrencyTest.php</file>
             <file>./Gedmo/Tree/MultiInheritanceTest.php</file>
             <file>./Gedmo/Tree/MultiInheritanceTest2.php</file>
+            <file>./Gedmo/Tree/MultiInheritanceTest3.php</file>
             <file>./Gedmo/Tree/NestedTreeRootRepositoryTest.php</file>
             <file>./Gedmo/Tree/NestedTreeRootTest.php</file>
             <file>./Gedmo/Tree/RepositoryTest.php</file>

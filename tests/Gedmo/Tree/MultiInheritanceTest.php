@@ -67,8 +67,9 @@ class MultiInheritanceTest extends BaseTestCaseORM
         $this->assertEquals(3, count($children));
 
         // node repository will not find it
-        $cabbage = $this->em->getRepository(self::BASE_NODE)->findOneByIdentifier('cabbage');
-        $path = $repo->getPath($cabbage);
+        $baseNodeRepo = $this->em->getRepository(self::BASE_NODE);
+        $cabbage = $baseNodeRepo->findOneByIdentifier('cabbage');
+        $path = $baseNodeRepo->getPath($cabbage);
         $this->assertEquals(3, count($path));
     }
 

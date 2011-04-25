@@ -41,7 +41,7 @@ class Yaml extends File implements Driver
      */
     public function validateFullMetadata(ClassMetadata $meta, array $config)
     {
-        if (!isset($config['fields'])) {
+        if ($config && !isset($config['fields'])) {
             throw new InvalidMappingException("Unable to find any sluggable fields specified for Sluggable entity - {$meta->name}");
         }
     }
