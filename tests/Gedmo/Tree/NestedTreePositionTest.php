@@ -30,6 +30,36 @@ class NestedTreePositionTest extends BaseTestCaseORM
         $this->getMockSqliteEntityManager($evm);
     }
 
+    public function testPositionedUpdates()
+    {
+        $this->populate();
+        $repo = $this->em->getRepository(self::ROOT_CATEGORY);
+
+        $citrons = $repo->findOneByTitle('Citrons');
+        $vegitables = $repo->findOneByTitle('Vegitables');
+
+        $repo->persistAsNextSiblingOf($vegitables, $citrons);
+        $this->em->flush();
+
+        $this->assertEquals(5, $vegitables->getLeft());
+        $this->assertEquals(6, $vegitables->getRight());
+        $this->assertEquals(2, $vegitables->getParent()->getId());
+
+        $fruits = $repo->findOneByTitle('Fruits');
+        $this->assertEquals(2, $fruits->getLeft());
+        $this->assertEquals(9, $fruits->getRight());
+
+        $milk = $repo->findOneByTitle('Milk');
+        $repo->persistAsFirstChildOf($milk, $fruits);
+        $this->em->flush();
+
+        $this->assertEquals(3, $milk->getLeft());
+        $this->assertEquals(4, $milk->getRight());
+
+        $this->assertEquals(2, $fruits->getLeft());
+        $this->assertEquals(11, $fruits->getRight());
+    }
+
     public function testOnRootCategory()
     {
         // need to check if this does not produce errors
@@ -233,6 +263,43 @@ class NestedTreePositionTest extends BaseTestCaseORM
         $this->assertEquals(11, $cookies->getRight());
 
         $this->assertTrue($repo->verify());
+    }
+
+    private function populate()
+    {
+        $repo = $this->em->getRepository(self::ROOT_CATEGORY);
+
+        $food = new RootCategory;
+        $food->setTitle('Food');
+
+        $fruits = new RootCategory;
+        $fruits->setTitle('Fruits');
+
+        $vegitables = new RootCategory;
+        $vegitables->setTitle('Vegitables');
+
+        $milk = new RootCategory;
+        $milk->setTitle('Milk');
+
+        $meat = new RootCategory;
+        $meat->setTitle('Meat');
+
+        $oranges = new RootCategory;
+        $oranges->setTitle('Oranges');
+
+        $citrons = new RootCategory;
+        $citrons->setTitle('Citrons');
+
+        $repo
+            ->persistAsFirstChild($food)
+            ->persistAsFirstChildOf($fruits, $food)
+            ->persistAsFirstChildOf($vegitables, $food)
+            ->persistAsLastChildOf($milk, $food)
+            ->persistAsLastChildOf($meat, $food)
+            ->persistAsFirstChildOf($oranges, $fruits)
+            ->persistAsFirstChildOf($citrons, $fruits);
+
+        $this->em->flush();
     }
 
     protected function getUsedEntityFixtures()
