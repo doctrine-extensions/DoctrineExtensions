@@ -12,6 +12,7 @@ class Article
     private $id;
 
     /**
+     * @gedmo:Versioned
      * @String
      */
     private $title;

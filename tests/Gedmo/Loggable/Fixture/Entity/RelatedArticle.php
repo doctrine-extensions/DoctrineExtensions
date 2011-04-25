@@ -8,23 +8,25 @@ namespace Loggable\Fixture\Entity;
  */
 class RelatedArticle
 {
-    /** 
-     * @Id 
-     * @GeneratedValue 
-     * @Column(type="integer") 
+    /**
+     * @Id
+     * @GeneratedValue
+     * @Column(type="integer")
      */
     private $id;
 
     /**
+     * @gedmo:Versioned
      * @Column(length=128)
      */
     private $title;
 
     /**
+     * @gedmo:Versioned
      * @Column(type="text")
      */
     private $content;
-    
+
     /**
      * @OneToMany(targetEntity="Comment", mappedBy="article")
      */
@@ -45,7 +47,7 @@ class RelatedArticle
     {
         return $this->comments;
     }
-    
+
     public function setTitle($title)
     {
         $this->title = $title;

@@ -14,16 +14,19 @@ class Comment
     private $id;
 
     /**
+     * @gedmo:Versioned
      * @String
      */
     private $subject;
 
     /**
+     * @gedmo:Versioned
      * @String
      */
     private $message;
 
     /**
+     * @gedmo:Versioned
      * @ReferenceOne(targetDocument="RelatedArticle")
      */
     private $article;

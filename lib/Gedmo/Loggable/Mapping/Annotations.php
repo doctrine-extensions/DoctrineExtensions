@@ -18,5 +18,10 @@ use Doctrine\Common\Annotations\Annotation;
 
 final class Loggable extends Annotation
 {
-    public $logEntryClass; 
+    public $logEntryClass;
+}
+
+final class Versioned extends Annotation
+{
+
 }

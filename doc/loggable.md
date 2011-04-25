@@ -23,7 +23,7 @@ and any number of them
 
 - You can [test live][blog_test] on this blog
 - Public [Loggable repository](http://github.com/l3pp4rd/DoctrineExtensions "Loggable extension on Github") is available on github
-- Last update date: **2011-04-04**
+- Last update date: **2011-04-23**
 
 **Portability:**
 
@@ -101,8 +101,10 @@ If you need a log entry table per single Entity or Document, we will cover how t
     // now this event manager should be passed to entity manager constructor
 
 ### Loggable annotations:
+
 - **@gedmo:Loggable(logEntryClass="my\class")** this class annotation 
 will use store logs to optionaly specified **logEntryClass**
+- **@gedmo:Versioned** tracks annotated property for changes
 
 ## Loggable Entity example: {#entity}
 
@@ -126,6 +128,7 @@ cache is active
         private $id;
     
         /**
+         * @gedmo:Versioned
          * @Column(name="title", type="string", length=8)
          */
         private $title;
@@ -161,6 +164,7 @@ cache is active
     
         /**
          * @String
+         * @gedmo:Versioned
          */
         private $title;
     
@@ -206,6 +210,8 @@ Yaml mapped Article: **/mapping/yaml/Entity.Article.dcm.yml**
         title:
           type: string
           length: 64
+          gedmo:
+            - versioned
         content:
           type: text
 

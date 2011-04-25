@@ -14,11 +14,13 @@ class RelatedArticle
     private $id;
 
     /**
+     * @gedmo:Versioned
      * @String
      */
     private $title;
 
     /**
+     * @gedmo:Versioned
      * @String
      */
     private $content;

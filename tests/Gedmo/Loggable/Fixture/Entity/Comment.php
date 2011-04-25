@@ -8,24 +8,27 @@ namespace Loggable\Fixture\Entity;
  */
 class Comment
 {
-    /** 
-     * @Id 
-     * @GeneratedValue 
-     * @Column(type="integer") 
+    /**
+     * @Id
+     * @GeneratedValue
+     * @Column(type="integer")
      */
     private $id;
 
     /**
+     * @gedmo:Versioned
      * @Column(length=128)
      */
     private $subject;
 
     /**
+     * @gedmo:Versioned
      * @Column(type="text")
      */
     private $message;
-    
+
     /**
+     * @gedmo:Versioned
      * @ManyToOne(targetEntity="RelatedArticle", inversedBy="comments")
      */
     private $article;
@@ -34,7 +37,7 @@ class Comment
     {
         $this->article = $article;
     }
-    
+
     public function getArticle()
     {
         return $this->article;
@@ -44,7 +47,7 @@ class Comment
     {
         return $this->id;
     }
-    
+
     public function setSubject($subject)
     {
         $this->subject = $subject;
