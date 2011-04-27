@@ -11,6 +11,7 @@ use Gedmo\Translatable\TranslationListener;
 use Gedmo\Sluggable\SluggableListener;
 use Gedmo\Timestampable\TimestampableListener;
 use Gedmo\Loggable\LoggableListener;
+use Tool\Logging\ODM\QueryAnalyzer;
 
 /**
  * Base test case contains common mock objects
@@ -29,6 +30,8 @@ abstract class BaseTestCaseMongoODM extends \PHPUnit_Framework_TestCase
      * @var DocumentManager
      */
     protected $dm;
+
+    protected $queryAnalyzer;
 
     /**
      * {@inheritdoc}
@@ -63,10 +66,10 @@ abstract class BaseTestCaseMongoODM extends \PHPUnit_Framework_TestCase
      * @param EventManager $evm
      * @return DocumentManager
      */
-    protected function getMockDocumentManager(EventManager $evm = null)
+    protected function getMockDocumentManager(EventManager $evm = null, $logger = false)
     {
-        $conn = new Connection;
-        $config = $this->getMockAnnotatedConfig();
+        $config = $this->getMockAnnotatedConfig($logger);
+        $conn = new Connection(null, array(), $config);
 
         try {
             $this->dm = DocumentManager::create($conn, $config, $evm ?: $this->getEventManager());
@@ -84,15 +87,42 @@ abstract class BaseTestCaseMongoODM extends \PHPUnit_Framework_TestCase
      * @param EventManager $evm
      * @return DocumentManager
      */
-    protected function getMockMappedDocumentManager(EventManager $evm = null)
+    protected function getMockMappedDocumentManager(EventManager $evm = null, $logger = false)
     {
         $conn = $this->getMock('Doctrine\\MongoDB\\Connection');
-        $config = $this->getMockAnnotatedConfig();
+        $config = $this->getMockAnnotatedConfig($logger);
 
         $this->dm = DocumentManager::create($conn, $config, $evm ?: $this->getEventManager());
         return $this->dm;
     }
-
+    
+    /**
+     * Stops query statistic log and outputs
+     * the data to screen or file
+     *
+     * @param boolean $dumpOnlySql
+     * @param boolean $writeToLog
+     * @throws \RuntimeException
+     */
+    protected function stopQueryLog($writeToLog = false)
+    {
+        if ($this->queryAnalyzer) {
+            $output = $this->queryAnalyzer->getOutput();
+            
+            if ($writeToLog) {
+                $fileName = __DIR__.'/../../temp/query_debug_'.time().'.log';
+                if (($file = fopen($fileName, 'w+')) !== false) {
+                    fwrite($file, $output);
+                    fclose($file);
+                } else {
+                    throw new \RuntimeException('Unable to write to the log file');
+                }
+            } else {
+                echo $output;
+            }
+        }
+    }
+    
     /**
      * Build event manager
      *
@@ -113,7 +143,7 @@ abstract class BaseTestCaseMongoODM extends \PHPUnit_Framework_TestCase
      *
      * @return Doctrine\ORM\Configuration
      */
-    private function getMockAnnotatedConfig()
+    private function getMockAnnotatedConfig($logger = false)
     {
         $config = $this->getMock('Doctrine\\ODM\\MongoDB\\Configuration');
         $config->expects($this->once())
@@ -152,6 +182,14 @@ abstract class BaseTestCaseMongoODM extends \PHPUnit_Framework_TestCase
             ->method('getMongoCmd')
             ->will($this->returnValue('$'));
 
+        if ($logger) {
+        	$this->queryAnalyzer = new QueryAnalyzer();
+            $config->expects($this->any())
+		      ->method('getLoggerCallable')
+		      ->will($this->returnValue(array(0 => $this->queryAnalyzer, 1 => 'logQuery')))
+            ;
+        }
+        
         $reader = new AnnotationReader();
         $reader->setDefaultAnnotationNamespace('Doctrine\\ODM\\MongoDB\\Mapping\\');
         $mappingDriver = new AnnotationDriver($reader);
