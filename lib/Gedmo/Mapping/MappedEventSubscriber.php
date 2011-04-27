@@ -39,7 +39,7 @@ abstract class MappedEventSubscriber implements EventSubscriber
      *
      * @var Gedmo\Mapping\ExtensionMetadataFactory
      */
-    private $extensionMetadataFactory;
+    private $extensionMetadataFactory = array();
 
     /**
      * List of event adapters used for this listener
@@ -105,13 +105,14 @@ abstract class MappedEventSubscriber implements EventSubscriber
      */
     public function getExtensionMetadataFactory(ObjectManager $objectManager)
     {
-        if (null === $this->extensionMetadataFactory) {
-            $this->extensionMetadataFactory = new ExtensionMetadataFactory(
+        $class = get_class($objectManager);
+        if (!isset($this->extensionMetadataFactory[$class])) {
+            $this->extensionMetadataFactory[$class] = new ExtensionMetadataFactory(
                 $objectManager,
                 $this->getNamespace()
             );
         }
-        return $this->extensionMetadataFactory;
+        return $this->extensionMetadataFactory[$class];
     }
 
     /**
