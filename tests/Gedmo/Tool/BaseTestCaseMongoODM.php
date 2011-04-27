@@ -185,8 +185,8 @@ abstract class BaseTestCaseMongoODM extends \PHPUnit_Framework_TestCase
         if ($logger) {
         	$this->queryAnalyzer = new QueryAnalyzer();
             $config->expects($this->any())
-		      ->method('getLoggerCallable')
-		      ->will($this->returnValue(array(0 => $this->queryAnalyzer, 1 => 'logQuery')))
+                ->method('getLoggerCallable')
+                ->will($this->returnValue(array(0 => $this->queryAnalyzer, 1 => 'logQuery')))
             ;
         }
         
