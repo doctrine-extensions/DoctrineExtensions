@@ -10,7 +10,7 @@ class User
 
     private $username;
 
-    private $locale;
+    private $localeField;
     /**
      * Get id
      *
