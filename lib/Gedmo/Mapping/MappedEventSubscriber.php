@@ -102,14 +102,14 @@ abstract class MappedEventSubscriber implements EventSubscriber
      */
     public function getExtensionMetadataFactory($objectManager)
     {
-        $class = get_class($objectManager);
-        if (!isset($this->extensionMetadataFactory[$class])) {
-            $this->extensionMetadataFactory[$class] = new ExtensionMetadataFactory(
+        $oid = spl_object_hash($objectManager);
+        if (!isset($this->extensionMetadataFactory[$oid])) {
+            $this->extensionMetadataFactory[$oid] = new ExtensionMetadataFactory(
                 $objectManager,
                 $this->getNamespace()
             );
         }
-        return $this->extensionMetadataFactory[$class];
+        return $this->extensionMetadataFactory[$oid];
     }
 
     /**
