@@ -24,6 +24,8 @@ use Gedmo\Tree\Strategy,
  */
 class Nested implements Strategy
 {
+    const PATH = 'path';
+    
     /**
      * Previous sibling position
      */
@@ -52,15 +54,6 @@ class Nested implements Strategy
     protected $listener = null;
 
     /**
-     * The max number of "right" field of the
-     * tree in case few root nodes will be persisted
-     * on one flush for node classes
-     *
-     * @var array
-     */
-    private $treeEdges = array();
-
-    /**
      * Stores a list of node position strategies
      * for each node by object hash
      *
@@ -81,7 +74,7 @@ class Nested implements Strategy
      */
     public function getName()
     {
-        return Strategy::NESTED;
+        return self::NESTED;
     }
 
     /**
