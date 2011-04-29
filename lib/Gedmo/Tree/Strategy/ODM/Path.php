@@ -175,7 +175,7 @@ class Path implements Strategy
     public function onFlushEnd($em)
     {
         // Reset values
-        $this->nodePositions = array();
+//        $this->nodePositions = array();
     }
 
     /**
@@ -223,7 +223,6 @@ class Path implements Strategy
         $sortOrder = 1;
         $equal = false;
         if ($referenceNode) {
-
             if ($referenceNode instanceof Proxy && !$parent->__isInitialized__) {
                 $dm->refresh($referenceNode);
             }
@@ -297,8 +296,22 @@ class Path implements Strategy
             }
 
         } else {
+        	// Okay, parent is null, what about sort order?
             $parent = null;
-            $sortOrder = $repo->findMaxSort() + 1;
+            switch ($position) {
+
+                case self::NEXT_SIBLING:
+                case self::LAST_CHILD:
+                    $sortOrder = $repo->findMaxSort() + 1;
+                break;
+
+                case self::PREV_SIBLING:
+                case self::FIRST_CHILD:
+                default:
+                    $sortOrder = 1;
+                    $equal = true;
+                break;
+            }
         }
 
         // @todo Support for multiple roots
@@ -347,11 +360,14 @@ class Path implements Strategy
         }
 
         // Execute the query
-        $query = $qb->getQuery()
+        $query = $qb->getQuery(array('safe' => true))
             ->execute()
         ;
 
+
         // @todo This breaks more tests than it fixes. Will reconsider this in
+        // @todo When working remove the refresh calls in MaterializedPathRepositoryTest::testRepositoryMagicMethods()
+        // @todo When working remove the refresh hint in the PathRepository::findMaxSort()
         // refactoring/cleanup
          // Update in memory nodes increases performance, saves some IO
 //        foreach ($dm->getUnitOfWork()->getIdentityMap() as $className => $nodes) {
