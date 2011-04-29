@@ -2,21 +2,21 @@
 
 Notice: **This branch is compatible with Doctrine2.0.x versions**
 and will be maintained only to support 2.0.x branch. All latest features and
-functionality updates are on **master** branch and compatible with upcomming
+functionality updates are on **master** branch and compatible with upcoming
 releases of Doctrine2.1 
 
 This package contains extensions for Doctrine 2 that hook into the facilities of Doctrine and
-offer new functionality or tools to use Doctrine 2 more efficently. This package contains mostly
+offer new functionality or tools to use Doctrine 2 more efficiently. This package contains mostly
 used behaviors which can be easily attached to your event system of Doctrine 2 and handle the
 records being flushed in the behavioral way. List of extensions:
 
 - Tree - this extension automates the tree handling process and adds some tree specific functions on repository. (closure or nestedset)
-- Translatable - gives you a very handy solution for translating records into diferent languages. Easy to setup, easier to use.
+- Translatable - gives you a very handy solution for translating records into different languages. Easy to setup, easier to use.
 - Sluggable - urlizes your specified fields into single unique slug
 - Timestampable - updates date fields on create, update and even property change.
-- Loggable - helps tracking changes and history of objects, also supports version managment.
+- Loggable - helps tracking changes and history of objects, also supports version management.
 
-Currently these extensions support **Yaml**, **Annotation**  and **Xml** mapping. Additional mapping drivers
+Currently these extensions support **Yaml** and **Annotation** mapping. Additional mapping drivers
 can be easy implemented using Mapping extension to handle the additional metadata mapping.
 
 **Notice:** from now on there is only one listener per extension which supports ODM
@@ -34,6 +34,11 @@ So root node now looks like this:
 
 ### Latest updates
 
+**2011-06-14**
+
+- Add support for materialized paths which is currently only supported in MongoDB. However support is finally available for running
+a tree structure in MongoDB with Doctrine!
+
 **2011-06-08**
 
 - [mvrhov](http://github.com/mvrhov) implemented the XML driver for extensions and now
@@ -46,6 +51,20 @@ So far I'm not sure if the same xsd will work with ODM but it will be created in
 If you are a **Symfony2** user, you will notice that shortly. Extensions were upgraded to support
 injection of annotation reader into listener which makes them compatible with these changes. For more
 details look in **doc/annotations.md**
+
+**2011-05-07**
+
+- Tree **closure** strategy was refactored and now fully functional. Actually nested-set
+is performing faster during concurrent inserts and moving subtrees and it also supports
+ordering of nodes.
+- Also there are good news for ODM users, @mtotheikle is working on **materialized path**
+strategy for ODM Tree like documents.
+
+**2011-04-16**
+
+- Translation **query walker** is a killer feature for translatable extension. It lets to
+translate any query components and filter or order by translated fields. I recommend you
+to use it extensively since it is very performative also.
 
 ### ODM MongoDB support
 
@@ -78,6 +97,7 @@ To setup and run tests follow these steps:
 
 - go to the root directory of extensions
 - run: **php bin/vendors.php**
+- run: **git submodule update --init**
 - run: **phpunit -c tests**
 - optional - run mongodb in background to complete all tests
 
@@ -91,3 +111,4 @@ To setup and run tests follow these steps:
 - Christophe Coevoet [stof](http://github.com/stof)
 - Kudryashov Konstantin [everzet](http://github.com/everzet)
 - Klein Florian [docteurklein](http://github.com/docteurklein)
+- Michael Williams [mtotheikle](http://github.com/mtotheikle)
