@@ -25,6 +25,7 @@ class MaterializedPathRepositoryTest extends BaseTestCaseMongoODM
     public function setUp()
     {
         parent::setUp();
+
         $this->getMockDocumentManager(null, true);
 
         $treeListener = null;
@@ -79,23 +80,18 @@ class MaterializedPathRepositoryTest extends BaseTestCaseMongoODM
 
         $this->dm->flush();
 
-        $this->dm->refresh($child1); // @todo Remove when UOW gets updated
         $this->assertEquals(1, $child1->getSortOrder());
         $this->assertEquals(0, $child1->getChildCount());
 
-        $this->dm->refresh($child2); // @todo Remove when UOW gets updated
         $this->assertEquals(2, $child2->getSortOrder());
         $this->assertEquals(1, $child2->getChildCount());
 
-        $this->dm->refresh($subChild); // @todo Remove when UOW gets updated
         $this->assertEquals(3, $subChild->getSortOrder());
         $this->assertEquals(0, $subChild->getChildCount());
 
-        $this->dm->refresh($lastChild1); // @todo Remove when UOW gets updated
         $this->assertEquals(4, $lastChild1->getSortOrder());
         $this->assertEquals(0, $lastChild1->getChildCount());
 
-        $this->dm->refresh($lastChild2); // @todo Remove when UOW gets updated
         $this->assertEquals(5, $lastChild2->getSortOrder());
         $this->assertEquals(0, $lastChild2->getChildCount());
     }

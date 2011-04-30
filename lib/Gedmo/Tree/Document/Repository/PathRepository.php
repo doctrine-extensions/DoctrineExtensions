@@ -95,15 +95,19 @@ class PathRepository extends AbstractTreeRepository
     /**
      * Finds the max sort that is currently stored in the DB.
      *
-     * @todo Remove refresh hint from query
+     * @param boolean $refresh  If set to true, Doctrine will refresh the already
+     *                          hydrated object if it has been persisted. For saftey
+     *                          it is good to set refresh to true, however you should
+     *                          test if you can get away without doing a refresh on
+     *                          a case-by-case basis as it helps with performance.
      */
-    public function findMaxSort()
+    public function findMaxSort($refresh = false)
     {
         $node = $this->createQueryBuilder()
             ->select('sortOrder')
             ->sort('sortOrder', 'desc')
             ->limit(1)
-            ->refresh(true) // @todo When the UOW gets updated, I think this can be removed
+            ->refresh($refresh)
             ->getQuery(array('safe' => true))
             ->getSingleResult()
         ;

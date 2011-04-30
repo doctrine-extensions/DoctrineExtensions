@@ -250,10 +250,12 @@ class Path implements Strategy
                     $parentPath = $meta->getReflectionProperty($config['path'])->getValue($referenceNode);
                     $referenceDescendants = $dm->getRepository($config['useObjectClass'])->countDescendants($parentPath);
                     $referenceNodeSort = $meta->getReflectionProperty($config['sort'])->getValue($referenceNode);
+                    $referencePath = $meta->getReflectionProperty($config['path'])->getValue($referenceNode);
+                    $referenceDescendants = $dm->getRepository($config['useObjectClass'])->countDescendants($parentPath);
 
                     // Determine new nodes sort based on the sort for the reference
                     // node + how many descendants it has + 1 so it is the last node
-                    $sortOrder = $referenceNodeSort + 1;
+                    $sortOrder = $referenceNodeSort + $referenceDescendants + 1;
                     $equal = true;
 
                 break;
@@ -355,8 +357,10 @@ class Path implements Strategy
 
         // Update parent if we have one
         if ($parent) {
-            $ref = $dm->createDBRef($parent);
+        	$ref = $dm->createDBRef($parent, null);
             $qb->field($config['parent'])->set($ref);
+            $meta->getReflectionProperty($config['parent'])->setValue($node, $parent);
+            $dm->getUnitOfWork()->setOriginalDocumentProperty($oid, $config['parent'], $parent);
         }
 
         // Execute the query
@@ -364,38 +368,36 @@ class Path implements Strategy
             ->execute()
         ;
 
+        // Update in memory nodes increases performance, saves some IO
+        foreach ($dm->getUnitOfWork()->getIdentityMap() as $className => $nodes) {
+            // For inheritance mapped classes, only root is always in the identity map
+            if ($className !== $meta->rootDocumentName) {
+                continue;
+            }
 
-        // @todo This breaks more tests than it fixes. Will reconsider this in
-        // @todo When working remove the refresh calls in MaterializedPathRepositoryTest::testRepositoryMagicMethods()
-        // @todo When working remove the refresh hint in the PathRepository::findMaxSort()
-        // refactoring/cleanup
-         // Update in memory nodes increases performance, saves some IO
-//        foreach ($dm->getUnitOfWork()->getIdentityMap() as $className => $nodes) {
-//
-//            // For inheritance mapped classes, only root is always in the identity map
-//            if ($className !== $meta->rootDocumentName) {
-//                continue;
-//            }
-//
-//            foreach ($nodes as $row) {
-//
-//                if ($row instanceof Proxy && !$row->__isInitialized__) {
-//                    continue;
-//                }
-//
-//                if ($row == $node) {
-//                	continue;
-//                }
-//
-//                $oid = spl_object_hash($row);
-//                $oldSortOrder = $meta->getReflectionProperty($config['sort'])->getValue($row);
-//
-//                if (($equal && ($sortOrder >= $oldSortOrder)) || (!$equal && ($sortOrder > $oldSortOrder))) {
-//                	$meta->getReflectionProperty($config['sort'])->setValue($row, $oldSortOrder + 1);
-//                    $dm->getUnitOfWork()->setOriginalDocumentProperty($oid, $config['sort'], $oldSortOrder + 1);
-//                }
-//            }
-//        }
+            foreach ($nodes as $row) {
+
+                if ($row instanceof Proxy && !$row->__isInitialized__) {
+                    continue;
+                }
+
+                if (!$meta->getReflectionProperty($config['sort'])->getValue($row)) {
+                	continue;
+                }
+
+                if (($row == $node) || ($row == $parent) || ($row == $referenceNode)) {
+                    continue;
+                }
+
+                $oid = spl_object_hash($row);
+                $oldSortOrder = $meta->getReflectionProperty($config['sort'])->getValue($row);
+
+                if (($equal && ($oldSortOrder >= $sortOrder)) || (!$equal && ($oldSortOrder > $oldSortOrder))) {
+                	$meta->getReflectionProperty($config['sort'])->setValue($row, $oldSortOrder + 1);
+                    $dm->getUnitOfWork()->setOriginalDocumentProperty($oid, $config['sort'], $oldSortOrder + 1);
+                }
+            }
+        }
     }
 
     protected function setNodePath($em, $node)
