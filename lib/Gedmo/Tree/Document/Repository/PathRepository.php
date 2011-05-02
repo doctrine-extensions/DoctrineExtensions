@@ -101,14 +101,20 @@ class PathRepository extends AbstractTreeRepository
      *                          test if you can get away without doing a refresh on
      *                          a case-by-case basis as it helps with performance.
      */
-    public function findMaxSort($refresh = false)
+    public function findMaxSort($refresh = false, $path = null)
     {
-        $node = $this->createQueryBuilder()
+        $qb = $this->createQueryBuilder()
             ->select('sortOrder')
             ->sort('sortOrder', 'desc')
             ->limit(1)
             ->refresh($refresh)
-            ->getQuery(array('safe' => true))
+        ;
+
+        if ($path) {
+        	$qb->field('path')->equals(new \MongoRegex('/^' . $path . '(.+)?/i'));
+        }
+
+        $node = $qb->getQuery(array('safe' => true))
             ->getSingleResult()
         ;
 

@@ -118,27 +118,10 @@ class Path implements Strategy
      */
     public function processScheduledInsertion($em, $node)
     {
-        $meta = $em->getClassMetadata(get_class($node));
-        $config = $this->listener->getConfiguration($em, $meta->name);
-        $pathProperty = $meta->getReflectionProperty($config['path']);
-        $treePathSource = $meta->getReflectionProperty($config['pathSource'])->getValue($node);
-        $parentNode = $meta->getReflectionProperty($config['parent'])->getValue($node);
-
-        // We have a new node so generate the path
-        $nodePath = call_user_func_array(
-            array('Gedmo\Tree\Util\Urlizer', 'transliterate'),
-            array($treePathSource, '-')
-        );
-
-        // If we have a parent, keep track that we added a child to this parent
-        if ($parentNode) {
-            $nodePath = $parentNode->getPath() . $nodePath;
-            $oid = spl_object_hash($parentNode);
-            $nodeHash = spl_object_hash($node);
-            $this->pendingChildrenNodes[$oid][$nodeHash] = true;
-        }
-
-        $pathProperty->setValue($node, $nodePath . ',');
+        // Don't calculate any paths until nodes are inserted. This way
+        // pending inserts do not have to be stored because calculations will not include
+        // pending nodes. I.E the countDescendants() method will not return nodes
+        // who have not been updated in the tree.
     }
 
     /**
@@ -212,14 +195,14 @@ class Path implements Strategy
 
         $nodeId = $meta->getIdentifierValue($node);
         $repo = $dm->getRepository($config['useObjectClass']);
+        $nodeParent = $meta->getReflectionProperty($config['parent'])->getValue($node);
 
         $oid = spl_object_hash($node);
         if (isset($this->nodePositions[$oid])) {
             $position = $this->nodePositions[$oid];
         }
 
-        $level = 0;
-        $newRootId = $parent = null;
+        $parent = null;
         $sortOrder = 1;
         $equal = false;
         if ($referenceNode) {
@@ -231,27 +214,30 @@ class Path implements Strategy
 
                 case self::PREV_SIBLING:
 
-                	$parent = $meta->getReflectionProperty($config['parent'])->getValue($referenceNode);
-                    $parentPath = $meta->getReflectionProperty($config['path'])->getValue($parent);
-                    $parentDescendants = $dm->getRepository($config['useObjectClass'])->countDescendants($parentPath);
-                    $referenceNodeSort = $meta->getReflectionProperty($config['sort'])->getValue($referenceNode);
-                    $meta->getReflectionProperty($config['sort'])->setValue($referenceNode, $referenceNodeSort + 1);
+                    $refParent = $meta->getReflectionProperty($config['parent'])->getValue($referenceNode);
 
-                    // Determine new nodes sort based on the sort for the reference
-                    // node + how many descendants it has + 1 so it is the last node
+                    // If refrence node has a parent, set this nodes parent to be the same, else nullify it
+                    if ($refParent) {
+                        $parent = $refParent;
+                        $parentPath = $meta->getReflectionProperty($config['path'])->getValue($parent);
+                        $parentDescendants = $dm->getRepository($config['useObjectClass'])->countDescendants($parentPath);
+                    }
+
+                    $referenceNodeSort = $meta->getReflectionProperty($config['sort'])->getValue($referenceNode);
+
+                    // Set the new nodes sort to be the reference node sort and then update all nodes equal
+                    // to the reference node sort
                     $sortOrder = $referenceNodeSort;
                     $equal = true;
-
                 break;
 
                 case self::NEXT_SIBLING:
 
+                	// Get reference nodes parent
                     $parent = $meta->getReflectionProperty($config['parent'])->getValue($referenceNode);
-                    $parentPath = $meta->getReflectionProperty($config['path'])->getValue($referenceNode);
-                    $referenceDescendants = $dm->getRepository($config['useObjectClass'])->countDescendants($parentPath);
                     $referenceNodeSort = $meta->getReflectionProperty($config['sort'])->getValue($referenceNode);
                     $referencePath = $meta->getReflectionProperty($config['path'])->getValue($referenceNode);
-                    $referenceDescendants = $dm->getRepository($config['useObjectClass'])->countDescendants($parentPath);
+                    $referenceDescendants = $dm->getRepository($config['useObjectClass'])->countDescendants($referencePath);
 
                     // Determine new nodes sort based on the sort for the reference
                     // node + how many descendants it has + 1 so it is the last node
@@ -265,19 +251,7 @@ class Path implements Strategy
                     $parentPath = $meta->getReflectionProperty($config['path'])->getValue($parent);
                     $parentDescendants = $dm->getRepository($config['useObjectClass'])->countDescendants($parentPath);
                     $parentSort = $meta->getReflectionProperty($config['sort'])->getValue($referenceNode);
-
-                    // Check if we have this object as a pending child of the parent, if we do
-                    // we will want to make note of it so we can subtract the pending ones
-                    // from the parent descendats count
-                    $pendingParentChildNodes = (isset($this->pendingChildrenNodes[spl_object_hash($parent)]))
-                        ? count($this->pendingChildrenNodes[spl_object_hash($parent)]) : 0;
-
-                    // Determine new nodes sort based on the sort for the reference
-                    // node + how many descendants it has + 1 so it is the last node
-                    $sortOrder = $parentSort + ($parentDescendants - $pendingParentChildNodes) + 1;
-
-                    // Unset the node from the parents list of pending children
-                    unset($this->pendingChildrenNodes[spl_object_hash($parent)][$oid]);
+                    $sortOrder = $parentSort + $parentDescendants + 1;
                 break;
 
                 case self::FIRST_CHILD:
@@ -285,28 +259,29 @@ class Path implements Strategy
                     $parent = $referenceNode;
                     $parentPath = $meta->getReflectionProperty($config['path'])->getValue($parent);
                     $parentDescendants = $dm->getRepository($config['useObjectClass'])->countDescendants($parentPath);
-                    $parentSort = $meta->getReflectionProperty($config['sort'])->getValue($referenceNode);
+                    $parentSort = $meta->getReflectionProperty($config['sort'])->getValue($parent);
 
                     // Determine new nodes sort based on the sort for the reference
                     // node + how many descendants it has + 1 so it is the last node
                     $sortOrder = $parentSort + 1;
                     $equal = true;
-
-                    // Unset the node from the parents list of pending children
-                    unset($this->pendingChildrenNodes[spl_object_hash($parent)][$oid]);
                 break;
             }
 
         } else {
-        	// Okay, parent is null, what about sort order?
+            // Okay, parent is null, what about sort order?
             $parent = null;
             switch ($position) {
 
+                // Next sibliing and last child of no parent will create this
+                // node as a new "root" at the very end of the tree
                 case self::NEXT_SIBLING:
                 case self::LAST_CHILD:
                     $sortOrder = $repo->findMaxSort() + 1;
                 break;
 
+                // Prev sibling and first child nodes with no parent will
+                // create a new "root" node at beginning of the tree
                 case self::PREV_SIBLING:
                 case self::FIRST_CHILD:
                 default:
@@ -326,8 +301,13 @@ class Path implements Strategy
         $meta->getReflectionProperty($config['sort'])->setValue($node, $sortOrder);
         $dm->getUnitOfWork()->setOriginalDocumentProperty($oid, $config['sort'], $sortOrder);
 
-        // If we have a parent, update the object reflection properties and
-        // update the objects default values in the UOW
+        // Update parent in memory
+        if ($parent != $nodeParent) {
+            $meta->getReflectionProperty($config['parent'])->setValue($node, $parent);
+            $dm->getUnitOfWork()->setOriginalDocumentProperty($oid, $config['parent'], $parent);
+        }
+
+        // Check if we have a parent, if so increase child count and update in memory
         if ($parent) {
             // Increase the parents child count
             $repo->increaseChildCount($parent);
@@ -337,9 +317,6 @@ class Path implements Strategy
             $newChildren = ($childProp->getValue($parent) + 1);
             $childProp->setValue($parent, $newChildren);
             $dm->getUnitOfWork()->setOriginalDocumentProperty(spl_object_hash($parent), $config['childCount'], $newChildren);
-
-            $meta->getReflectionProperty($config['parent'])->setValue($node, $parent);
-            $dm->getUnitOfWork()->setOriginalDocumentProperty($oid, $config['parent'], $parent);
         }
 
         $nodePath = $this->setNodePath($dm, $node);
@@ -355,9 +332,23 @@ class Path implements Strategy
         $meta->getReflectionProperty($config['path'])->setValue($node, $nodePath);
         $dm->getUnitOfWork()->setOriginalDocumentProperty($oid, $config['path'], $node);
 
-        // Update parent if we have one
+        // Update parent in query builder if we have one
         if ($parent) {
         	$ref = $dm->createDBRef($parent, null);
+            $qb->field($config['parent'])->set($ref);
+            $meta->getReflectionProperty($config['parent'])->setValue($node, $parent);
+            $dm->getUnitOfWork()->setOriginalDocumentProperty($oid, $config['parent'], $parent);
+        }
+
+        // If we have a parent but it is not equal to the nodes current parent, update in db
+        // and in memory
+        if ($parent != $nodeParent) {
+
+            $ref = null;
+            if ($parent) {
+                $ref = $dm->createDBRef($parent, null);
+            }
+
             $qb->field($config['parent'])->set($ref);
             $meta->getReflectionProperty($config['parent'])->setValue($node, $parent);
             $dm->getUnitOfWork()->setOriginalDocumentProperty($oid, $config['parent'], $parent);
@@ -368,7 +359,7 @@ class Path implements Strategy
             ->execute()
         ;
 
-        // Update in memory nodes increases performance, saves some IO
+        // Update in memory nodes. Increases performance, saves some IO
         foreach ($dm->getUnitOfWork()->getIdentityMap() as $className => $nodes) {
             // For inheritance mapped classes, only root is always in the identity map
             if ($className !== $meta->rootDocumentName) {
@@ -385,7 +376,8 @@ class Path implements Strategy
                 	continue;
                 }
 
-                if (($row == $node) || ($row == $parent) || ($row == $referenceNode)) {
+                // Don't update the node or the parent since these have already been updated
+                if (($row == $node) || ($row == $parent)) {
                     continue;
                 }
 
@@ -393,7 +385,7 @@ class Path implements Strategy
                 $oldSortOrder = $meta->getReflectionProperty($config['sort'])->getValue($row);
 
                 if (($equal && ($oldSortOrder >= $sortOrder)) || (!$equal && ($oldSortOrder > $oldSortOrder))) {
-                	$meta->getReflectionProperty($config['sort'])->setValue($row, $oldSortOrder + 1);
+                    $meta->getReflectionProperty($config['sort'])->setValue($row, $oldSortOrder + 1);
                     $dm->getUnitOfWork()->setOriginalDocumentProperty($oid, $config['sort'], $oldSortOrder + 1);
                 }
             }
