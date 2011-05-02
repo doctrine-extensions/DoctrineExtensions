@@ -47,29 +47,33 @@ class MaterializedPathTest extends BaseTestCaseMongoODM
         $this->listener = $treeListener;
 
         // @todo Remove test code
-//        $this->skipCollectionsOnDrop[] = 'Category';
+        $this->skipCollectionsOnDrop[] = 'Category';
     }
 
     public function testInsertNextSiblingOfRoot()
     {
         $this->populate();
 
-        // Fetch all nodes
-        $nodes = $this->dm->getRepository(self::CATEGORY)
-            ->findAll()
-            ->toArray()
+        $root1 = $this->dm->getRepository(self::CATEGORY)
+            ->findOneBy(array('title' => 'Root #1'))
         ;
 
-        $root = null;
-        foreach ($nodes as $row) {
-            if ($row->getSortOrder() == 1)  {
-                $root = $row;
-            }
-        }
+        $child = $this->dm->getRepository(self::CATEGORY)
+            ->findOneBy(array('title' => 'Child'))
+        ;
 
-        if (!$root) {
-            $this->markTestSkipped('Can not find a node with sort order of 1');
-        }
+        $subChild = $this->dm->getRepository(self::CATEGORY)
+            ->findOneBy(array('title' => 'Sub Child'))
+        ;
+
+        $subChild2 = $this->dm->getRepository(self::CATEGORY)
+            ->findOneBy(array('title' => 'Sub Child #2'))
+        ;
+
+        $subChild = null;
+        $subChild = $this->dm->getRepository(self::CATEGORY)
+            ->findOneBy(array('title' => 'Sub Child'))
+        ;
 
         $newNode = new Category();
         $newNode->setTitle('Next sibling of root');
@@ -80,52 +84,60 @@ class MaterializedPathTest extends BaseTestCaseMongoODM
         $meta = $this->dm->getClassMetadata($class);
 
         $this->listener->getStrategy($this->dm, $class)
-            ->updateNode($this->dm, $newNode, $root, Path::NEXT_SIBLING)
+            ->updateNode($this->dm, $newNode, $root1, Path::NEXT_SIBLING)
         ;
 
         $this->clearCollection();
 
-        // Now loop though the nodes and make sure they all
-        // have the values that will be in the DB
-        foreach ($nodes as $node) {
-            if ($node->getTitle() == 'Root #1') {
-                $this->assertEquals(1, $node->getChildCount());
-                $this->assertEquals(1, $node->getSortOrder());
-                $this->assertNull($node->getParent());
-                $this->assertEquals('root-1,', $node->getPath());
-            } else if ($node->getTitle() == 'Child') {
-                $this->assertEquals(2, $node->getChildCount());
-                $this->assertEquals(2, $node->getSortOrder());
-                $this->assertEquals('Root #1', $node->getParent()->getTitle());
-                $this->assertEquals('root-1,child,', $node->getPath());
-            } else if ($node->getTitle() == 'Sub Child') {
-                $this->assertEquals(0, $node->getChildCount());
-                $this->assertEquals(3, $node->getSortOrder());
-                $this->assertEquals('Child', $node->getParent()->getTitle());
-                $this->assertEquals('root-1,child,sub-child,', $node->getPath());
-            } else if ($node->getTitle() == 'Sub Child #2') {
-                $this->assertEquals(0, $node->getChildCount());
-                $this->assertEquals(4, $node->getSortOrder());
-                $this->assertEquals('Child', $node->getParent()->getTitle());
-                $this->assertEquals('root-1,child,sub-child-2,', $node->getPath());
-            } else if ($node->getTitle() == 'Sub Child #2') {
-                $this->assertEquals(0, $node->getChildCount());
-                $this->assertEquals(5, $node->getSortOrder());
-                $this->assertNull($node->getParent());
-                $this->assertEquals('next-sibling-of-root,', $node->getPath());
-            }
-        }
+        // Root
+        $this->assertEquals(1, $root1->getChildCount());
+        $this->assertEquals(1, $root1->getSortOrder());
+        $this->assertNull($root1->getParent());
+        $this->assertEquals('root-1,', $root1->getPath());
+
+        // Child
+        $this->assertEquals(2, $child->getChildCount());
+        $this->assertEquals(2, $child->getSortOrder());
+        $this->assertEquals($root1, $child->getParent());
+        $this->assertEquals('root-1,child,', $child->getPath());
+
+        // Sub child 1
+        $this->assertEquals(0, $subChild->getChildCount());
+        $this->assertEquals(3, $subChild->getSortOrder());
+        $this->assertEquals($child, $subChild->getParent());
+        $this->assertEquals('root-1,child,sub-child,', $subChild->getPath());
+
+        // Sub child 2
+        $this->assertEquals(0, $subChild2->getChildCount());
+        $this->assertEquals(4, $subChild2->getSortOrder());
+        $this->assertEquals($child, $subChild2->getParent());
+        $this->assertEquals('root-1,child,sub-child-2,', $subChild2->getPath());
+
+        $this->assertEquals(0, $newNode->getChildCount());
+        $this->assertEquals(5, $newNode->getSortOrder());
+        $this->assertNull($newNode->getParent());
+        $this->assertEquals('next-sibling-of-root,', $newNode->getPath());
     }
 
-    public function testNodesUpdateInUOW()
+    public function testNodesUpdateInUOWAndInsertAsNextSiblingOfChildNode()
     {
-    	// populate db
+    	// Populate db
         $this->populate();
 
-    	// Fetch all nodes
-        $nodes = $this->dm->getRepository(self::CATEGORY)
-            ->findAll()
-            ->toArray()
+        $root1 = $this->dm->getRepository(self::CATEGORY)
+            ->findOneBy(array('title' => 'Root #1'))
+        ;
+
+        $child = $this->dm->getRepository(self::CATEGORY)
+            ->findOneBy(array('title' => 'Child'))
+        ;
+
+        $subChild = $this->dm->getRepository(self::CATEGORY)
+            ->findOneBy(array('title' => 'Sub Child'))
+        ;
+
+        $subChild2 = $this->dm->getRepository(self::CATEGORY)
+            ->findOneBy(array('title' => 'Sub Child #2'))
         ;
 
         $subChild = null;
@@ -146,41 +158,40 @@ class MaterializedPathTest extends BaseTestCaseMongoODM
         $meta = $this->dm->getClassMetadata($class);
 
         $this->listener->getStrategy($this->dm, $class)
-            ->updateNode($this->dm, $newNode, $subChild, Path::NEXT_SIBLING)
+            ->updateNode($this->dm, $newNode, $child, Path::NEXT_SIBLING)
         ;
 
         $this->clearCollection();
 
-        $this->assertEquals(0, $newNode->getChildCount());
-        $this->assertEquals(4, $newNode->getSortOrder());
-        $this->assertEquals('Child', $newNode->getParent()->getTitle());
-        $this->assertEquals('root-1,child,next-sibling-of-sub-child,', $newNode->getPath());
+        // Root
+        $this->assertEquals(2, $root1->getChildCount());
+        $this->assertEquals(1, $root1->getSortOrder());
+        $this->assertNull($root1->getParent());
+        $this->assertEquals('root-1,', $root1->getPath());
 
-        // Now loop though the nodes and make sure they all
-        // have the values that will be in the DB
-        foreach ($nodes as $node) {
-            if ($node->getTitle() == 'Root #1') {
-                $this->assertEquals(1, $node->getChildCount());
-                $this->assertEquals(1, $node->getSortOrder());
-                $this->assertNull($node->getParent());
-                $this->assertEquals('root-1,', $node->getPath());
-            } else if ($node->getTitle() == 'Child') {
-                $this->assertEquals(3, $node->getChildCount());
-                $this->assertEquals(2, $node->getSortOrder());
-                $this->assertEquals('Root #1', $node->getParent()->getTitle());
-                $this->assertEquals('root-1,child,', $node->getPath());
-            } else if ($node->getTitle() == 'Sub Child') {
-                $this->assertEquals(0, $node->getChildCount());
-                $this->assertEquals(3, $node->getSortOrder());
-                $this->assertEquals('Child', $node->getParent()->getTitle());
-                $this->assertEquals('root-1,child,sub-child,', $node->getPath());
-            } else if ($node->getTitle() == 'Sub Child #2') {
-                $this->assertEquals(0, $node->getChildCount());
-                $this->assertEquals(5, $node->getSortOrder());
-                $this->assertEquals('Child', $node->getParent()->getTitle());
-                $this->assertEquals('root-1,child,sub-child-2,', $node->getPath());
-            }
-        }
+        // Child
+        $this->assertEquals(2, $child->getChildCount());
+        $this->assertEquals(2, $child->getSortOrder());
+        $this->assertEquals($root1, $child->getParent());
+        $this->assertEquals('root-1,child,', $child->getPath());
+
+        // Sub child 1
+        $this->assertEquals(0, $subChild->getChildCount());
+        $this->assertEquals(3, $subChild->getSortOrder());
+        $this->assertEquals($child, $subChild->getParent());
+        $this->assertEquals('root-1,child,sub-child,', $subChild->getPath());
+
+        // Sub child 2
+        $this->assertEquals(0, $subChild2->getChildCount());
+        $this->assertEquals(4, $subChild2->getSortOrder());
+        $this->assertEquals($child, $subChild2->getParent());
+        $this->assertEquals('root-1,child,sub-child-2,', $subChild2->getPath());
+
+        // New node
+        $this->assertEquals(0, $newNode->getChildCount());
+        $this->assertEquals(5, $newNode->getSortOrder());
+        $this->assertEquals($root1, $newNode->getParent());
+        $this->assertEquals('root-1,next-sibling-of-sub-child,', $newNode->getPath());
     }
 
     public function testInsertNodeAsNextSiblingOfRoot()
@@ -189,7 +200,7 @@ class MaterializedPathTest extends BaseTestCaseMongoODM
 
         // Create a new root category first
         $newNode = new Category();
-        $newNode->setTitle('Next sibling of child');
+        $newNode->setTitle('Next sibling of root');
         $this->dm->persist($newNode);
         $this->dm->flush();
         $this->dm->clear();
@@ -204,21 +215,67 @@ class MaterializedPathTest extends BaseTestCaseMongoODM
             ->updateNode($this->dm, $newNode, $reference, Path::NEXT_SIBLING)
         ;
 
+        $root1 = $this->dm->getRepository(self::CATEGORY)
+            ->findOneBy(array('title' => 'Root #1'))
+        ;
+
+        $child = $this->dm->getRepository(self::CATEGORY)
+            ->findOneBy(array('title' => 'Child'))
+        ;
+
+        $subChild = $this->dm->getRepository(self::CATEGORY)
+            ->findOneBy(array('title' => 'Sub Child'))
+        ;
+
+        $subChild2 = $this->dm->getRepository(self::CATEGORY)
+            ->findOneBy(array('title' => 'Sub Child #2'))
+        ;
+
+        $newNode = $this->dm->getRepository(self::CATEGORY)
+            ->findOneBy(array('title' => 'Next sibling of root'))
+        ;
+
         $this->clearCollection();
 
-        $this->markTestIncomplete('Need to add more assertions to make sure the tree is correct');
+        // Root node
+        $this->assertEquals(1, $root1->getChildCount());
+        $this->assertEquals('root-1,', $root1->getPath());
+        $this->assertEquals(1, $root1->getSortOrder());
+        $this->assertNull($root1->getParent());
+
+        // Child
+        $this->assertEquals(2, $child->getChildCount());
+        $this->assertEquals('root-1,child,', $child->getPath());
+        $this->assertEquals(2, $child->getSortOrder());
+        $this->assertEquals($root1, $child->getParent());
+
+        // Sub-child
+        $this->assertEquals(0, $subChild->getChildCount());
+        $this->assertEquals('root-1,child,sub-child,', $subChild->getPath());
+        $this->assertEquals(3, $subChild->getSortOrder());
+        $this->assertEquals($child, $subChild->getParent());
+
+        // Sub child 2
+        $this->assertEquals(0, $subChild2->getChildCount());
+        $this->assertEquals('root-1,child,sub-child-2,', $subChild2->getPath());
+        $this->assertEquals(4, $subChild2->getSortOrder());
+        $this->assertEquals($child, $subChild2->getParent());
+
+        // New sibling of root
+        $this->assertEquals(0, $newNode->getChildCount());
+        $this->assertEquals('next-sibling-of-root,', $newNode->getPath());
+        $this->assertEquals(5, $newNode->getSortOrder());
+        $this->assertNull($newNode->getParent());
     }
 
     public function testInsertNodeAsPrevSiblingOfChild()
     {
         $this->populate();
 
-        // Create a new root category first
         $newNode = new Category();
         $newNode->setTitle('Prev sibling of child');
         $this->dm->persist($newNode);
         $this->dm->flush();
-        $this->dm->clear();
 
         $class = get_class($newNode);
         $meta = $this->dm->getClassMetadata($class);
@@ -230,7 +287,6 @@ class MaterializedPathTest extends BaseTestCaseMongoODM
             ->updateNode($this->dm, $newNode, $reference, Path::PREV_SIBLING)
         ;
 
-        // Test root is all correct
         $root = $this->dm->getRepository(self::CATEGORY)
             ->findOneBy(array('title' => 'Root #1'))
         ;
@@ -248,13 +304,13 @@ class MaterializedPathTest extends BaseTestCaseMongoODM
         $this->assertEquals(2, $root->getChildCount());
         $this->assertEquals('root-1,', $root->getPath());
         $this->assertEquals(1, $root->getSortOrder());
+        $this->assertNull($root->getParent());
 
         // Test the new node is correct  w/o loading from DB
         $this->assertEquals(0, $newNode->getChildCount());
         $this->assertEquals('root-1,prev-sibling-of-child,', $newNode->getPath());
         $this->assertEquals(2, $newNode->getSortOrder());
-        $this->assertEquals('Prev sibling of child', $newNode->getTitle());
-        $this->assertEquals($root->getId(), $newNode->getParent()->getId());
+        $this->assertEquals($root, $newNode->getParent());
 
         // Test if next sibling that we used as reference
         // is getting updated correctly without reloading
@@ -266,12 +322,12 @@ class MaterializedPathTest extends BaseTestCaseMongoODM
         $this->assertEquals(0, $subChild->getChildCount());
         $this->assertEquals('root-1,child,sub-child,', $subChild->getPath());
         $this->assertEquals(4, $subChild->getSortOrder());
-        $this->assertEquals($reference->getId(), $subChild->getParent()->getId());
+        $this->assertEquals($reference, $subChild->getParent());
 
         $this->assertEquals(0, $subChild2->getChildCount());
         $this->assertEquals('root-1,child,sub-child-2,', $subChild2->getPath());
         $this->assertEquals(5, $subChild2->getSortOrder());
-        $this->assertEquals($reference->getId(), $subChild2->getParent()->getId());
+        $this->assertEquals($reference, $subChild2->getParent());
     }
 
     public function testInsertNodeAsFirstChild()
@@ -305,12 +361,14 @@ class MaterializedPathTest extends BaseTestCaseMongoODM
         $this->assertEquals(3, $parent->getChildCount());
         $this->assertEquals('root-1,child,', $parent->getPath());
         $this->assertEquals(2, $parent->getSortOrder());
+        $this->assertEquals($root, $parent->getParent());
 
-        // Test root is all correct
+        // Test root is correct
         $this->assertEquals(1, $root->getChildCount());
         $this->assertEquals('root-1,', $root->getPath());
         $this->assertEquals(1, $root->getSortOrder());
         $this->assertEquals('Root #1', $root->getTitle());
+        $this->assertNull($root->getParent());
 
         // Test the new first child node w/o loading from DB
         $this->assertEquals(0, $newNode->getChildCount());
@@ -328,56 +386,69 @@ class MaterializedPathTest extends BaseTestCaseMongoODM
         $this->dm->persist($newNode);
         $this->dm->flush();
 
-        $dbNode = $this->dm->getRepository(self::CATEGORY)->findOneBy(array('title' => 'Root #2'));
-
-        $this->clearCollection();
-
-        $this->assertEquals(0, $dbNode->getChildCount());
-        $this->assertEquals(5, $dbNode->getSortOrder());
-    }
-
-    public function testSimpleTreeCreation()
-    {
-    	$this->populate();
-
-        $result = $this->dm->createQueryBuilder(self::CATEGORY)
-            ->field('title')->in(array('Root #1', 'Child', 'Sub Child', 'Sub Child #2'))
-            ->getQuery()
-            ->execute()
-            ->toArray()
+        $root2 = $this->dm->getRepository(self::CATEGORY)
+            ->findOneBy(array('title' => 'Root #2'))
         ;
 
         $this->clearCollection();
 
-        $this->assertTrue(count($result) == 4, sprintf('--> Should only have 4 results from the DB. Returned %s', count($result)));
+        $this->assertEquals(0, $root2->getChildCount());
+        $this->assertEquals(5, $root2->getSortOrder());
+        $this->assertEquals('root-2,', $root2->getPath());
+        $this->assertNull($root2->getParent());
+    }
 
-        foreach ($result as $category)
-        {
-            if ($category->getTitle() == 'Root #1')
-            {
-                $this->assertEquals(1, $category->getChildCount(), '--> The root category should have 1 child');
-                $this->assertEquals(1, $category->getSortOrder(), '--> The root category should have sort order set to 1 since its first');
-            }
-            else if ($category->getTitle() == 'Child')
-            {
-                $this->assertEquals(2, $category->getChildCount(), '--> The child category should have 2 children');
-                $this->assertEquals(2, $category->getSortOrder(), '->> The child category should have a sort order of 2, one greater than that of its parent');
-            }
-            else if ($category->getTitle() == 'Sub Child')
-            {
-                $this->assertEquals(0, $category->getChildCount(), '--> The Sub Child category should have 0 children');
-                $this->assertEquals(3, $category->getSortOrder(), '->> The Sub Child category should have a sort order of 3, one greater than that of its parent');
-            }
-            else if ($category->getTitle() == 'Sub Child #2')
-            {
-                $this->assertEquals(0, $category->getChildCount(), '--> The Sub Child #2 category should have 0 children');
-                $this->assertEquals(4, $category->getSortOrder(), '->> The Sub Child #2 category should have a sort order of 4, one greater than that of its parent');
-            }
-        }
+    public function testSimpleTreeCreation()
+    {
+        $this->populate();
+
+    	// Load everything from DB
+        $root = $this->dm->getRepository(self::CATEGORY)
+            ->findOneBy(array('title' => 'Root #1'))
+        ;
+        $child = $this->dm->getRepository(self::CATEGORY)
+            ->findOneBy(array('title' => 'Child'))
+        ;
+        $subChild = $this->dm->getRepository(self::CATEGORY)
+            ->findOneBy(array('title' => 'Sub Child'))
+        ;
+        $subChild2 = $this->dm->getRepository(self::CATEGORY)
+            ->findOneBy(array('title' => 'Sub Child #2'))
+        ;
+
+        // Clear collection now incase tests fail
+        $this->clearCollection();
+
+        $this->assertEquals(1, $root->getChildCount(), '--> The root category should have 1 child');
+        $this->assertEquals(1, $root->getSortOrder(), '--> The root category should have sort order set to 1 since its first');
+        $this->assertEquals('root-1,', $root->getPath());
+        $this->assertEquals(1, $root->getChildCount());
+
+        $this->assertEquals(2, $child->getChildCount(), '--> The child category should have 2 children');
+        $this->assertEquals(2, $child->getSortOrder(), '->> The child category should have a sort order of 2, one greater than that of its parent');
+        $this->assertEquals('root-1,child,', $child->getPath());
+        $this->assertEquals($root, $child->getParent());
+
+        $this->assertEquals(0, $subChild->getChildCount(), '--> The Sub Child category should have 0 children');
+        $this->assertEquals(3, $subChild->getSortOrder(), '->> The Sub Child category should have a sort order of 3, one greater than that of its parent');
+        $this->assertEquals('root-1,child,sub-child,', $subChild->getPath());
+        $this->assertEquals($child, $subChild->getParent());
+
+        $this->assertEquals(0, $subChild2->getChildCount(), '--> The Sub Child #2 category should have 0 children');
+        $this->assertEquals(4, $subChild2->getSortOrder(), '->> The Sub Child #2 category should have a sort order of 4, one greater than that of its parent');
+        $this->assertEquals('root-1,child,sub-child-2,', $subChild2->getPath());
+        $this->assertEquals($child, $subChild2->getParent());
     }
 
     /**
-     * Populate the DB with some default nodes to work with
+     * Populate the DB with some default nodes to work with.
+     *
+     * Creates a tree like
+     *
+     * Root #1
+     *  child
+     *      Sub Child
+     *      Sub Child #2
      */
     private function populate()
     {
@@ -388,14 +459,6 @@ class MaterializedPathTest extends BaseTestCaseMongoODM
         $child->setTitle('Child');
         $child->setParent($root);
 
-        $this->dm->persist($root);
-        $this->dm->flush(array('safe' => true)); // Flush to insert root nodes
-
-        $this->dm->persist($child);
-        $this->dm->flush(array('safe' => true)); // Flush to insert children
-
-        // We can insert multiple childs at once, but we can not insert multiple
-        // parents at once.
         $subChild = new Category();
         $subChild->setTitle('Sub Child');
         $subChild->setParent($child);
@@ -404,10 +467,11 @@ class MaterializedPathTest extends BaseTestCaseMongoODM
         $subChild2->setTitle('Sub Child #2');
         $subChild2->setParent($child);
 
+        $this->dm->persist($root);
+        $this->dm->persist($child);
         $this->dm->persist($subChild);
         $this->dm->persist($subChild2);
-        $this->dm->flush(array('safe' => true)); // Flush to insert children
-        $this->dm->clear();
+        $this->dm->flush(array('safe' => true));
     }
 
     /**
