@@ -3,8 +3,6 @@
 namespace Gedmo\Tree;
 
 use Tool\BaseTestCaseMongoODM;
-use Doctrine\Common\EventManager;
-use Translatable\Fixture\Document\SimpleArticle as Article;
 use Tree\Fixture\Path\Category;
 use Gedmo\Tree\Strategy\ODM\Path;
 
