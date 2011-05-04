@@ -54,6 +54,14 @@ class QueryAnalyzer
         $this->processed = false;
     }
 
+    public function reset()
+    {
+    	$this->queries =
+    	$this->processed =
+    	$this->formattedQueries =
+    	$this->nbRealQueries = null;
+    }
+
     /**
      * Returns the number of queries that have been logged.
      *
@@ -84,22 +92,22 @@ class QueryAnalyzer
 
     /**
      * Returns a string of queries
-     * 
+     *
      * @return string Queriers that were ran
      */
     public function getOutput()
     {
         $queries = $this->getQueries();
-        
+
         $output = 'Queries: ' . $this->nbRealQueries . "\n\n";
         foreach ($queries as $query)
         {
             $output .= $query . "\n\n";
         }
-        
+
         return $output;
     }
-    
+
     /**
      * Groups and formats query arrays.
      *

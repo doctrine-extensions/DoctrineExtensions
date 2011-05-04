@@ -440,6 +440,59 @@ class MaterializedPathTest extends BaseTestCaseMongoODM
         $this->assertEquals($child, $subChild2->getParent());
     }
 
+    /*
+     * Updating methods
+     */
+    public function testUpdateNodeSlug()
+    {
+    	$this->clearCollection();
+
+        $this->populate();
+
+        // Clear dm so that all new nodes we just inserted are not managed
+        $this->dm->clear();
+
+        $repo = $this->dm->getRepository(self::CATEGORY);
+
+        $root = $repo->findOneBy(array('path' => 'root-1,'));
+
+        // Update one in DB
+        $root->setTitle('New Title');
+        $this->dm->flush();
+
+        $child = $this->dm->getRepository(self::CATEGORY)
+            ->findOneBy(array('title' => 'Child'))
+        ;
+        $subChild = $this->dm->getRepository(self::CATEGORY)
+            ->findOneBy(array('title' => 'Sub Child'))
+        ;
+        $subChild2 = $this->dm->getRepository(self::CATEGORY)
+            ->findOneBy(array('title' => 'Sub Child #2'))
+        ;
+
+        $this->assertEquals(1, $root->getChildCount());
+        $this->assertEquals(1, $root->getSortOrder());
+        $this->assertEquals('new-title,', $root->getPath());
+        $this->assertEquals(1, $root->getChildCount());
+
+        $this->assertEquals(2, $child->getChildCount());
+        $this->assertEquals(2, $child->getSortOrder());
+        $this->assertEquals('new-title,child,', $child->getPath());
+        $this->assertEquals($root, $child->getParent());
+
+        $this->assertEquals(0, $subChild->getChildCount());
+        $this->assertEquals(3, $subChild->getSortOrder());
+        $this->assertEquals('new-title,child,sub-child,', $subChild->getPath());
+        $this->assertEquals($child, $subChild->getParent());
+
+        $this->assertEquals(0, $subChild2->getChildCount());
+        $this->assertEquals(4, $subChild2->getSortOrder());
+        $this->assertEquals('new-title,child,sub-child-2,', $subChild2->getPath());
+        $this->assertEquals($child, $subChild2->getParent());
+
+        $this->clearCollection();
+    }
+
     /**
      * Populate the DB with some default nodes to work with.
      *
@@ -471,6 +524,7 @@ class MaterializedPathTest extends BaseTestCaseMongoODM
         $this->dm->persist($child);
         $this->dm->persist($subChild);
         $this->dm->persist($subChild2);
+
         $this->dm->flush(array('safe' => true));
     }
 

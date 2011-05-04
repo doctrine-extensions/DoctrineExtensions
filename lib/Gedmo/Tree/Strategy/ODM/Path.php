@@ -127,9 +127,34 @@ class Path implements Strategy
     /**
      * {@inheritdoc}
      */
-    public function processScheduledUpdate($em, $node)
+    public function processScheduledUpdate($dm, $node)
     {
-        // @todo
+        $meta = $dm->getClassMetadata(get_class($node));
+        $config = $this->listener->getConfiguration($dm, $meta->name);
+        $uow = $dm->getUnitOfWork();
+
+        $changeSet = $uow->getDocumentChangeSet($node);
+
+        if (isset($changeSet[$config['parent']])) {
+        	if ($changeSet[$config['parent']][1] == $changeSet[$config['parent']][0]) {
+                // The parent node has gotten updated but we do not need to update in the database
+                // this helps prevent multiple queries that are not needed if nodes are loaded
+                // in the UOW
+                $oid = spl_object_hash($node);
+                $uow->clearDocumentChangeSet($oid);
+        		$meta->getReflectionProperty($config['parent'])->setValue($node, $changeSet[$config['parent']][1]);
+        		$dm->getUnitOfWork()->setOriginalDocumentProperty($oid, $config['parent'], $changeSet[$config['parent']][1]);
+                $uow->recomputeSingleDocumentChangeSet($meta, $node);
+        	} else {
+        		// Update the parent
+        		$this->updateNode($dm, $node, $changeSet[$config['parent']][1]);
+        	}
+        }
+
+        if (isset($changeSet[$config['pathSource']])) {
+        	// Updating the path source
+            $this->updateNodesPath($dm, $node);
+        }
     }
 
     /**
@@ -390,12 +415,79 @@ class Path implements Strategy
                 }
             }
         }
+
+        $dm->getUnitOfWork()->recomputeSingleDocumentChangeSet($meta, $node);
     }
 
-    protected function setNodePath($em, $node)
+    /**
+     * Updates the nodes path as well as the nodes descendants
+     * paths
+     *
+     * @param $node
+     */
+    public function updateNodesPath(DocumentManager $dm, $parentNode)
     {
-        $meta = $em->getClassMetadata(get_class($node));
-        $config = $this->listener->getConfiguration($em, $meta->name);
+    	$meta = $dm->getClassMetadata(get_class($parentNode));
+        $config = $this->listener->getConfiguration($dm, $meta->name);
+        $repo = $dm->getRepository($config['useObjectClass']);
+        $pathProp = $meta->getReflectionProperty($config['path']);
+        $oldParentPath = $pathProp->getValue($parentNode);
+
+        // Set the new parent path
+        $this->setNodePath($dm, $parentNode);
+        $dm->getUnitOfWork()->recomputeSingleDocumentChangeSet($meta, $parentNode);
+
+        // @todo Working method but this can use a lot of resources to load all
+        // descendants into memory
+        $rows = $repo->fetchDescendants($oldParentPath, $config['sort'], 'asc');
+        foreach ($rows as $descendant)
+        {
+            // @todo Require a single sluggable field so we do not have
+            // to recompute the sluge for descendants. This will remove
+            // the extra method call
+            // @todo Use the Sluggable extension to do this work
+            $dm->persist($descendant);
+            $this->setNodePath($dm, $descendant);
+            $dm->getUnitOfWork()->computeChangeSet($meta, $descendant);
+        }
+
+        // Process all descendants
+        /* @todo need to figure out how to update single nodes
+         * and not persist in doctrine all descendants then do
+         * a massive flush
+         *
+        $size = 40;
+        $processed = 0;
+        $count = $repo->countDescendants($oldParentPath);
+        while ($processed < $count)
+        {
+        	$rows = $repo->fetchDescendants($oldParentPath, $config['sort'], 'asc');
+
+        	foreach ($rows as $descendant)
+        	{
+        		// @todo Require a single sluggable field so we do not have
+        		// to recompute the sluge for descendants. This will remove
+        		// the extra method call
+        		$dm->persist($descendant);
+                $this->setNodePath($dm, $descendant);
+                $dm->getUnitOfWork()->computeChangeSet($meta, $descendant);
+                $processed++;
+        	}
+        }
+         */
+    }
+
+    /**
+     * Sets the nodes path
+     * Does not flush changes in the DB. Used mostly internally
+     *
+     * @param DocumentManager $dm
+     * @param unknown_type $node
+     */
+    protected function setNodePath(DocumentManager $dm, $node)
+    {
+        $meta = $dm->getClassMetadata(get_class($node));
+        $config = $this->listener->getConfiguration($dm, $meta->name);
         $pathProperty = $meta->getReflectionProperty($config['path']);
         $treePathSource = $meta->getReflectionProperty($config['pathSource'])->getValue($node);
 
@@ -414,6 +506,8 @@ class Path implements Strategy
 
         $nodePath = $nodePath . ',';
         $pathProperty->setValue($node, $nodePath);
+
+        // Don't set UOW original property as we need to update this in DB
 
         return $nodePath;
     }

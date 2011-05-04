@@ -46,7 +46,8 @@ class PathRepository extends AbstractTreeRepository
             $qb->field('sortOrder')->gt($startingSort);
         }
 
-            //->field('path')->equals(new \MongoRegex('/^' . $rootNodePath . ',/i')) @todo For later
+        //->field('path')->equals(new \MongoRegex('/^' . $rootNodePath . ',/i')) @todo For later
+
         $qb->update()
             ->field('sortOrder')->inc($increaseBy)
         ;
@@ -62,13 +63,54 @@ class PathRepository extends AbstractTreeRepository
      */
     public function countDescendants($parentPath)
     {
-        $count = $this->createQueryBuilder()
-            ->field('path')->equals(new \MongoRegex('/^' . $parentPath . '(.+)/i'))
+        $count = $this->getDescendantsQueryBuilder($parentPath)
             ->getQuery()
             ->count()
         ;
 
         return $count;
+    }
+
+    /**
+     * Fetches $limit number of descendants after skipping $skip
+     *
+     * @param string $parentPath
+     * @param string $sortBy
+     * @param string $sortDir
+     * @param int $limit
+     * @param int $skip
+     */
+    public function fetchDescendants($parentPath, $sortBy, $sortDir = 'desc', $limit = false, $skip = false)
+    {
+        $qb = $this->getDescendantsQueryBuilder($parentPath);
+
+        if ($limit) {
+            $qb->limit($limit);
+        }
+
+        if ($skip) {
+        	$qb->skip($skip);
+        }
+
+        if ($sortBy && $sortDir) {
+            $qb->sort($sortBy, $sortDir);
+        }
+
+        return $qb->getQuery()->execute();
+    }
+
+    /**
+     * Gets the query builder for finding a nodes descendants
+     *
+     * @param string $parentPath
+     */
+    protected function getDescendantsQueryBuilder($parentPath)
+    {
+        $qb = $this->createQueryBuilder()
+            ->field('path')->equals(new \MongoRegex('/^' . $parentPath . '(.+)/i'))
+        ;
+
+        return $qb;
     }
 
     /**
