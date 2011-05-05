@@ -203,7 +203,6 @@ class MaterializedPathTest extends BaseTestCaseMongoODM
         $newNode->setTitle('Next sibling of root');
         $this->dm->persist($newNode);
         $this->dm->flush();
-        $this->dm->clear();
 
         $class = get_class($newNode);
         $meta = $this->dm->getClassMetadata($class);
@@ -339,7 +338,6 @@ class MaterializedPathTest extends BaseTestCaseMongoODM
         $newNode->setTitle('First child of child');
         $this->dm->persist($newNode);
         $this->dm->flush();
-        $this->dm->clear();
 
         $class = get_class($newNode);
         $meta = $this->dm->getClassMetadata($class);
@@ -379,6 +377,7 @@ class MaterializedPathTest extends BaseTestCaseMongoODM
 
     public function testInsertExtraRoot()
     {
+        $this->clearCollection();
         $this->populate();
 
         $newNode = new Category();
@@ -491,6 +490,152 @@ class MaterializedPathTest extends BaseTestCaseMongoODM
         $this->assertEquals($child, $subChild2->getParent());
 
         $this->clearCollection();
+    }
+
+    public function testUpdateMultipleNodeSlugs()
+    {
+        $this->clearCollection();
+
+        $this->populate();
+
+        // Clear dm so that all new nodes we just inserted are not managed
+        $this->dm->clear();
+
+        $repo = $this->dm->getRepository(self::CATEGORY);
+
+        $root = $repo->findOneBy(array('path' => 'root-1,'));
+        $child = $repo->findOneBy(array('path' => 'root-1,child,'));
+
+        // Update one in DB
+        $root->setTitle('New Title');
+        $child->setTitle('New Child Title');
+        $this->dm->flush();
+
+        $subChild = $this->dm->getRepository(self::CATEGORY)
+            ->findOneBy(array('title' => 'Sub Child'))
+        ;
+        $subChild2 = $this->dm->getRepository(self::CATEGORY)
+            ->findOneBy(array('title' => 'Sub Child #2'))
+        ;
+
+        $this->assertEquals(1, $root->getChildCount());
+        $this->assertEquals(1, $root->getSortOrder());
+        $this->assertEquals('new-title,', $root->getPath());
+        $this->assertEquals(1, $root->getChildCount());
+
+        $this->assertEquals(2, $child->getChildCount());
+        $this->assertEquals(2, $child->getSortOrder());
+        $this->assertEquals('new-title,new-child-title,', $child->getPath());
+        $this->assertEquals($root, $child->getParent());
+
+        $this->assertEquals(0, $subChild->getChildCount());
+        $this->assertEquals(3, $subChild->getSortOrder());
+        $this->assertEquals('new-title,new-child-title,sub-child,', $subChild->getPath());
+        $this->assertEquals($child, $subChild->getParent());
+
+        $this->assertEquals(0, $subChild2->getChildCount());
+        $this->assertEquals(4, $subChild2->getSortOrder());
+        $this->assertEquals('new-title,new-child-title,sub-child-2,', $subChild2->getPath());
+        $this->assertEquals($child, $subChild2->getParent());
+
+        $this->clearCollection();
+    }
+
+    public function testSimpleDeleteNode()
+    {
+    	$this->clearCollection();
+
+    	$this->populate();
+
+        // Clear dm so that all new nodes we just inserted are not managed
+        $this->dm->clear();
+
+        $repo = $this->dm->getRepository(self::CATEGORY);
+
+        $subChild = $repo->findOneBy(array('path' => 'root-1,child,sub-child,'));
+        $this->dm->remove($subChild);
+        $this->dm->flush();
+
+        $root = $this->dm->getRepository(self::CATEGORY)
+            ->findOneBy(array('title' => 'Root #1'))
+        ;
+        $child = $this->dm->getRepository(self::CATEGORY)
+            ->findOneBy(array('title' => 'Child'))
+        ;
+        $subChild2 = $this->dm->getRepository(self::CATEGORY)
+            ->findOneBy(array('title' => 'Sub Child #2'))
+        ;
+
+        $this->clearCollection();
+
+        $this->assertEquals(1, $root->getChildCount());
+        $this->assertEquals(1, $root->getSortOrder());
+        $this->assertEquals('root-1,', $root->getPath());
+        $this->assertEquals(1, $root->getChildCount());
+
+        $this->assertEquals(1, $child->getChildCount());
+        $this->assertEquals(2, $child->getSortOrder());
+        $this->assertEquals('root-1,child,', $child->getPath());
+        $this->assertEquals($root, $child->getParent());
+
+        $this->assertEquals(0, $subChild2->getChildCount());
+        $this->assertEquals(3, $subChild2->getSortOrder());
+        $this->assertEquals('root-1,child,sub-child-2,', $subChild2->getPath());
+        $this->assertEquals($child, $subChild2->getParent());
+    }
+
+    public function testDeleteNodeWithSubChildren()
+    {
+        $this->clearCollection();
+
+        $this->populate();
+
+        $reference = $this->dm->getRepository(self::CATEGORY)
+            ->findOneBy(array('path' => 'root-1,child,'))
+        ;
+
+        $newNode = new Category();
+        $newNode->setTitle('Next sibling child');
+//        $newNode->setParent($reference); // Do not set parent @todo note this
+        $this->dm->persist($newNode);
+        $this->dm->flush();
+
+        $class = get_class($newNode);
+        $meta = $this->dm->getClassMetadata($class);
+        $this->listener->getStrategy($this->dm, $class)
+            ->updateNode($this->dm, $newNode, $reference, Path::NEXT_SIBLING)
+        ;
+
+        $root1 = $this->dm->getRepository(self::CATEGORY)
+            ->findOneBy(array('title' => 'Root #1'))
+        ;
+
+        $child = $this->dm->getRepository(self::CATEGORY)
+            ->findOneBy(array('title' => 'Child'))
+        ;
+        $this->dm->remove($child);
+        $this->dm->flush();
+
+        $subChild = $this->dm->getRepository(self::CATEGORY)
+            ->findOneBy(array('title' => 'Sub Child'))
+        ;
+
+        $subChild2 = $this->dm->getRepository(self::CATEGORY)
+            ->findOneBy(array('title' => 'Sub Child #2'))
+        ;
+
+        $this->clearCollection();
+
+        // Root node
+        $this->assertEquals(1, $root1->getChildCount());
+        $this->assertEquals('root-1,', $root1->getPath());
+        $this->assertEquals(1, $root1->getSortOrder());
+        $this->assertNull($root1->getParent());
+
+        $this->assertEquals(0, $newNode->getChildCount());
+        $this->assertEquals('root-1,next-sibling-child,', $newNode->getPath());
+        $this->assertEquals(2, $newNode->getSortOrder());
+        $this->assertEquals($root1, $newNode->getParent());
     }
 
     /**

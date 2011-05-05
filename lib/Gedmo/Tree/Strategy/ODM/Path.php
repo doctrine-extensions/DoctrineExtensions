@@ -14,6 +14,7 @@ namespace Gedmo\Tree\Strategy\ODM;
 
 use Gedmo\Tree\Strategy;
 use Gedmo\Tree\TreeListener;
+use Gedmo\Tree\Node;
 use Doctrine\ODM\MongoDB\DocumentManager;
 
 /**
@@ -120,8 +121,8 @@ class Path implements Strategy
     {
         // Don't calculate any paths until nodes are inserted. This way
         // pending inserts do not have to be stored because calculations will not include
-        // pending nodes. I.E the countDescendants() method will not return nodes
-        // who have not been updated in the tree.
+        // pending nodes since they do not have a path variable. I.E the
+        // countDescendants() method will not return nodes who have not been updated in the tree.
     }
 
     /**
@@ -171,20 +172,97 @@ class Path implements Strategy
 
     /**
      * {@inheritdoc}
+     * Deleting a parent will also delete all children
      */
-    public function processScheduledDelete($em, $node)
+    public function processScheduledDelete($dm, $node)
     {
-        // @todo
+        $meta = $dm->getClassMetadata(get_class($node));
+        $config = $this->listener->getConfiguration($dm, $meta->name);
+        $repo = $dm->getRepository($config['useObjectClass']);
+        $path = $meta->getReflectionProperty($config['path'])->getValue($node);
+        $nodeSort = $meta->getReflectionProperty($config['sort'])->getValue($node);
+        $descendants = $repo->countDescendants($path);
+
+        $repo->deleteDescendants($path);
+        $repo->increaseSort($nodeSort, true, -(1 + $descendants));
+        $repo->decreaseChildCount($node, 1);
+
+        $parent = $meta->getReflectionProperty($config['parent'])->getValue($node);
+        $parentId = $meta->getIdentifierValue($parent);
+
+        // Update in memory nodes. Increases performance, saves some IO
+        // @todo Try to combine this update logic
+        foreach ($dm->getUnitOfWork()->getIdentityMap() as $className => $nodes) {
+            // For inheritance mapped classes, only root is always in the identity map
+            if ($className !== $meta->rootDocumentName) {
+                continue;
+            }
+
+            foreach ($nodes as $row) {
+
+                if ($row instanceof Proxy && !$row->__isInitialized__) {
+                    continue;
+                }
+
+                if ($this->isNodeChildOf($row, $node)) {
+                	$dm->detach($row);
+                }
+
+                $oldSortOrder = $meta->getReflectionProperty($config['sort'])->getValue($row);
+
+                if (!$oldSortOrder) {
+                    continue;
+                }
+
+                // Don't update the node or the parent since these have already been updated
+                if (($row == $node)) {
+                    continue;
+                }
+
+                $oid = spl_object_hash($row);
+                $nodePath = $meta->getReflectionProperty($config['path'])->getValue($row);
+                $oldChildCount = $meta->getReflectionProperty($config['childCount'])->getValue($row);
+
+                if ($oldSortOrder > $nodeSort) {
+                    $meta->getReflectionProperty($config['sort'])->setValue($row, $oldSortOrder - (1 + $descendants));
+                    $dm->getUnitOfWork()->setOriginalDocumentProperty($oid, $config['sort'], $oldSortOrder - (1 + $descendants));
+                }
+
+                // Decrease child count
+                if ($meta->getIdentifierValue($row) == $parentId) {
+                    $meta->getReflectionProperty($config['childCount'])->setValue($row, --$oldChildCount);
+                    $dm->getUnitOfWork()->setOriginalDocumentProperty($oid, $config['childCount'], --$oldChildCount);
+                }
+            }
+        }
+    }
+
+    /**
+     * Checks if the given $node is a child of the $parent node
+     *
+     * @param Node $node
+     * @param Node $parent
+     */
+    public function isNodeChildOf(Node $node, Node $parent)
+    {
+    	$parentPath = explode(',', $parent->getPath());
+        $childPath = explode(',', $node->getPath());
+
+        // Remove the last element which is a empty string
+        array_pop($parentPath);
+        array_pop($childPath);
+
+        // Remove the childs slug from the path
+        array_pop($childPath);
+
+        return $parentPath === $childPath;
     }
 
     /**
      * {@inheritdoc}
      */
     public function onFlushEnd($em)
-    {
-        // Reset values
-//        $this->nodePositions = array();
-    }
+    {}
 
     /**
      * {@inheritdoc}
@@ -409,7 +487,7 @@ class Path implements Strategy
                 $oid = spl_object_hash($row);
                 $oldSortOrder = $meta->getReflectionProperty($config['sort'])->getValue($row);
 
-                if (($equal && ($oldSortOrder >= $sortOrder)) || (!$equal && ($oldSortOrder > $oldSortOrder))) {
+                if (($equal && ($oldSortOrder >= $sortOrder)) || (!$equal && ($oldSortOrder > $sortOrder))) {
                     $meta->getReflectionProperty($config['sort'])->setValue($row, $oldSortOrder + 1);
                     $dm->getUnitOfWork()->setOriginalDocumentProperty($oid, $config['sort'], $oldSortOrder + 1);
                 }
@@ -475,6 +553,24 @@ class Path implements Strategy
         	}
         }
          */
+    }
+
+    public function getAncestorsPath(Node $node)
+    {
+        $nodePath = $node->getPath();
+        $fullPath = explode(',', $nodePath);
+        array_pop($fullPath); // Remove extra element
+        array_pop($fullPath); // Remove the $nodes path
+
+        $ancestorsPaths = array();
+        $previous = null;
+        foreach ($fullPath as $path)
+        {
+            $ancestorsPaths[] = $previous . $path . ',';
+            $previous = $previous . $path . ',';
+        }
+
+        return $ancestorsPaths;
     }
 
     /**

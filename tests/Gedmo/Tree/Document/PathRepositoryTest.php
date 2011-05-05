@@ -201,6 +201,60 @@ class PathRepositoryTest extends BaseTestCaseMongoODM
         $this->clearCollection();
     }
 
+    public function testFindAncestorsSimple()
+    {
+    	$this->clearCollection();
+
+    	/**
+         * Create a tree like
+         * - a ; 5 descendants
+         *     - b
+         *     - c
+         *     - a ; 2 descendants
+         *         - e
+         *         - f
+         */
+        $a = new Category();
+        $a->setTitle('A');
+
+        $ab = new Category();
+        $ab->setTitle('B');
+        $ab->setParent($a);
+
+        $ac = new Category();
+        $ac->setTitle('C');
+        $ac->setParent($a);
+
+        $aa = new Category();
+        $aa->setTitle('A');
+        $aa->setParent($a);
+
+        $aae = new Category();
+        $aae->setTitle('E');
+        $aae->setParent($aa);
+
+        $aaf = new Category();
+        $aaf->setTitle('F');
+        $aaf->setParent($aa);
+
+        $this->dm->persist($a);
+        $this->dm->persist($ab);
+        $this->dm->persist($ac);
+        $this->dm->persist($aa);
+        $this->dm->persist($aae);
+        $this->dm->persist($aaf);
+
+        $this->dm->flush(array('safe' => true));
+
+        $repo = $this->dm->getRepository(self::CATEGORY);
+
+        $ancestors = $repo->findAncestors($aaf)->toArray();
+
+        $this->assertTrue((sizeof($ancestors) == 2));
+        $this->assertTrue(isset($ancestors[$aa->getId()]));
+        $this->assertTrue(isset($ancestors[$a->getId()]));
+    }
+
     /**
      * Remove all nodes from the collection so a different test does not
      * have to deal with them

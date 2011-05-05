@@ -99,6 +99,15 @@ class PathRepository extends AbstractTreeRepository
         return $qb->getQuery()->execute();
     }
 
+    public function deleteDescendants($parentPath)
+    {
+    	$qb = $this->getDescendantsQueryBuilder($parentPath)
+            ->remove()
+            ->getQuery(array('safe' => true))
+            ->execute()
+        ;
+    }
+
     /**
      * Gets the query builder for finding a nodes descendants
      *
@@ -111,6 +120,47 @@ class PathRepository extends AbstractTreeRepository
         ;
 
         return $qb;
+    }
+
+    public function decreaseChildCount(Node $node, $decreaseBy = 1)
+    {
+        $this->createQueryBuilder()
+            ->field('id')->equals(new \MongoId($node->getParent()->getId()))
+            ->update()
+            ->field('childCount')->inc(-1 * $decreaseBy)
+            ->getQuery(array('safe' => true))
+            ->execute()
+        ;
+    }
+
+    /**
+     * Finds all ancestors for the given $node
+     *
+     * @param Node $node
+     * @param string $sortBy
+     * @param string $sortDir
+     */
+    public function findAncestors(Node $node, $sortBy = false, $sortDir = false)
+    {
+    	if (($sortBy && !$sortDir) || (!$sortBy && $sortDir)) {
+    		throw new \InvalidArgumentException('You must specifiy both $sortBy and $sortDir');
+    	}
+
+    	$meta = $this->getClassMetadata();
+    	$ancestorsPaths = $this->listener
+    	   ->getStrategy($this->dm, $meta->name)
+    	   ->getAncestorsPath($node)
+        ;
+
+        $qb = $this->createQueryBuilder()
+            ->field('path')->in($ancestorsPaths)
+        ;
+
+        if ($sortBy && $sortDir) {
+        	$qb->sort($sortBy, $sortDir);
+        }
+
+        return $qb->getQuery()->execute();
     }
 
     /**
