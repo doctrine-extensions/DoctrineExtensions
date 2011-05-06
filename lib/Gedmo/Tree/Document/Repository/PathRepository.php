@@ -34,8 +34,9 @@ class PathRepository extends AbstractTreeRepository
      * @param int       $startingSort
      * @param boolean   $rootNodePath
      * @param int       $increaseBy
+     * @param int       $endingSort
      */
-    public function increaseSort($startingSort, $equal = false, $increaseBy = 1)
+    public function increaseSort($startingSort, $equal = false, $increaseBy = 1, $endingSort = 0)
     {
         // @todo Support config values
         $qb = $this->createQueryBuilder();
@@ -44,6 +45,12 @@ class PathRepository extends AbstractTreeRepository
             $qb->field('sortOrder')->gte($startingSort);
         } else {
             $qb->field('sortOrder')->gt($startingSort);
+        }
+
+        if ($equal && $endingSort) {
+            $qb->field('sortOrder')->lte($endingSort);
+        } else if ($endingSort) {
+            $qb->field('sortOrder')->lt($endingSort);
         }
 
         //->field('path')->equals(new \MongoRegex('/^' . $rootNodePath . ',/i')) @todo For later

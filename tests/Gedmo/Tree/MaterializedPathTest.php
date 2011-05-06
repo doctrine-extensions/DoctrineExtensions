@@ -541,6 +541,59 @@ class MaterializedPathTest extends BaseTestCaseMongoODM
         $this->clearCollection();
     }
 
+    public function testMovingNode()
+    {
+        $this->clearCollection();
+
+        $this->populate();
+
+        // Clear dm so that all new nodes we just inserted are not managed
+        $this->dm->clear();
+
+        $repo = $this->dm->getRepository(self::CATEGORY);
+
+        $root = $repo->findOneBy(array('path' => 'root-1,'));
+        $child = $repo->findOneBy(array('path' => 'root-1,child,'));
+
+        $class = get_class($child);
+        $meta = $this->dm->getClassMetadata($class);
+        $this->listener->getStrategy($this->dm, $class)
+            ->moveNode($this->dm, $child, null, Path::PREV_SIBLING)
+        ;
+
+        // @todo In memory nodes do not update
+        $this->dm->clear();
+        $root = $repo->findOneBy(array('path' => 'root-1,'));
+        $child = $repo->findOneBy(array('path' => 'child,'));
+
+        $subChild = $this->dm->getRepository(self::CATEGORY)
+            ->findOneBy(array('title' => 'Sub Child'))
+        ;
+        $subChild2 = $this->dm->getRepository(self::CATEGORY)
+            ->findOneBy(array('title' => 'Sub Child #2'))
+        ;
+
+        $this->assertEquals(0, $root->getChildCount());
+        $this->assertEquals(4, $root->getSortOrder());
+        $this->assertEquals('root-1,', $root->getPath());
+
+        $this->assertEquals(2, $child->getChildCount());
+        $this->assertEquals(1, $child->getSortOrder());
+        $this->assertEquals('child,', $child->getPath());
+        $this->assertNull($child->getParent());
+
+        $this->assertEquals(0, $subChild->getChildCount());
+        $this->assertEquals(2, $subChild->getSortOrder());
+        $this->assertEquals('child,sub-child,', $subChild->getPath());
+        $this->assertEquals($child, $subChild->getParent());
+
+        $this->assertEquals(0, $subChild2->getChildCount());
+        $this->assertEquals(3, $subChild2->getSortOrder());
+        $this->assertEquals('child,sub-child-2,', $subChild2->getPath());
+        $this->assertEquals($child, $subChild2->getParent());
+
+    }
+
     public function testSimpleDeleteNode()
     {
     	$this->clearCollection();

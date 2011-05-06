@@ -277,6 +277,109 @@ class Path implements Strategy
     {}
 
     /**
+     *
+     * Note: The current exspense of this method is 3 + n where
+     * n = numbder of descendants a node has.
+     *
+     * @param $dm
+     * @param $node
+     * @param $referenceNode
+     * @param $position
+     */
+    public function moveNode(DocumentManager $dm, $node, $referenceNode, $position = self::FIRST_CHILD)
+    {
+        $meta = $dm->getClassMetadata(get_class($node));
+        $config = $this->listener->getConfiguration($dm, $meta->name);
+        $repo = $dm->getRepository($config['useObjectClass']);
+        $oid = spl_object_hash($node);
+        $nodeId = $meta->getIdentifierValue($node);
+        $parent = null;
+
+        $nodeParent = $meta->getReflectionProperty($config['parent'])->getValue($node);
+        $nodeSort = $meta->getReflectionProperty($config['sort'])->getValue($node);
+        $nodePath = $meta->getReflectionProperty($config['path'])->getValue($node);
+        $nodeDescendants = $repo->fetchDescendants($nodePath, $config['sort'], 'asc');
+        $descendantCount = $nodeDescendants->count();
+
+        if ($referenceNode) {
+            $referenceNodeParent = $meta->getReflectionProperty($config['parent'])->getValue($referenceNode);
+            $referenceNodeSort = $meta->getReflectionProperty($config['sort'])->getValue($referenceNode);
+        	$parent = $referenceNodeParent;
+
+            switch ($position) {
+
+            	case self::PREV_SIBlING:
+                    // This is simple
+                    // The new sort is reference node sort then we increase
+                    // everything greater than the new sort
+                    $newSort = $referenceNodeParent;
+
+                     // Make room for new nodes
+                    $repo->increaseSort($newSort, true, $nodeDescendants + 1);
+
+                    // Update the descendants sort
+                    $decreaseBy = $nodeSort - $newSort;
+                    $endingSort = $newSort + $nodeDescendants->count();
+                    $repo->increaseSort($newSort, false, -1 * $decreaseBy, $endingSort);
+            	break;
+
+            }
+
+	        // Subtract one from parent of the node if the new parent is not eqaul
+	        // to existing
+	        if ($referenceNodeParent != $nodeParent) {
+	            $repo->decreaseChildCount($node, 1);
+	        }
+        } else {
+        	// We have no reference node, so this will now become the very
+        	// first node in the tree
+        	$newSort = 1;
+
+        	$decreaseBy = 1 + $descendantCount + ($nodeSort - $newSort);
+            $endingSort = $nodeSort + ($descendantCount * 2) + 2;
+            $repo->increaseSort($newSort, true, 1 + $descendantCount);
+            $repo->increaseSort($newSort + $descendantCount + 1, false, -1 * $decreaseBy, $endingSort);
+        }
+
+        if ($parent != $nodeParent) {
+
+            // @todo This need to be updated in memory?
+            $repo->decreaseChildCount($node);
+
+            $childCountProp = $meta->getReflectionProperty($config['childCount']);
+            $newChildCount = $childCountProp->getValue($nodeParent) - 1;
+            $dm->getUnitOfWork()->setOriginalDocumentProperty(spl_object_hash($nodeParent), $config['path'], $newChildCount - 1);
+
+	        $qb = $dm->createQueryBuilder($config['useObjectClass']);
+	        $qb->field('id')->equals(new \MongoId($nodeId))
+	            ->update()
+	        ;
+
+            $ref = null;
+            if ($parent) {
+                $ref = $dm->createDBRef($parent, null);
+            }
+
+            $qb->field($config['parent'])->set($ref);
+            $meta->getReflectionProperty($config['parent'])->setValue($node, $parent);
+            $dm->getUnitOfWork()->setOriginalDocumentProperty($oid, $config['parent'], $parent);
+
+            // Update node path
+            $nodePath = $this->updateNodesPath($dm, $node, $nodeDescendants);
+
+            $qb->field($config['path'])->set($nodePath)
+                ->getQuery()
+                ->execute()
+            ;
+
+            $meta->getReflectionProperty($config['path'])->setValue($node, $nodePath);
+            $dm->getUnitOfWork()->setOriginalDocumentProperty($oid, $config['path'], $nodePath);
+        }
+
+        $dm->flush();
+    }
+
+    /**
      * Update the $node with a diferent $parent
      * destination
      *
@@ -291,7 +394,7 @@ class Path implements Strategy
      * @throws Gedmo\Exception\UnexpectedValueException
      * @return void
      */
-    public function updateNode(DocumentManager $dm, $node, $referenceNode, $position = 'FirstChild')
+    public function updateNode(DocumentManager $dm, $node, $referenceNode, $position = self::FIRST_CHILD)
     {
         $meta = $dm->getClassMetadata(get_class($node));
         $config = $this->listener->getConfiguration($dm, $meta->name);
@@ -305,9 +408,16 @@ class Path implements Strategy
             $position = $this->nodePositions[$oid];
         }
 
+        $referenceNodeSort = 0;
+        if ($referenceNode) {
+            $referenceNodeSort = $meta->getReflectionProperty($config['sort'])->getValue($referenceNode);
+        }
+        $currentNodePath = $meta->getReflectionProperty($config['path'])->getValue($node);
+        $nodeCurrentSort = $meta->getReflectionProperty($config['sort'])->getValue($node);
         $parent = null;
         $sortOrder = 1;
         $equal = false;
+
         if ($referenceNode) {
             if ($referenceNode instanceof Proxy && !$parent->__isInitialized__) {
                 $dm->refresh($referenceNode);
@@ -326,8 +436,6 @@ class Path implements Strategy
                         $parentDescendants = $dm->getRepository($config['useObjectClass'])->countDescendants($parentPath);
                     }
 
-                    $referenceNodeSort = $meta->getReflectionProperty($config['sort'])->getValue($referenceNode);
-
                     // Set the new nodes sort to be the reference node sort and then update all nodes equal
                     // to the reference node sort
                     $sortOrder = $referenceNodeSort;
@@ -338,7 +446,6 @@ class Path implements Strategy
 
                 	// Get reference nodes parent
                     $parent = $meta->getReflectionProperty($config['parent'])->getValue($referenceNode);
-                    $referenceNodeSort = $meta->getReflectionProperty($config['sort'])->getValue($referenceNode);
                     $referencePath = $meta->getReflectionProperty($config['path'])->getValue($referenceNode);
                     $referenceDescendants = $dm->getRepository($config['useObjectClass'])->countDescendants($referencePath);
 
@@ -503,7 +610,7 @@ class Path implements Strategy
      *
      * @param $node
      */
-    public function updateNodesPath(DocumentManager $dm, $parentNode)
+    public function updateNodesPath(DocumentManager $dm, $parentNode, $descendants = null)
     {
     	$meta = $dm->getClassMetadata(get_class($parentNode));
         $config = $this->listener->getConfiguration($dm, $meta->name);
@@ -517,8 +624,11 @@ class Path implements Strategy
 
         // @todo Working method but this can use a lot of resources to load all
         // descendants into memory
-        $rows = $repo->fetchDescendants($oldParentPath, $config['sort'], 'asc');
-        foreach ($rows as $descendant)
+        if (!$descendants) {
+        	$descendants = $repo->fetchDescendants($oldParentPath, $config['sort'], 'asc');
+        }
+
+        foreach ($descendants as $descendant)
         {
             // @todo Require a single sluggable field so we do not have
             // to recompute the sluge for descendants. This will remove
@@ -553,6 +663,8 @@ class Path implements Strategy
         	}
         }
          */
+
+        return $pathProp->getValue($parentNode);
     }
 
     public function getAncestorsPath(Node $node)

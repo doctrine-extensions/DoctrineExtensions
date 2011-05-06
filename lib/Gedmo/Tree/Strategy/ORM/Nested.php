@@ -25,7 +25,7 @@ use Gedmo\Tree\Strategy,
 class Nested implements Strategy
 {
     const PATH = 'path';
-    
+
     /**
      * Previous sibling position
      */
