@@ -4,9 +4,7 @@ namespace Gedmo\Sluggable;
 
 use Doctrine\Common\EventManager;
 use Tool\BaseTestCaseORM;
-use Doctrine\Common\Util\Debug,
-    Sluggable\Fixture\Post,
-    Sluggable\Fixture\Article;
+use Sluggable\Fixture\Article;
 
 /**
  * These are tests for sluggable behavior
@@ -19,8 +17,6 @@ use Doctrine\Common\Util\Debug,
 class SluggableTest extends BaseTestCaseORM
 {
     const ARTICLE = 'Sluggable\\Fixture\\Article';
-    const POST    = 'Sluggable\\Fixture\\Post';
-    
     private $articleId;
 
     protected function setUp()
@@ -54,18 +50,6 @@ class SluggableTest extends BaseTestCaseORM
             $this->em->clear();
             $this->assertEquals($article->getSlug(), 'the-title-my-code-' . ($i + 1));
         }
-    }
-    
-    public function testPositionedSlugGeneration()
-    {
-         $post = new Post();
-         $post->setTitle('the title');
-         $post->setCode('my code');
-         
-         $this->em->persist($post);
-         $this->em->flush();
-         $this->em->clear();
-         $this->assertEquals($post->getSlug(), 'my-code-the-title');
     }
 
     public function testUniqueSlugLimit()
@@ -126,11 +110,27 @@ class SluggableTest extends BaseTestCaseORM
         $this->assertEquals($article->getSlug(), 'the-title-updated-my-code');
     }
 
+    public function testGithubIssue45()
+    {
+        $article = new Article;
+        $article->setTitle('test');
+        $article->setCode('code');
+        $this->em->persist($article);
+
+        $article2 = new Article;
+        $article2->setTitle('test');
+        $article2->setCode('code');
+        $this->em->persist($article2);
+
+        $this->em->flush();
+        $this->assertEquals('test-code', $article->getSlug());
+        $this->assertEquals('test-code-1', $article2->getSlug());
+    }
+
     protected function getUsedEntityFixtures()
     {
         return array(
             self::ARTICLE,
-            self::POST
         );
     }
 
