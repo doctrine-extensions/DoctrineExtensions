@@ -110,11 +110,6 @@ class Yaml extends File implements Driver
                             throw new InvalidMappingException("Tree root field - [{$field}] type is not valid and must be 'integer' in class - {$meta->name}");
                         }
                         $config['root'] = $field;
-                    } elseif (in_array('treeChildCount', $fieldMapping['gedmo'])) {
-                        if (!$this->isValidField($meta, $field)) {
-                            throw new InvalidMappingException("Tree child count field - [{$field}] type is not valid and must be 'integer' in class - {$meta->name}");
-                        }
-                        $config['childCount'] = $field;
                     }
                 }
             }

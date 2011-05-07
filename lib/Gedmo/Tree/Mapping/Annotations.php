@@ -25,7 +25,6 @@ final class TreeRight extends Annotation {}
 final class TreeParent extends Annotation {}
 final class TreeLevel extends Annotation {}
 final class TreeRoot extends Annotation {}
-final class TreeChildCount extends Annotation {}
 final class TreeClosure extends Annotation
 {
     public $class; 

@@ -24,10 +24,18 @@ interface Strategy
     /**
      * Initialize strategy with tree listener
      *
-     * @param AbstractTreeListener $listener
+     * @param TreeListener $listener
      * @return void
      */
     function __construct(TreeListener $listener);
+
+    /**
+     * Operations after metadata is loaded
+     *
+     * @param object $om
+     * @param ClassMetadata $meta
+     */
+    function processMetadataLoad($om, $meta);
 
     /**
      * Operations on tree node insertion
@@ -48,7 +56,7 @@ interface Strategy
     function processScheduledUpdate($om, $object);
 
     /**
-     * Operations on tree node deletions
+     * Operations on tree node delete
      *
      * @param object $om - object manager
      * @param object $object - node

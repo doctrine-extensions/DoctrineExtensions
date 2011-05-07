@@ -210,6 +210,12 @@ class Nested implements Strategy
     {}
 
     /**
+     * {@inheritdoc}
+     */
+    public function processMetadataLoad($em, $meta)
+    {}
+
+    /**
      * Update the $node with a diferent $parent
      * destination
      *

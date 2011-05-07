@@ -7,12 +7,10 @@ class ClosureCategory
     private $id;
 
     private $title;
-    
+
     private $children;
 
     private $parent;
-    
-    private $childCount;
 
     /**
      * Get id

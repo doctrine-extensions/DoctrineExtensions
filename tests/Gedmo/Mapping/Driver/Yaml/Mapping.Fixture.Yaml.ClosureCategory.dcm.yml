@@ -10,15 +10,11 @@ Mapping\Fixture\Yaml\ClosureCategory:
   gedmo:
     tree:
       type: closure
-      closure: Mapping\Fixture\Yaml\BaseCategory
+      closure: Tree\Fixture\Closure\CategoryClosure
   fields:
     title:
       type: string
       length: 64
-    childCount:
-      type: integer
-      gedmo:
-        - treeChildCount
   manyToOne:
     parent:
       targetEntity: Mapping\Fixture\Yaml\ClosureCategory

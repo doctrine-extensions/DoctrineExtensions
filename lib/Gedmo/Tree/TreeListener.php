@@ -5,6 +5,7 @@ namespace Gedmo\Tree;
 use Doctrine\Common\EventArgs,
     Gedmo\Mapping\MappedEventSubscriber;
 
+
 /**
  * The tree listener handles the synchronization of
  * tree nodes. Can implement diferent
@@ -189,7 +190,12 @@ class TreeListener extends MappedEventSubscriber
     public function loadClassMetadata(EventArgs $eventArgs)
     {
         $ea = $this->getEventAdapter($eventArgs);
-        $this->loadMetadataForObjectClass($ea->getObjectManager(), $eventArgs->getClassMetadata());
+        $om = $ea->getObjectManager();
+        $meta = $eventArgs->getClassMetadata();
+        $this->loadMetadataForObjectClass($om, $meta);
+        if ($config = $this->getConfiguration($om, $meta->name)) {
+            $this->getStrategy($om, $meta->name)->processMetadataLoad($om, $meta);
+        }
     }
 
     /**
