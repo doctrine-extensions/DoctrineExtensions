@@ -190,10 +190,17 @@ class QueryAnalyzer implements SQLLogger
             return $sql;
         }
         $converted = $this->getConvertedParams($params, $types);
-        $index = key($converted);
-        return preg_replace_callback('@\?@sm', function($match) use (&$index, $converted) {
-            return $converted[$index++];
-        }, $sql);
+        if (is_int(key($params))) {
+            $index = key($converted);
+            $sql = preg_replace_callback('@\?@sm', function($match) use (&$index, $converted) {
+                return $converted[$index++];
+            }, $sql);
+        } else {
+            foreach ($converted as $key => $value) {
+                $sql = str_replace(':' . $key, $value, $sql);
+            }
+        }
+        return $sql;
     }
 
     /**
@@ -217,7 +224,10 @@ class QueryAnalyzer implements SQLLogger
                 }
             } else {
                 if (is_object($value) && $value instanceof \DateTime) {
-                    $value = $value->format('Y-m-d H:i:s');
+                    $value = $value->format($this->platform->getDateTimeFormatString());
+                } elseif (!is_null($value)) {
+                    $type = Type::getType(gettype($value));
+                    $value = $type->convertToDatabaseValue($value, $this->platform);
                 }
             }
             if (is_string($value)) {
