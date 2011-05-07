@@ -30,6 +30,14 @@ interface Strategy
     function __construct(TreeListener $listener);
 
     /**
+     * Operations after metadata is loaded
+     *
+     * @param object $om
+     * @param ClassMetadata $meta
+     */
+    function processMetadataLoad($om, $meta);
+
+    /**
      * Operations on tree node insertion
      *
      * @param object $om - object manager

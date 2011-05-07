@@ -1,15 +1,17 @@
 # Tree - Nestedset behavior extension for Doctrine 2
 
-**Tree** nested behavior will implement the standard Nested Set behavior
-on your Entity. Also this behavior can be nested with **Translatable**
-and **Sluggable** behaviors to translate the generated slugs into diferent languages
-of your tree nodes.
+**Tree** nested behavior will implement the standard Nested-Set behavior
+on your Entity. Tree supports different strategies and currently the alternative
+to **nested-set** can be **closure-table** tree. Also this behavior can be nested 
+with other extensions to translate or generated slugs of your tree nodes.
 
 Features:
-- Support for multiple roots
+
+- Closure tree strategy, may be faster in some cases where ordering does not matter
+- Support for multiple roots in nested-set
 - No need for other managers, implementation is through event listener
 - Synchronization of left, right values is automatic
-- Can support concurrent flush with many entities being persisted and updated
+- Can support concurrent flush with many objects being persisted and updated
 - Can be nested with other extensions
 - Annotation and Yaml mapping support for extensions
 
@@ -20,6 +22,12 @@ Thanks for contributions to:
 - **[comfortablynumb](http://github.com/comfortablynumb) Gustavo Adrian** for Closure strategy
 - **[everzet](http://github.com/everzet) Kudryashov Konstantin** for TreeLevel implementation
 - **[stof](http://github.com/stof) Christophe Coevoet** for getTreeLeafs function
+
+Update **2011-05-07**
+
+- Tree is now able to act as **closure** tree, this strategy was refactored
+and now fully functional. It is much faster for file-folder trees for instance
+where you do not care about tree ordering.
 
 Update **2011-04-11**
 

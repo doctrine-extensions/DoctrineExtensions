@@ -2,10 +2,12 @@
 
 namespace Gedmo\Tree\Strategy\ORM;
 
-use Gedmo\Tree\Strategy,
-    Doctrine\ORM\EntityManager,
-    Doctrine\ORM\Proxy\Proxy,
-    Gedmo\Tree\TreeListener;
+use Gedmo\Exception\RuntimeException;
+use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Gedmo\Tree\Strategy;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\Proxy\Proxy;
+use Gedmo\Tree\TreeListener;
 
 /**
  * This strategy makes tree act like
@@ -34,14 +36,7 @@ class Closure implements Strategy
      *
      * @var array
      */
-    protected $pendingChildNodeInserts = array();
-
-    /**
-     * List of pending Nodes to remove
-     *
-     * @var array
-     */
-    protected $pendingNodesForRemove = array();
+    private $pendingChildNodeInserts = array();
 
     /**
      * {@inheritdoc}
@@ -62,119 +57,145 @@ class Closure implements Strategy
     /**
      * {@inheritdoc}
      */
+    public function processMetadataLoad($em, $meta)
+    {
+        $config = $this->listener->getConfiguration($em, $meta->name);
+        $closureMetadata = $em->getClassMetadata($config['closure']);
+        // create ancestor mapping
+        $ancestorMapping = array(
+            'fieldName' => 'ancestor',
+            'id' => false,
+            'joinColumns' => array(
+                array(
+                    'name' => 'ancestor',
+                    'referencedColumnName' => 'id',
+                    'unique' => false,
+                    'nullable' => false,
+                    'onDelete' => 'CASCADE',
+                    'onUpdate' => null,
+                    'columnDefinition' => null,
+                )
+            ),
+            'inversedBy' => null,
+            'targetEntity' => $meta->name,
+            'cascade' => null,
+            'fetch' => ClassMetadataInfo::FETCH_LAZY
+        );
+        $closureMetadata->mapManyToOne($ancestorMapping);
+        // create descendant mapping
+        $descendantMapping = array(
+            'fieldName' => 'descendant',
+            'id' => false,
+            'joinColumns' => array(
+                array(
+                    'name' => 'descendant',
+                    'referencedColumnName' => 'id',
+                    'unique' => false,
+                    'nullable' => false,
+                    'onDelete' => 'CASCADE',
+                    'onUpdate' => null,
+                    'columnDefinition' => null,
+                )
+            ),
+            'inversedBy' => null,
+            'targetEntity' => $meta->name,
+            'cascade' => null,
+            'fetch' => ClassMetadataInfo::FETCH_LAZY
+        );
+        $closureMetadata->mapManyToOne($descendantMapping);
+        // create unique index on ancestor and descendant
+        $indexName = substr(strtoupper("IDX_" . md5($closureMetadata->name)), 0, 20);
+        $closureMetadata->table['uniqueConstraints'][$indexName] = array(
+            'columns' => array('ancestor', 'descendant')
+        );
+        // this one may not be very usefull
+        $indexName = substr(strtoupper("IDX_" . md5($meta->name . 'depth')), 0, 20);
+        $closureMetadata->table['indexes']['depth_index'] = array(
+            'columns' => array('depth')
+        );
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function onFlushEnd($em)
+    {}
+
+    /**
+     * {@inheritdoc}
+     */
     public function processPrePersist($em, $node)
     {
+        $this->pendingChildNodeInserts[spl_object_hash($node)] = $node;
     }
 
     /**
      * {@inheritdoc}
      */
     public function processPreRemove($em, $node)
-    {
-    }
+    {}
 
      /**
      * {@inheritdoc}
      */
-    public function processScheduledInsertion($em, $entity)
-    {
-        $this->pendingChildNodeInserts[] = $entity;
+    public function processScheduledInsertion($em, $node)
+    {}
 
-        $meta = $em->getClassMetadata(get_class($entity));
-        $config = $this->listener->getConfiguration($em, $meta->name);
-
-        if (isset( $config['childCount'])) {
-            // We set by default 0 on insertions for childCount field
-            $meta->getReflectionProperty($config['childCount'])->setValue($entity, 0);
-        }
-    }
+    /**
+     * {@inheritdoc}
+     */
+    public function processScheduledDelete($em, $entity)
+    {}
 
     /**
      * {@inheritdoc}
      */
     public function processPostPersist($em, $entity)
     {
-        if (count($this->pendingChildNodeInserts)) {
-            while ($e = array_shift($this->pendingChildNodeInserts)) {
-                $this->insertNode($em, $e);
-            }
+        $uow = $em->getUnitOfWork();
+        if ($uow->hasPendingInsertions()) {
+            return;
+        }
 
-            // If "childCount" property is in the schema, we recalculate child count of all entities
-            $meta = $em->getClassMetadata(get_class($entity));
+        while ($node = array_shift($this->pendingChildNodeInserts)) {
+            $meta = $em->getClassMetadata(get_class($node));
             $config = $this->listener->getConfiguration($em, $meta->name);
-            if (isset($config['childCount'])) {
-                $this->recalculateChildCountForEntities($em, get_class($entity));
-            }
-        }
-    }
 
-    /**
-     * Insert node and closures
-     *
-     * @param EntityManager $em
-     * @param object $entity
-     * @param bool $addNodeChildrenToAncestors
-     * @throws \Gedmo\Exception\RuntimeException - if closure insert fails
-     */
-    public function insertNode(EntityManager $em, $entity, $addNodeChildrenToAncestors = false)
-    {
-        $meta = $em->getClassMetadata(get_class($entity));
-        $config = $this->listener->getConfiguration($em, $meta->name);
-        $identifier = $meta->getSingleIdentifierFieldName();
-        $id = $this->extractIdentifier($em, $entity);
-        $closureMeta = $em->getClassMetadata($config['closure']);
-        $entityTable = $meta->getTableName();
-        $closureTable = $closureMeta->getTableName();
-        $entries = array();
-        $childrenIDs = array();
-        $ancestorsIDs = array();
+            $identifier = $meta->getSingleIdentifierFieldName();
+            $nodeId = $meta->getReflectionProperty($identifier)->getValue($node);
+            $parent = $meta->getReflectionProperty($config['parent'])->getValue($node);
 
-        // If node has children it means it already has a self referencing row, so we skip its insertion
-        if ($addNodeChildrenToAncestors === false) {
-            $entries[] = array(
-                'ancestor' => $id,
-                'descendant' => $id,
-                'depth' => 0
+            $closureClass = $config['closure'];
+            $closureMeta = $em->getClassMetadata($closureClass);
+            $closureTable = $closureMeta->getTableName();
+            $entries = array(
+                array(
+                    'ancestor' => $nodeId,
+                    'descendant' => $nodeId,
+                    'depth' => 0
+                )
             );
-        }
 
-        $parent = $meta->getReflectionProperty($config['parent'])->getValue($entity);
+            if ($parent) {
+                $dql = "SELECT c, a FROM {$closureMeta->name} c";
+                $dql .= " JOIN c.ancestor a";
+                $dql .= " WHERE c.descendant = :parent";
+                $q = $em->createQuery($dql);
+                $q->setParameters(compact('parent'));
+                $ancestors = $q->getArrayResult();
 
-        if ($parent) {
-            $parentId = $meta->getReflectionProperty($identifier)->getValue($parent);
-            $dql = "SELECT c.ancestor, c.depth FROM {$closureMeta->name} c";
-            $dql .= " WHERE c.descendant = {$parentId}";
-            $ancestors = $em->createQuery($dql)->getArrayResult();
-
-            foreach ($ancestors as $ancestor) {
-                $entries[] = array(
-                    'ancestor' => $ancestor['ancestor'],
-                    'descendant' => $id,
-                    'depth' => $ancestor['depth'] + 1
-                );
-                $ancestorsIDs[] = $ancestor['ancestor'];
-
-                if ($addNodeChildrenToAncestors === true) {
-                    $dql = "SELECT c.descendant, c.depth FROM {$closureMeta->name} c";
-                    $dql .= " WHERE c.ancestor = {$id} AND c.ancestor != c.descendant";
-                    $children = $em->createQuery($dql)
-                        ->getArrayResult();
-
-                    foreach ($children as $child) {
-                        $entries[] = array(
-                            'ancestor' => $ancestor['ancestor'],
-                            'descendant' => $child['descendant'],
-                            'depth' => $child['depth'] + 1
-                        );
-                        $childrenIDs[] = $child['descendant'];
-                    }
+                foreach ($ancestors as $ancestor) {
+                    $entries[] = array(
+                        'ancestor' => $ancestor['ancestor']['id'],
+                        'descendant' => $nodeId,
+                        'depth' => $ancestor['depth'] + 1
+                    );
                 }
             }
-        }
-
-        foreach ($entries as $closure) {
-            if (!$em->getConnection()->insert($closureTable, $closure)) {
-                throw new \Gedmo\Exception\RuntimeException('Failed to insert new Closure record');
+            foreach ($entries as $closure) {
+                if (!$em->getConnection()->insert($closureTable, $closure)) {
+                    throw new RuntimeException('Failed to insert new Closure record');
+                }
             }
         }
     }
@@ -182,20 +203,14 @@ class Closure implements Strategy
     /**
      * {@inheritdoc}
      */
-    public function processScheduledUpdate($em, $entity)
+    public function processScheduledUpdate($em, $node)
     {
-        $entityClass = get_class($entity);
-        $config = $this->listener->getConfiguration($em, $entityClass);
-        $meta = $em->getClassMetadata($entityClass);
+        $meta = $em->getClassMetadata(get_class($node));
+        $config = $this->listener->getConfiguration($em, $meta->name);
         $uow = $em->getUnitOfWork();
-        $changeSet = $uow->getEntityChangeSet($entity);
+        $changeSet = $uow->getEntityChangeSet($node);
         if (array_key_exists($config['parent'], $changeSet)) {
-            $this->updateNode($em, $entity, $changeSet[$config['parent']]);
-        }
-
-        // If "childCount" property is in the schema, we recalculate child count of all entities
-        if (isset($config['childCount'])) {
-            $this->recalculateChildCountForEntities($em, get_class($entity));
+            $this->updateNode($em, $node, $changeSet[$config['parent']][0]);
         }
     }
 
@@ -203,113 +218,61 @@ class Closure implements Strategy
      * Update node and closures
      *
      * @param EntityManager $em
-     * @param object $entity
-     * @param array $change - changeset of parent
+     * @param object $node
+     * @param object $oldParent
      */
-    public function updateNode(EntityManager $em, $entity, array $change)
+    public function updateNode(EntityManager $em, $node, $oldParent)
     {
-        $meta = $em->getClassMetadata(get_class($entity));
+        $meta = $em->getClassMetadata(get_class($node));
         $config = $this->listener->getConfiguration($em, $meta->name);
         $closureMeta = $em->getClassMetadata($config['closure']);
-        $oldParent = $change[0];
-        $nodeId = $this->extractIdentifier($em, $entity);
+
+        $nodeId = $this->extractIdentifier($em, $node);
+        $parent = $meta->getReflectionProperty($config['parent'])->getValue($node);
         $table = $closureMeta->getTableName();
+        $conn = $em->getConnection();
+        // ensure integrity
+        if ($parent) {
+            $dql = "SELECT COUNT(c) FROM {$closureMeta->name} c";
+            $dql .= " WHERE c.ancestor = :node";
+            $dql .= " AND c.descendant = :parent";
+            $q = $em->createQuery($dql);
+            $q->setParameters(compact('node', 'parent'));
+            if ($q->getSingleScalarResult()) {
+                throw new \Gedmo\Exception\UnexpectedValueException("Cannot set child as parent to node: {$nodeId}");
+            }
+        }
 
         if ($oldParent) {
-            $this->removeClosurePathsOfNodeID($em, $table, $nodeId);
-            $this->insertNode($em, $entity, true);
+            $subQuery = "SELECT c2.id FROM {$table} c1";
+            $subQuery .= " JOIN {$table} c2 ON c1.descendant = c2.descendant";
+            $subQuery .= " WHERE c1.ancestor = :nodeId AND c2.depth > c1.depth";
+
+            $ids = $conn->fetchAll($subQuery, compact('nodeId'));
+            if ($ids) {
+                $ids = array_map(function($el) {
+                    return $el['id'];
+                }, $ids);
+            }
+            // using subquery directly, sqlite acts unfriendly
+            $query = "DELETE FROM {$table} WHERE id IN (".implode(', ', $ids).")";
+            if (!$conn->executeQuery($query)) {
+                throw new RuntimeException('Failed to remove old closures');
+            }
         }
-    }
+        if ($parent) {
+            $parentId = $this->extractIdentifier($em, $parent);
+            $query = "SELECT c1.ancestor, c2.descendant, (c1.depth + c2.depth + 1) AS depth";
+            $query .= " FROM {$table} c1, {$table} c2";
+            $query .= " WHERE c1.descendant = :parentId";
+            $query .= " AND c2.ancestor = :nodeId";
 
-    /**
-     * {@inheritdoc}
-     */
-    public function processScheduledDelete($em, $entity)
-    {
-        $this->removeNode($em, $entity);
-
-        // If "childCount" property is in the schema, we recalculate child count of all entities
-        $meta = $em->getClassMetadata(get_class($entity));
-        $config = $this->listener->getConfiguration($em, $meta->name);
-
-        if (isset($config['childCount'])) {
-            $this->recalculateChildCountForEntities($em, get_class( $entity ));
-        }
-    }
-
-    /**
-     * Remove node and associated closures
-     *
-     * @param EntityManager $em
-     * @param object $entity
-     * @param bool $maintainSelfReferencingRow
-     * @param bool $maintainSelfReferencingRowOfChildren
-     */
-    public function removeNode(EntityManager $em, $entity, $maintainSelfReferencingRow = false, $maintainSelfReferencingRowOfChildren = false)
-    {
-        $meta = $em->getClassMetadata(get_class($entity));
-        $config = $this->listener->getConfiguration($em, $meta->name);
-        $closureMeta = $em->getClassMetadata($config['closure']);
-        $id = $this->extractIdentifier($em, $entity);
-
-        $this->removeClosurePathsOfNodeID($em, $closureMeta->getTableName(), $id, $maintainSelfReferencingRow, $maintainSelfReferencingRowOfChildren);
-    }
-
-    /**
-     * Remove closures for node $nodeId
-     *
-     * @param EntityManager $em
-     * @param string $table
-     * @param integer $nodeId
-     * @param bool $maintainSelfReferencingRow
-     * @param bool $maintainSelfReferencingRowOfChildren
-     * @throws \Gedmo\Exception\RuntimeException - if deletion of closures fails
-     */
-    public function removeClosurePathsOfNodeID(EntityManager $em, $table, $nodeId, $maintainSelfReferencingRow = true, $maintainSelfReferencingRowOfChildren = true)
-    {
-        $subquery = "SELECT c1.id FROM {$table} c1 ";
-        $subquery .= "WHERE c1.descendant IN (SELECT c2.descendant FROM {$table} c2 WHERE c2.ancestor = :id) ";
-        $subquery .= "AND (c1.ancestor IN (SELECT c3.ancestor FROM {$table} c3 WHERE c3.descendant = :id ";
-
-        if ($maintainSelfReferencingRow === true) {
-            $subquery .= "AND c3.descendant != c3.ancestor ";
-        }
-
-        if ( $maintainSelfReferencingRowOfChildren === false) {
-            $subquery .= " OR c1.descendant = c1.ancestor ";
-        }
-
-        $subquery .= " )) ";
-        $subquery = "DELETE FROM {$table} WHERE {$table}.id IN (SELECT temp_table.id FROM ({$subquery}) temp_table)";
-
-        if (!$em->getConnection()->executeQuery($subquery, array('id' => $nodeId))) {
-            throw new \Gedmo\Exception\RuntimeException('Failed to delete old Closure records');
-        }
-    }
-
-    /**
-     * Childcount recalculation
-     *
-     * @param EntityManager $em
-     * @param string $entityClass
-     * @throws \Gedmo\Exception\RuntimeException - if update fails
-     */
-    public function recalculateChildCountForEntities(EntityManager $em, $entityClass)
-    {
-        $meta = $em->getClassMetadata($entityClass);
-        $config = $this->listener->getConfiguration($em, $meta->name);
-        $entityIdentifierField = $meta->getIdentifierColumnNames();
-        $entityIdentifierField = $entityIdentifierField[0];
-        $childCountField = $config['childCount'];
-        $closureMeta = $em->getClassMetadata($config['closure']);
-        $entityTable = $meta->getTableName();
-        $closureTable = $closureMeta->getTableName();
-
-        $subquery = "(SELECT COUNT( c2.descendant ) FROM {$closureTable} c2 WHERE c2.ancestor = c1.{$entityIdentifierField} AND c2.ancestor != c2.descendant)";
-        $sql = "UPDATE {$entityTable} c1 SET c1.{$childCountField} = {$subquery}";
-
-        if (!$em->getConnection()->executeQuery($sql)) {
-            throw new \Gedmo\Exception\RuntimeException('Failed to update child count field of entities');
+            $closures = $conn->fetchAll($query, compact('nodeId', 'parentId'));
+            foreach ($closures as $closure) {
+                if (!$conn->insert($table, $closure)) {
+                    throw new RuntimeException('Failed to insert new Closure record');
+                }
+            }
         }
     }
 
@@ -336,12 +299,5 @@ class Closure implements Strategy
             $id = current($id);
         }
         return $id;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function onFlushEnd($em)
-    {
     }
 }

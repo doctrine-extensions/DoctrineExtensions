@@ -10,7 +10,7 @@ use Doctrine\Common\Util\Debug,
 
 /**
  * These are mapping tests for tree extension
- * 
+ *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  * @package Gedmo.Mapping
  * @link http://www.gediminasm.org
@@ -23,7 +23,7 @@ class TreeMappingTest extends \PHPUnit_Framework_TestCase
     private $em;
 
     public function setUp()
-    {        
+    {
         $config = new \Doctrine\ORM\Configuration();
         $config->setMetadataCacheImpl(new \Doctrine\Common\Cache\ArrayCache);
         $config->setQueryCacheImpl(new \Doctrine\Common\Cache\ArrayCache);
@@ -31,8 +31,16 @@ class TreeMappingTest extends \PHPUnit_Framework_TestCase
         $config->setProxyNamespace('Gedmo\Mapping\Proxy');
         $chainDriverImpl = new DriverChain;
         $chainDriverImpl->addDriver(
-            new YamlDriver(array(__DIR__ . '/Driver/Yaml')), 
+            new YamlDriver(array(__DIR__ . '/Driver/Yaml')),
             'Mapping\Fixture\Yaml'
+        );
+        $chainDriverImpl->addDriver(
+            $config->newDefaultAnnotationDriver(),
+            'Tree\Fixture'
+        );
+        $chainDriverImpl->addDriver(
+            $config->newDefaultAnnotationDriver(),
+            'Gedmo\Tree'
         );
         $config->setMetadataDriverImpl($chainDriverImpl);
 
@@ -41,18 +49,16 @@ class TreeMappingTest extends \PHPUnit_Framework_TestCase
             'memory' => true,
         );
 
-        //$config->setSQLLogger(new \Doctrine\DBAL\Logging\EchoSQLLogger());
-        
         $evm = new \Doctrine\Common\EventManager();
         $evm->addEventSubscriber(new TreeListener());
         $this->em = \Doctrine\ORM\EntityManager::create($conn, $config, $evm);
     }
-    
+
     public function testYamlNestedMapping()
     {
         $meta = $this->em->getClassMetadata(self::TEST_YAML_ENTITY_CLASS);
         $cacheId = ExtensionMetadataFactory::getCacheId(
-            self::TEST_YAML_ENTITY_CLASS, 
+            self::TEST_YAML_ENTITY_CLASS,
             'Gedmo\Tree'
         );
         $config = $this->em->getMetadataFactory()->getCacheDriver()->fetch($cacheId);
@@ -69,20 +75,18 @@ class TreeMappingTest extends \PHPUnit_Framework_TestCase
         $this->assertArrayHasKey('strategy', $config);
         $this->assertEquals('nested', $config['strategy']);
     }
-    
+
     public function testYamlClosureMapping()
     {
         $meta = $this->em->getClassMetadata(self::YAML_CLOSURE_CATEGORY);
         $cacheId = ExtensionMetadataFactory::getCacheId(self::YAML_CLOSURE_CATEGORY, 'Gedmo\Tree');
         $config = $this->em->getMetadataFactory()->getCacheDriver()->fetch($cacheId);
-        
+
         $this->assertArrayHasKey('parent', $config);
         $this->assertEquals('parent', $config['parent']);
         $this->assertArrayHasKey('strategy', $config);
         $this->assertEquals('closure', $config['strategy']);
         $this->assertArrayHasKey('closure', $config);
-        $this->assertEquals('Mapping\\Fixture\\Yaml\\BaseCategory', $config['closure']);
-        $this->assertArrayHasKey('childCount', $config);
-        $this->assertEquals('childCount', $config['childCount']);
+        $this->assertEquals('Tree\\Fixture\\Closure\\CategoryClosure', $config['closure']);
     }
 }

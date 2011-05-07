@@ -8,8 +8,8 @@ for other cases through the **Entity** itself
 Features:
 
 - Automatic storage of translations in database
-- ORM and ODM support using same listener -Automatic translation of Entity or
-Document fields then loaded
+- ORM and ODM support using same listener
+- Automatic translation of Entity or Document fields then loaded
 - ORM query can use **hint** to translate all records without issuing additional queries
 - Can be nested with other behaviors
 - Annotation and Yaml mapping support for extensions

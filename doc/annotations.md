@@ -15,7 +15,8 @@ Content:
 ## Tree annotations {#tree}
 
 Tree can use diferent adapters. Currently **Tree** extension supports **NestedSet**
-and **Closure** strategies which has a difference for annotations used.
+and **Closure** strategies which has a difference for annotations used. Note, that 
+tree will automatically map indexes which are considered necessary for best performance.
 
 ### @gedmo:Tree (required for all tree strategies)
 
@@ -40,7 +41,7 @@ example:
 **property** annotation
 
 This annotation forces to specify the **parent** field, which must be a **ManyToOne**
-relation.
+relation
 
 example:
 
@@ -131,21 +132,6 @@ example:
      */
     class Category ...
 
-### @gedmo:TreeChildCount (optional for closure tree)
-
-**property** annotation
-
-This annotation will use **integer** field to store count of children for
-each node.
-
-example:
-
-    /**
-     * @gedmo:TreeChildCount
-     * @Column(name="child_count", type=integer)
-     */
-    private $childCount;
-
 ## Translatable annotations {#translatable}
 
 Translatable additionaly can have unmapped property, which would override the
@@ -210,6 +196,11 @@ table map to create correct ascii slugs.
 **property** annotation
 
 Includes the marked **string** type property into generation of slug.
+Additionaly can use **position** option to set field position is slug
+
+**options:**
+
+- **position** - (integer) _optional_
 
 example:
 
@@ -219,7 +210,7 @@ example:
      */
     private $code;
 
-### @gedmo:Sluggable (required)
+### @gedmo:Slug (required)
 
 **property** annotation
 

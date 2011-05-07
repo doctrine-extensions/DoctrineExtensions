@@ -57,11 +57,6 @@ class Annotation implements Driver
     const CLOSURE = 'Gedmo\\Mapping\\Annotation\\TreeClosure';
 
     /**
-     * Annotation to mark field as child count
-     */
-    const CHILD_COUNT = 'Gedmo\\Mapping\\Annotation\\TreeChildCount';
-
-    /**
      * List of types which are valid for tree fields
      *
      * @var array
@@ -183,17 +178,6 @@ class Annotation implements Driver
                     throw new InvalidMappingException("Tree level field - [{$field}] type is not valid and must be 'integer' in class - {$meta->name}");
                 }
                 $config['level'] = $field;
-            }
-            // child count
-            if ($childCount = $reader->getPropertyAnnotation($property, self::CHILD_COUNT)) {
-                $field = $property->getName();
-                if (!$meta->hasField($field)) {
-                    throw new InvalidMappingException("Unable to find 'childCount' - [{$field}] as mapped property in entity - {$meta->name}");
-                }
-                if (!$this->isValidField($meta, $field)) {
-                    throw new InvalidMappingException("Tree childCount field - [{$field}] type is not valid and must be 'integer' in class - {$meta->name}");
-                }
-                $config['childCount'] = $field;
             }
         }
     }

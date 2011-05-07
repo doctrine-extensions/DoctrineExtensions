@@ -6,6 +6,7 @@ use Doctrine\Common\EventManager;
 use Tool\BaseTestCaseORM;
 use Doctrine\Common\Util\Debug;
 use Tree\Fixture\Closure\Category;
+use Tree\Fixture\Closure\CategoryClosure;
 
 /**
  * These are tests for Tree behavior
@@ -21,13 +22,6 @@ class ClosureTreeTest extends BaseTestCaseORM
     const CATEGORY = "Tree\\Fixture\\Closure\\Category";
     const CLOSURE = "Tree\\Fixture\\Closure\\CategoryClosure";
 
-    private $food;
-    private $sports;
-    private $fruits;
-    private $vegitables;
-    private $carrots;
-    private $potatoes;
-
     protected function setUp()
     {
         parent::setUp();
@@ -39,214 +33,172 @@ class ClosureTreeTest extends BaseTestCaseORM
         $this->populate();
     }
 
-    public function test_insertNodes_verifyClosurePaths()
+    /*public function testHeavyLoad()
     {
-        // We check the inserted nodes fields from the closure table
-        $repo = $this->em->getRepository(self::CLOSURE);
-        $rows = $this->em->createQuery(sprintf('SELECT c FROM %s c ORDER BY c.ancestor ASC, c.descendant ASC, c.depth ASC', self::CLOSURE))
-            ->getArrayResult();
+        $repo = $this->em->getRepository(self::CATEGORY);
+        $parent = null;
+        $num = 800;
+        for($i = 0; $i < 800; $i++) {
+            $cat = new Category;
+            $cat->setParent($parent);
+            $cat->setTitle('cat'.$i);
+            $this->em->persist($cat);
+            // siblings
+            $rnd = rand(0, 3);
+            for ($j = 0; $j < $rnd; $j++) {
+                $siblingCat = new Category;
+                $siblingCat->setTitle('cat'.$i.$j);
+                $siblingCat->setParent($cat);
+                $this->em->persist($siblingCat);
+            }
+            $num += $rnd;
+            $parent = $cat;
+        }
+        $this->em->flush();
+        var_dump('processed: '.$num);
+    }*/
 
-        // Root self referencing row and descendants
-        $this->assertEquals($rows[0]['ancestor'], $this->food->getId());
-        $this->assertEquals($rows[0]['descendant'], $this->food->getId());
-        $this->assertEquals($rows[0]['depth'], 0);
+    public function testClosureTree()
+    {
+        $repo = $this->em->getRepository(self::CATEGORY);
+        $closureRepo = $this->em->getRepository(self::CLOSURE);
 
-        $this->assertEquals($rows[1]['ancestor'], $this->food->getId());
-        $this->assertEquals($rows[1]['descendant'], $this->fruits->getId());
-        $this->assertEquals($rows[1]['depth'], 1);
+        $food = $repo->findOneByTitle('Food');
+        $dql = 'SELECT c FROM '.self::CLOSURE.' c';
+        $dql .= ' WHERE c.ancestor = :ancestor';
+        $query = $this->em->createQuery($dql);
+        $query->setParameter('ancestor', $food);
 
-        $this->assertEquals($rows[2]['ancestor'], $this->food->getId());
-        $this->assertEquals($rows[2]['descendant'], $this->vegitables->getId());
-        $this->assertEquals($rows[2]['depth'], 1);
-
-        $this->assertEquals($rows[3]['ancestor'], $this->food->getId());
-        $this->assertEquals($rows[3]['descendant'], $this->carrots->getId());
-        $this->assertEquals($rows[3]['depth'], 2);
-
-        $this->assertEquals($rows[4]['ancestor'], $this->food->getId());
-        $this->assertEquals($rows[4]['descendant'], $this->potatoes->getId());
-        $this->assertEquals($rows[4]['depth'], 2);
-
-        // Sports self referencing row
-        $this->assertEquals($rows[5]['ancestor'], $this->sports->getId());
-        $this->assertEquals($rows[5]['descendant'], $this->sports->getId());
-        $this->assertEquals($rows[5]['depth'], 0);
-
-        // Fruits self referencing row
-        $this->assertEquals($rows[6]['ancestor'], $this->fruits->getId());
-        $this->assertEquals($rows[6]['descendant'], $this->fruits->getId());
-        $this->assertEquals($rows[6]['depth'], 0);
-
-        // Vegitables self referencing row and descendants
-        $this->assertEquals($rows[7]['ancestor'], $this->vegitables->getId());
-        $this->assertEquals($rows[7]['descendant'], $this->vegitables->getId());
-        $this->assertEquals($rows[7]['depth'], 0);
-
-        $this->assertEquals($rows[8]['ancestor'], $this->vegitables->getId());
-        $this->assertEquals($rows[8]['descendant'], $this->carrots->getId());
-        $this->assertEquals($rows[8]['depth'], 1);
-
-        $this->assertEquals($rows[9]['ancestor'], $this->vegitables->getId());
-        $this->assertEquals($rows[9]['descendant'], $this->potatoes->getId());
-        $this->assertEquals($rows[9]['depth'], 1);
-
-        // Carrots self referencing row
-        $this->assertEquals($rows[10]['ancestor'], $this->carrots->getId());
-        $this->assertEquals($rows[10]['descendant'], $this->carrots->getId());
-        $this->assertEquals($rows[10]['depth'], 0);
-
-        // Potatoes self referencing row
-        $this->assertEquals($rows[11]['ancestor'], $this->potatoes->getId());
-        $this->assertEquals($rows[11]['descendant'], $this->potatoes->getId());
-        $this->assertEquals($rows[11]['depth'], 0);
+        $foodClosures = $query->getResult();
+        $this->assertEquals(12, count($foodClosures));
+        foreach ($foodClosures as $closure) {
+            $descendant = $closure->getDescendant();
+            if ($descendant === $food) {
+                $this->assertEquals(0, $closure->getDepth());
+                continue;
+            }
+            $descendantTitle = $descendant->getTitle();
+            $query->setParameter('ancestor', $descendant);
+            $descendantClosures = $query->getResult();
+            switch ($descendantTitle) {
+                case 'Fruits':
+                    $this->assertEquals(5, count($descendantClosures));
+                    $this->assertEquals(1, $closure->getDepth());
+                    break;
+                case 'Oranges':
+                    $this->assertEquals(1, count($descendantClosures));
+                    $this->assertEquals(2, $closure->getDepth());
+                    break;
+                case 'Berries':
+                    $this->assertEquals(2, count($descendantClosures));
+                    $this->assertEquals(2, $closure->getDepth());
+                    break;
+                case 'Vegitables':
+                    $this->assertEquals(3, count($descendantClosures));
+                    $this->assertEquals(1, $closure->getDepth());
+                    break;
+                case 'Milk':
+                    $this->assertEquals(3, count($descendantClosures));
+                    $this->assertEquals(1, $closure->getDepth());
+                    break;
+                case 'Cheese':
+                    $this->assertEquals(2, count($descendantClosures));
+                    $this->assertEquals(2, $closure->getDepth());
+                    break;
+                case 'Strawberries':
+                    $this->assertEquals(1, count($descendantClosures));
+                    $this->assertEquals(3, $closure->getDepth());
+                    break;
+            }
+        }
     }
 
-    public function test_childcount_afterInsertingNodesChildCountIsCalculated()
+    public function testUpdateOfParent()
     {
-        $this->em->refresh($this->food);
-        $this->em->refresh($this->sports);
-        $this->em->refresh($this->fruits);
-        $this->em->refresh($this->vegitables);
-        $this->em->refresh($this->carrots);
-        $this->em->refresh($this->potatoes);
+        $repo = $this->em->getRepository(self::CATEGORY);
+        $strawberries = $repo->findOneByTitle('Strawberries');
+        $cheese = $repo->findOneByTitle('Cheese');
 
-        $this->assertEquals($this->food->getChildCount(), 4);
-        $this->assertEquals($this->sports->getChildCount(), 0);
-        $this->assertEquals($this->fruits->getChildCount(), 0);
-        $this->assertEquals($this->vegitables->getChildCount(), 2);
-        $this->assertEquals($this->carrots->getChildCount(), 0);
-        $this->assertEquals($this->potatoes->getChildCount(), 0);
-    }
-
-    public function test_updateNodes_moveASubtreeVerifyTreeClosurePathsAndVerifyChildCountField()
-    {
-        // We change a subtree's location
-        $vegitables = $this->em->getRepository(self::CATEGORY)
-            ->findOneByTitle('Vegitables');
-        $sports = $this->em->getRepository(self::CATEGORY)
-            ->findOneByTitle('Sports');
-        $vegitables->setParent($sports);
-
-        $this->em->persist($vegitables);
+        $strawberries->setParent($cheese);
+        $this->em->persist($strawberries);
         $this->em->flush();
 
-        // We then verify the closure paths
-        $repo = $this->em->getRepository(self::CLOSURE);
-        $rows = $this->em->createQuery(sprintf('SELECT c FROM %s c ORDER BY c.ancestor ASC, c.descendant ASC, c.depth ASC', self::CLOSURE))
-            ->getArrayResult();
+        $dql = 'SELECT c FROM '.self::CLOSURE.' c';
+        $dql .= ' WHERE c.descendant = :descendant';
+        $query = $this->em->createQuery($dql);
+        $query->setParameter('descendant', $strawberries);
 
-        // Food self referencing row and descendants
-        $this->assertEquals($rows[0]['ancestor'], $this->food->getId());
-        $this->assertEquals($rows[0]['descendant'], $this->food->getId());
-        $this->assertEquals($rows[0]['depth'], 0);
-
-        $this->assertEquals($rows[1]['ancestor'], $this->food->getId());
-        $this->assertEquals($rows[1]['descendant'], $this->fruits->getId());
-        $this->assertEquals($rows[1]['depth'], 1);
-
-        // Sports self referencing row and descendants
-        $this->assertEquals($rows[2]['ancestor'], $this->sports->getId());
-        $this->assertEquals($rows[2]['descendant'], $this->sports->getId());
-        $this->assertEquals($rows[2]['depth'], 0);
-
-        $this->assertEquals($rows[3]['ancestor'], $this->sports->getId());
-        $this->assertEquals($rows[3]['descendant'], $this->vegitables->getId());
-        $this->assertEquals($rows[3]['depth'], 1);
-
-        $this->assertEquals($rows[4]['ancestor'], $this->sports->getId());
-        $this->assertEquals($rows[4]['descendant'], $this->carrots->getId());
-        $this->assertEquals($rows[4]['depth'], 2);
-
-        $this->assertEquals($rows[5]['ancestor'], $this->sports->getId());
-        $this->assertEquals($rows[5]['descendant'], $this->potatoes->getId());
-        $this->assertEquals($rows[5]['depth'], 2);
-
-        // Fruits self referencing row
-        $this->assertEquals($rows[6]['ancestor'], $this->fruits->getId());
-        $this->assertEquals($rows[6]['descendant'], $this->fruits->getId());
-        $this->assertEquals($rows[6]['depth'], 0);
-
-        // Vegitables self referencing row and descendants
-        $this->assertEquals($rows[7]['ancestor'], $this->vegitables->getId());
-        $this->assertEquals($rows[7]['descendant'], $this->vegitables->getId());
-        $this->assertEquals($rows[7]['depth'], 0);
-
-        $this->assertEquals($rows[8]['ancestor'], $this->vegitables->getId());
-        $this->assertEquals($rows[8]['descendant'], $this->carrots->getId());
-        $this->assertEquals($rows[8]['depth'], 1);
-
-        $this->assertEquals($rows[9]['ancestor'], $this->vegitables->getId());
-        $this->assertEquals($rows[9]['descendant'], $this->potatoes->getId());
-        $this->assertEquals($rows[9]['depth'], 1);
-
-        // Carrots self referencing row
-        $this->assertEquals($rows[10]['ancestor'], $this->carrots->getId());
-        $this->assertEquals($rows[10]['descendant'], $this->carrots->getId());
-        $this->assertEquals($rows[10]['depth'], 0);
-
-        // Potatoes self referencing row
-        $this->assertEquals($rows[11]['ancestor'], $this->potatoes->getId());
-        $this->assertEquals($rows[11]['descendant'], $this->potatoes->getId());
-        $this->assertEquals($rows[11]['depth'], 0);
-
-
-        // We check the childCount field
-        $this->em->refresh($this->food);
-        $this->em->refresh($this->sports);
-        $this->em->refresh($this->fruits);
-        $this->em->refresh($this->vegitables);
-        $this->em->refresh($this->carrots);
-        $this->em->refresh($this->potatoes);
-
-        $this->assertEquals($this->food->getChildCount(), 1);
-        $this->assertEquals($this->sports->getChildCount(), 3);
-        $this->assertEquals($this->fruits->getChildCount(), 0);
-        $this->assertEquals($this->vegitables->getChildCount(), 2);
-        $this->assertEquals($this->carrots->getChildCount(), 0);
-        $this->assertEquals($this->potatoes->getChildCount(), 0);
+        $closures = $query->getResult();
+        $this->assertTrue($this->hasAncestor($closures, 'Cheese'));
+        $this->assertTrue($this->hasAncestor($closures, 'Milk'));
+        $this->assertTrue($this->hasAncestor($closures, 'Food'));
+        $this->assertFalse($this->hasAncestor($closures, 'Berries'));
+        $this->assertFalse($this->hasAncestor($closures, 'Fruits'));
     }
 
-    public function test_removeNode_removesClosurePathsOfNodeAndVerifyTree()
+    public function testAnotherUpdateOfParent()
     {
-        // We remove a subtree
-        $vegitables = $this->em->getRepository(self::CATEGORY)
-            ->findOneByTitle('Vegitables');
-        $this->em->remove($vegitables);
+        $repo = $this->em->getRepository(self::CATEGORY);
+        $strawberries = $repo->findOneByTitle('Strawberries');
+
+        $strawberries->setParent(null);
+        $this->em->persist($strawberries);
         $this->em->flush();
 
-        // We then verify the closure paths
-        $repo = $this->em->getRepository(self::CLOSURE);
-        $rows = $this->em->createQuery(sprintf('SELECT c FROM %s c ORDER BY c.ancestor ASC, c.descendant ASC, c.depth ASC', self::CLOSURE))
-            ->getArrayResult();
+        $dql = 'SELECT c FROM '.self::CLOSURE.' c';
+        $dql .= ' WHERE c.descendant = :descendant';
+        $query = $this->em->createQuery($dql);
+        $query->setParameter('descendant', $strawberries);
 
-        // Food self referencing row and descendants
-        $this->assertEquals($rows[0]['ancestor'], $this->food->getId());
-        $this->assertEquals($rows[0]['descendant'], $this->food->getId());
-        $this->assertEquals($rows[0]['depth'], 0);
+        $closures = $query->getResult();
+        $this->assertEquals(1, count($closures));
+        $this->assertTrue($this->hasAncestor($closures, 'Strawberries'));
+    }
 
-        $this->assertEquals($rows[1]['ancestor'], $this->food->getId());
-        $this->assertEquals($rows[1]['descendant'], $this->fruits->getId());
-        $this->assertEquals($rows[1]['depth'], 1);
+    public function testBranchRemoval()
+    {
+        $repo = $this->em->getRepository(self::CATEGORY);
+        $fruits = $repo->findOneByTitle('Fruits');
 
-        // Sports self referencing row
-        $this->assertEquals($rows[2]['ancestor'], $this->sports->getId());
-        $this->assertEquals($rows[2]['descendant'], $this->sports->getId());
-        $this->assertEquals($rows[2]['depth'], 0);
+        $id = $fruits->getId();
+        $this->em->remove($fruits);
+        $this->em->flush();
 
-        // Fruits self referencing row
-        $this->assertEquals($rows[3]['ancestor'], $this->fruits->getId());
-        $this->assertEquals($rows[3]['descendant'], $this->fruits->getId());
-        $this->assertEquals($rows[3]['depth'], 0);
+        $dql = 'SELECT COUNT(c) FROM '.self::CLOSURE.' c';
+        $dql .= ' JOIN c.descendant d';
+        $dql .= ' JOIN c.ancestor a';
+        $dql .= ' WHERE (a.id = :id OR d.id = :id)';
+        $query = $this->em->createQuery($dql);
+        $query->setParameter('id', $id);
 
+        $this->assertEquals(0, $query->getSingleScalarResult());
+        // pdo_sqlite will not cascade
+    }
 
-        // We check the childCount field
-        $this->em->refresh($this->food);
-        $this->em->refresh($this->sports);
-        $this->em->refresh($this->fruits);
+    /**
+     * @expectedException Gedmo\Exception\UnexpectedValueException
+     */
+    public function testSettingParentToChild()
+    {
+        $repo = $this->em->getRepository(self::CATEGORY);
+        $fruits = $repo->findOneByTitle('Fruits');
+        $strawberries = $repo->findOneByTitle('Strawberries');
 
-        $this->assertEquals($this->food->getChildCount(), 1);
-        $this->assertEquals($this->sports->getChildCount(), 0);
-        $this->assertEquals($this->fruits->getChildCount(), 0);
+        $fruits->setParent($strawberries);
+        $this->em->flush();
+    }
+
+    private function hasAncestor($closures, $name)
+    {
+        $result = false;
+        foreach ($closures as $closure) {
+            $ancestor = $closure->getAncestor();
+            if ($ancestor->getTitle() === $name) {
+                $result = true;
+                break;
+            }
+        }
+        return $result;
     }
 
     protected function getUsedEntityFixtures()
@@ -259,40 +211,64 @@ class ClosureTreeTest extends BaseTestCaseORM
 
     private function populate()
     {
-        $root = new Category();
-        $root->setTitle("Food");
-        $this->food = $root;
+        $food = new Category;
+        $food->setTitle("Food");
+        $this->em->persist($food);
 
-        $root2 = new Category();
-        $root2->setTitle("Sports");
-        $this->sports = $root2;
+        $fruits = new Category;
+        $fruits->setTitle('Fruits');
+        $fruits->setParent($food);
+        $this->em->persist($fruits);
 
-        $child = new Category();
-        $child->setTitle("Fruits");
-        $child->setParent($root);
-        $this->fruits = $child;
+        $oranges = new Category;
+        $oranges->setTitle('Oranges');
+        $oranges->setParent($fruits);
+        $this->em->persist($oranges);
 
-        $child2 = new Category();
-        $child2->setTitle("Vegitables");
-        $child2->setParent($root);
-        $this->vegitables = $child2;
+        $lemons = new Category;
+        $lemons->setTitle('Lemons');
+        $lemons->setParent($fruits);
+        $this->em->persist($lemons);
 
-        $childsChild = new Category();
-        $childsChild->setTitle("Carrots");
-        $childsChild->setParent($child2);
-        $this->carrots = $childsChild;
+        $berries = new Category;
+        $berries->setTitle('Berries');
+        $berries->setParent($fruits);
+        $this->em->persist($berries);
 
-        $potatoes = new Category();
-        $potatoes->setTitle("Potatoes");
-        $potatoes->setParent($child2);
-        $this->potatoes = $potatoes;
+        $strawberries = new Category;
+        $strawberries->setTitle('Strawberries');
+        $strawberries->setParent($berries);
+        $this->em->persist($strawberries);
 
-        $this->em->persist($this->food);
-        $this->em->persist($this->sports);
-        $this->em->persist($this->fruits);
-        $this->em->persist($this->vegitables);
-        $this->em->persist($this->carrots);
-        $this->em->persist($this->potatoes);
+        $vegitables = new Category;
+        $vegitables->setTitle('Vegitables');
+        $vegitables->setParent($food);
+        $this->em->persist($vegitables);
+
+        $cabbages = new Category;
+        $cabbages->setTitle('Cabbages');
+        $cabbages->setParent($vegitables);
+        $this->em->persist($cabbages);
+
+        $carrots = new Category;
+        $carrots->setTitle('Carrots');
+        $carrots->setParent($vegitables);
+        $this->em->persist($carrots);
+
+        $milk = new Category;
+        $milk->setTitle('Milk');
+        $milk->setParent($food);
+        $this->em->persist($milk);
+
+        $cheese = new Category;
+        $cheese->setTitle('Cheese');
+        $cheese->setParent($milk);
+        $this->em->persist($cheese);
+
+        $mouldCheese = new Category;
+        $mouldCheese->setTitle('Mould cheese');
+        $mouldCheese->setParent($cheese);
+        $this->em->persist($mouldCheese);
 
         $this->em->flush();
     }

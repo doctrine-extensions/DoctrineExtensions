@@ -442,7 +442,7 @@ Create extended ORM event adapter:
         }
     }
 
-Create extended ORM event adapter:
+Create extended ODM event adapter:
 
     // file: vendor/Extension/Encoder/Mapping/Event/Adapter/ODM.php
     
