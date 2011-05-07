@@ -4,8 +4,7 @@ namespace Gedmo\Sluggable;
 
 use Doctrine\Common\EventManager;
 use Tool\BaseTestCaseORM;
-use Doctrine\Common\Util\Debug,
-    Sluggable\Fixture\Article;
+use Sluggable\Fixture\Article;
 
 /**
  * These are tests for sluggable behavior
@@ -109,6 +108,23 @@ class SluggableTest extends BaseTestCaseORM
         $this->em->clear();
 
         $this->assertEquals($article->getSlug(), 'the-title-updated-my-code');
+    }
+
+    public function testGithubIssue45()
+    {
+        $article = new Article;
+        $article->setTitle('test');
+        $article->setCode('code');
+        $this->em->persist($article);
+
+        $article2 = new Article;
+        $article2->setTitle('test');
+        $article2->setCode('code');
+        $this->em->persist($article2);
+
+        $this->em->flush();
+        $this->assertEquals('test-code', $article->getSlug());
+        $this->assertEquals('test-code-1', $article2->getSlug());
     }
 
     protected function getUsedEntityFixtures()
