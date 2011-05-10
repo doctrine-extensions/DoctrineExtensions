@@ -21,6 +21,9 @@ class ClosureTreeTest extends BaseTestCaseORM
 {
     const CATEGORY = "Tree\\Fixture\\Closure\\Category";
     const CLOSURE = "Tree\\Fixture\\Closure\\CategoryClosure";
+    const PERSON = "Tree\\Fixture\\Closure\\Person";
+    const USER = "Tree\\Fixture\\Closure\\User";
+    const PERSON_CLOSURE = "Tree\\Fixture\\Closure\\PersonClosure";
 
     protected function setUp()
     {
@@ -205,7 +208,10 @@ class ClosureTreeTest extends BaseTestCaseORM
     {
         return array(
             self::CATEGORY,
-            self::CLOSURE
+            self::CLOSURE,
+            self::PERSON,
+            self::PERSON_CLOSURE,
+            self::USER
         );
     }
 
