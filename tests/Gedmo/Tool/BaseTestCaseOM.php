@@ -75,7 +75,7 @@ abstract class BaseTestCaseOM extends \PHPUnit_Framework_TestCase
         }
     }
 
-	/**
+    /**
      * DocumentManager mock object together with
      * annotation mapping driver and database
      *
