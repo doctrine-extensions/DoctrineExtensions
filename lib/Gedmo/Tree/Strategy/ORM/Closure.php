@@ -61,48 +61,53 @@ class Closure implements Strategy
     {
         $config = $this->listener->getConfiguration($em, $meta->name);
         $closureMetadata = $em->getClassMetadata($config['closure']);
-        // create ancestor mapping
-        $ancestorMapping = array(
-            'fieldName' => 'ancestor',
-            'id' => false,
-            'joinColumns' => array(
-                array(
-                    'name' => 'ancestor',
-                    'referencedColumnName' => 'id',
-                    'unique' => false,
-                    'nullable' => false,
-                    'onDelete' => 'CASCADE',
-                    'onUpdate' => null,
-                    'columnDefinition' => null,
-                )
-            ),
-            'inversedBy' => null,
-            'targetEntity' => $meta->name,
-            'cascade' => null,
-            'fetch' => ClassMetadataInfo::FETCH_LAZY
-        );
-        $closureMetadata->mapManyToOne($ancestorMapping);
-        // create descendant mapping
-        $descendantMapping = array(
-            'fieldName' => 'descendant',
-            'id' => false,
-            'joinColumns' => array(
-                array(
-                    'name' => 'descendant',
-                    'referencedColumnName' => 'id',
-                    'unique' => false,
-                    'nullable' => false,
-                    'onDelete' => 'CASCADE',
-                    'onUpdate' => null,
-                    'columnDefinition' => null,
-                )
-            ),
-            'inversedBy' => null,
-            'targetEntity' => $meta->name,
-            'cascade' => null,
-            'fetch' => ClassMetadataInfo::FETCH_LAZY
-        );
-        $closureMetadata->mapManyToOne($descendantMapping);
+        if (!$closureMetadata->hasAssociation('ancestor')) {
+            // create ancestor mapping
+            $ancestorMapping = array(
+                'fieldName' => 'ancestor',
+                'id' => false,
+                'joinColumns' => array(
+                    array(
+                        'name' => 'ancestor',
+                        'referencedColumnName' => 'id',
+                        'unique' => false,
+                        'nullable' => false,
+                        'onDelete' => 'CASCADE',
+                        'onUpdate' => null,
+                        'columnDefinition' => null,
+                    )
+                ),
+                'inversedBy' => null,
+                'targetEntity' => $meta->name,
+                'cascade' => null,
+                'fetch' => ClassMetadataInfo::FETCH_LAZY
+            );
+            $closureMetadata->mapManyToOne($ancestorMapping);
+        }
+
+        if (!$closureMetadata->hasAssociation('descendant')) {
+            // create descendant mapping
+            $descendantMapping = array(
+                'fieldName' => 'descendant',
+                'id' => false,
+                'joinColumns' => array(
+                    array(
+                        'name' => 'descendant',
+                        'referencedColumnName' => 'id',
+                        'unique' => false,
+                        'nullable' => false,
+                        'onDelete' => 'CASCADE',
+                        'onUpdate' => null,
+                        'columnDefinition' => null,
+                    )
+                ),
+                'inversedBy' => null,
+                'targetEntity' => $meta->name,
+                'cascade' => null,
+                'fetch' => ClassMetadataInfo::FETCH_LAZY
+            );
+            $closureMetadata->mapManyToOne($descendantMapping);
+        }
         // create unique index on ancestor and descendant
         $indexName = substr(strtoupper("IDX_" . md5($closureMetadata->name)), 0, 20);
         $closureMetadata->table['uniqueConstraints'][$indexName] = array(
@@ -110,7 +115,7 @@ class Closure implements Strategy
         );
         // this one may not be very usefull
         $indexName = substr(strtoupper("IDX_" . md5($meta->name . 'depth')), 0, 20);
-        $closureMetadata->table['indexes']['depth_index'] = array(
+        $closureMetadata->table['indexes'][$indexName] = array(
             'columns' => array('depth')
         );
     }
