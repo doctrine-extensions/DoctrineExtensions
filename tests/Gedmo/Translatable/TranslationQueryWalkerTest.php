@@ -441,6 +441,24 @@ class TranslationQueryWalkerTest extends BaseTestCaseORM
         $this->assertEquals('apie maista', $food->getContent());
     }
 
+    /**
+     * @group testSelectWithUnmappedField
+     */
+    public function testSelectWithUnmappedField()
+    {
+        $dql = 'SELECT a.title, count(a.id) AS num FROM ' . self::ARTICLE . ' a';
+        $dql .= ' ORDER BY a.title';
+        $q = $this->em->createQuery($dql);
+        $q->setHint(Query::HINT_CUSTOM_OUTPUT_WALKER, self::TREE_WALKER_TRANSLATION);
+
+        // array hydration
+        $this->translationListener->setTranslatableLocale('en_us');
+        $result = $q->getArrayResult();
+        $this->assertEquals(1, count($result));
+        $this->assertEquals('Food', $result[0]['title']);
+        $this->assertEquals(1, $result[0]['num']);
+    }
+
     protected function getUsedEntityFixtures()
     {
         return array(

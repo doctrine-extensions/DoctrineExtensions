@@ -352,6 +352,9 @@ class TranslationWalker extends SqlWalker
     {
         $em = $this->getEntityManager();
         foreach ($queryComponents as $alias => $comp) {
+            if (!isset($comp['metadata'])) {
+                continue;
+            }
             $meta = $comp['metadata'];
             $config = $this->listener->getConfiguration($em, $meta->name);
             if ($config && isset($config['fields'])) {
