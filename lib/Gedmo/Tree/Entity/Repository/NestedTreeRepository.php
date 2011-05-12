@@ -167,6 +167,10 @@ class NestedTreeRepository extends AbstractTreeRepository
                         ->from($config['useObjectClass'], 'node')
                         ->where('node.' . $config['parent'] . ' = ' . $id);
 
+                    if (isset($config['root'])) {
+                        $rootId = $meta->getReflectionProperty($config['root'])->getValue($node);
+                        $qb->andWhere("node.{$config['root']} = {$rootId}");
+                    }
                     $q = $qb->getQuery();
                     $count = intval($q->getSingleScalarResult());
                 } else {
@@ -224,6 +228,10 @@ class NestedTreeRepository extends AbstractTreeRepository
                         $qb->where('node.' . $config['right'] . " < {$right}")
                             ->andWhere('node.' . $config['left'] . " > {$left}");
                     }
+                }
+                if (isset($config['root'])) {
+                    $rootId = $meta->getReflectionProperty($config['root'])->getValue($node);
+                    $qb->andWhere("node.{$config['root']} = {$rootId}");
                 }
             } else {
                 throw new \InvalidArgumentException("Node is not related to this repository");
