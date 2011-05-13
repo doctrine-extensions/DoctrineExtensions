@@ -18,7 +18,7 @@ use Doctrine\ODM\MongoDB\Cursor;
  */
 class TranslationRepository extends DocumentRepository
 {
-	/**
+    /**
      * Current TranslationListener instance used
      * in EntityManager
      *
@@ -152,7 +152,7 @@ class TranslationRepository extends DocumentRepository
         return $result;
     }
 
-	/**
+    /**
      * Get the currently used TranslationListener
      *
      * @throws \Gedmo\Exception\RuntimeException - if listener is not found
