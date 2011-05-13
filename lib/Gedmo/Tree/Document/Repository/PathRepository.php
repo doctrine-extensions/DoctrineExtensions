@@ -36,7 +36,7 @@ class PathRepository extends AbstractTreeRepository
      * @param int       $increaseBy
      * @param int       $endingSort
      */
-    public function increaseSort($startingSort, $equal = false, $increaseBy = 1, $endingSort = 0)
+    public function increaseSortBySortRange($startingSort, $equal = false, $increaseBy = 1, $endingSort = 0)
     {
         // @todo Support config values
         $qb = $this->createQueryBuilder();
@@ -60,6 +60,17 @@ class PathRepository extends AbstractTreeRepository
         ;
 
         return $qb->getQuery(array('multiple' => true, 'safe' => true))->execute();
+    }
+
+    public function increaseSortByPath($path, $increaseBy)
+    {
+    	$this->createQueryBuilder()
+            ->field('path')->equals(new \MongoRegex('/^' . $path . '(.+)?/i'))
+            ->update()
+            ->field('sortOrder')->inc($increaseBy)
+            ->getQuery(array('multiple' => true, 'safe' => true))
+            ->execute()
+        ;
     }
 
     /**
@@ -129,10 +140,16 @@ class PathRepository extends AbstractTreeRepository
         return $qb;
     }
 
+    /**
+     * Decreases the $nodes child count
+     *
+     * @param $node
+     * @param $decreaseBy
+     */
     public function decreaseChildCount(Node $node, $decreaseBy = 1)
     {
         $this->createQueryBuilder()
-            ->field('id')->equals(new \MongoId($node->getParent()->getId()))
+            ->field('id')->equals(new \MongoId($node->getId()))
             ->update()
             ->field('childCount')->inc(-1 * $decreaseBy)
             ->getQuery(array('safe' => true))
@@ -189,6 +206,17 @@ class PathRepository extends AbstractTreeRepository
         ;
 
         // @todo Update the reflection property for the node
+    }
+
+    public function setNodePath(Node $node, $path)
+    {
+    	$this->createQueryBuilder()
+            ->field('id')->equals(new \MongoId($node->getId()))
+            ->update()
+            ->field('path')->set($path)
+            ->getQuery(array('safe' => true))
+            ->execute()
+        ;
     }
 
     /**

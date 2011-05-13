@@ -100,6 +100,7 @@ class PathRepositoryTest extends BaseTestCaseMongoODM
 
         $this->assertEquals(5, $aCount);
         $this->assertEquals(2, $aaCount);
+        $this->dm->clear();
     }
 
     public function testFetchCorrectDescendents()
@@ -147,6 +148,7 @@ class PathRepositoryTest extends BaseTestCaseMongoODM
         $this->dm->persist($aaf);
 
         $this->dm->flush(array('safe' => true));
+        $this->dm->clear();
 
         $repo = $this->dm->getRepository(self::CATEGORY);
 
@@ -158,27 +160,27 @@ class PathRepositoryTest extends BaseTestCaseMongoODM
         // Advance pointer
         $aDescendants->next();
         $abDB = $aDescendants->current(); // a,b
-        $this->assertEquals($ab, $abDB);
+        $this->assertEquals($ab->getId(), $abDB->getId());
 
         // Advance pointer
         $aDescendants->next();
         $acDB = $aDescendants->current(); // a,c
-        $this->assertEquals($ac, $acDB);
+        $this->assertEquals($ac->getId(), $acDB->getId());
 
         // Advance pointer
         $aDescendants->next();
         $aaDB = $aDescendants->current(); // a,a
-        $this->assertEquals($aa, $aaDB);
+        $this->assertEquals($aa->getId(), $aaDB->getId());
 
         // Advance pointer
         $aDescendants->next();
         $aaeDB = $aDescendants->current(); // a,a,e
-        $this->assertEquals($aae, $aaeDB);
+        $this->assertEquals($aae->getId(), $aaeDB->getId());
 
         // Advance pointer
         $aDescendants->next();
         $aafDB = $aDescendants->current(); // a,a,f
-        $this->assertEquals($aaf, $aafDB);
+        $this->assertEquals($aaf->getId(), $aafDB->getId());
 
         $this->assertFalse($aDescendants->hasNext());
 
@@ -187,18 +189,16 @@ class PathRepositoryTest extends BaseTestCaseMongoODM
         // Advance pointer
         $aaDescendants->next();
         $aaeDB = $aaDescendants->current(); // a,a,e
-        $this->assertEquals($aae, $aaeDB);
+        $this->assertEquals($aae->getId(), $aaeDB->getId());
 
         // Advance pointer
         $aaDescendants->next();
         $aafDB = $aaDescendants->current(); // a,a,f
-        $this->assertEquals($aaf, $aafDB);
+        $this->assertEquals($aaf->getId(), $aafDB->getId());
 
         // assure we only have 2
         $this->assertFalse($aaDescendants->hasNext());
-
-        // Remove now that all tests are done
-        $this->clearCollection();
+        $this->dm->clear();
     }
 
     public function testFindAncestorsSimple()
@@ -253,6 +253,7 @@ class PathRepositoryTest extends BaseTestCaseMongoODM
         $this->assertTrue((sizeof($ancestors) == 2));
         $this->assertTrue(isset($ancestors[$aa->getId()]));
         $this->assertTrue(isset($ancestors[$a->getId()]));
+        $this->dm->clear();
     }
 
     /**
