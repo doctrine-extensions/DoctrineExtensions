@@ -115,7 +115,7 @@ to be used in global scope for all Entities or Documents:
     // ORM and ODM
     $translatableListener = new \Gedmo\Translatable\TranslationListener();
     
-    $translatableListener->setTranslatableLocale('en_us');
+    $translatableListener->setLocale('en_us');
     // in real world app the locale should be loaded from session, example:
     // Session::getInstance()->read('locale');
     $evm->addEventSubscriber($translatableListener);
@@ -189,7 +189,7 @@ cache is activated
             return $this->content;
         }
     
-        public function setTranslatableLocale($locale)
+        public function setLocale($locale)
         {
             $this->locale = $locale;
         }
@@ -252,7 +252,7 @@ cache is activated
             return $this->content;
         }
     
-        public function setTranslatableLocale($locale)
+        public function setLocale($locale)
         {
             $this->locale = $locale;
         }
@@ -305,7 +305,7 @@ Now lets update our article in diferent locale:
     $article = $em->find('Entity\Article', 1 /*article id*/);
     $article->setTitle('my title in de');
     $article->setContent('my content in de');
-    $article->setTranslatableLocale('de_de'); // change locale
+    $article->setLocale('de_de'); // change locale
     $em->persist($article);
     $em->flush();
 
