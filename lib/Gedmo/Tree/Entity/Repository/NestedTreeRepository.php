@@ -504,9 +504,13 @@ class NestedTreeRepository extends AbstractTreeRepository
             $config = $this->listener->getConfiguration($this->_em, $meta->name);
             $right = $meta->getReflectionProperty($config['right'])->getValue($node);
             $left = $meta->getReflectionProperty($config['left'])->getValue($node);
+            $rootId = isset($config['root']) ? $meta->getReflectionProperty($config['root'])->getValue($node) : null;
 
             if ($right == $left + 1) {
                 $this->removeSingle($node);
+                $this->listener
+                    ->getStrategy($this->_em, $meta->name)
+                    ->shiftRL($this->_em, $config['useObjectClass'], $right, -2, $rootId);
                 return; // node was a leaf
             }
             // process updates in transaction
@@ -519,7 +523,6 @@ class NestedTreeRepository extends AbstractTreeRepository
                 }
                 $pk = $meta->getSingleIdentifierFieldName();
                 $nodeId = $meta->getReflectionProperty($pk)->getValue($node);
-                $rootId = isset($config['root']) ? $meta->getReflectionProperty($config['root'])->getValue($node) : null;
                 $shift = -1;
 
                 // in case if root node is removed, childs become roots

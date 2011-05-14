@@ -195,6 +195,21 @@ class NestedTreeRootRepositoryTest extends BaseTestCaseORM
         $this->assertEquals(1, $node->getParent()->getId());
     }
 
+    public function testRemoveFromTreeLeaf()
+    {
+        $this->populateMore();
+        $repo = $this->em->getRepository(self::CATEGORY);
+        $onions = $repo->findOneByTitle('Onions');
+        $id = $onions->getId();
+        $repo->removeFromTree($onions);
+
+        $this->assertTrue(is_null($repo->find($id)));
+        $this->em->clear();
+
+        $vegies = $repo->findOneByTitle('Vegitables');
+        $this->assertTrue($repo->verify());
+    }
+
     protected function getUsedEntityFixtures()
     {
         return array(
