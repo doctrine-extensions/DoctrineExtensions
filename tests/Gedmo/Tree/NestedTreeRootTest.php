@@ -30,6 +30,49 @@ class NestedTreeRootTest extends BaseTestCaseORM
         $this->populate();
     }
 
+    /*public function testHeavyLoad()
+    {
+        $start = microtime(true);
+        $dumpTime = function($start, $msg) {
+            $took = microtime(true) - $start;
+            $minutes = intval($took / 60); $seconds = $took % 60;
+            echo sprintf("%s --> %02d:%02d", $msg, $minutes, $seconds) . PHP_EOL;
+        };
+        $repo = $this->em->getRepository(self::CATEGORY);
+        $parent = null;
+        $num = 800;
+        for($i = 0; $i < 500; $i++) {
+            $cat = new RootCategory;
+            $cat->setParent($parent);
+            $cat->setTitle('cat'.$i);
+            $this->em->persist($cat);
+            // siblings
+            $rnd = rand(0, 3);
+            for ($j = 0; $j < $rnd; $j++) {
+                $siblingCat = new RootCategory;
+                $siblingCat->setTitle('cat'.$i.$j);
+                $siblingCat->setParent($cat);
+                $this->em->persist($siblingCat);
+            }
+            $num += $rnd;
+            $parent = $cat;
+        }
+        $this->em->flush();
+        $dumpTime($start, $num.' - inserts took:');
+        $start = microtime(true);
+        // test moving
+        $target = $repo->findOneByTitle('cat300');
+        $dest = $repo->findOneByTitle('cat2000');
+        $target->setParent($dest);
+
+        $target2 = $repo->findOneByTitle('cat450');
+        $dest2 = $repo->findOneByTitle('cat2500');
+        $target2->setParent($dest2);
+
+        $this->em->flush();
+        $dumpTime($start, 'moving took:');
+    }*/
+
     public function testTheTree()
     {
         $repo = $this->em->getRepository(self::CATEGORY);
