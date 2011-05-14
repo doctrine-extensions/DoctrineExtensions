@@ -358,14 +358,13 @@ the slug, so the value as an additional translation should be processed when cre
 ### Example of multiple translations:
 
     // persisting multiple translations, assume default locale is EN
-    $repo = $em->getRepository('Gedmo\\Translatable\\Entity\\Translation');
+    $repository = $em->getRepository('Gedmo\\Translatable\\Entity\\Translation');
     // it works for ODM also
     $article = new Article;
     $article->setTitle('My article en');
     $article->setContent('content en');
 
-    $repo
-        ->translate($article, 'title', 'de', 'my article de')
+    $repository->translate($article, 'title', 'de', 'my article de')
         ->translate($article, 'content', 'de', 'content de')
         ->translate($article, 'title', 'ru', 'my article ru')
         ->translate($article, 'content', 'ru', 'content ru');
