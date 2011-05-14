@@ -460,4 +460,4 @@ Create extended ODM event adapter:
 It would be useful to make a common interface for those extended adapters.
 Now every possible requirement is fullfilled and this may be useful.
 
-Any sugestions on improvements are very welcome
+Any suggestions on improvements are very welcome

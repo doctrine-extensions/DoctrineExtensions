@@ -591,4 +591,4 @@ translated. Because the postLoad event never will be triggered
 
 Now the generated treenode slug will be translated by Translatable behavior
 
-Easy like that, any sugestions on improvements are very welcome
+Easy like that, any suggestions on improvements are very welcome
