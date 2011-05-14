@@ -424,4 +424,4 @@ Now few operations to get it all done:
     
     $article->getPublished()->format('Y-m-d'); // the date article type changed to published
 
-Easy like that, any sugestions on improvements are very welcome
+Easy like that, any suggestions on improvements are very welcome

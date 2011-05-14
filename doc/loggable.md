@@ -250,4 +250,4 @@ Now lets revert it to previous version:
     $em->flush();
     // if article had changed relation, it would be reverted also.
 
-Easy like that, any sugestions on improvements are very welcome
+Easy like that, any suggestions on improvements are very welcome

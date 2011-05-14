@@ -500,4 +500,4 @@ only if we specify a class annotation @gedmo:TranslationEntity(class="my\transla
 
 Now all translations of Article will be stored and queried from specific table
 
-Easy like that, any sugestions on improvements are very welcome
+Easy like that, any suggestions on improvements are very welcome
