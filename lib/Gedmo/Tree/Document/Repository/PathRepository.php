@@ -38,7 +38,6 @@ class PathRepository extends AbstractTreeRepository
      */
     public function increaseSortBySortRange($startingSort, $equal = false, $increaseBy = 1, $endingSort = 0)
     {
-        // @todo Support config values
         $qb = $this->createQueryBuilder();
 
         if ($equal) {
@@ -213,8 +212,6 @@ class PathRepository extends AbstractTreeRepository
             ->getQuery(array('safe' => true))
             ->execute()
         ;
-
-        // @todo Update the reflection property for the node
     }
 
     public function setNodePath(Node $node, $path)
@@ -245,8 +242,8 @@ class PathRepository extends AbstractTreeRepository
     public function findMaxSort($refresh = false, $path = null)
     {
         $qb = $this->createQueryBuilder()
-            ->select('sortOrder')
-            ->sort('sortOrder', 'desc')
+            ->select($this->config['sort'])
+            ->sort($this->config['sort'], 'desc')
             ->limit(1)
             ->refresh($refresh)
         ;
@@ -260,8 +257,7 @@ class PathRepository extends AbstractTreeRepository
         ;
 
         if ($node) {
-            // @todo Support for different field name
-            return $node->getSortOrder();
+        	return $this->meta->getReflectionProperty($this->config['sort'])->getValue($node);
         }
 
         return false;
