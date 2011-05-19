@@ -16,6 +16,10 @@ abstract class AbstractTreeRepository extends DocumentRepository
      */
     protected $listener = null;
 
+    protected $meta;
+
+    protected $config;
+
     /**
      * {@inheritdoc}
      */
@@ -44,6 +48,9 @@ abstract class AbstractTreeRepository extends DocumentRepository
         if (!$this->validates()) {
             throw new \Gedmo\Exception\InvalidMappingException('This repository cannot be used for tree type: ' . $treeListener->getStrategy($dm, $class->name)->getName());
         }
+
+        $this->meta = $this->getClassMetadata();
+        $this->config = $this->listener->getConfiguration($dm, $this->meta->name);
     }
 
     /**

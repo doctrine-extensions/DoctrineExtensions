@@ -130,7 +130,6 @@ class MaterializedPathRepositoryTest extends BaseTestCaseMongoODM
          * root 4
          *
          */
-
         $root1 = new Category;
         $root1->setTitle('Root 1');
 

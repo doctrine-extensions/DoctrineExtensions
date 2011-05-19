@@ -42,21 +42,21 @@ class PathRepository extends AbstractTreeRepository
         $qb = $this->createQueryBuilder();
 
         if ($equal) {
-            $qb->field('sortOrder')->gte($startingSort);
+            $qb->field($this->config['sort'])->gte($startingSort);
         } else {
-            $qb->field('sortOrder')->gt($startingSort);
+            $qb->field($this->config['sort'])->gt($startingSort);
         }
 
         if ($equal && $endingSort) {
-            $qb->field('sortOrder')->lte($endingSort);
+            $qb->field($this->config['sort'])->lte($endingSort);
         } else if ($endingSort) {
-            $qb->field('sortOrder')->lt($endingSort);
+            $qb->field($this->config['sort'])->lt($endingSort);
         }
 
         //->field('path')->equals(new \MongoRegex('/^' . $rootNodePath . ',/i')) @todo For later
 
         $qb->update()
-            ->field('sortOrder')->inc($increaseBy)
+            ->field($this->config['sort'])->inc($increaseBy)
         ;
 
         return $qb->getQuery(array('multiple' => true, 'safe' => true))->execute();
@@ -64,10 +64,10 @@ class PathRepository extends AbstractTreeRepository
 
     public function increaseSortByPath($path, $increaseBy)
     {
-    	$this->createQueryBuilder()
-            ->field('path')->equals(new \MongoRegex('/^' . $path . '(.+)?/i'))
+        $this->createQueryBuilder()
+            ->field($this->config['path'])->equals(new \MongoRegex('/^' . $path . '(.+)?/i'))
             ->update()
-            ->field('sortOrder')->inc($increaseBy)
+            ->field($this->config['sort'])->inc($increaseBy)
             ->getQuery(array('multiple' => true, 'safe' => true))
             ->execute()
         ;
@@ -134,7 +134,7 @@ class PathRepository extends AbstractTreeRepository
     protected function getDescendantsQueryBuilder($parentPath)
     {
         $qb = $this->createQueryBuilder()
-            ->field('path')->equals(new \MongoRegex('/^' . $parentPath . '(.+)/i'))
+            ->field($this->config['path'])->equals(new \MongoRegex('/^' . $parentPath . '(.+)/i'))
         ;
 
         return $qb;
@@ -148,10 +148,15 @@ class PathRepository extends AbstractTreeRepository
      */
     public function decreaseChildCount(Node $node, $decreaseBy = 1)
     {
+        // Get the ID by going to the unit of work. Otherwise we have to
+        // load the document from DB since the metadata info will not contain it
+        $idField = $this->meta->identifier;
+        $id = $this->dm->getUnitOfWork()->getDocumentIdentifier($node);
+
         $this->createQueryBuilder()
-            ->field('id')->equals(new \MongoId($node->getId()))
+            ->field($idField)->equals($id)
             ->update()
-            ->field('childCount')->inc(-1 * $decreaseBy)
+            ->field($this->config['childCount'])->inc(-1 * $decreaseBy)
             ->getQuery(array('safe' => true))
             ->execute()
         ;
@@ -166,22 +171,22 @@ class PathRepository extends AbstractTreeRepository
      */
     public function findAncestors(Node $node, $sortBy = false, $sortDir = false)
     {
-    	if (($sortBy && !$sortDir) || (!$sortBy && $sortDir)) {
-    		throw new \InvalidArgumentException('You must specifiy both $sortBy and $sortDir');
-    	}
+        if (($sortBy && !$sortDir) || (!$sortBy && $sortDir)) {
+            throw new \InvalidArgumentException('You must specifiy both $sortBy and $sortDir');
+        }
 
-    	$meta = $this->getClassMetadata();
-    	$ancestorsPaths = $this->listener
-    	   ->getStrategy($this->dm, $meta->name)
-    	   ->getAncestorsPath($node)
+        $meta = $this->getClassMetadata();
+        $ancestorsPaths = $this->listener
+           ->getStrategy($this->dm, $meta->name)
+           ->getAncestorsPath($node)
         ;
 
         $qb = $this->createQueryBuilder()
-            ->field('path')->in($ancestorsPaths)
+            ->field($this->config['path'])->in($ancestorsPaths)
         ;
 
         if ($sortBy && $sortDir) {
-        	$qb->sort($sortBy, $sortDir);
+            $qb->sort($sortBy, $sortDir);
         }
 
         return $qb->getQuery()->execute();
@@ -194,13 +199,17 @@ class PathRepository extends AbstractTreeRepository
      * @param Gedmo\Tree\Node $node
      * @param int $increaseBy
      */
-    public function increaseChildCount(Node $node, $increaseBy = 1)
+    public function increaseChildCount(Node $node, $increaseBy = 1, $refresh = true)
     {
-        // @todo Add support for reading metadata config
+    	// Get the ID by going to the unit of work. Otherwise we have to
+    	// load the document from DB since the metadata info will not contain it
+        $idField = $this->meta->identifier;
+        $id = $this->dm->getUnitOfWork()->getDocumentIdentifier($node);
+
         $this->createQueryBuilder()
-            ->field('id')->equals(new \MongoId($node->getId()))
+            ->field($idField)->equals($id)
             ->update()
-            ->field('childCount')->inc($increaseBy)
+            ->field($this->config['childCount'])->inc($increaseBy)
             ->getQuery(array('safe' => true))
             ->execute()
         ;
@@ -210,10 +219,15 @@ class PathRepository extends AbstractTreeRepository
 
     public function setNodePath(Node $node, $path)
     {
-    	$this->createQueryBuilder()
-            ->field('id')->equals(new \MongoId($node->getId()))
+        // Get the ID by going to the unit of work. Otherwise we have to
+        // load the document from DB since the metadata info will not contain it
+        $idField = $this->meta->identifier;
+        $id = $this->dm->getUnitOfWork()->getDocumentIdentifier($node);
+
+        $this->createQueryBuilder()
+            ->field($idField)->equals($id)
             ->update()
-            ->field('path')->set($path)
+            ->field($this->config['path'])->set($path)
             ->getQuery(array('safe' => true))
             ->execute()
         ;
