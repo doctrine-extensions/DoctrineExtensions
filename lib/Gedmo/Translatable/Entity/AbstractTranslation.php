@@ -2,6 +2,11 @@
 
 namespace Gedmo\Translatable\Entity;
 
+use Doctrine\ORM\Mapping\Column;
+use Doctrine\ORM\Mapping\MappedSuperclass;
+use Doctrine\ORM\Mapping\Id;
+use Doctrine\ORM\Mapping\GeneratedValue;
+
 /**
 * Gedmo\Translatable\Entity\AbstractTranslation
 *
@@ -12,16 +17,16 @@ abstract class AbstractTranslation
     /**
      * @var integer $id
      *
-     * @Column(name="id", type="integer")
+     * @Column(type="integer")
      * @Id
-     * @GeneratedValue(strategy="IDENTITY")
+     * @GeneratedValue
      */
     private $id;
 
     /**
      * @var string $locale
      *
-     * @Column(name="locale", type="string", length=8)
+     * @Column(type="string", length=8)
      */
     private $locale;
 
@@ -35,7 +40,7 @@ abstract class AbstractTranslation
     /**
      * @var string $field
      *
-     * @Column(name="field", type="string", length=32)
+     * @Column(type="string", length=32)
      */
     private $field;
 
@@ -49,7 +54,7 @@ abstract class AbstractTranslation
     /**
      * @var text $content
      *
-     * @Column(name="content", type="text", nullable=true)
+     * @Column(type="text", nullable=true)
      */
     private $content;
 

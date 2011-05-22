@@ -2,6 +2,10 @@
 
 namespace Gedmo\Translatable\Document;
 
+use Doctrine\ODM\MongoDB\Mapping\MappedSuperclass;
+use Doctrine\ODM\MongoDB\Mapping\Id;
+use Doctrine\ODM\MongoDB\Mapping\String;
+
 /**
 * Gedmo\Translatable\Document\AbstractTranslation
 *

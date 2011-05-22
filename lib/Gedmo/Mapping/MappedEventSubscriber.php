@@ -2,6 +2,8 @@
 
 namespace Gedmo\Mapping;
 
+use Doctrine\Common\Annotations\AnnotationReader;
+use Doctrine\Common\Annotations\Reader;
 use Gedmo\Mapping\ExtensionMetadataFactory,
     Doctrine\Common\EventSubscriber,
     Doctrine\Common\Persistence\ObjectManager,
@@ -47,6 +49,13 @@ abstract class MappedEventSubscriber implements EventSubscriber
      * @var array
      */
     private $adapters = array();
+
+    /**
+     * Custom annotation reader
+     *
+     * @var object
+     */
+    private $annotationReader;
 
     /**
      * Get an event adapter to handle event specific
@@ -107,12 +116,37 @@ abstract class MappedEventSubscriber implements EventSubscriber
     {
         $oid = spl_object_hash($objectManager);
         if (!isset($this->extensionMetadataFactory[$oid])) {
+            if (is_null($this->annotationReader)) {
+                // create default annotation reader for extensions
+                $this->annotationReader = new AnnotationReader;
+                $this->annotationReader->setAutoloadAnnotations(true);
+                if (!$this->annotationReader instanceof Reader) {
+                    $this->annotationReader->setAnnotationNamespaceAlias('Gedmo\\Mapping\\Annotation\\', 'gedmo');
+                }
+            }
             $this->extensionMetadataFactory[$oid] = new ExtensionMetadataFactory(
                 $objectManager,
-                $this->getNamespace()
+                $this->getNamespace(),
+                $this->annotationReader
             );
         }
         return $this->extensionMetadataFactory[$oid];
+    }
+
+    /**
+     * Set annotation reader class
+     * since older doctrine versions do not provide an interface
+     * it must provide these methods:
+     *     getClassAnnotations([reflectionClass])
+     *     getClassAnnotation([reflectionClass], [name])
+     *     getPropertyAnnotations([reflectionProperty])
+     *     getPropertyAnnotation([reflectionProperty], [name])
+     *
+     * @param object $reader - annotation reader class
+     */
+    public function setAnnotationReader($reader)
+    {
+        $this->annotationReader = $reader;
     }
 
     /**

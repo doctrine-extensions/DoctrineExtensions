@@ -2,7 +2,7 @@
 
 namespace Gedmo\Timestampable\Mapping\Driver;
 
-use Gedmo\Mapping\Driver,
+use Gedmo\Mapping\Driver\AnnotationDriverInterface,
     Doctrine\Common\Persistence\Mapping\ClassMetadata,
     Doctrine\Common\Annotations\AnnotationReader,
     Gedmo\Exception\InvalidMappingException;
@@ -19,7 +19,7 @@ use Gedmo\Mapping\Driver,
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class Annotation implements Driver
+class Annotation implements AnnotationDriverInterface
 {
     /**
      * Annotation field is timestampable
@@ -39,6 +39,21 @@ class Annotation implements Driver
     );
 
     /**
+     * Annotation reader instance
+     *
+     * @var object
+     */
+    private $reader;
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setAnnotationReader($reader)
+    {
+        $this->reader = $reader;
+    }
+
+    /**
      * {@inheritDoc}
      */
     public function validateFullMetadata(ClassMetadata $meta, array $config) {}
@@ -47,10 +62,6 @@ class Annotation implements Driver
      * {@inheritDoc}
      */
     public function readExtendedMetadata(ClassMetadata $meta, array &$config) {
-        $reader = new AnnotationReader();
-        $reader->setAnnotationNamespaceAlias('Gedmo\\Mapping\\Annotation\\', 'gedmo');
-        $reader->setAutoloadAnnotations(true);
-
         $class = $meta->getReflectionClass();
         // property annotations
         foreach ($class->getProperties() as $property) {
@@ -60,7 +71,7 @@ class Annotation implements Driver
             ) {
                 continue;
             }
-            if ($timestampable = $reader->getPropertyAnnotation($property, self::TIMESTAMPABLE)) {
+            if ($timestampable = $this->reader->getPropertyAnnotation($property, self::TIMESTAMPABLE)) {
                 $field = $property->getName();
                 if (!$meta->hasField($field)) {
                     throw new InvalidMappingException("Unable to find timestampable [{$field}] as mapped property in entity - {$meta->name}");

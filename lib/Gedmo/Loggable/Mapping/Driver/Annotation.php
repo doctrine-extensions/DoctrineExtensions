@@ -2,7 +2,7 @@
 
 namespace Gedmo\Loggable\Mapping\Driver;
 
-use Gedmo\Mapping\Driver,
+use Gedmo\Mapping\Driver\AnnotationDriverInterface,
     Doctrine\Common\Annotations\AnnotationReader,
     Doctrine\Common\Persistence\Mapping\ClassMetadata,
     Gedmo\Exception\InvalidMappingException;
@@ -20,7 +20,7 @@ use Gedmo\Mapping\Driver,
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class Annotation implements Driver
+class Annotation implements AnnotationDriverInterface
 {
     /**
      * Annotation to define that this object is loggable
@@ -31,6 +31,21 @@ class Annotation implements Driver
      * Annotation to define that this property is versioned
      */
     const VERSIONED = 'Gedmo\\Mapping\\Annotation\\Versioned';
+
+    /**
+     * Annotation reader instance
+     *
+     * @var object
+     */
+    private $reader;
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setAnnotationReader($reader)
+    {
+        $this->reader = $reader;
+    }
 
     /**
      * {@inheritDoc}
@@ -50,13 +65,9 @@ class Annotation implements Driver
      */
     public function readExtendedMetadata(ClassMetadata $meta, array &$config)
     {
-        $reader = new AnnotationReader();
-        $reader->setAnnotationNamespaceAlias('Gedmo\\Mapping\\Annotation\\', 'gedmo');
-        $reader->setAutoloadAnnotations(true);
-
         $class = $meta->getReflectionClass();
         // class annotations
-        $classAnnotations = $reader->getClassAnnotations($class);
+        $classAnnotations = $this->reader->getClassAnnotations($class);
         if (isset($classAnnotations[self::LOGGABLE])) {
             $config['loggable'] = true;
             $annot = $classAnnotations[self::LOGGABLE];
@@ -76,7 +87,7 @@ class Annotation implements Driver
                 continue;
             }
             // versioned property
-            if ($versioned = $reader->getPropertyAnnotation($property, self::VERSIONED)) {
+            if ($versioned = $this->reader->getPropertyAnnotation($property, self::VERSIONED)) {
                 $field = $property->getName();
                 if ($meta->isCollectionValuedAssociation($field)) {
                     throw new InvalidMappingException("Cannot versioned [{$field}] as it is collection in object - {$meta->name}");
