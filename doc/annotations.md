@@ -5,12 +5,72 @@ There will be introduction on usage with examples. For more detailed usage
 on extensions, refer to their specific documentation.
 
 Content:
-    
+
+- [New annotation mapping](#annotation_mapping) example for common3.0.x
 - [Tree](#tree)
 - [Translatable](#translatable)
 - [Sluggable](#sluggable)
 - [Timestampable](#timestampable)
 - [Loggable](#loggable)
+
+## New annotation mapping example for common3.0.x {#annotation_mapping}
+
+Recently there was an upgrade made for annotation reader in order to support
+more native way for annotation mapping in **common3.0.x** branch. Before that
+you had to make aliases for namespaces (like __gedmo:Translatable__), this strategy
+was limited and errors were not explainable. Now you have to add a **use** statement
+for each annotation you use in your mapping, see example bellow:
+
+    namespace MyApp\Entity;
+    
+    use Gedmo\Mapping\Annotation as Gedmo; // this will be like an alias before
+    use Doctrine\ORM\Mapping\Id; // includes single annotation
+    use Doctrine\ORM\Mapping as ORM;
+    
+    /**
+     * @ORM\Entity
+     * @Gedmo\TranslationEntity(class="something")
+     */
+    class Article
+    {
+        /**
+         * @Id
+         * @ORM\GeneratedValue
+         * @ORM\Column(type="integer")
+         */
+        private $id;
+        
+        /**
+         * @Gedmo\Translatable
+         * @Gedmo\Sluggable
+         * @ORM\Column(length=64)
+         */
+        private $title;
+        
+        /**
+         * @Gedmo\Slug
+         * @ORM\Column(length=64, unique=true)
+         */
+        private $slug;
+    }
+
+**Note:** this new mapping applies only if you use **doctrine-common** library at version **3.0.x**
+
+### Injecting the new annotation reader
+
+New annotation reader does not depend on any namespaces, for that reason you can use
+single reader instance for whole project. The example bellow shows how to inject it into
+listener:
+
+    $annotationReader = new \Doctrine\Common\Annotations\AnnotationReader;
+    $translatable = new \Gedmo\Translatable\TranslationListener;
+    $translatable->setAnnotationReader($annotationReader);
+    $sluggable = new \Gedmo\Sluggable\SluggableListener;
+    $sluggable->setAnnotationReader($annotationReader);
+    // ...
+    $eventManager->addEventSubscriber($translatable);
+    $eventManager->addEventSubscriber($sluggable);
+    // ...
 
 ## Tree annotations {#tree}
 
