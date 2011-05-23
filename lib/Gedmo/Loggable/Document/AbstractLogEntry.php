@@ -2,6 +2,14 @@
 
 namespace Gedmo\Loggable\Document;
 
+use Doctrine\ODM\MongoDB\Mapping\MappedSuperclass;
+use Doctrine\ODM\MongoDB\Mapping\Id;
+use Doctrine\ODM\MongoDB\Mapping\String;
+use Doctrine\ODM\MongoDB\Mapping\Index;
+use Doctrine\ODM\MongoDB\Mapping\Date;
+use Doctrine\ODM\MongoDB\Mapping\Int;
+use Doctrine\ODM\MongoDB\Mapping\Hash;
+
 /**
  * Gedmo\Loggable\Document\AbstractLogEntry
  *

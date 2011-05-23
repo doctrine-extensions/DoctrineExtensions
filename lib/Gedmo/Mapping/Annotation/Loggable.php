@@ -1,27 +1,20 @@
 <?php
 
-namespace Gedmo\Loggable\Mapping;
+namespace Gedmo\Mapping\Annotation;
 
 use Doctrine\Common\Annotations\Annotation;
 
 /**
- * Loggable extension annotation which should be used
- * on for specific record logging on any Domain Object
+ * Loggable annotation for Loggable behavioral extension
  *
- * @author Boussekeyt Jules <jules.boussekeyt@gmail.com>
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @package Gedmo.Loggable.Mapping
- * @subpackage Annotations
+ * @package Gedmo.Mapping.Annotation
+ * @subpackage Loggable
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-
 final class Loggable extends Annotation
 {
     public $logEntryClass;
 }
 
-final class Versioned extends Annotation
-{
-
-}

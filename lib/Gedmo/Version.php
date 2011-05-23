@@ -35,8 +35,7 @@ final class Version
         if (!class_exists('Doctrine\\Common\\Version')) {
             throw new DependentComponentNotFoundException("Doctrine\\Common library is either not registered by autoloader or not installed");
         }
-        //var_dump(\Doctrine\Common\Version::compare('2.0.2') === 0);
-        if (\Doctrine\Common\Version::compare('2.0.x') < 0 && \Doctrine\Common\Version::compare('2.1') <= 0) {
+        if (\Doctrine\Common\Version::compare('2.0.1') > 0 || \Doctrine\Common\Version::compare('3.0') < 0) {
             throw new IncompatibleComponentVersionException("Doctrine\\Common library is older than expected for these extensions");
         }
 
@@ -71,7 +70,7 @@ final class Version
             throw new DependentComponentNotFoundException("Doctrine\\Common library is either not registered by autoloader or not installed");
         }
 
-        if (\Doctrine\Common\Version::compare('2.0.x') < 0 && \Doctrine\Common\Version::compare('2.1') <= 0) {
+        if (\Doctrine\Common\Version::compare('2.0.1') > 0 || \Doctrine\Common\Version::compare('3.0') < 0) {
             throw new IncompatibleComponentVersionException("Doctrine\\Common library is older than expected for these extensions");
         }
 

@@ -2,8 +2,7 @@
 
 namespace Gedmo\Translatable\Mapping\Driver;
 
-use Gedmo\Mapping\Driver,
-    Doctrine\Common\Annotations\AnnotationReader,
+use Gedmo\Mapping\Driver\AnnotationDriverInterface,
     Gedmo\Exception\InvalidMappingException;
 
 /**
@@ -18,29 +17,44 @@ use Gedmo\Mapping\Driver,
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class Annotation implements Driver
+class Annotation implements AnnotationDriverInterface
 {
     /**
      * Annotation to identity translation entity to be used for translation storage
      */
-    const ANNOTATION_ENTITY_CLASS = 'Gedmo\Translatable\Mapping\TranslationEntity';
+    const ENTITY_CLASS = 'Gedmo\\Mapping\\Annotation\\TranslationEntity';
 
     /**
      * Annotation to identify field as translatable
      */
-    const ANNOTATION_TRANSLATABLE = 'Gedmo\Translatable\Mapping\Translatable';
+    const TRANSLATABLE = 'Gedmo\\Mapping\\Annotation\\Translatable';
 
     /**
      * Annotation to identify field which can store used locale or language
-     * alias is ANNOTATION_LANGUAGE
+     * alias is LANGUAGE
      */
-    const ANNOTATION_LOCALE = 'Gedmo\Translatable\Mapping\Locale';
+    const LOCALE = 'Gedmo\\Mapping\\Annotation\\Locale';
 
     /**
      * Annotation to identify field which can store used locale or language
-     * alias is ANNOTATION_LOCALE
+     * alias is LOCALE
      */
-    const ANNOTATION_LANGUAGE = 'Gedmo\Translatable\Mapping\Language';
+    const LANGUAGE = 'Gedmo\\Mapping\\Annotation\\Language';
+
+    /**
+     * Annotation reader instance
+     *
+     * @var object
+     */
+    private $reader;
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setAnnotationReader($reader)
+    {
+        $this->reader = $reader;
+    }
 
     /**
      * {@inheritDoc}
@@ -56,15 +70,11 @@ class Annotation implements Driver
      * {@inheritDoc}
      */
     public function readExtendedMetadata($meta, array &$config) {
-        require_once __DIR__ . '/../Annotations.php';
-        $reader = new AnnotationReader();
-        $reader->setAnnotationNamespaceAlias('Gedmo\Translatable\Mapping\\', 'gedmo');
-
         $class = $meta->getReflectionClass();
         // class annotations
-        $classAnnotations = $reader->getClassAnnotations($class);
-        if (isset($classAnnotations[self::ANNOTATION_ENTITY_CLASS])) {
-            $annot = $classAnnotations[self::ANNOTATION_ENTITY_CLASS];
+        $classAnnotations = $this->reader->getClassAnnotations($class);
+        if (isset($classAnnotations[self::ENTITY_CLASS])) {
+            $annot = $classAnnotations[self::ENTITY_CLASS];
             if (!class_exists($annot->class)) {
                 throw new InvalidMappingException("Translation class: {$annot->class} does not exist.");
             }
@@ -80,7 +90,7 @@ class Annotation implements Driver
                 continue;
             }
             // translatable property
-            if ($translatable = $reader->getPropertyAnnotation($property, self::ANNOTATION_TRANSLATABLE)) {
+            if ($translatable = $this->reader->getPropertyAnnotation($property, self::TRANSLATABLE)) {
                 $field = $property->getName();
                 if (!$meta->hasField($field)) {
                     throw new InvalidMappingException("Unable to find translatable [{$field}] as mapped property in entity - {$meta->name}");
@@ -89,13 +99,13 @@ class Annotation implements Driver
                 $config['fields'][] = $field;
             }
             // locale property
-            if ($locale = $reader->getPropertyAnnotation($property, self::ANNOTATION_LOCALE)) {
+            if ($locale = $this->reader->getPropertyAnnotation($property, self::LOCALE)) {
                 $field = $property->getName();
                 if ($meta->hasField($field)) {
                     throw new InvalidMappingException("Locale field [{$field}] should not be mapped as column property in entity - {$meta->name}, since it makes no sence");
                 }
                 $config['locale'] = $field;
-            } elseif ($language = $reader->getPropertyAnnotation($property, self::ANNOTATION_LANGUAGE)) {
+            } elseif ($language = $this->reader->getPropertyAnnotation($property, self::LANGUAGE)) {
                 $field = $property->getName();
                 if ($meta->hasField($field)) {
                     throw new InvalidMappingException("Language field [{$field}] should not be mapped as column property in entity - {$meta->name}, since it makes no sence");

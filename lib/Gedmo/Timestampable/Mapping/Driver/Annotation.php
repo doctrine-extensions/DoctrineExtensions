@@ -2,8 +2,7 @@
 
 namespace Gedmo\Timestampable\Mapping\Driver;
 
-use Gedmo\Mapping\Driver,
-    Doctrine\Common\Annotations\AnnotationReader,
+use Gedmo\Mapping\Driver\AnnotationDriverInterface,
     Gedmo\Exception\InvalidMappingException;
 
 /**
@@ -18,12 +17,12 @@ use Gedmo\Mapping\Driver,
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class Annotation implements Driver
+class Annotation implements AnnotationDriverInterface
 {
     /**
      * Annotation field is timestampable
      */
-    const ANNOTATION_TIMESTAMPABLE = 'Gedmo\Timestampable\Mapping\Timestampable';
+    const TIMESTAMPABLE = 'Gedmo\\Mapping\\Annotation\\Timestampable';
 
     /**
      * List of types which are valid for timestamp
@@ -38,6 +37,21 @@ class Annotation implements Driver
     );
 
     /**
+     * Annotation reader instance
+     *
+     * @var object
+     */
+    private $reader;
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setAnnotationReader($reader)
+    {
+        $this->reader = $reader;
+    }
+
+    /**
      * {@inheritDoc}
      */
     public function validateFullMetadata($meta, array $config) {}
@@ -46,10 +60,6 @@ class Annotation implements Driver
      * {@inheritDoc}
      */
     public function readExtendedMetadata($meta, array &$config) {
-        require_once __DIR__ . '/../Annotations.php';
-        $reader = new AnnotationReader();
-        $reader->setAnnotationNamespaceAlias('Gedmo\Timestampable\Mapping\\', 'gedmo');
-
         $class = $meta->getReflectionClass();
         // property annotations
         foreach ($class->getProperties() as $property) {
@@ -59,7 +69,7 @@ class Annotation implements Driver
             ) {
                 continue;
             }
-            if ($timestampable = $reader->getPropertyAnnotation($property, self::ANNOTATION_TIMESTAMPABLE)) {
+            if ($timestampable = $this->reader->getPropertyAnnotation($property, self::TIMESTAMPABLE)) {
                 $field = $property->getName();
                 if (!$meta->hasField($field)) {
                     throw new InvalidMappingException("Unable to find timestampable [{$field}] as mapped property in entity - {$meta->name}");

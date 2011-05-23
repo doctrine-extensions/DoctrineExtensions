@@ -2,11 +2,16 @@
 
 namespace Gedmo\Translatable\Entity;
 
+use Doctrine\ORM\Mapping\Table;
+use Doctrine\ORM\Mapping\Index;
+use Doctrine\ORM\Mapping\UniqueConstraint;
+use Doctrine\ORM\Mapping\Entity;
+
 /**
  * Gedmo\Translatable\Entity\Translation
  *
  * @Table(
- *         name="ext_translations", 
+ *         name="ext_translations",
  *         indexes={@index(name="translations_lookup_idx", columns={
  *             "locale", "object_class", "foreign_key"
  *         })},

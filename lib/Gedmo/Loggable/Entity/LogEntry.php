@@ -2,6 +2,10 @@
 
 namespace Gedmo\Loggable\Entity;
 
+use Doctrine\ORM\Mapping\Table;
+use Doctrine\ORM\Mapping\Index;
+use Doctrine\ORM\Mapping\Entity;
+
 /**
  * Gedmo\Loggable\Entity\LogEntry
  *

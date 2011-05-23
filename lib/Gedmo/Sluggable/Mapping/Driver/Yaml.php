@@ -3,7 +3,6 @@
 namespace Gedmo\Sluggable\Mapping\Driver;
 
 use Gedmo\Mapping\Driver\File,
-    Gedmo\Mapping\Driver,
     Gedmo\Exception\InvalidMappingException;
 
 /**
@@ -18,7 +17,7 @@ use Gedmo\Mapping\Driver\File,
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class Yaml extends File implements Driver
+class Yaml extends File
 {
     /**
      * File extension

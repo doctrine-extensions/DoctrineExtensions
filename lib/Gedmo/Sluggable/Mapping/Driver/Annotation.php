@@ -2,8 +2,7 @@
 
 namespace Gedmo\Sluggable\Mapping\Driver;
 
-use Gedmo\Mapping\Driver,
-    Doctrine\Common\Annotations\AnnotationReader,
+use Gedmo\Mapping\Driver\AnnotationDriverInterface,
     Gedmo\Exception\InvalidMappingException;
 
 /**
@@ -18,18 +17,18 @@ use Gedmo\Mapping\Driver,
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class Annotation implements Driver
+class Annotation implements AnnotationDriverInterface
 {
     /**
      * Annotation to mark field as sluggable and include it in slug building
      */
-    const ANNOTATION_SLUGGABLE = 'Gedmo\Sluggable\Mapping\Sluggable';
+    const SLUGGABLE = 'Gedmo\\Mapping\\Annotation\\Sluggable';
 
     /**
      * Annotation to identify field as one which holds the slug
      * together with slug options
      */
-    const ANNOTATION_SLUG = 'Gedmo\Sluggable\Mapping\Slug';
+    const SLUG = 'Gedmo\\Mapping\\Annotation\\Slug';
 
     /**
      * List of types which are valid for slug and sluggable fields
@@ -39,6 +38,21 @@ class Annotation implements Driver
     private $validTypes = array(
         'string'
     );
+
+    /**
+     * Annotation reader instance
+     *
+     * @var object
+     */
+    private $reader;
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setAnnotationReader($reader)
+    {
+        $this->reader = $reader;
+    }
 
     /**
      * {@inheritDoc}
@@ -54,10 +68,6 @@ class Annotation implements Driver
      * {@inheritDoc}
      */
     public function readExtendedMetadata($meta, array &$config) {
-        require_once __DIR__ . '/../Annotations.php';
-        $reader = new AnnotationReader();
-        $reader->setAnnotationNamespaceAlias('Gedmo\Sluggable\Mapping\\', 'gedmo');
-
         $class = $meta->getReflectionClass();
         // property annotations
         foreach ($class->getProperties() as $property) {
@@ -68,7 +78,7 @@ class Annotation implements Driver
                 continue;
             }
             // sluggable property
-            if ($sluggable = $reader->getPropertyAnnotation($property, self::ANNOTATION_SLUGGABLE)) {
+            if ($sluggable = $this->reader->getPropertyAnnotation($property, self::SLUGGABLE)) {
                 $field = $property->getName();
                 if (!$meta->hasField($field)) {
                     throw new InvalidMappingException("Unable to find sluggable [{$field}] as mapped property in entity - {$meta->name}");
@@ -79,7 +89,7 @@ class Annotation implements Driver
                 $config['fields'][] = array('field' => $field, 'position' => $sluggable->position);
             }
             // slug property
-            if ($slug = $reader->getPropertyAnnotation($property, self::ANNOTATION_SLUG)) {
+            if ($slug = $this->reader->getPropertyAnnotation($property, self::SLUG)) {
                 $field = $property->getName();
                 if (!$meta->hasField($field)) {
                     throw new InvalidMappingException("Unable to find slug [{$field}] as mapped property in entity - {$meta->name}");

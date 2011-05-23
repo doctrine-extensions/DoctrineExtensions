@@ -2,6 +2,9 @@
 
 namespace Gedmo\Mapping;
 
+use Gedmo\Mapping\Driver\File as FileDriver;
+use Gedmo\Mapping\Driver\AnnotationDriverInterface;
+
 /**
  * The extension metadata factory is responsible for extension driver
  * initialization and fully reading the extension metadata
@@ -12,13 +15,13 @@ namespace Gedmo\Mapping;
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class ExtensionMetadataFactory
+final class ExtensionMetadataFactory
 {
     /**
      * Extension driver
      * @var Gedmo\Mapping\Driver
      */
-    protected $driver;
+    private $driver;
 
     /**
      * Object manager, entity or document
@@ -34,14 +37,23 @@ class ExtensionMetadataFactory
     private $extensionNamespace;
 
     /**
+     * Custom annotation reader
+     *
+     * @var object
+     */
+    private $annotationReader;
+
+    /**
      * Initializes extension driver
      *
      * @param ObjectManager $objectManager
      * @param string $extensionNamespace
+     * @param object $annotationReader
      */
-    public function __construct($objectManager, $extensionNamespace)
+    public function __construct($objectManager, $extensionNamespace, $annotationReader)
     {
         $this->objectManager = $objectManager;
+        $this->annotationReader = $annotationReader;
         $this->extensionNamespace = $extensionNamespace;
         $omDriver = $objectManager->getConfiguration()->getMetadataDriverImpl();
         $this->driver = $this->getDriver($omDriver);
@@ -133,8 +145,11 @@ class ExtensionMetadataFactory
                 }
             }
             $driver = new $driverClassName();
-            if ($driver instanceof \Gedmo\Mapping\Driver\File) {
+            if ($driver instanceof FileDriver) {
                 $driver->setPaths($omDriver->getPaths());
+            }
+            if ($driver instanceof AnnotationDriverInterface) {
+                $driver->setAnnotationReader($this->annotationReader);
             }
         }
         return $driver;
