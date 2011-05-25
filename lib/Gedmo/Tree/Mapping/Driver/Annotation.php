@@ -3,7 +3,6 @@
 namespace Gedmo\Tree\Mapping\Driver;
 
 use Gedmo\Mapping\Driver\AnnotationDriverInterface,
-    Doctrine\Common\Annotations\AnnotationReader,
     Doctrine\Common\Persistence\Mapping\ClassMetadata,
     Gedmo\Exception\InvalidMappingException;
 
@@ -114,16 +113,13 @@ class Annotation implements AnnotationDriverInterface
     public function readExtendedMetadata(ClassMetadata $meta, array &$config) {
         $class = $meta->getReflectionClass();
         // class annotations
-        $classAnnotations = $this->reader->getClassAnnotations($class);
-        if (isset($classAnnotations[self::TREE])) {
-            $annot = $classAnnotations[self::TREE];
+        if ($annot = $this->reader->getClassAnnotation($class, self::TREE)) {
             if (!in_array($annot->type, $this->strategies)) {
                 throw new InvalidMappingException("Tree type: {$annot->type} is not available.");
             }
             $config['strategy'] = $annot->type;
         }
-        if (isset($classAnnotations[self::CLOSURE])) {
-            $annot = $classAnnotations[self::CLOSURE];
+        if ($annot = $this->reader->getClassAnnotation($class, self::CLOSURE)) {
             if (!class_exists($annot->class)) {
                 throw new InvalidMappingException("Tree closure class: {$annot->class} does not exist.");
             }

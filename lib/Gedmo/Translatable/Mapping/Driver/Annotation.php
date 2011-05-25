@@ -4,7 +4,6 @@ namespace Gedmo\Translatable\Mapping\Driver;
 
 use Gedmo\Mapping\Driver\AnnotationDriverInterface,
     Doctrine\Common\Persistence\Mapping\ClassMetadata,
-    Doctrine\Common\Annotations\AnnotationReader,
     Gedmo\Exception\InvalidMappingException;
 
 /**
@@ -74,9 +73,7 @@ class Annotation implements AnnotationDriverInterface
     public function readExtendedMetadata(ClassMetadata $meta, array &$config) {
         $class = $meta->getReflectionClass();
         // class annotations
-        $classAnnotations = $this->reader->getClassAnnotations($class);
-        if (isset($classAnnotations[self::ENTITY_CLASS])) {
-            $annot = $classAnnotations[self::ENTITY_CLASS];
+        if ($annot = $this->reader->getClassAnnotation($class, self::ENTITY_CLASS)) {
             if (!class_exists($annot->class)) {
                 throw new InvalidMappingException("Translation class: {$annot->class} does not exist.");
             }
