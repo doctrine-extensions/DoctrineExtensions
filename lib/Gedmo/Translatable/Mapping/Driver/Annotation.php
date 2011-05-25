@@ -72,9 +72,7 @@ class Annotation implements AnnotationDriverInterface
     public function readExtendedMetadata($meta, array &$config) {
         $class = $meta->getReflectionClass();
         // class annotations
-        $classAnnotations = $this->reader->getClassAnnotations($class);
-        if (isset($classAnnotations[self::ENTITY_CLASS])) {
-            $annot = $classAnnotations[self::ENTITY_CLASS];
+        if ($annot = $this->reader->getClassAnnotation($class, self::ENTITY_CLASS)) {
             if (!class_exists($annot->class)) {
                 throw new InvalidMappingException("Translation class: {$annot->class} does not exist.");
             }

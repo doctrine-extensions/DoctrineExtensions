@@ -65,10 +65,8 @@ class Annotation implements AnnotationDriverInterface
     {
         $class = $meta->getReflectionClass();
         // class annotations
-        $classAnnotations = $this->reader->getClassAnnotations($class);
-        if (isset($classAnnotations[self::LOGGABLE])) {
+        if ($annot = $this->reader->getClassAnnotation($class, self::LOGGABLE)) {
             $config['loggable'] = true;
-            $annot = $classAnnotations[self::LOGGABLE];
             if ($annot->logEntryClass) {
                 if (!class_exists($annot->logEntryClass)) {
                     throw new InvalidMappingException("LogEntry class: {$annot->logEntryClass} does not exist.");
