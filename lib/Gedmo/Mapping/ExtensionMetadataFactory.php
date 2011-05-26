@@ -4,6 +4,7 @@ namespace Gedmo\Mapping;
 
 use Gedmo\Mapping\Driver\File as FileDriver;
 use Gedmo\Mapping\Driver\AnnotationDriverInterface;
+use Doctrine\ORM\Tools\DisconnectedClassMetadataFactory;
 
 /**
  * The extension metadata factory is responsible for extension driver
@@ -73,21 +74,23 @@ final class ExtensionMetadataFactory
         $config = $supperclass = array();
         $useObjectName = $meta->name;
         // collect metadata from inherited classes
-        foreach (array_reverse(class_parents($meta->name)) as $parentClass) {
-            // read only inherited mapped classes
-            if ($this->objectManager->getMetadataFactory()->hasMetadataFor($parentClass)) {
-                $class = $this->objectManager->getClassMetadata($parentClass);
-                $partial = array();
-                $this->driver->readExtendedMetadata($class, $partial);
-                if ($class->isMappedSuperclass) {
-                    $supperclass += $partial;
-                } elseif (!$class->isInheritanceTypeNone()) {
-                    $this->driver->validateFullMetadata($class, $supperclass + $partial);
-                    if ($partial) {
-                        $useObjectName = $class->name;
+        if (!$this->objectManager->getMetadataFactory() instanceof DisconnectedClassMetadataFactory) {
+            foreach (array_reverse(class_parents($meta->name)) as $parentClass) {
+                // read only inherited mapped classes
+                if ($this->objectManager->getMetadataFactory()->hasMetadataFor($parentClass)) {
+                    $class = $this->objectManager->getClassMetadata($parentClass);
+                    $partial = array();
+                    $this->driver->readExtendedMetadata($class, $partial);
+                    if ($class->isMappedSuperclass) {
+                        $supperclass += $partial;
+                    } elseif (!$class->isInheritanceTypeNone()) {
+                        $this->driver->validateFullMetadata($class, $supperclass + $partial);
+                        if ($partial) {
+                            $useObjectName = $class->name;
+                        }
                     }
+                    $config += $partial;
                 }
-                $config += $partial;
             }
         }
         $this->driver->readExtendedMetadata($meta, $config);
