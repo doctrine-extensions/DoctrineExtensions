@@ -150,6 +150,7 @@ final class ExtensionMetadataFactory
                 }
             }
             $driver = new $driverClassName();
+            $driver->setOriginalDriver($omDriver);
             if ($driver instanceof FileDriver) {
                 $driver->setPaths($omDriver->getPaths());
             }

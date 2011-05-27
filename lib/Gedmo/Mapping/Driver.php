@@ -38,4 +38,12 @@ interface Driver
      * @return void
      */
     public function validateFullMetadata(ClassMetadata $meta, array $config);
+
+    /**
+     * Passes in the original driver
+     *
+     * @param $driver
+     * @return void
+     */
+    public function setOriginalDriver($driver);
 }
