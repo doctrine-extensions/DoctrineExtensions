@@ -10,6 +10,11 @@ use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 
 class Annotation implements Driver
 {
+    /**
+     * original driver if it is available
+     */
+    protected $_originalDriver = null;
+    
     public function validateFullMetadata(ClassMetadata $meta, array $config)
     {
         // in our case values are independant from each other
@@ -55,5 +60,16 @@ class Annotation implements Driver
                 );
             }
         }
+    }
+    
+    /**
+     * Passes in the mapping read by original driver
+     *
+     * @param $driver
+     * @return void
+     */
+    public function setOriginalDriver($driver)
+    {
+        $this->_originalDriver = $driver;
     }
 }

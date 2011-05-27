@@ -84,6 +84,11 @@ class Annotation implements AnnotationDriverInterface
     private $reader;
 
     /**
+     * original driver if it is available
+     */
+    protected $_originalDriver = null;
+
+    /**
      * {@inheritDoc}
      */
     public function setAnnotationReader($reader)
@@ -247,5 +252,16 @@ class Annotation implements AnnotationDriverInterface
         if ($missingFields) {
             throw new InvalidMappingException("Missing properties: " . implode(', ', $missingFields) . " in class - {$meta->name}");
         }
+    }
+
+    /**
+     * Passes in the mapping read by original driver
+     *
+     * @param $driver
+     * @return void
+     */
+    public function setOriginalDriver($driver)
+    {
+        $this->_originalDriver = $driver;
     }
 }
