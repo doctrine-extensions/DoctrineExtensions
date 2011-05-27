@@ -3,6 +3,7 @@
 namespace Gedmo\Sluggable\Mapping\Driver;
 
 use Gedmo\Mapping\Driver\File,
+    Gedmo\Mapping\Driver,
     Gedmo\Exception\InvalidMappingException;
 
 /**
@@ -17,7 +18,7 @@ use Gedmo\Mapping\Driver\File,
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class Yaml extends File
+class Yaml extends File implements Driver
 {
     /**
      * File extension
@@ -47,9 +48,9 @@ class Yaml extends File
     /**
      * {@inheritDoc}
      */
-    public function readExtendedMetadata($meta, array &$config) {
-        $yaml = $this->_loadMappingFile($this->_findMappingFile($meta->name));
-        $mapping = $yaml[$meta->name];
+    public function readExtendedMetadata($meta, array &$config)
+    {
+        $mapping = $this->_getMapping($meta->name);
 
         if (isset($mapping['fields'])) {
             foreach ($mapping['fields'] as $field => $fieldMapping) {

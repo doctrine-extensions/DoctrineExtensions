@@ -47,6 +47,11 @@ class Annotation implements AnnotationDriverInterface
     private $reader;
 
     /**
+     * original driver if it is available
+     */
+    protected $_originalDriver = null;
+
+    /**
      * {@inheritDoc}
      */
     public function setAnnotationReader($reader)
@@ -121,5 +126,16 @@ class Annotation implements AnnotationDriverInterface
     {
         $mapping = $meta->getFieldMapping($field);
         return $mapping && in_array($mapping['type'], $this->validTypes);
+    }
+
+    /**
+     * Passes in the mapping read by original driver
+     *
+     * @param $driver
+     * @return void
+     */
+    public function setOriginalDriver($driver)
+    {
+        $this->_originalDriver = $driver;
     }
 }

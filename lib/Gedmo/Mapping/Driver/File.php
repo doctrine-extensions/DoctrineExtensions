@@ -25,6 +25,11 @@ abstract class File implements Driver
     protected $_extension;
 
     /**
+     * original driver if it is available
+     */
+    protected $_originalDriver = null;
+
+    /**
      * List of paths for file search
      * @var array
      */
@@ -80,5 +85,41 @@ abstract class File implements Driver
             }
         }
         throw new \Gedmo\Exception\UnexpectedValueException("No mapping file found named '$fileName' for class '$className'.");
+    }
+
+    /**
+     * Tries to get a mapping for a given class
+     *
+     * @param  $className
+     * @return null|array|object
+     */
+    protected function _getMapping($className)
+    {
+        //try loading mapping from original driver first
+        $mapping = null;
+        if (!is_null($this->_originalDriver)) {
+            if ($this->_originalDriver instanceof AbstractFileDriver) {
+                $mapping = $this->_originalDriver->getElement($className);
+            }
+        }
+
+        //if no mapping found try to load mapping file again
+        if (is_null($mapping)) {
+            $yaml = $this->_loadMappingFile($this->_findMappingFile($className));
+            $mapping = $yaml[$className];
+        }
+
+        return $mapping;
+    }
+
+    /**
+     * Passes in the mapping read by original driver
+     *
+     * @param $driver
+     * @return void
+     */
+    public function setOriginalDriver($driver)
+    {
+        $this->_originalDriver = $driver;
     }
 }
