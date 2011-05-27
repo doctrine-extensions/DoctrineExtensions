@@ -72,7 +72,7 @@ class SluggableTest extends BaseTestCaseORM
             $this->em->clear();
 
             $shorten = $article->getSlug();
-            $this->assertEquals(strlen($shorten), 64);
+            $this->assertEquals(64, strlen($shorten));
             $expected = 'the-title-the-title-the-title-the-title-the-title-the-title-the-';
             $expected = substr($expected, 0, 64 - (strlen($i+1) + 1)) . '-' . ($i+1);
             $this->assertEquals($shorten, $expected);
@@ -112,6 +112,7 @@ class SluggableTest extends BaseTestCaseORM
 
     public function testGithubIssue45()
     {
+        // persist new records with same slug
         $article = new Article;
         $article->setTitle('test');
         $article->setCode('code');
@@ -125,6 +126,23 @@ class SluggableTest extends BaseTestCaseORM
         $this->em->flush();
         $this->assertEquals('test-code', $article->getSlug());
         $this->assertEquals('test-code-1', $article2->getSlug());
+    }
+
+    public function testGithubIssue57()
+    {
+        // slug matched by prefix
+        $article = new Article;
+        $article->setTitle('my');
+        $article->setCode('slug');
+        $this->em->persist($article);
+
+        $article2 = new Article;
+        $article2->setTitle('my');
+        $article2->setCode('s');
+        $this->em->persist($article2);
+
+        $this->em->flush();
+        $this->assertEquals('my-s', $article2->getSlug());
     }
 
     protected function getUsedEntityFixtures()

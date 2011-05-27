@@ -230,7 +230,7 @@ class SluggableListener extends MappedEventSubscriber
      * @param string $preferedSlug
      * @return string - unique slug
      */
-    private function makeUniqueSlug(SluggableAdapter $ea, $object, $preferedSlug)
+    private function makeUniqueSlug(SluggableAdapter $ea, $object, $preferedSlug, $recursing = false)
     {
         $om = $ea->getObjectManager();
         $meta = $om->getClassMetadata(get_class($object));
@@ -240,6 +240,10 @@ class SluggableListener extends MappedEventSubscriber
         $result = $ea->getSimilarSlugs($object, $meta, $config, $preferedSlug);
         // add similar persisted slugs into account
         $result += $this->getSimilarPersistedSlugs($meta->name, $preferedSlug);
+        // leave only right slugs
+        if (!$recursing) {
+            $this->filterSimilarSlugs($result, $config, $preferedSlug);
+        }
 
         if ($result) {
             $generatedSlug = $preferedSlug;
@@ -261,7 +265,7 @@ class SluggableListener extends MappedEventSubscriber
                     $mapping['length'] - (strlen($i) + strlen($config['separator']))
                 );
                 $this->exponent = strlen($i) - 1;
-                $generatedSlug = $this->makeUniqueSlug($ea, $object, $generatedSlug);
+                $generatedSlug = $this->makeUniqueSlug($ea, $object, $generatedSlug, true);
             }
             $preferedSlug = $generatedSlug;
         }
@@ -289,5 +293,22 @@ class SluggableListener extends MappedEventSubscriber
             });
         }
         return $result;
+    }
+
+    /**
+     * Filters $slugs which are matched as prefix but are
+     * simply shorter slugs
+     *
+     * @param array $slugs
+     * @param array $config
+     * @param string $prefered
+     */
+    private function filterSimilarSlugs(array &$slugs, array &$config, $prefered)
+    {
+        foreach ($slugs as $key => $similar) {
+            if (!preg_match("@{$prefered}($|{$config['separator']}[\d]+$)@smi", $similar['slug'])) {
+                unset($slugs[$key]);
+            }
+        }
     }
 }

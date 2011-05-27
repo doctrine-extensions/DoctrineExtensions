@@ -61,6 +61,23 @@ class SluggableDocumentTest extends BaseTestCaseMongoODM
         }
     }
 
+    public function testGithubIssue57()
+    {
+        // slug matched by prefix
+        $article = new Article;
+        $article->setTitle('my');
+        $article->setCode('slug');
+        $this->dm->persist($article);
+
+        $article2 = new Article;
+        $article2->setTitle('my');
+        $article2->setCode('s');
+        $this->dm->persist($article2);
+
+        $this->dm->flush();
+        $this->assertEquals('my-s', $article2->getSlug());
+    }
+
     private function populate()
     {
         $art0 = new Article();
