@@ -458,50 +458,6 @@ class Path implements Strategy
             $meta->getReflectionProperty($config['path'])->setValue($node, $nodePath);
             $dm->getUnitOfWork()->setOriginalDocumentProperty($oid, $config['path'], $nodePath);
         }
-//
-//        foreach ($dm->getUnitOfWork()->getIdentityMap() as $className => $nodes) {
-//            // For inheritance mapped classes, only root is always in the identity map
-//            if ($className !== $meta->rootDocumentName) {
-//                continue;
-//            }
-//
-//            foreach ($nodes as $row) {
-//
-//                if ($row instanceof Proxy && !$row->__isInitialized__) {
-//                    continue;
-//                }
-//
-//                if ($this->isNodeChildOf($row, $node)) {
-//                    $dm->detach($row);
-//                }
-//
-//                $oldSortOrder = $meta->getReflectionProperty($config['sort'])->getValue($row);
-//
-//                if (!$oldSortOrder) {
-//                    continue;
-//                }
-//
-//                // Don't update the node or the parent since these have already been updated
-//                if (($row == $node)) {
-//                    continue;
-//                }
-//
-//                $oid = spl_object_hash($row);
-//                $nodePath = $meta->getReflectionProperty($config['path'])->getValue($row);
-//                $oldChildCount = $meta->getReflectionProperty($config['childCount'])->getValue($row);
-//
-//                if ($oldSortOrder > $nodeSort) {
-//                    $meta->getReflectionProperty($config['sort'])->setValue($row, $oldSortOrder - (1 + $descendants));
-//                    $dm->getUnitOfWork()->setOriginalDocumentProperty($oid, $config['sort'], $oldSortOrder - (1 + $descendants));
-//                }
-//
-//                // Decrease child count
-//                if ($meta->getIdentifierValue($row) == $parentId) {
-//                    $meta->getReflectionProperty($config['childCount'])->setValue($row, --$oldChildCount);
-//                    $dm->getUnitOfWork()->setOriginalDocumentProperty($oid, $config['childCount'], --$oldChildCount);
-//                }
-//            }
-//        }
     }
 
     /**
@@ -759,39 +715,18 @@ class Path implements Strategy
             // to recompute the slug for descendants. This will remove
             // the extra method call
             // @todo Use the Sluggable extension to do this work
-//            $dm->persist($descendant); @todo remove?
             $this->setNodePath($dm, $descendant, $updateDb);
             $dm->getUnitOfWork()->computeChangeSet($meta, $descendant);
         }
 
-        // Process all descendants
-        /* @todo need to figure out how to update single nodes
-         * and not persist in doctrine all descendants then do
-         * a massive flush
-         *
-        $size = 40;
-        $processed = 0;
-        $count = $repo->countDescendants($oldParentPath);
-        while ($processed < $count)
-        {
-        	$rows = $repo->fetchDescendants($oldParentPath, $config['sort'], 'asc');
-
-        	foreach ($rows as $descendant)
-        	{
-        		// @todo Require a single sluggable field so we do not have
-        		// to recompute the sluge for descendants. This will remove
-        		// the extra method call
-        		$dm->persist($descendant);
-                $this->setNodePath($dm, $descendant);
-                $dm->getUnitOfWork()->computeChangeSet($meta, $descendant);
-                $processed++;
-        	}
-        }
-         */
-
         return $pathProp->getValue($parentNode);
     }
 
+    /**
+     * Returns the path that all ancestors of $node will contain
+     *
+     * @param Node $node
+     */
     public function getAncestorsPath(Node $node)
     {
         $nodePath = $node->getPath();

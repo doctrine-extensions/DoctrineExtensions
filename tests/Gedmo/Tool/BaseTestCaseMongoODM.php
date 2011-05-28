@@ -35,7 +35,7 @@ abstract class BaseTestCaseMongoODM extends \PHPUnit_Framework_TestCase
     protected $queryAnalyzer;
 
     protected $skipCollectionsOnDrop = array();
-    
+
     /**
      * {@inheritdoc}
      */
@@ -57,7 +57,7 @@ abstract class BaseTestCaseMongoODM extends \PHPUnit_Framework_TestCase
             	if (in_array($collection->getName(), $this->skipCollectionsOnDrop)) {
             		continue;
             	}
-            	
+
                 $collection->drop();
             }
             $this->dm->getConnection()->close();
@@ -101,7 +101,7 @@ abstract class BaseTestCaseMongoODM extends \PHPUnit_Framework_TestCase
         $this->dm = DocumentManager::create($conn, 'gedmo_extensions_test', $config, $evm ?: $this->getEventManager());
         return $this->dm;
     }
-    
+
     /**
      * Stops query statistic log and outputs
      * the data to screen or file
@@ -114,7 +114,8 @@ abstract class BaseTestCaseMongoODM extends \PHPUnit_Framework_TestCase
     {
         if ($this->queryAnalyzer) {
             $output = $this->queryAnalyzer->getOutput();
-            
+            $this->queryAnalyzer->reset();
+
             if ($writeToLog) {
                 $fileName = __DIR__.'/../../temp/query_debug_'.time().'.log';
                 if (($file = fopen($fileName, 'w+')) !== false) {
@@ -128,7 +129,7 @@ abstract class BaseTestCaseMongoODM extends \PHPUnit_Framework_TestCase
             }
         }
     }
-    
+
     /**
      * Build event manager
      *
@@ -196,7 +197,7 @@ abstract class BaseTestCaseMongoODM extends \PHPUnit_Framework_TestCase
               ->will($this->returnValue(array(0 => $this->queryAnalyzer, 1 => 'logQuery')))
             ;
         }
-        
+
         $reader = new AnnotationReader();
         $reader->setDefaultAnnotationNamespace('Doctrine\\ODM\\MongoDB\\Mapping\\');
         $mappingDriver = new AnnotationDriver($reader);
