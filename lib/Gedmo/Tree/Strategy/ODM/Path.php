@@ -127,6 +127,14 @@ class Path implements Strategy
     /**
      * {@inheritdoc}
      */
+    public function processMetadataLoad($om, $meta)
+    {
+
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function processScheduledInsertion($em, $node)
     {
         // Don't calculate any paths until nodes are inserted. This way
@@ -147,23 +155,23 @@ class Path implements Strategy
         $changeSet = $uow->getDocumentChangeSet($node);
 
         if (isset($changeSet[$config['parent']])) {
-        	if ($changeSet[$config['parent']][1] == $changeSet[$config['parent']][0]) {
+            if ($changeSet[$config['parent']][1] == $changeSet[$config['parent']][0]) {
                 // The parent node has gotten updated but we do not need to update in the database
                 // this helps prevent multiple queries that are not needed if nodes are loaded
                 // in the UOW
                 $oid = spl_object_hash($node);
                 $uow->clearDocumentChangeSet($oid);
-        		$meta->getReflectionProperty($config['parent'])->setValue($node, $changeSet[$config['parent']][1]);
-        		$dm->getUnitOfWork()->setOriginalDocumentProperty($oid, $config['parent'], $changeSet[$config['parent']][1]);
+                $meta->getReflectionProperty($config['parent'])->setValue($node, $changeSet[$config['parent']][1]);
+                $dm->getUnitOfWork()->setOriginalDocumentProperty($oid, $config['parent'], $changeSet[$config['parent']][1]);
                 $uow->recomputeSingleDocumentChangeSet($meta, $node);
-        	} else {
-        		// Update the parent
-        		$this->updateNode($dm, $node, $changeSet[$config['parent']][1]);
-        	}
+            } else {
+                // Update the parent
+                $this->updateNode($dm, $node, $changeSet[$config['parent']][1]);
+            }
         }
 
         if (isset($changeSet[$config['pathSource']])) {
-        	// Updating the path source
+            // Updating the path source
             $this->updateNodesPath($dm, $node);
         }
     }
@@ -220,7 +228,7 @@ class Path implements Strategy
                 }
 
                 if ($this->isNodeChildOf($row, $node)) {
-                	$dm->detach($row);
+                    $dm->detach($row);
                 }
 
                 $oldSortOrder = $meta->getReflectionProperty($config['sort'])->getValue($row);
@@ -260,7 +268,7 @@ class Path implements Strategy
      */
     public function isNodeChildOf(Node $node, Node $parent)
     {
-    	$parentPath = explode(',', $parent->getPath());
+        $parentPath = explode(',', $parent->getPath());
         $childPath = explode(',', $node->getPath());
 
         // Remove the last element which is a empty string
@@ -323,34 +331,34 @@ class Path implements Strategy
             $referenceNodeParent = $meta->getReflectionProperty($config['parent'])->getValue($referenceNode);
             $referenceNodeSort = $meta->getReflectionProperty($config['sort'])->getValue($referenceNode);
             $referenceNodePath = $meta->getReflectionProperty($config['path'])->getValue($referenceNode);
-        	$newParent = $referenceNodeParent;
+            $newParent = $referenceNodeParent;
 
             switch ($position) {
-            	case self::PREV_SIBLING:
+                case self::PREV_SIBLING:
                     $newSort = $referenceNodeSort;
                     $decreaseBy = 1 + $descendantCount + ($nodeSort - $newSort);
                     $endingSort = $nodeSort + ($descendantCount * 2) + 2;
                     $repo->increaseSortBySortRange($newSort, true, 1 + $descendantCount);
                     $repo->increaseSortBySortRange($newSort + $descendantCount + 1, false, -1 * $decreaseBy, $endingSort);
-            	break;
+                break;
 
-            	case self::NEXT_SIBLING:
-            		if ($nodeSort > $referenceNodeSort) {
-            			// We are moving the node up in the tree
+                case self::NEXT_SIBLING:
+                    if ($nodeSort > $referenceNodeSort) {
+                        // We are moving the node up in the tree
 
-            			$refMaxSort = $repo->findMaxSort(false, $referenceNodePath);
+                        $refMaxSort = $repo->findMaxSort(false, $referenceNodePath);
 
-            			// First, increase all nodes greater than reference sort by #
-            			// of node descendants + 1 to make room for nodes being moved up. Ending
-            			// sort is $nodeSort + 1 cause we are not using lte, just lt.
-            			$repo->increaseSortBySortRange($refMaxSort, false, $descendantCount + 1, $nodeSort);
+                        // First, increase all nodes greater than reference sort by #
+                        // of node descendants + 1 to make room for nodes being moved up. Ending
+                        // sort is $nodeSort + 1 cause we are not using lte, just lt.
+                        $repo->increaseSortBySortRange($refMaxSort, false, $descendantCount + 1, $nodeSort);
 
-            			// Second, our tree is now invalid because the duplicate sort orders exists
-            			// we now need to update the nodes we are moving, i.e the $node itself and
-            			// all sub children by the difference of the reference node sort - 1 and the node sort
-            			$repo->increaseSortByPath($nodePath, -1 * ($nodeSort - ($refMaxSort + 1)));
-            		} else {
-            			$refMaxSort = $repo->findMaxSort(false, $referenceNodePath);
+                        // Second, our tree is now invalid because the duplicate sort orders exists
+                        // we now need to update the nodes we are moving, i.e the $node itself and
+                        // all sub children by the difference of the reference node sort - 1 and the node sort
+                        $repo->increaseSortByPath($nodePath, -1 * ($nodeSort - ($refMaxSort + 1)));
+                    } else {
+                        $refMaxSort = $repo->findMaxSort(false, $referenceNodePath);
 
                         // First, decreasing all nodes greater than reference sort by #
                         // of node descendants + 1 to make room for nodes being moved down. Ending
@@ -361,24 +369,24 @@ class Path implements Strategy
                         // we now need to update the nodes we are moving, i.e the $node itself and
                         // all sub children by the difference of the reference node sort - 1 and the node sort
                         $repo->increaseSortByPath($nodePath, $referenceNodeSort - $nodeSort);
-            		}
-            	break;
+                    }
+                break;
 
                 case self::FIRST_CHILD:
-                	if ($referenceNodeSort > $nodeSort) {
-	                	// First we need to increase the sort order for all nodes
-	                	// greater than the reference node, this will make room for
-	                	// the new node
-	                	$newParent = $referenceNode;
-	                    $refMaxSort = $repo->findMaxSort(false, $referenceNodePath);
-	                    $nodeMaxSort = $repo->findMaxSort(false, $nodePath);
-	                	$repo->increaseSortBySortRange($nodeMaxSort, false, -1 * ($descendantCount + 1), $referenceNodeSort + 1);
+                    if ($referenceNodeSort > $nodeSort) {
+                        // First we need to increase the sort order for all nodes
+                        // greater than the reference node, this will make room for
+                        // the new node
+                        $newParent = $referenceNode;
+                        $refMaxSort = $repo->findMaxSort(false, $referenceNodePath);
+                        $nodeMaxSort = $repo->findMaxSort(false, $nodePath);
+                        $repo->increaseSortBySortRange($nodeMaxSort, false, -1 * ($descendantCount + 1), $referenceNodeSort + 1);
 
-	                    // Second, our tree is now invalid because the duplicate sort orders exists
-	                    // we now need to update the nodes we are moving, i.e the $node itself and
-	                    // all sub children by the difference of the reference node sort - 1 and the node sort
-	                    $repo->increaseSortByPath($nodePath, $referenceNodeSort - $nodeMaxSort);
-                	} else {
+                        // Second, our tree is now invalid because the duplicate sort orders exists
+                        // we now need to update the nodes we are moving, i.e the $node itself and
+                        // all sub children by the difference of the reference node sort - 1 and the node sort
+                        $repo->increaseSortByPath($nodePath, $referenceNodeSort - $nodeMaxSort);
+                    } else {
                         // First we need to increase the sort order for all nodes
                         // greater than the reference node, this will make room for
                         // the new node
@@ -390,35 +398,35 @@ class Path implements Strategy
                         // we now need to update the nodes we are moving, i.e the $node itself and
                         // all sub children by the difference of the reference node sort and the node sort
                         $repo->increaseSortByPath($nodePath, -1 * ($nodeSort - $referenceNodeSort) + 1);
-                	}
+                    }
                 break;
 
                 case self::LAST_CHILD:
                     $newParent = $referenceNode;
 
                     if ($referenceNodeSort > $nodeSort) {
-                    	// Moving the node down in the tree
-                    	$refMaxSort = $repo->findMaxSort(false, $referenceNodePath);
+                        // Moving the node down in the tree
+                        $refMaxSort = $repo->findMaxSort(false, $referenceNodePath);
                         $repo->increaseSortBySortRange($nodeSort + $descendantCount, false, -1 * ($descendantCount + 1), $refMaxSort + 1);
                         $repo->increaseSortByPath($nodePath, $refMaxSort - $nodeSort - $descendantCount);
                     } else {
-                    	// @todo Look for special case of the node being the next node after reference
-                    	// where we would not have to update sort orders, just paths. This applies to all
-                    	// move methods I beleive
-                    	// @todo Check if the node has any children, if no children then we don't need to find
-                    	// max sort, the max sort would simply be the node sort
+                        // @todo Look for special case of the node being the next node after reference
+                        // where we would not have to update sort orders, just paths. This applies to all
+                        // move methods I beleive
+                        // @todo Check if the node has any children, if no children then we don't need to find
+                        // max sort, the max sort would simply be the node sort
                         // Moving node up in the tree
-                    	$refMaxSort = $repo->findMaxSort(false, $referenceNodePath);
-	                    $repo->increaseSortBySortRange($refMaxSort, false, $descendantCount + 1, $nodeSort);
-	                    $repo->increaseSortByPath($nodePath, -1 * ($nodeSort - $refMaxSort) + 1);
+                        $refMaxSort = $repo->findMaxSort(false, $referenceNodePath);
+                        $repo->increaseSortBySortRange($refMaxSort, false, $descendantCount + 1, $nodeSort);
+                        $repo->increaseSortByPath($nodePath, -1 * ($nodeSort - $refMaxSort) + 1);
                     }
                 break;
             }
         } else {
-        	// We have no reference node, so this will now become the very
-        	// first node in the tree
-        	$newSort = 1;
-        	$decreaseBy = 1 + $descendantCount + ($nodeSort - $newSort);
+            // We have no reference node, so this will now become the very
+            // first node in the tree
+            $newSort = 1;
+            $decreaseBy = 1 + $descendantCount + ($nodeSort - $newSort);
             $endingSort = $nodeSort + ($descendantCount * 2) + 2;
             $repo->increaseSortBySortRange($newSort, true, 1 + $descendantCount);
             $repo->increaseSortBySortRange($newSort + $descendantCount + 1, false, -1 * $decreaseBy, $endingSort);
@@ -426,16 +434,16 @@ class Path implements Strategy
 
         if ($newParent != $nodeParent) {
 
-        	// Decrease child count in DB and in memory
+            // Decrease child count in DB and in memory
             $repo->decreaseChildCount($nodeParent);
             $childCountProp = $meta->getReflectionProperty($config['childCount']);
             $newChildCount = $childCountProp->getValue($nodeParent) - 1;
             $dm->getUnitOfWork()->setOriginalDocumentProperty(spl_object_hash($nodeParent), $config['path'], $newChildCount - 1);
 
-	        $qb = $dm->createQueryBuilder($config['useObjectClass']);
-	        $qb->field('id')->equals(new \MongoId($nodeId))
-	            ->update()
-	        ;
+            $qb = $dm->createQueryBuilder($config['useObjectClass']);
+            $qb->field('id')->equals(new \MongoId($nodeId))
+                ->update()
+            ;
 
             $ref = null;
             if ($newParent) {
@@ -525,7 +533,7 @@ class Path implements Strategy
 
                 case self::NEXT_SIBLING:
 
-                	// Get reference nodes parent
+                    // Get reference nodes parent
                     $parent = $meta->getReflectionProperty($config['parent'])->getValue($referenceNode);
                     $referencePath = $meta->getReflectionProperty($config['path'])->getValue($referenceNode);
                     $referenceDescendants = $dm->getRepository($config['useObjectClass'])->countDescendants($referencePath);
@@ -625,7 +633,7 @@ class Path implements Strategy
 
         // Update parent in query builder if we have one
         if ($parent) {
-        	$ref = $dm->createDBRef($parent, null);
+            $ref = $dm->createDBRef($parent, null);
             $qb->field($config['parent'])->set($ref);
             $meta->getReflectionProperty($config['parent'])->setValue($node, $parent);
             $dm->getUnitOfWork()->setOriginalDocumentProperty($oid, $config['parent'], $parent);
@@ -664,7 +672,7 @@ class Path implements Strategy
                 }
 
                 if (!$meta->getReflectionProperty($config['sort'])->getValue($row)) {
-                	continue;
+                    continue;
                 }
 
                 // Don't update the node or the parent since these have already been updated
@@ -693,7 +701,7 @@ class Path implements Strategy
      */
     public function updateNodesPath(DocumentManager $dm, $parentNode, $descendants = null, $updateDb = false)
     {
-    	$meta = $dm->getClassMetadata(get_class($parentNode));
+        $meta = $dm->getClassMetadata(get_class($parentNode));
         $config = $this->listener->getConfiguration($dm, $meta->name);
         $repo = $dm->getRepository($config['useObjectClass']);
         $pathProp = $meta->getReflectionProperty($config['path']);
@@ -706,7 +714,7 @@ class Path implements Strategy
         // @todo Working method but this can use a lot of resources to load all
         // descendants into memory
         if (!$descendants) {
-        	$descendants = $repo->fetchDescendants($oldParentPath, $config['sort'], 'asc');
+            $descendants = $repo->fetchDescendants($oldParentPath, $config['sort'], 'asc');
         }
 
         foreach ($descendants as $descendant)
@@ -776,7 +784,7 @@ class Path implements Strategy
         $pathProperty->setValue($node, $nodePath);
 
         if ($setNodePath) {
-        	$dm->getRepository($config['useObjectClass'])->setNodePath($node, $nodePath);
+            $dm->getRepository($config['useObjectClass'])->setNodePath($node, $nodePath);
             $dm->getUnitOfWork()->setOriginalDocumentProperty(spl_object_hash($node), $config['path'], $node);
         }
 

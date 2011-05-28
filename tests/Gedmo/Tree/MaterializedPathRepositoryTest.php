@@ -51,6 +51,8 @@ class MaterializedPathRepositoryTest extends BaseTestCaseMongoODM
 
     public function testRepositoryChildrenMagicMethods()
     {
+    	$this->clearCollection();
+
         $repo = $this->dm->getRepository(self::CATEGORY);
 
         $root1 = new Category;

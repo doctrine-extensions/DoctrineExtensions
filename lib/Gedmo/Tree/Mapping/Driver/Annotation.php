@@ -57,21 +57,23 @@ class Annotation implements AnnotationDriverInterface
 
     /**
      *
-     * @var unknown_type
      */
-    const ANNOTATION_PATH = 'Gedmo\Tree\Mapping\TreePath';
+    const ANNOTATION_CHILD_COUNT = 'Gedmo\\Mapping\\Annotation\\TreeChildCount';
 
     /**
      *
-     * @var unknown_type
      */
-    const ANNOTATION_PATH_SOURCE = 'Gedmo\Tree\Mapping\TreePathSource';
+    const ANNOTATION_PATH = 'Gedmo\\Mapping\\Annotation\\TreePath';
 
     /**
      *
-     * @var unknown_type
      */
-    const ANNOTATION_SORT = 'Gedmo\Tree\Mapping\TreeSort';
+    const ANNOTATION_PATH_SOURCE = 'Gedmo\\Mapping\\Annotation\\TreePathSource';
+
+    /**
+     *
+     */
+    const ANNOTATION_SORT = 'Gedmo\\Mapping\\Annotation\\TreeSort';
 
     /**
      * List of types which are valid for tree fields
@@ -218,7 +220,7 @@ class Annotation implements AnnotationDriverInterface
             }
 
             // child count
-            if ($childCount = $reader->getPropertyAnnotation($property, self::ANNOTATION_CHILD_COUNT)) {
+            if ($childCount = $this->reader->getPropertyAnnotation($property, self::ANNOTATION_CHILD_COUNT)) {
                 $field = $property->getName();
                 if (!$meta->hasField($field)) {
                     throw new InvalidMappingException("Unable to find 'childCount' - [{$field}] as mapped property in entity - {$meta->name}");
@@ -230,7 +232,7 @@ class Annotation implements AnnotationDriverInterface
             }
 
             // path
-            if ($path = $reader->getPropertyAnnotation($property, self::ANNOTATION_PATH)) {
+            if ($path = $this->reader->getPropertyAnnotation($property, self::ANNOTATION_PATH)) {
                 $field = $property->getName();
                 if (!$meta->hasField($field)) {
                     throw new InvalidMappingException("Unable to find 'path' - [{$field}] as mapped property in entity - {$meta->name}");
@@ -242,7 +244,7 @@ class Annotation implements AnnotationDriverInterface
             }
 
             // path source
-            if ($pathSource = $reader->getPropertyAnnotation($property, self::ANNOTATION_PATH_SOURCE)) {
+            if ($pathSource = $this->reader->getPropertyAnnotation($property, self::ANNOTATION_PATH_SOURCE)) {
                 $field = $property->getName();
                 if (!$meta->hasField($field)) {
                     throw new InvalidMappingException("Unable to find 'pathSource' - [{$field}] as mapped property in entity - {$meta->name}");
@@ -255,7 +257,7 @@ class Annotation implements AnnotationDriverInterface
             }
 
             // sort
-            if ($sort = $reader->getPropertyAnnotation($property, self::ANNOTATION_SORT)) {
+            if ($sort = $this->reader->getPropertyAnnotation($property, self::ANNOTATION_SORT)) {
                 $field = $property->getName();
                 if (!$meta->hasField($field)) {
                     throw new InvalidMappingException("Unable to find 'sort' - [{$field}] as mapped property in entity - {$meta->name}");
