@@ -61,6 +61,7 @@ class Closure implements Strategy
     {
         $config = $this->listener->getConfiguration($em, $meta->name);
         $closureMetadata = $em->getClassMetadata($config['closure']);
+
         if (!$closureMetadata->hasAssociation('ancestor')) {
             // create ancestor mapping
             $ancestorMapping = array(
@@ -118,6 +119,9 @@ class Closure implements Strategy
         $closureMetadata->table['indexes'][$indexName] = array(
             'columns' => array('depth')
         );
+        if ($cacheDriver = $em->getMetadataFactory()->getCacheDriver()) {
+            $cacheDriver->save($closureMetadata->name."\$CLASSMETADATA", $closureMetadata, null);
+        }
     }
 
     /**

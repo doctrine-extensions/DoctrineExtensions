@@ -25,7 +25,7 @@ class TreeMappingTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $config = new \Doctrine\ORM\Configuration();
-        $config->setMetadataCacheImpl(new \Doctrine\Common\Cache\ArrayCache);
+        $config->setMetadataCacheImpl(new \Doctrine\Common\Cache\ApcCache);
         $config->setQueryCacheImpl(new \Doctrine\Common\Cache\ArrayCache);
         $config->setProxyDir(TESTS_TEMP_DIR);
         $config->setProxyNamespace('Gedmo\Mapping\Proxy');
@@ -52,6 +52,21 @@ class TreeMappingTest extends \PHPUnit_Framework_TestCase
         $evm = new \Doctrine\Common\EventManager();
         $evm->addEventSubscriber(new TreeListener());
         $this->em = \Doctrine\ORM\EntityManager::create($conn, $config, $evm);
+    }
+
+    public function testApcCached()
+    {
+        if (!extension_loaded('apc') || !ini_get('apc.enable_cli')) {
+            $this->markTestSkipped('APC extension is not loaded.');
+        }
+        $meta = $this->em->getClassMetadata(self::YAML_CLOSURE_CATEGORY);
+        $this->em->getClassMetadata('Tree\Fixture\Closure\CategoryClosure');
+
+        $meta = $this->em->getMetadataFactory()->getCacheDriver()->fetch(
+            "Tree\\Fixture\\Closure\\CategoryClosure\$CLASSMETADATA"
+        );
+        $this->assertTrue($meta->hasAssociation('ancestor'));
+        $this->assertTrue($meta->hasAssociation('descendant'));
     }
 
     public function testYamlNestedMapping()
