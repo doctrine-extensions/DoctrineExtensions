@@ -1,25 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping">
-                              
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xmlns:gedmo="http://gediminasm.org/schemas/orm/doctrine-extensions-mapping">
+
     <entity name="Mapping\Fixture\Xml\ClosureTree" table="closure_trees">
-        <gedmo>
-            <tree type="closure"/>
-            <tree-closure class="Mapping\Fixture\ClosureTreeClosure"/>
-        </gedmo>
 
         <id name="id" type="integer" column="id">
             <generator strategy="AUTO"/>
         </id>
-        
+
         <field name="name" type="string" length="128"/>
-        
+
         <many-to-one field="parent" target-entity="ClosureTree">
             <join-column name="parent_id" referenced-column-name="id" on-delete="CASCADE"/>
-            <gedmo>
-                <tree-parent/>
-            </gedmo>
+            <gedmo:gedmo>
+                <gedmo:tree-parent/>
+            </gedmo:gedmo>
         </many-to-one>
+
+        <gedmo:gedmo>
+            <gedmo:tree type="closure"/>
+            <gedmo:tree-closure class="Mapping\Fixture\ClosureTreeClosure"/>
+        </gedmo:gedmo>
     </entity>
 
 </doctrine-mapping>

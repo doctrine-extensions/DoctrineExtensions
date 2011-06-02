@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping">
-                              
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xmlns:gedmo="http://gediminasm.org/schemas/orm/doctrine-extensions-mapping">
+
     <entity name="Mapping\Fixture\Xml\NestedTree" table="nested_trees">
-        <gedmo>
-            <tree type="nested"/>
-        </gedmo>
 
         <indexes>
             <index name="name_idx" columns="name"/>
@@ -14,35 +12,39 @@
         <id name="id" type="integer" column="id">
             <generator strategy="AUTO"/>
         </id>
-        
+
         <field name="name" type="string" length="128"/>
         <field name="left" column="lft" type="integer">
-            <gedmo>
-                <tree-left/>
-            </gedmo>
+            <gedmo:gedmo>
+                <gedmo:tree-left/>
+            </gedmo:gedmo>
         </field>
         <field name="right" column="rgt" type="integer">
-            <gedmo>
-                <tree-right/>
-            </gedmo>
+            <gedmo:gedmo>
+                <gedmo:tree-right/>
+            </gedmo:gedmo>
         </field>
         <field name="root" type="integer">
-            <gedmo>
-                <tree-root/>
-            </gedmo>
+            <gedmo:gedmo>
+                <gedmo:tree-root/>
+            </gedmo:gedmo>
         </field>
         <field name="level" column="lvl" type="integer">
-            <gedmo>
-                <tree-level/>
-            </gedmo>
+            <gedmo:gedmo>
+                <gedmo:tree-level/>
+            </gedmo:gedmo>
         </field>
-        
+
         <many-to-one field="parent" target-entity="NestedTree">
             <join-column name="parent_id" referenced-column-name="id" on-delete="SET_NULL"/>
-            <gedmo>
-                <tree-parent/>
-            </gedmo>
+            <gedmo:gedmo>
+                <gedmo:tree-parent/>
+            </gedmo:gedmo>
         </many-to-one>
+
+        <gedmo:gedmo>
+            <gedmo:tree type="nested"/>
+        </gedmo:gedmo>
     </entity>
 
 </doctrine-mapping>

@@ -1,389 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
-    targetNamespace="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+    targetNamespace="http://gediminasm.org/schemas/orm/doctrine-extensions-mapping"
+    xmlns:gedmo="http://gediminasm.org/schemas/orm/doctrine-extensions-mapping"
     xmlns:orm="http://doctrine-project.org/schemas/orm/doctrine-mapping"
-    xmlns:gedmo="http://doctrine-project.org/schemas/orm/doctrine-mapping"
     elementFormDefault="qualified">
 
-  <xs:annotation> 
-    <xs:documentation><![CDATA[ 
-       This is the XML Schema for the object/relational 
-       mapping file used by the Doctrine ORM and Gedmo doctrine
+  <xs:import namespace="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+             schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd"/>
+
+  <xs:annotation>
+    <xs:documentation><![CDATA[
+       This is the XML Schema for the object/relational
+       mapping file used by the Doctrine Extensions by Gedmo
        extensions
      ]]></xs:documentation>
   </xs:annotation>
 
-  <xs:element name="doctrine-mapping">
-    <xs:complexType>
-      <xs:sequence>
-        <xs:element name="mapped-superclass" type="orm:mapped-superclass" minOccurs="0" maxOccurs="unbounded" />
-        <xs:element name="entity" type="orm:entity" minOccurs="0" maxOccurs="unbounded" />
-      </xs:sequence>
-    </xs:complexType>
-  </xs:element>
-  
-  <xs:complexType name="emptyType"/> 
-  
-  <xs:complexType name="cascade-type">
-    <xs:sequence>
-      <xs:element name="cascade-all" type="orm:emptyType" minOccurs="0"/> 
-      <xs:element name="cascade-persist" type="orm:emptyType" minOccurs="0"/> 
-      <xs:element name="cascade-merge" type="orm:emptyType" minOccurs="0"/> 
-      <xs:element name="cascade-remove" type="orm:emptyType" minOccurs="0"/> 
-      <xs:element name="cascade-refresh" type="orm:emptyType" minOccurs="0"/> 
-    </xs:sequence>
-  </xs:complexType>
-  
-  <xs:simpleType name="lifecycle-callback-type">
-    <xs:restriction base="xs:token">
-      <xs:enumeration value="prePersist"/>
-      <xs:enumeration value="postPersist"/>
-      <xs:enumeration value="preUpdate"/>
-      <xs:enumeration value="postUpdate"/>
-      <xs:enumeration value="preRemove"/>
-      <xs:enumeration value="postRemove"/>
-      <xs:enumeration value="postLoad"/>
-    </xs:restriction>
-  </xs:simpleType>
-  
-  <xs:complexType name="lifecycle-callback">
-    <xs:attribute name="type" type="orm:lifecycle-callback-type" use="required" />
-    <xs:attribute name="method" type="xs:NMTOKEN" use="required" />
-  </xs:complexType>
-  
-  <xs:complexType name="lifecycle-callbacks">
-    <xs:sequence>
-      <xs:element name="lifecycle-callback" type="orm:lifecycle-callback" minOccurs="1" maxOccurs="unbounded" />
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="named-query">
-    <xs:attribute name="name" type="xs:string" use="required" />
-    <xs:attribute name="query" type="xs:string" use="required" />
-  </xs:complexType>
-
-  <xs:complexType name="named-queries">
-    <xs:sequence>
-      <xs:element name="named-query" type="orm:named-query" minOccurs="1" maxOccurs="unbounded" />
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="entity">
-    <xs:sequence>
-      <xs:element name="gedmo" type="gedmo:entity-extension" minOccurs="0" maxOccurs="unbounded"/>
-      <xs:element name="indexes" type="orm:indexes" minOccurs="0"/>
-      <xs:element name="unique-constraints" type="orm:unique-constraints" minOccurs="0"/>
-      <xs:element name="discriminator-column" type="orm:discriminator-column" minOccurs="0"/>
-      <xs:element name="discriminator-map" type="orm:discriminator-map" minOccurs="0"/>
-      <xs:element name="lifecycle-callbacks" type="orm:lifecycle-callbacks" minOccurs="0" maxOccurs="1" />
-      <xs:element name="named-queries" type="orm:named-queries" minOccurs="0" maxOccurs="1" />
-      <xs:element name="id" type="orm:id" minOccurs="0" maxOccurs="1" />
-      <xs:element name="field" type="orm:field" minOccurs="0" maxOccurs="unbounded"/>
-      <xs:element name="one-to-one" type="orm:one-to-one" minOccurs="0" maxOccurs="unbounded"/>
-      <xs:element name="one-to-many" type="orm:one-to-many" minOccurs="0" maxOccurs="unbounded" />
-      <xs:element name="many-to-one" type="orm:many-to-one" minOccurs="0" maxOccurs="unbounded" />
-      <xs:element name="many-to-many" type="orm:many-to-many" minOccurs="0" maxOccurs="unbounded" />
-    </xs:sequence>
-    <xs:attribute name="name" type="xs:string" use="required" />
-    <xs:attribute name="table" type="xs:NMTOKEN" />
-    <xs:attribute name="schema" type="xs:NMTOKEN" />
-    <xs:attribute name="repository-class" type="xs:string"/>
-    <xs:attribute name="inheritance-type" type="orm:inheritance-type"/>
-    <xs:attribute name="change-tracking-policy" type="orm:change-tracking-policy" />
-    <xs:attribute name="read-only" type="xs:boolean" default="false" />
-  </xs:complexType>
-  
-  <xs:complexType name="mapped-superclass" >
-    <xs:complexContent>
-      <xs:extension base="orm:entity"/>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:simpleType name="change-tracking-policy">
-    <xs:restriction base="xs:token">
-      <xs:enumeration value="DEFERRED_IMPLICIT"/>
-      <xs:enumeration value="DEFERRED_EXPLICIT"/>
-      <xs:enumeration value="NOTIFY"/>
-    </xs:restriction>
-  </xs:simpleType>
-  
-  <xs:simpleType name="inheritance-type">
-    <xs:restriction base="xs:token">
-      <xs:enumeration value="SINGLE_TABLE"/>
-      <xs:enumeration value="JOINED"/>
-      <xs:enumeration value="TABLE_PER_CLASS"/>
-    </xs:restriction>
-  </xs:simpleType>
-  
-  <xs:simpleType name="generator-strategy"> 
-    <xs:restriction base="xs:token"> 
-      <xs:enumeration value="TABLE"/> 
-      <xs:enumeration value="SEQUENCE"/> 
-      <xs:enumeration value="IDENTITY"/> 
-      <xs:enumeration value="AUTO"/> 
-    </xs:restriction> 
-  </xs:simpleType>
-  
-  <xs:simpleType name="fk-action"> 
-    <xs:restriction base="xs:token"> 
-      <xs:enumeration value="CASCADE"/> 
-      <xs:enumeration value="RESTRICT"/> 
-      <xs:enumeration value="SET_NULL"/>
-    </xs:restriction> 
-  </xs:simpleType>
-  
-  <xs:simpleType name="fetch-type"> 
-    <xs:restriction base="xs:token"> 
-      <xs:enumeration value="EAGER"/> 
-      <xs:enumeration value="LAZY"/>
-      <xs:enumeration value="EXTRALAZY"/>
-    </xs:restriction> 
-  </xs:simpleType>
-
-  <xs:complexType name="field">
-    <xs:sequence>
-      <xs:element name="gedmo" type="gedmo:gedmo-field-extension" minOccurs="0" maxOccurs="1"/>
-    </xs:sequence>
-    <xs:attribute name="name" type="xs:NMTOKEN" use="required" />
-    <xs:attribute name="type" type="xs:NMTOKEN" default="string" />
-    <xs:attribute name="column" type="xs:NMTOKEN" />
-    <xs:attribute name="length" type="xs:NMTOKEN" />
-    <xs:attribute name="unique" type="xs:boolean" default="false" />
-    <xs:attribute name="nullable" type="xs:boolean" default="false" />
-    <xs:attribute name="version" type="xs:boolean" />
-    <xs:attribute name="column-definition" type="xs:string" />
-    <xs:attribute name="precision" type="xs:integer" use="optional" />
-    <xs:attribute name="scale" type="xs:integer" use="optional" />
-  </xs:complexType>
-  
-  <xs:complexType name="discriminator-column">
-    <xs:attribute name="name" type="xs:NMTOKEN" use="required" />
-    <xs:attribute name="type" type="xs:NMTOKEN" use="required" />
-    <xs:attribute name="field-name" type="xs:NMTOKEN" />
-    <xs:attribute name="length" type="xs:NMTOKEN" />
-  </xs:complexType>
-  
-  <xs:complexType name="unique-constraint">
-    <xs:attribute name="name" type="xs:NMTOKEN" use="optional"/>
-    <xs:attribute name="columns" type="xs:string" use="required"/>
-  </xs:complexType>
-  
-  <xs:complexType name="unique-constraints">
-    <xs:sequence>
-      <xs:element name="unique-constraint" type="orm:unique-constraint" minOccurs="1" maxOccurs="unbounded"/>
-    </xs:sequence>
-  </xs:complexType>
-  
-  <xs:complexType name="index">
-    <xs:attribute name="name" type="xs:NMTOKEN" use="optional"/>
-    <xs:attribute name="columns" type="xs:NMTOKENS" use="required"/>
-  </xs:complexType>
-  
-  <xs:complexType name="indexes">
-    <xs:sequence>
-      <xs:element name="index" type="orm:index" minOccurs="1" maxOccurs="unbounded"/>
-    </xs:sequence>
-  </xs:complexType>
-  
-  <xs:complexType name="discriminator-mapping">
-    <xs:attribute name="value" type="xs:NMTOKEN" use="required"/>
-    <xs:attribute name="class" type="xs:NMTOKEN" use="required"/>
-  </xs:complexType>
-  
-  <xs:complexType name="discriminator-map">
-    <xs:sequence>
-      <xs:element name="discriminator-mapping" type="orm:discriminator-mapping" minOccurs="1" maxOccurs="unbounded"/>
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="generator">
-    <xs:attribute name="strategy" type="orm:generator-strategy" use="optional" default="AUTO" />
-  </xs:complexType>
-
-  <xs:complexType name="id">
-    <xs:sequence>
-      <xs:element name="generator" type="orm:generator" minOccurs="0" />
-      <xs:element name="sequence-generator" type="orm:sequence-generator" minOccurs="0" maxOccurs="1" />
-    </xs:sequence>
-    <xs:attribute name="name" type="xs:NMTOKEN" use="required" />
-    <xs:attribute name="type" type="xs:NMTOKEN" />
-    <xs:attribute name="column" type="xs:NMTOKEN" />
-    <xs:attribute name="association-key" type="xs:boolean" default="false" />
-  </xs:complexType>
-
-  <xs:complexType name="sequence-generator">
-      <xs:attribute name="sequence-name" type="xs:NMTOKEN" use="required" />
-      <xs:attribute name="allocation-size" type="xs:integer" use="optional" default="1" />
-      <xs:attribute name="initial-value" type="xs:integer" use="optional" default="1" />
-  </xs:complexType>
-
-  <xs:complexType name="inverse-join-columns">
-    <xs:sequence>
-      <xs:element name="join-column" type="orm:join-column" minOccurs="1" maxOccurs="unbounded" />
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="join-column">
-    <xs:attribute name="name" type="xs:NMTOKEN" use="required" />
-    <xs:attribute name="referenced-column-name" type="xs:NMTOKEN" use="optional" default="id" />
-    <xs:attribute name="unique" type="xs:boolean" default="false" />
-    <xs:attribute name="nullable" type="xs:boolean" default="true" />
-    <xs:attribute name="on-delete" type="orm:fk-action" />
-    <xs:attribute name="on-update" type="orm:fk-action" />
-    <xs:attribute name="column-definition" type="xs:string" />
-  </xs:complexType>
-
-  <xs:complexType name="join-columns">
-    <xs:sequence>
-      <xs:element name="join-column" type="orm:join-column" minOccurs="1" maxOccurs="unbounded" />
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="join-table">
-    <xs:sequence>
-      <xs:element name="join-columns" type="orm:join-columns" />
-      <xs:element name="inverse-join-columns" type="orm:join-columns" />
-    </xs:sequence>
-    <xs:attribute name="name" type="xs:NMTOKEN" use="required" />
-    <xs:attribute name="schema" type="xs:NMTOKEN" />
-  </xs:complexType>
-
-  <xs:complexType name="order-by">
-      <xs:sequence>
-          <xs:element name="order-by-field" type="orm:order-by-field" minOccurs="1" maxOccurs="unbounded" />
-      </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="order-by-field">
-      <xs:attribute name="name" type="xs:NMTOKEN" use="required" />
-      <xs:attribute name="direction" type="orm:order-by-direction" default="ASC" />
-  </xs:complexType>
-
-  <xs:simpleType name="order-by-direction">
-    <xs:restriction base="xs:token">
-      <xs:enumeration value="ASC"/>
-      <xs:enumeration value="DESC"/>
-    </xs:restriction>
-  </xs:simpleType>
-
-  <xs:complexType name="many-to-many">
-    <xs:sequence>
-      <xs:element name="cascade" type="orm:cascade-type" minOccurs="0" />
-      <xs:element name="join-table" type="orm:join-table" minOccurs="0" />
-      <xs:element name="order-by" type="orm:order-by" minOccurs="0" />
-    </xs:sequence>
-    <xs:attribute name="target-entity" type="xs:string" use="required" />
-    <xs:attribute name="field" type="xs:NMTOKEN" use="required" />
-    <xs:attribute name="mapped-by" type="xs:NMTOKEN" />
-    <xs:attribute name="index-by" type="xs:NMTOKEN" />
-    <xs:attribute name="inversed-by" type="xs:NMTOKEN" />
-    <xs:attribute name="fetch" type="orm:fetch-type" default="LAZY" />
-  </xs:complexType>
-
-  <xs:complexType name="one-to-many">
-    <xs:sequence>
-      <xs:element name="cascade" type="orm:cascade-type" minOccurs="0" />
-      <xs:element name="order-by" type="orm:order-by" minOccurs="0" />
-    </xs:sequence>
-    <xs:attribute name="target-entity" type="xs:string" use="required" />
-    <xs:attribute name="mapped-by" type="xs:NMTOKEN" use="required" />
-    <xs:attribute name="field" type="xs:NMTOKEN" use="required" />
-    <xs:attribute name="index-by" type="xs:NMTOKEN" />
-    <xs:attribute name="orphan-removal" type="xs:boolean" default="false" />
-    <xs:attribute name="fetch" type="orm:fetch-type" default="LAZY" />
-  </xs:complexType>
-  
-  <xs:complexType name="many-to-one">
-    <xs:sequence>
-      <xs:element name="cascade" type="orm:cascade-type" minOccurs="0" />
-      <xs:choice minOccurs="0" maxOccurs="1">
-        <xs:element name="join-column" type="orm:join-column"/>
-        <xs:element name="join-columns" type="orm:join-columns"/>
-      </xs:choice>
-      <xs:element name="gedmo" type="gedmo:gedmo-association-extension" minOccurs="0" maxOccurs="1"/>
-    </xs:sequence>
-    <xs:attribute name="target-entity" type="xs:string" use="required" />
-    <xs:attribute name="field" type="xs:NMTOKEN" use="required" />
-    <xs:attribute name="orphan-removal" type="xs:boolean" default="false" />
-    <xs:attribute name="fetch" type="orm:fetch-type" default="LAZY" />
-    <xs:attribute name="inversed-by" type="xs:NMTOKEN" />
-  </xs:complexType>
-  
-  <xs:complexType name="one-to-one">
-    <xs:sequence>
-      <xs:element name="cascade" type="orm:cascade-type" minOccurs="0" />
-      <xs:choice minOccurs="0" maxOccurs="1">
-        <xs:element name="join-column" type="orm:join-column"/>
-        <xs:element name="join-columns" type="orm:join-columns"/>
-      </xs:choice>
-      <xs:element name="gedmo" type="gedmo:gedmo-association-extension" minOccurs="0" maxOccurs="1"/>
-    </xs:sequence>
-    <xs:attribute name="field" type="xs:NMTOKEN" use="required" />
-    <xs:attribute name="target-entity" type="xs:string" use="required" />
-    <xs:attribute name="mapped-by" type="xs:NMTOKEN" />
-    <xs:attribute name="inversed-by" type="xs:NMTOKEN" />
-    <xs:attribute name="orphan-removal" type="xs:boolean" default="false" />
-    <xs:attribute name="fetch" type="orm:fetch-type" default="LAZY" />
-  </xs:complexType>
-  
+<!--
+It would be nice if we could force the gedmo with only necessary elements into each of doctrine elements.
+Patches that do that are more than welcome.
+Please note, that marking e.g filed element in xml document with xsi:type is not an option as we need to allow other
+people to push their own additional attributes/elements into the same field element and they should not extend our schema
+-->
+<!--
   <xs:complexType name="entity-extension">
     <xs:sequence>
-      <xs:element name="translation" type="gedmo:gedmo-translation" minOccurs="0" maxOccurs="1" />
-      <xs:element name="tree" type="gedmo:gedmo-tree" minOccurs="0" maxOccurs="1" />
-      <xs:element name="tree-closure" type="gedmo:gedmo-tree-closure" minOccurs="0" maxOccurs="1" />
-      <xs:element name="loggable" type="gedmo:gedmo-loggable" minOccurs="0" maxOccurs="1" />
+      <xs:element name="translation" type="gedmo:translation" minOccurs="0" maxOccurs="1" />
+      <xs:element name="tree" type="gedmo:tree" minOccurs="0" maxOccurs="1" />
+      <xs:element name="tree-closure" type="gedmo:tree-closure" minOccurs="0" maxOccurs="1" />
+      <xs:element name="loggable" type="gedmo:loggable" minOccurs="0" maxOccurs="1" />
     </xs:sequence>
   </xs:complexType>
-  
-  <xs:complexType name="gedmo-translation">
-    <xs:attribute name="entity" type="xs:string" use="optional" />
-    <xs:attribute name="locale" type="xs:string" use="optional" />
-    <xs:attribute name="language" type="xs:string" use="optional" />
-  </xs:complexType>
-  
-  <xs:complexType name="gedmo-tree">
-    <xs:attribute name="type" type="gedmo:gedmo-tree-type" default="nested" />
-  </xs:complexType>
-  
-  <xs:complexType name="gedmo-tree-closure">
-    <xs:attribute name="class" type="xs:string" use="required" />
-  </xs:complexType>
-  
-  <xs:complexType name="gedmo-loggable">
-    <xs:attribute name="log-entry-class" type="xs:string" use="optional" />
-  </xs:complexType>
-  
-  <xs:complexType name="gedmo-sluggable">
-    <xs:attribute name="position" type="xs:integer" use="optional" />
-  </xs:complexType>
-  
-  <xs:complexType name="gedmo-slug">
-    <xs:attribute name="unique" type="xs:boolean" use="optional" />
-    <xs:attribute name="updatable" type="xs:boolean" use="optional" />
-    <xs:attribute name="separator" type="xs:string" use="optional" />
-    <xs:attribute name="style" type="gedmo:gedmo-slug-style" use="optional" />
-  </xs:complexType>
-  
-  <xs:complexType name="gedmo-timestampable">
-    <xs:attribute name="on" type="gedmo:gedmo-timestampable-action" use="optional" />
-    <xs:attribute name="field" type="xs:string" use="optional" />
-    <xs:attribute name="value" type="xs:string" use="optional" />
-  </xs:complexType>
-  
-  <xs:complexType name="gedmo-association-extension">
+
+  <xs:complexType name="field-extension">
     <xs:sequence>
-      <xs:element name="versioned" type="orm:emptyType" minOccurs="0" maxOccurs="1"/>
-      <xs:element name="tree-parent" type="orm:emptyType" minOccurs="0" maxOccurs="1"/>
-    </xs:sequence>
-  </xs:complexType>
-  
-  <xs:complexType name="gedmo-field-extension">
-    <xs:sequence>
-      <xs:element name="sluggable" type="gedmo:gedmo-sluggable" minOccurs="0" maxOccurs="unbounded"/>
-      <xs:element name="slug" type="gedmo:gedmo-slug" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="sluggable" type="gedmo:sluggable" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="slug" type="gedmo:slug" minOccurs="0" maxOccurs="1"/>
       <xs:element name="translatable" type="orm:emptyType" minOccurs="0" maxOccurs="unbounded"/>
-      <xs:element name="timestampable" type="gedmo:gedmo-timestampable" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="timestampable" type="gedmo:timestampable" minOccurs="0" maxOccurs="unbounded"/>
       <xs:element name="versioned" type="orm:emptyType" minOccurs="0" maxOccurs="unbounded"/>
       <xs:element name="tree-left" type="orm:emptyType" minOccurs="0" maxOccurs="1"/>
       <xs:element name="tree-right" type="orm:emptyType" minOccurs="0" maxOccurs="1"/>
@@ -391,22 +46,102 @@
       <xs:element name="tree-root" type="orm:emptyType" minOccurs="0" maxOccurs="1"/>
     </xs:sequence>
   </xs:complexType>
-  
-  <xs:simpleType name="gedmo-tree-type">
+
+  <xs:complexType name="many-to-one-extension">
+    <xs:sequence>
+      <xs:element name="versioned" type="orm:emptyType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="tree-parent" type="orm:emptyType" minOccurs="0" maxOccurs="1"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="one-to-one-extension">
+    <xs:sequence>
+      <xs:element name="versioned" type="orm:emptyType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="tree-parent" type="orm:emptyType" minOccurs="0" maxOccurs="1"/>
+    </xs:sequence>
+  </xs:complexType>
+-->
+  <!-- because of the above we have for now a root element gedmo with all choices -->
+  <xs:element name="gedmo">
+    <xs:complexType>
+      <xs:choice minOccurs="1" maxOccurs="unbounded">
+        <!-- entity -->
+        <xs:element name="translation" type="gedmo:translation" minOccurs="0" maxOccurs="1" />
+        <xs:element name="tree" type="gedmo:tree" minOccurs="0" maxOccurs="1" />
+        <xs:element name="tree-closure" type="gedmo:tree-closure" minOccurs="0" maxOccurs="1" />
+        <xs:element name="loggable" type="gedmo:loggable" minOccurs="0" maxOccurs="1" />
+        <!-- field -->
+        <xs:element name="sluggable" type="gedmo:sluggable" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element name="slug" type="gedmo:slug" minOccurs="0" maxOccurs="1"/>
+        <xs:element name="translatable" type="orm:emptyType" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element name="timestampable" type="gedmo:timestampable" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element name="versioned" type="orm:emptyType" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element name="tree-left" type="orm:emptyType" minOccurs="0" maxOccurs="1"/>
+        <xs:element name="tree-right" type="orm:emptyType" minOccurs="0" maxOccurs="1"/>
+        <xs:element name="tree-level" type="orm:emptyType" minOccurs="0" maxOccurs="1"/>
+        <xs:element name="tree-root" type="orm:emptyType" minOccurs="0" maxOccurs="1"/>
+        <!-- many-to-one -->
+        <!-- xs:element name="versioned" type="orm:emptyType" minOccurs="0" maxOccurs="1"/-->
+        <xs:element name="tree-parent" type="orm:emptyType" minOccurs="0" maxOccurs="1"/>
+        <!-- one-to-one -->
+        <!-- same as many-to-one
+        <xs:element name="versioned" type="orm:emptyType" minOccurs="0" maxOccurs="1"/>
+        <xs:element name="tree-parent" type="orm:emptyType" minOccurs="0" maxOccurs="1"/>
+        -->
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:complexType name="translation">
+    <xs:attribute name="entity" type="xs:string" use="optional" />
+    <xs:attribute name="locale" type="xs:string" use="optional" />
+    <xs:attribute name="language" type="xs:string" use="optional" />
+  </xs:complexType>
+
+  <xs:complexType name="tree">
+    <xs:attribute name="type" type="gedmo:tree-type" default="nested" />
+  </xs:complexType>
+
+  <xs:complexType name="tree-closure">
+    <xs:attribute name="class" type="xs:string" use="required" />
+  </xs:complexType>
+
+  <xs:complexType name="loggable">
+    <xs:attribute name="log-entry-class" type="xs:string" use="optional" />
+  </xs:complexType>
+
+  <xs:complexType name="sluggable">
+    <xs:attribute name="position" type="xs:integer" use="optional" />
+  </xs:complexType>
+
+  <xs:complexType name="slug">
+    <xs:attribute name="unique" type="xs:boolean" use="optional" />
+    <xs:attribute name="updatable" type="xs:boolean" use="optional" />
+    <xs:attribute name="separator" type="xs:string" use="optional" />
+    <xs:attribute name="style" type="gedmo:slug-style" use="optional" />
+  </xs:complexType>
+
+  <xs:complexType name="timestampable">
+    <xs:attribute name="on" type="gedmo:timestampable-action" use="optional" />
+    <xs:attribute name="field" type="xs:string" use="optional" />
+    <xs:attribute name="value" type="xs:string" use="optional" />
+  </xs:complexType>
+
+  <xs:simpleType name="tree-type">
     <xs:restriction base="xs:token">
       <xs:enumeration value="nested"/>
       <xs:enumeration value="closure"/>
     </xs:restriction>
   </xs:simpleType>
-  
-  <xs:simpleType name="gedmo-slug-style">
+
+  <xs:simpleType name="slug-style">
     <xs:restriction base="xs:token">
       <xs:enumeration value="default"/>
       <xs:enumeration value="camel"/>
     </xs:restriction>
   </xs:simpleType>
-  
-  <xs:simpleType name="gedmo-timestampable-action">
+
+  <xs:simpleType name="timestampable-action">
     <xs:restriction base="xs:token">
       <xs:enumeration value="create"/>
       <xs:enumeration value="update"/>

@@ -2,29 +2,25 @@
 
 namespace Gedmo\Tree\Mapping\Driver;
 
-use Gedmo\Mapping\Driver\File,
+use Gedmo\Mapping\Driver\Xml as BaseXml,
     Doctrine\Common\Persistence\Mapping\ClassMetadata,
     Gedmo\Exception\InvalidMappingException;
 
 /**
- * This is a yaml mapping driver for Tree
+ * This is a xml mapping driver for Tree
  * behavioral extension. Used for extraction of extended
- * metadata from yaml specificaly for Tree
+ * metadata from xml specificaly for Tree
  * extension.
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
+ * @author Miha Vrhovnik <miha.vrhovnik@gmail.com>
  * @package Gedmo.Tree.Mapping.Driver
  * @subpackage Xml
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class Xml extends File
+class Xml extends BaseXml
 {
-    /**
-     * File extension
-     * @var string
-     */
-    protected $_extension = '.dcm.xml';
 
     /**
      * List of types which are valid for timestamp
@@ -67,27 +63,35 @@ class Xml extends File
      * {@inheritDoc}
      */
     public function readExtendedMetadata(ClassMetadata $meta, array &$config) {
+        /**
+         * @var \SimpleXmlElement $xml
+         */
         $xml = $this->_getMapping($meta->name);
+        $xmlDoctrine = $xml;
+        $xml = $xml->children(self::GEDMO_NAMESPACE_URI);
 
-        if ($xml->getName() == 'entity' && isset($xml->gedmo)) {
-            if (isset($xml->gedmo->tree) && isset($xml->gedmo->tree['type'])) {
-                $strategy = (string)$xml->gedmo->tree['type'];
+        if ($xmlDoctrine->getName() == 'entity' && isset($xml->gedmo)) {
+            if (isset($xml->gedmo->tree) && $this->_isAttributeSet($xml->gedmo->tree, 'type')) {
+                $strategy = $this->_getAttribute($xml->gedmo->tree, 'type');
                 if (!in_array($strategy, $this->strategies)) {
                     throw new InvalidMappingException("Tree type: $strategy is not available.");
                 }
                 $config['strategy'] = $strategy;
             }
-            if (isset($xml->gedmo->{'tree-closure'}) && isset($xml->gedmo->{'tree-closure'}['class'])) {
-                $class = (string)$xml->gedmo->{'tree-closure'}['class'];
+            if (isset($xml->gedmo->{'tree-closure'}) && $this->_isAttributeSet($xml->gedmo->{'tree-closure'}, 'class')) {
+                $class = $this->_getAttribute($xml->gedmo->{'tree-closure'}, 'class');
                 if (!class_exists($class)) {
                     throw new InvalidMappingException("Tree closure class: {$class} does not exist.");
                 }
                 $config['closure'] = $class;
             }
         }
-        if (isset($xml->field)) {
-            foreach ($xml->field as $mapping) {
-                $field = (string)$mapping['name'];
+        if (isset($xmlDoctrine->field)) {
+            foreach ($xmlDoctrine->field as $mapping) {
+                $mappingDoctrine = $mapping;
+                $mapping = $mapping->children(self::GEDMO_NAMESPACE_URI);
+
+                $field = $this->_getAttribute($mappingDoctrine, 'name');
                 if (isset($mapping->gedmo)) {
                     if (isset($mapping->gedmo->{'tree-left'})) {
                         if (!$this->isValidField($meta, $field)) {
@@ -113,10 +117,13 @@ class Xml extends File
                 }
             }
         }
-        if (isset($xml->{'many-to-one'})) {
-            foreach ($xml->{'many-to-one'} as $manyToOneMapping) {
+
+        if (isset($xmlDoctrine->{'many-to-one'})) {
+            foreach ($xmlDoctrine->{'many-to-one'} as $manyToOneMapping)  {
+            $manyToOneMappingDoctrine = $manyToOneMapping;
+                $manyToOneMapping = $manyToOneMapping->children(self::GEDMO_NAMESPACE_URI);;
                 if (isset($manyToOneMapping->gedmo) && isset($manyToOneMapping->gedmo->{'tree-parent'})) {
-                    $field = (string)$manyToOneMapping['field'];
+                    $field = $this->_getAttribute($manyToOneMappingDoctrine, 'field');
                     if ($meta->associationMappings[$field]['targetEntity'] != $meta->name) {
                         throw new InvalidMappingException("Unable to find ancestor/parent child relation through ancestor field - [{$field}] in class - {$meta->name}");
                     }
@@ -124,28 +131,6 @@ class Xml extends File
                 }
             }
         }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    protected function _loadMappingFile($file)
-    {
-        $result = array();
-        $xmlElement = simplexml_load_file($file);
-
-        if (isset($xmlElement->entity)) {
-            foreach ($xmlElement->entity as $entityElement) {
-                $entityName = (string)$entityElement['name'];
-                $result[$entityName] = $entityElement;
-            }
-        } else if (isset($xmlElement->{'mapped-superclass'})) {
-            foreach ($xmlElement->{'mapped-superclass'} as $mappedSuperClass) {
-                $className = (string)$mappedSuperClass['name'];
-                $result[$className] = $mappedSuperClass;
-            }
-        }
-        return $result;
     }
 
     /**
