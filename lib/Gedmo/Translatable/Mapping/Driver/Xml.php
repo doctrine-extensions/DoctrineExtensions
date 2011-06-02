@@ -2,29 +2,25 @@
 
 namespace Gedmo\Translatable\Mapping\Driver;
 
-use Gedmo\Mapping\Driver\File,
+use Gedmo\Mapping\Driver\Xml as BaseXml,
     Doctrine\Common\Persistence\Mapping\ClassMetadata,
     Gedmo\Exception\InvalidMappingException;
 
 /**
- * This is a yaml mapping driver for Translatable
+ * This is a xml mapping driver for Translatable
  * behavioral extension. Used for extraction of extended
- * metadata from yaml specificaly for Translatable
+ * metadata from xml specificaly for Translatable
  * extension.
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
+ * @author Miha Vrhovnik <miha.vrhovnik@gmail.com>
  * @package Gedmo.Translatable.Mapping.Driver
  * @subpackage Xml
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class Xml extends File
+class Xml extends BaseXml
 {
-    /**
-     * File extension
-     * @var string
-     */
-    protected $_extension = '.dcm.xml';
 
     /**
      * {@inheritDoc}
@@ -40,18 +36,27 @@ class Xml extends File
      * {@inheritDoc}
      */
     public function readExtendedMetadata(ClassMetadata $meta, array &$config) {
+        /**
+         * @var \SimpleXmlElement $xml
+         */
         $xml = $this->_getMapping($meta->name);
+        $xmlDoctrine = $xml;
+        
+        $xml = $xml->children(self::GEDMO_NAMESPACE_URI);
 
-        if (($xml->getName() == 'entity' || $xml->getName() == 'mapped-superclass') && isset($xml->gedmo)) {
+        if (($xmlDoctrine->getName() == 'entity' || $xmlDoctrine->getName() == 'mapped-superclass') && isset($xml->gedmo)) {
             if (isset($xml->gedmo->translation)) {
+                /**
+                 * @var \SimpleXmlElement $data
+                 */
                 $data = $xml->gedmo->translation;
-                if (isset($data['locale'])) {
-                    $config['locale'] = (string)$data['locale'];
-                } elseif (isset($data['language'])) {
-                    $config['locale'] = (string)$data['language'];
+                if ($this->_isAttributeSet($data, 'locale')) {
+                    $config['locale'] = $this->_getAttribute($data, 'locale');
+                } elseif ($this->_isAttributeSet($data, 'language')) {
+                    $config['locale'] = $this->_getAttribute($data, 'language');
                 }
-                if (isset($data['entity'])) {
-                    $entity = (string)$data['entity'];
+                if ($this->_isAttributeSet($data, 'entity')) {
+                    $entity = $this->_getAttribute($data, 'entity');
                     if (!class_exists($entity)) {
                         throw new InvalidMappingException("Translation entity class: {$entity} does not exist.");
                     }
@@ -59,9 +64,15 @@ class Xml extends File
                 }
             }
         }
-        if (isset($xml->field)) {
-            foreach ($xml->field as $mapping) {
-                $field = (string)$mapping['name'];
+
+        if (isset($xmlDoctrine->field)) {
+            foreach ($xmlDoctrine->field as $mapping) {
+                $mappingDoctrine = $mapping;
+                /**
+                 * @var \SimpleXmlElement $mapping
+                 */
+                $mapping = $mapping->children(self::GEDMO_NAMESPACE_URI);
+                $field = $this->_getAttribute($mappingDoctrine, 'name');
                 if (isset($mapping->gedmo)) {
                     if (isset($mapping->gedmo->translatable)) {
                         $config['fields'][] = $field;
@@ -71,25 +82,4 @@ class Xml extends File
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    protected function _loadMappingFile($file)
-    {
-        $result = array();
-        $xmlElement = simplexml_load_file($file);
-
-        if (isset($xmlElement->entity)) {
-            foreach ($xmlElement->entity as $entityElement) {
-                $entityName = (string)$entityElement['name'];
-                $result[$entityName] = $entityElement;
-            }
-        } else if (isset($xmlElement->{'mapped-superclass'})) {
-            foreach ($xmlElement->{'mapped-superclass'} as $mappedSuperClass) {
-                $className = (string)$mappedSuperClass['name'];
-                $result[$className] = $mappedSuperClass;
-            }
-        }
-        return $result;
-    }
 }

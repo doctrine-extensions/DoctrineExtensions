@@ -2,7 +2,7 @@
 
 namespace Gedmo\Loggable\Mapping\Driver;
 
-use Gedmo\Mapping\Driver\File,
+use Gedmo\Mapping\Driver\Xml as BaseXml,
     Doctrine\Common\Persistence\Mapping\ClassMetadata,
     Gedmo\Exception\InvalidMappingException;
 
@@ -14,18 +14,14 @@ use Gedmo\Mapping\Driver\File,
  *
  * @author Boussekeyt Jules <jules.boussekeyt@gmail.com>
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
+ * @author Miha Vrhovnik <miha.vrhovnik@gmail.com>
  * @package Gedmo.Loggable.Mapping.Driver
  * @subpackage Xml
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class Xml extends File
+class Xml extends BaseXml
 {
-    /**
-     * File extension
-     * @var string
-     */
-    protected $_extension = '.dcm.xml';
 
     /**
      * {@inheritDoc}
@@ -36,7 +32,7 @@ class Xml extends File
             throw new InvalidMappingException("Loggable does not support composite identifiers in class - {$meta->name}");
         }
         if (isset($config['versioned']) && !isset($config['loggable'])) {
-            throw new InvalidMappingException("Class must be annoted with Loggable annotation in order to track versioned fields in class - {$meta->name}");
+            throw new InvalidMappingException("Class must be annotated with Loggable annotation in order to track versioned fields in class - {$meta->name}");
         }
     }
 
@@ -45,14 +41,22 @@ class Xml extends File
      */
     public function readExtendedMetadata(ClassMetadata $meta, array &$config)
     {
+        /**
+         * @var \SimpleXmlElement $xml
+         */
         $xml = $this->_getMapping($meta->name);
+        $xmlDoctrine = $xml;
+        $xml = $xml->children(self::GEDMO_NAMESPACE_URI);
 
-        if (($xml->getName() == 'entity' || $xml->getName() == 'mapped-superclass') && isset($xml->gedmo)) {
+        if (($xmlDoctrine->getName() == 'entity' || $xmlDoctrine->getName() == 'mapped-superclass') && isset($xml->gedmo)) {
             if (isset($xml->gedmo->loggable)) {
+                /**
+                 * @var SimpleXMLElement $data;
+                 */
                 $data = $xml->gedmo->loggable;
                 $config['loggable'] = true;
-                if (isset($data['log-entry-class'])) {
-                    $class = (string)$data['log-entry-class'];
+                if ($this->_isAttributeSet($data, 'log-entry-class')) {
+                    $class = $this->_getAttribute($data, 'log-entry-class');
                     if (!class_exists($class)) {
                         throw new InvalidMappingException("LogEntry class: {$class} does not exist.");
                     }
@@ -61,37 +65,15 @@ class Xml extends File
             }
         }
 
-        if (isset($xml->field)) {
-            $this->inspectElementForVersioned($xml->field, $config, $meta);
+        if (isset($xmlDoctrine->field)) {
+            $this->inspectElementForVersioned($xmlDoctrine->field, $config, $meta);
         }
-        if (isset($xml->{'many-to-one'})) {
-            $this->inspectElementForVersioned($xml->{'many-to-one'}, $config, $meta);
+        if (isset($xmlDoctrine->{'many-to-one'})) {
+            $this->inspectElementForVersioned($xmlDoctrine->{'many-to-one'}, $config, $meta);
         }
-        if (isset($xml->{'one-to-one'})) {
-            $this->inspectElementForVersioned($xml->{'one-to-one'}, $config, $meta);
+        if (isset($xmlDoctrine->{'one-to-one'})) {
+            $this->inspectElementForVersioned($xmlDoctrine->{'one-to-one'}, $config, $meta);
         }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    protected function _loadMappingFile($file)
-    {
-        $result = array();
-        $xmlElement = simplexml_load_file($file);
-
-        if (isset($xmlElement->entity)) {
-            foreach ($xmlElement->entity as $entityElement) {
-                $entityName = (string)$entityElement['name'];
-                $result[$entityName] = $entityElement;
-            }
-        } else if (isset($xmlElement->{'mapped-superclass'})) {
-            foreach ($xmlElement->{'mapped-superclass'} as $mappedSuperClass) {
-                $className = (string)$mappedSuperClass['name'];
-                $result[$className] = $mappedSuperClass;
-            }
-        }
-        return $result;
     }
 
     /**
@@ -104,8 +86,14 @@ class Xml extends File
     private function inspectElementForVersioned(\SimpleXMLElement $element, array &$config, ClassMetadata $meta)
     {
         foreach ($element as $mapping) {
-            $isAssoc = isset($mapping['field']);
-            $field = (string)$mapping[$isAssoc ? 'field' : 'name'];
+            $mappingDoctrine = $mapping;
+            /**
+             * @var \SimpleXmlElement $mapping
+             */
+            $mapping = $mapping->children(self::GEDMO_NAMESPACE_URI);
+
+            $isAssoc = $this->_isAttributeSet($mappingDoctrine, 'field');
+            $field = $this->_getAttribute($mappingDoctrine, $isAssoc ? 'field' : 'name');
             if (isset($mapping->gedmo)) {
                 if (isset($mapping->gedmo->versioned)) {
                     if ($isAssoc && !$meta->associationMappings[$field]['isOwningSide']) {
