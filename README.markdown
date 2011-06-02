@@ -11,11 +11,21 @@ records being flushed in the behavioral way. List of extensions:
 - Timestampable - updates date fields on create, update and even property change.
 - Loggable - helps tracking changes and history of objects, also supports version managment.
 
-Currently these extensions support **Yaml** and **Annotation** mapping. Additional mapping drivers
+Currently these extensions support **Yaml**, **Annotation**  and **Xml** mapping. Additional mapping drivers
 can be easy implemented using Mapping extension to handle the additional metadata mapping.
 
 Notice: from now on there is only one listener per extension which supports ODM and ORM adapters to deal with objects. Only one instance of listener is 
 required, and can be attached to many different type object managers, currently supported (ORM or ODM)
+
+Notice xml: Please note, that xml mapping needs to be in a different namespace, the declared namespace for
+Doctrine extensions is http://gediminasm.org/schemas/orm/doctrine-extensions-mapping
+So root node now looks like this:
+```xml
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xmlns:gedmo="http://gediminasm.org/schemas/orm/doctrine-extensions-mapping">
+...
+</doctrine-mapping>
+```
 
 ## Important
 
