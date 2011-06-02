@@ -13,15 +13,12 @@
 
         <many-to-one field="parent" target-entity="ClosureTree">
             <join-column name="parent_id" referenced-column-name="id" on-delete="CASCADE"/>
-            <gedmo:gedmo>
-                <gedmo:tree-parent/>
-            </gedmo:gedmo>
+            <gedmo:tree-parent/>
         </many-to-one>
 
-        <gedmo:gedmo>
-            <gedmo:tree type="closure"/>
-            <gedmo:tree-closure class="Mapping\Fixture\ClosureTreeClosure"/>
-        </gedmo:gedmo>
+        <gedmo:tree type="closure"/>
+        <gedmo:tree-closure class="Mapping\Fixture\ClosureTreeClosure"/>
+
     </entity>
 
 </doctrine-mapping>

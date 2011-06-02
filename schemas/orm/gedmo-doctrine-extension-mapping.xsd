@@ -3,11 +3,7 @@
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
     targetNamespace="http://gediminasm.org/schemas/orm/doctrine-extensions-mapping"
     xmlns:gedmo="http://gediminasm.org/schemas/orm/doctrine-extensions-mapping"
-    xmlns:orm="http://doctrine-project.org/schemas/orm/doctrine-mapping"
     elementFormDefault="qualified">
-
-  <xs:import namespace="http://doctrine-project.org/schemas/orm/doctrine-mapping"
-             schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd"/>
 
   <xs:annotation>
     <xs:documentation><![CDATA[
@@ -37,60 +33,54 @@ people to push their own additional attributes/elements into the same field elem
     <xs:sequence>
       <xs:element name="sluggable" type="gedmo:sluggable" minOccurs="0" maxOccurs="unbounded"/>
       <xs:element name="slug" type="gedmo:slug" minOccurs="0" maxOccurs="1"/>
-      <xs:element name="translatable" type="orm:emptyType" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="translatable" type="gedmo:emptyType" minOccurs="0" maxOccurs="unbounded"/>
       <xs:element name="timestampable" type="gedmo:timestampable" minOccurs="0" maxOccurs="unbounded"/>
-      <xs:element name="versioned" type="orm:emptyType" minOccurs="0" maxOccurs="unbounded"/>
-      <xs:element name="tree-left" type="orm:emptyType" minOccurs="0" maxOccurs="1"/>
-      <xs:element name="tree-right" type="orm:emptyType" minOccurs="0" maxOccurs="1"/>
-      <xs:element name="tree-level" type="orm:emptyType" minOccurs="0" maxOccurs="1"/>
-      <xs:element name="tree-root" type="orm:emptyType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="versioned" type="gedmo:emptyType" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="tree-left" type="gedmo:emptyType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="tree-right" type="gedmo:emptyType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="tree-level" type="gedmo:emptyType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="tree-root" type="gedmo:emptyType" minOccurs="0" maxOccurs="1"/>
     </xs:sequence>
   </xs:complexType>
 
   <xs:complexType name="many-to-one-extension">
     <xs:sequence>
-      <xs:element name="versioned" type="orm:emptyType" minOccurs="0" maxOccurs="1"/>
-      <xs:element name="tree-parent" type="orm:emptyType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="versioned" type="gedmo:emptyType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="tree-parent" type="gedmo:emptyType" minOccurs="0" maxOccurs="1"/>
     </xs:sequence>
   </xs:complexType>
 
   <xs:complexType name="one-to-one-extension">
     <xs:sequence>
-      <xs:element name="versioned" type="orm:emptyType" minOccurs="0" maxOccurs="1"/>
-      <xs:element name="tree-parent" type="orm:emptyType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="versioned" type="gedmo:emptyType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="tree-parent" type="gedmo:emptyType" minOccurs="0" maxOccurs="1"/>
     </xs:sequence>
   </xs:complexType>
 -->
   <!-- because of the above we have for now a root element gedmo with all choices -->
-  <xs:element name="gedmo">
-    <xs:complexType>
-      <xs:choice minOccurs="1" maxOccurs="unbounded">
-        <!-- entity -->
-        <xs:element name="translation" type="gedmo:translation" minOccurs="0" maxOccurs="1" />
-        <xs:element name="tree" type="gedmo:tree" minOccurs="0" maxOccurs="1" />
-        <xs:element name="tree-closure" type="gedmo:tree-closure" minOccurs="0" maxOccurs="1" />
-        <xs:element name="loggable" type="gedmo:loggable" minOccurs="0" maxOccurs="1" />
-        <!-- field -->
-        <xs:element name="sluggable" type="gedmo:sluggable" minOccurs="0" maxOccurs="unbounded"/>
-        <xs:element name="slug" type="gedmo:slug" minOccurs="0" maxOccurs="1"/>
-        <xs:element name="translatable" type="orm:emptyType" minOccurs="0" maxOccurs="unbounded"/>
-        <xs:element name="timestampable" type="gedmo:timestampable" minOccurs="0" maxOccurs="unbounded"/>
-        <xs:element name="versioned" type="orm:emptyType" minOccurs="0" maxOccurs="unbounded"/>
-        <xs:element name="tree-left" type="orm:emptyType" minOccurs="0" maxOccurs="1"/>
-        <xs:element name="tree-right" type="orm:emptyType" minOccurs="0" maxOccurs="1"/>
-        <xs:element name="tree-level" type="orm:emptyType" minOccurs="0" maxOccurs="1"/>
-        <xs:element name="tree-root" type="orm:emptyType" minOccurs="0" maxOccurs="1"/>
-        <!-- many-to-one -->
-        <!-- xs:element name="versioned" type="orm:emptyType" minOccurs="0" maxOccurs="1"/-->
-        <xs:element name="tree-parent" type="orm:emptyType" minOccurs="0" maxOccurs="1"/>
-        <!-- one-to-one -->
-        <!-- same as many-to-one
-        <xs:element name="versioned" type="orm:emptyType" minOccurs="0" maxOccurs="1"/>
-        <xs:element name="tree-parent" type="orm:emptyType" minOccurs="0" maxOccurs="1"/>
-        -->
-      </xs:choice>
-    </xs:complexType>
-  </xs:element>
+  <!-- entity -->
+  <xs:element name="translation" type="gedmo:translation"/>
+  <xs:element name="tree" type="gedmo:tree"/>
+  <xs:element name="tree-closure" type="gedmo:tree-closure"/>
+  <xs:element name="loggable" type="gedmo:loggable"/>
+  <!-- field -->
+  <xs:element name="sluggable" type="gedmo:sluggable"/>
+  <xs:element name="slug" type="gedmo:slug"/>
+  <xs:element name="translatable" type="gedmo:emptyType"/>
+  <xs:element name="timestampable" type="gedmo:timestampable"/>
+  <xs:element name="versioned" type="gedmo:emptyType"/>
+  <xs:element name="tree-left" type="gedmo:emptyType"/>
+  <xs:element name="tree-right" type="gedmo:emptyType"/>
+  <xs:element name="tree-level" type="gedmo:emptyType"/>
+  <xs:element name="tree-root" type="gedmo:emptyType"/>
+  <!-- many-to-one -->
+  <!-- xs:element name="versioned" type="gedmo:emptyType"/-->
+  <xs:element name="tree-parent" type="gedmo:emptyType"/>
+  <!-- one-to-one -->
+  <!-- same as many-to-one
+  <xs:element name="versioned" type="gedmo:emptyType"/>
+  <xs:element name="tree-parent" type="gedmo:emptyType"/>
+  -->
 
   <xs:complexType name="translation">
     <xs:attribute name="entity" type="xs:string" use="optional" />
@@ -125,6 +115,9 @@ people to push their own additional attributes/elements into the same field elem
     <xs:attribute name="on" type="gedmo:timestampable-action" use="optional" />
     <xs:attribute name="field" type="xs:string" use="optional" />
     <xs:attribute name="value" type="xs:string" use="optional" />
+  </xs:complexType>
+
+  <xs:complexType name="emptyType">
   </xs:complexType>
 
   <xs:simpleType name="tree-type">

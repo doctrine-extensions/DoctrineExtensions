@@ -46,14 +46,15 @@ class Xml extends BaseXml
          */
         $xml = $this->_getMapping($meta->name);
         $xmlDoctrine = $xml;
+
         $xml = $xml->children(self::GEDMO_NAMESPACE_URI);
 
-        if (($xmlDoctrine->getName() == 'entity' || $xmlDoctrine->getName() == 'mapped-superclass') && isset($xml->gedmo)) {
-            if (isset($xml->gedmo->loggable)) {
+        if ($xmlDoctrine->getName() == 'entity' || $xmlDoctrine->getName() == 'mapped-superclass') {
+            if (isset($xml->loggable)) {
                 /**
                  * @var SimpleXMLElement $data;
                  */
-                $data = $xml->gedmo->loggable;
+                $data = $xml->loggable;
                 $config['loggable'] = true;
                 if ($this->_isAttributeSet($data, 'log-entry-class')) {
                     $class = $this->_getAttribute($data, 'log-entry-class');
@@ -94,13 +95,12 @@ class Xml extends BaseXml
 
             $isAssoc = $this->_isAttributeSet($mappingDoctrine, 'field');
             $field = $this->_getAttribute($mappingDoctrine, $isAssoc ? 'field' : 'name');
-            if (isset($mapping->gedmo)) {
-                if (isset($mapping->gedmo->versioned)) {
-                    if ($isAssoc && !$meta->associationMappings[$field]['isOwningSide']) {
-                        throw new InvalidMappingException("Cannot version [{$field}] as it is not the owning side in object - {$meta->name}");
-                    }
-                    $config['versioned'][] = $field;
+
+            if (isset($mapping->versioned)) {
+                if ($isAssoc && !$meta->associationMappings[$field]['isOwningSide']) {
+                    throw new InvalidMappingException("Cannot version [{$field}] as it is not the owning side in object - {$meta->name}");
                 }
+                $config['versioned'][] = $field;
             }
         }
     }

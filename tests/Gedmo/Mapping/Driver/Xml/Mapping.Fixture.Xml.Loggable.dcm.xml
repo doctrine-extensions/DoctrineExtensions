@@ -10,20 +10,15 @@
         </id>
 
         <field name="title" type="string" length="128">
-            <gedmo:gedmo>
-                <gedmo:versioned/>
-            </gedmo:gedmo>
+            <gedmo:versioned/>
         </field>
         <many-to-one field="status" target-entity="Status">
             <join-column name="status_id" referenced-column-name="id"/>
-            <gedmo:gedmo>
-                <gedmo:versioned/>
-            </gedmo:gedmo>
+            <gedmo:versioned/>
         </many-to-one>
 
-        <gedmo:gedmo>
-            <gedmo:loggable log-entry-class="Gedmo\Loggable\Entity\LogEntry"/>
-        </gedmo:gedmo>
+        <gedmo:loggable log-entry-class="Gedmo\Loggable\Entity\LogEntry"/>
+
     </entity>
 
 </doctrine-mapping>

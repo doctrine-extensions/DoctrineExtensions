@@ -56,11 +56,11 @@ class Xml extends BaseXml
             foreach ($mapping->field as $fieldMapping) {
                 $fieldMappingDoctrine = $fieldMapping;
                 $fieldMapping = $fieldMapping->children(self::GEDMO_NAMESPACE_URI);
-                if (isset($fieldMapping->gedmo) && isset($fieldMapping->gedmo->timestampable)) {
+                if (isset($fieldMapping->timestampable)) {
                     /**
                      * @var \SimpleXmlElement $data
                      */
-                    $data = $fieldMapping->gedmo->timestampable;
+                    $data = $fieldMapping->timestampable;
 
                     $field = $this->_getAttribute($fieldMappingDoctrine, 'name');
                     if (!$this->isValidField($meta, $field)) {

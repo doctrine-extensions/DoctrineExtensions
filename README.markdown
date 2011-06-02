@@ -20,9 +20,9 @@ required, and can be attached to many different type object managers, currently 
 Notice xml: Please note, that xml mapping needs to be in a different namespace, the declared namespace for
 Doctrine extensions is http://gediminasm.org/schemas/orm/doctrine-extensions-mapping
 So root node now looks like this:
-```xml
+```
 <doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
-                  xmlns:gedmo="http://gediminasm.org/schemas/orm/doctrine-extensions-mapping">
+                 xmlns:gedmo="http://gediminasm.org/schemas/orm/doctrine-extensions-mapping">
 ...
 </doctrine-mapping>
 ```
