@@ -15,36 +15,25 @@
 
         <field name="name" type="string" length="128"/>
         <field name="left" column="lft" type="integer">
-            <gedmo:gedmo>
-                <gedmo:tree-left/>
-            </gedmo:gedmo>
+            <gedmo:tree-left/>
         </field>
         <field name="right" column="rgt" type="integer">
-            <gedmo:gedmo>
-                <gedmo:tree-right/>
-            </gedmo:gedmo>
+            <gedmo:tree-right/>
         </field>
         <field name="root" type="integer">
-            <gedmo:gedmo>
-                <gedmo:tree-root/>
-            </gedmo:gedmo>
+            <gedmo:tree-root/>
         </field>
         <field name="level" column="lvl" type="integer">
-            <gedmo:gedmo>
-                <gedmo:tree-level/>
-            </gedmo:gedmo>
+            <gedmo:tree-level/>
         </field>
 
         <many-to-one field="parent" target-entity="NestedTree">
             <join-column name="parent_id" referenced-column-name="id" on-delete="SET_NULL"/>
-            <gedmo:gedmo>
-                <gedmo:tree-parent/>
-            </gedmo:gedmo>
+            <gedmo:tree-parent/>
         </many-to-one>
 
-        <gedmo:gedmo>
-            <gedmo:tree type="nested"/>
-        </gedmo:gedmo>
+        <gedmo:tree type="nested"/>
+
     </entity>
 
 </doctrine-mapping>

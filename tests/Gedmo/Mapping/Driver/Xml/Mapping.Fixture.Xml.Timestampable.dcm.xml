@@ -9,19 +9,13 @@
         </id>
 
         <field name="created" type="datetime">
-            <gedmo:gedmo>
-                <gedmo:timestampable on="create"/>
-            </gedmo:gedmo>
+            <gedmo:timestampable on="create"/>
         </field>
         <field name="updated" type="datetime">
-            <gedmo:gedmo>
-                <gedmo:timestampable on="update"/>
-            </gedmo:gedmo>
+            <gedmo:timestampable on="update"/>
         </field>
         <field name="published" type="datetime" nullable="true">
-            <gedmo:gedmo>
-                <gedmo:timestampable on="change" field="status.title" value="Published"/>
-            </gedmo:gedmo>
+            <gedmo:timestampable on="change" field="status.title" value="Published"/>
         </field>
 
         <many-to-one field="status" target-entity="Status">
