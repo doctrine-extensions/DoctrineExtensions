@@ -41,15 +41,15 @@ class Xml extends BaseXml
          */
         $xml = $this->_getMapping($meta->name);
         $xmlDoctrine = $xml;
-        
+
         $xml = $xml->children(self::GEDMO_NAMESPACE_URI);
 
-        if (($xmlDoctrine->getName() == 'entity' || $xmlDoctrine->getName() == 'mapped-superclass') && isset($xml->gedmo)) {
-            if (isset($xml->gedmo->translation)) {
+        if (($xmlDoctrine->getName() == 'entity' || $xmlDoctrine->getName() == 'mapped-superclass')) {
+            if (isset($xml->translation)) {
                 /**
                  * @var \SimpleXmlElement $data
                  */
-                $data = $xml->gedmo->translation;
+                $data = $xml->translation;
                 if ($this->_isAttributeSet($data, 'locale')) {
                     $config['locale'] = $this->_getAttribute($data, 'locale');
                 } elseif ($this->_isAttributeSet($data, 'language')) {
@@ -73,10 +73,8 @@ class Xml extends BaseXml
                  */
                 $mapping = $mapping->children(self::GEDMO_NAMESPACE_URI);
                 $field = $this->_getAttribute($mappingDoctrine, 'name');
-                if (isset($mapping->gedmo)) {
-                    if (isset($mapping->gedmo->translatable)) {
-                        $config['fields'][] = $field;
-                    }
+                if (isset($mapping->translatable)) {
+                    $config['fields'][] = $field;
                 }
             }
         }

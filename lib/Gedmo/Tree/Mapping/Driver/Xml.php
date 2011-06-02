@@ -70,16 +70,16 @@ class Xml extends BaseXml
         $xmlDoctrine = $xml;
         $xml = $xml->children(self::GEDMO_NAMESPACE_URI);
 
-        if ($xmlDoctrine->getName() == 'entity' && isset($xml->gedmo)) {
-            if (isset($xml->gedmo->tree) && $this->_isAttributeSet($xml->gedmo->tree, 'type')) {
-                $strategy = $this->_getAttribute($xml->gedmo->tree, 'type');
+        if ($xmlDoctrine->getName() == 'entity') {
+            if (isset($xml->tree) && $this->_isAttributeSet($xml->tree, 'type')) {
+                $strategy = $this->_getAttribute($xml->tree, 'type');
                 if (!in_array($strategy, $this->strategies)) {
                     throw new InvalidMappingException("Tree type: $strategy is not available.");
                 }
                 $config['strategy'] = $strategy;
             }
-            if (isset($xml->gedmo->{'tree-closure'}) && $this->_isAttributeSet($xml->gedmo->{'tree-closure'}, 'class')) {
-                $class = $this->_getAttribute($xml->gedmo->{'tree-closure'}, 'class');
+            if (isset($xml->{'tree-closure'}) && $this->_isAttributeSet($xml->{'tree-closure'}, 'class')) {
+                $class = $this->_getAttribute($xml->{'tree-closure'}, 'class');
                 if (!class_exists($class)) {
                     throw new InvalidMappingException("Tree closure class: {$class} does not exist.");
                 }
@@ -92,37 +92,38 @@ class Xml extends BaseXml
                 $mapping = $mapping->children(self::GEDMO_NAMESPACE_URI);
 
                 $field = $this->_getAttribute($mappingDoctrine, 'name');
-                if (isset($mapping->gedmo)) {
-                    if (isset($mapping->gedmo->{'tree-left'})) {
-                        if (!$this->isValidField($meta, $field)) {
-                            throw new InvalidMappingException("Tree left field - [{$field}] type is not valid and must be 'integer' in class - {$meta->name}");
-                        }
-                        $config['left'] = $field;
-                    } elseif (isset($mapping->gedmo->{'tree-right'})) {
-                        if (!$this->isValidField($meta, $field)) {
-                            throw new InvalidMappingException("Tree right field - [{$field}] type is not valid and must be 'integer' in class - {$meta->name}");
-                        }
-                        $config['right'] = $field;
-                    } elseif (isset($mapping->gedmo->{'tree-root'})) {
-                        if (!$this->isValidField($meta, $field)) {
-                            throw new InvalidMappingException("Tree root field - [{$field}] type is not valid and must be 'integer' in class - {$meta->name}");
-                        }
-                        $config['root'] = $field;
-                    } elseif (isset($mapping->gedmo->{'tree-level'})) {
-                        if (!$this->isValidField($meta, $field)) {
-                            throw new InvalidMappingException("Tree level field - [{$field}] type is not valid and must be 'integer' in class - {$meta->name}");
-                        }
-                        $config['level'] = $field;
+                if (isset($mapping->{'tree-left'})) {
+                    if (!$this->isValidField($meta, $field)) {
+                        throw new InvalidMappingException("Tree left field - [{$field}] type is not valid and must be 'integer' in class - {$meta->name}");
                     }
+                    $config['left'] = $field;
+                } elseif (isset($mapping->{'tree-right'})) {
+                    if (!$this->isValidField($meta, $field)) {
+                        throw new InvalidMappingException("Tree right field - [{$field}] type is not valid and must be 'integer' in class - {$meta->name}");
+                    }
+                    $config['right'] = $field;
+                } elseif (isset($mapping->{'tree-root'})) {
+                    if (!$this->isValidField($meta, $field)) {
+                        throw new InvalidMappingException("Tree root field - [{$field}] type is not valid and must be 'integer' in class - {$meta->name}");
+                    }
+                    $config['root'] = $field;
+                } elseif (isset($mapping->{'tree-level'})) {
+                    if (!$this->isValidField($meta, $field)) {
+                        throw new InvalidMappingException("Tree level field - [{$field}] type is not valid and must be 'integer' in class - {$meta->name}");
+                    }
+                    $config['level'] = $field;
                 }
             }
         }
 
         if (isset($xmlDoctrine->{'many-to-one'})) {
             foreach ($xmlDoctrine->{'many-to-one'} as $manyToOneMapping)  {
-            $manyToOneMappingDoctrine = $manyToOneMapping;
+                /**
+                 * @var \SimpleXMLElement $manyToOneMapping
+                 */
+                $manyToOneMappingDoctrine = $manyToOneMapping;
                 $manyToOneMapping = $manyToOneMapping->children(self::GEDMO_NAMESPACE_URI);;
-                if (isset($manyToOneMapping->gedmo) && isset($manyToOneMapping->gedmo->{'tree-parent'})) {
+                if (isset($manyToOneMapping->{'tree-parent'})) {
                     $field = $this->_getAttribute($manyToOneMappingDoctrine, 'field');
                     if ($meta->associationMappings[$field]['targetEntity'] != $meta->name) {
                         throw new InvalidMappingException("Unable to find ancestor/parent child relation through ancestor field - [{$field}] in class - {$meta->name}");

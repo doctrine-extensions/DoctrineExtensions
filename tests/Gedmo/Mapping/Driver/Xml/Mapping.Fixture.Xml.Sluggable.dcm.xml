@@ -8,24 +8,16 @@
         </id>
 
         <field name="title" type="string" length="128">
-            <gedmo:gedmo>
-                <gedmo:sluggable position="0"/>
-            </gedmo:gedmo>
+            <gedmo:sluggable position="0"/>
         </field>
         <field name="code" type="string" length="16">
-            <gedmo:gedmo>
-                <gedmo:sluggable/>
-            </gedmo:gedmo>
+            <gedmo:sluggable/>
         </field>
         <field name="ean" type="string" length="13">
-            <gedmo:gedmo>
-                <gedmo:sluggable position="1"/>
-            </gedmo:gedmo>
+            <gedmo:sluggable position="1"/>
         </field>
         <field name="slug" type="string" length="156" unique="true">
-            <gedmo:gedmo>
-                <gedmo:slug unique="true" style="camel" updatable="false" separator="_"/>
-            </gedmo:gedmo>
+            <gedmo:slug unique="true" style="camel" updatable="false" separator="_"/>
         </field>
     </entity>
 </doctrine-mapping>

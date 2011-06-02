@@ -10,19 +10,14 @@
         </id>
 
         <field name="title" type="string" length="128">
-            <gedmo:gedmo>
-                <gedmo:translatable/>
-            </gedmo:gedmo>
+            <gedmo:translatable/>
         </field>
         <field name="content" type="text">
-            <gedmo:gedmo>
-                <gedmo:translatable/>
-            </gedmo:gedmo>
+            <gedmo:translatable/>
         </field>
 
-        <gedmo:gedmo>
-            <gedmo:translation entity="Gedmo\Translatable\Entity\Translation" locale="locale"/>
-        </gedmo:gedmo>
+        <gedmo:translation entity="Gedmo\Translatable\Entity\Translation" locale="locale"/>
+
     </entity>
 
 </doctrine-mapping>
