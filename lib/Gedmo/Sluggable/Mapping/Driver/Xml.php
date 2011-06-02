@@ -2,7 +2,7 @@
 
 namespace Gedmo\Sluggable\Mapping\Driver;
 
-use Gedmo\Mapping\Driver\File,
+use Gedmo\Mapping\Driver\Xml as BaseXml,
     Doctrine\Common\Persistence\Mapping\ClassMetadata,
     Gedmo\Exception\InvalidMappingException;
 
@@ -13,18 +13,14 @@ use Gedmo\Mapping\Driver\File,
  * extension.
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
+ * @author Miha Vrhovnik <miha.vrhovnik@gmail.com>
  * @package Gedmo.Sluggable.Mapping.Driver
  * @subpackage Xml
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class Xml extends File
+class Xml extends BaseXml
 {
-    /**
-     * File extension
-     * @var string
-     */
-    protected $_extension = '.dcm.xml';
 
     /**
      * List of types which are valid for slug and sluggable fields
@@ -48,68 +44,59 @@ class Xml extends File
     /**
      * {@inheritDoc}
      */
-    public function readExtendedMetadata(ClassMetadata $meta, array &$config) {
+    public function readExtendedMetadata(ClassMetadata $meta, array &$config)
+    {
+        /**
+         * @var \SimpleXmlElement $xml
+         */
         $xml = $this->_getMapping($meta->name);
 
         if (isset($xml->field)) {
             foreach ($xml->field as $mapping) {
-                $field = (string)$mapping['name'];
+                $mappingDoctrine = $mapping;
+                /**
+                 * @var \SimpleXmlElement $mapping
+                 */
+                $mapping = $mapping->children(self::GEDMO_NAMESPACE_URI);
+
+                $field = $this->_getAttribute($mappingDoctrine, 'name');
                 if (isset($mapping->gedmo)) {
                     if (isset($mapping->gedmo->sluggable)) {
                         if (!$this->isValidField($meta, $field)) {
                             throw new InvalidMappingException("Cannot slug field - [{$field}] type is not valid and must be 'string' in class - {$meta->name}");
                         }
                         $options = array('position' => false, 'field' => $field);
-                        if (isset($mapping->gedmo->sluggable['position'])) {
-                            $options['position'] = (int)$mapping->gedmo->sluggable['position'];
+                        if ($this->_isAttributeSet($mapping->gedmo->sluggable, 'position')) {
+                            $options['position'] =  (int)$this->_getAttribute($mapping->gedmo->sluggable, 'position');
                         }
                         $config['fields'][] = $options;
                     } elseif (isset($mapping->gedmo->slug)) {
+                        /**
+                         * @var \SimpleXmlElement $slug
+                         */
                         $slug = $mapping->gedmo->slug;
                         if (!$this->isValidField($meta, $field)) {
                             throw new InvalidMappingException("Cannot use field - [{$field}] for slug storage, type is not valid and must be 'string' in class - {$meta->name}");
                         }
                         if (isset($config['slug'])) {
-                            throw new InvalidMappingException("There cannot be two slug fields: [{$slugField}] and [{$config['slug']}], in class - {$meta->name}.");
+                            throw new InvalidMappingException("There cannot be two slug fields: [{$slug}] and [{$config['slug']}], in class - {$meta->name}.");
                         }
                         $config['slug'] = $field;
-                        $config['style'] = isset($slug['style']) ?
-                            (string)$slug['style'] : 'default';
+                        $config['style'] = $this->_isAttributeSet($slug, 'style') ?
+                            $this->_getAttribute($slug, 'style') : 'default';
 
-                        $config['updatable'] = isset($slug['updatable']) ?
-                            (bool)$slug['updatable'] : true;
+                        $config['updatable'] = $this->_isAttributeSet($slug, 'updatable') ?
+                            (bool)$this->_getAttribute($slug, 'updatable') : true;
 
-                        $config['unique'] = isset($slug['unique']) ?
-                            (bool)$slug['unique'] : true;
+                        $config['unique'] = $this->_isAttributeSet($slug, 'unique') ?
+                            (bool)$this->_getAttribute($slug, 'unique') : true;
 
-                        $config['separator'] = isset($slug['separator']) ?
-                            (string)$slug['separator'] : '-';
+                        $config['separator'] = $this->_isAttributeSet($slug, 'separator') ?
+                            $this->_getAttribute($slug, 'separator') : '-';
                     }
                 }
             }
         }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    protected function _loadMappingFile($file)
-    {
-        $result = array();
-        $xmlElement = simplexml_load_file($file);
-
-        if (isset($xmlElement->entity)) {
-            foreach ($xmlElement->entity as $entityElement) {
-                $entityName = (string)$entityElement['name'];
-                $result[$entityName] = $entityElement;
-            }
-        } else if (isset($xmlElement->{'mapped-superclass'})) {
-            foreach ($xmlElement->{'mapped-superclass'} as $mappedSuperClass) {
-                $className = (string)$mappedSuperClass['name'];
-                $result[$className] = $mappedSuperClass;
-            }
-        }
-        return $result;
     }
 
     /**
