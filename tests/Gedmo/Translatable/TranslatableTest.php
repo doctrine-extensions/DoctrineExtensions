@@ -4,9 +4,9 @@ namespace Gedmo\Translatable;
 
 use Doctrine\Common\EventManager;
 use Tool\BaseTestCaseORM;
-use Doctrine\Common\Util\Debug,
-    Translatable\Fixture\Article,
-    Translatable\Fixture\Comment;
+use Translatable\Fixture\Article;
+use Translatable\Fixture\Comment;
+use Translatable\Fixture\Sport;
 
 /**
  * These are tests for translatable behavior
@@ -19,6 +19,7 @@ use Doctrine\Common\Util\Debug,
 class TranslatableTest extends BaseTestCaseORM
 {
     const ARTICLE = 'Translatable\\Fixture\\Article';
+    const SPORT = 'Translatable\\Fixture\\Sport';
     const COMMENT = 'Translatable\\Fixture\\Comment';
     const TRANSLATION = 'Gedmo\\Translatable\\Entity\\Translation';
 
@@ -202,12 +203,46 @@ class TranslatableTest extends BaseTestCaseORM
         $this->assertEquals($article->getContent(), 'content in en');
     }
 
+    public function testGithubIssue64()
+    {
+        $judo = new Sport;
+        $judo->setTitle('Judo');
+        $judo->setDescription('Whatever');
+
+        $this->em->persist($judo);
+        $this->em->flush();
+
+        $this->translatableListener->setTranslatableLocale('de_de');
+
+        $judo->setTitle('Judo');
+        $judo->setDescription('Something in changeset');
+        $this->em->persist($judo);
+        $this->em->flush();
+
+        $repo = $this->em->getRepository(self::TRANSLATION);
+        $translations = $repo->findTranslations($judo);
+        $this->assertEquals(2, count($translations));
+
+        // now without any changeset
+        $this->translatableListener->setTranslatableLocale('ru_ru');
+
+        $judo->setTitle('Judo');
+        $this->em->persist($judo);
+        $this->em->flush();
+
+        // this will not add additional translation, because it cannot be tracked
+        // without anything in changeset
+        $translations = $repo->findTranslations($judo);
+        $this->assertEquals(2, count($translations));
+    }
+
     protected function getUsedEntityFixtures()
     {
         return array(
             self::ARTICLE,
             self::TRANSLATION,
-            self::COMMENT
+            self::COMMENT,
+            self::SPORT
         );
     }
 
