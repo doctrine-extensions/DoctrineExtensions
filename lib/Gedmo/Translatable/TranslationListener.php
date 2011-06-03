@@ -309,11 +309,10 @@ class TranslationListener extends MappedEventSubscriber
                         $trans = $ea->findTranslation($objectId, $meta->name, $locale, $field, $transClass);
                         if (!$trans) {
                             $trans = new $transClass;
-                            $trans
-                                ->setField($field)
-                                ->setObjectClass($meta->name)
-                                ->setForeignKey($objectId)
-                                ->setLocale($locale);
+                            $trans->setField($field)
+                            $trans->setObjectClass($meta->name)
+                            $trans->setForeignKey($objectId)
+                            $trans->setLocale($locale);
                         }
                         $trans->setContent($ea->getTranslationValue($object, $field, $content));
                         if ($trans->getId()) {
