@@ -270,11 +270,10 @@ class TranslationListener extends MappedEventSubscriber
                 foreach ($this->additionalTranslations[$oid] as $field => $translations) {
                     foreach ($translations as $locale => $content) {
                         $trans = new $transClass;
-                        $trans
-                            ->setField($field)
-                            ->setObjectClass($meta->name)
-                            ->setForeignKey($objectId)
-                            ->setLocale($locale);
+                        $trans->setField($field);
+                        $trans->setObjectClass($meta->name);
+                        $trans->setForeignKey($objectId);
+                        $trans->setLocale($locale);
                         $trans->setContent($ea->getTranslationValue($object, $field, $content));
                         if (!$objectId) {
                             $this->pendingTranslationInserts[spl_object_hash($object)][] = $trans;
@@ -310,11 +309,10 @@ class TranslationListener extends MappedEventSubscriber
                         $trans = $ea->findTranslation($objectId, $meta->name, $locale, $field, $transClass);
                         if (!$trans) {
                             $trans = new $transClass;
-                            $trans
-                                ->setField($field)
-                                ->setObjectClass($meta->name)
-                                ->setForeignKey($objectId)
-                                ->setLocale($locale);
+                            $trans->setField($field);
+                            $trans->setObjectClass($meta->name);
+                            $trans->setForeignKey($objectId);
+                            $trans->setLocale($locale);
                         }
                         $trans->setContent($ea->getTranslationValue($object, $field, $content));
                         if ($trans->getId()) {
