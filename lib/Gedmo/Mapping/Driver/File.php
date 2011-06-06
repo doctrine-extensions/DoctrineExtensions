@@ -3,6 +3,7 @@
 namespace Gedmo\Mapping\Driver;
 
 use Gedmo\Mapping\Driver;
+use Doctrine\ORM\Mapping\Driver\AbstractFileDriver;
 
 /**
  * The mapping FileDriver abstract class, defines the
