@@ -82,7 +82,7 @@ final class Version
         if (!class_exists('Doctrine\\ODM\\MongoDB\\Version')) {
             throw new DependentComponentNotFoundException("Doctrine\\ODM\\MongoDB library is either not registered by autoloader or not installed");
         }
-        if (\Doctrine\ODM\MongoDB\Version::compare('1.0.0RC1-DEV') > 0) {
+        if (\Doctrine\ODM\MongoDB\Version::compare('1.0.0BETA3-DEV') > 0) {
             throw new IncompatibleComponentVersionException("Doctrine\\ODM\\MongoDB library is older than expected for these extensions");
         }
     }
