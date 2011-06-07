@@ -151,6 +151,7 @@ final class ExtensionMetadataFactory
             $driver->setOriginalDriver($omDriver);
             if ($driver instanceof FileDriver) {
                 $driver->setPaths($omDriver->getPaths());
+                $driver->setExtension($omDriver->getFileExtension());
             }
             if ($driver instanceof AnnotationDriverInterface) {
                 $driver->setAnnotationReader($this->annotationReader);
