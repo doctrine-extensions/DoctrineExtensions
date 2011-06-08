@@ -12,7 +12,7 @@ Features:
 - Automatic translation of Entity or Document fields then loaded
 - ORM query can use **hint** to translate all records without issuing additional queries
 - Can be nested with other behaviors
-- Annotation and Yaml mapping support for extensions
+- Annotation, Yaml and Xml mapping support for extensions
 
 [blog_test]: http://gediminasm.org/test "Test extensions on this blog"
 
@@ -39,7 +39,7 @@ and any number of them
 - Public [Translatable repository](http://github.com/l3pp4rd/DoctrineExtensions "Translatable extension on Github") is available on github
 - Using other extensions on the same Entity fields may result in unexpected way
 - May inpact your application performace since it does an additional query for translation
-- Last update date: **2011-04-21**
+- Last update date: **2011-06-08**
 
 **Portability:**
 
@@ -55,6 +55,7 @@ Content:
 - Entity [example](#entity)
 - Document [example](#document)
 - [Yaml](#yaml) mapping example
+- [Xml](#xml) mapping example
 - Basic usage [examples](#basic-examples)
 - [Persisting](#multi-translations) multiple translations
 - Using ORM query [hint](#orm-query-hint)
@@ -286,6 +287,31 @@ Yaml mapped Article: **/mapping/yaml/Entity.Article.dcm.yml**
           type: text
           gedmo:
             - translatable
+
+## Xml mapping example {#xml}
+
+    <?xml version="1.0" encoding="UTF-8"?>
+    <doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                      xmlns:gedmo="http://gediminasm.org/schemas/orm/doctrine-extensions-mapping">
+    
+        <entity name="Mapping\Fixture\Xml\Translatable" table="translatables">
+    
+            <id name="id" type="integer" column="id">
+                <generator strategy="AUTO"/>
+            </id>
+    
+            <field name="title" type="string" length="128">
+                <gedmo:translatable/>
+            </field>
+            <field name="content" type="text">
+                <gedmo:translatable/>
+            </field>
+    
+            <gedmo:translation entity="Gedmo\Translatable\Entity\Translation" locale="locale"/>
+    
+        </entity>
+    
+    </doctrine-mapping>
 
 ## Basic usage examples: {#basic-examples}
 

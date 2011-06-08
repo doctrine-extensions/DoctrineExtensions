@@ -13,7 +13,7 @@ Features:
 - Synchronization of left, right values is automatic
 - Can support concurrent flush with many objects being persisted and updated
 - Can be nested with other extensions
-- Annotation and Yaml mapping support for extensions
+- Annotation, Yaml and Xml mapping support for extensions
 
 [blog_test]: http://gediminasm.org/test "Test extensions on this blog"
 
@@ -53,7 +53,7 @@ Update **2011-02-02**
 because nodes may have changed values in database but not in memory. Flushing dirty nodes can lead to unexpected behaviour.
 - Closure tree implementation is experimental and not fully functional, so far not documented either
 - Public [Tree repository](http://github.com/l3pp4rd/DoctrineExtensions "Tree extension on Github") is available on github
-- Last update date: **2011-04-12**
+- Last update date: **2011-06-08**
 
 **Portability:**
 
@@ -68,6 +68,7 @@ Content:
 - [Attaching](#event-listener) the **Tree Listener**
 - Entity [example](#entity)
 - [Yaml](#yaml) mapping example
+- [Xml](#xml) mapping example
 - Basic usage [examples](#basic-examples)
 - Advanced usage [examples](#advanced-examples)
 
@@ -257,6 +258,47 @@ Yaml mapped Category: **/mapping/yaml/Entity.Category.dcm.yml**
         children:
           targetEntity: Entity\Category
           mappedBy: parent
+
+## Xml mapping example {#xml}
+
+    <?xml version="1.0" encoding="UTF-8"?>
+    <doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                      xmlns:gedmo="http://gediminasm.org/schemas/orm/doctrine-extensions-mapping">
+    
+        <entity name="Mapping\Fixture\Xml\NestedTree" table="nested_trees">
+    
+            <indexes>
+                <index name="name_idx" columns="name"/>
+            </indexes>
+    
+            <id name="id" type="integer" column="id">
+                <generator strategy="AUTO"/>
+            </id>
+    
+            <field name="name" type="string" length="128"/>
+            <field name="left" column="lft" type="integer">
+                <gedmo:tree-left/>
+            </field>
+            <field name="right" column="rgt" type="integer">
+                <gedmo:tree-right/>
+            </field>
+            <field name="root" type="integer">
+                <gedmo:tree-root/>
+            </field>
+            <field name="level" column="lvl" type="integer">
+                <gedmo:tree-level/>
+            </field>
+    
+            <many-to-one field="parent" target-entity="NestedTree">
+                <join-column name="parent_id" referenced-column-name="id" on-delete="SET_NULL"/>
+                <gedmo:tree-parent/>
+            </many-to-one>
+    
+            <gedmo:tree type="nested"/>
+    
+        </entity>
+    
+    </doctrine-mapping>
 
 ## Basic usage examples: {#basic-examples}
 

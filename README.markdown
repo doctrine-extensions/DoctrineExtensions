@@ -35,6 +35,12 @@ use these extensions from separate branch **doctrine2.0.x** or simply checkout t
 
 ### Latest updates
 
+**2011-06-08**
+
+- [mvrhov](http://github.com/mvrhov) implemented the XML driver for extensions and now
+there is a full stack of drivers to make your experience even better using these extensions.
+So far I'm not sure if the same xsd will work with ODM but it will be created in comming month.
+
 **2011-05-23**
 
 - Recently **doctrine-common** library changed the way for annotation mapping in branch **3.0.x**
@@ -49,12 +55,6 @@ is performing faster during concurrent inserts and moving subtrees and it also s
 ordering of nodes.
 - Also there are good news for ODM users, @mtotheikle is working on **materialized path**
 strategy for ODM Tree like documents.
-
-**2011-04-16**
-
-- Translation **query walker** is a killer feature for translatable extension. It lets to
-translate any query components and filter or order by translated fields. I recommmend you
-to use it extensively since it is very performative also.
 
 ### ODM MongoDB support
 
@@ -92,6 +92,7 @@ To setup and run tests follow these steps:
 
 ### Contributors:
 
+- Miha Vrhovnik [mvrhov](http://github.com/mvrhov)
 - Clément JOBEILI [dator](http://github.com/dator)
 - Illya Klymov [xanf](http://github.com/xanf)
 - Gustavo Adrian [comfortablynumb](http://github.com/comfortablynumb)
