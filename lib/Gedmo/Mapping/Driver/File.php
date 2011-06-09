@@ -3,7 +3,8 @@
 namespace Gedmo\Mapping\Driver;
 
 use Gedmo\Mapping\Driver;
-use Doctrine\ORM\Mapping\Driver\AbstractFileDriver;
+use Doctrine\ORM\Mapping\Driver\AbstractFileDriver as ORMAbstractFileDriver;
+use Doctrine\ODM\MongoDB\Mapping\Driver\AbstractFileDriver as MongoDBAbstractFileDriver;
 
 /**
  * The mapping FileDriver abstract class, defines the
@@ -99,7 +100,7 @@ abstract class File implements Driver
         //try loading mapping from original driver first
         $mapping = null;
         if (!is_null($this->_originalDriver)) {
-            if ($this->_originalDriver instanceof AbstractFileDriver) {
+            if ($this->_originalDriver instanceof ORMAbstractFileDriver || $this->_originalDriver instanceof MongoDBAbstractFileDriver) {
                 $mapping = $this->_originalDriver->getElement($className);
             }
         }
