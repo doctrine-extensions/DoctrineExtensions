@@ -43,6 +43,11 @@ class Article
     {
         $this->images[] = $image;
     }
+	
+	public function setImages(array $images)
+	{
+		$this->images = $images;
+	}
 
     public function getImages()
     {
