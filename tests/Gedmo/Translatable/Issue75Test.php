@@ -40,53 +40,31 @@ class Issue75Test extends BaseTestCaseORM
 
     public function testIssue75()
     {
-        $repo = $this->em->getRepository(self::TRANSLATION);
-        $file1 = new File;
-        $file1->setTitle('en file1');
-        $this->em->persist($file1);
-
-        $file2 = new File;
-        $file2->setTitle('en file2');
-        $this->em->persist($file2);
-
-        $article = new Article;
-        $article->setTitle('en art');
-        $article->addFile($file1);
-        $article->addFile($file2);
-        $this->em->persist($article);
-
-        $image1 = new Image;
-        $image1->setTitle('en img1');
+    	$repo = $this->em->getRepository(self::TRANSLATION);
+	
+		// Step1: article creation in default locale
+		$image1 = new Image;
+        $image1->setTitle('img1');
         $this->em->persist($image1);
 
         $image2 = new Image;
-        $image2->setTitle('en img2');
+        $image2->setTitle('img2');
         $this->em->persist($image2);
-
-        $article->addImage($image1);
-        $article->addImage($image2);
-
-        $this->em->flush();
-
-        $this->translatableListener->setTranslatableLocale('de');
-        $image1->setTitle('de img1');
-        $article->setTitle('de art');
-        $file2->setTitle('de file2');
-
+		
+        $article = new Article;
+        $article->setTitle('en art');
+		$article->setImages(array($image1, $image2));
         $this->em->persist($article);
-        $this->em->persist($image1);
-        $this->em->persist($file2);
-
+		
+		$this->em->flush();
+		//Step2: article update in another locale
+		$article = $this->em->find(self::ARTICLE, $article->getId());
+        $image1 = $this->em->find(self::IMAGE, $image1->getId());
+        $image2 = $this->em->find(self::IMAGE, $image2->getId());
+        $article->setTitle('en updated');
+		$article->setImages(array($image1, $image2));
+        $this->em->persist($article);
         $this->em->flush();
-
-        $trans = $repo->findTranslations($article);
-        $this->assertEquals(2, count($trans));
-
-        $trans = $repo->findTranslations($file2);
-        $this->assertEquals(2, count($trans));
-
-        $trans = $repo->findTranslations($image2);
-        $this->assertEquals(1, count($trans));
     }
 
     protected function getUsedEntityFixtures()
