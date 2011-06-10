@@ -40,29 +40,34 @@ class Issue75Test extends BaseTestCaseORM
 
     public function testIssue75()
     {
-    	$repo = $this->em->getRepository(self::TRANSLATION);
-	
-		// Step1: article creation in default locale
-		$image1 = new Image;
+        $repo = $this->em->getRepository(self::TRANSLATION);
+
+        // Step1: article creation in default locale
+        $image1 = new Image;
         $image1->setTitle('img1');
         $this->em->persist($image1);
 
         $image2 = new Image;
         $image2->setTitle('img2');
         $this->em->persist($image2);
-		
+
         $article = new Article;
         $article->setTitle('en art');
-		$article->setImages(array($image1, $image2));
+        // images is not an array
+        $article->setImages(array($image1, $image2));
         $this->em->persist($article);
-		
-		$this->em->flush();
-		//Step2: article update in another locale
-		$article = $this->em->find(self::ARTICLE, $article->getId());
+
+        $this->em->flush();
+        //Step2: article update in another locale
+        $article = $this->em->find(self::ARTICLE, $article->getId());
         $image1 = $this->em->find(self::IMAGE, $image1->getId());
         $image2 = $this->em->find(self::IMAGE, $image2->getId());
         $article->setTitle('en updated');
-		$article->setImages(array($image1, $image2));
+        /**
+         * here you duplicate the objects in collection, it allready
+         * contains them. Read more about doctrine collections
+         */
+        $article->setImages(array($image1, $image2));
         $this->em->persist($article);
         $this->em->flush();
     }

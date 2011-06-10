@@ -34,6 +34,13 @@ class Article
      */
     private $files;
 
+    public function __construct()
+    {
+        // $images is not an array, its a collection
+        // if you want to do such operations you have to cunstruct it
+        $this->images = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
     public function getId()
     {
         return $this->id;
@@ -43,11 +50,18 @@ class Article
     {
         $this->images[] = $image;
     }
-	
-	public function setImages(array $images)
-	{
-		$this->images = $images;
-	}
+
+    public function setImages(array $images)
+    {
+        foreach ($images as $img) {
+            // first check if it does not contain it allready
+            // because all entity objects are allready in memory
+            // simply $em->find('Image', $id); and you will get it from this collection
+            if (!$this->images->contains($img)) {
+                $this->addImage($img);
+            }
+        }
+    }
 
     public function getImages()
     {
