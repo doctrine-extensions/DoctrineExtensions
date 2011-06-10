@@ -9,7 +9,7 @@ Features:
 - ORM and ODM support using same listener
 - Can be nested with other behaviors
 - Objects can be reverted to previous versions
-- Annotation and Yaml mapping support for extensions
+- Annotation, Yaml and Xml mapping support for extensions
 
 [blog_test]: http://gediminasm.org/test "Test extensions on this blog"
 
@@ -23,7 +23,7 @@ and any number of them
 
 - You can [test live][blog_test] on this blog
 - Public [Loggable repository](http://github.com/l3pp4rd/DoctrineExtensions "Loggable extension on Github") is available on github
-- Last update date: **2011-04-23**
+- Last update date: **2011-06-08**
 
 **Portability:**
 
@@ -40,6 +40,7 @@ Content:
 - Entity [example](#entity)
 - Document [example](#document)
 - [Yaml](#yaml) mapping example
+- [Xml](#xml) mapping example
 - Basic usage [examples](#basic-examples)
 
 ## Setup and autoloading {#including-extension}
@@ -214,6 +215,32 @@ Yaml mapped Article: **/mapping/yaml/Entity.Article.dcm.yml**
             - versioned
         content:
           type: text
+
+## Xml mapping example {#xml}
+
+    <?xml version="1.0" encoding="UTF-8"?>
+    <doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                      xmlns:gedmo="http://gediminasm.org/schemas/orm/doctrine-extensions-mapping">
+    
+        <entity name="Mapping\Fixture\Xml\Loggable" table="loggables">
+    
+            <id name="id" type="integer" column="id">
+                <generator strategy="AUTO"/>
+            </id>
+    
+            <field name="title" type="string" length="128">
+                <gedmo:versioned/>
+            </field>
+            <many-to-one field="status" target-entity="Status">
+                <join-column name="status_id" referenced-column-name="id"/>
+                <gedmo:versioned/>
+            </many-to-one>
+    
+            <gedmo:loggable log-entry-class="Gedmo\Loggable\Entity\LogEntry"/>
+    
+        </entity>
+    
+    </doctrine-mapping>
 
 ## Basic usage examples: {#basic-examples}
 

@@ -9,7 +9,7 @@ Features:
 - ORM and ODM support using same listener
 - Slugs can be unique and styled
 - Can be nested with other behaviors
-- Annotation and Yaml mapping support for extensions
+- Annotation, Yaml and Xml mapping support for extensions
 
 [blog_test]: http://gediminasm.org/test "Test extensions on this blog"
 
@@ -26,7 +26,7 @@ no more exceptions during concurrent flushes.
 
 - You can [test live][blog_test] on this blog
 - Public [Sluggable repository](http://github.com/l3pp4rd/DoctrineExtensions "Sluggable extension on Github") is available on github
-- Last update date: **2011-04-04**
+- Last update date: **2011-06-08**
 
 **Portability:**
 
@@ -43,6 +43,7 @@ Content:
 - Entity [example](#entity)
 - Document [example](#document)
 - [Yaml](#yaml) mapping example
+- [Xml](#xml) mapping example
 - Basic usage [examples](#basic-examples)
 - Advanced usage [examples](#advanced-examples)
 
@@ -250,6 +251,31 @@ Yaml mapped Article: **/mapping/yaml/Entity.Article.dcm.yml**
       indexes:
         search_idx:
           columns: slug
+
+## Xml mapping example {#xml}
+
+    <?xml version="1.0" encoding="UTF-8"?>
+    <doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                      xmlns:gedmo="http://gediminasm.org/schemas/orm/doctrine-extensions-mapping">
+        <entity name="Mapping\Fixture\Xml\Sluggable" table="sluggables">
+            <id name="id" type="integer" column="id">
+                <generator strategy="AUTO"/>
+            </id>
+    
+            <field name="title" type="string" length="128">
+                <gedmo:sluggable position="0"/>
+            </field>
+            <field name="code" type="string" length="16">
+                <gedmo:sluggable/>
+            </field>
+            <field name="ean" type="string" length="13">
+                <gedmo:sluggable position="1"/>
+            </field>
+            <field name="slug" type="string" length="156" unique="true">
+                <gedmo:slug unique="true" style="camel" updatable="false" separator="_"/>
+            </field>
+        </entity>
+    </doctrine-mapping>
 
 ## Basic usage examples: {#basic-examples}
 
