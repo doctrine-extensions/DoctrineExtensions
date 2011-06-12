@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xmlns:gedmo="http://gediminasm.org/schemas/orm/doctrine-extensions-mapping">
+    <entity name="Mapping\Fixture\Xml\Sluggable" table="sluggables">
+        <id name="id" type="integer" column="id">
+            <generator strategy="AUTO"/>
+        </id>
+
+        <field name="title" type="string" length="128">
+            <gedmo:sluggable position="0"/>
+        </field>
+        <field name="code" type="string" length="16">
+            <gedmo:sluggable/>
+        </field>
+        <field name="ean" type="string" length="13">
+            <gedmo:sluggable position="1"/>
+        </field>
+        <field name="slug" type="string" length="156" unique="true">
+            <gedmo:slug unique="true" style="camel" updatable="false" separator="_"/>
+        </field>
+    </entity>
+</doctrine-mapping>

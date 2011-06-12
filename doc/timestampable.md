@@ -11,7 +11,7 @@ Features:
 - Specific annotations for properties, and no interface required
 - Can react to specific property or relation changes to specific value 
 - Can be nested with other behaviors 
-- Annotation and Yaml mapping support for extensions
+- Annotation, Yaml and Xml mapping support for extensions
 
 [blog_test]: http://gediminasm.org/test "Test extensions on this blog"
 
@@ -24,7 +24,7 @@ and any number of them
 
 - You can [test live][blog_test] on this blog
 - Public [Timestampable repository](http://github.com/l3pp4rd/DoctrineExtensions "Timestampable extension on Github") is available on github
-- Last update date: **2011-02-02**
+- Last update date: **2011-06-08**
 
 **Portability:**
 
@@ -40,6 +40,7 @@ Content:
 - Entity [example](#entity)
 - Document [example](#document)
 - [Yaml](#yaml) mapping example
+- [Xml](#xml) mapping example
 - Advanced usage [examples](#advanced-examples)
 
 ## Setup and autoloading {#including-extension}
@@ -240,6 +241,34 @@ Yaml mapped Article: **/mapping/yaml/Entity.Article.dcm.yml**
           gedmo:
             timestampable:
               on: update
+
+## Xml mapping example {#xml}
+
+    <?xml version="1.0" encoding="UTF-8"?>
+    <doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                      xmlns:gedmo="http://gediminasm.org/schemas/orm/doctrine-extensions-mapping">
+    
+        <entity name="Mapping\Fixture\Xml\Timestampable" table="timestampables">
+            <id name="id" type="integer" column="id">
+                <generator strategy="AUTO"/>
+            </id>
+    
+            <field name="created" type="datetime">
+                <gedmo:timestampable on="create"/>
+            </field>
+            <field name="updated" type="datetime">
+                <gedmo:timestampable on="update"/>
+            </field>
+            <field name="published" type="datetime" nullable="true">
+                <gedmo:timestampable on="change" field="status.title" value="Published"/>
+            </field>
+    
+            <many-to-one field="status" target-entity="Status">
+                <join-column name="status_id" referenced-column-name="id"/>
+            </many-to-one>
+        </entity>
+    
+    </doctrine-mapping>
 
 ## Advanced examples: {#advanced-examples}
 
