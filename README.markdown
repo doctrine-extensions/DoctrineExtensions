@@ -86,7 +86,7 @@ PHPUnit 3.5 or newer is required.
 To setup and run tests follow these steps:
 
 - go to the root directory of extensions
-- run: **git submodule update --init**
+- run: **php bin/vendors.php**
 - run: **phpunit -c tests**
 - optional - run mongodb in background to complete all tests
 
