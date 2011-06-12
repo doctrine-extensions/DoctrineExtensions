@@ -10,7 +10,7 @@ set_include_path(implode(PATH_SEPARATOR, array(
 
 $classLoaderFile = VENDOR_PATH . '/doctrine-common/lib/Doctrine/Common/ClassLoader.php';
 if (!file_exists($classLoaderFile)) {
-    die('cannot find vendor, git submodule init && git submodule update');
+    die('cannot find vendor, run: php bin/vendors.php');
 }
 
 require_once $classLoaderFile;

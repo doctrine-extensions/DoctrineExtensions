@@ -24,7 +24,9 @@ define('TESTS_TEMP_DIR', __DIR__.'/temp');
 define('VENDOR_PATH', realpath(__DIR__ . '/../vendor'));
 
 $classLoaderFile = VENDOR_PATH . '/Symfony/Component/ClassLoader/UniversalClassLoader.php';
-
+if (!file_exists($classLoaderFile)) {
+    die('cannot find vendor, run: php bin/vendors.php');
+}
 require_once $classLoaderFile;
 $loader = new Symfony\Component\ClassLoader\UniversalClassLoader;
 $loader->registerNamespaces(array(
