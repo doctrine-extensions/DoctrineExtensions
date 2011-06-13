@@ -1,6 +1,7 @@
 <?php
 
 namespace Translatable\Fixture\Issue75;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * @Entity
@@ -51,16 +52,22 @@ class Article
         $this->images[] = $image;
     }
 
-    public function setImages(array $images)
+    public function setImages(ArrayCollection $images)//Ok so here I just use an array collection in order to be coherent
     {
-        foreach ($images as $img) {
+        foreach ($images as $newImage) {
             // first check if it does not contain it allready
             // because all entity objects are allready in memory
             // simply $em->find('Image', $id); and you will get it from this collection
-            if (!$this->images->contains($img)) {
-                $this->addImage($img);
+            if (!$this->images->contains($newImage)) {
+                $this->addImage($newImage);
             }
         }
+		// i also need to remove previous images if applicable
+		foreach($this->images as $oldImage) {
+			if (!$images->contains($oldImage)) {
+				$this->images->removeElement($oldImage);
+			}
+		}
     }
 
     public function getImages()

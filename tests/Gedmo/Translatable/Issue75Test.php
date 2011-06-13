@@ -3,6 +3,7 @@
 namespace Gedmo\Translatable;
 
 use Doctrine\Common\EventManager;
+use Doctrine\Common\Collections\ArrayCollection;
 use Tool\BaseTestCaseORM;
 use Translatable\Fixture\Issue75\Article;
 use Translatable\Fixture\Issue75\Image;
@@ -50,24 +51,37 @@ class Issue75Test extends BaseTestCaseORM
         $image2 = new Image;
         $image2->setTitle('img2');
         $this->em->persist($image2);
+		
+        $image3 = new Image;
+        $image3->setTitle('img3');
+        $this->em->persist($image3);
 
         $article = new Article;
         $article->setTitle('en art');
         // images is not an array
-        $article->setImages(array($image1, $image2));
+        $images = new ArrayCollection();
+		$images[]= $image1;
+		$images[]= $image2;
+        $article->setImages($images);
         $this->em->persist($article);
 
         $this->em->flush();
-        //Step2: article update in another locale
+		
+        // Step2: article update in another locale
+        // The problem actually happens when I change the images - otherwise Doctrine does not detect any change ?
         $article = $this->em->find(self::ARTICLE, $article->getId());
+		// Now i want images 1 & 3, instead of 1 & 2
         $image1 = $this->em->find(self::IMAGE, $image1->getId());
-        $image2 = $this->em->find(self::IMAGE, $image2->getId());
+        $image3 = $this->em->find(self::IMAGE, $image3->getId());
         $article->setTitle('en updated');
         /**
          * here you duplicate the objects in collection, it allready
          * contains them. Read more about doctrine collections
          */
-        $article->setImages(array($image1, $image2));
+        $images = new ArrayCollection();
+		$images[]= $image1;
+		$images[]= $image3;
+        $article->setImages($images);
         $this->em->persist($article);
         $this->em->flush();
     }
