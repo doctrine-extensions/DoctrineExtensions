@@ -62,12 +62,12 @@ class Article
                 $this->addImage($newImage);
             }
         }
-		// i also need to remove previous images if applicable
-		foreach($this->images as $oldImage) {
-			if (!$images->contains($oldImage)) {
-				$this->images->removeElement($oldImage);
-			}
-		}
+        // i also need to remove previous images if applicable
+        foreach($this->images as $oldImage) {
+            if (!$images->contains($oldImage)) {
+                $this->images->removeElement($oldImage);
+            }
+        }
     }
 
     public function getImages()

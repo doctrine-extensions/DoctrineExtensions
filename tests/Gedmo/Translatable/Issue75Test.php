@@ -51,7 +51,7 @@ class Issue75Test extends BaseTestCaseORM
         $image2 = new Image;
         $image2->setTitle('img2');
         $this->em->persist($image2);
-		
+        
         $image3 = new Image;
         $image3->setTitle('img3');
         $this->em->persist($image3);
@@ -60,17 +60,17 @@ class Issue75Test extends BaseTestCaseORM
         $article->setTitle('en art');
         // images is not an array
         $images = new ArrayCollection();
-		$images[]= $image1;
-		$images[]= $image2;
+        $images[]= $image1;
+        $images[]= $image2;
         $article->setImages($images);
         $this->em->persist($article);
 
         $this->em->flush();
-		
+        
         // Step2: article update in another locale
         // The problem actually happens when I change the images - otherwise Doctrine does not detect any change ?
         $article = $this->em->find(self::ARTICLE, $article->getId());
-		// Now i want images 1 & 3, instead of 1 & 2
+        // Now i want images 1 & 3, instead of 1 & 2
         $image1 = $this->em->find(self::IMAGE, $image1->getId());
         $image3 = $this->em->find(self::IMAGE, $image3->getId());
         $article->setTitle('en updated');
@@ -79,8 +79,8 @@ class Issue75Test extends BaseTestCaseORM
          * contains them. Read more about doctrine collections
          */
         $images = new ArrayCollection();
-		$images[]= $image1;
-		$images[]= $image3;
+        $images[]= $image1;
+        $images[]= $image3;
         $article->setImages($images);
         $this->em->persist($article);
         $this->em->flush();
