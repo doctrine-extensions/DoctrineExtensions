@@ -75,7 +75,7 @@ Extensions which fully supports ODM:
 - Timestampable
 - Loggable
 
-All these extensions can be nested together. And most allready use only annotations without interface requirement
+All these extensions can be nested together. And most already use only annotations without interface requirement
 to not to aggregate the entity itself and has implemented proper caching for metadata.
 
 **Notice:** extension tutorial on doctrine blog is outdated.
