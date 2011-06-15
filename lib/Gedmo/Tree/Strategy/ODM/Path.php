@@ -4,7 +4,7 @@
  * This file is part of the DoctrineExtensions library.
  *
  * (c) 2011 Gediminas Morkevifcius
- * (c) Funsational <info@funsational.com>
+ * (c) Funsational <michael.williams@funsational.com>
  *
  * This source file is subject to the LICENSE located in
  * the root directory of this distrubution.

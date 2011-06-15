@@ -88,6 +88,20 @@ class PathRepository extends AbstractTreeRepository
         return $count;
     }
 
+    public function children(Node $node, $sortBy = null)
+    {
+        if (!$sortBy) {
+        	$soryBy = $this->config['sort'];
+        }
+
+        $path = $this->meta
+            ->getReflectionProperty($this->config['path'])
+            ->getValue($node)
+        ;
+
+        return $this->fetchDescendants($path, $sortBy)->toArray();
+    }
+
     /**
      * Fetches $limit number of descendants after skipping $skip
      *
