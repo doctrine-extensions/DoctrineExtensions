@@ -2,7 +2,7 @@
 
 namespace Tool;
 
-use Tool\Logging\DBAL\QueryAnalyzer;
+use Gedmo\Tool\Logging\DBAL\QueryAnalyzer;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
 use Doctrine\ORM\EntityManager;

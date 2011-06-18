@@ -1,6 +1,6 @@
 <?php
 
-namespace Tool\Logging\DBAL;
+namespace Gedmo\Tool\Logging\DBAL;
 
 use Doctrine\DBAL\Logging\SQLLogger;
 use Doctrine\DBAL\Types\Type;

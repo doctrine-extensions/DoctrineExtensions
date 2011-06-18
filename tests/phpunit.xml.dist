@@ -19,5 +19,8 @@
         <testsuite name="Loggable Extension">
             <directory suffix=".php">./Gedmo/Loggable/</directory>
         </testsuite>
+        <testsuite name="Object wrappers">
+            <directory suffix=".php">./Gedmo/Wrapper/</directory>
+        </testsuite>
     </testsuites>
 </phpunit>

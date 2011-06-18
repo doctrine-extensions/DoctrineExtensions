@@ -5,6 +5,7 @@ namespace Gedmo\Translatable\Entity\Repository;
 use Gedmo\Translatable\TranslationListener;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query;
+use Gedmo\Tool\Wrapper\EntityWrapper;
 
 /**
  * The TranslationRepository has some useful functions
@@ -57,14 +58,10 @@ class TranslationRepository extends EntityRepository
     public function findTranslations($entity)
     {
         $result = array();
-        if ($entity) {
-            if ($this->_em->getUnitOfWork()->getEntityState($entity) == \Doctrine\ORM\UnitOfWork::STATE_NEW) {
-                return $result;
-            }
-            $meta = $this->_em->getClassMetadata(get_class($entity));
-            $entityClass = $meta->name;
-            $identifier = $meta->getSingleIdentifierFieldName();
-            $entityId = $meta->getReflectionProperty($identifier)->getValue($entity);
+        $wrapped = new EntityWrapper($entity, $this->_em);
+        if ($wrapped->hasValidIdentifier()) {
+            $entityId = $wrapped->getIdentifier();
+            $entityClass = $wrapped->getClassName();
 
             $translationMeta = $this->getClassMetadata(); // table inheritance support
             $qb = $this->_em->createQueryBuilder();

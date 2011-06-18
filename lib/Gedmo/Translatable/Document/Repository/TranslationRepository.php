@@ -5,6 +5,7 @@ namespace Gedmo\Translatable\Document\Repository;
 use Gedmo\Translatable\TranslationListener;
 use Doctrine\ODM\MongoDB\DocumentRepository;
 use Doctrine\ODM\MongoDB\Cursor;
+use Gedmo\Tool\Wrapper\MongoDocumentWrapper;
 
 /**
  * The TranslationRepository has some useful functions
@@ -58,15 +59,14 @@ class TranslationRepository extends DocumentRepository
     public function findTranslations($document)
     {
         $result = array();
-        if ($document) {
-            $meta = $this->dm->getClassMetadata(get_class($document));
-            $identifier = $meta->identifier;
-            $documentId = $meta->getReflectionProperty($identifier)->getValue($document);
+        $wrapped = new MongoDocumentWrapper($document, $this->dm);
+        if ($wrapped->hasValidIdentifier()) {
+            $documentId = $wrapped->getIdentifier();
 
             $translationMeta = $this->getClassMetadata();
             $qb = $this->createQueryBuilder();
             $q = $qb->field('foreignKey')->equals($documentId)
-                ->field('objectClass')->equals($meta->name)
+                ->field('objectClass')->equals($wrapped->getClassName())
                 ->sort('locale', 'asc')
                 ->getQuery();
 

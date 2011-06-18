@@ -71,6 +71,9 @@ class TreeMappingTest extends \PHPUnit_Framework_TestCase
 
     public function testYamlNestedMapping()
     {
+        if (!extension_loaded('apc') || !ini_get('apc.enable_cli')) {
+            $this->markTestSkipped('APC extension is not loaded.');
+        }
         $meta = $this->em->getClassMetadata(self::TEST_YAML_ENTITY_CLASS);
         $cacheId = ExtensionMetadataFactory::getCacheId(
             self::TEST_YAML_ENTITY_CLASS,
@@ -93,6 +96,9 @@ class TreeMappingTest extends \PHPUnit_Framework_TestCase
 
     public function testYamlClosureMapping()
     {
+        if (!extension_loaded('apc') || !ini_get('apc.enable_cli')) {
+            $this->markTestSkipped('APC extension is not loaded.');
+        }
         $meta = $this->em->getClassMetadata(self::YAML_CLOSURE_CATEGORY);
         $cacheId = ExtensionMetadataFactory::getCacheId(self::YAML_CLOSURE_CATEGORY, 'Gedmo\Tree');
         $config = $this->em->getMetadataFactory()->getCacheDriver()->fetch($cacheId);
