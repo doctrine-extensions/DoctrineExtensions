@@ -2,6 +2,7 @@
 
 namespace Gedmo\Loggable\Entity\Repository;
 
+use Gedmo\Tool\Wrapper\EntityWrapper;
 use Doctrine\ORM\EntityRepository;
 use Gedmo\Loggable\LoggableListener;
 
@@ -45,16 +46,15 @@ class LogEntryRepository extends EntityRepository
      */
     public function getLogEntriesQuery($entity)
     {
-        $objectClass = get_class($entity);
-        $objectMeta = $this->_em->getClassMetadata($objectClass);
+        $wrapped = new EntityWrapper($entity, $this->_em);
+        $objectClass = $wrapped->getMetadata()->name;
         $meta = $this->getClassMetadata();
         $dql = "SELECT log FROM {$meta->name} log";
         $dql .= " WHERE log.objectId = :objectId";
         $dql .= " AND log.objectClass = :objectClass";
         $dql .= " ORDER BY log.version DESC";
 
-        $identifierField = $objectMeta->getSingleIdentifierFieldName();
-        $objectId = $objectMeta->getReflectionProperty($identifierField)->getValue($entity);
+        $objectId = $wrapped->getIdentifier();
         $q = $this->_em->createQuery($dql);
         $q->setParameters(compact('objectId', 'objectClass', 'order'));
         return $q;
@@ -73,8 +73,10 @@ class LogEntryRepository extends EntityRepository
      */
     public function revert($entity, $version = 1)
     {
-        $objectClass = get_class($entity);
-        $objectMeta = $this->_em->getClassMetadata($objectClass);
+        $wrapped = new EntityWrapper($entity, $this->_em);
+        $objectMeta = $wrapped->getMetadata();
+        $objectClass = $objectMeta->name;
+        //$objectMeta = $this->_em->getClassMetadata($objectClass);
         $meta = $this->getClassMetadata();
         $dql = "SELECT log FROM {$meta->name} log";
         $dql .= " WHERE log.objectId = :objectId";
@@ -82,8 +84,7 @@ class LogEntryRepository extends EntityRepository
         $dql .= " AND log.version <= :version";
         $dql .= " ORDER BY log.version ASC";
 
-        $identifierField = $objectMeta->getSingleIdentifierFieldName();
-        $objectId = $objectMeta->getReflectionProperty($identifierField)->getValue($entity);
+        $objectId = $wrapped->getIdentifier();
         $q = $this->_em->createQuery($dql);
         $q->setParameters(compact('objectId', 'objectClass', 'version'));
         $logs = $q->getResult();
@@ -100,7 +101,7 @@ class LogEntryRepository extends EntityRepository
                                 $mapping = $objectMeta->getAssociationMapping($field);
                                 $value = $value ? $this->_em->getReference($mapping['targetEntity'], $value) : null;
                             }
-                            $objectMeta->getReflectionProperty($field)->setValue($entity, $value);
+                            $wrapped->setPropertyValue($field, $value);
                             unset($fields[array_search($field, $fields)]);
                         }
                     }

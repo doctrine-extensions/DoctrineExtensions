@@ -2,6 +2,7 @@
 
 namespace Gedmo\Loggable\Document\Repository;
 
+use Gedmo\Tool\Wrapper\MongoDocumentWrapper;
 use Gedmo\Loggable\LoggableListener;
 use Doctrine\ODM\MongoDB\DocumentRepository,
     Doctrine\ODM\MongoDB\Cursor;
@@ -34,13 +35,12 @@ class LogEntryRepository extends DocumentRepository
      */
     public function getLogEntries($document)
     {
-        $objectClass = get_class($document);
-        $objectMeta = $this->dm->getClassMetadata($objectClass);
-        $objectId = $objectMeta->getReflectionProperty($objectMeta->identifier)->getValue($document);
+        $wrapped = new MongoDocumentWrapper($document, $this->dm);
+        $objectId = $wrapped->getIdentifier();
 
         $qb = $this->createQueryBuilder();
         $qb->field('objectId')->equals($objectId);
-        $qb->field('objectClass')->equals($objectMeta->name);
+        $qb->field('objectClass')->equals($wrapped->getMetadata()->name);
         $qb->sort('version', 'DESC');
         $q = $qb->getQuery();
 
@@ -64,10 +64,10 @@ class LogEntryRepository extends DocumentRepository
      */
     public function revert($document, $version = 1)
     {
-        $objectClass = get_class($document);
-        $objectMeta = $this->dm->getClassMetadata($objectClass);
+        $wrapped = new MongoDocumentWrapper($document, $this->dm);
+        $objectMeta = $wrapped->getMetadata();
         $meta = $this->getClassMetadata();
-        $objectId = $objectMeta->getReflectionProperty($objectMeta->identifier)->getValue($document);
+        $objectId = $wrapped->getIdentifier();
 
         $qb = $this->createQueryBuilder();
         $qb->field('objectId')->equals($objectId);
@@ -92,7 +92,7 @@ class LogEntryRepository extends DocumentRepository
                                 $mapping = $objectMeta->getFieldMapping($field);
                                 $value = $value ? $this->dm->getReference($mapping['targetDocument'], current($value)) : null;
                             }
-                            $objectMeta->getReflectionProperty($field)->setValue($document, $value);
+                            $wrapped->setPropertyValue($field, $value);
                             unset($fields[array_search($field, $fields)]);
                         }
                     }

@@ -6,6 +6,7 @@ use Gedmo\Exception\InvalidArgumentException;
 use Doctrine\ORM\Query;
 use Gedmo\Tree\Strategy;
 use Gedmo\Tree\Strategy\ORM\Closure;
+use Gedmo\Tool\Wrapper\EntityWrapper;
 use Doctrine\ORM\Proxy\Proxy;
 
 /**
@@ -225,13 +226,14 @@ class ClosureTreeRepository extends AbstractTreeRepository
         if (!$node instanceof $meta->name) {
             throw new InvalidArgumentException("Node is not related to this repository");
         }
-        if (!$this->_em->getUnitOfWork()->isInIdentityMap($node)) {
+        $wrapped = new EntityWrapper($node, $this->_em);
+        if (!$wrapped->hasValidIdentifier()) {
             throw new InvalidArgumentException("Node is not managed by UnitOfWork");
         }
         $config = $this->listener->getConfiguration($this->_em, $meta->name);
         $pk = $meta->getSingleIdentifierFieldName();
-        $nodeId = $meta->getReflectionProperty($pk)->getValue($node);
-        $parent = $meta->getReflectionProperty($config['parent'])->getValue($node);
+        $nodeId = $wrapped->getIdentifier();
+        $parent = $wrapped->getPropertyValue($config['parent']);
 
         $dql = "SELECT node FROM {$config['useObjectClass']} node";
         $dql .= " WHERE node.{$config['parent']} = :node";

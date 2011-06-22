@@ -66,7 +66,7 @@ class TranslationRepository extends DocumentRepository
             $translationMeta = $this->getClassMetadata();
             $qb = $this->createQueryBuilder();
             $q = $qb->field('foreignKey')->equals($documentId)
-                ->field('objectClass')->equals($wrapped->getClassName())
+                ->field('objectClass')->equals($wrapped->getMetadata()->name)
                 ->sort('locale', 'asc')
                 ->getQuery();
 

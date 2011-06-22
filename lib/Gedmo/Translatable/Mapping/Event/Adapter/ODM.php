@@ -3,6 +3,7 @@
 namespace Gedmo\Translatable\Mapping\Event\Adapter;
 
 use Gedmo\Mapping\Event\Adapter\ODM as BaseAdapterODM;
+use Gedmo\Tool\Wrapper\AbstractWrapper;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Doctrine\ODM\MongoDB\Mapping\ClassMetadataInfo;
 use Doctrine\ODM\MongoDB\Cursor;
@@ -35,15 +36,15 @@ final class ODM extends BaseAdapterODM implements TranslatableAdapter
     public function loadTranslations($object, $translationClass, $locale)
     {
         $dm = $this->getObjectManager();
-        $meta = $dm->getClassMetadata(get_class($object));
+        $wrapped = AbstractWrapper::wrapp($object, $dm);
 
         // load translated content for all translatable fields
-        $identifier = $this->extractIdentifier($dm, $object);
+        $identifier = $wrapped->getIdentifier();
         // construct query
         $qb = $dm->createQueryBuilder($translationClass);
         $q = $qb->field('foreignKey')->equals($identifier)
             ->field('locale')->equals($locale)
-            ->field('objectClass')->equals($meta->name)
+            ->field('objectClass')->equals($wrapped->getMetadata()->name)
             ->getQuery();
 
         $q->setHydrate(false);
@@ -115,11 +116,12 @@ final class ODM extends BaseAdapterODM implements TranslatableAdapter
     public function getTranslationValue($object, $field, $value = false)
     {
         $dm = $this->getObjectManager();
-        $meta = $dm->getClassMetadata(get_class($object));
+        $wrapped = AbstractWrapper::wrapp($object, $dm);
+        $meta = $wrapped->getMetadata();
         $mapping = $meta->getFieldMapping($field);
         $type = Type::getType($mapping['type']);
         if ($value === false) {
-            $value = $meta->getReflectionProperty($field)->getValue($object);
+            $value = $wrapped->getPropertyValue($field);
         }
         return $type->convertToDatabaseValue($value);
     }
@@ -130,11 +132,12 @@ final class ODM extends BaseAdapterODM implements TranslatableAdapter
     public function setTranslationValue($object, $field, $value)
     {
         $dm = $this->getObjectManager();
-        $meta = $dm->getClassMetadata(get_class($object));
+        $wrapped = AbstractWrapper::wrapp($object, $dm);
+        $meta = $wrapped->getMetadata();
         $mapping = $meta->getFieldMapping($field);
         $type = Type::getType($mapping['type']);
 
         $value = $type->convertToPHPValue($value);
-        $meta->getReflectionProperty($field)->setValue($object, $value);
+        $wrapped->setPropertyValue($field, $value);
     }
 }

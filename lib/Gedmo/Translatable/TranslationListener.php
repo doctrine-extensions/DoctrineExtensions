@@ -2,6 +2,7 @@
 
 namespace Gedmo\Translatable;
 
+use Gedmo\Tool\Wrapper\AbstractWrapper;
 use Doctrine\Common\EventArgs,
     Doctrine\Common\Persistence\Mapping\ClassMetadata,
     Gedmo\Mapping\MappedEventSubscriber,
@@ -287,9 +288,9 @@ class TranslationListener extends MappedEventSubscriber
             $meta = $om->getClassMetadata(get_class($object));
             $config = $this->getConfiguration($om, $meta->name);
             if (isset($config['fields'])) {
-                $objectId = $ea->extractIdentifier($om, $object);
+                $wrapped = AbstractWrapper::wrapp($object, $om);
                 $transClass = $this->getTranslationClass($ea, $meta->name);
-                $ea->removeAssociatedTranslations($objectId, $transClass);
+                $ea->removeAssociatedTranslations($wrapped->getIdentifier(), $transClass);
             }
         }
     }
@@ -312,7 +313,8 @@ class TranslationListener extends MappedEventSubscriber
             $oid = spl_object_hash($object);
             if (array_key_exists($oid, $this->pendingTranslationInserts)) {
                 // load the pending translations without key
-                $objectId = $ea->extractIdentifier($om, $object);
+                $wrapped = AbstractWrapper::wrapp($object, $om);
+                $objectId = $wrapped->getIdentifier();
                 foreach ($this->pendingTranslationInserts[$oid] as $translation) {
                     $translation->setForeignKey($objectId);
                     $ea->insertTranslationRecord($translation);
@@ -412,13 +414,14 @@ class TranslationListener extends MappedEventSubscriber
     private function handleTranslatableObjectUpdate(TranslatableAdapter $ea, $object, $isInsert)
     {
         $om = $ea->getObjectManager();
-        $meta = $om->getClassMetadata(get_class($object));
+        $wrapped = AbstractWrapper::wrapp($object, $om);
+        $meta = $wrapped->getMetadata();
         // no need cache, metadata is loaded only once in MetadataFactoryClass
         $translationClass = $this->getTranslationClass($ea, $meta->name);
         $translationMetadata = $om->getClassMetadata($translationClass);
 
         // check for the availability of the primary key
-        $objectId = $ea->extractIdentifier($om, $object);
+        $objectId = $wrapped->getIdentifier();
         // load the currently used locale
         $locale = $this->getTranslatableLocale($object, $meta);
 
@@ -456,9 +459,9 @@ class TranslationListener extends MappedEventSubscriber
             }
 
             // set the translated field, take value using reflection
-            $value = $meta->getReflectionProperty($field)->getValue($object);
+            $value = $wrapped->getPropertyValue($field);
             $translation->setContent($ea->getTranslationValue($object, $field));
-            if ($isInsert && is_null($objectId)) {
+            if ($isInsert && !$objectId) {
                 // if we do not have the primary key yet available
                 // keep this translation in memory to insert it later with foreign key
                 $this->pendingTranslationInserts[spl_object_hash($object)][] = $translation;
@@ -476,7 +479,7 @@ class TranslationListener extends MappedEventSubscriber
             foreach ($changeSet as $field => $changes) {
                 if (in_array($field, $translatableFields)) {
                     if ($locale != $this->defaultLocale && strlen($changes[0])) {
-                        $meta->getReflectionProperty($field)->setValue($object, $changes[0]);
+                        $wrapped->setPropertyValue($field, $changes[0]);
                         $ea->setOriginalObjectProperty($uow, $oid, $field, $changes[0]);
                         unset($modifiedChangeSet[$field]);
                     }
@@ -509,8 +512,9 @@ class TranslationListener extends MappedEventSubscriber
         if (isset($this->additionalTranslations[$oid])) {
             $om = $ea->getObjectManager();
             $uow = $om->getUnitOfWork();
-            $meta = $om->getClassMetadata(get_class($object));
-            $objectId = $ea->extractIdentifier($om, $object);
+            $wrapped = AbstractWrapper::wrapp($object, $om);
+            $meta = $wrapped->getMetadata();
+            $objectId = $wrapped->getIdentifier();
             $transClass = $this->getTranslationClass($ea, $meta->name);
             foreach ($this->additionalTranslations[$oid] as $field => $translations) {
                 foreach ($translations as $locale => $content) {
@@ -527,7 +531,7 @@ class TranslationListener extends MappedEventSubscriber
                     }
                     $trans->setContent($ea->getTranslationValue($object, $field, $content));
                     if ($inserting && !$objectId) {
-                        $this->pendingTranslationInserts[spl_object_hash($object)][] = $trans;
+                        $this->pendingTranslationInserts[$oid][] = $trans;
                     } elseif ($trans->getId()) {
                         $om->persist($trans);
                         $transMeta = $om->getClassMetadata($transClass);
