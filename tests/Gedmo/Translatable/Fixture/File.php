@@ -2,32 +2,35 @@
 
 namespace Translatable\Fixture;
 
+use Gedmo\Mapping\Annotation as Gedmo;
+use Doctrine\ORM\Mapping as ORM;
+
 /**
- * @Entity
- * @InheritanceType("JOINED")
- * @DiscriminatorColumn(name="discriminator", type="string")
- * @DiscriminatorMap({"file" = "File", "image" = "Image"})
+ * @ORM\Entity
+ * @ORM\InheritanceType("JOINED")
+ * @ORM\DiscriminatorColumn(name="discriminator", type="string")
+ * @ORM\DiscriminatorMap({"file" = "File", "image" = "Image"})
  */
 class File
 {
-    /** 
-     * @Id 
-     * @GeneratedValue 
-     * @Column(type="integer")
+    /**
+     * @ORM\Id
+     * @ORM\GeneratedValue
+     * @ORM\Column(type="integer")
      */
     private $id;
-    
+
     /**
-     * @gedmo:Translatable
-     * @Column(length=128)
+     * @Gedmo\Translatable
+     * @ORM\Column(length=128)
      */
     private $name;
-    
+
     /**
-     * @Column(type="integer")
+     * @ORM\Column(type="integer")
      */
     private $size;
-    
+
     public function setName($name)
     {
         $this->name = $name;
@@ -37,7 +40,7 @@ class File
     {
         return $this->name;
     }
-    
+
     public function setSize($size)
     {
         $this->size = $size;

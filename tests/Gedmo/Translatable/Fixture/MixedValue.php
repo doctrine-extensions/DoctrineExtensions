@@ -2,27 +2,30 @@
 
 namespace Translatable\Fixture;
 
+use Gedmo\Mapping\Annotation as Gedmo;
+use Doctrine\ORM\Mapping as ORM;
+
 /**
- * @Entity
+ * @ORM\Entity
  */
 class MixedValue
 {
     /**
-     * @Id
-     * @GeneratedValue
-     * @Column(type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue
+     * @ORM\Column(type="integer")
      */
     private $id;
 
     /**
-     * @gedmo:Translatable
-     * @Column(type="datetime")
+     * @Gedmo\Translatable
+     * @ORM\Column(type="datetime")
      */
     private $date;
 
     /**
-     * @gedmo:Translatable
-     * @Column(type="custom")
+     * @Gedmo\Translatable
+     * @ORM\Column(type="custom")
      */
     private $cust;
 

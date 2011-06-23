@@ -2,11 +2,13 @@
 
 namespace Tree\Fixture\Transport;
 
+use Doctrine\ORM\Mapping as ORM;
+
 /**
- * @Entity
- * @InheritanceType("SINGLE_TABLE")
- * @DiscriminatorColumn(name="discriminator", type="string")
- * @DiscriminatorMap({
+ * @ORM\Entity
+ * @ORM\InheritanceType("SINGLE_TABLE")
+ * @ORM\DiscriminatorColumn(name="discriminator", type="string")
+ * @ORM\DiscriminatorMap({
  *      "vehicle" = "Vehicle",
  *      "car" = "Car",
  *      "bus" = "Bus"
@@ -15,19 +17,19 @@ namespace Tree\Fixture\Transport;
 class Vehicle
 {
     /**
-     * @Id
-     * @GeneratedValue
-     * @Column(type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue
+     * @ORM\Column(type="integer")
      */
     private $id;
 
     /**
-     * @OneToOne(targetEntity="Engine")
+     * @ORM\OneToOne(targetEntity="Engine")
      */
     private $engine;
 
     /**
-     * @Column(length=128)
+     * @ORM\Column(length=128)
      */
     private $title;
 

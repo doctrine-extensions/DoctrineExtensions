@@ -2,25 +2,27 @@
 
 namespace Tree\Fixture\Transport;
 
+use Doctrine\ORM\Mapping as ORM;
+
 /**
- * @Entity
+ * @ORM\Entity
  */
 class Engine
 {
     /**
-     * @Id
-     * @GeneratedValue
-     * @Column(type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue
+     * @ORM\Column(type="integer")
      */
     private $id;
 
     /**
-     * @Column(length=32)
+     * @ORM\Column(length=32)
      */
     private $type;
 
     /**
-     * @Column(type="integer")
+     * @ORM\Column(type="integer")
      */
     private $valves;
 

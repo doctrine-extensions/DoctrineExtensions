@@ -2,8 +2,10 @@
 
 namespace Tree\Fixture\Transport;
 
+use Doctrine\ORM\Mapping as ORM;
+
 /**
- * @Entity
+ * @ORM\Entity
  */
 class Bus extends Vehicle
 {

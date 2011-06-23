@@ -3,30 +3,32 @@
 namespace Sluggable\Fixture;
 
 use Gedmo\Sluggable\Sluggable;
+use Gedmo\Mapping\Annotation as Gedmo;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @Entity
+ * @ORM\Entity
  */
 class Article implements Sluggable
 {
-    /** @Id @GeneratedValue @Column(type="integer") */
+    /** @ORM\Id @ORM\GeneratedValue @ORM\Column(type="integer") */
     private $id;
 
     /**
-     * @gedmo:Sluggable
-     * @Column(name="title", type="string", length=64)
+     * @Gedmo\Sluggable
+     * @ORM\Column(name="title", type="string", length=64)
      */
     private $title;
 
     /**
-     * @gedmo:Sluggable
-     * @Column(name="code", type="string", length=16)
+     * @Gedmo\Sluggable
+     * @ORM\Column(name="code", type="string", length=16)
      */
     private $code;
-    
+
     /**
-     * @gedmo:Slug
-     * @Column(name="slug", type="string", length=64, unique=true)
+     * @Gedmo\Slug
+     * @ORM\Column(name="slug", type="string", length=64, unique=true)
      */
     private $slug;
 
@@ -34,7 +36,7 @@ class Article implements Sluggable
     {
         return $this->id;
     }
-    
+
     public function setTitle($title)
     {
         $this->title = $title;
@@ -54,7 +56,7 @@ class Article implements Sluggable
     {
         return $this->code;
     }
-    
+
     public function getSlug()
     {
         return $this->slug;

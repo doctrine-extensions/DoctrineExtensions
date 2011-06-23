@@ -3,59 +3,61 @@
 namespace Tree\Fixture;
 
 use Gedmo\Tree\Node as NodeInterface;
+use Gedmo\Mapping\Annotation as Gedmo;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @Entity(repositoryClass="Gedmo\Tree\Entity\Repository\NestedTreeRepository")
- * @gedmo:Tree(type="nested")
+ * @ORM\Entity(repositoryClass="Gedmo\Tree\Entity\Repository\NestedTreeRepository")
+ * @Gedmo\Tree(type="nested")
  */
 class Category implements NodeInterface
 {
     /**
-     * @Column(name="id", type="integer")
-     * @Id
-     * @GeneratedValue
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue
      */
     private $id;
 
     /**
-     * @Column(name="title", type="string", length=64)
+     * @ORM\Column(name="title", type="string", length=64)
      */
     private $title;
 
     /**
-     * @gedmo:TreeLeft
-     * @Column(name="lft", type="integer")
+     * @Gedmo\TreeLeft
+     * @ORM\Column(name="lft", type="integer")
      */
     private $lft;
 
     /**
-     * @gedmo:TreeRight
-     * @Column(name="rgt", type="integer")
+     * @Gedmo\TreeRight
+     * @ORM\Column(name="rgt", type="integer")
      */
     private $rgt;
 
     /**
-     * @gedmo:TreeParent
-     * @ManyToOne(targetEntity="Category", inversedBy="children")
-     * @JoinColumns({
-     *   @JoinColumn(name="parent_id", referencedColumnName="id", onDelete="SET NULL")
+     * @Gedmo\TreeParent
+     * @ORM\ManyToOne(targetEntity="Category", inversedBy="children")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="SET NULL")
      * })
      */
     private $parentId;
 
     /**
-     * @gedmo:TreeLevel
-     * @Column(name="lvl", type="integer")
+     * @Gedmo\TreeLevel
+     * @ORM\Column(name="lvl", type="integer")
      */
      private $level;
 
     /**
-     * @OneToMany(targetEntity="Category", mappedBy="parent")
+     * @ORM\OneToMany(targetEntity="Category", mappedBy="parent")
      */
     private $children;
 
     /**
-     * @OneToMany(targetEntity="Article", mappedBy="category")
+     * @ORM\OneToMany(targetEntity="Article", mappedBy="category")
      */
     private $comments;
 

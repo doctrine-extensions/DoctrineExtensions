@@ -2,29 +2,32 @@
 
 namespace Translatable\Fixture\Template;
 
+use Gedmo\Mapping\Annotation as Gedmo;
+use Doctrine\ORM\Mapping as ORM;
+
 /**
- * @MappedSuperclass
+ * @ORM\MappedSuperclass
  */
 class ArticleTemplate
 {
     /**
-     * @gedmo:Translatable
-     * @Column(name="title", type="string", length=128)
+     * @Gedmo\Translatable
+     * @ORM\Column(name="title", type="string", length=128)
      */
     private $title;
 
     /**
-     * @gedmo:Translatable
-     * @Column(name="content", type="text")
+     * @Gedmo\Translatable
+     * @ORM\Column(name="content", type="text")
      */
     private $content;
-    
+
     /**
      * Used locale to override Translation listener`s locale
-     * @gedmo:Locale
+     * @Gedmo\Locale
      */
     protected $locale;
-    
+
     public function setTitle($title)
     {
         $this->title = $title;
@@ -44,7 +47,7 @@ class ArticleTemplate
     {
         return $this->content;
     }
-    
+
     public function setTranslatableLocale($locale)
     {
         $this->locale = $locale;

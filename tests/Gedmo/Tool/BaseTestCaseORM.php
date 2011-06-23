@@ -166,6 +166,18 @@ abstract class BaseTestCaseORM extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Creates default mapping driver
+     *
+     * @return \Doctrine\ORM\Mapping\Driver\Driver
+     */
+    protected function getMetadataDriverImplementation()
+    {
+        $reader = new AnnotationReader();
+        $reader->setAutoloadAnnotations(true);
+        return new AnnotationDriver($reader);
+    }
+
+    /**
      * Get a list of used fixture classes
      *
      * @return array
@@ -212,9 +224,7 @@ abstract class BaseTestCaseORM extends \PHPUnit_Framework_TestCase
             ->method('getClassMetadataFactoryName')
             ->will($this->returnValue('Doctrine\\ORM\\Mapping\\ClassMetadataFactory'));
 
-        $reader = new AnnotationReader();
-        $reader->setDefaultAnnotationNamespace('Doctrine\ORM\Mapping\\');
-        $mappingDriver = new AnnotationDriver($reader);
+        $mappingDriver = $this->getMetadataDriverImplementation();
 
         $config->expects($this->any())
             ->method('getMetadataDriverImpl')

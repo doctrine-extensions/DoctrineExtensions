@@ -2,26 +2,29 @@
 
 namespace Translatable\Fixture;
 
+use Gedmo\Mapping\Annotation as Gedmo;
+use Doctrine\ORM\Mapping as ORM;
+
 /**
- * @Entity
+ * @ORM\Entity
  */
 class StringIdentifier
 {
-    /** 
-     * @Id 
-     * @Column(name="uid", type="string", length=32)
+    /**
+     * @ORM\Id
+     * @ORM\Column(name="uid", type="string", length=32)
      */
     private $uid;
 
     /**
-     * @gedmo:Translatable
-     * @Column(name="title", type="string", length=128)
+     * @Gedmo\Translatable
+     * @ORM\Column(name="title", type="string", length=128)
      */
     private $title;
-    
+
     /**
      * Used locale to override Translation listener`s locale
-     * @gedmo:Locale
+     * @Gedmo\Locale
      */
     private $locale;
 
@@ -29,12 +32,12 @@ class StringIdentifier
     {
         return $this->uid;
     }
-    
+
     public function setUid($uid)
     {
         $this->uid = $uid;
     }
-    
+
     public function setTitle($title)
     {
         $this->title = $title;
@@ -44,7 +47,7 @@ class StringIdentifier
     {
         return $this->title;
     }
-    
+
     public function setTranslatableLocale($locale)
     {
         $this->locale = $locale;

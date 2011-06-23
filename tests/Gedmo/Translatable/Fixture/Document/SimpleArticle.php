@@ -2,23 +2,26 @@
 
 namespace Translatable\Fixture\Document;
 
+use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoODM;
+use Gedmo\Mapping\Annotation as Gedmo;
+
 /**
- * @Document(collection="articles")
+ * @MongoODM\Document(collection="articles")
  */
 class SimpleArticle
 {
-    /** @Id */
+    /** @MongoODM\Id */
     private $id;
 
     /**
-     * @gedmo:Translatable
-     * @String
+     * @Gedmo\Translatable
+     * @MongoODM\String
      */
     private $title;
 
     /**
-     * @gedmo:Translatable
-     * @String
+     * @Gedmo\Translatable
+     * @MongoODM\String
      */
     private $content;
 

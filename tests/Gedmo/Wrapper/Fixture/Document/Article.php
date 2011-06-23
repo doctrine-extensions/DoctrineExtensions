@@ -2,16 +2,18 @@
 
 namespace Wrapper\Fixture\Document;
 
+use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoODM;
+
 /**
- * @Document(collection="articles")
+ * @MongoODM\Document(collection="articles")
  */
 class Article
 {
-    /** @Id */
+    /** @MongoODM\Id */
     private $id;
 
     /**
-     * @String
+     * @MongoODM\String
      */
     private $title;
 

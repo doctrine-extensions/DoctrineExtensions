@@ -1,30 +1,32 @@
 <?php
 namespace Tree\Fixture;
 
+use Doctrine\ORM\Mapping as ORM;
+
 /**
- * @Entity
+ * @ORM\Entity
  */
 class Article
 {
-    /** 
-     * @Id 
-     * @GeneratedValue 
-     * @Column(type="integer") 
+    /**
+     * @ORM\Id
+     * @ORM\GeneratedValue
+     * @ORM\Column(type="integer")
      */
     private $id;
 
     /**
-     * @Column(name="title", type="string", length=128)
+     * @ORM\Column(name="title", type="string", length=128)
      */
     private $title;
-    
+
     /**
-     * @OneToMany(targetEntity="Comment", mappedBy="article")
+     * @ORM\OneToMany(targetEntity="Comment", mappedBy="article")
      */
     private $comments;
-    
+
     /**
-     * @ManyToOne(targetEntity="Category", inversedBy="articles")
+     * @ORM\ManyToOne(targetEntity="Category", inversedBy="articles")
      */
     private $category;
 
@@ -37,7 +39,7 @@ class Article
     {
         $this->category = $category;
     }
-    
+
     public function addComment(Comment $comment)
     {
         $comment->setArticle($this);
@@ -48,7 +50,7 @@ class Article
     {
         return $this->comments;
     }
-    
+
     public function setTitle($title)
     {
         $this->title = $title;

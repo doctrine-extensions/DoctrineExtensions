@@ -2,35 +2,38 @@
 
 namespace Translatable\Fixture\Issue75;
 
+use Gedmo\Mapping\Annotation as Gedmo;
+use Doctrine\ORM\Mapping as ORM;
+
 /**
- * @Entity
+ * @ORM\Entity
  */
 class Article
 {
     /**
-     * @Id
-     * @GeneratedValue
-     * @Column(type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue
+     * @ORM\Column(type="integer")
      */
     private $id;
 
     /**
-     * @gedmo:Translatable
-     * @Column(name="title", type="string", length=128)
+     * @Gedmo\Translatable
+     * @ORM\Column(name="title", type="string", length=128)
      */
     private $title;
 
     /**
-     * @ManyToMany(targetEntity="Image", inversedBy="articles")
-     * @JoinTable(name="article_images",
-     *      joinColumns={@JoinColumn(name="image_id", referencedColumnName="id")},
-     *      inverseJoinColumns={@JoinColumn(name="article_id", referencedColumnName="id")}
+     * @ORM\ManyToMany(targetEntity="Image", inversedBy="articles")
+     * @ORM\JoinTable(name="article_images",
+     *      joinColumns={@ORM\JoinColumn(name="image_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="article_id", referencedColumnName="id")}
      * )
      */
     private $images;
 
     /**
-     * @ManyToMany(targetEntity="File")
+     * @ORM\ManyToMany(targetEntity="File")
      */
     private $files;
 

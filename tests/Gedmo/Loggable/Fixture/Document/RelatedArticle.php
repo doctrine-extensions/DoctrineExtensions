@@ -2,31 +2,34 @@
 
 namespace Loggable\Fixture\Document;
 
+use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
+use Gedmo\Mapping\Annotation as Gedmo;
+
 /**
- * @Document
- * @gedmo:Loggable
+ * @ODM\Document
+ * @Gedmo\Loggable
  */
 class RelatedArticle
 {
     /**
-     * @Id
+     * @ODM\Id
      */
     private $id;
 
     /**
-     * @gedmo:Versioned
-     * @String
+     * @Gedmo\Versioned
+     * @ODM\String
      */
     private $title;
 
     /**
-     * @gedmo:Versioned
-     * @String
+     * @Gedmo\Versioned
+     * @ODM\String
      */
     private $content;
 
     /**
-     * @ReferenceMany(targetDocument="Comment", mappedBy="article")
+     * @ODM\ReferenceMany(targetDocument="Comment", mappedBy="article")
      */
     private $comments;
 

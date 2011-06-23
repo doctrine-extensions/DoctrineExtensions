@@ -2,34 +2,37 @@
 
 namespace Translatable\Fixture;
 
+use Gedmo\Mapping\Annotation as Gedmo;
+use Doctrine\ORM\Mapping as ORM;
+
 /**
- * @Entity
+ * @ORM\Entity
  */
 class Comment
 {
-    /** @Id @GeneratedValue @Column(type="integer") */
+    /** @ORM\Id @ORM\GeneratedValue @ORM\Column(type="integer") */
     private $id;
 
     /**
-     * @gedmo:Translatable
-     * @Column(name="subject", type="string", length=128)
+     * @Gedmo\Translatable
+     * @ORM\Column(name="subject", type="string", length=128)
      */
     private $subject;
 
     /**
-     * @gedmo:Translatable
-     * @Column(name="message", type="text")
+     * @Gedmo\Translatable
+     * @ORM\Column(name="message", type="text")
      */
     private $message;
-    
+
     /**
-     * @ManyToOne(targetEntity="Article", inversedBy="comments")
+     * @ORM\ManyToOne(targetEntity="Article", inversedBy="comments")
      */
     private $article;
-    
+
     /**
      * Used locale to override Translation listener`s locale
-     * @gedmo:Language
+     * @Gedmo\Language
      */
     private $locale;
 
@@ -42,7 +45,7 @@ class Comment
     {
         return $this->id;
     }
-    
+
     public function setSubject($subject)
     {
         $this->subject = $subject;
@@ -62,7 +65,7 @@ class Comment
     {
         return $this->message;
     }
-    
+
     public function setTranslatableLocale($locale)
     {
         $this->locale = $locale;

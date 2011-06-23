@@ -2,47 +2,50 @@
 
 namespace Tree\Fixture\Transport;
 
+use Gedmo\Mapping\Annotation as Gedmo;
+use Doctrine\ORM\Mapping as ORM;
+
 /**
- * @gedmo:Tree(type="nested")
- * @Entity(repositoryClass="Gedmo\Tree\Entity\Repository\NestedTreeRepository")
+ * @Gedmo\Tree(type="nested")
+ * @ORM\Entity(repositoryClass="Gedmo\Tree\Entity\Repository\NestedTreeRepository")
  */
 class Car extends Vehicle
 {
     /**
-     * @gedmo:TreeParent
-     * @ManyToOne(targetEntity="Car", inversedBy="children")
-     * @JoinColumns({
-     *   @JoinColumn(name="parent_id", referencedColumnName="id", onDelete="SET NULL")
+     * @Gedmo\TreeParent
+     * @ORM\ManyToOne(targetEntity="Car", inversedBy="children")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="SET NULL")
      * })
      */
     private $parent;
 
     /**
-     * @OneToMany(targetEntity="Car", mappedBy="parent")
+     * @ORM\OneToMany(targetEntity="Car", mappedBy="parent")
      */
     private $children;
 
     /**
-     * @gedmo:TreeLeft
-     * @Column(type="integer", nullable=true)
+     * @Gedmo\TreeLeft
+     * @ORM\Column(type="integer", nullable=true)
      */
     private $lft;
 
     /**
-     * @gedmo:TreeRight
-     * @Column(type="integer", nullable=true)
+     * @Gedmo\TreeRight
+     * @ORM\Column(type="integer", nullable=true)
      */
     private $rgt;
 
     /**
-     * @gedmo:TreeRoot
-     * @Column(type="integer", nullable=true)
+     * @Gedmo\TreeRoot
+     * @ORM\Column(type="integer", nullable=true)
      */
     private $root;
 
     /**
-     * @gedmo:TreeLevel
-     * @Column(name="lvl", type="integer", nullable=true)
+     * @Gedmo\TreeLevel
+     * @ORM\Column(name="lvl", type="integer", nullable=true)
      */
     private $classLevel;
 

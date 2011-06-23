@@ -2,32 +2,35 @@
 
 namespace Translatable\Fixture\Document;
 
-/** 
- * @Document(collection="articles")
+use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoODM;
+use Gedmo\Mapping\Annotation as Gedmo;
+
+/**
+ * @MongoODM\Document(collection="articles")
  */
 class Article
 {
-    /** @Id */
+    /** @MongoODM\Id */
     private $id;
 
     /**
-     * @gedmo:Sluggable
-     * @gedmo:Translatable
-     * @String
+     * @Gedmo\Sluggable
+     * @Gedmo\Translatable
+     * @MongoODM\String
      */
     private $title;
 
     /**
-     * @gedmo:Sluggable
-     * @gedmo:Translatable
-     * @String
+     * @Gedmo\Sluggable
+     * @Gedmo\Translatable
+     * @MongoODM\String
      */
     private $code;
-    
+
     /**
-     * @gedmo:Slug
-     * @gedmo:Translatable
-     * @String
+     * @Gedmo\Slug
+     * @Gedmo\Translatable
+     * @MongoODM\String
      */
     private $slug;
 
@@ -35,7 +38,7 @@ class Article
     {
         return $this->id;
     }
-    
+
     public function setTitle($title)
     {
         $this->title = $title;
@@ -55,7 +58,7 @@ class Article
     {
         return $this->code;
     }
-    
+
     public function getSlug()
     {
         return $this->slug;

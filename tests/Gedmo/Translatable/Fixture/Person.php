@@ -2,22 +2,25 @@
 
 namespace Translatable\Fixture;
 
+use Gedmo\Mapping\Annotation as Gedmo;
+use Doctrine\ORM\Mapping as ORM;
+
 /**
- * @Entity
- * @gedmo:TranslationEntity(class="Translatable\Fixture\PersonTranslation")
+ * @ORM\Entity
+ * @Gedmo\TranslationEntity(class="Translatable\Fixture\PersonTranslation")
  */
 class Person
 {
-    /** 
-     * @Id 
-     * @GeneratedValue 
-     * @Column(type="integer")
+    /**
+     * @ORM\Id
+     * @ORM\GeneratedValue
+     * @ORM\Column(type="integer")
      */
     private $id;
 
     /**
-     * @gedmo:Translatable
-     * @Column(name="name", type="string", length=128)
+     * @Gedmo\Translatable
+     * @ORM\Column(name="name", type="string", length=128)
      */
     private $name;
 
@@ -25,7 +28,7 @@ class Person
     {
         return $this->id;
     }
-    
+
     public function setName($name)
     {
         $this->name = $name;

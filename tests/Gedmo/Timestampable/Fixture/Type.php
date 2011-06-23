@@ -1,21 +1,23 @@
 <?php
 namespace Timestampable\Fixture;
 
+use Doctrine\ORM\Mapping as ORM;
+
 /**
- * @Entity
+ * @ORM\Entity
  */
 class Type
 {
-    /** @Id @GeneratedValue @Column(type="integer") */
+    /** @ORM\Id @ORM\GeneratedValue @ORM\Column(type="integer") */
     private $id;
 
     /**
-     * @Column(name="title", type="string", length=128)
+     * @ORM\Column(name="title", type="string", length=128)
      */
     private $title;
-    
+
     /**
-     * @OneToMany(targetEntity="Article", mappedBy="type")
+     * @ORM\OneToMany(targetEntity="Article", mappedBy="type")
      */
     private $articles;
 
@@ -23,7 +25,7 @@ class Type
     {
         return $this->id;
     }
-    
+
     public function setTitle($title)
     {
         $this->title = $title;

@@ -2,25 +2,27 @@
 
 namespace Sluggable\Fixture;
 
+use Doctrine\ORM\Mapping as ORM;
+
 /**
- * @Entity
+ * @ORM\Entity
  */
 class Comment
 {
-    /** 
-     * @Id 
-     * @GeneratedValue 
-     * @Column(type="integer") 
+    /**
+     * @ORM\Id
+     * @ORM\GeneratedValue
+     * @ORM\Column(type="integer")
      */
     private $id;
 
     /**
-     * @Column(type="text")
+     * @ORM\Column(type="text")
      */
     private $message;
-    
+
     /**
-     * @ManyToOne(targetEntity="TranslatableArticle", inversedBy="comments")
+     * @ORM\ManyToOne(targetEntity="TranslatableArticle", inversedBy="comments")
      */
     private $article;
 

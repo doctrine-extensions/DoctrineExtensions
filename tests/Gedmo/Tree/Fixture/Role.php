@@ -2,58 +2,60 @@
 namespace Tree\Fixture;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Gedmo\Mapping\Annotation as Gedmo;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @Entity(repositoryClass="Gedmo\Tree\Entity\Repository\NestedTreeRepository")
- * @Table(name="`role`")
- * @InheritanceType("JOINED")
- * @DiscriminatorColumn(name="discr", type="string")
- * @DiscriminatorMap({"user" = "User", "usergroup" = "UserGroup"})
- * @gedmo:Tree(type="nested")
+ * @ORM\Entity(repositoryClass="Gedmo\Tree\Entity\Repository\NestedTreeRepository")
+ * @ORM\Table(name="`role`")
+ * @ORM\InheritanceType("JOINED")
+ * @ORM\DiscriminatorColumn(name="discr", type="string")
+ * @ORM\DiscriminatorMap({"user" = "User", "usergroup" = "UserGroup"})
+ * @Gedmo\Tree(type="nested")
  */
 abstract class Role {
 
   /**
-   * @Column(name="id", type="integer")
-   * @Id
-   * @GeneratedValue
+   * @ORM\Column(name="id", type="integer")
+   * @ORM\Id
+   * @ORM\GeneratedValue
    * @var int
    */
   private $id;
 
   /**
-   * @gedmo:TreeParent
-   * @ManyToOne(targetEntity="UserGroup", inversedBy="children")
+   * @Gedmo\TreeParent
+   * @ORM\ManyToOne(targetEntity="UserGroup", inversedBy="children")
    * @var UserGroup
    */
   private $parent;
 
   /**
-   * @OneToMany(targetEntity="Role", mappedBy="parent")
+   * @ORM\OneToMany(targetEntity="Role", mappedBy="parent")
    * @var Doctrine\Common\Collections\ArrayCollection
    */
   protected $children;
 
   /**
-   * @gedmo:TreeLeft
-   * @Column(name="lft", type="integer")
+   * @Gedmo\TreeLeft
+   * @ORM\Column(name="lft", type="integer")
    */
   private $lft;
 
   /**
-   * @gedmo:TreeRight
-   * @Column(name="rgt", type="integer")
+   * @Gedmo\TreeRight
+   * @ORM\Column(name="rgt", type="integer")
    */
   private $rgt;
 
   /**
-   * @gedmo:TreeLevel
-   * @Column(name="lvl", type="integer")
+   * @Gedmo\TreeLevel
+   * @ORM\Column(name="lvl", type="integer")
    */
   private $lvl;
 
   /**
-   * @Column(name="role", type="string", length=255, nullable=false)
+   * @ORM\Column(name="role", type="string", length=255, nullable=false)
    * @var string
    */
   private $role;
@@ -94,17 +96,17 @@ abstract class Role {
   public function getId() {
     return $this->id;
   }
-  
+
   public function getLeft()
   {
       return $this->lft;
   }
-  
+
   public function getRight()
   {
       return $this->rgt;
   }
-  
+
   public function getLevel()
   {
       return $this->lvl;

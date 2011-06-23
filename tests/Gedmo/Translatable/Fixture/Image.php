@@ -2,17 +2,20 @@
 
 namespace Translatable\Fixture;
 
+use Gedmo\Mapping\Annotation as Gedmo;
+use Doctrine\ORM\Mapping as ORM;
+
 /**
- * @Entity
+ * @ORM\Entity
  */
 class Image extends File
-{    
+{
     /**
-     * @gedmo:Translatable
-     * @Column(length=128)
+     * @Gedmo\Translatable
+     * @ORM\Column(length=128)
      */
     private $mime;
-    
+
     public function setMime($mime)
     {
         $this->mime = $mime;

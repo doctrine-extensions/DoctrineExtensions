@@ -3,9 +3,10 @@
 namespace Tree\Fixture\Closure;
 
 use Gedmo\Tree\Entity\AbstractClosure;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @Entity
+ * @ORM\Entity
  */
 class PersonClosure extends AbstractClosure
 {

@@ -2,54 +2,56 @@
 namespace Timestampable\Fixture;
 
 use Gedmo\Timestampable\Timestampable;
+use Gedmo\Mapping\Annotation as Gedmo;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @Entity
+ * @ORM\Entity
  */
 class Article implements Timestampable
 {
-    /** @Id @GeneratedValue @Column(type="integer") */
+    /** @ORM\Id @ORM\GeneratedValue @ORM\Column(type="integer") */
     private $id;
 
     /**
-     * @Column(name="title", type="string", length=128)
+     * @ORM\Column(name="title", type="string", length=128)
      */
     private $title;
-    
+
     /**
-     * @OneToMany(targetEntity="Timestampable\Fixture\Comment", mappedBy="article")
+     * @ORM\OneToMany(targetEntity="Timestampable\Fixture\Comment", mappedBy="article")
      */
     private $comments;
-    
+
     /**
      * @var datetime $created
-     * 
-     * @gedmo:Timestampable(on="create")
-     * @Column(name="created", type="date")
+     *
+     * @Gedmo\Timestampable(on="create")
+     * @ORM\Column(name="created", type="date")
      */
     private $created;
-    
+
     /**
      * @var datetime $updated
      *
-     * @Column(name="updated", type="datetime")
-     * @gedmo:Timestampable
+     * @ORM\Column(name="updated", type="datetime")
+     * @Gedmo\Timestampable
      */
     private $updated;
-    
+
     /**
      * @var datetime $published
      *
-     * @Column(name="published", type="datetime", nullable=true)
-     * @gedmo:Timestampable(on="change", field="type.title", value="Published")
+     * @ORM\Column(name="published", type="datetime", nullable=true)
+     * @Gedmo\Timestampable(on="change", field="type.title", value="Published")
      */
     private $published;
-    
+
     /**
-     * @ManyToOne(targetEntity="Type", inversedBy="articles")
+     * @ORM\ManyToOne(targetEntity="Type", inversedBy="articles")
      */
     private $type;
-    
+
     public function setType($type)
     {
         $this->type = $type;
@@ -59,7 +61,7 @@ class Article implements Timestampable
     {
         return $this->id;
     }
-    
+
     public function setTitle($title)
     {
         $this->title = $title;
@@ -69,7 +71,7 @@ class Article implements Timestampable
     {
         return $this->title;
     }
-    
+
     public function addComment(Comment $comment)
     {
         $comment->setArticle($this);
@@ -80,7 +82,7 @@ class Article implements Timestampable
     {
         return $this->comments;
     }
-    
+
     /**
      * Get created
      *
@@ -90,22 +92,22 @@ class Article implements Timestampable
     {
         return $this->created;
     }
-    
+
     public function setCreated(\DateTime $created)
     {
         $this->created = $created;
     }
-    
+
     public function getPublished()
     {
         return $this->published;
     }
-    
+
     public function setPublished(\DateTime $published)
     {
         $this->published = $published;
     }
-    
+
     /**
      * Get updated
      *
@@ -115,7 +117,7 @@ class Article implements Timestampable
     {
         return $this->updated;
     }
-    
+
     public function setUpdated(\DateTime $updated)
     {
         $this->updated = $updated;

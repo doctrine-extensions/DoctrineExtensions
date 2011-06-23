@@ -2,35 +2,38 @@
 
 namespace Sluggable\Fixture;
 
+use Gedmo\Mapping\Annotation as Gedmo;
+use Doctrine\ORM\Mapping as ORM;
+
 /**
- * @Entity
+ * @ORM\Entity
  */
 class Page
 {
-    /** 
-     * @Id 
-     * @GeneratedValue 
-     * @Column(type="integer") 
+    /**
+     * @ORM\Id
+     * @ORM\GeneratedValue
+     * @ORM\Column(type="integer")
      */
     private $id;
 
     /**
-     * @gedmo:Sluggable
-     * @Column(type="string", length=255)
+     * @Gedmo\Sluggable
+     * @ORM\Column(type="string", length=255)
      */
     private $content;
-    
+
     /**
-     * @gedmo:Slug(style="camel", separator="_")
-     * @Column(type="string", length=128)
+     * @Gedmo\Slug(style="camel", separator="_")
+     * @ORM\Column(type="string", length=128)
      */
     private $slug;
-    
+
     /**
-     * @OneToMany(targetEntity="TranslatableArticle", mappedBy="page")
+     * @ORM\OneToMany(targetEntity="TranslatableArticle", mappedBy="page")
      */
     private $articles;
-    
+
     public function getId()
     {
         return $this->id;
@@ -56,7 +59,7 @@ class Page
     {
         return $this->content;
     }
-    
+
     public function getSlug()
     {
         return $this->slug;

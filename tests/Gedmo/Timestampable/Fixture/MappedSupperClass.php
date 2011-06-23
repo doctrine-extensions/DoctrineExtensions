@@ -2,43 +2,46 @@
 
 namespace Timestampable\Fixture;
 
+use Gedmo\Mapping\Annotation as Gedmo;
+use Doctrine\ORM\Mapping as ORM;
+
 /**
-* @MappedSuperclass
+* @ORM\MappedSuperclass
 */
 class MappedSupperClass
 {
     /**
     * @var integer $id
     *
-    * @Column(name="id", type="integer")
-    * @Id
-    * @GeneratedValue(strategy="AUTO")
+    * @ORM\Column(name="id", type="integer")
+    * @ORM\Id
+    * @ORM\GeneratedValue(strategy="AUTO")
     */
     protected $id;
-    
+
     /**
     * @var string $locale
     *
-    * @gedmo:Locale
+    * @Gedmo\Locale
     */
     protected $locale;
-    
+
     /**
     * @var string $title
     *
-    * @gedmo:Translatable
-    * @Column(name="name", type="string", length=255)
+    * @Gedmo\Translatable
+    * @ORM\Column(name="name", type="string", length=255)
     */
     protected $name;
-    
+
     /**
     * @var \DateTime $createdAt
     *
-    * @Column(name="created_at", type="datetime")
-    * @gedmo:Timestampable(on="create")
+    * @ORM\Column(name="created_at", type="datetime")
+    * @Gedmo\Timestampable(on="create")
     */
     protected $createdAt;
-    
+
     /**
     * Get id
     *
@@ -49,7 +52,7 @@ class MappedSupperClass
     {
         return $this->id;
     }
-    
+
     /**
     * Set name
     *
@@ -69,7 +72,7 @@ class MappedSupperClass
     {
         return $this->name;
     }
-    
+
     /**
     * Get createdAt
     *

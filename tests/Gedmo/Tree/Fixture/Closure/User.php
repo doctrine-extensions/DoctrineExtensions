@@ -2,13 +2,15 @@
 
 namespace Tree\Fixture\Closure;
 
+use Doctrine\ORM\Mapping as ORM;
+
 /**
- * @Entity
+ * @ORM\Entity
  */
 class User extends Person
 {
     /**
-     * @Column(name="username", type="string", length=64)
+     * @ORM\Column(name="username", type="string", length=64)
      */
     private $username;
 
