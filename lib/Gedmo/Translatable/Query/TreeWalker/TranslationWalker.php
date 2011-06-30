@@ -192,7 +192,9 @@ class TranslationWalker extends SqlWalker
     public function walkFromClause($fromClause)
     {
         $result = parent::walkFromClause($fromClause);
-        $result .= $this->translationJoinSql[0];
+        if (count($this->translationJoinSql)) {
+            $result .= $this->translationJoinSql[0];
+        }
         return $result;
     }
 
