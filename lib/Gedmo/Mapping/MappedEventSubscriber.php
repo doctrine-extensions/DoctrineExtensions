@@ -120,6 +120,18 @@ abstract class MappedEventSubscriber implements EventSubscriber
                 if (!$this->annotationReader instanceof Reader) {
                     $this->annotationReader->setAnnotationNamespaceAlias('Gedmo\\Mapping\\Annotation\\', 'gedmo');
                 }
+
+                //Check AnnotationReader version to keep BC
+                if (method_exists($this->annotationReader, 'setIgnoreNotImportedAnnotations')) {
+                    $this->annotationReader->setIgnoreNotImportedAnnotations(true);
+                    $this->annotationReader->setEnableParsePhpImports(false);
+
+                    $this->annotationReader = new \Doctrine\Common\Annotations\CachedReader(
+                        new \Doctrine\Common\Annotations\IndexedReader($this->annotationReader), 
+                        new ArrayCache()
+                    );
+                }
+
             }
             $this->extensionMetadataFactory[$oid] = new ExtensionMetadataFactory(
                 $objectManager,
