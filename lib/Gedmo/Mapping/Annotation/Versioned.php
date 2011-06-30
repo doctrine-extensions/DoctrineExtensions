@@ -7,6 +7,8 @@ use Doctrine\Common\Annotations\Annotation;
 /**
  * Versioned annotation for Loggable behavioral extension
  *
+ * @Annotation
+ *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  * @package Gedmo.Mapping.Annotation
  * @subpackage Versioned
