@@ -7,6 +7,7 @@ on extensions, refer to their specific documentation.
 Content:
 
 - [New annotation mapping](#annotation_mapping) example for common3.0.x
+- Best [practices](#setup) for setting up
 - [Tree](#tree)
 - [Translatable](#translatable)
 - [Sluggable](#sluggable)
@@ -56,21 +57,49 @@ for each annotation you use in your mapping, see example bellow:
 
 **Note:** this new mapping applies only if you use **doctrine-common** library at version **3.0.x**
 
-### Injecting the new annotation reader
+## Best practices for setting up with annotations {#setup}
 
 New annotation reader does not depend on any namespaces, for that reason you can use
-single reader instance for whole project. The example bellow shows how to inject it into
-listener:
+single reader instance for whole project. The example bellow shows how to setup the
+mapping and listeners:
 
-    $annotationReader = new \Doctrine\Common\Annotations\AnnotationReader;
-    $translatable = new \Gedmo\Translatable\TranslationListener;
-    $translatable->setAnnotationReader($annotationReader);
-    $sluggable = new \Gedmo\Sluggable\SluggableListener;
-    $sluggable->setAnnotationReader($annotationReader);
-    // ...
-    $eventManager->addEventSubscriber($translatable);
-    $eventManager->addEventSubscriber($sluggable);
-    // ...
+
+    $reader = new \Doctrine\Common\Annotations\AnnotationReader();
+    $annotationDriver = new \Doctrine\ORM\Mapping\Driver\AnnotationDriver($reader);
+    
+    $chain = new \Doctrine\ORM\Mapping\Driver\DriverChain;
+    $chain->addDriver($annotationDriver, 'Gedmo\Translatable\Entity');
+    $chain->addDriver($annotationDriver, 'Gedmo\Tree\Entity');
+    
+    $config = new \Doctrine\ORM\Configuration();
+    $config->setMetadataDriverImpl($chain);
+    $config->setProxyDir(/*location*/);
+    $config->setProxyNamespace('Proxy');
+    $config->setAutoGenerateProxyClasses(false);
+    
+    $evm = new \Doctrine\Common\EventManager();
+    
+    $translatable = new \Gedmo\Translatable\TranslationListener();
+    $translatable->setAnnotationReader($reader);
+    $evm->addEventSubscriber($translatable);
+    
+    $tree = new \Gedmo\Tree\TreeListener;
+    $tree->setAnnotationReader($reader);
+    $evm->addEventSubscriber($tree);
+    
+    //...
+    $conn = array(
+        'driver' => 'pdo_mysql',
+        'host' => '127.0.0.1',
+        'dbname' => 'test',
+        'user' => 'root',
+        'password' => ''
+    );
+    $em = \Doctrine\ORM\EntityManager::create($conn, $config, $evm);
+
+**Notice:** that symfony2 DoctrineExtensionsBundle does it automatically this
+way you will maintain a single instance of annotation reader. It relates only
+to doctrine-common-3.0.x branch.
 
 ## Tree annotations {#tree}
 

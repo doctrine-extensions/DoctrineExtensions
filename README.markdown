@@ -35,6 +35,14 @@ use these extensions from separate branch **doctrine2.0.x** or simply checkout t
 
 ### Latest updates
 
+**2011-06-24**
+
+- Implemented better compatibility with new and older annotation mapping style. Read
+**doc/annotations.md** on how to achieve best performances using annotation mapping and
+how to configure it.
+- The object wrappers were implemented internally in extensions to avoid issues with
+uninitialized or detached proxies.
+
 **2011-06-08**
 
 - [mvrhov](http://github.com/mvrhov) implemented the XML driver for extensions and now
