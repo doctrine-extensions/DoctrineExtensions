@@ -99,12 +99,15 @@ final class ExtensionMetadataFactory
         if ($config) {
             $this->driver->validateFullMetadata($meta, $config);
             $config['useObjectClass'] = $useObjectName;
-            // cache the metadata
-            $cacheId = self::getCacheId($meta->name, $this->extensionNamespace);
-            if ($cacheDriver = $this->objectManager->getMetadataFactory()->getCacheDriver()) {
-                $cacheDriver->save($cacheId, $config, null);
-            }
         }
+
+        // cache the metadata (even if it's empty)
+        // caching empty metadata will prevent re-parsing non-existent annotations
+        $cacheId = self::getCacheId($meta->name, $this->extensionNamespace);
+        if ($cacheDriver = $this->objectManager->getMetadataFactory()->getCacheDriver()) {
+            $cacheDriver->save($cacheId, $config, null);
+        }
+
         return $config;
     }
 
