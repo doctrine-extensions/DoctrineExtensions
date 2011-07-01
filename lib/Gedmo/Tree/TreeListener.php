@@ -12,6 +12,7 @@ use Doctrine\Common\EventArgs,
  * strategies on handling the tree.
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
+ * @author Michael Williams <michael.williams@funsational.com>
  * @package Gedmo.Tree
  * @subpackage TreeListener
  * @link http://www.gediminasm.org
@@ -101,7 +102,7 @@ class TreeListener extends MappedEventSubscriber
             if ($config = $this->getConfiguration($om, $meta->name)) {
                 $usedClasses[$meta->name] = null;
                 $this->getStrategy($om, $meta->name)->processScheduledInsertion($om, $object);
-                $uow->recomputeSingleEntityChangeSet($meta, $object);
+                $this->getEventAdapter($args)->computeSingleChangeSet($uow, $meta, $object);
             }
         }
 

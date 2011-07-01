@@ -10,6 +10,7 @@ use Gedmo\Tree\Mapping\Event\TreeAdapter;
  * for Tree behavior
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
+ * @author Michael Williams <michael.williams@funsational.com>
  * @package Gedmo\Tree\Mapping\Event\Adapter
  * @subpackage ORM
  * @link http://www.gediminasm.org
@@ -17,5 +18,8 @@ use Gedmo\Tree\Mapping\Event\TreeAdapter;
  */
 final class ORM extends BaseAdapterORM implements TreeAdapter
 {
-    // Nothing specific yet
+	public function computeSingleChangeSet($uow, $meta, $object)
+	{
+        $uow->recomputeSingleEntityChangeSet($meta, $object);
+	}
 }

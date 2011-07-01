@@ -16,5 +16,5 @@ use Gedmo\Mapping\Event\AdapterInterface;
  */
 interface TreeAdapter extends AdapterInterface
 {
-
+    public function computeSingleChangeSet($uow, $meta, $object);    
 }

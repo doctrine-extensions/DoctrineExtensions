@@ -33,6 +33,7 @@ class Yaml extends File implements Driver
      */
     private $validTypes = array(
         'integer',
+        'int',
         'smallint',
         'bigint'
     );

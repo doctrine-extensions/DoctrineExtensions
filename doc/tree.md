@@ -23,6 +23,14 @@ Thanks for contributions to:
 - **[everzet](http://github.com/everzet) Kudryashov Konstantin** for TreeLevel implementation
 - **[stof](http://github.com/stof) Christophe Coevoet** for getTreeLeafs function
 
+Update **2011-6-14**
+
+- Tree extension now supports Materialized paths in MongoDB. The documentation is similar to that of
+nested set and you have all the same method for inserting. Documentation is on the list todo still and
+will be done within the next few weeks. See https://github.com/mtotheikle/Doctrine-MongoDB-Materlized-Path 
+for a basic project that uses the new strategy, again documentation is limited with that as well and will
+be expanded.
+
 Update **2011-05-07**
 
 - Tree is now able to act as **closure** tree, this strategy was refactored
