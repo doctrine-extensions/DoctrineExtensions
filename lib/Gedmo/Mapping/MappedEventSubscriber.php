@@ -93,11 +93,20 @@ abstract class MappedEventSubscriber implements EventSubscriber
         if (isset($this->configurations[$class])) {
             $config = $this->configurations[$class];
         } else {
-            $cacheDriver = $objectManager->getMetadataFactory()->getCacheDriver();
-            $cacheId = ExtensionMetadataFactory::getCacheId($class, $this->getNamespace());
-            if ($cacheDriver && ($cached = $cacheDriver->fetch($cacheId)) !== false) {
-                $this->configurations[$class] = $cached;
-                $config = $cached;
+            $factory = $objectManager->getMetadataFactory();
+            $cacheDriver = $factory->getCacheDriver();
+            if ($cacheDriver) {
+                $cacheId = ExtensionMetadataFactory::getCacheId($class, $this->getNamespace());
+                if (($cached = $cacheDriver->fetch($cacheId)) !== false) {
+                    $this->configurations[$class] = $cached;
+                    $config = $cached;
+                } else {
+                    // re-generate metadata on cache miss
+                    $this->loadMetadataForObjectClass($objectManager, $factory->getMetadataFor($class));
+                    if (isset($this->configurations[$class])) {
+                        $config = $this->configurations[$class];
+                    }
+                }
             }
         }
         return $config;
@@ -119,19 +128,15 @@ abstract class MappedEventSubscriber implements EventSubscriber
                 $this->annotationReader->setAutoloadAnnotations(true);
                 if (!$this->annotationReader instanceof Reader) {
                     $this->annotationReader->setAnnotationNamespaceAlias('Gedmo\\Mapping\\Annotation\\', 'gedmo');
-                }
-
-                //Check AnnotationReader version to keep BC
-                if (method_exists($this->annotationReader, 'setIgnoreNotImportedAnnotations')) {
+                } else {
                     $this->annotationReader->setIgnoreNotImportedAnnotations(true);
                     $this->annotationReader->setEnableParsePhpImports(false);
 
                     $this->annotationReader = new \Doctrine\Common\Annotations\CachedReader(
-                        new \Doctrine\Common\Annotations\IndexedReader($this->annotationReader), 
+                        new \Doctrine\Common\Annotations\IndexedReader($this->annotationReader),
                         new ArrayCache()
                     );
                 }
-
             }
             $this->extensionMetadataFactory[$oid] = new ExtensionMetadataFactory(
                 $objectManager,
