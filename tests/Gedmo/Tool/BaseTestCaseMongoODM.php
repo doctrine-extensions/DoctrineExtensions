@@ -101,7 +101,11 @@ abstract class BaseTestCaseMongoODM extends \PHPUnit_Framework_TestCase
     protected function getMetadataDriverImplementation()
     {
         $reader = new AnnotationReader();
-        $reader->setAutoloadAnnotations(true);
+        \Doctrine\Common\Annotations\AnnotationRegistry::registerAutoloadNamespace(
+            'Gedmo\\Mapping\\Annotation',
+            VENDOR_PATH . '/../lib'
+        );
+        //$reader->setAutoloadAnnotations(true);
         return new AnnotationDriver($reader);
     }
 

@@ -194,9 +194,12 @@ abstract class MappedEventSubscriber implements EventSubscriber
     private function getDefaultAnnotationReader()
     {
         if (null === $this->defaultAnnotationReader) {
-            if (version_compare(\Doctrine\Common\Version::VERSION, '3.0.0-DEV', '>=')) {
+            if (version_compare(\Doctrine\Common\Version::VERSION, '2.1.0RC4-DEV', '>=')) {
                 $reader = new \Doctrine\Common\Annotations\AnnotationReader();
-                $reader->setAutoloadAnnotations(true);
+                \Doctrine\Common\Annotations\AnnotationRegistry::registerAutoloadNamespace(
+                    'Gedmo\\Mapping\\Annotation',
+                    __DIR__ . '/../../'
+                );
                 $reader = new \Doctrine\Common\Annotations\CachedReader($reader, new ArrayCache());
             } else if (version_compare(\Doctrine\Common\Version::VERSION, '2.1.0-BETA3-DEV', '>=')) {
                 $reader = new \Doctrine\Common\Annotations\AnnotationReader();
@@ -205,6 +208,10 @@ abstract class MappedEventSubscriber implements EventSubscriber
                 $reader->setAnnotationNamespaceAlias('Gedmo\\Mapping\\Annotation\\', 'gedmo');
                 $reader->setEnableParsePhpImports(false);
                 $reader->setAutoloadAnnotations(true);
+                /*\Doctrine\Common\Annotations\AnnotationRegistry::registerAutoloadNamespace(
+                    'Gedmo\\Mapping\\Annotation',
+                    __DIR__ . '/../../'
+                );*/
                 $reader = new \Doctrine\Common\Annotations\CachedReader(
                     new \Doctrine\Common\Annotations\IndexedReader($reader), new ArrayCache()
                 );

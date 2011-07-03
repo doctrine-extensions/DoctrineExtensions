@@ -25,8 +25,8 @@ class CompatibilityMappingTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        if (version_compare(\Doctrine\Common\Version::VERSION, '3.0.0-DEV', '>=')) {
-            $this->markTestSkipped('Doctrine common is 3.0.x version, skipping.');
+        if (version_compare(\Doctrine\Common\Version::VERSION, '2.1.0RC4-DEV', '>=')) {
+            $this->markTestSkipped('Doctrine common is 2.1.0RC4-DEV version, skipping.');
         } else if (version_compare(\Doctrine\Common\Version::VERSION, '2.1.0-BETA3-DEV', '>=')) {
             $reader = new AnnotationReader();
             $reader->setDefaultAnnotationNamespace('Doctrine\ORM\Mapping\\');

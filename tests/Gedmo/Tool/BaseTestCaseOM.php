@@ -176,7 +176,11 @@ abstract class BaseTestCaseOM extends \PHPUnit_Framework_TestCase
     protected function getDefaultORMMetadataDriverImplementation()
     {
         $reader = new AnnotationReader();
-        $reader->setAutoloadAnnotations(true);
+        \Doctrine\Common\Annotations\AnnotationRegistry::registerAutoloadNamespace(
+            'Gedmo\\Mapping\\Annotation',
+            VENDOR_PATH . '/../lib'
+        );
+        //$reader->setAutoloadAnnotations(true);
         return new AnnotationDriverORM($reader);
     }
 
@@ -188,7 +192,11 @@ abstract class BaseTestCaseOM extends \PHPUnit_Framework_TestCase
     protected function getDefaultMongoODMMetadataDriverImplementation()
     {
         $reader = new AnnotationReader();
-        $reader->setAutoloadAnnotations(true);
+        \Doctrine\Common\Annotations\AnnotationRegistry::registerAutoloadNamespace(
+            'Gedmo\\Mapping\\Annotation',
+            VENDOR_PATH . '/../lib'
+        );
+        //$reader->setAutoloadAnnotations(true);
         return new AnnotationDriverODM($reader);
     }
 
