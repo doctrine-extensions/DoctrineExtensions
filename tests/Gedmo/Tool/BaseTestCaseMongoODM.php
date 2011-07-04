@@ -94,6 +94,22 @@ abstract class BaseTestCaseMongoODM extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Creates default mapping driver
+     *
+     * @return \Doctrine\ORM\Mapping\Driver\Driver
+     */
+    protected function getMetadataDriverImplementation()
+    {
+        $reader = new AnnotationReader();
+        \Doctrine\Common\Annotations\AnnotationRegistry::registerAutoloadNamespace(
+            'Gedmo\\Mapping\\Annotation',
+            VENDOR_PATH . '/../lib'
+        );
+        //$reader->setAutoloadAnnotations(true);
+        return new AnnotationDriver($reader);
+    }
+
+    /**
      * Build event manager
      *
      * @return EventManager
@@ -152,9 +168,7 @@ abstract class BaseTestCaseMongoODM extends \PHPUnit_Framework_TestCase
             ->method('getMongoCmd')
             ->will($this->returnValue('$'));
 
-        $reader = new AnnotationReader();
-        $reader->setDefaultAnnotationNamespace('Doctrine\\ODM\\MongoDB\\Mapping\\');
-        $mappingDriver = new AnnotationDriver($reader);
+        $mappingDriver = $this->getMetadataDriverImplementation();
 
         $config->expects($this->any())
             ->method('getMetadataDriverImpl')

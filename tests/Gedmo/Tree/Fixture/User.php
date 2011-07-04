@@ -1,28 +1,30 @@
 <?php
 namespace Tree\Fixture;
 
+use Doctrine\ORM\Mapping as ORM;
+
 /**
- * @Entity(repositoryClass="Gedmo\Tree\Entity\Repository\NestedTreeRepository")
- * @Table(name="`user`")
+ * @ORM\Entity(repositoryClass="Gedmo\Tree\Entity\Repository\NestedTreeRepository")
+ * @ORM\Table(name="`user`")
  */
 class User extends Role {
 
   const PASSWORD_SALT = 'dfJko$~346958rg!DFT]AEtzserf9giq)3/TAeg;aDFa43';
 
   /**
-   * @Column(name="email", type="string", unique="true")
+   * @ORM\Column(name="email", type="string", unique="true")
    * @var string
    */
   private $email;
 
   /**
-   * @Column(name="password_hash", type="string", length=32)
+   * @ORM\Column(name="password_hash", type="string", length=32)
    * @var string
    */
   private $passwordHash;
 
   /**
-   * @Column(name="activation_code", type="string", length=12)
+   * @ORM\Column(name="activation_code", type="string", length=12)
    * @var string
    */
   private $activationCode;

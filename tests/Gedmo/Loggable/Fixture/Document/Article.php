@@ -2,18 +2,21 @@
 
 namespace Loggable\Fixture\Document;
 
+use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
+use Gedmo\Mapping\Annotation as Gedmo;
+
 /**
- * @Document(collection="articles")
- * @gedmo:Loggable
+ * @ODM\Document(collection="articles")
+ * @Gedmo\Loggable
  */
 class Article
 {
-    /** @Id */
+    /** @ODM\Id */
     private $id;
 
     /**
-     * @gedmo:Versioned
-     * @String
+     * @Gedmo\Versioned
+     * @ODM\String
      */
     private $title;
 

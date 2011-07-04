@@ -2,33 +2,36 @@
 
 namespace Loggable\Fixture\Entity;
 
+use Gedmo\Mapping\Annotation as Gedmo;
+use Doctrine\ORM\Mapping as ORM;
+
 /**
- * @Entity
- * @gedmo:Loggable
+ * @ORM\Entity
+ * @Gedmo\Loggable
  */
 class RelatedArticle
 {
     /**
-     * @Id
-     * @GeneratedValue
-     * @Column(type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue
+     * @ORM\Column(type="integer")
      */
     private $id;
 
     /**
-     * @gedmo:Versioned
-     * @Column(length=128)
+     * @Gedmo\Versioned
+     * @ORM\Column(length=128)
      */
     private $title;
 
     /**
-     * @gedmo:Versioned
-     * @Column(type="text")
+     * @Gedmo\Versioned
+     * @ORM\Column(type="text")
      */
     private $content;
 
     /**
-     * @OneToMany(targetEntity="Comment", mappedBy="article")
+     * @ORM\OneToMany(targetEntity="Comment", mappedBy="article")
      */
     private $comments;
 

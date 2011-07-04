@@ -2,56 +2,59 @@
 
 namespace Tree\Fixture;
 
+use Gedmo\Mapping\Annotation as Gedmo;
+use Doctrine\ORM\Mapping as ORM;
+
 /**
- * @Entity(repositoryClass="Tree\Fixture\Repository\BehavioralCategoryRepository")
- * @gedmo:Tree(type="nested")
+ * @ORM\Entity(repositoryClass="Tree\Fixture\Repository\BehavioralCategoryRepository")
+ * @Gedmo\Tree(type="nested")
  */
 class BehavioralCategory
 {
     /**
-     * @Column(name="id", type="integer")
-     * @Id
-     * @GeneratedValue
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue
      */
     private $id;
 
     /**
-     * @gedmo:Translatable
-     * @gedmo:Sluggable
-     * @Column(name="title", type="string", length=64)
+     * @Gedmo\Translatable
+     * @Gedmo\Sluggable
+     * @ORM\Column(name="title", type="string", length=64)
      */
     private $title;
 
     /**
-     * @gedmo:TreeLeft
-     * @Column(name="lft", type="integer", nullable=true)
+     * @Gedmo\TreeLeft
+     * @ORM\Column(name="lft", type="integer", nullable=true)
      */
     private $lft;
 
     /**
-     * @gedmo:TreeRight
-     * @Column(name="rgt", type="integer", nullable=true)
+     * @Gedmo\TreeRight
+     * @ORM\Column(name="rgt", type="integer", nullable=true)
      */
     private $rgt;
 
     /**
-     * @gedmo:TreeParent
-     * @ManyToOne(targetEntity="BehavioralCategory", inversedBy="children")
-     * @JoinColumns({
-     *   @JoinColumn(name="parent_id", referencedColumnName="id", onDelete="SET NULL")
+     * @Gedmo\TreeParent
+     * @ORM\ManyToOne(targetEntity="BehavioralCategory", inversedBy="children")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="SET NULL")
      * })
      */
     private $parent;
 
     /**
-     * @OneToMany(targetEntity="BehavioralCategory", mappedBy="parent")
+     * @ORM\OneToMany(targetEntity="BehavioralCategory", mappedBy="parent")
      */
     private $children;
 
     /**
-     * @gedmo:Translatable
-     * @gedmo:Slug
-     * @Column(name="slug", type="string", length=128, unique=true)
+     * @Gedmo\Translatable
+     * @Gedmo\Slug
+     * @ORM\Column(name="slug", type="string", length=128, unique=true)
      */
     private $slug;
 

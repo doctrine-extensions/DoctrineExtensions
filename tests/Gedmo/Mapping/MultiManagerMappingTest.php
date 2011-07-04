@@ -43,11 +43,9 @@ class MultiManagerMappingTest extends BaseTestCaseOM
         ));
         // EM with yaml and annotation mapping
         $reader = new AnnotationReader();
-        $reader->setDefaultAnnotationNamespace('Doctrine\ORM\Mapping\\');
         $annotationDriver = new AnnotationDriver($reader);
 
         $reader = new AnnotationReader();
-        $reader->setDefaultAnnotationNamespace('Doctrine\ORM\Mapping\\');
         $annotationDriver2 = new AnnotationDriver($reader);
 
         $yamlDriver = new YamlDriver(__DIR__.'/Driver/Yaml');

@@ -2,45 +2,48 @@
 
 namespace Sluggable\Fixture;
 
+use Gedmo\Mapping\Annotation as Gedmo;
+use Doctrine\ORM\Mapping as ORM;
+
 /**
- * @Entity
+ * @ORM\Entity
  */
 class Position
 {
     /**
-     * @Id
-     * @GeneratedValue
-     * @Column(type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue
+     * @ORM\Column(type="integer")
      */
     private $id;
 
     /**
-     * @gedmo:Sluggable(position=2)
-     * @Column(length=16)
+     * @Gedmo\Sluggable(position=2)
+     * @ORM\Column(length=16)
      */
     private $prop;
 
     /**
-     * @gedmo:Sluggable(position=1)
-     * @Column(length=64)
+     * @Gedmo\Sluggable(position=1)
+     * @ORM\Column(length=64)
      */
     private $title;
 
     /**
-     * @gedmo:Sluggable
-     * @Column(length=16)
+     * @Gedmo\Sluggable
+     * @ORM\Column(length=16)
      */
     private $code;
 
     /**
-     * @gedmo:Sluggable(position=0)
-     * @Column(length=16)
+     * @Gedmo\Sluggable(position=0)
+     * @ORM\Column(length=16)
      */
     private $other;
 
     /**
-     * @gedmo:Slug
-     * @Column(length=64, unique=true)
+     * @Gedmo\Slug
+     * @ORM\Column(length=64, unique=true)
      */
     private $slug;
 }

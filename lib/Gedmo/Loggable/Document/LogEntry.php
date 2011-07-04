@@ -2,7 +2,7 @@
 
 namespace Gedmo\Loggable\Document;
 
-use Doctrine\ODM\MongoDB\Mapping\Document;
+use Doctrine\ODM\MongoDB\Mapping\Annotations\Document;
 
 /**
  * Gedmo\Loggable\Document\LogEntry

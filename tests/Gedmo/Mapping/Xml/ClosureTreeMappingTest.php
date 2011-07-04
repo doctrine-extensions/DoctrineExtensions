@@ -35,7 +35,6 @@ class ClosureTreeMappingTest extends BaseTestCaseOM
         parent::setUp();
 
         $reader = new AnnotationReader();
-        $reader->setDefaultAnnotationNamespace('Doctrine\ORM\Mapping\\');
         $annotationDriver = new AnnotationDriver($reader);
 
         $xmlDriver = new XmlDriver(__DIR__.'/../Driver/Xml');

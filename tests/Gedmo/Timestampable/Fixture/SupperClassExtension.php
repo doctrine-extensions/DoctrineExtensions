@@ -2,17 +2,20 @@
 
 namespace Timestampable\Fixture;
 
+use Gedmo\Mapping\Annotation as Gedmo;
+use Doctrine\ORM\Mapping as ORM;
+
 /**
- * @Entity
+ * @ORM\Entity
  */
 class SupperClassExtension extends MappedSupperClass
 {
     /**
-     * @Column(length=128)
-     * @gedmo:Translatable
+     * @ORM\Column(length=128)
+     * @Gedmo\Translatable
      */
     private $title;
-    
+
     public function setTitle($title)
     {
         $this->title = $title;

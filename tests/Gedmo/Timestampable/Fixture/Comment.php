@@ -3,43 +3,45 @@
 namespace Timestampable\Fixture;
 
 use Gedmo\Timestampable\Timestampable;
+use Gedmo\Mapping\Annotation as Gedmo;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @Entity
+ * @ORM\Entity
  */
 class Comment implements Timestampable
 {
-    /** @Id @GeneratedValue @Column(type="integer") */
+    /** @ORM\Id @ORM\GeneratedValue @ORM\Column(type="integer") */
     private $id;
 
     /**
-     * @Column(name="message", type="text")
+     * @ORM\Column(name="message", type="text")
      */
     private $message;
-    
+
     /**
-     * @ManyToOne(targetEntity="Timestampable\Fixture\Article", inversedBy="comments")
+     * @ORM\ManyToOne(targetEntity="Timestampable\Fixture\Article", inversedBy="comments")
      */
     private $article;
-    
+
     /**
-     * @Column(type="integer")
+     * @ORM\Column(type="integer")
      */
     private $status;
-    
+
     /**
      * @var datetime $closed
      *
-     * @Column(name="closed", type="datetime", nullable=true)
-     * @gedmo:Timestampable(on="change", field="status", value=1)
+     * @ORM\Column(name="closed", type="datetime", nullable=true)
+     * @Gedmo\Timestampable(on="change", field="status", value=1)
      */
     private $closed;
-    
+
     /**
      * @var datetime $modified
      *
-     * @Column(name="modified", type="time")
-     * @gedmo:Timestampable(on="update")
+     * @ORM\Column(name="modified", type="time")
+     * @Gedmo\Timestampable(on="update")
      */
     private $modified;
 
@@ -62,7 +64,7 @@ class Comment implements Timestampable
     {
         return $this->status;
     }
-    
+
     public function setMessage($message)
     {
         $this->message = $message;
@@ -72,12 +74,12 @@ class Comment implements Timestampable
     {
         return $this->message;
     }
-    
+
     public function getModified()
     {
         return $this->modified;
     }
-    
+
     public function getClosed()
     {
         return $this->closed;

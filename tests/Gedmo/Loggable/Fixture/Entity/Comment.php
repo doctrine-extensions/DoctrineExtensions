@@ -2,34 +2,37 @@
 
 namespace Loggable\Fixture\Entity;
 
+use Gedmo\Mapping\Annotation as Gedmo;
+use Doctrine\ORM\Mapping as ORM;
+
 /**
- * @Entity
- * @gedmo:Loggable(logEntryClass="Loggable\Fixture\Entity\Log\Comment")
+ * @ORM\Entity
+ * @Gedmo\Loggable(logEntryClass="Loggable\Fixture\Entity\Log\Comment")
  */
 class Comment
 {
     /**
-     * @Id
-     * @GeneratedValue
-     * @Column(type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue
+     * @ORM\Column(type="integer")
      */
     private $id;
 
     /**
-     * @gedmo:Versioned
-     * @Column(length=128)
+     * @Gedmo\Versioned
+     * @ORM\Column(length=128)
      */
     private $subject;
 
     /**
-     * @gedmo:Versioned
-     * @Column(type="text")
+     * @Gedmo\Versioned
+     * @ORM\Column(type="text")
      */
     private $message;
 
     /**
-     * @gedmo:Versioned
-     * @ManyToOne(targetEntity="RelatedArticle", inversedBy="comments")
+     * @Gedmo\Versioned
+     * @ORM\ManyToOne(targetEntity="RelatedArticle", inversedBy="comments")
      */
     private $article;
 

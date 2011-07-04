@@ -2,9 +2,9 @@
 
 namespace Gedmo\Translatable\Document;
 
-use Doctrine\ODM\MongoDB\Mapping\Document;
-use Doctrine\ODM\MongoDB\Mapping\UniqueIndex;
-use Doctrine\ODM\MongoDB\Mapping\Index;
+use Doctrine\ODM\MongoDB\Mapping\Annotations\Document;
+use Doctrine\ODM\MongoDB\Mapping\Annotations\UniqueIndex;
+use Doctrine\ODM\MongoDB\Mapping\Annotations\Index;
 
 /**
  * Gedmo\Translatable\Document\Translation

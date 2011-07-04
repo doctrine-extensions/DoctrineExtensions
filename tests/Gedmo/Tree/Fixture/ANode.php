@@ -2,30 +2,33 @@
 
 namespace Tree\Fixture;
 
+use Gedmo\Mapping\Annotation as Gedmo;
+use Doctrine\ORM\Mapping as ORM;
+
 /**
- * @MappedSuperclass
+ * @ORM\MappedSuperclass
  */
 class ANode
 {
-    /** 
-     * @Id 
-     * @GeneratedValue 
-     * @Column(type="integer")
+    /**
+     * @ORM\Id
+     * @ORM\GeneratedValue
+     * @ORM\Column(type="integer")
      */
     private $id;
-    
+
     /**
-     * @gedmo:TreeLeft
-     * @Column(type="integer", nullable=true)
+     * @Gedmo\TreeLeft
+     * @ORM\Column(type="integer", nullable=true)
      */
     private $lft;
-    
+
     /**
-     * @gedmo:TreeRight
-     * @Column(type="integer", nullable=true)
+     * @Gedmo\TreeRight
+     * @ORM\Column(type="integer", nullable=true)
      */
     private $rgt;
-    
+
     public function getId()
     {
         return $this->id;

@@ -2,26 +2,29 @@
 
 namespace Translatable\Fixture\Issue75;
 
+use Gedmo\Mapping\Annotation as Gedmo;
+use Doctrine\ORM\Mapping as ORM;
+
 /**
- * @Entity
+ * @ORM\Entity
  */
 class Image
 {
     /**
-     * @Id
-     * @GeneratedValue
-     * @Column(type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue
+     * @ORM\Column(type="integer")
      */
     private $id;
 
     /**
-     * @gedmo:Translatable
-     * @Column(name="title", type="string", length=128)
+     * @Gedmo\Translatable
+     * @ORM\Column(name="title", type="string", length=128)
      */
     private $title;
 
     /**
-     * @ManyToMany(targetEntity="Article", mappedBy="images")
+     * @ORM\ManyToMany(targetEntity="Article", mappedBy="images")
      */
     private $articles;
 

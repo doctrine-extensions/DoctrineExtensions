@@ -2,29 +2,32 @@
 
 namespace Sluggable\Fixture\Document;
 
-/** 
- * @Document(collection="articles")
+use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
+use Gedmo\Mapping\Annotation as Gedmo;
+
+/**
+ * @ODM\Document(collection="articles")
  */
 class Article
 {
-    /** @Id */
+    /** @ODM\Id */
     private $id;
 
     /**
-     * @gedmo:Sluggable
-     * @String
+     * @Gedmo\Sluggable
+     * @ODM\String
      */
     private $title;
 
     /**
-     * @gedmo:Sluggable
-     * @String
+     * @Gedmo\Sluggable
+     * @ODM\String
      */
     private $code;
-    
+
     /**
-     * @gedmo:Slug
-     * @String
+     * @Gedmo\Slug
+     * @ODM\String
      */
     private $slug;
 
@@ -32,7 +35,7 @@ class Article
     {
         return $this->id;
     }
-    
+
     public function setTitle($title)
     {
         $this->title = $title;
@@ -52,7 +55,7 @@ class Article
     {
         return $this->code;
     }
-    
+
     public function getSlug()
     {
         return $this->slug;

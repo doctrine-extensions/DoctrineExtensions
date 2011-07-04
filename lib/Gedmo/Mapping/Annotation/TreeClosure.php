@@ -7,6 +7,8 @@ use Doctrine\Common\Annotations\Annotation;
 /**
  * TreeClosure annotation for Tree behavioral extension
  *
+ * @Annotation
+ *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  * @package Gedmo.Mapping.Annotation
  * @subpackage TreeClosure

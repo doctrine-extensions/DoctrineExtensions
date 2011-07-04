@@ -2,25 +2,28 @@
 
 namespace Mapping\Fixture\Document;
 
+use Gedmo\Mapping\Mock\Extension\Encoder\Mapping as Ext;
+use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
+
 /**
- * @Document(collection="test_users")
+ * @ODM\Document(collection="test_users")
  */
 class User
 {
     /**
-     * @Id
+     * @ODM\Id
      */
     private $id;
 
     /**
-     * @ext:Encode(type="sha1", secret="xxx")
-     * @String
+     * @Ext\Encode(type="sha1", secret="xxx")
+     * @ODM\String
      */
     private $name;
 
     /**
-     * @ext:Encode(type="md5")
-     * @String
+     * @Ext\Encode(type="md5")
+     * @ODM\String
      */
     private $password;
 

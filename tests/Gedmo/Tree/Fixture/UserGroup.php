@@ -1,16 +1,18 @@
 <?php
 namespace Tree\Fixture;
 
+use Doctrine\ORM\Mapping as ORM;
+
 /**
  * Group entity
- * 
- * @Entity(repositoryClass="Gedmo\Tree\Entity\Repository\NestedTreeRepository")
- * @Table(name="`user_group`")
+ *
+ * @ORM\Entity(repositoryClass="Gedmo\Tree\Entity\Repository\NestedTreeRepository")
+ * @ORM\Table(name="`user_group`")
  */
 class UserGroup extends Role {
 
   /**
-   * @Column(name="name", type="string", length=255)
+   * @ORM\Column(name="name", type="string", length=255)
    * @var string
    */
   private $name;

@@ -2,21 +2,23 @@
 
 namespace Translatable\Fixture;
 
+use Doctrine\ORM\Mapping as ORM;
+
 use Gedmo\Translatable\Entity\AbstractTranslation;
 
 /**
- * @Table(
- *         name="ext_translations", 
- *         indexes={@index(name="translations_lookup_idx", columns={
+ * @ORM\Table(
+ *         name="ext_translations",
+ *         indexes={@ORM\index(name="translations_lookup_idx", columns={
  *             "locale", "object_class", "foreign_key"
  *         })},
- *         uniqueConstraints={@UniqueConstraint(name="lookup_unique_idx", columns={
+ *         uniqueConstraints={@ORM\UniqueConstraint(name="lookup_unique_idx", columns={
  *             "locale", "object_class", "foreign_key", "field"
  *         })}
  * )
- * @Entity(repositoryClass="Gedmo\Translatable\Entity\Repository\TranslationRepository")
+ * @ORM\Entity(repositoryClass="Gedmo\Translatable\Entity\Repository\TranslationRepository")
  */
 class PersonTranslation extends AbstractTranslation
 {
-    
+
 }

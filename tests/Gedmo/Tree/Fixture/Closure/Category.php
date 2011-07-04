@@ -2,29 +2,32 @@
 
 namespace Tree\Fixture\Closure;
 
+use Gedmo\Mapping\Annotation as Gedmo;
+use Doctrine\ORM\Mapping as ORM;
+
 /**
- * @gedmo:Tree(type="closure")
- * @gedmo:TreeClosure(class="Tree\Fixture\Closure\CategoryClosure")
- * @Entity(repositoryClass="Gedmo\Tree\Entity\Repository\ClosureTreeRepository")
+ * @Gedmo\Tree(type="closure")
+ * @Gedmo\TreeClosure(class="Tree\Fixture\Closure\CategoryClosure")
+ * @ORM\Entity(repositoryClass="Gedmo\Tree\Entity\Repository\ClosureTreeRepository")
  */
 class Category
 {
     /**
-     * @Column(name="id", type="integer")
-     * @Id
-     * @GeneratedValue
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue
      */
     private $id;
 
     /**
-     * @Column(name="title", type="string", length=64)
+     * @ORM\Column(name="title", type="string", length=64)
      */
     private $title;
 
     /**
-     * @gedmo:TreeParent
-     * @JoinColumn(name="parent_id", referencedColumnName="id", onDelete="CASCADE")
-     * @ManyToOne(targetEntity="Category", inversedBy="children")
+     * @Gedmo\TreeParent
+     * @ORM\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="CASCADE")
+     * @ORM\ManyToOne(targetEntity="Category", inversedBy="children")
      */
     private $parent;
 

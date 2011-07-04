@@ -169,6 +169,38 @@ abstract class BaseTestCaseOM extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Creates default mapping driver
+     *
+     * @return \Doctrine\ORM\Mapping\Driver\Driver
+     */
+    protected function getDefaultORMMetadataDriverImplementation()
+    {
+        $reader = new AnnotationReader();
+        \Doctrine\Common\Annotations\AnnotationRegistry::registerAutoloadNamespace(
+            'Gedmo\\Mapping\\Annotation',
+            VENDOR_PATH . '/../lib'
+        );
+        //$reader->setAutoloadAnnotations(true);
+        return new AnnotationDriverORM($reader);
+    }
+
+    /**
+     * Creates default mapping driver
+     *
+     * @return \Doctrine\ODM\MongoDB\Mapping\Driver\Driver
+     */
+    protected function getDefaultMongoODMMetadataDriverImplementation()
+    {
+        $reader = new AnnotationReader();
+        \Doctrine\Common\Annotations\AnnotationRegistry::registerAutoloadNamespace(
+            'Gedmo\\Mapping\\Annotation',
+            VENDOR_PATH . '/../lib'
+        );
+        //$reader->setAutoloadAnnotations(true);
+        return new AnnotationDriverODM($reader);
+    }
+
+    /**
      * Build event manager
      *
      * @return EventManager
@@ -233,9 +265,7 @@ abstract class BaseTestCaseOM extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue('$'));
 
         if (is_null($mappingDriver)) {
-            $reader = new AnnotationReader();
-            $reader->setDefaultAnnotationNamespace('Doctrine\\ODM\\MongoDB\\Mapping\\');
-            $mappingDriver = new AnnotationDriverODM($reader);
+            $mappingDriver = $this->getDefaultMongoODMMetadataDriverImplementation();
         }
 
         $config->expects($this->any())
@@ -271,9 +301,7 @@ abstract class BaseTestCaseOM extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue('Doctrine\\ORM\\Mapping\\ClassMetadataFactory'));
 
         if (is_null($mappingDriver)) {
-            $reader = new AnnotationReader();
-            $reader->setDefaultAnnotationNamespace('Doctrine\ORM\Mapping\\');
-            $mappingDriver = new AnnotationDriverORM($reader);
+            $mappingDriver = $this->getDefaultORMMetadataDriverImplementation();
         }
 
         $config->expects($this->any())

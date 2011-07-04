@@ -2,21 +2,23 @@
 
 namespace Timestampable\Fixture\Document;
 
-/** 
- * @Document(collection="types")
+use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
+
+/**
+ * @ODM\Document(collection="types")
  */
 class Type
 {
-    /** @Id */
+    /** @ODM\Id */
     private $id;
 
     /**
-     * @String
+     * @ODM\String
      */
     private $title;
-    
+
     /**
-     * @String
+     * @ODM\String
      */
     private $identifier;
 
@@ -24,7 +26,7 @@ class Type
     {
         return $this->id;
     }
-    
+
     public function setTitle($title)
     {
         $this->title = $title;
@@ -34,12 +36,12 @@ class Type
     {
         return $this->title;
     }
-    
+
     public function getIdentifier()
     {
         return $this->identifier;
     }
-    
+
     public function setIdentifier($identifier)
     {
         $this->identifier = $identifier;

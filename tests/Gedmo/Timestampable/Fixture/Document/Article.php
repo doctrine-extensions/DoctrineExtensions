@@ -2,45 +2,48 @@
 
 namespace Timestampable\Fixture\Document;
 
-/** 
- * @Document(collection="articles")
+use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
+use Gedmo\Mapping\Annotation as Gedmo;
+
+/**
+ * @ODM\Document(collection="articles")
  */
 class Article
 {
-    /** @Id */
+    /** @ODM\Id */
     private $id;
 
     /**
-     * @String
+     * @ODM\String
      */
     private $title;
-    
-    /** 
-     * @ReferenceOne(targetDocument="Type")
+
+    /**
+     * @ODM\ReferenceOne(targetDocument="Type")
      */
     private $type;
-    
+
     /**
      * @var timestamp $created
-     * 
-     * @Timestamp
-     * @gedmo:Timestampable(on="create")
+     *
+     * @ODM\Timestamp
+     * @Gedmo\Timestampable(on="create")
      */
     private $created;
-    
+
     /**
      * @var date $updated
      *
-     * @Date
-     * @gedmo:Timestampable
+     * @ODM\Date
+     * @Gedmo\Timestampable
      */
     private $updated;
-    
+
     /**
      * @var date $published
      *
-     * @Date
-     * @gedmo:Timestampable(on="change", field="type.title", value="Published")
+     * @ODM\Date
+     * @Gedmo\Timestampable(on="change", field="type.title", value="Published")
      */
     private $published;
 
@@ -48,7 +51,7 @@ class Article
     {
         return $this->id;
     }
-    
+
     public function setTitle($title)
     {
         $this->title = $title;
@@ -58,42 +61,42 @@ class Article
     {
         return $this->title;
     }
-    
+
     public function getCreated()
     {
         return $this->created;
     }
-    
+
     public function getPublished()
     {
         return $this->published;
     }
-    
+
     public function getUpdated()
     {
         return $this->updated;
     }
-    
+
     public function setType(Type $type)
     {
         $this->type = $type;
     }
-    
+
     public function getType()
     {
         return $this->type;
     }
-    
+
     public function setCreated($created)
     {
         $this->created = $created;
     }
-    
+
     public function setPublished(\DateTime $published)
     {
         $this->published = $published;
     }
-    
+
     public function setUpdated(\DateTime $updated)
     {
         $this->updated = $updated;

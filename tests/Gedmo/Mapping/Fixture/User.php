@@ -2,28 +2,31 @@
 
 namespace Mapping\Fixture;
 
+use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Mock\Extension\Encoder\Mapping as Ext;
+
 /**
- * @Table(name="test_users")
- * @Entity
+ * @ORM\Table(name="test_users")
+ * @ORM\Entity
  */
 class User
 {
     /**
-     * @Column(type="integer")
-     * @Id
-     * @GeneratedValue
+     * @ORM\Column(type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue
      */
     private $id;
 
     /**
-     * @ext:Encode(type="sha1", secret="xxx")
-     * @Column(length=64)
+     * @Ext\Encode(type="sha1", secret="xxx")
+     * @ORM\Column(length=64)
      */
     private $name;
 
     /**
-     * @ext:Encode(type="md5")
-     * @Column(length=32)
+     * @Ext\Encode(type="md5")
+     * @ORM\Column(length=32)
      */
     private $password;
 

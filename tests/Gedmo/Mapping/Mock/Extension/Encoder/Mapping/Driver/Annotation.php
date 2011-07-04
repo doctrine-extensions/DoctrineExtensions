@@ -14,7 +14,7 @@ class Annotation implements Driver
      * original driver if it is available
      */
     protected $_originalDriver = null;
-    
+
     public function validateFullMetadata(ClassMetadata $meta, array $config)
     {
         // in our case values are independant from each other
@@ -25,7 +25,7 @@ class Annotation implements Driver
         require_once __DIR__ . '/../Annotations.php';
         $reader = new AnnotationReader();
         // set annotation namespace and alias
-        $reader->setAnnotationNamespaceAlias('Gedmo\Mapping\Mock\Extension\Encoder\Mapping\\', 'ext');
+        //$reader->setAnnotationNamespaceAlias('Gedmo\Mapping\Mock\Extension\Encoder\Mapping\\', 'ext');
 
         $class = $meta->getReflectionClass();
         // check only property annotations
@@ -61,7 +61,7 @@ class Annotation implements Driver
             }
         }
     }
-    
+
     /**
      * Passes in the mapping read by original driver
      *

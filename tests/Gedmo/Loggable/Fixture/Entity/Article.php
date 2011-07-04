@@ -2,22 +2,25 @@
 
 namespace Loggable\Fixture\Entity;
 
+use Gedmo\Mapping\Annotation as Gedmo;
+use Doctrine\ORM\Mapping as ORM;
+
 /**
- * @Entity
- * @gedmo:Loggable
+ * @ORM\Entity
+ * @Gedmo\Loggable
  */
 class Article
 {
     /**
-     * @Column(name="id", type="integer")
-     * @Id
-     * @GeneratedValue(strategy="IDENTITY")
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $id;
 
     /**
-     * @gedmo:Versioned
-     * @Column(name="title", type="string", length=8)
+     * @Gedmo\Versioned
+     * @ORM\Column(name="title", type="string", length=8)
      */
     private $title;
 

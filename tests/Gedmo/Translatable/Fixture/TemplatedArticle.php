@@ -3,25 +3,27 @@
 namespace Translatable\Fixture;
 
 use Translatable\Fixture\Template\ArticleTemplate;
+use Gedmo\Mapping\Annotation as Gedmo;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @Entity
+ * @ORM\Entity
  */
 class TemplatedArticle extends ArticleTemplate
 {
-    /** 
-     * @Id 
-     * @GeneratedValue 
-     * @Column(type="integer") 
+    /**
+     * @ORM\Id
+     * @ORM\GeneratedValue
+     * @ORM\Column(type="integer")
      */
     private $id;
-    
+
     /**
-     * @gedmo:Translatable
-     * @Column(type="string", length=128)
+     * @Gedmo\Translatable
+     * @ORM\Column(type="string", length=128)
      */
     private $name;
-    
+
     public function setName($name)
     {
         $this->name = $name;

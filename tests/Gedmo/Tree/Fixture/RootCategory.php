@@ -2,59 +2,62 @@
 
 namespace Tree\Fixture;
 
+use Gedmo\Mapping\Annotation as Gedmo;
+use Doctrine\ORM\Mapping as ORM;
+
 /**
- * @Entity(repositoryClass="Gedmo\Tree\Entity\Repository\NestedTreeRepository")
- * @gedmo:Tree(type="nested")
+ * @ORM\Entity(repositoryClass="Gedmo\Tree\Entity\Repository\NestedTreeRepository")
+ * @Gedmo\Tree(type="nested")
  */
 class RootCategory
 {
     /**
-     * @Column(name="id", type="integer")
-     * @Id
-     * @GeneratedValue
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue
      */
     private $id;
 
     /**
-     * @Column(name="title", type="string", length=64)
+     * @ORM\Column(name="title", type="string", length=64)
      */
     private $title;
 
     /**
-     * @gedmo:TreeLeft
-     * @Column(name="lft", type="integer")
+     * @Gedmo\TreeLeft
+     * @ORM\Column(name="lft", type="integer")
      */
     private $lft;
 
     /**
-     * @gedmo:TreeRight
-     * @Column(name="rgt", type="integer")
+     * @Gedmo\TreeRight
+     * @ORM\Column(name="rgt", type="integer")
      */
     private $rgt;
 
     /**
-     * @gedmo:TreeParent
-     * @ManyToOne(targetEntity="RootCategory", inversedBy="children")
-     * @JoinColumns({
-     *   @JoinColumn(name="parent_id", referencedColumnName="id", onDelete="SET NULL")
+     * @Gedmo\TreeParent
+     * @ORM\ManyToOne(targetEntity="RootCategory", inversedBy="children")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="SET NULL")
      * })
      */
     private $parent;
 
     /**
-     * @gedmo:TreeRoot
-     * @Column(type="integer")
+     * @Gedmo\TreeRoot
+     * @ORM\Column(type="integer")
      */
     private $root;
 
     /**
-     * @gedmo:TreeLevel
-     * @Column(name="lvl", type="integer")
+     * @Gedmo\TreeLevel
+     * @ORM\Column(name="lvl", type="integer")
      */
      private $level;
 
     /**
-     * @OneToMany(targetEntity="RootCategory", mappedBy="parent")
+     * @ORM\OneToMany(targetEntity="RootCategory", mappedBy="parent")
      */
     private $children;
 

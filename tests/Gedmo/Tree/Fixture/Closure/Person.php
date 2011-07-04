@@ -2,34 +2,37 @@
 
 namespace Tree\Fixture\Closure;
 
+use Gedmo\Mapping\Annotation as Gedmo;
+use Doctrine\ORM\Mapping as ORM;
+
 /**
- * @gedmo:Tree(type="closure")
- * @gedmo:TreeClosure(class="Tree\Fixture\Closure\PersonClosure")
- * @Entity(repositoryClass="Gedmo\Tree\Entity\Repository\ClosureTreeRepository")
- * @InheritanceType("JOINED")
- * @DiscriminatorColumn(name="discriminator", type="string")
- * @DiscriminatorMap({
+ * @Gedmo\Tree(type="closure")
+ * @Gedmo\TreeClosure(class="Tree\Fixture\Closure\PersonClosure")
+ * @ORM\Entity(repositoryClass="Gedmo\Tree\Entity\Repository\ClosureTreeRepository")
+ * @ORM\InheritanceType("JOINED")
+ * @ORM\DiscriminatorColumn(name="discriminator", type="string")
+ * @ORM\DiscriminatorMap({
     "user" = "User"
     })
  */
 class Person
 {
     /**
-     * @Column(name="id", type="integer")
-     * @Id
-     * @GeneratedValue
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue
      */
     private $id;
 
     /**
-     * @Column(name="full_name", type="string", length=64)
+     * @ORM\Column(name="full_name", type="string", length=64)
      */
     private $fullName;
 
     /**
-     * @gedmo:TreeParent
-     * @JoinColumn(name="parent_id", referencedColumnName="id", onDelete="CASCADE")
-     * @ManyToOne(targetEntity="Person", inversedBy="children", cascade={"persist"})
+     * @Gedmo\TreeParent
+     * @ORM\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="CASCADE")
+     * @ORM\ManyToOne(targetEntity="Person", inversedBy="children", cascade={"persist"})
      */
     private $parent;
 

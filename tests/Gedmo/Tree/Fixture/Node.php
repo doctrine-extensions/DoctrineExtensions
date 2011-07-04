@@ -2,22 +2,25 @@
 
 namespace Tree\Fixture;
 
+use Gedmo\Mapping\Annotation as Gedmo;
+use Doctrine\ORM\Mapping as ORM;
+
 /**
- * @Entity(repositoryClass="Gedmo\Tree\Entity\Repository\NestedTreeRepository")
+ * @ORM\Entity(repositoryClass="Gedmo\Tree\Entity\Repository\NestedTreeRepository")
  */
 class Node extends BaseNode
 {
     /**
-     * @gedmo:Translatable
-     * @gedmo:Sluggable
-     * @Column(name="title", type="string", length=64)
+     * @Gedmo\Translatable
+     * @Gedmo\Sluggable
+     * @ORM\Column(name="title", type="string", length=64)
      */
     private $title;
 
     /**
-     * @gedmo:Translatable
-     * @gedmo:Slug
-     * @Column(name="slug", type="string", length=128)
+     * @Gedmo\Translatable
+     * @Gedmo\Slug
+     * @ORM\Column(name="slug", type="string", length=128)
      */
     private $slug;
 
