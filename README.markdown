@@ -8,6 +8,7 @@ records being flushed in the behavioral way. List of extensions:
 - Tree - this extension automates the tree handling process and adds some tree specific functions on repository. (closure or nestedset)
 - Translatable - gives you a very handy solution for translating records into diferent languages. Easy to setup, easier to use.
 - Sluggable - urlizes your specified fields into single unique slug
+- Sortable - maintains a position field for ordering entities
 - Timestampable - updates date fields on create, update and even property change.
 - Loggable - helps tracking changes and history of objects, also supports version managment.
 
@@ -34,6 +35,9 @@ Recently where was a change for type hinting on object manager and other. These 
 use these extensions from separate branch **doctrine2.0.x** or simply checkout to this branch.
 
 ### Latest updates
+
+**2011-07-04**
+- [lbotsch](http://github.com/lbotsch) implemented the Sortable extension.
 
 **2011-06-08**
 
@@ -100,3 +104,4 @@ To setup and run tests follow these steps:
 - Christophe Coevoet [stof](http://github.com/stof)
 - Kudryashov Konstantin [everzet](http://github.com/everzet)
 - Klein Florian [docteurklein](http://github.com/docteurklein)
+- Lukas Botsch [lbotsch](http://github.com/lbotsch)
