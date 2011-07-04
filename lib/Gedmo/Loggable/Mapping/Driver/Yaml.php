@@ -60,8 +60,37 @@ class Yaml extends File implements Driver
                 }
             }
         }
+
         if (isset($mapping['fields'])) {
             foreach ($mapping['fields'] as $field => $fieldMapping) {
+                if (isset($fieldMapping['gedmo'])) {
+                    if (in_array('versioned', $fieldMapping['gedmo'])) {
+                        if ($meta->isCollectionValuedAssociation($field)) {
+                            throw new InvalidMappingException("Cannot versioned [{$field}] as it is collection in object - {$meta->name}");
+                        }
+                        // fields cannot be overrided and throws mapping exception
+                        $config['versioned'][] = $field;
+                    }
+                }
+            }
+        }
+
+        if (isset($mapping['manyToOne'])) {
+            foreach ($mapping['manyToOne'] as $field => $fieldMapping) {
+                if (isset($fieldMapping['gedmo'])) {
+                    if (in_array('versioned', $fieldMapping['gedmo'])) {
+                        if ($meta->isCollectionValuedAssociation($field)) {
+                            throw new InvalidMappingException("Cannot versioned [{$field}] as it is collection in object - {$meta->name}");
+                        }
+                        // fields cannot be overrided and throws mapping exception
+                        $config['versioned'][] = $field;
+                    }
+                }
+            }
+        }
+
+        if (isset($mapping['oneToOne'])) {
+            foreach ($mapping['oneToOne'] as $field => $fieldMapping) {
                 if (isset($fieldMapping['gedmo'])) {
                     if (in_array('versioned', $fieldMapping['gedmo'])) {
                         if ($meta->isCollectionValuedAssociation($field)) {
