@@ -5,6 +5,8 @@ namespace Gedmo\Sortable\Mapping\Driver;
 use Gedmo\Mapping\Driver\AnnotationDriverInterface,
     Gedmo\Exception\InvalidMappingException;
 
+use Doctrine\Common\Persistence\Mapping\ClassMetadata;
+
 /**
  * This is an annotation mapping driver for Sortable
  * behavioral extension. Used for extraction of extended
@@ -63,7 +65,7 @@ class Annotation implements AnnotationDriverInterface
     /**
      * {@inheritDoc}
      */
-    public function validateFullMetadata($meta, array $config)
+    public function validateFullMetadata(ClassMetadata $meta, array $config)
     {
         if ($config && !isset($config['position'])) {
             throw new InvalidMappingException("Missing property: 'position' in class - {$meta->name}");
@@ -73,7 +75,7 @@ class Annotation implements AnnotationDriverInterface
     /**
      * {@inheritDoc}
      */
-    public function readExtendedMetadata($meta, array &$config) {
+    public function readExtendedMetadata(ClassMetadata $meta, array &$config) {
         $class = $meta->getReflectionClass();
         
         // property annotations
