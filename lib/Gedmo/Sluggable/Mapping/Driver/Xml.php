@@ -28,7 +28,8 @@ class Xml extends BaseXml
      * @var array
      */
     private $validTypes = array(
-        'string'
+        'string',
+        'text'
     );
 
     /**
