@@ -277,4 +277,3 @@ Yaml mapped Item: **/mapping/yaml/Entity.Item.dcm.yml**
     // prints:
     // 0: item 2
     // 1: item 1
-

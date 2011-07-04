@@ -69,4 +69,3 @@ class Item
         return $this->category;
     }
 }
-    

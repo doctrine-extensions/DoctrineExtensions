@@ -375,4 +375,3 @@ class SortableListener extends MappedEventSubscriber
         return __NAMESPACE__;
     }
 }
-    

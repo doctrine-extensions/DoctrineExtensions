@@ -282,4 +282,3 @@ class SortableTest extends BaseTestCaseORM
         $this->nodeId = $node->getId();
     }
 }
-    
