@@ -129,8 +129,13 @@ class SortableTest extends BaseTestCaseORM
         
         $this->em->clear();
         
-        $items = $this->em->createQuery("SELECT i, c FROM Sortable\Fixture\Item i JOIN i.category c ORDER BY c.name, i.position")
-                 ->getResult();
+        $repo = $this->em->getRepository('Sortable\\Fixture\\Category');
+        $category1 = $repo->findOneByName('Category1');
+        $category2 = $repo->findOneByName('Category2');
+        
+        $repo = $this->em->getRepository('Sortable\\Fixture\\Item');
+        
+        $items = $repo->getBySortableGroups(array('category' => $category1));
         
         $this->assertEquals("Item1", $items[0]->getName());
         $this->assertEquals("Category1", $items[0]->getCategory()->getName());
@@ -144,11 +149,13 @@ class SortableTest extends BaseTestCaseORM
         $this->assertEquals("Item4", $items[3]->getName());
         $this->assertEquals("Category1", $items[3]->getCategory()->getName());
         
-        $this->assertEquals("Item1_2", $items[4]->getName());
-        $this->assertEquals("Category2", $items[4]->getCategory()->getName());
+        $items = $repo->getBySortableGroups(array('category' => $category2));
         
-        $this->assertEquals("Item2_2", $items[5]->getName());
-        $this->assertEquals("Category2", $items[5]->getCategory()->getName());
+        $this->assertEquals("Item1_2", $items[0]->getName());
+        $this->assertEquals("Category2", $items[0]->getCategory()->getName());
+        
+        $this->assertEquals("Item2_2", $items[1]->getName());
+        $this->assertEquals("Category2", $items[1]->getCategory()->getName());
     }
     
     protected function getUsedEntityFixtures()
