@@ -74,9 +74,112 @@ class SortableTest extends BaseTestCaseORM
         $this->assertEquals('Node1', $nodes[0]->getName());
     }
     
-    public function testInsertUnsortedList()
+    public function testShiftForward()
     {
-        $this->assertTrue(true);
+        $node2 = new Node();
+        $node2->setName("Node2");
+        $node2->setPath("/");
+        $this->em->persist($node2);
+        
+        $node = new Node();
+        $node->setName("Node3");
+        $node->setPath("/");
+        $this->em->persist($node);
+        
+        $node = new Node();
+        $node->setName("Node4");
+        $node->setPath("/");
+        $this->em->persist($node);
+        
+        $node = new Node();
+        $node->setName("Node5");
+        $node->setPath("/");
+        $this->em->persist($node);
+        
+        $this->em->flush();
+        
+        $this->assertEquals(1, $node2->getPosition());
+        $node2->setPosition(3);
+        $this->em->persist($node2);
+        $this->em->flush();
+        $this->em->clear();
+        
+        $repo = $this->em->getRepository('Sortable\\Fixture\\Node');
+        $nodes = $repo->getBySortableGroups(array('path' => '/'));
+        
+        $this->assertEquals('Node1', $nodes[0]->getName());
+        $this->assertEquals('Node3', $nodes[1]->getName());
+        $this->assertEquals('Node4', $nodes[2]->getName());
+        $this->assertEquals('Node2', $nodes[3]->getName());
+        $this->assertEquals('Node5', $nodes[4]->getName());
+    }
+
+    public function testShiftBackward()
+    {
+        $node = new Node();
+        $node->setName("Node2");
+        $node->setPath("/");
+        $this->em->persist($node);
+        
+        $node = new Node();
+        $node->setName("Node3");
+        $node->setPath("/");
+        $this->em->persist($node);
+        
+        $node2 = new Node();
+        $node2->setName("Node4");
+        $node2->setPath("/");
+        $this->em->persist($node2);
+        
+        $node = new Node();
+        $node->setName("Node5");
+        $node->setPath("/");
+        $this->em->persist($node);
+        
+        $this->em->flush();
+        $this->assertEquals(3, $node2->getPosition());
+        
+        
+        $node2->setPosition(1);
+        $this->em->persist($node2);
+        $this->em->flush();
+        $this->em->clear();
+        
+        $repo = $this->em->getRepository('Sortable\\Fixture\\Node');
+        $nodes = $repo->getBySortableGroups(array('path' => '/'));
+        
+        $this->assertEquals('Node1', $nodes[0]->getName());
+        $this->assertEquals('Node4', $nodes[1]->getName());
+        $this->assertEquals('Node2', $nodes[2]->getName());
+        $this->assertEquals('Node3', $nodes[3]->getName());
+        $this->assertEquals('Node5', $nodes[4]->getName());
+    }
+
+    public function testDelete()
+    {
+        $node2 = new Node();
+        $node2->setName("Node2");
+        $node2->setPath("/");
+        $this->em->persist($node2);
+        
+        $node3 = new Node();
+        $node3->setName("Node3");
+        $node3->setPath("/");
+        $this->em->persist($node3);
+        
+        $this->em->flush();
+        
+        $this->em->remove($node2);
+        $this->em->flush();
+        $this->em->clear();
+        
+        $repo = $this->em->getRepository('Sortable\\Fixture\\Node');
+        $nodes = $repo->getBySortableGroups(array('path' => '/'));
+        
+        $this->assertEquals('Node1', $nodes[0]->getName());
+        $this->assertEquals('Node3', $nodes[1]->getName());
+        $this->assertEquals(0, $nodes[0]->getPosition());
+        $this->assertEquals(1, $nodes[1]->getPosition());
     }
     
     public function testGroupByAssociation()
