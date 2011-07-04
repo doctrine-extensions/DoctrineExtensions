@@ -12,7 +12,7 @@ Features:
 
 **Notice:**
 
-- Public [Sortable repository](http://github.com/lbotsch/DoctrineExtensions "Sortable extension on Github") is available on github
+- Public [Sortable repository](http://github.com/l3pp4rd/DoctrineExtensions "Sortable extension on Github") is available on github
 - Last update date: **2011-06-08**
 
 **Portability:**
@@ -98,13 +98,13 @@ cache is activated
         private $name;
     
         /**
-         * @gedmo:SortablePosition
+         * @Gedmo\SortablePosition
          * @Column(name="position", type="integer")
          */
         private $position;
     
         /**
-         * @gedmo:SortableGroup
+         * @Gedmo\SortableGroup
          * @Column(name="category", type="string", length=128)
          */
         private $category;
