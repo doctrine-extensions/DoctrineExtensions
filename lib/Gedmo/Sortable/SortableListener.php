@@ -40,10 +40,10 @@ class SortableListener extends MappedEventSubscriber
     
     public function prePersist(EventArgs $eventArgs)
     {
-        $em = $eventArgs->getEntityManager();
-        $object = $eventArgs->getEntity();
-        $meta = $em->getClassMetadata(get_class($object));
-        if ($config = $this->getConfiguration($em, $meta->name)) {
+        $dm = $eventArgs->getDocumentManager();
+        $object = $eventArgs->getDocument();
+        $meta = $dm->getClassMetadata(get_class($object));
+        if ($config = $this->getConfiguration($dm, $meta->name)) {
             if (isset($config['position'])
                     && is_null($meta->getReflectionProperty($config['position'])->getValue($object))) {
                 $meta->getReflectionProperty($config['position'])->setValue($object, -1);
@@ -105,11 +105,11 @@ class SortableListener extends MappedEventSubscriber
     
     /**
      * Computes node positions and updates the sort field in memory and in the db
-     * @param EntityManager $em
+     * @param DocumentManager $dm
      */
-    private function processInsert($em, $config, $meta, $object)
+    private function processInsert($dm, $config, $meta, $object)
     {
-        $uow = $em->getUnitOfWork();
+        $uow = $dm->getUnitOfWork();
         
         $newPosition = $meta->getReflectionProperty($config['position'])->getValue($object);
         if (is_null($newPosition)) {
@@ -126,7 +126,7 @@ class SortableListener extends MappedEventSubscriber
         
         // Get max position
         if (!isset($this->maxPositions[$hash])) {
-            $this->maxPositions[$hash] = $this->getMaxPosition($em, $meta, $config, $object);
+            $this->maxPositions[$hash] = $this->getMaxPosition($dm, $meta, $config, $object);
         }
         
         // Compute position if it is negative
@@ -163,11 +163,11 @@ class SortableListener extends MappedEventSubscriber
 
     /**
      * Computes node positions and updates the sort field in memory and in the db
-     * @param EntityManager $em
+     * @param DocumentManager $dm
      */
-    private function processUpdate($em, $config, $meta, $object)
+    private function processUpdate($dm, $config, $meta, $object)
     {
-        $uow = $em->getUnitOfWork();
+        $uow = $dm->getUnitOfWork();
         
         $changeSet = $uow->getEntityChangeSet($object);
         if (!array_key_exists($config['position'], $changeSet)) {
@@ -186,7 +186,7 @@ class SortableListener extends MappedEventSubscriber
         
         // Get max position
         if (!isset($this->maxPositions[$hash])) {
-            $this->maxPositions[$hash] = $this->getMaxPosition($em, $meta, $config, $object);
+            $this->maxPositions[$hash] = $this->getMaxPosition($dm, $meta, $config, $object);
         }
         
         // Compute position if it is negative
@@ -242,9 +242,9 @@ class SortableListener extends MappedEventSubscriber
     
     /**
      * Computes node positions and updates the sort field in memory and in the db
-     * @param EntityManager $em
+     * @param DocumentManager $dm
      */
-    private function processDeletion($em, $config, $meta, $object)
+    private function processDeletion($dm, $config, $meta, $object)
     {
         $position = $meta->getReflectionProperty($config['position'])->getValue($object);
         
@@ -258,24 +258,24 @@ class SortableListener extends MappedEventSubscriber
         
         // Get max position
         if (!isset($this->maxPositions[$hash])) {
-            $this->maxPositions[$hash] = $this->getMaxPosition($em, $meta, $config, $object);
+            $this->maxPositions[$hash] = $this->getMaxPosition($dm, $meta, $config, $object);
         }
         
         // Add relocation
         $this->addRelocation($hash, $meta, $groups, $position, -1, -1);
     }
     
-    private function processRelocations($em)
+    private function processRelocations($dm)
     {
         foreach ($this->relocations as $hash => $relocation) {
-            $config = $this->getConfiguration($em, $relocation['name']);
+            $config = $this->getConfiguration($dm, $relocation['name']);
             foreach ($relocation['deltas'] as $delta) {
                 if ($delta['start'] > $this->maxPositions[$hash] || $delta['delta'] == 0) {
                     continue;
                 }
                 $sign = $delta['delta'] < 0 ? "-" : "+";
                 $absDelta = abs($delta['delta']);
-                $qb = $em->createQueryBuilder();
+                $qb = $dm->createQueryBuilder();
                 $qb->update($relocation['name'], 'n')
                    ->set("n.{$config['position']}", "n.{$config['position']} ".$sign." :delta")
                    ->where("n.{$config['position']} >= :start")
@@ -312,10 +312,10 @@ class SortableListener extends MappedEventSubscriber
         return md5($data);
     }
     
-    private function getMaxPosition($em, $meta, $config, $object)
+    private function getMaxPosition($dm, $meta, $config, $object)
     {
         $maxPos = null;
-        $qb = $em->createQueryBuilder();
+        $qb = $dm->createQueryBuilder();
         $qb->select('MAX(n.'.$config['position'].')')
            ->from($meta->name, 'n');
         $qb = $this->addGroupWhere($qb, $config["groups"], $meta, $object);
