@@ -169,6 +169,7 @@ class SortableListener extends MappedEventSubscriber
     {
         $uow = $em->getUnitOfWork();
         
+        $changed = false;
         $changeSet = $uow->getEntityChangeSet($object);
         if (!array_key_exists($config['position'], $changeSet)) {
             return;
@@ -176,11 +177,19 @@ class SortableListener extends MappedEventSubscriber
         $oldPosition = $changeSet[$config['position']][0];
         $newPosition = $changeSet[$config['position']][1];
         
+        $changed = $changed || $oldPosition != $newPosition;
+        
         // Get groups
         $groups = array();
         foreach ($config['groups'] as $group) {
+            $changed = $changed ||
+                (array_key_exists($group, $changeSet)
+                    && $changeSet[$group][0] != $changeSet[$group][1]);
             $groups[$group] = $meta->getReflectionProperty($group)->getValue($object);
         }
+        
+        if (!$changed) return;
+        
         // Get hash
         $hash = $this->getHash($meta, $groups, $object);
         
