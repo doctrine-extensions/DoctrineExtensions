@@ -38,12 +38,13 @@ class SortableListener extends MappedEventSubscriber
         );
     }
     
-    public function prePersist(EventArgs $eventArgs)
+    public function prePersist(EventArgs $args)
     {
-        $em = $eventArgs->getEntityManager();
-        $object = $eventArgs->getEntity();
-        $meta = $em->getClassMetadata(get_class($object));
-        if ($config = $this->getConfiguration($em, $meta->name)) {
+        $ea = $this->getEventAdapter($args);
+        $om = $ea->getObjectManager();
+        $object = $ea->getObject();
+        $meta = $om->getClassMetadata(get_class($object));
+        if ($config = $this->getConfiguration($om, $meta->name)) {
             if (isset($config['position'])
                     && is_null($meta->getReflectionProperty($config['position'])->getValue($object))) {
                 $meta->getReflectionProperty($config['position'])->setValue($object, -1);
@@ -57,10 +58,10 @@ class SortableListener extends MappedEventSubscriber
      * @param EventArgs $eventArgs
      * @return void
      */
-    public function loadClassMetadata(EventArgs $eventArgs)
+    public function loadClassMetadata(EventArgs $args)
     {
-        $ea = $this->getEventAdapter($eventArgs);
-        $this->loadMetadataForObjectClass($ea->getObjectManager(), $eventArgs->getClassMetadata());
+        $ea = $this->getEventAdapter($args);
+        $this->loadMetadataForObjectClass($ea->getObjectManager(), $args->getClassMetadata());
     }
 
     /**
@@ -105,7 +106,7 @@ class SortableListener extends MappedEventSubscriber
     
     /**
      * Computes node positions and updates the sort field in memory and in the db
-     * @param EntityManager $em
+     * @param object $em ObjectManager
      */
     private function processInsert($em, $config, $meta, $object)
     {
@@ -163,7 +164,7 @@ class SortableListener extends MappedEventSubscriber
 
     /**
      * Computes node positions and updates the sort field in memory and in the db
-     * @param EntityManager $em
+     * @param object $em ObjectManager
      */
     private function processUpdate($em, $config, $meta, $object)
     {
@@ -251,7 +252,7 @@ class SortableListener extends MappedEventSubscriber
     
     /**
      * Computes node positions and updates the sort field in memory and in the db
-     * @param EntityManager $em
+     * @param object $em ObjectManager
      */
     private function processDeletion($em, $config, $meta, $object)
     {
