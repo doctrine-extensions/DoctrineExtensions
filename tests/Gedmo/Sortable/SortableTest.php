@@ -27,13 +27,8 @@ class SortableTest extends BaseTestCaseORM
     {
         parent::setUp();
         
-        $annotationReader = new \Doctrine\Common\Annotations\AnnotationReader();
-        $annotationReader->setAutoloadAnnotations(true);
-        $sortable = new SortableListener;
-        $sortable->setAnnotationReader($annotationReader);
-        
         $evm = new EventManager;
-        $evm->addEventSubscriber($sortable);
+        $evm->addEventSubscriber(new SortableListener);
 
         $this->getMockSqliteEntityManager($evm);
         //$this->startQueryLog();
