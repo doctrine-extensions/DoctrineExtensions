@@ -6,7 +6,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @Entity(repositoryClass="Gedmo\Sortable\Entity\Repository\SortableRepository")
+ * @ORM\Entity(repositoryClass="Gedmo\Sortable\Entity\Repository\SortableRepository")
  */
 class Node
 {
