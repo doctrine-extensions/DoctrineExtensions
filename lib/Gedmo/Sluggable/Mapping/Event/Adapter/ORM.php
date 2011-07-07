@@ -27,7 +27,7 @@ final class ORM extends BaseAdapterORM implements SluggableAdapter
         $em = $this->getObjectManager();
         $qb = $em->createQueryBuilder();
         $qb->select('rec.' . $config['slug'])
-            ->from($meta->name, 'rec')
+            ->from($config['useObjectClass'], 'rec')
             ->where($qb->expr()->like(
                 'rec.' . $config['slug'],
                 $qb->expr()->literal($slug . '%'))

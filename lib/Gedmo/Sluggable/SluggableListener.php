@@ -117,7 +117,7 @@ class SluggableListener extends MappedEventSubscriber
                 // generate first to exclude this object from similar persisted slugs result
                 $this->generateSlug($ea, $object);
                 $slug = $meta->getReflectionProperty($config['slug'])->getValue($object);
-                $this->persistedSlugs[$meta->name][] = $slug;
+                $this->persistedSlugs[$config['useObjectClass']][] = $slug;
             }
         }
         // we use onFlush and not preUpdate event to let other
@@ -239,7 +239,7 @@ class SluggableListener extends MappedEventSubscriber
         // search for similar slug
         $result = $ea->getSimilarSlugs($object, $meta, $config, $preferedSlug);
         // add similar persisted slugs into account
-        $result += $this->getSimilarPersistedSlugs($meta->name, $preferedSlug);
+        $result += $this->getSimilarPersistedSlugs($config['useObjectClass'], $preferedSlug);
         // leave only right slugs
         if (!$recursing) {
             $this->filterSimilarSlugs($result, $config, $preferedSlug);
