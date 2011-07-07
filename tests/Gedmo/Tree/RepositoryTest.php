@@ -306,6 +306,22 @@ class RepositoryTest extends BaseTestCaseORM
         //$this->assertTrue($repo->verify());
     }
 
+    public function testMoveRootNode()
+    {
+        $repo = $this->em->getRepository(self::CATEGORY);
+        $food = $repo->findOneByTitle('Food');
+
+        $repo->moveDown($food, 1);
+
+        $meta = $this->em->getClassMetadata(self::CATEGORY);
+
+        $left = $meta->getReflectionProperty('lft')->getValue($food);
+        $right = $meta->getReflectionProperty('rgt')->getValue($food);
+
+        $this->assertEquals($left, 3);
+        $this->assertEquals($right, 12);
+    }
+
     protected function getUsedEntityFixtures()
     {
         return array(
