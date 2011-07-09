@@ -186,7 +186,7 @@ cache is activated
             return $this->title;
         }
         
-        public function setParent(Category $parent)
+        public function setParent(Category $parent = null)
         {
             $this->parent = $parent;    
         }
