@@ -58,12 +58,12 @@ class Yaml extends File implements Driver
             foreach ($mapping['fields'] as $field => $fieldMapping) {
                 if (isset($fieldMapping['gedmo'])) {
 
-                    if (in_array('sluggable', $fieldMapping['gedmo'])) {
+                    if (isset($fieldMapping['gedmo']['sluggable']) || in_array('sluggable', $fieldMapping['gedmo'])) {
                         if (!$this->isValidField($meta, $field)) {
                             throw new InvalidMappingException("Cannot slug field - [{$field}] type is not valid and must be 'string' in class - {$meta->name}");
                         }
-                        $sluggable = $fieldMapping['gedmo'][array_search('sluggable', $fieldMapping['gedmo'])];
-                        $slugField = isset($sluggable['slugField'])? $sluggable['slugField']:'slug';
+                        $sluggable = $fieldMapping['gedmo']['sluggable'];
+                        $slugField = (isset($sluggable['slugField'])? $sluggable['slugField']:'slug');
                         $config['fields'][$slugField][] = array('field' => $field, 'position' => $sluggable['position'], 'slugField' => $slugField);
                     } elseif (isset($fieldMapping['gedmo']['slug']) || in_array('slug', $fieldMapping['gedmo'])) {
                         $slug = $fieldMapping['gedmo']['slug'];
