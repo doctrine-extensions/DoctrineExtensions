@@ -227,7 +227,6 @@ class SluggableListener extends MappedEventSubscriber
                 $meta->getReflectionProperty($slugFieldConfig['slug'])->setValue($object, $slug);
                 // recompute changeset
                 $ea->recomputeSingleObjectChangeSet($uow, $meta, $object);
-            
             }
         }
     }

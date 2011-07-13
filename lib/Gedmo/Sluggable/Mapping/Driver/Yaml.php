@@ -73,8 +73,6 @@ class Yaml extends File implements Driver
                         if (isset($config['slug'])) {
                             throw new InvalidMappingException("There cannot be two slug fields: [{$slugField}] and [{$config['slug']}], in class - {$meta->name}.");
                         }
-                        
-
                         $config['slugFields'][$field]['slug'] = $field;
                         $config['slugFields'][$field]['style'] = isset($slug['style']) ?
                             (string)$slug['style'] : 'default';
