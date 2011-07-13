@@ -108,7 +108,6 @@ class Annotation implements AnnotationDriverInterface
                 if (!$this->isValidField($meta, $field)) {
                     throw new InvalidMappingException("Cannot use field - [{$field}] for slug storage, type is not valid and must be 'string' in class - {$meta->name}");
                 }
-                
                 $config['slugFields'][$field]['slug'] = $field;
                 $config['slugFields'][$field]['style'] = $slug->style;
                 $config['slugFields'][$field]['updatable'] = $slug->updatable;
