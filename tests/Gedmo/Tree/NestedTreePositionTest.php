@@ -60,6 +60,23 @@ class NestedTreePositionTest extends BaseTestCaseORM
         $this->assertEquals(11, $fruits->getRight());
     }
 
+    public function testTreeChildPositionMove()
+    {
+        $this->populate();
+        $repo = $this->em->getRepository(self::ROOT_CATEGORY);
+
+        $oranges = $repo->findOneByTitle('Oranges');
+        $fruits = $repo->findOneByTitle('Fruits');
+
+        $this->assertEquals(2, $oranges->getLevel());
+
+        $repo->persistAsNextSiblingOf($oranges, $fruits);
+        $this->em->flush();
+
+        $this->assertEquals(1, $oranges->getLevel());
+        $this->assertEquals(1, count($repo->children($fruits, true)));
+    }
+
     public function testOnRootCategory()
     {
         // need to check if this does not produce errors

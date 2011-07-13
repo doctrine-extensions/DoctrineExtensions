@@ -87,6 +87,7 @@ class NestedTreeRepository extends AbstractTreeRepository
                 $wrapped->setPropertyValue($config['parent'], $parent);
                 $position = substr($position, 0, -2);
             }
+            $wrapped->setPropertyValue($config['left'], 0); // simulate changeset
             $oid = spl_object_hash($node);
             $this->listener
                 ->getStrategy($this->_em, $meta->name)

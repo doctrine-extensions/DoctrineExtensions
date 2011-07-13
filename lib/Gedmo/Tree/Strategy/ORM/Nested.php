@@ -136,8 +136,15 @@ class Nested implements Strategy
         if (isset($config['root']) && isset($changeSet[$config['root']])) {
             throw new \Gedmo\Exception\UnexpectedValueException("Root cannot be changed manualy, change parent instead");
         }
-        if (isset($changeSet[$config['parent']])) {
-            $this->updateNode($em, $node, $changeSet[$config['parent']][1]);
+        if (isset($changeSet[$config['parent']]) || isset($changeSet[$config['left']])) {
+            $oid = spl_object_hash($node);
+            $wrapped = AbstractWrapper::wrapp($node, $em);
+            $parent = $wrapped->getPropertyValue($config['parent']);
+            if (isset($this->nodePositions[$oid]) && isset($changeSet[$config['left']])) {
+                // revert simulated changeset
+                $wrapped->setPropertyValue($config['left'], $changeSet[$config['left']][0]);
+            }
+            $this->updateNode($em, $node, $parent);
         }
     }
 
