@@ -18,13 +18,6 @@ use Doctrine\Common\Annotations\Annotation;
 final class Sluggable extends Annotation
 {
     public $position = 0;
-<<<<<<< HEAD
     public $slugField = 'slug';
-=======
-<<<<<<< HEAD
-=======
-    public $slugField = 'slug';
->>>>>>> a6dd4fd... Fixed coding standard problems
->>>>>>> multiple_slugs
 }
 

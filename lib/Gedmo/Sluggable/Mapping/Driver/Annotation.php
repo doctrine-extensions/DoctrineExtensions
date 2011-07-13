@@ -108,30 +108,12 @@ class Annotation implements AnnotationDriverInterface
                 if (!$this->isValidField($meta, $field)) {
                     throw new InvalidMappingException("Cannot use field - [{$field}] for slug storage, type is not valid and must be 'string' in class - {$meta->name}");
                 }
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-                if (isset($config['slug'])) {
-                    throw new InvalidMappingException("There cannot be two slug fields: [{$slugField}] and [{$config['slug']}], in class - {$meta->name}.");
-                }
-
-                $config['slug'] = $field;
-                $config['style'] = $slug->style;
-                $config['updatable'] = $slug->updatable;
-                $config['unique'] = $slug->unique;
-                $config['separator'] = $slug->separator;
-=======
->>>>>>> multiple_slugs
                 
                 $config['slugFields'][$field]['slug'] = $field;
                 $config['slugFields'][$field]['style'] = $slug->style;
                 $config['slugFields'][$field]['updatable'] = $slug->updatable;
                 $config['slugFields'][$field]['unique'] = $slug->unique;
                 $config['slugFields'][$field]['separator'] = $slug->separator;
-<<<<<<< HEAD
-=======
->>>>>>> a6dd4fd... Fixed coding standard problems
->>>>>>> multiple_slugs
             }
         }
     }

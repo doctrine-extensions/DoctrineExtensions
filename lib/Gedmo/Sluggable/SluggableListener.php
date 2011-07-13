@@ -116,21 +116,10 @@ class SluggableListener extends MappedEventSubscriber
             if ($config = $this->getConfiguration($om, $meta->name)) {
                 // generate first to exclude this object from similar persisted slugs result
                 $this->generateSlug($ea, $object);
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-                $slug = $meta->getReflectionProperty($config['slug'])->getValue($object);
-                $this->persistedSlugs[$config['useObjectClass']][] = $slug;
-=======
->>>>>>> multiple_slugs
                 foreach ($config['fields'] as $slugField=>$fieldsForSlugField) {
                     $slug = $meta->getReflectionProperty($slugField)->getValue($object);
                     $this->persistedSlugs[$config['useObjectClass']][] = $slug;
                 }
-<<<<<<< HEAD
-=======
->>>>>>> a6dd4fd... Fixed coding standard problems
->>>>>>> multiple_slugs
             }
         }
         // we use onFlush and not preUpdate event to let other
@@ -138,21 +127,10 @@ class SluggableListener extends MappedEventSubscriber
         foreach ($ea->getScheduledObjectUpdates($uow) as $object) {
             $meta = $om->getClassMetadata(get_class($object));
             if ($config = $this->getConfiguration($om, $meta->name)) {
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-                if ($config['updatable']) {
-                    $this->generateSlug($ea, $object);
-=======
->>>>>>> multiple_slugs
                 foreach ($config['slugFields'] as $slugField) {
                     if ($slugField['updatable']) {
                         $this->generateSlug($ea, $object);
                     }
-<<<<<<< HEAD
-=======
->>>>>>> a6dd4fd... Fixed coding standard problems
->>>>>>> multiple_slugs
                 }
             }
         }
@@ -182,14 +160,7 @@ class SluggableListener extends MappedEventSubscriber
         $uow = $om->getUnitOfWork();
         $changeSet = $ea->getObjectChangeSet($uow, $object);
         $config = $this->getConfiguration($om, $meta->name);
-<<<<<<< HEAD
         foreach ($config['fields'] as $slugField=>$fieldsForSlugField) {
-=======
-<<<<<<< HEAD
-=======
-        foreach ($config['fields'] as $slugField=>$fieldsForSlugField) {
->>>>>>> a6dd4fd... Fixed coding standard problems
->>>>>>> multiple_slugs
 
             // sort sluggable fields by position
             $fields = $fieldsForSlugField;
@@ -256,7 +227,6 @@ class SluggableListener extends MappedEventSubscriber
                 $meta->getReflectionProperty($slugFieldConfig['slug'])->setValue($object, $slug);
                 // recompute changeset
                 $ea->recomputeSingleObjectChangeSet($uow, $meta, $object);
-            
             }
         }
     }
@@ -273,21 +243,11 @@ class SluggableListener extends MappedEventSubscriber
     {
         $om = $ea->getObjectManager();
         $meta = $om->getClassMetadata(get_class($object));
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-        $config = $this->getConfiguration($om, $meta->name);
-=======
->>>>>>> multiple_slugs
         if (count ($config) == 0)
         {
             $config = $this->getConfiguration($om, $meta->name);
         }
         
-<<<<<<< HEAD
-=======
->>>>>>> a6dd4fd... Fixed coding standard problems
->>>>>>> multiple_slugs
 
         // search for similar slug
         $result = $ea->getSimilarSlugs($object, $meta, $config, $preferedSlug);
