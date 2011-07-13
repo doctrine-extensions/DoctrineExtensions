@@ -65,6 +65,7 @@ class Xml extends BaseXml
                     if (!$this->isValidField($meta, $field)) {
                         throw new InvalidMappingException("Cannot slug field - [{$field}] type is not valid and must be 'string' in class - {$meta->name}");
                     }
+<<<<<<< HEAD
                     $options = array('position'=>false, 'field'=>$field, 'slugField'=>'slug');
                     if ($this->_isAttributeSet($mapping->sluggable, 'position')) {
                         $options['position'] =  (int)$this->_getAttribute($mapping->sluggable, 'position');
@@ -74,6 +75,17 @@ class Xml extends BaseXml
                         $options['slugField'] =  $this->_getAttribute($mapping->sluggable, 'slugField');
                     }
                     
+=======
+                    $options = array('position' => false, 'field' => $field, 'slugField' => 'slug');
+                    if ($this->_isAttributeSet($mapping->sluggable, 'position')) {
+                        $options['position'] =  (int)$this->_getAttribute($mapping->sluggable, 'position');
+                    }
+
+                    if ($this->_isAttributeSet($mapping->sluggable, 'slugField')) {
+                        $options['slugField'] =  $this->_getAttribute($mapping->sluggable, 'slugField');
+                    }
+
+>>>>>>> multiple_slugs_1
                     $config['fields'][$options['slugField']][] = $options;
                 } elseif (isset($mapping->slug)) {
                     /**

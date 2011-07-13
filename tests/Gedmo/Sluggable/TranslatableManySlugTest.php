@@ -77,8 +77,11 @@ class TranslatableManySlugTest extends BaseTestCaseORM
         $this->assertEquals('title-in-de-code-in-de', $translations['de_de']['slug']);
     }
 
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> multiple_slugs_1
     protected function getUsedEntityFixtures()
     {
         return array(
