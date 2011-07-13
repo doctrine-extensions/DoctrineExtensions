@@ -84,9 +84,6 @@ class Xml extends BaseXml
                     if (!$this->isValidField($meta, $field)) {
                         throw new InvalidMappingException("Cannot use field - [{$field}] for slug storage, type is not valid and must be 'string' in class - {$meta->name}");
                     }
-                    if (isset($config['slug'])) {
-                        throw new InvalidMappingException("There cannot be two slug fields: [{$slug}] and [{$config['slug']}], in class - {$meta->name}.");
-                    }
                     $config['slugFields'][$field]['slug'] = $field;
                     $config['slugFields'][$field]['style'] = $this->_isAttributeSet($slug, 'style') ?
                         $this->_getAttribute($slug, 'style') : 'default';
