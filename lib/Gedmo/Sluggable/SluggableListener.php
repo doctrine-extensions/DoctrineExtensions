@@ -116,13 +116,10 @@ class SluggableListener extends MappedEventSubscriber
             if ($config = $this->getConfiguration($om, $meta->name)) {
                 // generate first to exclude this object from similar persisted slugs result
                 $this->generateSlug($ea, $object);
-                
                 foreach ($config['fields'] as $slugField=>$fieldsForSlugField) {
                     $slug = $meta->getReflectionProperty($slugField)->getValue($object);
                     $this->persistedSlugs[$config['useObjectClass']][] = $slug;
                 }
-                
-                
             }
         }
         // we use onFlush and not preUpdate event to let other
@@ -131,13 +128,10 @@ class SluggableListener extends MappedEventSubscriber
             $meta = $om->getClassMetadata(get_class($object));
             if ($config = $this->getConfiguration($om, $meta->name)) {
                 foreach ($config['slugFields'] as $slugField) {
-                
                     if ($slugField['updatable']) {
                         $this->generateSlug($ea, $object);
                     }
-                
                 }
-                
             }
         }
     }
@@ -166,7 +160,6 @@ class SluggableListener extends MappedEventSubscriber
         $uow = $om->getUnitOfWork();
         $changeSet = $ea->getObjectChangeSet($uow, $object);
         $config = $this->getConfiguration($om, $meta->name);
-        
         foreach ($config['fields'] as $slugField=>$fieldsForSlugField) {
 
             // sort sluggable fields by position
@@ -253,9 +246,7 @@ class SluggableListener extends MappedEventSubscriber
         $meta = $om->getClassMetadata(get_class($object));
         if (count ($config) == 0)
         {
-        
             $config = $this->getConfiguration($om, $meta->name);
-        
         }
         
 
