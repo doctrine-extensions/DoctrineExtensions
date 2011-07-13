@@ -182,30 +182,16 @@ class SluggableListener extends MappedEventSubscriber
             }
             // if slug is changed, do further processing
             if ($needToChangeSlug) {            
-<<<<<<< HEAD
-    
-=======
->>>>>>> multiple_slugs_1
                 if (!strlen(trim($slug))) {
                     throw new \Gedmo\Exception\UnexpectedValueException("Unable to find any non empty sluggable fields for slug [{$slugField}] , make sure they have something at least.");
                 }
                 
                 $slugFieldConfig = $config['slugFields'][$slugField];
-<<<<<<< HEAD
-        
-=======
-
->>>>>>> multiple_slugs_1
                 // build the slug
                 $slug = call_user_func_array(
                     $this->transliterator,
                     array($slug, $slugFieldConfig['separator'], $object)
                 );
-<<<<<<< HEAD
-        
-=======
-
->>>>>>> multiple_slugs_1
                 // stylize the slug
                 switch ($slugFieldConfig['style']) {
                     case 'camel':
@@ -258,10 +244,6 @@ class SluggableListener extends MappedEventSubscriber
         {
             $config = $this->getConfiguration($om, $meta->name);
         }
-<<<<<<< HEAD
-        
-=======
->>>>>>> multiple_slugs_1
 
         // search for similar slug
         $result = $ea->getSimilarSlugs($object, $meta, $config, $preferedSlug);
