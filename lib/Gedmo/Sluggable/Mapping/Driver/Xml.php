@@ -65,7 +65,11 @@ class Xml extends BaseXml
                     if (!$this->isValidField($meta, $field)) {
                         throw new InvalidMappingException("Cannot slug field - [{$field}] type is not valid and must be 'string' in class - {$meta->name}");
                     }
+<<<<<<< HEAD
                     $options = array('position' => false, 'field' => $field);
+=======
+                    $options = array('position'=>false, 'field'=>$field, 'slugField'=>'slug');
+>>>>>>> a6dd4fd... Fixed coding standard problems
                     if ($this->_isAttributeSet($mapping->sluggable, 'position')) {
                         $options['position'] =  (int)$this->_getAttribute($mapping->sluggable, 'position');
                     }
@@ -81,8 +85,13 @@ class Xml extends BaseXml
                     if (isset($config['slug'])) {
                         throw new InvalidMappingException("There cannot be two slug fields: [{$slug}] and [{$config['slug']}], in class - {$meta->name}.");
                     }
+<<<<<<< HEAD
                     $config['slug'] = $field;
                     $config['style'] = $this->_isAttributeSet($slug, 'style') ?
+=======
+                    $config['slugFields'][$field]['slug'] = $field;
+                    $config['slugFields'][$field]['style'] = $this->_isAttributeSet($slug, 'style') ?
+>>>>>>> a6dd4fd... Fixed coding standard problems
                         $this->_getAttribute($slug, 'style') : 'default';
 
                     $config['updatable'] = $this->_isAttributeSet($slug, 'updatable') ?
