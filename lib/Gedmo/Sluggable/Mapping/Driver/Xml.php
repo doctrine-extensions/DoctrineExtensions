@@ -65,11 +65,16 @@ class Xml extends BaseXml
                     if (!$this->isValidField($meta, $field)) {
                         throw new InvalidMappingException("Cannot slug field - [{$field}] type is not valid and must be 'string' in class - {$meta->name}");
                     }
-                    $options = array('position' => false, 'field' => $field);
+                    $options = array('position' => false, 'field' => $field, 'slugField'=>'slug');
                     if ($this->_isAttributeSet($mapping->sluggable, 'position')) {
                         $options['position'] =  (int)$this->_getAttribute($mapping->sluggable, 'position');
                     }
-                    $config['fields'][] = $options;
+                    
+                    if ($this->_isAttributeSet($mapping->sluggable, 'slugField')) {
+                        $options['slugField'] =  $this->_getAttribute($mapping->sluggable, 'slugField');
+                    }
+                    
+                    $config['fields'][$options['slugField']][] = $options;
                 } elseif (isset($mapping->slug)) {
                     /**
                      * @var \SimpleXmlElement $slug
@@ -81,17 +86,19 @@ class Xml extends BaseXml
                     if (isset($config['slug'])) {
                         throw new InvalidMappingException("There cannot be two slug fields: [{$slug}] and [{$config['slug']}], in class - {$meta->name}.");
                     }
-                    $config['slug'] = $field;
-                    $config['style'] = $this->_isAttributeSet($slug, 'style') ?
+                    
+                    
+                    $config['slugFields'][$field]['slug'] = $field;
+                    $config['slugFields'][$field]['style'] = $this->_isAttributeSet($slug, 'style') ?
                         $this->_getAttribute($slug, 'style') : 'default';
 
-                    $config['updatable'] = $this->_isAttributeSet($slug, 'updatable') ?
+                    $config['slugFields'][$field]['updatable'] = $this->_isAttributeSet($slug, 'updatable') ?
                         (bool)$this->_getAttribute($slug, 'updatable') : true;
 
-                    $config['unique'] = $this->_isAttributeSet($slug, 'unique') ?
+                    $config['slugFields'][$field]['unique'] = $this->_isAttributeSet($slug, 'unique') ?
                         (bool)$this->_getAttribute($slug, 'unique') : true;
 
-                    $config['separator'] = $this->_isAttributeSet($slug, 'separator') ?
+                    $config['slugFields'][$field]['separator'] = $this->_isAttributeSet($slug, 'separator') ?
                         $this->_getAttribute($slug, 'separator') : '-';
                 }
             }
