@@ -94,7 +94,10 @@ class Annotation implements AnnotationDriverInterface
                 if (!$this->isValidField($meta, $field)) {
                     throw new InvalidMappingException("Cannot slug field - [{$field}] type is not valid and must be 'string' in class - {$meta->name}");
                 }
-                $config['fields'][] = array('field' => $field, 'position' => $sluggable->position);
+                if (!is_null($sluggable->slugField) and !$meta->hasField($sluggable->slugField)) {
+                    throw new InvalidMappingException("Unable to find slug [{$field}] as mapped property in entity - {$meta->name}");
+                }
+                $config['fields'][$sluggable->slugField][] = array('field' => $field, 'position' => $sluggable->position, 'slugField' => $sluggable->slugField);
             }
             // slug property
             if ($slug = $this->reader->getPropertyAnnotation($property, self::SLUG)) {
@@ -105,6 +108,9 @@ class Annotation implements AnnotationDriverInterface
                 if (!$this->isValidField($meta, $field)) {
                     throw new InvalidMappingException("Cannot use field - [{$field}] for slug storage, type is not valid and must be 'string' in class - {$meta->name}");
                 }
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
                 if (isset($config['slug'])) {
                     throw new InvalidMappingException("There cannot be two slug fields: [{$slugField}] and [{$config['slug']}], in class - {$meta->name}.");
                 }
@@ -114,6 +120,18 @@ class Annotation implements AnnotationDriverInterface
                 $config['updatable'] = $slug->updatable;
                 $config['unique'] = $slug->unique;
                 $config['separator'] = $slug->separator;
+=======
+>>>>>>> multiple_slugs
+                
+                $config['slugFields'][$field]['slug'] = $field;
+                $config['slugFields'][$field]['style'] = $slug->style;
+                $config['slugFields'][$field]['updatable'] = $slug->updatable;
+                $config['slugFields'][$field]['unique'] = $slug->unique;
+                $config['slugFields'][$field]['separator'] = $slug->separator;
+<<<<<<< HEAD
+=======
+>>>>>>> a6dd4fd... Fixed coding standard problems
+>>>>>>> multiple_slugs
             }
         }
     }
