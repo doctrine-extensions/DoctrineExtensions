@@ -35,6 +35,13 @@ use these extensions from separate branch **doctrine2.0.x** or simply checkout t
 
 ### Latest updates
 
+**2011-07-14**
+
+- Sluggable can handle multiple slug fields, now on Sluggable annotation you will need
+to provide slugField property it should belong to
+- Translatable query hint will use **default locale** translations in case if it does not
+have a translation in currently used locale
+
 **2011-06-24**
 
 - Implemented better compatibility with new and older annotation mapping style. Read
@@ -48,21 +55,6 @@ uninitialized or detached proxies.
 - [mvrhov](http://github.com/mvrhov) implemented the XML driver for extensions and now
 there is a full stack of drivers to make your experience even better using these extensions.
 So far I'm not sure if the same xsd will work with ODM but it will be created in comming month.
-
-**2011-05-23**
-
-- Recently **doctrine-common** library changed the way for annotation mapping in branch **3.0.x**
-If you are a **Symfony2** user, you will notice that shortly. Extensions were upgraded to support
-injection of annotation reader into listener which makes them compatible with these changes. For more
-details look in **doc/annotations.md**
-
-**2011-05-07**
-
-- Tree **closure** strategy was refactored and now fully functional. Actually nested-set
-is performing faster during concurrent inserts and moving subtrees and it also supports
-ordering of nodes.
-- Also there are good news for ODM users, @mtotheikle is working on **materialized path**
-strategy for ODM Tree like documents.
 
 ### ODM MongoDB support
 
@@ -100,6 +92,7 @@ To setup and run tests follow these steps:
 
 ### Contributors:
 
+- DinoWeb [dinoweb](http://github.com/dinoweb)
 - Miha Vrhovnik [mvrhov](http://github.com/mvrhov)
 - Clément JOBEILI [dator](http://github.com/dator)
 - Illya Klymov [xanf](http://github.com/xanf)
