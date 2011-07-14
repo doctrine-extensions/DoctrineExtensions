@@ -306,7 +306,6 @@ Yaml mapped Article: **/mapping/yaml/Entity.Article.dcm.yml**
 
 - **slugField** (optional, default="slug") - the slug field where the slug will be stored
 
-
     class Article
     {
         // ...
@@ -316,7 +315,7 @@ Yaml mapped Article: **/mapping/yaml/Entity.Article.dcm.yml**
          */
         private $slug;
         // ...
-        
+ 
         // ...
         /**
          * @gedmo:Sluggable(slugField="slug")
