@@ -214,6 +214,7 @@ Yaml mapped Category: **/mapping/yaml/Entity.Category.dcm.yml**
     ---
     Entity\Category:
       type: entity
+      repositoryClass: Gedmo\Tree\Entity\Repository\NestedTreeRepository
       table: categories
       gedmo:
         tree:
@@ -579,6 +580,7 @@ Yaml mapped Category: **/mapping/yaml/Entity.Category.dcm.yml**
     ---
     Entity\Category:
       type: entity
+      repositoryClass: Gedmo\Tree\Entity\Repository\NestedTreeRepository
       table: categories
       gedmo:
         tree:
