@@ -306,7 +306,7 @@ Yaml mapped Article: **/mapping/yaml/Entity.Article.dcm.yml**
 
 - **slugField** (optional, default="slug") - the slug field where the slug will be stored
 
-    namespace Document;
+### Example
     
     class Article
     {
