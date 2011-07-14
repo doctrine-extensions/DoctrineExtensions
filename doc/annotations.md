@@ -290,6 +290,7 @@ Additionaly can use **position** option to set field position is slug
 **options:**
 
 - **position** - (integer) _optional_
+- **slugField** - (string) _optional_ default: **slug**
 
 example:
 
