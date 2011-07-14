@@ -290,11 +290,12 @@ Additionaly can use **position** option to set field position is slug
 **options:**
 
 - **position** - (integer) _optional_
+- **slugField** - (string) _optional_ default: **slug**
 
 example:
 
     /**
-     * @gedmo:Sluggable
+     * @gedmo:Sluggable(slugField="slug")
      * @Column(length=64)
      */
     private $code;
