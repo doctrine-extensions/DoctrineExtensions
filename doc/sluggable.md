@@ -10,6 +10,7 @@ Features:
 - Slugs can be unique and styled
 - Can be nested with other behaviors
 - Annotation, Yaml and Xml mapping support for extensions
+- Multiple slugs
 
 [blog_test]: http://gediminasm.org/test "Test extensions on this blog"
 
@@ -106,13 +107,13 @@ cache is activated
         private $id;
     
         /**
-         * @gedmo:Sluggable
+         * @gedmo:Sluggable(slugField="slug")
          * @Column(name="title", type="string", length=64)
          */
         private $title;
     
         /**
-         * @gedmo:Sluggable
+         * @gedmo:Sluggable(slugField="slug")
          * @Column(name="code", type="string", length=16)
          */
         private $code;
@@ -167,7 +168,7 @@ cache is activated
         private $id;
     
         /**
-         * @gedmo:Sluggable
+         * @gedmo:Sluggable(slugField="slug")
          * @String
          */
         private $title;
@@ -233,12 +234,16 @@ Yaml mapped Article: **/mapping/yaml/Entity.Article.dcm.yml**
           type: string
           length: 64
           gedmo:
-            - sluggable
+            sluggable:
+              position: 0
+              fieldSlug: 'slug'
         code:
           type: string
           length: 16
           gedmo:
-            - sluggable
+            sluggable:
+              position: 1
+              fieldSlug: 'slug'
         slug:
           type: string
           length: 128
@@ -290,12 +295,17 @@ Yaml mapped Article: **/mapping/yaml/Entity.Article.dcm.yml**
     echo $article->getSlug();
     // prints: the-title-my-code
 
-### Some other configuration options:
+### Some other configuration options for **slug** annotation:
 
 - **updatable** (optional, default=true) - **true** to update the slug on sluggable field changes, **false** - otherwise
 - **unique** (optional, default=true) - **true** if slug should be unique and if identical it will be prefixed, **false** - otherwise
 - **separator** (optional, default="-") - separator which will separate words in slug
 - **style** (optional, default="default") - **"default"** all letters will be lowercase, **"camel"** - first word letter will be uppercase
+
+### Some other configuration options for **sluggable** annotation:
+
+- **slugField** (optional, default="slug") - the slug field where the slug will be stored
+
 
     class Article
     {
@@ -305,6 +315,14 @@ Yaml mapped Article: **/mapping/yaml/Entity.Article.dcm.yml**
          * @Column(name="slug", type="string", length=128, unique=true)
          */
         private $slug;
+        // ...
+        
+        // ...
+        /**
+         * @gedmo:Sluggable(slugField="slug")
+         * @Column(name="title", type="string", length=128)
+         */
+        private $title;
         // ...
     }
 
