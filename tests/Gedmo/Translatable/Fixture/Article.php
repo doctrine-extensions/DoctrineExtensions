@@ -22,7 +22,7 @@ class Article implements Translatable
 
     /**
      * @Gedmo\Translatable
-     * @ORM\Column(name="content", type="text")
+     * @ORM\Column(name="content", type="text", nullable=true)
      */
     private $content;
 

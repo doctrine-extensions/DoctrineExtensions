@@ -210,6 +210,16 @@ class TranslationListener extends MappedEventSubscriber
     }
 
     /**
+     * Gets the default locale
+     *
+     * @return string
+     */
+    public function getDefaultLocale()
+    {
+        return $this->defaultLocale;
+    }
+
+    /**
      * Get currently set global locale, used
      * extensively during query execution
      *

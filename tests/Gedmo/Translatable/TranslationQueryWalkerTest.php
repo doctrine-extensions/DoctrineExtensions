@@ -40,6 +40,33 @@ class TranslationQueryWalkerTest extends BaseTestCaseORM
         $this->populate();
     }
 
+    public function testIssue109()
+    {
+        $this->populateIssue109();
+        $this->em
+            ->getConfiguration()
+            ->expects($this->any())
+            ->method('getCustomHydrationMode')
+            ->with(TranslationWalker::HYDRATE_OBJECT_TRANSLATION)
+            ->will($this->returnValue('Gedmo\\Translatable\\Hydrator\\ORM\\ObjectHydrator'))
+        ;
+        $query = $this->em->createQueryBuilder();
+        $query->select('a')
+            ->from(self::ARTICLE, 'a')
+            ->add('where', $query->expr()->not($query->expr()->eq('a.title', ':title')))
+            ->setParameter('title', 'NA')
+        ;
+
+        $this->translationListener->setTranslatableLocale('es');
+        $this->translationListener->setDefaultLocale('en');
+        $this->translationListener->setTranslationFallback(true);
+        $query = $query->getQuery();
+        $query->setHint(Query::HINT_CUSTOM_OUTPUT_WALKER, self::TREE_WALKER_TRANSLATION);
+
+        $result = $query->getResult();
+        $this->assertEquals(3, count($result));
+    }
+
     public function testSubselectByTranslatedField()
     {
         $this->populateMore();
@@ -557,5 +584,37 @@ class TranslationQueryWalkerTest extends BaseTestCaseORM
         $this->em->persist($badFood);
         $this->em->flush();
         $this->em->clear();
+    }
+
+    public function populateIssue109()
+    {
+        $this->translationListener->setTranslatableLocale('en');
+        $text0 = new Article;
+        $text0->setTitle('text0');
+
+        $this->em->persist($text0);
+
+        $text1 = new Article;
+        $text1->setTitle('text1');
+
+        $this->em->persist($text1);
+
+        $na = new Article;
+        $na->setTitle('NA');
+
+        $this->em->persist($na);
+
+        $out = new Article;
+        $out->setTitle('Out');
+
+        $this->em->persist($out);
+        $this->em->flush();
+        $this->translationListener->setTranslatableLocale('es');
+
+        $text1->setTitle('texto1');
+        $text0->setTitle('texto0');
+        $this->em->persist($text1);
+        $this->em->persist($text0);
+        $this->em->flush();
     }
 }

@@ -297,6 +297,7 @@ class TranslationWalker extends SqlWalker
         $em = $this->getEntityManager();
         $ea = new TranslatableEventAdapter;
         $locale = $this->listener->getListenerLocale();
+        $defaultLocale = $this->listener->getDefaultLocale();
 
         foreach ($this->translatedComponents as $dqlAlias => $comp) {
             if (!isset($result[$comp['nestingLevel']])) {
@@ -320,12 +321,31 @@ class TranslationWalker extends SqlWalker
                     .' = '.$this->conn->quote($field);
                 $identifier = $meta->getSingleIdentifierFieldName();
                 $colName = $meta->getQuotedColumnName($identifier, $this->platform);
-                $colAlias = $this->getSQLColumnAlias($colName);
                 $sql .= ' AND '.$tblAlias.'.'.$transMeta->getQuotedColumnName('foreignKey', $this->platform)
                     .' = '.$compTblAlias.'.'.$colName;
                 $result[$comp['nestingLevel']] .= $sql;
-                $this->replacements[$compTblAlias.'.'.$meta->getQuotedColumnName($field, $this->platform)]
-                    = $tblAlias.'.'.$transMeta->getQuotedColumnName('content', $this->platform);
+                if (strlen($defaultLocale)) {
+                    // join default locale
+                    $tblAliasDefault = $this->getSQLTableAlias('trans_default_locale'.$compTblAlias.$field);
+                    $sql = ' LEFT JOIN '.$transTable.' '.$tblAliasDefault;
+                    $sql .= ' ON '.$tblAliasDefault.'.'.$transMeta->getQuotedColumnName('locale', $this->platform)
+                        .' = '.$this->conn->quote($defaultLocale);
+                    $sql .= ' AND '.$tblAliasDefault.'.'.$transMeta->getQuotedColumnName('objectClass', $this->platform)
+                        .' = '.$this->conn->quote($meta->name);
+                    $sql .= ' AND '.$tblAliasDefault.'.'.$transMeta->getQuotedColumnName('field', $this->platform)
+                        .' = '.$this->conn->quote($field);
+                    $sql .= ' AND '.$tblAliasDefault.'.'.$transMeta->getQuotedColumnName('foreignKey', $this->platform)
+                        .' = '.$compTblAlias.'.'.$colName;
+                    $result[$comp['nestingLevel']] .= $sql;
+                    $this->replacements[$compTblAlias.'.'.$meta->getQuotedColumnName($field, $this->platform)]
+                        = 'COALESCE('.$tblAlias.'.'.$transMeta->getQuotedColumnName('content', $this->platform)
+                        .', '.$tblAliasDefault.'.'.$transMeta->getQuotedColumnName('content', $this->platform).')'
+                    ;
+                } else {
+                    $this->replacements[$compTblAlias.'.'.$meta->getQuotedColumnName($field, $this->platform)]
+                        = $tblAlias.'.'.$transMeta->getQuotedColumnName('content', $this->platform)
+                    ;
+                }
             }
         }
         return $result;
