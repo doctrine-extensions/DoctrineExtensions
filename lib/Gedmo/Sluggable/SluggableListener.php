@@ -118,7 +118,7 @@ class SluggableListener extends MappedEventSubscriber
                 $this->generateSlug($ea, $object);
                 foreach ($config['fields'] as $slugField=>$fieldsForSlugField) {
                     $slug = $meta->getReflectionProperty($slugField)->getValue($object);
-                    $this->persistedSlugs[$config['useObjectClass']][] = $slug;
+                    $this->persistedSlugs[$config['useObjectClass']][$slugField][] = $slug;
                 }
             }
         }
@@ -234,6 +234,7 @@ class SluggableListener extends MappedEventSubscriber
      * @param SluggableAdapter $ea
      * @param object $object
      * @param string $preferedSlug
+     * @param array $config[$slugField]
      * @return string - unique slug
      */
     private function makeUniqueSlug(SluggableAdapter $ea, $object, $preferedSlug, $recursing = false, $config = array())
@@ -244,11 +245,10 @@ class SluggableListener extends MappedEventSubscriber
         {
             $config = $this->getConfiguration($om, $meta->name);
         }
-
         // search for similar slug
         $result = $ea->getSimilarSlugs($object, $meta, $config, $preferedSlug);
         // add similar persisted slugs into account
-        $result += $this->getSimilarPersistedSlugs($config['useObjectClass'], $preferedSlug);
+        $result += $this->getSimilarPersistedSlugs($config['useObjectClass'], $preferedSlug, $config['slug']);
         // leave only right slugs
         if (!$recursing) {
             $this->filterSimilarSlugs($result, $config, $preferedSlug);
@@ -258,7 +258,7 @@ class SluggableListener extends MappedEventSubscriber
             $generatedSlug = $preferedSlug;
             $sameSlugs = array();
             foreach ((array)$result as $list) {
-                $sameSlugs[] = $list[$config['slug']];
+                $sameSlugs[] = $list['slug'];
             }
 
             $i = pow(10, $this->exponent);
@@ -289,14 +289,15 @@ class SluggableListener extends MappedEventSubscriber
      *
      * @param string $class
      * @param string $preferedSlug
+     * @param string $slugField
      * @return array
      */
-    private function getSimilarPersistedSlugs($class, $preferedSlug)
+    private function getSimilarPersistedSlugs($class, $preferedSlug, $slugField)
     {
         $result = array();
-        if (isset($this->persistedSlugs[$class])) {
-            array_walk($this->persistedSlugs[$class], function($val) use ($preferedSlug, &$result) {
-                if (preg_match("/{$preferedSlug}.*/smi", $val)) {
+        if (isset($this->persistedSlugs[$class][$slugField])) {
+            array_walk($this->persistedSlugs[$class][$slugField], function($val) use ($preferedSlug, &$result) {
+                if (preg_match("/^{$preferedSlug}.*/smi", $val)) {
                     $result[] = array('slug' => $val);
                 }
             });

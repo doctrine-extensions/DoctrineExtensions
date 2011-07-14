@@ -76,6 +76,30 @@ class TranslatableManySlugTest extends BaseTestCaseORM
         $this->assertArrayHasKey('slug', $translations['de_de']);
         $this->assertEquals('title-in-de-code-in-de', $translations['de_de']['slug']);
     }
+    
+    public function testUniqueness()
+    {
+       $a0 = new TransArticleManySlug;
+       $a0->setTitle('the title');
+       $a0->setCode('my code');
+       $a0->setUniqueTitle('title');
+
+       $this->em->persist($a0);
+
+       $a1 = new TransArticleManySlug;
+       $a1->setTitle('the title');
+       $a1->setCode('my code');
+       $a1->setUniqueTitle('title');
+
+       $this->em->persist($a1);
+       $this->em->flush();
+
+       $this->assertEquals('title', $a0->getUniqueSlug());
+       $this->assertEquals('title-1', $a1->getUniqueSlug());
+       // if its translated maybe should be different
+       $this->assertEquals('the-title-my-code-1', $a0->getSlug());
+       $this->assertEquals('the-title-my-code-2', $a1->getSlug());
+    }
 
     protected function getUsedEntityFixtures()
     {
