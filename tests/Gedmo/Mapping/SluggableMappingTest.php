@@ -61,18 +61,21 @@ class SluggableMappingTest extends \PHPUnit_Framework_TestCase
             'Gedmo\Sluggable'
         );
         $config = $this->em->getMetadataFactory()->getCacheDriver()->fetch($cacheId);
-        $this->assertArrayHasKey('slug', $config);
-        $this->assertEquals('slug', $config['slug']);
+        $this->assertArrayHasKey('slugFields', $config);
+        $this->assertEquals('slug', $config['slugFields']['slug']['slug']);
         $this->assertArrayHasKey('fields', $config);
-        $this->assertEquals(1, count($config['fields']));
-        $this->assertEquals('title', $config['fields'][0]['field']);
-        $this->assertArrayHasKey('style', $config);
-        $this->assertEquals('camel', $config['style']);
-        $this->assertArrayHasKey('separator', $config);
-        $this->assertEquals('_', $config['separator']);
-        $this->assertArrayHasKey('unique', $config);
-        $this->assertTrue($config['unique']);
-        $this->assertArrayHasKey('updatable', $config);
-        $this->assertTrue($config['updatable']);
+        $this->assertEquals(1, count($config['fields']['slug']));
+        $this->assertEquals('title', $config['fields']['slug'][0]['field']);
+        $this->assertEquals('slug', $config['fields']['slug'][0]['slugField']);
+        $this->assertEquals(1, $config['fields']['slug'][0]['position']);
+        $this->assertArrayHasKey('style', $config['slugFields']['slug']);
+        $this->assertEquals('camel', $config['slugFields']['slug']['style']);
+        $this->assertArrayHasKey('separator', $config['slugFields']['slug']);
+        $this->assertEquals('_', $config['slugFields']['slug']['separator']);
+        $this->assertArrayHasKey('unique', $config['slugFields']['slug']);
+        $this->assertTrue($config['slugFields']['slug']['unique']);
+        $this->assertArrayHasKey('updatable', $config['slugFields']['slug']);
+        $this->assertTrue($config['slugFields']['slug']['updatable']);
+        
     }
 }
