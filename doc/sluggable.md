@@ -369,24 +369,38 @@ And the Entity should look like:
     
         /**
          * @gedmo:Translatable
-         * @gedmo:Sluggable
+         * @gedmo:Sluggable(slugField="slug")
          * @Column(name="title", type="string", length=64)
          */
         private $title;
     
         /**
          * @gedmo:Translatable
-         * @gedmo:Sluggable
+         * @gedmo:Sluggable(slugField="slug")
          * @Column(name="code", type="string", length=16)
          */
         private $code;
-    
+        
         /**
          * @gedmo:Translatable
          * @gedmo:Slug
          * @Column(name="slug", type="string", length=128, unique=true)
          */
         private $slug;
+        
+        /**
+        * @Gedmo:Sluggable(slugField="uniqueSlug")
+        * @ORM\Column(type="string", length=64)
+        */
+        private $uniqueTitle;
+        
+        /**
+        * @Gedmo:Slug
+        * @ORM\Column(type="string", length=128)
+        */
+        private $uniqueSlug;
+    
+        
     
         public function getId()
         {
@@ -416,6 +430,11 @@ And the Entity should look like:
         public function getSlug()
         {
             return $this->slug;
+        }
+        
+        public function getUniqueSlug()
+        {
+            return $this->uniqueSlug;
         }
     }
 
