@@ -502,7 +502,7 @@ class TranslationListener extends MappedEventSubscriber
                 foreach ($modifiedChangeSet as $field => $changes) {
                     $ea->setOriginalObjectProperty($uow, $oid, $field, $changes[0]);
                 }
-                $uow->computeChangeSet($meta, $object);
+                $ea->recomputeSingleObjectChangeset($uow, $meta, $object);
             }
         }
     }
