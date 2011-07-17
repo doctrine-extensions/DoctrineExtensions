@@ -101,11 +101,9 @@ class Issue114Test extends BaseTestCaseORM
         $this->assertEquals(2, count($trans));
         
         $trans = $repo->findTranslations($article3);
-        print_r($trans);
         $this->assertEquals(2, count($trans));
         
         $trans = $repo->findTranslations($article1);
-        print_r($trans);
         $this->assertEquals(2, count($trans));
            
     }
