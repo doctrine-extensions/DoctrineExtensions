@@ -300,7 +300,7 @@ class TranslationListener extends MappedEventSubscriber
             if (isset($config['fields'])) {
                 $wrapped = AbstractWrapper::wrapp($object, $om);
                 $transClass = $this->getTranslationClass($ea, $meta->name);
-                $ea->removeAssociatedTranslations($wrapped->getIdentifier(), $transClass);
+                $ea->removeAssociatedTranslations($wrapped->getIdentifier(), $transClass, $meta->name);
             }
         }
     }

@@ -50,9 +50,10 @@ interface TranslatableAdapter extends AdapterInterface
      *
      * @param mixed $objectId
      * @param string $transClass
+     * @param string $targetClass
      * @return void
      */
-    function removeAssociatedTranslations($objectId, $transClass);
+    function removeAssociatedTranslations($objectId, $transClass, $targetClass);
 
     /**
      * Inserts the translation record

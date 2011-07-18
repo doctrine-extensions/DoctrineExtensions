@@ -79,13 +79,15 @@ final class ODM extends BaseAdapterODM implements TranslatableAdapter
     /**
      * {@inheritDoc}
      */
-    public function removeAssociatedTranslations($objectId, $transClass)
+    public function removeAssociatedTranslations($objectId, $transClass, $targetClass)
     {
         $dm = $this->getObjectManager();
         $qb = $dm->createQueryBuilder($transClass);
         $q = $qb->remove()
             ->field('foreignKey')->equals($objectId)
-            ->getQuery();
+            ->field('objectClass')->equals($targetClass)
+            ->getQuery()
+        ;
         return $q->execute();
     }
 
