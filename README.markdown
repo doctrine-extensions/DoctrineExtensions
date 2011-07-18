@@ -1,4 +1,4 @@
-# Some Doctrine 2 Extensions
+# Doctrine 2 behavioral extensions
 
 This package contains extensions for Doctrine 2 that hook into the facilities of Doctrine and
 offer new functionality or tools to use Doctrine 2 more efficently. This package contains mostly
@@ -10,28 +10,27 @@ records being flushed in the behavioral way. List of extensions:
 - Sluggable - urlizes your specified fields into single unique slug
 - Timestampable - updates date fields on create, update and even property change.
 - Loggable - helps tracking changes and history of objects, also supports version managment.
+- Sortable - makes any document or entity sortable
 
 Currently these extensions support **Yaml**, **Annotation**  and **Xml** mapping. Additional mapping drivers
-can be easy implemented using Mapping extension to handle the additional metadata mapping.
+can be easily implemented using Mapping extension to handle the additional metadata mapping.
 
-Notice: from now on there is only one listener per extension which supports ODM and ORM adapters to deal with objects. Only one instance of listener is 
+**Note:** doctrine2.0.x branch is no longer being supported and all new features
+and fixes are on master branch, which currently supports 2.1.x versions of doctrine2
+
+**Note:** from now on there is only one listener per extension which supports ODM and ORM adapters to deal with objects. Only one instance of listener is 
 required, and can be attached to many different type object managers, currently supported (ORM or ODM)
 
-Notice xml: Please note, that xml mapping needs to be in a different namespace, the declared namespace for
+**Note:** Please note, that xml mapping needs to be in a different namespace, the declared namespace for
 Doctrine extensions is http://gediminasm.org/schemas/orm/doctrine-extensions-mapping
 So root node now looks like this:
+
 ```
 <doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
                  xmlns:gedmo="http://gediminasm.org/schemas/orm/doctrine-extensions-mapping">
 ...
 </doctrine-mapping>
 ```
-
-## Important
-
-Recently where was a change for type hinting on object manager and other. These changes
-**requires doctrine2 from master branch**. If you do not want to update your doctrine libraries
-use these extensions from separate branch **doctrine2.0.x** or simply checkout to this branch.
 
 ### Latest updates
 
@@ -64,11 +63,12 @@ List of extensions which support ODM
 - Sluggable
 - Timestampable
 - Loggable
+- Sortable
 
-All these extensions can be nested together. And most allready use only annotations without interface requirement
-to not to aggregate the entity itself and has implemented proper caching for metadata.
+All these extensions can be nested together and mapped in traditional ways - annotations,
+xml or yaml
 
-**Notice:** extension tutorial on doctrine blog is outdated.
+**Notice:** extension tutorial on doctrine blog is outdated, most recent documentation is in **doc** directory.
 There is a post introducing to these extensions on [doctrine project](http://www.doctrine-project.org/blog/doctrine2-behavioral-extensions "Doctrine2 behavior extensions")
 
 You can test these extensions on [my blog](http://gediminasm.org/test/ "Test doctrine behavior extensions").
@@ -92,6 +92,7 @@ To setup and run tests follow these steps:
 
 ### Contributors:
 
+- megabite [oscarballadares](http://github.com/oscarballadares)
 - DinoWeb [dinoweb](http://github.com/dinoweb)
 - Miha Vrhovnik [mvrhov](http://github.com/mvrhov)
 - Clément JOBEILI [dator](http://github.com/dator)
