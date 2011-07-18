@@ -30,6 +30,72 @@ class NestedTreePositionTest extends BaseTestCaseORM
         $this->getMockSqliteEntityManager($evm);
     }
 
+    public function testTreeChildPositionMove2()
+    {
+        $this->populate();
+        $repo = $this->em->getRepository(self::ROOT_CATEGORY);
+
+        $oranges = $repo->findOneByTitle('Oranges');
+        $meat = $repo->findOneByTitle('Meat');
+
+        $this->assertEquals(2, $oranges->getLevel());
+        $this->assertEquals(7, $oranges->getLeft());
+        $this->assertEquals(8, $oranges->getRight());
+
+        $repo->persistAsNextSiblingOf($meat, $oranges);
+        $this->em->flush();
+
+        $oranges = $repo->findOneByTitle('Oranges');
+        $meat = $repo->findOneByTitle('Meat');
+
+        $this->assertEquals(7, $oranges->getLeft());
+        $this->assertEquals(8, $oranges->getRight());
+
+        //Normal test that pass
+        $this->assertEquals(9, $meat->getLeft());
+        $this->assertEquals(10, $meat->getRight());
+
+        // Raw query to show the issue #108 with wrong left value by Doctrine
+        $dql = 'SELECT c FROM ' . self::ROOT_CATEGORY . ' c';
+        $dql .= ' WHERE c.id = 5'; //5 == meat
+        $meat_array = $this->em->createQuery($dql)->getScalarResult();
+
+        $this->assertEquals(9, $meat_array[0]['c_lft']);
+        $this->assertEquals(10, $meat_array[0]['c_rgt']);
+        $this->assertEquals(2, $meat_array[0]['c_level']);
+    }
+
+    public function testTreeChildPositionMove3()
+    {
+        $this->populate();
+        $repo = $this->em->getRepository(self::ROOT_CATEGORY);
+
+        $oranges = $repo->findOneByTitle('Oranges');
+        $milk = $repo->findOneByTitle('Milk');
+
+        $this->assertEquals(2, $oranges->getLevel());
+        $this->assertEquals(7, $oranges->getLeft());
+        $this->assertEquals(8, $oranges->getRight());
+
+        $repo->persistAsNextSiblingOf($milk, $oranges);
+        $this->em->flush();
+
+        $this->assertEquals(7, $oranges->getLeft());
+        $this->assertEquals(8, $oranges->getRight());
+
+        //Normal test that pass
+        $this->assertEquals(9, $milk->getLeft());
+        $this->assertEquals(10, $milk->getRight());
+
+        // Raw query to show the issue #108 with wrong left value by Doctrine
+        $dql = 'SELECT c FROM ' . self::ROOT_CATEGORY . ' c';
+        $dql .= ' WHERE c.id = 4 '; //4 == Milk
+        $milk_array = $this->em->createQuery($dql)->getScalarResult();
+        $this->assertEquals(9, $milk_array[0]['c_lft']);
+        $this->assertEquals(10, $milk_array[0]['c_rgt']);
+        $this->assertEquals(2, $milk_array[0]['c_level']);
+    }
+
     public function testPositionedUpdates()
     {
         $this->populate();
@@ -75,6 +141,15 @@ class NestedTreePositionTest extends BaseTestCaseORM
 
         $this->assertEquals(1, $oranges->getLevel());
         $this->assertEquals(1, count($repo->children($fruits, true)));
+
+        $vegies = $repo->findOneByTitle('Vegitables');
+        $this->assertEquals(2, $vegies->getLeft());
+        $repo->persistAsNextSiblingOf($vegies, $fruits);
+        $this->em->flush();
+
+        $this->assertEquals(6, $vegies->getLeft());
+        $this->em->flush();
+        $this->assertEquals(6, $vegies->getLeft());
     }
 
     public function testOnRootCategory()

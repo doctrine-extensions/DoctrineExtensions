@@ -136,15 +136,26 @@ class Nested implements Strategy
         if (isset($config['root']) && isset($changeSet[$config['root']])) {
             throw new \Gedmo\Exception\UnexpectedValueException("Root cannot be changed manualy, change parent instead");
         }
-        if (isset($changeSet[$config['parent']]) || isset($changeSet[$config['left']])) {
-            $oid = spl_object_hash($node);
+
+        $oid = spl_object_hash($node);
+        if (isset($changeSet[$config['left']]) && isset($this->nodePositions[$oid])) {
             $wrapped = AbstractWrapper::wrapp($node, $em);
             $parent = $wrapped->getPropertyValue($config['parent']);
-            if (isset($this->nodePositions[$oid]) && isset($changeSet[$config['left']])) {
-                // revert simulated changeset
-                $wrapped->setPropertyValue($config['left'], $changeSet[$config['left']][0]);
+            // revert simulated changeset
+            $uow->clearEntityChangeSet($oid);
+            $wrapped->setPropertyValue($config['left'], $changeSet[$config['left']][0]);
+            $uow->setOriginalEntityProperty($oid, $config['left'], $changeSet[$config['left']][0]);
+            // set back all other changes
+            foreach ($changeSet as $field => $set) {
+                if ($field !== $config['left']) {
+                    $uow->setOriginalEntityProperty($oid, $field, $set[0]);
+                    $wrapped->setPropertyValue($field, $set[1]);
+                }
             }
+            $uow->recomputeSingleEntityChangeSet($meta, $node);
             $this->updateNode($em, $node, $parent);
+        } elseif (isset($changeSet[$config['parent']])) {
+            $this->updateNode($em, $node, $changeSet[$config['parent']][1]);
         }
     }
 
