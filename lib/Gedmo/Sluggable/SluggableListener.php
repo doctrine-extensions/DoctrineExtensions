@@ -170,7 +170,7 @@ class SluggableListener extends MappedEventSubscriber
                 }
                 return ($a['position'] < $b['position']) ? -1 : 1;
             });
-    
+
             // collect the slug from fields
             $slug = '';
             $needToChangeSlug = false;
@@ -181,11 +181,11 @@ class SluggableListener extends MappedEventSubscriber
                 $slug .= $meta->getReflectionProperty($sluggableField['field'])->getValue($object) . ' ';
             }
             // if slug is changed, do further processing
-            if ($needToChangeSlug) {            
+            if ($needToChangeSlug) {
                 if (!strlen(trim($slug))) {
                     throw new \Gedmo\Exception\UnexpectedValueException("Unable to find any non empty sluggable fields for slug [{$slugField}] , make sure they have something at least.");
                 }
-                
+
                 $slugFieldConfig = $config['slugFields'][$slugField];
                 // build the slug
                 $slug = call_user_func_array(
@@ -201,23 +201,23 @@ class SluggableListener extends MappedEventSubscriber
                             $slug
                         );
                         break;
-        
+
                     default:
                         // leave it as is
                         break;
                 }
-        
+
                 // cut slug if exceeded in length
                 $mapping = $meta->getFieldMapping($slugFieldConfig['slug']);
                 if (isset($mapping['length']) && strlen($slug) > $mapping['length']) {
                     $slug = substr($slug, 0, $mapping['length']);
                 }
-        
+
                 // make unique slug if requested
                 if ($slugFieldConfig['unique']) {
                     $this->exponent = 0;
                     $arrayConfig = $slugFieldConfig;
-                    $arrayConfig['useObjectClass'] = $config['useObjectClass']; 
+                    $arrayConfig['useObjectClass'] = $config['useObjectClass'];
                     $slug = $this->makeUniqueSlug($ea, $object, $slug, false, $arrayConfig);
                 }
                 // set the final slug
@@ -258,7 +258,7 @@ class SluggableListener extends MappedEventSubscriber
             $generatedSlug = $preferedSlug;
             $sameSlugs = array();
             foreach ((array)$result as $list) {
-                $sameSlugs[] = $list['slug'];
+                $sameSlugs[] = $list[$config['slug']];
             }
 
             $i = pow(10, $this->exponent);
@@ -296,9 +296,9 @@ class SluggableListener extends MappedEventSubscriber
     {
         $result = array();
         if (isset($this->persistedSlugs[$class][$slugField])) {
-            array_walk($this->persistedSlugs[$class][$slugField], function($val) use ($preferedSlug, &$result) {
+            array_walk($this->persistedSlugs[$class][$slugField], function($val) use ($preferedSlug, &$result, $slugField) {
                 if (preg_match("/^{$preferedSlug}.*/smi", $val)) {
-                    $result[] = array('slug' => $val);
+                    $result[] = array($slugField => $val);
                 }
             });
         }
@@ -316,7 +316,7 @@ class SluggableListener extends MappedEventSubscriber
     private function filterSimilarSlugs(array &$slugs, array &$config, $prefered)
     {
         foreach ($slugs as $key => $similar) {
-            if (!preg_match("@{$prefered}($|{$config['separator']}[\d]+$)@smi", $similar['slug'])) {
+            if (!preg_match("@{$prefered}($|{$config['separator']}[\d]+$)@smi", $similar[$config['slug']])) {
                 unset($slugs[$key]);
             }
         }

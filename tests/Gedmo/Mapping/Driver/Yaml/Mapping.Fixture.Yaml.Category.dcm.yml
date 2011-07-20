@@ -23,7 +23,7 @@ Mapping\Fixture\Yaml\Category:
         - translatable
         sluggable:
           position: 1
-          fieldSlug: 'slug'
+          slugField: 'slug'
     slug:
       type: string
       length: 64

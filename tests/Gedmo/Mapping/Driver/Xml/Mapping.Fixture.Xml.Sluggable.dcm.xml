@@ -8,7 +8,7 @@
         </id>
 
         <field name="title" type="string" length="128">
-            <gedmo:sluggable position="0"/>
+            <gedmo:sluggable position="0" slugField="slug"/>
         </field>
         <field name="code" type="string" length="16">
             <gedmo:sluggable/>
