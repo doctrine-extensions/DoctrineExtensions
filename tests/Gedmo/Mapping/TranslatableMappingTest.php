@@ -10,7 +10,7 @@ use Doctrine\Common\Util\Debug,
 
 /**
  * These are mapping tests for translatable behavior
- * 
+ *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  * @package Gedmo.Mapping
  * @link http://www.gediminasm.org
@@ -22,7 +22,7 @@ class TranslatableMappingTest extends \PHPUnit_Framework_TestCase
     private $em;
 
     public function setUp()
-    {        
+    {
         $config = new \Doctrine\ORM\Configuration();
         $config->setMetadataCacheImpl(new \Doctrine\Common\Cache\ArrayCache);
         $config->setQueryCacheImpl(new \Doctrine\Common\Cache\ArrayCache);
@@ -30,7 +30,7 @@ class TranslatableMappingTest extends \PHPUnit_Framework_TestCase
         $config->setProxyNamespace('Gedmo\Mapping\Proxy');
         $chainDriverImpl = new DriverChain;
         $chainDriverImpl->addDriver(
-            new YamlDriver(array(__DIR__ . '/Driver/Yaml')), 
+            new YamlDriver(array(__DIR__ . '/Driver/Yaml')),
             'Mapping\Fixture\Yaml'
         );
         $config->setMetadataDriverImpl($chainDriverImpl);
@@ -41,25 +41,19 @@ class TranslatableMappingTest extends \PHPUnit_Framework_TestCase
         );
 
         //$config->setSQLLogger(new \Doctrine\DBAL\Logging\EchoSQLLogger());
-        
+
         $evm = new \Doctrine\Common\EventManager();
         $this->translatableListener = new TranslationListener();
         $this->translatableListener->setTranslatableLocale('en_us');
         $evm->addEventSubscriber($this->translatableListener);
         $this->em = \Doctrine\ORM\EntityManager::create($conn, $config, $evm);
-
-        $schemaTool = new \Doctrine\ORM\Tools\SchemaTool($this->em);
-        $schemaTool->dropSchema(array());
-        $schemaTool->createSchema(array(
-            $this->em->getClassMetadata(self::TEST_YAML_ENTITY_CLASS)
-        ));
     }
-    
+
     public function testYamlMapping()
     {
         $meta = $this->em->getClassMetadata(self::TEST_YAML_ENTITY_CLASS);
         $cacheId = ExtensionMetadataFactory::getCacheId(
-            self::TEST_YAML_ENTITY_CLASS, 
+            self::TEST_YAML_ENTITY_CLASS,
             'Gedmo\Translatable'
         );
         $config = $this->em->getMetadataFactory()->getCacheDriver()->fetch($cacheId);

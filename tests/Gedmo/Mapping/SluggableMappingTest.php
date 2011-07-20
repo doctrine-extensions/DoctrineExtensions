@@ -19,6 +19,7 @@ use Doctrine\Common\Util\Debug,
 class SluggableMappingTest extends \PHPUnit_Framework_TestCase
 {
     const TEST_YAML_ENTITY_CLASS = 'Mapping\Fixture\Yaml\Category';
+    const SLUGGABLE = 'Mapping\Fixture\Sluggable';
     private $em;
 
     public function setUp()
@@ -33,6 +34,15 @@ class SluggableMappingTest extends \PHPUnit_Framework_TestCase
             new YamlDriver(array(__DIR__ . '/Driver/Yaml')),
             'Mapping\Fixture\Yaml'
         );
+        $reader = new \Doctrine\Common\Annotations\AnnotationReader();
+        \Doctrine\Common\Annotations\AnnotationRegistry::registerAutoloadNamespace(
+            'Gedmo\\Mapping\\Annotation',
+            VENDOR_PATH . '/../lib'
+        );
+        $chainDriverImpl->addDriver(
+            new \Doctrine\ORM\Mapping\Driver\AnnotationDriver($reader),
+            'Mapping\Fixture'
+        );
         $config->setMetadataDriverImpl($chainDriverImpl);
 
         $conn = array(
@@ -40,17 +50,9 @@ class SluggableMappingTest extends \PHPUnit_Framework_TestCase
             'memory' => true,
         );
 
-        //$config->setSQLLogger(new \Doctrine\DBAL\Logging\EchoSQLLogger());
-
         $evm = new \Doctrine\Common\EventManager();
         $evm->addEventSubscriber(new SluggableListener());
         $this->em = \Doctrine\ORM\EntityManager::create($conn, $config, $evm);
-
-        $schemaTool = new \Doctrine\ORM\Tools\SchemaTool($this->em);
-        $schemaTool->dropSchema(array());
-        $schemaTool->createSchema(array(
-            $this->em->getClassMetadata(self::TEST_YAML_ENTITY_CLASS)
-        ));
     }
 
     public function testYamlMapping()
@@ -76,6 +78,35 @@ class SluggableMappingTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($config['slugFields']['slug']['unique']);
         $this->assertArrayHasKey('updatable', $config['slugFields']['slug']);
         $this->assertTrue($config['slugFields']['slug']['updatable']);
-        
+    }
+
+    public function testSlugHandlerMapping()
+    {
+        $meta = $this->em->getClassMetadata(self::SLUGGABLE);
+        $cacheId = ExtensionMetadataFactory::getCacheId(
+            self::SLUGGABLE,
+            'Gedmo\Sluggable'
+        );
+        $config = $this->em->getMetadataFactory()->getCacheDriver()->fetch($cacheId);
+
+        $this->assertArrayHasKey('handlers', $config);
+        $handlers = $config['handlers'];
+        $this->assertEquals(2, count($handlers));
+        $this->assertArrayHasKey('Some\\Class', $handlers);
+        $this->assertArrayHasKey('Some\\Class2', $handlers);
+
+        $first = $handlers['Some\\Class'];
+        $this->assertEquals(2, count($first));
+        $this->assertArrayHasKey('relation', $first);
+        $this->assertArrayHasKey('separator', $first);
+        $this->assertEquals('parent', $first['relation']);
+        $this->assertEquals('/', $first['separator']);
+
+        $second = $handlers['Some\\Class2'];
+        $this->assertEquals(2, count($second));
+        $this->assertArrayHasKey('option', $second);
+        $this->assertArrayHasKey('option2', $second);
+        $this->assertEquals('val', $second['option']);
+        $this->assertEquals('val2', $second['option2']);
     }
 }

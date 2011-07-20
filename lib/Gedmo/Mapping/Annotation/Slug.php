@@ -21,5 +21,6 @@ final class Slug extends Annotation
     public $style = 'default'; // or "camel"
     public $unique = true;
     public $separator = '-';
+    public $handlers = array();
 }
 

@@ -5,6 +5,7 @@ namespace Gedmo\Sluggable;
 use Doctrine\Common\EventArgs;
 use Gedmo\Mapping\MappedEventSubscriber;
 use Gedmo\Sluggable\Mapping\Event\SluggableAdapter;
+use Doctrine\Common\Persistence\ObjectManager;
 
 /**
  * The SluggableListener handles the generation of slugs
@@ -45,6 +46,13 @@ class SluggableListener extends MappedEventSubscriber
      * @var array
      */
     private $persistedSlugs = array();
+
+    /**
+     * List of initialized slug handlers
+     *
+     * @var array
+     */
+    private $handlers = array();
 
     /**
      * Specifies the list of events to listen
@@ -116,7 +124,7 @@ class SluggableListener extends MappedEventSubscriber
             if ($config = $this->getConfiguration($om, $meta->name)) {
                 // generate first to exclude this object from similar persisted slugs result
                 $this->generateSlug($ea, $object);
-                foreach ($config['fields'] as $slugField=>$fieldsForSlugField) {
+                foreach ($config['fields'] as $slugField => $fieldsForSlugField) {
                     $slug = $meta->getReflectionProperty($slugField)->getValue($object);
                     $this->persistedSlugs[$config['useObjectClass']][$slugField][] = $slug;
                 }
@@ -144,6 +152,14 @@ class SluggableListener extends MappedEventSubscriber
         return __NAMESPACE__;
     }
 
+    private function getHandler($class, ObjectManager $om, array $options)
+    {
+        if (!isset($this->handlers[$class])) {
+            $this->handlers[$class] = new $class($om, $this, $options);
+        }
+        return $this->handlers[$class];
+    }
+
     /**
      * Creates the slug for object being flushed
      *
@@ -160,8 +176,7 @@ class SluggableListener extends MappedEventSubscriber
         $uow = $om->getUnitOfWork();
         $changeSet = $ea->getObjectChangeSet($uow, $object);
         $config = $this->getConfiguration($om, $meta->name);
-        foreach ($config['fields'] as $slugField=>$fieldsForSlugField) {
-
+        foreach ($config['fields'] as $slugField => $fieldsForSlugField) {
             // sort sluggable fields by position
             $fields = $fieldsForSlugField;
             usort($fields, function($a, $b) {
@@ -184,6 +199,16 @@ class SluggableListener extends MappedEventSubscriber
             if ($needToChangeSlug) {
                 if (!strlen(trim($slug))) {
                     throw new \Gedmo\Exception\UnexpectedValueException("Unable to find any non empty sluggable fields for slug [{$slugField}] , make sure they have something at least.");
+                }
+
+                // notify slug handlers --> postSlugBuild
+                if (isset($config['handlers'])) {
+                    foreach ($config['handlers'] as $class => $options) {
+                        $this
+                            ->getHandler($class, $om, $options)
+                            ->postSlugBuild($ea, $slugField, $object, $slug)
+                        ;
+                    }
                 }
 
                 $slugFieldConfig = $config['slugFields'][$slugField];
@@ -297,7 +322,7 @@ class SluggableListener extends MappedEventSubscriber
         $result = array();
         if (isset($this->persistedSlugs[$class][$slugField])) {
             array_walk($this->persistedSlugs[$class][$slugField], function($val) use ($preferedSlug, &$result, $slugField) {
-                if (preg_match("/^{$preferedSlug}.*/smi", $val)) {
+                if (preg_match("@^{$preferedSlug}.*@smi", $val)) {
                     $result[] = array($slugField => $val);
                 }
             });
