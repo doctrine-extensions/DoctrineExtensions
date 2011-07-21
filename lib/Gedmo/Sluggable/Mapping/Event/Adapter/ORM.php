@@ -48,4 +48,23 @@ final class ORM extends BaseAdapterORM implements SluggableAdapter
         $q->setHydrationMode(Query::HYDRATE_ARRAY);
         return $q->execute();
     }
+
+    public function replaceRelative($object, array $config, $target, $replacement)
+    {
+        $em = $this->getObjectManager();
+        $qb = $em->createQueryBuilder();
+        $qb->update($config['useObjectClass'], 'rec')
+            ->set('rec.'.$config['slug'], $qb->expr()->concat(
+                $qb->expr()->literal($replacement),
+                $qb->expr()->substring('rec.'.$config['slug'], strlen($target))
+            ))
+            ->where($qb->expr()->like(
+                'rec.'.$config['slug'],
+                $qb->expr()->literal($target . '%'))
+            )
+        ;
+        // update in memory
+        $q = $qb->getQuery();
+        return $q->execute();
+    }
 }

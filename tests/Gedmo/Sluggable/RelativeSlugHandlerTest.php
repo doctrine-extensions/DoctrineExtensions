@@ -24,8 +24,8 @@ class RelativeSlugHandlerTest extends BaseTestCaseORM
         parent::setUp();
 
         $evm = new EventManager;
-        $evm->addEventSubscriber(new TreeListener);
         $evm->addEventSubscriber(new SluggableListener);
+        $evm->addEventSubscriber(new TreeListener);
 
         $conn = array(
             'driver' => 'pdo_mysql',
@@ -41,6 +41,31 @@ class RelativeSlugHandlerTest extends BaseTestCaseORM
     public function testSlugGeneration()
     {
         $this->populate();
+        $repo = $this->em->getRepository(self::TARGET);
+
+        $food = $repo->findOneByTitle('Food');
+        $this->assertEquals('food', $food->getSlug());
+
+        $fruits = $repo->findOneByTitle('Fruits');
+        $this->assertEquals('food/fruits', $fruits->getSlug());
+
+        $oranges = $repo->findOneByTitle('Oranges');
+        $this->assertEquals('food/fruits/oranges', $oranges->getSlug());
+
+        $citrons = $repo->findOneByTitle('Citrons');
+        $this->assertEquals('food/fruits/citrons', $citrons->getSlug());
+    }
+
+    public function testSlugUpdates()
+    {
+        $this->populate();
+        $repo = $this->em->getRepository(self::TARGET);
+
+        $fruits = $repo->findOneByTitle('Fruits');
+        $fruits->setTitle('Fructis');
+
+        $this->em->persist($fruits);
+        $this->em->flush();
     }
 
     protected function getUsedEntityFixtures()

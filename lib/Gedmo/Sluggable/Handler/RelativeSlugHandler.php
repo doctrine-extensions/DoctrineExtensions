@@ -32,6 +32,8 @@ class RelativeSlugHandler implements SlugHandlerInterface
 
     private $parts = array();
 
+    private $isInsert = false;
+
     /**
      * {@inheritDoc}
      */
@@ -49,21 +51,26 @@ class RelativeSlugHandler implements SlugHandlerInterface
     /**
      * {@inheritDoc}
      */
-    public function postSlugBuild(SluggableAdapter $ea, $field, $object, &$slug)
+    public function postSlugBuild(SluggableAdapter $ea, array &$config, $object, &$slug)
     {
         $this->originalTransliterator = $this->sluggable->getTransliterator();
         $this->sluggable->setTransliterator(array($this, 'transliterate'));
         $this->parts = array();
+        $this->isInsert = $this->om->getUnitOfWork()->isScheduledForInsert($object);
+
         $wrapped = AbstractWrapper::wrapp($object, $this->om);
-        do {
-            $relation = $wrapped->getPropertyValue($this->options['relation']);
-            if ($relation) {
-                $wrappedRelation = AbstractWrapper::wrapp($relation, $this->om);
-                array_unshift($this->parts, $wrappedRelation->getPropertyValue($this->options['targetField']));
-                $wrapped = $wrappedRelation;
-            }
-        } while ($this->options['recursive'] && $relation);
-        //var_dump($slug);
+        if ($this->isInsert) {
+            do {
+                $relation = $wrapped->getPropertyValue($this->options['relation']);
+                if ($relation) {
+                    $wrappedRelation = AbstractWrapper::wrapp($relation, $this->om);
+                    array_unshift($this->parts, $wrappedRelation->getPropertyValue($this->options['targetField']));
+                    $wrapped = $wrappedRelation;
+                }
+            } while ($this->options['recursive'] && $relation);
+        } else {
+            $this->parts = explode($this->options['separator'], $wrapped->getPropertyValue($config['slug']));
+        }
     }
 
     /**
@@ -79,13 +86,35 @@ class RelativeSlugHandler implements SlugHandlerInterface
         }*/
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public function onSlugCompletion(SluggableAdapter $ea, array &$config, $object, &$slug)
+    {
+        if (!$this->isInsert) {
+            $wrapped = AbstractWrapper::wrapp($object, $this->om);
+            $extConfig = $this->sluggable->getConfiguration($this->om, $wrapped->getMetadata()->name);
+            $config['useObjectClass'] = $extConfig['useObjectClass'];
+            $ea->replaceRelative(
+                $object,
+                $config,
+                $wrapped->getPropertyValue($config['slug']).$this->options['separator'],
+                $slug
+            );
+        }
+    }
+
     public function transliterate($text, $separator, $object)
     {
-        foreach ($this->parts as &$part) {
-            $part = call_user_func_array(
-                $this->originalTransliterator,
-                array($part, $separator, $object)
-            );
+        if ($this->isInsert) {
+            foreach ($this->parts as &$part) {
+                $part = call_user_func_array(
+                    $this->originalTransliterator,
+                    array($part, $separator, $object)
+                );
+            }
+        } else {
+            array_pop($this->parts);
         }
         $this->parts[] = call_user_func_array(
             $this->originalTransliterator,

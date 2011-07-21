@@ -201,17 +201,17 @@ class SluggableListener extends MappedEventSubscriber
                     throw new \Gedmo\Exception\UnexpectedValueException("Unable to find any non empty sluggable fields for slug [{$slugField}] , make sure they have something at least.");
                 }
 
+                $slugFieldConfig = $config['slugFields'][$slugField];
                 // notify slug handlers --> postSlugBuild
                 if (isset($config['handlers'])) {
                     foreach ($config['handlers'] as $class => $options) {
                         $this
                             ->getHandler($class, $om, $options)
-                            ->postSlugBuild($ea, $slugField, $object, $slug)
+                            ->postSlugBuild($ea, $slugFieldConfig, $object, $slug)
                         ;
                     }
                 }
 
-                $slugFieldConfig = $config['slugFields'][$slugField];
                 // build the slug
                 $slug = call_user_func_array(
                     $this->transliterator,
@@ -244,6 +244,15 @@ class SluggableListener extends MappedEventSubscriber
                     $arrayConfig = $slugFieldConfig;
                     $arrayConfig['useObjectClass'] = $config['useObjectClass'];
                     $slug = $this->makeUniqueSlug($ea, $object, $slug, false, $arrayConfig);
+                }
+                // notify slug handlers --> onSlugCompletion
+                if (isset($config['handlers'])) {
+                    foreach ($config['handlers'] as $class => $options) {
+                        $this
+                            ->getHandler($class, $om, $options)
+                            ->onSlugCompletion($ea, $slugFieldConfig, $object, $slug)
+                        ;
+                    }
                 }
                 // set the final slug
                 $meta->getReflectionProperty($slugFieldConfig['slug'])->setValue($object, $slug);

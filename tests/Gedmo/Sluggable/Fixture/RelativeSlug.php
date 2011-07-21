@@ -31,7 +31,7 @@ class RelativeSlug
      *          @Gedmo\SlugHandlerOption(name="targetField", value="title"),
      *          @Gedmo\SlugHandlerOption(name="separator", value="/")
      *      })
-     * }, separator="-", updatable=false)
+     * }, separator="-", updatable=true)
      * @ORM\Column(name="slug", type="string", length=64, unique=true)
      */
     private $slug;

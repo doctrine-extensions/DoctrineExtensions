@@ -22,12 +22,23 @@ interface SlugHandlerInterface
      * Callback on slug handlers right after the slug is built
      *
      * @param Gedmo\Sluggable\Mapping\Event\SluggableAdapter $ea
-     * @param string $field
+     * @param array $config
      * @param object $object
      * @param string $slug
      * @return void
      */
-    function postSlugBuild(SluggableAdapter $ea, $field, $object, &$slug);
+    function postSlugBuild(SluggableAdapter $ea, array &$config, $object, &$slug);
+
+    /**
+     * Callback for slug handlers on slug completion
+     *
+     * @param Gedmo\Sluggable\Mapping\Event\SluggableAdapter $ea
+     * @param array $config
+     * @param object $object
+     * @param string $slug
+     * @return void
+     */
+    function onSlugCompletion(SluggableAdapter $ea, array &$config, $object, &$slug);
 
     /**
      * Validate handler options
