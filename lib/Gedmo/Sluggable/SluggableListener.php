@@ -152,10 +152,10 @@ class SluggableListener extends MappedEventSubscriber
         return __NAMESPACE__;
     }
 
-    private function getHandler($class, ObjectManager $om, array $options)
+    private function getHandler($class, ObjectManager $om)
     {
         if (!isset($this->handlers[$class])) {
-            $this->handlers[$class] = new $class($om, $this, $options);
+            $this->handlers[$class] = new $class($om, $this);
         }
         return $this->handlers[$class];
     }
@@ -206,7 +206,7 @@ class SluggableListener extends MappedEventSubscriber
                 if (isset($config['handlers'])) {
                     foreach ($config['handlers'] as $class => $options) {
                         $this
-                            ->getHandler($class, $om, $options)
+                            ->getHandler($class, $om)
                             ->postSlugBuild($ea, $slugFieldConfig, $object, $slug)
                         ;
                     }
@@ -249,7 +249,7 @@ class SluggableListener extends MappedEventSubscriber
                 if (isset($config['handlers'])) {
                     foreach ($config['handlers'] as $class => $options) {
                         $this
-                            ->getHandler($class, $om, $options)
+                            ->getHandler($class, $om)
                             ->onSlugCompletion($ea, $slugFieldConfig, $object, $slug)
                         ;
                     }

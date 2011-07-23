@@ -9,7 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @Gedmo\Tree(type="nested")
  * @ORM\Entity(repositoryClass="Gedmo\Tree\Entity\Repository\NestedTreeRepository")
  */
-class RelativeSlug
+class TreeSlug
 {
     /**
      * @ORM\Id
@@ -26,8 +26,8 @@ class RelativeSlug
 
     /**
      * @Gedmo\Slug(handlers={
-     *      @Gedmo\SlugHandler(class="Gedmo\Sluggable\Handler\RelativeSlugHandler", options={
-     *          @Gedmo\SlugHandlerOption(name="relation", value="parent"),
+     *      @Gedmo\SlugHandler(class="Gedmo\Sluggable\Handler\TreeSlugHandler", options={
+     *          @Gedmo\SlugHandlerOption(name="parentRelation", value="parent"),
      *          @Gedmo\SlugHandlerOption(name="targetField", value="title"),
      *          @Gedmo\SlugHandlerOption(name="separator", value="/")
      *      })
@@ -38,7 +38,7 @@ class RelativeSlug
 
     /**
      * @Gedmo\TreeParent
-     * @ORM\ManyToOne(targetEntity="RelativeSlug")
+     * @ORM\ManyToOne(targetEntity="TreeSlug")
      * @ORM\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="SET NULL")
      */
     private $parent;
@@ -67,7 +67,7 @@ class RelativeSlug
      */
     private $level;
 
-    public function setParent($parent = null)
+    public function setParent(TreeSlug $parent = null)
     {
         $this->parent = $parent;
     }

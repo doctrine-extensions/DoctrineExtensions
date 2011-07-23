@@ -49,6 +49,9 @@ final class ORM extends BaseAdapterORM implements SluggableAdapter
         return $q->execute();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function replaceRelative($object, array $config, $target, $replacement)
     {
         $em = $this->getObjectManager();
@@ -65,6 +68,29 @@ final class ORM extends BaseAdapterORM implements SluggableAdapter
         ;
         // update in memory
         $q = $qb->getQuery();
+        return $q->execute();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function replaceInverseRelative($object, array $config, $target, $replacement)
+    {
+        $em = $this->getObjectManager();
+        $qb = $em->createQueryBuilder();
+        $qb->update($config['useObjectClass'], 'rec')
+            ->set('rec.'.$config['slug'], $qb->expr()->concat(
+                $qb->expr()->literal($replacement),
+                $qb->expr()->substring('rec.'.$config['slug'], strlen($target)+1)
+            ))
+            ->where('rec.'.$config['mappedBy'].' = :object')
+            ->andWhere($qb->expr()->like(
+                'rec.'.$config['slug'],
+                $qb->expr()->literal($target . '%'))
+            )
+        ;
+        $q = $qb->getQuery();
+        $q->setParameters(compact('object'));
         return $q->execute();
     }
 }

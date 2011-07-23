@@ -4,8 +4,8 @@ namespace Gedmo\Sluggable;
 
 use Doctrine\Common\EventManager;
 use Tool\BaseTestCaseORM;
-use Sluggable\Fixture\RelativeSlug;
-use Gedmo\Tree\TreeListener;
+use Sluggable\Fixture\Article;
+use Sluggable\Fixture\ArticleRelativeSlug;
 
 /**
  * These are tests for Sluggable behavior
@@ -17,7 +17,8 @@ use Gedmo\Tree\TreeListener;
  */
 class RelativeSlugHandlerTest extends BaseTestCaseORM
 {
-    const TARGET = "Sluggable\\Fixture\\RelativeSlug";
+    const SLUG = "Sluggable\\Fixture\\ArticleRelativeSlug";
+    const ARTICLE = "Sluggable\\Fixture\\Article";
 
     protected function setUp()
     {
@@ -25,12 +26,11 @@ class RelativeSlugHandlerTest extends BaseTestCaseORM
 
         $evm = new EventManager;
         $evm->addEventSubscriber(new SluggableListener);
-        $evm->addEventSubscriber(new TreeListener);
 
         $conn = array(
             'driver' => 'pdo_mysql',
             'host' => '127.0.0.1',
-            'dbname' => 'test',
+            'dbname' => 'tests',
             'user' => 'root',
             'password' => 'nimda'
         );
@@ -41,73 +41,83 @@ class RelativeSlugHandlerTest extends BaseTestCaseORM
     public function testSlugGeneration()
     {
         $this->populate();
-        $repo = $this->em->getRepository(self::TARGET);
+        $repo = $this->em->getRepository(self::SLUG);
 
-        $food = $repo->findOneByTitle('Food');
-        $this->assertEquals('food', $food->getSlug());
+        $thomas = $repo->findOneByTitle('Thomas');
+        $this->assertEquals('sport-test/thomas', $thomas->getSlug());
 
-        $fruits = $repo->findOneByTitle('Fruits');
-        $this->assertEquals('food/fruits', $fruits->getSlug());
+        $jen = $repo->findOneByTitle('Jen');
+        $this->assertEquals('sport-test/jen', $jen->getSlug());
 
-        $oranges = $repo->findOneByTitle('Oranges');
-        $this->assertEquals('food/fruits/oranges', $oranges->getSlug());
+        $john = $repo->findOneByTitle('John');
+        $this->assertEquals('cars-code/john', $john->getSlug());
 
-        $citrons = $repo->findOneByTitle('Citrons');
-        $this->assertEquals('food/fruits/citrons', $citrons->getSlug());
+        $single = $repo->findOneByTitle('Single');
+        $this->assertEquals('single', $single->getSlug());
     }
 
-    public function testSlugUpdates()
+    public function testUpdateOperations()
     {
         $this->populate();
-        $repo = $this->em->getRepository(self::TARGET);
+        $repo = $this->em->getRepository(self::SLUG);
 
-        $fruits = $repo->findOneByTitle('Fruits');
-        $fruits->setTitle('Fructis');
-
-        $this->em->persist($fruits);
+        $thomas = $repo->findOneByTitle('Thomas');
+        $thomas->setTitle('Ninja');
+        $this->em->persist($thomas);
         $this->em->flush();
+
+        $this->assertEquals('sport-test/ninja', $thomas->getSlug());
+
+        $sport = $this->em->getRepository(self::ARTICLE)->findOneByTitle('Sport');
+        $sport->setTitle('Martial Arts');
+
+        $this->em->persist($sport);
+        $this->em->flush();
+
+        $this->assertEquals('martial-arts-test/ninja', $thomas->getSlug());
+
+        $jen = $repo->findOneByTitle('Jen');
+        $this->assertEquals('martial-arts-test/jen', $jen->getSlug());
     }
 
     protected function getUsedEntityFixtures()
     {
         return array(
-            self::TARGET
+            self::SLUG,
+            self::ARTICLE
         );
     }
 
     private function populate()
     {
-        $repo = $this->em->getRepository(self::TARGET);
+        $sport = new Article;
+        $sport->setTitle('Sport');
+        $sport->setCode('test');
+        $this->em->persist($sport);
 
-        $food = new RelativeSlug;
-        $food->setTitle('Food');
+        $cars = new Article;
+        $cars->setTitle('Cars');
+        $cars->setCode('code');
+        $this->em->persist($cars);
 
-        $fruits = new RelativeSlug;
-        $fruits->setTitle('Fruits');
+        $thomas = new ArticleRelativeSlug;
+        $thomas->setTitle('Thomas');
+        $thomas->setArticle($sport);
+        $this->em->persist($thomas);
 
-        $vegitables = new RelativeSlug;
-        $vegitables->setTitle('Vegitables');
+        $jen = new ArticleRelativeSlug;
+        $jen->setTitle('Jen');
+        $jen->setArticle($sport);
+        $this->em->persist($jen);
 
-        $milk = new RelativeSlug;
-        $milk->setTitle('Milk');
+        $john = new ArticleRelativeSlug;
+        $john->setTitle('John');
+        $john->setArticle($cars);
+        $this->em->persist($john);
 
-        $meat = new RelativeSlug;
-        $meat->setTitle('Meat');
-
-        $oranges = new RelativeSlug;
-        $oranges->setTitle('Oranges');
-
-        $citrons = new RelativeSlug;
-        $citrons->setTitle('Citrons');
-
-        $repo
-            ->persistAsFirstChild($food)
-            ->persistAsFirstChildOf($fruits, $food)
-            ->persistAsFirstChildOf($vegitables, $food)
-            ->persistAsLastChildOf($milk, $food)
-            ->persistAsLastChildOf($meat, $food)
-            ->persistAsFirstChildOf($oranges, $fruits)
-            ->persistAsFirstChildOf($citrons, $fruits);
+        $single = new ArticleRelativeSlug;
+        $single->setTitle('Single');
+        $this->em->persist($single);
 
         $this->em->flush();
     }

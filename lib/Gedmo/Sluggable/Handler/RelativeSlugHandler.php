@@ -9,43 +9,75 @@ use Gedmo\Sluggable\Mapping\Event\SluggableAdapter;
 use Gedmo\Tool\Wrapper\AbstractWrapper;
 use Gedmo\Exception\InvalidMappingException;
 
+/**
+* Sluggable handler which should be used in order to prefix
+* a slug of related object. For instance user may belong to a company
+* in this case user slug could look like 'company-name/user-firstname'
+* where path separator separates the relative slug
+*
+* @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
+* @package Gedmo.Sluggable.Handler
+* @subpackage RelativeSlugHandler
+* @link http://www.gediminasm.org
+* @license MIT License (http://www.opensource.org/licenses/mit-license.php)
+*/
 class RelativeSlugHandler implements SlugHandlerInterface
 {
     /**
      * @var Doctrine\Common\Persistence\ObjectManager
      */
-    private $om;
+    protected $om;
 
     /**
      * @var Gedmo\Sluggable\SluggableListener
      */
-    private $sluggable;
+    protected $sluggable;
 
     /**
-     * Options for relative slug handler
+     * Options for relative slug handler object
+     * classes
      *
      * @var array
      */
     private $options;
 
+    /**
+     * Callable of original transliterator
+     * which is used by sluggable
+     *
+     * @var callable
+     */
     private $originalTransliterator;
 
-    private $parts = array();
-
-    private $isInsert = false;
-
     /**
+     * $options = array(
+     *     'separator' => '/',
+     *     'relationField' => 'something',
+     *     'relativeSlugField' => 'slug'
+     * )
      * {@inheritDoc}
      */
-    public function __construct(ObjectManager $om, SluggableListener $sluggable, array $options)
+    public function __construct(ObjectManager $om, SluggableListener $sluggable)
     {
         $this->om = $om;
         $this->sluggable = $sluggable;
-        $default = array(
-            'recursive' => true,
-            'separator' => '/'
-        );
-        $this->options = array_merge($default, $options);
+    }
+
+    /**
+    * {@inheritDoc}
+    */
+    public function getOptions($object)
+    {
+        $meta = $this->om->getClassMetadata(get_class($object));
+        if (!isset($this->options[$meta->name])) {
+            $config = $this->sluggable->getConfiguration($this->om, $meta->name);
+            $options = $config['handlers'][get_called_class()];
+            $default = array(
+                'separator' => '/'
+            );
+            $this->options[$meta->name] = array_merge($default, $options);
+        }
+        return $this->options[$meta->name];
     }
 
     /**
@@ -55,22 +87,6 @@ class RelativeSlugHandler implements SlugHandlerInterface
     {
         $this->originalTransliterator = $this->sluggable->getTransliterator();
         $this->sluggable->setTransliterator(array($this, 'transliterate'));
-        $this->parts = array();
-        $this->isInsert = $this->om->getUnitOfWork()->isScheduledForInsert($object);
-
-        $wrapped = AbstractWrapper::wrapp($object, $this->om);
-        if ($this->isInsert) {
-            do {
-                $relation = $wrapped->getPropertyValue($this->options['relation']);
-                if ($relation) {
-                    $wrappedRelation = AbstractWrapper::wrapp($relation, $this->om);
-                    array_unshift($this->parts, $wrappedRelation->getPropertyValue($this->options['targetField']));
-                    $wrapped = $wrappedRelation;
-                }
-            } while ($this->options['recursive'] && $relation);
-        } else {
-            $this->parts = explode($this->options['separator'], $wrapped->getPropertyValue($config['slug']));
-        }
     }
 
     /**
@@ -78,8 +94,8 @@ class RelativeSlugHandler implements SlugHandlerInterface
      */
     public static function validate(array $options, ClassMetadata $meta)
     {
-        if (!$meta->isSingleValuedAssociation($options['relation'])) {
-            throw new InvalidMappingException("Unable to find slug relation through field - [{$options['relation']}] in class - {$meta->name}");
+        if (!$meta->isSingleValuedAssociation($options['relationField'])) {
+            throw new InvalidMappingException("Unable to find slug relation through field - [{$options['relationField']}] in class - {$meta->name}");
         }
         /*if (!$meta->isSingleValuedAssociation($options['relation'])) {
             throw new InvalidMappingException("Unable to find slug relation through field - [{$options['relation']}] in class - {$meta->name}");
@@ -90,37 +106,32 @@ class RelativeSlugHandler implements SlugHandlerInterface
      * {@inheritDoc}
      */
     public function onSlugCompletion(SluggableAdapter $ea, array &$config, $object, &$slug)
-    {
-        if (!$this->isInsert) {
-            $wrapped = AbstractWrapper::wrapp($object, $this->om);
-            $extConfig = $this->sluggable->getConfiguration($this->om, $wrapped->getMetadata()->name);
-            $config['useObjectClass'] = $extConfig['useObjectClass'];
-            $ea->replaceRelative(
-                $object,
-                $config,
-                $wrapped->getPropertyValue($config['slug']).$this->options['separator'],
-                $slug
-            );
-        }
-    }
+    {}
 
+    /**
+     * Transliterates the slug and prefixes the slug
+     * by relative one
+     *
+     * @param string $text
+     * @param string $separator
+     * @param object $object
+     * @return string
+     */
     public function transliterate($text, $separator, $object)
     {
-        if ($this->isInsert) {
-            foreach ($this->parts as &$part) {
-                $part = call_user_func_array(
-                    $this->originalTransliterator,
-                    array($part, $separator, $object)
-                );
-            }
-        } else {
-            array_pop($this->parts);
-        }
-        $this->parts[] = call_user_func_array(
+        $options = $this->getOptions($object);
+        $result = call_user_func_array(
             $this->originalTransliterator,
             array($text, $separator, $object)
         );
+        $wrapped = AbstractWrapper::wrapp($object, $this->om);
+        $relation = $wrapped->getPropertyValue($options['relationField']);
+        if ($relation) {
+            $wrappedRelation = AbstractWrapper::wrapp($relation, $this->om);
+            $slug = $wrappedRelation->getPropertyValue($options['relativeSlugField']);
+            $result = $slug . $options['separator'] . $result;
+        }
         $this->sluggable->setTransliterator($this->originalTransliterator);
-        return implode($this->options['separator'], $this->parts);
+        return $result;
     }
 }
