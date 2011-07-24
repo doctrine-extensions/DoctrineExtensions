@@ -56,6 +56,14 @@ class MongoDocumentWrapper extends AbstractWrapper
     /**
      * {@inheritDoc}
      */
+    public function getRootObjectName()
+    {
+        return $this->meta->rootDocumentName;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function setPropertyValue($property, $value)
     {
         $this->initialize();

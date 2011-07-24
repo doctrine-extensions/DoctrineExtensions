@@ -6,6 +6,7 @@ use Gedmo\Mapping\Event\Adapter\ODM as BaseAdapterODM;
 use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 use Doctrine\ODM\MongoDB\Cursor;
 use Gedmo\Sluggable\Mapping\Event\SluggableAdapter;
+use Gedmo\Tool\Wrapper\AbstractWrapper;
 
 /**
  * Doctrine event adapter for ODM adapted
@@ -41,5 +42,21 @@ final class ODM extends BaseAdapterODM implements SluggableAdapter
             $result = $result->toArray();
         }
         return $result;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function replaceRelative($object, array $config, $target, $replacement)
+    {
+        throw new \Exception('not implemented yet');
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function replaceInverseRelative($object, array $config, $target, $replacement)
+    {
+        throw new \Exception('not implemented yet');
     }
 }

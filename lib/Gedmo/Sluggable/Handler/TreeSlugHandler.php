@@ -156,7 +156,7 @@ class TreeSlugHandler implements SlugHandlerInterface
             // update in memory objects
             foreach ($uow->getIdentityMap() as $className => $objects) {
                 // for inheritance mapped classes, only root is always in the identity map
-                if ($className !== $meta->rootEntityName) {
+                if ($className !== $wrapped->getRootObjectName()) {
                     continue;
                 }
                 foreach ($objects as $object) {

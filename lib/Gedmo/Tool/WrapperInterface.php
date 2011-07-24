@@ -67,4 +67,11 @@ interface WrapperInterface
      * @return array|mixed
      */
     function getIdentifier($single = true);
+
+    /**
+     * Get root object class name
+     *
+     * @return string
+     */
+    function getRootObjectName();
 }

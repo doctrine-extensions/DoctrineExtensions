@@ -74,6 +74,14 @@ class EntityWrapper extends AbstractWrapper
     /**
      * {@inheritDoc}
      */
+    public function getRootObjectName()
+    {
+        return $this->meta->rootEntityName;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function getIdentifier($single = true)
     {
         if (!$this->identifier) {

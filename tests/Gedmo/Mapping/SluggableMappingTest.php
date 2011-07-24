@@ -92,21 +92,25 @@ class SluggableMappingTest extends \PHPUnit_Framework_TestCase
         $this->assertArrayHasKey('handlers', $config);
         $handlers = $config['handlers'];
         $this->assertEquals(2, count($handlers));
-        $this->assertArrayHasKey('Some\\Class', $handlers);
-        $this->assertArrayHasKey('Some\\Class2', $handlers);
+        $this->assertArrayHasKey('Gedmo\Sluggable\Handler\TreeSlugHandler', $handlers);
+        $this->assertArrayHasKey('Gedmo\Sluggable\Handler\RelativeSlugHandler', $handlers);
 
-        $first = $handlers['Some\\Class'];
-        $this->assertEquals(2, count($first));
-        $this->assertArrayHasKey('relation', $first);
+        $first = $handlers['Gedmo\Sluggable\Handler\TreeSlugHandler'];
+        $this->assertEquals(3, count($first));
+        $this->assertArrayHasKey('parentRelation', $first);
+        $this->assertArrayHasKey('targetField', $first);
         $this->assertArrayHasKey('separator', $first);
-        $this->assertEquals('parent', $first['relation']);
+        $this->assertEquals('parent', $first['parentRelation']);
+        $this->assertEquals('title', $first['targetField']);
         $this->assertEquals('/', $first['separator']);
 
-        $second = $handlers['Some\\Class2'];
-        $this->assertEquals(2, count($second));
-        $this->assertArrayHasKey('option', $second);
-        $this->assertArrayHasKey('option2', $second);
-        $this->assertEquals('val', $second['option']);
-        $this->assertEquals('val2', $second['option2']);
+        $second = $handlers['Gedmo\Sluggable\Handler\RelativeSlugHandler'];
+        $this->assertEquals(3, count($second));
+        $this->assertArrayHasKey('relationField', $second);
+        $this->assertArrayHasKey('relativeSlugField', $second);
+        $this->assertArrayHasKey('separator', $second);
+        $this->assertEquals('user', $second['relationField']);
+        $this->assertEquals('slug', $second['relativeSlugField']);
+        $this->assertEquals('/', $second['separator']);
     }
 }

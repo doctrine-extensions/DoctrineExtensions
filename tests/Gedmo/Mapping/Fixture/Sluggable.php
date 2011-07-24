@@ -31,18 +31,30 @@ class Sluggable
 
     /**
      * @Gedmo\Slug(handlers={
-     *      @Gedmo\SlugHandler(class="Some\Class", options={
-     *          @Gedmo\SlugHandlerOption(name="relation", value="parent"),
+     *      @Gedmo\SlugHandler(class="Gedmo\Sluggable\Handler\TreeSlugHandler", options={
+     *          @Gedmo\SlugHandlerOption(name="parentRelation", value="parent"),
+     *          @Gedmo\SlugHandlerOption(name="targetField", value="title"),
      *          @Gedmo\SlugHandlerOption(name="separator", value="/")
      *      }),
-     *      @Gedmo\SlugHandler(class="Some\Class2", options={
-     *          @Gedmo\SlugHandlerOption(name="option", value="val"),
-     *          @Gedmo\SlugHandlerOption(name="option2", value="val2")
+     *      @Gedmo\SlugHandler(class="Gedmo\Sluggable\Handler\RelativeSlugHandler", options={
+     *          @Gedmo\SlugHandlerOption(name="relationField", value="user"),
+     *          @Gedmo\SlugHandlerOption(name="relativeSlugField", value="slug"),
+     *          @Gedmo\SlugHandlerOption(name="separator", value="/")
      *      })
      * }, separator="-", updatable=false)
      * @ORM\Column(name="slug", type="string", length=64, unique=true)
      */
     private $slug;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Sluggable")
+     */
+    private $parent;
+
+    /**
+    * @ORM\ManyToOne(targetEntity="User")
+    */
+    private $user;
 
     public function getId()
     {
