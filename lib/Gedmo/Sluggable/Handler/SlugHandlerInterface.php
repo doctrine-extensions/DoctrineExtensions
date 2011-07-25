@@ -24,10 +24,9 @@ interface SlugHandlerInterface
     /**
      * Construct the slug handler
      *
-     * @param Doctrine\Common\Persistence\ObjectManager $om
      * @param Gedmo\Sluggable\SluggableListener $sluggable
      */
-    function __construct(ObjectManager $om, SluggableListener $sluggable);
+    function __construct(SluggableListener $sluggable);
 
     /**
      * Get the options for specific object

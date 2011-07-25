@@ -72,9 +72,8 @@ class TreeSlugHandler implements SlugHandlerInterface
     /**
      * {@inheritDoc}
      */
-    public function __construct(ObjectManager $om, SluggableListener $sluggable)
+    public function __construct(SluggableListener $sluggable)
     {
-        $this->om = $om;
         $this->sluggable = $sluggable;
     }
 
@@ -105,6 +104,7 @@ class TreeSlugHandler implements SlugHandlerInterface
      */
     public function postSlugBuild(SluggableAdapter $ea, array &$config, $object, &$slug)
     {
+        $this->om = $ea->getObjectManager();
         $options = $this->getOptions($object);
         $this->originalTransliterator = $this->sluggable->getTransliterator();
         $this->sluggable->setTransliterator(array($this, 'transliterate'));

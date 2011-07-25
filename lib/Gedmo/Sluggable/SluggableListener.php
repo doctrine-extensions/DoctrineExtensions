@@ -152,10 +152,16 @@ class SluggableListener extends MappedEventSubscriber
         return __NAMESPACE__;
     }
 
-    private function getHandler($class, ObjectManager $om)
+    /**
+     * Get the slug handler instance by $class name
+     *
+     * @param string $class
+     * @return Gedmo\Sluggable\Handler\SlugHandlerInterface
+     */
+    private function getHandler($class)
     {
         if (!isset($this->handlers[$class])) {
-            $this->handlers[$class] = new $class($om, $this);
+            $this->handlers[$class] = new $class($this);
         }
         return $this->handlers[$class];
     }
@@ -206,7 +212,7 @@ class SluggableListener extends MappedEventSubscriber
                 if (isset($config['handlers'])) {
                     foreach ($config['handlers'] as $class => $options) {
                         $this
-                            ->getHandler($class, $om)
+                            ->getHandler($class)
                             ->postSlugBuild($ea, $slugFieldConfig, $object, $slug)
                         ;
                     }
@@ -249,7 +255,7 @@ class SluggableListener extends MappedEventSubscriber
                 if (isset($config['handlers'])) {
                     foreach ($config['handlers'] as $class => $options) {
                         $this
-                            ->getHandler($class, $om)
+                            ->getHandler($class)
                             ->onSlugCompletion($ea, $slugFieldConfig, $object, $slug)
                         ;
                     }

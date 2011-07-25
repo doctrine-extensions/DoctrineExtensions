@@ -48,9 +48,8 @@ class InversedRelativeSlugHandler implements SlugHandlerInterface
      * )
      * {@inheritDoc}
      */
-    public function __construct(ObjectManager $om, SluggableListener $sluggable)
+    public function __construct(SluggableListener $sluggable)
     {
-        $this->om = $om;
         $this->sluggable = $sluggable;
     }
 
@@ -84,6 +83,7 @@ class InversedRelativeSlugHandler implements SlugHandlerInterface
      */
     public function onSlugCompletion(SluggableAdapter $ea, array &$config, $object, &$slug)
     {
+        $this->om = $ea->getObjectManager();
         $isInsert = $this->om->getUnitOfWork()->isScheduledForInsert($object);
         if (!$isInsert) {
             $options = $this->getOptions($object);
