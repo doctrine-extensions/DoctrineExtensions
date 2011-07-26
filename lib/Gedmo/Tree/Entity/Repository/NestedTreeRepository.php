@@ -842,4 +842,69 @@ class NestedTreeRepository extends AbstractTreeRepository
         // remove from identity map
         $this->_em->getUnitOfWork()->removeFromIdentityMap($wrapped->getObject());
     }
+
+    /**
+     * Get hierarchy array of children followed by given $node
+     *
+     * @param object $node - from which node to start reordering the tree
+     * @param boolean $direct - true to take only direct children
+     * @param string $direction - sort direction : "ASC" or "DESC"
+     * @return array $trees
+     */
+    public function childrenArrayHierarchy($node = null, $direct = false, $direction = "ASC")
+    {
+        $meta = $this->getClassMetadata();
+        $config = $this->listener->getConfiguration($this->_em, $meta->name);
+
+        if ($node !== null) {
+            if ($node instanceof $meta->name) {
+                $wrapped = new EntityWrapper($node, $this->_em);
+                if (!$wrapped->hasValidIdentifier()) {
+                    throw new InvalidArgumentException("Node is not managed by UnitOfWork");
+                }
+            }
+        }
+
+        // Gets the array of $node results.
+        // It must be order by 'root' field
+        $nodes = self::childrenQuery($node, $direct, 'root' , $direction)->getArrayResult();
+
+        // Trees mapped
+        $trees = array();
+        $l = 0;
+
+        if (count($nodes) > 0) {
+            // Node Stack. Used to help building the hierarchy
+            $stack = array();
+
+            foreach ($nodes as $child) {
+                $item = $child;
+
+                $item['__children'] = array();
+
+                // Number of stack items
+                $l = count($stack);
+
+                // Check if we're dealing with different levels
+                while($l > 0 && $stack[$l - 1]['lvl'] >= $item['lvl']) {
+                    array_pop($stack);
+                    $l--;
+                }
+
+                // Stack is empty (we are inspecting the root)
+                if ($l == 0) {
+                    // Assigning the root child
+                    $i = count($trees);
+                    $trees[$i] = $item;
+                    $stack[] = & $trees[$i];
+                } else {
+                    // Add child to parent
+                    $i = count($stack[$l - 1]['__children']);
+                    $stack[$l - 1]['__children'][$i] = $item;
+                    $stack[] = & $stack[$l - 1]['__children'][$i];
+                }
+            }
+        }
+        return $trees;
+    }
 }
