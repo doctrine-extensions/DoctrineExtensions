@@ -69,7 +69,7 @@ class Yaml extends File implements Driver
                         if (!$this->isValidField($meta, $field)) {
                             throw new InvalidMappingException("Cannot slug field - [{$field}] type is not valid and must be 'string' in class - {$meta->name}");
                         }
-                        $sluggable = $fieldMapping['gedmo']['sluggable'];
+                        $sluggable = (isset($fieldMapping['gedmo']['sluggable'])? $fieldMapping['gedmo']['sluggable']:array());
                         $slugField = (isset($sluggable['slugField'])? $sluggable['slugField']:'slug');
                         $position = (isset($sluggable['position'])? $sluggable['position']:0);
                         $config['fields'][$slugField][] = array('field' => $field, 'position' => $position, 'slugField' => $slugField);
