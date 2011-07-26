@@ -236,14 +236,14 @@ Yaml mapped Article: **/mapping/yaml/Entity.Article.dcm.yml**
           gedmo:
             sluggable:
               position: 0
-              fieldSlug: 'slug'
+              slugField: 'slug'
         code:
           type: string
           length: 16
           gedmo:
             sluggable:
               position: 1
-              fieldSlug: 'slug'
+              slugField: 'slug'
         slug:
           type: string
           length: 128
