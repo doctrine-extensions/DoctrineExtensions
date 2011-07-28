@@ -7,6 +7,9 @@
         <testsuite name="Sluggable Extension">
             <directory suffix=".php">./Gedmo/Sluggable/</directory>
         </testsuite>
+        <testsuite name="Sortable Extension">
+            <directory suffix=".php">./Gedmo/Sortable/</directory>
+        </testsuite>
         <testsuite name="Tree Extension">
             <directory suffix=".php">./Gedmo/Tree/</directory>
         </testsuite>

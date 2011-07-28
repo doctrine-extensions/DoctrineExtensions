@@ -67,18 +67,44 @@ class Xml extends BaseXml
                         throw new InvalidMappingException("Sortable position field - [{$field}] type is not valid and must be 'integer' in class - {$meta->name}");
                     }
                     $config['position'] = $field;
-                } elseif (isset($mapping->{'sortable-group'})) {
-                    if (!isset($config['groups'])) {
-                        $config['groups'] = array();
-                    }
-                    $config['groups'][] = $field;
                 }
+            }
+            $this->readSortableGroups($xml->field, $config, 'name');
+        }
+        
+        
+        // Search for sortable-groups in association mappings
+        if (isset($xml->{'many-to-one'})) {
+            $this->readSortableGroups($xml->{'many-to-one'}, $config);
+        }
+        
+        // Search for sortable-groups in association mappings
+        if (isset($xml->{'many-to-many'})) {
+            $this->readSortableGroups($xml->{'many-to-many'}, $config);
+        }
+    }
+
+    private function readSortableGroups($mapping, array &$config, $fieldAttr='field')
+    {
+        foreach ($mapping as $map) {
+            $mappingDoctrine = $map;
+            /**
+             * @var \SimpleXmlElement $mapping
+             */
+            $map = $map->children(self::GEDMO_NAMESPACE_URI);
+            
+            $field = $this->_getAttribute($mappingDoctrine, $fieldAttr);
+            if (isset($map->{'sortable-group'})) {
+                if (!isset($config['groups'])) {
+                    $config['groups'] = array();
+                }
+                $config['groups'][] = $field;
             }
         }
     }
 
     /**
-     * Checks if $field type is valid as Sluggable field
+     * Checks if $field type is valid as Sortable Position field
      *
      * @param ClassMetadata $meta
      * @param string $field
