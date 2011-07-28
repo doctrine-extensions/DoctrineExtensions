@@ -47,17 +47,36 @@ class Issue75Test extends BaseTestCaseORM
         $image1->setTitle('img1');
         $this->em->persist($image1);
 
-        $image2 = new Image;
+        /*$image2 = new Image;
         $image2->setTitle('img2');
-        $this->em->persist($image2);
+        $this->em->persist($image2);*/
 
         $article = new Article;
         $article->setTitle('en art');
         // images is not an array
-        $article->setImages(array($image1, $image2));
+        //$article->setImages(array($image1, $image2));
         $this->em->persist($article);
 
+        //$this->em->flush();*/
+        $image2 = new Image;  //line 62
+        $image2->setTitle('en img2');
+        $this->em->persist($image2);
+
+        $image32 = new Image; // +
+        $image32->setTitle('en img3');  // +
+        $this->em->persist($image32); // +
+
+        $article->addImage($image1);
+        $article->addImage($image2);
+
+        $this->em->persist($article);  // +
         $this->em->flush();
+
+        $article->setTitle('nada');  // +
+        $article->addImage($image32);  // +
+        $this->em->persist($article);  // +
+        $this->em->flush();
+
         //Step2: article update in another locale
         $article = $this->em->find(self::ARTICLE, $article->getId());
         $image1 = $this->em->find(self::IMAGE, $image1->getId());

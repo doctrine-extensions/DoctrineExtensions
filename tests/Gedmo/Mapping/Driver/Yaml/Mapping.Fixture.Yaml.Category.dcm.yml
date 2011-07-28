@@ -21,7 +21,9 @@ Mapping\Fixture\Yaml\Category:
       length: 64
       gedmo:
         - translatable
-        - sluggable
+        sluggable:
+          position: 1
+          slugField: 'slug'
     slug:
       type: string
       length: 64

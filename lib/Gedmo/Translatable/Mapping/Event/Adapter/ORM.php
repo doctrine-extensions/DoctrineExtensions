@@ -81,14 +81,15 @@ final class ORM extends BaseAdapterORM implements TranslatableAdapter
     /**
      * {@inheritDoc}
      */
-    public function removeAssociatedTranslations($objectId, $transClass)
+    public function removeAssociatedTranslations($objectId, $transClass, $targetClass)
     {
         $em = $this->getObjectManager();
         $dql = 'DELETE ' . $transClass . ' trans';
         $dql .= ' WHERE trans.foreignKey = :objectId';
+        $dql .= ' AND trans.objectClass = :targetClass';
 
         $q = $em->createQuery($dql);
-        $q->setParameters(compact('objectId'));
+        $q->setParameters(compact('objectId', 'targetClass'));
         return $q->getSingleScalarResult();
     }
 

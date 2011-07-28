@@ -22,6 +22,9 @@
         <testsuite name="Loggable Extension">
             <directory suffix=".php">./Gedmo/Loggable/</directory>
         </testsuite>
+        <testsuite name="Sortable Extension">
+            <directory suffix=".php">./Gedmo/Sortable/</directory>
+        </testsuite>
         <testsuite name="Object wrappers">
             <directory suffix=".php">./Gedmo/Wrapper/</directory>
         </testsuite>

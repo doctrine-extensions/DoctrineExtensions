@@ -67,8 +67,15 @@ class Annotation implements AnnotationDriverInterface
      */
     public function validateFullMetadata(ClassMetadata $meta, array $config)
     {
-        if ($config && !isset($config['fields'])) {
-            throw new InvalidMappingException("Unable to find any sluggable fields specified for Sluggable entity - {$meta->name}");
+        if ($config) {
+            if (!isset($config['fields'])) {
+                throw new InvalidMappingException("Unable to find any sluggable fields specified for Sluggable entity - {$meta->name}");
+            }
+            foreach ($config['fields'] as $slugField => $fields) {
+                if (!isset($config['slugFields'][$slugField])) {
+                    throw new InvalidMappingException("Unable to find {$slugField} slugField specified for Sluggable entity - {$meta->name}, you should specify slugField annotation property");
+                }
+            }
         }
     }
 
@@ -94,7 +101,10 @@ class Annotation implements AnnotationDriverInterface
                 if (!$this->isValidField($meta, $field)) {
                     throw new InvalidMappingException("Cannot slug field - [{$field}] type is not valid and must be 'string' in class - {$meta->name}");
                 }
-                $config['fields'][] = array('field' => $field, 'position' => $sluggable->position);
+                if (!is_null($sluggable->slugField) and !$meta->hasField($sluggable->slugField)) {
+                    throw new InvalidMappingException("Unable to find slug [{$field}] as mapped property in entity - {$meta->name}");
+                }
+                $config['fields'][$sluggable->slugField][] = array('field' => $field, 'position' => $sluggable->position, 'slugField' => $sluggable->slugField);
             }
             // slug property
             if ($slug = $this->reader->getPropertyAnnotation($property, self::SLUG)) {
@@ -105,15 +115,12 @@ class Annotation implements AnnotationDriverInterface
                 if (!$this->isValidField($meta, $field)) {
                     throw new InvalidMappingException("Cannot use field - [{$field}] for slug storage, type is not valid and must be 'string' in class - {$meta->name}");
                 }
-                if (isset($config['slug'])) {
-                    throw new InvalidMappingException("There cannot be two slug fields: [{$slugField}] and [{$config['slug']}], in class - {$meta->name}.");
-                }
 
-                $config['slug'] = $field;
-                $config['style'] = $slug->style;
-                $config['updatable'] = $slug->updatable;
-                $config['unique'] = $slug->unique;
-                $config['separator'] = $slug->separator;
+                $config['slugFields'][$field]['slug'] = $field;
+                $config['slugFields'][$field]['style'] = $slug->style;
+                $config['slugFields'][$field]['updatable'] = $slug->updatable;
+                $config['slugFields'][$field]['unique'] = $slug->unique;
+                $config['slugFields'][$field]['separator'] = $slug->separator;
             }
         }
     }

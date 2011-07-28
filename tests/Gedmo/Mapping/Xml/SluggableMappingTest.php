@@ -51,26 +51,26 @@ class SluggableMappingTest extends BaseTestCaseOM
         $meta = $this->em->getClassMetadata('Mapping\Fixture\Xml\Sluggable');
         $config = $this->sluggable->getConfiguration($this->em, $meta->name);
 
-        $this->assertArrayHasKey('slug', $config);
-        $this->assertEquals('slug', $config['slug']);
-        $this->assertArrayHasKey('style', $config);
-        $this->assertEquals('camel', $config['style']);
-        $this->assertArrayHasKey('updatable', $config);
-        $this->assertTrue($config['updatable']);
-        $this->assertArrayHasKey('unique', $config);
-        $this->assertTrue($config['unique']);
-        $this->assertArrayHasKey('separator', $config);
-        $this->assertEquals('_', $config['separator']);
+        $this->assertArrayHasKey('slugFields', $config);
+        $this->assertEquals('slug', $config['slugFields']['slug']['slug']);
+        $this->assertArrayHasKey('style', $config['slugFields']['slug']);
+        $this->assertEquals('camel', $config['slugFields']['slug']['style']);
+        $this->assertArrayHasKey('updatable', $config['slugFields']['slug']);
+        $this->assertTrue($config['slugFields']['slug']['updatable']);
+        $this->assertArrayHasKey('unique', $config['slugFields']['slug']);
+        $this->assertTrue($config['slugFields']['slug']['unique']);
+        $this->assertArrayHasKey('separator', $config['slugFields']['slug']);
+        $this->assertEquals('_', $config['slugFields']['slug']['separator']);
 
         $this->assertArrayHasKey('fields', $config);
-        $this->assertEquals(3, count($config['fields']));
+        $this->assertEquals(3, count($config['fields']['slug']));
         $fields = $config['fields'];
 
-        $this->assertEquals('title', $fields[0]['field']);
-        $this->assertEquals(0, $fields[0]['position']);
-        $this->assertEquals('code', $fields[1]['field']);
-        $this->assertEquals(false, $fields[1]['position']);
-        $this->assertEquals('ean', $fields[2]['field']);
-        $this->assertEquals(1, $fields[2]['position']);
+        $this->assertEquals('title', $fields['slug'][0]['field']);
+        $this->assertEquals(0, $fields['slug'][0]['position']);
+        $this->assertEquals('code', $fields['slug'][1]['field']);
+        $this->assertEquals(false, $fields['slug'][1]['position']);
+        $this->assertEquals('ean', $fields['slug'][2]['field']);
+        $this->assertEquals(1, $fields['slug'][2]['position']);
     }
 }

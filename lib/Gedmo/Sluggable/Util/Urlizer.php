@@ -208,86 +208,47 @@ class Urlizer
     * @param string (default = ?) Character use if character unknown
     * @return string US-ASCII string
     */
-    public static function utf8ToAscii($str, $unknown = '?') {
-
-        # The database for transliteration stored here
-        static $UTF8_TO_ASCII = array();
-
-        # Variable lookups faster than accessing constants
-        $UTF8_TO_ASCII_DB = __DIR__ . '/data';
+    public static function utf8ToAscii($str, $unknown = '?')
+    {
+        static $UTF8_TO_ASCII;
 
         if (strlen($str) == 0) {
-            return '';
+            return;
         }
 
-        $len = strlen($str);
-        $i = 0;
-        $result = '';
+        preg_match_all('/.{1}|[^\x00]{1,1}$/us', $str, $ar);
+        $chars = $ar[0];
 
-        while ($i < $len) {
-            $ord = NULL;
-            $increment = 1;
-
-            $ord0 = ord($str{$i});
-
-            # Much nested if /else - PHP fn calls expensive, no block scope...
-            # 1 byte - ASCII
-            if ($ord0 >= 0 && $ord0 <= 127) {
-                $ord = $ord0;
-                $increment = 1;
-            } else {
-                # 2 bytes
-                $ord1 = ord($str{$i+1});
-                if ($ord0 >= 192 && $ord0 <= 223) {
-                    $ord = ($ord0 - 192) * 64 + ($ord1 - 128);
-                    $increment = 2;
-                } else {
-                    # 3 bytes
-                    $ord2 = ord($str{$i+2});
-                    if ($ord0 >= 224 && $ord0 <= 239) {
-                        $ord = ($ord0-224)*4096 + ($ord1-128)*64 + ($ord2-128);
-                        $increment = 3;
-                    } else {
-                        # 4 bytes
-                        $ord3 = ord($str{$i+3});
-                        if ($ord0>=240 && $ord0<=247) {
-                            $ord = ($ord0-240)*262144 + ($ord1-128)*4096
-                                + ($ord2-128)*64 + ($ord3-128);
-                            $increment = 4;
-                        } else {
-                            throw new \Gedmo\Exception\UnexpectedValueException('Unidentified ut8 character was present, pure utf8 required');
-                        }
-                    }
-                }
-            }
+        foreach ($chars as $i => $c) {
+            $ud = 0;
+            if (ord($c{0})>=0 && ord($c{0})<=127) { continue; } // ASCII - next please
+            if (ord($c{0})>=192 && ord($c{0})<=223) { $ord = (ord($c{0})-192)*64 + (ord($c{1})-128); }
+            if (ord($c{0})>=224 && ord($c{0})<=239) { $ord = (ord($c{0})-224)*4096 + (ord($c{1})-128)*64 + (ord($c{2})-128); }
+            if (ord($c{0})>=240 && ord($c{0})<=247) { $ord = (ord($c{0})-240)*262144 + (ord($c{1})-128)*4096 + (ord($c{2})-128)*64 + (ord($c{3})-128); }
+            if (ord($c{0})>=248 && ord($c{0})<=251) { $ord = (ord($c{0})-248)*16777216 + (ord($c{1})-128)*262144 + (ord($c{2})-128)*4096 + (ord($c{3})-128)*64 + (ord($c{4})-128); }
+            if (ord($c{0})>=252 && ord($c{0})<=253) { $ord = (ord($c{0})-252)*1073741824 + (ord($c{1})-128)*16777216 + (ord($c{2})-128)*262144 + (ord($c{3})-128)*4096 + (ord($c{4})-128)*64 + (ord($c{5})-128); }
+            if (ord($c{0})>=254 && ord($c{0})<=255) { $chars{$i} = $unknown; continue; } //error
 
             $bank = $ord >> 8;
 
-            # If we haven't used anything from this bank before, need to load it...
-            if (!array_key_exists($bank, $UTF8_TO_ASCII)) {
-                $bankfile = $UTF8_TO_ASCII_DB. '/'. sprintf("x%02x", $bank).'.php';
-
+            if (!array_key_exists($bank, (array)$UTF8_TO_ASCII)) {
+                $bankfile = __DIR__. '/data/'. sprintf("x%02x",$bank).'.php';
                 if (file_exists($bankfile)) {
-                    # Load the appropriate database
-                    if (!include $bankfile) {
-                        throw new \Gedmo\Exception\RuntimeException('Cannot find character bank file: ' . $bankfile);
-                    }
+                    include $bankfile;
                 } else {
-                    # Some banks are deliberately empty
                     $UTF8_TO_ASCII[$bank] = array();
                 }
             }
 
             $newchar = $ord & 255;
-            if (isset($UTF8_TO_ASCII[$bank]) && array_key_exists($newchar, $UTF8_TO_ASCII[$bank])) {
-                $result .= $UTF8_TO_ASCII[$bank][$newchar];
+            if (array_key_exists($newchar, $UTF8_TO_ASCII[$bank])) {
+                $chars{$i} = $UTF8_TO_ASCII[$bank][$newchar];
             } else {
-                $result .= $unknown;
+                $chars{$i} = $unknown;
             }
-            $i += $increment;
         }
 
-        return $result;
+        return implode('', $chars);
     }
 
     /**

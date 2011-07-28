@@ -18,42 +18,42 @@ abstract class AbstractTranslation
      *
      * @Id
      */
-    private $id;
+    protected $id;
 
     /**
      * @var string $locale
      *
      * @String
      */
-    private $locale;
+    protected $locale;
 
     /**
      * @var string $objectClass
      *
      * @String
      */
-    private $objectClass;
+    protected $objectClass;
 
     /**
      * @var string $field
      *
      * @String
      */
-    private $field;
+    protected $field;
 
     /**
      * @var string $foreignKey
      *
      * @String(name="foreign_key")
      */
-    private $foreignKey;
+    protected $foreignKey;
 
     /**
      * @var text $content
      *
      * @String
      */
-    private $content;
+    protected $content;
 
     /**
      * Get id
