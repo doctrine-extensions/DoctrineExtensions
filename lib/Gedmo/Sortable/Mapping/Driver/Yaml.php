@@ -65,12 +65,28 @@ class Yaml extends File implements Driver
                             throw new InvalidMappingException("Sortable position field - [{$field}] type is not valid and must be 'integer' in class - {$meta->name}");
                         }
                         $config['position'] = $field;
-                    } elseif (in_array('sortableGroup', $fieldMapping['gedmo'])) {
-                        if (!isset($config['groups'])) {
-                            $config['groups'] = array();
-                        }
-                        $config['groups'][] = $field;
                     }
+                }
+            }
+            $this->readSortableGroups($mapping['fields'], $config);
+        }
+        if (isset($mapping['manyToOne'])) {
+            $this->readSortableGroups($mapping['manyToOne'], $config);
+        }
+        if (isset($mapping['manyToMany'])) {
+            $this->readSortableGroups($mapping['manyToMany'], $config);
+        }
+    }
+    
+    private function readSortableGroups($mapping, array &$config)
+    {
+        foreach ($mapping as $field => $fieldMapping) {
+            if (isset($fieldMapping['gedmo'])) {
+                if (in_array('sortableGroup', $fieldMapping['gedmo'])) {
+                    if (!isset($config['groups'])) {
+                        $config['groups'] = array();
+                    }
+                    $config['groups'][] = $field;
                 }
             }
         }

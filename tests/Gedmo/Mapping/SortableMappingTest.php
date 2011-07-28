@@ -1,17 +1,17 @@
 <?php
 
-namespace Gedmo\Mapping\Xml;
+namespace Gedmo\Sluggable;
 
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
 use Doctrine\Common\EventManager;
 use Doctrine\ORM\Mapping\Driver\DriverChain;
-use Doctrine\ORM\Mapping\Driver\XmlDriver;
+use Doctrine\ORM\Mapping\Driver\YamlDriver;
 use Gedmo\Sortable\SortableListener;
 use Tool\BaseTestCaseOM;
 
 /**
- * These are mapping extension tests
+ * These are mapping tests for sortable extension
  *
  * @author Lukas Botsch <lukas.botsch@gmail.com>
  * @package Gedmo.Mapping
@@ -37,10 +37,10 @@ class SortableMappingTest extends BaseTestCaseOM
         $reader = new AnnotationReader();
         $annotationDriver = new AnnotationDriver($reader);
 
-        $xmlDriver = new XmlDriver(__DIR__.'/../Driver/Xml');
+        $yamlDriver = new YamlDriver(__DIR__.'/Driver/Yaml');
 
         $chain = new DriverChain;
-        $chain->addDriver($xmlDriver, 'Mapping\Fixture\Xml');
+        $chain->addDriver($yamlDriver, 'Mapping\Fixture\Yaml');
         $chain->addDriver($annotationDriver, 'Mapping\Fixture');
 
         $this->sortable = new SortableListener;
@@ -48,16 +48,16 @@ class SortableMappingTest extends BaseTestCaseOM
         $this->evm->addEventSubscriber($this->sortable);
 
         $this->em = $this->getMockSqliteEntityManager(array(
-            'Mapping\Fixture\Xml\Sortable',
+            'Mapping\Fixture\Yaml\Sortable',
             'Mapping\Fixture\SortableGroup'
         ), $chain);
     }
 
-    public function testSluggableMetadata()
+    public function testYamlMapping()
     {
-        $meta = $this->em->getClassMetadata('Mapping\Fixture\Xml\Sortable');
+        $meta = $this->em->getClassMetadata('Mapping\Fixture\Yaml\Sortable');
         $config = $this->sortable->getConfiguration($this->em, $meta->name);
-
+        
         $this->assertArrayHasKey('position', $config);
         $this->assertEquals('position', $config['position']);
         $this->assertArrayHasKey('groups', $config);
