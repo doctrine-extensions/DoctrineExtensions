@@ -89,6 +89,7 @@ class InversedRelativeSlugHandler implements SlugHandlerInterface
             $options = $this->getOptions($object);
             $wrapped = AbstractWrapper::wrapp($object, $this->om);
             $oldSlug = $wrapped->getPropertyValue($config['slug']);
+            // @todo: check the changeset for the **object** to update the slug.
             $mappedByConfig = $this->sluggable->getConfiguration(
                 $this->om,
                 $options['relationClass']
