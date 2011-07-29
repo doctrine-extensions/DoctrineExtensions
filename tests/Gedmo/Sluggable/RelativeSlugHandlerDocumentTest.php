@@ -52,7 +52,7 @@ class RelativeSlugHandlerDocumentTest extends BaseTestCaseMongoODM
         $this->populate();
         $repo = $this->dm->getRepository(self::SLUG);
 
-        /*$thomas = $repo->findOneByTitle('Thomas');
+        $thomas = $repo->findOneByTitle('Thomas');
         $thomas->setTitle('Ninja');
         $this->dm->persist($thomas);
         $this->dm->flush();
@@ -68,7 +68,7 @@ class RelativeSlugHandlerDocumentTest extends BaseTestCaseMongoODM
         $this->assertEquals('martial-arts-test/ninja', $thomas->getSlug());
 
         $jen = $repo->findOneByTitle('Jen');
-        $this->assertEquals('martial-arts-test/jen', $jen->getSlug());*/
+        $this->assertEquals('martial-arts-test/jen', $jen->getSlug());
     }
 
     private function populate()

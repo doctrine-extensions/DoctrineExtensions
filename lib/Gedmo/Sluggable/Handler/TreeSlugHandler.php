@@ -151,6 +151,7 @@ class TreeSlugHandler implements SlugHandlerInterface
             $extConfig = $this->sluggable->getConfiguration($this->om, $meta->name);
             $config['useObjectClass'] = $extConfig['useObjectClass'];
             $target = $wrapped->getPropertyValue($config['slug']);
+            $config['pathSeparator'] = $this->usedSeparator;
             $ea->replaceRelative($object, $config, $target.$this->usedSeparator, $slug);
             $uow = $this->om->getUnitOfWork();
             // update in memory objects
