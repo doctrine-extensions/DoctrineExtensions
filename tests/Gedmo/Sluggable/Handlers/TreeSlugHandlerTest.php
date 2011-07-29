@@ -4,7 +4,7 @@ namespace Gedmo\Sluggable;
 
 use Doctrine\Common\EventManager;
 use Tool\BaseTestCaseORM;
-use Sluggable\Fixture\TreeSlug;
+use Sluggable\Fixture\Handler\TreeSlug;
 use Gedmo\Tree\TreeListener;
 
 /**
@@ -17,7 +17,7 @@ use Gedmo\Tree\TreeListener;
  */
 class TreeSlugHandlerTest extends BaseTestCaseORM
 {
-    const TARGET = "Sluggable\\Fixture\\TreeSlug";
+    const TARGET = "Sluggable\\Fixture\\Handler\\TreeSlug";
 
     protected function setUp()
     {
@@ -27,14 +27,6 @@ class TreeSlugHandlerTest extends BaseTestCaseORM
         $evm->addEventSubscriber(new SluggableListener);
         $evm->addEventSubscriber(new TreeListener);
 
-        $conn = array(
-            'driver' => 'pdo_mysql',
-            'host' => '127.0.0.1',
-            'dbname' => 'tests',
-            'user' => 'root',
-            'password' => 'nimda'
-        );
-        //$this->getMockCustomEntityManager($conn, $evm);
         $this->getMockSqliteEntityManager($evm);
     }
 

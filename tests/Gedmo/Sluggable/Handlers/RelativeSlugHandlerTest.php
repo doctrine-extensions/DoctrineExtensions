@@ -4,8 +4,8 @@ namespace Gedmo\Sluggable;
 
 use Doctrine\Common\EventManager;
 use Tool\BaseTestCaseORM;
-use Sluggable\Fixture\Article;
-use Sluggable\Fixture\ArticleRelativeSlug;
+use Sluggable\Fixture\Handler\Article;
+use Sluggable\Fixture\Handler\ArticleRelativeSlug;
 
 /**
  * These are tests for Sluggable behavior
@@ -17,8 +17,8 @@ use Sluggable\Fixture\ArticleRelativeSlug;
  */
 class RelativeSlugHandlerTest extends BaseTestCaseORM
 {
-    const SLUG = "Sluggable\\Fixture\\ArticleRelativeSlug";
-    const ARTICLE = "Sluggable\\Fixture\\Article";
+    const SLUG = "Sluggable\\Fixture\\Handler\\ArticleRelativeSlug";
+    const ARTICLE = "Sluggable\\Fixture\\Handler\\Article";
 
     protected function setUp()
     {
