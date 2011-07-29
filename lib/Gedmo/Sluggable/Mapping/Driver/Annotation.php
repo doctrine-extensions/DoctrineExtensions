@@ -102,7 +102,8 @@ class Annotation implements AnnotationDriverInterface
                     throw new InvalidMappingException("Cannot slug field - [{$field}] type is not valid and must be 'string' in class - {$meta->name}");
                 }
                 if (!is_null($sluggable->slugField) and !$meta->hasField($sluggable->slugField)) {
-                    throw new InvalidMappingException("Unable to find slug [{$field}] as mapped property in entity - {$meta->name}");
+
+                    throw new InvalidMappingException(sprintf('The "%s" property - which is defined as the "slugField" for the "%s" property - does not exist or is not mapped to Doctrine in "%s"', $sluggable->slugField, $field, $meta->name));
                 }
                 $config['fields'][$sluggable->slugField][] = array('field' => $field, 'position' => $sluggable->position, 'slugField' => $sluggable->slugField);
             }
