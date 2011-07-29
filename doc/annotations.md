@@ -6,7 +6,6 @@ on extensions, refer to their specific documentation.
 
 Content:
 
-- [New annotation mapping](#annotation_mapping) example for common3.0.x
 - Best [practices](#setup) for setting up
 - [Tree](#tree)
 - [Translatable](#translatable)
@@ -14,12 +13,12 @@ Content:
 - [Timestampable](#timestampable)
 - [Loggable](#loggable)
 
-## New annotation mapping example for common3.0.x {#annotation_mapping}
+## New annotation mapping
 
 Recently there was an upgrade made for annotation reader in order to support
-more native way for annotation mapping in **common3.0.x** branch. Before that
+more native way for annotation mapping in **common2.1.x** branch. Before that
 you had to make aliases for namespaces (like __gedmo:Translatable__), this strategy
-was limited and errors were not explainable. Now you have to add a **use** statement
+was limited and errors were not self explanatory. Now you have to add a **use** statement
 for each annotation you use in your mapping, see example bellow:
 
     namespace MyApp\Entity;
@@ -55,7 +54,8 @@ for each annotation you use in your mapping, see example bellow:
         private $slug;
     }
 
-**Note:** this new mapping applies only if you use **doctrine-common** library at version **3.0.x**
+**Note:** this new mapping applies only if you use **doctrine-common** library at version **2.1.x** or higher
+extension library still supports old mapping styles if you manually set the mapping drivers
 
 ## Best practices for setting up with annotations {#setup}
 
@@ -99,7 +99,7 @@ mapping and listeners:
 
 **Notice:** that symfony2 DoctrineExtensionsBundle does it automatically this
 way you will maintain a single instance of annotation reader. It relates only
-to doctrine-common-3.0.x branch.
+to doctrine-common-2.1.x branch.
 
 ## Tree annotations {#tree}
 
@@ -107,7 +107,7 @@ Tree can use diferent adapters. Currently **Tree** extension supports **NestedSe
 and **Closure** strategies which has a difference for annotations used. Note, that 
 tree will automatically map indexes which are considered necessary for best performance.
 
-### @gedmo:Tree (required for all tree strategies)
+### @Gedmo\Mapping\Annotation\Tree (required for all tree strategies)
 
 **class** annotation
 
@@ -120,12 +120,12 @@ Is the main identificator of tree used for domain object which should **act as T
 example:
 
     /**
-     * @gedmo:Tree(type="nested")
-     * @Entity(repositoryClass="Gedmo\Tree\Entity\Repository\NestedTreeRepository")
+     * @Gedmo\Mapping\Annotation\Tree(type="nested")
+     * @Doctrine\ORM\Mapping\Entity(repositoryClass="Gedmo\Tree\Entity\Repository\NestedTreeRepository")
      */
     class Category ...
 
-### @gedmo:TreeParent (required for all tree strategies)
+### @Gedmo\Mapping\Annotation\TreeParent (required for all tree strategies)
 
 **property** annotation
 
@@ -135,13 +135,13 @@ relation
 example:
 
     /**
-     * @gedmo:TreeParent
-     * @ManyToOne(targetEntity="Category")
-     * @JoinColumn(name="parent_id", referencedColumnName="id", onDelete="SET NULL")
+     * @Gedmo\Mapping\Annotation\TreeParent
+     * @Doctrine\ORM\Mapping\ManyToOne(targetEntity="Category")
+     * @Doctrine\ORM\Mapping\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="SET NULL")
      */
     private $parent;
 
-### @gedmo:TreeLeft (required for nested tree)
+### @Gedmo\Mapping\Annotation\TreeLeft (required for nested tree)
 
 **property** annotation
 
@@ -151,12 +151,12 @@ of nestedset left values. Property must be **integer** type.
 example:
 
     /**
-     * @gedmo:TreeLeft
-     * @Column(type=integer)
+     * @Gedmo\Mapping\Annotation\TreeLeft
+     * @Doctrine\ORM\Mapping\Column(type=integer)
      */
     private $lft;
 
-### @gedmo:TreeRight (required for nested tree)
+### @Gedmo\Mapping\Annotation\TreeRight (required for nested tree)
 
 **property** annotation
 
@@ -166,12 +166,12 @@ of nestedset right values. Property must be **integer** type.
 example:
 
     /**
-     * @gedmo:TreeRight
-     * @Column(type=integer)
+     * @Gedmo\Mapping\Annotation\TreeRight
+     * @Doctrine\ORM\Mapping\Column(type=integer)
      */
     private $rgt;
 
-### @gedmo:TreeRoot (optional for nested tree)
+### @Gedmo\Mapping\Annotation\TreeRoot (optional for nested tree)
 
 **property** annotation
 
@@ -181,12 +181,12 @@ updating tree will cost less because each root will act as separate tree.
 example:
 
     /**
-     * @gedmo:TreeRoot
-     * @Column(type=integer, nullable=true)
+     * @Gedmo\Mapping\Annotation\TreeRoot
+     * @Doctrine\ORM\Mapping\Column(type=integer, nullable=true)
      */
     private $root;
 
-### @gedmo:TreeLevel (optional for nested tree)
+### @Gedmo\Mapping\Annotation\TreeLevel (optional for nested tree)
 
 **property** annotation
 
@@ -196,12 +196,12 @@ is depth. Can be used for indentation for instance. Property must be **integer**
 example:
 
     /**
-     * @gedmo:TreeLevel
-     * @Column(type=integer)
+     * @Gedmo\Mapping\Annotation\TreeLevel
+     * @Doctrine\ORM\Mapping\Column(type=integer)
      */
     private $lvl;
 
-### @gedmo:TreeClosure (required for closure tree)
+### @Gedmo\Mapping\Annotation\TreeClosure (required for closure tree)
 
 **class** annotation
 
@@ -215,9 +215,9 @@ extend **AbstractClosure** in order to have personal closures.
 example:
 
     /**
-     * @gedmo:Tree(type="closure")
-     * @gedmo:TreeClosure(class="Entity\CategoryClosure")
-     * @Entity(repositoryClass="Gedmo\Tree\Entity\Repository\ClosureTreeRepository")
+     * @Gedmo\Mapping\Annotation\Tree(type="closure")
+     * @Gedmo\Mapping\Annotation\TreeClosure(class="Entity\CategoryClosure")
+     * @Doctrine\ORM\Mapping\Entity(repositoryClass="Gedmo\Tree\Entity\Repository\ClosureTreeRepository")
      */
     class Category ...
 
@@ -226,7 +226,7 @@ example:
 Translatable additionaly can have unmapped property, which would override the
 locale used by listener.
 
-### @gedmo:TranslationEntity (optional)
+### @Gedmo\Mapping\Annotation\TranslationEntity (optional)
 
 **class** annotation
 
@@ -240,12 +240,12 @@ translations. In large tables this can be very handy.
 example:
 
     /**
-     * @gedmo:TranslationEntity(class="Entity\ProductTranslation")
-     * @Entity
+     * @Gedmo\Mapping\Annotation\TranslationEntity(class="Entity\ProductTranslation")
+     * @Doctrine\ORM\Mapping\Entity
      */
     class Product ...
 
-### @gedmo:Translatable (required in order to translate)
+### @Gedmo\Mapping\Annotation\Translatable (required in order to translate)
 
 **property** annotation
 
@@ -255,12 +255,12 @@ currently used locale. Locale can be forced through entity or set by **Translati
 example:
 
     /**
-     * @gedmo:Translatable
-     * @Column(type=text)
+     * @Gedmo\Mapping\Annotation\Translatable
+     * @Doctrine\ORM\Mapping\Column(type=text)
      */
     private $content;
     
-### @gedmo:Locale or @gedmo:Language (optional)
+### @Gedmo\Mapping\Annotation\Locale or @Gedmo\Mapping\Annotation\Language (optional)
 
 **unmapped property** annotation
 
@@ -271,7 +271,7 @@ it cannot be stored in database.
 example:
 
     /**
-     * @gedmo:Locale
+     * @Gedmo\Mapping\Annotation\Locale
      */
     private $locale;
 
@@ -280,7 +280,7 @@ example:
 Sluggable ensures unique slugs and correct length of the slug. It also uses utf8 to ascii
 table map to create correct ascii slugs.
 
-### @gedmo:Sluggable (required at least one sluggable field)
+### @Gedmo\Mapping\Annotation\Sluggable (required at least one sluggable field)
 
 **property** annotation
 
@@ -295,12 +295,12 @@ Additionaly can use **position** option to set field position is slug
 example:
 
     /**
-     * @gedmo:Sluggable(slugField="slug")
-     * @Column(length=64)
+     * @Gedmo\Mapping\Annotation\Sluggable(slugField="slug")
+     * @Doctrine\ORM\Mapping\Column(length=64)
      */
     private $code;
 
-### @gedmo:Slug (required)
+### @Gedmo\Mapping\Annotation\Slug (required)
 
 **property** annotation
 
@@ -312,12 +312,66 @@ It will use this **string** property to store the generated slug.
 - **separator** - (string) _optional_ default: **-**
 - **unique** - (boolean) _optional_ default: **true**
 - **style** - (string) _optional_ default: **default** lowercase, can be **camel** also
+- **handlers** - (array) _optional_ default: empty array, refer to the documentation below, possible elements: **Gedmo\Mapping\Annotation\SlugHandler**
 
-example:
+### Slug handlers:
+
+- Gedmo\Sluggable\Handler\TreeSlugHandler - transforms a tree slug into path based, example "food/fruits/apricots/king-apricots"
+- Gedmo\Sluggable\Handler\RelativeSlugHandler - takes a raliotion slug and prefixes the slug, example "singers/michael-jackson"
+in order to synchronize updates regarding the relation changes, you will need to hood **InversedRelativeSlugHandler** to the relation mentioned.
+- Gedmo\Sluggable\Handler\InversedRelativeSlugHandler - updates prefixed slug for an inversed relation which is mapped by **RelativeSlugHandler**
+
+examples:
 
     /**
-     * @gedmo:Slug
-     * @Column(length=64, unique=true)
+     * @Gedmo\Mapping\Annotation\Slug
+     * @Doctrine\ORM\Mapping\Column(length=64, unique=true)
+     */
+    private $slug;
+
+with TreeSlugHandler
+
+    /**
+     * @Gedmo\Mapping\Annotation\Slug(handlers={
+     *      @Gedmo\Mapping\Annotation\SlugHandler(class="Gedmo\Sluggable\Handler\TreeSlugHandler", options={
+     *          @Gedmo\Mapping\Annotation\SlugHandlerOption(name="parentRelation", value="parent"),
+     *          @Gedmo\Mapping\Annotation\SlugHandlerOption(name="targetField", value="title"),
+     *          @Gedmo\Mapping\Annotation\SlugHandlerOption(name="separator", value="/")
+     *      })
+     * }, separator="-", updatable=true)
+     * @Doctrine\ORM\Mapping\Column(length=64, unique=true)
+     */
+    private $slug;
+
+with **RelativeSlugHandler**:
+
+    /**
+     * Person domain object class
+     *
+     * @Gedmo\Mapping\Annotation\Slug(handlers={
+     *      @Gedmo\Mapping\Annotation\SlugHandler(class="Gedmo\Sluggable\Handler\RelativeSlugHandler", options={
+     *          @Gedmo\Mapping\Annotation\SlugHandlerOption(name="relationField", value="category"),
+     *          @Gedmo\Mapping\Annotation\SlugHandlerOption(name="relativeSlugField", value="slug"),
+     *          @Gedmo\Mapping\Annotation\SlugHandlerOption(name="separator", value="/")
+     *      })
+     * })
+     * @Doctrine\ORM\Mapping\Column(length=64, unique=true)
+     */
+    private $slug;
+
+if you used **RelativeSlugHandler** - relation object should use **InversedRelativeSlugHandler**:
+
+    /**
+     * Category domain object class
+     *
+     * @Gedmo\Mapping\Annotation\Slug(handlers={
+     *      @Gedmo\Mapping\Annotation\SlugHandler(class="Gedmo\Sluggable\Handler\InversedRelativeSlugHandler", options={
+     *          @Gedmo\Mapping\Annotation\SlugHandlerOption(name="relationClass", value="App\Entity\Person"),
+     *          @Gedmo\Mapping\Annotation\SlugHandlerOption(name="mappedBy", value="category"),
+     *          @Gedmo\Mapping\Annotation\SlugHandlerOption(name="inverseSlugField", value="slug")
+     *      })
+     * })
+     * @Doctrine\ORM\Mapping\Column(length=64, unique=true)
      */
     private $slug;
 
@@ -326,7 +380,7 @@ example:
 Timestampable will update date fields on create, update or property change. If you set/force
 date manualy it will not update it.
 
-### @gedmo:Timestampable (required)
+### @Gedmo\Mapping\Annotation\Timestampable (required)
 
 **property** annotation
 
@@ -343,19 +397,19 @@ which would trigger an update.
 example:
 
     /**
-     * @gedmo:Timestampable(on="create")
-     * @Column(type="datetime")
+     * @Gedmo\Mapping\Annotation\Timestampable(on="create")
+     * @Doctrine\ORM\Mapping\Column(type="datetime")
      */
     private $created;
     
     /**
-     * @gedmo:Timestampable(on="change", field="status.title", value="Published")
-     * @Column(type="date")
+     * @Gedmo\Mapping\Annotation\Timestampable(on="change", field="status.title", value="Published")
+     * @Doctrine\ORM\Mapping\Column(type="date")
      */
     private $published;
     
     /**
-     * @ManyToOne(targetEntity="Status")
+     * @Doctrine\ORM\Mapping\ManyToOne(targetEntity="Status")
      */
     private $status;
 
@@ -366,7 +420,7 @@ and remove actions for a username which currently is logged in for instance.
 Further more, it stores all **Versioned** property changes in the log which allows
 a version management implementation for this object.
 
-### @gedmo:Loggable (required)
+### @Gedmo\Mapping\Annotation\Loggable (required)
 
 **class** annotation
 
@@ -380,12 +434,12 @@ this class records.
 example:
 
     /**
-     * @gedmo:Loggable(logEntryClass="Entity\ProductLogEntry")
-     * @Entity
+     * @Gedmo\Mapping\Annotation\Loggable(logEntryClass="Entity\ProductLogEntry")
+     * @Doctrine\ORM\Mapping\Entity
      */
     class Product ...
 
-### @gedmo:Versioned (optional)
+### @Gedmo\Mapping\Annotation\Versioned (optional)
 
 **property** annotation
 
@@ -396,14 +450,14 @@ a specific version.
 example:
 
     /**
-     * @gedmo:Versioned
-     * @Column(type="text")
+     * @Gedmo\Mapping\Annotation\Versioned
+     * @Doctrine\ORM\Mapping\Column(type="text")
      */
     private $content;
     
     /**
-     * @gedmo:Versioned
-     * @ManyToOne(targetEntity="Article", inversedBy="comments")
+     * @Gedmo\Mapping\Annotation\Versioned
+     * @Doctrine\ORM\Mapping\ManyToOne(targetEntity="Article", inversedBy="comments")
      */
     private $article;
 
