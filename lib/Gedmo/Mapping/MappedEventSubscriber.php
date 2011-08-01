@@ -194,7 +194,14 @@ abstract class MappedEventSubscriber implements EventSubscriber
     private function getDefaultAnnotationReader()
     {
         if (null === $this->defaultAnnotationReader) {
-            if (version_compare(\Doctrine\Common\Version::VERSION, '2.1.0RC4-DEV', '>=')) {
+            if (version_compare(\Doctrine\Common\Version::VERSION, '3.0.0-DEV', '>=')) {
+                $reader = new \Doctrine\Common\Annotations\AnnotationReader();
+                \Doctrine\Common\Annotations\AnnotationRegistry::registerAutoloadNamespace(
+                    'Gedmo\\Mapping\\Annotation',
+                    __DIR__ . '/../../'
+                );
+                $reader = new \Doctrine\Common\Annotations\CachedReader($reader, new ArrayCache());
+            } else if (version_compare(\Doctrine\Common\Version::VERSION, '2.1.0RC4-DEV', '>=')) {
                 $reader = new \Doctrine\Common\Annotations\AnnotationReader();
                 \Doctrine\Common\Annotations\AnnotationRegistry::registerAutoloadNamespace(
                     'Gedmo\\Mapping\\Annotation',
