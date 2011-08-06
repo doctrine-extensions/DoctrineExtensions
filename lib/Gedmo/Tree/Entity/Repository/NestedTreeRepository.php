@@ -893,17 +893,28 @@ class NestedTreeRepository extends AbstractTreeRepository
         }
 
         //Defines html decorators and opcional options
-        (!empty($options['root'])) ?  $root_open  = " ". $options['root']  ." " : $root_open  = "";
-        (!empty($options['child'])) ?  $child_open = " ". $options['child'] ." " : $child_open = "";
+        if(!empty($options['root'])){
+            $root_open  = $options['root']['open'];
+            $root_close = $options['root']['close'];
+        }else{
+            $root_open  = "<ul> ";
+            $root_close = " </ul>";
+        }
+        if(!empty($options['child'])){
+            $child_open  = $options['child']['open'];
+            $child_close = $options['child']['close'];
+        }else{
+            $child_open  = "<li> ";
+            $child_close = " </li>";
+        }
         
         $html_decorator = array(
-            'root'  => array('open' => '<ul'. $root_open  .'>', 'close' => '</ul>'),
-            'child' => array('open' => '<li'. $child_open .'>', 'close' => '</li>'),
+            'root'  => array('open' => $root_open,  'close' => $root_close),
+            'child' => array('open' => $child_open, 'close' => $child_close),
             );
 
-        $html_output = $html_decorator['root']['open'];
+        $html_output = $this->processHtmlTree($nestedTree, $html_decorator, $html_output = null);
 
-        $html_output = $this->processHtmlTree($nestedTree, $html_decorator, $html_output);
         return $html_output;
     }
 
