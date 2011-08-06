@@ -888,25 +888,24 @@ class NestedTreeRepository extends AbstractTreeRepository
         $nestedTree = $this->processTree($nodes);
         
         // If you don't want any html output it will return the nested array
-        if(!$html){
+        if (!$html) {
             return $nestedTree;
         }
 
         //Defines html decorators and opcional options
-        if(!empty($options['root'])){
+        if (!empty($options['root'])) {
             $root_open  = $options['root']['open'];
             $root_close = $options['root']['close'];
-        }else{
+        } else {
             $root_open  = "<ul> ";
             $root_close = " </ul>";
-        
-            if(!empty($options['child'])){
-                $child_open  = $options['child']['open'];
-                $child_close = $options['child']['close'];
-            }else{
-                $child_open  = "<li> ";
-                $child_close = " </li>";
-            }
+        }
+        if (!empty($options['child'])) {
+            $child_open  = $options['child']['open'];
+            $child_close = $options['child']['close'];
+        } else {
+            $child_open  = "<li> ";
+            $child_close = " </li>";
         }
 
         $html_decorator = array(
