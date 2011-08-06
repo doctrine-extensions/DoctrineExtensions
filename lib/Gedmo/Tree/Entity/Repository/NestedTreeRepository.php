@@ -853,7 +853,7 @@ class NestedTreeRepository extends AbstractTreeRepository
      * @param array|null $options
      * @return array|string
      */
-    public function childrenArrayHierarchy($node = null, $direct = false, $html = false, array $options = null)
+    public function childrenHierarchy($node = null, $direct = false, $html = false, array $options = null)
     {
         $meta = $this->getClassMetadata();
         $config = $this->listener->getConfiguration($this->_em, $meta->name);
@@ -899,19 +899,20 @@ class NestedTreeRepository extends AbstractTreeRepository
         }else{
             $root_open  = "<ul> ";
             $root_close = " </ul>";
-        }
-        if(!empty($options['child'])){
-            $child_open  = $options['child']['open'];
-            $child_close = $options['child']['close'];
-        }else{
-            $child_open  = "<li> ";
-            $child_close = " </li>";
-        }
         
+            if(!empty($options['child'])){
+                $child_open  = $options['child']['open'];
+                $child_close = $options['child']['close'];
+            }else{
+                $child_open  = "<li> ";
+                $child_close = " </li>";
+            }
+        }
+
         $html_decorator = array(
             'root'  => array('open' => $root_open,  'close' => $root_close),
             'child' => array('open' => $child_open, 'close' => $child_close),
-            );
+        );
 
         $html_output = $this->processHtmlTree($nestedTree, $html_decorator, $html_output = null);
 
