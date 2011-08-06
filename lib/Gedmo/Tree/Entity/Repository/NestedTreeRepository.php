@@ -844,14 +844,16 @@ class NestedTreeRepository extends AbstractTreeRepository
     }
 
     /**
-     * Get hierarchy array of children followed by given $node
+     * Retrieves the nested array or the html output
      *
+     * @throws \Gedmo\Exception\InvalidArgumentException
      * @param object $node - from which node to start reordering the tree
      * @param boolean $direct - true to take only direct children
-     * @param string $direction - sort direction : "ASC" or "DESC"
-     * @return array $trees
+     * @param bool $html
+     * @param array|null $options
+     * @return array|string
      */
-    public function childrenArrayHierarchy($node = null, $direct = false, $direction = "ASC")
+    public function childrenArrayHierarchy($node = null, $direct = false, $html = false, array $options = null)
     {
         $meta = $this->getClassMetadata();
         $config = $this->listener->getConfiguration($this->_em, $meta->name);
@@ -867,8 +869,53 @@ class NestedTreeRepository extends AbstractTreeRepository
 
         // Gets the array of $node results.
         // It must be order by 'root' field
-        $nodes = self::childrenQuery($node, $direct, 'root' , $direction)->getArrayResult();
+        $nodes = self::childrenQuery($node, $direct, 'root' , 'ASC')->getArrayResult();
 
+        return $this->buildTree($nodes, $html, $options);
+    }
+
+    /**
+     * Builds the tree
+     *
+     * @param array $nodes
+     * @param bool $html
+     * @param array|null $options
+     * @return array|string
+     */
+    private function buildTree(array $nodes, $html = false, array $options = null)
+    {
+        //process the nested tree into a nested array
+        $nestedTree = $this->processTree($nodes);
+        
+        // If you don't want any html output it will return the nested array
+        if(!$html){
+            return $nestedTree;
+        }
+
+        //Defines html decorators and opcional options
+        (!empty($options['root'])) ?  $root_open  = " ". $options['root']  ." " : $root_open  = "";
+        (!empty($options['child'])) ?  $child_open = " ". $options['child'] ." " : $child_open = "";
+        
+        $html_decorator = array(
+            'root'  => array('open' => '<ul'. $root_open  .'>', 'close' => '</ul>'),
+            'child' => array('open' => '<li'. $child_open .'>', 'close' => '</li>'),
+            );
+
+        $html_output = $html_decorator['root']['open'];
+
+        $html_output = $this->processHtmlTree($nestedTree, $html_decorator, $html_output);
+        return $html_output;
+    }
+
+    /**
+     * Creates the nested array
+     *
+     * @static
+     * @param array $nodes
+     * @return array
+     */
+    private static function processTree($nodes)
+    {
         // Trees mapped
         $trees = array();
         $l = 0;
@@ -880,7 +927,7 @@ class NestedTreeRepository extends AbstractTreeRepository
             foreach ($nodes as $child) {
                 $item = $child;
 
-                $item['__children'] = array();
+                $item['children'] = array();
 
                 // Number of stack items
                 $l = count($stack);
@@ -899,12 +946,37 @@ class NestedTreeRepository extends AbstractTreeRepository
                     $stack[] = & $trees[$i];
                 } else {
                     // Add child to parent
-                    $i = count($stack[$l - 1]['__children']);
-                    $stack[$l - 1]['__children'][$i] = $item;
-                    $stack[] = & $stack[$l - 1]['__children'][$i];
+                    $i = count($stack[$l - 1]['children']);
+                    $stack[$l - 1]['children'][$i] = $item;
+                    $stack[] = & $stack[$l - 1]['children'][$i];
                 }
             }
         }
         return $trees;
+    }
+
+    /**
+     * Creates the html output of the nested tree
+     *
+     * @param $parent_node
+     * @param $html_decorator
+     * @param $html_output
+     * @return string
+     */
+    private function processHtmlTree($parent_node, $html_decorator, $html_output)
+    {
+        if (is_array($parent_node)) {
+            $html_output .= $html_decorator['root']['open'];
+            foreach ($parent_node as $item) {
+                 $html_output .= $html_decorator['child']['open'] . $item['title'];
+                if (count($item['children']) > 0) {
+                    $html_output = $this->processHtmlTree($item['children'], $html_decorator, $html_output);
+                }
+                $html_output .= $html_decorator['child']['close'];
+            }
+            $html_output .= $html_decorator['root']['close'];
+        }
+            
+        return $html_output;
     }
 }
