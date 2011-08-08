@@ -27,7 +27,7 @@ no more exceptions during concurrent flushes.
 
 - You can [test live][blog_test] on this blog
 - Public [Sluggable repository](http://github.com/l3pp4rd/DoctrineExtensions "Sluggable extension on Github") is available on github
-- Last update date: **2011-06-08**
+- Last update date: **2011-08-08**
 
 **Portability:**
 

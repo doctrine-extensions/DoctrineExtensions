@@ -24,7 +24,7 @@ and any number of them
 
 - You can [test live][blog_test] on this blog
 - Public [Timestampable repository](http://github.com/l3pp4rd/DoctrineExtensions "Timestampable extension on Github") is available on github
-- Last update date: **2011-06-08**
+- Last update date: **2011-08-08**
 
 **Portability:**
 
@@ -81,7 +81,7 @@ To attach the **Timestampable Listener** to your event system:
 ## Timestampable Entity example: {#entity}
 
 ### Timestampable annotations:
-- **@gedmo:Timestampable** this annotation tells that this column is timestampable
+- **@Gedmo\Mapping\Annotation\Timestampable** this annotation tells that this column is timestampable
 by default it updates this column on update. If column is not date, datetime or time
 type it will trigger an exception.
 
@@ -98,32 +98,35 @@ cache is activated
 
     namespace Entity;
     
+    use Gedmo\Mapping\Annotation as Gedmo;
+    use Doctrine\ORM\Mapping as ORM;
+    
     /**
-     * @Entity
+     * @ORM\Entity
      */
     class Article
     {
-        /** @Id @GeneratedValue @Column(type="integer") */
+        /** @ORM\Id @ORM\GeneratedValue @ORM\Column(type="integer") */
         private $id;
     
         /**
-         * @Column(type="string", length=128)
+         * @ORM\Column(type="string", length=128)
          */
         private $title;
     
         /**
          * @var datetime $created
          *
-         * @gedmo:Timestampable(on="create")
-         * @Column(type="date")
+         * @Gedmo\Timestampable(on="create")
+         * @ORM\Column(type="date")
          */
         private $created;
     
         /**
          * @var datetime $updated
          *
-         * @Column(type="datetime")
-         * @gedmo:Timestampable(on="update")
+         * @ORM\Column(type="datetime")
+         * @Gedmo\Timestampable(on="update")
          */
         private $updated;
     
@@ -157,32 +160,35 @@ cache is activated
 
     namespace Document;
     
+    use Gedmo\Mapping\Annotation as Gedmo;
+    use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
+    
     /**
-     * @Document(collection="articles")
+     * @ODM\Document(collection="articles")
      */
     class Article
     {
-        /** @Id */
+        /** @ODM\Id */
         private $id;
     
         /**
-         * @String
+         * @ODM\String
          */
         private $title;
     
         /**
          * @var timestamp $created
          *
-         * @Timestamp
-         * @gedmo:Timestampable(on="create")
+         * @ODM\Timestamp
+         * @Gedmo\Timestampable(on="create")
          */
         private $created;
     
         /**
          * @var date $updated
          *
-         * @Date
-         * @gedmo:Timestampable
+         * @ODM\Date
+         * @Gedmo\Timestampable
          */
         private $updated;
     
@@ -278,21 +284,23 @@ Add another entity which would represent Article Type:
 
     namespace Entity;
     
+    use Doctrine\ORM\Mapping as ORM;
+    
     /**
-     * @Entity
+     * @ORM\Entity
      */
     class Type
     {
-        /** @Id @GeneratedValue @Column(type="integer") */
+        /** @ORM\Id @ORM\GeneratedValue @ORM\Column(type="integer") */
         private $id;
     
         /**
-         * @Column(type="string", length=128)
+         * @ORM\Column(type="string", length=128)
          */
         private $title;
     
         /**
-         * @OneToMany(targetEntity="Article", mappedBy="type")
+         * @ORM\OneToMany(targetEntity="Article", mappedBy="type")
          */
         private $articles;
     
@@ -316,45 +324,48 @@ Now update the Article Entity to reflect published date on Type change:
 
     namespace Entity;
     
+    use Gedmo\Mapping\Annotation as Gedmo;
+    use Doctrine\ORM\Mapping as ORM;
+    
     /**
-     * @Entity
+     * @ORM\Entity
      */
     class Article
     {
-        /** @Id @GeneratedValue @Column(type="integer") */
+        /** @ORM\Id @ORM\GeneratedValue @ORM\Column(type="integer") */
         private $id;
     
         /**
-         * @Column(type="string", length=128)
+         * @ORM\Column(type="string", length=128)
          */
         private $title;
     
         /**
          * @var datetime $created
          *
-         * @gedmo:Timestampable(on="create")
-         * @Column(type="date")
+         * @Gedmo\Timestampable(on="create")
+         * @ORM\Column(type="date")
          */
         private $created;
     
         /**
          * @var datetime $updated
          *
-         * @Column(type="datetime")
-         * @gedmo:Timestampable(on="update")
+         * @ORM\Column(type="datetime")
+         * @Gedmo\Timestampable(on="update")
          */
         private $updated;
     
         /**
-         * @ManyToOne(targetEntity="Type", inversedBy="articles")
+         * @ORM\ManyToOne(targetEntity="Type", inversedBy="articles")
          */
         private $type;
     
         /**
          * @var datetime $published
          *
-         * @Column(type="datetime", nullable=true)
-         * @gedmo:Timestampable(on="change", field="type.title", value="Published")
+         * @ORM\Column(type="datetime", nullable=true)
+         * @Gedmo\Timestampable(on="change", field="type.title", value="Published")
          */
         private $published;
     

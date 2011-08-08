@@ -53,7 +53,7 @@ Update **2011-02-02**
 because nodes may have changed values in database but not in memory. Flushing dirty nodes can lead to unexpected behaviour.
 - Closure tree implementation is experimental and not fully functional, so far not documented either
 - Public [Tree repository](http://github.com/l3pp4rd/DoctrineExtensions "Tree extension on Github") is available on github
-- Last update date: **2011-06-08**
+- Last update date: **2011-08-08**
 
 **Portability:**
 
@@ -114,60 +114,63 @@ cache is activated
 
     namespace Entity;
     
+    use Gedmo\Mapping\Annotation as Gedmo;
+    use Doctrine\ORM\Mapping as ORM;
+    
     /**
-     * @gedmo:Tree(type="nested")
-     * @Table(name="categories")
+     * @Gedmo\Tree(type="nested")
+     * @ORM\Table(name="categories")
      * use repository for handy tree functions
-     * @Entity(repositoryClass="Gedmo\Tree\Entity\Repository\NestedTreeRepository")
+     * @ORM\Entity(repositoryClass="Gedmo\Tree\Entity\Repository\NestedTreeRepository")
      */
     class Category
     {
         /**
-         * @Column(name="id", type="integer")
-         * @Id
-         * @GeneratedValue
+         * @ORM\Column(name="id", type="integer")
+         * @ORM\Id
+         * @ORM\GeneratedValue
          */
         private $id;
     
         /**
-         * @Column(name="title", type="string", length=64)
+         * @ORM\Column(name="title", type="string", length=64)
          */
         private $title;
     
         /**
-         * @gedmo:TreeLeft
-         * @Column(name="lft", type="integer")
+         * @Gedmo\TreeLeft
+         * @ORM\Column(name="lft", type="integer")
          */
         private $lft;
         
         /**
-         * @gedmo:TreeLevel
-         * @Column(name="lvl", type="integer")
+         * @Gedmo\TreeLevel
+         * @ORM\Column(name="lvl", type="integer")
          */
         private $lvl;
         
         /**
-         * @gedmo:TreeRight
-         * @Column(name="rgt", type="integer")
+         * @Gedmo\TreeRight
+         * @ORM\Column(name="rgt", type="integer")
          */
         private $rgt;
         
         /**
-         * @gedmo:TreeRoot
-         * @Column(name="root", type="integer", nullable=true)
+         * @Gedmo\TreeRoot
+         * @ORM\Column(name="root", type="integer", nullable=true)
          */
         private $root;
         
         /**
-         * @gedmo:TreeParent
-         * @ManyToOne(targetEntity="Category", inversedBy="children")
-         * @JoinColumn(name="parent_id", referencedColumnName="id", onDelete="SET NULL")
+         * @Gedmo\TreeParent
+         * @ORM\ManyToOne(targetEntity="Category", inversedBy="children")
+         * @ORM\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="SET NULL")
          */
         private $parent;
         
         /**
-         * @OneToMany(targetEntity="Category", mappedBy="parent")
-         * @OrderBy({"lft" = "ASC"})
+         * @ORM\OneToMany(targetEntity="Category", mappedBy="parent")
+         * @ORM\OrderBy({"lft" = "ASC"})
          */
         private $children;
     
@@ -199,13 +202,13 @@ cache is activated
 
 ### Tree annotations: {#annotations}
 
-- **@gedmo:Tree(type="strategy")** this **class annotation** is used to set the tree strategy by **type** parameter.
+- **@Gedmo\Mapping\Annotation\Tree(type="strategy")** this **class annotation** is used to set the tree strategy by **type** parameter.
 Currently **nested** or **closure** strategy is supported
-- **@gedmo:TreeLeft** it will use this field to store tree **left** value
-- **@gedmo:TreeRight** it will use this field to store tree **right** value
-- **@gedmo:TreeParent** this will identify this column as the relation to **parent node**
-- **@gedmo:TreeLevel** it will use this field to store tree**level**
-- **@gedmo:TreeRoot** it will use this field to store tree**root** id value
+- **@Gedmo\Mapping\Annotation\TreeLeft** it will use this field to store tree **left** value
+- **@Gedmo\Mapping\Annotation\TreeRight** it will use this field to store tree **right** value
+- **@Gedmo\Mapping\Annotation\TreeParent** this will identify this column as the relation to **parent node**
+- **@Gedmo\Mapping\Annotation\TreeLevel** it will use this field to store tree**level**
+- **@Gedmo\Mapping\Annotation\TreeRoot** it will use this field to store tree**root** id value
 
 ## Yaml mapping example {#yaml}
 
@@ -457,7 +460,7 @@ So after that use `$em->clear();` if you will continue using the nodes after the
     // and then on your entity link to this repository
     
     /**
-     * @gedmo:Tree(type="nested")
+     * @Gedmo\Tree(type="nested")
      * @Entity(repositoryClass="Entity\Repository\CategoryRepository")
      */
     class Category implements Node
@@ -487,60 +490,63 @@ And the Entity should look like:
 
     namespace Entity;
     
+    use Gedmo\Mapping\Annotation as Gedmo;
+    use Doctrine\ORM\Mapping as ORM;
+    
     /**
-     * @gedmo:Tree(type="nested")
-     * @Entity(repositoryClass="Gedmo\Tree\Entity\Repository\NestedTreeRepository")
+     * @Gedmo\Tree(type="nested")
+     * @ORM\Entity(repositoryClass="Gedmo\Tree\Entity\Repository\NestedTreeRepository")
      */
     class Category
     {
         /**
-         * @Column(name="id", type="integer")
-         * @Id
-         * @GeneratedValue
+         * @ORM\Column(name="id", type="integer")
+         * @ORM\Id
+         * @ORM\GeneratedValue
          */
         private $id;
     
         /**
-         * @gedmo:Translatable
-         * @gedmo:Sluggable
-         * @Column(name="title", type="string", length=64)
+         * @Gedmo\Translatable
+         * @Gedmo\Sluggable
+         * @ORM\Column(name="title", type="string", length=64)
          */
         private $title;
     
         /**
-         * @gedmo:TreeLeft
-         * @Column(name="lft", type="integer")
+         * @Gedmo\TreeLeft
+         * @ORM\Column(name="lft", type="integer")
          */
         private $lft;
         
         /**
-         * @gedmo:TreeRight
-         * @Column(name="rgt", type="integer")
+         * @Gedmo\TreeRight
+         * @ORM\Column(name="rgt", type="integer")
          */
         private $rgt;
         
         /**
-         * @gedmo:TreeLevel
-         * @Column(name="lvl", type="integer")
+         * @Gedmo\TreeLevel
+         * @ORM\Column(name="lvl", type="integer")
          */
         private $lvl;
         
         /**
-         * @gedmo:TreeParent
-         * @ManyToOne(targetEntity="Category", inversedBy="children")
-         * @JoinColumn(name="parent_id", referencedColumnName="id", onDelete="SET NULL")
+         * @Gedmo\TreeParent
+         * @ORM\ManyToOne(targetEntity="Category", inversedBy="children")
+         * @ORM\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="SET NULL")
          */
         private $parent;
         
         /**
-         * @OneToMany(targetEntity="Category", mappedBy="parent")
+         * @ORM\OneToMany(targetEntity="Category", mappedBy="parent")
          */
         private $children;
         
         /**
-         * @gedmo:Translatable
-         * @gedmo:Slug
-         * @Column(name="slug", type="string", length=128)
+         * @Gedmo\Translatable
+         * @Gedmo\Slug
+         * @ORM\Column(name="slug", type="string", length=128)
          */
         private $slug;
     

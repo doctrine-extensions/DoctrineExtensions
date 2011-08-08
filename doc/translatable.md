@@ -39,7 +39,7 @@ and any number of them
 - Public [Translatable repository](http://github.com/l3pp4rd/DoctrineExtensions "Translatable extension on Github") is available on github
 - Using other extensions on the same Entity fields may result in unexpected way
 - May inpact your application performace since it does an additional query for translation
-- Last update date: **2011-06-08**
+- Last update date: **2011-08-08**
 
 **Portability:**
 
@@ -51,7 +51,7 @@ This article will cover the basic installation and functionality of **Translatab
 Content:
 
 - [Including](#including-extension) the extension
-- [Attaching](#event-listener) the **Translatable Listener**
+- [Attaching](#event-listener) the **Translation Listener**
 - Entity [example](#entity)
 - Document [example](#document)
 - [Yaml](#yaml) mapping example
@@ -123,9 +123,9 @@ to be used in global scope for all Entities or Documents:
     // now this event manager should be passed to entity manager constructor
 
 ### Translatable annotations:
-- **@gedmo:Translatable** it will **translate** this field
-- **@gedmo:TranslationEntity(class="my\class")** it will use this class to store **translations** generated
-- **@gedmo:Locale or @gedmo:Language** this will identify this column as **locale** or **language**
+- **@Gedmo\Mapping\Annotation\Translatable** it will **translate** this field
+- **@Gedmo\Mapping\Annotation\TranslationEntity(class="my\class")** it will use this class to store **translations** generated
+- **@Gedmo\Mapping\Annotation\Locale or @Gedmo\Mapping\Annotation\Language** this will identify this column as **locale** or **language**
 used to override the global locale
 
 ## Translatable Entity example: {#entity}
@@ -136,30 +136,32 @@ cache is activated
 
     namespace Entity;
     
+    use Gedmo\Mapping\Annotation as Gedmo;
+    use Doctrine\ORM\Mapping as ORM;
     use Gedmo\Translatable\Translatable;
     /**
-     * @Table(name="articles")
-     * @Entity
+     * @ORM\Table(name="articles")
+     * @ORM\Entity
      */
     class Article implements Translatable
     {
-        /** @Id @GeneratedValue @Column(type="integer") */
+        /** @ORM\Id @ORM\GeneratedValue @ORM\Column(type="integer") */
         private $id;
     
         /**
-         * @gedmo:Translatable
-         * @Column(name="title", type="string", length=128)
+         * @Gedmo\Translatable
+         * @ORM\Column(name="title", type="string", length=128)
          */
         private $title;
     
         /**
-         * @gedmo:Translatable
-         * @Column(name="content", type="text")
+         * @Gedmo\Translatable
+         * @ORM\Column(name="content", type="text")
          */
         private $content;
     
         /**
-         * @gedmo:Locale
+         * @Gedmo\Locale
          * Used locale to override Translation listener`s locale
          * this is not a mapped field of entity metadata, just a simple property
          */
@@ -200,29 +202,31 @@ cache is activated
 
     namespace Document;
     
+    use Gedmo\Mapping\Annotation as Gedmo;
+    use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
     use Gedmo\Translatable\Translatable;
     /**
-     * @Document(collection="articles")
+     * @ODM\Document(collection="articles")
      */
     class Article implements Translatable
     {
-        /** @Id */
+        /** @ODM\Id */
         private $id;
     
         /**
-         * @gedmo:Translatable
-         * @String
+         * @Gedmo\Translatable
+         * @ODM\String
          */
         private $title;
     
         /**
-         * @gedmo:Translatable
-         * @String
+         * @Gedmo\Translatable
+         * @ODM\String
          */
         private $content;
     
         /**
-         * @gedmo:Locale
+         * @Gedmo\Locale
          * Used locale to override Translation listener`s locale
          * this is not a mapped field of entity metadata, just a simple property
          */
@@ -493,13 +497,14 @@ ArticleTranslation Entity:
 
     namespace Entity\Translation;
     
+    use Doctrine\ORM\Mapping as ORM;
     use Gedmo\Translatable\Entity\AbstractTranslation;
     
     /**
-     * @Table(name="article_translations", indexes={
-     *      @index(name="article_translation_idx", columns={"locale", "objectClass", "foreign_key", "field"})
+     * @ORM\Table(name="article_translations", indexes={
+     *      @ORM\index(name="article_translation_idx", columns={"locale", "objectClass", "foreign_key", "field"})
      * })
-     * @Entity(repositoryClass="Gedmo\Translatable\Entity\Repository\TranslationRepository")
+     * @ORM\Entity(repositoryClass="Gedmo\Translatable\Entity\Repository\TranslationRepository")
      */
     class ArticleTranslation extends AbstractTranslation
     {
@@ -512,12 +517,14 @@ ArticleTranslation Entity:
 It is handy for specific methods common to the Translation Entity
 
 **Notice:** This Entity will be used instead of default Translation Entity
-only if we specify a class annotation @gedmo:TranslationEntity(class="my\translation\entity"):
+only if we specify a class annotation @Gedmo\TranslationEntity(class="my\translation\entity"):
 
+    use Doctrine\ORM\Mapping as ORM;
+    
     /**
-     * @Table(name="articles")
-     * @Entity
-     * @gedmo:TranslationEntity(class="Entity\Translation\ArticleTranslation")
+     * @ORM\Table(name="articles")
+     * @ORM\Entity
+     * @Gedmo\TranslationEntity(class="Entity\Translation\ArticleTranslation")
      */
     class Article
     {

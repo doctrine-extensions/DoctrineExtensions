@@ -23,7 +23,7 @@ and any number of them
 
 - You can [test live][blog_test] on this blog
 - Public [Loggable repository](http://github.com/l3pp4rd/DoctrineExtensions "Loggable extension on Github") is available on github
-- Last update date: **2011-06-08**
+- Last update date: **2011-08-08**
 
 **Portability:**
 
@@ -103,9 +103,9 @@ If you need a log entry table per single Entity or Document, we will cover how t
 
 ### Loggable annotations:
 
-- **@gedmo:Loggable(logEntryClass="my\class")** this class annotation 
+- **@Gedmo\Mapping\Annotation\Loggable(logEntryClass="my\class")** this class annotation 
 will use store logs to optionaly specified **logEntryClass**
-- **@gedmo:Versioned** tracks annotated property for changes
+- **@Gedmo\Mapping\Annotation\Versioned** tracks annotated property for changes
 
 ## Loggable Entity example: {#entity}
 
@@ -115,22 +115,25 @@ cache is active
 
     namespace Entity;
     
+    use Gedmo\Mapping\Annotation as Gedmo;
+    use Doctrine\ORM\Mapping as ORM;
+    
     /**
      * @Entity
-     * @gedmo:Loggable
+     * @Gedmo\Loggable
      */
     class Article
     {
         /**
-         * @Column(name="id", type="integer")
-         * @Id
-         * @GeneratedValue(strategy="IDENTITY")
+         * @ORM\Column(name="id", type="integer")
+         * @ORM\Id
+         * @ORM\GeneratedValue(strategy="IDENTITY")
          */
         private $id;
     
         /**
-         * @gedmo:Versioned
-         * @Column(name="title", type="string", length=8)
+         * @Gedmo\Versioned
+         * @ORM\Column(name="title", type="string", length=8)
          */
         private $title;
     
@@ -154,18 +157,21 @@ cache is active
 
     namespace Document;
     
+    use Gedmo\Mapping\Annotation as Gedmo;
+    use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
+    
     /**
-     * @Document(collection="articles")
-     * @gedmo:Loggable
+     * @ODM\Document(collection="articles")
+     * @Gedmo\Loggable
      */
     class Article
     {
-        /** @Id */
+        /** @ODM\Id */
         private $id;
     
         /**
-         * @String
-         * @gedmo:Versioned
+         * @ODM\String
+         * @Gedmo\Versioned
          */
         private $title;
     

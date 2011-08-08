@@ -1,7 +1,7 @@
 # Mapping extension for Doctrine2
 
 **Mapping** extension makes it easy to map additional metadata for event listeners.
-It supports **Yaml** and **Annotation** drivers which will be chosen depending on
+It supports **Yaml**, **Xml** and **Annotation** drivers which will be chosen depending on
 currently used mapping driver for your domain objects. **Mapping** extension also
 provides abstraction layer of **EventArgs** to make it possible to use single listener
 for different object managers like **ODM** and **ORM**.
@@ -14,7 +14,7 @@ Features:
 [blog_test]: http://gediminasm.org/test "Test extensions on this blog"
 
 - Public [Mapping repository](http://github.com/l3pp4rd/DoctrineExtensions "Mapping extension on Github") is available on github
-- Last update date: **2011-04-04**
+- Last update date: **2011-08-08**
 
 This article will cover the basic installation and usage of **Mapping** extension
 
@@ -135,8 +135,6 @@ Edit **Annotation.php** driver file:
             // load our available annotations
             require_once __DIR__ . '/../Annotations.php';
             $reader = new AnnotationReader();
-            // set annotation namespace and alias
-            $reader->setAnnotationNamespaceAlias('Extension\Encoder\Mapping\\', 'ext');
     
             $class = $meta->getReflectionClass();
             // check only property annotations
@@ -262,28 +260,31 @@ with some fields to encode.
 
     namespace YourNamespace\Entity;
     
+    use Doctrine\ORM\Mapping as ORM;
+    use Extension\Encoder\Mapping as EXT;
+    
     /**
-     * @orm:Table(name="test_users")
-     * @orm:Entity
+     * @ORM\Table(name="test_users")
+     * @ORM\Entity
      */
     class User
     {
         /**
-         * @orm:Column(type="integer")
-         * @orm:Id
-         * @orm:GeneratedValue
+         * @ORM\Column(type="integer")
+         * @ORM\Id
+         * @ORM\GeneratedValue
          */
         private $id;
     
         /**
-         * @ext:Encode(type="sha1", secret="xxx")
-         * @orm:Column(length=64)
+         * @EXT\Encode(type="sha1", secret="xxx")
+         * @ORM\Column(length=64)
          */
         private $name;
     
         /**
-         * @ext:Encode(type="md5")
-         * @orm:Column(length=32)
+         * @EXT\Encode(type="md5")
+         * @ORM\Column(length=32)
          */
         private $password;
     

@@ -13,7 +13,7 @@ Features:
 **Notice:**
 
 - Public [Sortable repository](http://github.com/l3pp4rd/DoctrineExtensions "Sortable extension on Github") is available on github
-- Last update date: **2011-06-08**
+- Last update date: **2011-08-08**
 
 **Portability:**
 
@@ -74,8 +74,8 @@ To attach the **Sortable Listener** to your event system:
 
 ### Sortable annotations:
 
-- **@gedmo:SortableGroup** it will use this field for **grouping**
-- **@gedmo:SortablePosition** it will use this column to store **position** index
+- **@Gedmo\Mapping\Annotation\SortableGroup** it will use this field for **grouping**
+- **@Gedmo\Mapping\Annotation\SortablePosition** it will use this column to store **position** index
 
 **Notice:** that Sortable interface is not necessary, except in cases there
 you need to identify entity as being Sortable. The metadata is loaded only once then
@@ -83,29 +83,32 @@ cache is activated
 
     namespace Entity;
     
+    use Gedmo\Mapping\Annotation as Gedmo;
+    use Doctrine\ORM\Mapping as ORM;
+    
     /**
-     * @Table(name="items")
-     * @Entity
+     * @ORM\Table(name="items")
+     * @ORM\Entity
      */
     class Item
     {
-        /** @Id @GeneratedValue @Column(type="integer") */
+        /** @ORM\Id @ORM\GeneratedValue @ORM\Column(type="integer") */
         private $id;
     
         /**
-         * @Column(name="name", type="string", length=64)
+         * @ORM\Column(name="name", type="string", length=64)
          */
         private $name;
     
         /**
          * @Gedmo\SortablePosition
-         * @Column(name="position", type="integer")
+         * @ORM\Column(name="position", type="integer")
          */
         private $position;
     
         /**
          * @Gedmo\SortableGroup
-         * @Column(name="category", type="string", length=128)
+         * @ORM\Column(name="category", type="string", length=128)
          */
         private $category;
     
