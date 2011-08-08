@@ -208,6 +208,7 @@ abstract class MappedEventSubscriber implements EventSubscriber
                     __DIR__ . '/../../'
                 );
                 $reader->setDefaultAnnotationNamespace('Doctrine\ORM\Mapping\\');
+                $reader->setAnnotationNamespaceAlias('Gedmo\\Mapping\\Annotation\\', 'gedmo');
                 $reader = new \Doctrine\Common\Annotations\CachedReader($reader, new ArrayCache());
             } else if (version_compare(\Doctrine\Common\Version::VERSION, '2.1.0-BETA3-DEV', '>=')) {
                 $reader = new \Doctrine\Common\Annotations\AnnotationReader();
