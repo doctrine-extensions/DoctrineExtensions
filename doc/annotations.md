@@ -334,8 +334,7 @@ with TreeSlugHandler
     /**
      * @Gedmo\Mapping\Annotation\Slug(handlers={
      *      @Gedmo\Mapping\Annotation\SlugHandler(class="Gedmo\Sluggable\Handler\TreeSlugHandler", options={
-     *          @Gedmo\Mapping\Annotation\SlugHandlerOption(name="parentRelation", value="parent"),
-     *          @Gedmo\Mapping\Annotation\SlugHandlerOption(name="targetField", value="title"),
+     *          @Gedmo\Mapping\Annotation\SlugHandlerOption(name="parentRelationField", value="parent"),
      *          @Gedmo\Mapping\Annotation\SlugHandlerOption(name="separator", value="/")
      *      })
      * }, separator="-", updatable=true)
@@ -351,7 +350,7 @@ with **RelativeSlugHandler**:
      * @Gedmo\Mapping\Annotation\Slug(handlers={
      *      @Gedmo\Mapping\Annotation\SlugHandler(class="Gedmo\Sluggable\Handler\RelativeSlugHandler", options={
      *          @Gedmo\Mapping\Annotation\SlugHandlerOption(name="relationField", value="category"),
-     *          @Gedmo\Mapping\Annotation\SlugHandlerOption(name="relativeSlugField", value="slug"),
+     *          @Gedmo\Mapping\Annotation\SlugHandlerOption(name="relationSlugField", value="slug"),
      *          @Gedmo\Mapping\Annotation\SlugHandlerOption(name="separator", value="/")
      *      })
      * })

@@ -34,26 +34,19 @@ So root node now looks like this:
 
 ### Latest updates
 
+**2011-08-08**
+
+- Sluggable listener now has extension points to extend the default behavior of sluggable. 
+By default there is TreeSlug, RelativeSlug handlers. Which can build a tree path like slug
+example: **category/shoes/nike**. Using relative slug handler it is possible to have related slug
+for example, user is related to company by ManyToOne relation in result slug is: **company/user-name**
+
 **2011-07-14**
 
 - Sluggable can handle multiple slug fields, now on Sluggable annotation you will need
 to provide slugField property it should belong to
 - Translatable query hint will use **default locale** translations in case if it does not
 have a translation in currently used locale
-
-**2011-06-24**
-
-- Implemented better compatibility with new and older annotation mapping style. Read
-**doc/annotations.md** on how to achieve best performances using annotation mapping and
-how to configure it.
-- The object wrappers were implemented internally in extensions to avoid issues with
-uninitialized or detached proxies.
-
-**2011-06-08**
-
-- [mvrhov](http://github.com/mvrhov) implemented the XML driver for extensions and now
-there is a full stack of drivers to make your experience even better using these extensions.
-So far I'm not sure if the same xsd will work with ODM but it will be created in comming month.
 
 ### ODM MongoDB support
 
@@ -75,11 +68,6 @@ You can test these extensions on [my blog](http://gediminasm.org/test/ "Test doc
 
 All tutorials for basic usage examples are on [my blog](http://gediminasm.org "Tutorials for extensions") also.
 
-### Recommendations
-
-- Use Symfony/Component/ClassLoader/UniversalClassLoader for autoloading these extensions, it will help
-to avoid triggering fatal error during the check of **class_exists**
-
 ### Running the tests:
 
 PHPUnit 3.5 or newer is required.
@@ -92,6 +80,7 @@ To setup and run tests follow these steps:
 
 ### Contributors:
 
+- Daniel Gomes [danielcsgomes](http://github.com/danielcsgomes)
 - megabite [oscarballadares](http://github.com/oscarballadares)
 - DinoWeb [dinoweb](http://github.com/dinoweb)
 - Miha Vrhovnik [mvrhov](http://github.com/mvrhov)
