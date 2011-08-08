@@ -27,8 +27,7 @@ class Occupation
     /**
      * @Gedmo\Slug(handlers={
      *      @Gedmo\SlugHandler(class="Gedmo\Sluggable\Handler\TreeSlugHandler", options={
-     *          @Gedmo\SlugHandlerOption(name="parentRelation", value="parent"),
-     *          @Gedmo\SlugHandlerOption(name="targetField", value="title"),
+     *          @Gedmo\SlugHandlerOption(name="parentRelationField", value="parent"),
      *          @Gedmo\SlugHandlerOption(name="separator", value="/")
      *      }),
      *      @Gedmo\SlugHandler(class="Gedmo\Sluggable\Handler\InversedRelativeSlugHandler", options={

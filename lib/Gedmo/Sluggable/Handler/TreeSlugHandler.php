@@ -49,13 +49,6 @@ class TreeSlugHandler implements SlugHandlerInterface
     private $originalTransliterator;
 
     /**
-     * List of node slugs to transliterate
-     *
-     * @var array
-     */
-    private $parts = array();
-
-    /**
      * True if node is being inserted
      *
      * @var boolean
@@ -63,11 +56,11 @@ class TreeSlugHandler implements SlugHandlerInterface
     private $isInsert = false;
 
     /**
-     * Used separator for slugs
+     * Transliterated parent slug
      *
      * @var string
      */
-    private $usedSeparator;
+    private $parentSlug;
 
     /**
      * {@inheritDoc}
@@ -80,8 +73,7 @@ class TreeSlugHandler implements SlugHandlerInterface
     /**
      * $options = array(
      *     'separator' => '/',
-     *     'parentRelation' => 'parent',
-     *     'targetField' => 'title'
+     *     'parentRelationField' => 'parent'
      * )
      * {@inheritDoc}
      */
@@ -102,29 +94,34 @@ class TreeSlugHandler implements SlugHandlerInterface
     /**
      * {@inheritDoc}
      */
-    public function postSlugBuild(SluggableAdapter $ea, array &$config, $object, &$slug)
+    public function onChangeDecision(SluggableAdapter $ea, $slugFieldConfig, $object, &$slug, &$needToChangeSlug)
     {
         $this->om = $ea->getObjectManager();
+        $this->isInsert = $this->om->getUnitOfWork()->isScheduledForInsert($object);
+        if (!$this->isInsert && !$needToChangeSlug) {
+            $changeSet = $ea->getObjectChangeSet($this->om->getUnitOfWork(), $object);
+            $options = $this->getOptions($object);
+            if (isset($changeSet[$options['parentRelationField']])) {
+                $needToChangeSlug = true;
+            }
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function postSlugBuild(SluggableAdapter $ea, array &$config, $object, &$slug)
+    {
         $options = $this->getOptions($object);
         $this->originalTransliterator = $this->sluggable->getTransliterator();
         $this->sluggable->setTransliterator(array($this, 'transliterate'));
-        $this->parts = array();
-        $this->isInsert = $this->om->getUnitOfWork()->isScheduledForInsert($object);
+        $this->parentSlug = '';
 
         $wrapped = AbstractWrapper::wrapp($object, $this->om);
-        if ($this->isInsert) {
-            do {
-                $relation = $wrapped->getPropertyValue($options['parentRelation']);
-                if ($relation) {
-                    $wrappedRelation = AbstractWrapper::wrapp($relation, $this->om);
-                    array_unshift($this->parts, $wrappedRelation->getPropertyValue($options['targetField']));
-                    $wrapped = $wrappedRelation;
-                }
-            } while ($relation);
-        } else {
-            $this->parts = explode($options['separator'], $wrapped->getPropertyValue($config['slug']));
+        if ($parent = $wrapped->getPropertyValue($options['parentRelationField'])) {
+            $parent = AbstractWrapper::wrapp($parent, $this->om);
+            $this->parentSlug = $parent->getPropertyValue($config['slug']);
         }
-        $this->usedSeparator = $options['separator'];
     }
 
     /**
@@ -132,12 +129,9 @@ class TreeSlugHandler implements SlugHandlerInterface
      */
     public static function validate(array $options, ClassMetadata $meta)
     {
-        if (!$meta->isSingleValuedAssociation($options['parentRelation'])) {
-            throw new InvalidMappingException("Unable to find tree parent slug relation through field - [{$options['parentRelation']}] in class - {$meta->name}");
+        if (!$meta->isSingleValuedAssociation($options['parentRelationField'])) {
+            throw new InvalidMappingException("Unable to find tree parent slug relation through field - [{$options['parentRelationField']}] in class - {$meta->name}");
         }
-        /*if (!$meta->isSingleValuedAssociation($options['relation'])) {
-            throw new InvalidMappingException("Unable to find slug relation through field - [{$options['relation']}] in class - {$meta->name}");
-        }*/
     }
 
     /**
@@ -146,13 +140,14 @@ class TreeSlugHandler implements SlugHandlerInterface
     public function onSlugCompletion(SluggableAdapter $ea, array &$config, $object, &$slug)
     {
         if (!$this->isInsert) {
+            $options = $this->getOptions($object);
             $wrapped = AbstractWrapper::wrapp($object, $this->om);
             $meta = $wrapped->getMetadata();
             $extConfig = $this->sluggable->getConfiguration($this->om, $meta->name);
             $config['useObjectClass'] = $extConfig['useObjectClass'];
             $target = $wrapped->getPropertyValue($config['slug']);
-            $config['pathSeparator'] = $this->usedSeparator;
-            $ea->replaceRelative($object, $config, $target.$this->usedSeparator, $slug);
+            $config['pathSeparator'] = $options['separator'];
+            $ea->replaceRelative($object, $config, $target.$options['separator'], $slug);
             $uow = $this->om->getUnitOfWork();
             // update in memory objects
             foreach ($uow->getIdentityMap() as $className => $objects) {
@@ -166,7 +161,7 @@ class TreeSlugHandler implements SlugHandlerInterface
                     }
                     $oid = spl_object_hash($object);
                     $objectSlug = $meta->getReflectionProperty($config['slug'])->getValue($object);
-                    if (preg_match("@^{$target}{$this->usedSeparator}@smi", $objectSlug)) {
+                    if (preg_match("@^{$target}{$options['separator']}@smi", $objectSlug)) {
                         $objectSlug = str_replace($target, $slug, $objectSlug);
                         $meta->getReflectionProperty($config['slug'])->setValue($object, $objectSlug);
                         $ea->setOriginalObjectProperty($uow, $oid, $config['slug'], $objectSlug);
@@ -187,21 +182,15 @@ class TreeSlugHandler implements SlugHandlerInterface
      */
     public function transliterate($text, $separator, $object)
     {
-        if ($this->isInsert) {
-            foreach ($this->parts as &$part) {
-                $part = call_user_func_array(
-                    $this->originalTransliterator,
-                    array($part, $separator, $object)
-                );
-            }
-        } else {
-            array_pop($this->parts);
-        }
-        $this->parts[] = call_user_func_array(
+        $slug = call_user_func_array(
             $this->originalTransliterator,
             array($text, $separator, $object)
         );
+        if (strlen($this->parentSlug)) {
+            $options = $this->getOptions($object);
+            $slug = $this->parentSlug . $options['separator'] . $slug;
+        }
         $this->sluggable->setTransliterator($this->originalTransliterator);
-        return implode($this->usedSeparator, $this->parts);
+        return $slug;
     }
 }

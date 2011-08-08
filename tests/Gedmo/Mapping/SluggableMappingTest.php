@@ -96,21 +96,19 @@ class SluggableMappingTest extends \PHPUnit_Framework_TestCase
         $this->assertArrayHasKey('Gedmo\Sluggable\Handler\RelativeSlugHandler', $handlers);
 
         $first = $handlers['Gedmo\Sluggable\Handler\TreeSlugHandler'];
-        $this->assertEquals(3, count($first));
-        $this->assertArrayHasKey('parentRelation', $first);
-        $this->assertArrayHasKey('targetField', $first);
+        $this->assertEquals(2, count($first));
+        $this->assertArrayHasKey('parentRelationField', $first);
         $this->assertArrayHasKey('separator', $first);
-        $this->assertEquals('parent', $first['parentRelation']);
-        $this->assertEquals('title', $first['targetField']);
+        $this->assertEquals('parent', $first['parentRelationField']);
         $this->assertEquals('/', $first['separator']);
 
         $second = $handlers['Gedmo\Sluggable\Handler\RelativeSlugHandler'];
         $this->assertEquals(3, count($second));
         $this->assertArrayHasKey('relationField', $second);
-        $this->assertArrayHasKey('relativeSlugField', $second);
+        $this->assertArrayHasKey('relationSlugField', $second);
         $this->assertArrayHasKey('separator', $second);
         $this->assertEquals('user', $second['relationField']);
-        $this->assertEquals('slug', $second['relativeSlugField']);
+        $this->assertEquals('slug', $second['relationSlugField']);
         $this->assertEquals('/', $second['separator']);
     }
 }

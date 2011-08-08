@@ -27,14 +27,6 @@ class RelativeSlugHandlerTest extends BaseTestCaseORM
         $evm = new EventManager;
         $evm->addEventSubscriber(new SluggableListener);
 
-        $conn = array(
-            'driver' => 'pdo_mysql',
-            'host' => '127.0.0.1',
-            'dbname' => 'tests',
-            'user' => 'root',
-            'password' => 'nimda'
-        );
-        //$this->getMockCustomEntityManager($conn, $evm);
         $this->getMockSqliteEntityManager($evm);
     }
 
@@ -78,6 +70,14 @@ class RelativeSlugHandlerTest extends BaseTestCaseORM
 
         $jen = $repo->findOneByTitle('Jen');
         $this->assertEquals('martial-arts-test/jen', $jen->getSlug());
+
+        $cars = $this->em->getRepository(self::ARTICLE)->findOneByTitle('Cars');
+        $jen->setArticle($cars);
+
+        $this->em->persist($jen);
+        $this->em->flush();
+
+        $this->assertEquals('cars-code/jen', $jen->getSlug());
     }
 
     protected function getUsedEntityFixtures()

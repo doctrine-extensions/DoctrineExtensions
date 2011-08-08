@@ -69,6 +69,12 @@ class InversedRelativeSlugHandler implements SlugHandlerInterface
     /**
      * {@inheritDoc}
      */
+    public function onChangeDecision(SluggableAdapter $ea, $slugFieldConfig, $object, &$slug, &$needToChangeSlug)
+    {}
+
+    /**
+     * {@inheritDoc}
+     */
     public function postSlugBuild(SluggableAdapter $ea, array &$config, $object, &$slug)
     {}
 
@@ -89,7 +95,6 @@ class InversedRelativeSlugHandler implements SlugHandlerInterface
             $options = $this->getOptions($object);
             $wrapped = AbstractWrapper::wrapp($object, $this->om);
             $oldSlug = $wrapped->getPropertyValue($config['slug']);
-            // @todo: check the changeset for the **object** to update the slug.
             $mappedByConfig = $this->sluggable->getConfiguration(
                 $this->om,
                 $options['relationClass']

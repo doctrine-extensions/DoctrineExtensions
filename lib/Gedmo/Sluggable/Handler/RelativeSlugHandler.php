@@ -53,7 +53,7 @@ class RelativeSlugHandler implements SlugHandlerInterface
      * $options = array(
      *     'separator' => '/',
      *     'relationField' => 'something',
-     *     'relativeSlugField' => 'slug'
+     *     'relationSlugField' => 'slug'
      * )
      * {@inheritDoc}
      */
@@ -82,9 +82,24 @@ class RelativeSlugHandler implements SlugHandlerInterface
     /**
      * {@inheritDoc}
      */
-    public function postSlugBuild(SluggableAdapter $ea, array &$config, $object, &$slug)
+    public function onChangeDecision(SluggableAdapter $ea, $slugFieldConfig, $object, &$slug, &$needToChangeSlug)
     {
         $this->om = $ea->getObjectManager();
+        $isInsert = $this->om->getUnitOfWork()->isScheduledForInsert($object);
+        if (!$isInsert && !$needToChangeSlug) {
+            $changeSet = $ea->getObjectChangeSet($this->om->getUnitOfWork(), $object);
+            $options = $this->getOptions($object);
+            if (isset($changeSet[$options['relationField']])) {
+                $needToChangeSlug = true;
+            }
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function postSlugBuild(SluggableAdapter $ea, array &$config, $object, &$slug)
+    {
         $this->originalTransliterator = $this->sluggable->getTransliterator();
         $this->sluggable->setTransliterator(array($this, 'transliterate'));
     }
@@ -128,7 +143,7 @@ class RelativeSlugHandler implements SlugHandlerInterface
         $relation = $wrapped->getPropertyValue($options['relationField']);
         if ($relation) {
             $wrappedRelation = AbstractWrapper::wrapp($relation, $this->om);
-            $slug = $wrappedRelation->getPropertyValue($options['relativeSlugField']);
+            $slug = $wrappedRelation->getPropertyValue($options['relationSlugField']);
             $result = $slug . $options['separator'] . $result;
         }
         $this->sluggable->setTransliterator($this->originalTransliterator);

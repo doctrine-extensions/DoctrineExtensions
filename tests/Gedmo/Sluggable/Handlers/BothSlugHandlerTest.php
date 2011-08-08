@@ -29,14 +29,6 @@ class BothSlugHandlerTest extends BaseTestCaseORM
         $evm->addEventSubscriber(new TreeListener);
         $evm->addEventSubscriber(new SluggableListener);
 
-        $conn = array(
-                    'driver' => 'pdo_mysql',
-                    'host' => '127.0.0.1',
-                    'dbname' => 'test',
-                    'user' => 'root',
-                    'password' => 'nimda'
-        );
-        //$this->getMockCustomEntityManager($conn, $evm);
         $this->getMockSqliteEntityManager($evm);
     }
 
@@ -61,11 +53,11 @@ class BothSlugHandlerTest extends BaseTestCaseORM
         $repo = $this->em->getRepository(self::PERSON);
 
         $gedi = $repo->findOneByName('Gedi');
-        $gedi->setName('Rock`n Gedi');
+        $gedi->setName('Upd Gedi');
         $this->em->persist($gedi);
         $this->em->flush();
 
-        $this->assertEquals('web/developer/rock-n-gedi', $gedi->getSlug());
+        $this->assertEquals('web/developer/upd-gedi', $gedi->getSlug());
 
         $artist = $this->em->getRepository(self::OCCUPATION)->findOneByTitle('Singer');
         $artist->setTitle('Artist');
@@ -77,10 +69,10 @@ class BothSlugHandlerTest extends BaseTestCaseORM
         $this->em->persist($gedi);
         $this->em->flush();
 
-        /*$this->assertEquals('martial-arts-test/ninja', $thomas->getSlug());
+        $this->assertEquals('artist/upd-gedi', $gedi->getSlug());
 
-        $jen = $repo->findOneByTitle('Jen');
-        $this->assertEquals('martial-arts-test/jen', $jen->getSlug());*/
+        $hurty = $repo->findOneByName('Hurty');
+        $this->assertEquals('artist/hurty', $hurty->getSlug());
     }
 
     protected function getUsedEntityFixtures()

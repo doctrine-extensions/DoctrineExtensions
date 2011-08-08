@@ -27,7 +27,7 @@ class Person
      * @Gedmo\Slug(handlers={
      *      @Gedmo\SlugHandler(class="Gedmo\Sluggable\Handler\RelativeSlugHandler", options={
      *          @Gedmo\SlugHandlerOption(name="relationField", value="occupation"),
-     *          @Gedmo\SlugHandlerOption(name="relativeSlugField", value="slug"),
+     *          @Gedmo\SlugHandlerOption(name="relationSlugField", value="slug"),
      *          @Gedmo\SlugHandlerOption(name="separator", value="/")
      *      })
      * }, separator="-", updatable=true)

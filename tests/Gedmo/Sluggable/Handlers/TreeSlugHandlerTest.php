@@ -78,6 +78,42 @@ class TreeSlugHandlerTest extends BaseTestCaseORM
         $this->assertEquals('foodissimo/fructis/citrons', $citrons->getSlug());
     }
 
+    public function testMoreSlugUpdates()
+    {
+        $this->populate();
+        $repo = $this->em->getRepository(self::TARGET);
+
+        $fruits = $repo->findOneByTitle('Fruits');
+        $fruits->setTitle('Fructis');
+        $milk = $repo->findOneByTitle('Milk');
+        $repo->persistAsFirstChildOf($fruits, $milk);
+        $this->em->flush();
+
+        $this->assertEquals('food/milk/fructis', $fruits->getSlug());
+
+        $oranges = $repo->findOneByTitle('Oranges');
+        $this->assertEquals('food/milk/fructis/oranges', $oranges->getSlug());
+
+        $citrons = $repo->findOneByTitle('Citrons');
+        $this->assertEquals('food/milk/fructis/citrons', $citrons->getSlug());
+
+        $food = $repo->findOneByTitle('Food');
+        $food->setTitle('Foodissimo');
+
+        $this->em->persist($food);
+        $this->em->flush();
+
+        $this->assertEquals('foodissimo', $food->getSlug());
+        $this->assertEquals('foodissimo/milk/fructis/oranges', $oranges->getSlug());
+        $this->assertEquals('foodissimo/milk/fructis/citrons', $citrons->getSlug());
+
+        $repo->persistAsFirstChildOf($fruits, $food);
+        $this->em->flush();
+
+        $this->assertEquals('foodissimo/fructis/oranges', $oranges->getSlug());
+        $this->assertEquals('foodissimo/fructis/citrons', $citrons->getSlug());
+    }
+
     protected function getUsedEntityFixtures()
     {
         return array(

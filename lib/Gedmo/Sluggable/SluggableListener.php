@@ -192,6 +192,7 @@ class SluggableListener extends MappedEventSubscriber
                 return ($a['position'] < $b['position']) ? -1 : 1;
             });
 
+            $slugFieldConfig = $config['slugFields'][$slugField];
             // collect the slug from fields
             $slug = '';
             $needToChangeSlug = false;
@@ -201,13 +202,21 @@ class SluggableListener extends MappedEventSubscriber
                 }
                 $slug .= $meta->getReflectionProperty($sluggableField['field'])->getValue($object) . ' ';
             }
+            // notify slug handlers --> onChangeDecision
+            if (isset($config['handlers'])) {
+                foreach ($config['handlers'] as $class => $options) {
+                    $this
+                        ->getHandler($class)
+                        ->onChangeDecision($ea, $slugFieldConfig, $object, $slug, $needToChangeSlug)
+                    ;
+                }
+            }
             // if slug is changed, do further processing
             if ($needToChangeSlug) {
                 if (!strlen(trim($slug))) {
                     throw new \Gedmo\Exception\UnexpectedValueException("Unable to find any non empty sluggable fields for slug [{$slugField}] , make sure they have something at least.");
                 }
 
-                $slugFieldConfig = $config['slugFields'][$slugField];
                 // notify slug handlers --> postSlugBuild
                 if (isset($config['handlers'])) {
                     foreach ($config['handlers'] as $class => $options) {

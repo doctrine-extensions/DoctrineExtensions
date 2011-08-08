@@ -37,6 +37,20 @@ interface SlugHandlerInterface
     function getOptions($object);
 
     /**
+     * Callback on slug handlers before the decision
+     * is made whether or not the slug needs to be
+     * recalculated
+     *
+     * @param Gedmo\Sluggable\Mapping\Event\SluggableAdapter $ea
+     * @param array $config
+     * @param object $object
+     * @param string $slug
+     * @param boolean $needToChangeSlug
+     * @return void
+     */
+    function onChangeDecision(SluggableAdapter $ea, $slugFieldConfig, $object, &$slug, &$needToChangeSlug);
+
+    /**
      * Callback on slug handlers right after the slug is built
      *
      * @param Gedmo\Sluggable\Mapping\Event\SluggableAdapter $ea
