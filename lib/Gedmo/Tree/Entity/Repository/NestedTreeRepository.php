@@ -289,7 +289,7 @@ class NestedTreeRepository extends AbstractTreeRepository
 
         if (isset($config['root']) && is_null($root)) {
             if (is_null($root)) {
-                throw new InvalidArgumentException("If tree has root, getLiefs method requires any node of this tree");
+                throw new InvalidArgumentException("If tree has root, getLeafs method requires any node of this tree");
             }
         }
 
