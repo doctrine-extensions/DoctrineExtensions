@@ -40,6 +40,34 @@ class TranslationQueryWalkerTest extends BaseTestCaseORM
         $this->populate();
     }
 
+    public function testIssue135()
+    {
+        $this->populateIssue109();
+        $this->em
+            ->getConfiguration()
+            ->expects($this->any())
+            ->method('getCustomHydrationMode')
+            ->with(TranslationWalker::HYDRATE_OBJECT_TRANSLATION)
+            ->will($this->returnValue('Gedmo\\Translatable\\Hydrator\\ORM\\ObjectHydrator'))
+        ;
+        $query = $this->em->createQueryBuilder();
+        $query->select('a')
+            ->from(self::ARTICLE, 'a')
+            ->add('where', $query->expr()->not($query->expr()->eq('a.title', ':title')))
+            ->setParameter('title', 'NA')
+        ;
+
+        $this->translationListener->setTranslatableLocale('en');
+        $this->translationListener->setDefaultLocale('en');
+        $this->translationListener->setTranslationFallback(true);
+        $query = $query->getQuery();
+        $query->setHint(Query::HINT_CUSTOM_OUTPUT_WALKER, self::TREE_WALKER_TRANSLATION);
+
+        $count = 0;
+        str_replace("locale = 'en'", '', $query->getSql(), $count);
+        $this->assertEquals(2, $count);
+    }
+
     public function testIssue109()
     {
         $this->populateIssue109();

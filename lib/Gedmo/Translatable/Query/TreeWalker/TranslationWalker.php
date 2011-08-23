@@ -324,7 +324,7 @@ class TranslationWalker extends SqlWalker
                 $sql .= ' AND '.$tblAlias.'.'.$transMeta->getQuotedColumnName('foreignKey', $this->platform)
                     .' = '.$compTblAlias.'.'.$colName;
                 $result[$comp['nestingLevel']] .= $sql;
-                if (strlen($defaultLocale)) {
+                if (strlen($defaultLocale) && $locale != $defaultLocale) {
                     // join default locale
                     $tblAliasDefault = $this->getSQLTableAlias('trans_default_locale'.$compTblAlias.$field);
                     $sql = ' LEFT JOIN '.$transTable.' '.$tblAliasDefault;
