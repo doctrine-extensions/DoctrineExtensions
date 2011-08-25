@@ -189,11 +189,7 @@ class TranslationWalker extends SqlWalker
             }
             $this->getQuery()->setHint(self::HINT_TRANSLATION_FALLBACKS, $fallbackAliases);
         }
-        $result = str_replace(
-            array_keys($this->replacements),
-            array_values($this->replacements),
-            $result
-        );
+        $result = $this->replace($this->replacements, $result);
         $result .= $fallbackSql;
         return $result;
     }
@@ -216,11 +212,7 @@ class TranslationWalker extends SqlWalker
     public function walkWhereClause($whereClause)
     {
         $result = parent::walkWhereClause($whereClause);
-        return str_replace(
-            array_keys($this->replacements),
-            array_values($this->replacements),
-            $result
-        );
+        return $this->replace($this->replacements, $result);
     }
 
     /**
@@ -229,11 +221,7 @@ class TranslationWalker extends SqlWalker
     public function walkHavingClause($havingClause)
     {
         $result = parent::walkHavingClause($havingClause);
-        return str_replace(
-            array_keys($this->replacements),
-            array_values($this->replacements),
-            $result
-        );
+        return $this->replace($this->replacements, $result);
     }
 
     /**
@@ -242,11 +230,7 @@ class TranslationWalker extends SqlWalker
     public function walkOrderByClause($orderByClause)
     {
         $result = parent::walkOrderByClause($orderByClause);
-        return str_replace(
-            array_keys($this->replacements),
-            array_values($this->replacements),
-            $result
-        );
+        return $this->replace($this->replacements, $result);
     }
 
     /**
@@ -277,11 +261,7 @@ class TranslationWalker extends SqlWalker
     public function walkSimpleSelectClause($simpleSelectClause)
     {
         $result = parent::walkSimpleSelectClause($simpleSelectClause);
-        return str_replace(
-            array_keys($this->replacements),
-            array_values($this->replacements),
-            $result
-        );
+        return $this->replace($this->replacements, $result);
     }
 
     /**
@@ -411,5 +391,23 @@ class TranslationWalker extends SqlWalker
             throw new \Gedmo\Exception\RuntimeException('The translation listener could not be found');
         }
         return $translationListener;
+    }
+
+    /**
+     * Replaces given sql $str with required
+     * results
+     *
+     * @param array $repl
+     * @param string $str
+     * @return string
+     */
+    private function replace(array $repl, $str)
+    {
+        foreach ($repl as $target => $result) {
+            $str = preg_replace_callback('/(\s|\()('.$target.')(\s|\))/smi', function($m) use ($result) {
+                return $m[1].$result.$m[3];
+            }, $str);
+        }
+        return $str;
     }
 }

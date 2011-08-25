@@ -43,13 +43,6 @@ class TranslationQueryWalkerTest extends BaseTestCaseORM
     public function testIssue135()
     {
         $this->populateIssue109();
-        $this->em
-            ->getConfiguration()
-            ->expects($this->any())
-            ->method('getCustomHydrationMode')
-            ->with(TranslationWalker::HYDRATE_OBJECT_TRANSLATION)
-            ->will($this->returnValue('Gedmo\\Translatable\\Hydrator\\ORM\\ObjectHydrator'))
-        ;
         $query = $this->em->createQueryBuilder();
         $query->select('a')
             ->from(self::ARTICLE, 'a')
