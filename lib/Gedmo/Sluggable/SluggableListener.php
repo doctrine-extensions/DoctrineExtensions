@@ -213,7 +213,8 @@ class SluggableListener extends MappedEventSubscriber
             }
             // if slug is changed, do further processing
             if ($needToChangeSlug) {
-                if (!strlen(trim($slug))) {
+                $mapping = $meta->getFieldMapping($slugFieldConfig['slug']);
+                if (!strlen(trim($slug)) && !$mapping['nullable']) {
                     throw new \Gedmo\Exception\UnexpectedValueException("Unable to find any non empty sluggable fields for slug [{$slugField}] , make sure they have something at least.");
                 }
 
@@ -248,13 +249,15 @@ class SluggableListener extends MappedEventSubscriber
                 }
 
                 // cut slug if exceeded in length
-                $mapping = $meta->getFieldMapping($slugFieldConfig['slug']);
                 if (isset($mapping['length']) && strlen($slug) > $mapping['length']) {
                     $slug = substr($slug, 0, $mapping['length']);
                 }
 
+                if ($mapping['nullable'] && !$slug) {
+                    $slug = null;
+                }
                 // make unique slug if requested
-                if ($slugFieldConfig['unique']) {
+                if ($slugFieldConfig['unique'] && !is_null($slug)) {
                     $this->exponent = 0;
                     $arrayConfig = $slugFieldConfig;
                     $arrayConfig['useObjectClass'] = $config['useObjectClass'];
