@@ -253,7 +253,7 @@ class SluggableListener extends MappedEventSubscriber
                     $slug = substr($slug, 0, $mapping['length']);
                 }
 
-                if ($mapping['nullable'] && !$slug) {
+                if (isset($mapping['nullable']) && $mapping['nullable'] && !$slug) {
                     $slug = null;
                 }
                 // make unique slug if requested
