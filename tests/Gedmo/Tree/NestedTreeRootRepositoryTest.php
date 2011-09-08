@@ -30,6 +30,28 @@ class NestedTreeRootRepositoryTest extends BaseTestCaseORM
         $this->populate();
     }
 
+    public function testChildrenHierarchyAsArray()
+    {
+        $repo = $this->em->getRepository(self::CATEGORY);
+        $result = $repo->childrenHierarchy();
+        $this->assertEquals(2, count($result));
+        $this->assertTrue(isset($result[0]['children'][0]['children']));
+
+        $vegies = $repo->findOneByTitle('Vegitables');
+        $result = $repo->childrenHierarchy($vegies);
+        $this->assertEquals(2, count($result));
+        $this->assertEquals(0, count($result[0]['children']));
+    }
+
+    public function testChildrenHierarchyAsHtml()
+    {
+        $repo = $this->em->getRepository(self::CATEGORY);
+        $food = $repo->findOneByTitle('Food');
+        $result = $repo->childrenHierarchy($food, false, true);
+
+        $this->assertTrue(is_string($result));
+    }
+
     public function testRootRemoval()
     {
         $repo = $this->em->getRepository(self::CATEGORY);

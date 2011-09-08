@@ -693,6 +693,42 @@ class NestedTreeRepository extends AbstractTreeRepository
     }
 
     /**
+    * Retrieves the nested array or the html output
+    *
+    * @throws \Gedmo\Exception\InvalidArgumentException
+    * @param object $node - from which node to start reordering the tree
+    * @param boolean $direct - true to take only direct children
+    * @param bool $html
+    * @param array|null $options
+    * @return array|string
+    */
+    public function childrenHierarchy($node = null, $direct = false, $html = false, array $options = null)
+    {
+        $meta = $this->getClassMetadata();
+        $config = $this->listener->getConfiguration($this->_em, $meta->name);
+
+        if ($node !== null) {
+            if ($node instanceof $meta->name) {
+                $wrapped = new EntityWrapper($node, $this->_em);
+                if (!$wrapped->hasValidIdentifier()) {
+                    throw new InvalidArgumentException("Node is not managed by UnitOfWork");
+                }
+            }
+        }
+
+        // Gets the array of $node results.
+        // It must be order by 'root' field
+        $nodes = self::childrenQuery(
+            $node,
+            $direct,
+            isset($config['root']) ? $config['root'] : $config['left'],
+            'ASC'
+        )->getArrayResult();
+
+        return $this->buildTree($nodes, $html, $options);
+    }
+
+    /**
      * {@inheritdoc}
      */
     protected function validates()
@@ -844,37 +880,6 @@ class NestedTreeRepository extends AbstractTreeRepository
     }
 
     /**
-     * Retrieves the nested array or the html output
-     *
-     * @throws \Gedmo\Exception\InvalidArgumentException
-     * @param object $node - from which node to start reordering the tree
-     * @param boolean $direct - true to take only direct children
-     * @param bool $html
-     * @param array|null $options
-     * @return array|string
-     */
-    public function childrenHierarchy($node = null, $direct = false, $html = false, array $options = null)
-    {
-        $meta = $this->getClassMetadata();
-        $config = $this->listener->getConfiguration($this->_em, $meta->name);
-
-        if ($node !== null) {
-            if ($node instanceof $meta->name) {
-                $wrapped = new EntityWrapper($node, $this->_em);
-                if (!$wrapped->hasValidIdentifier()) {
-                    throw new InvalidArgumentException("Node is not managed by UnitOfWork");
-                }
-            }
-        }
-
-        // Gets the array of $node results.
-        // It must be order by 'root' field
-        $nodes = self::childrenQuery($node, $direct, 'root' , 'ASC')->getArrayResult();
-
-        return $this->buildTree($nodes, $html, $options);
-    }
-
-    /**
      * Builds the tree
      *
      * @param array $nodes
@@ -885,8 +890,9 @@ class NestedTreeRepository extends AbstractTreeRepository
     private function buildTree(array $nodes, $html = false, array $options = null)
     {
         //process the nested tree into a nested array
-        $nestedTree = $this->processTree($nodes);
-        
+        $config = $this->listener->getConfiguration($this->_em, $this->getClassMetadata()->name);
+        $nestedTree = $this->processTree($nodes, $config);
+
         // If you don't want any html output it will return the nested array
         if (!$html) {
             return $nestedTree;
@@ -907,10 +913,18 @@ class NestedTreeRepository extends AbstractTreeRepository
             $child_open  = "<li> ";
             $child_close = " </li>";
         }
+        $representationField = empty($options['representationField']) ?
+            'title' :
+            $options['representationField']
+        ;
+        if (!$this->getClassMetadata()->hasField($representationField) && $html) {
+            throw new InvalidArgumentException("There must be a representation field specified");
+        }
 
         $html_decorator = array(
             'root'  => array('open' => $root_open,  'close' => $root_close),
             'child' => array('open' => $child_open, 'close' => $child_close),
+            'represents' => $representationField
         );
 
         $html_output = $this->processHtmlTree($nestedTree, $html_decorator, $html_output = null);
@@ -925,7 +939,7 @@ class NestedTreeRepository extends AbstractTreeRepository
      * @param array $nodes
      * @return array
      */
-    private static function processTree($nodes)
+    private static function processTree(array $nodes, array $config)
     {
         // Trees mapped
         $trees = array();
@@ -944,7 +958,7 @@ class NestedTreeRepository extends AbstractTreeRepository
                 $l = count($stack);
 
                 // Check if we're dealing with different levels
-                while($l > 0 && $stack[$l - 1]['lvl'] >= $item['lvl']) {
+                while($l > 0 && $stack[$l - 1][$config['level']] >= $item[$config['level']]) {
                     array_pop($stack);
                     $l--;
                 }
@@ -979,7 +993,7 @@ class NestedTreeRepository extends AbstractTreeRepository
         if (is_array($parent_node)) {
             $html_output .= $html_decorator['root']['open'];
             foreach ($parent_node as $item) {
-                 $html_output .= $html_decorator['child']['open'] . $item['title'];
+                 $html_output .= $html_decorator['child']['open'] . $item[$html_decorator['represents']];
                 if (count($item['children']) > 0) {
                     $html_output = $this->processHtmlTree($item['children'], $html_decorator, $html_output);
                 }
@@ -987,7 +1001,7 @@ class NestedTreeRepository extends AbstractTreeRepository
             }
             $html_output .= $html_decorator['root']['close'];
         }
-            
+
         return $html_output;
     }
 }
