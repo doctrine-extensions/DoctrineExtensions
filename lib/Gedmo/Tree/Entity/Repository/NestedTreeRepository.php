@@ -23,20 +23,30 @@ use Doctrine\ORM\Query,
 class NestedTreeRepository extends AbstractTreeRepository
 {
     /**
-     * Get all root nodes query
+     * Get all root nodes query builder
      *
-     * @return Query
+     * @return Doctrine\ORM\QueryBuilder
      */
-    public function getRootNodesQuery()
+    public function getRootNodesQueryBuilder()
     {
         $meta = $this->getClassMetadata();
         $config = $this->listener->getConfiguration($this->_em, $meta->name);
-        $qb = $this->_em->createQueryBuilder();
-        $qb->select('node')
+        return $this->_em->createQueryBuilder()
+            ->select('node')
             ->from($config['useObjectClass'], 'node')
             ->where('node.' . $config['parent'] . " IS NULL")
-            ->orderBy('node.' . $config['left'], 'ASC');
-        return $qb->getQuery();
+            ->orderBy('node.' . $config['left'], 'ASC')
+        ;
+    }
+
+    /**
+     * Get all root nodes query
+     *
+     * @return Doctrine\ORM\Query
+     */
+    public function getRootNodesQuery()
+    {
+        return $this->getRootNodesQueryBuilder()->getQuery();
     }
 
     /**
@@ -100,13 +110,13 @@ class NestedTreeRepository extends AbstractTreeRepository
     }
 
     /**
-     * Get the Tree path query by given $node
+     * Get the Tree path query builder by given $node
      *
      * @param object $node
      * @throws InvalidArgumentException - if input is not valid
-     * @return Query
+     * @return Doctrine\ORM\QueryBuilder
      */
-    public function getPathQuery($node)
+    public function getPathQueryBuilder($node)
     {
         $meta = $this->getClassMetadata();
         if (!$node instanceof $meta->name) {
@@ -122,16 +132,26 @@ class NestedTreeRepository extends AbstractTreeRepository
         $qb = $this->_em->createQueryBuilder();
         $qb->select('node')
             ->from($config['useObjectClass'], 'node')
-            ->where('node.' . $config['left'] . " <= :left")
-            ->andWhere('node.' . $config['right'] . " >= :right")
-            ->orderBy('node.' . $config['left'], 'ASC');
+            ->where('node.' . $config['left'] . " <= {$left}")
+            ->andWhere('node.' . $config['right'] . " >= {$right}")
+            ->orderBy('node.' . $config['left'], 'ASC')
+        ;
         if (isset($config['root'])) {
             $rootId = $wrapped->getPropertyValue($config['root']);
             $qb->andWhere("node.{$config['root']} = {$rootId}");
         }
-        $q = $qb->getQuery();
-        $q->setParameters(compact('left', 'right'));
-        return $q;
+        return $qb;
+    }
+
+    /**
+     * Get the Tree path query by given $node
+     *
+     * @param object $node
+     * @return Doctrine\ORM\Query
+     */
+    public function getPathQuery($node)
+    {
+        return $this->getPathQueryBuilder($node)->getQuery();
     }
 
     /**
@@ -200,23 +220,24 @@ class NestedTreeRepository extends AbstractTreeRepository
     }
 
     /**
-     * Get tree children query followed by given $node
+     * Get tree children query builder followed by given $node
      *
      * @param object $node - if null, all tree nodes will be taken
      * @param boolean $direct - true to take only direct children
      * @param string $sortByField - field name to sort by
      * @param string $direction - sort direction : "ASC" or "DESC"
      * @throws InvalidArgumentException - if input is not valid
-     * @return Query
+     * @return Doctrine\ORM\QueryBuilder
      */
-    public function childrenQuery($node = null, $direct = false, $sortByField = null, $direction = 'ASC')
+    public function childrenQueryBuilder($node = null, $direct = false, $sortByField = null, $direction = 'ASC')
     {
         $meta = $this->getClassMetadata();
         $config = $this->listener->getConfiguration($this->_em, $meta->name);
 
         $qb = $this->_em->createQueryBuilder();
         $qb->select('node')
-            ->from($config['useObjectClass'], 'node');
+            ->from($config['useObjectClass'], 'node')
+        ;
         if ($node !== null) {
             if ($node instanceof $meta->name) {
                 $wrapped = new EntityWrapper($node, $this->_em);
@@ -230,8 +251,10 @@ class NestedTreeRepository extends AbstractTreeRepository
                     $left = $wrapped->getPropertyValue($config['left']);
                     $right = $wrapped->getPropertyValue($config['right']);
                     if ($left && $right) {
-                        $qb->where('node.' . $config['right'] . " < {$right}")
-                            ->andWhere('node.' . $config['left'] . " > {$left}");
+                        $qb
+                            ->where('node.' . $config['right'] . " < {$right}")
+                            ->andWhere('node.' . $config['left'] . " > {$left}")
+                        ;
                     }
                 }
                 if (isset($config['root'])) {
@@ -255,7 +278,21 @@ class NestedTreeRepository extends AbstractTreeRepository
                 throw new InvalidArgumentException("Invalid sort options specified: field - {$sortByField}, direction - {$direction}");
             }
         }
-        return $qb->getQuery();
+        return $qb;
+    }
+
+    /**
+     * Get tree children query followed by given $node
+     *
+     * @param object $node - if null, all tree nodes will be taken
+     * @param boolean $direct - true to take only direct children
+     * @param string $sortByField - field name to sort by
+     * @param string $direction - sort direction : "ASC" or "DESC"
+     * @return Doctrine\ORM\Query
+     */
+    public function childrenQuery($node = null, $direct = false, $sortByField = null, $direction = 'ASC')
+    {
+        return $this->childrenQueryBuilder($node, $direct, $sortByField, $direction)->getQuery();
     }
 
     /**
@@ -274,15 +311,15 @@ class NestedTreeRepository extends AbstractTreeRepository
     }
 
     /**
-     * Get tree leafs query
+     * Get tree leafs query builder
      *
      * @param object $root - root node in case of root tree is required
      * @param string $sortByField - field name to sort by
      * @param string $direction - sort direction : "ASC" or "DESC"
      * @throws InvalidArgumentException - if input is not valid
-     * @return Query
+     * @return Doctrine\ORM\QueryBuilder
      */
-    public function getLeafsQuery($root = null, $sortByField = null, $direction = 'ASC')
+    public function getLeafsQueryBuilder($root = null, $sortByField = null, $direction = 'ASC')
     {
         $meta = $this->getClassMetadata();
         $config = $this->listener->getConfiguration($this->_em, $meta->name);
@@ -296,7 +333,8 @@ class NestedTreeRepository extends AbstractTreeRepository
         $qb = $this->_em->createQueryBuilder();
         $qb->select('node')
             ->from($config['useObjectClass'], 'node')
-            ->where('node.' . $config['right'] . ' = 1 + node.' . $config['left']);
+            ->where('node.' . $config['right'] . ' = 1 + node.' . $config['left'])
+        ;
         if (isset($config['root'])) {
             if ($root instanceof $meta->name) {
                 $wrapped = new EntityWrapper($root, $this->_em);
@@ -318,7 +356,20 @@ class NestedTreeRepository extends AbstractTreeRepository
                 throw new InvalidArgumentException("Invalid sort options specified: field - {$sortByField}, direction - {$direction}");
             }
         }
-        return $qb->getQuery();
+        return $qb;
+    }
+
+    /**
+     * Get tree leafs query
+     *
+     * @param object $root - root node in case of root tree is required
+     * @param string $sortByField - field name to sort by
+     * @param string $direction - sort direction : "ASC" or "DESC"
+     * @return Doctrine\ORM\Query
+     */
+    public function getLeafsQuery($root = null, $sortByField = null, $direction = 'ASC')
+    {
+        return $this->getLeafsQueryBuilder($root, $sortByField, $direction)->getQuery();
     }
 
     /**
@@ -335,14 +386,14 @@ class NestedTreeRepository extends AbstractTreeRepository
     }
 
     /**
-     * Get the query for next siblings of the given $node
+     * Get the query builder for next siblings of the given $node
      *
      * @param object $node
      * @param bool $includeSelf - include the node itself
      * @throws \Gedmo\Exception\InvalidArgumentException - if input is invalid
-     * @return Query
+     * @return Doctrine\ORM\QueryBuilder
      */
-    public function getNextSiblingsQuery($node, $includeSelf = false)
+    public function getNextSiblingsQueryBuilder($node, $includeSelf = false)
     {
         $meta = $this->getClassMetadata();
         if (!$node instanceof $meta->name) {
@@ -362,17 +413,32 @@ class NestedTreeRepository extends AbstractTreeRepository
         $left = $wrapped->getPropertyValue($config['left']);
         $sign = $includeSelf ? '>=' : '>';
 
-        $dql = "SELECT node FROM {$config['useObjectClass']} node";
+        $qb = $this->_em->createQueryBuilder();
+        $qb->select('node')
+            ->from($config['useObjectClass'], 'node')
+            ->where("node.{$config['left']} {$sign} {$left}")
+            ->orderBy("node.{$config['left']}", 'ASC')
+        ;
         if ($parent) {
             $wrappedParent = new EntityWrapper($parent, $this->_em);
             $parentId = $wrappedParent->getIdentifier();
-            $dql .= " WHERE node.{$config['parent']} = {$parentId}";
+            $qb->andWhere("node.{$config['parent']} = {$parentId}");
         } else {
-            $dql .= " WHERE node.{$config['parent']} IS NULL";
+            $qb->andWhere($qb->expr()->isNull('node.'.$config['parent']));
         }
-        $dql .= " AND node.{$config['left']} {$sign} {$left}";
-        $dql .= " ORDER BY node.{$config['left']} ASC";
-        return $this->_em->createQuery($dql);
+        return $qb;
+    }
+
+    /**
+     * Get the query for next siblings of the given $node
+     *
+     * @param object $node
+     * @param bool $includeSelf - include the node itself
+     * @return Doctrine\ORM\Query
+     */
+    public function getNextSiblingsQuery($node, $includeSelf = false)
+    {
+        return $this->getNextSiblingsQueryBuilder($node, $includeSelf)->getQuery();
     }
 
     /**
@@ -388,14 +454,14 @@ class NestedTreeRepository extends AbstractTreeRepository
     }
 
     /**
-     * Get query for previous siblings of the given $node
+     * Get query builder for previous siblings of the given $node
      *
      * @param object $node
      * @param bool $includeSelf - include the node itself
      * @throws \Gedmo\Exception\InvalidArgumentException - if input is invalid
-     * @return Query
+     * @return Doctrine\ORM\QueryBuilder
      */
-    public function getPrevSiblingsQuery($node, $includeSelf = false)
+    public function getPrevSiblingsQueryBuilder($node, $includeSelf = false)
     {
         $meta = $this->getClassMetadata();
         if (!$node instanceof $meta->name) {
@@ -415,17 +481,33 @@ class NestedTreeRepository extends AbstractTreeRepository
         $left = $wrapped->getPropertyValue($config['left']);
         $sign = $includeSelf ? '<=' : '<';
 
-        $dql = "SELECT node FROM {$config['useObjectClass']} node";
+        $qb = $this->_em->createQueryBuilder();
+        $qb->select('node')
+            ->from($config['useObjectClass'], 'node')
+            ->where("node.{$config['left']} {$sign} {$left}")
+            ->orderBy("node.{$config['left']}", 'ASC')
+        ;
         if ($parent) {
             $wrappedParent = new EntityWrapper($parent, $this->_em);
             $parentId = $wrappedParent->getIdentifier();
-            $dql .= " WHERE node.{$config['parent']} = {$parentId}";
+            $qb->andWhere("node.{$config['parent']} = {$parentId}");
         } else {
-            $dql .= " WHERE node.{$config['parent']} IS NULL";
+            $qb->andWhere($qb->expr()->isNull('node.'.$config['parent']));
         }
-        $dql .= " AND node.{$config['left']} {$sign} {$left}";
-        $dql .= " ORDER BY node.{$config['left']} ASC";
-        return $this->_em->createQuery($dql);
+        return $qb;
+    }
+
+    /**
+     * Get query for previous siblings of the given $node
+     *
+     * @param object $node
+     * @param bool $includeSelf - include the node itself
+     * @throws \Gedmo\Exception\InvalidArgumentException - if input is invalid
+     * @return Doctrine\ORM\Query
+     */
+    public function getPrevSiblingsQuery($node, $includeSelf = false)
+    {
+        return $this->getPrevSiblingsQueryBuilder($node, $includeSelf)->getQuery();
     }
 
     /**
