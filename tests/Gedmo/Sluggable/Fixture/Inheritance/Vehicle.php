@@ -24,13 +24,12 @@ class Vehicle
     private $id;
 
     /**
-     * @Gedmo\Sluggable
      * @ORM\Column(length=128)
      */
     private $title;
 
     /**
-     * @Gedmo\Slug
+     * @Gedmo\Slug(fields={"title"})
      * @ORM\Column(length=128, unique=true)
      */
     private $slug;

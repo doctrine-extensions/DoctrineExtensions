@@ -19,7 +19,6 @@ class Occupation
     private $id;
 
     /**
-     * @Gedmo\Sluggable
      * @ORM\Column(length=64)
      */
     private $title;
@@ -35,7 +34,7 @@ class Occupation
      *          @Gedmo\SlugHandlerOption(name="mappedBy", value="occupation"),
      *          @Gedmo\SlugHandlerOption(name="inverseSlugField", value="slug")
      *      })
-     * })
+     * }, fields={"title"})
      * @ORM\Column(length=64, unique=true)
      */
     private $slug;

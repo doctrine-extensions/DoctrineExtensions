@@ -18,13 +18,12 @@ class Page
     private $id;
 
     /**
-     * @Gedmo\Sluggable
      * @ORM\Column(type="string", length=255)
      */
     private $content;
 
     /**
-     * @Gedmo\Slug(style="camel", separator="_")
+     * @Gedmo\Slug(style="camel", separator="_", fields={"content"})
      * @ORM\Column(type="string", length=128)
      */
     private $slug;

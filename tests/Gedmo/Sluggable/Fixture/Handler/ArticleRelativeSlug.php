@@ -18,7 +18,6 @@ class ArticleRelativeSlug
     private $id;
 
     /**
-     * @Gedmo\Sluggable
      * @ORM\Column(length=64)
      */
     private $title;
@@ -30,7 +29,7 @@ class ArticleRelativeSlug
      *          @Gedmo\SlugHandlerOption(name="relationSlugField", value="slug"),
      *          @Gedmo\SlugHandlerOption(name="separator", value="/")
      *      })
-     * }, separator="-", updatable=true)
+     * }, separator="-", updatable=true, fields={"title"})
      * @ORM\Column(name="slug", type="string", length=64, unique=true)
      */
     private $slug;

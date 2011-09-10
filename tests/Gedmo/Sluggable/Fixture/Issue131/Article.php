@@ -18,13 +18,12 @@ class Article
     private $id;
 
     /**
-     * @Gedmo\Sluggable
      * @ORM\Column(length=64)
      */
     private $title;
 
     /**
-     * @Gedmo\Slug(updatable=true, unique=true)
+     * @Gedmo\Slug(updatable=true, unique=true, fields={"title"})
      * @ORM\Column(length=64, unique=true, nullable=true)
      */
     private $slug;

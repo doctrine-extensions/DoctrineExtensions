@@ -17,6 +17,7 @@ use Doctrine\Common\Annotations\Annotation;
  */
 final class Slug extends Annotation
 {
+    public $fields = array();
     public $updatable = true;
     public $style = 'default'; // or "camel"
     public $unique = true;

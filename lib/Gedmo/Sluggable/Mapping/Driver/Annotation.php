@@ -24,11 +24,6 @@ use Gedmo\Mapping\Driver\AnnotationDriverInterface,
 class Annotation implements AnnotationDriverInterface
 {
     /**
-     * Annotation to mark field as sluggable and include it in slug building
-     */
-    const SLUGGABLE = 'Gedmo\\Mapping\\Annotation\\Sluggable';
-
-    /**
      * Annotation to identify field as one which holds the slug
      * together with slug options
      */
@@ -78,18 +73,7 @@ class Annotation implements AnnotationDriverInterface
      * {@inheritDoc}
      */
     public function validateFullMetadata(ClassMetadata $meta, array $config)
-    {
-        if ($config) {
-            if (!isset($config['fields'])) {
-                throw new InvalidMappingException("Unable to find any sluggable fields specified for Sluggable entity - {$meta->name}");
-            }
-            foreach ($config['fields'] as $slugField => $fields) {
-                if (!isset($config['slugFields'][$slugField])) {
-                    throw new InvalidMappingException("Unable to find {$slugField} slugField specified for Sluggable entity - {$meta->name}, you should specify slugField annotation property");
-                }
-            }
-        }
-    }
+    {}
 
     /**
      * {@inheritDoc}
@@ -104,21 +88,6 @@ class Annotation implements AnnotationDriverInterface
             ) {
                 continue;
             }
-            // sluggable property
-            if ($sluggable = $this->reader->getPropertyAnnotation($property, self::SLUGGABLE)) {
-                $field = $property->getName();
-                if (!$meta->hasField($field)) {
-                    throw new InvalidMappingException("Unable to find sluggable [{$field}] as mapped property in entity - {$meta->name}");
-                }
-                if (!$this->isValidField($meta, $field)) {
-                    throw new InvalidMappingException("Cannot slug field - [{$field}] type is not valid and must be 'string' in class - {$meta->name}");
-                }
-                if (!is_null($sluggable->slugField) and !$meta->hasField($sluggable->slugField)) {
-
-                    throw new InvalidMappingException(sprintf('The "%s" property - which is defined as the "slugField" for the "%s" property - does not exist or is not mapped to Doctrine in "%s"', $sluggable->slugField, $field, $meta->name));
-                }
-                $config['fields'][$sluggable->slugField][] = array('field' => $field, 'position' => $sluggable->position, 'slugField' => $sluggable->slugField);
-            }
             // slug property
             if ($slug = $this->reader->getPropertyAnnotation($property, self::SLUG)) {
                 $field = $property->getName();
@@ -126,9 +95,10 @@ class Annotation implements AnnotationDriverInterface
                     throw new InvalidMappingException("Unable to find slug [{$field}] as mapped property in entity - {$meta->name}");
                 }
                 if (!$this->isValidField($meta, $field)) {
-                    throw new InvalidMappingException("Cannot use field - [{$field}] for slug storage, type is not valid and must be 'string' in class - {$meta->name}");
+                    throw new InvalidMappingException("Cannot use field - [{$field}] for slug storage, type is not valid and must be 'string' or 'text' in class - {$meta->name}");
                 }
                 // process slug handlers
+                $handlers = array();
                 if (is_array($slug->handlers) && $slug->handlers) {
                     foreach ($slug->handlers as $handler) {
                         if (!$handler instanceof SlugHandler) {
@@ -138,7 +108,7 @@ class Annotation implements AnnotationDriverInterface
                             throw new InvalidMappingException("SlugHandler class: {$handler->class} should be a valid class name in entity - {$meta->name}");
                         }
                         $class = $handler->class;
-                        $config['handlers'][$class] = array();
+                        $handlers[$class] = array();
                         foreach ((array)$handler->options as $option) {
                             if (!$option instanceof SlugHandlerOption) {
                                 throw new InvalidMappingException("SlugHandlerOption: {$option} should be instance of SlugHandlerOption annotation in entity - {$meta->name}");
@@ -146,17 +116,33 @@ class Annotation implements AnnotationDriverInterface
                             if (!strlen($option->name)) {
                                 throw new InvalidMappingException("SlugHandlerOption name: {$option->name} should be valid name in entity - {$meta->name}");
                             }
-                            $config['handlers'][$class][$option->name] = $option->value;
+                            $handlers[$class][$option->name] = $option->value;
                         }
-                        $class::validate($config['handlers'][$class], $meta);
+                        $class::validate($handlers[$class], $meta);
                     }
                 }
-
-                $config['slugFields'][$field]['slug'] = $field;
-                $config['slugFields'][$field]['style'] = $slug->style;
-                $config['slugFields'][$field]['updatable'] = $slug->updatable;
-                $config['slugFields'][$field]['unique'] = $slug->unique;
-                $config['slugFields'][$field]['separator'] = $slug->separator;
+                // process slug fields
+                if (empty($slug->fields) || !is_array($slug->fields)) {
+                    throw new InvalidMappingException("Slug must contain at least one field for slug generation in class - {$meta->name}");
+                }
+                foreach ($slug->fields as $slugField) {
+                    if (!$meta->hasField($slugField)) {
+                        throw new InvalidMappingException("Unable to find slug [{$slugField}] as mapped property in entity - {$meta->name}");
+                    }
+                    if (!$this->isValidField($meta, $slugField)) {
+                        throw new InvalidMappingException("Cannot use field - [{$slugField}] for slug storage, type is not valid and must be 'string' or 'text' in class - {$meta->name}");
+                    }
+                }
+                // set all options
+                $config['slugs'][$field] = array(
+                    'fields' => $slug->fields,
+                    'slug' => $field,
+                    'style' => $slug->style,
+                    'updatable' => $slug->updatable,
+                    'unique' => $slug->unique,
+                    'separator' => $slug->separator,
+                    'handlers' => $handlers
+                );
             }
         }
     }

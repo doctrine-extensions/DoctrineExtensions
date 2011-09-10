@@ -21,21 +21,19 @@ class TranslatableArticle implements Sluggable, Translatable
 
     /**
      * @Gedmo\Translatable
-     * @Gedmo\Sluggable
      * @ORM\Column(type="string", length=64)
      */
     private $title;
 
     /**
      * @Gedmo\Translatable
-     * @Gedmo\Sluggable
      * @ORM\Column(type="string", length=16)
      */
     private $code;
 
     /**
      * @Gedmo\Translatable
-     * @Gedmo\Slug
+     * @Gedmo\Slug(fields={"title", "code"})
      * @ORM\Column(type="string", length=128)
      */
     private $slug;

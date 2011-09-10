@@ -15,19 +15,17 @@ class Article implements Sluggable
     private $id;
 
     /**
-     * @Gedmo\Sluggable
      * @ORM\Column(name="title", type="string", length=64)
      */
     private $title;
 
     /**
-     * @Gedmo\Sluggable
      * @ORM\Column(name="code", type="string", length=16)
      */
     private $code;
 
     /**
-     * @Gedmo\Slug(separator="-", updatable=true)
+     * @Gedmo\Slug(separator="-", updatable=true, fields={"title", "code"})
      * @ORM\Column(name="slug", type="string", length=64, unique=true)
      */
     private $slug;

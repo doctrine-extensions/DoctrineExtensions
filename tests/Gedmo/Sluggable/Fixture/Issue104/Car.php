@@ -11,7 +11,6 @@ use Gedmo\Mapping\Annotation as Gedmo;
 class Car extends Vehicle
 {
     /**
-     * @Gedmo\Sluggable
      * @ORM\Column(length=128)
      */
     protected $title;

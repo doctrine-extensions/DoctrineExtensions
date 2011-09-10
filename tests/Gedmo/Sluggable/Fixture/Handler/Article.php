@@ -15,13 +15,11 @@ class Article implements Sluggable
     private $id;
 
     /**
-     * @Gedmo\Sluggable
      * @ORM\Column(name="title", type="string", length=64)
      */
     private $title;
 
     /**
-     * @Gedmo\Sluggable
      * @ORM\Column(name="code", type="string", length=16)
      */
     private $code;
@@ -33,7 +31,7 @@ class Article implements Sluggable
      *          @Gedmo\SlugHandlerOption(name="mappedBy", value="article"),
      *          @Gedmo\SlugHandlerOption(name="inverseSlugField", value="slug")
      *      })
-     * }, separator="-", updatable=true)
+     * }, separator="-", updatable=true, fields={"title", "code"})
      * @ORM\Column(name="slug", type="string", length=64, unique=true)
      */
     private $slug;

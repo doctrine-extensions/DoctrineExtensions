@@ -19,7 +19,6 @@ class TreeSlug
     private $id;
 
     /**
-     * @Gedmo\Sluggable
      * @ORM\Column(name="title", type="string", length=64)
      */
     private $title;
@@ -30,7 +29,7 @@ class TreeSlug
      *          @Gedmo\SlugHandlerOption(name="parentRelationField", value="parent"),
      *          @Gedmo\SlugHandlerOption(name="separator", value="/")
      *      })
-     * }, separator="-", updatable=true)
+     * }, separator="-", updatable=true, fields={"title"})
      * @ORM\Column(name="slug", type="string", length=64, unique=true)
      */
     private $slug;

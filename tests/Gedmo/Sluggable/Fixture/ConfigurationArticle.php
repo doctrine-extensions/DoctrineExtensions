@@ -15,19 +15,17 @@ class ConfigurationArticle implements Sluggable
     private $id;
 
     /**
-     * @Gedmo\Sluggable
      * @ORM\Column(name="title", type="string", length=64)
      */
     private $title;
 
     /**
-     * @Gedmo\Sluggable
      * @ORM\Column(name="code", type="string", length=16)
      */
     private $code;
 
     /**
-     * @Gedmo\Slug(updatable=false, unique=false)
+     * @Gedmo\Slug(updatable=false, unique=false, fields={"title", "code"})
      * @ORM\Column(name="slug", type="string", length=32)
      */
     private $slug;
