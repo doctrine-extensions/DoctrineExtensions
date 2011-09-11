@@ -10,9 +10,17 @@ Features:
 - Slugs can be unique and styled
 - Can be nested with other behaviors
 - Annotation, Yaml and Xml mapping support for extensions
-- Multiple slugs
+- Multiple slugs, diferent slugs can link to same fields
+- Built-in slug handlers, for tree path based slugs or linked by relation
 
 [blog_test]: http://gediminasm.org/test "Test extensions on this blog"
+
+Update **2010-09-11**
+
+- Refactored sluggable for doctrine2.2 by specifieng slug fields directly in slug annotation
+- Slug handler functionality, possibility to create custom ones or use built-in
+tree path handler or linked slug through single valued association
+- Updated documentation mapping examples for 2.1.x version or higher
 
 Update **2011-04-04**
 
@@ -27,7 +35,7 @@ no more exceptions during concurrent flushes.
 
 - You can [test live][blog_test] on this blog
 - Public [Sluggable repository](http://github.com/l3pp4rd/DoctrineExtensions "Sluggable extension on Github") is available on github
-- Last update date: **2011-08-08**
+- Last update date: **2011-09-11**
 
 **Portability:**
 
@@ -47,6 +55,7 @@ Content:
 - [Xml](#xml) mapping example
 - Basic usage [examples](#basic-examples)
 - Advanced usage [examples](#advanced-examples)
+- Using [slug handlers](#slug-handlers)
 
 ## Setup and autoloading {#including-extension}
 
@@ -78,7 +87,7 @@ First of all we need to setup the autoloading of extensions:
 To attach the **Sluggable Listener** to your event system:
 
     $evm = new \Doctrine\Common\EventManager();
-    // ORM and ORM
+    // ORM and ODM
     $sluggableListener = new \Gedmo\Sluggable\SluggableListener();
     
     $evm->addEventSubscriber($sluggableListener);
@@ -88,39 +97,47 @@ To attach the **Sluggable Listener** to your event system:
 
 ### Sluggable annotations:
 
-- **@gedmo:Sluggable** it will include this field into **slug** generation
-- **@gedmo:Slug** it will use this column to store **slug** generated
+- **@Gedmo\Mapping\Annotation\Slug** it will use this column to store **slug** generated
+**fields** option must be specified, an array of field names to slug
 
-**Notice:** that Sluggable interface is not necessary, except in cases there
+**Note:** that Sluggable interface is not necessary, except in cases there
 you need to identify entity as being Sluggable. The metadata is loaded only once then
 cache is activated
 
+**Note:** 2.1.x version of extensions used @Gedmo\Mapping\Annotation\Sluggable to identify
+the field for slug
+
     namespace Entity;
     
+    use Gedmo\Mapping\Annotation as Gedmo;
+    use Doctrine\ORM\Mapping as ORM;
+    
     /**
-     * @Table(name="articles")
-     * @Entity
+     * @ORM\Table(name="articles")
+     * @ORM\Entity
      */
     class Article
     {
-        /** @Id @GeneratedValue @Column(type="integer") */
+        /** 
+         * @ORM\Id
+         * @ORM\GeneratedValue
+         * @ORM\Column(type="integer")
+         */
         private $id;
     
         /**
-         * @gedmo:Sluggable(slugField="slug")
-         * @Column(name="title", type="string", length=64)
+         * @ORM\Column(length=64)
          */
         private $title;
     
         /**
-         * @gedmo:Sluggable(slugField="slug")
-         * @Column(name="code", type="string", length=16)
+         * @ORM\Column(length=16)
          */
         private $code;
     
         /**
-         * @gedmo:Slug
-         * @Column(name="slug", type="string", length=128, unique=true)
+         * @Gedmo\Slug(fields={"title", "code"})
+         * @ORM\Column(length=128, unique=true)
          */
         private $slug;
     
@@ -159,29 +176,32 @@ cache is activated
 
     namespace Document;
     
+    use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
+    use Gedmo\Mapping\Annotation as Gedmo;
+    
     /**
-     * @Document(collection="articles")
+     * @ODM\Document(collection="articles")
      */
     class Article
     {
-        /** @Id */
+        /** 
+         * @ODM\Id
+         */
         private $id;
     
         /**
-         * @gedmo:Sluggable(slugField="slug")
-         * @String
+         * @ODM\String
          */
         private $title;
     
         /**
-         * @gedmo:Sluggable
-         * @String
+         * @ODM\String
          */
         private $code;
     
         /**
-         * @gedmo:Slug
-         * @String
+         * @Gedmo\Slug(fields={"title", "code"})
+         * @ODM\String
          */
         private $slug;
     
@@ -233,17 +253,9 @@ Yaml mapped Article: **/mapping/yaml/Entity.Article.dcm.yml**
         title:
           type: string
           length: 64
-          gedmo:
-            sluggable:
-              position: 0
-              slugField: 'slug'
         code:
           type: string
           length: 16
-          gedmo:
-            sluggable:
-              position: 1
-              slugField: 'slug'
         slug:
           type: string
           length: 128
@@ -251,8 +263,9 @@ Yaml mapped Article: **/mapping/yaml/Entity.Article.dcm.yml**
             slug:
               separator: _
               style: camel
-    # or simply:
-    #       - slug
+              fields:
+                - title
+                - code
       indexes:
         search_idx:
           columns: slug
@@ -267,17 +280,17 @@ Yaml mapped Article: **/mapping/yaml/Entity.Article.dcm.yml**
                 <generator strategy="AUTO"/>
             </id>
     
-            <field name="title" type="string" length="128">
-                <gedmo:sluggable position="0"/>
-            </field>
-            <field name="code" type="string" length="16">
-                <gedmo:sluggable/>
-            </field>
-            <field name="ean" type="string" length="13">
-                <gedmo:sluggable position="1"/>
-            </field>
+            <field name="title" type="string" length="128"/>
+            <field name="code" type="string" length="16"/>
+            <field name="ean" type="string" length="13"/>
             <field name="slug" type="string" length="156" unique="true">
-                <gedmo:slug unique="true" style="camel" updatable="false" separator="_"/>
+                <gedmo:slug unique="true" style="camel" updatable="false" separator="_">
+                    <fields>
+                        <field>title</field>
+                        <field>code</field>
+                        <field>ean</field>
+                    </fields>
+                </gedmo:slug>
             </field>
         </entity>
     </doctrine-mapping>
@@ -297,14 +310,59 @@ Yaml mapped Article: **/mapping/yaml/Entity.Article.dcm.yml**
 
 ### Some other configuration options for **slug** annotation:
 
+- **fields** (required, default=[]) - list of fields for slug
 - **updatable** (optional, default=true) - **true** to update the slug on sluggable field changes, **false** - otherwise
 - **unique** (optional, default=true) - **true** if slug should be unique and if identical it will be prefixed, **false** - otherwise
 - **separator** (optional, default="-") - separator which will separate words in slug
 - **style** (optional, default="default") - **"default"** all letters will be lowercase, **"camel"** - first word letter will be uppercase
+- **handlers** (optional, default=[]) - list of slug handlers, like tree path slug, or customized, for example see bellow
 
-### Some other configuration options for **sluggable** annotation:
+**TreeSlugHandler**
 
-- **slugField** (optional, default="slug") - the slug field where the slug will be stored
+    /**
+     * @Gedmo\Mapping\Annotation\Slug(handlers={
+     *      @Gedmo\Mapping\Annotation\SlugHandler(class="Gedmo\Sluggable\Handler\TreeSlugHandler", options={
+     *          @Gedmo\Mapping\Annotation\SlugHandlerOption(name="parentRelationField", value="parent"),
+     *          @Gedmo\Mapping\Annotation\SlugHandlerOption(name="separator", value="/")
+     *      })
+     * }, fields={"title", "code"})
+     * @Doctrine\ORM\Mapping\Column(length=64, unique=true)
+     */
+    private $slug;
+
+**RelativeSlugHandler**:
+
+    /**
+     * Person domain object class
+     *
+     * @Gedmo\Mapping\Annotation\Slug(handlers={
+     *      @Gedmo\Mapping\Annotation\SlugHandler(class="Gedmo\Sluggable\Handler\RelativeSlugHandler", options={
+     *          @Gedmo\Mapping\Annotation\SlugHandlerOption(name="relationField", value="category"),
+     *          @Gedmo\Mapping\Annotation\SlugHandlerOption(name="relationSlugField", value="slug"),
+     *          @Gedmo\Mapping\Annotation\SlugHandlerOption(name="separator", value="/")
+     *      })
+     * }, fields={"title", "code"})
+     * @Doctrine\ORM\Mapping\Column(length=64, unique=true)
+     */
+    private $slug;
+
+**Note:** if you used **RelativeSlugHandler** - relation object should use in order to sync changes:
+
+**InversedRelativeSlugHandler**
+
+    /**
+     * Category domain object class
+     *
+     * @Gedmo\Mapping\Annotation\Slug(handlers={
+     *      @Gedmo\Mapping\Annotation\SlugHandler(class="Gedmo\Sluggable\Handler\InversedRelativeSlugHandler", options={
+     *          @Gedmo\Mapping\Annotation\SlugHandlerOption(name="relationClass", value="App\Entity\Person"),
+     *          @Gedmo\Mapping\Annotation\SlugHandlerOption(name="mappedBy", value="category"),
+     *          @Gedmo\Mapping\Annotation\SlugHandlerOption(name="inverseSlugField", value="slug")
+     *      })
+     * }, fields={"title"})
+     * @Doctrine\ORM\Mapping\Column(length=64, unique=true)
+     */
+    private $slug;
 
 ### Example
     
@@ -312,16 +370,15 @@ Yaml mapped Article: **/mapping/yaml/Entity.Article.dcm.yml**
     {
         // ...
         /**
-         * @gedmo:Slug(style="camel", separator="_", updatable=false, unique=false)
-         * @Column(name="slug", type="string", length=128, unique=true)
+         * @Gedmo\Slug(fields={"title"}, style="camel", separator="_", updatable=false, unique=false)
+         * @Doctrine\ORM\Mapping\Column(length=128, unique=true)
          */
         private $slug;
         // ...
  
         // ...
         /**
-         * @gedmo:Sluggable(slugField="slug")
-         * @Column(name="title", type="string", length=128)
+         * @Doctrine\ORM\Mapping\Column(length=128)
          */
         private $title;
         // ...
@@ -358,46 +415,50 @@ And the Entity should look like:
 
     namespace Entity;
     
+    use Gedmo\Mapping\Annotation as Gedmo;
+    use Doctrine\ORM\Mapping as ORM;
+    
     /**
-     * @Table(name="articles")
-     * @Entity
+     * @ORM\Table(name="articles")
+     * @ORM\Entity
      */
     class Article
     {
-        /** @Id @GeneratedValue @Column(type="integer") */
+        /** 
+         * @ORM\Id
+         * @ORM\GeneratedValue
+         * @ORM\Column(type="integer")
+         */
         private $id;
     
         /**
-         * @gedmo:Translatable
-         * @gedmo:Sluggable(slugField="slug")
-         * @Column(name="title", type="string", length=64)
+         * @Gedmo\Translatable
+         * @ORM\Column(length=64)
          */
         private $title;
     
         /**
-         * @gedmo:Translatable
-         * @gedmo:Sluggable(slugField="slug")
-         * @Column(name="code", type="string", length=16)
+         * @Gedmo\Translatable
+         * @ORM\Column(length=16)
          */
         private $code;
         
         /**
-         * @gedmo:Translatable
-         * @gedmo:Slug
-         * @Column(name="slug", type="string", length=128, unique=true)
+         * @Gedmo\Translatable
+         * @Gedmo\Slug(fields={"title", "code"})
+         * @ORM\Column(length=128, unique=true)
          */
         private $slug;
         
         /**
-        * @Gedmo:Sluggable(slugField="uniqueSlug")
-        * @ORM\Column(type="string", length=64)
-        */
+         * @ORM\Column(type="string", length=64)
+         */
         private $uniqueTitle;
         
         /**
-        * @Gedmo:Slug
-        * @ORM\Column(type="string", length=128)
-        */
+         * @Gedmo\Slug(fields={"uniqueTitle"})
+         * @ORM\Column(type="string", length=128, unique=true)
+         */
         private $uniqueSlug;
     
         
@@ -439,5 +500,13 @@ And the Entity should look like:
     }
 
 Now the generated slug will be translated by Translatable behavior
+
+## Using slug handlers: {#slug-handlers}
+
+There are built-in slug handlers like described in configuration options of slug, but there
+can be also customized slug handlers depending on use cases. Usually the most logic use case
+is for related slug. For instance if user has a **ManyToOne relation to a **Company** we
+would like to have a url like **http://example.com/knplabs/gedi where **KnpLabs**
+is a company and user name is **Gedi**. In this case relation has a path separator **/**
 
 Easy like that, any suggestions on improvements are very welcome

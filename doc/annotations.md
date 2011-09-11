@@ -99,7 +99,7 @@ mapping and listeners:
 
 **Notice:** that symfony2 DoctrineExtensionsBundle does it automatically this
 way you will maintain a single instance of annotation reader. It relates only
-to doctrine-common-2.1.x branch.
+to doctrine-common-2.1.x branch and newer.
 
 ## Tree annotations {#tree}
 
@@ -280,26 +280,6 @@ example:
 Sluggable ensures unique slugs and correct length of the slug. It also uses utf8 to ascii
 table map to create correct ascii slugs.
 
-### @Gedmo\Mapping\Annotation\Sluggable (required at least one sluggable field)
-
-**property** annotation
-
-Includes the marked **string** type property into generation of slug.
-Additionaly can use **position** option to set field position is slug
-
-**options:**
-
-- **position** - (integer) _optional_
-- **slugField** - (string) _optional_ default: **slug**
-
-example:
-
-    /**
-     * @Gedmo\Mapping\Annotation\Sluggable(slugField="slug")
-     * @Doctrine\ORM\Mapping\Column(length=64)
-     */
-    private $code;
-
 ### @Gedmo\Mapping\Annotation\Slug (required)
 
 **property** annotation
@@ -308,6 +288,7 @@ It will use this **string** property to store the generated slug.
 
 **options:**
 
+- **fields** - (array) _required_, must at least contain one field
 - **updatable** - (boolean) _optional_ default: **true**
 - **separator** - (string) _optional_ default: **-**
 - **unique** - (boolean) _optional_ default: **true**
