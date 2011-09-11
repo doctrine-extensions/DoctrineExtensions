@@ -509,4 +509,157 @@ is for related slug. For instance if user has a **ManyToOne relation to a **Comp
 would like to have a url like **http://example.com/knplabs/gedi where **KnpLabs**
 is a company and user name is **Gedi**. In this case relation has a path separator **/**
 
+User entity example:
+
+    namespace Sluggable\Fixture\Handler;
+    
+    use Gedmo\Mapping\Annotation as Gedmo;
+    use Doctrine\ORM\Mapping as ORM;
+    
+    /**
+     * @ORM\Entity
+     */
+    class User
+    {
+        /**
+         * @ORM\Id
+         * @ORM\GeneratedValue
+         * @ORM\Column(type="integer")
+         */
+        private $id;
+    
+        /**
+         * @ORM\Column(length=64)
+         */
+        private $username;
+    
+        /**
+         * @Gedmo\Slug(handlers={
+         *      @Gedmo\SlugHandler(class="Gedmo\Sluggable\Handler\RelativeSlugHandler", options={
+         *          @Gedmo\SlugHandlerOption(name="relationField", value="company"),
+         *          @Gedmo\SlugHandlerOption(name="relationSlugField", value="alias"),
+         *          @Gedmo\SlugHandlerOption(name="separator", value="/")
+         *      })
+         * }, separator="-", updatable=true, fields={"username"})
+         * @ORM\Column(length=64, unique=true)
+         */
+        private $slug;
+    
+        /**
+         * @ORM\ManyToOne(targetEntity="Company")
+         */
+        private $company;
+    
+        public function setCompany(Company $company = null)
+        {
+            $this->company = $company;
+        }
+    
+        public function getCompany()
+        {
+            return $this->company;
+        }
+    
+        public function getId()
+        {
+            return $this->id;
+        }
+    
+        public function setName($name)
+        {
+            $this->name = $name;
+        }
+    
+        public function getName()
+        {
+            return $this->name;
+        }
+    
+        public function getSlug()
+        {
+            return $this->slug;
+        }
+    }
+
+
+Company entity example:
+
+    namespace Sluggable\Fixture\Handler;
+    
+    use Gedmo\Mapping\Annotation as Gedmo;
+    use Doctrine\ORM\Mapping as ORM;
+    
+    /**
+     * @ORM\Entity
+     */
+    class Company
+    {
+        /**
+         * @ORM\Id
+         * @ORM\GeneratedValue
+         * @ORM\Column(type="integer")
+         */
+        private $id;
+    
+        /**
+         * @ORM\Column(length=64)
+         */
+        private $title;
+    
+        /**
+         * @Gedmo\Slug(handlers={
+         *      @Gedmo\SlugHandler(class="Gedmo\Sluggable\Handler\InversedRelativeSlugHandler", options={
+         *          @Gedmo\SlugHandlerOption(name="relationClass", value="Sluggable\Fixture\Handler\User"),
+         *          @Gedmo\SlugHandlerOption(name="mappedBy", value="company"),
+         *          @Gedmo\SlugHandlerOption(name="inverseSlugField", value="slug")
+         *      })
+         * }, fields={"title"})
+         * @ORM\Column(length=64, unique=true)
+         */
+        private $alias;
+    
+        public function getId()
+        {
+            return $this->id;
+        }
+    
+        public function setTitle($title)
+        {
+            $this->title = $title;
+        }
+    
+        public function getTitle()
+        {
+            return $this->title;
+        }
+    
+        public function getAlias()
+        {
+            return $this->alias;
+        }
+    }
+
+And the example usage:
+
+    $company = new Company;
+    $company->setTitle('KnpLabs');
+    $em->persist($company);
+
+    $gedi = new User;
+    $gedi->setUsername('Gedi');
+    $gedi->setCompany($company);
+    $em->persist($gedi);
+
+    $em->flush();
+    
+    echo $gedi->getSlug(); // outputs "knplabs/gedi"
+    
+    $company->setTitle('KnpLabs Nantes');
+    $em->persist($company);
+    $em->flush();
+    
+    echo $gedi->getSlug(); // outputs "knplabs-nantes/gedi"
+
+**Note:** tree slug handler, takes a parent relation to build slug recursively.
+
 Easy like that, any suggestions on improvements are very welcome
