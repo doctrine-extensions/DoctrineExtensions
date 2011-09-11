@@ -33,14 +33,6 @@ class InversedRelativeSlugHandler implements SlugHandlerInterface
     protected $sluggable;
 
     /**
-     * Options for relative slug handler object
-     * classes
-     *
-     * @var array
-     */
-    private $options;
-
-    /**
      * $options = array(
      *     'relationClass' => 'objectclass',
      *     'inverseSlugField' => 'slug',
@@ -51,19 +43,6 @@ class InversedRelativeSlugHandler implements SlugHandlerInterface
     public function __construct(SluggableListener $sluggable)
     {
         $this->sluggable = $sluggable;
-    }
-
-    /**
-    * {@inheritDoc}
-    */
-    public function getOptions($object)
-    {
-        $meta = $this->om->getClassMetadata(get_class($object));
-        if (!isset($this->options[$meta->name])) {
-            $config = $this->sluggable->getConfiguration($this->om, $meta->name);
-            $this->options[$meta->name] = $config['handlers'][get_called_class()];
-        }
-        return $this->options[$meta->name];
     }
 
     /**
@@ -82,7 +61,17 @@ class InversedRelativeSlugHandler implements SlugHandlerInterface
      * {@inheritDoc}
      */
     public static function validate(array $options, ClassMetadata $meta)
-    {}
+    {
+        if (!isset($options['relationClass']) || !strlen($options['relationClass'])) {
+            throw new InvalidMappingException("'relationClass' option must be specified for object slug mapping - {$meta->name}");
+        }
+        if (!isset($options['mappedBy']) || !strlen($options['mappedBy'])) {
+            throw new InvalidMappingException("'mappedBy' option must be specified for object slug mapping - {$meta->name}");
+        }
+        if (!isset($options['inverseSlugField']) || !strlen($options['inverseSlugField'])) {
+            throw new InvalidMappingException("'inverseSlugField' option must be specified for object slug mapping - {$meta->name}");
+        }
+    }
 
     /**
      * {@inheritDoc}
@@ -92,7 +81,7 @@ class InversedRelativeSlugHandler implements SlugHandlerInterface
         $this->om = $ea->getObjectManager();
         $isInsert = $this->om->getUnitOfWork()->isScheduledForInsert($object);
         if (!$isInsert) {
-            $options = $this->getOptions($object);
+            $options = $config['handlers'][get_called_class()];
             $wrapped = AbstractWrapper::wrapp($object, $this->om);
             $oldSlug = $wrapped->getPropertyValue($config['slug']);
             $mappedByConfig = $this->sluggable->getConfiguration(
@@ -104,10 +93,10 @@ class InversedRelativeSlugHandler implements SlugHandlerInterface
                 if (!$meta->isSingleValuedAssociation($options['mappedBy'])) {
                     throw new InvalidMappingException("Unable to find ".$wrapped->getMetadata()->name." relation - [{$options['mappedBy']}] in class - {$meta->name}");
                 }
-                if (!isset($mappedByConfig['slugFields'][$options['inverseSlugField']])) {
+                if (!isset($mappedByConfig['slugs'][$options['inverseSlugField']])) {
                     throw new InvalidMappingException("Unable to find slug field - [{$options['inverseSlugField']}] in class - {$meta->name}");
                 }
-                $mappedByConfig['slug'] = $mappedByConfig['slugFields'][$options['inverseSlugField']]['slug'];
+                $mappedByConfig['slug'] = $mappedByConfig['slugs'][$options['inverseSlugField']]['slug'];
                 $mappedByConfig['mappedBy'] = $options['mappedBy'];
                 $ea->replaceInverseRelative($object, $mappedByConfig, $slug, $oldSlug);
                 $uow = $this->om->getUnitOfWork();

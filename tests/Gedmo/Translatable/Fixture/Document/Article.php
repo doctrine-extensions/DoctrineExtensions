@@ -14,21 +14,19 @@ class Article
     private $id;
 
     /**
-     * @Gedmo\Sluggable
      * @Gedmo\Translatable
      * @MongoODM\String
      */
     private $title;
 
     /**
-     * @Gedmo\Sluggable
      * @Gedmo\Translatable
      * @MongoODM\String
      */
     private $code;
 
     /**
-     * @Gedmo\Slug
+     * @Gedmo\Slug(fields={"title", "code"})
      * @Gedmo\Translatable
      * @MongoODM\String
      */

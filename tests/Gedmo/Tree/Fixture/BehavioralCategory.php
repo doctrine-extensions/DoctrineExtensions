@@ -20,7 +20,6 @@ class BehavioralCategory
 
     /**
      * @Gedmo\Translatable
-     * @Gedmo\Sluggable
      * @ORM\Column(name="title", type="string", length=64)
      */
     private $title;
@@ -53,7 +52,7 @@ class BehavioralCategory
 
     /**
      * @Gedmo\Translatable
-     * @Gedmo\Slug
+     * @Gedmo\Slug(fields={"title"})
      * @ORM\Column(name="slug", type="string", length=128, unique=true)
      */
     private $slug;

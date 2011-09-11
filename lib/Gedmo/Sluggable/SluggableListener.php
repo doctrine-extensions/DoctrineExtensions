@@ -184,6 +184,7 @@ class SluggableListener extends MappedEventSubscriber
         $config = $this->getConfiguration($om, $meta->name);
         foreach ($config['slugs'] as $slugField => $options) {
             $hasHandlers = count($options['handlers']);
+            $options['useObjectClass'] = $config['useObjectClass'];
             $fields = $options['fields'];
             //$slugFieldConfig = $config['slugFields'][$slugField];
             // collect the slug from fields
@@ -252,9 +253,7 @@ class SluggableListener extends MappedEventSubscriber
                 // make unique slug if requested
                 if ($options['unique'] && !is_null($slug)) {
                     $this->exponent = 0;
-                    $arrayConfig = $options;
-                    $arrayConfig['useObjectClass'] = $config['useObjectClass'];
-                    $slug = $this->makeUniqueSlug($ea, $object, $slug, false, $arrayConfig);
+                    $slug = $this->makeUniqueSlug($ea, $object, $slug, false, $options);
                 }
                 // notify slug handlers --> onSlugCompletion
                 if ($hasHandlers) {

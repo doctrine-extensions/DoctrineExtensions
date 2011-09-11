@@ -14,7 +14,10 @@ Sluggable\Fixture\Issue116\Country:
       fixed: false
       nullable: false
       gedmo:
-        - slug
+        slug:
+          separator: "-"
+          fields:
+            - originalName
     languageCode:
       type: string(10)
       fixed: false
@@ -25,7 +28,4 @@ Sluggable\Fixture\Issue116\Country:
       fixed: false
       nullable: false
       column: original_name
-      gedmo:
-        sluggable:
-          slugField: 'alias'
   lifecycleCallbacks: {  }

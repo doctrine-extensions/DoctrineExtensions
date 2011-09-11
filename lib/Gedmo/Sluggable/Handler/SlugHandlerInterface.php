@@ -29,14 +29,6 @@ interface SlugHandlerInterface
     function __construct(SluggableListener $sluggable);
 
     /**
-     * Get the options for specific object
-     *
-     * @param object $object
-     * @return array
-     */
-    function getOptions($object);
-
-    /**
      * Callback on slug handlers before the decision
      * is made whether or not the slug needs to be
      * recalculated
