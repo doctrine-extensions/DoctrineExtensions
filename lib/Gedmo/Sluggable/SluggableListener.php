@@ -214,7 +214,7 @@ class SluggableListener extends MappedEventSubscriber
             // if slug is changed, do further processing
             if ($needToChangeSlug) {
                 $mapping = $meta->getFieldMapping($slugFieldConfig['slug']);
-                if (!strlen(trim($slug)) && !isset($mapping['nullable']) || !$mapping['nullable']) {
+                if (!strlen(trim($slug)) && (!isset($mapping['nullable']) || !$mapping['nullable'])) {
                     throw new \Gedmo\Exception\UnexpectedValueException("Unable to find any non empty sluggable fields for slug [{$slugField}] , make sure they have something at least.");
                 }
 
