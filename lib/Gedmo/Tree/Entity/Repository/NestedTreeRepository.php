@@ -271,17 +271,14 @@ class NestedTreeRepository extends AbstractTreeRepository
         }
         if (!$sortByField) {
             $qb->orderBy('node.' . $config['left'], 'ASC');
-        }
-        elseif (is_array($sortByField)) {
+        } elseif (is_array($sortByField)) {
             $fields = '';
-            foreach ($sortByField as $field)
-            {
+            foreach ($sortByField as $field) {
                 $fields .= 'node.'.$field.',';
             }
-            $fields=rtrim($fields,',');
+            $fields = rtrim($fields,',');
             $qb->orderBy($fields,$direction);
-        }
-        else {
+        } else {
             if ($meta->hasField($sortByField) && in_array(strtolower($direction), array('asc', 'desc'))) {
                 $qb->orderBy('node.' . $sortByField, $direction);
             } else {
@@ -813,7 +810,7 @@ class NestedTreeRepository extends AbstractTreeRepository
         $nodes = self::childrenQuery(
             $node,
             $direct,
-            array($config['root'],$config['left']),
+            isset($config['root']) ? array($config['root'], $config['left']) : $config['left'],
             'ASC'
         )->getArrayResult();
 
