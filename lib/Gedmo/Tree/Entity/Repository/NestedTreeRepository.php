@@ -271,6 +271,13 @@ class NestedTreeRepository extends AbstractTreeRepository
         }
         if (!$sortByField) {
             $qb->orderBy('node.' . $config['left'], 'ASC');
+        } elseif (is_array($sortByField)) {
+            $fields = '';
+            foreach ($sortByField as $field) {
+                $fields .= 'node.'.$field.',';
+            }
+            $fields = rtrim($fields,',');
+            $qb->orderBy($fields,$direction);
         } else {
             if ($meta->hasField($sortByField) && in_array(strtolower($direction), array('asc', 'desc'))) {
                 $qb->orderBy('node.' . $sortByField, $direction);
@@ -286,7 +293,7 @@ class NestedTreeRepository extends AbstractTreeRepository
      *
      * @param object $node - if null, all tree nodes will be taken
      * @param boolean $direct - true to take only direct children
-     * @param string $sortByField - field name to sort by
+     * @param string|array $sortByField - field names to sort by
      * @param string $direction - sort direction : "ASC" or "DESC"
      * @return Doctrine\ORM\Query
      */
@@ -799,11 +806,11 @@ class NestedTreeRepository extends AbstractTreeRepository
         }
 
         // Gets the array of $node results.
-        // It must be order by 'root' field
+        // It must be order by 'root' and 'left' field
         $nodes = self::childrenQuery(
             $node,
             $direct,
-            isset($config['root']) ? $config['root'] : $config['left'],
+            isset($config['root']) ? array($config['root'], $config['left']) : $config['left'],
             'ASC'
         )->getArrayResult();
 
