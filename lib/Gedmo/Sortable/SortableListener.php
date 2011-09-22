@@ -23,7 +23,7 @@ class SortableListener extends MappedEventSubscriber
 {
     private $relocations = array();
     private $maxPositions = array();
-    
+
     /**
      * Specifies the list of events to listen
      *
@@ -37,7 +37,7 @@ class SortableListener extends MappedEventSubscriber
             'loadClassMetadata'
         );
     }
-    
+
     public function prePersist(EventArgs $args)
     {
         $ea = $this->getEventAdapter($args);
@@ -51,7 +51,7 @@ class SortableListener extends MappedEventSubscriber
             }
         }
     }
-    
+
     /**
      * Mapps additional metadata
      *
@@ -76,7 +76,7 @@ class SortableListener extends MappedEventSubscriber
         $ea = $this->getEventAdapter($args);
         $om = $ea->getObjectManager();
         $uow = $om->getUnitOfWork();
-        
+
         // process all objects beeing deleted
         foreach ($ea->getScheduledObjectDeletions($uow) as $object) {
             $meta = $om->getClassMetadata(get_class($object));
@@ -84,7 +84,7 @@ class SortableListener extends MappedEventSubscriber
                 $this->processDeletion($om, $config, $meta, $object);
             }
         }
-        
+
         // process all objects beeing updated
         foreach ($ea->getScheduledObjectUpdates($uow) as $object) {
             $meta = $om->getClassMetadata(get_class($object));
@@ -92,7 +92,7 @@ class SortableListener extends MappedEventSubscriber
                 $this->processUpdate($om, $config, $meta, $object);
             }
         }
-        
+
         // process all objects beeing inserted
         foreach ($ea->getScheduledObjectInsertions($uow) as $object) {
             $meta = $om->getClassMetadata(get_class($object));
@@ -100,10 +100,10 @@ class SortableListener extends MappedEventSubscriber
                 $this->processInsert($om, $config, $meta, $object);
             }
         }
-        
+
         $this->processRelocations($om);
     }
-    
+
     /**
      * Computes node positions and updates the sort field in memory and in the db
      * @param object $em ObjectManager
@@ -111,12 +111,12 @@ class SortableListener extends MappedEventSubscriber
     private function processInsert($em, $config, $meta, $object)
     {
         $uow = $em->getUnitOfWork();
-        
+
         $newPosition = $meta->getReflectionProperty($config['position'])->getValue($object);
         if (is_null($newPosition)) {
             $newPosition = -1;
         }
-        
+
         // Get groups
         $groups = array();
         foreach ($config['groups'] as $group) {
@@ -124,24 +124,24 @@ class SortableListener extends MappedEventSubscriber
         }
         // Get hash
         $hash = $this->getHash($meta, $groups, $object);
-        
+
         // Get max position
         if (!isset($this->maxPositions[$hash])) {
             $this->maxPositions[$hash] = $this->getMaxPosition($em, $meta, $config, $object);
         }
-        
+
         // Compute position if it is negative
         if ($newPosition < 0) {
             $newPosition += $this->maxPositions[$hash] + 2; // position == -1 => append at end of list
             if ($newPosition < 0) $newPosition = 0;
         }
-        
+
         // Set position to max position if it is too big
         $newPosition = min(array($this->maxPositions[$hash] + 1, $newPosition));
-        
+
         // Compute relocations
         $relocation = array($hash, $meta, $groups, $newPosition, -1, +1);
-        
+
         // Apply existing relocations
         $applyDelta = 0;
         if (isset($this->relocations[$hash])) {
@@ -153,10 +153,10 @@ class SortableListener extends MappedEventSubscriber
             }
         }
         $newPosition += $applyDelta;
-        
+
         // Add relocations
         call_user_func_array(array($this, 'addRelocation'), $relocation);
-        
+
         // Set new position
         $meta->getReflectionProperty($config['position'])->setValue($object, $newPosition);
         $uow->recomputeSingleEntityChangeSet($meta, $object);
@@ -169,7 +169,7 @@ class SortableListener extends MappedEventSubscriber
     private function processUpdate($em, $config, $meta, $object)
     {
         $uow = $em->getUnitOfWork();
-        
+
         $changed = false;
         $changeSet = $uow->getEntityChangeSet($object);
         if (!array_key_exists($config['position'], $changeSet)) {
@@ -177,9 +177,9 @@ class SortableListener extends MappedEventSubscriber
         }
         $oldPosition = $changeSet[$config['position']][0];
         $newPosition = $changeSet[$config['position']][1];
-        
+
         $changed = $changed || $oldPosition != $newPosition;
-        
+
         // Get groups
         $groups = array();
         foreach ($config['groups'] as $group) {
@@ -188,26 +188,26 @@ class SortableListener extends MappedEventSubscriber
                     && $changeSet[$group][0] != $changeSet[$group][1]);
             $groups[$group] = $meta->getReflectionProperty($group)->getValue($object);
         }
-        
+
         if (!$changed) return;
-        
+
         // Get hash
         $hash = $this->getHash($meta, $groups, $object);
-        
+
         // Get max position
         if (!isset($this->maxPositions[$hash])) {
             $this->maxPositions[$hash] = $this->getMaxPosition($em, $meta, $config, $object);
         }
-        
+
         // Compute position if it is negative
         if ($newPosition < 0) {
             $newPosition += $this->maxPositions[$hash] + 2; // position == -1 => append at end of list
             if ($newPosition < 0) $newPosition = 0;
         }
-        
+
         // Set position to max position if it is too big
         $newPosition = min(array($this->maxPositions[$hash] + 1, $newPosition));
-        
+
         // Compute relocations
         /*
         CASE 1: shift backwards
@@ -229,7 +229,7 @@ class SortableListener extends MappedEventSubscriber
         } elseif ($newPosition > $oldPosition) {
             $relocation = array($hash, $meta, $groups, $oldPosition + 1, $newPosition + 1, -1);
         }
-        
+
         // Apply existing relocations
         $applyDelta = 0;
         if (isset($this->relocations[$hash])) {
@@ -241,15 +241,15 @@ class SortableListener extends MappedEventSubscriber
             }
         }
         $newPosition += $applyDelta;
-        
+
         // Add relocation
         call_user_func_array(array($this, 'addRelocation'), $relocation);
-        
+
         // Set new position
         $meta->getReflectionProperty($config['position'])->setValue($object, $newPosition);
         $uow->recomputeSingleEntityChangeSet($meta, $object);
     }
-    
+
     /**
      * Computes node positions and updates the sort field in memory and in the db
      * @param object $em ObjectManager
@@ -257,7 +257,7 @@ class SortableListener extends MappedEventSubscriber
     private function processDeletion($em, $config, $meta, $object)
     {
         $position = $meta->getReflectionProperty($config['position'])->getValue($object);
-        
+
         // Get groups
         $groups = array();
         foreach ($config['groups'] as $group) {
@@ -265,16 +265,16 @@ class SortableListener extends MappedEventSubscriber
         }
         // Get hash
         $hash = $this->getHash($meta, $groups, $object);
-        
+
         // Get max position
         if (!isset($this->maxPositions[$hash])) {
             $this->maxPositions[$hash] = $this->getMaxPosition($em, $meta, $config, $object);
         }
-        
+
         // Add relocation
         $this->addRelocation($hash, $meta, $groups, $position, -1, -1);
     }
-    
+
     private function processRelocations($em)
     {
         foreach ($this->relocations as $hash => $relocation) {
@@ -297,8 +297,12 @@ class SortableListener extends MappedEventSubscriber
                 }
                 $i = 1;
                 foreach ($relocation['groups'] as $group => $val) {
-                    $qb->andWhere('n.'.$group." = :group".$i)
-                       ->setParameter('group'.$i, $val);
+                    if (is_null($val)) {
+                        $qb->andWhere($qb->expr()->isNull('n.'.$group));
+                    } else {
+                        $qb->andWhere('n.'.$group.' = :group'.$i);
+                        $qb->setParameter('group'.$i, $val);
+                    }
                     $i++;
                 }
                 $qb->getQuery()->getResult();
@@ -309,7 +313,7 @@ class SortableListener extends MappedEventSubscriber
         $this->relocations = array();
         $this->maxPositions = array();
     }
-    
+
     private function getHash($meta, $groups, $object)
     {
         $data = $meta->name;
@@ -321,7 +325,7 @@ class SortableListener extends MappedEventSubscriber
         }
         return md5($data);
     }
-    
+
     private function getMaxPosition($em, $meta, $config, $object)
     {
         $maxPos = null;
@@ -337,19 +341,23 @@ class SortableListener extends MappedEventSubscriber
         if (is_null($maxPos)) $maxPos = -1;
         return $maxPos;
     }
-    
+
     private function addGroupWhere($qb, $groups, $meta, $object)
     {
         $i = 1;
         foreach ($groups as $group) {
-            //$qb->andWhere('n.'.$group." = '".$meta->getReflectionProperty($group)->getValue($object)."'");
-            $qb->andWhere('n.'.$group.' = :group'.$i);
-            $qb->setParameter('group'.$i, $meta->getReflectionProperty($group)->getValue($object));
+            $value = $meta->getReflectionProperty($group)->getValue($object);
+            if (is_null($value)) {
+                $qb->andWhere($qb->expr()->isNull('n.'.$group));
+            } else {
+                $qb->andWhere('n.'.$group.' = :group'.$i);
+                $qb->setParameter('group'.$i, $value);
+            }
             $i++;
         }
         return $qb;
     }
-    
+
     /**
      * Add a relocation rule
      * @param string $hash The hash of the sorting group
@@ -364,7 +372,7 @@ class SortableListener extends MappedEventSubscriber
         if (!array_key_exists($hash, $this->relocations)) {
             $this->relocations[$hash] = array('name' => $meta->name, 'groups' => $groups, 'deltas' => array());
         }
-        
+
         try {
             $newDelta = array('start' => $start, 'stop' => $stop, 'delta' => $delta);
             array_walk($this->relocations[$hash]['deltas'], function(&$val, $idx, $needle) {
@@ -376,7 +384,7 @@ class SortableListener extends MappedEventSubscriber
             $this->relocations[$hash]['deltas'][] = $newDelta;
         } catch (\Exception $e) {}
     }
-    
+
     /**
      * {@inheritDoc}
      */
