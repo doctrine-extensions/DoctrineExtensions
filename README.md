@@ -1,5 +1,7 @@
 # Doctrine2 behavioral extensions
 
+**Version 2.2-DEV**
+
 This package contains extensions for Doctrine2 that hook into the facilities of Doctrine and
 offer new functionality or tools to use Doctrine2 more efficently. This package contains mostly
 used behaviors which can be easily attached to your event system of Doctrine2 and handle the
@@ -18,9 +20,6 @@ can be easily implemented using Mapping extension to handle the additional metad
 **Note:** doctrine2.0.x branch is no longer being supported and all new features
 and fixes are on master branch, which currently supports 2.1.x versions of doctrine2
 
-**Note:** from now on there is only one listener per extension which supports ODM and ORM adapters to deal with objects. Only one instance of listener is 
-required, and can be attached to many different type object managers, currently supported (ORM or ODM)
-
 **Note:** Please note, that xml mapping needs to be in a different namespace, the declared namespace for
 Doctrine extensions is http://gediminasm.org/schemas/orm/doctrine-extensions-mapping
 So root node now looks like this:
@@ -37,7 +36,7 @@ master branch is based on 2.2.x versions and may not work with 2.1.x
 
 ### Latest updates
 
-**2011-09-11**
+**2011-09-23**
 
 - Refactored sluggable for doctrine2.2 by specifieng slug fields directly in slug annotation
 - Slug handler functionality, possibility to create custom ones or use built-in
@@ -48,13 +47,6 @@ master branch is based on 2.2.x versions and may not work with 2.1.x
 By default there is TreeSlug, RelativeSlug handlers. Which can build a tree path like slug
 example: **category/shoes/nike**. Using relative slug handler it is possible to have related slug
 for example, user is related to company by ManyToOne relation in result slug is: **company/user-name**
-
-**2011-07-14**
-
-- Sluggable can handle multiple slug fields, now on Sluggable annotation you will need
-to provide slugField property it should belong to
-- Translatable query hint will use **default locale** translations in case if it does not
-have a translation in currently used locale
 
 ### ODM MongoDB support
 
@@ -88,6 +80,7 @@ To setup and run tests follow these steps:
 
 ### Contributors:
 
+- Lukas Botsch [lbotsch](http://github.com/lbotsch)
 - Daniel Gomes [danielcsgomes](http://github.com/danielcsgomes)
 - megabite [oscarballadares](http://github.com/oscarballadares)
 - DinoWeb [dinoweb](http://github.com/dinoweb)

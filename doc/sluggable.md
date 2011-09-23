@@ -272,6 +272,8 @@ Yaml mapped Article: **/mapping/yaml/Entity.Article.dcm.yml**
 
 ## Xml mapping example {#xml}
 
+**Note:** xml driver is not yet adapted for single slug mapping
+
     <?xml version="1.0" encoding="UTF-8"?>
     <doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
                       xmlns:gedmo="http://gediminasm.org/schemas/orm/doctrine-extensions-mapping">
@@ -662,4 +664,4 @@ And the example usage:
 
 **Note:** tree slug handler, takes a parent relation to build slug recursively.
 
-Easy like that, any suggestions on improvements are very welcome
+Any suggestions on improvements are very welcome
