@@ -4,7 +4,7 @@ namespace Gedmo\Sluggable;
 
 use Doctrine\Common\EventManager;
 use Tool\BaseTestCaseORM;
-use Sluggable\Fixture\Issue104\Car;
+use Sluggable\Fixture\Issue104\Icarus;
 
 /**
  * These are tests for Sluggable behavior
@@ -14,9 +14,9 @@ use Sluggable\Fixture\Issue104\Car;
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class Issue104Test extends BaseTestCaseORM
+class Issue104RightTest extends BaseTestCaseORM
 {
-    const CAR = 'Sluggable\\Fixture\\Issue104\\Car';
+    const ICARUS = 'Sluggable\\Fixture\\Issue104\\Icarus';
 
     protected function setUp()
     {
@@ -25,26 +25,27 @@ class Issue104Test extends BaseTestCaseORM
 
     /**
      * @test
-     * @expectedException Gedmo\Exception\InvalidMappingException
      */
-    public function shouldThrowAnExceptionWhenMappedSuperclassProtectedProperty()
+    public function shouldMapMappedSuperclassPrivateInheritedProperty()
     {
         $evm = new EventManager;
         $evm->addEventSubscriber(new SluggableListener);
         $this->getMockSqliteEntityManager($evm);
 
-        $audi = new Car;
+        $audi = new Icarus;
         $audi->setDescription('audi car');
         $audi->setTitle('Audi');
 
         $this->em->persist($audi);
         $this->em->flush();
+
+        $this->assertEquals('audi', $audi->getSlug());
     }
 
     protected function getUsedEntityFixtures()
     {
         return array(
-            self::CAR
+            self::ICARUS
         );
     }
 }
