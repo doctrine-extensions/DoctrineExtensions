@@ -30,20 +30,4 @@ class ObjectHydrator extends BaseObjectHydrator
         $listener->setSkipOnLoad(false);
         return $result;
     }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function _hydrateRow(array $data, array &$cache, array &$result)
-    {
-        if (isset($this->_hints[TranslationWalker::HINT_TRANSLATION_FALLBACKS])) {
-            foreach ($this->_hints[TranslationWalker::HINT_TRANSLATION_FALLBACKS] as $field => $alias) {
-                if ($data[$field] && !$data[$alias]) {
-                    $data[$alias] = $data[$field];
-                }
-                unset($data[$field]);
-            }
-        }
-        return parent::_hydrateRow($data, $cache, $result);
-    }
 }

@@ -47,9 +47,7 @@ class ProtectedPropertySupperclassTest extends BaseTestCaseORM
 
         $repo = $this->em->getRepository(self::TRANSLATION);
         $translations = $repo->findTranslations($test);
-        $this->assertEquals(1, count($translations));
-        $this->assertArrayHasKey('en_us', $translations);
-        $this->assertEquals(2, count($translations['en_us']));
+        $this->assertEquals(0, count($translations));
 
         $this->assertTrue($test->getCreatedAt() !== null);
     }
