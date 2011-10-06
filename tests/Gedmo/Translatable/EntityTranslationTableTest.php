@@ -30,6 +30,7 @@ class EntityTranslationTableTest extends BaseTestCaseORM
         $evm = new EventManager;
         $this->translatableListener = new TranslationListener();
         $this->translatableListener->setTranslatableLocale('en_us');
+        $this->translatableListener->setDefaultLocale('en_us');
         $evm->addEventSubscriber($this->translatableListener);
 
         $this->getMockSqliteEntityManager($evm);
@@ -48,11 +49,9 @@ class EntityTranslationTableTest extends BaseTestCaseORM
         $this->assertTrue($repo instanceof Entity\Repository\TranslationRepository);
 
         $translations = $repo->findTranslations($person);
-        $this->assertEquals(count($translations), 1);
-        $this->assertArrayHasKey('en_us', $translations);
+        //As Translate locale and Default locale are the same, no records should be present in translations table
+        $this->assertEquals(count($translations), 0);
 
-        $this->assertArrayHasKey('name', $translations['en_us']);
-        $this->assertEquals('name in en', $translations['en_us']['name']);
         // test second translations
         $person = $this->em->find(self::PERSON, $person->getId());
         $this->translatableListener->setTranslatableLocale('de_de');
@@ -63,7 +62,8 @@ class EntityTranslationTableTest extends BaseTestCaseORM
         $this->em->clear();
 
         $translations = $repo->findTranslations($person);
-        $this->assertEquals(count($translations), 2);
+        //Only one translation should be present
+        $this->assertEquals(count($translations), 1);
         $this->assertArrayHasKey('de_de', $translations);
 
         $this->assertArrayHasKey('name', $translations['de_de']);

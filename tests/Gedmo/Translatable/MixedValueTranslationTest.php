@@ -34,6 +34,7 @@ class MixedValueTranslationTest extends BaseTestCaseORM
         $evm = new EventManager;
         $this->translatableListener = new TranslationListener();
         $this->translatableListener->setTranslatableLocale('en_us');
+        $this->translatableListener->setDefaultLocale('en_us');        
         $evm->addEventSubscriber($this->translatableListener);
 
         $this->getMockSqliteEntityManager($evm);
@@ -69,7 +70,7 @@ class MixedValueTranslationTest extends BaseTestCaseORM
         $transRepo = $this->em->getRepository(self::TRANSLATION);
         $translations = $transRepo->findTranslations($mixed);
 
-        $this->assertEquals(2, count($translations));
+        $this->assertEquals(1, count($translations));
         $this->assertArrayHasKey('de_de', $translations);
         $cust = unserialize($translations['de_de']['cust']);
 

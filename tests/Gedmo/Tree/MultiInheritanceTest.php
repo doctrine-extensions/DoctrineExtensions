@@ -45,9 +45,8 @@ class MultiInheritanceTest extends BaseTestCaseORM
         $translationRepo = $this->em->getRepository(self::TRANSLATION);
         $translations = $translationRepo->findTranslations($food);
 
-        $this->assertEquals(1, count($translations));
+        $this->assertEquals(0, count($translations));
         $this->assertEquals('food', $food->getSlug());
-        $this->assertEquals(2, count($translations['en_us']));
     }
 
     /**

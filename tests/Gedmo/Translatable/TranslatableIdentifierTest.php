@@ -30,6 +30,7 @@ class TranslatableIdentifierTest extends BaseTestCaseORM
         $evm = new EventManager;
         $this->translationListener = new TranslationListener();
         $this->translationListener->setTranslatableLocale('en_us');
+        $this->translationListener->setDefaultLocale('en_us');
         $evm->addEventSubscriber($this->translationListener);
 
         $this->getMockSqliteEntityManager($evm);
@@ -50,11 +51,7 @@ class TranslatableIdentifierTest extends BaseTestCaseORM
         $object = $this->em->find(self::FIXTURE, $this->testObjectId);
 
         $translations = $repo->findTranslations($object);
-        $this->assertEquals(count($translations), 1);
-        $this->assertArrayHasKey('en_us', $translations);
-
-        $this->assertArrayHasKey('title', $translations['en_us']);
-        $this->assertEquals('title in en', $translations['en_us']['title']);
+        $this->assertEquals(count($translations), 0);
 
         $object = $this->em->find(self::FIXTURE, $this->testObjectId);
         $object->setTitle('title in de');
@@ -69,14 +66,6 @@ class TranslatableIdentifierTest extends BaseTestCaseORM
         // test the entity load by translated title
         $object = $repo->findObjectByTranslatedField(
             'title',
-            'title in en',
-            self::FIXTURE
-        );
-
-        $this->assertEquals($this->testObjectId, $object->getUid());
-
-        $object = $repo->findObjectByTranslatedField(
-            'title',
             'title in de',
             self::FIXTURE
         );
@@ -84,7 +73,7 @@ class TranslatableIdentifierTest extends BaseTestCaseORM
         $this->assertEquals($this->testObjectId, $object->getUid());
 
         $translations = $repo->findTranslations($object);
-        $this->assertEquals(count($translations), 2);
+        $this->assertEquals(count($translations), 1);
         $this->assertArrayHasKey('de_de', $translations);
 
         $this->assertArrayHasKey('title', $translations['de_de']);
