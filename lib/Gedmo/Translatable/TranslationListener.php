@@ -259,7 +259,7 @@ class TranslationListener extends MappedEventSubscriber
                 $locale = strtolower($value);
             } catch(\Gedmo\Exception\InvalidArgumentException $e) {}
         }
-        
+
         return $locale;
     }
 
@@ -470,7 +470,7 @@ class TranslationListener extends MappedEventSubscriber
                 $scheduleUpdate = !$isInsert;
             }
 
-            if (!is_null($translation)) {
+            if (!empty($translation)) {
                 // set the translated field, take value using reflection
                 $value = $wrapped->getPropertyValue($field);
                 $translation->setContent($ea->getTranslationValue($object, $field));
@@ -492,21 +492,24 @@ class TranslationListener extends MappedEventSubscriber
             $modifiedChangeSet = $changeSet;
             foreach ($changeSet as $field => $changes) {
                 if (in_array($field, $translatableFields)) {
-                    if ($locale != $this->defaultLocale /*&& !empty($changes[0])*/) {
+                    if ($locale !== $this->defaultLocale) {
                         $wrapped->setPropertyValue($field, $changes[0]);
                         $ea->setOriginalObjectProperty($uow, $oid, $field, $changes[0]);
                         unset($modifiedChangeSet[$field]);
                     }
                 }
             }
-            // cleanup current changeset
-            $ea->clearObjectChangeSet($uow, $oid);
-            // recompute changeset only if there are changes other than reverted translations
-            if ($modifiedChangeSet) {
-                foreach ($modifiedChangeSet as $field => $changes) {
-                    $ea->setOriginalObjectProperty($uow, $oid, $field, $changes[0]);
+            // cleanup current changeset only if working in a another locale different than de default one, otherwise the changeset will always be reverted
+            if($locale !== $this->defaultLocale)
+            {
+                $ea->clearObjectChangeSet($uow, $oid);
+                // recompute changeset only if there are changes other than reverted translations
+                if ($modifiedChangeSet) {
+                    foreach ($modifiedChangeSet as $field => $changes) {
+                        $ea->setOriginalObjectProperty($uow, $oid, $field, $changes[0]);
+                    }
+                    $ea->recomputeSingleObjectChangeset($uow, $meta, $object);
                 }
-                $ea->recomputeSingleObjectChangeset($uow, $meta, $object);
             }
         }
     }

@@ -28,6 +28,7 @@ class TranslatableDocumentTest extends BaseTestCaseMongoODM
         parent::setUp();
         $evm = new EventManager();
         $this->translationListener = new TranslationListener;
+        $this->translationListener->setDefaultLocale('en_us');
         $this->translationListener->setTranslatableLocale('en_us');
         $evm->addEventSubscriber(new SluggableListener);
         $evm->addEventSubscriber($this->translationListener);
@@ -46,17 +47,7 @@ class TranslatableDocumentTest extends BaseTestCaseMongoODM
         $this->assertTrue($transRepo instanceof Document\Repository\TranslationRepository);
 
         $translations = $transRepo->findTranslations($article);
-        $this->assertEquals(1, count($translations));
-
-        $this->assertArrayHasKey('en_us', $translations);
-        $this->assertArrayHasKey('title', $translations['en_us']);
-        $this->assertEquals('Title EN', $translations['en_us']['title']);
-
-        $this->assertArrayHasKey('code', $translations['en_us']);
-        $this->assertEquals('Code EN', $translations['en_us']['code']);
-
-        $this->assertArrayHasKey('slug', $translations['en_us']);
-        $this->assertEquals('title-en-code-en', $translations['en_us']['slug']);
+        $this->assertEquals(0, count($translations));
 
         // test second translations
         $this->translationListener->setTranslatableLocale('de_de');
@@ -69,7 +60,7 @@ class TranslatableDocumentTest extends BaseTestCaseMongoODM
 
         $article = $repo->find($this->articleId);
         $translations = $transRepo->findTranslations($article);
-        $this->assertEquals(2, count($translations));
+        $this->assertEquals(1, count($translations));
 
         $this->assertArrayHasKey('de_de', $translations);
         $this->assertArrayHasKey('title', $translations['de_de']);
