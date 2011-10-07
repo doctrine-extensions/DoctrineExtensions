@@ -32,6 +32,7 @@ class Issue138Test extends BaseTestCaseORM
         $this->translatableListener = new TranslationListener();
         $this->translatableListener->setTranslatableLocale('en');
         $this->translatableListener->setDefaultLocale('en');
+        $this->translatableListener->setTranslationFallback(true);
         $evm->addEventSubscriber($this->translatableListener);
 
         $this->getMockSqliteEntityManager($evm);

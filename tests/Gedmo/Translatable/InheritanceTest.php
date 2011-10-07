@@ -31,6 +31,7 @@ class InheritanceTest extends BaseTestCaseORM
         $evm = new EventManager;
         $this->translatableListener = new TranslationListener();
         $this->translatableListener->setTranslatableLocale('en_us');
+        $this->translatableListener->setDefaultLocale('en_us');
         $evm->addEventSubscriber($this->translatableListener);
 
         $this->getMockSqliteEntityManager($evm);
@@ -51,18 +52,8 @@ class InheritanceTest extends BaseTestCaseORM
         $this->assertTrue($repo instanceof Entity\Repository\TranslationRepository);
 
         $translations = $repo->findTranslations($article);
-        $this->assertEquals(1, count($translations));
-        $this->assertArrayHasKey('en_us', $translations);
-        $this->assertEquals(3, count($translations['en_us']));
+        $this->assertEquals(0, count($translations));
 
-        $this->assertArrayHasKey('name', $translations['en_us']);
-        $this->assertEquals('name in en', $translations['en_us']['name']);
-
-        $this->assertArrayHasKey('title', $translations['en_us']);
-        $this->assertEquals('title in en', $translations['en_us']['title']);
-
-        $this->assertArrayHasKey('content', $translations['en_us']);
-        $this->assertEquals('content in en', $translations['en_us']['content']);
         // test second translations
         $article = $this->em->getRepository(self::ARTICLE)->find(1);
         $this->translatableListener->setTranslatableLocale('de_de');
@@ -75,7 +66,7 @@ class InheritanceTest extends BaseTestCaseORM
         $this->em->clear();
 
         $translations = $repo->findTranslations($article);
-        $this->assertEquals(2, count($translations));
+        $this->assertEquals(1, count($translations));
         $this->assertArrayHasKey('de_de', $translations);
 
         $this->assertArrayHasKey('name', $translations['de_de']);
@@ -124,20 +115,15 @@ class InheritanceTest extends BaseTestCaseORM
         $this->assertTrue($repo instanceof Entity\Repository\TranslationRepository);
 
         $translations = $repo->findTranslations($file);
-        $this->assertEquals(2, count($translations));
+        $this->assertEquals(1, count($translations));
 
         $this->assertArrayHasKey('de_de', $translations);
 
         $this->assertArrayHasKey('name', $translations['de_de']);
         $this->assertEquals('file de', $translations['de_de']['name']);
 
-        $this->assertArrayHasKey('en_us', $translations);
-
-        $this->assertArrayHasKey('name', $translations['en_us']);
-        $this->assertEquals('file en', $translations['en_us']['name']);
-
         $translations = $repo->findTranslations($image);
-        $this->assertEquals(2, count($translations));
+        $this->assertEquals(1, count($translations));
 
         $this->assertArrayHasKey('de_de', $translations);
 
@@ -145,13 +131,6 @@ class InheritanceTest extends BaseTestCaseORM
         $this->assertEquals('image de', $translations['de_de']['name']);
         $this->assertArrayHasKey('mime', $translations['de_de']);
         $this->assertEquals('mime de', $translations['de_de']['mime']);
-
-        $this->assertArrayHasKey('en_us', $translations);
-
-        $this->assertArrayHasKey('name', $translations['en_us']);
-        $this->assertEquals('image en', $translations['en_us']['name']);
-        $this->assertArrayHasKey('mime', $translations['en_us']);
-        $this->assertEquals('mime en', $translations['en_us']['mime']);
     }
 
     protected function getUsedEntityFixtures()

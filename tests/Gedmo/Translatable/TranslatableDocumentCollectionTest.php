@@ -28,6 +28,7 @@ class TranslatableDocumentCollectionTest extends BaseTestCaseMongoODM
 
         $evm = new EventManager;
         $this->translatableListener = new TranslationListener();
+        $this->translatableListener->setDefaultLocale('en_us');
         $this->translatableListener->setTranslatableLocale('en_us');
         $evm->addEventSubscriber($this->translatableListener);
 
@@ -40,12 +41,6 @@ class TranslatableDocumentCollectionTest extends BaseTestCaseMongoODM
         $repo = $this->dm->getRepository(self::TRANSLATION);
         $sport = $this->dm->getRepository(self::ARTICLE)->find($this->id);
         $translations = $repo->findTranslations($sport);
-
-        $this->assertArrayHasKey('en_us', $translations);
-        $this->assertArrayHasKey('title', $translations['en_us']);
-        $this->assertArrayHasKey('content', $translations['en_us']);
-        $this->assertEquals('Sport', $translations['en_us']['title']);
-        $this->assertEquals('about sport', $translations['en_us']['content']);
 
         $this->assertArrayHasKey('de_de', $translations);
         $this->assertArrayHasKey('title', $translations['de_de']);
@@ -74,12 +69,6 @@ class TranslatableDocumentCollectionTest extends BaseTestCaseMongoODM
         $this->dm->persist($sport);
         $this->dm->flush();
         $translations = $repo->findTranslations($sport);
-
-        $this->assertArrayHasKey('en_us', $translations);
-        $this->assertArrayHasKey('title', $translations['en_us']);
-        $this->assertArrayHasKey('content', $translations['en_us']);
-        $this->assertEquals('Changed', $translations['en_us']['title']);
-        $this->assertEquals('about sport', $translations['en_us']['content']);
 
         $this->assertArrayHasKey('de_de', $translations);
         $this->assertArrayHasKey('title', $translations['de_de']);

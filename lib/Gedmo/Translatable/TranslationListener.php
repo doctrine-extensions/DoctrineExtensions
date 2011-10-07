@@ -46,7 +46,7 @@ class TranslationListener extends MappedEventSubscriber
      *
      * @var string
      */
-    private $defaultLocale = '';
+    private $defaultLocale = 'en_us';
 
     /**
      * If this is set to false, when if entity does
@@ -191,7 +191,8 @@ class TranslationListener extends MappedEventSubscriber
      */
     public function setTranslatableLocale($locale)
     {
-        $this->locale = $locale;
+        $this->validateLocale($locale);
+        $this->locale = strtolower($locale);
         return $this;
     }
 
@@ -205,6 +206,7 @@ class TranslationListener extends MappedEventSubscriber
      */
     public function setDefaultLocale($locale)
     {
+        $this->validateLocale($locale);
         $this->defaultLocale = strtolower($locale);
         return $this;
     }
@@ -227,8 +229,7 @@ class TranslationListener extends MappedEventSubscriber
      */
     public function getListenerLocale()
     {
-        $this->validateLocale($this->locale);
-        return strtolower($this->locale);
+        return $this->locale;
     }
 
     /**
@@ -253,12 +254,13 @@ class TranslationListener extends MappedEventSubscriber
             }
             $reflectionProperty->setAccessible(true);
             $value = $reflectionProperty->getValue($object);
-            if (is_string($value) && strlen($value)) {
-                $locale = $value;
-            }
+            try {
+                $this->validateLocale($value);
+                $locale = strtolower($value);
+            } catch(\Gedmo\Exception\InvalidArgumentException $e) {}
         }
-        $this->validateLocale($locale);
-        return strtolower($locale);
+
+        return $locale;
     }
 
     /**
@@ -358,7 +360,7 @@ class TranslationListener extends MappedEventSubscriber
             return;
         }
 
-        if (isset($config['fields'])) {
+        if (isset($config['fields']) && $locale !== $this->defaultLocale) {
             // fetch translations
             $result = $ea->loadTranslations(
                 $object,
@@ -458,8 +460,8 @@ class TranslationListener extends MappedEventSubscriber
                     $translationClass
                 );
             }
-            // create new translation
-            if (!$translation) {
+            // create new translation if translation not already created and locale is differentent from default locale, otherwise, we have the date in the original record
+            if (!$translation && $locale !== $this->defaultLocale) {
                 $translation = new $translationClass();
                 $translation->setLocale($locale);
                 $translation->setField($field);
@@ -468,17 +470,19 @@ class TranslationListener extends MappedEventSubscriber
                 $scheduleUpdate = !$isInsert;
             }
 
-            // set the translated field, take value using reflection
-            $value = $wrapped->getPropertyValue($field);
-            $translation->setContent($ea->getTranslationValue($object, $field));
-            if ($isInsert && !$objectId) {
-                // if we do not have the primary key yet available
-                // keep this translation in memory to insert it later with foreign key
-                $this->pendingTranslationInserts[spl_object_hash($object)][] = $translation;
-            } else {
-                // persist and compute change set for translation
-                $om->persist($translation);
-                $uow->computeChangeSet($translationMetadata, $translation);
+            if (!empty($translation)) {
+                // set the translated field, take value using reflection
+                $value = $wrapped->getPropertyValue($field);
+                $translation->setContent($ea->getTranslationValue($object, $field));
+                if ($isInsert && !$objectId) {
+                    // if we do not have the primary key yet available
+                    // keep this translation in memory to insert it later with foreign key
+                    $this->pendingTranslationInserts[spl_object_hash($object)][] = $translation;
+                } else {
+                    // persist and compute change set for translation
+                    $om->persist($translation);
+                    $uow->computeChangeSet($translationMetadata, $translation);
+                }
             }
         }
         $this->translatedInLocale[$oid] = $locale;
@@ -488,21 +492,24 @@ class TranslationListener extends MappedEventSubscriber
             $modifiedChangeSet = $changeSet;
             foreach ($changeSet as $field => $changes) {
                 if (in_array($field, $translatableFields)) {
-                    if ($locale != $this->defaultLocale && strlen($changes[0])) {
+                    if ($locale !== $this->defaultLocale) {
                         $wrapped->setPropertyValue($field, $changes[0]);
                         $ea->setOriginalObjectProperty($uow, $oid, $field, $changes[0]);
                         unset($modifiedChangeSet[$field]);
                     }
                 }
             }
-            // cleanup current changeset
-            $ea->clearObjectChangeSet($uow, $oid);
-            // recompute changeset only if there are changes other than reverted translations
-            if ($modifiedChangeSet) {
-                foreach ($modifiedChangeSet as $field => $changes) {
-                    $ea->setOriginalObjectProperty($uow, $oid, $field, $changes[0]);
+            // cleanup current changeset only if working in a another locale different than de default one, otherwise the changeset will always be reverted
+            if($locale !== $this->defaultLocale)
+            {
+                $ea->clearObjectChangeSet($uow, $oid);
+                // recompute changeset only if there are changes other than reverted translations
+                if ($modifiedChangeSet) {
+                    foreach ($modifiedChangeSet as $field => $changes) {
+                        $ea->setOriginalObjectProperty($uow, $oid, $field, $changes[0]);
+                    }
+                    $ea->recomputeSingleObjectChangeset($uow, $meta, $object);
                 }
-                $ea->recomputeSingleObjectChangeset($uow, $meta, $object);
             }
         }
     }
@@ -532,22 +539,24 @@ class TranslationListener extends MappedEventSubscriber
                     if (!$inserting) {
                         $trans = $ea->findTranslation($objectId, $meta->name, $locale, $field, $transClass);
                     }
-                    if (!$trans) {
+                    if (!$trans && $locale !== $this->defaultLocale) {
                         $trans = new $transClass;
                         $trans->setField($field);
                         $trans->setObjectClass($meta->name);
                         $trans->setForeignKey($objectId);
                         $trans->setLocale($locale);
                     }
-                    $trans->setContent($ea->getTranslationValue($object, $field, $content));
-                    if ($inserting && !$objectId) {
-                        $this->pendingTranslationInserts[$oid][] = $trans;
-                    } elseif ($trans->getId()) {
-                        $om->persist($trans);
-                        $transMeta = $om->getClassMetadata($transClass);
-                        $uow->computeChangeSet($transMeta, $trans);
-                    } else {
-                        $ea->insertTranslationRecord($trans);
+                    if( !is_null($trans)) {
+                        $trans->setContent($ea->getTranslationValue($object, $field, $content));
+                        if ($inserting && !$objectId) {
+                            $this->pendingTranslationInserts[$oid][] = $trans;
+                        } elseif ($trans->getId()) {
+                            $om->persist($trans);
+                            $transMeta = $om->getClassMetadata($transClass);
+                            $uow->computeChangeSet($transMeta, $trans);
+                        } else {
+                            $ea->insertTranslationRecord($trans);
+                        }
                     }
                 }
             }

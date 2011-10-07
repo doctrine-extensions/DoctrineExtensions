@@ -140,16 +140,6 @@ class TranslationWalker extends SqlWalker
         }
 
         $hydrationMode = $this->getQuery()->getHydrationMode();
-        if ($this->needsFallback()) {
-            // in case if fallback is used and hydration is array, it needs custom hydrator
-            if ($hydrationMode === Query::HYDRATE_ARRAY) {
-                $this->getQuery()->setHydrationMode(self::HYDRATE_ARRAY_TRANSLATION);
-                $this->getEntityManager()->getConfiguration()->addCustomHydrationMode(
-                    self::HYDRATE_ARRAY_TRANSLATION,
-                    'Gedmo\\Translatable\\Hydrator\\ORM\\ArrayHydrator'
-                );
-            }
-        }
 
         $this->getQuery()->setHint(self::HINT_TRANSLATION_LISTENER, $this->listener);
         if ($hydrationMode === Query::HYDRATE_OBJECT) {
@@ -176,21 +166,7 @@ class TranslationWalker extends SqlWalker
     public function walkSelectClause($selectClause)
     {
         $result = parent::walkSelectClause($selectClause);
-        $fallbackSql = '';
-        if ($this->needsFallback() && count($this->translatedComponents)) {
-            $fallbackAliases = array();
-            foreach ($this->replacements as $dqlAlias => $trans) {
-                if (preg_match("/{$dqlAlias} AS ([^\s]+)/smi", $result, $m)) {
-                    list($tblAlias, $colName) = explode('.', $dqlAlias);
-                    $fallback = $this->getSQLColumnAlias($colName.'_fallback');
-                    $fallbackSql .= ', '.$dqlAlias.' AS '.$fallback;
-                    $fallbackAliases[$fallback] = rtrim($m[1], ',');
-                }
-            }
-            $this->getQuery()->setHint(self::HINT_TRANSLATION_FALLBACKS, $fallbackAliases);
-        }
         $result = $this->replace($this->replacements, $result);
-        $result .= $fallbackSql;
         return $result;
     }
 
@@ -288,43 +264,34 @@ class TranslationWalker extends SqlWalker
             $transClass = $this->listener->getTranslationClass($ea, $meta->name);
             $transMeta = $em->getClassMetadata($transClass);
             $transTable = $transMeta->getQuotedTableName($this->platform);
-            foreach ($config['fields'] as $field) {
-                $compTableName = $meta->getQuotedTableName($this->platform);
-                $compTblAlias = $this->getSQLTableAlias($compTableName, $dqlAlias);
-                $tblAlias = $this->getSQLTableAlias('trans'.$compTblAlias.$field);
-                $sql = ' LEFT JOIN '.$transTable.' '.$tblAlias;
-                $sql .= ' ON '.$tblAlias.'.'.$transMeta->getQuotedColumnName('locale', $this->platform)
-                    .' = '.$this->conn->quote($locale);
-                $sql .= ' AND '.$tblAlias.'.'.$transMeta->getQuotedColumnName('objectClass', $this->platform)
-                    .' = '.$this->conn->quote($meta->name);
-                $sql .= ' AND '.$tblAlias.'.'.$transMeta->getQuotedColumnName('field', $this->platform)
-                    .' = '.$this->conn->quote($field);
-                $identifier = $meta->getSingleIdentifierFieldName();
-                $colName = $meta->getQuotedColumnName($identifier, $this->platform);
-                $sql .= ' AND '.$tblAlias.'.'.$transMeta->getQuotedColumnName('foreignKey', $this->platform)
-                    .' = '.$compTblAlias.'.'.$colName;
-                $result[$comp['nestingLevel']] .= $sql;
-                if (strlen($defaultLocale) && $locale != $defaultLocale) {
-                    // join default locale
-                    $tblAliasDefault = $this->getSQLTableAlias('trans_default_locale'.$compTblAlias.$field);
-                    $sql = ' LEFT JOIN '.$transTable.' '.$tblAliasDefault;
-                    $sql .= ' ON '.$tblAliasDefault.'.'.$transMeta->getQuotedColumnName('locale', $this->platform)
-                        .' = '.$this->conn->quote($defaultLocale);
-                    $sql .= ' AND '.$tblAliasDefault.'.'.$transMeta->getQuotedColumnName('objectClass', $this->platform)
+            if ($locale !== $defaultLocale) {
+                foreach ($config['fields'] as $field) {
+                    $compTableName = $meta->getQuotedTableName($this->platform);
+                    $compTblAlias = $this->getSQLTableAlias($compTableName, $dqlAlias);
+                    $tblAlias = $this->getSQLTableAlias('trans'.$compTblAlias.$field);
+                    $sql = ' LEFT JOIN '.$transTable.' '.$tblAlias;
+                    $sql .= ' ON '.$tblAlias.'.'.$transMeta->getQuotedColumnName('locale', $this->platform)
+                        .' = '.$this->conn->quote($locale);
+                    $sql .= ' AND '.$tblAlias.'.'.$transMeta->getQuotedColumnName('objectClass', $this->platform)
                         .' = '.$this->conn->quote($meta->name);
-                    $sql .= ' AND '.$tblAliasDefault.'.'.$transMeta->getQuotedColumnName('field', $this->platform)
+                    $sql .= ' AND '.$tblAlias.'.'.$transMeta->getQuotedColumnName('field', $this->platform)
                         .' = '.$this->conn->quote($field);
-                    $sql .= ' AND '.$tblAliasDefault.'.'.$transMeta->getQuotedColumnName('foreignKey', $this->platform)
+                    $identifier = $meta->getSingleIdentifierFieldName();
+                    $colName = $meta->getQuotedColumnName($identifier, $this->platform);
+                    $sql .= ' AND '.$tblAlias.'.'.$transMeta->getQuotedColumnName('foreignKey', $this->platform)
                         .' = '.$compTblAlias.'.'.$colName;
                     $result[$comp['nestingLevel']] .= $sql;
-                    $this->replacements[$compTblAlias.'.'.$meta->getQuotedColumnName($field, $this->platform)]
-                        = 'COALESCE('.$tblAlias.'.'.$transMeta->getQuotedColumnName('content', $this->platform)
-                        .', '.$tblAliasDefault.'.'.$transMeta->getQuotedColumnName('content', $this->platform).')'
-                    ;
-                } else {
-                    $this->replacements[$compTblAlias.'.'.$meta->getQuotedColumnName($field, $this->platform)]
-                        = $tblAlias.'.'.$transMeta->getQuotedColumnName('content', $this->platform)
-                    ;
+                    if ($this->needsFallback()) {
+                        // COALESCE with the original record columns
+                        $this->replacements[$compTblAlias.'.'.$meta->getQuotedColumnName($field, $this->platform)]
+                            = 'COALESCE('.$tblAlias.'.'.$transMeta->getQuotedColumnName('content', $this->platform)
+                            .', '.$compTblAlias.'.'.$meta->getQuotedColumnName($field, $this->platform).')'
+                        ;
+                    } else {
+                        $this->replacements[$compTblAlias.'.'.$meta->getQuotedColumnName($field, $this->platform)]
+                            = $tblAlias.'.'.$transMeta->getQuotedColumnName('content', $this->platform)
+                        ;
+                    }
                 }
             }
         }

@@ -30,6 +30,7 @@ class TranslatableEntityCollectionTest extends BaseTestCaseORM
         $evm = new EventManager;
         $this->translatableListener = new TranslationListener();
         $this->translatableListener->setTranslatableLocale('en_us');
+        $this->translatableListener->setDefaultLocale('en_us');
         $evm->addEventSubscriber($this->translatableListener);
 
         $conn = array(
@@ -50,12 +51,8 @@ class TranslatableEntityCollectionTest extends BaseTestCaseORM
         $sport = $this->em->getRepository(self::ARTICLE)->find(1);
         $translations = $repo->findTranslations($sport);
 
-        $this->assertArrayHasKey('en_us', $translations);
-        $this->assertArrayHasKey('title', $translations['en_us']);
-        $this->assertArrayHasKey('content', $translations['en_us']);
-        $this->assertEquals('Sport', $translations['en_us']['title']);
-        $this->assertEquals('about sport', $translations['en_us']['content']);
-
+        $this->assertEquals(2, count($translations));
+        
         $this->assertArrayHasKey('de_de', $translations);
         $this->assertArrayHasKey('title', $translations['de_de']);
         $this->assertArrayHasKey('content', $translations['de_de']);
@@ -84,11 +81,7 @@ class TranslatableEntityCollectionTest extends BaseTestCaseORM
         $this->em->flush();
         $translations = $repo->findTranslations($sport);
 
-        $this->assertArrayHasKey('en_us', $translations);
-        $this->assertArrayHasKey('title', $translations['en_us']);
-        $this->assertArrayHasKey('content', $translations['en_us']);
-        $this->assertEquals('Changed', $translations['en_us']['title']);
-        $this->assertEquals('about sport', $translations['en_us']['content']);
+        $this->assertEquals(3, count($translations));
 
         $this->assertArrayHasKey('de_de', $translations);
         $this->assertArrayHasKey('title', $translations['de_de']);
