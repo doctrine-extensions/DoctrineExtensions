@@ -83,7 +83,6 @@ class TranslationQueryWalkerTest extends BaseTestCaseORM
     {
         $this->populateMore();
         $dql = 'SELECT a, c FROM ' . self::ARTICLE . ' a';
-        //@todo: its impossible to support translated values in WITH statement
         $dql .= ' LEFT JOIN a.comments c WITH c.subject LIKE :lookup';
         $dql .= ' WHERE a.title LIKE :filter';
         $dql .= ' ORDER BY a.title';
@@ -92,9 +91,10 @@ class TranslationQueryWalkerTest extends BaseTestCaseORM
 
         // array hydration
         $this->translationListener->setTranslatableLocale('en_us');
-        $q->setParameter('lookup', '%ger%');
+        $q->setParameter('lookup', '%goo%');
         $q->setParameter('filter', 'Foo%');
         $result = $q->getArrayResult();
+
         $this->assertEquals(1, count($result));
         $this->assertEquals('Food', $result[0]['title']);
         $comments = $result[0]['comments'];
@@ -136,13 +136,6 @@ class TranslationQueryWalkerTest extends BaseTestCaseORM
 
     public function testSelectWithTranslationFallbackOnArrayHydration()
     {
-        $this->em
-            ->getConfiguration()
-            ->expects($this->any())
-            ->method('getCustomHydrationMode')
-            ->with(TranslationWalker::HYDRATE_ARRAY_TRANSLATION)
-            ->will($this->returnValue('Gedmo\\Translatable\\Hydrator\\ORM\\ArrayHydrator'));
-
         $dql = 'SELECT a, c FROM ' . self::ARTICLE . ' a';
         $dql .= ' LEFT JOIN a.comments c';
         $q = $this->em->createQuery($dql);
