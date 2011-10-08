@@ -16,6 +16,12 @@ Features:
 
 [blog_test]: http://gediminasm.org/test "Test extensions on this blog"
 
+**2011-10-08**
+
+- Thanks to [@acasademont](https://github.com/acasademont) Translatable now does not store translations for default locale. It is always left as original record value.
+So be sure you do not change your default locale per project or per data migration. This way
+it is more rational and unnecessary to store it additionaly in translation table.
+
 Update **2011-04-21**
 
 - Implemented multiple translation persistense through repository
@@ -39,7 +45,7 @@ and any number of them
 - Public [Translatable repository](http://github.com/l3pp4rd/DoctrineExtensions "Translatable extension on Github") is available on github
 - Using other extensions on the same Entity fields may result in unexpected way
 - May inpact your application performace since it does an additional query for translation
-- Last update date: **2011-08-08**
+- Last update date: **2011-10-08**
 
 **Portability:**
 
@@ -329,6 +335,9 @@ set in **TranslationListener** globaly. To save article with its translations:
     $em->flush();
 
 This inserted an article and inserted the translations for it in "en_us" locale
+only if **en_us** is not the [default locale](#advanced-examples) in case if default locale
+matches current locale - it uses original record value as translation
+
 Now lets update our article in diferent locale:
 
     // first load the article
@@ -476,15 +485,22 @@ available in **Doctrine**
 
 In some cases we need a default translation as a fallback if record does not have
 a translation on globaly used locale. In that case Translation Listener takes the
-current value of Entity. But there is a way to specify a **default locale**
-which would force Entity to not update it`s field if current locale is not a default
+current value of Entity. So if **default locale** is specified and it matches the
+locale in which record is being translated - it will not create extra translation
+but use original values instead. If translation fallback is set to **false** it
+will fill untranslated values as blanks
 
 To set the default locale:
 
     $translationListener->setDefaultLocale('en_us');
 
-Default locale should be set on the **TranslationListener** initialization
-once, since it can impact your current records if it will be changed.
+To set translation fallback:
+
+    $translationListener->setTranslationFallback(true); // default is false
+
+Note: Default locale should be set on the **TranslationListener** initialization
+once, since it can impact your current records if it will be changed. As it
+will not store extra record in translation table. 
 
 ### Translation Entity
 

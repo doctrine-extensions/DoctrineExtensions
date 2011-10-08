@@ -7,6 +7,12 @@
 **Note:** Use 2.1.x tag in order to use extensions based on Doctrine2.1.x versions. Currently
 master branch is based on 2.2.x versions and may not work with 2.1.x components
 
+**2011-10-08**
+
+- Thanks to [@acasademont](https://github.com/acasademont) Translatable now does not store translations for default locale. It is always left as original record value.
+So be sure you do not change your default locale per project or per data migration. This way
+it is more rational and unnecessary to store it additionaly in translation table.
+
 **2011-09-24**
 
 - Sluggable was refactored with a **BC break** for the sake of simplicity it now uses a single @Slug annotation.
@@ -76,6 +82,7 @@ To setup and run tests follow these steps:
 
 ### Contributors:
 
+- acasademont [acasademont](https://github.com/acasademont)
 - Lukas Botsch [lbotsch](http://github.com/lbotsch)
 - Daniel Gomes [danielcsgomes](http://github.com/danielcsgomes)
 - megabite [oscarballadares](http://github.com/oscarballadares)
