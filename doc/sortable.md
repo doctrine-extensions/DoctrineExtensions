@@ -81,6 +81,9 @@ To attach the **Sortable Listener** to your event system:
 you need to identify entity as being Sortable. The metadata is loaded only once then
 cache is activated
 
+**Notice:** that you should register SortableRepository (or a subclass) as the repository in the Entity
+annotation to benefit from its query methods.
+
     namespace Entity;
     
     use Gedmo\Mapping\Annotation as Gedmo;
@@ -88,7 +91,7 @@ cache is activated
     
     /**
      * @ORM\Table(name="items")
-     * @ORM\Entity
+     * @ORM\Entity(repositoryClass="Gedmo\Sortable\Entity\Repository\SortableRepository")
      */
     class Item
     {
