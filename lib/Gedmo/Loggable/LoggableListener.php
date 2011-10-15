@@ -250,6 +250,10 @@ class LoggableListener extends MappedEventSubscriber
             $logEntryMeta = $om->getClassMetadata($logEntryClass);
             if ($action !== self::ACTION_CREATE) {
                 $version = $ea->getNewVersion($logEntryMeta, $object);
+                if (empty($version)) {
+                    // was versioned later
+                    $version = 1;
+                }
             }
             $logEntry->setVersion($version);
 
