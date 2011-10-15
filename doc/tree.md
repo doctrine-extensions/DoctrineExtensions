@@ -15,6 +15,7 @@ Features:
 - Can be nested with other extensions
 - Annotation, Yaml and Xml mapping support for extensions
 
+[blog_reference]: http://gediminasm.org/article/tree-nestedset-behavior-extension-for-doctrine-2 "Tree - Nestedset or Closure extension for Doctrine 2 makes tree implementation on entities"
 [blog_test]: http://gediminasm.org/test "Test extensions on this blog"
 
 Thanks for contributions to:

@@ -1,4 +1,4 @@
-# Sortable behavior extension for Doctrine 2
+# Sortable behavior extension for Doctrine2
 
 **Sortable** behavior will maintain a position field for ordering
 entities.
@@ -9,6 +9,9 @@ Features:
 - Group entity ordering by one or more fields
 - Can be nested with other behaviors
 - Annotation, Yaml and Xml mapping support for extensions
+
+[blog_reference]: http://gediminasm.org/article/sortable-behavior-extension-for-doctrine2 "Sortable extension will enable ordering on any entity or its relation"
+[blog_test]: http://gediminasm.org/test "Test extensions on this blog"
 
 **Notice:**
 

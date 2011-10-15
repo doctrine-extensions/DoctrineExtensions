@@ -14,6 +14,7 @@ Features:
 - Can be nested with other behaviors
 - Annotation, Yaml and Xml mapping support for extensions
 
+[blog_reference]: http://gediminasm.org/article/translatable-behavior-extension-for-doctrine-2 "Translatable extension for Doctrine 2 makes automatic record field translations and their loading depending on language used"
 [blog_test]: http://gediminasm.org/test "Test extensions on this blog"
 
 **2011-10-08**

@@ -13,6 +13,7 @@ Features:
 - Multiple slugs, diferent slugs can link to same fields
 - Built-in slug handlers, for tree path based slugs or linked by relation
 
+[blog_reference]: http://gediminasm.org/article/sluggable-behavior-extension-for-doctrine-2 "Sluggable extension for Doctrine 2 makes automatic record field transformations into url friendly names"
 [blog_test]: http://gediminasm.org/test "Test extensions on this blog"
 
 Update **2010-09-11**

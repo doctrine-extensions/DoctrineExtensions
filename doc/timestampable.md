@@ -13,6 +13,7 @@ Features:
 - Can be nested with other behaviors 
 - Annotation, Yaml and Xml mapping support for extensions
 
+[blog_reference]: http://gediminasm.org/article/timestampable-behavior-extension-for-doctrine-2 "Timestampable extension for Doctrine 2 helps automate update of dates"
 [blog_test]: http://gediminasm.org/test "Test extensions on this blog"
 
 Update **2011-04-04**

@@ -11,6 +11,7 @@ Features:
 - Objects can be reverted to previous versions
 - Annotation, Yaml and Xml mapping support for extensions
 
+[blog_reference]: http://gediminasm.org/article/loggable-behavioral-extension-for-doctrine2 "Loggable extension for Doctrine2 tracks record changes and version management"
 [blog_test]: http://gediminasm.org/test "Test extensions on this blog"
 
 Update **2011-04-04**

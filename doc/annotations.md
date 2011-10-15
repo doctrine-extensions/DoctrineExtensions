@@ -4,6 +4,8 @@ Bellow you will find all annotation descriptions used in these extensions.
 There will be introduction on usage with examples. For more detailed usage
 on extensions, refer to their specific documentation.
 
+[blog_reference]: http://gediminasm.org/article/annotation-reference-for-extensions "Doctrine2 extensions annotation reference and examples"
+
 Content:
 
 - Best [practices](#setup) for setting up
