@@ -69,7 +69,36 @@ class Issue165Test extends BaseTestCaseMongoODM
 
         $this->dm->persist($newarticle);
         $this->dm->flush();
+        $this->dm->refresh($article);
 
         $this->assertEquals('de', $newarticle->getUntranslated());
+
+        $this->translationListener->setTranslatableLocale('en');
+
+        $id = $newarticle->getId();
+        $newarticle = $this->dm->getRepository('Translatable\Fixture\Issue165\SimpleArticle')->find($id);
+
+        $newarticle->setTitle('en');
+        $newarticle->setContent('en');
+        $newarticle->setUntranslated('en');
+
+        $this->dm->persist($newarticle);
+        $this->dm->flush();
+        $this->dm->refresh($newarticle);
+
+        $this->assertEquals('en', $newarticle->getUntranslated());
+
+        $this->translationListener->setTranslatableLocale('de');
+        $newarticle->setTitle('de2');
+        $newarticle->setContent('de2');
+        $newarticle->setUntranslated('de2');
+
+        $this->dm->persist($newarticle);
+        $this->dm->flush();
+
+        $id = $newarticle->getId();
+        $newarticle = $this->dm->getRepository('Translatable\Fixture\Issue165\SimpleArticle')->find($id);
+
+        $this->assertEquals('de2', $newarticle->getUntranslated());
     }
 }
