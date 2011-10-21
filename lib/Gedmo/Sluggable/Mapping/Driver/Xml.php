@@ -29,7 +29,8 @@ class Xml extends BaseXml
      */
     private $validTypes = array(
         'string',
-        'text'
+        'text',
+        'integer'
     );
 
     /**
