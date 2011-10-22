@@ -34,7 +34,8 @@ class Yaml extends File implements Driver
      */
     private $validTypes = array(
         'string',
-        'text'
+        'text',
+        'integer',
     );
 
     /**
