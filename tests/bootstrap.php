@@ -40,6 +40,7 @@ $loader->registerNamespaces(array(
     'Gedmo'                      => __DIR__.'/../lib',
     'Tool'                       => __DIR__.'/Gedmo',
     // fixture namespaces
+    'Translator\\Fixture'        => __DIR__.'/Gedmo',
     'Translatable\\Fixture'      => __DIR__.'/Gedmo',
     'Timestampable\\Fixture'     => __DIR__.'/Gedmo',
     'Tree\\Fixture'              => __DIR__.'/Gedmo',
