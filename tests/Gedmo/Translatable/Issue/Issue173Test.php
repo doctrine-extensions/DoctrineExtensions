@@ -4,6 +4,7 @@ namespace Gedmo\Translatable;
 
 use Doctrine\Common\EventManager;
 use Tool\BaseTestCaseORM;
+use Gedmo\Translatable\Query\TreeWalker\TranslationWalker;
 use Translatable\Fixture\Issue173\Article;
 use Translatable\Fixture\Issue173\Category;
 use Translatable\Fixture\Issue173\Product;
@@ -18,12 +19,12 @@ use Translatable\Fixture\Issue173\Product;
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class Issue173Test extends BaseTestCaseORM
-{ 
+{
     const CATEGORY =   'Translatable\\Fixture\\Issue173\\Category';
     const ARTICLE = 'Translatable\\Fixture\\Issue173\\Article';
     const PRODUCT = 'Translatable\\Fixture\\Issue173\\Product';
     const TRANSLATION = 'Gedmo\\Translatable\\Entity\\Translation';
-    
+
     private $translatableListener;
 
     protected function setUp()
@@ -43,9 +44,17 @@ class Issue173Test extends BaseTestCaseORM
 
     public function testIssue173()
     {
+        $this->em
+            ->getConfiguration()
+            ->expects($this->any())
+            ->method('getCustomHydrationMode')
+            ->with(TranslationWalker::HYDRATE_OBJECT_TRANSLATION)
+            ->will($this->returnValue('Gedmo\\Translatable\\Hydrator\\ORM\\ObjectHydrator'))
+        ;
+
         $categories = $this->getCategoriesThatHasNoAssociations();
         $this->assertEquals(count($categories), 1, '$categoriy3 has no associations');
-           
+
     }
 
     public function getCategoriesThatHasNoAssociations()
@@ -54,28 +63,28 @@ class Issue173Test extends BaseTestCaseORM
         $query2 = $this->em->createQueryBuilder();
         $query3 = $this->em->createQueryBuilder();
         $dql1 = $query2
-                    ->select('c1')
-                    ->from(self::CATEGORY, 'c1')
-                    ->join('c1.products', 'p')
-                    ->getDql()
-                ;
+            ->select('c1')
+            ->from(self::CATEGORY, 'c1')
+            ->join('c1.products', 'p')
+            ->getDql()
+        ;
         $dql2 = $query3
-                    ->select('c2')
-                    ->from(self::CATEGORY, 'c2')
-                    ->join('c2.articles', 'a')
-                    ->getDql()
-                ;   
+            ->select('c2')
+            ->from(self::CATEGORY, 'c2')
+            ->join('c2.articles', 'a')
+            ->getDql()
+        ;
         $query
             ->select('c')
             ->from(self::CATEGORY, 'c')
             ->where($query->expr()->notIn('c.id', $dql1))
             ->andWhere($query->expr()->notIn('c.id', $dql2))
-            ; 
-    
+            ;
+
         return $query->getQuery()->setHint(
-                        \Doctrine\ORM\Query::HINT_CUSTOM_OUTPUT_WALKER,
-                        'Gedmo\\Translatable\\Query\\TreeWalker\\TranslationWalker'
-                )->getResult();
+            \Doctrine\ORM\Query::HINT_CUSTOM_OUTPUT_WALKER,
+            'Gedmo\\Translatable\\Query\\TreeWalker\\TranslationWalker'
+        )->getResult();
     }
 
     private function populate()
@@ -83,10 +92,10 @@ class Issue173Test extends BaseTestCaseORM
         //Categories
         $category1 = new Category;
         $category1->setTitle('en category1');
-    
+
         $category2 = new Category;
         $category2->setTitle('en category2');
-        
+
         $category3 = new Category;
         $category3->setTitle('en category3');
 
@@ -104,13 +113,13 @@ class Issue173Test extends BaseTestCaseORM
         $product1 = new Product;
         $product1->setTitle('en product1');
         $product1->setCategory($category2);
-        
+
         $this->em->persist($article1);
         $this->em->persist($product1);
         $this->em->flush();
 
         $this->translatableListener->setTranslatableLocale('es');
-        
+
         // Categories
         $category1->setTitle('es title');
         $category2->setTitle('es title');
@@ -124,7 +133,7 @@ class Issue173Test extends BaseTestCaseORM
         $this->em->persist($category3);
         $this->em->persist($article1);
         $this->em->persist($product1);
-       
+
         $this->em->flush();
     }
 
@@ -135,7 +144,7 @@ class Issue173Test extends BaseTestCaseORM
             self::ARTICLE,
             self::PRODUCT,
             self::TRANSLATION,
-            
+
         );
     }
 }
