@@ -278,6 +278,7 @@ class SluggableListener extends MappedEventSubscriber
      * @param SluggableAdapter $ea
      * @param object $object
      * @param string $preferedSlug
+     * @param boolean $recursing
      * @param array $config[$slugField]
      * @return string - unique slug
      */
@@ -285,10 +286,11 @@ class SluggableListener extends MappedEventSubscriber
     {
         $om = $ea->getObjectManager();
         $meta = $om->getClassMetadata(get_class($object));
-        // search for similar slug
-        $result = $ea->getSimilarSlugs($object, $meta, $config, $preferedSlug);
-        // add similar persisted slugs into account
-        $result += $this->getSimilarPersistedSlugs($config['useObjectClass'], $preferedSlug, $config['slug']);
+        // load similar slugs
+        $result = array_merge(
+            (array)$ea->getSimilarSlugs($object, $meta, $config, $preferedSlug),
+            (array)$this->getSimilarPersistedSlugs($config['useObjectClass'], $preferedSlug, $config['slug'])
+        );
         // leave only right slugs
         if (!$recursing) {
             $this->filterSimilarSlugs($result, $config, $preferedSlug);
