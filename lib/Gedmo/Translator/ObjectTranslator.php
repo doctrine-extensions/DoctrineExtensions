@@ -36,6 +36,14 @@ class ObjectTranslator
         $this->class        = $class;
         $this->coll         = $coll;
 
+        $translationClass = new \ReflectionClass($class);
+        if (!$translationClass->implementsInterface('Gedmo\Translator\TranslationInterface')) {
+            throw new \InvalidArgumentException(sprintf(
+                'Translation class should implement Gedmo\Translator\TranslationInterface, "%s" given',
+                $class
+            ));
+        }
+
         $translatableClass = new \ReflectionObject($translatable);
         foreach ($properties as $property) {
             $translatableProperty = $translatableClass->getProperty($property);

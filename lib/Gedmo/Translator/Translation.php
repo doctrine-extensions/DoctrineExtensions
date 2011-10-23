@@ -2,7 +2,7 @@
 
 namespace Gedmo\Translator;
 
-abstract class Translation
+abstract class Translation implements TranslationInterface
 {
     protected $translatable;
     protected $locale;
