@@ -75,17 +75,14 @@ class Person
     {
         $this->translations = new ArrayCollection();
 
-        $this->initializeTranslator();
+        $this->translate();
     }
 
-    /** @ORM\PrePersist */
-    public function translateEntityToDefaultLocale()
-    {
-        $this->translator->translate();
-    }
-
-    /** @ORM\PostLoad */
-    public function initializeTranslator()
+    /**
+     * @ORM\PrePersist
+     * @ORM\PostLoad
+     */
+    public function translate($locale = null)
     {
         if (null === $this->translator) {
             $this->translator = new ObjectTranslator($this,
@@ -97,11 +94,6 @@ class Person
             return;
         }
 
-        $this->translateEntityToDefaultLocale();
-    }
-
-    public function translate($locale = null)
-    {
         return $this->translator->translate($locale);
     }
 }
