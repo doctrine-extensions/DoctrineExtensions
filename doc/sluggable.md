@@ -40,7 +40,7 @@ no more exceptions during concurrent flushes.
 
 **Portability:**
 
-- **Sluggable** is now available as [Bundle](http://github.com/stof/DoctrineExtensionsBundle)
+- **Sluggable** is now available as [Bundle](http://github.com/stof/StofDoctrineExtensionsBundle)
 ported to **Symfony2** by **Christophe Coevoet**, together with all other extensions
 
 This article will cover the basic installation and functionality of **Sluggable**
