@@ -58,7 +58,7 @@ because nodes may have changed values in database but not in memory. Flushing di
 
 **Portability:**
 
-- **Tree** is now available as [Bundle](http://github.com/stof/DoctrineExtensionsBundle)
+- **Tree** is now available as [Bundle](http://github.com/stof/StofDoctrineExtensionsBundle)
 ported to **Symfony2** by **Christophe Coevoet**, together with all other extensions
 
 This article will cover the basic installation and functionality of **Tree** behavior
