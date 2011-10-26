@@ -27,6 +27,9 @@ final class ODM extends BaseAdapterODM implements TimestampableAdapter
         if (isset($mapping['type']) && $mapping['type'] === 'timestamp') {
             return time();
         }
+        if ($meta->getTypeOfField($field) == 'zenddate') {
+            return new \Zend_Date();
+        }
         return new \DateTime();
     }
 }
