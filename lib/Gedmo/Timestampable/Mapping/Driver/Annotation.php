@@ -35,7 +35,8 @@ class Annotation implements AnnotationDriverInterface
         'date',
         'time',
         'datetime',
-        'timestamp'
+        'timestamp',
+        'zenddate'
     );
 
     /**
