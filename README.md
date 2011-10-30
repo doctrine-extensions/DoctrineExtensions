@@ -7,6 +7,11 @@
 **Note:** Use 2.1.x tag in order to use extensions based on Doctrine2.1.x versions. Currently
 master branch is based on 2.2.x versions and may not work with 2.1.x components
 
+**2011-10-30**
+
+- Support for doctrine common **2.2.x** with backward compatibility. Be sure to use all components
+from the specific version, etc.: **2.2.x** or **2.1.x** both are supported
+
 **2011-10-23**
 
 - [@everzet](https://github.com/everzet) has contributed the **Translator** behavior, which indeed

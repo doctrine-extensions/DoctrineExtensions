@@ -12,8 +12,9 @@ use Doctrine\Common\Annotations\Annotation;
  * @subpackage SortableGroup
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
- * 
+ *
  * @Annotation
+ * @Target("PROPERTY")
  */
 final class SortablePosition extends Annotation
 {
