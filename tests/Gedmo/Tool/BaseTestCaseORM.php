@@ -172,13 +172,7 @@ abstract class BaseTestCaseORM extends \PHPUnit_Framework_TestCase
      */
     protected function getMetadataDriverImplementation()
     {
-        $reader = new AnnotationReader();
-        \Doctrine\Common\Annotations\AnnotationRegistry::registerAutoloadNamespace(
-            'Gedmo\\Mapping\\Annotation',
-            VENDOR_PATH . '/../lib'
-        );
-        //$reader->setAutoloadAnnotations(true);
-        return new AnnotationDriver($reader);
+        return new AnnotationDriver($_ENV['annotation_reader']);
     }
 
     /**
@@ -212,27 +206,43 @@ abstract class BaseTestCaseORM extends \PHPUnit_Framework_TestCase
     private function getMockAnnotatedConfig()
     {
         $config = $this->getMock('Doctrine\ORM\Configuration');
-        $config->expects($this->once())
+        $config
+            ->expects($this->once())
             ->method('getProxyDir')
-            ->will($this->returnValue(__DIR__.'/../../temp'));
+            ->will($this->returnValue(__DIR__.'/../../temp'))
+        ;
 
-        $config->expects($this->once())
+        $config
+            ->expects($this->once())
             ->method('getProxyNamespace')
-            ->will($this->returnValue('Proxy'));
+            ->will($this->returnValue('Proxy'))
+        ;
 
-        $config->expects($this->once())
+        $config
+            ->expects($this->once())
             ->method('getAutoGenerateProxyClasses')
-            ->will($this->returnValue(true));
+            ->will($this->returnValue(true))
+        ;
 
-        $config->expects($this->once())
+        $config
+            ->expects($this->once())
             ->method('getClassMetadataFactoryName')
-            ->will($this->returnValue('Doctrine\\ORM\\Mapping\\ClassMetadataFactory'));
+            ->will($this->returnValue('Doctrine\\ORM\\Mapping\\ClassMetadataFactory'))
+        ;
 
         $mappingDriver = $this->getMetadataDriverImplementation();
 
-        $config->expects($this->any())
+        $config
+            ->expects($this->any())
             ->method('getMetadataDriverImpl')
-            ->will($this->returnValue($mappingDriver));
+            ->will($this->returnValue($mappingDriver))
+        ;
+
+        $config
+            ->expects($this->any())
+            ->method('getDefaultRepositoryClassName')
+            ->will($this->returnValue('Doctrine\\ORM\\EntityRepository'))
+        ;
 
         return $config;
     }

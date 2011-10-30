@@ -54,3 +54,16 @@ $loader->register();
 
 Gedmo\Version::checkODMMongoDBDependencies();
 Gedmo\Version::checkORMDependencies();
+
+\Doctrine\Common\Annotations\AnnotationRegistry::registerFile(
+    VENDOR_PATH.'/doctrine-orm/lib/Doctrine/ORM/Mapping/Driver/DoctrineAnnotations.php'
+);
+
+\Doctrine\Common\Annotations\AnnotationRegistry::registerAutoloadNamespace(
+    'Gedmo\\Mapping\\Annotation',
+    VENDOR_PATH.'/../lib'
+);
+
+$reader = new \Doctrine\Common\Annotations\AnnotationReader();
+$reader = new \Doctrine\Common\Annotations\CachedReader($reader, new \Doctrine\Common\Cache\ArrayCache());
+$_ENV['annotation_reader'] = $reader;

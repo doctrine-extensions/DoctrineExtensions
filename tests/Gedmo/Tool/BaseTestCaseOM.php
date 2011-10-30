@@ -55,6 +55,9 @@ abstract class BaseTestCaseOM extends \PHPUnit_Framework_TestCase
         if (!class_exists('Mongo')) {
             $this->markTestSkipped('Missing Mongo extension.');
         }
+        if (version_compare(\Doctrine\Common\Version::VERSION, '2.2.0-DEV', '>=')) {
+            $this->markTestSkipped('ODM does not support version 2.2 of doctrine common.');
+        }
     }
 
     /**
@@ -175,13 +178,7 @@ abstract class BaseTestCaseOM extends \PHPUnit_Framework_TestCase
      */
     protected function getDefaultORMMetadataDriverImplementation()
     {
-        $reader = new AnnotationReader();
-        \Doctrine\Common\Annotations\AnnotationRegistry::registerAutoloadNamespace(
-            'Gedmo\\Mapping\\Annotation',
-            VENDOR_PATH . '/../lib'
-        );
-        //$reader->setAutoloadAnnotations(true);
-        return new AnnotationDriverORM($reader);
+        return new AnnotationDriverORM($_ENV['annotation_reader']);
     }
 
     /**
@@ -191,13 +188,7 @@ abstract class BaseTestCaseOM extends \PHPUnit_Framework_TestCase
      */
     protected function getDefaultMongoODMMetadataDriverImplementation()
     {
-        $reader = new AnnotationReader();
-        \Doctrine\Common\Annotations\AnnotationRegistry::registerAutoloadNamespace(
-            'Gedmo\\Mapping\\Annotation',
-            VENDOR_PATH . '/../lib'
-        );
-        //$reader->setAutoloadAnnotations(true);
-        return new AnnotationDriverODM($reader);
+        return new AnnotationDriverODM($_ENV['annotation_reader']);
     }
 
     /**

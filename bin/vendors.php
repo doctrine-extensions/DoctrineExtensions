@@ -10,11 +10,11 @@ if (!is_dir(VENDOR_PATH)) {
 }
 
 $deps = array(
-    array('doctrine-orm', 'http://github.com/doctrine/doctrine2.git', '550fcbc17fc9d927edf3'),
-    array('doctrine-dbal', 'http://github.com/doctrine/dbal.git', 'eb80a3797e80fbaa024bb0a1ef01c3d81bb68a76'),
-    array('doctrine-common', 'http://github.com/doctrine/common.git', '73b61b50782640358940'),
-    array('doctrine-mongodb', 'http://github.com/doctrine/mongodb.git', '4109734e249a951f270c531999871bfe9eeed843'),
-    array('doctrine-mongodb-odm', 'http://github.com/doctrine/mongodb-odm.git', '8fb97a4740c2c12a2a5a4e7d78f0717847c39691'),
+    array('doctrine-orm', 'http://github.com/doctrine/doctrine2.git', '15562d030e'),
+    array('doctrine-dbal', 'http://github.com/doctrine/dbal.git', '537de7e'),
+    array('doctrine-common', 'http://github.com/doctrine/common.git', 'b3b1e62b1c'/*b385ca7708*/),
+    array('doctrine-mongodb', 'http://github.com/doctrine/mongodb.git', '1674e629f2'),
+    array('doctrine-mongodb-odm', 'http://github.com/doctrine/mongodb-odm.git', '1674e629f2'),
 
     array('Symfony/Component/ClassLoader', 'http://github.com/symfony/ClassLoader.git', '6894a17bb88831f2d260c7b9897862e5ccf35bae'),
     array('Symfony/Component/Console', 'http://github.com/symfony/Console.git', '55344823ce1c2a780c9137d86143d9084209a02d'),
