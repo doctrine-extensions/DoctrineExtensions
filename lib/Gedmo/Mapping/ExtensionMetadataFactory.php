@@ -143,6 +143,10 @@ final class ExtensionMetadataFactory
             }
         } else {
             $driverName = substr($driverName, 0, strpos($driverName, 'Driver'));
+            if (substr($driverName, 0, 10) === 'Simplified') {
+                // support for simplified file drivers
+                $driverName = substr($driverName, 10);
+            }
             // create driver instance
             $driverClassName = $this->extensionNamespace . '\Mapping\Driver\\' . $driverName;
             if (!class_exists($driverClassName)) {
