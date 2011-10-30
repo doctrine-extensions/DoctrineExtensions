@@ -5,7 +5,8 @@
 ### Latest updates
 
 **Note:** Use 2.1.x tag in order to use extensions based on Doctrine2.1.x versions. Currently
-master branch is based on 2.2.x versions and may not work with 2.1.x components
+master branch is based on 2.2.x versions and may not work with 2.1.x components. ODM currently
+does not work with **doctrine common 2.2.x**
 
 **2011-10-30**
 
