@@ -16,7 +16,7 @@ use Tool\BaseTestCaseORM;
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class TimestampableMappingTest extends BaseTestCaseORM
+class SimplifiedTimestampableMappingTest extends BaseTestCaseORM
 {
     /**
      * @var Gedmo\Timestampable\TimestampableListener
