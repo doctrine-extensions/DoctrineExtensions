@@ -1,0 +1,25 @@
+{
+    "name": "gedmo/doctrine-extensions",
+    "type": "library",
+    "description": "Doctrine2 behavioral extensions",
+    "keywords": [],
+    "homepage": "http://gediminasm.org/",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Gediminas Morkevicius",
+            "email": "Gediminas Morkevicius"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.2",
+        "doctrine/common": ">=2.1"
+    },
+    "suggest": {
+        "doctrine/orm": ">=2.1",
+        "doctrine/mongodb-odm": "*"
+    },
+    "autoload": {
+        "psr-0": { "Gedmo": "lib/" }
+    }
+}
