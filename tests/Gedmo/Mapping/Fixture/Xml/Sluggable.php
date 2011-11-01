@@ -13,4 +13,6 @@ class Sluggable
     private $ean;
 
     private $slug;
+
+    private $parent;
 }
