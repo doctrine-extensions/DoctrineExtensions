@@ -62,6 +62,12 @@ master branch is based on 2.2.x versions and may not work with 2.1.x
 </doctrine-mapping>
 ```
 
+XML mapping xsd schemas are also versioned and can be used by version suffix:
+
+- Latest version - **http://gediminasm.org/schemas/orm/doctrine-extensions-mapping**
+- 2.2.x version - **http://gediminasm.org/schemas/orm/doctrine-extensions-mapping-2-2**
+- 2.1.x version - **http://gediminasm.org/schemas/orm/doctrine-extensions-mapping-2-1**
+
 ### ODM MongoDB support
 
 List of extensions which support ODM
