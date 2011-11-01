@@ -7,9 +7,7 @@
             <generator strategy="AUTO"/>
         </id>
 
-        <field name="title" type="string" length="128">
-            <gedmo:sluggable position="0"/>
-        </field>
+        <field name="title" type="string" length="128"/>
         <field name="position" type="integer">
             <gedmo:sortable-position/>
         </field>

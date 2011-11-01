@@ -52,12 +52,7 @@ abstract class BaseTestCaseOM extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        if (!class_exists('Mongo')) {
-            $this->markTestSkipped('Missing Mongo extension.');
-        }
-        if (version_compare(\Doctrine\Common\Version::VERSION, '2.2.0-DEV', '>=')) {
-            $this->markTestSkipped('ODM does not support version 2.2 of doctrine common.');
-        }
+
     }
 
     /**
@@ -88,6 +83,12 @@ abstract class BaseTestCaseOM extends \PHPUnit_Framework_TestCase
      */
     protected function getMockDocumentManager($dbName, MappingDriverODM $mappingDriver = null)
     {
+        if (!class_exists('Mongo')) {
+            $this->markTestSkipped('Missing Mongo extension.');
+        }
+        if (version_compare(\Doctrine\Common\Version::VERSION, '2.2.0-DEV', '>=')) {
+            $this->markTestSkipped('ODM does not support version 2.2 of doctrine common.');
+        }
         $conn = new Connection;
         $config = $this->getMockAnnotatedODMMongoDBConfig($dbName, $mappingDriver);
 

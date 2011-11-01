@@ -35,14 +35,9 @@ people to push their own additional attributes/elements into the same field elem
   <xs:element name="tree-right" type="gedmo:emptyType"/>
   <xs:element name="tree-level" type="gedmo:emptyType"/>
   <xs:element name="tree-root" type="gedmo:emptyType"/>
-  <!-- many-to-one -->
-  <!-- xs:element name="versioned" type="gedmo:emptyType"/-->
   <xs:element name="tree-parent" type="gedmo:emptyType"/>
-  <!-- one-to-one -->
-  <!-- same as many-to-one
-  <xs:element name="versioned" type="gedmo:emptyType"/>
-  <xs:element name="tree-parent" type="gedmo:emptyType"/>
-  -->
+  <xs:element name="sortable-group" type="gedmo:emptyType"/>
+  <xs:element name="sortable-position" type="gedmo:emptyType"/>
 
   <xs:complexType name="translation">
     <xs:attribute name="entity" type="xs:string" use="optional" />
