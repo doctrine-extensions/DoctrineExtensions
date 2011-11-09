@@ -466,3 +466,89 @@ Now few operations to get it all done:
     $article->getPublished()->format('Y-m-d'); // the date article type changed to published
 
 Easy like that, any suggestions on improvements are very welcome
+
+### Creating a UTC DateTime type that stores your datetimes in UTC
+
+First, we define our custom data type (note the type name is datetime and the type extends DateTimeType which simply overrides the default Doctrine type):
+
+    <?php
+    
+    namespace Acme\DoctrineExtensions\DBAL\Types;
+    
+    use Doctrine\DBAL\Types\DateTimeType;
+    use Doctrine\DBAL\Platforms\AbstractPlatform;
+    use Doctrine\DBAL\Types\ConversionException;
+    
+    class UTCDateTimeType extends DateTimeType
+    {
+        static private $utc = null;
+    
+        public function convertToDatabaseValue($value, AbstractPlatform $platform)
+        {
+            if ($value === null) {
+                return null;
+            }
+    
+            if (is_null(self::$utc)) {
+                self::$utc = new \DateTimeZone('UTC');
+            }
+    
+            $value->setTimeZone(self::$utc);
+    
+            return $value->format($platform->getDateTimeFormatString());
+        }
+    
+        public function convertToPHPValue($value, AbstractPlatform $platform)
+        {
+            if ($value === null) {
+                return null;
+            }
+    
+            if (is_null(self::$utc)) {
+                self::$utc = new \DateTimeZone('UTC');
+            }
+    
+            $val = \DateTime::createFromFormat($platform->getDateTimeFormatString(), $value, self::$utc);
+    
+            if (!$val) {
+                throw ConversionException::conversionFailed($value, $this->getName());
+            }
+    
+            return $val;
+        }
+    }
+
+Now in Symfony2, we register and override the **datetime** type. **WARNING:** this will override the **datetime** type for all your entities and for all entities in external bundles or extensions, so if you have some entities that require the standard **datetime** type from Doctrine, you must modify the above type and use a different name (such as **utcdatetime**). Additionally, you'll need to modify **Timestampable** so that it includes **utcdatetime** as a valid type.
+
+    doctrine:
+        dbal:
+            types: 
+                datetime: Acme\DoctrineExtensions\DBAL\Types\UTCDateTimeType
+            
+And our Entity properties look as expected:
+
+    /**
+     * @var datetime $dateCreated
+     *
+     * @ORM\Column(name="date_created", type="datetime")
+     * @Gedmo\Timestampable(on="create")
+     */
+    private $dateCreated;
+    
+    /**
+     * @var datetime $dateLastModified
+     *
+     * @ORM\Column(name="date_last_modified", type="datetime")
+     * @Gedmo\Timestampable(on="update")
+     */
+    private $dateLastModified;
+
+Now, in our view (suppose we are using Symfony2 and Twig), we can display the datetime (which is persisted in UTC format) in our user's time zone:
+
+    {{ myEntity.dateCreated | date("d/m/Y g:i a", app.user.timezone) }}
+
+Or if the user does not have a timezone, we could expand that to use a system/app/PHP default timezone.
+
+[doctrine_custom_datetime_type]: http://www.doctrine-project.org/docs/orm/2.0/en/cookbook/working-with-datetime.html#handling-different-timezones-with-the-datetime-type "Handling different Timezones with the DateTime Type"
+
+This example is based off [Handling different Timezones with the DateTime Type][doctrine_custom_datetime_type] - however that example may be outdated because it contains some obvioulsy invalid PHP from the TimeZone class.
