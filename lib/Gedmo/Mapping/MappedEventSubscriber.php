@@ -61,7 +61,7 @@ abstract class MappedEventSubscriber implements EventSubscriber
     /**
      * @var \Doctrine\Common\Annotations\AnnotationReader
      */
-    private $defaultAnnotationReader;
+    private static $defaultAnnotationReader;
 
     /**
      * Get an event adapter to handle event specific
@@ -193,7 +193,7 @@ abstract class MappedEventSubscriber implements EventSubscriber
      */
     private function getDefaultAnnotationReader()
     {
-        if (null === $this->defaultAnnotationReader) {
+        if (null === self::$defaultAnnotationReader) {
             if (version_compare(\Doctrine\Common\Version::VERSION, '2.2.0-DEV', '>=')) {
                 $reader = new \Doctrine\Common\Annotations\AnnotationReader();
                 \Doctrine\Common\Annotations\AnnotationRegistry::registerAutoloadNamespace(
@@ -225,8 +225,8 @@ abstract class MappedEventSubscriber implements EventSubscriber
                 $reader->setAnnotationNamespaceAlias('Gedmo\\Mapping\\Annotation\\', 'gedmo');
                 $reader->setDefaultAnnotationNamespace('Doctrine\ORM\Mapping\\');
             }
-            $this->defaultAnnotationReader = $reader;
+            self::$defaultAnnotationReader = $reader;
         }
-        return $this->defaultAnnotationReader;
+        return self::$defaultAnnotationReader;
     }
 }
