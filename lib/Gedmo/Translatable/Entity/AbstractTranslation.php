@@ -8,10 +8,10 @@ use Doctrine\ORM\Mapping\Id;
 use Doctrine\ORM\Mapping\GeneratedValue;
 
 /**
-* Gedmo\Translatable\Entity\AbstractTranslation
-*
-* @MappedSuperclass
-*/
+ * Gedmo\Translatable\Entity\AbstractTranslation
+ *
+ * @MappedSuperclass
+ */
 abstract class AbstractTranslation
 {
     /**
@@ -47,7 +47,7 @@ abstract class AbstractTranslation
     /**
      * @var string $foreignKey
      *
-     * @Column(name="foreign_key", type="string", length="64")
+     * @Column(name="foreign_key", type="string", length=64)
      */
     private $foreignKey;
 

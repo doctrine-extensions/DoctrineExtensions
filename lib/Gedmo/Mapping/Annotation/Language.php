@@ -8,6 +8,7 @@ use Doctrine\Common\Annotations\Annotation;
  * Language annotation for Translatable behavioral extension
  *
  * @Annotation
+ * @Target("PROPERTY")
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  * @package Gedmo.Mapping.Annotation

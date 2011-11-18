@@ -20,6 +20,7 @@ use Doctrine\Common\Annotations\Annotation;
  * }, separator="-", updatable=false)
  *
  * @Annotation
+ * @Target("ANNOTATION")
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  * @package Gedmo.Mapping.Annotation
@@ -29,7 +30,9 @@ use Doctrine\Common\Annotations\Annotation;
  */
 final class SlugHandler extends Annotation
 {
-    public $class = '';
+    /** @var string @required */
+    public $class;
+    /** @var array<Gedmo\Mapping\Annotation\SlugHandlerOption> */
     public $options = array();
 }
 

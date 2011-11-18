@@ -39,7 +39,7 @@ class MultiInheritanceTest3 extends BaseTestCaseORM
     {
         $this->populate();
         $carRepo = $this->em->getRepository(self::CAR);
-        $audi = $carRepo->find(2);
+        $audi = $carRepo->findOneByTitle('Audi-80');
         $this->assertEquals(2, $carRepo->childCount($audi));
         $this->assertEquals(1, $audi->getLeft());
         $this->assertEquals(6, $audi->getRight());

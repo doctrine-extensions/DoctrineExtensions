@@ -36,7 +36,8 @@ class ConcurrencyTest extends BaseTestCaseORM
 
     public function testConcurrentEntitiesInOneFlush()
     {
-        $sport = $this->em->getRepository(self::CATEGORY)->find(2);
+        $repo = $this->em->getRepository(self::CATEGORY);
+        $sport = $repo->findOneByTitle('Root2');
         $sport->setTitle('Sport');
 
         $skiing = new Category();
@@ -74,14 +75,14 @@ class ConcurrencyTest extends BaseTestCaseORM
         $this->em->clear();
 
         $meta = $this->em->getClassMetadata(self::CATEGORY);
-        $sport = $this->em->getRepository(self::CATEGORY)->find(2);
+        $sport = $repo->findOneByTitle('Sport');
         $left = $meta->getReflectionProperty('lft')->getValue($sport);
         $right = $meta->getReflectionProperty('rgt')->getValue($sport);
 
         $this->assertEquals($left, 9);
         $this->assertEquals($right, 16);
 
-        $skiing = $this->em->getRepository(self::CATEGORY)->find(6);
+        $skiing = $repo->findOneByTitle('Skiing');
         $left = $meta->getReflectionProperty('lft')->getValue($skiing);
         $right = $meta->getReflectionProperty('rgt')->getValue($skiing);
 
@@ -91,36 +92,28 @@ class ConcurrencyTest extends BaseTestCaseORM
 
     public function testConcurrentTree()
     {
+        $repo = $this->em->getRepository(self::CATEGORY);
         $meta = $this->em->getClassMetadata(self::CATEGORY);
 
-        $root = $this->em->getRepository(self::CATEGORY)->find(1);
-        $left = $meta->getReflectionProperty('lft')->getValue($root);
-        $right = $meta->getReflectionProperty('rgt')->getValue($root);
+        $root = $repo->findOneByTitle('Root');
 
-        $this->assertEquals($left, 1);
-        $this->assertEquals($right, 8);
+        $this->assertEquals($root->getLeft(), 1);
+        $this->assertEquals($root->getRight(), 8);
 
-        $root2 = $this->em->getRepository(self::CATEGORY)->find(2);
-        $left = $meta->getReflectionProperty('lft')->getValue($root2);
-        $right = $meta->getReflectionProperty('rgt')->getValue($root2);
+        $root2 = $repo->findOneByTitle('Root2');
 
-        $this->assertEquals($left, 9);
-        $this->assertEquals($right, 10);
+        $this->assertEquals($root2->getLeft(), 9);
+        $this->assertEquals($root2->getRight(), 10);
 
-        $child2Child = $this->em->getRepository(self::CATEGORY)->find(5);
-        $left = $meta->getReflectionProperty('lft')->getValue($child2Child);
-        $right = $meta->getReflectionProperty('rgt')->getValue($child2Child);
+        $child2Child = $repo->findOneByTitle('childs2_child');
 
-        $this->assertEquals($left, 5);
-        $this->assertEquals($right, 6);
+        $this->assertEquals($child2Child->getLeft(), 5);
+        $this->assertEquals($child2Child->getRight(), 6);
 
         $child2Parent = $child2Child->getParent();
-        $child2Parent->getId(); // initialize if proxy
-        $left = $meta->getReflectionProperty('lft')->getValue($child2Parent);
-        $right = $meta->getReflectionProperty('rgt')->getValue($child2Parent);
 
-        $this->assertEquals($left, 4);
-        $this->assertEquals($right, 7);
+        $this->assertEquals($child2Parent->getLeft(), 4);
+        $this->assertEquals($child2Parent->getRight(), 7);
     }
 
     protected function getUsedEntityFixtures()

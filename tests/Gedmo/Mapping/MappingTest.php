@@ -27,19 +27,13 @@ class MappingTest extends \PHPUnit_Framework_TestCase
         $config = new \Doctrine\ORM\Configuration();
         $config->setProxyDir(TESTS_TEMP_DIR);
         $config->setProxyNamespace('Gedmo\Mapping\Proxy');
-        \Doctrine\Common\Annotations\AnnotationRegistry::registerAutoloadNamespace(
-            'Gedmo\\Mapping\\Annotation',
-            VENDOR_PATH . '/../lib'
-        );
-        $this->markTestSkipped('Skipping according to a bug in annotation reader creation.');
-        $config->setMetadataDriverImpl($config->newDefaultAnnotationDriver());
+        //$this->markTestSkipped('Skipping according to a bug in annotation reader creation.');
+        $config->setMetadataDriverImpl(new \Doctrine\ORM\Mapping\Driver\AnnotationDriver($_ENV['annotation_reader']));
 
         $conn = array(
             'driver' => 'pdo_sqlite',
             'memory' => true,
         );
-
-        //$config->setSQLLogger(new \Doctrine\DBAL\Logging\EchoSQLLogger());
 
         $evm = new \Doctrine\Common\EventManager();
         $evm->addEventSubscriber(new \Gedmo\Translatable\TranslationListener());

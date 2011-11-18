@@ -9,7 +9,7 @@ if (!is_dir(VENDOR_PATH)) {
     mkdir(VENDOR_PATH, 0775, true);
 }
 
-$deps = array(
+$deps21x = array(
     array('doctrine-orm', 'http://github.com/doctrine/doctrine2.git', '550fcbc17fc9d927edf3'),
     array('doctrine-dbal', 'http://github.com/doctrine/dbal.git', 'eb80a3797e80fbaa024bb0a1ef01c3d81bb68a76'),
     array('doctrine-common', 'http://github.com/doctrine/common.git', '73b61b50782640358940'),
@@ -21,8 +21,20 @@ $deps = array(
     array('Symfony/Component/Finder', 'http://github.com/symfony/Finder.git', '83d148b10f3acf2a1d1cc427386a1d3d1a125206'),
     array('Symfony/Component/Yaml', 'http://github.com/symfony/Yaml.git', '2b858b077d1e6748569fd143ae16da44b541d3f3'),
 );
+$deps22x = array(
+    array('doctrine-orm', 'http://github.com/doctrine/doctrine2.git', '15562d030e'),
+    array('doctrine-dbal', 'http://github.com/doctrine/dbal.git', '537de7e'),
+    array('doctrine-common', 'http://github.com/doctrine/common.git', 'b3b1e62b1c'),
+    array('doctrine-mongodb', 'http://github.com/doctrine/mongodb.git', '1674e629f2'),
+    array('doctrine-mongodb-odm', 'http://github.com/doctrine/mongodb-odm.git', '1674e629f2'),
 
-foreach ($deps as $dep) {
+    array('Symfony/Component/ClassLoader', 'http://github.com/symfony/ClassLoader.git', '6894a17bb88831f2d260c7b9897862e5ccf35bae'),
+    array('Symfony/Component/Console', 'http://github.com/symfony/Console.git', '55344823ce1c2a780c9137d86143d9084209a02d'),
+    array('Symfony/Component/Finder', 'http://github.com/symfony/Finder.git', '83d148b10f3acf2a1d1cc427386a1d3d1a125206'),
+    array('Symfony/Component/Yaml', 'http://github.com/symfony/Yaml.git', '2b858b077d1e6748569fd143ae16da44b541d3f3'),
+);
+
+foreach ($deps22x as $dep) {
     list($name, $url, $rev) = $dep;
 
     echo "> Installing/Updating $name\n";

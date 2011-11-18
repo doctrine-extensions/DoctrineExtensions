@@ -6,7 +6,7 @@ use Doctrine\Common\EventManager;
 use Doctrine\ORM\Mapping\Driver\DriverChain;
 use Doctrine\ORM\Mapping\Driver\XmlDriver;
 use Gedmo\Sluggable\SluggableListener;
-use Tool\BaseTestCaseOM;
+use Tool\BaseTestCaseORM;
 
 /**
  * These are mapping extension tests
@@ -16,13 +16,8 @@ use Tool\BaseTestCaseOM;
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class SluggableMappingTest extends BaseTestCaseOM
+class SluggableMappingTest extends BaseTestCaseORM
 {
-    /**
-     * @var Doctrine\ORM\EntityManager
-     */
-    private $em;
-
     /**
      * @var Gedmo\Sluggable\SluggableListener
      */
@@ -32,45 +27,78 @@ class SluggableMappingTest extends BaseTestCaseOM
     {
         parent::setUp();
 
+        $this->sluggable = new SluggableListener;
+        $evm = new EventManager;
+        $evm->addEventSubscriber($this->sluggable);
+
+        $this->getMockSqliteEntityManager($evm);
+    }
+
+    protected function getUsedEntityFixtures()
+    {
+        return array('Mapping\Fixture\Xml\Sluggable');
+    }
+
+    protected function getMetadataDriverImplementation()
+    {
         $xmlDriver = new XmlDriver(__DIR__.'/../Driver/Xml');
 
         $chain = new DriverChain;
         $chain->addDriver($xmlDriver, 'Mapping\Fixture\Xml');
-
-        $this->sluggable = new SluggableListener;
-        $this->evm = new EventManager;
-        $this->evm->addEventSubscriber($this->sluggable);
-
-        $this->em = $this->getMockSqliteEntityManager(array(
-            'Mapping\Fixture\Xml\Sluggable',
-        ), $chain);
+        return $chain;
     }
 
-    public function testSluggableMetadata()
+    /**
+     * @test
+     */
+    public function shouldBeAbleToMapSluggableMetadata()
     {
         $meta = $this->em->getClassMetadata('Mapping\Fixture\Xml\Sluggable');
         $config = $this->sluggable->getConfiguration($this->em, $meta->name);
 
-        $this->assertArrayHasKey('slugFields', $config);
-        $this->assertEquals('slug', $config['slugFields']['slug']['slug']);
-        $this->assertArrayHasKey('style', $config['slugFields']['slug']);
-        $this->assertEquals('camel', $config['slugFields']['slug']['style']);
-        $this->assertArrayHasKey('updatable', $config['slugFields']['slug']);
-        $this->assertTrue($config['slugFields']['slug']['updatable']);
-        $this->assertArrayHasKey('unique', $config['slugFields']['slug']);
-        $this->assertTrue($config['slugFields']['slug']['unique']);
-        $this->assertArrayHasKey('separator', $config['slugFields']['slug']);
-        $this->assertEquals('_', $config['slugFields']['slug']['separator']);
+        $this->assertArrayHasKey('slug', $config['slugs']);
+        $this->assertEquals(1, count($config['slugs']));
+        $config = $config['slugs']['slug'];
+
+        $this->assertEquals('slug', $config['slug']);
+        $this->assertArrayHasKey('style', $config);
+        $this->assertEquals('camel', $config['style']);
+        $this->assertArrayHasKey('updatable', $config);
+        $this->assertTrue($config['updatable']);
+        $this->assertArrayHasKey('unique', $config);
+        $this->assertTrue($config['unique']);
+        $this->assertArrayHasKey('separator', $config);
+        $this->assertEquals('_', $config['separator']);
 
         $this->assertArrayHasKey('fields', $config);
-        $this->assertEquals(3, count($config['fields']['slug']));
+        $this->assertEquals(3, count($config['fields']));
         $fields = $config['fields'];
 
-        $this->assertEquals('title', $fields['slug'][0]['field']);
-        $this->assertEquals(0, $fields['slug'][0]['position']);
-        $this->assertEquals('code', $fields['slug'][1]['field']);
-        $this->assertEquals(false, $fields['slug'][1]['position']);
-        $this->assertEquals('ean', $fields['slug'][2]['field']);
-        $this->assertEquals(1, $fields['slug'][2]['position']);
+        $this->assertEquals('title', $fields[0]);
+        $this->assertEquals('ean', $fields[1]);
+        $this->assertEquals('code', $fields[2]);
+
+        $this->assertArrayHasKey('handlers', $config);
+        $this->assertEquals(2, count($config['handlers']));
+        $handlers = $config['handlers'];
+
+        $this->assertArrayHasKey('Gedmo\Sluggable\Handler\TreeSlugHandler', $handlers);
+        $this->assertArrayHasKey('Gedmo\Sluggable\Handler\RelativeSlugHandler', $handlers);
+
+        $first = $handlers['Gedmo\Sluggable\Handler\TreeSlugHandler'];
+        $this->assertEquals(2, count($first));
+        $this->assertArrayHasKey('parentRelationField', $first);
+        $this->assertArrayHasKey('separator', $first);
+        $this->assertEquals('parent', $first['parentRelationField']);
+        $this->assertEquals('/', $first['separator']);
+
+        $second = $handlers['Gedmo\Sluggable\Handler\RelativeSlugHandler'];
+        $this->assertEquals(3, count($second));
+        $this->assertArrayHasKey('relationField', $second);
+        $this->assertArrayHasKey('relationSlugField', $second);
+        $this->assertArrayHasKey('separator', $second);
+        $this->assertEquals('parent', $second['relationField']);
+        $this->assertEquals('test', $second['relationSlugField']);
+        $this->assertEquals('-', $second['separator']);
     }
 }

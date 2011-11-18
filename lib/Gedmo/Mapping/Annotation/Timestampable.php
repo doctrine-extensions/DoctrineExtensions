@@ -8,6 +8,7 @@ use Doctrine\Common\Annotations\Annotation;
  * Timestampable annotation for Timestampable behavioral extension
  *
  * @Annotation
+ * @Target("PROPERTY")
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  * @package Gedmo.Mapping.Annotation
@@ -17,8 +18,11 @@ use Doctrine\Common\Annotations\Annotation;
  */
 final class Timestampable extends Annotation
 {
+    /** @var string */
     public $on = 'update';
+    /** @var string */
     public $field;
+    /** @var mixed */
     public $value;
 }
 

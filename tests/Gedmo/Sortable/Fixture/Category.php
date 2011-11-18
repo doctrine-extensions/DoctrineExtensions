@@ -17,32 +17,32 @@ class Category
      * @ORM\Column(type="integer")
      */
     private $id;
-    
+
     /**
-     * @ORM\Column(type="string", length="255")
+     * @ORM\Column(type="string", length=255)
      */
     private $name;
-    
+
     /**
      * @ORM\OneToMany(targetEntity="Item", mappedBy="category")
      */
     private $items;
-    
+
     public function __construct()
     {
         $this->items = new ArrayCollection();
     }
-    
+
     public function getId()
     {
         return $this->id;
     }
-    
+
     public function setName($name)
     {
         $this->name = $name;
     }
-    
+
     public function getName()
     {
         return $this->name;

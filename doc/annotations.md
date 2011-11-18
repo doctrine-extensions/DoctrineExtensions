@@ -68,10 +68,24 @@ mapping and listeners:
 
     $reader = new \Doctrine\Common\Annotations\AnnotationReader();
     $annotationDriver = new \Doctrine\ORM\Mapping\Driver\AnnotationDriver($reader);
+    Doctrine\Common\Annotations\AnnotationRegistry::registerAutoloadNamespace(
+        'Gedmo\\Mapping\\Annotation',
+        'path/to/gedmo/extension/library'
+    );
     
     $chain = new \Doctrine\ORM\Mapping\Driver\DriverChain;
-    $chain->addDriver($annotationDriver, 'Gedmo\Translatable\Entity');
-    $chain->addDriver($annotationDriver, 'Gedmo\Tree\Entity');
+    $annotationDriver = new Doctrine\ORM\Mapping\Driver\AnnotationDriver($annotationReader, array(
+        __DIR__.'/../your/application/source/Entity',
+        'path/to/gedmo/extension/library'.'/Gedmo/Translatable/Entity',
+        'path/to/gedmo/extension/library'.'/Gedmo/Loggable/Entity',
+        'path/to/gedmo/extension/library'.'/Gedmo/Tree/Entity',
+    ));
+    // drivers
+    $driverChain->addDriver($annotationDriver, 'Gedmo\\Translatable\\Entity');
+    $driverChain->addDriver($annotationDriver, 'Gedmo\\Loggable\\Entity');
+    $driverChain->addDriver($annotationDriver, 'Gedmo\\Tree\\Entity');
+    $driverChain->addDriver($annotationDriver, 'Entity');
+    $config->setMetadataDriverImpl($driverChain);
     
     $config = new \Doctrine\ORM\Configuration();
     $config->setMetadataDriverImpl($chain);
@@ -99,7 +113,7 @@ mapping and listeners:
     );
     $em = \Doctrine\ORM\EntityManager::create($conn, $config, $evm);
 
-**Notice:** that symfony2 DoctrineExtensionsBundle does it automatically this
+**Notice:** that symfony2 StofDoctrineExtensionsBundle does it automatically this
 way you will maintain a single instance of annotation reader. It relates only
 to doctrine-common-2.1.x branch and newer.
 
