@@ -9,7 +9,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 /**
  * @ORM\Entity
  */
-class Person
+class PersonCustom
 {
     /**
      * @ORM\Id
@@ -64,7 +64,7 @@ class Person
 
 
     /**
-     * @ORM\OneToMany(targetEntity="PersonTranslation", mappedBy="translatable", cascade={"persist"})
+     * @ORM\OneToMany(targetEntity="PersonCustomTranslation", mappedBy="translatable", cascade={"persist"})
      */
     private $translations;
 
@@ -79,10 +79,10 @@ class Person
             return $this;
         }
 
-        return new \Gedmo\Translator\TranslationProxy($this,
+        return new CustomProxy($this,
         /* Locale                            */ $locale,
         /* List of translatable properties:  */ array('name'),
-        /* Translation entity class:         */ 'Translator\Fixture\PersonTranslation',
+        /* Translation entity class:         */ 'Translator\Fixture\PersonCustomTranslation',
         /* Translations collection property: */ $this->translations
         );
     }
