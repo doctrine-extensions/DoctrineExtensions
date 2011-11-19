@@ -4,6 +4,13 @@ namespace Gedmo\Translator;
 
 use Doctrine\Common\Collections\Collection;
 
+/**
+ * Proxy class for Entity/Document translations.
+ *
+ * @author  Konstantin Kudryashov <ever.zet@gmail.com>
+ * @link    http://www.gediminasm.org
+ * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
+ */
 class TranslationProxy
 {
     protected $locale;
@@ -69,6 +76,10 @@ class TranslationProxy
     public function __get($property)
     {
         if (in_array($property, $this->properties)) {
+            if (method_exists($this, $getter = 'get'.ucfirst($property))) {
+                return $this->$getter;
+            }
+
             return $this->getTranslatedValue($property);
         }
 
@@ -78,59 +89,61 @@ class TranslationProxy
     public function __set($property, $value)
     {
         if (in_array($property, $this->properties)) {
-            $this->setTranslatedValue($property, $value);
+            if (method_exists($this, $setter = 'set'.ucfirst($property))) {
+                return $this->$setter($value);
+            }
 
-            return $value;
+            return $this->setTranslatedValue($property, $value);
         }
 
         $this->translatable->property = $value;
     }
 
+    /**
+     * Returns translated value for specific property.
+     *
+     * @param   string  $property   property name
+     *
+     * @return  mixed
+     */
     public function getTranslatedValue($property)
     {
-        return $this->getOrCreateTranslationForProperty($property, $this->locale)->getValue();
+        return $this->findOrCreateTranslationForProperty($property, $this->locale)->getValue();
     }
 
+    /**
+     * Sets translated value for specific property.
+     *
+     * @param   string  $property   property name
+     * @param   string  $value      value
+     */
     public function setTranslatedValue($property, $value)
     {
-        $this->getOrCreateTranslationForProperty($property, $this->locale)->setValue($value);
+        $this->findOrCreateTranslationForProperty($property, $this->locale)->setValue($value);
     }
 
     /**
-     * Finds or creates new translation for specified property
+     * Finds existing or creates new translation for specified property
      *
      * @param   string  $property   object property name
      * @param   string  $locale     locale name
      *
      * @return  Translation
      */
-    private function getOrCreateTranslationForProperty($property, $locale)
-    {
-        if (!($translation = $this->getTranslationForProperty($property, $locale))) {
-            $translation = new $this->class;
-            $translation->setTranslatable($this->translatable);
-            $translation->setProperty($property);
-            $translation->setLocale($locale);
-            $this->coll->add($translation);
-        }
-
-        return $translation;
-    }
-
-    /**
-     * Finds translation for specified property
-     *
-     * @param   string  $property   object property name
-     * @param   string  $locale     locale name
-     *
-     * @return  Translation
-     */
-    private function getTranslationForProperty($property, $locale)
+    private function findOrCreateTranslationForProperty($property, $locale)
     {
         foreach ($this->coll as $translation) {
             if ($locale === $translation->getLocale() && $property === $translation->getProperty()) {
                 return $translation;
             }
         }
+
+        $translation = new $this->class;
+        $translation->setTranslatable($this->translatable);
+        $translation->setProperty($property);
+        $translation->setLocale($locale);
+        $this->coll->add($translation);
+
+        return $translation;
     }
 }
