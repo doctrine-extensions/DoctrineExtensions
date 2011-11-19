@@ -89,7 +89,7 @@ class TranslatableTest extends BaseTestCaseORM
     public function testTranslatableWithMagicProperties()
     {
         $person = new Person();
-        $person->setName('Jen');
+        $person->translate('en')->setName('Jen');
         $person->translate('ru_RU')->name = 'Женя';
         $person->translate('ru_RU')->description = 'multilingual description';
 

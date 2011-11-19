@@ -73,9 +73,9 @@ class Person
         $this->translations = new ArrayCollection();
     }
 
-    public function translate($locale = null)
+    public function translate($locale = 'en')
     {
-        if (null === $locale) {
+        if ('en' === $locale) {
             return $this;
         }
 
