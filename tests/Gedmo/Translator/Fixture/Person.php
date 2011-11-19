@@ -21,12 +21,12 @@ class Person
     /**
      * @ORM\Column(name="name", type="string", length=128)
      */
-    private $name;
+    public $name;
 
     /**
      * @ORM\Column(name="desc", type="string", length=128)
      */
-    private $description;
+    public $description;
 
     public function getId()
     {

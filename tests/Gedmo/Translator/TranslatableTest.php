@@ -86,6 +86,20 @@ class TranslatableTest extends BaseTestCaseORM
         $this->assertSame('multilingual description', $person->translate('ru_RU')->getDescription());
     }
 
+    public function testTranslatableWithMagicProperties()
+    {
+        $person = new Person();
+        $person->setName('Jen');
+        $person->translate('ru_RU')->name = 'Женя';
+        $person->translate('ru_RU')->description = 'multilingual description';
+
+        $this->assertSame('Jen', $person->name);
+        $this->assertSame('Jen', $person->translate()->name);
+        $this->assertSame('Женя', $person->translate('ru_RU')->name);
+        $this->assertSame('multilingual description', $person->translate('ru_RU')->description);
+        $this->assertSame('multilingual description', $person->description);
+    }
+
     public function testTranslatableWithCustomProxy()
     {
         $person = new PersonCustom();

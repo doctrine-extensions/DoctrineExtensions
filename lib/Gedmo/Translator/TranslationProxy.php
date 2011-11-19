@@ -13,7 +13,7 @@ use Doctrine\Common\Collections\Collection;
  */
 class TranslationProxy
 {
-    protected $locale;
+    private $locale;
     private $translatable;
     private $properties = array();
     private $class;
@@ -96,7 +96,17 @@ class TranslationProxy
             return $this->setTranslatedValue($property, $value);
         }
 
-        $this->translatable->property = $value;
+        $this->translatable->$property = $value;
+    }
+
+    /**
+     * Returns locale name for the current translation proxy instance.
+     *
+     * @return  string
+     */
+    public function getProxyLocale()
+    {
+        return $this->locale;
     }
 
     /**
@@ -108,7 +118,9 @@ class TranslationProxy
      */
     public function getTranslatedValue($property)
     {
-        return $this->findOrCreateTranslationForProperty($property, $this->locale)->getValue();
+        return $this
+            ->findOrCreateTranslationForProperty($property, $this->getProxyLocale())
+            ->getValue();
     }
 
     /**
@@ -119,7 +131,9 @@ class TranslationProxy
      */
     public function setTranslatedValue($property, $value)
     {
-        $this->findOrCreateTranslationForProperty($property, $this->locale)->setValue($value);
+        $this
+            ->findOrCreateTranslationForProperty($property, $this->getProxyLocale())
+            ->setValue($value);
     }
 
     /**
