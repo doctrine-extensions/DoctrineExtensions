@@ -493,11 +493,11 @@ will fill untranslated values as blanks
 
 To set the default locale:
 
-    $translationListener->setDefaultLocale('en_us');
+    $translatableListener->setDefaultLocale('en_us');
 
 To set translation fallback:
 
-    $translationListener->setTranslationFallback(true); // default is false
+    $translatableListener->setTranslationFallback(true); // default is false
 
 Note: Default locale should be set on the **TranslationListener** initialization
 once, since it can impact your current records if it will be changed. As it
@@ -519,7 +519,7 @@ ArticleTranslation Entity:
     
     /**
      * @ORM\Table(name="article_translations", indexes={
-     *      @ORM\index(name="article_translation_idx", columns={"locale", "objectClass", "foreign_key", "field"})
+     *      @ORM\index(name="article_translation_idx", columns={"locale", "object_class", "foreign_key", "field"})
      * })
      * @ORM\Entity(repositoryClass="Gedmo\Translatable\Entity\Repository\TranslationRepository")
      */
