@@ -127,11 +127,6 @@ Edit **Annotation.php** driver file:
     
     class Annotation implements Driver
     {
-        public function validateFullMetadata(ClassMetadata $meta, array $config)
-        {
-            // in our case values are independant from each other
-        }
-    
         public function readExtendedMetadata(ClassMetadata $meta, array &$config) {
             // load our available annotations
             require_once __DIR__ . '/../Annotations.php';
