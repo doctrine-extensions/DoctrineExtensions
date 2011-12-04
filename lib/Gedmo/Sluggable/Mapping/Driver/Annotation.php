@@ -73,12 +73,6 @@ class Annotation implements AnnotationDriverInterface
     /**
      * {@inheritDoc}
      */
-    public function validateFullMetadata(ClassMetadata $meta, array $config)
-    {}
-
-    /**
-     * {@inheritDoc}
-     */
     public function readExtendedMetadata(ClassMetadata $meta, array &$config) {
         $class = $meta->getReflectionClass();
         // property annotations

@@ -73,38 +73,28 @@ final class ExtensionMetadataFactory
         if ($meta->isMappedSuperclass) {
             return; // ignore mappedSuperclasses for now
         }
-        $config = $supperclass = array();
+        $config = array();
+        $cmf = $this->objectManager->getMetadataFactory();
         $useObjectName = $meta->name;
         // collect metadata from inherited classes
-        if (!$this->objectManager->getMetadataFactory() instanceof DisconnectedClassMetadataFactory) {
+        if (!$cmf instanceof DisconnectedClassMetadataFactory) {
             foreach (array_reverse(class_parents($meta->name)) as $parentClass) {
                 // read only inherited mapped classes
-                if ($this->objectManager->getMetadataFactory()->hasMetadataFor($parentClass)) {
+                if ($cmf->hasMetadataFor($parentClass)) {
                     $class = $this->objectManager->getClassMetadata($parentClass);
-                    $partial = array();
-                    $this->driver->readExtendedMetadata($class, $partial);
-                    if ($class->isMappedSuperclass) {
-                        $supperclass += $partial;
-                    } elseif (!$class->isInheritanceTypeNone()) {
-                        $this->driver->validateFullMetadata($class, $supperclass + $partial);
-                        if ($partial) {
-                            $useObjectName = $class->name;
-                        }
-                    }
-                    $config += $partial;
+                    $this->driver->readExtendedMetadata($class, $config);
                 }
             }
         }
         $this->driver->readExtendedMetadata($meta, $config);
         if ($config) {
-            $this->driver->validateFullMetadata($meta, $config);
             $config['useObjectClass'] = $useObjectName;
         }
 
         // cache the metadata (even if it's empty)
         // caching empty metadata will prevent re-parsing non-existent annotations
         $cacheId = self::getCacheId($meta->name, $this->extensionNamespace);
-        if ($cacheDriver = $this->objectManager->getMetadataFactory()->getCacheDriver()) {
+        if ($cacheDriver = $cmf->getCacheDriver()) {
             $cacheDriver->save($cacheId, $config, null);
         }
 

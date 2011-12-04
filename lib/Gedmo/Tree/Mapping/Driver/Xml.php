@@ -46,22 +46,6 @@ class Xml extends BaseXml
     /**
      * {@inheritDoc}
      */
-    public function validateFullMetadata(ClassMetadata $meta, array $config)
-    {
-        if (isset($config['strategy'])) {
-            if (is_array($meta->identifier) && count($meta->identifier) > 1) {
-                throw new InvalidMappingException("Tree does not support composite identifiers in class - {$meta->name}");
-            }
-            $method = 'validate' . ucfirst($config['strategy']) . 'TreeMetadata';
-            $this->$method($meta, $config);
-        } elseif ($config) {
-            throw new InvalidMappingException("Cannot find Tree type for class: {$meta->name}");
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public function readExtendedMetadata(ClassMetadata $meta, array &$config) {
         /**
          * @var \SimpleXmlElement $xml
@@ -130,6 +114,18 @@ class Xml extends BaseXml
                     }
                     $config['parent'] = $field;
                 }
+            }
+        }
+
+        if (!$meta->isMappedSuperclass && $config) {
+            if (isset($config['strategy'])) {
+                if (is_array($meta->identifier) && count($meta->identifier) > 1) {
+                    throw new InvalidMappingException("Tree does not support composite identifiers in class - {$meta->name}");
+                }
+                $method = 'validate' . ucfirst($config['strategy']) . 'TreeMetadata';
+                $this->$method($meta, $config);
+            } else {
+                throw new InvalidMappingException("Cannot find Tree type for class: {$meta->name}");
             }
         }
     }

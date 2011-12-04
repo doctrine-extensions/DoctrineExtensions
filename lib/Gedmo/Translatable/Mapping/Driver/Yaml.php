@@ -30,16 +30,6 @@ class Yaml extends File implements Driver
     /**
      * {@inheritDoc}
      */
-    public function validateFullMetadata(ClassMetadata $meta, array $config)
-    {
-        if ($config && is_array($meta->identifier) && count($meta->identifier) > 1) {
-            throw new InvalidMappingException("Translatable does not support composite identifiers in class - {$meta->name}");
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public function readExtendedMetadata(ClassMetadata $meta, array &$config)
     {
         $mapping = $this->_getMapping($meta->name);
@@ -67,6 +57,12 @@ class Yaml extends File implements Driver
                         $config['fields'][] = $field;
                     }
                 }
+            }
+        }
+
+        if (!$meta->isMappedSuperclass && $config) {
+            if (is_array($meta->identifier) && count($meta->identifier) > 1) {
+                throw new InvalidMappingException("Translatable does not support composite identifiers in class - {$meta->name}");
             }
         }
     }

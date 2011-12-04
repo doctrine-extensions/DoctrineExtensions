@@ -42,16 +42,6 @@ class Yaml extends File implements Driver
     /**
      * {@inheritDoc}
      */
-    public function validateFullMetadata(ClassMetadata $meta, array $config)
-    {
-        if ($config && !isset($config['position'])) {
-            throw new InvalidMappingException("Missing property: 'position' in class - {$meta->name}");
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public function readExtendedMetadata(ClassMetadata $meta, array &$config)
     {
         $mapping = $this->_getMapping($meta->name);
@@ -76,8 +66,14 @@ class Yaml extends File implements Driver
         if (isset($mapping['manyToMany'])) {
             $this->readSortableGroups($mapping['manyToMany'], $config);
         }
+
+        if (!$meta->isMappedSuperclass && $config) {
+            if (!isset($config['position'])) {
+                throw new InvalidMappingException("Missing property: 'position' in class - {$meta->name}");
+            }
+        }
     }
-    
+
     private function readSortableGroups($mapping, array &$config)
     {
         foreach ($mapping as $field => $fieldMapping) {

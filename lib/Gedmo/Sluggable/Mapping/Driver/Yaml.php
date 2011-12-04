@@ -41,12 +41,6 @@ class Yaml extends File implements Driver
     /**
      * {@inheritDoc}
      */
-    public function validateFullMetadata(ClassMetadata $meta, array $config)
-    {}
-
-    /**
-     * {@inheritDoc}
-     */
     public function readExtendedMetadata(ClassMetadata $meta, array &$config)
     {
         $mapping = $this->_getMapping($meta->name);

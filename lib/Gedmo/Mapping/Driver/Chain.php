@@ -8,7 +8,7 @@ use Gedmo\Mapping\Driver,
 /**
  * The chain mapping driver enables chained
  * extension mapping driver support
- * 
+ *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  * @package Gedmo.Mapping.Driver
  * @subpackage Chain
@@ -22,7 +22,7 @@ class Chain implements Driver
      * @var array
      */
     private $_drivers = array();
-    
+
     /**
      * Add a nested driver.
      *
@@ -33,7 +33,7 @@ class Chain implements Driver
     {
         $this->_drivers[$namespace] = $nestedDriver;
     }
-    
+
     /**
      * Get the array of nested drivers.
      *
@@ -43,12 +43,7 @@ class Chain implements Driver
     {
         return $this->_drivers;
     }
-    
-    /**
-     * {@inheritDoc}
-     */
-    public function validateFullMetadata(ClassMetadata $meta, array $config) {}
-    
+
     /**
      * {@inheritDoc}
      */

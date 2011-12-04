@@ -22,20 +22,6 @@ use Gedmo\Mapping\Driver\Xml as BaseXml,
  */
 class Xml extends BaseXml
 {
-
-    /**
-     * {@inheritDoc}
-     */
-    public function validateFullMetadata(ClassMetadata $meta, array $config)
-    {
-        if ($config && is_array($meta->identifier) && count($meta->identifier) > 1) {
-            throw new InvalidMappingException("Loggable does not support composite identifiers in class - {$meta->name}");
-        }
-        if (isset($config['versioned']) && !isset($config['loggable'])) {
-            throw new InvalidMappingException("Class must be annotated with Loggable annotation in order to track versioned fields in class - {$meta->name}");
-        }
-    }
-
     /**
      * {@inheritDoc}
      */
@@ -74,6 +60,15 @@ class Xml extends BaseXml
         }
         if (isset($xmlDoctrine->{'one-to-one'})) {
             $this->inspectElementForVersioned($xmlDoctrine->{'one-to-one'}, $config, $meta);
+        }
+
+        if (!$meta->isMappedSuperclass && $config) {
+            if (is_array($meta->identifier) && count($meta->identifier) > 1) {
+                throw new InvalidMappingException("Loggable does not support composite identifiers in class - {$meta->name}");
+            }
+            if (isset($config['versioned']) && !isset($config['loggable'])) {
+                throw new InvalidMappingException("Class must be annoted with Loggable annotation in order to track versioned fields in class - {$meta->name}");
+            }
         }
     }
 

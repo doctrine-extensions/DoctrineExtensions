@@ -27,7 +27,7 @@ class Annotation implements AnnotationDriverInterface
     const POSITION = 'Gedmo\\Mapping\\Annotation\\SortablePosition';
 
     /**
-     * Annotation to mark field as sorting group 
+     * Annotation to mark field as sorting group
      */
     const GROUP = 'Gedmo\\Mapping\\Annotation\\SortableGroup';
 
@@ -65,19 +65,9 @@ class Annotation implements AnnotationDriverInterface
     /**
      * {@inheritDoc}
      */
-    public function validateFullMetadata(ClassMetadata $meta, array $config)
-    {
-        if ($config && !isset($config['position'])) {
-            throw new InvalidMappingException("Missing property: 'position' in class - {$meta->name}");
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public function readExtendedMetadata(ClassMetadata $meta, array &$config) {
         $class = $meta->getReflectionClass();
-        
+
         // property annotations
         foreach ($class->getProperties() as $property) {
             if ($meta->isMappedSuperclass && !$property->isPrivate() ||
@@ -107,6 +97,12 @@ class Annotation implements AnnotationDriverInterface
                     $config['groups'] = array();
                 }
                 $config['groups'][] = $field;
+            }
+        }
+
+        if (!$meta->isMappedSuperclass && $config) {
+            if (!isset($config['position'])) {
+                throw new InvalidMappingException("Missing property: 'position' in class - {$meta->name}");
             }
         }
     }

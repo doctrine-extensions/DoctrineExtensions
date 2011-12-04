@@ -21,17 +21,6 @@ use Gedmo\Mapping\Driver\Xml as BaseXml,
  */
 class Xml extends BaseXml
 {
-
-    /**
-     * {@inheritDoc}
-     */
-    public function validateFullMetadata(ClassMetadata $meta, array $config)
-    {
-        if ($config && is_array($meta->identifier) && count($meta->identifier) > 1) {
-            throw new InvalidMappingException("Translatable does not support composite identifiers in class - {$meta->name}");
-        }
-    }
-
     /**
      * {@inheritDoc}
      */
@@ -78,6 +67,11 @@ class Xml extends BaseXml
                 }
             }
         }
-    }
 
+        if (!$meta->isMappedSuperclass && $config) {
+            if (is_array($meta->identifier) && count($meta->identifier) > 1) {
+                throw new InvalidMappingException("Translatable does not support composite identifiers in class - {$meta->name}");
+            }
+        }
+    }
 }

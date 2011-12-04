@@ -65,16 +65,6 @@ class Annotation implements AnnotationDriverInterface
     /**
      * {@inheritDoc}
      */
-    public function validateFullMetadata(ClassMetadata $meta, array $config)
-    {
-        if ($config && is_array($meta->identifier) && count($meta->identifier) > 1) {
-            throw new InvalidMappingException("Translatable does not support composite identifiers in class - {$meta->name}");
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public function readExtendedMetadata(ClassMetadata $meta, array &$config) {
         $class = $meta->getReflectionClass();
         // class annotations
@@ -115,6 +105,12 @@ class Annotation implements AnnotationDriverInterface
                     throw new InvalidMappingException("Language field [{$field}] should not be mapped as column property in entity - {$meta->name}, since it makes no sence");
                 }
                 $config['locale'] = $field;
+            }
+        }
+
+        if (!$meta->isMappedSuperclass && $config) {
+            if (is_array($meta->identifier) && count($meta->identifier) > 1) {
+                throw new InvalidMappingException("Translatable does not support composite identifiers in class - {$meta->name}");
             }
         }
     }
