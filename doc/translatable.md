@@ -17,7 +17,12 @@ Features:
 [blog_reference]: http://gediminasm.org/article/translatable-behavior-extension-for-doctrine-2 "Translatable extension for Doctrine 2 makes automatic record field translations and their loading depending on language used"
 [blog_test]: http://gediminasm.org/test "Test extensions on this blog"
 
-**2011-10-08**
+**2011-12-11**
+
+- Added more useful translation query hints: Override translatable locale, inner join
+translations instead left join, override translation fallback
+
+**2011-11-08**
 
 - Thanks to [@acasademont](https://github.com/acasademont) Translatable now does not store translations for default locale. It is always left as original record value.
 So be sure you do not change your default locale per project or per data migration. This way
@@ -479,6 +484,28 @@ in **JOIN WITH** statement, example `JOIN a.comments c WITH c.message LIKE '%wil
 Notice: any **find** related method calls cannot hook this hint automagically, we
 will use a different approach when **persister overriding feature** will be
 available in **Doctrine** 
+
+In case if **translation query walker** is used, you can additionally override:
+
+### Overriding translation fallback
+
+`$query->setHint(Gedmo\TranslationListener::HINT_FALLBACK, 1);` will fallback to default
+locale translations instead of empty values if used. And will override the translation listener
+setting for fallback.
+`$query->setHint(Gedmo\TranslationListener::HINT_FALLBACK, 0);` will do the opposite.
+
+### Using inner join strategy
+
+`$query->setHint(Gedmo\TranslationListener::HINT_INNER_JOIN, true);` will use **INNER** joins
+for translations instead of **LEFT** joins, so that in case if you do not want untranslated
+records in your result set for instance.
+
+### Overriding translatable locale
+
+`$query->setHint(Gedmo\TranslationListener::HINT_TRANSLATABLE_LOCALE, 'en');` would override
+the translation locale used to translate the resultset.
+
+**Note:** all these query hints lasts only for the specific query.
 
 ## Advanced examples: {#advanced-examples}
 
