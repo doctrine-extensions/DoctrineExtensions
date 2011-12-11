@@ -160,6 +160,43 @@ class TranslationQueryWalkerTest extends BaseTestCaseORM
         $this->assertEquals('about food', $result[0]['content']);
     }
 
+    /**
+     * @test
+     */
+    public function shouldBeAbleToUseInnerJoinStrategyForTranslations()
+    {
+        $dql = 'SELECT a FROM ' . self::ARTICLE . ' a';
+        $q = $this->em->createQuery($dql);
+        $q->setHint(Query::HINT_CUSTOM_OUTPUT_WALKER, self::TREE_WALKER_TRANSLATION);
+        $q->setHint(TranslationListener::HINT_INNER_JOIN, true);
+
+        $this->translationListener->setTranslatableLocale('ru_ru');
+        $this->translationListener->setTranslationFallback(false);
+
+        // array hydration
+        $result = $q->getArrayResult();
+        $this->assertEquals(0, count($result));
+    }
+
+    /**
+     * @test
+     */
+    public function shouldBeAbleToOverrideTranslatableLocale()
+    {
+        $dql = 'SELECT a FROM ' . self::ARTICLE . ' a';
+        $q = $this->em->createQuery($dql);
+        $q->setHint(Query::HINT_CUSTOM_OUTPUT_WALKER, self::TREE_WALKER_TRANSLATION);
+        $q->setHint(TranslationListener::HINT_TRANSLATABLE_LOCALE, 'lt_lt');
+
+        $this->translationListener->setTranslatableLocale('ru_ru');
+        $this->translationListener->setTranslationFallback(false);
+
+        // array hydration
+        $result = $q->getArrayResult();
+        $this->assertEquals(1, count($result));
+        $this->assertEquals('Maistas', $result[0]['title']);
+    }
+
     public function testSelectWithTranslationFallbackOnObjectHydration()
     {
         $this->em
@@ -190,6 +227,24 @@ class TranslationQueryWalkerTest extends BaseTestCaseORM
         //Default translation is en_us, so we expect the results in that locale
         $this->assertEquals('Food', $result[0]->getTitle());
         $this->assertEquals('about food', $result[0]->getContent());
+
+        // test fallback hint
+        $this->translationListener->setTranslationFallback(false);
+        $q->setHint(TranslationListener::HINT_FALLBACK, 1);
+
+        $result = $q->getResult();
+        //Default translation is en_us, so we expect the results in that locale
+        $this->assertEquals('Food', $result[0]->getTitle());
+        $this->assertEquals('about food', $result[0]->getContent());
+
+        // test fallback hint
+        $this->translationListener->setTranslationFallback(true);
+        $q->setHint(TranslationListener::HINT_FALLBACK, 0);
+
+        $result = $q->getResult();
+        //Default translation is en_us, so we expect the results in that locale
+        $this->assertEquals('', $result[0]->getTitle());
+        $this->assertEquals('', $result[0]->getContent());
     }
 
     public function testSelectCountStatement()

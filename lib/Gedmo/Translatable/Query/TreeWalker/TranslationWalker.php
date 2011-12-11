@@ -32,28 +32,31 @@ class TranslationWalker extends SqlWalker
 {
     /**
      * Name for translation fallback hint
+     *
+     * @internal
      */
-    const HINT_TRANSLATION_FALLBACKS = 'translation_fallbacks';
+    const HINT_TRANSLATION_FALLBACKS = '__gedmo.translatable.stored.fallbacks';
 
     /**
      * Name for translation listener hint
+     *
+     * @internal
      */
-    const HINT_TRANSLATION_LISTENER = 'translation_listener';
+    const HINT_TRANSLATION_LISTENER = '__gedmo.translatable.listener';
 
     /**
      * Customized object hydrator name
+     *
+     * @internal
      */
-    const HYDRATE_OBJECT_TRANSLATION = 'object_translation_hydrator';
+    const HYDRATE_OBJECT_TRANSLATION = '__gedmo.translatable.object.hydrator';
 
     /**
      * Customized object hydrator name
+     *
+     * @internal
      */
-    const HYDRATE_ARRAY_TRANSLATION = 'array_translation_hydrator';
-
-    /**
-     * Customized object hydrator name
-     */
-    const HYDRATE_SIMPLE_OBJECT_TRANSLATION = 'simple_object_translation_hydrator';
+    const HYDRATE_SIMPLE_OBJECT_TRANSLATION = '__gedmo.translatable.simple_object.hydrator';
 
     /**
      * Stores all component references from select clause
@@ -266,9 +269,15 @@ class TranslationWalker extends SqlWalker
     private function prepareTranslatedComponents()
     {
         $em = $this->getEntityManager();
+        $q = $this->getQuery();
         $ea = new TranslatableEventAdapter;
-        $locale = $this->listener->getListenerLocale();
+        $locale = $q->getHint(TranslationListener::HINT_TRANSLATABLE_LOCALE);
+        if (!$locale) {
+            // use from listener
+            $locale = $this->listener->getListenerLocale();
+        }
         $defaultLocale = $this->listener->getDefaultLocale();
+        $joinStrategy = $q->getHint(TranslationListener::HINT_INNER_JOIN) ? 'INNER' : 'LEFT';
 
         foreach ($this->translatedComponents as $dqlAlias => $comp) {
             $meta = $comp['metadata'];
@@ -281,7 +290,7 @@ class TranslationWalker extends SqlWalker
                     $compTableName = $meta->getQuotedTableName($this->platform);
                     $compTblAlias = $this->getSQLTableAlias($compTableName, $dqlAlias);
                     $tblAlias = $this->getSQLTableAlias('trans'.$compTblAlias.$field);
-                    $sql = ' LEFT JOIN '.$transTable.' '.$tblAlias;
+                    $sql = " {$joinStrategy} JOIN ".$transTable.' '.$tblAlias;
                     $sql .= ' ON '.$tblAlias.'.'.$transMeta->getQuotedColumnName('locale', $this->platform)
                         .' = '.$this->conn->quote($locale);
                     $sql .= ' AND '.$tblAlias.'.'.$transMeta->getQuotedColumnName('objectClass', $this->platform)
@@ -317,7 +326,12 @@ class TranslationWalker extends SqlWalker
     private function needsFallback()
     {
         $q = $this->getQuery();
-        return $this->listener->getTranslationFallback()
+        $fallback = $q->getHint(TranslationListener::HINT_FALLBACK);
+        if (false === $fallback) {
+            // non overrided
+            $fallback = $this->listener->getTranslationFallback();
+        }
+        return (bool)$fallback
             && $q->getHydrationMode() !== Query::HYDRATE_SCALAR
             && $q->getHydrationMode() !== Query::HYDRATE_SINGLE_SCALAR;
     }
