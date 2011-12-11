@@ -28,5 +28,8 @@
         <testsuite name="Object wrappers">
             <directory suffix=".php">./Gedmo/Wrapper/</directory>
         </testsuite>
+        <testsuite name="Translator extension">
+            <directory suffix=".php">./Gedmo/Translator/</directory>
+        </testsuite>
     </testsuites>
 </phpunit>
