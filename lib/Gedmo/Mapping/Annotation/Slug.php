@@ -8,7 +8,7 @@ use Doctrine\Common\Annotations\Annotation;
  * Slug annotation for Sluggable behavioral extension
  *
  * @Annotation
- * @Target("PROPERTY")
+ * @Target({"PROPERTY","CLASS"})
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  * @package Gedmo.Mapping.Annotation
