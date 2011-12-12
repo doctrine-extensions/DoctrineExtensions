@@ -31,9 +31,7 @@ final class ODM extends BaseAdapterODM implements SluggableAdapter
         if ($identifier) {
             $qb->field($meta->identifier)->notEqual($identifier);
         }
-        $qb->where("function() {
-            return this.{$config['slug']}.indexOf('{$slug}') === 0;
-        }");
+        $qb->field($config['slug'])->Equals(new \MongoRegex('/^' . str_replace('/', '\/', $slug) . '/'));
         $q = $qb->getQuery();
         $q->setHydrate(false);
 
