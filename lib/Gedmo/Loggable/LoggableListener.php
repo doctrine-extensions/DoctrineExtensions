@@ -165,6 +165,18 @@ class LoggableListener extends MappedEventSubscriber
     }
 
     /**
+     * Handle any custom LogEntry functionality that needs to be performed
+     * before persisting it
+     *
+     * @param object $logEntry The LogEntry being persisted
+     * @param object $object   The object being Logged
+     */
+    protected function prePersistLogEntry($logEntry, $object)
+    {
+
+    }
+
+    /**
      * Looks for loggable objects being inserted or updated
      * for further processing
      *
@@ -256,6 +268,8 @@ class LoggableListener extends MappedEventSubscriber
                 }
             }
             $logEntry->setVersion($version);
+
+            $this->prePersistLogEntry($logEntry, $object);
 
             $om->persist($logEntry);
             $uow->computeChangeSet($logEntryMeta, $logEntry);
