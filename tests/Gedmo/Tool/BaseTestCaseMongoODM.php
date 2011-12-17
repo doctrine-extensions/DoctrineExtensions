@@ -38,9 +38,6 @@ abstract class BaseTestCaseMongoODM extends \PHPUnit_Framework_TestCase
         if (!class_exists('Mongo')) {
             $this->markTestSkipped('Missing Mongo extension.');
         }
-        if (version_compare(\Doctrine\Common\Version::VERSION, '2.2.0-DEV', '>=')) {
-            $this->markTestSkipped('ODM does not support version 2.2 of doctrine common.');
-        }
     }
 
     /**

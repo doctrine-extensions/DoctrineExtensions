@@ -20,6 +20,7 @@ use Doctrine\ORM\Internal\Hydration\ObjectHydrator as BaseObjectHydrator;
 class ObjectHydrator extends BaseObjectHydrator
 {
     /**
+     * 2.1 version
      * {@inheritdoc}
      */
     protected function _hydrateAll()
@@ -27,6 +28,19 @@ class ObjectHydrator extends BaseObjectHydrator
         $listener = $this->_hints[TranslationWalker::HINT_TRANSLATION_LISTENER];
         $listener->setSkipOnLoad(true);
         $result = parent::_hydrateAll();
+        $listener->setSkipOnLoad(false);
+        return $result;
+    }
+
+    /**
+     * 2.2 version
+     * {@inheritdoc}
+     */
+    protected function hydrateAllData()
+    {
+        $listener = $this->_hints[TranslationWalker::HINT_TRANSLATION_LISTENER];
+        $listener->setSkipOnLoad(true);
+        $result = parent::hydrateAllData();
         $listener->setSkipOnLoad(false);
         return $result;
     }

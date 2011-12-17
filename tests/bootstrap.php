@@ -59,6 +59,10 @@ Gedmo\Version::checkORMDependencies();
     VENDOR_PATH.'/doctrine-orm/lib/Doctrine/ORM/Mapping/Driver/DoctrineAnnotations.php'
 );
 
+\Doctrine\Common\Annotations\AnnotationRegistry::registerFile(
+    VENDOR_PATH.'/doctrine-mongodb-odm/lib/Doctrine/ODM/MongoDB/Mapping/Annotations/DoctrineAnnotations.php'
+);
+
 \Doctrine\Common\Annotations\AnnotationRegistry::registerAutoloadNamespace(
     'Gedmo\\Mapping\\Annotation',
     VENDOR_PATH.'/../lib'

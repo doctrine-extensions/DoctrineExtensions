@@ -22,16 +22,16 @@ $deps21x = array(
     array('Symfony/Component/Yaml', 'http://github.com/symfony/Yaml.git', '2b858b077d1e6748569fd143ae16da44b541d3f3'),
 );
 $deps22x = array(
-    array('doctrine-orm', 'http://github.com/doctrine/doctrine2.git', '15562d030e'),
-    array('doctrine-dbal', 'http://github.com/doctrine/dbal.git', '537de7e'),
-    array('doctrine-common', 'http://github.com/doctrine/common.git', 'b3b1e62b1c'),
-    array('doctrine-mongodb', 'http://github.com/doctrine/mongodb.git', '1674e629f2'),
-    array('doctrine-mongodb-odm', 'http://github.com/doctrine/mongodb-odm.git', '1674e629f2'),
+    array('doctrine-orm', 'http://github.com/doctrine/doctrine2.git', 'cfe1259400'),
+    array('doctrine-dbal', 'http://github.com/doctrine/dbal.git', '5a827d7c18'),
+    array('doctrine-common', 'http://github.com/doctrine/common.git', '06e9f72342'),
+    array('doctrine-mongodb', 'http://github.com/doctrine/mongodb.git', 'e8e1e8e474'),
+    array('doctrine-mongodb-odm', 'http://github.com/doctrine/mongodb-odm.git', '5a4076ec9c'),
 
-    array('Symfony/Component/ClassLoader', 'http://github.com/symfony/ClassLoader.git', '6894a17bb88831f2d260c7b9897862e5ccf35bae'),
-    array('Symfony/Component/Console', 'http://github.com/symfony/Console.git', '55344823ce1c2a780c9137d86143d9084209a02d'),
-    array('Symfony/Component/Finder', 'http://github.com/symfony/Finder.git', '83d148b10f3acf2a1d1cc427386a1d3d1a125206'),
-    array('Symfony/Component/Yaml', 'http://github.com/symfony/Yaml.git', '2b858b077d1e6748569fd143ae16da44b541d3f3'),
+    array('Symfony/Component/ClassLoader', 'http://github.com/symfony/ClassLoader.git', 'v2.0.7'),
+    array('Symfony/Component/Console', 'http://github.com/symfony/Console.git', 'v2.0.7'),
+    array('Symfony/Component/Finder', 'http://github.com/symfony/Finder.git', 'v2.0.7'),
+    array('Symfony/Component/Yaml', 'http://github.com/symfony/Yaml.git', 'v2.0.7'),
 );
 
 foreach ($deps22x as $dep) {
