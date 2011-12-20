@@ -10,6 +10,7 @@ does not work with **doctrine common 2.2.x**
 
 **2011-12-20**
 
+- Refactored html tree building function, see [documentation](https://github.com/l3pp4rd/DoctrineExtensions/blob/master/doc/tree.md)
 - Added [example](https://github.com/l3pp4rd/DoctrineExtensions/tree/master/example)
 on how to create entity manager with extensions hooked using environment without framework
 - To run this example follow the documentation on the bottom of this document

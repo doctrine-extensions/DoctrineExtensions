@@ -71,6 +71,7 @@ Content:
 - [Yaml](#yaml) mapping example
 - [Xml](#xml) mapping example
 - Basic usage [examples](#basic-examples)
+- Build [html tree](#html-tree)
 - Advanced usage [examples](#advanced-examples)
 
 ## Setup and autoloading {#including-extension}
@@ -468,6 +469,61 @@ So after that use `$em->clear();` if you will continue using the nodes after the
     {
         //...
     }
+
+## Create html tree: {#html-tree}
+
+### Retrieving whole tree as array
+
+If you would like to load whole tree as node array hierarchy use:
+
+    $repo = $em->getRepository('Entity\Category');
+    $arrayTree = $repo->childrenHierarchy();
+
+All node children will stored under **__children** key for each node.
+
+### Retrieving as html tree
+
+To load a tree as **ul - li** html tree use:
+
+    $repo = $em->getRepository('Entity\Category');
+    $htmlTree = $repo->childrenHierarchy(
+        null, /* starting from root nodes */
+        false, /* load all children, not only direct */
+        array('decorate' => true)
+    );
+
+### Customize html tree output
+
+    $repo = $em->getRepository('Entity\Category');
+    $options = array(
+        'decorate' => true,
+        'rootOpen' => '<ul>',
+        'rootClose' => '</ul>',
+        'childOpen' => '<li>',
+        'childClose' => '</li>',
+        'nodeDecorator' => function($node) {
+            return '<a href="/page/'.$node['slug'].'">'.$node[$field].'</a>';
+        }
+    );
+    $htmlTree = $repo->childrenHierarchy(
+        null, /* starting from root nodes */
+        false, /* load all children, not only direct */
+        $options
+    );
+
+### Generate own node list
+
+    $repo = $em->getRepository('Entity\Category');
+    $query = $entityManager
+        ->createQueryBuilder()
+        ->select('node')
+        ->from('Entity\Category', 'node')
+        ->orderBy('node.root, node.left', 'ASC')
+        ->where('node.root = 1')
+        ->getQuery()
+    ;
+    $options = array('decorate' => true);
+    $tree = $repo->buildTree($query->getArrayResult(), $options);
 
 ## Advanced examples: {#advanced-examples}
 
