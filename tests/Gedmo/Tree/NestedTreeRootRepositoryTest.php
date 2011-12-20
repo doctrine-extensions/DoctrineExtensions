@@ -30,26 +30,89 @@ class NestedTreeRootRepositoryTest extends BaseTestCaseORM
         $this->populate();
     }
 
-    public function testChildrenHierarchyAsArray()
+    /**
+     * @test
+     */
+    function shouldSupportChildrenHierarchyAsArray()
     {
         $repo = $this->em->getRepository(self::CATEGORY);
         $result = $repo->childrenHierarchy();
         $this->assertEquals(2, count($result));
-        $this->assertTrue(isset($result[0]['children'][0]['children']));
+        $this->assertTrue(isset($result[0]['__children'][0]['__children']));
 
         $vegies = $repo->findOneByTitle('Vegitables');
         $result = $repo->childrenHierarchy($vegies);
         $this->assertEquals(2, count($result));
-        $this->assertEquals(0, count($result[0]['children']));
+        $this->assertEquals(0, count($result[0]['__children']));
     }
 
-    public function testChildrenHierarchyAsHtml()
+    /**
+     * @test
+     */
+    function shouldSupportChildrenHierarchyAsHtml()
     {
         $repo = $this->em->getRepository(self::CATEGORY);
         $food = $repo->findOneByTitle('Food');
-        $result = $repo->childrenHierarchy($food, false, true);
+        $decorate = true;
+        $defaultHtmlTree = $repo->childrenHierarchy($food, false, compact('decorate'));
 
-        $this->assertTrue(is_string($result));
+        $this->assertEquals(
+            '<ul><li>Fruits</li><li>Vegitables<ul><li>Carrots</li><li>Potatoes</li></ul></li></ul>',
+            $defaultHtmlTree
+        );
+
+        // custom title
+        $nodeDecorator = function($node) {
+            return '<span>'.$node['title'].'</span>';
+        };
+
+        $decoratedHtmlTree = $repo->childrenHierarchy(
+            $food,
+            false,
+            compact('decorate', 'nodeDecorator')
+        );
+
+        $this->assertEquals(
+            '<ul><li><span>Fruits</span></li><li><span>Vegitables</span><ul><li><span>Carrots</span></li><li><span>Potatoes</span></li></ul></li></ul>',
+            $decoratedHtmlTree
+        );
+        // cli friendly output
+        $rootOpen = '';
+        $rootClose = '';
+        $childOpen = '';
+        $childClose = '';
+        $nodeDecorator = function($node) {
+            return str_repeat('-', $node['level']).$node['title'].PHP_EOL;
+        };
+
+        $decoratedCliTree = $repo->childrenHierarchy(
+            $food,
+            false,
+            compact('decorate', 'nodeDecorator', 'rootOpen', 'rootClose', 'childOpen', 'childClose')
+        );
+        $this->assertEquals(
+            "-Fruits\n-Vegitables\n--Carrots\n--Potatoes\n",
+            $decoratedCliTree
+        );
+    }
+
+    /**
+     * @test
+     */
+    function shouldSupportChildrenHierarchyByBuildTreeFunction()
+    {
+        $repo = $this->em->getRepository(self::CATEGORY);
+        $q = $this->em
+            ->createQueryBuilder()
+            ->select('node')
+            ->from(self::CATEGORY, 'node')
+            ->orderBy('node.root, node.lft', 'ASC')
+            ->where('node.root = 1')
+            ->getQuery()
+        ;
+        $tree = $repo->buildTree($q->getArrayResult());
+        $this->assertEquals(1, count($tree));
+        $this->assertEquals(2, count($tree[0]['__children']));
     }
 
     public function testRootRemoval()

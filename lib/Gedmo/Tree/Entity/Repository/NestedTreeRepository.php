@@ -789,7 +789,7 @@ class NestedTreeRepository extends AbstractTreeRepository
      * @param object $node - from which node to start reordering the tree
      * @param boolean $direct - true to take only direct children
      * @param array $options :
-     *     decorate: boolean (true) - retrieves tree as UL->LI tree
+     *     decorate: boolean (false) - retrieves tree as UL->LI tree
      *     nodeDecorator: Closure (null) - uses $node as argument and returns decorated item as string
      *     rootOpen: string ('<ul>') - branch start
      *     rootClose: string ('</ul>') - branch close
@@ -999,8 +999,9 @@ class NestedTreeRepository extends AbstractTreeRepository
                 // Number of stack items
                 $l = count($stack);
                 // Check if we're dealing with different levels
-                while($l-- && $stack[$l - 1][$config['level']] >= $item[$config['level']]) {
+                while($l > 0 && $stack[$l - 1][$config['level']] >= $item[$config['level']]) {
                     array_pop($stack);
+                    $l--;
                 }
                 // Stack is empty (we are inspecting the root)
                 if ($l == 0) {
@@ -1018,7 +1019,7 @@ class NestedTreeRepository extends AbstractTreeRepository
         }
 
         $default = array(
-            'decorate' => true,
+            'decorate' => false,
             'rootOpen' => '<ul>',
             'rootClose' => '</ul>',
             'childOpen' => '<li>',
@@ -1037,7 +1038,7 @@ class NestedTreeRepository extends AbstractTreeRepository
         );
         $options = array_merge($default, $options);
         // If you don't want any html output it will return the nested array
-        if ($options['decorate'] || !count($nestedTree)) {
+        if (!$options['decorate'] || !count($nestedTree)) {
             return $nestedTree;
         }
 
