@@ -112,7 +112,8 @@ To setup and run example follow these steps:
 - go to the root directory of extensions
 - run: **php bin/vendors.php** installs doctrine and required symfony libraries
 - edit **example/em.php** and configure your database on top of the file
-- run: **./example/bin/console** or **php example/bin/console**
+- run: **./example/bin/console** or **php example/bin/console** for console commands
+- run: **./example/bin/console orm:schema-tool:create** to create schema
 - run: **php example/run.php** to run example
 
 ### Contributors:
