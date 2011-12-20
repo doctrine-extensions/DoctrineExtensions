@@ -782,16 +782,23 @@ class NestedTreeRepository extends AbstractTreeRepository
     }
 
     /**
-    * Retrieves the nested array or the html output
-    *
-    * @throws \Gedmo\Exception\InvalidArgumentException
-    * @param object $node - from which node to start reordering the tree
-    * @param boolean $direct - true to take only direct children
-    * @param bool $html
-    * @param array|null $options
-    * @return array|string
-    */
-    public function childrenHierarchy($node = null, $direct = false, $html = false, array $options = null)
+     * Retrieves the nested array or the decorated output.
+     * Uses @options to handle decorations
+     *
+     * @throws \Gedmo\Exception\InvalidArgumentException
+     * @param object $node - from which node to start reordering the tree
+     * @param boolean $direct - true to take only direct children
+     * @param array $options :
+     *     decorate: boolean (true) - retrieves tree as UL->LI tree
+     *     nodeDecorator: Closure (null) - uses $node as argument and returns decorated item as string
+     *     rootOpen: string ('<ul>') - branch start
+     *     rootClose: string ('</ul>') - branch close
+     *     childStart: string ('<li>') - start of node
+     *     childClose: string ('</li>') - close of node
+     *
+     * @return array|string
+     */
+    public function childrenHierarchy($node = null, $direct = false, array $options = array())
     {
         $meta = $this->getClassMetadata();
         $config = $this->listener->getConfiguration($this->_em, $meta->name);
@@ -814,7 +821,7 @@ class NestedTreeRepository extends AbstractTreeRepository
             'ASC'
         )->getArrayResult();
 
-        return $this->buildTree($nodes, $html, $options);
+        return $this->buildTree($nodes, $options);
     }
 
     /**
@@ -971,126 +978,81 @@ class NestedTreeRepository extends AbstractTreeRepository
     /**
      * Builds the tree
      *
-     * @param array $nodes
-     * @param bool $html
-     * @param array|null $options
+     * @param array $nodes - array result of ORM query
+     * @param array $options
      * @return array|string
      */
-    private function buildTree(array $nodes, $html = false, array $options = null)
+    public function buildTree(array $nodes, array &$options = array())
     {
         //process the nested tree into a nested array
-        $config = $this->listener->getConfiguration($this->_em, $this->getClassMetadata()->name);
-        $nestedTree = $this->processTree($nodes, $config);
-
-        // If you don't want any html output it will return the nested array
-        if (!$html) {
-            return $nestedTree;
-        }
-
-        //Defines html decorators and opcional options
-        if (!empty($options['root'])) {
-            $root_open  = $options['root']['open'];
-            $root_close = $options['root']['close'];
-        } else {
-            $root_open  = "<ul> ";
-            $root_close = " </ul>";
-        }
-        if (!empty($options['child'])) {
-            $child_open  = $options['child']['open'];
-            $child_close = $options['child']['close'];
-        } else {
-            $child_open  = "<li> ";
-            $child_close = " </li>";
-        }
-        $representationField = empty($options['representationField']) ?
-            'title' :
-            $options['representationField']
-        ;
-        if (!$this->getClassMetadata()->hasField($representationField) && $html) {
-            throw new InvalidArgumentException("There must be a representation field specified");
-        }
-
-        $html_decorator = array(
-            'root'  => array('open' => $root_open,  'close' => $root_close),
-            'child' => array('open' => $child_open, 'close' => $child_close),
-            'represents' => $representationField
-        );
-
-        $html_output = $this->processHtmlTree($nestedTree, $html_decorator, $html_output = null);
-
-        return $html_output;
-    }
-
-    /**
-     * Creates the nested array
-     *
-     * @static
-     * @param array $nodes
-     * @return array
-     */
-    private static function processTree(array $nodes, array $config)
-    {
-        // Trees mapped
-        $trees = array();
+        $meta = $this->getClassMetadata();
+        $config = $this->listener->getConfiguration($this->_em, $meta->name);
+        $nestedTree = array();
         $l = 0;
 
         if (count($nodes) > 0) {
             // Node Stack. Used to help building the hierarchy
             $stack = array();
-
             foreach ($nodes as $child) {
                 $item = $child;
-
-                $item['children'] = array();
-
+                $item['__children'] = array();
                 // Number of stack items
                 $l = count($stack);
-
                 // Check if we're dealing with different levels
-                while($l > 0 && $stack[$l - 1][$config['level']] >= $item[$config['level']]) {
+                while($l-- && $stack[$l - 1][$config['level']] >= $item[$config['level']]) {
                     array_pop($stack);
-                    $l--;
                 }
-
                 // Stack is empty (we are inspecting the root)
                 if ($l == 0) {
                     // Assigning the root child
-                    $i = count($trees);
-                    $trees[$i] = $item;
-                    $stack[] = & $trees[$i];
+                    $i = count($nestedTree);
+                    $nestedTree[$i] = $item;
+                    $stack[] = &$nestedTree[$i];
                 } else {
                     // Add child to parent
-                    $i = count($stack[$l - 1]['children']);
-                    $stack[$l - 1]['children'][$i] = $item;
-                    $stack[] = & $stack[$l - 1]['children'][$i];
+                    $i = count($stack[$l - 1]['__children']);
+                    $stack[$l - 1]['__children'][$i] = $item;
+                    $stack[] = &$stack[$l - 1]['__children'][$i];
                 }
             }
         }
-        return $trees;
-    }
 
-    /**
-     * Creates the html output of the nested tree
-     *
-     * @param $parent_node
-     * @param $html_decorator
-     * @param $html_output
-     * @return string
-     */
-    private function processHtmlTree($parent_node, $html_decorator, $html_output)
-    {
-        if (is_array($parent_node)) {
-            $html_output .= $html_decorator['root']['open'];
-            foreach ($parent_node as $item) {
-                 $html_output .= $html_decorator['child']['open'] . $item[$html_decorator['represents']];
-                if (count($item['children']) > 0) {
-                    $html_output = $this->processHtmlTree($item['children'], $html_decorator, $html_output);
+        $default = array(
+            'decorate' => true,
+            'rootOpen' => '<ul>',
+            'rootClose' => '</ul>',
+            'childOpen' => '<li>',
+            'childClose' => '</li>',
+            'nodeDecorator' => function ($node) use ($meta) {
+                // override and change it, guessing which field to use
+                if ($meta->hasField('title')) {
+                    $field = 'title';
+                } else if ($meta->hasField('name')) {
+                    $field = 'name';
+                } else {
+                    throw new InvalidArgumentException("Cannot find any representation field");
                 }
-                $html_output .= $html_decorator['child']['close'];
+                return $node[$field];
             }
-            $html_output .= $html_decorator['root']['close'];
+        );
+        $options = array_merge($default, $options);
+        // If you don't want any html output it will return the nested array
+        if ($options['decorate'] || !count($nestedTree)) {
+            return $nestedTree;
         }
 
-        return $html_output;
+        $build = function($tree) use (&$build, &$options) {
+            $output = $options['rootOpen'];
+            foreach ($tree as $node) {
+                $output .= $options['childOpen'] . $options['nodeDecorator']($node);
+                if (count($node['__children']) > 0) {
+                    $output .= $build($node['__children']);
+                }
+                $output .= $options['childClose'];
+            }
+            return $output . $options['rootClose'];
+        };
+
+        return $build($nestedTree);
     }
 }
