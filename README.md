@@ -8,6 +8,12 @@
 master branch is based on 2.2.x versions and may not work with 2.1.x components. ODM currently
 does not work with **doctrine common 2.2.x**
 
+**2011-12-20**
+
+- Added [example](https://github.com/l3pp4rd/DoctrineExtensions/tree/master/example)
+on how to create entity manager with extensions hooked using environment without framework
+- To run this example follow the documentation on the bottom of this document
+
 **2011-10-30**
 
 - Support for doctrine common **2.2.x** with backward compatibility. Be sure to use all components
@@ -98,6 +104,16 @@ To setup and run tests follow these steps:
 - run: **php bin/vendors.php**
 - run: **phpunit -c tests**
 - optional - run mongodb in background to complete all tests
+
+### Running the example:
+
+To setup and run example follow these steps:
+
+- go to the root directory of extensions
+- run: **php bin/vendors.php** installs doctrine and required symfony libraries
+- edit **example/em.php** and configure your database on top of the file
+- run: **./example/bin/console** or **php example/bin/console**
+- run: **php example/run.php** to run example
 
 ### Contributors:
 

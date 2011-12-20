@@ -1,0 +1,6 @@
+#!/usr/bin/env php
+<?php
+
+$cli = include __DIR__.'/console.php';
+$cli->run();
+
