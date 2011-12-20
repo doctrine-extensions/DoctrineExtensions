@@ -1,5 +1,7 @@
 <?php
+
 $executionStart = microtime(true);
+$memoryStart = memory_get_usage(true);
 
 $em = include 'em.php';
 
@@ -75,4 +77,5 @@ $nodes = $repository->getRootNodes(); // reload in diferent locale
 echo $build($nodes).PHP_EOL.PHP_EOL;
 
 $ms = round(microtime(true) - $executionStart, 4) * 1000;
-echo "Execution took: {$ms} ms";
+$mem = round((memory_get_usage(true) - $memoryStart) / 1000000, 2);
+echo "Execution took: {$ms} ms, memory consumed: {$mem} Mb";
