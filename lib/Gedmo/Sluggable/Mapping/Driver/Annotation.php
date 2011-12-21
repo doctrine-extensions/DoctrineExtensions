@@ -128,6 +128,12 @@ class Annotation implements AnnotationDriverInterface
                         throw new InvalidMappingException("Cannot use field - [{$slugField}] for slug storage, type is not valid and must be 'string' or 'text' in class - {$meta->name}");
                     }
                 }
+                if (!is_bool($slug->updatable)) {
+                    throw new InvalidMappingException("Slug annotation [updatable], type is not valid and must be 'boolean' in class - {$meta->name}");
+                }
+                if (!is_bool($slug->unique)) {
+                    throw new InvalidMappingException("Slug annotation [unique], type is not valid and must be 'boolean' in class - {$meta->name}");
+                }
                 // set all options
                 $config['slugs'][$field] = array(
                     'fields' => $slug->fields,
