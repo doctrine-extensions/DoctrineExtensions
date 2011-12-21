@@ -53,7 +53,7 @@ class Annotation implements AnnotationDriverInterface
     /**
      * Annotation reader instance
      *
-     * @var object
+     * @var AnnotationDriverInterface
      */
     private $reader;
 
@@ -73,8 +73,10 @@ class Annotation implements AnnotationDriverInterface
     /**
      * {@inheritDoc}
      */
-    public function readExtendedMetadata(ClassMetadata $meta, array &$config) {
+    public function readExtendedMetadata(ClassMetadata $meta, array &$config)
+    {
         $class = $meta->getReflectionClass();
+        $numInheritedSlugs = isset($config['slugs']) ? count($config['slugs']) : 0;
         // property annotations
         foreach ($class->getProperties() as $property) {
             if ($meta->isMappedSuperclass && !$property->isPrivate() ||
@@ -96,41 +98,16 @@ class Annotation implements AnnotationDriverInterface
                 $handlers = array();
                 if (is_array($slug->handlers) && $slug->handlers) {
                     foreach ($slug->handlers as $handler) {
-                        if (!$handler instanceof SlugHandler) {
-                            throw new InvalidMappingException("SlugHandler: {$handler} should be instance of SlugHandler annotation in entity - {$meta->name}");
-                        }
-                        if (!strlen($handler->class)) {
-                            throw new InvalidMappingException("SlugHandler class: {$handler->class} should be a valid class name in entity - {$meta->name}");
-                        }
-                        $class = $handler->class;
-                        $handlers[$class] = array();
-                        foreach ((array)$handler->options as $option) {
-                            if (!$option instanceof SlugHandlerOption) {
-                                throw new InvalidMappingException("SlugHandlerOption: {$option} should be instance of SlugHandlerOption annotation in entity - {$meta->name}");
-                            }
-                            if (!strlen($option->name)) {
-                                throw new InvalidMappingException("SlugHandlerOption name: {$option->name} should be valid name in entity - {$meta->name}");
-                            }
-                            $handlers[$class][$option->name] = $option->value;
-                        }
-                        $class::validate($handlers[$class], $meta);
+                        $handlers[$handler->class] = $this->parseHandler($handler, $meta);
                     }
                 }
                 // process slug fields
-                if (empty($slug->fields) || !is_array($slug->fields)) {
-                    throw new InvalidMappingException("Slug must contain at least one field for slug generation in class - {$meta->name}");
-                }
-                foreach ($slug->fields as $slugField) {
-                    if (!$meta->hasField($slugField)) {
-                        throw new InvalidMappingException("Unable to find slug [{$slugField}] as mapped property in entity - {$meta->name}");
-                    }
-                    if (!$this->isValidField($meta, $slugField)) {
-                        throw new InvalidMappingException("Cannot use field - [{$slugField}] for slug storage, type is not valid and must be 'string' or 'text' in class - {$meta->name}");
-                    }
-                }
+                $fields = (array) $slug->fields;
+                $this->validateFields($fields, $meta, $class);
+
                 // set all options
                 $config['slugs'][$field] = array(
-                    'fields' => $slug->fields,
+                    'fields' => $fields,
                     'slug' => $field,
                     'style' => $slug->style,
                     'updatable' => $slug->updatable,
@@ -140,6 +117,76 @@ class Annotation implements AnnotationDriverInterface
                 );
             }
         }
+
+        // validate inherited slugs
+        if ($numInheritedSlugs > 0) {
+            // try to finish slug definitions in child classes (when incomplete definition inherited from abstract parent class)
+            if ($slug = $this->reader->getClassAnnotation($class, self::SLUG)) {
+                $slugName = key($config['slugs']);
+                $config['slugs'][$slugName]['fields'] = $slug->fields;
+            }
+
+            // make sure all slug fields are valid (particulary whether defined if in concrete class)
+            foreach($config['slugs'] as $slugName => $slugDefinition) {
+                $this->validateFields($slugDefinition['fields'], $meta);
+            }
+        }
+    }
+
+    /**
+     * Checks if slug fields are valid
+     *
+     * @param array $fields
+     * @param \Doctrine\Common\Persistence\Mapping\ClassMetadata $meta
+     */
+    protected function validateFields(array $fields, ClassMetadata $meta)
+    {
+        if (!empty($fields) && is_array($fields)) {
+            foreach ($fields as $slugField) {
+                if (!$meta->hasField($slugField)) {
+                    throw new InvalidMappingException("Unable to find slug [{$slugField}] as mapped property in entity - {$meta->name}");
+                }
+                if (!$this->isValidField($meta, $slugField)) {
+                    throw new InvalidMappingException("Cannot use field - [{$slugField}] for slug storage, type is not valid and must be 'string' or 'text' in class - {$meta->name}");
+                }
+            }
+        } else {
+            if (!$meta->getReflectionClass()->isAbstract()) {
+                throw new InvalidMappingException("Slug must contain at least one field for slug generation in class - {$meta->name}");
+            }
+        }
+    }
+
+    /**
+     * Parse and validate handler definition
+     *
+     * @param SlugHandler $handler
+     * @param ClassMetadata $meta
+     * @return array handler config
+     */
+    private function parseHandler(SlugHandler $handler, ClassMetadata $meta)
+    {
+        if (!$handler instanceof SlugHandler) {
+            throw new InvalidMappingException("SlugHandler: {$handler} should be instance of SlugHandler annotation in entity - {$meta->name}");
+        }
+        if (!strlen($handler->class)) {
+            throw new InvalidMappingException("SlugHandler class: {$handler->class} should be a valid class name in entity - {$meta->name}");
+        }
+        $class = $handler->class;
+        $ret = array();
+        foreach ((array)$handler->options as $option) {
+            if (!$option instanceof SlugHandlerOption) {
+                throw new InvalidMappingException("SlugHandlerOption: {$option} should be instance of SlugHandlerOption annotation in entity - {$meta->name}");
+            }
+            if (!strlen($option->name)) {
+                throw new InvalidMappingException("SlugHandlerOption name: {$option->name} should be valid name in entity - {$meta->name}");
+            }
+            $ret[$option->name] = $option->value;
+        }
+
+        $class::validate($ret, $meta);
+
+        return $ret;
     }
 
     /**
