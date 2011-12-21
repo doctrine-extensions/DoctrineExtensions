@@ -55,7 +55,8 @@ class Chain implements Driver
                 return;
             }
         }
-        throw new \Gedmo\Exception\UnexpectedValueException('Class ' . $meta->name . ' is not a valid entity or mapped super class.');
+        // commenting it for customized mapping support, debugging of such cases might get harder
+        //throw new \Gedmo\Exception\UnexpectedValueException('Class ' . $meta->name . ' is not a valid entity or mapped super class.');
     }
 
     /**
