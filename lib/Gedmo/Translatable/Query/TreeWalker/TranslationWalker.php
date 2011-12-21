@@ -38,13 +38,6 @@ class TranslationWalker extends SqlWalker
     const HINT_TRANSLATION_FALLBACKS = '__gedmo.translatable.stored.fallbacks';
 
     /**
-     * Name for translation listener hint
-     *
-     * @internal
-     */
-    const HINT_TRANSLATION_LISTENER = '__gedmo.translatable.listener';
-
-    /**
      * Customized object hydrator name
      *
      * @internal
@@ -64,14 +57,6 @@ class TranslationWalker extends SqlWalker
      * @var array
      */
     private $translatedComponents = array();
-
-    /**
-     * Current TranslationListener instance used
-     * in EntityManager
-     *
-     * @var TranslationListener
-     */
-    private $listener;
 
     /**
      * DBAL database platform
@@ -137,8 +122,6 @@ class TranslationWalker extends SqlWalker
         }
 
         $hydrationMode = $this->getQuery()->getHydrationMode();
-
-        $this->getQuery()->setHint(self::HINT_TRANSLATION_LISTENER, $this->listener);
         if ($hydrationMode === Query::HYDRATE_OBJECT) {
             $this->getQuery()->setHydrationMode(self::HYDRATE_OBJECT_TRANSLATION);
             $this->getEntityManager()->getConfiguration()->addCustomHydrationMode(

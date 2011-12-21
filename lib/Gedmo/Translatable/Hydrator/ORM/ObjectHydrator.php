@@ -2,7 +2,7 @@
 
 namespace Gedmo\Translatable\Hydrator\ORM;
 
-use Gedmo\Translatable\Query\TreeWalker\TranslationWalker;
+use Gedmo\Translatable\TranslationListener;
 use Doctrine\ORM\Internal\Hydration\ObjectHydrator as BaseObjectHydrator;
 
 /**
@@ -25,7 +25,7 @@ class ObjectHydrator extends BaseObjectHydrator
      */
     protected function _hydrateAll()
     {
-        $listener = $this->_hints[TranslationWalker::HINT_TRANSLATION_LISTENER];
+        $listener = $this->getTranslationListener();
         $listener->setSkipOnLoad(true);
         $result = parent::_hydrateAll();
         $listener->setSkipOnLoad(false);
@@ -38,10 +38,37 @@ class ObjectHydrator extends BaseObjectHydrator
      */
     protected function hydrateAllData()
     {
-        $listener = $this->_hints[TranslationWalker::HINT_TRANSLATION_LISTENER];
+        $listener = $this->getTranslationListener();
         $listener->setSkipOnLoad(true);
         $result = parent::hydrateAllData();
         $listener->setSkipOnLoad(false);
         return $result;
+    }
+
+    /**
+     * Get the currently used TranslationListener
+     *
+     * @throws \Gedmo\Exception\RuntimeException - if listener is not found
+     * @return TranslationListener
+     */
+    protected function getTranslationListener()
+    {
+        $translationListener = null;
+        foreach ($this->_em->getEventManager()->getListeners() as $event => $listeners) {
+            foreach ($listeners as $hash => $listener) {
+                if ($listener instanceof TranslationListener) {
+                    $translationListener = $listener;
+                    break;
+                }
+            }
+            if ($translationListener) {
+                break;
+            }
+        }
+
+        if (is_null($translationListener)) {
+            throw new \Gedmo\Exception\RuntimeException('The translation listener could not be found');
+        }
+        return $translationListener;
     }
 }

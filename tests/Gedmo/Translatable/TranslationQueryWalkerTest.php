@@ -41,6 +41,33 @@ class TranslationQueryWalkerTest extends BaseTestCaseORM
         $this->populate();
     }
 
+    /**
+     * @test
+     */
+    function shouldHandleQueryCache()
+    {
+        $cache = new \Doctrine\Common\Cache\ArrayCache();
+        $this->em
+            ->getConfiguration()
+            ->expects($this->any())
+            ->method('getQueryCacheImpl')
+            ->will($this->returnValue($cache))
+        ;
+        $dql = 'SELECT a FROM ' . self::ARTICLE . ' a';
+        $q = $this->em->createQuery($dql);
+        $q->setHint(Query::HINT_CUSTOM_OUTPUT_WALKER, self::TREE_WALKER_TRANSLATION);
+
+        // array hydration
+        $this->translationListener->setTranslatableLocale('en_us');
+        $result = $q->getArrayResult();
+        $this->assertEquals(1, count($result));
+
+        $q2 = clone $q;
+        $q2->setHint(Query::HINT_CUSTOM_OUTPUT_WALKER, self::TREE_WALKER_TRANSLATION);
+        $result = $q->getArrayResult();
+        $this->assertEquals(1, count($result));
+    }
+
     public function testSubselectByTranslatedField()
     {
         $this->populateMore();
