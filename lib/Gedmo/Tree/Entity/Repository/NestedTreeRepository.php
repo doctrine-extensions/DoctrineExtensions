@@ -94,6 +94,8 @@ class NestedTreeRepository extends AbstractTreeRepository
                     throw new \Gedmo\Exception\InvalidArgumentException('If "Of" is specified you must provide parent or sibling as the second argument');
                 }
                 $parent = $args[1];
+    			$parent = substr($method,-7) == 'ChildOf' ? $parent : $parent->getParent();
+                
                 $wrapped->setPropertyValue($config['parent'], $parent);
                 $position = substr($position, 0, -2);
             }
