@@ -59,7 +59,7 @@ class Item
         return $this->position;
     }
 
-    public function setCategory(Category $category)
+    public function setCategory(Category $category = null)
     {
         $this->category = $category;
     }
