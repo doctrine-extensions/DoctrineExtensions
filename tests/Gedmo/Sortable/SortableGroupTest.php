@@ -57,8 +57,9 @@ class SortableGroupTest extends BaseTestCaseORM
 
         $icarus = $this->em->getRepository(self::BUS)->findOneByTitle('Icarus');
         $this->assertEquals(2, $icarus->getSortByEngine());
-        //$this->em->remove($audi);
-        //$this->em->flush();
+
+        $this->em->remove($audi80);
+        $this->em->flush();
     }
 
     protected function getUsedEntityFixtures()
