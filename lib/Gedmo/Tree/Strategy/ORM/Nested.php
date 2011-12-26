@@ -287,19 +287,15 @@ class Nested implements Strategy
             switch ($position) {
                 case self::PREV_SIBLING:
                     $newParent = $wrappedParent->getPropertyValue($config['parent']);
-                    if (!$isNewNode) {
-                        $wrapped->setPropertyValue($config['parent'], $newParent);
-                        $em->getUnitOfWork()->recomputeSingleEntityChangeSet($meta, $node);
-                    }
+                    $wrapped->setPropertyValue($config['parent'], $newParent);
+                    $em->getUnitOfWork()->recomputeSingleEntityChangeSet($meta, $node);
                     $start = $parentLeft;
                     break;
 
                 case self::NEXT_SIBLING:
                     $newParent = $wrappedParent->getPropertyValue($config['parent']);
-                    if (!$isNewNode) {
-                        $wrapped->setPropertyValue($config['parent'], $newParent);
-                        $em->getUnitOfWork()->recomputeSingleEntityChangeSet($meta, $node);
-                    }
+                    $wrapped->setPropertyValue($config['parent'], $newParent);
+                    $em->getUnitOfWork()->recomputeSingleEntityChangeSet($meta, $node);
                     $start = $parentRight + 1;
                     break;
 
