@@ -93,17 +93,16 @@ class NestedTreeRepository extends AbstractTreeRepository
                 if (!isset($args[1])) {
                     throw new \Gedmo\Exception\InvalidArgumentException('If "Of" is specified you must provide parent or sibling as the second argument');
                 }
-                $parent = $args[1];
-    			$parent = substr($method,-7) == 'ChildOf' ? $parent : $parent->getParent();
-                
-                $wrapped->setPropertyValue($config['parent'], $parent);
+                $parentOrSibling = $args[1];
+                $wrapped->setPropertyValue($config['parent'], $parentOrSibling);
                 $position = substr($position, 0, -2);
             }
             $wrapped->setPropertyValue($config['left'], 0); // simulate changeset
             $oid = spl_object_hash($node);
             $this->listener
                 ->getStrategy($this->_em, $meta->name)
-                ->setNodePosition($oid, $position);
+                ->setNodePosition($oid, $position)
+            ;
 
             $this->_em->persist($node);
             return $this;
