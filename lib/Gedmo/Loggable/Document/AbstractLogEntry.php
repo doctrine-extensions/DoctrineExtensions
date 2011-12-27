@@ -22,14 +22,14 @@ abstract class AbstractLogEntry
      *
      * @Id
      */
-    private $id;
+    protected $id;
 
     /**
      * @var string $action
      *
      * @String
      */
-    private $action;
+    protected $action;
 
     /**
      * @var datetime $loggedAt
@@ -37,7 +37,7 @@ abstract class AbstractLogEntry
      * @Index
      * @Date
      */
-    private $loggedAt;
+    protected $loggedAt;
 
     /**
      * @var string $objectId
@@ -59,7 +59,7 @@ abstract class AbstractLogEntry
      *
      * @Int
      */
-    private $version;
+    protected $version;
 
     /**
      * @var text $data

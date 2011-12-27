@@ -21,42 +21,42 @@ abstract class AbstractTranslation
      * @Id
      * @GeneratedValue
      */
-    private $id;
+    protected $id;
 
     /**
      * @var string $locale
      *
      * @Column(type="string", length=8)
      */
-    private $locale;
+    protected $locale;
 
     /**
      * @var string $objectClass
      *
      * @Column(name="object_class", type="string", length=255)
      */
-    private $objectClass;
+    protected $objectClass;
 
     /**
      * @var string $field
      *
      * @Column(type="string", length=32)
      */
-    private $field;
+    protected $field;
 
     /**
      * @var string $foreignKey
      *
      * @Column(name="foreign_key", type="string", length=64)
      */
-    private $foreignKey;
+    protected $foreignKey;
 
     /**
      * @var text $content
      *
      * @Column(type="text", nullable=true)
      */
-    private $content;
+    protected $content;
 
     /**
      * Get id

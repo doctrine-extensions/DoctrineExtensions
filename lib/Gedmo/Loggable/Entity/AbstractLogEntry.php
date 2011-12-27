@@ -21,21 +21,21 @@ abstract class AbstractLogEntry
      * @Id
      * @GeneratedValue
      */
-    private $id;
+    protected $id;
 
     /**
      * @var string $action
      *
      * @Column(type="string", length=8)
      */
-    private $action;
+    protected $action;
 
     /**
      * @var string $loggedAt
      *
      * @Column(name="logged_at", type="datetime")
      */
-    private $loggedAt;
+    protected $loggedAt;
 
     /**
      * @var string $objectId
@@ -56,7 +56,7 @@ abstract class AbstractLogEntry
      *
      * @Column(type="integer")
      */
-    private $version;
+    protected $version;
 
     /**
      * @var text $data
