@@ -32,24 +32,9 @@ class SortableListener extends MappedEventSubscriber
     public function getSubscribedEvents()
     {
         return array(
-            'prePersist',
             'onFlush',
             'loadClassMetadata'
         );
-    }
-
-    public function prePersist(EventArgs $args)
-    {
-        $ea = $this->getEventAdapter($args);
-        $om = $ea->getObjectManager();
-        $object = $ea->getObject();
-        $meta = $om->getClassMetadata(get_class($object));
-        if ($config = $this->getConfiguration($om, $meta->name)) {
-            if (isset($config['position'])
-                    && is_null($meta->getReflectionProperty($config['position'])->getValue($object))) {
-                $meta->getReflectionProperty($config['position'])->setValue($object, -1);
-            }
-        }
     }
 
     /**
