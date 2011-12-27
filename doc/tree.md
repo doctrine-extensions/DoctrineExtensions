@@ -518,7 +518,7 @@ To load a tree as **ul - li** html tree use:
         ->createQueryBuilder()
         ->select('node')
         ->from('Entity\Category', 'node')
-        ->orderBy('node.root, node.left', 'ASC')
+        ->orderBy('node.root, node.lft', 'ASC')
         ->where('node.root = 1')
         ->getQuery()
     ;
