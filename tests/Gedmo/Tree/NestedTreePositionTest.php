@@ -30,6 +30,46 @@ class NestedTreePositionTest extends BaseTestCaseORM
         $this->getMockSqliteEntityManager($evm);
     }
 
+    /**
+    * @test
+    * @expectedException UnexpectedValueException
+    */
+    function shouldFailToPersistRootSibling()
+    {
+        $food = new Category;
+        $food->setTitle('Food');
+
+        $sport = new Category;
+        $sport->setTitle('Sport');
+
+        $repo = $this->em->getRepository(self::CATEGORY);
+
+        $repo->persistAsFirstChild($food);
+        $repo->persistAsNextSiblingOf($sport, $food);
+
+        $this->em->flush();
+    }
+
+    /**
+     * @test
+     * @expectedException UnexpectedValueException
+     */
+    function shouldFailToPersistRootAsSiblingForRootBasedTree()
+    {
+        $food = new RootCategory;
+        $food->setTitle('Food');
+
+        $sport = new RootCategory;
+        $sport->setTitle('Sport');
+
+        $repo = $this->em->getRepository(self::ROOT_CATEGORY);
+
+        $repo->persistAsFirstChild($food);
+        $repo->persistAsNextSiblingOf($sport, $food);
+
+        $this->em->flush();
+    }
+
     public function testTreeChildPositionMove2()
     {
         $this->populate();

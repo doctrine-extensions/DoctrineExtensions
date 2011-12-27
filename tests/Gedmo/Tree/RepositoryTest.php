@@ -320,6 +320,9 @@ class RepositoryTest extends BaseTestCaseORM
 
         $this->assertEquals($left, 3);
         $this->assertEquals($right, 12);
+        $this->assertEquals(null, $food->getParent());
+
+        $this->assertTrue($repo->verify());
     }
 
     protected function getUsedEntityFixtures()
