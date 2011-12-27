@@ -270,27 +270,26 @@ class SortableListener extends MappedEventSubscriber
                 }
                 $sign = $delta['delta'] < 0 ? "-" : "+";
                 $absDelta = abs($delta['delta']);
-                $qb = $em->createQueryBuilder();
-                $qb->update($relocation['name'], 'n')
-                   ->set("n.{$config['position']}", "n.{$config['position']} ".$sign." :delta")
-                   ->where("n.{$config['position']} >= :start")
-                   ->setParameter('delta', $absDelta)
-                   ->setParameter('start', $delta['start']);
+                $dql = "UPDATE {$relocation['name']} n";
+                $dql .= " SET n.{$config['position']} = n.{$config['position']} {$sign} {$absDelta}";
+                $dql .= " WHERE n.{$config['position']} >= {$delta['start']}";
+                // if not null, false or 0
                 if ($delta['stop'] > 0) {
-                    $qb->andWhere("n.{$config['position']} < :stop")
-                       ->setParameter('stop', $delta['stop']);
+                    $dql .= " AND n.{$config['position']} < {$delta['stop']}";
                 }
-                $i = 1;
-                foreach ($relocation['groups'] as $group => $val) {
-                    if (is_null($val)) {
-                        $qb->andWhere($qb->expr()->isNull('n.'.$group));
+                $i = -1;
+                $params = array();
+                foreach ($relocation['groups'] as $group => $value) {
+                    if (is_null($value)) {
+                        $dql .= " AND n.{$group} IS NULL";
                     } else {
-                        $qb->andWhere('n.'.$group.' = :group__'.$i);
-                        $qb->setParameter('group__'.$i, $val);
+                        $dql .= " AND n.{$group} = :val___".(++$i);
+                        $params['val___'.$i] = $value;
                     }
-                    $i++;
                 }
-                $qb->getQuery()->getResult();
+                $q = $em->createQuery($dql);
+                $q->setParameters($params);
+                $q->getSingleScalarResult();
             }
         }
 
