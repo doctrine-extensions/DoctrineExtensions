@@ -3,7 +3,6 @@
 namespace Gedmo\Mapping;
 
 use Doctrine\Common\Persistence\ObjectManager;
-use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 use Gedmo\Mapping\Driver\File as FileDriver;
 use Gedmo\Mapping\Driver\AnnotationDriverInterface;
 use Doctrine\ORM\Tools\DisconnectedClassMetadataFactory;
@@ -68,7 +67,7 @@ final class ExtensionMetadataFactory
      * @param ClassMetadata $meta
      * @return array - the metatada configuration
      */
-    public function getExtensionMetadata(ClassMetadata $meta)
+    public function getExtensionMetadata($meta)
     {
         if ($meta->isMappedSuperclass) {
             return; // ignore mappedSuperclasses for now
