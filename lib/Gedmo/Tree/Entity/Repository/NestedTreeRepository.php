@@ -792,9 +792,9 @@ class NestedTreeRepository extends AbstractTreeRepository
      * @param array $options :
      *     decorate: boolean (false) - retrieves tree as UL->LI tree
      *     nodeDecorator: Closure (null) - uses $node as argument and returns decorated item as string
-     *     rootOpen: string ('<ul>') - branch start
+     *     rootOpen: string || Closure ('<ul>') - branch start, closure will be given $children as a parameter
      *     rootClose: string ('</ul>') - branch close
-     *     childStart: string ('<li>') - start of node
+     *     childStart: string || Closure ('<li>') - start of node, closure will be given $node as a parameter
      *     childClose: string ('</li>') - close of node
      *
      * @return array|string
@@ -977,10 +977,20 @@ class NestedTreeRepository extends AbstractTreeRepository
     }
 
     /**
-     * Builds the tree
+     * Retrieves the nested array or the decorated output.
+     * Uses @options to handle decorations
+     * NOTE: @nodes should be fetched and hydrated as array
      *
-     * @param array $nodes - array result of ORM query
-     * @param array $options
+     * @throws \Gedmo\Exception\InvalidArgumentException
+     * @param array $nodes - list o nodes to build tree
+     * @param array $options :
+     *     decorate: boolean (false) - retrieves tree as UL->LI tree
+     *     nodeDecorator: Closure (null) - uses $node as argument and returns decorated item as string
+     *     rootOpen: string || Closure ('<ul>') - branch start, closure will be given $children as a parameter
+     *     rootClose: string ('</ul>') - branch close
+     *     childStart: string || Closure ('<li>') - start of node, closure will be given $node as a parameter
+     *     childClose: string ('</li>') - close of node
+     *
      * @return array|string
      */
     public function buildTree(array $nodes, array &$options = array())
@@ -1044,9 +1054,10 @@ class NestedTreeRepository extends AbstractTreeRepository
         }
 
         $build = function($tree) use (&$build, &$options) {
-            $output = $options['rootOpen'];
+            $output = is_string($options['rootOpen']) ? $options['rootOpen'] : $options['rootOpen']($tree);
             foreach ($tree as $node) {
-                $output .= $options['childOpen'] . $options['nodeDecorator']($node);
+                $output .= is_string($options['childOpen']) ? $options['childOpen'] : $options['childOpen']($node);
+                $output .= $options['nodeDecorator']($node);
                 if (count($node['__children']) > 0) {
                     $output .= $build($node['__children']);
                 }

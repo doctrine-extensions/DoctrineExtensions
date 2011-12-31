@@ -94,6 +94,22 @@ class NestedTreeRootRepositoryTest extends BaseTestCaseORM
             "-Fruits\n-Vegitables\n--Carrots\n--Potatoes\n",
             $decoratedCliTree
         );
+
+        $rootOpen = function () {return '<ul class="group">';};
+        $childOpen = function (&$node) {
+            return '<li class="depth'.$node['level'].'">';
+        };
+
+        $decoratedHtmlTree = $repo->childrenHierarchy(
+            $food,
+            false,
+            compact('decorate', 'rootOpen', 'childOpen')
+        );
+
+        $this->assertEquals(
+            '<ul class="group"><li class="depth1">Fruits</li><li class="depth1">Vegitables<ul class="group"><li class="depth2">Carrots</li><li class="depth2">Potatoes</li></ul></li></ul>',
+            $decoratedHtmlTree
+        );
     }
 
     /**
