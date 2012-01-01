@@ -129,6 +129,9 @@ class NestedTreeRootRepositoryTest extends BaseTestCaseORM
         $tree = $repo->buildTree($q->getArrayResult());
         $this->assertEquals(1, count($tree));
         $this->assertEquals(2, count($tree[0]['__children']));
+        $nodes = array();
+        $options = array('decorate' => true);
+        $this->assertEquals('', $repo->buildTree($nodes, $options), 'should give empty string when there are no nodes given');
     }
 
     public function testRootRemoval()

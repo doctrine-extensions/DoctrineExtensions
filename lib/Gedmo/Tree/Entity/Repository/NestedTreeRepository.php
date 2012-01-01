@@ -993,7 +993,7 @@ class NestedTreeRepository extends AbstractTreeRepository
      *
      * @return array|string
      */
-    public function buildTree(array $nodes, array &$options = array())
+    public function buildTree(array $nodes, array $options = array())
     {
         //process the nested tree into a nested array
         $meta = $this->getClassMetadata();
@@ -1049,8 +1049,10 @@ class NestedTreeRepository extends AbstractTreeRepository
         );
         $options = array_merge($default, $options);
         // If you don't want any html output it will return the nested array
-        if (!$options['decorate'] || !count($nestedTree)) {
+        if (!$options['decorate']) {
             return $nestedTree;
+        } elseif (!count($nestedTree)) {
+            return '';
         }
 
         $build = function($tree) use (&$build, &$options) {
