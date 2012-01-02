@@ -3,7 +3,6 @@
 namespace Gedmo\Translatable\Mapping\Driver;
 
 use Gedmo\Mapping\Driver\AnnotationDriverInterface,
-    Doctrine\Common\Persistence\Mapping\ClassMetadata,
     Gedmo\Exception\InvalidMappingException;
 
 /**
@@ -65,7 +64,7 @@ class Annotation implements AnnotationDriverInterface
     /**
      * {@inheritDoc}
      */
-    public function readExtendedMetadata(ClassMetadata $meta, array &$config) {
+    public function readExtendedMetadata($meta, array &$config) {
         $class = $meta->getReflectionClass();
         // class annotations
         if ($annot = $this->reader->getClassAnnotation($class, self::ENTITY_CLASS)) {

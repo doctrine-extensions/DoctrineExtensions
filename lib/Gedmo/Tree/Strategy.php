@@ -33,7 +33,7 @@ interface Strategy
      * Operations after metadata is loaded
      *
      * @param object $om
-     * @param ClassMetadata $meta
+     * @param object $meta
      */
     function processMetadataLoad($om, $meta);
 

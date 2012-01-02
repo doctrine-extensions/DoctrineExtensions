@@ -3,7 +3,6 @@
 namespace Gedmo\Loggable\Mapping\Event\Adapter;
 
 use Gedmo\Mapping\Event\Adapter\ODM as BaseAdapterODM;
-use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 use Gedmo\Loggable\Mapping\Event\LoggableAdapter;
 
 /**
@@ -29,7 +28,7 @@ final class ODM extends BaseAdapterODM implements LoggableAdapter
     /**
      * {@inheritDoc}
      */
-    public function getNewVersion(ClassMetadata $meta, $object)
+    public function getNewVersion($meta, $object)
     {
         $dm = $this->getObjectManager();
         $objectMeta = $dm->getClassMetadata(get_class($object));
