@@ -6,8 +6,6 @@ use Gedmo\Mapping\Driver\File,
     Gedmo\Mapping\Driver,
     Gedmo\Exception\InvalidMappingException;
 
-use Doctrine\Common\Persistence\Mapping\ClassMetadata;
-
 /**
  * This is a yaml mapping driver for Sortable
  * behavioral extension. Used for extraction of extended
@@ -42,7 +40,7 @@ class Yaml extends File implements Driver
     /**
      * {@inheritDoc}
      */
-    public function readExtendedMetadata(ClassMetadata $meta, array &$config)
+    public function readExtendedMetadata($meta, array &$config)
     {
         $mapping = $this->_getMapping($meta->name);
 
@@ -99,7 +97,7 @@ class Yaml extends File implements Driver
     /**
      * Checks if $field type is valid as SortablePosition field
      *
-     * @param ClassMetadata $meta
+     * @param object $meta
      * @param string $field
      * @return boolean
      */

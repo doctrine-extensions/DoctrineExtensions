@@ -3,7 +3,6 @@
 namespace Gedmo\Loggable;
 
 use Doctrine\Common\Persistence\ObjectManager,
-    Doctrine\Common\Persistence\Mapping\ClassMetadata,
     Gedmo\Mapping\MappedEventSubscriber,
     Gedmo\Loggable\Mapping\Event\LoggableAdapter,
     Doctrine\Common\EventArgs;

@@ -3,7 +3,6 @@
 namespace Gedmo\Timestampable\Mapping\Event\Adapter;
 
 use Gedmo\Mapping\Event\Adapter\ORM as BaseAdapterORM;
-use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 use Gedmo\Timestampable\Mapping\Event\TimestampableAdapter;
 
 /**
@@ -21,7 +20,7 @@ final class ORM extends BaseAdapterORM implements TimestampableAdapter
     /**
      * {@inheritDoc}
      */
-    public function getDateValue(ClassMetadata $meta, $field)
+    public function getDateValue($meta, $field)
     {
         if (isset($mapping['type']) && $mapping['type'] == 'zenddate') {
             return new \Zend_Date();

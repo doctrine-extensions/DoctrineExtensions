@@ -3,7 +3,6 @@
 namespace Gedmo\Sluggable\Handler;
 
 use Doctrine\Common\Persistence\ObjectManager;
-use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 use Gedmo\Sluggable\SluggableListener;
 use Gedmo\Sluggable\Mapping\Event\SluggableAdapter;
 use Gedmo\Tool\Wrapper\AbstractWrapper;
@@ -111,7 +110,7 @@ class RelativeSlugHandler implements SlugHandlerInterface
     /**
      * {@inheritDoc}
      */
-    public static function validate(array $options, ClassMetadata $meta)
+    public static function validate(array $options, $meta)
     {
         if (!$meta->isSingleValuedAssociation($options['relationField'])) {
             throw new InvalidMappingException("Unable to find slug relation through field - [{$options['relationField']}] in class - {$meta->name}");

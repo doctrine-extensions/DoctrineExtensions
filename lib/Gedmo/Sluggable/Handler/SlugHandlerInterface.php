@@ -3,7 +3,6 @@
 namespace Gedmo\Sluggable\Handler;
 
 use Doctrine\Common\Persistence\ObjectManager;
-use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 use Gedmo\Sluggable\SluggableListener;
 use Gedmo\Sluggable\Mapping\Event\SluggableAdapter;
 
@@ -69,5 +68,5 @@ interface SlugHandlerInterface
      *
      * @param array $options
      */
-    static function validate(array $options, ClassMetadata $meta);
+    static function validate(array $options, $meta);
 }

@@ -2,8 +2,7 @@
 
 namespace Gedmo\Mapping\Driver;
 
-use Gedmo\Mapping\Driver,
-    Doctrine\Common\Persistence\Mapping\ClassMetadata;
+use Gedmo\Mapping\Driver;
 
 /**
  * The chain mapping driver enables chained
@@ -47,7 +46,7 @@ class Chain implements Driver
     /**
      * {@inheritDoc}
      */
-    public function readExtendedMetadata(ClassMetadata $meta, array &$config)
+    public function readExtendedMetadata($meta, array &$config)
     {
         foreach ($this->_drivers as $namespace => $driver) {
             if (strpos($meta->name, $namespace) === 0) {

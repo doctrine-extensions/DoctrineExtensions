@@ -6,7 +6,6 @@ namespace Gedmo\Mapping\Mock\Extension\Encoder\Mapping\Driver;
 
 use Gedmo\Mapping\Driver;
 use Doctrine\Common\Annotations\AnnotationReader;
-use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 
 class Annotation implements Driver
 {
@@ -15,7 +14,7 @@ class Annotation implements Driver
      */
     protected $_originalDriver = null;
 
-    public function readExtendedMetadata(ClassMetadata $meta, array &$config) {
+    public function readExtendedMetadata($meta, array &$config) {
         // load our available annotations
         require_once __DIR__ . '/../Annotations.php';
         $reader = new AnnotationReader();

@@ -164,7 +164,7 @@ abstract class MappedEventSubscriber implements EventSubscriber
      * event subscribers must subscribe to loadClassMetadata event
      *
      * @param ObjectManager $objectManager
-     * @param ClassMetadata $metadata
+     * @param object $metadata
      * @return void
      */
     public function loadMetadataForObjectClass(ObjectManager $objectManager, $metadata)

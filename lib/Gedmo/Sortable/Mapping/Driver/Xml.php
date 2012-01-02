@@ -5,8 +5,6 @@ namespace Gedmo\Sortable\Mapping\Driver;
 use Gedmo\Mapping\Driver\Xml as BaseXml,
     Gedmo\Exception\InvalidMappingException;
 
-use Doctrine\Common\Persistence\Mapping\ClassMetadata;
-
 /**
  * This is a xml mapping driver for Sortable
  * behavioral extension. Used for extraction of extended
@@ -36,7 +34,7 @@ class Xml extends BaseXml
     /**
      * {@inheritDoc}
      */
-    public function readExtendedMetadata(ClassMetadata $meta, array &$config)
+    public function readExtendedMetadata($meta, array &$config)
     {
         /**
          * @var \SimpleXmlElement $xml
@@ -102,7 +100,7 @@ class Xml extends BaseXml
     /**
      * Checks if $field type is valid as Sortable Position field
      *
-     * @param ClassMetadata $meta
+     * @param object $meta
      * @param string $field
      * @return boolean
      */

@@ -4,7 +4,6 @@ namespace Gedmo\Tree\Mapping\Driver;
 
 use Gedmo\Mapping\Driver\File,
     Gedmo\Mapping\Driver,
-    Doctrine\Common\Persistence\Mapping\ClassMetadata,
     Gedmo\Exception\InvalidMappingException;
 
 /**
@@ -51,7 +50,7 @@ class Yaml extends File implements Driver
     /**
      * {@inheritDoc}
      */
-    public function readExtendedMetadata(ClassMetadata $meta, array &$config)
+    public function readExtendedMetadata($meta, array &$config)
     {
         $mapping = $this->_getMapping($meta->name);
 
@@ -136,11 +135,11 @@ class Yaml extends File implements Driver
     /**
      * Checks if $field type is valid
      *
-     * @param ClassMetadata $meta
+     * @param object $meta
      * @param string $field
      * @return boolean
      */
-    protected function isValidField(ClassMetadata $meta, $field)
+    protected function isValidField($meta, $field)
     {
         $mapping = $meta->getFieldMapping($field);
         return $mapping && in_array($mapping['type'], $this->validTypes);
@@ -149,12 +148,12 @@ class Yaml extends File implements Driver
     /**
      * Validates metadata for nested type tree
      *
-     * @param ClassMetadata $meta
+     * @param object $meta
      * @param array $config
      * @throws InvalidMappingException
      * @return void
      */
-    private function validateNestedTreeMetadata(ClassMetadata $meta, array $config)
+    private function validateNestedTreeMetadata($meta, array $config)
     {
         $missingFields = array();
         if (!isset($config['parent'])) {
@@ -174,12 +173,12 @@ class Yaml extends File implements Driver
     /**
      * Validates metadata for closure type tree
      *
-     * @param ClassMetadata $meta
+     * @param object $meta
      * @param array $config
      * @throws InvalidMappingException
      * @return void
      */
-    private function validateClosureTreeMetadata(ClassMetadata $meta, array $config)
+    private function validateClosureTreeMetadata($meta, array $config)
     {
         $missingFields = array();
         if (!isset($config['parent'])) {

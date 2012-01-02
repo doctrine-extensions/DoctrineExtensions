@@ -2,7 +2,6 @@
 
 namespace Gedmo\Sluggable\Mapping\Event;
 
-use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 use Gedmo\Mapping\Event\AdapterInterface;
 
 /**
@@ -21,12 +20,12 @@ interface SluggableAdapter extends AdapterInterface
      * Loads the similar slugs
      *
      * @param object $object
-     * @param ClassMetadata $meta
+     * @param object $meta
      * @param array $config
      * @param string $slug
      * @return array
      */
-    function getSimilarSlugs($object, ClassMetadata $meta, array $config, $slug);
+    function getSimilarSlugs($object, $meta, array $config, $slug);
 
     /**
      * Replace part of slug to all objects

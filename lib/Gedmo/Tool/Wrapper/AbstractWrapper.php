@@ -23,7 +23,7 @@ abstract class AbstractWrapper implements WrapperInterface
     /**
      * Object metadata
      *
-     * @var \Doctrine\Common\Persistence\Mapping\ClassMetadata
+     * @var object
      */
     protected $meta;
 

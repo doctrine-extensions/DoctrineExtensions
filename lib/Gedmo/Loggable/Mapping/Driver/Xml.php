@@ -3,7 +3,6 @@
 namespace Gedmo\Loggable\Mapping\Driver;
 
 use Gedmo\Mapping\Driver\Xml as BaseXml,
-    Doctrine\Common\Persistence\Mapping\ClassMetadata,
     Gedmo\Exception\InvalidMappingException;
 
 /**
@@ -25,7 +24,7 @@ class Xml extends BaseXml
     /**
      * {@inheritDoc}
      */
-    public function readExtendedMetadata(ClassMetadata $meta, array &$config)
+    public function readExtendedMetadata($meta, array &$config)
     {
         /**
          * @var \SimpleXmlElement $xml
@@ -77,9 +76,9 @@ class Xml extends BaseXml
      *
      * @param SimpleXMLElement $element
      * @param array $config
-     * @param ClassMetadata $meta
+     * @param object $meta
      */
-    private function inspectElementForVersioned(\SimpleXMLElement $element, array &$config, ClassMetadata $meta)
+    private function inspectElementForVersioned(\SimpleXMLElement $element, array &$config, $meta)
     {
         foreach ($element as $mapping) {
             $mappingDoctrine = $mapping;
