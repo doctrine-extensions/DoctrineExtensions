@@ -23,38 +23,40 @@ you had to make aliases for namespaces (like __gedmo:Translatable__), this strat
 was limited and errors were not self explanatory. Now you have to add a **use** statement
 for each annotation you use in your mapping, see example bellow:
 
-    namespace MyApp\Entity;
-    
-    use Gedmo\Mapping\Annotation as Gedmo; // this will be like an alias before
-    use Doctrine\ORM\Mapping\Id; // includes single annotation
-    use Doctrine\ORM\Mapping as ORM;
+``` php
+namespace MyApp\Entity;
+
+use Gedmo\Mapping\Annotation as Gedmo; // this will be like an alias before
+use Doctrine\ORM\Mapping\Id; // includes single annotation
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * @ORM\Entity
+ * @Gedmo\TranslationEntity(class="something")
+ */
+class Article
+{
+    /**
+     * @Id
+     * @ORM\GeneratedValue
+     * @ORM\Column(type="integer")
+     */
+    private $id;
     
     /**
-     * @ORM\Entity
-     * @Gedmo\TranslationEntity(class="something")
+     * @Gedmo\Translatable
+     * @Gedmo\Sluggable
+     * @ORM\Column(length=64)
      */
-    class Article
-    {
-        /**
-         * @Id
-         * @ORM\GeneratedValue
-         * @ORM\Column(type="integer")
-         */
-        private $id;
-        
-        /**
-         * @Gedmo\Translatable
-         * @Gedmo\Sluggable
-         * @ORM\Column(length=64)
-         */
-        private $title;
-        
-        /**
-         * @Gedmo\Slug
-         * @ORM\Column(length=64, unique=true)
-         */
-        private $slug;
-    }
+    private $title;
+    
+    /**
+     * @Gedmo\Slug
+     * @ORM\Column(length=64, unique=true)
+     */
+    private $slug;
+}
+```
 
 **Note:** this new mapping applies only if you use **doctrine-common** library at version **2.1.x** or higher
 extension library still supports old mapping styles if you manually set the mapping drivers
@@ -65,55 +67,56 @@ New annotation reader does not depend on any namespaces, for that reason you can
 single reader instance for whole project. The example bellow shows how to setup the
 mapping and listeners:
 
+``` php
+$reader = new \Doctrine\Common\Annotations\AnnotationReader();
+$annotationDriver = new \Doctrine\ORM\Mapping\Driver\AnnotationDriver($reader);
+Doctrine\Common\Annotations\AnnotationRegistry::registerAutoloadNamespace(
+    'Gedmo\\Mapping\\Annotation',
+    'path/to/gedmo/extension/library'
+);
 
-    $reader = new \Doctrine\Common\Annotations\AnnotationReader();
-    $annotationDriver = new \Doctrine\ORM\Mapping\Driver\AnnotationDriver($reader);
-    Doctrine\Common\Annotations\AnnotationRegistry::registerAutoloadNamespace(
-        'Gedmo\\Mapping\\Annotation',
-        'path/to/gedmo/extension/library'
-    );
-    
-    $chain = new \Doctrine\ORM\Mapping\Driver\DriverChain;
-    $annotationDriver = new Doctrine\ORM\Mapping\Driver\AnnotationDriver($annotationReader, array(
-        __DIR__.'/../your/application/source/Entity',
-        'path/to/gedmo/extension/library'.'/Gedmo/Translatable/Entity',
-        'path/to/gedmo/extension/library'.'/Gedmo/Loggable/Entity',
-        'path/to/gedmo/extension/library'.'/Gedmo/Tree/Entity',
-    ));
-    // drivers
-    $driverChain->addDriver($annotationDriver, 'Gedmo\\Translatable\\Entity');
-    $driverChain->addDriver($annotationDriver, 'Gedmo\\Loggable\\Entity');
-    $driverChain->addDriver($annotationDriver, 'Gedmo\\Tree\\Entity');
-    $driverChain->addDriver($annotationDriver, 'Entity');
-    $config->setMetadataDriverImpl($driverChain);
-    
-    $config = new \Doctrine\ORM\Configuration();
-    $config->setMetadataDriverImpl($chain);
-    $config->setProxyDir(/*location*/);
-    $config->setProxyNamespace('Proxy');
-    $config->setAutoGenerateProxyClasses(false);
-    
-    $evm = new \Doctrine\Common\EventManager();
-    
-    $translatable = new \Gedmo\Translatable\TranslationListener();
-    $translatable->setAnnotationReader($reader);
-    $evm->addEventSubscriber($translatable);
-    
-    $tree = new \Gedmo\Tree\TreeListener;
-    $tree->setAnnotationReader($reader);
-    $evm->addEventSubscriber($tree);
-    
-    //...
-    $conn = array(
-        'driver' => 'pdo_mysql',
-        'host' => '127.0.0.1',
-        'dbname' => 'test',
-        'user' => 'root',
-        'password' => ''
-    );
-    $em = \Doctrine\ORM\EntityManager::create($conn, $config, $evm);
+$chain = new \Doctrine\ORM\Mapping\Driver\DriverChain;
+$annotationDriver = new Doctrine\ORM\Mapping\Driver\AnnotationDriver($annotationReader, array(
+    __DIR__.'/../your/application/source/Entity',
+    'path/to/gedmo/extension/library'.'/Gedmo/Translatable/Entity',
+    'path/to/gedmo/extension/library'.'/Gedmo/Loggable/Entity',
+    'path/to/gedmo/extension/library'.'/Gedmo/Tree/Entity',
+));
+// drivers
+$driverChain->addDriver($annotationDriver, 'Gedmo\\Translatable\\Entity');
+$driverChain->addDriver($annotationDriver, 'Gedmo\\Loggable\\Entity');
+$driverChain->addDriver($annotationDriver, 'Gedmo\\Tree\\Entity');
+$driverChain->addDriver($annotationDriver, 'Entity');
+$config->setMetadataDriverImpl($driverChain);
 
-**Notice:** that symfony2 StofDoctrineExtensionsBundle does it automatically this
+$config = new \Doctrine\ORM\Configuration();
+$config->setMetadataDriverImpl($chain);
+$config->setProxyDir(/*location*/);
+$config->setProxyNamespace('Proxy');
+$config->setAutoGenerateProxyClasses(false);
+
+$evm = new \Doctrine\Common\EventManager();
+
+$translatable = new \Gedmo\Translatable\TranslationListener();
+$translatable->setAnnotationReader($reader);
+$evm->addEventSubscriber($translatable);
+
+$tree = new \Gedmo\Tree\TreeListener;
+$tree->setAnnotationReader($reader);
+$evm->addEventSubscriber($tree);
+
+//...
+$conn = array(
+    'driver' => 'pdo_mysql',
+    'host' => '127.0.0.1',
+    'dbname' => 'test',
+    'user' => 'root',
+    'password' => ''
+);
+$em = \Doctrine\ORM\EntityManager::create($conn, $config, $evm);
+```
+
+**Note:** that symfony2 StofDoctrineExtensionsBundle does it automatically this
 way you will maintain a single instance of annotation reader. It relates only
 to doctrine-common-2.1.x branch and newer.
 
@@ -135,11 +138,14 @@ Is the main identificator of tree used for domain object which should **act as T
 
 example:
 
-    /**
-     * @Gedmo\Mapping\Annotation\Tree(type="nested")
-     * @Doctrine\ORM\Mapping\Entity(repositoryClass="Gedmo\Tree\Entity\Repository\NestedTreeRepository")
-     */
-    class Category ...
+``` php
+<?php
+/**
+ * @Gedmo\Mapping\Annotation\Tree(type="nested")
+ * @Doctrine\ORM\Mapping\Entity(repositoryClass="Gedmo\Tree\Entity\Repository\NestedTreeRepository")
+ */
+class Category ...
+```
 
 ### @Gedmo\Mapping\Annotation\TreeParent (required for all tree strategies)
 
@@ -150,12 +156,15 @@ relation
 
 example:
 
-    /**
-     * @Gedmo\Mapping\Annotation\TreeParent
-     * @Doctrine\ORM\Mapping\ManyToOne(targetEntity="Category")
-     * @Doctrine\ORM\Mapping\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="SET NULL")
-     */
-    private $parent;
+``` php
+<?php
+/**
+ * @Gedmo\Mapping\Annotation\TreeParent
+ * @Doctrine\ORM\Mapping\ManyToOne(targetEntity="Category")
+ * @Doctrine\ORM\Mapping\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="SET NULL")
+ */
+private $parent;
+```
 
 ### @Gedmo\Mapping\Annotation\TreeLeft (required for nested tree)
 
@@ -166,11 +175,14 @@ of nestedset left values. Property must be **integer** type.
 
 example:
 
-    /**
-     * @Gedmo\Mapping\Annotation\TreeLeft
-     * @Doctrine\ORM\Mapping\Column(type=integer)
-     */
-    private $lft;
+``` php
+<?php
+/**
+ * @Gedmo\Mapping\Annotation\TreeLeft
+ * @Doctrine\ORM\Mapping\Column(type=integer)
+ */
+private $lft;
+```
 
 ### @Gedmo\Mapping\Annotation\TreeRight (required for nested tree)
 
@@ -181,11 +193,14 @@ of nestedset right values. Property must be **integer** type.
 
 example:
 
-    /**
-     * @Gedmo\Mapping\Annotation\TreeRight
-     * @Doctrine\ORM\Mapping\Column(type=integer)
-     */
-    private $rgt;
+``` php
+<?php
+/**
+ * @Gedmo\Mapping\Annotation\TreeRight
+ * @Doctrine\ORM\Mapping\Column(type=integer)
+ */
+private $rgt;
+```
 
 ### @Gedmo\Mapping\Annotation\TreeRoot (optional for nested tree)
 
@@ -196,11 +211,14 @@ updating tree will cost less because each root will act as separate tree.
 
 example:
 
-    /**
-     * @Gedmo\Mapping\Annotation\TreeRoot
-     * @Doctrine\ORM\Mapping\Column(type=integer, nullable=true)
-     */
-    private $root;
+``` php
+<?php
+/**
+ * @Gedmo\Mapping\Annotation\TreeRoot
+ * @Doctrine\ORM\Mapping\Column(type=integer, nullable=true)
+ */
+private $root;
+```
 
 ### @Gedmo\Mapping\Annotation\TreeLevel (optional for nested tree)
 
@@ -211,11 +229,14 @@ is depth. Can be used for indentation for instance. Property must be **integer**
 
 example:
 
-    /**
-     * @Gedmo\Mapping\Annotation\TreeLevel
-     * @Doctrine\ORM\Mapping\Column(type=integer)
-     */
-    private $lvl;
+``` php
+<?php
+/**
+ * @Gedmo\Mapping\Annotation\TreeLevel
+ * @Doctrine\ORM\Mapping\Column(type=integer)
+ */
+private $lvl;
+```
 
 ### @Gedmo\Mapping\Annotation\TreeClosure (required for closure tree)
 
@@ -230,12 +251,15 @@ extend **AbstractClosure** in order to have personal closures.
 
 example:
 
-    /**
-     * @Gedmo\Mapping\Annotation\Tree(type="closure")
-     * @Gedmo\Mapping\Annotation\TreeClosure(class="Entity\CategoryClosure")
-     * @Doctrine\ORM\Mapping\Entity(repositoryClass="Gedmo\Tree\Entity\Repository\ClosureTreeRepository")
-     */
-    class Category ...
+``` php
+<?php
+/**
+ * @Gedmo\Mapping\Annotation\Tree(type="closure")
+ * @Gedmo\Mapping\Annotation\TreeClosure(class="Entity\CategoryClosure")
+ * @Doctrine\ORM\Mapping\Entity(repositoryClass="Gedmo\Tree\Entity\Repository\ClosureTreeRepository")
+ */
+class Category ...
+```
 
 ## Translatable annotations {#translatable}
 
@@ -255,11 +279,14 @@ translations. In large tables this can be very handy.
 
 example:
 
-    /**
-     * @Gedmo\Mapping\Annotation\TranslationEntity(class="Entity\ProductTranslation")
-     * @Doctrine\ORM\Mapping\Entity
-     */
-    class Product ...
+``` php
+<?php
+/**
+ * @Gedmo\Mapping\Annotation\TranslationEntity(class="Entity\ProductTranslation")
+ * @Doctrine\ORM\Mapping\Entity
+ */
+class Product ...
+```
 
 ### @Gedmo\Mapping\Annotation\Translatable (required in order to translate)
 
@@ -270,11 +297,14 @@ currently used locale. Locale can be forced through entity or set by **Translati
 
 example:
 
-    /**
-     * @Gedmo\Mapping\Annotation\Translatable
-     * @Doctrine\ORM\Mapping\Column(type=text)
-     */
-    private $content;
+``` php
+<?php
+/**
+ * @Gedmo\Mapping\Annotation\Translatable
+ * @Doctrine\ORM\Mapping\Column(type=text)
+ */
+private $content;
+```
     
 ### @Gedmo\Mapping\Annotation\Locale or @Gedmo\Mapping\Annotation\Language (optional)
 
@@ -286,10 +316,13 @@ it cannot be stored in database.
 
 example:
 
-    /**
-     * @Gedmo\Mapping\Annotation\Locale
-     */
-    private $locale;
+``` php
+<?php
+/**
+ * @Gedmo\Mapping\Annotation\Locale
+ */
+private $locale;
+```
 
 ## Sluggable annotations {#sluggable}
 
@@ -320,56 +353,68 @@ in order to synchronize updates regarding the relation changes, you will need to
 
 examples:
 
-    /**
-     * @Gedmo\Mapping\Annotation\Slug
-     * @Doctrine\ORM\Mapping\Column(length=64, unique=true)
-     */
-    private $slug;
+``` php
+<?php
+/**
+ * @Gedmo\Mapping\Annotation\Slug
+ * @Doctrine\ORM\Mapping\Column(length=64, unique=true)
+ */
+private $slug;
+```
 
 with TreeSlugHandler
 
-    /**
-     * @Gedmo\Mapping\Annotation\Slug(handlers={
-     *      @Gedmo\Mapping\Annotation\SlugHandler(class="Gedmo\Sluggable\Handler\TreeSlugHandler", options={
-     *          @Gedmo\Mapping\Annotation\SlugHandlerOption(name="parentRelationField", value="parent"),
-     *          @Gedmo\Mapping\Annotation\SlugHandlerOption(name="separator", value="/")
-     *      })
-     * }, separator="-", updatable=true)
-     * @Doctrine\ORM\Mapping\Column(length=64, unique=true)
-     */
-    private $slug;
+``` php
+<?php
+/**
+ * @Gedmo\Mapping\Annotation\Slug(handlers={
+ *      @Gedmo\Mapping\Annotation\SlugHandler(class="Gedmo\Sluggable\Handler\TreeSlugHandler", options={
+ *          @Gedmo\Mapping\Annotation\SlugHandlerOption(name="parentRelationField", value="parent"),
+ *          @Gedmo\Mapping\Annotation\SlugHandlerOption(name="separator", value="/")
+ *      })
+ * }, separator="-", updatable=true)
+ * @Doctrine\ORM\Mapping\Column(length=64, unique=true)
+ */
+private $slug;
+```
 
 with **RelativeSlugHandler**:
 
-    /**
-     * Person domain object class
-     *
-     * @Gedmo\Mapping\Annotation\Slug(handlers={
-     *      @Gedmo\Mapping\Annotation\SlugHandler(class="Gedmo\Sluggable\Handler\RelativeSlugHandler", options={
-     *          @Gedmo\Mapping\Annotation\SlugHandlerOption(name="relationField", value="category"),
-     *          @Gedmo\Mapping\Annotation\SlugHandlerOption(name="relationSlugField", value="slug"),
-     *          @Gedmo\Mapping\Annotation\SlugHandlerOption(name="separator", value="/")
-     *      })
-     * })
-     * @Doctrine\ORM\Mapping\Column(length=64, unique=true)
-     */
-    private $slug;
+``` php
+<?php
+/**
+ * Person domain object class
+ *
+ * @Gedmo\Mapping\Annotation\Slug(handlers={
+ *      @Gedmo\Mapping\Annotation\SlugHandler(class="Gedmo\Sluggable\Handler\RelativeSlugHandler", options={
+ *          @Gedmo\Mapping\Annotation\SlugHandlerOption(name="relationField", value="category"),
+ *          @Gedmo\Mapping\Annotation\SlugHandlerOption(name="relationSlugField", value="slug"),
+ *          @Gedmo\Mapping\Annotation\SlugHandlerOption(name="separator", value="/")
+ *      })
+ * })
+ * @Doctrine\ORM\Mapping\Column(length=64, unique=true)
+ */
+private $slug;
+```
 
 if you used **RelativeSlugHandler** - relation object should use **InversedRelativeSlugHandler**:
 
-    /**
-     * Category domain object class
-     *
-     * @Gedmo\Mapping\Annotation\Slug(handlers={
-     *      @Gedmo\Mapping\Annotation\SlugHandler(class="Gedmo\Sluggable\Handler\InversedRelativeSlugHandler", options={
-     *          @Gedmo\Mapping\Annotation\SlugHandlerOption(name="relationClass", value="App\Entity\Person"),
-     *          @Gedmo\Mapping\Annotation\SlugHandlerOption(name="mappedBy", value="category"),
-     *          @Gedmo\Mapping\Annotation\SlugHandlerOption(name="inverseSlugField", value="slug")
-     *      })
-     * })
-     * @Doctrine\ORM\Mapping\Column(length=64, unique=true)
-     */
-    private $slug;
+``` php
+<?php
+/**
+ * Category domain object class
+ *
+ * @Gedmo\Mapping\Annotation\Slug(handlers={
+ *      @Gedmo\Mapping\Annotation\SlugHandler(class="Gedmo\Sluggable\Handler\InversedRelativeSlugHandler", options={
+ *          @Gedmo\Mapping\Annotation\SlugHandlerOption(name="relationClass", value="App\Entity\Person"),
+ *          @Gedmo\Mapping\Annotation\SlugHandlerOption(name="mappedBy", value="category"),
+ *          @Gedmo\Mapping\Annotation\SlugHandlerOption(name="inverseSlugField", value="slug")
+ *      })
+ * })
+ * @Doctrine\ORM\Mapping\Column(length=64, unique=true)
+ */
+private $slug;
+```
 
 ## Timestampable annotations {#timestampable}
 
@@ -392,22 +437,25 @@ which would trigger an update.
 
 example:
 
-    /**
-     * @Gedmo\Mapping\Annotation\Timestampable(on="create")
-     * @Doctrine\ORM\Mapping\Column(type="datetime")
-     */
-    private $created;
-    
-    /**
-     * @Gedmo\Mapping\Annotation\Timestampable(on="change", field="status.title", value="Published")
-     * @Doctrine\ORM\Mapping\Column(type="date")
-     */
-    private $published;
-    
-    /**
-     * @Doctrine\ORM\Mapping\ManyToOne(targetEntity="Status")
-     */
-    private $status;
+``` php
+<?php
+/**
+ * @Gedmo\Mapping\Annotation\Timestampable(on="create")
+ * @Doctrine\ORM\Mapping\Column(type="datetime")
+ */
+private $created;
+
+/**
+ * @Gedmo\Mapping\Annotation\Timestampable(on="change", field="status.title", value="Published")
+ * @Doctrine\ORM\Mapping\Column(type="date")
+ */
+private $published;
+
+/**
+ * @Doctrine\ORM\Mapping\ManyToOne(targetEntity="Status")
+ */
+private $status;
+```
 
 ## Loggable annotations {#loggable}
 
@@ -429,11 +477,14 @@ this class records.
 
 example:
 
-    /**
-     * @Gedmo\Mapping\Annotation\Loggable(logEntryClass="Entity\ProductLogEntry")
-     * @Doctrine\ORM\Mapping\Entity
-     */
-    class Product ...
+``` php
+<?php
+/**
+ * @Gedmo\Mapping\Annotation\Loggable(logEntryClass="Entity\ProductLogEntry")
+ * @Doctrine\ORM\Mapping\Entity
+ */
+class Product ...
+```
 
 ### @Gedmo\Mapping\Annotation\Versioned (optional)
 
@@ -445,15 +496,18 @@ a specific version.
 
 example:
 
-    /**
-     * @Gedmo\Mapping\Annotation\Versioned
-     * @Doctrine\ORM\Mapping\Column(type="text")
-     */
-    private $content;
-    
-    /**
-     * @Gedmo\Mapping\Annotation\Versioned
-     * @Doctrine\ORM\Mapping\ManyToOne(targetEntity="Article", inversedBy="comments")
-     */
-    private $article;
+``` php
+<?php
+/**
+ * @Gedmo\Mapping\Annotation\Versioned
+ * @Doctrine\ORM\Mapping\Column(type="text")
+ */
+private $content;
+
+/**
+ * @Gedmo\Mapping\Annotation\Versioned
+ * @Doctrine\ORM\Mapping\ManyToOne(targetEntity="Article", inversedBy="comments")
+ */
+private $article;
+```
 

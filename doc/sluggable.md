@@ -36,7 +36,7 @@ no more exceptions during concurrent flushes.
 
 - You can [test live][blog_test] on this blog
 - Public [Sluggable repository](http://github.com/l3pp4rd/DoctrineExtensions "Sluggable extension on Github") is available on github
-- Last update date: **2011-09-11**
+- Last update date: **2012-01-02**
 
 **Portability:**
 
@@ -63,36 +63,44 @@ Content:
 If you using the source from github repository, initial directory structure for
 the extension library should look like this:
 
-    ...
-    /DoctrineExtensions
-        /lib
-            /Gedmo
-                /Exception
-                /Loggable
-                /Mapping
-                /Sluggable
-                /Timestampable
-                /Translatable
-                /Tree
-        /tests
-            ...
-    ...
+```
+...
+/DoctrineExtensions
+    /lib
+        /Gedmo
+            /Exception
+            /Loggable
+            /Mapping
+            /Sluggable
+            /Timestampable
+            /Translatable
+            /Tree
+    /tests
+        ...
+...
+```
 
 First of all we need to setup the autoloading of extensions:
 
-    $classLoader = new \Doctrine\Common\ClassLoader('Gedmo', "/path/to/library/DoctrineExtensions/lib");
-    $classLoader->register();
+``` php
+<?php
+$classLoader = new \Doctrine\Common\ClassLoader('Gedmo', "/path/to/library/DoctrineExtensions/lib");
+$classLoader->register();
+```
 
 ### Attaching the Sluggable Listener to the event manager {#event-listener}
 
 To attach the **Sluggable Listener** to your event system:
 
-    $evm = new \Doctrine\Common\EventManager();
-    // ORM and ODM
-    $sluggableListener = new \Gedmo\Sluggable\SluggableListener();
-    
-    $evm->addEventSubscriber($sluggableListener);
-    // now this event manager should be passed to entity manager constructor
+``` php
+<?php
+$evm = new \Doctrine\Common\EventManager();
+// ORM and ODM
+$sluggableListener = new \Gedmo\Sluggable\SluggableListener();
+
+$evm->addEventSubscriber($sluggableListener);
+// now this event manager should be passed to entity manager constructor
+```
 
 ## Sluggable Entity example: {#entity}
 
@@ -108,208 +116,221 @@ cache is activated
 **Note:** 2.1.x version of extensions used @Gedmo\Mapping\Annotation\Sluggable to identify
 the field for slug
 
-    namespace Entity;
-    
-    use Gedmo\Mapping\Annotation as Gedmo;
-    use Doctrine\ORM\Mapping as ORM;
-    
-    /**
-     * @ORM\Table(name="articles")
-     * @ORM\Entity
+``` php
+<?php
+namespace Entity;
+
+use Gedmo\Mapping\Annotation as Gedmo;
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * @ORM\Table(name="articles")
+ * @ORM\Entity
+ */
+class Article
+{
+    /** 
+     * @ORM\Id
+     * @ORM\GeneratedValue
+     * @ORM\Column(type="integer")
      */
-    class Article
+    private $id;
+
+    /**
+     * @ORM\Column(length=64)
+     */
+    private $title;
+
+    /**
+     * @ORM\Column(length=16)
+     */
+    private $code;
+
+    /**
+     * @Gedmo\Slug(fields={"title", "code"})
+     * @ORM\Column(length=128, unique=true)
+     */
+    private $slug;
+
+    public function getId()
     {
-        /** 
-         * @ORM\Id
-         * @ORM\GeneratedValue
-         * @ORM\Column(type="integer")
-         */
-        private $id;
-    
-        /**
-         * @ORM\Column(length=64)
-         */
-        private $title;
-    
-        /**
-         * @ORM\Column(length=16)
-         */
-        private $code;
-    
-        /**
-         * @Gedmo\Slug(fields={"title", "code"})
-         * @ORM\Column(length=128, unique=true)
-         */
-        private $slug;
-    
-        public function getId()
-        {
-            return $this->id;
-        }
-    
-        public function setTitle($title)
-        {
-            $this->title = $title;
-        }
-    
-        public function getTitle()
-        {
-            return $this->title;
-        }
-    
-        public function setCode($code)
-        {
-            $this->code = $code;
-        }
-    
-        public function getCode()
-        {
-            return $this->code;
-        }
-    
-        public function getSlug()
-        {
-            return $this->slug;
-        }
+        return $this->id;
     }
+
+    public function setTitle($title)
+    {
+        $this->title = $title;
+    }
+
+    public function getTitle()
+    {
+        return $this->title;
+    }
+
+    public function setCode($code)
+    {
+        $this->code = $code;
+    }
+
+    public function getCode()
+    {
+        return $this->code;
+    }
+
+    public function getSlug()
+    {
+        return $this->slug;
+    }
+}
+```
 
 ## Sluggable Document example: {#document}
 
-    namespace Document;
-    
-    use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
-    use Gedmo\Mapping\Annotation as Gedmo;
-    
-    /**
-     * @ODM\Document(collection="articles")
+``` php
+<?php
+namespace Document;
+
+use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
+use Gedmo\Mapping\Annotation as Gedmo;
+
+/**
+ * @ODM\Document(collection="articles")
+ */
+class Article
+{
+    /** 
+     * @ODM\Id
      */
-    class Article
+    private $id;
+
+    /**
+     * @ODM\String
+     */
+    private $title;
+
+    /**
+     * @ODM\String
+     */
+    private $code;
+
+    /**
+     * @Gedmo\Slug(fields={"title", "code"})
+     * @ODM\String
+     */
+    private $slug;
+
+    public function getId()
     {
-        /** 
-         * @ODM\Id
-         */
-        private $id;
-    
-        /**
-         * @ODM\String
-         */
-        private $title;
-    
-        /**
-         * @ODM\String
-         */
-        private $code;
-    
-        /**
-         * @Gedmo\Slug(fields={"title", "code"})
-         * @ODM\String
-         */
-        private $slug;
-    
-        public function getId()
-        {
-            return $this->id;
-        }
-    
-        public function setTitle($title)
-        {
-            $this->title = $title;
-        }
-    
-        public function getTitle()
-        {
-            return $this->title;
-        }
-    
-        public function setCode($code)
-        {
-            $this->code = $code;
-        }
-    
-        public function getCode()
-        {
-            return $this->code;
-        }
-    
-        public function getSlug()
-        {
-            return $this->slug;
-        }
+        return $this->id;
     }
+
+    public function setTitle($title)
+    {
+        $this->title = $title;
+    }
+
+    public function getTitle()
+    {
+        return $this->title;
+    }
+
+    public function setCode($code)
+    {
+        $this->code = $code;
+    }
+
+    public function getCode()
+    {
+        return $this->code;
+    }
+
+    public function getSlug()
+    {
+        return $this->slug;
+    }
+}
+```
 
 ## Yaml mapping example {#yaml}
 
 Yaml mapped Article: **/mapping/yaml/Entity.Article.dcm.yml**
 
-    ---
-    Entity\Article:
-      type: entity
-      table: articles
-      id:
-        id:
-          type: integer
-          generator:
-            strategy: AUTO
-      fields:
-        title:
-          type: string
-          length: 64
-        code:
-          type: string
-          length: 16
+```
+---
+Entity\Article:
+  type: entity
+  table: articles
+  id:
+    id:
+      type: integer
+      generator:
+        strategy: AUTO
+  fields:
+    title:
+      type: string
+      length: 64
+    code:
+      type: string
+      length: 16
+    slug:
+      type: string
+      length: 128
+      gedmo:
         slug:
-          type: string
-          length: 128
-          gedmo:
-            slug:
-              separator: _
-              style: camel
-              fields:
-                - title
-                - code
-      indexes:
-        search_idx:
-          columns: slug
+          separator: _
+          style: camel
+          fields:
+            - title
+            - code
+  indexes:
+    search_idx:
+      columns: slug
+```
 
 ## Xml mapping example {#xml}
 
 **Note:** xml driver is not yet adapted for single slug mapping
 
-    <?xml version="1.0" encoding="UTF-8"?>
-    <doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
-                      xmlns:gedmo="http://gediminasm.org/schemas/orm/doctrine-extensions-mapping">
-        <entity name="Mapping\Fixture\Xml\Sluggable" table="sluggables">
-            <id name="id" type="integer" column="id">
-                <generator strategy="AUTO"/>
-            </id>
-    
-            <field name="title" type="string" length="128"/>
-            <field name="code" type="string" length="16"/>
-            <field name="ean" type="string" length="13"/>
-            <field name="slug" type="string" length="156" unique="true">
-                <gedmo:slug unique="true" style="camel" updatable="false" separator="_">
-                    <fields>
-                        <field>title</field>
-                        <field>code</field>
-                        <field>ean</field>
-                    </fields>
-                </gedmo:slug>
-            </field>
-        </entity>
-    </doctrine-mapping>
+``` xml
+<?xml version="1.0" encoding="UTF-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xmlns:gedmo="http://gediminasm.org/schemas/orm/doctrine-extensions-mapping">
+    <entity name="Mapping\Fixture\Xml\Sluggable" table="sluggables">
+        <id name="id" type="integer" column="id">
+            <generator strategy="AUTO"/>
+        </id>
+
+        <field name="title" type="string" length="128"/>
+        <field name="code" type="string" length="16"/>
+        <field name="ean" type="string" length="13"/>
+        <field name="slug" type="string" length="156" unique="true">
+            <gedmo:slug unique="true" style="camel" updatable="false" separator="_">
+                <fields>
+                    <field>title</field>
+                    <field>code</field>
+                    <field>ean</field>
+                </fields>
+            </gedmo:slug>
+        </field>
+    </entity>
+</doctrine-mapping>
+```
 
 ## Basic usage examples: {#basic-examples}
 
 ### To save **Article** and generate slug simply use:
 
-    $article = new Article();
-    $article->setTitle('the title');
-    $article->setCode('my code');
-    $this->em->persist($article);
-    $this->em->flush();
-    
-    echo $article->getSlug();
-    // prints: the-title-my-code
+``` php
+<?php
+$article = new Article();
+$article->setTitle('the title');
+$article->setCode('my code');
+$this->em->persist($article);
+$this->em->flush();
+
+echo $article->getSlug();
+// prints: the-title-my-code
+```
 
 ### Some other configuration options for **slug** annotation:
 
@@ -322,81 +343,96 @@ Yaml mapped Article: **/mapping/yaml/Entity.Article.dcm.yml**
 
 **TreeSlugHandler**
 
-    /**
-     * @Gedmo\Mapping\Annotation\Slug(handlers={
-     *      @Gedmo\Mapping\Annotation\SlugHandler(class="Gedmo\Sluggable\Handler\TreeSlugHandler", options={
-     *          @Gedmo\Mapping\Annotation\SlugHandlerOption(name="parentRelationField", value="parent"),
-     *          @Gedmo\Mapping\Annotation\SlugHandlerOption(name="separator", value="/")
-     *      })
-     * }, fields={"title", "code"})
-     * @Doctrine\ORM\Mapping\Column(length=64, unique=true)
-     */
-    private $slug;
+``` php
+<?php
+/**
+ * @Gedmo\Mapping\Annotation\Slug(handlers={
+ *      @Gedmo\Mapping\Annotation\SlugHandler(class="Gedmo\Sluggable\Handler\TreeSlugHandler", options={
+ *          @Gedmo\Mapping\Annotation\SlugHandlerOption(name="parentRelationField", value="parent"),
+ *          @Gedmo\Mapping\Annotation\SlugHandlerOption(name="separator", value="/")
+ *      })
+ * }, fields={"title", "code"})
+ * @Doctrine\ORM\Mapping\Column(length=64, unique=true)
+ */
+private $slug;
+```
 
 **RelativeSlugHandler**:
 
-    /**
-     * Person domain object class
-     *
-     * @Gedmo\Mapping\Annotation\Slug(handlers={
-     *      @Gedmo\Mapping\Annotation\SlugHandler(class="Gedmo\Sluggable\Handler\RelativeSlugHandler", options={
-     *          @Gedmo\Mapping\Annotation\SlugHandlerOption(name="relationField", value="category"),
-     *          @Gedmo\Mapping\Annotation\SlugHandlerOption(name="relationSlugField", value="slug"),
-     *          @Gedmo\Mapping\Annotation\SlugHandlerOption(name="separator", value="/")
-     *      })
-     * }, fields={"title", "code"})
-     * @Doctrine\ORM\Mapping\Column(length=64, unique=true)
-     */
-    private $slug;
+``` php
+<?php
+/**
+ * Person domain object class
+ *
+ * @Gedmo\Mapping\Annotation\Slug(handlers={
+ *      @Gedmo\Mapping\Annotation\SlugHandler(class="Gedmo\Sluggable\Handler\RelativeSlugHandler", options={
+ *          @Gedmo\Mapping\Annotation\SlugHandlerOption(name="relationField", value="category"),
+ *          @Gedmo\Mapping\Annotation\SlugHandlerOption(name="relationSlugField", value="slug"),
+ *          @Gedmo\Mapping\Annotation\SlugHandlerOption(name="separator", value="/")
+ *      })
+ * }, fields={"title", "code"})
+ * @Doctrine\ORM\Mapping\Column(length=64, unique=true)
+ */
+private $slug;
+```
 
 **Note:** if you used **RelativeSlugHandler** - relation object should use in order to sync changes:
 
 **InversedRelativeSlugHandler**
 
-    /**
-     * Category domain object class
-     *
-     * @Gedmo\Mapping\Annotation\Slug(handlers={
-     *      @Gedmo\Mapping\Annotation\SlugHandler(class="Gedmo\Sluggable\Handler\InversedRelativeSlugHandler", options={
-     *          @Gedmo\Mapping\Annotation\SlugHandlerOption(name="relationClass", value="App\Entity\Person"),
-     *          @Gedmo\Mapping\Annotation\SlugHandlerOption(name="mappedBy", value="category"),
-     *          @Gedmo\Mapping\Annotation\SlugHandlerOption(name="inverseSlugField", value="slug")
-     *      })
-     * }, fields={"title"})
-     * @Doctrine\ORM\Mapping\Column(length=64, unique=true)
-     */
-    private $slug;
+``` php
+<?php
+/**
+ * Category domain object class
+ *
+ * @Gedmo\Mapping\Annotation\Slug(handlers={
+ *      @Gedmo\Mapping\Annotation\SlugHandler(class="Gedmo\Sluggable\Handler\InversedRelativeSlugHandler", options={
+ *          @Gedmo\Mapping\Annotation\SlugHandlerOption(name="relationClass", value="App\Entity\Person"),
+ *          @Gedmo\Mapping\Annotation\SlugHandlerOption(name="mappedBy", value="category"),
+ *          @Gedmo\Mapping\Annotation\SlugHandlerOption(name="inverseSlugField", value="slug")
+ *      })
+ * }, fields={"title"})
+ * @Doctrine\ORM\Mapping\Column(length=64, unique=true)
+ */
+private $slug;
+```
 
 ### Example
-    
-    class Article
-    {
-        // ...
-        /**
-         * @Gedmo\Slug(fields={"title"}, style="camel", separator="_", updatable=false, unique=false)
-         * @Doctrine\ORM\Mapping\Column(length=128, unique=true)
-         */
-        private $slug;
-        // ...
- 
-        // ...
-        /**
-         * @Doctrine\ORM\Mapping\Column(length=128)
-         */
-        private $title;
-        // ...
-    }
+
+``` php
+<?php
+class Article
+{
+    // ...
+    /**
+     * @Gedmo\Slug(fields={"title"}, style="camel", separator="_", updatable=false, unique=false)
+     * @Doctrine\ORM\Mapping\Column(length=128, unique=true)
+     */
+    private $slug;
+    // ...
+
+    // ...
+    /**
+     * @Doctrine\ORM\Mapping\Column(length=128)
+     */
+    private $title;
+    // ...
+}
+```
 
 And now test the result:
 
-    $article = new Article();
-    $article->setTitle('the title');
-    $article->setCode('my code');
-    $this->em->persist($article);
-    $this->em->flush();
-    
-    echo $article->getSlug();
-    // prints: The_Title_My_Code
+``` php
+<?php
+$article = new Article();
+$article->setTitle('the title');
+$article->setCode('my code');
+$this->em->persist($article);
+$this->em->flush();
+
+echo $article->getSlug();
+// prints: The_Title_My_Code
+```
 
 ## Advanced examples: {#advanced-examples}
 
@@ -406,101 +442,107 @@ If you want to attach **TranslationListener** also add it to EventManager after
 the **SluggableListener**. It is important because slug must be generated first
 before the creation of it`s translation.
 
-    $evm = new \Doctrine\Common\EventManager();
-    $sluggableListener = new \Gedmo\Sluggable\SluggableListener();
-    $evm->addEventSubscriber($sluggableListener);
-    $translatableListener = new \Gedmo\Translatable\TranslationListener();
-    $translatableListener->setTranslatableLocale('en_us');
-    $evm->addEventSubscriber($translatableListener);
-    // now this event manager should be passed to entity manager constructor
+``` php
+<?php
+$evm = new \Doctrine\Common\EventManager();
+$sluggableListener = new \Gedmo\Sluggable\SluggableListener();
+$evm->addEventSubscriber($sluggableListener);
+$translatableListener = new \Gedmo\Translatable\TranslationListener();
+$translatableListener->setTranslatableLocale('en_us');
+$evm->addEventSubscriber($translatableListener);
+// now this event manager should be passed to entity manager constructor
+```
 
 And the Entity should look like:
 
-    namespace Entity;
-    
-    use Gedmo\Mapping\Annotation as Gedmo;
-    use Doctrine\ORM\Mapping as ORM;
+``` php
+<?php
+namespace Entity;
+
+use Gedmo\Mapping\Annotation as Gedmo;
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * @ORM\Table(name="articles")
+ * @ORM\Entity
+ */
+class Article
+{
+    /** 
+     * @ORM\Id
+     * @ORM\GeneratedValue
+     * @ORM\Column(type="integer")
+     */
+    private $id;
+
+    /**
+     * @Gedmo\Translatable
+     * @ORM\Column(length=64)
+     */
+    private $title;
+
+    /**
+     * @Gedmo\Translatable
+     * @ORM\Column(length=16)
+     */
+    private $code;
     
     /**
-     * @ORM\Table(name="articles")
-     * @ORM\Entity
+     * @Gedmo\Translatable
+     * @Gedmo\Slug(fields={"title", "code"})
+     * @ORM\Column(length=128, unique=true)
      */
-    class Article
+    private $slug;
+    
+    /**
+     * @ORM\Column(type="string", length=64)
+     */
+    private $uniqueTitle;
+    
+    /**
+     * @Gedmo\Slug(fields={"uniqueTitle"})
+     * @ORM\Column(type="string", length=128, unique=true)
+     */
+    private $uniqueSlug;
+
+    
+
+    public function getId()
     {
-        /** 
-         * @ORM\Id
-         * @ORM\GeneratedValue
-         * @ORM\Column(type="integer")
-         */
-        private $id;
-    
-        /**
-         * @Gedmo\Translatable
-         * @ORM\Column(length=64)
-         */
-        private $title;
-    
-        /**
-         * @Gedmo\Translatable
-         * @ORM\Column(length=16)
-         */
-        private $code;
-        
-        /**
-         * @Gedmo\Translatable
-         * @Gedmo\Slug(fields={"title", "code"})
-         * @ORM\Column(length=128, unique=true)
-         */
-        private $slug;
-        
-        /**
-         * @ORM\Column(type="string", length=64)
-         */
-        private $uniqueTitle;
-        
-        /**
-         * @Gedmo\Slug(fields={"uniqueTitle"})
-         * @ORM\Column(type="string", length=128, unique=true)
-         */
-        private $uniqueSlug;
-    
-        
-    
-        public function getId()
-        {
-            return $this->id;
-        }
-    
-        public function setTitle($title)
-        {
-            $this->title = $title;
-        }
-    
-        public function getTitle()
-        {
-            return $this->title;
-        }
-    
-        public function setCode($code)
-        {
-            $this->code = $code;
-        }
-    
-        public function getCode()
-        {
-            return $this->code;
-        }
-    
-        public function getSlug()
-        {
-            return $this->slug;
-        }
-        
-        public function getUniqueSlug()
-        {
-            return $this->uniqueSlug;
-        }
+        return $this->id;
     }
+
+    public function setTitle($title)
+    {
+        $this->title = $title;
+    }
+
+    public function getTitle()
+    {
+        return $this->title;
+    }
+
+    public function setCode($code)
+    {
+        $this->code = $code;
+    }
+
+    public function getCode()
+    {
+        return $this->code;
+    }
+
+    public function getSlug()
+    {
+        return $this->slug;
+    }
+    
+    public function getUniqueSlug()
+    {
+        return $this->uniqueSlug;
+    }
+}
+```
 
 Now the generated slug will be translated by Translatable behavior
 
@@ -514,154 +556,162 @@ is a company and user name is **Gedi**. In this case relation has a path separat
 
 User entity example:
 
-    namespace Sluggable\Fixture\Handler;
-    
-    use Gedmo\Mapping\Annotation as Gedmo;
-    use Doctrine\ORM\Mapping as ORM;
-    
+``` php
+<?php
+namespace Sluggable\Fixture\Handler;
+
+use Gedmo\Mapping\Annotation as Gedmo;
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * @ORM\Entity
+ */
+class User
+{
     /**
-     * @ORM\Entity
+     * @ORM\Id
+     * @ORM\GeneratedValue
+     * @ORM\Column(type="integer")
      */
-    class User
+    private $id;
+
+    /**
+     * @ORM\Column(length=64)
+     */
+    private $username;
+
+    /**
+     * @Gedmo\Slug(handlers={
+     *      @Gedmo\SlugHandler(class="Gedmo\Sluggable\Handler\RelativeSlugHandler", options={
+     *          @Gedmo\SlugHandlerOption(name="relationField", value="company"),
+     *          @Gedmo\SlugHandlerOption(name="relationSlugField", value="alias"),
+     *          @Gedmo\SlugHandlerOption(name="separator", value="/")
+     *      })
+     * }, separator="-", updatable=true, fields={"username"})
+     * @ORM\Column(length=64, unique=true)
+     */
+    private $slug;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Company")
+     */
+    private $company;
+
+    public function setCompany(Company $company = null)
     {
-        /**
-         * @ORM\Id
-         * @ORM\GeneratedValue
-         * @ORM\Column(type="integer")
-         */
-        private $id;
-    
-        /**
-         * @ORM\Column(length=64)
-         */
-        private $username;
-    
-        /**
-         * @Gedmo\Slug(handlers={
-         *      @Gedmo\SlugHandler(class="Gedmo\Sluggable\Handler\RelativeSlugHandler", options={
-         *          @Gedmo\SlugHandlerOption(name="relationField", value="company"),
-         *          @Gedmo\SlugHandlerOption(name="relationSlugField", value="alias"),
-         *          @Gedmo\SlugHandlerOption(name="separator", value="/")
-         *      })
-         * }, separator="-", updatable=true, fields={"username"})
-         * @ORM\Column(length=64, unique=true)
-         */
-        private $slug;
-    
-        /**
-         * @ORM\ManyToOne(targetEntity="Company")
-         */
-        private $company;
-    
-        public function setCompany(Company $company = null)
-        {
-            $this->company = $company;
-        }
-    
-        public function getCompany()
-        {
-            return $this->company;
-        }
-    
-        public function getId()
-        {
-            return $this->id;
-        }
-    
-        public function setName($name)
-        {
-            $this->name = $name;
-        }
-    
-        public function getName()
-        {
-            return $this->name;
-        }
-    
-        public function getSlug()
-        {
-            return $this->slug;
-        }
+        $this->company = $company;
     }
 
+    public function getCompany()
+    {
+        return $this->company;
+    }
+
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    public function setName($name)
+    {
+        $this->name = $name;
+    }
+
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    public function getSlug()
+    {
+        return $this->slug;
+    }
+}
+```
 
 Company entity example:
 
-    namespace Sluggable\Fixture\Handler;
-    
-    use Gedmo\Mapping\Annotation as Gedmo;
-    use Doctrine\ORM\Mapping as ORM;
-    
+``` php
+<?php
+namespace Sluggable\Fixture\Handler;
+
+use Gedmo\Mapping\Annotation as Gedmo;
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * @ORM\Entity
+ */
+class Company
+{
     /**
-     * @ORM\Entity
+     * @ORM\Id
+     * @ORM\GeneratedValue
+     * @ORM\Column(type="integer")
      */
-    class Company
+    private $id;
+
+    /**
+     * @ORM\Column(length=64)
+     */
+    private $title;
+
+    /**
+     * @Gedmo\Slug(handlers={
+     *      @Gedmo\SlugHandler(class="Gedmo\Sluggable\Handler\InversedRelativeSlugHandler", options={
+     *          @Gedmo\SlugHandlerOption(name="relationClass", value="Sluggable\Fixture\Handler\User"),
+     *          @Gedmo\SlugHandlerOption(name="mappedBy", value="company"),
+     *          @Gedmo\SlugHandlerOption(name="inverseSlugField", value="slug")
+     *      })
+     * }, fields={"title"})
+     * @ORM\Column(length=64, unique=true)
+     */
+    private $alias;
+
+    public function getId()
     {
-        /**
-         * @ORM\Id
-         * @ORM\GeneratedValue
-         * @ORM\Column(type="integer")
-         */
-        private $id;
-    
-        /**
-         * @ORM\Column(length=64)
-         */
-        private $title;
-    
-        /**
-         * @Gedmo\Slug(handlers={
-         *      @Gedmo\SlugHandler(class="Gedmo\Sluggable\Handler\InversedRelativeSlugHandler", options={
-         *          @Gedmo\SlugHandlerOption(name="relationClass", value="Sluggable\Fixture\Handler\User"),
-         *          @Gedmo\SlugHandlerOption(name="mappedBy", value="company"),
-         *          @Gedmo\SlugHandlerOption(name="inverseSlugField", value="slug")
-         *      })
-         * }, fields={"title"})
-         * @ORM\Column(length=64, unique=true)
-         */
-        private $alias;
-    
-        public function getId()
-        {
-            return $this->id;
-        }
-    
-        public function setTitle($title)
-        {
-            $this->title = $title;
-        }
-    
-        public function getTitle()
-        {
-            return $this->title;
-        }
-    
-        public function getAlias()
-        {
-            return $this->alias;
-        }
+        return $this->id;
     }
+
+    public function setTitle($title)
+    {
+        $this->title = $title;
+    }
+
+    public function getTitle()
+    {
+        return $this->title;
+    }
+
+    public function getAlias()
+    {
+        return $this->alias;
+    }
+}
+```
 
 And the example usage:
 
-    $company = new Company;
-    $company->setTitle('KnpLabs');
-    $em->persist($company);
+``` php
+<?php
+$company = new Company;
+$company->setTitle('KnpLabs');
+$em->persist($company);
 
-    $gedi = new User;
-    $gedi->setUsername('Gedi');
-    $gedi->setCompany($company);
-    $em->persist($gedi);
+$gedi = new User;
+$gedi->setUsername('Gedi');
+$gedi->setCompany($company);
+$em->persist($gedi);
 
-    $em->flush();
-    
-    echo $gedi->getSlug(); // outputs "knplabs/gedi"
-    
-    $company->setTitle('KnpLabs Nantes');
-    $em->persist($company);
-    $em->flush();
-    
-    echo $gedi->getSlug(); // outputs "knplabs-nantes/gedi"
+$em->flush();
+
+echo $gedi->getSlug(); // outputs "knplabs/gedi"
+
+$company->setTitle('KnpLabs Nantes');
+$em->persist($company);
+$em->flush();
+
+echo $gedi->getSlug(); // outputs "knplabs-nantes/gedi"
+```
 
 **Note:** tree slug handler, takes a parent relation to build slug recursively.
 
