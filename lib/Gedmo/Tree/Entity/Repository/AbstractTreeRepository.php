@@ -18,7 +18,7 @@ abstract class AbstractTreeRepository extends EntityRepository
     /**
      * {@inheritdoc}
      */
-    public function __construct(EntityManager $em, $class)
+    public function __construct(EntityManager $em, ClassMetadata $class)
     {
         parent::__construct($em, $class);
         $treeListener = null;
