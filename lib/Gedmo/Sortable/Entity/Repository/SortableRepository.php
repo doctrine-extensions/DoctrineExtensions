@@ -18,7 +18,7 @@ class SortableRepository extends EntityRepository
     protected $config = null;
     protected $meta = null;
     
-    public function __construct(EntityManager $em, ClassMetadata $class)
+    public function __construct(EntityManager $em, $class)
     {
         parent::__construct($em, $class);
         $sortableListener = null;

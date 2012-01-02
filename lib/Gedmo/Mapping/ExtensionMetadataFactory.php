@@ -64,7 +64,7 @@ final class ExtensionMetadataFactory
     /**
      * Reads extension metadata
      *
-     * @param ClassMetadata $meta
+     * @param object $meta
      * @return array - the metatada configuration
      */
     public function getExtensionMetadata($meta)

@@ -5,8 +5,6 @@ namespace Gedmo\Sortable\Mapping\Driver;
 use Gedmo\Mapping\Driver\AnnotationDriverInterface,
     Gedmo\Exception\InvalidMappingException;
 
-use Doctrine\Common\Persistence\Mapping\ClassMetadata;
-
 /**
  * This is an annotation mapping driver for Sortable
  * behavioral extension. Used for extraction of extended
@@ -65,7 +63,7 @@ class Annotation implements AnnotationDriverInterface
     /**
      * {@inheritDoc}
      */
-    public function readExtendedMetadata(ClassMetadata $meta, array &$config) {
+    public function readExtendedMetadata($meta, array &$config) {
         $class = $meta->getReflectionClass();
 
         // property annotations
@@ -110,7 +108,7 @@ class Annotation implements AnnotationDriverInterface
     /**
      * Checks if $field type is valid
      *
-     * @param ClassMetadata $meta
+     * @param object $meta
      * @param string $field
      * @return boolean
      */

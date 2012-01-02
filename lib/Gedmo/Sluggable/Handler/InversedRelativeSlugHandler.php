@@ -3,7 +3,6 @@
 namespace Gedmo\Sluggable\Handler;
 
 use Doctrine\Common\Persistence\ObjectManager;
-use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 use Gedmo\Sluggable\SluggableListener;
 use Gedmo\Sluggable\Mapping\Event\SluggableAdapter;
 use Gedmo\Tool\Wrapper\AbstractWrapper;
@@ -60,7 +59,7 @@ class InversedRelativeSlugHandler implements SlugHandlerInterface
     /**
      * {@inheritDoc}
      */
-    public static function validate(array $options, ClassMetadata $meta)
+    public static function validate(array $options, $meta)
     {
         if (!isset($options['relationClass']) || !strlen($options['relationClass'])) {
             throw new InvalidMappingException("'relationClass' option must be specified for object slug mapping - {$meta->name}");

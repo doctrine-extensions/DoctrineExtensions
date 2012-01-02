@@ -56,7 +56,7 @@ interface WrapperInterface
     /**
      * Get metadata
      *
-     * @return \Doctrine\Common\Persistence\Mapping\ClassMetadata
+     * @return object
      */
     function getMetadata();
 

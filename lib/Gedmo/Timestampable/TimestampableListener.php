@@ -2,8 +2,7 @@
 
 namespace Gedmo\Timestampable;
 
-use Doctrine\Common\Persistence\Mapping\ClassMetadata,
-    Doctrine\Common\EventArgs,
+use Doctrine\Common\EventArgs,
     Gedmo\Mapping\MappedEventSubscriber;
 
 /**
