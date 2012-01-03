@@ -7,6 +7,7 @@ use Tool\BaseTestCaseORM;
 use Sortable\Fixture\Node;
 use Sortable\Fixture\Item;
 use Sortable\Fixture\Category;
+use Sortable\Fixture\SimpleListItem;
 
 /**
  * These are tests for sluggable behavior
@@ -21,6 +22,7 @@ class SortableTest extends BaseTestCaseORM
     const NODE = 'Sortable\\Fixture\\Node';
     const ITEM = 'Sortable\\Fixture\\Item';
     const CATEGORY = 'Sortable\\Fixture\\Category';
+    const SIMPLE_LIST_ITEM = 'Sortable\\Fixture\\SimpleListItem';
     private $nodeId;
     
     protected function setUp()
@@ -255,13 +257,35 @@ class SortableTest extends BaseTestCaseORM
         $this->assertEquals("Item2_2", $items[1]->getName());
         $this->assertEquals("Category2", $items[1]->getCategory()->getName());
     }
+
+    /**
+     * Test for issue #219
+     */
+    public function test219()
+    {
+        $item1 = new SimpleListItem();
+        $item1->setName("Item 1");
+        $this->em->persist($item1);
+
+        $this->em->flush();
+        
+        $item1->setName("Update...");
+        $item1->setPosition(1);
+        $this->em->persist($item1);
+        $this->em->flush();
+        
+        $this->em->remove($item1);
+        $this->em->flush();
+        $this->em->clear();
+    }
     
     protected function getUsedEntityFixtures()
     {
         return array(
             self::NODE,
             self::ITEM,
-            self::CATEGORY
+            self::CATEGORY,
+            self::SIMPLE_LIST_ITEM,
         );
     }
     

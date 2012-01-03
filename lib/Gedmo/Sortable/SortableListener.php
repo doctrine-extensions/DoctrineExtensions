@@ -104,8 +104,10 @@ class SortableListener extends MappedEventSubscriber
 
         // Get groups
         $groups = array();
-        foreach ($config['groups'] as $group) {
-            $groups[$group] = $meta->getReflectionProperty($group)->getValue($object);
+        if (isset($config['groups'])) {
+            foreach ($config['groups'] as $group) {
+                $groups[$group] = $meta->getReflectionProperty($group)->getValue($object);
+            }
         }
         // Get hash
         $hash = $this->getHash($meta, $groups, $object, $config);
@@ -167,11 +169,13 @@ class SortableListener extends MappedEventSubscriber
 
         // Get groups
         $groups = array();
-        foreach ($config['groups'] as $group) {
-            $changed = $changed ||
-                (array_key_exists($group, $changeSet)
-                    && $changeSet[$group][0] != $changeSet[$group][1]);
-            $groups[$group] = $meta->getReflectionProperty($group)->getValue($object);
+        if (isset($config['groups'])) {
+            foreach ($config['groups'] as $group) {
+                $changed = $changed ||
+                    (array_key_exists($group, $changeSet)
+                        && $changeSet[$group][0] != $changeSet[$group][1]);
+                $groups[$group] = $meta->getReflectionProperty($group)->getValue($object);
+            }
         }
 
         if (!$changed) return;
@@ -245,8 +249,10 @@ class SortableListener extends MappedEventSubscriber
 
         // Get groups
         $groups = array();
-        foreach ($config['groups'] as $group) {
-            $groups[$group] = $meta->getReflectionProperty($group)->getValue($object);
+        if (isset($config['groups'])) {
+            foreach ($config['groups'] as $group) {
+                $groups[$group] = $meta->getReflectionProperty($group)->getValue($object);
+            }
         }
         // Get hash
         $hash = $this->getHash($meta, $groups, $object, $config);
@@ -313,10 +319,11 @@ class SortableListener extends MappedEventSubscriber
     private function getMaxPosition($em, $meta, $config, $object)
     {
         $maxPos = null;
+        $groups = isset($config["groups"]) ? $config["groups"] : array();
         $qb = $em->createQueryBuilder();
         $qb->select('MAX(n.'.$config['position'].')')
            ->from($config['useObjectClass'], 'n');
-        $qb = $this->addGroupWhere($qb, $config["groups"], $meta, $object);
+        $qb = $this->addGroupWhere($qb, $groups, $meta, $object);
         $query = $qb->getQuery();
         $query->useQueryCache(false);
         $query->useResultCache(false);
