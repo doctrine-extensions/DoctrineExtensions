@@ -76,6 +76,7 @@ class TranslationRepository extends EntityRepository
         }
         return $this;
     }
+
     /**
      * Loads all translations with all translatable
      * fields from the given entity

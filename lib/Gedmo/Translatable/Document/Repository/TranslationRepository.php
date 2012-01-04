@@ -6,6 +6,8 @@ use Gedmo\Translatable\TranslationListener;
 use Doctrine\ODM\MongoDB\DocumentRepository;
 use Doctrine\ODM\MongoDB\Cursor;
 use Gedmo\Tool\Wrapper\MongoDocumentWrapper;
+use Gedmo\Translatable\Mapping\Event\Adapter\ODM as TranslatableAdapterODM;
+use Doctrine\ODM\MongoDB\Mapping\Types\Type;
 
 /**
  * The TranslationRepository has some useful functions
@@ -40,12 +42,39 @@ class TranslationRepository extends DocumentRepository
     public function translate($document, $field, $locale, $value)
     {
         $meta = $this->dm->getClassMetadata(get_class($document));
-        $config = $this->getTranslationListener()->getConfiguration($this->dm, $meta->name);
+        $listener = $this->getTranslationListener();
+        $config = $listener->getConfiguration($this->dm, $meta->name);
         if (!isset($config['fields']) || !in_array($field, $config['fields'])) {
-            throw new \Gedmo\Exception\InvalidArgumentException("Document: {$meta->name} does not translate - {$field}");
+            throw new \Gedmo\Exception\InvalidArgumentException("Document: {$meta->name} does not translate field - {$field}");
         }
-        $oid = spl_object_hash($document);
-        $this->listener->addTranslation($oid, $field, $locale, $value);
+        if ($locale === $listener->getDefaultLocale()) {
+            $meta->getReflectionProperty($field)->setValue($document, $value);
+            $this->dm->persist($document);
+        } else {
+            $ea = new TranslatableAdapterODM();
+            $foreignKey = $meta->getReflectionProperty($meta->identifier)->getValue($document);
+            $objectClass = $meta->name;
+            $class = $listener->getTranslationClass($ea, $meta->name);
+            $transMeta = $this->dm->getClassMetadata($class);
+            $trans = $this->findOneBy(compact('locale', 'field', 'objectClass', 'foreignKey'));
+            if (!$trans) {
+                $trans = new $class();
+                $transMeta->getReflectionProperty('foreignKey')->setValue($trans, $foreignKey);
+                $transMeta->getReflectionProperty('objectClass')->setValue($trans, $objectClass);
+                $transMeta->getReflectionProperty('field')->setValue($trans, $field);
+                $transMeta->getReflectionProperty('locale')->setValue($trans, $locale);
+            }
+            $mapping = $meta->getFieldMapping($field);
+            $type = Type::getType($mapping['type']);
+            $transformed = $type->convertToDatabaseValue($value);
+            $transMeta->getReflectionProperty('content')->setValue($trans, $transformed);
+            if ($this->dm->getUnitOfWork()->isInIdentityMap($document)) {
+                $this->dm->persist($trans);
+            } else {
+                $oid = spl_object_hash($document);
+                $listener->addPendingTranslationInsert($oid, $trans);
+            }
+        }
         return $this;
     }
 

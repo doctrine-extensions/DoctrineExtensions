@@ -36,7 +36,10 @@ class TranslatableDocumentCollectionTest extends BaseTestCaseMongoODM
         $this->populate();
     }
 
-    public function testMultipleTranslationPersistence()
+    /**
+     * @test
+     */
+    function shouldPersistMultipleTranslations()
     {
         $repo = $this->dm->getRepository(self::TRANSLATION);
         $sport = $this->dm->getRepository(self::ARTICLE)->find($this->id);
@@ -55,7 +58,33 @@ class TranslatableDocumentCollectionTest extends BaseTestCaseMongoODM
         $this->assertEquals('content ru', $translations['ru_ru']['content']);
     }
 
-    public function testMultipleTranslationUpdates()
+    /**
+     * @test
+     */
+    function shouldUpdateTranslation()
+    {
+        $repo = $this->dm->getRepository(self::TRANSLATION);
+        $sport = $this->dm->getRepository(self::ARTICLE)->find($this->id);
+        $repo
+            ->translate($sport, 'title', 'ru_ru', 'sport ru change')
+            ->translate($sport, 'content', 'ru_ru', 'content ru change')
+        ;
+        $this->dm->flush();
+
+        $translations = $repo->findTranslations($sport);
+        $this->assertEquals(2, count($translations));
+
+        $this->assertArrayHasKey('ru_ru', $translations);
+        $this->assertArrayHasKey('title', $translations['ru_ru']);
+        $this->assertArrayHasKey('content', $translations['ru_ru']);
+        $this->assertEquals('sport ru change', $translations['ru_ru']['title']);
+        $this->assertEquals('content ru change', $translations['ru_ru']['content']);
+    }
+
+    /**
+     * @test
+     */
+    function shouldUpdateMultipleTranslations()
     {
         $repo = $this->dm->getRepository(self::TRANSLATION);
         $sport = $this->dm->getRepository(self::ARTICLE)->find($this->id);
@@ -64,10 +93,16 @@ class TranslatableDocumentCollectionTest extends BaseTestCaseMongoODM
             ->translate($sport, 'title', 'lt_lt', 'sport lt')
             ->translate($sport, 'content', 'lt_lt', 'content lt')
             ->translate($sport, 'title', 'ru_ru', 'sport ru change')
-            ->translate($sport, 'content', 'ru_ru', 'content ru change');
+            ->translate($sport, 'content', 'ru_ru', 'content ru change')
+            ->translate($sport, 'title', 'en_us', 'sport en update')
+            ->translate($sport, 'content', 'en_us', 'content en update')
+        ;
 
-        $this->dm->persist($sport);
         $this->dm->flush();
+
+        $this->assertEquals('sport en update', $sport->getTitle());
+        $this->assertEquals('content en update', $sport->getContent());
+
         $translations = $repo->findTranslations($sport);
 
         $this->assertArrayHasKey('de_de', $translations);
@@ -100,7 +135,8 @@ class TranslatableDocumentCollectionTest extends BaseTestCaseMongoODM
             ->translate($sport, 'title', 'de_de', 'sport de')
             ->translate($sport, 'content', 'de_de', 'content de')
             ->translate($sport, 'title', 'ru_ru', 'sport ru')
-            ->translate($sport, 'content', 'ru_ru', 'content ru');
+            ->translate($sport, 'content', 'ru_ru', 'content ru')
+        ;
 
         $this->dm->persist($sport);
         $this->dm->flush();
