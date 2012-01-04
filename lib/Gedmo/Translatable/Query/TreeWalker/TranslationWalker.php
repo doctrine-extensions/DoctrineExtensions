@@ -251,15 +251,19 @@ class TranslationWalker extends SqlWalker
      */
     private function prepareTranslatedComponents()
     {
-        $em = $this->getEntityManager();
         $q = $this->getQuery();
-        $ea = new TranslatableEventAdapter;
         $locale = $q->getHint(TranslationListener::HINT_TRANSLATABLE_LOCALE);
         if (!$locale) {
             // use from listener
             $locale = $this->listener->getListenerLocale();
         }
         $defaultLocale = $this->listener->getDefaultLocale();
+        if ($locale === $defaultLocale) {
+            // Skip preparation as there's no need to translate anything
+            return;
+        }
+        $em = $this->getEntityManager();
+        $ea = new TranslatableEventAdapter;
         $joinStrategy = $q->getHint(TranslationListener::HINT_INNER_JOIN) ? 'INNER' : 'LEFT';
 
         foreach ($this->translatedComponents as $dqlAlias => $comp) {
@@ -268,35 +272,38 @@ class TranslationWalker extends SqlWalker
             $transClass = $this->listener->getTranslationClass($ea, $meta->name);
             $transMeta = $em->getClassMetadata($transClass);
             $transTable = $transMeta->getQuotedTableName($this->platform);
-            if ($locale !== $defaultLocale) {
-                foreach ($config['fields'] as $field) {
-                    $compTableName = $meta->getQuotedTableName($this->platform);
-                    $compTblAlias = $this->getSQLTableAlias($compTableName, $dqlAlias);
-                    $tblAlias = $this->getSQLTableAlias('trans'.$compTblAlias.$field);
-                    $sql = " {$joinStrategy} JOIN ".$transTable.' '.$tblAlias;
-                    $sql .= ' ON '.$tblAlias.'.'.$transMeta->getQuotedColumnName('locale', $this->platform)
-                        .' = '.$this->conn->quote($locale);
-                    $sql .= ' AND '.$tblAlias.'.'.$transMeta->getQuotedColumnName('objectClass', $this->platform)
-                        .' = '.$this->conn->quote($meta->name);
-                    $sql .= ' AND '.$tblAlias.'.'.$transMeta->getQuotedColumnName('field', $this->platform)
-                        .' = '.$this->conn->quote($field);
-                    $identifier = $meta->getSingleIdentifierFieldName();
-                    $colName = $meta->getQuotedColumnName($identifier, $this->platform);
-                    $sql .= ' AND '.$tblAlias.'.'.$transMeta->getQuotedColumnName('foreignKey', $this->platform)
-                        .' = '.$compTblAlias.'.'.$colName;
-                    isset($this->components[$dqlAlias]) ? $this->components[$dqlAlias] .= $sql : $this->components[$dqlAlias] = $sql;
-                    if ($this->needsFallback()) {
-                        // COALESCE with the original record columns
-                        $this->replacements[$compTblAlias.'.'.$meta->getQuotedColumnName($field, $this->platform)]
-                            = 'COALESCE('.$tblAlias.'.'.$transMeta->getQuotedColumnName('content', $this->platform)
-                            .', '.$compTblAlias.'.'.$meta->getQuotedColumnName($field, $this->platform).')'
-                        ;
-                    } else {
-                        $this->replacements[$compTblAlias.'.'.$meta->getQuotedColumnName($field, $this->platform)]
-                            = $tblAlias.'.'.$transMeta->getQuotedColumnName('content', $this->platform)
-                        ;
-                    }
+            foreach ($config['fields'] as $field) {
+                $compTableName = $meta->getQuotedTableName($this->platform);
+                $compTblAlias = $this->getSQLTableAlias($compTableName, $dqlAlias);
+                $tblAlias = $this->getSQLTableAlias('trans'.$compTblAlias.$field);
+                $sql = " {$joinStrategy} JOIN ".$transTable.' '.$tblAlias;
+                $sql .= ' ON '.$tblAlias.'.'.$transMeta->getQuotedColumnName('locale', $this->platform)
+                    .' = '.$this->conn->quote($locale);
+                $sql .= ' AND '.$tblAlias.'.'.$transMeta->getQuotedColumnName('objectClass', $this->platform)
+                    .' = '.$this->conn->quote($meta->name);
+                $sql .= ' AND '.$tblAlias.'.'.$transMeta->getQuotedColumnName('field', $this->platform)
+                    .' = '.$this->conn->quote($field);
+                $identifier = $meta->getSingleIdentifierFieldName();
+                $colName = $meta->getQuotedColumnName($identifier, $this->platform);
+                $sql .= ' AND '.$tblAlias.'.'.$transMeta->getQuotedColumnName('foreignKey', $this->platform)
+                    .' = '.$compTblAlias.'.'.$colName;
+                isset($this->components[$dqlAlias]) ? $this->components[$dqlAlias] .= $sql : $this->components[$dqlAlias] = $sql;
+
+                $originalField = $compTblAlias.'.'.$meta->getQuotedColumnName($field, $this->platform);
+                $substituteField = $tblAlias . '.' . $transMeta->getQuotedColumnName('content', $this->platform);
+
+                // If original field is integer - treat translation as integer (for ORDER BY, WHERE, etc)
+                $fieldMapping = $meta->getFieldMapping($field);
+                if (in_array($fieldMapping["type"], array("integer", "bigint", "tinyint", "int"))) {
+                    $substituteField = 'CAST(' . $substituteField . ' AS SIGNED)';
                 }
+
+                // Fallback to original if was asked for
+                if ($this->needsFallback()) {
+                    $substituteField = 'COALESCE('.$substituteField.', '.$originalField.')';
+                }
+
+                $this->replacements[$originalField] = $substituteField;
             }
         }
     }
