@@ -7,6 +7,11 @@
 **Note:** Use 2.1.x tag in order to use extensions based on Doctrine2.1.x versions. Currently
 master branch is based on 2.2.x versions and may not work with 2.1.x components.
 
+**2012-01-04**
+
+- Refactored translatable to be able to persist, update many translations
+using repository, [issue #224](https://github.com/l3pp4rd/DoctrineExtensions/issues/224)
+
 **2011-12-20**
 
 - Refactored html tree building function, see [documentation](https://github.com/l3pp4rd/DoctrineExtensions/blob/master/doc/tree.md)

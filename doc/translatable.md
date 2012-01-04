@@ -17,6 +17,11 @@ Features:
 [blog_reference]: http://gediminasm.org/article/translatable-behavior-extension-for-doctrine-2 "Translatable extension for Doctrine 2 makes automatic record field translations and their loading depending on language used"
 [blog_test]: http://gediminasm.org/test "Test extensions on this blog"
 
+**2012-01-04**
+
+- Refactored translatable to be able to persist, update many translations
+using repository, [issue #224](https://github.com/l3pp4rd/DoctrineExtensions/issues/224)
+
 **2011-12-11**
 
 - Added more useful translation query hints: Override translatable locale, inner join
@@ -447,9 +452,22 @@ $article->setContent('content en');
 $repository->translate($article, 'title', 'de', 'my article de')
     ->translate($article, 'content', 'de', 'content de')
     ->translate($article, 'title', 'ru', 'my article ru')
-    ->translate($article, 'content', 'ru', 'content ru');
+    ->translate($article, 'content', 'ru', 'content ru')
+;
 
 $em->persist($article);
+$em->flush();
+
+// updating same article also having one new translation
+
+$repo
+    ->translate($article, 'title', 'lt', 'title lt')
+    ->translate($article, 'content', 'lt', 'content lt')
+    ->translate($article, 'title', 'ru', 'title ru change')
+    ->translate($article, 'content', 'ru', 'content ru change')
+    ->translate($article, 'title', 'en', 'title en (default locale) update')
+    ->translate($article, 'content', 'en', 'content en (default locale) update')
+;
 $em->flush();
 ```
 
