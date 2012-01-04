@@ -47,32 +47,32 @@ class TranslationRepository extends EntityRepository
         if (!isset($config['fields']) || !in_array($field, $config['fields'])) {
             throw new \Gedmo\Exception\InvalidArgumentException("Entity: {$meta->name} does not translate field - {$field}");
         }
-        if ($this->_em->getUnitOfWork()->isInIdentityMap($entity)) {
-            if ($locale === $listener->getDefaultLocale()) {
-                $meta->getReflectionProperty($field)->setValue($entity, $value);
-                $this->_em->persist($entity);
-            } else {
-                $ea = new TranslatableAdapterORM();
-                $foreignKey = $meta->getReflectionProperty($meta->getSingleIdentifierFieldName())->getValue($entity);
-                $objectClass = $meta->name;
-                $class = $listener->getTranslationClass($ea, $meta->name);
-                $transMeta = $this->_em->getClassMetadata($class);
-                $trans = $this->findOneBy(compact('locale', 'field', 'objectClass', 'foreignKey'));
-                if (!$trans) {
-                    $trans = new $class();
-                    $transMeta->getReflectionProperty('foreignKey')->setValue($trans, $foreignKey);
-                    $transMeta->getReflectionProperty('objectClass')->setValue($trans, $objectClass);
-                    $transMeta->getReflectionProperty('field')->setValue($trans, $field);
-                    $transMeta->getReflectionProperty('locale')->setValue($trans, $locale);
-                }
-                $type = Type::getType($meta->getTypeOfField($field));
-                $transformed = $type->convertToDatabaseValue($value, $this->_em->getConnection()->getDatabasePlatform());
-                $transMeta->getReflectionProperty('content')->setValue($trans, $transformed);
-                $this->_em->persist($trans);
-            }
+        if ($locale === $listener->getDefaultLocale()) {
+            $meta->getReflectionProperty($field)->setValue($entity, $value);
+            $this->_em->persist($entity);
         } else {
-            $oid = spl_object_hash($entity);
-            $listener->addTranslation($oid, $field, $locale, $value);
+            $ea = new TranslatableAdapterORM();
+            $foreignKey = $meta->getReflectionProperty($meta->getSingleIdentifierFieldName())->getValue($entity);
+            $objectClass = $meta->name;
+            $class = $listener->getTranslationClass($ea, $meta->name);
+            $transMeta = $this->_em->getClassMetadata($class);
+            $trans = $this->findOneBy(compact('locale', 'field', 'objectClass', 'foreignKey'));
+            if (!$trans) {
+                $trans = new $class();
+                $transMeta->getReflectionProperty('foreignKey')->setValue($trans, $foreignKey);
+                $transMeta->getReflectionProperty('objectClass')->setValue($trans, $objectClass);
+                $transMeta->getReflectionProperty('field')->setValue($trans, $field);
+                $transMeta->getReflectionProperty('locale')->setValue($trans, $locale);
+            }
+            $type = Type::getType($meta->getTypeOfField($field));
+            $transformed = $type->convertToDatabaseValue($value, $this->_em->getConnection()->getDatabasePlatform());
+            $transMeta->getReflectionProperty('content')->setValue($trans, $transformed);
+            if ($this->_em->getUnitOfWork()->isInIdentityMap($entity)) {
+                $this->_em->persist($trans);
+            } else {
+                $oid = spl_object_hash($entity);
+                $listener->addPendingTranslationInsert($oid, $trans);
+            }
         }
         return $this;
     }

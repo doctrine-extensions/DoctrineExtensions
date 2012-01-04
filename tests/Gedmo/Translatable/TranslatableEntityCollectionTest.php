@@ -40,13 +40,13 @@ class TranslatableEntityCollectionTest extends BaseTestCaseORM
             'user' => 'root',
             'password' => 'nimda'
         );
-        $this->getMockCustomEntityManager($conn, $evm);
-        //$this->getMockSqliteEntityManager($evm);
+        //$this->getMockCustomEntityManager($conn, $evm);
+        $this->getMockSqliteEntityManager($evm);
         $this->populate();
     }
 
     /**
-     * test
+     * @test
      */
     function shouldPersistMultipleTranslations()
     {
@@ -70,7 +70,7 @@ class TranslatableEntityCollectionTest extends BaseTestCaseORM
     }
 
     /**
-     * test
+     * @test
      */
     function shouldUpdateTranslation()
     {

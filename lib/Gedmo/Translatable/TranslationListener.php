@@ -132,6 +132,11 @@ class TranslationListener extends MappedEventSubscriber
         return $this;
     }
 
+    public function addPendingTranslationInsert($oid, $translation)
+    {
+        $this->pendingTranslationInserts[$oid][] = $translation;
+    }
+
     /**
      * Add additional translation for $oid object
      *
