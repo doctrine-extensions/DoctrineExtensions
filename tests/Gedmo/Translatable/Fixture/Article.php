@@ -27,6 +27,12 @@ class Article implements Translatable
     private $content;
 
     /**
+     * @Gedmo\Translatable
+     * @ORM\Column(name="views", type="integer", nullable=true)
+     */
+    private $views;
+
+    /**
      * Used locale to override Translation listener`s locale
      * @Gedmo\Locale
      */
@@ -76,5 +82,15 @@ class Article implements Translatable
     public function setTranslatableLocale($locale)
     {
         $this->locale = $locale;
+    }
+
+    public function setViews ($views)
+    {
+        $this->views = $views;
+    }
+
+    public function getViews ()
+    {
+        return $this->views;
     }
 }

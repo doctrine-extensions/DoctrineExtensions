@@ -285,17 +285,22 @@ class TranslationWalker extends SqlWalker
                     $sql .= ' AND '.$tblAlias.'.'.$transMeta->getQuotedColumnName('foreignKey', $this->platform)
                         .' = '.$compTblAlias.'.'.$colName;
                     isset($this->components[$dqlAlias]) ? $this->components[$dqlAlias] .= $sql : $this->components[$dqlAlias] = $sql;
-                    if ($this->needsFallback()) {
-                        // COALESCE with the original record columns
-                        $this->replacements[$compTblAlias.'.'.$meta->getQuotedColumnName($field, $this->platform)]
-                            = 'COALESCE('.$tblAlias.'.'.$transMeta->getQuotedColumnName('content', $this->platform)
-                            .', '.$compTblAlias.'.'.$meta->getQuotedColumnName($field, $this->platform).')'
-                        ;
-                    } else {
-                        $this->replacements[$compTblAlias.'.'.$meta->getQuotedColumnName($field, $this->platform)]
-                            = $tblAlias.'.'.$transMeta->getQuotedColumnName('content', $this->platform)
-                        ;
+
+                    $originalField = $compTblAlias.'.'.$meta->getQuotedColumnName($field, $this->platform);
+                    $substituteField = $tblAlias . '.' . $transMeta->getQuotedColumnName('content', $this->platform);
+
+                    // If original field is integer - treat translation as integer (for ORDER BY, WHERE, etc)
+                    $fieldMapping = $meta->getFieldMapping($field);
+                    if (in_array($fieldMapping["type"], array("integer", "bigint", "tinyint", "int"))) {
+                        $substituteField = 'CAST(' . $substituteField . ' AS SIGNED)';
                     }
+
+                    // Fallback to original if was asked for
+                    if ($this->needsFallback()) {
+                        $substituteField = 'COALESCE('.$substituteField.', '.$originalField.')';
+                    }
+
+                    $this->replacements[$originalField] = $substituteField;
                 }
             }
         }
