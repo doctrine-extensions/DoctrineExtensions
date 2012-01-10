@@ -139,14 +139,14 @@ class TranslationRepository extends DocumentRepository
             $q->setHydrate(false);
             $result = $q->execute();
             if ($result instanceof Cursor) {
-                $result = $data->toArray();
+                $result = $result->toArray();
             }
             $id = count($result) ? $result[0]['foreignKey'] : null;
             if ($id) {
                 $document = $this->dm->find($class, $id);
             }
         }
-        return $entity;
+        return $document;
     }
 
     /**
