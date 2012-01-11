@@ -30,6 +30,34 @@ class NestedTreeRootTest extends BaseTestCaseORM
         $this->populate();
     }
 
+    /**
+     * @test
+     */
+    function shouldRemoveAndSynchronize()
+    {
+        $repo = $this->em->getRepository(self::CATEGORY);
+        $vegies = $repo->findOneByTitle('Vegitables');
+
+        $this->em->remove($vegies);
+        $this->em->flush();
+
+        $food = $repo->findOneByTitle('Food');
+
+        $this->assertEquals(1, $food->getLeft());
+        $this->assertEquals(4, $food->getRight());
+
+        $vegies = new RootCategory;
+        $vegies->setTitle('Vegies');
+        $repo->persistAsFirstChildOf($vegies, $food);
+
+        $this->em->flush();
+        $this->assertEquals(1, $food->getLeft());
+        $this->assertEquals(6, $food->getRight());
+
+        $this->assertEquals(2, $vegies->getLeft());
+        $this->assertEquals(3, $vegies->getRight());
+    }
+
     /*public function testHeavyLoad()
     {
         $start = microtime(true);
