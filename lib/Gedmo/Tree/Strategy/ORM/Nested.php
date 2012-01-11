@@ -456,7 +456,7 @@ class Nested implements Strategy
                 $root = isset($config['root']) ? $meta->getReflectionProperty($config['root'])->getValue($node) : null;
                 if ($root === $rootId && $left >= $first) {
                     if ($left + $delta < 0) {
-                        throw new UnexpectedValueException(sprintf('Attempting to set left equal to %s for node %s', $left + $delta, $node));
+                        throw new UnexpectedValueException(sprintf('Attempting to set left equal to %s for node %s', $left + $delta, self::objToStr($node)));
                     }
 
                     $meta->getReflectionProperty($config['left'])->setValue($node, $left + $delta);
@@ -465,7 +465,7 @@ class Nested implements Strategy
                 $right = $meta->getReflectionProperty($config['right'])->getValue($node);
                 if ($root === $rootId && $right >= $first) {
                     if ($right + $delta < 0) {
-                        throw new UnexpectedValueException(sprintf('Attempting to set right equal to %s for node %s', $right + $delta, $node));
+                        throw new UnexpectedValueException(sprintf('Attempting to set right equal to %s for node %s', $right + $delta, self::objToStr($node)));
                     }
 
                     $meta->getReflectionProperty($config['right'])->setValue($node, $right + $delta);
@@ -533,14 +533,14 @@ class Nested implements Strategy
                     $uow = $em->getUnitOfWork();
 
                     if ($left + $delta < 0) {
-                        throw new UnexpectedValueException(sprintf('Attempting to set left equal to %s for node %s', $left + $delta, $node));
+                        throw new UnexpectedValueException(sprintf('Attempting to set left equal to %s for node %s', $left + $delta, self::objToStr($node)));
                     }
 
                     $meta->getReflectionProperty($config['left'])->setValue($node, $left + $delta);
                     $uow->setOriginalEntityProperty($oid, $config['left'], $left + $delta);
 
                     if ($right + $delta < 0) {
-                        throw new UnexpectedValueException(sprintf('Attempting to set right equal to %s for node %s', $right + $delta, $node));
+                        throw new UnexpectedValueException(sprintf('Attempting to set right equal to %s for node %s', $right + $delta, self::objToStr($node)));
                     }
 
                     $meta->getReflectionProperty($config['right'])->setValue($node, $right + $delta);
@@ -557,5 +557,16 @@ class Nested implements Strategy
                 }
             }
         }
+    }
+
+    /**
+     * Helper method to show an object as string.
+     *
+     * @param  object $obj
+     * @return string
+     */
+    private static function objToStr($obj)
+    {
+        return method_exists($obj, '__toString') ? (string)$obj : get_class($obj).'@'.spl_object_hash($obj);
     }
 }
