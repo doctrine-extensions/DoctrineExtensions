@@ -815,7 +815,7 @@ class NestedTreeRepository extends AbstractTreeRepository
 
         // Gets the array of $node results.
         // It must be order by 'root' and 'left' field
-        $nodes = self::childrenQuery(
+        $nodes = $this->childrenQuery(
             $node,
             $direct,
             isset($config['root']) ? array($config['root'], $config['left']) : $config['left'],
