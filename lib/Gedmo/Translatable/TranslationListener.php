@@ -125,7 +125,7 @@ class TranslationListener extends MappedEventSubscriber
     }
 
     /**
-     * Add additional @translation for pending $oid object
+     * Add additional $translation for pending $oid object
      * which is being inserted
      *
      * @param string $oid
