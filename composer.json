@@ -2,13 +2,25 @@
     "name": "gedmo/doctrine-extensions",
     "type": "library",
     "description": "Doctrine2 behavioral extensions",
-    "keywords": [],
+    "keywords": [
+        'behaviors',
+        'doctrine2',
+        'extensions',
+        'gedmo',
+        'sluggable',
+        'loggable',
+        'translatable',
+        'tree',
+        'nestedset',
+        'sortable',
+        'timestampable'
+    ],
     "homepage": "http://gediminasm.org/",
     "license": "MIT",
     "authors": [
         {
             "name": "Gediminas Morkevicius",
-            "email": "Gediminas Morkevicius"
+            "email": "gediminas.morkevicius@gmail"
         }
     ],
     "require": {
