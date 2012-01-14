@@ -63,7 +63,8 @@ class SluggableListener extends MappedEventSubscriber
     {
         return array(
             'onFlush',
-            'loadClassMetadata'
+            'loadClassMetadata',
+            'prePersist'
         );
     }
 
@@ -101,6 +102,28 @@ class SluggableListener extends MappedEventSubscriber
     {
         $ea = $this->getEventAdapter($eventArgs);
         $this->loadMetadataForObjectClass($ea->getObjectManager(), $eventArgs->getClassMetadata());
+    }
+
+    /**
+     * Allows identifier fields to be slugged as usual
+     *
+     * @param EventArgs $args
+     * @return void
+     */
+    public function prePersist(EventArgs $args)
+    {
+        $ea = $this->getEventAdapter($args);
+        $om = $ea->getObjectManager();
+        $object = $ea->getObject();
+        $meta = $om->getClassMetadata(get_class($object));
+
+        if ($config = $this->getConfiguration($om, $meta->name)) {
+            foreach ($config['slugs'] as $slugField => $options) {
+                if ($meta->isIdentifier($slugField)) {
+                    $meta->getReflectionProperty($slugField)->setValue($object, '__id__');
+                }
+            }
+        }
     }
 
     /**

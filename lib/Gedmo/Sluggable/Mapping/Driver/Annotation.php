@@ -133,6 +133,9 @@ class Annotation implements AnnotationDriverInterface
                 if (!is_bool($slug->unique)) {
                     throw new InvalidMappingException("Slug annotation [unique], type is not valid and must be 'boolean' in class - {$meta->name}");
                 }
+                if ($meta->isIdentifier($field) && !(bool)$slug->unique) {
+                    throw new InvalidMappingException("Identifier field - [{$field}] slug must be unique in order to maintain primary key in class - {$meta->name}");
+                }
                 // set all options
                 $config['slugs'][$field] = array(
                     'fields' => $slug->fields,

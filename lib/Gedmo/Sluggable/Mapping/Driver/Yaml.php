@@ -75,6 +75,7 @@ class Yaml extends File implements Driver
                                 throw new InvalidMappingException("Cannot use field - [{$slugField}] for slug storage, type is not valid and must be 'string' or 'text' in class - {$meta->name}");
                             }
                         }
+
                         $config['slugs'][$field]['fields'] = $slug['fields'];
                         $config['slugs'][$field]['handlers'] = $handlers;
                         $config['slugs'][$field]['slug'] = $field;
@@ -89,6 +90,10 @@ class Yaml extends File implements Driver
 
                         $config['slugs'][$field]['separator'] = isset($slug['separator']) ?
                             (string)$slug['separator'] : '-';
+
+                        if ($meta->isIdentifier($field) && !$config['slugs'][$field]['unique']) {
+                            throw new InvalidMappingException("Identifier field - [{$field}] slug must be unique in order to maintain primary key in class - {$meta->name}");
+                        }
                     }
                 }
             }
