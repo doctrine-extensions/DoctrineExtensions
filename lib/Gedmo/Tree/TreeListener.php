@@ -139,7 +139,7 @@ class TreeListener extends MappedEventSubscriber
         $object = $ea->getObject();
         $meta = $om->getClassMetadata(get_class($object));
 
-        if ($config = $this->getConfiguration($om, $meta->name)) {
+        if ($this->getConfiguration($om, $meta->name)) {
             $this->getStrategy($om, $meta->name)->processPreRemove($om, $object);
         }
     }
@@ -157,7 +157,7 @@ class TreeListener extends MappedEventSubscriber
         $object = $ea->getObject();
         $meta = $om->getClassMetadata(get_class($object));
 
-        if ($config = $this->getConfiguration($om, $meta->name)) {
+        if ($this->getConfiguration($om, $meta->name)) {
             $this->getStrategy($om, $meta->name)->processPrePersist($om, $object);
         }
     }
@@ -176,7 +176,7 @@ class TreeListener extends MappedEventSubscriber
         $object = $ea->getObject();
         $meta = $om->getClassMetadata(get_class($object));
 
-        if ($config = $this->getConfiguration($om, $meta->name)) {
+        if ($this->getConfiguration($om, $meta->name)) {
             $this->getStrategy($om, $meta->name)->processPostPersist($om, $object);
         }
     }
@@ -194,7 +194,6 @@ class TreeListener extends MappedEventSubscriber
         $meta = $eventArgs->getClassMetadata();
         $this->loadMetadataForObjectClass($om, $meta);
         if (isset($this->configurations[$meta->name]) && $this->configurations[$meta->name]) {
-            $config = $this->configurations[$meta->name];
             $this->getStrategy($om, $meta->name)->processMetadataLoad($om, $meta);
         }
     }

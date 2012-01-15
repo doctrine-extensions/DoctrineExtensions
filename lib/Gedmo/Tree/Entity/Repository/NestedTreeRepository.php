@@ -545,7 +545,6 @@ class NestedTreeRepository extends AbstractTreeRepository
         $result = false;
         $meta = $this->getClassMetadata();
         if ($node instanceof $meta->name) {
-            $config = $this->listener->getConfiguration($this->_em, $meta->name);
             $nextSiblings = $this->getNextSiblings($node);
             if ($numSiblings = count($nextSiblings)) {
                 $result = true;
@@ -579,7 +578,6 @@ class NestedTreeRepository extends AbstractTreeRepository
         $result = false;
         $meta = $this->getClassMetadata();
         if ($node instanceof $meta->name) {
-            $config = $this->listener->getConfiguration($this->_em, $meta->name);
             $prevSiblings = array_reverse($this->getPrevSiblings($node));
             if ($numSiblings = count($prevSiblings)) {
                 $result = true;

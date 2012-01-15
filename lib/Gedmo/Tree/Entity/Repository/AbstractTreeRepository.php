@@ -22,8 +22,8 @@ abstract class AbstractTreeRepository extends EntityRepository
     {
         parent::__construct($em, $class);
         $treeListener = null;
-        foreach ($em->getEventManager()->getListeners() as $event => $listeners) {
-            foreach ($listeners as $hash => $listener) {
+        foreach ($em->getEventManager()->getListeners() as $listeners) {
+            foreach ($listeners as $listener) {
                 if ($listener instanceof \Gedmo\Tree\TreeListener) {
                     $treeListener = $listener;
                     break;
