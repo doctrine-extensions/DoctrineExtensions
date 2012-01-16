@@ -270,7 +270,7 @@ class Closure implements Strategy
             }
         }
         if ($parent) {
-            $this->extractIdentifier($em, $parent);
+            $parentId = $this->extractIdentifier($em, $parent);
             $query = "SELECT c1.ancestor, c2.descendant, (c1.depth + c2.depth + 1) AS depth";
             $query .= " FROM {$table} c1, {$table} c2";
             $query .= " WHERE c1.descendant = :parentId";

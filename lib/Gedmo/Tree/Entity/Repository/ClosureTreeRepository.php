@@ -232,6 +232,7 @@ class ClosureTreeRepository extends AbstractTreeRepository
         }
         $config = $this->listener->getConfiguration($this->_em, $meta->name);
         $pk = $meta->getSingleIdentifierFieldName();
+        $nodeId = $wrapped->getIdentifier();
         $parent = $wrapped->getPropertyValue($config['parent']);
 
         $dql = "SELECT node FROM {$config['useObjectClass']} node";
@@ -243,6 +244,7 @@ class ClosureTreeRepository extends AbstractTreeRepository
         $this->_em->getConnection()->beginTransaction();
         try {
             foreach ($nodesToReparent as $nodeToReparent) {
+                $id = $meta->getReflectionProperty($pk)->getValue($nodeToReparent);
                 $meta->getReflectionProperty($config['parent'])->setValue($nodeToReparent, $parent);
 
                 $dql = "UPDATE {$config['useObjectClass']} node";
