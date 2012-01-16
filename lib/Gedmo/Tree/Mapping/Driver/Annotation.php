@@ -203,6 +203,53 @@ class Annotation implements AnnotationDriverInterface
     }
 
     /**
+     * Validates metadata for nested type tree
+     *
+     * @param object $meta
+     * @param array $config
+     * @throws InvalidMappingException
+     * @return void
+     */
+    private function validateNestedTreeMetadata($meta, array $config)
+    {
+        $missingFields = array();
+        if (!isset($config['parent'])) {
+            $missingFields[] = 'ancestor';
+        }
+        if (!isset($config['left'])) {
+            $missingFields[] = 'left';
+        }
+        if (!isset($config['right'])) {
+            $missingFields[] = 'right';
+        }
+        if ($missingFields) {
+            throw new InvalidMappingException("Missing properties: " . implode(', ', $missingFields) . " in class - {$meta->name}");
+        }
+    }
+
+    /**
+     * Validates metadata for closure type tree
+     *
+     * @param object $meta
+     * @param array $config
+     * @throws InvalidMappingException
+     * @return void
+     */
+    private function validateClosureTreeMetadata($meta, array $config)
+    {
+        $missingFields = array();
+        if (!isset($config['parent'])) {
+            $missingFields[] = 'ancestor';
+        }
+        if (!isset($config['closure'])) {
+            $missingFields[] = 'closure class';
+        }
+        if ($missingFields) {
+            throw new InvalidMappingException("Missing properties: " . implode(', ', $missingFields) . " in class - {$meta->name}");
+        }
+    }
+
+    /**
      * Passes in the mapping read by original driver
      *
      * @param $driver
