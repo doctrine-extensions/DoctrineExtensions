@@ -155,7 +155,7 @@ class Xml extends BaseXml
         $missingFields = array();
         if (!isset($config['parent'])) {
             $missingFields[] = 'ancestor';
-}
+        }
         if (!isset($config['left'])) {
             $missingFields[] = 'left';
         }

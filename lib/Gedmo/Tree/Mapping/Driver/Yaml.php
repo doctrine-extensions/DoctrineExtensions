@@ -158,7 +158,7 @@ class Yaml extends File implements Driver
         $missingFields = array();
         if (!isset($config['parent'])) {
             $missingFields[] = 'ancestor';
-}
+        }
         if (!isset($config['left'])) {
             $missingFields[] = 'left';
         }
