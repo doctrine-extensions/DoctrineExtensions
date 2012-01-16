@@ -123,7 +123,7 @@ class Annotation implements AnnotationDriverInterface
                 continue;
             }
             // left
-            if ($left = $this->reader->getPropertyAnnotation($property, self::LEFT)) {
+            if ($this->reader->getPropertyAnnotation($property, self::LEFT)) {
                 $field = $property->getName();
                 if (!$meta->hasField($field)) {
                     throw new InvalidMappingException("Unable to find 'left' - [{$field}] as mapped property in entity - {$meta->name}");
@@ -134,7 +134,7 @@ class Annotation implements AnnotationDriverInterface
                 $config['left'] = $field;
             }
             // right
-            if ($right = $this->reader->getPropertyAnnotation($property, self::RIGHT)) {
+            if ($this->reader->getPropertyAnnotation($property, self::RIGHT)) {
                 $field = $property->getName();
                 if (!$meta->hasField($field)) {
                     throw new InvalidMappingException("Unable to find 'right' - [{$field}] as mapped property in entity - {$meta->name}");
@@ -145,7 +145,7 @@ class Annotation implements AnnotationDriverInterface
                 $config['right'] = $field;
             }
             // ancestor/parent
-            if ($parent = $this->reader->getPropertyAnnotation($property, self::PARENT)) {
+            if ($this->reader->getPropertyAnnotation($property, self::PARENT)) {
                 $field = $property->getName();
                 if (!$meta->isSingleValuedAssociation($field)) {
                     throw new InvalidMappingException("Unable to find ancestor/parent child relation through ancestor field - [{$field}] in class - {$meta->name}");
@@ -153,7 +153,7 @@ class Annotation implements AnnotationDriverInterface
                 $config['parent'] = $field;
             }
             // root
-            if ($root = $this->reader->getPropertyAnnotation($property, self::ROOT)) {
+            if ($this->reader->getPropertyAnnotation($property, self::ROOT)) {
                 $field = $property->getName();
                 if (!$meta->hasField($field)) {
                     throw new InvalidMappingException("Unable to find 'root' - [{$field}] as mapped property in entity - {$meta->name}");
@@ -164,7 +164,7 @@ class Annotation implements AnnotationDriverInterface
                 $config['root'] = $field;
             }
             // level
-            if ($parent = $this->reader->getPropertyAnnotation($property, self::LEVEL)) {
+            if ($this->reader->getPropertyAnnotation($property, self::LEVEL)) {
                 $field = $property->getName();
                 if (!$meta->hasField($field)) {
                     throw new InvalidMappingException("Unable to find 'level' - [{$field}] as mapped property in entity - {$meta->name}");
