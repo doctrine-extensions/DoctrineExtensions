@@ -33,7 +33,8 @@ class SortableListener extends MappedEventSubscriber
     {
         return array(
             'onFlush',
-            'loadClassMetadata'
+            'loadClassMetadata',
+            'prePersist',
         );
     }
 
@@ -87,6 +88,35 @@ class SortableListener extends MappedEventSubscriber
         }
 
         $this->processRelocations($om);
+    }
+
+    /**
+     * Update maxPositions as needed
+     */
+    public function prePersist(EventArgs $args)
+    {
+        $ea = $this->getEventAdapter($args);
+        $om = $ea->getObjectManager();
+        $uow = $om->getUnitOfWork();
+        $object = $ea->getObject();
+        $meta = $om->getClassMetadata(get_class($object));
+
+        if ($config = $this->getConfiguration($om, $meta->name)) {
+            // Get groups
+            $groups = array();
+            if (isset($config['groups'])) {
+                foreach ($config['groups'] as $group) {
+                    $groups[$group] = $meta->getReflectionProperty($group)->getValue($object);
+                }
+            }
+            // Get hash
+            $hash = $this->getHash($meta, $groups, $object, $config);
+
+            // Get max position
+            if (!isset($this->maxPositions[$hash])) {
+                $this->maxPositions[$hash] = $this->getMaxPosition($om, $meta, $config, $object);
+            }
+        }
     }
 
     /**
@@ -318,7 +348,34 @@ class SortableListener extends MappedEventSubscriber
 
     private function getMaxPosition($em, $meta, $config, $object)
     {
+        $uow = $em->getUnitOfWork();
         $maxPos = null;
+        
+        // Get groups
+        $groups = array();
+        if (isset($config['groups'])) {
+            foreach ($config['groups'] as $group) {
+                $groups[$group] = $meta->getReflectionProperty($group)->getValue($object);
+            }
+        }
+
+        // Get hash
+        $hash = $this->getHash($meta, $groups, $object, $config);
+        
+        // Check for cached max position
+        if (isset($this->maxPositions[$hash])) {
+            return $this->maxPositions[$hash];
+        }
+        
+        // Check for groups that are associations. If the value is an object and is
+        // scheduled for insert, it has no identifier yet and is obviously new
+        // see issue #226
+        foreach ($groups as $group => $val) {
+            if (is_object($val) && $uow->isScheduledForInsert($val)) {
+                return 0;
+            }
+        }
+
         $groups = isset($config["groups"]) ? $config["groups"] : array();
         $qb = $em->createQueryBuilder();
         $qb->select('MAX(n.'.$config['position'].')')
