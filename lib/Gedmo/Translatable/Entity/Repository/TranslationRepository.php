@@ -47,7 +47,7 @@ class TranslationRepository extends EntityRepository
         if (!isset($config['fields']) || !in_array($field, $config['fields'])) {
             throw new \Gedmo\Exception\InvalidArgumentException("Entity: {$meta->name} does not translate field - {$field}");
         }
-        if ($locale === $listener->getDefaultLocale()) {
+        if (in_array($locale, array($listener->getDefaultLocale(), $listener->getTranslatableLocale($entity, $meta)))) {
             $meta->getReflectionProperty($field)->setValue($entity, $value);
             $this->_em->persist($entity);
         } else {

@@ -47,7 +47,7 @@ class TranslationRepository extends DocumentRepository
         if (!isset($config['fields']) || !in_array($field, $config['fields'])) {
             throw new \Gedmo\Exception\InvalidArgumentException("Document: {$meta->name} does not translate field - {$field}");
         }
-        if ($locale === $listener->getDefaultLocale()) {
+        if (in_array($locale, array($listener->getDefaultLocale(), $listener->getTranslatableLocale($document, $meta)))) {
             $meta->getReflectionProperty($field)->setValue($document, $value);
             $this->dm->persist($document);
         } else {

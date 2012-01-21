@@ -42,7 +42,28 @@ class TranslatableEntityCollectionTest extends BaseTestCaseORM
         );
         //$this->getMockCustomEntityManager($conn, $evm);
         $this->getMockSqliteEntityManager($evm);
-        $this->populate();
+    }
+
+    /**
+     * @test
+     */
+    function shouldEnsureSolvedIssue234()
+    {
+        $this->translatableListener->setTranslatableLocale('de');
+        $this->translatableListener->setDefaultLocale('en');
+        $repo = $this->em->getRepository(self::TRANSLATION);
+        $entity = new Article;
+        $entity->setTitle('he'); // is translated to de
+
+        $repo
+            ->translate($entity, 'title', 'en', 'my article en')
+            ->translate($entity, 'title', 'es', 'my article es')
+            ->translate($entity, 'title', 'fr', 'my article fr')
+            ->translate($entity, 'title', 'de', 'my article de')
+        ;
+
+        $this->em->persist($entity);
+        $this->em->flush();
     }
 
     /**
@@ -50,6 +71,7 @@ class TranslatableEntityCollectionTest extends BaseTestCaseORM
      */
     function shouldPersistMultipleTranslations()
     {
+        $this->populate();
         $repo = $this->em->getRepository(self::TRANSLATION);
         $sport = $this->em->getRepository(self::ARTICLE)->find(1);
         $translations = $repo->findTranslations($sport);
@@ -74,6 +96,7 @@ class TranslatableEntityCollectionTest extends BaseTestCaseORM
      */
     function shouldUpdateTranslation()
     {
+        $this->populate();
         $repo = $this->em->getRepository(self::TRANSLATION);
         $sport = $this->em->getRepository(self::ARTICLE)->find(1);
         $repo
@@ -97,6 +120,7 @@ class TranslatableEntityCollectionTest extends BaseTestCaseORM
      */
     function shouldUpdateMultipleTranslations()
     {
+        $this->populate();
         $repo = $this->em->getRepository(self::TRANSLATION);
         $sport = $this->em->getRepository(self::ARTICLE)->find(1);
         $repo
