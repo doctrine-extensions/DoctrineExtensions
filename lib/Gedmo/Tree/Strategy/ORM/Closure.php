@@ -8,6 +8,7 @@ use Gedmo\Tree\Strategy;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Proxy\Proxy;
 use Gedmo\Tree\TreeListener;
+use Doctrine\ORM\Version;
 
 /**
  * This strategy makes tree act like
@@ -61,6 +62,7 @@ class Closure implements Strategy
     {
         $config = $this->listener->getConfiguration($em, $meta->name);
         $closureMetadata = $em->getClassMetadata($config['closure']);
+        $cmf = $em->getMetadataFactory();
 
         if (!$closureMetadata->hasAssociation('ancestor')) {
             // create ancestor mapping
@@ -84,6 +86,12 @@ class Closure implements Strategy
                 'fetch' => ClassMetadataInfo::FETCH_LAZY
             );
             $closureMetadata->mapManyToOne($ancestorMapping);
+            if (Version::compare('2.3.0') >= 0) {
+                $closureMetadata->reflFields['ancestor'] = $cmf
+                    ->getReflectionService()
+                    ->getAccessibleProperty($closureMetadata->name, 'ancestor')
+                ;
+            }
         }
 
         if (!$closureMetadata->hasAssociation('descendant')) {
@@ -108,6 +116,12 @@ class Closure implements Strategy
                 'fetch' => ClassMetadataInfo::FETCH_LAZY
             );
             $closureMetadata->mapManyToOne($descendantMapping);
+            if (Version::compare('2.3.0') >= 0) {
+                $closureMetadata->reflFields['descendant'] = $cmf
+                    ->getReflectionService()
+                    ->getAccessibleProperty($closureMetadata->name, 'descendant')
+                ;
+            }
         }
         // create unique index on ancestor and descendant
         $indexName = substr(strtoupper("IDX_" . md5($closureMetadata->name)), 0, 20);
@@ -119,7 +133,7 @@ class Closure implements Strategy
         $closureMetadata->table['indexes'][$indexName] = array(
             'columns' => array('depth')
         );
-        if ($cacheDriver = $em->getMetadataFactory()->getCacheDriver()) {
+        if ($cacheDriver = $cmf->getCacheDriver()) {
             $cacheDriver->save($closureMetadata->name."\$CLASSMETADATA", $closureMetadata, null);
         }
     }

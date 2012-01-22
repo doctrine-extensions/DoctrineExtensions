@@ -2,6 +2,7 @@
 
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Mapping\Fixture\Unmapped\Timestampable;
+use Doctrine\ORM\Version;
 
 /**
 * These are mapping tests for tree extension
@@ -56,6 +57,7 @@ class ForcedMetadataTest extends \PHPUnit_Framework_TestCase
         $metadata->mapField($created);
         $metadata->setIdGeneratorType(ClassMetadata::GENERATOR_TYPE_IDENTITY);
         $metadata->setIdGenerator(new \Doctrine\ORM\Id\IdentityGenerator(null));
+        $metadata->setPrimaryTable(array('name' => 'temp_test'));
         $cmf->setMetadataFor('Mapping\Fixture\Unmapped\Timestampable', $metadata);
 
         // trigger loadClassMetadata event
@@ -63,6 +65,9 @@ class ForcedMetadataTest extends \PHPUnit_Framework_TestCase
         $eventArgs = new \Doctrine\ORM\Event\LoadClassMetadataEventArgs($metadata, $this->em);
         $evm->dispatchEvent(\Doctrine\ORM\Events::loadClassMetadata, $eventArgs);
 
+        if (Version::compare('2.3.0') >= 0) {
+            $metadata->wakeupReflection($cmf->getReflectionService());
+        }
         $schemaTool = new \Doctrine\ORM\Tools\SchemaTool($this->em);
         $schemaTool->dropSchema(array());
         $schemaTool->createSchema(array(
