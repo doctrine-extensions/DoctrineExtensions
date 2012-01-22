@@ -1,11 +1,16 @@
 # Doctrine2 behavioral extensions
 
-**Version 2.2-DEV**
+**Version 2.3-DEV**
 
 ### Latest updates
 
-**Note:** Use 2.1.x tag in order to use extensions based on Doctrine2.1.x versions. Currently
-master branch is based on 2.2.x versions and may not work with 2.1.x components.
+**Note:** Use 2.1.x or 2.2.x tag in order to use extensions based on Doctrine2.x.x component versions. Currently
+master branch is based on 2.3.x versions and may not work with older components.
+
+**2012-01-22**
+
+- Adapted extensions for recent 2.3.0-DEV version of doctrine2. Released a tag for 2.2.x component
+support. In general extensions are **BC** with versions 2.1.x, 2.2.x of doctrine2.
 
 **2012-01-09**
 
