@@ -86,7 +86,7 @@ class Closure implements Strategy
                 'fetch' => ClassMetadataInfo::FETCH_LAZY
             );
             $closureMetadata->mapManyToOne($ancestorMapping);
-            if (Version::compare('2.3.0') >= 0) {
+            if (Version::compare('2.3.0-dev') <= 0) {
                 $closureMetadata->reflFields['ancestor'] = $cmf
                     ->getReflectionService()
                     ->getAccessibleProperty($closureMetadata->name, 'ancestor')
@@ -116,7 +116,7 @@ class Closure implements Strategy
                 'fetch' => ClassMetadataInfo::FETCH_LAZY
             );
             $closureMetadata->mapManyToOne($descendantMapping);
-            if (Version::compare('2.3.0') >= 0) {
+            if (Version::compare('2.3.0-dev') <= 0) {
                 $closureMetadata->reflFields['descendant'] = $cmf
                     ->getReflectionService()
                     ->getAccessibleProperty($closureMetadata->name, 'descendant')

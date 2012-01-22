@@ -65,7 +65,7 @@ class ForcedMetadataTest extends \PHPUnit_Framework_TestCase
         $eventArgs = new \Doctrine\ORM\Event\LoadClassMetadataEventArgs($metadata, $this->em);
         $evm->dispatchEvent(\Doctrine\ORM\Events::loadClassMetadata, $eventArgs);
 
-        if (Version::compare('2.3.0') >= 0) {
+        if (Version::compare('2.3.0-dev') <= 0) {
             $metadata->wakeupReflection($cmf->getReflectionService());
         }
         $schemaTool = new \Doctrine\ORM\Tools\SchemaTool($this->em);
