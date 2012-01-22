@@ -43,7 +43,7 @@ class TranslatableMappingTest extends \PHPUnit_Framework_TestCase
         //$config->setSQLLogger(new \Doctrine\DBAL\Logging\EchoSQLLogger());
 
         $evm = new \Doctrine\Common\EventManager();
-        $this->translatableListener = new TranslationListener();
+        $this->translatableListener = new TranslatableListener();
         $this->translatableListener->setTranslatableLocale('en_us');
         $evm->addEventSubscriber($this->translatableListener);
         $this->em = \Doctrine\ORM\EntityManager::create($conn, $config, $evm);

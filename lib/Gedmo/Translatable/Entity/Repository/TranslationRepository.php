@@ -2,7 +2,7 @@
 
 namespace Gedmo\Translatable\Entity\Repository;
 
-use Gedmo\Translatable\TranslationListener;
+use Gedmo\Translatable\TranslatableListener;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query;
 use Gedmo\Tool\Wrapper\EntityWrapper;
@@ -22,10 +22,10 @@ use Doctrine\DBAL\Types\Type;
 class TranslationRepository extends EntityRepository
 {
     /**
-     * Current TranslationListener instance used
+     * Current TranslatableListener instance used
      * in EntityManager
      *
-     * @var TranslationListener
+     * @var TranslatableListener
      */
     private $listener;
 
@@ -42,7 +42,7 @@ class TranslationRepository extends EntityRepository
     public function translate($entity, $field, $locale, $value)
     {
         $meta = $this->_em->getClassMetadata(get_class($entity));
-        $listener = $this->getTranslationListener();
+        $listener = $this->getTranslatableListener();
         $config = $listener->getConfiguration($this->_em, $meta->name);
         if (!isset($config['fields']) || !in_array($field, $config['fields'])) {
             throw new \Gedmo\Exception\InvalidArgumentException("Entity: {$meta->name} does not translate field - {$field}");
@@ -180,17 +180,17 @@ class TranslationRepository extends EntityRepository
     }
 
     /**
-     * Get the currently used TranslationListener
+     * Get the currently used TranslatableListener
      *
      * @throws \Gedmo\Exception\RuntimeException - if listener is not found
-     * @return TranslationListener
+     * @return TranslatableListener
      */
-    private function getTranslationListener()
+    private function getTranslatableListener()
     {
         if (!$this->listener) {
             foreach ($this->_em->getEventManager()->getListeners() as $event => $listeners) {
                 foreach ($listeners as $hash => $listener) {
-                    if ($listener instanceof TranslationListener) {
+                    if ($listener instanceof TranslatableListener) {
                         $this->listener = $listener;
                         break;
                     }

@@ -21,17 +21,17 @@ class TranslatableIdentifierTest extends BaseTestCaseORM
     const TRANSLATION = 'Gedmo\\Translatable\\Entity\\Translation';
 
     private $testObjectId;
-    private $translationListener;
+    private $translatableListener;
 
     protected function setUp()
     {
         parent::setUp();
 
         $evm = new EventManager;
-        $this->translationListener = new TranslationListener();
-        $this->translationListener->setTranslatableLocale('en_us');
-        $this->translationListener->setDefaultLocale('en_us');
-        $evm->addEventSubscriber($this->translationListener);
+        $this->translatableListener = new TranslatableListener();
+        $this->translatableListener->setTranslatableLocale('en_us');
+        $this->translatableListener->setDefaultLocale('en_us');
+        $evm->addEventSubscriber($this->translatableListener);
 
         $this->getMockSqliteEntityManager($evm);
     }
@@ -89,7 +89,7 @@ class TranslatableIdentifierTest extends BaseTestCaseORM
         $object = $data[0];
         $this->assertEquals('title in en', $object->getTitle());
 
-        $this->translationListener->setTranslatableLocale('de_de');
+        $this->translatableListener->setTranslatableLocale('de_de');
         $q = $this->em->createQuery('SELECT si FROM ' . self::FIXTURE . ' si WHERE si.uid = :id');
         $data = $q->execute(
             array('id' => $this->testObjectId),

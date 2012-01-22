@@ -3,7 +3,7 @@
 namespace Gedmo\Translatable\Query\TreeWalker;
 
 use Gedmo\Translatable\Mapping\Event\Adapter\ORM as TranslatableEventAdapter;
-use Gedmo\Translatable\TranslationListener;
+use Gedmo\Translatable\TranslatableListener;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\Query\SqlWalker;
 use Doctrine\ORM\Query\TreeWalkerAdapter;
@@ -18,7 +18,7 @@ use Doctrine\ORM\Query\AST\Join;
  * It works with any select query, any hydration method.
  *
  * Behind the scenes, during the object hydration it forces
- * custom hydrator in order to interact with TranslationListener
+ * custom hydrator in order to interact with TranslatableListener
  * and skip postLoad event which would couse automatic retranslation
  * of the fields.
  *
@@ -95,7 +95,7 @@ class TranslationWalker extends SqlWalker
         parent::__construct($query, $parserResult, $queryComponents);
         $this->conn = $this->getConnection();
         $this->platform = $this->getConnection()->getDatabasePlatform();
-        $this->listener = $this->getTranslationListener();
+        $this->listener = $this->getTranslatableListener();
         $this->extractTranslatedComponents($queryComponents);
     }
 
@@ -252,7 +252,7 @@ class TranslationWalker extends SqlWalker
     private function prepareTranslatedComponents()
     {
         $q = $this->getQuery();
-        $locale = $q->getHint(TranslationListener::HINT_TRANSLATABLE_LOCALE);
+        $locale = $q->getHint(TranslatableListener::HINT_TRANSLATABLE_LOCALE);
         if (!$locale) {
             // use from listener
             $locale = $this->listener->getListenerLocale();
@@ -264,7 +264,7 @@ class TranslationWalker extends SqlWalker
         }
         $em = $this->getEntityManager();
         $ea = new TranslatableEventAdapter;
-        $joinStrategy = $q->getHint(TranslationListener::HINT_INNER_JOIN) ? 'INNER' : 'LEFT';
+        $joinStrategy = $q->getHint(TranslatableListener::HINT_INNER_JOIN) ? 'INNER' : 'LEFT';
 
         foreach ($this->translatedComponents as $dqlAlias => $comp) {
             $meta = $comp['metadata'];
@@ -316,7 +316,7 @@ class TranslationWalker extends SqlWalker
     private function needsFallback()
     {
         $q = $this->getQuery();
-        $fallback = $q->getHint(TranslationListener::HINT_FALLBACK);
+        $fallback = $q->getHint(TranslatableListener::HINT_FALLBACK);
         if (false === $fallback) {
             // non overrided
             $fallback = $this->listener->getTranslationFallback();
@@ -348,31 +348,31 @@ class TranslationWalker extends SqlWalker
     }
 
     /**
-     * Get the currently used TranslationListener
+     * Get the currently used TranslatableListener
      *
      * @throws \Gedmo\Exception\RuntimeException - if listener is not found
-     * @return TranslationListener
+     * @return TranslatableListener
      */
-    private function getTranslationListener()
+    private function getTranslatableListener()
     {
-        $translationListener = null;
+        $translatableListener = null;
         $em = $this->getEntityManager();
         foreach ($em->getEventManager()->getListeners() as $event => $listeners) {
             foreach ($listeners as $hash => $listener) {
-                if ($listener instanceof TranslationListener) {
-                    $translationListener = $listener;
+                if ($listener instanceof TranslatableListener) {
+                    $translatableListener = $listener;
                     break;
                 }
             }
-            if ($translationListener) {
+            if ($translatableListener) {
                 break;
             }
         }
 
-        if (is_null($translationListener)) {
+        if (is_null($translatableListener)) {
             throw new \Gedmo\Exception\RuntimeException('The translation listener could not be found');
         }
-        return $translationListener;
+        return $translatableListener;
     }
 
     /**

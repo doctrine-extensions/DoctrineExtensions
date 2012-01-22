@@ -27,7 +27,7 @@ class TranslatableDocumentCollectionTest extends BaseTestCaseMongoODM
         parent::setUp();
 
         $evm = new EventManager;
-        $this->translatableListener = new TranslationListener();
+        $this->translatableListener = new TranslatableListener();
         $this->translatableListener->setDefaultLocale('en_us');
         $this->translatableListener->setTranslatableLocale('en_us');
         $evm->addEventSubscriber($this->translatableListener);

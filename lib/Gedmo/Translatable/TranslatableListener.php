@@ -21,11 +21,11 @@ use Doctrine\Common\EventArgs,
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  * @package Gedmo.Translatable
- * @subpackage TranslationListener
+ * @subpackage TranslatableListener
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class TranslationListener extends MappedEventSubscriber
+class TranslatableListener extends MappedEventSubscriber
 {
     /**
      * Query hint to override the fallback of translations
@@ -116,7 +116,7 @@ class TranslationListener extends MappedEventSubscriber
      * Set to skip or not onLoad event
      *
      * @param boolean $bool
-     * @return TranslationListener
+     * @return TranslatableListener
      */
     public function setSkipOnLoad($bool)
     {
@@ -153,7 +153,7 @@ class TranslationListener extends MappedEventSubscriber
      * to original record value
      *
      * @param boolean $bool
-     * @return TranslationListener
+     * @return TranslatableListener
      */
     public function setTranslationFallback($bool)
     {
@@ -191,7 +191,7 @@ class TranslationListener extends MappedEventSubscriber
      * Set the locale to use for translation listener
      *
      * @param string $locale
-     * @return TranslationListener
+     * @return TranslatableListener
      */
     public function setTranslatableLocale($locale)
     {
@@ -206,7 +206,7 @@ class TranslationListener extends MappedEventSubscriber
      * which is used for updating is not default
      *
      * @param string $locale
-     * @return TranslationListener
+     * @return TranslatableListener
      */
     public function setDefaultLocale($locale)
     {

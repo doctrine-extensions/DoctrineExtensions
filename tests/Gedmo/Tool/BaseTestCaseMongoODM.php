@@ -7,7 +7,7 @@ use Doctrine\ODM\MongoDB\Mapping\Driver\AnnotationDriver;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Doctrine\Common\EventManager;
 use Doctrine\MongoDB\Connection;
-use Gedmo\Translatable\TranslationListener;
+use Gedmo\Translatable\TranslatableListener;
 use Gedmo\Sluggable\SluggableListener;
 use Gedmo\Timestampable\TimestampableListener;
 use Gedmo\Loggable\LoggableListener;
@@ -113,7 +113,7 @@ abstract class BaseTestCaseMongoODM extends \PHPUnit_Framework_TestCase
         $evm = new EventManager;
         $evm->addEventSubscriber(new SluggableListener);
         $evm->addEventSubscriber(new LoggableListener);
-        $evm->addEventSubscriber(new TranslationListener);
+        $evm->addEventSubscriber(new TranslatableListener);
         $evm->addEventSubscriber(new TimestampableListener);
         return $evm;
     }

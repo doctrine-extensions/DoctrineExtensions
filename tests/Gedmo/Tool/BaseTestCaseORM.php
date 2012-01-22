@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
 use Doctrine\ORM\EntityManager;
 use Doctrine\Common\EventManager;
 use Doctrine\ORM\Tools\SchemaTool;
-use Gedmo\Translatable\TranslationListener;
+use Gedmo\Translatable\TranslatableListener;
 use Gedmo\Sluggable\SluggableListener;
 use Gedmo\Tree\TreeListener;
 use Gedmo\Timestampable\TimestampableListener;
@@ -193,7 +193,7 @@ abstract class BaseTestCaseORM extends \PHPUnit_Framework_TestCase
         $evm->addEventSubscriber(new TreeListener);
         $evm->addEventSubscriber(new SluggableListener);
         $evm->addEventSubscriber(new LoggableListener);
-        $evm->addEventSubscriber(new TranslationListener);
+        $evm->addEventSubscriber(new TranslatableListener);
         $evm->addEventSubscriber(new TimestampableListener);
         return $evm;
     }

@@ -30,7 +30,7 @@ class Issue75Test extends BaseTestCaseORM
         parent::setUp();
 
         $evm = new EventManager;
-        $this->translatableListener = new TranslationListener();
+        $this->translatableListener = new TranslatableListener();
         $this->translatableListener->setTranslatableLocale('en');
         $this->translatableListener->setDefaultLocale('en');
         $evm->addEventSubscriber($this->translatableListener);
