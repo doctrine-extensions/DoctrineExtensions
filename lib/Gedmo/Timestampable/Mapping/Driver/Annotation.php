@@ -64,7 +64,7 @@ class Annotation implements AnnotationDriverInterface
     public function readExtendedMetadata($meta, array &$config) {
         $class = $meta->getReflectionClass();
         if (!$class) {
-            // based on recent doctrine 2.3.0-DEV
+            // based on recent doctrine 2.3.0-DEV maybe will be fixed in some way
             // this happens when running annotation driver in combination with
             // static reflection services. This is not the nicest fix
             $class = new \ReflectionClass($meta->name);
