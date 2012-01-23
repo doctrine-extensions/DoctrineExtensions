@@ -1,4 +1,9 @@
 <?php
+/**
+ * This entity manager configuration works with doctrine 2.1.x and 2.2.x
+ * versions. Regarding AnnotationDriver setup it most probably will be changed into
+ * xml. Because annotation driver fails to read other classes in same namespace
+ */
 // connection args, modify at will
 $connection = array(
     'host' => '127.0.0.1',

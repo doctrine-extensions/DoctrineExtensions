@@ -1,5 +1,8 @@
 <?php
 
+use Doctrine\ORM\Query;
+use Gedmo\Translatable\TranslationListener;
+
 $executionStart = microtime(true);
 $memoryStart = memory_get_usage(true);
 
@@ -53,28 +56,35 @@ if (!$food) {
     $translatable->setTranslatableLocale('en');
 }
 
-// builds tree
-$build = function ($nodes) use (&$build, $repository) {
-    $result = '';
-    foreach ($nodes as $node) {
-        $result .= str_repeat("-", $node->getLevel())
-            . $node->getTitle()
-            . '('.$node->getSlug().')'
-            . PHP_EOL
-        ;
-        if ($repository->childCount($node, false)) {
-            $result .= $build($repository->children($node, true));
-        }
+// create query to fetch tree nodes
+$query = $em
+    ->createQueryBuilder()
+    ->select('node')
+    ->from('Entity\Category', 'node')
+    ->orderBy('node.root, node.lft', 'ASC')
+    ->getQuery()
+;
+// set hint to translate nodes
+$query->setHint(
+    Doctrine\ORM\Query::HINT_CUSTOM_OUTPUT_WALKER,
+    'Gedmo\\Translatable\\Query\\TreeWalker\\TranslationWalker'
+);
+$treeDecorationOptions = array(
+    'decorate' => true,
+    'rootOpen' => '',
+    'rootClose' => '',
+    'childOpen' => '',
+    'childClose' => '',
+    'nodeDecorator' => function($node) {
+        return str_repeat('-', $node['level']).$node['title'].PHP_EOL;
     }
-    return $result;
-};
-
-$nodes = $repository->getRootNodes();
-echo $build($nodes).PHP_EOL.PHP_EOL;
+);
+// build tree in english
+echo $repository->buildTree($query->getArrayResult(), $treeDecorationOptions).PHP_EOL.PHP_EOL;
 // change locale
-$translatable->setTranslatableLocale('lt');
-$nodes = $repository->getRootNodes(); // reload in diferent locale
-echo $build($nodes).PHP_EOL.PHP_EOL;
+$query->setHint(TranslationListener::HINT_TRANSLATABLE_LOCALE, 'lt');
+// build tree in lithuanian
+echo $repository->buildTree($query->getArrayResult(), $treeDecorationOptions).PHP_EOL.PHP_EOL;
 
 $ms = round(microtime(true) - $executionStart, 4) * 1000;
 $mem = round((memory_get_usage(true) - $memoryStart) / 1000000, 2);
