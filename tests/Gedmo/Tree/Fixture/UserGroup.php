@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Group entity
  *
  * @ORM\Entity(repositoryClass="Gedmo\Tree\Entity\Repository\NestedTreeRepository")
- * @ORM\Table(name="`user_group`")
+ * @ORM\Table(name="user_group")
  */
 class UserGroup extends Role {
 

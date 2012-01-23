@@ -21,19 +21,42 @@ class MultiInheritanceTest2 extends BaseTestCaseORM
     const USER = "Tree\\Fixture\\User";
     const GROUP = "Tree\\Fixture\\UserGroup";
     const ROLE = "Tree\\Fixture\\Role";
+    const USERLDAP = "Tree\\Fixture\\UserLDAP";
 
     protected function setUp()
     {
         parent::setUp();
 
         $evm = new EventManager;
-        $evm->addEventSubscriber(new TreeListener);
+        $this->tree = new TreeListener;
+        $evm->addEventSubscriber($this->tree);
 
         $this->getMockSqliteEntityManager($evm);
         $this->populate();
     }
 
-    public function testConsistence()
+    /**
+     * @test
+     */
+    public function shouldHandleMultilevelInheritance()
+    {
+        $admins = $this->em->getRepository(self::GROUP)->findOneByName('Admins');
+        $adminRight = $admins->getRight();
+        $userLdap = new \Tree\Fixture\UserLDAP('testname');
+        $userLdap->init();
+        $userLdap->setParent($admins);
+        $this->em->persist($userLdap);
+        $this->em->flush();
+        $this->em->clear();
+
+        $admins = $this->em->getRepository(self::GROUP)->findOneByName('Admins');
+        self::assertNotEquals($adminRight, $admins->getRight());
+    }
+
+    /**
+     * @test
+     */
+    public function shouldBeAbleToPopulateTree()
     {
         $admins = $this->em->getRepository(self::GROUP)->findOneByName('Admins');
         $user3 = new \Tree\Fixture\User('user3@test.com', 'secret');
@@ -87,7 +110,8 @@ class MultiInheritanceTest2 extends BaseTestCaseORM
         return array(
             self::USER,
             self::GROUP,
-            self::ROLE
+            self::ROLE,
+            self::USERLDAP
         );
     }
 

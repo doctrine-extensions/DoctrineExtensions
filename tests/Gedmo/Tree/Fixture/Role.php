@@ -7,10 +7,10 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass="Gedmo\Tree\Entity\Repository\NestedTreeRepository")
- * @ORM\Table(name="`role`")
+ * @ORM\Table(name="role")
  * @ORM\InheritanceType("JOINED")
  * @ORM\DiscriminatorColumn(name="discr", type="string")
- * @ORM\DiscriminatorMap({"user" = "User", "usergroup" = "UserGroup"})
+ * @ORM\DiscriminatorMap({"user" = "User", "usergroup" = "UserGroup", "userldap" = "UserLDAP"})
  * @Gedmo\Tree(type="nested")
  */
 abstract class Role {

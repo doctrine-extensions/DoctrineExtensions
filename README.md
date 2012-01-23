@@ -7,6 +7,11 @@
 **Note:** Use 2.1.x or 2.2.x tag in order to use extensions based on Doctrine2.x.x component versions. Currently
 master branch is based on 2.3.x versions and may not work with older components.
 
+**2012-01-23**
+
+- Fixed an issue with inheritance mapping in case of multiple class extension.
+For details take a [peek at tests](https://github.com/l3pp4rd/DoctrineExtensions/blob/master/tests/Gedmo/Tree/MultiInheritanceTest2.php)
+
 **2012-01-22**
 
 - Adapted extensions for recent 2.3.0-DEV version of doctrine2. Released a tag for 2.2.x component
