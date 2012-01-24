@@ -45,8 +45,7 @@ class PersonalTranslationDocumentTest extends BaseTestCaseMongoODM
         $article = $this->dm->getRepository(self::ARTICLE)->find($this->id);
         $translations = $article->getTranslations();
 
-        // @TODO: strange issue, persisted object is not inserted
-        //$this->assertEquals(2, count($translations));
+        $this->assertEquals(2, count($translations));
     }
 
     /**

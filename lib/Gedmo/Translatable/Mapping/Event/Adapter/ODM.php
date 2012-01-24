@@ -54,52 +54,46 @@ final class ODM extends BaseAdapterODM implements TranslatableAdapter
 
         if ($this->usesPersonalTranslation($translationClass)) {
             // first try to load it using collection
-            die(print_r($wrapped->getMetadata()));
-            $found = false;
-            foreach ($wrapped->getMetadata()->associationMappings as $assoc) {
-                $isRightCollection = $assoc['targetEntity'] === $translationClass
-                && $assoc['mappedBy'] === 'object'
-                && $assoc['type'] === ClassMetadataInfo::ONE_TO_MANY
+            foreach ($wrapped->getMetadata()->fieldMappings as $mapping) {
+                $isRightCollection = isset($mapping['association'])
+                    && $mapping['association'] === ClassMetadataInfo::REFERENCE_MANY
+                    && $mapping['targetDocument'] === $translationClass
+                    && $mapping['mappedBy'] === 'object'
                 ;
                 if ($isRightCollection) {
-                    $collection = $wrapped->getPropertyValue($assoc['fieldName']);
+                    $collection = $wrapped->getPropertyValue($mapping['fieldName']);
                     foreach ($collection as $trans) {
                         if ($trans->getLocale() === $locale) {
                             $result[] = array(
-                                        'field' => $trans->getField(),
-                                        'content' => $trans->getContent()
+                                'field' => $trans->getField(),
+                                'content' => $trans->getContent()
                             );
                         }
                     }
-                    $found = true;
-                    break;
+                    return $result;
                 }
             }
-            // if collection is not set, fetch it through relation
-            if (!$found) {
-                $dql = 'SELECT t.content, t.field FROM ' . $translationClass . ' t';
-                $dql .= ' WHERE t.locale = :locale';
-                $dql .= ' AND t.object = :object';
-
-                $q = $em->createQuery($dql);
-                $q->setParameters(compact('object', 'locale'));
-                $result = $q->getArrayResult();
-            }
+            $q = $dm
+                ->createQueryBuilder($translationClass)
+                ->field('object.$id')->equals($wrapped->getIdentifier())
+                ->field('locale')->equals($locale)
+                ->getQuery()
+            ;
         } else {
             // load translated content for all translatable fields
-            $identifier = $wrapped->getIdentifier();
             // construct query
-            $qb = $dm->createQueryBuilder($translationClass);
-            $q = $qb->field('foreignKey')->equals($identifier)
+            $q = $dm
+                ->createQueryBuilder($translationClass)
+                ->field('foreignKey')->equals($wrapped->getIdentifier())
                 ->field('locale')->equals($locale)
                 ->field('objectClass')->equals($wrapped->getMetadata()->name)
-                ->getQuery();
-
-            $q->setHydrate(false);
-            $result = $q->execute();
-            if ($result instanceof Cursor) {
-                $result = $result->toArray();
-            }
+                ->getQuery()
+            ;
+        }
+        $q->setHydrate(false);
+        $result = $q->execute();
+        if ($result instanceof Cursor) {
+            $result = $result->toArray();
         }
         return $result;
     }
@@ -117,13 +111,12 @@ final class ODM extends BaseAdapterODM implements TranslatableAdapter
             ->limit(1)
         ;
         if ($this->usesPersonalTranslation($translationClass)) {
-            $qb->field('object')->equals($wrapped->getObject());
+            $qb->field('object.$id')->equals($wrapped->getIdentifier());
         } else {
             $qb->field('foreignKey')->equals($wrapped->getIdentifier());
             $qb->field('objectClass')->equals($wrapped->getMetadata()->name);
         }
         $q = $qb->getQuery();
-        $q->setHydrate(false);
         $result = $q->execute();
         if ($result instanceof Cursor) {
             $result = current($result->toArray());
@@ -142,7 +135,7 @@ final class ODM extends BaseAdapterODM implements TranslatableAdapter
             ->remove()
         ;
         if ($this->usesPersonalTranslation($transClass)) {
-            $qb->field('object')->equals($wrapped->getObject());
+            $qb->field('object.$id')->equals($wrapped->getIdentifier());
         } else {
             $qb->field('foreignKey')->equals($wrapped->getIdentifier());
             $qb->field('objectClass')->equals($wrapped->getMetadata()->name);
