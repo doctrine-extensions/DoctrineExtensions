@@ -13,5 +13,5 @@ class PersonalArticleTranslation extends AbstractPersonalTranslation
     /**
      * @ORM\ManyToOne(targetEntity="Article", inversedBy="translations")
      */
-    protected $entity;
+    protected $object;
 }

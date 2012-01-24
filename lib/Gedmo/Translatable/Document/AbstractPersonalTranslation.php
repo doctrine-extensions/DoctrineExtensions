@@ -1,14 +1,13 @@
 <?php
 
-namespace Gedmo\Translatable\Entity;
+namespace Gedmo\Translatable\Document;
 
-use Doctrine\ORM\Mapping\Column;
-use Doctrine\ORM\Mapping\MappedSuperclass;
-use Doctrine\ORM\Mapping\Id;
-use Doctrine\ORM\Mapping\GeneratedValue;
+use Doctrine\ODM\MongoDB\Mapping\Annotations\MappedSuperclass;
+use Doctrine\ODM\MongoDB\Mapping\Annotations\Id;
+use Doctrine\ODM\MongoDB\Mapping\Annotations\String;
 
 /**
- * Gedmo\Translatable\Entity\AbstractPersonalTranslation
+ * Gedmo\Translatable\Document\AbstractPersonalTranslation
  *
  * @MappedSuperclass
  */
@@ -17,25 +16,16 @@ abstract class AbstractPersonalTranslation
     /**
      * @var integer $id
      *
-     * @Column(type="integer")
      * @Id
-     * @GeneratedValue
      */
     protected $id;
 
     /**
      * @var string $locale
      *
-     * @Column(type="string", length=8)
+     * @String
      */
     protected $locale;
-
-    /**
-     * @var string $field
-     *
-     * @Column(type="string", length=32)
-     */
-    protected $field;
 
     /**
      * Related entity with ManyToOne relation
@@ -44,9 +34,16 @@ abstract class AbstractPersonalTranslation
     protected $object;
 
     /**
+     * @var string $field
+     *
+     * @String
+     */
+    protected $field;
+
+    /**
      * @var text $content
      *
-     * @Column(type="text", nullable=true)
+     * @String
      */
     protected $content;
 
@@ -64,7 +61,7 @@ abstract class AbstractPersonalTranslation
      * Set locale
      *
      * @param string $locale
-     * @return AbstractTranslation
+     * @return AbstractPersonalTranslation
      */
     public function setLocale($locale)
     {
@@ -86,7 +83,7 @@ abstract class AbstractPersonalTranslation
      * Set field
      *
      * @param string $field
-     * @return AbstractTranslation
+     * @return AbstractPersonalTranslation
      */
     public function setField($field)
     {
@@ -107,8 +104,8 @@ abstract class AbstractPersonalTranslation
     /**
      * Set object related
      *
-     * @param string $object
-     * @return AbstractTranslation
+     * @param object $object
+     * @return AbstractPersonalTranslation
      */
     public function setObject($object)
     {
@@ -117,9 +114,9 @@ abstract class AbstractPersonalTranslation
     }
 
     /**
-     * Get related object
+     * Get object related
      *
-     * @return object $object
+     * @return string $object
      */
     public function getObject()
     {
@@ -130,7 +127,7 @@ abstract class AbstractPersonalTranslation
      * Set content
      *
      * @param string $content
-     * @return AbstractTranslation
+     * @return AbstractPersonalTranslation
      */
     public function setContent($content)
     {

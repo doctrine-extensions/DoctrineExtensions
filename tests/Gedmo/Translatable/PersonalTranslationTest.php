@@ -48,6 +48,31 @@ class PersonalTranslationTest extends BaseTestCaseORM
      */
     function shouldCreateTranslations()
     {
+        $this->populate();
+        $article = $this->em->find(self::ARTICLE, array('id' => 1));
+        $translations = $article->getTranslations();
+        $this->assertEquals(2, count($translations));
+    }
+
+    /**
+     * @test
+     */
+    function shouldTranslateTheRecord()
+    {
+        $this->populate();
+        $this->translatableListener->setTranslatableLocale('lt');
+
+        $this->startQueryLog();
+        $article = $this->em->find(self::ARTICLE, array('id' => 1));
+
+        $sqlQueriesExecuted = $this->queryAnalyzer->getExecutedQueries();
+        $this->assertEquals(2, count($sqlQueriesExecuted));
+        $this->assertEquals('SELECT t0.id AS id1, t0.locale AS locale2, t0.field AS field3, t0.content AS content4, t0.object_id AS object_id5 FROM article_translations t0 WHERE t0.object_id = 1', $sqlQueriesExecuted[1]);
+        $this->assertEquals('lt', $article->getTitle());
+    }
+
+    private function populate()
+    {
         $article = new Article;
         $article->setTitle('en');
 
@@ -57,8 +82,17 @@ class PersonalTranslationTest extends BaseTestCaseORM
         $this->translatableListener->setTranslatableLocale('de');
         $article->setTitle('de');
 
+        $ltTranslation = new PersonalArticleTranslation;
+        $ltTranslation
+            ->setField('title')
+            ->setContent('lt')
+            ->setObject($article)
+            ->setLocale('lt')
+        ;
+        $this->em->persist($ltTranslation);
         $this->em->persist($article);
         $this->em->flush();
+        $this->em->clear();
     }
 
     protected function getUsedEntityFixtures()

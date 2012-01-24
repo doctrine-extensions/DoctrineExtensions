@@ -4,6 +4,7 @@ namespace Gedmo\Translatable\Mapping\Event\Adapter;
 
 use Gedmo\Mapping\Event\Adapter\ORM as BaseAdapterORM;
 use Doctrine\ORM\Query;
+use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Gedmo\Translatable\Mapping\Event\TranslatableAdapter;
 use Gedmo\Tool\Wrapper\AbstractWrapper;
 use Doctrine\DBAL\Types\Type;
@@ -48,18 +49,54 @@ final class ORM extends BaseAdapterORM implements TranslatableAdapter
     {
         $em = $this->getObjectManager();
         $wrapped = AbstractWrapper::wrapp($object, $em);
-        // load translated content for all translatable fields
-        $objectId = $wrapped->getIdentifier();
-        // construct query
-        $dql = 'SELECT t.content, t.field FROM ' . $translationClass . ' t';
-        $dql .= ' WHERE t.foreignKey = :objectId';
-        $dql .= ' AND t.locale = :locale';
-        $dql .= ' AND t.objectClass = :objectClass';
-        // fetch results
-        $objectClass = $wrapped->getMetadata()->name;
-        $q = $em->createQuery($dql);
-        $q->setParameters(compact('objectId', 'locale', 'objectClass'));
-        return $q->getArrayResult();
+        $result = array();
+        if ($this->usesPersonalTranslation($translationClass)) {
+            // first try to load it using collection
+            $found = false;
+            foreach ($wrapped->getMetadata()->associationMappings as $assoc) {
+                $isRightCollection = $assoc['targetEntity'] === $translationClass
+                    && $assoc['mappedBy'] === 'object'
+                    && $assoc['type'] === ClassMetadataInfo::ONE_TO_MANY
+                ;
+                if ($isRightCollection) {
+                    $collection = $wrapped->getPropertyValue($assoc['fieldName']);
+                    foreach ($collection as $trans) {
+                        if ($trans->getLocale() === $locale) {
+                            $result[] = array(
+                                'field' => $trans->getField(),
+                                'content' => $trans->getContent()
+                            );
+                        }
+                    }
+                    $found = true;
+                    break;
+                }
+            }
+            // if collection is not set, fetch it through relation
+            if (!$found) {
+                $dql = 'SELECT t.content, t.field FROM ' . $translationClass . ' t';
+                $dql .= ' WHERE t.locale = :locale';
+                $dql .= ' AND t.object = :object';
+
+                $q = $em->createQuery($dql);
+                $q->setParameters(compact('object', 'locale'));
+                $result = $q->getArrayResult();
+            }
+        } else {
+            // load translated content for all translatable fields
+            $objectId = $wrapped->getIdentifier();
+            // construct query
+            $dql = 'SELECT t.content, t.field FROM ' . $translationClass . ' t';
+            $dql .= ' WHERE t.foreignKey = :objectId';
+            $dql .= ' AND t.locale = :locale';
+            $dql .= ' AND t.objectClass = :objectClass';
+            // fetch results
+            $objectClass = $wrapped->getMetadata()->name;
+            $q = $em->createQuery($dql);
+            $q->setParameters(compact('objectId', 'locale', 'objectClass'));
+            $result = $q->getArrayResult();
+        }
+        return $result;
     }
 
     /**
@@ -87,6 +124,7 @@ final class ORM extends BaseAdapterORM implements TranslatableAdapter
             $qb->setParameter('objectClass', $wrapped->getMetadata()->name);
         }
         $q = $qb->getQuery();
+        $q->setMaxResults(1);
         $result = $q->getResult();
 
         if ($result) {

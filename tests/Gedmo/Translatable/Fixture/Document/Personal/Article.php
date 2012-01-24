@@ -1,31 +1,27 @@
 <?php
 
-namespace Translatable\Fixture\Personal;
+namespace Translatable\Fixture\Document\Personal;
 
+use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoODM;
 use Gedmo\Mapping\Annotation as Gedmo;
-use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @Gedmo\TranslationEntity(class="Translatable\Fixture\Personal\PersonalArticleTranslation")
- * @ORM\Entity
+ * @Gedmo\TranslationEntity(class="Translatable\Fixture\Document\Personal\ArticleTranslation")
+ * @MongoODM\Document(collection="articles")
  */
 class Article
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
+    /** @MongoODM\Id */
     private $id;
 
     /**
      * @Gedmo\Translatable
-     * @ORM\Column(length=128)
+     * @MongoODM\String
      */
     private $title;
 
     /**
-     * @ORM\OneToMany(targetEntity="PersonalArticleTranslation", mappedBy="object")
+     * @MongoODM\ReferenceMany(targetDocument="ArticleTranslation", mappedBy="object")
      */
     private $translations;
 
@@ -55,5 +51,20 @@ class Article
     public function getTitle()
     {
         return $this->title;
+    }
+
+    public function setCode($code)
+    {
+        $this->code = $code;
+    }
+
+    public function getCode()
+    {
+        return $this->code;
+    }
+
+    public function getSlug()
+    {
+        return $this->slug;
     }
 }

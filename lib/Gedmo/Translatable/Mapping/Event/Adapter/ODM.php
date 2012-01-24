@@ -25,6 +25,19 @@ final class ODM extends BaseAdapterODM implements TranslatableAdapter
     /**
      * {@inheritDoc}
      */
+    public function usesPersonalTranslation($translationClassName)
+    {
+        return $this
+            ->getObjectManager()
+            ->getClassMetadata($translationClassName)
+            ->getReflectionClass()
+            ->isSubclassOf('Gedmo\Translatable\Document\AbstractPersonalTranslation')
+        ;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function getDefaultTranslationClass()
     {
         return 'Gedmo\\Translatable\\Document\\Translation';
@@ -37,20 +50,56 @@ final class ODM extends BaseAdapterODM implements TranslatableAdapter
     {
         $dm = $this->getObjectManager();
         $wrapped = AbstractWrapper::wrapp($object, $dm);
+        $result = array();
 
-        // load translated content for all translatable fields
-        $identifier = $wrapped->getIdentifier();
-        // construct query
-        $qb = $dm->createQueryBuilder($translationClass);
-        $q = $qb->field('foreignKey')->equals($identifier)
-            ->field('locale')->equals($locale)
-            ->field('objectClass')->equals($wrapped->getMetadata()->name)
-            ->getQuery();
+        if ($this->usesPersonalTranslation($translationClass)) {
+            // first try to load it using collection
+            die(print_r($wrapped->getMetadata()));
+            $found = false;
+            foreach ($wrapped->getMetadata()->associationMappings as $assoc) {
+                $isRightCollection = $assoc['targetEntity'] === $translationClass
+                && $assoc['mappedBy'] === 'object'
+                && $assoc['type'] === ClassMetadataInfo::ONE_TO_MANY
+                ;
+                if ($isRightCollection) {
+                    $collection = $wrapped->getPropertyValue($assoc['fieldName']);
+                    foreach ($collection as $trans) {
+                        if ($trans->getLocale() === $locale) {
+                            $result[] = array(
+                                        'field' => $trans->getField(),
+                                        'content' => $trans->getContent()
+                            );
+                        }
+                    }
+                    $found = true;
+                    break;
+                }
+            }
+            // if collection is not set, fetch it through relation
+            if (!$found) {
+                $dql = 'SELECT t.content, t.field FROM ' . $translationClass . ' t';
+                $dql .= ' WHERE t.locale = :locale';
+                $dql .= ' AND t.object = :object';
 
-        $q->setHydrate(false);
-        $result = $q->execute();
-        if ($result instanceof Cursor) {
-            $result = $result->toArray();
+                $q = $em->createQuery($dql);
+                $q->setParameters(compact('object', 'locale'));
+                $result = $q->getArrayResult();
+            }
+        } else {
+            // load translated content for all translatable fields
+            $identifier = $wrapped->getIdentifier();
+            // construct query
+            $qb = $dm->createQueryBuilder($translationClass);
+            $q = $qb->field('foreignKey')->equals($identifier)
+                ->field('locale')->equals($locale)
+                ->field('objectClass')->equals($wrapped->getMetadata()->name)
+                ->getQuery();
+
+            $q->setHydrate(false);
+            $result = $q->execute();
+            if ($result instanceof Cursor) {
+                $result = $result->toArray();
+            }
         }
         return $result;
     }
@@ -58,36 +107,47 @@ final class ODM extends BaseAdapterODM implements TranslatableAdapter
     /**
      * {@inheritDoc}
      */
-    public function findTranslation($objectId, $objectClass, $locale, $field, $translationClass)
+    public function findTranslation(AbstractWrapper $wrapped, $locale, $field, $translationClass)
     {
         $dm = $this->getObjectManager();
-        $qb = $dm->createQueryBuilder($translationClass);
-        $q = $qb->field('foreignKey')->equals($objectId)
+        $qb = $dm
+            ->createQueryBuilder($translationClass)
             ->field('locale')->equals($locale)
             ->field('field')->equals($field)
-            ->field('objectClass')->equals($objectClass)
-            ->getQuery();
-
+            ->limit(1)
+        ;
+        if ($this->usesPersonalTranslation($translationClass)) {
+            $qb->field('object')->equals($wrapped->getObject());
+        } else {
+            $qb->field('foreignKey')->equals($wrapped->getIdentifier());
+            $qb->field('objectClass')->equals($wrapped->getMetadata()->name);
+        }
+        $q = $qb->getQuery();
+        $q->setHydrate(false);
         $result = $q->execute();
         if ($result instanceof Cursor) {
             $result = current($result->toArray());
         }
-        $q->setHydrate(false);
         return $result;
     }
 
     /**
      * {@inheritDoc}
      */
-    public function removeAssociatedTranslations($objectId, $transClass, $targetClass)
+    public function removeAssociatedTranslations(AbstractWrapper $wrapped, $transClass)
     {
         $dm = $this->getObjectManager();
-        $qb = $dm->createQueryBuilder($transClass);
-        $q = $qb->remove()
-            ->field('foreignKey')->equals($objectId)
-            ->field('objectClass')->equals($targetClass)
-            ->getQuery()
+        $qb = $dm
+            ->createQueryBuilder($transClass)
+            ->remove()
         ;
+        if ($this->usesPersonalTranslation($transClass)) {
+            $qb->field('object')->equals($wrapped->getObject());
+        } else {
+            $qb->field('foreignKey')->equals($wrapped->getIdentifier());
+            $qb->field('objectClass')->equals($wrapped->getMetadata()->name);
+        }
+        $q = $qb->getQuery();
         return $q->execute();
     }
 

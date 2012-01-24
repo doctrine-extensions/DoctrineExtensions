@@ -358,7 +358,7 @@ class TranslatableListener extends MappedEventSubscriber
             $this->translatedInLocale[$oid] = $locale;
         }
 
-        if ($this->skipOnLoad || $ea->usesPersonalTranslation($translationClass)) {
+        if ($this->skipOnLoad) {
             return;
         }
 
