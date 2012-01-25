@@ -2,12 +2,13 @@
 
 namespace Gedmo\Translatable\Mapping\Event\Adapter;
 
-use Gedmo\Mapping\Event\Adapter\ORM as BaseAdapterORM;
+use Doctrine\DBAL\Types\Type;
+use Doctrine\ORM\Proxy\Proxy;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Gedmo\Mapping\Event\Adapter\ORM as BaseAdapterORM;
 use Gedmo\Translatable\Mapping\Event\TranslatableAdapter;
 use Gedmo\Tool\Wrapper\AbstractWrapper;
-use Doctrine\DBAL\Types\Type;
 
 /**
  * Doctrine event adapter for ORM adapted
@@ -105,6 +106,29 @@ final class ORM extends BaseAdapterORM implements TranslatableAdapter
     public function findTranslation(AbstractWrapper $wrapped, $locale, $field, $translationClass)
     {
         $em = $this->getObjectManager();
+        // first look in identityMap, will save one SELECT query
+        foreach ($em->getUnitOfWork()->getIdentityMap() as $className => $objects) {
+            if ($className === $translationClass) {
+                foreach ($objects as $trans) {
+                    $match = !$trans instanceof Proxy
+                        && $trans->getLocale() === $locale
+                        && $trans->getField() === $field
+                    ;
+                    if ($match) {
+                        if ($this->usesPersonalTranslation($translationClass)) {
+                            $match = $match && $trans->getObject() === $wrapped->getObject();
+                        } else {
+                            $match = $match && $trans->getForeignKey() === $wrapped->getIdentifier();
+                            $match = $match && $trans->getObjectClass() === $wrapped->getMetadata()->name;
+                        }
+                    }
+                    if ($match) {
+                        return $trans;
+                    }
+                }
+            }
+        }
+
         $qb = $em->createQueryBuilder();
         $qb->select('trans')
             ->from($translationClass, 'trans')

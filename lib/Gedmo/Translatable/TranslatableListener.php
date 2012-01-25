@@ -2,8 +2,8 @@
 
 namespace Gedmo\Translatable;
 
-use Gedmo\Tool\Wrapper\AbstractWrapper;
 use Doctrine\Common\EventArgs;
+use Gedmo\Tool\Wrapper\AbstractWrapper;
 use Gedmo\Mapping\MappedEventSubscriber;
 use Gedmo\Translatable\Mapping\Event\TranslatableAdapter;
 
@@ -446,14 +446,30 @@ class TranslatableListener extends MappedEventSubscriber
 
         $translatableFields = $config['fields'];
         foreach ($translatableFields as $field) {
+            $wasPersistedSeparetely = false;
             $skip = isset($this->translatedInLocale[$oid]) && $locale === $this->translatedInLocale[$oid];
             $skip = $skip && !isset($changeSet[$field]);
             if ($skip) {
                 continue; // locale is same and nothing changed
             }
             $translation = null;
+            // lookup persisted translations
+            if ($ea->usesPersonalTranslation($translationClass)) {
+                foreach ($ea->getScheduledObjectInsertions($uow) as $trans) {
+                    $match = get_class($trans) === $translationClass
+                        && $trans->getLocale() === $locale
+                        && $trans->getField() === $field
+                        && $trans->getObject() === $object
+                    ;
+                    if ($match) {
+                        $translation = $trans;
+                        $wasPersistedSeparetely = true;
+                        break;
+                    }
+                }
+            }
             // check if translation allready is created
-            if (!$isInsert) {
+            if (!$isInsert && !$translation) {
                 $translation = $ea->findTranslation(
                     $wrapped,
                     $locale,
@@ -475,7 +491,7 @@ class TranslatableListener extends MappedEventSubscriber
                 $scheduleUpdate = !$isInsert;
             }
 
-            if (!empty($translation)) {
+            if ($translation) {
                 // set the translated field, take value using reflection
                 $value = $wrapped->getPropertyValue($field);
                 $translation->setContent($ea->getTranslationValue($object, $field));
@@ -485,8 +501,12 @@ class TranslatableListener extends MappedEventSubscriber
                     $this->pendingTranslationInserts[spl_object_hash($object)][] = $translation;
                 } else {
                     // persist and compute change set for translation
-                    $om->persist($translation);
-                    $uow->computeChangeSet($translationMetadata, $translation);
+                    if ($wasPersistedSeparetely) {
+                        $ea->recomputeSingleObjectChangeset($uow, $translationMetadata, $translation);
+                    } else {
+                        $om->persist($translation);
+                        $uow->computeChangeSet($translationMetadata, $translation);
+                    }
                 }
             }
         }

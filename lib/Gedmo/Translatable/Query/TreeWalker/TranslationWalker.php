@@ -264,6 +264,7 @@ class TranslationWalker extends SqlWalker
         }
         $em = $this->getEntityManager();
         $ea = new TranslatableEventAdapter;
+        $ea->setEntityManager($em);
         $joinStrategy = $q->getHint(TranslatableListener::HINT_INNER_JOIN) ? 'INNER' : 'LEFT';
 
         foreach ($this->translatedComponents as $dqlAlias => $comp) {
@@ -279,14 +280,19 @@ class TranslationWalker extends SqlWalker
                 $sql = " {$joinStrategy} JOIN ".$transTable.' '.$tblAlias;
                 $sql .= ' ON '.$tblAlias.'.'.$transMeta->getQuotedColumnName('locale', $this->platform)
                     .' = '.$this->conn->quote($locale);
-                $sql .= ' AND '.$tblAlias.'.'.$transMeta->getQuotedColumnName('objectClass', $this->platform)
-                    .' = '.$this->conn->quote($meta->name);
                 $sql .= ' AND '.$tblAlias.'.'.$transMeta->getQuotedColumnName('field', $this->platform)
                     .' = '.$this->conn->quote($field);
                 $identifier = $meta->getSingleIdentifierFieldName();
-                $colName = $meta->getQuotedColumnName($identifier, $this->platform);
-                $sql .= ' AND '.$tblAlias.'.'.$transMeta->getQuotedColumnName('foreignKey', $this->platform)
-                    .' = '.$compTblAlias.'.'.$colName;
+                $idColName = $meta->getQuotedColumnName($identifier, $this->platform);
+                if ($ea->usesPersonalTranslation($transClass)) {
+                    $sql .= ' AND '.$tblAlias.'.'.$transMeta->getSingleAssociationJoinColumnName('object')
+                        .' = '.$compTblAlias.'.'.$idColName;
+                } else {
+                    $sql .= ' AND '.$tblAlias.'.'.$transMeta->getQuotedColumnName('objectClass', $this->platform)
+                        .' = '.$this->conn->quote($meta->name);
+                    $sql .= ' AND '.$tblAlias.'.'.$transMeta->getQuotedColumnName('foreignKey', $this->platform)
+                        .' = '.$compTblAlias.'.'.$idColName;
+                }
                 isset($this->components[$dqlAlias]) ? $this->components[$dqlAlias] .= $sql : $this->components[$dqlAlias] = $sql;
 
                 $originalField = $compTblAlias.'.'.$meta->getQuotedColumnName($field, $this->platform);
