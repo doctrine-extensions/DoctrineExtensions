@@ -98,9 +98,9 @@ class TreeSlugHandler implements SlugHandlerInterface
         $this->sluggable->setTransliterator(array($this, 'transliterate'));
         $this->parentSlug = '';
 
-        $wrapped = AbstractWrapper::wrapp($object, $this->om);
+        $wrapped = AbstractWrapper::wrap($object, $this->om);
         if ($parent = $wrapped->getPropertyValue($options['parentRelationField'])) {
-            $parent = AbstractWrapper::wrapp($parent, $this->om);
+            $parent = AbstractWrapper::wrap($parent, $this->om);
             $this->parentSlug = $parent->getPropertyValue($config['slug']);
         }
     }
@@ -130,7 +130,7 @@ class TreeSlugHandler implements SlugHandlerInterface
     {
         if (!$this->isInsert) {
             $options = $config['handlers'][get_called_class()];
-            $wrapped = AbstractWrapper::wrapp($object, $this->om);
+            $wrapped = AbstractWrapper::wrap($object, $this->om);
             $meta = $wrapped->getMetadata();
             $target = $wrapped->getPropertyValue($config['slug']);
             $config['pathSeparator'] = $this->usedPathSeparator;

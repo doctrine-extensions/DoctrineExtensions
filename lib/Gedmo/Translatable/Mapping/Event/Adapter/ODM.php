@@ -49,7 +49,7 @@ final class ODM extends BaseAdapterODM implements TranslatableAdapter
     public function loadTranslations($object, $translationClass, $locale)
     {
         $dm = $this->getObjectManager();
-        $wrapped = AbstractWrapper::wrapp($object, $dm);
+        $wrapped = AbstractWrapper::wrap($object, $dm);
         $result = array();
 
         if ($this->usesPersonalTranslation($translationClass)) {
@@ -171,7 +171,7 @@ final class ODM extends BaseAdapterODM implements TranslatableAdapter
     public function getTranslationValue($object, $field, $value = false)
     {
         $dm = $this->getObjectManager();
-        $wrapped = AbstractWrapper::wrapp($object, $dm);
+        $wrapped = AbstractWrapper::wrap($object, $dm);
         $meta = $wrapped->getMetadata();
         $mapping = $meta->getFieldMapping($field);
         $type = Type::getType($mapping['type']);
@@ -187,7 +187,7 @@ final class ODM extends BaseAdapterODM implements TranslatableAdapter
     public function setTranslationValue($object, $field, $value)
     {
         $dm = $this->getObjectManager();
-        $wrapped = AbstractWrapper::wrapp($object, $dm);
+        $wrapped = AbstractWrapper::wrap($object, $dm);
         $meta = $wrapped->getMetadata();
         $mapping = $meta->getFieldMapping($field);
         $type = Type::getType($mapping['type']);

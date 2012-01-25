@@ -49,7 +49,7 @@ final class ORM extends BaseAdapterORM implements TranslatableAdapter
     public function loadTranslations($object, $translationClass, $locale)
     {
         $em = $this->getObjectManager();
-        $wrapped = AbstractWrapper::wrapp($object, $em);
+        $wrapped = AbstractWrapper::wrap($object, $em);
         $result = array();
         if ($this->usesPersonalTranslation($translationClass)) {
             // first try to load it using collection
@@ -208,7 +208,7 @@ final class ORM extends BaseAdapterORM implements TranslatableAdapter
     public function getTranslationValue($object, $field, $value = false)
     {
         $em = $this->getObjectManager();
-        $wrapped = AbstractWrapper::wrapp($object, $em);
+        $wrapped = AbstractWrapper::wrap($object, $em);
         $meta = $wrapped->getMetadata();
         $type = Type::getType($meta->getTypeOfField($field));
         if ($value === false) {
@@ -223,7 +223,7 @@ final class ORM extends BaseAdapterORM implements TranslatableAdapter
     public function setTranslationValue($object, $field, $value)
     {
         $em = $this->getObjectManager();
-        $wrapped = AbstractWrapper::wrapp($object, $em);
+        $wrapped = AbstractWrapper::wrap($object, $em);
         $meta = $wrapped->getMetadata();
         $type = Type::getType($meta->getTypeOfField($field));
         $value = $type->convertToPHPValue($value, $em->getConnection()->getDatabasePlatform());

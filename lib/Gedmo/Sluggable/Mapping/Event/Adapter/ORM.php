@@ -25,7 +25,7 @@ final class ORM extends BaseAdapterORM implements SluggableAdapter
     public function getSimilarSlugs($object, $meta, array $config, $slug)
     {
         $em = $this->getObjectManager();
-        $wrapped = AbstractWrapper::wrapp($object, $em);
+        $wrapped = AbstractWrapper::wrap($object, $em);
         $qb = $em->createQueryBuilder();
         $qb->select('rec.' . $config['slug'])
             ->from($config['useObjectClass'], 'rec')

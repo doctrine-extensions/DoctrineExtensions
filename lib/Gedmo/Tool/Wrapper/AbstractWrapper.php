@@ -55,7 +55,7 @@ abstract class AbstractWrapper implements WrapperInterface
      * @param \Doctrine\Common\Persistence\ObjectManager $om
      * @return \Gedmo\Tool\WrapperInterface
      */
-    public static function wrapp($object, ObjectManager $om)
+    public static function wrap($object, ObjectManager $om)
     {
         $oid = spl_object_hash($object);
         if (!isset(self::$wrappedObjectReferences[$oid])) {

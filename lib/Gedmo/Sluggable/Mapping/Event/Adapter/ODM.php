@@ -25,7 +25,7 @@ final class ODM extends BaseAdapterODM implements SluggableAdapter
     public function getSimilarSlugs($object, $meta, array $config, $slug)
     {
         $dm = $this->getObjectManager();
-        $wrapped = AbstractWrapper::wrapp($object, $dm);
+        $wrapped = AbstractWrapper::wrap($object, $dm);
         $qb = $dm->createQueryBuilder($config['useObjectClass']);
         if (($identifier = $wrapped->getIdentifier()) && !$meta->isIdentifier($config['slug'])) {
             $qb->field($meta->identifier)->notEqual($identifier);
@@ -84,7 +84,7 @@ final class ODM extends BaseAdapterODM implements SluggableAdapter
     public function replaceInverseRelative($object, array $config, $target, $replacement)
     {
         $dm = $this->getObjectManager();
-        $wrapped = AbstractWrapper::wrapp($object, $dm);
+        $wrapped = AbstractWrapper::wrap($object, $dm);
         $meta = $dm->getClassMetadata($config['useObjectClass']);
         $q = $dm
             ->createQueryBuilder($config['useObjectClass'])

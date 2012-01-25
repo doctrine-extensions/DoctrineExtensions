@@ -261,7 +261,7 @@ class Closure implements Strategy
      */
     public function updateNode(EntityManager $em, $node, $oldParent)
     {
-        $wrapped = AbstractWrapper::wrapp($node, $em);
+        $wrapped = AbstractWrapper::wrap($node, $em);
         $meta = $wrapped->getMetadata();
         $config = $this->listener->getConfiguration($em, $meta->name);
         $closureMeta = $em->getClassMetadata($config['closure']);
@@ -300,7 +300,7 @@ class Closure implements Strategy
             }
         }
         if ($parent) {
-            $wrappedParent = AbstractWrapper::wrapp($parent, $em);
+            $wrappedParent = AbstractWrapper::wrap($parent, $em);
             $parentId = $wrappedParent->getIdentifier();
             $query = "SELECT c1.ancestor, c2.descendant, (c1.depth + c2.depth + 1) AS depth";
             $query .= " FROM {$table} c1, {$table} c2";

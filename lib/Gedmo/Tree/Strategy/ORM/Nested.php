@@ -141,7 +141,7 @@ class Nested implements Strategy
 
         $oid = spl_object_hash($node);
         if (isset($changeSet[$config['left']]) && isset($this->nodePositions[$oid])) {
-            $wrapped = AbstractWrapper::wrapp($node, $em);
+            $wrapped = AbstractWrapper::wrap($node, $em);
             $parent = $wrapped->getPropertyValue($config['parent']);
             // revert simulated changeset
             $uow->clearEntityChangeSet($oid);
@@ -181,7 +181,7 @@ class Nested implements Strategy
         $config = $this->listener->getConfiguration($em, $meta->name);
         $uow = $em->getUnitOfWork();
 
-        $wrapped = AbstractWrapper::wrapp($node, $em);
+        $wrapped = AbstractWrapper::wrap($node, $em);
         $leftValue = $wrapped->getPropertyValue($config['left']);
         $rightValue = $wrapped->getPropertyValue($config['right']);
 
@@ -249,7 +249,7 @@ class Nested implements Strategy
      */
     public function updateNode(EntityManager $em, $node, $parent, $position = 'FirstChild')
     {
-        $wrapped = AbstractWrapper::wrapp($node, $em);
+        $wrapped = AbstractWrapper::wrap($node, $em);
         $meta = $wrapped->getMetadata();
         $config = $this->listener->getConfiguration($em, $meta->name);
 
@@ -274,7 +274,7 @@ class Nested implements Strategy
         $treeSize = $right - $left + 1;
         $newRootId = null;
         if ($parent) {
-            $wrappedParent = AbstractWrapper::wrapp($parent, $em);
+            $wrappedParent = AbstractWrapper::wrap($parent, $em);
 
             $parentRootId = isset($config['root']) ? $wrappedParent->getPropertyValue($config['root']) : null;
             $parentLeft = $wrappedParent->getPropertyValue($config['left']);
@@ -365,7 +365,7 @@ class Nested implements Strategy
                 $em->getUnitOfWork()->setOriginalEntityProperty($oid, $config['level'], $level);
             }
             if (isset($newParent)) {
-                $wrappedNewParent = AbstractWrapper::wrapp($newParent, $em);
+                $wrappedNewParent = AbstractWrapper::wrap($newParent, $em);
                 $newParentId = $wrappedNewParent->getIdentifier();
                 $qb->set('node.' . $config['parent'], $newParentId);
                 $wrapped->setPropertyValue($config['parent'], $newParent);

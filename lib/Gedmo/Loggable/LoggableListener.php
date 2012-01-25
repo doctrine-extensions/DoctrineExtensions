@@ -130,7 +130,7 @@ class LoggableListener extends MappedEventSubscriber
         $oid = spl_object_hash($object);
         $uow = $om->getUnitOfWork();
         if ($this->pendingLogEntryInserts && array_key_exists($oid, $this->pendingLogEntryInserts)) {
-            $wrapped = AbstractWrapper::wrapp($object, $om);
+            $wrapped = AbstractWrapper::wrap($object, $om);
             $meta = $wrapped->getMetadata();
             $config = $this->getConfiguration($om, $meta->name);
 
@@ -146,7 +146,7 @@ class LoggableListener extends MappedEventSubscriber
             unset($this->pendingLogEntryInserts[$oid]);
         }
         if ($this->pendingRelatedObjects && array_key_exists($oid, $this->pendingRelatedObjects)) {
-            $wrapped = AbstractWrapper::wrapp($object, $om);
+            $wrapped = AbstractWrapper::wrap($object, $om);
             $identifiers = $wrapped->getIdentifier(false);
             foreach ($this->pendingRelatedObjects[$oid] as $props) {
                 $logEntry = $props['log'];
@@ -219,7 +219,7 @@ class LoggableListener extends MappedEventSubscriber
     private function createLogEntry($action, $object, LoggableAdapter $ea)
     {
         $om = $ea->getObjectManager();
-        $wrapped = AbstractWrapper::wrapp($object, $om);
+        $wrapped = AbstractWrapper::wrap($object, $om);
         $meta = $wrapped->getMetadata();
         if ($config = $this->getConfiguration($om, $meta->name)) {
             $logEntryClass = $this->getLogEntryClass($ea, $meta->name);
@@ -246,7 +246,7 @@ class LoggableListener extends MappedEventSubscriber
                     $value = $changes[1];
                     if ($meta->isSingleValuedAssociation($field) && $value) {
                         $oid = spl_object_hash($value);
-                        $wrappedAssoc = AbstractWrapper::wrapp($value, $om);
+                        $wrappedAssoc = AbstractWrapper::wrap($value, $om);
                         $value = $wrappedAssoc->getIdentifier(false);
                         if (!is_array($value) && !$value) {
                             $this->pendingRelatedObjects[$oid][] = array(

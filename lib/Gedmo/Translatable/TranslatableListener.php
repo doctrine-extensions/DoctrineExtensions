@@ -301,7 +301,7 @@ class TranslatableListener extends MappedEventSubscriber
             $meta = $om->getClassMetadata(get_class($object));
             $config = $this->getConfiguration($om, $meta->name);
             if (isset($config['fields'])) {
-                $wrapped = AbstractWrapper::wrapp($object, $om);
+                $wrapped = AbstractWrapper::wrap($object, $om);
                 $transClass = $this->getTranslationClass($ea, $meta->name);
                 $ea->removeAssociatedTranslations($wrapped, $transClass);
             }
@@ -326,7 +326,7 @@ class TranslatableListener extends MappedEventSubscriber
             $oid = spl_object_hash($object);
             if (array_key_exists($oid, $this->pendingTranslationInserts)) {
                 // load the pending translations without key
-                $wrapped = AbstractWrapper::wrapp($object, $om);
+                $wrapped = AbstractWrapper::wrap($object, $om);
                 $objectId = $wrapped->getIdentifier();
                 foreach ($this->pendingTranslationInserts[$oid] as $translation) {
                     $translation->setForeignKey($objectId);
@@ -428,7 +428,7 @@ class TranslatableListener extends MappedEventSubscriber
     private function handleTranslatableObjectUpdate(TranslatableAdapter $ea, $object, $isInsert)
     {
         $om = $ea->getObjectManager();
-        $wrapped = AbstractWrapper::wrapp($object, $om);
+        $wrapped = AbstractWrapper::wrap($object, $om);
         $meta = $wrapped->getMetadata();
         $config = $this->getConfiguration($om, $meta->name);
         // no need cache, metadata is loaded only once in MetadataFactoryClass
