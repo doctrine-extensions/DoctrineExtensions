@@ -110,19 +110,20 @@ final class ORM extends BaseAdapterORM implements TranslatableAdapter
         foreach ($em->getUnitOfWork()->getIdentityMap() as $className => $objects) {
             if ($className === $translationClass) {
                 foreach ($objects as $trans) {
-                    $match = !$trans instanceof Proxy
+                    $isRequestedTranslation = !$trans instanceof Proxy
                         && $trans->getLocale() === $locale
                         && $trans->getField() === $field
                     ;
-                    if ($match) {
+                    if ($isRequestedTranslation) {
                         if ($this->usesPersonalTranslation($translationClass)) {
-                            $match = $match && $trans->getObject() === $wrapped->getObject();
+                            $isRequestedTranslation = $trans->getObject() === $wrapped->getObject();
                         } else {
-                            $match = $match && $trans->getForeignKey() === $wrapped->getIdentifier();
-                            $match = $match && $trans->getObjectClass() === $wrapped->getMetadata()->name;
+                            $isRequestedTranslation = $trans->getForeignKey() === $wrapped->getIdentifier()
+                                && $trans->getObjectClass() === $wrapped->getMetadata()->name
+                            ;
                         }
                     }
-                    if ($match) {
+                    if ($isRequestedTranslation) {
                         return $trans;
                     }
                 }

@@ -456,14 +456,13 @@ class TranslatableListener extends MappedEventSubscriber
             // lookup persisted translations
             if ($ea->usesPersonalTranslation($translationClass)) {
                 foreach ($ea->getScheduledObjectInsertions($uow) as $trans) {
-                    $match = get_class($trans) === $translationClass
+                    $wasPersistedSeparetely = get_class($trans) === $translationClass
                         && $trans->getLocale() === $locale
                         && $trans->getField() === $field
                         && $trans->getObject() === $object
                     ;
-                    if ($match) {
+                    if ($wasPersistedSeparetely) {
                         $translation = $trans;
-                        $wasPersistedSeparetely = true;
                         break;
                     }
                 }
