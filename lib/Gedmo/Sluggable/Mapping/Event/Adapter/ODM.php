@@ -25,9 +25,9 @@ final class ODM extends BaseAdapterODM implements SluggableAdapter
     public function getSimilarSlugs($object, $meta, array $config, $slug)
     {
         $dm = $this->getObjectManager();
+        $wrapped = AbstractWrapper::wrapp($object, $dm);
         $qb = $dm->createQueryBuilder($config['useObjectClass']);
-        $identifier = $this->extractIdentifier($dm, $object);
-        if ($identifier && !$meta->isIdentifier($config['slug'])) {
+        if (($identifier = $wrapped->getIdentifier()) && !$meta->isIdentifier($config['slug'])) {
             $qb->field($meta->identifier)->notEqual($identifier);
         }
         $qb->field($config['slug'])->equals(new \MongoRegex('/^' . preg_quote($slug, '/') . '/'));

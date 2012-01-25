@@ -3,11 +3,9 @@
 namespace Gedmo\Mapping\Event\Adapter;
 
 use Gedmo\Mapping\Event\AdapterInterface;
+use Gedmo\Exception\RuntimeException;
 use Doctrine\Common\EventArgs;
-use Doctrine\ODM\MongoDB\Mapping\ClassMetadataInfo;
-use Doctrine\ODM\MongoDB\UnitOfWork;
 use Doctrine\ODM\MongoDB\DocumentManager;
-use Doctrine\ODM\MongoDB\Proxy\Proxy;
 
 /**
  * Doctrine event adapter for ODM specific
@@ -22,9 +20,14 @@ use Doctrine\ODM\MongoDB\Proxy\Proxy;
 class ODM implements AdapterInterface
 {
     /**
-     * @var EventArgs
+     * @var \Doctrine\Common\EventArgs
      */
     private $args;
+
+    /**
+     * @var \Doctrine\ODM\MongoDB\DocumentManager
+     */
+    private $dm;
 
     /**
      * {@inheritdoc}
@@ -51,133 +54,98 @@ class ODM implements AdapterInterface
     }
 
     /**
-     * Extracts identifiers from object or proxy
+     * Set the document manager
      *
-     * @param DocumentManager $dm
-     * @param object $object
-     * @param bool $single
-     * @return mixed - array or single identifier
+     * @param \Doctrine\ODM\MongoDB\DocumentManager $dm
      */
-    public function extractIdentifier(DocumentManager $dm, $object, $single = true)
+    public function setDocumentManager(DocumentManager $dm)
     {
-        $meta = $dm->getClassMetadata(get_class($object));
-        if ($object instanceof Proxy) {
-            $id = $dm->getUnitOfWork()->getDocumentIdentifier($object);
-        } else {
-            $id = $meta->getReflectionProperty($meta->identifier)->getValue($object);
-        }
-
-        if ($single || !$id) {
-            return $id;
-        } else {
-            return array($meta->identifier => $id);
-        }
+        $this->dm = $dm;
     }
 
     /**
-     * Call event specific method
-     *
-     * @param string $method
-     * @param array $args
-     * @return mixed
+     * {@inheritdoc}
+     */
+    public function getObjectManager()
+    {
+        if (!is_null($this->dm)) {
+            return $this->dm;
+        }
+        return $this->__call('getDocumentManager', array());
+    }
+
+    /**
+     * {@inheritdoc}
      */
     public function __call($method, $args)
     {
+        if (is_null($this->args)) {
+            throw new RuntimeException("Event args must be set before calling its methods");
+        }
         $method = str_replace('Object', $this->getDomainObjectName(), $method);
         return call_user_func_array(array($this->args, $method), $args);
     }
 
     /**
-     * Get the object changeset from a UnitOfWork
-     *
-     * @param UnitOfWork $uow
-     * @param Object $object
-     * @return array
+     * {@inheritdoc}
      */
-    public function getObjectChangeSet(UnitOfWork $uow, $object)
+    public function getObjectChangeSet($uow, $object)
     {
         return $uow->getDocumentChangeSet($object);
     }
 
     /**
-     * Get the single identifier field name
-     *
-     * @param ClassMetadataInfo $meta
-     * @throws MappingException - if identifier is composite
-     * @return string
+     * {@inheritdoc}
      */
-    public function getSingleIdentifierFieldName(ClassMetadataInfo $meta)
+    public function getSingleIdentifierFieldName($meta)
     {
         return $meta->identifier;
     }
 
     /**
-     * Recompute the single object changeset from a UnitOfWork
-     *
-     * @param UnitOfWork $uow
-     * @param ClassMetadataInfo $meta
-     * @param Object $object
-     * @return void
+     * {@inheritdoc}
      */
-    public function recomputeSingleObjectChangeSet(UnitOfWork $uow, ClassMetadataInfo $meta, $object)
+    public function recomputeSingleObjectChangeSet($uow, $meta, $object)
     {
         $uow->recomputeSingleDocumentChangeSet($meta, $object);
     }
 
     /**
-     * Get the scheduled object updates from a UnitOfWork
-     *
-     * @param UnitOfWork $uow
-     * @return array
+     * {@inheritdoc}
      */
-    public function getScheduledObjectUpdates(UnitOfWork $uow)
+    public function getScheduledObjectUpdates($uow)
     {
         return $uow->getScheduledDocumentUpdates();
     }
 
     /**
-     * Get the scheduled object insertions from a UnitOfWork
-     *
-     * @param UnitOfWork $uow
-     * @return array
+     * {@inheritdoc}
      */
-    public function getScheduledObjectInsertions(UnitOfWork $uow)
+    public function getScheduledObjectInsertions($uow)
     {
         return $uow->getScheduledDocumentInsertions();
     }
 
     /**
-     * Get the scheduled object deletions from a UnitOfWork
-     *
-     * @param UnitOfWork $uow
-     * @return array
+     * {@inheritdoc}
      */
-    public function getScheduledObjectDeletions(UnitOfWork $uow)
+    public function getScheduledObjectDeletions($uow)
     {
         return $uow->getScheduledDocumentDeletions();
     }
 
     /**
-     * Sets a property value of the original data array of an object
-     *
-     * @param UnitOfWork $uow
-     * @param string $oid
-     * @param string $property
-     * @param mixed $value
-     * @return void
+     * {@inheritdoc}
      */
-    public function setOriginalObjectProperty(UnitOfWork $uow, $oid, $property, $value)
+    public function setOriginalObjectProperty($uow, $oid, $property, $value)
     {
         $uow->setOriginalDocumentProperty($oid, $property, $value);
     }
 
     /**
-     * Clears the property changeset of the object with the given OID.
-     *
-     * @param UnitOfWork $uow
-     * @param string $oid The object's OID.
+     * {@inheritdoc}
      */
-    public function clearObjectChangeSet(UnitOfWork $uow, $oid)
+    public function clearObjectChangeSet($uow, $oid)
     {
         $uow->clearDocumentChangeSet($oid);
     }

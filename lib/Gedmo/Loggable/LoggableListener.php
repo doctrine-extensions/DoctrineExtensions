@@ -2,10 +2,11 @@
 
 namespace Gedmo\Loggable;
 
-use Doctrine\Common\Persistence\ObjectManager,
-    Gedmo\Mapping\MappedEventSubscriber,
-    Gedmo\Loggable\Mapping\Event\LoggableAdapter,
-    Doctrine\Common\EventArgs;
+use Doctrine\Common\EventArgs;
+use Doctrine\Common\Persistence\ObjectManager;
+use Gedmo\Mapping\MappedEventSubscriber;
+use Gedmo\Loggable\Mapping\Event\LoggableAdapter;
+use Gedmo\Tool\Wrapper\AbstractWrapper;
 
 /**
  * Loggable listener
@@ -129,14 +130,14 @@ class LoggableListener extends MappedEventSubscriber
         $oid = spl_object_hash($object);
         $uow = $om->getUnitOfWork();
         if ($this->pendingLogEntryInserts && array_key_exists($oid, $this->pendingLogEntryInserts)) {
-            $meta = $om->getClassMetadata(get_class($object));
+            $wrapped = AbstractWrapper::wrapp($object, $om);
+            $meta = $wrapped->getMetadata();
             $config = $this->getConfiguration($om, $meta->name);
-            // there should be single identifier
-            $identifierField = $ea->getSingleIdentifierFieldName($meta);
+
             $logEntry = $this->pendingLogEntryInserts[$oid];
             $logEntryMeta = $om->getClassMetadata(get_class($logEntry));
 
-            $id = $meta->getReflectionProperty($identifierField)->getValue($object);
+            $id = $wrapped->getIdentifier();
             $logEntryMeta->getReflectionProperty('objectId')->setValue($logEntry, $id);
             $uow->scheduleExtraUpdate($logEntry, array(
                 'objectId' => array(null, $id)
@@ -145,14 +146,14 @@ class LoggableListener extends MappedEventSubscriber
             unset($this->pendingLogEntryInserts[$oid]);
         }
         if ($this->pendingRelatedObjects && array_key_exists($oid, $this->pendingRelatedObjects)) {
-            $identifiers = $ea->extractIdentifier($om, $object, false);
+            $wrapped = AbstractWrapper::wrapp($object, $om);
+            $identifiers = $wrapped->getIdentifier(false);
             foreach ($this->pendingRelatedObjects[$oid] as $props) {
                 $logEntry = $props['log'];
                 $logEntryMeta = $om->getClassMetadata(get_class($logEntry));
                 $oldData = $data = $logEntry->getData();
                 $data[$props['field']] = $identifiers;
                 $logEntry->setData($data);
-
 
                 $uow->scheduleExtraUpdate($logEntry, array(
                     'data' => array($oldData, $data)
@@ -218,7 +219,8 @@ class LoggableListener extends MappedEventSubscriber
     private function createLogEntry($action, $object, LoggableAdapter $ea)
     {
         $om = $ea->getObjectManager();
-        $meta = $om->getClassMetadata(get_class($object));
+        $wrapped = AbstractWrapper::wrapp($object, $om);
+        $meta = $wrapped->getMetadata();
         if ($config = $this->getConfiguration($om, $meta->name)) {
             $logEntryClass = $this->getLogEntryClass($ea, $meta->name);
             $logEntry = new $logEntryClass;
@@ -229,8 +231,7 @@ class LoggableListener extends MappedEventSubscriber
             $logEntry->setLoggedAt();
 
             // check for the availability of the primary key
-            $identifierField = $ea->getSingleIdentifierFieldName($meta);
-            $objectId = $meta->getReflectionProperty($identifierField)->getValue($object);
+            $objectId = $wrapped->getIdentifier();
             if (!$objectId && $action === self::ACTION_CREATE) {
                 $this->pendingLogEntryInserts[spl_object_hash($object)] = $logEntry;
             }
@@ -245,8 +246,9 @@ class LoggableListener extends MappedEventSubscriber
                     $value = $changes[1];
                     if ($meta->isSingleValuedAssociation($field) && $value) {
                         $oid = spl_object_hash($value);
-                        $value = $ea->extractIdentifier($om, $value, false);
-                        if (!is_array($value)) {
+                        $wrappedAssoc = AbstractWrapper::wrapp($value, $om);
+                        $value = $wrappedAssoc->getIdentifier(false);
+                        if (!is_array($value) && !$value) {
                             $this->pendingRelatedObjects[$oid][] = array(
                                 'log' => $logEntry,
                                 'field' => $field

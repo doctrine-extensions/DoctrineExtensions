@@ -9,6 +9,7 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Proxy\Proxy;
 use Gedmo\Tree\TreeListener;
 use Doctrine\ORM\Version;
+use Gedmo\Tool\Wrapper\AbstractWrapper;
 
 /**
  * This strategy makes tree act like
@@ -260,12 +261,13 @@ class Closure implements Strategy
      */
     public function updateNode(EntityManager $em, $node, $oldParent)
     {
-        $meta = $em->getClassMetadata(get_class($node));
+        $wrapped = AbstractWrapper::wrapp($node, $em);
+        $meta = $wrapped->getMetadata();
         $config = $this->listener->getConfiguration($em, $meta->name);
         $closureMeta = $em->getClassMetadata($config['closure']);
 
-        $nodeId = $this->extractIdentifier($em, $node);
-        $parent = $meta->getReflectionProperty($config['parent'])->getValue($node);
+        $nodeId = $wrapped->getIdentifier();
+        $parent = $wrapped->getPropertyValue($config['parent']);
         $table = $closureMeta->getTableName();
         $conn = $em->getConnection();
         // ensure integrity
@@ -298,7 +300,8 @@ class Closure implements Strategy
             }
         }
         if ($parent) {
-            $parentId = $this->extractIdentifier($em, $parent);
+            $wrappedParent = AbstractWrapper::wrapp($parent, $em);
+            $parentId = $wrappedParent->getIdentifier();
             $query = "SELECT c1.ancestor, c2.descendant, (c1.depth + c2.depth + 1) AS depth";
             $query .= " FROM {$table} c1, {$table} c2";
             $query .= " WHERE c1.descendant = :parentId";
@@ -311,30 +314,5 @@ class Closure implements Strategy
                 }
             }
         }
-    }
-
-    /**
-     * Extracts identifiers from object or proxy
-     *
-     * @param EntityManager $em
-     * @param object $entity
-     * @param bool $single
-     * @return mixed - array or single identifier
-     */
-    private function extractIdentifier(EntityManager $em, $entity, $single = true)
-    {
-        if ($entity instanceof Proxy) {
-            $id = $em->getUnitOfWork()->getEntityIdentifier($entity);
-        } else {
-            $meta = $em->getClassMetadata(get_class($entity));
-            $id = array();
-            foreach ($meta->identifier as $name) {
-                $id[$name] = $meta->getReflectionProperty($name)->getValue($entity);
-            }
-        }
-        if ($single) {
-            $id = current($id);
-        }
-        return $id;
     }
 }
