@@ -1,39 +1,36 @@
 <?php
 
-namespace Gedmo\Translatable\Entity;
+namespace Gedmo\Translatable\Entity\MappedSuperclass;
 
-use Doctrine\ORM\Mapping\Column;
-use Doctrine\ORM\Mapping\MappedSuperclass;
-use Doctrine\ORM\Mapping\Id;
-use Doctrine\ORM\Mapping\GeneratedValue;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Gedmo\Translatable\Entity\AbstractPersonalTranslation
+ * Gedmo\Translatable\Entity\MappedSuperclass\AbstractPersonalTranslation
  *
- * @MappedSuperclass
+ * @ORM\MappedSuperclass
  */
 abstract class AbstractPersonalTranslation
 {
     /**
      * @var integer $id
      *
-     * @Column(type="integer")
-     * @Id
-     * @GeneratedValue
+     * @ORM\Column(type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue
      */
     protected $id;
 
     /**
      * @var string $locale
      *
-     * @Column(type="string", length=8)
+     * @ORM\Column(type="string", length=8)
      */
     protected $locale;
 
     /**
      * @var string $field
      *
-     * @Column(type="string", length=32)
+     * @ORM\Column(type="string", length=32)
      */
     protected $field;
 
@@ -46,7 +43,7 @@ abstract class AbstractPersonalTranslation
     /**
      * @var text $content
      *
-     * @Column(type="text", nullable=true)
+     * @ORM\Column(type="text", nullable=true)
      */
     protected $content;
 

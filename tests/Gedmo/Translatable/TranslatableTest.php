@@ -2,6 +2,9 @@
 
 namespace Gedmo\Translatable;
 
+use Doctrine\ORM\Mapping\Driver\DriverChain;
+use Doctrine\ORM\Mapping\Driver\SimplifiedXmlDriver;
+use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
 use Doctrine\Common\EventManager;
 use Tool\BaseTestCaseORM;
 use Translatable\Fixture\Article;
@@ -33,11 +36,32 @@ class TranslatableTest extends BaseTestCaseORM
         $evm = new EventManager;
         $this->translatableListener = new TranslatableListener();
         $this->translatableListener->setTranslatableLocale('en_us');
-        $this->translatableListener->setDefaultLocale('en_us');        
+        $this->translatableListener->setDefaultLocale('en_us');
         $evm->addEventSubscriber($this->translatableListener);
 
         $this->getMockSqliteEntityManager($evm);
         $this->populate();
+    }
+
+    protected function getMetadataDriverImplementation()
+    {
+        $translatableRefl = new \ReflectionClass('Gedmo\Translatable\TranslatableListener');
+        $mapping = dirname($translatableRefl->getFileName()).'/Mapping/Metadata';
+
+        $annotationDriver = new AnnotationDriver($_ENV['annotation_reader']);
+        $xmlDriverSuperclass = new SimplifiedXmlDriver(array(
+            $mapping.'/abstract' => 'Gedmo\Translatable\Entity\MappedSuperclass'
+        ));
+        $xmlDriver = new SimplifiedXmlDriver(array(
+            $mapping.'/translation' => 'Gedmo\Translatable\Entity'
+        ));
+
+        $chain = new DriverChain;
+        $chain->addDriver($annotationDriver, 'Translatable\Fixture');
+        $chain->addDriver($xmlDriverSuperclass, 'Gedmo\Translatable\Entity\MappedSuperclass');
+        $chain->addDriver($xmlDriver, 'Gedmo\Translatable\Entity');
+
+        return $chain;
     }
 
     public function testFixtureGeneratedTranslations()
@@ -162,7 +186,7 @@ class TranslatableTest extends BaseTestCaseORM
     /**
      * Translation fallback, related to issue #9 on github
      */
-    /*public function testTranslationFallback()
+    public function testTranslationFallback()
     {
         $this->translatableListener->setTranslationFallback(false);
         $this->translatableListener->setTranslatableLocale('ru_RU');
@@ -201,7 +225,7 @@ class TranslatableTest extends BaseTestCaseORM
 
         $repo = $this->em->getRepository(self::TRANSLATION);
         $translations = $repo->findTranslations($judo);
-        $this->assertEquals(2, count($translations));
+        $this->assertEquals(1, count($translations));
 
         // now without any changeset
         $this->translatableListener->setTranslatableLocale('ru_ru');
@@ -213,8 +237,8 @@ class TranslatableTest extends BaseTestCaseORM
         // this will not add additional translation, because it cannot be tracked
         // without anything in changeset
         $translations = $repo->findTranslations($judo);
-        $this->assertEquals(2, count($translations));
-    }*/
+        $this->assertEquals(1, count($translations));
+    }
 
     protected function getUsedEntityFixtures()
     {

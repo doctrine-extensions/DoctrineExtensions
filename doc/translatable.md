@@ -633,7 +633,7 @@ ArticleTranslation Entity:
 namespace Entity\Translation;
 
 use Doctrine\ORM\Mapping as ORM;
-use Gedmo\Translatable\Entity\AbstractTranslation;
+use Gedmo\Translatable\Entity\MappedSuperclass\AbstractTranslation;
 
 /**
  * @ORM\Table(name="article_translations", indexes={

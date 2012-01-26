@@ -2,7 +2,7 @@
 namespace Translatable\Fixture\Personal;
 
 use Doctrine\ORM\Mapping as ORM;
-use Gedmo\Translatable\Entity\AbstractPersonalTranslation;
+use Gedmo\Translatable\Entity\MappedSuperclass\AbstractPersonalTranslation;
 
 /**
  * @ORM\Table(name="article_translations")

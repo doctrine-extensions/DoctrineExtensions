@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping">
+    
+    <entity name="Gedmo\Translatable\Entity\Translation" repository-class="Gedmo\Translatable\Entity\Repository\TranslationRepository" table="ext_translations">
+        <unique-constraints>
+            <unique-constraint name="lookup_unique_idx" columns="locale,object_class,foreign_key,field" />
+        </unique-constraints>
+        
+        <indexes>
+            <index name="translations_lookup_idx" columns="locale,object_class,foreign_key" />
+        </indexes>
+    </entity>
+
+</doctrine-mapping>

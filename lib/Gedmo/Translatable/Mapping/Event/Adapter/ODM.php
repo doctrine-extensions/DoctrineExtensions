@@ -31,7 +31,7 @@ final class ODM extends BaseAdapterODM implements TranslatableAdapter
             ->getObjectManager()
             ->getClassMetadata($translationClassName)
             ->getReflectionClass()
-            ->isSubclassOf('Gedmo\Translatable\Document\AbstractPersonalTranslation')
+            ->isSubclassOf('Gedmo\Translatable\Document\MappedSuperclass\AbstractPersonalTranslation')
         ;
     }
 

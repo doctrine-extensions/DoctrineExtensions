@@ -31,7 +31,7 @@ final class ORM extends BaseAdapterORM implements TranslatableAdapter
             ->getObjectManager()
             ->getClassMetadata($translationClassName)
             ->getReflectionClass()
-            ->isSubclassOf('Gedmo\Translatable\Entity\AbstractPersonalTranslation')
+            ->isSubclassOf('Gedmo\Translatable\Entity\MappedSuperclass\AbstractPersonalTranslation')
         ;
     }
 

@@ -2,7 +2,7 @@
 namespace Translatable\Fixture\Document\Personal;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoODM;
-use Gedmo\Translatable\Document\AbstractPersonalTranslation;
+use Gedmo\Translatable\Document\MappedSuperclass\AbstractPersonalTranslation;
 
 /**
  * @MongoODM\Document(collection="article_translations")
