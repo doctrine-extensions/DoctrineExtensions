@@ -170,6 +170,15 @@ class Closure implements Strategy
     public function processScheduledDelete($em, $entity)
     {}
 
+    protected function getJoinColumnFieldName($association)
+    {
+        if (count($association['joinColumnFieldNames']) > 1) {
+            throw new RuntimeException('More association on field '.$association['fieldName']);
+        }
+
+        return array_shift($association['joinColumnFieldNames']);
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -191,11 +200,16 @@ class Closure implements Strategy
             $closureClass = $config['closure'];
             $closureMeta = $em->getClassMetadata($closureClass);
             $closureTable = $closureMeta->getTableName();
+
+            $ancestorColumnName = $this->getJoinColumnFieldName($em->getClassMetadata($config['closure'])->getAssociationMapping('ancestor'));
+            $descendantColumnName = $this->getJoinColumnFieldName($em->getClassMetadata($config['closure'])->getAssociationMapping('descendant'));
+            $depthColumnName = $em->getClassMetadata($config['closure'])->getColumnName('depth');
+
             $entries = array(
                 array(
-                    'ancestor' => $nodeId,
-                    'descendant' => $nodeId,
-                    'depth' => 0
+                    $ancestorColumnName => $nodeId,
+                    $descendantColumnName => $nodeId,
+                    $depthColumnName => 0
                 )
             );
 
@@ -209,9 +223,9 @@ class Closure implements Strategy
 
                 foreach ($ancestors as $ancestor) {
                     $entries[] = array(
-                        'ancestor' => $ancestor['ancestor']['id'],
-                        'descendant' => $nodeId,
-                        'depth' => $ancestor['depth'] + 1
+                        $ancestorColumnName => $ancestor['ancestor']['id'],
+                        $descendantColumnName => $nodeId,
+                        $depthColumnName => $ancestor['depth'] + 1
                     );
                 }
             }
