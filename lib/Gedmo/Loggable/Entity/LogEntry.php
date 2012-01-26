@@ -19,7 +19,7 @@ use Doctrine\ORM\Mapping\Entity;
  * )
  * @Entity(repositoryClass="Gedmo\Loggable\Entity\Repository\LogEntryRepository")
  */
-class LogEntry extends AbstractLogEntry
+class LogEntry extends MappedSuperclass\AbstractLogEntry
 {
     /**
      * All required columns are mapped through inherited superclass

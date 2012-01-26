@@ -2,7 +2,7 @@
 
 namespace Loggable\Fixture\Document\Log;
 
-use Gedmo\Loggable\Document\AbstractLogEntry;
+use Gedmo\Loggable\Document\MappedSuperclass\AbstractLogEntry;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 
 /**
