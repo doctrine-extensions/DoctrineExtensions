@@ -13,11 +13,11 @@ use Doctrine\Common\Collections\Collection;
  */
 class TranslationProxy
 {
-    private $locale;
-    private $translatable;
-    private $properties = array();
-    private $class;
-    private $coll;
+    protected $locale;
+    protected $translatable;
+    protected $properties = array();
+    protected $class;
+    protected $coll;
 
     /**
      * Initializes translations collection
