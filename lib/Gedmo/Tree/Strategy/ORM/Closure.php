@@ -170,13 +170,15 @@ class Closure implements Strategy
     public function processScheduledDelete($em, $entity)
     {}
 
-    protected function _getJoinColumnFieldName($association)
+    protected function getJoinColumnFieldName($association)
     {
-        if (count($association['joinColumnFieldNames']) > 1)
+        if (count($association['joinColumnFieldNames']) > 1) {
             throw new RuntimeException('More association on field '.$association['fieldName']);
+        }
 
         return array_shift($association['joinColumnFieldNames']);
     }
+
     /**
      * {@inheritdoc}
      */
