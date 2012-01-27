@@ -20,14 +20,22 @@ class MaterializedPathODMMongoDBTest extends BaseTestCaseMongoODM
 {
     const CATEGORY = "Tree\\Fixture\\Document\\Category";
 
+    protected $config;
+    protected $listener;
+
     protected function setUp()
     {
         parent::setUp();
 
+        $this->listener = new TreeListener;
+
         $evm = new EventManager;
-        $evm->addEventSubscriber(new TreeListener);
+        $evm->addEventSubscriber($this->listener);
 
         $this->getMockDocumentManager($evm);
+
+        $meta = $this->dm->getClassMetadata(self::CATEGORY);
+        $this->config = $this->listener->getConfiguration($this->dm, $meta->name);
     }
 
     /**
@@ -59,10 +67,10 @@ class MaterializedPathODMMongoDBTest extends BaseTestCaseMongoODM
         $this->dm->refresh($category3);
         $this->dm->refresh($category4);
 
-        $this->assertEquals('1,', $category->getPath());
-        $this->assertEquals('1,2,', $category2->getPath());
-        $this->assertEquals('1,2,3,', $category3->getPath());
-        $this->assertEquals('4,', $category4->getPath());
+        $this->assertEquals($this->generatePath(array('1')), $category->getPath());
+        $this->assertEquals($this->generatePath(array('1', '2')), $category2->getPath());
+        $this->assertEquals($this->generatePath(array('1', '2', '3')), $category3->getPath());
+        $this->assertEquals($this->generatePath(array('4')), $category4->getPath());
 
         // Update
         $category2->setParent(null);
@@ -74,9 +82,9 @@ class MaterializedPathODMMongoDBTest extends BaseTestCaseMongoODM
         $this->dm->refresh($category2);
         $this->dm->refresh($category3);
 
-        $this->assertEquals('1,', $category->getPath());
-        $this->assertEquals('2,', $category2->getPath());
-        $this->assertEquals('2,3,', $category3->getPath());
+        $this->assertEquals($this->generatePath(array('1')), $category->getPath());
+        $this->assertEquals($this->generatePath(array('2')), $category2->getPath());
+        $this->assertEquals($this->generatePath(array('2', '3')), $category3->getPath());
 
         // Remove
         $this->dm->remove($category);
@@ -93,5 +101,10 @@ class MaterializedPathODMMongoDBTest extends BaseTestCaseMongoODM
     {
         $class = self::CATEGORY;
         return new $class;
+    }
+
+    public function generatePath(array $sources)
+    {
+        return implode($this->config['path_separator'], $sources).$this->config['path_separator'];
     }
 }
