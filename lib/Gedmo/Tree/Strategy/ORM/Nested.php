@@ -128,7 +128,7 @@ class Nested implements Strategy
     /**
      * {@inheritdoc}
      */
-    public function processScheduledInsertion($em, $node)
+    public function processScheduledInsertion($em, $node, $ea)
     {
         $meta = $em->getClassMetadata(get_class($node));
         $config = $this->listener->getConfiguration($em, $meta->name);

@@ -165,7 +165,7 @@ class Closure implements Strategy
      /**
      * {@inheritdoc}
      */
-    public function processScheduledInsertion($em, $node)
+    public function processScheduledInsertion($em, $node, $ea)
     {}
 
     /**

@@ -55,6 +55,21 @@ abstract class AbstractMaterializedPath implements Strategy
     /**
      * {@inheritdoc}
      */
+    public function processScheduledInsertion($om, $node, $ea)
+    {
+        $meta = $om->getClassMetadata(get_class($node));
+        $config = $this->listener->getConfiguration($om, $meta->name);
+
+        if ($meta->isIdentifier($config['path_source'])) {
+            $this->scheduledForPathProcess[spl_object_hash($node)] = node;
+        } else {
+            $this->updateNode($om, $node, $ea);
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function processScheduledUpdate($om, $node, $ea)
     {
         $meta = $om->getClassMetadata(get_class($node));
@@ -81,7 +96,11 @@ abstract class AbstractMaterializedPath implements Strategy
      */
     public function processPostPersist($om, $node, $ea)
     {
-        $this->updateNode($om, $node, $ea);
+        foreach ($this->scheduledForPathProcess as $node) {
+            $this->updateNode($om, $node, $ea);
+
+            unset($this->scheduledForPathProcess[spl_object_hash($node)]);
+        }
     }
 
     /**
@@ -89,7 +108,6 @@ abstract class AbstractMaterializedPath implements Strategy
      */
     public function onFlushEnd($om)
     {
-        $this->alreadyProcessedObjects = array();
         $this->scheduledForPathProcess = array();
     }
 

@@ -17,14 +17,6 @@ use Gedmo\Tree\Strategy\AbstractMaterializedPath;
 class MaterializedPath extends AbstractMaterializedPath
 {
     /**
-     * {@inheritdoc}
-     */
-    public function processScheduledInsertion($om, $node)
-    {
-        // TODO
-    }
-
-    /**
      * Remove node and its children
      *
      * @param ObjectManager $om

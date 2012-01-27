@@ -47,9 +47,10 @@ interface Strategy
      *
      * @param object $om - object manager
      * @param object $object - node
+     * @param object $ea - event adapter
      * @return void
      */
-    function processScheduledInsertion($om, $object);
+    function processScheduledInsertion($om, $object, $ea);
 
     /**
      * Operations on tree node updates
