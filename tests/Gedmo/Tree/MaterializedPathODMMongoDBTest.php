@@ -71,6 +71,10 @@ class MaterializedPathODMMongoDBTest extends BaseTestCaseMongoODM
         $this->assertEquals($this->generatePath(array('1', '2')), $category2->getPath());
         $this->assertEquals($this->generatePath(array('1', '2', '3')), $category3->getPath());
         $this->assertEquals($this->generatePath(array('4')), $category4->getPath());
+        $this->assertEquals(1, $category->getLevel());
+        $this->assertEquals(2, $category2->getLevel());
+        $this->assertEquals(3, $category3->getLevel());
+        $this->assertEquals(1, $category4->getLevel());
 
         // Update
         $category2->setParent(null);
@@ -85,6 +89,10 @@ class MaterializedPathODMMongoDBTest extends BaseTestCaseMongoODM
         $this->assertEquals($this->generatePath(array('1')), $category->getPath());
         $this->assertEquals($this->generatePath(array('2')), $category2->getPath());
         $this->assertEquals($this->generatePath(array('2', '3')), $category3->getPath());
+        $this->assertEquals(1, $category->getLevel());
+        $this->assertEquals(1, $category2->getLevel());
+        $this->assertEquals(2, $category3->getLevel());
+        $this->assertEquals(1, $category4->getLevel());
 
         // Remove
         $this->dm->remove($category);
@@ -92,9 +100,11 @@ class MaterializedPathODMMongoDBTest extends BaseTestCaseMongoODM
         $this->dm->flush();
 
         $result = $this->dm->createQueryBuilder()->find(self::CATEGORY)->getQuery()->execute();
+        $firstResult = $result->getNext();
 
         $this->assertEquals(1, $result->count());
-        $this->assertEquals('4', $result->getNext()->getTitle());
+        $this->assertEquals('4', $firstResult->getTitle());
+        $this->assertEquals(1, $firstResult->getLevel());
     }
 
     public function createCategory()

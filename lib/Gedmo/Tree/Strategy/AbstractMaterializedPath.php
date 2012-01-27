@@ -157,9 +157,19 @@ abstract class AbstractMaterializedPath implements Strategy
         }
 
         $pathProp->setValue($node, $path);
-        $uow->scheduleExtraUpdate($node, array(
+        $changes = array(
             $config['path'] => array(null, $path)
-        ));
+        );
+
+        if (isset($config['level'])) {
+            $level = substr_count($path, $config['path_separator']);
+            $levelProp = $meta->getReflectionProperty($config['level']);
+            $levelProp->setAccessible(true);
+            $levelProp->setValue($node, $level);
+            $changes[$config['level']] = array(null, $level);
+        }
+
+        $uow->scheduleExtraUpdate($node, $changes);
         $ea->setOriginalObjectProperty($uow, $oid, $config['path'], $path);
     }
 
