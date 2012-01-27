@@ -68,7 +68,6 @@ class TimestampableListener extends MappedEventSubscriber
                     foreach ($config['update'] as $field) {
                         if (!isset($changeSet[$field])) { // let manual values
                             $needChanges = true;
-                            //$meta->getReflectionProperty($field)->setValue($object, $ea->getDateValue($meta, $field));
                             $this->updateField($object, $ea, $meta, $field);
 
                         }
@@ -108,8 +107,6 @@ class TimestampableListener extends MappedEventSubscriber
 
                             if ($options['value'] == $value) {
                                 $needChanges = true;
-                                //$meta->getReflectionProperty($options['field'])
-                                //    ->setValue($object, $ea->getDateValue($meta, $options['field']));
                                 $this->updateField($object, $ea, $meta, $options['field']);
                             }
                         }
@@ -141,7 +138,6 @@ class TimestampableListener extends MappedEventSubscriber
             if (isset($config['update'])) {
                 foreach ($config['update'] as $field) {
                     if ($meta->getReflectionProperty($field)->getValue($object) === null) { // let manual values
-                        //$meta->getReflectionProperty($field)->setValue($object, $ea->getDateValue($meta, $field));
                         $this->updateField($object, $ea, $meta, $field);
                     }
                 }
@@ -150,7 +146,6 @@ class TimestampableListener extends MappedEventSubscriber
             if (isset($config['create'])) {
                 foreach ($config['create'] as $field) {
                     if ($meta->getReflectionProperty($field)->getValue($object) === null) { // let manual values
-                        //$meta->getReflectionProperty($field)->setValue($object, $ea->getDateValue($meta, $field));
                         $this->updateField($object, $ea, $meta, $field);
                     }
                 }
