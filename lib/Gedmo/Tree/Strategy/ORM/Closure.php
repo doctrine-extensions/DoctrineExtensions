@@ -10,6 +10,7 @@ use Doctrine\ORM\Proxy\Proxy;
 use Gedmo\Tree\TreeListener;
 use Doctrine\ORM\Version;
 use Gedmo\Tool\Wrapper\AbstractWrapper;
+use Gedmo\Mapping\Event\AdapterInterface;
 
 /**
  * This strategy makes tree act like
@@ -165,7 +166,7 @@ class Closure implements Strategy
      /**
      * {@inheritdoc}
      */
-    public function processScheduledInsertion($em, $node, $ea)
+    public function processScheduledInsertion($em, $node, AdapterInterface $ea)
     {}
 
     /**
@@ -186,7 +187,7 @@ class Closure implements Strategy
     /**
      * {@inheritdoc}
      */
-    public function processPostPersist($em, $entity, $ea)
+    public function processPostPersist($em, $entity, AdapterInterface $ea)
     {
         $uow = $em->getUnitOfWork();
 
@@ -241,7 +242,7 @@ class Closure implements Strategy
     /**
      * {@inheritdoc}
      */
-    public function processScheduledUpdate($em, $node, $ea)
+    public function processScheduledUpdate($em, $node, AdapterInterface $ea)
     {
         $meta = $em->getClassMetadata(get_class($node));
         $config = $this->listener->getConfiguration($em, $meta->name);

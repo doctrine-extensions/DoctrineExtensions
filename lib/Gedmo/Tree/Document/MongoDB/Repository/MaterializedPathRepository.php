@@ -62,7 +62,7 @@ class MaterializedPathRepository extends AbstractTreeRepository
     /**
      * {@inheritdoc}
      */
-    protected function validates()
+    protected function validate()
     {
         return $this->listener->getStrategy($this->dm, $this->getClassMetadata()->name)->getName() === Strategy::MATERIALIZED_PATH;
     }

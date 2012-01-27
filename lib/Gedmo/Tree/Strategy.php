@@ -2,6 +2,8 @@
 
 namespace Gedmo\Tree;
 
+use Gedmo\Mapping\Event\AdapterInterface;
+
 interface Strategy
 {
     /**
@@ -47,20 +49,20 @@ interface Strategy
      *
      * @param object $om - object manager
      * @param object $object - node
-     * @param object $ea - event adapter
+     * @param AdapterInterface $ea - event adapter
      * @return void
      */
-    function processScheduledInsertion($om, $object, $ea);
+    function processScheduledInsertion($om, $object, AdapterInterface $ea);
 
     /**
      * Operations on tree node updates
      *
      * @param object $om - object manager
      * @param object $object - node
-     * @param object $ea - event adapter
+     * @param AdapterInterface $ea - event adapter
      * @return void
      */
-    function processScheduledUpdate($om, $object, $ea);
+    function processScheduledUpdate($om, $object, AdapterInterface $ea);
 
     /**
      * Operations on tree node delete
@@ -94,10 +96,10 @@ interface Strategy
      *
      * @param object $om - object manager
      * @param object $object - node
-     * @param object $ea - event adapter
+     * @param AdapterInterface $ea - event adapter
      * @return void
      */
-    function processPostPersist($om, $object, $ea);
+    function processPostPersist($om, $object, AdapterInterface $ea);
 
     /**
      * Operations on the end of flush process

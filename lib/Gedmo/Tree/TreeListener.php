@@ -68,16 +68,10 @@ class TreeListener extends MappedEventSubscriber
             if ($om instanceof \Doctrine\ORM\EntityManager) {
                 $managerName = 'ORM';
             } elseif ($om instanceof \Doctrine\ODM\MongoDB\DocumentManager) {
-                $managerName = 'ODM';
+                $managerName = 'ODM\\MongoDB';
             }
             if (!isset($this->strategyInstances[$config['strategy']])) {
-                $strategyClass = $this->getNamespace().'\\Strategy\\'.$managerName;
-
-                if ($managerName === 'ODM') {
-                    $strategyClass .= '\\MongoDB';
-                }
-
-                $strategyClass .= '\\'.ucfirst($config['strategy']);
+                $strategyClass = $this->getNamespace().'\\Strategy\\'.$managerName.'\\'.ucfirst($config['strategy']);
                 
                 if (!class_exists($strategyClass)) {
                     throw new \Gedmo\Exception\InvalidArgumentException($managerName." TreeListener does not support tree type: {$config['strategy']}");

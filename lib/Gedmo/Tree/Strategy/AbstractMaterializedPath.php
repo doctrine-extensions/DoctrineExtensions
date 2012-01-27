@@ -8,6 +8,7 @@ use Gedmo\Tree\TreeListener;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Doctrine\ORM\Query;
 use Doctrine\Common\Persistence\ObjectManager;
+use Gedmo\Mapping\Event\AdapterInterface;
 
 /**
  * This strategy makes tree using materialized path strategy
@@ -55,7 +56,7 @@ abstract class AbstractMaterializedPath implements Strategy
     /**
      * {@inheritdoc}
      */
-    public function processScheduledInsertion($om, $node, $ea)
+    public function processScheduledInsertion($om, $node, AdapterInterface $ea)
     {
         $meta = $om->getClassMetadata(get_class($node));
         $config = $this->listener->getConfiguration($om, $meta->name);
@@ -70,7 +71,7 @@ abstract class AbstractMaterializedPath implements Strategy
     /**
      * {@inheritdoc}
      */
-    public function processScheduledUpdate($om, $node, $ea)
+    public function processScheduledUpdate($om, $node, AdapterInterface $ea)
     {
         $meta = $om->getClassMetadata(get_class($node));
         $config = $this->listener->getConfiguration($om, $meta->name);
@@ -87,14 +88,14 @@ abstract class AbstractMaterializedPath implements Strategy
             }
 
             $this->updateNode($om, $node, $ea);
-            $this->updateNodesChildren($om, $node, $ea, $originalPath);
+            $this->updateChildren($om, $node, $ea, $originalPath);
         }
     }
 
     /**
      * {@inheritdoc}
      */
-    public function processPostPersist($om, $node, $ea)
+    public function processPostPersist($om, $node, AdapterInterface $ea)
     {
         foreach ($this->scheduledForPathProcess as $node) {
             $this->updateNode($om, $node, $ea);
@@ -148,7 +149,7 @@ abstract class AbstractMaterializedPath implements Strategy
      * @param object $ea - event adapter
      * @return void
      */
-    public function updateNode(ObjectManager $om, $node, $ea)
+    public function updateNode(ObjectManager $om, $node, AdapterInterface $ea)
     {
         $oid = spl_object_hash($node);
         $meta = $om->getClassMetadata(get_class($node));
@@ -200,7 +201,7 @@ abstract class AbstractMaterializedPath implements Strategy
      * @param string $originalPath - original path of object
      * @return void
      */
-    public function updateNodesChildren(ObjectManager $om, $node, $ea, $originalPath)
+    public function updateChildren(ObjectManager $om, $node, AdapterInterface $ea, $originalPath)
     {
         $meta = $om->getClassMetadata(get_class($node));
         $config = $this->listener->getConfiguration($om, $meta->name);

@@ -39,7 +39,7 @@ abstract class AbstractTreeRepository extends EntityRepository
         }
 
         $this->listener = $treeListener;
-        if (!$this->validates()) {
+        if (!$this->validate()) {
             throw new \Gedmo\Exception\InvalidMappingException('This repository cannot be used for tree type: ' . $treeListener->getStrategy($em, $class->name)->getName());
         }
     }
@@ -50,5 +50,5 @@ abstract class AbstractTreeRepository extends EntityRepository
      *
      * @return bool
      */
-    abstract protected function validates();
+    abstract protected function validate();
 }
