@@ -27,14 +27,40 @@ class Yaml extends File implements Driver
     protected $_extension = '.dcm.yml';
 
     /**
-     * List of types which are valid for timestamp
+     * List of types which are valid for tree fields
      *
      * @var array
      */
     private $validTypes = array(
         'integer',
         'smallint',
-        'bigint'
+        'bigint',
+        'int'
+    );
+
+    /**
+     * List of types which are valid for the path (materialized path strategy)
+     *
+     * @var array
+     */
+    private $validPathTypes = array(
+        'string',
+        'text'
+    );
+
+    /**
+     * List of types which are valid for the path source (materialized path strategy)
+     *
+     * @var array
+     */
+    private $validPathSourceTypes = array(
+        'id',
+        'integer',
+        'smallint',
+        'bigint',
+        'string',
+        'int',
+        'float'
     );
 
     /**
@@ -44,7 +70,8 @@ class Yaml extends File implements Driver
      */
     private $strategies = array(
         'nested',
-        'closure'
+        'closure',
+        'materializedPath'
     );
 
     /**
@@ -94,6 +121,16 @@ class Yaml extends File implements Driver
                             throw new InvalidMappingException("Tree root field - [{$field}] type is not valid in class - {$meta->name}");
                         }
                         $config['root'] = $field;
+                    } elseif (in_array('treePath', $fieldMapping['gedmo'])) {
+                        if (!$this->isValidFieldForPath($meta, $field)) {
+                            throw new InvalidMappingException("Tree Path field - [{$field}] type is not valid. It must be string or text in class - {$meta->name}");
+                        }
+                        $config['path'] = $field;
+                    } elseif (in_array('treePathSource', $fieldMapping['gedmo'])) {
+                        if (!$this->isValidFieldForPathSource($meta, $field)) {
+                            throw new InvalidMappingException("Tree PathSource field - [{$field}] type is not valid. It can be any of the integer variants, double, float or string in class - {$meta->name}");
+                        }
+                        $config['path_source'] = $field;
                     }
                 }
             }
@@ -146,6 +183,32 @@ class Yaml extends File implements Driver
     }
 
     /**
+     * Checks if $field type is valid for Path field
+     *
+     * @param object $meta
+     * @param string $field
+     * @return boolean
+     */
+    protected function isValidFieldForPath($meta, $field)
+    {
+        $mapping = $meta->getFieldMapping($field);
+        return $mapping && in_array($mapping['type'], $this->validPathTypes);
+    }
+
+    /**
+     * Checks if $field type is valid for PathSource field
+     *
+     * @param object $meta
+     * @param string $field
+     * @return boolean
+     */
+    protected function isValidFieldForPathSource($meta, $field)
+    {
+        $mapping = $meta->getFieldMapping($field);
+        return $mapping && in_array($mapping['type'], $this->validPathSourceTypes);
+    }
+
+    /**
      * Validates metadata for nested type tree
      *
      * @param object $meta
@@ -186,6 +249,31 @@ class Yaml extends File implements Driver
         }
         if (!isset($config['closure'])) {
             $missingFields[] = 'closure class';
+        }
+        if ($missingFields) {
+            throw new InvalidMappingException("Missing properties: " . implode(', ', $missingFields) . " in class - {$meta->name}");
+        }
+    }
+
+    /**
+     * Validates metadata for materialized path type tree
+     *
+     * @param object $meta
+     * @param array $config
+     * @throws InvalidMappingException
+     * @return void
+     */
+    private function validateMaterializedPathTreeMetadata($meta, array $config)
+    {
+        $missingFields = array();
+        if (!isset($config['parent'])) {
+            $missingFields[] = 'ancestor';
+        }
+        if (!isset($config['path'])) {
+            $missingFields[] = 'path';
+        }
+        if (!isset($config['path_source'])) {
+            $missingFields[] = 'path_source';
         }
         if ($missingFields) {
             throw new InvalidMappingException("Missing properties: " . implode(', ', $missingFields) . " in class - {$meta->name}");

@@ -15,6 +15,11 @@ interface Strategy
     const CLOSURE = 'closure';
 
     /**
+     * Materialized Path strategy
+     */
+    const MATERIALIZED_PATH = 'materializedPath';
+
+    /**
      * Get the name of strategy
      *
      * @return string
@@ -51,9 +56,10 @@ interface Strategy
      *
      * @param object $om - object manager
      * @param object $object - node
+     * @param object $ea - event adapter
      * @return void
      */
-    function processScheduledUpdate($om, $object);
+    function processScheduledUpdate($om, $object, $ea);
 
     /**
      * Operations on tree node delete
@@ -87,9 +93,10 @@ interface Strategy
      *
      * @param object $om - object manager
      * @param object $object - node
+     * @param object $ea - event adapter
      * @return void
      */
-    function processPostPersist($om, $object);
+    function processPostPersist($om, $object, $ea);
 
     /**
      * Operations on the end of flush process

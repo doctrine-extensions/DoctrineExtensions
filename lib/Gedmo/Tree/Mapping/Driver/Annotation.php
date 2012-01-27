@@ -55,6 +55,16 @@ class Annotation implements AnnotationDriverInterface
     const CLOSURE = 'Gedmo\\Mapping\\Annotation\\TreeClosure';
 
     /**
+     * Annotation to specify path class
+     */
+    const PATH = 'Gedmo\\Mapping\\Annotation\\TreePath';
+
+    /**
+     * Annotation to specify path source class
+     */
+    const PATH_SOURCE = 'Gedmo\\Mapping\\Annotation\\TreePathSource';
+
+    /**
      * List of types which are valid for tree fields
      *
      * @var array
@@ -62,7 +72,33 @@ class Annotation implements AnnotationDriverInterface
     private $validTypes = array(
         'integer',
         'smallint',
-        'bigint'
+        'bigint',
+        'int'
+    );
+
+    /**
+     * List of types which are valid for the path (materialized path strategy)
+     *
+     * @var array
+     */
+    private $validPathTypes = array(
+        'string',
+        'text'
+    );
+
+    /**
+     * List of types which are valid for the path source (materialized path strategy)
+     *
+     * @var array
+     */
+    private $validPathSourceTypes = array(
+        'id',
+        'integer',
+        'smallint',
+        'bigint',
+        'string',
+        'int',
+        'float'
     );
 
     /**
@@ -72,7 +108,8 @@ class Annotation implements AnnotationDriverInterface
      */
     private $strategies = array(
         'nested',
-        'closure'
+        'closure',
+        'materializedPath'
     );
 
     /**
@@ -181,6 +218,28 @@ class Annotation implements AnnotationDriverInterface
                 }
                 $config['level'] = $field;
             }
+            // path
+            if ($this->reader->getPropertyAnnotation($property, self::PATH)) {
+                $field = $property->getName();
+                if (!$meta->hasField($field)) {
+                    throw new InvalidMappingException("Unable to find 'path' - [{$field}] as mapped property in entity - {$meta->name}");
+                }
+                if (!$this->isValidFieldForPath($meta, $field)) {
+                    throw new InvalidMappingException("Tree Path field - [{$field}] type is not valid. It must be string or text in class - {$meta->name}");
+                }
+                $config['path'] = $field;
+            }
+            // path source
+            if ($this->reader->getPropertyAnnotation($property, self::PATH_SOURCE)) {
+                $field = $property->getName();
+                if (!$meta->hasField($field)) {
+                    throw new InvalidMappingException("Unable to find 'path_source' - [{$field}] as mapped property in entity - {$meta->name}");
+                }
+                if (!$this->isValidFieldForPathSource($meta, $field)) {
+                    throw new InvalidMappingException("Tree PathSource field - [{$field}] type is not valid. It can be any of the integer variants, double, float or string in class - {$meta->name}");
+                }
+                $config['path_source'] = $field;
+            }
         }
 
         if (!$meta->isMappedSuperclass && $config) {
@@ -207,6 +266,32 @@ class Annotation implements AnnotationDriverInterface
     {
         $mapping = $meta->getFieldMapping($field);
         return $mapping && in_array($mapping['type'], $this->validTypes);
+    }
+
+    /**
+     * Checks if $field type is valid for Path field
+     *
+     * @param object $meta
+     * @param string $field
+     * @return boolean
+     */
+    protected function isValidFieldForPath($meta, $field)
+    {
+        $mapping = $meta->getFieldMapping($field);
+        return $mapping && in_array($mapping['type'], $this->validPathTypes);
+    }
+
+    /**
+     * Checks if $field type is valid for PathSource field
+     *
+     * @param object $meta
+     * @param string $field
+     * @return boolean
+     */
+    protected function isValidFieldForPathSource($meta, $field)
+    {
+        $mapping = $meta->getFieldMapping($field);
+        return $mapping && in_array($mapping['type'], $this->validPathSourceTypes);
     }
 
     /**
@@ -250,6 +335,31 @@ class Annotation implements AnnotationDriverInterface
         }
         if (!isset($config['closure'])) {
             $missingFields[] = 'closure class';
+        }
+        if ($missingFields) {
+            throw new InvalidMappingException("Missing properties: " . implode(', ', $missingFields) . " in class - {$meta->name}");
+        }
+    }
+
+    /**
+     * Validates metadata for materialized path type tree
+     *
+     * @param object $meta
+     * @param array $config
+     * @throws InvalidMappingException
+     * @return void
+     */
+    private function validateMaterializedPathTreeMetadata($meta, array $config)
+    {
+        $missingFields = array();
+        if (!isset($config['parent'])) {
+            $missingFields[] = 'ancestor';
+        }
+        if (!isset($config['path'])) {
+            $missingFields[] = 'path';
+        }
+        if (!isset($config['path_source'])) {
+            $missingFields[] = 'path_source';
         }
         if ($missingFields) {
             throw new InvalidMappingException("Missing properties: " . implode(', ', $missingFields) . " in class - {$meta->name}");

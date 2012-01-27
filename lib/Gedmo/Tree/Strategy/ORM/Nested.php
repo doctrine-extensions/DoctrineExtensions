@@ -146,7 +146,7 @@ class Nested implements Strategy
     /**
      * {@inheritdoc}
      */
-    public function processScheduledUpdate($em, $node)
+    public function processScheduledUpdate($em, $node, $ea)
     {
         $meta = $em->getClassMetadata(get_class($node));
         $config = $this->listener->getConfiguration($em, $meta->name);
@@ -182,7 +182,7 @@ class Nested implements Strategy
     /**
      * {@inheritdoc}
      */
-    public function processPostPersist($em, $node)
+    public function processPostPersist($em, $node, $ea)
     {
         $meta = $em->getClassMetadata(get_class($node));
         $config = $this->listener->getConfiguration($em, $meta->name);

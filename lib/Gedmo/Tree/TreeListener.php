@@ -4,7 +4,8 @@ namespace Gedmo\Tree;
 
 use Doctrine\Common\EventArgs,
     Gedmo\Mapping\MappedEventSubscriber,
-    Doctrine\Common\Persistence\ObjectManager;
+    Doctrine\Common\Persistence\ObjectManager,
+    Gedmo\Mapping\Event\AdapterInterface;
 
 /**
  * The tree listener handles the synchronization of
@@ -70,7 +71,14 @@ class TreeListener extends MappedEventSubscriber
                 $managerName = 'ODM';
             }
             if (!isset($this->strategyInstances[$config['strategy']])) {
-                $strategyClass = $this->getNamespace().'\\Strategy\\'.$managerName.'\\'.ucfirst($config['strategy']);
+                $strategyClass = $this->getNamespace().'\\Strategy\\'.$managerName;
+
+                if ($managerName === 'ODM') {
+                    $strategyClass .= '\\MongoDB';
+                }
+
+                $strategyClass .= '\\'.ucfirst($config['strategy']);
+                
                 if (!class_exists($strategyClass)) {
                     throw new \Gedmo\Exception\InvalidArgumentException($managerName." TreeListener does not support tree type: {$config['strategy']}");
                 }
@@ -101,7 +109,7 @@ class TreeListener extends MappedEventSubscriber
             if ($config = $this->getConfiguration($om, $meta->name)) {
                 $usedClasses[$meta->name] = null;
                 $this->getStrategy($om, $meta->name)->processScheduledInsertion($om, $object);
-                $uow->recomputeSingleEntityChangeSet($meta, $object);
+                $ea->recomputeSingleObjectChangeSet($uow, $meta, $object);
             }
         }
 
@@ -109,7 +117,7 @@ class TreeListener extends MappedEventSubscriber
             $meta = $om->getClassMetadata(get_class($object));
             if ($config = $this->getConfiguration($om, $meta->name)) {
                 $usedClasses[$meta->name] = null;
-                $this->getStrategy($om, $meta->name)->processScheduledUpdate($om, $object);
+                $this->getStrategy($om, $meta->name)->processScheduledUpdate($om, $object, $ea);
             }
         }
 
@@ -177,7 +185,7 @@ class TreeListener extends MappedEventSubscriber
         $meta = $om->getClassMetadata(get_class($object));
 
         if ($this->getConfiguration($om, $meta->name)) {
-            $this->getStrategy($om, $meta->name)->processPostPersist($om, $object);
+            $this->getStrategy($om, $meta->name)->processPostPersist($om, $object, $ea);
         }
     }
 

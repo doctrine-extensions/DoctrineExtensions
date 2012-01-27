@@ -186,7 +186,7 @@ class Closure implements Strategy
     /**
      * {@inheritdoc}
      */
-    public function processPostPersist($em, $entity)
+    public function processPostPersist($em, $entity, $ea)
     {
         $uow = $em->getUnitOfWork();
 
@@ -241,7 +241,7 @@ class Closure implements Strategy
     /**
      * {@inheritdoc}
      */
-    public function processScheduledUpdate($em, $node)
+    public function processScheduledUpdate($em, $node, $ea)
     {
         $meta = $em->getClassMetadata(get_class($node));
         $config = $this->listener->getConfiguration($em, $meta->name);
