@@ -219,7 +219,7 @@ class Annotation implements AnnotationDriverInterface
                 $config['level'] = $field;
             }
             // path
-            if ($this->reader->getPropertyAnnotation($property, self::PATH)) {
+            if ($pathAnnotation = $this->reader->getPropertyAnnotation($property, self::PATH)) {
                 $field = $property->getName();
                 if (!$meta->hasField($field)) {
                     throw new InvalidMappingException("Unable to find 'path' - [{$field}] as mapped property in entity - {$meta->name}");
@@ -227,7 +227,11 @@ class Annotation implements AnnotationDriverInterface
                 if (!$this->isValidFieldForPath($meta, $field)) {
                     throw new InvalidMappingException("Tree Path field - [{$field}] type is not valid. It must be string or text in class - {$meta->name}");
                 }
+                if (strlen($pathAnnotation->separator) > 1) {
+                    throw new InvalidMappingException("Tree Path field - [{$field}] Separator {$pathAnnotation->separator} is invalid. It must be only one character long.");
+                }
                 $config['path'] = $field;
+                $config['path_separator'] = $pathAnnotation->separator;
             }
             // path source
             if ($this->reader->getPropertyAnnotation($property, self::PATH_SOURCE)) {

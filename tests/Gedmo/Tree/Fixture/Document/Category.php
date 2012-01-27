@@ -24,7 +24,7 @@ class Category
 
     /**
      * @MONGO\Field(type="string")
-     * @Gedmo\TreePath
+     * @Gedmo\TreePath(separator="|")
      */
     private $path;
 

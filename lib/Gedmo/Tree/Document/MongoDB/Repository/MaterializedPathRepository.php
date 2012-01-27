@@ -29,7 +29,7 @@ class MaterializedPathRepository extends AbstractTreeRepository
     {
         $meta = $this->getClassMetadata();
         $config = $this->listener->getConfiguration($this->dm, $meta->name);
-        $separator = preg_quote(MaterializedPath::PATH_SEPARATOR);
+        $separator = preg_quote($config['path_separator']);
         
         return $this->dm->createQueryBuilder()
             ->find($meta->name)

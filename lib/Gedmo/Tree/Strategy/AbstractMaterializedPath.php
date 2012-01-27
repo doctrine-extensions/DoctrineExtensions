@@ -23,11 +23,6 @@ use Doctrine\Common\Persistence\ObjectManager;
 abstract class AbstractMaterializedPath implements Strategy
 {
     /**
-     * Path separator
-     */
-    const PATH_SEPARATOR = ',';
-
-    /**
      * TreeListener
      *
      * @var AbstractTreeListener
@@ -148,7 +143,7 @@ abstract class AbstractMaterializedPath implements Strategy
         $pathProp->setAccessible(true);
         $pathSourceProp = $meta->getReflectionProperty($config['path_source']);
         $pathSourceProp->setAccessible(true);
-        $path = $pathSourceProp->getValue($node).self::PATH_SEPARATOR;
+        $path = $pathSourceProp->getValue($node).$config['path_separator'];
 
         if ($parent) {
             $changeSet = $uow->isScheduledForUpdate($parent) ? $ea->getObjectChangeSet($uow, $parent) : false;

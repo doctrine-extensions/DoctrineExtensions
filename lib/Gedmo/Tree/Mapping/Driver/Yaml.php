@@ -125,7 +125,12 @@ class Yaml extends File implements Driver
                         if (!$this->isValidFieldForPath($meta, $field)) {
                             throw new InvalidMappingException("Tree Path field - [{$field}] type is not valid. It must be string or text in class - {$meta->name}");
                         }
+                        $separator = $fieldMapping['gedmo']['treePath']['separator'];
+                        if (strlen($separator) > 1) {
+                            throw new InvalidMappingException("Tree Path field - [{$field}] Separator {$separator} is invalid. It must be only one character long.");
+                        }
                         $config['path'] = $field;
+                        $config['path_separator'] = $separator;
                     } elseif (in_array('treePathSource', $fieldMapping['gedmo'])) {
                         if (!$this->isValidFieldForPathSource($meta, $field)) {
                             throw new InvalidMappingException("Tree PathSource field - [{$field}] type is not valid. It can be any of the integer variants, double, float or string in class - {$meta->name}");

@@ -19,6 +19,6 @@ use Doctrine\Common\Annotations\Annotation;
  */
 final class TreePath extends Annotation
 {
-
+    public $separator = ',';
 }
 

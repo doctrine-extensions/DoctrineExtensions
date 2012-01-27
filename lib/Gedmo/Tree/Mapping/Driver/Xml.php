@@ -126,7 +126,15 @@ class Xml extends BaseXml
                     if (!$this->isValidFieldForPath($meta, $field)) {
                         throw new InvalidMappingException("Tree Path field - [{$field}] type is not valid. It must be string or text in class - {$meta->name}");
                     }
+
+                    $separator = $this->_getAttribute($mapping->{'tree-path'}, 'separator');
+
+                    if (strlen($separator) > 1) {
+                        throw new InvalidMappingException("Tree Path field - [{$field}] Separator {$separator} is invalid. It must be only one character long.");
+                    }
+
                     $config['path'] = $field;
+                    $config['path_separator'] = $separator;
                 } elseif (isset($mapping->{'tree-path-source'})) {
                     if (!$this->isValidFieldForPathSource($meta, $field)) {
                         throw new InvalidMappingException("Tree PathSource field - [{$field}] type is not valid. It can be any of the integer variants, double, float or string in class - {$meta->name}");
