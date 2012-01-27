@@ -100,6 +100,7 @@ class MaterializedPathODMMongoDBTest extends BaseTestCaseMongoODM
         $this->dm->flush();
 
         $result = $this->dm->createQueryBuilder()->find(self::CATEGORY)->getQuery()->execute();
+        
         $firstResult = $result->getNext();
 
         $this->assertEquals(1, $result->count());

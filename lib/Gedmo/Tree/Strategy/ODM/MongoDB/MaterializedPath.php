@@ -17,13 +17,7 @@ use Gedmo\Tree\Strategy\AbstractMaterializedPath;
 class MaterializedPath extends AbstractMaterializedPath
 {
     /**
-     * Remove node and its children
-     *
-     * @param ObjectManager $om
-     * @param object $meta - Metadata
-     * @param object $config - config
-     * @param object $node - node to remove
-     * @return void
+     * {@inheritdoc}
      */
     public function removeNode($om, $meta, $config, $node)
     {
@@ -39,19 +33,13 @@ class MaterializedPath extends AbstractMaterializedPath
     }
 
     /**
-     * Returns children of the node with its original path
-     *
-     * @param ObjectManager $om
-     * @param object $meta - Metadata
-     * @param object $config - config
-     * @param mixed $originalPath - original path of object
-     * @return void
+     * {@inheritdoc}
      */
     public function getChildren($om, $meta, $config, $originalPath)
     {
         return $om->createQueryBuilder()
             ->find($meta->name)
-            ->field($config['path'])->equals(new \MongoRegex('/^'.$originalPath.'.+/'))
+            ->field($config['path'])->equals(new \MongoRegex('/^'.preg_quote($originalPath).'.+/'))
             ->sort($config['path'], 'asc')      // This may save some calls to updateNode
             ->getQuery()
             ->execute();

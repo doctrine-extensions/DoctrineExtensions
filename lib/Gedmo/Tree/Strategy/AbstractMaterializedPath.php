@@ -197,7 +197,7 @@ abstract class AbstractMaterializedPath implements Strategy
      * @param ObjectManager $om
      * @param object $node - target node
      * @param object $ea - event adapter
-     * @param mixed $originalPath - original path of object
+     * @param string $originalPath - original path of object
      * @return void
      */
     public function updateNodesChildren(ObjectManager $om, $node, $ea, $originalPath)
@@ -210,4 +210,26 @@ abstract class AbstractMaterializedPath implements Strategy
             $this->updateNode($om, $child, $ea);
         }
     }
+
+    /**
+     * Remove node and its children
+     *
+     * @param ObjectManager $om
+     * @param object $meta - Metadata
+     * @param object $config - config
+     * @param object $node - node to remove
+     * @return void
+     */
+    abstract public function removeNode($om, $meta, $config, $node);
+
+    /**
+     * Returns children of the node with its original path
+     *
+     * @param ObjectManager $om
+     * @param object $meta - Metadata
+     * @param object $config - config
+     * @param mixed $originalPath - original path of object
+     * @return Doctrine\ODM\MongoDB\Cursor
+     */
+    abstract public function getChildren($om, $meta, $config, $originalPath);
 }
