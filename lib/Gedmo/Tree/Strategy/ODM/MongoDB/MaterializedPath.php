@@ -21,15 +21,20 @@ class MaterializedPath extends AbstractMaterializedPath
      */
     public function removeNode($om, $meta, $config, $node)
     {
+        $uow = $om->getUnitOfWork();
         $pathProp = $meta->getReflectionProperty($config['path']);
         $pathProp->setAccessible(true);
 
-        // Remove node and its children
-        $om->createQueryBuilder()
-            ->remove($meta->name)
+        // Remove node's children
+        $results = $om->createQueryBuilder()
+            ->find($meta->name)
             ->field($config['path'])->equals(new \MongoRegex('/^'.preg_quote($pathProp->getValue($node)).'.?+/'))
             ->getQuery()
             ->execute();
+        
+        foreach ($results as $node) {
+            $uow->scheduleForDelete($node);
+        }
     }
 
     /**
