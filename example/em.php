@@ -57,29 +57,22 @@ $config->setAutoGenerateProxyClasses(false);
 
 // standard annotation reader
 $annotationReader = new Doctrine\Common\Annotations\AnnotationReader;
-// gedmo annotation loader
-Doctrine\Common\Annotations\AnnotationRegistry::registerAutoloadNamespace(
-    'Gedmo\Mapping\Annotation',
-    $gedmoPath
-);
 // standard doctrine annotations
 Doctrine\Common\Annotations\AnnotationRegistry::registerFile(
     $vendorPath.'/doctrine-orm/lib/Doctrine/ORM/Mapping/Driver/DoctrineAnnotations.php'
 );
 // register annotation driver
 $driverChain = new Doctrine\ORM\Mapping\Driver\DriverChain();
+// load superclass extension metadata mapping into driver chain also registers annotation autoload
+Gedmo\DoctrineExtensions::registerAbstractMappingIntoDriverChainORM($driverChain);
+
+// personal annotation reader for Entity namespace
 $annotationDriver = new Doctrine\ORM\Mapping\Driver\AnnotationDriver($annotationReader, array(
     __DIR__.'/app/Entity', // example entity
-    $gedmoPath.'/Gedmo/Translatable/Entity',
-    $gedmoPath.'/Gedmo/Loggable/Entity',
-    $gedmoPath.'/Gedmo/Tree/Entity',
 ));
 
-// drivers for diferent namespaces
+// register our Entity driver
 $driverChain->addDriver($annotationDriver, 'Entity');
-$driverChain->addDriver($annotationDriver, 'Gedmo\Translatable\Entity');
-$driverChain->addDriver($annotationDriver, 'Gedmo\Loggable\Entity');
-$driverChain->addDriver($annotationDriver, 'Gedmo\Tree\Entity');
 
 // register metadata driver
 $config->setMetadataDriverImpl($driverChain);
@@ -93,7 +86,7 @@ $evm->addEventSubscriber(new Gedmo\Sluggable\SluggableListener);
 $evm->addEventSubscriber(new Gedmo\Tree\TreeListener);
 $evm->addEventSubscriber(new Gedmo\Loggable\LoggableListener);
 $evm->addEventSubscriber(new Gedmo\Timestampable\TimestampableListener);
-$translatable = new Gedmo\Translatable\TranslationListener;
+$translatable = new Gedmo\Translatable\TranslatableListener;
 $translatable->setTranslatableLocale('en');
 $translatable->setDefaultLocale('en');
 $evm->addEventSubscriber($translatable);

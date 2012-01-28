@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @Gedmo\Tree(type="nested")
  * @ORM\Table(name="ext_categories")
  * @ORM\Entity(repositoryClass="Entity\Repository\CategoryRepository")
+ * @Gedmo\TranslationEntity(class="Entity\CategoryTranslation")
  */
 class Category
 {
@@ -21,16 +22,22 @@ class Category
 
     /**
      * @Gedmo\Translatable
+     * @ORM\Column(length=64)
+     */
+    private $title;
+
+    /**
+     * @Gedmo\Translatable
+     * @ORM\Column(type="text", nullable=true)
+     */
+    private $description;
+
+    /**
+     * @Gedmo\Translatable
      * @Gedmo\Slug(fields={"title"})
      * @ORM\Column(length=64, unique=true)
      */
     private $slug;
-
-    /**
-     * @Gedmo\Translatable
-     * @ORM\Column(length=64)
-     */
-    private $title;
 
     /**
      * @Gedmo\TreeLeft
@@ -69,12 +76,6 @@ class Category
     private $children;
 
     /**
-     * @Gedmo\Translatable
-     * @ORM\Column(type="text", nullable=true)
-     */
-    private $description;
-
-    /**
      * @Gedmo\Timestampable(on="create")
      * @ORM\Column(type="datetime")
      */
@@ -87,14 +88,31 @@ class Category
     private $updated;
 
     /**
-     * Used locale to override Translation listener`s locale
-     * @Gedmo\Locale
+     * @ORM\OneToMany(
+     *   targetEntity="CategoryTranslation",
+     *   mappedBy="object",
+     *   cascade={"persist", "remove"}
+     * )
      */
-    private $locale;
+    private $translations;
 
     public function __construct()
     {
-    	$this->children = new ArrayCollection();
+        $this->children = new ArrayCollection();
+        $this->translations = new ArrayCollection();
+    }
+
+    public function getTranslations()
+    {
+        return $this->translations;
+    }
+
+    public function addTranslation(CategoryTranslation $t)
+    {
+        if (!$this->translations->contains($t)) {
+            $this->translations[] = $t;
+            $t->setObject($this);
+        }
     }
 
     public function getSlug()
@@ -119,7 +137,7 @@ class Category
 
     public function setDescription($description)
     {
-        $this->description = strip_tags($description);
+        $this->description = $description;
     }
 
     public function getDescription()
@@ -170,11 +188,6 @@ class Category
     public function getUpdated()
     {
         return $this->updated;
-    }
-
-    public function setTranslatableLocale($locale)
-    {
-        $this->locale = $locale;
     }
 
     public function __toString()
