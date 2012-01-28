@@ -52,18 +52,15 @@ $loader->registerNamespaces(array(
 ));
 $loader->register();
 
-\Doctrine\Common\Annotations\AnnotationRegistry::registerFile(
+Doctrine\Common\Annotations\AnnotationRegistry::registerFile(
     VENDOR_PATH.'/doctrine-orm/lib/Doctrine/ORM/Mapping/Driver/DoctrineAnnotations.php'
 );
 
-\Doctrine\Common\Annotations\AnnotationRegistry::registerFile(
+Doctrine\Common\Annotations\AnnotationRegistry::registerFile(
     VENDOR_PATH.'/doctrine-mongodb-odm/lib/Doctrine/ODM/MongoDB/Mapping/Annotations/DoctrineAnnotations.php'
 );
 
-\Doctrine\Common\Annotations\AnnotationRegistry::registerAutoloadNamespace(
-    'Gedmo\\Mapping\\Annotation',
-    VENDOR_PATH.'/../lib'
-);
+Gedmo\DoctrineExtensions::registerAnnotations();
 
 $reader = new \Doctrine\Common\Annotations\AnnotationReader();
 $reader = new \Doctrine\Common\Annotations\CachedReader($reader, new \Doctrine\Common\Cache\ArrayCache());

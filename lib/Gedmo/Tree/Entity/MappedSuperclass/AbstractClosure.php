@@ -1,21 +1,18 @@
 <?php
 
-namespace Gedmo\Tree\Entity;
+namespace Gedmo\Tree\Entity\MappedSuperclass;
 
-use Doctrine\ORM\Mapping\Column;
-use Doctrine\ORM\Mapping\MappedSuperclass;
-use Doctrine\ORM\Mapping\Id;
-use Doctrine\ORM\Mapping\GeneratedValue;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @MappedSuperclass
+ * @ORM\MappedSuperclass
  */
 abstract class AbstractClosure
 {
     /**
-     * @Id
-     * @GeneratedValue
-     * @Column(type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue
+     * @ORM\Column(type="integer")
      */
     private $id;
 
@@ -32,7 +29,7 @@ abstract class AbstractClosure
     protected $descendant;
 
     /**
-     * @Column(type="integer")
+     * @ORM\Column(type="integer")
      */
     private $depth;
 

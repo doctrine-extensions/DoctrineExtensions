@@ -43,27 +43,6 @@ class TranslatableTest extends BaseTestCaseORM
         $this->populate();
     }
 
-    protected function getMetadataDriverImplementation()
-    {
-        $translatableRefl = new \ReflectionClass('Gedmo\Translatable\TranslatableListener');
-        $mapping = dirname($translatableRefl->getFileName()).'/Mapping/Metadata';
-
-        $annotationDriver = new AnnotationDriver($_ENV['annotation_reader']);
-        $xmlDriverSuperclass = new SimplifiedXmlDriver(array(
-            $mapping.'/abstract' => 'Gedmo\Translatable\Entity\MappedSuperclass'
-        ));
-        $xmlDriver = new SimplifiedXmlDriver(array(
-            $mapping.'/translation' => 'Gedmo\Translatable\Entity'
-        ));
-
-        $chain = new DriverChain;
-        $chain->addDriver($annotationDriver, 'Translatable\Fixture');
-        $chain->addDriver($xmlDriverSuperclass, 'Gedmo\Translatable\Entity\MappedSuperclass');
-        $chain->addDriver($xmlDriver, 'Gedmo\Translatable\Entity');
-
-        return $chain;
-    }
-
     public function testFixtureGeneratedTranslations()
     {
         $repo = $this->em->getRepository(self::TRANSLATION);
