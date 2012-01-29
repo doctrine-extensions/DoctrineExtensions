@@ -21,7 +21,7 @@ Update **2011-04-04**
 - Made single listener, one instance can be used for any object manager
 and any number of them
 
-**Note list:**
+**Note:**
 
 - You can [test live][blog_test] on this blog
 - Public [Timestampable repository](http://github.com/l3pp4rd/DoctrineExtensions "Timestampable extension on Github") is available on github
@@ -37,57 +37,23 @@ This article will cover the basic installation and functionality of **Timestampa
 Content:
 
 - [Including](#including-extension) the extension
-- [Attaching](#event-listener) the **Sluggable Listener**
-- Entity [example](#entity)
-- Document [example](#document)
-- [Yaml](#yaml) mapping example
-- [Xml](#xml) mapping example
+- Entity [example](#entity-mapping)
+- Document [example](#document-mapping)
+- [Yaml](#yaml-mapping) mapping example
+- [Xml](#xml-mapping) mapping example
 - Advanced usage [examples](#advanced-examples)
 
-## Setup and autoloading {#including-extension}
+<a name="including-extension"></a>
 
-If you using the source from github repository, initial directory structure for
-the extension library should look like this:
+## Setup and autoloading
 
-```
-...
-/DoctrineExtensions
-    /lib
-        /Gedmo
-            /Exception
-            /Mapping
-            /Sluggable
-            /Timestampable
-            /Translatable
-            /Tree
-    /tests
-        ...
-...
-```
+Read the [documentation](http://github.com/l3pp4rd/DoctrineExtensions/blob/master/doc/annotations.md#em-setup)
+or check the [example code](http://github.com/l3pp4rd/DoctrineExtensions/tree/master/example)
+on how to setup and use the extensions in most optimized way.
 
-First of all we need to setup the autoloading of extensions:
+<a name="entity-mapping"></a>
 
-``` php
-<?php
-$classLoader = new \Doctrine\Common\ClassLoader('Gedmo', "/path/to/library/DoctrineExtensions/lib");
-$classLoader->register();
-```
-
-### Attaching the Timestampable Listener to the event manager {#event-listener}
-
-To attach the **Timestampable Listener** to your event system:
-
-``` php
-<?php
-$evm = new \Doctrine\Common\EventManager();
-// ORM and ORM
-$timestampableListener = new \Gedmo\Timestampable\TimestampableListener();
-
-$evm->addEventSubscriber($timestampableListener);
-// now this event manager should be passed to entity manager constructor
-```
-
-## Timestampable Entity example: {#entity}
+## Timestampable Entity example:
 
 ### Timestampable annotations:
 - **@Gedmo\Mapping\Annotation\Timestampable** this annotation tells that this column is timestampable
@@ -168,7 +134,9 @@ class Article
 }
 ```
 
-## Timestampable Document example: {#document}
+<a name="document-mapping"></a>
+
+## Timestampable Document example:
 
 ``` php
 <?php
@@ -235,7 +203,9 @@ class Article
 
 Now on update and creation these annotated fields will be automatically updated
 
-## Yaml mapping example: {#yaml}
+<a name="yaml-mapping"></a>
+
+## Yaml mapping example:
 
 Yaml mapped Article: **/mapping/yaml/Entity.Article.dcm.yml**
 
@@ -265,7 +235,9 @@ Entity\Article:
           on: update
 ```
 
-## Xml mapping example {#xml}
+<a name="xml-mapping"></a>
+
+## Xml mapping example
 
 ``` xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -295,7 +267,9 @@ Entity\Article:
 </doctrine-mapping>
 ```
 
-## Advanced examples: {#advanced-examples}
+<a name="advanced-examples"></a>
+
+## Advanced examples:
 
 ### Using dependency of property changes
 

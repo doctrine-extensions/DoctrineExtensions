@@ -1,5 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit bootstrap="./bootstrap.php">
+<phpunit backupGlobals="false"
+         backupStaticAttributes="false"
+         colors="true"
+         convertErrorsToExceptions="true"
+         convertNoticesToExceptions="true"
+         convertWarningsToExceptions="true"
+         processIsolation="false"
+         stopOnFailure="false"
+         syntaxCheck="false"
+         bootstrap="./bootstrap.php"
+>
     <testsuites>
         <testsuite name="Translatable Extension">
             <directory suffix=".php">./Gedmo/Translatable/</directory>

@@ -24,35 +24,23 @@ Content:
 - [Including](#including-extension) the extension
 - [Creating](#create-extension) an extension
 - Defining [annotations](#annotations)
-- Creating [listener](#listener)
-- Attaching our [listener](#attach) to the event manager
-- [Entity](#entity) with some fields to encode
+- Creating [listener](#create-listener)
+- Attaching our [listener](#attach-listener) to the event manager
+- [Entity](#entity-mapping) with some fields to encode
 - Addapting listener to support [different](#different-managers) object managers
 - [Customizing](#event-adapter-customize) event adapter for specific functions
 
-## Setup and autoloading {#including-extension}
+<a name="including-extension"></a>
 
-If you using the source from github repository, initial directory structure for
-the extension library should look like this:
+## Setup and autoloading
 
-```
-...
-/DoctrineExtensions
-    /lib
-        /Gedmo
-            /Exception
-            /Loggable
-            /Mapping
-            /Sluggable
-            /Timestampable
-            /Translatable
-            /Tree
-    /tests
-        ...
-...
-```
+Read the [documentation](http://github.com/l3pp4rd/DoctrineExtensions/blob/master/doc/annotations.md#em-setup)
+or check the [example code](http://github.com/l3pp4rd/DoctrineExtensions/tree/master/example)
+on how to setup and use the extensions in most optimized way.
 
-## Tutorial on creation of mapped extension {#create-extension}
+<a name="create-extension"></a>
+
+## Tutorial on creation of mapped extension
 
 First, lets asume we will use **Extension** namespace for our additional
 extension library. You should create an **Extension** directory in your library
@@ -103,7 +91,9 @@ That is all we will need for now. As you may noticed we will create an encoding
 listener which could encode your fields by specified annotations. In real life it
 may not be useful since object will not know how to match the value.
 
-## Now lets define available annotations and setup drivers {#annotations}
+<a name="annotations"></a>
+
+## Now lets define available annotations and setup drivers
 
 Edit **Annotations.php** file:
 
@@ -176,6 +166,8 @@ class Annotation implements Driver
     }
 }
 ```
+
+<a name="create-listener"></a>
 
 ## Finally, lets create the listener
 
@@ -259,7 +251,9 @@ Our **Encoder** extension is ready, now if we want to test it, we need
 to attach our **EncoderListener** to the EventManager and create an entity
 with some fields to encode.
 
-### Attaching the EncoderListener {#attach}
+<a name="attach-listener"></a>
+
+### Attaching the EncoderListener
 
 ``` php
 <?php
@@ -269,7 +263,9 @@ $evm->addEventSubscriber($encoderListener);
 // now this event manager should be passed to entity manager constructor
 ```
 
-### Create an entity with some fields to encode {#entity}
+<a name="entity-mapping"></a>
+
+### Create an entity with some fields to encode
 
 ``` php
 <?php
@@ -327,7 +323,9 @@ class User
 
 If you will try to create a new **User** you will get encoded fields in database.
 
-## Adapting listener to support other object managers {#different-managers}
+<a name="different-managers"></a>
+
+## Adapting listener to support other object managers
 
 Now the event adapter comes into play, lets slightly modify our listener:
 
@@ -415,7 +413,9 @@ specific methods for each manager.
 
 Thats it, now it will work on ORM and ODM object managers.
 
-## Customizing event adapter for specific functions {#event-adapter-customize}
+<a name="event-adapter-customize"></a>
+
+## Customizing event adapter for specific functions
 
 In most cases event listener will need specific functionality which will differ
 for every object manager. For instance, a query to load users will differ. The

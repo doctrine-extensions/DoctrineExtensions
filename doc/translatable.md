@@ -73,7 +73,6 @@ This article will cover the basic installation and functionality of **Translatab
 Content:
 
 - [Including](#including-extension) the extension
-- [Attaching](#event-listener) the **Translatable Listener**
 - Entity [example](#entity-domain-object)
 - Document [example](#document-domain-object)
 - [Yaml](#yaml-mapping) mapping example
@@ -88,77 +87,9 @@ Content:
 
 ## Setup and autoloading
 
-If you using the source from github repository, initial directory structure for
-the extension library should look like this:
-
-```
-...
-/DoctrineExtensions
-    /lib
-        /Gedmo
-            /Exception
-            /Loggable
-            /Mapping
-            /Sluggable
-            /Timestampable
-            /Translatable
-            /Tree
-    /tests
-        ...
-...
-```
-
-First of all we need to setup the autoloading of extensions:
-
-``` php
-<?php
-$classLoader = new \Doctrine\Common\ClassLoader('Gedmo', "/path/to/library/DoctrineExtensions/lib");
-$classLoader->register();
-```
-
-This behavior requires an additional metadata path to be specified in order to have a translation
-table and translation Entity or Document available. To configure it correctly you need to add new annotation
-driver into driver chain with a specific location and namespace
-
-### Translation metadata Annotation driver mapped into driver chain:
-
-``` php
-<?php
-$chainDriverImpl = new \Doctrine\ORM\Mapping\Driver\DriverChain();
-$yourDefaultDriverImpl = new \Doctrine\ORM\Mapping\Driver\YamlDriver('/yml/mapping/files');
-$translatableDriverImpl = $doctrineOrmConfig->newDefaultAnnotationDriver(
-    '/path/to/library/DoctrineExtensions/lib/Gedmo/Translatable/Entity' // Document for ODM
-);
-$chainDriverImpl->addDriver($yourDefaultDriverImpl, 'Entity');
-$chainDriverImpl->addDriver($translatableDriverImpl, 'Gedmo\Translatable');
-$doctrineOrmConfig->setMetadataDriverImpl($chainDriverImpl);
-```
-
-**Note:** there can be many annotation drivers in driver chain
-
-**Note:** Translation Entity or Document is required for storing all translations.
-
-If you need a translation table per single Entity or Document, we will cover how to setup it later
-
-<a name="event-listener"></a>
-
-### Attaching the Translation Listener to the event manager
-
-To attach the **Translation Listener** to your event system and to set the translation locale
-to be used in global scope for all Entities or Documents:
-
-``` php
-<?php
-$evm = new \Doctrine\Common\EventManager();
-// ORM and ODM
-$translatableListener = new \Gedmo\Translatable\TranslationListener();
-
-$translatableListener->setTranslatableLocale('en_us');
-// in real world app the locale should be loaded from session, example:
-// Session::getInstance()->read('locale');
-$evm->addEventSubscriber($translatableListener);
-// now this event manager should be passed to entity manager constructor
-```
+Read the [documentation](http://github.com/l3pp4rd/DoctrineExtensions/blob/master/doc/annotations.md#em-setup)
+or check the [example code](http://github.com/l3pp4rd/DoctrineExtensions/tree/master/example)
+on how to setup and use the extensions in most optimized way.
 
 ### Translatable annotations:
 - **@Gedmo\Mapping\Annotation\Translatable** it will **translate** this field
@@ -853,6 +784,7 @@ class CategoryTranslation extends AbstractPersonalTranslation
 Some example code to persist with translations:
 
 ``` php
+<?php
 // assumes default locale is "en"
 $food = new Entity\Category;
 $food->setTitle('Food');

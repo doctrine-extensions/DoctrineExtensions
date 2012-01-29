@@ -8,27 +8,24 @@ on extensions, refer to their specific documentation.
 
 Content:
 
-- Best [practices](#setup) for setting up
-- [Tree](#tree)
-- [Translatable](#translatable)
-- [Sluggable](#sluggable)
-- [Timestampable](#timestampable)
-- [Loggable](#loggable)
+- Best [practices](#em-setup) for setting up
+- [Tree](#gedmo-tree)
+- [Translatable](#gedmo-translatable)
+- [Sluggable](#gedmo-sluggable)
+- [Timestampable](#gedmo-timestampable)
+- [Loggable](#gedmo-loggable)
 
-## New annotation mapping
+## Annotation mapping
 
-Recently there was an upgrade made for annotation reader in order to support
-more native way for annotation mapping in **common2.1.x** branch. Before that
-you had to make aliases for namespaces (like __gedmo:Translatable__), this strategy
-was limited and errors were not self explanatory. Now you have to add a **use** statement
-for each annotation you use in your mapping, see example bellow:
+Starting from **doctrine2.1.x** versions you have to import all used annotations
+by an **use** statement, see example bellow:
 
 ``` php
 namespace MyApp\Entity;
 
-use Gedmo\Mapping\Annotation as Gedmo; // this will be like an alias before
+use Gedmo\Mapping\Annotation as Gedmo; // this will be like an alias for Gedmo extensions annotations
 use Doctrine\ORM\Mapping\Id; // includes single annotation
-use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping as ORM; // alias for doctrine ORM annotations
 
 /**
  * @ORM\Entity
@@ -38,30 +35,31 @@ class Article
 {
     /**
      * @Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
+     * @Gedmo\Slug(fields={"title"}, updatable=false, separator="_")
+     * @ORM\Column(length=32, unique=true)
      */
     private $id;
     
     /**
      * @Gedmo\Translatable
-     * @Gedmo\Sluggable
      * @ORM\Column(length=64)
      */
     private $title;
     
     /**
-     * @Gedmo\Slug
-     * @ORM\Column(length=64, unique=true)
+     * @Gedmo\Timestampable(on="create")
+     * @ORM\Column(type="datetime")
      */
-    private $slug;
+    private $created;
 }
 ```
 
-**Note:** this new mapping applies only if you use **doctrine-common** library at version **2.1.x** or higher
+**Note:** this mapping applies only if you use **doctrine-common** library at version **2.1.x** or higher,
 extension library still supports old mapping styles if you manually set the mapping drivers
 
-## Best practices for setting up with annotations {#setup}
+<a name="em-setup"></a>
+
+## Best practices for setting up with annotations
 
 New annotation reader does not depend on any namespaces, for that reason you can use
 single reader instance for whole project. The example bellow shows how to setup the
@@ -70,59 +68,82 @@ mapping and listeners:
 **Note:** using this repository you can test and check the [example demo configuration](https://github.com/l3pp4rd/DoctrineExtensions/blob/master/example/em.php)
 
 ``` php
-$reader = new \Doctrine\Common\Annotations\AnnotationReader();
-$annotationDriver = new \Doctrine\ORM\Mapping\Driver\AnnotationDriver($reader);
-Doctrine\Common\Annotations\AnnotationRegistry::registerAutoloadNamespace(
-    'Gedmo\\Mapping\\Annotation',
-    'path/to/gedmo/extension/library'
+<?php
+// WARNING: setup, assumes that autoloaders are set
+
+// globally used cache driver, in production use APC or memcached
+$cache = new Doctrine\Common\Cache\ArrayCache;
+// standard annotation reader
+$annotationReader = new Doctrine\Common\Annotations\AnnotationReader;
+$cachedAnnotationReader = new Doctrine\Common\Annotations\CachedReader(
+    $annotationReader, // use reader
+    $cache // and a cache driver
+);
+// create a driver chain for metadata reading
+$driverChain = new Doctrine\ORM\Mapping\Driver\DriverChain();
+// load superclass metadata mapping only, into driver chain
+// also registers Gedmo annotations.NOTE: you can personalize it
+Gedmo\DoctrineExtensions::registerAbstractMappingIntoDriverChainORM(
+    $driverChain, // our metadata driver chain, to hook into
+    $cachedAnnotationReader // our cached annotation reader
 );
 
-$chain = new \Doctrine\ORM\Mapping\Driver\DriverChain;
-$annotationDriver = new Doctrine\ORM\Mapping\Driver\AnnotationDriver($annotationReader, array(
-    __DIR__.'/../your/application/source/Entity',
-    'path/to/gedmo/extension/library'.'/Gedmo/Translatable/Entity',
-    'path/to/gedmo/extension/library'.'/Gedmo/Loggable/Entity',
-    'path/to/gedmo/extension/library'.'/Gedmo/Tree/Entity',
-));
-// drivers
-$driverChain->addDriver($annotationDriver, 'Gedmo\\Translatable\\Entity');
-$driverChain->addDriver($annotationDriver, 'Gedmo\\Loggable\\Entity');
-$driverChain->addDriver($annotationDriver, 'Gedmo\\Tree\\Entity');
+// now we want to register our application entities,
+// for that we need another metadata driver used for Entity namespace
+$annotationDriver = new Doctrine\ORM\Mapping\Driver\AnnotationDriver(
+    $cachedAnnotationReader, // our cached annotation reader
+    array(__DIR__.'/app/Entity') // paths to look in
+);
+// NOTE: driver for application Entity can be different, Yaml, Xml or whatever
+// register annotation driver for our application Entity namespace
 $driverChain->addDriver($annotationDriver, 'Entity');
-$config->setMetadataDriverImpl($driverChain);
 
-$config = new \Doctrine\ORM\Configuration();
-$config->setMetadataDriverImpl($chain);
-$config->setProxyDir(/*location*/);
+// general ORM configuration
+$config = new Doctrine\ORM\Configuration;
+$config->setProxyDir(sys_get_temp_dir());
 $config->setProxyNamespace('Proxy');
-$config->setAutoGenerateProxyClasses(false);
+$config->setAutoGenerateProxyClasses(false); // this can be based on production config.
+// register metadata driver
+$config->setMetadataDriverImpl($driverChain);
+// use our allready initialized cache driver
+$config->setMetadataCacheImpl($cache);
+$config->setQueryCacheImpl($cache);
 
-$evm = new \Doctrine\Common\EventManager();
-
-$translatable = new \Gedmo\Translatable\TranslationListener();
-$translatable->setAnnotationReader($reader);
+// create event manager and hook prefered extension listeners
+$evm = new Doctrine\Common\EventManager();
+// gedmo extension listeners
+$evm->addEventSubscriber(new Gedmo\Sluggable\SluggableListener);
+$evm->addEventSubscriber(new Gedmo\Tree\TreeListener);
+$evm->addEventSubscriber(new Gedmo\Loggable\LoggableListener);
+$evm->addEventSubscriber(new Gedmo\Timestampable\TimestampableListener);
+$translatable = new Gedmo\Translatable\TranslatableListener;
+// current translation locale should be set from session or hook later into the listener
+// most important, before entity manager is flushed
+$translatable->setTranslatableLocale('en');
+$translatable->setDefaultLocale('en');
 $evm->addEventSubscriber($translatable);
 
-$tree = new \Gedmo\Tree\TreeListener;
-$tree->setAnnotationReader($reader);
-$evm->addEventSubscriber($tree);
-
-//...
-$conn = array(
+// mysql set names UTF-8 if required
+$evm->addEventSubscriber(new Doctrine\DBAL\Event\Listeners\MysqlSessionInit());
+// DBAL connection
+$connection = array(
     'driver' => 'pdo_mysql',
     'host' => '127.0.0.1',
     'dbname' => 'test',
     'user' => 'root',
     'password' => ''
 );
-$em = \Doctrine\ORM\EntityManager::create($conn, $config, $evm);
+// Finally, create entity manager
+$em = Doctrine\ORM\EntityManager::create($connection, $config, $evm);
 ```
 
 **Note:** that symfony2 StofDoctrineExtensionsBundle does it automatically this
 way you will maintain a single instance of annotation reader. It relates only
 to doctrine-common-2.1.x branch and newer.
 
-## Tree annotations {#tree}
+<a name="gedmo-tree"></a>
+
+## Tree annotations
 
 Tree can use diferent adapters. Currently **Tree** extension supports **NestedSet**
 and **Closure** strategies which has a difference for annotations used. Note, that 
@@ -263,7 +284,9 @@ example:
 class Category ...
 ```
 
-## Translatable annotations {#translatable}
+<a name="gedmo-translatable"></a>
+
+## Translatable annotations
 
 Translatable additionaly can have unmapped property, which would override the
 locale used by listener.
@@ -326,7 +349,9 @@ example:
 private $locale;
 ```
 
-## Sluggable annotations {#sluggable}
+<a name="gedmo-sluggable"></a>
+
+## Sluggable annotations
 
 Sluggable ensures unique slugs and correct length of the slug. It also uses utf8 to ascii
 table map to create correct ascii slugs.
@@ -418,7 +443,9 @@ if you used **RelativeSlugHandler** - relation object should use **InversedRelat
 private $slug;
 ```
 
-## Timestampable annotations {#timestampable}
+<a name="gedmo-timestampable"></a>
+
+## Timestampable annotations
 
 Timestampable will update date fields on create, update or property change. If you set/force
 date manualy it will not update it.
@@ -459,7 +486,9 @@ private $published;
 private $status;
 ```
 
-## Loggable annotations {#loggable}
+<a name="gedmo-loggable"></a>
+
+## Loggable annotations
 
 Loggable is used to log all actions made on annotated object class, it logs insert, update
 and remove actions for a username which currently is logged in for instance.
