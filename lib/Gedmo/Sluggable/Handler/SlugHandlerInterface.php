@@ -62,6 +62,13 @@ interface SlugHandlerInterface
      * @return void
      */
     function onSlugCompletion(SluggableAdapter $ea, array &$config, $object, &$slug);
+    
+    /**
+     * True if the handler also urlizes the slug on its own
+     * 
+     * @return boolean 
+     */
+    function handlesUrlization();
 
     /**
      * Validate handler options
