@@ -250,6 +250,7 @@ class SluggableListener extends MappedEventSubscriber
                     $this->transliterator,
                     array($slug, $options['separator'], $object)
                 );
+                $slug = Util\Urlizer::urlize($slug, $options['separator']);
                 // stylize the slug
                 switch ($options['style']) {
                     case 'camel':
