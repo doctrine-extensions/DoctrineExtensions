@@ -21,7 +21,7 @@ use Doctrine\Common\Persistence\ObjectManager;
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class SluggableListener extends MappedEventSubscriber 
+class SluggableListener extends MappedEventSubscriber
 {
 
     /**
@@ -60,7 +60,7 @@ class SluggableListener extends MappedEventSubscriber
      *
      * @return array
      */
-    public function getSubscribedEvents() 
+    public function getSubscribedEvents()
     {
         return array(
             'onFlush',
@@ -75,7 +75,7 @@ class SluggableListener extends MappedEventSubscriber
      *
      * @param mixed $callable
      */
-    public function setTransliterator($callable) 
+    public function setTransliterator($callable)
     {
         if (!is_callable($callable)) {
             throw new \Gedmo\Exception\InvalidArgumentException('Invalid transliterator callable parameter given');
@@ -88,7 +88,7 @@ class SluggableListener extends MappedEventSubscriber
      *
      * @return callable
      */
-    public function getTransliterator() 
+    public function getTransliterator()
     {
         return $this->transliterator;
     }
@@ -99,7 +99,7 @@ class SluggableListener extends MappedEventSubscriber
      * @param EventArgs $eventArgs
      * @return void
      */
-    public function loadClassMetadata(EventArgs $eventArgs) 
+    public function loadClassMetadata(EventArgs $eventArgs)
     {
         $ea = $this->getEventAdapter($eventArgs);
         $this->loadMetadataForObjectClass($ea->getObjectManager(), $eventArgs->getClassMetadata());
@@ -111,7 +111,7 @@ class SluggableListener extends MappedEventSubscriber
      * @param EventArgs $args
      * @return void
      */
-    public function prePersist(EventArgs $args) 
+    public function prePersist(EventArgs $args)
     {
         $ea = $this->getEventAdapter($args);
         $om = $ea->getObjectManager();
@@ -134,7 +134,7 @@ class SluggableListener extends MappedEventSubscriber
      * @param EventArgs $args
      * @return void
      */
-    public function onFlush(EventArgs $args) 
+    public function onFlush(EventArgs $args)
     {
         $ea = $this->getEventAdapter($args);
         $om = $ea->getObjectManager();
@@ -171,7 +171,7 @@ class SluggableListener extends MappedEventSubscriber
     /**
      * {@inheritDoc}
      */
-    protected function getNamespace() 
+    protected function getNamespace()
     {
         return __NAMESPACE__;
     }
@@ -182,7 +182,7 @@ class SluggableListener extends MappedEventSubscriber
      * @param string $class
      * @return Gedmo\Sluggable\Handler\SlugHandlerInterface
      */
-    private function getHandler($class) 
+    private function getHandler($class)
     {
         if (!isset($this->handlers[$class])) {
             $this->handlers[$class] = new $class($this);
@@ -199,7 +199,7 @@ class SluggableListener extends MappedEventSubscriber
      *      or invalid
      * @return void
      */
-    private function generateSlug(SluggableAdapter $ea, $object) 
+    private function generateSlug(SluggableAdapter $ea, $object)
     {
         $om = $ea->getObjectManager();
         $meta = $om->getClassMetadata(get_class($object));
@@ -252,7 +252,7 @@ class SluggableListener extends MappedEventSubscriber
 
                 // build the slug
                 $slug = call_user_func_array(
-                    $this->transliterator, 
+                    $this->transliterator,
                     array($slug, $options['separator'], $object)
                 );
                 if(!$urlized){
@@ -313,7 +313,7 @@ class SluggableListener extends MappedEventSubscriber
      * @param array $config[$slugField]
      * @return string - unique slug
      */
-    private function makeUniqueSlug(SluggableAdapter $ea, $object, $preferedSlug, $recursing = false, $config = array()) 
+    private function makeUniqueSlug(SluggableAdapter $ea, $object, $preferedSlug, $recursing = false, $config = array())
     {
         $om = $ea->getObjectManager();
         $meta = $om->getClassMetadata(get_class($object));
@@ -330,7 +330,7 @@ class SluggableListener extends MappedEventSubscriber
         if ($result) {
             $generatedSlug = $preferedSlug;
             $sameSlugs = array();
-            foreach ((array) $result as $list) {
+            foreach ((array)$result as $list) {
                 $sameSlugs[] = $list[$config['slug']];
             }
 
@@ -365,7 +365,7 @@ class SluggableListener extends MappedEventSubscriber
      * @param string $slugField
      * @return array
      */
-    private function getSimilarPersistedSlugs($class, $preferedSlug, $slugField) 
+    private function getSimilarPersistedSlugs($class, $preferedSlug, $slugField)
     {
         $result = array();
         if (isset($this->persistedSlugs[$class][$slugField])) {
@@ -386,7 +386,7 @@ class SluggableListener extends MappedEventSubscriber
      * @param array $config
      * @param string $prefered
      */
-    private function filterSimilarSlugs(array &$slugs, array &$config, $prefered) 
+    private function filterSimilarSlugs(array &$slugs, array &$config, $prefered)
     {
         foreach ($slugs as $key => $similar) {
             if (!preg_match("@{$prefered}($|{$config['separator']}[\d]+$)@smi", $similar[$config['slug']])) {
