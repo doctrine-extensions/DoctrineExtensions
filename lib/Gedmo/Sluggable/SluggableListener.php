@@ -224,8 +224,8 @@ class SluggableListener extends MappedEventSubscriber
             if ($hasHandlers) {
                 foreach ($options['handlers'] as $class => $handlerOptions) {
                     $this
-                            ->getHandler($class)
-                            ->onChangeDecision($ea, $options, $object, $slug, $needToChangeSlug)
+                        ->getHandler($class)
+                        ->onChangeDecision($ea, $options, $object, $slug, $needToChangeSlug)
                     ;
                 }
             }
@@ -241,8 +241,8 @@ class SluggableListener extends MappedEventSubscriber
                 if ($hasHandlers) {
                     foreach ($options['handlers'] as $class => $handlerOptions) {
                         $this
-                                ->getHandler($class)
-                                ->postSlugBuild($ea, $options, $object, $slug)
+                            ->getHandler($class)
+                            ->postSlugBuild($ea, $options, $object, $slug)
                         ;
                         if($this->getHandler($class)->handlesUrlization()){
                             $urlized = true;
