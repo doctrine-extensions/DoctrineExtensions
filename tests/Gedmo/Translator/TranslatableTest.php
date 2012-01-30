@@ -102,6 +102,9 @@ class TranslatableTest extends BaseTestCaseORM
 
     public function testTranslatableWithCustomProxy()
     {
+        if (\Doctrine\ORM\Version::compare('2.3.0-dev') <= 0) {
+            $this->markTestSkipped('Seems that orm strictly checks the class name in higher version');
+        }
         $person = new PersonCustom();
         $person->setName('Jen');
         $person->translate('ru_RU')->setName('Женя');
