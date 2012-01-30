@@ -7,6 +7,7 @@ use Gedmo\Sluggable\SluggableListener;
 use Gedmo\Sluggable\Mapping\Event\SluggableAdapter;
 use Gedmo\Tool\Wrapper\AbstractWrapper;
 use Gedmo\Exception\InvalidMappingException;
+use Gedmo\Sluggable\Util\Urlizer;
 
 /**
 * Sluggable handler which slugs all parent nodes
@@ -103,6 +104,14 @@ class TreeSlugHandler implements SlugHandlerInterface
             $this->parentSlug = $parent->getPropertyValue($config['slug']);
         }
     }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public function handlesUrlization()
+    {
+        return true;
+    }
 
     /**
      * {@inheritDoc}
@@ -164,6 +173,8 @@ class TreeSlugHandler implements SlugHandlerInterface
             $this->originalTransliterator,
             array($text, $separator, $object)
         );
+        // For tree slugs, we "urlize" each part of the slug before appending "/"
+        $slug = Urlizer::urlize($slug, $separator);
         if (strlen($this->parentSlug)) {
             $slug = $this->parentSlug . $this->usedPathSeparator . $slug;
         }
