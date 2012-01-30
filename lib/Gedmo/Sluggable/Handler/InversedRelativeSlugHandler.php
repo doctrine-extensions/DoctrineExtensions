@@ -75,7 +75,8 @@ class InversedRelativeSlugHandler implements SlugHandlerInterface
     /**
      * {@inheritDoc}
      */
-    public function handlesUrlization(){
+    public function handlesUrlization()
+    {
         return false;
     }
 
