@@ -23,6 +23,7 @@ use Doctrine\Common\Persistence\ObjectManager;
  */
 class SluggableListener extends MappedEventSubscriber
 {
+
     /**
      * The power exponent to jump
      * the slug unique number by tens.
@@ -236,12 +237,16 @@ class SluggableListener extends MappedEventSubscriber
                 }
 
                 // notify slug handlers --> postSlugBuild
+                $urlized = false;
                 if ($hasHandlers) {
                     foreach ($options['handlers'] as $class => $handlerOptions) {
                         $this
                             ->getHandler($class)
                             ->postSlugBuild($ea, $options, $object, $slug)
                         ;
+                        if($this->getHandler($class)->handlesUrlization()){
+                            $urlized = true;
+                        }
                     }
                 }
 
@@ -250,13 +255,15 @@ class SluggableListener extends MappedEventSubscriber
                     $this->transliterator,
                     array($slug, $options['separator'], $object)
                 );
-                $slug = Util\Urlizer::urlize($slug, $options['separator']);
+                if(!$urlized){
+                    $slug = Util\Urlizer::urlize($slug, $options['separator']);
+                }
                 // stylize the slug
                 switch ($options['style']) {
                     case 'camel':
                         $slug = preg_replace_callback(
-                            '@^[a-z]|' . $options['separator'] . '[a-z]@smi',
-                            create_function('$m', 'return strtoupper($m[0]);'),
+                            '@^[a-z]|' . $options['separator'] . '[a-z]@smi', 
+                            create_function('$m', 'return strtoupper($m[0]);'), 
                             $slug
                         );
                         break;
@@ -312,8 +319,8 @@ class SluggableListener extends MappedEventSubscriber
         $meta = $om->getClassMetadata(get_class($object));
         // load similar slugs
         $result = array_merge(
-            (array)$ea->getSimilarSlugs($object, $meta, $config, $preferedSlug),
-            (array)$this->getSimilarPersistedSlugs($config['useObjectClass'], $preferedSlug, $config['slug'])
+            (array) $ea->getSimilarSlugs($object, $meta, $config, $preferedSlug), 
+            (array) $this->getSimilarPersistedSlugs($config['useObjectClass'], $preferedSlug, $config['slug'])
         );
         // leave only right slugs
         if (!$recursing) {
@@ -335,8 +342,8 @@ class SluggableListener extends MappedEventSubscriber
             $mapping = $meta->getFieldMapping($config['slug']);
             if (isset($mapping['length']) && strlen($generatedSlug) > $mapping['length']) {
                 $generatedSlug = substr(
-                    $generatedSlug,
-                    0,
+                    $generatedSlug, 
+                    0, 
                     $mapping['length'] - (strlen($i) + strlen($config['separator']))
                 );
                 $this->exponent = strlen($i) - 1;
@@ -387,4 +394,5 @@ class SluggableListener extends MappedEventSubscriber
             }
         }
     }
+
 }

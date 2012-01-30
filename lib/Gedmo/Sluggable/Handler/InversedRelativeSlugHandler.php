@@ -71,6 +71,14 @@ class InversedRelativeSlugHandler implements SlugHandlerInterface
             throw new InvalidMappingException("'inverseSlugField' option must be specified for object slug mapping - {$meta->name}");
         }
     }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public function handlesUrlization()
+    {
+        return false;
+    }
 
     /**
      * {@inheritDoc}

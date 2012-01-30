@@ -7,6 +7,7 @@ use Gedmo\Sluggable\SluggableListener;
 use Gedmo\Sluggable\Mapping\Event\SluggableAdapter;
 use Gedmo\Tool\Wrapper\AbstractWrapper;
 use Gedmo\Exception\InvalidMappingException;
+use Gedmo\Sluggable\Util\Urlizer;
 
 /**
 * Sluggable handler which should be used in order to prefix
@@ -78,6 +79,14 @@ class RelativeSlugHandler implements SlugHandlerInterface
         }
         return $this->options[$meta->name];
     }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public function handlesUrlization()
+    {
+        return true;
+    }
 
     /**
      * {@inheritDoc}
@@ -138,6 +147,7 @@ class RelativeSlugHandler implements SlugHandlerInterface
             $this->originalTransliterator,
             array($text, $separator, $object)
         );
+        $result = Urlizer::urlize($result, $separator);
         $wrapped = AbstractWrapper::wrapp($object, $this->om);
         $relation = $wrapped->getPropertyValue($this->usedOptions['relationField']);
         if ($relation) {
