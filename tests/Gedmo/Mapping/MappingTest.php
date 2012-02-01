@@ -36,7 +36,7 @@ class MappingTest extends \PHPUnit_Framework_TestCase
         );
 
         $evm = new \Doctrine\Common\EventManager();
-        $evm->addEventSubscriber(new \Gedmo\Translatable\TranslationListener());
+        $evm->addEventSubscriber(new \Gedmo\Translatable\TranslatableListener());
         $this->timestampable = new \Gedmo\Timestampable\TimestampableListener();
         $evm->addEventSubscriber($this->timestampable);
         $evm->addEventSubscriber(new \Gedmo\Sluggable\SluggableListener());

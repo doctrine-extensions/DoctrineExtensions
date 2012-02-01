@@ -21,7 +21,7 @@ use Doctrine\ORM\Mapping\Entity;
  * )
  * @Entity(repositoryClass="Gedmo\Translatable\Entity\Repository\TranslationRepository")
  */
-class Translation extends AbstractTranslation
+class Translation extends MappedSuperclass\AbstractTranslation
 {
     /**
      * All required columns are mapped through inherited superclass

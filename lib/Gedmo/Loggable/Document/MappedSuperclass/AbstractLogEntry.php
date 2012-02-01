@@ -1,74 +1,72 @@
 <?php
 
-namespace Gedmo\Loggable\Entity;
+namespace Gedmo\Loggable\Document\MappedSuperclass;
 
-use Doctrine\ORM\Mapping\Column;
-use Doctrine\ORM\Mapping\MappedSuperclass;
-use Doctrine\ORM\Mapping\Id;
-use Doctrine\ORM\Mapping\GeneratedValue;
+use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoODM;
 
 /**
- * Gedmo\Loggable\Entity\AbstractLog
+ * Gedmo\Loggable\Document\MappedSuperclass\AbstractLogEntry
  *
- * @MappedSuperclass
+ * @MongoODM\MappedSuperclass
  */
 abstract class AbstractLogEntry
 {
     /**
      * @var integer $id
      *
-     * @Column(type="integer")
-     * @Id
-     * @GeneratedValue
+     * @MongoODM\Id
      */
     protected $id;
 
     /**
      * @var string $action
      *
-     * @Column(type="string", length=8)
+     * @MongoODM\String
      */
     protected $action;
 
     /**
-     * @var string $loggedAt
+     * @var datetime $loggedAt
      *
-     * @Column(name="logged_at", type="datetime")
+     * @MongoODM\Index
+     * @MongoODM\Date
      */
     protected $loggedAt;
 
     /**
      * @var string $objectId
      *
-     * @Column(name="object_id", length=32, nullable=true)
+     * @MongoODM\String(nullable=true)
      */
     protected $objectId;
 
     /**
      * @var string $objectClass
      *
-     * @Column(name="object_class", type="string", length=255)
+     * @MongoODM\Index
+     * @MongoODM\String
      */
     protected $objectClass;
 
     /**
      * @var integer $version
      *
-     * @Column(type="integer")
+     * @MongoODM\Int
      */
     protected $version;
 
     /**
      * @var text $data
      *
-     * @Column(type="array", nullable=true)
+     * @MongoODM\Hash(nullable=true)
      */
     protected $data;
 
     /**
-     * @var text $data
+     * @var string $data
      *
-     * @Column(length=255, nullable=true)
+     * @MongoODM\Index
+     * @MongoODM\String(nullable=true)
      */
     protected $username;
 
@@ -175,7 +173,7 @@ abstract class AbstractLogEntry
     /**
      * Get data
      *
-     * @return array
+     * @return array or null
      */
     public function getData()
     {

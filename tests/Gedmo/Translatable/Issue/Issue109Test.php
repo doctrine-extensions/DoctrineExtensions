@@ -25,17 +25,17 @@ class Issue109Test extends BaseTestCaseORM
 
     const TREE_WALKER_TRANSLATION = 'Gedmo\\Translatable\\Query\\TreeWalker\\TranslationWalker';
 
-    private $translationListener;
+    private $translatableListener;
 
     protected function setUp()
     {
         parent::setUp();
 
         $evm = new EventManager;
-        $this->translationListener = new TranslationListener();
-        $this->translationListener->setTranslatableLocale('en');
-        $this->translationListener->setDefaultLocale('en');
-        $evm->addEventSubscriber($this->translationListener);
+        $this->translatableListener = new TranslatableListener();
+        $this->translatableListener->setTranslatableLocale('en');
+        $this->translatableListener->setDefaultLocale('en');
+        $evm->addEventSubscriber($this->translatableListener);
 
         $this->getMockSqliteEntityManager($evm);
          $this->populate();
@@ -57,9 +57,9 @@ class Issue109Test extends BaseTestCaseORM
             ->setParameter('title', 'NA')
         ;
 
-        $this->translationListener->setTranslatableLocale('es');
-        $this->translationListener->setDefaultLocale('en');
-        $this->translationListener->setTranslationFallback(true);
+        $this->translatableListener->setTranslatableLocale('es');
+        $this->translatableListener->setDefaultLocale('en');
+        $this->translatableListener->setTranslationFallback(true);
         $query = $query->getQuery();
         $query->setHint(Query::HINT_CUSTOM_OUTPUT_WALKER, self::TREE_WALKER_TRANSLATION);
 
@@ -98,7 +98,7 @@ class Issue109Test extends BaseTestCaseORM
 
         $this->em->persist($out);
         $this->em->flush();
-        $this->translationListener->setTranslatableLocale('es');
+        $this->translatableListener->setTranslatableLocale('es');
 
         $text1->setTitle('texto1');
         $text0->setTitle('texto0');

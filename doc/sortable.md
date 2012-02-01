@@ -29,59 +29,23 @@ behavior
 Content:
 
 - [Including](#including-extension) the extension
-- [Attaching](#event-listener) the **Sortable Listener**
-- Entity [example](#entity)
-- [Yaml](#yaml) mapping example
-- [Xml](#xml) mapping example
+- Entity [example](#entity-mapping)
+- [Yaml](#yaml-mapping) mapping example
+- [Xml](#xml-mapping) mapping example
 - Basic usage [examples](#basic-examples)
 
 
-## Setup and autoloading {#including-extension}
+<a name="including-extension"></a>
 
-If you are using the source from github repository, initial directory structure for
-the extension library should look like this:
+## Setup and autoloading
 
-```
-...
-/DoctrineExtensions
-    /lib
-        /Gedmo
-            /Exception
-            /Loggable
-            /Mapping
-            /Sluggable
-            /Sortable
-            /Timestampable
-            /Translatable
-            /Tree
-    /tests
-        ...
-...
-```
+Read the [documentation](http://github.com/l3pp4rd/DoctrineExtensions/blob/master/doc/annotations.md#em-setup)
+or check the [example code](http://github.com/l3pp4rd/DoctrineExtensions/tree/master/example)
+on how to setup and use the extensions in most optimized way.
 
-First of all we need to setup the autoloading of extensions:
+<a name="entity-mapping"></a>
 
-``` php
-<?php
-$classLoader = new \Doctrine\Common\ClassLoader('Gedmo', "/path/to/library/DoctrineExtensions/lib");
-$classLoader->register();
-```
-
-### Attaching the Sortable Listener to the event manager {#event-listener}
-
-To attach the **Sortable Listener** to your event system:
-
-``` php
-<?php
-$evm = new \Doctrine\Common\EventManager();
-// ORM
-$sortableListener = new \Gedmo\Sortable\SortableListener();
-
-$evm->addEventSubscriber($sortableListener);
-// now this event manager should be passed to entity manager constructor
-```
-
-## Sortable Entity example: {#entity}
+## Sortable Entity example:
 
 ### Sortable annotations:
 
@@ -165,7 +129,9 @@ class Item
 }
 ```
 
-## Yaml mapping example {#yaml}
+<a name="yaml-mapping"></a>
+
+## Yaml mapping example
 
 Yaml mapped Item: **/mapping/yaml/Entity.Item.dcm.yml**
 
@@ -194,7 +160,9 @@ Entity\Item:
         - sortableGroup
 ```
 
-## Xml mapping example {#xml}
+<a name="xml-mapping"></a>
+
+## Xml mapping example
 
 ``` xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -218,7 +186,9 @@ Entity\Item:
 </doctrine-mapping>
 ```
 
-## Basic usage examples: {#basic-examples}
+<a name="basic-examples"></a>
+
+## Basic usage examples:
 
 ### To save **Items** at the end of the sorting list simply do:
 

@@ -32,11 +32,11 @@ Update **2010-12-23**
 - Full support for unique index on slug field,
 no more exceptions during concurrent flushes.
 
-**Notice:**
+**Note:**
 
 - You can [test live][blog_test] on this blog
 - Public [Sluggable repository](http://github.com/l3pp4rd/DoctrineExtensions "Sluggable extension on Github") is available on github
-- Last update date: **2012-01-02**
+- Last update date: **2012-01-29**
 
 **Portability:**
 
@@ -49,60 +49,25 @@ behavior
 Content:
     
 - [Including](#including-extension) the extension
-- [Attaching](#event-listener) the **Sluggable Listener**
-- Entity [example](#entity)
-- Document [example](#document)
-- [Yaml](#yaml) mapping example
-- [Xml](#xml) mapping example
+- Entity [example](#entity-mapping)
+- Document [example](#document-mapping)
+- [Yaml](#yaml-mapping) mapping example
+- [Xml](#xml-mapping) mapping example
 - Basic usage [examples](#basic-examples)
 - Advanced usage [examples](#advanced-examples)
 - Using [slug handlers](#slug-handlers)
 
-## Setup and autoloading {#including-extension}
+<a name="including-extension"></a>
 
-If you using the source from github repository, initial directory structure for
-the extension library should look like this:
+## Setup and autoloading
 
-```
-...
-/DoctrineExtensions
-    /lib
-        /Gedmo
-            /Exception
-            /Loggable
-            /Mapping
-            /Sluggable
-            /Timestampable
-            /Translatable
-            /Tree
-    /tests
-        ...
-...
-```
+Read the [documentation](http://github.com/l3pp4rd/DoctrineExtensions/blob/master/doc/annotations.md#em-setup)
+or check the [example code](http://github.com/l3pp4rd/DoctrineExtensions/tree/master/example)
+on how to setup and use the extensions in most optimized way.
 
-First of all we need to setup the autoloading of extensions:
+<a name="entity-mapping"></a>
 
-``` php
-<?php
-$classLoader = new \Doctrine\Common\ClassLoader('Gedmo', "/path/to/library/DoctrineExtensions/lib");
-$classLoader->register();
-```
-
-### Attaching the Sluggable Listener to the event manager {#event-listener}
-
-To attach the **Sluggable Listener** to your event system:
-
-``` php
-<?php
-$evm = new \Doctrine\Common\EventManager();
-// ORM and ODM
-$sluggableListener = new \Gedmo\Sluggable\SluggableListener();
-
-$evm->addEventSubscriber($sluggableListener);
-// now this event manager should be passed to entity manager constructor
-```
-
-## Sluggable Entity example: {#entity}
+## Sluggable Entity example:
 
 ### Sluggable annotations:
 
@@ -184,7 +149,9 @@ class Article
 }
 ```
 
-## Sluggable Document example: {#document}
+<a name="document-mapping"></a>
+
+## Sluggable Document example:
 
 ``` php
 <?php
@@ -251,7 +218,9 @@ class Article
 }
 ```
 
-## Yaml mapping example {#yaml}
+<a name="yaml-mapping"></a>
+
+## Yaml mapping example
 
 Yaml mapped Article: **/mapping/yaml/Entity.Article.dcm.yml**
 
@@ -287,7 +256,9 @@ Entity\Article:
       columns: slug
 ```
 
-## Xml mapping example {#xml}
+<a name="xml-mapping"></a>
+
+## Xml mapping example
 
 **Note:** xml driver is not yet adapted for single slug mapping
 
@@ -316,7 +287,9 @@ Entity\Article:
 </doctrine-mapping>
 ```
 
-## Basic usage examples: {#basic-examples}
+<a name="basic-examples"></a>
+
+## Basic usage examples:
 
 ### To save **Article** and generate slug simply use:
 
@@ -340,6 +313,8 @@ echo $article->getSlug();
 - **separator** (optional, default="-") - separator which will separate words in slug
 - **style** (optional, default="default") - **"default"** all letters will be lowercase, **"camel"** - first word letter will be uppercase
 - **handlers** (optional, default=[]) - list of slug handlers, like tree path slug, or customized, for example see bellow
+
+**Note**: handlers are totally optional
 
 **TreeSlugHandler**
 
@@ -434,7 +409,9 @@ echo $article->getSlug();
 // prints: The_Title_My_Code
 ```
 
-## Advanced examples: {#advanced-examples}
+<a name="advanced-examples"></a>
+
+## Advanced examples:
 
 ### Using TranslationListener to translate our slug
 
@@ -546,7 +523,9 @@ class Article
 
 Now the generated slug will be translated by Translatable behavior
 
-## Using slug handlers: {#slug-handlers}
+<a name="slug-handlers"></a>
+
+## Using slug handlers:
 
 There are built-in slug handlers like described in configuration options of slug, but there
 can be also customized slug handlers depending on use cases. Usually the most logic use case

@@ -2,7 +2,7 @@
 
 namespace Gedmo\Translatable\Document\Repository;
 
-use Gedmo\Translatable\TranslationListener;
+use Gedmo\Translatable\TranslatableListener;
 use Doctrine\ODM\MongoDB\DocumentRepository;
 use Doctrine\ODM\MongoDB\Cursor;
 use Gedmo\Tool\Wrapper\MongoDocumentWrapper;
@@ -22,10 +22,10 @@ use Doctrine\ODM\MongoDB\Mapping\Types\Type;
 class TranslationRepository extends DocumentRepository
 {
     /**
-     * Current TranslationListener instance used
+     * Current TranslatableListener instance used
      * in EntityManager
      *
-     * @var TranslationListener
+     * @var TranslatableListener
      */
     private $listener;
 
@@ -42,7 +42,7 @@ class TranslationRepository extends DocumentRepository
     public function translate($document, $field, $locale, $value)
     {
         $meta = $this->dm->getClassMetadata(get_class($document));
-        $listener = $this->getTranslationListener();
+        $listener = $this->getTranslatableListener();
         $config = $listener->getConfiguration($this->dm, $meta->name);
         if (!isset($config['fields']) || !in_array($field, $config['fields'])) {
             throw new \Gedmo\Exception\InvalidArgumentException("Document: {$meta->name} does not translate field - {$field}");
@@ -182,17 +182,17 @@ class TranslationRepository extends DocumentRepository
     }
 
     /**
-     * Get the currently used TranslationListener
+     * Get the currently used TranslatableListener
      *
      * @throws \Gedmo\Exception\RuntimeException - if listener is not found
-     * @return TranslationListener
+     * @return TranslatableListener
      */
-    private function getTranslationListener()
+    private function getTranslatableListener()
     {
         if (!$this->listener) {
             foreach ($this->dm->getEventManager()->getListeners() as $event => $listeners) {
                 foreach ($listeners as $hash => $listener) {
-                    if ($listener instanceof TranslationListener) {
+                    if ($listener instanceof TranslatableListener) {
                         $this->listener = $listener;
                         break;
                     }

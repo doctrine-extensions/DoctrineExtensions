@@ -7,7 +7,7 @@ use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\ORM\Mapping\Driver\DriverChain;
 use Doctrine\ORM\Mapping\Driver\XmlDriver;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
-use Gedmo\Translatable\TranslationListener;
+use Gedmo\Translatable\TranslatableListener;
 use Tool\BaseTestCaseOM;
 
 /**
@@ -26,7 +26,7 @@ class TranslatableMappingTest extends BaseTestCaseOM
     private $em;
 
     /**
-     * @var Gedmo\Translatable\TranslationListener
+     * @var Gedmo\Translatable\TranslatableListener
      */
     private $translatable;
 
@@ -43,7 +43,7 @@ class TranslatableMappingTest extends BaseTestCaseOM
         $chain->addDriver($annotationDriver, 'Gedmo\Translatable');
         $chain->addDriver($xmlDriver, 'Mapping\Fixture\Xml');
 
-        $this->translatable = new TranslationListener;
+        $this->translatable = new TranslatableListener;
         $this->evm = new EventManager;
         $this->evm->addEventSubscriber($this->translatable);
 

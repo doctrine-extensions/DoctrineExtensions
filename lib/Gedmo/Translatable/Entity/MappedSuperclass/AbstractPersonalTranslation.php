@@ -1,60 +1,49 @@
 <?php
 
-namespace Gedmo\Translatable\Entity;
+namespace Gedmo\Translatable\Entity\MappedSuperclass;
 
-use Doctrine\ORM\Mapping\Column;
-use Doctrine\ORM\Mapping\MappedSuperclass;
-use Doctrine\ORM\Mapping\Id;
-use Doctrine\ORM\Mapping\GeneratedValue;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Gedmo\Translatable\Entity\AbstractTranslation
+ * Gedmo\Translatable\Entity\MappedSuperclass\AbstractPersonalTranslation
  *
- * @MappedSuperclass
+ * @ORM\MappedSuperclass
  */
-abstract class AbstractTranslation
+abstract class AbstractPersonalTranslation
 {
     /**
      * @var integer $id
      *
-     * @Column(type="integer")
-     * @Id
-     * @GeneratedValue
+     * @ORM\Column(type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue
      */
     protected $id;
 
     /**
      * @var string $locale
      *
-     * @Column(type="string", length=8)
+     * @ORM\Column(type="string", length=8)
      */
     protected $locale;
 
     /**
-     * @var string $objectClass
-     *
-     * @Column(name="object_class", type="string", length=255)
-     */
-    protected $objectClass;
-
-    /**
      * @var string $field
      *
-     * @Column(type="string", length=32)
+     * @ORM\Column(type="string", length=32)
      */
     protected $field;
 
     /**
-     * @var string $foreignKey
-     *
-     * @Column(name="foreign_key", type="string", length=64)
+     * Related entity with ManyToOne relation
+     * must be mapped by user
      */
-    protected $foreignKey;
+    protected $object;
 
     /**
      * @var text $content
      *
-     * @Column(type="text", nullable=true)
+     * @ORM\Column(type="text", nullable=true)
      */
     protected $content;
 
@@ -113,53 +102,31 @@ abstract class AbstractTranslation
     }
 
     /**
-     * Set object class
+     * Set object related
      *
-     * @param string $objectClass
+     * @param string $object
      * @return AbstractTranslation
      */
-    public function setObjectClass($objectClass)
+    public function setObject($object)
     {
-        $this->objectClass = $objectClass;
+        $this->object = $object;
         return $this;
     }
 
     /**
-     * Get objectClass
+     * Get related object
      *
-     * @return string $objectClass
+     * @return object $object
      */
-    public function getObjectClass()
+    public function getObject()
     {
-        return $this->objectClass;
-    }
-
-    /**
-     * Set foreignKey
-     *
-     * @param string $foreignKey
-     * @return AbstractTranslation
-     */
-    public function setForeignKey($foreignKey)
-    {
-        $this->foreignKey = $foreignKey;
-        return $this;
-    }
-
-    /**
-     * Get foreignKey
-     *
-     * @return string $foreignKey
-     */
-    public function getForeignKey()
-    {
-        return $this->foreignKey;
+        return $this->object;
     }
 
     /**
      * Set content
      *
-     * @param text $content
+     * @param string $content
      * @return AbstractTranslation
      */
     public function setContent($content)
@@ -171,7 +138,7 @@ abstract class AbstractTranslation
     /**
      * Get content
      *
-     * @return text $content
+     * @return string $content
      */
     public function getContent()
     {

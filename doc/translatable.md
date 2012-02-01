@@ -17,6 +17,11 @@ Features:
 [blog_reference]: http://gediminasm.org/article/translatable-behavior-extension-for-doctrine-2 "Translatable extension for Doctrine 2 makes automatic record field translations and their loading depending on language used"
 [blog_test]: http://gediminasm.org/test "Test extensions on this blog"
 
+**2012-01-28**
+
+- Created personal translation which maps through real foreign key
+constraint. This dramatically improves the management of translations
+
 **2012-01-04**
 
 - Refactored translatable to be able to persist, update many translations
@@ -55,8 +60,8 @@ and any number of them
 - You can [test live][blog_test] on this blog 
 - Public [Translatable repository](http://github.com/l3pp4rd/DoctrineExtensions "Translatable extension on Github") is available on github
 - Using other extensions on the same Entity fields may result in unexpected way
-- May inpact your application performace since it does an additional query for translation
-- Last update date: **2012-01-02**
+- May inpact your application performace since it does an additional query for translation if loaded without query hint
+- Last update date: **2012-01-28**
 
 **Portability:**
 
@@ -68,87 +73,23 @@ This article will cover the basic installation and functionality of **Translatab
 Content:
 
 - [Including](#including-extension) the extension
-- [Attaching](#event-listener) the **Translation Listener**
-- Entity [example](#entity)
-- Document [example](#document)
-- [Yaml](#yaml) mapping example
-- [Xml](#xml) mapping example
+- Entity [example](#entity-domain-object)
+- Document [example](#document-domain-object)
+- [Yaml](#yaml-mapping) mapping example
+- [Xml](#xml-mapping) mapping example
 - Basic usage [examples](#basic-examples)
 - [Persisting](#multi-translations) multiple translations
 - Using ORM query [hint](#orm-query-hint)
 - Advanced usage [examples](#advanced-examples)
+- Personal [translations](#personal-translations)
 
-## Setup and autoloading {#including-extension}
+<a name="including-extension"></a>
 
-If you using the source from github repository, initial directory structure for
-the extension library should look like this:
+## Setup and autoloading
 
-```
-...
-/DoctrineExtensions
-    /lib
-        /Gedmo
-            /Exception
-            /Loggable
-            /Mapping
-            /Sluggable
-            /Timestampable
-            /Translatable
-            /Tree
-    /tests
-        ...
-...
-```
-
-First of all we need to setup the autoloading of extensions:
-
-``` php
-<?php
-$classLoader = new \Doctrine\Common\ClassLoader('Gedmo', "/path/to/library/DoctrineExtensions/lib");
-$classLoader->register();
-```
-
-This behavior requires an additional metadata path to be specified in order to have a translation
-table and translation Entity or Document available. To configure it correctly you need to add new annotation
-driver into driver chain with a specific location and namespace
-
-### Translation metadata Annotation driver mapped into driver chain:
-
-``` php
-<?php
-$chainDriverImpl = new \Doctrine\ORM\Mapping\Driver\DriverChain();
-$yourDefaultDriverImpl = new \Doctrine\ORM\Mapping\Driver\YamlDriver('/yml/mapping/files');
-$translatableDriverImpl = $doctrineOrmConfig->newDefaultAnnotationDriver(
-    '/path/to/library/DoctrineExtensions/lib/Gedmo/Translatable/Entity' // Document for ODM
-);
-$chainDriverImpl->addDriver($yourDefaultDriverImpl, 'Entity');
-$chainDriverImpl->addDriver($translatableDriverImpl, 'Gedmo\Translatable');
-$doctrineOrmConfig->setMetadataDriverImpl($chainDriverImpl);
-```
-
-**Note:** there can be many annotation drivers in driver chain
-
-**Note:** Translation Entity or Document is required for storing all translations.
-
-If you need a translation table per single Entity or Document, we will cover how to setup it later
-
-### Attaching the Translation Listener to the event manager {#event-listener}
-
-To attach the **Translation Listener** to your event system and to set the translation locale
-to be used in global scope for all Entities or Documents:
-
-``` php
-<?php
-$evm = new \Doctrine\Common\EventManager();
-// ORM and ODM
-$translatableListener = new \Gedmo\Translatable\TranslationListener();
-
-$translatableListener->setTranslatableLocale('en_us');
-// in real world app the locale should be loaded from session, example:
-// Session::getInstance()->read('locale');
-$evm->addEventSubscriber($translatableListener);
-// now this event manager should be passed to entity manager constructor
-```
+Read the [documentation](http://github.com/l3pp4rd/DoctrineExtensions/blob/master/doc/annotations.md#em-setup)
+or check the [example code](http://github.com/l3pp4rd/DoctrineExtensions/tree/master/example)
+on how to setup and use the extensions in most optimized way.
 
 ### Translatable annotations:
 - **@Gedmo\Mapping\Annotation\Translatable** it will **translate** this field
@@ -156,7 +97,9 @@ $evm->addEventSubscriber($translatableListener);
 - **@Gedmo\Mapping\Annotation\Locale or @Gedmo\Mapping\Annotation\Language** this will identify this column as **locale** or **language**
 used to override the global locale
 
-## Translatable Entity example: {#entity}
+<a name="entity-domain-object"></a>
+
+## Translatable Entity example:
 
 **Note:** that Translatable interface is not necessary, except in cases there
 you need to identify entity as being Translatable. The metadata is loaded only once then
@@ -169,6 +112,7 @@ namespace Entity;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Translatable\Translatable;
+
 /**
  * @ORM\Table(name="articles")
  * @ORM\Entity
@@ -229,7 +173,9 @@ class Article implements Translatable
 }
 ```
 
-## Translatable Document example: {#document}
+<a name="document-domain-object"></a>
+
+## Translatable Document example:
 
 ``` php
 <?php
@@ -238,6 +184,7 @@ namespace Document;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 use Gedmo\Translatable\Translatable;
+
 /**
  * @ODM\Document(collection="articles")
  */
@@ -297,7 +244,9 @@ class Article implements Translatable
 }
 ```
 
-## Yaml mapping example {#yaml}
+<a name="yaml-mapping"></a>
+
+## Yaml mapping example
 
 Yaml mapped Article: **/mapping/yaml/Entity.Article.dcm.yml**
 
@@ -328,7 +277,9 @@ Entity\Article:
         - translatable
 ```
 
-## Xml mapping example {#xml}
+<a name="xml-mapping"></a>
+
+## Xml mapping example
 
 ``` xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -354,6 +305,8 @@ Entity\Article:
 
 </doctrine-mapping>
 ```
+
+<a name="basic-examples"></a>
 
 ## Basic usage examples: {#basic-examples}
 
@@ -427,7 +380,9 @@ echo $article->getContent();
 // prints: "my content in en"
 ```
 
-## Persisting multiple translations {#multi-translations}
+<a name="multi-translations"></a>
+
+## Persisting multiple translations
 
 Usually it is more convinient to persist more translations when creating
 or updating a record. **Translatable** allows to do that through translation repository.
@@ -471,7 +426,9 @@ $repo
 $em->flush();
 ```
 
-## Using ORM query hint {#orm-query-hint}
+<a name="orm-query-hint"></a>
+
+## Using ORM query hint
 
 By default, behind the scenes, when you load a record - translatable hooks into **postLoad**
 event and issues additional query to translate all fields. Imagine that when you load a collection,
@@ -590,7 +547,9 @@ would override the translation locale used to translate the resultset.
 
 **Note:** all these query hints lasts only for the specific query.
 
-## Advanced examples: {#advanced-examples}
+<a name="advanced-examples"></a>
+
+## Advanced examples:
 
 ### Default locale
 
@@ -633,7 +592,7 @@ ArticleTranslation Entity:
 namespace Entity\Translation;
 
 use Doctrine\ORM\Mapping as ORM;
-use Gedmo\Translatable\Entity\AbstractTranslation;
+use Gedmo\Translatable\Entity\MappedSuperclass\AbstractTranslation;
 
 /**
  * @ORM\Table(name="article_translations", indexes={
@@ -671,5 +630,177 @@ class Article
 ```
 
 Now all translations of Article will be stored and queried from specific table
+
+<a name="personal-translations"></a>
+
+## Personal translations
+
+Translatable has **AbstractPersonalTranslation** mapped superclass, which must
+be extended and mapped based on your **entity** which you want to translate.
+Note: translations are not automapped because of user preference based on cascades
+or other possible choises, which user can make.
+Personal translations uses foreign key constraint which is fully managed by ORM and
+allows to have a collection of related translations. User can use it anyway he likes, etc.:
+implementing array access on entity, using left join to fill collection and so on.
+ 
+Note: that [query hint](#orm-query-hint) will work on personal translations the same way.
+You can always use a left join like for standard doctrine collections.
+
+Usage example:
+
+``` php
+<?php
+namespace Entity;
+
+use Doctrine\Common\Collections\ArrayCollection;
+use Gedmo\Mapping\Annotation as Gedmo;
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * @ORM\Entity
+ * @Gedmo\TranslationEntity(class="Entity\CategoryTranslation")
+ */
+class Category
+{
+    /**
+     * @ORM\Column(type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue
+     */
+    private $id;
+
+    /**
+     * @Gedmo\Translatable
+     * @ORM\Column(length=64)
+     */
+    private $title;
+
+    /**
+     * @Gedmo\Translatable
+     * @ORM\Column(type="text", nullable=true)
+     */
+    private $description;
+
+    /**
+     * @ORM\OneToMany(
+     *   targetEntity="CategoryTranslation",
+     *   mappedBy="object",
+     *   cascade={"persist", "remove"}
+     * )
+     */
+    private $translations;
+
+    public function __construct()
+    {
+        $this->translations = new ArrayCollection();
+    }
+
+    public function getTranslations()
+    {
+        return $this->translations;
+    }
+
+    public function addTranslation(CategoryTranslation $t)
+    {
+        if (!$this->translations->contains($t)) {
+            $this->translations[] = $t;
+            $t->setObject($this);
+        }
+    }
+
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    public function setTitle($title)
+    {
+        $this->title = $title;
+    }
+
+    public function getTitle()
+    {
+        return $this->title;
+    }
+
+    public function setDescription($description)
+    {
+        $this->description = $description;
+    }
+
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
+    public function __toString()
+    {
+        return $this->getTitle();
+    }
+}
+```
+
+Now the translation entity for the Category:
+
+``` php
+<?php
+namespace Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Translatable\Entity\MappedSuperclass\AbstractPersonalTranslation;
+
+/**
+ * @ORM\Entity
+ * @ORM\Table(name="category_translations",
+ *     uniqueConstraints={@ORM\UniqueConstraint(name="lookup_unique_idx", columns={
+ *         "locale", "object_id", "field"
+ *     })}
+ * )
+ */
+class CategoryTranslation extends AbstractPersonalTranslation
+{
+    /**
+     * Convinient constructor
+     *
+     * @param string $locale
+     * @param string $field
+     * @param string $value
+     */
+    public function __construct($locale, $field, $value)
+    {
+        $this->setLocale($locale);
+        $this->setField($field);
+        $this->setContent($value);
+    }
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Category", inversedBy="translations")
+     * @ORM\JoinColumn(name="object_id", referencedColumnName="id", onDelete="CASCADE")
+     */
+    protected $object;
+}
+```
+
+Some example code to persist with translations:
+
+``` php
+<?php
+// assumes default locale is "en"
+$food = new Entity\Category;
+$food->setTitle('Food');
+$food->addTranslation(new Entity\CategoryTranslation('lt', 'title', 'Maistas'));
+
+$fruits = new Entity\Category;
+$fruits->setParent($food);
+$fruits->setTitle('Fruits');
+$fruits->addTranslation(new Entity\CategoryTranslation('lt', 'title', 'Vaisiai'));
+$fruits->addTranslation(new Entity\CategoryTranslation('ru', 'title', 'rus trans'));
+
+$em->persist($food);
+$em->persist($fruits);
+$em->flush();
+```
+
+This would create translations for english and lithuanian, and for fruits, **ru** additionally.
 
 Easy like that, any suggestions on improvements are very welcome

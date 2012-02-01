@@ -1,78 +1,71 @@
 <?php
 
-namespace Gedmo\Loggable\Document;
+namespace Gedmo\Loggable\Entity\MappedSuperclass;
 
-use Doctrine\ODM\MongoDB\Mapping\Annotations\MappedSuperclass;
-use Doctrine\ODM\MongoDB\Mapping\Annotations\Id;
-use Doctrine\ODM\MongoDB\Mapping\Annotations\String;
-use Doctrine\ODM\MongoDB\Mapping\Annotations\Index;
-use Doctrine\ODM\MongoDB\Mapping\Annotations\Date;
-use Doctrine\ODM\MongoDB\Mapping\Annotations\Int;
-use Doctrine\ODM\MongoDB\Mapping\Annotations\Hash;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Gedmo\Loggable\Document\AbstractLogEntry
+ * Gedmo\Loggable\Entity\AbstractLog
  *
- * @MappedSuperclass
+ * @ORM\MappedSuperclass
  */
 abstract class AbstractLogEntry
 {
     /**
      * @var integer $id
      *
-     * @Id
+     * @ORM\Column(type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue
      */
     protected $id;
 
     /**
      * @var string $action
      *
-     * @String
+     * @ORM\Column(type="string", length=8)
      */
     protected $action;
 
     /**
-     * @var datetime $loggedAt
+     * @var string $loggedAt
      *
-     * @Index
-     * @Date
+     * @ORM\Column(name="logged_at", type="datetime")
      */
     protected $loggedAt;
 
     /**
      * @var string $objectId
      *
-     * @String(nullable=true)
+     * @ORM\Column(name="object_id", length=32, nullable=true)
      */
     protected $objectId;
 
     /**
      * @var string $objectClass
      *
-     * @Index
-     * @String
+     * @ORM\Column(name="object_class", type="string", length=255)
      */
     protected $objectClass;
 
     /**
      * @var integer $version
      *
-     * @Int
+     * @ORM\Column(type="integer")
      */
     protected $version;
 
     /**
      * @var text $data
      *
-     * @Hash(nullable=true)
+     * @ORM\Column(type="array", nullable=true)
      */
     protected $data;
 
     /**
-     * @var string $data
+     * @var text $data
      *
-     * @Index
-     * @String(nullable=true)
+     * @ORM\Column(length=255, nullable=true)
      */
     protected $username;
 
@@ -179,7 +172,7 @@ abstract class AbstractLogEntry
     /**
      * Get data
      *
-     * @return array or null
+     * @return array
      */
     public function getData()
     {

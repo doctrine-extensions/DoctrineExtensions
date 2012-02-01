@@ -4,10 +4,26 @@
 
 [![Build Status](https://secure.travis-ci.org/l3pp4rd/DoctrineExtensions.png?branch=master)](http://travis-ci.org/l3pp4rd/DoctrineExtensions)
 
-### Latest updates
-
 **Note:** Use 2.1.x or 2.2.x tag in order to use extensions based on Doctrine2.x.x component versions. Currently
 master branch is based on 2.3.x versions and may not work with older components.
+
+### Latest updates
+
+**2012-01-29**
+
+- Translatable finally has **Personal Translations** which can relate through a real **foreign key**
+constraint and be used as a standard doctrine collection. This allows to configure domain
+objects anyway you prefere and still enjoy all features **Translatable** provides.
+- There were **BC** breaks introduced in **master** branch of extensions which is
+based on **doctrine2.3.x** version. If you are not interested in upgrading you can
+safely checkout at **2.2.x** or **2.1.x** [tag](http://github.com/l3pp4rd/DoctrineExtensions/tags).
+To upgrade your source code follow the [upgrade guide](upgrade/2-3-0.md)
+- Library now can map only **MappedSuperclass**es which would avoid generation of **ext_**
+tables which might not be used. Also it provides [convinient methods](lib/Gedmo/DoctrineExtensions.php#L66)
+to hook extension metadata drivers into metadata driver chain.
+- [Example demo application](example/em.php) has a detailed configuration provided, which
+explains and shows how extensions can or should be used with **Doctrine2** ORM. To install
+it follow the [steps](#example-demo).
 
 **2012-01-23**
 

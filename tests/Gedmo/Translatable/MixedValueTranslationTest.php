@@ -32,7 +32,7 @@ class MixedValueTranslationTest extends BaseTestCaseORM
         }
 
         $evm = new EventManager;
-        $this->translatableListener = new TranslationListener();
+        $this->translatableListener = new TranslatableListener();
         $this->translatableListener->setTranslatableLocale('en_us');
         $this->translatableListener->setDefaultLocale('en_us');        
         $evm->addEventSubscriber($this->translatableListener);

@@ -20,18 +20,18 @@ class TranslatableDocumentTest extends BaseTestCaseMongoODM
     const ARTICLE = 'Translatable\\Fixture\\Document\\Article';
     const TRANSLATION = 'Gedmo\\Translatable\\Document\\Translation';
 
-    private $translationListener;
+    private $translatableListener;
     private $articleId;
 
     protected function setUp()
     {
         parent::setUp();
         $evm = new EventManager();
-        $this->translationListener = new TranslationListener;
-        $this->translationListener->setDefaultLocale('en_us');
-        $this->translationListener->setTranslatableLocale('en_us');
+        $this->translatableListener = new TranslatableListener;
+        $this->translatableListener->setDefaultLocale('en_us');
+        $this->translatableListener->setTranslatableLocale('en_us');
         $evm->addEventSubscriber(new SluggableListener);
-        $evm->addEventSubscriber($this->translationListener);
+        $evm->addEventSubscriber($this->translatableListener);
 
         $this->getMockDocumentManager($evm);
         $this->populate();
@@ -50,7 +50,7 @@ class TranslatableDocumentTest extends BaseTestCaseMongoODM
         $this->assertEquals(0, count($translations));
 
         // test second translations
-        $this->translationListener->setTranslatableLocale('de_de');
+        $this->translatableListener->setTranslatableLocale('de_de');
         $article->setTitle('Title DE');
         $article->setCode('Code DE');
 
@@ -74,7 +74,7 @@ class TranslatableDocumentTest extends BaseTestCaseMongoODM
 
         // test value update
         $this->dm->clear();
-        $this->translationListener->setTranslatableLocale('en_us');
+        $this->translatableListener->setTranslatableLocale('en_us');
         $article = $repo->find($this->articleId);
 
         $this->assertEquals('Title EN', $article->getTitle());

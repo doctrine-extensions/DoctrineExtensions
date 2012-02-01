@@ -1,57 +1,47 @@
 <?php
 
-namespace Gedmo\Translatable\Document;
+namespace Gedmo\Translatable\Document\MappedSuperclass;
 
-use Doctrine\ODM\MongoDB\Mapping\Annotations\MappedSuperclass;
-use Doctrine\ODM\MongoDB\Mapping\Annotations\Id;
-use Doctrine\ODM\MongoDB\Mapping\Annotations\String;
+use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoODM;
 
 /**
-* Gedmo\Translatable\Document\AbstractTranslation
-*
-* @MappedSuperclass
-*/
-abstract class AbstractTranslation
+ * Gedmo\Translatable\Document\AbstractPersonalTranslation
+ *
+ * @MongoODM\MappedSuperclass
+ */
+abstract class AbstractPersonalTranslation
 {
     /**
      * @var integer $id
      *
-     * @Id
+     * @MongoODM\Id
      */
     protected $id;
 
     /**
      * @var string $locale
      *
-     * @String
+     * @MongoODM\String
      */
     protected $locale;
 
     /**
-     * @var string $objectClass
-     *
-     * @String
+     * Related entity with ManyToOne relation
+     * must be mapped by user
      */
-    protected $objectClass;
+    protected $object;
 
     /**
      * @var string $field
      *
-     * @String
+     * @MongoODM\String
      */
     protected $field;
 
     /**
-     * @var string $foreignKey
-     *
-     * @String(name="foreign_key")
-     */
-    protected $foreignKey;
-
-    /**
      * @var text $content
      *
-     * @String
+     * @MongoODM\String
      */
     protected $content;
 
@@ -69,7 +59,7 @@ abstract class AbstractTranslation
      * Set locale
      *
      * @param string $locale
-     * @return AbstractTranslation
+     * @return AbstractPersonalTranslation
      */
     public function setLocale($locale)
     {
@@ -91,7 +81,7 @@ abstract class AbstractTranslation
      * Set field
      *
      * @param string $field
-     * @return AbstractTranslation
+     * @return AbstractPersonalTranslation
      */
     public function setField($field)
     {
@@ -110,54 +100,32 @@ abstract class AbstractTranslation
     }
 
     /**
-     * Set object class
+     * Set object related
      *
-     * @param string $objectClass
-     * @return AbstractTranslation
+     * @param object $object
+     * @return AbstractPersonalTranslation
      */
-    public function setObjectClass($objectClass)
+    public function setObject($object)
     {
-        $this->objectClass = $objectClass;
+        $this->object = $object;
         return $this;
     }
 
     /**
-     * Get objectClass
+     * Get object related
      *
-     * @return string $objectClass
+     * @return string $object
      */
-    public function getObjectClass()
+    public function getObject()
     {
-        return $this->objectClass;
-    }
-
-    /**
-     * Set foreignKey
-     *
-     * @param string $foreignKey
-     * @return AbstractTranslation
-     */
-    public function setForeignKey($foreignKey)
-    {
-        $this->foreignKey = $foreignKey;
-        return $this;
-    }
-
-    /**
-     * Get foreignKey
-     *
-     * @return string $foreignKey
-     */
-    public function getForeignKey()
-    {
-        return $this->foreignKey;
+        return $this->object;
     }
 
     /**
      * Set content
      *
-     * @param text $content
-     * @return AbstractTranslation
+     * @param string $content
+     * @return AbstractPersonalTranslation
      */
     public function setContent($content)
     {
@@ -168,7 +136,7 @@ abstract class AbstractTranslation
     /**
      * Get content
      *
-     * @return text $content
+     * @return string $content
      */
     public function getContent()
     {

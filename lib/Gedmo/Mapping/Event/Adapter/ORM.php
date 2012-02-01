@@ -3,11 +3,9 @@
 namespace Gedmo\Mapping\Event\Adapter;
 
 use Gedmo\Mapping\Event\AdapterInterface;
+use Gedmo\Exception\RuntimeException;
 use Doctrine\Common\EventArgs;
-use Doctrine\ORM\Mapping\ClassMetadataInfo;
-use Doctrine\ORM\UnitOfWork;
 use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\Proxy\Proxy;
 
 /**
  * Doctrine event adapter for ORM specific
@@ -22,9 +20,14 @@ use Doctrine\ORM\Proxy\Proxy;
 class ORM implements AdapterInterface
 {
     /**
-     * @var EventArgs
+     * @var \Doctrine\Common\EventArgs
      */
     private $args;
+
+    /**
+     * @var \Doctrine\ORM\EntityManager
+     */
+    private $em;
 
     /**
      * {@inheritdoc}
@@ -51,139 +54,98 @@ class ORM implements AdapterInterface
     }
 
     /**
-     * Extracts identifiers from object or proxy
-     *
-     * @param EntityManager $em
-     * @param object $object
-     * @param bool $single
-     * @return mixed - array or single identifier
-     */
-    public function extractIdentifier(EntityManager $em, $object, $single = true)
-    {
-        if ($object instanceof Proxy) {
-            $id = $em->getUnitOfWork()->getEntityIdentifier($object);
-        } else {
-            $meta = $em->getClassMetadata(get_class($object));
-            $id = array();
-            foreach ($meta->identifier as $name) {
-                $id[$name] = $meta->getReflectionProperty($name)->getValue($object);
-                // return null if one of identifiers is missing
-                if (!$id[$name]) {
-                    return null;
-                }
-            }
-        }
-
-        if ($single) {
-            $id = current($id);
-        }
-        return $id;
-    }
-
-    /**
-     * Call event specific method
-     *
-     * @param string $method
-     * @param array $args
-     * @return mixed
+     * {@inheritdoc}
      */
     public function __call($method, $args)
     {
+        if (is_null($this->args)) {
+            throw new RuntimeException("Event args must be set before calling its methods");
+        }
         $method = str_replace('Object', $this->getDomainObjectName(), $method);
         return call_user_func_array(array($this->args, $method), $args);
     }
 
     /**
-     * Get the object changeset from a UnitOfWork
+     * Set the entity manager
      *
-     * @param UnitOfWork $uow
-     * @param Object $object
-     * @return array
+     * @param \Doctrine\ORM\EntityManager $em
      */
-    public function getObjectChangeSet(UnitOfWork $uow, $object)
+    public function setEntityManager(EntityManager $em)
+    {
+        $this->em = $em;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getObjectManager()
+    {
+        if (!is_null($this->em)) {
+            return $this->em;
+        }
+        return $this->__call('getEntityManager', array());
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getObjectChangeSet($uow, $object)
     {
         return $uow->getEntityChangeSet($object);
     }
 
     /**
-     * Get the single identifier field name
-     *
-     * @param ClassMetadataInfo $meta
-     * @throws MappingException - if identifier is composite
-     * @return string
+     * {@inheritdoc}
      */
-    public function getSingleIdentifierFieldName(ClassMetadataInfo $meta)
+    public function getSingleIdentifierFieldName($meta)
     {
         return $meta->getSingleIdentifierFieldName();
     }
 
     /**
-     * Recompute the single object changeset from a UnitOfWork
-     *
-     * @param UnitOfWork $uow
-     * @param ClassMetadataInfo $meta
-     * @param Object $object
-     * @return void
+     * {@inheritdoc}
      */
-    public function recomputeSingleObjectChangeSet(UnitOfWork $uow, ClassMetadataInfo $meta, $object)
+    public function recomputeSingleObjectChangeSet($uow, $meta, $object)
     {
         $uow->recomputeSingleEntityChangeSet($meta, $object);
     }
 
     /**
-     * Get the scheduled object updates from a UnitOfWork
-     *
-     * @param UnitOfWork $uow
-     * @return array
+     * {@inheritdoc}
      */
-    public function getScheduledObjectUpdates(UnitOfWork $uow)
+    public function getScheduledObjectUpdates($uow)
     {
         return $uow->getScheduledEntityUpdates();
     }
 
     /**
-     * Get the scheduled object insertions from a UnitOfWork
-     *
-     * @param UnitOfWork $uow
-     * @return array
+     * {@inheritdoc}
      */
-    public function getScheduledObjectInsertions(UnitOfWork $uow)
+    public function getScheduledObjectInsertions($uow)
     {
         return $uow->getScheduledEntityInsertions();
     }
 
     /**
-     * Get the scheduled object deletions from a UnitOfWork
-     *
-     * @param UnitOfWork $uow
-     * @return array
+     * {@inheritdoc}
      */
-    public function getScheduledObjectDeletions(UnitOfWork $uow)
+    public function getScheduledObjectDeletions($uow)
     {
         return $uow->getScheduledEntityDeletions();
     }
 
     /**
-     * Sets a property value of the original data array of an object
-     *
-     * @param UnitOfWork $uow
-     * @param string $oid
-     * @param string $property
-     * @param mixed $value
-     * @return void
+     * {@inheritdoc}
      */
-    public function setOriginalObjectProperty(UnitOfWork $uow, $oid, $property, $value)
+    public function setOriginalObjectProperty($uow, $oid, $property, $value)
     {
         $uow->setOriginalEntityProperty($oid, $property, $value);
     }
 
     /**
-     * Clears the property changeset of the object with the given OID.
-     *
-     * @param UnitOfWork $uow
-     * @param string $oid The object's OID.
+     * {@inheritdoc}
      */
-    public function clearObjectChangeSet(UnitOfWork $uow, $oid)
+    public function clearObjectChangeSet($uow, $oid)
     {
         $uow->clearEntityChangeSet($oid);
     }

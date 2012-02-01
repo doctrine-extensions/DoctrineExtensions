@@ -2,7 +2,7 @@
 
 namespace Loggable\Fixture\Entity\Log;
 
-use Gedmo\Loggable\Entity\AbstractLogEntry;
+use Gedmo\Loggable\Entity\MappedSuperclass\AbstractLogEntry;
 use Doctrine\ORM\Mapping as ORM;
 
 /**

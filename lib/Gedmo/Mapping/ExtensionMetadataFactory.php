@@ -82,7 +82,11 @@ final class ExtensionMetadataFactory
                 if ($cmf->hasMetadataFor($parentClass)) {
                     $class = $this->objectManager->getClassMetadata($parentClass);
                     $this->driver->readExtendedMetadata($class, $config);
-                    if (!$class->isInheritanceTypeNone() && !$class->parentClasses && $config) {
+                    $isBaseInheritanceLevel = !$class->isInheritanceTypeNone()
+                        && !$class->parentClasses
+                        && $config
+                    ;
+                    if ($isBaseInheritanceLevel) {
                         $useObjectName = $class->name;
                     }
                 }

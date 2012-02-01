@@ -90,7 +90,7 @@ class LogEntryRepository extends DocumentRepository
                         if (in_array($field, $fields)) {
                             if ($objectMeta->isSingleValuedAssociation($field)) {
                                 $mapping = $objectMeta->getFieldMapping($field);
-                                $value = $value ? $this->dm->getReference($mapping['targetDocument'], current($value)) : null;
+                                $value = $value ? $this->dm->getReference($mapping['targetDocument'], $value) : null;
                             }
                             $wrapped->setPropertyValue($field, $value);
                             unset($fields[array_search($field, $fields)]);

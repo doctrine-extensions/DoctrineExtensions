@@ -1,7 +1,7 @@
 <?php
 
 use Doctrine\ORM\Query;
-use Gedmo\Translatable\TranslationListener;
+use Gedmo\Translatable\TranslatableListener;
 
 $executionStart = microtime(true);
 $memoryStart = memory_get_usage(true);
@@ -21,39 +21,28 @@ if (!$food) {
     // lets create some categories
     $food = new Entity\Category;
     $food->setTitle('Food');
+    $food->addTranslation(new Entity\CategoryTranslation('lt', 'title', 'Maistas'));
 
     $fruits = new Entity\Category;
     $fruits->setParent($food);
     $fruits->setTitle('Fruits');
+    $fruits->addTranslation(new Entity\CategoryTranslation('lt', 'title', 'Vaisiai'));
 
     $apple = new Entity\Category;
     $apple->setParent($fruits);
     $apple->setTitle('Apple');
+    $apple->addTranslation(new Entity\CategoryTranslation('lt', 'title', 'Obuolys'));
 
     $milk = new Entity\Category;
     $milk->setParent($food);
     $milk->setTitle('Milk');
+    $milk->addTranslation(new Entity\CategoryTranslation('lt', 'title', 'Pienas'));
 
     $em->persist($food);
     $em->persist($milk);
     $em->persist($fruits);
     $em->persist($apple);
     $em->flush();
-
-    // translate into LT
-    $translatable->setTranslatableLocale('lt');
-    $food->setTitle('Maistas');
-    $fruits->setTitle('Vaisiai');
-    $apple->setTitle('Obuolys');
-    $milk->setTitle('Pienas');
-
-    $em->persist($food);
-    $em->persist($milk);
-    $em->persist($fruits);
-    $em->persist($apple);
-    $em->flush();
-    // set locale back to en
-    $translatable->setTranslatableLocale('en');
 }
 
 // create query to fetch tree nodes
@@ -82,7 +71,7 @@ $treeDecorationOptions = array(
 // build tree in english
 echo $repository->buildTree($query->getArrayResult(), $treeDecorationOptions).PHP_EOL.PHP_EOL;
 // change locale
-$query->setHint(TranslationListener::HINT_TRANSLATABLE_LOCALE, 'lt');
+$query->setHint(TranslatableListener::HINT_TRANSLATABLE_LOCALE, 'lt');
 // build tree in lithuanian
 echo $repository->buildTree($query->getArrayResult(), $treeDecorationOptions).PHP_EOL.PHP_EOL;
 

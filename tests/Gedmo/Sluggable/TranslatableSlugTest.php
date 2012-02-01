@@ -7,7 +7,7 @@ use Tool\BaseTestCaseORM;
 use Doctrine\Common\Util\Debug,
     Gedmo\Translatable\Translatable,
     Gedmo\Translatable\Entity\Translation,
-    Gedmo\Translatable\TranslationListener,
+    Gedmo\Translatable\TranslatableListener,
     Sluggable\Fixture\TranslatableArticle,
     Sluggable\Fixture\Comment,
     Sluggable\Fixture\Page;
@@ -23,7 +23,7 @@ use Doctrine\Common\Util\Debug,
 class TranslatableSlugTest extends BaseTestCaseORM
 {
     private $articleId;
-    private $translationListener;
+    private $translatableListener;
 
     const ARTICLE = 'Sluggable\\Fixture\\TranslatableArticle';
     const COMMENT = 'Sluggable\\Fixture\\Comment';
@@ -35,10 +35,10 @@ class TranslatableSlugTest extends BaseTestCaseORM
         parent::setUp();
 
         $evm = new EventManager;
-        $this->translationListener = new TranslationListener();
-        $this->translationListener->setTranslatableLocale('en_us');
+        $this->translatableListener = new TranslatableListener();
+        $this->translatableListener->setTranslatableLocale('en_us');
         $evm->addEventSubscriber(new SluggableListener);
-        $evm->addEventSubscriber($this->translationListener);
+        $evm->addEventSubscriber($this->translatableListener);
 
         $this->getMockSqliteEntityManager($evm);
         $this->populate();

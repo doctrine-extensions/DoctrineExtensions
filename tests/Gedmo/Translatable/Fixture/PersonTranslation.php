@@ -4,7 +4,7 @@ namespace Translatable\Fixture;
 
 use Doctrine\ORM\Mapping as ORM;
 
-use Gedmo\Translatable\Entity\AbstractTranslation;
+use Gedmo\Translatable\Entity\MappedSuperclass\AbstractTranslation;
 
 /**
  * @ORM\Table(

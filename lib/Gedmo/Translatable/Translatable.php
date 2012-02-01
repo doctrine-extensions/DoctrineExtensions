@@ -32,6 +32,6 @@ interface Translatable
     /**
      * @gedmo:Locale OR @gedmo:Language
      * to mark the field as locale used to override global
-     * locale settings from TranslationListener
+     * locale settings from TranslatableListener
      */
 }

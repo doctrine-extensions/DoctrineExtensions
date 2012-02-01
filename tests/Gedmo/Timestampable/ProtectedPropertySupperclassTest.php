@@ -4,7 +4,7 @@ namespace Gedmo\Tree;
 
 use Doctrine\Common\EventManager;
 use Tool\BaseTestCaseORM;
-use Gedmo\Translatable\TranslationListener;
+use Gedmo\Translatable\TranslatableListener;
 use Gedmo\Timestampable\TimestampableListener;
 use Doctrine\Common\Util\Debug;
 use Timestampable\Fixture\SupperClassExtension;
@@ -27,9 +27,9 @@ class ProtectedPropertySupperclassTest extends BaseTestCaseORM
         parent::setUp();
 
         $evm = new EventManager;
-        $translationListener = new TranslationListener;
-        $translationListener->setTranslatableLocale('en_us');
-        $evm->addEventSubscriber($translationListener);
+        $translatableListener = new TranslatableListener;
+        $translatableListener->setTranslatableLocale('en_us');
+        $evm->addEventSubscriber($translatableListener);
         $evm->addEventSubscriber(new TimestampableListener);
 
         $this->getMockSqliteEntityManager($evm);

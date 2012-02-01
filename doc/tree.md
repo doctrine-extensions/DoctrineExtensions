@@ -66,57 +66,25 @@ This article will cover the basic installation and functionality of **Tree** beh
 Content:
     
 - [Including](#including-extension) the extension
-- [Attaching](#event-listener) the **Tree Listener**
-- Entity [example](#entity)
-- [Yaml](#yaml) mapping example
-- [Xml](#xml) mapping example
+- Tree [annotations](#annotations)
+- Entity [example](#entity-mapping)
+- [Yaml](#yaml-mapping) mapping example
+- [Xml](#xml-mapping) mapping example
 - Basic usage [examples](#basic-examples)
 - Build [html tree](#html-tree)
 - Advanced usage [examples](#advanced-examples)
 
-## Setup and autoloading {#including-extension}
+<a name="including-extension"></a>
 
-If you using the source from github repository, initial directory structure for 
-the extension library should look like this:
+## Setup and autoloading
 
-```
-...
-/DoctrineExtensions
-    /lib
-        /Gedmo
-            /Exception
-            /Loggable
-            /Mapping
-            /Sluggable
-            /Timestampable
-            /Translatable
-            /Tree
-    /tests
-        ...
-...
-```
+Read the [documentation](http://github.com/l3pp4rd/DoctrineExtensions/blob/master/doc/annotations.md#em-setup)
+or check the [example code](http://github.com/l3pp4rd/DoctrineExtensions/tree/master/example)
+on how to setup and use the extensions in most optimized way.
 
-First of all we need to setup the autoloading of extensions:
+<a name="entity-mapping"></a>
 
-``` php
-<?php
-$classLoader = new \Doctrine\Common\ClassLoader('Gedmo', "/path/to/library/DoctrineExtensions/lib");
-$classLoader->register();
-```
-
-### Attaching the Tree Listener to the event manager {#event-listener}
-
-To attach the **Tree Listener** to your event system:
-
-``` php
-<?php
-$evm = new \Doctrine\Common\EventManager();
-$treeListener = new \Gedmo\Tree\TreeListener();
-$evm->addEventSubscriber($treeListener);
-// now this event manager should be passed to entity manager constructor
-```
-
-## Tree Entity example: {#entity}
+## Tree Entity example:
 
 **Note:** that Node interface is not necessary, except in cases there
 you need to identify entity as being Tree Node. The metadata is loaded only once then
@@ -213,7 +181,9 @@ class Category
 }
 ```
 
-### Tree annotations: {#annotations}
+<a name="annotations"></a>
+
+### Tree annotations:
 
 - **@Gedmo\Mapping\Annotation\Tree(type="strategy")** this **class annotation** is used to set the tree strategy by **type** parameter.
 Currently **nested** or **closure** strategy is supported
@@ -223,7 +193,9 @@ Currently **nested** or **closure** strategy is supported
 - **@Gedmo\Mapping\Annotation\TreeLevel** it will use this field to store tree**level**
 - **@Gedmo\Mapping\Annotation\TreeRoot** it will use this field to store tree**root** id value
 
-## Yaml mapping example {#yaml}
+<a name="yaml-mapping"></a>
+
+## Yaml mapping example
 
 Yaml mapped Category: **/mapping/yaml/Entity.Category.dcm.yml**
 
@@ -278,7 +250,9 @@ Entity\Category:
       mappedBy: parent
 ```
 
-## Xml mapping example {#xml}
+<a name="xml-mapping"></a>
+
+## Xml mapping example
 
 ``` xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -321,7 +295,9 @@ Entity\Category:
 </doctrine-mapping>
 ```
 
-## Basic usage examples: {#basic-examples}
+<a name="basic-examples"></a>
+
+## Basic usage examples:
 
 ### To save some **Categories** and generate tree:
 
@@ -515,7 +491,9 @@ class Category implements Node
 }
 ```
 
-## Create html tree: {#html-tree}
+<a name="html-tree"></a>
+
+## Create html tree:
 
 ### Retrieving whole tree as array
 
@@ -582,7 +560,9 @@ $options = array('decorate' => true);
 $tree = $repo->buildTree($query->getArrayResult(), $options);
 ```
 
-## Advanced examples: {#advanced-examples}
+<a name="advanced-examples"></a>
+
+## Advanced examples:
 
 ### Nesting Translatatable and Sluggable extensions
 

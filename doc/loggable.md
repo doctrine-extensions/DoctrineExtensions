@@ -37,81 +37,19 @@ behavior
 Content:
     
 - [Including](#including-extension) the extension
-- [Attaching](#event-listener) the **Loggable Listener**
-- Entity [example](#entity)
-- Document [example](#document)
-- [Yaml](#yaml) mapping example
-- [Xml](#xml) mapping example
+- Entity [example](#entity-mapping)
+- Document [example](#document-mapping)
+- [Yaml](#yaml-mapping) mapping example
+- [Xml](#xml-mapping) mapping example
 - Basic usage [examples](#basic-examples)
 
-## Setup and autoloading {#including-extension}
+<a name="including-extension"></a>
 
-If you using the source from github repository, initial directory structure for
-the extension library should look like this:
+## Setup and autoloading
 
-```
-...
-/DoctrineExtensions
-    /lib
-        /Gedmo
-            /Exception
-            /Loggable
-            /Mapping
-            /Sluggable
-            /Timestampable
-            /Translatable
-            /Tree
-    /tests
-        ...
-...
-```
-
-First of all we need to setup the autoloading of extensions:
-
-``` php
-<?php
-$classLoader = new \Doctrine\Common\ClassLoader('Gedmo', "/path/to/library/DoctrineExtensions/lib");
-$classLoader->register();
-```
-
-This behavior requires an additional metadata path to be specified in order to have a logEntry
-table for log entries. To configure it correctly you need to add new annotation
-driver into driver chain with a specific location and namespace
-
-### Loggable metadata Annotation driver mapped into driver chain:
-
-``` php
-<?php
-$chainDriverImpl = new \Doctrine\ORM\Mapping\Driver\DriverChain();
-$yourDefaultDriverImpl = new \Doctrine\ORM\Mapping\Driver\YamlDriver('/yml/mapping/files');
-$loggableDriverImpl = $doctrineOrmConfig->newDefaultAnnotationDriver(
-    '/path/to/library/DoctrineExtensions/lib/Gedmo/Loggable/Entity' // Document for ODM
-);
-$chainDriverImpl->addDriver($yourDefaultDriverImpl, 'Entity');
-$chainDriverImpl->addDriver($loggableDriverImpl, 'Gedmo\Loggable');
-$doctrineOrmConfig->setMetadataDriverImpl($chainDriverImpl);
-```
-
-**Note:** there can be many annotation drivers in driver chain
-
-**Note:** Loggable Entity or Document is required for storing all logs.
-
-If you need a log entry table per single Entity or Document, we will cover how to setup it later
-
-### Attaching the Loggable Listener to the event manager {#event-listener}
-
-``` php
-<?php
-$evm = new \Doctrine\Common\EventManager();
-// ORM and ODM
-$loggableListener = new \Gedmo\Loggable\LoggableListener();
-
-$loggableListener->setUsername('currently_loggedin_user');
-// in real world app the username should be loaded from session, example:
-// Session::getInstance()->read('user')->getUsername();
-$evm->addEventSubscriber($loggableListener);
-// now this event manager should be passed to entity manager constructor
-```
+Read the [documentation](http://github.com/l3pp4rd/DoctrineExtensions/blob/master/doc/annotations.md#em-setup)
+or check the [example code](http://github.com/l3pp4rd/DoctrineExtensions/tree/master/example)
+on how to setup and use the extensions in most optimized way.
 
 ### Loggable annotations:
 
@@ -119,7 +57,9 @@ $evm->addEventSubscriber($loggableListener);
 will use store logs to optionaly specified **logEntryClass**
 - **@Gedmo\Mapping\Annotation\Versioned** tracks annotated property for changes
 
-## Loggable Entity example: {#entity}
+<a name="entity-mapping"></a>
+
+## Loggable Entity example:
 
 **Note:** that Loggable interface is not necessary, except in cases there
 you need to identify entity as being Loggable. The metadata is loaded only once when
@@ -168,7 +108,9 @@ class Article
 }
 ```
 
-## Loggable Document example: {#document}
+<a name="document-mapping"></a>
+
+## Loggable Document example:
 
 ``` php
 <?php
@@ -214,7 +156,9 @@ class Article
 }
 ```
 
-## Yaml mapping example {#yaml}
+<a name="yaml-mapping"></a>
+
+## Yaml mapping example
 
 Yaml mapped Article: **/mapping/yaml/Entity.Article.dcm.yml**
 
@@ -242,7 +186,9 @@ Entity\Article:
       type: text
 ```
 
-## Xml mapping example {#xml}
+<a name="xml-mapping"></a>
+
+## Xml mapping example
 
 ``` xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -269,7 +215,9 @@ Entity\Article:
 </doctrine-mapping>
 ```
 
-## Basic usage examples: {#basic-examples}
+<a name="basic-examples"></a>
+
+## Basic usage examples:
 
 ``` php
 <?php

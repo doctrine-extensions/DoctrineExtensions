@@ -148,10 +148,10 @@ class RelativeSlugHandler implements SlugHandlerInterface
             array($text, $separator, $object)
         );
         $result = Urlizer::urlize($result, $separator);
-        $wrapped = AbstractWrapper::wrapp($object, $this->om);
+        $wrapped = AbstractWrapper::wrap($object, $this->om);
         $relation = $wrapped->getPropertyValue($this->usedOptions['relationField']);
         if ($relation) {
-            $wrappedRelation = AbstractWrapper::wrapp($relation, $this->om);
+            $wrappedRelation = AbstractWrapper::wrap($relation, $this->om);
             $slug = $wrappedRelation->getPropertyValue($this->usedOptions['relationSlugField']);
             $result = $slug . $this->usedOptions['separator'] . $result;
         }

@@ -22,7 +22,7 @@ use Doctrine\ODM\MongoDB\Mapping\Annotations\Index;
  *      "foreign_key"
  * })
  */
-class Translation extends AbstractTranslation
+class Translation extends MappedSuperclass\AbstractTranslation
 {
     /**
      * All required columns are mapped through inherited superclass

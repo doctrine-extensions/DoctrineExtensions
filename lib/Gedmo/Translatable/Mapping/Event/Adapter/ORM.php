@@ -2,13 +2,13 @@
 
 namespace Gedmo\Translatable\Mapping\Event\Adapter;
 
-use Gedmo\Mapping\Event\Adapter\ORM as BaseAdapterORM;
-use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Doctrine\DBAL\Types\Type;
+use Doctrine\ORM\Proxy\Proxy;
 use Doctrine\ORM\Query;
+use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Gedmo\Mapping\Event\Adapter\ORM as BaseAdapterORM;
 use Gedmo\Translatable\Mapping\Event\TranslatableAdapter;
 use Gedmo\Tool\Wrapper\AbstractWrapper;
-use Doctrine\DBAL\Types\Type;
 
 /**
  * Doctrine event adapter for ORM adapted
@@ -25,6 +25,19 @@ final class ORM extends BaseAdapterORM implements TranslatableAdapter
     /**
      * {@inheritDoc}
      */
+    public function usesPersonalTranslation($translationClassName)
+    {
+        return $this
+            ->getObjectManager()
+            ->getClassMetadata($translationClassName)
+            ->getReflectionClass()
+            ->isSubclassOf('Gedmo\Translatable\Entity\MappedSuperclass\AbstractPersonalTranslation')
+        ;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function getDefaultTranslationClass()
     {
         return 'Gedmo\\Translatable\\Entity\\Translation';
@@ -36,41 +49,108 @@ final class ORM extends BaseAdapterORM implements TranslatableAdapter
     public function loadTranslations($object, $translationClass, $locale)
     {
         $em = $this->getObjectManager();
-        $wrapped = AbstractWrapper::wrapp($object, $em);
-        // load translated content for all translatable fields
-        $objectId = $wrapped->getIdentifier();
-        // construct query
-        $dql = 'SELECT t.content, t.field FROM ' . $translationClass . ' t';
-        $dql .= ' WHERE t.foreignKey = :objectId';
-        $dql .= ' AND t.locale = :locale';
-        $dql .= ' AND t.objectClass = :objectClass';
-        // fetch results
-        $objectClass = $wrapped->getMetadata()->name;
-        $q = $em->createQuery($dql);
-        $q->setParameters(compact('objectId', 'locale', 'objectClass'));
-        return $q->getArrayResult();
+        $wrapped = AbstractWrapper::wrap($object, $em);
+        $result = array();
+        if ($this->usesPersonalTranslation($translationClass)) {
+            // first try to load it using collection
+            $found = false;
+            foreach ($wrapped->getMetadata()->associationMappings as $assoc) {
+                $isRightCollection = $assoc['targetEntity'] === $translationClass
+                    && $assoc['mappedBy'] === 'object'
+                    && $assoc['type'] === ClassMetadataInfo::ONE_TO_MANY
+                ;
+                if ($isRightCollection) {
+                    $collection = $wrapped->getPropertyValue($assoc['fieldName']);
+                    foreach ($collection as $trans) {
+                        if ($trans->getLocale() === $locale) {
+                            $result[] = array(
+                                'field' => $trans->getField(),
+                                'content' => $trans->getContent()
+                            );
+                        }
+                    }
+                    $found = true;
+                    break;
+                }
+            }
+            // if collection is not set, fetch it through relation
+            if (!$found) {
+                $dql = 'SELECT t.content, t.field FROM ' . $translationClass . ' t';
+                $dql .= ' WHERE t.locale = :locale';
+                $dql .= ' AND t.object = :object';
+
+                $q = $em->createQuery($dql);
+                $q->setParameters(compact('object', 'locale'));
+                $result = $q->getArrayResult();
+            }
+        } else {
+            // load translated content for all translatable fields
+            $objectId = $wrapped->getIdentifier();
+            // construct query
+            $dql = 'SELECT t.content, t.field FROM ' . $translationClass . ' t';
+            $dql .= ' WHERE t.foreignKey = :objectId';
+            $dql .= ' AND t.locale = :locale';
+            $dql .= ' AND t.objectClass = :objectClass';
+            // fetch results
+            $objectClass = $wrapped->getMetadata()->name;
+            $q = $em->createQuery($dql);
+            $q->setParameters(compact('objectId', 'locale', 'objectClass'));
+            $result = $q->getArrayResult();
+        }
+        return $result;
     }
 
     /**
      * {@inheritDoc}
      */
-    public function findTranslation($objectId, $objectClass, $locale, $field, $translationClass)
+    public function findTranslation(AbstractWrapper $wrapped, $locale, $field, $translationClass)
     {
         $em = $this->getObjectManager();
+        // first look in identityMap, will save one SELECT query
+        foreach ($em->getUnitOfWork()->getIdentityMap() as $className => $objects) {
+            if ($className === $translationClass) {
+                foreach ($objects as $trans) {
+                    $isRequestedTranslation = !$trans instanceof Proxy
+                        && $trans->getLocale() === $locale
+                        && $trans->getField() === $field
+                    ;
+                    if ($isRequestedTranslation) {
+                        if ($this->usesPersonalTranslation($translationClass)) {
+                            $isRequestedTranslation = $trans->getObject() === $wrapped->getObject();
+                        } else {
+                            $isRequestedTranslation = $trans->getForeignKey() === $wrapped->getIdentifier()
+                                && $trans->getObjectClass() === $wrapped->getMetadata()->name
+                            ;
+                        }
+                    }
+                    if ($isRequestedTranslation) {
+                        return $trans;
+                    }
+                }
+            }
+        }
+
         $qb = $em->createQueryBuilder();
         $qb->select('trans')
             ->from($translationClass, 'trans')
             ->where(
-                'trans.foreignKey = :objectId',
                 'trans.locale = :locale',
-                'trans.field = :field',
-                'trans.objectClass = :objectClass'
-            );
+                'trans.field = :field'
+            )
+        ;
+        $qb->setParameters(compact('locale', 'field'));
+        if ($this->usesPersonalTranslation($translationClass)) {
+            $qb->andWhere('trans.object = :object');
+            $qb->setParameter('object', $wrapped->getObject());
+        } else {
+            $qb->andWhere('trans.foreignKey = :objectId');
+            $qb->andWhere('trans.objectClass = :objectClass');
+            $qb->setParameter('objectId', $wrapped->getIdentifier());
+            $qb->setParameter('objectClass', $wrapped->getMetadata()->name);
+        }
         $q = $qb->getQuery();
-        $result = $q->execute(
-            compact('field', 'locale', 'objectId', 'objectClass'),
-            Query::HYDRATE_OBJECT
-        );
+        $q->setMaxResults(1);
+        $result = $q->getResult();
 
         if ($result) {
             return array_shift($result);
@@ -81,16 +161,25 @@ final class ORM extends BaseAdapterORM implements TranslatableAdapter
     /**
      * {@inheritDoc}
      */
-    public function removeAssociatedTranslations($objectId, $transClass, $targetClass)
+    public function removeAssociatedTranslations(AbstractWrapper $wrapped, $transClass)
     {
-        $em = $this->getObjectManager();
-        $dql = 'DELETE ' . $transClass . ' trans';
-        $dql .= ' WHERE trans.foreignKey = :objectId';
-        $dql .= ' AND trans.objectClass = :targetClass';
-
-        $q = $em->createQuery($dql);
-        $q->setParameters(compact('objectId', 'targetClass'));
-        return $q->getSingleScalarResult();
+        $qb = $this
+            ->getObjectManager()
+            ->createQueryBuilder()
+            ->delete($transClass, 'trans')
+        ;
+        if ($this->usesPersonalTranslation($transClass)) {
+            $qb->where('trans.object = :object');
+            $qb->setParameter('object', $wrapped->getObject());
+        } else {
+            $qb->where(
+                'trans.foreignKey = :objectId',
+                'trans.objectClass = :class'
+            );
+            $qb->setParameter('objectId', $wrapped->getIdentifier());
+            $qb->setParameter('class', $wrapped->getMetadata()->name);
+        }
+        return $qb->getQuery()->getSingleScalarResult();
     }
 
     /**
@@ -120,7 +209,7 @@ final class ORM extends BaseAdapterORM implements TranslatableAdapter
     public function getTranslationValue($object, $field, $value = false)
     {
         $em = $this->getObjectManager();
-        $wrapped = AbstractWrapper::wrapp($object, $em);
+        $wrapped = AbstractWrapper::wrap($object, $em);
         $meta = $wrapped->getMetadata();
         $type = Type::getType($meta->getTypeOfField($field));
         if ($value === false) {
@@ -135,7 +224,7 @@ final class ORM extends BaseAdapterORM implements TranslatableAdapter
     public function setTranslationValue($object, $field, $value)
     {
         $em = $this->getObjectManager();
-        $wrapped = AbstractWrapper::wrapp($object, $em);
+        $wrapped = AbstractWrapper::wrap($object, $em);
         $meta = $wrapped->getMetadata();
         $type = Type::getType($meta->getTypeOfField($field));
         $value = $type->convertToPHPValue($value, $em->getConnection()->getDatabasePlatform());
