@@ -98,8 +98,8 @@ class LoggableListener extends MappedEventSubscriber
      */
     protected function getLogEntryClass(LoggableAdapter $ea, $class)
     {
-        return isset($this->configurations[$class]['logEntryClass']) ?
-            $this->configurations[$class]['logEntryClass'] :
+        return isset(self::$configurations[$this->name][$class]['logEntryClass']) ?
+            self::$configurations[$this->name][$class]['logEntryClass'] :
             $ea->getDefaultLogEntryClass();
     }
 

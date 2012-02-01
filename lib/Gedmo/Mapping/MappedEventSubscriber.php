@@ -29,11 +29,20 @@ use Doctrine\Common\EventArgs;
 abstract class MappedEventSubscriber implements EventSubscriber
 {
     /**
-     * List of cached object configurations
+     * Static List of cached object configurations
+     * leaving it static for reasons to look into
+     * other listener configuration
      *
      * @var array
      */
-    protected $configurations = array();
+    protected static $configurations = array();
+
+    /**
+     * Listener name, etc: sluggable
+     *
+     * @var string
+     */
+    protected $name;
 
     /**
      * ExtensionMetadataFactory used to read the extension
@@ -61,6 +70,14 @@ abstract class MappedEventSubscriber implements EventSubscriber
      * @var \Doctrine\Common\Annotations\AnnotationReader
      */
     private static $defaultAnnotationReader;
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->name = end(explode('\\', $this->getNamespace()));
+    }
 
     /**
      * Get an event adapter to handle event specific
@@ -98,21 +115,21 @@ abstract class MappedEventSubscriber implements EventSubscriber
      */
     public function getConfiguration(ObjectManager $objectManager, $class) {
         $config = array();
-        if (isset($this->configurations[$class])) {
-            $config = $this->configurations[$class];
+        if (isset(self::$configurations[$this->name][$class])) {
+            $config = self::$configurations[$this->name][$class];
         } else {
             $factory = $objectManager->getMetadataFactory();
             $cacheDriver = $factory->getCacheDriver();
             if ($cacheDriver) {
                 $cacheId = ExtensionMetadataFactory::getCacheId($class, $this->getNamespace());
                 if (($cached = $cacheDriver->fetch($cacheId)) !== false) {
-                    $this->configurations[$class] = $cached;
+                    self::$configurations[$this->name][$class] = $cached;
                     $config = $cached;
                 } else {
                     // re-generate metadata on cache miss
                     $this->loadMetadataForObjectClass($objectManager, $factory->getMetadataFor($class));
-                    if (isset($this->configurations[$class])) {
-                        $config = $this->configurations[$class];
+                    if (isset(self::$configurations[$this->name][$class])) {
+                        $config = self::$configurations[$this->name][$class];
                     }
                 }
             }
@@ -172,7 +189,7 @@ abstract class MappedEventSubscriber implements EventSubscriber
         $factory = $this->getExtensionMetadataFactory($objectManager);
         $config = $factory->getExtensionMetadata($metadata);
         if ($config) {
-            $this->configurations[$metadata->name] = $config;
+            self::$configurations[$this->name][$metadata->name] = $config;
         }
     }
 

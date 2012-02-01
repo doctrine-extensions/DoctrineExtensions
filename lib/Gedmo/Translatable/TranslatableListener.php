@@ -158,8 +158,8 @@ class TranslatableListener extends MappedEventSubscriber
      */
     public function getTranslationClass(TranslatableAdapter $ea, $class)
     {
-        return isset($this->configurations[$class]['translationClass']) ?
-            $this->configurations[$class]['translationClass'] :
+        return isset(self::$configurations[$this->name][$class]['translationClass']) ?
+            self::$configurations[$this->name][$class]['translationClass'] :
             $ea->getDefaultTranslationClass()
         ;
     }
@@ -250,11 +250,11 @@ class TranslatableListener extends MappedEventSubscriber
     public function getTranslatableLocale($object, $meta)
     {
         $locale = $this->locale;
-        if (isset($this->configurations[$meta->name]['locale'])) {
+        if (isset(self::$configurations[$this->name][$meta->name]['locale'])) {
             $class = $meta->getReflectionClass();
-            $reflectionProperty = $class->getProperty($this->configurations[$meta->name]['locale']);
+            $reflectionProperty = $class->getProperty(self::$configurations[$this->name][$meta->name]['locale']);
             if (!$reflectionProperty) {
-                $column = $this->configurations[$meta->name]['locale'];
+                $column = self::$configurations[$this->name][$meta->name]['locale'];
                 throw new \Gedmo\Exception\RuntimeException("There is no locale or language property ({$column}) found on object: {$meta->name}");
             }
             $reflectionProperty->setAccessible(true);
@@ -322,7 +322,7 @@ class TranslatableListener extends MappedEventSubscriber
         $object = $ea->getObject();
         $meta = $om->getClassMetadata(get_class($object));
         // check if entity is tracked by translatable and without foreign key
-        if (array_key_exists($meta->name, $this->configurations) && count($this->pendingTranslationInserts)) {
+        if ($this->getConfiguration($om, $meta->name) && count($this->pendingTranslationInserts)) {
             $oid = spl_object_hash($object);
             if (array_key_exists($oid, $this->pendingTranslationInserts)) {
                 // load the pending translations without key
