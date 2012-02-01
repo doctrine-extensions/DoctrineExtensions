@@ -76,7 +76,8 @@ abstract class MappedEventSubscriber implements EventSubscriber
      */
     public function __construct()
     {
-        $this->name = end(explode('\\', $this->getNamespace()));
+        $parts = explode('\\', $this->getNamespace());
+        $this->name = end($parts);
     }
 
     /**
