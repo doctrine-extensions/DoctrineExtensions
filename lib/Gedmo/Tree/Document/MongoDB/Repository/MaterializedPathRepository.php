@@ -4,7 +4,8 @@ namespace Gedmo\Tree\Document\MongoDB\Repository;
 
 use Gedmo\Exception\InvalidArgumentException,
     Gedmo\Tree\Strategy,
-    Gedmo\Tree\Strategy\ODM\MongoDB\MaterializedPath;
+    Gedmo\Tree\Strategy\ODM\MongoDB\MaterializedPath,
+    Gedmo\Tool\Wrapper\MongoDocumentWrapper;
 
 /**
  * The MaterializedPathRepository has some useful functions
@@ -21,22 +22,43 @@ use Gedmo\Exception\InvalidArgumentException,
 class MaterializedPathRepository extends AbstractTreeRepository
 {
     /**
+     * Get tree query builder
+     *
+     * @return Doctrine\ODM\MongoDB\QueryBuilder
+     */
+    public function getTreeQueryBuilder()
+    {
+        return $this->getChildrenQueryBuilder();
+    }
+
+    /**
+     * Get tree query
+     *
+     * @return Doctrine\ODM\MongoDB\Query\Query
+     */
+    public function getTreeQuery()
+    {
+        return $this->getTreeQueryBuilder()->getQuery();
+    }
+
+    /**
+     * Get tree
+     *
+     * @return Doctrine\ODM\MongoDB\Cursor
+     */
+    public function getTree()
+    {
+        return $this->getTreeQuery()->execute();
+    }
+
+    /**
      * Get all root nodes query builder
      *
      * @return Doctrine\ODM\MongoDB\QueryBuilder
      */
-    public function getRootNodesQueryBuilder()
+    public function getRootNodesQueryBuilder($sortByField = null, $direction = 'asc')
     {
-        $meta = $this->getClassMetadata();
-        $config = $this->listener->getConfiguration($this->dm, $meta->name);
-        $separator = preg_quote($config['path_separator']);
-        
-        return $this->dm->createQueryBuilder()
-            ->find($meta->name)
-            ->field($config['path'])->equals(new \MongoRegex(sprintf('/^[^%s]+%s{1}$/u',
-                $separator,
-                $separator)))
-            ->sort($config['path'], 'asc');
+        return $this->getChildrenQueryBuilder(null, true, $sortByField, $direction);
     }
 
     /**
@@ -44,9 +66,9 @@ class MaterializedPathRepository extends AbstractTreeRepository
      *
      * @return Doctrine\ODM\MongoDB\Query\Query
      */
-    public function getRootNodesQuery()
+    public function getRootNodesQuery($sortByField = null, $direction = 'asc')
     {
-        return $this->getRootNodesQueryBuilder()->getQuery();
+        return $this->getRootNodesQueryBuilder($sortByField, $direction)->getQuery();
     }
 
     /**
@@ -54,9 +76,69 @@ class MaterializedPathRepository extends AbstractTreeRepository
      *
      * @return Doctrine\ODM\MongoDB\Cursor
      */
-    public function getRootNodes()
+    public function getRootNodes($sortByField = null, $direction = 'asc')
     {
-        return $this->getRootNodesQuery()->execute();
+        return $this->getRootNodesQuery($sortByField, $direction)->execute();
+    }
+
+    /**
+     * Get children from node
+     *
+     * @return Doctrine\ODM\MongoDB\QueryBuilder
+     */
+    public function getChildrenQueryBuilder($node = null, $direct = false, $sortByField = null, $direction = 'asc')
+    {
+        $meta = $this->getClassMetadata();
+        $config = $this->listener->getConfiguration($this->dm, $meta->name);
+        $separator = preg_quote($config['path_separator']);
+        $qb = $this->dm->createQueryBuilder()
+            ->find($meta->name);
+
+        if (is_object($node) && $node instanceof $meta->name) {
+            $node = new MongoDocumentWrapper($node, $this->dm);
+            $nodePath = preg_quote($node->getPropertyValue($config['path']));
+
+            if ($direct) {
+                $regex = sprintf('/^%s[^%s]+%s$/',
+                     $nodePath,
+                     $separator,
+                     $separator);
+                
+            } else {
+                $regex = sprintf('/^%s.+/',
+                     $nodePath);
+            }
+
+            $qb->field($config['path'])->equals(new \MongoRegex($regex));
+        } else if ($direct) {
+            $qb->field($config['path'])->equals(new \MongoRegex(sprintf('/^[^%s]+%s$/',
+                $separator,
+                $separator)));
+        }
+
+        $qb->sort(is_null($sortByField) ? $config['path'] : $sortByField, $direction === 'asc' ? 'asc' : 'desc');
+
+        return $qb;
+    }
+
+    /**
+     * Get children query
+     *
+     * @return Doctrine\ODM\MongoDB\Query\Query
+     */
+    public function getChildrenQuery($node = null, $direct = false, $sortByField = null, $direction = 'asc')
+    {
+        return $this->getChildrenQueryBuilder($node, $direct, $sortByField, $direction)->getQuery();
+    }
+
+    /**
+     * Get children
+     *
+     * @return Doctrine\ODM\MongoDB\Cursor
+     */
+    public function getChildren($node = null, $direct = false, $sortByField = null, $direction = 'asc')
+    {
+        return $this->getChildrenQuery($node, $direct, $sortByField, $direction)->execute();
     }
 
     /**
