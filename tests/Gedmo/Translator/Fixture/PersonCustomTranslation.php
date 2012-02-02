@@ -19,7 +19,7 @@ use Gedmo\Translator\Entity\Translation;
 class PersonCustomTranslation extends Translation
 {
     /**
-     * @ORM\ManyToOne(targetEntity="Person", inversedBy="translations")
+     * @ORM\ManyToOne(targetEntity="PersonCustom", inversedBy="translations")
      */
     protected $translatable;
 }

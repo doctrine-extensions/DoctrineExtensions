@@ -68,6 +68,21 @@ class Person
      */
     private $translations;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="Person")
+     */
+    private $parent;
+
+    public function setParent(Person $parent)
+    {
+        $this->parent = $parent;
+    }
+
+    public function getParent()
+    {
+        return $this->parent;
+    }
+
     public function __construct()
     {
         $this->translations = new ArrayCollection();

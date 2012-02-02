@@ -6,6 +6,7 @@ use Doctrine\Common\EventManager;
 use Tool\BaseTestCaseORM;
 use Translator\Fixture\Person;
 use Translator\Fixture\PersonCustom;
+use Doctrine\ORM\Proxy\Proxy;
 
 /**
  * These are tests for translatable behavior
@@ -86,6 +87,59 @@ class TranslatableTest extends BaseTestCaseORM
         $this->assertSame('multilingual description', $person->translate('ru_RU')->getDescription());
     }
 
+    /**
+     * @test
+     */
+    function shouldTranslateRelation()
+    {
+        $person = new Person();
+        $person->setName('Jen');
+        $person->translate('ru')->setName('Женя');
+        $person->setDescription('description');
+        $person->translate('ru')->setDescription('multilingual description');
+
+        $parent = new Person();
+        $parent->setName('Jen');
+        $parent->translate('ru')->setName('Женя starshai');
+        $parent->translate('fr')->setName('zenia');
+        $parent->setDescription('description');
+        $parent->translate('ru')->setDescription('multilingual description');
+
+        $person->setParent($parent);
+        $this->em->persist($person);
+        $this->em->persist($parent);
+        $this->em->flush();
+        $this->em->clear();
+
+        $person = $this->em->getRepository(self::PERSON)->findOneByName('Jen');
+        $this->assertSame('Женя', $person->translate('ru')->getName());
+        $parent = $person->getParent();
+        $this->assertTrue($parent instanceof Proxy);
+        $this->assertSame('Женя starshai', $parent->translate('ru')->getName());
+        $this->assertSame('zenia', $parent->translate('fr')->getName());
+    }
+
+    /**
+     * @test
+     */
+    function shouldHandleDomainObjectProxy()
+    {
+        $person = new Person();
+        $person->setName('Jen');
+        $person->translate('ru_RU')->setName('Женя');
+        $person->setDescription('description');
+        $person->translate('ru_RU')->setDescription('multilingual description');
+
+        $this->em->persist($person);
+        $this->em->flush();
+        $this->em->clear();
+
+        $personProxy = $this->em->getReference(self::PERSON, array('id' => 1));
+        $this->assertTrue($personProxy instanceof Proxy);
+        $name = $personProxy->translate('ru_RU')->getName();
+        $this->assertSame('Женя', $name);
+    }
+
     public function testTranslatableWithMagicProperties()
     {
         $person = new Person();
@@ -102,9 +156,6 @@ class TranslatableTest extends BaseTestCaseORM
 
     public function testTranslatableWithCustomProxy()
     {
-        if (\Doctrine\ORM\Version::compare('2.3.0-dev') <= 0) {
-            $this->markTestSkipped('Seems that orm strictly checks the class name in higher version');
-        }
         $person = new PersonCustom();
         $person->setName('Jen');
         $person->translate('ru_RU')->setName('Женя');
