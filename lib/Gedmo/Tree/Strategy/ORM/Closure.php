@@ -126,7 +126,10 @@ class Closure implements Strategy
         // create unique index on ancestor and descendant
         $indexName = substr(strtoupper("IDX_" . md5($closureMetadata->name)), 0, 20);
         $closureMetadata->table['uniqueConstraints'][$indexName] = array(
-            'columns' => array('ancestor', 'descendant')
+            'columns' => array(
+                $this->getJoinColumnFieldName($em->getClassMetadata($config['closure'])->getAssociationMapping('ancestor')),
+                $this->getJoinColumnFieldName($em->getClassMetadata($config['closure'])->getAssociationMapping('descendant'))
+            )
         );
         // this one may not be very usefull
         $indexName = substr(strtoupper("IDX_" . md5($meta->name . 'depth')), 0, 20);
