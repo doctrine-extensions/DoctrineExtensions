@@ -5,6 +5,9 @@ namespace Gedmo\Translatable\Document\Repository;
 use Gedmo\Translatable\TranslatableListener;
 use Doctrine\ODM\MongoDB\DocumentRepository;
 use Doctrine\ODM\MongoDB\Cursor;
+use Doctrine\ODM\MongoDB\DocumentManager;
+use Doctrine\ODM\MongoDB\UnitOfWork;
+use Doctrine\ODM\MongoDB\Mapping\ClassMetadata;
 use Gedmo\Tool\Wrapper\MongoDocumentWrapper;
 use Gedmo\Translatable\Mapping\Event\Adapter\ODM as TranslatableAdapterODM;
 use Doctrine\ODM\MongoDB\Mapping\Types\Type;
@@ -28,6 +31,17 @@ class TranslationRepository extends DocumentRepository
      * @var TranslatableListener
      */
     private $listener;
+
+    /**
+     * {@inheritdoc}
+     */
+    public function __construct(DocumentManager $dm, UnitOfWork $uow, ClassMetadata $class)
+    {
+        if ($class->getReflectionClass()->isSubclassOf('Gedmo\Translatable\Document\MappedSuperclass\AbstractPersonalTranslation')) {
+            throw new \Gedmo\Exception\UnexpectedValueException('This repository is useless for personal translations');
+        }
+        parent::__construct($dm, $uow, $class);
+    }
 
     /**
      * Makes additional translation of $document $field into $locale

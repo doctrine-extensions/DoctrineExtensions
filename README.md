@@ -17,9 +17,9 @@ objects anyway you prefere and still enjoy all features **Translatable** provide
 - There were **BC** breaks introduced in **master** branch of extensions which is
 based on **doctrine2.3.x** version. If you are not interested in upgrading you can
 safely checkout at **2.2.x** or **2.1.x** [tag](http://github.com/l3pp4rd/DoctrineExtensions/tags).
-To upgrade your source code follow the [upgrade guide](upgrade/2-3-0.md)
+To upgrade your source code follow the [upgrade guide](https://github.com/l3pp4rd/DoctrineExtensions/blob/master/upgrade/2-3-0.md)
 - Library now can map only **MappedSuperclass**es which would avoid generation of **ext_**
-tables which might not be used. Also it provides [convinient methods](lib/Gedmo/DoctrineExtensions.php#L66)
+tables which might not be used. Also it provides [convinient methods](https://github.com/l3pp4rd/DoctrineExtensions/blob/master/lib/Gedmo/DoctrineExtensions.php#L66)
 to hook extension metadata drivers into metadata driver chain.
 - [Example demo application](example/em.php) has a detailed configuration provided, which
 explains and shows how extensions can or should be used with **Doctrine2** ORM. To install
@@ -127,6 +127,8 @@ To setup and run tests follow these steps:
 - run: **php bin/vendors.php**
 - run: **phpunit -c tests**
 - optional - run mongodb in background to complete all tests
+
+<a name="example-demo"></a>
 
 ### Running the example:
 

@@ -5,6 +5,8 @@ namespace Gedmo\Translatable\Entity\Repository;
 use Gedmo\Translatable\TranslatableListener;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\Mapping\ClassMetadata;
 use Gedmo\Tool\Wrapper\EntityWrapper;
 use Gedmo\Translatable\Mapping\Event\Adapter\ORM as TranslatableAdapterORM;
 use Doctrine\DBAL\Types\Type;
@@ -28,6 +30,17 @@ class TranslationRepository extends EntityRepository
      * @var TranslatableListener
      */
     private $listener;
+
+    /**
+     * {@inheritdoc}
+     */
+    public function __construct(EntityManager $em, ClassMetadata $class)
+    {
+        if ($class->getReflectionClass()->isSubclassOf('Gedmo\Translatable\Entity\MappedSuperclass\AbstractPersonalTranslation')) {
+            throw new \Gedmo\Exception\UnexpectedValueException('This repository is useless for personal translations');
+        }
+        parent::__construct($em, $class);
+    }
 
     /**
      * Makes additional translation of $entity $field into $locale

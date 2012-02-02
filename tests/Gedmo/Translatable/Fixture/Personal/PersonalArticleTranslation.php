@@ -6,7 +6,7 @@ use Gedmo\Translatable\Entity\MappedSuperclass\AbstractPersonalTranslation;
 
 /**
  * @ORM\Table(name="article_translations")
- * @ORM\Entity(repositoryClass="Gedmo\Translatable\Entity\Repository\TranslationRepository")
+ * @ORM\Entity
  */
 class PersonalArticleTranslation extends AbstractPersonalTranslation
 {
