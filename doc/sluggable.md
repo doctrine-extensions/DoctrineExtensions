@@ -16,7 +16,7 @@ Features:
 [blog_reference]: http://gediminasm.org/article/sluggable-behavior-extension-for-doctrine-2 "Sluggable extension for Doctrine 2 makes automatic record field transformations into url friendly names"
 [blog_test]: http://gediminasm.org/test "Test extensions on this blog"
 
-Update **2010-09-11**
+Update **2011-09-11**
 
 - Refactored sluggable for doctrine2.2 by specifieng slug fields directly in slug annotation
 - Slug handler functionality, possibility to create custom ones or use built-in
@@ -34,9 +34,12 @@ no more exceptions during concurrent flushes.
 
 **Note:**
 
+- There is a reported [issue](https://github.com/l3pp4rd/DoctrineExtensions/issues/254) that sluggable transliterator
+does not work on OSX 10.6 its ok starting again from 10.7 version. To overcome the problem
+you can use your [custom transliterator](#transliterator)
 - You can [test live][blog_test] on this blog
 - Public [Sluggable repository](http://github.com/l3pp4rd/DoctrineExtensions "Sluggable extension on Github") is available on github
-- Last update date: **2012-01-29**
+- Last update date: **2012-02-04**
 
 **Portability:**
 
@@ -54,6 +57,7 @@ Content:
 - [Yaml](#yaml-mapping) mapping example
 - [Xml](#xml-mapping) mapping example
 - Basic usage [examples](#basic-examples)
+- Custom [transliterator](#transliterator)
 - Advanced usage [examples](#advanced-examples)
 - Using [slug handlers](#slug-handlers)
 
@@ -407,6 +411,27 @@ $this->em->flush();
 
 echo $article->getSlug();
 // prints: The_Title_My_Code
+```
+
+<a name="transliterator"></a>
+
+## Custom transliterator
+
+To set your own custom transliterator, which would be used to generate the slug, use:
+
+``` php
+<?php
+
+$callable = array('My\Class', 'transliterationMethod');
+$sluggableListener->setTransliterator($callable);
+
+// or use a closure
+
+$callable = function($text, $separatorUsed, $objectBeingSlugged) {
+    // ...
+    return $transliteratedText;
+};
+$sluggableListener->setTransliterator($callable);
 ```
 
 <a name="advanced-examples"></a>
