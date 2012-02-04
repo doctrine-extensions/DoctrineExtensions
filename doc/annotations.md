@@ -111,17 +111,42 @@ $config->setQueryCacheImpl($cache);
 
 // create event manager and hook prefered extension listeners
 $evm = new Doctrine\Common\EventManager();
-// gedmo extension listeners
-$evm->addEventSubscriber(new Gedmo\Sluggable\SluggableListener);
-$evm->addEventSubscriber(new Gedmo\Tree\TreeListener);
-$evm->addEventSubscriber(new Gedmo\Loggable\LoggableListener);
-$evm->addEventSubscriber(new Gedmo\Timestampable\TimestampableListener);
-$translatable = new Gedmo\Translatable\TranslatableListener;
+// gedmo extension listeners, remove which are not used
+
+// sluggable
+$sluggableListener = new Gedmo\Sluggable\SluggableListener;
+// you should set the used annotation reader to listener, to avoid creating new one for mapping drivers
+$sluggableListener->setAnnotationReader($cachedAnnotationReader);
+$evm->addEventSubscriber($sluggableListener);
+
+// tree
+$treeListener = new Gedmo\Tree\TreeListener;
+$treeListener->setAnnotationReader($cachedAnnotationReader);
+$evm->addEventSubscriber($treeListener);
+
+// loggable, not used in example
+$loggableListener = new Gedmo\Loggable\LoggableListener;
+$loggableListener->setAnnotationReader($cachedAnnotationReader);
+$evm->addEventSubscriber($loggableListener);
+
+// timestampable
+$timestampableListener = new Gedmo\Timestampable\TimestampableListener;
+$timestampableListener->setAnnotationReader($cachedAnnotationReader);
+$evm->addEventSubscriber($timestampableListener);
+
+// translatable
+$translatableListener = new Gedmo\Translatable\TranslatableListener;
 // current translation locale should be set from session or hook later into the listener
 // most important, before entity manager is flushed
-$translatable->setTranslatableLocale('en');
-$translatable->setDefaultLocale('en');
-$evm->addEventSubscriber($translatable);
+$translatableListener->setTranslatableLocale('en');
+$translatableListener->setDefaultLocale('en');
+$translatableListener->setAnnotationReader($cachedAnnotationReader);
+$evm->addEventSubscriber($translatableListener);
+
+// sortable, not used in example
+$sortableListener = new Gedmo\Sortable\SortableListener;
+$sortableListener->setAnnotationReader($cachedAnnotationReader);
+$evm->addEventSubscriber($sortableListener);
 
 // mysql set names UTF-8 if required
 $evm->addEventSubscriber(new Doctrine\DBAL\Event\Listeners\MysqlSessionInit());
