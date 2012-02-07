@@ -65,6 +65,11 @@ class Annotation implements AnnotationDriverInterface
     const PATH_SOURCE = 'Gedmo\\Mapping\\Annotation\\TreePathSource';
 
     /**
+     * Annotation to mark the field to be used to hold the lock time
+     */
+    const LOCK_TIME = 'Gedmo\\Mapping\\Annotation\\TreeLockTime';
+
+    /**
      * List of types which are valid for tree fields
      *
      * @var array
@@ -150,6 +155,12 @@ class Annotation implements AnnotationDriverInterface
                 throw new InvalidMappingException("Tree type: {$annot->type} is not available.");
             }
             $config['strategy'] = $annot->type;
+            $config['activate_locking'] = $annot->activateLocking;
+            $config['locking_timeout'] = $annot->lockingTimeout;
+
+            if (!is_int($config['locking_timeout'])) {
+                throw new InvalidMappingException("Tree Locking timeout must be an integer value.");
+            }
         }
         if ($annot = $this->reader->getClassAnnotation($class, self::CLOSURE)) {
             if (!class_exists($annot->class)) {
@@ -244,6 +255,22 @@ class Annotation implements AnnotationDriverInterface
                 }
                 $config['path_source'] = $field;
             }
+            // lock time
+
+            if ($this->reader->getPropertyAnnotation($property, self::LOCK_TIME)) {
+                $field = $property->getName();
+                if (!$meta->hasField($field)) {
+                    throw new InvalidMappingException("Unable to find 'lock_time' - [{$field}] as mapped property in entity - {$meta->name}");
+                }
+                if (!$this->isValidFieldForLockTime($meta, $field)) {
+                    throw new InvalidMappingException("Tree PathSource field - [{$field}] type is not valid. It must be \"date\" in class - {$meta->name}");
+                }
+                $config['lock_time'] = $field;
+            }
+        }
+
+        if (isset($config['activate_locking']) && $config['activate_locking'] && !isset($config['lock_time'])) {
+            throw new InvalidMappingException("You need to map a date field as the tree lock time field to activate locking support.");
         }
 
         if (!$meta->isMappedSuperclass && $config) {
@@ -296,6 +323,19 @@ class Annotation implements AnnotationDriverInterface
     {
         $mapping = $meta->getFieldMapping($field);
         return $mapping && in_array($mapping['type'], $this->validPathSourceTypes);
+    }
+
+    /**
+     * Checks if $field type is valid for LockTime field
+     *
+     * @param object $meta
+     * @param string $field
+     * @return boolean
+     */
+    protected function isValidFieldForLockTime($meta, $field)
+    {
+        $mapping = $meta->getFieldMapping($field);
+        return $mapping && $mapping['type'] === 'date';
     }
 
     /**

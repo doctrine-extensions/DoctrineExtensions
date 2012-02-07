@@ -146,7 +146,7 @@ class Closure implements Strategy
     /**
      * {@inheritdoc}
      */
-    public function onFlushEnd($em)
+    public function onFlushEnd($em, AdapterInterface $ea)
     {}
 
     /**
@@ -156,6 +156,12 @@ class Closure implements Strategy
     {
         $this->pendingChildNodeInserts[spl_object_hash($node)] = $node;
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function processPreUpdate($em, $node)
+    {}
 
     /**
      * {@inheritdoc}
@@ -183,6 +189,18 @@ class Closure implements Strategy
 
         return array_shift($association['joinColumnFieldNames']);
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function processPostUpdate($em, $entity, AdapterInterface $ea)
+    {}
+
+    /**
+     * {@inheritdoc}
+     */
+    public function processPostRemove($em, $entity, AdapterInterface $ea)
+    {}
 
     /**
      * {@inheritdoc}

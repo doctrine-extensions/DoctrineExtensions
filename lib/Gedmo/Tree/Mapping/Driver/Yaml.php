@@ -89,6 +89,14 @@ class Yaml extends File implements Driver
                     throw new InvalidMappingException("Tree type: $strategy is not available.");
                 }
                 $config['strategy'] = $strategy;
+                $config['activate_locking'] = isset($classMapping['tree']['activate_locking']) ?
+                    $classMapping['tree']['activate_locking'] : false;
+                $config['locking_timeout'] = isset($classMapping['tree']['locking_timeout']) ?
+                    $classMapping['tree']['locking_timeout'] : 3;
+
+                if (!is_int($config['locking_timeout'])) {
+                    throw new InvalidMappingException("Tree Locking timeout must be an integer value.");
+                }
             }
             if (isset($classMapping['tree']['closure'])) {
                 $class = $classMapping['tree']['closure'];
@@ -136,10 +144,20 @@ class Yaml extends File implements Driver
                             throw new InvalidMappingException("Tree PathSource field - [{$field}] type is not valid. It can be any of the integer variants, double, float or string in class - {$meta->name}");
                         }
                         $config['path_source'] = $field;
+                    } elseif (in_array('treeLockTime', $fieldMapping['gedmo'])) {
+                        if (!$this->isValidFieldForLocktime($meta, $field)) {
+                            throw new InvalidMappingException("Tree LockTime field - [{$field}] type is not valid. It must be \"date\" in class - {$meta->name}");
+                        }
+                        $config['lock_time'] = $field;
                     }
                 }
             }
         }
+
+        if (isset($config['activate_locking']) && $config['activate_locking'] && !isset($config['lock_time'])) {
+            throw new InvalidMappingException("You need to map a date field as the tree lock time field to activate locking support.");
+        }
+
         if (isset($mapping['manyToOne'])) {
             foreach ($mapping['manyToOne'] as $field => $relationMapping) {
                 if (isset($relationMapping['gedmo'])) {
@@ -211,6 +229,19 @@ class Yaml extends File implements Driver
     {
         $mapping = $meta->getFieldMapping($field);
         return $mapping && in_array($mapping['type'], $this->validPathSourceTypes);
+    }
+
+    /**
+     * Checks if $field type is valid for LockTime field
+     *
+     * @param object $meta
+     * @param string $field
+     * @return boolean
+     */
+    protected function isValidFieldForLockTime($meta, $field)
+    {
+        $mapping = $meta->getFieldMapping($field);
+        return $mapping && $mapping['type'] === 'date';
     }
 
     /**

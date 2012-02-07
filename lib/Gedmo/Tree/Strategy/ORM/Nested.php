@@ -230,7 +230,7 @@ class Nested implements Strategy
     /**
      * {@inheritdoc}
      */
-    public function onFlushEnd($em)
+    public function onFlushEnd($em, AdapterInterface $ea)
     {
         // reset values
         $this->treeEdges = array();
@@ -252,7 +252,25 @@ class Nested implements Strategy
     /**
      * {@inheritdoc}
      */
+    public function processPreUpdate($em, $node)
+    {}
+
+    /**
+     * {@inheritdoc}
+     */
     public function processMetadataLoad($em, $meta)
+    {}
+
+    /**
+     * {@inheritdoc}
+     */
+    public function processPostUpdate($em, $entity, AdapterInterface $ea)
+    {}
+
+    /**
+     * {@inheritdoc}
+     */
+    public function processPostRemove($em, $entity, AdapterInterface $ea)
     {}
 
     /**

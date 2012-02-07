@@ -10,6 +10,7 @@ use Doctrine\ORM\Query;
 use Doctrine\Common\Persistence\ObjectManager;
 use Gedmo\Mapping\Event\AdapterInterface;
 use Gedmo\Exception\RuntimeException;
+use Gedmo\Exception\TreeLockingException;
 
 /**
  * This strategy makes tree using materialized path strategy
@@ -24,6 +25,10 @@ use Gedmo\Exception\RuntimeException;
 
 abstract class AbstractMaterializedPath implements Strategy
 {
+    const ACTION_INSERT = 'insert';
+    const ACTION_UPDATE = 'update';
+    const ACTION_REMOVE = 'remove';
+
     /**
      * TreeListener
      *
@@ -46,6 +51,34 @@ abstract class AbstractMaterializedPath implements Strategy
      * @var array
      */
     protected $scheduledForPathProcessWithIdSet = array();
+
+    /**
+     * Roots of trees which needs to be locked
+     *
+     * @var array
+     */
+    protected $rootsOfTreesWhichNeedsLocking = array();
+
+    /**
+     * Objects which are going to be inserted (set only if tree locking is used)
+     *
+     * @var array
+     */
+    protected $pendingObjectsToInsert = array();
+
+    /**
+     * Objects which are going to be updated (set only if tree locking is used)
+     *
+     * @var array
+     */
+    protected $pendingObjectsToUpdate = array();
+
+    /**
+     * Objects which are going to be removed (set only if tree locking is used)
+     *
+     * @var array
+     */
+    protected $pendingObjectsToRemove = array();
 
     /**
      * {@inheritdoc}
@@ -123,26 +156,57 @@ abstract class AbstractMaterializedPath implements Strategy
                 }
             }
         }
+
+        $this->processPostEventsActions($om, $ea, $node, self::ACTION_INSERT);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function onFlushEnd($om)
+    public function processPostUpdate($om, $node, AdapterInterface $ea)
     {
+        $this->processPostEventsActions($om, $ea, $node, self::ACTION_UPDATE);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function processPostRemove($om, $node, AdapterInterface $ea)
+    {
+        $this->processPostEventsActions($om, $ea, $node, self::ACTION_REMOVE);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function onFlushEnd($om, AdapterInterface $ea)
+    {
+        $this->lockTrees($om, $ea);
     }
 
     /**
      * {@inheritdoc}
      */
     public function processPreRemove($om, $node)
-    {}
+    {
+        $this->processPreLockingActions($om, $node, self::ACTION_REMOVE);
+    }
 
     /**
      * {@inheritdoc}
      */
     public function processPrePersist($om, $node)
-    {}
+    {
+        $this->processPreLockingActions($om, $node, self::ACTION_INSERT);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function processPreUpdate($om, $node)
+    {
+        $this->processPreLockingActions($om, $node, self::ACTION_UPDATE);
+    }
 
     /**
      * {@inheritdoc}
@@ -229,12 +293,12 @@ abstract class AbstractMaterializedPath implements Strategy
     }
 
     /**
-     * Update $node 's children
+     * Update node's children
      *
      * @param ObjectManager $om
-     * @param object $node - target node
-     * @param object $ea - event adapter
-     * @param string $originalPath - original path of object
+     * @param object $node
+     * @param AdapterInterface $ea
+     * @param string $originalPath
      * @return void
      */
     public function updateChildren(ObjectManager $om, $node, AdapterInterface $ea, $originalPath)
@@ -246,6 +310,140 @@ abstract class AbstractMaterializedPath implements Strategy
         foreach ($children as $child) {
             $this->updateNode($om, $child, $ea);
         }
+    }
+
+    /**
+     * Process pre-locking actions
+     *
+     * @param ObjectManager $om
+     * @param object $node
+     * @param string $action
+     * @return void
+     */
+    public function processPreLockingActions($om, $node, $action)
+    {
+        $meta = $om->getClassMetadata(get_class($node));
+        $config = $this->listener->getConfiguration($om, $meta->name);
+
+        if ($config['activate_locking']) {;
+            $parentProp = $meta->getReflectionProperty($config['parent']);
+            $parentProp->setAccessible(true);
+            $parentNode = $node;
+
+            while (!is_null($parent = $parentProp->getValue($parentNode))) {
+                $parentNode = $parent;
+            }
+
+            // In some cases, the parent could be a not initialized proxy. In this case, the
+            // "lockTime" field may NOT be loaded yet and have null instead of the date.
+            // We need to be sure that this field has its real value
+            if ($parentNode !== $node && $parentNode instanceof \Doctrine\ODM\MongoDB\Proxy\Proxy) {
+                $reflMethod = new \ReflectionMethod(get_class($parentNode), '__load');
+                $reflMethod->setAccessible(true);
+
+                $reflMethod->invoke($parentNode);
+            }
+            
+            // If tree is already locked, we throw an exception
+            $lockTimeProp = $meta->getReflectionProperty($config['lock_time']);
+            $lockTimeProp->setAccessible(true);
+            $lockTime = $lockTimeProp->getValue($parentNode);
+
+            if (!is_null($lockTime)) {
+                $lockTime = $lockTime instanceof \MongoDate ? $lockTime->sec : $lockTime->getTimestamp();
+            }
+
+            if (!is_null($lockTime) && ($lockTime >= (time() - $config['locking_timeout']))) {
+                $msg = 'Tree with root id "%s" is locked.';
+                $id = $meta->getIdentifierValue($parentNode);
+
+                throw new TreeLockingException(sprintf($msg, $id));
+            }
+
+            $this->rootsOfTreesWhichNeedsLocking[spl_object_hash($parentNode)] = $parentNode;
+
+            $oid = spl_object_hash($node);
+
+            switch ($action) {
+                case self::ACTION_INSERT:
+                    $this->pendingObjectsToInsert[$oid] = $node;
+
+                    break;
+                case self::ACTION_UPDATE:
+                    $this->pendingObjectsToUpdate[$oid] = $node;
+
+                    break;
+                case self::ACTION_REMOVE:
+                    $this->pendingObjectsToRemove[$oid] = $node;
+
+                    break;
+                default:
+                    throw new \InvalidArgumentException(sprintf('"%s" is not a valid action.', $action));
+            }
+        }
+    }
+
+    /**
+     * Process pre-locking actions
+     *
+     * @param ObjectManager $om
+     * @param AdapterInterface $ea
+     * @param object $node
+     * @param string $action
+     * @return void
+     */
+    public function processPostEventsActions(ObjectManager $om, AdapterInterface $ea, $node, $action)
+    {
+        $meta = $om->getClassMetadata(get_class($node));
+        $config = $this->listener->getConfiguration($om, $meta->name);
+
+        if ($config['activate_locking']) {
+            switch ($action) {
+                case self::ACTION_INSERT:
+                    unset($this->pendingObjectsToInsert[spl_object_hash($node)]);
+
+                    break;
+                case self::ACTION_UPDATE:
+                    unset($this->pendingObjectsToUpdate[spl_object_hash($node)]);
+
+                    break;
+                case self::ACTION_REMOVE:
+                    unset($this->pendingObjectsToRemove[spl_object_hash($node)]);
+
+                    break;
+                default:
+                    throw new \InvalidArgumentException(sprintf('"%s" is not a valid action.', $action));
+            }
+
+            if (empty($this->pendingObjectsToInsert) && empty($this->pendingObjectsToUpdate) &&
+                empty($this->pendingObjectsToRemove)) {
+                $this->releaseTreeLocks($om, $ea);
+            }
+        }
+    }
+    
+    /**
+     * Locks all needed trees
+     *
+     * @param ObjectManager $om
+     * @param AdapterInterface $ea
+     * @return void
+     */
+    protected function lockTrees(ObjectManager $om, AdapterInterface $ea)
+    {
+        // Do nothing by default
+    }
+
+    /**
+     * Releases all trees which are locked
+     *
+     * @param ObjectManager $om
+     * @param AdapterInterface $ea
+     * @return void
+     */
+    protected function releaseTreeLocks(ObjectManager $om, AdapterInterface $ea)
+    {
+        // Do nothing by default
     }
 
     /**
@@ -265,7 +463,7 @@ abstract class AbstractMaterializedPath implements Strategy
      * @param ObjectManager $om
      * @param object $meta - Metadata
      * @param object $config - config
-     * @param mixed $originalPath - original path of object
+     * @param string $originalPath - original path of object
      * @return Doctrine\ODM\MongoDB\Cursor
      */
     abstract public function getChildren($om, $meta, $config, $originalPath);

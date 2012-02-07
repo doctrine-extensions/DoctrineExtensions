@@ -87,6 +87,17 @@ class Xml extends BaseXml
                     throw new InvalidMappingException("Tree type: $strategy is not available.");
                 }
                 $config['strategy'] = $strategy;
+                $config['activate_locking'] = $this->_getAttribute($xml->tree, 'activate-locking') === true ? true : false;
+
+                if ($lockingTimeout = $this->_getAttribute($xml->tree, 'locking-timeout')) {
+                    $config['locking_timeout'] = $lockingTimeout;
+
+                    if (!is_int($config['locking_timeout'])) {
+                        throw new InvalidMappingException("Tree Locking timeout must be an integer value.");
+                    }
+                } else {
+                    $config['locking_timeout'] = 3;
+                }
             }
             if (isset($xml->{'tree-closure'}) && $this->_isAttributeSet($xml->{'tree-closure'}, 'class')) {
                 $class = $this->_getAttribute($xml->{'tree-closure'}, 'class');
@@ -140,8 +151,17 @@ class Xml extends BaseXml
                         throw new InvalidMappingException("Tree PathSource field - [{$field}] type is not valid. It can be any of the integer variants, double, float or string in class - {$meta->name}");
                     }
                     $config['path_source'] = $field;
+                } elseif (isset($mapping->{'tree-lock-time'})) {
+                    if (!$this->isValidFieldForLockTime($meta, $field)) {
+                        throw new InvalidMappingException("Tree LockTime field - [{$field}] type is not valid. It must be \"date\" in class - {$meta->name}");
+                    }
+                    $config['lock_time'] = $field;
                 }
             }
+        }
+
+        if ($config['activate_locking'] && !isset($config['lock_time'])) {
+            throw new InvalidMappingException("You need to map a date field as the tree lock time field to activate locking support.");
         }
 
         if (isset($xmlDoctrine->{'many-to-one'})) {
@@ -211,6 +231,19 @@ class Xml extends BaseXml
     {
         $mapping = $meta->getFieldMapping($field);
         return $mapping && in_array($mapping['type'], $this->validPathSourceTypes);
+    }
+
+    /**
+     * Checks if $field type is valid for LockTime field
+     *
+     * @param object $meta
+     * @param string $field
+     * @return boolean
+     */
+    protected function isValidFieldForLockTime($meta, $field)
+    {
+        $mapping = $meta->getFieldMapping($field);
+        return $mapping && $mapping['type'] === 'date';
     }
 
     /**

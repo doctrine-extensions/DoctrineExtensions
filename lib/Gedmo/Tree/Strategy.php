@@ -92,6 +92,15 @@ interface Strategy
     function processPrePersist($om, $object);
 
     /**
+     * Operations on tree node update
+     *
+     * @param object $om - object manager
+     * @param object $object - node
+     * @return void
+     */
+    function processPreUpdate($om, $object);
+
+    /**
      * Operations on tree node insertions
      *
      * @param object $om - object manager
@@ -102,10 +111,31 @@ interface Strategy
     function processPostPersist($om, $object, AdapterInterface $ea);
 
     /**
+     * Operations on tree node updates
+     *
+     * @param object $om - object manager
+     * @param object $object - node
+     * @param AdapterInterface $ea - event adapter
+     * @return void
+     */
+    function processPostUpdate($om, $object, AdapterInterface $ea);
+
+    /**
+     * Operations on tree node removals
+     *
+     * @param object $om - object manager
+     * @param object $object - node
+     * @param AdapterInterface $ea - event adapter
+     * @return void
+     */
+    function processPostRemove($om, $object, AdapterInterface $ea);
+
+    /**
      * Operations on the end of flush process
      *
      * @param object $om - object manager
+     * @param AdapterInterface $ea - event adapter
      * @return void
      */
-    function onFlushEnd($om);
+    function onFlushEnd($om, AdapterInterface $ea);
 }
