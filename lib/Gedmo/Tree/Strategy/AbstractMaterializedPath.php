@@ -38,6 +38,15 @@ abstract class AbstractMaterializedPath implements Strategy
     protected $scheduledForPathProcess = array();
 
     /**
+     * Array of objects which were scheduled for path process.
+     * This time, this array contains the objects with their ID
+     * already set
+     *
+     * @var array
+     */
+    protected $scheduledForPathProcessWithIdSet = array();
+
+    /**
      * {@inheritdoc}
      */
     public function __construct(TreeListener $listener)
@@ -60,9 +69,10 @@ abstract class AbstractMaterializedPath implements Strategy
     {
         $meta = $om->getClassMetadata(get_class($node));
         $config = $this->listener->getConfiguration($om, $meta->name);
+        $fieldMapping = $meta->getFieldMapping($config['path_source']);
 
-        if ($meta->isIdentifier($config['path_source'])) {
-            $this->scheduledForPathProcess[spl_object_hash($node)] = node;
+        if ($meta->isIdentifier($config['path_source']) || $fieldMapping['type'] === 'string') {
+            $this->scheduledForPathProcess[spl_object_hash($node)] = $node;
         } else {
             $this->updateNode($om, $node, $ea);
         }
@@ -97,10 +107,20 @@ abstract class AbstractMaterializedPath implements Strategy
      */
     public function processPostPersist($om, $node, AdapterInterface $ea)
     {
-        foreach ($this->scheduledForPathProcess as $node) {
-            $this->updateNode($om, $node, $ea);
+        $oid = spl_object_hash($node);
 
-            unset($this->scheduledForPathProcess[spl_object_hash($node)]);
+        if ($this->scheduledForPathProcess && array_key_exists($oid, $this->scheduledForPathProcess)) {
+            $this->scheduledForPathProcessWithIdSet[$oid] = $node;
+
+            unset($this->scheduledForPathProcess[$oid]);
+
+            if (empty($this->scheduledForPathProcess)) {
+                foreach ($this->scheduledForPathProcessWithIdSet as $oid => $node) {
+                    $this->updateNode($om, $node, $ea);
+
+                    unset($this->scheduledForPathProcessWithIdSet[$oid]);
+                }
+            }
         }
     }
 
@@ -109,7 +129,6 @@ abstract class AbstractMaterializedPath implements Strategy
      */
     public function onFlushEnd($om)
     {
-        $this->scheduledForPathProcess = array();
     }
 
     /**
@@ -162,7 +181,15 @@ abstract class AbstractMaterializedPath implements Strategy
         $pathProp->setAccessible(true);
         $pathSourceProp = $meta->getReflectionProperty($config['path_source']);
         $pathSourceProp->setAccessible(true);
-        $path = $pathSourceProp->getValue($node).$config['path_separator'];
+        $path = $pathSourceProp->getValue($node);
+        $fieldMapping = $meta->getFieldMapping($config['path_source']);
+
+        // If PathSource field is a string, we append the ID to the path
+        if ($fieldMapping['type'] === 'string') {
+            $path .= '-'.$meta->getIdentifierValue($node);
+        }
+
+        $path .= $config['path_separator'];
 
         if ($parent) {
             $changeSet = $uow->isScheduledForUpdate($parent) ? $ea->getObjectChangeSet($uow, $parent) : false;
@@ -174,7 +201,7 @@ abstract class AbstractMaterializedPath implements Strategy
 
             $path = $pathProp->getValue($parent).$path;
         }
-
+        
         $pathProp->setValue($node, $path);
         $changes = array(
             $config['path'] => array(null, $path)

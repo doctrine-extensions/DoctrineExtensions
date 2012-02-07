@@ -67,10 +67,10 @@ class MaterializedPathODMMongoDBTest extends BaseTestCaseMongoODM
         $this->dm->refresh($category3);
         $this->dm->refresh($category4);
 
-        $this->assertEquals($this->generatePath(array('1')), $category->getPath());
-        $this->assertEquals($this->generatePath(array('1', '2')), $category2->getPath());
-        $this->assertEquals($this->generatePath(array('1', '2', '3')), $category3->getPath());
-        $this->assertEquals($this->generatePath(array('4')), $category4->getPath());
+        $this->assertEquals($this->generatePath(array('1' => $category->getId())), $category->getPath());
+        $this->assertEquals($this->generatePath(array('1' => $category->getId(), '2' => $category2->getId())), $category2->getPath());
+        $this->assertEquals($this->generatePath(array('1' => $category->getId(), '2' => $category2->getId(), '3' => $category3->getId())), $category3->getPath());
+        $this->assertEquals($this->generatePath(array('4' => $category4->getId())), $category4->getPath());
         $this->assertEquals(1, $category->getLevel());
         $this->assertEquals(2, $category2->getLevel());
         $this->assertEquals(3, $category3->getLevel());
@@ -86,9 +86,9 @@ class MaterializedPathODMMongoDBTest extends BaseTestCaseMongoODM
         $this->dm->refresh($category2);
         $this->dm->refresh($category3);
 
-        $this->assertEquals($this->generatePath(array('1')), $category->getPath());
-        $this->assertEquals($this->generatePath(array('2')), $category2->getPath());
-        $this->assertEquals($this->generatePath(array('2', '3')), $category3->getPath());
+        $this->assertEquals($this->generatePath(array('1' => $category->getId())), $category->getPath());
+        $this->assertEquals($this->generatePath(array('2' => $category2->getId())), $category2->getPath());
+        $this->assertEquals($this->generatePath(array('2' => $category2->getId(), '3' => $category3->getId())), $category3->getPath());
         $this->assertEquals(1, $category->getLevel());
         $this->assertEquals(1, $category2->getLevel());
         $this->assertEquals(2, $category3->getLevel());
@@ -116,6 +116,12 @@ class MaterializedPathODMMongoDBTest extends BaseTestCaseMongoODM
 
     public function generatePath(array $sources)
     {
-        return implode($this->config['path_separator'], $sources).$this->config['path_separator'];
+        $path = '';
+
+        foreach ($sources as $p => $id) {
+            $path .= $p.'-'.$id.$this->config['path_separator'];
+        }
+
+        return $path;
     }
 }
