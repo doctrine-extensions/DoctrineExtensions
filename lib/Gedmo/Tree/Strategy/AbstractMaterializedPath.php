@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Doctrine\ORM\Query;
 use Doctrine\Common\Persistence\ObjectManager;
 use Gedmo\Mapping\Event\AdapterInterface;
+use Gedmo\Exception\RuntimeException;
 
 /**
  * This strategy makes tree using materialized path strategy
@@ -182,6 +183,14 @@ abstract class AbstractMaterializedPath implements Strategy
         $pathSourceProp = $meta->getReflectionProperty($config['path_source']);
         $pathSourceProp->setAccessible(true);
         $path = $pathSourceProp->getValue($node);
+
+        // We need to avoid the presence of the path separator in the path source
+        if (strpos($path, $config['path_separator']) !== false) {
+            $msg = 'You can\'t use the Path separator ("%s") as a character for your PathSource field value.';
+
+            throw new RuntimeException(sprintf($msg, $config['path_separator']));
+        }
+
         $fieldMapping = $meta->getFieldMapping($config['path_source']);
 
         // If PathSource field is a string, we append the ID to the path

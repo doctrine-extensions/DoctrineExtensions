@@ -108,6 +108,20 @@ class MaterializedPathODMMongoDBTest extends BaseTestCaseMongoODM
         $this->assertEquals(1, $firstResult->getLevel());
     }
 
+    /**
+     * @test
+     */
+    public function useOfSeparatorInPathSourceShouldThrowAnException()
+    {
+        $this->setExpectedException('Gedmo\Exception\RuntimeException');
+
+        $category = $this->createCategory();
+        $category->setTitle('1|');
+
+        $this->dm->persist($category);
+        $this->dm->flush();
+    }
+
     public function createCategory()
     {
         $class = self::CATEGORY;
