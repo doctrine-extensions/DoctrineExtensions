@@ -216,7 +216,7 @@ class LoggableListener extends MappedEventSubscriber
      * @param LoggableAdapter $ea
      * @return void
      */
-    private function createLogEntry($action, $object, LoggableAdapter $ea)
+    protected function createLogEntry($action, $object, LoggableAdapter $ea)
     {
         $om = $ea->getObjectManager();
         $wrapped = AbstractWrapper::wrap($object, $om);
