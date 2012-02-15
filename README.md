@@ -12,7 +12,7 @@ master branch is based on 2.3.x versions and may not work with older components.
 **2012-02-15**
 
 - Add option to force **Translatable** store translation in default locale like any other.
-See (documentation)(http://github.com/l3pp4rd/DoctrineExtensions/blob/master/doc/translatable.md#advanced-examples)
+See [documentation](http://github.com/l3pp4rd/DoctrineExtensions/blob/master/doc/translatable.md#advanced-examples)
 
 **2012-01-29**
 
@@ -26,7 +26,7 @@ To upgrade your source code follow the [upgrade guide](https://github.com/l3pp4r
 - Library now can map only **MappedSuperclass**es which would avoid generation of **ext_**
 tables which might not be used. Also it provides [convinient methods](https://github.com/l3pp4rd/DoctrineExtensions/blob/master/lib/Gedmo/DoctrineExtensions.php#L66)
 to hook extension metadata drivers into metadata driver chain.
-- [Example demo application](example/em.php) has a detailed configuration provided, which
+- [Example demo application](https://github.com/l3pp4rd/DoctrineExtensions/blob/master/example/em.php) has a detailed configuration provided, which
 explains and shows how extensions can or should be used with **Doctrine2** ORM. To install
 it follow the [steps](#example-demo).
 
