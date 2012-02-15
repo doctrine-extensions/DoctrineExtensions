@@ -9,6 +9,11 @@ master branch is based on 2.3.x versions and may not work with older components.
 
 ### Latest updates
 
+**2012-02-15**
+
+- Add option to force **Translatable** store translation in default locale like any other.
+See (documentation)(http://github.com/l3pp4rd/DoctrineExtensions/blob/master/doc/translatable.md#advanced-examples)
+
 **2012-01-29**
 
 - Translatable finally has **Personal Translations** which can relate through a real **foreign key**
@@ -40,28 +45,6 @@ support. In general extensions are **BC** with versions 2.1.x, 2.2.x of doctrine
 - My [blog](http://gediminasm.org) was recently rebuilt from scratch using symfony2.
 All recent documentation based on [extension docs](https://github.com/l3pp4rd/DoctrineExtensions/tree/master/doc)
 will be available there too. Also it will be a good example for symfony2 users.
-
-**2012-01-04**
-
-- Refactored translatable to be able to persist, update many translations
-using repository, [issue #224](https://github.com/l3pp4rd/DoctrineExtensions/issues/224)
-
-**2011-12-20**
-
-- Refactored html tree building function, see [documentation](https://github.com/l3pp4rd/DoctrineExtensions/blob/master/doc/tree.md)
-- Added [example](https://github.com/l3pp4rd/DoctrineExtensions/tree/master/example)
-on how to create entity manager with extensions hooked using environment without framework
-- To run this example follow the documentation on the bottom of this document
-
-**2011-10-30**
-
-- Support for doctrine common **2.2.x** with backward compatibility. Be sure to use all components
-from the specific version, etc.: **2.2.x** or **2.1.x** both are supported
-
-**2011-10-23**
-
-- [@everzet](https://github.com/everzet) has contributed the **Translator** behavior, which indeed
-is a more explicit way of handling translations in your projects
 
 ### Summary and features
 

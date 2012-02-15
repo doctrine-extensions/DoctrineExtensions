@@ -61,7 +61,7 @@ and any number of them
 - Public [Translatable repository](http://github.com/l3pp4rd/DoctrineExtensions "Translatable extension on Github") is available on github
 - Using other extensions on the same Entity fields may result in unexpected way
 - May inpact your application performace since it does an additional query for translation if loaded without query hint
-- Last update date: **2012-01-28**
+- Last update date: **2012-02-15**
 
 **Portability:**
 
@@ -574,9 +574,19 @@ To set translation fallback:
 $translatableListener->setTranslationFallback(true); // default is false
 ```
 
-**Note**: Default locale should be set on the **TranslationListener** initialization
+**Note**: Default locale should be set on the **TranslatableListener** initialization
 once, since it can impact your current records if it will be changed. As it
-will not store extra record in translation table. 
+will not store extra record in translation table by default.
+
+If you need to store translation in default locale, set:
+
+``` php
+<?php
+$translatableListener->setPersistDefaultLocaleTranslation(true); // default is false
+```
+
+This would always store translations in all locales, also keeping original record
+translated field values in default locale set.
 
 ### Translation Entity
 
