@@ -45,8 +45,8 @@ class NoInterfaceTest extends BaseTestCaseORM
             $test->getCreated()->format('Y-m-d H:i:s')
         );
         $this->assertEquals(
-            $date->format('Y-m-d H:i:s'),
-            $test->getUpdated()->format('Y-m-d H:i:s')
+            $date->format('Y-m-d H:i'),
+            $test->getUpdated()->format('Y-m-d H:i')
         );
     }
 

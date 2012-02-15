@@ -59,15 +59,15 @@ class TimestampableTest extends BaseTestCaseORM
             $sport->getCreated()->format('Y-m-d H:i:s')
         );
         $this->assertEquals(
-            $date->format('Y-m-d H:i:s'),
-            $sport->getUpdated()->format('Y-m-d H:i:s')
+            $date->format('Y-m-d H:i'),
+            $sport->getUpdated()->format('Y-m-d H:i')
         );
         $this->assertEquals(null, $sport->getPublished());
 
         $sportComment = $this->em->getRepository(self::COMMENT)->findOneByMessage('hello');
         $this->assertEquals(
-            $date->format('H:i:s'),
-            $sportComment->getModified()->format('H:i:s')
+            $date->format('H:i'),
+            $sportComment->getModified()->format('H:i')
         );
         $this->assertEquals(null, $sportComment->getClosed());
 
@@ -86,18 +86,13 @@ class TimestampableTest extends BaseTestCaseORM
 
         $sportComment = $this->em->getRepository(self::COMMENT)->findOneByMessage('hello');
         $this->assertEquals(
-            $date->format('Y-m-d H:i:s'),
-            $sportComment->getClosed()->format('Y-m-d H:i:s')
+            $date->format('Y-m-d H:i'),
+            $sportComment->getClosed()->format('Y-m-d H:i')
         );
 
-        $sport = $this->em->getRepository(self::ARTICLE)->findOneByTitle('Updated');
         $this->assertEquals(
-            $date->format('Y-m-d H:i:s'),
-            $sport->getUpdated()->format('Y-m-d H:i:s')
-        );
-        $this->assertEquals(
-            $date->format('Y-m-d H:i:s'),
-            $sport->getPublished()->format('Y-m-d H:i:s')
+            $date->format('Y-m-d H:i'),
+            $sport->getPublished()->format('Y-m-d H:i')
         );
     }
 
