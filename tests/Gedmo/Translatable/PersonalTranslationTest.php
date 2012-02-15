@@ -50,6 +50,18 @@ class PersonalTranslationTest extends BaseTestCaseORM
     /**
      * @test
      */
+    function shouldPersistDefaultLocaleTranslationIfRequired()
+    {
+        $this->translatableListener->setPersistDefaultLocaleTranslation(true);
+        $this->populate();
+        $article = $this->em->find(self::ARTICLE, array('id' => 1));
+        $translations = $article->getTranslations();
+        $this->assertEquals(3, count($translations));
+    }
+
+    /**
+     * @test
+     */
     function shouldCreateTranslations()
     {
         $this->populate();

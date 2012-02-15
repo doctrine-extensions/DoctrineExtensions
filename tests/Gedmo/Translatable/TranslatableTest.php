@@ -40,11 +40,35 @@ class TranslatableTest extends BaseTestCaseORM
         $evm->addEventSubscriber($this->translatableListener);
 
         $this->getMockSqliteEntityManager($evm);
-        $this->populate();
     }
 
-    public function testFixtureGeneratedTranslations()
+    /**
+     * @test
+     */
+    function shouldPersistDefaultLocaleTranslationIfRequired()
     {
+        $this->translatableListener->setPersistDefaultLocaleTranslation(true);
+
+        $article = new Article();
+        $article->setTitle('title in en');
+        $article->setContent('content in en');
+
+        $this->em->persist($article);
+        $this->em->flush();
+
+        $repo = $this->em->getRepository(self::TRANSLATION);
+
+        $translations = $repo->findTranslations($article);
+        $this->assertEquals(1, count($translations));
+        $this->assertArrayHasKey('en_us', $translations);
+    }
+
+    /**
+     * @test
+     */
+    function shouldGenerateTranslations()
+    {
+        $this->populate();
         $repo = $this->em->getRepository(self::TRANSLATION);
         $this->assertTrue($repo instanceof Entity\Repository\TranslationRepository);
 
@@ -163,10 +187,11 @@ class TranslatableTest extends BaseTestCaseORM
     }
 
     /**
-     * Translation fallback, related to issue #9 on github
+     * @test
      */
-    public function testTranslationFallback()
+    function shouldSolveTranslationFallbackGithubIssue9()
     {
+        $this->populate();
         $this->translatableListener->setTranslationFallback(false);
         $this->translatableListener->setTranslatableLocale('ru_RU');
 
@@ -186,7 +211,10 @@ class TranslatableTest extends BaseTestCaseORM
         $this->assertEquals($article->getContent(), 'content in en');
     }
 
-    public function testGithubIssue64()
+    /**
+     * @test
+     */
+    function shouldSolveGithubIssue64()
     {
         $judo = new Sport;
         $judo->setTitle('Judo');

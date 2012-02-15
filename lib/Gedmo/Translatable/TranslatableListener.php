@@ -98,6 +98,14 @@ class TranslatableListener extends MappedEventSubscriber
     private $translatedInLocale = array();
 
     /**
+     * Wether or not, to persist default locale
+     * translation or keep it in original record
+     *
+     * @var boolean
+     */
+    private $persistDefaultLocaleTranslation = false;
+
+    /**
      * Specifies the list of events to listen
      *
      * @return array
@@ -121,6 +129,19 @@ class TranslatableListener extends MappedEventSubscriber
     public function setSkipOnLoad($bool)
     {
         $this->skipOnLoad = (bool)$bool;
+        return $this;
+    }
+
+    /**
+     * Wether or not, to persist default locale
+     * translation or keep it in original record
+     *
+     * @param boolean $bool
+     * @return \Gedmo\Translatable\TranslatableListener
+     */
+    public function setPersistDefaultLocaleTranslation($bool)
+    {
+        $this->persistDefaultLocaleTranslation = (bool)$bool;
         return $this;
     }
 
@@ -477,7 +498,10 @@ class TranslatableListener extends MappedEventSubscriber
                 );
             }
             // create new translation if translation not already created and locale is differentent from default locale, otherwise, we have the date in the original record
-            if (!$translation && $locale !== $this->defaultLocale) {
+            $persistNewTranslation = !$translation
+                && ($locale !== $this->defaultLocale || $this->persistDefaultLocaleTranslation)
+            ;
+            if ($persistNewTranslation) {
                 $translation = new $translationClass();
                 $translation->setLocale($locale);
                 $translation->setField($field);
@@ -487,7 +511,6 @@ class TranslatableListener extends MappedEventSubscriber
                     $translation->setObjectClass($meta->name);
                     $translation->setForeignKey($objectId);
                 }
-                $scheduleUpdate = !$isInsert;
             }
 
             if ($translation) {
