@@ -190,7 +190,6 @@ class Nested implements Strategy
         }
         $rootId = isset($config['root']) ? $wrapped->getPropertyValue($config['root']) : null;
         $diff = $rightValue - $leftValue + 1;
-        $this->shiftRL($em, $config['useObjectClass'], $rightValue + 1, -$diff, $rootId);
         if ($diff > 2) {
             $dql = "SELECT node FROM {$config['useObjectClass']} node";
             $dql .= " WHERE node.{$config['left']} BETWEEN :left AND :right";
@@ -206,6 +205,7 @@ class Nested implements Strategy
                 $uow->scheduleForDelete($removalNode);
             }
         }
+        $this->shiftRL($em, $config['useObjectClass'], $rightValue + 1, -$diff, $rootId);
     }
 
     /**
