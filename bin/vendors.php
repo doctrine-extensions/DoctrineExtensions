@@ -40,10 +40,10 @@ $deps23x = array(
     array('doctrine-mongodb', 'http://github.com/doctrine/mongodb.git', 'd7fdcff25b'),
     array('doctrine-mongodb-odm', 'http://github.com/doctrine/mongodb-odm.git', 'e8c0bfb975'),
 
-    array('Symfony/Component/ClassLoader', 'http://github.com/symfony/ClassLoader.git', 'v2.1.0'),
-    array('Symfony/Component/Console', 'http://github.com/symfony/Console.git', 'v2.1.0'),
-    array('Symfony/Component/Finder', 'http://github.com/symfony/Finder.git', 'v2.1.0'),
-    array('Symfony/Component/Yaml', 'http://github.com/symfony/Yaml.git', 'v2.1.0'),
+    array('Symfony/Component/ClassLoader', 'http://github.com/symfony/ClassLoader.git', 'v2.0.10'),
+    array('Symfony/Component/Console', 'http://github.com/symfony/Console.git', 'v2.0.10'),
+    array('Symfony/Component/Finder', 'http://github.com/symfony/Finder.git', 'v2.0.10'),
+    array('Symfony/Component/Yaml', 'http://github.com/symfony/Yaml.git', 'v2.0.10'),
 );
 
 foreach ($deps23x as $dep) {
