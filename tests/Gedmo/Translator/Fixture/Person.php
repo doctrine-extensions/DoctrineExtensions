@@ -27,6 +27,11 @@ class Person
      * @ORM\Column(name="desc", type="string", length=128)
      */
     public $description;
+    
+    /**
+     * @ORM\Column(name="last_name", type="string", length=128, nullable=true)
+     */
+    public $lastName;
 
     public function getId()
     {
@@ -51,6 +56,16 @@ class Person
     public function getDescription()
     {
         return $this->description;
+    }
+    
+    public function getLastName()
+    {
+        return $this->lastName;
+    }
+    
+    public function setLastName($name)
+    {
+        $this->lastName = $name;
     }
 
 
@@ -96,7 +111,7 @@ class Person
 
         return new \Gedmo\Translator\TranslationProxy($this,
         /* Locale                            */ $locale,
-        /* List of translatable properties:  */ array('name'),
+        /* List of translatable properties:  */ array('name', 'lastName'),
         /* Translation entity class:         */ 'Translator\Fixture\PersonTranslation',
         /* Translations collection property: */ $this->translations
         );
