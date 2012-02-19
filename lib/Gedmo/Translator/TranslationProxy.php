@@ -49,7 +49,7 @@ class TranslationProxy
     {
         $matches = array();
         if (preg_match('/^(set|get)(.*)$/', $method, $matches)) {
-            $property = strtolower($matches[2]);
+            $property = lcfirst($matches[2]);
 
             if (in_array($property, $this->properties)) {
                 switch ($matches[1]) {
