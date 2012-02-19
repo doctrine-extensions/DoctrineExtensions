@@ -249,9 +249,17 @@ abstract class BaseTestCaseOM extends \PHPUnit_Framework_TestCase
             ->method('getClassMetadataFactoryName')
             ->will($this->returnValue('Doctrine\\ODM\\MongoDB\\Mapping\\ClassMetadataFactory'));
 
-        $config->expects($this->any())
+        $config
+            ->expects($this->any())
             ->method('getMongoCmd')
-            ->will($this->returnValue('$'));
+            ->will($this->returnValue('$'))
+        ;
+
+        $config
+            ->expects($this->any())
+            ->method('getDefaultCommitOptions')
+            ->will($this->returnValue(array('safe' => true)))
+        ;
 
         if (is_null($mappingDriver)) {
             $mappingDriver = $this->getDefaultMongoODMMetadataDriverImplementation();

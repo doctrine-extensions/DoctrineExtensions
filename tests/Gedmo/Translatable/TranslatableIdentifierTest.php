@@ -33,10 +33,21 @@ class TranslatableIdentifierTest extends BaseTestCaseORM
         $this->translatableListener->setDefaultLocale('en_us');
         $evm->addEventSubscriber($this->translatableListener);
 
+        $conn = array(
+                    'driver' => 'pdo_mysql',
+                    'host' => '127.0.0.1',
+                    'dbname' => 'test',
+                    'user' => 'root',
+                    'password' => 'nimda'
+        );
+        //$this->getMockCustomEntityManager($conn, $evm);
         $this->getMockSqliteEntityManager($evm);
     }
 
-    public function testStringIdentifier()
+    /**
+     * @test
+     */
+    function shouldHandleStringIdentifier()
     {
         $object = new StringIdentifier();
         $object->setTitle('title in en');
@@ -80,21 +91,19 @@ class TranslatableIdentifierTest extends BaseTestCaseORM
         $this->assertEquals('title in de', $translations['de_de']['title']);
 
         // dql test object hydration
-        $q = $this->em->createQuery('SELECT si FROM ' . self::FIXTURE . ' si WHERE si.uid = :id');
-        $data = $q->execute(
-            array('id' => $this->testObjectId),
-            \Doctrine\ORM\Query::HYDRATE_OBJECT
-        );
+        $q = $this->em
+            ->createQuery('SELECT si FROM ' . self::FIXTURE . ' si WHERE si.uid = :id')
+            ->setParameter('id', $this->testObjectId)
+            ->useResultCache(false)
+        ;
+        $data = $q->getResult();
         $this->assertEquals(count($data), 1);
         $object = $data[0];
         $this->assertEquals('title in en', $object->getTitle());
 
+        $this->em->clear(); // based on 2.3.0 it caches in identity map
         $this->translatableListener->setTranslatableLocale('de_de');
-        $q = $this->em->createQuery('SELECT si FROM ' . self::FIXTURE . ' si WHERE si.uid = :id');
-        $data = $q->execute(
-            array('id' => $this->testObjectId),
-            \Doctrine\ORM\Query::HYDRATE_OBJECT
-        );
+        $data = $q->getResult();
         $this->assertEquals(count($data), 1);
         $object = $data[0];
         $this->assertEquals('title in de', $object->getTitle());
