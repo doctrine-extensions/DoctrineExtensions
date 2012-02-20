@@ -259,7 +259,15 @@ abstract class AbstractMaterializedPath implements Strategy
 
         // If PathSource field is a string, we append the ID to the path
         if ($fieldMapping['type'] === 'string') {
-            $path .= '-'.$meta->getIdentifierValue($node);
+            if (method_exists($meta, 'getIdentifierValue')) {
+                $identifier = $meta->getIdentifierValue($node);
+            } else {
+                $identifierProp = $meta->getReflectionProperty($meta->getSingleIdentifierFieldName());
+                $identifierProp->setAccessible(true);
+                $identifier = $identifierProp->getValue($node);
+            }
+
+            $path .= '-'.$identifier;
         }
 
         $path .= $config['path_separator'];

@@ -3,9 +3,7 @@
 namespace Gedmo\Tree;
 
 use Doctrine\Common\EventManager;
-use Tool\BaseTestCaseMongoODM;
-use Doctrine\Common\Util\Debug;
-use Tree\Fixture\RootCategory;
+use Tool\BaseTestCaseORM;
 
 /**
  * These are tests for Tree behavior
@@ -16,9 +14,9 @@ use Tree\Fixture\RootCategory;
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class MaterializedPathODMMongoDBTest extends BaseTestCaseMongoODM
+class MaterializedPathORMTest extends BaseTestCaseORM
 {
-    const CATEGORY = "Tree\\Fixture\\Document\\Category";
+    const CATEGORY = "Tree\\Fixture\\MPCategory";
 
     protected $config;
     protected $listener;
@@ -32,10 +30,10 @@ class MaterializedPathODMMongoDBTest extends BaseTestCaseMongoODM
         $evm = new EventManager;
         $evm->addEventSubscriber($this->listener);
 
-        $this->getMockDocumentManager($evm);
+        $this->getMockSqliteEntityManager($evm);
 
-        $meta = $this->dm->getClassMetadata(self::CATEGORY);
-        $this->config = $this->listener->getConfiguration($this->dm, $meta->name);
+        $meta = $this->em->getClassMetadata(self::CATEGORY);
+        $this->config = $this->listener->getConfiguration($this->em, $meta->name);
     }
 
     /**
@@ -56,16 +54,16 @@ class MaterializedPathODMMongoDBTest extends BaseTestCaseMongoODM
         $category2->setParent($category);
         $category3->setParent($category2);
 
-        $this->dm->persist($category4);
-        $this->dm->persist($category3);
-        $this->dm->persist($category2);
-        $this->dm->persist($category);
-        $this->dm->flush();
+        $this->em->persist($category4);
+        $this->em->persist($category3);
+        $this->em->persist($category2);
+        $this->em->persist($category);
+        $this->em->flush();
 
-        $this->dm->refresh($category);
-        $this->dm->refresh($category2);
-        $this->dm->refresh($category3);
-        $this->dm->refresh($category4);
+        $this->em->refresh($category);
+        $this->em->refresh($category2);
+        $this->em->refresh($category3);
+        $this->em->refresh($category4);
 
         $this->assertEquals($this->generatePath(array('1' => $category->getId())), $category->getPath());
         $this->assertEquals($this->generatePath(array('1' => $category->getId(), '2' => $category2->getId())), $category2->getPath());
@@ -79,12 +77,12 @@ class MaterializedPathODMMongoDBTest extends BaseTestCaseMongoODM
         // Update
         $category2->setParent(null);
 
-        $this->dm->persist($category2);
-        $this->dm->flush();
+        $this->em->persist($category2);
+        $this->em->flush();
 
-        $this->dm->refresh($category);
-        $this->dm->refresh($category2);
-        $this->dm->refresh($category3);
+        $this->em->refresh($category);
+        $this->em->refresh($category2);
+        $this->em->refresh($category3);
 
         $this->assertEquals($this->generatePath(array('1' => $category->getId())), $category->getPath());
         $this->assertEquals($this->generatePath(array('2' => $category2->getId())), $category2->getPath());
@@ -95,15 +93,15 @@ class MaterializedPathODMMongoDBTest extends BaseTestCaseMongoODM
         $this->assertEquals(1, $category4->getLevel());
 
         // Remove
-        $this->dm->remove($category);
-        $this->dm->remove($category2);
-        $this->dm->flush();
+        $this->em->remove($category);
+        $this->em->remove($category2);
+        $this->em->flush();
 
-        $result = $this->dm->createQueryBuilder()->find(self::CATEGORY)->getQuery()->execute();
+        $result = $this->em->createQueryBuilder()->select('c')->from(self::CATEGORY, 'c')->getQuery()->execute();
         
-        $firstResult = $result->getNext();
+        $firstResult = $result[0];
 
-        $this->assertEquals(1, $result->count());
+        $this->assertEquals(1, count($result));
         $this->assertEquals('4', $firstResult->getTitle());
         $this->assertEquals(1, $firstResult->getLevel());
     }
@@ -118,14 +116,21 @@ class MaterializedPathODMMongoDBTest extends BaseTestCaseMongoODM
         $category = $this->createCategory();
         $category->setTitle('1'.$this->config['path_separator']);
 
-        $this->dm->persist($category);
-        $this->dm->flush();
+        $this->em->persist($category);
+        $this->em->flush();
     }
 
     public function createCategory()
     {
         $class = self::CATEGORY;
         return new $class;
+    }
+
+    protected function getUsedEntityFixtures()
+    {
+        return array(
+            self::CATEGORY
+        );
     }
 
     public function generatePath(array $sources)

@@ -2,6 +2,8 @@
 
 namespace Gedmo\Tree\Mapping;
 
+use Gedmo\Exception\InvalidMappingException;
+
 /**
  * This is a validator for all mapping drivers for Tree
  * behavioral extension, containing methods to validate
