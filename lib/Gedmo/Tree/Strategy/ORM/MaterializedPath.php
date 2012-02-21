@@ -26,7 +26,7 @@ class MaterializedPath extends AbstractMaterializedPath
         $uow = $om->getUnitOfWork();
         $pathProp = $meta->getReflectionProperty($config['path']);
         $pathProp->setAccessible(true);
-        $path = $pathProp->getValue($node);
+        $path = addcslashes($pathProp->getValue($node), '%');
 
         // Remove node's children
         $qb = $om->createQueryBuilder();
@@ -46,6 +46,7 @@ class MaterializedPath extends AbstractMaterializedPath
      */
     public function getChildren($om, $meta, $config, $path)
     {
+        $path = addcslashes($path, '%');
         $qb = $om->createQueryBuilder($meta->name);
         $qb->select('e')
             ->from($meta->name, 'e')
