@@ -536,6 +536,7 @@ class TranslationListener extends MappedEventSubscriber
                     }
                 }
             }
+            unset($this->additionalTranslations[$oid]);
         }
     }
 }
