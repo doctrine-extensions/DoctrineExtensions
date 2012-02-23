@@ -1,12 +1,13 @@
 # Tree - Nestedset behavior extension for Doctrine 2
 
 **Tree** nested behavior will implement the standard Nested-Set behavior
-on your Entity. Tree supports different strategies and currently the alternative
-to **nested-set** can be **closure-table** tree. Also this behavior can be nested 
+on your Entity. Tree supports different strategies. Currently it supports
+**nested-set**, **closure-table** and **materialized-path**. Also this behavior can be nested
 with other extensions to translate or generated slugs of your tree nodes.
 
 Features:
 
+- Materialized Path strategy for ORM and ODM (MongoDB)
 - Closure tree strategy, may be faster in some cases where ordering does not matter
 - Support for multiple roots in nested-set
 - No need for other managers, implementation is through event listener
@@ -23,6 +24,9 @@ Thanks for contributions to:
 - **[comfortablynumb](http://github.com/comfortablynumb) Gustavo Adrian** for Closure strategy
 - **[everzet](http://github.com/everzet) Kudryashov Konstantin** for TreeLevel implementation
 - **[stof](http://github.com/stof) Christophe Coevoet** for getTreeLeafs function
+
+Update **2012-02-23**
+- Added a new strategy to support the "Materialized Path" tree model. It works on ODM (MongoDB) and ORM.
 
 Update **2011-05-07**
 
@@ -73,6 +77,7 @@ Content:
 - Basic usage [examples](#basic-examples)
 - Build [html tree](#html-tree)
 - Advanced usage [examples](#advanced-examples)
+- [Materialized Path](#materialized-path)
 
 <a name="including-extension"></a>
 
@@ -186,12 +191,21 @@ class Category
 ### Tree annotations:
 
 - **@Gedmo\Mapping\Annotation\Tree(type="strategy")** this **class annotation** is used to set the tree strategy by **type** parameter.
-Currently **nested** or **closure** strategy is supported
+Currently **nested**, **closure** or **materializedPath** strategies are supported. An additional "activateLocking" parameter
+is available if you use the "Materialized Path" strategy with MongoDB. It's used to activate the locking mechanism (more on that
+in the corresponding section).
 - **@Gedmo\Mapping\Annotation\TreeLeft** it will use this field to store tree **left** value
 - **@Gedmo\Mapping\Annotation\TreeRight** it will use this field to store tree **right** value
 - **@Gedmo\Mapping\Annotation\TreeParent** this will identify this column as the relation to **parent node**
 - **@Gedmo\Mapping\Annotation\TreeLevel** it will use this field to store tree**level**
 - **@Gedmo\Mapping\Annotation\TreeRoot** it will use this field to store tree**root** id value
+- **@Gedmo\Mapping\Annotation\TreePath** (Materialized Path only) it will use this field to store the "path". It has an
+optional parameter "separator" to define the separator used in the path
+- **@Gedmo\Mapping\Annotation\TreePathSource** (Materialized Path only) it will use this field as the source to
+ construct the "path"
+- **@Gedmo\Mapping\Annotation\TreeLockTime** (Materialized Path - ODM MongoDB only) this field is used if you need to
+use the locking mechanism with MongoDB. It persists the lock time if a root node is locked (more on that in the corresponding
+section).
 
 <a name="yaml-mapping"></a>
 
@@ -744,3 +758,246 @@ translated. Because the postLoad event never will be triggered
 Now the generated treenode slug will be translated by Translatable behavior
 
 Easy like that, any suggestions on improvements are very welcome
+
+<a name="materialized-path"></a>
+
+## Materialized Path
+
+### Important notes before defining the schema
+
+- If you use MongoDB you should activate the locking mechanism provided to avoid inconsistencies in cases where concurrent
+modifications on the tree could occur. Look at the MongoDB example of schema definition to see how it must be configured.
+- If your "TreePathSource" field is of type "string", then the primary key will be concatenated in the form: "value-id".
+ This is to allow you to use non-unique values as the path source. For example, this could be very useful if you need to
+ use the date as the path source (maybe to create a tree of comments and order them by date).
+- "TreePath" field can only be of types: string, text
+- "TreePathSource" field can only be of types: id, integer, smallint, bigint, string, int, float (I include here all the
+variations of the field types, including the ORM and ODM for MongoDB ones).
+- "TreeLockTime" must be of type "date" (used only in MongoDB for now).
+
+### ORM Entity example (Annotations)
+
+``` php
+<?php
+
+namespace Entity;
+
+use Gedmo\Mapping\Annotation as Gedmo;
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * @ORM\Entity(repositoryClass="Gedmo\Tree\Entity\Repository\MaterializedPathRepository")
+ * @Gedmo\Tree(type="materializedPath")
+ */
+class Category
+{
+    /**
+     * @ORM\Id
+     * @ORM\GeneratedValue
+     */
+    private $id;
+
+    /**
+     * @Gedmo\TreePath
+     * @ORM\Column(name="path", type="string", length=3000, nullable=true)
+     */
+    private $path;
+
+    /**
+     * @Gedmo\TreePathSource
+     * @ORM\Column(name="title", type="string", length=64)
+     */
+    private $title;
+
+    /**
+     * @Gedmo\TreeParent
+     * @ORM\ManyToOne(targetEntity="Category", inversedBy="children")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="SET NULL")
+     * })
+     */
+    private $parent;
+
+    /**
+     * @Gedmo\TreeLevel
+     * @ORM\Column(name="lvl", type="integer", nullable=true)
+     */
+    private $level;
+
+    /**
+     * @ORM\OneToMany(targetEntity="Category", mappedBy="parent")
+     */
+    private $children;
+
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    public function setTitle($title)
+    {
+        $this->title = $title;
+    }
+
+    public function getTitle()
+    {
+        return $this->title;
+    }
+
+    public function setParent(Category $parent = null)
+    {
+        $this->parent = $parent;
+    }
+
+    public function getParent()
+    {
+        return $this->parent;
+    }
+
+    public function setPath($path)
+    {
+        $this->path = $path;
+    }
+
+    public function getPath()
+    {
+        return $this->path;
+    }
+
+    public function getLevel()
+    {
+        return $this->level;
+    }
+}
+
+```
+
+### MongoDB example (Annotations)
+
+``` php
+<?php
+
+namespace Document;
+
+use Gedmo\Mapping\Annotation as Gedmo;
+use Doctrine\ODM\MongoDB\Mapping\Annotations as MONGO;
+
+/**
+ * @MONGO\Document(repositoryClass="Gedmo\Tree\Document\MongoDB\Repository\MaterializedPathRepository")
+ * @Gedmo\Tree(type="materializedPath", activateLocking=true)
+ */
+class Category
+{
+    /**
+     * @MONGO\Id
+     */
+    private $id;
+
+    /**
+     * @MONGO\Field(type="string")
+     * @Gedmo\TreePathSource
+     */
+    private $title;
+
+    /**
+     * @MONGO\Field(type="string")
+     * @Gedmo\TreePath(separator="|")
+     */
+    private $path;
+
+    /**
+     * @Gedmo\TreeParent
+     * @MONGO\ReferenceOne(targetDocument="Category")
+     */
+    private $parent;
+
+    /**
+     * @Gedmo\TreeLevel
+     * @MONGO\Field(type="int")
+     */
+    private $level;
+
+    /**
+     * @Gedmo\TreeLockTime
+     * @MONGO\Field(type="date")
+     */
+    private $lockTime;
+
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    public function setTitle($title)
+    {
+        $this->title = $title;
+    }
+
+    public function getTitle()
+    {
+        return $this->title;
+    }
+
+    public function setParent(Category $parent = null)
+    {
+        $this->parent = $parent;
+    }
+
+    public function getParent()
+    {
+        return $this->parent;
+    }
+
+    public function getLevel()
+    {
+        return $this->level;
+    }
+
+    public function getPath()
+    {
+        return $this->path;
+    }
+
+    public function getLockTime()
+    {
+        return $this->lockTime;
+    }
+}
+
+```
+
+### Path generation
+
+When an entity is inserted, a path is generated using the value of the field configured as the TreePathSource.
+If For example:
+
+``` php
+$food = new Category();
+$food->setTitle('Food');
+
+$em->persist($food);
+$em->flush();
+
+// This would print "Food-1" assuming the id is 1.
+echo $food->getPath();
+
+$fruits = new Category();
+$fruits->setTitle('Fruits');
+$fruits->setParent($food);
+
+$em->persist($fruits);
+$em->flush();
+
+// This would print "Food-1,Fruits-2" assuming that $food id is 1, $fruits id is 2 and separator = "|" (the default value)
+echo $fruits->getPath();
+
+```
+
+### Locking mechanism for MongoDB
+
+Why you need a locking mechanism for MongoDB? Sadly, MongoDB lacks of full transactional support, so if two or more
+users try to modify the same tree concurrently, it could lead to an inconsistent tree. So we've implemented a simple
+locking mechanism to avoid this type of problems. It works like this: As soon as a user tries to modify a node of a tree,
+it first check if the root node is locked (or if the current lock has expired). If it is locked, then it throws an
+exception of type "Gedmo\Exception\TreeLockingException". If it's not locked, it locks the tree and proceed with the
+modification.
