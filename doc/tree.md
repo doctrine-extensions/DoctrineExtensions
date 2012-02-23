@@ -988,7 +988,7 @@ $fruits->setParent($food);
 $em->persist($fruits);
 $em->flush();
 
-// This would print "Food-1,Fruits-2" assuming that $food id is 1, $fruits id is 2 and separator = "|" (the default value)
+// This would print "Food-1,Fruits-2" assuming that $food id is 1, $fruits id is 2 and separator = "," (the default value)
 echo $fruits->getPath();
 
 ```
