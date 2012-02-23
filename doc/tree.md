@@ -26,6 +26,7 @@ Thanks for contributions to:
 - **[stof](http://github.com/stof) Christophe Coevoet** for getTreeLeafs function
 
 Update **2012-02-23**
+
 - Added a new strategy to support the "Materialized Path" tree model. It works on ODM (MongoDB) and ORM.
 
 Update **2011-05-07**
@@ -58,7 +59,7 @@ Update **2011-02-02**
 because nodes may have changed values in database but not in memory. Flushing dirty nodes can lead to unexpected behaviour.
 - Closure tree implementation is experimental and not fully functional, so far not documented either
 - Public [Tree repository](http://github.com/l3pp4rd/DoctrineExtensions "Tree extension on Github") is available on github
-- Last update date: **2012-01-02**
+- Last update date: **2012-02-23**
 
 **Portability:**
 
@@ -767,13 +768,13 @@ Easy like that, any suggestions on improvements are very welcome
 
 - If you use MongoDB you should activate the locking mechanism provided to avoid inconsistencies in cases where concurrent
 modifications on the tree could occur. Look at the MongoDB example of schema definition to see how it must be configured.
-- If your "TreePathSource" field is of type "string", then the primary key will be concatenated in the form: "value-id".
+- If your **TreePathSource** field is of type "string", then the primary key will be concatenated in the form: "value-id".
  This is to allow you to use non-unique values as the path source. For example, this could be very useful if you need to
  use the date as the path source (maybe to create a tree of comments and order them by date).
-- "TreePath" field can only be of types: string, text
-- "TreePathSource" field can only be of types: id, integer, smallint, bigint, string, int, float (I include here all the
+- **TreePath** field can only be of types: string, text
+- **TreePathSource** field can only be of types: id, integer, smallint, bigint, string, int, float (I include here all the
 variations of the field types, including the ORM and ODM for MongoDB ones).
-- "TreeLockTime" must be of type "date" (used only in MongoDB for now).
+- **TreeLockTime** must be of type "date" (used only in MongoDB for now).
 
 ### ORM Entity example (Annotations)
 
@@ -988,7 +989,8 @@ $fruits->setParent($food);
 $em->persist($fruits);
 $em->flush();
 
-// This would print "Food-1,Fruits-2" assuming that $food id is 1, $fruits id is 2 and separator = "," (the default value)
+// This would print "Food-1,Fruits-2" assuming that $food id is 1,
+// $fruits id is 2 and separator = "," (the default value)
 echo $fruits->getPath();
 
 ```
@@ -1000,4 +1002,7 @@ users try to modify the same tree concurrently, it could lead to an inconsistent
 locking mechanism to avoid this type of problems. It works like this: As soon as a user tries to modify a node of a tree,
 it first check if the root node is locked (or if the current lock has expired). If it is locked, then it throws an
 exception of type "Gedmo\Exception\TreeLockingException". If it's not locked, it locks the tree and proceed with the
-modification.
+modification. After all the modifications are done, the lock is freed. If, for some reason, the lock couldn't get freed,
+there's a lock timeout configured with a default time of 3 seconds. You can change this value using the
+**lockingTimeout** parameter under the Tree annotation (or equivalent in XML and YML). You must pass a value in seconds
+to this parameter.
