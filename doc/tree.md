@@ -21,13 +21,13 @@ Features:
 
 Thanks for contributions to:
 
-- **[comfortablynumb](http://github.com/comfortablynumb) Gustavo Adrian** for Closure strategy
+- **[comfortablynumb](http://github.com/comfortablynumb) Gustavo Falco** for Closure strategy
 - **[everzet](http://github.com/everzet) Kudryashov Konstantin** for TreeLevel implementation
 - **[stof](http://github.com/stof) Christophe Coevoet** for getTreeLeafs function
 
 Update **2012-02-23**
 
-- Added a new strategy to support the "Materialized Path" tree model. It works on ODM (MongoDB) and ORM.
+- Added a new strategy to support the "Materialized Path" tree model. It works with ODM (MongoDB) and ORM.
 
 Update **2011-05-07**
 
@@ -1000,9 +1000,11 @@ echo $fruits->getPath();
 Why you need a locking mechanism for MongoDB? Sadly, MongoDB lacks of full transactional support, so if two or more
 users try to modify the same tree concurrently, it could lead to an inconsistent tree. So we've implemented a simple
 locking mechanism to avoid this type of problems. It works like this: As soon as a user tries to modify a node of a tree,
-it first check if the root node is locked (or if the current lock has expired). If it is locked, then it throws an
-exception of type "Gedmo\Exception\TreeLockingException". If it's not locked, it locks the tree and proceed with the
-modification. After all the modifications are done, the lock is freed. If, for some reason, the lock couldn't get freed,
-there's a lock timeout configured with a default time of 3 seconds. You can change this value using the
-**lockingTimeout** parameter under the Tree annotation (or equivalent in XML and YML). You must pass a value in seconds
-to this parameter.
+it first check if the root node is locked (or if the current lock has expired).
+
+If it is locked, then it throws an exception of type "Gedmo\Exception\TreeLockingException". If it's not locked,
+it locks the tree and proceed with the modification. After all the modifications are done, the lock is freed.
+
+If, for some reason, the lock couldn't get freed, there's a lock timeout configured with a default time of 3 seconds.
+You can change this value using the **lockingTimeout** parameter under the Tree annotation (or equivalent in XML and YML).
+You must pass a value in seconds to this parameter.
