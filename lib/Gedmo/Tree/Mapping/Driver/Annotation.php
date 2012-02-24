@@ -165,8 +165,8 @@ class Annotation implements AnnotationDriverInterface
                 if (!$meta->hasField($field)) {
                     throw new InvalidMappingException("Unable to find 'root' - [{$field}] as mapped property in entity - {$meta->name}");
                 }
-                if (!$this->isValidField($meta, $field)) {
-                    throw new InvalidMappingException("Tree root field - [{$field}] type is not valid and must be 'integer' in class - {$meta->name}");
+                if (!$meta->getFieldMapping($field)) {
+                    throw new InvalidMappingException("Tree root field - [{$field}] type is not valid in class - {$meta->name}");
                 }
                 $config['root'] = $field;
             }

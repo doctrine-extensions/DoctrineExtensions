@@ -86,8 +86,8 @@ class Xml extends BaseXml
                     }
                     $config['right'] = $field;
                 } elseif (isset($mapping->{'tree-root'})) {
-                    if (!$this->isValidField($meta, $field)) {
-                        throw new InvalidMappingException("Tree root field - [{$field}] type is not valid and must be 'integer' in class - {$meta->name}");
+                    if (!$meta->getFieldMapping($field)) {
+                        throw new InvalidMappingException("Tree root field - [{$field}] type is not valid in class - {$meta->name}");
                     }
                     $config['root'] = $field;
                 } elseif (isset($mapping->{'tree-level'})) {

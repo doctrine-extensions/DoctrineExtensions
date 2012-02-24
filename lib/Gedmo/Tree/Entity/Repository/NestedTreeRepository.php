@@ -139,7 +139,7 @@ class NestedTreeRepository extends AbstractTreeRepository
         ;
         if (isset($config['root'])) {
             $rootId = $wrapped->getPropertyValue($config['root']);
-            $qb->andWhere("node.{$config['root']} = {$rootId}");
+            $qb->andWhere("node.{$config['root']} = ".$this->getIdExpression($rootId));
         }
         return $qb;
     }
@@ -191,11 +191,11 @@ class NestedTreeRepository extends AbstractTreeRepository
                     $qb = $this->_em->createQueryBuilder();
                     $qb->select('COUNT(node.' . $nodeId . ')')
                         ->from($config['useObjectClass'], 'node')
-                        ->where('node.' . $config['parent'] . ' = ' . $id);
+                        ->where('node.' . $config['parent'] . ' = ' . $this->getIdExpression($id));
 
                     if (isset($config['root'])) {
                         $rootId = $wrapped->getPropertyValue($config['root']);
-                        $qb->andWhere("node.{$config['root']} = {$rootId}");
+                        $qb->andWhere("node.{$config['root']} = ".$this->getIdExpression($rootId));
                     }
                     $q = $qb->getQuery();
                     $count = intval($q->getSingleScalarResult());
@@ -247,7 +247,7 @@ class NestedTreeRepository extends AbstractTreeRepository
                 }
                 if ($direct) {
                     $id = $wrapped->getIdentifier();
-                    $qb->where('node.' . $config['parent'] . ' = ' . $id);
+                    $qb->where('node.' . $config['parent'] . ' = ' . $this->getIdExpression($id));
                 } else {
                     $left = $wrapped->getPropertyValue($config['left']);
                     $right = $wrapped->getPropertyValue($config['right']);
@@ -260,7 +260,7 @@ class NestedTreeRepository extends AbstractTreeRepository
                 }
                 if (isset($config['root'])) {
                     $rootId = $wrapped->getPropertyValue($config['root']);
-                    $qb->andWhere("node.{$config['root']} = {$rootId}");
+                    $qb->andWhere("node.{$config['root']} = ".$this->getIdExpression($rootId));
                 }
             } else {
                 throw new \InvalidArgumentException("Node is not related to this repository");
@@ -350,7 +350,7 @@ class NestedTreeRepository extends AbstractTreeRepository
                 if (!$rootId) {
                     throw new InvalidArgumentException("Root node must be managed");
                 }
-                $qb->andWhere("node.{$config['root']} = {$rootId}");
+                $qb->andWhere("node.{$config['root']} = ".$this->getIdExpression($rootId));
             } else {
                 throw new InvalidArgumentException("Node is not related to this repository");
             }
@@ -430,7 +430,7 @@ class NestedTreeRepository extends AbstractTreeRepository
         if ($parent) {
             $wrappedParent = new EntityWrapper($parent, $this->_em);
             $parentId = $wrappedParent->getIdentifier();
-            $qb->andWhere("node.{$config['parent']} = {$parentId}");
+            $qb->andWhere("node.{$config['parent']} = ".$this->getIdExpression($parentId));
         } else {
             $qb->andWhere($qb->expr()->isNull('node.'.$config['parent']));
         }
@@ -498,7 +498,7 @@ class NestedTreeRepository extends AbstractTreeRepository
         if ($parent) {
             $wrappedParent = new EntityWrapper($parent, $this->_em);
             $parentId = $wrappedParent->getIdentifier();
-            $qb->andWhere("node.{$config['parent']} = {$parentId}");
+            $qb->andWhere("node.{$config['parent']} = ".$this->getIdExpression($parentId));
         } else {
             $qb->andWhere($qb->expr()->isNull('node.'.$config['parent']));
         }
@@ -624,7 +624,7 @@ class NestedTreeRepository extends AbstractTreeRepository
             $this->_em->getConnection()->beginTransaction();
             try {
                 $parent = $wrapped->getPropertyValue($config['parent']);
-                $parentId = 'NULL';
+                $parentId = null;
                 if ($parent) {
                     $wrappedParrent = new EntityWrapper($parent, $this->_em);
                     $parentId = $wrappedParrent->getIdentifier();
@@ -636,7 +636,7 @@ class NestedTreeRepository extends AbstractTreeRepository
                 // in case if root node is removed, childs become roots
                 if (isset($config['root']) && !$parent) {
                     $dql = "SELECT node.{$pk}, node.{$config['left']}, node.{$config['right']} FROM {$config['useObjectClass']} node";
-                    $dql .= " WHERE node.{$config['parent']} = {$nodeId}";
+                    $dql .= " WHERE node.{$config['parent']} = ".$this->getIdExpression($nodeId);
                     $nodes = $this->_em->createQuery($dql)->getArrayResult();
 
                     foreach ($nodes as $newRoot) {
@@ -656,9 +656,9 @@ class NestedTreeRepository extends AbstractTreeRepository
                         $q->getSingleScalarResult();
 
                         $dql = "UPDATE {$config['useObjectClass']} node";
-                        $dql .= ' SET node.' . $config['parent'] . ' = ' . $parentId;
-                        $dql .= ' WHERE node.' . $config['parent'] . ' = ' . $nodeId;
-                        $dql .= ' AND node.' . $config['root'] . ' = ' . $rootId;
+                        $dql .= ' SET node.' . $config['parent'] . ' = ' . $this->getIdExpression($parentId);
+                        $dql .= ' WHERE node.' . $config['parent'] . ' = ' . $this->getIdExpression($nodeId);
+                        $dql .= ' AND node.' . $config['root'] . ' = ' . $this->getIdExpression($rootId);
 
                         $q = $this->_em->createQuery($dql);
                         $q->getSingleScalarResult();
@@ -672,10 +672,10 @@ class NestedTreeRepository extends AbstractTreeRepository
                     }
                 } else {
                     $dql = "UPDATE {$config['useObjectClass']} node";
-                    $dql .= ' SET node.' . $config['parent'] . ' = ' . $parentId;
-                    $dql .= ' WHERE node.' . $config['parent'] . ' = ' . $nodeId;
+                    $dql .= ' SET node.' . $config['parent'] . ' = ' . $this->getIdExpression($parentId);
+                    $dql .= ' WHERE node.' . $config['parent'] . ' = ' . $this->getIdExpression($nodeId);
                     if (isset($config['root'])) {
-                        $dql .= ' AND node.' . $config['root'] . ' = ' . $rootId;
+                        $dql .= ' AND node.' . $config['root'] . ' = ' . $this->getIdExpression($rootId);
                     }
                     // @todo: update in memory nodes
                     $q = $this->_em->createQuery($dql);
@@ -849,7 +849,7 @@ class NestedTreeRepository extends AbstractTreeRepository
 
         $dql = "SELECT MIN(node.{$config['left']}) FROM {$config['useObjectClass']} node";
         if ($root) {
-            $dql .= " WHERE node.{$config['root']} = {$rootId}";
+            $dql .= " WHERE node.{$config['root']} = ".$this->getIdExpression($rootId);
         }
         $min = intval($this->_em->createQuery($dql)->getSingleScalarResult());
         $edge = $this->listener->getStrategy($this->_em, $meta->name)->max($this->_em, $config['useObjectClass'], $rootId);
@@ -858,7 +858,7 @@ class NestedTreeRepository extends AbstractTreeRepository
             $dql = "SELECT COUNT(node.{$identifier}) FROM {$config['useObjectClass']} node";
             $dql .= " WHERE (node.{$config['left']} = {$i} OR node.{$config['right']} = {$i})";
             if ($root) {
-                $dql .= " AND node.{$config['root']} = {$rootId}";
+                $dql .= " AND node.{$config['root']} = ".$this->getIdExpression($rootId);
             }
             $count = intval($this->_em->createQuery($dql)->getSingleScalarResult());
             if ($count !== 1) {
@@ -876,7 +876,7 @@ class NestedTreeRepository extends AbstractTreeRepository
         $dql .= " WHERE node.{$config['parent']} IS NOT NULL";
         $dql .= " AND parent.{$identifier} IS NULL";
         if ($root) {
-            $dql .= " AND node.{$config['root']} = {$rootId}";
+            $dql .= " AND node.{$config['root']} = ".$this->getIdExpression($rootId);
         }
         $nodes = $this->_em->createQuery($dql)->getArrayResult();
         if (count($nodes)) {
@@ -889,7 +889,7 @@ class NestedTreeRepository extends AbstractTreeRepository
         $dql = "SELECT node FROM {$config['useObjectClass']} node";
         $dql .= " WHERE node.{$config['right']} < node.{$config['left']}";
         if ($root) {
-            $dql .= " AND node.{$config['root']} = {$rootId}";
+            $dql .= " AND node.{$config['root']} = ".$this->getIdExpression($rootId);
         }
         $result = $this->_em->createQuery($dql)
             ->setMaxResults(1)
@@ -903,7 +903,7 @@ class NestedTreeRepository extends AbstractTreeRepository
 
         $dql = "SELECT node FROM {$config['useObjectClass']} node";
         if ($root) {
-            $dql .= " WHERE node.{$config['root']} = {$rootId}";
+            $dql .= " WHERE node.{$config['root']} = ".$this->getIdExpression($rootId);
         }
         $nodes = $this->_em->createQuery($dql)->getResult(Query::HYDRATE_OBJECT);
 
@@ -933,7 +933,7 @@ class NestedTreeRepository extends AbstractTreeRepository
                 $dql .= " WHERE node.{$config['left']} < {$left}";
                 $dql .= " AND node.{$config['right']} > {$right}";
                 if ($root) {
-                    $dql .= " AND node.{$config['root']} = {$rootId}";
+                    $dql .= " AND node.{$config['root']} = ".$this->getIdExpression($rootId);
                 }
                 $q = $this->_em->createQuery($dql);
                 if ($count = intval($q->getSingleScalarResult())) {
@@ -962,12 +962,12 @@ class NestedTreeRepository extends AbstractTreeRepository
         $dql = "UPDATE {$config['useObjectClass']} node";
         $dql .= ' SET node.' . $config['left'] . ' = 0,';
         $dql .= ' node.' . $config['right'] . ' = 0';
-        $dql .= ' WHERE node.' . $pk . ' = ' . $nodeId;
+        $dql .= ' WHERE node.' . $pk . ' = ' . $this->getIdExpression($nodeId);
         $this->_em->createQuery($dql)->getSingleScalarResult();
 
         // remove the node from database
         $dql = "DELETE {$config['useObjectClass']} node";
-        $dql .= " WHERE node.{$pk} = {$nodeId}";
+        $dql .= " WHERE node.{$pk} = ".$this->getIdExpression($nodeId);
         $this->_em->createQuery($dql)->getSingleScalarResult();
 
         // remove from identity map
@@ -1068,4 +1068,22 @@ class NestedTreeRepository extends AbstractTreeRepository
 
         return $build($nestedTree);
     }
+
+    /**
+     * get DQL expression for id value
+     *
+     * @param integer|string $id
+     * @return string
+     */
+    public function getIdExpression($id)
+    {
+        if(is_string($id)){
+            $id = $this->_em->getExpressionBuilder()->literal($id);
+        }
+        if($id === null){
+            $id = 'NULL';
+        }
+        return (string)$id;
+    }
+
 }
