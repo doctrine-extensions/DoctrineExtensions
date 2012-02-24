@@ -90,8 +90,8 @@ class Yaml extends File implements Driver
                         }
                         $config['level'] = $field;
                     } elseif (in_array('treeRoot', $fieldMapping['gedmo'])) {
-                        if (!$this->isValidField($meta, $field)) {
-                            throw new InvalidMappingException("Tree root field - [{$field}] type is not valid and must be 'integer' in class - {$meta->name}");
+                        if (!$meta->getFieldMapping($field)) {
+                            throw new InvalidMappingException("Tree root field - [{$field}] type is not valid in class - {$meta->name}");
                         }
                         $config['root'] = $field;
                     }

@@ -88,6 +88,24 @@ class Nested implements Strategy
     }
 
     /**
+     * get DQL expression for id value
+     *
+     * @param integer|string $id
+     * @param EntityManager $em
+     * @return string
+     */
+    private function getIdExpression($id, EntityManager $em)
+    {
+        if (is_string($id)) {
+            $id = $em->getExpressionBuilder()->literal($id);
+        }
+        if ($id === null) {
+            $id = 'NULL';
+        }
+        return (string)$id;
+    }
+
+    /**
      * Set node position strategy
      *
      * @param string $oid
@@ -194,7 +212,7 @@ class Nested implements Strategy
             $dql = "SELECT node FROM {$config['useObjectClass']} node";
             $dql .= " WHERE node.{$config['left']} BETWEEN :left AND :right";
             if (isset($config['root'])) {
-                $dql .= " AND node.{$config['root']} = {$rootId}";
+                $dql .= " AND node.{$config['root']} = ".$this->getIdExpression($rootId, $em);
             }
             $q = $em->createQuery($dql);
             // get nodes for deletion
@@ -355,7 +373,7 @@ class Nested implements Strategy
             $qb = $em->createQueryBuilder();
             $qb->update($config['useObjectClass'], 'node');
             if (isset($config['root'])) {
-                $qb->set('node.' . $config['root'], $newRootId);
+                $qb->set('node.' . $config['root'], $this->getIdExpression($newRootId, $em));
                 $wrapped->setPropertyValue($config['root'], $newRootId);
                 $em->getUnitOfWork()->setOriginalEntityProperty($oid, $config['root'], $newRootId);
             }
@@ -367,13 +385,13 @@ class Nested implements Strategy
             if (isset($newParent)) {
                 $wrappedNewParent = AbstractWrapper::wrap($newParent, $em);
                 $newParentId = $wrappedNewParent->getIdentifier();
-                $qb->set('node.' . $config['parent'], $newParentId);
+                $qb->set('node.' . $config['parent'], $this->getIdExpression($newParentId, $em));
                 $wrapped->setPropertyValue($config['parent'], $newParent);
                 $em->getUnitOfWork()->setOriginalEntityProperty($oid, $config['parent'], $newParent);
             }
             $qb->set('node.' . $config['left'], $left + $diff);
             $qb->set('node.' . $config['right'], $right + $diff);
-            $qb->where("node.{$identifierField} = {$nodeId}");
+            $qb->where("node.{$identifierField} = ".$this->getIdExpression($nodeId, $em));
             $qb->getQuery()->getSingleScalarResult();
             $wrapped->setPropertyValue($config['left'], $left + $diff);
             $wrapped->setPropertyValue($config['right'], $right + $diff);
@@ -397,7 +415,7 @@ class Nested implements Strategy
 
         $dql = "SELECT MAX(node.{$config['right']}) FROM {$config['useObjectClass']} node";
         if (isset($config['root']) && $rootId) {
-            $dql .= " WHERE node.{$config['root']} = {$rootId}";
+            $dql .= " WHERE node.{$config['root']} = ".$this->getIdExpression($rootId, $em);
         }
 
         $query = $em->createQuery($dql);
@@ -412,7 +430,7 @@ class Nested implements Strategy
      * @param string $class
      * @param integer $first
      * @param integer $delta
-     * @param integer $rootId
+     * @param integer|string $rootId
      * @return void
      */
     public function shiftRL(EntityManager $em, $class, $first, $delta, $rootId = null)
@@ -427,7 +445,7 @@ class Nested implements Strategy
         $dql .= " SET node.{$config['left']} = node.{$config['left']} {$sign} {$absDelta}";
         $dql .= " WHERE node.{$config['left']} >= {$first}";
         if (isset($config['root'])) {
-            $dql .= " AND node.{$config['root']} = {$rootId}";
+            $dql .= " AND node.{$config['root']} = ".$this->getIdExpression($rootId, $em);
         }
         $q = $em->createQuery($dql);
         $q->getSingleScalarResult();
@@ -436,7 +454,7 @@ class Nested implements Strategy
         $dql .= " SET node.{$config['right']} = node.{$config['right']} {$sign} {$absDelta}";
         $dql .= " WHERE node.{$config['right']} >= {$first}";
         if (isset($config['root'])) {
-            $dql .= " AND node.{$config['root']} = {$rootId}";
+            $dql .= " AND node.{$config['root']} = ".$this->getIdExpression($rootId, $em);
         }
         $q = $em->createQuery($dql);
         $q->getSingleScalarResult();
@@ -475,8 +493,8 @@ class Nested implements Strategy
      * @param integer $first
      * @param integer $last
      * @param integer $delta
-     * @param integer $rootId
-     * @param integer $destRootId
+     * @param integer|string $rootId
+     * @param integer|string $destRootId
      * @param integer $levelDelta
      * @return void
      */
@@ -494,7 +512,7 @@ class Nested implements Strategy
         $dql .= " SET node.{$config['left']} = node.{$config['left']} {$sign} {$absDelta}";
         $dql .= ", node.{$config['right']} = node.{$config['right']} {$sign} {$absDelta}";
         if (isset($config['root'])) {
-            $dql .= ", node.{$config['root']} = {$destRootId}";
+            $dql .= ", node.{$config['root']} = ".$this->getIdExpression($destRootId, $em);
         }
         if (isset($config['level'])) {
             $dql .= ", node.{$config['level']} = node.{$config['level']} {$levelSign} {$absLevelDelta}";
@@ -502,7 +520,7 @@ class Nested implements Strategy
         $dql .= " WHERE node.{$config['left']} >= {$first}";
         $dql .= " AND node.{$config['right']} <= {$last}";
         if (isset($config['root'])) {
-            $dql .= " AND node.{$config['root']} = {$rootId}";
+            $dql .= " AND node.{$config['root']} = ".$this->getIdExpression($rootId, $em);
         }
         $q = $em->createQuery($dql);
         $q->getSingleScalarResult();

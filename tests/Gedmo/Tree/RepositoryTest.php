@@ -5,7 +5,8 @@ namespace Gedmo\Tree;
 use Doctrine\Common\EventManager;
 use Tool\BaseTestCaseORM;
 use Doctrine\Common\Util\Debug,
-    Tree\Fixture\Category;
+    Tree\Fixture\Category,
+    Tree\Fixture\CategoryUuid;
 
 /**
  * These are tests for Tree behavior
@@ -18,6 +19,7 @@ use Doctrine\Common\Util\Debug,
 class RepositoryTest extends BaseTestCaseORM
 {
     const CATEGORY = "Tree\\Fixture\\Category";
+    const CATEGORY_UUID = "Tree\\Fixture\\CategoryUuid";
 
     protected function setUp()
     {
@@ -325,10 +327,100 @@ class RepositoryTest extends BaseTestCaseORM
         $this->assertTrue($repo->verify());
     }
 
+    public function testIssue273()
+    {
+        $this->populateUuid();
+
+        $vegies = $this->em->getRepository(self::CATEGORY_UUID)
+            ->findOneByTitle('Vegitables');
+
+        $food = $this->em->getRepository(self::CATEGORY_UUID)
+            ->findOneByTitle('Food');
+
+        // test childCount
+
+        $childCount = $this->em->getRepository(self::CATEGORY_UUID)
+            ->childCount($vegies);
+        $this->assertEquals(2, $childCount);
+
+        $childCount = $this->em->getRepository(self::CATEGORY_UUID)
+            ->childCount($food);
+        $this->assertEquals(4, $childCount);
+
+        $childCount = $this->em->getRepository(self::CATEGORY_UUID)
+            ->childCount($food, true);
+        $this->assertEquals(2, $childCount);
+
+        $childCount = $this->em->getRepository(self::CATEGORY_UUID)
+            ->childCount();
+        $this->assertEquals(6, $childCount);
+
+        // test children
+
+        $children = $this->em->getRepository(self::CATEGORY_UUID)
+            ->children($vegies);
+
+        $this->assertEquals(2, count($children));
+        $this->assertEquals('Carrots', $children[0]->getTitle());
+        $this->assertEquals('Potatoes', $children[1]->getTitle());
+
+        $children = $this->em->getRepository(self::CATEGORY_UUID)
+            ->children($food);
+
+        $this->assertEquals(4, count($children));
+        $this->assertEquals('Fruits', $children[0]->getTitle());
+        $this->assertEquals('Vegitables', $children[1]->getTitle());
+        $this->assertEquals('Carrots', $children[2]->getTitle());
+        $this->assertEquals('Potatoes', $children[3]->getTitle());
+
+        $children = $this->em->getRepository(self::CATEGORY_UUID)
+            ->children($food, true);
+
+        $this->assertEquals(2, count($children));
+        $this->assertEquals('Fruits', $children[0]->getTitle());
+        $this->assertEquals('Vegitables', $children[1]->getTitle());
+
+        $children = $this->em->getRepository(self::CATEGORY_UUID)
+            ->children();
+
+        $this->assertEquals(6, count($children));
+
+        // path
+
+        $path = $this->em->getRepository(self::CATEGORY_UUID)
+            ->getPath($vegies);
+
+        $this->assertEquals(2, count($path));
+        $this->assertEquals('Food', $path[0]->getTitle());
+        $this->assertEquals('Vegitables', $path[1]->getTitle());
+
+        $carrots = $this->em->getRepository(self::CATEGORY_UUID)
+            ->findOneByTitle('Carrots');
+
+        $path = $this->em->getRepository(self::CATEGORY_UUID)
+            ->getPath($carrots);
+
+        $this->assertEquals(3, count($path));
+        $this->assertEquals('Food', $path[0]->getTitle());
+        $this->assertEquals('Vegitables', $path[1]->getTitle());
+        $this->assertEquals('Carrots', $path[2]->getTitle());
+
+        // leafs
+
+        $leafs = $this->em->getRepository(self::CATEGORY_UUID)
+            ->getLeafs($path[0]);
+
+        $this->assertEquals(3, count($leafs));
+        $this->assertEquals('Fruits', $leafs[0]->getTitle());
+        $this->assertEquals('Carrots', $leafs[1]->getTitle());
+        $this->assertEquals('Potatoes', $leafs[2]->getTitle());
+    }
+
     protected function getUsedEntityFixtures()
     {
         return array(
-            self::CATEGORY
+            self::CATEGORY,
+            self::CATEGORY_UUID,
         );
     }
 
@@ -372,6 +464,40 @@ class RepositoryTest extends BaseTestCaseORM
         $childsChild->setParent($child2);
 
         $potatoes = new Category();
+        $potatoes->setTitle("Potatoes");
+        $potatoes->setParent($child2);
+
+        $this->em->persist($root);
+        $this->em->persist($root2);
+        $this->em->persist($child);
+        $this->em->persist($child2);
+        $this->em->persist($childsChild);
+        $this->em->persist($potatoes);
+        $this->em->flush();
+        $this->em->clear();
+    }
+
+    private function populateUuid()
+    {
+        $root = new CategoryUuid();
+        $root->setTitle("Food");
+
+        $root2 = new CategoryUuid();
+        $root2->setTitle("Sports");
+
+        $child = new CategoryUuid();
+        $child->setTitle("Fruits");
+        $child->setParent($root);
+
+        $child2 = new CategoryUuid();
+        $child2->setTitle("Vegitables");
+        $child2->setParent($root);
+
+        $childsChild = new CategoryUuid();
+        $childsChild->setTitle("Carrots");
+        $childsChild->setParent($child2);
+
+        $potatoes = new CategoryUuid();
         $potatoes->setTitle("Potatoes");
         $potatoes->setParent($child2);
 
