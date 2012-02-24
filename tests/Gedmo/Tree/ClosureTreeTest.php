@@ -6,6 +6,7 @@ use Doctrine\Common\EventManager;
 use Tool\BaseTestCaseORM;
 use Doctrine\Common\Util\Debug;
 use Tree\Fixture\Closure\Category;
+use Tree\Fixture\Closure\News;
 use Tree\Fixture\Closure\CategoryClosure;
 
 /**
@@ -24,6 +25,7 @@ class ClosureTreeTest extends BaseTestCaseORM
     const PERSON = "Tree\\Fixture\\Closure\\Person";
     const USER = "Tree\\Fixture\\Closure\\User";
     const PERSON_CLOSURE = "Tree\\Fixture\\Closure\\PersonClosure";
+    const NEWS = "Tree\\Fixture\\Closure\\News";
 
     protected function setUp()
     {
@@ -229,7 +231,8 @@ class ClosureTreeTest extends BaseTestCaseORM
             self::CLOSURE,
             self::PERSON,
             self::PERSON_CLOSURE,
-            self::USER
+            self::USER,
+            self::NEWS
         );
     }
 
@@ -295,5 +298,25 @@ class ClosureTreeTest extends BaseTestCaseORM
         $this->em->persist($mouldCheese);
 
         $this->em->flush();
+    }
+
+    public function testCascadePersistTree()
+    {
+        $politics = new Category();
+        $politics->setTitle('Politics');
+
+        $news = new News('Lorem ipsum', $politics);
+        $this->em->persist($news);
+        $this->em->flush();
+
+        $closure = $this->em->createQueryBuilder()
+                    ->select('c')
+                    ->from(self::CLOSURE, 'c')
+                    ->where('c.ancestor = :ancestor')
+                    ->setParameter('ancestor', $politics->getId())
+                    ->getQuery()
+                    ->getResult();
+
+        $this->assertEquals(1, count($closure));
     }
 }
