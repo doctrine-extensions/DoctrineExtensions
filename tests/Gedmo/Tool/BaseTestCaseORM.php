@@ -8,11 +8,13 @@ use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
 use Doctrine\ORM\EntityManager;
 use Doctrine\Common\EventManager;
 use Doctrine\ORM\Tools\SchemaTool;
+use Doctrine\ORM\Configuration;
 use Gedmo\Translatable\TranslatableListener;
 use Gedmo\Sluggable\SluggableListener;
 use Gedmo\Tree\TreeListener;
 use Gedmo\Timestampable\TimestampableListener;
 use Gedmo\Loggable\LoggableListener;
+use Gedmo\SoftDeleteable\SoftDeleteableListener;
 
 /**
  * Base test case contains common mock objects
@@ -53,14 +55,14 @@ abstract class BaseTestCaseORM extends \PHPUnit_Framework_TestCase
      * @param EventManager $evm
      * @return EntityManager
      */
-    protected function getMockSqliteEntityManager(EventManager $evm = null)
+    protected function getMockSqliteEntityManager(EventManager $evm = null, Configuration $config = null)
     {
         $conn = array(
             'driver' => 'pdo_sqlite',
             'memory' => true,
         );
 
-        $config = $this->getMockAnnotatedConfig();
+        $config = is_null($config) ? $this->getMockAnnotatedConfig() : $config;
         $em = EntityManager::create($conn, $config, $evm ?: $this->getEventManager());
 
         $schema = array_map(function($class) use ($em) {
@@ -195,6 +197,7 @@ abstract class BaseTestCaseORM extends \PHPUnit_Framework_TestCase
         $evm->addEventSubscriber(new LoggableListener);
         $evm->addEventSubscriber(new TranslatableListener);
         $evm->addEventSubscriber(new TimestampableListener);
+        $evm->addEventSubscriber(new SoftDeleteableListener);
         return $evm;
     }
 
@@ -203,9 +206,10 @@ abstract class BaseTestCaseORM extends \PHPUnit_Framework_TestCase
      *
      * @return Doctrine\ORM\Configuration
      */
-    private function getMockAnnotatedConfig()
+    protected function getMockAnnotatedConfig()
     {
         $config = $this->getMock('Doctrine\ORM\Configuration');
+
         $config
             ->expects($this->once())
             ->method('getProxyDir')

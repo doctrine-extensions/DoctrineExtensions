@@ -27,8 +27,41 @@ class SoftDeleteableListener extends MappedEventSubscriber
     {
         return array(
             'loadClassMetadata',
-            'preRemove'
+            'onFlush'
         );
+    }
+
+    /**
+     * If it's a SoftDeleteable object, update the "deletedAt" field
+     * and skip the removal of the object
+     *
+     * @param EventArgs $args
+     * @return void
+     */
+    public function onFlush(EventArgs $args)
+    {
+        $ea = $this->getEventAdapter($args);
+        $om = $ea->getObjectManager();
+        $uow = $om->getUnitOfWork();
+        
+        foreach ($uow->getScheduledEntityDeletions() as $entity) {
+            $meta = $om->getClassMetadata(get_class($entity));
+            $config = $this->getConfiguration($om, $meta->name);
+
+            if (isset($config['softDeleteable']) && $config['softDeleteable']) {
+                $reflProp = $meta->getReflectionProperty($config['fieldName']);
+                $reflProp->setAccessible(true);
+                $date = new \DateTime();
+                $oldValue = $reflProp->getValue($entity);
+                $reflProp->setValue($entity, $date);
+
+                $om->persist($entity);
+                $uow->propertyChanged($entity, $config['fieldName'], $oldValue, $date);
+                $uow->scheduleExtraUpdate($entity, array(
+                    $config['fieldName'] => array($oldValue, $date)
+                ));
+            }
+        }
     }
 
     /**
@@ -40,37 +73,7 @@ class SoftDeleteableListener extends MappedEventSubscriber
     public function loadClassMetadata(EventArgs $eventArgs)
     {
         $ea = $this->getEventAdapter($eventArgs);
-        $om = $ea->getObjectManager();
-        $meta = $eventArgs->getClassMetadata();
         $this->loadMetadataForObjectClass($ea->getObjectManager(), $eventArgs->getClassMetadata());
-        $config = isset($this->configurations[$meta->name]) ? $this->configurations[$meta->name] : array();
-        
-        if (isset($config['softDeleteable']) && $config['softDeleteable']) {
-            if ($config['autoMap']) {
-                $meta->mapField(array(
-                     'fieldName'         => $config['fieldName'],
-                     'id'                => false,
-                     'type'              => 'datetime',
-                     'nullable'          => true
-                ));
-
-                if ($cacheDriver = $om->getMetadataFactory()->getCacheDriver()) {
-                    $cacheDriver->save($meta->name."\$CLASSMETADATA", $meta, null);
-                }
-            }
-        }
-    }
-
-    /**
-     * If it's a SoftDeleteable object, update the "deletedAt" field
-     * and skip the removal of the object
-     *
-     * @param EventArgs $args
-     * @return void
-     */
-    public function preRemove(EventArgs $args)
-    {
-        
     }
 
     /**

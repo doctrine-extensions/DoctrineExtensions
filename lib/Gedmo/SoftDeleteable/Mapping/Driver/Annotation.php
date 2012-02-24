@@ -4,7 +4,8 @@ namespace Gedmo\SoftDeleteable\Mapping\Driver;
 
 use Gedmo\Mapping\Driver\AnnotationDriverInterface,
     Doctrine\Common\Persistence\Mapping\ClassMetadata,
-    Gedmo\Exception\InvalidMappingException;
+    Gedmo\Exception\InvalidMappingException,
+    Gedmo\SoftDeleteable\Mapping\Validator;
 
 /**
  * This is an annotation mapping driver for SoftDeleteable
@@ -50,20 +51,25 @@ class Annotation implements AnnotationDriverInterface
      */
     public function validateFullMetadata(ClassMetadata $meta, array $config)
     {
+        // Nothing here for now
     }
 
     /**
      * {@inheritDoc}
      */
-    public function readExtendedMetadata(ClassMetadata $meta, array &$config)
+    public function readExtendedMetadata($meta, array &$config)
     {
         $class = $meta->getReflectionClass();
         // class annotations
         if ($annot = $this->reader->getClassAnnotation($class, self::SOFT_DELETEABLE)) {
             $config['softDeleteable'] = true;
+
+            Validator::validateField($meta, $annot->fieldName);
+            
             $config['fieldName'] = $annot->fieldName;
-            $config['autoMap'] = $annot->autoMap;
         }
+
+        $this->validateFullMetadata($meta, $config);
     }
 
     /**
