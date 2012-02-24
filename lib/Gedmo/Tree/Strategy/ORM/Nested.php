@@ -94,12 +94,12 @@ class Nested implements Strategy
      * @param EntityManager $em
      * @return string
      */
-    public function getIdExpression($id, EntityManager $em)
+    private function getIdExpression($id, EntityManager $em)
     {
-        if(is_string($id)){
+        if (is_string($id)) {
             $id = $em->getExpressionBuilder()->literal($id);
         }
-        if($id === null){
+        if ($id === null) {
             $id = 'NULL';
         }
         return (string)$id;

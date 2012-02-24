@@ -1075,12 +1075,12 @@ class NestedTreeRepository extends AbstractTreeRepository
      * @param integer|string $id
      * @return string
      */
-    public function getIdExpression($id)
+    private function getIdExpression($id)
     {
-        if(is_string($id)){
+        if (is_string($id)) {
             $id = $this->_em->getExpressionBuilder()->literal($id);
         }
-        if($id === null){
+        if ($id === null) {
             $id = 'NULL';
         }
         return (string)$id;
