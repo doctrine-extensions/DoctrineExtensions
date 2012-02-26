@@ -9,6 +9,10 @@ master branch is based on 2.3.x versions and may not work with older components.
 
 ### Latest updates
 
+**2012-02-26**
+
+- Removed slug handlers, this functionality brought complucations which could not be maintained.
+
 **2012-02-15**
 
 - Add option to force **Translatable** store translation in default locale like any other.
@@ -53,13 +57,13 @@ offer new functionality or tools to use Doctrine2 more efficently. This package 
 used behaviors which can be easily attached to your event system of Doctrine2 and handle the
 records being flushed in the behavioral way. List of extensions:
 
-- Tree - this extension automates the tree handling process and adds some tree specific functions on repository. (closure or nestedset)
-- Translatable - gives you a very handy solution for translating records into diferent languages. Easy to setup, easier to use.
-- Sluggable - urlizes your specified fields into single unique slug
-- Timestampable - updates date fields on create, update and even property change.
-- Loggable - helps tracking changes and history of objects, also supports version managment.
-- Sortable - makes any document or entity sortable
-- Translator - explicit way to handle translations
+- **Tree** - this extension automates the tree handling process and adds some tree specific functions on repository. (closure or nestedset)
+- **Translatable** - gives you a very handy solution for translating records into diferent languages. Easy to setup, easier to use.
+- **Sluggable** - urlizes your specified fields into single unique slug
+- **Timestampable** - updates date fields on create, update and even property change.
+- **Loggable** - helps tracking changes and history of objects, also supports version managment.
+- **Sortable** - makes any document or entity sortable
+- **Translator** - explicit way to handle translations
 
 Currently these extensions support **Yaml**, **Annotation**  and **Xml** mapping. Additional mapping drivers
 can be easily implemented using Mapping extension to handle the additional metadata mapping.
@@ -126,16 +130,12 @@ To setup and run example follow these steps:
 
 ### Contributors:
 
-- acasademont [acasademont](https://github.com/acasademont)
+Thanks to [everyone participating](http://github.com/l3pp4rd/DoctrineExtensions/contributors) in
+the development of these great Doctrine2 extensions!
+
+And especialy ones who create and maintain new extensions:
+
 - Lukas Botsch [lbotsch](http://github.com/lbotsch)
-- Daniel Gomes [danielcsgomes](http://github.com/danielcsgomes)
-- megabite [oscarballadares](http://github.com/oscarballadares)
-- DinoWeb [dinoweb](http://github.com/dinoweb)
-- Miha Vrhovnik [mvrhov](http://github.com/mvrhov)
-- Clément JOBEILI [dator](http://github.com/dator)
-- Illya Klymov [xanf](http://github.com/xanf)
 - Gustavo Adrian [comfortablynumb](http://github.com/comfortablynumb)
 - Boussekeyt Jules [gordonslondon](http://github.com/gordonslondon)
-- Christophe Coevoet [stof](http://github.com/stof)
 - Kudryashov Konstantin [everzet](http://github.com/everzet)
-- Klein Florian [docteurklein](http://github.com/docteurklein)

@@ -69,19 +69,6 @@ class Xml extends BaseXml
                         }
                     }
 
-                    $handlers = array();
-                    if (isset($slug->handler)) {
-                        foreach ($slug->handler as $handler) {
-                            $class = (string)$this->_getAttribute($handler, 'class');
-                            $handlers[$class] = array();
-                            foreach ($handler->{'handler-option'} as $option) {
-                                $handlers[$class][(string)$this->_getAttribute($option, 'name')]
-                                    = (string)$this->_getAttribute($option, 'value')
-                                ;
-                            }
-                            $class::validate($handlers[$class], $meta);
-                        }
-                    }
                     // set all options
                     $config['slugs'][$field] = array(
                         'fields' => $fields,
@@ -94,7 +81,6 @@ class Xml extends BaseXml
                             (bool)$this->_getAttribute($slug, 'unique') : true,
                         'separator' => $this->_isAttributeSet($slug, 'separator') ?
                             $this->_getAttribute($slug, 'separator') : '-',
-                        'handlers' => $handlers
                     );
                     if ($meta->isIdentifier($field) && !$config['slugs'][$field]['unique']) {
                         throw new InvalidMappingException("Identifier field - [{$field}] slug must be unique in order to maintain primary key in class - {$meta->name}");

@@ -79,36 +79,4 @@ class SluggableMappingTest extends \PHPUnit_Framework_TestCase
         $this->assertArrayHasKey('updatable', $config['slugs']['slug']);
         $this->assertTrue($config['slugs']['slug']['updatable']);
     }
-
-    public function testSlugHandlerMapping()
-    {
-        $meta = $this->em->getClassMetadata(self::SLUGGABLE);
-        $cacheId = ExtensionMetadataFactory::getCacheId(
-            self::SLUGGABLE,
-            'Gedmo\Sluggable'
-        );
-        $config = $this->em->getMetadataFactory()->getCacheDriver()->fetch($cacheId);
-
-        $this->assertArrayHasKey('handlers', $config['slugs']['slug']);
-        $handlers = $config['slugs']['slug']['handlers'];
-        $this->assertEquals(2, count($handlers));
-        $this->assertArrayHasKey('Gedmo\Sluggable\Handler\TreeSlugHandler', $handlers);
-        $this->assertArrayHasKey('Gedmo\Sluggable\Handler\RelativeSlugHandler', $handlers);
-
-        $first = $handlers['Gedmo\Sluggable\Handler\TreeSlugHandler'];
-        $this->assertEquals(2, count($first));
-        $this->assertArrayHasKey('parentRelationField', $first);
-        $this->assertArrayHasKey('separator', $first);
-        $this->assertEquals('parent', $first['parentRelationField']);
-        $this->assertEquals('/', $first['separator']);
-
-        $second = $handlers['Gedmo\Sluggable\Handler\RelativeSlugHandler'];
-        $this->assertEquals(3, count($second));
-        $this->assertArrayHasKey('relationField', $second);
-        $this->assertArrayHasKey('relationSlugField', $second);
-        $this->assertArrayHasKey('separator', $second);
-        $this->assertEquals('user', $second['relationField']);
-        $this->assertEquals('slug', $second['relationSlugField']);
-        $this->assertEquals('/', $second['separator']);
-    }
 }

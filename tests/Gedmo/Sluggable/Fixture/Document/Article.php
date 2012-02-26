@@ -24,13 +24,7 @@ class Article
     private $code;
 
     /**
-     * @Gedmo\Slug(handlers={
-     *      @Gedmo\SlugHandler(class="Gedmo\Sluggable\Handler\InversedRelativeSlugHandler", options={
-     *          @Gedmo\SlugHandlerOption(name="relationClass", value="Sluggable\Fixture\Document\RelativeSlug"),
-     *          @Gedmo\SlugHandlerOption(name="mappedBy", value="article"),
-     *          @Gedmo\SlugHandlerOption(name="inverseSlugField", value="alias")
-     *      })
-     * }, separator="-", updatable=true, fields={"title", "code"})
+     * @Gedmo\Slug(separator="-", updatable=true, fields={"title", "code"})
      * @ODM\String
      */
     private $slug;
