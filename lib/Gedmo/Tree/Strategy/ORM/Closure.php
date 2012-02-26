@@ -10,7 +10,6 @@ use Doctrine\ORM\Proxy\Proxy;
 use Gedmo\Tree\TreeListener;
 use Doctrine\ORM\Version;
 use Gedmo\Tool\Wrapper\AbstractWrapper;
-use Gedmo\Tree\Node;
 
 /**
  * This strategy makes tree act like
@@ -190,13 +189,6 @@ class Closure implements Strategy
     public function processPostPersist($em, $entity)
     {
         $uow = $em->getUnitOfWork();
-        if ($uow->hasPendingInsertions()) {
-            $insertions = $uow->getScheduledEntityInsertions();
-            foreach ($insertions as $insertion) {
-                if ($insertion instanceof Node)
-                    return;
-            }
-        }
 
         while ($node = array_shift($this->pendingChildNodeInserts)) {
             $meta = $em->getClassMetadata(get_class($node));
