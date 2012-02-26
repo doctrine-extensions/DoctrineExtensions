@@ -4,8 +4,11 @@ namespace Gedmo\Translatable;
 
 use Doctrine\Common\EventManager;
 use Tool\BaseTestCaseORM;
-use Doctrine\Common\Util\Debug,
-    Translatable\Fixture\TemplatedArticle;
+use Doctrine\ORM\Query;
+use Translatable\Fixture\File;
+use Translatable\Fixture\Image;
+use Translatable\Fixture\TemplatedArticle;
+use Gedmo\Translatable\Query\TreeWalker\TranslationWalker;
 
 /**
  * These are tests for translatable behavior
@@ -22,6 +25,8 @@ class InheritanceTest extends BaseTestCaseORM
     const FILE = 'Translatable\\Fixture\\File';
     const IMAGE = 'Translatable\\Fixture\\Image';
 
+    const TREE_WALKER_TRANSLATION = 'Gedmo\\Translatable\\Query\\TreeWalker\\TranslationWalker';
+
     private $translatableListener;
 
     protected function setUp()
@@ -30,14 +35,17 @@ class InheritanceTest extends BaseTestCaseORM
 
         $evm = new EventManager;
         $this->translatableListener = new TranslatableListener();
-        $this->translatableListener->setTranslatableLocale('en_us');
-        $this->translatableListener->setDefaultLocale('en_us');
+        $this->translatableListener->setTranslatableLocale('en');
+        $this->translatableListener->setDefaultLocale('en');
         $evm->addEventSubscriber($this->translatableListener);
 
         $this->getMockSqliteEntityManager($evm);
     }
 
-    public function testTranslations()
+    /**
+     * @test
+     */
+    function shouldHandleMappedSuperclass()
     {
         $article = new TemplatedArticle();
         $article->setName('name in en');
@@ -56,7 +64,7 @@ class InheritanceTest extends BaseTestCaseORM
 
         // test second translations
         $article = $this->em->getRepository(self::ARTICLE)->find(1);
-        $this->translatableListener->setTranslatableLocale('de_de');
+        $this->translatableListener->setTranslatableLocale('de');
         $article->setName('name in de');
         $article->setContent('content in de');
         $article->setTitle('title in de');
@@ -67,27 +75,28 @@ class InheritanceTest extends BaseTestCaseORM
 
         $translations = $repo->findTranslations($article);
         $this->assertEquals(1, count($translations));
-        $this->assertArrayHasKey('de_de', $translations);
+        $this->assertArrayHasKey('de', $translations);
 
-        $this->assertArrayHasKey('name', $translations['de_de']);
-        $this->assertEquals('name in de', $translations['de_de']['name']);
+        $this->assertArrayHasKey('name', $translations['de']);
+        $this->assertEquals('name in de', $translations['de']['name']);
 
-        $this->assertArrayHasKey('title', $translations['de_de']);
-        $this->assertEquals('title in de', $translations['de_de']['title']);
+        $this->assertArrayHasKey('title', $translations['de']);
+        $this->assertEquals('title in de', $translations['de']['title']);
 
-        $this->assertArrayHasKey('content', $translations['de_de']);
-        $this->assertEquals('content in de', $translations['de_de']['content']);
-
-        $this->translatableListener->setTranslatableLocale('en_us');
+        $this->assertArrayHasKey('content', $translations['de']);
+        $this->assertEquals('content in de', $translations['de']['content']);
     }
 
-    public function testInheritedTable()
+    /**
+     * @test
+     */
+    function shouldHandleInheritedTranslationsThroughBaseObjectClass()
     {
-        $file = new \Translatable\Fixture\File;
+        $file = new File;
         $file->setSize(500);
         $file->setName('file en');
 
-        $image = new \Translatable\Fixture\Image;
+        $image = new Image;
         $image->setMime('mime en');
         $image->setName('image en');
         $image->setSize(445);
@@ -95,13 +104,10 @@ class InheritanceTest extends BaseTestCaseORM
         $this->em->persist($file);
         $this->em->persist($image);
         $this->em->flush();
-        $this->em->clear();
 
-        $this->translatableListener->setTranslatableLocale('de_de');
-        $file = $this->em->getRepository(self::FILE)->findOneByName('file en');
+        $this->translatableListener->setTranslatableLocale('de');
         $file->setName('file de');
 
-        $image = $this->em->getRepository(self::IMAGE)->findOneByName('image en');
         $image->setName('image de');
         $image->setMime('mime de');
 
@@ -109,28 +115,21 @@ class InheritanceTest extends BaseTestCaseORM
         $this->em->persist($image);
         $this->em->flush();
         $this->em->clear();
-        $this->translatableListener->setTranslatableLocale('en_us');
 
-        $repo = $this->em->getRepository(self::TRANSLATION);
-        $this->assertTrue($repo instanceof Entity\Repository\TranslationRepository);
+        $dql = 'SELECT f FROM ' . self::FILE . ' f';
+        $q = $this->em->createQuery($dql);
+        $q->setHint(Query::HINT_CUSTOM_OUTPUT_WALKER, self::TREE_WALKER_TRANSLATION);
 
-        $translations = $repo->findTranslations($file);
-        $this->assertEquals(1, count($translations));
+        $files = $q->getArrayResult();
+        $this->assertEquals(2, count($files));
+        $this->assertEquals('image de', $files[0]['name']);
+        $this->assertEquals('file de', $files[1]['name']);
 
-        $this->assertArrayHasKey('de_de', $translations);
-
-        $this->assertArrayHasKey('name', $translations['de_de']);
-        $this->assertEquals('file de', $translations['de_de']['name']);
-
-        $translations = $repo->findTranslations($image);
-        $this->assertEquals(1, count($translations));
-
-        $this->assertArrayHasKey('de_de', $translations);
-
-        $this->assertArrayHasKey('name', $translations['de_de']);
-        $this->assertEquals('image de', $translations['de_de']['name']);
-        $this->assertArrayHasKey('mime', $translations['de_de']);
-        $this->assertEquals('mime de', $translations['de_de']['mime']);
+        // test loading in locale
+        $images = $this->em->getRepository(self::IMAGE)->findAll();
+        $this->assertEquals(1, count($images));
+        $this->assertEquals('image de', $images[0]->getName());
+        $this->assertEquals('mime de', $images[0]->getMime());
     }
 
     protected function getUsedEntityFixtures()

@@ -39,9 +39,10 @@ interface TranslatableAdapter extends AdapterInterface
      * @param object $object
      * @param string $translationClass
      * @param string $locale
+     * @param string $objectClass
      * @return array
      */
-    function loadTranslations($object, $translationClass, $locale);
+    function loadTranslations($object, $translationClass, $locale, $objectClass);
 
     /**
      * Search for existing translation record
@@ -50,18 +51,20 @@ interface TranslatableAdapter extends AdapterInterface
      * @param string $locale
      * @param string $field
      * @param string $translationClass
+     * @param string $objectClass
      * @return mixed - null if nothing is found, Translation otherwise
      */
-    function findTranslation(AbstractWrapper $wrapped, $locale, $field, $translationClass);
+    function findTranslation(AbstractWrapper $wrapped, $locale, $field, $translationClass, $objectClass);
 
     /**
      * Removes all associated translations for given object
      *
      * AbstractWrapper $wrapped
      * @param string $transClass
+     * @param string $objectClass
      * @return void
      */
-    function removeAssociatedTranslations(AbstractWrapper $wrapped, $transClass);
+    function removeAssociatedTranslations(AbstractWrapper $wrapped, $transClass, $objectClass);
 
     /**
      * Inserts the translation record

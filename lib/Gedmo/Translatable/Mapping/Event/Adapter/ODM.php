@@ -46,7 +46,7 @@ final class ODM extends BaseAdapterODM implements TranslatableAdapter
     /**
      * {@inheritDoc}
      */
-    public function loadTranslations($object, $translationClass, $locale)
+    public function loadTranslations($object, $translationClass, $locale, $objectClass)
     {
         $dm = $this->getObjectManager();
         $wrapped = AbstractWrapper::wrap($object, $dm);
@@ -86,7 +86,7 @@ final class ODM extends BaseAdapterODM implements TranslatableAdapter
                 ->createQueryBuilder($translationClass)
                 ->field('foreignKey')->equals($wrapped->getIdentifier())
                 ->field('locale')->equals($locale)
-                ->field('objectClass')->equals($wrapped->getMetadata()->name)
+                ->field('objectClass')->equals($objectClass)
                 ->getQuery()
             ;
         }
@@ -101,7 +101,7 @@ final class ODM extends BaseAdapterODM implements TranslatableAdapter
     /**
      * {@inheritDoc}
      */
-    public function findTranslation(AbstractWrapper $wrapped, $locale, $field, $translationClass)
+    public function findTranslation(AbstractWrapper $wrapped, $locale, $field, $translationClass, $objectClass)
     {
         $dm = $this->getObjectManager();
         $qb = $dm
@@ -114,7 +114,7 @@ final class ODM extends BaseAdapterODM implements TranslatableAdapter
             $qb->field('object.$id')->equals($wrapped->getIdentifier());
         } else {
             $qb->field('foreignKey')->equals($wrapped->getIdentifier());
-            $qb->field('objectClass')->equals($wrapped->getMetadata()->name);
+            $qb->field('objectClass')->equals($objectClass);
         }
         $q = $qb->getQuery();
         $result = $q->execute();
@@ -127,7 +127,7 @@ final class ODM extends BaseAdapterODM implements TranslatableAdapter
     /**
      * {@inheritDoc}
      */
-    public function removeAssociatedTranslations(AbstractWrapper $wrapped, $transClass)
+    public function removeAssociatedTranslations(AbstractWrapper $wrapped, $transClass, $objectClass)
     {
         $dm = $this->getObjectManager();
         $qb = $dm
@@ -138,7 +138,7 @@ final class ODM extends BaseAdapterODM implements TranslatableAdapter
             $qb->field('object.$id')->equals($wrapped->getIdentifier());
         } else {
             $qb->field('foreignKey')->equals($wrapped->getIdentifier());
-            $qb->field('objectClass')->equals($wrapped->getMetadata()->name);
+            $qb->field('objectClass')->equals($objectClass);
         }
         $q = $qb->getQuery();
         return $q->execute();

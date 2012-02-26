@@ -3,7 +3,6 @@
 namespace Gedmo\Translatable\Mapping\Event\Adapter;
 
 use Doctrine\DBAL\Types\Type;
-use Doctrine\ORM\Proxy\Proxy;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Gedmo\Mapping\Event\Adapter\ORM as BaseAdapterORM;
@@ -46,7 +45,7 @@ final class ORM extends BaseAdapterORM implements TranslatableAdapter
     /**
      * {@inheritDoc}
      */
-    public function loadTranslations($object, $translationClass, $locale)
+    public function loadTranslations($object, $translationClass, $locale, $objectClass)
     {
         $em = $this->getObjectManager();
         $wrapped = AbstractWrapper::wrap($object, $em);
@@ -92,7 +91,6 @@ final class ORM extends BaseAdapterORM implements TranslatableAdapter
             $dql .= ' AND t.locale = :locale';
             $dql .= ' AND t.objectClass = :objectClass';
             // fetch results
-            $objectClass = $wrapped->getMetadata()->name;
             $q = $em->createQuery($dql);
             $q->setParameters(compact('objectId', 'locale', 'objectClass'));
             $result = $q->getArrayResult();
@@ -103,7 +101,7 @@ final class ORM extends BaseAdapterORM implements TranslatableAdapter
     /**
      * {@inheritDoc}
      */
-    public function findTranslation(AbstractWrapper $wrapped, $locale, $field, $translationClass)
+    public function findTranslation(AbstractWrapper $wrapped, $locale, $field, $translationClass, $objectClass)
     {
         $em = $this->getObjectManager();
         // first look in identityMap, will save one SELECT query
@@ -146,7 +144,7 @@ final class ORM extends BaseAdapterORM implements TranslatableAdapter
             $qb->andWhere('trans.foreignKey = :objectId');
             $qb->andWhere('trans.objectClass = :objectClass');
             $qb->setParameter('objectId', $wrapped->getIdentifier());
-            $qb->setParameter('objectClass', $wrapped->getMetadata()->name);
+            $qb->setParameter('objectClass', $objectClass);
         }
         $q = $qb->getQuery();
         $q->setMaxResults(1);
@@ -161,7 +159,7 @@ final class ORM extends BaseAdapterORM implements TranslatableAdapter
     /**
      * {@inheritDoc}
      */
-    public function removeAssociatedTranslations(AbstractWrapper $wrapped, $transClass)
+    public function removeAssociatedTranslations(AbstractWrapper $wrapped, $transClass, $objectClass)
     {
         $qb = $this
             ->getObjectManager()
@@ -177,7 +175,7 @@ final class ORM extends BaseAdapterORM implements TranslatableAdapter
                 'trans.objectClass = :class'
             );
             $qb->setParameter('objectId', $wrapped->getIdentifier());
-            $qb->setParameter('class', $wrapped->getMetadata()->name);
+            $qb->setParameter('class', $objectClass);
         }
         return $qb->getQuery()->getSingleScalarResult();
     }

@@ -324,7 +324,7 @@ class TranslatableListener extends MappedEventSubscriber
             if (isset($config['fields'])) {
                 $wrapped = AbstractWrapper::wrap($object, $om);
                 $transClass = $this->getTranslationClass($ea, $meta->name);
-                $ea->removeAssociatedTranslations($wrapped, $transClass);
+                $ea->removeAssociatedTranslations($wrapped, $transClass, $config['useObjectClass']);
             }
         }
     }
@@ -372,7 +372,6 @@ class TranslatableListener extends MappedEventSubscriber
         $object = $ea->getObject();
         $meta = $om->getClassMetadata(get_class($object));
         $config = $this->getConfiguration($om, $meta->name);
-        $translationClass = $this->getTranslationClass($ea, $meta->name);
         if (isset($config['fields'])) {
             $locale = $this->getTranslatableLocale($object, $meta);
             $oid = spl_object_hash($object);
@@ -385,10 +384,12 @@ class TranslatableListener extends MappedEventSubscriber
 
         if (isset($config['fields']) && $locale !== $this->defaultLocale) {
             // fetch translations
+            $translationClass = $this->getTranslationClass($ea, $config['useObjectClass']);
             $result = $ea->loadTranslations(
                 $object,
                 $translationClass,
-                $locale
+                $locale,
+                $config['useObjectClass']
             );
             // translate object's translatable properties
             foreach ($config['fields'] as $field) {
@@ -453,7 +454,7 @@ class TranslatableListener extends MappedEventSubscriber
         $meta = $wrapped->getMetadata();
         $config = $this->getConfiguration($om, $meta->name);
         // no need cache, metadata is loaded only once in MetadataFactoryClass
-        $translationClass = $this->getTranslationClass($ea, $meta->name);
+        $translationClass = $this->getTranslationClass($ea, $config['useObjectClass']);
         $translationMetadata = $om->getClassMetadata($translationClass);
 
         // check for the availability of the primary key
@@ -494,7 +495,8 @@ class TranslatableListener extends MappedEventSubscriber
                     $wrapped,
                     $locale,
                     $field,
-                    $translationClass
+                    $translationClass,
+                    $config['useObjectClass']
                 );
             }
             // create new translation if translation not already created and locale is differentent from default locale, otherwise, we have the date in the original record
@@ -508,7 +510,7 @@ class TranslatableListener extends MappedEventSubscriber
                 if ($ea->usesPersonalTranslation($translationClass)) {
                     $translation->setObject($object);
                 } else {
-                    $translation->setObjectClass($meta->name);
+                    $translation->setObjectClass($config['useObjectClass']);
                     $translation->setForeignKey($objectId);
                 }
             }
