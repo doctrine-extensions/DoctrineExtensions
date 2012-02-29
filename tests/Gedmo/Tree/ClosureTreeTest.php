@@ -8,6 +8,8 @@ use Doctrine\Common\Util\Debug;
 use Tree\Fixture\Closure\Category;
 use Tree\Fixture\Closure\News;
 use Tree\Fixture\Closure\CategoryClosure;
+use Tree\Fixture\Closure\Resource;
+use Tree\Fixture\Closure\ResourceClosure;
 
 /**
  * These are tests for Tree behavior
@@ -26,6 +28,8 @@ class ClosureTreeTest extends BaseTestCaseORM
     const USER = "Tree\\Fixture\\Closure\\User";
     const PERSON_CLOSURE = "Tree\\Fixture\\Closure\\PersonClosure";
     const NEWS = "Tree\\Fixture\\Closure\\News";
+    const RESOURCE = "Tree\\Fixture\\Closure\\Resource";
+    const RESOURCE_CLOSURE = "Tree\\Fixture\\Closure\\ResourceClosure";
 
     protected function setUp()
     {
@@ -136,6 +140,10 @@ class ClosureTreeTest extends BaseTestCaseORM
         }
     }
 
+    public function testClosureTreeWithCustomColumns()
+    {
+    }
+
     public function testUpdateOfParent()
     {
         $repo = $this->em->getRepository(self::CATEGORY);
@@ -157,6 +165,25 @@ class ClosureTreeTest extends BaseTestCaseORM
         $this->assertTrue($this->hasAncestor($closures, 'Food'));
         $this->assertFalse($this->hasAncestor($closures, 'Berries'));
         $this->assertFalse($this->hasAncestor($closures, 'Fruits'));
+    }
+
+    public function testUpdateOfParentWithCustomClosure()
+    {
+        $repo = $this->em->getRepository(self::RESOURCE);
+        $root = $repo->findOneByTitle('Root');
+        $car = $repo->findOneByTitle('Car');
+
+        $car->setParent($root);
+        $this->em->persist($car);
+        $this->em->flush();
+
+        $dql = 'SELECT c FROM '.self::RESOURCE_CLOSURE.' c';
+        $dql .= ' WHERE c.descendant = :descendant';
+        $query = $this->em->createQuery($dql);
+        $query->setParameter('descendant', $car);
+
+        $closures = $query->getResult();
+        $this->assertTrue($this->hasAncestor($closures, 'Root'));
     }
 
     public function testAnotherUpdateOfParent()
@@ -232,7 +259,9 @@ class ClosureTreeTest extends BaseTestCaseORM
             self::PERSON,
             self::PERSON_CLOSURE,
             self::USER,
-            self::NEWS
+            self::NEWS,
+            self::RESOURCE,
+            self::RESOURCE_CLOSURE
         );
     }
 
@@ -296,6 +325,22 @@ class ClosureTreeTest extends BaseTestCaseORM
         $mouldCheese->setTitle('Mould cheese');
         $mouldCheese->setParent($cheese);
         $this->em->persist($mouldCheese);
+
+        $this->em->flush();
+
+        $root = new Resource;
+        $root->setTitle("Root");
+        $this->em->persist($root);
+
+        $vehicle = new Resource;
+        $vehicle->setTitle('Vehicle');
+        $vehicle->setParent($root);
+        $this->em->persist($vehicle);
+
+        $car = new Resource;
+        $car->setTitle('Car');
+        $car->setParent($vehicle);
+        $this->em->persist($car);
 
         $this->em->flush();
     }
