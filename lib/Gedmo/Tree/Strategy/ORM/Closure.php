@@ -57,7 +57,8 @@ class Closure implements Strategy
     }
 
     /**
-     * {@inheritdoc}
+     * @param EntityManager $em
+     * @param $meta
      */
     public function processMetadataLoad($em, $meta)
     {
@@ -133,9 +134,10 @@ class Closure implements Strategy
             )
         );
         // this one may not be very usefull
-        $indexName = substr(strtoupper("IDX_" . md5($meta->name . 'depth')), 0, 20);
+        $depthColumnName = $em->getClassMetadata($config['closure'])->getColumnName('depth');
+        $indexName = substr(strtoupper("IDX_" . md5($meta->name . $depthColumnName)), 0, 20);
         $closureMetadata->table['indexes'][$indexName] = array(
-            'columns' => array('depth')
+            'columns' => array($depthColumnName)
         );
         if ($cacheDriver = $cmf->getCacheDriver()) {
             $cacheDriver->save($closureMetadata->name."\$CLASSMETADATA", $closureMetadata, null);
@@ -282,19 +284,31 @@ class Closure implements Strategy
             }
         }
 
+        $ancestorColumnName = $this->getJoinColumnFieldName($em->getClassMetadata($config['closure'])->getAssociationMapping('ancestor'));
+        $descendantColumnName = $this->getJoinColumnFieldName($em->getClassMetadata($config['closure'])->getAssociationMapping('descendant'));
+        $depthColumnName = $em->getClassMetadata($config['closure'])->getColumnName('depth');
+
         if ($oldParent) {
-            $subQuery = "SELECT c2.id FROM {$table} c1";
-            $subQuery .= " JOIN {$table} c2 ON c1.descendant = c2.descendant";
-            $subQuery .= " WHERE c1.ancestor = :nodeId AND c2.depth > c1.depth";
+            $subQuery = "SELECT c2.* FROM {$table} c1";
+            $subQuery .= " JOIN {$table} c2 ON c1.$descendantColumnName = c2.$descendantColumnName";
+            $subQuery .= " WHERE c1.$ancestorColumnName = :nodeId AND c2.$depthColumnName > c1.$depthColumnName";
 
             $ids = $conn->fetchAll($subQuery, compact('nodeId'));
+            $ancestorIds = array();
+            $descendantIds = array();
             if ($ids) {
-                $ids = array_map(function($el) {
-                    return $el['id'];
+                $ancestorIds = array_map(function($el) use ($ancestorColumnName) {
+                    return $el[$ancestorColumnName];
+                }, $ids);
+                $descendantIds = array_map(function($el) use ($descendantColumnName) {
+                    return $el[$descendantColumnName];
                 }, $ids);
             }
+
             // using subquery directly, sqlite acts unfriendly
-            $query = "DELETE FROM {$table} WHERE id IN (".implode(', ', $ids).")";
+            $query = "DELETE FROM {$table}"
+                . " WHERE ($ancestorColumnName IN (".implode(', ', array_unique($ancestorIds)).")"
+                . " AND $descendantColumnName IN (".implode(', ', array_unique($descendantIds))."))";
             if (!$conn->executeQuery($query)) {
                 throw new RuntimeException('Failed to remove old closures');
             }
@@ -302,10 +316,10 @@ class Closure implements Strategy
         if ($parent) {
             $wrappedParent = AbstractWrapper::wrap($parent, $em);
             $parentId = $wrappedParent->getIdentifier();
-            $query = "SELECT c1.ancestor, c2.descendant, (c1.depth + c2.depth + 1) AS depth";
+            $query = "SELECT c1.$ancestorColumnName, c2.$descendantColumnName, (c1.$depthColumnName + c2.$depthColumnName + 1) AS $depthColumnName";
             $query .= " FROM {$table} c1, {$table} c2";
-            $query .= " WHERE c1.descendant = :parentId";
-            $query .= " AND c2.ancestor = :nodeId";
+            $query .= " WHERE c1.$descendantColumnName = :parentId";
+            $query .= " AND c2.$ancestorColumnName = :nodeId";
 
             $closures = $conn->fetchAll($query, compact('nodeId', 'parentId'));
             foreach ($closures as $closure) {
