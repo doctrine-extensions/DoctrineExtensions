@@ -289,18 +289,26 @@ class Closure implements Strategy
         $depthColumnName = $em->getClassMetadata($config['closure'])->getColumnName('depth');
 
         if ($oldParent) {
-            $subQuery = "SELECT c2.id FROM {$table} c1";
+            $subQuery = "SELECT c2.* FROM {$table} c1";
             $subQuery .= " JOIN {$table} c2 ON c1.$descendantColumnName = c2.$descendantColumnName";
             $subQuery .= " WHERE c1.$ancestorColumnName = :nodeId AND c2.$depthColumnName > c1.$depthColumnName";
 
             $ids = $conn->fetchAll($subQuery, compact('nodeId'));
+            $ancestorIds = array();
+            $descendantIds = array();
             if ($ids) {
-                $ids = array_map(function($el) {
-                    return $el['id'];
+                $ancestorIds = array_map(function($el) use ($ancestorColumnName) {
+                    return $el[$ancestorColumnName];
+                }, $ids);
+                $descendantIds = array_map(function($el) use ($descendantColumnName) {
+                    return $el[$descendantColumnName];
                 }, $ids);
             }
+
             // using subquery directly, sqlite acts unfriendly
-            $query = "DELETE FROM {$table} WHERE id IN (".implode(', ', $ids).")";
+            $query = "DELETE FROM {$table}"
+                . " WHERE ($ancestorColumnName IN (".implode(', ', array_unique($ancestorIds)).")"
+                . " AND $descendantColumnName IN (".implode(', ', array_unique($descendantIds))."))";
             if (!$conn->executeQuery($query)) {
                 throw new RuntimeException('Failed to remove old closures');
             }

@@ -12,20 +12,14 @@ class ResourceClosure
 {
     /**
      * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
-    private $id;
-
-    /**
      * @ORM\ManyToOne(targetEntity="Tree\Fixture\Closure\Resource", fetch="LAZY")
      * @ORM\JoinColumn(name="parent_id", referencedColumnName="id", nullable=false)
      * @var integer
-     *
      */
     private $ancestor;
 
     /**
+     * @ORM\Id
      * @ORM\ManyToOne(targetEntity="Tree\Fixture\Closure\Resource", fetch="LAZY")
      * @ORM\JoinColumn(name="item_id", referencedColumnName="id", nullable=false)
      * @var integer
