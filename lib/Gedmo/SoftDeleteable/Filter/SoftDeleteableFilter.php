@@ -36,7 +36,7 @@ class SoftDeleteableFilter extends SQLFilter
 
     protected function getConfiguration(ClassMetadata $meta)
     {
-        if (is_null($this->configuration)) {
+        if ($this->configuration === null) {
             $refl = new \ReflectionProperty('Doctrine\ORM\Query\Filter\SQLFilter', 'em');
             $refl->setAccessible(true);
             $em = $refl->getValue($this);
@@ -51,12 +51,12 @@ class SoftDeleteableFilter extends SQLFilter
                     }
                 }
 
-                if (!is_null($this->configuration)) {
+                if ($this->configuration === null) {
                     break;
                 }
             }
 
-            if (is_null($this->configuration)) {
+            if ($this->configuration === null) {
                 throw new \RuntimeException('Listener "SoftDeleteableListener" was not added to the EventManager!');
             }
         }

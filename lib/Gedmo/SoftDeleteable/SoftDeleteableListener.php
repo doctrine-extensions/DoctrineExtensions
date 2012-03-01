@@ -50,7 +50,6 @@ class SoftDeleteableListener extends MappedEventSubscriber
 
             if (isset($config['softDeleteable']) && $config['softDeleteable']) {
                 $reflProp = $meta->getReflectionProperty($config['fieldName']);
-                $reflProp->setAccessible(true);
                 $date = new \DateTime();
                 $oldValue = $reflProp->getValue($entity);
                 $reflProp->setValue($entity, $date);
