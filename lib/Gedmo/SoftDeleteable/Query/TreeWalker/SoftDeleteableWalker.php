@@ -12,7 +12,16 @@ use Doctrine\ORM\Query\AST\PathExpression;
 use Gedmo\SoftDeleteable\SoftDeleteableListener;
 
 /**
- * Created by Gustavo Falco <comfortablynumb84@gmail.com>
+ * This SqlWalker is needed when you need to use a DELETE DQL query.
+ * It will update the "deletedAt" field with the actual date, instead
+ * of actually deleting it.
+ *
+ * @author Gustavo Falco <comfortablynumb84@gmail.com>
+ * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
+ * @package Gedmo.Query.TreeWalker
+ * @subpackage SoftDeleteableWalker
+ * @link http://www.gediminasm.org
+ * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 
 class SoftDeleteableWalker extends SqlWalker

@@ -27,6 +27,28 @@ Read the [documentation](http://github.com/l3pp4rd/DoctrineExtensions/blob/maste
 or check the [example code](http://github.com/l3pp4rd/DoctrineExtensions/tree/master/example)
 on how to setup and use the extensions in most optimized way.
 
+With SoftDeleteable there's one more step you need to do. You need to add the filter to your configuration:
+
+``` php
+
+$config = new Doctrine\ORM\Configuration;
+
+// Your configs..
+
+$config->addFilter('soft-deleteable', 'Gedmo\SoftDeleteable\Filter\SoftDeleteableFilter');
+```
+
+And then you can access the filter from your EntityManager to enable or disable it with the following code:
+
+``` php
+// This will enable the SoftDeleteable filter, so entities which were "soft-deleted" will not appear
+// in results
+$em->getFilters()->enable('soft-deleteable);
+
+// This will disable the SoftDeleteable filter, so entities which were "soft-deleted" will appear in results
+$em->getFilters()->disable('soft-deleteable);
+```
+
 <a name="entity-mapping"></a>
 
 ## SoftDeleteable Entity example:
