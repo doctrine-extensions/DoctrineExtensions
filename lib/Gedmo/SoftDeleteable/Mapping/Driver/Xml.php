@@ -35,8 +35,8 @@ class Xml extends BaseXml
         $xml = $xml->children(self::GEDMO_NAMESPACE_URI);
 
         if ($xmlDoctrine->getName() == 'entity' || $xmlDoctrine->getName() == 'mapped-superclass') {
-            if (isset($xmlDoctrine->soft_deleteable)) {
-                $field = $this->_getAttribute($xmlDoctrine, 'field-name');
+            if (isset($xml->{'soft-deleteable'})) {
+                $field = $this->_getAttribute($xml->{'soft-deleteable'}, 'field-name');
 
                 if (!$field) {
                     throw new InvalidMappingException('Field name for SoftDeleteable class is mandatory.');
