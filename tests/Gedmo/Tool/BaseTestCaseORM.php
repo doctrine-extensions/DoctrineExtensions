@@ -208,7 +208,21 @@ abstract class BaseTestCaseORM extends \PHPUnit_Framework_TestCase
      */
     protected function getMockAnnotatedConfig()
     {
-        $config = $this->getMock('Doctrine\ORM\Configuration');
+        // We need to mock every method except the ones which
+        // handle the filters
+        $configurationClass = 'Doctrine\ORM\Configuration';
+        $refl = new \ReflectionClass($configurationClass);
+        $methods = $refl->getMethods();
+
+        $mockMethods = array();
+
+        foreach ($methods as $method) {
+            if ($method->name !== 'addFilter' && $method->name !== 'getFilterClassName') {
+                $mockMethods[] = $method->name;
+            }
+        }
+        
+        $config = $this->getMock($configurationClass, $mockMethods);
 
         $config
             ->expects($this->once())

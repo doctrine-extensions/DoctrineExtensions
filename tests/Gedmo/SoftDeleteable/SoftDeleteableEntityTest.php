@@ -85,12 +85,10 @@ class SoftDeleteableEntityTest extends BaseTestCaseORM
         $this->assertTrue(is_object($comment->getDeletedAt()));
         $this->assertTrue($comment->getDeletedAt() instanceof \DateTime);
 
-        $art->setDeletedAt(null);
-        $comment->setDeletedAt(null);
-        $this->em->persist($art);
-        $this->em->flush();
-
         $this->em->createQuery('UPDATE '.self::ARTICLE_CLASS.' a SET a.deletedAt = NULL')->execute();
+
+        $this->em->refresh($art);
+        $this->em->refresh($comment);
 
         // Now we try with a DQL Delete query
         $this->em->getFilters()->enable(self::SOFT_DELETEABLE_FILTER_NAME);
