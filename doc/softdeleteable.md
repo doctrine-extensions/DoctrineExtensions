@@ -43,10 +43,10 @@ And then you can access the filter from your EntityManager to enable or disable 
 ``` php
 // This will enable the SoftDeleteable filter, so entities which were "soft-deleted" will not appear
 // in results
-$em->getFilters()->enable('soft-deleteable);
+$em->getFilters()->enable('soft-deleteable');
 
 // This will disable the SoftDeleteable filter, so entities which were "soft-deleted" will appear in results
-$em->getFilters()->disable('soft-deleteable);
+$em->getFilters()->disable('soft-deleteable');
 ```
 
 <a name="entity-mapping"></a>
