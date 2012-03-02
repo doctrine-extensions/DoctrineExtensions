@@ -8,6 +8,7 @@ use Doctrine\ORM\Query\AST\DeleteClause;
 use Doctrine\ORM\Query\AST\UpdateClause;
 use Doctrine\ORM\Query\AST\UpdateItem;
 use Doctrine\ORM\Query\Exec\SingleTableDeleteUpdateExecutor;
+use Doctrine\ORM\Query\Exec\MultiTableDeleteExecutor;
 use Doctrine\ORM\Query\AST\PathExpression;
 use Gedmo\SoftDeleteable\SoftDeleteableListener;
 
@@ -51,11 +52,16 @@ class SoftDeleteableWalker extends SqlWalker
      */
     public function getExecutor($AST)
     {
-        if (!$AST instanceof DeleteStatement) {
-            throw new \Gedmo\Exception\UnexpectedValueException('SoftDeleteable walker should be used only on delete statement');
+        switch (true) {
+            case ($AST instanceof DeleteStatement):
+                $primaryClass = $this->getEntityManager()->getClassMetadata($AST->deleteClause->abstractSchemaName);
+
+                return ($primaryClass->isInheritanceTypeJoined())
+                    ? new MultiTableDeleteExecutor($AST, $this)
+                    : new SingleTableDeleteUpdateExecutor($AST, $this);
+            default:
+                throw new \Gedmo\Exception\UnexpectedValueException('SoftDeleteable walker should be used only on delete statement');
         }
-        
-        return parent::getExecutor($AST);
     }
 
     /**

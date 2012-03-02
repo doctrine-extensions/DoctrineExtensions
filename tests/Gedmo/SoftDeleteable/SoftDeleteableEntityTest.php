@@ -7,6 +7,9 @@ use Doctrine\Common\EventManager;
 use Doctrine\Common\Util\Debug,
     SoftDeleteable\Fixture\Entity\Article,
     SoftDeleteable\Fixture\Entity\Comment,
+    SoftDeleteable\Fixture\Entity\Page,
+    SoftDeleteable\Fixture\Entity\MegaPage,
+    SoftDeleteable\Fixture\Entity\Module,
     Gedmo\SoftDeleteable\SoftDeleteableListener;
 
 /**
@@ -22,6 +25,9 @@ class SoftDeleteableEntityTest extends BaseTestCaseORM
 {
     const ARTICLE_CLASS = 'SoftDeleteable\Fixture\Entity\Article';
     const COMMENT_CLASS = 'SoftDeleteable\Fixture\Entity\Comment';
+    const PAGE_CLASS = 'SoftDeleteable\Fixture\Entity\Page';
+    const MEGA_PAGE_CLASS = 'SoftDeleteable\Fixture\Entity\MegaPage';
+    const MODULE_CLASS = 'SoftDeleteable\Fixture\Entity\Module';
     const SOFT_DELETEABLE_FILTER_NAME = 'soft-deleteable';
 
     private $softDeleteableListener;
@@ -55,7 +61,6 @@ class SoftDeleteableEntityTest extends BaseTestCaseORM
         $art0->addComment($comment);
 
         $this->em->persist($art0);
-
         $this->em->flush();
         
         $art = $repo->findOneBy(array($field => $value));
@@ -114,12 +119,55 @@ class SoftDeleteableEntityTest extends BaseTestCaseORM
         $this->assertTrue(is_object($art));
         $this->assertTrue(is_object($art->getDeletedAt()));
         $this->assertTrue($art->getDeletedAt() instanceof \DateTime);
+
+        /*
+        // Inheritance tree DELETE DQL
+        $this->em->getFilters()->enable(self::SOFT_DELETEABLE_FILTER_NAME);
+        
+        $megaPageRepo = $this->em->getRepository(self::MEGA_PAGE_CLASS);
+        $module = new Module();
+        $module->setTitle('Module 1');
+        $page = new MegaPage();
+        $page->setTitle('Page 1');
+        $page->addModule($module);
+        $module->setPage($page);
+
+        $this->em->persist($page);
+        $this->em->persist($module);
+        $this->em->flush();
+        
+        $dql = sprintf('DELETE FROM %s p',
+            self::PAGE_CLASS);
+        $query = $this->em->createQuery($dql);
+        $query->setHint(
+            \Doctrine\ORM\Query::HINT_CUSTOM_OUTPUT_WALKER,
+            'Gedmo\SoftDeleteable\Query\TreeWalker\SoftDeleteableWalker'
+        );
+        
+        $query->execute();
+
+        $p = $megaPageRepo->findOneBy(array('title' => 'Page 1'));
+        $this->assertNull($p);
+
+        // Now we deactivate the filter so we test if the entity appears in the result
+        $this->em->getFilters()->disable(self::SOFT_DELETEABLE_FILTER_NAME);
+        $this->em->clear();
+
+        $p = $megaPageRepo->findOneBy(array('title' => 'Page 1'));
+
+        $this->assertTrue(is_object($p));
+        $this->assertTrue(is_object($p->getDeletedAt()));
+        $this->assertTrue($p->getDeletedAt() instanceof \DateTime);
+        */
     }
 
     protected function getUsedEntityFixtures()
     {
         return array(
             self::ARTICLE_CLASS,
+            self::PAGE_CLASS,
+            self::MEGA_PAGE_CLASS,
+            self::MODULE_CLASS,
             self::COMMENT_CLASS
         );
     }
