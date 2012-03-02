@@ -1,9 +1,5 @@
 tests/phpunit.xml
 tests/temp/*.php
-build/
 scripts/
 vendor/
-.project
-.settings
-.build.xml
-.buildpath
+tags
