@@ -9,6 +9,13 @@ master branch is based on 2.3.x versions and may not work with older components.
 
 ### Latest updates
 
+**2012-03-04**
+
+- We should be very grateful for contributions of @comfortablynumb He has contributed most to these extensions
+and recently - long waited [softdeleteable
+behavior](https://github.com/l3pp4rd/DoctrineExtensions/blob/master/doc/softdeleteable.md) for **ORM** users. Also most important, there
+was a tree extension missing for **ODM** now everyone can enjoy [materialized path tree strategy](https://github.com/l3pp4rd/DoctrineExtensions/blob/master/doc/tree.md#materialized-path) for **ORM** including.
+
 **2012-02-26**
 
 - Removed slug handlers, this functionality brought complucations which could not be maintained.
@@ -57,13 +64,15 @@ offer new functionality or tools to use Doctrine2 more efficently. This package 
 used behaviors which can be easily attached to your event system of Doctrine2 and handle the
 records being flushed in the behavioral way. List of extensions:
 
-- **Tree** - this extension automates the tree handling process and adds some tree specific functions on repository. (closure or nestedset)
+- **Tree** - this extension automates the tree handling process and adds some tree specific functions on repository.
+(**closure**, **nestedset** or **materialized path**)
 - **Translatable** - gives you a very handy solution for translating records into diferent languages. Easy to setup, easier to use.
 - **Sluggable** - urlizes your specified fields into single unique slug
 - **Timestampable** - updates date fields on create, update and even property change.
 - **Loggable** - helps tracking changes and history of objects, also supports version managment.
 - **Sortable** - makes any document or entity sortable
 - **Translator** - explicit way to handle translations
+- **Softdeleteable** - allows to implicitly remove records
 
 Currently these extensions support **Yaml**, **Annotation**  and **Xml** mapping. Additional mapping drivers
 can be easily implemented using Mapping extension to handle the additional metadata mapping.
