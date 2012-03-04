@@ -41,5 +41,8 @@
         <testsuite name="Translator extension">
             <directory suffix=".php">./Gedmo/Translator/</directory>
         </testsuite>
+        <testsuite name="SoftDeleteable Extension">
+            <directory suffix=".php">./Gedmo/SoftDeleteable/</directory>
+        </testsuite>
     </testsuites>
 </phpunit>

@@ -14,6 +14,7 @@ include __DIR__.'/Language.php';
 include __DIR__.'/Locale.php';
 include __DIR__.'/Loggable.php';
 include __DIR__.'/Slug.php';
+include __DIR__.'/SoftDeleteable.php';
 include __DIR__.'/SortableGroup.php';
 include __DIR__.'/SortablePosition.php';
 include __DIR__.'/Timestampable.php';
