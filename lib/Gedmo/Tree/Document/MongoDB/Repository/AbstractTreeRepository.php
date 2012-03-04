@@ -1,12 +1,13 @@
 <?php
 
-namespace Gedmo\Tree\Entity\Repository;
+namespace Gedmo\Tree\Document\MongoDB\Repository;
 
-use Doctrine\ORM\EntityRepository,
-    Doctrine\ORM\EntityManager,
-    Doctrine\ORM\Mapping\ClassMetadata;
+use Doctrine\ODM\MongoDB\DocumentRepository,
+    Doctrine\ODM\MongoDB\DocumentManager,
+    Doctrine\ODM\MongoDB\Mapping\ClassMetadata,
+    Doctrine\ODM\MongoDB\UnitOfWork;
 
-abstract class AbstractTreeRepository extends EntityRepository
+abstract class AbstractTreeRepository extends DocumentRepository
 {
     /**
      * Tree listener on event manager
@@ -18,9 +19,9 @@ abstract class AbstractTreeRepository extends EntityRepository
     /**
      * {@inheritdoc}
      */
-    public function __construct(EntityManager $em, ClassMetadata $class)
+    public function __construct(DocumentManager $em, UnitOfWork $uow, ClassMetadata $class)
     {
-        parent::__construct($em, $class);
+        parent::__construct($em, $uow, $class);
         $treeListener = null;
         foreach ($em->getEventManager()->getListeners() as $listeners) {
             foreach ($listeners as $listener) {
@@ -35,7 +36,7 @@ abstract class AbstractTreeRepository extends EntityRepository
         }
 
         if (is_null($treeListener)) {
-            throw new \Gedmo\Exception\InvalidMappingException('This repository can be attached only to ORM tree listener');
+            throw new \Gedmo\Exception\InvalidMappingException('This repository can be attached only to ODM MongoDB tree listener');
         }
 
         $this->listener = $treeListener;

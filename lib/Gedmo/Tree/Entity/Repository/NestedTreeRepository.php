@@ -826,7 +826,7 @@ class NestedTreeRepository extends AbstractTreeRepository
     /**
      * {@inheritdoc}
      */
-    protected function validates()
+    protected function validate()
     {
         return $this->listener->getStrategy($this->_em, $this->getClassMetadata()->name)->getName() === Strategy::NESTED;
     }

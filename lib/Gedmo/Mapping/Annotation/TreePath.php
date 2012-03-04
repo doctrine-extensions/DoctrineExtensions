@@ -5,26 +5,20 @@ namespace Gedmo\Mapping\Annotation;
 use Doctrine\Common\Annotations\Annotation;
 
 /**
- * Tree annotation for Tree behavioral extension
+ * TreePath annotation for Tree behavioral extension
  *
  * @Annotation
- * @Target("CLASS")
+ * @Target("PROPERTY")
  *
+ * @author Gustavo Falco <comfortablynumb84@gmail.com>
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  * @package Gedmo.Mapping.Annotation
- * @subpackage Tree
+ * @subpackage TreePath
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-final class Tree extends Annotation
+final class TreePath extends Annotation
 {
-    /** @var string */
-    public $type = 'nested';
-
-    /** @var string */
-    public $activateLocking = false;
-
-    /** @var integer */
-    public $lockingTimeout = 3;
+    public $separator = ',';
 }
 

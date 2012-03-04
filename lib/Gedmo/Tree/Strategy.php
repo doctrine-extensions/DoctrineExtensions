@@ -2,6 +2,8 @@
 
 namespace Gedmo\Tree;
 
+use Gedmo\Mapping\Event\AdapterInterface;
+
 interface Strategy
 {
     /**
@@ -13,6 +15,11 @@ interface Strategy
      * Closure strategy
      */
     const CLOSURE = 'closure';
+
+    /**
+     * Materialized Path strategy
+     */
+    const MATERIALIZED_PATH = 'materializedPath';
 
     /**
      * Get the name of strategy
@@ -42,18 +49,20 @@ interface Strategy
      *
      * @param object $om - object manager
      * @param object $object - node
+     * @param AdapterInterface $ea - event adapter
      * @return void
      */
-    function processScheduledInsertion($om, $object);
+    function processScheduledInsertion($om, $object, AdapterInterface $ea);
 
     /**
      * Operations on tree node updates
      *
      * @param object $om - object manager
      * @param object $object - node
+     * @param AdapterInterface $ea - event adapter
      * @return void
      */
-    function processScheduledUpdate($om, $object);
+    function processScheduledUpdate($om, $object, AdapterInterface $ea);
 
     /**
      * Operations on tree node delete
@@ -83,19 +92,50 @@ interface Strategy
     function processPrePersist($om, $object);
 
     /**
-     * Operations on tree node insertions
+     * Operations on tree node update
      *
      * @param object $om - object manager
      * @param object $object - node
      * @return void
      */
-    function processPostPersist($om, $object);
+    function processPreUpdate($om, $object);
+
+    /**
+     * Operations on tree node insertions
+     *
+     * @param object $om - object manager
+     * @param object $object - node
+     * @param AdapterInterface $ea - event adapter
+     * @return void
+     */
+    function processPostPersist($om, $object, AdapterInterface $ea);
+
+    /**
+     * Operations on tree node updates
+     *
+     * @param object $om - object manager
+     * @param object $object - node
+     * @param AdapterInterface $ea - event adapter
+     * @return void
+     */
+    function processPostUpdate($om, $object, AdapterInterface $ea);
+
+    /**
+     * Operations on tree node removals
+     *
+     * @param object $om - object manager
+     * @param object $object - node
+     * @param AdapterInterface $ea - event adapter
+     * @return void
+     */
+    function processPostRemove($om, $object, AdapterInterface $ea);
 
     /**
      * Operations on the end of flush process
      *
      * @param object $om - object manager
+     * @param AdapterInterface $ea - event adapter
      * @return void
      */
-    function onFlushEnd($om);
+    function onFlushEnd($om, AdapterInterface $ea);
 }
