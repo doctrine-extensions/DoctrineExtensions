@@ -117,6 +117,10 @@ class TreeMappingTest extends \PHPUnit_Framework_TestCase
 
     public function testYamlMaterializedPathMapping()
     {
+        if (!extension_loaded('apc') || !ini_get('apc.enable_cli')) {
+            $this->markTestSkipped('APC extension is not loaded.');
+        }
+
         $meta = $this->em->getClassMetadata(self::YAML_MATERIALIZED_PATH_CATEGORY);
         $config = $this->listener->getConfiguration($this->em, $meta->name);
 
