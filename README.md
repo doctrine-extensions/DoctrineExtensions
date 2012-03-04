@@ -97,6 +97,7 @@ List of extensions which support ODM
 - Timestampable
 - Loggable
 - Translator
+- Tree (Materialized Path strategy for now)
 
 All these extensions can be nested together and mapped in traditional ways - annotations,
 xml or yaml

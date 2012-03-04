@@ -11,6 +11,7 @@ use Doctrine\ORM\EntityManager;
 use Gedmo\Tree\TreeListener;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Doctrine\ORM\Query;
+use Gedmo\Mapping\Event\AdapterInterface;
 
 /**
  * This strategy makes tree act like
@@ -128,7 +129,7 @@ class Nested implements Strategy
     /**
      * {@inheritdoc}
      */
-    public function processScheduledInsertion($em, $node)
+    public function processScheduledInsertion($em, $node, AdapterInterface $ea)
     {
         $meta = $em->getClassMetadata(get_class($node));
         $config = $this->listener->getConfiguration($em, $meta->name);
@@ -146,7 +147,7 @@ class Nested implements Strategy
     /**
      * {@inheritdoc}
      */
-    public function processScheduledUpdate($em, $node)
+    public function processScheduledUpdate($em, $node, AdapterInterface $ea)
     {
         $meta = $em->getClassMetadata(get_class($node));
         $config = $this->listener->getConfiguration($em, $meta->name);
@@ -182,7 +183,7 @@ class Nested implements Strategy
     /**
      * {@inheritdoc}
      */
-    public function processPostPersist($em, $node)
+    public function processPostPersist($em, $node, AdapterInterface $ea)
     {
         $meta = $em->getClassMetadata(get_class($node));
         $config = $this->listener->getConfiguration($em, $meta->name);
@@ -229,7 +230,7 @@ class Nested implements Strategy
     /**
      * {@inheritdoc}
      */
-    public function onFlushEnd($em)
+    public function onFlushEnd($em, AdapterInterface $ea)
     {
         // reset values
         $this->treeEdges = array();
@@ -251,7 +252,25 @@ class Nested implements Strategy
     /**
      * {@inheritdoc}
      */
+    public function processPreUpdate($em, $node)
+    {}
+
+    /**
+     * {@inheritdoc}
+     */
     public function processMetadataLoad($em, $meta)
+    {}
+
+    /**
+     * {@inheritdoc}
+     */
+    public function processPostUpdate($em, $entity, AdapterInterface $ea)
+    {}
+
+    /**
+     * {@inheritdoc}
+     */
+    public function processPostRemove($em, $entity, AdapterInterface $ea)
     {}
 
     /**
