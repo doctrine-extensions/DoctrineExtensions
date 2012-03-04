@@ -1,11 +1,13 @@
 # Doctrine2 behavioral extensions
 
-**Version 2.3-DEV**
+**Version 2.2.1**
 
 [![Build Status](https://secure.travis-ci.org/l3pp4rd/DoctrineExtensions.png?branch=master)](http://travis-ci.org/l3pp4rd/DoctrineExtensions)
 
 **Note:** Use 2.1.x or 2.2.x tag in order to use extensions based on Doctrine2.x.x component versions. Currently
 master branch is based on 2.3.x versions and may not work with older components.
+
+**Note:** please submit all pull requests to **develop** branch
 
 ### Latest updates
 
@@ -123,6 +125,8 @@ To setup and run example follow these steps:
 - run: **php example/run.php** to run example
 
 ### Contributors:
+
+Submit all pull requests to **develop** branch
 
 Thanks to [everyone participating](http://github.com/l3pp4rd/DoctrineExtensions/contributors) in
 the development of these great Doctrine2 extensions!
