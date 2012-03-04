@@ -11,8 +11,8 @@ master branch is based on 2.3.x versions and may not work with older components.
 
 **2012-03-04**
 
-- We should be very grateful for contributions of @comfortablynumb He has contributed most to these extensions
-and recently - long waited [softdeleteable
+- We should be very grateful for contributions of [comfortablynumb](http://github.com/comfortablynumb)
+He has contributed most to these extensions and recently - long waited [softdeleteable
 behavior](https://github.com/l3pp4rd/DoctrineExtensions/blob/master/doc/softdeleteable.md) for **ORM** users. Also most important, there
 was a tree extension missing for **ODM** now everyone can enjoy [materialized path tree strategy](https://github.com/l3pp4rd/DoctrineExtensions/blob/master/doc/tree.md#materialized-path) for **ORM** including.
 
@@ -40,22 +40,6 @@ to hook extension metadata drivers into metadata driver chain.
 - [Example demo application](https://github.com/l3pp4rd/DoctrineExtensions/blob/master/example/em.php) has a detailed configuration provided, which
 explains and shows how extensions can or should be used with **Doctrine2** ORM. To install
 it follow the [steps](#example-demo).
-
-**2012-01-23**
-
-- Fixed an issue with inheritance mapping in case of multiple class extension.
-For details take a [peek at tests](https://github.com/l3pp4rd/DoctrineExtensions/blob/master/tests/Gedmo/Tree/MultiInheritanceTest2.php)
-
-**2012-01-22**
-
-- Adapted extensions for recent 2.3.0-DEV version of doctrine2. Released a tag for 2.2.x component
-support. In general extensions are **BC** with versions 2.1.x, 2.2.x of doctrine2.
-
-**2012-01-09**
-
-- My [blog](http://gediminasm.org) was recently rebuilt from scratch using symfony2.
-All recent documentation based on [extension docs](https://github.com/l3pp4rd/DoctrineExtensions/tree/master/doc)
-will be available there too. Also it will be a good example for symfony2 users.
 
 ### Summary and features
 
