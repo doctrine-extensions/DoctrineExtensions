@@ -105,6 +105,7 @@ class SoftDeleteableEntityTest extends BaseTestCaseORM
             \Doctrine\ORM\Query::HINT_CUSTOM_OUTPUT_WALKER,
             'Gedmo\SoftDeleteable\Query\TreeWalker\SoftDeleteableWalker'
         );
+        
         $query->execute();
 
         $art = $repo->findOneBy(array($field => $value));
@@ -120,7 +121,7 @@ class SoftDeleteableEntityTest extends BaseTestCaseORM
         $this->assertTrue(is_object($art->getDeletedAt()));
         $this->assertTrue($art->getDeletedAt() instanceof \DateTime);
 
-        /*
+
         // Inheritance tree DELETE DQL
         $this->em->getFilters()->enable(self::SOFT_DELETEABLE_FILTER_NAME);
         
@@ -143,7 +144,7 @@ class SoftDeleteableEntityTest extends BaseTestCaseORM
             \Doctrine\ORM\Query::HINT_CUSTOM_OUTPUT_WALKER,
             'Gedmo\SoftDeleteable\Query\TreeWalker\SoftDeleteableWalker'
         );
-        
+
         $query->execute();
 
         $p = $megaPageRepo->findOneBy(array('title' => 'Page 1'));
@@ -158,7 +159,6 @@ class SoftDeleteableEntityTest extends BaseTestCaseORM
         $this->assertTrue(is_object($p));
         $this->assertTrue(is_object($p->getDeletedAt()));
         $this->assertTrue($p->getDeletedAt() instanceof \DateTime);
-        */
     }
 
     protected function getUsedEntityFixtures()

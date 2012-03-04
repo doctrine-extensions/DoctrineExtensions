@@ -8,9 +8,9 @@ use Doctrine\ORM\Query\AST\DeleteClause;
 use Doctrine\ORM\Query\AST\UpdateClause;
 use Doctrine\ORM\Query\AST\UpdateItem;
 use Doctrine\ORM\Query\Exec\SingleTableDeleteUpdateExecutor;
-use Doctrine\ORM\Query\Exec\MultiTableDeleteExecutor;
 use Doctrine\ORM\Query\AST\PathExpression;
 use Gedmo\SoftDeleteable\SoftDeleteableListener;
+use Gedmo\SoftDeleteable\Query\TreeWalker\Exec\MultiTableDeleteExecutor;
 
 /**
  * This SqlWalker is needed when you need to use a DELETE DQL query.
@@ -30,6 +30,7 @@ class SoftDeleteableWalker extends SqlWalker
     protected $conn;
     protected $platform;
     protected $listener;
+    protected $configuration;
     protected $alias;
     protected $deletedAtField;
     protected $meta;
@@ -57,7 +58,7 @@ class SoftDeleteableWalker extends SqlWalker
                 $primaryClass = $this->getEntityManager()->getClassMetadata($AST->deleteClause->abstractSchemaName);
 
                 return ($primaryClass->isInheritanceTypeJoined())
-                    ? new MultiTableDeleteExecutor($AST, $this)
+                    ? new MultiTableDeleteExecutor($AST, $this, $this->meta, $this->platform, $this->configuration)
                     : new SingleTableDeleteUpdateExecutor($AST, $this);
             default:
                 throw new \Gedmo\Exception\UnexpectedValueException('SoftDeleteable walker should be used only on delete statement');
@@ -132,6 +133,7 @@ class SoftDeleteableWalker extends SqlWalker
             $meta = $comp['metadata'];
             $config = $this->listener->getConfiguration($em, $meta->name);
             if ($config && isset($config['softDeleteable']) && $config['softDeleteable']) {
+                $this->configuration = $config;
                 $this->deletedAtField = $config['fieldName'];
                 $this->meta = $meta;
             }
