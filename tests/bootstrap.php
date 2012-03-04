@@ -48,6 +48,7 @@ $loader->registerNamespaces(array(
     'Sortable\\Fixture'          => __DIR__.'/Gedmo',
     'Mapping\\Fixture'           => __DIR__.'/Gedmo',
     'Loggable\\Fixture'          => __DIR__.'/Gedmo',
+    'SoftDeleteable\\Fixture'    => __DIR__.'/Gedmo',
     'Wrapper\\Fixture'           => __DIR__.'/Gedmo',
 ));
 $loader->register();
