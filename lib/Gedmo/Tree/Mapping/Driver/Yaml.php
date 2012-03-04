@@ -54,13 +54,13 @@ class Yaml extends File implements Driver
                     throw new InvalidMappingException("Tree type: $strategy is not available.");
                 }
                 $config['strategy'] = $strategy;
-                $config['activate_locking'] = isset($classMapping['tree']['activate_locking']) ?
-                    $classMapping['tree']['activate_locking'] : false;
-                $config['locking_timeout'] = isset($classMapping['tree']['locking_timeout']) ?
-                    $classMapping['tree']['locking_timeout'] : 3;
+                $config['activate_locking'] = isset($classMapping['tree']['activateLocking']) ?
+                    $classMapping['tree']['activateLocking'] : false;
+                $config['locking_timeout'] = isset($classMapping['tree']['lockingTimeout']) ?
+                    (int) $classMapping['tree']['lockingTimeout'] : 3;
 
-                if (!is_int($config['locking_timeout'])) {
-                    throw new InvalidMappingException("Tree Locking timeout must be an integer value.");
+                if ($config['locking_timeout'] < 1) {
+                    throw new InvalidMappingException("Tree Locking Timeout must be at least of 1 second.");
                 }
             }
             if (isset($classMapping['tree']['closure'])) {
@@ -94,11 +94,20 @@ class Yaml extends File implements Driver
                             throw new InvalidMappingException("Tree root field - [{$field}] type is not valid and must be any of the 'integer' types or 'string' in class - {$meta->name}");
                         }
                         $config['root'] = $field;
-                    } elseif (in_array('treePath', $fieldMapping['gedmo'])) {
+                    } elseif (in_array('treePath', $fieldMapping['gedmo']) || isset($fieldMapping['gedmo']['treePath'])) {
                         if (!$validator->isValidFieldForPath($meta, $field)) {
                             throw new InvalidMappingException("Tree Path field - [{$field}] type is not valid. It must be string or text in class - {$meta->name}");
                         }
-                        $separator = $fieldMapping['gedmo']['treePath']['separator'];
+
+                        $treePathInfo = isset($fieldMapping['gedmo']['treePath']) ? $fieldMapping['gedmo']['treePath'] :
+                            $fieldMapping['gedmo'][array_search('treePath', $fieldMapping['gedmo'])];
+
+                        if (is_array($treePathInfo) && isset($treePathInfo['separator'])) {
+                            $separator = $treePathInfo['separator'];
+                        } else {
+                            $separator = '|';
+                        }
+
                         if (strlen($separator) > 1) {
                             throw new InvalidMappingException("Tree Path field - [{$field}] Separator {$separator} is invalid. It must be only one character long.");
                         }
@@ -120,7 +129,7 @@ class Yaml extends File implements Driver
         }
 
         if (isset($config['activate_locking']) && $config['activate_locking'] && !isset($config['lock_time'])) {
-            throw new InvalidMappingException("You need to map a date field as the tree lock time field to activate locking support.");
+            throw new InvalidMappingException("You need to map a date|datetime|timestamp field as the tree lock time field to activate locking support.");
         }
 
         if (isset($mapping['manyToOne'])) {

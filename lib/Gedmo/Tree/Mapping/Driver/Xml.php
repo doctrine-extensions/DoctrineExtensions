@@ -52,13 +52,13 @@ class Xml extends BaseXml
                     throw new InvalidMappingException("Tree type: $strategy is not available.");
                 }
                 $config['strategy'] = $strategy;
-                $config['activate_locking'] = $this->_getAttribute($xml->tree, 'activate-locking') === true ? true : false;
+                $config['activate_locking'] = $this->_getAttribute($xml->tree, 'activate-locking') === 'true' ? true : false;
 
                 if ($lockingTimeout = $this->_getAttribute($xml->tree, 'locking-timeout')) {
-                    $config['locking_timeout'] = $lockingTimeout;
+                    $config['locking_timeout'] = (int) $lockingTimeout;
 
-                    if (!is_int($config['locking_timeout'])) {
-                        throw new InvalidMappingException("Tree Locking timeout must be an integer value.");
+                    if ($config['locking_timeout'] < 1) {
+                        throw new InvalidMappingException("Tree Locking Timeout must be at least of 1 second.");
                     }
                 } else {
                     $config['locking_timeout'] = 3;

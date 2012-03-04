@@ -119,7 +119,7 @@ class Validator
     public function isValidFieldForLockTime($meta, $field)
     {
         $mapping = $meta->getFieldMapping($field);
-        return $mapping && $mapping['type'] === 'date';
+        return $mapping && ($mapping['type'] === 'date' || $mapping['type'] === 'datetime' || $mapping['type'] === 'timestamp');
     }
 
     /**

@@ -122,10 +122,10 @@ class Annotation implements AnnotationDriverInterface
             }
             $config['strategy'] = $annot->type;
             $config['activate_locking'] = $annot->activateLocking;
-            $config['locking_timeout'] = $annot->lockingTimeout;
+            $config['locking_timeout'] = (int) $annot->lockingTimeout;
 
-            if (!is_int($config['locking_timeout'])) {
-                throw new InvalidMappingException("Tree Locking timeout must be an integer value.");
+            if ($config['locking_timeout'] < 1) {
+                throw new InvalidMappingException("Tree Locking Timeout must be at least of 1 second.");
             }
         }
         if ($annot = $this->reader->getClassAnnotation($class, self::CLOSURE)) {
