@@ -125,7 +125,7 @@ class Xml extends BaseXml
             }
         }
 
-        if ($config['activate_locking'] && !isset($config['lock_time'])) {
+        if (isset($config['activate_locking']) && $config['activate_locking'] && !isset($config['lock_time'])) {
             throw new InvalidMappingException("You need to map a date field as the tree lock time field to activate locking support.");
         }
 
