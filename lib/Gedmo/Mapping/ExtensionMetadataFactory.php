@@ -76,7 +76,7 @@ final class ExtensionMetadataFactory
         $cmf = $this->objectManager->getMetadataFactory();
         $useObjectName = $meta->name;
         // collect metadata from inherited classes
-        if (!$cmf instanceof DisconnectedClassMetadataFactory) {
+        if (null !== $meta->reflClass) {
             foreach (array_reverse(class_parents($meta->name)) as $parentClass) {
                 // read only inherited mapped classes
                 if ($cmf->hasMetadataFor($parentClass)) {
