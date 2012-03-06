@@ -1,8 +1,12 @@
 # Doctrine2 behavioral extensions
 
-**Version 2.2.1**
+**Version 2.3.1-DEV**
 
 [![Build Status](https://secure.travis-ci.org/l3pp4rd/DoctrineExtensions.png?branch=master)](http://travis-ci.org/l3pp4rd/DoctrineExtensions)
+
+**Note:** tag **2.2.1** was removed, because it was published with backward incompatible changes by
+misstake. If you have used **2.2.1** tag as a dependency version, please switch to **2.3.0** it is
+a dirrect replacement of the removed tag.
 
 **Note:** Use 2.1.x or 2.2.x tag in order to use extensions based on Doctrine2.x.x component versions. Currently
 master branch is based on 2.3.x versions and may not work with older components.
