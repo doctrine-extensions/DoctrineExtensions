@@ -283,13 +283,7 @@ Entity\Article:
         <field name="code" type="string" length="16"/>
         <field name="ean" type="string" length="13"/>
         <field name="slug" type="string" length="156" unique="true">
-            <gedmo:slug unique="true" style="camel" updatable="false" separator="_">
-                <fields>
-                    <field>title</field>
-                    <field>code</field>
-                    <field>ean</field>
-                </fields>
-            </gedmo:slug>
+            <gedmo:slug unique="true" style="camel" updatable="false" separator="_", fields="title,code,ean" />
         </field>
     </entity>
 </doctrine-mapping>
