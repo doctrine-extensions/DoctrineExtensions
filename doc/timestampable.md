@@ -16,6 +16,10 @@ Features:
 [blog_reference]: http://gediminasm.org/article/timestampable-behavior-extension-for-doctrine-2 "Timestampable extension for Doctrine 2 helps automate update of dates"
 [blog_test]: http://gediminasm.org/test "Test extensions on this blog"
 
+Update **2012-03-10**
+
+- Add [Timestampable traits](#traits)
+
 Update **2011-04-04**
  
 - Made single listener, one instance can be used for any object manager
@@ -42,6 +46,7 @@ Content:
 - [Yaml](#yaml-mapping) mapping example
 - [Xml](#xml-mapping) mapping example
 - Advanced usage [examples](#advanced-examples)
+- Using [Traits](#traits)
 
 <a name="including-extension"></a>
 
@@ -564,3 +569,54 @@ Or if the user does not have a timezone, we could expand that to use a system/ap
 [doctrine_custom_datetime_type]: http://www.doctrine-project.org/docs/orm/2.0/en/cookbook/working-with-datetime.html#handling-different-timezones-with-the-datetime-type "Handling different Timezones with the DateTime Type"
 
 This example is based off [Handling different Timezones with the DateTime Type][doctrine_custom_datetime_type] - however that example may be outdated because it contains some obvioulsy invalid PHP from the TimeZone class.
+
+<a name="traits"></a>
+
+## Traits
+
+You can use timestampable traits for quick **createdAt** **updatedAt** timestamp definitions
+when using annotation mapping.
+
+**Note:** this feature is only available since php **5.4.0**. And you are not required
+to use the Traits provided by extensions.
+
+``` php
+<?php
+namespace Timestampable\Fixture;
+
+use Gedmo\Timestampable\Traits\TimestampableEntity;
+use Gedmo\Mapping\Annotation as Gedmo;
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * @ORM\Entity
+ */
+class UsingTrait
+{
+    /**
+     * Hook timestampable behavior
+     * updates createdAt, updatedAt fields
+     */
+    use TimestampableEntity;
+
+    /**
+     * @ORM\Id
+     * @ORM\GeneratedValue
+     * @ORM\Column(type="integer")
+     */
+    private $id;
+
+    /**
+     * @ORM\Column(length=128)
+     */
+    private $title;
+}
+```
+
+**Note:** you must import **Gedmo\Mapping\Annotation as Gedmo** and **Doctrine\ORM\Mapping as ORM**
+annotations. If you use mongodb ODM import **Doctrine\ODM\MongoDB\Mapping\Annotations as ODM** and
+**TimestampableDocument** instead.
+
+Traits are very simple and if you use different field names I recomment to simply create your
+own ones based per project. These ones are standing as an example.
+
