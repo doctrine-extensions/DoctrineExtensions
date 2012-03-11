@@ -263,6 +263,8 @@ Entity\Category:
     children:
       targetEntity: Entity\Category
       mappedBy: parent
+      orderBy:
+        lft: ASC
 ```
 
 <a name="xml-mapping"></a>
