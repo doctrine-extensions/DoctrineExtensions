@@ -504,7 +504,7 @@ class TranslatableListener extends MappedEventSubscriber
                 && ($locale !== $this->defaultLocale || $this->persistDefaultLocaleTranslation)
             ;
             if ($persistNewTranslation) {
-                $translation = new $translationClass();
+                $translation = $translationMetadata->newInstance();
                 $translation->setLocale($locale);
                 $translation->setField($field);
                 if ($ea->usesPersonalTranslation($translationClass)) {
