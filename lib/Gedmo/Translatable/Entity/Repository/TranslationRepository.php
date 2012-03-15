@@ -7,7 +7,6 @@ use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\ClassMetadata;
-use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Gedmo\Tool\Wrapper\EntityWrapper;
 use Gedmo\Translatable\Mapping\Event\Adapter\ORM as TranslatableAdapterORM;
 use Doctrine\DBAL\Types\Type;
@@ -56,11 +55,6 @@ class TranslationRepository extends EntityRepository
     public function translate($entity, $field, $locale, $value)
     {
         $meta = $this->_em->getClassMetadata(get_class($entity));
-        if($meta->inheritanceType == ClassMetadataInfo::INHERITANCE_TYPE_SINGLE_TABLE){
-            $metaname = $meta->rootEntityName;
-        }else{
-            $metaname = $meta->name;
-        }          
         $listener = $this->getTranslatableListener();
         $config = $listener->getConfiguration($this->_em, $meta->name);
         if (!isset($config['fields']) || !in_array($field, $config['fields'])) {
@@ -72,8 +66,8 @@ class TranslationRepository extends EntityRepository
         } else {
             $ea = new TranslatableAdapterORM();
             $foreignKey = $meta->getReflectionProperty($meta->getSingleIdentifierFieldName())->getValue($entity);
-            $objectClass = $metaname;
-            $class = $listener->getTranslationClass($ea, $metaname);
+            $objectClass = $config['useObjectClass'];
+            $class = $listener->getTranslationClass($ea, $config['useObjectClass']);
             $transMeta = $this->_em->getClassMetadata($class);
             $trans = $this->findOneBy(compact('locale', 'field', 'objectClass', 'foreignKey'));
             if (!$trans) {

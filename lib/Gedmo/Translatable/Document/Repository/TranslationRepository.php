@@ -67,8 +67,8 @@ class TranslationRepository extends DocumentRepository
         } else {
             $ea = new TranslatableAdapterODM();
             $foreignKey = $meta->getReflectionProperty($meta->identifier)->getValue($document);
-            $objectClass = $meta->name;
-            $class = $listener->getTranslationClass($ea, $meta->name);
+            $objectClass = $config['useObjectClass'];
+            $class = $listener->getTranslationClass($ea, $config['useObjectClass']);
             $transMeta = $this->dm->getClassMetadata($class);
             $trans = $this->findOneBy(compact('locale', 'field', 'objectClass', 'foreignKey'));
             if (!$trans) {
