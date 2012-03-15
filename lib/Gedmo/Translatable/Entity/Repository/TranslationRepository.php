@@ -55,6 +55,11 @@ class TranslationRepository extends EntityRepository
     public function translate($entity, $field, $locale, $value)
     {
         $meta = $this->_em->getClassMetadata(get_class($entity));
+        if($meta->inheritanceType == ClassMetadataInfo::INHERITANCE_TYPE_SINGLE_TABLE){
+            $metaname = $meta->rootEntityName;
+        }else{
+            $metaname = $meta->name;
+        }          
         $listener = $this->getTranslatableListener();
         $config = $listener->getConfiguration($this->_em, $meta->name);
         if (!isset($config['fields']) || !in_array($field, $config['fields'])) {
@@ -66,8 +71,8 @@ class TranslationRepository extends EntityRepository
         } else {
             $ea = new TranslatableAdapterORM();
             $foreignKey = $meta->getReflectionProperty($meta->getSingleIdentifierFieldName())->getValue($entity);
-            $objectClass = $meta->name;
-            $class = $listener->getTranslationClass($ea, $meta->name);
+            $objectClass = $metaname;
+            $class = $listener->getTranslationClass($ea, $metaname);
             $transMeta = $this->_em->getClassMetadata($class);
             $trans = $this->findOneBy(compact('locale', 'field', 'objectClass', 'foreignKey'));
             if (!$trans) {
