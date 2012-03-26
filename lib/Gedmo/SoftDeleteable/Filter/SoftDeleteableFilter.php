@@ -27,16 +27,17 @@ class SoftDeleteableFilter extends SQLFilter
     {
         $config = $this->getConfiguration($targetEntity);
 
-        if (!isset($config['softDeleteable']) || !$config['softDeleteable']) {
-            return '';
+        if (isset($config['softDeleteable']) && $config['useObjectClass'] === $targetEntity->name)
+        {
+            return $targetTableAlias . '.' . $config['fieldName'] . ' IS NULL';
         }
 
-        return $targetTableAlias.'.'.$config['fieldName'].' IS NULL';
+        return '';
     }
 
     protected function getConfiguration(ClassMetadata $meta)
     {
-        if ($this->configuration === null) {
+        if (empty($this->configuration)) {
             $refl = new \ReflectionProperty('Doctrine\ORM\Query\Filter\SQLFilter', 'em');
             $refl->setAccessible(true);
             $em = $refl->getValue($this);
