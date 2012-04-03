@@ -20,7 +20,7 @@ class File
     private $id;
 
     /**
-     * @ORM\Column(name="title", type="string")
+     * @ORM\Column(name="title", type="string", nullable=true)
      */
     private $title;
 

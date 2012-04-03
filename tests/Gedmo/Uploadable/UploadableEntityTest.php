@@ -139,11 +139,39 @@ class UploadableEntityTest extends BaseTestCaseORM
 
     public function testEntityWithUploadableEntities()
     {
+        $artRepo = $this->em->getRepository(self::ARTICLE_CLASS);
         $article = new Article();
         $article->setTitle('Test');
 
+        $file1 = new File();
+        $file2 = new File();
+        $file3 = new File();
+
+        $article->addFile($file1);
+        $article->addFile($file2);
+        $article->addFile($file3);
+
+        $filesArrayIndex = strtr($file1->getFilesArrayIndex(), array('[' => '', ']' => ''));
+
+        $fileInfo = $this->generateUploadedFile($filesArrayIndex);
+        $fileInfo2 = $this->generateUploadedFile($filesArrayIndex);
+        $fileInfo3 = $this->generateUploadedFile($filesArrayIndex);
+
+        $_FILES[$fileInfo['index']] = array($fileInfo, $fileInfo2, $fileInfo3);
+
         $this->em->persist($article);
+
         $this->em->flush();
+
+        $art = $artRepo->findOneByTitle('Test');
+        $files = $art->getFiles();
+        $file1Path = $file1->getPath().DIRECTORY_SEPARATOR.$fileInfo['name'];
+        $file2Path = $file2->getPath().DIRECTORY_SEPARATOR.$fileInfo['name'];
+        $file3Path = $file3->getPath().DIRECTORY_SEPARATOR.$fileInfo['name'];
+
+        $this->assertEquals($file1Path, $files[0]->getFilePath());
+        $this->assertEquals($file2Path, $files[1]->getFilePath());
+        $this->assertEquals($file3Path, $files[2]->getFilePath());
     }
 
     public function testGetItemFromArrayMethod()

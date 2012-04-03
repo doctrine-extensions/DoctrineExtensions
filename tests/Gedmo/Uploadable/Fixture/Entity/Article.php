@@ -24,7 +24,7 @@ class Article
     private $title;
 
     /**
-     * @ORM\OneToMany(targetEntity="File", mappedBy="article")
+     * @ORM\OneToMany(targetEntity="File", mappedBy="article", cascade={"persist", "remove"})
      */
     private $files;
 
@@ -59,19 +59,13 @@ class Article
         return $this->filePath;
     }
 
-    /**
-     * @Gedmo\UploadablePath
-     */
-    public function getPath()
+    public function getFiles()
     {
-        return __DIR__.'/../../../../temp/uploadable';
+        return $this->files;
     }
 
-    /**
-     * @Gedmo\UploadableFilesArrayIndex
-     */
-    public function getFilesArrayIndex()
+    public function addFile(File $file)
     {
-        return '[image]';
+        $this->files[] = $file;
     }
 }

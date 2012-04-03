@@ -62,7 +62,7 @@ class UploadableListener extends MappedEventSubscriber
 
             if ($config = $this->getConfiguration($om, $meta->name)) {
                 if (isset($config['uploadable']) && $config['uploadable']) {
-                    $this->processFile($om, $uow, $ea, $meta, $config, $object, self::ACTION_INSERT);
+                    $this->processFile($uow, $ea, $meta, $config, $object, self::ACTION_INSERT);
                 }
             }
         }
@@ -73,7 +73,7 @@ class UploadableListener extends MappedEventSubscriber
             if ($config = $this->getConfiguration($om, $meta->name)) {
                 if (isset($config['uploadable']) && $config['uploadable']) {
                     $this->removeFile($meta, $config, $object);
-                    $this->processFile($om, $uow, $ea, $meta, $config, $object, self::ACTION_UPDATE);
+                    $this->processFile($uow, $ea, $meta, $config, $object, self::ACTION_UPDATE);
                 }
             }
         }
@@ -93,7 +93,6 @@ class UploadableListener extends MappedEventSubscriber
      * If it's a Uploadable object, verify if the file was uploaded.
      * If that's the case, process it.
      *
-     * @param ObjectManager
      * @param UnitOfWork
      * @param AdapterInterface
      * @param ClassMetadata
@@ -103,7 +102,7 @@ class UploadableListener extends MappedEventSubscriber
      *
      * @return void
      */
-    public function processFile(ObjectManager $om, UnitOfWork $uow, AdapterInterface $ea, ClassMetadata $meta, array $config, $object, $action)
+    public function processFile(UnitOfWork $uow, AdapterInterface $ea, ClassMetadata $meta, array $config, $object, $action)
     {
         $refl = $meta->getReflectionClass();
         $pathMethod = $refl->getMethod($config['pathMethod']);
