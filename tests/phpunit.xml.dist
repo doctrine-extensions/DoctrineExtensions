@@ -44,5 +44,8 @@
         <testsuite name="SoftDeleteable Extension">
             <directory suffix="Test.php">./Gedmo/SoftDeleteable/</directory>
         </testsuite>
+        <testsuite name="Uploadable Extension">
+            <directory suffix="Test.php">./Gedmo/Uploadable/</directory>
+        </testsuite>
     </testsuites>
 </phpunit>
