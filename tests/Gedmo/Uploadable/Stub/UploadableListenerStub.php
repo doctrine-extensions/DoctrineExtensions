@@ -16,11 +16,6 @@ use Gedmo\Uploadable\UploadableListener;
 
 class UploadableListenerStub extends UploadableListener
 {
-    public function isUploadedFile()
-    {
-        return true;
-    }
-
     public function moveUploadedFile($source, $dest)
     {
         return copy($source, $dest);

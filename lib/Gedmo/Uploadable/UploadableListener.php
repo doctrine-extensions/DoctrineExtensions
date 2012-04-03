@@ -256,7 +256,7 @@ class UploadableListener extends MappedEventSubscriber
         $info['fileName'] = $fileInfo['name'];
         $info['filePath'] = $path.'/'.$info['fileName'];
 
-        if ($this->isUploadedFile($fileInfo['tmp_name']) && $this->moveUploadedFile($fileInfo['tmp_name'], $info['filePath'])) {
+        if ($this->moveUploadedFile($fileInfo['tmp_name'], $info['filePath'])) {
             return $info;
         } else {
             throw new UploadableUploadException(sprintf('File "%s" was not uploaded, or there was a problem moving it to the location "%s".',
@@ -264,18 +264,6 @@ class UploadableListener extends MappedEventSubscriber
                 $path
             ));
         }
-    }
-
-    /**
-     * Simple wrapper to "is_uploaded_file" function so we can mock it in tests
-     *
-     * @param string
-     *
-     * @return bool
-     */
-    public function isUploadedFile($file)
-    {
-        return is_uploaded_file($file);
     }
 
     /**
