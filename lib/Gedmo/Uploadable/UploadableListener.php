@@ -72,7 +72,6 @@ class UploadableListener extends MappedEventSubscriber
 
             if ($config = $this->getConfiguration($om, $meta->name)) {
                 if (isset($config['uploadable']) && $config['uploadable']) {
-                    $this->removeFile($meta, $config, $object);
                     $this->processFile($uow, $ea, $meta, $config, $object, self::ACTION_UPDATE);
                 }
             }
@@ -139,6 +138,9 @@ class UploadableListener extends MappedEventSubscriber
 
             foreach ($file as $id => $f) {
                 if ($action === self::ACTION_INSERT || $id === $identifier) {
+                    // First we remove the original file
+                    $this->removefile($meta, $config, $object);
+
                     $info = $this->moveFile($f, $path);
                     $filePathField->setValue($object, $info['filePath']);
                     $changes = array(
