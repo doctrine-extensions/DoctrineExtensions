@@ -71,8 +71,8 @@ class Validator
             throw new InvalidMappingException(sprintf($msg,
                 $field,
                 $uploadableField,
-                explode(', ', $validFieldTypes
-            )));
+                explode(', ', $validFieldTypes)
+            ));
         }
     }
 }

@@ -7,6 +7,7 @@ use Doctrine\Common\Persistence\ObjectManager,
     Doctrine\ORM\UnitOfWork,
     Gedmo\Mapping\MappedEventSubscriber,
     Doctrine\Common\EventArgs,
+    Gedmo\Mapping\Event\AdapterInterface,
     Gedmo\Exception\UploadableDirectoryNotFoundException,
     Gedmo\Exception\UploadablePartialException,
     Gedmo\Exception\UploadableCantWriteException,
@@ -46,7 +47,8 @@ class UploadableListener extends MappedEventSubscriber
      * Handle file-uploading depending on the action
      * being done with objects
      *
-     * @param EventArgs $args
+     * @param EventArgs
+     *
      * @return void
      */
     public function onFlush(EventArgs $args)
@@ -91,10 +93,17 @@ class UploadableListener extends MappedEventSubscriber
      * If it's a Uploadable object, verify if the file was uploaded.
      * If that's the case, process it.
      *
-     * @param EventArgs $args
+     * @param ObjectManager
+     * @param UnitOfWork
+     * @param AdapterInterface
+     * @param ClassMetadata
+     * @param array
+     * @param object
+     * @param string
+     *
      * @return void
      */
-    public function processFile(ObjectManager $om, UnitOfWork $uow, $ea, ClassMetadata $meta, array $config, $object, $action)
+    public function processFile(ObjectManager $om, UnitOfWork $uow, AdapterInterface $ea, ClassMetadata $meta, array $config, $object, $action)
     {
         $refl = $meta->getReflectionClass();
         $pathMethod = $refl->getMethod($config['pathMethod']);
@@ -305,6 +314,7 @@ class UploadableListener extends MappedEventSubscriber
      * by the string passed as first argument
      *
      * @param string
+     *
      * @return array
      */
     public function getFile($indexString)
@@ -371,7 +381,8 @@ class UploadableListener extends MappedEventSubscriber
     /**
      * Maps additional metadata
      *
-     * @param EventArgs $eventArgs
+     * @param EventArgs
+     *
      * @return void
      */
     public function loadClassMetadata(EventArgs $eventArgs)
