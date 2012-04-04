@@ -31,7 +31,9 @@ class SoftDeleteableFilter extends SQLFilter
             return '';
         }
 
-        return $targetTableAlias.'.'.$config['fieldName'].' IS NULL';
+        $column = $targetEntity->columnNames[$config['fieldName']];
+
+        return $targetTableAlias.'.'.$column.' IS NULL';
     }
 
     protected function getListener()
