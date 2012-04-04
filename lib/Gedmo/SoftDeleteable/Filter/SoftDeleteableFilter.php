@@ -20,47 +20,54 @@ use Doctrine\ORM\Mapping\ClassMetaData,
 
 class SoftDeleteableFilter extends SQLFilter
 {
-    protected $configuration;
-
+    protected $listener;
+    protected $entityManager;
 
     public function addFilterConstraint(ClassMetadata $targetEntity, $targetTableAlias)
     {
-        $config = $this->getConfiguration($targetEntity);
+        $config = $this->getListener()->getConfiguration($this->getEntityManager(), $targetEntity->name);
 
         if (!isset($config['softDeleteable']) || !$config['softDeleteable']) {
             return '';
         }
 
-        return $targetTableAlias.'.'.$config['fieldName'].' IS NULL';
+        $column = $targetEntity->columnNames[$config['fieldName']];
+
+        return $targetTableAlias.'.'.$column.' IS NULL';
     }
 
-    protected function getConfiguration(ClassMetadata $meta)
+    protected function getListener()
     {
-        if ($this->configuration === null) {
-            $refl = new \ReflectionProperty('Doctrine\ORM\Query\Filter\SQLFilter', 'em');
-            $refl->setAccessible(true);
-            $em = $refl->getValue($this);
+        if ($this->listener === null) {
+            $em = $this->getEntityManager();
             $evm = $em->getEventManager();
 
             foreach ($evm->getListeners() as $listeners) {
                 foreach ($listeners as $listener) {
                     if ($listener instanceof SoftDeleteableListener) {
-                        $this->configuration = $listener->getConfiguration($em, $meta->name);
+                        $this->listener = $listener;
 
-                        break;
+                        break 2;
                     }
-                }
-
-                if ($this->configuration === null) {
-                    break;
                 }
             }
 
-            if ($this->configuration === null) {
+            if (!$this->listener === null) {
                 throw new \RuntimeException('Listener "SoftDeleteableListener" was not added to the EventManager!');
             }
         }
 
-        return $this->configuration;
+        return $this->listener;
+    }
+
+    protected function getEntityManager()
+    {
+        if ($this->entityManager === null) {
+            $refl = new \ReflectionProperty('Doctrine\ORM\Query\Filter\SQLFilter', 'em');
+            $refl->setAccessible(true);
+            $this->entityManager = $refl->getValue($this);
+        }
+
+        return $this->entityManager;
     }
 }
