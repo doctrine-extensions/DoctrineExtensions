@@ -60,7 +60,7 @@ class InheritanceTest extends BaseTestCaseORM
         $this->assertTrue($repo instanceof Entity\Repository\TranslationRepository);
 
         $translations = $repo->findTranslations($article);
-        $this->assertEquals(0, count($translations));
+        $this->assertCount(0, $translations);
 
         // test second translations
         $article = $this->em->getRepository(self::ARTICLE)->find(1);
@@ -74,7 +74,7 @@ class InheritanceTest extends BaseTestCaseORM
         $this->em->clear();
 
         $translations = $repo->findTranslations($article);
-        $this->assertEquals(1, count($translations));
+        $this->assertCount(1, $translations);
         $this->assertArrayHasKey('de', $translations);
 
         $this->assertArrayHasKey('name', $translations['de']);
@@ -121,13 +121,13 @@ class InheritanceTest extends BaseTestCaseORM
         $q->setHint(Query::HINT_CUSTOM_OUTPUT_WALKER, self::TREE_WALKER_TRANSLATION);
 
         $files = $q->getArrayResult();
-        $this->assertEquals(2, count($files));
+        $this->assertCount(2, $files);
         $this->assertEquals('image de', $files[0]['name']);
         $this->assertEquals('file de', $files[1]['name']);
 
         // test loading in locale
         $images = $this->em->getRepository(self::IMAGE)->findAll();
-        $this->assertEquals(1, count($images));
+        $this->assertCount(1, $images);
         $this->assertEquals('image de', $images[0]->getName());
         $this->assertEquals('mime de', $images[0]->getMime());
     }

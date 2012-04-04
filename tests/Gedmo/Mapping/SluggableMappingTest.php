@@ -67,7 +67,7 @@ class SluggableMappingTest extends \PHPUnit_Framework_TestCase
         $this->assertArrayHasKey('slug', $config['slugs']);
         $this->assertEquals('slug', $config['slugs']['slug']['slug']);
         $this->assertArrayHasKey('fields', $config['slugs']['slug']);
-        $this->assertEquals(1, count($config['slugs']['slug']['fields']));
+        $this->assertCount(1, $config['slugs']['slug']['fields']);
         $this->assertEquals('title', $config['slugs']['slug']['fields'][0]);
 
         $this->assertArrayHasKey('style', $config['slugs']['slug']);

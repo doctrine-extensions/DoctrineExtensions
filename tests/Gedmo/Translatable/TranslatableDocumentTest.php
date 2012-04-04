@@ -47,7 +47,7 @@ class TranslatableDocumentTest extends BaseTestCaseMongoODM
         $this->assertTrue($transRepo instanceof Document\Repository\TranslationRepository);
 
         $translations = $transRepo->findTranslations($article);
-        $this->assertEquals(0, count($translations));
+        $this->assertCount(0, $translations);
 
         // test second translations
         $this->translatableListener->setTranslatableLocale('de_de');
@@ -60,7 +60,7 @@ class TranslatableDocumentTest extends BaseTestCaseMongoODM
 
         $article = $repo->find($this->articleId);
         $translations = $transRepo->findTranslations($article);
-        $this->assertEquals(1, count($translations));
+        $this->assertCount(1, $translations);
 
         $this->assertArrayHasKey('de_de', $translations);
         $this->assertArrayHasKey('title', $translations['de_de']);
@@ -98,10 +98,10 @@ class TranslatableDocumentTest extends BaseTestCaseMongoODM
         $this->dm->clear();
 
         $article = $repo->find($this->articleId);
-        $this->assertTrue(is_null($article));
+        $this->assertNull($article);
 
         $translations = $transRepo->findTranslationsByObjectId($this->articleId);
-        $this->assertEquals(0, count($translations));
+        $this->assertCount(0, $translations);
     }
 
     private function populate()

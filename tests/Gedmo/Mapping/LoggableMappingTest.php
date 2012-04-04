@@ -22,7 +22,7 @@ class TreeMappingTest extends \PHPUnit_Framework_TestCase
     private $em;
 
     public function setUp()
-    {        
+    {
         $config = new \Doctrine\ORM\Configuration();
         $config->setMetadataCacheImpl(new \Doctrine\Common\Cache\ArrayCache);
         $config->setQueryCacheImpl(new \Doctrine\Common\Cache\ArrayCache);
@@ -41,20 +41,20 @@ class TreeMappingTest extends \PHPUnit_Framework_TestCase
         );
 
         //$config->setSQLLogger(new \Doctrine\DBAL\Logging\EchoSQLLogger());
-        
+
         $evm = new \Doctrine\Common\EventManager();
         $evm->addEventSubscriber(new LoggableListener());
         $this->em = \Doctrine\ORM\EntityManager::create($conn, $config, $evm);
     }
-    
+
     public function testLoggableMapping()
     {
         $meta = $this->em->getClassMetadata(self::YAML_CATEGORY);
         $cacheId = ExtensionMetadataFactory::getCacheId(self::YAML_CATEGORY, 'Gedmo\Loggable');
         $config = $this->em->getMetadataFactory()->getCacheDriver()->fetch($cacheId);
-        
+
         $this->assertArrayHasKey('loggable', $config);
-        $this->assertEquals(true, $config['loggable']);
+        $this->assertTrue($config['loggable']);
         $this->assertArrayHasKey('logEntryClass', $config);
         $this->assertEquals('Gedmo\\Loggable\\Entity\\LogEntry', $config['logEntryClass']);
     }

@@ -76,7 +76,7 @@ class TranslatableEntityCollectionTest extends BaseTestCaseORM
         $sport = $this->em->getRepository(self::ARTICLE)->find(1);
         $translations = $repo->findTranslations($sport);
 
-        $this->assertEquals(2, count($translations));
+        $this->assertCount(2, $translations);
 
         $this->assertArrayHasKey('de_de', $translations);
         $this->assertArrayHasKey('title', $translations['de_de']);
@@ -106,7 +106,7 @@ class TranslatableEntityCollectionTest extends BaseTestCaseORM
         $this->em->flush();
 
         $translations = $repo->findTranslations($sport);
-        $this->assertEquals(2, count($translations));
+        $this->assertCount(2, $translations);
 
         $this->assertArrayHasKey('ru_ru', $translations);
         $this->assertArrayHasKey('title', $translations['ru_ru']);
@@ -137,7 +137,7 @@ class TranslatableEntityCollectionTest extends BaseTestCaseORM
         $this->assertEquals('content en update', $sport->getContent());
 
         $translations = $repo->findTranslations($sport);
-        $this->assertEquals(3, count($translations));
+        $this->assertCount(3, $translations);
 
         $this->assertArrayHasKey('de_de', $translations);
         $this->assertArrayHasKey('title', $translations['de_de']);

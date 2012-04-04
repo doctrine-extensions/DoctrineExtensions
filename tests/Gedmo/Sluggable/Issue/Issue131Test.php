@@ -36,7 +36,7 @@ class Issue131Test extends BaseTestCaseORM
         $this->em->persist($test);
         $this->em->flush();
 
-        $this->assertEquals(null, $test->getSlug());
+        $this->assertNull($test->getSlug());
 
         $test2 = new Article;
         $test2->setTitle('');
@@ -44,7 +44,7 @@ class Issue131Test extends BaseTestCaseORM
         $this->em->persist($test2);
         $this->em->flush();
 
-        $this->assertEquals(null, $test2->getSlug());
+        $this->assertNull($test2->getSlug());
     }
 
     protected function getUsedEntityFixtures()

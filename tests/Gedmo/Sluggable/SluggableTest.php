@@ -35,7 +35,7 @@ class SluggableTest extends BaseTestCaseORM
         $article = $this->em->find(self::ARTICLE, $this->articleId);
 
         $this->assertTrue($article instanceof Sluggable);
-        $this->assertEquals($article->getSlug(), 'the-title-my-code');
+        $this->assertEquals('the-title-my-code', $article->getSlug());
     }
 
     public function testUniqueSlugGeneration()
@@ -48,7 +48,7 @@ class SluggableTest extends BaseTestCaseORM
             $this->em->persist($article);
             $this->em->flush();
             $this->em->clear();
-            $this->assertEquals($article->getSlug(), 'the-title-my-code-' . ($i + 1));
+            $this->assertEquals('the-title-my-code-' . ($i + 1), $article->getSlug());
         }
     }
 
@@ -75,7 +75,7 @@ class SluggableTest extends BaseTestCaseORM
             $this->assertEquals(64, strlen($shorten));
             $expected = 'the-title-the-title-the-title-the-title-the-title-the-title-the-';
             $expected = substr($expected, 0, 64 - (strlen($i+1) + 1)) . '-' . ($i+1);
-            $this->assertEquals($shorten, $expected);
+            $this->assertEquals($expected, $shorten);
         }
     }
 
@@ -95,7 +95,7 @@ class SluggableTest extends BaseTestCaseORM
             $this->em->persist($article);
             $this->em->flush();
             $this->em->clear();
-            $this->assertEquals($article->getSlug(), 'the-title-my-code-123-' . ($i + 1));
+            $this->assertEquals('the-title-my-code-123-' . ($i + 1), $article->getSlug());
         }
     }
 
@@ -107,7 +107,7 @@ class SluggableTest extends BaseTestCaseORM
         $this->em->flush();
         $this->em->clear();
 
-        $this->assertEquals($article->getSlug(), 'the-title-updated-my-code');
+        $this->assertEquals('the-title-updated-my-code', $article->getSlug());
     }
 
     public function testGithubIssue45()

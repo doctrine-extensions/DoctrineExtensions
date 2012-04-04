@@ -70,7 +70,7 @@ class MixedValueTranslationTest extends BaseTestCaseORM
         $transRepo = $this->em->getRepository(self::TRANSLATION);
         $translations = $transRepo->findTranslations($mixed);
 
-        $this->assertEquals(1, count($translations));
+        $this->assertCount(1, $translations);
         $this->assertArrayHasKey('de_de', $translations);
         $cust = unserialize($translations['de_de']['cust']);
 

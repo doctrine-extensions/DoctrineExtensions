@@ -72,7 +72,7 @@ class SortableTest extends BaseTestCaseORM
                  ->setParameter('path', '/')
                  ->getResult();
         
-        $this->assertEquals(10, count($nodes));
+        $this->assertCount(10, $nodes);
         $this->assertEquals('Node1', $nodes[0]->getName());
     }
     

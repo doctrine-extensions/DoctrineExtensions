@@ -43,7 +43,7 @@ class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
         $repo = $this->em->getRepository(self::CATEGORY);
         $result = $repo->getRootNodes('title');
         
-        $this->assertEquals(2, count($result));
+        $this->assertCount(2, $result);
         $this->assertEquals('Food', $result[0]->getTitle());
         $this->assertEquals('Sports', $result[1]->getTitle());
     }
@@ -59,7 +59,7 @@ class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
         // Get all children from the root
         $result = $repo->getChildren($root, false, 'title');
 
-        $this->assertEquals(4, count($result));
+        $this->assertCount(4, $result);
         $this->assertEquals('Carrots', $result[0]->getTitle());
         $this->assertEquals('Fruits', $result[1]->getTitle());
         $this->assertEquals('Potatoes', $result[2]->getTitle());
@@ -68,14 +68,14 @@ class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
         // Get direct children from the root
         $result = $repo->getChildren($root, true, 'title');
 
-        $this->assertEquals(2, count($result));
+        $this->assertCount(2, $result);
         $this->assertEquals('Fruits', $result[0]->getTitle());
         $this->assertEquals('Vegitables', $result[1]->getTitle());
 
         // Get ALL nodes
         $result = $repo->getChildren(null, false, 'title');
 
-        $this->assertEquals(6, count($result));
+        $this->assertCount(6, $result);
         $this->assertEquals('Carrots', $result[0]->getTitle());
         $this->assertEquals('Food', $result[1]->getTitle());
         $this->assertEquals('Fruits', $result[2]->getTitle());
@@ -92,7 +92,7 @@ class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
         $repo = $this->em->getRepository(self::CATEGORY);
         $tree = $repo->getTree();
 
-        $this->assertEquals(6, count($tree));
+        $this->assertCount(6, $tree);
         $this->assertEquals('Food', $tree[0]->getTitle());
         $this->assertEquals('Fruits', $tree[1]->getTitle());
         $this->assertEquals('Vegitables', $tree[2]->getTitle());

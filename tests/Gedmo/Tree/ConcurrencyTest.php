@@ -79,15 +79,15 @@ class ConcurrencyTest extends BaseTestCaseORM
         $left = $meta->getReflectionProperty('lft')->getValue($sport);
         $right = $meta->getReflectionProperty('rgt')->getValue($sport);
 
-        $this->assertEquals($left, 9);
-        $this->assertEquals($right, 16);
+        $this->assertEquals(9, $left);
+        $this->assertEquals(16, $right);
 
         $skiing = $repo->findOneByTitle('Skiing');
         $left = $meta->getReflectionProperty('lft')->getValue($skiing);
         $right = $meta->getReflectionProperty('rgt')->getValue($skiing);
 
-        $this->assertEquals($left, 10);
-        $this->assertEquals($right, 13);
+        $this->assertEquals(10, $left);
+        $this->assertEquals(13, $right);
     }
 
     public function testConcurrentTree()
@@ -97,23 +97,23 @@ class ConcurrencyTest extends BaseTestCaseORM
 
         $root = $repo->findOneByTitle('Root');
 
-        $this->assertEquals($root->getLeft(), 1);
-        $this->assertEquals($root->getRight(), 8);
+        $this->assertEquals(1, $root->getLeft());
+        $this->assertEquals(8, $root->getRight());
 
         $root2 = $repo->findOneByTitle('Root2');
 
-        $this->assertEquals($root2->getLeft(), 9);
-        $this->assertEquals($root2->getRight(), 10);
+        $this->assertEquals(9, $root2->getLeft());
+        $this->assertEquals(10, $root2->getRight());
 
         $child2Child = $repo->findOneByTitle('childs2_child');
 
-        $this->assertEquals($child2Child->getLeft(), 5);
-        $this->assertEquals($child2Child->getRight(), 6);
+        $this->assertEquals(5, $child2Child->getLeft());
+        $this->assertEquals(6, $child2Child->getRight());
 
         $child2Parent = $child2Child->getParent();
 
-        $this->assertEquals($child2Parent->getLeft(), 4);
-        $this->assertEquals($child2Parent->getRight(), 7);
+        $this->assertEquals(4, $child2Parent->getLeft());
+        $this->assertEquals(7, $child2Parent->getRight());
     }
 
     protected function getUsedEntityFixtures()

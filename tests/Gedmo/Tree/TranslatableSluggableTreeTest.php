@@ -74,7 +74,7 @@ class TranslatableSluggableTreeTest extends BaseTestCaseORM
         $translations = $this->em->getRepository(self::TRANSLATION)
             ->findTranslations($vegies);
 
-        $this->assertEquals(1, count($translations));
+        $this->assertCount(1, $translations);
         $this->assertArrayHasKey('de_de', $translations);
 
         $this->assertArrayHasKey('title', $translations['de_de']);

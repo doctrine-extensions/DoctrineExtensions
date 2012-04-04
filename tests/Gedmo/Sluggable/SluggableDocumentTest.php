@@ -57,7 +57,7 @@ class SluggableDocumentTest extends BaseTestCaseMongoODM
             $this->dm->persist($article);
             $this->dm->flush();
             $this->dm->clear();
-            $this->assertEquals($article->getSlug(), 'my-title-the-code-' . ($i + 1));
+            $this->assertEquals('my-title-the-code-' . ($i + 1), $article->getSlug());
         }
     }
 
