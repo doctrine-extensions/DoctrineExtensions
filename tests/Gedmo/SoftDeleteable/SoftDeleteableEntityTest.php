@@ -7,6 +7,7 @@ use Doctrine\Common\EventManager;
 use Doctrine\Common\Util\Debug,
     SoftDeleteable\Fixture\Entity\Article,
     SoftDeleteable\Fixture\Entity\Comment,
+    SoftDeleteable\Fixture\Entity\User,
     SoftDeleteable\Fixture\Entity\Page,
     SoftDeleteable\Fixture\Entity\MegaPage,
     SoftDeleteable\Fixture\Entity\Module,
@@ -29,6 +30,7 @@ class SoftDeleteableEntityTest extends BaseTestCaseORM
     const MEGA_PAGE_CLASS = 'SoftDeleteable\Fixture\Entity\MegaPage';
     const MODULE_CLASS = 'SoftDeleteable\Fixture\Entity\Module';
     const SOFT_DELETEABLE_FILTER_NAME = 'soft-deleteable';
+    const USER_CLASS = 'SoftDeleteable\Fixture\Entity\User';
 
     private $softDeleteableListener;
 
@@ -43,6 +45,31 @@ class SoftDeleteableEntityTest extends BaseTestCaseORM
         $config->addFilter(self::SOFT_DELETEABLE_FILTER_NAME, 'Gedmo\SoftDeleteable\Filter\SoftDeleteableFilter');
         $this->em = $this->getMockSqliteEntityManager($evm, $config);
         $this->em->getFilters()->enable(self::SOFT_DELETEABLE_FILTER_NAME);
+    }
+
+    /**
+     * @test
+     */
+    public function shouldSoftlyDeleteIfColumnNameDifferFromPropertyName()
+    {
+        $repo = $this->em->getRepository(self::USER_CLASS);
+
+        $newUser = new User();
+        $username = 'test_user';
+        $newUser->setUsername($username);
+
+        $this->em->persist($newUser);
+        $this->em->flush();
+
+        $user = $repo->findOneBy(array('username' => $username));
+
+        $this->assertNull($user->getDeletedAt());
+
+        $this->em->remove($user);
+        $this->em->flush();
+
+        $user = $repo->findOneBy(array('username' => $username));
+        $this->assertNull($user);
     }
 
     public function testSoftDeleteable()
@@ -168,7 +195,8 @@ class SoftDeleteableEntityTest extends BaseTestCaseORM
             self::PAGE_CLASS,
             self::MEGA_PAGE_CLASS,
             self::MODULE_CLASS,
-            self::COMMENT_CLASS
+            self::COMMENT_CLASS,
+            self::USER_CLASS
         );
     }
 
