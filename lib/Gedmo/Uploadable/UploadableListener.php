@@ -106,7 +106,7 @@ class UploadableListener extends MappedEventSubscriber
     public function processFile(UnitOfWork $uow, AdapterInterface $ea, ClassMetadata $meta, array $config, $object, $action)
     {
         $refl = $meta->getReflectionClass();
-        $fileInfoProp = $refl->getProperty($config['fileInfoField']);
+        $fileInfoProp = $refl->getProperty($config['fileInfoProperty']);
         $fileInfoProp->setAccessible(true);
         $file = $fileInfoProp->getValue($object);
         $filePathField = $refl->getProperty($config['filePathField']);

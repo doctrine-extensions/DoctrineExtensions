@@ -38,7 +38,37 @@ class Yaml extends File implements Driver
         if (isset($mapping['gedmo'])) {
             $classMapping = $mapping['gedmo'];
 
-            // TODO
+            if (isset($classMapping['uploadable'])) {
+                $uploadable = $classMapping['uploadable'];
+
+                $config['uploadable'] = true;
+                $config['allowOverwrite'] = isset($uploadable['allowOverwrite']) ?
+                    (bool) $uploadable['allowOverwrite'] : false;
+                $config['appendNumber'] = isset($uploadable['appendNumber']) ?
+                    (bool) $uploadable['appendNumber'] : false;
+                $config['path'] = isset($uploadable['path']) ? $uploadable['path'] : '';
+                $config['pathMethod'] = isset($uploadable['pathMethod']) ? $uploadable['pathMethod'] : '';
+                $config['fileInfoProperty'] = isset($uploadable['fileInfoProperty']) ? $uploadable['fileInfoProperty'] : '';
+                $config['fileMimeTypeField'] = false;
+                $config['filePathField'] = false;
+                $config['fileSizeField'] = false;
+
+                if (isset($mapping['fields'])) {
+                    foreach ($mapping['fields'] as $field => $info) {
+                        if (isset($info['gedmo'])) {
+                            if ($info['gedmo'][0] === 'uploadableFileMimeType') {
+                                $config['fileMimeTypeField'] = $field;
+                            } else if ($info['gedmo'][0] === 'uploadableFileSize') {
+                                $config['fileSizeField'] = $field;
+                            } else if ($info['gedmo'][0] === 'uploadableFilePath') {
+                                $config['filePathField'] = $field;
+                            }
+                        }
+                    }
+                }
+
+                Validator::validateConfiguration($meta, $config);
+            }
         }
     }
 

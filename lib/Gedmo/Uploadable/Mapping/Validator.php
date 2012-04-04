@@ -93,16 +93,25 @@ class Validator
 
     public static function validateConfiguration(ClassMetadata $meta, array $config)
     {
+        $refl = $meta->getReflectionClass();
+
         if (!$config['filePathField']) {
             throw new InvalidMappingException(sprintf('Class "%s" must have an UploadableFilePath field.',
                 $meta->name
             ));
         }
 
-        if (!$config['fileInfoField']) {
-            throw new InvalidMappingException(sprintf('Class "%s" must have an UploadableFileInfo field.',
+        if (!$config['fileInfoProperty']) {
+            throw new InvalidMappingException(sprintf('Class "%s" must define a "fileInfoProperty".',
                 $meta->name
             ));
+        } else {
+            if (!$refl->hasProperty($config['fileInfoProperty'])) {
+                throw new InvalidMappingException(sprintf('Class "%s" doesn\'t have property "%s"!',
+                    $meta->name,
+                    $config['fileInfoProperty']
+                ));
+            }
         }
 
         if ($config['path'] === '' && $config['pathMethod'] === '') {
@@ -112,8 +121,23 @@ class Validator
                 self::UPLOADABLE,
                 self::UPLOADABLE_PATH
             ));
-        } else if ($config['path'] !== '') {
-            Validator::validatePath($config['path']);
+        } else if ($config['pathMethod'] !== '') {
+            if (!$refl->hasMethod($config['pathMethod'])) {
+                throw new InvalidMappingException(sprintf('Class "%s" doesn\'t have method "%s"!',
+                    $meta->name,
+                    $config['pathMethod']
+                ));
+            }
         }
+
+        if ($config['fileMimeTypeField']) {
+            self::validateFileMimeTypeField($meta, $config['fileMimeTypeField']);
+        }
+
+        if ($config['fileSizeField']) {
+            self::validateFileSizeField($meta, $config['fileSizeField']);
+        }
+
+        self::validateFilePathField($meta, $config['filePathField']);
     }
 }

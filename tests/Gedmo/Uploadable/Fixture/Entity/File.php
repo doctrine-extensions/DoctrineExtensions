@@ -8,7 +8,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * @ORM\Entity
- * @Gedmo\Uploadable(allowOverwrite=true)
+ * @Gedmo\Uploadable(allowOverwrite=true, fileInfoProperty="fileInfo", pathMethod="getPath")
  */
 class File
 {
@@ -30,9 +30,6 @@ class File
      */
     private $filePath;
 
-    /**
-     * @Gedmo\UploadableFileInfo
-     */
     private $fileInfo;
 
     /**
@@ -87,9 +84,6 @@ class File
         return $this->fileInfo;
     }
 
-    /**
-     * @Gedmo\UploadablePath
-     */
     public function getPath()
     {
         return __DIR__.'/../../../../temp/uploadable';

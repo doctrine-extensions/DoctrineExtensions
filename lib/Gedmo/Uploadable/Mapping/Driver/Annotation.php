@@ -29,8 +29,6 @@ class Annotation implements AnnotationDriverInterface
     const UPLOADABLE_FILE_MIME_TYPE = 'Gedmo\\Mapping\\Annotation\\UploadableFileMimeType';
     const UPLOADABLE_FILE_PATH = 'Gedmo\\Mapping\\Annotation\\UploadableFilePath';
     const UPLOADABLE_FILE_SIZE = 'Gedmo\\Mapping\\Annotation\\UploadableFileSize';
-    const UPLOADABLE_FILE_INFO = 'Gedmo\\Mapping\\Annotation\\UploadableFileInfo';
-    const UPLOADABLE_PATH = 'Gedmo\\Mapping\\Annotation\\UploadablePath';
 
     /**
      * Annotation reader instance
@@ -78,38 +76,23 @@ class Annotation implements AnnotationDriverInterface
             $config['allowOverwrite'] = $annot->allowOverwrite;
             $config['appendNumber'] = $annot->appendNumber;
             $config['path'] = $annot->path;
-            $config['pathMethod'] = '';
+            $config['pathMethod'] = $annot->pathMethod;
             $config['fileMimeTypeField'] = false;
             $config['filePathField'] = false;
             $config['fileSizeField'] = false;
+            $config['fileInfoProperty'] = $annot->fileInfoProperty;
 
             foreach ($class->getProperties() as $prop) {
                 if ($this->reader->getPropertyAnnotation($prop, self::UPLOADABLE_FILE_MIME_TYPE)) {
                     $config['fileMimeTypeField'] = $prop->getName();
-
-                    Validator::validateFileMimeTypeField($meta, $config['fileMimeTypeField']);
                 }
 
                 if ($this->reader->getPropertyAnnotation($prop, self::UPLOADABLE_FILE_PATH)) {
                     $config['filePathField'] = $prop->getName();
-
-                    Validator::validateFilePathField($meta, $config['filePathField']);
                 }
 
                 if ($this->reader->getPropertyAnnotation($prop, self::UPLOADABLE_FILE_SIZE)) {
                     $config['fileSizeField'] = $prop->getName();
-
-                    Validator::validateFileSizeField($meta, $config['fileSizeField']);
-                }
-
-                if ($this->reader->getPropertyAnnotation($prop, self::UPLOADABLE_FILE_INFO)) {
-                    $config['fileInfoField'] = $prop->getName();
-                }
-            }
-
-            foreach ($class->getMethods() as $method) {
-                if ($this->reader->getMethodAnnotation($method, self::UPLOADABLE_PATH)) {
-                    $config['pathMethod'] = $method->getName();
                 }
             }
 

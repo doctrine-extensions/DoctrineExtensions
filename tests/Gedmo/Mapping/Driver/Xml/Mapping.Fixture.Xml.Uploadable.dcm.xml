@@ -5,17 +5,11 @@
 
     <entity name="Mapping\Fixture\Xml\Uploadable" table="uploadables">
 
-        <indexes>
-            <index name="name_idx" columns="name"/>
-        </indexes>
-
         <id name="id" type="integer" column="id">
             <generator strategy="AUTO"/>
         </id>
 
-        <field name="name" type="string" length="128"/>
-
-        <field name="mime" column="mime" type="string">
+        <field name="mimeType" column="mime" type="string">
             <gedmo:uploadable-file-mime-type />
         </field>
 
@@ -27,7 +21,12 @@
             <gedmo:uploadable-file-path />
         </field>
 
-        <gedmo:uploadable allow-overwrite="true" append-number="true" path="my/path" />
+        <gedmo:uploadable
+            allow-overwrite="true"
+            append-number="true"
+            path="/my/path"
+            path-method="getPath"
+            file-info-property="fileInfo" />
 
     </entity>
 

@@ -32,8 +32,6 @@ include __DIR__.'/TreeRight.php';
 include __DIR__.'/TreeRoot.php';
 include __DIR__.'/Versioned.php';
 include __DIR__.'/Uploadable.php';
-include __DIR__.'/UploadableFileInfo.php';
 include __DIR__.'/UploadableFileMimeType.php';
 include __DIR__.'/UploadableFilePath.php';
 include __DIR__.'/UploadableFileSize.php';
-include __DIR__.'/UploadablePath.php';

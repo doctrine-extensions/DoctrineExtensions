@@ -35,15 +35,16 @@ class Xml extends BaseXml
         $xml = $xml->children(self::GEDMO_NAMESPACE_URI);
 
         if ($xmlDoctrine->getName() == 'entity' || $xmlDoctrine->getName() == 'mapped-superclass') {
-            // TODO
-
-            /*
-             if (isset($xml->uploadable)) {
+            if (isset($xml->uploadable)) {
+                $xmlUploadable = $xml->uploadable;
                 $config['uploadable'] = true;
-                $config['allowOverwrite'] = isset($xml->allowOverwrite) ? $xml->allowOverwrite : false;
-                $config['appendNumber'] = isset($xml->appendNumber) ? $xml->appendNumber: false;
-                $config['path'] = isset($xml->path) ? $xml->path: '';
-                $config['pathMethod'] = '';
+                $config['allowOverwrite'] = $this->_isAttributeSet($xmlUploadable, 'allow-overwrite') ?
+                    (bool) $this->_getAttribute($xmlUploadable, 'allow-overwrite') : false;
+                $config['appendNumber'] = $this->_isAttributeSet($xmlUploadable, 'append-number') ?
+                    (bool) $this->_getAttribute($xmlUploadable, 'append-number') : false;
+                $config['path'] = $this->_getAttribute($xml->{'uploadable'}, 'path');
+                $config['pathMethod'] = $this->_getAttribute($xml->{'uploadable'}, 'path-method');
+                $config['fileInfoProperty'] = $this->_getAttribute($xml->{'uploadable'}, 'file-info-property');
                 $config['fileMimeTypeField'] = false;
                 $config['filePathField'] = false;
                 $config['fileSizeField'] = false;
@@ -57,25 +58,16 @@ class Xml extends BaseXml
 
                         if (isset($mapping->{'uploadable-file-mime-type'})) {
                             $config['fileMimeTypeField'] = $field;
-
-                            Validator::validateFileMimeTypeField($meta, $config['fileMimeTypeField']);
                         } else if (isset($mapping->{'uploadable-file-size'})) {
                             $config['fileSizeField'] = $field;
-
-                            Validator::validateFileSizeField($meta, $config['fileSizeField']);
                         } else if (isset($mapping->{'uploadable-file-path'})) {
                             $config['filePathField'] = $field;
-
-                            Validator::validateFilePathField($meta, $config['filePathField']);
-                        } else if (isset($mapping->{'uploadable-file-info'})) {
-                            $config['fileInfoField'] = $field;
                         }
                     }
                 }
 
                 Validator::validateConfiguration($meta, $config);
             }
-            */
         }
     }
 }
