@@ -11,6 +11,8 @@ use Doctrine\Common\Util\Debug,
     SoftDeleteable\Fixture\Entity\Page,
     SoftDeleteable\Fixture\Entity\MegaPage,
     SoftDeleteable\Fixture\Entity\Module,
+    SoftDeleteable\Fixture\Entity\OtherArticle,
+    SoftDeleteable\Fixture\Entity\OtherComment,
     Gedmo\SoftDeleteable\SoftDeleteableListener;
 
 /**
@@ -29,8 +31,10 @@ class SoftDeleteableEntityTest extends BaseTestCaseORM
     const PAGE_CLASS = 'SoftDeleteable\Fixture\Entity\Page';
     const MEGA_PAGE_CLASS = 'SoftDeleteable\Fixture\Entity\MegaPage';
     const MODULE_CLASS = 'SoftDeleteable\Fixture\Entity\Module';
-    const SOFT_DELETEABLE_FILTER_NAME = 'soft-deleteable';
+    const OTHER_ARTICLE_CLASS = 'SoftDeleteable\Fixture\Entity\OtherArticle';
+    const OTHER_COMMENT_CLASS = 'SoftDeleteable\Fixture\Entity\OtherComment';
     const USER_CLASS = 'SoftDeleteable\Fixture\Entity\User';
+    const SOFT_DELETEABLE_FILTER_NAME = 'soft-deleteable';
 
     private $softDeleteableListener;
 
@@ -186,6 +190,50 @@ class SoftDeleteableEntityTest extends BaseTestCaseORM
         $this->assertTrue(is_object($p));
         $this->assertTrue(is_object($p->getDeletedAt()));
         $this->assertTrue($p->getDeletedAt() instanceof \DateTime);
+
+        // Test of #301
+        $this->em->getFilters()->enable(self::SOFT_DELETEABLE_FILTER_NAME);
+
+        $otherArticleRepo = $this->em->getRepository(self::OTHER_ARTICLE_CLASS);
+        $otherCommentRepo = $this->em->getRepository(self::OTHER_COMMENT_CLASS);
+        $otherArt = new OtherArticle();
+        $otherComment = new OtherComment();
+        $otherArt->setTitle('Page 1');
+        $otherComment->setComment('Comment');
+        $otherArt->addComment($otherComment);
+        $otherComment->setArticle($otherArt);
+
+        $this->em->persist($otherArt);
+        $this->em->persist($otherComment);
+        $this->em->flush();
+
+        $this->em->refresh($otherArt);
+        $this->em->refresh($otherComment);
+
+        $artId = $otherArt->getId();
+        $commentId = $otherComment->getId();
+
+        $this->em->remove($otherArt);
+        $this->em->flush();
+
+        $foundArt = $otherArticleRepo->findOneBy(array('id' => $artId));
+        $foundComment = $otherCommentRepo->findOneBy(array('id' => $commentId));
+
+        $this->assertNull($foundArt);
+        $this->assertTrue(is_object($foundComment));
+        $this->assertInstanceOf(self::OTHER_COMMENT_CLASS, $foundComment);
+
+        $this->em->getFilters()->disable(self::SOFT_DELETEABLE_FILTER_NAME);
+
+        $foundArt = $otherArticleRepo->findOneById($artId);
+        $foundComment = $otherCommentRepo->findOneById($commentId);
+
+        $this->assertTrue(is_object($foundArt));
+        $this->assertTrue(is_object($foundArt->getDeletedAt()));
+        $this->assertTrue($foundArt->getDeletedAt() instanceof \DateTime);
+        $this->assertTrue(is_object($foundComment));
+        $this->assertInstanceOf(self::OTHER_COMMENT_CLASS, $foundComment);
+
     }
 
     protected function getUsedEntityFixtures()
@@ -196,12 +244,9 @@ class SoftDeleteableEntityTest extends BaseTestCaseORM
             self::MEGA_PAGE_CLASS,
             self::MODULE_CLASS,
             self::COMMENT_CLASS,
-            self::USER_CLASS
+            self::USER_CLASS,
+            self::OTHER_ARTICLE_CLASS,
+            self::OTHER_COMMENT_CLASS
         );
-    }
-
-    private function populate()
-    {
-        
     }
 }
