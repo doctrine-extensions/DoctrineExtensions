@@ -4,6 +4,8 @@ namespace Gedmo\Uploadable\Mapping;
 
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Gedmo\Exception\InvalidMappingException;
+use Gedmo\Exception\UploadableCantWriteException;
+use Doctrine\ORM\Mapping\ClassMetadata;
 
 /**
  * This class is used to validate mapping information
@@ -77,6 +79,41 @@ class Validator
                 $uploadableField,
                 explode(', ', $validFieldTypes)
             ));
+        }
+    }
+
+    public static function validatePath($path)
+    {
+        if (!is_dir($path) || !is_writable($path)) {
+            throw new UploadableCantWriteException(sprintf('Directory "%s" does not exist or is not writable',
+                $path
+            ));
+        }
+    }
+
+    public static function validateConfiguration(ClassMetadata $meta, array $config)
+    {
+        if (!$config['filePathField']) {
+            throw new InvalidMappingException(sprintf('Class "%s" must have an UploadableFilePath field.',
+                $meta->name
+            ));
+        }
+
+        if (!$config['fileInfoField']) {
+            throw new InvalidMappingException(sprintf('Class "%s" must have an UploadableFileInfo field.',
+                $meta->name
+            ));
+        }
+
+        if ($config['path'] === '' && $config['pathMethod'] === '') {
+            $msg = 'You need to define the path in the %s annotation, or add a method with %s annotation.';
+
+            throw new InvalidMappingException(sprintf($msg,
+                self::UPLOADABLE,
+                self::UPLOADABLE_PATH
+            ));
+        } else if ($config['path'] !== '') {
+            Validator::validatePath($config['path']);
         }
     }
 }

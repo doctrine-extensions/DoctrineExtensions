@@ -17,7 +17,8 @@ use Doctrine\Common\Persistence\ObjectManager,
     Gedmo\Exception\UploadableNoFileException,
     Gedmo\Exception\UploadableNoTmpDirException,
     Gedmo\Exception\UploadableUploadException,
-    Gedmo\Exception\UploadableFileAlreadyExistsException;
+    Gedmo\Exception\UploadableFileAlreadyExistsException,
+    Gedmo\Uploadable\Mapping\Validator;
 
 /**
  * Uploadable listener
@@ -117,6 +118,16 @@ class UploadableListener extends MappedEventSubscriber
             $pathMethod = $refl->getMethod($config['pathMethod']);
             $pathMethod->setAccessible(true);
             $path = $pathMethod->invoke($object);
+
+            if (is_string($path) && $path !== '') {
+                Validator::validatePath($path);
+            } else {
+                $msg = 'The method which returns the file path in class "%s" must return a valid path.';
+
+                throw new \RuntimeException(sprintf($msg,
+                    $meta->name
+                ));
+            }
         }
 
         $path = substr($path, strlen($path) - 1) === '/' ? substr($path, 0, strlen($path) - 2) : $path;

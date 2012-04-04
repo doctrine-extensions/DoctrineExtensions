@@ -107,32 +107,19 @@ class Annotation implements AnnotationDriverInterface
                 }
             }
 
-            if (!$config['filePathField']) {
-                throw new InvalidMappingException(sprintf('Class "%s" must have an UploadableFilePath field.',
-                    $class->getName()
-                ));
-            }
-
-            if (!$config['fileInfoField']) {
-                throw new InvalidMappingException(sprintf('Class "%s" must have an UploadableFileInfo field.',
-                    $class->getName()
-                ));
-            }
-
             foreach ($class->getMethods() as $method) {
                 if ($this->reader->getMethodAnnotation($method, self::UPLOADABLE_PATH)) {
                     $config['pathMethod'] = $method->getName();
                 }
             }
 
-            if ($config['path'] && $config['pathMethod'] === '') {
-                $msg = 'You need to define the path in the %s annotation, or add a method with %s annotation.';
+            Validator::validateConfiguration($meta, $config);
+        }
 
-                throw new InvalidMappingException(sprintf($msg,
-                    self::UPLOADABLE,
-                    self::UPLOADABLE_PATH
-                ));
-            }
+        /*
+        // Code in case we need to identify entities which are not Uploadables, but have associations
+        // with other Uploadable entities
+
         } else {
             // We need to check if this class has a relation with Uploadable entities
             $associations = $meta->getAssociationMappings();
@@ -153,7 +140,7 @@ class Annotation implements AnnotationDriverInterface
                     );
                 }
             }
-        }
+        }*/
 
         $this->validateFullMetadata($meta, $config);
     }

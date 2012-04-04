@@ -55,19 +55,14 @@ class UploadableEntityTest extends BaseTestCaseORM
         $this->testFileSize = 4;
         $this->testFileMimeType = 'text/plain';
 
-        if (is_file($this->destinationTestFile)) {
-            unlink($this->destinationTestFile);
-        }
-
-        if (is_file($this->destinationTestFile2)) {
-            unlink($this->destinationTestFile2);
-        }
-
-        if (is_dir($this->destinationTestDir)) {
-            rmdir($this->destinationTestDir);
-        }
+        $this->clearFilesAndDirectories();
 
         mkdir($this->destinationTestDir);
+    }
+
+    public function tearDown()
+    {
+        $this->clearFilesAndDirectories();
     }
 
     public function testUploadableEntity()
@@ -195,7 +190,18 @@ class UploadableEntityTest extends BaseTestCaseORM
         );
     }
 
-    private function populate()
+    private function clearFilesAndDirectories()
     {
+        if (is_file($this->destinationTestFile)) {
+            unlink($this->destinationTestFile);
+        }
+
+        if (is_file($this->destinationTestFile2)) {
+            unlink($this->destinationTestFile2);
+        }
+
+        if (is_dir($this->destinationTestDir)) {
+            rmdir($this->destinationTestDir);
+        }
     }
 }
