@@ -72,7 +72,7 @@ class TranslatableDocumentCollectionTest extends BaseTestCaseMongoODM
         $this->dm->flush();
 
         $translations = $repo->findTranslations($sport);
-        $this->assertEquals(2, count($translations));
+        $this->assertCount(2, $translations);
 
         $this->assertArrayHasKey('ru_ru', $translations);
         $this->assertArrayHasKey('title', $translations['ru_ru']);

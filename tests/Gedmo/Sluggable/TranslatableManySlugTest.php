@@ -44,12 +44,12 @@ class TranslatableManySlugTest extends BaseTestCaseORM
     {
         $article = $this->em->find(self::ARTICLE, $this->articleId);
         $this->assertTrue($article instanceof Translatable && $article instanceof Sluggable);
-        $this->assertEquals($article->getSlug(), 'the-title-my-code');
-        $this->assertEquals($article->getUniqueSlug(), 'the-unique-title');
+        $this->assertEquals('the-title-my-code', $article->getSlug());
+        $this->assertEquals('the-unique-title', $article->getUniqueSlug());
         $repo = $this->em->getRepository(self::TRANSLATION);
 
         $translations = $repo->findTranslations($article);
-        $this->assertEquals(count($translations), 0);
+        $this->assertCount(0, $translations);
 
         $article = $this->em->find(self::ARTICLE, $this->articleId);
         $article->setTranslatableLocale('de_de');
@@ -62,9 +62,9 @@ class TranslatableManySlugTest extends BaseTestCaseORM
 
         $repo = $this->em->getRepository(self::TRANSLATION);
         $translations = $repo->findTranslations($article);
-        $this->assertEquals(count($translations), 1);
+        $this->assertCount(1, $translations);
         $this->assertArrayHasKey('de_de', $translations);
-        $this->assertEquals(3, count($translations['de_de']));
+        $this->assertCount(3, $translations['de_de']);
 
         $this->assertEquals('title in de', $translations['de_de']['title']);
 
@@ -111,7 +111,6 @@ class TranslatableManySlugTest extends BaseTestCaseORM
         $article->setCode('my code');
         $article->setUniqueTitle('the unique title');
         
-
         $this->em->persist($article);
         $this->em->flush();
         $this->em->clear();

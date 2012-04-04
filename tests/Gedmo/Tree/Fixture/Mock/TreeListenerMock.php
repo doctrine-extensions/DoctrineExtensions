@@ -22,7 +22,7 @@ class TreeListenerMock extends TreeListener
 
     public function getStrategy(ObjectManager $om, $class)
     {
-        if (is_null($this->strategy)) {
+        if (null === $this->strategy) {
             $this->strategy = new MaterializedPathMock($this);
             $this->strategy->releaseLock = $this->releaseLocks;
         }
@@ -32,7 +32,7 @@ class TreeListenerMock extends TreeListener
 
     protected function getStrategiesUsedForObjects(array $classes)
     {
-        if (is_null($this->strategy)) {
+        if (null === $this->strategy) {
             $this->strategy = new MaterializedPathMock($this);
             $this->strategy->releaseLock = $this->releaseLocks;
         }

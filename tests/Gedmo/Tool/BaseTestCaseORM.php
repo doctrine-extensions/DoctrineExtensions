@@ -62,7 +62,7 @@ abstract class BaseTestCaseORM extends \PHPUnit_Framework_TestCase
             'memory' => true,
         );
 
-        $config = is_null($config) ? $this->getMockAnnotatedConfig() : $config;
+        $config = null === $config ? $this->getMockAnnotatedConfig() : $config;
         $em = EntityManager::create($conn, $config, $evm ?: $this->getEventManager());
 
         $schema = array_map(function($class) use ($em) {
@@ -72,6 +72,7 @@ abstract class BaseTestCaseORM extends \PHPUnit_Framework_TestCase
         $schemaTool = new SchemaTool($em);
         $schemaTool->dropSchema(array());
         $schemaTool->createSchema($schema);
+
         return $this->em = $em;
     }
 
@@ -96,6 +97,7 @@ abstract class BaseTestCaseORM extends \PHPUnit_Framework_TestCase
         $schemaTool = new SchemaTool($em);
         $schemaTool->dropSchema(array());
         $schemaTool->createSchema($schema);
+
         return $this->em = $em;
     }
 
@@ -120,6 +122,7 @@ abstract class BaseTestCaseORM extends \PHPUnit_Framework_TestCase
 
         $config = $this->getMockAnnotatedConfig();
         $this->em = EntityManager::create($conn, $config);
+
         return $this->em;
     }
 

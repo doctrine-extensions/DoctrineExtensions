@@ -61,7 +61,7 @@ class SortableMappingTest extends BaseTestCaseOM
         $this->assertArrayHasKey('position', $config);
         $this->assertEquals('position', $config['position']);
         $this->assertArrayHasKey('groups', $config);
-        $this->assertEquals(3, count($config['groups']));
+        $this->assertCount(3, $config['groups']);
         $this->assertEquals('grouping', $config['groups'][0]);
         $this->assertEquals('sortable_group', $config['groups'][1]);
         $this->assertEquals('sortable_groups', $config['groups'][2]);

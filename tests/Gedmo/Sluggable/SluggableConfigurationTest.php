@@ -37,7 +37,7 @@ class SluggableConfigurationTest extends BaseTestCaseORM
         $article = $this->em->find(self::ARTICLE, $this->articleId);
 
         $this->assertTrue($article instanceof Sluggable);
-        $this->assertEquals($article->getSlug(), 'the-title-my-code');
+        $this->assertEquals('the-title-my-code', $article->getSlug());
     }
 
     public function testNonUniqueSlugGeneration()
@@ -50,7 +50,7 @@ class SluggableConfigurationTest extends BaseTestCaseORM
             $this->em->persist($article);
             $this->em->flush();
             $this->em->clear();
-            $this->assertEquals($article->getSlug(), 'the-title-my-code');
+            $this->assertEquals('the-title-my-code', $article->getSlug());
         }
     }
 
@@ -66,7 +66,7 @@ class SluggableConfigurationTest extends BaseTestCaseORM
         $this->em->clear();
 
         $shorten = $article->getSlug();
-        $this->assertEquals(strlen($shorten), 32);
+        $this->assertEquals(32, strlen($shorten));
     }
 
     public function testNonUpdatableSlug()
@@ -77,7 +77,7 @@ class SluggableConfigurationTest extends BaseTestCaseORM
         $this->em->flush();
         $this->em->clear();
 
-        $this->assertEquals($article->getSlug(), 'the-title-my-code');
+        $this->assertEquals('the-title-my-code', $article->getSlug());
     }
 
     protected function getUsedEntityFixtures()

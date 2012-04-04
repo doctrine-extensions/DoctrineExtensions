@@ -63,14 +63,14 @@ class RepositoryTest extends BaseTestCaseORM
         $children = $this->em->getRepository(self::CATEGORY)
             ->children($vegies);
 
-        $this->assertEquals(2, count($children));
+        $this->assertCount(2, $children);
         $this->assertEquals('Carrots', $children[0]->getTitle());
         $this->assertEquals('Potatoes', $children[1]->getTitle());
 
         $children = $this->em->getRepository(self::CATEGORY)
             ->children($food);
 
-        $this->assertEquals(4, count($children));
+        $this->assertCount(4, $children);
         $this->assertEquals('Fruits', $children[0]->getTitle());
         $this->assertEquals('Vegitables', $children[1]->getTitle());
         $this->assertEquals('Carrots', $children[2]->getTitle());
@@ -79,21 +79,21 @@ class RepositoryTest extends BaseTestCaseORM
         $children = $this->em->getRepository(self::CATEGORY)
             ->children($food, true);
 
-        $this->assertEquals(2, count($children));
+        $this->assertCount(2, $children);
         $this->assertEquals('Fruits', $children[0]->getTitle());
         $this->assertEquals('Vegitables', $children[1]->getTitle());
 
         $children = $this->em->getRepository(self::CATEGORY)
             ->children();
 
-        $this->assertEquals(6, count($children));
+        $this->assertCount(6, $children);
 
         // path
 
         $path = $this->em->getRepository(self::CATEGORY)
             ->getPath($vegies);
 
-        $this->assertEquals(2, count($path));
+        $this->assertCount(2, $path);
         $this->assertEquals('Food', $path[0]->getTitle());
         $this->assertEquals('Vegitables', $path[1]->getTitle());
 
@@ -103,7 +103,7 @@ class RepositoryTest extends BaseTestCaseORM
         $path = $this->em->getRepository(self::CATEGORY)
             ->getPath($carrots);
 
-        $this->assertEquals(3, count($path));
+        $this->assertCount(3, $path);
         $this->assertEquals('Food', $path[0]->getTitle());
         $this->assertEquals('Vegitables', $path[1]->getTitle());
         $this->assertEquals('Carrots', $path[2]->getTitle());
@@ -113,7 +113,7 @@ class RepositoryTest extends BaseTestCaseORM
         $leafs = $this->em->getRepository(self::CATEGORY)
             ->getLeafs();
 
-        $this->assertEquals(4, count($leafs));
+        $this->assertCount(4, $leafs);
         $this->assertEquals('Fruits', $leafs[0]->getTitle());
         $this->assertEquals('Carrots', $leafs[1]->getTitle());
         $this->assertEquals('Potatoes', $leafs[2]->getTitle());
@@ -131,8 +131,8 @@ class RepositoryTest extends BaseTestCaseORM
         $left = $meta->getReflectionProperty('lft')->getValue($onions);
         $right = $meta->getReflectionProperty('rgt')->getValue($onions);
 
-        $this->assertEquals($left, 11);
-        $this->assertEquals($right, 12);
+        $this->assertEquals(11, $left);
+        $this->assertEquals(12, $right);
 
         // move up onions by one position
 
@@ -141,8 +141,8 @@ class RepositoryTest extends BaseTestCaseORM
         $left = $meta->getReflectionProperty('lft')->getValue($onions);
         $right = $meta->getReflectionProperty('rgt')->getValue($onions);
 
-        $this->assertEquals($left, 9);
-        $this->assertEquals($right, 10);
+        $this->assertEquals(9, $left);
+        $this->assertEquals(10, $right);
 
         // move down onions by one position
         $repo->moveDown($onions, 1);
@@ -150,8 +150,8 @@ class RepositoryTest extends BaseTestCaseORM
         $left = $meta->getReflectionProperty('lft')->getValue($onions);
         $right = $meta->getReflectionProperty('rgt')->getValue($onions);
 
-        $this->assertEquals($left, 11);
-        $this->assertEquals($right, 12);
+        $this->assertEquals(11, $left);
+        $this->assertEquals(12, $right);
 
         // move to the up onions on this level
 
@@ -160,8 +160,8 @@ class RepositoryTest extends BaseTestCaseORM
         $left = $meta->getReflectionProperty('lft')->getValue($onions);
         $right = $meta->getReflectionProperty('rgt')->getValue($onions);
 
-        $this->assertEquals($left, 5);
-        $this->assertEquals($right, 6);
+        $this->assertEquals(5, $left);
+        $this->assertEquals(6, $right);
 
         // test tree reordering
         // reorder tree by title
@@ -174,32 +174,32 @@ class RepositoryTest extends BaseTestCaseORM
         $left = $meta->getReflectionProperty('lft')->getValue($node);
         $right = $meta->getReflectionProperty('rgt')->getValue($node);
 
-        $this->assertEquals($left, 5);
-        $this->assertEquals($right, 6);
+        $this->assertEquals(5, $left);
+        $this->assertEquals(6, $right);
 
         $node = $this->em->getRepository(self::CATEGORY)
             ->findOneByTitle('Carrots');
         $left = $meta->getReflectionProperty('lft')->getValue($node);
         $right = $meta->getReflectionProperty('rgt')->getValue($node);
 
-        $this->assertEquals($left, 7);
-        $this->assertEquals($right, 8);
+        $this->assertEquals(7, $left);
+        $this->assertEquals(8, $right);
 
         $node = $this->em->getRepository(self::CATEGORY)
             ->findOneByTitle('Onions');
         $left = $meta->getReflectionProperty('lft')->getValue($node);
         $right = $meta->getReflectionProperty('rgt')->getValue($node);
 
-        $this->assertEquals($left, 9);
-        $this->assertEquals($right, 10);
+        $this->assertEquals(9, $left);
+        $this->assertEquals(10, $right);
 
         $node = $this->em->getRepository(self::CATEGORY)
             ->findOneByTitle('Potatoes');
         $left = $meta->getReflectionProperty('lft')->getValue($node);
         $right = $meta->getReflectionProperty('rgt')->getValue($node);
 
-        $this->assertEquals($left, 11);
-        $this->assertEquals($right, 12);
+        $this->assertEquals(11, $left);
+        $this->assertEquals(12, $right);
 
         // test removal with reparenting
 
@@ -213,15 +213,15 @@ class RepositoryTest extends BaseTestCaseORM
         $vegies = $this->em->getRepository(self::CATEGORY)
             ->findOneByTitle('Vegitables');
 
-        $this->assertTrue($vegies === null);
+        $this->assertNull($vegies);
 
         $node = $this->em->getRepository(self::CATEGORY)
             ->findOneByTitle('Fruits');
         $left = $meta->getReflectionProperty('lft')->getValue($node);
         $right = $meta->getReflectionProperty('rgt')->getValue($node);
 
-        $this->assertEquals($left, 2);
-        $this->assertEquals($right, 3);
+        $this->assertEquals(2, $left);
+        $this->assertEquals(3, $right);
         $this->assertEquals('Food', $node->getParent()->getTitle());
 
         $node = $this->em->getRepository(self::CATEGORY)
@@ -229,8 +229,8 @@ class RepositoryTest extends BaseTestCaseORM
         $left = $meta->getReflectionProperty('lft')->getValue($node);
         $right = $meta->getReflectionProperty('rgt')->getValue($node);
 
-        $this->assertEquals($left, 4);
-        $this->assertEquals($right, 5);
+        $this->assertEquals(4, $left);
+        $this->assertEquals(5, $right);
         $this->assertEquals('Food', $node->getParent()->getTitle());
     }
 
@@ -245,23 +245,23 @@ class RepositoryTest extends BaseTestCaseORM
         $this->em->clear();
 
         $food = $repo->findOneByTitle('Food');
-        $this->assertTrue(is_null($food));
+        $this->assertNull($food);
 
         $node = $repo->findOneByTitle('Fruits');
         $left = $meta->getReflectionProperty('lft')->getValue($node);
         $right = $meta->getReflectionProperty('rgt')->getValue($node);
 
-        $this->assertEquals($left, 1);
-        $this->assertEquals($right, 2);
-        $this->assertTrue(is_null($node->getParent()));
+        $this->assertEquals(1, $left);
+        $this->assertEquals(2, $right);
+        $this->assertNull($node->getParent());
 
         $node = $repo->findOneByTitle('Vegitables');
         $left = $meta->getReflectionProperty('lft')->getValue($node);
         $right = $meta->getReflectionProperty('rgt')->getValue($node);
 
-        $this->assertEquals($left, 3);
-        $this->assertEquals($right, 12);
-        $this->assertTrue(is_null($node->getParent()));
+        $this->assertEquals(3, $left);
+        $this->assertEquals(12, $right);
+        $this->assertNull($node->getParent());
     }
 
     public function testVerificationAndRecover()
@@ -320,9 +320,9 @@ class RepositoryTest extends BaseTestCaseORM
         $left = $meta->getReflectionProperty('lft')->getValue($food);
         $right = $meta->getReflectionProperty('rgt')->getValue($food);
 
-        $this->assertEquals($left, 3);
-        $this->assertEquals($right, 12);
-        $this->assertEquals(null, $food->getParent());
+        $this->assertEquals(3, $left);
+        $this->assertEquals(12, $right);
+        $this->assertNull($food->getParent());
 
         $this->assertTrue($repo->verify());
     }
@@ -360,14 +360,14 @@ class RepositoryTest extends BaseTestCaseORM
         $children = $this->em->getRepository(self::CATEGORY_UUID)
             ->children($vegies);
 
-        $this->assertEquals(2, count($children));
+        $this->assertCount(2, $children);
         $this->assertEquals('Carrots', $children[0]->getTitle());
         $this->assertEquals('Potatoes', $children[1]->getTitle());
 
         $children = $this->em->getRepository(self::CATEGORY_UUID)
             ->children($food);
 
-        $this->assertEquals(4, count($children));
+        $this->assertCount(4, $children);
         $this->assertEquals('Fruits', $children[0]->getTitle());
         $this->assertEquals('Vegitables', $children[1]->getTitle());
         $this->assertEquals('Carrots', $children[2]->getTitle());
@@ -376,21 +376,21 @@ class RepositoryTest extends BaseTestCaseORM
         $children = $this->em->getRepository(self::CATEGORY_UUID)
             ->children($food, true);
 
-        $this->assertEquals(2, count($children));
+        $this->assertCount(2, $children);
         $this->assertEquals('Fruits', $children[0]->getTitle());
         $this->assertEquals('Vegitables', $children[1]->getTitle());
 
         $children = $this->em->getRepository(self::CATEGORY_UUID)
             ->children();
 
-        $this->assertEquals(6, count($children));
+        $this->assertCount(6, $children);
 
         // path
 
         $path = $this->em->getRepository(self::CATEGORY_UUID)
             ->getPath($vegies);
 
-        $this->assertEquals(2, count($path));
+        $this->assertCount(2, $path);
         $this->assertEquals('Food', $path[0]->getTitle());
         $this->assertEquals('Vegitables', $path[1]->getTitle());
 
@@ -400,7 +400,7 @@ class RepositoryTest extends BaseTestCaseORM
         $path = $this->em->getRepository(self::CATEGORY_UUID)
             ->getPath($carrots);
 
-        $this->assertEquals(3, count($path));
+        $this->assertCount(3, $path);
         $this->assertEquals('Food', $path[0]->getTitle());
         $this->assertEquals('Vegitables', $path[1]->getTitle());
         $this->assertEquals('Carrots', $path[2]->getTitle());
@@ -410,7 +410,7 @@ class RepositoryTest extends BaseTestCaseORM
         $leafs = $this->em->getRepository(self::CATEGORY_UUID)
             ->getLeafs($path[0]);
 
-        $this->assertEquals(3, count($leafs));
+        $this->assertCount(3, $leafs);
         $this->assertEquals('Fruits', $leafs[0]->getTitle());
         $this->assertEquals('Carrots', $leafs[1]->getTitle());
         $this->assertEquals('Potatoes', $leafs[2]->getTitle());

@@ -93,7 +93,7 @@ class ClosureTreeTest extends BaseTestCaseORM
         $query->setParameter('ancestor', $food);
 
         $foodClosures = $query->getResult();
-        $this->assertEquals(12, count($foodClosures));
+        $this->assertCount(12, $foodClosures);
         foreach ($foodClosures as $closure) {
             $descendant = $closure->getDescendant();
             if ($descendant === $food) {
@@ -105,31 +105,31 @@ class ClosureTreeTest extends BaseTestCaseORM
             $descendantClosures = $query->getResult();
             switch ($descendantTitle) {
                 case 'Fruits':
-                    $this->assertEquals(5, count($descendantClosures));
+                    $this->assertCount(5, $descendantClosures);
                     $this->assertEquals(1, $closure->getDepth());
                     break;
                 case 'Oranges':
-                    $this->assertEquals(1, count($descendantClosures));
+                    $this->assertCount(1, $descendantClosures);
                     $this->assertEquals(2, $closure->getDepth());
                     break;
                 case 'Berries':
-                    $this->assertEquals(2, count($descendantClosures));
+                    $this->assertCount(2, $descendantClosures);
                     $this->assertEquals(2, $closure->getDepth());
                     break;
                 case 'Vegitables':
-                    $this->assertEquals(3, count($descendantClosures));
+                    $this->assertCount(3, $descendantClosures);
                     $this->assertEquals(1, $closure->getDepth());
                     break;
                 case 'Milk':
-                    $this->assertEquals(3, count($descendantClosures));
+                    $this->assertCount(3, $descendantClosures);
                     $this->assertEquals(1, $closure->getDepth());
                     break;
                 case 'Cheese':
-                    $this->assertEquals(2, count($descendantClosures));
+                    $this->assertCount(2, $descendantClosures);
                     $this->assertEquals(2, $closure->getDepth());
                     break;
                 case 'Strawberries':
-                    $this->assertEquals(1, count($descendantClosures));
+                    $this->assertCount(1, $descendantClosures);
                     $this->assertEquals(3, $closure->getDepth());
                     break;
             }
@@ -174,7 +174,7 @@ class ClosureTreeTest extends BaseTestCaseORM
         $query->setParameter('descendant', $strawberries);
 
         $closures = $query->getResult();
-        $this->assertEquals(1, count($closures));
+        $this->assertCount(1, $closures);
         $this->assertTrue($this->hasAncestor($closures, 'Strawberries'));
     }
 
@@ -317,6 +317,6 @@ class ClosureTreeTest extends BaseTestCaseORM
                     ->getQuery()
                     ->getResult();
 
-        $this->assertEquals(1, count($closure));
+        $this->assertCount(1, $closure);
     }
 }

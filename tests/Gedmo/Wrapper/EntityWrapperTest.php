@@ -48,7 +48,7 @@ class EntityWrapperTest extends BaseTestCaseORM
 
         $id = $wrapped->getIdentifier(false);
         $this->assertTrue(is_array($id));
-        $this->assertEquals(1, count($id));
+        $this->assertCount(1, $id);
         $this->assertArrayHasKey('id', $id);
         $this->assertEquals(1, $id['id']);
 

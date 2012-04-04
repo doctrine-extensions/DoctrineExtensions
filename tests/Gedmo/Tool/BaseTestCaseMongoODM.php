@@ -90,6 +90,7 @@ abstract class BaseTestCaseMongoODM extends \PHPUnit_Framework_TestCase
         $config = $this->getMockAnnotatedConfig();
 
         $this->dm = DocumentManager::create($conn, $config, $evm ?: $this->getEventManager());
+
         return $this->dm;
     }
 
@@ -115,6 +116,7 @@ abstract class BaseTestCaseMongoODM extends \PHPUnit_Framework_TestCase
         $evm->addEventSubscriber(new LoggableListener);
         $evm->addEventSubscriber(new TranslatableListener);
         $evm->addEventSubscriber(new TimestampableListener);
+
         return $evm;
     }
 

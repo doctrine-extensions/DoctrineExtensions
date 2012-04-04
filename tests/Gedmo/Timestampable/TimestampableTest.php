@@ -62,14 +62,14 @@ class TimestampableTest extends BaseTestCaseORM
             $date->format('Y-m-d H:i'),
             $sport->getUpdated()->format('Y-m-d H:i')
         );
-        $this->assertEquals(null, $sport->getPublished());
+        $this->assertNull($sport->getPublished());
 
         $sportComment = $this->em->getRepository(self::COMMENT)->findOneByMessage('hello');
         $this->assertEquals(
             $date->format('H:i'),
             $sportComment->getModified()->format('H:i')
         );
-        $this->assertEquals(null, $sportComment->getClosed());
+        $this->assertNull($sportComment->getClosed());
 
         $sportComment->setStatus(1);
         $published = new Type();
