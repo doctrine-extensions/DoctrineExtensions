@@ -48,11 +48,11 @@ class TranslatableSlugTest extends BaseTestCaseORM
     {
         $article = $this->em->find(self::ARTICLE, $this->articleId);
         $this->assertTrue($article instanceof Translatable && $article instanceof Sluggable);
-        $this->assertEquals($article->getSlug(), 'the-title-my-code');
+        $this->assertEquals('the-title-my-code', $article->getSlug());
         $repo = $this->em->getRepository(self::TRANSLATION);
 
         $translations = $repo->findTranslations($article);
-        $this->assertEquals(count($translations), 0);
+        $this->assertCount(0, $translations);
 
         $article = $this->em->find(self::ARTICLE, $this->articleId);
         $article->setTranslatableLocale('de_de');
@@ -65,9 +65,9 @@ class TranslatableSlugTest extends BaseTestCaseORM
 
         $repo = $this->em->getRepository(self::TRANSLATION);
         $translations = $repo->findTranslations($article);
-        $this->assertEquals(count($translations), 1);
+        $this->assertCount(1, $translations);
         $this->assertArrayHasKey('de_de', $translations);
-        $this->assertEquals(3, count($translations['de_de']));
+        $this->assertCount(3, $translations['de_de']);
 
         $this->assertArrayHasKey('code', $translations['de_de']);
         $this->assertEquals('code in de', $translations['de_de']['code']);

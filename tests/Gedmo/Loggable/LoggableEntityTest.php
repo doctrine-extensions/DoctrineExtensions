@@ -43,7 +43,7 @@ class LoggableEntityTest extends BaseTestCaseORM
     {
         $logRepo = $this->em->getRepository('Gedmo\Loggable\Entity\LogEntry');
         $articleRepo = $this->em->getRepository(self::ARTICLE);
-        $this->assertEquals(0, count($logRepo->findAll()));
+        $this->assertCount(0, $logRepo->findAll());
 
         $art0 = new Article();
         $art0->setTitle('Title');
@@ -53,13 +53,13 @@ class LoggableEntityTest extends BaseTestCaseORM
 
         $log = $logRepo->findOneByObjectId($art0->getId());
 
-        $this->assertNotEquals(null, $log);
+        $this->assertNotNull($log);
         $this->assertEquals('create', $log->getAction());
         $this->assertEquals(get_class($art0), $log->getObjectClass());
         $this->assertEquals('jules', $log->getUsername());
         $this->assertEquals(1, $log->getVersion());
         $data = $log->getData();
-        $this->assertEquals(1, count($data));
+        $this->assertCount(1, $data);
         $this->assertArrayHasKey('title', $data);
         $this->assertEquals($data['title'], 'Title');
 
@@ -82,7 +82,7 @@ class LoggableEntityTest extends BaseTestCaseORM
 
         $log = $logRepo->findOneBy(array('version' => 3, 'objectId' => 1));
         $this->assertEquals('remove', $log->getAction());
-        $this->assertEquals(null, $log->getData());
+        $this->assertNull($log->getData());
     }
 
     public function testVersionControl()
@@ -106,7 +106,7 @@ class LoggableEntityTest extends BaseTestCaseORM
 
         // test get log entries
         $logEntries = $commentLogRepo->getLogEntries($comment);
-        $this->assertEquals(6, count($logEntries));
+        $this->assertCount(6, $logEntries);
         $latest = $logEntries[0];
         $this->assertEquals('update', $latest->getAction());
     }

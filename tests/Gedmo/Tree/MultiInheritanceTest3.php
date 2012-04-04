@@ -45,10 +45,10 @@ class MultiInheritanceTest3 extends BaseTestCaseORM
         $this->assertEquals(6, $audi->getRight());
 
         $children = $carRepo->children($audi);
-        $this->assertEquals(2, count($children));
+        $this->assertCount(2, $children);
 
         $path = $carRepo->getPath($children[0]);
-        $this->assertEquals(2, count($path));
+        $this->assertCount(2, $path);
 
         $carRepo->moveDown($children[0]);
         $this->assertEquals(4, $children[0]->getLeft());

@@ -62,7 +62,7 @@ class TranslatableIdentifierTest extends BaseTestCaseORM
         $object = $this->em->find(self::FIXTURE, $this->testObjectId);
 
         $translations = $repo->findTranslations($object);
-        $this->assertEquals(count($translations), 0);
+        $this->assertCount(0, $translations);
 
         $object = $this->em->find(self::FIXTURE, $this->testObjectId);
         $object->setTitle('title in de');
@@ -84,7 +84,7 @@ class TranslatableIdentifierTest extends BaseTestCaseORM
         $this->assertEquals($this->testObjectId, $object->getUid());
 
         $translations = $repo->findTranslations($object);
-        $this->assertEquals(count($translations), 1);
+        $this->assertCount(1, $translations);
         $this->assertArrayHasKey('de_de', $translations);
 
         $this->assertArrayHasKey('title', $translations['de_de']);
@@ -97,14 +97,14 @@ class TranslatableIdentifierTest extends BaseTestCaseORM
             ->useResultCache(false)
         ;
         $data = $q->getResult();
-        $this->assertEquals(count($data), 1);
+        $this->assertCount(1, $data);
         $object = $data[0];
         $this->assertEquals('title in en', $object->getTitle());
 
         $this->em->clear(); // based on 2.3.0 it caches in identity map
         $this->translatableListener->setTranslatableLocale('de_de');
         $data = $q->getResult();
-        $this->assertEquals(count($data), 1);
+        $this->assertCount(1, $data);
         $object = $data[0];
         $this->assertEquals('title in de', $object->getTitle());
     }

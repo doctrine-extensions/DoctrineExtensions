@@ -60,12 +60,12 @@ class TranslationQueryWalkerTest extends BaseTestCaseORM
         // array hydration
         $this->translatableListener->setTranslatableLocale('en_us');
         $result = $q->getArrayResult();
-        $this->assertEquals(1, count($result));
+        $this->assertCount(1, $result);
 
         $q2 = clone $q;
         $q2->setHint(Query::HINT_CUSTOM_OUTPUT_WALKER, self::TREE_WALKER_TRANSLATION);
         $result = $q->getArrayResult();
-        $this->assertEquals(1, count($result));
+        $this->assertCount(1, $result);
     }
 
     public function testSubselectByTranslatedField()
@@ -82,7 +82,7 @@ class TranslationQueryWalkerTest extends BaseTestCaseORM
         // array hydration
         $this->translatableListener->setTranslatableLocale('en_us');
         $result = $q->getArrayResult();
-        $this->assertEquals(2, count($result));
+        $this->assertCount(2, $result);
         $this->assertEquals('Alfabet', $result[0]['title']);
         $this->assertEquals('Cabbages', $result[1]['title']);
     }
@@ -101,7 +101,7 @@ class TranslationQueryWalkerTest extends BaseTestCaseORM
         // array hydration
         $this->translatableListener->setTranslatableLocale('en_us');
         $result = $q->getArrayResult();
-        $this->assertEquals(2, count($result));
+        $this->assertCount(2, $result);
         $this->assertEquals('Alfabet', $result[0]['title']);
         $this->assertEquals('Cabbages', $result[1]['title']);
     }
@@ -122,10 +122,10 @@ class TranslationQueryWalkerTest extends BaseTestCaseORM
         $q->setParameter('filter', 'Foo%');
         $result = $q->getArrayResult();
 
-        $this->assertEquals(1, count($result));
+        $this->assertCount(1, $result);
         $this->assertEquals('Food', $result[0]['title']);
         $comments = $result[0]['comments'];
-        $this->assertEquals(1, count($comments));
+        $this->assertCount(1, $comments);
         $this->assertEquals('good', $comments[0]['subject']);
     }
 
@@ -202,7 +202,7 @@ class TranslationQueryWalkerTest extends BaseTestCaseORM
 
         // array hydration
         $result = $q->getArrayResult();
-        $this->assertEquals(0, count($result));
+        $this->assertCount(0, $result);
     }
 
     /**
@@ -220,7 +220,7 @@ class TranslationQueryWalkerTest extends BaseTestCaseORM
 
         // array hydration
         $result = $q->getArrayResult();
-        $this->assertEquals(1, count($result));
+        $this->assertCount(1, $result);
         $this->assertEquals('Maistas', $result[0]['title']);
     }
 
@@ -316,7 +316,7 @@ class TranslationQueryWalkerTest extends BaseTestCaseORM
         // array hydration
         $this->translatableListener->setTranslatableLocale('en_us');
         $result = $q->getArrayResult();
-        $this->assertEquals(4, count($result));
+        $this->assertCount(4, $result);
         $this->assertEquals('Alfabet', $result[0]['title']);
         $this->assertEquals('Cabbages', $result[1]['title']);
         $this->assertEquals('Food', $result[2]['title']);
@@ -324,7 +324,7 @@ class TranslationQueryWalkerTest extends BaseTestCaseORM
 
         $this->translatableListener->setTranslatableLocale('lt_lt');
         $result = $q->getArrayResult();
-        $this->assertEquals(4, count($result));
+        $this->assertCount(4, $result);
         $this->assertEquals('Alfabetas', $result[0]['title']);
         $this->assertEquals('Kopustai', $result[1]['title']);
         $this->assertEquals('Maistas', $result[2]['title']);
@@ -333,7 +333,7 @@ class TranslationQueryWalkerTest extends BaseTestCaseORM
         // object hydration
         $this->translatableListener->setTranslatableLocale('en_us');
         $result = $q->getResult();
-        $this->assertEquals(4, count($result));
+        $this->assertCount(4, $result);
         $this->assertEquals('Alfabet', $result[0]->getTitle());
         $this->assertEquals('Cabbages', $result[1]->getTitle());
         $this->assertEquals('Food', $result[2]->getTitle());
@@ -341,7 +341,7 @@ class TranslationQueryWalkerTest extends BaseTestCaseORM
 
         $this->translatableListener->setTranslatableLocale('lt_lt');
         $result = $q->getResult();
-        $this->assertEquals(4, count($result));
+        $this->assertCount(4, $result);
         $this->assertEquals('Alfabetas', $result[0]->getTitle());
         $this->assertEquals('Kopustai', $result[1]->getTitle());
         $this->assertEquals('Maistas', $result[2]->getTitle());
@@ -398,49 +398,49 @@ class TranslationQueryWalkerTest extends BaseTestCaseORM
         // array hydration
         $this->translatableListener->setTranslatableLocale('en_us');
         $result = $q->getArrayResult();
-        $this->assertEquals(1, count($result));
+        $this->assertCount(1, $result);
         $food = $result[0];
-        $this->assertEquals(5, count($food));
+        $this->assertCount(5, $food);
         $this->assertEquals('Food', $food['title']);
         $this->assertEquals('about food', $food['content']);
         $comments = $food['comments'];
-        $this->assertEquals(2, count($comments));
+        $this->assertCount(2, $comments);
         $good = $comments[0];
-        $this->assertEquals(3, count($good));
+        $this->assertCount(3, $good);
         $this->assertEquals('good', $good['subject']);
         $this->assertEquals('food is good', $good['message']);
         $bad = $comments[1];
-        $this->assertEquals(3, count($bad));
+        $this->assertCount(3, $bad);
         $this->assertEquals('bad', $bad['subject']);
         $this->assertEquals('food is bad', $bad['message']);
 
         $this->translatableListener->setTranslatableLocale('lt_lt');
         $result = $q->getArrayResult();
-        $this->assertEquals(1, count($result));
+        $this->assertCount(1, $result);
         $food = $result[0];
-        $this->assertEquals(5, count($food));
+        $this->assertCount(5, $food);
         $this->assertEquals('Maistas', $food['title']);
         $this->assertEquals('apie maista', $food['content']);
         $comments = $food['comments'];
-        $this->assertEquals(2, count($comments));
+        $this->assertCount(2, $comments);
         $good = $comments[0];
-        $this->assertEquals(3, count($good));
+        $this->assertCount(3, $good);
         $this->assertEquals('geras', $good['subject']);
         $this->assertEquals('maistas yra geras', $good['message']);
         $bad = $comments[1];
-        $this->assertEquals(3, count($bad));
+        $this->assertCount(3, $bad);
         $this->assertEquals('blogas', $bad['subject']);
         $this->assertEquals('maistas yra blogas', $bad['message']);
 
         // object hydration
         $this->translatableListener->setTranslatableLocale('en_us');
         $result = $q->getResult();
-        $this->assertEquals(1, count($result));
+        $this->assertCount(1, $result);
         $food = $result[0];
         $this->assertEquals('Food', $food->getTitle());
         $this->assertEquals('about food', $food->getContent());
         $comments = $food->getComments();
-        $this->assertEquals(2, count($comments));
+        $this->assertCount(2, $comments);
         $good = $comments[0];
         $this->assertEquals('good', $good->getSubject());
         $this->assertEquals('food is good', $good->getMessage());
@@ -450,12 +450,12 @@ class TranslationQueryWalkerTest extends BaseTestCaseORM
 
         $this->translatableListener->setTranslatableLocale('lt_lt');
         $result = $q->getResult();
-        $this->assertEquals(1, count($result));
+        $this->assertCount(1, $result);
         $food = $result[0];
         $this->assertEquals('Maistas', $food->getTitle());
         $this->assertEquals('apie maista', $food->getContent());
         $comments = $food->getComments();
-        $this->assertEquals(2, count($comments));
+        $this->assertCount(2, $comments);
         $good = $comments[0];
         $this->assertInstanceOf(self::COMMENT, $good);
         $this->assertEquals('geras', $good->getSubject());
@@ -481,29 +481,29 @@ class TranslationQueryWalkerTest extends BaseTestCaseORM
         // array hydration
         $this->translatableListener->setTranslatableLocale('en_us');
         $result = $q->getArrayResult();
-        $this->assertEquals(1, count($result));
+        $this->assertCount(1, $result);
         $food = $result[0];
-        $this->assertEquals(1, count($food));
+        $this->assertCount(1, $food);
         $this->assertEquals('Food', $food['title']);
         $this->translatableListener->setTranslatableLocale('lt_lt');
         $result = $q->getArrayResult();
-        $this->assertEquals(1, count($result));
+        $this->assertCount(1, $result);
         $food = $result[0];
-        $this->assertEquals(1, count($food));
+        $this->assertCount(1, $food);
         $this->assertEquals('Maistas', $food['title']);
 
         // object hydration
         $this->translatableListener->setTranslatableLocale('en_us');
         $result = $q->getResult();
-        $this->assertEquals(1, count($result));
+        $this->assertCount(1, $result);
         $food = $result[0];
-        $this->assertEquals(1, count($food));
+        $this->assertCount(1, $food);
         $this->assertEquals('Food', $food['title']);
         $this->translatableListener->setTranslatableLocale('lt_lt');
         $result = $q->getResult();
-        $this->assertEquals(1, count($result));
+        $this->assertCount(1, $result);
         $food = $result[0];
-        $this->assertEquals(1, count($food));
+        $this->assertCount(1, $food);
         $this->assertEquals('Maistas', $food['title']);
     }
 
@@ -523,23 +523,23 @@ class TranslationQueryWalkerTest extends BaseTestCaseORM
         // array hydration
         $this->translatableListener->setTranslatableLocale('en_us');
         $result = $q->getArrayResult();
-        $this->assertEquals(1, count($result));
+        $this->assertCount(1, $result);
         $food = $result[0];
-        $this->assertEquals(4, count($food));
+        $this->assertCount(4, $food);
         $this->assertEquals('Food', $food['title']);
         $this->assertEquals('about food', $food['content']);
         $this->translatableListener->setTranslatableLocale('lt_lt');
         $result = $q->getArrayResult();
-        $this->assertEquals(1, count($result));
+        $this->assertCount(1, $result);
         $food = $result[0];
-        $this->assertEquals(4, count($food));
+        $this->assertCount(4, $food);
         $this->assertEquals('Maistas', $food['title']);
         $this->assertEquals('apie maista', $food['content']);
 
         // object hydration
         $this->translatableListener->setTranslatableLocale('en_us');
         $result = $q->getResult();
-        $this->assertEquals(1, count($result));
+        $this->assertCount(1, $result);
         $food = $result[0];
         $this->assertInstanceOf(self::ARTICLE, $food);
         $this->assertEquals('Food', $food->getTitle());
@@ -547,7 +547,7 @@ class TranslationQueryWalkerTest extends BaseTestCaseORM
 
         $this->translatableListener->setTranslatableLocale('lt_lt');
         $result = $q->getResult();
-        $this->assertEquals(1, count($result));
+        $this->assertCount(1, $result);
         $food = $result[0];
         $this->assertEquals('Maistas', $food->getTitle());
         $this->assertEquals('apie maista', $food->getContent());
@@ -566,7 +566,7 @@ class TranslationQueryWalkerTest extends BaseTestCaseORM
         // array hydration
         $this->translatableListener->setTranslatableLocale('en_us');
         $result = $q->getArrayResult();
-        $this->assertEquals(1, count($result));
+        $this->assertCount(1, $result);
         $this->assertEquals('Food', $result[0]['title']);
         $this->assertEquals(1, $result[0]['num']);
     }

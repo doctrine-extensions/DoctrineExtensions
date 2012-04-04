@@ -59,7 +59,7 @@ class TranslatableTest extends BaseTestCaseORM
         $repo = $this->em->getRepository(self::TRANSLATION);
 
         $translations = $repo->findTranslations($article);
-        $this->assertEquals(1, count($translations));
+        $this->assertCount(1, $translations);
         $this->assertArrayHasKey('en_us', $translations);
     }
 
@@ -76,14 +76,14 @@ class TranslatableTest extends BaseTestCaseORM
         $this->assertTrue($article instanceof Translatable);
 
         $translations = $repo->findTranslations($article);
-        $this->assertEquals(count($translations), 0);
+        $this->assertCount(0, $translations);
 
         $comments = $article->getComments();
-        $this->assertEquals(count($comments), 2);
+        $this->assertCount(2, $comments);
         foreach ($comments as $num => $comment) {
             $translations = $repo->findTranslations($comment);
 
-            $this->assertEquals(count($translations), 0);
+            $this->assertCount(0, $translations);
         }
         // test default locale
         $article = $this->em->find(self::ARTICLE, $this->articleId);
@@ -104,13 +104,13 @@ class TranslatableTest extends BaseTestCaseORM
             array('id' => $article->getId()),
             \Doctrine\ORM\Query::HYDRATE_ARRAY
         );
-        $this->assertEquals(1, count($result));
-        $this->assertEquals($result[0]['title'], 'title in en');
-        $this->assertEquals($result[0]['content'], 'content in en');
+        $this->assertCount(1, $result);
+        $this->assertEquals('title in en', $result[0]['title']);
+        $this->assertEquals('content in en', $result[0]['content']);
 
         $repo = $this->em->getRepository(self::TRANSLATION);
         $translations = $repo->findTranslations($article);
-        $this->assertEquals(count($translations), 1);
+        $this->assertCount(1, $translations);
         $this->assertArrayHasKey('de_de', $translations);
 
         $this->assertArrayHasKey('content', $translations['de_de']);
@@ -139,7 +139,7 @@ class TranslatableTest extends BaseTestCaseORM
 
         $repo = $this->em->getRepository(self::TRANSLATION);
         $translations = $repo->findTranslations($article);
-        $this->assertEquals(count($translations), 1);
+        $this->assertCount(1, $translations);
         $this->assertArrayHasKey('de_de', $translations);
 
         $this->assertArrayHasKey('content', $translations['de_de']);
@@ -149,11 +149,11 @@ class TranslatableTest extends BaseTestCaseORM
         $this->assertEquals('title in de', $translations['de_de']['title']);
 
         $comments = $article->getComments();
-        $this->assertEquals(count($comments), 2);
+        $this->assertCount(2, $comments);
         foreach ($comments as $comment) {
             $translations = $repo->findTranslations($comment);
 
-            $this->assertEquals(count($translations), 1);
+            $this->assertCount(1, $translations);
             $this->assertArrayHasKey('de_de', $translations);
 
             $number = preg_replace("@[^\d]+@", '', $comment->getSubject());
@@ -167,15 +167,15 @@ class TranslatableTest extends BaseTestCaseORM
         }
 
         $article = $this->em->find(self::ARTICLE, $this->articleId);
-        $this->assertEquals($article->getTitle(), 'title in en');
-        $this->assertEquals($article->getContent(), 'content in en');
+        $this->assertEquals('title in en', $article->getTitle());
+        $this->assertEquals('content in en', $article->getContent());
 
         $comments = $article->getComments();
         foreach ($comments as $comment) {
             $number = preg_replace("@[^\d]+@", '', $comment->getSubject());
 
-            $this->assertEquals($comment->getSubject(), "subject{$number} in en");
-            $this->assertEquals($comment->getMessage(), "message{$number} in en");
+            $this->assertEquals("subject{$number} in en", $comment->getSubject());
+            $this->assertEquals("message{$number} in en", $comment->getMessage());
         }
         // test deletion
         $article = $this->em->find(self::ARTICLE, $this->articleId);
@@ -183,7 +183,7 @@ class TranslatableTest extends BaseTestCaseORM
         $this->em->flush();
 
         $translations = $repo->findTranslations($article);
-        $this->assertEquals(0, count($translations));
+        $this->assertCount(0, $translations);
     }
 
     /**
@@ -207,8 +207,8 @@ class TranslatableTest extends BaseTestCaseORM
         $this->translatableListener->setTranslationFallback(true);
         $article = $this->em->find(self::ARTICLE, $this->articleId);
 
-        $this->assertEquals($article->getTitle(), 'title in en');
-        $this->assertEquals($article->getContent(), 'content in en');
+        $this->assertEquals('title in en', $article->getTitle());
+        $this->assertEquals('content in en', $article->getContent());
     }
 
     /**
@@ -232,7 +232,7 @@ class TranslatableTest extends BaseTestCaseORM
 
         $repo = $this->em->getRepository(self::TRANSLATION);
         $translations = $repo->findTranslations($judo);
-        $this->assertEquals(1, count($translations));
+        $this->assertCount(1, $translations);
 
         // now without any changeset
         $this->translatableListener->setTranslatableLocale('ru_ru');
@@ -244,7 +244,7 @@ class TranslatableTest extends BaseTestCaseORM
         // this will not add additional translation, because it cannot be tracked
         // without anything in changeset
         $translations = $repo->findTranslations($judo);
-        $this->assertEquals(1, count($translations));
+        $this->assertCount(1, $translations);
     }
 
     protected function getUsedEntityFixtures()

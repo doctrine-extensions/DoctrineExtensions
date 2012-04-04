@@ -62,6 +62,6 @@ class MappingTest extends \PHPUnit_Framework_TestCase
             $this->em,
             self::TEST_ENTITY_CATEGORY
         );
-        $this->assertEquals(0, count($conf));
+        $this->assertCount(0, $conf);
     }
 }

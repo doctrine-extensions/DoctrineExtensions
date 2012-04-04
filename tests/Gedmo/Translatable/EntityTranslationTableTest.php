@@ -50,7 +50,7 @@ class EntityTranslationTableTest extends BaseTestCaseORM
 
         $translations = $repo->findTranslations($person);
         //As Translate locale and Default locale are the same, no records should be present in translations table
-        $this->assertEquals(count($translations), 0);
+        $this->assertCount(0, $translations);
 
         // test second translations
         $person = $this->em->find(self::PERSON, $person->getId());
@@ -63,7 +63,7 @@ class EntityTranslationTableTest extends BaseTestCaseORM
 
         $translations = $repo->findTranslations($person);
         //Only one translation should be present
-        $this->assertEquals(count($translations), 1);
+        $this->assertCount(1, $translations);
         $this->assertArrayHasKey('de_de', $translations);
 
         $this->assertArrayHasKey('name', $translations['de_de']);

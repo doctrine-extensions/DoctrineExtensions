@@ -180,7 +180,7 @@ class NestedTreePositionTest extends BaseTestCaseORM
         $this->em->flush();
 
         $this->assertEquals(1, $oranges->getLevel());
-        $this->assertEquals(1, count($repo->children($fruits, true)));
+        $this->assertCount(1, $repo->children($fruits, true));
 
         $vegies = $repo->findOneByTitle('Vegitables');
         $this->assertEquals(2, $vegies->getLeft());

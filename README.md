@@ -105,7 +105,7 @@ You can also fork or clone this blog from [github repository](https://github.com
 
 ### Running the tests:
 
-PHPUnit 3.5 or newer is required.
+PHPUnit 3.6 or newer is required.
 To setup and run tests follow these steps:
 
 - go to the root directory of extensions

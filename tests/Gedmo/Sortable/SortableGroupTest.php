@@ -44,7 +44,7 @@ class SortableGroupTest extends BaseTestCaseORM
     /**
      * @test
      */
-    function shouldBeAbleToRemove()
+    public function shouldBeAbleToRemove()
     {
         $this->populate();
         $carRepo = $this->em->getRepository(self::CAR);

@@ -196,7 +196,7 @@ abstract class BaseTestCaseOM extends \PHPUnit_Framework_TestCase
      */
     private function getEventManager()
     {
-        if (is_null($this->evm)) {
+        if (null === $this->evm) {
             $this->evm = new EventManager;
             $this->evm->addEventSubscriber(new TreeListener);
             $this->evm->addEventSubscriber(new SluggableListener);
@@ -204,6 +204,7 @@ abstract class BaseTestCaseOM extends \PHPUnit_Framework_TestCase
             $this->evm->addEventSubscriber(new TranslatableListener);
             $this->evm->addEventSubscriber(new TimestampableListener);
         }
+
         return $this->evm;
     }
 
@@ -261,7 +262,7 @@ abstract class BaseTestCaseOM extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue(array('safe' => true)))
         ;
 
-        if (is_null($mappingDriver)) {
+        if (null === $mappingDriver) {
             $mappingDriver = $this->getDefaultMongoODMMetadataDriverImplementation();
         }
 
@@ -297,7 +298,7 @@ abstract class BaseTestCaseOM extends \PHPUnit_Framework_TestCase
             ->method('getClassMetadataFactoryName')
             ->will($this->returnValue('Doctrine\\ORM\\Mapping\\ClassMetadataFactory'));
 
-        if (is_null($mappingDriver)) {
+        if (null === $mappingDriver) {
             $mappingDriver = $this->getDefaultORMMetadataDriverImplementation();
         }
 

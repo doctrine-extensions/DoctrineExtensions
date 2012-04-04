@@ -37,13 +37,13 @@ class NestedTreeRootRepositoryTest extends BaseTestCaseORM
     {
         $repo = $this->em->getRepository(self::CATEGORY);
         $result = $repo->childrenHierarchy();
-        $this->assertEquals(2, count($result));
+        $this->assertCount(2, $result);
         $this->assertTrue(isset($result[0]['__children'][0]['__children']));
 
         $vegies = $repo->findOneByTitle('Vegitables');
         $result = $repo->childrenHierarchy($vegies);
-        $this->assertEquals(2, count($result));
-        $this->assertEquals(0, count($result[0]['__children']));
+        $this->assertCount(2, $result);
+        $this->assertCount(0, $result[0]['__children']);
     }
 
     /**
@@ -127,8 +127,8 @@ class NestedTreeRootRepositoryTest extends BaseTestCaseORM
             ->getQuery()
         ;
         $tree = $repo->buildTree($q->getArrayResult());
-        $this->assertEquals(1, count($tree));
-        $this->assertEquals(2, count($tree[0]['__children']));
+        $this->assertCount(1, $tree);
+        $this->assertCount(2, $tree[0]['__children']);
         $nodes = array();
         $options = array('decorate' => true);
         $this->assertEquals('', $repo->buildTree($nodes, $options), 'should give empty string when there are no nodes given');
@@ -144,21 +144,21 @@ class NestedTreeRootRepositoryTest extends BaseTestCaseORM
         $this->em->clear();
 
         $food = $repo->findOneByTitle('Food');
-        $this->assertTrue(is_null($food));
+        $this->assertNull($food);
 
         $node = $repo->findOneByTitle('Fruits');
 
         $this->assertEquals(1, $node->getLeft());
         $this->assertEquals(2, $node->getRight());
         $this->assertEquals(3, $node->getRoot());
-        $this->assertTrue(is_null($node->getParent()));
+        $this->assertNull($node->getParent());
 
         $node = $repo->findOneByTitle('Vegitables');
 
         $this->assertEquals(1, $node->getLeft());
         $this->assertEquals(10, $node->getRight());
         $this->assertEquals(4, $node->getRoot());
-        $this->assertTrue(is_null($node->getParent()));
+        $this->assertNull($node->getParent());
     }
 
     public function testRepository()
@@ -167,7 +167,7 @@ class NestedTreeRootRepositoryTest extends BaseTestCaseORM
         $carrots = $repo->findOneByTitle('Carrots');
 
         $path = $repo->getPath($carrots);
-        $this->assertEquals(3, count($path));
+        $this->assertCount(3, $path);
         $this->assertEquals('Food', $path[0]->getTitle());
         $this->assertEquals('Vegitables', $path[1]->getTitle());
         $this->assertEquals('Carrots', $path[2]->getTitle());
@@ -203,7 +203,7 @@ class NestedTreeRootRepositoryTest extends BaseTestCaseORM
 
         $this->em->clear(); // must clear cached entities
         $errors = $repo->verify();
-        $this->assertEquals(2, count($errors));
+        $this->assertCount(2, $errors);
         $this->assertEquals('index [1], duplicate on tree root: 1', $errors[0]);
         $this->assertEquals('index [4], missing on tree root: 1', $errors[1]);
 
@@ -271,7 +271,7 @@ class NestedTreeRootRepositoryTest extends BaseTestCaseORM
         // leafs
 
         $leafs = $repo->getLeafs($node);
-        $this->assertEquals(5, count($leafs));
+        $this->assertCount(5, $leafs);
         $this->assertEquals('Fruits', $leafs[0]->getTitle());
         $this->assertEquals('Cabbages', $leafs[1]->getTitle());
         $this->assertEquals('Carrots', $leafs[2]->getTitle());
@@ -284,13 +284,13 @@ class NestedTreeRootRepositoryTest extends BaseTestCaseORM
         $id = $node->getId();
         $repo->removeFromTree($node);
 
-        $this->assertTrue(is_null($repo->find($id)));
+        $this->assertNull($repo->find($id));
 
         $node = $repo->findOneByTitle('Vegitables');
         $id = $node->getId();
         $repo->removeFromTree($node);
 
-        $this->assertTrue(is_null($repo->find($id)));
+        $this->assertNull($repo->find($id));
         $this->em->clear();
 
         $node = $repo->findOneByTitle('Cabbages');
@@ -307,7 +307,7 @@ class NestedTreeRootRepositoryTest extends BaseTestCaseORM
         $id = $onions->getId();
         $repo->removeFromTree($onions);
 
-        $this->assertTrue(is_null($repo->find($id)));
+        $this->assertNull($repo->find($id));
         $this->em->clear();
 
         $vegies = $repo->findOneByTitle('Vegitables');

@@ -101,7 +101,7 @@ class MaterializedPathORMTest extends BaseTestCaseORM
         
         $firstResult = $result[0];
 
-        $this->assertEquals(1, count($result));
+        $this->assertCount(1, $result);
         $this->assertEquals('4', $firstResult->getTitle());
         $this->assertEquals(1, $firstResult->getLevel());
     }

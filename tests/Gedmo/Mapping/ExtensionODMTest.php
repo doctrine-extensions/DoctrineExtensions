@@ -32,7 +32,7 @@ class ExtensionODMTest extends BaseTestCaseMongoODM
         $meta = $this->dm->getClassMetadata(self::USER);
         $config = $this->encoderListener->getConfiguration($this->dm, self::USER);
         $this->assertArrayHasKey('encode', $config);
-        $this->assertEquals(2, count($config['encode']));
+        $this->assertCount(2, $config['encode']);
 
         $this->assertArrayHasKey('name', $config['encode']);
         $options = $config['encode']['name'];
@@ -42,7 +42,7 @@ class ExtensionODMTest extends BaseTestCaseMongoODM
         $this->assertArrayHasKey('password', $config['encode']);
         $options = $config['encode']['password'];
         $this->assertEquals('md5', $options['type']);
-        $this->assertTrue(empty($options['secret']));
+        $this->assertEmpty($options['secret']);
     }
 
     public function testGeneratedValues()

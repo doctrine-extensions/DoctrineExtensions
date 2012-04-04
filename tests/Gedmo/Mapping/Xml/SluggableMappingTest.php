@@ -57,7 +57,7 @@ class SluggableMappingTest extends BaseTestCaseORM
         $config = $this->sluggable->getConfiguration($this->em, $meta->name);
 
         $this->assertArrayHasKey('slug', $config['slugs']);
-        $this->assertEquals(1, count($config['slugs']));
+        $this->assertCount(1, $config['slugs']);
         $config = $config['slugs']['slug'];
 
         $this->assertEquals('slug', $config['slug']);
@@ -71,7 +71,7 @@ class SluggableMappingTest extends BaseTestCaseORM
         $this->assertEquals('_', $config['separator']);
 
         $this->assertArrayHasKey('fields', $config);
-        $this->assertEquals(3, count($config['fields']));
+        $this->assertCount(3, $config['fields']);
         $fields = $config['fields'];
 
         $this->assertEquals('title', $fields[0]);
