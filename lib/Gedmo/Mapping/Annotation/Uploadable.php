@@ -21,7 +21,11 @@ final class Uploadable extends Annotation
 {
     /** @var boolean */
     public $allowOverwrite = false;
+
     /** @var boolean */
-    public $appendNumber = true;
+    public $appendNumber = false;
+
+    /** @var string */
+    public $path = '';
 }
 

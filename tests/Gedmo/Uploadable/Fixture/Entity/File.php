@@ -8,7 +8,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * @ORM\Entity
- * @Gedmo\Uploadable()
+ * @Gedmo\Uploadable(allowOverwrite=true)
  */
 class File
 {
@@ -29,6 +29,11 @@ class File
      * @Gedmo\UploadableFilePath
      */
     private $filePath;
+
+    /**
+     * @Gedmo\UploadableFileInfo
+     */
+    private $fileInfo;
 
     /**
      * @ORM\ManyToOne(targetEntity="Article", inversedBy="files")
@@ -72,19 +77,21 @@ class File
         return $this->article;
     }
 
+    public function setFileInfo(array $fileInfo)
+    {
+        $this->fileInfo = $fileInfo;
+    }
+
+    public function getFileInfo()
+    {
+        return $this->fileInfo;
+    }
+
     /**
      * @Gedmo\UploadablePath
      */
     public function getPath()
     {
         return __DIR__.'/../../../../temp/uploadable';
-    }
-
-    /**
-     * @Gedmo\UploadableFilesArrayIndex
-     */
-    public function getFilesArrayIndex()
-    {
-        return '[file]';
     }
 }

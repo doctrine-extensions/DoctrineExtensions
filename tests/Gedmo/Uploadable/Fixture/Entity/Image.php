@@ -30,6 +30,11 @@ class Image
      */
     private $filePath;
 
+    /**
+     * @Gedmo\UploadableFileInfo
+     */
+    private $fileInfo;
+
 
     public function getId()
     {
@@ -56,19 +61,21 @@ class Image
         return $this->filePath;
     }
 
+    public function setFileInfo(array $fileInfo)
+    {
+        $this->fileInfo = $fileInfo;
+    }
+
+    public function getFileInfo()
+    {
+        return $this->fileInfo;
+    }
+
     /**
      * @Gedmo\UploadablePath
      */
     public function getPath()
     {
         return __DIR__.'/../../../../temp/uploadable';
-    }
-
-    /**
-     * @Gedmo\UploadableFilesArrayIndex
-     */
-    public function getFilesArrayIndex()
-    {
-        return '[image]';
     }
 }

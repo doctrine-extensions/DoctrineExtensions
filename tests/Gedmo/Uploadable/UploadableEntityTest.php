@@ -55,13 +55,6 @@ class UploadableEntityTest extends BaseTestCaseORM
         $this->testFileSize = 4;
         $this->testFileMimeType = 'text/plain';
 
-        mkdir($this->destinationTestDir);
-    }
-
-    protected function tearDown()
-    {
-        parent::tearDown();
-
         if (is_file($this->destinationTestFile)) {
             unlink($this->destinationTestFile);
         }
@@ -70,7 +63,11 @@ class UploadableEntityTest extends BaseTestCaseORM
             unlink($this->destinationTestFile2);
         }
 
-        rmdir($this->destinationTestDir);
+        if (is_dir($this->destinationTestDir)) {
+            rmdir($this->destinationTestDir);
+        }
+
+        mkdir($this->destinationTestDir);
     }
 
     public function testUploadableEntity()
@@ -88,14 +85,17 @@ class UploadableEntityTest extends BaseTestCaseORM
 
         // If there is an uploaded file, we process it
         $fileInfo = $this->generateUploadedFile();
+
         $image2 = new Image();
         $image2->setTitle('456');
+        $image2->setFileInfo($fileInfo);
 
         $this->em->persist($image2);
         $this->em->flush();
 
         $this->em->refresh($image2);
 
+        // We need to set this again because of the recent refresh
         $firstFile = $image2->getFilePath();
 
         $this->assertEquals($image2->getPath().DIRECTORY_SEPARATOR.$fileInfo['name'], $image2->getFilePath());
@@ -103,25 +103,20 @@ class UploadableEntityTest extends BaseTestCaseORM
 
         // UPDATE of an Uploadable Entity
 
-        // First we need to add the ID to the index of the element in $_FILES so it can be recognized
-        // by the listener as the update info for the file $image2.
-        unset($_FILES[$fileInfo['index']]);
-
         // We change the "uploaded" file
         $fileInfo['tmp_name'] = $this->testFile2;
         $fileInfo['name'] = $this->testFilename2;
 
-        $_FILES[$fileInfo['index']] = array(
-            $image2->getId()    => $fileInfo
-        );
+        $image2->setFileInfo($fileInfo);
 
         // For now, we need to force the update changing one of the managed fields. If we don't do this,
         // entity won't be marked for update
-        $image2->setTitle($image2->getTitle().'789');
+        $image2->setTitle($image2->getTitle().'7892');
 
         $this->em->flush();
 
         $this->em->refresh($image2);
+
         $lastFile = $image2->getFilePath();
 
         $this->assertEquals($image2->getPath().DIRECTORY_SEPARATOR.$fileInfo['name'], $image2->getFilePath());
@@ -151,13 +146,15 @@ class UploadableEntityTest extends BaseTestCaseORM
         $article->addFile($file2);
         $article->addFile($file3);
 
-        $filesArrayIndex = strtr($file1->getFilesArrayIndex(), array('[' => '', ']' => ''));
+        $filesArrayIndex = 'file';
 
         $fileInfo = $this->generateUploadedFile($filesArrayIndex);
         $fileInfo2 = $this->generateUploadedFile($filesArrayIndex);
         $fileInfo3 = $this->generateUploadedFile($filesArrayIndex);
 
-        $_FILES[$fileInfo['index']] = array($fileInfo, $fileInfo2, $fileInfo3);
+        $file1->setFileInfo($fileInfo);
+        $file2->setFileInfo($fileInfo2);
+        $file3->setFileInfo($fileInfo3);
 
         $this->em->persist($article);
 
@@ -174,37 +171,6 @@ class UploadableEntityTest extends BaseTestCaseORM
         $this->assertEquals($file3Path, $files[2]->getFilePath());
     }
 
-    public function testGetItemFromArrayMethod()
-    {
-        $dataText = 'My Data';
-        $data = array('first' => array('second' => array('third' => $dataText)));
-        $indexes = array('first', 'second', 'third');
-
-        $result = $this->listener->getItemFromArray($data, $indexes);
-
-        $this->assertEquals($dataText, $result);
-
-        $data = array('first' => $dataText);
-
-        $this->assertFalse($this->listener->getItemFromArray($data, $indexes));
-
-        $data = array();
-
-        $this->assertFalse($this->listener->getItemFromArray($data, $indexes));
-
-        $data = array('first' => array('second' => array('anotherIndex' => $dataText)));
-        $indexes = array('first', 'second', 'third');
-
-        $this->assertFalse($this->listener->getItemFromArray($data, $indexes));
-
-        $this->setExpectedException('InvalidArgumentException');
-
-        $data = array('first' => $dataText);
-        $indexes = array();
-
-        $this->listener->getItemFromArray($data, $indexes);
-    }
-
     private function generateUploadedFile($index = 'image', $file = false, array $info = array())
     {
         if (empty($info)) {
@@ -213,12 +179,9 @@ class UploadableEntityTest extends BaseTestCaseORM
                 'name'              => $this->testFilename,
                 'size'              => $this->testFileSize,
                 'type'              => $this->testFileMimeType,
-                'error'             => 0,
-                'index'             => $index
+                'error'             => 0
             );
         }
-        
-        $_FILES[$index] = $info;
 
         return $info;
     }

@@ -18,6 +18,10 @@ use Gedmo\Exception\InvalidMappingException;
 
 class Validator 
 {
+    const UPLOADABLE_FILE_MIME_TYPE = 'UploadableFileMimeType';
+    const UPLOADABLE_FILE_PATH = 'UploadableFilePath';
+    const UPLOADABLE_FILE_SIZE = 'UploadableFileSize';
+
     /**
      * List of types which are valid for UploadableFileMimeType field
      *
@@ -48,17 +52,17 @@ class Validator
 
     public static function validateFileMimeTypeField(ClassMetadataInfo $meta, $field)
     {
-        self::validateField($meta, $field, 'UploadableFileMimeType', self::$validFileMimeTypeTypes);
+        self::validateField($meta, $field, self::UPLOADABLE_FILE_MIME_TYPE, self::$validFileMimeTypeTypes);
     }
 
     public static function validateFilePathField(ClassMetadataInfo $meta, $field)
     {
-        self::validateField($meta, $field, 'UploadableFilePath', self::$validFilePathTypes);
+        self::validateField($meta, $field, self::UPLOADABLE_FILE_PATH, self::$validFilePathTypes);
     }
 
     public static function validateFileSizeField(ClassMetadataInfo $meta, $field)
     {
-        self::validateField($meta, $field, 'UploadableFileSize', self::$validFileSizeTypes);
+        self::validateField($meta, $field, self::UPLOADABLE_FILE_SIZE, self::$validFileSizeTypes);
     }
 
     public static function validateField($meta, $field, $uploadableField, $validFieldTypes)

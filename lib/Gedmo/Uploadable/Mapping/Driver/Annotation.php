@@ -29,7 +29,7 @@ class Annotation implements AnnotationDriverInterface
     const UPLOADABLE_FILE_MIME_TYPE = 'Gedmo\\Mapping\\Annotation\\UploadableFileMimeType';
     const UPLOADABLE_FILE_PATH = 'Gedmo\\Mapping\\Annotation\\UploadableFilePath';
     const UPLOADABLE_FILE_SIZE = 'Gedmo\\Mapping\\Annotation\\UploadableFileSize';
-    const UPLOADABLE_FILES_ARRAY_INDEX = 'Gedmo\\Mapping\\Annotation\\UploadableFilesArrayIndex';
+    const UPLOADABLE_FILE_INFO = 'Gedmo\\Mapping\\Annotation\\UploadableFileInfo';
     const UPLOADABLE_PATH = 'Gedmo\\Mapping\\Annotation\\UploadablePath';
 
     /**
@@ -77,7 +77,7 @@ class Annotation implements AnnotationDriverInterface
             $config['uploadable'] = true;
             $config['allowOverwrite'] = $annot->allowOverwrite;
             $config['appendNumber'] = $annot->appendNumber;
-            $config['filesArrayIndexMethod'] = '';
+            $config['path'] = $annot->path;
             $config['pathMethod'] = '';
             $config['fileMimeTypeField'] = false;
             $config['filePathField'] = false;
@@ -101,6 +101,10 @@ class Annotation implements AnnotationDriverInterface
 
                     Validator::validateFileSizeField($meta, $config['fileSizeField']);
                 }
+
+                if ($this->reader->getPropertyAnnotation($prop, self::UPLOADABLE_FILE_INFO)) {
+                    $config['fileInfoField'] = $prop->getName();
+                }
             }
 
             if (!$config['filePathField']) {
@@ -109,14 +113,25 @@ class Annotation implements AnnotationDriverInterface
                 ));
             }
 
+            if (!$config['fileInfoField']) {
+                throw new InvalidMappingException(sprintf('Class "%s" must have an UploadableFileInfo field.',
+                    $class->getName()
+                ));
+            }
+
             foreach ($class->getMethods() as $method) {
                 if ($this->reader->getMethodAnnotation($method, self::UPLOADABLE_PATH)) {
                     $config['pathMethod'] = $method->getName();
                 }
+            }
 
-                if ($this->reader->getMethodAnnotation($method, self::UPLOADABLE_FILES_ARRAY_INDEX)) {
-                    $config['filesArrayIndexMethod'] = $method->getName();
-                }
+            if ($config['path'] && $config['pathMethod'] === '') {
+                $msg = 'You need to define the path in the %s annotation, or add a method with %s annotation.';
+
+                throw new InvalidMappingException(sprintf($msg,
+                    self::UPLOADABLE,
+                    self::UPLOADABLE_PATH
+                ));
             }
         } else {
             // We need to check if this class has a relation with Uploadable entities

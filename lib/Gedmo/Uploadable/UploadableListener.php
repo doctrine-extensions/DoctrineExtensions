@@ -16,7 +16,8 @@ use Doctrine\Common\Persistence\ObjectManager,
     Gedmo\Exception\UploadableIniSizeException,
     Gedmo\Exception\UploadableNoFileException,
     Gedmo\Exception\UploadableNoTmpDirException,
-    Gedmo\Exception\UploadableUploadException;
+    Gedmo\Exception\UploadableUploadException,
+    Gedmo\Exception\UploadableFileAlreadyExistsException;
 
 /**
  * Uploadable listener
@@ -104,18 +105,21 @@ class UploadableListener extends MappedEventSubscriber
     public function processFile(UnitOfWork $uow, AdapterInterface $ea, ClassMetadata $meta, array $config, $object, $action)
     {
         $refl = $meta->getReflectionClass();
-        $pathMethod = $refl->getMethod($config['pathMethod']);
-        $pathMethod->setAccessible(true);
-        $path = $pathMethod->invoke($object);
-        $path = substr($path, strlen($path) - 1) === '/' ? substr($path, 0, strlen($path) - 2) : $path;
-        $indexMethod = $refl->getMethod($config['filesArrayIndexMethod']);
-        $indexMethod->setAccessible(true);
-        $index = $indexMethod->invoke($object);
+        $fileInfoProp = $refl->getProperty($config['fileInfoField']);
+        $fileInfoProp->setAccessible(true);
+        $file = $fileInfoProp->getValue($object);
         $filePathField = $refl->getProperty($config['filePathField']);
         $filePathField->setAccessible(true);
-        $identifierProp = $meta->getReflectionProperty($meta->getSingleIdentifierFieldName());
-        $identifierProp->setAccessible(true);
-        $identifier = $identifierProp->getValue($object);
+
+        $path = $config['path'];
+
+        if ($path === '') {
+            $pathMethod = $refl->getMethod($config['pathMethod']);
+            $pathMethod->setAccessible(true);
+            $path = $pathMethod->invoke($object);
+        }
+
+        $path = substr($path, strlen($path) - 1) === '/' ? substr($path, 0, strlen($path) - 2) : $path;
 
         if ($config['fileMimeTypeField']) {
             $fileMimeTypeField = $refl->getProperty($config['fileMimeTypeField']);
@@ -127,37 +131,33 @@ class UploadableListener extends MappedEventSubscriber
             $fileSizeField->setAccessible(true);
         }
 
-        $file = $this->getFile($index);
-
-        if ($file && is_array($file)) {
+        if (is_array($file)) {
             // If it's a single file we create an array anyway, so we can process
             // a collection or a single file in the same way
             if (isset($file['size'])) {
                 $file = array($file);
             }
 
-            foreach ($file as $id => $f) {
-                if ($action === self::ACTION_INSERT || $id === $identifier) {
-                    // First we remove the original file
-                    $this->removefile($meta, $config, $object);
+            foreach ($file as $f) {
+                // First we remove the original file
+                $this->removefile($meta, $config, $object);
 
-                    $info = $this->moveFile($f, $path);
-                    $filePathField->setValue($object, $info['filePath']);
-                    $changes = array(
-                        $config['filePathField'] => array($filePathField->getValue($object), $info['filePath'])
-                    );
+                $info = $this->moveFile($f, $path, $config['allowOverwrite'], $config['appendNumber']);
+                $filePathField->setValue($object, $info['filePath']);
+                $changes = array(
+                    $config['filePathField'] => array($filePathField->getValue($object), $info['filePath'])
+                );
 
-                    if ($config['fileMimeTypeField']) {
-                        $changes[$config['fileMimeTypeField']] = array($fileMimeTypeField->getValue($object), $info['fileMimeType']);
-                    }
-
-                    if ($config['fileSizeField']) {
-                        $changes[$config['fileSizeField']] = array($fileSizeField->getValue($object), $info['fileSize']);
-                    }
-
-                    $uow->scheduleExtraUpdate($object, $changes);
-                    $ea->setOriginalObjectProperty($uow, spl_object_hash($object), $config['filePathField'], $info['filePath']);
+                if ($config['fileMimeTypeField']) {
+                    $changes[$config['fileMimeTypeField']] = array($fileMimeTypeField->getValue($object), $info['fileMimeType']);
                 }
+
+                if ($config['fileSizeField']) {
+                    $changes[$config['fileSizeField']] = array($fileSizeField->getValue($object), $info['fileSize']);
+                }
+
+                $uow->scheduleExtraUpdate($object, $changes);
+                $ea->setOriginalObjectProperty($uow, spl_object_hash($object), $config['filePathField'], $info['filePath']);
             }
         }
     }
@@ -207,7 +207,7 @@ class UploadableListener extends MappedEventSubscriber
      * 
      * @return array - Information about the moved file
      */
-    public function moveFile(array $fileInfo, $path)
+    public function moveFile(array $fileInfo, $path, $overwrite = false, $appendNumber = false)
     {
         if ($fileInfo['error'] > 0) {
             switch ($fileInfo) {
@@ -256,6 +256,31 @@ class UploadableListener extends MappedEventSubscriber
         $info['fileName'] = $fileInfo['name'];
         $info['filePath'] = $path.'/'.$info['fileName'];
 
+        if (is_file($info['filePath'])) {
+            if ($overwrite) {
+                $this->doRemoveFile($info['filePath']);
+            } else if ($appendNumber) {
+                $counter = 1;
+                $extensionPos = strrpos($info['filePath'], '.');
+
+                if ($extensionPos !== false) {
+                    $extension = substr($info['filePath'], $extensionPos);
+
+                    $fileWithoutExt = substr($info['filePath'], 0, strrpos($info['filePath'], '.'));
+
+                    $info['filePath'] = $fileWithoutExt.'-'.$counter.$extension;
+                }
+
+                do {
+                    $info['filePath'] = $fileWithoutExt.'-'.(++$counter).$extension;
+                } while (is_file($info['filePath']));
+            } else {
+                throw new UploadableFileAlreadyExistsException(sprintf('File "%s" already exists!',
+                    $info['filePath']
+                ));
+            }
+        }
+
         if ($this->moveUploadedFile($fileInfo['tmp_name'], $info['filePath'])) {
             return $info;
         } else {
@@ -296,75 +321,6 @@ class UploadableListener extends MappedEventSubscriber
     public function doMoveUploadedFile($source, $dest)
     {
         return move_uploaded_file($source, $dest);
-    }
-
-    /**
-     * Gets the $_FILES item at the index represented
-     * by the string passed as first argument
-     *
-     * @param string
-     *
-     * @return array
-     */
-    public function getFile($indexString)
-    {
-        $len = strlen($indexString);
-
-        if (empty($indexString) || $indexString{0} !== '[' || $indexString{$len - 1} !== ']') {
-            $msg = 'Index string "%s" is invalid. It should be something like "[image]" or "[image_form][images]';
-
-            throw new \InvalidArgumentException(sprintf($msg), $indexString);
-        }
-
-        $indexString = substr($indexString, 1, strlen($indexString) - 2);
-
-        if (strpos($indexString, '][') !== false) {
-            $indexArray = explode('][', $indexString);
-        } else {
-            $indexArray = array($indexString);
-        }
-
-        return $this->getItemFromArray($_FILES, $indexArray);
-    }
-
-    /**
-     * Helper method to return an item from an array using an array of indexes
-     * as an index path
-     *
-     * @param array - Source array
-     * @param array - Array of indexes
-     */
-    public function getItemFromArray(array $sourceArray, array $indexesArray)
-    {
-        // Nothing to do
-        if (empty($sourceArray)) {
-            return false;
-        }
-
-        if (empty($indexesArray)) {
-            $msg = 'Second argument: "indexesArray" must be a non empty array with the indexes to search.';
-
-            throw new \InvalidArgumentException($msg);
-        }
-
-        if (isset($sourceArray[$indexesArray[0]])) {
-            if (count($indexesArray) === 1) {
-                return $sourceArray[$indexesArray[0]];
-            } else {
-                $source = $sourceArray[$indexesArray[0]];
-
-                if (!is_array($source)) {
-                    return false;
-                }
-
-                unset($sourceArray[$indexesArray[0]]);
-                $indexesArray = array_slice($indexesArray, 1);
-
-                return $this->getItemFromArray($source, $indexesArray);
-            }
-        } else {
-            return false;
-        }
     }
 
     /**
