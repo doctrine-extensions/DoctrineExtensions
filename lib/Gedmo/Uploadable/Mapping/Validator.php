@@ -114,14 +114,7 @@ class Validator
             }
         }
 
-        if ($config['path'] === '' && $config['pathMethod'] === '') {
-            $msg = 'You need to define the path in the %s annotation, or add a method with %s annotation.';
-
-            throw new InvalidMappingException(sprintf($msg,
-                self::UPLOADABLE,
-                self::UPLOADABLE_PATH
-            ));
-        } else if ($config['pathMethod'] !== '') {
+        if ($config['pathMethod'] !== '') {
             if (!$refl->hasMethod($config['pathMethod'])) {
                 throw new InvalidMappingException(sprintf('Class "%s" doesn\'t have method "%s"!',
                     $meta->name,

@@ -2,12 +2,13 @@
 
 namespace Gedmo\Uploadable;
 
-use Tool\BaseTestCaseORM;
-use Doctrine\Common\EventManager;
-use Doctrine\Common\Util\Debug,
+use Tool\BaseTestCaseORM,
+    Doctrine\Common\EventManager,
+    Doctrine\Common\Util\Debug,
     Uploadable\Fixture\Entity\Image,
     Uploadable\Fixture\Entity\Article,
     Uploadable\Fixture\Entity\File,
+    Uploadable\Fixture\Entity\FileWithoutPath,
     Gedmo\Uploadable\Stub\UploadableListenerStub;
 
 /**
@@ -24,6 +25,7 @@ class UploadableEntityTest extends BaseTestCaseORM
     const IMAGE_CLASS = 'Uploadable\Fixture\Entity\Image';
     const ARTICLE_CLASS = 'Uploadable\Fixture\Entity\Article';
     const FILE_CLASS = 'Uploadable\Fixture\Entity\File';
+    const FILE_WITHOUT_PATH_CLASS = 'Uploadable\Fixture\Entity\FileWithoutPath';
 
     private $listener;
     private $testFile;
@@ -166,6 +168,35 @@ class UploadableEntityTest extends BaseTestCaseORM
         $this->assertEquals($file3Path, $files[2]->getFilePath());
     }
 
+    /**
+     * @expectedException Gedmo\Exception\UploadableNoPathDefinedException
+     */
+    public function testNoPathDefinedOnEntityOrListenerThrowsException()
+    {
+        $file = new FileWithoutPath();
+
+        $this->em->persist($file);
+        $this->em->flush();
+    }
+
+    public function testNoPathDefinedOnEntityButDefinedOnListenerUsesDefaultPath()
+    {
+        // We set the default path on the listener
+        $this->listener->setDefaultPath($this->destinationTestDir);
+
+        $file = new FileWithoutPath();
+        $fileInfo = $this->generateUploadedFile();
+
+        $file->setFileInfo($fileInfo);
+
+        $this->em->persist($file);
+        $this->em->flush();
+
+        $this->em->refresh($file);
+
+        $this->assertEquals($this->destinationTestFile, $file->getFilePath());
+    }
+
     private function generateUploadedFile($index = 'image', $file = false, array $info = array())
     {
         if (empty($info)) {
@@ -186,7 +217,8 @@ class UploadableEntityTest extends BaseTestCaseORM
         return array(
             self::IMAGE_CLASS,
             self::ARTICLE_CLASS,
-            self::FILE_CLASS
+            self::FILE_CLASS,
+            self::FILE_WITHOUT_PATH_CLASS
         );
     }
 

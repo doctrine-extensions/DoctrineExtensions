@@ -18,6 +18,7 @@ use Doctrine\Common\Persistence\ObjectManager,
     Gedmo\Exception\UploadableNoTmpDirException,
     Gedmo\Exception\UploadableUploadException,
     Gedmo\Exception\UploadableFileAlreadyExistsException,
+    Gedmo\Exception\UploadableNoPathDefinedException,
     Gedmo\Uploadable\Mapping\Validator;
 
 /**
@@ -34,6 +35,9 @@ class UploadableListener extends MappedEventSubscriber
 {
     const ACTION_INSERT = 'INSERT';
     const ACTION_UPDATE = 'UPDATE';
+
+    private $defaultPath;
+
     /**
      * {@inheritdoc}
      */
@@ -115,16 +119,26 @@ class UploadableListener extends MappedEventSubscriber
         $path = $config['path'];
 
         if ($path === '') {
-            $pathMethod = $refl->getMethod($config['pathMethod']);
-            $pathMethod->setAccessible(true);
-            $path = $pathMethod->invoke($object);
+            if ($config['pathMethod'] !== '') {
+                $pathMethod = $refl->getMethod($config['pathMethod']);
+                $pathMethod->setAccessible(true);
+                $path = $pathMethod->invoke($object);
 
-            if (is_string($path) && $path !== '') {
-                Validator::validatePath($path);
+                if (is_string($path) && $path !== '') {
+                    Validator::validatePath($path);
+                } else {
+                    $msg = 'The method which returns the file path in class "%s" must return a valid path.';
+
+                    throw new \RuntimeException(sprintf($msg,
+                        $meta->name
+                    ));
+                }
+            } else if ($this->getDefaultPath() !== null) {
+                $path = $this->getDefaultPath();
             } else {
-                $msg = 'The method which returns the file path in class "%s" must return a valid path.';
+                $msg = 'You have to define the path to save files either in the listener, or in the class "%s"';
 
-                throw new \RuntimeException(sprintf($msg,
+                throw new UploadableNoPathDefinedException(sprintf($msg,
                     $meta->name
                 ));
             }
@@ -343,6 +357,28 @@ class UploadableListener extends MappedEventSubscriber
     {
         $ea = $this->getEventAdapter($eventArgs);
         $this->loadMetadataForObjectClass($ea->getObjectManager(), $eventArgs->getClassMetadata());
+    }
+
+    /**
+     * Sets the default path
+     *
+     * @param string
+     *
+     * @return void
+     */
+    public function setDefaultPath($path)
+    {
+        $this->defaultPath = $path;
+    }
+
+    /**
+     * Returns default path
+     *
+     * @return string
+     */
+    public function getDefaultPath()
+    {
+        return $this->defaultPath;
     }
 
     /**

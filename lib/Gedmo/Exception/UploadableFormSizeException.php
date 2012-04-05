@@ -15,6 +15,6 @@ use Gedmo\Exception;
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class UploadableFormSizeException
-    extends RuntimeException
+    extends UploadableException
     implements Exception
 {}
