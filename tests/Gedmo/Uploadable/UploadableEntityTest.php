@@ -233,6 +233,27 @@ class UploadableEntityTest extends BaseTestCaseORM
         $this->em->flush();
     }
 
+    public function testSettingAnotherDefaultFileInfoClass()
+    {
+        $fileInfoStubClass = 'Gedmo\Uploadable\Stub\FileInfoStub';
+
+        $this->listener->setDefaultFileInfoClass($fileInfoStubClass);
+
+        $file = new File();
+        $fileInfo = $this->generateUploadedFile();
+
+        $file->setFileInfo($fileInfo);
+
+        $this->em->persist($file);
+        $this->em->flush();
+
+        $this->em->refresh($file);
+
+        $this->assertInstanceOf($fileInfoStubClass, $file->getFileInfo());
+    }
+
+
+
     // Data Providers
 
     public function uploadExceptionsProvider()

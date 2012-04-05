@@ -39,6 +39,7 @@ class UploadableListener extends MappedEventSubscriber
     const ACTION_UPDATE = 'UPDATE';
 
     private $defaultPath;
+    private $defaultFileInfoClass = 'Gedmo\Uploadable\FileInfo\FileInfoArray';
 
     /**
      * {@inheritdoc}
@@ -122,7 +123,9 @@ class UploadableListener extends MappedEventSubscriber
             return;
         }
 
-        $fileInfo = is_array($fileInfo) ? new FileInfoArray($fileInfo) : $fileInfo;
+        $fileInfoClass = $this->getDefaultFileInfoClass();
+        $fileInfo = is_array($fileInfo) ? new $fileInfoClass($fileInfo) : $fileInfo;
+        $fileInfoProp->setValue($object, $fileInfo);
 
         $filePathField = $refl->getProperty($config['filePathField']);
         $filePathField->setAccessible(true);
@@ -203,7 +206,9 @@ class UploadableListener extends MappedEventSubscriber
         }
 
         $uow->scheduleExtraUpdate($object, $changes);
-        $ea->setOriginalObjectProperty($uow, spl_object_hash($object), $config['filePathField'], $info['filePath']);
+
+        $oid = spl_object_hash($object);
+        $ea->setOriginalObjectProperty($uow, $oid, $config['filePathField'], $info['filePath']);
     }
 
     /**
@@ -398,6 +403,28 @@ class UploadableListener extends MappedEventSubscriber
     public function getDefaultPath()
     {
         return $this->defaultPath;
+    }
+
+    /**
+     * Sets file info default class
+     *
+     * @param string
+     *
+     * @return void
+     */
+    public function setDefaultFileInfoClass($defaultFileInfoClass)
+    {
+        $this->defaultFileInfoClass = $defaultFileInfoClass;
+    }
+
+    /**
+     * Returns file info default class
+     *
+     * @return string
+     */
+    public function getDefaultFileInfoClass()
+    {
+        return $this->defaultFileInfoClass;
     }
 
     /**
