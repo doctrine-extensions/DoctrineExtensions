@@ -225,6 +225,38 @@ class UploadableEntityTest extends BaseTestCaseORM
         return $info;
     }
 
+    public function testUploadExceptions()
+    {
+        $exceptions = array(
+            1 => 'Gedmo\Exception\UploadableIniSizeException',
+            2 => 'Gedmo\Exception\UploadableFormSizeException',
+            3 => 'Gedmo\Exception\UploadablePartialException',
+            4 => 'Gedmo\Exception\UploadableNoFileException',
+            6 => 'Gedmo\Exception\UploadableNoTmpDirException',
+            7 => 'Gedmo\Exception\UploadableCantWriteException',
+            8 => 'Gedmo\Exception\UploadableExtensionException',
+            999 => 'Gedmo\Exception\UploadableUploadException'
+        );
+
+        foreach ($exceptions as $error => $exceptionClass) {
+            $this->exceptionTester($error, $exceptionClass);
+        }
+    }
+
+    protected function exceptionTester($error, $exceptionClass)
+    {
+        $this->setExpectedException($exceptionClass);
+
+        $file = new File();
+        $fileInfo = $this->generateUploadedFile();
+        $fileInfo['error'] = $error;
+
+        $file->setFileInfo($fileInfo);
+
+        $this->em->persist($file);
+        $this->em->flush();
+    }
+
     protected function getUsedEntityFixtures()
     {
         return array(

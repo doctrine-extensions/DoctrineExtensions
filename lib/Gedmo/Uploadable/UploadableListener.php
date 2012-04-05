@@ -241,7 +241,7 @@ class UploadableListener extends MappedEventSubscriber
     public function moveFile(array $fileInfo, $path, $overwrite = false, $appendNumber = false)
     {
         if ($fileInfo['error'] > 0) {
-            switch ($fileInfo) {
+            switch ($fileInfo['error']) {
                 case 1:
                     $msg = 'Size of uploaded file "%s" exceeds limit imposed by directive "upload_max_filesize" in php.ini';
 
@@ -312,14 +312,14 @@ class UploadableListener extends MappedEventSubscriber
             }
         }
 
-        if ($this->moveUploadedFile($fileInfo['tmp_name'], $info['filePath'])) {
-            return $info;
-        } else {
+        if (!$this->moveUploadedFile($fileInfo['tmp_name'], $info['filePath'])) {
             throw new UploadableUploadException(sprintf('File "%s" was not uploaded, or there was a problem moving it to the location "%s".',
                 $fileInfo['fileName'],
                 $path
             ));
         }
+
+        return $info;
     }
 
     /**
