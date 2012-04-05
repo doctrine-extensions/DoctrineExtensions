@@ -210,6 +210,71 @@ class UploadableEntityTest extends BaseTestCaseORM
         $this->assertTrue($file->callbackWasCalled);
     }
 
+    /**
+      * @dataProvider prepareFileInfoCollectionMethodExceptionsProvider
+      */
+    public function testPrepareFileInfoCollectionMethodExceptions($fileInfo)
+    {
+        $this->setExpectedException('RuntimeException');
+
+        $meta = $this->em->getClassMetadata('Uploadable\Fixture\Entity\File');
+
+        $refl = new \ReflectionClass(get_class($this->listener));
+        $method = $refl->getMethod('prepareFileInfoCollection');
+        $method->setAccessible(true);
+
+        $method->invokeArgs($this->listener, array($meta, $fileInfo));
+    }
+
+    public function testPrepareFileInfoCollectionMethod()
+    {
+
+    }
+
+    /**
+     * @dataProvider uploadExceptionsProvider
+     */
+    public function testUploadExceptions($error, $exceptionClass)
+    {
+        $this->setExpectedException($exceptionClass);
+
+        $file = new File();
+        $fileInfo = $this->generateUploadedFile();
+        $fileInfo['error'] = $error;
+
+        $file->setFileInfo($fileInfo);
+
+        $this->em->persist($file);
+        $this->em->flush();
+    }
+
+    // Data Providers
+
+    public function prepareFileInfoCollectionMethodExceptionsProvider()
+    {
+        return array(
+            array(array('size' => 123)),
+            array(new \DateTime())
+        );
+    }
+
+    public function uploadExceptionsProvider()
+    {
+        return array(
+            array(1, 'Gedmo\Exception\UploadableIniSizeException'),
+            array(2, 'Gedmo\Exception\UploadableFormSizeException'),
+            array(3, 'Gedmo\Exception\UploadablePartialException'),
+            array(4, 'Gedmo\Exception\UploadableNoFileException'),
+            array(6, 'Gedmo\Exception\UploadableNoTmpDirException'),
+            array(7, 'Gedmo\Exception\UploadableCantWriteException'),
+            array(8, 'Gedmo\Exception\UploadableExtensionException'),
+            array(999, 'Gedmo\Exception\UploadableUploadException')
+        );
+    }
+
+
+    // Util
+
     private function generateUploadedFile($index = 'image', $file = false, array $info = array())
     {
         if (empty($info)) {
@@ -223,38 +288,6 @@ class UploadableEntityTest extends BaseTestCaseORM
         }
 
         return $info;
-    }
-
-    public function testUploadExceptions()
-    {
-        $exceptions = array(
-            1 => 'Gedmo\Exception\UploadableIniSizeException',
-            2 => 'Gedmo\Exception\UploadableFormSizeException',
-            3 => 'Gedmo\Exception\UploadablePartialException',
-            4 => 'Gedmo\Exception\UploadableNoFileException',
-            6 => 'Gedmo\Exception\UploadableNoTmpDirException',
-            7 => 'Gedmo\Exception\UploadableCantWriteException',
-            8 => 'Gedmo\Exception\UploadableExtensionException',
-            999 => 'Gedmo\Exception\UploadableUploadException'
-        );
-
-        foreach ($exceptions as $error => $exceptionClass) {
-            $this->exceptionTester($error, $exceptionClass);
-        }
-    }
-
-    protected function exceptionTester($error, $exceptionClass)
-    {
-        $this->setExpectedException($exceptionClass);
-
-        $file = new File();
-        $fileInfo = $this->generateUploadedFile();
-        $fileInfo['error'] = $error;
-
-        $file->setFileInfo($fileInfo);
-
-        $this->em->persist($file);
-        $this->em->flush();
     }
 
     protected function getUsedEntityFixtures()

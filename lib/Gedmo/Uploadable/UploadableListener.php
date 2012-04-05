@@ -19,7 +19,9 @@ use Doctrine\Common\Persistence\ObjectManager,
     Gedmo\Exception\UploadableUploadException,
     Gedmo\Exception\UploadableFileAlreadyExistsException,
     Gedmo\Exception\UploadableNoPathDefinedException,
-    Gedmo\Uploadable\Mapping\Validator;
+    Gedmo\Uploadable\Mapping\Validator,
+    Gedmo\Uploadable\FileInfo\FileInfoInterface,
+    Gedmo\Uploadable\FileInfo\FileInfoArray;
 
 /**
  * Uploadable listener
@@ -112,9 +114,10 @@ class UploadableListener extends MappedEventSubscriber
         $refl = $meta->getReflectionClass();
         $fileInfoProp = $refl->getProperty($config['fileInfoProperty']);
         $fileInfoProp->setAccessible(true);
-        $file = $fileInfoProp->getValue($object);
+        $fileInfo = $fileInfoProp->getValue($object);
         $filePathField = $refl->getProperty($config['filePathField']);
         $filePathField->setAccessible(true);
+        $fileInfoCollection = $this->prepareFileInfoCollection($meta, $fileInfo);
 
         $path = $config['path'];
 
@@ -156,43 +159,73 @@ class UploadableListener extends MappedEventSubscriber
             $fileSizeField->setAccessible(true);
         }
 
-        if (is_array($file)) {
-            // If it's a single file we create an array anyway, so we can process
-            // a collection or a single file in the same way
-            if (isset($file['size'])) {
-                $file = array($file);
+        foreach ($fileInfoCollection as $f) {
+            // First we remove the original file
+            $this->removefile($meta, $config, $object);
+
+            $info = $this->moveFile($f, $path, $config['allowOverwrite'], $config['appendNumber']);
+            $filePathField->setValue($object, $info['filePath']);
+
+            if ($config['callback'] !== '') {
+                $callbackMethod = $refl->getMethod($config['callback']);
+                $callbackMethod->setAccessible(true);
+
+                $callbackMethod->invokeArgs($object, array($config));
             }
 
-            foreach ($file as $f) {
-                // First we remove the original file
-                $this->removefile($meta, $config, $object);
+            $changes = array(
+                $config['filePathField'] => array($filePathField->getValue($object), $info['filePath'])
+            );
 
-                $info = $this->moveFile($f, $path, $config['allowOverwrite'], $config['appendNumber']);
-                $filePathField->setValue($object, $info['filePath']);
+            if ($config['fileMimeTypeField']) {
+                $changes[$config['fileMimeTypeField']] = array($fileMimeTypeField->getValue($object), $info['fileMimeType']);
+            }
 
-                if ($config['callback'] !== '') {
-                    $callbackMethod = $refl->getMethod($config['callback']);
-                    $callbackMethod->setAccessible(true);
+            if ($config['fileSizeField']) {
+                $changes[$config['fileSizeField']] = array($fileSizeField->getValue($object), $info['fileSize']);
+            }
 
-                    $callbackMethod->invokeArgs($object, array($config));
-                }
+            $uow->scheduleExtraUpdate($object, $changes);
+            $ea->setOriginalObjectProperty($uow, spl_object_hash($object), $config['filePathField'], $info['filePath']);
+        }
+    }
 
-                $changes = array(
-                    $config['filePathField'] => array($filePathField->getValue($object), $info['filePath'])
-                );
+    /**
+     * Prepare the array of FileInfoInterface objects
+     *
+     * @param classMetadata
+     * @param mixed - Single array, array of arrays, FileInfoInterface or array of FileInfoInterface objects
+     *
+     * @return array - Array of FileInfoInterface objects
+     */
+    protected function prepareFileInfoCollection(ClassMetadata $meta, $fileInfo)
+    {
+        if (!$fileInfo || (is_array($fileInfo) && empty($fileInfo))) {
+            return array();
+        }
 
-                if ($config['fileMimeTypeField']) {
-                    $changes[$config['fileMimeTypeField']] = array($fileMimeTypeField->getValue($object), $info['fileMimeType']);
-                }
+        $fileInfoCollection = array();
+        $fileInfo = array($fileInfo);
 
-                if ($config['fileSizeField']) {
-                    $changes[$config['fileSizeField']] = array($fileSizeField->getValue($object), $info['fileSize']);
-                }
+        foreach ($fileInfo as $value) {
+            if (is_array($value)) {
+                $fileInfoCollection[] = new FileInfoArray($value);
 
-                $uow->scheduleExtraUpdate($object, $changes);
-                $ea->setOriginalObjectProperty($uow, spl_object_hash($object), $config['filePathField'], $info['filePath']);
+                break;
+            } else if (is_object($value) && $value instanceof FileInfoInterface) {
+                $fileInfoCollection[] = $fileInfo;
+            } else {
+                $msg = 'FileInfo for class "%s" must return either an array with information ';
+                $msg .= 'about an uploaded file (provided by $_FILES) or a FileInfoInterface object. ';
+                $msg .= 'You can even return an array of elements representing any of these two options.';
+
+                throw new \RuntimeException(sprintf($msg,
+                    $meta->name
+                ));
             }
         }
+
+        return $fileInfoCollection;
     }
 
     /**
@@ -238,26 +271,26 @@ class UploadableListener extends MappedEventSubscriber
      * 
      * @return array - Information about the moved file
      */
-    public function moveFile(array $fileInfo, $path, $overwrite = false, $appendNumber = false)
+    public function moveFile(FileInfoInterface $fileInfo, $path, $overwrite = false, $appendNumber = false)
     {
-        if ($fileInfo['error'] > 0) {
-            switch ($fileInfo['error']) {
+        if ($fileInfo->getError() > 0) {
+            switch ($fileInfo->getError()) {
                 case 1:
                     $msg = 'Size of uploaded file "%s" exceeds limit imposed by directive "upload_max_filesize" in php.ini';
 
-                    throw new UploadableIniSizeException(sprintf($msg, $fileInfo['name']));
+                    throw new UploadableIniSizeException(sprintf($msg, $fileInfo->getName()));
                 case 2:
                     $msg = 'Size of uploaded file "%s" exceeds limit imposed by option MAX_FILE_SIZE in your form.';
 
-                    throw new UploadableFormSizeException(sprintf($msg, $fileInfo['name']));
+                    throw new UploadableFormSizeException(sprintf($msg, $fileInfo->getName()));
                 case 3:
                     $msg = 'File "%s" was partially uploaded.';
 
-                    throw new UploadablePartialException(sprintf($msg, $fileInfo['name']));
+                    throw new UploadablePartialException(sprintf($msg, $fileInfo->getName()));
                 case 4:
                     $msg = 'No file was uploaded!';
 
-                    throw new UploadableNoFileException(sprintf($msg, $fileInfo['name']));
+                    throw new UploadableNoFileException(sprintf($msg, $fileInfo->getName()));
                 case 6:
                     $msg = 'Upload failed. Temp dir is missing.';
 
@@ -265,14 +298,14 @@ class UploadableListener extends MappedEventSubscriber
                 case 7:
                     $msg = 'File "%s" couldn\'t be uploaded because directory is not writable.';
 
-                    throw new UploadableCantWriteException(sprintf($msg, $fileInfo['name']));
+                    throw new UploadableCantWriteException(sprintf($msg, $fileInfo->getName()));
                 case 8:
                     $msg = 'A PHP Extension stopped the uploaded for some reason.';
 
-                    throw new UploadableExtensionException(sprintf($msg, $fileInfo['name']));
+                    throw new UploadableExtensionException(sprintf($msg, $fileInfo->getName()));
                 default:
                     throw new UploadableUploadException(sprintf('There was an unknown problem while uploading file "%s"',
-                        $fileInfo['name']
+                        $fileInfo->getName()
                     ));
             }
         }
@@ -280,11 +313,11 @@ class UploadableListener extends MappedEventSubscriber
         $info = array(
             'fileName'      => '',
             'filePath'      => '',
-            'fileMimeType'  => $fileInfo['type'],
-            'fileSize'      => $fileInfo['size']
+            'fileMimeType'  => $fileInfo->getType(),
+            'fileSize'      => $fileInfo->getSize()
         );
 
-        $info['fileName'] = basename($fileInfo['name']);
+        $info['fileName'] = basename($fileInfo->getName());
         $info['filePath'] = $path.'/'.$info['fileName'];
 
         if (is_file($info['filePath'])) {
@@ -312,7 +345,7 @@ class UploadableListener extends MappedEventSubscriber
             }
         }
 
-        if (!$this->moveUploadedFile($fileInfo['tmp_name'], $info['filePath'])) {
+        if (!$this->moveUploadedFile($fileInfo->getTmpName(), $info['filePath'])) {
             throw new UploadableUploadException(sprintf('File "%s" was not uploaded, or there was a problem moving it to the location "%s".',
                 $fileInfo['fileName'],
                 $path
