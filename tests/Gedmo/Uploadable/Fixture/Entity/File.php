@@ -8,7 +8,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * @ORM\Entity
- * @Gedmo\Uploadable(allowOverwrite=true, fileInfoProperty="fileInfo", pathMethod="getPath")
+ * @Gedmo\Uploadable(allowOverwrite=true, fileInfoProperty="fileInfo", pathMethod="getPath", callback="callbackMethod")
  */
 class File
 {
@@ -37,6 +37,8 @@ class File
      * @ORM\JoinColumn(name="article_id", referencedColumnName="id")
      */
     private $article;
+
+    public $callbackWasCalled = false;
 
 
     public function getId()
@@ -82,6 +84,11 @@ class File
     public function getFileInfo()
     {
         return $this->fileInfo;
+    }
+
+    public function callbackMethod()
+    {
+        $this->callbackWasCalled = true;
     }
 
     public function getPath()

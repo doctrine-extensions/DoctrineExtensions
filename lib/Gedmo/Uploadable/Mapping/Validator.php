@@ -123,6 +123,15 @@ class Validator
             }
         }
 
+        if ($config['callback'] !== '') {
+            if (!$refl->hasMethod($config['callback'])) {
+                throw new InvalidMappingException(sprintf('Class "%s" doesn\'t have method "%s"!',
+                    $meta->name,
+                    $config['callback']
+                ));
+            }
+        }
+
         if ($config['fileMimeTypeField']) {
             self::validateFileMimeTypeField($meta, $config['fileMimeTypeField']);
         }

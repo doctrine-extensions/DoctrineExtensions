@@ -33,5 +33,8 @@ final class Uploadable extends Annotation
 
     /** @var string */
     public $pathMethod = '';
+
+    /** @var string */
+    public $callback = '';
 }
 

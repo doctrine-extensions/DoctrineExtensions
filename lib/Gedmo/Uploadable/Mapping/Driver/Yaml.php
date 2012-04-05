@@ -48,6 +48,7 @@ class Yaml extends File implements Driver
                     (bool) $uploadable['appendNumber'] : false;
                 $config['path'] = isset($uploadable['path']) ? $uploadable['path'] : '';
                 $config['pathMethod'] = isset($uploadable['pathMethod']) ? $uploadable['pathMethod'] : '';
+                $config['callback'] = isset($uploadable['callback']) ? $uploadable['callback'] : '';
                 $config['fileInfoProperty'] = isset($uploadable['fileInfoProperty']) ? $uploadable['fileInfoProperty'] : '';
                 $config['fileMimeTypeField'] = false;
                 $config['filePathField'] = false;

@@ -18,4 +18,8 @@ class Uploadable
     {
         return $this->path;
     }
+
+    public function callbackMethod()
+    {
+    }
 }

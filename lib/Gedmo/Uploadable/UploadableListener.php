@@ -169,6 +169,14 @@ class UploadableListener extends MappedEventSubscriber
 
                 $info = $this->moveFile($f, $path, $config['allowOverwrite'], $config['appendNumber']);
                 $filePathField->setValue($object, $info['filePath']);
+
+                if ($config['callback'] !== '') {
+                    $callbackMethod = $refl->getMethod($config['callback']);
+                    $callbackMethod->setAccessible(true);
+
+                    $callbackMethod->invokeArgs($object, array($config));
+                }
+
                 $changes = array(
                     $config['filePathField'] => array($filePathField->getValue($object), $info['filePath'])
                 );

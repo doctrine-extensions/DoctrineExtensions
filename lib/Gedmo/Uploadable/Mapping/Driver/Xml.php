@@ -42,8 +42,12 @@ class Xml extends BaseXml
                     (bool) $this->_getAttribute($xmlUploadable, 'allow-overwrite') : false;
                 $config['appendNumber'] = $this->_isAttributeSet($xmlUploadable, 'append-number') ?
                     (bool) $this->_getAttribute($xmlUploadable, 'append-number') : false;
-                $config['path'] = $this->_getAttribute($xml->{'uploadable'}, 'path');
-                $config['pathMethod'] = $this->_getAttribute($xml->{'uploadable'}, 'path-method');
+                $config['path'] = $this->_isAttributeSet($xmlUploadable, 'path') ?
+                    $this->_getAttribute($xml->{'uploadable'}, 'path') : '';
+                $config['pathMethod'] = $this->_isAttributeSet($xmlUploadable, 'path-method') ?
+                    $this->_getAttribute($xml->{'uploadable'}, 'path-method') : '';
+                $config['callback'] = $this->_isAttributeSet($xmlUploadable, 'callback') ?
+                    $this->_getAttribute($xml->{'uploadable'}, 'callback') : '';
                 $config['fileInfoProperty'] = $this->_getAttribute($xml->{'uploadable'}, 'file-info-property');
                 $config['fileMimeTypeField'] = false;
                 $config['filePathField'] = false;

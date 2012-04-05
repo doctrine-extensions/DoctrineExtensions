@@ -197,6 +197,19 @@ class UploadableEntityTest extends BaseTestCaseORM
         $this->assertEquals($this->destinationTestFile, $file->getFilePath());
     }
 
+    public function testCallbackIsCalledIfItsSetOnEntity()
+    {
+        $file = new File();
+        $fileInfo = $this->generateUploadedFile();
+
+        $file->setFileInfo($fileInfo);
+
+        $this->em->persist($file);
+        $this->em->flush();
+
+        $this->assertTrue($file->callbackWasCalled);
+    }
+
     private function generateUploadedFile($index = 'image', $file = false, array $info = array())
     {
         if (empty($info)) {

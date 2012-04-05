@@ -9,6 +9,7 @@ Mapping\Fixture\Yaml\Uploadable:
       path: '/my/path'
       pathMethod: getPath
       fileInfoProperty: fileInfo
+      callback: callbackMethod
   id:
     id:
       type: integer

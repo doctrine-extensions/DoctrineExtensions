@@ -81,6 +81,7 @@ class Annotation implements AnnotationDriverInterface
             $config['filePathField'] = false;
             $config['fileSizeField'] = false;
             $config['fileInfoProperty'] = $annot->fileInfoProperty;
+            $config['callback'] = $annot->callback;
 
             foreach ($class->getProperties() as $prop) {
                 if ($this->reader->getPropertyAnnotation($prop, self::UPLOADABLE_FILE_MIME_TYPE)) {
