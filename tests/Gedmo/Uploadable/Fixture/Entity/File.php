@@ -76,7 +76,7 @@ class File
         return $this->article;
     }
 
-    public function setFileInfo(array $fileInfo)
+    public function setFileInfo($fileInfo)
     {
         $this->fileInfo = $fileInfo;
     }

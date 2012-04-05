@@ -9,7 +9,8 @@ use Tool\BaseTestCaseORM,
     Uploadable\Fixture\Entity\Article,
     Uploadable\Fixture\Entity\File,
     Uploadable\Fixture\Entity\FileWithoutPath,
-    Gedmo\Uploadable\Stub\UploadableListenerStub;
+    Gedmo\Uploadable\Stub\UploadableListenerStub,
+    Gedmo\Uploadable\FileInfo\FileInfoArray;
 
 /**
  * These are tests for Uploadable behavior
@@ -104,7 +105,8 @@ class UploadableEntityTest extends BaseTestCaseORM
         $fileInfo['tmp_name'] = $this->testFile2;
         $fileInfo['name'] = $this->testFilename2;
 
-        $image2->setFileInfo($fileInfo);
+        // We use a FileInfoInterface instance here
+        $image2->setFileInfo(new FileInfoArray($fileInfo));
 
         // For now, we need to force the update changing one of the managed fields. If we don't do this,
         // entity won't be marked for update
@@ -175,6 +177,10 @@ class UploadableEntityTest extends BaseTestCaseORM
     {
         $file = new FileWithoutPath();
 
+        $fileInfo = $this->generateUploadedFile();
+
+        $file->setFileInfo($fileInfo);
+
         $this->em->persist($file);
         $this->em->flush();
     }
@@ -211,27 +217,6 @@ class UploadableEntityTest extends BaseTestCaseORM
     }
 
     /**
-      * @dataProvider prepareFileInfoCollectionMethodExceptionsProvider
-      */
-    public function testPrepareFileInfoCollectionMethodExceptions($fileInfo)
-    {
-        $this->setExpectedException('RuntimeException');
-
-        $meta = $this->em->getClassMetadata('Uploadable\Fixture\Entity\File');
-
-        $refl = new \ReflectionClass(get_class($this->listener));
-        $method = $refl->getMethod('prepareFileInfoCollection');
-        $method->setAccessible(true);
-
-        $method->invokeArgs($this->listener, array($meta, $fileInfo));
-    }
-
-    public function testPrepareFileInfoCollectionMethod()
-    {
-
-    }
-
-    /**
      * @dataProvider uploadExceptionsProvider
      */
     public function testUploadExceptions($error, $exceptionClass)
@@ -249,14 +234,6 @@ class UploadableEntityTest extends BaseTestCaseORM
     }
 
     // Data Providers
-
-    public function prepareFileInfoCollectionMethodExceptionsProvider()
-    {
-        return array(
-            array(array('size' => 123)),
-            array(new \DateTime())
-        );
-    }
 
     public function uploadExceptionsProvider()
     {

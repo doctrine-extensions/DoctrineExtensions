@@ -58,7 +58,7 @@ class Image
         return $this->filePath;
     }
 
-    public function setFileInfo(array $fileInfo)
+    public function setFileInfo($fileInfo)
     {
         $this->fileInfo = $fileInfo;
     }

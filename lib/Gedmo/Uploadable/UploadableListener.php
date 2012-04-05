@@ -115,9 +115,27 @@ class UploadableListener extends MappedEventSubscriber
         $fileInfoProp = $refl->getProperty($config['fileInfoProperty']);
         $fileInfoProp->setAccessible(true);
         $fileInfo = $fileInfoProp->getValue($object);
+
+        if (!$fileInfo) {
+            // Nothing to do
+
+            return;
+        }
+
+        $fileInfo = is_array($fileInfo) ? new FileInfoArray($fileInfo) : $fileInfo;
+
         $filePathField = $refl->getProperty($config['filePathField']);
         $filePathField->setAccessible(true);
-        $fileInfoCollection = $this->prepareFileInfoCollection($meta, $fileInfo);
+
+        if (!($fileInfo instanceof FileInfoInterface)) {
+            $msg = 'Property "%s" for class "%s" must contain either an array with information ';
+            $msg .= 'about an uploaded or a FileInfoInterface instance. ';
+
+            throw new \RuntimeException(sprintf($msg,
+                $fileInfoProp->getName(),
+                $meta->name
+            ));
+        }
 
         $path = $config['path'];
 
@@ -159,73 +177,33 @@ class UploadableListener extends MappedEventSubscriber
             $fileSizeField->setAccessible(true);
         }
 
-        foreach ($fileInfoCollection as $f) {
-            // First we remove the original file
-            $this->removefile($meta, $config, $object);
+        // First we remove the original file
+        $this->removefile($meta, $config, $object);
 
-            $info = $this->moveFile($f, $path, $config['allowOverwrite'], $config['appendNumber']);
-            $filePathField->setValue($object, $info['filePath']);
+        $info = $this->moveFile($fileInfo, $path, $config['allowOverwrite'], $config['appendNumber']);
+        $filePathField->setValue($object, $info['filePath']);
 
-            if ($config['callback'] !== '') {
-                $callbackMethod = $refl->getMethod($config['callback']);
-                $callbackMethod->setAccessible(true);
+        if ($config['callback'] !== '') {
+            $callbackMethod = $refl->getMethod($config['callback']);
+            $callbackMethod->setAccessible(true);
 
-                $callbackMethod->invokeArgs($object, array($config));
-            }
-
-            $changes = array(
-                $config['filePathField'] => array($filePathField->getValue($object), $info['filePath'])
-            );
-
-            if ($config['fileMimeTypeField']) {
-                $changes[$config['fileMimeTypeField']] = array($fileMimeTypeField->getValue($object), $info['fileMimeType']);
-            }
-
-            if ($config['fileSizeField']) {
-                $changes[$config['fileSizeField']] = array($fileSizeField->getValue($object), $info['fileSize']);
-            }
-
-            $uow->scheduleExtraUpdate($object, $changes);
-            $ea->setOriginalObjectProperty($uow, spl_object_hash($object), $config['filePathField'], $info['filePath']);
-        }
-    }
-
-    /**
-     * Prepare the array of FileInfoInterface objects
-     *
-     * @param classMetadata
-     * @param mixed - Single array, array of arrays, FileInfoInterface or array of FileInfoInterface objects
-     *
-     * @return array - Array of FileInfoInterface objects
-     */
-    protected function prepareFileInfoCollection(ClassMetadata $meta, $fileInfo)
-    {
-        if (!$fileInfo || (is_array($fileInfo) && empty($fileInfo))) {
-            return array();
+            $callbackMethod->invokeArgs($object, array($config));
         }
 
-        $fileInfoCollection = array();
-        $fileInfo = array($fileInfo);
+        $changes = array(
+            $config['filePathField'] => array($filePathField->getValue($object), $info['filePath'])
+        );
 
-        foreach ($fileInfo as $value) {
-            if (is_array($value)) {
-                $fileInfoCollection[] = new FileInfoArray($value);
-
-                break;
-            } else if (is_object($value) && $value instanceof FileInfoInterface) {
-                $fileInfoCollection[] = $fileInfo;
-            } else {
-                $msg = 'FileInfo for class "%s" must return either an array with information ';
-                $msg .= 'about an uploaded file (provided by $_FILES) or a FileInfoInterface object. ';
-                $msg .= 'You can even return an array of elements representing any of these two options.';
-
-                throw new \RuntimeException(sprintf($msg,
-                    $meta->name
-                ));
-            }
+        if ($config['fileMimeTypeField']) {
+            $changes[$config['fileMimeTypeField']] = array($fileMimeTypeField->getValue($object), $info['fileMimeType']);
         }
 
-        return $fileInfoCollection;
+        if ($config['fileSizeField']) {
+            $changes[$config['fileSizeField']] = array($fileSizeField->getValue($object), $info['fileSize']);
+        }
+
+        $uow->scheduleExtraUpdate($object, $changes);
+        $ea->setOriginalObjectProperty($uow, spl_object_hash($object), $config['filePathField'], $info['filePath']);
     }
 
     /**
