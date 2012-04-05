@@ -97,9 +97,9 @@ class UploadableListener extends MappedEventSubscriber
      * @param UnitOfWork
      * @param AdapterInterface
      * @param ClassMetadata
-     * @param array
-     * @param object
-     * @param string
+     * @param array - Configuration
+     * @param object - The entity
+     * @param string - String representing the action (insert or update)
      *
      * @return void
      */
@@ -177,8 +177,8 @@ class UploadableListener extends MappedEventSubscriber
      * Removes a file from an Uploadable file
      *
      * @param ClassMetadata
-     * @param array
-     * @param object
+     * @param array - Configuration
+     * @param object - Entity
      *
      * @return bool
      */
@@ -201,13 +201,11 @@ class UploadableListener extends MappedEventSubscriber
      */
     public function doRemoveFile($filePath)
     {
-        $res = false;
-
         if (is_file($filePath)) {
-            $res = unlink($filePath);
+            return unlink($filePath);
         }
 
-        return $res;
+        return false;
     }
 
     /**
@@ -264,7 +262,7 @@ class UploadableListener extends MappedEventSubscriber
             'fileSize'      => $fileInfo['size']
         );
 
-        $info['fileName'] = $fileInfo['name'];
+        $info['fileName'] = basename($fileInfo['name']);
         $info['filePath'] = $path.'/'.$info['fileName'];
 
         if (is_file($info['filePath'])) {
@@ -303,7 +301,7 @@ class UploadableListener extends MappedEventSubscriber
     }
 
     /**
-     * Simple wrapper to "move_uploaded_file" function so we can mock it in tests
+     * Simple wrapper to "move_uploaded_file" function to ease testing
      *
      * @param string - Source file
      * @param string - Destination file
@@ -322,7 +320,7 @@ class UploadableListener extends MappedEventSubscriber
     }
 
     /**
-     * Simple wrapper to "move_uploaded_file" function so we can mock it in tests
+     * Simple wrapper to "move_uploaded_file" function to ease testing
      *
      * @param string - Source file
      * @param string - Destination file
