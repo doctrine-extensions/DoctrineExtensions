@@ -4,7 +4,7 @@
 in diferent languages. Further more, it loads the translations automatically for a locale
 currently used, which can be set to **Translatable Listener** on it`s initialization or later
 for other cases through the **Entity** itself
-    
+
 Features:
 
 - Automatic storage of translations in database
@@ -431,15 +431,15 @@ $em->flush();
 ## Using ORM query hint
 
 By default, behind the scenes, when you load a record - translatable hooks into **postLoad**
-event and issues additional query to translate all fields. Imagine that when you load a collection,
-when it issues a lot of queries just to translate those fields. Also if you want to hydrate
-result as an **array**, it is not possible to hook any **postLoad** event since it is not an
-entity being hydrated. These are the main reason why **TranslationWalker** was born.
+event and issues additional query to translate all fields. Imagine that, when you load a collection,
+it may issue a lot of queries just to translate those fields. Including array hydration, 
+it is not possible to hook any **postLoad** event since it is not an
+entity being hydrated. These are the main reasons why **TranslationWalker** was created.
 
 **TranslationWalker** uses a query **hint** to hook into any **select type query**,
 and when you execute the query, no matter which hydration method you use, it automatically
 joins the translations for all fields, so you could use ordering filtering or whatever you
-want on **translations of the fields** instead of original record fields.
+want on **translated fields** instead of original record fields.
 
 And in result there is only one query for all this happyness.
 
@@ -451,11 +451,14 @@ Now enough talking, here is an example:
 
 ``` php
 <?php
-$dql = "SELECT a, c, u FROM Article a "
-     . "LEFT JOIN a.comments c "
-     . "JOIN c.author u "
-     . "WHERE a.title LIKE '%translated_title%' "
-     . "ORDER BY a.title";
+$dql = <<<___SQL
+  SELECT a, c, u
+  FROM Article a
+  LEFT JOIN a.comments c
+  JOIN c.author u
+  WHERE a.title LIKE '%translated_title%'
+  ORDER BY a.title
+___SQL;
 
 $query = $em->createQuery($dql);
 // set the translation query hint
@@ -472,19 +475,42 @@ And even a subselect:
 
 ``` php
 <?php
-$subSelect = "SELECT a2.id FROM Article a2 "
-    . "WHERE a2.title LIKE '%something_translated%'";
-$dql = "SELECT a, c, u FROM Article a "
-    . "LEFT JOIN a.comments c "
-    . "JOIN c.author u "
-    . "WHERE a.id IN ({$subSelect}) "
-    . "ORDER BY a.title";
+$dql = <<<___SQL
+  SELECT a, c, u
+  FROM Article a
+  LEFT JOIN a.comments c
+  JOIN c.author u
+  WHERE a.id IN (
+    SELECT a2.id
+    FROM Article a2
+    WHERE a2.title LIKE '%something_translated%'
+      AND a2.status = 1
+  )
+  ORDER BY a.title
+___SQL;
 
 $query = $em->createQuery($dql);
 $query->setHint(
     \Doctrine\ORM\Query::HINT_CUSTOM_OUTPUT_WALKER,
     'Gedmo\\Translatable\\Query\\TreeWalker\\TranslationWalker'
 );
+
+**NOTE:** if you use memcache or apc. You should set locale and other options like fallbacks
+to query through hints. Otherwise the query will be cached with a first used locale
+
+``` php
+<?php
+// locale
+$query->setHint(
+    \Gedmo\Translatable\TranslatableListener::HINT_TRANSLATABLE_LOCALE,
+    'en', // take locale from session or request etc.
+);
+// fallback
+$query->setHint(
+    \Gedmo\Translatable\TranslatableListener::HINT_FALLBACK,
+    1, // fallback to default values in case if record is not translated
+);
+```
 
 $articles = $query->getResult(); // object hydration
 ```
