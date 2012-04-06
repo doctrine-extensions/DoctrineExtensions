@@ -52,7 +52,7 @@ class SoftDeleteableFilter extends SQLFilter
                 }
             }
 
-            if (!$this->listener === null) {
+            if ($this->listener === null) {
                 throw new \RuntimeException('Listener "SoftDeleteableListener" was not added to the EventManager!');
             }
         }
