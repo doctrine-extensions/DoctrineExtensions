@@ -494,6 +494,7 @@ $query->setHint(
     \Doctrine\ORM\Query::HINT_CUSTOM_OUTPUT_WALKER,
     'Gedmo\\Translatable\\Query\\TreeWalker\\TranslationWalker'
 );
+```
 
 **NOTE:** if you use memcache or apc. You should set locale and other options like fallbacks
 to query through hints. Otherwise the query will be cached with a first used locale
@@ -510,7 +511,6 @@ $query->setHint(
     \Gedmo\Translatable\TranslatableListener::HINT_FALLBACK,
     1, // fallback to default values in case if record is not translated
 );
-```
 
 $articles = $query->getResult(); // object hydration
 ```
