@@ -100,15 +100,15 @@ class Article
      * @var datetime $created
      *
      * @Gedmo\Timestampable(on="create")
-     * @ORM\Column(type="date")
+     * @ORM\Column(type="datetime")
      */
     private $created;
 
     /**
      * @var datetime $updated
      *
-     * @ORM\Column(type="datetime")
      * @Gedmo\Timestampable(on="update")
+     * @ORM\Column(type="datetime")
      */
     private $updated;
 
@@ -347,15 +347,15 @@ class Article
      * @var datetime $created
      *
      * @Gedmo\Timestampable(on="create")
-     * @ORM\Column(type="date")
+     * @ORM\Column(type="datetime")
      */
     private $created;
 
     /**
      * @var datetime $updated
      *
-     * @ORM\Column(type="datetime")
      * @Gedmo\Timestampable(on="update")
+     * @ORM\Column(type="datetime")
      */
     private $updated;
 
@@ -552,8 +552,8 @@ private $dateCreated;
 /**
  * @var datetime $dateLastModified
  *
- * @ORM\Column(name="date_last_modified", type="datetime")
  * @Gedmo\Timestampable(on="update")
+ * @ORM\Column(name="date_last_modified", type="datetime")
  */
 private $dateLastModified;
 ```
