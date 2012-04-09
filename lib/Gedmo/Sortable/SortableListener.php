@@ -5,6 +5,7 @@ namespace Gedmo\Sortable;
 use Doctrine\Common\EventArgs;
 use Gedmo\Mapping\MappedEventSubscriber;
 use Gedmo\Sluggable\Mapping\Event\SortableAdapter;
+use Doctrine\ORM\Proxy\Proxy;
 
 /**
  * The SortableListener maintains a sort index on your entities
@@ -326,6 +327,38 @@ class SortableListener extends MappedEventSubscriber
                 $q = $em->createQuery($dql);
                 $q->setParameters($params);
                 $q->getSingleScalarResult();
+                $meta = $em->getClassMetadata($relocation['name']);
+
+                // now walk through the unit of work in memory objects and sync those
+                foreach ($em->getUnitOfWork()->getIdentityMap() as $className => $objects) {
+                    // for inheritance mapped classes, only root is always in the identity map
+                    if ($className !== $meta->rootEntityName) {
+                        continue;
+                    }
+                    foreach ($objects as $object) {
+                        if ($object instanceof Proxy && !$object->__isInitialized__) {
+                            continue;
+                        }
+                        $oid = spl_object_hash($object);
+                        $pos = $meta->getReflectionProperty($config['position'])->getValue($object);
+                        $matches = $pos >= $delta['start'];
+                        $matches = $matches && ($delta['stop'] <= 0 || $pos < $delta['stop']);
+                        $value = reset($relocation['groups']);
+                        while ($matches && ($group = key($relocation['groups']))) {
+                            $gr = $meta->getReflectionProperty($group)->getValue($object);
+                            if (null === $value) {
+                                $matches = $gr === null;
+                            } else {
+                                $matches = $gr === $value;
+                            }
+                            $value = next($relocation['groups']);
+                        }
+                        if ($matches) {
+                            $meta->getReflectionProperty($config['position'])->setValue($object, $pos + $delta['delta']);
+                            $em->getUnitOfWork()->setOriginalEntityProperty($oid, $config['position'], $pos + $delta['delta']);
+                        }
+                    }
+                }
             }
         }
 
@@ -350,7 +383,7 @@ class SortableListener extends MappedEventSubscriber
     {
         $uow = $em->getUnitOfWork();
         $maxPos = null;
-        
+
         // Get groups
         $groups = array();
         if (isset($config['groups'])) {
@@ -361,12 +394,12 @@ class SortableListener extends MappedEventSubscriber
 
         // Get hash
         $hash = $this->getHash($meta, $groups, $object, $config);
-        
+
         // Check for cached max position
         if (isset($this->maxPositions[$hash])) {
             return $this->maxPositions[$hash];
         }
-        
+
         // Check for groups that are associations. If the value is an object and is
         // scheduled for insert, it has no identifier yet and is obviously new
         // see issue #226

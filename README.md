@@ -19,6 +19,8 @@ master branch is based on 2.3.x versions and may not work with older components.
 sensitive, take this into account and upgrade your current translations in the database. This change
 will not be backported into 2.2 or older versions of extensions and will be available in comming
 releases.
+- **Sortable** now handles and synchronizes all object sort positions which are allready in memory
+of unitOfWork. Which does not require to do **$em->clear()** after each operation anymore.
 
 **2012-03-04**
 
