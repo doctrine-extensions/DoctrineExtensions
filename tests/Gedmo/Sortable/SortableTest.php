@@ -330,6 +330,32 @@ class SortableTest extends BaseTestCaseORM
         $this->assertEquals(1, $author3->getPosition());
     }
 
+    /**
+     * @test
+     */
+    function shouldFixIssue275()
+    {
+        $nodes = array();
+        for ($i = 2; $i <= 10; $i++) {
+            $node = new Node();
+            $node->setName("Node".$i);
+            $node->setPath("/");
+            $this->em->persist($node);
+            $nodes[] = $node;
+        }
+        $this->em->flush();
+
+        $node1 = $this->em->find(self::NODE, $this->nodeId);
+        $this->em->remove($node1);
+        $this->em->flush();
+
+        for ($i = 1; $i <= 9; $i++) {
+            $nodes[$i-1]->setPosition($i);
+            $this->em->persist($nodes[$i-1]);
+        }
+        $this->em->flush();
+    }
+
     protected function getUsedEntityFixtures()
     {
         return array(
