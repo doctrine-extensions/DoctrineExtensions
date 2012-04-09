@@ -28,7 +28,7 @@ class ProtectedPropertySupperclassTest extends BaseTestCaseORM
 
         $evm = new EventManager;
         $translatableListener = new TranslatableListener;
-        $translatableListener->setTranslatableLocale('en_us');
+        $translatableListener->setTranslatableLocale('en_US');
         $evm->addEventSubscriber($translatableListener);
         $evm->addEventSubscriber(new TimestampableListener);
 

@@ -50,7 +50,7 @@ class TranslatableListener extends MappedEventSubscriber
      *
      * @var string
      */
-    protected $locale = 'en_us';
+    protected $locale = 'en_US';
 
     /**
      * Default locale, this changes behavior
@@ -61,7 +61,7 @@ class TranslatableListener extends MappedEventSubscriber
      *
      * @var string
      */
-    private $defaultLocale = 'en_us';
+    private $defaultLocale = 'en_US';
 
     /**
      * If this is set to false, when if entity does
@@ -218,7 +218,7 @@ class TranslatableListener extends MappedEventSubscriber
     public function setTranslatableLocale($locale)
     {
         $this->validateLocale($locale);
-        $this->locale = strtolower($locale);
+        $this->locale = $locale;
         return $this;
     }
 
@@ -233,7 +233,7 @@ class TranslatableListener extends MappedEventSubscriber
     public function setDefaultLocale($locale)
     {
         $this->validateLocale($locale);
-        $this->defaultLocale = strtolower($locale);
+        $this->defaultLocale = $locale;
         return $this;
     }
 
@@ -282,7 +282,7 @@ class TranslatableListener extends MappedEventSubscriber
             $value = $reflectionProperty->getValue($object);
             try {
                 $this->validateLocale($value);
-                $locale = strtolower($value);
+                $locale = $value;
             } catch(\Gedmo\Exception\InvalidArgumentException $e) {}
         }
 

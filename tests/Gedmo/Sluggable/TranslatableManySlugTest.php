@@ -32,7 +32,7 @@ class TranslatableManySlugTest extends BaseTestCaseORM
 
         $evm = new EventManager;
         $this->translatableListener = new TranslatableListener();
-        $this->translatableListener->setTranslatableLocale('en_us');
+        $this->translatableListener->setTranslatableLocale('en_US');
         $evm->addEventSubscriber(new SluggableListener);
         $evm->addEventSubscriber($this->translatableListener);
 
@@ -52,7 +52,7 @@ class TranslatableManySlugTest extends BaseTestCaseORM
         $this->assertCount(0, $translations);
 
         $article = $this->em->find(self::ARTICLE, $this->articleId);
-        $article->setTranslatableLocale('de_de');
+        $article->setTranslatableLocale('de_DE');
         $article->setCode('code in de');
         $article->setTitle('title in de');
 
@@ -63,15 +63,15 @@ class TranslatableManySlugTest extends BaseTestCaseORM
         $repo = $this->em->getRepository(self::TRANSLATION);
         $translations = $repo->findTranslations($article);
         $this->assertCount(1, $translations);
-        $this->assertArrayHasKey('de_de', $translations);
-        $this->assertCount(3, $translations['de_de']);
+        $this->assertArrayHasKey('de_DE', $translations);
+        $this->assertCount(3, $translations['de_DE']);
 
-        $this->assertEquals('title in de', $translations['de_de']['title']);
+        $this->assertEquals('title in de', $translations['de_DE']['title']);
 
-        $this->assertArrayHasKey('slug', $translations['de_de']);
-        $this->assertEquals('title-in-de-code-in-de', $translations['de_de']['slug']);
+        $this->assertArrayHasKey('slug', $translations['de_DE']);
+        $this->assertEquals('title-in-de-code-in-de', $translations['de_DE']['slug']);
     }
-    
+
     public function testUniqueness()
     {
        $a0 = new TransArticleManySlug;
@@ -110,7 +110,7 @@ class TranslatableManySlugTest extends BaseTestCaseORM
         $article->setTitle('the title');
         $article->setCode('my code');
         $article->setUniqueTitle('the unique title');
-        
+
         $this->em->persist($article);
         $this->em->flush();
         $this->em->clear();

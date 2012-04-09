@@ -13,6 +13,13 @@ master branch is based on 2.3.x versions and may not work with older components.
 
 ### Latest updates
 
+**2012-04-09**
+
+- **Translatable** now does not force lowercase letters on locale or language. If your database is case
+sensitive, take this into account and upgrade your current translations in the database. This change
+will not be backported into 2.2 or older versions of extensions and will be available in comming
+releases.
+
 **2012-03-04**
 
 - We should be very grateful for contributions of [comfortablynumb](http://github.com/comfortablynumb)
