@@ -66,6 +66,7 @@ by default it updates this column on update. If column is not date, datetime or 
 type it will trigger an exception.
 
 Available configuration options:
+
 - **on** - is main option and can be **create, update, change** this tells when it 
 should be updated
 - **field** - only valid if **on="change"** is specified, tracks property for changes
