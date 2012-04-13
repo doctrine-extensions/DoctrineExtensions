@@ -38,8 +38,27 @@ class UploadableListener extends MappedEventSubscriber
     const ACTION_INSERT = 'INSERT';
     const ACTION_UPDATE = 'UPDATE';
 
+
+    /**
+     * Default path to move files in
+     *
+     * @var string
+     */
     private $defaultPath;
+
+    /**
+     * Default FileInfoInterface class
+     *
+     * @var string
+     */
     private $defaultFileInfoClass = 'Gedmo\Uploadable\FileInfo\FileInfoArray';
+
+    /**
+     * Array of files to remove on postFlush
+     *
+     * @var array
+     */
+    private $pendingFileRemovals = array();
 
     /**
      * {@inheritdoc}
@@ -48,7 +67,8 @@ class UploadableListener extends MappedEventSubscriber
     {
         return array(
             'loadClassMetadata',
-            'onFlush'
+            'onFlush',
+            'postFlush'
         );
     }
 
@@ -91,9 +111,27 @@ class UploadableListener extends MappedEventSubscriber
             
             if ($config = $this->getConfiguration($om, $meta->name)) {
                 if (isset($config['uploadable']) && $config['uploadable']) {
-                    $this->removeFile($meta, $config, $object);
+                    $this->pendingFileRemovals[] = $this->getFilePath($meta, $config, $object);
                 }
             }
+        }
+    }
+
+    /**
+     * Handle removal of files
+     *
+     * @param EventArgs
+     *
+     * @return void
+     */
+    public function postFlush(EventArgs $args)
+    {
+        if (!empty($this->pendingFileRemovals)) {
+            foreach ($this->pendingFileRemovals as $file) {
+                $this->removeFile($file);
+            }
+
+            $this->pendingFileRemovals = array();
         }
     }
 
@@ -180,8 +218,10 @@ class UploadableListener extends MappedEventSubscriber
             $fileSizeField->setAccessible(true);
         }
 
-        // First we remove the original file
-        $this->removefile($meta, $config, $object);
+        if ($action === self::ACTION_UPDATE) {
+            // First we add the original file to the pendingFileRemovals array
+            $this->pendingFileRemovals[] = $this->getFilePath($meta, $config, $object);
+        }
 
         $info = $this->moveFile($fileInfo, $path, $config['allowOverwrite'], $config['appendNumber']);
         $filePathField->setValue($object, $info['filePath']);
@@ -212,22 +252,22 @@ class UploadableListener extends MappedEventSubscriber
     }
 
     /**
-     * Removes a file from an Uploadable file
+     * Returns the path of the entity's file
      *
      * @param ClassMetadata
      * @param array - Configuration
      * @param object - Entity
      *
-     * @return bool
+     * @return string
      */
-    public function removeFile(ClassMetadata $meta, array $config, $object)
+    public function getFilePath(ClassMetadata $meta, array $config, $object)
     {
         $refl = $meta->getReflectionClass();
         $filePathField = $refl->getProperty($config['filePathField']);
         $filePathField->setAccessible(true);
         $filePath = $filePathField->getValue($object);
 
-        return $this->doRemoveFile($filePath);
+        return $filePath;
     }
 
     /**
@@ -237,7 +277,7 @@ class UploadableListener extends MappedEventSubscriber
      *
      * @return bool
      */
-    public function doRemoveFile($filePath)
+    public function removeFile($filePath)
     {
         if (is_file($filePath)) {
             return unlink($filePath);
@@ -305,7 +345,7 @@ class UploadableListener extends MappedEventSubscriber
 
         if (is_file($info['filePath'])) {
             if ($overwrite) {
-                $this->doRemoveFile($info['filePath']);
+                $this->removeFile($info['filePath']);
             } else if ($appendNumber) {
                 $counter = 1;
                 $extensionPos = strrpos($info['filePath'], '.');
