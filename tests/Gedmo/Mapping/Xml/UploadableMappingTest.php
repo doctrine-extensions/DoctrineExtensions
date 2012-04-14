@@ -68,5 +68,6 @@ class UploadableMappingTest extends BaseTestCaseOM
         $this->assertEquals('path', $config['filePathField']);
         $this->assertEquals('size', $config['fileSizeField']);
         $this->assertEquals('callbackMethod', $config['callback']);
+        $this->assertEquals('SHA1', $config['filenameGenerator']);
     }
 }

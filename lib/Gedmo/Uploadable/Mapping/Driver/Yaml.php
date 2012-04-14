@@ -53,6 +53,9 @@ class Yaml extends File implements Driver
                 $config['fileMimeTypeField'] = false;
                 $config['filePathField'] = false;
                 $config['fileSizeField'] = false;
+                $config['filenameGenerator'] = isset($uploadable['filenameGenerator']) ?
+                    $uploadable['filenameGenerator'] :
+                    Validator::FILENAME_GENERATOR_NONE;
 
                 if (isset($mapping['fields'])) {
                     foreach ($mapping['fields'] as $field => $info) {

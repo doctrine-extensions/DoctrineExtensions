@@ -27,7 +27,8 @@
             path="/my/path"
             path-method="getPath"
             file-info-property="fileInfo"
-            callback="callbackMethod" />
+            callback="callbackMethod"
+            filename-generator="SHA1" />
 
     </entity>
 

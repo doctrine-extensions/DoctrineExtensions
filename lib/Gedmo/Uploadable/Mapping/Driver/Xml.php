@@ -52,6 +52,9 @@ class Xml extends BaseXml
                 $config['fileMimeTypeField'] = false;
                 $config['filePathField'] = false;
                 $config['fileSizeField'] = false;
+                $config['filenameGenerator'] = $this->_isAttributeSet($xmlUploadable, 'filename-generator') ?
+                    $this->_getAttribute($xml->{'uploadable'}, 'filename-generator') :
+                    Validator::FILENAME_GENERATOR_NONE;
 
                 if (isset($xmlDoctrine->field)) {
                     foreach ($xmlDoctrine->field as $mapping) {

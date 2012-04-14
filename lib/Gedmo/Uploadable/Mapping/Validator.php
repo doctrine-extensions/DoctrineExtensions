@@ -23,6 +23,9 @@ class Validator
     const UPLOADABLE_FILE_MIME_TYPE = 'UploadableFileMimeType';
     const UPLOADABLE_FILE_PATH = 'UploadableFilePath';
     const UPLOADABLE_FILE_SIZE = 'UploadableFileSize';
+    const FILENAME_GENERATOR_SHA1 = 'SHA1';
+    const FILENAME_GENERATOR_ALPHANUMERIC = 'ALPHANUMERIC';
+    const FILENAME_GENERATOR_NONE = 'NONE';
 
     /**
      * List of types which are valid for UploadableFileMimeType field
@@ -138,6 +141,31 @@ class Validator
 
         if ($config['fileSizeField']) {
             self::validateFileSizeField($meta, $config['fileSizeField']);
+        }
+
+        switch ((string) $config['filenameGenerator']) {
+            case self::FILENAME_GENERATOR_ALPHANUMERIC:
+            case self::FILENAME_GENERATOR_SHA1:
+            case self::FILENAME_GENERATOR_NONE:
+                break;
+            default:
+                $ok = false;
+                if (is_class($config['filenameGenerator'])) {
+                    $refl = new \ReflectionClass($config['filenameGenerator']);
+
+                    if ($refl->implementsInterface('Gedmo\Uploadable\FilenameGeneratorInterface')) {
+                        $ok = true;
+                    }
+                }
+
+                if (!$ok) {
+                    $msg = 'Class "%s" needs a valid value for filenameGenerator. It can be: SHA1, ALPHANUMERIC, NONE or ';
+                    $msg .= 'a class implementing FileGeneratorInterface.';
+
+                    throw new InvalidMappingException(sprintf($msg,
+                        $meta->name
+                    ));
+                }
         }
 
         self::validateFilePathField($meta, $config['filePathField']);

@@ -10,6 +10,7 @@ Mapping\Fixture\Yaml\Uploadable:
       pathMethod: getPath
       fileInfoProperty: fileInfo
       callback: callbackMethod
+      filenameGenerator: SHA1
   id:
     id:
       type: integer

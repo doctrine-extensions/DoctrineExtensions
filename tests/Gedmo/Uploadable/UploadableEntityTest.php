@@ -9,6 +9,7 @@ use Tool\BaseTestCaseORM,
     Uploadable\Fixture\Entity\Article,
     Uploadable\Fixture\Entity\File,
     Uploadable\Fixture\Entity\FileWithoutPath,
+    Uploadable\Fixture\Entity\FileWithSha1Name,
     Gedmo\Uploadable\Stub\UploadableListenerStub,
     Gedmo\Uploadable\FileInfo\FileInfoArray;
 
@@ -27,6 +28,7 @@ class UploadableEntityTest extends BaseTestCaseORM
     const ARTICLE_CLASS = 'Uploadable\Fixture\Entity\Article';
     const FILE_CLASS = 'Uploadable\Fixture\Entity\File';
     const FILE_WITHOUT_PATH_CLASS = 'Uploadable\Fixture\Entity\FileWithoutPath';
+    const FILE_WITH_SHA1_NAME = 'Uploadable\Fixture\Entity\FileWithSha1Name';
 
     private $listener;
     private $testFile;
@@ -60,7 +62,9 @@ class UploadableEntityTest extends BaseTestCaseORM
 
         $this->clearFilesAndDirectories();
 
-        mkdir($this->destinationTestDir);
+        if (!is_dir($this->destinationTestDir)) {
+            mkdir($this->destinationTestDir);
+        };
     }
 
     public function tearDown()
@@ -252,6 +256,24 @@ class UploadableEntityTest extends BaseTestCaseORM
         $this->assertInstanceOf($fileInfoStubClass, $file->getFileInfo());
     }
 
+    public function testFileWithFilenameGenerator()
+    {
+        $file = new FileWithSha1Name();
+        $fileInfo = $this->generateUploadedFile();
+
+        $file->setFileInfo($fileInfo);
+
+        $this->em->persist($file);
+        $this->em->flush();
+
+        $this->em->refresh($file);
+
+        $sha1String = substr($file->getFilePath(), strrpos($file->getFilePath(), '/') + 1);
+        $sha1String = str_replace('.txt', '', $sha1String);
+
+        $this->assertRegExp('/[a-z0-9]{40}/', $sha1String);
+    }
+
 
 
     // Data Providers
@@ -294,22 +316,21 @@ class UploadableEntityTest extends BaseTestCaseORM
             self::IMAGE_CLASS,
             self::ARTICLE_CLASS,
             self::FILE_CLASS,
-            self::FILE_WITHOUT_PATH_CLASS
+            self::FILE_WITHOUT_PATH_CLASS,
+            self::FILE_WITH_SHA1_NAME
         );
     }
 
     private function clearFilesAndDirectories()
     {
-        if (is_file($this->destinationTestFile)) {
-            unlink($this->destinationTestFile);
-        }
-
-        if (is_file($this->destinationTestFile2)) {
-            unlink($this->destinationTestFile2);
-        }
-
         if (is_dir($this->destinationTestDir)) {
-            rmdir($this->destinationTestDir);
+            $iter = new \DirectoryIterator($this->destinationTestDir);
+
+            foreach ($iter as $fileInfo) {
+                if (!$fileInfo->isDot()) {
+                    @unlink($fileInfo->getPathname());
+                }
+            }
         }
     }
 }
