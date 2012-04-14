@@ -80,7 +80,6 @@ class Annotation implements AnnotationDriverInterface
             $config['fileMimeTypeField'] = false;
             $config['filePathField'] = false;
             $config['fileSizeField'] = false;
-            $config['fileInfoProperty'] = $annot->fileInfoProperty;
             $config['callback'] = $annot->callback;
             $config['filenameGenerator'] = $annot->filenameGenerator;
 

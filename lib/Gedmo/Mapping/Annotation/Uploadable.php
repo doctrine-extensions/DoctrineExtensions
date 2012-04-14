@@ -29,9 +29,6 @@ final class Uploadable extends Annotation
     /** @var string */
     public $path = '';
 
-    /** @var string @required */
-    public $fileInfoProperty;
-
     /** @var string */
     public $pathMethod = '';
 

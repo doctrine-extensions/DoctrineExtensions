@@ -63,7 +63,6 @@ class UploadableMappingTest extends BaseTestCaseOM
         $this->assertTrue($config['appendNumber']);
         $this->assertEquals('/my/path', $config['path']);
         $this->assertEquals('getPath', $config['pathMethod']);
-        $this->assertEquals('fileInfo', $config['fileInfoProperty']);
         $this->assertEquals('mimeType', $config['fileMimeTypeField']);
         $this->assertEquals('path', $config['filePathField']);
         $this->assertEquals('size', $config['fileSizeField']);

@@ -8,7 +8,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * @ORM\Entity
- * @Gedmo\Uploadable(allowOverwrite=true, fileInfoProperty="fileInfo", pathMethod="getPath", callback="callbackMethod")
+ * @Gedmo\Uploadable(allowOverwrite=true, pathMethod="getPath", callback="callbackMethod")
  */
 class File
 {

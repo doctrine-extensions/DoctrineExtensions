@@ -8,7 +8,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * @ORM\Entity
- * @Gedmo\Uploadable(pathMethod="getPath", fileInfoProperty="fileInfo", filenameGenerator="SHA1")
+ * @Gedmo\Uploadable(pathMethod="getPath", filenameGenerator="SHA1")
  */
 class FileWithSha1Name
 {

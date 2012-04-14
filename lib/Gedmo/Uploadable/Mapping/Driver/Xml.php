@@ -48,7 +48,6 @@ class Xml extends BaseXml
                     $this->_getAttribute($xml->{'uploadable'}, 'path-method') : '';
                 $config['callback'] = $this->_isAttributeSet($xmlUploadable, 'callback') ?
                     $this->_getAttribute($xml->{'uploadable'}, 'callback') : '';
-                $config['fileInfoProperty'] = $this->_getAttribute($xml->{'uploadable'}, 'file-info-property');
                 $config['fileMimeTypeField'] = false;
                 $config['filePathField'] = false;
                 $config['fileSizeField'] = false;

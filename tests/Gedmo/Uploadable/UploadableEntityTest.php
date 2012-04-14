@@ -90,7 +90,7 @@ class UploadableEntityTest extends BaseTestCaseORM
 
         $image2 = new Image();
         $image2->setTitle('456');
-        $image2->setFileInfo($fileInfo);
+        $this->listener->addEntityFileInfo($image2, $fileInfo);
 
         $this->em->persist($image2);
         $this->em->flush();
@@ -110,7 +110,7 @@ class UploadableEntityTest extends BaseTestCaseORM
         $fileInfo['name'] = $this->testFilename2;
 
         // We use a FileInfoInterface instance here
-        $image2->setFileInfo(new FileInfoArray($fileInfo));
+        $this->listener->addEntityFileInfo($image2, new FileInfoArray($fileInfo));
 
         // For now, we need to force the update changing one of the managed fields. If we don't do this,
         // entity won't be marked for update
@@ -155,9 +155,9 @@ class UploadableEntityTest extends BaseTestCaseORM
         $fileInfo2 = $this->generateUploadedFile($filesArrayIndex);
         $fileInfo3 = $this->generateUploadedFile($filesArrayIndex);
 
-        $file1->setFileInfo($fileInfo);
-        $file2->setFileInfo($fileInfo2);
-        $file3->setFileInfo($fileInfo3);
+        $this->listener->addEntityFileInfo($file1, $fileInfo);
+        $this->listener->addEntityFileInfo($file2, $fileInfo2);
+        $this->listener->addEntityFileInfo($file3, $fileInfo3);
 
         $this->em->persist($article);
 
@@ -183,7 +183,7 @@ class UploadableEntityTest extends BaseTestCaseORM
 
         $fileInfo = $this->generateUploadedFile();
 
-        $file->setFileInfo($fileInfo);
+        $this->listener->addEntityFileInfo($file, $fileInfo);
 
         $this->em->persist($file);
         $this->em->flush();
@@ -197,7 +197,7 @@ class UploadableEntityTest extends BaseTestCaseORM
         $file = new FileWithoutPath();
         $fileInfo = $this->generateUploadedFile();
 
-        $file->setFileInfo($fileInfo);
+        $this->listener->addEntityFileInfo($file, $fileInfo);
 
         $this->em->persist($file);
         $this->em->flush();
@@ -212,7 +212,7 @@ class UploadableEntityTest extends BaseTestCaseORM
         $file = new File();
         $fileInfo = $this->generateUploadedFile();
 
-        $file->setFileInfo($fileInfo);
+        $this->listener->addEntityFileInfo($file, $fileInfo);
 
         $this->em->persist($file);
         $this->em->flush();
@@ -231,7 +231,7 @@ class UploadableEntityTest extends BaseTestCaseORM
         $fileInfo = $this->generateUploadedFile();
         $fileInfo['error'] = $error;
 
-        $file->setFileInfo($fileInfo);
+        $this->listener->addEntityFileInfo($file, $fileInfo);
 
         $this->em->persist($file);
         $this->em->flush();
@@ -246,14 +246,10 @@ class UploadableEntityTest extends BaseTestCaseORM
         $file = new File();
         $fileInfo = $this->generateUploadedFile();
 
-        $file->setFileInfo($fileInfo);
+        $this->listener->addEntityFileInfo($file, $fileInfo);
+        $fileInfo = $this->listener->getEntityFileInfo($file);
 
-        $this->em->persist($file);
-        $this->em->flush();
-
-        $this->em->refresh($file);
-
-        $this->assertInstanceOf($fileInfoStubClass, $file->getFileInfo());
+        $this->assertInstanceOf($fileInfoStubClass, $fileInfo);
     }
 
     public function testFileWithFilenameGenerator()
@@ -261,7 +257,7 @@ class UploadableEntityTest extends BaseTestCaseORM
         $file = new FileWithSha1Name();
         $fileInfo = $this->generateUploadedFile();
 
-        $file->setFileInfo($fileInfo);
+        $this->listener->addEntityFileInfo($file, $fileInfo);
 
         $this->em->persist($file);
         $this->em->flush();

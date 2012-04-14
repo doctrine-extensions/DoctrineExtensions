@@ -26,7 +26,6 @@
             append-number="true"
             path="/my/path"
             path-method="getPath"
-            file-info-property="fileInfo"
             callback="callbackMethod"
             filename-generator="SHA1" />
 

@@ -61,6 +61,14 @@ class UploadableListener extends MappedEventSubscriber
     private $pendingFileRemovals = array();
 
     /**
+     * Array of FileInfoInterface objects. The index is the hash of the entity owner
+     * of the FileInfoInterface object.
+     *
+     * @var array
+     */
+    private $fileInfoObjects = array();
+
+    /**
      * {@inheritdoc}
      */
     public function getSubscribedEvents()
@@ -151,32 +159,17 @@ class UploadableListener extends MappedEventSubscriber
     public function processFile(UnitOfWork $uow, AdapterInterface $ea, ClassMetadata $meta, array $config, $object, $action)
     {
         $refl = $meta->getReflectionClass();
-        $fileInfoProp = $refl->getProperty($config['fileInfoProperty']);
-        $fileInfoProp->setAccessible(true);
-        $fileInfo = $fileInfoProp->getValue($object);
+        $oid = spl_object_hash($object);
 
-        if (!$fileInfo) {
+        if (!isset($this->fileInfoObjects[$oid])) {
             // Nothing to do
 
             return;
         }
 
-        $fileInfoClass = $this->getDefaultFileInfoClass();
-        $fileInfo = is_array($fileInfo) ? new $fileInfoClass($fileInfo) : $fileInfo;
-        $fileInfoProp->setValue($object, $fileInfo);
-
+        $fileInfo = $this->fileInfoObjects[$oid];
         $filePathField = $refl->getProperty($config['filePathField']);
         $filePathField->setAccessible(true);
-
-        if (!($fileInfo instanceof FileInfoInterface)) {
-            $msg = 'Property "%s" for class "%s" must contain either an array with information ';
-            $msg .= 'about an uploaded or a FileInfoInterface instance. ';
-
-            throw new \RuntimeException(sprintf($msg,
-                $fileInfoProp->getName(),
-                $meta->name
-            ));
-        }
 
         $path = $config['path'];
 
@@ -266,9 +259,9 @@ class UploadableListener extends MappedEventSubscriber
         }
 
         $uow->scheduleExtraUpdate($object, $changes);
-
-        $oid = spl_object_hash($object);
         $ea->setOriginalObjectProperty($uow, $oid, $config['filePathField'], $info['filePath']);
+
+        unset($this->fileInfoObjects[$oid]);
     }
 
     /**
@@ -506,6 +499,41 @@ class UploadableListener extends MappedEventSubscriber
     public function getDefaultFileInfoClass()
     {
         return $this->defaultFileInfoClass;
+    }
+
+    /**
+     * Adds a FileInfoInterface object for the given entity
+     *
+     * @param object - $entity
+     * @param FileInfo\FileInfoInterface $fileInfo
+     */
+    public function addEntityFileInfo($entity, $fileInfo)
+    {
+        $fileInfoClass = $this->getDefaultFileInfoClass();
+        $fileInfo = is_array($fileInfo) ? new $fileInfoClass($fileInfo) : $fileInfo;
+
+        if (!is_object($fileInfo) || !($fileInfo instanceof FileInfoInterface)) {
+            $msg = 'You must pass an instance of FileInfoInterface or a valid array for entity of class "%s".';
+
+            throw new \RuntimeException(sprintf($msg,
+                get_class($entity)
+            ));
+        }
+
+        $this->fileInfoObjects[spl_object_hash($entity)] = $fileInfo;
+    }
+
+    public function getEntityFileInfo($entity)
+    {
+        $oid = spl_object_hash($entity);
+
+        if (!isset($this->fileInfoObjects[$oid])) {
+            throw new \RuntimeException(sprintf('There\'s no FileInfoInterface object for entity of class "%s".',
+                get_class($entity)
+            ));
+        }
+
+        return $this->fileInfoObjects[$oid];
     }
 
     /**

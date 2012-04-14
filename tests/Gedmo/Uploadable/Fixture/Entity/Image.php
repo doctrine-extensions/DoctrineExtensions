@@ -8,7 +8,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * @ORM\Entity
- * @Gedmo\Uploadable(fileInfoProperty="fileInfo", pathMethod="getPath")
+ * @Gedmo\Uploadable(pathMethod="getPath")
  */
 class Image
 {

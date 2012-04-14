@@ -8,7 +8,6 @@ Mapping\Fixture\Yaml\Uploadable:
       appendNumber: true
       path: '/my/path'
       pathMethod: getPath
-      fileInfoProperty: fileInfo
       callback: callbackMethod
       filenameGenerator: SHA1
   id:

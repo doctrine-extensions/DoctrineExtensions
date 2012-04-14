@@ -104,19 +104,6 @@ class Validator
             ));
         }
 
-        if (!$config['fileInfoProperty']) {
-            throw new InvalidMappingException(sprintf('Class "%s" must define a "fileInfoProperty".',
-                $meta->name
-            ));
-        } else {
-            if (!$refl->hasProperty($config['fileInfoProperty'])) {
-                throw new InvalidMappingException(sprintf('Class "%s" doesn\'t have property "%s"!',
-                    $meta->name,
-                    $config['fileInfoProperty']
-                ));
-            }
-        }
-
         if ($config['pathMethod'] !== '') {
             if (!$refl->hasMethod($config['pathMethod'])) {
                 throw new InvalidMappingException(sprintf('Class "%s" doesn\'t have method "%s"!',
