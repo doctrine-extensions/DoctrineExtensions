@@ -5,6 +5,7 @@ namespace Gedmo\Uploadable\Mapping;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Gedmo\Exception\InvalidMappingException;
 use Gedmo\Exception\UploadableCantWriteException;
+use Gedmo\Exception\UploadableInvalidPathException;
 use Doctrine\ORM\Mapping\ClassMetadata;
 
 /**
@@ -80,13 +81,17 @@ class Validator
             throw new InvalidMappingException(sprintf($msg,
                 $field,
                 $uploadableField,
-                explode(', ', $validFieldTypes)
+                implode(', ', $validFieldTypes)
             ));
         }
     }
 
     public static function validatePath($path)
     {
+        if (!is_string($path) || $path === '') {
+            throw new UploadableInvalidPathException('Path must be a string containing the path to a valid directory.');
+        }
+
         if (!is_dir($path) || !is_writable($path)) {
             throw new UploadableCantWriteException(sprintf('Directory "%s" does not exist or is not writable',
                 $path
@@ -96,13 +101,13 @@ class Validator
 
     public static function validateConfiguration(ClassMetadata $meta, array $config)
     {
-        $refl = $meta->getReflectionClass();
-
         if (!$config['filePathField']) {
             throw new InvalidMappingException(sprintf('Class "%s" must have an UploadableFilePath field.',
                 $meta->name
             ));
         }
+
+        $refl = $meta->getReflectionClass();
 
         if ($config['pathMethod'] !== '') {
             if (!$refl->hasMethod($config['pathMethod'])) {
@@ -137,10 +142,10 @@ class Validator
                 break;
             default:
                 $ok = false;
-                if (is_class($config['filenameGenerator'])) {
+                if (class_exists($config['filenameGenerator'])) {
                     $refl = new \ReflectionClass($config['filenameGenerator']);
 
-                    if ($refl->implementsInterface('Gedmo\Uploadable\FilenameGeneratorInterface')) {
+                    if ($refl->implementsInterface('Gedmo\Uploadable\FilenameGenerator\FilenameGeneratorInterface')) {
                         $ok = true;
                     }
                 }

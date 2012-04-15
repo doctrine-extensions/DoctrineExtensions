@@ -30,8 +30,17 @@ class Image
      */
     private $filePath;
 
-    private $fileInfo;
+    /**
+     * @ORM\Column(name="size", type="decimal", nullable=true)
+     * @Gedmo\UploadableFileSize
+     */
+    private $size;
 
+    /**
+     * @ORM\Column(name="mime_type", type="string", nullable=true)
+     * @Gedmo\UploadableFileMimeType
+     */
+    private $mime;
 
     public function getId()
     {
@@ -58,18 +67,28 @@ class Image
         return $this->filePath;
     }
 
-    public function setFileInfo($fileInfo)
-    {
-        $this->fileInfo = $fileInfo;
-    }
-
-    public function getFileInfo()
-    {
-        return $this->fileInfo;
-    }
-
     public function getPath()
     {
         return __DIR__.'/../../../../temp/uploadable';
+    }
+
+    public function setMime($mime)
+    {
+        $this->mime = $mime;
+    }
+
+    public function getMime()
+    {
+        return $this->mime;
+    }
+
+    public function setSize($size)
+    {
+        $this->size = $size;
+    }
+
+    public function getSize()
+    {
+        return $this->size;
     }
 }

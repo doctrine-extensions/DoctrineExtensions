@@ -8,9 +8,9 @@ use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * @ORM\Entity
- * @Gedmo\Uploadable
+ * @Gedmo\Uploadable(pathMethod="getPath", filenameGenerator="Gedmo\Uploadable\FakeFilenameGenerator")
  */
-class FileWithoutPath
+class FileWithCustomFilenameGenerator
 {
     /**
      * @ORM\Column(name="id", type="integer")
@@ -39,5 +39,10 @@ class FileWithoutPath
     public function getFilePath()
     {
         return $this->filePath;
+    }
+
+    public function getPath()
+    {
+        return __DIR__.'/../../../../temp/uploadable';
     }
 }

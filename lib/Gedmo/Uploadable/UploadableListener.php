@@ -178,16 +178,6 @@ class UploadableListener extends MappedEventSubscriber
                 $pathMethod = $refl->getMethod($config['pathMethod']);
                 $pathMethod->setAccessible(true);
                 $path = $pathMethod->invoke($object);
-
-                if (is_string($path) && $path !== '') {
-                    Validator::validatePath($path);
-                } else {
-                    $msg = 'The method which returns the file path in class "%s" must return a valid path.';
-
-                    throw new \RuntimeException(sprintf($msg,
-                        $meta->name
-                    ));
-                }
             } else if ($this->getDefaultPath() !== null) {
                 $path = $this->getDefaultPath();
             } else {
@@ -198,6 +188,8 @@ class UploadableListener extends MappedEventSubscriber
                 ));
             }
         }
+
+        Validator::validatePath($path);
 
         $path = substr($path, strlen($path) - 1) === '/' ? substr($path, 0, strlen($path) - 2) : $path;
 
@@ -252,10 +244,12 @@ class UploadableListener extends MappedEventSubscriber
 
         if ($config['fileMimeTypeField']) {
             $changes[$config['fileMimeTypeField']] = array($fileMimeTypeField->getValue($object), $info['fileMimeType']);
+            $ea->setOriginalObjectProperty($uow, $oid, $config['fileMimeTypeField'], $info['fileMimeType']);
         }
 
         if ($config['fileSizeField']) {
             $changes[$config['fileSizeField']] = array($fileSizeField->getValue($object), $info['fileSize']);
+            $ea->setOriginalObjectProperty($uow, $oid, $config['fileSizeField'], $info['fileSize']);
         }
 
         $uow->scheduleExtraUpdate($object, $changes);
@@ -305,13 +299,13 @@ class UploadableListener extends MappedEventSubscriber
 
      * @param FileInfoInterface
      * @param string - Path
-     * @param string - FilenameGeneratorClass
+     * @param mixed - String of class that implements FilenameGeneratorInterface, or false
      * @param bool - Overwrite if file already exists?
      * @param bool - Append a number if file already exists?
      *
      * @return array - Information about the moved file
      */
-    public function moveFile(FileInfoInterface $fileInfo, $path, $filenameGeneratorClass, $overwrite = false, $appendNumber = false)
+    public function moveFile(FileInfoInterface $fileInfo, $path, $filenameGeneratorClass = false, $overwrite = false, $appendNumber = false)
     {
         if ($fileInfo->getError() > 0) {
             switch ($fileInfo->getError()) {
@@ -362,10 +356,10 @@ class UploadableListener extends MappedEventSubscriber
         $info['fileName'] = basename($fileInfo->getName());
         $info['filePath'] = $path.'/'.$info['fileName'];
 
-        $extensionPos = strrpos($info['filePath'], '.');
+        $hasExtension = strrpos($info['fileName'], '.');
 
-        if ($extensionPos !== false) {
-            $info['fileExtension'] = substr($info['filePath'], $extensionPos);
+        if ($hasExtension) {
+            $info['fileExtension'] = substr($info['filePath'], strrpos($info['filePath'], '.'));
             $info['fileWithoutExt'] = substr($info['filePath'], 0, strrpos($info['filePath'], '.'));
         } else {
             $info['fileWithoutExt'] = $info['fileName'];
@@ -404,7 +398,7 @@ class UploadableListener extends MappedEventSubscriber
 
         if (!$this->moveUploadedFile($fileInfo->getTmpName(), $info['filePath'])) {
             throw new UploadableUploadException(sprintf('File "%s" was not uploaded, or there was a problem moving it to the location "%s".',
-                $fileInfo['fileName'],
+                $fileInfo->getName(),
                 $path
             ));
         }
@@ -421,25 +415,6 @@ class UploadableListener extends MappedEventSubscriber
      * @return bool
      */
     public function moveUploadedFile($source, $dest)
-    {
-        if (!is_dir($dest)) {
-            throw new UploadableDirectoryNotFoundException(sprintf('File "%s" cannot be moved because that directory does not exist!',
-                $dest
-            ));
-        }
-
-        return $this->doMoveUploadedFile($source, $dest);
-    }
-
-    /**
-     * Simple wrapper to "move_uploaded_file" function to ease testing
-     *
-     * @param string - Source file
-     * @param string - Destination file
-     *
-     * @return bool
-     */
-    public function doMoveUploadedFile($source, $dest)
     {
         return move_uploaded_file($source, $dest);
     }

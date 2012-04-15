@@ -30,8 +30,6 @@ class File
      */
     private $filePath;
 
-    private $fileInfo;
-
     /**
      * @ORM\ManyToOne(targetEntity="Article", inversedBy="files")
      * @ORM\JoinColumn(name="article_id", referencedColumnName="id")
@@ -74,16 +72,6 @@ class File
     public function getArticle()
     {
         return $this->article;
-    }
-
-    public function setFileInfo($fileInfo)
-    {
-        $this->fileInfo = $fileInfo;
-    }
-
-    public function getFileInfo()
-    {
-        return $this->fileInfo;
     }
 
     public function callbackMethod()
