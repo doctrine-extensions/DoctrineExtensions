@@ -57,4 +57,9 @@ class FileInfoArray implements FileInfoInterface
     {
         return $this->fileInfo['error'];
     }
+
+    public function isUploadedFile()
+    {
+        return true;
+    }
 }

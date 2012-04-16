@@ -17,6 +17,7 @@ Content:
 - [Yaml](#yaml-mapping) mapping example
 - [Xml](#xml-mapping) mapping example
 - Usage [examples](#usage)
+- [Using](#additional-usages) the extension to handle not only uploaded files
 
 <a name="including-extension"></a>
 
@@ -307,3 +308,82 @@ $em->flush();
 ```
 
 Easy like that, any suggestions on improvements are very welcome.
+
+<a name="additional-usages"></a>
+
+### Using the extension to handle not only uploaded files
+
+Maybe you want to handle files obtained from an URL, or even files that are already located in the same server than your app.
+This can be handled in a very simple way. First, you need to create a class that implements the FileInfoInterface
+interface. As an example:
+
+``` php
+use Gedmo\Uploadable\FileInfo\FileInfoInterface;
+
+class CustomFileInfo implements FileInfoInterface
+{
+    protected $path;
+    protected $size;
+    protected $type;
+    protected $filename;
+    protected $error = 0;
+
+    public function __construct($path)
+    {
+        $this->path = $path;
+
+        // Now, process the file and fill the rest of the properties.
+    }
+
+    // This returns the actual path of the file
+    public function getTmpName()
+    {
+        return $path;
+    }
+
+    // This returns the filename
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    // This returns the file size in bytes
+    public function getSize()
+    {
+        return $this->size;
+    }
+
+    // This returns the mime type
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    public function getError()
+    {
+        // This should return 0, as it's only used to return the codes from PHP file upload errors.
+        return $this->error;
+    }
+
+    // This method, if returns true, will produce that the extension uses "move_uploaded_file" function to move
+    // the file. If it returns false, the extension will move the file with the "copy" function.
+    public function isUploadedFile()
+    {
+        return false;
+    }
+}
+```
+
+And then, instead of getting the file info from the $_FILES array, you would do:
+
+``` php
+// We set the default path in the listener again
+$listener->setDefaultPath('/my/path');
+
+$file = new File();
+
+$listener->addEntityFileInfo($file, new CustomFileInfo('/path/to/file.txt'));
+
+$em->persist($file);
+$em->flush();
+```

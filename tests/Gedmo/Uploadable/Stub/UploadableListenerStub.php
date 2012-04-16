@@ -9,8 +9,8 @@ class UploadableListenerStub extends UploadableListener
 {
     public $returnFalseOnMoveUploadedFile = false;
 
-    public function moveUploadedFile($source, $dest)
+    public function doMoveFile($source, $dest, $isUploadedFile = true)
     {
-        return $this->returnFalseOnMoveUploadedFile ? false : copy($source, $dest);
+        return $this->returnFalseOnMoveUploadedFile ? false : parent::doMoveFile($source, $dest, false);
     }
 }

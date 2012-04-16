@@ -396,7 +396,7 @@ class UploadableListener extends MappedEventSubscriber
             }
         }
 
-        if (!$this->moveUploadedFile($fileInfo->getTmpName(), $info['filePath'])) {
+        if (!$this->doMoveFile($fileInfo->getTmpName(), $info['filePath'], $fileInfo->isUploadedFile())) {
             throw new UploadableUploadException(sprintf('File "%s" was not uploaded, or there was a problem moving it to the location "%s".',
                 $fileInfo->getName(),
                 $path
@@ -407,16 +407,19 @@ class UploadableListener extends MappedEventSubscriber
     }
 
     /**
-     * Simple wrapper to "move_uploaded_file" function to ease testing
+     * Simple wrapper method used to move the file. If it's an uploaded file
+     * it will use the "move_uploaded_file method. If it's not, it will
+     * simple move it
      *
      * @param string - Source file
      * @param string - Destination file
+     * @param bool - Is an uploaded file?
      *
      * @return bool
      */
-    public function moveUploadedFile($source, $dest)
+    public function doMoveFile($source, $dest, $isUploadedFile = true)
     {
-        return move_uploaded_file($source, $dest);
+        return $isUploadedFile ? move_uploaded_file($source, $dest) : copy($source, $dest);
     }
 
     /**
