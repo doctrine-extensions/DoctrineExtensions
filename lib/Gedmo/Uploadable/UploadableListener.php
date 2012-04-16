@@ -235,7 +235,7 @@ class UploadableListener extends MappedEventSubscriber
             $callbackMethod = $refl->getMethod($config['callback']);
             $callbackMethod->setAccessible(true);
 
-            $callbackMethod->invokeArgs($object, array($config));
+            $callbackMethod->invokeArgs($object, array($info));
         }
 
         $changes = array(
