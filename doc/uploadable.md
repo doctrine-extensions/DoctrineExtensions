@@ -374,7 +374,41 @@ class CustomFileInfo implements FileInfoInterface
 }
 ```
 
-And then, instead of getting the file info from the $_FILES array, you would do:
+Or you could simply extend the FileInfoArray class and do the following:
+
+``` php
+use Gedmo\Uploadable\FileInfo\FileInfoArray;
+
+class CustomFileInfo extends FileInfoArray
+{
+    public function __construct($path)
+    {
+        // There's already a $fileInfo property, which needs to be an array with the
+        // following keys: tmp_name, name, size, type, error
+        $this->fileInfo = array(
+            'tmp_name'      => '',
+            'name'          => '',
+            'size'          => 0,
+            'type'          => '',
+            'error'         => 0
+        );
+
+        // Now process the file at $path and fill the keys with the correct values.
+        //
+        // In this example we use a $path as the first argument, but it could be an URL
+        // to the file we need to obtain, etc.
+    }
+
+    public function isUploadedFile()
+    {
+        // Remember to set this to false so we use "copy" instead of "move_uploaded_file"
+
+        return false;
+    }
+}
+```
+
+And that's it. Then, instead of getting the file info from the $_FILES array, you would do:
 
 ``` php
 // We set the default path in the listener again
