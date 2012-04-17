@@ -34,31 +34,31 @@ on how to setup and use the extensions in most optimized way.
 
 ### Uploadable annotations:
 1. **@Gedmo\Mapping\Annotation\Uploadable** this class annotation tells if a class is Uploadable. Available configuration options:
- 1.**allowOverwrite** - If this option is true, it will overwrite a file if it already exists. If you set "false", an
+ * **allowOverwrite** - If this option is true, it will overwrite a file if it already exists. If you set "false", an
  exception will be thrown. Default: false
- 2. **appendNumber** - If this option is true and "allowOverwrite" is false, in the case that the file already exists,
+ * **appendNumber** - If this option is true and "allowOverwrite" is false, in the case that the file already exists,
  it will append a number to the filename. Example: if you're uploading a file named "test.txt", if the file already
  exists and this option is true, the extension will modify the name of the uploaded file to "test-1.txt", where "1"
  could be any number. The extension will check if the file exists until it finds a filename with a number as its postfix that is not used.
  If you use a filename generator and this option is true, it will append a number to the filename anyway if a file with
  the same name already exists.
  Default value: false
- 3. **path** - This option expects a string containing the path where the files represented by this entity will be moved.
+ * **path** - This option expects a string containing the path where the files represented by this entity will be moved.
 Default: "". Path can be set in other ways: From the listener or from a method. More details later.
- 4. **pathMethod** - Similar to option "path", but this time it represents the name of a method on the entity that
+ * **pathMethod** - Similar to option "path", but this time it represents the name of a method on the entity that
  will return the path to which the files represented by this entity will be moved. This is useful in several cases.
  For example, you can set specific paths for specific entities, or you can get the path from other sources (like a
  framework configuration) instead of hardcoding it in the entity. Default: ""
- 5. **callback** - This option allows you to set a method name. If this option is set, the method will be called after
+ * **callback** - This option allows you to set a method name. If this option is set, the method will be called after
  the file is moved. Default value: "". As first argument, this method can receive an array with information about the uploaded file, which
  includes the following keys:
-   1. **fileName**: The filename.
-   2. **fileExtension**: The extension of the file (including the dot). Example: .jpg
-   3. **fileWithoutExt**: The filename without the extension.
-   4. **filePath**: The file path. Example: /my/path/filename.jpg
-   5. **fileMimeType**: The mime-type of the file. Example: text/plain.
-   6. **fileSize**: Size of the file in bytes. Example: 140000.
- 6. **filenameGenerator**: This option allows you to set a filename generator for the file. There are two already included
+   * **fileName**: The filename.
+   * **fileExtension**: The extension of the file (including the dot). Example: .jpg
+   * **fileWithoutExt**: The filename without the extension.
+   * **filePath**: The file path. Example: /my/path/filename.jpg
+   * **fileMimeType**: The mime-type of the file. Example: text/plain.
+   * **fileSize**: Size of the file in bytes. Example: 140000.
+ * **filenameGenerator**: This option allows you to set a filename generator for the file. There are two already included
  by the extension: **SHA1**, which generates a sha1 filename for the file, and **ALPHANUMERIC**, which "normalizes"
  the filename, leaving only alphanumeric characters in the filename, and replacing anything else with a "-". You can
  even create your own FileGenerator class (implementing the FileGeneratorInterface) and set this option with the
@@ -365,8 +365,8 @@ class CustomFileInfo implements FileInfoInterface
         return $this->error;
     }
 
-    // This method, if returns true, will produce that the extension uses "move_uploaded_file" function to move
-    // the file. If it returns false, the extension will move the file with the "copy" function.
+    // If this method returns true, it will produce that the extension uses "move_uploaded_file" function to move
+    // the file. If it returns false, the extension will use the "copy" function.
     public function isUploadedFile()
     {
         return false;
