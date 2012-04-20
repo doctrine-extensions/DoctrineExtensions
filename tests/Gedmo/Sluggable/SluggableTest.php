@@ -163,4 +163,17 @@ class SluggableTest extends BaseTestCaseORM
         $this->em->clear();
         $this->articleId = $article->getId();
     }
+    public function testUpdatableTrueChangeSlug()
+    {
+        $article = $this->em->find(self::ARTICLE, $this->articleId);
+        $article->setSlug('my-title');
+
+        $this->em->persist($article);
+        $this->em->flush();
+        $this->em->clear();
+
+        $this->assertEquals($article->getTitle(), 'my title');
+        $this->assertEquals($article->getCode(), 'my code');
+        $this->assertEquals($article->getSlug(), 'my-title-my-code');
+    }
 }
