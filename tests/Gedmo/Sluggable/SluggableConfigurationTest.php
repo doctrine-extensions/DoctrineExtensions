@@ -98,5 +98,74 @@ class SluggableConfigurationTest extends BaseTestCaseORM
         $this->em->clear();
         $this->articleId = $article->getId();
     }
+
+    public function testUpdatableFalse()
+    {
+        $article = new ConfigurationArticle();
+        $article->setTitle('my title');
+        $article->setCode('my code');
+
+        $this->em->persist($article);
+        $this->em->flush();
+        $this->em->clear();
+
+        $this->assertEquals($article->getSlug(), 'my-title-my-code');
+    }
+
+    public function testUpdatableFalseSetSlug()
+    {
+        $article = new ConfigurationArticle();
+        $article->setTitle('my title');
+        $article->setCode('my code');
+
+        $article->setSlug('my-slug');
+
+        $this->em->persist($article);
+        $this->em->flush();
+        $this->em->clear();
+
+        $this->assertEquals($article->getSlug(), 'my-slug');
+    }
+
+    public function testUpdatableFalseChangeSlug()
+    {
+        $article = $this->em->find(self::ARTICLE, $this->articleId);
+        $article->setSlug('my-new-slug');
+
+        $this->em->persist($article);
+        $this->em->flush();
+        $this->em->clear();
+
+        $this->assertEquals($article->getTitle(), 'my title');
+        $this->assertEquals($article->getCode(), 'my code');
+        $this->assertEquals($article->getSlug(), 'my-new-slug');
+    }
+
+    public function testUpdatableFalseChangeTitle()
+    {
+        $article = $this->em->find(self::ARTICLE, $this->articleId);
+        $article->setTitle('my new title');
+
+        $this->em->persist($article);
+        $this->em->flush();
+        $this->em->clear();
+
+        $this->assertEquals($article->getTitle(), 'my new title');
+        $this->assertEquals($article->getCode(), 'my code');
+        $this->assertEquals($article->getSlug(), 'my-slug');
+    }
+    public function testUpdatableFalseSetSlugNull()
+    {
+        $article = $this->em->find(self::ARTICLE, $this->articleId);
+        $article->setSlug('');
+
+        $this->em->persist($article);
+        $this->em->flush();
+        $this->em->clear();
+
+        $this->assertEquals($article->getTitle(), 'my title');
+        $this->assertEquals($article->getCode(), 'my code');
+        $this->assertEquals($article->getSlug(), 'my-title-my-code');
+    }
 }
 

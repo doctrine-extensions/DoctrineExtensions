@@ -146,10 +146,12 @@ class SluggableListener extends MappedEventSubscriber
             $meta = $om->getClassMetadata(get_class($object));
             if ($config = $this->getConfiguration($om, $meta->name)) {
                 // generate first to exclude this object from similar persisted slugs result
-                $this->generateSlug($ea, $object);
                 foreach ($config['slugs'] as $slugField => $options) {
-                    $slug = $meta->getReflectionProperty($slugField)->getValue($object);
-                    $this->persistedSlugs[$config['useObjectClass']][$slugField][] = $slug;
+                    if (($options['updatable']) || (call_user_func(array($object,"get".ucfirst($slugField))) == "")) {
+                        $this->generateSlug($ea, $object);
+                        $slug = $meta->getReflectionProperty($slugField)->getValue($object);
+                        $this->persistedSlugs[$config['useObjectClass']][$slugField][] = $slug;
+                    }
                 }
             }
         }
@@ -159,7 +161,7 @@ class SluggableListener extends MappedEventSubscriber
             $meta = $om->getClassMetadata(get_class($object));
             if ($config = $this->getConfiguration($om, $meta->name)) {
                 foreach ($config['slugs'] as $slugField => $options) {
-                    if ($options['updatable']) {
+                    if (($options['updatable']) || (call_user_func(array($object,"get".ucfirst($slugField))) == "")) {
                         $this->generateSlug($ea, $object);
                     }
                 }
@@ -214,7 +216,7 @@ class SluggableListener extends MappedEventSubscriber
             $slug = '';
             $needToChangeSlug = false;
             foreach ($options['fields'] as $sluggableField) {
-                if (isset($changeSet[$sluggableField])) {
+                if (isset($changeSet[$sluggableField]) || isset($changeSet[$slugField])) {
                     $needToChangeSlug = true;
                 }
                 $slug .= $meta->getReflectionProperty($sluggableField)->getValue($object) . ' ';
