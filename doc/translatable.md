@@ -840,3 +840,56 @@ $em->flush();
 This would create translations for english and lithuanian, and for fruits, **ru** additionally.
 
 Easy like that, any suggestions on improvements are very welcome
+
+
+Example code to use Personal Translations with (sonata) i18n Forms:
+
+Suppose you have a Sonata Backend with s asimple form like:
+
+``` php
+    protected function configureFormFields(FormMapper $formMapper)    {
+        $formMapper
+            ->with('General')
+            ->add('title', 'text')
+            ->end()
+            ;
+    }
+```
+
+Then you can turn it into an 118n Form by providing the following changes.
+
+``` php
+    protected function configureFormFields(FormMapper $formMapper)
+    {
+        $formMapper
+            ->with('General')
+                ->add('title', 'translatable_field', array(
+                    'field'                => 'title',
+                    'personal_translation' => 'ExampleBundle\Entity\Translation\ProductTranslation',
+                    'property_path'        => 'translations',
+                ))
+            ->end()
+        ;
+    }
+
+```
+
+To accomplish this you can add the following code in your bundle:
+
+https://gist.github.com/2437078
+
+<Bundle>/Form/TranslatedFieldType.php
+<Bundle>/Form/EventListener/addTranslatedFieldSubscriber.php
+<Bundle>/Resources/services.yml
+
+Then you can change to your needs:
+
+``` php
+                    'field'                => 'title', //you need to provide which field you wish to translate
+                    'personal_translation' => 'ExampleBundle\Entity\Translation\ProductTranslation', //the personal translation entity
+
+```
+
+
+
+
