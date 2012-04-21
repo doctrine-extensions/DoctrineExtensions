@@ -64,6 +64,12 @@ class TranslatableEntityCollectionTest extends BaseTestCaseORM
 
         $this->em->persist($entity);
         $this->em->flush();
+        $this->em->clear();
+        $trans = $repo->findTranslations($this->em->find(self::ARTICLE, $entity->getId()));
+        $this->assertEquals(3, count($trans)); // EN is default, and left in original record
+        $this->assertSame('my article de', $trans['de']['title']); // overrides "he" which would be used if translate for de not called
+        $this->assertSame('my article es', $trans['es']['title']);
+        $this->assertSame('my article fr', $trans['fr']['title']);
     }
 
     /**
