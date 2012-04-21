@@ -60,14 +60,21 @@ class TranslationRepository extends EntityRepository
         if (!isset($config['fields']) || !in_array($field, $config['fields'])) {
             throw new \Gedmo\Exception\InvalidArgumentException("Entity: {$meta->name} does not translate field - {$field}");
         }
-        if (in_array($locale, array($listener->getDefaultLocale(), $listener->getTranslatableLocale($entity, $meta)))) {
+        $modRecordValue = (!$listener->getPersistDefaultLocaleTranslation() && $locale === $listener->getDefaultLocale())
+            || $listener->getTranslatableLocale($entity, $meta) === $locale
+        ;
+        if ($modRecordValue) {
             $meta->getReflectionProperty($field)->setValue($entity, $value);
             $this->_em->persist($entity);
         } else {
-            $ea = new TranslatableAdapterORM();
+            if (isset($config['translationClass'])) {
+                $class = $config['translationClass'];
+            } else {
+                $ea = new TranslatableAdapterORM();
+                $class = $listener->getTranslationClass($ea, $config['useObjectClass']);
+            }
             $foreignKey = $meta->getReflectionProperty($meta->getSingleIdentifierFieldName())->getValue($entity);
             $objectClass = $config['useObjectClass'];
-            $class = $listener->getTranslationClass($ea, $config['useObjectClass']);
             $transMeta = $this->_em->getClassMetadata($class);
             $trans = $this->findOneBy(compact('locale', 'field', 'objectClass', 'foreignKey'));
             if (!$trans) {

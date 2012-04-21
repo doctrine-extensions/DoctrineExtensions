@@ -61,14 +61,21 @@ class TranslationRepository extends DocumentRepository
         if (!isset($config['fields']) || !in_array($field, $config['fields'])) {
             throw new \Gedmo\Exception\InvalidArgumentException("Document: {$meta->name} does not translate field - {$field}");
         }
-        if (in_array($locale, array($listener->getDefaultLocale(), $listener->getTranslatableLocale($document, $meta)))) {
+        $modRecordValue = (!$listener->getPersistDefaultLocaleTranslation() && $locale === $listener->getDefaultLocale())
+            || $listener->getTranslatableLocale($document, $meta) === $locale
+        ;
+        if ($modRecordValue) {
             $meta->getReflectionProperty($field)->setValue($document, $value);
             $this->dm->persist($document);
         } else {
-            $ea = new TranslatableAdapterODM();
+            if (isset($config['translationClass'])) {
+                $class = $config['translationClass'];
+            } else {
+                $ea = new TranslatableAdapterODM();
+                $class = $listener->getTranslationClass($ea, $config['useObjectClass']);
+            }
             $foreignKey = $meta->getReflectionProperty($meta->identifier)->getValue($document);
             $objectClass = $config['useObjectClass'];
-            $class = $listener->getTranslationClass($ea, $config['useObjectClass']);
             $transMeta = $this->dm->getClassMetadata($class);
             $trans = $this->findOneBy(compact('locale', 'field', 'objectClass', 'foreignKey'));
             if (!$trans) {

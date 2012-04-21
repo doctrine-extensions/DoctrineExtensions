@@ -146,6 +146,17 @@ class TranslatableListener extends MappedEventSubscriber
     }
 
     /**
+     * Check if should persist default locale
+     * translation or keep it in original record
+     *
+     * @return boolean
+     */
+    public function getPersistDefaultLocaleTranslation()
+    {
+        return (bool)$this->persistDefaultLocaleTranslation;
+    }
+
+    /**
      * Add additional $translation for pending $oid object
      * which is being inserted
      *
