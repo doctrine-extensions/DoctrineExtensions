@@ -289,6 +289,10 @@ class UploadableListener extends MappedEventSubscriber
         }
 
         $info = $this->moveFile($fileInfo, $path, $generatorClass, $config['allowOverwrite'], $config['appendNumber']);
+
+        // We override the mime type with the guessed one
+        $info['fileMimeType'] = $mime;
+
         $filePathField->setValue($object, $info['filePath']);
 
         if ($config['callback'] !== '') {
