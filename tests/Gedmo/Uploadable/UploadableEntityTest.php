@@ -14,7 +14,10 @@ use Tool\BaseTestCaseORM,
     Uploadable\Fixture\Entity\FileWithCustomFilenameGenerator,
     Uploadable\Fixture\Entity\FileAppendNumber,
     Uploadable\Fixture\Entity\FileWithMaxSize,
+    Uploadable\Fixture\Entity\FileWithAllowedTypes,
+    Uploadable\Fixture\Entity\FileWithDisallowedTypes,
     Gedmo\Uploadable\Stub\UploadableListenerStub,
+    Gedmo\Uploadable\Stub\MimeTypeGuesserStub,
     Gedmo\Uploadable\FileInfo\FileInfoArray;
 
 /**
@@ -37,6 +40,8 @@ class UploadableEntityTest extends BaseTestCaseORM
     const FILE_WITH_ALPHANUMERIC_NAME_CLASS = 'Uploadable\Fixture\Entity\FileWithAlphanumericName';
     const FILE_WITH_CUSTOM_FILENAME_GENERATOR_CLASS = 'Uploadable\Fixture\Entity\FileWithCustomFilenameGenerator';
     const FILE_WITH_MAX_SIZE_CLASS = 'Uploadable\Fixture\Entity\FileWithMaxSize';
+    const FILE_WITH_ALLOWED_TYPES_CLASS = 'Uploadable\Fixture\Entity\FileWithAllowedTypes';
+    const FILE_WITH_DISALLOWED_TYPES_CLASS = 'Uploadable\Fixture\Entity\FileWithDisallowedTypes';
 
     private $listener;
     private $testFile;
@@ -61,6 +66,8 @@ class UploadableEntityTest extends BaseTestCaseORM
 
         $evm = new EventManager;
         $this->listener = new UploadableListenerStub();
+        $this->listener->setMimeTypeGuesser(new MimeTypeGuesserStub('text/plain'));
+
         $evm->addEventSubscriber($this->listener);
         $config = $this->getMockAnnotatedConfig();
         $this->em = $this->getMockSqliteEntityManager($evm, $config);
@@ -463,6 +470,89 @@ class UploadableEntityTest extends BaseTestCaseORM
         $this->assertEquals($size, $file->getFileSize());
     }
 
+    /**
+     * @expectedException Gedmo\Exception\UploadableCouldntGuessMimeTypeException
+     */
+    public function test_ifMimeTypeGuesserCantResolveTypeThrowException()
+    {
+        // We set the default path on the listener
+        $this->listener->setDefaultPath($this->destinationTestDir);
+        $this->listener->setMimeTypeGuesser(new MimeTypeGuesserStub(null));
+
+        $file = new FileWithAllowedTypes();
+        $fileInfo = $this->generateUploadedFile();
+
+        $this->listener->addEntityFileInfo($file, $fileInfo);
+
+        $this->em->persist($file);
+        $this->em->flush();
+    }
+
+    /**
+     * @expectedException Gedmo\Exception\UploadableInvalidMimeTypeException
+     */
+    public function test_allowedTypesOption_ifMimeTypeIsInvalidThrowException()
+    {
+        // We set the default path on the listener
+        $this->listener->setDefaultPath($this->destinationTestDir);
+        $this->listener->setMimeTypeGuesser(new MimeTypeGuesserStub('text/css'));
+
+        $file = new FileWithAllowedTypes();
+        $fileInfo = $this->generateUploadedFile();
+
+        $this->listener->addEntityFileInfo($file, $fileInfo);
+
+        $this->em->persist($file);
+        $this->em->flush();
+    }
+
+    public function test_allowedTypesOption_ifMimeTypeIsValidThenDontThrowException()
+    {
+        // We set the default path on the listener
+        $this->listener->setDefaultPath($this->destinationTestDir);
+
+        $file = new FileWithAllowedTypes();
+        $fileInfo = $this->generateUploadedFile();
+
+        $this->listener->addEntityFileInfo($file, $fileInfo);
+
+        $this->em->persist($file);
+        $this->em->flush();
+    }
+
+    /**
+     * @expectedException Gedmo\Exception\UploadableInvalidMimeTypeException
+     */
+    public function test_disallowedTypesOption_ifMimeTypeIsInvalidThrowException()
+    {
+        // We set the default path on the listener
+        $this->listener->setDefaultPath($this->destinationTestDir);
+        $this->listener->setMimeTypeGuesser(new MimeTypeGuesserStub('text/css'));
+
+        $file = new FileWithDisallowedTypes();
+        $fileInfo = $this->generateUploadedFile();
+
+        $this->listener->addEntityFileInfo($file, $fileInfo);
+
+        $this->em->persist($file);
+        $this->em->flush();
+    }
+
+    public function test_disallowedTypesOption_ifMimeTypeIsValidThenDontThrowException()
+    {
+        // We set the default path on the listener
+        $this->listener->setDefaultPath($this->destinationTestDir);
+        $this->listener->setMimeTypeGuesser(new MimeTypeGuesserStub('video/jpeg'));
+
+        $file = new FileWithDisallowedTypes();
+        $fileInfo = $this->generateUploadedFile();
+
+        $this->listener->addEntityFileInfo($file, $fileInfo);
+
+        $this->em->persist($file);
+        $this->em->flush();
+    }
+
     // Data Providers
 
     public function uploadExceptionsProvider()
@@ -508,7 +598,9 @@ class UploadableEntityTest extends BaseTestCaseORM
             self::FILE_WITH_ALPHANUMERIC_NAME_CLASS,
             self::FILE_WITH_SHA1_NAME_CLASS,
             self::FILE_WITH_CUSTOM_FILENAME_GENERATOR_CLASS,
-            self::FILE_WITH_MAX_SIZE_CLASS
+            self::FILE_WITH_MAX_SIZE_CLASS,
+            self::FILE_WITH_ALLOWED_TYPES_CLASS,
+            self::FILE_WITH_DISALLOWED_TYPES_CLASS
         );
     }
 

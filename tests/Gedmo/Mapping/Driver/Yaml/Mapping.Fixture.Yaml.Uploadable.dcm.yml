@@ -11,6 +11,8 @@ Mapping\Fixture\Yaml\Uploadable:
       callback: callbackMethod
       filenameGenerator: SHA1
       maxSize: 1500
+      allowedTypes: 'text/plain,text/css'
+      disallowedTypes: 'video/jpeg,text/html'
   id:
     id:
       type: integer

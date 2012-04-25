@@ -57,6 +57,12 @@ class Xml extends BaseXml
                 $config['maxSize'] = $this->_isAttributeSet($xmlUploadable, 'max-size') ?
                     (double) $this->_getAttribute($xml->{'uploadable'}, 'max-size') :
                     (double) 0;
+                $config['allowedTypes'] = $this->_isAttributeSet($xmlUploadable, 'allowed-types') ?
+                    $this->_getAttribute($xml->{'uploadable'}, 'allowed-types') :
+                    '';
+                $config['disallowedTypes'] = $this->_isAttributeSet($xmlUploadable, 'disallowed-types') ?
+                    $this->_getAttribute($xml->{'uploadable'}, 'disallowed-types') :
+                    '';
 
                 if (isset($xmlDoctrine->field)) {
                     foreach ($xmlDoctrine->field as $mapping) {

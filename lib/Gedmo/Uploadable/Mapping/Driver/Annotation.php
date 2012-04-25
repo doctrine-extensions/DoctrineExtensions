@@ -83,6 +83,8 @@ class Annotation implements AnnotationDriverInterface
             $config['callback'] = $annot->callback;
             $config['filenameGenerator'] = $annot->filenameGenerator;
             $config['maxSize'] = (double) $annot->maxSize;
+            $config['allowedTypes'] = $annot->allowedTypes;
+            $config['disallowedTypes'] = $annot->disallowedTypes;
 
             foreach ($class->getProperties() as $prop) {
                 if ($this->reader->getPropertyAnnotation($prop, self::UPLOADABLE_FILE_MIME_TYPE)) {

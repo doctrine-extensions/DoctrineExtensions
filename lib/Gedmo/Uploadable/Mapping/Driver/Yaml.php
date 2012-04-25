@@ -58,6 +58,12 @@ class Yaml extends File implements Driver
                 $config['maxSize'] = isset($uploadable['maxSize']) ?
                     (double) $uploadable['maxSize'] :
                     (double) 0;
+                $config['allowedTypes'] = isset($uploadable['allowedTypes']) ?
+                    $uploadable['allowedTypes'] :
+                    '';
+                $config['disallowedTypes'] = isset($uploadable['disallowedTypes']) ?
+                    $uploadable['disallowedTypes'] :
+                    '';
 
                 if (isset($mapping['fields'])) {
                     foreach ($mapping['fields'] as $field => $info) {

@@ -61,7 +61,9 @@ class ValidatorTest extends \PHPUnit_Framework_TestCase
      */
     public function test_validateConfiguration_ifFilePathFieldIsNotDefinedThrowException()
     {
-        Validator::validateConfiguration($this->meta, array('filePathField' => false));
+        $config = array('filePathField' => false);
+
+        Validator::validateConfiguration($this->meta, $config);
     }
 
     /**
@@ -73,9 +75,11 @@ class ValidatorTest extends \PHPUnit_Framework_TestCase
             ->method('getReflectionClass')
             ->will($this->returnValue(new \ReflectionClass(new FakeEntity())));
 
+        $config = array('filePathField' => 'someField', 'pathMethod' => 'invalidMethod');
+
         Validator::validateConfiguration(
             $this->meta,
-            array('filePathField' => 'someField', 'pathMethod' => 'invalidMethod')
+            $config
         );
     }
 
@@ -88,9 +92,11 @@ class ValidatorTest extends \PHPUnit_Framework_TestCase
             ->method('getReflectionClass')
             ->will($this->returnValue(new \ReflectionClass(new FakeEntity())));
 
+        $config = array('filePathField' => 'someField', 'pathMethod' => '', 'callback' => 'invalidMethod');
+
         Validator::validateConfiguration(
             $this->meta,
-            array('filePathField' => 'someField', 'pathMethod' => '', 'callback' => 'invalidMethod')
+            $config
         );
     }
 
@@ -103,16 +109,20 @@ class ValidatorTest extends \PHPUnit_Framework_TestCase
             ->method('getReflectionClass')
             ->will($this->returnValue(new \ReflectionClass(new FakeEntity())));
 
+        $config = array(
+            'fileMimeTypeField' => 'someField',
+            'filePathField'     => 'someField',
+            'pathMethod'        => '',
+            'callback'          => '',
+            'filenameGenerator' => 'invalidClass',
+            'maxSize'           => 0,
+            'allowedTypes'      => '',
+            'disallowedTypes'   => ''
+        );
+
         Validator::validateConfiguration(
             $this->meta,
-            array(
-                'fileMimeTypeField' => 'someField',
-                'filePathField'     => 'someField',
-                'pathMethod'        => '',
-                'callback'          => '',
-                'filenameGenerator' => 'invalidClass',
-                'maxSize'           => 0
-            )
+            $config
         );
     }
 
@@ -125,15 +135,19 @@ class ValidatorTest extends \PHPUnit_Framework_TestCase
             ->method('getReflectionClass')
             ->will($this->returnValue(new \ReflectionClass(new FakeEntity())));
 
+        $config = array(
+            'fileMimeTypeField' => 'someField',
+            'filePathField'     => 'someField',
+            'pathMethod'        => '',
+            'callback'          => '',
+            'maxSize'           => -123,
+            'allowedTypes'      => '',
+            'disallowedTypes'   => ''
+        );
+
         Validator::validateConfiguration(
             $this->meta,
-            array(
-                'fileMimeTypeField' => 'someField',
-                'filePathField'     => 'someField',
-                'pathMethod'        => '',
-                'callback'          => '',
-                'maxSize'           => -123
-            )
+            $config
         );
     }
 }

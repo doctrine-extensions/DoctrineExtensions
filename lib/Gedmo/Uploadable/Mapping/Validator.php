@@ -29,6 +29,14 @@ class Validator
     const FILENAME_GENERATOR_NONE = 'NONE';
 
     /**
+     * Determines if we should throw an exception in the case the "allowedTypes" and
+     * "disallowedTypes" options are BOTH set. Useful for testing purposes
+     *
+     * @var bool
+     */
+    public static $enableMimeTypesConfigException = true;
+
+    /**
      * List of types which are valid for UploadableFileMimeType field
      *
      * @var array
@@ -99,7 +107,7 @@ class Validator
         }
     }
 
-    public static function validateConfiguration(ClassMetadata $meta, array $config)
+    public static function validateConfiguration(ClassMetadata $meta, array &$config)
     {
         if (!$config['filePathField']) {
             throw new InvalidMappingException(sprintf('Class "%s" must have an UploadableFilePath field.',
@@ -128,8 +136,23 @@ class Validator
         }
 
         if ($config['maxSize'] < 0) {
-            throw new InvalidMappingException('Option "maxSize" must be a number >= 0.');
+            throw new InvalidMappingException(sprintf('Option "maxSize" must be a number >= 0 for class "%s".',
+                $meta->name
+            ));
         }
+
+        if (self::$enableMimeTypesConfigException && ($config['allowedTypes'] !== '' && $config['disallowedTypes'] !== '')) {
+            $msg = 'You\'ve set "allowedTypes" and "disallowedTypes" options. You must set only one in class "%s".';
+
+            throw new InvalidMappingException(sprintf($msg,
+                $meta->name
+            ));
+        }
+
+        $config['allowedTypes'] = $config['allowedTypes'] ? (strpos($config['allowedTypes'], ',') !== false ?
+            explode(',', $config['allowedTypes']) : array($config['allowedTypes'])) : false;
+        $config['disallowedTypes'] = $config['disallowedTypes'] ? (strpos($config['disallowedTypes'], ',') !== false ?
+            explode(',', $config['disallowedTypes']) : array($config['disallowedTypes'])) : false;
 
         if ($config['fileMimeTypeField']) {
             self::validateFileMimeTypeField($meta, $config['fileMimeTypeField']);

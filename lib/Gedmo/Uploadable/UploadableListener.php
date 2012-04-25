@@ -20,9 +20,14 @@ use Doctrine\Common\Persistence\ObjectManager,
     Gedmo\Exception\UploadableFileAlreadyExistsException,
     Gedmo\Exception\UploadableNoPathDefinedException,
     Gedmo\Exception\UploadableMaxSizeException,
+    Gedmo\Exception\UploadableInvalidMimeTypeException,
+    Gedmo\Exception\UploadableCouldntGuessMimeTypeException,
     Gedmo\Uploadable\Mapping\Validator,
     Gedmo\Uploadable\FileInfo\FileInfoInterface,
-    Gedmo\Uploadable\FileInfo\FileInfoArray;
+    Gedmo\Uploadable\FileInfo\FileInfoArray,
+    Gedmo\Uploadable\MimeType\MimeTypeGuesser,
+    Gedmo\Uploadable\MimeType\MimeTypeGuesserInterface,
+    Gedmo\Uploadable\MimeType\MimeTypesExtensionsMap;
 
 /**
  * Uploadable listener
@@ -48,6 +53,13 @@ class UploadableListener extends MappedEventSubscriber
     private $defaultPath;
 
     /**
+     * Mime type guesser
+     *
+     * @var Gedmo\Uploadable\MimeType\MimeTypeGuesserInterface
+     */
+    private $mimeTypeGuesser;
+
+    /**
      * Default FileInfoInterface class
      *
      * @var string
@@ -68,6 +80,13 @@ class UploadableListener extends MappedEventSubscriber
      * @var array
      */
     private $fileInfoObjects = array();
+
+
+
+    public function __construct(\MimeTypeGuesserInterface $mimeTypeGuesser = null)
+    {
+        $this->mimeTypeGuesser = $mimeTypeGuesser ? $mimeTypeGuesser : new MimeTypeGuesser();
+    }
 
     /**
      * {@inheritdoc}
@@ -179,6 +198,34 @@ class UploadableListener extends MappedEventSubscriber
                 $config['maxSize'],
                 $fileInfo->getSize()
             ));
+        }
+
+        $mime = $this->mimeTypeGuesser->guess($fileInfo->getTmpName());
+
+        if (!$mime) {
+            throw new UploadableCouldntGuessMimeTypeException(sprintf('Couldn\'t guess mime type for file "%s".',
+                $fileInfo->getName()
+            ));
+        }
+
+        if ($config['allowedTypes'] || $config['disallowedTypes']) {
+            $ok = $config['allowedTypes'] ? false : true;
+            $mimes = $config['allowedTypes'] ? $config['allowedTypes'] : $config['disallowedTypes'];
+
+            foreach ($mimes as $m) {
+                if ($mime === $m) {
+                    $ok = $config['allowedTypes'] ? true : false;
+
+                    break;
+                }
+            }
+
+            if (!$ok) {
+                throw new UploadableInvalidMimeTypeException(sprintf('Invalid mime type "%s" for file "%s".',
+                    $mime,
+                    $fileInfo->getName()
+                ));
+            }
         }
 
         $filePathField = $refl->getProperty($config['filePathField']);
@@ -533,5 +580,21 @@ class UploadableListener extends MappedEventSubscriber
     protected function getNamespace()
     {
         return __NAMESPACE__;
+    }
+
+    /**
+     * @param \Gedmo\Uploadable\Gedmo\Uploadable\MimeType\MimeTypeGuesserInterface $mimeTypeGuesser
+     */
+    public function setMimeTypeGuesser(MimeTypeGuesserInterface $mimeTypeGuesser)
+    {
+        $this->mimeTypeGuesser = $mimeTypeGuesser;
+    }
+
+    /**
+     * @return \Gedmo\Uploadable\Gedmo\Uploadable\MimeType\MimeTypeGuesserInterface
+     */
+    public function getMimeTypeGuesser()
+    {
+        return $this->mimeTypeGuesser;
     }
 }

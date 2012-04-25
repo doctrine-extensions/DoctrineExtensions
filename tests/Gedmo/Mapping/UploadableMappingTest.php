@@ -8,6 +8,7 @@ use Doctrine\Common\EventManager;
 use Doctrine\ORM\Mapping\Driver\DriverChain;
 use Doctrine\ORM\Mapping\Driver\YamlDriver;
 use Gedmo\Uploadable\UploadableListener;
+use Gedmo\Uploadable\Mapping\Validator;
 use Tool\BaseTestCaseOM;
 
 /**
@@ -34,6 +35,8 @@ class UploadableMappingTest extends BaseTestCaseOM
     public function setUp()
     {
         parent::setUp();
+
+        Validator::$enableMimeTypesConfigException = false;
         
         $reader = new AnnotationReader();
         $annotationDriver = new AnnotationDriver($reader);
@@ -69,5 +72,9 @@ class UploadableMappingTest extends BaseTestCaseOM
         $this->assertEquals('callbackMethod', $config['callback']);
         $this->assertEquals('SHA1', $config['filenameGenerator']);
         $this->assertEquals(1500, $config['maxSize']);
+        $this->assertContains('text/plain', $config['allowedTypes']);
+        $this->assertContains('text/css', $config['allowedTypes']);
+        $this->assertContains('video/jpeg', $config['disallowedTypes']);
+        $this->assertContains('text/html', $config['disallowedTypes']);
     }
 }

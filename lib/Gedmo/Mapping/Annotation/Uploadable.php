@@ -40,5 +40,11 @@ final class Uploadable extends Annotation
 
     /** @var double */
     public $maxSize = 0;
+
+    /** @var array */
+    public $allowedTypes = '';
+
+    /** @var array */
+    public $disallowedTypes = '';
 }
 

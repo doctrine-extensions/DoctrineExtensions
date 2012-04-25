@@ -28,7 +28,9 @@
             path-method="getPath"
             callback="callbackMethod"
             filename-generator="SHA1"
-            max-size="1500" />
+            max-size="1500"
+            allowed-types="text/plain,text/css"
+            disallowed-types="video/jpeg,text/html" />
 
     </entity>
 
