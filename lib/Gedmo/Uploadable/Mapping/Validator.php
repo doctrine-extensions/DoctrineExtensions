@@ -117,22 +117,18 @@ class Validator
 
         $refl = $meta->getReflectionClass();
 
-        if ($config['pathMethod'] !== '') {
-            if (!$refl->hasMethod($config['pathMethod'])) {
-                throw new InvalidMappingException(sprintf('Class "%s" doesn\'t have method "%s"!',
-                    $meta->name,
-                    $config['pathMethod']
-                ));
-            }
+        if ($config['pathMethod'] !== '' && !$refl->hasMethod($config['pathMethod'])) {
+            throw new InvalidMappingException(sprintf('Class "%s" doesn\'t have method "%s"!',
+                $meta->name,
+                $config['pathMethod']
+            ));
         }
 
-        if ($config['callback'] !== '') {
-            if (!$refl->hasMethod($config['callback'])) {
-                throw new InvalidMappingException(sprintf('Class "%s" doesn\'t have method "%s"!',
-                    $meta->name,
-                    $config['callback']
-                ));
-            }
+        if ($config['callback'] !== '' && !$refl->hasMethod($config['callback'])) {
+            throw new InvalidMappingException(sprintf('Class "%s" doesn\'t have method "%s"!',
+                $meta->name,
+                $config['callback']
+            ));
         }
 
         $config['maxSize'] = (double) $config['maxSize'];
@@ -171,6 +167,7 @@ class Validator
                 break;
             default:
                 $ok = false;
+
                 if (class_exists($config['filenameGenerator'])) {
                     $refl = new \ReflectionClass($config['filenameGenerator']);
 
