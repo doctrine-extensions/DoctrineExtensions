@@ -110,7 +110,29 @@ class ValidatorTest extends \PHPUnit_Framework_TestCase
                 'filePathField'     => 'someField',
                 'pathMethod'        => '',
                 'callback'          => '',
-                'filenameGenerator' => 'invalidClass'
+                'filenameGenerator' => 'invalidClass',
+                'maxSize'           => 0
+            )
+        );
+    }
+
+    /**
+     * @expectedException Gedmo\Exception\InvalidMappingException
+     */
+    public function test_validateConfiguration_ifMaxSizeIsLessThanZeroThenThrowException()
+    {
+        $this->meta->expects($this->once())
+            ->method('getReflectionClass')
+            ->will($this->returnValue(new \ReflectionClass(new FakeEntity())));
+
+        Validator::validateConfiguration(
+            $this->meta,
+            array(
+                'fileMimeTypeField' => 'someField',
+                'filePathField'     => 'someField',
+                'pathMethod'        => '',
+                'callback'          => '',
+                'maxSize'           => -123
             )
         );
     }

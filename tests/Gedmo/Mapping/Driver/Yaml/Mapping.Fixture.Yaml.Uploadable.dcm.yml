@@ -10,6 +10,7 @@ Mapping\Fixture\Yaml\Uploadable:
       pathMethod: getPath
       callback: callbackMethod
       filenameGenerator: SHA1
+      maxSize: 1500
   id:
     id:
       type: integer

@@ -127,6 +127,10 @@ class Validator
             }
         }
 
+        if ($config['maxSize'] < 0) {
+            throw new InvalidMappingException('Option "maxSize" must be a number >= 0.');
+        }
+
         if ($config['fileMimeTypeField']) {
             self::validateFileMimeTypeField($meta, $config['fileMimeTypeField']);
         }

@@ -55,6 +55,9 @@ class Yaml extends File implements Driver
                 $config['filenameGenerator'] = isset($uploadable['filenameGenerator']) ?
                     $uploadable['filenameGenerator'] :
                     Validator::FILENAME_GENERATOR_NONE;
+                $config['maxSize'] = isset($uploadable['maxSize']) ?
+                    (double) $uploadable['maxSize'] :
+                    (double) 0;
 
                 if (isset($mapping['fields'])) {
                     foreach ($mapping['fields'] as $field => $info) {

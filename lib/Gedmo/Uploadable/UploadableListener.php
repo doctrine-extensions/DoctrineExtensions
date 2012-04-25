@@ -19,6 +19,7 @@ use Doctrine\Common\Persistence\ObjectManager,
     Gedmo\Exception\UploadableUploadException,
     Gedmo\Exception\UploadableFileAlreadyExistsException,
     Gedmo\Exception\UploadableNoPathDefinedException,
+    Gedmo\Exception\UploadableMaxSizeException,
     Gedmo\Uploadable\Mapping\Validator,
     Gedmo\Uploadable\FileInfo\FileInfoInterface,
     Gedmo\Uploadable\FileInfo\FileInfoArray;
@@ -168,6 +169,18 @@ class UploadableListener extends MappedEventSubscriber
         }
 
         $fileInfo = $this->fileInfoObjects[$oid];
+
+        // Validations
+        if ($config['maxSize'] > 0 && $fileInfo->getSize() > $config['maxSize']) {
+            $msg = 'File "%s" exceeds the maximum allowed size of %d bytes. File size: %d bytes';
+
+            throw new UploadableMaxSizeException(sprintf($msg,
+                $fileInfo->getName(),
+                $config['maxSize'],
+                $fileInfo->getSize()
+            ));
+        }
+
         $filePathField = $refl->getProperty($config['filePathField']);
         $filePathField->setAccessible(true);
 

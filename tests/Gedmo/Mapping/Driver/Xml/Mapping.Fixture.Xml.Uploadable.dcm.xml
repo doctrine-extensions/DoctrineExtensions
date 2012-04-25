@@ -27,7 +27,8 @@
             path="/my/path"
             path-method="getPath"
             callback="callbackMethod"
-            filename-generator="SHA1" />
+            filename-generator="SHA1"
+            max-size="1500" />
 
     </entity>
 

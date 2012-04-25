@@ -13,6 +13,7 @@ use Tool\BaseTestCaseORM,
     Uploadable\Fixture\Entity\FileWithAlphanumericName,
     Uploadable\Fixture\Entity\FileWithCustomFilenameGenerator,
     Uploadable\Fixture\Entity\FileAppendNumber,
+    Uploadable\Fixture\Entity\FileWithMaxSize,
     Gedmo\Uploadable\Stub\UploadableListenerStub,
     Gedmo\Uploadable\FileInfo\FileInfoArray;
 
@@ -35,6 +36,7 @@ class UploadableEntityTest extends BaseTestCaseORM
     const FILE_WITH_SHA1_NAME_CLASS = 'Uploadable\Fixture\Entity\FileWithSha1Name';
     const FILE_WITH_ALPHANUMERIC_NAME_CLASS = 'Uploadable\Fixture\Entity\FileWithAlphanumericName';
     const FILE_WITH_CUSTOM_FILENAME_GENERATOR_CLASS = 'Uploadable\Fixture\Entity\FileWithCustomFilenameGenerator';
+    const FILE_WITH_MAX_SIZE_CLASS = 'Uploadable\Fixture\Entity\FileWithMaxSize';
 
     private $listener;
     private $testFile;
@@ -425,6 +427,42 @@ class UploadableEntityTest extends BaseTestCaseORM
         $this->listener->getEntityFileInfo(new Image);
     }
 
+    /**
+     * @expectedException Gedmo\Exception\UploadableMaxSizeException
+     */
+    public function test_fileExceedingMaximumAllowedSizeThrowsException()
+    {
+        // We set the default path on the listener
+        $this->listener->setDefaultPath($this->destinationTestDir);
+
+        $file = new FileWithMaxSize();
+        $fileInfo = $this->generateUploadedFile();
+
+        $this->listener->addEntityFileInfo($file, $fileInfo);
+
+        $this->em->persist($file);
+        $this->em->flush();
+    }
+
+    public function test_fileNotExceedingMaximumAllowedSizeDoesntThrowException()
+    {
+        // We set the default path on the listener
+        $this->listener->setDefaultPath($this->destinationTestDir);
+
+        $file = new FileWithMaxSize();
+        $size = 0.0001;
+        $fileInfo = $this->generateUploadedFile('image', false, false, array('size' => $size));
+
+        $this->listener->addEntityFileInfo($file, $fileInfo);
+
+        $this->em->persist($file);
+        $this->em->flush();
+
+        $this->em->refresh($file);
+
+        $this->assertEquals($size, $file->getFileSize());
+    }
+
     // Data Providers
 
     public function uploadExceptionsProvider()
@@ -446,15 +484,15 @@ class UploadableEntityTest extends BaseTestCaseORM
 
     private function generateUploadedFile($index = 'image', $filePath = false, $filename = false, array $info = array())
     {
-        if (empty($info)) {
-            $info = array(
-                'tmp_name'          => !$filePath ? $this->testFile : $filePath,
-                'name'              => !$filename ? $this->testFilename : $filename,
-                'size'              => $this->testFileSize,
-                'type'              => $this->testFileMimeType,
-                'error'             => 0
-            );
-        }
+        $defaultInfo = array(
+            'tmp_name'          => !$filePath ? $this->testFile : $filePath,
+            'name'              => !$filename ? $this->testFilename : $filename,
+            'size'              => $this->testFileSize,
+            'type'              => $this->testFileMimeType,
+            'error'             => 0
+        );
+
+        $info = array_merge($defaultInfo, $info);
 
         return $info;
     }
@@ -469,7 +507,8 @@ class UploadableEntityTest extends BaseTestCaseORM
             self::FILE_APPEND_NUMBER_CLASS,
             self::FILE_WITH_ALPHANUMERIC_NAME_CLASS,
             self::FILE_WITH_SHA1_NAME_CLASS,
-            self::FILE_WITH_CUSTOM_FILENAME_GENERATOR_CLASS
+            self::FILE_WITH_CUSTOM_FILENAME_GENERATOR_CLASS,
+            self::FILE_WITH_MAX_SIZE_CLASS
         );
     }
 

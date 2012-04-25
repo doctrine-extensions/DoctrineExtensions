@@ -54,6 +54,9 @@ class Xml extends BaseXml
                 $config['filenameGenerator'] = $this->_isAttributeSet($xmlUploadable, 'filename-generator') ?
                     $this->_getAttribute($xml->{'uploadable'}, 'filename-generator') :
                     Validator::FILENAME_GENERATOR_NONE;
+                $config['maxSize'] = $this->_isAttributeSet($xmlUploadable, 'max-size') ?
+                    (double) $this->_getAttribute($xml->{'uploadable'}, 'max-size') :
+                    (double) 0;
 
                 if (isset($xmlDoctrine->field)) {
                     foreach ($xmlDoctrine->field as $mapping) {

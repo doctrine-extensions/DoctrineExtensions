@@ -37,5 +37,8 @@ final class Uploadable extends Annotation
 
     /** @var string */
     public $filenameGenerator = Validator::FILENAME_GENERATOR_NONE;
+
+    /** @var double */
+    public $maxSize = 0;
 }
 
