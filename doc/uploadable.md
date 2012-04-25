@@ -9,6 +9,7 @@ Features:
 - Lots of options: Allow overwrite, append a number if file exists, filename generators, post-move callbacks, etc.
 - It can be extended to work not only with uploaded files, but with files coming from any source (an URL, another
  file in the same server, etc).
+- Validation of size and mime type
 
 Content:
 
@@ -18,6 +19,7 @@ Content:
 - [Xml](#xml-mapping) mapping example
 - Usage [examples](#usage)
 - [Using](#additional-usages) the extension to handle not only uploaded files
+- [Custom](#custom-mime-type-guessers) mime type guessers
 
 <a name="including-extension"></a>
 
@@ -64,6 +66,18 @@ on how to setup and use the extensions in most optimized way.
     even create your own FileGenerator class (implementing the FileGeneratorInterface) and set this option with the
     fully qualified class name. The other option available is "NONE" which, as you may guess, means no generation for the
     filename will occur. Default: "NONE".
+    * **maxSize**: This option allows you to set a maximum size for the file in bytes. If file size exceeds the value
+    set in this configuration, an exception of type "UploadableMaxSizeException" will be thrown. By default, its value is set to 0, meaning
+    that no size validation will occur.
+    * **allowedTypes**: With this option you can set a comma-separated list of allowed mime types for the file. The extension
+    will use a simple mime type guesser to guess the file type, and then it will compare it to the list of allowed types.
+    If the mime type is not valid, then an exception of type "UploadableInvalidMimeTypeException" will be thrown. If you
+    set this option, you can't set the **disallowedTypes** option described next. By default, no validation of mime type
+    occurs. If you want to use a custom mime type guesser, see this.
+    * **disallowedTypes**: Similar to the option **allowedTypes**, but with this one you configure a "black list" of
+    mime types. If the mime type of the file is on this list, n exception of type "UploadableInvalidMimeTypeException" will be thrown. If you
+    set this option, you can't set the **allowedTypes** option described next. By default, no validation of mime type
+    occurs. If you want to use a custom mime type guesser, see this.
 2. **@Gedmo\Mapping\Annotation\UploadableFilePath**: This annotation is used to set which field will receive the path
  to the file. The field MUST be of type "string" and this annotation is REQUIRED.
 3. **@Gedmo\Mapping\Annotation\UploadableFileMimeType**: This is an optional annotation used to set which field will
@@ -420,4 +434,17 @@ $listener->addEntityFileInfo($file, new CustomFileInfo('/path/to/file.txt'));
 
 $em->persist($file);
 $em->flush();
+```
+
+<a name="custom-mime-type-guessers"></a>
+
+### Custom Mime type guessers
+
+If you want to use your own mime type guesser, you need to implement the interface "Gedmo\Uploadable\MimeType\MimeTypeGuesserInterface",
+which has only one method: "guess($filePath)". Then, you can set the mime type guesser used on the listener in the following
+way:
+
+``` php
+$listener->setMimeTypeGuesser(new MyCustomMimeTypeGuesser());
+
 ```

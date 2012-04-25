@@ -135,6 +135,8 @@ class Validator
             }
         }
 
+        $config['maxSize'] = (double) $config['maxSize'];
+
         if ($config['maxSize'] < 0) {
             throw new InvalidMappingException(sprintf('Option "maxSize" must be a number >= 0 for class "%s".',
                 $meta->name
