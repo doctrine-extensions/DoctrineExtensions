@@ -118,7 +118,7 @@ class Article
 
     public function setDeletedAt($deletedAt)
     {
-        return $this->deletedAt;
+        $this->deletedAt = $deletedAt;
     }
 }
 ```
