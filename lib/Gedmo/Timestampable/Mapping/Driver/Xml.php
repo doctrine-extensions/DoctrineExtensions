@@ -31,7 +31,8 @@ class Xml extends BaseXml
         'time',
         'datetime',
         'timestamp',
-        'zenddate'
+        'zenddate',
+        'vardatetime'
     );
 
     /**

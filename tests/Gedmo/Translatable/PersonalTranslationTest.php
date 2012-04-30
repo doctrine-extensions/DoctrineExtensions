@@ -153,8 +153,8 @@ class PersonalTranslationTest extends BaseTestCaseORM
         $this->em->persist($article);
         $this->em->flush();
         $sqlQueriesExecuted = $this->queryAnalyzer->getExecutedQueries();
-        $this->assertCount(1, $sqlQueriesExecuted);
-        $this->assertEquals("UPDATE article_translations SET content = 'change lt' WHERE id = 1", $sqlQueriesExecuted[0]);
+        $this->assertCount(3, $sqlQueriesExecuted); // one update, transaction start - commit
+        $this->assertEquals("UPDATE article_translations SET content = 'change lt' WHERE id = 1", $sqlQueriesExecuted[1]);
     }
 
     /**

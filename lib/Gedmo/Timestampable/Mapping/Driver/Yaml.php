@@ -36,7 +36,8 @@ class Yaml extends File implements Driver
         'time',
         'datetime',
         'timestamp',
-        'zenddate'
+        'zenddate',
+        'vardatetime'
     );
 
     /**
