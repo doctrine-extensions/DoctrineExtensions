@@ -13,6 +13,11 @@ master branch is based on 2.3.x versions and may not work with older components.
 
 ### Latest updates
 
+**2012-05-01**
+
+- **Sluggable** now allows to regenerate slug if its set to empty or null. Also it allows to
+manually set the slug, in that case it would only transliterate it and ensure uniqueness.
+
 **2012-04-09**
 
 - **Translatable** now does not force lowercase letters on locale or language. If your database is case

@@ -377,6 +377,37 @@ $sluggableListener->setTransliterator($callable);
 
 ## Advanced examples:
 
+### Regenerating slug
+
+In case if you want the slug to regenerate itself based on sluggable fields.
+Set the slug to **null** or empty string.
+
+``` php
+<?php
+$entity = $em->find('Entity\Something', $id);
+$entity->setSlug('');
+
+$em->persist($entity);
+$em->flush();
+```
+
+### Setting the slug manually
+
+Sometimes you might need to set it manually, etc if generated one does not look satisfying enough.
+Sluggable will ensure uniqueness of the slug.
+
+``` php
+<?php
+$entity = new SomeEntity;
+$entity->setSluggableField('won't be taken into account');
+$entity->setSlug('the required slug, set manually');
+
+$em->persist($entity);
+$em->flush();
+
+echo $entity->getSlug(); // outputs: "the-required-slug-set-manually"
+```
+
 ### Using TranslationListener to translate our slug
 
 If you want to attach **TranslationListener** also add it to EventManager after
