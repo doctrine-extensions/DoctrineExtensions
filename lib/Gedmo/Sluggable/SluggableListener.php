@@ -129,6 +129,7 @@ class SluggableListener extends MappedEventSubscriber
      */
     public function onFlush(EventArgs $args)
     {
+        $this->persistedSlugs = array();
         $ea = $this->getEventAdapter($args);
         $om = $ea->getObjectManager();
         $uow = $om->getUnitOfWork();
@@ -152,11 +153,7 @@ class SluggableListener extends MappedEventSubscriber
         foreach ($ea->getScheduledObjectUpdates($uow) as $object) {
             $meta = $om->getClassMetadata(get_class($object));
             if ($config = $this->getConfiguration($om, $meta->name)) {
-                foreach ($config['slugs'] as $slugField => $options) {
-                    if ($options['updatable']) {
-                        $this->generateSlug($ea, $object);
-                    }
-                }
+                $this->generateSlug($ea, $object);
             }
         }
     }
@@ -184,19 +181,30 @@ class SluggableListener extends MappedEventSubscriber
         $meta = $om->getClassMetadata(get_class($object));
         $uow = $om->getUnitOfWork();
         $changeSet = $ea->getObjectChangeSet($uow, $object);
+        $isInsert = $uow->isScheduledForInsert($object);
         $config = $this->getConfiguration($om, $meta->name);
         foreach ($config['slugs'] as $slugField => $options) {
             $options['useObjectClass'] = $config['useObjectClass'];
             $fields = $options['fields'];
-            //$slugFieldConfig = $config['slugFields'][$slugField];
             // collect the slug from fields
-            $slug = '';
+            $slug = $meta->getReflectionProperty($slugField)->getValue($object);
+            // if slug should not be updated, skip it
+            if (!$options['updatable'] && !$isInsert && (!isset($changeSet[$slugField]) || $slug === '__id__')) {
+                continue;
+            }
             $needToChangeSlug = false;
-            foreach ($options['fields'] as $sluggableField) {
-                if (isset($changeSet[$sluggableField])) {
-                    $needToChangeSlug = true;
+            // if slug is null or set to empty, regenerate it, or needs an update
+            if (empty($slug) || $slug === '__id__' || !isset($changeSet[$slugField])) {
+                $slug = '';
+                foreach ($options['fields'] as $sluggableField) {
+                    if (isset($changeSet[$sluggableField]) || isset($changeSet[$slugField])) {
+                        $needToChangeSlug = true;
+                    }
+                    $slug .= $meta->getReflectionProperty($sluggableField)->getValue($object) . ' ';
                 }
-                $slug .= $meta->getReflectionProperty($sluggableField)->getValue($object) . ' ';
+            } else {
+                // slug was set manually
+                $needToChangeSlug = true;
             }
             // if slug is changed, do further processing
             if ($needToChangeSlug) {
