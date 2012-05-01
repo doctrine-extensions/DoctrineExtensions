@@ -99,19 +99,6 @@ class SluggableConfigurationTest extends BaseTestCaseORM
         $this->articleId = $article->getId();
     }
 
-    public function testUpdatableFalse()
-    {
-        $article = new ConfigurationArticle();
-        $article->setTitle('my title');
-        $article->setCode('my code');
-
-        $this->em->persist($article);
-        $this->em->flush();
-        $this->em->clear();
-
-        $this->assertEquals($article->getSlug(), 'my-title-my-code');
-    }
-
     public function testUpdatableFalseSetSlug()
     {
         $article = new ConfigurationArticle();
@@ -122,7 +109,6 @@ class SluggableConfigurationTest extends BaseTestCaseORM
 
         $this->em->persist($article);
         $this->em->flush();
-        $this->em->clear();
 
         $this->assertEquals($article->getSlug(), 'my-slug');
     }
@@ -134,11 +120,8 @@ class SluggableConfigurationTest extends BaseTestCaseORM
 
         $this->em->persist($article);
         $this->em->flush();
-        $this->em->clear();
 
-        $this->assertEquals($article->getTitle(), 'my title');
-        $this->assertEquals($article->getCode(), 'my code');
-        $this->assertEquals($article->getSlug(), 'my-new-slug');
+        $this->assertSame('my-new-slug', $article->getSlug());
     }
 
     public function testUpdatableFalseChangeTitle()
@@ -148,24 +131,19 @@ class SluggableConfigurationTest extends BaseTestCaseORM
 
         $this->em->persist($article);
         $this->em->flush();
-        $this->em->clear();
 
-        $this->assertEquals($article->getTitle(), 'my new title');
-        $this->assertEquals($article->getCode(), 'my code');
-        $this->assertEquals($article->getSlug(), 'my-slug');
+        $this->assertSame('the-title-my-code', $article->getSlug());
     }
     public function testUpdatableFalseSetSlugNull()
     {
         $article = $this->em->find(self::ARTICLE, $this->articleId);
+        $article->setTitle('new');
         $article->setSlug('');
 
         $this->em->persist($article);
         $this->em->flush();
-        $this->em->clear();
 
-        $this->assertEquals($article->getTitle(), 'my title');
-        $this->assertEquals($article->getCode(), 'my code');
-        $this->assertEquals($article->getSlug(), 'my-title-my-code');
+        $this->assertEquals($article->getSlug(), 'new-my-code');
     }
 }
 

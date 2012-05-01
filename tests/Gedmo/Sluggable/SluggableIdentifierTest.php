@@ -38,7 +38,7 @@ class SluggableIdentifierTest extends BaseTestCaseORM
         $this->em->persist($sport);
         $this->em->flush();
 
-        $this->assertEquals('sport', $sport->getId());
+        $this->assertSame('sport', $sport->getId());
     }
 
     /**

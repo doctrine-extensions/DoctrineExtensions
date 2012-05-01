@@ -135,6 +135,7 @@ class SluggableListener extends MappedEventSubscriber
      */
     public function onFlush(EventArgs $args)
     {
+        $this->persistedSlugs = array();
         $ea = $this->getEventAdapter($args);
         $om = $ea->getObjectManager();
         $uow = $om->getUnitOfWork();
@@ -146,12 +147,10 @@ class SluggableListener extends MappedEventSubscriber
             $meta = $om->getClassMetadata(get_class($object));
             if ($config = $this->getConfiguration($om, $meta->name)) {
                 // generate first to exclude this object from similar persisted slugs result
+                $this->generateSlug($ea, $object);
                 foreach ($config['slugs'] as $slugField => $options) {
-                    if (($options['updatable']) || (call_user_func(array($object,"get".ucfirst($slugField))) == "")) {
-                        $this->generateSlug($ea, $object);
-                        $slug = $meta->getReflectionProperty($slugField)->getValue($object);
-                        $this->persistedSlugs[$config['useObjectClass']][$slugField][] = $slug;
-                    }
+                    $slug = $meta->getReflectionProperty($slugField)->getValue($object);
+                    $this->persistedSlugs[$config['useObjectClass']][$slugField][] = $slug;
                 }
             }
         }
@@ -160,11 +159,7 @@ class SluggableListener extends MappedEventSubscriber
         foreach ($ea->getScheduledObjectUpdates($uow) as $object) {
             $meta = $om->getClassMetadata(get_class($object));
             if ($config = $this->getConfiguration($om, $meta->name)) {
-                foreach ($config['slugs'] as $slugField => $options) {
-                    if (($options['updatable']) || (call_user_func(array($object,"get".ucfirst($slugField))) == "")) {
-                        $this->generateSlug($ea, $object);
-                    }
-                }
+                $this->generateSlug($ea, $object);
             }
         }
     }
@@ -205,30 +200,41 @@ class SluggableListener extends MappedEventSubscriber
         $om = $ea->getObjectManager();
         $meta = $om->getClassMetadata(get_class($object));
         $uow = $om->getUnitOfWork();
+        $isInsert = $uow->isScheduledForInsert($object);
         $changeSet = $ea->getObjectChangeSet($uow, $object);
         $config = $this->getConfiguration($om, $meta->name);
         foreach ($config['slugs'] as $slugField => $options) {
             $hasHandlers = count($options['handlers']);
             $options['useObjectClass'] = $config['useObjectClass'];
             $fields = $options['fields'];
-            //$slugFieldConfig = $config['slugFields'][$slugField];
             // collect the slug from fields
-            $slug = '';
-            $needToChangeSlug = false;
-            foreach ($options['fields'] as $sluggableField) {
-                if (isset($changeSet[$sluggableField]) || isset($changeSet[$slugField])) {
-                    $needToChangeSlug = true;
-                }
-                $slug .= $meta->getReflectionProperty($sluggableField)->getValue($object) . ' ';
+            $slug = $meta->getReflectionProperty($slugField)->getValue($object);
+            // if slug should not be updated, skip it
+            if (!$options['updatable'] && !$isInsert && (!isset($changeSet[$slugField]) || $slug === '__id__')) {
+                continue;
             }
-            // notify slug handlers --> onChangeDecision
-            if ($hasHandlers) {
-                foreach ($options['handlers'] as $class => $handlerOptions) {
-                    $this
-                        ->getHandler($class)
-                        ->onChangeDecision($ea, $options, $object, $slug, $needToChangeSlug)
-                    ;
+            $needToChangeSlug = false;
+            // if slug is null or set to empty, regenerate it, or needs an update
+            if (empty($slug) || $slug === '__id__' || !isset($changeSet[$slugField])) {
+                $slug = '';
+                foreach ($options['fields'] as $sluggableField) {
+                    if (isset($changeSet[$sluggableField]) || isset($changeSet[$slugField])) {
+                        $needToChangeSlug = true;
+                    }
+                    $slug .= $meta->getReflectionProperty($sluggableField)->getValue($object) . ' ';
                 }
+                // notify slug handlers --> onChangeDecision
+                if ($hasHandlers) {
+                    foreach ($options['handlers'] as $class => $handlerOptions) {
+                        $this
+                            ->getHandler($class)
+                            ->onChangeDecision($ea, $options, $object, $slug, $needToChangeSlug)
+                        ;
+                    }
+                }
+            } else {
+                // slug was set manually
+                $needToChangeSlug = true;
             }
             // if slug is changed, do further processing
             if ($needToChangeSlug) {

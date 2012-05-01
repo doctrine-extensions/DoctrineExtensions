@@ -30,7 +30,10 @@ class SluggableTest extends BaseTestCaseORM
         $this->populate();
     }
 
-    public function testInsertedNewSlug()
+    /**
+     * @test
+     */
+    function shouldInsertNewSlug()
     {
         $article = $this->em->find(self::ARTICLE, $this->articleId);
 
@@ -38,7 +41,10 @@ class SluggableTest extends BaseTestCaseORM
         $this->assertEquals($article->getSlug(), 'the-title-my-code');
     }
 
-    public function testUniqueSlugGeneration()
+    /**
+     * @test
+     */
+    function shouldBuildUniqueSlug()
     {
         for ($i = 0; $i < 12; $i++) {
             $article = new Article();
@@ -52,7 +58,10 @@ class SluggableTest extends BaseTestCaseORM
         }
     }
 
-    public function testUniqueSlugLimit()
+    /**
+     * @test
+     */
+    function shouldHandleUniqueSlugLimitedLength()
     {
         $long = 'the title the title the title the title the title the title the title';
         $article = new Article();
@@ -79,7 +88,10 @@ class SluggableTest extends BaseTestCaseORM
         }
     }
 
-    public function testUniqueNumberedSlug()
+    /**
+     * @test
+     */
+    function shouldHandleNumbersInSlug()
     {
         $article = new Article();
         $article->setTitle('the title');
@@ -99,18 +111,56 @@ class SluggableTest extends BaseTestCaseORM
         }
     }
 
-    public function testUpdatableSlug()
+    /**
+     * @test
+     */
+    function shouldUpdateSlug()
     {
         $article = $this->em->find(self::ARTICLE, $this->articleId);
         $article->setTitle('the title updated');
         $this->em->persist($article);
         $this->em->flush();
-        $this->em->clear();
 
-        $this->assertEquals($article->getSlug(), 'the-title-updated-my-code');
+        $this->assertSame('the-title-updated-my-code', $article->getSlug());
     }
 
-    public function testGithubIssue45()
+    /**
+     * @test
+     */
+    function shouldBeAbleToForceRegenerationOfSlug()
+    {
+        $article = $this->em->find(self::ARTICLE, $this->articleId);
+        $article->setSlug(null);
+        $this->em->persist($article);
+        $this->em->flush();
+
+        $this->assertSame('the-title-my-code', $article->getSlug());
+    }
+
+    /**
+     * @test
+     */
+    function shouldBeAbleToForceTheSlug()
+    {
+        $article = $this->em->find(self::ARTICLE, $this->articleId);
+        $article->setSlug('my forced slug');
+        $this->em->persist($article);
+
+        $new = new Article;
+        $new->setTitle('hey');
+        $new->setCode('cc');
+        $new->setSlug('forced');
+        $this->em->persist($new);
+
+        $this->em->flush();
+        $this->assertSame('my-forced-slug', $article->getSlug());
+        $this->assertSame('forced', $new->getSlug());
+    }
+
+    /**
+     * @test
+     */
+    function shouldSolveGithubIssue45()
     {
         // persist new records with same slug
         $article = new Article;
@@ -128,7 +178,10 @@ class SluggableTest extends BaseTestCaseORM
         $this->assertEquals('test-code-1', $article2->getSlug());
     }
 
-    public function testGithubIssue57()
+    /**
+     * @test
+     */
+    function shouldSolveGithubIssue57()
     {
         // slug matched by prefix
         $article = new Article;
@@ -162,18 +215,5 @@ class SluggableTest extends BaseTestCaseORM
         $this->em->flush();
         $this->em->clear();
         $this->articleId = $article->getId();
-    }
-    public function testUpdatableTrueChangeSlug()
-    {
-        $article = $this->em->find(self::ARTICLE, $this->articleId);
-        $article->setSlug('my-title');
-
-        $this->em->persist($article);
-        $this->em->flush();
-        $this->em->clear();
-
-        $this->assertEquals($article->getTitle(), 'my title');
-        $this->assertEquals($article->getCode(), 'my code');
-        $this->assertEquals($article->getSlug(), 'my-title-my-code');
     }
 }
