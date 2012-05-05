@@ -16,7 +16,7 @@ use Doctrine\Common\Util\Debug;
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class MultiInheritanceTest2 extends BaseTestCaseORM
+class MultiInheritanceWithJoinedTableTest extends BaseTestCaseORM
 {
     const USER = "Tree\\Fixture\\User";
     const GROUP = "Tree\\Fixture\\UserGroup";
