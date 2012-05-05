@@ -75,7 +75,7 @@ class Nested implements Strategy
     /**
      * Stores a list of delayed nodes for correct order of updates
      *
-     * @var arrau
+     * @var array
      */
     private $delayedNodes = array();
 
