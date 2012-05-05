@@ -15,7 +15,7 @@ use Tree\Fixture\Genealogy\Woman;
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class InMemoryUpdatesWithInheritance extends BaseTestCaseORM
+class InMemoryUpdatesWithInheritanceTest extends BaseTestCaseORM
 {
 
     const PERSON = "Tree\\Fixture\\Genealogy\\Person";
