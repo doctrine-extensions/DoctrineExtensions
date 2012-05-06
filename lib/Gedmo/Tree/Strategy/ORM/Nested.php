@@ -73,6 +73,13 @@ class Nested implements Strategy
     private $nodePositions = array();
 
     /**
+     * Stores a list of delayed nodes for correct order of updates
+     *
+     * @var array
+     */
+    private $delayedNodes = array();
+
+    /**
      * {@inheritdoc}
      */
     public function __construct(TreeListener $listener)
@@ -314,8 +321,18 @@ class Nested implements Strategy
             $wrappedParent = AbstractWrapper::wrap($parent, $em);
 
             $parentRootId = isset($config['root']) ? $wrappedParent->getPropertyValue($config['root']) : null;
+            $parentOid = spl_object_hash($parent);
             $parentLeft = $wrappedParent->getPropertyValue($config['left']);
             $parentRight = $wrappedParent->getPropertyValue($config['right']);
+            if (empty($parentLeft) && empty($parentRight)) {
+                // parent node is a new node, but wasn't processed yet (due to Doctrine commit order calculator redordering)
+                // We delay processing of node to the moment parent node will be processed
+                if (!isset($this->delayedNodes[$parentOid])) {
+                    $this->delayedNodes[$parentOid] = array();
+                }
+                $this->delayedNodes[$parentOid][] = array('node' => $node, 'position' => $position);
+                return;
+            }
             if (!$isNewNode && $rootId === $parentRootId && $parentLeft >= $left && $parentRight <= $right) {
                 throw new UnexpectedValueException("Cannot set child as parent to node: {$nodeId}");
             }
@@ -416,6 +433,11 @@ class Nested implements Strategy
             $wrapped->setPropertyValue($config['right'], $right + $diff);
             $em->getUnitOfWork()->setOriginalEntityProperty($oid, $config['left'], $left + $diff);
             $em->getUnitOfWork()->setOriginalEntityProperty($oid, $config['right'], $right + $diff);
+        }
+        if (isset($this->delayedNodes[$oid])) {
+            foreach($this->delayedNodes[$oid] as $nodeData) {
+                $this->updateNode($em, $nodeData['node'], $node, $nodeData['position']);
+            }
         }
     }
 
