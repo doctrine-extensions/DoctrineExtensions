@@ -18,7 +18,7 @@ use Tree\Fixture\Transport\Engine;
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class MultiInheritanceTest3 extends BaseTestCaseORM
+class MultiInheritanceWithSingleTableTest extends BaseTestCaseORM
 {
     const CAR = "Tree\Fixture\Transport\Car";
     const BUS = "Tree\Fixture\Transport\Bus";
