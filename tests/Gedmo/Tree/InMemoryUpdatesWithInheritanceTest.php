@@ -53,7 +53,6 @@ class InMemoryUpdatesWithInheritanceTest extends BaseTestCaseORM
 
         $this->em->flush();
 
-        $this->em->refresh($man1);
         $left = $man1->getLeft();
         $right = $man1->getRight();
         $level = $man1->getLevel();
@@ -61,7 +60,6 @@ class InMemoryUpdatesWithInheritanceTest extends BaseTestCaseORM
         $this->assertEquals(8, $right);
         $this->assertEquals(0, $level);
 
-        $this->em->refresh($woman1);
         $left = $woman1->getLeft();
         $right = $woman1->getRight();
         $level = $woman1->getLevel();
@@ -69,7 +67,6 @@ class InMemoryUpdatesWithInheritanceTest extends BaseTestCaseORM
         $this->assertEquals(7, $right);
         $this->assertEquals(1, $level);
 
-        $this->em->refresh($man2);
         $left = $man2->getLeft();
         $right = $man2->getRight();
         $level = $man2->getLevel();
@@ -77,7 +74,6 @@ class InMemoryUpdatesWithInheritanceTest extends BaseTestCaseORM
         $this->assertEquals(6, $right);
         $this->assertEquals(2, $level);
 
-        $this->em->refresh($woman2);
         $left = $woman2->getLeft();
         $right = $woman2->getRight();
         $level = $woman2->getLevel();
