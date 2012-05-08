@@ -259,7 +259,11 @@ class TreeListener extends MappedEventSubscriber
         $ea = $this->getEventAdapter($eventArgs);
         $om = $ea->getObjectManager();
         $meta = $eventArgs->getClassMetadata();
-        $this->loadMetadataForObjectClass($om, $meta);
+        try {
+            $this->loadMetadataForObjectClass($om, $meta);
+        } catch (\ReflectionException $e) {
+            return;
+        }
         if (isset(self::$configurations[$this->name][$meta->name]) && self::$configurations[$this->name][$meta->name]) {
             $this->getStrategy($om, $meta->name)->processMetadataLoad($om, $meta);
         }
