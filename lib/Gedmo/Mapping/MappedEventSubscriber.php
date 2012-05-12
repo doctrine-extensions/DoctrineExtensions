@@ -188,7 +188,12 @@ abstract class MappedEventSubscriber implements EventSubscriber
     public function loadMetadataForObjectClass(ObjectManager $objectManager, $metadata)
     {
         $factory = $this->getExtensionMetadataFactory($objectManager);
-        $config = $factory->getExtensionMetadata($metadata);
+        try {
+            $config = $factory->getExtensionMetadata($metadata);
+        } catch (\ReflectionException $e) {
+            // entity\document generator is running
+            $config = false; // will not store a cached version, to remap later
+        }
         if ($config) {
             self::$configurations[$this->name][$metadata->name] = $config;
         }
