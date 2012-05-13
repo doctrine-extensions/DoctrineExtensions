@@ -5,7 +5,8 @@ namespace Gedmo\Tree\Entity\Repository;
 use Gedmo\Exception\InvalidArgumentException,
     Gedmo\Tree\Strategy,
     Gedmo\Tree\Strategy\ORM\MaterializedPath,
-    Gedmo\Tool\Wrapper\EntityWrapper;
+    Gedmo\Tool\Wrapper\EntityWrapper,
+    Gedmo\Exception\FeatureNotImplementedException;
 
 /**
  * The MaterializedPathRepository has some useful functions
@@ -145,6 +146,30 @@ class MaterializedPathRepository extends AbstractTreeRepository
     public function getChildren($node = null, $direct = false, $sortByField = null, $direction = 'asc')
     {
         return $this->getChildrenQuery($node, $direct, $sortByField, $direction)->execute();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getNodesHierarchy($node, $direct, array $config, array $options = array())
+    {
+        throw new FeatureNotImplementedException('You can\'t build an array with the tree structure for this strategy yet.');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function buildTree(array $nodes, array $options = array())
+    {
+        throw new FeatureNotImplementedException('You can\'t build an array with the tree structure for this strategy yet.');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function childrenHierarchy($node = null, $direct = false, array $options = array())
+    {
+        throw new FeatureNotImplementedException('You can\'t build an array with the tree structure for this strategy yet.');
     }
 
     /**

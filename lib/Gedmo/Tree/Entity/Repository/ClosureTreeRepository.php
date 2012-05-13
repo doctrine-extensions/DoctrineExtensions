@@ -273,11 +273,89 @@ class ClosureTreeRepository extends AbstractTreeRepository
         } catch (\Exception $e) {
             $this->_em->close();
             $this->_em->getConnection()->rollback();
-            throw new \Gedmo\Exception\RuntimeException('Transaction failed', null, $e);
+            throw new \Gedmo\Exception\RuntimeException('Transaction failed: '.$e->getMessage(), null, $e);
         }
         // remove from identity map
         $this->_em->getUnitOfWork()->removeFromIdentityMap($node);
         $node = null;
+    }
+
+    /**
+     * Process nodes and produce an array with the
+     * structure of the tree
+     *
+     * @param array - Array of nodes
+     *
+     * @return array - Array with tree structure
+     */
+    public function buildTreeArray(array $nodes)
+    {
+        $meta = $this->getClassMetadata();
+        $config = $this->listener->getConfiguration($this->_em, $meta->name);
+        $nestedTree = array();
+        $levelField = $config['level'];
+        $idField = $meta->getSingleIdentifierFieldName();
+
+        if (count($nodes) > 0) {
+            $l = 1;
+            $refs = array();
+
+            foreach ($nodes as $n) {
+                $node = $n[0]['descendant'];
+                $node['__children'] = array();
+
+                if ($l < $node[$levelField]) {
+                    $l = $node[$levelField];
+                }
+
+                if ($l == 1) {
+                    $tmp = &$nestedTree;
+                } else {
+                    $tmp = &$refs[$n['parent_id']]['__children'];
+                }
+
+                $key = count($tmp);
+                $tmp[$key] = $node;
+                $refs[$node[$idField]] = &$tmp[$key];
+            }
+
+            unset($refs);
+        }
+
+        return $nestedTree;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getNodesHierarchy($node, $direct, array $config, array $options = array())
+    {
+        $meta = $this->getClassMetadata();
+        $idField = $meta->getSingleIdentifierFieldName();
+
+        $q = $this->_em->createQueryBuilder()
+            ->select('c, node, p.'.$idField.' AS parent_id')
+            ->from($config['closure'], 'c')
+            ->innerJoin('c.descendant', 'node')
+            ->leftJoin('node.parent', 'p')
+            ->where('c.ancestor = :node')
+            ->addOrderBy('node.'.$config['level'], 'asc');
+
+        $defaultOptions = array();
+        $options = array_merge($defaultOptions, $options);
+
+        if (isset($options['childSort']) && is_array($options['childSort']) &&
+            isset($options['childSort']['field']) && isset($options['childSort']['dir'])) {
+            $q->addOrderBy(
+                'node.'.$options['childSort']['field'],
+                strtolower($options['childSort']['dir']) == 'asc' ? 'asc' : 'desc'
+            );
+        }
+
+        $q = $q->getQuery();
+        $q->setParameters(compact('node'));
+
+        return $q->getArrayResult();
     }
 
     /**

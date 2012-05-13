@@ -125,6 +125,67 @@ class ClosureTreeRepositoryTest extends BaseTestCaseORM
         $this->assertCount(4, $repo->children(null, true));
     }
 
+    public function testBuildTree()
+    {
+        $repo = $this->em->getRepository(self::CATEGORY);
+        $roots = $repo->getRootNodes();
+        $tree = $repo->childrenHierarchy(
+            $roots[0],
+            false,
+            array('childSort' => array('field' => 'title', 'dir' => 'asc'))
+        );
+
+        $fruits = $tree[0]['__children'][0];
+        $milk = $tree[0]['__children'][1];
+        $vegitables = $tree[0]['__children'][2];
+
+        $this->assertEquals('Food', $tree[0]['title']);
+        $this->assertEquals('Fruits', $fruits['title']);
+        $this->assertEquals('Berries', $fruits['__children'][0]['title']);
+        $this->assertEquals('Strawberries', $fruits['__children'][0]['__children'][0]['title']);
+        $this->assertEquals('Milk', $milk['title']);
+        $this->assertEquals('Cheese', $milk['__children'][0]['title']);
+        $this->assertEquals('Mould cheese', $milk['__children'][0]['__children'][0]['title']);
+        $this->assertEquals('Vegitables', $vegitables['title']);
+        $this->assertEquals('Cabbages', $vegitables['__children'][0]['title']);
+        $this->assertEquals('Carrots', $vegitables['__children'][1]['title']);
+
+        $food = $repo->findOneByTitle('Food');
+        $vegitables = $repo->findOneByTitle('Vegitables');
+
+        $boringFood = new Category();
+        $boringFood->setTitle('Boring Food');
+        $boringFood->setParent($food);
+        $vegitables->setParent($boringFood);
+
+        $this->em->persist($boringFood);
+
+        $this->em->flush();
+
+        $tree = $repo->childrenHierarchy(
+            $roots[0],
+            false,
+            array('childSort' => array('field' => 'title', 'dir' => 'asc'))
+        );
+
+        $boringFood = $tree[0]['__children'][0];
+        $fruits = $tree[0]['__children'][1];
+        $milk = $tree[0]['__children'][2];
+        $vegitables = $boringFood['__children'][0];
+
+        $this->assertEquals('Food', $tree[0]['title']);
+        $this->assertEquals('Fruits', $fruits['title']);
+        $this->assertEquals('Berries', $fruits['__children'][0]['title']);
+        $this->assertEquals('Strawberries', $fruits['__children'][0]['__children'][0]['title']);
+        $this->assertEquals('Milk', $milk['title']);
+        $this->assertEquals('Cheese', $milk['__children'][0]['title']);
+        $this->assertEquals('Mould cheese', $milk['__children'][0]['__children'][0]['title']);
+        $this->assertEquals('Boring Food', $boringFood['title']);
+        $this->assertEquals('Vegitables', $boringFood['__children'][0]['title']);
+        $this->assertEquals('Cabbages', $vegitables['__children'][0]['title']);
+        $this->assertEquals('Carrots', $vegitables['__children'][1]['title']);
+    }
+
     protected function getUsedEntityFixtures()
     {
         return array(
@@ -138,6 +199,11 @@ class ClosureTreeRepositoryTest extends BaseTestCaseORM
         $food = new Category;
         $food->setTitle("Food");
         $this->em->persist($food);
+
+        $vegitables = new Category;
+        $vegitables->setTitle('Vegitables');
+        $vegitables->setParent($food);
+        $this->em->persist($vegitables);
 
         $fruits = new Category;
         $fruits->setTitle('Fruits');
@@ -163,11 +229,6 @@ class ClosureTreeRepositoryTest extends BaseTestCaseORM
         $strawberries->setTitle('Strawberries');
         $strawberries->setParent($berries);
         $this->em->persist($strawberries);
-
-        $vegitables = new Category;
-        $vegitables->setTitle('Vegitables');
-        $vegitables->setParent($food);
-        $this->em->persist($vegitables);
 
         $cabbages = new Category;
         $cabbages->setTitle('Cabbages');
@@ -195,5 +256,6 @@ class ClosureTreeRepositoryTest extends BaseTestCaseORM
         $this->em->persist($mouldCheese);
 
         $this->em->flush();
+        $this->em->clear();
     }
 }
