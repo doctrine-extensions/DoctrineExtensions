@@ -142,6 +142,17 @@ class MaterializedPathRepository extends AbstractTreeRepository
     }
 
     /**
+     * {@inheritDoc}
+     */
+    public function getNodesHierarchy($node, $direct, array $config, array $options = array())
+    {
+        $query = $this->getChildrenQuery();
+        $query->setHydrate(false);
+
+        return $query->toArray();
+    }
+
+    /**
      * {@inheritdoc}
      */
     protected function validate()

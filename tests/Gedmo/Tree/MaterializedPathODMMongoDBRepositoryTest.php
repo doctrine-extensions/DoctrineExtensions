@@ -96,6 +96,24 @@ class MaterializedPathODMMongoDBRepositoryTest extends BaseTestCaseMongoODM
         $this->assertEquals('Sports', $tree->getNext()->getTitle());
     }
 
+    /**
+     * @test
+     */
+    function childrenHierarchy()
+    {
+        $repo = $this->dm->getRepository(self::CATEGORY);
+        $roots = $repo->getRootNodes();
+        $tree = $repo->childrenHierarchy($roots->getNext());
+
+        $vegitablesChildren = $tree[0]['__children'][1]['__children'];
+        $this->assertEquals('Food', $tree[0]['title']);
+        $this->assertEquals('Fruits', $tree[0]['__children'][0]['title']);
+        $this->assertEquals('Vegitables', $tree[0]['__children'][1]['title']);
+        $this->assertEquals('Carrots', $vegitablesChildren[0]['title']);
+        $this->assertEquals('Potatoes', $vegitablesChildren[1]['title']);
+        $this->assertEquals('Sports', $tree[1]['title']);
+    }
+
     protected function getUsedEntityFixtures()
     {
         return array(
