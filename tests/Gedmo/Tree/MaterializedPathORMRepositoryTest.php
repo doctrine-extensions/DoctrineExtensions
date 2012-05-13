@@ -101,6 +101,22 @@ class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
         $this->assertEquals('Sports', $tree[5]->getTitle());
     }
 
+    public function testBuildTreeMethod()
+    {
+        $repo = $this->em->getRepository(self::CATEGORY);
+        $roots = $repo->getRootNodes();
+        $tree = $repo->childrenHierarchy($roots[0]);
+
+        $vegitables = $tree[0]['__children'][1];
+
+        $this->assertEquals('Food', $tree[0]['title']);
+        $this->assertEquals('Fruits', $tree[0]['__children'][0]['title']);
+        $this->assertEquals('Vegitables', $tree[0]['__children'][1]['title']);
+        $this->assertEquals('Carrots', $vegitables['__children'][0]['title']);
+        $this->assertEquals('Potatoes', $vegitables['__children'][1]['title']);
+        $this->assertEquals('Sports', $tree[1]['title']);
+    }
+
     protected function getUsedEntityFixtures()
     {
         return array(

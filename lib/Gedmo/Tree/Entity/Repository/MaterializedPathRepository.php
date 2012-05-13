@@ -153,23 +153,7 @@ class MaterializedPathRepository extends AbstractTreeRepository
      */
     public function getNodesHierarchy($node, $direct, array $config, array $options = array())
     {
-        throw new FeatureNotImplementedException('You can\'t build an array with the tree structure for this strategy yet.');
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function buildTree(array $nodes, array $options = array())
-    {
-        throw new FeatureNotImplementedException('You can\'t build an array with the tree structure for this strategy yet.');
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function childrenHierarchy($node = null, $direct = false, array $options = array())
-    {
-        throw new FeatureNotImplementedException('You can\'t build an array with the tree structure for this strategy yet.');
+        return $this->getChildrenQuery()->getArrayResult();
     }
 
     /**
