@@ -276,8 +276,10 @@ class Closure implements Strategy
                     );
                 }
 
-                $this->pendingNodesLevelProcess[$nodeId] = $node;
-            } else {
+                if (isset($config['level'])) {
+                    $this->pendingNodesLevelProcess[$nodeId] = $node;
+                }
+            } else if (isset($config['level'])) {
                 $uow->scheduleExtraUpdate($node, array($config['level'] => array(null, 1)));
                 $ea->setOriginalObjectProperty($uow, spl_object_hash($node), $config['level'], 1);
             }
@@ -444,6 +446,8 @@ class Closure implements Strategy
             }
         }
 
-        $this->pendingNodesLevelProcess[$nodeId] = $node;
+        if (isset($config['level'])) {
+            $this->pendingNodesLevelProcess[$nodeId] = $node;
+        }
     }
 }

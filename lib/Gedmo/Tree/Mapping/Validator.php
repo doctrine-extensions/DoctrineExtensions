@@ -177,9 +177,6 @@ class Validator
         if (!isset($config['closure'])) {
             $missingFields[] = 'closure class';
         }
-        if (!isset($config['level'])) {
-            $missingFields[] = 'level';
-        }
         if ($missingFields) {
             throw new InvalidMappingException("Missing properties: " . implode(', ', $missingFields) . " in class - {$meta->name}");
         }

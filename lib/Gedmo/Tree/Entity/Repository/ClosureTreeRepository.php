@@ -8,6 +8,7 @@ use Gedmo\Tree\Strategy;
 use Gedmo\Tree\Strategy\ORM\Closure;
 use Gedmo\Tool\Wrapper\EntityWrapper;
 use Doctrine\ORM\Proxy\Proxy;
+use Gedmo\Exception\TreeLevelFieldNotFoundException;
 
 /**
  * The ClosureTreeRepository has some useful functions
@@ -292,6 +293,16 @@ class ClosureTreeRepository extends AbstractTreeRepository
     {
         $meta = $this->getClassMetadata();
         $config = $this->listener->getConfiguration($this->_em, $meta->name);
+
+        if (!isset($config['level'])) {
+            $msg = sprintf('TreeLevel field is needed on class "%s" to be allowed to call "%s" method.',
+                $meta->name,
+                'buildTreeArray'
+            );
+
+            throw new TreeLevelFieldNotFoundException($msg);
+        }
+
         $nestedTree = array();
         $levelField = $config['level'];
         $idField = $meta->getSingleIdentifierFieldName();
@@ -331,6 +342,16 @@ class ClosureTreeRepository extends AbstractTreeRepository
     public function getNodesHierarchy($node, $direct, array $config, array $options = array())
     {
         $meta = $this->getClassMetadata();
+
+        if (!isset($config['level'])) {
+            $msg = sprintf('TreeLevel field is needed on class "%s" to be allowed to call "%s" method.',
+                $meta->name,
+                'buildTreeArray'
+            );
+
+            throw new TreeLevelFieldNotFoundException($msg);
+        }
+
         $idField = $meta->getSingleIdentifierFieldName();
 
         $q = $this->_em->createQueryBuilder()

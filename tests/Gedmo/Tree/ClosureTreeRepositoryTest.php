@@ -5,6 +5,8 @@ namespace Gedmo\Tree;
 use Doctrine\Common\EventManager;
 use Tool\BaseTestCaseORM;
 use Tree\Fixture\Closure\Category;
+use Tree\Fixture\Closure\CategoryWithoutLevel;
+use Tree\Fixture\Closure\CategoryWithoutLevelClosure;
 
 /**
  * These are tests for Tree behavior
@@ -19,6 +21,8 @@ class ClosureTreeRepositoryTest extends BaseTestCaseORM
 {
     const CATEGORY = "Tree\\Fixture\\Closure\\Category";
     const CLOSURE = "Tree\\Fixture\\Closure\\CategoryClosure";
+    const CATEGORY_WITHOUT_LEVEL = "Tree\\Fixture\\Closure\\CategoryWithoutLevel";
+    const CATEGORY_WITHOUT_LEVEL_CLOSURE = "Tree\\Fixture\\Closure\\CategoryWithoutLevelClosure";
 
     protected function setUp()
     {
@@ -186,11 +190,31 @@ class ClosureTreeRepositoryTest extends BaseTestCaseORM
         $this->assertEquals('Carrots', $vegitables['__children'][1]['title']);
     }
 
+    /**
+     * @expectedException Gedmo\Exception\TreeLevelFieldNotFoundException
+     */
+    public function test_buildTreeArray_IfLevelFieldIsNotPresentThrowException()
+    {
+        $repo = $this->em->getRepository(self::CATEGORY_WITHOUT_LEVEL);
+        $repo->buildTreeArray(array());
+    }
+
+    /**
+     * @expectedException Gedmo\Exception\TreeLevelFieldNotFoundException
+     */
+    public function test_getNodesHierarchy_IfLevelFieldIsNotPresentThrowException()
+    {
+        $repo = $this->em->getRepository(self::CATEGORY_WITHOUT_LEVEL);
+        $repo->getNodesHierarchy(new CategoryWithoutLevel(), true, array());
+    }
+
     protected function getUsedEntityFixtures()
     {
         return array(
             self::CATEGORY,
-            self::CLOSURE
+            self::CLOSURE,
+            self::CATEGORY_WITHOUT_LEVEL,
+            self::CATEGORY_WITHOUT_LEVEL_CLOSURE
         );
     }
 
