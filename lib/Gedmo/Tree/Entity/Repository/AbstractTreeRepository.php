@@ -51,7 +51,7 @@ abstract class AbstractTreeRepository extends EntityRepository
             throw new \Gedmo\Exception\InvalidMappingException('This repository cannot be used for tree type: ' . $treeListener->getStrategy($em, $class->name)->getName());
         }
 
-        $this->repoUtils = new \Gedmo\Tree\RepositoryUtils($this->_em, $this->getClassMetadata(), $this->listener, $this);
+        $this->repoUtils = new RepositoryUtils($this->_em, $this->getClassMetadata(), $this->listener, $this);
     }
 
     /**

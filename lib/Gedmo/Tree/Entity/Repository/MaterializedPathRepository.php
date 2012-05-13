@@ -5,8 +5,7 @@ namespace Gedmo\Tree\Entity\Repository;
 use Gedmo\Exception\InvalidArgumentException,
     Gedmo\Tree\Strategy,
     Gedmo\Tree\Strategy\ORM\MaterializedPath,
-    Gedmo\Tool\Wrapper\EntityWrapper,
-    Gedmo\Exception\FeatureNotImplementedException;
+    Gedmo\Tool\Wrapper\EntityWrapper;
 
 /**
  * The MaterializedPathRepository has some useful functions
