@@ -31,6 +31,35 @@ class NestedTreeRootRepositoryTest extends BaseTestCaseORM
     }
 
     /**
+     * Based on issue #342
+     *
+     * @test
+     */
+    function shouldBeAbleToShiftRootNode()
+    {
+        $repo = $this->em->getRepository(self::CATEGORY);
+
+        $food = $repo->findOneByTitle('Food');
+        $acme = new RootCategory;
+        $acme->setTitle('Acme');
+
+        $food->setParent($acme);
+
+        $this->em->persist($acme);
+        $this->em->persist($food);
+        $this->em->flush();
+
+        $this->assertNull($acme->getParent());
+        $this->assertSame($acme, $food->getParent());
+        $this->assertSame($acme->getId(), $acme->getRoot());
+        $this->assertSame($acme->getId(), $food->getRoot());
+        $this->assertSame(1, $acme->getLeft());
+        $this->assertSame(12, $acme->getRight());
+        $this->assertSame(2, $food->getLeft());
+        $this->assertSame(11, $food->getRight());
+    }
+
+    /**
      * @test
      */
     function shouldSupportChildrenHierarchyAsArray()
