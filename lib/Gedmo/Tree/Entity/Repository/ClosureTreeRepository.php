@@ -296,8 +296,9 @@ class ClosureTreeRepository extends AbstractTreeRepository
         $meta = $this->getClassMetadata();
         $config = $this->listener->getConfiguration($this->_em, $meta->name);
         $nestedTree = array();
-        $levelField = self::SUBQUERY_LEVEL;
         $idField = $meta->getSingleIdentifierFieldName();
+        $hasLevelProp = isset($config['level']) && $config['level'];
+        $levelProp = $hasLevelProp ? $config['level'] : self::SUBQUERY_LEVEL;
 
         if (count($nodes) > 0) {
             $l = 1;
@@ -306,7 +307,7 @@ class ClosureTreeRepository extends AbstractTreeRepository
             foreach ($nodes as $n) {
                 $node = $n[0]['descendant'];
                 $node['__children'] = array();
-                $level = $n[$levelField];
+                $level = $hasLevelProp ? $node[$levelProp] : $n[$levelProp];
 
                 if ($l < $level) {
                     $l = $level;
@@ -332,19 +333,25 @@ class ClosureTreeRepository extends AbstractTreeRepository
     /**
      * {@inheritdoc}
      */
-    public function getNodesHierarchy($node, $direct, array $config, array $options = array())
+    public function getNodesHierarchy($node, $direct, array $config, array $options = array(), $returnQueryBuilder = false)
     {
         $meta = $this->getClassMetadata();
         $idField = $meta->getSingleIdentifierFieldName();
-        $subQuery = '(SELECT MAX(c2.depth) + 1 FROM '.$config['closure'];
-        $subQuery .= ' c2 WHERE c2.descendant = c.descendant GROUP BY c2.descendant) AS '.self::SUBQUERY_LEVEL;
+        $subQuery = '';
+        $hasLevelProp = isset($config['level']) && $config['level'];
+
+        if (!$hasLevelProp) {
+            $subQuery = ', (SELECT MAX(c2.depth) + 1 FROM '.$config['closure'];
+            $subQuery .= ' c2 WHERE c2.descendant = c.descendant GROUP BY c2.descendant) AS '.self::SUBQUERY_LEVEL;
+        }
+
         $q = $this->_em->createQueryBuilder()
-            ->select('c, node, p.'.$idField.' AS parent_id, '.$subQuery)
+            ->select('c, node, p.'.$idField.' AS parent_id'.$subQuery)
             ->from($config['closure'], 'c')
             ->innerJoin('c.descendant', 'node')
             ->leftJoin('node.parent', 'p')
             ->where('c.ancestor = :node')
-            ->addOrderBy('level', 'asc');
+            ->addOrderBy(($hasLevelProp ? 'node.'.$config['level'] : self::SUBQUERY_LEVEL), 'asc');
 
         $defaultOptions = array();
         $options = array_merge($defaultOptions, $options);
@@ -357,10 +364,13 @@ class ClosureTreeRepository extends AbstractTreeRepository
             );
         }
 
-        $q = $q->getQuery();
         $q->setParameters(compact('node'));
 
-        return $q->getArrayResult();
+        if ($returnQueryBuilder) {
+            return $q;
+        }
+
+        return $q->getQuery()->getArrayResult();
     }
 
     /**

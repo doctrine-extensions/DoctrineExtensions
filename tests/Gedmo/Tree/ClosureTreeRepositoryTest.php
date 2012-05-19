@@ -24,12 +24,16 @@ class ClosureTreeRepositoryTest extends BaseTestCaseORM
     const CATEGORY_WITHOUT_LEVEL = "Tree\\Fixture\\Closure\\CategoryWithoutLevel";
     const CATEGORY_WITHOUT_LEVEL_CLOSURE = "Tree\\Fixture\\Closure\\CategoryWithoutLevelClosure";
 
+    protected $listener;
+
     protected function setUp()
     {
         parent::setUp();
 
+        $this->listener = new TreeListener;
+
         $evm = new EventManager;
-        $evm->addEventSubscriber(new TreeListener);
+        $evm->addEventSubscriber($this->listener);
 
         $this->getMockSqliteEntityManager($evm);
     }
@@ -149,6 +153,36 @@ class ClosureTreeRepositoryTest extends BaseTestCaseORM
 
         $this->buildTreeTests(self::CATEGORY_WITHOUT_LEVEL);
     }
+
+    public function testHavingLevelPropertyAvoidsSubqueryInSelectInGetNodesHierarchy()
+    {
+        $this->populate();
+
+        $repo = $this->em->getRepository(self::CATEGORY);
+        $roots = $repo->getRootNodes();
+        $meta = $this->em->getClassMetadata(self::CATEGORY);
+        $config = $this->listener->getConfiguration($this->em, $meta->name);
+        $qb = $repo->getNodesHierarchy($roots[0], false, $config, array(), true);
+
+        $this->assertFalse(strpos($qb->getQuery()->getDql(), '(SELECT MAX('));
+    }
+
+    public function testoNotHavingLevelPropertyUsesASubqueryInSelectInGetNodesHierarchy()
+    {
+        $this->populate(self::CATEGORY_WITHOUT_LEVEL);
+
+        $repo = $this->em->getRepository(self::CATEGORY_WITHOUT_LEVEL);
+        $roots = $repo->getRootNodes();
+        $meta = $this->em->getClassMetadata(self::CATEGORY_WITHOUT_LEVEL);
+        $config = $this->listener->getConfiguration($this->em, $meta->name);
+        $qb = $repo->getNodesHierarchy($roots[0], false, $config, array(), true);
+
+        $this->assertTrue(((bool) strpos($qb->getQuery()->getDql(), '(SELECT MAX(')));
+    }
+
+
+
+    // Utility Methods
 
     protected function buildTreeTests($class)
     {
