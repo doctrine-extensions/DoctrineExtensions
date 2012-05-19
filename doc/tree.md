@@ -382,6 +382,8 @@ $repo->recover();
 $em->clear(); // clear cached nodes
 // if tree has errors it will try to fix all tree nodes
 
+UNSAFE: be sure to backup before runing this method when necessary, if you can use $em->remove($node);
+// which would cascade to children
 // single node removal
 $vegies = $repo->findOneByTitle('Vegitables');
 $repo->removeFromTree($vegies);
