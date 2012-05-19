@@ -27,7 +27,7 @@ class CategoryWithoutLevel
     /**
      * @Gedmo\TreeParent
      * @ORM\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="CASCADE")
-     * @ORM\ManyToOne(targetEntity="Category", inversedBy="children")
+     * @ORM\ManyToOne(targetEntity="CategoryWithoutLevel", inversedBy="children")
      */
     private $parent;
 
@@ -46,7 +46,7 @@ class CategoryWithoutLevel
         return $this->title;
     }
 
-    public function setParent(Category $parent = null)
+    public function setParent(CategoryWithoutLevel $parent = null)
     {
         $this->parent = $parent;
     }
@@ -56,7 +56,7 @@ class CategoryWithoutLevel
         return $this->parent;
     }
 
-    public function addClosure(CategoryClosure $closure)
+    public function addClosure(CategoryWithoutLevelClosure $closure)
     {
         $this->closures[] = $closure;
     }

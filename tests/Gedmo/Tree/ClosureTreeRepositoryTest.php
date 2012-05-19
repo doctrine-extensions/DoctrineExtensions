@@ -32,11 +32,12 @@ class ClosureTreeRepositoryTest extends BaseTestCaseORM
         $evm->addEventSubscriber(new TreeListener);
 
         $this->getMockSqliteEntityManager($evm);
-        $this->populate();
     }
 
     public function testChildCount()
     {
+        $this->populate();
+
         $repo = $this->em->getRepository(self::CATEGORY);
         $food = $repo->findOneByTitle('Food');
 
@@ -53,6 +54,8 @@ class ClosureTreeRepositoryTest extends BaseTestCaseORM
 
     public function testPath()
     {
+        $this->populate();
+
         $repo = $this->em->getRepository(self::CATEGORY);
         $fruits = $repo->findOneByTitle('Fruits');
 
@@ -72,6 +75,8 @@ class ClosureTreeRepositoryTest extends BaseTestCaseORM
 
     public function testChildren()
     {
+        $this->populate();
+
         $repo = $this->em->getRepository(self::CATEGORY);
         $fruits = $repo->findOneByTitle('Fruits');
 
@@ -102,6 +107,8 @@ class ClosureTreeRepositoryTest extends BaseTestCaseORM
 
     public function testSingleNodeRemoval()
     {
+        $this->populate();
+
         $repo = $this->em->getRepository(self::CATEGORY);
         $fruits = $repo->findOneByTitle('Fruits');
 
@@ -129,9 +136,23 @@ class ClosureTreeRepositoryTest extends BaseTestCaseORM
         $this->assertCount(4, $repo->children(null, true));
     }
 
-    public function testBuildTree()
+    public function testBuildTreeWithLevelProperty()
     {
-        $repo = $this->em->getRepository(self::CATEGORY);
+        $this->populate();
+
+        $this->buildTreeTests(self::CATEGORY);
+    }
+
+    public function testBuildTreeWithoutLevelProperty()
+    {
+        $this->populate(self::CATEGORY_WITHOUT_LEVEL);
+
+        $this->buildTreeTests(self::CATEGORY_WITHOUT_LEVEL);
+    }
+
+    protected function buildTreeTests($class)
+    {
+        $repo = $this->em->getRepository($class);
         $roots = $repo->getRootNodes();
         $tree = $repo->childrenHierarchy(
             $roots[0],
@@ -157,7 +178,7 @@ class ClosureTreeRepositoryTest extends BaseTestCaseORM
         $food = $repo->findOneByTitle('Food');
         $vegitables = $repo->findOneByTitle('Vegitables');
 
-        $boringFood = new Category();
+        $boringFood = new $class();
         $boringFood->setTitle('Boring Food');
         $boringFood->setParent($food);
         $vegitables->setParent($boringFood);
@@ -190,23 +211,6 @@ class ClosureTreeRepositoryTest extends BaseTestCaseORM
         $this->assertEquals('Carrots', $vegitables['__children'][1]['title']);
     }
 
-    /**
-     * @expectedException Gedmo\Exception\TreeLevelFieldNotFoundException
-     */
-    public function test_buildTreeArray_IfLevelFieldIsNotPresentThrowException()
-    {
-        $repo = $this->em->getRepository(self::CATEGORY_WITHOUT_LEVEL);
-        $repo->buildTreeArray(array());
-    }
-
-    /**
-     * @expectedException Gedmo\Exception\TreeLevelFieldNotFoundException
-     */
-    public function test_getNodesHierarchy_IfLevelFieldIsNotPresentThrowException()
-    {
-        $repo = $this->em->getRepository(self::CATEGORY_WITHOUT_LEVEL);
-        $repo->getNodesHierarchy(new CategoryWithoutLevel(), true, array());
-    }
 
     protected function getUsedEntityFixtures()
     {
@@ -218,63 +222,63 @@ class ClosureTreeRepositoryTest extends BaseTestCaseORM
         );
     }
 
-    private function populate()
+    private function populate($class = self::CATEGORY)
     {
-        $food = new Category;
+        $food = new $class;
         $food->setTitle("Food");
         $this->em->persist($food);
 
-        $vegitables = new Category;
+        $vegitables = new $class;
         $vegitables->setTitle('Vegitables');
         $vegitables->setParent($food);
         $this->em->persist($vegitables);
 
-        $fruits = new Category;
+        $fruits = new $class;
         $fruits->setTitle('Fruits');
         $fruits->setParent($food);
         $this->em->persist($fruits);
 
-        $oranges = new Category;
+        $oranges = new $class;
         $oranges->setTitle('Oranges');
         $oranges->setParent($fruits);
         $this->em->persist($oranges);
 
-        $lemons = new Category;
+        $lemons = new $class;
         $lemons->setTitle('Lemons');
         $lemons->setParent($fruits);
         $this->em->persist($lemons);
 
-        $berries = new Category;
+        $berries = new $class;
         $berries->setTitle('Berries');
         $berries->setParent($fruits);
         $this->em->persist($berries);
 
-        $strawberries = new Category;
+        $strawberries = new $class;
         $strawberries->setTitle('Strawberries');
         $strawberries->setParent($berries);
         $this->em->persist($strawberries);
 
-        $cabbages = new Category;
+        $cabbages = new $class;
         $cabbages->setTitle('Cabbages');
         $cabbages->setParent($vegitables);
         $this->em->persist($cabbages);
 
-        $carrots = new Category;
+        $carrots = new $class;
         $carrots->setTitle('Carrots');
         $carrots->setParent($vegitables);
         $this->em->persist($carrots);
 
-        $milk = new Category;
+        $milk = new $class;
         $milk->setTitle('Milk');
         $milk->setParent($food);
         $this->em->persist($milk);
 
-        $cheese = new Category;
+        $cheese = new $class;
         $cheese->setTitle('Cheese');
         $cheese->setParent($milk);
         $this->em->persist($cheese);
 
-        $mouldCheese = new Category;
+        $mouldCheese = new $class;
         $mouldCheese->setTitle('Mould cheese');
         $mouldCheese->setParent($cheese);
         $this->em->persist($mouldCheese);

@@ -8,7 +8,6 @@ use Gedmo\Tree\Strategy;
 use Gedmo\Tree\Strategy\ORM\Closure;
 use Gedmo\Tool\Wrapper\EntityWrapper;
 use Doctrine\ORM\Proxy\Proxy;
-use Gedmo\Exception\TreeLevelFieldNotFoundException;
 
 /**
  * The ClosureTreeRepository has some useful functions
@@ -24,6 +23,9 @@ use Gedmo\Exception\TreeLevelFieldNotFoundException;
  */
 class ClosureTreeRepository extends AbstractTreeRepository
 {
+    /** Alias for the level value used in the subquery of the getNodesHierarchy method */
+    const SUBQUERY_LEVEL = 'level';
+
     /**
      * Get all root nodes query
      *
@@ -293,18 +295,8 @@ class ClosureTreeRepository extends AbstractTreeRepository
     {
         $meta = $this->getClassMetadata();
         $config = $this->listener->getConfiguration($this->_em, $meta->name);
-
-        if (!isset($config['level'])) {
-            $msg = sprintf('TreeLevel field is needed on class "%s" to be allowed to call "%s" method.',
-                $meta->name,
-                'buildTreeArray'
-            );
-
-            throw new TreeLevelFieldNotFoundException($msg);
-        }
-
         $nestedTree = array();
-        $levelField = $config['level'];
+        $levelField = self::SUBQUERY_LEVEL;
         $idField = $meta->getSingleIdentifierFieldName();
 
         if (count($nodes) > 0) {
@@ -314,9 +306,10 @@ class ClosureTreeRepository extends AbstractTreeRepository
             foreach ($nodes as $n) {
                 $node = $n[0]['descendant'];
                 $node['__children'] = array();
+                $level = $n[$levelField];
 
-                if ($l < $node[$levelField]) {
-                    $l = $node[$levelField];
+                if ($l < $level) {
+                    $l = $level;
                 }
 
                 if ($l == 1) {
@@ -342,25 +335,16 @@ class ClosureTreeRepository extends AbstractTreeRepository
     public function getNodesHierarchy($node, $direct, array $config, array $options = array())
     {
         $meta = $this->getClassMetadata();
-
-        if (!isset($config['level'])) {
-            $msg = sprintf('TreeLevel field is needed on class "%s" to be allowed to call "%s" method.',
-                $meta->name,
-                'buildTreeArray'
-            );
-
-            throw new TreeLevelFieldNotFoundException($msg);
-        }
-
         $idField = $meta->getSingleIdentifierFieldName();
-
+        $subQuery = '(SELECT MAX(c2.depth) + 1 FROM '.$config['closure'];
+        $subQuery .= ' c2 WHERE c2.descendant = c.descendant GROUP BY c2.descendant) AS '.self::SUBQUERY_LEVEL;
         $q = $this->_em->createQueryBuilder()
-            ->select('c, node, p.'.$idField.' AS parent_id')
+            ->select('c, node, p.'.$idField.' AS parent_id, '.$subQuery)
             ->from($config['closure'], 'c')
             ->innerJoin('c.descendant', 'node')
             ->leftJoin('node.parent', 'p')
             ->where('c.ancestor = :node')
-            ->addOrderBy('node.'.$config['level'], 'asc');
+            ->addOrderBy('level', 'asc');
 
         $defaultOptions = array();
         $options = array_merge($defaultOptions, $options);
