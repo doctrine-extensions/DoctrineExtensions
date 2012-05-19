@@ -134,7 +134,10 @@ class NestedTreeRootRepositoryTest extends BaseTestCaseORM
         $this->assertEquals('', $repo->buildTree($nodes, $options), 'should give empty string when there are no nodes given');
     }
 
-    public function testRootRemoval()
+    /**
+     * @test
+     */
+    public function shouldRemoveRootNodeFromTree()
     {
         $repo = $this->em->getRepository(self::CATEGORY);
         $this->populateMore();
@@ -161,7 +164,10 @@ class NestedTreeRootRepositoryTest extends BaseTestCaseORM
         $this->assertNull($node->getParent());
     }
 
-    public function testRepository()
+    /**
+     * @test
+     */
+    public function shouldHandleBasicRepositoryMethods()
     {
         $repo = $this->em->getRepository(self::CATEGORY);
         $carrots = $repo->findOneByTitle('Carrots');
@@ -187,7 +193,10 @@ class NestedTreeRootRepositoryTest extends BaseTestCaseORM
         $this->assertEquals(6, $childCount);
     }
 
-    public function testAdvancedRepositoryFunctions()
+    /**
+     * @test
+     */
+    public function shouldHandleAdvancedRepositoryFunctions()
     {
         $this->populateMore();
         $repo = $this->em->getRepository(self::CATEGORY);
@@ -299,7 +308,10 @@ class NestedTreeRootRepositoryTest extends BaseTestCaseORM
         $this->assertEquals(1, $node->getParent()->getId());
     }
 
-    public function testRemoveFromTreeLeaf()
+    /**
+     * @test
+     */
+    public function shouldRemoveTreeLeafFromTree()
     {
         $this->populateMore();
         $repo = $this->em->getRepository(self::CATEGORY);
