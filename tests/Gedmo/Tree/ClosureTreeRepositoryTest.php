@@ -162,7 +162,7 @@ class ClosureTreeRepositoryTest extends BaseTestCaseORM
         $roots = $repo->getRootNodes();
         $meta = $this->em->getClassMetadata(self::CATEGORY);
         $config = $this->listener->getConfiguration($this->em, $meta->name);
-        $qb = $repo->getNodesHierarchy($roots[0], false, $config, array(), true);
+        $qb = $repo->getNodesHierarchyQueryBuilder($roots[0], false, $config);
 
         $this->assertFalse(strpos($qb->getQuery()->getDql(), '(SELECT MAX('));
     }
@@ -175,12 +175,10 @@ class ClosureTreeRepositoryTest extends BaseTestCaseORM
         $roots = $repo->getRootNodes();
         $meta = $this->em->getClassMetadata(self::CATEGORY_WITHOUT_LEVEL);
         $config = $this->listener->getConfiguration($this->em, $meta->name);
-        $qb = $repo->getNodesHierarchy($roots[0], false, $config, array(), true);
+        $qb = $repo->getNodesHierarchyQueryBuilder($roots[0], false, $config);
 
         $this->assertTrue(((bool) strpos($qb->getQuery()->getDql(), '(SELECT MAX(')));
     }
-
-
 
     // Utility Methods
 
@@ -244,7 +242,6 @@ class ClosureTreeRepositoryTest extends BaseTestCaseORM
         $this->assertEquals('Cabbages', $vegitables['__children'][0]['title']);
         $this->assertEquals('Carrots', $vegitables['__children'][1]['title']);
     }
-
 
     protected function getUsedEntityFixtures()
     {

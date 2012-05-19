@@ -72,7 +72,7 @@ class RepositoryUtils implements RepositoryUtilsInterface
                 // override and change it, guessing which field to use
                 if ($meta->hasField('title')) {
                     $field = 'title';
-                } else if ($meta->hasField('name')) {
+                } elseif ($meta->hasField('name')) {
                     $field = 'name';
                 } else {
                     throw new InvalidArgumentException("Cannot find any representation field");

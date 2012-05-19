@@ -297,7 +297,7 @@ class ClosureTreeRepository extends AbstractTreeRepository
         $config = $this->listener->getConfiguration($this->_em, $meta->name);
         $nestedTree = array();
         $idField = $meta->getSingleIdentifierFieldName();
-        $hasLevelProp = isset($config['level']) && $config['level'];
+        $hasLevelProp = !empty($config['level']);
         $levelProp = $hasLevelProp ? $config['level'] : self::SUBQUERY_LEVEL;
 
         if (count($nodes) > 0) {
@@ -333,7 +333,17 @@ class ClosureTreeRepository extends AbstractTreeRepository
     /**
      * {@inheritdoc}
      */
-    public function getNodesHierarchy($node, $direct, array $config, array $options = array(), $returnQueryBuilder = false)
+    public function getNodesHierarchy($node, $direct, array $config, array $options = array())
+    {
+        return $this->getNodesHierarchyQuery($node, $direct, $config, $options)->getArrayResult();
+    }
+
+    public function getNodesHierarchyQuery($node, $direct, array $config, array $options = array())
+    {
+        return $this->getNodesHierarchyQueryBuilder($node, $direct, $config, $options)->getQuery();
+    }
+
+    public function getNodesHierarchyQueryBuilder($node, $direct, array $config, array $options = array())
     {
         $meta = $this->getClassMetadata();
         $idField = $meta->getSingleIdentifierFieldName();
@@ -366,11 +376,7 @@ class ClosureTreeRepository extends AbstractTreeRepository
 
         $q->setParameters(compact('node'));
 
-        if ($returnQueryBuilder) {
-            return $q;
-        }
-
-        return $q->getQuery()->getArrayResult();
+        return $q;
     }
 
     /**
