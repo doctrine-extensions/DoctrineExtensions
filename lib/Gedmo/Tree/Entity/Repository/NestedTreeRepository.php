@@ -836,16 +836,32 @@ class NestedTreeRepository extends AbstractTreeRepository
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
-    public function getNodesHierarchy($node, $direct, array $config, array $options = array())
+    public function getNodesHierarchyQueryBuilder($node, $direct, array $config, array $options = array())
     {
-        return $this->childrenQuery(
+        return $this->childrenQueryBuilder(
             $node,
             $direct,
             isset($config['root']) ? array($config['root'], $config['left']) : $config['left'],
             'ASC'
-        )->getArrayResult();
+        );
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getNodesHierarchyQuery($node, $direct, array $config, array $options = array())
+    {
+        return $this->getNodesHierarchyQueryBuilder($node, $direct, $config, $options)->getQuery();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getNodesHierarchy($node, $direct, array $config, array $options = array())
+    {
+        return $this->getNodesHierarchyQuery($node, $direct, $config, $options)->getArrayResult();
     }
 
     /**

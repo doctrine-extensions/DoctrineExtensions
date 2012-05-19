@@ -111,6 +111,28 @@ abstract class AbstractTreeRepository extends EntityRepository
     abstract protected function validate();
 
     /**
+     * Returns a Query Builder configured to return an array of nodes suitable for buildTree method
+     *
+     * @param object - Root node
+     * @param bool - Obtain direct children?
+     * @param array $config
+     * @param array $options
+     * @return \Doctrine\ODM\MongoDB\Query\Builder
+     */
+    abstract public function getNodesHierarchyQueryBuilder($node, $direct, array $config, array $options = array());
+
+    /**
+     * Returns a Query configured to return an array of nodes suitable for buildTree method
+     *
+     * @param object - Root node
+     * @param bool - Obtain direct children?
+     * @param array - Metadata configuration
+     * @param array - Options
+     * @return \Doctrine\ODM\MongoDB\Query\Query
+     */
+    abstract public function getNodesHierarchyQuery($node, $direct, array $config, array $options = array());
+
+    /**
      * Returns an array of nodes suitable for method buildTree
      *
      * @param object - Root node

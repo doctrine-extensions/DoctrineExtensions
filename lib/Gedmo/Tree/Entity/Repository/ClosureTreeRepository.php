@@ -338,11 +338,17 @@ class ClosureTreeRepository extends AbstractTreeRepository
         return $this->getNodesHierarchyQuery($node, $direct, $config, $options)->getArrayResult();
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getNodesHierarchyQuery($node, $direct, array $config, array $options = array())
     {
         return $this->getNodesHierarchyQueryBuilder($node, $direct, $config, $options)->getQuery();
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getNodesHierarchyQueryBuilder($node, $direct, array $config, array $options = array())
     {
         $meta = $this->getClassMetadata();

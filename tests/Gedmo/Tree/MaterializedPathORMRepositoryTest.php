@@ -104,8 +104,7 @@ class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
     public function testBuildTreeMethod()
     {
         $repo = $this->em->getRepository(self::CATEGORY);
-        $roots = $repo->getRootNodes();
-        $tree = $repo->childrenHierarchy($roots[0]);
+        $tree = $repo->childrenHierarchy();
 
         $vegitables = $tree[0]['__children'][1];
 

@@ -24,7 +24,7 @@ class MaterializedPathRepository extends AbstractTreeRepository
     /**
      * Get tree query builder
      *
-     * @return Doctrine\ODM\MongoDB\QueryBuilder
+     * @return \Doctrine\ODM\MongoDB\Query\Builder
      */
     public function getTreeQueryBuilder()
     {
@@ -34,7 +34,7 @@ class MaterializedPathRepository extends AbstractTreeRepository
     /**
      * Get tree query
      *
-     * @return Doctrine\ODM\MongoDB\Query\Query
+     * @return \Doctrine\ODM\MongoDB\Query\Query
      */
     public function getTreeQuery()
     {
@@ -44,7 +44,7 @@ class MaterializedPathRepository extends AbstractTreeRepository
     /**
      * Get tree
      *
-     * @return Doctrine\ODM\MongoDB\Cursor
+     * @return \Doctrine\ODM\MongoDB\Cursor
      */
     public function getTree()
     {
@@ -54,7 +54,7 @@ class MaterializedPathRepository extends AbstractTreeRepository
     /**
      * Get all root nodes query builder
      *
-     * @return Doctrine\ODM\MongoDB\QueryBuilder
+     * @return \Doctrine\ODM\MongoDB\Query\Builder
      */
     public function getRootNodesQueryBuilder($sortByField = null, $direction = 'asc')
     {
@@ -64,7 +64,7 @@ class MaterializedPathRepository extends AbstractTreeRepository
     /**
      * Get all root nodes query
      *
-     * @return Doctrine\ODM\MongoDB\Query\Query
+     * @return \Doctrine\ODM\MongoDB\Query\Query
      */
     public function getRootNodesQuery($sortByField = null, $direction = 'asc')
     {
@@ -74,7 +74,7 @@ class MaterializedPathRepository extends AbstractTreeRepository
     /**
      * Get all root nodes
      *
-     * @return Doctrine\ODM\MongoDB\Cursor
+     * @return \Doctrine\ODM\MongoDB\Cursor
      */
     public function getRootNodes($sortByField = null, $direction = 'asc')
     {
@@ -84,7 +84,7 @@ class MaterializedPathRepository extends AbstractTreeRepository
     /**
      * Get children from node
      *
-     * @return Doctrine\ODM\MongoDB\QueryBuilder
+     * @return \Doctrine\ODM\MongoDB\Query\Builder
      */
     public function getChildrenQueryBuilder($node = null, $direct = false, $sortByField = null, $direction = 'asc')
     {
@@ -124,7 +124,7 @@ class MaterializedPathRepository extends AbstractTreeRepository
     /**
      * Get children query
      *
-     * @return Doctrine\ODM\MongoDB\Query\Query
+     * @return \Doctrine\ODM\MongoDB\Query\Query
      */
     public function getChildrenQuery($node = null, $direct = false, $sortByField = null, $direction = 'asc')
     {
@@ -134,7 +134,7 @@ class MaterializedPathRepository extends AbstractTreeRepository
     /**
      * Get children
      *
-     * @return Doctrine\ODM\MongoDB\Cursor
+     * @return \Doctrine\ODM\MongoDB\Cursor
      */
     public function getChildren($node = null, $direct = false, $sortByField = null, $direction = 'asc')
     {
@@ -144,9 +144,34 @@ class MaterializedPathRepository extends AbstractTreeRepository
     /**
      * {@inheritDoc}
      */
+    public function getNodesHierarchyQueryBuilder($node, $direct, array $config, array $options = array())
+    {
+        $sortBy = array(
+            'field'     => null,
+            'dir'       => 'asc'
+        );
+
+        if (isset($options['childSort'])) {
+            $sortBy = array_merge($sortBy, $options['childSort']);
+        }
+
+        return $this->getChildrenQueryBuilder($node, $direct, $sortBy['field'], $sortBy['dir']);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getNodesHierarchyQuery($node, $direct, array $config, array $options = array())
+    {
+        return $this->getNodesHierarchyQueryBuilder($node, $direct, $config, $options)->getQuery();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function getNodesHierarchy($node, $direct, array $config, array $options = array())
     {
-        $query = $this->getChildrenQuery();
+        $query = $this->getNodesHierarchyQuery($node, $direct, $config, $options);
         $query->setHydrate(false);
 
         return $query->toArray();

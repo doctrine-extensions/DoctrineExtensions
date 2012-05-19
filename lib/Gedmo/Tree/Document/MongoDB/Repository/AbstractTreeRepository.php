@@ -111,6 +111,28 @@ abstract class AbstractTreeRepository extends DocumentRepository
     abstract protected function validate();
 
     /**
+     * Returns a QueryBuilder configured to return an array of nodes suitable for buildTree method
+     *
+     * @param object - Root node
+     * @param bool - Obtain direct children?
+     * @param array $config
+     * @param array $options
+     * @return \Doctrine\ORM\QueryBuilder
+     */
+    abstract public function getNodesHierarchyQueryBuilder($node, $direct, array $config, array $options = array());
+
+    /**
+     * Returns a Query configured to return an array of nodes suitable for buildTree method
+     *
+     * @param object - Root node
+     * @param bool - Obtain direct children?
+     * @param array - Metadata configuration
+     * @param array - Options
+     * @return \Doctrine\ORM\Query
+     */
+    abstract public function getNodesHierarchyQuery($node, $direct, array $config, array $options = array());
+
+    /**
      * Returns an array of nodes suitable for method buildTree
      *
      * @param object - Root node

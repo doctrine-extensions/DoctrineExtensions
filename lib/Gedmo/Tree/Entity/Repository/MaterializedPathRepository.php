@@ -150,9 +150,34 @@ class MaterializedPathRepository extends AbstractTreeRepository
     /**
      * {@inheritdoc}
      */
+    public function getNodesHierarchyQueryBuilder($node, $direct, array $config, array $options = array())
+    {
+        $sortBy = array(
+            'field'     => null,
+            'dir'       => 'asc'
+        );
+
+        if (isset($options['childSort'])) {
+            $sortBy = array_merge($sortBy, $options['childSort']);
+        }
+
+        return $this->getChildrenQueryBuilder($node, $direct, $sortBy['field'], $sortBy['dir']);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getNodesHierarchyQuery($node, $direct, array $config, array $options = array())
+    {
+        return $this->getNodesHierarchyQueryBuilder($node, $direct, $config, $options)->getQuery();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getNodesHierarchy($node, $direct, array $config, array $options = array())
     {
-        return $this->getChildrenQuery()->getArrayResult();
+        return $this->getNodesHierarchyQuery($node, $direct, $config, $options)->getArrayResult();
     }
 
     /**

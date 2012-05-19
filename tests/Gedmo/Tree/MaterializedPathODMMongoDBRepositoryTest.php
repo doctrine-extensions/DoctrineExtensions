@@ -102,8 +102,7 @@ class MaterializedPathODMMongoDBRepositoryTest extends BaseTestCaseMongoODM
     function childrenHierarchy()
     {
         $repo = $this->dm->getRepository(self::CATEGORY);
-        $roots = $repo->getRootNodes();
-        $tree = $repo->childrenHierarchy($roots->getNext());
+        $tree = $repo->childrenHierarchy();
 
         $vegitablesChildren = $tree[0]['__children'][1]['__children'];
         $this->assertEquals('Food', $tree[0]['title']);
