@@ -38,7 +38,8 @@ class MaterializedPathODMMongoDBRepositoryTest extends BaseTestCaseMongoODM
         $repo = $this->dm->getRepository(self::CATEGORY);
         $result = $repo->getRootNodes('title');
         
-        $this->assertEquals(2, $result->count());
+        $this->assertEquals(3, $result->count());
+        $this->assertEquals('Drinks', $result->getNext()->getTitle());
         $this->assertEquals('Food', $result->getNext()->getTitle());
         $this->assertEquals('Sports', $result->getNext()->getTitle());
     }
@@ -51,8 +52,18 @@ class MaterializedPathODMMongoDBRepositoryTest extends BaseTestCaseMongoODM
         $repo = $this->dm->getRepository(self::CATEGORY);
         $root = $repo->findOneByTitle('Food');
 
-        // Get all children from the root
-        $result = $repo->getChildren($root, false, 'title');
+        // Get all children from the root, including it
+        $result = $repo->getChildren($root, false, 'title', 'asc', true);
+
+        $this->assertEquals(5, count($result));
+        $this->assertEquals('Carrots', $result->getNext()->getTitle());
+        $this->assertEquals('Food', $result->getNext()->getTitle());
+        $this->assertEquals('Fruits', $result->getNext()->getTitle());
+        $this->assertEquals('Potatoes', $result->getNext()->getTitle());
+        $this->assertEquals('Vegitables', $result->getNext()->getTitle());
+
+        // Get all children from the root, NOT including it
+        $result = $repo->getChildren($root, false, 'title', 'asc', false);
 
         $this->assertEquals(4, count($result));
         $this->assertEquals('Carrots', $result->getNext()->getTitle());
@@ -60,8 +71,16 @@ class MaterializedPathODMMongoDBRepositoryTest extends BaseTestCaseMongoODM
         $this->assertEquals('Potatoes', $result->getNext()->getTitle());
         $this->assertEquals('Vegitables', $result->getNext()->getTitle());
 
-        // Get direct children from the root
-        $result = $repo->getChildren($root, true, 'title');
+        // Get direct children from the root, including it
+        $result = $repo->getChildren($root, true, 'title', 'asc', true);
+
+        $this->assertEquals(3, $result->count());
+        $this->assertEquals('Food', $result->getNext()->getTitle());
+        $this->assertEquals('Fruits', $result->getNext()->getTitle());
+        $this->assertEquals('Vegitables', $result->getNext()->getTitle());
+
+        // Get direct children from the root, NOT including it
+        $result = $repo->getChildren($root, true, 'title', 'asc', false);
 
         $this->assertEquals(2, $result->count());
         $this->assertEquals('Fruits', $result->getNext()->getTitle());
@@ -70,13 +89,24 @@ class MaterializedPathODMMongoDBRepositoryTest extends BaseTestCaseMongoODM
         // Get ALL nodes
         $result = $repo->getChildren(null, false, 'title');
 
-        $this->assertEquals(6, $result->count());
+        $this->assertEquals(9, $result->count());
+        $this->assertEquals('Best Whisky', $result->getNext()->getTitle());
         $this->assertEquals('Carrots', $result->getNext()->getTitle());
+        $this->assertEquals('Drinks', $result->getNext()->getTitle());
         $this->assertEquals('Food', $result->getNext()->getTitle());
         $this->assertEquals('Fruits', $result->getNext()->getTitle());
         $this->assertEquals('Potatoes', $result->getNext()->getTitle());
         $this->assertEquals('Sports', $result->getNext()->getTitle());
         $this->assertEquals('Vegitables', $result->getNext()->getTitle());
+        $this->assertEquals('Whisky', $result->getNext()->getTitle());
+
+        // Get ALL root nodes
+        $result = $repo->getChildren(null, true, 'title');
+
+        $this->assertEquals(3, $result->count());
+        $this->assertEquals('Drinks', $result->getNext()->getTitle());
+        $this->assertEquals('Food', $result->getNext()->getTitle());
+        $this->assertEquals('Sports', $result->getNext()->getTitle());
     }
 
     /**
@@ -87,13 +117,25 @@ class MaterializedPathODMMongoDBRepositoryTest extends BaseTestCaseMongoODM
         $repo = $this->dm->getRepository(self::CATEGORY);
         $tree = $repo->getTree();
 
-        $this->assertEquals(6, $tree->count());
+        $this->assertEquals(9, $tree->count());
+        $this->assertEquals('Drinks', $tree->getNext()->getTitle());
+        $this->assertEquals('Whisky', $tree->getNext()->getTitle());
+        $this->assertEquals('Best Whisky', $tree->getNext()->getTitle());
         $this->assertEquals('Food', $tree->getNext()->getTitle());
         $this->assertEquals('Fruits', $tree->getNext()->getTitle());
         $this->assertEquals('Vegitables', $tree->getNext()->getTitle());
         $this->assertEquals('Carrots', $tree->getNext()->getTitle());
         $this->assertEquals('Potatoes', $tree->getNext()->getTitle());
         $this->assertEquals('Sports', $tree->getNext()->getTitle());
+
+        // Get a specific tree
+        $roots = $repo->getRootNodes();
+        $tree = $repo->getTree($roots->getNext());
+
+        $this->assertEquals(3, $tree->count());
+        $this->assertEquals('Drinks', $tree->getNext()->getTitle());
+        $this->assertEquals('Whisky', $tree->getNext()->getTitle());
+        $this->assertEquals('Best Whisky', $tree->getNext()->getTitle());
     }
 
     /**
@@ -101,16 +143,24 @@ class MaterializedPathODMMongoDBRepositoryTest extends BaseTestCaseMongoODM
      */
     function childrenHierarchy()
     {
+        /** @var $repo \Gedmo\Tree\Document\MongoDB\Repository\MaterializedPathRepository */
         $repo = $this->dm->getRepository(self::CATEGORY);
         $tree = $repo->childrenHierarchy();
 
-        $vegitablesChildren = $tree[0]['__children'][1]['__children'];
-        $this->assertEquals('Food', $tree[0]['title']);
-        $this->assertEquals('Fruits', $tree[0]['__children'][0]['title']);
-        $this->assertEquals('Vegitables', $tree[0]['__children'][1]['title']);
+        $this->assertEquals('Drinks', $tree[0]['title']);
+        $this->assertEquals('Whisky', $tree[0]['__children'][0]['title']);
+        $this->assertEquals('Best Whisky', $tree[0]['__children'][0]['__children'][0]['title']);
+        $vegitablesChildren = $tree[1]['__children'][1]['__children'];
+        $this->assertEquals('Food', $tree[1]['title']);
+        $this->assertEquals('Fruits', $tree[1]['__children'][0]['title']);
+        $this->assertEquals('Vegitables', $tree[1]['__children'][1]['title']);
         $this->assertEquals('Carrots', $vegitablesChildren[0]['title']);
         $this->assertEquals('Potatoes', $vegitablesChildren[1]['title']);
-        $this->assertEquals('Sports', $tree[1]['title']);
+        $this->assertEquals('Sports', $tree[2]['title']);
+
+        // Tree of one specific root
+        $roots = $repo->getRootNodes();
+        $tree = $repo->childrenHierarchy($roots->getNext());
     }
 
     protected function getUsedEntityFixtures()
@@ -150,12 +200,27 @@ class MaterializedPathODMMongoDBRepositoryTest extends BaseTestCaseMongoODM
         $potatoes->setTitle("Potatoes");
         $potatoes->setParent($child2);
 
+        $drinks = $this->createCategory();
+        $drinks->setTitle('Drinks');
+
+        $whisky = $this->createCategory();
+        $whisky->setTitle('Whisky');
+        $whisky->setParent($drinks);
+
+        $bestWhisky = $this->createCategory();
+        $bestWhisky->setTitle('Best Whisky');
+        $bestWhisky->setParent($whisky);
+
         $this->dm->persist($root);
         $this->dm->persist($root2);
         $this->dm->persist($child);
         $this->dm->persist($child2);
         $this->dm->persist($childsChild);
         $this->dm->persist($potatoes);
+        $this->dm->persist($drinks);
+        $this->dm->persist($whisky);
+        $this->dm->persist($bestWhisky);
+
         $this->dm->flush();
     }
 }

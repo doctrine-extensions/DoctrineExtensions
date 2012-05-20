@@ -24,31 +24,37 @@ class MaterializedPathRepository extends AbstractTreeRepository
     /**
      * Get tree query builder
      *
+     * @param object Root node
+     *
      * @return \Doctrine\ODM\MongoDB\Query\Builder
      */
-    public function getTreeQueryBuilder()
+    public function getTreeQueryBuilder($rootNode)
     {
-        return $this->getChildrenQueryBuilder();
+        return $this->getChildrenQueryBuilder($rootNode, false, null, 'asc', true);
     }
 
     /**
      * Get tree query
      *
+     * @param object Root node
+     *
      * @return \Doctrine\ODM\MongoDB\Query\Query
      */
-    public function getTreeQuery()
+    public function getTreeQuery($rootNode = null)
     {
-        return $this->getTreeQueryBuilder()->getQuery();
+        return $this->getTreeQueryBuilder($rootNode)->getQuery();
     }
 
     /**
      * Get tree
      *
+     * @param object Root node
+     *
      * @return \Doctrine\ODM\MongoDB\Cursor
      */
-    public function getTree()
+    public function getTree($rootNode = null)
     {
-        return $this->getTreeQuery()->execute();
+        return $this->getTreeQuery($rootNode)->execute();
     }
 
     /**
@@ -86,7 +92,7 @@ class MaterializedPathRepository extends AbstractTreeRepository
      *
      * @return \Doctrine\ODM\MongoDB\Query\Builder
      */
-    public function getChildrenQueryBuilder($node = null, $direct = false, $sortByField = null, $direction = 'asc')
+    public function getChildrenQueryBuilder($node = null, $direct = false, $sortByField = null, $direction = 'asc', $includeNode = false)
     {
         $meta = $this->getClassMetadata();
         $config = $this->listener->getConfiguration($this->dm, $meta->name);
@@ -99,19 +105,19 @@ class MaterializedPathRepository extends AbstractTreeRepository
             $nodePath = preg_quote($node->getPropertyValue($config['path']));
 
             if ($direct) {
-                $regex = sprintf('/^%s[^%s]+%s$/',
+                $regex = sprintf('/^%s([^%s]+%s)'.($includeNode ? '?' : '').'$/',
                      $nodePath,
                      $separator,
                      $separator);
                 
             } else {
-                $regex = sprintf('/^%s.+/',
+                $regex = sprintf('/^%s(.+)'.($includeNode ? '?' : '').'/',
                      $nodePath);
             }
 
             $qb->field($config['path'])->equals(new \MongoRegex($regex));
         } else if ($direct) {
-            $qb->field($config['path'])->equals(new \MongoRegex(sprintf('/^[^%s]+%s$/',
+            $qb->field($config['path'])->equals(new \MongoRegex(sprintf('/^([^%s]+)'.($includeNode ? '?' : '').'%s$/',
                 $separator,
                 $separator)));
         }
@@ -126,9 +132,9 @@ class MaterializedPathRepository extends AbstractTreeRepository
      *
      * @return \Doctrine\ODM\MongoDB\Query\Query
      */
-    public function getChildrenQuery($node = null, $direct = false, $sortByField = null, $direction = 'asc')
+    public function getChildrenQuery($node = null, $direct = false, $sortByField = null, $direction = 'asc', $includeNode = false)
     {
-        return $this->getChildrenQueryBuilder($node, $direct, $sortByField, $direction)->getQuery();
+        return $this->getChildrenQueryBuilder($node, $direct, $sortByField, $direction, $includeNode)->getQuery();
     }
 
     /**
@@ -136,9 +142,9 @@ class MaterializedPathRepository extends AbstractTreeRepository
      *
      * @return \Doctrine\ODM\MongoDB\Cursor
      */
-    public function getChildren($node = null, $direct = false, $sortByField = null, $direction = 'asc')
+    public function getChildren($node = null, $direct = false, $sortByField = null, $direction = 'asc', $includeNode = false)
     {
-        return $this->getChildrenQuery($node, $direct, $sortByField, $direction)->execute();
+        return $this->getChildrenQuery($node, $direct, $sortByField, $direction, $includeNode)->execute();
     }
 
     /**
@@ -155,7 +161,7 @@ class MaterializedPathRepository extends AbstractTreeRepository
             $sortBy = array_merge($sortBy, $options['childSort']);
         }
 
-        return $this->getChildrenQueryBuilder($node, $direct, $sortBy['field'], $sortBy['dir']);
+        return $this->getChildrenQueryBuilder($node, $direct, $sortBy['field'], $sortBy['dir'], true);
     }
 
     /**
