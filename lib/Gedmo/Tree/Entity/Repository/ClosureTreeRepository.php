@@ -148,10 +148,12 @@ class ClosureTreeRepository extends AbstractTreeRepository
      * @param boolean $direct - true to take only direct children
      * @param string $sortByField - field name to sort by
      * @param string $direction - sort direction : "ASC" or "DESC"
+     * @param bool $includeNode - Include the root node in the result?
+     *
      * @throws InvalidArgumentException - if input is not valid
      * @return Query
      */
-    public function childrenQuery($node = null, $direct = false, $sortByField = null, $direction = 'ASC')
+    public function childrenQueryBuilder($node = null, $direct = false, $sortByField = null, $direction = 'ASC', $includeNode = false)
     {
         $meta = $this->getClassMetadata();
         $config = $this->listener->getConfiguration($this->_em, $meta->name);
@@ -162,14 +164,23 @@ class ClosureTreeRepository extends AbstractTreeRepository
                 if (!$this->_em->getUnitOfWork()->isInIdentityMap($node)) {
                     throw new InvalidArgumentException("Node is not managed by UnitOfWork");
                 }
+
+                $where = 'c.ancestor = :node AND ';
+
                 $qb->select('c, node')
                     ->from($config['closure'], 'c')
-                    ->innerJoin('c.descendant', 'node')
-                    ->where('c.ancestor = :node');
+                    ->innerJoin('c.descendant', 'node');
+
                 if ($direct) {
-                    $qb->andWhere('c.depth = 1');
+                    $where .= 'c.depth = 1';
                 } else {
-                    $qb->andWhere('c.descendant <> :node');
+                    $where .= 'c.descendant <> :node';
+                }
+
+                $qb->where($where);
+
+                if ($includeNode) {
+                    $qb->orWhere('c.ancestor = :node AND c.descendant = :node');
                 }
             } else {
                 throw new \InvalidArgumentException("Node is not related to this repository");
@@ -181,6 +192,7 @@ class ClosureTreeRepository extends AbstractTreeRepository
                 $qb->where('node.' . $config['parent'] . ' IS NULL');
             }
         }
+
         if ($sortByField) {
             if ($meta->hasField($sortByField) && in_array(strtolower($direction), array('asc', 'desc'))) {
                 $qb->orderBy('node.' . $sortByField, $direction);
@@ -188,11 +200,17 @@ class ClosureTreeRepository extends AbstractTreeRepository
                 throw new InvalidArgumentException("Invalid sort options specified: field - {$sortByField}, direction - {$direction}");
             }
         }
-        $q = $qb->getQuery();
+
         if ($node) {
-            $q->setParameters(compact('node'));
+            $qb->setParameter('node', $node);
         }
-        return $q;
+
+        return $qb;
+    }
+
+    public function childrenQuery($node = null, $direct = false, $sortByField = null, $direction = 'ASC', $includeNode = false)
+    {
+        return $this->childrenQueryBuilder($node, $direct, $sortByField, $direction, $includeNode)->getQuery();
     }
 
     /**
@@ -202,11 +220,12 @@ class ClosureTreeRepository extends AbstractTreeRepository
      * @param boolean $direct - true to take only direct children
      * @param string $sortByField - field name to sort by
      * @param string $direction - sort direction : "ASC" or "DESC"
+     * @param bool $includeNode - Include the root node in results?
      * @return array - list of given $node children, null on failure
      */
-    public function children($node = null, $direct = false, $sortByField = null, $direction = 'ASC')
+    public function children($node = null, $direct = false, $sortByField = null, $direction = 'ASC', $includeNode = false)
     {
-        $result = $this->childrenQuery($node, $direct, $sortByField, $direction)->getResult();
+        $result = $this->childrenQuery($node, $direct, $sortByField, $direction, $includeNode)->getResult();
         if ($node) {
             $result = array_map(function($closure) {
                 return $closure->getDescendant();

@@ -53,7 +53,7 @@ class ClosureTreeRepositoryTest extends BaseTestCaseORM
         $this->assertEquals(4, $count);
 
         $rootCount = $repo->childCount(null, true);
-        $this->assertEquals(1, $rootCount);
+        $this->assertEquals(2, $rootCount);
     }
 
     public function testPath()
@@ -84,14 +84,22 @@ class ClosureTreeRepositoryTest extends BaseTestCaseORM
         $repo = $this->em->getRepository(self::CATEGORY);
         $fruits = $repo->findOneByTitle('Fruits');
 
-        // direct children of node, sorted by title ascending order
+        // direct children of node, sorted by title ascending order. NOT including the root node
         $children = $repo->children($fruits, true, 'title');
         $this->assertCount(3, $children);
         $this->assertEquals('Berries', $children[0]->getTitle());
         $this->assertEquals('Lemons', $children[1]->getTitle());
         $this->assertEquals('Oranges', $children[2]->getTitle());
 
-        // all children of node
+        // direct children of node, sorted by title ascending order. including the root node
+        $children = $repo->children($fruits, true, 'title', 'asc', true);
+        $this->assertCount(4, $children);
+        $this->assertEquals('Berries', $children[0]->getTitle());
+        $this->assertEquals('Fruits', $children[1]->getTitle());
+        $this->assertEquals('Lemons', $children[2]->getTitle());
+        $this->assertEquals('Oranges', $children[3]->getTitle());
+
+        // all children of node, NOT including the root
         $children = $repo->children($fruits);
         $this->assertCount(4, $children);
         $this->assertEquals('Oranges', $children[0]->getTitle());
@@ -99,14 +107,24 @@ class ClosureTreeRepositoryTest extends BaseTestCaseORM
         $this->assertEquals('Berries', $children[2]->getTitle());
         $this->assertEquals('Strawberries', $children[3]->getTitle());
 
+        // all children of node, including the root
+        $children = $repo->children($fruits, false, 'title', 'asc', true);
+        $this->assertCount(5, $children);
+        $this->assertEquals('Berries', $children[0]->getTitle());
+        $this->assertEquals('Fruits', $children[1]->getTitle());
+        $this->assertEquals('Lemons', $children[2]->getTitle());
+        $this->assertEquals('Oranges', $children[3]->getTitle());
+        $this->assertEquals('Strawberries', $children[4]->getTitle());
+
         // direct root nodes
         $children = $repo->children(null, true, 'title');
-        $this->assertCount(1, $children);
+        $this->assertCount(2, $children);
         $this->assertEquals('Food', $children[0]->getTitle());
+        $this->assertEquals('Sports', $children[1]->getTitle());
 
         // all tree
         $children = $repo->children();
-        $this->assertCount(12, $children);
+        $this->assertCount(15, $children);
     }
 
     public function testSingleNodeRemoval()
@@ -137,7 +155,7 @@ class ClosureTreeRepositoryTest extends BaseTestCaseORM
         $this->assertNull($vegitables->getParent());
 
         $repo->removeFromTree($lemons);
-        $this->assertCount(4, $repo->children(null, true));
+        $this->assertCount(5, $repo->children(null, true));
     }
 
     public function testBuildTreeWithLevelProperty()
@@ -207,6 +225,15 @@ class ClosureTreeRepositoryTest extends BaseTestCaseORM
         $this->assertEquals('Cabbages', $vegitables['__children'][0]['title']);
         $this->assertEquals('Carrots', $vegitables['__children'][1]['title']);
 
+        $tree = $repo->childrenHierarchy(
+            $roots[1],
+            false,
+            array('childSort' => array('field' => 'title', 'dir' => 'asc'))
+        );
+        $this->assertEquals('Sports', $tree[0]['title']);
+        $this->assertEquals('Soccer', $tree[0]['__children'][0]['title']);
+        $this->assertEquals('Indoor Soccer', $tree[0]['__children'][0]['__children'][0]['title']);
+
         $food = $repo->findOneByTitle('Food');
         $vegitables = $repo->findOneByTitle('Vegitables');
 
@@ -241,6 +268,15 @@ class ClosureTreeRepositoryTest extends BaseTestCaseORM
         $this->assertEquals('Vegitables', $boringFood['__children'][0]['title']);
         $this->assertEquals('Cabbages', $vegitables['__children'][0]['title']);
         $this->assertEquals('Carrots', $vegitables['__children'][1]['title']);
+
+        $tree = $repo->childrenHierarchy(
+            $roots[1],
+            false,
+            array('childSort' => array('field' => 'title', 'dir' => 'asc'))
+        );
+        $this->assertEquals('Sports', $tree[0]['title']);
+        $this->assertEquals('Soccer', $tree[0]['__children'][0]['title']);
+        $this->assertEquals('Indoor Soccer', $tree[0]['__children'][0]['__children'][0]['title']);
     }
 
     protected function getUsedEntityFixtures()
@@ -313,6 +349,20 @@ class ClosureTreeRepositoryTest extends BaseTestCaseORM
         $mouldCheese->setTitle('Mould cheese');
         $mouldCheese->setParent($cheese);
         $this->em->persist($mouldCheese);
+
+        $sports = new $class;
+        $sports->setTitle('Sports');
+        $this->em->persist($sports);
+
+        $soccer = new $class;
+        $soccer->setTitle('Soccer');
+        $soccer->setParent($sports);
+        $this->em->persist($soccer);
+
+        $indoorSoccer = new $class;
+        $indoorSoccer->setTitle('Indoor Soccer');
+        $indoorSoccer->setParent($soccer);
+        $this->em->persist($indoorSoccer);
 
         $this->em->flush();
         $this->em->clear();
