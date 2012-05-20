@@ -161,6 +161,10 @@ class MaterializedPathODMMongoDBRepositoryTest extends BaseTestCaseMongoODM
         // Tree of one specific root
         $roots = $repo->getRootNodes();
         $tree = $repo->childrenHierarchy($roots->getNext());
+
+        $this->assertEquals('Drinks', $tree[0]['title']);
+        $this->assertEquals('Whisky', $tree[0]['__children'][0]['title']);
+        $this->assertEquals('Best Whisky', $tree[0]['__children'][0]['__children'][0]['title']);
     }
 
     protected function getUsedEntityFixtures()
