@@ -28,7 +28,7 @@ class MaterializedPathRepository extends AbstractTreeRepository
      *
      * @return \Doctrine\ODM\MongoDB\Query\Builder
      */
-    public function getTreeQueryBuilder($rootNode)
+    public function getTreeQueryBuilder($rootNode = null)
     {
         return $this->getChildrenQueryBuilder($rootNode, false, null, 'asc', true);
     }
