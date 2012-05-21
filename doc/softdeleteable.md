@@ -1,7 +1,7 @@
 # SoftDeleteable behavior extension for Doctrine 2
 
 **SoftDeleteable** behavior allows to "soft delete" objects, filtering them
-at SELECT time, but not really removing them from the DB
+at SELECT time by marking them as with a timestamp, but not explicitly removing them from the database.
 
 Features:
 
@@ -11,7 +11,7 @@ Features:
 - Can be nested with other behaviors
 - Annotation, Yaml and Xml mapping support for extensions
 
-[blog_reference]: http://gediminasm.org/article/tree-nestedset-behavior-extension-for-doctrine-2 "Tree - Nestedset or Closure extension for Doctrine 2 makes tree implementation on entities"
+[blog_reference]: http://gediminasm.org/article/tree-nestedset-behavior-extension-for-doctrine-2 "Softdeleteable - does not explicitly remove record entries from the database, instead it marks those as deleted and skips in selection queries"
 [blog_test]: http://gediminasm.org/test "Test extensions on this blog"
 
 Content:
