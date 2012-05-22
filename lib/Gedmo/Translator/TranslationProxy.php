@@ -98,6 +98,11 @@ class TranslationProxy
 
         $this->translatable->$property = $value;
     }
+    
+    public function __isset($property)
+    {
+        return in_array($property, $this->properties);
+    }
 
     /**
      * Returns locale name for the current translation proxy instance.
