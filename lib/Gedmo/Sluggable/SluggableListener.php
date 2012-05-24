@@ -154,6 +154,10 @@ class SluggableListener extends MappedEventSubscriber
             $meta = $om->getClassMetadata(get_class($object));
             if ($config = $this->getConfiguration($om, $meta->name)) {
                 $this->generateSlug($ea, $object);
+                foreach ($config['slugs'] as $slugField => $options) {
+                    $slug = $meta->getReflectionProperty($slugField)->getValue($object);
+                    $this->persistedSlugs[$config['useObjectClass']][$slugField][] = $slug;
+                }
             }
         }
     }
