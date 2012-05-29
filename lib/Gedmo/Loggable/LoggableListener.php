@@ -49,7 +49,7 @@ class LoggableListener extends MappedEventSubscriber
      *
      * @var array
      */
-    private $pendingLogEntryInserts = array();
+    protected $pendingLogEntryInserts = array();
 
     /**
      * For log of changed relations we use
@@ -59,7 +59,7 @@ class LoggableListener extends MappedEventSubscriber
      *
      * @var array
      */
-    private $pendingRelatedObjects = array();
+    protected $pendingRelatedObjects = array();
 
     /**
      * Set username for identification
