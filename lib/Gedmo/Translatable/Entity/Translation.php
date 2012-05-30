@@ -16,7 +16,7 @@ use Doctrine\ORM\Mapping\Entity;
  *             "locale", "object_class", "foreign_key"
  *         })},
  *         uniqueConstraints={@UniqueConstraint(name="lookup_unique_idx", columns={
- *             "locale", "object_class", "foreign_key", "field"
+ *             "locale", "object_class", "field", "foreign_key"
  *         })}
  * )
  * @Entity(repositoryClass="Gedmo\Translatable\Entity\Repository\TranslationRepository")
