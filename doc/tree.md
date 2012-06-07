@@ -585,6 +585,33 @@ $options = array('decorate' => true);
 $tree = $repo->buildTree($query->getArrayResult(), $options);
 ```
 
+### Using routes in decorator, show only selected items, return unlimited levels items as 2 levels
+
+```
+$controller = $this;
+        $tree = $root->childrenHierarchy(null,false,array('decorate' => true,
+            'rootOpen' => function($tree) {
+                if(count($tree) && ($tree[0]['lvl'] == 0)){
+                        return '<div class="catalog-list">';
+                }
+            },
+            'rootClose' => function($child) {
+                if(count($child) && ($child[0]['lvl'] == 0)){
+                                return '</div>';
+                }
+             },
+            'childOpen' => '',
+            'childClose' => '',
+            'nodeDecorator' => function($node) use (&$controller) {
+                if($node['lvl'] == 1) {
+                    return '<h1>'.$node['title'].'</h1>';
+                }elseif($node["isVisibleOnHome"]) {
+                    return '<a href="'.$controller->generateUrl("wareTree",array("id"=>$node['id'])).'">'.$node['title'].'</a>&nbsp;';
+                }
+            }
+        ));
+```
+
 <a name="advanced-examples"></a>
 
 ## Advanced examples:
