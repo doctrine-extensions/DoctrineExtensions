@@ -1061,9 +1061,9 @@ class NestedTreeRepository extends AbstractTreeRepository
                 if (count($node['__children']) > 0) {
                     $output .= $build($node['__children']);
                 }
-                $output .= $options['childClose'];
+                $output .= is_string($options['childClose']) ? $options['childClose'] : $options['childClose']($node);
             }
-            return $output . $options['rootClose'];
+            return $output . (is_string($options['rootClose']) ? $options['rootClose'] : $options['rootClose']($tree));
         };
 
         return $build($nestedTree);
