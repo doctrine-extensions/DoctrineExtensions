@@ -37,7 +37,7 @@ class Annotation implements AnnotationDriverInterface
         'string',
         'text',
         'integer',
-        'int'
+        'int',
     );
 
     /**

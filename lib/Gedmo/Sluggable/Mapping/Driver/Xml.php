@@ -30,7 +30,7 @@ class Xml extends BaseXml
         'string',
         'text',
         'integer',
-        'int'
+        'int',
     );
 
     /**

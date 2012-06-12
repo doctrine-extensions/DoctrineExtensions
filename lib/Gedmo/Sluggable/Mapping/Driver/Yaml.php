@@ -35,7 +35,7 @@ class Yaml extends File implements Driver
         'string',
         'text',
         'integer',
-        'int'
+        'int',
     );
 
     /**
