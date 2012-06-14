@@ -61,7 +61,7 @@ class Annotation implements AnnotationDriverInterface
     {
         $class = $meta->getReflectionClass();
         // class annotations
-        if ($annot = $this->reader->getClassAnnotation($class, self::SOFT_DELETEABLE)) {
+        if ($class !== null && $annot = $this->reader->getClassAnnotation($class, self::SOFT_DELETEABLE)) {
             $config['softDeleteable'] = true;
 
             Validator::validateField($meta, $annot->fieldName);
