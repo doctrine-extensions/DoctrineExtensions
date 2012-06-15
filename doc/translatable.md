@@ -842,35 +842,37 @@ This would create translations for english and lithuanian, and for fruits, **ru*
 Easy like that, any suggestions on improvements are very welcome
 
 
-Example code to use Personal Translations with (sonata) i18n Forms:
+### Example code to use Personal Translations with (Symfony2 Sonata) i18n Forms:
 
-Suppose you have a Sonata Backend with s asimple form like:
+Suppose you have a Sonata Backend with s a simple form like:
 
 ``` php
-    protected function configureFormFields(FormMapper $formMapper)    {
-        $formMapper
-            ->with('General')
-            ->add('title', 'text')
-            ->end()
-            ;
-    }
+<?php
+protected function configureFormFields(FormMapper $formMapper)    {
+    $formMapper
+        ->with('General')
+        ->add('title', 'text')
+        ->end()
+    ;
+}
 ```
 
 Then you can turn it into an 118n Form by providing the following changes.
 
 ``` php
-    protected function configureFormFields(FormMapper $formMapper)
-    {
-        $formMapper
-            ->with('General')
-                ->add('title', 'translatable_field', array(
-                    'field'                => 'title',
-                    'personal_translation' => 'ExampleBundle\Entity\Translation\ProductTranslation',
-                    'property_path'        => 'translations',
-                ))
-            ->end()
-        ;
-    }
+<?php
+protected function configureFormFields(FormMapper $formMapper)
+{
+    $formMapper
+        ->with('General')
+            ->add('title', 'translatable_field', array(
+                'field'                => 'title',
+                'personal_translation' => 'ExampleBundle\Entity\Translation\ProductTranslation',
+                'property_path'        => 'translations',
+            ))
+        ->end()
+    ;
+}
 
 ```
 
@@ -885,11 +887,8 @@ https://gist.github.com/2437078
 Then you can change to your needs:
 
 ``` php
-                    'field'                => 'title', //you need to provide which field you wish to translate
-                    'personal_translation' => 'ExampleBundle\Entity\Translation\ProductTranslation', //the personal translation entity
+    'field'                => 'title', //you need to provide which field you wish to translate
+    'personal_translation' => 'ExampleBundle\Entity\Translation\ProductTranslation', //the personal translation entity
 
 ```
-
-
-
 
