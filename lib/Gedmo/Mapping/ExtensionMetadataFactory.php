@@ -91,8 +91,8 @@ final class ExtensionMetadataFactory
                     }
                 }
             }
+            $this->driver->readExtendedMetadata($meta, $config);
         }
-        $this->driver->readExtendedMetadata($meta, $config);
         if ($config) {
             $config['useObjectClass'] = $useObjectName;
         }
