@@ -116,7 +116,7 @@ class TranslationRepository extends DocumentRepository
             $translationMeta = $this->getClassMetadata();
             $qb = $this->createQueryBuilder();
             $q = $qb->field('foreignKey')->equals($documentId)
-                ->field('objectClass')->equals($wrapped->getMetadata()->name)
+                ->field('objectClass')->equals($wrapped->getMetadata()->rootDocumentName)
                 ->sort('locale', 'asc')
                 ->getQuery();
 
@@ -153,7 +153,7 @@ class TranslationRepository extends DocumentRepository
         if ($meta->hasField($field)) {
             $qb = $this->createQueryBuilder();
             $q = $qb->field('field')->equals($field)
-                ->field('objectClass')->equals($meta->name)
+                ->field('objectClass')->equals($meta->rootDocumentName)
                 ->field('content')->equals($value)
                 ->getQuery();
 
