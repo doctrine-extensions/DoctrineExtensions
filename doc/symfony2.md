@@ -46,7 +46,7 @@ Now lets add the **gedmo/doctrine-extensions** into **composer.json**
             "sensio/framework-extra-bundle":  "2.0.*",
             "sensio/distribution-bundle":     "2.0.*",
             "jms/security-extra-bundle":      "1.0.*",
-            "gedmo/doctrine-extensions":      "master-dev"
+            "gedmo/doctrine-extensions":      "dev-master"
         },
     
         "autoload": {
