@@ -25,7 +25,7 @@
     ],
     "require": {
         "php": ">=5.3.2",
-        "doctrine/common": ">=2.1"
+        "doctrine/common": ">=2.1,<2.4-dev"
     },
     "suggest": {
         "doctrine/orm": ">=2.1",
@@ -33,5 +33,10 @@
     },
     "autoload": {
         "psr-0": { "Gedmo": "lib/" }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "2.3.x-dev"
+        }
     }
 }
