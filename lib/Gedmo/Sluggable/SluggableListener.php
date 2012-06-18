@@ -229,6 +229,22 @@ class SluggableListener extends MappedEventSubscriber
                             return strtoupper($m[0]);
                         }, $slug);
                         break;
+                        
+                    case 'lower':
+                        if (function_exists('mb_strtolower')) {
+                            $slug = mb_strtolower($slug);
+                        } else {
+                            $slug = strtolower($slug);
+                        }
+                        break;
+                        
+                    case 'upper':
+                        if (function_exists('mb_strtoupper')) {
+                            $slug = mb_strtoupper($slug);
+                        } else {
+                            $slug = strtoupper($slug);
+                        }
+                        break;
 
                     default:
                         // leave it as is
