@@ -247,6 +247,9 @@ class TranslatableTest extends BaseTestCaseORM
         $this->assertCount(1, $translations);
     }
 
+    /**
+     * @test
+     */
     function shouldRespectNoFallbackAnnotation()
     {
         $article = new Article;
