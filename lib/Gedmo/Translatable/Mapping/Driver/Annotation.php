@@ -86,7 +86,6 @@ class Annotation implements AnnotationDriverInterface
             $config['translationClass'] = $annot->class;
         }
 
-        $config['nofallback'] = array();
         // property annotations
         foreach ($class->getProperties() as $property) {
             if ($meta->isMappedSuperclass && !$property->isPrivate() ||
