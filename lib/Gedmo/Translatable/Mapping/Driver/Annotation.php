@@ -103,9 +103,9 @@ class Annotation implements AnnotationDriverInterface
                 }
                 // fields cannot be overrided and throws mapping exception
                 $config['fields'][] = $field;
-				if ($this->reader->getPropertyAnnotation($property, self::NOFALLBACK)) {
-					$config['nofallback'][] = $field;
-				}
+                if ($this->reader->getPropertyAnnotation($property, self::NOFALLBACK)) {
+                    $config['nofallback'][] = $field;
+                }
             }
             // locale property
             if ($locale = $this->reader->getPropertyAnnotation($property, self::LOCALE)) {
