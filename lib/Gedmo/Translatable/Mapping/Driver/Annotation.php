@@ -29,6 +29,11 @@ class Annotation implements AnnotationDriverInterface
      */
     const TRANSLATABLE = 'Gedmo\\Mapping\\Annotation\\Translatable';
 
+	/**
+	 * Annotation to identify field that does not require fallback
+	 */
+	const NOFALLBACK = 'Gedmo\\Mapping\\Annotation\\NoFallback';
+
     /**
      * Annotation to identify field which can store used locale or language
      * alias is LANGUAGE
@@ -81,6 +86,7 @@ class Annotation implements AnnotationDriverInterface
             $config['translationClass'] = $annot->class;
         }
 
+		$config['nofallback'] = array();
         // property annotations
         foreach ($class->getProperties() as $property) {
             if ($meta->isMappedSuperclass && !$property->isPrivate() ||
@@ -97,6 +103,9 @@ class Annotation implements AnnotationDriverInterface
                 }
                 // fields cannot be overrided and throws mapping exception
                 $config['fields'][] = $field;
+				if ($this->reader->getPropertyAnnotation($property, self::NOFALLBACK)) {
+					$config['nofallback'][] = $field;
+				}
             }
             // locale property
             if ($locale = $this->reader->getPropertyAnnotation($property, self::LOCALE)) {

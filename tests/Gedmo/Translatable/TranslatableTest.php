@@ -247,6 +247,27 @@ class TranslatableTest extends BaseTestCaseORM
         $this->assertCount(1, $translations);
     }
 
+	function shouldRespectNoFallbackAnnotation()
+	{
+		$article = new Article;
+		$article->setTitle('Euro2012');
+		$article->setViews(10);
+
+		$this->em->persist($article);
+		$this->em->flush();
+
+		$this->translatableListener->setTranslatableLocale('ua_UA');
+		$this->em->persist($article);
+		$this->em->flush();
+
+		$this->em->clear();
+		$this->translatableListener->setTranslationFallback(true);
+		$article = $this->em->find(self::ARTICLE, $article->getId());
+
+		$this->assertEquals('Euro2012', $article->getTitle());
+		$this->assertEmpty($article->getViews());
+	}
+
     protected function getUsedEntityFixtures()
     {
         return array(

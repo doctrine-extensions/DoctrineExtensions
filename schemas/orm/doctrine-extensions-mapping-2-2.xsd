@@ -30,6 +30,7 @@ people to push their own additional attributes/elements into the same field elem
   <!-- field -->
   <xs:element name="slug" type="gedmo:slug"/>
   <xs:element name="translatable" type="gedmo:emptyType"/>
+  <xs:element name="nofallback" type="gedmo:emptyType"/>
   <xs:element name="timestampable" type="gedmo:timestampable"/>
   <xs:element name="versioned" type="gedmo:emptyType"/>
   <xs:element name="tree-left" type="gedmo:emptyType"/>

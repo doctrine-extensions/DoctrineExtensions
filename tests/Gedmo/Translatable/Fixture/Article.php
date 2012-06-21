@@ -28,6 +28,7 @@ class Article implements Translatable
 
     /**
      * @Gedmo\Translatable
+	 * @Gedmo\NoFallback
      * @ORM\Column(name="views", type="integer", nullable=true)
      */
     private $views;

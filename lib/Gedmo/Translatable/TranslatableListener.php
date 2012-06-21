@@ -412,7 +412,7 @@ class TranslatableListener extends MappedEventSubscriber
                     }
                 }
                 // update translation
-                if ($translated || !$this->translationFallback) {
+                if ($translated || !$this->translationFallback || in_array($field, $config['nofallback'])) {
                     $ea->setTranslationValue($object, $field, $translated);
                     // ensure clean changeset
                     $ea->setOriginalObjectProperty(
