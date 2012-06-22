@@ -60,10 +60,12 @@ class TranslatableMappingTest extends \PHPUnit_Framework_TestCase
         $this->assertArrayHasKey('translationClass', $config);
         $this->assertEquals('Translatable\Fixture\PersonTranslation', $config['translationClass']);
         $this->assertArrayHasKey('fields', $config);
-        $this->assertCount(2, $config['fields']);
+        $this->assertCount(3, $config['fields']);
         $this->assertEquals('password', $config['fields'][0]);
         $this->assertEquals('username', $config['fields'][1]);
         $this->assertArrayHasKey('locale', $config);
         $this->assertEquals('localeField', $config['locale']);
+        $this->assertCount(1, $config['fallback']);
+        $this->assertTrue($config['fallback']['company']);
     }
 }

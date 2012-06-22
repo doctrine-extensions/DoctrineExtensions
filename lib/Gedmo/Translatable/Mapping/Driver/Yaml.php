@@ -51,12 +51,11 @@ class Yaml extends File implements Driver
         if (isset($mapping['fields'])) {
             foreach ($mapping['fields'] as $field => $fieldMapping) {
                 if (isset($fieldMapping['gedmo'])) {
-                    if (in_array('translatable', $fieldMapping['gedmo'])) {
+                    if (in_array('translatable', $fieldMapping['gedmo']) || isset($fieldMapping['gedmo']['translatable'])) {
                         // fields cannot be overrided and throws mapping exception
                         $config['fields'][] = $field;
-                        $mappingProperty = $fieldMapping['gedmo']['translatable'];
-                        if (isset($mappingProperty['fallback'])) {
-                            $config['fallback'][$field] = (bool)$mappingProperty['fallback'];
+                        if (isset($fieldMapping['gedmo']['translatable']['fallback'])) {
+                            $config['fallback'][$field] = (bool)$fieldMapping['gedmo']['translatable']['fallback'];
                         }
                     }
                 }
