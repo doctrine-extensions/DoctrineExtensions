@@ -55,7 +55,7 @@ class Yaml extends File implements Driver
                         // fields cannot be overrided and throws mapping exception
                         $config['fields'][] = $field;
                         if (isset($fieldMapping['gedmo']['translatable']['fallback'])) {
-                            $config['fallback'][$field] = (bool)$fieldMapping['gedmo']['translatable']['fallback'];
+                            $config['fallback'][$field] = $fieldMapping['gedmo']['translatable']['fallback'];
                         }
                     }
                 }

@@ -97,8 +97,8 @@ class Annotation implements AnnotationDriverInterface
                 }
                 // fields cannot be overrided and throws mapping exception
                 $config['fields'][] = $field;
-                if(isset($translatable->fallback)) {
-                    $config['fallback'][$field] = (bool)$translatable->fallback;
+                if (isset($translatable->fallback)) {
+                    $config['fallback'][$field] = $translatable->fallback;
                 }
             }
             // locale property
