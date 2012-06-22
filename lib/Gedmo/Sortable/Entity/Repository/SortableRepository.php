@@ -5,7 +5,7 @@ namespace Gedmo\Sortable\Entity\Repository;
 use Doctrine\ORM\EntityRepository,
     Doctrine\ORM\EntityManager,
     Doctrine\ORM\Mapping\ClassMetadata;
-    
+
 /**
  * Sortable Repository
  *
