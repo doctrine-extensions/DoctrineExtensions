@@ -15,6 +15,12 @@
         <field name="content" type="text">
             <gedmo:translatable/>
         </field>
+        <field name="author" type="text">
+            <gedmo:translatable fallback="true"/>
+        </field>
+        <field name="views" type="text">
+            <gedmo:translatable fallback="false"/>
+        </field>
 
         <gedmo:translation entity="Gedmo\Translatable\Entity\Translation" locale="locale"/>
 
