@@ -11,4 +11,8 @@ class Translatable
     private $content;
 
     private $locale;
+
+    private $author;
+
+    private $views;
 }

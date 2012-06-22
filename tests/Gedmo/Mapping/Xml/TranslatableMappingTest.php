@@ -64,7 +64,7 @@ class TranslatableMappingTest extends BaseTestCaseOM
         $this->assertEquals('locale', $config['locale']);
 
         $this->assertArrayHasKey('fields', $config);
-        $this->assertCount(2, $config['fields']);
+        $this->assertCount(4, $config['fields']);
         $this->assertTrue(in_array('title', $config['fields']));
         $this->assertTrue(in_array('content', $config['fields']));
     }
