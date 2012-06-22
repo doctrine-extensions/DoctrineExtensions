@@ -6,6 +6,15 @@ use Doctrine\ORM\EntityRepository,
     Doctrine\ORM\EntityManager,
     Doctrine\ORM\Mapping\ClassMetadata;
 
+/**
+ * Sortable Repository
+ *
+ * @author Lukas Botsch <lukas.botsch@gmail.com>
+ * @subpackage SortableRepository
+ * @package Gedmo.Sortable
+ * @link http://www.gediminasm.org
+ * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
+ */
 class SortableRepository extends EntityRepository
 {
     /**
