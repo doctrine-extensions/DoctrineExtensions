@@ -10,6 +10,8 @@ class User
 
     private $username;
 
+    private $company;
+
     private $localeField;
     /**
      * Get id
@@ -59,5 +61,25 @@ class User
     public function getUsername()
     {
         return $this->username;
+    }
+
+    /**
+     * Set company
+     *
+     * @param $company
+     */
+    public function setCompany($company)
+    {
+        $this->company = $company;
+    }
+
+    /**
+     * Get company
+     *
+     * @return string $company
+     */
+    public function getCompany()
+    {
+        return $this->company;
     }
 }
