@@ -67,5 +67,9 @@ class TranslatableMappingTest extends BaseTestCaseOM
         $this->assertCount(4, $config['fields']);
         $this->assertTrue(in_array('title', $config['fields']));
         $this->assertTrue(in_array('content', $config['fields']));
+        $this->assertTrue(in_array('author', $config['fields']));
+        $this->assertTrue(in_array('views', $config['fields']));
+        $this->assertTrue($config['fallback']['author']);
+        $this->assertFalse($config['fallback']['views']);
     }
 }
