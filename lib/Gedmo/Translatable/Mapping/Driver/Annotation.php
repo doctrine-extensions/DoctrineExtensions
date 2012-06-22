@@ -30,11 +30,6 @@ class Annotation implements AnnotationDriverInterface
     const TRANSLATABLE = 'Gedmo\\Mapping\\Annotation\\Translatable';
 
     /**
-     * Annotation to identify field that does not require fallback
-     */
-    const NOFALLBACK = 'Gedmo\\Mapping\\Annotation\\NoFallback';
-
-    /**
      * Annotation to identify field which can store used locale or language
      * alias is LANGUAGE
      */
