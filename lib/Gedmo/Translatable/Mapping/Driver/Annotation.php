@@ -102,7 +102,7 @@ class Annotation implements AnnotationDriverInterface
                 }
                 // fields cannot be overrided and throws mapping exception
                 $config['fields'][] = $field;
-                if ($this->reader->getPropertyAnnotation($property, self::NOFALLBACK)) {
+                if (false === $translatable->fallback) {
                     $config['nofallback'][] = $field;
                 }
             }

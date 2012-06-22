@@ -250,7 +250,7 @@ class TranslatableTest extends BaseTestCaseORM
     /**
      * @test
      */
-    function shouldRespectNoFallbackAnnotation()
+    function shouldRespectFallbackOption()
     {
         $article = new Article;
         $article->setTitle('Euro2012');
