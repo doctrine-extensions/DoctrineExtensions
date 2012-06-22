@@ -33,6 +33,12 @@ class Article implements Translatable
     private $views;
 
     /**
+     * @Gedmo\Translatable(fallback=true)
+     * @ORM\Column(name="author", type="string", nullable=true)
+     */
+    private $author;
+
+    /**
      * Used locale to override Translation listener`s locale
      * @Gedmo\Locale
      */
@@ -92,5 +98,15 @@ class Article implements Translatable
     public function getViews ()
     {
         return $this->views;
+    }
+
+    public function setAuthor($author)
+    {
+        $this->author = $author;
+    }
+
+    public function getAuthor()
+    {
+        return $this->author;
     }
 }

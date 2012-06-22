@@ -63,12 +63,10 @@ class Xml extends BaseXml
                 $field = $this->_getAttribute($mappingDoctrine, 'name');
                 if (isset($mapping->translatable)) {
                     $config['fields'][] = $field;
-                    /**
-                     * @var \SimpleXmlElement $data
-                     */
+                    /** @var \SimpleXmlElement $data */
                     $data = $mapping->translatable;
-                    if($this->_isAttributeSet($data, 'fallback') && false === $this->_getAttribute($data, 'fallback')) {
-                        $config['nofallback'][] = $field;
+                    if ($this->_isAttributeSet($data, 'fallback')) {
+                        $config['fallback'][$field] = (bool)$this->_getAttribute($data, 'fallback');
                     }
                 }
             }

@@ -254,6 +254,7 @@ class TranslatableTest extends BaseTestCaseORM
     {
         $article = new Article;
         $article->setTitle('Euro2012');
+        $article->setAuthor('Shevchenko');
         $article->setViews(10);
 
         $this->em->persist($article);
@@ -265,6 +266,14 @@ class TranslatableTest extends BaseTestCaseORM
         $article = $this->em->find(self::ARTICLE, $article->getId());
 
         $this->assertEquals('Euro2012', $article->getTitle());
+        $this->assertEquals('Shevchenko', $article->getAuthor());
+        $this->assertEmpty($article->getViews());
+
+        $this->em->clear();
+        $this->translatableListener->setTranslationFallback(false);
+        $article = $this->em->find(self::ARTICLE, $article->getId());
+        $this->assertEmpty($article->getTitle());
+        $this->assertEquals('Shevchenko', $article->getAuthor());
         $this->assertEmpty($article->getViews());
     }
 

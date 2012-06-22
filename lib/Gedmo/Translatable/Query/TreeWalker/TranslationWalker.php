@@ -305,7 +305,9 @@ class TranslationWalker extends SqlWalker
                 }
 
                 // Fallback to original if was asked for
-                if ($this->needsFallback() && (!isset($config['nofallback']) || !in_array($field, $config['nofallback']))) {
+                if (($this->needsFallback() && (!isset($config['fallback'][$field]) || $config['fallback'][$field]))
+                    ||  (!$this->needsFallback() && isset($config['fallback'][$field]) && $config['fallback'][$field])
+                ) {
                     $substituteField = 'COALESCE('.$substituteField.', '.$originalField.')';
                 }
 
