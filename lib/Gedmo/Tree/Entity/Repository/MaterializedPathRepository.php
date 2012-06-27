@@ -58,9 +58,7 @@ class MaterializedPathRepository extends AbstractTreeRepository
     }
 
     /**
-     * Get all root nodes query builder
-     *
-     * @return Doctrine\ORM\QueryBuilder
+     * {@inheritDoc}
      */
     public function getRootNodesQueryBuilder($sortByField = null, $direction = 'asc')
     {
@@ -68,9 +66,7 @@ class MaterializedPathRepository extends AbstractTreeRepository
     }
 
     /**
-     * Get all root nodes query
-     *
-     * @return Doctrine\ORM\Query
+     * {@inheritDoc}
      */
     public function getRootNodesQuery($sortByField = null, $direction = 'asc')
     {
@@ -78,9 +74,7 @@ class MaterializedPathRepository extends AbstractTreeRepository
     }
 
     /**
-     * Get all root nodes
-     *
-     * @return array
+     * {@inheritDoc}
      */
     public function getRootNodes($sortByField = null, $direction = 'asc')
     {
@@ -88,9 +82,7 @@ class MaterializedPathRepository extends AbstractTreeRepository
     }
 
     /**
-     * Get children from node
-     *
-     * @return Doctrine\ORM\QueryBuilder
+     * {@inheritDoc}
      */
     public function getChildrenQueryBuilder($node = null, $direct = false, $sortByField = null, $direction = 'asc', $includeNode = false)
     {
@@ -139,9 +131,7 @@ class MaterializedPathRepository extends AbstractTreeRepository
     }
 
     /**
-     * Get children query
-     *
-     * @return Doctrine\ORM\Query
+     * {@inheritDoc}
      */
     public function getChildrenQuery($node = null, $direct = false, $sortByField = null, $direction = 'asc', $includeNode = false)
     {
@@ -149,9 +139,7 @@ class MaterializedPathRepository extends AbstractTreeRepository
     }
 
     /**
-     * Get children
-     *
-     * @return array
+     * {@inheritDoc}
      */
     public function getChildren($node = null, $direct = false, $sortByField = null, $direction = 'asc', $includeNode = false)
     {
@@ -161,7 +149,7 @@ class MaterializedPathRepository extends AbstractTreeRepository
     /**
      * {@inheritdoc}
      */
-    public function getNodesHierarchyQueryBuilder($node, $direct, array $config, array $options = array())
+    public function getNodesHierarchyQueryBuilder($node = null, $direct, array $config, array $options = array(), $includeNode = false)
     {
         $sortBy = array(
             'field'     => null,
@@ -172,23 +160,23 @@ class MaterializedPathRepository extends AbstractTreeRepository
             $sortBy = array_merge($sortBy, $options['childSort']);
         }
 
-        return $this->getChildrenQueryBuilder($node, $direct, $sortBy['field'], $sortBy['dir'], true);
+        return $this->getChildrenQueryBuilder($node, $direct, $sortBy['field'], $sortBy['dir'], $includeNode);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getNodesHierarchyQuery($node, $direct, array $config, array $options = array())
+    public function getNodesHierarchyQuery($node = null, $direct, array $config, array $options = array(), $includeNode = false)
     {
-        return $this->getNodesHierarchyQueryBuilder($node, $direct, $config, $options)->getQuery();
+        return $this->getNodesHierarchyQueryBuilder($node, $direct, $config, $options, $includeNode)->getQuery();
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getNodesHierarchy($node, $direct, array $config, array $options = array())
+    public function getNodesHierarchy($node = null, $direct, array $config, array $options = array(), $includeNode = false)
     {
-        return $this->getNodesHierarchyQuery($node, $direct, $config, $options)->getArrayResult();
+        return $this->getNodesHierarchyQuery($node, $direct, $config, $options, $includeNode)->getArrayResult();
     }
 
     /**

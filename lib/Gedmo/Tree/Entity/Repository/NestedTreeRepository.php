@@ -23,11 +23,9 @@ use Doctrine\ORM\Query,
 class NestedTreeRepository extends AbstractTreeRepository
 {
     /**
-     * Get all root nodes query builder
-     *
-     * @return Doctrine\ORM\QueryBuilder
+     * {@inheritDoc}
      */
-    public function getRootNodesQueryBuilder()
+    public function getRootNodesQueryBuilder($sortByField = null, $direction = 'asc')
     {
         $meta = $this->getClassMetadata();
         $config = $this->listener->getConfiguration($this->_em, $meta->name);
@@ -41,23 +39,19 @@ class NestedTreeRepository extends AbstractTreeRepository
     }
 
     /**
-     * Get all root nodes query
-     *
-     * @return Doctrine\ORM\Query
+     * {@inheritDoc}
      */
-    public function getRootNodesQuery()
+    public function getRootNodesQuery($sortByField = null, $direction = 'asc')
     {
-        return $this->getRootNodesQueryBuilder()->getQuery();
+        return $this->getRootNodesQueryBuilder($sortByField, $direction)->getQuery();
     }
 
     /**
-     * Get all root nodes
-     *
-     * @return array
+     * {@inheritDoc}
      */
-    public function getRootNodes()
+    public function getRootNodes($sortByField = null, $direction = 'asc')
     {
-        return $this->getRootNodesQuery()->getResult();
+        return $this->getRootNodesQuery($sortByField, $direction)->getResult();
     }
 
     /**
@@ -234,16 +228,9 @@ class NestedTreeRepository extends AbstractTreeRepository
     }
 
     /**
-     * Get tree children query builder followed by given $node
-     *
-     * @param object $node - if null, all tree nodes will be taken
-     * @param boolean $direct - true to take only direct children
-     * @param string $sortByField - field name to sort by
-     * @param string $direction - sort direction : "ASC" or "DESC"
-     * @throws InvalidArgumentException - if input is not valid
-     * @return Doctrine\ORM\QueryBuilder
+     * @see getChildrenQueryBuilder
      */
-    public function childrenQueryBuilder($node = null, $direct = false, $sortByField = null, $direction = 'ASC')
+    public function childrenQueryBuilder($node = null, $direct = false, $sortByField = null, $direction = 'ASC', $includeNode = false)
     {
         $meta = $this->getClassMetadata();
         $config = $this->listener->getConfiguration($this->_em, $meta->name);
@@ -281,6 +268,11 @@ class NestedTreeRepository extends AbstractTreeRepository
                         $qb->expr()->eq('node.'.$config['root'], is_string($rootId) ? $qb->expr()->literal($rootId) : $rootId)
                     );
                 }
+                if ($includeNode) {
+                    $idField = $meta->getSingleIdentifierFieldName();
+                    $qb->where('('.$qb->getDqlPart('where').') OR node.'.$idField.' = :rootNode');
+                    $qb->setParameter('rootNode', $node);
+                }
             } else {
                 throw new \InvalidArgumentException("Node is not related to this repository");
             }
@@ -309,32 +301,44 @@ class NestedTreeRepository extends AbstractTreeRepository
     }
 
     /**
-     * Get tree children query followed by given $node
-     *
-     * @param object $node - if null, all tree nodes will be taken
-     * @param boolean $direct - true to take only direct children
-     * @param string|array $sortByField - field names to sort by
-     * @param string $direction - sort direction : "ASC" or "DESC"
-     * @return Doctrine\ORM\Query
+     * @see getChildrenQuery
      */
-    public function childrenQuery($node = null, $direct = false, $sortByField = null, $direction = 'ASC')
+    public function childrenQuery($node = null, $direct = false, $sortByField = null, $direction = 'ASC', $includeNode = false)
     {
-        return $this->childrenQueryBuilder($node, $direct, $sortByField, $direction)->getQuery();
+        return $this->childrenQueryBuilder($node, $direct, $sortByField, $direction, $includeNode)->getQuery();
     }
 
     /**
-     * Get list of children followed by given $node
-     *
-     * @param object $node - if null, all tree nodes will be taken
-     * @param boolean $direct - true to take only direct children
-     * @param string $sortByField - field name to sort by
-     * @param string $direction - sort direction : "ASC" or "DESC"
-     * @return array - list of given $node children, null on failure
+     * @see getChildren
      */
-    public function children($node = null, $direct = false, $sortByField = null, $direction = 'ASC')
+    public function children($node = null, $direct = false, $sortByField = null, $direction = 'ASC', $includeNode = false)
     {
-        $q = $this->childrenQuery($node, $direct, $sortByField, $direction);
+        $q = $this->childrenQuery($node, $direct, $sortByField, $direction, $includeNode);
         return $q->getResult();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getChildrenQueryBuilder($node = null, $direct = false, $sortByField = null, $direction = 'ASC', $includeNode = false)
+    {
+        return $this->childrenQueryBuilder($node, $direct, $sortByField, $direction, $includeNode);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getChildrenQuery($node = null, $direct = false, $sortByField = null, $direction = 'ASC', $includeNode = false)
+    {
+        return $this->childrenQuery($node, $direct, $sortByField, $direction, $includeNode);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getChildren($node = null, $direct = false, $sortByField = null, $direction = 'ASC', $includeNode = false)
+    {
+        return $this->children($node, $direct, $sortByField, $direction, $includeNode);
     }
 
     /**
@@ -838,20 +842,21 @@ class NestedTreeRepository extends AbstractTreeRepository
     /**
      * {@inheritDoc}
      */
-    public function getNodesHierarchyQueryBuilder($node, $direct, array $config, array $options = array())
+    public function getNodesHierarchyQueryBuilder($node = null, $direct, array $config, array $options = array(), $includeNode = false)
     {
         return $this->childrenQueryBuilder(
             $node,
             $direct,
             isset($config['root']) ? array($config['root'], $config['left']) : $config['left'],
-            'ASC'
+            'ASC',
+            $includeNode
         );
     }
 
     /**
      * {@inheritDoc}
      */
-    public function getNodesHierarchyQuery($node, $direct, array $config, array $options = array())
+    public function getNodesHierarchyQuery($node = null, $direct, array $config, array $options = array(), $includeNode = false)
     {
         return $this->getNodesHierarchyQueryBuilder($node, $direct, $config, $options)->getQuery();
     }
@@ -859,7 +864,7 @@ class NestedTreeRepository extends AbstractTreeRepository
     /**
      * {@inheritdoc}
      */
-    public function getNodesHierarchy($node, $direct, array $config, array $options = array())
+    public function getNodesHierarchy($node = null, $direct, array $config, array $options = array(), $includeNode = false)
     {
         return $this->getNodesHierarchyQuery($node, $direct, $config, $options)->getArrayResult();
     }

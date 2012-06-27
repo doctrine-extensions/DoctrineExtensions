@@ -203,36 +203,94 @@ class ClosureTreeRepositoryTest extends BaseTestCaseORM
     protected function buildTreeTests($class)
     {
         $repo = $this->em->getRepository($class);
+        $sortOption =  array('childSort' => array('field' => 'title', 'dir' => 'asc'));
+
+        $testClosure = function(ClosureTreeRepositoryTest $phpUnit, array $tree, $includeNode = false, $whichTree = 'both', $includeNewNode = false) {
+            if ($whichTree === 'both' || $whichTree === 'first') {
+                $boringFood = $includeNewNode ? ($includeNode ? $tree[0]['__children'][0] : $tree[0]) : null;
+                $fruitsIndex = $includeNewNode ? 1 : 0;
+                $milkIndex = $includeNewNode ? 2 : 1;
+                $fruits = $includeNode ? $tree[0]['__children'][$fruitsIndex] : $tree[$fruitsIndex];
+                $milk = $includeNode ? $tree[0]['__children'][$milkIndex] : $tree[$milkIndex];
+                $vegitables = $includeNewNode ? $boringFood['__children'][0] : ($includeNode ? $tree[0]['__children'][2] : $tree[2]);
+
+                if ($includeNode) {
+                    $phpUnit->assertEquals('Food', $tree[0]['title']);
+                }
+
+                $phpUnit->assertEquals('Fruits', $fruits['title']);
+                $phpUnit->assertEquals('Berries', $fruits['__children'][0]['title']);
+                $phpUnit->assertEquals('Strawberries', $fruits['__children'][0]['__children'][0]['title']);
+                $phpUnit->assertEquals('Milk', $milk['title']);
+                $phpUnit->assertEquals('Cheese', $milk['__children'][0]['title']);
+                $phpUnit->assertEquals('Mould cheese', $milk['__children'][0]['__children'][0]['title']);
+
+                if ($boringFood) {
+                    $phpUnit->assertEquals('Boring Food', $boringFood['title']);
+                }
+
+                $phpUnit->assertEquals('Vegitables', $vegitables['title']);
+                $phpUnit->assertEquals('Cabbages', $vegitables['__children'][0]['title']);
+                $phpUnit->assertEquals('Carrots', $vegitables['__children'][1]['title']);
+            }
+
+            if ($whichTree === 'both' || $whichTree === 'second') {
+                $root = $whichTree === 'both' ? $tree[1] : $tree[0];
+                $soccer = $includeNode ? $root['__children'][0] : $root;
+
+                if ($includeNode) {
+                    $phpUnit->assertEquals('Sports', $root['title']);
+                }
+
+                $phpUnit->assertEquals('Soccer', $soccer['title']);
+                $phpUnit->assertEquals('Indoor Soccer', $soccer['__children'][0]['title']);
+            }
+        };
+
+        // All trees
+        $tree = $repo->childrenHierarchy(null, false, $sortOption);
+
+        $testClosure($this, $tree, true, 'both');
+
         $roots = $repo->getRootNodes();
+
+        // First root tree, including root node
         $tree = $repo->childrenHierarchy(
             $roots[0],
             false,
-            array('childSort' => array('field' => 'title', 'dir' => 'asc'))
+            $sortOption,
+            true
         );
 
-        $fruits = $tree[0]['__children'][0];
-        $milk = $tree[0]['__children'][1];
-        $vegitables = $tree[0]['__children'][2];
+        $testClosure($this, $tree, true, 'first');
 
-        $this->assertEquals('Food', $tree[0]['title']);
-        $this->assertEquals('Fruits', $fruits['title']);
-        $this->assertEquals('Berries', $fruits['__children'][0]['title']);
-        $this->assertEquals('Strawberries', $fruits['__children'][0]['__children'][0]['title']);
-        $this->assertEquals('Milk', $milk['title']);
-        $this->assertEquals('Cheese', $milk['__children'][0]['title']);
-        $this->assertEquals('Mould cheese', $milk['__children'][0]['__children'][0]['title']);
-        $this->assertEquals('Vegitables', $vegitables['title']);
-        $this->assertEquals('Cabbages', $vegitables['__children'][0]['title']);
-        $this->assertEquals('Carrots', $vegitables['__children'][1]['title']);
+        // First root tree, not including root node
+        $tree = $repo->childrenHierarchy(
+            $roots[0],
+            false,
+            $sortOption
+        );
 
+        $testClosure($this, $tree, false, 'first');
+
+        // Second root tree, including root node
         $tree = $repo->childrenHierarchy(
             $roots[1],
             false,
-            array('childSort' => array('field' => 'title', 'dir' => 'asc'))
+            $sortOption,
+            true
         );
-        $this->assertEquals('Sports', $tree[0]['title']);
-        $this->assertEquals('Soccer', $tree[0]['__children'][0]['title']);
-        $this->assertEquals('Indoor Soccer', $tree[0]['__children'][0]['__children'][0]['title']);
+
+        $testClosure($this, $tree, true, 'second');
+
+        // Second root tree, not including root node
+        $tree = $repo->childrenHierarchy(
+            $roots[1],
+            false,
+            $sortOption
+        );
+
+        $testClosure($this, $tree, false, 'second');
 
         $food = $repo->findOneByTitle('Food');
         $vegitables = $repo->findOneByTitle('Vegitables');
@@ -246,37 +304,95 @@ class ClosureTreeRepositoryTest extends BaseTestCaseORM
 
         $this->em->flush();
 
+        // First root tree, after inserting a new node in the middle. This includes the root node
         $tree = $repo->childrenHierarchy(
             $roots[0],
             false,
-            array('childSort' => array('field' => 'title', 'dir' => 'asc'))
+            $sortOption,
+            true
         );
 
-        $boringFood = $tree[0]['__children'][0];
-        $fruits = $tree[0]['__children'][1];
-        $milk = $tree[0]['__children'][2];
-        $vegitables = $boringFood['__children'][0];
+        $testClosure($this, $tree, true, 'first', true);
 
-        $this->assertEquals('Food', $tree[0]['title']);
-        $this->assertEquals('Fruits', $fruits['title']);
-        $this->assertEquals('Berries', $fruits['__children'][0]['title']);
-        $this->assertEquals('Strawberries', $fruits['__children'][0]['__children'][0]['title']);
-        $this->assertEquals('Milk', $milk['title']);
-        $this->assertEquals('Cheese', $milk['__children'][0]['title']);
-        $this->assertEquals('Mould cheese', $milk['__children'][0]['__children'][0]['title']);
-        $this->assertEquals('Boring Food', $boringFood['title']);
-        $this->assertEquals('Vegitables', $boringFood['__children'][0]['title']);
-        $this->assertEquals('Cabbages', $vegitables['__children'][0]['title']);
-        $this->assertEquals('Carrots', $vegitables['__children'][1]['title']);
+        // First root tree, after inserting a new node in the middle. This not includes the root node
+        $tree = $repo->childrenHierarchy(
+            $roots[0],
+            false,
+            $sortOption
+        );
 
+        $testClosure($this, $tree, false, 'first', true);
+
+        // Second root tree, after inserting a new node in the middle. This includes the root node
         $tree = $repo->childrenHierarchy(
             $roots[1],
             false,
-            array('childSort' => array('field' => 'title', 'dir' => 'asc'))
+            $sortOption,
+            true
         );
-        $this->assertEquals('Sports', $tree[0]['title']);
-        $this->assertEquals('Soccer', $tree[0]['__children'][0]['title']);
-        $this->assertEquals('Indoor Soccer', $tree[0]['__children'][0]['__children'][0]['title']);
+
+        $testClosure($this, $tree, true, 'second', true);
+
+        // Second root tree, after inserting a new node in the middle. This not includes the root node
+        $tree = $repo->childrenHierarchy(
+            $roots[1],
+            false,
+            $sortOption
+        );
+
+        $testClosure($this, $tree, false, 'second', false);
+
+        // Test a subtree, including node
+        $node = $repo->findOneByTitle('Fruits');
+        $tree = $repo->childrenHierarchy(
+            $node,
+            false,
+            $sortOption,
+            true
+        );
+
+
+        $this->assertEquals('Fruits', $tree[0]['title']);
+        $this->assertEquals('Berries', $tree[0]['__children'][0]['title']);
+        $this->assertEquals('Strawberries', $tree[0]['__children'][0]['__children'][0]['title']);
+
+        $node = $repo->findOneByTitle('Fruits');
+        $tree = $repo->childrenHierarchy(
+            $node,
+            false,
+            $sortOption
+        );
+
+        $this->assertEquals('Berries', $tree[0]['title']);
+        $this->assertEquals('Strawberries', $tree[0]['__children'][0]['title']);
+
+        // First Tree Direct Nodes, including root node
+        $tree = $repo->childrenHierarchy(
+            $roots[0],
+            true,
+            $sortOption,
+            true
+        );
+
+        $food = $tree[0];
+        $this->assertEquals('Food', $food['title']);
+        $this->assertEquals(3, count($food['__children']));
+        $this->assertEquals('Boring Food', $food['__children'][0]['title']);
+        $this->assertEquals('Fruits', $food['__children'][1]['title']);
+        $this->assertEquals('Milk', $food['__children'][2]['title']);
+
+        // First Tree Direct Nodes, not including root node
+        $tree = $repo->childrenHierarchy(
+            $roots[0],
+            true,
+            $sortOption,
+            false
+        );
+
+        $this->assertEquals(3, count($tree));
+        $this->assertEquals('Boring Food', $tree[0]['title']);
+        $this->assertEquals('Fruits', $tree[1]['title']);
+        $this->assertEquals('Milk', $tree[2]['title']);
     }
 
     protected function getUsedEntityFixtures()

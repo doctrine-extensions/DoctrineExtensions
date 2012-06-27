@@ -143,7 +143,7 @@ class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
         $this->assertEquals('Best Whisky', $tree[2]->getTitle());
     }
 
-    public function testBuildTreeMethod()
+    public function testChildrenHierarchyMethod()
     {
         /** @var $repo \Gedmo\Tree\Document\MongoDB\Repository\MaterializedPathRepository */
         $repo = $this->em->getRepository(self::CATEGORY);
@@ -160,9 +160,15 @@ class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
         $this->assertEquals('Potatoes', $vegitablesChildren[1]['title']);
         $this->assertEquals('Sports', $tree[2]['title']);
 
-        // Tree of one specific root
+        // Tree of one specific root, without the root node
         $roots = $repo->getRootNodes();
         $tree = $repo->childrenHierarchy($roots[0]);
+
+        $this->assertEquals('Whisky', $tree[0]['title']);
+        $this->assertEquals('Best Whisky', $tree[0]['__children'][0]['title']);
+
+        // Tree of one specific root, with the root node
+        $tree = $repo->childrenHierarchy($roots[0], false, array(), true);
 
         $this->assertEquals('Drinks', $tree[0]['title']);
         $this->assertEquals('Whisky', $tree[0]['__children'][0]['title']);

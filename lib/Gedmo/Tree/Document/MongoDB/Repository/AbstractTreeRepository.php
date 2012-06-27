@@ -7,9 +7,10 @@ use Doctrine\ODM\MongoDB\DocumentRepository,
     Doctrine\ODM\MongoDB\Mapping\ClassMetadata,
     Doctrine\ODM\MongoDB\UnitOfWork,
     Gedmo\Tree\RepositoryUtils,
-    Gedmo\Tree\RepositoryUtilsInterface;
+    Gedmo\Tree\RepositoryUtilsInterface,
+    Gedmo\Tree\RepositoryInterface;
 
-abstract class AbstractTreeRepository extends DocumentRepository
+abstract class AbstractTreeRepository extends DocumentRepository implements RepositoryInterface
 {
     /**
      * Tree listener on event manager
@@ -79,7 +80,7 @@ abstract class AbstractTreeRepository extends DocumentRepository
     }
 
     /**
-     * @see \Gedmo\Tree\RepositoryUtilsInterface::childrenHierarchy
+     * {@inheritDoc}
      */
     public function childrenHierarchy($node = null, $direct = false, array $options = array())
     {
@@ -87,7 +88,7 @@ abstract class AbstractTreeRepository extends DocumentRepository
     }
 
     /**
-     * @see \Gedmo\Tree\RepositoryUtilsInterface::buildTree
+     * {@inheritDoc}
      */
     public function buildTree(array $nodes, array $options = array())
     {
@@ -95,7 +96,7 @@ abstract class AbstractTreeRepository extends DocumentRepository
     }
 
     /**
-     * @see \Gedmo\Tree\RepositoryUtilsInterface::buildTreeArray
+     * {@inheritDoc}
      */
     public function buildTreeArray(array $nodes)
     {
@@ -109,38 +110,4 @@ abstract class AbstractTreeRepository extends DocumentRepository
      * @return bool
      */
     abstract protected function validate();
-
-    /**
-     * Returns a QueryBuilder configured to return an array of nodes suitable for buildTree method
-     *
-     * @param object - Root node
-     * @param bool - Obtain direct children?
-     * @param array $config
-     * @param array $options
-     * @return \Doctrine\ORM\QueryBuilder
-     */
-    abstract public function getNodesHierarchyQueryBuilder($node, $direct, array $config, array $options = array());
-
-    /**
-     * Returns a Query configured to return an array of nodes suitable for buildTree method
-     *
-     * @param object - Root node
-     * @param bool - Obtain direct children?
-     * @param array - Metadata configuration
-     * @param array - Options
-     * @return \Doctrine\ORM\Query
-     */
-    abstract public function getNodesHierarchyQuery($node, $direct, array $config, array $options = array());
-
-    /**
-     * Returns an array of nodes suitable for method buildTree
-     *
-     * @param object - Root node
-     * @param bool - Obtain direct children?
-     * @param array - Metadata configuration
-     * @param array - Options
-     *
-     * @return array - Array of nodes
-     */
-    abstract public function getNodesHierarchy($node, $direct, array $config, array $options = array());
 }

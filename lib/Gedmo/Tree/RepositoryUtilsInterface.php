@@ -19,10 +19,11 @@ interface RepositoryUtilsInterface
      *     childStart: string || Closure ('<li>') - start of node, closure will be given $node as a parameter
      *     childClose: string ('</li>') - close of node
      *     childSort: array || keys allowed: field: field to sort on, dir: direction. 'asc' or 'desc'
+     * @param boolean $includeNode - Include node on results?
      *
      * @return array|string
      */
-    public function childrenHierarchy($node = null, $direct = false, array $options = array());
+    public function childrenHierarchy($node = null, $direct = false, array $options = array(), $includeNode = false);
 
     /**
      * Retrieves the nested array or the decorated output.

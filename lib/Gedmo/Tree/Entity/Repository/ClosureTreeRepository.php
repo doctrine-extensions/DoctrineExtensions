@@ -27,11 +27,9 @@ class ClosureTreeRepository extends AbstractTreeRepository
     const SUBQUERY_LEVEL = 'level';
 
     /**
-     * Get all root nodes query
-     *
-     * @return Query
+     * {@inheritDoc}
      */
-    public function getRootNodesQuery()
+    public function getRootNodesQueryBuilder($sortByField = null, $direction = 'asc')
     {
         $meta = $this->getClassMetadata();
         $config = $this->listener->getConfiguration($this->_em, $meta->name);
@@ -39,17 +37,28 @@ class ClosureTreeRepository extends AbstractTreeRepository
         $qb->select('node')
             ->from($config['useObjectClass'], 'node')
             ->where('node.' . $config['parent'] . " IS NULL");
-        return $qb->getQuery();
+
+        if ($sortByField) {
+            $qb->orderBy($sortByField, $direction === 'asc' ? 'asc' : 'desc');
+        }
+
+        return $qb;
     }
 
     /**
-     * Get all root nodes
-     *
-     * @return array
+     * {@inheritDoc}
      */
-    public function getRootNodes()
+    public function getRootNodesQuery($sortByField = null, $direction = 'asc')
     {
-        return $this->getRootNodesQuery()->getResult();
+        return $this->getRootNodesQueryBuilder($sortByField, $direction)->getQuery();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getRootNodes($sortByField = null, $direction = 'asc')
+    {
+        return $this->getRootNodesQuery($sortByField, $direction)->getResult();
     }
 
     /**
@@ -142,16 +151,7 @@ class ClosureTreeRepository extends AbstractTreeRepository
     }
 
     /**
-     * Get tree children query followed by given $node
-     *
-     * @param object $node - if null, all tree nodes will be taken
-     * @param boolean $direct - true to take only direct children
-     * @param string $sortByField - field name to sort by
-     * @param string $direction - sort direction : "ASC" or "DESC"
-     * @param bool $includeNode - Include the root node in the result?
-     *
-     * @throws InvalidArgumentException - if input is not valid
-     * @return Query
+     * @see getChildrenQueryBuilder
      */
     public function childrenQueryBuilder($node = null, $direct = false, $sortByField = null, $direction = 'ASC', $includeNode = false)
     {
@@ -208,20 +208,16 @@ class ClosureTreeRepository extends AbstractTreeRepository
         return $qb;
     }
 
+    /**
+     * @see getChildrenQuery
+     */
     public function childrenQuery($node = null, $direct = false, $sortByField = null, $direction = 'ASC', $includeNode = false)
     {
         return $this->childrenQueryBuilder($node, $direct, $sortByField, $direction, $includeNode)->getQuery();
     }
 
     /**
-     * Get list of children followed by given $node
-     *
-     * @param object $node - if null, all tree nodes will be taken
-     * @param boolean $direct - true to take only direct children
-     * @param string $sortByField - field name to sort by
-     * @param string $direction - sort direction : "ASC" or "DESC"
-     * @param bool $includeNode - Include the root node in results?
-     * @return array - list of given $node children, null on failure
+     * @see getChildren
      */
     public function children($node = null, $direct = false, $sortByField = null, $direction = 'ASC', $includeNode = false)
     {
@@ -232,6 +228,30 @@ class ClosureTreeRepository extends AbstractTreeRepository
             }, $result);
         }
         return $result;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getChildrenQueryBuilder($node = null, $direct = false, $sortByField = null, $direction = 'ASC', $includeNode = false)
+    {
+        return $this->childrenQueryBuilder($node, $direct, $sortByField, $direction, $includeNode);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getChildrenQuery($node = null, $direct = false, $sortByField = null, $direction = 'ASC', $includeNode = false)
+    {
+        return $this->childrenQuery($node, $direct, $sortByField, $direction, $includeNode);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getChildren($node = null, $direct = false, $sortByField = null, $direction = 'ASC', $includeNode = false)
+    {
+        return $this->children($node, $direct, $sortByField, $direction, $includeNode);
     }
 
     /**
@@ -320,7 +340,8 @@ class ClosureTreeRepository extends AbstractTreeRepository
         $levelProp = $hasLevelProp ? $config['level'] : self::SUBQUERY_LEVEL;
 
         if (count($nodes) > 0) {
-            $l = 1;
+            $firstLevel = $hasLevelProp ? $nodes[0][0]['descendant'][$levelProp] : $nodes[0][$levelProp];
+            $l = 1;     // 1 is only an initial value. We could have a tree which has a root node with any level (subtrees)
             $refs = array();
 
             foreach ($nodes as $n) {
@@ -332,7 +353,7 @@ class ClosureTreeRepository extends AbstractTreeRepository
                     $l = $level;
                 }
 
-                if ($l == 1) {
+                if ($l == $firstLevel) {
                     $tmp = &$nestedTree;
                 } else {
                     $tmp = &$refs[$n['parent_id']]['__children'];
@@ -352,23 +373,23 @@ class ClosureTreeRepository extends AbstractTreeRepository
     /**
      * {@inheritdoc}
      */
-    public function getNodesHierarchy($node, $direct, array $config, array $options = array())
+    public function getNodesHierarchy($node = null, $direct, array $config, array $options = array(), $includeNode = false)
     {
-        return $this->getNodesHierarchyQuery($node, $direct, $config, $options)->getArrayResult();
+        return $this->getNodesHierarchyQuery($node, $direct, $config, $options, $includeNode)->getArrayResult();
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getNodesHierarchyQuery($node, $direct, array $config, array $options = array())
+    public function getNodesHierarchyQuery($node = null, $direct, array $config, array $options = array(), $includeNode = false)
     {
-        return $this->getNodesHierarchyQueryBuilder($node, $direct, $config, $options)->getQuery();
+        return $this->getNodesHierarchyQueryBuilder($node, $direct, $config, $options, $includeNode)->getQuery();
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getNodesHierarchyQueryBuilder($node, $direct, array $config, array $options = array())
+    public function getNodesHierarchyQueryBuilder($node = null, $direct, array $config, array $options = array(), $includeNode = false)
     {
         $meta = $this->getClassMetadata();
         $idField = $meta->getSingleIdentifierFieldName();
@@ -385,8 +406,18 @@ class ClosureTreeRepository extends AbstractTreeRepository
             ->from($config['closure'], 'c')
             ->innerJoin('c.descendant', 'node')
             ->leftJoin('node.parent', 'p')
-            ->where('c.ancestor = :node')
             ->addOrderBy(($hasLevelProp ? 'node.'.$config['level'] : self::SUBQUERY_LEVEL), 'asc');
+
+        if ($node !== null) {
+            $q->where('c.ancestor = :node');
+            $q->setParameters(compact('node'));
+        } else {
+            $q->groupBy('c.descendant');
+        }
+
+        if (!$includeNode) {
+            $q->andWhere('c.ancestor != c.descendant');
+        }
 
         $defaultOptions = array();
         $options = array_merge($defaultOptions, $options);
@@ -398,8 +429,6 @@ class ClosureTreeRepository extends AbstractTreeRepository
                 strtolower($options['childSort']['dir']) == 'asc' ? 'asc' : 'desc'
             );
         }
-
-        $q->setParameters(compact('node'));
 
         return $q;
     }

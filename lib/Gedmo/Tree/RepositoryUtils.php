@@ -7,12 +7,16 @@ use Doctrine\Common\Persistence\ObjectManager;
 
 class RepositoryUtils implements RepositoryUtilsInterface
 {
+    /** @var \Doctrine\Common\Persistence\Mapping\ClassMetadata */
     protected $meta;
 
+    /** @var \Gedmo\Tree\TreeListener */
     protected $listener;
 
+    /** @var \Doctrine\Common\Persistence\ObjectManager */
     protected $om;
 
+    /** @var \Gedmo\Tree\RepositoryInterface */
     protected $repo;
 
     public function __construct(ObjectManager $om, ClassMetadata $meta, $listener, $repo)
@@ -31,7 +35,7 @@ class RepositoryUtils implements RepositoryUtilsInterface
     /**
      * {@inheritDoc}
      */
-    public function childrenHierarchy($node = null, $direct = false, array $options = array())
+    public function childrenHierarchy($node = null, $direct = false, array $options = array(), $includeNode = false)
     {
         $meta = $this->getClassMetadata();
         $config = $this->listener->getConfiguration($this->om, $meta->name);
@@ -46,10 +50,12 @@ class RepositoryUtils implements RepositoryUtilsInterface
                     throw new InvalidArgumentException("Node is not managed by UnitOfWork");
                 }
             }
+        } else {
+            $includeNode = true;
         }
 
         // Gets the array of $node results. It must be ordered by depth
-        $nodes = $this->repo->getNodesHierarchy($node, $direct, $config, $options);
+        $nodes = $this->repo->getNodesHierarchy($node, $direct, $config, $options, $includeNode);
 
         return $this->buildTree($nodes, $options);
     }

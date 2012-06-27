@@ -7,9 +7,10 @@ use Doctrine\ORM\EntityRepository,
     Doctrine\ORM\Mapping\ClassMetadata,
     Gedmo\Tool\Wrapper\EntityWrapper,
     Gedmo\Tree\RepositoryUtils,
-    Gedmo\Tree\RepositoryUtilsInterface;
+    Gedmo\Tree\RepositoryUtilsInterface,
+    Gedmo\Tree\RepositoryInterface;
 
-abstract class AbstractTreeRepository extends EntityRepository
+abstract class AbstractTreeRepository extends EntityRepository implements RepositoryInterface
 {
     /**
      * Tree listener on event manager
@@ -81,9 +82,9 @@ abstract class AbstractTreeRepository extends EntityRepository
     /**
      * @see \Gedmo\Tree\RepositoryUtilsInterface::childrenHierarchy
      */
-    public function childrenHierarchy($node = null, $direct = false, array $options = array())
+    public function childrenHierarchy($node = null, $direct = false, array $options = array(), $includeNode = false)
     {
-        return $this->repoUtils->childrenHierarchy($node, $direct, $options);
+        return $this->repoUtils->childrenHierarchy($node, $direct, $options, $includeNode);
     }
 
     /**
@@ -109,38 +110,4 @@ abstract class AbstractTreeRepository extends EntityRepository
      * @return bool
      */
     abstract protected function validate();
-
-    /**
-     * Returns a Query Builder configured to return an array of nodes suitable for buildTree method
-     *
-     * @param object - Root node
-     * @param bool - Obtain direct children?
-     * @param array $config
-     * @param array $options
-     * @return \Doctrine\ODM\MongoDB\Query\Builder
-     */
-    abstract public function getNodesHierarchyQueryBuilder($node, $direct, array $config, array $options = array());
-
-    /**
-     * Returns a Query configured to return an array of nodes suitable for buildTree method
-     *
-     * @param object - Root node
-     * @param bool - Obtain direct children?
-     * @param array - Metadata configuration
-     * @param array - Options
-     * @return \Doctrine\ODM\MongoDB\Query\Query
-     */
-    abstract public function getNodesHierarchyQuery($node, $direct, array $config, array $options = array());
-
-    /**
-     * Returns an array of nodes suitable for method buildTree
-     *
-     * @param object - Root node
-     * @param bool - Obtain direct children?
-     * @param array - Metadata configuration
-     * @param array - Options
-     *
-     * @return array - Array of nodes
-     */
-    abstract public function getNodesHierarchy($node, $direct, array $config, array $options = array());
 }
