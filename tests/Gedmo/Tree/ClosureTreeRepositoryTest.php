@@ -385,14 +385,34 @@ class ClosureTreeRepositoryTest extends BaseTestCaseORM
         $tree = $repo->childrenHierarchy(
             $roots[0],
             true,
-            $sortOption,
-            false
+            $sortOption
         );
 
         $this->assertEquals(3, count($tree));
         $this->assertEquals('Boring Food', $tree[0]['title']);
         $this->assertEquals('Fruits', $tree[1]['title']);
         $this->assertEquals('Milk', $tree[2]['title']);
+
+        // Helper Closures
+        $getTree = function($includeNode) use ($repo, $roots, $sortOption) {
+            return $repo->childrenHierarchy(
+                $roots[0],
+                true,
+                array_merge($sortOption, array('decorate' => true)),
+                $includeNode
+            );
+        };
+        $getTreeHtml = function($includeNode) {
+            $baseHtml = '<li>Boring Food<ul><li>Vegitables<ul><li>Cabbages</li><li>Carrots</li></ul></li></ul></li><li>Fruits<ul><li>Berries<ul><li>Strawberries</li></ul></li><li>Lemons</li><li>Oranges</li></ul></li><li>Milk<ul><li>Cheese<ul><li>Mould cheese</li></ul></li></ul></li></ul>';
+
+            return $includeNode ? '<ul><li>Food<ul>'.$baseHtml.'</li></ul>' : '<ul>'.$baseHtml;
+        };
+
+        // First Tree - Including Root Node - Html test
+        $this->assertEquals($getTreeHtml(true), $getTree(true));
+
+        // First Tree - Not including Root Node - Html test
+        $this->assertEquals($getTreeHtml(false), $getTree(false));
     }
 
     protected function getUsedEntityFixtures()
