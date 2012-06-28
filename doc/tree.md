@@ -21,9 +21,13 @@ Features:
 
 Thanks for contributions to:
 
-- **[comfortablynumb](http://github.com/comfortablynumb) Gustavo Falco** for Closure strategy
+- **[comfortablynumb](http://github.com/comfortablynumb) Gustavo Falco** for Closure and Materialized Path strategy
 - **[everzet](http://github.com/everzet) Kudryashov Konstantin** for TreeLevel implementation
 - **[stof](http://github.com/stof) Christophe Coevoet** for getTreeLeafs function
+
+Update **2012-06-28**
+
+- Added "buildTree" functionality support for Closure and Materialized Path strategies
 
 Update **2012-02-23**
 
@@ -79,6 +83,7 @@ Content:
 - Build [html tree](#html-tree)
 - Advanced usage [examples](#advanced-examples)
 - [Materialized Path](#materialized-path)
+- [Closure Table](#closure-table)
 
 <a name="including-extension"></a>
 
@@ -1045,3 +1050,120 @@ it locks the tree and proceed with the modification. After all the modifications
 If, for some reason, the lock couldn't get freed, there's a lock timeout configured with a default time of 3 seconds.
 You can change this value using the **lockingTimeout** parameter under the Tree annotation (or equivalent in XML and YML).
 You must pass a value in seconds to this parameter.
+
+
+<a name="closure-table"></a>
+
+## Closure Table
+
+To be able to use this strategy, you'll need an additional entity which represents the closures. We already provide you an abstract
+entity, so you'd only need to extend it.
+
+### Closure Entity
+
+``` php
+<?php
+
+namespace YourNamespace\Entity;
+
+use Gedmo\Tree\Entity\MappedSuperclass\AbstractClosure;
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * @ORM\Entity
+ */
+class CategoryClosure extends AbstractClosure
+{
+}
+```
+
+Next step, define your entity.
+
+### ORM Entity example (Annotations)
+
+``` php
+<?php
+
+namespace YourNamespace\Entity;
+
+use Gedmo\Mapping\Annotation as Gedmo;
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * @Gedmo\Tree(type="closure")
+ * @Gedmo\TreeClosure(class="YourNamespace\Entity\CategoryClosure")
+ * @ORM\Entity(repositoryClass="Gedmo\Tree\Entity\Repository\ClosureTreeRepository")
+ */
+class Category
+{
+    /**
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue
+     */
+    private $id;
+
+    /**
+     * @ORM\Column(name="title", type="string", length=64)
+     */
+    private $title;
+
+    /**
+     * This parameter is optional for the closure strategy
+     *
+     * @ORM\Column(name="level", type="integer", nullable=true)
+     * @Gedmo\TreeLevel
+     */
+    private $level;
+
+    /**
+     * @Gedmo\TreeParent
+     * @ORM\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="CASCADE")
+     * @ORM\ManyToOne(targetEntity="Category", inversedBy="children")
+     */
+    private $parent;
+
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    public function setTitle($title)
+    {
+        $this->title = $title;
+    }
+
+    public function getTitle()
+    {
+        return $this->title;
+    }
+
+    public function setParent(Category $parent = null)
+    {
+        $this->parent = $parent;
+    }
+
+    public function getParent()
+    {
+        return $this->parent;
+    }
+
+    public function addClosure(CategoryClosure $closure)
+    {
+        $this->closures[] = $closure;
+    }
+
+    public function setLevel($level)
+    {
+        $this->level = $level;
+    }
+
+    public function getLevel()
+    {
+        return $this->level;
+    }
+}
+
+```
+
+And that's it!
