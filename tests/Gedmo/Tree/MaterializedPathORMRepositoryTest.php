@@ -173,6 +173,36 @@ class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
         $this->assertEquals('Drinks', $tree[0]['title']);
         $this->assertEquals('Whisky', $tree[0]['__children'][0]['title']);
         $this->assertEquals('Best Whisky', $tree[0]['__children'][0]['__children'][0]['title']);
+
+        // Tree of one specific root only with direct children, without the root node
+        $roots = $repo->getRootNodes();
+        $tree = $repo->childrenHierarchy($roots[1], true);
+
+        $this->assertEquals(2, count($tree));
+        $this->assertEquals('Fruits', $tree[0]['title']);
+        $this->assertEquals('Vegitables', $tree[1]['title']);
+
+        // Tree of one specific root only with direct children, with the root node
+        $tree = $repo->childrenHierarchy($roots[1], true, array(), true);
+
+        $this->assertEquals(1, count($tree));
+        $this->assertEquals(2, count($tree[0]['__children']));
+        $this->assertEquals('Food', $tree[0]['title']);
+        $this->assertEquals('Fruits', $tree[0]['__children'][0]['title']);
+        $this->assertEquals('Vegitables', $tree[0]['__children'][1]['title']);
+
+        // HTML Tree of one specific root, without the root node
+        $roots = $repo->getRootNodes();
+        $tree = $repo->childrenHierarchy($roots[0], false, array('decorate' => true), false);
+
+        $this->assertEquals('<ul><li>Whisky<ul><li>Best Whisky</li></ul></li></ul>', $tree);
+
+
+        // HTML Tree of one specific root, with the root node
+        $roots = $repo->getRootNodes();
+        $tree = $repo->childrenHierarchy($roots[0], false, array('decorate' => true), true);
+
+        $this->assertEquals('<ul><li>Drinks<ul><li>Whisky<ul><li>Best Whisky</li></ul></li></ul></li></ul>', $tree);
     }
 
     protected function getUsedEntityFixtures()

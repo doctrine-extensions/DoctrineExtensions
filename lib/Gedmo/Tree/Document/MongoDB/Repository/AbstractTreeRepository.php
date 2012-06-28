@@ -84,7 +84,7 @@ abstract class AbstractTreeRepository extends DocumentRepository implements Repo
      */
     public function childrenHierarchy($node = null, $direct = false, array $options = array(), $includeNode = false)
     {
-        return $this->repoUtils->childrenHierarchy($node, $direct, $options);
+        return $this->repoUtils->childrenHierarchy($node, $direct, $options, $includeNode);
     }
 
     /**

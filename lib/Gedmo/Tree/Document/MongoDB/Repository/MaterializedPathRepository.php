@@ -91,6 +91,7 @@ class MaterializedPathRepository extends AbstractTreeRepository
         $separator = preg_quote($config['path_separator']);
         $qb = $this->dm->createQueryBuilder()
             ->find($meta->name);
+        $regex = false;
 
         if (is_object($node) && $node instanceof $meta->name) {
             $node = new MongoDocumentWrapper($node, $this->dm);
@@ -106,12 +107,14 @@ class MaterializedPathRepository extends AbstractTreeRepository
                 $regex = sprintf('/^%s(.+)'.($includeNode ? '?' : '').'/',
                      $nodePath);
             }
-
-            $qb->field($config['path'])->equals(new \MongoRegex($regex));
         } else if ($direct) {
-            $qb->field($config['path'])->equals(new \MongoRegex(sprintf('/^([^%s]+)'.($includeNode ? '?' : '').'%s$/',
+            $regex = sprintf('/^([^%s]+)'.($includeNode ? '?' : '').'%s$/',
                 $separator,
-                $separator)));
+                $separator);
+        }
+
+        if ($regex) {
+            $qb->field($config['path'])->equals(new \MongoRegex($regex));
         }
 
         $qb->sort(is_null($sortByField) ? $config['path'] : $sortByField, $direction === 'asc' ? 'asc' : 'desc');
@@ -149,7 +152,7 @@ class MaterializedPathRepository extends AbstractTreeRepository
             $sortBy = array_merge($sortBy, $options['childSort']);
         }
 
-        return $this->getChildrenQueryBuilder($node, $direct, $sortBy['field'], $sortBy['dir'], true);
+        return $this->getChildrenQueryBuilder($node, $direct, $sortBy['field'], $sortBy['dir'], $includeNode);
     }
 
     /**
@@ -157,7 +160,7 @@ class MaterializedPathRepository extends AbstractTreeRepository
      */
     public function getNodesHierarchyQuery($node = null, $direct, array $config, array $options = array(), $includeNode = false)
     {
-        return $this->getNodesHierarchyQueryBuilder($node, $direct, $config, $options)->getQuery();
+        return $this->getNodesHierarchyQueryBuilder($node, $direct, $config, $options, $includeNode)->getQuery();
     }
 
     /**
@@ -165,7 +168,7 @@ class MaterializedPathRepository extends AbstractTreeRepository
      */
     public function getNodesHierarchy($node = null, $direct, array $config, array $options = array(), $includeNode = false)
     {
-        $query = $this->getNodesHierarchyQuery($node, $direct, $config, $options);
+        $query = $this->getNodesHierarchyQuery($node, $direct, $config, $options, $includeNode);
         $query->setHydrate(false);
 
         return $query->toArray();
