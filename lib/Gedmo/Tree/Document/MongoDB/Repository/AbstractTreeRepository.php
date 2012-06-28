@@ -82,7 +82,7 @@ abstract class AbstractTreeRepository extends DocumentRepository implements Repo
     /**
      * {@inheritDoc}
      */
-    public function childrenHierarchy($node = null, $direct = false, array $options = array())
+    public function childrenHierarchy($node = null, $direct = false, array $options = array(), $includeNode = false)
     {
         return $this->repoUtils->childrenHierarchy($node, $direct, $options);
     }
@@ -110,4 +110,76 @@ abstract class AbstractTreeRepository extends DocumentRepository implements Repo
      * @return bool
      */
     abstract protected function validate();
+
+    /**
+     * Get all root nodes query builder
+     *
+     * @param string - Sort by field
+     * @param string - Sort direction ("asc" or "desc")
+     *
+     * @return \Doctrine\MongoDB\Query\Builder - QueryBuilder object
+     */
+    abstract public function getRootNodesQueryBuilder($sortByField = null, $direction = 'asc');
+
+    /**
+     * Get all root nodes query
+     *
+     * @param string - Sort by field
+     * @param string - Sort direction ("asc" or "desc")
+     *
+     * @return \Doctrine\MongoDB\Query\Query - Query object
+     */
+    abstract public function getRootNodesQuery($sortByField = null, $direction = 'asc');
+
+    /**
+     * Returns a QueryBuilder configured to return an array of nodes suitable for buildTree method
+     *
+     * @param object $node - Root node
+     * @param bool $direct - Obtain direct children?
+     * @param array $config - Metadata configuration
+     * @param array $options - Options
+     * @param boolean $includeNode - Include node in results?
+     *
+     * @return \Doctrine\MongoDB\Query\Builder - QueryBuilder object
+     */
+    abstract public function getNodesHierarchyQueryBuilder($node = null, $direct, array $config, array $options = array(), $includeNode = false);
+
+    /**
+     * Returns a Query configured to return an array of nodes suitable for buildTree method
+     *
+     * @param object $node - Root node
+     * @param bool $direct - Obtain direct children?
+     * @param array $config - Metadata configuration
+     * @param array $options - Options
+     * @param boolean $includeNode - Include node in results?
+     *
+     * @return \Doctrine\MongoDB\Query\Query - Query object
+     */
+    abstract public function getNodesHierarchyQuery($node = null, $direct, array $config, array $options = array(), $includeNode = false);
+
+    /**
+     * Get list of children followed by given $node. This returns a QueryBuilder object
+     *
+     * @param object $node - if null, all tree nodes will be taken
+     * @param boolean $direct - true to take only direct children
+     * @param string $sortByField - field name to sort by
+     * @param string $direction - sort direction : "ASC" or "DESC"
+     * @param bool $includeNode - Include the root node in results?
+     *
+     * @return \Doctrine\MongoDB\Query\Builder - QueryBuilder object
+     */
+    abstract public function getChildrenQueryBuilder($node = null, $direct = false, $sortByField = null, $direction = 'ASC', $includeNode = false);
+
+    /**
+     * Get list of children followed by given $node. This returns a Query
+     *
+     * @param object $node - if null, all tree nodes will be taken
+     * @param boolean $direct - true to take only direct children
+     * @param string $sortByField - field name to sort by
+     * @param string $direction - sort direction : "ASC" or "DESC"
+     * @param bool $includeNode - Include the root node in results?
+     *
+     * @return \Doctrine\MongoDB\Query\Query - Query object
+     */
+    abstract public function getChildrenQuery($node = null, $direct = false, $sortByField = null, $direction = 'ASC', $includeNode = false);
 }

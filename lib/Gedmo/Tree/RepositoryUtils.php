@@ -90,7 +90,9 @@ class RepositoryUtils implements RepositoryUtilsInterface
         // If you don't want any html output it will return the nested array
         if (!$options['decorate']) {
             return $nestedTree;
-        } elseif (!count($nestedTree)) {
+        }
+
+        if (!count($nestedTree)) {
             return '';
         }
 

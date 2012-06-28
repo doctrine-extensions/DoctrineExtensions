@@ -12,7 +12,6 @@ use Doctrine\ORM\Version;
 use Gedmo\Tool\Wrapper\AbstractWrapper;
 use Gedmo\Mapping\Event\AdapterInterface;
 use Doctrine\Common\Persistence\ObjectManager;
-use Doctrine\ORM\Mapping\ClassMetadata;
 
 /**
  * This strategy makes tree act like
@@ -308,8 +307,6 @@ class Closure implements Strategy
      * Process pending entities to set their "level" value
      *
      * @param \Doctrine\Common\Persistence\ObjectManager $em
-     * @param \Doctrine\ORM\Mapping\ClassMetadata $meta
-     * @param array $config
      */
     protected function setLevelFieldOnPendingNodes(ObjectManager $em)
     {
