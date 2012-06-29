@@ -76,7 +76,7 @@ class TranslationRepository extends EntityRepository
             $foreignKey = $meta->getReflectionProperty($meta->getSingleIdentifierFieldName())->getValue($entity);
             $objectClass = $config['useObjectClass'];
             $transMeta = $this->_em->getClassMetadata($class);
-            $trans = $this->findOneBy(compact('locale', 'field', 'objectClass', 'foreignKey'));
+            $trans = $this->findOneBy(compact('locale', 'objectClass', 'field', 'foreignKey'));
             if (!$trans) {
                 $trans = $transMeta->newInstance();
                 $transMeta->getReflectionProperty('foreignKey')->setValue($trans, $foreignKey);
