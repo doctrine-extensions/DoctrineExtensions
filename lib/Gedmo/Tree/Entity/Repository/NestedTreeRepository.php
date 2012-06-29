@@ -30,12 +30,19 @@ class NestedTreeRepository extends AbstractTreeRepository
         $meta = $this->getClassMetadata();
         $config = $this->listener->getConfiguration($this->_em, $meta->name);
         $qb = $this->_em->createQueryBuilder();
-        return $qb
+        $qb
             ->select('node')
             ->from($config['useObjectClass'], 'node')
             ->where($qb->expr()->isNull('node.'.$config['parent']))
-            ->orderBy('node.' . $config['left'], 'ASC')
         ;
+
+        if ($sortByField !== null) {
+            $qb->orderBy('node.' . $sortByField, strtolower($direction) === 'asc' ? 'asc' : 'desc');
+        } else {
+            $qb->orderBy('node.' . $config['left'], 'ASC');
+        }
+
+        return $qb;
     }
 
     /**

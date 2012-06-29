@@ -84,6 +84,7 @@ Content:
 - Advanced usage [examples](#advanced-examples)
 - [Materialized Path](#materialized-path)
 - [Closure Table](#closure-table)
+- [Repository methods (all strategies)](#repository-methods)
 
 <a name="including-extension"></a>
 
@@ -1167,3 +1168,36 @@ class Category
 ```
 
 And that's it!
+
+
+<a name="repository-methods"></a>
+
+## Repository Methods (All strategies)
+
+There are repository methods that are available for you in all the strategies:
+
+* **getRootNodes** / **getRootNodesQuery** / **getRootNodesQueryBuilder**: Returns an array with the available root nodes. Arguments:
+  - *sortByField*: An optional field to order the root nodes. Defaults to "null".
+  - *direction*: In case the first argument is used, you can pass the direction here: "asc" or "desc". Defaults to "asc".
+* **getChildren** / **getChildrenQuery** / **getChildrenQueryBuilder**: Returns an array of children nodes. Arguments:
+  - *node*: If you pass a node, the method will return its children. Defaults to "null" (this means it will return ALL nodes).
+  - *direct*: If you pass true as a value for this argument, you'll get only the direct children of the node
+  (or only the root nodes if you pass "null" to the "node" argument).
+  - *sortByField*: An optional field to sort the children. Defaults to "null".
+  - *direction*: If you use the "sortByField" argument, this allows you to set the direction: "asc" or "desc". Defaults to "asc".
+  - *includeNode*: Using "true", this argument allows you to include in the result the node you passed as the first argument. Defaults to "false".
+* **childrenHierarchy**: This useful method allows you to build an array of nodes representing the hierarchy of a tree. Arguments:
+  - *node*: If you pass a node, the method will return its children. Defaults to "null" (this means it will return ALL nodes).
+  - *direct*: If you pass true as a value for this argument, you'll get only the direct children of the node
+  - *options*: An array of options that allows you to decorate the results with HTML. Available options:
+    + decorate: boolean (false) - retrieves tree as UL->LI tree
+    + nodeDecorator: Closure (null) - uses $node as argument and returns decorated item as string
+    + rootOpen: string || Closure ('<ul>') - branch start, closure will be given $children as a parameter
+    + rootClose: string ('</ul>') - branch close
+    + childStart: string || Closure ('<li>') - start of node, closure will be given $node as a parameter
+    + childClose: string ('</li>') - close of node
+    + childSort: array || keys allowed: field: field to sort on, dir: direction. 'asc' or 'desc'
+  - *includeNode*: Using "true", this argument allows you to include in the result the node you passed as the first argument. Defaults to "false".
+
+This list is not complete yet. We're working on including more methods in the common API offered by repositories of all the strategies.
+Soon we'll be adding more helpful methods here.
