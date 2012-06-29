@@ -1190,13 +1190,13 @@ There are repository methods that are available for you in all the strategies:
   - *node*: If you pass a node, the method will return its children. Defaults to "null" (this means it will return ALL nodes).
   - *direct*: If you pass true as a value for this argument, you'll get only the direct children of the node
   - *options*: An array of options that allows you to decorate the results with HTML. Available options:
-    + decorate: boolean (false) - retrieves tree as UL->LI tree
-    + nodeDecorator: Closure (null) - uses $node as argument and returns decorated item as string
-    + rootOpen: string || Closure ('<ul>') - branch start, closure will be given $children as a parameter
-    + rootClose: string ('</ul>') - branch close
-    + childStart: string || Closure ('<li>') - start of node, closure will be given $node as a parameter
-    + childClose: string ('</li>') - close of node
-    + childSort: array || keys allowed: field: field to sort on, dir: direction. 'asc' or 'desc'
+      * decorate: boolean (false) - retrieves tree as UL->LI tree
+      * nodeDecorator: Closure (null) - uses $node as argument and returns decorated item as string
+      * rootOpen: string || Closure ('\<ul\>') - branch start, closure will be given $children as a parameter
+      * rootClose: string ('\</ul\>') - branch close
+      * childStart: string || Closure ('\<li\>') - start of node, closure will be given $node as a parameter
+      * childClose: string ('\</li\>') - close of node
+      * childSort: array || keys allowed: field: field to sort on, dir: direction. 'asc' or 'desc'
   - *includeNode*: Using "true", this argument allows you to include in the result the node you passed as the first argument. Defaults to "false".
 
 This list is not complete yet. We're working on including more methods in the common API offered by repositories of all the strategies.
