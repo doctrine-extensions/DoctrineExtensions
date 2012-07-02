@@ -99,7 +99,7 @@ You can use the Uploadable "path" option to set the path:
 ``` php
 /**
  * @ORM\Entity
- * @Gedmo\SoftDeleteable(path="/my/path")
+ * @Gedmo\Uploadable(path="/my/path")
  */
 class File
 {
@@ -112,7 +112,7 @@ Or you can use the Uploadable "pathMethod" option to set the name of the method 
 ``` php
 /**
  * @ORM\Entity
- * @Gedmo\SoftDeleteable(pathMethod="getPath")
+ * @Gedmo\Uploadable(pathMethod="getPath")
  */
 class File
 {
