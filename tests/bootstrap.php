@@ -49,7 +49,10 @@ $loader->registerNamespaces(array(
     'Mapping\\Fixture'           => __DIR__.'/Gedmo',
     'Loggable\\Fixture'          => __DIR__.'/Gedmo',
     'SoftDeleteable\\Fixture'    => __DIR__.'/Gedmo',
+    'Uploadable\\Fixture'        => __DIR__.'/Gedmo',
     'Wrapper\\Fixture'           => __DIR__.'/Gedmo',
+    // Stubs
+    'Gedmo\\Uploadable\\Stub'    => __DIR__,
 ));
 $loader->register();
 
