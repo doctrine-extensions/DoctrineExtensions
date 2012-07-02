@@ -165,9 +165,9 @@ class Article
     private $title;
 
     /**
-     * @var timestamp $created
+     * @var date $created
      *
-     * @ODM\Timestamp
+     * @ODM\Date
      * @Gedmo\Timestampable(on="create")
      */
     private $created;
