@@ -539,13 +539,11 @@ class TranslatableListener extends MappedEventSubscriber
                         // if we do not have the primary key yet available
                         // keep this translation in memory to insert it later with foreign key
                         $this->pendingTranslationInserts[spl_object_hash($object)][] = $translation;
-                    }
-                    else {
+                    } else {
                         // persist and compute change set for translation
                         if ($wasPersistedSeparetely) {
                             $ea->recomputeSingleObjectChangeset($uow, $translationMetadata, $translation);
-                        }
-                        else {
+                        } else {
                             $om->persist($translation);
                             $uow->computeChangeSet($translationMetadata, $translation);
                         }
@@ -561,8 +559,6 @@ class TranslatableListener extends MappedEventSubscriber
             foreach ($changeSet as $field => $changes) {
                 if (in_array($field, $translatableFields)) {
                     if ($locale !== $this->defaultLocale) {
-                        // Useless : don't change anything
-                        //$wrapped->setPropertyValue($field, $changes[1]);
                         $ea->setOriginalObjectProperty($uow, $oid, $field, $changes[0]);
                         unset($modifiedChangeSet[$field]);
                     }
