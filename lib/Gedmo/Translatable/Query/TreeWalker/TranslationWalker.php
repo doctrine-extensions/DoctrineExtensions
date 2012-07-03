@@ -231,10 +231,21 @@ class TranslationWalker extends SqlWalker
                     $result .= $this->components[$decl->rangeVariableDeclaration->aliasIdentificationVariable];
                 }
             }
-            foreach ($decl->joins as $join) {
-                if ($join instanceof Join) {
-                    if (isset($this->components[$join->joinAssociationDeclaration->aliasIdentificationVariable])) {
-                        $result .= $this->components[$join->joinAssociationDeclaration->aliasIdentificationVariable];
+            if (isset($decl->joinVariableDeclarations)) {
+                foreach ($decl->joinVariableDeclarations as $joinDecl) {
+                    if ($joinDecl->join instanceof Join) {
+                        if (isset($this->components[$joinDecl->join->aliasIdentificationVariable])) {
+                            $result .= $this->components[$joinDecl->join->aliasIdentificationVariable];
+                        }
+                    }
+                }
+            } else {
+                // based on new changes
+                foreach ($decl->joins as $join) {
+                    if ($join instanceof Join) {
+                        if (isset($this->components[$join->joinAssociationDeclaration->aliasIdentificationVariable])) {
+                            $result .= $this->components[$join->joinAssociationDeclaration->aliasIdentificationVariable];
+                        }
                     }
                 }
             }
