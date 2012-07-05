@@ -1,17 +1,18 @@
 # Doctrine2 behavioral extensions
 
-**Version 2.3.1-DEV**
+**Version 2.3.1**
 
 [![Build Status](https://secure.travis-ci.org/l3pp4rd/DoctrineExtensions.png?branch=master)](http://travis-ci.org/l3pp4rd/DoctrineExtensions)
 
-**Note:** tag **2.2.1** was removed, because it was published with backward incompatible changes by
-mistake. If you have used **2.2.1** tag as a dependency version, please switch to **2.3.0** it is
-a direct replacement of the removed tag.
-
-**Note:** Use 2.1.x or 2.2.x tag in order to use extensions based on Doctrine2.x.x component versions. Currently
-master branch is based on 2.3.x versions and may not work with older components.
+**Note:** recently doctrine orm and odm were updated to use common doctrine mapping persistense
+layer. The support for it has been made and tagged with **2.3.1** version tag. It will be compatible
+with latest version of doctrine mapping at master branches
 
 ### Latest updates
+
+**2012-07-05**
+
+- **Mapping** drivers were updated to support latest doctrine versions.
 
 **2012-05-01**
 
