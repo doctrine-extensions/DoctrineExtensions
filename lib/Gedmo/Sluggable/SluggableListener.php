@@ -152,7 +152,7 @@ class SluggableListener extends MappedEventSubscriber
         // event listeners be nested together
         foreach ($ea->getScheduledObjectUpdates($uow) as $object) {
             $meta = $om->getClassMetadata(get_class($object));
-            if ($config = $this->getConfiguration($om, $meta->name)) {
+            if (($config = $this->getConfiguration($om, $meta->name)) && !$uow->isScheduledForInsert($object)) {
                 $this->generateSlug($ea, $object);
                 foreach ($config['slugs'] as $slugField => $options) {
                     $slug = $meta->getReflectionProperty($slugField)->getValue($object);
@@ -229,7 +229,7 @@ class SluggableListener extends MappedEventSubscriber
                             return strtoupper($m[0]);
                         }, $slug);
                         break;
-                        
+
                     case 'lower':
                         if (function_exists('mb_strtolower')) {
                             $slug = mb_strtolower($slug);
@@ -237,7 +237,7 @@ class SluggableListener extends MappedEventSubscriber
                             $slug = strtolower($slug);
                         }
                         break;
-                        
+
                     case 'upper':
                         if (function_exists('mb_strtoupper')) {
                             $slug = mb_strtoupper($slug);

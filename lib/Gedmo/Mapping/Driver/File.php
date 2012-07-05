@@ -2,9 +2,8 @@
 
 namespace Gedmo\Mapping\Driver;
 
+use Doctrine\Common\Persistence\Mapping\Driver\FileDriver;
 use Gedmo\Mapping\Driver;
-use Doctrine\ORM\Mapping\Driver\AbstractFileDriver as ORMAbstractFileDriver;
-use Doctrine\ODM\MongoDB\Mapping\Driver\AbstractFileDriver as MongoDBAbstractFileDriver;
 
 /**
  * The mapping FileDriver abstract class, defines the
@@ -100,7 +99,7 @@ abstract class File implements Driver
         //try loading mapping from original driver first
         $mapping = null;
         if (!is_null($this->_originalDriver)) {
-            if ($this->_originalDriver instanceof ORMAbstractFileDriver || $this->_originalDriver instanceof MongoDBAbstractFileDriver) {
+            if ($this->_originalDriver instanceof FileDriver) {
                 $mapping = $this->_originalDriver->getElement($className);
             }
         }
