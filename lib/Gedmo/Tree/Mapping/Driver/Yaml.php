@@ -45,7 +45,7 @@ class Yaml extends File implements Driver
     {
         $mapping = $this->_getMapping($meta->name);
         $validator = new Validator();
-        
+
         if (isset($mapping['gedmo'])) {
             $classMapping = $mapping['gedmo'];
             if (isset($classMapping['tree']['type'])) {
@@ -163,6 +163,6 @@ class Yaml extends File implements Driver
      */
     protected function _loadMappingFile($file)
     {
-        return \Symfony\Component\Yaml\Yaml::load($file);
+        return \Symfony\Component\Yaml\Yaml::parse($file);
     }
 }

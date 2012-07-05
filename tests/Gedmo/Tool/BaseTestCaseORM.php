@@ -15,6 +15,8 @@ use Gedmo\Tree\TreeListener;
 use Gedmo\Timestampable\TimestampableListener;
 use Gedmo\Loggable\LoggableListener;
 use Gedmo\SoftDeleteable\SoftDeleteableListener;
+use Doctrine\ORM\Mapping\DefaultQuoteStrategy;
+use Doctrine\ORM\Mapping\DefaultNamingStrategy;
 
 /**
  * Base test case contains common mock objects
@@ -224,7 +226,7 @@ abstract class BaseTestCaseORM extends \PHPUnit_Framework_TestCase
                 $mockMethods[] = $method->name;
             }
         }
-        
+
         $config = $this->getMock($configurationClass, $mockMethods);
 
         $config
@@ -263,6 +265,18 @@ abstract class BaseTestCaseORM extends \PHPUnit_Framework_TestCase
             ->expects($this->any())
             ->method('getDefaultRepositoryClassName')
             ->will($this->returnValue('Doctrine\\ORM\\EntityRepository'))
+        ;
+
+        $config
+            ->expects($this->any())
+            ->method('getQuoteStrategy')
+            ->will($this->returnValue(new DefaultQuoteStrategy()))
+        ;
+
+        $config
+            ->expects($this->any())
+            ->method('getNamingStrategy')
+            ->will($this->returnValue(new DefaultNamingStrategy()))
         ;
 
         return $config;

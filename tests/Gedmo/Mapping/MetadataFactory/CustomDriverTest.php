@@ -1,8 +1,8 @@
 <?php
 
-use Doctrine\ORM\Mapping\ClassMetadataInfo;
-use Doctrine\ORM\Mapping\Driver\Driver;
+use Doctrine\Common\Persistence\Mapping\Driver\MappingDriver;
 use Mapping\Fixture\Unmapped\Timestampable;
+use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 
 /**
 * These are mapping tests for tree extension
@@ -64,14 +64,14 @@ class CustomDriverTest extends \PHPUnit_Framework_TestCase
     }
 }
 
-class CustomDriver implements Driver
+class CustomDriver implements MappingDriver
 {
     public function getAllClassNames()
     {
         return array('Mapping\Fixture\Unmapped\Timestampable');
     }
 
-    public function loadMetadataForClass($className, ClassMetadataInfo $metadata)
+    public function loadMetadataForClass($className, ClassMetadata $metadata)
     {
         if ($className === 'Mapping\Fixture\Unmapped\Timestampable') {
             $id = array();
