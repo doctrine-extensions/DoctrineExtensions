@@ -534,7 +534,9 @@ class TranslatableListener extends MappedEventSubscriber
                 $value = $wrapped->getPropertyValue($field);
                 $content = $ea->getTranslationValue($object, $field);
                 $translation->setContent($content);
-                if (!empty($content)) {
+                // check if need to update in database
+                $transWrapper = AbstractWrapper::wrap($translation, $om);
+                if (!empty($content) && ($isInsert || !$transWrapper->getIdentifier() || isset($changeSet[$field]))) {
                     if ($isInsert && !$objectId && !$ea->usesPersonalTranslation($translationClass)) {
                         // if we do not have the primary key yet available
                         // keep this translation in memory to insert it later with foreign key
@@ -564,6 +566,7 @@ class TranslatableListener extends MappedEventSubscriber
                     }
                 }
             }
+            $ea->recomputeSingleObjectChangeset($uow, $meta, $object);
             // cleanup current changeset only if working in a another locale different than de default one, otherwise the changeset will always be reverted
             if ($locale !== $this->defaultLocale) {
                 $ea->clearObjectChangeSet($uow, $oid);
