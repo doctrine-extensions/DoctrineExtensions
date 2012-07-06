@@ -19,6 +19,9 @@ class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
 {
     const CATEGORY = "Tree\\Fixture\\MPCategory";
 
+    /** @var $this->repo \Gedmo\Tree\Entity\Repository\MaterializedPathRepository */
+    protected $repo;
+
     protected function setUp()
     {
         parent::setUp();
@@ -33,6 +36,8 @@ class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
         $meta = $this->em->getClassMetadata(self::CATEGORY);
         $this->config = $this->listener->getConfiguration($this->em, $meta->name);
         $this->populate();
+
+        $this->repo = $this->em->getRepository(self::CATEGORY);
     }
 
     /**
@@ -40,8 +45,7 @@ class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
      */
     function getRootNodes()
     {
-        $repo = $this->em->getRepository(self::CATEGORY);
-        $result = $repo->getRootNodes('title');
+        $result = $this->repo->getRootNodes('title');
         
         $this->assertCount(3, $result);
         $this->assertEquals('Drinks', $result[0]->getTitle());
@@ -54,11 +58,10 @@ class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
      */
     function getChildren()
     {
-        $repo = $this->em->getRepository(self::CATEGORY);
-        $root = $repo->findOneByTitle('Food');
+        $root = $this->repo->findOneByTitle('Food');
 
         // Get all children from the root, NOT including it
-        $result = $repo->getChildren($root, false, 'title');
+        $result = $this->repo->getChildren($root, false, 'title');
 
         $this->assertCount(4, $result);
         $this->assertEquals('Carrots', $result[0]->getTitle());
@@ -67,7 +70,7 @@ class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
         $this->assertEquals('Vegitables', $result[3]->getTitle());
 
         // Get all children from the root, including it
-        $result = $repo->getChildren($root, false, 'title', 'asc', true);
+        $result = $this->repo->getChildren($root, false, 'title', 'asc', true);
 
         $this->assertCount(5, $result);
         $this->assertEquals('Carrots', $result[0]->getTitle());
@@ -77,14 +80,14 @@ class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
         $this->assertEquals('Vegitables', $result[4]->getTitle());
 
         // Get direct children from the root, NOT including it
-        $result = $repo->getChildren($root, true, 'title', 'asc');
+        $result = $this->repo->getChildren($root, true, 'title', 'asc');
 
         $this->assertCount(2, $result);
         $this->assertEquals('Fruits', $result[0]->getTitle());
         $this->assertEquals('Vegitables', $result[1]->getTitle());
 
         // Get direct children from the root, including it
-        $result = $repo->getChildren($root, true, 'title', 'asc', true);
+        $result = $this->repo->getChildren($root, true, 'title', 'asc', true);
 
         $this->assertCount(3, $result);
         $this->assertEquals('Food', $result[0]->getTitle());
@@ -92,7 +95,7 @@ class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
         $this->assertEquals('Vegitables', $result[2]->getTitle());
 
         // Get ALL nodes
-        $result = $repo->getChildren(null, false, 'title');
+        $result = $this->repo->getChildren(null, false, 'title');
 
         $this->assertCount(9, $result);
         $this->assertEquals('Best Whisky', $result[0]->getTitle());
@@ -106,7 +109,7 @@ class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
         $this->assertEquals('Whisky', $result[8]->getTitle());
 
         // Get ALL root nodes
-        $result = $repo->getChildren(null, true, 'title');
+        $result = $this->repo->getChildren(null, true, 'title');
 
         $this->assertCount(3, $result);
         $this->assertEquals('Drinks', $result[0]->getTitle());
@@ -119,8 +122,7 @@ class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
      */
     function getTree()
     {
-        $repo = $this->em->getRepository(self::CATEGORY);
-        $tree = $repo->getTree();
+        $tree = $this->repo->getTree();
 
         $this->assertCount(9, $tree);
         $this->assertEquals('Drinks', $tree[0]->getTitle());
@@ -134,8 +136,8 @@ class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
         $this->assertEquals('Sports', $tree[8]->getTitle());
 
         // Get tree from a specific root node
-        $roots = $repo->getRootNodes();
-        $tree = $repo->getTree($roots[0]);
+        $roots = $this->repo->getRootNodes();
+        $tree = $this->repo->getTree($roots[0]);
 
         $this->assertCount(3, $tree);
         $this->assertEquals('Drinks', $tree[0]->getTitle());
@@ -145,9 +147,7 @@ class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
 
     public function testChildrenHierarchyMethod()
     {
-        /** @var $repo \Gedmo\Tree\Entity\Repository\MaterializedPathRepository */
-        $repo = $this->em->getRepository(self::CATEGORY);
-        $tree = $repo->childrenHierarchy();
+        $tree = $this->repo->childrenHierarchy();
 
         $this->assertEquals('Drinks', $tree[0]['title']);
         $this->assertEquals('Whisky', $tree[0]['__children'][0]['title']);
@@ -161,29 +161,29 @@ class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
         $this->assertEquals('Sports', $tree[2]['title']);
 
         // Tree of one specific root, without the root node
-        $roots = $repo->getRootNodes();
-        $tree = $repo->childrenHierarchy($roots[0]);
+        $roots = $this->repo->getRootNodes();
+        $tree = $this->repo->childrenHierarchy($roots[0]);
 
         $this->assertEquals('Whisky', $tree[0]['title']);
         $this->assertEquals('Best Whisky', $tree[0]['__children'][0]['title']);
 
         // Tree of one specific root, with the root node
-        $tree = $repo->childrenHierarchy($roots[0], false, array(), true);
+        $tree = $this->repo->childrenHierarchy($roots[0], false, array(), true);
 
         $this->assertEquals('Drinks', $tree[0]['title']);
         $this->assertEquals('Whisky', $tree[0]['__children'][0]['title']);
         $this->assertEquals('Best Whisky', $tree[0]['__children'][0]['__children'][0]['title']);
 
         // Tree of one specific root only with direct children, without the root node
-        $roots = $repo->getRootNodes();
-        $tree = $repo->childrenHierarchy($roots[1], true);
+        $roots = $this->repo->getRootNodes();
+        $tree = $this->repo->childrenHierarchy($roots[1], true);
 
         $this->assertEquals(2, count($tree));
         $this->assertEquals('Fruits', $tree[0]['title']);
         $this->assertEquals('Vegitables', $tree[1]['title']);
 
         // Tree of one specific root only with direct children, with the root node
-        $tree = $repo->childrenHierarchy($roots[1], true, array(), true);
+        $tree = $this->repo->childrenHierarchy($roots[1], true, array(), true);
 
         $this->assertEquals(1, count($tree));
         $this->assertEquals(2, count($tree[0]['__children']));
@@ -192,44 +192,57 @@ class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
         $this->assertEquals('Vegitables', $tree[0]['__children'][1]['title']);
 
         // HTML Tree of one specific root, without the root node
-        $roots = $repo->getRootNodes();
-        $tree = $repo->childrenHierarchy($roots[0], false, array('decorate' => true), false);
+        $roots = $this->repo->getRootNodes();
+        $tree = $this->repo->childrenHierarchy($roots[0], false, array('decorate' => true), false);
 
         $this->assertEquals('<ul><li>Whisky<ul><li>Best Whisky</li></ul></li></ul>', $tree);
 
 
         // HTML Tree of one specific root, with the root node
-        $roots = $repo->getRootNodes();
-        $tree = $repo->childrenHierarchy($roots[0], false, array('decorate' => true), true);
+        $roots = $this->repo->getRootNodes();
+        $tree = $this->repo->childrenHierarchy($roots[0], false, array('decorate' => true), true);
 
         $this->assertEquals('<ul><li>Drinks<ul><li>Whisky<ul><li>Best Whisky</li></ul></li></ul></li></ul>', $tree);
     }
 
     public function testChildCount()
     {
-        /** @var $repo \Gedmo\Tree\Entity\Repository\MaterializedPathRepository */
-        $repo = $this->em->getRepository(self::CATEGORY);
-
         // Count all
-        $count = $repo->childCount();
+        $count = $this->repo->childCount();
 
         $this->assertEquals(9, $count);
 
         // Count all, but only direct ones
-        $count = $repo->childCount(null, true);
+        $count = $this->repo->childCount(null, true);
 
         $this->assertEquals(3, $count);
 
         // Count food children
-        $food = $repo->findOneByTitle('Food');
-        $count = $repo->childCount($food);
+        $food = $this->repo->findOneByTitle('Food');
+        $count = $this->repo->childCount($food);
 
         $this->assertEquals(4, $count);
 
         // Count food children, but only direct ones
-        $count = $repo->childCount($food, true);
+        $count = $this->repo->childCount($food, true);
 
         $this->assertEquals(2, $count);
+    }
+
+    /**
+     * @expectedException \Gedmo\Exception\InvalidArgumentException
+     */
+    public function testChildCount_ifAnObjectIsPassedWhichIsNotAnInstanceOfTheEntityClassThrowException()
+    {
+        $this->repo->childCount(new \DateTime());
+    }
+
+    /**
+     * @expectedException \Gedmo\Exception\InvalidArgumentException
+     */
+    public function testChildCount_ifAnObjectIsPassedIsAnInstanceOfTheEntityClassButIsNotHandledByUnitOfWorkThrowException()
+    {
+        $this->repo->childCount($this->createCategory());
     }
 
     protected function getUsedEntityFixtures()
