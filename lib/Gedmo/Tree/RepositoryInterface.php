@@ -51,7 +51,7 @@ interface RepositoryInterface extends RepositoryUtilsInterface
      *
      * @param object $node - if null counts all records in tree
      * @param boolean $direct - true to count only direct children
-     * @throws InvalidArgumentException - if input is not valid
+     * @throws \Gedmo\Exception\InvalidArgumentException - if input is not valid
      * @return integer
      */
     public function childCount($node = null, $direct = false);
