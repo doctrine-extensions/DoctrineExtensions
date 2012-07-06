@@ -105,9 +105,7 @@ abstract class AbstractTreeRepository extends EntityRepository implements Reposi
 
         $qb->select('COUNT('.$alias.')');
 
-        $result = $qb->getQuery()->getScalarResult();
-
-        return (int) $result[0][1];
+        return (int) $qb->getQuery()->getSingleScalarResult();
     }
 
     /**
