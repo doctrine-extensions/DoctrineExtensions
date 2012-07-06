@@ -219,6 +219,9 @@ class NestedTreeRootRepositoryTest extends BaseTestCaseORM
 
         $childCount = $repo->childCount();
         $this->assertEquals(6, $childCount);
+
+        $childCount = $repo->childCount(null, true);
+        $this->assertEquals(2, $childCount);
     }
 
     /**

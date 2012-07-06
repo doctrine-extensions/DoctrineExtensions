@@ -8,7 +8,8 @@ use Doctrine\ORM\EntityRepository,
     Gedmo\Tool\Wrapper\EntityWrapper,
     Gedmo\Tree\RepositoryUtils,
     Gedmo\Tree\RepositoryUtilsInterface,
-    Gedmo\Tree\RepositoryInterface;
+    Gedmo\Tree\RepositoryInterface,
+    Gedmo\Exception\InvalidArgumentException;
 
 abstract class AbstractTreeRepository extends EntityRepository implements RepositoryInterface
 {
@@ -77,6 +78,36 @@ abstract class AbstractTreeRepository extends EntityRepository implements Reposi
     public function getRepoUtils()
     {
         return $this->repoUtils;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function childCount($node = null, $direct = false)
+    {
+        $meta = $this->getClassMetadata();
+
+        if (is_object($node)) {
+            if (!($node instanceof $meta->name)) {
+                throw new InvalidArgumentException("Node is not related to this repository");
+            }
+
+            $wrapped = new EntityWrapper($node, $this->_em);
+
+            if (!$wrapped->hasValidIdentifier()) {
+                throw new InvalidArgumentException("Node is not managed by UnitOfWork");
+            }
+        }
+
+        $qb = $this->getChildrenQueryBuilder($node, $direct);
+        $aliases = $qb->getRootAliases();
+        $alias = $aliases[0];
+
+        $qb->select('COUNT('.$alias.')');
+
+        $result = $qb->getQuery()->getScalarResult();
+
+        return (int) $result[0][1];
     }
 
     /**

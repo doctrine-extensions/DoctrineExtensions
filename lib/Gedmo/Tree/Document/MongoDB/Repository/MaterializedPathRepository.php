@@ -84,6 +84,32 @@ class MaterializedPathRepository extends AbstractTreeRepository
     /**
      * {@inheritDoc}
      */
+    public function childCount($node = null, $direct = false)
+    {
+        $meta = $this->getClassMetadata();
+
+        if (is_object($node)) {
+            if (!($node instanceof $meta->name)) {
+                throw new InvalidArgumentException("Node is not related to this repository");
+            }
+
+            $wrapped = new MongoDocumentWrapper($node, $this->dm);
+
+            if (!$wrapped->hasValidIdentifier()) {
+                throw new InvalidArgumentException("Node is not managed by UnitOfWork");
+            }
+        }
+
+        $qb = $this->getChildrenQueryBuilder($node, $direct);
+
+        $qb->count();
+
+        return (int) $qb->getQuery()->execute();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function getChildrenQueryBuilder($node = null, $direct = false, $sortByField = null, $direction = 'asc', $includeNode = false)
     {
         $meta = $this->getClassMetadata();

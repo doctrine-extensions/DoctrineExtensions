@@ -62,54 +62,6 @@ class ClosureTreeRepository extends AbstractTreeRepository
     }
 
     /**
-     * Counts the children of given TreeNode
-     *
-     * @param object $node - if null counts all records in tree
-     * @param boolean $direct - true to count only direct children
-     * @throws InvalidArgumentException - if input is not valid
-     * @return integer
-     */
-    public function childCount($node = null, $direct = false)
-    {
-        $count = 0;
-        $meta = $this->getClassMetadata();
-        $config = $this->listener->getConfiguration($this->_em, $meta->name);
-        if (null !== $node) {
-            if ($node instanceof $meta->name) {
-                if (!$this->_em->getUnitOfWork()->isInIdentityMap($node)) {
-                    throw new InvalidArgumentException("Node is not managed by UnitOfWork");
-                }
-                if ($direct) {
-                    $qb = $this->_em->createQueryBuilder();
-                    $qb->select('COUNT(node)')
-                        ->from($config['useObjectClass'], 'node')
-                        ->where('node.' . $config['parent'] . ' = :node');
-
-                    $q = $qb->getQuery();
-                } else {
-                    $closureMeta = $this->_em->getClassMetadata($config['closure']);
-                    $dql = "SELECT COUNT(c) FROM {$closureMeta->name} c";
-                    $dql .= " WHERE c.ancestor = :node";
-                    $dql .= " AND c.descendant <> :node";
-                    $q = $this->_em->createQuery($dql);
-                }
-                $q->setParameters(compact('node'));
-                $count = intval($q->getSingleScalarResult());
-            } else {
-                throw new InvalidArgumentException("Node is not related to this repository");
-            }
-        } else {
-            $dql = "SELECT COUNT(node) FROM " . $config['useObjectClass'] . " node";
-            if ($direct) {
-                $dql .= ' WHERE node.' . $config['parent'] . ' IS NULL';
-            }
-            $q = $this->_em->createQuery($dql);
-            $count = intval($q->getSingleScalarResult());
-        }
-        return $count;
-    }
-
-    /**
      * Get the Tree path query by given $node
      *
      * @param object $node

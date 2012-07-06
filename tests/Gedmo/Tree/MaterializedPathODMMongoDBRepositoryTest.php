@@ -206,6 +206,33 @@ class MaterializedPathODMMongoDBRepositoryTest extends BaseTestCaseMongoODM
         $this->assertEquals('<ul><li>Drinks<ul><li>Whisky<ul><li>Best Whisky</li></ul></li></ul></li></ul>', $tree);
     }
 
+    public function testChildCount()
+    {
+        /** @var $repo \Gedmo\Tree\Document\MongoDB\Repository\MaterializedPathRepository */
+        $repo = $this->dm->getRepository(self::CATEGORY);
+
+        // Count all
+        $count = $repo->childCount();
+
+        $this->assertEquals(9, $count);
+
+        // Count all, but only direct ones
+        $count = $repo->childCount(null, true);
+
+        $this->assertEquals(3, $count);
+
+        // Count food children
+        $food = $repo->findOneByTitle('Food');
+        $count = $repo->childCount($food);
+
+        $this->assertEquals(4, $count);
+
+        // Count food children, but only direct ones
+        $count = $repo->childCount($food, true);
+
+        $this->assertEquals(2, $count);
+    }
+
     protected function getUsedEntityFixtures()
     {
         return array(

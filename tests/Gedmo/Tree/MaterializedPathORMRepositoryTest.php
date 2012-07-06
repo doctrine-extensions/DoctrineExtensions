@@ -145,7 +145,7 @@ class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
 
     public function testChildrenHierarchyMethod()
     {
-        /** @var $repo \Gedmo\Tree\Document\MongoDB\Repository\MaterializedPathRepository */
+        /** @var $repo \Gedmo\Tree\Entity\Repository\MaterializedPathRepository */
         $repo = $this->em->getRepository(self::CATEGORY);
         $tree = $repo->childrenHierarchy();
 
@@ -203,6 +203,33 @@ class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
         $tree = $repo->childrenHierarchy($roots[0], false, array('decorate' => true), true);
 
         $this->assertEquals('<ul><li>Drinks<ul><li>Whisky<ul><li>Best Whisky</li></ul></li></ul></li></ul>', $tree);
+    }
+
+    public function testChildCount()
+    {
+        /** @var $repo \Gedmo\Tree\Entity\Repository\MaterializedPathRepository */
+        $repo = $this->em->getRepository(self::CATEGORY);
+
+        // Count all
+        $count = $repo->childCount();
+
+        $this->assertEquals(9, $count);
+
+        // Count all, but only direct ones
+        $count = $repo->childCount(null, true);
+
+        $this->assertEquals(3, $count);
+
+        // Count food children
+        $food = $repo->findOneByTitle('Food');
+        $count = $repo->childCount($food);
+
+        $this->assertEquals(4, $count);
+
+        // Count food children, but only direct ones
+        $count = $repo->childCount($food, true);
+
+        $this->assertEquals(2, $count);
     }
 
     protected function getUsedEntityFixtures()

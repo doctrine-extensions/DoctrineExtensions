@@ -45,15 +45,23 @@ class ClosureTreeRepositoryTest extends BaseTestCaseORM
         $repo = $this->em->getRepository(self::CATEGORY);
         $food = $repo->findOneByTitle('Food');
 
-        $directCount = $repo->childCount($food, true);
-        $this->assertEquals(3, $directCount);
+        // Count all
+        $count = $repo->childCount();
+        $this->assertEquals(15, $count);
 
-        $fruits = $repo->findOneByTitle('Fruits');
-        $count = $repo->childCount($fruits);
-        $this->assertEquals(4, $count);
+        // Count all, but only direct ones
+        $count = $repo->childCount(null, true);
+        $this->assertEquals(2, $count);
 
-        $rootCount = $repo->childCount(null, true);
-        $this->assertEquals(2, $rootCount);
+        // Count food children
+        $food = $repo->findOneByTitle('Food');
+        $count = $repo->childCount($food);
+        $this->assertEquals(11, $count);
+
+        // Count food children, but only direct ones
+        $food = $repo->findOneByTitle('Food');
+        $count = $repo->childCount($food, true);
+        $this->assertEquals(3, $count);
     }
 
     public function testPath()

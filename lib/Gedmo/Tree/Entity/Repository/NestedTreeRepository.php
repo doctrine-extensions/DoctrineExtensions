@@ -172,69 +172,6 @@ class NestedTreeRepository extends AbstractTreeRepository
     }
 
     /**
-     * Counts the children of given TreeNode
-     *
-     * @param object $node - if null counts all records in tree
-     * @param boolean $direct - true to count only direct children
-     * @throws InvalidArgumentException - if input is not valid
-     * @return integer
-     */
-    public function childCount($node = null, $direct = false)
-    {
-        $count = 0;
-        $meta = $this->getClassMetadata();
-        $nodeId = $meta->getSingleIdentifierFieldName();
-        $config = $this->listener->getConfiguration($this->_em, $meta->name);
-        if (null !== $node) {
-            if ($node instanceof $meta->name) {
-                $wrapped = new EntityWrapper($node, $this->_em);
-                if (!$wrapped->hasValidIdentifier()) {
-                    throw new InvalidArgumentException("Node is not managed by UnitOfWork");
-                }
-                if ($direct) {
-                    $id = $wrapped->getIdentifier();
-                    $qb = $this->_em->createQueryBuilder();
-                    $qb->select($qb->expr()->count('node.' . $nodeId))
-                        ->from($config['useObjectClass'], 'node')
-                        ->where($id === null ?
-                            $qb->expr()->isNull('node.'.$config['parent']) :
-                            $qb->expr()->eq('node.'.$config['parent'], is_string($id) ? $qb->expr()->literal($id) : $id)
-                        )
-                    ;
-
-                    if (isset($config['root'])) {
-                        $rootId = $wrapped->getPropertyValue($config['root']);
-                        $qb->andWhere($rootId === null ?
-                            $qb->expr()->isNull('node.'.$config['root']) :
-                            $qb->expr()->eq('node.'.$config['root'], is_string($rootId) ? $qb->expr()->literal($rootId) : $rootId)
-                        );
-                    }
-                    $q = $qb->getQuery();
-                    $count = intval($q->getSingleScalarResult());
-                } else {
-                    $left = $wrapped->getPropertyValue($config['left']);
-                    $right = $wrapped->getPropertyValue($config['right']);
-                    if ($left && $right) {
-                        $count = ($right - $left - 1) / 2;
-                    }
-                }
-            } else {
-                throw new InvalidArgumentException("Node is not related to this repository");
-            }
-        } else {
-            $qb = $this->_em->createQueryBuilder();
-            $qb->select($qb->expr()->count('node.' . $nodeId))
-                ->from($config['useObjectClass'], 'node')
-            ;
-            if ($direct) {
-                $qb->where($qb->expr()->isNull('node.'.$config['parent']));
-            }
-            $count = intval($qb->getQuery()->getSingleScalarResult());
-        }
-        return $count;
-    }
-
-    /**
      * @see getChildrenQueryBuilder
      */
     public function childrenQueryBuilder($node = null, $direct = false, $sortByField = null, $direction = 'ASC', $includeNode = false)
