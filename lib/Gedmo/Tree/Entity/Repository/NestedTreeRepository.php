@@ -23,41 +23,42 @@ use Doctrine\ORM\Query,
 class NestedTreeRepository extends AbstractTreeRepository
 {
     /**
-     * Get all root nodes query builder
-     *
-     * @return Doctrine\ORM\QueryBuilder
+     * {@inheritDoc}
      */
-    public function getRootNodesQueryBuilder()
+    public function getRootNodesQueryBuilder($sortByField = null, $direction = 'asc')
     {
         $meta = $this->getClassMetadata();
         $config = $this->listener->getConfiguration($this->_em, $meta->name);
         $qb = $this->_em->createQueryBuilder();
-        return $qb
+        $qb
             ->select('node')
             ->from($config['useObjectClass'], 'node')
             ->where($qb->expr()->isNull('node.'.$config['parent']))
-            ->orderBy('node.' . $config['left'], 'ASC')
         ;
+
+        if ($sortByField !== null) {
+            $qb->orderBy('node.' . $sortByField, strtolower($direction) === 'asc' ? 'asc' : 'desc');
+        } else {
+            $qb->orderBy('node.' . $config['left'], 'ASC');
+        }
+
+        return $qb;
     }
 
     /**
-     * Get all root nodes query
-     *
-     * @return Doctrine\ORM\Query
+     * {@inheritDoc}
      */
-    public function getRootNodesQuery()
+    public function getRootNodesQuery($sortByField = null, $direction = 'asc')
     {
-        return $this->getRootNodesQueryBuilder()->getQuery();
+        return $this->getRootNodesQueryBuilder($sortByField, $direction)->getQuery();
     }
 
     /**
-     * Get all root nodes
-     *
-     * @return array
+     * {@inheritDoc}
      */
-    public function getRootNodes()
+    public function getRootNodes($sortByField = null, $direction = 'asc')
     {
-        return $this->getRootNodesQuery()->getResult();
+        return $this->getRootNodesQuery($sortByField, $direction)->getResult();
     }
 
     /**
@@ -171,79 +172,9 @@ class NestedTreeRepository extends AbstractTreeRepository
     }
 
     /**
-     * Counts the children of given TreeNode
-     *
-     * @param object $node - if null counts all records in tree
-     * @param boolean $direct - true to count only direct children
-     * @throws InvalidArgumentException - if input is not valid
-     * @return integer
+     * @see getChildrenQueryBuilder
      */
-    public function childCount($node = null, $direct = false)
-    {
-        $count = 0;
-        $meta = $this->getClassMetadata();
-        $nodeId = $meta->getSingleIdentifierFieldName();
-        $config = $this->listener->getConfiguration($this->_em, $meta->name);
-        if (null !== $node) {
-            if ($node instanceof $meta->name) {
-                $wrapped = new EntityWrapper($node, $this->_em);
-                if (!$wrapped->hasValidIdentifier()) {
-                    throw new InvalidArgumentException("Node is not managed by UnitOfWork");
-                }
-                if ($direct) {
-                    $id = $wrapped->getIdentifier();
-                    $qb = $this->_em->createQueryBuilder();
-                    $qb->select($qb->expr()->count('node.' . $nodeId))
-                        ->from($config['useObjectClass'], 'node')
-                        ->where($id === null ?
-                            $qb->expr()->isNull('node.'.$config['parent']) :
-                            $qb->expr()->eq('node.'.$config['parent'], is_string($id) ? $qb->expr()->literal($id) : $id)
-                        )
-                    ;
-
-                    if (isset($config['root'])) {
-                        $rootId = $wrapped->getPropertyValue($config['root']);
-                        $qb->andWhere($rootId === null ?
-                            $qb->expr()->isNull('node.'.$config['root']) :
-                            $qb->expr()->eq('node.'.$config['root'], is_string($rootId) ? $qb->expr()->literal($rootId) : $rootId)
-                        );
-                    }
-                    $q = $qb->getQuery();
-                    $count = intval($q->getSingleScalarResult());
-                } else {
-                    $left = $wrapped->getPropertyValue($config['left']);
-                    $right = $wrapped->getPropertyValue($config['right']);
-                    if ($left && $right) {
-                        $count = ($right - $left - 1) / 2;
-                    }
-                }
-            } else {
-                throw new InvalidArgumentException("Node is not related to this repository");
-            }
-        } else {
-            $qb = $this->_em->createQueryBuilder();
-            $qb->select($qb->expr()->count('node.' . $nodeId))
-                ->from($config['useObjectClass'], 'node')
-            ;
-            if ($direct) {
-                $qb->where($qb->expr()->isNull('node.'.$config['parent']));
-            }
-            $count = intval($qb->getQuery()->getSingleScalarResult());
-        }
-        return $count;
-    }
-
-    /**
-     * Get tree children query builder followed by given $node
-     *
-     * @param object $node - if null, all tree nodes will be taken
-     * @param boolean $direct - true to take only direct children
-     * @param string $sortByField - field name to sort by
-     * @param string $direction - sort direction : "ASC" or "DESC"
-     * @throws InvalidArgumentException - if input is not valid
-     * @return Doctrine\ORM\QueryBuilder
-     */
-    public function childrenQueryBuilder($node = null, $direct = false, $sortByField = null, $direction = 'ASC')
+    public function childrenQueryBuilder($node = null, $direct = false, $sortByField = null, $direction = 'ASC', $includeNode = false)
     {
         $meta = $this->getClassMetadata();
         $config = $this->listener->getConfiguration($this->_em, $meta->name);
@@ -281,6 +212,11 @@ class NestedTreeRepository extends AbstractTreeRepository
                         $qb->expr()->eq('node.'.$config['root'], is_string($rootId) ? $qb->expr()->literal($rootId) : $rootId)
                     );
                 }
+                if ($includeNode) {
+                    $idField = $meta->getSingleIdentifierFieldName();
+                    $qb->where('('.$qb->getDqlPart('where').') OR node.'.$idField.' = :rootNode');
+                    $qb->setParameter('rootNode', $node);
+                }
             } else {
                 throw new \InvalidArgumentException("Node is not related to this repository");
             }
@@ -309,32 +245,44 @@ class NestedTreeRepository extends AbstractTreeRepository
     }
 
     /**
-     * Get tree children query followed by given $node
-     *
-     * @param object $node - if null, all tree nodes will be taken
-     * @param boolean $direct - true to take only direct children
-     * @param string|array $sortByField - field names to sort by
-     * @param string $direction - sort direction : "ASC" or "DESC"
-     * @return Doctrine\ORM\Query
+     * @see getChildrenQuery
      */
-    public function childrenQuery($node = null, $direct = false, $sortByField = null, $direction = 'ASC')
+    public function childrenQuery($node = null, $direct = false, $sortByField = null, $direction = 'ASC', $includeNode = false)
     {
-        return $this->childrenQueryBuilder($node, $direct, $sortByField, $direction)->getQuery();
+        return $this->childrenQueryBuilder($node, $direct, $sortByField, $direction, $includeNode)->getQuery();
     }
 
     /**
-     * Get list of children followed by given $node
-     *
-     * @param object $node - if null, all tree nodes will be taken
-     * @param boolean $direct - true to take only direct children
-     * @param string $sortByField - field name to sort by
-     * @param string $direction - sort direction : "ASC" or "DESC"
-     * @return array - list of given $node children, null on failure
+     * @see getChildren
      */
-    public function children($node = null, $direct = false, $sortByField = null, $direction = 'ASC')
+    public function children($node = null, $direct = false, $sortByField = null, $direction = 'ASC', $includeNode = false)
     {
-        $q = $this->childrenQuery($node, $direct, $sortByField, $direction);
+        $q = $this->childrenQuery($node, $direct, $sortByField, $direction, $includeNode);
         return $q->getResult();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getChildrenQueryBuilder($node = null, $direct = false, $sortByField = null, $direction = 'ASC', $includeNode = false)
+    {
+        return $this->childrenQueryBuilder($node, $direct, $sortByField, $direction, $includeNode);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getChildrenQuery($node = null, $direct = false, $sortByField = null, $direction = 'ASC', $includeNode = false)
+    {
+        return $this->childrenQuery($node, $direct, $sortByField, $direction, $includeNode);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getChildren($node = null, $direct = false, $sortByField = null, $direction = 'ASC', $includeNode = false)
+    {
+        return $this->children($node, $direct, $sortByField, $direction, $includeNode);
     }
 
     /**
@@ -836,46 +784,33 @@ class NestedTreeRepository extends AbstractTreeRepository
     }
 
     /**
-     * Retrieves the nested array or the decorated output.
-     * Uses @options to handle decorations
-     *
-     * @throws \Gedmo\Exception\InvalidArgumentException
-     * @param object $node - from which node to start reordering the tree
-     * @param boolean $direct - true to take only direct children
-     * @param array $options :
-     *     decorate: boolean (false) - retrieves tree as UL->LI tree
-     *     nodeDecorator: Closure (null) - uses $node as argument and returns decorated item as string
-     *     rootOpen: string || Closure ('<ul>') - branch start, closure will be given $children as a parameter
-     *     rootClose: string ('</ul>') - branch close
-     *     childStart: string || Closure ('<li>') - start of node, closure will be given $node as a parameter
-     *     childClose: string ('</li>') - close of node
-     *
-     * @return array|string
+     * {@inheritDoc}
      */
-    public function childrenHierarchy($node = null, $direct = false, array $options = array())
+    public function getNodesHierarchyQueryBuilder($node = null, $direct, array $config, array $options = array(), $includeNode = false)
     {
-        $meta = $this->getClassMetadata();
-        $config = $this->listener->getConfiguration($this->_em, $meta->name);
-
-        if ($node !== null) {
-            if ($node instanceof $meta->name) {
-                $wrapped = new EntityWrapper($node, $this->_em);
-                if (!$wrapped->hasValidIdentifier()) {
-                    throw new InvalidArgumentException("Node is not managed by UnitOfWork");
-                }
-            }
-        }
-
-        // Gets the array of $node results.
-        // It must be order by 'root' and 'left' field
-        $nodes = $this->childrenQuery(
+        return $this->childrenQueryBuilder(
             $node,
             $direct,
             isset($config['root']) ? array($config['root'], $config['left']) : $config['left'],
-            'ASC'
-        )->getArrayResult();
+            'ASC',
+            $includeNode
+        );
+    }
 
-        return $this->buildTree($nodes, $options);
+    /**
+     * {@inheritDoc}
+     */
+    public function getNodesHierarchyQuery($node = null, $direct, array $config, array $options = array(), $includeNode = false)
+    {
+        return $this->getNodesHierarchyQueryBuilder($node, $direct, $config, $options)->getQuery();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getNodesHierarchy($node = null, $direct, array $config, array $options = array(), $includeNode = false)
+    {
+        return $this->getNodesHierarchyQuery($node, $direct, $config, $options)->getArrayResult();
     }
 
     /**
@@ -1072,100 +1007,5 @@ class NestedTreeRepository extends AbstractTreeRepository
 
         // remove from identity map
         $this->_em->getUnitOfWork()->removeFromIdentityMap($wrapped->getObject());
-    }
-
-    /**
-     * Retrieves the nested array or the decorated output.
-     * Uses @options to handle decorations
-     * NOTE: @nodes should be fetched and hydrated as array
-     *
-     * @throws \Gedmo\Exception\InvalidArgumentException
-     * @param array $nodes - list o nodes to build tree
-     * @param array $options :
-     *     decorate: boolean (false) - retrieves tree as UL->LI tree
-     *     nodeDecorator: Closure (null) - uses $node as argument and returns decorated item as string
-     *     rootOpen: string || Closure ('<ul>') - branch start, closure will be given $children as a parameter
-     *     rootClose: string ('</ul>') - branch close
-     *     childStart: string || Closure ('<li>') - start of node, closure will be given $node as a parameter
-     *     childClose: string ('</li>') - close of node
-     *
-     * @return array|string
-     */
-    public function buildTree(array $nodes, array $options = array())
-    {
-        //process the nested tree into a nested array
-        $meta = $this->getClassMetadata();
-        $config = $this->listener->getConfiguration($this->_em, $meta->name);
-        $nestedTree = array();
-        $l = 0;
-
-        if (count($nodes) > 0) {
-            // Node Stack. Used to help building the hierarchy
-            $stack = array();
-            foreach ($nodes as $child) {
-                $item = $child;
-                $item['__children'] = array();
-                // Number of stack items
-                $l = count($stack);
-                // Check if we're dealing with different levels
-                while($l > 0 && $stack[$l - 1][$config['level']] >= $item[$config['level']]) {
-                    array_pop($stack);
-                    $l--;
-                }
-                // Stack is empty (we are inspecting the root)
-                if ($l == 0) {
-                    // Assigning the root child
-                    $i = count($nestedTree);
-                    $nestedTree[$i] = $item;
-                    $stack[] = &$nestedTree[$i];
-                } else {
-                    // Add child to parent
-                    $i = count($stack[$l - 1]['__children']);
-                    $stack[$l - 1]['__children'][$i] = $item;
-                    $stack[] = &$stack[$l - 1]['__children'][$i];
-                }
-            }
-        }
-
-        $default = array(
-            'decorate' => false,
-            'rootOpen' => '<ul>',
-            'rootClose' => '</ul>',
-            'childOpen' => '<li>',
-            'childClose' => '</li>',
-            'nodeDecorator' => function ($node) use ($meta) {
-                // override and change it, guessing which field to use
-                if ($meta->hasField('title')) {
-                    $field = 'title';
-                } else if ($meta->hasField('name')) {
-                    $field = 'name';
-                } else {
-                    throw new InvalidArgumentException("Cannot find any representation field");
-                }
-                return $node[$field];
-            }
-        );
-        $options = array_merge($default, $options);
-        // If you don't want any html output it will return the nested array
-        if (!$options['decorate']) {
-            return $nestedTree;
-        } elseif (!count($nestedTree)) {
-            return '';
-        }
-
-        $build = function($tree) use (&$build, &$options) {
-            $output = is_string($options['rootOpen']) ? $options['rootOpen'] : $options['rootOpen']($tree);
-            foreach ($tree as $node) {
-                $output .= is_string($options['childOpen']) ? $options['childOpen'] : $options['childOpen']($node);
-                $output .= $options['nodeDecorator']($node);
-                if (count($node['__children']) > 0) {
-                    $output .= $build($node['__children']);
-                }
-                $output .= is_string($options['childClose']) ? $options['childClose'] : $options['childClose']($node);
-            }
-            return $output . (is_string($options['rootClose']) ? $options['rootClose'] : $options['rootClose']($tree));
-        };
-
-        return $build($nestedTree);
     }
 }

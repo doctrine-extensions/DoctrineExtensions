@@ -12,6 +12,8 @@ class ClosureCategory
 
     private $parent;
 
+    private $level;
+
     /**
      * Get id
      *
@@ -80,5 +82,15 @@ class ClosureCategory
     public function getParent()
     {
         return $this->parent;
+    }
+
+    public function setLevel($level)
+    {
+        $this->level = $level;
+    }
+
+    public function getLevel()
+    {
+        return $this->level;
     }
 }

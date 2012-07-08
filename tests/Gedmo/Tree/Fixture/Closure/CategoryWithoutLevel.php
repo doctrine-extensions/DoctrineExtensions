@@ -7,10 +7,10 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @Gedmo\Tree(type="closure")
- * @Gedmo\TreeClosure(class="Tree\Fixture\Closure\CategoryClosure")
+ * @Gedmo\TreeClosure(class="Tree\Fixture\Closure\CategoryWithoutLevelClosure")
  * @ORM\Entity(repositoryClass="Gedmo\Tree\Entity\Repository\ClosureTreeRepository")
  */
-class Category
+class CategoryWithoutLevel
 {
     /**
      * @ORM\Column(name="id", type="integer")
@@ -25,15 +25,9 @@ class Category
     private $title;
 
     /**
-     * @ORM\Column(name="level", type="integer", nullable=true)
-     * @Gedmo\TreeLevel
-     */
-    private $level;
-
-    /**
      * @Gedmo\TreeParent
      * @ORM\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="CASCADE")
-     * @ORM\ManyToOne(targetEntity="Category", inversedBy="children")
+     * @ORM\ManyToOne(targetEntity="CategoryWithoutLevel", inversedBy="children")
      */
     private $parent;
 
@@ -52,7 +46,7 @@ class Category
         return $this->title;
     }
 
-    public function setParent(Category $parent = null)
+    public function setParent(CategoryWithoutLevel $parent = null)
     {
         $this->parent = $parent;
     }
@@ -62,18 +56,8 @@ class Category
         return $this->parent;
     }
 
-    public function addClosure(CategoryClosure $closure)
+    public function addClosure(CategoryWithoutLevelClosure $closure)
     {
         $this->closures[] = $closure;
-    }
-
-    public function setLevel($level)
-    {
-        $this->level = $level;
-    }
-
-    public function getLevel()
-    {
-        return $this->level;
     }
 }

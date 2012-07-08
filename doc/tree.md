@@ -21,9 +21,13 @@ Features:
 
 Thanks for contributions to:
 
-- **[comfortablynumb](http://github.com/comfortablynumb) Gustavo Falco** for Closure strategy
+- **[comfortablynumb](http://github.com/comfortablynumb) Gustavo Falco** for Closure and Materialized Path strategy
 - **[everzet](http://github.com/everzet) Kudryashov Konstantin** for TreeLevel implementation
 - **[stof](http://github.com/stof) Christophe Coevoet** for getTreeLeafs function
+
+Update **2012-06-28**
+
+- Added "buildTree" functionality support for Closure and Materialized Path strategies
 
 Update **2012-02-23**
 
@@ -79,6 +83,8 @@ Content:
 - Build [html tree](#html-tree)
 - Advanced usage [examples](#advanced-examples)
 - [Materialized Path](#materialized-path)
+- [Closure Table](#closure-table)
+- [Repository methods (all strategies)](#repository-methods)
 
 <a name="including-extension"></a>
 
@@ -1045,3 +1051,153 @@ it locks the tree and proceed with the modification. After all the modifications
 If, for some reason, the lock couldn't get freed, there's a lock timeout configured with a default time of 3 seconds.
 You can change this value using the **lockingTimeout** parameter under the Tree annotation (or equivalent in XML and YML).
 You must pass a value in seconds to this parameter.
+
+
+<a name="closure-table"></a>
+
+## Closure Table
+
+To be able to use this strategy, you'll need an additional entity which represents the closures. We already provide you an abstract
+entity, so you'd only need to extend it.
+
+### Closure Entity
+
+``` php
+<?php
+
+namespace YourNamespace\Entity;
+
+use Gedmo\Tree\Entity\MappedSuperclass\AbstractClosure;
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * @ORM\Entity
+ */
+class CategoryClosure extends AbstractClosure
+{
+}
+```
+
+Next step, define your entity.
+
+### ORM Entity example (Annotations)
+
+``` php
+<?php
+
+namespace YourNamespace\Entity;
+
+use Gedmo\Mapping\Annotation as Gedmo;
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * @Gedmo\Tree(type="closure")
+ * @Gedmo\TreeClosure(class="YourNamespace\Entity\CategoryClosure")
+ * @ORM\Entity(repositoryClass="Gedmo\Tree\Entity\Repository\ClosureTreeRepository")
+ */
+class Category
+{
+    /**
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue
+     */
+    private $id;
+
+    /**
+     * @ORM\Column(name="title", type="string", length=64)
+     */
+    private $title;
+
+    /**
+     * This parameter is optional for the closure strategy
+     *
+     * @ORM\Column(name="level", type="integer", nullable=true)
+     * @Gedmo\TreeLevel
+     */
+    private $level;
+
+    /**
+     * @Gedmo\TreeParent
+     * @ORM\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="CASCADE")
+     * @ORM\ManyToOne(targetEntity="Category", inversedBy="children")
+     */
+    private $parent;
+
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    public function setTitle($title)
+    {
+        $this->title = $title;
+    }
+
+    public function getTitle()
+    {
+        return $this->title;
+    }
+
+    public function setParent(Category $parent = null)
+    {
+        $this->parent = $parent;
+    }
+
+    public function getParent()
+    {
+        return $this->parent;
+    }
+
+    public function addClosure(CategoryClosure $closure)
+    {
+        $this->closures[] = $closure;
+    }
+
+    public function setLevel($level)
+    {
+        $this->level = $level;
+    }
+
+    public function getLevel()
+    {
+        return $this->level;
+    }
+}
+
+```
+
+And that's it!
+
+
+<a name="repository-methods"></a>
+
+## Repository Methods (All strategies)
+
+There are repository methods that are available for you in all the strategies:
+
+* **getRootNodes** / **getRootNodesQuery** / **getRootNodesQueryBuilder**: Returns an array with the available root nodes. Arguments:
+  - *sortByField*: An optional field to order the root nodes. Defaults to "null".
+  - *direction*: In case the first argument is used, you can pass the direction here: "asc" or "desc". Defaults to "asc".
+* **getChildren** / **getChildrenQuery** / **getChildrenQueryBuilder**: Returns an array of children nodes. Arguments:
+  - *node*: If you pass a node, the method will return its children. Defaults to "null" (this means it will return ALL nodes).
+  - *direct*: If you pass true as a value for this argument, you'll get only the direct children of the node
+  (or only the root nodes if you pass "null" to the "node" argument).
+  - *sortByField*: An optional field to sort the children. Defaults to "null".
+  - *direction*: If you use the "sortByField" argument, this allows you to set the direction: "asc" or "desc". Defaults to "asc".
+  - *includeNode*: Using "true", this argument allows you to include in the result the node you passed as the first argument. Defaults to "false".
+* **childrenHierarchy**: This useful method allows you to build an array of nodes representing the hierarchy of a tree. Arguments:
+  - *node*: If you pass a node, the method will return its children. Defaults to "null" (this means it will return ALL nodes).
+  - *direct*: If you pass true as a value for this argument, you'll get only the direct children of the node
+  - *options*: An array of options that allows you to decorate the results with HTML. Available options:
+      * decorate: boolean (false) - retrieves tree as UL->LI tree
+      * nodeDecorator: Closure (null) - uses $node as argument and returns decorated item as string
+      * rootOpen: string || Closure ('\<ul\>') - branch start, closure will be given $children as a parameter
+      * rootClose: string ('\</ul\>') - branch close
+      * childStart: string || Closure ('\<li\>') - start of node, closure will be given $node as a parameter
+      * childClose: string ('\</li\>') - close of node
+      * childSort: array || keys allowed: field: field to sort on, dir: direction. 'asc' or 'desc'
+  - *includeNode*: Using "true", this argument allows you to include in the result the node you passed as the first argument. Defaults to "false".
+
+This list is not complete yet. We're working on including more methods in the common API offered by repositories of all the strategies.
+Soon we'll be adding more helpful methods here.

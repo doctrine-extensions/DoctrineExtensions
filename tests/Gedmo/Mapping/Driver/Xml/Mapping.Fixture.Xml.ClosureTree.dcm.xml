@@ -11,6 +11,10 @@
 
         <field name="name" type="string" length="128"/>
 
+        <field name="level" type="integer">
+            <gedmo:tree-level />
+        </field>
+
         <many-to-one field="parent" target-entity="ClosureTree">
             <join-column name="parent_id" referenced-column-name="id" on-delete="CASCADE"/>
             <gedmo:tree-parent/>

@@ -36,6 +36,12 @@ class Person
      */
     private $parent;
 
+    /**
+     * @ORM\Column(name="level", type="integer")
+     * @Gedmo\TreeLevel
+     */
+    private $level;
+
     public function getId()
     {
         return $this->id;
@@ -64,5 +70,25 @@ class Person
     public function addClosure(CategoryClosure $closure)
     {
         $this->closures[] = $closure;
+    }
+
+    public function setLevel($level)
+    {
+        $this->level = $level;
+    }
+
+    public function getLevel()
+    {
+        return $this->level;
+    }
+
+    public function setFullName($fullName)
+    {
+        $this->fullName = $fullName;
+    }
+
+    public function getFullName()
+    {
+        return $this->fullName;
     }
 }
