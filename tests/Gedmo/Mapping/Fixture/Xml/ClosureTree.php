@@ -9,4 +9,6 @@ class ClosureTree
     private $name;
 
     private $parent;
+
+    private $level;
 }

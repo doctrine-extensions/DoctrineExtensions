@@ -15,6 +15,10 @@ Mapping\Fixture\Yaml\ClosureCategory:
     title:
       type: string
       length: 64
+    level:
+      type: integer
+      gedmo:
+        - treeLevel
   manyToOne:
     parent:
       targetEntity: Mapping\Fixture\Yaml\ClosureCategory

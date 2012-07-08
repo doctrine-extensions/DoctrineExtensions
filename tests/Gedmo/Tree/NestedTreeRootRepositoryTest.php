@@ -4,7 +4,6 @@ namespace Gedmo\Tree;
 
 use Doctrine\Common\EventManager;
 use Tool\BaseTestCaseORM;
-use Doctrine\Common\Util\Debug;
 use Tree\Fixture\RootCategory;
 
 /**
@@ -220,6 +219,9 @@ class NestedTreeRootRepositoryTest extends BaseTestCaseORM
 
         $childCount = $repo->childCount();
         $this->assertEquals(6, $childCount);
+
+        $childCount = $repo->childCount(null, true);
+        $this->assertEquals(2, $childCount);
     }
 
     /**
@@ -353,6 +355,28 @@ class NestedTreeRootRepositoryTest extends BaseTestCaseORM
 
         $vegies = $repo->findOneByTitle('Vegitables');
         $this->assertTrue($repo->verify());
+    }
+
+    /**
+     * @test
+     */
+    public function getRootNodesTest()
+    {
+        $repo = $this->em->getRepository(self::CATEGORY);
+
+        // Test getRootNodes without custom ordering
+        $roots = $repo->getRootNodes();
+
+        $this->assertEquals(2, count($roots));
+        $this->assertEquals('Food', $roots[0]->getTitle());
+        $this->assertEquals('Sports', $roots[1]->getTitle());
+
+        // Test getRootNodes with custom ordering
+        $roots = $repo->getRootNodes('title', 'desc');
+
+        $this->assertEquals(2, count($roots));
+        $this->assertEquals('Sports', $roots[0]->getTitle());
+        $this->assertEquals('Food', $roots[1]->getTitle());
     }
 
     protected function getUsedEntityFixtures()
