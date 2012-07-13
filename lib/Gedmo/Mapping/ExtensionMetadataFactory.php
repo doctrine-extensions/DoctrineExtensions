@@ -2,6 +2,7 @@
 
 namespace Gedmo\Mapping;
 
+use Doctrine\Common\Persistence\Mapping\Driver\MappingDriver;
 use Doctrine\Common\Persistence\ObjectManager;
 use Gedmo\Mapping\Driver\File as FileDriver;
 use Gedmo\Mapping\Driver\AnnotationDriverInterface;
@@ -154,8 +155,14 @@ final class ExtensionMetadataFactory
             $driver = new $driverClassName();
             $driver->setOriginalDriver($omDriver);
             if ($driver instanceof FileDriver) {
-                $driver->setPaths($omDriver->getLocator()->getPaths());
-                $driver->setExtension($omDriver->getLocator()->getFileExtension());
+                if ($omDriver instanceof MappingDriver) {
+                    $driver->setPaths($omDriver->getLocator()->getPaths());
+                    $driver->setExtension($omDriver->getLocator()->getFileExtension());
+                } else {
+                    // BC for Doctrine 2.2
+                    $driver->setPaths($omDriver->getPaths());
+                    $driver->setExtension($omDriver->getFileExtension());
+                }
             }
             if ($driver instanceof AnnotationDriverInterface) {
                 $driver->setAnnotationReader($this->annotationReader);
