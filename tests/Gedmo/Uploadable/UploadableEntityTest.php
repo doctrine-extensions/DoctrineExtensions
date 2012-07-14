@@ -127,7 +127,7 @@ class UploadableEntityTest extends BaseTestCaseORM
         // We need to set this again because of the recent refresh
         $firstFile = $image2->getFilePath();
 
-        $this->assertEquals($image2->getPath().DIRECTORY_SEPARATOR.$fileInfo['name'], $image2->getFilePath());
+        $this->assertPathEquals($image2->getPath().DIRECTORY_SEPARATOR.$fileInfo['name'], $image2->getFilePath());
         $this->assertTrue(is_file($firstFile));
         $this->assertEquals($fileInfo['size'], $image2->getSize());
         $this->assertEquals($fileInfo['type'], $image2->getMime());
@@ -151,7 +151,7 @@ class UploadableEntityTest extends BaseTestCaseORM
 
         $lastFile = $image2->getFilePath();
 
-        $this->assertEquals($image2->getPath().DIRECTORY_SEPARATOR.$fileInfo['name'], $image2->getFilePath());
+        $this->assertPathEquals($image2->getPath().DIRECTORY_SEPARATOR.$fileInfo['name'], $image2->getFilePath());
         $this->assertTrue(is_file($lastFile));
 
         // First file should be removed on update
@@ -198,9 +198,9 @@ class UploadableEntityTest extends BaseTestCaseORM
         $file2Path = $file2->getPath().DIRECTORY_SEPARATOR.$fileInfo['name'];
         $file3Path = $file3->getPath().DIRECTORY_SEPARATOR.$fileInfo['name'];
 
-        $this->assertEquals($file1Path, $files[0]->getFilePath());
-        $this->assertEquals($file2Path, $files[1]->getFilePath());
-        $this->assertEquals($file3Path, $files[2]->getFilePath());
+        $this->assertPathEquals($file1Path, $files[0]->getFilePath());
+        $this->assertPathEquals($file2Path, $files[1]->getFilePath());
+        $this->assertPathEquals($file3Path, $files[2]->getFilePath());
     }
 
     /**
@@ -233,7 +233,7 @@ class UploadableEntityTest extends BaseTestCaseORM
 
         $this->em->refresh($file);
 
-        $this->assertEquals($this->destinationTestFile, $file->getFilePath());
+        $this->assertPathEquals($this->destinationTestFile, $file->getFilePath());
     }
 
     public function testCallbackIsCalledIfItsSetOnEntity()
@@ -311,7 +311,7 @@ class UploadableEntityTest extends BaseTestCaseORM
 
         $this->em->refresh($file);
 
-        $filename = substr($file->getFilePath(), strrpos($file->getFilePath(), DIRECTORY_SEPARATOR) + 1);
+        $filename = substr($file->getFilePath(), strrpos($this->fixWindowsPath($file->getFilePath()), '/') + 1);
 
         $this->assertEquals('test-3.txt', $filename);
     }
@@ -328,7 +328,7 @@ class UploadableEntityTest extends BaseTestCaseORM
 
         $this->em->refresh($file);
 
-        $filename = substr($file->getFilePath(), strrpos($file->getFilePath(), DIRECTORY_SEPARATOR) + 1);
+        $filename = substr($file->getFilePath(), strrpos($this->fixWindowsPath($file->getFilePath()), '/') + 1);
 
         $this->assertEquals('123.txt', $filename);
     }
@@ -347,7 +347,7 @@ class UploadableEntityTest extends BaseTestCaseORM
 
         $filePath = $file->getPath().DIRECTORY_SEPARATOR.$fileInfo['name'];
 
-        $this->assertEquals($filePath, $file->getFilePath());
+        $this->assertPathEquals($filePath, $file->getFilePath());
     }
 
     /**
@@ -396,7 +396,7 @@ class UploadableEntityTest extends BaseTestCaseORM
 
         $this->em->refresh($file2);
 
-        $filename = substr($file2->getFilePath(), strrpos($file2->getFilePath(), DIRECTORY_SEPARATOR) + 1);
+        $filename = substr($file2->getFilePath(), strrpos($this->fixWindowsPath($file2->getFilePath()), '/') + 1);
 
         $this->assertEquals('test-2.txt', $filename);
     }
@@ -615,6 +615,20 @@ class UploadableEntityTest extends BaseTestCaseORM
                 }
             }
         }
+    }
+
+    protected function assertPathEquals($expected, $path, $message = '')
+    {
+        $this->assertEquals($this->fixWindowsPath($expected), $this->fixWindowsPath($path), $message);
+    }
+
+    protected function fixWindowsPath($path)
+    {
+        if (defined('PHP_WINDOWS_VERSION_BUILD')) {
+            $path = str_replace('\\', '/', $path);
+        }
+
+        return $path;
     }
 }
 

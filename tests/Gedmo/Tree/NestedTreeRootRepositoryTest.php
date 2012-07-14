@@ -110,7 +110,7 @@ class NestedTreeRootRepositoryTest extends BaseTestCaseORM
         $childOpen = '';
         $childClose = '';
         $nodeDecorator = function($node) {
-            return str_repeat('-', $node['level']).$node['title'].PHP_EOL;
+            return str_repeat('-', $node['level']).$node['title']."\n";
         };
 
         $decoratedCliTree = $repo->childrenHierarchy(
