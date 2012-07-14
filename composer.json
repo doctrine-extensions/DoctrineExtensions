@@ -25,7 +25,7 @@
     ],
     "require": {
         "php": ">=5.3.2",
-        "doctrine/common": ">=2.1,<2.4-dev"
+        "doctrine/common": ">=2.2,<2.4-dev"
     },
     "suggest": {
         "doctrine/orm": ">=2.1",

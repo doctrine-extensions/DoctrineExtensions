@@ -2,7 +2,10 @@
 
 namespace Gedmo\Mapping;
 
+use Doctrine\Common\Persistence\Mapping\Driver\DefaultFileLocator;
+use Doctrine\Common\Persistence\Mapping\Driver\SymfonyFileLocator;
 use Doctrine\Common\Persistence\Mapping\Driver\MappingDriver;
+use Doctrine\Common\Persistence\Mapping\Driver\MappingDriverChain;
 use Doctrine\Common\Persistence\ObjectManager;
 use Gedmo\Mapping\Driver\File as FileDriver;
 use Gedmo\Mapping\Driver\AnnotationDriverInterface;
@@ -22,7 +25,7 @@ final class ExtensionMetadataFactory
 {
     /**
      * Extension driver
-     * @var Gedmo\Mapping\Driver
+     * @var \Gedmo\Mapping\Driver
      */
     private $driver;
 
@@ -126,23 +129,25 @@ final class ExtensionMetadataFactory
      *
      * @param object $omDriver
      * @throws DriverException if driver was not found in extension
-     * @return Gedmo\Mapping\Driver
+     * @return \Gedmo\Mapping\Driver
      */
     private function getDriver($omDriver)
     {
         $driver = null;
         $className = get_class($omDriver);
         $driverName = substr($className, strrpos($className, '\\') + 1);
-        if ($driverName == 'DriverChain') {
+        if ($omDriver instanceof MappingDriverChain || $driverName == 'DriverChain') {
             $driver = new Driver\Chain();
             foreach ($omDriver->getDrivers() as $namespace => $nestedOmDriver) {
                 $driver->addDriver($this->getDriver($nestedOmDriver), $namespace);
             }
         } else {
             $driverName = substr($driverName, 0, strpos($driverName, 'Driver'));
+            $isSimplified = false;
             if (substr($driverName, 0, 10) === 'Simplified') {
                 // support for simplified file drivers
                 $driverName = substr($driverName, 10);
+                $isSimplified = true;
             }
             // create driver instance
             $driverClassName = $this->extensionNamespace . '\Mapping\Driver\\' . $driverName;
@@ -155,13 +160,14 @@ final class ExtensionMetadataFactory
             $driver = new $driverClassName();
             $driver->setOriginalDriver($omDriver);
             if ($driver instanceof FileDriver) {
+                /** @var $driver FileDriver */
                 if ($omDriver instanceof MappingDriver) {
-                    $driver->setPaths($omDriver->getLocator()->getPaths());
-                    $driver->setExtension($omDriver->getLocator()->getFileExtension());
+                    $driver->setLocator($omDriver->getLocator());
+                // BC for Doctrine 2.2
+                } elseif ($isSimplified) {
+                    $driver->setLocator(new SymfonyFileLocator($omDriver->getNamespacePrefixes(), $omDriver->getFileExtension()));
                 } else {
-                    // BC for Doctrine 2.2
-                    $driver->setPaths($omDriver->getPaths());
-                    $driver->setExtension($omDriver->getFileExtension());
+                    $driver->setLocator(new DefaultFileLocator($omDriver->getPaths(), $omDriver->getFileExtension()));
                 }
             }
             if ($driver instanceof AnnotationDriverInterface) {
