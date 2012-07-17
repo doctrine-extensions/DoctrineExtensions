@@ -2,7 +2,7 @@
 
 namespace Gedmo\Loggable\Mapping\Driver;
 
-use Gedmo\Mapping\Driver\AnnotationDriverInterface,
+use Gedmo\Mapping\Driver\AbstractAnnotationDriver,
     Gedmo\Exception\InvalidMappingException;
 
 /**
@@ -18,7 +18,7 @@ use Gedmo\Mapping\Driver\AnnotationDriverInterface,
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class Annotation implements AnnotationDriverInterface
+class Annotation extends AbstractAnnotationDriver
 {
     /**
      * Annotation to define that this object is loggable
@@ -29,25 +29,6 @@ class Annotation implements AnnotationDriverInterface
      * Annotation to define that this property is versioned
      */
     const VERSIONED = 'Gedmo\\Mapping\\Annotation\\Versioned';
-
-    /**
-     * Annotation reader instance
-     *
-     * @var object
-     */
-    private $reader;
-
-    /**
-     * original driver if it is available
-     */
-    protected $_originalDriver = null;
-    /**
-     * {@inheritDoc}
-     */
-    public function setAnnotationReader($reader)
-    {
-        $this->reader = $reader;
-    }
 
     /**
      * {@inheritDoc}
@@ -67,13 +48,7 @@ class Annotation implements AnnotationDriverInterface
      */
     public function readExtendedMetadata($meta, array &$config)
     {
-        $class = $meta->getReflectionClass();
-        if (!$class) {
-            // based on recent doctrine 2.3.0-DEV maybe will be fixed in some way
-            // this happens when running annotation driver in combination with
-            // static reflection services. This is not the nicest fix
-            $class = new \ReflectionClass($meta->name);
-        }
+        $class = $this->getMetaReflectionClass($meta);
         // class annotations
         if ($annot = $this->reader->getClassAnnotation($class, self::LOGGABLE)) {
             $config['loggable'] = true;
@@ -111,16 +86,5 @@ class Annotation implements AnnotationDriverInterface
                 throw new InvalidMappingException("Class must be annoted with Loggable annotation in order to track versioned fields in class - {$meta->name}");
             }
         }
-    }
-
-    /**
-     * Passes in the mapping read by original driver
-     *
-     * @param $driver
-     * @return void
-     */
-    public function setOriginalDriver($driver)
-    {
-        $this->_originalDriver = $driver;
     }
 }

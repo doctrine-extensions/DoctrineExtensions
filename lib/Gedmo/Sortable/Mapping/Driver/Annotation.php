@@ -2,7 +2,7 @@
 
 namespace Gedmo\Sortable\Mapping\Driver;
 
-use Gedmo\Mapping\Driver\AnnotationDriverInterface,
+use Gedmo\Mapping\Driver\AbstractAnnotationDriver,
     Gedmo\Exception\InvalidMappingException;
 
 /**
@@ -17,7 +17,7 @@ use Gedmo\Mapping\Driver\AnnotationDriverInterface,
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class Annotation implements AnnotationDriverInterface
+class Annotation extends AbstractAnnotationDriver
 {
     /**
      * Annotation to mark field as one which will store node position
@@ -34,44 +34,18 @@ class Annotation implements AnnotationDriverInterface
      *
      * @var array
      */
-    private $validTypes = array(
+    protected $validTypes = array(
         'integer',
         'smallint',
         'bigint'
     );
 
     /**
-     * Annotation reader instance
-     *
-     * @var object
-     */
-    private $reader;
-
-    /**
-     * original driver if it is available
-     */
-    protected $_originalDriver = null;
-
-    /**
-     * {@inheritDoc}
-     */
-    public function setAnnotationReader($reader)
-    {
-        $this->reader = $reader;
-    }
-
-    /**
      * {@inheritDoc}
      */
     public function readExtendedMetadata($meta, array &$config)
     {
-        $class = $meta->getReflectionClass();
-        if (!$class) {
-            // based on recent doctrine 2.3.0-DEV maybe will be fixed in some way
-            // this happens when running annotation driver in combination with
-            // static reflection services. This is not the nicest fix
-            $class = new \ReflectionClass($meta->name);
-        }
+        $class = $this->getMetaReflectionClass($meta);
 
         // property annotations
         foreach ($class->getProperties() as $property) {
@@ -110,29 +84,5 @@ class Annotation implements AnnotationDriverInterface
                 throw new InvalidMappingException("Missing property: 'position' in class - {$meta->name}");
             }
         }
-    }
-
-    /**
-     * Checks if $field type is valid
-     *
-     * @param object $meta
-     * @param string $field
-     * @return boolean
-     */
-    protected function isValidField($meta, $field)
-    {
-        $mapping = $meta->getFieldMapping($field);
-        return $mapping && in_array($mapping['type'], $this->validTypes);
-    }
-
-    /**
-     * Passes in the mapping read by original driver
-     *
-     * @param $driver
-     * @return void
-     */
-    public function setOriginalDriver($driver)
-    {
-        $this->_originalDriver = $driver;
     }
 }
