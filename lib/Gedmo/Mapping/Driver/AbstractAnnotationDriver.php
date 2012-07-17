@@ -71,4 +71,20 @@ abstract class AbstractAnnotationDriver implements AnnotationDriverInterface
         }
         return $class;
     }
+
+    /**
+     * Checks if $field type is valid
+     *
+     * @param object $meta
+     * @param string $field
+     * @return boolean
+     */
+    protected function isValidField($meta, $field)
+    {
+        $mapping = $meta->getFieldMapping($field);
+        return $mapping && in_array($mapping['type'], $this->validTypes);
+    }
+
+    public function validateFullMetadata(ClassMetadata $meta, array $config) {}
+
 }
