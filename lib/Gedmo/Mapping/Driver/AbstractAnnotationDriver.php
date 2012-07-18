@@ -8,11 +8,11 @@ use Gedmo\Mapping\Driver\AnnotationDriverInterface;
  * This is an abstract class to implement common functionality
  * for extension annotation mapping drivers.
  *
- * @author     Derek J. Lambert <dlambert@dereklambert.com>
  * @package    Gedmo.Mapping.Driver
  * @subpackage AnnotationDriverInterface
- * @link       http://www.gediminasm.org
+ * @author     Derek J. Lambert <dlambert@dereklambert.com>
  * @license    MIT License (http://www.opensource.org/licenses/mit-license.php)
+ * @link       http://www.gediminasm.org
  */
 abstract class AbstractAnnotationDriver implements AnnotationDriverInterface
 {
@@ -46,9 +46,7 @@ abstract class AbstractAnnotationDriver implements AnnotationDriverInterface
     /**
      * Passes in the mapping read by original driver
      *
-     * @param $driver
-     *
-     * @return void
+     * @param object $driver
      */
     public function setOriginalDriver($driver)
     {
@@ -69,6 +67,7 @@ abstract class AbstractAnnotationDriver implements AnnotationDriverInterface
             // static reflection services. This is not the nicest fix
             $class = new \ReflectionClass($meta->name);
         }
+
         return $class;
     }
 
@@ -77,14 +76,22 @@ abstract class AbstractAnnotationDriver implements AnnotationDriverInterface
      *
      * @param object $meta
      * @param string $field
+     *
      * @return boolean
      */
     protected function isValidField($meta, $field)
     {
         $mapping = $meta->getFieldMapping($field);
+
         return $mapping && in_array($mapping['type'], $this->validTypes);
     }
 
-    public function validateFullMetadata(ClassMetadata $meta, array $config) {}
+    /**
+     * @param ClassMetadata $meta
+     * @param array         $config
+     */
+    public function validateFullMetadata(ClassMetadata $meta, array $config)
+    {
+    }
 
 }
