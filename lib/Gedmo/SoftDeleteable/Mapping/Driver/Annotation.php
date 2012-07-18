@@ -2,7 +2,7 @@
 
 namespace Gedmo\SoftDeleteable\Mapping\Driver;
 
-use Gedmo\Mapping\Driver\AnnotationDriverInterface,
+use Gedmo\Mapping\Driver\AbstractAnnotationDriver,
     Doctrine\Common\Persistence\Mapping\ClassMetadata,
     Gedmo\Exception\InvalidMappingException,
     Gedmo\SoftDeleteable\Mapping\Validator;
@@ -20,7 +20,7 @@ use Gedmo\Mapping\Driver\AnnotationDriverInterface,
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class Annotation implements AnnotationDriverInterface
+class Annotation extends AbstractAnnotationDriver
 {
     /**
      * Annotation to define that this object is loggable
@@ -28,58 +28,20 @@ class Annotation implements AnnotationDriverInterface
     const SOFT_DELETEABLE = 'Gedmo\\Mapping\\Annotation\\SoftDeleteable';
 
     /**
-     * Annotation reader instance
-     *
-     * @var object
-     */
-    private $reader;
-
-    /**
-     * original driver if it is available
-     */
-    protected $_originalDriver = null;
-    /**
-     * {@inheritDoc}
-     */
-    public function setAnnotationReader($reader)
-    {
-        $this->reader = $reader;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function validateFullMetadata(ClassMetadata $meta, array $config)
-    {
-        // Nothing here for now
-    }
-
-    /**
      * {@inheritDoc}
      */
     public function readExtendedMetadata($meta, array &$config)
     {
-        $class = $meta->getReflectionClass();
+        $class = $this->getMetaReflectionClass($meta);
         // class annotations
         if ($class !== null && $annot = $this->reader->getClassAnnotation($class, self::SOFT_DELETEABLE)) {
             $config['softDeleteable'] = true;
 
             Validator::validateField($meta, $annot->fieldName);
-            
+
             $config['fieldName'] = $annot->fieldName;
         }
 
         $this->validateFullMetadata($meta, $config);
-    }
-
-    /**
-     * Passes in the mapping read by original driver
-     *
-     * @param $driver
-     * @return void
-     */
-    public function setOriginalDriver($driver)
-    {
-        $this->_originalDriver = $driver;
     }
 }
