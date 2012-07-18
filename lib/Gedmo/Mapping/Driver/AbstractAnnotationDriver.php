@@ -87,10 +87,10 @@ abstract class AbstractAnnotationDriver implements AnnotationDriverInterface
     }
 
     /**
-     * @param ClassMetadata $meta
+     * @param Doctrine\ORM\Mapping\ClassMetadata $meta
      * @param array         $config
      */
-    public function validateFullMetadata(ClassMetadata $meta, array $config)
+    public function validateFullMetadata(\Doctrine\ORM\Mapping\ClassMetadata $meta, array $config)
     {
     }
 
