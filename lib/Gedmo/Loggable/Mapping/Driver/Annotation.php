@@ -2,6 +2,7 @@
 
 namespace Gedmo\Loggable\Mapping\Driver;
 
+use Doctrine\ORM\Mapping\ClassMetadata;
 use Gedmo\Mapping\Driver\AbstractAnnotationDriver,
     Gedmo\Exception\InvalidMappingException;
 
@@ -33,7 +34,7 @@ class Annotation extends AbstractAnnotationDriver
     /**
      * {@inheritDoc}
      */
-    public function validateFullMetadata($meta, array $config)
+    public function validateFullMetadata(ClassMetadata $meta, array $config)
     {
         if ($config && is_array($meta->identifier) && count($meta->identifier) > 1) {
             throw new InvalidMappingException("Loggable does not support composite identifiers in class - {$meta->name}");
