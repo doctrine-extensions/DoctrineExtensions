@@ -6,7 +6,8 @@ interface RepositoryUtilsInterface
 {
     /**
      * Retrieves the nested array or the decorated output.
-     * Uses @options to handle decorations
+     *
+     * Uses options to handle decorations
      *
      * @throws \Gedmo\Exception\InvalidArgumentException
      * @param object $node - from which node to start reordering the tree
@@ -27,8 +28,9 @@ interface RepositoryUtilsInterface
 
     /**
      * Retrieves the nested array or the decorated output.
-     * Uses @options to handle decorations
-     * NOTE: @nodes should be fetched and hydrated as array
+     *
+     * Uses options to handle decorations
+     * NOTE: nodes should be fetched and hydrated as array
      *
      * @throws \Gedmo\Exception\InvalidArgumentException
      * @param array $nodes - list o nodes to build tree

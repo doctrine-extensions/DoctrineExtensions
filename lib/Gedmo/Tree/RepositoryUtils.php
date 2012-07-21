@@ -4,6 +4,7 @@ namespace Gedmo\Tree;
 
 use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 use Doctrine\Common\Persistence\ObjectManager;
+use Gedmo\Exception\InvalidArgumentException;
 
 class RepositoryUtils implements RepositoryUtilsInterface
 {
