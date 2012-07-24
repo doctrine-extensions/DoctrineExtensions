@@ -142,7 +142,7 @@ abstract class AbstractTreeRepository extends DocumentRepository implements Repo
      *
      * @return \Doctrine\MongoDB\Query\Builder - QueryBuilder object
      */
-    abstract public function getNodesHierarchyQueryBuilder($node = null, $direct, array $config, array $options = array(), $includeNode = false);
+    abstract public function getNodesHierarchyQueryBuilder($node = null, $direct = false, array $config = array(), array $options = array(), $includeNode = false);
 
     /**
      * Returns a Query configured to return an array of nodes suitable for buildTree method
@@ -155,7 +155,7 @@ abstract class AbstractTreeRepository extends DocumentRepository implements Repo
      *
      * @return \Doctrine\MongoDB\Query\Query - Query object
      */
-    abstract public function getNodesHierarchyQuery($node = null, $direct, array $config, array $options = array(), $includeNode = false);
+    abstract public function getNodesHierarchyQuery($node = null, $direct = false, array $config = array(), array $options = array(), $includeNode = false);
 
     /**
      * Get list of children followed by given $node. This returns a QueryBuilder object
