@@ -557,7 +557,6 @@ $htmlTree = $repo->childrenHierarchy(
 $repo = $em->getRepository('Entity\Category');
 $options = array(
     'decorate' => true,
-    'representationField' => 'slug',
     'rootOpen' => '<ul>',
     'rootClose' => '</ul>',
     'childOpen' => '<li>',
@@ -569,9 +568,9 @@ $options = array(
 $htmlTree = $repo->childrenHierarchy(
     null, /* starting from root nodes */
     false, /* load all children, not only direct */
-    true, /* render html */
     $options
 );
+
 ```
 
 ### Generate own node list
