@@ -88,8 +88,8 @@ To attach the **Sluggable Listener** to your event system:
 
 ### Sluggable annotations:
 
-- **@gedmo:Sluggable** it will include this field into **slug** generation
-- **@gedmo:Slug** it will use this column to store **slug** generated
+- **@Gedmo\Sluggable** it will include this field into **slug** generation
+- **@Gedmo\Slug** it will use this column to store **slug** generated
 
 **Notice:** that Sluggable interface is not necessary, except in cases there
 you need to identify entity as being Sluggable. The metadata is loaded only once then
@@ -107,19 +107,19 @@ cache is activated
         private $id;
     
         /**
-         * @gedmo:Sluggable(slugField="slug")
+         * @Gedmo\Sluggable(slugField="slug")
          * @Column(name="title", type="string", length=64)
          */
         private $title;
     
         /**
-         * @gedmo:Sluggable(slugField="slug")
+         * @Gedmo\Sluggable(slugField="slug")
          * @Column(name="code", type="string", length=16)
          */
         private $code;
     
         /**
-         * @gedmo:Slug
+         * @Gedmo\Slug
          * @Column(name="slug", type="string", length=128, unique=true)
          */
         private $slug;
@@ -168,19 +168,19 @@ cache is activated
         private $id;
     
         /**
-         * @gedmo:Sluggable(slugField="slug")
+         * @Gedmo\Sluggable(slugField="slug")
          * @String
          */
         private $title;
     
         /**
-         * @gedmo:Sluggable
+         * @Gedmo\Sluggable
          * @String
          */
         private $code;
     
         /**
-         * @gedmo:Slug
+         * @Gedmo\Slug
          * @String
          */
         private $slug;
@@ -312,7 +312,7 @@ Yaml mapped Article: **/mapping/yaml/Entity.Article.dcm.yml**
     {
         // ...
         /**
-         * @gedmo:Slug(style="camel", separator="_", updatable=false, unique=false)
+         * @Gedmo\Slug(style="camel", separator="_", updatable=false, unique=false)
          * @Column(name="slug", type="string", length=128, unique=true)
          */
         private $slug;
@@ -320,7 +320,7 @@ Yaml mapped Article: **/mapping/yaml/Entity.Article.dcm.yml**
  
         // ...
         /**
-         * @gedmo:Sluggable(slugField="slug")
+         * @Gedmo\Sluggable(slugField="slug")
          * @Column(name="title", type="string", length=128)
          */
         private $title;
@@ -368,34 +368,34 @@ And the Entity should look like:
         private $id;
     
         /**
-         * @gedmo:Translatable
-         * @gedmo:Sluggable(slugField="slug")
+         * @Gedmo\Translatable
+         * @Gedmo\Sluggable(slugField="slug")
          * @Column(name="title", type="string", length=64)
          */
         private $title;
     
         /**
-         * @gedmo:Translatable
-         * @gedmo:Sluggable(slugField="slug")
+         * @Gedmo\Translatable
+         * @Gedmo\Sluggable(slugField="slug")
          * @Column(name="code", type="string", length=16)
          */
         private $code;
         
         /**
-         * @gedmo:Translatable
-         * @gedmo:Slug
+         * @Gedmo\Translatable
+         * @Gedmo\Slug
          * @Column(name="slug", type="string", length=128, unique=true)
          */
         private $slug;
         
         /**
-        * @Gedmo:Sluggable(slugField="uniqueSlug")
+        * @Gedmo\Sluggable(slugField="uniqueSlug")
         * @ORM\Column(type="string", length=64)
         */
         private $uniqueTitle;
         
         /**
-        * @Gedmo:Slug
+        * @Gedmo\Slug
         * @ORM\Column(type="string", length=128)
         */
         private $uniqueSlug;
