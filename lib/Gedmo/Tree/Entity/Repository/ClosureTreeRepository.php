@@ -325,7 +325,7 @@ class ClosureTreeRepository extends AbstractTreeRepository
     /**
      * {@inheritdoc}
      */
-    public function getNodesHierarchy($node = null, $direct, array $config, array $options = array(), $includeNode = false)
+    public function getNodesHierarchy($node = null, $direct = false, array $config = array(), array $options = array(), $includeNode = false)
     {
         return $this->getNodesHierarchyQuery($node, $direct, $config, $options, $includeNode)->getArrayResult();
     }
@@ -333,7 +333,7 @@ class ClosureTreeRepository extends AbstractTreeRepository
     /**
      * {@inheritdoc}
      */
-    public function getNodesHierarchyQuery($node = null, $direct, array $config, array $options = array(), $includeNode = false)
+    public function getNodesHierarchyQuery($node = null, $direct = false, array $config = array(), array $options = array(), $includeNode = false)
     {
         return $this->getNodesHierarchyQueryBuilder($node, $direct, $config, $options, $includeNode)->getQuery();
     }
@@ -341,7 +341,7 @@ class ClosureTreeRepository extends AbstractTreeRepository
     /**
      * {@inheritdoc}
      */
-    public function getNodesHierarchyQueryBuilder($node = null, $direct, array $config, array $options = array(), $includeNode = false)
+    public function getNodesHierarchyQueryBuilder($node = null, $direct = false, array $config = array(), array $options = array(), $includeNode = false)
     {
         $meta = $this->getClassMetadata();
         $idField = $meta->getSingleIdentifierFieldName();

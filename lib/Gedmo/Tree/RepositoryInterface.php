@@ -32,7 +32,7 @@ interface RepositoryInterface extends RepositoryUtilsInterface
      *
      * @return array - Array of nodes
      */
-    public function getNodesHierarchy($node = null, $direct, array $config, array $options = array(), $includeNode = false);
+    public function getNodesHierarchy($node = null, $direct = false, array $config = array(), array $options = array(), $includeNode = false);
 
     /**
      * Get list of children followed by given $node
