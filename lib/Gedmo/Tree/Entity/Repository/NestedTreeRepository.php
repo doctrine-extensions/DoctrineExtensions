@@ -789,7 +789,7 @@ class NestedTreeRepository extends AbstractTreeRepository
     /**
      * {@inheritDoc}
      */
-    public function getNodesHierarchyQueryBuilder($node = null, $direct, array $config, array $options = array(), $includeNode = false)
+    public function getNodesHierarchyQueryBuilder($node = null, $direct = false, array $config = array(), array $options = array(), $includeNode = false)
     {
         return $this->childrenQueryBuilder(
             $node,
@@ -803,7 +803,7 @@ class NestedTreeRepository extends AbstractTreeRepository
     /**
      * {@inheritDoc}
      */
-    public function getNodesHierarchyQuery($node = null, $direct, array $config, array $options = array(), $includeNode = false)
+    public function getNodesHierarchyQuery($node = null, $direct = false, array $config = array(), array $options = array(), $includeNode = false)
     {
         return $this->getNodesHierarchyQueryBuilder($node, $direct, $config, $options)->getQuery();
     }
@@ -811,7 +811,7 @@ class NestedTreeRepository extends AbstractTreeRepository
     /**
      * {@inheritdoc}
      */
-    public function getNodesHierarchy($node = null, $direct, array $config, array $options = array(), $includeNode = false)
+    public function getNodesHierarchy($node = null, $direct = false, array $config = array(), array $options = array(), $includeNode = false)
     {
         return $this->getNodesHierarchyQuery($node, $direct, $config, $options)->getArrayResult();
     }
