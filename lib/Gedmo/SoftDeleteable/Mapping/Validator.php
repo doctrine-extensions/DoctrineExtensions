@@ -16,7 +16,7 @@ use Gedmo\Exception\InvalidMappingException;
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 
-class Validator 
+class Validator
 {
     /**
      * List of types which are valid for timestamp
@@ -37,8 +37,9 @@ class Validator
         $fieldMapping = $meta->getFieldMapping($field);
 
         if (!in_array($fieldMapping['type'], self::$validTypes)) {
-            throw new InvalidMappingException(sprintf('Field "%s" must be of one of the following types: "',
-                explode(', ', self::$validTypes)));
+            throw new InvalidMappingException(sprintf('Field "%s" must be of one of the following types: "%s"',
+                $fieldMapping['type'],
+                implode(', ', self::$validTypes)));
         }
     }
 }
