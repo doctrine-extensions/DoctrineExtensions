@@ -542,10 +542,10 @@ $repo = $em->getRepository('Entity\Category');
 $htmlTree = $repo->childrenHierarchy(
     null, /* starting from root nodes */
     false, /* load all children, not only direct */
-    true, /* render html */
     array(
         'decorate' => true,
-        'representationField' => 'slug'
+        'representationField' => 'slug',
+        'html' => true
     )
 );
 ```
