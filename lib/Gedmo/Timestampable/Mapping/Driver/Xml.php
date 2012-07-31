@@ -73,7 +73,7 @@ class Xml extends BaseXml
                         $field = array(
                             'field' => $field,
                             'trackedField' => $this->_getAttribute($data, 'field'),
-                            'value' => $this->_isAttributeSet($data, 'value') ? $this->_getAttribute($data, 'value') : false,
+                            'value' => $this->_isAttributeSet($data, 'value') ? $this->_getAttribute($data, 'value') : null,
                         );
                     }
                     $config[$this->_getAttribute($data, 'on')][] = $field;

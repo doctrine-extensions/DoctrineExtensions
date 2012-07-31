@@ -65,7 +65,7 @@ class Yaml extends File implements Driver
                         $field = array(
                             'field' => $field,
                             'trackedField' => $mappingProperty['field'],
-                            'value' => isset($mappingProperty['value']) ? $mappingProperty['value'] : false,
+                            'value' => isset($mappingProperty['value']) ? $mappingProperty['value'] : null,
                         );
                     }
                     $config[$mappingProperty['on']][] = $field;

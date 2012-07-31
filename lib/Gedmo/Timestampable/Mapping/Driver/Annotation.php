@@ -70,7 +70,7 @@ class Annotation extends AbstractAnnotationDriver
                     $field = array(
                         'field' => $field,
                         'trackedField' => $timestampable->field,
-                        'value' => $timestampable->value !== null ? $timestampable->value : false,
+                        'value' => $timestampable->value,
                     );
                 }
                 // properties are unique and mapper checks that, no risk here
