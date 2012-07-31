@@ -32,7 +32,12 @@ interface Timestampable
      * dates which should be updated on changed "property" 
      * value and become equal to given "value"
      */
-    
+
+    /**
+     * @gedmo:Timestampable(on="change", field="field")
+     * dates which should be updated on changed "property"
+     */
+
     /**
      * example
      * 
