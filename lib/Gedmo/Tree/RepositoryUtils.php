@@ -39,7 +39,6 @@ class RepositoryUtils implements RepositoryUtilsInterface
     public function childrenHierarchy($node = null, $direct = false, array $options = array(), $includeNode = false)
     {
         $meta = $this->getClassMetadata();
-        $config = $this->listener->getConfiguration($this->om, $meta->name);
 
         if ($node !== null) {
             if ($node instanceof $meta->name) {
@@ -56,7 +55,7 @@ class RepositoryUtils implements RepositoryUtilsInterface
         }
 
         // Gets the array of $node results. It must be ordered by depth
-        $nodes = $this->repo->getNodesHierarchy($node, $direct, $config, $options, $includeNode);
+        $nodes = $this->repo->getNodesHierarchy($node, $direct, $options, $includeNode);
 
         return $this->buildTree($nodes, $options);
     }
