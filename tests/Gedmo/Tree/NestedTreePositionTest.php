@@ -166,6 +166,33 @@ class NestedTreePositionTest extends BaseTestCaseORM
         $this->assertEquals(11, $fruits->getRight());
     }
 
+    public function testFullTreePositionUpdates()
+    {
+        $repo = $this->em->getRepository(self::ROOT_CATEGORY);
+        
+        $this->populate();
+        $tree = $this->debugTree($repo);
+        $this->em->clear();
+        
+        foreach (array('food','fruits','vegitables','meat','oranges','citrons','milk') as $node) {
+            $$node = $repo->findOneByTitle(ucfirst($node));
+        }
+        
+        $repo
+            ->persistAsFirstChild($food)
+            ->persistAsFirstChildOf($fruits, $food)
+            ->persistAsFirstChildOf($vegitables, $food)
+            ->persistAsLastChildOf($milk, $food)
+            ->persistAsLastChildOf($meat, $food)
+            ->persistAsFirstChildOf($oranges, $fruits)
+            ->persistAsFirstChildOf($citrons, $fruits);
+        
+        $this->em->flush();
+        
+        $this->assertEquals($tree, $this->debugTree($repo));
+    }
+
+
     public function testTreeChildPositionMove()
     {
         $this->populate();
@@ -268,7 +295,7 @@ class NestedTreePositionTest extends BaseTestCaseORM
         $count = $this->em->createQuery($dql)->getSingleScalarResult();
         $this->assertEquals(6, $count);
     }
-
+    
     public function testRootTreePositionedInserts()
     {
         $repo = $this->em->getRepository(self::ROOT_CATEGORY);
@@ -432,6 +459,24 @@ class NestedTreePositionTest extends BaseTestCaseORM
             ->persistAsFirstChildOf($citrons, $fruits);
 
         $this->em->flush();
+    }
+
+    protected function debugTree($repository) {
+        return "\n".$repository->childrenHierarchy(
+            null,
+            FALSE,
+            array(
+                'decorate'=>true,
+                'rootOpen' => '',
+                'rootClose' => '',
+                'childOpen' => '',
+                'childClose' => '',
+                'nodeDecorator'=>function ($node) {
+                    $node = (object) $node;
+                    return str_repeat(' ', $node->level).$node->title."\n";
+                }
+                )
+        )."\n";
     }
 
     protected function getUsedEntityFixtures()
