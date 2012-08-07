@@ -107,8 +107,8 @@ abstract class AbstractTreeRepository extends EntityRepository implements Reposi
 
         // We need to check first if there's an ORDER BY DQL part, because resetDQLPart doesn't
         // check if its internal array has an "orderby" index
-        if (isset($dqlParts['orderby'])) {
-            $qb->resetDQLPart('orderby');
+        if (isset($dqlParts['orderBy'])) {
+            $qb->resetDQLPart('orderBy');
         }
 
         $aliases = $qb->getRootAliases();
