@@ -4,7 +4,7 @@ namespace Gedmo\Sluggable;
 
 use Doctrine\Common\EventManager;
 use Tool\BaseTestCaseORM;
-use Sluggable\Fixture\Article;
+use Sluggable\Fixture\MappedSuperclass\Car;
 
 /**
  * These are tests for sluggable behavior
