@@ -302,6 +302,13 @@ class Nested implements Strategy
                         throw new UnexpectedValueException("Cannot persist sibling for a root node, tree operation is not possible");
                     }
                     $wrapped->setPropertyValue($config['parent'], $newParent);
+
+                    $dql = "UPDATE {$meta->name} node";
+                    $dql .= " SET node.{$config['parent']} = {$newParent->getId()}";
+                    $dql .= " WHERE node.{$identifierField} = {$nodeId}";
+                    $q = $em->createQuery($dql);
+                    $q->getSingleScalarResult();
+
                     $em->getUnitOfWork()->recomputeSingleEntityChangeSet($meta, $node);
                     $start = $parentRight + 1;
                     break;
