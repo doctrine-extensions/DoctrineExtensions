@@ -27,7 +27,8 @@ use Doctrine\Common\Persistence\ObjectManager,
     Gedmo\Uploadable\FileInfo\FileInfoArray,
     Gedmo\Uploadable\MimeType\MimeTypeGuesser,
     Gedmo\Uploadable\MimeType\MimeTypeGuesserInterface,
-    Gedmo\Uploadable\MimeType\MimeTypesExtensionsMap;
+    Gedmo\Uploadable\MimeType\MimeTypesExtensionsMap,
+    Doctrine\Common\NotifyPropertyChanged;
 
 /**
  * Uploadable listener
@@ -95,9 +96,38 @@ class UploadableListener extends MappedEventSubscriber
     {
         return array(
             'loadClassMetadata',
+            'prePersist',
+            'preFlush',
             'onFlush',
             'postFlush'
         );
+    }
+
+    public function prePersist(EventArgs $args)
+    {
+        $ea = $this->getEventAdapter($args);
+
+        $this->processFile($ea, $ea->getObject(), self::ACTION_INSERT);
+    }
+
+    public function preFlush(EventArgs $args)
+    {
+        $ea = $this->getEventAdapter($args);
+        $om = $ea->getObjectManager();
+        $uow = $om->getUnitOfWork();
+
+        foreach ($this->fileInfoObjects as $info) {
+            $entity = $info['entity'];
+            if (!$uow->isScheduledForInsert($entity) &&
+                !$uow->isScheduledForUpdate($entity) &&
+                !$uow->isScheduledForDelete($entity)) {
+
+                // If we still have pending file info objects, probably it means the entities don't have any of their
+                // fields updated, except for the file. Doctrine doesn't consider this entities dirty, so update won't happen.
+                // We need to process them anyway as an update.
+                $this->processFile($ea, $entity, self::ACTION_UPDATE);
+            }
+        }
     }
 
     /**
@@ -114,24 +144,8 @@ class UploadableListener extends MappedEventSubscriber
         $om = $ea->getObjectManager();
         $uow = $om->getUnitOfWork();
 
-        foreach ($ea->getScheduledObjectInsertions($uow) as $object) {
-            $meta = $om->getClassMetadata(get_class($object));
-
-            if ($config = $this->getConfiguration($om, $meta->name)) {
-                if (isset($config['uploadable']) && $config['uploadable']) {
-                    $this->processFile($uow, $ea, $meta, $config, $object, self::ACTION_INSERT);
-                }
-            }
-        }
-
         foreach ($ea->getScheduledObjectUpdates($uow) as $object) {
-            $meta = $om->getClassMetadata(get_class($object));
-
-            if ($config = $this->getConfiguration($om, $meta->name)) {
-                if (isset($config['uploadable']) && $config['uploadable']) {
-                    $this->processFile($uow, $ea, $meta, $config, $object, self::ACTION_UPDATE);
-                }
-            }
+            $this->processFile($ea, $object, self::ACTION_UPDATE);
         }
 
         foreach ($ea->getScheduledObjectDeletions($uow) as $object) {
@@ -167,27 +181,34 @@ class UploadableListener extends MappedEventSubscriber
      * If it's a Uploadable object, verify if the file was uploaded.
      * If that's the case, process it.
      *
-     * @param UnitOfWork
-     * @param AdapterInterface
-     * @param ClassMetadata
-     * @param array - Configuration
-     * @param object - The entity
-     * @param string - String representing the action (insert or update)
-     *
-     * @return void
+     * @param \Gedmo\Mapping\Event\AdapterInterface $ea
+     * @param $object
+     * @param $action
+     * @throws \Gedmo\Exception\UploadableNoPathDefinedException
+     * @throws \Gedmo\Exception\UploadableCouldntGuessMimeTypeException
+     * @throws \Gedmo\Exception\UploadableMaxSizeException
+     * @throws \Gedmo\Exception\UploadableInvalidMimeTypeException
      */
-    public function processFile(UnitOfWork $uow, AdapterInterface $ea, ClassMetadata $meta, array $config, $object, $action)
+    public function processFile(AdapterInterface $ea, $object, $action)
     {
-        $refl = $meta->getReflectionClass();
+        $om = $ea->getObjectManager();
+        $uow = $om->getUnitOfWork();
+        $meta = $om->getClassMetadata(get_class($object));
+        $config = $this->getConfiguration($om, $meta->name);
+
+        if (!$config || !isset($config['uploadable']) || !$config['uploadable']) {
+            // Nothing to do
+            return;
+        }
         $oid = spl_object_hash($object);
 
         if (!isset($this->fileInfoObjects[$oid])) {
             // Nothing to do
-
             return;
         }
 
-        $fileInfo = $this->fileInfoObjects[$oid];
+        $refl = $meta->getReflectionClass();
+        $fileInfo = $this->fileInfoObjects[$oid]['fileInfo'];
 
         // Validations
         if ($config['maxSize'] > 0 && $fileInfo->getSize() > $config['maxSize']) {
@@ -308,16 +329,23 @@ class UploadableListener extends MappedEventSubscriber
 
         if ($config['fileMimeTypeField']) {
             $changes[$config['fileMimeTypeField']] = array($fileMimeTypeField->getValue($object), $info['fileMimeType']);
-            $ea->setOriginalObjectProperty($uow, $oid, $config['fileMimeTypeField'], $info['fileMimeType']);
+
+            $this->updateField($object, $uow, $ea, $meta, $action, $config['fileMimeTypeField'], $info['fileMimeType']);
         }
 
         if ($config['fileSizeField']) {
             $changes[$config['fileSizeField']] = array($fileSizeField->getValue($object), $info['fileSize']);
-            $ea->setOriginalObjectProperty($uow, $oid, $config['fileSizeField'], $info['fileSize']);
+
+            $this->updateField($object, $uow, $ea, $meta, $action, $config['fileSizeField'], $info['fileSize']);
         }
 
-        $uow->scheduleExtraUpdate($object, $changes);
-        $ea->setOriginalObjectProperty($uow, $oid, $config['filePathField'], $info['filePath']);
+        $this->updateField($object, $uow, $ea, $meta, $action, $config['filePathField'], $info['filePath']);
+
+        // Only schedule an extra update if it's an update. If it's an insert, we're on the prePersist event, which means we don't
+        // need to recompute anything.
+        if ($action === self::ACTION_UPDATE) {
+            $uow->scheduleExtraUpdate($object, $changes);
+        }
 
         unset($this->fileInfoObjects[$oid]);
     }
@@ -562,7 +590,10 @@ class UploadableListener extends MappedEventSubscriber
             ));
         }
 
-        $this->fileInfoObjects[spl_object_hash($entity)] = $fileInfo;
+        $this->fileInfoObjects[spl_object_hash($entity)] = array(
+            'entity'        => $entity,
+            'fileInfo'      => $fileInfo
+        );
     }
 
     public function getEntityFileInfo($entity)
@@ -575,7 +606,7 @@ class UploadableListener extends MappedEventSubscriber
             ));
         }
 
-        return $this->fileInfoObjects[$oid];
+        return $this->fileInfoObjects[$oid]['fileInfo'];
     }
 
     /**
@@ -600,5 +631,17 @@ class UploadableListener extends MappedEventSubscriber
     public function getMimeTypeGuesser()
     {
         return $this->mimeTypeGuesser;
+    }
+
+    protected function updateField($object, $uow, AdapterInterface $ea, $meta, $action, $field, $value)
+    {
+        $property = $meta->getReflectionProperty($field);
+        $oldValue = $property->getValue($object);
+        $property->setValue($object, $value);
+
+        if ($object instanceof NotifyPropertyChanged) {
+            $uow = $ea->getObjectManager()->getUnitOfWork();
+            $uow->propertyChanged($object, $field, $oldValue, $value);
+        }
     }
 }
