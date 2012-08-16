@@ -303,15 +303,15 @@ if (isset($_FILES['images']) && is_array($_FILES['images']) {
     foreach ($_FILES['images'] as $fileInfo) {
         $file = new File();
 
-        $listener->setEntityFileInfo($file, $fileInfo);
+        $listener->addEntityFileInfo($file, $fileInfo);
 
         // You can set the file info directly with a FileInfoInterface object, like this:
         //
-        // $listener->setEntityFileInfo($file, new FileInfoArray($fileInfo));
+        // $listener->addEntityFileInfo($file, new FileInfoArray($fileInfo));
         //
         // Or create your own class which implements FileInfoInterface
         //
-        // $listener->setEntityFileInfo($file, new MyOwnFileInfo($fileInfo));
+        // $listener->addEntityFileInfo($file, new MyOwnFileInfo($fileInfo));
 
 
         $em->persist($file);
