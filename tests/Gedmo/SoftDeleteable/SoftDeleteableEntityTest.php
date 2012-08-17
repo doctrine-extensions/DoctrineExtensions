@@ -42,7 +42,7 @@ class SoftDeleteableEntityTest extends BaseTestCaseORM
     {
         parent::setUp();
 
-        $evm = new EventManager;
+        $evm = new EventManager();
         $this->softDeleteableListener = new SoftDeleteableListener();
         $evm->addEventSubscriber($this->softDeleteableListener);
         $config = $this->getMockAnnotatedConfig();
@@ -235,6 +235,56 @@ class SoftDeleteableEntityTest extends BaseTestCaseORM
         $this->assertInstanceOf(self::OTHER_COMMENT_CLASS, $foundComment);
 
     }
+
+    public function testPostSoftDeleteEventIsDispatched()
+    {
+        $subscriber = $this->getMock(
+            "Doctrine\Common\EventSubscriber",
+            array(
+                "getSubscribedEvents",
+                "preSoftDelete",
+                "postSoftDelete"
+            )
+        );
+
+        $subscriber->expects($this->once())
+                   ->method("getSubscribedEvents")
+                   ->will($this->returnValue(array(SoftDeleteableListener::PRE_SOFT_DELETE, SoftDeleteableListener::POST_SOFT_DELETE)));
+
+        $subscriber->expects($this->exactly(2))
+                   ->method("preSoftDelete")
+                   ->with($this->anything());
+
+        $subscriber->expects($this->exactly(2))
+                   ->method("postSoftDelete")
+                   ->with($this->anything());
+
+        $this->em->getEventManager()->addEventSubscriber($subscriber);
+
+        $repo = $this->em->getRepository(self::ARTICLE_CLASS);
+        $commentRepo = $this->em->getRepository(self::COMMENT_CLASS);
+
+        $comment = new Comment();
+        $commentField = 'comment';
+        $commentValue = 'Comment 1';
+        $comment->setComment($commentValue);
+        $art0 = new Article();
+        $field = 'title';
+        $value = 'Title 1';
+        $art0->setTitle($value);
+        $art0->addComment($comment);
+
+        $this->em->persist($art0);
+        $this->em->flush();
+        
+        $art = $repo->findOneBy(array($field => $value));
+
+        $this->assertNull($art->getDeletedAt());
+        $this->assertNull($comment->getDeletedAt());
+
+        $this->em->remove($art);
+        $this->em->flush();
+     }
 
     protected function getUsedEntityFixtures()
     {
