@@ -99,36 +99,46 @@ class UploadableListener extends MappedEventSubscriber
     {
         return array(
             'loadClassMetadata',
-            'prePersist',
             'preFlush',
             'onFlush',
             'postFlush'
         );
     }
 
-    public function prePersist(EventArgs $args)
-    {
-        $ea = $this->getEventAdapter($args);
-
-        $this->processFile($ea, $ea->getObject(), self::ACTION_INSERT);
-    }
-
+    /**
+     * This event is needed in special cases where the entity needs to be updated, but it only has the
+     * file field modified. Since we can't mark an entity as "dirty" in the "addEntityFileInfo" method,
+     * doctrine thinks the entity has no changes, which produces that the "onFlush" event gets never called.
+     * Here we mark the entity as dirty, so the "onFlush" event gets called, and the file is processed.
+     *
+     * @param \Doctrine\Common\EventArgs $args
+     */
     public function preFlush(EventArgs $args)
     {
+        if (empty($this->fileInfoObjects)) {
+            // Nothing to do
+            return;
+        }
+
         $ea = $this->getEventAdapter($args);
         $om = $ea->getObjectManager();
         $uow = $om->getUnitOfWork();
+        $first = reset($this->fileInfoObjects);
+        $meta = $om->getClassMetadata(get_class($first['entity']));
+        $config = $this->getConfiguration($om, $meta->name);
 
         foreach ($this->fileInfoObjects as $info) {
             $entity = $info['entity'];
-            if (!$uow->isScheduledForInsert($entity) &&
-                !$uow->isScheduledForUpdate($entity) &&
-                !$uow->isScheduledForDelete($entity)) {
 
-                // If we still have pending file info objects, probably it means the entities don't have any of their
-                // fields updated, except for the file. Doctrine doesn't consider this entities dirty, so update won't happen.
-                // We need to process them anyway as an update.
-                $this->processFile($ea, $entity, self::ACTION_UPDATE);
+            // If the entity is in the identity map, it means it will be updated. We need to force the
+            // "dirty check" here by "modifying" the path. We are actually setting the same value, but
+            // this will mark the entity as dirty, and the "onFlush" event will be fired, even if there's
+            // no other change in the entity's fields apart from the file itself.
+            if ($uow->isInIdentityMap($entity)) {
+                $path = $this->getFilePath($meta, $config, $entity);
+
+                $uow->propertyChanged($entity, $config['filePathField'], $path, $path);
+                $uow->scheduleForUpdate($entity);
             }
         }
     }
@@ -145,10 +155,21 @@ class UploadableListener extends MappedEventSubscriber
         $om = $ea->getObjectManager();
         $uow = $om->getUnitOfWork();
 
-        foreach ($ea->getScheduledObjectUpdates($uow) as $object) {
-            $this->processFile($ea, $object, self::ACTION_UPDATE);
+        // Do we need to upload files?
+        foreach ($this->fileInfoObjects as $info) {
+            $entity = $info['entity'];
+            $scheduledForInsert = $uow->isScheduledForInsert($entity);
+            $scheduledForUpdate = $uow->isScheduledForUpdate($entity);
+            $action = ($scheduledForInsert || $scheduledForUpdate) ?
+                ($scheduledForInsert ? self::ACTION_INSERT : self::ACTION_UPDATE) :
+                false;
+
+            if ($action) {
+                $this->processFile($ea, $entity, $action);
+            }
         }
 
+        // Do we need to remove any files?
         foreach ($ea->getScheduledObjectDeletions($uow) as $object) {
             $meta = $om->getClassMetadata(get_class($object));
             
@@ -174,6 +195,8 @@ class UploadableListener extends MappedEventSubscriber
 
             $this->pendingFileRemovals = array();
         }
+
+        $this->fileInfoObjects = array();
     }
 
     /**
@@ -190,18 +213,13 @@ class UploadableListener extends MappedEventSubscriber
      */
     public function processFile(AdapterInterface $ea, $object, $action)
     {
+        $oid = spl_object_hash($object);
         $om = $ea->getObjectManager();
         $uow = $om->getUnitOfWork();
         $meta = $om->getClassMetadata(get_class($object));
         $config = $this->getConfiguration($om, $meta->name);
 
         if (!$config || !isset($config['uploadable']) || !$config['uploadable']) {
-            // Nothing to do
-            return;
-        }
-        $oid = spl_object_hash($object);
-
-        if (!isset($this->fileInfoObjects[$oid])) {
             // Nothing to do
             return;
         }
@@ -341,22 +359,18 @@ class UploadableListener extends MappedEventSubscriber
         if ($config['fileMimeTypeField']) {
             $changes[$config['fileMimeTypeField']] = array($fileMimeTypeField->getValue($object), $info['fileMimeType']);
 
-            $this->updateField($object, $uow, $ea, $meta, $action, $config['fileMimeTypeField'], $info['fileMimeType']);
+            $this->updateField($object, $uow, $ea, $meta, $config['fileMimeTypeField'], $info['fileMimeType']);
         }
 
         if ($config['fileSizeField']) {
             $changes[$config['fileSizeField']] = array($fileSizeField->getValue($object), $info['fileSize']);
 
-            $this->updateField($object, $uow, $ea, $meta, $action, $config['fileSizeField'], $info['fileSize']);
+            $this->updateField($object, $uow, $ea, $meta, $config['fileSizeField'], $info['fileSize']);
         }
 
-        $this->updateField($object, $uow, $ea, $meta, $action, $config['filePathField'], $info['filePath']);
+        $this->updateField($object, $uow, $ea, $meta, $config['filePathField'], $info['filePath']);
 
-        // Only schedule an extra update if it's an update. If it's an insert, we're on the prePersist event, which means we don't
-        // need to recompute anything.
-        if ($action === self::ACTION_UPDATE) {
-            $uow->scheduleExtraUpdate($object, $changes);
-        }
+        $ea->recomputeSingleObjectChangeSet($uow, $meta, $object);
 
         if ($evm->hasListeners(Events::uploadablePostFileProcess)) {
             $evm->dispatchEvent(Events::uploadablePostFileProcess, new UploadablePostFileProcessEventArgs(
@@ -660,13 +674,13 @@ class UploadableListener extends MappedEventSubscriber
         return $this->mimeTypeGuesser;
     }
 
-    protected function updateField($object, $uow, AdapterInterface $ea, $meta, $action, $field, $value)
+    protected function updateField($object, $uow, AdapterInterface $ea, $meta, $field, $value, $notifyPropertyChanged = true)
     {
         $property = $meta->getReflectionProperty($field);
         $oldValue = $property->getValue($object);
         $property->setValue($object, $value);
 
-        if ($object instanceof NotifyPropertyChanged) {
+        if ($notifyPropertyChanged && $object instanceof NotifyPropertyChanged) {
             $uow = $ea->getObjectManager()->getUnitOfWork();
             $uow->propertyChanged($object, $field, $oldValue, $value);
         }
