@@ -25,7 +25,7 @@ class File
     private $title;
 
     /**
-     * @ORM\Column(name="path", type="string", nullable=true)
+     * @ORM\Column(name="path", type="string")
      * @Gedmo\UploadableFilePath
      */
     private $filePath;

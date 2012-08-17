@@ -141,10 +141,6 @@ class UploadableEntityTest extends BaseTestCaseORM
         // We use a FileInfoInterface instance here
         $this->listener->addEntityFileInfo($image2, new FileInfoArray($fileInfo));
 
-        // For now, we need to force the update changing one of the managed fields. If we don't do this,
-        // entity won't be marked for update
-        $image2->setTitle($image2->getTitle().'7892');
-
         $this->em->flush();
 
         $this->em->refresh($image2);
