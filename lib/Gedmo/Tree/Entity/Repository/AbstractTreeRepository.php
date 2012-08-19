@@ -107,8 +107,8 @@ abstract class AbstractTreeRepository extends EntityRepository implements Reposi
 
         // We need to check first if there's an ORDER BY DQL part, because resetDQLPart doesn't
         // check if its internal array has an "orderby" index
-        if (isset($dqlParts['orderby'])) {
-            $qb->resetDQLPart('orderby');
+        if (isset($dqlParts['orderBy'])) {
+            $qb->resetDQLPart('orderBy');
         }
 
         $aliases = $qb->getRootAliases();
@@ -176,26 +176,24 @@ abstract class AbstractTreeRepository extends EntityRepository implements Reposi
      *
      * @param object $node - Root node
      * @param bool $direct - Obtain direct children?
-     * @param array $config - Metadata configuration
      * @param array $options - Options
      * @param boolean $includeNode - Include node in results?
      *
      * @return \Doctrine\ORM\QueryBuilder - QueryBuilder object
      */
-    abstract public function getNodesHierarchyQueryBuilder($node = null, $direct = false, array $config = array(), array $options = array(), $includeNode = false);
+    abstract public function getNodesHierarchyQueryBuilder($node = null, $direct = false, array $options = array(), $includeNode = false);
 
     /**
      * Returns a Query configured to return an array of nodes suitable for buildTree method
      *
      * @param object $node - Root node
      * @param bool $direct - Obtain direct children?
-     * @param array $config - Metadata configuration
      * @param array $options - Options
      * @param boolean $includeNode - Include node in results?
      *
      * @return \Doctrine\ORM\Query - Query object
      */
-    abstract public function getNodesHierarchyQuery($node = null, $direct = false, array $config = array(), array $options = array(), $includeNode = false);
+    abstract public function getNodesHierarchyQuery($node = null, $direct = false, array $options = array(), $includeNode = false);
 
     /**
      * Get list of children followed by given $node. This returns a QueryBuilder object

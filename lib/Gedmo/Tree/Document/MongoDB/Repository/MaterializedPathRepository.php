@@ -167,7 +167,7 @@ class MaterializedPathRepository extends AbstractTreeRepository
     /**
      * {@inheritDoc}
      */
-    public function getNodesHierarchyQueryBuilder($node = null, $direct = false, array $config = array(), array $options = array(), $includeNode = false)
+    public function getNodesHierarchyQueryBuilder($node = null, $direct = false, array $options = array(), $includeNode = false)
     {
         $sortBy = array(
             'field'     => null,
@@ -184,17 +184,17 @@ class MaterializedPathRepository extends AbstractTreeRepository
     /**
      * {@inheritDoc}
      */
-    public function getNodesHierarchyQuery($node = null, $direct = false, array $config = array(), array $options = array(), $includeNode = false)
+    public function getNodesHierarchyQuery($node = null, $direct = false, array $options = array(), $includeNode = false)
     {
-        return $this->getNodesHierarchyQueryBuilder($node, $direct, $config, $options, $includeNode)->getQuery();
+        return $this->getNodesHierarchyQueryBuilder($node, $direct, $options, $includeNode)->getQuery();
     }
 
     /**
      * {@inheritDoc}
      */
-    public function getNodesHierarchy($node = null, $direct = false, array $config = array(), array $options = array(), $includeNode = false)
+    public function getNodesHierarchy($node = null, $direct = false, array $options = array(), $includeNode = false)
     {
-        $query = $this->getNodesHierarchyQuery($node, $direct, $config, $options, $includeNode);
+        $query = $this->getNodesHierarchyQuery($node, $direct, $options, $includeNode);
         $query->setHydrate(false);
 
         return $query->toArray();
