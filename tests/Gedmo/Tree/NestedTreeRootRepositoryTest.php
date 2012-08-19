@@ -72,6 +72,54 @@ class NestedTreeRootRepositoryTest extends BaseTestCaseORM
         $result = $repo->childrenHierarchy($vegies);
         $this->assertCount(2, $result);
         $this->assertCount(0, $result[0]['__children']);
+
+        // Complete Tree
+        $roots = $repo->getRootNodes();
+        $tree = $repo->childrenHierarchy();
+
+        $this->assertEquals(2, count($tree));     // Count roots
+        $this->assertEquals('Food', $tree[0]['title']);
+        $this->assertEquals('Sports', $tree[1]['title']);
+        $this->assertEquals('Fruits', $tree[0]['__children'][0]['title']);
+        $this->assertEquals('Vegitables', $tree[0]['__children'][1]['title']);
+        $this->assertEquals('Carrots', $tree[0]['__children'][1]['__children'][0]['title']);
+        $this->assertEquals('Potatoes', $tree[0]['__children'][1]['__children'][1]['title']);
+
+        // Tree of one specific root, without the root node
+        $roots = $repo->getRootNodes();
+        $tree = $repo->childrenHierarchy($roots[0]);
+
+        $this->assertEquals(2, count($tree));     // Count roots
+        $this->assertEquals('Fruits', $tree[0]['title']);
+        $this->assertEquals('Vegitables', $tree[1]['title']);
+        $this->assertEquals('Carrots', $tree[1]['__children'][0]['title']);
+        $this->assertEquals('Potatoes', $tree[1]['__children'][1]['title']);
+
+        // Tree of one specific root, with the root node
+        $tree = $repo->childrenHierarchy($roots[0], false, array(), true);
+
+        $this->assertEquals(1, count($tree));     // Count roots
+        $this->assertEquals('Food', $tree[0]['title']);
+        $this->assertEquals('Fruits', $tree[0]['__children'][0]['title']);
+        $this->assertEquals('Vegitables', $tree[0]['__children'][1]['title']);
+        $this->assertEquals('Carrots', $tree[0]['__children'][1]['__children'][0]['title']);
+        $this->assertEquals('Potatoes', $tree[0]['__children'][1]['__children'][1]['title']);
+
+        // Tree of one specific root only with direct children, without the root node
+        $roots = $repo->getRootNodes();
+        $tree = $repo->childrenHierarchy($roots[0], true);
+
+        $this->assertEquals(2, count($tree));
+        $this->assertEquals('Fruits', $tree[0]['title']);
+        $this->assertEquals('Vegitables', $tree[1]['title']);
+
+        // Tree of one specific root only with direct children, with the root node
+        $tree = $repo->childrenHierarchy($roots[0], true, array(), true);
+
+        $this->assertEquals(1, count($tree));
+        $this->assertEquals('Food', $tree[0]['title']);
+        $this->assertEquals('Fruits', $tree[0]['__children'][0]['title']);
+        $this->assertEquals('Vegitables', $tree[0]['__children'][1]['title']);
     }
 
     /**
