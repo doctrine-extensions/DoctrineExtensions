@@ -25,13 +25,13 @@ class FileWithMaxSize
     private $title;
 
     /**
-     * @ORM\Column(name="path", type="string", nullable=true)
+     * @ORM\Column(name="path", type="string")
      * @Gedmo\UploadableFilePath
      */
     private $filePath;
 
     /**
-     * @ORM\Column(name="size", type="decimal", nullable=true)
+     * @ORM\Column(name="size", type="decimal")
      * @Gedmo\UploadableFileSize
      */
     private $fileSize;
