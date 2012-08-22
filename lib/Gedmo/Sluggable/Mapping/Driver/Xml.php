@@ -77,9 +77,9 @@ class Xml extends BaseXml
                         'style' => $this->_isAttributeSet($slug, 'style') ?
                             $this->_getAttribute($slug, 'style') : 'default',
                         'updatable' => $this->_isAttributeSet($slug, 'updatable') ?
-                            (bool)$this->_getAttribute($slug, 'updatable') : true,
+                            $this->_getBooleanAttribute($slug, 'updatable') : true,
                         'unique' => $this->_isAttributeSet($slug, 'unique') ?
-                            (bool)$this->_getAttribute($slug, 'unique') : true,
+                            $this->_getBooleanAttribute($slug, 'unique') : true,
                         'separator' => $this->_isAttributeSet($slug, 'separator') ?
                             $this->_getAttribute($slug, 'separator') : '-',
                     );
