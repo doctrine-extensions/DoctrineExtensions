@@ -35,7 +35,7 @@ abstract class Xml extends File
      * As we are supporting namespaces the only way to get to the attributes under a node is to use attributes function on it
      *
      * @param SimpleXMLElement $node
-     * @param  $attributeName
+     * @param string $attributeName
      * @return string
      */
     protected function _getAttribute(SimpleXmlElement $node, $attributeName)
@@ -50,7 +50,7 @@ abstract class Xml extends File
      * As we are supporting namespaces the only way to get to the attributes under a node is to use attributes function on it
      *
      * @param SimpleXMLElement $node
-     * @param  $attributeName
+     * @param string $attributeName
      * @return boolean
      */
     protected function _getBooleanAttribute(SimpleXmlElement $node, $attributeName)
@@ -63,7 +63,7 @@ abstract class Xml extends File
      * As we are supporting namespaces the only way to get to the attributes under a node is to use attributes function on it
      *
      * @param SimpleXMLElement $node
-     * @param  $attributeName
+     * @param string $attributeName
      * @return string
      */
     protected function _isAttributeSet(SimpleXmlElement $node, $attributeName)
