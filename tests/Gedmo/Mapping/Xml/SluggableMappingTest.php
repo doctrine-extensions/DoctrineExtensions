@@ -64,7 +64,7 @@ class SluggableMappingTest extends BaseTestCaseORM
         $this->assertArrayHasKey('style', $config);
         $this->assertEquals('camel', $config['style']);
         $this->assertArrayHasKey('updatable', $config);
-        $this->assertTrue($config['updatable']);
+        $this->assertFalse($config['updatable']);
         $this->assertArrayHasKey('unique', $config);
         $this->assertTrue($config['unique']);
         $this->assertArrayHasKey('separator', $config);

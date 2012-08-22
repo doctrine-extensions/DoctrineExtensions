@@ -46,6 +46,19 @@ abstract class Xml extends File
     }
 
     /**
+     * Get boolean attribute value.
+     * As we are supporting namespaces the only way to get to the attributes under a node is to use attributes function on it
+     *
+     * @param SimpleXMLElement $node
+     * @param  $attributeName
+     * @return boolean
+     */
+    protected function _getBooleanAttribute(SimpleXmlElement $node, $attributeName)
+    {
+        return 'true' === strtolower($this->_getAttribute($node, $attributeName));
+    }
+
+    /**
      * does attribute exist under a specific node
      * As we are supporting namespaces the only way to get to the attributes under a node is to use attributes function on it
      *
