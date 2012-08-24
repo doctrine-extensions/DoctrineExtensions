@@ -549,7 +549,36 @@ class UploadableEntityTest extends BaseTestCaseORM
         $this->em->flush();
     }
 
+    /**
+     * @expectedException Gedmo\Exception\InvalidArgumentException
+     * @dataProvider invalidFileInfoClassesProvider
+     */
+    public function test_setDefaultFileInfoClass_throwExceptionIfInvalidClassArePassed($class)
+    {
+        $this->listener->setDefaultFileInfoClass($class);
+    }
+
+    public function test_setDefaultFileInfoClass_setClassIfClassIsValid()
+    {
+        $validClass = 'Gedmo\\Uploadable\\FileInfo\\FileInfoArray';
+
+        $this->listener->setDefaultFileInfoClass($validClass);
+
+        $this->assertEquals($validClass, $this->listener->getDefaultFileInfoClass());
+    }
+
     // Data Providers
+    public function invalidFileInfoClassesProvider()
+    {
+        return array(
+            array(''),
+            array(false),
+            array(null),
+            array('FakeFileInfo'),
+            array(array()),
+            array(new \DateTime())
+        );
+    }
 
     public function uploadExceptionsProvider()
     {
@@ -564,6 +593,8 @@ class UploadableEntityTest extends BaseTestCaseORM
             array(999, 'Gedmo\Exception\UploadableUploadException')
         );
     }
+
+
 
 
     // Util
@@ -626,6 +657,10 @@ class UploadableEntityTest extends BaseTestCaseORM
 
         return $path;
     }
+}
+
+class FakeFileInfo
+{
 }
 
 class FakeFilenameGenerator implements \Gedmo\Uploadable\FilenameGenerator\FilenameGeneratorInterface

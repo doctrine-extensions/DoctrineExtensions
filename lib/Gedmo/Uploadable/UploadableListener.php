@@ -598,6 +598,19 @@ class UploadableListener extends MappedEventSubscriber
      */
     public function setDefaultFileInfoClass($defaultFileInfoClass)
     {
+        $fileInfoInterface = 'Gedmo\\Uploadable\\FileInfo\\FileInfoInterface';
+        $refl = is_string($defaultFileInfoClass) && class_exists($defaultFileInfoClass) ?
+            new \ReflectionClass($defaultFileInfoClass) :
+            false;
+
+        if (!$refl || !$refl->implementsInterface($fileInfoInterface)) {
+            $msg = sprintf('Default FileInfo class must be a valid class, and it must implement "%s".',
+                $fileInfoInterface
+            );
+
+            throw new \Gedmo\Exception\InvalidArgumentException($msg);
+        }
+
         $this->defaultFileInfoClass = $defaultFileInfoClass;
     }
 
