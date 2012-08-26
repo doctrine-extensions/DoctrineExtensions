@@ -892,3 +892,7 @@ Then you can change to your needs:
 
 ```
 
+
+### Translations field type using Personal Translations with Symfony2:
+
+You can use [A2lixTranslationFormBundle](https://github.com/a2lix/TranslationFormBundle) to facilitate your translations.
