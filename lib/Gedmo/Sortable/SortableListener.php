@@ -104,12 +104,8 @@ class SortableListener extends MappedEventSubscriber
 
         if ($config = $this->getConfiguration($om, $meta->name)) {
             // Get groups
-            $groups = array();
-            if (isset($config['groups'])) {
-                foreach ($config['groups'] as $group) {
-                    $groups[$group] = $meta->getReflectionProperty($group)->getValue($object);
-                }
-            }
+            $groups = $this->getGroups($meta, $config, $object);
+
             // Get hash
             $hash = $this->getHash($meta, $groups, $object, $config);
 
@@ -134,12 +130,8 @@ class SortableListener extends MappedEventSubscriber
         }
 
         // Get groups
-        $groups = array();
-        if (isset($config['groups'])) {
-            foreach ($config['groups'] as $group) {
-                $groups[$group] = $meta->getReflectionProperty($group)->getValue($object);
-            }
-        }
+        $groups = $this->getGroups($meta, $config, $object);
+
         // Get hash
         $hash = $this->getHash($meta, $groups, $object, $config);
 
@@ -199,14 +191,11 @@ class SortableListener extends MappedEventSubscriber
         $changed = $changed || $oldPosition != $newPosition;
 
         // Get groups
-        $groups = array();
-        if (isset($config['groups'])) {
-            foreach ($config['groups'] as $group) {
-                $changed = $changed ||
-                    (array_key_exists($group, $changeSet)
-                        && $changeSet[$group][0] != $changeSet[$group][1]);
-                $groups[$group] = $meta->getReflectionProperty($group)->getValue($object);
-            }
+        $groups = $this->getGroups($meta, $config, $object);
+        foreach ($groups as $group) {
+            $changed = $changed ||
+                (array_key_exists($group, $changeSet)
+                    && $changeSet[$group][0] != $changeSet[$group][1]);
         }
 
         if (!$changed) return;
@@ -279,12 +268,8 @@ class SortableListener extends MappedEventSubscriber
         $position = $meta->getReflectionProperty($config['position'])->getValue($object);
 
         // Get groups
-        $groups = array();
-        if (isset($config['groups'])) {
-            foreach ($config['groups'] as $group) {
-                $groups[$group] = $meta->getReflectionProperty($group)->getValue($object);
-            }
-        }
+        $groups = $this->getGroups($meta, $config, $object);
+
         // Get hash
         $hash = $this->getHash($meta, $groups, $object, $config);
 
@@ -385,12 +370,7 @@ class SortableListener extends MappedEventSubscriber
         $maxPos = null;
 
         // Get groups
-        $groups = array();
-        if (isset($config['groups'])) {
-            foreach ($config['groups'] as $group) {
-                $groups[$group] = $meta->getReflectionProperty($group)->getValue($object);
-            }
-        }
+        $groups = $this->getGroups($meta, $config, $object);
 
         // Get hash
         $hash = $this->getHash($meta, $groups, $object, $config);
@@ -465,6 +445,25 @@ class SortableListener extends MappedEventSubscriber
             }, $newDelta);
             $this->relocations[$hash]['deltas'][] = $newDelta;
         } catch (\Exception $e) {}
+    }
+
+    /**
+     * @param $meta
+     * @param $config
+     * @param $object
+     *
+     * @return array
+     */
+    private function getGroups($meta, $config, $object)
+    {
+        $groups = array();
+        if (isset($config['groups'])) {
+            foreach ($config['groups'] as $group) {
+                $groups[$group] = $meta->getReflectionProperty($group)->getValue($object);
+            }
+        }
+
+        return $groups;
     }
 
     /**
