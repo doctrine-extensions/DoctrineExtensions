@@ -11,7 +11,7 @@ use Doctrine\ORM\Proxy\Proxy;
  * The SortableListener maintains a sort index on your entities
  * to enable arbitrary sorting.
  *
- * This behavior can inpact the performance of your application
+ * This behavior can impact the performance of your application
  * since it does some additional calculations on persisted objects.
  *
  * @author Lukas Botsch <lukas.botsch@gmail.com>
@@ -40,10 +40,9 @@ class SortableListener extends MappedEventSubscriber
     }
 
     /**
-     * Mapps additional metadata
+     * Maps additional metadata
      *
-     * @param EventArgs $eventArgs
-     * @return void
+     * @param EventArgs $args
      */
     public function loadClassMetadata(EventArgs $args)
     {
@@ -52,11 +51,10 @@ class SortableListener extends MappedEventSubscriber
     }
 
     /**
-     * Generate slug on objects being updated during flush
+     * Update position on objects being updated during flush
      * if they require changing
      *
      * @param EventArgs $args
-     * @return void
      */
     public function onFlush(EventArgs $args)
     {
@@ -64,7 +62,7 @@ class SortableListener extends MappedEventSubscriber
         $om = $ea->getObjectManager();
         $uow = $om->getUnitOfWork();
 
-        // process all objects beeing deleted
+        // process all objects being deleted
         foreach ($ea->getScheduledObjectDeletions($uow) as $object) {
             $meta = $om->getClassMetadata(get_class($object));
             if ($config = $this->getConfiguration($om, $meta->name)) {
@@ -72,7 +70,7 @@ class SortableListener extends MappedEventSubscriber
             }
         }
 
-        // process all objects beeing updated
+        // process all objects being updated
         foreach ($ea->getScheduledObjectUpdates($uow) as $object) {
             $meta = $om->getClassMetadata(get_class($object));
             if ($config = $this->getConfiguration($om, $meta->name)) {
@@ -80,7 +78,7 @@ class SortableListener extends MappedEventSubscriber
             }
         }
 
-        // process all objects beeing inserted
+        // process all objects being inserted
         foreach ($ea->getScheduledObjectInsertions($uow) as $object) {
             $meta = $om->getClassMetadata(get_class($object));
             if ($config = $this->getConfiguration($om, $meta->name)) {
@@ -93,6 +91,8 @@ class SortableListener extends MappedEventSubscriber
 
     /**
      * Update maxPositions as needed
+     *
+     * @param EventArgs $args
      */
     public function prePersist(EventArgs $args)
     {
