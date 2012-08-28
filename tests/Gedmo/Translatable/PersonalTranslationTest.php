@@ -128,6 +128,50 @@ class PersonalTranslationTest extends BaseTestCaseORM
     }
 
     /**
+     * Covers issue #438
+     * @test
+     */
+    function shouldPersistDefaultLocaleValue()
+    {
+        $this->translatableListener->setTranslatableLocale('de');
+        $this->translatableListener->setDefaultLocale('en');
+        $article = new Article;
+        $article->setTitle('de');
+
+        $enTranslation = new PersonalArticleTranslation;
+        $enTranslation
+            ->setField('title')
+            ->setContent('en')
+            ->setObject($article)
+            ->setLocale('en')
+        ;
+        $this->em->persist($enTranslation);
+
+        $deTranslation = new PersonalArticleTranslation;
+        $deTranslation
+            ->setField('title')
+            ->setContent('de')
+            ->setObject($article)
+            ->setLocale('de')
+        ;
+        $this->em->persist($deTranslation);
+
+        $this->em->persist($article);
+        $this->em->flush();
+
+        $this->startQueryLog();
+        $this->translatableListener->setTranslatableLocale('en');
+        $articles = $this->em->createQuery('SELECT t FROM '.self::ARTICLE.' t')->getArrayResult();
+        $sqlQueriesExecuted = $this->queryAnalyzer->getExecutedQueries();
+        $this->assertEquals('en', $articles[0]['title']);
+        $trans = $this->em->createQuery('SELECT t FROM '.self::TRANSLATION.' t')->getArrayResult();
+        $this->assertCount(2, $trans);
+        foreach ($trans as $item){
+            $this->assertEquals($item['locale'], $item['content']);
+        }
+    }
+
+    /**
      * @test
      */
     function shouldFindFromIdentityMap()

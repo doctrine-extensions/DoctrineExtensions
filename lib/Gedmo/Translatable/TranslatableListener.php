@@ -489,9 +489,14 @@ class TranslatableListener extends MappedEventSubscriber
                 continue; // locale is same and nothing changed
             }
             $translation = null;
+            $translationInDefaultLocale = null;
             // lookup persisted translations
             if ($ea->usesPersonalTranslation($translationClass)) {
                 foreach ($ea->getScheduledObjectInsertions($uow) as $trans) {
+                    if ($locale !== $this->defaultLocale && get_class($trans) === $translationClass &&
+                        $trans->getLocale() === $this->defaultLocale) {
+                        $translationInDefaultLocale = $trans;
+                    }
                     $wasPersistedSeparetely = get_class($trans) === $translationClass
                         && $trans->getLocale() === $locale
                         && $trans->getField() === $field
@@ -513,6 +518,7 @@ class TranslatableListener extends MappedEventSubscriber
                     $config['useObjectClass']
                 );
             }
+
             // create new translation if translation not already created and locale is differentent from default locale, otherwise, we have the date in the original record
             $persistNewTranslation = !$translation
                 && ($locale !== $this->defaultLocale || $this->persistDefaultLocaleTranslation)
@@ -551,6 +557,14 @@ class TranslatableListener extends MappedEventSubscriber
                         }
                     }
                 }
+            }
+
+            if ($isInsert && $translationInDefaultLocale !== null) {
+                // We can't rely on object field value which is created in non default locale.
+                // If we provide translation for default locale as well, the latter is considered to be trusted
+                // and object content should be overridden.
+                $wrapped->setPropertyValue($field, $translationInDefaultLocale->getContent());
+                $ea->recomputeSingleObjectChangeset($uow, $meta, $object);
             }
         }
         $this->translatedInLocale[$oid] = $locale;
