@@ -134,18 +134,8 @@ class PersonalTranslationTest extends BaseTestCaseORM
     function shouldPersistDefaultLocaleValue()
     {
         $this->translatableListener->setTranslatableLocale('de');
-        $this->translatableListener->setDefaultLocale('en');
         $article = new Article;
         $article->setTitle('de');
-
-        $enTranslation = new PersonalArticleTranslation;
-        $enTranslation
-            ->setField('title')
-            ->setContent('en')
-            ->setObject($article)
-            ->setLocale('en')
-        ;
-        $this->em->persist($enTranslation);
 
         $deTranslation = new PersonalArticleTranslation;
         $deTranslation
@@ -156,13 +146,20 @@ class PersonalTranslationTest extends BaseTestCaseORM
         ;
         $this->em->persist($deTranslation);
 
+        $enTranslation = new PersonalArticleTranslation;
+        $enTranslation
+            ->setField('title')
+            ->setContent('en')
+            ->setObject($article)
+            ->setLocale('en')
+        ;
+        $this->em->persist($enTranslation);
+
         $this->em->persist($article);
         $this->em->flush();
 
-        $this->startQueryLog();
         $this->translatableListener->setTranslatableLocale('en');
         $articles = $this->em->createQuery('SELECT t FROM '.self::ARTICLE.' t')->getArrayResult();
-        $sqlQueriesExecuted = $this->queryAnalyzer->getExecutedQueries();
         $this->assertEquals('en', $articles[0]['title']);
         $trans = $this->em->createQuery('SELECT t FROM '.self::TRANSLATION.' t')->getArrayResult();
         $this->assertCount(2, $trans);

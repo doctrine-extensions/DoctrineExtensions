@@ -106,6 +106,13 @@ class TranslatableListener extends MappedEventSubscriber
     private $persistDefaultLocaleTranslation = false;
 
     /**
+     * Tracks translation object for default locale
+     *
+     * @var array
+     */
+    private $translationInDefaultLocale = array();
+
+    /**
      * Specifies the list of events to listen
      *
      * @return array
@@ -479,7 +486,6 @@ class TranslatableListener extends MappedEventSubscriber
         $uow = $om->getUnitOfWork();
         $oid = spl_object_hash($object);
         $changeSet = $ea->getObjectChangeSet($uow, $object);
-
         $translatableFields = $config['fields'];
         foreach ($translatableFields as $field) {
             $wasPersistedSeparetely = false;
@@ -489,14 +495,18 @@ class TranslatableListener extends MappedEventSubscriber
                 continue; // locale is same and nothing changed
             }
             $translation = null;
-            $translationInDefaultLocale = null;
+            foreach ($ea->getScheduledObjectInsertions($uow) as $trans) {
+                if ($locale !== $this->defaultLocale
+                    && get_class($trans) === $translationClass
+                    && $trans->getLocale() === $this->defaultLocale
+                    && $trans->getObject() === $object) {
+                    $this->setTranslationInDefaultLocale($oid, $trans);
+                    break;
+                }
+            }
             // lookup persisted translations
             if ($ea->usesPersonalTranslation($translationClass)) {
                 foreach ($ea->getScheduledObjectInsertions($uow) as $trans) {
-                    if ($locale !== $this->defaultLocale && get_class($trans) === $translationClass &&
-                        $trans->getLocale() === $this->defaultLocale) {
-                        $translationInDefaultLocale = $trans;
-                    }
                     $wasPersistedSeparetely = get_class($trans) === $translationClass
                         && $trans->getLocale() === $locale
                         && $trans->getField() === $field
@@ -559,12 +569,13 @@ class TranslatableListener extends MappedEventSubscriber
                 }
             }
 
-            if ($isInsert && $translationInDefaultLocale !== null) {
+            if ($isInsert && $this->getTranslationInDefaultLocale($oid) !== null) {
                 // We can't rely on object field value which is created in non default locale.
                 // If we provide translation for default locale as well, the latter is considered to be trusted
                 // and object content should be overridden.
-                $wrapped->setPropertyValue($field, $translationInDefaultLocale->getContent());
+                $wrapped->setPropertyValue($field, $this->getTranslationInDefaultLocale($oid)->getContent());
                 $ea->recomputeSingleObjectChangeset($uow, $meta, $object);
+                $this->removeTranslationInDefaultLocale($oid);
             }
         }
         $this->translatedInLocale[$oid] = $locale;
@@ -593,5 +604,46 @@ class TranslatableListener extends MappedEventSubscriber
                 }
             }
         }
+    }
+
+    /**
+     * Sets translation object which represents translation in default language.
+     *
+     * @param    string    $oid     hash of basic entity
+     * @param    mixed     $trans   Translation object
+     */
+    public function setTranslationInDefaultLocale($oid, $trans)
+    {
+        $this->translationInDefaultLocale[$oid] = $trans;
+    }
+
+    /**
+     * Removes translation object which represents translation in default language.
+     * This is for internal use only.
+     *
+     * @param string    $oid     hash of the basic entity
+     */
+    private function removeTranslationInDefaultLocale($oid)
+    {
+        if (isset($this->translationInDefaultLocale[$oid])) {
+            unset($this->translationInDefaultLocale[$oid]);
+        }
+    }
+
+    /**
+     * Gets translation object which represents translation in default language.
+     * This is for internal use only.
+     *
+     * @param    string    $oid   hash of the basic entity
+     * @return   mixed     Returns translation object if it exists or NULL otherwise
+     */
+    private function getTranslationInDefaultLocale($oid)
+    {
+        if (array_key_exists($oid, $this->translationInDefaultLocale)) {
+            $ret = $this->translationInDefaultLocale[$oid];
+        } else {
+            $ret = null;
+        }
+        return $ret;
     }
 }
