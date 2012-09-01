@@ -72,6 +72,35 @@ class EntityTranslationTableTest extends BaseTestCaseORM
         $this->translatableListener->setTranslatableLocale('en_us');
     }
 
+    /**
+     * Covers issue #438
+     * @test
+     */
+    function shouldPersistDefaultLocaleValue()
+    {
+        $this->translatableListener->setPersistDefaultLocaleTranslation(true);
+        $this->translatableListener->setTranslatableLocale('de');
+        $person = new Person;
+        $person->setName('de');
+
+        $repo = $this->em->getRepository(self::TRANSLATION);
+        $repo
+            ->translate($person, 'name', 'de', 'de')
+            ->translate($person, 'name', 'en_us', 'en_us')
+        ;
+        $this->em->persist($person);
+        $this->em->flush();
+
+        $this->translatableListener->setTranslatableLocale('en_us');
+        $articles = $this->em->createQuery('SELECT p FROM ' . self::PERSON . ' p')->getArrayResult();
+        $this->assertEquals('en_us', $articles[0]['name']);
+        $trans = $this->em->createQuery('SELECT t FROM ' . self::TRANSLATION . ' t')->getArrayResult();
+        $this->assertCount(2, $trans);
+        foreach ($trans as $item) {
+            $this->assertEquals($item['locale'], $item['content']);
+        }
+    }
+
     protected function getUsedEntityFixtures()
     {
         return array(
