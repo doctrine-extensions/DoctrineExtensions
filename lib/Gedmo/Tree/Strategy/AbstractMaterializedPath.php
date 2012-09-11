@@ -273,6 +273,9 @@ abstract class AbstractMaterializedPath implements Strategy
         $path .= $config['path_separator'];
 
         if ($parent) {
+            // Ensure parent has been initialized in the case where it's a proxy
+            $om->initializeObject($parent);
+            
             $changeSet = $uow->isScheduledForUpdate($parent) ? $ea->getObjectChangeSet($uow, $parent) : false;
             $pathOrPathSourceHasChanged = $changeSet && (isset($changeSet[$config['path_source']]) || isset($changeSet[$config['path']]));
 
