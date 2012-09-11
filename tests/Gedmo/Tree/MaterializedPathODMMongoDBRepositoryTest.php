@@ -245,6 +245,16 @@ class MaterializedPathODMMongoDBRepositoryTest extends BaseTestCaseMongoODM
         $this->repo->childCount($this->createCategory());
     }
 
+    public function test_changeChildrenIndex()
+    {
+        $childrenIndex = 'myChildren';
+        $this->repo->setChildrenIndex($childrenIndex);
+
+        $tree = $this->repo->childrenHierarchy();
+
+        $this->assertInternalType('array', $tree[0][$childrenIndex]);
+    }
+
     protected function getUsedEntityFixtures()
     {
         return array(

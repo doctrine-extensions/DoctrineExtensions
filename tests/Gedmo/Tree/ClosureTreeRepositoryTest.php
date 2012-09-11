@@ -193,7 +193,7 @@ class ClosureTreeRepositoryTest extends BaseTestCaseORM
         $this->assertFalse(strpos($qb->getQuery()->getDql(), '(SELECT MAX('));
     }
 
-    public function testoNotHavingLevelPropertyUsesASubqueryInSelectInGetNodesHierarchy()
+    public function testNotHavingLevelPropertyUsesASubqueryInSelectInGetNodesHierarchy()
     {
         $this->populate(self::CATEGORY_WITHOUT_LEVEL);
 
@@ -204,6 +204,19 @@ class ClosureTreeRepositoryTest extends BaseTestCaseORM
         $qb = $repo->getNodesHierarchyQueryBuilder($roots[0], false, $config);
 
         $this->assertTrue(((bool) strpos($qb->getQuery()->getDql(), '(SELECT MAX(')));
+    }
+
+    public function test_changeChildrenIndex()
+    {
+        $this->populate(self::CATEGORY);
+
+        $childrenIndex = 'myChildren';
+        $repo = $this->em->getRepository(self::CATEGORY);
+        $repo->setChildrenIndex($childrenIndex);
+
+        $tree = $repo->childrenHierarchy();
+
+        $this->assertInternalType('array', $tree[0][$childrenIndex]);
     }
 
     // Utility Methods

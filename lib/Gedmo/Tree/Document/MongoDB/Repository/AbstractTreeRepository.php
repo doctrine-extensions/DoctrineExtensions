@@ -96,6 +96,22 @@ abstract class AbstractTreeRepository extends DocumentRepository implements Repo
     }
 
     /**
+     * @see \Gedmo\Tree\RepositoryUtilsInterface::setChildrenIndex
+     */
+    public function setChildrenIndex($childrenIndex)
+    {
+        $this->repoUtils->setChildrenIndex($childrenIndex);
+    }
+
+    /**
+     * @see \Gedmo\Tree\RepositoryUtilsInterface::getChildrenIndex
+     */
+    public function getChildrenIndex()
+    {
+        return $this->repoUtils->getChildrenIndex();
+    }
+
+    /**
      * {@inheritDoc}
      */
     public function buildTreeArray(array $nodes)

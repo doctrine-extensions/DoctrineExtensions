@@ -290,6 +290,7 @@ class ClosureTreeRepository extends AbstractTreeRepository
         $idField = $meta->getSingleIdentifierFieldName();
         $hasLevelProp = !empty($config['level']);
         $levelProp = $hasLevelProp ? $config['level'] : self::SUBQUERY_LEVEL;
+        $childrenIndex = $this->repoUtils->getChildrenIndex();
 
         if (count($nodes) > 0) {
             $firstLevel = $hasLevelProp ? $nodes[0][0]['descendant'][$levelProp] : $nodes[0][$levelProp];
@@ -298,7 +299,7 @@ class ClosureTreeRepository extends AbstractTreeRepository
 
             foreach ($nodes as $n) {
                 $node = $n[0]['descendant'];
-                $node['__children'] = array();
+                $node[$childrenIndex] = array();
                 $level = $hasLevelProp ? $node[$levelProp] : $n[$levelProp];
 
                 if ($l < $level) {
@@ -308,7 +309,7 @@ class ClosureTreeRepository extends AbstractTreeRepository
                 if ($l == $firstLevel) {
                     $tmp = &$nestedTree;
                 } else {
-                    $tmp = &$refs[$n['parent_id']]['__children'];
+                    $tmp = &$refs[$n['parent_id']][$childrenIndex];
                 }
 
                 $key = count($tmp);

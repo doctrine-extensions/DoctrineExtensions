@@ -265,6 +265,16 @@ class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
         $this->assertEquals(2, $newNode->getLevel());
     }
 
+    public function test_changeChildrenIndex()
+    {
+        $childrenIndex = 'myChildren';
+        $this->repo->setChildrenIndex($childrenIndex);
+
+        $tree = $this->repo->childrenHierarchy();
+
+        $this->assertInternalType('array', $tree[0][$childrenIndex]);
+    }
+
     protected function getUsedEntityFixtures()
     {
         return array(

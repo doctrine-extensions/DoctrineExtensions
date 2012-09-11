@@ -20,6 +20,15 @@ class RepositoryUtils implements RepositoryUtilsInterface
     /** @var \Gedmo\Tree\RepositoryInterface */
     protected $repo;
 
+    /**
+     * This index is used to hold the children of a node
+     * when using any of the buildTree related methods.
+     *
+     * @var string
+     */
+    protected $childrenIndex = '__children';
+
+
     public function __construct(ObjectManager $om, ClassMetadata $meta, $listener, $repo)
     {
         $this->om = $om;
@@ -57,7 +66,7 @@ class RepositoryUtils implements RepositoryUtilsInterface
         // Gets the array of $node results. It must be ordered by depth
         $nodes = $this->repo->getNodesHierarchy($node, $direct, $options, $includeNode);
 
-        return $this->buildTree($nodes, $options);
+        return $this->repo->buildTree($nodes, $options);
     }
 
     /**
@@ -96,13 +105,15 @@ class RepositoryUtils implements RepositoryUtilsInterface
             return '';
         }
 
-        $build = function($tree) use (&$build, &$options) {
+        $childrenIndex = $this->childrenIndex;
+
+        $build = function($tree) use (&$build, &$options, $childrenIndex) {
             $output = is_string($options['rootOpen']) ? $options['rootOpen'] : $options['rootOpen']($tree);
             foreach ($tree as $node) {
                 $output .= is_string($options['childOpen']) ? $options['childOpen'] : $options['childOpen']($node);
                 $output .= $options['nodeDecorator']($node);
-                if (count($node['__children']) > 0) {
-                    $output .= $build($node['__children']);
+                if (count($node[$childrenIndex]) > 0) {
+                    $output .= $build($node[$childrenIndex]);
                 }
                 $output .= $options['childClose'];
             }
@@ -127,7 +138,7 @@ class RepositoryUtils implements RepositoryUtilsInterface
             $stack = array();
             foreach ($nodes as $child) {
                 $item = $child;
-                $item['__children'] = array();
+                $item[$this->childrenIndex] = array();
                 // Number of stack items
                 $l = count($stack);
                 // Check if we're dealing with different levels
@@ -143,13 +154,29 @@ class RepositoryUtils implements RepositoryUtilsInterface
                     $stack[] = &$nestedTree[$i];
                 } else {
                     // Add child to parent
-                    $i = count($stack[$l - 1]['__children']);
-                    $stack[$l - 1]['__children'][$i] = $item;
-                    $stack[] = &$stack[$l - 1]['__children'][$i];
+                    $i = count($stack[$l - 1][$this->childrenIndex]);
+                    $stack[$l - 1][$this->childrenIndex][$i] = $item;
+                    $stack[] = &$stack[$l - 1][$this->childrenIndex][$i];
                 }
             }
         }
 
         return $nestedTree;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setChildrenIndex($childrenIndex)
+    {
+        $this->childrenIndex = $childrenIndex;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getChildrenIndex()
+    {
+        return $this->childrenIndex;
     }
 }

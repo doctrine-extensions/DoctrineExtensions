@@ -144,6 +144,22 @@ abstract class AbstractTreeRepository extends EntityRepository implements Reposi
     }
 
     /**
+     * @see \Gedmo\Tree\RepositoryUtilsInterface::setChildrenIndex
+     */
+    public function setChildrenIndex($childrenIndex)
+    {
+        $this->repoUtils->setChildrenIndex($childrenIndex);
+    }
+
+    /**
+     * @see \Gedmo\Tree\RepositoryUtilsInterface::getChildrenIndex
+     */
+    public function getChildrenIndex()
+    {
+        return $this->repoUtils->getChildrenIndex();
+    }
+
+    /**
      * Checks if current repository is right
      * for currently used tree strategy
      *

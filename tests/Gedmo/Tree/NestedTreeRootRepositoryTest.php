@@ -427,6 +427,20 @@ class NestedTreeRootRepositoryTest extends BaseTestCaseORM
         $this->assertEquals('Food', $roots[1]->getTitle());
     }
 
+    /**
+     * @test
+     */
+    public function changeChildrenIndexTest()
+    {
+        $repo = $this->em->getRepository(self::CATEGORY);
+        $childrenIndex = 'myChildren';
+        $repo->setChildrenIndex($childrenIndex);
+
+        $tree = $repo->childrenHierarchy();
+
+        $this->assertInternalType('array', $tree[0][$childrenIndex]);
+    }
+
     protected function getUsedEntityFixtures()
     {
         return array(

@@ -55,4 +55,18 @@ interface RepositoryUtilsInterface
      * @return array - Array with tree structure
      */
     public function buildTreeArray(array $nodes);
+
+    /**
+     * Sets the current children index.
+     *
+     * @param string $childrenIndex
+     */
+    public function setChildrenIndex($childrenIndex);
+
+    /**
+     * Gets the current children index.
+     *
+     * @return string
+     */
+    public function getChildrenIndex();
 }
