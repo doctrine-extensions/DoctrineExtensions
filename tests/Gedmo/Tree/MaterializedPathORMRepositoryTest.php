@@ -245,6 +245,26 @@ class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
         $this->repo->childCount($this->createCategory());
     }
 
+    public function test_issue458()
+    {
+        $this->em->clear();
+
+        $node = $this->repo->findOneByTitle('Fruits');
+        $newNode = $this->createCategory();
+        $parent = $node->getParent();
+
+        $this->assertFalse($parent->__isInitialized());
+
+        $newNode->setTitle('New Node');
+        $newNode->setParent($parent);
+
+        $this->em->persist($newNode);
+        $this->em->flush();
+
+        $this->assertRegexp('/Food\-\d+,New\sNode\-\d+/', $newNode->getPath());
+        $this->assertEquals(2, $newNode->getLevel());
+    }
+
     protected function getUsedEntityFixtures()
     {
         return array(
