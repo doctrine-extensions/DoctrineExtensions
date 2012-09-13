@@ -5,7 +5,10 @@ namespace Gedmo\Timestampable;
 use Doctrine\Common\EventManager;
 use Tool\BaseTestCaseORM;
 use Doctrine\Common\Util\Debug,
-    Timestampable\Fixture\TitledArticle;
+    Timestampable\Fixture\TitledArticle,
+    Gedmo\Mapping\Event\Adapter\ORM as BaseAdapterORM,
+    Gedmo\Timestampable\Mapping\Event\TimestampableAdapter,
+    Doctrine\Common\EventArgs;
 
 /**
  * These are tests for Timestampable behavior
@@ -19,12 +22,17 @@ class ChangeTest extends BaseTestCaseORM
 {
     const FIXTURE = "Timestampable\\Fixture\\TitledArticle";
 
+    protected $listener;
+
     protected function setUp()
     {
         parent::setUp();
 
+        $this->listener = new TimestampableListenerStub();
+        $this->listener->eventAdapter = new EventAdapterORMStub();
+
         $evm = new EventManager;
-        $evm->addEventSubscriber(new TimestampableListener);
+        $evm->addEventSubscriber($this->listener);
 
         $this->getMockSqliteEntityManager($evm);
     }
@@ -35,7 +43,9 @@ class ChangeTest extends BaseTestCaseORM
         $test->setTitle('Test');
         $test->setText('Test');
 
-        $date = new \DateTime('now');
+        $currentDate = new \DateTime('now');
+        $this->listener->eventAdapter->setDateValue($currentDate);
+
         $this->em->persist($test);
         $this->em->flush();
         $this->em->clear();
@@ -47,10 +57,12 @@ class ChangeTest extends BaseTestCaseORM
         $this->em->clear();
         //Changed
         $this->assertEquals(
-            $date->format('Y-m-d H:i:s'),
+            $currentDate->format('Y-m-d H:i:s'),
             $test->getChtitle()->format('Y-m-d H:i:s')
         );
-        sleep(1);
+
+        $this->listener->eventAdapter->setDateValue(\DateTime::createFromFormat('Y-m-d H:i:s', '2000-01-01 00:00:00'));
+
         $test = $this->em->getRepository(self::FIXTURE)->findOneByTitle('New Title');
         $test->setText('New Text');
         $this->em->persist($test);
@@ -58,10 +70,9 @@ class ChangeTest extends BaseTestCaseORM
         $this->em->clear();
         //Not Changed
         $this->assertEquals(
-            $date->format('Y-m-d H:i:s'),
+            $currentDate->format('Y-m-d H:i:s'),
             $test->getChtitle()->format('Y-m-d H:i:s')
         );
-        $date = new \DateTime('now');
     }
 
     protected function getUsedEntityFixtures()
@@ -69,5 +80,32 @@ class ChangeTest extends BaseTestCaseORM
         return array(
             self::FIXTURE,
         );
+    }
+}
+
+class EventAdapterORMStub extends BaseAdapterORM implements TimestampableAdapter
+{
+    protected $dateTime;
+
+    public function setDateValue(\DateTime $dateTime)
+    {
+        $this->dateTime = $dateTime;
+    }
+
+    public function getDateValue($meta, $field)
+    {
+        return $this->dateTime;
+    }
+}
+
+class TimestampableListenerStub extends TimestampableListener
+{
+    public $eventAdapter;
+
+    protected function getEventAdapter(EventArgs $args)
+    {
+        $this->eventAdapter->setEventArgs($args);
+
+        return $this->eventAdapter;
     }
 }
