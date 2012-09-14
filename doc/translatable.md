@@ -844,7 +844,7 @@ Easy like that, any suggestions on improvements are very welcome
 
 ### Example code to use Personal Translations with (Symfony2 Sonata) i18n Forms:
 
-Suppose you have a Sonata Backend with s a simple form like:
+Suppose you have a Sonata Backend with a simple form like:
 
 ``` php
 <?php
