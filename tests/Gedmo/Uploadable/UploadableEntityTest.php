@@ -48,15 +48,18 @@ class UploadableEntityTest extends BaseTestCaseORM
     private $testFile2;
     private $testFile3;
     private $testFileWithoutExt;
+    private $testFileWithSpaces;
     private $destinationTestDir;
     private $destinationTestFile;
     private $destinationTestFile2;
     private $destinationTestFile3;
     private $destinationTestFileWithoutExt;
+    private $destinationTestFileWithspaces;
     private $testFilename;
     private $testFilename2;
     private $testFilename3;
     private $testFilenameWithoutExt;
+    private $testFilenameWithSpaces;
     private $testFileSize;
     private $testFileMimeType;
 
@@ -75,15 +78,18 @@ class UploadableEntityTest extends BaseTestCaseORM
         $this->testFile2 = __DIR__.'/../../data/test2.txt';
         $this->testFile3 = __DIR__.'/../../data/test_3.txt';
         $this->testFileWithoutExt = __DIR__.'/../../data/test4';
+        $this->testFileWithSpaces = __DIR__.'/../../data/test with spaces.txt';
         $this->destinationTestDir = __DIR__.'/../../temp/uploadable';
         $this->destinationTestFile = $this->destinationTestDir.'/test.txt';
         $this->destinationTestFile2 = $this->destinationTestDir.'/test2.txt';
         $this->destinationTestFile3 = $this->destinationTestDir.'/test_3.txt';
         $this->destinationTestFileWithoutExt = $this->destinationTestDir.'/test4';
+        $this->destinationTestFileWithSpaces = $this->destinationTestDir.'/test with spaces';
         $this->testFilename = substr($this->testFile, strrpos($this->testFile, '/') + 1);
         $this->testFilename2 = substr($this->testFile2, strrpos($this->testFile2, '/') + 1);
         $this->testFilename3 = substr($this->testFile3, strrpos($this->testFile3, '/') + 1);
         $this->testFilenameWithoutExt = substr($this->testFileWithoutExt, strrpos($this->testFileWithoutExt, '/') + 1);
+        $this->testFilenameWithSpaces= substr($this->testFileWithSpaces, strrpos($this->testFileWithSpaces, '/') + 1);
         $this->testFileSize = 4;
         $this->testFileMimeType = 'text/plain';
 
@@ -565,6 +571,35 @@ class UploadableEntityTest extends BaseTestCaseORM
         $this->listener->setDefaultFileInfoClass($validClass);
 
         $this->assertEquals($validClass, $this->listener->getDefaultFileInfoClass());
+    }
+
+    public function test_useGeneratedFilenameWhenAppendingNumbers()
+    {
+        // We set the default path on the listener
+        $this->listener->setDefaultPath($this->destinationTestDir);
+
+        $file = new FileWithAlphanumericName();
+        $fileInfo = $this->generateUploadedFile('file', $this->testFileWithSpaces, $this->testFilenameWithSpaces);
+
+        $this->listener->addEntityFileInfo($file, $fileInfo);
+
+        $this->em->persist($file);
+        $this->em->flush();
+
+        $filePath = $file->getPath().DIRECTORY_SEPARATOR.str_replace(' ', '-', $fileInfo['name']);
+
+        $this->assertPathEquals($filePath, $file->getFilePath());
+
+        $file = new FileWithAlphanumericName();
+
+        $this->listener->addEntityFileInfo($file, $fileInfo);
+
+        $this->em->persist($file);
+        $this->em->flush();
+
+        $filePath = $file->getPath().DIRECTORY_SEPARATOR.str_replace(' ', '-', str_replace('.txt', '-2.txt', $fileInfo['name']));
+
+        $this->assertPathEquals($filePath, $file->getFilePath());
     }
 
     // Data Providers
