@@ -356,7 +356,9 @@ class SortableListener extends MappedEventSubscriber
     {
         $data = $config['useObjectClass'];
         foreach ($groups as $group => $val) {
-            if (is_object($val)) {
+            if($val instanceof \DateTime) {
+                $val = $val->format('c');
+            } elseif (is_object($val)) {
                 $val = spl_object_hash($val);
             }
             $data .= $group.$val;
