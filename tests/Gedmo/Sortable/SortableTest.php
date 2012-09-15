@@ -10,6 +10,7 @@ use Sortable\Fixture\Category;
 use Sortable\Fixture\SimpleListItem;
 use Sortable\Fixture\Author;
 use Sortable\Fixture\Paper;
+use Sortable\Fixture\Event;
 
 /**
  * These are tests for sluggable behavior
@@ -27,6 +28,7 @@ class SortableTest extends BaseTestCaseORM
     const SIMPLE_LIST_ITEM = 'Sortable\\Fixture\\SimpleListItem';
     const AUTHOR = 'Sortable\\Fixture\\Author';
     const PAPER = 'Sortable\\Fixture\\Paper';
+    const EVENT = 'Sortable\\Fixture\\Event';
 
     private $nodeId;
 
@@ -278,6 +280,45 @@ class SortableTest extends BaseTestCaseORM
     /**
      * @test
      */
+    public function shouldGroupByDateTimeValue()
+    {
+        $event1 = new Event();
+        $event1->setDateTime(new \DateTime("2012-09-15 00:00:00"));
+        $event1->setName("Event1");
+        $this->em->persist($event1);
+        $event2 = new Event();
+        $event2->setDateTime(new \DateTime("2012-09-15 00:00:00"));
+        $event2->setName("Event2");
+        $this->em->persist($event2);
+        $event3 = new Event();
+        $event3->setDateTime(new \DateTime("2012-09-16 00:00:00"));
+        $event3->setName("Event3");
+        $this->em->persist($event3);
+
+        $this->em->flush();
+
+        $event4 = new Event();
+        $event4->setDateTime(new \DateTime("2012-09-15 00:00:00"));
+        $event4->setName("Event4");
+        $this->em->persist($event4);
+
+        $event5 = new Event();
+        $event5->setDateTime(new \DateTime("2012-09-16 00:00:00"));
+        $event5->setName("Event5");
+        $this->em->persist($event5);
+
+        $this->em->flush();
+
+        $this->assertEquals(0, $event1->getPosition());
+        $this->assertEquals(1, $event2->getPosition());
+        $this->assertEquals(0, $event3->getPosition());
+        $this->assertEquals(2, $event4->getPosition());
+        $this->assertEquals(1, $event5->getPosition());
+    }
+
+    /**
+     * @test
+     */
     public function shouldFixIssue219()
     {
         $item1 = new SimpleListItem();
@@ -365,6 +406,7 @@ class SortableTest extends BaseTestCaseORM
             self::SIMPLE_LIST_ITEM,
             self::AUTHOR,
             self::PAPER,
+            self::EVENT,
         );
     }
 
