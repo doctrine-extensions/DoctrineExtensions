@@ -385,7 +385,7 @@ class SortableListener extends MappedEventSubscriber
         // see issue #226
         foreach ($groups as $group => $val) {
             if (is_object($val) && $uow->isScheduledForInsert($val)) {
-                return 0;
+                return -1;
             }
         }
 
