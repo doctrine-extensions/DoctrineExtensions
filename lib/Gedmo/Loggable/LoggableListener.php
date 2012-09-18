@@ -261,22 +261,24 @@ class LoggableListener extends MappedEventSubscriber
                 $logEntry->setData($newValues);
             }
             
-            if(0 !== count($newValues)) {
-                $version = 1;
-                if ($action !== self::ACTION_CREATE) {
-                    $version = $ea->getNewVersion($logEntryMeta, $object);
-                    if (empty($version)) {
-                        // was versioned later
-                        $version = 1;
-                    }
-                }
-                $logEntry->setVersion($version);
-
-                $this->prePersistLogEntry($logEntry, $object);
-
-                $om->persist($logEntry);
-                $uow->computeChangeSet($logEntryMeta, $logEntry);
+            if($action === self::ACTION_UPDATE && 0 === count($newValues)) {
+                return;
             }
+            
+            $version = 1;
+            if ($action !== self::ACTION_CREATE) {
+                $version = $ea->getNewVersion($logEntryMeta, $object);
+                if (empty($version)) {
+                    // was versioned later
+                    $version = 1;
+                }
+            }
+            $logEntry->setVersion($version);
+
+            $this->prePersistLogEntry($logEntry, $object);
+
+            $om->persist($logEntry);
+            $uow->computeChangeSet($logEntryMeta, $logEntry);
         }
     }
 }
