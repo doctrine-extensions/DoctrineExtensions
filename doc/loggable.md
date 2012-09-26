@@ -171,6 +171,8 @@ Entity\Article:
     loggable:
 # using specific personal LogEntryClass class:
       logEntryClass: My\LogEntry
+# without specifying the LogEntryClass class:
+#   loggable: true
   id:
     id:
       type: integer
