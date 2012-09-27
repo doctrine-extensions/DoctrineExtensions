@@ -100,6 +100,195 @@ class TranslatableEntityDefaultTranslationTest extends BaseTestCaseORM
 
 
 
+    // --- Tests for default translation making it into the entity's
+    //     database row --------------------------------------------------------
+
+
+
+    function testOnlyDefaultTranslationWithoutPersistingDefault()
+    {
+        $this->translatableListener->setPersistDefaultLocaleTranslation( false );
+        $entity = new Article;
+        $this->repo
+            ->translate($entity, 'title', 'defaultLocale'   , 'title defaultLocale'   )
+        ;
+
+        $this->em->persist($entity);
+        $this->em->flush();
+        $this->em->clear();
+
+        $trans = $this->repo->findTranslations($this->em->find(self::ARTICLE, $entity->getId()));
+        $this->assertCount(0, $trans);
+
+        $articles = $this->em->createQuery('SELECT a FROM ' . self::ARTICLE . ' a')->getArrayResult();
+        $this->assertCount(1, $articles);
+        $this->assertEquals('title defaultLocale', $articles[0]['title']);
+    }
+
+    function testOnlyDefaultTranslationWithPersistingDefault()
+    {
+        $this->translatableListener->setPersistDefaultLocaleTranslation( true );
+        $entity = new Article;
+        $this->repo
+            ->translate($entity, 'title', 'defaultLocale'   , 'title defaultLocale'   )
+        ;
+
+        $this->em->persist($entity);
+        $this->em->flush();
+        $this->em->clear();
+
+        $trans = $this->repo->findTranslations($this->em->find(self::ARTICLE, $entity->getId()));
+        $this->assertCount(1, $trans);
+        $this->assertSame('title defaultLocale', $trans['defaultLocale']['title']);
+
+        $articles = $this->em->createQuery('SELECT a FROM ' . self::ARTICLE . ' a')->getArrayResult();
+        $this->assertCount(1, $articles);
+        $this->assertEquals('title defaultLocale', $articles[0]['title']);
+    }
+
+    /**
+     * As this test does not provide a default translation, we assert
+     * that a translated value is picked as default value
+     */
+    function testOnlyEntityTranslationWithoutPersistingDefault()
+    {
+        $this->translatableListener->setPersistDefaultLocaleTranslation( false );
+        $entity = new Article;
+        $this->repo
+            ->translate($entity, 'title', 'translatedLocale', 'title translatedLocale')
+        ;
+
+        $this->em->persist($entity);
+        $this->em->flush();
+        $this->em->clear();
+
+        $trans = $this->repo->findTranslations($this->em->find(self::ARTICLE, $entity->getId()));
+        $this->assertCount(1, $trans);
+        $this->assertSame('title translatedLocale', $trans['translatedLocale']['title']);
+
+        $articles = $this->em->createQuery('SELECT a FROM ' . self::ARTICLE . ' a')->getArrayResult();
+        $this->assertCount(1, $articles);
+        $this->assertEquals('title translatedLocale', $articles[0]['title']);
+    }
+
+    /**
+     * As this test does not provide a default translation, we assert
+     * that a translated value is picked as default value
+     */
+    function testOnlyEntityTranslationWithPersistingDefault()
+    {
+        $this->translatableListener->setPersistDefaultLocaleTranslation( true );
+        $entity = new Article;
+        $this->repo
+            ->translate($entity, 'title', 'translatedLocale', 'title translatedLocale')
+        ;
+
+        $this->em->persist($entity);
+        $this->em->flush();
+        $this->em->clear();
+
+        $trans = $this->repo->findTranslations($this->em->find(self::ARTICLE, $entity->getId()));
+        $this->assertCount(1, $trans);
+        $this->assertSame('title translatedLocale', $trans['translatedLocale']['title']);
+
+        $articles = $this->em->createQuery('SELECT a FROM ' . self::ARTICLE . ' a')->getArrayResult();
+        $this->assertCount(1, $articles);
+        $this->assertEquals('title translatedLocale', $articles[0]['title']);
+    }
+
+    function testDefaultAndEntityTranslationWithoutPersistingDefault()
+    {
+        $this->translatableListener->setPersistDefaultLocaleTranslation( false );
+        $entity = new Article;
+        $this->repo
+            ->translate($entity, 'title', 'defaultLocale'   , 'title defaultLocale'   )
+            ->translate($entity, 'title', 'translatedLocale', 'title translatedLocale')
+        ;
+
+        $this->em->persist($entity);
+        $this->em->flush();
+        $this->em->clear();
+
+        $trans = $this->repo->findTranslations($this->em->find(self::ARTICLE, $entity->getId()));
+        $this->assertCount(1, $trans);
+        $this->assertSame('title translatedLocale', $trans['translatedLocale']['title']);
+
+        $articles = $this->em->createQuery('SELECT a FROM ' . self::ARTICLE . ' a')->getArrayResult();
+        $this->assertCount(1, $articles);
+        $this->assertEquals('title defaultLocale', $articles[0]['title']);
+    }
+
+    function testDefaultAndEntityTranslationWithoutPersistingDefaultResorted()
+    {
+
+        $this->translatableListener->setPersistDefaultLocaleTranslation( false );
+        $entity = new Article;
+        $this->repo
+            ->translate($entity, 'title', 'translatedLocale', 'title translatedLocale')
+            ->translate($entity, 'title', 'defaultLocale'   , 'title defaultLocale'   )
+        ;
+
+        $this->em->persist($entity);
+        $this->em->flush();
+        $this->em->clear();
+
+        $trans = $this->repo->findTranslations($this->em->find(self::ARTICLE, $entity->getId()));
+        $this->assertCount(1, $trans);
+        $this->assertSame('title translatedLocale', $trans['translatedLocale']['title']);
+
+        $articles = $this->em->createQuery('SELECT a FROM ' . self::ARTICLE . ' a')->getArrayResult();
+        $this->assertCount(1, $articles);
+        $this->assertEquals('title defaultLocale', $articles[0]['title']);
+    }
+
+    function testDefaultAndEntityTranslationWithPersistingDefault()
+    {
+        $this->translatableListener->setPersistDefaultLocaleTranslation( true );
+        $entity = new Article;
+        $this->repo
+            ->translate($entity, 'title', 'defaultLocale'   , 'title defaultLocale'   )
+            ->translate($entity, 'title', 'translatedLocale', 'title translatedLocale')
+        ;
+
+        $this->em->persist($entity);
+        $this->em->flush();
+        $this->em->clear();
+
+        $trans = $this->repo->findTranslations($this->em->find(self::ARTICLE, $entity->getId()));
+        $this->assertCount(2, $trans);
+        $this->assertSame('title translatedLocale', $trans['translatedLocale']['title']);
+        $this->assertSame('title defaultLocale', $trans['defaultLocale']['title']);
+
+        $articles = $this->em->createQuery('SELECT a FROM ' . self::ARTICLE . ' a')->getArrayResult();
+        $this->assertCount(1, $articles);
+        $this->assertEquals('title defaultLocale', $articles[0]['title']);
+    }
+
+    function testDefaultAndEntityTranslationWithPersistingDefaultResorted()
+    {
+        $this->translatableListener->setPersistDefaultLocaleTranslation( true );
+        $entity = new Article;
+        $this->repo
+            ->translate($entity, 'title', 'translatedLocale', 'title translatedLocale')
+            ->translate($entity, 'title', 'defaultLocale'   , 'title defaultLocale'   )
+        ;
+
+        $this->em->persist($entity);
+        $this->em->flush();
+        $this->em->clear();
+
+        $trans = $this->repo->findTranslations($this->em->find(self::ARTICLE, $entity->getId()));
+        $this->assertCount(2, $trans);
+        $this->assertSame('title translatedLocale', $trans['translatedLocale']['title']);
+        $this->assertSame('title defaultLocale', $trans['defaultLocale']['title']);
+
+        $articles = $this->em->createQuery('SELECT a FROM ' . self::ARTICLE . ' a')->getArrayResult();
+        $this->assertCount(1, $articles);
+        $this->assertEquals('title defaultLocale', $articles[0]['title']);
+    }
+
+
+
     // --- Fixture related methods ---------------------------------------------
 
 
