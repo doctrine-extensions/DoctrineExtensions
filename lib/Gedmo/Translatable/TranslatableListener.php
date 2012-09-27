@@ -499,8 +499,9 @@ class TranslatableListener extends MappedEventSubscriber
                 if ($locale !== $this->defaultLocale
                     && get_class($trans) === $translationClass
                     && $trans->getLocale() === $this->defaultLocale
+                    && $trans->getField() === $field
                     && $trans->getObject() === $object) {
-                    $this->setTranslationInDefaultLocale($oid, $trans);
+                    $this->setTranslationInDefaultLocale($oid, $field, $trans);
                     break;
                 }
             }
@@ -569,13 +570,13 @@ class TranslatableListener extends MappedEventSubscriber
                 }
             }
 
-            if ($isInsert && $this->getTranslationInDefaultLocale($oid) !== null) {
+            if ($isInsert && $this->getTranslationInDefaultLocale($oid, $field) !== null) {
                 // We can't rely on object field value which is created in non default locale.
                 // If we provide translation for default locale as well, the latter is considered to be trusted
                 // and object content should be overridden.
-                $wrapped->setPropertyValue($field, $this->getTranslationInDefaultLocale($oid)->getContent());
+                $wrapped->setPropertyValue($field, $this->getTranslationInDefaultLocale($oid, $field)->getContent());
                 $ea->recomputeSingleObjectChangeset($uow, $meta, $object);
-                $this->removeTranslationInDefaultLocale($oid);
+                $this->removeTranslationInDefaultLocale($oid, $field);
             }
         }
         $this->translatedInLocale[$oid] = $locale;
@@ -610,11 +611,15 @@ class TranslatableListener extends MappedEventSubscriber
      * Sets translation object which represents translation in default language.
      *
      * @param    string    $oid     hash of basic entity
+     * @param    string    $field   field of basic entity
      * @param    mixed     $trans   Translation object
      */
-    public function setTranslationInDefaultLocale($oid, $trans)
+    public function setTranslationInDefaultLocale($oid, $field, $trans)
     {
-        $this->translationInDefaultLocale[$oid] = $trans;
+        if (!isset($this->translationInDefaultLocale[$oid])) {
+            $this->translationInDefaultLocale[$oid] = array();
+        }
+        $this->translationInDefaultLocale[$oid][$field] = $trans;
     }
 
     /**
@@ -622,11 +627,20 @@ class TranslatableListener extends MappedEventSubscriber
      * This is for internal use only.
      *
      * @param string    $oid     hash of the basic entity
+     * @param string    $field   field of basic entity
      */
-    private function removeTranslationInDefaultLocale($oid)
+    private function removeTranslationInDefaultLocale($oid, $field)
     {
         if (isset($this->translationInDefaultLocale[$oid])) {
-            unset($this->translationInDefaultLocale[$oid]);
+            if (isset($this->translationInDefaultLocale[$oid][$field])) {
+                unset($this->translationInDefaultLocale[$oid][$field]);
+            }
+            if (! $this->translationInDefaultLocale[$oid]) {
+                // We removed the final remaining elements from the
+                // translationInDefaultLocale[$oid] array, so we might as well
+                // completely remove the entry at $oid.
+                unset($this->translationInDefaultLocale[$oid]);
+            }
         }
     }
 
@@ -635,12 +649,17 @@ class TranslatableListener extends MappedEventSubscriber
      * This is for internal use only.
      *
      * @param    string    $oid   hash of the basic entity
+     * @param    string    $field field of basic entity
      * @return   mixed     Returns translation object if it exists or NULL otherwise
      */
-    private function getTranslationInDefaultLocale($oid)
+    private function getTranslationInDefaultLocale($oid, $field)
     {
         if (array_key_exists($oid, $this->translationInDefaultLocale)) {
-            $ret = $this->translationInDefaultLocale[$oid];
+            if (array_key_exists($field, $this->translationInDefaultLocale[$oid])) {
+                $ret = $this->translationInDefaultLocale[$oid][$field];
+            } else {
+                $ret = null;
+            }
         } else {
             $ret = null;
         }

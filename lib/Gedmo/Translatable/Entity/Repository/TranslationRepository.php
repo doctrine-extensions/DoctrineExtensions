@@ -83,7 +83,7 @@ class TranslationRepository extends EntityRepository
                 $transMeta->getReflectionProperty('locale')->setValue($trans, $locale);
                 if ($listener->getDefaultLocale() != $listener->getTranslatableLocale($entity, $meta) &&
                     $locale === $listener->getDefaultLocale()) {
-                    $listener->setTranslationInDefaultLocale(spl_object_hash($entity), $trans);
+                    $listener->setTranslationInDefaultLocale(spl_object_hash($entity), $field, $trans);
                     $needsPersist = $listener->getPersistDefaultLocaleTranslation();
                 }
             }

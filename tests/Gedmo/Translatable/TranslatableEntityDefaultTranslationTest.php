@@ -287,6 +287,114 @@ class TranslatableEntityDefaultTranslationTest extends BaseTestCaseORM
         $this->assertEquals('title defaultLocale', $articles[0]['title']);
     }
 
+    function testTwoFieldsWithoutPersistingDefault()
+    {
+        $this->translatableListener->setPersistDefaultLocaleTranslation( false );
+        $entity = new Article;
+        $this->repo
+            ->translate($entity, 'title'  , 'translatedLocale', 'title translatedLocale'  )
+            ->translate($entity, 'title'  , 'defaultLocale'   , 'title defaultLocale'     )
+            ->translate($entity, 'content', 'translatedLocale', 'content translatedLocale')
+            ->translate($entity, 'content', 'defaultLocale'   , 'content defaultLocale'   )
+        ;
+
+        $this->em->persist($entity);
+        $this->em->flush();
+        $this->em->clear();
+
+        $trans = $this->repo->findTranslations($this->em->find(self::ARTICLE, $entity->getId()));
+        $this->assertCount(1, $trans);
+        $this->assertSame('title translatedLocale'  , $trans['translatedLocale']['title']);
+        $this->assertSame('content translatedLocale', $trans['translatedLocale']['content']);
+
+        $articles = $this->em->createQuery('SELECT a FROM ' . self::ARTICLE . ' a')->getArrayResult();
+        $this->assertCount(1, $articles);
+        $this->assertEquals('title defaultLocale'  , $articles[0]['title']  );
+        $this->assertEquals('content defaultLocale', $articles[0]['content']);
+    }
+
+    function testTwoFieldsWithoutPersistingDefaultResorted()
+    {
+        $this->translatableListener->setPersistDefaultLocaleTranslation( false );
+        $entity = new Article;
+        $this->repo
+            ->translate($entity, 'title'  , 'defaultLocale'   , 'title defaultLocale'     )
+            ->translate($entity, 'title'  , 'translatedLocale', 'title translatedLocale'  )
+            ->translate($entity, 'content', 'defaultLocale'   , 'content defaultLocale'   )
+            ->translate($entity, 'content', 'translatedLocale', 'content translatedLocale')
+        ;
+
+        $this->em->persist($entity);
+        $this->em->flush();
+        $this->em->clear();
+
+        $trans = $this->repo->findTranslations($this->em->find(self::ARTICLE, $entity->getId()));
+        $this->assertCount(1, $trans);
+        $this->assertSame('title translatedLocale'  , $trans['translatedLocale']['title']);
+        $this->assertSame('content translatedLocale', $trans['translatedLocale']['content']);
+
+        $articles = $this->em->createQuery('SELECT a FROM ' . self::ARTICLE . ' a')->getArrayResult();
+        $this->assertCount(1, $articles);
+        $this->assertEquals('title defaultLocale'  , $articles[0]['title']  );
+        $this->assertEquals('content defaultLocale', $articles[0]['content']);
+    }
+
+    function testTwoFieldsWithPersistingDefault()
+    {
+        $this->translatableListener->setPersistDefaultLocaleTranslation( true );
+        $entity = new Article;
+        $this->repo
+            ->translate($entity, 'title'  , 'translatedLocale', 'title translatedLocale'  )
+            ->translate($entity, 'title'  , 'defaultLocale'   , 'title defaultLocale'     )
+            ->translate($entity, 'content', 'translatedLocale', 'content translatedLocale')
+            ->translate($entity, 'content', 'defaultLocale'   , 'content defaultLocale'   )
+        ;
+
+        $this->em->persist($entity);
+        $this->em->flush();
+        $this->em->clear();
+
+        $trans = $this->repo->findTranslations($this->em->find(self::ARTICLE, $entity->getId()));
+        $this->assertCount(2, $trans);
+        $this->assertSame('title translatedLocale'  , $trans['translatedLocale']['title']);
+        $this->assertSame('title defaultLocale'     , $trans['defaultLocale']['title']);
+        $this->assertSame('content translatedLocale', $trans['translatedLocale']['content']);
+        $this->assertSame('content defaultLocale'   , $trans['defaultLocale']['content']);
+
+        $articles = $this->em->createQuery('SELECT a FROM ' . self::ARTICLE . ' a')->getArrayResult();
+        $this->assertCount(1, $articles);
+        $this->assertEquals('title defaultLocale'  , $articles[0]['title']  );
+        $this->assertEquals('content defaultLocale', $articles[0]['content']);
+    }
+
+    function testTwoFieldsWithPersistingDefaultResorted()
+    {
+        $this->translatableListener->setPersistDefaultLocaleTranslation( true );
+        $entity = new Article;
+        $this->repo
+            ->translate($entity, 'title'  , 'defaultLocale'   , 'title defaultLocale'     )
+            ->translate($entity, 'title'  , 'translatedLocale', 'title translatedLocale'  )
+            ->translate($entity, 'content', 'defaultLocale'   , 'content defaultLocale'   )
+            ->translate($entity, 'content', 'translatedLocale', 'content translatedLocale')
+        ;
+
+        $this->em->persist($entity);
+        $this->em->flush();
+        $this->em->clear();
+
+        $trans = $this->repo->findTranslations($this->em->find(self::ARTICLE, $entity->getId()));
+        $this->assertCount(2, $trans);
+        $this->assertSame('title translatedLocale'  , $trans['translatedLocale']['title']);
+        $this->assertSame('title defaultLocale'     , $trans['defaultLocale']['title']);
+        $this->assertSame('content translatedLocale', $trans['translatedLocale']['content']);
+        $this->assertSame('content defaultLocale'   , $trans['defaultLocale']['content']);
+
+        $articles = $this->em->createQuery('SELECT a FROM ' . self::ARTICLE . ' a')->getArrayResult();
+        $this->assertCount(1, $articles);
+        $this->assertEquals('title defaultLocale'  , $articles[0]['title']  );
+        $this->assertEquals('content defaultLocale', $articles[0]['content']);
+    }
+
 
 
     // --- Fixture related methods ---------------------------------------------
