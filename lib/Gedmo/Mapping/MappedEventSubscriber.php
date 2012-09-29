@@ -133,6 +133,12 @@ abstract class MappedEventSubscriber implements EventSubscriber
                         $config = self::$configurations[$this->name][$class];
                     }
                 }
+
+                $objectClass = isset($config['useObjectClass']) ? $config['useObjectClass'] : $class;
+                if ($objectClass !== $class) {
+                    $this->getConfiguration($objectManager, $objectClass);
+                }
+
             }
         }
         return $config;
