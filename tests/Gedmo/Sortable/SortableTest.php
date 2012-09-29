@@ -325,9 +325,9 @@ class SortableTest extends BaseTestCaseORM
         $this->em->persist($author3);
         $this->em->flush();
 
-        $this->assertEquals(1, $author1->getPosition());
-        $this->assertEquals(2, $author2->getPosition());
-        $this->assertEquals(1, $author3->getPosition());
+        $this->assertEquals(0, $author1->getPosition());
+        $this->assertEquals(1, $author2->getPosition());
+        $this->assertEquals(0, $author3->getPosition());
     }
 
     /**
