@@ -699,7 +699,6 @@ class NestedTreeRepository extends AbstractTreeRepository
             } catch (\Exception $e) {
                 $this->_em->close();
                 $this->_em->getConnection()->rollback();
-                die($e->getMessage());
                 throw new \Gedmo\Exception\RuntimeException('Transaction failed', null, $e);
             }
         } else {
