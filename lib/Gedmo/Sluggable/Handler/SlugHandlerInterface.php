@@ -1,0 +1,81 @@
+<?php
+
+namespace Gedmo\Sluggable\Handler;
+
+use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\Common\Persistence\Mapping\ClassMetadata;
+use Gedmo\Sluggable\SluggableListener;
+use Gedmo\Sluggable\Mapping\Event\SluggableAdapter;
+
+/**
+ * Sluggable handler interface is a common pattern for all
+ * slug handlers which can be attached to the sluggable listener.
+ * Usage is intented only for internal access of sluggable.
+ * Should not be used outside of sluggable extension
+ *
+ * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
+ * @package Gedmo.Sluggable.Handler
+ * @subpackage SlugHandlerInterface
+ * @link http://www.gediminasm.org
+ * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
+ */
+interface SlugHandlerInterface
+{
+    /**
+     * Construct the slug handler
+     *
+     * @param Gedmo\Sluggable\SluggableListener $sluggable
+     */
+    function __construct(SluggableListener $sluggable);
+
+    /**
+     * Get the options for specific object
+     *
+     * @param object $object
+     * @return array
+     */
+    function getOptions($object);
+
+    /**
+     * Callback on slug handlers before the decision
+     * is made whether or not the slug needs to be
+     * recalculated
+     *
+     * @param Gedmo\Sluggable\Mapping\Event\SluggableAdapter $ea
+     * @param string $slugField
+     * @param object $object
+     * @param string $slug
+     * @param boolean $needToChangeSlug
+     * @return void
+     */
+    function onChangeDecision(SluggableAdapter $ea, $slugField, $object, &$slug, &$needToChangeSlug);
+
+    /**
+     * Callback on slug handlers right after the slug is built
+     *
+     * @param Gedmo\Sluggable\Mapping\Event\SluggableAdapter $ea
+     * @param string $slugField
+     * @param object $object
+     * @param string $slug
+     * @return void
+     */
+    function postSlugBuild(SluggableAdapter $ea, $slugField, $object, &$slug);
+
+    /**
+     * Callback for slug handlers on slug completion
+     *
+     * @param Gedmo\Sluggable\Mapping\Event\SluggableAdapter $ea
+     * @param string $slugField
+     * @param object $object
+     * @param string $slug
+     * @return void
+     */
+    function onSlugCompletion(SluggableAdapter $ea, $slugField, $object, &$slug);
+
+    /**
+     * Validate handler options
+     *
+     * @param array $options
+     */
+    static function validate(array $options, ClassMetadata $meta);
+}
