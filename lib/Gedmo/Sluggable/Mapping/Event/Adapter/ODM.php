@@ -40,4 +40,40 @@ final class ODM extends BaseAdapterODM implements SluggableAdapter
         }
         return $result;
     }
+
+    /**
+     * This query can couse some data integrity failures since it does not
+     * execute atomicaly
+     *
+     * {@inheritDoc}
+     */
+    public function replaceRelative($object, $slugField, $useObjectClass, $pathSeparator, $target, $replacement)
+    {
+        $dm = $this->getObjectManager();
+        $meta = $dm->getClassMetadata($useObjectClass);
+
+        $q = $dm
+            ->createQueryBuilder($useObjectClass)
+            ->where("function() {
+                return this.{$slugField}.indexOf('{$target}') === 0;
+            }")
+            ->getQuery()
+        ;
+        $q->setHydrate(false);
+        $result = $q->execute();
+        if ($result instanceof Cursor) {
+            $result = $result->toArray();
+            foreach ($result as $targetObject) {
+                $slug = preg_replace("@^{$target}@smi", $replacement.$pathSeparator, $targetObject[$slugField]);
+                $dm
+                    ->createQueryBuilder()
+                    ->update($useObjectClass)
+                    ->field($slugField)->set($slug)
+                    ->field($meta->identifier)->equals($targetObject['_id'])
+                    ->getQuery()
+                    ->execute()
+                ;
+            }
+        }
+    }
 }

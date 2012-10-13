@@ -26,4 +26,17 @@ interface SluggableAdapter extends AdapterInterface
      * @return array
      */
     function getSimilarSlugs($object, $meta, array $config, $slug);
+
+    /**
+     * Replace part of slug to all objects
+     * matching $target pattern
+     *
+     * @param object $object
+     * @param array $config
+     * @param string $target
+     * @param string $replacement
+     * @return integer
+     */
+    function replaceRelative($object, $slugField, $useObjectClass, $pathSeparator, $target, $replacement);
+
 }

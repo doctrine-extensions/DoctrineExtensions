@@ -276,7 +276,7 @@ class Urlizer
         if (preg_match('/[\x80-\xff]/', $text) && self::validUtf8($text)) {
             $text = self::utf8ToAscii($text);
         }
-        return $text;
+        return  self::postProcessText($text, $separator);;
     }
 
     /**
