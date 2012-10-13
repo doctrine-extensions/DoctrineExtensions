@@ -46,6 +46,7 @@ class TreeSlugHandlerTest extends BaseTestCaseORM
 
         $citrons = $repo->findOneByTitle('Citrons');
         $this->assertEquals('food/fruits/citrons', $citrons->getSlug());
+<<<<<<< refs/heads/master
 
         $apple = $repo->findOneByTitle('Apple');
         $this->assertEquals('food/fruits/apple', $apple->getSlug());
@@ -55,6 +56,8 @@ class TreeSlugHandlerTest extends BaseTestCaseORM
 
         $banana = $repo->findOneByTitle('Banana');
         $this->assertEquals('food/fruits/banana', $banana->getSlug());
+=======
+>>>>>>> HEAD~6
     }
 
     public function testSlugUpdates()
@@ -155,6 +158,7 @@ class TreeSlugHandlerTest extends BaseTestCaseORM
         $citrons = new TreeSlug;
         $citrons->setTitle('Citrons');
 
+<<<<<<< refs/heads/master
         $apple = new TreeSlug;
         $apple->setTitle('Apple');
 
@@ -164,6 +168,8 @@ class TreeSlugHandlerTest extends BaseTestCaseORM
         $banana = new TreeSlug;
         $banana->setTitle('Banana');
 
+=======
+>>>>>>> HEAD~6
         $repo
             ->persistAsFirstChild($food)
             ->persistAsFirstChildOf($fruits, $food)
@@ -171,10 +177,14 @@ class TreeSlugHandlerTest extends BaseTestCaseORM
             ->persistAsLastChildOf($milk, $food)
             ->persistAsLastChildOf($meat, $food)
             ->persistAsFirstChildOf($oranges, $fruits)
+<<<<<<< refs/heads/master
             ->persistAsFirstChildOf($citrons, $fruits)
             ->persistAsFirstChildOf($apple, $fruits)
             ->persistAsPrevSiblingOf($kiwi, $apple)
             ->persistAsNextSiblingOf($banana, $apple);
+=======
+            ->persistAsFirstChildOf($citrons, $fruits);
+>>>>>>> HEAD~6
 
         $this->em->flush();
     }
