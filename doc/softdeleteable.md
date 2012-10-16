@@ -205,6 +205,11 @@ $em->getFilters()->disable('soft-deleteable');
 $art = $repo->findOneBy(array('title' => 'My Article'));
 
 $this->assertTrue(is_object($art));
+
+// Enable / Disable filter filter, for specified entity (default is enabled for all)
+$filter = $em->getFilters()->enable('soft-deleteable');
+$filter->disableForEntity('Entity\Article');
+$filter->enableForEntity('Entity\Article');
 ```
 
 Easy like that, any suggestions on improvements are very welcome.
