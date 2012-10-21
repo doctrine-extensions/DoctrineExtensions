@@ -209,7 +209,7 @@ class ClosureTreeRepository extends AbstractTreeRepository
     /**
      * Removes given $node from the tree and reparents its descendants
      *
-     * @todo: may be improved, to issue single query on reparenting
+     * @todo may be improved, to issue single query on reparenting
      * @param object $node
      * @throws RuntimeException - if something fails in transaction
      * @return void
