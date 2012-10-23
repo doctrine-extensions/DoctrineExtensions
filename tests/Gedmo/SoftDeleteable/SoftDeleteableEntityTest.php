@@ -20,6 +20,7 @@ use Doctrine\Common\Util\Debug,
  *
  * @author Gustavo Falco <comfortablynumb84@gmail.com>
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
+ * @author Patrik Votoček <patrik@votocek.cz>
  * @package Gedmo.SoftDeleteable
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
@@ -234,6 +235,36 @@ class SoftDeleteableEntityTest extends BaseTestCaseORM
         $this->assertTrue(is_object($foundComment));
         $this->assertInstanceOf(self::OTHER_COMMENT_CLASS, $foundComment);
 
+    }
+
+    public function testSoftDeleteableFilter()
+    {
+        $filter = $this->em->getFilters()->enable(self::SOFT_DELETEABLE_FILTER_NAME);
+        $filter->disableForEntity(self::USER_CLASS);
+
+        $repo = $this->em->getRepository(self::USER_CLASS);
+
+        $newUser = new User();
+        $username = 'test_user';
+        $newUser->setUsername($username);
+
+        $this->em->persist($newUser);
+        $this->em->flush();
+
+        $user = $repo->findOneBy(array('username' => $username));
+
+        $this->assertNull($user->getDeletedAt());
+
+        $this->em->remove($user);
+        $this->em->flush();
+
+        $user = $repo->findOneBy(array('username' => $username));
+        $this->assertNotNull($user->getDeletedAt());
+
+        $filter->enableForEntity(self::USER_CLASS);
+
+        $user = $repo->findOneBy(array('username' => $username));
+        $this->assertNull($user);
     }
 
     public function testPostSoftDeleteEventIsDispatched()
