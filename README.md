@@ -37,7 +37,7 @@ was a tree extension missing for **ODM** now everyone can enjoy [materialized pa
 
 **2012-02-26**
 
-- Removed slug handlers, this functionality brought complucations which could not be maintained.
+- Removed slug handlers, this functionality brought complications which could not be maintained.
 
 **2012-02-15**
 
