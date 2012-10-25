@@ -4,6 +4,7 @@ namespace Gedmo\Mapping\Driver;
 
 use Doctrine\Common\Persistence\Mapping\Driver\FileDriver;
 use Doctrine\Common\Persistence\Mapping\Driver\FileLocator;
+use Doctrine\ORM\Mapping\Driver\AbstractFileDriver;
 use Gedmo\Mapping\Driver;
 
 /**
@@ -83,7 +84,7 @@ abstract class File implements Driver
         //try loading mapping from original driver first
         $mapping = null;
         if (!is_null($this->_originalDriver)) {
-            if ($this->_originalDriver instanceof FileDriver) {
+            if ($this->_originalDriver instanceof FileDriver || $this->_originalDriver instanceof AbstractFileDriver) {
                 $mapping = $this->_originalDriver->getElement($className);
             }
         }
