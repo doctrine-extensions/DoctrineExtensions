@@ -25,7 +25,6 @@ Mapping\Fixture\Yaml\Category:
       type: string
       length: 64
       gedmo:
-        - translatable
         slug:
           separator: "_"
           style: camel
