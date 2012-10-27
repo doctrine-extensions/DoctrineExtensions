@@ -175,7 +175,7 @@ Entity\Item:
 
         <field name="name" type="string" length="128">
         </field>
-        
+
         <field name="position" type="integer">
             <gedmo:sortable-position/>
         </field>
@@ -234,10 +234,9 @@ $item0->setPosition(0);
 $this->em->persist($item0);
 
 $this->em->flush();
-$this->em->clear();
 
 $repo = $this->em->getRepository('Entity\\Item');
-$items = $repo->getBySortableGroupsQuery(array('category' => 'category 1'));
+$items = $repo->getBySortableGroupsQuery(array('category' => 'category 1'))->getResult();
 foreach ($items as $item) {
     echo "{$item->getPosition()}: {$item->getName()}\n";
 }
@@ -267,10 +266,10 @@ $this->em->flush();
 $item2->setPosition(0);
 $this->em->persist($item2);
 
-$this->em->clear();
+$this->em->flush();
 
 $repo = $this->em->getRepository('Entity\\Item');
-$items = $repo->getBySortableGroupsQuery(array('category' => 'category 1'));
+$items = $repo->getBySortableGroupsQuery(array('category' => 'category 1'))->getResult();
 foreach ($items as $item) {
     echo "{$item->getPosition()}: {$item->getName()}\n";
 }
