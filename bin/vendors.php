@@ -34,23 +34,11 @@ $deps22x = array(
     array('Symfony/Component/Yaml', 'http://github.com/symfony/Yaml.git', 'v2.0.7'),
 );
 $deps23x = array(
-    array('doctrine-orm', 'git://github.com/doctrine/doctrine2.git', '0a09a28ec9'),
-    array('doctrine-dbal', 'git://github.com/doctrine/dbal.git', '493ced5cd0'),
-    array('doctrine-common', 'git://github.com/doctrine/common.git', '4f78640efd'),
-    array('doctrine-mongodb', 'git://github.com/doctrine/mongodb.git', '727a12d25b'),
-    array('doctrine-mongodb-odm', 'git://github.com/doctrine/mongodb-odm.git', '47c185fff5'),
-
-    array('Symfony/Component/ClassLoader', 'git://github.com/symfony/ClassLoader.git', 'v2.0.12'),
-    array('Symfony/Component/Console', 'git://github.com/symfony/Console.git', 'v2.0.12'),
-    array('Symfony/Component/Finder', 'git://github.com/symfony/Finder.git', 'v2.0.12'),
-    array('Symfony/Component/Yaml', 'git://github.com/symfony/Yaml.git', 'v2.0.12'),
-);
-$deps23x = array(
     array('doctrine-orm', 'git://github.com/doctrine/doctrine2.git', 'cc4613533b'),
     array('doctrine-dbal', 'git://github.com/doctrine/dbal.git', '7beb634d69'),
     array('doctrine-common', 'git://github.com/doctrine/common.git', 'd2f8a36b86'),
-    array('doctrine-mongodb', 'git://github.com/doctrine/mongodb.git', 'bf542f0ef6'),
-    array('doctrine-mongodb-odm', 'git://github.com/doctrine/mongodb-odm.git', 'f4280d7a28'),
+    array('doctrine-mongodb', 'git://github.com/doctrine/mongodb.git', '27f5d6fa6c'),
+    array('doctrine-mongodb-odm', 'git://github.com/doctrine/mongodb-odm.git', '3f6779f5ab'),
 
     array('Symfony/Component/ClassLoader', 'git://github.com/symfony/ClassLoader.git', 'v2.0.12'),
     array('Symfony/Component/Console', 'git://github.com/symfony/Console.git', 'v2.0.12'),
