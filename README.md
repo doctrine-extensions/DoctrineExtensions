@@ -83,6 +83,7 @@ records being flushed in the behavioral way. List of extensions:
 - **Sortable** - makes any document or entity sortable
 - **Translator** - explicit way to handle translations
 - **Softdeleteable** - allows to implicitly remove records
+- **Uploadable** - provides file upload handling in entity fields
 
 Currently these extensions support **Yaml**, **Annotation**  and **Xml** mapping. Additional mapping drivers
 can be easily implemented using Mapping extension to handle the additional metadata mapping.
