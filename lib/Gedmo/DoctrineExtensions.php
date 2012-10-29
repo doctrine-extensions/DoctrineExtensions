@@ -42,7 +42,7 @@ final class DoctrineExtensions
      * @param \Doctrine\ORM\Mapping\Driver\DriverChain $driverChain
      * @param \Doctrine\Common\Annotations\Reader $reader
      */
-    public static function registerMappingIntoDriverChainORM(DriverORM\DriverChain $driverChain, Reader $reader = null)
+    public static function registerMappingIntoDriverChainORM(\Doctrine\Common\Persistence\Mapping\Driver\MappingDriverChain $driverChain, Reader $reader = null)
     {
         self::registerAnnotations();
         if (!$reader) {
@@ -63,7 +63,7 @@ final class DoctrineExtensions
      * @param \Doctrine\ORM\Mapping\Driver\DriverChain $chain
      * @param \Doctrine\Common\Annotations\Reader $reader
      */
-    public static function registerAbstractMappingIntoDriverChainORM(DriverORM\DriverChain $driverChain, Reader $reader = null)
+    public static function registerAbstractMappingIntoDriverChainORM(\Doctrine\Common\Persistence\Mapping\Driver\MappingDriverChain $driverChain, Reader $reader = null)
     {
         self::registerAnnotations();
         if (!$reader) {
