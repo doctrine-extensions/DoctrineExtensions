@@ -14,10 +14,9 @@ use Doctrine\ORM\Query;
 use Gedmo\Mapping\Event\AdapterInterface;
 
 /**
- * This strategy makes tree act like
- * nested set.
+ * This strategy makes the tree act like a nested set.
  *
- * This behavior can inpact the performance of your application
+ * This behavior can impact the performance of your application
  * since nested set trees are slow on inserts and updates.
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
