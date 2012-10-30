@@ -105,7 +105,6 @@ class NestedTreeRepository extends AbstractTreeRepository
                     }
                     $node->sibling = $parentOrSibling;
                     $parentOrSibling = $newParent;
-                    $this->_em->getUnitOfWork()->recomputeSingleEntityChangeSet($meta, $parentOrSibling);
                 }
                 $wrapped->setPropertyValue($config['parent'], $parentOrSibling);
                 $position = substr($position, 0, -2);
