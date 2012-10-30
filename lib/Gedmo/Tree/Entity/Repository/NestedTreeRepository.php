@@ -97,8 +97,8 @@ class NestedTreeRepository extends AbstractTreeRepository
                     throw new \Gedmo\Exception\InvalidArgumentException('If "Of" is specified you must provide parent or sibling as the second argument');
                 }
                 $parentOrSibling = $args[1];
-                $wrappedParentOrSibling = new EntityWrapper($parentOrSibling, $this->_em);
                 if (strstr($method,'Sibling')) {
+                    $wrappedParentOrSibling = new EntityWrapper($parentOrSibling, $this->_em);
                     $newParent = $wrappedParentOrSibling->getPropertyValue($config['parent']);
                     if (is_null($newParent)) {
                         throw new UnexpectedValueException("Cannot persist sibling for a root node, tree operation is not possible");
