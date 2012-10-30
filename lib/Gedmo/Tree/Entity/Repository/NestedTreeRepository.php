@@ -7,6 +7,7 @@ use Doctrine\ORM\Query,
     Gedmo\Tree\Strategy,
     Gedmo\Tree\Strategy\ORM\Nested,
     Gedmo\Exception\InvalidArgumentException,
+    Gedmo\Exception\UnexpectedValueException,
     Doctrine\ORM\Proxy\Proxy;
 
 /**
@@ -96,6 +97,16 @@ class NestedTreeRepository extends AbstractTreeRepository
                     throw new \Gedmo\Exception\InvalidArgumentException('If "Of" is specified you must provide parent or sibling as the second argument');
                 }
                 $parentOrSibling = $args[1];
+                $wrappedParentOrSibling = new EntityWrapper($parentOrSibling, $this->_em);
+                if (strstr($method,'Sibling')) {
+                    $newParent = $wrappedParentOrSibling->getPropertyValue($config['parent']);
+                    if (is_null($newParent)) {
+                        throw new UnexpectedValueException("Cannot persist sibling for a root node, tree operation is not possible");
+                    }
+                    $node->sibling = $parentOrSibling;
+                    $parentOrSibling = $newParent;
+                    $this->_em->getUnitOfWork()->recomputeSingleEntityChangeSet($meta, $parentOrSibling);
+                }
                 $wrapped->setPropertyValue($config['parent'], $parentOrSibling);
                 $position = substr($position, 0, -2);
             }

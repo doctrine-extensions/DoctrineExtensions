@@ -329,23 +329,35 @@ class Nested implements Strategy
             }
             switch ($position) {
                 case self::PREV_SIBLING:
-                    $newParent = $wrappedParent->getPropertyValue($config['parent']);
-                    if (is_null($newParent) && (isset($config['root']) || $isNewNode)) {
-                        throw new UnexpectedValueException("Cannot persist sibling for a root node, tree operation is not possible");
+                    if (property_exists($node, 'sibling')) {
+                        $wrappedSibling = AbstractWrapper::wrap($node->sibling, $em);
+                        $start = $wrappedSibling->getPropertyValue($config['left']);
+                        $level++;
+                    } else {
+                        $newParent = $wrappedParent->getPropertyValue($config['parent']);
+                        if (is_null($newParent) && (isset($config['root']) || $isNewNode)) {
+                            throw new UnexpectedValueException("Cannot persist sibling for a root node, tree operation is not possible");
+                        }
+                        $wrapped->setPropertyValue($config['parent'], $newParent);
+                        $em->getUnitOfWork()->recomputeSingleEntityChangeSet($meta, $node);
+                        $start = $parentLeft;
                     }
-                    $wrapped->setPropertyValue($config['parent'], $newParent);
-                    $em->getUnitOfWork()->recomputeSingleEntityChangeSet($meta, $node);
-                    $start = $parentLeft;
                     break;
 
                 case self::NEXT_SIBLING:
-                    $newParent = $wrappedParent->getPropertyValue($config['parent']);
-                    if (is_null($newParent) && (isset($config['root']) || $isNewNode)) {
-                        throw new UnexpectedValueException("Cannot persist sibling for a root node, tree operation is not possible");
+                    if (property_exists($node, 'sibling')) {
+                        $wrappedSibling = AbstractWrapper::wrap($node->sibling, $em);
+                        $start = $wrappedSibling->getPropertyValue($config['right']) + 1;
+                        $level++;
+                    } else {
+                        $newParent = $wrappedParent->getPropertyValue($config['parent']);
+                        if (is_null($newParent) && (isset($config['root']) || $isNewNode)) {
+                            throw new UnexpectedValueException("Cannot persist sibling for a root node, tree operation is not possible");
+                        }
+                        $wrapped->setPropertyValue($config['parent'], $newParent);
+                        $em->getUnitOfWork()->recomputeSingleEntityChangeSet($meta, $node);
+                        $start = $parentRight + 1;
                     }
-                    $wrapped->setPropertyValue($config['parent'], $newParent);
-                    $em->getUnitOfWork()->recomputeSingleEntityChangeSet($meta, $node);
-                    $start = $parentRight + 1;
                     break;
 
                 case self::LAST_CHILD:
