@@ -50,11 +50,11 @@ class TreeSlugHandlerTest extends BaseTestCaseORM
         $apple = $repo->findOneByTitle('Apple');
         $this->assertEquals('food/fruits/apple', $apple->getSlug());
 
-        //$kiwi = $repo->findOneByTitle('Kiwi');
-        //$this->assertEquals('food/fruits/kiwi', $kiwi->getSlug());
+        $kiwi = $repo->findOneByTitle('Kiwi');
+        $this->assertEquals('food/fruits/kiwi', $kiwi->getSlug());
 
-        //$banana = $repo->findOneByTitle('Bananan');
-        //$this->assertEquals('food/fruits/banana', $banana->getSlug());
+        $banana = $repo->findOneByTitle('Banana');
+        $this->assertEquals('food/fruits/banana', $banana->getSlug());
     }
 
     public function testSlugUpdates()
