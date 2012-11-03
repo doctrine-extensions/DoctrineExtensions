@@ -11,15 +11,15 @@ use Doctrine\ODM\MongoDB\Mapping\Annotations\Index;
  *
  * @Document(repositoryClass="Gedmo\Translatable\Document\Repository\TranslationRepository")
  * @UniqueIndex(name="lookup_unique_idx", keys={
- *         "locale",
- *         "object_class",
- *         "foreign_key",
- *         "field"
+ *         "locale" = "asc",
+ *         "object_class" = "asc",
+ *         "foreign_key" = "asc",
+ *         "field" = "asc"
  * })
  * @Index(name="translations_lookup_idx", keys={
- *      "locale",
- *      "object_class",
- *      "foreign_key"
+ *      "locale" = "asc",
+ *      "object_class" = "asc",
+ *      "foreign_key" = "asc"
  * })
  */
 class Translation extends MappedSuperclass\AbstractTranslation

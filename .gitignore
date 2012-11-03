@@ -3,3 +3,4 @@ tests/temp/*.php
 scripts/
 vendor/
 tags
+.vimrc.local
