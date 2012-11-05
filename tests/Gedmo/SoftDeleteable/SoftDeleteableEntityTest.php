@@ -251,10 +251,11 @@ class SoftDeleteableEntityTest extends BaseTestCaseORM
         $this->em->flush();
 
         $this->em->remove($child);
+        $this->em->flush();
         $this->em->clear();
 
         $repo = $this->em->getRepository(self::MAPPED_SUPERCLASS_CHILD_CLASS);
-        $this->assertNull($repo->findById($child->getId()));
+        $this->assertNull($repo->findOneById($child->getId()));
 
         $this->em->getFilters()->enable(self::SOFT_DELETEABLE_FILTER_NAME);
         $this->assertNotNull($repo->findById($child->getId()));
@@ -350,7 +351,8 @@ class SoftDeleteableEntityTest extends BaseTestCaseORM
             self::COMMENT_CLASS,
             self::USER_CLASS,
             self::OTHER_ARTICLE_CLASS,
-            self::OTHER_COMMENT_CLASS
+            self::OTHER_COMMENT_CLASS,
+            self::MAPPED_SUPERCLASS_CHILD_CLASS,
         );
     }
 }
