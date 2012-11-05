@@ -13,6 +13,7 @@ use Doctrine\Common\Util\Debug,
     SoftDeleteable\Fixture\Entity\Module,
     SoftDeleteable\Fixture\Entity\OtherArticle,
     SoftDeleteable\Fixture\Entity\OtherComment,
+    SoftDeleteable\Fixture\Entity\Child,
     Gedmo\SoftDeleteable\SoftDeleteableListener;
 
 /**
@@ -35,6 +36,7 @@ class SoftDeleteableEntityTest extends BaseTestCaseORM
     const OTHER_ARTICLE_CLASS = 'SoftDeleteable\Fixture\Entity\OtherArticle';
     const OTHER_COMMENT_CLASS = 'SoftDeleteable\Fixture\Entity\OtherComment';
     const USER_CLASS = 'SoftDeleteable\Fixture\Entity\User';
+    const MAPPED_SUPERCLASS_CHILD_CLASS = 'SoftDeleteable\Fixture\Entity\Child';
     const SOFT_DELETEABLE_FILTER_NAME = 'soft-deleteable';
 
     private $softDeleteableListener;
@@ -94,7 +96,7 @@ class SoftDeleteableEntityTest extends BaseTestCaseORM
 
         $this->em->persist($art0);
         $this->em->flush();
-        
+
         $art = $repo->findOneBy(array($field => $value));
 
         $this->assertNull($art->getDeletedAt());
@@ -137,7 +139,7 @@ class SoftDeleteableEntityTest extends BaseTestCaseORM
             \Doctrine\ORM\Query::HINT_CUSTOM_OUTPUT_WALKER,
             'Gedmo\SoftDeleteable\Query\TreeWalker\SoftDeleteableWalker'
         );
-        
+
         $query->execute();
 
         $art = $repo->findOneBy(array($field => $value));
@@ -146,9 +148,9 @@ class SoftDeleteableEntityTest extends BaseTestCaseORM
         // Now we deactivate the filter so we test if the entity appears in the result
         $this->em->getFilters()->disable(self::SOFT_DELETEABLE_FILTER_NAME);
         $this->em->clear();
-        
+
         $art = $repo->findOneBy(array($field => $value));
-        
+
         $this->assertTrue(is_object($art));
         $this->assertTrue(is_object($art->getDeletedAt()));
         $this->assertTrue($art->getDeletedAt() instanceof \DateTime);
@@ -156,7 +158,7 @@ class SoftDeleteableEntityTest extends BaseTestCaseORM
 
         // Inheritance tree DELETE DQL
         $this->em->getFilters()->enable(self::SOFT_DELETEABLE_FILTER_NAME);
-        
+
         $megaPageRepo = $this->em->getRepository(self::MEGA_PAGE_CLASS);
         $module = new Module();
         $module->setTitle('Module 1');
@@ -168,7 +170,7 @@ class SoftDeleteableEntityTest extends BaseTestCaseORM
         $this->em->persist($page);
         $this->em->persist($module);
         $this->em->flush();
-        
+
         $dql = sprintf('DELETE FROM %s p',
             self::PAGE_CLASS);
         $query = $this->em->createQuery($dql);
@@ -235,6 +237,28 @@ class SoftDeleteableEntityTest extends BaseTestCaseORM
         $this->assertTrue(is_object($foundComment));
         $this->assertInstanceOf(self::OTHER_COMMENT_CLASS, $foundComment);
 
+    }
+
+    /**
+     * Make sure that soft delete also works when configured on a mapped superclass
+     */
+    public function testMappedSuperclass()
+    {
+        $child = new Child();
+        $child->setTitle('test title');
+
+        $this->em->persist($child);
+        $this->em->flush();
+
+        $this->em->remove($child);
+        $this->em->flush();
+        $this->em->clear();
+
+        $repo = $this->em->getRepository(self::MAPPED_SUPERCLASS_CHILD_CLASS);
+        $this->assertNull($repo->findOneById($child->getId()));
+
+        $this->em->getFilters()->enable(self::SOFT_DELETEABLE_FILTER_NAME);
+        $this->assertNotNull($repo->findById($child->getId()));
     }
 
     public function testSoftDeleteableFilter()
@@ -307,7 +331,7 @@ class SoftDeleteableEntityTest extends BaseTestCaseORM
 
         $this->em->persist($art0);
         $this->em->flush();
-        
+
         $art = $repo->findOneBy(array($field => $value));
 
         $this->assertNull($art->getDeletedAt());
@@ -327,7 +351,8 @@ class SoftDeleteableEntityTest extends BaseTestCaseORM
             self::COMMENT_CLASS,
             self::USER_CLASS,
             self::OTHER_ARTICLE_CLASS,
-            self::OTHER_COMMENT_CLASS
+            self::OTHER_COMMENT_CLASS,
+            self::MAPPED_SUPERCLASS_CHILD_CLASS,
         );
     }
 }
