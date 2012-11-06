@@ -674,7 +674,7 @@ Now all translations of Article will be stored and queried from specific table
 Translatable has **AbstractPersonalTranslation** mapped superclass, which must
 be extended and mapped based on your **entity** which you want to translate.
 Note: translations are not automapped because of user preference based on cascades
-or other possible choises, which user can make.
+or other possible choices, which user can make.
 Personal translations uses foreign key constraint which is fully managed by ORM and
 allows to have a collection of related translations. User can use it anyway he likes, etc.:
 implementing array access on entity, using left join to fill collection and so on.
