@@ -400,7 +400,7 @@ with other manager name:
                 # additional ORM subscriber
                 - { name: doctrine.event_subscriber, connection: other_connection }
                 # ODM MongoDb subscriber, where **default** is manager name
-                - { name: doctrine.odm.mongodb.default_event_subscriber }
+                - { name: doctrine_mongodb.odm.event_subscriber }
             calls:
                 - [ setAnnotationReader, [ @annotation_reader ] ]
 
