@@ -618,7 +618,7 @@ translated field values in default locale set.
 
 In some cases if there are thousands of records or even more.. we would like to
 have a single table for translations of this Entity in order to increase the performance
-on translation loading speed. This example will show how to specify a diferent Entity for
+on translation loading speed. This example will show how to specify a different Entity for
 your translations by extending the mapped superclass.
 
 ArticleTranslation Entity:
