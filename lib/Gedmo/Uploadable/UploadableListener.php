@@ -301,7 +301,7 @@ class UploadableListener extends MappedEventSubscriber
 
         Validator::validatePath($path);
 
-        $path = substr($path, strlen($path) - 1) === '/' ? substr($path, 0, strlen($path) - 2) : $path;
+        $path = substr($path, strlen($path) - 1) === '/' ? substr($path, 0, strlen($path) - 1) : $path;
 
         if ($config['fileMimeTypeField']) {
             $fileMimeTypeField = $refl->getProperty($config['fileMimeTypeField']);
