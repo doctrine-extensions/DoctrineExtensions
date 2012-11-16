@@ -301,7 +301,7 @@ class UploadableListener extends MappedEventSubscriber
 
         Validator::validatePath($path);
 
-        $path = substr($path, strlen($path) - 1) === '/' ? substr($path, 0, strlen($path) - 2) : $path;
+        $path = substr($path, strlen($path) - 1) === DIRECTORY_SEPARATOR ? substr($path, 0, strlen($path) - 2) : $path;
 
         if ($config['fileMimeTypeField']) {
             $fileMimeTypeField = $refl->getProperty($config['fileMimeTypeField']);
@@ -488,7 +488,7 @@ class UploadableListener extends MappedEventSubscriber
         );
 
         $info['fileName'] = basename($fileInfo->getName());
-        $info['filePath'] = $path.'/'.$info['fileName'];
+        $info['filePath'] = $path.DIRECTORY_SEPARATOR.$info['fileName'];
 
         $hasExtension = strrpos($info['fileName'], '.');
 
@@ -502,7 +502,7 @@ class UploadableListener extends MappedEventSubscriber
         // Now we generate the filename using the configured class
         if ($filenameGeneratorClass) {
             $filename = $filenameGeneratorClass::generate(
-                str_replace($path.'/', '', $info['fileWithoutExt']),
+                str_replace($path.DIRECTORY_SEPARATOR, '', $info['fileWithoutExt']),
                 $info['fileExtension']
             );
             $info['filePath'] = str_replace(
