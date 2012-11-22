@@ -115,9 +115,9 @@ class RepositoryUtils implements RepositoryUtilsInterface
                 if (count($node[$childrenIndex]) > 0) {
                     $output .= $build($node[$childrenIndex]);
                 }
-                $output .= $options['childClose'];
+                $output .= is_string($options['childClose']) ? $options['childClose'] : $options['childClose']($node);
             }
-            return $output . $options['rootClose'];
+            return $output . (is_string($options['rootClose']) ? $options['rootClose'] : $options['rootClose']($tree));
         };
 
         return $build($nestedTree);
