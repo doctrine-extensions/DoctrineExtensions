@@ -197,12 +197,15 @@ class SortableListener extends MappedEventSubscriber
             $oldPosition = $changeSet[$config['position']][0];
             $newPosition = $changeSet[$config['position']][1];
         }
-        elseif(sizeof($oldGroups)) {
-            $oldHash = $this->getHash($meta, $oldGroups, $object);
-            if (!isset($this->maxPositions[$oldHash])) {
-                $this->maxPositions[$oldHash] = $this->getMaxPosition($em, $meta->name, $config['position'], $oldGroups);
+        else
+        {
+            if(sizeof($oldGroups)) {
+                $oldHash = $this->getHash($meta, $oldGroups, $object);
+                if (!isset($this->maxPositions[$oldHash])) {
+                    $this->maxPositions[$oldHash] = $this->getMaxPosition($em, $meta->name, $config['position'], $oldGroups);
+                }
+                $this->addRelocation($oldHash, $meta, $oldGroups, $object->getPosition() + 1, $this->maxPositions[$oldHash] + 1, -1);
             }
-            $this->addRelocation($oldHash, $meta, $oldGroups, $object->getPosition() + 1, $this->maxPositions[$oldHash] + 1, -1);
             return;
         }
         
