@@ -130,7 +130,7 @@ class SortableListener extends MappedEventSubscriber
         
         // Get max position
         if (!isset($this->maxPositions[$hash])) {
-            $this->maxPositions[$hash] = $this->getMaxPosition($em, $meta, $config, $object);
+            $this->maxPositions[$hash] = $this->getMaxPosition($em, $meta->name, $config['position'], $groups);
         }
         
         // Compute position if it is negative
@@ -175,24 +175,41 @@ class SortableListener extends MappedEventSubscriber
         
         $changed = false;
         $changeSet = $uow->getEntityChangeSet($object);
-        if (!array_key_exists($config['position'], $changeSet)) {
-            return;
-        }
-        $oldPosition = $changeSet[$config['position']][0];
-        $newPosition = $changeSet[$config['position']][1];
-        
-        $changed = $changed || $oldPosition != $newPosition;
         
         // Get groups
         $groups = array();
+        $oldGroups = array();
         if (isset($config['groups'])) {
             foreach ($config['groups'] as $group) {
-                $changed = $changed ||
-                    (array_key_exists($group, $changeSet)
+                $groupChanged = (array_key_exists($group, $changeSet)
                         && $changeSet[$group][0] != $changeSet[$group][1]);
+                
+                $changed = $changed || $groupChanged;
                 $groups[$group] = $meta->getReflectionProperty($group)->getValue($object);
+                
+                if($groupChanged) {
+                    $oldGroups[$group] = $changeSet[$group][0];
+                }
             }
         }
+        
+        if (array_key_exists($config['position'], $changeSet)) {
+            $oldPosition = $changeSet[$config['position']][0];
+            $newPosition = $changeSet[$config['position']][1];
+        }
+        else
+        {
+            if(sizeof($oldGroups)) {
+                $oldHash = $this->getHash($meta, $oldGroups, $object);
+                if (!isset($this->maxPositions[$oldHash])) {
+                    $this->maxPositions[$oldHash] = $this->getMaxPosition($em, $meta->name, $config['position'], $oldGroups);
+                }
+                $this->addRelocation($oldHash, $meta, $oldGroups, $object->getPosition() + 1, $this->maxPositions[$oldHash] + 1, -1);
+            }
+            return;
+        }
+        
+        $changed = $changed || $oldPosition != $newPosition;
         
         if (!$changed) return;
         
@@ -201,9 +218,9 @@ class SortableListener extends MappedEventSubscriber
         
         // Get max position
         if (!isset($this->maxPositions[$hash])) {
-            $this->maxPositions[$hash] = $this->getMaxPosition($em, $meta, $config, $object);
+            $this->maxPositions[$hash] = $this->getMaxPosition($em, $meta->name, $config['position'], $groups);
         }
-        
+
         // Compute position if it is negative
         if ($newPosition < 0) {
             $newPosition += $this->maxPositions[$hash] + 2; // position == -1 => append at end of list
@@ -211,7 +228,7 @@ class SortableListener extends MappedEventSubscriber
         }
         
         // Set position to max position if it is too big
-        $newPosition = min(array($this->maxPositions[$hash] + 1, $newPosition));
+        $newPosition = min(array($this->maxPositions[$hash], $newPosition));
         
         // Compute relocations
         /*
@@ -248,7 +265,9 @@ class SortableListener extends MappedEventSubscriber
         $newPosition += $applyDelta;
         
         // Add relocation
-        call_user_func_array(array($this, 'addRelocation'), $relocation);
+        if($relocation) {
+            call_user_func_array(array($this, 'addRelocation'), $relocation);
+        }
         
         // Set new position
         $meta->getReflectionProperty($config['position'])->setValue($object, $newPosition);
@@ -276,7 +295,7 @@ class SortableListener extends MappedEventSubscriber
         
         // Get max position
         if (!isset($this->maxPositions[$hash])) {
-            $this->maxPositions[$hash] = $this->getMaxPosition($em, $meta, $config, $object);
+            $this->maxPositions[$hash] = $this->getMaxPosition($em, $meta->name, $config['position'], $groups);
         }
         
         // Add relocation
@@ -330,14 +349,29 @@ class SortableListener extends MappedEventSubscriber
         return md5($data);
     }
     
-    private function getMaxPosition($em, $meta, $config, $object)
+    /**
+     * $groups = array(
+     *      'label' => $object,
+     *      ...
+     *      )
+     * where 'label' is the group attribute inside original entity
+     * and $object is the the group object
+     * 
+     * @param EntityManager $em
+     * @param string $entityLabel
+     * @param string $positionLabel
+     * @param array $groups
+     * 
+     * @return integer
+     */
+    private function getMaxPosition($em, $entityLabel, $positionLabel, array $groups = array())
     {
         $maxPos = null;
-        $groups = isset($config["groups"]) ? $config["groups"] : array();
         $qb = $em->createQueryBuilder();
-        $qb->select('MAX(n.'.$config['position'].')')
-           ->from($meta->name, 'n');
-        $qb = $this->addGroupWhere($qb, $groups, $meta, $object);
+        
+        $qb->select('MAX(n.'.$positionLabel.')')
+           ->from($entityLabel, 'n');
+        $qb = $this->addGroupWhere($qb, $groups);
         $query = $qb->getQuery();
         $query->useQueryCache(false);
         $query->useResultCache(false);
@@ -347,13 +381,13 @@ class SortableListener extends MappedEventSubscriber
         return $maxPos;
     }
     
-    private function addGroupWhere($qb, $groups, $meta, $object)
+    private function addGroupWhere($qb, $groups)
     {
         $i = 1;
-        foreach ($groups as $group) {
+        foreach ($groups as $label=>$object) {
             //$qb->andWhere('n.'.$group." = '".$meta->getReflectionProperty($group)->getValue($object)."'");
-            $qb->andWhere('n.'.$group.' = :group'.$i);
-            $qb->setParameter('group'.$i, $meta->getReflectionProperty($group)->getValue($object));
+            $qb->andWhere('n.'.$label.' = :group'.$i);
+            $qb->setParameter('group'.$i, $object);
             $i++;
         }
         return $qb;
