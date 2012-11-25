@@ -172,18 +172,23 @@ class NestedTreeRootRepositoryTest extends BaseTestCaseORM
         );
 
         $rootOpen = function () {return '<ul class="group">';};
+        // check support of the closures in rootClose
+        $rootClose = function () {return '</ul><!--rootCloseClosure-->';};
         $childOpen = function (&$node) {
             return '<li class="depth'.$node['level'].'">';
         };
-
+        // check support of the closures in childClose
+        $childClose = function(&$node) {
+            return '</li><!--childCloseClosure-->';
+        };
         $decoratedHtmlTree = $repo->childrenHierarchy(
             $food,
             false,
-            compact('decorate', 'rootOpen', 'childOpen')
+            compact('decorate', 'rootOpen', 'rootClose','childOpen','childClose')
         );
 
         $this->assertEquals(
-            '<ul class="group"><li class="depth1">Fruits</li><li class="depth1">Vegitables<ul class="group"><li class="depth2">Carrots</li><li class="depth2">Potatoes</li></ul></li></ul>',
+            '<ul class="group"><li class="depth1">Fruits</li><!--childCloseClosure--><li class="depth1">Vegitables<ul class="group"><li class="depth2">Carrots</li><!--childCloseClosure--><li class="depth2">Potatoes</li><!--childCloseClosure--></ul><!--rootCloseClosure--></li><!--childCloseClosure--></ul><!--rootCloseClosure-->',
             $decoratedHtmlTree
         );
     }
