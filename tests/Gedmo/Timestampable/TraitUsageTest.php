@@ -47,6 +47,16 @@ class TraitUsageTest extends BaseTestCaseORM
         $this->assertNotNull($sport->getUpdatedAt());
     }
 
+    /**
+     * @test
+     */
+    function traitMethodthShouldReturnObject()
+    {
+        $sport = new UsingTrait;
+        $this->assertInstanceOf('Timestampable\Fixture\UsingTrait', $sport->setCreatedAt(new \DateTime()));
+        $this->assertInstanceOf('Timestampable\Fixture\UsingTrait', $sport->setUpdatedAt(new \DateTime()));
+    }
+
     protected function getUsedEntityFixtures()
     {
         return array(
