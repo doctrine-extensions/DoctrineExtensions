@@ -205,6 +205,10 @@ class SortableListener extends MappedEventSubscriber
                     $this->maxPositions[$oldHash] = $this->getMaxPosition($em, $meta->name, $config['position'], $oldGroups);
                 }
                 $this->addRelocation($oldHash, $meta, $oldGroups, $object->getPosition() + 1, $this->maxPositions[$oldHash] + 1, -1);
+                
+                // update position for 
+                $object->setPosition($this->getMaxPosition($em, $meta->name, $config['position'], $groups)+1);
+                $uow->recomputeSingleEntityChangeSet($em->getClassMetadata(get_class($object)), $object);
             }
             return;
         }
