@@ -29,6 +29,16 @@ class Annotation extends AbstractAnnotationDriver
     const SLUG = 'Gedmo\\Mapping\\Annotation\\Slug';
 
     /**
+     * SlugHandler extension annotation
+     */
+    const HANDLER = 'Gedmo\\Mapping\\Annotation\\SlugHandler';
+
+    /**
+     * SlugHandler option annotation
+     */
+    const HANDLER_OPTION ='Gedmo\\Mapping\\Annotation\\SlugHandlerOption';
+
+    /**
      * List of types which are valid for slug and sluggable fields
      *
      * @var array
@@ -61,6 +71,29 @@ class Annotation extends AbstractAnnotationDriver
                 }
                 if (!$this->isValidField($meta, $field)) {
                     throw new InvalidMappingException("Cannot use field - [{$field}] for slug storage, type is not valid and must be 'string' or 'text' in class - {$meta->name}");
+                }
+                // process slug handlers
+                if (is_array($slug->handlers) && $slug->handlers) {
+                    foreach ($slug->handlers as $handler) {
+                        if (!$handler instanceof SlugHandler) {
+                            throw new InvalidMappingException("SlugHandler: {$handler} should be instance of SlugHandler annotation in entity - {$meta->name}");
+                        }
+                        if (!strlen($handler->class)) {
+                            throw new InvalidMappingException("SlugHandler class: {$handler->class} should be a valid class name in entity - {$meta->name}");
+                        }
+                        $class = $handler->class;
+                        $config['handlers'][$class] = array();
+                        foreach ((array)$handler->options as $option) {
+                            if (!$option instanceof SlugHandlerOption) {
+                                throw new InvalidMappingException("SlugHandlerOption: {$option} should be instance of SlugHandlerOption annotation in entity - {$meta->name}");
+                            }
+                            if (!strlen($option->name)) {
+                                throw new InvalidMappingException("SlugHandlerOption name: {$option->name} should be valid name in entity - {$meta->name}");
+                            }
+                            $config['handlers'][$class][$option->name] = $option->value;
+                        }
+                        $class::validate($config['handlers'][$class], $meta);
+                    }
                 }
                 // process slug fields
                 if (empty($slug->fields) || !is_array($slug->fields)) {
