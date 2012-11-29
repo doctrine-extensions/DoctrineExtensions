@@ -23,6 +23,9 @@ final class ORM extends BaseAdapterORM implements TimestampableAdapter
     public function getDateValue($meta, $field)
     {
         $mapping = $meta->getFieldMapping($field);
+        if (isset($mapping['type']) && $mapping['type'] === 'integer') {
+            return time();
+        }
         if (isset($mapping['type']) && $mapping['type'] == 'zenddate') {
             return new \Zend_Date();
         }
