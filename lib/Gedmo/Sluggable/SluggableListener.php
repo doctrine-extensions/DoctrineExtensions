@@ -49,6 +49,13 @@ class SluggableListener extends MappedEventSubscriber
     private $persistedSlugs = array();
 
     /**
+     * List of initialized slug handlers
+     *
+     * @var array
+     */
+    private $handlers = array();
+
+    /**
      * Specifies the list of events to listen
      *
      * @return array
@@ -171,6 +178,20 @@ class SluggableListener extends MappedEventSubscriber
     }
 
     /**
+     * Get the slug handler instance by $class name
+     *
+     * @param string $class
+     * @return Gedmo\Sluggable\Handler\SlugHandlerInterface
+     */
+    private function getHandler($class)
+    {
+        if (!isset($this->handlers[$class])) {
+            $this->handlers[$class] = new $class($this);
+        }
+        return $this->handlers[$class];
+    }
+
+    /**
      * Creates the slug for object being flushed
      *
      * @param SluggableAdapter $ea
@@ -209,18 +230,37 @@ class SluggableListener extends MappedEventSubscriber
                 // slug was set manually
                 $needToChangeSlug = true;
             }
+            // notify slug handlers --> onChangeDecision
+            if (isset($config['handlers'])) {
+                foreach ($config['handlers'] as $class => $handlerOptions) {
+                    $this
+                        ->getHandler($class)
+                        ->onChangeDecision($ea, $slugField, $object, $slug, $needToChangeSlug)
+                    ;
+                }
+            }
             // if slug is changed, do further processing
             if ($needToChangeSlug) {
                 $mapping = $meta->getFieldMapping($slugField);
                 if (!strlen(trim($slug)) && (!isset($mapping['nullable']) || !$mapping['nullable'])) {
                     throw new \Gedmo\Exception\UnexpectedValueException("Unable to find any non empty sluggable fields for slug [{$slugField}] , make sure they have something at least.");
                 }
+
+                // notify slug handlers --> postSlugBuild
+                if (isset($config['handlers'])) {
+                    foreach ($config['handlers'] as $class => $handlerOptions) {
+                        $this
+                            ->getHandler($class)
+                            ->postSlugBuild($ea, $slugField, $object, $slug)
+                        ;
+                    }
+                }
+
                 // build the slug
                 $slug = call_user_func_array(
                     $this->transliterator,
                     array($slug, $options['separator'], $object)
                 );
-                $slug = Util\Urlizer::urlize($slug, $options['separator']);
                 // stylize the slug
                 switch ($options['style']) {
                     case 'camel':
@@ -262,6 +302,15 @@ class SluggableListener extends MappedEventSubscriber
                 if ($options['unique'] && !is_null($slug)) {
                     $this->exponent = 0;
                     $slug = $this->makeUniqueSlug($ea, $object, $slug, false, $options);
+                }
+                // notify slug handlers --> onSlugCompletion
+                if (isset($config['handlers'])) {
+                    foreach ($config['handlers'] as $class => $handlerOptions) {
+                        $this
+                            ->getHandler($class)
+                            ->onSlugCompletion($ea, $slugField, $object, $slug)
+                        ;
+                    }
                 }
                 // set the final slug
                 $meta->getReflectionProperty($slugField)->setValue($object, $slug);
