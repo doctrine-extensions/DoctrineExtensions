@@ -9,6 +9,8 @@
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 
+use Doctrine\Common\Annotations\AnnotationRegistry;
+
 if (!class_exists('PHPUnit_Framework_TestCase') ||
     version_compare(PHPUnit_Runner_Version::id(), '3.5') < 0
 ) {
@@ -19,13 +21,18 @@ if (!class_exists('PHPUnit_Framework_MockObject_MockBuilder')) {
     die('PHPUnit MockObject plugin is required, at least 1.0.8 version');
 }
 
+$loader = require __DIR__.'/../vendor/autoload.php';
+AnnotationRegistry::registerLoader(array($loader, 'loadClass'));
+Gedmo\DoctrineExtensions::registerAnnotations();
+
+return;
 define('TESTS_PATH', __DIR__);
 define('TESTS_TEMP_DIR', __DIR__.'/temp');
 define('VENDOR_PATH', realpath(__DIR__ . '/../vendor'));
 
-$classLoaderFile = VENDOR_PATH . '/Symfony/Component/ClassLoader/UniversalClassLoader.php';
+$classLoaderFile = VENDOR_PATH . '/symfony/class-loader/Symfony/Component/ClassLoader/UniversalClassLoader.php';
 if (!file_exists($classLoaderFile)) {
-    die('cannot find vendor, run: php bin/vendors.php');
+    die('cannot find vendor, install dependencies using composer');
 }
 require_once $classLoaderFile;
 $loader = new Symfony\Component\ClassLoader\UniversalClassLoader;
@@ -57,11 +64,11 @@ $loader->registerNamespaces(array(
 $loader->register();
 
 Doctrine\Common\Annotations\AnnotationRegistry::registerFile(
-    VENDOR_PATH.'/doctrine-orm/lib/Doctrine/ORM/Mapping/Driver/DoctrineAnnotations.php'
+    VENDOR_PATH.'/doctrine/orm/lib/Doctrine/ORM/Mapping/Driver/DoctrineAnnotations.php'
 );
 
 Doctrine\Common\Annotations\AnnotationRegistry::registerFile(
-    VENDOR_PATH.'/doctrine-mongodb-odm/lib/Doctrine/ODM/MongoDB/Mapping/Annotations/DoctrineAnnotations.php'
+    VENDOR_PATH.'/doctrine/mongodb-odm/lib/Doctrine/ODM/MongoDB/Mapping/Annotations/DoctrineAnnotations.php'
 );
 
 Gedmo\DoctrineExtensions::registerAnnotations();
