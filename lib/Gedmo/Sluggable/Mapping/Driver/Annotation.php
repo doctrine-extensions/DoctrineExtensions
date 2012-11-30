@@ -116,8 +116,8 @@ class Annotation extends AbstractAnnotationDriver
                 if (!empty($meta->identifier) && $meta->isIdentifier($field) && !(bool)$slug->unique) {
                     throw new InvalidMappingException("Identifier field - [{$field}] slug must be unique in order to maintain primary key in class - {$meta->name}");
                 }
-                if (!is_bool($slug->removeDoubleSlug)) {
-                    throw new InvalidMappingException("Slug annotation [removeDoubleSlug], type is not valid and must be 'boolean' in class - {$meta->name}");
+                if (!is_bool($slug->removeDoubleSeparator)) {
+                    throw new InvalidMappingException("Slug annotation [removeDoubleSeparator], type is not valid and must be 'boolean' in class - {$meta->name}");
                 }
                 // set all options
                 $config['slugs'][$field] = array(
@@ -127,7 +127,7 @@ class Annotation extends AbstractAnnotationDriver
                     'updatable' => $slug->updatable,
                     'unique' => $slug->unique,
                     'separator' => $slug->separator,
-                    'removeDoubleSlug' => $slug->removeDoubleSlug,
+                    'removeDoubleSeparator' => $slug->removeDoubleSeparator,
                 );
             }
         }
