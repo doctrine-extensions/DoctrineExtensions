@@ -21,15 +21,27 @@
         {
             "name": "Gediminas Morkevicius",
             "email": "gediminas.morkevicius@gmail.com"
+        },
+        {
+            "name": "Christoph Krämer",
+            "email": "cevou@gmx.de"
         }
     ],
     "require": {
         "php": ">=5.3.2",
-        "doctrine/common": ">=2.2,<2.5-dev"
+        "doctrine/common": ">=2.2",
+        "doctrine/dbal": ">=2.2",
+        "symfony/class-loader": ">=2.0"
+    },
+    "require-dev": {
+        "doctrine/mongodb": ">=1.0.0-BETA1",
+        "doctrine/mongodb-odm": ">=1.0.0-BETA6",
+        "doctrine/orm": ">=2.2"
     },
     "suggest": {
-        "doctrine/orm": ">=2.1",
-        "doctrine/mongodb-odm": "*"
+        "doctrine/mongodb": ">=1.0.0-BETA1",
+        "doctrine/mongodb-odm": ">=1.0.0-BETA6",
+        "doctrine/orm": ">=2.2"
     },
     "autoload": {
         "psr-0": { "Gedmo": "lib/" }
