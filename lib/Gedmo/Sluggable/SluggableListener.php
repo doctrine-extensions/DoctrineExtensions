@@ -364,6 +364,11 @@ class SluggableListener extends MappedEventSubscriber
                     $mapping['length'] - (strlen($i) + strlen($config['separator']))
                 );
                 $this->exponent = strlen($i) - 1;
+                if($config["removeDoubleSlug"]) {
+                    if(substr($generatedSlug,-strlen($config['separator'])) == $config['separator']) {
+                        $generatedSlug = substr($generatedSlug,0,strlen($generatedSlug) - strlen($config['separator']));
+                    }
+                }
                 $generatedSlug = $this->makeUniqueSlug($ea, $object, $generatedSlug, true, $config);
             }
             $preferedSlug = $generatedSlug;
