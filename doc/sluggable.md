@@ -15,6 +15,10 @@ Features:
 [blog_reference]: http://gediminasm.org/article/sluggable-behavior-extension-for-doctrine-2 "Sluggable extension for Doctrine 2 makes automatic record field transformations into url friendly names"
 [blog_test]: http://gediminasm.org/test "Test extensions on this blog"
 
+Update **2012-11-30**
+
+- Recreated slug handlers, as they are used by many people
+
 Update **2012-02-26**
 
 - Remove slug handlers were removed because of complications it brought together
