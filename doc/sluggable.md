@@ -15,6 +15,11 @@ Features:
 [blog_reference]: http://gediminasm.org/article/sluggable-behavior-extension-for-doctrine-2 "Sluggable extension for Doctrine 2 makes automatic record field transformations into url friendly names"
 [blog_test]: http://gediminasm.org/test "Test extensions on this blog"
 
+Update **2012-11-30**
+
+- Sometime slugable generate ugly slugs (when used with length limit) like some-slug--2, new option removeDoubleSlug provide ability to remove double slugs. Disabled by default for BC.
+
+
 Update **2012-02-26**
 
 - Remove slug handlers were removed because of complications it brought together
@@ -314,6 +319,7 @@ echo $article->getSlug();
 - **unique** (optional, default=true) - **true** if slug should be unique and if identical it will be prefixed, **false** - otherwise
 - **separator** (optional, default="-") - separator which will separate words in slug
 - **style** (optional, default="default") - **"default"** all letters will be lowercase, **"camel"** - first word letter will be uppercase
+- **removeDoubleSlug** (optional, default=false) - **true** double slugs like some-slug--2 would be changed to some-slug-2
 
 ### Example
 
