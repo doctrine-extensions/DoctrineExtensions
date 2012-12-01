@@ -18,7 +18,7 @@ use Composer\Autoload\ClassLoader;
  */
 
 define('TESTS_PATH', __DIR__);
-define('TESTS_TEMP_DIR', __DIR__.'/temp');
+define('TESTS_TEMP_DIR', __DIR__ . '/temp');
 define('VENDOR_PATH', realpath(__DIR__ . '/../vendor'));
 
 if (!class_exists('PHPUnit_Framework_TestCase') ||
@@ -32,24 +32,24 @@ if (!class_exists('PHPUnit_Framework_MockObject_MockBuilder')) {
 }
 
 /** @var $loader ClassLoader */
-$loader = require __DIR__.'/../vendor/autoload.php';
+$loader = require __DIR__ . '/../vendor/autoload.php';
 
-$loader->add('Gedmo\\Mapping\\Mock',__DIR__);
-$loader->add('Tool',__DIR__.'/Gedmo');
+$loader->add('Gedmo\\Mapping\\Mock', __DIR__);
+$loader->add('Tool', __DIR__ . '/Gedmo');
 // fixture namespaces
-$loader->add('Translator\\Fixture',__DIR__.'/Gedmo');
-$loader->add('Translatable\\Fixture',__DIR__.'/Gedmo');
-$loader->add('Timestampable\\Fixture',__DIR__.'/Gedmo');
-$loader->add('Tree\\Fixture',__DIR__.'/Gedmo');
-$loader->add('Sluggable\\Fixture',__DIR__.'/Gedmo');
-$loader->add('Sortable\\Fixture',__DIR__.'/Gedmo');
-$loader->add('Mapping\\Fixture',__DIR__.'/Gedmo');
-$loader->add('Loggable\\Fixture',__DIR__.'/Gedmo');
-$loader->add('SoftDeleteable\\Fixture',__DIR__.'/Gedmo');
-$loader->add('Uploadable\\Fixture',__DIR__.'/Gedmo');
-$loader->add('Wrapper\\Fixture',__DIR__.'/Gedmo');
+$loader->add('Translator\\Fixture', __DIR__ . '/Gedmo');
+$loader->add('Translatable\\Fixture', __DIR__ . '/Gedmo');
+$loader->add('Timestampable\\Fixture', __DIR__ . '/Gedmo');
+$loader->add('Tree\\Fixture', __DIR__ . '/Gedmo');
+$loader->add('Sluggable\\Fixture', __DIR__ . '/Gedmo');
+$loader->add('Sortable\\Fixture', __DIR__ . '/Gedmo');
+$loader->add('Mapping\\Fixture', __DIR__ . '/Gedmo');
+$loader->add('Loggable\\Fixture', __DIR__ . '/Gedmo');
+$loader->add('SoftDeleteable\\Fixture', __DIR__ . '/Gedmo');
+$loader->add('Uploadable\\Fixture', __DIR__ . '/Gedmo');
+$loader->add('Wrapper\\Fixture', __DIR__ . '/Gedmo');
 // stubs
-$loader->add('Gedmo\\Uploadable\\Stub',__DIR__);
+$loader->add('Gedmo\\Uploadable\\Stub', __DIR__);
 
 AnnotationRegistry::registerLoader(array($loader, 'loadClass'));
 Gedmo\DoctrineExtensions::registerAnnotations();
