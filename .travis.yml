@@ -5,7 +5,8 @@ php:
   - 5.4
 
 before_script:
-  - php bin/vendors.php
+  - wget http://getcomposer.org/composer.phar
+  - php composer.phar install --dev
 
 script: phpunit --coverage-text -c tests/
 
