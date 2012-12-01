@@ -47,15 +47,15 @@ final class ODM extends BaseAdapterODM implements SluggableAdapter
      *
      * {@inheritDoc}
      */
-    public function replaceRelative($object, $slugField, $useObjectClass, $pathSeparator, $target, $replacement)
+    public function replaceRelative($object, array $config, $target, $replacement)
     {
         $dm = $this->getObjectManager();
-        $meta = $dm->getClassMetadata($useObjectClass);
+        $meta = $dm->getClassMetadata($config['useObjectClass']);
 
         $q = $dm
-            ->createQueryBuilder($useObjectClass)
+            ->createQueryBuilder($config['useObjectClass'])
             ->where("function() {
-                return this.{$slugField}.indexOf('{$target}') === 0;
+                return this.{$config['slug']}.indexOf('{$target}') === 0;
             }")
             ->getQuery()
         ;
@@ -64,11 +64,45 @@ final class ODM extends BaseAdapterODM implements SluggableAdapter
         if ($result instanceof Cursor) {
             $result = $result->toArray();
             foreach ($result as $targetObject) {
-                $slug = preg_replace("@^{$target}@smi", $replacement.$pathSeparator, $targetObject[$slugField]);
+                $slug = preg_replace("@^{$target}@smi", $replacement.$config['pathSeparator'], $targetObject[$config['slug']]);
                 $dm
                     ->createQueryBuilder()
-                    ->update($useObjectClass)
-                    ->field($slugField)->set($slug)
+                    ->update($config['useObjectClass'])
+                    ->field($config['slug'])->set($slug)
+                    ->field($meta->identifier)->equals($targetObject['_id'])
+                    ->getQuery()
+                    ->execute()
+                ;
+            }
+        }
+    }
+
+    /**
+     * This query can couse some data integrity failures since it does not
+     * execute atomicaly
+     *
+     * {@inheritDoc}
+     */
+    public function replaceInverseRelative($object, array $config, $target, $replacement)
+    {
+        $dm = $this->getObjectManager();
+        $wrapped = AbstractWrapper::wrap($object, $dm);
+        $meta = $dm->getClassMetadata($config['useObjectClass']);
+        $q = $dm
+            ->createQueryBuilder($config['useObjectClass'])
+            ->field($config['mappedBy'].'.'.$meta->identifier)->equals($wrapped->getIdentifier())
+            ->getQuery()
+        ;
+        $q->setHydrate(false);
+        $result = $q->execute();
+        if ($result instanceof Cursor) {
+            $result = $result->toArray();
+            foreach ($result as $targetObject) {
+                $slug = preg_replace("@^{$replacement}@smi", $target, $targetObject[$config['slug']]);
+                $dm
+                    ->createQueryBuilder()
+                    ->update($config['useObjectClass'])
+                    ->field($config['slug'])->set($slug)
                     ->field($meta->identifier)->equals($targetObject['_id'])
                     ->getQuery()
                     ->execute()
