@@ -7,6 +7,7 @@ php:
 services: mongodb
 
 before_script:
+  - pecl install mongo
   - wget http://getcomposer.org/composer.phar
   - php composer.phar install --dev
 
