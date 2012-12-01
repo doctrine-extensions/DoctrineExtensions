@@ -58,5 +58,3 @@ Gedmo\DoctrineExtensions::registerAnnotations();
 $reader = new AnnotationReader();
 $reader = new CachedReader($reader, new ArrayCache());
 $_ENV['annotation_reader'] = $reader;
-
-return;
