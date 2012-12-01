@@ -7,17 +7,17 @@ use Gedmo\Sluggable\Mapping\Event\SluggableAdapter;
 use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 
 /**
-* Sluggable handler interface is a common pattern for all
-* slug handlers which can be attached to the sluggable listener.
-* Usage is intented only for internal access of sluggable.
-* Should not be used outside of sluggable extension
-*
-* @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
-* @package Gedmo.Sluggable.Handler
-* @subpackage SlugHandlerInterface
-* @link http://www.gediminasm.org
-* @license MIT License (http://www.opensource.org/licenses/mit-license.php)
-*/
+ * Sluggable handler interface is a common pattern for all
+ * slug handlers which can be attached to the sluggable listener.
+ * Usage is intented only for internal access of sluggable.
+ * Should not be used outside of sluggable extension
+ *
+ * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
+ * @package Gedmo.Sluggable.Handler
+ * @subpackage SlugHandlerInterface
+ * @link http://www.gediminasm.org
+ * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
+ */
 interface SlugHandlerInterface
 {
     /**
