@@ -65,6 +65,8 @@ class RelativeSlugHandlerDocumentTest extends BaseTestCaseMongoODM
         $this->dm->persist($sport);
         $this->dm->flush();
 
+        $this->assertEquals('martial-arts-test', $sport->getSlug());
+
         $this->assertEquals('martial-arts-test/ninja', $thomas->getSlug());
 
         $jen = $repo->findOneByTitle('Jen');
