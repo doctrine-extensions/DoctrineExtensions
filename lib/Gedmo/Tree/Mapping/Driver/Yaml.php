@@ -123,6 +123,8 @@ class Yaml extends File implements Driver
                             throw new InvalidMappingException("Tree LockTime field - [{$field}] type is not valid. It must be \"date\" in class - {$meta->name}");
                         }
                         $config['lock_time'] = $field;
+                    } elseif (in_array('treeParent', $fieldMapping['gedmo'])) {
+                        $config['parent'] = $field;
                     }
                 }
             }
