@@ -232,10 +232,11 @@ class SluggableListener extends MappedEventSubscriber
             }
             // notify slug handlers --> onChangeDecision
             if (isset($config['handlers'])) {
+                $options['handlers'] = $config['handlers'];
                 foreach ($config['handlers'] as $class => $handlerOptions) {
                     $this
                         ->getHandler($class)
-                        ->onChangeDecision($ea, $slugField, $object, $slug, $needToChangeSlug)
+                        ->onChangeDecision($ea, $options, $object, $slug, $needToChangeSlug)
                     ;
                 }
             }
@@ -251,7 +252,7 @@ class SluggableListener extends MappedEventSubscriber
                     foreach ($config['handlers'] as $class => $handlerOptions) {
                         $this
                             ->getHandler($class)
-                            ->postSlugBuild($ea, $slugField, $object, $slug)
+                            ->postSlugBuild($ea, $options, $object, $slug)
                         ;
                     }
                 }
@@ -308,7 +309,7 @@ class SluggableListener extends MappedEventSubscriber
                     foreach ($config['handlers'] as $class => $handlerOptions) {
                         $this
                             ->getHandler($class)
-                            ->onSlugCompletion($ea, $slugField, $object, $slug)
+                            ->onSlugCompletion($ea, $options, $object, $slug)
                         ;
                     }
                 }
