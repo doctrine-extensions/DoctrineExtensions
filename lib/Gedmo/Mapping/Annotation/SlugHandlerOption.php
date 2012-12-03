@@ -17,7 +17,7 @@ use Doctrine\Common\Annotations\Annotation;
  *          ...
  *      }),
  *      ...
- * }, separator="-", updatable=false, removeDoubleSeparator=false)
+ * }, separator="-", updatable=false)
  *
  * @Annotation
  *

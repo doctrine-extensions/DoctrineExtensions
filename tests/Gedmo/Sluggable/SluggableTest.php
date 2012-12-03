@@ -87,6 +87,26 @@ class SluggableTest extends BaseTestCaseORM
             $this->assertEquals($shorten, $expected);
         }
     }
+    /**
+     * @test
+     */
+    function doubleDelimiterShouldBeRemoved()
+    {
+        $long = 'Пример длинного заголовка, который надо правильно обрезать щжшш';
+        $article = new Article();
+        $article->setTitle($long);
+        $article->setCode('my code');
+        $article2 = new Article();
+        $article2->setTitle($long);
+        $article2->setCode('my code');
+
+        $this->em->persist($article);
+        $this->em->persist($article2);
+        $this->em->flush();
+        $this->em->clear();
+        $this->assertEquals(64, $article->getSlug());
+        $this->assertEquals(64, $article2->getSlug());
+    }
 
     /**
      * @test

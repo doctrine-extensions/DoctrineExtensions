@@ -30,7 +30,5 @@ final class Slug extends Annotation
     public $separator = '-';
     /** @var array<Gedmo\Mapping\Annotation\SlugHandler> */
     public $handlers = array();
-    /** @var boolean */
-    public $removeDoubleSeparator = false;
 }
 
