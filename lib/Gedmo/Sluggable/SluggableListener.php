@@ -344,10 +344,6 @@ class SluggableListener extends MappedEventSubscriber
         if (!$recursing) {
             $this->filterSimilarSlugs($result, $config, $preferedSlug);
         }
-		// check if the exact preferedSlug is free
-		if(!$this->isInPersistedSlugs($result, $preferedSlug, $config['slug'])) {
-			$result = array(); // maybe not the best solution, but works
-		}
 
         if ($result) {
             $generatedSlug = $preferedSlug;
@@ -371,6 +367,12 @@ class SluggableListener extends MappedEventSubscriber
                 $this->exponent = strlen($i) - 1;
                 $generatedSlug = $this->makeUniqueSlug($ea, $object, $generatedSlug, true, $config);
             }
+			else {
+				// if length is okay, check if exact preferedSlug is free
+				if(!$this->isInPersistedSlugs($result, $preferedSlug, $config['slug'])) {
+					$generatedSlug = $preferedSlug;
+				}
+			}
             $preferedSlug = $generatedSlug;
         }
         return $preferedSlug;
