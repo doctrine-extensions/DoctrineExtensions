@@ -367,8 +367,8 @@ class SluggableListener extends MappedEventSubscriber
                 $this->exponent = strlen($i) - 1;
                 $generatedSlug = $this->makeUniqueSlug($ea, $object, $generatedSlug, true, $config);
             }
-			else {
-				// if length is okay, check if exact preferedSlug is free
+			elseif(isset($mapping['length']) && strlen($generatedSlug) < $mapping['length']) {
+				// if sluglength is shorter than limit, check if exact preferedSlug is free and then use it
 				if(!$this->isInPersistedSlugs($result, $preferedSlug, $config['slug'])) {
 					$generatedSlug = $preferedSlug;
 				}
@@ -403,7 +403,7 @@ class SluggableListener extends MappedEventSubscriber
     }
 	
 	/**
-     * check if the preferedSlug is free
+     * check if the exact preferedSlug is free
      *
      * @param array $result
      * @param string $preferedSlug
