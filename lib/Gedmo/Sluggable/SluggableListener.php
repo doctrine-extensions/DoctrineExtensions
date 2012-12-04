@@ -344,6 +344,10 @@ class SluggableListener extends MappedEventSubscriber
         if (!$recursing) {
             $this->filterSimilarSlugs($result, $config, $preferedSlug);
         }
+		// check if the exact preferedSlug is free
+		if(!$this->isInPersistedSlugs($result, $preferedSlug, $config['slug'])) {
+			$result = array(); // maybe not the best solution, but works
+		}
 
         if ($result) {
             $generatedSlug = $preferedSlug;
@@ -394,6 +398,28 @@ class SluggableListener extends MappedEventSubscriber
             });
         }
         return $result;
+    }
+	
+	/**
+     * check if the preferedSlug is free
+     *
+     * @param array $result
+     * @param string $preferedSlug
+     * @param string $slugField
+     * @return bool
+     */
+	private function isInPersistedSlugs($result, $preferedSlug, $slugField)
+    {
+		$isInside = false;
+		if (isset($result)) {
+			
+            array_walk($result, function($val) use ($preferedSlug, &$isInside, $slugField) {
+				if (preg_match("/^$preferedSlug$/", $val[$slugField])) {
+                	$isInside = true;
+                }
+            });
+        }
+		return $isInside;
     }
 
     /**
