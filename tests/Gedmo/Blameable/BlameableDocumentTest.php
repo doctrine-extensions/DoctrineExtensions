@@ -23,8 +23,12 @@ class BlameableDocumentTest extends BaseTestCaseMongoODM
     protected function setUp()
     {
         parent::setUp();
+
+        $listener = new BlameableListener;
+        $listener->setUserValue('testuser');
+
         $evm = new EventManager();
-        $evm->addEventSubscriber(new BlameableListener);
+        $evm->addEventSubscriber($listener);
 
         $this->getMockDocumentManager($evm);
         $this->populate();
@@ -35,12 +39,8 @@ class BlameableDocumentTest extends BaseTestCaseMongoODM
         $repo = $this->dm->getRepository(self::ARTICLE);
         $article = $repo->findOneByTitle('Blameable Article');
 
-        $date = new \DateTime();
-        $this->assertEquals(time(), (string)$article->getCreated());
-        $this->assertEquals(
-            $date->format('Y-m-d H:i'),
-            $article->getUpdated()->format('Y-m-d H:i')
-        );
+        $this->assertEquals('testuser', $article->getCreated());
+        $this->assertEquals('testuser', $article->getUpdated());
 
         $published = new Type;
         $published->setIdentifier('published');
@@ -53,20 +53,15 @@ class BlameableDocumentTest extends BaseTestCaseMongoODM
         $this->dm->clear();
 
         $article = $repo->findOneByTitle('Blameable Article');
-        $date = new \DateTime();
-        $this->assertEquals(
-            $date->format('Y-m-d H:i'),
-            $article->getPublished()->format('Y-m-d H:i')
-        );
+        $this->assertEquals('testuser', $article->getPublished());
     }
 
     public function testForcedValues()
     {
         $sport = new Article();
         $sport->setTitle('sport forced');
-        $created = strtotime('2000-01-01 12:00:00');
-        $sport->setCreated($created);
-        $sport->setUpdated(new \DateTime('2000-01-01 12:00:00'));
+        $sport->setCreated('myuser');
+        $sport->setUpdated('myuser');
 
         $this->dm->persist($sport);
         $this->dm->flush();
@@ -74,31 +69,22 @@ class BlameableDocumentTest extends BaseTestCaseMongoODM
 
         $repo = $this->dm->getRepository(self::ARTICLE);
         $sport = $repo->findOneByTitle('sport forced');
-        $this->assertEquals(
-            $created,
-            (string)$sport->getCreated()
-        );
-        $this->assertEquals(
-            '2000-01-01 12:00:00',
-            $sport->getUpdated()->format('Y-m-d H:i:s')
-        );
+        $this->assertEquals('myuser', $sport->getCreated());
+        $this->assertEquals('myuser', $sport->getUpdated());
 
         $published = new Type;
         $published->setIdentifier('published');
         $published->setTitle('Published');
 
         $sport->setType($published);
-        $sport->setPublished(new \DateTime('2000-01-01 12:00:00'));
+        $sport->setPublished('myuser');
         $this->dm->persist($sport);
         $this->dm->persist($published);
         $this->dm->flush();
         $this->dm->clear();
 
         $sport = $repo->findOneByTitle('sport forced');
-        $this->assertEquals(
-            '2000-01-01 12:00:00',
-            $sport->getPublished()->format('Y-m-d H:i:s')
-        );
+        $this->assertEquals('myuser', $sport->getPublished());
     }
 
     private function populate()

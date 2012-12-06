@@ -1,0 +1,54 @@
+<?php
+
+namespace Gedmo\Blameable;
+
+use Doctrine\Common\EventManager;
+use Tool\BaseTestCaseORM;
+use Doctrine\Common\Util\Debug,
+    Blameable\Fixture\WithoutInterface;
+
+/**
+ * These are tests for Blameable behavior
+ *
+ * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
+ * @package Gedmo.Blameable
+ * @link http://www.gediminasm.org
+ * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
+ */
+class NoInterfaceTest extends BaseTestCaseORM
+{
+    const FIXTURE = "Blameable\\Fixture\\WithoutInterface";
+
+    protected function setUp()
+    {
+        parent::setUp();
+
+        $evm = new EventManager;
+        $blameableListener = new BlameableListener;
+        $blameableListener->setUserValue('testuser');
+        $evm->addEventSubscriber($blameableListener);
+
+        $this->getMockSqliteEntityManager($evm);
+    }
+
+    public function testBlameableNoInterface()
+    {
+        $test = new WithoutInterface();
+        $test->setTitle('Test');
+
+        $this->em->persist($test);
+        $this->em->flush();
+        $this->em->clear();
+
+        $test = $this->em->getRepository(self::FIXTURE)->findOneByTitle('Test');
+        $this->assertEquals('testuser', $test->getCreated());
+        $this->assertEquals('testuser', $test->getUpdated());
+    }
+
+    protected function getUsedEntityFixtures()
+    {
+        return array(
+            self::FIXTURE,
+        );
+    }
+}

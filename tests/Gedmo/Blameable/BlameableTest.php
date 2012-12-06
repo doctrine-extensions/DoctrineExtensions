@@ -27,8 +27,11 @@ class BlameableTest extends BaseTestCaseORM
     {
         parent::setUp();
 
+        $listener = new BlameableListener;
+        $listener->setUserValue('testuser');
+
         $evm = new EventManager;
-        $evm->addEventSubscriber(new BlameableListener);
+        $evm->addEventSubscriber($listener);
 
         $this->getMockSqliteEntityManager($evm);
     }
@@ -47,28 +50,18 @@ class BlameableTest extends BaseTestCaseORM
 
         $this->assertTrue($sportComment instanceof Blameable);
 
-        $date = new \DateTime('now');
         $this->em->persist($sport);
         $this->em->persist($sportComment);
         $this->em->flush();
         $this->em->clear();
 
         $sport = $this->em->getRepository(self::ARTICLE)->findOneByTitle('Sport');
-        $this->assertEquals(
-            $date->format('Y-m-d 00:00:00'),
-            $sport->getCreated()->format('Y-m-d H:i:s')
-        );
-        $this->assertEquals(
-            $date->format('Y-m-d H:i'),
-            $sport->getUpdated()->format('Y-m-d H:i')
-        );
+        $this->assertEquals('testuser', $sport->getCreated());
+        $this->assertEquals('testuser', $sport->getUpdated());
         $this->assertNull($sport->getPublished());
 
         $sportComment = $this->em->getRepository(self::COMMENT)->findOneByMessage('hello');
-        $this->assertEquals(
-            $date->format('H:i'),
-            $sportComment->getModified()->format('H:i')
-        );
+        $this->assertEquals('testuser', $sportComment->getModified());
         $this->assertNull($sportComment->getClosed());
 
         $sportComment->setStatus(1);
@@ -77,7 +70,6 @@ class BlameableTest extends BaseTestCaseORM
 
         $sport->setTitle('Updated');
         $sport->setType($published);
-        $date = new \DateTime('now');
         $this->em->persist($sport);
         $this->em->persist($published);
         $this->em->persist($sportComment);
@@ -85,23 +77,17 @@ class BlameableTest extends BaseTestCaseORM
         $this->em->clear();
 
         $sportComment = $this->em->getRepository(self::COMMENT)->findOneByMessage('hello');
-        $this->assertEquals(
-            $date->format('Y-m-d H:i'),
-            $sportComment->getClosed()->format('Y-m-d H:i')
-        );
+        $this->assertEquals('testuser', $sportComment->getClosed());
 
-        $this->assertEquals(
-            $date->format('Y-m-d H:i'),
-            $sport->getPublished()->format('Y-m-d H:i')
-        );
+        $this->assertEquals('testuser', $sport->getPublished());
     }
 
     public function testForcedValues()
     {
         $sport = new Article();
         $sport->setTitle('sport forced');
-        $sport->setCreated(new \DateTime('2000-01-01'));
-        $sport->setUpdated(new \DateTime('2000-01-01 12:00:00'));
+        $sport->setCreated('myuser');
+        $sport->setUpdated('myuser');
 
         $this->em->persist($sport);
         $this->em->flush();
@@ -109,30 +95,21 @@ class BlameableTest extends BaseTestCaseORM
 
         $repo = $this->em->getRepository(self::ARTICLE);
         $sport = $repo->findOneByTitle('sport forced');
-        $this->assertEquals(
-            '2000-01-01',
-            $sport->getCreated()->format('Y-m-d')
-        );
-        $this->assertEquals(
-            '2000-01-01 12:00:00',
-            $sport->getUpdated()->format('Y-m-d H:i:s')
-        );
+        $this->assertEquals('myuser', $sport->getCreated());
+        $this->assertEquals('myuser', $sport->getUpdated());
 
         $published = new Type();
         $published->setTitle('Published');
 
         $sport->setType($published);
-        $sport->setPublished(new \DateTime('2000-01-01 12:00:00'));
+        $sport->setPublished('myuser');
         $this->em->persist($sport);
         $this->em->persist($published);
         $this->em->flush();
         $this->em->clear();
 
         $sport = $repo->findOneByTitle('sport forced');
-        $this->assertEquals(
-            '2000-01-01 12:00:00',
-            $sport->getPublished()->format('Y-m-d H:i:s')
-        );
+        $this->assertEquals('myuser', $sport->getPublished());
     }
 
     protected function getUsedEntityFixtures()
