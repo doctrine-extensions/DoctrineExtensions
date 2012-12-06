@@ -7,7 +7,7 @@ use Gedmo\Blameable\Mapping\Event\BlameableAdapter;
 
 /**
  * Doctrine event adapter for ODM adapted
- * for Blameable behavior. Simple version to manually inject username to use.
+ * for Blameable behavior.
  *
  * @author David Buchmann <mail@davidbu.ch>
  * @package Gedmo\Blameable\Mapping\Event\Adapter
@@ -17,21 +17,4 @@ use Gedmo\Blameable\Mapping\Event\BlameableAdapter;
  */
 final class ODM extends BaseAdapterODM implements BlameableAdapter
 {
-    private $user;
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getUserValue($meta, $field)
-    {
-        return $this->user;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function setUserValue($user)
-    {
-        $this->user = $user;
-    }
 }

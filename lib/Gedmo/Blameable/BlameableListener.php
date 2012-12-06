@@ -20,17 +20,45 @@ use Doctrine\Common\EventArgs,
  */
 class BlameableListener extends TimestampableListener
 {
-    /** @var BlameableAdapter */
-    private $eventAdapter;
+    private $user;
 
     /**
-     * Allows to set a custom event adapter, e.g. a symfony one with the session.
+     * Get the user value to set on a blameable field
      *
-     * @param BlameableAdapter $eventAdapter
+     * @param object $meta
+     * @param string $field
+     * @return mixed
      */
-    public function setAdapter($eventAdapter = null)
+    public function getUserValue($meta, $field)
     {
-        $this->eventAdapter = $eventAdapter;
+        if ($meta->hasAssociation($field)) {
+            if (null !== $this->user && ! is_object($this->user)) {
+                throw new InvalidArgumentException("Blame is reference, user must be an object");
+            }
+
+            return $this->user;
+        }
+
+        // ok so its not an association, then it is a string
+        if (is_object($this->user)) {
+            if (! method_exists($this->user, 'getUsername')) {
+                throw new InvalidArgumentException("Field expects string, user must be a string, or object should have method: getUsername");
+            }
+
+            return (string)$this->user->getUsername();
+        }
+
+        return $this->user;
+    }
+
+    /**
+     * Set a user value to return
+     *
+     * @return mixed
+     */
+    public function setUserValue($user)
+    {
+        $this->user = $user;
     }
 
     /**
@@ -44,36 +72,20 @@ class BlameableListener extends TimestampableListener
     /**
      * Updates a field
      *
-     * @param $object
-     * @param $ea
+     * @param mixed $object
+     * @param BlameableAdapter $ea
      * @param $meta
      * @param $field
      */
     protected function updateField($object, $ea, $meta, $field)
     {
-        /** @var $ea BlameableAdapter */
         $property = $meta->getReflectionProperty($field);
         $oldValue = $property->getValue($object);
-        $newValue = $ea->getUserValue($meta, $field);
+        $newValue = $this->getUserValue($meta, $field);
         $property->setValue($object, $newValue);
         if ($object instanceof NotifyPropertyChanged) {
             $uow = $ea->getObjectManager()->getUnitOfWork();
             $uow->propertyChanged($object, $field, $oldValue, $newValue);
         }
-    }
-
-    /**
-     * Return the manually set event adapter or let the parent do one
-     *
-     * @param \Doctrine\Common\EventArgs $args
-     * @return \Gedmo\Mapping\Event\AdapterInterface|void
-     */
-    protected function getEventAdapter(EventArgs $args)
-    {
-        if ($this->eventAdapter) {
-            $this->eventAdapter->setEventArgs($args);
-            return $this->eventAdapter;
-        }
-        return parent::getEventAdapter($args);
     }
 }

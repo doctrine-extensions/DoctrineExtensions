@@ -17,6 +17,11 @@ with latest version of doctrine mapping at master branches
 
 ### Latest updates
 
+**2012-12-06**
+
+- **Blameable** extension added to allow setting a username string or user object on fields, with the same options as Timestampable.
+
+
 **2012-07-05**
 
 - **Mapping** drivers were updated to support latest doctrine versions.
@@ -116,6 +121,7 @@ List of extensions which support ODM
 - Translatable
 - Sluggable
 - Timestampable
+- Blameable
 - Loggable
 - Translator
 - Tree (Materialized Path strategy for now)

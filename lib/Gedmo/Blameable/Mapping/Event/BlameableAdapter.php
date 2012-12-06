@@ -6,7 +6,7 @@ use Gedmo\Mapping\Event\AdapterInterface;
 
 /**
  * Doctrine event adapter interface
- * for Blameable behavior
+ * for Blameable behavior.
  *
  * @author David Buchmann <mail@davidbu.ch>
  * @package Gedmo\Blameable\Mapping\Event
@@ -16,19 +16,4 @@ use Gedmo\Mapping\Event\AdapterInterface;
  */
 interface BlameableAdapter extends AdapterInterface
 {
-    /**
-     * Get the user value
-     *
-     * @param object $meta
-     * @param string $field
-     * @return mixed
-     */
-    public function getUserValue($meta, $field);
-
-    /**
-     * Set a user value to return
-     *
-     * @return mixed
-     */
-    public function setUserValue($user);
 }
