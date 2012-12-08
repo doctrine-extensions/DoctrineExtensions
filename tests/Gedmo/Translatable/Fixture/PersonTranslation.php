@@ -9,7 +9,7 @@ use Gedmo\Translatable\Entity\MappedSuperclass\AbstractTranslation;
 /**
  * @ORM\Table(
  *         name="ext_translations",
- *         indexes={@ORM\index(name="translations_lookup_idx", columns={
+ *         indexes={@ORM\Index(name="translations_lookup_idx", columns={
  *             "locale", "object_class", "foreign_key"
  *         })},
  *         uniqueConstraints={@ORM\UniqueConstraint(name="lookup_unique_idx", columns={

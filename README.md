@@ -139,9 +139,10 @@ PHPUnit 3.6 or newer is required.
 To setup and run tests follow these steps:
 
 - go to the root directory of extensions
-- run: **php bin/vendors.php**
+- download composer: **wget https://getcomposer.org/composer.phar**
+- install dev libraries: **php composer.phar install --dev**
 - run: **phpunit -c tests**
-- optional - run mongodb in background to complete all tests
+- optional - run mongodb service if targetting mongo tests
 
 <a name="example-demo"></a>
 
@@ -150,7 +151,8 @@ To setup and run tests follow these steps:
 To setup and run example follow these steps:
 
 - go to the root directory of extensions
-- run: **php bin/vendors.php** installs doctrine and required symfony libraries
+- download composer: **wget https://getcomposer.org/composer.phar**
+- install dev libraries: **php composer.phar install --dev**
 - edit **example/em.php** and configure your database on top of the file
 - run: **./example/bin/console** or **php example/bin/console** for console commands
 - run: **./example/bin/console orm:schema-tool:create** to create schema

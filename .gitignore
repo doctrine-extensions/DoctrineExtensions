@@ -5,3 +5,4 @@ vendor/
 tags
 .vimrc.local
 /composer.lock
+/composer.phar

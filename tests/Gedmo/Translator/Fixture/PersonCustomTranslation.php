@@ -7,7 +7,7 @@ use Gedmo\Translator\Entity\Translation;
 
 /**
  * @ORM\Table(
- *         indexes={@ORM\index(name="pers_translations_lookup_idx", columns={
+ *         indexes={@ORM\Index(name="pers_translations_lookup_idx", columns={
  *             "locale", "translatable_id"
  *         })},
  *         uniqueConstraints={@ORM\UniqueConstraint(name="pers_lookup_unique_idx", columns={
