@@ -4,8 +4,11 @@ php:
   - 5.3
   - 5.4
 
+services: mongodb
+
 before_script:
-  - php bin/vendors.php
+  - pecl install mongo
+  - composer install --dev
 
 script: phpunit --coverage-text -c tests/
 
