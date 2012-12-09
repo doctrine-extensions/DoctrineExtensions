@@ -2,11 +2,12 @@
 
 namespace Gedmo\Blameable;
 
-use Doctrine\Common\EventArgs,
-    Gedmo\Mapping\MappedEventSubscriber,
-    Doctrine\Common\NotifyPropertyChanged,
-    Gedmo\Timestampable\TimestampableListener,
-    Gedmo\Blameable\Mapping\Event\BlameableAdapter;
+use Doctrine\Common\EventArgs;
+use Doctrine\Common\NotifyPropertyChanged;
+use Gedmo\Exception\InvalidArgumentException;
+use Gedmo\Mapping\MappedEventSubscriber;
+use Gedmo\Timestampable\TimestampableListener;
+use Gedmo\Blameable\Mapping\Event\BlameableAdapter;
 
 /**
  * The Blameable listener handles the update of
@@ -41,11 +42,13 @@ class BlameableListener extends TimestampableListener
 
         // ok so its not an association, then it is a string
         if (is_object($this->user)) {
-            if (! method_exists($this->user, 'getUsername')) {
-                throw new InvalidArgumentException("Field expects string, user must be a string, or object should have method: getUsername");
+            if (method_exists($this->user, 'getUsername')) {
+                return (string)$this->user->getUsername();
             }
-
-            return (string)$this->user->getUsername();
+            if (method_exists($this->user, '__toString()')) {
+                return $this->user->__toString();
+            }
+            throw new InvalidArgumentException("Field expects string, user must be a string, or object should have method getUsername or __toString");
         }
 
         return $this->user;
