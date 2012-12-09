@@ -31,7 +31,7 @@ trait BlameableEntity
      * @param  string $createdBy
      * @return $this
      */
-    public function setCreatedAt($createdBy)
+    public function setCreatedBy($createdBy)
     {
         $this->createdBy = $createdBy;
 
@@ -54,7 +54,7 @@ trait BlameableEntity
      * @param  string $updatedBy
      * @return $this
      */
-    public function setUpdatedAt($updatedBy)
+    public function setUpdatedBy($updatedBy)
     {
         $this->updatedBy = $updatedBy;
 
