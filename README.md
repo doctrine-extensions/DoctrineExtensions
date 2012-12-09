@@ -17,6 +17,11 @@ with latest version of doctrine mapping at master branches
 
 ### Latest updates
 
+**2012-12-06**
+
+- **Blameable** extension added to allow setting a username string or user object on fields, with the same options as Timestampable.
+
+
 **2012-07-05**
 
 - **Mapping** drivers were updated to support latest doctrine versions.
@@ -79,6 +84,7 @@ records being flushed in the behavioral way. List of extensions:
 - **Translatable** - gives you a very handy solution for translating records into diferent languages. Easy to setup, easier to use.
 - **Sluggable** - urlizes your specified fields into single unique slug
 - **Timestampable** - updates date fields on create, update and even property change.
+- **Blameable** - updates string or reference fields on create, update and even property change with a string or object (e.g. user).
 - **Loggable** - helps tracking changes and history of objects, also supports version managment.
 - **Sortable** - makes any document or entity sortable
 - **Translator** - explicit way to handle translations
@@ -115,6 +121,7 @@ List of extensions which support ODM
 - Translatable
 - Sluggable
 - Timestampable
+- Blameable
 - Loggable
 - Translator
 - Tree (Materialized Path strategy for now)

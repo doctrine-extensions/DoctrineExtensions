@@ -43,6 +43,7 @@ $loader->registerNamespaces(array(
     'Translator\\Fixture'        => __DIR__.'/Gedmo',
     'Translatable\\Fixture'      => __DIR__.'/Gedmo',
     'Timestampable\\Fixture'     => __DIR__.'/Gedmo',
+    'Blameable\\Fixture'     => __DIR__.'/Gedmo',
     'Tree\\Fixture'              => __DIR__.'/Gedmo',
     'Sluggable\\Fixture'         => __DIR__.'/Gedmo',
     'Sortable\\Fixture'          => __DIR__.'/Gedmo',
