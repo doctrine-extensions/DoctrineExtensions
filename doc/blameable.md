@@ -10,9 +10,9 @@ If you map the blame onto a string field, this extension will try to assign the 
 If you map the blame onto a association field, this extension will try to assign the user
 object to it.
 
-Note that you need to set the user on the BlameableAdapter which needs to be set on
-the BlameableListener (unless you use the Symfony2 extension which does all automatically
-to assign the current security context user).
+Note that you need to set the user on the BlameableListener (unless you use the
+Symfony2 extension which does automatically assign the current security context
+user).
 
 
 Features:
