@@ -61,29 +61,6 @@ class SluggableTest extends BaseTestCaseORM
     /**
      * @test
      */
-    function shouldBuildUniqueSlugAfterSoftDelete()
-    {
-        $article = new Article();
-        $article->setTitle('the soft title');
-        $article->setCode('my soft code');
-
-        $this->em->persist($article);
-        $this->em->flush();
-
-        $slug = $article->getSlug();
-
-        $this->em->remove($article);
-
-        $this->em->persist($article);
-        $this->em->flush();
-        $this->em->clear();
-
-        $this->assertNotEquals($slug, $article->getSlug());
-    }
-
-    /**
-     * @test
-     */
     function shouldHandleUniqueSlugLimitedLength()
     {
         $long = 'the title the title the title the title the title the title the title';

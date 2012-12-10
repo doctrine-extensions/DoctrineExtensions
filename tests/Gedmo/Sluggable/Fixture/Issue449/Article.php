@@ -1,6 +1,6 @@
 <?php
 
-namespace Sluggable\Fixture;
+namespace Sluggable\Fixture\Issue449;
 
 use Gedmo\Sluggable\Sluggable;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -8,6 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
+ * @Gedmo\SoftDeleteable(fieldName="deletedAt")
  */
 class Article implements Sluggable
 {
@@ -29,6 +30,11 @@ class Article implements Sluggable
      * @ORM\Column(name="slug", type="string", length=64, unique=true)
      */
     private $slug;
+
+    /**
+     * @ORM\Column(name="deletedAt", type="datetime", nullable=true)
+     */
+    private $deletedAt;
 
     public function getId()
     {
@@ -64,5 +70,14 @@ class Article implements Sluggable
     {
         return $this->slug;
     }
-}
 
+    public function setDeletedAt($deletedAt)
+    {
+        $this->deletedAt = $deletedAt;
+    }
+
+    public function getDeletedAt()
+    {
+        return $this->deletedAt;
+    }
+}

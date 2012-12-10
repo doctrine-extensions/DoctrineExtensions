@@ -56,6 +56,13 @@ class SluggableListener extends MappedEventSubscriber
     private $handlers = array();
 
     /**
+     * List of filters which are manipulated when slugs are generated
+     *
+     * @var array
+     */
+    private $managedFilters = array();
+
+    /**
      * Specifies the list of events to listen
      *
      * @return array
@@ -74,6 +81,8 @@ class SluggableListener extends MappedEventSubscriber
      * to transliterate slugs
      *
      * @param mixed $callable
+     * @throws \Gedmo\Exception\InvalidArgumentException
+     * @return void
      */
     public function setTransliterator($callable)
     {
@@ -91,6 +100,27 @@ class SluggableListener extends MappedEventSubscriber
     public function getTransliterator()
     {
         return $this->transliterator;
+    }
+
+    /**
+     * Enables or disables the given filter when slugs are generated
+     *
+     * @param string $name
+     * @param bool $disable True by default
+     */
+    public function addManagedFilter($name, $disable = true)
+    {
+        $this->managedFilters[$name] = array('disabled' => $disable);
+    }
+
+    /**
+     * Removes a filter from the managed set
+     *
+     * @param string $name
+     */
+    public function removeManagedFilter($name)
+    {
+        unset($this->managedFilters[$name]);
     }
 
     /**
@@ -141,6 +171,8 @@ class SluggableListener extends MappedEventSubscriber
         $om = $ea->getObjectManager();
         $uow = $om->getUnitOfWork();
 
+        $this->manageFiltersBeforeGeneration($om);
+
         // process all objects being inserted, using scheduled insertions instead
         // of prePersist in case if record will be changed before flushing this will
         // ensure correct result. No additional overhead is encoutered
@@ -167,6 +199,8 @@ class SluggableListener extends MappedEventSubscriber
                 }
             }
         }
+
+        $this->manageFiltersAfterGeneration($om);
     }
 
     /**
@@ -411,6 +445,63 @@ class SluggableListener extends MappedEventSubscriber
                 unset($slugs[$key]);
             }
         }
+    }
+
+    /**
+     * @param \Doctrine\Common\Persistence\ObjectManager $om
+     */
+    private function manageFiltersBeforeGeneration(ObjectManager $om)
+    {
+        $collection = $this->getFilterCollectionFromObjectManager($om);
+
+        $enabledFilters = array_keys($collection->getEnabledFilters());
+
+        // set each manage filters to desired status
+        foreach ($this->managedFilters as $name => &$config) {
+            $enabled = (in_array($name, $enabledFilters));
+            $config['previouslyEnabled'] = $enabled;
+
+            if ($config['disabled']) {
+                $collection->disable($name);
+            } else {
+                $collection->enable($name);
+            }
+        }
+    }
+
+    /**
+     * @param \Doctrine\Common\Persistence\ObjectManager $om
+     */
+    private function manageFiltersAfterGeneration(ObjectManager $om)
+    {
+        $collection = $this->getFilterCollectionFromObjectManager($om);
+
+        // Restore managed filters to their original status
+        foreach ($this->managedFilters as $name => &$config) {
+            if ($config['previouslyEnabled'] === true) {
+                $collection->enable($name);
+            }
+
+            unset($config['previouslyEnabled']);
+        }
+    }
+
+    /**
+     * Retrieves a FilterCollection instance from the given ObjectManager.
+     *
+     * @param \Doctrine\Common\Persistence\ObjectManager $om
+     * @throws \Gedmo\Exception\InvalidArgumentException
+     * @return mixed
+     */
+    private function getFilterCollectionFromObjectManager(ObjectManager $om)
+    {
+        if (is_callable(array($om, 'getFilters'))) {
+            return $om->getFilters();
+        } else if (is_callable(array($om, 'getFilterCollection'))) {
+            return $om->getFilterCollection();
+        }
+
+        throw new \Gedmo\Exception\InvalidArgumentException("ObjectManager does not support filters");
     }
 
 }
