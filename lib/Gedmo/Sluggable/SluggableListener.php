@@ -456,9 +456,9 @@ class SluggableListener extends MappedEventSubscriber
 
         $enabledFilters = array_keys($collection->getEnabledFilters());
 
-        // set each manage filters to desired status
+        // set each managed filter to desired status
         foreach ($this->managedFilters as $name => &$config) {
-            $enabled = (in_array($name, $enabledFilters));
+            $enabled = in_array($name, $enabledFilters);
             $config['previouslyEnabled'] = $enabled;
 
             if ($config['disabled']) {
