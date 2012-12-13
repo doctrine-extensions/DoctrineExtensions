@@ -118,6 +118,14 @@ $timestampableListener = new Gedmo\Timestampable\TimestampableListener;
 $timestampableListener->setAnnotationReader($cachedAnnotationReader);
 $evm->addEventSubscriber($timestampableListener);
 
+// blameable
+
+$blameableListener = new \Gedmo\Blameable\BlameableListener();
+$blameableListener->setAnnotationReader($cachedAnnotationReader);
+$blameableListener->setUserValue('MyUsername'); // determine from your environment
+$evm->addEventSubscriber($blameableListener);
+
+
 // translatable
 $translatableListener = new Gedmo\Translatable\TranslatableListener;
 // current translation locale should be set from session or hook later into the listener

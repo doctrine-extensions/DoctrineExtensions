@@ -26,6 +26,9 @@
         <testsuite name="Timestampable Extension">
             <directory suffix="Test.php">./Gedmo/Timestampable/</directory>
         </testsuite>
+        <testsuite name="Blameable Extension">
+            <directory suffix="Test.php">./Gedmo/Blameable/</directory>
+        </testsuite>
         <testsuite name="Mapping Extension">
             <directory suffix="Test.php">./Gedmo/Mapping/</directory>
         </testsuite>
@@ -48,4 +51,10 @@
             <directory suffix="Test.php">./Gedmo/Uploadable/</directory>
         </testsuite>
     </testsuites>
+
+    <filter>
+        <whitelist>
+            <directory>../lib</directory>
+        </whitelist>
+    </filter>
 </phpunit>

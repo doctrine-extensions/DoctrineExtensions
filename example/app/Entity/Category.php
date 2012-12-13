@@ -88,6 +88,18 @@ class Category
     private $updated;
 
     /**
+     * @Gedmo\Blameable(on="create")
+     * @ORM\Column(type="string")
+     */
+    private $createdBy;
+
+    /**
+     * @Gedmo\Blameable(on="update")
+     * @ORM\Column(type="string")
+     */
+    private $updatedBy;
+
+    /**
      * @ORM\OneToMany(
      *   targetEntity="CategoryTranslation",
      *   mappedBy="object",
@@ -188,6 +200,16 @@ class Category
     public function getUpdated()
     {
         return $this->updated;
+    }
+
+    public function getCreatedBy()
+    {
+        return $this->createdBy;
+    }
+
+    public function getUpdatedBy()
+    {
+        return $this->updatedBy;
     }
 
     public function __toString()
