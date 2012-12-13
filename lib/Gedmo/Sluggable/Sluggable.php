@@ -30,7 +30,7 @@ interface Sluggable
      *         unique (optional, default=true) - true if slug should be unique and if identical it will be prefixed, false - otherwise
      *         separator (optional, default="-") - separator which will separate words in slug
      *         style (optional, default="default") - "default" all letters will be lowercase, "camel" - first word letter will be uppercase
-     * 
+     *
      * example:
      * 
      * @gedmo:Slug(style="camel", separator="_", updatable=false, unique=false)
