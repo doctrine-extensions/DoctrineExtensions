@@ -87,6 +87,27 @@ class SluggableTest extends BaseTestCaseORM
             $this->assertEquals($shorten, $expected);
         }
     }
+    /**
+     * @test
+     */
+    function doubleDelimiterShouldBeRemoved()
+    {
+        $long = 'Sample long title which should be correctly slugged blablabla';
+        $article = new Article();
+        $article->setTitle($long);
+        $article->setCode('my code');
+        $article2 = new Article();
+        $article2->setTitle($long);
+        $article2->setCode('my code');
+
+        $this->em->persist($article);
+        $this->em->persist($article2);
+        $this->em->flush();
+        $this->em->clear();
+        $this->assertEquals("sample-long-title-which-should-be-correctly-slugged-blablabla-my", $article->getSlug());
+        // OLD IMPLEMENTATION PRODUCE SLUG sample-long-title-which-should-be-correctly-slugged-blablabla--1
+        $this->assertEquals("sample-long-title-which-should-be-correctly-slugged-blablabla-1", $article2->getSlug());
+    }
 
     /**
      * @test
