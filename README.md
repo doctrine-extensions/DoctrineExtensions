@@ -7,7 +7,7 @@ refactoring doctrine2 extensions. The repository can be moved to the maintainers
 left on mine. I do not want users to lose availability of stable extensions which they were and are
 used to, at the moment.
 
-**Version 2.3.1**
+**Version 2.3.2**
 
 [![Build Status](https://secure.travis-ci.org/l3pp4rd/DoctrineExtensions.png?branch=master)](http://travis-ci.org/l3pp4rd/DoctrineExtensions)
 
@@ -169,3 +169,5 @@ And especialy ones who create and maintain new extensions:
 - Gustavo Adrian [comfortablynumb](http://github.com/comfortablynumb)
 - Boussekeyt Jules [gordonslondon](http://github.com/gordonslondon)
 - Kudryashov Konstantin [everzet](http://github.com/everzet)
+- David Buchmann [dbu](https://github.com/dbu)
+
