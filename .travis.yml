@@ -4,10 +4,13 @@ php:
   - 5.3
   - 5.4
 
+env:
+  - MONGO_VERSION=1.2.12
+
 services: mongodb
 
 before_script:
-  - pecl install mongo
+  - pecl -q install mongo-${MONGO_VERSION} && echo "extension=mongo.so" >> `php --ini | grep "Loaded Configuration" | sed -e "s|.*:\s*||"`
   - composer install --dev
 
 script: phpunit --coverage-text -c tests/
