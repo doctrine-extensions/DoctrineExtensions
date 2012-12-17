@@ -1,6 +1,6 @@
 <?php
 
-namespace Sluggable\Fixture\Document;
+namespace Sluggable\Fixture\Document\Handler;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -8,7 +8,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 /**
  * @ODM\Document
  */
-class RelativeSlug
+class TreeSlug
 {
     /**
      * @ODM\Id
@@ -22,9 +22,8 @@ class RelativeSlug
 
     /**
      * @Gedmo\Slug(handlers={
-     *      @Gedmo\SlugHandler(class="Gedmo\Sluggable\Handler\RelativeSlugHandler", options={
-     *          @Gedmo\SlugHandlerOption(name="relationField", value="article"),
-     *          @Gedmo\SlugHandlerOption(name="relationSlugField", value="slug"),
+     *      @Gedmo\SlugHandler(class="Gedmo\Sluggable\Handler\TreeSlugHandler", options={
+     *          @Gedmo\SlugHandlerOption(name="parentRelationField", value="parent"),
      *          @Gedmo\SlugHandlerOption(name="separator", value="/")
      *      })
      * }, separator="-", updatable=true, fields={"title"})
@@ -33,18 +32,18 @@ class RelativeSlug
     private $alias;
 
     /**
-     * @ODM\ReferenceOne(targetDocument="Article")
+     * @ODM\ReferenceOne(targetDocument="TreeSlug")
      */
-    private $article;
+    private $parent;
 
-    public function setArticle(Article $article = null)
+    public function setParent(TreeSlug $parent = null)
     {
-        $this->article = $article;
+        $this->parent = $parent;
     }
 
-    public function getArticle()
+    public function getParent()
     {
-        return $this->article;
+        return $this->parent;
     }
 
     public function getId()

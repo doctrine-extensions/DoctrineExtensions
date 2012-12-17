@@ -4,7 +4,7 @@ namespace Gedmo\Sluggable;
 
 use Tool\BaseTestCaseMongoODM;
 use Doctrine\Common\EventManager;
-use Sluggable\Fixture\Document\TreeSlug;
+use Sluggable\Fixture\Document\Handler\TreeSlug;
 
 /**
  * These are tests for sluggable behavior
@@ -16,7 +16,7 @@ use Sluggable\Fixture\Document\TreeSlug;
  */
 class TreeSlugHandlerDocumentTest extends BaseTestCaseMongoODM
 {
-    const SLUG = 'Sluggable\\Fixture\\Document\\TreeSlug';
+    const SLUG = 'Sluggable\\Fixture\\Document\\Handler\\TreeSlug';
 
     protected function setUp()
     {
