@@ -4,8 +4,8 @@ namespace Gedmo\Sluggable;
 
 use Tool\BaseTestCaseMongoODM;
 use Doctrine\Common\EventManager;
-use Sluggable\Fixture\Document\Article;
-use Sluggable\Fixture\Document\RelativeSlug;
+use Sluggable\Fixture\Document\Handler\Article;
+use Sluggable\Fixture\Document\Handler\RelativeSlug;
 
 /**
  * These are tests for sluggable behavior
@@ -17,8 +17,8 @@ use Sluggable\Fixture\Document\RelativeSlug;
  */
 class RelativeSlugHandlerDocumentTest extends BaseTestCaseMongoODM
 {
-    const ARTICLE = 'Sluggable\\Fixture\\Document\\Article';
-    const SLUG = 'Sluggable\\Fixture\\Document\\RelativeSlug';
+    const ARTICLE = 'Sluggable\\Fixture\\Document\\Handler\\Article';
+    const SLUG = 'Sluggable\\Fixture\\Document\\Handler\\RelativeSlug';
 
     protected function setUp()
     {
@@ -71,6 +71,14 @@ class RelativeSlugHandlerDocumentTest extends BaseTestCaseMongoODM
 
         $jen = $repo->findOneByTitle('Jen');
         $this->assertEquals('martial-arts-test/jen', $jen->getSlug());
+
+        $cars = $this->dm->getRepository(self::ARTICLE)->findOneByTitle('Cars');
+        $jen->setArticle($cars);
+
+        $this->dm->persist($jen);
+        $this->dm->flush();
+
+        $this->assertEquals('cars-code/jen', $jen->getSlug());
     }
 
     private function populate()
