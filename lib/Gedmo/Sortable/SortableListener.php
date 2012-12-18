@@ -182,22 +182,24 @@ class SortableListener extends MappedEventSubscriber
 
         $changed = false;
         $changeSet = $uow->getEntityChangeSet($object);
-        if (!array_key_exists($config['position'], $changeSet)) {
-            return;
-        }
-        $oldPosition = $changeSet[$config['position']][0];
-        $newPosition = $changeSet[$config['position']][1];
-
-        $changed = $changed || $oldPosition != $newPosition;
 
         // Get groups
         $groups = $this->getGroups($meta, $config, $object);
-        foreach ($groups as $group) {
-            $changed = $changed ||
-                (array_key_exists($group, $changeSet)
-                    && $changeSet[$group][0] != $changeSet[$group][1]);
+        foreach (array_keys($groups) as $group) {
+            $changed = $changed || array_key_exists($group, $changeSet);
         }
 
+        if (array_key_exists($config['position'], $changeSet)) {
+            // position was manually updated
+            $oldPosition = $changeSet[$config['position']][0];
+            $newPosition = $changeSet[$config['position']][1];
+            $changed = $changed || $oldPosition != $newPosition;
+        } elseif ($changed) {
+            // group has changed, so position has to be recalculated
+            $oldPosition = -1;
+            $newPosition = -1;
+            // specific case
+        }
         if (!$changed) return;
 
         // Get hash
@@ -216,7 +218,6 @@ class SortableListener extends MappedEventSubscriber
 
         // Set position to max position if it is too big
         $newPosition = min(array($this->maxPositions[$hash] + 1, $newPosition));
-
         // Compute relocations
         /*
         CASE 1: shift backwards
@@ -233,7 +234,10 @@ class SortableListener extends MappedEventSubscriber
         |--node1--|--node3--|--node4--|--node2--|--node5--|
         */
         $relocation = null;
-        if ($newPosition < $oldPosition) {
+        if ($oldPosition === -1) {
+            // special case when group changes
+            $relocation = array($hash, $config['useObjectClass'], $groups, $newPosition, -1, +1);
+        } elseif ($newPosition < $oldPosition) {
             $relocation = array($hash, $config['useObjectClass'], $groups, $newPosition, $oldPosition, +1);
         } elseif ($newPosition > $oldPosition) {
             $relocation = array($hash, $config['useObjectClass'], $groups, $oldPosition + 1, $newPosition + 1, -1);
@@ -402,7 +406,7 @@ class SortableListener extends MappedEventSubscriber
         $res = $query->getResult();
         $maxPos = $res[0][1];
         if (is_null($maxPos)) $maxPos = -1;
-        return $maxPos;
+        return intval($maxPos);
     }
 
     private function addGroupWhere($qb, $groups, $meta, $object)

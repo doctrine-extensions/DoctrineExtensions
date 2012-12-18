@@ -34,6 +34,7 @@ class Author
      */
     private $position;
 
+    public function getId() { return $this->id; }
     public function getName() { return $this->name; }
     public function setName($name) { $this->name = $name; }
     public function getPaper() { return $this->paper; }
