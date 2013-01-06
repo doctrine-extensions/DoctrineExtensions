@@ -132,4 +132,12 @@ class RelativeSlugHandler implements SlugHandlerInterface
         $this->sluggable->setTransliterator($this->originalTransliterator);
         return $result;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function handlesUrlization()
+    {
+        return true;
+    }
 }

@@ -282,12 +282,16 @@ class SluggableListener extends MappedEventSubscriber
                 }
 
                 // notify slug handlers --> postSlugBuild
+                $urlized = false;
                 if (isset($config['handlers'])) {
                     foreach ($config['handlers'] as $class => $handlerOptions) {
                         $this
                             ->getHandler($class)
                             ->postSlugBuild($ea, $options, $object, $slug)
                         ;
+                        if($this->getHandler($class)->handlesUrlization()){
+                            $urlized = true;
+                        }
                     }
                 }
 
@@ -298,7 +302,9 @@ class SluggableListener extends MappedEventSubscriber
                     array($slug, $options['separator'], $object)
                 );
                 // Step 2: urlization (replace spaces by '-' etc...)
-                $slug = Util\Urlizer::urlize($slug, $options['separator']);
+                if(!$urlized){
+                    $slug = Util\Urlizer::urlize($slug, $options['separator']);
+                }
                 // stylize the slug
                 switch ($options['style']) {
                     case 'camel':
