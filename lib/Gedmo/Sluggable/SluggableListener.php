@@ -282,20 +282,29 @@ class SluggableListener extends MappedEventSubscriber
                 }
 
                 // notify slug handlers --> postSlugBuild
+                $urlized = false;
                 if (isset($config['handlers'])) {
                     foreach ($config['handlers'] as $class => $handlerOptions) {
                         $this
                             ->getHandler($class)
                             ->postSlugBuild($ea, $options, $object, $slug)
                         ;
+                        if($this->getHandler($class)->handlesUrlization()){
+                            $urlized = true;
+                        }
                     }
                 }
 
                 // build the slug
+                // Step 1: transliteration, changing 北京 to 'Bei Jing'
                 $slug = call_user_func_array(
                     $this->transliterator,
                     array($slug, $options['separator'], $object)
                 );
+                // Step 2: urlization (replace spaces by '-' etc...)
+                if(!$urlized){
+                    $slug = Util\Urlizer::urlize($slug, $options['separator']);
+                }
                 // stylize the slug
                 switch ($options['style']) {
                     case 'camel':

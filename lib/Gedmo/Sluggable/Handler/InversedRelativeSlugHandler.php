@@ -122,4 +122,12 @@ class InversedRelativeSlugHandler implements SlugHandlerInterface
             }
         }
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function handlesUrlization()
+    {
+        return false;
+    }
 }

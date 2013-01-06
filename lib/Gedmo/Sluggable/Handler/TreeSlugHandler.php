@@ -170,4 +170,12 @@ class TreeSlugHandler implements SlugHandlerInterface
         $this->sluggable->setTransliterator($this->originalTransliterator);
         return $slug;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function handlesUrlization()
+    {
+        return true;
+    }
 }
