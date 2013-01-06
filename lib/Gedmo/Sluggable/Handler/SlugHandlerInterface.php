@@ -64,6 +64,11 @@ interface SlugHandlerInterface
     function onSlugCompletion(SluggableAdapter $ea, array &$config, $object, &$slug);
 
     /**
+     * @return boolean whether or not this handler has already urlized the slug
+     */
+    function handlesUrlization();
+
+    /**
      * Validate handler options
      *
      * @param array $options
