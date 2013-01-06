@@ -292,10 +292,13 @@ class SluggableListener extends MappedEventSubscriber
                 }
 
                 // build the slug
+                // Step 1: transliteration, changing 北京 to 'Bei Jing'
                 $slug = call_user_func_array(
                     $this->transliterator,
                     array($slug, $options['separator'], $object)
                 );
+                // Step 2: urlization (replace spaces by '-' etc...)
+                $slug = Util\Urlizer::urlize($slug, $options['separator']);
                 // stylize the slug
                 switch ($options['style']) {
                     case 'camel':
