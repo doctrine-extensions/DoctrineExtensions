@@ -58,6 +58,12 @@ class ValidatorTest extends \PHPUnit_Framework_TestCase
         Validator::validatePath('/invalid/directory/12312432423');
     }
 
+    public function test_validatePath_ifPassedDirIsNotAValidDirectoryOrIsNotWriteableDoesNotThrowExceptionIfDisabled()
+    {
+        Validator::$validateWritableDirectory = false;
+        Validator::validatePath('/invalid/directory/12312432423');
+    }
+
     /**
      * @expectedException Gedmo\Exception\InvalidMappingException
      */
