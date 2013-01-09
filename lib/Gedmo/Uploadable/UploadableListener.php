@@ -301,7 +301,7 @@ class UploadableListener extends MappedEventSubscriber
 
         Validator::validatePath($path);
 
-        $path = substr($path, strlen($path) - 1) === DIRECTORY_SEPARATOR ? rtrim($path, DIRECTORY_SEPARATOR) : $path;
+        $path = rtrim($path, '\/');
 
         if ($config['fileMimeTypeField']) {
             $fileMimeTypeField = $refl->getProperty($config['fileMimeTypeField']);
@@ -488,7 +488,7 @@ class UploadableListener extends MappedEventSubscriber
         );
 
         $info['fileName'] = basename($fileInfo->getName());
-        $info['filePath'] = $path.DIRECTORY_SEPARATOR.$info['fileName'];
+        $info['filePath'] = $path.'/'.$info['fileName'];
 
         $hasExtension = strrpos($info['fileName'], '.');
 
@@ -502,12 +502,12 @@ class UploadableListener extends MappedEventSubscriber
         // Now we generate the filename using the configured class
         if ($filenameGeneratorClass) {
             $filename = $filenameGeneratorClass::generate(
-                str_replace($path.DIRECTORY_SEPARATOR, '', $info['fileWithoutExt']),
+                str_replace($path.'/', '', $info['fileWithoutExt']),
                 $info['fileExtension']
             );
             $info['filePath'] = str_replace(
-                DIRECTORY_SEPARATOR.$info['fileName'],
-                DIRECTORY_SEPARATOR.$filename,
+                '/'.$info['fileName'],
+                '/'.$filename,
                 $info['filePath']
             );
             $info['fileName'] = $filename;
@@ -559,7 +559,7 @@ class UploadableListener extends MappedEventSubscriber
      */
     public function doMoveFile($source, $dest, $isUploadedFile = true)
     {
-        return $isUploadedFile ? move_uploaded_file($source, $dest) : copy($source, $dest);
+        return $isUploadedFile ? @move_uploaded_file($source, $dest) : @copy($source, $dest);
     }
 
     /**
