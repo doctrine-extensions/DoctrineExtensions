@@ -70,6 +70,16 @@ abstract class AbstractLogEntry
     protected $username;
 
     /**
+     * Get id
+     *
+     * @return integer
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
      * Get action
      *
      * @return string
