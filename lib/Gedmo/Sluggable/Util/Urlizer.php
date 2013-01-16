@@ -68,7 +68,7 @@ class Urlizer
             // Decompositions for Latin-1 Supplement
             chr(195).chr(128) => 'A', chr(195).chr(129) => 'A',
             chr(195).chr(130) => 'A', chr(195).chr(131) => 'A',
-            chr(195).chr(132) => 'A', chr(195).chr(133) => 'A',
+            chr(195).chr(132) => 'Ae',chr(195).chr(133) => 'A',
             chr(195).chr(135) => 'C', chr(195).chr(136) => 'E',
             chr(195).chr(137) => 'E', chr(195).chr(138) => 'E',
             chr(195).chr(139) => 'E', chr(195).chr(140) => 'I',
@@ -76,12 +76,12 @@ class Urlizer
             chr(195).chr(143) => 'I', chr(195).chr(145) => 'N',
             chr(195).chr(146) => 'O', chr(195).chr(147) => 'O',
             chr(195).chr(148) => 'O', chr(195).chr(149) => 'O',
-            chr(195).chr(150) => 'O', chr(195).chr(153) => 'U',
+            chr(195).chr(150) => 'Oe',chr(195).chr(153) => 'U',
             chr(195).chr(154) => 'U', chr(195).chr(155) => 'U',
-            chr(195).chr(156) => 'U', chr(195).chr(157) => 'Y',
+            chr(195).chr(156) => 'Ue',chr(195).chr(157) => 'Y',
             chr(195).chr(159) => 's', chr(195).chr(160) => 'a',
             chr(195).chr(161) => 'a', chr(195).chr(162) => 'a',
-            chr(195).chr(163) => 'a', chr(195).chr(164) => 'a',
+            chr(195).chr(163) => 'a', chr(195).chr(164) => 'ae',
             chr(195).chr(165) => 'a', chr(195).chr(167) => 'c',
             chr(195).chr(168) => 'e', chr(195).chr(169) => 'e',
             chr(195).chr(170) => 'e', chr(195).chr(171) => 'e',
@@ -90,9 +90,9 @@ class Urlizer
             chr(195).chr(177) => 'n', chr(195).chr(178) => 'o',
             chr(195).chr(179) => 'o', chr(195).chr(180) => 'o',
             chr(195).chr(181) => 'o', chr(195).chr(182) => 'o',
-            chr(195).chr(182) => 'o', chr(195).chr(185) => 'u',
+            chr(195).chr(182) => 'oe',chr(195).chr(185) => 'u',
             chr(195).chr(186) => 'u', chr(195).chr(187) => 'u',
-            chr(195).chr(188) => 'u', chr(195).chr(189) => 'y',
+            chr(195).chr(188) => 'ue',chr(195).chr(189) => 'y',
             chr(195).chr(191) => 'y',
             // Decompositions for Latin Extended-A
             chr(196).chr(128) => 'A', chr(196).chr(129) => 'a',
@@ -174,20 +174,19 @@ class Urlizer
             // Assume ISO-8859-1 if not UTF-8
             $chars['in'] = chr(128).chr(131).chr(138).chr(142).chr(154).chr(158)
             .chr(159).chr(162).chr(165).chr(181).chr(192).chr(193).chr(194)
-            .chr(195).chr(196).chr(197).chr(199).chr(200).chr(201).chr(202)
-            .chr(203).chr(204).chr(205).chr(206).chr(207).chr(209).chr(210)
-            .chr(211).chr(212).chr(213).chr(214).chr(216).chr(217).chr(218)
-            .chr(219).chr(220).chr(221).chr(224).chr(225).chr(226).chr(227)
-            .chr(228).chr(229).chr(231).chr(232).chr(233).chr(234).chr(235)
-            .chr(236).chr(237).chr(238).chr(239).chr(241).chr(242).chr(243)
-            .chr(244).chr(245).chr(246).chr(248).chr(249).chr(250).chr(251)
-            .chr(252).chr(253).chr(255);
+            .chr(195).chr(197).chr(199).chr(200).chr(201).chr(202).chr(203)
+            .chr(204).chr(205).chr(206).chr(207).chr(209).chr(210).chr(211)
+            .chr(212).chr(213).chr(216).chr(217).chr(218).chr(219).chr(221)
+            .chr(224).chr(225).chr(226).chr(227).chr(229).chr(231).chr(232)
+            .chr(233).chr(234).chr(235).chr(236).chr(237).chr(238).chr(239)
+            .chr(241).chr(242).chr(243).chr(244).chr(245).chr(248).chr(249)
+            .chr(250).chr(251).chr(253).chr(255);
 
-            $chars['out'] = "EfSZszYcYuAAAAAACEEEEIIIINOOOOOOUUUUYaaaaaaceeeeiiiinoooooouuuuyy";
+            $chars['out'] = "EfSZszYcYuAAAAACEEEEIIIINOOOOOUUUYaaaaaceeeeiiiinooooouuuyy";
 
             $string = strtr($string, $chars['in'], $chars['out']);
-            $doubleChars['in'] = array(chr(140), chr(156), chr(198), chr(208), chr(222), chr(223), chr(230), chr(240), chr(254));
-            $doubleChars['out'] = array('OE', 'oe', 'AE', 'DH', 'TH', 'ss', 'ae', 'dh', 'th');
+            $doubleChars['in'] = array(chr(140), chr(156), chr(196), chr(198), chr(208), chr(214), chr(220), chr(222), chr(223), chr(228), chr(230), chr(240), chr(246), chr(252), chr(254));
+            $doubleChars['out'] = array('OE', 'oe', 'Ae', 'AE', 'DH', 'Oe', 'Ue', 'TH', 'ss', 'ae', 'ae', 'dh', 'oe', 'ue', 'th');
             $string = str_replace($doubleChars['in'], $doubleChars['out'], $string);
         }
 
