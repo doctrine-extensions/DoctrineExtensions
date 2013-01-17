@@ -24,5 +24,5 @@ interface FilenameGeneratorInterface
      *
      * @return string
      */
-    public static function generate($filename, $extension, $object);
+    public static function generate($filename, $extension, $object = null);
 }
