@@ -2,7 +2,8 @@
 
 namespace Gedmo\Uploadable;
 
-use Gedmo\Uploadable\FilenameGenerator\FilenameGeneratorAlphanumeric;
+use Gedmo\Uploadable\FilenameGenerator\FilenameGeneratorAlphanumeric,
+    tests\Gedmo\Uploadable\Fixture\Entity\File;
 
 /**
  * These are tests for FilenameGeneratorAlphanumeric class
@@ -21,6 +22,7 @@ class FilenameGeneratorAlphanumericTest extends \PHPUnit_Framework_TestCase
 
         $filename = 'MegaName_For_A_###$$$File$$$###';
         $extension = '.exe';
+        $entity = new File();
 
         $this->assertEquals('meganame-for-a-file-.exe', $generator->generate($filename, $extension));
     }
