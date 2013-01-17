@@ -3,7 +3,7 @@
 namespace Gedmo\Uploadable;
 
 use Gedmo\Uploadable\FilenameGenerator\FilenameGeneratorAlphanumeric,
-    tests\Gedmo\Uploadable\Fixture\Entity\File;
+    Uploadable\Fixture\Entity\File;
 
 /**
  * These are tests for FilenameGeneratorAlphanumeric class
