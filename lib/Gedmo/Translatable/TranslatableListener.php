@@ -12,7 +12,7 @@ use Gedmo\Translatable\Mapping\Event\TranslatableAdapter;
  * loading of translations for entities which implements
  * the Translatable interface.
  *
- * This behavior can inpact the performance of your application
+ * This behavior can impact the performance of your application
  * since it does an additional query for each field to translate.
  *
  * Nevertheless the annotation metadata is properly cached and
@@ -98,7 +98,7 @@ class TranslatableListener extends MappedEventSubscriber
     private $translatedInLocale = array();
 
     /**
-     * Wether or not, to persist default locale
+     * Whether or not, to persist default locale
      * translation or keep it in original record
      *
      * @var boolean
@@ -140,7 +140,7 @@ class TranslatableListener extends MappedEventSubscriber
     }
 
     /**
-     * Wether or not, to persist default locale
+     * Whether or not, to persist default locale
      * translation or keep it in original record
      *
      * @param boolean $bool
@@ -176,7 +176,7 @@ class TranslatableListener extends MappedEventSubscriber
     }
 
     /**
-     * Mapps additional metadata
+     * Maps additional metadata
      *
      * @param EventArgs $eventArgs
      * @return void
@@ -530,7 +530,7 @@ class TranslatableListener extends MappedEventSubscriber
                 );
             }
 
-            // create new translation if translation not already created and locale is differentent from default locale, otherwise, we have the date in the original record
+            // create new translation if translation not already created and locale is different from default locale, otherwise, we have the date in the original record
             $persistNewTranslation = !$translation
                 && ($locale !== $this->defaultLocale || $this->persistDefaultLocaleTranslation)
             ;
@@ -571,7 +571,7 @@ class TranslatableListener extends MappedEventSubscriber
             }
 
             if ($isInsert && $this->getTranslationInDefaultLocale($oid, $field) !== null) {
-                // We can't rely on object field value which is created in non default locale.
+                // We can't rely on object field value which is created in non-default locale.
                 // If we provide translation for default locale as well, the latter is considered to be trusted
                 // and object content should be overridden.
                 $wrapped->setPropertyValue($field, $this->getTranslationInDefaultLocale($oid, $field)->getContent());
