@@ -36,7 +36,10 @@ class TimestampableDocumentTest extends BaseTestCaseMongoODM
         $article = $repo->findOneByTitle('Timestampable Article');
 
         $date = new \DateTime();
-        $this->assertEquals(time(), (string)$article->getCreated());
+        $this->assertEquals(
+            $date->format('Y-m-d H:i'),
+            $article->getCreated()->format('Y-m-d H:i')
+        );
         $this->assertEquals(
             $date->format('Y-m-d H:i'),
             $article->getUpdated()->format('Y-m-d H:i')
