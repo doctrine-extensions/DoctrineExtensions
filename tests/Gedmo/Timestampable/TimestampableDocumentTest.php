@@ -38,7 +38,7 @@ class TimestampableDocumentTest extends BaseTestCaseMongoODM
         $date = new \DateTime();
         $this->assertEquals(
             $date->format('Y-m-d H:i'),
-            gmdate('Y-m-d H:i', (int)$article->getCreated())
+            gmdate('Y-m-d H:i', (string)$article->getCreated())
         );
         $this->assertEquals(
             $date->format('Y-m-d H:i'),
