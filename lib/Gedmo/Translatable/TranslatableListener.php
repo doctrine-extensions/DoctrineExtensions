@@ -535,12 +535,18 @@ class TranslatableListener extends MappedEventSubscriber
             }
             $translation = null;
             foreach ($ea->getScheduledObjectInsertions($uow) as $trans) {
-                if ($locale !== $this->defaultLocale
+                if (method_exists($trans, 'getObject')) {
+                    $sameObject = ($trans->getObject() === $object);
+                } else {
+                    $sameObject = ($trans->getForeignKey() === $object->getId()
+                        && ($trans->getObjectClass() === get_class($object)));
+                }
+
+                if ($sameObject
+                    && $locale !== $this->defaultLocale
                     && get_class($trans) === $translationClass
                     && $trans->getLocale() === $this->defaultLocale
-                    && $trans->getField() === $field
-                    && $trans->getForeignKey() === $object->getId()
-                    && $trans->getObjectClass() === get_class($object)) {
+                    && $trans->getField() === $field) {
                     $this->setTranslationInDefaultLocale($oid, $field, $trans);
                     break;
                 }
