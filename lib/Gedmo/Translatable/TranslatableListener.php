@@ -539,7 +539,8 @@ class TranslatableListener extends MappedEventSubscriber
                     && get_class($trans) === $translationClass
                     && $trans->getLocale() === $this->defaultLocale
                     && $trans->getField() === $field
-                    && $trans->getObject() === $object) {
+                    && $trans->getForeignKey() === $object->getId()
+                    && $trans->getObjectClass() === get_class($object)) {
                     $this->setTranslationInDefaultLocale($oid, $field, $trans);
                     break;
                 }
