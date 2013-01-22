@@ -108,6 +108,12 @@ class Yaml extends File implements Driver
                             $separator = '|';
                         }
 
+                        if (is_array($treePathInfo) && isset($treePathInfo['unique'])) {
+                            $config['path_unique'] = (bool) $treePathInfo['unique'];
+                        } else {
+                            $config['path_unique'] = true;
+                        }
+
                         if (strlen($separator) > 1) {
                             throw new InvalidMappingException("Tree Path field - [{$field}] Separator {$separator} is invalid. It must be only one character long.");
                         }
