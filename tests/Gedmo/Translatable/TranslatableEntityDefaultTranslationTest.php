@@ -146,6 +146,68 @@ class TranslatableEntityDefaultTranslationTest extends BaseTestCaseORM
         $this->assertEquals('title defaultLocale', $articles[0]['title']);
     }
 
+    function testUpdateTranslationInDefaultLocale()
+    {
+        $this->translatableListener->setPersistDefaultLocaleTranslation( false );
+        $entity = new Article;
+        $this->repo
+            ->translate($entity, 'title', 'defaultLocale'   , 'title defaultLocale'   )
+            ->translate($entity, 'title', 'translatedLocale', 'title translatedLocale');
+
+        $this->em->persist($entity);
+        $this->em->flush();
+        $this->em->clear();
+
+        $entity = $this->em->find(self::ARTICLE, 1);
+        $entity->setTranslatableLocale('translatedLocale');
+        $this->em->refresh($entity);
+
+        $this->repo
+             ->translate($entity, 'title', 'defaultLocale', 'update title defaultLocale');
+
+        $this->em->flush();
+
+        $qb = $this->em->createQueryBuilder('a');
+        $qb->select('a')
+           ->from(self::ARTICLE, 'a')
+           ->where('a.id = 1');
+
+        $fields = $qb->getQuery()->getArrayResult();
+
+        $this->assertEquals( 'update title defaultLocale', $fields[0]['title']);
+    }
+
+    function testUpdateTranslationWithPersistingInDefaultLocale()
+    {
+        $this->translatableListener->setPersistDefaultLocaleTranslation( true );
+        $entity = new Article;
+        $this->repo
+            ->translate($entity, 'title', 'defaultLocale'   , 'title defaultLocale'   )
+            ->translate($entity, 'title', 'translatedLocale', 'title translatedLocale');
+
+        $this->em->persist($entity);
+        $this->em->flush();
+        $this->em->clear();
+
+        $entity = $this->em->find(self::ARTICLE, 1);
+        $entity->setTranslatableLocale('translatedLocale');
+        $this->em->refresh($entity);
+
+        $this->repo
+             ->translate($entity, 'title', 'defaultLocale', 'update title defaultLocale');
+
+        $this->em->flush();
+
+        $qb = $this->em->createQueryBuilder('a');
+        $qb->select('a')
+           ->from(self::ARTICLE, 'a')
+           ->where('a.id = 1');
+
+        $fields = $qb->getQuery()->getArrayResult();
+
+        $this->assertEquals( 'update title defaultLocale', $fields[0]['title']);
+    }
+
     /**
      * As this test does not provide a default translation, we assert
      * that a translated value is picked as default value
