@@ -81,11 +81,11 @@ class TranslationRepository extends EntityRepository
                 $transMeta->getReflectionProperty('objectClass')->setValue($trans, $objectClass);
                 $transMeta->getReflectionProperty('field')->setValue($trans, $field);
                 $transMeta->getReflectionProperty('locale')->setValue($trans, $locale);
-                if ($listener->getDefaultLocale() != $listener->getTranslatableLocale($entity, $meta) &&
-                    $locale === $listener->getDefaultLocale()) {
-                    $listener->setTranslationInDefaultLocale(spl_object_hash($entity), $field, $trans);
-                    $needsPersist = $listener->getPersistDefaultLocaleTranslation();
-                }
+            }
+            if ($listener->getDefaultLocale() != $listener->getTranslatableLocale($entity, $meta) &&
+                $locale === $listener->getDefaultLocale()) {
+                $listener->setTranslationInDefaultLocale(spl_object_hash($entity), $field, $trans);
+                $needsPersist = $listener->getPersistDefaultLocaleTranslation();
             }
             $type = Type::getType($meta->getTypeOfField($field));
             $transformed = $type->convertToDatabaseValue($value, $this->_em->getConnection()->getDatabasePlatform());
