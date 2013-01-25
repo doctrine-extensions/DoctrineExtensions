@@ -6,6 +6,7 @@ use Gedmo\Mapping\Event\AdapterInterface;
 use Gedmo\Exception\RuntimeException;
 use Doctrine\Common\EventArgs;
 use Doctrine\ODM\MongoDB\DocumentManager;
+use Doctrine\ODM\MongoDB\Event\LifecycleEventArgs;
 
 /**
  * Doctrine event adapter for ODM specific
@@ -148,5 +149,17 @@ class ODM implements AdapterInterface
     public function clearObjectChangeSet($uow, $oid)
     {
         $uow->clearDocumentChangeSet($oid);
+    }
+
+    /**
+     * Creates a ODM specific LifecycleEventArgs.
+     *
+     * @param $document
+     * @param \Doctrine\ODM\MongoDB\DocumentManager $documentManager
+     * @return \Doctrine\ODM\MongoDB\Event\LifecycleEventArgs
+     */
+    public function createLifecycleEventArgsInstance($document, $documentManager)
+    {
+        return new LifecycleEventArgs($document, $documentManager);
     }
 }
