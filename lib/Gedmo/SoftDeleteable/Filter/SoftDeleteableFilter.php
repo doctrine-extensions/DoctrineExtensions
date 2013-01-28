@@ -31,9 +31,7 @@ class SoftDeleteableFilter extends SQLFilter
         if (array_key_exists($class, $this->disabled) && $this->disabled[$class] === true) {
             return '';
         } elseif (array_key_exists($targetEntity->rootEntityName, $this->disabled) && $this->disabled[$targetEntity->rootEntityName] === true) {
-            if (!array_key_exists($class, $this->disabled) || $this->disabled[$class] !== false) {
-                return '';
-            }
+            return '';
         }
 
         $config = $this->getListener()->getConfiguration($this->getEntityManager(), $targetEntity->name);

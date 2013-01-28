@@ -21,17 +21,16 @@ class SoftDeleteableFilter extends BsonFilter
     {
         $class = $targetEntity->getName();
         if (array_key_exists($class, $this->disabled) && $this->disabled[$class] === true) {
-            return '';
+            return array();
         } elseif (array_key_exists($targetEntity->rootDocumentName, $this->disabled) && $this->disabled[$targetEntity->rootDocumentName] === true) {
-            if (!array_key_exists($class, $this->disabled) || $this->disabled[$class] !== false) {
-                return '';
-            }
+            return array();
         }
+
 
         $config = $this->getListener()->getConfiguration($this->getDocumentManager(), $targetEntity->name);
 
         if (!isset($config['softDeleteable']) || !$config['softDeleteable']) {
-            return '';
+            return array();
         }
 
         $column = $targetEntity->fieldMappings[$config['fieldName']];
@@ -75,6 +74,16 @@ class SoftDeleteableFilter extends BsonFilter
         }
 
         return $this->documentManager;
+    }
+
+    public function disableForDocument($class)
+    {
+        $this->disabled[$class] = true;
+    }
+
+    public function enableForDocument($class)
+    {
+        $this->disabled[$class] = false;
     }
 
 }

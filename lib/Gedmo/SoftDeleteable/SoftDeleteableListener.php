@@ -21,7 +21,6 @@ use Doctrine\Common\Persistence\ObjectManager,
  */
 class SoftDeleteableListener extends MappedEventSubscriber
 {
-
     /**
      * Pre soft-delete event
      *
