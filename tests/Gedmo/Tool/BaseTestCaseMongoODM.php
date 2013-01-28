@@ -10,6 +10,7 @@ use Doctrine\MongoDB\Connection;
 use Gedmo\Translatable\TranslatableListener;
 use Gedmo\Sluggable\SluggableListener;
 use Gedmo\Timestampable\TimestampableListener;
+use Gedmo\SoftDeleteable\SoftDeleteableListener;
 use Gedmo\Loggable\LoggableListener;
 
 /**
@@ -66,13 +67,12 @@ abstract class BaseTestCaseMongoODM extends \PHPUnit_Framework_TestCase
     protected function getMockDocumentManager(EventManager $evm = null, $config = null)
     {
         $conn = new Connection();
-        $config ?: $this->getMockAnnotatedConfig();
+        $config = $config ? $config : $this->getMockAnnotatedConfig();
 
         try {
             $this->dm = DocumentManager::create($conn, $config, $evm ?: $this->getEventManager());
             $this->dm->getConnection()->connect();
         } catch (\MongoException $e) {
-            die($e->getMessage());
             $this->markTestSkipped('Doctrine MongoDB ODM failed to connect');
         }
         return $this->dm;
@@ -89,7 +89,7 @@ abstract class BaseTestCaseMongoODM extends \PHPUnit_Framework_TestCase
     {
         $conn = $this->getMock('Doctrine\\MongoDB\\Connection');
 
-        $config ?: $this->getMockAnnotatedConfig();
+        $config = $config ? $config : $this->getMockAnnotatedConfig();
 
         $this->dm = DocumentManager::create($conn, $config, $evm ?: $this->getEventManager());
 
@@ -118,6 +118,7 @@ abstract class BaseTestCaseMongoODM extends \PHPUnit_Framework_TestCase
         $evm->addEventSubscriber(new LoggableListener);
         $evm->addEventSubscriber(new TranslatableListener);
         $evm->addEventSubscriber(new TimestampableListener);
+        $evm->addEventSubscriber(new SoftDeleteableListener());
 
         return $evm;
     }
