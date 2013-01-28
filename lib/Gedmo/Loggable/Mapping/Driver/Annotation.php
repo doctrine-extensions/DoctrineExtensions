@@ -2,8 +2,8 @@
 
 namespace Gedmo\Loggable\Mapping\Driver;
 
-use Doctrine\ORM\Mapping\ClassMetadata;
-use Gedmo\Mapping\Driver\AbstractAnnotationDriver,
+use Doctrine\Common\Persistence\Mapping\ClassMetadata,
+    Gedmo\Mapping\Driver\AbstractAnnotationDriver,
     Gedmo\Exception\InvalidMappingException;
 
 /**
