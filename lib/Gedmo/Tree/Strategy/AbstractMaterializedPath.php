@@ -17,6 +17,7 @@ use Gedmo\Exception\TreeLockingException;
  *
  * @author Gustavo Falco <comfortablynumb84@gmail.com>
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
+ * @author <rocco@roccosportal.com>
  * @package Gedmo.Tree.Strategy
  * @subpackage AbstractMaterializedPath
  * @link http://www.gediminasm.org
@@ -257,8 +258,10 @@ abstract class AbstractMaterializedPath implements Strategy
 
         $fieldMapping = $meta->getFieldMapping($config['path_source']);
 
-        // If PathSource field is a string, we append the ID to the path
-        if ($fieldMapping['type'] === 'string') {
+        // default behavior: if PathSource field is a string, we append the ID to the path
+        // path_append_id is true: always append id
+        // path_append_id is false: never append id
+        if ($config['path_append_id'] === true || ($fieldMapping['type'] === 'string' && $config['path_append_id']!==false)) {
             if (method_exists($meta, 'getIdentifierValue')) {
                 $identifier = $meta->getIdentifierValue($node);
             } else {
@@ -270,7 +273,6 @@ abstract class AbstractMaterializedPath implements Strategy
             $path .= '-'.$identifier;
         }
 
-        $path .= $config['path_separator'];
 
         if ($parent) {
             // Ensure parent has been initialized in the case where it's a proxy
@@ -283,13 +285,31 @@ abstract class AbstractMaterializedPath implements Strategy
                 $this->updateNode($om, $parent, $ea);
             }
 
-            $path = $pathProp->getValue($parent).$path;
+            $path = $pathProp->getValue($parent) . $config['path_separator'] . $path;
+        }
+		
+		
+        if($config['path_starts_with_seperator'] && (strlen($path) > 0 && $path[0] !== '/')){
+            $path = $config['path_separator'] . $path;
+        }
+
+        if($config['path_ends_with_seperator']) {
+            $path .= $config['path_separator'];
         }
         
         $pathProp->setValue($node, $path);
         $changes = array(
             $config['path'] => array(null, $path)
         );
+		
+		if(isset($config['path_hash'])){
+            $pathHash = md5($path);
+            $pathHashProp = $meta->getReflectionProperty($config['path_hash']);
+            $pathHashProp->setAccessible(true);
+            $pathHashProp->setValue($node, $pathHash);
+            $changes[$config['path_hash']] = array(null, $pathHash);
+        }
+
 
         if (isset($config['level'])) {
             $level = substr_count($path, $config['path_separator']);
@@ -301,6 +321,10 @@ abstract class AbstractMaterializedPath implements Strategy
 
         $uow->scheduleExtraUpdate($node, $changes);
         $ea->setOriginalObjectProperty($uow, $oid, $config['path'], $path);
+		
+		if(isset($config['path_hash'])){
+            $ea->setOriginalObjectProperty($uow, $oid, $config['path_hash'], $pathHash);
+        }
     }
 
     /**
