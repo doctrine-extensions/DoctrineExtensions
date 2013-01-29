@@ -269,7 +269,7 @@ class TranslationWalker extends SqlWalker
             $locale = $this->listener->getListenerLocale();
         }
         $defaultLocale = $this->listener->getDefaultLocale();
-        if ($locale === $defaultLocale) {
+        if ($locale === $defaultLocale  && !$this->listener->getPersistDefaultLocaleTranslation()) {
             // Skip preparation as there's no need to translate anything
             return;
         }
