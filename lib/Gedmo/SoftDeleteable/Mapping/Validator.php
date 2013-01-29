@@ -3,7 +3,7 @@
 namespace Gedmo\SoftDeleteable\Mapping;
 
 use Gedmo\Exception\InvalidMappingException;
-use \Doctrine\Common\Persistence\Mapping\ClassMetadata;
+use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 
 /**
  * This class is used to validate mapping information

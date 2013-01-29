@@ -3,6 +3,7 @@
 namespace Gedmo\Translatable;
 
 use Doctrine\Common\EventArgs;
+use Doctrine\ORM\ORMInvalidArgumentException;
 use Gedmo\Tool\Wrapper\AbstractWrapper;
 use Gedmo\Mapping\MappedEventSubscriber;
 use Gedmo\Translatable\Mapping\Event\TranslatableAdapter;
@@ -122,6 +123,7 @@ class TranslatableListener extends MappedEventSubscriber
         return array(
             'postLoad',
             'postPersist',
+            'preFlush',
             'onFlush',
             'loadClassMetadata'
         );
@@ -308,6 +310,43 @@ class TranslatableListener extends MappedEventSubscriber
     }
 
     /**
+     * Handle translation changes in default locale
+     *
+     * This has to be done in the preFlush because, when an entity has been loaded
+     * in a different locale, no changes will be detected.
+     *
+     * @param EventArgs $args
+     * @return void
+     */
+    public function preFlush(EventArgs $args)
+    {
+        $ea = $this->getEventAdapter($args);
+        $om = $ea->getObjectManager();
+        $uow = $om->getUnitOfWork();
+
+        foreach ($this->translationInDefaultLocale as $oid => $fields) {
+            $trans = reset($fields);
+            if ($ea->usesPersonalTranslation(get_class($trans))) {
+                $entity = $trans->getObject();
+            } else {
+                $entity = $uow->tryGetById($trans->getForeignKey(), $trans->getObjectClass());
+            }
+
+            if (!$entity) {
+                continue;
+            }
+
+            try {
+                $uow->scheduleForUpdate($entity);
+            } catch (ORMInvalidArgumentException $e) {
+                foreach ($fields as $field => $trans) {
+                    $this->removeTranslationInDefaultLocale($oid, $field);
+                }
+            }
+        }
+    }
+
+    /**
      * Looks for translatable objects being inserted or updated
      * for further processing
      *
@@ -490,7 +529,7 @@ class TranslatableListener extends MappedEventSubscriber
         foreach ($translatableFields as $field) {
             $wasPersistedSeparetely = false;
             $skip = isset($this->translatedInLocale[$oid]) && $locale === $this->translatedInLocale[$oid];
-            $skip = $skip && !isset($changeSet[$field]);
+            $skip = $skip && !isset($changeSet[$field]) && !$this->getTranslationInDefaultLocale($oid, $field);
             if ($skip) {
                 continue; // locale is same and nothing changed
             }
@@ -597,9 +636,15 @@ class TranslatableListener extends MappedEventSubscriber
             if ($locale !== $this->defaultLocale) {
                 $ea->clearObjectChangeSet($uow, $oid);
                 // recompute changeset only if there are changes other than reverted translations
-                if ($modifiedChangeSet) {
+                if ($modifiedChangeSet || $this->hasTranslationsInDefaultLocale($oid)) {
                     foreach ($modifiedChangeSet as $field => $changes) {
                         $ea->setOriginalObjectProperty($uow, $oid, $field, $changes[0]);
+                    }
+                    foreach ($translatableFields as $field) {
+                        if ($this->getTranslationInDefaultLocale($oid, $field) !== null) {
+                            $wrapped->setPropertyValue($field, $this->getTranslationInDefaultLocale($oid, $field)->getContent());
+                            $this->removeTranslationInDefaultLocale($oid, $field);
+                        }
                     }
                     $ea->recomputeSingleObjectChangeset($uow, $meta, $object);
                 }
@@ -664,5 +709,17 @@ class TranslatableListener extends MappedEventSubscriber
             $ret = null;
         }
         return $ret;
+    }
+
+    /**
+     * Check if object has any translation object which represents translation in default language.
+     * This is for internal use only.
+     *
+     * @param    string    $oid   hash of the basic entity
+     * @return   bool
+     */
+    public function hasTranslationsInDefaultLocale($oid)
+    {
+        return array_key_exists($oid, $this->translationInDefaultLocale);
     }
 }
