@@ -190,8 +190,8 @@ class Annotation extends AbstractAnnotationDriver
                 $config['path'] = $field;
                 $config['path_separator'] = $pathAnnotation->separator;
 				$config['path_append_id'] = $pathAnnotation->appendId;
-                $config['path_starts_with_seperator'] = $pathAnnotation->startsWithSeperator;
-                $config['path_ends_with_seperator'] = $pathAnnotation->endsWithSeperator;
+                $config['path_starts_with_separator'] = $pathAnnotation->startsWithSeparator;
+                $config['path_ends_with_separator'] = $pathAnnotation->endsWithSeparator;
             }
             // path source
             if ($this->reader->getPropertyAnnotation($property, self::PATH_SOURCE)) {

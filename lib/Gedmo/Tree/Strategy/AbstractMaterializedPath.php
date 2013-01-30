@@ -285,15 +285,25 @@ abstract class AbstractMaterializedPath implements Strategy
                 $this->updateNode($om, $parent, $ea);
             }
 
-            $path = $pathProp->getValue($parent) . $config['path_separator'] . $path;
+            $parentPath = $pathProp->getValue($parent);
+            // if parent path not ends with separator
+            if($parentPath[strlen($parentPath) - 1] !== $config['path_separator']){
+         		// add separator
+            	$path = $pathProp->getValue($parent) .  $config['path_separator'] . $path;
+            }
+            else {
+            	// don't add separator
+            	$path = $pathProp->getValue($parent) . $path;
+            }
+           
         }
 		
 		
-        if($config['path_starts_with_seperator'] && (strlen($path) > 0 && $path[0] !== '/')){
+        if($config['path_starts_with_separator'] && (strlen($path) > 0 && $path[0] !== $config['path_separator'])){
             $path = $config['path_separator'] . $path;
         }
 
-        if($config['path_ends_with_seperator']) {
+        if($config['path_ends_with_separator'] && ($path[strlen($path) - 1] !== $config['path_separator'])) {
             $path .= $config['path_separator'];
         }
         
