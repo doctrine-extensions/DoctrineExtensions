@@ -41,7 +41,7 @@ class MaterializedPathORMFeaturesTest extends BaseTestCaseORM
      */
     function checkPathsAndHash()
     {
-    	$category = $this->createCategory();
+        $category = $this->createCategory();
         $category->setTitle('1');
         $category2 = $this->createCategory();
         $category2->setTitle('2');
@@ -68,14 +68,14 @@ class MaterializedPathORMFeaturesTest extends BaseTestCaseORM
         $this->assertEquals($this->generatePath(array('1' => $category->getId(), '2' => $category2->getId())), $category2->getPath());
         $this->assertEquals($this->generatePath(array('1' => $category->getId(), '2' => $category2->getId(), '3' => $category3->getId())), $category3->getPath());
         $this->assertEquals($this->generatePath(array('4' => $category4->getId())), $category4->getPath());
-        
+
         $this->assertEquals($this->generatePathHash(array('1' => $category->getId())), $category->getPathHash());
         $this->assertEquals($this->generatePathHash(array('1' => $category->getId(), '2' => $category2->getId())), $category2->getPathHash());
         $this->assertEquals($this->generatePathHash(array('1' => $category->getId(), '2' => $category2->getId(), '3' => $category3->getId())), $category3->getPathHash());
         $this->assertEquals($this->generatePathHash(array('4' => $category4->getId())), $category4->getPathHash());
     }
-    
-    
+
+
 
 
     public function createCategory()
@@ -93,17 +93,17 @@ class MaterializedPathORMFeaturesTest extends BaseTestCaseORM
 
     public function generatePath(array $sources)
     {
-    	$path = '';
+        $path = '';
         foreach ($sources as $p => $id) {
             $path .= $this->config['path_separator'] . $p;
         }
 
         return $path;
     }
-    
+
     public function generatePathHash(array $sources)
     {
-    	
-    	return md5($this->generatePath($sources));
+
+        return md5($this->generatePath($sources));
     }
 }

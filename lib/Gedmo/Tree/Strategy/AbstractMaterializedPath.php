@@ -277,7 +277,7 @@ abstract class AbstractMaterializedPath implements Strategy
         if ($parent) {
             // Ensure parent has been initialized in the case where it's a proxy
             $om->initializeObject($parent);
-            
+
             $changeSet = $uow->isScheduledForUpdate($parent) ? $ea->getObjectChangeSet($uow, $parent) : false;
             $pathOrPathSourceHasChanged = $changeSet && (isset($changeSet[$config['path_source']]) || isset($changeSet[$config['path']]));
 
@@ -288,17 +288,17 @@ abstract class AbstractMaterializedPath implements Strategy
             $parentPath = $pathProp->getValue($parent);
             // if parent path not ends with separator
             if($parentPath[strlen($parentPath) - 1] !== $config['path_separator']){
-         		// add separator
-            	$path = $pathProp->getValue($parent) .  $config['path_separator'] . $path;
+                 // add separator
+                $path = $pathProp->getValue($parent) .  $config['path_separator'] . $path;
             }
             else {
-            	// don't add separator
-            	$path = $pathProp->getValue($parent) . $path;
+                // don't add separator
+                $path = $pathProp->getValue($parent) . $path;
             }
-           
+
         }
-		
-		
+
+
         if($config['path_starts_with_separator'] && (strlen($path) > 0 && $path[0] !== $config['path_separator'])){
             $path = $config['path_separator'] . $path;
         }
@@ -306,13 +306,13 @@ abstract class AbstractMaterializedPath implements Strategy
         if($config['path_ends_with_separator'] && ($path[strlen($path) - 1] !== $config['path_separator'])) {
             $path .= $config['path_separator'];
         }
-        
+
         $pathProp->setValue($node, $path);
         $changes = array(
             $config['path'] => array(null, $path)
         );
-		
-		if(isset($config['path_hash'])){
+
+        if(isset($config['path_hash'])){
             $pathHash = md5($path);
             $pathHashProp = $meta->getReflectionProperty($config['path_hash']);
             $pathHashProp->setAccessible(true);
@@ -331,8 +331,8 @@ abstract class AbstractMaterializedPath implements Strategy
 
         $uow->scheduleExtraUpdate($node, $changes);
         $ea->setOriginalObjectProperty($uow, $oid, $config['path'], $path);
-		
-		if(isset($config['path_hash'])){
+
+        if(isset($config['path_hash'])){
             $ea->setOriginalObjectProperty($uow, $oid, $config['path_hash'], $pathHash);
         }
     }
@@ -388,7 +388,7 @@ abstract class AbstractMaterializedPath implements Strategy
 
                 $reflMethod->invoke($parentNode);
             }
-            
+
             // If tree is already locked, we throw an exception
             $lockTimeProp = $meta->getReflectionProperty($config['lock_time']);
             $lockTimeProp->setAccessible(true);
@@ -466,7 +466,7 @@ abstract class AbstractMaterializedPath implements Strategy
             }
         }
     }
-    
+
     /**
      * Locks all needed trees
      *

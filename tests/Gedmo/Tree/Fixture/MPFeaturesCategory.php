@@ -24,7 +24,7 @@ class MPFeaturesCategory
      * @ORM\Column(name="path", type="string", length=3000, nullable=true)
      */
     private $path;
-    
+
     /**
      * @Gedmo\TreePathHash
      * @ORM\Column(name="pathhash", type="string", length=32, nullable=true)
@@ -101,8 +101,8 @@ class MPFeaturesCategory
     {
         return $this->level;
     }
-    
+
     public function getPathHash(){
-    	return $this->pathHash;
+        return $this->pathHash;
     }
 }

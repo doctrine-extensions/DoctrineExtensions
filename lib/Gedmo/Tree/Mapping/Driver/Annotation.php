@@ -65,8 +65,8 @@ class Annotation extends AbstractAnnotationDriver
      * Annotation to specify path source class
      */
     const PATH_SOURCE = 'Gedmo\\Mapping\\Annotation\\TreePathSource';
-	
-	/**
+
+    /**
      * Annotation to specify path hash class
      */
     const PATH_HASH = 'Gedmo\\Mapping\\Annotation\\TreePathHash';
@@ -189,7 +189,7 @@ class Annotation extends AbstractAnnotationDriver
                 }
                 $config['path'] = $field;
                 $config['path_separator'] = $pathAnnotation->separator;
-				$config['path_append_id'] = $pathAnnotation->appendId;
+                $config['path_append_id'] = $pathAnnotation->appendId;
                 $config['path_starts_with_separator'] = $pathAnnotation->startsWithSeparator;
                 $config['path_ends_with_separator'] = $pathAnnotation->endsWithSeparator;
             }
@@ -204,8 +204,8 @@ class Annotation extends AbstractAnnotationDriver
                 }
                 $config['path_source'] = $field;
             }
-			
-			 // path hash
+
+             // path hash
             if ($this->reader->getPropertyAnnotation($property, self::PATH_HASH)) {
                 $field = $property->getName();
                 if (!$meta->hasField($field)) {

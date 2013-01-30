@@ -21,8 +21,8 @@ use Doctrine\Common\Annotations\Annotation;
 final class TreePath extends Annotation
 {
     public $separator = ',';
-	
-	public $appendId = null;
+
+    public $appendId = null;
 
     public $startsWithSeparator = false;
 

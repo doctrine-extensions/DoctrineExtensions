@@ -17,7 +17,7 @@ use Gedmo\Exception\InvalidMappingException;
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class Validator 
+class Validator
 {
     /**
      * List of types which are valid for tree fields
@@ -55,8 +55,8 @@ class Validator
         'int',
         'float'
     );
-	
-	/**
+
+    /**
      * List of types which are valid for the path hash (materialized path strategy)
      *
      * @var array
@@ -78,7 +78,7 @@ class Validator
         'string'
     );
 
-    
+
 
     /**
      * Checks if $field type is valid
@@ -118,8 +118,8 @@ class Validator
         $mapping = $meta->getFieldMapping($field);
         return $mapping && in_array($mapping['type'], $this->validPathSourceTypes);
     }
-	
-	/**
+
+    /**
      * Checks if $field type is valid for PathHash field
      *
      * @param object $meta
