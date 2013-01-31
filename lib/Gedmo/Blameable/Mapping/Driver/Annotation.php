@@ -31,6 +31,7 @@ class Annotation extends AbstractAnnotationDriver
      * @var array
      */
     protected $validTypes = array(
+        'one',
         'string',
         'int',
     );
