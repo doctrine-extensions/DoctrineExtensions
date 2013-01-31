@@ -21,7 +21,7 @@ use Gedmo\Blameable\Mapping\Event\BlameableAdapter;
  */
 class BlameableListener extends TimestampableListener
 {
-    private $user;
+    protected $user;
 
     /**
      * Get the user value to set on a blameable field
@@ -85,6 +85,7 @@ class BlameableListener extends TimestampableListener
         $property = $meta->getReflectionProperty($field);
         $oldValue = $property->getValue($object);
         $newValue = $this->getUserValue($meta, $field);
+
         $property->setValue($object, $newValue);
         if ($object instanceof NotifyPropertyChanged) {
             $uow = $ea->getObjectManager()->getUnitOfWork();

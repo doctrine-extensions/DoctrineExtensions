@@ -134,7 +134,9 @@ class TimestampableListener extends MappedEventSubscriber
         $object = $ea->getObject();
 
         $meta = $om->getClassMetadata(get_class($object));
-        if ($config = $this->getConfiguration($om, $meta->name)) {
+
+        if ($config = $this->getConfiguration($om, $meta->getName())) {
+
             if (isset($config['update'])) {
                 foreach ($config['update'] as $field) {
                     if ($meta->getReflectionProperty($field)->getValue($object) === null) { // let manual values
