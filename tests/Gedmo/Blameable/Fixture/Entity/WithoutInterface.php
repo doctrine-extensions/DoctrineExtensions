@@ -1,5 +1,5 @@
 <?php
-namespace Blameable\Fixture;
+namespace Blameable\Fixture\Entity;
 
 use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
