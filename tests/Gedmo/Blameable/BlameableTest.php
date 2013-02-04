@@ -5,9 +5,9 @@ namespace Gedmo\Blameable;
 use Doctrine\Common\EventManager;
 use Tool\BaseTestCaseORM;
 use Doctrine\Common\Util\Debug,
-    Blameable\Fixture\Article,
-    Blameable\Fixture\Comment,
-    Blameable\Fixture\Type;
+    Blameable\Fixture\Entity\Article,
+    Blameable\Fixture\Entity\Comment,
+    Blameable\Fixture\Entity\Type;
 
 /**
  * These are tests for Blameable behavior
@@ -19,9 +19,9 @@ use Doctrine\Common\Util\Debug,
  */
 class BlameableTest extends BaseTestCaseORM
 {
-    const ARTICLE = "Blameable\\Fixture\\Article";
-    const COMMENT = "Blameable\\Fixture\\Comment";
-    const TYPE = "Blameable\\Fixture\\Type";
+    const ARTICLE = "Blameable\\Fixture\\Entity\\Article";
+    const COMMENT = "Blameable\\Fixture\\Entity\\Comment";
+    const TYPE = "Blameable\\Fixture\\Entity\\Type";
 
     protected function setUp()
     {

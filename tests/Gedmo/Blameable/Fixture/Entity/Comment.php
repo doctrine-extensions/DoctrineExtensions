@@ -1,6 +1,6 @@
 <?php
 
-namespace Blameable\Fixture;
+namespace Blameable\Fixture\Entity;
 
 use Gedmo\Blameable\Blameable;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -20,7 +20,7 @@ class Comment implements Blameable
     private $message;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Blameable\Fixture\Article", inversedBy="comments")
+     * @ORM\ManyToOne(targetEntity="Blameable\Fixture\Entity\Article", inversedBy="comments")
      */
     private $article;
 
