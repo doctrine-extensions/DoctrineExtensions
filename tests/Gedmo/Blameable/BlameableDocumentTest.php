@@ -18,16 +18,18 @@ use Blameable\Fixture\Document\Article,
  */
 class BlameableDocumentTest extends BaseTestCaseMongoODM
 {
-    const ARTICLE = 'Blameable\Fixture\Document\Article';
+    const TEST_USERNAME = 'testuser';
+
     const TYPE = 'Blameable\Fixture\Document\Type';
     const USER = 'Blameable\Fixture\Document\User';
+    const ARTICLE = 'Blameable\Fixture\Document\Article';
 
     protected function setUp()
     {
         parent::setUp();
 
         $user = new User();
-        $user->setUsername('testuser');
+        $user->setUsername(self::TEST_USERNAME);
 
         $listener = new BlameableListener();
         $listener->setUserValue($user);
@@ -35,18 +37,20 @@ class BlameableDocumentTest extends BaseTestCaseMongoODM
         $evm = new EventManager();
         $evm->addEventSubscriber($listener);
 
-        $this->getMockDocumentManager($evm);
+        $manager = $this->getMockDocumentManager($evm);
+        $manager->persist($user);
+        $manager->flush();
+
         $this->populate();
     }
-
 
     public function testBlameable()
     {
         $repo = $this->dm->getRepository(self::ARTICLE);
         $article = $repo->findOneByTitle('Blameable Article');
 
-        $this->assertEquals('testuser', $article->getCreated());
-        $this->assertEquals('testuser', $article->getUpdated());
+        $this->assertEquals(self::TEST_USERNAME, $article->getCreated());
+        $this->assertEquals(self::TEST_USERNAME, $article->getUpdated());
 
         $published = new Type;
         $published->setIdentifier('published');
@@ -59,15 +63,17 @@ class BlameableDocumentTest extends BaseTestCaseMongoODM
         $this->dm->clear();
 
         $article = $repo->findOneByTitle('Blameable Article');
-        $this->assertEquals('testuser', $article->getPublished());
+
+        $this->assertEquals(self::TEST_USERNAME, $article->getPublished());
+        $this->assertEquals(self::TEST_USERNAME, $article->getCreator()->getUsername());
     }
 
     public function testForcedValues()
     {
         $sport = new Article();
         $sport->setTitle('sport forced');
-        $sport->setCreated('myuser');
-        $sport->setUpdated('myuser');
+        $sport->setCreated(self::TEST_USERNAME);
+        $sport->setUpdated(self::TEST_USERNAME);
 
         $this->dm->persist($sport);
         $this->dm->flush();
@@ -75,22 +81,22 @@ class BlameableDocumentTest extends BaseTestCaseMongoODM
 
         $repo = $this->dm->getRepository(self::ARTICLE);
         $sport = $repo->findOneByTitle('sport forced');
-        $this->assertEquals('myuser', $sport->getCreated());
-        $this->assertEquals('myuser', $sport->getUpdated());
+        $this->assertEquals(self::TEST_USERNAME, $sport->getCreated());
+        $this->assertEquals(self::TEST_USERNAME, $sport->getUpdated());
 
         $published = new Type;
         $published->setIdentifier('published');
         $published->setTitle('Published');
 
         $sport->setType($published);
-        $sport->setPublished('myuser');
+        $sport->setPublished(self::TEST_USERNAME);
         $this->dm->persist($sport);
         $this->dm->persist($published);
         $this->dm->flush();
         $this->dm->clear();
 
         $sport = $repo->findOneByTitle('sport forced');
-        $this->assertEquals('myuser', $sport->getPublished());
+        $this->assertEquals(self::TEST_USERNAME, $sport->getPublished());
     }
 
     private function populate()
