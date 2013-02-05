@@ -28,8 +28,8 @@
         "doctrine/common": ">=2.2,<2.5-dev"
     },
     "require-dev": {
-        "doctrine/mongodb": ">=1.0.0-BETA1",
-        "doctrine/mongodb-odm": ">=1.0.0-BETA6",
+        "doctrine/mongodb": ">=1.0.1",
+        "doctrine/mongodb-odm": ">=1.0.0-BETA7",
         "doctrine/orm": ">=2.2",
         "doctrine/dbal": ">=2.2",
         "symfony/yaml": "2.*"
