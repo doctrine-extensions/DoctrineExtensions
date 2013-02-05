@@ -53,16 +53,15 @@ class Yaml extends File implements Driver
                         if (!$this->isValidField($meta, $field)) {
                             throw new InvalidMappingException("Cannot use field - [{$field}] for slug storage, type is not valid and must be 'string' or 'text' in class - {$meta->name}");
                         }
-						// process slug handlers
-                        if (!empty($slug['handlers']) && is_array($slug['handlers'])) {
-                            foreach ($slug['handlers'] as $handler) {
-                                foreach ($handler as $class => $options) {
-                                    $config['handlers'][$class] = array();
-                                    foreach ((array)$options as $name => $value) {
-                                        $config['handlers'][$class][$name] = $value;
-                                    }
+                        // process slug handlers
+                        $handlers = array();
+                        if (isset($slug['handlers'])) {
+                            foreach ($slug['handlers'] as $handlerClass => $options) {
+                                if (!strlen($handlerClass)) {
+                                    throw new InvalidMappingException("SlugHandler class: {$handlerClass} should be a valid class name in entity - {$meta->name}");
                                 }
-                                $class::validate($config['handlers'][$class], $meta);
+                                $handlers[$handlerClass] = $options;
+                                $handlerClass::validate($handlers[$handlerClass], $meta);
                             }
                         }
                         // process slug fields
@@ -79,6 +78,7 @@ class Yaml extends File implements Driver
                         }
 
                         $config['slugs'][$field]['fields'] = $slug['fields'];
+                        $config['slugs'][$field]['handlers'] = $handlers;
                         $config['slugs'][$field]['slug'] = $field;
                         $config['slugs'][$field]['style'] = isset($slug['style']) ?
                             (string)$slug['style'] : 'default';
