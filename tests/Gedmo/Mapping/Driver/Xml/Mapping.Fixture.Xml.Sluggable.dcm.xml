@@ -11,7 +11,17 @@
         <field name="code" type="string" length="16"/>
         <field name="ean" type="string" length="13"/>
         <field name="slug" type="string" length="156" unique="true">
-            <gedmo:slug unique="true" style="camel" updatable="false" separator="_" fields="title, ean, code" />
+            <gedmo:slug unique="true" style="camel" updatable="false" separator="_" fields="title, ean, code">
+                <gedmo:handler class="Gedmo\Sluggable\Handler\TreeSlugHandler">
+                    <gedmo:handler-option name="parentRelationField" value="parent"/>
+                    <gedmo:handler-option name="separator" value="/"/>
+                </gedmo:handler>
+                <gedmo:handler class="Gedmo\Sluggable\Handler\RelativeSlugHandler">
+                    <gedmo:handler-option name="relationField" value="parent"/>
+                    <gedmo:handler-option name="relationSlugField" value="test"/>
+                    <gedmo:handler-option name="separator" value="-"/>
+                </gedmo:handler>
+            </gedmo:slug>
         </field>
         <many-to-one field="parent" target-entity="Sluggable">
             <join-column name="parent_id" referenced-column-name="id" on-delete="SET_NULL"/>
