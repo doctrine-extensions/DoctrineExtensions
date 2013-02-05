@@ -726,6 +726,9 @@ class Company
 }
 ```
 
+For other mapping drivers see
+[xml](https://github.com/l3pp4rd/DoctrineExtensions/blob/master/tests/Gedmo/Mapping/Driver/Xml/Mapping.Fixture.Xml.Sluggable.dcm.xml) or [yaml](https://github.com/l3pp4rd/DoctrineExtensions/blob/master/tests/Gedmo/Mapping/Driver/Yaml/Mapping.Fixture.Yaml.Category.dcm.yml) examples from tests
+
 And the example usage:
 
 ``` php
