@@ -7,7 +7,7 @@ refactoring doctrine2 extensions. The repository can be moved to the maintainers
 left on mine. I do not want users to lose availability of stable extensions which they were and are
 used to, at the moment.
 
-**Version 2.3.2**
+**Version 2.3.4**
 
 [![Build Status](https://secure.travis-ci.org/l3pp4rd/DoctrineExtensions.png?branch=master)](http://travis-ci.org/l3pp4rd/DoctrineExtensions)
 
@@ -16,6 +16,10 @@ layer. The support for it has been made and tagged with **2.3.1** version tag. I
 with latest version of doctrine mapping at master branches
 
 ### Latest updates
+
+**2013-02-05**
+
+- **Sluggable** added back slug handler mapping driver support for yaml and xml.
 
 **2012-12-06**
 
