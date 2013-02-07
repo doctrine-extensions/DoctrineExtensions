@@ -7,7 +7,7 @@ namespace Gedmo\ReferenceIntegrity;
  * Entities which in some cases needs to be identified te have
  * ReferenceIntegrity checks
  *
- * @author Evert Harmeling
+ * @author Evert Harmeling <evert.harmeling@freshheads.com>
  * @package Gedmo.ReferenceIntegrity
  * @subpackage ReferenceIntegrity
  * @link http://www.gediminasm.org

@@ -9,9 +9,6 @@ use Tool\BaseTestCaseMongoODM;
 /**
  * These are tests for the ReferenceIntegrity extension
  *
- * @todo test 'mappedBy' setting (see ReferenceIntegrityListener:74)
- * @todo test 'nullable' setting (see ReferenceIntegrityListener:80)
- *
  * @author Evert Harmeling <evert.harmeling@freshheads.com>
  * @package Gedmo.ReferenceIntegrity
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
