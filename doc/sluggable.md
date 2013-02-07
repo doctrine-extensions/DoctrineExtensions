@@ -58,7 +58,7 @@ This article will cover the basic installation and functionality of **Sluggable*
 behavior
 
 Content:
-    
+
 - [Including](#including-extension) the extension
 - Entity [example](#entity-mapping)
 - Document [example](#document-mapping)
@@ -106,7 +106,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Article
 {
-    /** 
+    /**
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
@@ -177,7 +177,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
  */
 class Article
 {
-    /** 
+    /**
      * @ODM\Id
      */
     private $id;
@@ -503,7 +503,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Article
 {
-    /** 
+    /**
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
@@ -521,26 +521,26 @@ class Article
      * @ORM\Column(length=16)
      */
     private $code;
-    
+
     /**
      * @Gedmo\Translatable
      * @Gedmo\Slug(fields={"title", "code"})
      * @ORM\Column(length=128, unique=true)
      */
     private $slug;
-    
+
     /**
      * @ORM\Column(type="string", length=64)
      */
     private $uniqueTitle;
-    
+
     /**
      * @Gedmo\Slug(fields={"uniqueTitle"})
      * @ORM\Column(type="string", length=128, unique=true)
      */
     private $uniqueSlug;
 
-    
+
 
     public function getId()
     {
@@ -571,7 +571,7 @@ class Article
     {
         return $this->slug;
     }
-    
+
     public function getUniqueSlug()
     {
         return $this->uniqueSlug;
@@ -725,6 +725,9 @@ class Company
     }
 }
 ```
+
+For other mapping drivers see
+[xml](https://github.com/l3pp4rd/DoctrineExtensions/blob/master/tests/Gedmo/Mapping/Driver/Xml/Mapping.Fixture.Xml.Sluggable.dcm.xml) or [yaml](https://github.com/l3pp4rd/DoctrineExtensions/blob/master/tests/Gedmo/Mapping/Driver/Yaml/Mapping.Fixture.Yaml.Category.dcm.yml) examples from tests
 
 And the example usage:
 

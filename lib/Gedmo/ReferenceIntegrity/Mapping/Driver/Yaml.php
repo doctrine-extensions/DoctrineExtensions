@@ -36,31 +36,40 @@ class Yaml extends File implements Driver
 
         if (isset($mapping['fields'])) {
             foreach ($mapping['fields'] as $property => $fieldMapping) {
-                if (isset($fieldMapping['gedmo']['referenceIntegrity']['actions'])) {
-                    foreach ($fieldMapping['gedmo']['referenceIntegrity']['actions'] as $field => $action) {
-                        if (!$meta->hasField($property)) {
-                            throw new InvalidMappingException(
-                                sprintf(
-                                    "Unable to find reference integrity [%s] as mapped property in entity - %s",
-                                    $property,
-                                    $meta->name
-                                )
-                            );
-                        }
-
-                        if (!in_array($action, $validator->getIntegrityActions())) {
-                            throw new InvalidMappingException(
-                                sprintf(
-                                    "Field - [%s] does not have a valid integrity option, [%s] in class - %s",
-                                    $property,
-                                    implode($validator->getIntegrityActions(), ', '),
-                                    $meta->name
-                                )
-                            );
-                        }
-
-                        $config['referenceIntegrities'][$property][$field] = $action;
+                if (isset($fieldMapping['gedmo']['referenceIntegrity'])) {
+                    if (!$meta->hasField($property)) {
+                        throw new InvalidMappingException(
+                            sprintf(
+                                "Unable to find reference integrity [%s] as mapped property in entity - %s",
+                                $property,
+                                $meta->name
+                            )
+                        );
                     }
+
+                    if (empty($mapping['fields'][$property]['mappedBy'])) {
+                        throw new InvalidMappingException(
+                            sprintf(
+                                "'mappedBy' should be set on '%s' in '%s'",
+                                $property,
+                                $meta->name
+                            )
+                        );
+                    }
+
+                    if (!in_array($fieldMapping['gedmo']['referenceIntegrity'], $validator->getIntegrityActions())) {
+                        throw new InvalidMappingException(
+                            sprintf(
+                                "Field - [%s] does not have a valid integrity option, [%s] in class - %s",
+                                $property,
+                                implode($validator->getIntegrityActions(), ', '),
+                                $meta->name
+                            )
+                        );
+                    }
+
+                    $config['referenceIntegrities'][$property][$mapping['fields'][$property]['mappedBy']] =
+                        $fieldMapping['gedmo']['referenceIntegrity'];
                 }
             }
         }

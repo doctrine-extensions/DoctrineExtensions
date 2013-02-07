@@ -53,6 +53,17 @@ class Yaml extends File implements Driver
                         if (!$this->isValidField($meta, $field)) {
                             throw new InvalidMappingException("Cannot use field - [{$field}] for slug storage, type is not valid and must be 'string' or 'text' in class - {$meta->name}");
                         }
+                        // process slug handlers
+                        $handlers = array();
+                        if (isset($slug['handlers'])) {
+                            foreach ($slug['handlers'] as $handlerClass => $options) {
+                                if (!strlen($handlerClass)) {
+                                    throw new InvalidMappingException("SlugHandler class: {$handlerClass} should be a valid class name in entity - {$meta->name}");
+                                }
+                                $handlers[$handlerClass] = $options;
+                                $handlerClass::validate($handlers[$handlerClass], $meta);
+                            }
+                        }
                         // process slug fields
                         if (empty($slug['fields']) || !is_array($slug['fields'])) {
                             throw new InvalidMappingException("Slug must contain at least one field for slug generation in class - {$meta->name}");
@@ -67,6 +78,7 @@ class Yaml extends File implements Driver
                         }
 
                         $config['slugs'][$field]['fields'] = $slug['fields'];
+                        $config['slugs'][$field]['handlers'] = $handlers;
                         $config['slugs'][$field]['slug'] = $field;
                         $config['slugs'][$field]['style'] = isset($slug['style']) ?
                             (string)$slug['style'] : 'default';

@@ -321,7 +321,7 @@ class SortableListener extends MappedEventSubscriber
                 // now walk through the unit of work in memory objects and sync those
                 foreach ($em->getUnitOfWork()->getIdentityMap() as $className => $objects) {
                     // for inheritance mapped classes, only root is always in the identity map
-                    if ($className !== $meta->rootEntityName) {
+                    if ($className !== $meta->rootEntityName || !$this->getConfiguration($em, $className)) {
                         continue;
                     }
                     foreach ($objects as $object) {

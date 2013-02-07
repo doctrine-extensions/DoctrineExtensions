@@ -27,9 +27,7 @@ class Type
 
     /**
      * @ODM\ReferenceOne(targetDocument="Article", mappedBy="type")
-     * @Gedmo\ReferenceIntegrity(actions={
-     *      @Gedmo\ReferenceIntegrityAction(field="type", action="nullify")
-     * })
+     * @Gedmo\ReferenceIntegrity("nullify")
      * @var Article
      */
     protected $article;

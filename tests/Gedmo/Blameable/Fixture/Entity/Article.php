@@ -1,5 +1,5 @@
 <?php
-namespace Blameable\Fixture;
+namespace Blameable\Fixture\Entity;
 
 use Gedmo\Blameable\Blameable;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -19,7 +19,7 @@ class Article implements Blameable
     private $title;
 
     /**
-     * @ORM\OneToMany(targetEntity="Blameable\Fixture\Comment", mappedBy="article")
+     * @ORM\OneToMany(targetEntity="Blameable\Fixture\Entity\Comment", mappedBy="article")
      */
     private $comments;
 

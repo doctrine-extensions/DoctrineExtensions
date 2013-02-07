@@ -16,9 +16,4 @@ use Doctrine\Common\Annotations\Annotation;
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 final class ReferenceIntegrity extends Annotation
-{
-    /**
-     * @var array<Gedmo\Mapping\Annotation\ReferenceIntegrityAction>
-     */
-    public $actions = array();
-}
+{}

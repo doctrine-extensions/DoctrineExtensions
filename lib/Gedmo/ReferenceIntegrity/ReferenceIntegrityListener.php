@@ -58,70 +58,68 @@ class ReferenceIntegrityListener extends MappedEventSubscriber
 
         if ($config = $this->getConfiguration($om, $class)) {
             $flush = false;
-            foreach ($config['referenceIntegrities'] as $property => $options) {
-                foreach ($options as $field => $action) {
-                    $reflProp = $meta->getReflectionProperty($property);
-                    $refDoc = $reflProp->getValue($document);
-                    $fieldMapping = $meta->getFieldMapping($property);
+            foreach ($config['referenceIntegrity'] as $property => $action) {
+                $reflProp = $meta->getReflectionProperty($property);
+                $refDoc = $reflProp->getValue($document);
+                $fieldMapping = $meta->getFieldMapping($property);
 
-                    switch ($action) {
-                        case Validator::NULLIFY:
-                            if (!isset($fieldMapping['mappedBy'])) {
-                                throw new InvalidMappingException(
-                                    sprintf(
-                                        "Reference '%s' on '%s' should have 'mappedBy' option defined",
-                                        $property,
-                                        $meta->name
-                                    )
-                                );
+                switch ($action) {
+                    case Validator::NULLIFY:
+                        if (!isset($fieldMapping['mappedBy'])) {
+                            throw new InvalidMappingException(
+                                sprintf(
+                                    "Reference '%s' on '%s' should have 'mappedBy' option defined",
+                                    $property,
+                                    $meta->name
+                                )
+                            );
+                        }
+
+                        $subMeta = $om->getClassMetadata($fieldMapping['targetDocument']);
+
+                        if (!$subMeta->hasField($fieldMapping['mappedBy'])) {
+                            throw new InvalidMappingException(
+                                sprintf(
+                                    "Unable to find reference integrity [%s] as mapped property in entity - %s",
+                                    $fieldMapping['mappedBy'],
+                                    $fieldMapping['targetDocument']
+                                )
+                            );
+                        }
+
+                        $refReflProp = $subMeta->getReflectionProperty($fieldMapping['mappedBy']);
+
+                        if ($meta->isCollectionValuedReference($property)) {
+                            foreach ($refDoc as $object) {
+                                $refReflProp->setValue($object, null);
+                                $om->persist($object);
                             }
+                        } else {
+                            $refReflProp->setValue($refDoc, null);
+                            $om->persist($refDoc);
+                        }
 
-                            $subMeta = $om->getClassMetadata($fieldMapping['targetDocument']);
+                        $flush = true;
 
-                            if (!$subMeta->hasField($field)) {
-                                throw new InvalidMappingException(
-                                    sprintf(
-                                        "Unable to find reference integrity [%s] as mapped property in entity - %s",
-                                        $field,
-                                        $fieldMapping['targetDocument']
-                                    )
-                                );
-                            }
+                        break;
+                    case Validator::RESTRICT:
+                        if ($meta->isCollectionValuedReference($property) && $refDoc->count() > 0) {
+                            throw new ReferenceIntegrityStrictException(
+                                sprintf(
+                                    "The reference integrity for the '%s' collection is restricted",
+                                    $fieldMapping['targetDocument']
+                                )
+                            );
+                        } elseif ($meta->isSingleValuedReference($property) && !is_null($refDoc)) {
+                            throw new ReferenceIntegrityStrictException(
+                                sprintf(
+                                    "The reference integrity for the '%s' document is restricted",
+                                    $fieldMapping['targetDocument']
+                                )
+                            );
+                        }
 
-                            $refReflProp = $subMeta->getReflectionProperty($field);
-
-                            if ($meta->isCollectionValuedReference($property)) {
-                                foreach ($refDoc as $object) {
-                                    $refReflProp->setValue($object, null);
-                                    $om->persist($object);
-                                }
-                            } else {
-                                $refReflProp->setValue($refDoc, null);
-                                $om->persist($refDoc);
-                            }
-
-                            $flush = true;
-
-                            break;
-                        case Validator::RESTRICT:
-                            if ($meta->isCollectionValuedReference($property) && $refDoc->count() > 0) {
-                                throw new ReferenceIntegrityStrictException(
-                                    sprintf(
-                                        "The reference integrity for the '%s' collection is restricted",
-                                        $fieldMapping['targetDocument']
-                                    )
-                                );
-                            } elseif ($meta->isSingleValuedReference($property) && !is_null($refDoc)) {
-                                throw new ReferenceIntegrityStrictException(
-                                    sprintf(
-                                        "The reference integrity for the '%s' document is restricted",
-                                        $fieldMapping['targetDocument']
-                                    )
-                                );
-                            }
-
-                            break;
-                    }
+                        break;
                 }
             }
 

@@ -28,9 +28,7 @@ class Type
 
     /**
      * @ODM\ReferenceMany(targetDocument="Article", mappedBy="type")
-     * @Gedmo\ReferenceIntegrity(actions={
-     *      @Gedmo\ReferenceIntegrityAction(field="type", action="restrict")
-     * })
+     * @Gedmo\ReferenceIntegrity("restrict")
      * @var ArrayCollection
      */
     protected $articles = array();
