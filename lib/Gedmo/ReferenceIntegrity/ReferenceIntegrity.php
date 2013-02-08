@@ -23,36 +23,28 @@ interface ReferenceIntegrity
     /**
      * example
      * @ODM\ReferenceOne(targetDocument="Article", nullable="true", mappedBy="type")
-     * @Gedmo\ReferenceIntegrity(actions={
-     *      @Gedmo\ReferenceIntegrityAction(field="type", action="nullify")
-     * })
+     * @Gedmo\ReferenceIntegrity("nullify")
      * @var Article
      */
 
     /**
      * example
      * @ODM\ReferenceOne(targetDocument="Article", nullable="true", mappedBy="type")
-     * @Gedmo\ReferenceIntegrity(actions={
-     *      @Gedmo\ReferenceIntegrityAction(field="type", action="restrict")
-     * })
+     * @Gedmo\ReferenceIntegrity("restrict")
      * @var Article
      */
 
     /**
      * example
      * @ODM\ReferenceMany(targetDocument="Article", nullable="true", mappedBy="type")
-     * @Gedmo\ReferenceIntegrity(actions={
-     *      @Gedmo\ReferenceIntegrityAction(field="type", action="nullify")
-     * })
+     * @Gedmo\ReferenceIntegrity("nullify")
      * @var Doctrine\Common\Collections\ArrayCollection
      */
 
     /**
      * example
      * @ODM\ReferenceMany(targetDocument="Article", nullable="true", mappedBy="type")
-     * @Gedmo\ReferenceIntegrity(actions={
-     *      @Gedmo\ReferenceIntegrityAction(field="type", action="restrict")
-     * })
+     * @Gedmo\ReferenceIntegrity("restrict")
      * @var Doctrine\Common\Collections\ArrayCollection
      */
 }

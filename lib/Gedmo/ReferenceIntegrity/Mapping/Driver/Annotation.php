@@ -50,33 +50,30 @@ class Annotation extends AbstractAnnotationDriver
                         )
                     );
                 }
-                if (is_array($referenceIntegrity->actions) && $referenceIntegrity->actions) {
-                    foreach ($referenceIntegrity->actions as $action) {
-                        if (!$action instanceof ReferenceIntegrityAction) {
-                            throw new InvalidMappingException(
-                                sprintf(
-                                    "ReferenceIntegrityAction: %s
-                                    should be instance of ReferenceIntegrityAction annotation in entity - %s",
-                                    $action,
-                                    $meta->name
-                                )
-                            );
-                        }
 
-                        if (!in_array($action->action, $validator->getIntegrityActions())) {
-                            throw new InvalidMappingException(
-                                sprintf(
-                                    "Field - [%s] does not have a valid integrity option, [%s] in class - %s",
-                                    $property,
-                                    implode($validator->getIntegrityActions(), ', '),
-                                    $meta->name
-                                )
-                            );
-                        }
-
-                        $config['referenceIntegrities'][$property][$action->field] = $action->action;
-                    }
+                $fieldMapping = $meta->getFieldMapping($property);
+                if (!isset($fieldMapping['mappedBy'])) {
+                    throw new InvalidMappingException(
+                        sprintf(
+                            "'mappedBy' should be set on '%s' in '%s'",
+                            $property,
+                            $meta->name
+                        )
+                    );
                 }
+
+                if (!in_array($referenceIntegrity->value, $validator->getIntegrityActions())) {
+                    throw new InvalidMappingException(
+                        sprintf(
+                            "Field - [%s] does not have a valid integrity option, [%s] in class - %s",
+                            $property,
+                            implode($validator->getIntegrityActions(), ', '),
+                            $meta->name
+                        )
+                    );
+                }
+
+                $config['referenceIntegrity'][$property] = $referenceIntegrity->value;
             }
         }
     }
