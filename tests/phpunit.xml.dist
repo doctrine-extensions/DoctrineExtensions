@@ -50,6 +50,9 @@
         <testsuite name="Uploadable Extension">
             <directory suffix="Test.php">./Gedmo/Uploadable/</directory>
         </testsuite>
+        <testsuite name="ReferenceIntegrity Extension">
+            <directory suffix="Test.php">./Gedmo/ReferenceIntegrity/</directory>
+        </testsuite>
     </testsuites>
 
     <filter>
