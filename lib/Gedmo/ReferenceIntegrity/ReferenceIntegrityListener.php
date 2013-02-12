@@ -52,15 +52,14 @@ class ReferenceIntegrityListener extends MappedEventSubscriber
     {
         $ea = $this->getEventAdapter($args);
         $om = $ea->getObjectManager();
-        $document = $args->getDocument();
-        $class = get_class($document);
+        $object = $ea->getObject();
+        $class = get_class($object);
         $meta = $om->getClassMetadata($class);
 
         if ($config = $this->getConfiguration($om, $class)) {
-            $flush = false;
             foreach ($config['referenceIntegrity'] as $property => $action) {
                 $reflProp = $meta->getReflectionProperty($property);
-                $refDoc = $reflProp->getValue($document);
+                $refDoc = $reflProp->getValue($object);
                 $fieldMapping = $meta->getFieldMapping($property);
 
                 switch ($action) {
@@ -99,8 +98,6 @@ class ReferenceIntegrityListener extends MappedEventSubscriber
                             $om->persist($refDoc);
                         }
 
-                        $flush = true;
-
                         break;
                     case Validator::RESTRICT:
                         if ($meta->isCollectionValuedReference($property) && $refDoc->count() > 0) {
@@ -110,7 +107,8 @@ class ReferenceIntegrityListener extends MappedEventSubscriber
                                     $fieldMapping['targetDocument']
                                 )
                             );
-                        } elseif ($meta->isSingleValuedReference($property) && !is_null($refDoc)) {
+                        }
+                        if ($meta->isSingleValuedReference($property) && !is_null($refDoc)) {
                             throw new ReferenceIntegrityStrictException(
                                 sprintf(
                                     "The reference integrity for the '%s' document is restricted",
@@ -121,10 +119,6 @@ class ReferenceIntegrityListener extends MappedEventSubscriber
 
                         break;
                 }
-            }
-
-            if ($flush) {
-                $om->flush();
             }
         }
     }

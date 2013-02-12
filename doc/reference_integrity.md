@@ -100,7 +100,7 @@ Document\Type:
           mappedBy: type
           targetDocument: Document\Article
           gedmo:
-              referenceIntegrity: nullify
+              referenceIntegrity: nullify   # or restrict
 
 ```
 
