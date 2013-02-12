@@ -163,7 +163,7 @@ class Article
      *
      * @Gedmo\Blameable(on="create")
      * @ORM\ManyToOne(targetEntity="Path\To\Entity\User")
-     * @ORM\JoinColumn(name="created_by", referencedColumnName="id", nullable=true, onDelete="SET NULL")
+     * @ORM\JoinColumn(name="created_by", referencedColumnName="id")
      */
     private $createdBy;
 
@@ -172,7 +172,7 @@ class Article
      *
      * @Gedmo\Blameable(on="update")
      * @ORM\ManyToOne(targetEntity="Path\To\Entity\User")
-     * @ORM\JoinColumn(name="updated_by", referencedColumnName="id", nullable=true, onDelete="SET NULL")
+     * @ORM\JoinColumn(name="updated_by", referencedColumnName="id")
      */
     private $updatedBy;
 
