@@ -71,6 +71,8 @@ then it updates the blame
 you need to identify entity as being Blameable. The metadata is loaded only once then
 cache is activated
 
+Column is a string field:
+
 ``` php
 <?php
 namespace Entity;
@@ -104,6 +106,73 @@ class Article
      *
      * @Gedmo\Blameable(on="update")
      * @ORM\Column(type="string")
+     */
+    private $updatedBy;
+
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    public function setTitle($title)
+    {
+        $this->title = $title;
+    }
+
+    public function getTitle()
+    {
+        return $this->title;
+    }
+
+    public function getCreated()
+    {
+        return $this->created;
+    }
+
+    public function getUpdated()
+    {
+        return $this->updated;
+    }
+}
+```
+
+Column is an association:
+
+``` php
+<?php
+namespace Entity;
+
+use Gedmo\Mapping\Annotation as Gedmo;
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * @ORM\Entity
+ */
+class Article
+{
+    /** @ORM\Id @ORM\GeneratedValue @ORM\Column(type="integer") */
+    private $id;
+
+    /**
+     * @ORM\Column(type="string", length=128)
+     */
+    private $title;
+
+    /**
+     * @var string $createdBy
+     *
+     * @Gedmo\Blameable(on="create")
+     * @ORM\ManyToOne(targetEntity="Path\To\Entity\User")
+     * @ORM\JoinColumn(name="created_by", referencedColumnName="id")
+     */
+    private $createdBy;
+
+    /**
+     * @var string $updatedBy
+     *
+     * @Gedmo\Blameable(on="update")
+     * @ORM\ManyToOne(targetEntity="Path\To\Entity\User")
+     * @ORM\JoinColumn(name="updated_by", referencedColumnName="id")
      */
     private $updatedBy;
 
