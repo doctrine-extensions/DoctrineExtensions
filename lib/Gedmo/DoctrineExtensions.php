@@ -29,7 +29,7 @@ final class DoctrineExtensions
 
     /**
      * Flag if annotations were included into registry
-     * allready
+     * already
      *
      * @var boolean
      */
