@@ -22,10 +22,10 @@ trait SoftDeleteableEntity
     /**
      * Sets deletedAt.
      *
-     * @param  Datetime $deletedAt
+     * @param \Datetime|null $deletedAt
      * @return $this
      */
-    public function setDeletedAt(\DateTime $deletedAt)
+    public function setDeletedAt(\DateTime $deletedAt = null)
     {
         $this->deletedAt = $deletedAt;
 
