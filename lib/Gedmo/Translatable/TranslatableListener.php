@@ -589,7 +589,6 @@ class TranslatableListener extends MappedEventSubscriber
 
             if ($translation) {
                 // set the translated field, take value using reflection
-                $value = $wrapped->getPropertyValue($field);
                 $content = $ea->getTranslationValue($object, $field);
                 $translation->setContent($content);
                 // check if need to update in database
