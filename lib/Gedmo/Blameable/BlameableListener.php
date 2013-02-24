@@ -45,7 +45,7 @@ class BlameableListener extends TimestampableListener
             if (method_exists($this->user, 'getUsername')) {
                 return (string)$this->user->getUsername();
             }
-            if (method_exists($this->user, '__toString()')) {
+            if (method_exists($this->user, '__toString')) {
                 return $this->user->__toString();
             }
             throw new InvalidArgumentException("Field expects string, user must be a string, or object should have method getUsername or __toString");
