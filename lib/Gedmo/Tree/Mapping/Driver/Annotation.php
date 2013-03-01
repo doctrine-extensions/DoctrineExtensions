@@ -13,6 +13,7 @@ use Gedmo\Mapping\Driver\AbstractAnnotationDriver,
  * extension.
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
+ * @author <rocco@roccosportal.com>
  * @package Gedmo.Tree.Mapping.Driver
  * @subpackage Annotation
  * @link http://www.gediminasm.org
@@ -64,6 +65,11 @@ class Annotation extends AbstractAnnotationDriver
      * Annotation to specify path source class
      */
     const PATH_SOURCE = 'Gedmo\\Mapping\\Annotation\\TreePathSource';
+
+    /**
+     * Annotation to specify path hash class
+     */
+    const PATH_HASH = 'Gedmo\\Mapping\\Annotation\\TreePathHash';
 
     /**
      * Annotation to mark the field to be used to hold the lock time
@@ -183,6 +189,9 @@ class Annotation extends AbstractAnnotationDriver
                 }
                 $config['path'] = $field;
                 $config['path_separator'] = $pathAnnotation->separator;
+                $config['path_append_id'] = $pathAnnotation->appendId;
+                $config['path_starts_with_separator'] = $pathAnnotation->startsWithSeparator;
+                $config['path_ends_with_separator'] = $pathAnnotation->endsWithSeparator;
             }
             // path source
             if ($this->reader->getPropertyAnnotation($property, self::PATH_SOURCE)) {
@@ -194,6 +203,19 @@ class Annotation extends AbstractAnnotationDriver
                     throw new InvalidMappingException("Tree PathSource field - [{$field}] type is not valid. It can be any of the integer variants, double, float or string in class - {$meta->name}");
                 }
                 $config['path_source'] = $field;
+            }
+
+             // path hash
+            if ($this->reader->getPropertyAnnotation($property, self::PATH_HASH)) {
+                $field = $property->getName();
+                if (!$meta->hasField($field)) {
+                    throw new InvalidMappingException("Unable to find 'path_hash' - [{$field}] as mapped property in entity - {$meta->name}");
+                }
+                if (!$validator->isValidFieldForPathHash($meta, $field)) {
+                    throw new InvalidMappingException("Tree PathHash field - [{$field}] type is not valid. It can be any of the integer variants, double, float or string in class - {$meta->name}");
+                }
+                $config['path_hash'] = $field;
+
             }
             // lock time
 
