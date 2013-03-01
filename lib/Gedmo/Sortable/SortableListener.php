@@ -123,8 +123,10 @@ class SortableListener extends MappedEventSubscriber
     private function processInsert($em, $config, $meta, $object)
     {
         $uow = $em->getUnitOfWork();
-
+        
+        $old = $meta->getReflectionProperty($config['position'])->getValue($object);
         $newPosition = $meta->getReflectionProperty($config['position'])->getValue($object);
+        
         if (is_null($newPosition)) {
             $newPosition = -1;
         }
@@ -168,8 +170,10 @@ class SortableListener extends MappedEventSubscriber
         call_user_func_array(array($this, 'addRelocation'), $relocation);
 
         // Set new position
-        $meta->getReflectionProperty($config['position'])->setValue($object, $newPosition);
-        $uow->recomputeSingleEntityChangeSet($meta, $object);
+        if ($old < 0 || is_null($old)) {
+            $meta->getReflectionProperty($config['position'])->setValue($object, $newPosition);
+            $uow->recomputeSingleEntityChangeSet($meta, $object);
+        }
     }
 
     /**
