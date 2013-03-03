@@ -36,10 +36,9 @@ class TimestampableDocumentTest extends BaseTestCaseMongoODM
         $article = $repo->findOneByTitle('Timestampable Article');
 
         $date = new \DateTime();
-        $this->assertEquals(
-            $date->format('Y-m-d H:i'),
-            gmdate('Y-m-d H:i', (string)$article->getCreated())
-        );
+        $now = time();
+        $created = intval((string)$article->getCreated());
+        $this->assertTrue($created > $now - 5 && $created < $now + 5); // 5 seconds interval if lag
         $this->assertEquals(
             $date->format('Y-m-d H:i'),
             $article->getUpdated()->format('Y-m-d H:i')
@@ -114,3 +113,4 @@ class TimestampableDocumentTest extends BaseTestCaseMongoODM
         $this->dm->clear();
     }
 }
+
