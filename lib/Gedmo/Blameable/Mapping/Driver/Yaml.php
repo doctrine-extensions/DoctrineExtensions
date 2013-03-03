@@ -32,6 +32,7 @@ class Yaml extends File implements Driver
      * @var array
      */
     private $validTypes = array(
+        'one',
         'string',
         'int',
     );
@@ -81,7 +82,7 @@ class Yaml extends File implements Driver
     /**
      * Checks if $field type is valid
      *
-     * @param object $meta
+     * @param \Doctrine\ODM\MongoDB\Mapping\ClassMetadata $meta
      * @param string $field
      * @return boolean
      */

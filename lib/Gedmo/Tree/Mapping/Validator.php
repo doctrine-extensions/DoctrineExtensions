@@ -11,12 +11,13 @@ use Gedmo\Exception\InvalidMappingException;
  *
  * @author Gustavo Falco <comfortablynumb84@gmail.com>
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
+ * @author <rocco@roccosportal.com>
  * @package Gedmo.Tree.Mapping
  * @subpackage Validator
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class Validator 
+class Validator
 {
     /**
      * List of types which are valid for tree fields
@@ -56,6 +57,15 @@ class Validator
     );
 
     /**
+     * List of types which are valid for the path hash (materialized path strategy)
+     *
+     * @var array
+     */
+    private $validPathHashTypes = array(
+            'string'
+    );
+
+    /**
      * List of types which are valid for the path source (materialized path strategy)
      *
      * @var array
@@ -68,7 +78,7 @@ class Validator
         'string'
     );
 
-    
+
 
     /**
      * Checks if $field type is valid
@@ -107,6 +117,19 @@ class Validator
     {
         $mapping = $meta->getFieldMapping($field);
         return $mapping && in_array($mapping['type'], $this->validPathSourceTypes);
+    }
+
+    /**
+     * Checks if $field type is valid for PathHash field
+     *
+     * @param object $meta
+     * @param string $field
+     * @return boolean
+     */
+    public function isValidFieldForPathHash($meta, $field)
+    {
+        $mapping = $meta->getFieldMapping($field);
+        return $mapping && in_array($mapping['type'], $this->validPathHashTypes);
     }
 
     /**

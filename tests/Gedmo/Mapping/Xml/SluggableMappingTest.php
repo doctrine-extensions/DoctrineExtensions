@@ -77,5 +77,28 @@ class SluggableMappingTest extends BaseTestCaseORM
         $this->assertEquals('title', $fields[0]);
         $this->assertEquals('ean', $fields[1]);
         $this->assertEquals('code', $fields[2]);
+
+        $this->assertArrayHasKey('handlers', $config);
+        $this->assertEquals(2, count($config['handlers']));
+        $handlers = $config['handlers'];
+
+        $this->assertArrayHasKey('Gedmo\Sluggable\Handler\TreeSlugHandler', $handlers);
+        $this->assertArrayHasKey('Gedmo\Sluggable\Handler\RelativeSlugHandler', $handlers);
+
+        $first = $handlers['Gedmo\Sluggable\Handler\TreeSlugHandler'];
+        $this->assertEquals(2, count($first));
+        $this->assertArrayHasKey('parentRelationField', $first);
+        $this->assertArrayHasKey('separator', $first);
+        $this->assertEquals('parent', $first['parentRelationField']);
+        $this->assertEquals('/', $first['separator']);
+
+        $second = $handlers['Gedmo\Sluggable\Handler\RelativeSlugHandler'];
+        $this->assertEquals(3, count($second));
+        $this->assertArrayHasKey('relationField', $second);
+        $this->assertArrayHasKey('relationSlugField', $second);
+        $this->assertArrayHasKey('separator', $second);
+        $this->assertEquals('parent', $second['relationField']);
+        $this->assertEquals('test', $second['relationSlugField']);
+        $this->assertEquals('-', $second['separator']);
     }
 }

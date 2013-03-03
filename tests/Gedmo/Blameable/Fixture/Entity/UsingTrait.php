@@ -1,5 +1,5 @@
 <?php
-namespace Blameable\Fixture;
+namespace Blameable\Fixture\Entity;
 
 use Gedmo\Blameable\Traits\BlameableEntity;
 use Gedmo\Mapping\Annotation as Gedmo;

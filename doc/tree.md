@@ -812,11 +812,15 @@ Easy like that, any suggestions on improvements are very welcome
 modifications on the tree could occur. Look at the MongoDB example of schema definition to see how it must be configured.
 - If your **TreePathSource** field is of type "string", then the primary key will be concatenated in the form: "value-id".
  This is to allow you to use non-unique values as the path source. For example, this could be very useful if you need to
- use the date as the path source (maybe to create a tree of comments and order them by date).
+ use the date as the path source (maybe to create a tree of comments and order them by date). If you want to change this 
+ default behaviour you can set the attribute "appendId" of **TreePath** to true or false. By default the path does not start
+ with the given separator but ends with it. You can customize this behaviour with "startsWithSeparator" and "endsWithSeparator".
+ `@Gedmo\TreePath(appendId=false, startsWithSeparator=true, endsWithSeparator=false)`
 - **TreePath** field can only be of types: string, text
 - **TreePathSource** field can only be of types: id, integer, smallint, bigint, string, int, float (I include here all the
 variations of the field types, including the ORM and ODM for MongoDB ones).
 - **TreeLockTime** must be of type "date" (used only in MongoDB for now).
+- **TreePathHash** allows you to define a field that is automatically filled with the md5 hash of the path. This field could be neccessary if you want to set a unique constraint on the database table.
 
 ### ORM Entity example (Annotations)
 

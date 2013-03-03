@@ -3,16 +3,19 @@
 namespace Gedmo\Translatable;
 
 use Doctrine\Common\EventArgs;
+use Doctrine\ORM\ORMInvalidArgumentException;
 use Gedmo\Tool\Wrapper\AbstractWrapper;
 use Gedmo\Mapping\MappedEventSubscriber;
 use Gedmo\Translatable\Mapping\Event\TranslatableAdapter;
+use Gedmo\Translatable\Entity\MappedSuperclass\AbstractPersonalTranslation;
+use Gedmo\Translatable\Entity\MappedSuperclass\AbstractTranslation;
 
 /**
  * The translation listener handles the generation and
  * loading of translations for entities which implements
  * the Translatable interface.
  *
- * This behavior can inpact the performance of your application
+ * This behavior can impact the performance of your application
  * since it does an additional query for each field to translate.
  *
  * Nevertheless the annotation metadata is properly cached and
@@ -98,7 +101,7 @@ class TranslatableListener extends MappedEventSubscriber
     private $translatedInLocale = array();
 
     /**
-     * Wether or not, to persist default locale
+     * Whether or not, to persist default locale
      * translation or keep it in original record
      *
      * @var boolean
@@ -122,6 +125,7 @@ class TranslatableListener extends MappedEventSubscriber
         return array(
             'postLoad',
             'postPersist',
+            'preFlush',
             'onFlush',
             'loadClassMetadata'
         );
@@ -140,7 +144,7 @@ class TranslatableListener extends MappedEventSubscriber
     }
 
     /**
-     * Wether or not, to persist default locale
+     * Whether or not, to persist default locale
      * translation or keep it in original record
      *
      * @param boolean $bool
@@ -176,7 +180,7 @@ class TranslatableListener extends MappedEventSubscriber
     }
 
     /**
-     * Mapps additional metadata
+     * Maps additional metadata
      *
      * @param EventArgs $eventArgs
      * @return void
@@ -305,6 +309,43 @@ class TranslatableListener extends MappedEventSubscriber
         }
 
         return $locale;
+    }
+
+    /**
+     * Handle translation changes in default locale
+     *
+     * This has to be done in the preFlush because, when an entity has been loaded
+     * in a different locale, no changes will be detected.
+     *
+     * @param EventArgs $args
+     * @return void
+     */
+    public function preFlush(EventArgs $args)
+    {
+        $ea = $this->getEventAdapter($args);
+        $om = $ea->getObjectManager();
+        $uow = $om->getUnitOfWork();
+
+        foreach ($this->translationInDefaultLocale as $oid => $fields) {
+            $trans = reset($fields);
+            if ($ea->usesPersonalTranslation(get_class($trans))) {
+                $entity = $trans->getObject();
+            } else {
+                $entity = $uow->tryGetById($trans->getForeignKey(), $trans->getObjectClass());
+            }
+
+            if (!$entity) {
+                continue;
+            }
+
+            try {
+                $uow->scheduleForUpdate($entity);
+            } catch (ORMInvalidArgumentException $e) {
+                foreach ($fields as $field => $trans) {
+                    $this->removeTranslationInDefaultLocale($oid, $field);
+                }
+            }
+        }
     }
 
     /**
@@ -490,7 +531,7 @@ class TranslatableListener extends MappedEventSubscriber
         foreach ($translatableFields as $field) {
             $wasPersistedSeparetely = false;
             $skip = isset($this->translatedInLocale[$oid]) && $locale === $this->translatedInLocale[$oid];
-            $skip = $skip && !isset($changeSet[$field]);
+            $skip = $skip && !isset($changeSet[$field]) && !$this->getTranslationInDefaultLocale($oid, $field);
             if ($skip) {
                 continue; // locale is same and nothing changed
             }
@@ -500,7 +541,7 @@ class TranslatableListener extends MappedEventSubscriber
                     && get_class($trans) === $translationClass
                     && $trans->getLocale() === $this->defaultLocale
                     && $trans->getField() === $field
-                    && $trans->getObject() === $object) {
+                    && $this->belongsToObject($ea, $trans, $object)) {
                     $this->setTranslationInDefaultLocale($oid, $field, $trans);
                     break;
                 }
@@ -530,7 +571,7 @@ class TranslatableListener extends MappedEventSubscriber
                 );
             }
 
-            // create new translation if translation not already created and locale is differentent from default locale, otherwise, we have the date in the original record
+            // create new translation if translation not already created and locale is different from default locale, otherwise, we have the date in the original record
             $persistNewTranslation = !$translation
                 && ($locale !== $this->defaultLocale || $this->persistDefaultLocaleTranslation)
             ;
@@ -548,12 +589,11 @@ class TranslatableListener extends MappedEventSubscriber
 
             if ($translation) {
                 // set the translated field, take value using reflection
-                $value = $wrapped->getPropertyValue($field);
                 $content = $ea->getTranslationValue($object, $field);
                 $translation->setContent($content);
                 // check if need to update in database
                 $transWrapper = AbstractWrapper::wrap($translation, $om);
-                if (!empty($content) && ($isInsert || !$transWrapper->getIdentifier() || isset($changeSet[$field]))) {
+                if ((is_bool($content) || is_int($content) || (is_string($content) && strlen($content) > 0) || !empty($content)) && ($isInsert || !$transWrapper->getIdentifier() || isset($changeSet[$field]))) {
                     if ($isInsert && !$objectId && !$ea->usesPersonalTranslation($translationClass)) {
                         // if we do not have the primary key yet available
                         // keep this translation in memory to insert it later with foreign key
@@ -571,7 +611,7 @@ class TranslatableListener extends MappedEventSubscriber
             }
 
             if ($isInsert && $this->getTranslationInDefaultLocale($oid, $field) !== null) {
-                // We can't rely on object field value which is created in non default locale.
+                // We can't rely on object field value which is created in non-default locale.
                 // If we provide translation for default locale as well, the latter is considered to be trusted
                 // and object content should be overridden.
                 $wrapped->setPropertyValue($field, $this->getTranslationInDefaultLocale($oid, $field)->getContent());
@@ -597,9 +637,15 @@ class TranslatableListener extends MappedEventSubscriber
             if ($locale !== $this->defaultLocale) {
                 $ea->clearObjectChangeSet($uow, $oid);
                 // recompute changeset only if there are changes other than reverted translations
-                if ($modifiedChangeSet) {
+                if ($modifiedChangeSet || $this->hasTranslationsInDefaultLocale($oid)) {
                     foreach ($modifiedChangeSet as $field => $changes) {
                         $ea->setOriginalObjectProperty($uow, $oid, $field, $changes[0]);
+                    }
+                    foreach ($translatableFields as $field) {
+                        if ($this->getTranslationInDefaultLocale($oid, $field) !== null) {
+                            $wrapped->setPropertyValue($field, $this->getTranslationInDefaultLocale($oid, $field)->getContent());
+                            $this->removeTranslationInDefaultLocale($oid, $field);
+                        }
                     }
                     $ea->recomputeSingleObjectChangeset($uow, $meta, $object);
                 }
@@ -665,4 +711,35 @@ class TranslatableListener extends MappedEventSubscriber
         }
         return $ret;
     }
+
+    /**
+     * Check if object has any translation object which represents translation in default language.
+     * This is for internal use only.
+     *
+     * @param    string    $oid   hash of the basic entity
+     * @return   bool
+     */
+    public function hasTranslationsInDefaultLocale($oid)
+    {
+        return array_key_exists($oid, $this->translationInDefaultLocale);
+    }
+     
+    /**
+     * Checks if the translation entity belongs to the object in question
+     *
+     * @param   TranslatableAdapter $ea
+     * @param   mixed               $trans
+     * @param   mixed               $object
+     * @return  boolean
+     */
+    private function belongsToObject(TranslatableAdapter $ea, $trans, $object)
+    {
+        if ($ea->usesPersonalTranslation(get_class($trans))) {
+            return $trans->getObject() === $object;
+        }
+
+        return ($trans->getForeignKey() === $object->getId()
+            && ($trans->getObjectClass() === get_class($object)));
+    }
 }
+

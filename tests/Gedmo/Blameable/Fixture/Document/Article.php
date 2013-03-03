@@ -40,6 +40,12 @@ class Article
     private $updated;
 
     /**
+     * @ODM\ReferenceOne(targetDocument="User")
+     * @Gedmo\Blameable(on="create")
+     */
+    private $creator;
+
+    /**
      * @var string $published
      *
      * @ODM\String
@@ -72,6 +78,11 @@ class Article
         return $this->published;
     }
 
+    public function getCreator()
+    {
+        return $this->creator;
+    }
+
     public function getUpdated()
     {
         return $this->updated;
@@ -101,4 +112,11 @@ class Article
     {
         $this->updated = $updated;
     }
+
+    public function setCreator($creator)
+    {
+        $this->creator = $creator;
+    }
+
+
 }

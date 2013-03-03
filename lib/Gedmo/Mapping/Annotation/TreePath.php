@@ -12,6 +12,7 @@ use Doctrine\Common\Annotations\Annotation;
  *
  * @author Gustavo Falco <comfortablynumb84@gmail.com>
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
+ * @author <rocco@roccosportal.com>
  * @package Gedmo.Mapping.Annotation
  * @subpackage TreePath
  * @link http://www.gediminasm.org
@@ -20,5 +21,11 @@ use Doctrine\Common\Annotations\Annotation;
 final class TreePath extends Annotation
 {
     public $separator = ',';
+
+    public $appendId = null;
+
+    public $startsWithSeparator = false;
+
+    public $endsWithSeparator = true;
 }
 

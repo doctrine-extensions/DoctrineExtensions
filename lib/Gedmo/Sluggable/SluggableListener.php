@@ -243,6 +243,7 @@ class SluggableListener extends MappedEventSubscriber
         $isInsert = $uow->isScheduledForInsert($object);
         $config = $this->getConfiguration($om, $meta->name);
         foreach ($config['slugs'] as $slugField => $options) {
+            $hasHandlers = count($options['handlers']);
             $options['useObjectClass'] = $config['useObjectClass'];
             // collect the slug from fields
             $slug = $meta->getReflectionProperty($slugField)->getValue($object);
@@ -265,13 +266,9 @@ class SluggableListener extends MappedEventSubscriber
                 $needToChangeSlug = true;
             }
             // notify slug handlers --> onChangeDecision
-            if (isset($config['handlers'])) {
-                $options['handlers'] = $config['handlers'];
-                foreach ($config['handlers'] as $class => $handlerOptions) {
-                    $this
-                        ->getHandler($class)
-                        ->onChangeDecision($ea, $options, $object, $slug, $needToChangeSlug)
-                    ;
+            if ($hasHandlers) {
+                foreach ($options['handlers'] as $class => $handlerOptions) {
+                    $this->getHandler($class)->onChangeDecision($ea, $options, $object, $slug, $needToChangeSlug);
                 }
             }
             // if slug is changed, do further processing
@@ -283,13 +280,10 @@ class SluggableListener extends MappedEventSubscriber
 
                 // notify slug handlers --> postSlugBuild
                 $urlized = false;
-                if (isset($config['handlers'])) {
-                    foreach ($config['handlers'] as $class => $handlerOptions) {
-                        $this
-                            ->getHandler($class)
-                            ->postSlugBuild($ea, $options, $object, $slug)
-                        ;
-                        if($this->getHandler($class)->handlesUrlization()){
+                if ($hasHandlers) {
+                    foreach ($options['handlers'] as $class => $handlerOptions) {
+                        $this->getHandler($class)->postSlugBuild($ea, $options, $object, $slug);
+                        if ($this->getHandler($class)->handlesUrlization()) {
                             $urlized = true;
                         }
                     }
@@ -348,12 +342,9 @@ class SluggableListener extends MappedEventSubscriber
                     $slug = $this->makeUniqueSlug($ea, $object, $slug, false, $options);
                 }
                 // notify slug handlers --> onSlugCompletion
-                if (isset($config['handlers'])) {
-                    foreach ($config['handlers'] as $class => $handlerOptions) {
-                        $this
-                            ->getHandler($class)
-                            ->onSlugCompletion($ea, $options, $object, $slug)
-                        ;
+                if ($hasHandlers) {
+                    foreach ($options['handlers'] as $class => $handlerOptions) {
+                        $this->getHandler($class)->onSlugCompletion($ea, $options, $object, $slug);
                     }
                 }
                 // set the final slug

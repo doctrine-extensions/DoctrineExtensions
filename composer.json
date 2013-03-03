@@ -13,7 +13,9 @@
         "tree",
         "nestedset",
         "sortable",
-        "timestampable"
+        "timestampable",
+        "blameable",
+        "uploadable"
     ],
     "homepage": "http://gediminasm.org/",
     "license": "MIT",
@@ -21,24 +23,38 @@
         {
             "name": "Gediminas Morkevicius",
             "email": "gediminas.morkevicius@gmail.com"
+        },
+        {
+            "name": "Gustavo Falco",
+            "email": "comfortablynumb84@gmail.com"
+        },
+        {
+            "name": "David Buchmann",
+            "email": "david@liip.ch"
         }
     ],
+    "support": {
+        "email": "gediminas.morkevicius@gmail.com",
+        "wiki": "https://github.com/l3pp4rd/DoctrineExtensions/tree/master/doc",
+        "issues": "https://github.com/l3pp4rd/DoctrineExtensions/issues",
+        "source": "https://github.com/l3pp4rd/DoctrineExtensions"
+    },
     "require": {
         "php": ">=5.3.2",
         "doctrine/common": ">=2.2,<2.5-dev"
     },
     "require-dev": {
-        "doctrine/mongodb": ">=1.0.0-BETA1",
-        "doctrine/mongodb-odm": ">=1.0.0-BETA6",
+        "doctrine/mongodb": "1.0.1",
+        "doctrine/mongodb-odm": "1.0.0-BETA7",
         "doctrine/orm": ">=2.2",
         "doctrine/dbal": ">=2.2",
         "symfony/yaml": "2.*"
     },
     "suggest": {
-        "doctrine/mongodb": ">=1.0.0",
+        "doctrine/mongodb": ">=1.0.1",
         "doctrine/mongodb-odm": ">=1.0.0-BETA7",
-        "doctrine/orm": ">=2.2",
-        "doctrine/dbal": ">=2.2"
+        "doctrine/orm": ">=2.3.2",
+        "doctrine/dbal": ">=2.3.2"
     },
     "autoload": {
         "psr-0": { "Gedmo": "lib/" }

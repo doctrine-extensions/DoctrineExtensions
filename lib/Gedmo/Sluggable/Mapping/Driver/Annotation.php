@@ -73,6 +73,7 @@ class Annotation extends AbstractAnnotationDriver
                     throw new InvalidMappingException("Cannot use field - [{$field}] for slug storage, type is not valid and must be 'string' or 'text' in class - {$meta->name}");
                 }
                 // process slug handlers
+                $handlers = array();
                 if (is_array($slug->handlers) && $slug->handlers) {
                     foreach ($slug->handlers as $handler) {
                         if (!$handler instanceof SlugHandler) {
@@ -82,7 +83,7 @@ class Annotation extends AbstractAnnotationDriver
                             throw new InvalidMappingException("SlugHandler class: {$handler->class} should be a valid class name in entity - {$meta->name}");
                         }
                         $class = $handler->class;
-                        $config['handlers'][$class] = array();
+                        $handlers[$class] = array();
                         foreach ((array)$handler->options as $option) {
                             if (!$option instanceof SlugHandlerOption) {
                                 throw new InvalidMappingException("SlugHandlerOption: {$option} should be instance of SlugHandlerOption annotation in entity - {$meta->name}");
@@ -90,9 +91,9 @@ class Annotation extends AbstractAnnotationDriver
                             if (!strlen($option->name)) {
                                 throw new InvalidMappingException("SlugHandlerOption name: {$option->name} should be valid name in entity - {$meta->name}");
                             }
-                            $config['handlers'][$class][$option->name] = $option->value;
+                            $handlers[$class][$option->name] = $option->value;
                         }
-                        $class::validate($config['handlers'][$class], $meta);
+                        $class::validate($handlers[$class], $meta);
                     }
                 }
                 // process slug fields
@@ -124,6 +125,7 @@ class Annotation extends AbstractAnnotationDriver
                     'updatable' => $slug->updatable,
                     'unique' => $slug->unique,
                     'separator' => $slug->separator,
+                    'handlers' => $handlers,
                 );
             }
         }

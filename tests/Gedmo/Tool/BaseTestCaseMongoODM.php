@@ -10,6 +10,7 @@ use Doctrine\MongoDB\Connection;
 use Gedmo\Translatable\TranslatableListener;
 use Gedmo\Sluggable\SluggableListener;
 use Gedmo\Timestampable\TimestampableListener;
+use Gedmo\SoftDeleteable\SoftDeleteableListener;
 use Gedmo\Loggable\LoggableListener;
 
 /**
@@ -63,10 +64,11 @@ abstract class BaseTestCaseMongoODM extends \PHPUnit_Framework_TestCase
      * @param EventManager $evm
      * @return DocumentManager
      */
-    protected function getMockDocumentManager(EventManager $evm = null)
+    protected function getMockDocumentManager(EventManager $evm = null, $config = null)
     {
-        $conn = new Connection;
-        $config = $this->getMockAnnotatedConfig();
+        $conn = new Connection();
+
+        $config = $config ? $config : $this->getMockAnnotatedConfig();
 
         try {
             $this->dm = DocumentManager::create($conn, $config, $evm ?: $this->getEventManager());
@@ -84,10 +86,11 @@ abstract class BaseTestCaseMongoODM extends \PHPUnit_Framework_TestCase
      * @param EventManager $evm
      * @return DocumentManager
      */
-    protected function getMockMappedDocumentManager(EventManager $evm = null)
+    protected function getMockMappedDocumentManager(EventManager $evm = null, $config = null)
     {
         $conn = $this->getMock('Doctrine\\MongoDB\\Connection');
-        $config = $this->getMockAnnotatedConfig();
+
+        $config = $config ? $config : $this->getMockAnnotatedConfig();
 
         $this->dm = DocumentManager::create($conn, $config, $evm ?: $this->getEventManager());
 
@@ -116,6 +119,7 @@ abstract class BaseTestCaseMongoODM extends \PHPUnit_Framework_TestCase
         $evm->addEventSubscriber(new LoggableListener);
         $evm->addEventSubscriber(new TranslatableListener);
         $evm->addEventSubscriber(new TimestampableListener);
+        $evm->addEventSubscriber(new SoftDeleteableListener());
 
         return $evm;
     }
@@ -125,9 +129,14 @@ abstract class BaseTestCaseMongoODM extends \PHPUnit_Framework_TestCase
      *
      * @return Doctrine\ORM\Configuration
      */
-    private function getMockAnnotatedConfig()
+    protected function getMockAnnotatedConfig()
     {
         $config = $this->getMock('Doctrine\\ODM\\MongoDB\\Configuration');
+
+        $config->expects($this->any())
+            ->method('getFilterClassName')
+            ->will($this->returnValue('Gedmo\\SoftDeleteable\\Filter\\ODM\\SoftDeleteableFilter'));
+
         $config->expects($this->once())
             ->method('getProxyDir')
             ->will($this->returnValue(__DIR__.'/../../temp'));

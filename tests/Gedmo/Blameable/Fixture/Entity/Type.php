@@ -1,5 +1,5 @@
 <?php
-namespace Blameable\Fixture;
+namespace Blameable\Fixture\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 

@@ -17,6 +17,7 @@ use Gedmo\Exception\TreeLockingException;
  *
  * @author Gustavo Falco <comfortablynumb84@gmail.com>
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
+ * @author <rocco@roccosportal.com>
  * @package Gedmo.Tree.Strategy
  * @subpackage AbstractMaterializedPath
  * @link http://www.gediminasm.org
@@ -257,8 +258,10 @@ abstract class AbstractMaterializedPath implements Strategy
 
         $fieldMapping = $meta->getFieldMapping($config['path_source']);
 
-        // If PathSource field is a string, we append the ID to the path
-        if ($fieldMapping['type'] === 'string') {
+        // default behavior: if PathSource field is a string, we append the ID to the path
+        // path_append_id is true: always append id
+        // path_append_id is false: never append id
+        if ($config['path_append_id'] === true || ($fieldMapping['type'] === 'string' && $config['path_append_id']!==false)) {
             if (method_exists($meta, 'getIdentifierValue')) {
                 $identifier = $meta->getIdentifierValue($node);
             } else {
@@ -270,12 +273,11 @@ abstract class AbstractMaterializedPath implements Strategy
             $path .= '-'.$identifier;
         }
 
-        $path .= $config['path_separator'];
 
         if ($parent) {
             // Ensure parent has been initialized in the case where it's a proxy
             $om->initializeObject($parent);
-            
+
             $changeSet = $uow->isScheduledForUpdate($parent) ? $ea->getObjectChangeSet($uow, $parent) : false;
             $pathOrPathSourceHasChanged = $changeSet && (isset($changeSet[$config['path_source']]) || isset($changeSet[$config['path']]));
 
@@ -283,13 +285,41 @@ abstract class AbstractMaterializedPath implements Strategy
                 $this->updateNode($om, $parent, $ea);
             }
 
-            $path = $pathProp->getValue($parent).$path;
+            $parentPath = $pathProp->getValue($parent);
+            // if parent path not ends with separator
+            if($parentPath[strlen($parentPath) - 1] !== $config['path_separator']){
+                 // add separator
+                $path = $pathProp->getValue($parent) .  $config['path_separator'] . $path;
+            }
+            else {
+                // don't add separator
+                $path = $pathProp->getValue($parent) . $path;
+            }
+
         }
-        
+
+
+        if($config['path_starts_with_separator'] && (strlen($path) > 0 && $path[0] !== $config['path_separator'])){
+            $path = $config['path_separator'] . $path;
+        }
+
+        if($config['path_ends_with_separator'] && ($path[strlen($path) - 1] !== $config['path_separator'])) {
+            $path .= $config['path_separator'];
+        }
+
         $pathProp->setValue($node, $path);
         $changes = array(
             $config['path'] => array(null, $path)
         );
+
+        if(isset($config['path_hash'])){
+            $pathHash = md5($path);
+            $pathHashProp = $meta->getReflectionProperty($config['path_hash']);
+            $pathHashProp->setAccessible(true);
+            $pathHashProp->setValue($node, $pathHash);
+            $changes[$config['path_hash']] = array(null, $pathHash);
+        }
+
 
         if (isset($config['level'])) {
             $level = substr_count($path, $config['path_separator']);
@@ -301,6 +331,10 @@ abstract class AbstractMaterializedPath implements Strategy
 
         $uow->scheduleExtraUpdate($node, $changes);
         $ea->setOriginalObjectProperty($uow, $oid, $config['path'], $path);
+
+        if(isset($config['path_hash'])){
+            $ea->setOriginalObjectProperty($uow, $oid, $config['path_hash'], $pathHash);
+        }
     }
 
     /**
@@ -354,7 +388,7 @@ abstract class AbstractMaterializedPath implements Strategy
 
                 $reflMethod->invoke($parentNode);
             }
-            
+
             // If tree is already locked, we throw an exception
             $lockTimeProp = $meta->getReflectionProperty($config['lock_time']);
             $lockTimeProp->setAccessible(true);
@@ -432,7 +466,7 @@ abstract class AbstractMaterializedPath implements Strategy
             }
         }
     }
-    
+
     /**
      * Locks all needed trees
      *
