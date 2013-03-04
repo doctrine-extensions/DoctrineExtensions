@@ -338,7 +338,7 @@ class UploadableListener extends MappedEventSubscriber
                 $generatorClass = $config['filenameGenerator'];
         }
 
-        $info = $this->moveFile($fileInfo, $path, $generatorClass, $config['allowOverwrite'], $config['appendNumber']);
+        $info = $this->moveFile($fileInfo, $path, $generatorClass, $config['allowOverwrite'], $config['appendNumber'], $object);
 
         // We override the mime type with the guessed one
         $info['fileMimeType'] = $mime;
@@ -428,6 +428,7 @@ class UploadableListener extends MappedEventSubscriber
      * @param bool $filenameGeneratorClass
      * @param bool $overwrite
      * @param bool $appendNumber
+     * @param $object
      * @return array
      * @throws \Gedmo\Exception\UploadableUploadException
      * @throws \Gedmo\Exception\UploadableNoFileException
@@ -439,7 +440,7 @@ class UploadableListener extends MappedEventSubscriber
      * @throws \Gedmo\Exception\UploadableNoTmpDirException
      * @throws \Gedmo\Exception\UploadableCantWriteException
      */
-    public function moveFile(FileInfoInterface $fileInfo, $path, $filenameGeneratorClass = false, $overwrite = false, $appendNumber = false)
+    public function moveFile(FileInfoInterface $fileInfo, $path, $filenameGeneratorClass = false, $overwrite = false, $appendNumber = false, $object)
     {
         if ($fileInfo->getError() > 0) {
             switch ($fileInfo->getError()) {
@@ -503,7 +504,8 @@ class UploadableListener extends MappedEventSubscriber
         if ($filenameGeneratorClass) {
             $filename = $filenameGeneratorClass::generate(
                 str_replace($path.'/', '', $info['fileWithoutExt']),
-                $info['fileExtension']
+                $info['fileExtension'],
+                $object
             );
             $info['filePath'] = str_replace(
                 '/'.$info['fileName'],
