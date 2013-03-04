@@ -62,7 +62,7 @@ class Validator
      * @var array
      */
     private $validPathHashTypes = array(
-            'string'
+        'string'
     );
 
     /**
@@ -77,8 +77,6 @@ class Validator
         'int',
         'string'
     );
-
-
 
     /**
      * Checks if $field type is valid
