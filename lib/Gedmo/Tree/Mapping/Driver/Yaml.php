@@ -111,13 +111,40 @@ class Yaml extends File implements Driver
                         if (strlen($separator) > 1) {
                             throw new InvalidMappingException("Tree Path field - [{$field}] Separator {$separator} is invalid. It must be only one character long.");
                         }
+
+                        if (is_array($treePathInfo) && isset($treePathInfo['appendId'])) {
+                            $appendId = $treePathInfo['appendId'];
+                        } else {
+                            $appendId = null;
+                        }
+
+                        if (is_array($treePathInfo) && isset($treePathInfo['startsWithSeparator'])) {
+                            $startsWithSeparator = $treePathInfo['startsWithSeparator'];
+                        } else {
+                            $startsWithSeparator = false;
+                        }
+
+                        if (is_array($treePathInfo) && isset($treePathInfo['endsWithSeparator'])) {
+                            $endsWithSeparator = $treePathInfo['endsWithSeparator'];
+                        } else {
+                            $endsWithSeparator = true;
+                        }
+
                         $config['path'] = $field;
                         $config['path_separator'] = $separator;
+                        $config['path_append_id'] = $appendId;
+                        $config['path_starts_with_separator'] = $startsWithSeparator;
+                        $config['path_ends_with_separator'] = $endsWithSeparator;
                     } elseif (in_array('treePathSource', $fieldMapping['gedmo'])) {
                         if (!$validator->isValidFieldForPathSource($meta, $field)) {
                             throw new InvalidMappingException("Tree PathSource field - [{$field}] type is not valid. It can be any of the integer variants, double, float or string in class - {$meta->name}");
                         }
                         $config['path_source'] = $field;
+                    } elseif (in_array('treePathHash', $fieldMapping['gedmo'])) {
+                        if (!$validator->isValidFieldForPathSource($meta, $field)) {
+                            throw new InvalidMappingException("Tree PathHash field - [{$field}] type is not valid and must be 'string' in class - {$meta->name}");
+                        }
+                        $config['path_hash'] = $field;
                     } elseif (in_array('treeLockTime', $fieldMapping['gedmo'])) {
                         if (!$validator->isValidFieldForLocktime($meta, $field)) {
                             throw new InvalidMappingException("Tree LockTime field - [{$field}] type is not valid. It must be \"date\" in class - {$meta->name}");
