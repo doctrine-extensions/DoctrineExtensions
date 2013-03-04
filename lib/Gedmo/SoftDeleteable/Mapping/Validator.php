@@ -27,6 +27,7 @@ class Validator
         'date',
         'time',
         'datetime',
+        'datetimetz',
         'timestamp',
         'zenddate'
     );

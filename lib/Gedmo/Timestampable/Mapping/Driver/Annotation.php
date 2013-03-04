@@ -34,6 +34,7 @@ class Annotation extends AbstractAnnotationDriver
         'date',
         'time',
         'datetime',
+        'datetimetz',
         'timestamp',
         'zenddate',
         'vardatetime',
