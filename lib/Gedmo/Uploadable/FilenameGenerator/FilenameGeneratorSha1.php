@@ -18,7 +18,7 @@ class FilenameGeneratorSha1 implements FilenameGeneratorInterface
     /**
      * @inheritDoc
      */
-    public static function generate($filename, $extension)
+    public static function generate($filename, $extension, $object = null)
     {
         return sha1(uniqid($filename.$extension, true)).$extension;
     }

@@ -691,7 +691,7 @@ class FakeFileInfo
 
 class FakeFilenameGenerator implements \Gedmo\Uploadable\FilenameGenerator\FilenameGeneratorInterface
 {
-    public static function generate($filename, $extension)
+    public static function generate($filename, $extension, $object = null)
     {
         return '123.txt';
     }
