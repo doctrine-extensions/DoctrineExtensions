@@ -287,11 +287,10 @@ abstract class AbstractMaterializedPath implements Strategy
 
             $parentPath = $pathProp->getValue($parent);
             // if parent path not ends with separator
-            if($parentPath[strlen($parentPath) - 1] !== $config['path_separator']){
-                 // add separator
-                $path = $pathProp->getValue($parent) .  $config['path_separator'] . $path;
-            }
-            else {
+            if ($parentPath[strlen($parentPath) - 1] !== $config['path_separator']) {
+                // add separator
+                $path = $pathProp->getValue($parent) . $config['path_separator'] . $path;
+            } else {
                 // don't add separator
                 $path = $pathProp->getValue($parent) . $path;
             }
@@ -299,11 +298,11 @@ abstract class AbstractMaterializedPath implements Strategy
         }
 
 
-        if($config['path_starts_with_separator'] && (strlen($path) > 0 && $path[0] !== $config['path_separator'])){
+        if ($config['path_starts_with_separator'] && (strlen($path) > 0 && $path[0] !== $config['path_separator'])) {
             $path = $config['path_separator'] . $path;
         }
 
-        if($config['path_ends_with_separator'] && ($path[strlen($path) - 1] !== $config['path_separator'])) {
+        if ($config['path_ends_with_separator'] && ($path[strlen($path) - 1] !== $config['path_separator'])) {
             $path .= $config['path_separator'];
         }
 
@@ -312,7 +311,7 @@ abstract class AbstractMaterializedPath implements Strategy
             $config['path'] => array(null, $path)
         );
 
-        if(isset($config['path_hash'])){
+        if (isset($config['path_hash'])) {
             $pathHash = md5($path);
             $pathHashProp = $meta->getReflectionProperty($config['path_hash']);
             $pathHashProp->setAccessible(true);

@@ -1013,6 +1013,63 @@ class Category
 
 ```
 
+### MongoDB example (Yaml)
+
+YourNamespace\Document\Category:
+    type:               mappedSuperclass
+    repositoryClass:    Gedmo\Tree\Document\MongoDB\Repository\MaterializedPathRepository
+    collection:         categories
+    gedmo:
+        tree:
+            type: materializedPath
+            activateLocking: true
+    fields:
+        id:
+            id:     true
+        title:
+            type:   string
+            gedmo:
+                -   sluggable
+        slug:
+            type:   string
+            gedmo:
+                0:  treePathSource
+                slug:
+                    unique:     false
+                    fields:
+                        - title
+        path:
+            type:   string
+            gedmo:
+                treePath:
+                    separator:           '/'
+                    appendId:            false
+                    startsWithSeparator: false  # default
+                    endsWithSeparator:   true   # default
+        level:
+            type:   int
+            name:   lvl
+            nullable:   true
+            gedmo:
+                -   treeLevel
+        lockTime:
+            type:   date
+            gedmo:
+                -   treeLockTime
+        hash:
+            type:   string
+            gedmo:
+                -   treePathHash
+        parent:
+            reference:  true
+            type:       one
+            inversedBy: children
+            targetDocument: YourNamespace\Document\Category
+            simple:     true
+            gedmo:
+                -   treeParent
+
+
 ### Path generation
 
 When an entity is inserted, a path is generated using the value of the field configured as the TreePathSource.
