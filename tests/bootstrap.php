@@ -50,6 +50,7 @@ $loader->add('SoftDeleteable\\Fixture', __DIR__ . '/Gedmo');
 $loader->add('Uploadable\\Fixture', __DIR__ . '/Gedmo');
 $loader->add('Wrapper\\Fixture', __DIR__ . '/Gedmo');
 $loader->add('ReferenceIntegrity\\Fixture', __DIR__ . '/Gedmo');
+$loader->add('References\\Fixture', __DIR__ . '/Gedmo');
 // stubs
 $loader->add('Gedmo\\Uploadable\\Stub', __DIR__);
 
