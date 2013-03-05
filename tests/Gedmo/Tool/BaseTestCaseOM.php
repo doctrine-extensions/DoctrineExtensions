@@ -303,6 +303,12 @@ abstract class BaseTestCaseOM extends \PHPUnit_Framework_TestCase
 
         $config
             ->expects($this->any())
+            ->method('getDefaultRepositoryClassName')
+            ->will($this->returnValue('Doctrine\\ORM\\EntityRepository'))
+        ;
+
+        $config
+            ->expects($this->any())
             ->method('getQuoteStrategy')
             ->will($this->returnValue(new DefaultQuoteStrategy()))
         ;

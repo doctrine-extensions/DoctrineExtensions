@@ -53,6 +53,9 @@
         <testsuite name="ReferenceIntegrity Extension">
             <directory suffix="Test.php">./Gedmo/ReferenceIntegrity/</directory>
         </testsuite>
+        <testsuite name="References Extension">
+            <directory suffix="Test.php">./Gedmo/References/</directory>
+        </testsuite>
     </testsuites>
 
     <filter>
