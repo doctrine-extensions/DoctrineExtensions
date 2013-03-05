@@ -592,7 +592,8 @@ $tree = $repo->buildTree($query->getArrayResult(), $options);
 
 ### Using routes in decorator, show only selected items, return unlimited levels items as 2 levels
 
-```
+``` php
+<?php
 $controller = $this;
         $tree = $root->childrenHierarchy(null,false,array('decorate' => true,
             'rootOpen' => function($tree) {
