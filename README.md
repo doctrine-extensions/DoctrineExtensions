@@ -7,7 +7,7 @@ refactoring doctrine2 extensions. The repository can be moved to the maintainers
 left on mine. I do not want users to lose availability of stable extensions which they were and are
 used to, at the moment.
 
-**Version 2.3.4**
+**Version 2.3.5**
 
 [![Build Status](https://secure.travis-ci.org/l3pp4rd/DoctrineExtensions.png?branch=master)](http://travis-ci.org/l3pp4rd/DoctrineExtensions)
 
@@ -16,6 +16,10 @@ layer. The support for it has been made and tagged with **2.3.1** version tag. I
 with latest version of doctrine mapping at master branches
 
 ### Latest updates
+
+**2013-03-05**
+
+- A new extension - **References**, which links Entities in Documents and visa versa, [read more about it](https://github.com/l3pp4rd/DoctrineExtensions/blob/master/doc/references.md). It was contributed by @jwage, @avalanche123, @jmikola and @bobthecow, thanks
 
 **2013-02-05**
 
@@ -35,47 +39,6 @@ with latest version of doctrine mapping at master branches
 - **Sluggable** now allows to regenerate slug if its set to empty or null. Also it allows to
 manually set the slug, in that case it would only transliterate it and ensure uniqueness.
 
-**2012-04-09**
-
-- **Translatable** now does not force lowercase letters on locale or language. If your database is case
-sensitive, take this into account and upgrade your current translations in the database. This change
-will not be backported into 2.2 or older versions of extensions and will be available in comming
-releases.
-- **Sortable** now handles and synchronizes all object sort positions which are allready in memory
-of unitOfWork. Which does not require to do **$em->clear()** after each operation anymore.
-
-**2012-03-04**
-
-- We should be very grateful for contributions of [comfortablynumb](http://github.com/comfortablynumb)
-He has contributed most to these extensions and recently - long waited [softdeleteable
-behavior](https://github.com/l3pp4rd/DoctrineExtensions/blob/master/doc/softdeleteable.md) for **ORM** users. Also most important, there
-was a tree extension missing for **ODM** now everyone can enjoy [materialized path tree strategy](https://github.com/l3pp4rd/DoctrineExtensions/blob/master/doc/tree.md#materialized-path) for **ORM** including.
-
-**2012-02-26**
-
-- Removed slug handlers, this functionality brought complications which could not be maintained.
-
-**2012-02-15**
-
-- Add option to force **Translatable** store translation in default locale like any other.
-See [documentation](http://github.com/l3pp4rd/DoctrineExtensions/blob/master/doc/translatable.md#advanced-examples)
-
-**2012-01-29**
-
-- Translatable finally has **Personal Translations** which can relate through a real **foreign key**
-constraint and be used as a standard doctrine collection. This allows to configure domain
-objects anyway you prefere and still enjoy all features **Translatable** provides.
-- There were **BC** breaks introduced in **master** branch of extensions which is
-based on **doctrine2.3.x** version. If you are not interested in upgrading you can
-safely checkout at **2.2.x** or **2.1.x** [tag](http://github.com/l3pp4rd/DoctrineExtensions/tags).
-To upgrade your source code follow the [upgrade guide](https://github.com/l3pp4rd/DoctrineExtensions/blob/master/upgrade/2-3-0.md)
-- Library now can map only **MappedSuperclass**es which would avoid generation of **ext_**
-tables which might not be used. Also it provides [convinient methods](https://github.com/l3pp4rd/DoctrineExtensions/blob/master/lib/Gedmo/DoctrineExtensions.php#L66)
-to hook extension metadata drivers into metadata driver chain.
-- [Example demo application](https://github.com/l3pp4rd/DoctrineExtensions/blob/master/example/em.php) has a detailed configuration provided, which
-explains and shows how extensions can or should be used with **Doctrine2** ORM. To install
-it follow the [steps](#example-demo).
-
 ### Summary and features
 
 This package contains extensions for Doctrine2 that hook into the facilities of Doctrine and
@@ -94,6 +57,7 @@ records being flushed in the behavioral way. List of extensions:
 - **Translator** - explicit way to handle translations
 - **Softdeleteable** - allows to implicitly remove records
 - **Uploadable** - provides file upload handling in entity fields
+- **References** - supports linking Entities in Documents and visa versa
 
 Currently these extensions support **Yaml**, **Annotation**  and **Xml** mapping. Additional mapping drivers
 can be easily implemented using Mapping extension to handle the additional metadata mapping.
@@ -129,6 +93,7 @@ List of extensions which support ODM
 - Loggable
 - Translator
 - Tree (Materialized Path strategy for now)
+- References
 
 All these extensions can be nested together and mapped in traditional ways - annotations,
 xml or yaml
