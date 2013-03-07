@@ -299,7 +299,7 @@ Entity\File:
 
 $listener->setDefaultPath('/my/app/web/upload');
 
-if (isset($_FILES['images']) && is_array($_FILES['images']) {
+if (isset($_FILES['images']) && is_array($_FILES['images'])) {
     foreach ($_FILES['images'] as $fileInfo) {
         $file = new File();
 
