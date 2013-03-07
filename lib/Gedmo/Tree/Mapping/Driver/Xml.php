@@ -107,8 +107,35 @@ class Xml extends BaseXml
                         throw new InvalidMappingException("Tree Path field - [{$field}] Separator {$separator} is invalid. It must be only one character long.");
                     }
 
+                    $appendId = $this->_getAttribute($mapping->{'tree-path'}, 'append_id');
+
+                    if (!$appendId) {
+                        $appendId = true;
+                    } else {
+                        $appendId = strtolower($appendId) == 'false' ? false : true;
+                    }
+
+                    $startsWithSeparator = $this->_getAttribute($mapping->{'tree-path'}, 'starts_with_separator');
+
+                    if (!$startsWithSeparator) {
+                        $startsWithSeparator = false;
+                    } else {
+                        $startsWithSeparator = strtolower($startsWithSeparator) == 'false' ? false : true;
+                    }
+
+                    $endsWithSeparator = $this->_getAttribute($mapping->{'tree-path'}, 'ends_with_separator');
+
+                    if (!$endsWithSeparator) {
+                        $endsWithSeparator = true;
+                    } else {
+                        $endsWithSeparator = strtolower($endsWithSeparator) == 'false' ? false : true;
+                    }
+
                     $config['path'] = $field;
                     $config['path_separator'] = $separator;
+                    $config['path_append_id'] = $appendId;
+                    $config['path_starts_with_separator'] = $startsWithSeparator;
+                    $config['path_ends_with_separator'] = $endsWithSeparator;
                 } elseif (isset($mapping->{'tree-path-source'})) {
                     if (!$validator->isValidFieldForPathSource($meta, $field)) {
                         throw new InvalidMappingException("Tree PathSource field - [{$field}] type is not valid. It can be any of the integer variants, double, float or string in class - {$meta->name}");
