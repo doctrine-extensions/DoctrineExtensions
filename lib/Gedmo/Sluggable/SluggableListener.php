@@ -251,6 +251,7 @@ class SluggableListener extends MappedEventSubscriber
             if (!$options['updatable'] && !$isInsert && (!isset($changeSet[$slugField]) || $slug === '__id__')) {
                 continue;
             }
+            $oldSlug = $slug;
             $needToChangeSlug = false;
             // if slug is null or set to empty, regenerate it, or needs an update
             if (empty($slug) || $slug === '__id__' || !isset($changeSet[$slugField])) {
@@ -349,6 +350,8 @@ class SluggableListener extends MappedEventSubscriber
                 }
                 // set the final slug
                 $meta->getReflectionProperty($slugField)->setValue($object, $slug);
+                $uow->propertyChanged($object, $slugField, $oldSlug, $slug);
+                
                 // recompute changeset
                 $ea->recomputeSingleObjectChangeSet($uow, $meta, $object);
             }
