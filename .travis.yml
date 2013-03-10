@@ -7,7 +7,6 @@ php:
 services: mongodb
 
 before_script:
-  - pecl install mongo
   - composer install --dev
 
 script: phpunit --coverage-text -c tests/
