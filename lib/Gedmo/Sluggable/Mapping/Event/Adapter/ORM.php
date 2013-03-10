@@ -38,13 +38,8 @@ final class ORM extends BaseAdapterORM implements SluggableAdapter
         // use the unique_base to restrict the uniqueness check
         if($config['unique'] && isset($config['unique_base']))
         {
-            $objectGetMethod = 'get'.ucfirst($config['unique_base']);
-            
-            if(method_exists($object, $objectGetMethod))
-            {
-                $qb->andWhere('rec.' . $config['unique_base'] . ' = :unique_base')
-                    ->setParameter(':unique_base', $object->$objectGetMethod());
-            }
+            $qb->andWhere('rec.' . $config['unique_base'] . ' = :unique_base')
+                ->setParameter(':unique_base', $meta->getReflectionProperty($config['unique_base'])->getValue($object));
         }
         
         // include identifiers
