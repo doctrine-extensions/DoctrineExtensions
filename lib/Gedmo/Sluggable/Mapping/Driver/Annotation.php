@@ -117,6 +117,13 @@ class Annotation extends AbstractAnnotationDriver
                 if (!empty($meta->identifier) && $meta->isIdentifier($field) && !(bool)$slug->unique) {
                     throw new InvalidMappingException("Identifier field - [{$field}] slug must be unique in order to maintain primary key in class - {$meta->name}");
                 }
+                if($slug->unique == false && strlen($slug->unique_base) > 0) {
+                    throw new InvalidMappingException("Slug annotation [unique_base] can not be set if unique is unset or 'false'");
+                }
+                if(strlen($slug->unique_base) > 0) {
+                    if(!$meta->hasField($slug->unique_base) && !$meta->hasAssociation($slug->unique_base))
+                        throw new InvalidMappingException("Unable to find [{$slug->unique_base}] as mapped property in entity - {$meta->name}");
+                }
                 // set all options
                 $config['slugs'][$field] = array(
                     'fields' => $slug->fields,
@@ -124,6 +131,7 @@ class Annotation extends AbstractAnnotationDriver
                     'style' => $slug->style,
                     'updatable' => $slug->updatable,
                     'unique' => $slug->unique,
+                    'unique_base' => $slug->unique_base,
                     'separator' => $slug->separator,
                     'handlers' => $handlers,
                 );

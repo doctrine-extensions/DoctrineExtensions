@@ -15,6 +15,10 @@ Features:
 [blog_reference]: http://gediminasm.org/article/sluggable-behavior-extension-for-doctrine-2 "Sluggable extension for Doctrine 2 makes automatic record field transformations into url friendly names"
 [blog_test]: http://gediminasm.org/test "Test extensions on this blog"
 
+Update **2013-03-10**
+
+- Added 'unique_base' configuration parameter to the Sluggable behaviour
+
 Update **2012-11-30**
 
 - Recreated slug handlers, as they are used by many people
@@ -316,6 +320,7 @@ echo $article->getSlug();
 - **fields** (required, default=[]) - list of fields for slug
 - **updatable** (optional, default=true) - **true** to update the slug on sluggable field changes, **false** - otherwise
 - **unique** (optional, default=true) - **true** if slug should be unique and if identical it will be prefixed, **false** - otherwise
+- **unique_base** (optional, default=null) - used in conjunction with **unique**. The name of the entity property that should be used as a key when doing a uniqueness check.
 - **separator** (optional, default="-") - separator which will separate words in slug
 - **style** (optional, default="default") - **"default"** all letters will be lowercase, **"camel"** - first word letter will be uppercase
 - **handlers** (optional, default=[]) - list of slug handlers, like tree path slug, or customized, for example see bellow

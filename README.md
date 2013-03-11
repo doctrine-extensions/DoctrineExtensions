@@ -17,6 +17,10 @@ with latest version of doctrine mapping at master branches
 
 ### Latest updates
 
+**2013-03-10**
+
+- **Sluggable** added 'unique_base' configuration parameter
+
 **2013-03-05**
 
 - A new extension - **References**, which links Entities in Documents and visa versa, [read more about it](https://github.com/l3pp4rd/DoctrineExtensions/blob/master/doc/references.md). It was contributed by @jwage, @avalanche123, @jmikola and @bobthecow, thanks
