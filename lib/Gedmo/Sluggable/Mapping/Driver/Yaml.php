@@ -88,12 +88,22 @@ class Yaml extends File implements Driver
 
                         $config['slugs'][$field]['unique'] = isset($slug['unique']) ?
                             (bool)$slug['unique'] : true;
+                        
+                        $config['slugs'][$field]['unique_base'] = isset($slug['unique_base']) ?
+                            $slug['unique_base'] : null;
 
                         $config['slugs'][$field]['separator'] = isset($slug['separator']) ?
                             (string)$slug['separator'] : '-';
 
                         if (!$meta->isMappedSuperclass && $meta->isIdentifier($field) && !$config['slugs'][$field]['unique']) {
                             throw new InvalidMappingException("Identifier field - [{$field}] slug must be unique in order to maintain primary key in class - {$meta->name}");
+                        }
+                        if($config['slugs'][$field]['unique'] == false && $config['slugs'][$field]['unique_base']) {
+                            throw new InvalidMappingException("Slug annotation [unique_base] can not be set if unique is unset or 'false'");
+                        }
+                        if($config['slugs'][$field]['unique_base']) {
+                            if(!$this->isValidField($meta, $config['slugs'][$field]['unique_base']) && !$meta->hasAssociation($config['slugs'][$field]['unique_base']))
+                                throw new InvalidMappingException("Unable to find [{$config['slugs'][$field]['unique_base']}] as mapped property in entity - {$meta->name}");
                         }
                     }
                 }

@@ -32,8 +32,16 @@ final class ORM extends BaseAdapterORM implements SluggableAdapter
             ->where($qb->expr()->like(
                 'rec.' . $config['slug'],
                 $qb->expr()->literal($slug . '%'))
-        )
+            )
         ;
+        
+        // use the unique_base to restrict the uniqueness check
+        if($config['unique'] && isset($config['unique_base']))
+        {
+            $qb->andWhere('rec.' . $config['unique_base'] . ' = :unique_base')
+                ->setParameter(':unique_base', $meta->getReflectionProperty($config['unique_base'])->getValue($object));
+        }
+        
         // include identifiers
         foreach ((array)$wrapped->getIdentifier(false) as $id => $value) {
             if (!$meta->isIdentifier($config['slug'])) {
