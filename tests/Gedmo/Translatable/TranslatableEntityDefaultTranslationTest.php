@@ -118,7 +118,7 @@ class TranslatableEntityDefaultTranslationTest extends BaseTestCaseORM
         $this->em->clear();
 
         $trans = $this->repo->findTranslations($this->em->find(self::ARTICLE, $entity->getId()));
-        $this->assertCount(0, $trans);
+        $this->assertCount(1, $trans);
 
         $articles = $this->em->createQuery('SELECT a FROM ' . self::ARTICLE . ' a')->getArrayResult();
         $this->assertCount(1, $articles);
@@ -138,7 +138,7 @@ class TranslatableEntityDefaultTranslationTest extends BaseTestCaseORM
         $this->em->clear();
 
         $trans = $this->repo->findTranslations($this->em->find(self::ARTICLE, $entity->getId()));
-        $this->assertCount(1, $trans);
+        $this->assertCount(2, $trans);
         $this->assertSame('title defaultLocale', $trans['defaultLocale']['title']);
 
         $articles = $this->em->createQuery('SELECT a FROM ' . self::ARTICLE . ' a')->getArrayResult();
