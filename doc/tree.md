@@ -1015,7 +1015,7 @@ class Category
 ```
 
 ### MongoDB example (Yaml)
-
+```
 YourNamespace\Document\Category:
     type:               mappedSuperclass
     repositoryClass:    Gedmo\Tree\Document\MongoDB\Repository\MaterializedPathRepository
@@ -1069,7 +1069,7 @@ YourNamespace\Document\Category:
             simple:     true
             gedmo:
                 -   treeParent
-
+```
 
 ### Path generation
 
