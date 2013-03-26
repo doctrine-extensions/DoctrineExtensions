@@ -31,6 +31,18 @@ final class ODM extends BaseAdapterODM implements SluggableAdapter
             $qb->field($meta->identifier)->notEqual($identifier);
         }
         $qb->field($config['slug'])->equals(new \MongoRegex('/^' . preg_quote($slug, '/') . '/'));
+
+        // use the unique_base to restrict the uniqueness check
+        if($config['unique'] && isset($config['unique_base']))
+        {
+            $reflectValue = $meta->getReflectionProperty($config['unique_base'])->getValue($object);
+            if (is_object($reflectValue)) {
+                $qb->field($config['unique_base'] . '.$id')->equals(new \MongoId($reflectValue->getId()));
+            } else {
+                $qb->where("/^" . preg_quote($meta->getReflectionProperty($config['unique_base'])->getValue($object), '/') . "/.test(this." . $config['unique_base'] . ")");
+            }
+        }
+
         $q = $qb->getQuery();
         $q->setHydrate(false);
 
