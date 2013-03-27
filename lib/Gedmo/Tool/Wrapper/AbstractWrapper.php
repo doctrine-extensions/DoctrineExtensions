@@ -70,6 +70,11 @@ abstract class AbstractWrapper implements WrapperInterface
         return self::$wrappedObjectReferences[$oid];
     }
 
+    public static function clear()
+    {
+        self::$wrappedObjectReferences = array();
+    }
+
     /**
      * {@inheritDoc}
      */
