@@ -48,6 +48,12 @@ class InheritanceTest extends BaseTestCaseORM
         $audi3->setTitle('Audi');
 
         $this->em->persist($audi3);
+        
+        $audi = new Car;
+        $audi->setDescription('audi3 car');
+        $audi->setTitle('Audi');
+
+        $this->em->persist($audi);
         $this->em->flush();
     }
 
