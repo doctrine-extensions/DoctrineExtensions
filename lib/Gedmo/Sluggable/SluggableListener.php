@@ -367,12 +367,12 @@ class SluggableListener extends MappedEventSubscriber
                 $this->exponent = strlen($i) - 1;
                 $generatedSlug = $this->makeUniqueSlug($ea, $object, $generatedSlug, true, $config);
             }
-			elseif(isset($mapping['length']) && strlen($generatedSlug) < $mapping['length']) {
-				// if sluglength is shorter than limit, check if exact preferedSlug is free and then use it
-				if(!$this->isInPersistedSlugs($result, $preferedSlug, $config['slug'])) {
-					$generatedSlug = $preferedSlug;
-				}
-			}
+            elseif(isset($mapping['length']) && strlen($generatedSlug) < $mapping['length']) {
+                // if sluglength is shorter than limit, check if exact preferedSlug is free and then use it
+                if(!$this->isInPersistedSlugs($result, $preferedSlug, $config['slug'])) {
+                    $generatedSlug = $preferedSlug;
+                }
+            }
             $preferedSlug = $generatedSlug;
         }
         return $preferedSlug;
@@ -401,8 +401,8 @@ class SluggableListener extends MappedEventSubscriber
         }
         return $result;
     }
-	
-	/**
+    
+    /**
      * check if the exact preferedSlug is free
      *
      * @param array $result
@@ -410,18 +410,18 @@ class SluggableListener extends MappedEventSubscriber
      * @param string $slugField
      * @return bool
      */
-	private function isInPersistedSlugs($result, $preferedSlug, $slugField)
+    private function isInPersistedSlugs($result, $preferedSlug, $slugField)
     {
-		$isInside = false;
-		if (isset($result)) {
-			
+        $isInside = false;
+        if (isset($result)) {
+            
             array_walk($result, function($val) use ($preferedSlug, &$isInside, $slugField) {
-				if (preg_match("/^$preferedSlug$/", $val[$slugField])) {
-                	$isInside = true;
+                if (preg_match("/^$preferedSlug$/", $val[$slugField])) {
+                    $isInside = true;
                 }
             });
         }
-		return $isInside;
+        return $isInside;
     }
 
     /**

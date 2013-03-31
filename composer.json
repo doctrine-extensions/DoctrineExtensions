@@ -1,5 +1,5 @@
 {
-    "name": "monbro/doctrine-extensions",
+    "name": "gedmo/doctrine-extensions",
     "type": "library",
     "description": "Doctrine2 behavioral extensions",
     "keywords": [
