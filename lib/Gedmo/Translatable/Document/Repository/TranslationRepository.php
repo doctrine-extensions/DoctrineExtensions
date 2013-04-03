@@ -10,7 +10,6 @@ use Doctrine\ODM\MongoDB\UnitOfWork;
 use Doctrine\ODM\MongoDB\Mapping\ClassMetadata;
 use Gedmo\Tool\Wrapper\MongoDocumentWrapper;
 use Gedmo\Translatable\Mapping\Event\Adapter\ODM as TranslatableAdapterODM;
-use Doctrine\ODM\MongoDB\Mapping\Types\Type;
 
 /**
  * The TranslationRepository has some useful functions
@@ -86,7 +85,7 @@ class TranslationRepository extends DocumentRepository
                 $transMeta->getReflectionProperty('locale')->setValue($trans, $locale);
             }
             $mapping = $meta->getFieldMapping($field);
-            $type = Type::getType($mapping['type']);
+            $type = $this->getType($mapping['type']);
             $transformed = $type->convertToDatabaseValue($value);
             $transMeta->getReflectionProperty('content')->setValue($trans, $transformed);
             if ($this->dm->getUnitOfWork()->isInIdentityMap($document)) {
@@ -228,5 +227,12 @@ class TranslationRepository extends DocumentRepository
             }
         }
         return $this->listener;
+    }
+
+    private function getType($type)
+    {
+        // due to change in ODM beta 9
+        return class_exists('Doctrine\ODM\MongoDB\Types\Type') ? \Doctrine\ODM\MongoDB\Types\Type::getType($type)
+            : \Doctrine\ODM\MongoDB\Mapping\Types\Type::getType($type);
     }
 }
