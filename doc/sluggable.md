@@ -455,7 +455,6 @@ Set the slug to **null** or empty string.
 $entity = $em->find('Entity\Something', $id);
 $entity->setSlug('');
 
-$em->persist($entity);
 $em->flush();
 ```
 
