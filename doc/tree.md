@@ -307,7 +307,7 @@ Entity\Category:
         </field>
 
         <many-to-one field="parent" target-entity="NestedTree">
-            <join-column name="parent_id" referenced-column-name="id" on-delete="SET_NULL"/>
+            <join-column name="parent_id" referenced-column-name="id" on-delete="SET NULL"/>
             <gedmo:tree-parent/>
         </many-to-one>
 
