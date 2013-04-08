@@ -338,7 +338,7 @@ class UploadableListener extends MappedEventSubscriber
                 $generatorClass = $config['filenameGenerator'];
         }
 
-        $info = $this->moveFile($fileInfo, $path, $generatorClass, $config['allowOverwrite'], $config['appendNumber'], $object);
+        $info = $this->moveFile($fileInfo, $path, $generatorClass, $config['allowOverwrite'], $config['appendNumber']);
 
         // We override the mime type with the guessed one
         $info['fileMimeType'] = $mime;
@@ -428,7 +428,6 @@ class UploadableListener extends MappedEventSubscriber
      * @param bool $filenameGeneratorClass
      * @param bool $overwrite
      * @param bool $appendNumber
-     * @param $object
      * @return array
      * @throws \Gedmo\Exception\UploadableUploadException
      * @throws \Gedmo\Exception\UploadableNoFileException
@@ -440,7 +439,7 @@ class UploadableListener extends MappedEventSubscriber
      * @throws \Gedmo\Exception\UploadableNoTmpDirException
      * @throws \Gedmo\Exception\UploadableCantWriteException
      */
-    public function moveFile(FileInfoInterface $fileInfo, $path, $filenameGeneratorClass = false, $overwrite = false, $appendNumber = false, $object)
+    public function moveFile(FileInfoInterface $fileInfo, $path, $filenameGeneratorClass = false, $overwrite = false, $appendNumber = false)
     {
         if ($fileInfo->getError() > 0) {
             switch ($fileInfo->getError()) {
@@ -483,6 +482,7 @@ class UploadableListener extends MappedEventSubscriber
             'fileName'          => '',
             'fileExtension'     => '',
             'fileWithoutExt'    => '',
+            'origFileName'      => '',
             'filePath'          => '',
             'fileMimeType'      => $fileInfo->getType(),
             'fileSize'          => $fileInfo->getSize()
@@ -500,12 +500,14 @@ class UploadableListener extends MappedEventSubscriber
             $info['fileWithoutExt'] = $info['fileName'];
         }
 
+        // Save the original filename for later use
+        $info['origFileName'] = $info['fileName'];
+
         // Now we generate the filename using the configured class
         if ($filenameGeneratorClass) {
             $filename = $filenameGeneratorClass::generate(
                 str_replace($path.'/', '', $info['fileWithoutExt']),
-                $info['fileExtension'],
-                $object
+                $info['fileExtension']
             );
             $info['filePath'] = str_replace(
                 '/'.$info['fileName'],
