@@ -483,6 +483,7 @@ class UploadableListener extends MappedEventSubscriber
             'fileName'          => '',
             'fileExtension'     => '',
             'fileWithoutExt'    => '',
+            'origFileName'      => '',
             'filePath'          => '',
             'fileMimeType'      => $fileInfo->getType(),
             'fileSize'          => $fileInfo->getSize()
@@ -499,6 +500,9 @@ class UploadableListener extends MappedEventSubscriber
         } else {
             $info['fileWithoutExt'] = $info['fileName'];
         }
+
+        // Save the original filename for later use
+        $info['origFileName'] = $info['fileName'];
 
         // Now we generate the filename using the configured class
         if ($filenameGeneratorClass) {
