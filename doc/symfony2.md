@@ -67,7 +67,7 @@ connection parameters, edit **app/config/parameters.ini**
 
 Lets start from the mapping, in case if you use **translatable**, **tree** or **loggable**
 extension you will need to map those abstract mappedsuperclasses for you ORM to be aware of.
-To do so, add some mapping info to your **doctrine.orm** configuration, edit **app/config.yml**:
+To do so, add some mapping info to your **doctrine.orm** configuration, edit **app/config/config.yml**:
 
     doctrine:
         dbal:
