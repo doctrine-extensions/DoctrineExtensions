@@ -259,7 +259,7 @@ Do not forget to import **doctrine_extensions.yml** in your **app/config/config.
 
     # file: app/config/config.yml
     imports:
-        - { resource: parameters.ini }
+        - { resource: parameters.yml }
         - { resource: security.yml }
         - { resource: doctrine_extensions.yml }
     
