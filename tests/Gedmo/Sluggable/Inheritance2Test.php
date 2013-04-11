@@ -12,7 +12,7 @@ use Sluggable\Fixture\Inheritance2\Vehicle;
  * Tests for Sluggable behavior
  *
  */
-class InheritanceTest extends BaseTestCaseORM
+class Inheritance2Test extends BaseTestCaseORM
 {
     const VEHICLE = 'Sluggable\\Fixture\\Inheritance2\\Vehicle';
     const CAR = 'Sluggable\\Fixture\\Inheritance2\\Car';
