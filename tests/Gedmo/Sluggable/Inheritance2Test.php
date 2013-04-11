@@ -55,7 +55,7 @@ class Inheritance2Test extends BaseTestCaseORM
         return array(
             self::VEHICLE,
             self::CAR,
-			self::SPORTCAR
+	    self::SPORTCAR
         );
     }
 }
