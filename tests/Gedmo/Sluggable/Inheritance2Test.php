@@ -16,7 +16,7 @@ class InheritanceTest extends BaseTestCaseORM
 {
     const VEHICLE = 'Sluggable\\Fixture\\Inheritance2\\Vehicle';
     const CAR = 'Sluggable\\Fixture\\Inheritance2\\Car';
-	const SPORTCAR = 'Sluggable\\Fixture\\Inheritance2\\SportCar';
+    const SPORTCAR = 'Sluggable\\Fixture\\Inheritance2\\SportCar';
 
     protected function setUp()
     {
