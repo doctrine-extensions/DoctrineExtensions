@@ -1,6 +1,6 @@
 <?php
 
-namespace Sluggable\Fixture\Inheritance;
+namespace Sluggable\Fixture\Inheritance2;
 
 use Doctrine\ORM\Mapping as ORM;
 

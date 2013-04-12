@@ -1,8 +1,9 @@
 <?php
 
-namespace Sluggable\Fixture\Inheritance;
+namespace Sluggable\Fixture\Inheritance2;
 
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ORM\Entity
@@ -23,7 +24,7 @@ class Car extends Vehicle
      * @Gedmo\Slug(fields={"title"})
      * @ORM\Column(length=128, unique=true)
      */
-    private $slug;    
+    private $slug;
 
     public function setDescription($description)
     {
