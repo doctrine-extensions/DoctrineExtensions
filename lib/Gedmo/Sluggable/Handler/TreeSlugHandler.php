@@ -15,8 +15,6 @@ use Gedmo\Exception\InvalidMappingException;
  * category tree slug could look like "food/fruits/apples"
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @package Gedmo.Sluggable.Handler
- * @subpackage TreeSlugHandler
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */

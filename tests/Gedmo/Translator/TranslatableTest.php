@@ -12,7 +12,6 @@ use Doctrine\ORM\Proxy\Proxy;
  * These are tests for translatable behavior
  *
  * @author Konstantin Kudryashov <ever.zet@gmail.com>
- * @package Gedmo.Translatable
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */

@@ -14,8 +14,6 @@ use Gedmo\ReferenceIntegrity\Mapping\Validator;
  * extension.
  *
  * @author Evert Harmeling <evert.harmeling@freshheads.com>
- * @package Gedmo.ReferenceIntegrity.Mapping.Driver
- * @subpackage Yaml
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class Yaml extends File implements Driver

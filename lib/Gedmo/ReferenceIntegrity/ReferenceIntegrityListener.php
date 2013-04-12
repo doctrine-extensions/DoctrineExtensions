@@ -12,8 +12,6 @@ use Gedmo\ReferenceIntegrity\Mapping\Validator;
  * The ReferenceIntegrity listener handles the reference integrity on related entities
  *
  * @author Evert Harmeling <evert.harmeling@freshheads.com>
- * @package Gedmo.ReferenceIntegrity
- * @subpackage ReferenceIntegrityListener
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class ReferenceIntegrityListener extends MappedEventSubscriber

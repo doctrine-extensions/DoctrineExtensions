@@ -15,8 +15,6 @@ use Doctrine\Common\Cache\ArrayCache;
  * and the current version of doctrine extensions
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @subpackage DoctrineExtensions
- * @package Gedmo
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */

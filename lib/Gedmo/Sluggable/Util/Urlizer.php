@@ -13,8 +13,6 @@ namespace Gedmo\Sluggable\Util;
  * Uses 3rd party libraries and functions:
  *         http://sourceforge.net/projects/phputf8
  *
- * @package     Gedmo.Sluggable.Util
- * @subpackage  Urlizer
  * @license     http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link        www.doctrine-project.org
  * @since       1.0

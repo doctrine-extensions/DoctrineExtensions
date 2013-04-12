@@ -15,8 +15,6 @@ use Doctrine\ORM\Proxy\Proxy;
  * since it does some additional calculations on persisted objects.
  *
  * @author Lukas Botsch <lukas.botsch@gmail.com>
- * @subpackage SortableListener
- * @package Gedmo.Sortable
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */

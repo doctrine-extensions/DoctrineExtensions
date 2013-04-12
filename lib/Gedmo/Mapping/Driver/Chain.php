@@ -9,8 +9,6 @@ use Gedmo\Mapping\Driver;
  * extension mapping driver support
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @package Gedmo.Mapping.Driver
- * @subpackage Chain
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */

@@ -8,8 +8,6 @@ namespace Gedmo\Sortable;
  * Sortable
  * 
  * @author Lukas Botsch <lukas.botsch@gmail.com>
- * @package Gedmo.Sortable
- * @subpackage Sortable
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */

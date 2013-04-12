@@ -10,7 +10,6 @@ use Sluggable\Fixture\Issue633\Article;
  * These are tests for Sluggable behavior
  *
  * @author Derek Clapham <derek.clapham@gmail.com>
- * @package Gedmo.Sluggable
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */

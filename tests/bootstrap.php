@@ -12,7 +12,6 @@ use Composer\Autoload\ClassLoader;
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  * @author Christoph Krämer <cevou@gmx.de>
- * @package Gedmo.Tests
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */

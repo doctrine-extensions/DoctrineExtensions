@@ -11,8 +11,6 @@ use Gedmo\Exception\InvalidArgumentException;
  * for SoftDeleteable behavior.
  *
  * @author David Buchmann <mail@davidbu.ch>
- * @package Gedmo\SoftDeleteable\Mapping\Event\Adapter
- * @subpackage ORM
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */

@@ -6,8 +6,6 @@ namespace Gedmo\ReferenceIntegrity\Mapping;
  * This class is used to validate mapping information
  *
  * @author Evert Harmeling <evert.harmeling@freshheads.com>
- * @package Gedmo.ReferenceIntegrity.Mapping
- * @subpackage Validator
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 

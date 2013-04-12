@@ -13,7 +13,6 @@ use Doctrine\Common\Util\Debug,
  * These are tests for Timestampable behavior
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @package Gedmo.Timestampable
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */

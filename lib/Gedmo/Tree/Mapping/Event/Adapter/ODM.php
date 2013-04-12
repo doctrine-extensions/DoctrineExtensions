@@ -13,8 +13,6 @@ use Gedmo\Tree\Mapping\Event\TreeAdapter;
  * for Tree behavior
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @package Gedmo\Tree\Mapping\Event\Adapter
- * @subpackage ODM
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */

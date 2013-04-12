@@ -11,7 +11,6 @@ use Sluggable\Fixture\Issue449\Article;
  * These are tests for Sluggable behavior
  *
  * @author Craig Marvelley <craig.marvelley@gmail.com>
- * @package Gedmo.Sluggable
  * @link http://marvelley.com
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */

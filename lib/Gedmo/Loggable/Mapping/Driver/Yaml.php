@@ -14,8 +14,6 @@ use Gedmo\Mapping\Driver\File,
  *
  * @author Boussekeyt Jules <jules.boussekeyt@gmail.com>
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @package Gedmo.Loggable.Mapping.Driver
- * @subpackage Yaml
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */

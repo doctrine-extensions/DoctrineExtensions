@@ -20,8 +20,6 @@ use Gedmo\Mapping\Event\AdapterInterface;
  * since nested set trees are slow on inserts and updates.
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @package Gedmo.Tree.Strategy.ORM
- * @subpackage Nested
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */

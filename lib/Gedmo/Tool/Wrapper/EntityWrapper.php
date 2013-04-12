@@ -10,8 +10,6 @@ use Doctrine\ORM\Proxy\Proxy;
  * manipulation
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @package Gedmo.Tool.Wrapper
- * @subpackage EntityWrapper
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */

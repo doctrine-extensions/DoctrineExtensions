@@ -8,8 +8,6 @@ namespace Gedmo\Tree;
  * Tree Node
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @package Gedmo.Tree
- * @subpackage Node
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */

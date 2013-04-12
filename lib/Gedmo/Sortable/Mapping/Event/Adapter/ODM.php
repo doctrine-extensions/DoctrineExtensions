@@ -11,8 +11,6 @@ use Gedmo\Sortable\Mapping\Event\SortableAdapter;
  * for sortable behavior
  *
  * @author Lukas Botsch <lukas.botsch@gmail.com>
- * @package Gedmo\Sortable\Mapping\Event\Adapter
- * @subpackage ODM
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */

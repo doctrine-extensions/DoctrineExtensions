@@ -11,8 +11,6 @@ use Doctrine\Common\Annotations\Annotation;
  * @Target("PROPERTY")
  *
  * @author David Buchmann <mail@davidbu.ch>
- * @package Gedmo.Mapping.Annotation
- * @subpackage Blameable
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */

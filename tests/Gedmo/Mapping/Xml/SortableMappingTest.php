@@ -14,7 +14,6 @@ use Tool\BaseTestCaseOM;
  * These are mapping extension tests
  *
  * @author Lukas Botsch <lukas.botsch@gmail.com>
- * @package Gedmo.Mapping
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */

@@ -13,8 +13,6 @@ use Gedmo\Mapping\Driver\AbstractAnnotationDriver,
  * extension.
  *
  * @author David Buchmann <mail@davidbu.ch>
- * @package Gedmo.Blameable.Mapping.Driver
- * @subpackage Annotation
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */

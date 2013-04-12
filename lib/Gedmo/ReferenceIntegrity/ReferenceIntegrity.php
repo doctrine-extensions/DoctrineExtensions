@@ -8,8 +8,6 @@ namespace Gedmo\ReferenceIntegrity;
  * ReferenceIntegrity checks
  *
  * @author Evert Harmeling <evert.harmeling@freshheads.com>
- * @package Gedmo.ReferenceIntegrity
- * @subpackage ReferenceIntegrity
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */

@@ -13,7 +13,6 @@ use Doctrine\Common\Util\Debug,
  * These are tests for Blameable behavior
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @package Gedmo.Blameable
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */

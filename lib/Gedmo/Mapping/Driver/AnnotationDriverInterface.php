@@ -9,8 +9,6 @@ use Gedmo\Mapping\Driver;
  * to set custom annotation reader.
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @package Gedmo.Mapping.Driver
- * @subpackage AnnotationDriverInterface
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */

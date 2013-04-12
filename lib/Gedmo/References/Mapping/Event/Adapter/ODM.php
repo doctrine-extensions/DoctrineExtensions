@@ -17,8 +17,6 @@ use Gedmo\References\Mapping\Event\ReferencesAdapter;
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  * @author Bulat Shakirzyanov <mallluhuct@gmail.com>
  * @author Jonathan H. Wage <jonwage@gmail.com>
- * @package Gedmo\References\Mapping\Event\Adapter
- * @subpackage ODM
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */

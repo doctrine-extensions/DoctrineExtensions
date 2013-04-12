@@ -11,8 +11,6 @@ use Doctrine\Common\Annotations\Annotation;
  * @Target("PROPERTY")
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @package Gedmo.Mapping.Annotation
- * @subpackage Timestampable
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */

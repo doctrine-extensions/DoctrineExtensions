@@ -11,8 +11,6 @@ use Doctrine\Common\Annotations\Annotation;
  * @Target("PROPERTY")
  *
  * @author Evert Harmeling <evert.harmeling@freshheads.com>
- * @package Gedmo.Mapping.Annotation
- * @subpackage ReferenceIntegrity
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 final class ReferenceIntegrity extends Annotation

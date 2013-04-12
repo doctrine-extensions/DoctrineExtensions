@@ -16,8 +16,6 @@ use Doctrine\ORM\Query,
  * the strategy used by listener
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @package Gedmo.Tree.Entity.Repository
- * @subpackage NestedTreeRepository
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */

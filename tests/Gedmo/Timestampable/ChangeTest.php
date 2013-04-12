@@ -14,7 +14,6 @@ use Doctrine\Common\Util\Debug,
  * These are tests for Timestampable behavior
  *
  * @author Ivan Borzenkov <ivan.borzenkov@gmail.com>
- * @package Gedmo.Timestampable
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */

@@ -6,8 +6,6 @@ namespace Gedmo\Timestampable\Traits;
  * Timestampable Trait, usable with PHP >= 5.4
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @package Gedmo.Timestampable.Traits
- * @subpackage TimestampableEntity
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */

@@ -10,7 +10,6 @@ use Tool\BaseTestCaseMongoODM;
  * These are tests for the ReferenceIntegrity extension
  *
  * @author Evert Harmeling <evert.harmeling@freshheads.com>
- * @package Gedmo.ReferenceIntegrity
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class ReferenceIntegrityDocumentTest extends BaseTestCaseMongoODM

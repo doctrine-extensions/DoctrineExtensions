@@ -23,8 +23,6 @@ use Gedmo\Translatable\Entity\MappedSuperclass\AbstractTranslation;
  * the caching is activated for metadata
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @package Gedmo.Translatable
- * @subpackage TranslatableListener
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */

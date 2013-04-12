@@ -13,8 +13,6 @@ use Gedmo\Mapping\Driver\File,
  * extension.
  *
  * @author David Buchmann <mail@davidbu.ch>
- * @package Gedmo.Blameable.Mapping.Driver
- * @subpackage Yaml
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */

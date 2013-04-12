@@ -12,8 +12,6 @@ use Gedmo\Exception\InvalidMappingException;
  * @author Gustavo Falco <comfortablynumb84@gmail.com>
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  * @author <rocco@roccosportal.com>
- * @package Gedmo.Tree.Mapping
- * @subpackage Validator
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */

@@ -11,7 +11,6 @@ use Tree\Fixture\Genealogy\Woman;
  * Additional tests for tree inheritance and in-memory updates
  *
  * @author Illya Klymov <xanf@xanf.me>
- * @package Gedmo.Tree
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */

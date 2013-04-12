@@ -9,8 +9,6 @@ use Doctrine\Common\Persistence\Mapping\ClassMetadata;
  * This is an abstract class to implement common functionality
  * for extension annotation mapping drivers.
  *
- * @package    Gedmo.Mapping.Driver
- * @subpackage AnnotationDriverInterface
  * @author     Derek J. Lambert <dlambert@dereklambert.com>
  * @license    MIT License (http://www.opensource.org/licenses/mit-license.php)
  * @link       http://www.gediminasm.org
