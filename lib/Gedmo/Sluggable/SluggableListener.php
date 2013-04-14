@@ -98,8 +98,8 @@ class SluggableListener extends MappedEventSubscriber
     }
 
     /**
-     * Set the transliteration callable method
-     * to transliterate slugs
+     * Set the urlization callable method
+     * to urlize slugs
      *
      * @param callable $callable
      */
@@ -122,7 +122,7 @@ class SluggableListener extends MappedEventSubscriber
     }
 
     /**
-     * Get currently used transliterator callable
+     * Get currently used urlizer callable
      *
      * @return callable
      */
