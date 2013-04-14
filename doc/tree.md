@@ -299,17 +299,23 @@ Entity\Category:
         <field name="right" column="rgt" type="integer">
             <gedmo:tree-right/>
         </field>
-        <field name="root" type="integer">
+        <field name="root" type="integer" nullable="true">
             <gedmo:tree-root/>
         </field>
         <field name="level" column="lvl" type="integer">
             <gedmo:tree-level/>
         </field>
 
-        <many-to-one field="parent" target-entity="NestedTree">
+        <many-to-one field="parent" target-entity="NestedTree" inversed-by="children">
             <join-column name="parent_id" referenced-column-name="id" on-delete="SET NULL"/>
             <gedmo:tree-parent/>
         </many-to-one>
+        
+        <one-to-many field="children" target-entity="NestedTree" mapped-by="parent">
+            <order-by>
+                <order-by-field name="lft" direction="ASC" />
+            </order-by>
+        </one-to-many>
 
         <gedmo:tree type="nested"/>
 
