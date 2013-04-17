@@ -139,6 +139,9 @@ final class ExtensionMetadataFactory
             foreach ($omDriver->getDrivers() as $namespace => $nestedOmDriver) {
                 $driver->addDriver($this->getDriver($nestedOmDriver), $namespace);
             }
+            if ($omDriver->getDefaultDriver() !== null) {
+                $driver->setDefaultDriver($this->getDriver($omDriver->getDefaultDriver()));
+            }
         } else {
             $driverName = substr($driverName, 0, strpos($driverName, 'Driver'));
             $isSimplified = false;

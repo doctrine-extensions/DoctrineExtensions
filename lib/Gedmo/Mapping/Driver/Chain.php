@@ -15,6 +15,13 @@ use Gedmo\Mapping\Driver;
 class Chain implements Driver
 {
     /**
+     * The default driver
+     *
+     * @var Driver|null
+     */
+    private $defaultDriver;
+
+    /**
      * List of drivers nested
      * @var array
      */
@@ -42,6 +49,26 @@ class Chain implements Driver
     }
 
     /**
+     * Get the default driver.
+     *
+     * @return Driver|null
+     */
+    public function getDefaultDriver()
+    {
+        return $this->defaultDriver;
+    }
+
+    /**
+     * Set the default driver.
+     *
+     * @param Driver $driver
+     */
+    public function setDefaultDriver(Driver $driver)
+    {
+        $this->defaultDriver = $driver;
+    }
+
+    /**
      * {@inheritDoc}
      */
     public function readExtendedMetadata($meta, array &$config)
@@ -52,6 +79,12 @@ class Chain implements Driver
                 return;
             }
         }
+
+        if (null !== $this->defaultDriver) {
+            $this->defaultDriver->readExtendedMetadata($meta, $config);
+            return;
+        }
+
         // commenting it for customized mapping support, debugging of such cases might get harder
         //throw new \Gedmo\Exception\UnexpectedValueException('Class ' . $meta->name . ' is not a valid entity or mapped super class.');
     }
