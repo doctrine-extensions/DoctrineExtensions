@@ -33,9 +33,16 @@ class SluggableListener extends MappedEventSubscriber
     /**
      * Transliteration callback for slugs
      *
-     * @var array
+     * @var callable
      */
     private $transliterator = array('Gedmo\Sluggable\Util\Urlizer', 'transliterate');
+
+    /**
+     * Urlize callback for slugs
+     *
+     * @var callable
+     */
+    private $urlizer = array('Gedmo\Sluggable\Util\Urlizer', 'urlize');
 
     /**
      * List of inserted slugs for each object class.
@@ -78,7 +85,7 @@ class SluggableListener extends MappedEventSubscriber
      * Set the transliteration callable method
      * to transliterate slugs
      *
-     * @param mixed $callable
+     * @param callable $callable
      * @throws \Gedmo\Exception\InvalidArgumentException
      * @return void
      */
@@ -91,6 +98,20 @@ class SluggableListener extends MappedEventSubscriber
     }
 
     /**
+     * Set the urlization callable method
+     * to urlize slugs
+     *
+     * @param callable $callable
+     */
+    public function setUrlizer($callable)
+    {
+        if (!is_callable($callable)) {
+            throw new \Gedmo\Exception\InvalidArgumentException('Invalid urlizer callable parameter given');
+        }
+        $this->urlizer = $callable;
+    }
+
+    /**
      * Get currently used transliterator callable
      *
      * @return callable
@@ -98,6 +119,16 @@ class SluggableListener extends MappedEventSubscriber
     public function getTransliterator()
     {
         return $this->transliterator;
+    }
+
+    /**
+     * Get currently used urlizer callable
+     *
+     * @return callable
+     */
+    public function getUrlizer()
+    {
+        return $this->urlizer;
     }
 
     /**
@@ -296,7 +327,7 @@ class SluggableListener extends MappedEventSubscriber
                 );
                 // Step 2: urlization (replace spaces by '-' etc...)
                 if(!$urlized){
-                    $slug = Util\Urlizer::urlize($slug, $options['separator']);
+                    $slug = call_user_func($this->urlizer, $slug, $options['separator']);
                 }
                 // stylize the slug
                 switch ($options['style']) {
