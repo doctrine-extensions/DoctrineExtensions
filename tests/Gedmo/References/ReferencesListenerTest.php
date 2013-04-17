@@ -19,6 +19,10 @@ class ReferencesListenerTest extends BaseTestCaseOM
     {
         parent::setUp();
 
+        if (!class_exists('Mongo')) {
+            $this->markTestSkipped('Missing Mongo extension.');
+        }
+
         $reader = new AnnotationReader();
 
         $this->dm = $this->getMockDocumentManager('test', new MongoDBAnnotationDriver($reader, __DIR__ . '/Fixture/ODM/MongoDB'));
