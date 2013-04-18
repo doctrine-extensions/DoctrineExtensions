@@ -17,6 +17,9 @@ class TranslationProxy
     protected $translatable;
     protected $properties = array();
     protected $class;
+    /**
+     * @var Collection|Translation[]
+     */
     protected $coll;
 
     /**
@@ -27,6 +30,7 @@ class TranslationProxy
      * @param   array       $properties     object properties to translate
      * @param   string      $class          translation entity|document class
      * @param   Collection  $coll           translations collection
+     * @throws \InvalidArgumentException Translation class doesn't implement TranslationInterface
      */
     public function __construct($translatable, $locale, array $properties, $class, Collection $coll)
     {
@@ -157,6 +161,7 @@ class TranslationProxy
             }
         }
 
+        /** @var Translation $translation */
         $translation = new $this->class;
         $translation->setTranslatable($this->translatable);
         $translation->setProperty($property);

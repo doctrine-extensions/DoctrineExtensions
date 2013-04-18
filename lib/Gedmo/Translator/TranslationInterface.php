@@ -42,7 +42,7 @@ interface TranslationInterface
     /**
      * Set property
      *
-     * @param string $field
+     * @param string $property
      */
     function setProperty($property);
 
@@ -56,15 +56,15 @@ interface TranslationInterface
     /**
      * Set value
      *
-     * @param text $value
-     * @return AbstractTranslation
+     * @param string $value
+     * @return TranslationInterface
      */
     function setValue($value);
 
     /**
      * Get value
      *
-     * @return text $value
+     * @return string $value
      */
     function getValue();
 }

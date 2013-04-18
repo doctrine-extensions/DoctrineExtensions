@@ -126,7 +126,7 @@ final class ExtensionMetadataFactory
      * read the metadata required by extension
      *
      * @param object $omDriver
-     * @throws DriverException if driver was not found in extension
+     * @throws \Gedmo\Exception\RuntimeException if driver was not found in extension
      * @return \Gedmo\Mapping\Driver
      */
     private function getDriver($omDriver)

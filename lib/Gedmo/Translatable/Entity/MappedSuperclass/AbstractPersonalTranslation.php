@@ -41,7 +41,7 @@ abstract class AbstractPersonalTranslation
     protected $object;
 
     /**
-     * @var text $content
+     * @var string $content
      *
      * @ORM\Column(type="text", nullable=true)
      */

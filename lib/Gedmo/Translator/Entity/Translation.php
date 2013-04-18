@@ -44,7 +44,7 @@ abstract class Translation extends BaseTranslation
     protected $property;
 
     /**
-     * @var text $value
+     * @var string $value
      *
      * @Column(type="text", nullable=true)
      */
