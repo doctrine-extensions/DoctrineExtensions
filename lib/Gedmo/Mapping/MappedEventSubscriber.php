@@ -46,7 +46,7 @@ abstract class MappedEventSubscriber implements EventSubscriber
      * ExtensionMetadataFactory used to read the extension
      * metadata through the extension drivers
      *
-     * @var Gedmo\Mapping\ExtensionMetadataFactory
+     * @var ExtensionMetadataFactory
      */
     private $extensionMetadataFactory = array();
 
@@ -146,7 +146,7 @@ abstract class MappedEventSubscriber implements EventSubscriber
      * Get extended metadata mapping reader
      *
      * @param ObjectManager $objectManager
-     * @return Gedmo\Mapping\ExtensionMetadataFactory
+     * @return ExtensionMetadataFactory
      */
     public function getExtensionMetadataFactory(ObjectManager $objectManager)
     {
