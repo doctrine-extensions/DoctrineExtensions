@@ -12,8 +12,7 @@ namespace Gedmo\SoftDeleteable\Traits;
 trait SoftDeleteableEntity
 {
     /**
-     * @Gedmo\SoftDeleteable(on="delete")
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(type="datetime", nullable=true)
      */
     protected $deletedAt;
 
