@@ -43,7 +43,7 @@ class Inheritance2Test extends BaseTestCaseORM
         $this->em->persist($audi2);
 
         $audi3 = new SportCar;
-	$audi3->setDescription('audi3 car');
+        $audi3->setDescription('audi3 car');
         $audi3->setTitle('Audi');
 
         $this->em->persist($audi3);
@@ -55,7 +55,7 @@ class Inheritance2Test extends BaseTestCaseORM
         return array(
             self::VEHICLE,
             self::CAR,
-	    self::SPORTCAR
+            self::SPORTCAR
         );
     }
 }
