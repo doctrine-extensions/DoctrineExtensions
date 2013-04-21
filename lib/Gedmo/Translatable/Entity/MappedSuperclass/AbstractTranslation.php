@@ -49,7 +49,7 @@ abstract class AbstractTranslation
     protected $foreignKey;
 
     /**
-     * @var text $content
+     * @var string $content
      *
      * @ORM\Column(type="text", nullable=true)
      */

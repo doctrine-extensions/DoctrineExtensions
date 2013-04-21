@@ -47,10 +47,11 @@ abstract class AbstractWrapper implements WrapperInterface
     private static $wrappedObjectReferences;
 
     /**
-     * Wrapp object factory method
+     * Wrap object factory method
      *
      * @param object $object
      * @param \Doctrine\Common\Persistence\ObjectManager $om
+     * @throws \Gedmo\Exception\UnsupportedObjectManager
      * @return \Gedmo\Tool\WrapperInterface
      */
     public static function wrap($object, ObjectManager $om)

@@ -16,7 +16,7 @@ class Chain implements Driver
 {
     /**
      * List of drivers nested
-     * @var array
+     * @var Driver[]
      */
     private $_drivers = array();
 
@@ -34,7 +34,7 @@ class Chain implements Driver
     /**
      * Get the array of nested drivers.
      *
-     * @return array $drivers
+     * @return Driver[] $drivers
      */
     public function getDrivers()
     {

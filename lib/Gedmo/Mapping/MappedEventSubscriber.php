@@ -5,7 +5,6 @@ namespace Gedmo\Mapping;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Annotations\CachedReader;
 use Doctrine\Common\Cache\ArrayCache;
-use Doctrine\Common\Annotations\Reader;
 use Gedmo\Mapping\ExtensionMetadataFactory;
 use Doctrine\Common\EventSubscriber;
 use Doctrine\Common\Persistence\ObjectManager;

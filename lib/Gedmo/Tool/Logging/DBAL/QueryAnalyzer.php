@@ -180,7 +180,7 @@ class QueryAnalyzer implements SQLLogger
      * @param string $sql
      * @param array $params
      * @param array $types
-     * @return sql
+     * @return string sql
      */
     private function generateSql($sql, $params, $types)
     {

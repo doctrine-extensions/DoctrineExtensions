@@ -3,7 +3,6 @@
 namespace Gedmo\Loggable;
 
 use Doctrine\Common\EventArgs;
-use Doctrine\Common\Persistence\ObjectManager;
 use Gedmo\Mapping\MappedEventSubscriber;
 use Gedmo\Loggable\Mapping\Event\LoggableAdapter;
 use Gedmo\Tool\Wrapper\AbstractWrapper;
@@ -63,6 +62,7 @@ class LoggableListener extends MappedEventSubscriber
      * Set username for identification
      *
      * @param mixed $username
+     * @throws \Gedmo\Exception\InvalidArgumentException Invalid username
      */
     public function setUsername($username)
     {
@@ -178,7 +178,7 @@ class LoggableListener extends MappedEventSubscriber
      * Looks for loggable objects being inserted or updated
      * for further processing
      *
-     * @param EventArgs $args
+     * @param EventArgs $eventArgs
      * @return void
      */
     public function onFlush(EventArgs $eventArgs)
@@ -222,6 +222,7 @@ class LoggableListener extends MappedEventSubscriber
         if ($config = $this->getConfiguration($om, $meta->name)) {
             $logEntryClass = $this->getLogEntryClass($ea, $meta->name);
             $logEntryMeta = $om->getClassMetadata($logEntryClass);
+            /** @var \Gedmo\Loggable\Entity\LogEntry $logEntry */
             $logEntry = $logEntryMeta->newInstance();
 
             $logEntry->setAction($action);

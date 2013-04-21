@@ -284,7 +284,7 @@ class TranslatableListener extends MappedEventSubscriber
      *
      * @param object $object
      * @param object $meta
-     * @throws RuntimeException - if language or locale property is not
+     * @throws \Gedmo\Exception\RuntimeException - if language or locale property is not
      *         found in entity
      * @return string
      */
@@ -487,7 +487,7 @@ class TranslatableListener extends MappedEventSubscriber
      * Validates the given locale
      *
      * @param string $locale - locale to validate
-     * @throws InvalidArgumentException if locale is not valid
+     * @throws \Gedmo\Exception\InvalidArgumentException if locale is not valid
      * @return void
      */
     protected function validateLocale($locale)

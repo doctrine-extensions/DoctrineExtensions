@@ -12,9 +12,12 @@ namespace Gedmo\Tree;
  */
 interface RepositoryInterface extends RepositoryUtilsInterface
 {
+
     /**
      * Get all root nodes
      *
+     * @param string $sortByField
+     * @param string $direction
      * @return array
      */
     public function getRootNodes($sortByField = null, $direction = 'asc');

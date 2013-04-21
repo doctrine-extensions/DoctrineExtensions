@@ -30,7 +30,7 @@ class MongoDocumentWrapper extends AbstractWrapper
     private $initialized = false;
 
     /**
-     * Wrapp document
+     * Wrap document
      *
      * @param object $document
      * @param \Doctrine\ODM\MongoDB\DocumentManager $dm

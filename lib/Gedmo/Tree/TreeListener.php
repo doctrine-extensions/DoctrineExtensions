@@ -9,7 +9,7 @@ use Doctrine\Common\EventArgs,
 
 /**
  * The tree listener handles the synchronization of
- * tree nodes. Can implement diferent
+ * tree nodes. Can implement different
  * strategies on handling the tree.
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>

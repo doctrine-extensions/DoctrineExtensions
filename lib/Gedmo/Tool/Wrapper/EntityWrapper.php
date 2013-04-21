@@ -30,7 +30,7 @@ class EntityWrapper extends AbstractWrapper
     private $initialized = false;
 
     /**
-     * Wrapp entity
+     * Wrap entity
      *
      * @param object $entity
      * @param \Doctrine\ORM\EntityManager $em
