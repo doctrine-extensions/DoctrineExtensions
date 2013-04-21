@@ -59,7 +59,7 @@ abstract class Translation implements TranslationInterface
     /**
      * Set property
      *
-     * @param string $field
+     * @param string $property
      */
     public function setProperty($property)
     {
@@ -79,8 +79,8 @@ abstract class Translation implements TranslationInterface
     /**
      * Set value
      *
-     * @param text $value
-     * @return AbstractTranslation
+     * @param string $value
+     * @return Translation
      */
     public function setValue($value)
     {
@@ -91,7 +91,7 @@ abstract class Translation implements TranslationInterface
     /**
      * Get value
      *
-     * @return text $value
+     * @return string $value
      */
     public function getValue()
     {

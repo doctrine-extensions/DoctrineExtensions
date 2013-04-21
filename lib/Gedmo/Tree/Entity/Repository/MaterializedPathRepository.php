@@ -2,9 +2,7 @@
 
 namespace Gedmo\Tree\Entity\Repository;
 
-use Gedmo\Exception\InvalidArgumentException,
-    Gedmo\Tree\Strategy,
-    Gedmo\Tree\Strategy\ORM\MaterializedPath,
+use Gedmo\Tree\Strategy,
     Gedmo\Tool\Wrapper\EntityWrapper;
 
 /**

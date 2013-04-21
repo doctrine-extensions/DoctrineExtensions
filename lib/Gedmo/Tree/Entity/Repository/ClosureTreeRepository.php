@@ -209,7 +209,8 @@ class ClosureTreeRepository extends AbstractTreeRepository
      *
      * @todo may be improved, to issue single query on reparenting
      * @param object $node
-     * @throws RuntimeException - if something fails in transaction
+     * @throws \Gedmo\Exception\InvalidArgumentException
+     * @throws \Gedmo\Exception\RuntimeException - if something fails in transaction
      * @return void
      */
     public function removeFromTree($node)

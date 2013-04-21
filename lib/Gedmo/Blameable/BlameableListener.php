@@ -55,7 +55,7 @@ class BlameableListener extends TimestampableListener
     /**
      * Set a user value to return
      *
-     * @return mixed
+     * @param mixed $user
      */
     public function setUserValue($user)
     {

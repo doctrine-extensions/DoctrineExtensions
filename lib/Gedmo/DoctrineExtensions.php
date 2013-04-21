@@ -58,7 +58,7 @@ final class DoctrineExtensions
      * Hooks only superclass metadata mapping drivers
      * into given $driverChain of drivers for ORM
      *
-     * @param \Doctrine\ORM\Mapping\Driver\DriverChain $chain
+     * @param \Doctrine\ORM\Mapping\Driver\DriverChain $driverChain
      * @param \Doctrine\Common\Annotations\Reader $reader
      */
     public static function registerAbstractMappingIntoDriverChainORM(DriverORM\DriverChain $driverChain, Reader $reader = null)

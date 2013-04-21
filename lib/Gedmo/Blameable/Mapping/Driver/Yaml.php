@@ -9,7 +9,7 @@ use Gedmo\Mapping\Driver\File,
 /**
  * This is a yaml mapping driver for Blameable
  * behavioral extension. Used for extraction of extended
- * metadata from yaml specificaly for Blameable
+ * metadata from yaml specifically for Blameable
  * extension.
  *
  * @author David Buchmann <mail@davidbu.ch>

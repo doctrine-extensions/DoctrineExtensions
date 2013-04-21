@@ -39,7 +39,7 @@ abstract class Translation extends BaseTranslation
     protected $property;
 
     /**
-     * @var text $value
+     * @var string $value
      *
      * @MongoString
      */
