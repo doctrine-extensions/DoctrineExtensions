@@ -18,7 +18,7 @@ class TranslationProxy
     protected $properties = array();
     protected $class;
     /**
-     * @var Collection|Translation[]
+     * @var Collection|TranslationInterface[]
      */
     protected $coll;
 
@@ -161,7 +161,7 @@ class TranslationProxy
             }
         }
 
-        /** @var Translation $translation */
+        /** @var TranslationInterface $translation */
         $translation = new $this->class;
         $translation->setTranslatable($this->translatable);
         $translation->setProperty($property);
