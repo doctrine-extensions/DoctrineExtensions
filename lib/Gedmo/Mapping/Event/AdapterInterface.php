@@ -47,6 +47,14 @@ interface AdapterInterface
     function getManagerName();
 
     /**
+     * Get the root object class, handles inheritance
+     *
+     * @param \Doctrine\Common\Persistence\Mapping\ClassMetadata
+     * @return string
+     */
+    function getRootObjectClass($meta);
+
+    /**
      * Get used object manager
      *
      * @return \Doctrine\Common\Persistence\ObjectManager

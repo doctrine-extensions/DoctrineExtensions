@@ -53,6 +53,14 @@ class ODM implements AdapterInterface
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function getRootObjectClass($meta)
+    {
+        return $meta->rootDocumentName;
+    }
+
+    /**
      * Set the document manager
      *
      * @param \Doctrine\ODM\MongoDB\DocumentManager $dm

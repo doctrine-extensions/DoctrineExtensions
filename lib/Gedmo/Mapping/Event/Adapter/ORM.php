@@ -55,6 +55,14 @@ class ORM implements AdapterInterface
     /**
      * {@inheritdoc}
      */
+    public function getRootObjectClass($meta)
+    {
+        return $meta->rootEntityName;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function __call($method, $args)
     {
         if (is_null($this->args)) {
