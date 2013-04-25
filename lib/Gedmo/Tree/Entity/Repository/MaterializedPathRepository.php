@@ -89,7 +89,7 @@ class MaterializedPathRepository extends AbstractTreeRepository
         $path = $config['path'];
         $qb = $this->_em->createQueryBuilder($meta->name)
             ->select($alias)
-            ->from($config['useObjectClass'], $alias);
+            ->from($meta->rootEntityName, $alias);
         $expr = '';
 
         if (is_object($node) && $node instanceof $meta->name) {
