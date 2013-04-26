@@ -29,11 +29,11 @@ class MaterializedPath extends AbstractMaterializedPath
         // Remove node's children
         $qb = $om->createQueryBuilder();
         $qb->select('e')
-            ->from($meta->name, 'e')
+            ->from($config['useObjectClass'], 'e')
             ->where($qb->expr()->like('e.'.$config['path'], $qb->expr()->literal($path.'%')));
         $results = $qb->getQuery()
             ->execute();
-        
+
         foreach ($results as $node) {
             $uow->scheduleForDelete($node);
         }
@@ -45,9 +45,9 @@ class MaterializedPath extends AbstractMaterializedPath
     public function getChildren($om, $meta, $config, $path)
     {
         $path = addcslashes($path, '%');
-        $qb = $om->createQueryBuilder($meta->name);
+        $qb = $om->createQueryBuilder($config['useObjectClass']);
         $qb->select('e')
-            ->from($meta->name, 'e')
+            ->from($config['useObjectClass'], 'e')
             ->where($qb->expr()->like('e.'.$config['path'], $qb->expr()->literal($path.'%')))
             ->andWhere('e.'.$config['path'].' != :path')
             ->orderBy('e.'.$config['path'], 'asc');      // This may save some calls to updateNode
