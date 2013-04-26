@@ -6,7 +6,6 @@ namespace Gedmo\SoftDeleteable\Traits;
  * SoftDeletable Trait, usable with PHP >= 5.4
  *
  * @author Wesley van Opdorp <wesley.van.opdorp@freshheads.com>
- * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 trait SoftDeleteableEntity

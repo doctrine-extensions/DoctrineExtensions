@@ -13,7 +13,6 @@ use Doctrine\ORM\Mapping\GeneratedValue;
  * Entity translation class.
  *
  * @author  Konstantin Kudryashov <ever.zet@gmail.com>
- * @link    http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  *
  * @MappedSuperclass

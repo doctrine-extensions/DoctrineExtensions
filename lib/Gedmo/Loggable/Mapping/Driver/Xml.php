@@ -14,7 +14,6 @@ use Gedmo\Mapping\Driver\Xml as BaseXml,
  * @author Boussekeyt Jules <jules.boussekeyt@gmail.com>
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  * @author Miha Vrhovnik <miha.vrhovnik@gmail.com>
- * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class Xml extends BaseXml

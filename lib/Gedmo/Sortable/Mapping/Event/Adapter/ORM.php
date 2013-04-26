@@ -11,7 +11,6 @@ use Gedmo\Sortable\Mapping\Event\SortableAdapter;
  * for sortable behavior
  *
  * @author Lukas Botsch <lukas.botsch@gmail.com>
- * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 final class ORM extends BaseAdapterORM implements SortableAdapter

@@ -12,7 +12,6 @@ use Doctrine\ORM\Internal\Hydration\ObjectHydrator as BaseObjectHydrator;
  * of the fields
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class ObjectHydrator extends BaseObjectHydrator

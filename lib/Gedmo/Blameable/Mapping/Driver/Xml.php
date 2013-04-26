@@ -12,7 +12,6 @@ use Gedmo\Mapping\Driver\Xml as BaseXml,
  * extension.
  *
  * @author David Buchmann <mail@davidbu.ch>
- * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class Xml extends BaseXml

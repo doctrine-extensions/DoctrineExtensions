@@ -16,7 +16,6 @@ use Gedmo\References\Mapping\Event\ReferencesAdapter;
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  * @author Bulat Shakirzyanov <mallluhuct@gmail.com>
  * @author Jonathan H. Wage <jonwage@gmail.com>
- * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 final class ORM extends BaseAdapterORM implements ReferencesAdapter

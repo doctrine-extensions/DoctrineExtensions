@@ -16,7 +16,6 @@ use Gedmo\Translatable\Mapping\Event\Adapter\ODM as TranslatableAdapterODM;
  * to interact with translations.
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class TranslationRepository extends DocumentRepository

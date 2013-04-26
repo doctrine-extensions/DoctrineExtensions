@@ -11,7 +11,6 @@ use Doctrine\Common\Persistence\Mapping\ClassMetadata;
  *
  * @author     Derek J. Lambert <dlambert@dereklambert.com>
  * @license    MIT License (http://www.opensource.org/licenses/mit-license.php)
- * @link       http://www.gediminasm.org
  */
 abstract class AbstractAnnotationDriver implements AnnotationDriverInterface
 {

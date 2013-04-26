@@ -12,7 +12,6 @@ use Gedmo\Mapping\Driver\AbstractAnnotationDriver,
  * extension.
  *
  * @author Lukas Botsch <lukas.botsch@gmail.com>
- * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class Annotation extends AbstractAnnotationDriver
