@@ -100,12 +100,12 @@ class Xml extends BaseXml
                     if (!$meta->isMappedSuperclass && $meta->isIdentifier($field) && !$config['slugs'][$field]['unique']) {
                         throw new InvalidMappingException("Identifier field - [{$field}] slug must be unique in order to maintain primary key in class - {$meta->name}");
                     }
-                    if($config['slugs'][$field]['unique'] == false && $config['slugs'][$field]['unique_base']) {
+                    $ubase = $config['slugs'][$field]['unique_base'];
+                    if ($config['slugs'][$field]['unique'] === false && $ubase) {
                         throw new InvalidMappingException("Slug annotation [unique_base] can not be set if unique is unset or 'false'");
                     }
-                    if($config['slugs'][$field]['unique_base']) {
-                        if(!$this->isValidField($meta, $config['slugs'][$field]['unique_base']) && !$meta->hasAssociation($config['slugs'][$field]['unique_base']))
-                            throw new InvalidMappingException("Unable to find [{$config['slugs'][$field]['unique_base']}] as mapped property in entity - {$meta->name}");
+                    if ($ubase && !$this->isValidField($meta, $ubase) && !$meta->hasAssociation($ubase)) {
+                        throw new InvalidMappingException("Unable to find [{$ubase}] as mapped property in entity - {$meta->name}");
                     }
                 }
             }
