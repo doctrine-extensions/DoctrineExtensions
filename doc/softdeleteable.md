@@ -46,6 +46,7 @@ And then you can access the filter from your EntityManager to enable or disable 
 ``` php
 // This will enable the SoftDeleteable filter, so entities which were "soft-deleted" will not appear
 // in results
+// You should adapt the filter name to your configuration (ex: softdeleteable)
 $em->getFilters()->enable('soft-deleteable');
 
 // This will disable the SoftDeleteable filter, so entities which were "soft-deleted" will appear in results
