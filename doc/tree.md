@@ -547,7 +547,7 @@ To load a tree as **ul - li** html tree use:
 $repo = $em->getRepository('Entity\Category');
 $htmlTree = $repo->childrenHierarchy(
     null, /* starting from root nodes */
-    false, /* load all children, not only direct */
+    false, /* true: load all children, false: only direct */
     array(
         'decorate' => true,
         'representationField' => 'slug',
@@ -573,7 +573,7 @@ $options = array(
 );
 $htmlTree = $repo->childrenHierarchy(
     null, /* starting from root nodes */
-    false, /* load all children, not only direct */
+    false, /* true: load all children, false: only direct */
     $options
 );
 
