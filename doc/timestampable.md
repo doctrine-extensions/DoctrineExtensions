@@ -81,6 +81,7 @@ cache is activated
 <?php
 namespace Entity;
 
+use DateTime;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
 
