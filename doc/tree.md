@@ -262,7 +262,7 @@ Entity\Category:
       joinColumn:
         name: parent_id
         referencedColumnName: id
-        onDelete: SET NULL
+        onDelete: CASCADE
       gedmo:
         - treeParent
   oneToMany:
@@ -307,7 +307,7 @@ Entity\Category:
         </field>
 
         <many-to-one field="parent" target-entity="NestedTree" inversed-by="children">
-            <join-column name="parent_id" referenced-column-name="id" on-delete="SET NULL"/>
+            <join-column name="parent_id" referenced-column-name="id" on-delete="CASCADE"/>
             <gedmo:tree-parent/>
         </many-to-one>
         
@@ -697,7 +697,7 @@ class Category
     /**
      * @Gedmo\TreeParent
      * @ORM\ManyToOne(targetEntity="Category", inversedBy="children")
-     * @ORM\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="SET NULL")
+     * @ORM\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="CASCADE")
      */
     private $parent;
     
@@ -793,7 +793,7 @@ Entity\Category:
       joinColumn:
         name: parent_id
         referencedColumnName: id
-        onDelete: SET NULL
+        onDelete: CASCADE
       gedmo:
         - treeParent
   oneToMany:
@@ -867,7 +867,7 @@ class Category
      * @Gedmo\TreeParent
      * @ORM\ManyToOne(targetEntity="Category", inversedBy="children")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="SET NULL")
+     *   @ORM\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="CASCADE")
      * })
      */
     private $parent;

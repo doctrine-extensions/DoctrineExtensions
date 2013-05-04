@@ -209,7 +209,7 @@ example:
 /**
  * @Gedmo\Mapping\Annotation\TreeParent
  * @Doctrine\ORM\Mapping\ManyToOne(targetEntity="Category")
- * @Doctrine\ORM\Mapping\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="SET NULL")
+ * @Doctrine\ORM\Mapping\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="CASCADE")
  */
 private $parent;
 ```
