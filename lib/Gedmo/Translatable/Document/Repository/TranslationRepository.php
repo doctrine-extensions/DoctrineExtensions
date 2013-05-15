@@ -53,9 +53,9 @@ class TranslationRepository extends DocumentRepository
     {
         $meta = $this->dm->getClassMetadata(get_class($document));
         $listener = $this->getTranslatableListener();
-        $config = $listener->getConfiguration($this->dm, $meta->name);
+        $config = $listener->getConfiguration($this->dm, $meta->rootEntityName);
         if (!isset($config['fields']) || !in_array($field, $config['fields'])) {
-            throw new \Gedmo\Exception\InvalidArgumentException("Document: {$meta->name} does not translate field - {$field}");
+            throw new \Gedmo\Exception\InvalidArgumentException("Document: {$meta->rootEntityName} does not translate field - {$field}");
         }
         $modRecordValue = (!$listener->getPersistDefaultLocaleTranslation() && $locale === $listener->getDefaultLocale())
             || $listener->getTranslatableLocale($document, $meta) === $locale
