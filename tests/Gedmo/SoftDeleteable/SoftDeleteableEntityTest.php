@@ -56,6 +56,29 @@ class SoftDeleteableEntityTest extends BaseTestCaseORM
     /**
      * @test
      */
+    public function shouldBeAbleToHardDeleteSoftdeletedItems()
+    {
+        $repo = $this->em->getRepository(self::USER_CLASS);
+
+        $newUser = new User();
+        $newUser->setUsername($username = 'test_user');
+
+        $this->em->persist($newUser);
+        $this->em->flush();
+
+        $user = $repo->findOneBy(array('username' => $username));
+        $this->assertNull($user->getDeletedAt());
+
+        $this->em->remove($user);
+        $this->em->flush();
+
+        $user = $repo->findOneBy(array('username' => $username));
+        $this->assertNull($user);
+    }
+
+    /**
+     * @test
+     */
     public function shouldSoftlyDeleteIfColumnNameDifferFromPropertyName()
     {
         $repo = $this->em->getRepository(self::USER_CLASS);
@@ -75,7 +98,18 @@ class SoftDeleteableEntityTest extends BaseTestCaseORM
         $this->em->flush();
 
         $user = $repo->findOneBy(array('username' => $username));
-        $this->assertNull($user);
+        $this->assertNull($user, "User should be filtered out");
+
+        // now deatcivate filter and attempt to hard delete
+        $this->em->getFilters()->disable(self::SOFT_DELETEABLE_FILTER_NAME);
+        $user = $repo->findOneBy(array('username' => $username));
+        $this->assertNotNull($user, "User should be fetched when filter is disabled");
+
+        $this->em->remove($user);
+        $this->em->flush();
+
+        $user = $repo->findOneBy(array('username' => $username));
+        $this->assertNull($user, "User is still available after hard delete");
     }
 
     public function testSoftDeleteable()
@@ -111,8 +145,6 @@ class SoftDeleteableEntityTest extends BaseTestCaseORM
 
         // Now we deactivate the filter so we test if the entity appears in the result
         $this->em->getFilters()->disable(self::SOFT_DELETEABLE_FILTER_NAME);
-
-        $this->em->clear();
 
         $art = $repo->findOneBy(array($field => $value));
         $this->assertTrue(is_object($art));
