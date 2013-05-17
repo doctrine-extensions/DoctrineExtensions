@@ -87,6 +87,7 @@ $evm->addEventSubscriber($treeListener);
 // loggable, not used in example
 //$loggableListener = new Gedmo\Loggable\LoggableListener;
 //$loggableListener->setAnnotationReader($cachedAnnotationReader);
+//$loggableListener->setUsername('admin');
 //$evm->addEventSubscriber($loggableListener);
 
 // timestampable
