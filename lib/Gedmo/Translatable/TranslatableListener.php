@@ -290,12 +290,12 @@ class TranslatableListener extends MappedEventSubscriber
     public function getTranslatableLocale($object, $meta)
     {
         $locale = $this->locale;
-        if (isset(self::$configurations[$this->name][$meta->name]['locale'])) {
+        if (isset(self::$configurations[$this->name][$meta->rootEntityName]['locale'])) {
             $class = $meta->getReflectionClass();
-            $reflectionProperty = $class->getProperty(self::$configurations[$this->name][$meta->name]['locale']);
+            $reflectionProperty = $class->getProperty(self::$configurations[$this->name][$meta->rootEntityName]['locale']);
             if (!$reflectionProperty) {
-                $column = self::$configurations[$this->name][$meta->name]['locale'];
-                throw new \Gedmo\Exception\RuntimeException("There is no locale or language property ({$column}) found on object: {$meta->name}");
+                $column = self::$configurations[$this->name][$meta->rootEntityName]['locale'];
+                throw new \Gedmo\Exception\RuntimeException("There is no locale or language property ({$column}) found on object: {$meta->rootEntityName}");
             }
             $reflectionProperty->setAccessible(true);
             $value = $reflectionProperty->getValue($object);
