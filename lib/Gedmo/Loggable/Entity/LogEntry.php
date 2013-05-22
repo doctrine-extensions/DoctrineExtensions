@@ -15,7 +15,7 @@ use Doctrine\ORM\Mapping\Entity;
  *      @index(name="log_class_lookup_idx", columns={"object_class"}),
  *      @index(name="log_date_lookup_idx", columns={"logged_at"}),
  *      @index(name="log_user_lookup_idx", columns={"username"}),
- *      @index(name="log_version_lookup_idx", columns={"object_id", "object_class", "version"}),
+ *      @index(name="log_version_lookup_idx", columns={"object_id", "object_class", "version"})
  *  }
  * )
  * @Entity(repositoryClass="Gedmo\Loggable\Entity\Repository\LogEntryRepository")
