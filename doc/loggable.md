@@ -57,6 +57,16 @@ on how to setup and use the extensions in most optimized way.
 will use store logs to optionaly specified **logEntryClass**
 - **@Gedmo\Mapping\Annotation\Versioned** tracks annotated property for changes
 
+### Loggable username:
+
+In order to set the username, when adding the loggeable listener you need to set it this way:
+
+``` php
+$loggableListener = new Gedmo\Loggable\LoggableListener;
+$loggableListener->setAnnotationReader($cachedAnnotationReader);
+$loggableListener->setUsername('admin');
+$evm->addEventSubscriber($loggableListener);
+```
 <a name="entity-mapping"></a>
 
 ## Loggable Entity example:
