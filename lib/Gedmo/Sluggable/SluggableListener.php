@@ -497,7 +497,9 @@ class SluggableListener extends MappedEventSubscriber
             $config['previouslyEnabled'] = $enabled;
 
             if ($config['disabled']) {
-                $collection->disable($name);
+                if ($enabled) {
+                    $collection->disable($name);
+                }
             } else {
                 $collection->enable($name);
             }
