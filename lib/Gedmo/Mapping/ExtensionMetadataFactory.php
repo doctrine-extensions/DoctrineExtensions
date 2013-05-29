@@ -25,27 +25,27 @@ class ExtensionMetadataFactory
      * Extension driver
      * @var \Gedmo\Mapping\Driver
      */
-    private $driver;
+    protected $driver;
 
     /**
      * Object manager, entity or document
      * @var object
      */
-    private $objectManager;
+    protected $objectManager;
 
     /**
      * Extension namespace
      *
      * @var string
      */
-    private $extensionNamespace;
+    protected $extensionNamespace;
 
     /**
      * Custom annotation reader
      *
      * @var object
      */
-    private $annotationReader;
+    protected $annotationReader;
 
     /**
      * Initializes extension driver
