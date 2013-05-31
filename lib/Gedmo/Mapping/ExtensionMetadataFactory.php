@@ -19,33 +19,33 @@ use Doctrine\ORM\Tools\DisconnectedClassMetadataFactory;
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-final class ExtensionMetadataFactory
+class ExtensionMetadataFactory
 {
     /**
      * Extension driver
      * @var \Gedmo\Mapping\Driver
      */
-    private $driver;
+    protected $driver;
 
     /**
      * Object manager, entity or document
      * @var object
      */
-    private $objectManager;
+    protected $objectManager;
 
     /**
      * Extension namespace
      *
      * @var string
      */
-    private $extensionNamespace;
+    protected $extensionNamespace;
 
     /**
      * Custom annotation reader
      *
      * @var object
      */
-    private $annotationReader;
+    protected $annotationReader;
 
     /**
      * Initializes extension driver
@@ -129,7 +129,7 @@ final class ExtensionMetadataFactory
      * @throws \Gedmo\Exception\RuntimeException if driver was not found in extension
      * @return \Gedmo\Mapping\Driver
      */
-    private function getDriver($omDriver)
+    protected function getDriver($omDriver)
     {
         $driver = null;
         $className = get_class($omDriver);
