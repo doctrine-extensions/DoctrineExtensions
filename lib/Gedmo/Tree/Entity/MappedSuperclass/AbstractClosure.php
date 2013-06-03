@@ -14,7 +14,7 @@ abstract class AbstractClosure
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
-    private $id;
+    protected $id;
 
     /**
      * Mapped by listener
@@ -31,7 +31,7 @@ abstract class AbstractClosure
     /**
      * @ORM\Column(type="integer")
      */
-    private $depth;
+    protected $depth;
 
     /**
      * Get id
