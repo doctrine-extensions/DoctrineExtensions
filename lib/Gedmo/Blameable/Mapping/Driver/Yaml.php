@@ -56,10 +56,15 @@ class Yaml extends File implements Driver
                         if (!isset($mappingProperty['field'])) {
                             throw new InvalidMappingException("Missing parameters on property - {$field}, field must be set on [change] trigger in class - {$meta->name}");
                         }
+                        $trackedFieldAttribute = $mappingProperty['field'];
+                        $valueAttribute = isset($mappingProperty['value']) ? $mappingProperty['value'] : null;
+                        if (is_array($trackedFieldAttribute) && null !== $valueAttribute) {
+                            throw new InvalidMappingException("Blameable extension does not support multiple value changeset detection yet.");
+                        }
                         $field = array(
                             'field' => $field,
-                            'trackedField' => $mappingProperty['field'],
-                            'value' => isset($mappingProperty['value']) ? $mappingProperty['value'] : null,
+                            'trackedField' => $trackedFieldAttribute,
+                            'value' => $valueAttribute,
                         );
                     }
                     $config[$mappingProperty['on']][] = $field;
@@ -82,10 +87,15 @@ class Yaml extends File implements Driver
                         if (!isset($mappingProperty['field'])) {
                             throw new InvalidMappingException("Missing parameters on property - {$field}, field must be set on [change] trigger in class - {$meta->name}");
                         }
+                        $trackedFieldAttribute = $mappingProperty['field'];
+                        $valueAttribute = isset($mappingProperty['value']) ? $mappingProperty['value'] : null;
+                        if (is_array($trackedFieldAttribute) && null !== $valueAttribute) {
+                            throw new InvalidMappingException("Blameable extension does not support multiple value changeset detection yet.");
+                        }
                         $field = array(
                             'field' => $field,
-                            'trackedField' => $mappingProperty['field'],
-                            'value' => isset($mappingProperty['value']) ? $mappingProperty['value'] : null,
+                            'trackedField' => $trackedFieldAttribute,
+                            'value' => $valueAttribute,
                         );
                     }
                     $config[$mappingProperty['on']][] = $field;
