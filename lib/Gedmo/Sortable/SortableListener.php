@@ -320,7 +320,8 @@ class SortableListener extends MappedEventSubscriber
                 $meta = $em->getClassMetadata($relocation['name']);
 
                 // now walk through the unit of work in memory objects and sync those
-                foreach ($em->getUnitOfWork()->getIdentityMap() as $className => $objects) {
+                $uow = $em->getUnitOfWork();
+                foreach ($uow->getIdentityMap() as $className => $objects) {
                     // for inheritance mapped classes, only root is always in the identity map
                     if ($className !== $meta->rootEntityName || !$this->getConfiguration($em, $className)) {
                         continue;
@@ -329,6 +330,12 @@ class SortableListener extends MappedEventSubscriber
                         if ($object instanceof Proxy && !$object->__isInitialized__) {
                             continue;
                         }
+
+                        // if the entity's position is already changed, stop now
+                        if (array_key_exists($config['position'], $uow->getEntityChangeSet($object))) {
+                            continue;
+                        }
+                        
                         $oid = spl_object_hash($object);
                         $pos = $meta->getReflectionProperty($config['position'])->getValue($object);
                         $matches = $pos >= $delta['start'];
