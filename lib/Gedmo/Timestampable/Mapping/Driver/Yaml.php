@@ -63,8 +63,8 @@ class Yaml extends File implements Driver
                         }
                         $field = array(
                             'field' => $field,
-                            'trackedField' => $mappingProperty['field'],
-                            'trackedFields' => $mappingProperty['fields'],
+                            'trackedField' => isset($mappingProperty['field']) ? $mappingProperty['field'] : null,
+                            'trackedFields' => isset($mappingProperty['fields']) ? $mappingProperty['fields']: null,
                             'value' => isset($mappingProperty['value']) ? $mappingProperty['value'] : null,
                         );
                     }
