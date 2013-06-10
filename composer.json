@@ -58,7 +58,7 @@
         "doctrine/dbal": ">=2.3.2"
     },
     "autoload": {
-        "psr-0": { "Gedmo": "lib/" }
+        "psr-0": { "Gedmo\\": "lib/" }
     },
     "extra": {
         "branch-alias": {
