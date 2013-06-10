@@ -77,34 +77,43 @@ class TimestampableListener extends MappedEventSubscriber
                             continue; // value was set manually
                         }
 
-                        $tracked = $options['trackedField'];
-                        $trackedChild = null;
-                        $parts = explode('.', $tracked);
-                        if (isset($parts[1])) {
-                            $tracked = $parts[0];
-                            $trackedChild = $parts[1];
+                        if (null === $options['trackedFields']) {
+                            $singleField = true;
+                            $trackedFields = array($options['trackedField']);
+                        } else {
+                            $singleField = false;
+                            $trackedFields = $options['trackedFields'];
                         }
 
-                        if (isset($changeSet[$tracked])) {
-                            $changes = $changeSet[$tracked];
-                            if (isset($trackedChild)) {
-                                $changingObject = $changes[1];
-                                if (!is_object($changingObject)) {
-                                    throw new UnexpectedValueException(
-                                        "Field - [{$field}] is expected to be object in class - {$meta->name}"
-                                    );
-                                }
-                                $objectMeta = $om->getClassMetadata(get_class($changingObject));
-                                $trackedChild instanceof Proxy && $om->refresh($trackedChild);
-                                $value = $objectMeta->getReflectionProperty($trackedChild)
-                                    ->getValue($changingObject);
-                            } else {
-                                $value = $changes[1];
+                        foreach ($trackedFields as $tracked) {
+                            $trackedChild = null;
+                            $parts = explode('.', $tracked);
+                            if (isset($parts[1])) {
+                                $tracked = $parts[0];
+                                $trackedChild = $parts[1];
                             }
 
-                            if ($options['value'] == $value || $options['value'] === null) {
-                                $needChanges = true;
-                                $this->updateField($object, $ea, $meta, $options['field']);
+                            if (isset($changeSet[$tracked])) {
+                                $changes = $changeSet[$tracked];
+                                if (isset($trackedChild)) {
+                                    $changingObject = $changes[1];
+                                    if (!is_object($changingObject)) {
+                                        throw new UnexpectedValueException(
+                                            "Field - [{$field}] is expected to be object in class - {$meta->name}"
+                                        );
+                                    }
+                                    $objectMeta = $om->getClassMetadata(get_class($changingObject));
+                                    $trackedChild instanceof Proxy && $om->refresh($trackedChild);
+                                    $value = $objectMeta->getReflectionProperty($trackedChild)
+                                        ->getValue($changingObject);
+                                } else {
+                                    $value = $changes[1];
+                                }
+
+                                if (($singleField && $options['value'] == $value) || $options['value'] === null) {
+                                    $needChanges = true;
+                                    $this->updateField($object, $ea, $meta, $options['field']);
+                                }
                             }
                         }
                     }

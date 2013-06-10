@@ -66,12 +66,13 @@ class Xml extends BaseXml
                     }
 
                     if ($this->_getAttribute($data, 'on') == 'change') {
-                        if (!$this->_isAttributeSet($data, 'field')) {
-                            throw new InvalidMappingException("Missing parameters on property - {$field}, field must be set on [change] trigger in class - {$meta->name}");
+                        if (!($this->_isAttributeSet($data, 'field') xor $this->_isAttributeSet($data, 'fields'))) {
+                            throw new InvalidMappingException("Invalid parameters on property - {$field}, one of 'field' or 'fields' (not both) must be set on [change] trigger in class - {$meta->name}");
                         }
                         $field = array(
                             'field' => $field,
-                            'trackedField' => $this->_getAttribute($data, 'field'),
+                            'trackedField' => $this->_isAttributeSet($data, 'field') ? $this->_getAttribute($data, 'field') : null,
+                            'trackedFields' => $this->_isAttributeSet($data, 'fields') ? $this->_getAttribute($data, 'fields') : null,
                             'value' => $this->_isAttributeSet($data, 'value') ? $this->_getAttribute($data, 'value') : null,
                         );
                     }

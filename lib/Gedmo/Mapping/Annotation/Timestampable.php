@@ -19,6 +19,8 @@ final class Timestampable extends Annotation
     public $on = 'update';
     /** @var string */
     public $field;
+    /** @var array */
+    public $fields;
     /** @var mixed */
     public $value;
 }
