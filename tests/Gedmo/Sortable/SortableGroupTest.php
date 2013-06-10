@@ -59,6 +59,53 @@ class SortableGroupTest extends BaseTestCaseORM
 
         $this->em->remove($audi80);
         $this->em->flush();
+
+        $audi80s = $carRepo->findOneByTitle('Audi-80s');
+        $this->assertEquals(0, $audi80s->getSortByEngine());
+
+        $icarus = $this->em->getRepository(self::BUS)->findOneByTitle('Icarus');
+        $this->assertEquals(1, $icarus->getSortByEngine());
+    }
+
+    /**
+     * @test
+     * fix issue #502
+     */
+    public function shouldBeAbleToChangeGroup()
+    {
+        $this->populate();
+        $carRepo = $this->em->getRepository(self::CAR);
+
+        // position 0
+        $audi80 = $carRepo->findOneByTitle('Audi-80');
+        $this->assertEquals(0, $audi80->getSortByEngine());
+
+        //position 1
+        $audi80s = $carRepo->findOneByTitle('Audi-80s');
+        $this->assertEquals(1, $audi80s->getSortByEngine());
+
+        //position 2
+        $icarus = $this->em->getRepository(self::BUS)->findOneByTitle('Icarus');
+        $this->assertEquals(2, $icarus->getSortByEngine());
+
+        // theres only 1 v6 so this should be position:0
+        $audiJet = $carRepo->findOneByTitle('Audi-jet');
+        $this->assertEquals(0, $audiJet->getSortByEngine());
+
+        // change engines
+        $v6engine = $this->em->getRepository(self::ENGINE)->findOneByType('V6');
+
+        $audi80s->setEngine($v6engine);
+
+        $this->em->flush();
+
+        // v6
+        $this->assertEquals(0, $audiJet->getSortByEngine());
+        $this->assertEquals(1, $audi80s->getSortByEngine());
+
+        // v8
+        $this->assertEquals(0, $audi80->getSortByEngine());
+        $this->assertEquals(1, $icarus->getSortByEngine());
     }
 
     protected function getUsedEntityFixtures()
