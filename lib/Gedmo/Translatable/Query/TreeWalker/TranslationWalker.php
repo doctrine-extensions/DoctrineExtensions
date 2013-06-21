@@ -211,6 +211,15 @@ class TranslationWalker extends SqlWalker
         $result = parent::walkSimpleSelectClause($simpleSelectClause);
         return $this->replace($this->replacements, $result);
     }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public function walkGroupByClause($groupByClause)
+    {
+        $result = parent::walkGroupByClause($groupByClause);
+        return $this->replace($this->replacements, $result);
+    }
 
     /**
      * Walks from clause, and creates translation joins
@@ -402,8 +411,8 @@ class TranslationWalker extends SqlWalker
     private function replace(array $repl, $str)
     {
         foreach ($repl as $target => $result) {
-            $str = preg_replace_callback('/(\s|\()('.$target.')(\s|\))/smi', function($m) use ($result) {
-                return $m[1].$result.$m[3];
+            $str = preg_replace_callback('/(\s|\()('.$target.')(,?)(\s|\))/smi', function($m) use ($result) {
+                return $m[1].$result.$m[3].$m[4];
             }, $str);
         }
         return $str;
