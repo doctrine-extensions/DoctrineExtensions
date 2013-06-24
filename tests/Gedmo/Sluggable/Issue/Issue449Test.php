@@ -27,7 +27,6 @@ class Issue449Test extends BaseTestCaseORM
 
         $evm = new EventManager;
         $sluggableListener = new SluggableListener;
-        $sluggableListener->addManagedFilter(self::SOFT_DELETEABLE_FILTER_NAME, true);
         $evm->addEventSubscriber($sluggableListener);
 
         $this->softDeleteableListener = new SoftDeleteableListener();
@@ -53,6 +52,37 @@ class Issue449Test extends BaseTestCaseORM
      */
     public function shouldBuildUniqueSlugAfterSoftDeleteFilterIsDisabled()
     {
+        $article = new Article();
+        $article->setTitle('the soft title');
+        $article->setCode('my soft code');
+
+        $this->em->persist($article);
+        $this->em->flush();
+
+        $slug = $article->getSlug();
+
+        $this->em->remove($article);
+        $this->em->flush();
+
+        $article = new Article();
+        $article->setTitle('the soft title');
+        $article->setCode('my soft code');
+
+        $this->em->persist($article);
+        $this->em->flush();
+        $this->em->clear();
+
+        $this->assertNotEquals($slug, $article->getSlug());
+    }
+
+    /**
+     * @test
+     */
+    function shouldSuccessWhenManagedFilterHasAlreadyBeenDisabled()
+    {
+        // disable one managed doctrine filter
+        $this->em->getFilters()->disable(self::SOFT_DELETEABLE_FILTER_NAME);
+
         $article = new Article();
         $article->setTitle('the soft title');
         $article->setCode('my soft code');
