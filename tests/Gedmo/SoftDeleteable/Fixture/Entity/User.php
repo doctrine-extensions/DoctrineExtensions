@@ -18,7 +18,7 @@ class User
     private $id;
 
     /**
-     * @ORM\Column(name="title", type="string")
+     * @ORM\Column(name="username", type="string")
      */
     private $username;
 
