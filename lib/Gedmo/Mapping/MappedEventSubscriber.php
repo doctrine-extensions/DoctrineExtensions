@@ -9,6 +9,7 @@ use Gedmo\Mapping\ExtensionMetadataFactory;
 use Doctrine\Common\EventSubscriber;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\Common\EventArgs;
+use Gedmo\Exception\InvalidArgumentException;
 
 /**
  * This is extension of event subscriber class and is
@@ -41,6 +42,14 @@ abstract class MappedEventSubscriber implements EventSubscriber
     protected $name;
 
     /**
+     * Filters to ignore during processing
+     * Should be set in extended listener class
+     *
+     * @var array
+     */
+    protected $ignoredFilters = array();
+
+    /**
      * ExtensionMetadataFactory used to read the extension
      * metadata through the extension drivers
      *
@@ -63,6 +72,14 @@ abstract class MappedEventSubscriber implements EventSubscriber
     private $annotationReader;
 
     /**
+     * A list of filters which were disabled by listener
+     * to maintain valid state
+     *
+     * @var array
+     */
+    private $disabledFilters = array();
+
+    /**
      * @var \Doctrine\Common\Annotations\AnnotationReader
      */
     private static $defaultAnnotationReader;
@@ -74,6 +91,48 @@ abstract class MappedEventSubscriber implements EventSubscriber
     {
         $parts = explode('\\', $this->getNamespace());
         $this->name = end($parts);
+    }
+
+    /**
+     * Add a filter to ignored list
+     *
+     * @param string $filterClassName
+     */
+    public function addFilterToIgnore($filterClassName)
+    {
+        $this->ignoredFilters[] = $filterClassName;
+    }
+
+    /**
+     * Disables filters by class name specified in $this->ignoredFilters
+     *
+     * @param ObjectManager $om
+     */
+    protected function disableFilters($om)
+    {
+        if ($this->ignoredFilters) {
+            $filters = $this->getFilterCollectionFromObjectManager($om);
+            $enabled = $filters->getEnabledFilters();
+            foreach ($enabled as $name => $filter) {
+                if (in_array(get_class($filter), $this->ignoredFilters)) {
+                    $filters->disable($name);
+                    $this->disabledFilters[] = $name;
+                }
+            }
+        }
+    }
+
+    /**
+     * Enables back previously disabled filters by class name specified in $this->ignoredFilters
+     *
+     * @param ObjectManager $om
+     */
+    protected function enableFilters($om)
+    {
+        $filters = $this->getFilterCollectionFromObjectManager($om);
+        while ($name = array_pop($this->disabledFilters)) {
+            $filters->enable($name);
+        }
     }
 
     /**
@@ -252,5 +311,23 @@ abstract class MappedEventSubscriber implements EventSubscriber
             self::$defaultAnnotationReader = $reader;
         }
         return self::$defaultAnnotationReader;
+    }
+
+    /**
+     * Retrieves a FilterCollection instance from the given ObjectManager.
+     *
+     * @param \Doctrine\Common\Persistence\ObjectManager $om
+     * @throws \Gedmo\Exception\InvalidArgumentException
+     * @return mixed
+     */
+    private function getFilterCollectionFromObjectManager($om)
+    {
+        if (is_callable(array($om, 'getFilters'))) {
+            return $om->getFilters();
+        } else if (is_callable(array($om, 'getFilterCollection'))) {
+            return $om->getFilterCollection();
+        }
+
+        throw new InvalidArgumentException("ObjectManager does not support filters");
     }
 }
