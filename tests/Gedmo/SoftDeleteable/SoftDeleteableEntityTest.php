@@ -54,6 +54,44 @@ class SoftDeleteableEntityTest extends BaseTestCaseORM
     /**
      * @test
      */
+    public function shouldBePossibleToUndeleteIssue739()
+    {
+        $repo = $this->em->getRepository(self::USER_CLASS);
+
+        $user = new User();
+        $user->setUsername($username = 'user');
+
+        $this->em->persist($user);
+        $this->em->flush();
+
+        $this->assertNull($user->getDeletedAt());
+
+        $this->em->remove($user);
+        $this->em->flush();
+
+        $user = $repo->findOneByUsername($username);
+        $this->assertNull($user);
+
+        $this->em->getFilters()->disable(self::SOFT_DELETEABLE_FILTER_NAME);
+
+        $user = $repo->findOneByUsername($username);
+        $this->assertNotNull($user);
+        $this->assertNotNull($user->getDeletedAt());
+
+        $user->setDeletedAt(null);
+        $this->em->persist($user);
+        $this->em->flush();
+
+        $this->em->getFilters()->enable(self::SOFT_DELETEABLE_FILTER_NAME);
+
+        $user = $repo->findOneByUsername($username);
+        $this->assertNotNull($user);
+        $this->assertNull($user->getDeletedAt());
+    }
+
+    /**
+     * @test
+     */
     public function shouldBeAbleToHardDeleteSoftdeletedItems()
     {
         $repo = $this->em->getRepository(self::USER_CLASS);

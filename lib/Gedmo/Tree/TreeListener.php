@@ -17,6 +17,13 @@ use Doctrine\Common\Persistence\ObjectManager;
 class TreeListener extends MappedEventSubscriber
 {
     /**
+     * {@inheritDoc}
+     */
+    protected $ignoredFilters = array(
+        'Gedmo\SoftDeleteable\Filter\SoftDeleteableFilter',
+    );
+
+    /**
      * Tree processing strategies for object classes
      *
      * @var array
@@ -103,6 +110,7 @@ class TreeListener extends MappedEventSubscriber
         $om = $ea->getObjectManager();
         $uow = $om->getUnitOfWork();
 
+        $this->disableFilters($om);
         // check all scheduled updates for TreeNodes
         foreach ($ea->getScheduledObjectInsertions($uow) as $object) {
             $meta = $om->getClassMetadata(get_class($object));
@@ -132,6 +140,7 @@ class TreeListener extends MappedEventSubscriber
         foreach ($this->getStrategiesUsedForObjects($this->usedClassesOnFlush) as $strategy) {
             $strategy->onFlushEnd($om, $ea);
         }
+        $this->enableFilters($om);
     }
 
     /**
@@ -147,7 +156,9 @@ class TreeListener extends MappedEventSubscriber
         $meta = $om->getClassMetadata(get_class($object));
 
         if ($this->getConfiguration($om, $meta->name)) {
+            $this->disableFilters($om);
             $this->getStrategy($om, $meta->name)->processPreRemove($om, $object);
+            $this->enableFilters($om);
         }
     }
 
@@ -164,7 +175,9 @@ class TreeListener extends MappedEventSubscriber
         $meta = $om->getClassMetadata(get_class($object));
 
         if ($this->getConfiguration($om, $meta->name)) {
+            $this->disableFilters($om);
             $this->getStrategy($om, $meta->name)->processPrePersist($om, $object);
+            $this->enableFilters($om);
         }
     }
 
@@ -181,7 +194,9 @@ class TreeListener extends MappedEventSubscriber
         $meta = $om->getClassMetadata(get_class($object));
 
         if ($this->getConfiguration($om, $meta->name)) {
+            $this->disableFilters($om);
             $this->getStrategy($om, $meta->name)->processPreUpdate($om, $object);
+            $this->enableFilters($om);
         }
     }
 
@@ -199,7 +214,9 @@ class TreeListener extends MappedEventSubscriber
         $meta = $om->getClassMetadata(get_class($object));
 
         if ($this->getConfiguration($om, $meta->name)) {
+            $this->disableFilters($om);
             $this->getStrategy($om, $meta->name)->processPostPersist($om, $object, $ea);
+            $this->enableFilters($om);
         }
     }
 
@@ -217,7 +234,9 @@ class TreeListener extends MappedEventSubscriber
         $meta = $om->getClassMetadata(get_class($object));
 
         if ($this->getConfiguration($om, $meta->name)) {
+            $this->disableFilters($om);
             $this->getStrategy($om, $meta->name)->processPostUpdate($om, $object, $ea);
+            $this->enableFilters($om);
         }
     }
 
@@ -235,7 +254,9 @@ class TreeListener extends MappedEventSubscriber
         $meta = $om->getClassMetadata(get_class($object));
 
         if ($this->getConfiguration($om, $meta->name)) {
+            $this->disableFilters($om);
             $this->getStrategy($om, $meta->name)->processPostRemove($om, $object, $ea);
+            $this->enableFilters($om);
         }
     }
 
