@@ -8,6 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass="Gedmo\Tree\Entity\Repository\NestedTreeRepository")
+ * @Gedmo\SoftDeleteable(fieldName="deletedAt")
  * @Gedmo\Tree(type="nested")
  */
 class Category implements NodeInterface
@@ -61,6 +62,11 @@ class Category implements NodeInterface
      */
     private $comments;
 
+    /**
+     * @ORM\Column(name="deletedAt", type="datetime", nullable=true)
+     */
+    private $deletedAt;
+
     public function getId()
     {
         return $this->id;
@@ -76,7 +82,7 @@ class Category implements NodeInterface
         return $this->title;
     }
 
-    public function setParent(Category $parent)
+    public function setParent(Category $parent = null)
     {
         $this->parentId = $parent;
     }
@@ -99,5 +105,15 @@ class Category implements NodeInterface
     public function getLevel()
     {
         return $this->level;
+    }
+
+    public function getDeletedAt()
+    {
+        return $this->deletedAt;
+    }
+
+    public function setDeletedAt($deletedAt)
+    {
+        $this->deletedAt = $deletedAt;
     }
 }
