@@ -15,7 +15,7 @@ use Doctrine\Common\EventManager;
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class TreeTest extends BaseTestCaseORM
+class IgnoredFilterTest extends BaseTestCaseORM
 {
     const CATEGORY = "Tree\\Fixture\\Category";
 
