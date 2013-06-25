@@ -5,10 +5,8 @@ namespace Gedmo\Translatable\Document\MappedSuperclass;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoODM;
 
 /**
-* Gedmo\Translatable\Document\MappedSuperclass\AbstractTranslation
-*
-* @MongoODM\MappedSuperclass
-*/
+ * @MongoODM\MappedSuperclass
+ */
 abstract class AbstractTranslation
 {
     /**
@@ -26,32 +24,10 @@ abstract class AbstractTranslation
     protected $locale;
 
     /**
-     * @var string $objectClass
-     *
-     * @MongoODM\String
+     * Related entity with ManyToOne relation
+     * must be mapped by user
      */
-    protected $objectClass;
-
-    /**
-     * @var string $field
-     *
-     * @MongoODM\String
-     */
-    protected $field;
-
-    /**
-     * @var string $foreignKey
-     *
-     * @MongoODM\String(name="foreign_key")
-     */
-    protected $foreignKey;
-
-    /**
-     * @var string $content
-     *
-     * @MongoODM\String
-     */
-    protected $content;
+    protected $object;
 
     /**
      * Get id
@@ -88,98 +64,26 @@ abstract class AbstractTranslation
     }
 
     /**
-     * Set field
+     * Set object related
      *
-     * @param string $field
+     * @param object $object
      *
      * @return static
      */
-    public function setField($field)
+    public function setObject($object)
     {
-        $this->field = $field;
+        $this->object = $object;
 
         return $this;
     }
 
     /**
-     * Get field
+     * Get object related
      *
-     * @return string
+     * @return object
      */
-    public function getField()
+    public function getObject()
     {
-        return $this->field;
-    }
-
-    /**
-     * Set object class
-     *
-     * @param string $objectClass
-     *
-     * @return static
-     */
-    public function setObjectClass($objectClass)
-    {
-        $this->objectClass = $objectClass;
-
-        return $this;
-    }
-
-    /**
-     * Get objectClass
-     *
-     * @return string
-     */
-    public function getObjectClass()
-    {
-        return $this->objectClass;
-    }
-
-    /**
-     * Set foreignKey
-     *
-     * @param string $foreignKey
-     *
-     * @return static
-     */
-    public function setForeignKey($foreignKey)
-    {
-        $this->foreignKey = $foreignKey;
-
-        return $this;
-    }
-
-    /**
-     * Get foreignKey
-     *
-     * @return string
-     */
-    public function getForeignKey()
-    {
-        return $this->foreignKey;
-    }
-
-    /**
-     * Set content
-     *
-     * @param string $content
-     *
-     * @return static
-     */
-    public function setContent($content)
-    {
-        $this->content = $content;
-
-        return $this;
-    }
-
-    /**
-     * Get content
-     *
-     * @return string
-     */
-    public function getContent()
-    {
-        return $this->content;
+        return $this->object;
     }
 }

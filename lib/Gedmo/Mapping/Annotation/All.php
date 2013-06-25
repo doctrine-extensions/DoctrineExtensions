@@ -21,7 +21,7 @@ include __DIR__.'/Timestampable.php';
 include __DIR__.'/Blameable.php';
 include __DIR__.'/IpTraceable.php';
 include __DIR__.'/Translatable.php';
-include __DIR__.'/TranslationEntity.php';
+include __DIR__.'/TranslationClass.php';
 include __DIR__.'/Tree.php';
 include __DIR__.'/TreeClosure.php';
 include __DIR__.'/TreeLeft.php';

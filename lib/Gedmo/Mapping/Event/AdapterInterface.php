@@ -92,6 +92,16 @@ interface AdapterInterface
     public function getSingleIdentifierFieldName($meta);
 
     /**
+     * Get the single identifier field name
+     *
+     * @param object  $object
+     * @param boolean $single
+     *
+     * @return mixed - array of identifiers or single identifier
+     */
+    public function getIdentifier($object, $single = true);
+
+    /**
      * Recompute the single object changeset from a UnitOfWork
      *
      * @param UnitOfWork                                         $uow
