@@ -41,9 +41,6 @@
         <testsuite name="Object wrappers">
             <directory suffix="Test.php">./Gedmo/Wrapper/</directory>
         </testsuite>
-        <testsuite name="Translator extension">
-            <directory suffix="Test.php">./Gedmo/Translator/</directory>
-        </testsuite>
         <testsuite name="SoftDeleteable Extension">
             <directory suffix="Test.php">./Gedmo/SoftDeleteable/</directory>
         </testsuite>

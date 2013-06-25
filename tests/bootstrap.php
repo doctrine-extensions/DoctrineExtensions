@@ -36,8 +36,10 @@ $loader = require __DIR__ . '/../vendor/autoload.php';
 $loader->add('Gedmo\\Mapping\\Mock', __DIR__);
 $loader->add('Tool', __DIR__ . '/Gedmo');
 // fixture namespaces
-$loader->add('Translator\\Fixture', __DIR__ . '/Gedmo');
-$loader->add('Translatable\\Fixture', __DIR__ . '/Gedmo');
+$loader->add('Fixture', __DIR__);
+
+//$loader->add('Translator\\Fixture', __DIR__ . '/Gedmo');
+//$loader->add('Translatable\\Fixture', __DIR__ . '/Gedmo');
 $loader->add('Timestampable\\Fixture', __DIR__ . '/Gedmo');
 $loader->add('Blameable\\Fixture', __DIR__.'/Gedmo');
 $loader->add('Tree\\Fixture', __DIR__ . '/Gedmo');

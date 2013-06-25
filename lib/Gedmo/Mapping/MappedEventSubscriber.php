@@ -114,13 +114,35 @@ abstract class MappedEventSubscriber implements EventSubscriber
             $filters = $this->getFilterCollectionFromObjectManager($om);
             $enabled = $filters->getEnabledFilters();
             foreach ($enabled as $name => $filter) {
-                if (in_array(get_class($filter), $this->ignoredFilters)) {
-                    $filters->disable($name);
-                    $this->disabledFilters[] = $name;
+                foreach ($this->ignoredFilters as $filterClassName) {
+                    if (is_a($filter, $filterClassName)) {
+                        $filters->disable($name);
+                        $this->disabledFilters[] = $name;
+                        break;
+                    }
                 }
             }
         }
     }
+
+    /**
+     * Checks if $filterClassName filter is enabled
+     *
+     * @param ObjectManager $om
+     * @param String $filterClassName
+     * @return boolean
+     */
+    protected function hasEnabledFilter($om, $filterClassName)
+    {
+        $enabled = $this->getFilterCollectionFromObjectManager($om)->getEnabledFilters();
+        foreach ($enabled as $name => $filter) {
+            if (is_a($filter, $filterClassName)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 
     /**
      * Enables back previously disabled filters by class name specified in $this->ignoredFilters
