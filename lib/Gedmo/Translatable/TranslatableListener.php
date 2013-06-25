@@ -378,7 +378,11 @@ class TranslatableListener extends MappedEventSubscriber
         foreach ($ea->getScheduledObjectDeletions($uow) as $object) {
             $meta = $om->getClassMetadata(get_class($object));
             $config = $this->getConfiguration($om, $meta->name);
-            if (isset($config['fields'])) {
+
+            $isSoftdeleteable = isset(self::$configurations['SoftDeleteable'][$meta->name])
+                && $this->hasEnabledFilter($om, 'Gedmo\SoftDeleteable\Filter\SoftDeleteableFilter');
+
+            if (isset($config['fields']) && !$isSoftdeleteable) {
                 $wrapped = AbstractWrapper::wrap($object, $om);
                 $transClass = $this->getTranslationClass($ea, $meta->name);
                 $ea->removeAssociatedTranslations($wrapped, $transClass, $config['useObjectClass']);
@@ -726,7 +730,7 @@ class TranslatableListener extends MappedEventSubscriber
     {
         return array_key_exists($oid, $this->translationInDefaultLocale);
     }
-     
+
     /**
      * Checks if the translation entity belongs to the object in question
      *
