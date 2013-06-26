@@ -102,7 +102,7 @@ class TimestampableListener extends MappedEventSubscriber
                                 $value = $changes[1];
                             }
 
-                            if ($options['value'] == $value || $options['value'] === null) {
+                            if (in_array($value, (array)$options['value']) || $options['value'] === null) {
                                 $needChanges = true;
                                 $this->updateField($object, $ea, $meta, $options['field']);
                             }

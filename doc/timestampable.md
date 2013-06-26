@@ -16,6 +16,10 @@ Features:
 [blog_reference]: http://gediminasm.org/article/timestampable-behavior-extension-for-doctrine-2 "Timestampable extension for Doctrine 2 helps automate update of dates"
 [blog_test]: http://gediminasm.org/test "Test extensions on this blog"
 
+Update **2012-06-26**
+
+- Allow multiple values for on="change"
+
 Update **2012-03-10**
 
 - Add [Timestampable traits](#traits)
@@ -70,7 +74,7 @@ Available configuration options:
 - **on** - is main option and can be **create, update, change** this tells when it 
 should be updated
 - **field** - only valid if **on="change"** is specified, tracks property for changes
-- **value** - only valid if **on="change"** is specified, if tracked field has this **value** 
+- **value** - only valid if **on="change"** is specified, if tracked field has this **value** (single value or array possible)
 then it updates timestamp
 
 **Note:** that Timestampable interface is not necessary, except in cases there
@@ -370,6 +374,9 @@ class Article
      *
      * @ORM\Column(type="datetime", nullable=true)
      * @Gedmo\Timestampable(on="change", field="type.title", value="Published")
+     *
+     * or for example
+     * @Gedmo\Timestambable(on="change", field="type.title", value={"Published", "Closed"})
      */
     private $published;
 
