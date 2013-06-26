@@ -41,6 +41,7 @@ class ChangeTest extends BaseTestCaseORM
         $test = new TitledArticle();
         $test->setTitle('Test');
         $test->setText('Test');
+        $test->setState('Open');
 
         $currentDate = new \DateTime('now');
         $this->listener->eventAdapter->setDateValue($currentDate);
@@ -51,6 +52,7 @@ class ChangeTest extends BaseTestCaseORM
 
         $test = $this->em->getRepository(self::FIXTURE)->findOneByTitle('Test');
         $test->setTitle('New Title');
+        $test->setState('Closed');
         $this->em->persist($test);
         $this->em->flush();
         $this->em->clear();
@@ -59,11 +61,17 @@ class ChangeTest extends BaseTestCaseORM
             $currentDate->format('Y-m-d H:i:s'),
             $test->getChtitle()->format('Y-m-d H:i:s')
         );
+        $this->assertEquals(
+            $currentDate->format('Y-m-d H:i:s'),
+            $test->getClosed()->format('Y-m-d H:i:s')
+        );
 
-        $this->listener->eventAdapter->setDateValue(\DateTime::createFromFormat('Y-m-d H:i:s', '2000-01-01 00:00:00'));
+        $anotherDate = \DateTime::createFromFormat('Y-m-d H:i:s', '2000-01-01 00:00:00');
+        $this->listener->eventAdapter->setDateValue($anotherDate);
 
         $test = $this->em->getRepository(self::FIXTURE)->findOneByTitle('New Title');
         $test->setText('New Text');
+        $test->setState('Open');
         $this->em->persist($test);
         $this->em->flush();
         $this->em->clear();
@@ -71,6 +79,21 @@ class ChangeTest extends BaseTestCaseORM
         $this->assertEquals(
             $currentDate->format('Y-m-d H:i:s'),
             $test->getChtitle()->format('Y-m-d H:i:s')
+        );
+        $this->assertEquals(
+            $currentDate->format('Y-m-d H:i:s'),
+            $test->getClosed()->format('Y-m-d H:i:s')
+        );
+
+        $test = $this->em->getRepository(self::FIXTURE)->findOneByTitle('New Title');
+        $test->setState('Published');
+        $this->em->persist($test);
+        $this->em->flush();
+        $this->em->clear();
+        //Changed
+        $this->assertEquals(
+            $anotherDate->format('Y-m-d H:i:s'),
+            $test->getClosed()->format('Y-m-d H:i:s')
         );
     }
 

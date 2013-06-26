@@ -28,6 +28,11 @@ class TitledArticle implements Timestampable
     private $text;
 
     /**
+     * @ORM\Column(name="state", type="string", length=128)
+     */
+    private $state;
+
+    /**
      * @var \DateTime $updated
      *
      * @ORM\Column(name="chtext", type="datetime", nullable=true)
@@ -42,6 +47,14 @@ class TitledArticle implements Timestampable
      * @Gedmo\Timestampable(on="change", field="title")
      */
     private $chtitle;
+
+    /**    
+     * @var \DateTime $closed
+     *
+     * @ORM\Column(name="closed", type="datetime", nullable=true)
+     * @Gedmo\Timestampable(on="change", field="state", value={"Published", "Closed"})
+     */
+    private $closed;
 
     /**
      * @param \DateTime $chtext
@@ -75,6 +88,22 @@ class TitledArticle implements Timestampable
         return $this->chtitle;
     }
 
+    /**
+     * @param \DateTime $closed
+     */
+    public function setClosed($closed)
+    {
+        $this->closed = $closed;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getClosed()
+    {
+        return $this->closed;
+    }
+
     public function setId($id)
     {
         $this->id = $id;
@@ -103,5 +132,15 @@ class TitledArticle implements Timestampable
     public function getTitle()
     {
         return $this->title;
+    }
+
+    public function setState($state)
+    {
+        $this->state = $state;
+    }
+
+    public function getState()
+    {
+        return $this->state;
     }
 }
