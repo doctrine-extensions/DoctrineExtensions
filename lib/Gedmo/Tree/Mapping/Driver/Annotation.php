@@ -111,6 +111,11 @@ class Annotation extends AbstractAnnotationDriver
             $config['closure'] = $annot->class;
         }
 
+        if($annot = $this->reader->getClassAnnotation($class, self::PATH_SOURCE))
+        {
+            $config['path_source'] = $annot->field;
+        }
+
         // property annotations
         foreach ($class->getProperties() as $property) {
             if ($meta->isMappedSuperclass && !$property->isPrivate() ||

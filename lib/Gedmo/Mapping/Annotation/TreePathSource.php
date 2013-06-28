@@ -9,6 +9,7 @@ use Doctrine\Common\Annotations\Annotation;
  *
  * @Annotation
  * @Target("PROPERTY")
+ * @Target("CLASS")
  *
  * @author Gustavo Falco <comfortablynumb84@gmail.com>
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
@@ -16,6 +17,7 @@ use Doctrine\Common\Annotations\Annotation;
  */
 final class TreePathSource extends Annotation
 {
-
+    /** @var string */
+    public $field = null;
 }
 
