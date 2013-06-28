@@ -39,7 +39,7 @@ abstract class AbstractPersonalTranslation
     protected $field;
 
     /**
-     * @var text $content
+     * @var string $content
      *
      * @MongoODM\String
      */

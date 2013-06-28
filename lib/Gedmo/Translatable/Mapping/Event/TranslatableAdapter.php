@@ -44,7 +44,7 @@ interface TranslatableAdapter extends AdapterInterface
     /**
      * Search for existing translation record
      *
-     * AbstractWrapper $wrapped
+     * @param AbstractWrapper $wrapped
      * @param string $locale
      * @param string $field
      * @param string $translationClass
@@ -56,7 +56,7 @@ interface TranslatableAdapter extends AdapterInterface
     /**
      * Removes all associated translations for given object
      *
-     * AbstractWrapper $wrapped
+     * @param AbstractWrapper $wrapped
      * @param string $transClass
      * @param string $objectClass
      * @return void

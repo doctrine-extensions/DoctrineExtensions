@@ -156,7 +156,7 @@ abstract class AbstractTranslation
     /**
      * Set content
      *
-     * @param text $content
+     * @param string $content
      * @return AbstractTranslation
      */
     public function setContent($content)
@@ -168,7 +168,7 @@ abstract class AbstractTranslation
     /**
      * Get content
      *
-     * @return text $content
+     * @return string $content
      */
     public function getContent()
     {
