@@ -54,7 +54,7 @@ abstract class AbstractAnnotationDriver implements AnnotationDriverInterface
     /**
      * @param object $meta
      *
-     * @return array
+     * @return \ReflectionClass
      */
     public function getMetaReflectionClass($meta)
     {
@@ -85,7 +85,7 @@ abstract class AbstractAnnotationDriver implements AnnotationDriverInterface
     }
 
     /**
-     * @param Doctrine\Common\Persistence\Mapping\ClassMetaData $meta
+     * @param \Doctrine\Common\Persistence\Mapping\ClassMetaData $meta
      * @param array         $config
      */
     public function validateFullMetadata(ClassMetadata $meta, array $config)

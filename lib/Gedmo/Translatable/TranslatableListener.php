@@ -291,6 +291,7 @@ class TranslatableListener extends MappedEventSubscriber
     {
         $locale = $this->locale;
         if (isset(self::$configurations[$this->name][$meta->name]['locale'])) {
+            /** @var \ReflectionClass $class */
             $class = $meta->getReflectionClass();
             $reflectionProperty = $class->getProperty(self::$configurations[$this->name][$meta->name]['locale']);
             if (!$reflectionProperty) {
@@ -507,7 +508,7 @@ class TranslatableListener extends MappedEventSubscriber
      * @param TranslatableAdapter $ea
      * @param object $object
      * @param boolean $isInsert
-     * @throws UnexpectedValueException - if locale is not valid, or
+     * @throws \UnexpectedValueException - if locale is not valid, or
      *      primary key is composite, missing or invalid
      * @return void
      */
