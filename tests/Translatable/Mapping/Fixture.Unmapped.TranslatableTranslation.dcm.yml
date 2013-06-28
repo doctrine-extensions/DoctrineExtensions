@@ -1,0 +1,19 @@
+---
+Fixture\Unmapped\TranslatableTranslation:
+  type: entity
+  table: translatable_translations
+  fields:
+    title:
+      type: string
+      length: 64
+    content:
+      type: text
+    author:
+      type: string
+      length: 128
+  manyToOne:
+    object:
+      targetEntity: Translatable
+      joinColumn:
+        name: object_id
+        referencedColumnName: id

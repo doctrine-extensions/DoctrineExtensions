@@ -109,6 +109,36 @@ class ORM implements AdapterInterface
     }
 
     /**
+     * {@inheritDoc}
+     */
+    public function getIdentifier($object, $single = true)
+    {
+        $meta = $this->getObjectManager()->getClassMetadata(get_class($object));
+        if ($single) {
+            $meta->getSingleIdentifierFieldName(); // ensures that identifier expected is single
+        }
+        $identifier = null;
+        if ($object instanceof Proxy) {
+            $uow = $this->em->getUnitOfWork();
+            if ($uow->isInIdentityMap($object)) {
+                $identifier = $uow->getEntityIdentifier($object);
+            } elseif (!$object->__isInitialized__) {
+                $object->__load();
+            }
+        }
+        if (null === $identifier) {
+            $identifier = array();
+            foreach ($meta->identifier as $name) {
+                if (($identifier[$name] = $meta->getReflectionProperty($name)->getValue($object)) === null) {
+                    // is incomplete
+                    return null;
+                }
+            }
+        }
+        return $identifier;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function recomputeSingleObjectChangeSet($uow, $meta, $object)

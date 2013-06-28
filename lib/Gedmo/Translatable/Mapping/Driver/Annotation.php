@@ -2,8 +2,8 @@
 
 namespace Gedmo\Translatable\Mapping\Driver;
 
-use Gedmo\Mapping\Driver\AbstractAnnotationDriver,
-    Gedmo\Exception\InvalidMappingException;
+use Gedmo\Mapping\Driver\AbstractAnnotationDriver;
+use Gedmo\Exception\InvalidMappingException;
 
 /**
  * This is an annotation mapping driver for Translatable
@@ -19,24 +19,12 @@ class Annotation extends AbstractAnnotationDriver
     /**
      * Annotation to identity translation entity to be used for translation storage
      */
-    const ENTITY_CLASS = 'Gedmo\\Mapping\\Annotation\\TranslationEntity';
+    const TRANSLATION_CLASS = 'Gedmo\\Mapping\\Annotation\\TranslationClass';
 
     /**
      * Annotation to identify field as translatable
      */
     const TRANSLATABLE = 'Gedmo\\Mapping\\Annotation\\Translatable';
-
-    /**
-     * Annotation to identify field which can store used locale or language
-     * alias is LANGUAGE
-     */
-    const LOCALE = 'Gedmo\\Mapping\\Annotation\\Locale';
-
-    /**
-     * Annotation to identify field which can store used locale or language
-     * alias is LOCALE
-     */
-    const LANGUAGE = 'Gedmo\\Mapping\\Annotation\\Language';
 
     /**
      * {@inheritDoc}
@@ -45,11 +33,12 @@ class Annotation extends AbstractAnnotationDriver
     {
         $class = $this->getMetaReflectionClass($meta);
         // class annotations
-        if ($annot = $this->reader->getClassAnnotation($class, self::ENTITY_CLASS)) {
-            if (!class_exists($annot->class)) {
-                throw new InvalidMappingException("Translation class: {$annot->class} does not exist.");
+        if ($annot = $this->reader->getClassAnnotation($class, self::TRANSLATION_CLASS)) {
+            if (!class_exists($annot->name)) {
+                throw new InvalidMappingException("Translation class: {$annot->name} does not exist."
+                    . " If you haven't generated it yet, use TranslatableCommand to do so");
             }
-            $config['translationClass'] = $annot->class;
+            $config['translationClass'] = $annot->name;
         }
 
         // property annotations
@@ -66,31 +55,22 @@ class Annotation extends AbstractAnnotationDriver
                 if (!$meta->hasField($field)) {
                     throw new InvalidMappingException("Unable to find translatable [{$field}] as mapped property in entity - {$meta->name}");
                 }
-                // fields cannot be overrided and throws mapping exception
-                $config['fields'][] = $field;
-                if (isset($translatable->fallback)) {
-                    $config['fallback'][$field] = $translatable->fallback;
-                }
-            }
-            // locale property
-            if ($locale = $this->reader->getPropertyAnnotation($property, self::LOCALE)) {
-                $field = $property->getName();
-                if ($meta->hasField($field)) {
-                    throw new InvalidMappingException("Locale field [{$field}] should not be mapped as column property in entity - {$meta->name}, since it makes no sence");
-                }
-                $config['locale'] = $field;
-            } elseif ($language = $this->reader->getPropertyAnnotation($property, self::LANGUAGE)) {
-                $field = $property->getName();
-                if ($meta->hasField($field)) {
-                    throw new InvalidMappingException("Language field [{$field}] should not be mapped as column property in entity - {$meta->name}, since it makes no sence");
-                }
-                $config['locale'] = $field;
+                // fields cannot be overriden and throws mapping exception
+                $config['fields'][$field] = array(); // can be some options in future
             }
         }
 
-        if (!$meta->isMappedSuperclass && $config) {
-            if (is_array($meta->identifier) && count($meta->identifier) > 1) {
-                throw new InvalidMappingException("Translatable does not support composite identifiers in class - {$meta->name}");
+        if (!$meta->isMappedSuperclass && $config && !isset($config['translationClass'])) {
+            // try to guess translation class
+            ($parts = explode('\\', $meta->name)) && ($name = array_pop($parts));
+            if (class_exists($fullname = implode('\\', $parts).'\\'.$name.'Translation')) {
+                $config['translationClass'] = $fullname;
+            } elseif (class_exists($fullname2 = implode('\\', $parts).'\\Translation\\'.$name)) {
+                $config['translationClass'] = $fullname2;
+            } else {
+                throw new InvalidMappingException("Tried to guess translation class as {$fullname} or {$fullname2}"
+                    . ", but could not locate it. If you haven't generated it yet, use TranslatableCommand to do so"
+                    . ", if it is available elsewhere, specify it in configuration with 'translationClass'");
             }
         }
     }

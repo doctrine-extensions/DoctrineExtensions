@@ -1,0 +1,12 @@
+---
+Gedmo\Translatable\Entity\MappedSuperclass\AbstractTranslation:
+  type: mappedSuperclass
+  id:
+    id:
+      type: integer
+      generator:
+        strategy: AUTO
+  fields:
+    locale:
+      type: string
+      length: 8

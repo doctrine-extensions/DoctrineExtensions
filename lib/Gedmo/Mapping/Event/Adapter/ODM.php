@@ -7,6 +7,7 @@ use Gedmo\Exception\RuntimeException;
 use Doctrine\Common\EventArgs;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Doctrine\ODM\MongoDB\Event\LifecycleEventArgs;
+use Doctrine\ODM\MongoDB\Proxy\Proxy;
 
 /**
  * Doctrine event adapter for ODM specific
@@ -106,6 +107,34 @@ class ODM implements AdapterInterface
     public function getSingleIdentifierFieldName($meta)
     {
         return $meta->identifier;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getIdentifier($object, $single = true)
+    {
+        $identifier = null;
+        $meta = $this->getObjectManager()->getClassMetadata(get_class($object));
+        if ($object instanceof Proxy) {
+            $uow = $this->dm->getUnitOfWork();
+            if ($uow->isInIdentityMap($object)) {
+                $identifier = (string)$uow->getDocumentIdentifier($object);
+            } else {
+                if (!$object->__isInitialized__) {
+                    $persister = $uow->getDocumentPersister($meta->name);
+                    $reflProperty = new \ReflectionProperty($object, 'identifier');
+                    $reflProperty->setAccessible(true);
+                    $identifier = $reflProperty->getValue($object);
+                    $object->__isInitialized__ = true;
+                    $persister->load($identifier, $object);
+                }
+            }
+        }
+        if (!$identifier) {
+            $identifier = (string)$meta->getReflectionProperty($meta->identifier)->getValue($object);
+        }
+        return $identifier;
     }
 
     /**
