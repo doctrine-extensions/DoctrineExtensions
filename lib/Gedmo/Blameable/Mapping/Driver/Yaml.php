@@ -69,6 +69,32 @@ class Yaml extends File implements Driver
                 }
             }
         }
+
+        if (isset($mapping['manyToOne'])) {
+            foreach ($mapping['manyToOne'] as $field => $fieldMapping) {
+                if (isset($fieldMapping['gedmo']['blameable'])) {
+                    $mappingProperty = $fieldMapping['gedmo']['blameable'];
+                    if (! $meta->isSingleValuedAssociation($field)) {
+                        throw new InvalidMappingException("Association - [{$field}] is not valid, it must be a one-to-many relation or a string field - {$meta->name}");
+                    }
+                    if (!isset($mappingProperty['on']) || !in_array($mappingProperty['on'], array('update', 'create', 'change'))) {
+                        throw new InvalidMappingException("Field - [{$field}] trigger 'on' is not one of [update, create, change] in class - {$meta->name}");
+                    }
+                
+                    if ($mappingProperty['on'] == 'change') {
+                        if (!isset($mappingProperty['field'])) {
+                            throw new InvalidMappingException("Missing parameters on property - {$field}, field must be set on [change] trigger in class - {$meta->name}");
+                        }
+                        $field = array(
+                            'field' => $field,
+                            'trackedField' => $mappingProperty['field'],
+                            'value' => isset($mappingProperty['value']) ? $mappingProperty['value'] : null,
+                        );
+                    }
+                    $config[$mappingProperty['on']][] = $field;
+                }
+            }
+        }
     }
 
     /**
