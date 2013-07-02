@@ -39,11 +39,13 @@ class Xml extends BaseXml
                 $data = $xml->loggable;
                 $config['loggable'] = true;
                 if ($this->_isAttributeSet($data, 'log-entry-class')) {
-                    $class = $this->_getAttribute($data, 'log-entry-class');
-                    if (!class_exists($class)) {
-                        throw new InvalidMappingException("LogEntry class: {$class} does not exist.");
+                    if (!class_exists($name = $this->_getAttribute($data, 'log-entry-class'))) {
+                        $ns = substr($meta->name, 0, strrpos($meta->name, '\\'));
+                        if (!class_exists($name = $ns.'\\'.$name)) {
+                            throw new InvalidMappingException("LogEntry class: ".$this->_getAttribute($data, 'log-entry-class')." does not exist.");
+                        }
                     }
-                    $config['logEntryClass'] = $class;
+                    $config['logEntryClass'] = $name;
                 }
             }
         }

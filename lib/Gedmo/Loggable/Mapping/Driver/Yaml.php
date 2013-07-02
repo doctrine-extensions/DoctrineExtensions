@@ -36,10 +36,13 @@ class Yaml extends File implements Driver
             if (isset($classMapping['loggable'])) {
                 $config['loggable'] = true;
                 if (isset ($classMapping['loggable']['logEntryClass'])) {
-                    if (!class_exists($classMapping['loggable']['logEntryClass'])) {
-                        throw new InvalidMappingException("LogEntry class: {$classMapping['loggable']['logEntryClass']} does not exist.");
+                    if (!class_exists($name = $classMapping['loggable']['logEntryClass'])) {
+                        $ns = substr($meta->name, 0, strrpos($meta->name, '\\'));
+                        if (!class_exists($name = $ns.'\\'.$name)) {
+                            throw new InvalidMappingException("LogEntry class: {$classMapping['loggable']['logEntryClass']} does not exist.");
+                        }
                     }
-                    $config['logEntryClass'] = $classMapping['loggable']['logEntryClass'];
+                    $config['logEntryClass'] = $name;
                 }
             }
         }
