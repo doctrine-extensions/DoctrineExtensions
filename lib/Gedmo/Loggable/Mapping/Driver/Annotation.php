@@ -51,10 +51,12 @@ class Annotation extends AbstractAnnotationDriver
         if ($annot = $this->reader->getClassAnnotation($class, self::LOGGABLE)) {
             $config['loggable'] = true;
             if ($annot->logEntryClass) {
-                if (!class_exists($annot->logEntryClass)) {
-                    throw new InvalidMappingException("LogEntry class: {$annot->logEntryClass} does not exist.");
+                if (!class_exists($name = $annot->logEntryClass)) {
+                    if (!class_exists($name = $class->getNamespaceName().'\\'.$name)) {
+                        throw new InvalidMappingException("LogEntry class: {$annot->logEntryClass} does not exist.");
+                    }
                 }
-                $config['logEntryClass'] = $annot->logEntryClass;
+                $config['logEntryClass'] = $name;
             }
         }
         // property annotations

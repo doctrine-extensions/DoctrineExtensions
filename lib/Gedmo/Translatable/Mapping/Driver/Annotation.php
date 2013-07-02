@@ -34,11 +34,13 @@ class Annotation extends AbstractAnnotationDriver
         $class = $this->getMetaReflectionClass($meta);
         // class annotations
         if ($annot = $this->reader->getClassAnnotation($class, self::TRANSLATION_CLASS)) {
-            if (!class_exists($annot->name)) {
-                throw new InvalidMappingException("Translation class: {$annot->name} does not exist."
-                    . " If you haven't generated it yet, use TranslatableCommand to do so");
+            if (!class_exists($name = $annot->name)) {
+                if (!class_exists($name = $class->getNamespaceName().'\\'.$name)) {
+                    throw new InvalidMappingException("Translation class: {$annot->name} does not exist."
+                        . " If you haven't generated it yet, use TranslatableCommand to do so");
+                }
             }
-            $config['translationClass'] = $annot->name;
+            $config['translationClass'] = $name;
         }
 
         // property annotations
