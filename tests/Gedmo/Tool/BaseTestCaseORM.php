@@ -17,6 +17,7 @@ use Gedmo\Loggable\LoggableListener;
 use Gedmo\SoftDeleteable\SoftDeleteableListener;
 use Doctrine\ORM\Mapping\DefaultQuoteStrategy;
 use Doctrine\ORM\Mapping\DefaultNamingStrategy;
+use Doctrine\ORM\Repository\DefaultRepositoryFactory;
 
 /**
  * Base test case contains common mock objects
@@ -268,15 +269,20 @@ abstract class BaseTestCaseORM extends \PHPUnit_Framework_TestCase
         $config
             ->expects($this->any())
             ->method('getQuoteStrategy')
-            ->will($this->returnValue(new DefaultQuoteStrategy()))
+            ->will($this->returnValue(new DefaultQuoteStrategy))
         ;
 
         $config
             ->expects($this->any())
             ->method('getNamingStrategy')
-            ->will($this->returnValue(new DefaultNamingStrategy()))
+            ->will($this->returnValue(new DefaultNamingStrategy))
         ;
 
+        $config
+            ->expects($this->once())
+            ->method('getRepositoryFactory')
+            ->will($this->returnValue(new DefaultRepositoryFactory))
+        ;
         return $config;
     }
 }

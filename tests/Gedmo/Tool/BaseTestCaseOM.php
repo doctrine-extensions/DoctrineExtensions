@@ -24,6 +24,7 @@ use Gedmo\Sluggable\SluggableListener;
 use Gedmo\Tree\TreeListener;
 use Gedmo\Timestampable\TimestampableListener;
 use Gedmo\Loggable\LoggableListener;
+use Doctrine\ORM\Repository\DefaultRepositoryFactory;
 
 /**
  * Base test case contains common mock objects
@@ -323,6 +324,11 @@ abstract class BaseTestCaseOM extends \PHPUnit_Framework_TestCase
         $config->expects($this->any())
             ->method('getMetadataDriverImpl')
             ->will($this->returnValue($mappingDriver));
+
+        $config
+            ->expects($this->once())
+            ->method('getRepositoryFactory')
+            ->will($this->returnValue(new DefaultRepositoryFactory));
 
         return $config;
     }
