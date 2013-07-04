@@ -95,7 +95,7 @@ class MaterializedPathRepository extends AbstractTreeRepository
             $node = new EntityWrapper($node, $this->_em);
             $nodePath = $node->getPropertyValue($path);
             $expr = $qb->expr()->andx()->add(
-                $qb->expr()->like($alias.'.'.$path, $qb->expr()->literal($nodePath.(substr($string, -1) != $separator ? $separator : '').'%'))
+                $qb->expr()->like($alias.'.'.$path, $qb->expr()->literal($nodePath.(substr($nodePath, -1) != $separator ? $separator : '').'%'))
             );
 
             if (!$includeNode) {
