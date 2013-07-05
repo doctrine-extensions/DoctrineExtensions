@@ -27,7 +27,10 @@ class Issue633Test extends BaseTestCaseORM
         $this->getMockSqliteEntityManager($evm);
     }
 
-    public function testSlugGeneration()
+    /**
+     * @test
+     */
+    function shouldHandleUniqueBasedSlug()
     {
         $test = new Article;
         $test->setTitle('Unique to code');
@@ -41,19 +44,48 @@ class Issue633Test extends BaseTestCaseORM
         $test2 = new Article;
         $test2->setTitle('Unique to code');
         $test2->setCode('CODE002');
-        
+
         $this->em->persist($test2);
         $this->em->flush();
 
         $this->assertEquals('unique-to-code', $test2->getSlug());
-        
+
         $test3 = new Article;
         $test3->setTitle('Unique to code');
         $test3->setCode('CODE001');
-        
+
         $this->em->persist($test3);
         $this->em->flush();
-        
+
+        $this->assertEquals('unique-to-code-1', $test3->getSlug());
+    }
+
+    /**
+     * @test
+     */
+    function handlePersistedSlugsForUniqueBased()
+    {
+        $test = new Article;
+        $test->setTitle('Unique to code');
+        $test->setCode('CODE001');
+
+        $this->em->persist($test);
+
+        $test2 = new Article;
+        $test2->setTitle('Unique to code');
+        $test2->setCode('CODE002');
+
+        $this->em->persist($test2);
+
+        $test3 = new Article;
+        $test3->setTitle('Unique to code');
+        $test3->setCode('CODE001');
+
+        $this->em->persist($test3);
+        $this->em->flush();
+
+        $this->assertEquals('unique-to-code', $test->getSlug());
+        $this->assertEquals('unique-to-code', $test2->getSlug());
         $this->assertEquals('unique-to-code-1', $test3->getSlug());
     }
 
