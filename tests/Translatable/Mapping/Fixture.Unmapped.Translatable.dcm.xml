@@ -20,8 +20,6 @@
         </field>
         <field name="views" type="text" />
 
-        <gedmo:translation-class name="TranslatableTranslation" />
-
     </entity>
 
 </doctrine-mapping>

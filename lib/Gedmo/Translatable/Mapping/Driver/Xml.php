@@ -29,25 +29,6 @@ class Xml extends BaseXml
 
         $xml = $xml->children(self::GEDMO_NAMESPACE_URI);
 
-        if (($xmlDoctrine->getName() == 'entity' || $xmlDoctrine->getName() == 'mapped-superclass')) {
-            if (isset($xml->{'translation-class'})) {
-                /**
-                 * @var \SimpleXmlElement $data
-                 */
-                $data = $xml->{'translation-class'};
-                if ($this->_isAttributeSet($data, 'name')) {
-                    if (!class_exists($name = $this->_getAttribute($data, 'name'))) {
-                        $ns = substr($meta->name, 0, strrpos($meta->name, '\\'));
-                        if (!class_exists($name = $ns.'\\'.$name)) {
-                            throw new InvalidMappingException("Translation class: ".$this->_getAttribute($data, 'name')." does not exist."
-                                . " If you haven't generated it yet, use TranslatableCommand to do so");
-                        }
-                    }
-                    $config['translationClass'] = $name;
-                }
-            }
-        }
-
         if (isset($xmlDoctrine->field)) {
             foreach ($xmlDoctrine->field as $mapping) {
                 $mappingDoctrine = $mapping;
@@ -59,6 +40,19 @@ class Xml extends BaseXml
                 if (isset($mapping->translatable)) {
                     $config['fields'][$field] = array();
                 }
+            }
+        }
+
+        if (!$meta->isMappedSuperclass && $config && !isset($config['translationClass'])) {
+            // ensure identifier is singular
+            if (is_array($meta->identifier) && count($meta->identifier) > 1) {
+                throw new InvalidMappingException("Translatable does not support composite identifiers in class - {$meta->name}");
+            }
+            // try to guess translation class
+            $config['translationClass'] = $meta->name . 'Translation';
+            if (!class_exists($config['translationClass'])) {
+                throw new InvalidMappingException("Translation class {$config['translationClass']} for domain object {$meta->name}"
+                    . ", was not found or could not be autoloaded. If it was not generated yet, use GenerateTranslationsCommand", $config);
             }
         }
     }

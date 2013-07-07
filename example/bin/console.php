@@ -25,6 +25,9 @@ $cli->addCommands(array(
     new Doctrine\ORM\Tools\Console\Command\ConvertMappingCommand(),
     new Doctrine\ORM\Tools\Console\Command\RunDqlCommand(),
     new Doctrine\ORM\Tools\Console\Command\ValidateSchemaCommand(),
+
+    // Gedmo commands
+    new Gedmo\Translatable\Command\GenerateTranslationsCommand,
 ));
 // helpers
 $helpers = array(

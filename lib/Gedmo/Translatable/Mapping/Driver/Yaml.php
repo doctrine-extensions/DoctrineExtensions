@@ -30,27 +30,27 @@ class Yaml extends File implements Driver
     {
         $mapping = $this->_getMapping($meta->name);
 
-        if (isset($mapping['gedmo'])) {
-            $classMapping = $mapping['gedmo'];
-            if (isset($classMapping['translation']['entity'])) {
-                if (!class_exists($name = $classMapping['translationClass']['name'])) {
-                    $ns = substr($meta->name, 0, strrpos($meta->name, '\\'));
-                    if (!class_exists($name = $ns.'\\'.$name)) {
-                        throw new InvalidMappingException("Translation class: {$classMapping['translationClass']['name']} does not exist."
-                            . " If you haven't generated it yet, use TranslatableCommand to do so");
-                    }
-                }
-                $config['translationClass'] = $name;
-            }
-        }
         if (isset($mapping['fields'])) {
             foreach ($mapping['fields'] as $field => $fieldMapping) {
                 if (isset($fieldMapping['gedmo'])) {
-                    if (in_array('translatable', $fieldMapping['gedmo']) || isset($fieldMapping['gedmo']['translatable'])) {
+                    if (array_key_exists('translatable', $fieldMapping['gedmo'])) {
                         // fields cannot be overrided and throws mapping exception
                         $config['fields'][$field] = array();
                     }
                 }
+            }
+        }
+
+        if (!$meta->isMappedSuperclass && $config && !isset($config['translationClass'])) {
+            // ensure identifier is singular
+            if (is_array($meta->identifier) && count($meta->identifier) > 1) {
+                throw new InvalidMappingException("Translatable does not support composite identifiers in class - {$meta->name}");
+            }
+            // try to guess translation class
+            $config['translationClass'] = $meta->name . 'Translation';
+            if (!class_exists($config['translationClass'])) {
+                throw new InvalidMappingException("Translation class {$config['translationClass']} for domain object {$meta->name}"
+                    . ", was not found or could not be autoloaded. If it was not generated yet, use GenerateTranslationsCommand", $config);
             }
         }
     }
