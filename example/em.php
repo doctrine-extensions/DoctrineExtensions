@@ -71,14 +71,8 @@ $config->setQueryCacheImpl($cache);
 
 // Third, create event manager and hook prefered extension listeners
 $evm = new Doctrine\Common\EventManager();
-// gedmo extension listeners
 
-// sluggable
-$sluggableListener = new Gedmo\Sluggable\SluggableListener;
-// you should set the used annotation reader to listener, to avoid creating new one for mapping drivers
-$sluggableListener->setAnnotationReader($cachedAnnotationReader);
-$evm->addEventSubscriber($sluggableListener);
-
+// hook gedmo extension listeners
 // tree
 $treeListener = new Gedmo\Tree\TreeListener;
 $treeListener->setAnnotationReader($cachedAnnotationReader);
@@ -96,21 +90,24 @@ $timestampableListener->setAnnotationReader($cachedAnnotationReader);
 $evm->addEventSubscriber($timestampableListener);
 
 // blameable
-
 $blameableListener = new \Gedmo\Blameable\BlameableListener();
 $blameableListener->setAnnotationReader($cachedAnnotationReader);
 $blameableListener->setUserValue('MyUsername'); // determine from your environment
 $evm->addEventSubscriber($blameableListener);
-
 
 // translatable
 $translatableListener = new Gedmo\Translatable\TranslatableListener;
 // current translation locale should be set from session or hook later into the listener
 // most important, before entity manager is flushed
 $translatableListener->setTranslatableLocale('en');
-$translatableListener->setDefaultLocale('en');
 $translatableListener->setAnnotationReader($cachedAnnotationReader);
 $evm->addEventSubscriber($translatableListener);
+
+// sluggable
+$sluggableListener = new Gedmo\Sluggable\SluggableListener;
+// you should set the used annotation reader to listener, to avoid creating new one for mapping drivers
+$sluggableListener->setAnnotationReader($cachedAnnotationReader);
+$evm->addEventSubscriber($sluggableListener);
 
 // sortable, not used in example
 //$sortableListener = new Gedmo\Sortable\SortableListener;
