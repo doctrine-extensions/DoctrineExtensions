@@ -3,11 +3,12 @@
 namespace Gedmo\Translatable\Document\MappedSuperclass;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoODM;
+use Gedmo\Translatable\TranslationInterface;
 
 /**
  * @MongoODM\MappedSuperclass
  */
-abstract class AbstractTranslation
+abstract class AbstractTranslation implements TranslationInterface
 {
     /**
      * @var integer $id

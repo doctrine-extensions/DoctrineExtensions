@@ -3,11 +3,12 @@
 namespace Gedmo\Translatable\Entity\MappedSuperclass;
 
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Translatable\TranslationInterface;
 
 /**
  * @ORM\MappedSuperclass
  */
-abstract class AbstractTranslation
+abstract class AbstractTranslation implements TranslationInterface
 {
     /**
      * @var integer $id

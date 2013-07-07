@@ -8,7 +8,6 @@ use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * @ORM\Entity
- * @Gedmo\TranslationClass(name="PostTranslation")
  * @Gedmo\SoftDeleteable(fieldName="deletedAt")
  */
 class Post
