@@ -9,7 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @Gedmo\Tree(type="nested")
  * @ORM\Table(name="ext_categories")
  * @ORM\Entity(repositoryClass="Entity\Repository\CategoryRepository")
- * @Gedmo\TranslationEntity(class="Entity\CategoryTranslation")
+ * @Gedmo\TranslationClass(name="CategoryTranslation")
  */
 class Category
 {
@@ -33,9 +33,12 @@ class Category
     private $description;
 
     /**
+     * Slug should be nullable, since it is generated on
+     * translation entity, this fields serves only for
+     * representation
+     *
      * @Gedmo\Translatable
-     * @Gedmo\Slug(fields={"title"})
-     * @ORM\Column(length=64, unique=true)
+     * @ORM\Column(length=64, nullable=true)
      */
     private $slug;
 
@@ -157,7 +160,7 @@ class Category
         return $this->description;
     }
 
-	public function setParent($parent)
+    public function setParent(Category $parent = null)
     {
         $this->parent = $parent;
     }
@@ -184,10 +187,10 @@ class Category
 
     public function getLeft()
     {
-    	return $this->lft;
+        return $this->lft;
     }
 
-	public function getRight()
+    public function getRight()
     {
         return $this->rgt;
     }

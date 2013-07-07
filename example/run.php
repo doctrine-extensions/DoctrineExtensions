@@ -21,22 +21,22 @@ if (!$food) {
     // lets create some categories
     $food = new Entity\Category;
     $food->setTitle('Food');
-    $food->addTranslation(new Entity\CategoryTranslation('lt', 'title', 'Maistas'));
+    $food->addTranslation(new Entity\CategoryTranslation('lt', 'Maistas'));
 
     $fruits = new Entity\Category;
     $fruits->setParent($food);
     $fruits->setTitle('Fruits');
-    $fruits->addTranslation(new Entity\CategoryTranslation('lt', 'title', 'Vaisiai'));
+    $fruits->addTranslation(new Entity\CategoryTranslation('lt', 'Vaisiai'));
 
     $apple = new Entity\Category;
     $apple->setParent($fruits);
     $apple->setTitle('Apple');
-    $apple->addTranslation(new Entity\CategoryTranslation('lt', 'title', 'Obuolys'));
+    $apple->addTranslation(new Entity\CategoryTranslation('lt', 'Obuolys'));
 
     $milk = new Entity\Category;
     $milk->setParent($food);
     $milk->setTitle('Milk');
-    $milk->addTranslation(new Entity\CategoryTranslation('lt', 'title', 'Pienas'));
+    $milk->addTranslation(new Entity\CategoryTranslation('lt', 'Pienas'));
 
     $em->persist($food);
     $em->persist($milk);
@@ -69,6 +69,7 @@ $treeDecorationOptions = array(
     }
 );
 // build tree in english
+$query->setHint(TranslatableListener::HINT_TRANSLATABLE_LOCALE, 'en');
 echo $repository->buildTree($query->getArrayResult(), $treeDecorationOptions).PHP_EOL.PHP_EOL;
 // change locale
 $query->setHint(TranslatableListener::HINT_TRANSLATABLE_LOCALE, 'lt');
