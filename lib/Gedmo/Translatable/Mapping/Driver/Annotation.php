@@ -32,17 +32,6 @@ class Annotation extends AbstractAnnotationDriver
     public function readExtendedMetadata($meta, array &$config)
     {
         $class = $this->getMetaReflectionClass($meta);
-        // class annotations
-        if ($annot = $this->reader->getClassAnnotation($class, self::TRANSLATION_CLASS)) {
-            if (!class_exists($name = $annot->name)) {
-                if (!class_exists($name = $class->getNamespaceName().'\\'.$name)) {
-                    throw new InvalidMappingException("Translation class: {$annot->name} does not exist."
-                        . " If you haven't generated it yet, use TranslatableCommand to do so");
-                }
-            }
-            $config['translationClass'] = $name;
-        }
-
         // property annotations
         foreach ($class->getProperties() as $property) {
             if ($meta->isMappedSuperclass && !$property->isPrivate() ||
@@ -62,6 +51,18 @@ class Annotation extends AbstractAnnotationDriver
             }
         }
 
+        // class annotations
+        if ($annot = $this->reader->getClassAnnotation($class, self::TRANSLATION_CLASS)) {
+            if (!class_exists($name = $annot->name)) {
+                if (!class_exists($name = $class->getNamespaceName().'\\'.$name)) {
+                    $config['translationClass'] = $annot->name;
+                    throw new InvalidMappingException("Translation class: {$annot->name} does not exist."
+                        . " If you haven't generated it yet, use TranslatableCommand to do so", $config);
+                }
+            }
+            $config['translationClass'] = $name;
+        }
+
         if (!$meta->isMappedSuperclass && $config && !isset($config['translationClass'])) {
             // try to guess translation class
             ($parts = explode('\\', $meta->name)) && ($name = array_pop($parts));
@@ -72,7 +73,7 @@ class Annotation extends AbstractAnnotationDriver
             } else {
                 throw new InvalidMappingException("Tried to guess translation class as {$fullname} or {$fullname2}"
                     . ", but could not locate it. If you haven't generated it yet, use TranslatableCommand to do so"
-                    . ", if it is available elsewhere, specify it in configuration with 'translationClass'");
+                    . ", if it is available elsewhere, specify it in configuration with 'translationClass'", $config);
             }
         }
     }

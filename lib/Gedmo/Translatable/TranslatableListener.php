@@ -74,19 +74,7 @@ class TranslatableListener extends MappedEventSubscriber
     public function loadClassMetadata(EventArgs $eventArgs)
     {
         $ea = $this->getEventAdapter($eventArgs);
-        $this->loadMetadataForObjectClass($om = $ea->getObjectManager(), $meta = $eventArgs->getClassMetadata());
-        if (($config = $this->getConfiguration($om, $meta->name)) && isset($config['fields'])) {
-            // validate translation class
-            $tmeta = $om->getClassMetadata($tname = $config['translationClass']);
-            // ensure all translatable fields are available on translation class
-            foreach ($config['fields'] as $field => $options) {
-                if (!$tmeta->hasField($field)) {
-                    throw new InvalidMappingException("Translation {$tname} does not have a translated field '{$field}' mapped"
-                        . ". Run the command to regenerate/update translations or update it manually"
-                    );
-                }
-            }
-        }
+        $this->loadMetadataForObjectClass($ea->getObjectManager(), $eventArgs->getClassMetadata());
     }
 
     /**
@@ -204,6 +192,14 @@ class TranslatableListener extends MappedEventSubscriber
         $config = $this->getConfiguration($om, $meta->name);
         $tmeta = $om->getClassMetadata($config['translationClass']);
 
+        // ensure all translatable fields are available on translation class
+        foreach ($config['fields'] as $field => $options) {
+            if (!$tmeta->hasField($field)) {
+                throw new InvalidMappingException("Translation {$config['translationClass']} does not have a translated field '{$field}' mapped"
+                    . ". Run the command to regenerate/update translations or update it manually"
+                );
+            }
+        }
         // check if translation was manually added into collection
         if ($translations = $ea->getTranslationCollection($object, $config['translationClass'])) {
             foreach ($translations as $translation) {
