@@ -17,11 +17,6 @@ use Gedmo\Exception\InvalidMappingException;
 class Annotation extends AbstractAnnotationDriver
 {
     /**
-     * Annotation to identity translation entity to be used for translation storage
-     */
-    const TRANSLATION_CLASS = 'Gedmo\\Mapping\\Annotation\\TranslationClass';
-
-    /**
      * Annotation to identify field as translatable
      */
     const TRANSLATABLE = 'Gedmo\\Mapping\\Annotation\\Translatable';
@@ -51,29 +46,12 @@ class Annotation extends AbstractAnnotationDriver
             }
         }
 
-        // class annotations
-        if ($annot = $this->reader->getClassAnnotation($class, self::TRANSLATION_CLASS)) {
-            if (!class_exists($name = $annot->name)) {
-                if (!class_exists($name = $class->getNamespaceName().'\\'.$name)) {
-                    $config['translationClass'] = $annot->name;
-                    throw new InvalidMappingException("Translation class: {$annot->name} does not exist."
-                        . " If you haven't generated it yet, use TranslatableCommand to do so", $config);
-                }
-            }
-            $config['translationClass'] = $name;
-        }
-
         if (!$meta->isMappedSuperclass && $config && !isset($config['translationClass'])) {
             // try to guess translation class
-            ($parts = explode('\\', $meta->name)) && ($name = array_pop($parts));
-            if (class_exists($fullname = implode('\\', $parts).'\\'.$name.'Translation')) {
-                $config['translationClass'] = $fullname;
-            } elseif (class_exists($fullname2 = implode('\\', $parts).'\\Translation\\'.$name)) {
-                $config['translationClass'] = $fullname2;
-            } else {
-                throw new InvalidMappingException("Tried to guess translation class as {$fullname} or {$fullname2}"
-                    . ", but could not locate it. If you haven't generated it yet, use TranslatableCommand to do so"
-                    . ", if it is available elsewhere, specify it in configuration with 'translationClass'", $config);
+            $config['translationClass'] = $meta->name . 'Translation';
+            if (!class_exists($config['translationClass'])) {
+                throw new InvalidMappingException("Translation class {$config['translationClass']} for domain object {$meta->name}"
+                    . ", was not found or could not be autoloaded. If it was not generated yet, use GenerateTranslationsCommand", $config);
             }
         }
     }

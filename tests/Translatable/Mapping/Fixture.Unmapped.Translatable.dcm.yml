@@ -2,9 +2,6 @@
 Fixture\Unmapped\Translatable:
   type: entity
   table: translatables
-  gedmo:
-    translationClass:
-      name: TranslatableTranslation
   id:
     id:
       type: integer
