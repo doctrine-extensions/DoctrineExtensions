@@ -15,7 +15,6 @@ use Doctrine\Common\Collections\ArrayCollection;
  *      "car" = "Car",
  *      "motorcycle" = "Motorcycle"
  * })
- * @Gedmo\TranslationEntity(class="Fixture\Translatable\Transport\VehicleTranslation")
  */
 class Vehicle
 {
