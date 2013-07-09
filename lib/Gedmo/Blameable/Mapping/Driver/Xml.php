@@ -73,6 +73,34 @@ class Xml extends BaseXml
                 }
             }
         }
+
+        if (isset($mapping->{'many-to-one'})) {
+            foreach ($mapping->{'many-to-one'} as $fieldMapping) {
+                $field = $this->_getAttribute($fieldMapping, 'field');
+                $fieldMapping = $fieldMapping->children(self::GEDMO_NAMESPACE_URI);
+                if (isset($fieldMapping->blameable)) {
+                    $data = $fieldMapping->blameable;
+                    if (! $meta->isSingleValuedAssociation($field)) {
+                        throw new InvalidMappingException("Association - [{$field}] is not valid, it must be a one-to-many relation or a string field - {$meta->name}");
+                    }
+                    if (!$this->_isAttributeSet($data, 'on') || !in_array($this->_getAttribute($data, 'on'), array('update', 'create', 'change'))) {
+                        throw new InvalidMappingException("Field - [{$field}] trigger 'on' is not one of [update, create, change] in class - {$meta->name}");
+                    }
+
+                    if ($this->_getAttribute($data, 'on') == 'change') {
+                        if (!$this->_isAttributeSet($data, 'field')) {
+                            throw new InvalidMappingException("Missing parameters on property - {$field}, field must be set on [change] trigger in class - {$meta->name}");
+                        }
+                        $field = array(
+                            'field' => $field,
+                            'trackedField' => $this->_getAttribute($data, 'field'),
+                            'value' => $this->_isAttributeSet($data, 'value') ? $this->_getAttribute($data, 'value') : null,
+                        );
+                    }
+                    $config[$this->_getAttribute($data, 'on')][] = $field;
+                }
+            }
+        }
     }
 
     /**
