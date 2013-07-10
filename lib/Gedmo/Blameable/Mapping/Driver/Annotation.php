@@ -70,6 +70,9 @@ class Annotation extends AbstractAnnotationDriver
                     if (!isset($blameable->field)) {
                         throw new InvalidMappingException("Missing parameters on property - {$field}, field must be set on [change] trigger in class - {$meta->name}");
                     }
+                    if (is_array($blameable->field) && isset($blameable->value)) {
+                        throw new InvalidMappingException("Blameable extension does not support multiple value changeset detection yet.");
+                    }
                     $field = array(
                         'field' => $field,
                         'trackedField' => $blameable->field,

@@ -66,6 +66,9 @@ class Annotation extends AbstractAnnotationDriver
                     if (!isset($timestampable->field)) {
                         throw new InvalidMappingException("Missing parameters on property - {$field}, field must be set on [change] trigger in class - {$meta->name}");
                     }
+                    if (is_array($timestampable->field) && isset($timestampable->value)) {
+                        throw new InvalidMappingException("Timestampable extension does not support multiple value changeset detection yet.");
+                    }
                     $field = array(
                         'field' => $field,
                         'trackedField' => $timestampable->field,
