@@ -17,7 +17,7 @@ user).
 
 Features:
 
-- Automatic predefined date field update on creation, update, property subset update, and even on record property changes
+- Automatic predefined user field update on creation, update, property subset update, and even on record property changes
 - ORM and ODM support using same listener
 - Specific annotations for properties, and no interface required
 - Can react to specific property or relation changes to specific value
