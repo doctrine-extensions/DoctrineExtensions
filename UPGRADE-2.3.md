@@ -1,6 +1,6 @@
-# Upgrade from 2.1.x or 2.2.x to 2.3.0
+# UPGRADE FROM 2.1 or 2.2 TO 2.3
 
-## Changes introduced
+## Translatable
 
 - **TranslationListener** classname has changed into **TranslatableListener**
 - Abstract classes (mapped superclasses) were moved into MappedSuperclass subdirectory. Etc.:
