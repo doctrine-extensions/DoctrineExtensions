@@ -6,6 +6,21 @@ use Doctrine\Common\EventArgs;
 use Gedmo\Mapping\MappedEventSubscriber;
 use Gedmo\Translatable\Mapping\Event\TranslatableAdapterInterface;
 
+/**
+ * Translatable listener handles the generation and
+ * loading of translations for orm entities and mongo odm documents
+ *
+ * This behavior can impact the performance of your application
+ * since it does an additional query for each field to translate.
+ * Translations can be preloaded with translations collection.
+ *
+ * Nevertheless the annotation metadata is properly cached and
+ * it is not a big overhead to lookup all entity annotations since
+ * the caching is activated for metadata
+ *
+ * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
+ * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
+ */
 class TranslatableListener extends MappedEventSubscriber
 {
     /**
@@ -63,18 +78,6 @@ class TranslatableListener extends MappedEventSubscriber
             'onFlush',
             'loadClassMetadata'
         );
-    }
-
-    /**
-     * Maps additional metadata
-     *
-     * @param EventArgs $eventArgs
-     * @return void
-     */
-    public function loadClassMetadata(EventArgs $eventArgs)
-    {
-        $ea = $this->getEventAdapter($eventArgs);
-        $this->loadMetadataForObjectClass($ea->getObjectManager(), $eventArgs->getClassMetadata());
     }
 
     /**
@@ -136,6 +139,18 @@ class TranslatableListener extends MappedEventSubscriber
     }
 
     /**
+     * Maps additional metadata
+     *
+     * @param EventArgs $eventArgs
+     * @return void
+     */
+    public function loadClassMetadata(EventArgs $eventArgs)
+    {
+        $ea = $this->getEventAdapter($eventArgs);
+        $this->loadMetadataForObjectClass($ea->getObjectManager(), $eventArgs->getClassMetadata());
+    }
+
+    /**
      * Looks for translatable objects being inserted or updated
      * for further processing
      *
@@ -163,6 +178,12 @@ class TranslatableListener extends MappedEventSubscriber
         }
     }
 
+    /**
+     * Shedules translation update for $object in persisted locale
+     *
+     * @param TranslatableAdapterInterface $ea
+     * @param Object $object
+     */
     protected function updateTranslation(TranslatableAdapterInterface $ea, $object)
     {
         $om = $ea->getObjectManager();
@@ -184,6 +205,12 @@ class TranslatableListener extends MappedEventSubscriber
         }
     }
 
+    /**
+     * Persists a new translation for $object
+     *
+     * @param TranslatableAdapterInterface $ea
+     * @param Object $object
+     */
     protected function persistNewTranslation(TranslatableAdapterInterface $ea, $object)
     {
         $om = $ea->getObjectManager();

@@ -23,8 +23,29 @@ use Gedmo\Translatable\TranslatableListener;
 use Gedmo\Translatable\Mapping\Driver\Annotation as TranslatableAnnotationDriver;
 use Gedmo\Exception\InvalidMappingException;
 
+/**
+ * Generates or updates translations and their inversed collection
+ * relation for all available mappings.
+ *
+ * After generation of translation entities, you can additionally
+ * update its mapping, add extra methods and so on. If you run
+ * generator again it will not overwrite your changes.
+ *
+ * Note: if you remove a translatable property, make sure to remove
+ * and migrate its translation as well. Generator will not remove
+ * properties which are not translated anymore.
+ *
+ * You can execute this command anytime without being worried
+ * that it will change your updates to translations.
+ *
+ * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
+ * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
+ */
 class GenerateTranslationsCommand extends Command
 {
+    /**
+     * A template of annoted translation entity
+     */
     const TRANSLATION_ANNOTATED_ORM_TPL = <<<EOT
 <?php
 
@@ -49,7 +70,10 @@ class %targetClass%Translation extends AbstractTranslation
 }
 EOT;
 
-const TRANSLATION_ANNOTATED_ODM_TPL = <<<EOT
+    /**
+     * A template of annoted mongodb odm document
+     */
+    const TRANSLATION_ANNOTATED_ODM_TPL = <<<EOT
 <?php
 
 namespace %ns%;
@@ -69,7 +93,10 @@ class %targetClass%Translation extends AbstractTranslation
 }
 EOT;
 
-const TRANSLATION_TPL = <<<EOT
+    /**
+     * A template of plain translation object
+     */
+    const TRANSLATION_TPL = <<<EOT
 <?php
 
 namespace %ns%;
@@ -86,10 +113,27 @@ class %targetClass%Translation extends AbstractTranslation
     protected \$object;
 }
 EOT;
-    protected $em;
+
+    /**
+     * Console output wrapper
+     *
+     * @var OutputInterface
+     */
     protected $output;
+
+    /**
+     * Whether to build annotations anyway if mapping driver
+     * is different
+     *
+     * @var boolean
+     */
     protected $annotate = true;
 
+    /**
+     * ORM column mapping type aliases
+     *
+     * @var array
+     */
     protected $typeAlias = array(
         Type::DATETIMETZ    => '\DateTime',
         Type::DATETIME      => '\DateTime',
@@ -135,13 +179,25 @@ EOT
         }
     }
 
+    /**
+     * Scans all metadatas for given $om ObjectManager
+     * and looks for translatable configuration. If found, it does
+     * further investigation whether it needs to create translation and
+     * update mappings
+     *
+     * @param ObjectManager $om
+     */
     protected function generate(ObjectManager $om)
     {
+        // extension metadata factory will allow to build extended mapping driver and read mapping info
         $emf = new ExtensionMetadataFactory($om, 'Gedmo\Translatable', $this->getAnnotationReader());
+        // disable translatable so we can only read configuration, without validation and caching
         $this->disableTranslatableListener($om);
+        // scan all available mappings for this object manager
         $metadatas = $om->getMetadataFactory()->getAllMetadata();
         foreach ($metadatas as $meta) {
             try {
+                // an exception can be thrown if translation class is not generated yet
                 $config = $emf->getExtensionMetadata($meta);
             } catch (InvalidMappingException $e) {
                 $config = $e->currentConfig;
@@ -167,6 +223,15 @@ EOT
         }
     }
 
+    /**
+     * Builds or updates translation class and its XML mapping for the
+     * given $meta metadata of domain object
+     *
+     * @param ObjectManager $om
+     * @param Driver $driver - extension mapping driver
+     * @param array $config - translatable config
+     * @param ClassMetadataInfo $meta
+     */
     private function generateXmlTranslationMapping(ObjectManager $om, Driver $driver, array $config, $meta)
     {
         $type = $om instanceof EntityManager ? 'entity' : 'document';
@@ -304,6 +369,14 @@ EOT
         }
     }
 
+    /**
+     * Save given $xml to $filename for domain target $name
+     *
+     * @param string $filename
+     * @param SimpleXMLDocument $xml
+     * @param string $name - target class name
+     * @return mixed - result of file_put_contents
+     */
     private function saveXml($filename, $xml, $name)
     {
         $dom = new \DOMDocument('1.0', 'UTF-8');
@@ -313,6 +386,15 @@ EOT
         return file_put_contents($filename, $dom->saveXML());
     }
 
+    /**
+     * Builds or updates translation class and its YAML mapping for the
+     * given $meta metadata of domain object
+     *
+     * @param ObjectManager $om
+     * @param Driver $driver - extension mapping driver
+     * @param array $config - translatable config
+     * @param ClassMetadataInfo $meta
+     */
     private function generateYamlTranslationMapping(ObjectManager $om, Driver $driver, array $config, $meta)
     {
         $type = $om instanceof EntityManager ? 'Entity' : 'Document';
@@ -419,12 +501,30 @@ EOT
         }
     }
 
+    /**
+     * Save given $yaml to $filename for domain target $name
+     *
+     * @param string $filename
+     * @param string $yaml
+     * @param string $name - target class name
+     * @return mixed - result of file_put_contents
+     */
     private function saveYaml($filename, $yaml, $name)
     {
         $this->output->writeLn("Saving yaml mapping for <info>{$name}</info> into file <comment>{$filename}</comment>");
         return file_put_contents($filename, Yaml::dump($yaml, 120));
     }
 
+    /**
+     * Builds or updates translation class and its ANNOTATION mapping for the
+     * given $meta metadata of domain object. Creates translation file and puts
+     * all properties there.
+     *
+     * @param ObjectManager $om
+     * @param Driver $driver - extension mapping driver
+     * @param array $config - translatable config
+     * @param ClassMetadataInfo $meta
+     */
     private function generateTranslationClass(ObjectManager $om, Driver $driver, array $config, $meta)
     {
         $annotate = $this->annotate || $driver instanceof TranslatableAnnotationDriver;
@@ -519,7 +619,15 @@ EOT;
         }
     }
 
-    private function injectTranslationCode($fields, $methods, $refl)
+    /**
+     * Injects $fields and $methods code blocks for given translation class
+     * identified from $refl class reflection
+     *
+     * @param string $fields
+     * @param string $methods
+     * @param \ReflectionClass $refl
+     */
+    private function injectTranslationCode($fields, $methods, \ReflectionClass $refl)
     {
         $lines = explode("\n", file_get_contents($refl->getFileName()));
         foreach ($lines as $num => $line) {
@@ -539,7 +647,16 @@ EOT;
         }
     }
 
-    private function injectInversedRelation($targetName, $refl, $annotate, $type)
+    /**
+     * Injects inversed relation code into translated object
+     * identified from $refl class reflection
+     *
+     * @param string $targetName - inversed relation target
+     * @param \ReflectionClass $refl
+     * @param boolean $annotate
+     * @param string $type - Entity or Document
+     */
+    private function injectInversedRelation($targetName, \ReflectionClass $refl, $annotate, $type)
     {
         $lastProp = array_pop(($props = $refl->getProperties()));
         $visibility = 'public';
@@ -628,6 +745,14 @@ EOT;
         }
     }
 
+    /**
+     * Build field annotation based on given $mapping for
+     * translated document identified by $meta metadata
+     *
+     * @param array $mapping
+     * @param ClassMetadataInfo $meta
+     * @return string - field annotation
+     */
     private function getDocumentColumn(array $mapping, $meta)
     {
         $field = array();
@@ -647,6 +772,14 @@ EOT;
         return '@MongoODM\\Field(' . implode(', ', $field) . ')';
     }
 
+    /**
+     * Build column annotation based on given $mapping for
+     * translated entity identified by $meta metadata
+     *
+     * @param array $mapping
+     * @param ClassMetadataInfo $meta
+     * @return string - column annotation
+     */
     private function getEntityColumn(array $mapping, $meta)
     {
         $column = array();
@@ -676,11 +809,25 @@ EOT;
         return '@ORM\Column(' . implode(', ', $column) . ')';
     }
 
+    /**
+     * Get type alias for field/column
+     *
+     * @param string $type - mapping type
+     * @return string - type alias
+     */
     protected function getType($type)
     {
         return isset($this->typeAlias[$type]) ? $this->typeAlias[$type] : $type;
     }
 
+    /**
+     * Find driver used to extract translatable configuration
+     * from $meta metadata
+     *
+     * @param ExtensionMetadataFactory $emf
+     * @param ClassMetadataInfo $meta
+     * @return Driver
+     */
     private function getExtensionDriverUsed(ExtensionMetadataFactory $emf, $meta)
     {
         $refl = new \ReflectionProperty('Gedmo\Mapping\ExtensionMetadataFactory', 'driver');
@@ -702,6 +849,12 @@ EOT;
         return $driver instanceOf DriverChain ? $findDriver($driver) : $driver;
     }
 
+    /**
+     * Makes a temporary annotation reader without cache in order to
+     * read annotations
+     *
+     * @return AnnotationReader
+     */
     private function getAnnotationReader()
     {
         $refl = new \ReflectionMethod('Gedmo\Mapping\MappedEventSubscriber', 'getDefaultAnnotationReader');
@@ -709,6 +862,12 @@ EOT;
         return $refl->invoke(new TranslatableListener);
     }
 
+    /**
+     * Disables TranslatableListener on metadata load event in order
+     * to avoid triggering validation errors
+     *
+     * @param ObjectManager $om
+     */
     private function disableTranslatableListener(ObjectManager $om)
     {
         $translatable = null;
