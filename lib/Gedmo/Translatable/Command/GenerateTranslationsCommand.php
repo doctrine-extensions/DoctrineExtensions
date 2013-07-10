@@ -43,7 +43,7 @@ class %targetClass%Translation extends AbstractTranslation
 {
     /**
      * @ORM\ManyToOne(targetEntity="%targetClass%", inversedBy="translations")
-     * @ORM\JoinColumn(name="object_id", referencedColumnName="id", onDelete="CASCADE", nullable=false)
+     * @ORM\JoinColumn(name="object_id", referencedColumnName="%rel_id%", onDelete="CASCADE", nullable=false)
      */
     protected \$object;
 }
@@ -87,6 +87,8 @@ class %targetClass%Translation extends AbstractTranslation
 }
 EOT;
     protected $em;
+    protected $output;
+    protected $annotate = true;
 
     protected $typeAlias = array(
         Type::DATETIMETZ    => '\DateTime',
@@ -124,6 +126,7 @@ EOT
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $this->output = $output;
         if ($this->getHelperSet()->has('em')) {
             $this->generate($this->getHelper('em')->getEntityManager());
         }
@@ -145,6 +148,7 @@ EOT
             }
             if ($config && ($driver = $this->getExtensionDriverUsed($emf, $meta))) {
                 $driverType = end($parts = explode('\\', get_class($driver)));
+                $this->output->writeLn("Found Translatable mapping for <info>{$meta->name}</info> checking required updates for <comment>{$driverType}</comment> driver");
                 switch ($driverType) {
                     case "Annotation":
                         $this->generateTranslationClass($om, $driver, $config, $meta);
@@ -158,13 +162,14 @@ EOT
                         $this->generateTranslationClass($om, $driver, $config, $meta);
                         break;
                 }
+                $this->output->writeLn("");
             }
         }
     }
 
     private function generateXmlTranslationMapping(ObjectManager $om, Driver $driver, array $config, $meta)
     {
-        $type = $om instanceof EntityManager ? 'Entity' : 'Document';
+        $type = $om instanceof EntityManager ? 'entity' : 'document';
         $refl = new \ReflectionProperty(get_class($driver), 'locator');
         $refl->setAccessible(true);
         $locator = $refl->getValue($driver);
@@ -179,92 +184,133 @@ EOT
         $extension = $refl->getValue($driver);
 
         $xml = simplexml_load_file($file);
-        $ref = null;
-        foreach ($xml->entity as $entity) {
-            if (($name = (string)$entity['name']) === $meta->name) {
-                $ref = &$entity; break;
+        $root = null;
+        foreach ($xml->{$type} as $domain) {
+            if (($name = (string)$domain['name']) === $meta->name) {
+                $root = $domain;
+                break;
             }
         }
-        die(var_dump($ref));
-        $hasInversedRelation = false;
-        foreach ($ref->field as $field) {
-            //if ($field)
+        $inversedRelation = false;
+        $sname = $meta->getReflectionClass()->getShortName() . 'Translation';
+        $relName = $type === 'entity' ? 'one-to-many' : 'reference-many';
+        if (isset($root->{$relName})) {
+            foreach ($root->{$relName} as $assoc) {
+                $attrs = $assoc->attributes();
+                if (strrpos((string)$attrs['target-'.$type], $sname) === 0) {
+                    $inversedRelation = (string)$attrs['field'];
+                    break;
+                }
+            }
         }
         // add mapping for translations collection
-        if ($type === 'Entity') {
-            if (!isset($yaml[$meta->name]['oneToMany'])) {
-                $yaml[$meta->name]['oneToMany'] = array();
-            }
-            $yaml[$meta->name]['oneToMany']['translations'] = array(
-                'targetEntity' => $meta->getReflectionClass()->getShortName() . 'Translation',
-                'mappedBy' => 'object',
-                'cascade' => array('persist', 'remove')
-            );
-        } else {
-            $yaml[$meta->name]['fields']['translations'] = array(
-                'targetDocument' => $meta->getReflectionClass()->getShortName() . 'Translation',
-                'mappedBy' => 'object',
-                'type' => 'many',
-                'cascade' => array('persist', 'remove')
-            );
+        if (!$inversedRelation) {
+            $this->output->writeLn("Adding iversed relation mapping for <info>{$meta->name}</info> as <comment>translations</comment> collection");
+            // no relation to translations found, add it
+            $transAssoc = $root->addChild($relName);
+            $transAssoc->addAttribute('field', 'translations');
+            $transAssoc->addAttribute('target-'.$type, $sname);
+            $transAssoc->addAttribute('mapped-by', 'object');
+            // cascade
+            $cascadeXml = $transAssoc->addChild('cascade');
+            $cascadeXml->addChild('cascade-persist');
+            $cascadeXml->addChild('cascade-remove');
         }
-
         // now generate a translation mapping
         $translationFile = dirname($file) . DIRECTORY_SEPARATOR . basename($file, $extension) . 'Translation' . $extension;
         $changed = false;
-        $name = $meta->name . 'Translation';
+        $fname = $meta->name . 'Translation';
         if (!file_exists($translationFile)) {
-            if ($type === 'Entity') {
-                $translationYaml = array($name => array(
-                    'type' => 'entity',
-                    'manyToOne' => array(
-                        'object' => array(
-                            'targetEntity' => $meta->getReflectionClass()->getShortName(),
-                            'joinColumn' => array(
-                                'name' => 'object_id',
-                                'referencedColumnName' => 'id',
-                                'onDelete' => 'CASCADE',
-                            ),
-                            'inversedBy' => 'translations',
-                        )
-                    ),
-                    'fields' => array()
-                ));
-            } else {
-                $translationYaml = array($name => array(
-                    'fields' => array(
-                        'object' => array(
-                            'targetDocument' => $meta->getReflectionClass()->getShortName(),
-                            'type' => 'one',
-                            'inversedBy' => 'translations',
-                        )
-                    )
-                ));
+            $mapperName = $type === 'entity' ? 'doctrine-mapping' : 'doctrine-mongo-mapping';
+            $transXml = new \SimpleXmlElement("<?xml version=\"1.0\" encoding=\"utf-8\"?><{$mapperName} ".
+                "xmlns=\"http://doctrine-project.org/schemas/orm/{$mapperName}\" " .
+                "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" ".
+                "xsi:schemaLocation=\"http://doctrine-project.org/schemas/orm/{$mapperName} http://doctrine-project.org/schemas/orm/{$mapperName}.xsd\" />");
+
+            $ent = $transXml->addChild($type);
+            $ent->addAttribute('name', $fname);
+
+            $assoc = $ent->addChild($relName);
+            $assoc->addAttribute('field', 'object');
+            $assoc->addAttribute('target-'.$type, $meta->getReflectionClass()->getShortName());
+            $assoc->addAttribute('inversed-by', $inversedRelation ?: 'translations');
+
+            if ($type === 'entity') {
+                // unique index
+                $cs = $ent->addChild('unique-constraints')->addChild('unique-constraint');
+                $cs->addAttribute('name', 'UNIQ_' . substr(strtoupper(md5($fname)), 0, 16));
+                $cs->addAttribute('columns', 'locale, object_id');
+
+                $joinColumnXml = $assoc->addChild('join-column');
+                $joinColumnXml->addAttribute('name', 'object_id');
+                $joinColumnXml->addAttribute('referenced-column-name', $meta->getSingleIdentifierFieldName());
+                $joinColumnXml->addAttribute('on-delete', 'CASCADE');
             }
             $changed = true;
         } else {
-            $translationYaml = Yaml::parse($translationFile);
+            $transXml = simplexml_load_file($translationFile);
         }
         // update field mappings
         foreach ($config['fields'] as $field => $options) {
-            if (!isset($translationYaml[$name]['fields'][$field])) {
-                $fieldMapping = $yaml[$meta->name]['fields'][$field];
-                unset($fieldMapping['gedmo']);
-                if (isset($fieldMapping['unique'])) {
-                    throw new \LogicException("Translatable entity: {$meta->name} cannot have unique translatable field"
-                        . ", place unique on {$name} field '{$field}' mapping instead.");
+            // first check if we have this field
+            $had = false;
+            if (isset($transXml->{$type}->field)) {
+                foreach ($transXml->{$type}->field as $fieldNode) {
+                    $attrs = $fieldNode->attributes();
+                    if ($field === (string)$attrs['name']) {
+                        $had = true;
+                        foreach ($root->field as $targetNode) {
+                            $attrsTarget = $targetNode->attributes();
+                            if ($field === (string)$attrsTarget['name']) {
+                                foreach ($attrsTarget as $key => $val) {
+                                    if (!isset($attrs[$key]) || (string)$attrs[$key] !== (string)$val) {
+                                        $fieldNode->attributes()->{$key} = (string)$val;
+                                        $this->output->writeLn("Updating mapping for <info>{$fname}</info> - translatable property <comment>{$field}</comment> attribute <comment>{$key}</comment>");
+                                        $changed = true;
+                                    }
+                                }
+                                break;
+                            }
+                        }
+                        continue;
+                    }
                 }
-                $translationYaml[$name]['fields'][$field] = $fieldMapping;
-                $changed = true;
+            }
+            if ($had) {
+                continue; // do not need to add it
+            }
+            foreach ($root->field as $fieldNode) {
+                $attrs = $fieldNode->attributes();
+                if ((string)$attrs['name'] === $field) {
+                    if (isset($attrs['unique']) && "true" === (string)$attrs['unique']) {
+                        throw new \LogicException("Translatable target: {$meta->name} cannot have unique translatable field"
+                            . ", place unique on {$fname} field '{$field}' mapping instead.");
+                    }
+                    $fieldXml = $transXml->{$type}->addChild('field');
+                    foreach ($attrs as $key => $val) {
+                        $fieldXml->addAttribute($key, (string)$val);
+                    }
+                    $this->output->writeLn("Adding translatable property <comment>{$field}</comment> mapping for <info>{$fname}</info>");
+                    $changed = true;
+                }
             }
         }
         // save modifications
-        if ($changed && false === file_put_contents($translationFile, Yaml::dump($translationYaml, 120))) {
+        if ($changed && false === $this->saveXml($translationFile, $transXml, $fname)) {
             throw new \RuntimeException("Could not write file: $translationFile");
         }
-        if (!$hasInversedRelation && false === file_put_contents($file, Yaml::dump($yaml, 120))) {
+        if (!$inversedRelation && false === $this->saveXml($file, $xml, $meta->name)) {
             throw new \RuntimeException("Could not write file: $file");
         }
+    }
+
+    private function saveXml($filename, $xml, $name)
+    {
+        $dom = new \DOMDocument('1.0', 'UTF-8');
+        $dom->loadXML($xml->asXML());
+        $dom->formatOutput = true;
+        $this->output->writeLn("Saving xml mapping for <info>{$name}</info> into file <comment>{$filename}</comment>");
+        return file_put_contents($filename, $dom->saveXML());
     }
 
     private function generateYamlTranslationMapping(ObjectManager $om, Driver $driver, array $config, $meta)
@@ -284,57 +330,56 @@ EOT
         $extension = $refl->getValue($driver);
 
         $yaml = Yaml::parse($file);
-        $hasInversedRelation = isset($yaml[$meta->name]['oneToMany']['translations']) || isset($yaml[$meta->name]['fields']['translations']);
-        // add mapping for translations collection
-        if ($type === 'Entity') {
-            if (!isset($yaml[$meta->name]['oneToMany'])) {
-                $yaml[$meta->name]['oneToMany'] = array();
+        $relName = $type === 'Entity' ? 'oneToMany' : 'fields';
+        $sname = $meta->getReflectionClass()->getShortName() . 'Translation';
+        $inversedRelation = false;
+        if (isset($yaml[$meta->name][$relName])) {
+            foreach ($yaml[$meta->name][$relName] as $assocFieldName => $assoc) {
+                if (isset($assoc['target'.$type]) && strrpos($assoc['target'.$type], $sname) === 0) {
+                    $inversedRelation = $assocFieldName;
+                    break;
+                }
             }
-            $yaml[$meta->name]['oneToMany']['translations'] = array(
-                'targetEntity' => $meta->getReflectionClass()->getShortName() . 'Translation',
+        }
+        if (!$inversedRelation) {
+            // add mapping for translations collection
+            $this->output->writeLn("Adding iversed relation mapping for <info>{$meta->name}</info> as <comment>translations</comment> collection");
+            if (!isset($yaml[$meta->name][$relName])) {
+                $yaml[$meta->name][$relName] = array();
+            }
+            $yaml[$meta->name][$relName]['translations'] = array(
+                'target'.$type => $sname,
                 'mappedBy' => 'object',
                 'cascade' => array('persist', 'remove')
             );
-        } else {
-            $yaml[$meta->name]['fields']['translations'] = array(
-                'targetDocument' => $meta->getReflectionClass()->getShortName() . 'Translation',
-                'mappedBy' => 'object',
-                'type' => 'many',
-                'cascade' => array('persist', 'remove')
-            );
+            if ($type === 'Document') {
+                $yaml[$meta->name][$relName]['translations']['type'] = 'many';
+            }
         }
 
         // now generate a translation mapping
         $translationFile = dirname($file) . DIRECTORY_SEPARATOR . basename($file, $extension) . 'Translation' . $extension;
         $changed = false;
-        $name = $meta->name . 'Translation';
+        $fname = $meta->name . 'Translation';
+        $relName = $type === 'Entity' ? 'manyToOne' : 'referenceOne';
+
         if (!file_exists($translationFile)) {
-            if ($type === 'Entity') {
-                $translationYaml = array($name => array(
-                    'type' => 'entity',
-                    'manyToOne' => array(
-                        'object' => array(
-                            'targetEntity' => $meta->getReflectionClass()->getShortName(),
-                            'joinColumn' => array(
-                                'name' => 'object_id',
-                                'referencedColumnName' => 'id',
-                                'onDelete' => 'CASCADE',
-                            ),
-                            'inversedBy' => 'translations',
-                        )
-                    ),
-                    'fields' => array()
-                ));
-            } else {
-                $translationYaml = array($name => array(
-                    'fields' => array(
-                        'object' => array(
-                            'targetDocument' => $meta->getReflectionClass()->getShortName(),
-                            'type' => 'one',
-                            'inversedBy' => 'translations',
-                        )
+            $translationYaml = array($fname => array(
+                $relName => array(
+                    'object' => array(
+                        'target'.$type => $sname,
+                        'inversedBy' => $inversedRelation ?: 'translations'
                     )
-                ));
+                )
+            ));
+            if ($type === 'Entity') {
+                $translationYaml[$fname]['type'] = 'entity';
+                $translationYaml[$fname][$relName]['object']['joinColumn'] = array(
+                    'name' => 'object_id',
+                    'referencedColumnName' => $meta->getSingleIdentifierFieldName(),
+                    'onDelete' => 'CASCADE',
+                );
+                $translationYaml[$fname]['fields'] = array();
             }
             $changed = true;
         } else {
@@ -342,69 +387,92 @@ EOT
         }
         // update field mappings
         foreach ($config['fields'] as $field => $options) {
-            if (!isset($translationYaml[$name]['fields'][$field])) {
+            if (!isset($translationYaml[$fname]['fields'][$field])) {
                 $fieldMapping = $yaml[$meta->name]['fields'][$field];
                 unset($fieldMapping['gedmo']);
                 if (isset($fieldMapping['unique'])) {
                     throw new \LogicException("Translatable entity: {$meta->name} cannot have unique translatable field"
-                        . ", place unique on {$name} field '{$field}' mapping instead.");
+                        . ", place unique on {$fname} field '{$field}' mapping instead.");
                 }
-                $translationYaml[$name]['fields'][$field] = $fieldMapping;
+                $translationYaml[$fname]['fields'][$field] = $fieldMapping;
+                $this->output->writeLn("Adding translatable property <comment>{$field}</comment> mapping for <info>{$fname}</info>");
                 $changed = true;
+            } else {
+                // field is available, but check attributes
+                $origMapping = $yaml[$meta->name]['fields'][$field];
+                $tranMapping = $translationYaml[$fname]['fields'][$field];
+                foreach ($origMapping as $key => $val) {
+                    if ($key !== 'gedmo' && (!isset($tranMapping[$key]) || $tranMapping[$key] !== $val)) {
+                        $translationYaml[$fname]['fields'][$field][$key] = $val;
+                        $this->output->writeLn("Updating mapping for <info>{$fname}</info> - translatable property <comment>{$field}</comment> attribute <comment>{$key}</comment>");
+                        $changed = true;
+                    }
+                }
             }
         }
         // save modifications
-        if ($changed && false === file_put_contents($translationFile, Yaml::dump($translationYaml, 120))) {
+        if ($changed && false === $this->saveYaml($translationFile, $translationYaml, $fname)) {
             throw new \RuntimeException("Could not write file: $translationFile");
         }
-        if (!$hasInversedRelation && false === file_put_contents($file, Yaml::dump($yaml, 120))) {
+        if (!$inversedRelation && false === $this->saveYaml($file, $yaml, $meta->name)) {
             throw new \RuntimeException("Could not write file: $file");
         }
     }
 
+    private function saveYaml($filename, $yaml, $name)
+    {
+        $this->output->writeLn("Saving yaml mapping for <info>{$name}</info> into file <comment>{$filename}</comment>");
+        return file_put_contents($filename, Yaml::dump($yaml, 120));
+    }
+
     private function generateTranslationClass(ObjectManager $om, Driver $driver, array $config, $meta)
     {
+        $annotate = $this->annotate || $driver instanceof TranslatableAnnotationDriver;
         if ($om instanceof EntityManager) {
-            $objectType = 'Entity';
-            $annotated = $driver instanceof TranslatableAnnotationDriver ? true : false;
-            $tpl = $annotated ? self::TRANSLATION_ANNOTATED_ORM_TPL : self::TRANSLATION_TPL;
+            $type = 'Entity';
+            $tpl = $annotate ? self::TRANSLATION_ANNOTATED_ORM_TPL : self::TRANSLATION_TPL;
         } elseif ($om instanceof DocumentManager) {
-            $objectType = 'Document';
-            $annotated = $driver instanceof TranslatableAnnotationDriver ? true : false;
-            $tpl = $annotated ? self::TRANSLATION_ANNOTATED_ODM_TPL : self::TRANSLATION_TPL;
+            $type = 'Document';
+            $tpl = $annotate ? self::TRANSLATION_ANNOTATED_ODM_TPL : self::TRANSLATION_TPL;
         } else {
             throw new \RuntimeException("Unsupported object manager: ".get_class($om));
         }
 
+        $refl = $meta->getReflectionClass();
+        $sname = $refl->getShortName() . 'Translation';
+        $tname = $config['translationClass'];
+        $transFileName = dirname($refl->getFileName()) . DIRECTORY_SEPARATOR . $sname . '.php';
+
         if (!class_exists($config['translationClass'])) {
-            $refl = $meta->getReflectionClass();
-            $transFileName = dirname($refl->getFileName()) . DIRECTORY_SEPARATOR . $refl->getShortName() . 'Translation.php';
             $replace = array(
                 '%ns%' => $refl->getNamespaceName(),
-                '%type%' => $objectType,
+                '%type%' => $type,
+                '%rel_id%' => $type === 'Entity' ? $meta->getSingleIdentifierFieldName() : $meta->identifier,
                 '%targetClass%' => $refl->getShortName(),
                 '%index%' => 'UNIQ_' . substr(strtoupper(md5($meta->name)), 0, 16),
             );
+            $this->output->writeLn("Creating new translation class <info>{$tname}</info>");
             if (!file_put_contents($transFileName, str_replace(array_keys($replace), array_values($replace), $tpl))) {
                 throw new \RuntimeException("Could not write file: $transFileName");
             }
             require $transFileName;
         }
 
-        $tname = $config['translationClass'];
         $refl = new \ReflectionClass($tname);
         $methodBlock = $fieldBlock = '';
         foreach ($config['fields'] as $field => $options) {
             if (!$refl->hasProperty($field)) {
+                $this->output->writeLn("Adding translatable property <comment>{$field}</comment> to translation class file <info>{$tname}</info>");
+
                 $ufield = ucfirst($field);
                 $mapping = $meta->getFieldMapping($field);
-                $type = $this->getType($mapping['type']);
+                $colType = $this->getType($mapping['type']);
+                $methodBlock .= strlen($methodBlock) ? "\n\n" : "";
                 $methodBlock .= <<<EOT
-
     /**
      * Set translation \${$field} field
      *
-     * @param {$type} \${$field}
+     * @param {$colType} \${$field}
      * @return \\$tname
      */
     public function set{$ufield}(\${$field})
@@ -416,29 +484,28 @@ EOT
     /**
      * Get \${$field} translation
      *
-     * @return {$type}
+     * @return {$colType}
      */
     public function get{$ufield}()
     {
         return \$this->{$field};
     }
-
 EOT;
-                if ($annotated) {
-                    $column = $om instanceof EntityManager ? $this->getOrmColumn($mapping, $meta) : $this->getOdmColumn($mapping, $meta);
+                if ($annotate) {
+                    $callMethod = 'get'.$type.'Column';
+                    $column = $this->$callMethod($mapping, $meta);
                 } else {
-                    $column = '@var '.$type;
+                    $column = '@var '.$colType;
                 }
 
+                $fieldBlock .= strlen($fieldBlock) ? "\n\n" : "";
                 $fieldBlock .= <<<EOT
-
     /**
      * Translation value of {$field}
      *
      * {$column}
      */
     private \${$field};
-
 EOT;
             }
         }
@@ -447,7 +514,28 @@ EOT;
             $this->injectTranslationCode($fieldBlock, $methodBlock, $refl);
         }
         if (($refl = $meta->getReflectionClass()) && !$refl->hasProperty('translations')) {
-            $this->injectInversedRelation($refl->getShortName().'Translation', $refl, $annotated, $objectType);
+            $this->output->writeLn("Adding iversed relation mapping for <info>{$meta->name}</info> as <comment>translations</comment> collection");
+            $this->injectInversedRelation($sname, $refl, $annotate, $type);
+        }
+    }
+
+    private function injectTranslationCode($fields, $methods, $refl)
+    {
+        $lines = explode("\n", file_get_contents($refl->getFileName()));
+        foreach ($lines as $num => $line) {
+            if (preg_match('/^protected\s+\$object\s*;$/i', trim($line))) {
+                $lines[$num] .= "\n\n" . $fields;
+                break;
+            }
+        }
+        for ($i = count($lines) - 1; $i !== 0; $i--) {
+            if (trim($lines[$i]) === '}') {
+                $lines[$i - 1] .= "\n\n".$methods;
+                break;
+            }
+        }
+        if (false === file_put_contents($refl->getFileName(), implode("\n", $lines))) {
+            throw new \RuntimeException("Could not write file: $transFileName, check permissions");
         }
     }
 
@@ -473,7 +561,6 @@ EOT;
         $fullTargetName = $refl->getNamespaceName().'\\'.$targetName;
         $name = $refl->getName();
         $inverseRelationBlock = <<<EOT
-
     /**
      * Translation collection
      *
@@ -484,7 +571,6 @@ EOT;
 EOT;
 
         $methodBlock = <<<EOT
-
     /**
      * Get translations
      *
@@ -498,7 +584,7 @@ EOT;
     /**
      * Add translation
      *
-     * @param \\$fullTargetName
+     * @param \\$fullTargetName \$translation
      * @return \\$name
      */
     public function addTranslation($targetName \$translation)
@@ -513,7 +599,7 @@ EOT;
     /**
      * Remove translation
      *
-     * @param \\$fullTargetName
+     * @param \\$fullTargetName \$translation
      * @return \\$name
      */
     public function removeTranslation($targetName \$translation)
@@ -527,13 +613,13 @@ EOT;
         $lines = explode("\n", file_get_contents($refl->getFileName()));
         foreach ($lines as $num => $line) {
             if (preg_match("/^{$visibility}\s+\\\$".$lastProp->getName()."\s*;$/i", trim($line))) {
-                $lines[$num] .= "\n" . $inverseRelationBlock;
+                $lines[$num] .= "\n\n" . $inverseRelationBlock;
                 break;
             }
         }
         for ($i = count($lines) - 1; $i !== 0; $i--) {
             if (trim($lines[$i]) === '}') {
-                $lines[$i - 1] .= "\n" . rtrim($methodBlock);
+                $lines[$i - 1] .= "\n\n" . rtrim($methodBlock);
                 break;
             }
         }
@@ -542,13 +628,12 @@ EOT;
         }
     }
 
-    private function getOdmColumn(array $mapping, $meta)
+    private function getDocumentColumn(array $mapping, $meta)
     {
         $field = array();
         if (isset($mapping['type'])) {
             $field[] = 'type="' . $mapping['type'] . '"';
         }
-
         if (isset($mapping['nullable']) && $mapping['nullable'] === true) {
             $field[] = 'nullable=' . var_export($mapping['nullable'], true);
         }
@@ -562,7 +647,7 @@ EOT;
         return '@MongoODM\\Field(' . implode(', ', $field) . ')';
     }
 
-    private function getOrmColumn(array $mapping, $meta)
+    private function getEntityColumn(array $mapping, $meta)
     {
         $column = array();
         if (isset($mapping['type'])) {
@@ -589,26 +674,6 @@ EOT;
         }
 
         return '@ORM\Column(' . implode(', ', $column) . ')';
-    }
-
-    private function injectTranslationCode($fields, $methods, $refl)
-    {
-        $lines = explode("\n", file_get_contents($refl->getFileName()));
-        foreach ($lines as $num => $line) {
-            if (preg_match('/^protected\s+\$object\s*;$/i', trim($line))) {
-                $lines[$num] .= "\n" . $fields;
-                break;
-            }
-        }
-        for ($i = count($lines) - 1; $i !== 0; $i--) {
-            if (trim($lines[$i]) === '}') {
-                $lines[$i - 1] .= rtrim($methods);
-                break;
-            }
-        }
-        if (false === file_put_contents($refl->getFileName(), implode("\n", $lines))) {
-            throw new \RuntimeException("Could not write file: $transFileName, check permissions");
-        }
     }
 
     protected function getType($type)
