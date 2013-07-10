@@ -36,6 +36,7 @@ class TimestampableTest extends BaseTestCaseORM
     {
         $sport = new Article();
         $sport->setTitle('Sport');
+        $sport->setBody('Sport article body.');
 
         $this->assertTrue($sport instanceof Timestampable);
 
@@ -46,26 +47,29 @@ class TimestampableTest extends BaseTestCaseORM
 
         $this->assertTrue($sportComment instanceof Timestampable);
 
-        $date = new \DateTime('now');
+        $dateCreated = new \DateTime('now');
         $this->em->persist($sport);
         $this->em->persist($sportComment);
         $this->em->flush();
-        $this->em->clear();
 
         $sport = $this->em->getRepository(self::ARTICLE)->findOneByTitle('Sport');
         $this->assertEquals(
-            $date->format('Y-m-d 00:00:00'),
-            $sport->getCreated()->format('Y-m-d H:i:s')
+            $dateCreated->format('Y-m-d'),
+            $sport->getCreated()->format('Y-m-d')
         );
         $this->assertEquals(
-            $date->format('Y-m-d H:i'),
+            $dateCreated->format('Y-m-d H:i'),
             $sport->getUpdated()->format('Y-m-d H:i')
+        );
+        $this->assertEquals(
+            null,
+            $sport->getContentChanged()
         );
         $this->assertNull($sport->getPublished());
 
         $sportComment = $this->em->getRepository(self::COMMENT)->findOneByMessage('hello');
         $this->assertEquals(
-            $date->format('H:i'),
+            $dateCreated->format('H:i'),
             $sportComment->getModified()->format('H:i')
         );
         $this->assertNull($sportComment->getClosed());
@@ -74,37 +78,90 @@ class TimestampableTest extends BaseTestCaseORM
         $published = new Type();
         $published->setTitle('Published');
 
-        $sport->setTitle('Updated');
         $sport->setType($published);
-        $date = new \DateTime('now');
+        $datePublished = new \DateTime('now');
         $this->em->persist($sport);
         $this->em->persist($published);
         $this->em->persist($sportComment);
         $this->em->flush();
-        $this->em->clear();
 
         $sportComment = $this->em->getRepository(self::COMMENT)->findOneByMessage('hello');
         $this->assertEquals(
-            $date->format('Y-m-d H:i'),
+            $datePublished->format('Y-m-d H:i'),
             $sportComment->getClosed()->format('Y-m-d H:i')
         );
 
         $this->assertEquals(
-            $date->format('Y-m-d H:i'),
+            $datePublished->format('Y-m-d H:i'),
             $sport->getPublished()->format('Y-m-d H:i')
         );
+
+        sleep(1);
+
+        $dateUpdated1 = new \DateTime('now');
+        $sport->setTitle('Updated');
+        $this->em->persist($sport);
+        $this->em->persist($published);
+        $this->em->persist($sportComment);
+        $this->em->flush();
+
+        $this->assertEquals(
+            $dateCreated->format('Y-m-d'),
+            $sport->getCreated()->format('Y-m-d')
+        );
+        $this->assertEquals(
+            $dateUpdated1->format('Y-m-d H:i:s'),
+            $sport->getUpdated()->format('Y-m-d H:i:s')
+        );
+        $this->assertEquals(
+            $datePublished->format('Y-m-d H:i:s'),
+            $sport->getPublished()->format('Y-m-d H:i:s')
+        );
+        $this->assertEquals(
+            $dateUpdated1->format('Y-m-d H:i:s'),
+            $sport->getContentChanged()->format('Y-m-d H:i:s')
+        );
+
+        sleep(1);
+
+        $dateUpdated2 = new \DateTime('now');
+        $sport->setBody('Body updated');
+        $this->em->persist($sport);
+        $this->em->persist($published);
+        $this->em->persist($sportComment);
+        $this->em->flush();
+
+        $this->assertEquals(
+            $dateCreated->format('Y-m-d'),
+            $sport->getCreated()->format('Y-m-d')
+        );
+        $this->assertEquals(
+            $dateUpdated2->format('Y-m-d H:i:s'),
+            $sport->getUpdated()->format('Y-m-d H:i:s')
+        );
+        $this->assertEquals(
+            $datePublished->format('Y-m-d H:i:s'),
+            $sport->getPublished()->format('Y-m-d H:i:s')
+        );
+        $this->assertEquals(
+            $dateUpdated2->format('Y-m-d H:i:s'),
+            $sport->getContentChanged()->format('Y-m-d H:i:s')
+        );
+
+        $this->em->clear();
     }
 
     public function testForcedValues()
     {
         $sport = new Article();
         $sport->setTitle('sport forced');
+        $sport->setBody('Sport article body.');
         $sport->setCreated(new \DateTime('2000-01-01'));
         $sport->setUpdated(new \DateTime('2000-01-01 12:00:00'));
+        $sport->setContentChanged(new \DateTime('2000-01-01 12:00:00'));
 
         $this->em->persist($sport);
         $this->em->flush();
-        $this->em->clear();
 
         $repo = $this->em->getRepository(self::ARTICLE);
         $sport = $repo->findOneByTitle('sport forced');
@@ -116,6 +173,10 @@ class TimestampableTest extends BaseTestCaseORM
             '2000-01-01 12:00:00',
             $sport->getUpdated()->format('Y-m-d H:i:s')
         );
+        $this->assertEquals(
+            '2000-01-01 12:00:00',
+            $sport->getContentChanged()->format('Y-m-d H:i:s')
+        );
 
         $published = new Type();
         $published->setTitle('Published');
@@ -125,13 +186,14 @@ class TimestampableTest extends BaseTestCaseORM
         $this->em->persist($sport);
         $this->em->persist($published);
         $this->em->flush();
-        $this->em->clear();
 
         $sport = $repo->findOneByTitle('sport forced');
         $this->assertEquals(
             '2000-01-01 12:00:00',
             $sport->getPublished()->format('Y-m-d H:i:s')
         );
+
+        $this->em->clear();
     }
 
     protected function getUsedEntityFixtures()

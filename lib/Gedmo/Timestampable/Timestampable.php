@@ -36,6 +36,11 @@ interface Timestampable
      */
 
     /**
+     * @gedmo:Timestampable(on="change", fields={"field1", "field2"})
+     * dates which should be updated if at least one of the given fields changed
+     */
+
+    /**
      * example
      * 
      * @gedmo:Timestampable(on="create")
