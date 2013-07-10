@@ -47,6 +47,10 @@ class Annotation extends AbstractAnnotationDriver
         }
 
         if (!$meta->isMappedSuperclass && $config && !isset($config['translationClass'])) {
+            // ensure identifier is singular
+            if (is_array($meta->identifier) && count($meta->identifier) > 1) {
+                throw new InvalidMappingException("Translatable does not support composite identifiers in class - {$meta->name}");
+            }
             // try to guess translation class
             $config['translationClass'] = $meta->name . 'Translation';
             if (!class_exists($config['translationClass'])) {
