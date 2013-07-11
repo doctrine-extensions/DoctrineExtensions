@@ -2,15 +2,13 @@
 
 namespace Sluggable\Fixture;
 
-use Gedmo\Sluggable\Sluggable;
-use Gedmo\Translatable\Translatable;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
  */
-class TranslatableArticle implements Sluggable, Translatable
+class TranslatableArticle
 {
     /**
      * @ORM\Id
