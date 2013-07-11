@@ -1,14 +1,13 @@
 <?php
 namespace Blameable\Fixture\Entity;
 
-use Gedmo\Blameable\Blameable;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
  */
-class TitledArticle implements Blameable
+class TitledArticle
 {
     /**
      * @ORM\Id

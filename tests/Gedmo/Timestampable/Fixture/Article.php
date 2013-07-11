@@ -1,14 +1,13 @@
 <?php
 namespace Timestampable\Fixture;
 
-use Gedmo\Timestampable\Timestampable;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
  */
-class Article implements Timestampable
+class Article
 {
     /** @ORM\Id @ORM\GeneratedValue @ORM\Column(type="integer") */
     private $id;
@@ -29,7 +28,7 @@ class Article implements Timestampable
     private $comments;
 
     /**
-     * @var datetime $created
+     * @var \DateTime
      *
      * @Gedmo\Timestampable(on="create")
      * @ORM\Column(name="created", type="date")
@@ -37,7 +36,7 @@ class Article implements Timestampable
     private $created;
 
     /**
-     * @var datetime $updated
+     * @var \DateTime
      *
      * @ORM\Column(name="updated", type="datetime")
      * @Gedmo\Timestampable
@@ -45,7 +44,7 @@ class Article implements Timestampable
     private $updated;
 
     /**
-     * @var datetime $published
+     * @var \DateTime|null
      *
      * @ORM\Column(name="published", type="datetime", nullable=true)
      * @Gedmo\Timestampable(on="change", field="type.title", value="Published")
@@ -53,7 +52,7 @@ class Article implements Timestampable
     private $published;
 
     /**
-     * @var datetime $contentChanged
+     * @var \DateTime|null
      *
      * @ORM\Column(name="content_changed", type="datetime", nullable=true)
      * @Gedmo\Timestampable(on="change", field={"title", "body"})
@@ -109,7 +108,7 @@ class Article implements Timestampable
     /**
      * Get created
      *
-     * @return datetime $created
+     * @return \DateTime
      */
     public function getCreated()
     {
@@ -134,7 +133,7 @@ class Article implements Timestampable
     /**
      * Get updated
      *
-     * @return datetime $updated
+     * @return \DateTime
      */
     public function getUpdated()
     {

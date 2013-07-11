@@ -5,7 +5,9 @@ namespace Gedmo\References;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\EventArgs;
 use Doctrine\Common\Persistence\ObjectManager;
+use Gedmo\Exception\UnexpectedValueException;
 use Gedmo\Mapping\MappedEventSubscriber;
+use Gedmo\Mapping\ObjectManagerHelper as OMH;
 
 /**
  * Listener for loading and persisting cross database references.
@@ -17,26 +19,64 @@ use Gedmo\Mapping\MappedEventSubscriber;
  */
 class ReferencesListener extends MappedEventSubscriber
 {
+    /**
+     * A list of object managers to link references,
+     * in pairs of
+     *      managerType => ObjectManagerInstance
+     *
+     * Supported types are "entity" and "document"
+     *
+     * @var ObjectManager[]
+     */
     private $managers;
 
+    /**
+     * Listener can be initialized with a list of managers
+     * to link references
+     *
+     * @param ObjectManager[] $managers - list of managers, check above
+     */
     public function __construct(array $managers = array())
     {
-        $this->managers = $managers;
+        foreach ($managers as $type => $manager) {
+            $this->registerManager($type, $manager);
+        }
     }
 
-    public function loadClassMetadata(EventArgs $eventArgs)
+    /**
+     * {@inheritDoc}
+     */
+    public function getSubscribedEvents()
     {
-        $ea = $this->getEventAdapter($eventArgs);
-        $this->loadMetadataForObjectClass(
-            $ea->getObjectManager(), $eventArgs->getClassMetadata()
+        return array(
+            'postLoad',
+            'loadClassMetadata',
+            'prePersist',
+            'preUpdate',
         );
     }
 
-    public function postLoad(EventArgs $eventArgs)
+    /**
+     * Load the extension metadata
+     *
+     * @param \Doctrine\Common\EventArgs $event
+     */
+    public function loadClassMetadata(EventArgs $event)
     {
-        $ea = $this->getEventAdapter($eventArgs);
-        $om = $ea->getObjectManager();
-        $object = $ea->getObject();
+        $this->loadMetadataForObjectClass(OMH::getObjectManagerFromEvent($event), $event->getClassMetadata());
+    }
+
+    /**
+     * This event triggers on post initialization of an object,
+     * currently it initializes references to foreign manager
+     * if any are confihured
+     *
+     * @param \Doctrine\Common\EventArgs $event
+     */
+    public function postLoad(EventArgs $event)
+    {
+        $om = OMH::getObjectManagerFromEvent($event);
+        $object = OMH::getObjectFromEvent($event);
         $meta = $om->getClassMetadata(get_class($object));
         $config = $this->getConfiguration($om, $meta->name);
         foreach ($config['referenceOne'] as $mapping) {
@@ -45,14 +85,11 @@ class ReferencesListener extends MappedEventSubscriber
             if (isset($mapping['identifier'])) {
                 $referencedObjectId = $meta->getFieldValue($object, $mapping['identifier']);
                 if (null !== $referencedObjectId) {
-                    $property->setValue(
-                        $object,
-                        $ea->getSingleReference(
-                            $this->getManager($mapping['type']),
-                            $mapping['class'],
-                            $referencedObjectId
-                        )
-                    );
+                    $manager = $this->getManager($mapping['type']);
+                    if (get_class($manager) === get_class($om)) {
+                        throw new UnexpectedValueException("Referenced manager is of the same type: {$mapping['type']}");
+                    }
+                    $property->setValue($object, $this->getSingleReference($manager, $mapping['class'], $referencedObjectId));
                 }
             }
         }
@@ -61,7 +98,7 @@ class ReferencesListener extends MappedEventSubscriber
             $property = $meta->reflClass->getProperty($mapping['field']);
             $property->setAccessible(true);
             if (isset($mapping['mappedBy'])) {
-                $id = $ea->extractIdentifier($om, $object);
+                $id = OMH::getIdentifier($om, $object);
                 $manager = $this->getManager($mapping['type']);
                 $class = $mapping['class'];
                 $refMeta = $manager->getClassMetadata($class);
@@ -87,56 +124,100 @@ class ReferencesListener extends MappedEventSubscriber
             }
         }
 
-        $this->updateManyEmbedReferences($eventArgs);
-    }
-
-    public function prePersist(EventArgs $eventArgs)
-    {
-        $this->updateReferences($eventArgs);
-    }
-
-    public function preUpdate(EventArgs $eventArgs)
-    {
-        $this->updateReferences($eventArgs);
-    }
-
-    public function getSubscribedEvents()
-    {
-        return array(
-            'postLoad',
-            'loadClassMetadata',
-            'prePersist',
-            'preUpdate',
-        );
-    }
-
-    public function registerManager($type, $manager)
-    {
-        $this->managers[$type] = $manager;
+        $this->updateManyEmbedReferences($event);
     }
 
     /**
-     * @param string $type
+     * Hook to update references
      *
-     * @return ObjectManager
+     * @param \Doctrine\Common\EventArgs $event
      */
-    public function getManager($type)
+    public function prePersist(EventArgs $event)
     {
-        return $this->managers[$type];
+        $this->updateReferences($event);
     }
 
+    /**
+     * Hook to update references
+     *
+     * @param \Doctrine\Common\EventArgs $event
+     */
+    public function preUpdate(EventArgs $event)
+    {
+        $this->updateReferences($event);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     protected function getNamespace()
     {
         return __NAMESPACE__;
     }
 
-    private function updateReferences(EventArgs $eventArgs)
+    /**
+     * Registeners a $manager of type $type
+     * to support linking references
+     *
+     * @param string        $type    - document or entity
+     * @param ObjectManager $manager
+     *
+     * @return static
+     */
+    public function registerManager($type, ObjectManager $manager)
     {
-        $ea = $this->getEventAdapter($eventArgs);
-        $om = $ea->getObjectManager();
-        $object = $ea->getObject();
+        $this->managers[$type] = $manager;
+
+        return $this;
+    }
+
+    /**
+     * Get a registered manager of $type
+     *
+     * @param string $type - document or entity
+     *
+     * @return ObjectManager
+     */
+    public function getManager($type)
+    {
+        if (!isset($this->managers[$type])) {
+            throw new UnexpectedValueException("Object manager for type: {$type} is not registered");
+        }
+
+        return $this->managers[$type];
+    }
+
+    /**
+     * Get a reference to relation managed by another manager $om
+     *
+     * @param ObjectManager $om
+     * @param string        $class
+     * @param mixed         $identifier
+     *
+     * @return object
+     */
+    protected function getSingleReference(ObjectManager $om, $class, $identifier)
+    {
+        $meta = $om->getClassMetadata($class);
+        if (!$meta->isInheritanceTypeNone()) {
+            return $om->find($class, $identifier);
+        }
+
+        return $om->getReference($class, $identifier);
+    }
+
+    /**
+     * Updates linked references
+     *
+     * @param \Doctrine\Common\EventArgs $event
+     */
+    private function updateReferences(EventArgs $event)
+    {
+        $om = OMH::getObjectManagerFromEvent($event);
+        $object = OMH::getObjectFromEvent($event);
         $meta = $om->getClassMetadata(get_class($object));
         $config = $this->getConfiguration($om, $meta->name);
+
         foreach ($config['referenceOne'] as $mapping) {
             if (isset($mapping['identifier'])) {
                 $property = $meta->reflClass->getProperty($mapping['field']);
@@ -146,15 +227,13 @@ class ReferencesListener extends MappedEventSubscriber
                     $meta->setFieldValue(
                         $object,
                         $mapping['identifier'],
-                        $ea->getIdentifier(
-                            $this->getManager($mapping['type']),
-                            $referencedObject
-                        )
+                        OMH::getIdentifier($this->getManager($mapping['type']), $referencedObject)
                     );
                 }
             }
         }
-        $this->updateManyEmbedReferences($eventArgs);
+
+        $this->updateManyEmbedReferences($event);
     }
 
     public function updateManyEmbedReferences(EventArgs $eventArgs)

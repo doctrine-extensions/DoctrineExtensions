@@ -2,10 +2,15 @@
 
 namespace Gedmo\Translatable;
 
+use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\EventArgs;
+use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ODM\MongoDB\Cursor;
+use Doctrine\ODM\MongoDB\DocumentManager;
 use Gedmo\Mapping\MappedEventSubscriber;
 use Gedmo\Mapping\ObjectManagerHelper as OMH;
-use Gedmo\Translatable\Mapping\Event\TranslatableAdapterInterface;
+use MongoId;
 
 /**
  * Translatable listener handles the generation and
@@ -149,37 +154,35 @@ class TranslatableListener extends MappedEventSubscriber
     /**
      * Maps additional metadata
      *
-     * @param EventArgs $eventArgs
+     * @param EventArgs $event
      */
-    public function loadClassMetadata(EventArgs $eventArgs)
+    public function loadClassMetadata(EventArgs $event)
     {
-        $ea = $this->getEventAdapter($eventArgs);
-        $this->loadMetadataForObjectClass($ea->getObjectManager(), $eventArgs->getClassMetadata());
+        $this->loadMetadataForObjectClass(OMH::getObjectManagerFromEvent($event), $event->getClassMetadata());
     }
 
     /**
      * Looks for translatable objects being inserted or updated
      * for further processing
      *
-     * @param EventArgs $args
+     * @param EventArgs $event
      */
-    public function onFlush(EventArgs $args)
+    public function onFlush(EventArgs $event)
     {
-        $ea = $this->getEventAdapter($args);
-        $om = $ea->getObjectManager();
+        $om = OMH::getObjectManagerFromEvent($event);
         $uow = $om->getUnitOfWork();
         // check all scheduled inserts for Translatable objects
-        foreach ($ea->getScheduledObjectInsertions($uow) as $object) {
+        foreach (OMH::getScheduledObjectInsertions($uow) as $object) {
             $meta = $om->getClassMetadata(get_class($object));
             if (($config = $this->getConfiguration($om, $meta->name)) && isset($config['fields'])) {
-                $this->persistNewTranslation($ea, $object);
+                $this->persistNewTranslation($om, $object);
             }
         }
         // check all scheduled updates for Translatable entities
-        foreach ($ea->getScheduledObjectUpdates($uow) as $object) {
+        foreach (OMH::getScheduledObjectUpdates($uow) as $object) {
             $meta = $om->getClassMetadata(get_class($object));
             if (($config = $this->getConfiguration($om, $meta->name)) && isset($config['fields'])) {
-                $this->updateTranslation($ea, $object);
+                $this->updateTranslation($om, $object);
             }
         }
     }
@@ -245,19 +248,18 @@ class TranslatableListener extends MappedEventSubscriber
     /**
      * Shedules translation update for $object in persisted locale
      *
-     * @param TranslatableAdapterInterface $ea
-     * @param object                       $object
+     * @param ObjectManager $om
+     * @param object        $object
      */
-    protected function updateTranslation(TranslatableAdapterInterface $ea, $object)
+    protected function updateTranslation(ObjectManager $om, $object)
     {
-        $om = $ea->getObjectManager();
         $uow = $om->getUnitOfWork();
         $meta = $om->getClassMetadata(get_class($object));
         $config = $this->getConfiguration($om, $meta->name);
         $tmeta = $om->getClassMetadata($config['translationClass']);
 
-        if (!$translation = $ea->findTranslation($object, $this->locale, $config['translationClass'])) {
-            $this->persistNewTranslation($ea, $object);
+        if (!$translation = $this->findTranslation($om, $object, $this->locale, $config['translationClass'])) {
+            $this->persistNewTranslation($om, $object);
         } else {
             $changeSet = OMH::getObjectChangeSet($uow, $object);
             foreach ($config['fields'] as $field => $options) {
@@ -277,12 +279,11 @@ class TranslatableListener extends MappedEventSubscriber
     /**
      * Persists a new translation for $object
      *
-     * @param TranslatableAdapterInterface $ea
-     * @param object                       $object
+     * @param ObjectManager $om
+     * @param object        $object
      */
-    protected function persistNewTranslation(TranslatableAdapterInterface $ea, $object)
+    protected function persistNewTranslation(ObjectManager $om, $object)
     {
-        $om = $ea->getObjectManager();
         $uow = $om->getUnitOfWork();
         $meta = $om->getClassMetadata(get_class($object));
         $config = $this->getConfiguration($om, $meta->name);
@@ -297,7 +298,7 @@ class TranslatableListener extends MappedEventSubscriber
             }
         }
         // check if translation was manually added into collection
-        if ($translations = $ea->getTranslationCollection($object, $config['translationClass'])) {
+        if ($translations = $this->getTranslationCollection($om, $object, $config['translationClass'])) {
             foreach ($translations as $translation) {
                 if ($translation->getLocale() === $this->locale) {
                     // need to update object properties
@@ -305,7 +306,7 @@ class TranslatableListener extends MappedEventSubscriber
                         $prop = $meta->getReflectionProperty($field);
                         $tprop = $tmeta->getReflectionProperty($field);
                         $prop->setValue($object, $tprop->getValue($translation));
-                        $ea->recomputeSingleObjectChangeSet($uow, $meta, $object);
+                        OMH::recomputeSingleObjectChangeSet($uow, $meta, $object);
                     }
 
                     return; // already added by user
@@ -343,25 +344,24 @@ class TranslatableListener extends MappedEventSubscriber
      * After object is loaded, listener updates the translations
      * by currently used locale
      *
-     * @param EventArgs $args
+     * @param EventArgs $event
      */
-    public function postLoad(EventArgs $args)
+    public function postLoad(EventArgs $event)
     {
         if ($this->skipOnLoad) {
             return;
         }
 
-        $ea = $this->getEventAdapter($args);
-        $om = $ea->getObjectManager();
-        $object = $ea->getObject();
+        $om = OMH::getObjectManagerFromEvent($event);
+        $object = OMH::getObjectFromEvent($event);
         $meta = $om->getClassMetadata(get_class($object));
 
         if (($config = $this->getConfiguration($om, $meta->name)) && isset($config['fields'])) {
-            if (!$translation = $ea->findTranslation($object, $this->locale, $config['translationClass'])) {
+            if (!$translation = $this->findTranslation($om, $object, $this->locale, $config['translationClass'])) {
                 // try fallback to specified locales
                 $fallbackLocales = $this->translationFallbackLocales;
                 while ($fallback = array_shift($fallbackLocales)) {
-                    if ($translation = $ea->findTranslation($object, $fallback, $config['translationClass'])) {
+                    if ($translation = $this->findTranslation($om, $object, $fallback, $config['translationClass'])) {
                         break;
                     }
                 }
@@ -375,17 +375,93 @@ class TranslatableListener extends MappedEventSubscriber
                     $prop = $meta->getReflectionProperty($field);
                     $tprop = $tmeta->getReflectionProperty($field);
                     $prop->setValue($object, $value = $tprop->getValue($translation));
-                    $ea->setOriginalObjectProperty($om->getUnitOfWork(), $oid, $field, $value);
+                    OMH::setOriginalObjectProperty($om->getUnitOfWork(), $oid, $field, $value);
                 }
             } else {
                 // if there was no fallback or current translation, null values
                 foreach ($config['fields'] as $field => $options) {
                     $prop = $meta->getReflectionProperty($field);
                     $prop->setValue($object, null); // consider getting new object instance and use default values
-                    $ea->setOriginalObjectProperty($om->getUnitOfWork(), $oid, $field, null);
+                    OMH::setOriginalObjectProperty($om->getUnitOfWork(), $oid, $field, null);
                 }
             }
         }
+    }
+
+    /**
+     * Find collection of translations for an object if mapped
+     *
+     * @param ObjectManager $om
+     * @param object        $object
+     * @param string        $translationClass
+     *
+     * @return Collection|TranslationInterface[]|null
+     */
+    protected function getTranslationCollection(ObjectManager $om, $object, $translationClass)
+    {
+        $meta = $om->getClassMetadata(get_class($object));
+        $tmeta = $om->getClassMetadata($translationClass);
+
+        if ($inversed = $tmeta->associationMappings['object']['inversedBy']) {
+            return $meta->getReflectionProperty($inversed)->getValue($object);
+        }
+
+        return null;
+    }
+
+    /**
+     * Find translation in given $locale
+     *
+     * @param ObjectManager $om
+     * @param object        $object
+     * @param string        $locale
+     * @param string        $translationClass
+     *
+     * @return TranslationInterface|null
+     */
+    protected function findTranslation(ObjectManager $om, $object, $locale, $translationClass)
+    {
+        // first look in identityMap, will save one SELECT query
+        foreach ($om->getUnitOfWork()->getIdentityMap() as $className => $objects) {
+            if ($className === $translationClass) {
+                foreach ($objects as $trans) {
+                    if (!OMH::isProxy($trans) && $trans->getLocale() === $locale && $trans->getObject() === $object) {
+                        return $trans;
+                    }
+                }
+            }
+        }
+        // make query only if object has identifier
+        if ($id = OMH::getIdentifier($om, $object)) {
+            if ($om instanceof EntityManager) {
+                $q = $om->createQueryBuilder()
+                    ->select('trans')
+                    ->from($translationClass, 'trans')
+                    ->where('trans.locale = :locale', 'trans.object = :object')
+                    ->setParameters(compact('locale', 'object'))
+                    ->getQuery();
+
+                $q->setMaxResults(1);
+
+                if ($result = $q->getResult()) {
+                    return array_shift($result);
+                }
+            } elseif ($om instanceof DocumentManager) {
+                $qb = $om
+                    ->createQueryBuilder($translationClass)
+                    ->field('locale')->equals($locale)
+                    ->field('object.$id')->equals(new MongoId($id))
+                    ->limit(1)
+                ;
+                $result = $qb->getQuery()->execute();
+
+                if ($result instanceof Cursor) {
+                    return current($result->toArray());
+                }
+            }
+        }
+
+        return null;
     }
 
     /**

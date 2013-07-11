@@ -3,11 +3,11 @@
 namespace Gedmo\Translatable\Command;
 
 use Doctrine\Common\Annotations\Reader;
+use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\DBAL\Types\Type;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Gedmo\Exception\InvalidMappingException;
 use Gedmo\Mapping\Driver;
 use Gedmo\Mapping\Driver\Chain as DriverChain;
@@ -223,12 +223,12 @@ EOT
      * Builds or updates translation class and its XML mapping for the
      * given $meta metadata of domain object
      *
-     * @param ObjectManager     $om
-     * @param Driver            $driver - extension mapping driver
-     * @param array             $config - translatable config
-     * @param ClassMetadataInfo $meta
+     * @param ObjectManager $om
+     * @param Driver        $driver - extension mapping driver
+     * @param array         $config - translatable config
+     * @param ClassMetadata $meta
      */
-    private function generateXmlTranslationMapping(ObjectManager $om, Driver $driver, array $config, $meta)
+    private function generateXmlTranslationMapping(ObjectManager $om, Driver $driver, array $config, ClassMetadata $meta)
     {
         $type = $om instanceof EntityManager ? 'entity' : 'document';
         $refl = new \ReflectionProperty(get_class($driver), 'locator');
@@ -390,12 +390,12 @@ EOT
      * Builds or updates translation class and its YAML mapping for the
      * given $meta metadata of domain object
      *
-     * @param ObjectManager     $om
-     * @param Driver            $driver - extension mapping driver
-     * @param array             $config - translatable config
-     * @param ClassMetadataInfo $meta
+     * @param ObjectManager $om
+     * @param Driver        $driver - extension mapping driver
+     * @param array         $config - translatable config
+     * @param ClassMetadata $meta
      */
-    private function generateYamlTranslationMapping(ObjectManager $om, Driver $driver, array $config, $meta)
+    private function generateYamlTranslationMapping(ObjectManager $om, Driver $driver, array $config, ClassMetadata $meta)
     {
         $type = $om instanceof EntityManager ? 'Entity' : 'Document';
         $refl = new \ReflectionProperty(get_class($driver), 'locator');
@@ -522,12 +522,12 @@ EOT
      * given $meta metadata of domain object. Creates translation file and puts
      * all properties there.
      *
-     * @param ObjectManager     $om
-     * @param Driver            $driver - extension mapping driver
-     * @param array             $config - translatable config
-     * @param ClassMetadataInfo $meta
+     * @param ObjectManager $om
+     * @param Driver        $driver - extension mapping driver
+     * @param array         $config - translatable config
+     * @param ClassMetadata $meta
      */
-    private function generateTranslationClass(ObjectManager $om, Driver $driver, array $config, $meta)
+    private function generateTranslationClass(ObjectManager $om, Driver $driver, array $config, ClassMetadata $meta)
     {
         $annotate = $this->annotate || $driver instanceof TranslatableAnnotationDriver;
         if ($om instanceof EntityManager) {
@@ -782,13 +782,13 @@ EOT;
      * Build column annotation based on given $mapping for
      * translated entity identified by $meta metadata
      *
-     * @param array             $mapping
-     * @param ClassMetadataInfo $meta
-     * @param string            $tname
+     * @param array         $mapping
+     * @param ClassMetadata $meta
+     * @param string        $tname
      *
      * @return string - column annotation
      */
-    private function getEntityColumn(array $mapping, $meta, $tname)
+    private function getEntityColumn(array $mapping, ClassMetadata $meta, $tname)
     {
         $column = array();
         if (isset($mapping['type'])) {
@@ -834,11 +834,11 @@ EOT;
      * from $meta metadata
      *
      * @param ExtensionMetadataFactory $emf
-     * @param ClassMetadataInfo        $meta
+     * @param ClassMetadata            $meta
      *
-     * @return Driver
+     * @return Driver|null
      */
-    private function getExtensionDriverUsed(ExtensionMetadataFactory $emf, $meta)
+    private function getExtensionDriverUsed(ExtensionMetadataFactory $emf, ClassMetadata $meta)
     {
         $refl = new \ReflectionProperty('Gedmo\Mapping\ExtensionMetadataFactory', 'driver');
         $refl->setAccessible('true');
