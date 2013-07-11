@@ -2,7 +2,6 @@
 
 namespace Tree\Fixture;
 
-use Gedmo\Tree\Node as NodeInterface;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -11,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @Gedmo\Tree(type="nested")
  * @ORM\HasLifecycleCallbacks
  */
-class CategoryUuid implements NodeInterface
+class CategoryUuid
 {
     /**
      * @ORM\Column(name="id", type="string", nullable=false)

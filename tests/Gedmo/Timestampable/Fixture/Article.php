@@ -1,14 +1,13 @@
 <?php
 namespace Timestampable\Fixture;
 
-use Gedmo\Timestampable\Timestampable;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
  */
-class Article implements Timestampable
+class Article
 {
     /** @ORM\Id @ORM\GeneratedValue @ORM\Column(type="integer") */
     private $id;
