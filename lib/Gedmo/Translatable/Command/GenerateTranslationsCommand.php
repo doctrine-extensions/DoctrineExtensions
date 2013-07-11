@@ -13,7 +13,7 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Doctrine\Common\Persistence\ObjectManager;
-
+use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 use Doctrine\ODM\MongoDB\DocumentManager;
 
 use Gedmo\Mapping\Driver;
@@ -230,9 +230,9 @@ EOT
      * @param ObjectManager $om
      * @param Driver $driver - extension mapping driver
      * @param array $config - translatable config
-     * @param ClassMetadataInfo $meta
+     * @param ClassMetadata $meta
      */
-    private function generateXmlTranslationMapping(ObjectManager $om, Driver $driver, array $config, $meta)
+    private function generateXmlTranslationMapping(ObjectManager $om, Driver $driver, array $config, ClassMetadata $meta)
     {
         $type = $om instanceof EntityManager ? 'entity' : 'document';
         $refl = new \ReflectionProperty(get_class($driver), 'locator');
@@ -393,9 +393,9 @@ EOT
      * @param ObjectManager $om
      * @param Driver $driver - extension mapping driver
      * @param array $config - translatable config
-     * @param ClassMetadataInfo $meta
+     * @param ClassMetadata $meta
      */
-    private function generateYamlTranslationMapping(ObjectManager $om, Driver $driver, array $config, $meta)
+    private function generateYamlTranslationMapping(ObjectManager $om, Driver $driver, array $config, ClassMetadata $meta)
     {
         $type = $om instanceof EntityManager ? 'Entity' : 'Document';
         $refl = new \ReflectionProperty(get_class($driver), 'locator');
@@ -523,9 +523,9 @@ EOT
      * @param ObjectManager $om
      * @param Driver $driver - extension mapping driver
      * @param array $config - translatable config
-     * @param ClassMetadataInfo $meta
+     * @param ClassMetadata $meta
      */
-    private function generateTranslationClass(ObjectManager $om, Driver $driver, array $config, $meta)
+    private function generateTranslationClass(ObjectManager $om, Driver $driver, array $config, ClassMetadata $meta)
     {
         $annotate = $this->annotate || $driver instanceof TranslatableAnnotationDriver;
         if ($om instanceof EntityManager) {
@@ -750,10 +750,10 @@ EOT;
      * translated document identified by $meta metadata
      *
      * @param array $mapping
-     * @param ClassMetadataInfo $meta
+     * @param ClassMetadata $meta
      * @return string - field annotation
      */
-    private function getDocumentColumn(array $mapping, $meta)
+    private function getDocumentColumn(array $mapping, ClassMetadata $meta)
     {
         $field = array();
         if (isset($mapping['type'])) {
@@ -777,10 +777,10 @@ EOT;
      * translated entity identified by $meta metadata
      *
      * @param array $mapping
-     * @param ClassMetadataInfo $meta
+     * @param ClassMetadata $meta
      * @return string - column annotation
      */
-    private function getEntityColumn(array $mapping, $meta)
+    private function getEntityColumn(array $mapping, ClassMetadata $meta)
     {
         $column = array();
         if (isset($mapping['type'])) {
@@ -825,10 +825,10 @@ EOT;
      * from $meta metadata
      *
      * @param ExtensionMetadataFactory $emf
-     * @param ClassMetadataInfo $meta
+     * @param ClassMetadata $meta
      * @return Driver
      */
-    private function getExtensionDriverUsed(ExtensionMetadataFactory $emf, $meta)
+    private function getExtensionDriverUsed(ExtensionMetadataFactory $emf, ClassMetadata $meta)
     {
         $refl = new \ReflectionProperty('Gedmo\Mapping\ExtensionMetadataFactory', 'driver');
         $refl->setAccessible('true');

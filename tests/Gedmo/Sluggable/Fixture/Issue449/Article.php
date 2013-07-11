@@ -2,7 +2,6 @@
 
 namespace Sluggable\Fixture\Issue449;
 
-use Gedmo\Sluggable\Sluggable;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -10,7 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity
  * @Gedmo\SoftDeleteable(fieldName="deletedAt")
  */
-class Article implements Sluggable
+class Article
 {
     /** @ORM\Id @ORM\GeneratedValue @ORM\Column(type="integer") */
     private $id;
