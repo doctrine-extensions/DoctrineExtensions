@@ -11,6 +11,7 @@ use MongoId;
 
 use Gedmo\Mapping\MappedEventSubscriber;
 use Gedmo\Mapping\ObjectManagerHelper as OMH;
+use Gedmo\Translatable\TranslationInterface;
 
 /**
  * Translatable listener handles the generation and
@@ -82,7 +83,9 @@ class TranslatableListener extends MappedEventSubscriber
         return array(
             'postLoad',
             'onFlush',
-            'loadClassMetadata'
+            'loadClassMetadata',
+            'postPersist', // track changes done by other behaviors
+            'postUpdate', // track changes done by other behaviors
         );
     }
 
@@ -183,6 +186,67 @@ class TranslatableListener extends MappedEventSubscriber
     }
 
     /**
+     * Does extra checks for flushed translations
+     * if there were any changes done to them
+     *
+     * @param EventArgs $event
+     * @return void
+     */
+    public function postPersist(EventArgs $event)
+    {
+        $this->postTranslationChanges($event);
+    }
+
+    /**
+     * Does extra checks for flushed translations
+     * if there were any changes done to them
+     *
+     * @param EventArgs $event
+     * @return void
+     */
+    public function postUpdate(EventArgs $event)
+    {
+        $this->postTranslationChanges($event);
+    }
+
+    /**
+     * Does extra checks for flushed translations
+     * if there were any changes done to them
+     *
+     * @param EventArgs $event
+     * @return void
+     */
+    protected function postTranslationChanges($event)
+    {
+        $om = OMH::getObjectManagerFromEvent($event);
+        $object = OMH::getObjectFromEvent($event);
+
+        // we are interested only to changes for translations
+        if ($object instanceof TranslationInterface) {
+            $tmeta = $om->getClassMetadata(get_class($object));
+            // check for slugs
+            if (isset(self::$configurations['Sluggable'][$tmeta->name])) {
+                if ($config = self::$configurations['Sluggable'][$tmeta->name]) {
+                    // there was a translated slug, update back the translated object
+                    $translated = $tmeta->getReflectionProperty('object')->getValue($object);
+                    $meta = $om->getClassMetadata(get_class($translated));
+                    $changeSet = array();
+                    foreach ($config['slugs'] as $slugField => $options) {
+                        $slugProp = $meta->getReflectionProperty($slugField);
+                        $changeSet[$slugField] = array(
+                            $slugProp->getValue($translated), // old slug
+                            $newSlug = $tmeta->getReflectionProperty($slugField)->getValue($object)
+                        );
+                        $slugProp->setValue($translated, $newSlug);
+                        OMH::setOriginalObjectProperty($om->getUnitOfWork(), spl_object_hash($translated), $slugField, $newSlug);
+                    }
+                    $om->getUnitOfWork()->scheduleExtraUpdate($translated, $changeSet);
+                }
+            }
+        }
+    }
+
+    /**
      * Shedules translation update for $object in persisted locale
      *
      * @param ObjectManager $om
@@ -198,10 +262,15 @@ class TranslatableListener extends MappedEventSubscriber
         if (!$translation = $this->findTranslation($om, $object, $this->locale, $config['translationClass'])) {
             $this->persistNewTranslation($om, $object);
         } else {
+            $changeSet = OMH::getObjectChangeSet($uow, $object);
             foreach ($config['fields'] as $field => $options) {
-                $prop = $meta->getReflectionProperty($field);
-                $tprop = $tmeta->getReflectionProperty($field);
-                $tprop->setValue($translation, $prop->getValue($object));
+                // translate only those fields, which have changed, otherwise translation value is default
+                // if a translation in different language is the same. Persist translation manually in collection
+                if (array_key_exists($field, $changeSet)) {
+                    $prop = $meta->getReflectionProperty($field);
+                    $tprop = $tmeta->getReflectionProperty($field);
+                    $tprop->setValue($translation, $prop->getValue($object));
+                }
             }
             $om->persist($translation);
             $uow->computeChangeSet($tmeta, $translation);
@@ -247,15 +316,23 @@ class TranslatableListener extends MappedEventSubscriber
         $translation = new $config['translationClass'];
         $translation->setObject($object);
         $translation->setLocale($this->locale);
+        $changeSet = OMH::getObjectChangeSet($uow, $object);
         foreach ($config['fields'] as $field => $options) {
-            $prop = $meta->getReflectionProperty($field);
-            $tprop = $tmeta->getReflectionProperty($field);
-            $tprop->setValue($translation, $prop->getValue($object));
+            // translate only those fields, which have changed, otherwise translation value is default
+            // if a translation in different language is the same. Persist translation manually in collection
+            if (array_key_exists($field, $changeSet)) {
+                $prop = $meta->getReflectionProperty($field);
+                $tprop = $tmeta->getReflectionProperty($field);
+                $tprop->setValue($translation, $prop->getValue($object));
+            }
         }
         $om->persist($translation);
         $uow->computeChangeSet($tmeta, $translation);
+        // ensure translation will be there in collection
         if ($translations = $this->getTranslationCollection($om, $object, $config['translationClass'])) {
-            $translations->add($translation);
+            if (!$translations->contains($translation)) {
+                $translations->add($translation);
+            }
         }
     }
 

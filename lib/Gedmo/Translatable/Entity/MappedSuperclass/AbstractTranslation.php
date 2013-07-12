@@ -3,11 +3,12 @@
 namespace Gedmo\Translatable\Entity\MappedSuperclass;
 
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Translatable\TranslationInterface;
 
 /**
  * @ORM\MappedSuperclass
  */
-abstract class AbstractTranslation
+abstract class AbstractTranslation implements TranslationInterface
 {
 
     /**
@@ -46,7 +47,7 @@ abstract class AbstractTranslation
      * Set locale
      *
      * @param string $locale
-     * @return AbstractPersonalTranslation
+     * @return AbstractTranslation
      */
     public function setLocale($locale)
     {
@@ -68,7 +69,7 @@ abstract class AbstractTranslation
      * Set object related
      *
      * @param string $object
-     * @return AbstractPersonalTranslation
+     * @return AbstractTranslation
      */
     public function setObject($object)
     {
