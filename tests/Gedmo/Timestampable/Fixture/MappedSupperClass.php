@@ -20,16 +20,8 @@ class MappedSupperClass
     protected $id;
 
     /**
-    * @var string $locale
-    *
-    * @Gedmo\Locale
-    */
-    protected $locale;
-
-    /**
     * @var string $title
     *
-    * @Gedmo\Translatable
     * @ORM\Column(name="name", type="string", length=255)
     */
     protected $name;

@@ -50,12 +50,12 @@ class MultiManagerMappingTest extends BaseTestCaseOM
         $yamlDriver = new YamlDriver(__DIR__.'/Driver/Yaml');
 
         $chain = new DriverChain;
-        $chain->addDriver($annotationDriver, 'Translatable\Fixture');
+        $chain->addDriver($annotationDriver, 'Fixture\Translatable');
         $chain->addDriver($yamlDriver, 'Mapping\Fixture\Yaml');
         $chain->addDriver($annotationDriver2, 'Gedmo\Translatable');
 
         $this->em2 = $this->getMockSqliteEntityManager(array(
-            'Translatable\Fixture\PersonTranslation',
+            'Fixture\Translatable\PostTranslation',
             'Mapping\Fixture\Yaml\User',
         ), $chain);
         // DM with standard annotation mapping

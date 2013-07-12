@@ -2,9 +2,8 @@
 
 namespace Gedmo\Mapping;
 
-use Doctrine\Common\Util\Debug,
-    Tree\Fixture\BehavioralCategory,
-    Gedmo\Mapping\ExtensionMetadataFactory;
+use Tree\Fixture\BehavioralCategory;
+use Gedmo\Mapping\ExtensionMetadataFactory;
 
 /**
  * These are mapping extension tests
@@ -16,7 +15,7 @@ use Doctrine\Common\Util\Debug,
 class MappingTest extends \PHPUnit_Framework_TestCase
 {
     const TEST_ENTITY_CATEGORY = "Tree\Fixture\BehavioralCategory";
-    const TEST_ENTITY_TRANSLATION = "Gedmo\Translatable\Entity\Translation";
+    const TEST_ENTITY_TRANSLATION = "Tree\Fixture\BehavioralCategoryTranslation";
 
     private $em;
     private $timestampable;
@@ -26,7 +25,6 @@ class MappingTest extends \PHPUnit_Framework_TestCase
         $config = new \Doctrine\ORM\Configuration();
         $config->setProxyDir(TESTS_TEMP_DIR);
         $config->setProxyNamespace('Gedmo\Mapping\Proxy');
-        //$this->markTestSkipped('Skipping according to a bug in annotation reader creation.');
         $config->setMetadataDriverImpl(new \Doctrine\ORM\Mapping\Driver\AnnotationDriver($_ENV['annotation_reader']));
 
         $conn = array(

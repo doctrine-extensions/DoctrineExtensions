@@ -4,9 +4,7 @@ namespace Gedmo\Tree;
 
 use Doctrine\Common\EventManager;
 use Tool\BaseTestCaseORM;
-use Gedmo\Translatable\TranslatableListener;
 use Gedmo\Timestampable\TimestampableListener;
-use Doctrine\Common\Util\Debug;
 use Timestampable\Fixture\SupperClassExtension;
 
 /**
@@ -19,16 +17,12 @@ use Timestampable\Fixture\SupperClassExtension;
 class ProtectedPropertySupperclassTest extends BaseTestCaseORM
 {
     const SUPERCLASS = "Timestampable\\Fixture\\SupperClassExtension";
-    const TRANSLATION = "Gedmo\\Translatable\\Entity\\Translation";
 
     protected function setUp()
     {
         parent::setUp();
 
         $evm = new EventManager;
-        $translatableListener = new TranslatableListener;
-        $translatableListener->setTranslatableLocale('en_US');
-        $evm->addEventSubscriber($translatableListener);
         $evm->addEventSubscriber(new TimestampableListener);
 
         $this->getMockSqliteEntityManager($evm);
@@ -42,11 +36,6 @@ class ProtectedPropertySupperclassTest extends BaseTestCaseORM
 
         $this->em->persist($test);
         $this->em->flush();
-        $this->em->clear();
-
-        $repo = $this->em->getRepository(self::TRANSLATION);
-        $translations = $repo->findTranslations($test);
-        $this->assertCount(0, $translations);
 
         $this->assertNotNull($test->getCreatedAt());
     }
@@ -54,7 +43,6 @@ class ProtectedPropertySupperclassTest extends BaseTestCaseORM
     protected function getUsedEntityFixtures()
     {
         return array(
-            self::TRANSLATION,
             self::SUPERCLASS
         );
     }
