@@ -2,6 +2,7 @@
 
 namespace Gedmo\Mapping\Driver;
 
+use Doctrine\Common\Annotations\Reader;
 use Gedmo\Mapping\Driver;
 
 /**
@@ -22,7 +23,7 @@ interface AnnotationDriverInterface extends Driver
      *     getPropertyAnnotations([reflectionProperty])
      *     getPropertyAnnotation([reflectionProperty], [name])
      *
-     * @param object $reader - annotation reader class
+     * @param Reader $reader - annotation reader class
      */
     public function setAnnotationReader($reader);
 }

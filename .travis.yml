@@ -10,6 +10,15 @@ php:
 matrix:
   allow_failures:
     - php: hhvm
+  exclude:
+    # Exclude pgsql on HHVM as it is not implemented yet
+    - php: hhvm
+      env: DB=pgsql
+
+env:
+  - DB=mysql
+  - DB=pgsql
+  - DB=sqlite
 
 services: mongodb
 
@@ -24,7 +33,7 @@ before_install:
 install:
   - composer install
 
-script: phpunit -c tests/
+script: phpunit -c tests/travis/$DB.phpunit.xml
 
 notifications:
   email:

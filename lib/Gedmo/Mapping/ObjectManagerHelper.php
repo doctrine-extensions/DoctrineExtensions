@@ -161,12 +161,20 @@ final class ObjectManagerHelper
             if ($object instanceof MongoOdmObjectProxy) {
                 $uow = $om->getUnitOfWork();
                 if ($uow->isInIdentityMap($object)) {
-                    $identifier = array($meta->identifier => (string) $uow->getDocumentIdentifier($object));
+                    $identifier = array($meta->identifier => (string)$uow->getDocumentIdentifier($object));
+                } elseif ($object instanceof Proxy && !$object->__isInitialized()) {
+                    $object->__load();
+                    $identifier = $om->getClassMetadata(get_class($object))->getIdentifierValue($object);
                 } elseif (!$object->__isInitialized__) {
                     $persister = $uow->getDocumentPersister($meta->name);
-                    $reflProperty = new \ReflectionProperty($object, 'identifier');
-                    $reflProperty->setAccessible(true);
-                    $identifier = $reflProperty->getValue($object);
+                    $refl = new \ReflectionClass(get_class($object));
+                    if ($refl->hasProperty('__identifier__')) {
+                        $prop = $refl->getProperty('__identifier__');
+                    } else {
+                        $prop = $refl->getProperty('identifier'); // older version of ODM
+                    }
+                    $prop->setAccessible(true);
+                    $identifier = $prop->getValue($object);
                     $object->__isInitialized__ = true;
                     $persister->load($identifier, $object);
                 }
@@ -176,7 +184,7 @@ final class ObjectManagerHelper
             }
         }
 
-        return ($single && null !== $identifier) ? current($identifier) : $identifier;
+        return ($single && null !== $identifier) ? (is_array($identifier) ? current($identifier) : $identifier) : $identifier;
     }
 
     /**

@@ -1,7 +1,8 @@
-tests/phpunit.xml
+/phpunit.xml
 tests/temp/*.php
 scripts/
 vendor/
+/om
 tags
 .vimrc.local
 /composer.lock

@@ -2,12 +2,17 @@
 
 namespace Gedmo\Mapping;
 
+use Doctrine\Common\Annotations\AnnotationReader;
+use Doctrine\Common\Annotations\AnnotationRegistry;
+use Doctrine\Common\Annotations\CachedReader;
 use Doctrine\Common\Annotations\Reader;
 use Doctrine\Common\Cache\ArrayCache;
 use Doctrine\Common\EventSubscriber;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\Common\EventArgs;
+use Doctrine\Common\Version;
 use Gedmo\Exception\InvalidArgumentException;
+use Gedmo\Exception\RuntimeException;
 
 /**
  * This is extension of event subscriber class and is
@@ -106,7 +111,7 @@ abstract class MappedEventSubscriber implements EventSubscriber
      *
      * @param ObjectManager $om
      */
-    protected function disableFilters($om)
+    protected function disableFilters(ObjectManager $om)
     {
         if ($this->ignoredFilters) {
             $filters = $this->getFilterCollectionFromObjectManager($om);
@@ -131,7 +136,7 @@ abstract class MappedEventSubscriber implements EventSubscriber
      *
      * @return boolean
      */
-    protected function hasEnabledFilter($om, $filterClassName)
+    protected function hasEnabledFilter(ObjectManager $om, $filterClassName)
     {
         $enabled = $this->getFilterCollectionFromObjectManager($om)->getEnabledFilters();
         foreach ($enabled as $name => $filter) {
@@ -300,43 +305,17 @@ abstract class MappedEventSubscriber implements EventSubscriber
     /**
      * Create default annotation reader for extensions
      *
-     * @return \Doctrine\Common\Annotations\AnnotationReader
+     * @return Reader
      */
     private function getDefaultAnnotationReader()
     {
         if (null === self::$defaultAnnotationReader) {
-            if (version_compare(\Doctrine\Common\Version::VERSION, '2.2.0-DEV', '>=')) {
-                $reader = new \Doctrine\Common\Annotations\AnnotationReader();
-                \Doctrine\Common\Annotations\AnnotationRegistry::registerAutoloadNamespace(
-                    'Gedmo\\Mapping\\Annotation',
-                    __DIR__.'/../../'
-                );
-                $reader = new \Doctrine\Common\Annotations\CachedReader($reader, new ArrayCache());
-            } elseif (version_compare(\Doctrine\Common\Version::VERSION, '2.1.0RC4-DEV', '>=')) {
-                $reader = new \Doctrine\Common\Annotations\AnnotationReader();
-                \Doctrine\Common\Annotations\AnnotationRegistry::registerAutoloadNamespace(
-                    'Gedmo\\Mapping\\Annotation',
-                    __DIR__.'/../../'
-                );
-                $reader->setDefaultAnnotationNamespace('Doctrine\ORM\Mapping\\');
-                $reader = new \Doctrine\Common\Annotations\CachedReader($reader, new ArrayCache());
-            } elseif (version_compare(\Doctrine\Common\Version::VERSION, '2.1.0-BETA3-DEV', '>=')) {
-                $reader = new \Doctrine\Common\Annotations\AnnotationReader();
-                $reader->setDefaultAnnotationNamespace('Doctrine\ORM\Mapping\\');
-                $reader->setIgnoreNotImportedAnnotations(true);
-                $reader->setAnnotationNamespaceAlias('Gedmo\\Mapping\\Annotation\\', 'gedmo');
-                $reader->setEnableParsePhpImports(false);
-                $reader->setAutoloadAnnotations(true);
-                $reader = new \Doctrine\Common\Annotations\CachedReader(
-                    new \Doctrine\Common\Annotations\IndexedReader($reader), new ArrayCache()
-                );
-            } else {
-                $reader = new \Doctrine\Common\Annotations\AnnotationReader();
-                $reader->setAutoloadAnnotations(true);
-                $reader->setAnnotationNamespaceAlias('Gedmo\\Mapping\\Annotation\\', 'gedmo');
-                $reader->setDefaultAnnotationNamespace('Doctrine\ORM\Mapping\\');
+            if (version_compare(Version::VERSION, '2.2.0', '<')) {
+                throw new RuntimeException("The least supported version for Doctrine Common library is 2.2.0, your is: ".Version::VERSION);
             }
-            self::$defaultAnnotationReader = $reader;
+
+            AnnotationRegistry::registerAutoloadNamespace('Gedmo\Mapping\Annotation', __DIR__.'/../../');
+            self::$defaultAnnotationReader = new CachedReader(new AnnotationReader(), new ArrayCache());
         }
 
         return self::$defaultAnnotationReader;
@@ -351,7 +330,7 @@ abstract class MappedEventSubscriber implements EventSubscriber
      *
      * @return mixed
      */
-    private function getFilterCollectionFromObjectManager($om)
+    private function getFilterCollectionFromObjectManager(ObjectManager $om)
     {
         if (is_callable(array($om, 'getFilters'))) {
             return $om->getFilters();

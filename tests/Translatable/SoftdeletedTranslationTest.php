@@ -3,27 +3,42 @@
 namespace Translatable;
 
 use Doctrine\Common\EventManager;
+use Doctrine\ORM\EntityManager;
 use Gedmo\Translatable\TranslatableListener;
-use Tool\BaseTestCaseORM;
 use Fixture\Translatable\Post;
-use Fixture\Translatable\PostTranslation;
 use Gedmo\SoftDeleteable\SoftDeleteableListener;
+use TestTool\ObjectManagerTestCase;
 
-class SoftdeletedTranslationTest extends BaseTestCaseORM
+class SoftdeletedTranslationTest extends ObjectManagerTestCase
 {
+    /**
+     * @var TranslatableListener
+     */
     private $translatable;
+    /**
+     * @var EntityManager
+     */
+    private $em;
 
     protected function setUp()
     {
-        parent::setUp();
-
         $evm = new EventManager();
         $evm->addEventSubscriber($this->translatable = new TranslatableListener());
         $evm->addEventSubscriber(new SoftDeleteableListener());
 
-        $this->getMockSqliteEntityManager($evm);
+        $this->em = $this->createEntityManager($evm);
+        $this->createSchema($this->em, array(
+            'Fixture\Translatable\Post',
+            'Fixture\Translatable\PostTranslation',
+        ));
+        // hook softdeleteable filter
         $this->em->getConfiguration()->addFilter('soft-deleteable', 'Gedmo\SoftDeleteable\Filter\SoftDeleteableFilter');
         $this->em->getFilters()->enable('soft-deleteable');
+    }
+
+    protected function tearDown()
+    {
+        $this->releaseEntityManager($this->em);
     }
 
     /**
@@ -67,13 +82,5 @@ class SoftdeletedTranslationTest extends BaseTestCaseORM
 
         $translations = $repo->findAll();
         $this->assertSame(0, count($translations), "Translations should be removed");
-    }
-
-    protected function getUsedEntityFixtures()
-    {
-        return array(
-            'Fixture\Translatable\Post',
-            'Fixture\Translatable\PostTranslation',
-        );
     }
 }

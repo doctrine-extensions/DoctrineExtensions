@@ -2,23 +2,34 @@
 
 namespace Translatable\Document;
 
-use Tool\BaseTestCaseMongoODM;
 use Doctrine\Common\EventManager;
+use Doctrine\ODM\MongoDB\DocumentManager;
 use Fixture\Translatable\Document\Post;
 use Fixture\Translatable\Document\PostTranslation;
 use Gedmo\Translatable\TranslatableListener;
+use TestTool\ObjectManagerTestCase;
 
-class TranslationTest extends BaseTestCaseMongoODM
+class TranslationTest extends ObjectManagerTestCase
 {
+    /**
+     * @var TranslatableListener
+     */
     private $translatable;
+    /**
+     * @var DocumentManager
+     */
+    private $dm;
 
     protected function setUp()
     {
-        parent::setUp();
-
         $evm = new EventManager();
         $evm->addEventSubscriber($this->translatable = new TranslatableListener());
-        $this->getMockDocumentManager($evm);
+        $this->dm = $this->createDocumentManager($evm);
+    }
+
+    protected function tearDown()
+    {
+        $this->releaseDocumentManager($this->dm);
     }
 
     /**
@@ -37,7 +48,7 @@ class TranslationTest extends BaseTestCaseMongoODM
         $this->assertCount(1, $translations, "There should be one english translation available");
 
         $translations = $this->dm->getRepository('Fixture\Translatable\Document\PostTranslation')->findAll();
-        $this->assertCount(1, $translations = iterator_to_array($translations), "There should be one english translation available");
+        $this->assertCount(1, $translations, "There should be one english translation available");
 
         // test update
         $food->setTitle('Food Updated');
@@ -57,7 +68,7 @@ class TranslationTest extends BaseTestCaseMongoODM
         $this->assertCount(2, $translations, "There should be two translations available");
 
         $translations = $this->dm->getRepository('Fixture\Translatable\Document\PostTranslation')->findAll();
-        $this->assertCount(2, $translations = iterator_to_array($translations), "There should be two translations available");
+        $this->assertCount(2, $translations, "There should be two translations available");
 
         // try post load
         $this->dm->clear();
@@ -112,6 +123,6 @@ class TranslationTest extends BaseTestCaseMongoODM
         $this->assertSame('en title', $post->getTitle(), "Should be translated in english on load");
 
         $translations = $this->dm->getRepository('Fixture\Translatable\Document\PostTranslation')->findAll();
-        $this->assertCount(3, iterator_to_array($translations), "There should be three translations available");
+        $this->assertCount(3, $translations, "There should be three translations available");
     }
 }

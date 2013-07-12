@@ -3,21 +3,31 @@
 namespace Translatable\Mapping;
 
 use Doctrine\Common\EventManager;
-use Tool\BaseTestCaseORM;
+use Doctrine\ORM\EntityManager;
 use Gedmo\Translatable\TranslatableListener;
+use TestTool\ObjectManagerTestCase;
 
-class AnnotationTest extends BaseTestCaseORM
+class AnnotationTest extends ObjectManagerTestCase
 {
+    /**
+     * @var TranslatableListener
+     */
     private $translatable;
+    /**
+     * @var EntityManager
+     */
+    private $em;
 
     protected function setUp()
     {
-        parent::setUp();
-
         $evm = new EventManager();
         $evm->addEventSubscriber($this->translatable = new TranslatableListener());
+        $this->em = $this->createEntityManager($evm);
+    }
 
-        $this->getMockSqliteEntityManager($evm);
+    protected function tearDown()
+    {
+        $this->releaseEntityManager($this->em);
     }
 
     /**
@@ -37,13 +47,5 @@ class AnnotationTest extends BaseTestCaseORM
         $this->assertCount(2, $config['fields']);
         $this->assertArrayHasKey('title', $config['fields']);
         $this->assertArrayHasKey('content', $config['fields']);
-    }
-
-    protected function getUsedEntityFixtures()
-    {
-        return array(
-            'Fixture\Translatable\Post',
-            'Fixture\Translatable\PostTranslation',
-        );
     }
 }

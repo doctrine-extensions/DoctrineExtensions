@@ -2,6 +2,8 @@
 
 namespace Gedmo\Mapping;
 
+use Doctrine\Common\Annotations\Reader;
+use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 use Doctrine\Common\Persistence\Mapping\Driver\DefaultFileLocator;
 use Doctrine\Common\Persistence\Mapping\Driver\SymfonyFileLocator;
 use Doctrine\Common\Persistence\Mapping\Driver\MappingDriver;
@@ -10,6 +12,7 @@ use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\Common\Version as CommonLibVer;
 use Gedmo\Mapping\Driver\File as FileDriver;
 use Gedmo\Mapping\Driver\AnnotationDriverInterface;
+use Gedmo\Exception\RuntimeException;
 
 /**
  * The extension metadata factory is responsible for extension driver
@@ -28,9 +31,9 @@ class ExtensionMetadataFactory
 
     /**
      * Object manager, entity or document
-     * @var object
+     * @var ObjectManager
      */
-    protected $objectManager;
+    protected $om;
 
     /**
      * Extension namespace
@@ -42,46 +45,47 @@ class ExtensionMetadataFactory
     /**
      * Custom annotation reader
      *
-     * @var object
+     * @var Reader
      */
     protected $annotationReader;
 
     /**
      * Initializes extension driver
      *
-     * @param ObjectManager $objectManager
+     * @param ObjectManager $om
      * @param string        $extensionNamespace
-     * @param object        $annotationReader
+     * @param Reader        $annotationReader
      */
-    public function __construct(ObjectManager $objectManager, $extensionNamespace, $annotationReader)
+    public function __construct(ObjectManager $om, $extensionNamespace, Reader $annotationReader)
     {
-        $this->objectManager = $objectManager;
+        $this->om = $om;
         $this->annotationReader = $annotationReader;
         $this->extensionNamespace = $extensionNamespace;
-        $omDriver = $objectManager->getConfiguration()->getMetadataDriverImpl();
-        $this->driver = $this->getDriver($omDriver);
+        $this->driver = $this->getDriver($om->getConfiguration()->getMetadataDriverImpl());
     }
 
     /**
      * Reads extension metadata
      *
-     * @param  object $meta
-     * @return array  - the metatada configuration
+     * @param ClassMetadata $meta
+     *
+     * @return array - the metatada configuration
      */
     public function getExtensionMetadata($meta)
     {
         if ($meta->isMappedSuperclass) {
             return; // ignore mappedSuperclasses for now
         }
+
         $config = array();
-        $cmf = $this->objectManager->getMetadataFactory();
+        $cmf = $this->om->getMetadataFactory();
         $useObjectName = $meta->name;
         // collect metadata from inherited classes
         if (null !== $meta->reflClass) {
             foreach (array_reverse(class_parents($meta->name)) as $parentClass) {
                 // read only inherited mapped classes
                 if ($cmf->hasMetadataFor($parentClass)) {
-                    $class = $this->objectManager->getClassMetadata($parentClass);
+                    $class = $this->om->getClassMetadata($parentClass);
                     $this->driver->readExtendedMetadata($class, $config);
                     $isBaseInheritanceLevel = !$class->isInheritanceTypeNone()
                         && !$class->parentClasses
@@ -109,10 +113,21 @@ class ExtensionMetadataFactory
     }
 
     /**
+     * Get the initialized extension driver
+     *
+     * @return \Gedmo\Mapping\Driver
+     */
+    public function getExtensionDriver()
+    {
+        return $this->driver;
+    }
+
+    /**
      * Get the cache id
      *
-     * @param  string $className
-     * @param  string $extensionNamespace
+     * @param string $className
+     * @param string $extensionNamespace
+     *
      * @return string
      */
     public static function getCacheId($className, $extensionNamespace)
@@ -124,8 +139,10 @@ class ExtensionMetadataFactory
      * Get the extended driver instance which will
      * read the metadata required by extension
      *
-     * @param  object                            $omDriver
+     * @param object $omDriver
+     *
      * @throws \Gedmo\Exception\RuntimeException if driver was not found in extension
+     *
      * @return \Gedmo\Mapping\Driver
      */
     protected function getDriver($omDriver)
@@ -154,7 +171,7 @@ class ExtensionMetadataFactory
             if (!class_exists($driverClassName)) {
                 $driverClassName = $this->extensionNamespace.'\Mapping\Driver\Annotation';
                 if (!class_exists($driverClassName)) {
-                    throw new \Gedmo\Exception\RuntimeException("Failed to fallback to annotation driver: ({$driverClassName}), extension driver was not found.");
+                    throw new RuntimeException("Failed to fallback to annotation driver: ({$driverClassName}), extension driver was not found.");
                 }
             }
             $driver = new $driverClassName();

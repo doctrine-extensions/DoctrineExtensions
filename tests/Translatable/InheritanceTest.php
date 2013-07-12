@@ -3,25 +3,41 @@
 namespace Translatable;
 
 use Doctrine\Common\EventManager;
-use Tool\BaseTestCaseORM;
-use Fixture\Translatable\Transport\Vehicle;
-use Fixture\Translatable\Transport\VehicleTranslation;
+use Doctrine\ORM\EntityManager;
 use Fixture\Translatable\Transport\Car;
 use Fixture\Translatable\Transport\Engine;
 use Fixture\Translatable\Transport\Motorcycle;
 use Gedmo\Translatable\TranslatableListener;
+use TestTool\ObjectManagerTestCase;
 
-class InheritanceTest extends BaseTestCaseORM
+class InheritanceTest extends ObjectManagerTestCase
 {
+    /**
+     * @var TranslatableListener
+     */
     private $translatable;
+    /**
+     * @var EntityManager
+     */
+    private $em;
 
     protected function setUp()
     {
-        parent::setUp();
-
         $evm = new EventManager();
         $evm->addEventSubscriber($this->translatable = new TranslatableListener());
-        $this->getMockSqliteEntityManager($evm);
+        $this->em = $this->createEntityManager($evm);
+        $this->createSchema($this->em, array(
+            'Fixture\Translatable\Transport\Vehicle',
+            'Fixture\Translatable\Transport\VehicleTranslation',
+            'Fixture\Translatable\Transport\Car',
+            'Fixture\Translatable\Transport\Engine',
+            'Fixture\Translatable\Transport\Motorcycle',
+        ));
+    }
+
+    protected function tearDown()
+    {
+        $this->releaseEntityManager($this->em);
     }
 
     /**
@@ -102,16 +118,5 @@ class InheritanceTest extends BaseTestCaseORM
         $hayabusa->setTitle('Hayabusa de');
         $this->em->persist($hayabusa);
         $this->em->flush();
-    }
-
-    protected function getUsedEntityFixtures()
-    {
-        return array(
-            'Fixture\Translatable\Transport\Vehicle',
-            'Fixture\Translatable\Transport\VehicleTranslation',
-            'Fixture\Translatable\Transport\Car',
-            'Fixture\Translatable\Transport\Engine',
-            'Fixture\Translatable\Transport\Motorcycle',
-        );
     }
 }

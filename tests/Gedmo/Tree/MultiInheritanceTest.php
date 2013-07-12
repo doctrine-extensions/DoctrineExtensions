@@ -16,7 +16,6 @@ class MultiInheritanceTest extends BaseTestCaseORM
     const NODE = "Tree\\Fixture\\Node";
     const BASE_NODE = "Tree\\Fixture\\BaseNode";
     const ANODE = "Tree\\Fixture\\ANode";
-    const TRANSLATION = "Gedmo\\Translatable\\Entity\\Translation";
 
     protected function setUp()
     {
@@ -39,10 +38,6 @@ class MultiInheritanceTest extends BaseTestCaseORM
         $this->assertNotNull($food->getCreated());
         $this->assertNotNull($food->getUpdated());
 
-        $translationRepo = $this->em->getRepository(self::TRANSLATION);
-        $translations = $translationRepo->findTranslations($food);
-
-        $this->assertCount(0, $translations);
         $this->assertEquals('food', $food->getSlug());
     }
 
@@ -74,7 +69,6 @@ class MultiInheritanceTest extends BaseTestCaseORM
         return array(
             self::NODE,
             self::ANODE,
-            self::TRANSLATION,
             self::BASE_NODE,
         );
     }
@@ -121,6 +115,5 @@ class MultiInheritanceTest extends BaseTestCaseORM
         $this->em->persist($potatoes);
         $this->em->persist($cabbages);
         $this->em->flush();
-        $this->em->clear();
     }
 }
