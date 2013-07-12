@@ -11,13 +11,11 @@ use Doctrine\ORM\Mapping as ORM;
 class Node extends BaseNode
 {
     /**
-     * @Gedmo\Translatable
      * @ORM\Column(name="title", type="string", length=64)
      */
     private $title;
 
     /**
-     * @Gedmo\Translatable
      * @Gedmo\Slug(fields={"title"})
      * @ORM\Column(name="slug", type="string", length=128)
      */

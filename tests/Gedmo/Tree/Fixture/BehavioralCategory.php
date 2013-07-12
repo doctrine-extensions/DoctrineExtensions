@@ -4,6 +4,7 @@ namespace Tree\Fixture;
 
 use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * @ORM\Entity(repositoryClass="Tree\Fixture\Repository\BehavioralCategoryRepository")
@@ -12,7 +13,7 @@ use Doctrine\ORM\Mapping as ORM;
 class BehavioralCategory
 {
     /**
-     * @ORM\Column(name="id", type="integer")
+     * @ORM\Column(type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue
      */
@@ -20,28 +21,26 @@ class BehavioralCategory
 
     /**
      * @Gedmo\Translatable
-     * @ORM\Column(name="title", type="string", length=64)
+     * @ORM\Column(length=64)
      */
     private $title;
 
     /**
      * @Gedmo\TreeLeft
-     * @ORM\Column(name="lft", type="integer", nullable=true)
+     * @ORM\Column(type="integer", nullable=true)
      */
     private $lft;
 
     /**
      * @Gedmo\TreeRight
-     * @ORM\Column(name="rgt", type="integer", nullable=true)
+     * @ORM\Column(type="integer", nullable=true)
      */
     private $rgt;
 
     /**
      * @Gedmo\TreeParent
      * @ORM\ManyToOne(targetEntity="BehavioralCategory", inversedBy="children")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="CASCADE")
-     * })
+     * @ORM\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="CASCADE")
      */
     private $parent;
 
@@ -52,10 +51,33 @@ class BehavioralCategory
 
     /**
      * @Gedmo\Translatable
-     * @Gedmo\Slug(fields={"title"})
-     * @ORM\Column(name="slug", type="string", length=128, unique=true)
+     * @ORM\Column(length=128, nullable=true)
      */
     private $slug;
+
+    /**
+     * @ORM\OneToMany(targetEntity="BehavioralCategoryTranslation", mappedBy="object", cascade={"all"})
+     */
+    private $translations;
+
+    public function __construct()
+    {
+        $this->translations = new ArrayCollection;
+    }
+
+    public function getTranslations()
+    {
+        return $this->translations;
+    }
+
+    public function addTranslation(BehavioralCategoryTranslation $translation)
+    {
+        if (!$this->translations->contains($translation)) {
+            $this->translations[] = $translation;
+            $translation->setObject($this);
+        }
+        return $this;
+    }
 
     public function getId()
     {
@@ -77,7 +99,7 @@ class BehavioralCategory
         return $this->title;
     }
 
-    public function setParent(BehavioralCategory $parent)
+    public function setParent(BehavioralCategory $parent = null)
     {
         $this->parent = $parent;
     }

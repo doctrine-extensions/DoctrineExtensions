@@ -289,14 +289,12 @@ class TranslationWalker extends SqlWalker
             // organize replacements for sql query
             foreach ($config['fields'] as $field => $options) {
                 $originalField = $compTblAlias.'.'.$meta->getQuotedColumnName($field, $this->platform);
-                $transFieldSql = $tblAlias.'.'.$tmeta->getQuotedColumnName($field, $this->platform);
-                $fallbackSql = 'NULL';
+                $transFieldSql = $fallbackSql = $tblAlias.'.'.$tmeta->getQuotedColumnName($field, $this->platform);
                 foreach (array_reverse($fallbackComponents) as $tblAliasFallback) {
                     $fallbackField = $tblAliasFallback.'.'.$tmeta->getQuotedColumnName($field, $this->platform);
                     $fallbackSql = "COALESCE({$fallbackField}, {$fallbackSql})";
                 }
-                $fieldSql = "COALESCE({$transFieldSql}, {$fallbackSql})"; // always fallback to NULL by default
-                $this->replacements[$originalField] = $fieldSql;
+                $this->replacements[$originalField] = $fallbackSql;
             }
         }
     }

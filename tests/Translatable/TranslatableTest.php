@@ -3,22 +3,31 @@
 namespace Translatable;
 
 use Doctrine\Common\EventManager;
-use Tool\BaseTestCaseORM;
+use TestTool\ObjectManagerTestCase;
 use Fixture\Translatable\Post;
 use Fixture\Translatable\PostTranslation;
 use Gedmo\Translatable\TranslatableListener;
 
-class TranslatableTest extends BaseTestCaseORM
+class TranslatableTest extends ObjectManagerTestCase
 {
     private $translatable;
+    private $em;
 
     protected function setUp()
     {
-        parent::setUp();
-
         $evm = new EventManager;
         $evm->addEventSubscriber($this->translatable = new TranslatableListener);
-        $this->getMockSqliteEntityManager($evm);
+        $this->em = $this->createEntityManager($evm);
+
+        $this->createSchema($this->em, array(
+            'Fixture\Translatable\Post',
+            'Fixture\Translatable\PostTranslation',
+        ));
+    }
+
+    protected function tearDown()
+    {
+        $this->releaseEntityManager($this->em);
     }
 
     /**
@@ -120,14 +129,6 @@ class TranslatableTest extends BaseTestCaseORM
 
         $translations = $this->em->getRepository('Fixture\Translatable\PostTranslation')->findAll();
         $this->assertCount(3, $translations, "There should be three translations available");
-    }
-
-    protected function getUsedEntityFixtures()
-    {
-        return array(
-            'Fixture\Translatable\Post',
-            'Fixture\Translatable\PostTranslation',
-        );
     }
 }
 
