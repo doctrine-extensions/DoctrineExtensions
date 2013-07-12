@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity
  */
-class TransArticleManySlug
+class ArticleManySlug
 {
     /**
      * @ORM\Id
@@ -18,7 +18,6 @@ class TransArticleManySlug
     private $id;
 
     /**
-     * @Gedmo\Translatable
      * @ORM\Column(type="string", length=64)
      */
     private $title;
@@ -35,39 +34,15 @@ class TransArticleManySlug
     private $uniqueSlug;
 
     /**
-     * @Gedmo\Translatable
      * @ORM\Column(type="string", length=16)
      */
     private $code;
 
     /**
-     * @Gedmo\Translatable
      * @Gedmo\Slug(fields={"title", "code"})
      * @ORM\Column(type="string", length=128)
      */
     private $slug;
-
-    /**
-     * @Gedmo\Locale
-     * Used locale to override Translation listener`s locale
-     */
-    private $locale;
-
-    public function addComment(Comment $comment)
-    {
-        $comment->setArticle($this);
-        $this->comments[] = $comment;
-    }
-
-    public function getComments()
-    {
-        return $this->comments;
-    }
-
-    public function setPage($page)
-    {
-        $this->page = $page;
-    }
 
     public function getId()
     {
@@ -112,10 +87,5 @@ class TransArticleManySlug
     public function getUniqueSlug()
     {
         return $this->uniqueSlug;
-    }
-
-    public function setTranslatableLocale($locale)
-    {
-        $this->locale = $locale;
     }
 }
