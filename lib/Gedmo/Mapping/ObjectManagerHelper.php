@@ -136,9 +136,14 @@ final class ObjectManagerHelper
                     $identifier = array($meta->identifier => (string)$uow->getDocumentIdentifier($object));
                 } elseif (!$object->__isInitialized__) {
                     $persister = $uow->getDocumentPersister($meta->name);
-                    $reflProperty = new \ReflectionProperty($object, 'identifier');
-                    $reflProperty->setAccessible(true);
-                    $identifier = $reflProperty->getValue($object);
+                    $refl = new \ReflectionClass(get_class($object));
+                    if ($refl->hasProperty('__identifier__')) {
+                        $prop = $refl->getProperty('__identifier__');
+                    } else {
+                        $prop = $refl->getProperty('identifier'); // older version of ODM
+                    }
+                    $prop->setAccessible(true);
+                    $identifier = $prop->getValue($object);
                     $object->__isInitialized__ = true;
                     $persister->load($identifier, $object);
                 }
@@ -147,7 +152,7 @@ final class ObjectManagerHelper
                 $identifier = array($meta->identifier => (string)$meta->getReflectionProperty($meta->identifier)->getValue($object));
             }
         }
-        return ($single && null !== $identifier) ? current($identifier) : $identifier;
+        return ($single && null !== $identifier) ? (is_array($identifier) ? current($identifier) : $identifier) : $identifier;
     }
 
     /**
