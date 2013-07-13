@@ -31,10 +31,12 @@ final class ODM extends BaseAdapterODM implements SluggableAdapter
 
         // use the unique_base to restrict the uniqueness check
         if ($config['unique'] && isset($config['unique_base'])) {
-            if (is_object($reflectValue = $wrapped->getPropertyValue($config['unique_base']))) {
-                $qb->field($config['unique_base'] . '.$id')->equals(new \MongoId($reflectValue->getId()));
+            if (is_object($ubase = $wrapped->getPropertyValue($config['unique_base']))) {
+                $qb->field($config['unique_base'] . '.$id')->equals(new \MongoId($ubase->getId()));
+            } elseif ($ubase) {
+                $qb->where('/^' . preg_quote($ubase, '/') . '/.test(this.' . $config['unique_base'] . ')');
             } else {
-                $qb->where('/^' . preg_quote($reflectValue, '/') . '/.test(this.' . $config['unique_base'] . ')');
+                $qb->field($config['unique_base'])->equals(null);
             }
         }
 
