@@ -20,14 +20,13 @@ class EncoderExtensionWithEntityManagerTest extends BaseTestCaseORM
     {
         parent::setUp();
 
-        require_once __DIR__.'/../Fixture/EncoderExtension/Mapping/Annotations.php';
         $evm = new EventManager;
         $evm->addEventSubscriber($this->encoder = new EncoderListener);
 
         $config = new Configuration;
         $config->setProxyDir(TESTS_TEMP_DIR);
         $config->setProxyNamespace('Mapping\Proxy');
-        $config->setMetadataDriverImpl(new EncoderEntityCustomDriver);
+        $config->setMetadataDriverImpl(new EncoderExtensionWithEntityManagerTestDriver);
 
         $conn = array(
             'driver' => 'pdo_sqlite',
@@ -81,7 +80,7 @@ class EncoderExtensionWithEntityManagerTest extends BaseTestCaseORM
     }
 }
 
-class EncoderEntityCustomDriver implements MappingDriver
+class EncoderExtensionWithEntityManagerTestDriver implements MappingDriver
 {
     public function getAllClassNames()
     {
