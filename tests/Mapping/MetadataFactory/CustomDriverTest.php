@@ -4,28 +4,32 @@ use Doctrine\Common\Persistence\Mapping\Driver\MappingDriver;
 use Fixture\Unmapped\Person;
 use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 use Gedmo\Timestampable\TimestampableListener;
+use Doctrine\ORM\Configuration;
+use Doctrine\Common\EventManager;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\Tools\SchemaTool;
 
 class CustomDriverTest extends \PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
-        $config = new \Doctrine\ORM\Configuration();
+        $config = new Configuration();
         $config->setProxyDir(TESTS_TEMP_DIR);
         $config->setProxyNamespace('Mapping\Proxy');
-        $config->setMetadataDriverImpl(new CustomDriver);
+        $config->setMetadataDriverImpl(new CustomDriverTestDriver);
 
         $conn = array(
             'driver' => 'pdo_sqlite',
             'memory' => true,
         );
 
-        $evm = new \Doctrine\Common\EventManager();
+        $evm = new EventManager;
         $this->timestampable = new TimestampableListener;
         $this->timestampable->setAnnotationReader($_ENV['annotation_reader']);
         $evm->addEventSubscriber($this->timestampable);
-        $this->em = \Doctrine\ORM\EntityManager::create($conn, $config, $evm);
+        $this->em = EntityManager::create($conn, $config, $evm);
 
-        $schemaTool = new \Doctrine\ORM\Tools\SchemaTool($this->em);
+        $schemaTool = new SchemaTool($this->em);
         $schemaTool->dropSchema(array());
         $schemaTool->createSchema(array(
             $this->em->getClassMetadata('Fixture\Unmapped\Person'),
@@ -58,7 +62,7 @@ class CustomDriverTest extends \PHPUnit_Framework_TestCase
     }
 }
 
-class CustomDriver implements MappingDriver
+class CustomDriverTestDriver implements MappingDriver
 {
     public function getAllClassNames()
     {

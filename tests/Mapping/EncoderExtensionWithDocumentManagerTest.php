@@ -21,14 +21,13 @@ class EncoderExtensionWithDocumentManagerTest extends BaseTestCaseMongoODM
     {
         parent::setUp();
 
-        require_once __DIR__.'/../Fixture/EncoderExtension/Mapping/Annotations.php';
         $evm = new EventManager;
         $evm->addEventSubscriber($this->encoder = new EncoderListener);
 
         $config = new Configuration;
         $config->setProxyDir(TESTS_TEMP_DIR);
         $config->setProxyNamespace('Mapping\Proxy');
-        $config->setMetadataDriverImpl(new EncoderDocumentCustomDriver);
+        $config->setMetadataDriverImpl(new EncoderExtensionWithDocumentManagerTestDriver);
         $config->setHydratorDir(TESTS_TEMP_DIR);
         $config->setHydratorNamespace('Mapping\Hydrators');
         $config->setDefaultDB('mapping_encoders');
@@ -67,7 +66,7 @@ class EncoderExtensionWithDocumentManagerTest extends BaseTestCaseMongoODM
     }
 }
 
-class EncoderDocumentCustomDriver implements MappingDriver
+class EncoderExtensionWithDocumentManagerTestDriver implements MappingDriver
 {
     public function getAllClassNames()
     {
