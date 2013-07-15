@@ -169,7 +169,7 @@ class UploadableListener extends MappedEventSubscriber
         // Do we need to remove any files?
         foreach ($ea->getScheduledObjectDeletions($uow) as $object) {
             $meta = $om->getClassMetadata(get_class($object));
-            
+
             if ($config = $this->getConfiguration($om, $meta->name)) {
                 if (isset($config['uploadable']) && $config['uploadable']) {
                     $this->pendingFileRemovals[] = $this->getFilePath($meta, $config, $object);
@@ -281,12 +281,13 @@ class UploadableListener extends MappedEventSubscriber
         $path = $config['path'];
 
         if ($path === '') {
+            $defaultPath = $this->getDefaultPath();
             if ($config['pathMethod'] !== '') {
                 $pathMethod = $refl->getMethod($config['pathMethod']);
                 $pathMethod->setAccessible(true);
-                $path = $pathMethod->invoke($object);
-            } else if ($this->getDefaultPath() !== null) {
-                $path = $this->getDefaultPath();
+                $path = $pathMethod->invokeArgs($object, array($defaultPath));
+            } else if ($defaultPath !== null) {
+                $path = $defaultPath;
             } else {
                 $msg = 'You have to define the path to save files either in the listener, or in the class "%s"';
 
@@ -297,7 +298,6 @@ class UploadableListener extends MappedEventSubscriber
         }
 
         Validator::validatePath($path);
-
         $path = rtrim($path, '\/');
 
         if ($config['fileMimeTypeField']) {

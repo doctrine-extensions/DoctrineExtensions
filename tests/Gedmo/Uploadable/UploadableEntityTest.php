@@ -42,6 +42,9 @@ class UploadableEntityTest extends BaseTestCaseORM
     const FILE_WITH_ALLOWED_TYPES_CLASS = 'Uploadable\Fixture\Entity\FileWithAllowedTypes';
     const FILE_WITH_DISALLOWED_TYPES_CLASS = 'Uploadable\Fixture\Entity\FileWithDisallowedTypes';
 
+    /**
+     * @var UploadableListener
+     */
     private $listener;
     private $testFile;
     private $testFile2;
@@ -53,7 +56,7 @@ class UploadableEntityTest extends BaseTestCaseORM
     private $destinationTestFile2;
     private $destinationTestFile3;
     private $destinationTestFileWithoutExt;
-    private $destinationTestFileWithspaces;
+    private $destinationTestFileWithSpaces;
     private $testFilename;
     private $testFilename2;
     private $testFilename3;
@@ -153,6 +156,60 @@ class UploadableEntityTest extends BaseTestCaseORM
         $lastFile = $image2->getFilePath();
 
         $this->assertPathEquals($image2->getPath().'/'.$fileInfo['name'], $image2->getFilePath());
+        $this->assertTrue(is_file($lastFile));
+
+        // First file should be removed on update
+        $this->assertFalse(is_file($firstFile));
+
+        // REMOVAL of an Uploadable Entity
+        $this->em->remove($image2);
+        $this->em->flush();
+
+        $this->assertFalse(is_file($lastFile));
+    }
+
+    public function testUploadableEntityWithCompositePath()
+    {
+        // We set the default path on the listener
+        $this->listener->setDefaultPath($this->destinationTestDir);
+
+        // If there is an uploaded file, we process it
+        $fileInfo = $this->generateUploadedFile();
+
+        $image2 = new Image();
+        $image2->setUseBasePath(true);
+        $image2->setTitle('456');
+        $this->listener->addEntityFileInfo($image2, $fileInfo);
+
+        $this->em->persist($image2);
+        $this->em->flush();
+
+        $this->em->refresh($image2);
+
+        // We need to set this again because of the recent refresh
+        $firstFile = $image2->getFilePath();
+
+        $this->assertPathEquals($image2->getPath($this->destinationTestDir).'/'.$fileInfo['name'], $image2->getFilePath());
+        $this->assertTrue(is_file($firstFile));
+        $this->assertEquals($fileInfo['size'], $image2->getSize());
+        $this->assertEquals($fileInfo['type'], $image2->getMime());
+
+        // UPDATE of an Uploadable Entity
+
+        // We change the "uploaded" file
+        $fileInfo['tmp_name'] = $this->testFile2;
+        $fileInfo['name'] = $this->testFilename2;
+
+        // We use a FileInfoInterface instance here
+        $this->listener->addEntityFileInfo($image2, new FileInfoArray($fileInfo));
+
+        $this->em->flush();
+
+        $this->em->refresh($image2);
+
+        $lastFile = $image2->getFilePath();
+
+        $this->assertPathEquals($image2->getPath($this->destinationTestDir).'/'.$fileInfo['name'], $image2->getFilePath());
         $this->assertTrue(is_file($lastFile));
 
         // First file should be removed on update
