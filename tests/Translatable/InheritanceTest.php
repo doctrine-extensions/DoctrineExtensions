@@ -11,7 +11,7 @@ use Fixture\Translatable\Transport\Engine;
 use Fixture\Translatable\Transport\Motorcycle;
 use Gedmo\Translatable\TranslatableListener;
 
-class TranslatableTest extends BaseTestCaseORM
+class InheritanceTest extends BaseTestCaseORM
 {
     private $translatable;
 

@@ -66,13 +66,15 @@ abstract class BaseTestCaseORM extends \PHPUnit_Framework_TestCase
         $config = null === $config ? $this->getMockAnnotatedConfig() : $config;
         $em = EntityManager::create($conn, $config, $evm ?: $this->getEventManager());
 
-        $schema = array_map(function($class) use ($em) {
-            return $em->getClassMetadata($class);
-        }, (array)$this->getUsedEntityFixtures());
+        if ($fixtures = $this->getUsedEntityFixtures()) {
+            $schema = array_map(function($class) use ($em) {
+                return $em->getClassMetadata($class);
+            }, $fixtures);
 
-        $schemaTool = new SchemaTool($em);
-        $schemaTool->dropSchema(array());
-        $schemaTool->createSchema($schema);
+            $schemaTool = new SchemaTool($em);
+            $schemaTool->dropSchema(array());
+            $schemaTool->createSchema($schema);
+        }
 
         return $this->em = $em;
     }
@@ -91,14 +93,15 @@ abstract class BaseTestCaseORM extends \PHPUnit_Framework_TestCase
         $config = $this->getMockAnnotatedConfig();
         $em = EntityManager::create($conn, $config, $evm ?: $this->getEventManager());
 
-        $schema = array_map(function($class) use ($em) {
-            return $em->getClassMetadata($class);
-        }, (array)$this->getUsedEntityFixtures());
+        if ($fixtures = $this->getUsedEntityFixtures()) {
+            $schema = array_map(function($class) use ($em) {
+                return $em->getClassMetadata($class);
+            }, $fixtures);
 
-        $schemaTool = new SchemaTool($em);
-        $schemaTool->dropSchema(array());
-        $schemaTool->createSchema($schema);
-
+            $schemaTool = new SchemaTool($em);
+            $schemaTool->dropSchema(array());
+            $schemaTool->createSchema($schema);
+        }
         return $this->em = $em;
     }
 
