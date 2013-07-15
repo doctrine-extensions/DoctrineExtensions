@@ -20,6 +20,6 @@ class FilenameGeneratorAlphanumeric implements FilenameGeneratorInterface
      */
     public static function generate($filename, $extension, $object = null)
     {
-        return preg_replace('/[^a-z0-9]+/', '-', strtolower($filename)).$extension;
+        return preg_replace('/[^a-z0-9]+/', '-', strtolower($filename)).'.'.$extension;
     }
 }

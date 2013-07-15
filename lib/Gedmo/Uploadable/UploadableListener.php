@@ -2,9 +2,10 @@
 
 namespace Gedmo\Uploadable;
 
+use Doctrine\Common\EventArgs;
+use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 use Gedmo\Mapping\MappedEventSubscriber;
-use Doctrine\Common\EventArgs;
 use Gedmo\Mapping\Event\AdapterInterface;
 use Gedmo\Exception\UploadablePartialException;
 use Gedmo\Exception\UploadableCantWriteException;
@@ -23,7 +24,6 @@ use Gedmo\Uploadable\Mapping\Validator;
 use Gedmo\Uploadable\FileInfo\FileInfoInterface;
 use Gedmo\Uploadable\MimeType\MimeTypeGuesser;
 use Gedmo\Uploadable\MimeType\MimeTypeGuesserInterface;
-use Doctrine\Common\NotifyPropertyChanged;
 use Gedmo\Uploadable\Event\UploadablePreFileProcessEventArgs;
 use Gedmo\Uploadable\Event\UploadablePostFileProcessEventArgs;
 
@@ -515,7 +515,7 @@ class UploadableListener extends MappedEventSubscriber
         }
 
         $info = array(
-            'fileName'          => '',
+            'fileName'          => basename($fileInfo->getName()),
             'fileExtension'     => '',
             'fileWithoutExt'    => '',
             'origFileName'      => '',
@@ -524,41 +524,23 @@ class UploadableListener extends MappedEventSubscriber
             'fileSize'          => $fileInfo->getSize(),
         );
 
-        $info['fileName'] = basename($fileInfo->getName());
         $info['filePath'] = $path.'/'.$info['fileName'];
-
-        $hasExtension = strrpos($info['fileName'], '.');
-
-        if ($hasExtension) {
-            $info['fileExtension'] = substr($info['filePath'], strrpos($info['filePath'], '.'));
-            $info['fileWithoutExt'] = substr($info['filePath'], 0, strrpos($info['filePath'], '.'));
-        } else {
-            $info['fileWithoutExt'] = $info['fileName'];
-        }
+        $info['fileWithoutExt'] = pathinfo($info['fileName'], PATHINFO_FILENAME);
+        $info['fileExtension'] = pathinfo($info['fileName'], PATHINFO_EXTENSION);
 
         // Save the original filename for later use
         $info['origFileName'] = $info['fileName'];
 
         // Now we generate the filename using the configured class
         if ($filenameGeneratorClass) {
-            $filename = $filenameGeneratorClass::generate(
-                str_replace($path.'/', '', $info['fileWithoutExt']),
+            $info['fileName'] = $filenameGeneratorClass::generate(
+                $info['fileWithoutExt'],
                 $info['fileExtension'],
                 $object
             );
-            $info['filePath'] = str_replace(
-                '/'.$info['fileName'],
-                '/'.$filename,
-                $info['filePath']
-            );
-            $info['fileName'] = $filename;
 
-            if ($pos = strrpos($info['filePath'], '.')) {
-                // ignores positions like "./file" at 0 see #915
-                $info['fileWithoutExt'] = substr($info['filePath'], 0, $pos);
-            } else {
-                $info['fileWithoutExt'] = $info['filePath'];
-            }
+            $info['filePath'] = $path.'/'.$info['fileName'];
+            $info['fileWithoutExt'] = pathinfo($info['fileName'], PATHINFO_FILENAME);
         }
 
         if (is_file($info['filePath'])) {
@@ -566,10 +548,10 @@ class UploadableListener extends MappedEventSubscriber
                 $this->removeFile($info['filePath']);
             } elseif ($appendNumber) {
                 $counter = 1;
-                $info['filePath'] = $info['fileWithoutExt'].'-'.$counter.$info['fileExtension'];
+                $info['filePath'] = $path.'/'.$info['fileWithoutExt'].'-'.$counter.'.'.$info['fileExtension'];
 
                 do {
-                    $info['filePath'] = $info['fileWithoutExt'].'-'.(++$counter).$info['fileExtension'];
+                    $info['filePath'] = $path.'/'.$info['fileWithoutExt'].'-'.(++$counter).'.'.$info['fileExtension'];
                 } while (is_file($info['filePath']));
             } else {
                 throw new UploadableFileAlreadyExistsException(sprintf('File "%s" already exists!',
