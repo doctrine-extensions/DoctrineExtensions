@@ -12,7 +12,7 @@
 >
     <testsuites>
         <testsuite name="Translatable Extension">
-            <directory suffix="Test.php">./Gedmo/Translatable/</directory>
+            <directory suffix="Test.php">./Translatable/</directory>
         </testsuite>
         <testsuite name="Sluggable Extension">
             <directory suffix="Test.php">./Gedmo/Sluggable/</directory>
@@ -30,7 +30,7 @@
             <directory suffix="Test.php">./Gedmo/Blameable/</directory>
         </testsuite>
         <testsuite name="Mapping Extension">
-            <directory suffix="Test.php">./Gedmo/Mapping/</directory>
+            <directory suffix="Test.php">./Mapping/</directory>
         </testsuite>
         <testsuite name="Loggable Extension">
             <directory suffix="Test.php">./Gedmo/Loggable/</directory>

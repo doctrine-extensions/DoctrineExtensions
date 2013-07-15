@@ -3,22 +3,26 @@
 namespace Translatable;
 
 use Doctrine\Common\EventManager;
-use Tool\BaseTestCaseORM;
+use TestTool\ObjectManagerTestCase;
 use Fixture\Translatable\Post;
 use Fixture\Translatable\PostTranslation;
 use Gedmo\Translatable\TranslatableListener;
 
-class TranslatableTest extends BaseTestCaseORM
+class TranslatableTest extends ObjectManagerTestCase
 {
     private $translatable;
+    private $em;
 
     protected function setUp()
     {
-        parent::setUp();
-
         $evm = new EventManager;
         $evm->addEventSubscriber($this->translatable = new TranslatableListener);
-        $this->getMockSqliteEntityManager($evm);
+        $this->em = $this->createEntityManager($evm);
+    }
+
+    protected function tearDown()
+    {
+        $this->releaseEntityManager($this->em);
     }
 
     /**

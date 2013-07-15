@@ -20,6 +20,10 @@ define('TESTS_PATH', __DIR__);
 define('TESTS_TEMP_DIR', __DIR__ . '/temp');
 define('VENDOR_PATH', realpath(__DIR__ . '/../vendor'));
 
+if (!is_dir(TESTS_TEMP_DIR)) {
+    mkdir(TESTS_TEMP_DIR);
+}
+
 if (!class_exists('PHPUnit_Framework_TestCase') ||
     version_compare(PHPUnit_Runner_Version::id(), '3.5') < 0
 ) {
@@ -33,23 +37,19 @@ if (!class_exists('PHPUnit_Framework_MockObject_MockBuilder')) {
 /** @var $loader ClassLoader */
 $loader = require __DIR__ . '/../vendor/autoload.php';
 
-$loader->add('Gedmo\\Mapping\\Mock', __DIR__);
-$loader->add('Tool', __DIR__ . '/Gedmo');
-// fixture namespaces
+// test tools
+$loader->add('TestTool', __DIR__);
+// fixtures
 $loader->add('Fixture', __DIR__);
 
-//$loader->add('Translator\\Fixture', __DIR__ . '/Gedmo');
-//$loader->add('Translatable\\Fixture', __DIR__ . '/Gedmo');
 $loader->add('Timestampable\\Fixture', __DIR__ . '/Gedmo');
 $loader->add('Blameable\\Fixture', __DIR__.'/Gedmo');
 $loader->add('Tree\\Fixture', __DIR__ . '/Gedmo');
 $loader->add('Sluggable\\Fixture', __DIR__ . '/Gedmo');
 $loader->add('Sortable\\Fixture', __DIR__ . '/Gedmo');
-$loader->add('Mapping\\Fixture', __DIR__ . '/Gedmo');
 $loader->add('Loggable\\Fixture', __DIR__ . '/Gedmo');
 $loader->add('SoftDeleteable\\Fixture', __DIR__ . '/Gedmo');
 $loader->add('Uploadable\\Fixture', __DIR__ . '/Gedmo');
-$loader->add('Wrapper\\Fixture', __DIR__ . '/Gedmo');
 $loader->add('ReferenceIntegrity\\Fixture', __DIR__ . '/Gedmo');
 $loader->add('References\\Fixture', __DIR__ . '/Gedmo');
 // stubs
