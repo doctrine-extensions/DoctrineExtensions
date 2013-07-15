@@ -19,7 +19,7 @@ class FilenameGeneratorAlphanumericTest extends \PHPUnit_Framework_TestCase
         $generator = new FilenameGeneratorAlphanumeric();
 
         $filename = 'MegaName_For_A_###$$$File$$$###';
-        $extension = '.exe';
+        $extension = 'exe';
 
         $this->assertEquals('meganame-for-a-file-.exe', $generator->generate($filename, $extension));
     }
