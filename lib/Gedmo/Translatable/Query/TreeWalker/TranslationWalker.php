@@ -291,8 +291,7 @@ class TranslationWalker extends SqlWalker
             $transMeta = $em->getClassMetadata($transClass);
             $transTable = $transMeta->getQuotedTableName($this->platform);
             foreach ($config['fields'] as $field) {
-                $compTableName = $meta->getQuotedTableName($this->platform);
-                $compTblAlias = $this->getSQLTableAlias($compTableName, $dqlAlias);
+                $compTblAlias = $this->walkIdentificationVariable($dqlAlias, $field);
                 $tblAlias = $this->getSQLTableAlias('trans'.$compTblAlias.$field);
                 $sql = " {$joinStrategy} JOIN ".$transTable.' '.$tblAlias;
                 $sql .= ' ON '.$tblAlias.'.'.$transMeta->getQuotedColumnName('locale', $this->platform)
