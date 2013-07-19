@@ -151,7 +151,7 @@ class Xml extends BaseXml
             throw new InvalidMappingException("You need to map a date field as the tree lock time field to activate locking support.");
         }
 
-        if ($xmlDoctrine->getName() == 'entity') {        
+        if ($xmlDoctrine->getName() == 'entity' || $xmlDoctrine->getName() == 'mapped-superclass') {        
             if (isset($xmlDoctrine->{'many-to-one'})) {
                 foreach ($xmlDoctrine->{'many-to-one'} as $manyToOneMapping)  {
                     /**
