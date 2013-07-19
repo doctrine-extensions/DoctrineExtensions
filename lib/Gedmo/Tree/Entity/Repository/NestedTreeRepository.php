@@ -793,7 +793,6 @@ class NestedTreeRepository extends AbstractTreeRepository
     /**
      * Tries to recover the tree
      *
-     * @todo implement
      * @throws RuntimeException - if something fails in transaction
      * @return void
      */
@@ -802,7 +801,70 @@ class NestedTreeRepository extends AbstractTreeRepository
         if ($this->verify() === true) {
             return;
         }
-        // not yet implemented
+        $roots = $this->getRootNodes();
+        foreach ($roots as $root) {
+            $nodes = $this->findBy(
+                array(
+                    'root' => $root->getId()
+                )
+            );
+            $adj = $this->createAdjacencyArray($root, $nodes);
+            $count = 1;
+            $this->traverseAndFix($root->getId(), $adj, $count);
+        }
+    }
+
+    /**
+     * Creates an Adjacency array of a node
+     *
+     * @param $root
+     * @param $nodes
+     * @return array
+     */
+    private function createAdjacencyArray($root, $nodes)
+    {
+        $adj = array();
+        // Build a complete copy of the asjacency table in ram
+        foreach ($nodes as $node) {
+            if (!is_null($node->getParent())) {
+                $parentId = $node->getParent()->getId();
+                $id = $node->getId();
+                if (!array_key_exists($parentId, $adj)) {
+                    $adj[$parentId] = array();
+                }
+                $adj[$parentId][] = $id;
+            }
+        }
+
+        return $adj;
+    }
+
+    /**
+     * Tranverses an Adjacency array and fixes the nodes within
+     *
+     * @param $rootId
+     * @param $link
+     * @param $count
+     */
+    private function traverseAndFix($rootId, $adj, &$count)
+    {
+        $lft = $count;
+        $count++;
+
+        $children = isset($adj[$rootId]) ? $adj[$rootId] : null;
+
+        if ($children) {
+            foreach ($children as $child) {
+                $this->traverseAndFix($child, $adj, $count);
+            }
+        }
+        $rgt = $count;
+        $count++;
+
+        $node = $this->find($rootId);
+        $node->setLft($lft);
+        $node->setRgt($rgt);
+        $this->getEntityManager()->persist($node);
     }
 
     /**
