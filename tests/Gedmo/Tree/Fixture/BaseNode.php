@@ -15,15 +15,6 @@ use Doctrine\ORM\Mapping as ORM;
 class BaseNode extends ANode
 {
     /**
-     * @Gedmo\TreeParent
-     * @ORM\ManyToOne(targetEntity="BaseNode", inversedBy="children")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="CASCADE")
-     * })
-     */
-    private $parent;
-
-    /**
      * @ORM\OneToMany(targetEntity="BaseNode", mappedBy="parent")
      */
     private $children;
@@ -55,19 +46,9 @@ class BaseNode extends ANode
         return $this->updated;
     }
 
-    public function setParent($parent = null)
-    {
-        $this->parent = $parent;
-    }
-
     public function getChildren()
     {
         return $this->children;
-    }
-
-    public function getParent()
-    {
-        return $this->parent;
     }
 
     public function getIdentifier()

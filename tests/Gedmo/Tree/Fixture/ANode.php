@@ -29,8 +29,25 @@ class ANode
      */
     private $rgt;
 
+    /**
+     * @Gedmo\TreeParent
+     * @ORM\ManyToOne(targetEntity="BaseNode", inversedBy="children")
+     * @ORM\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="CASCADE")
+     */
+    private $parent;
+
     public function getId()
     {
         return $this->id;
+    }
+
+    public function setParent($parent = null)
+    {
+        $this->parent = $parent;
+    }
+
+    public function getParent()
+    {
+        return $this->parent;
     }
 }
