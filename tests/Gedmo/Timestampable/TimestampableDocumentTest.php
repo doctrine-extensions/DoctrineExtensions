@@ -102,6 +102,23 @@ class TimestampableDocumentTest extends BaseTestCaseMongoODM
         );
     }
 
+    /**
+     * @test
+     */
+    function shouldHandleOnChangeWithBooleanValue()
+    {
+        $repo = $this->dm->getRepository(self::ARTICLE);
+        $article = $repo->findOneByTitle('Timestampable Article');
+
+        $this->assertNull($article->getReady());
+
+        $article->setIsReady(true);
+        $this->dm->persist($article);
+        $this->dm->flush();
+
+        $this->assertNotNull($article->getReady());
+    }
+
     private function populate()
     {
         $art0 = new Article();

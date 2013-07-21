@@ -47,6 +47,20 @@ class Article
      */
     private $published;
 
+
+    /**
+     * @var \DateTime
+     * @ODM\Date
+     * @Gedmo\Timestampable(on="change", field="isReady", value=true)
+     */
+    private $ready;
+
+    /**
+     * @var bool
+     * @ODM\Boolean
+     */
+    private $isReady = false;
+
     public function getId()
     {
         return $this->id;
@@ -100,5 +114,27 @@ class Article
     public function setUpdated(\DateTime $updated)
     {
         $this->updated = $updated;
+    }
+
+    public function setReady($ready)
+    {
+        $this->ready = $ready;
+        return $this;
+    }
+
+    public function getReady()
+    {
+        return $this->ready;
+    }
+
+    public function setIsReady($isReady)
+    {
+        $this->isReady = $isReady;
+        return $this;
+    }
+
+    public function getIsReady()
+    {
+        return $this->isReady;
     }
 }
