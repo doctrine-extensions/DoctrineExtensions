@@ -4,7 +4,6 @@ namespace Uploadable\Fixture\Entity;
 
 use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * @ORM\Entity
@@ -42,6 +41,8 @@ class Image
      */
     private $mime;
 
+    private $useBasePath = false;
+
     public function getId()
     {
         return $this->id;
@@ -67,8 +68,12 @@ class Image
         return $this->filePath;
     }
 
-    public function getPath()
+    public function getPath($basePath = null)
     {
+        if ($this->useBasePath) {
+            return $basePath.'/abc/def';
+        }
+
         return __DIR__.'/../../../../temp/uploadable';
     }
 
@@ -90,5 +95,10 @@ class Image
     public function getSize()
     {
         return $this->size;
+    }
+
+    public function setUseBasePath($useBasePath)
+    {
+        $this->useBasePath = $useBasePath;
     }
 }
