@@ -6,7 +6,7 @@
  */
 // connection args, modify at will
 $connection = array(
-    'host' => 'localhost',
+    'host' => '127.0.0.1',
     'port' => 3306,
     'user' => 'root',
     'password' => 'nimda',
@@ -40,7 +40,7 @@ $cachedAnnotationReader = new Doctrine\Common\Annotations\CachedReader(
     $cache // and a cache driver
 );
 // create a driver chain for metadata reading
-$driverChain = new Doctrine\ORM\Mapping\Driver\DriverChain();
+$driverChain = new Doctrine\Common\Persistence\Mapping\Driver\MappingDriverChain();
 // load superclass metadata mapping only, into driver chain
 // also registers Gedmo annotations.NOTE: you can personalize it
 Gedmo\DoctrineExtensions::registerAbstractMappingIntoDriverChainORM(
