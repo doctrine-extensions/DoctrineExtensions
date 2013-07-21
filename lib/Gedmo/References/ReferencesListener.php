@@ -90,6 +90,8 @@ class ReferencesListener extends MappedEventSubscriber
                 }
             }
         }
+
+        $this->updateManyEmbedReferences($eventArgs);
     }
 
     public function prePersist(EventArgs $eventArgs)
@@ -150,6 +152,43 @@ class ReferencesListener extends MappedEventSubscriber
                     );
                 }
             }
+        }
+        $this->updateManyEmbedReferences($eventArgs);
+    }
+
+    public function updateManyEmbedReferences(EventArgs $eventArgs)
+    {
+        $ea = $this->getEventAdapter($eventArgs);
+        $om = $ea->getObjectManager();
+        $object = $ea->getObject();
+        $meta = $om->getClassMetadata(get_class($object));
+        $config = $this->getConfiguration($om, $meta->name);
+        foreach ($config['referenceManyEmbed'] as $mapping) {
+            $property = $meta->reflClass->getProperty($mapping['field']);
+            $property->setAccessible(true);
+
+            $id = $ea->extractIdentifier($om, $object);
+            $manager = $this->getManager('document');
+
+            $class = $mapping['class'];
+            $refMeta = $manager->getClassMetadata($class);
+            $refConfig = $this->getConfiguration($manager, $refMeta->name);
+
+            $identifier = $mapping['identifier'];
+            $property->setValue(
+                $object,
+                new LazyCollection(
+                    function() use ($id, &$manager, $class, $identifier) {
+                        $results = $manager
+                            ->getRepository($class)
+                            ->findBy(array(
+                                $identifier => $id,
+                            ));
+
+                        return new ArrayCollection((is_array($results) ? $results : $results->toArray()));
+                    }
+                )
+            );
         }
     }
 }

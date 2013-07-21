@@ -28,9 +28,15 @@ class Annotation implements AnnotationDriverInterface
      */
     const REFERENCE_MANY = 'Gedmo\\Mapping\\Annotation\\ReferenceMany';
 
+    /**
+     * Annotation to mark field as reference to many
+     */
+    const REFERENCE_MANY_EMBED = 'Gedmo\\Mapping\\Annotation\\ReferenceManyEmbed';
+
     private $annotations = array(
         'referenceOne'  => self::REFERENCE_ONE,
         'referenceMany' => self::REFERENCE_MANY,
+        'referenceManyEmbed' => self::REFERENCE_MANY_EMBED,
     );
 
     /**
