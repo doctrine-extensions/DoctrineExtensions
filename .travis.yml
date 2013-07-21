@@ -3,6 +3,12 @@ language: php
 php:
   - 5.3
   - 5.4
+  - 5.5
+
+env:
+  - DB=mysql
+  - DB=pgsql
+  - DB=sqlite
 
 services: mongodb
 
@@ -10,7 +16,7 @@ before_script:
   - echo "extension = mongo.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
   - composer install --dev
 
-script: phpunit --coverage-text -c tests/
+script: phpunit --coverage-text -c tests/travis/$DB.phpunit.xml
 
 notifications:
   email:

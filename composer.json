@@ -52,10 +52,10 @@
         "symfony/yaml": "2.3.1"
     },
     "suggest": {
-        "doctrine/mongodb": ">=1.0.1",
-        "doctrine/mongodb-odm": ">=1.0.0-BETA7",
-        "doctrine/orm": ">=2.3.2",
-        "doctrine/dbal": ">=2.3.2"
+        "doctrine/mongodb": ">=1.0.3",
+        "doctrine/mongodb-odm": ">=1.0.0-BETA9",
+        "doctrine/orm": ">=2.4.0-RC2",
+        "doctrine/dbal": ">=2.4.0-RC2"
     },
     "autoload": {
         "psr-0": { "Gedmo\\": "lib/" }
