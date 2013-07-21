@@ -8,29 +8,26 @@
          processIsolation="false"
          stopOnFailure="false"
          syntaxCheck="false"
-         bootstrap="./tests/bootstrap.php"
+         bootstrap="./../bootstrap.php"
 >
     <testsuites>
 
         <testsuite name="Mapping Extension">
-            <directory suffix="Test.php">./tests/Mapping/</directory>
+            <directory suffix="Test.php">./../Mapping/</directory>
         </testsuite>
 
         <testsuite name="Translatable Extension">
-            <directory suffix="Test.php">./tests/Translatable/</directory>
+            <directory suffix="Test.php">./../Translatable/</directory>
         </testsuite>
 
     </testsuites>
 
-    <!-- uncomment to use a custom pdo database instead of sqlite memory
     <php>
         <var name="db_type" value="pdo_mysql"/>
         <var name="db_host" value="localhost" />
-        <var name="db_username" value="root" />
+        <var name="db_username" value="travis" />
         <var name="db_password" value="" />
         <var name="db_name" value="doctrine_extension_tests" />
         <var name="db_port" value="3306"/>
     </php>
-    -->
-
 </phpunit>

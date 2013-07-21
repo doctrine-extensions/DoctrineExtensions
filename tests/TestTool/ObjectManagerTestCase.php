@@ -238,17 +238,25 @@ abstract class ObjectManagerTestCase extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * If db_inc_file is defined in phpunit global variable
-     * it returns a result of it. Can be either dbal connection instance
-     * or an array of connection parameters. Otherwise returns
+     * If custom phpunit global database variables are defined
+     * it returns array of connection parameters. Otherwise returns
      * sqlite memory
      *
      * @return mixed - null if not configured to use specific database, or a connection value or parameters
      */
     protected function getDefaultDbalConnectionParams()
     {
-        if (isset($GLOBALS['db_inc_file'])) {
-            return include $GLOBALS['db_inc_file'];
+        $useGlobal = isset($GLOBALS['db_type'], $GLOBALS['db_username'], $GLOBALS['db_password']);
+        $useGlobal = $useGlobal && isset($GLOBALS['db_host'], $GLOBALS['db_name'], $GLOBALS['db_port']);
+        if ($useGlobal) {
+            return array(
+                'driver' => $GLOBALS['db_type'],
+                'user' => $GLOBALS['db_username'],
+                'password' => $GLOBALS['db_password'],
+                'host' => $GLOBALS['db_host'],
+                'dbname' => $GLOBALS['db_name'],
+                'port' => $GLOBALS['db_port']
+            );
         }
         return array('driver' => 'pdo_sqlite', 'memory' => true);
     }
