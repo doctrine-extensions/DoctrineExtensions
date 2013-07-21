@@ -3,7 +3,7 @@
 namespace Mapping;
 
 use Doctrine\Common\EventManager;
-use Tool\BaseTestCaseORM;
+use TestTool\ObjectManagerTestCase;
 use Fixture\EncoderExtension\EncoderListener;
 use Gedmo\Mapping\ExtensionMetadataFactory;
 use Fixture\Unmapped\Person;
@@ -12,34 +12,30 @@ use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 use Doctrine\ORM\Configuration;
 use Doctrine\ORM\EntityManager;
 
-class EncoderExtensionWithEntityManagerTest extends BaseTestCaseORM
+class EncoderExtensionWithEntityManagerTest extends ObjectManagerTestCase
 {
     const PERSON = 'Fixture\Unmapped\Person';
 
+    private $em;
+    private $encoder;
+
     protected function setUp()
     {
-        parent::setUp();
-
         $evm = new EventManager;
         $evm->addEventSubscriber($this->encoder = new EncoderListener);
 
-        $config = new Configuration;
-        $config->setProxyDir(TESTS_TEMP_DIR);
-        $config->setProxyNamespace('Mapping\Proxy');
+        $config = $this->getEntityManagerConfiguration();
         $config->setMetadataDriverImpl(new EncoderExtensionWithEntityManagerTestDriver);
 
-        $conn = array(
-            'driver' => 'pdo_sqlite',
-            'memory' => true,
-        );
-
-        $this->em = EntityManager::create($conn, $config, $evm);
-
-        $schemaTool = new \Doctrine\ORM\Tools\SchemaTool($this->em);
-        $schemaTool->dropSchema(array());
-        $schemaTool->createSchema(array(
-            $this->em->getClassMetadata(self::PERSON),
+        $this->em = $this->createEntityManager($evm, null, $config);
+        $this->createSchema($this->em, array(
+            self::PERSON
         ));
+    }
+
+    protected function tearDown()
+    {
+        $this->releaseEntityManager($this->em);
     }
 
     /**

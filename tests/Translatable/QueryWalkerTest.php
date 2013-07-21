@@ -4,7 +4,7 @@ namespace Translatable;
 
 use Doctrine\Common\EventManager;
 use Doctrine\ORM\Query;
-use Tool\BaseTestCaseORM;
+use TestTool\ObjectManagerTestCase;
 use Fixture\Translatable\Post;
 use Fixture\Translatable\PostTranslation;
 use Fixture\Translatable\Comment;
@@ -13,28 +13,30 @@ use Gedmo\Translatable\TranslatableListener;
 use Gedmo\Translatable\Query\TreeWalker\TranslationWalker;
 use Doctrine\Common\Cache\ArrayCache;
 
-class QueryWalkerTest extends BaseTestCaseORM
+class QueryWalkerTest extends ObjectManagerTestCase
 {
     const SQL_WALKER = 'Gedmo\Translatable\Query\TreeWalker\TranslationWalker';
 
     private $translatable;
+    private $em;
 
     protected function setUp()
     {
-        parent::setUp();
-
         $evm = new EventManager;
         $evm->addEventSubscriber($this->translatable = new TranslatableListener);
-        $conn = array(
-            'driver' => 'pdo_mysql',
-            'host' => '127.0.0.1',
-            'dbname' => 'test',
-            'user' => 'root',
-            'password' => 'nimda'
-        );
-        /* $this->getMockCustomEntityManager($conn, $evm); */
-        $this->getMockSqliteEntityManager($evm);
+        $this->em = $this->createEntityManager($evm);
+        $this->createSchema($this->em, array(
+            'Fixture\Translatable\Post',
+            'Fixture\Translatable\PostTranslation',
+            'Fixture\Translatable\Comment',
+            'Fixture\Translatable\CommentTranslation',
+        ));
         $this->populate();
+    }
+
+    protected function tearDown()
+    {
+        $this->releaseEntityManager($this->em);
     }
 
     /**
@@ -42,28 +44,25 @@ class QueryWalkerTest extends BaseTestCaseORM
      */
     function shouldHandleQueryCache()
     {
-        $this->em
-            ->getConfiguration()
-            ->expects($this->any())
-            ->method('getQueryCacheImpl')
-            ->will($this->returnValue($cache = new ArrayCache()));
+        $this->em->getConfiguration()->setQueryCacheImpl($cache = new ArrayCache());
 
         $q = $this->em->createQuery('SELECT p FROM Fixture\Translatable\Post p');
         $q->setHint(Query::HINT_CUSTOM_OUTPUT_WALKER, self::SQL_WALKER);
         $q->setHint(TranslatableListener::HINT_TRANSLATABLE_LOCALE, 'en');
 
         // array hydration
-        $this->startQueryLog();
+        $log = $this->startQueryLog($this->em);
         $result = $q->getArrayResult();
-        $this->assertEquals(1, $this->queryAnalyzer->getNumExecutedQueries());
+        $this->assertEquals(1, $log->getNumExecutedQueries());
         $this->assertCount(1, $result);
 
         $q2 = clone $q;
         $q2->setHint(Query::HINT_CUSTOM_OUTPUT_WALKER, self::SQL_WALKER);
         $q2->setHint(TranslatableListener::HINT_TRANSLATABLE_LOCALE, 'en');
-        $this->queryAnalyzer->cleanUp();
+
+        $log->cleanUp();
         $result = $q2->getArrayResult();
-        $this->assertEquals(1, $this->queryAnalyzer->getNumExecutedQueries());
+        $this->assertEquals(1, $log->getNumExecutedQueries());
         $this->assertCount(1, $result);
     }
 
@@ -127,36 +126,34 @@ DQL;
      */
     function shouldSelectWithTranslationFallbackOnObjectHydration()
     {
-        $this->em
-            ->getConfiguration()
-            ->expects($this->any())
-            ->method('getCustomHydrationMode')
-            ->with(TranslationWalker::HYDRATE_OBJECT_TRANSLATION)
-            ->will($this->returnValue('Gedmo\Translatable\Hydrator\ORM\ObjectHydrator'));
+        $this->em->getConfiguration()->addCustomHydrationMode(
+            TranslationWalker::HYDRATE_OBJECT_TRANSLATION,
+            'Gedmo\Translatable\Hydrator\ORM\ObjectHydrator'
+        );
 
         $q = $this->em->createQuery('SELECT p FROM Fixture\Translatable\Post p');
         $q->setHint(Query::HINT_CUSTOM_OUTPUT_WALKER, self::SQL_WALKER);
         $q->setHint(TranslatableListener::HINT_TRANSLATABLE_LOCALE, 'ru');
 
         // object hydration
-        $this->startQueryLog();
+        $log = $this->startQueryLog($this->em);
         $result = $q->getResult();
-        $this->assertEquals(1, $this->queryAnalyzer->getNumExecutedQueries());
+        $this->assertEquals(1, $log->getNumExecutedQueries());
         $this->assertEquals(null, $result[0]->getTitle());
         $this->assertEquals(null, $result[0]->getContent());
 
         $q->setHint(TranslatableListener::HINT_FALLBACK, array('en'));
-        $this->queryAnalyzer->cleanUp();
+        $log->cleanUp();
         $result = $q->getResult();
-        $this->assertEquals(1, $this->queryAnalyzer->getNumExecutedQueries());
+        $this->assertEquals(1, $log->getNumExecutedQueries());
         $this->assertEquals('Food', $result[0]->getTitle());
         $this->assertEquals('about food', $result[0]->getContent());
 
         // test multiple fallbacks
         $q->setHint(TranslatableListener::HINT_FALLBACK, array('undef', 'lt'));
-        $this->queryAnalyzer->cleanUp();
+        $log->cleanUp();
         $result = $q->getResult();
-        $this->assertEquals(1, $this->queryAnalyzer->getNumExecutedQueries());
+        $this->assertEquals(1, $log->getNumExecutedQueries());
         $this->assertEquals('Maistas', $result[0]->getTitle());
         $this->assertEquals('apie maista', $result[0]->getContent());
     }
@@ -195,12 +192,10 @@ DQL;
      */
     function shouldTranslateSecondJoinedComponentTranslation()
     {
-        $this->em
-            ->getConfiguration()
-            ->expects($this->any())
-            ->method('getCustomHydrationMode')
-            ->with(TranslationWalker::HYDRATE_OBJECT_TRANSLATION)
-            ->will($this->returnValue('Gedmo\Translatable\Hydrator\ORM\ObjectHydrator'));
+        $this->em->getConfiguration()->addCustomHydrationMode(
+            TranslationWalker::HYDRATE_OBJECT_TRANSLATION,
+            'Gedmo\Translatable\Hydrator\ORM\ObjectHydrator'
+        );
 
         $dql = <<<DQL
     SELECT p, c
@@ -272,12 +267,10 @@ DQL;
      */
     function shouldTranslatePartialComponentTranslation()
     {
-        $this->em
-            ->getConfiguration()
-            ->expects($this->any())
-            ->method('getCustomHydrationMode')
-            ->with(TranslationWalker::HYDRATE_OBJECT_TRANSLATION)
-            ->will($this->returnValue('Gedmo\Translatable\Hydrator\ORM\ObjectHydrator'));
+        $this->em->getConfiguration()->addCustomHydrationMode(
+            TranslationWalker::HYDRATE_OBJECT_TRANSLATION,
+            'Gedmo\Translatable\Hydrator\ORM\ObjectHydrator'
+        );
 
         $dql = 'SELECT p.title FROM Fixture\Translatable\Post p';
         $q = $this->em->createQuery($dql);
@@ -343,12 +336,10 @@ DQL;
      */
     function shouldTranslateSingleComponentQuery()
     {
-        $this->em
-            ->getConfiguration()
-            ->expects($this->any())
-            ->method('getCustomHydrationMode')
-            ->with(TranslationWalker::HYDRATE_OBJECT_TRANSLATION)
-            ->will($this->returnValue('Gedmo\Translatable\Hydrator\ORM\ObjectHydrator'));
+        $this->em->getConfiguration()->addCustomHydrationMode(
+            TranslationWalker::HYDRATE_OBJECT_TRANSLATION,
+            'Gedmo\Translatable\Hydrator\ORM\ObjectHydrator'
+        );
 
         $q = $this->em->createQuery('SELECT p FROM Fixture\Translatable\Post p');
         $q->setHint(Query::HINT_CUSTOM_OUTPUT_WALKER, self::SQL_WALKER);
@@ -420,16 +411,6 @@ DQL;
         $this->em->persist($badFood);
         $this->em->flush();
         $this->em->clear();
-    }
-
-    protected function getUsedEntityFixtures()
-    {
-        return array(
-            'Fixture\Translatable\Post',
-            'Fixture\Translatable\PostTranslation',
-            'Fixture\Translatable\Comment',
-            'Fixture\Translatable\CommentTranslation',
-        );
     }
 }
 

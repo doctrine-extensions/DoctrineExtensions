@@ -9,29 +9,26 @@ use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 use Doctrine\ORM\Configuration;
 use Gedmo\Timestampable\TimestampableListener;
 use Doctrine\Common\Cache\Cache;
-use Doctrine\ORM\EntityManager;
+use TestTool\ObjectManagerTestCase;
 
-class CacheTest extends \PHPUnit_Framework_TestCase
+class CacheTest extends ObjectManagerTestCase
 {
     const PERSON = 'Fixture\Unmapped\Person';
 
+    private $em;
+    private $timestampable;
+    private $cache;
+
     protected function setUp()
     {
-        parent::setUp();
-        $config = new Configuration;
-        $config->setProxyDir(TESTS_TEMP_DIR);
-        $config->setProxyNamespace('Mapping\Proxy');
+        $evm = new EventManager;
+        $evm->addEventSubscriber($this->timestampable = new TimestampableListener);
+
+        $config = $this->getEntityManagerConfiguration();
         $config->setMetadataDriverImpl(new CacheTestDriver);
+        $config->setMetadataCacheImpl($this->cache = new CacheTestMock);
 
-        $this->config = $config;
-        $this->conn = array(
-            'driver' => 'pdo_sqlite',
-            'memory' => true,
-        );
-
-        $this->evm = new EventManager;
-        $this->timestampable = new TimestampableListener;
-        $this->evm->addEventSubscriber($this->timestampable);
+        $this->em = $this->createEntityManager($evm, null, $config);
     }
 
     /**
@@ -39,16 +36,15 @@ class CacheTest extends \PHPUnit_Framework_TestCase
      */
     function shouldTriggerExtensionCaching()
     {
-        $cache = new CacheTestMock;
-        $this->config->setMetadataCacheImpl($cache);
-        $em = EntityManager::create($this->conn, $this->config, $this->evm);
-        $em->getClassMetadata(self::PERSON);
+        $this->em->getClassMetadata(self::PERSON);
 
-        $this->assertTrue(in_array('Fixture\Unmapped\Person$CLASSMETADATA', $cache->calls['fetch']));
+        $this->assertTrue(isset($this->cache->calls['fetch']));
+        $this->assertTrue(in_array('Fixture\Unmapped\Person$CLASSMETADATA', $this->cache->calls['fetch']));
 
-        $this->assertTrue(in_array('Fixture\Unmapped\Person\$GEDMO_TIMESTAMPABLE_CLASSMETADATA', $cache->calls['save']));
-        $this->assertTrue(in_array('Fixture\Unmapped\Nameable$CLASSMETADATA', $cache->calls['save']));
-        $this->assertTrue(in_array('Fixture\Unmapped\Person$CLASSMETADATA', $cache->calls['save']));
+        $this->assertTrue(isset($this->cache->calls['save']));
+        $this->assertTrue(in_array('Fixture\Unmapped\Person\$GEDMO_TIMESTAMPABLE_CLASSMETADATA', $this->cache->calls['save']));
+        $this->assertTrue(in_array('Fixture\Unmapped\Nameable$CLASSMETADATA', $this->cache->calls['save']));
+        $this->assertTrue(in_array('Fixture\Unmapped\Person$CLASSMETADATA', $this->cache->calls['save']));
     }
 }
 

@@ -4,24 +4,32 @@ namespace Translatable;
 
 use Doctrine\Common\EventManager;
 use Doctrine\ORM\PersistentCollection;
-use Tool\BaseTestCaseORM;
+use TestTool\ObjectManagerTestCase;
 use Fixture\Translatable\Sluggable\Post;
 use Fixture\Translatable\Sluggable\PostTranslation;
 use Gedmo\Translatable\TranslatableListener;
 use Gedmo\Sluggable\SluggableListener;
 
-class UniqueSlugTranslationTest extends BaseTestCaseORM
+class UniqueSlugTranslationTest extends ObjectManagerTestCase
 {
     private $translatable;
+    private $em;
 
     protected function setUp()
     {
-        parent::setUp();
-
         $evm = new EventManager;
         $evm->addEventSubscriber($this->translatable = new TranslatableListener);
         $evm->addEventSubscriber(new SluggableListener);
-        $this->getMockSqliteEntityManager($evm);
+        $this->em = $this->createEntityManager($evm);
+        $this->createSchema($this->em, array(
+            'Fixture\Translatable\Sluggable\Post',
+            'Fixture\Translatable\Sluggable\PostTranslation',
+        ));
+    }
+
+    protected function tearDown()
+    {
+        $this->releaseEntityManager($this->em);
     }
 
     /**
@@ -123,14 +131,6 @@ class UniqueSlugTranslationTest extends BaseTestCaseORM
         }
         $this->assertNotNull($transByLocale, "Translation was not found by locale: $locale");
         $this->assertSame($slug, $transByLocale->getSlug(), "Slug was not same as expected");
-    }
-
-    protected function getUsedEntityFixtures()
-    {
-        return array(
-            'Fixture\Translatable\Sluggable\Post',
-            'Fixture\Translatable\Sluggable\PostTranslation',
-        );
     }
 }
 

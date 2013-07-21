@@ -8,32 +8,30 @@ use Doctrine\ORM\Configuration;
 use Doctrine\Common\EventManager;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Tools\SchemaTool;
+use TestTool\ObjectManagerTestCase;
 
-class CustomDriverTest extends \PHPUnit_Framework_TestCase
+class CustomDriverTest extends ObjectManagerTestCase
 {
-    public function setUp()
+    private $em;
+    private $timestampable;
+
+    protected function setUp()
     {
-        $config = new Configuration();
-        $config->setProxyDir(TESTS_TEMP_DIR);
-        $config->setProxyNamespace('Mapping\Proxy');
+        $evm = new EventManager;
+        $evm->addEventSubscriber($this->timestampable = new TimestampableListener);
+
+        $config = $this->getEntityManagerConfiguration();
         $config->setMetadataDriverImpl(new CustomDriverTestDriver);
 
-        $conn = array(
-            'driver' => 'pdo_sqlite',
-            'memory' => true,
-        );
-
-        $evm = new EventManager;
-        $this->timestampable = new TimestampableListener;
-        $this->timestampable->setAnnotationReader($_ENV['annotation_reader']);
-        $evm->addEventSubscriber($this->timestampable);
-        $this->em = EntityManager::create($conn, $config, $evm);
-
-        $schemaTool = new SchemaTool($this->em);
-        $schemaTool->dropSchema(array());
-        $schemaTool->createSchema(array(
-            $this->em->getClassMetadata('Fixture\Unmapped\Person'),
+        $this->em = $this->createEntityManager($evm, null, $config);
+        $this->createSchema($this->em, array(
+            'Fixture\Unmapped\Person'
         ));
+    }
+
+    protected function tearDown()
+    {
+        $this->releaseEntityManager($this->em);
     }
 
     /**
@@ -41,6 +39,7 @@ class CustomDriverTest extends \PHPUnit_Framework_TestCase
      */
     public function shouldBeAbleToReadAnnotationsForCustomMetadataDriver()
     {
+        $this->em->getClassMetadata('Fixture\Unmapped\Person');
         // driver falls back to annotation driver
         $conf = $this->timestampable->getConfiguration(
             $this->em,

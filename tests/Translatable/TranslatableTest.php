@@ -18,6 +18,11 @@ class TranslatableTest extends ObjectManagerTestCase
         $evm = new EventManager;
         $evm->addEventSubscriber($this->translatable = new TranslatableListener);
         $this->em = $this->createEntityManager($evm);
+
+        $this->createSchema($this->em, array(
+            'Fixture\Translatable\Post',
+            'Fixture\Translatable\PostTranslation',
+        ));
     }
 
     protected function tearDown()
@@ -124,14 +129,6 @@ class TranslatableTest extends ObjectManagerTestCase
 
         $translations = $this->em->getRepository('Fixture\Translatable\PostTranslation')->findAll();
         $this->assertCount(3, $translations, "There should be three translations available");
-    }
-
-    protected function getUsedEntityFixtures()
-    {
-        return array(
-            'Fixture\Translatable\Post',
-            'Fixture\Translatable\PostTranslation',
-        );
     }
 }
 

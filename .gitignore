@@ -1,4 +1,4 @@
-tests/phpunit.xml
+/phpunit.xml
 tests/temp/*.php
 scripts/
 vendor/

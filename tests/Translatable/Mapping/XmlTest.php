@@ -3,47 +3,33 @@
 namespace Translatable\Mapping;
 
 use Doctrine\Common\EventManager;
-use Doctrine\ORM\Mapping\Driver\DriverChain;
+use Doctrine\Common\Persistence\Mapping\Driver\MappingDriverChain;
 use Doctrine\ORM\Mapping\Driver\XmlDriver;
 use Doctrine\ORM\Mapping\Driver\SimplifiedXmlDriver;
 use Gedmo\Translatable\TranslatableListener;
-use Tool\BaseTestCaseOM;
+use TestTool\ObjectManagerTestCase;
 use DOMDocument;
 
-class XmlTest extends BaseTestCaseOM
+class XmlTest extends ObjectManagerTestCase
 {
-    /**
-     * @var Doctrine\ORM\EntityManager
-     */
     private $em;
-
-    /**
-     * @var Gedmo\Translatable\TranslatableListener
-     */
     private $translatable;
-
-    private $rootProjectDirectory;
 
     public function setUp()
     {
-        parent::setUp();
-
-        $this->rootProjectDirectory = realpath(__DIR__.'/../../..');
         $xmlDriver = new XmlDriver(__DIR__);
         $xmlSimplifiedDriver = new SimplifiedXmlDriver(array(
-            $this->rootProjectDirectory.'/lib/Gedmo/Translatable/Mapping/Resources' => 'Gedmo\Translatable\Entity\MappedSuperclass'
+            $this->getRootDir().'/lib/Gedmo/Translatable/Mapping/Resources' => 'Gedmo\Translatable\Entity\MappedSuperclass'
         ), '.orm.xml');
-        $chain = new DriverChain;
+        $chain = new MappingDriverChain;
         $chain->addDriver($xmlSimplifiedDriver, 'Gedmo\Translatable');
         $chain->addDriver($xmlDriver, 'Fixture\Unmapped');
 
-        $this->evm = new EventManager;
-        $this->evm->addEventSubscriber($this->translatable = new TranslatableListener);
+        $evm = new EventManager;
+        $evm->addEventSubscriber($this->translatable = new TranslatableListener);
 
-        $this->em = $this->getMockSqliteEntityManager(array(
-            'Fixture\Unmapped\Translatable',
-            'Fixture\Unmapped\TranslatableTranslation',
-        ), $chain);
+        $this->em = $this->createEntityManager($evm);
+        $this->em->getConfiguration()->setMetadataDriverImpl($chain);
     }
 
     /**

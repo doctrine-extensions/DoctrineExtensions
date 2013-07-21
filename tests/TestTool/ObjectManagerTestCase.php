@@ -9,14 +9,15 @@ use Doctrine\Common\EventManager;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Tools\SchemaTool;
-use Doctrine\ORM\Configuration;
+use Doctrine\ORM\Configuration as EntityManagerConfiguration;
 use Doctrine\ORM\Mapping\DefaultQuoteStrategy;
 use Doctrine\ORM\Mapping\DefaultNamingStrategy;
 use Doctrine\ORM\Repository\DefaultRepositoryFactory;
 use Doctrine\DBAL\DriverManager;
 
-use Doctrine\ODM\MongoDB\Mapping\Driver\AnnotationDriver as MongoAnnationDriver;
+use Doctrine\ODM\MongoDB\Mapping\Driver\AnnotationDriver as MongoAnnotationDriver;
 use Doctrine\ODM\MongoDB\DocumentManager;
+use Doctrine\ODM\MongoDB\Configuration as MongoDBDocumentManagerConfiguration;
 use Doctrine\MongoDB\Connection;
 
 use Gedmo\Translatable\TranslatableListener;
@@ -47,33 +48,14 @@ abstract class ObjectManagerTestCase extends \PHPUnit_Framework_TestCase
      * @param array $config - ORM configuration, defaults to annotation driver based mock
      * @return EntityManager
      */
-    protected function createEntityManager(EventManager $evm = null, $conn = null, Configuration $config = null)
+    protected function createEntityManager(EventManager $evm = null, $conn = null, EntityManagerConfiguration $config = null)
     {
-        $conn = $conn ?: $this->getGlobalDbalConn(); // try a global connection first on fallback
-
         $em = EntityManager::create(
-            $conn ?: array('driver' => 'pdo_sqlite', 'memory' => true), // fallback to sqlite if theres no global or dirrect
-            $config ?: $this->getMockAnnotatedEntityConfig(),
+            $conn ?: $this->getDefaultDbalConnectionParams(),
+            $config ?: $this->getEntityManagerConfiguration(),
             $evm ?: $this->getEventManager()
         );
 
-        if ($fixtures = $this->getUsedEntityFixtures()) {
-            $params = $em->getConnection()->getParams();
-            $name = isset($params['path']) ? $params['path'] : (isset($params['dbname']) ? $params['dbname'] : false);
-            unset($params['dbname']);
-            if ($name) {
-                $tmpConnection = DriverManager::getConnection($params);
-                $tmpConnection->getSchemaManager()->createDatabase($name);
-            }
-
-            $schema = array_map(function($class) use ($em) {
-                return $em->getClassMetadata($class);
-            }, $fixtures);
-
-            $schemaTool = new SchemaTool($em);
-            $schemaTool->dropSchema(array());
-            $schemaTool->createSchema($schema);
-        }
         return $em;
     }
 
@@ -86,18 +68,43 @@ abstract class ObjectManagerTestCase extends \PHPUnit_Framework_TestCase
      * @param array $config - ODM mongodb configuration, defaults to annotation driver based mock
      * @return DocumentManager
      */
-    protected function createDocumentManager(EventManager $evm = null, Connection $conn = null, $config = null)
+    protected function createDocumentManager(EventManager $evm = null, Connection $conn = null, MongoDBDocumentManagerConfiguration $config = null)
     {
         if (!class_exists('Mongo')) {
             $this->markTestSkipped('Missing PHP Mongo database extension.');
         }
         $dm = DocumentManager::create(
             $conn ?: new Connection,
-            $config ?: $this->getMockAnnotatedMongoDocumentConfig(),
+            $config ?: $this->getMongoDBDocumentManagerConfiguration(),
             $evm ?: $this->getEventManager()
         );
         $dm->getConnection()->connect();
         return $dm;
+    }
+
+    /**
+     * Creates database schema for EntityManager $em
+     *
+     * @param EntityManager $em
+     * @param array $entityClassNames
+     */
+    protected function createSchema(EntityManager $em, array $entityClassNames)
+    {
+        $params = $em->getConnection()->getParams();
+        $name = isset($params['path']) ? $params['path'] : (isset($params['dbname']) ? $params['dbname'] : false);
+        unset($params['dbname']);
+        if ($name) {
+            $tmpConnection = DriverManager::getConnection($params);
+            $tmpConnection->getSchemaManager()->createDatabase($name);
+        }
+
+        $schema = array_map(function($class) use ($em) {
+            return $em->getClassMetadata($class);
+        }, $entityClassNames);
+
+        $schemaTool = new SchemaTool($em);
+        $schemaTool->dropSchema(array());
+        $schemaTool->createSchema($schema);
     }
 
     /**
@@ -143,7 +150,7 @@ abstract class ObjectManagerTestCase extends \PHPUnit_Framework_TestCase
         if (!$platform = $em->getConnection()->getDatabasePlatform()) {
             throw new \RuntimeException('EntityManager and database platform must be initialized');
         }
-        $analyzer = new QueryAnalyzer($platform);
+        $analyzer = new DbalQueryAnalyzer($platform);
         $conf = $em->getConfiguration();
         if ($conf instanceof \PHPUnit_Framework_MockObject_MockObject) {
             $conf
@@ -155,14 +162,6 @@ abstract class ObjectManagerTestCase extends \PHPUnit_Framework_TestCase
         }
         return $analyzer;
     }
-
-    /**
-     * Get a list of used fixture classes,
-     * if empty, schema will not be built
-     *
-     * @return array
-     */
-    abstract protected function getUsedEntityFixtures();
 
     /**
      * Build event manager
@@ -207,68 +206,13 @@ abstract class ObjectManagerTestCase extends \PHPUnit_Framework_TestCase
      *
      * @return Doctrine\ORM\Configuration
      */
-    private function getMockAnnotatedEntityConfig()
+    protected function getEntityManagerConfiguration()
     {
-        // We need to mock every method except the ones which
-        // handle the filters
-        $configurationClass = 'Doctrine\ORM\Configuration';
-        $refl = new \ReflectionClass($configurationClass);
-        $methods = $refl->getMethods();
-
-        $mockMethods = array();
-
-        foreach ($methods as $method) {
-            if ($method->name !== 'addFilter' && $method->name !== 'getFilterClassName') {
-                $mockMethods[] = $method->name;
-            }
-        }
-
-        $config = $this->getMock($configurationClass, $mockMethods);
-
-        $config
-            ->expects($this->once())
-            ->method('getProxyDir')
-            ->will($this->returnValue($this->getTempDir()));
-
-        $config
-            ->expects($this->once())
-            ->method('getProxyNamespace')
-            ->will($this->returnValue('Proxy'));
-
-        $config
-            ->expects($this->once())
-            ->method('getAutoGenerateProxyClasses')
-            ->will($this->returnValue(true));
-
-        $config
-            ->expects($this->once())
-            ->method('getClassMetadataFactoryName')
-            ->will($this->returnValue('Doctrine\\ORM\\Mapping\\ClassMetadataFactory'));
-
-        $config
-            ->expects($this->any())
-            ->method('getMetadataDriverImpl')
-            ->will($this->returnValue(new AnnotationDriver($_ENV['annotation_reader'])));
-
-        $config
-            ->expects($this->any())
-            ->method('getDefaultRepositoryClassName')
-            ->will($this->returnValue('Doctrine\\ORM\\EntityRepository'));
-
-        $config
-            ->expects($this->any())
-            ->method('getQuoteStrategy')
-            ->will($this->returnValue(new DefaultQuoteStrategy));
-
-        $config
-            ->expects($this->any())
-            ->method('getNamingStrategy')
-            ->will($this->returnValue(new DefaultNamingStrategy));
-
-        $config
-            ->expects($this->once())
-            ->method('getRepositoryFactory')
-            ->will($this->returnValue(new DefaultRepositoryFactory));
+        $config = new EntityManagerConfiguration;
+        $config->setProxyDir($this->getTempDir());
+        $config->setProxyNamespace('ProxyORM');
+        $config->setAutoGenerateProxyClasses(true);
+        $config->setMetadataDriverImpl(new AnnotationDriver($_ENV['annotation_reader']));
 
         return $config;
     }
@@ -278,57 +222,17 @@ abstract class ObjectManagerTestCase extends \PHPUnit_Framework_TestCase
      *
      * @return Doctrine\ODM\MongoDB\Configuration
      */
-    private function getMockAnnotatedMongoDocumentConfig()
+    protected function getMongoDBDocumentManagerConfiguration()
     {
-        $config = $this->getMock('Doctrine\\ODM\\MongoDB\\Configuration');
-
-        $config->expects($this->any())
-            ->method('getFilterClassName')
-            ->will($this->returnValue('Gedmo\\SoftDeleteable\\Filter\\ODM\\SoftDeleteableFilter'));
-
-        $config->expects($this->once())
-            ->method('getProxyDir')
-            ->will($this->returnValue($this->getTempDir()));
-
-        $config->expects($this->once())
-            ->method('getProxyNamespace')
-            ->will($this->returnValue('Proxy'));
-
-        $config->expects($this->once())
-            ->method('getHydratorDir')
-            ->will($this->returnValue($this->getTempDir()));
-
-        $config->expects($this->once())
-            ->method('getHydratorNamespace')
-            ->will($this->returnValue('Hydrator'));
-
-        $config->expects($this->any())
-            ->method('getDefaultDB')
-            ->will($this->returnValue('gedmo_extensions_test'));
-
-        $config->expects($this->once())
-            ->method('getAutoGenerateProxyClasses')
-            ->will($this->returnValue(true));
-
-        $config->expects($this->once())
-            ->method('getAutoGenerateHydratorClasses')
-            ->will($this->returnValue(true));
-
-        $config->expects($this->once())
-            ->method('getClassMetadataFactoryName')
-            ->will($this->returnValue('Doctrine\\ODM\\MongoDB\\Mapping\\ClassMetadataFactory'));
-
-        $config->expects($this->any())
-            ->method('getMongoCmd')
-            ->will($this->returnValue('$'));
-
-        $config->expects($this->any())
-            ->method('getDefaultCommitOptions')
-            ->will($this->returnValue(array('safe' => true)));
-
-        $config->expects($this->any())
-            ->method('getMetadataDriverImpl')
-            ->will($this->returnValue(new MongoAnnotationDriver($_ENV['annotation_reader'])));
+        $config = new MongoDBDocumentManagerConfiguration;
+        $config->setProxyDir($this->getTempDir());
+        $config->setProxyNamespace('ProxyDM');
+        $config->setHydratorDir($this->getTempDir());
+        $config->setHydratorNamespace('HydratorDM');
+        $config->setDefaultDB('gedmo_extensions_test');
+        $config->setAutoGenerateProxyClasses(true);
+        $config->setAutoGenerateHydratorClasses(true);
+        $config->setMetadataDriverImpl(new MongoAnnotationDriver($_ENV['annotation_reader']));
 
         return $config;
     }
@@ -336,15 +240,16 @@ abstract class ObjectManagerTestCase extends \PHPUnit_Framework_TestCase
     /**
      * If db_inc_file is defined in phpunit global variable
      * it returns a result of it. Can be either dbal connection instance
-     * or an array of connection parameters
+     * or an array of connection parameters. Otherwise returns
+     * sqlite memory
      *
      * @return mixed - null if not configured to use specific database, or a connection value or parameters
      */
-    private function getGlobalDbalConn()
+    protected function getDefaultDbalConnectionParams()
     {
         if (isset($GLOBALS['db_inc_file'])) {
             return include $GLOBALS['db_inc_file'];
         }
-        return null;
+        return array('driver' => 'pdo_sqlite', 'memory' => true);
     }
 }
