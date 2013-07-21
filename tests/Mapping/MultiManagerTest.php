@@ -7,50 +7,55 @@ use Doctrine\ORM\Mapping\Driver\DriverChain;
 use Doctrine\ORM\Mapping\Driver\YamlDriver;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
 use Gedmo\Mapping\ExtensionMetadataFactory;
-use Tool\BaseTestCaseOM;
+use TestTool\ObjectManagerTestCase;
 use Doctrine\ORM\Mapping\Driver\SimplifiedYamlDriver;
 
-class MultiManagerTest extends BaseTestCaseOM
+class MultiManagerTest extends ObjectManagerTestCase
 {
-    /**
-     * @var Doctrine\ORM\EntityManager
-     */
     private $em1;
-
-    /**
-     * @var Doctrine\ORM\EntityManager
-     */
     private $em2;
-
-    /**
-     * @var Doctrine\ODM\MongoDB\DocumentManager
-     */
     private $dm1;
 
     public function setUp()
     {
-        parent::setUp();
         // EM with standard annotation mapping
-        $this->em1 = $this->getMockSqliteEntityManager(array(
+        $this->em1 = $this->createEntityManager();
+        $this->createSchema($this->em1, array(
             'Fixture\Translatable\Post',
             'Fixture\Translatable\PostTranslation'
         ));
+
         // EM with yaml mapping
         $yamlDriver = new YamlDriver(__DIR__.'/../Translatable/Mapping');
         $yamlSimplifiedDriver = new SimplifiedYamlDriver(array(
-            __DIR__.'/../../lib/Gedmo/Translatable/Mapping/Resources' => 'Gedmo\Translatable\Entity\MappedSuperclass'
+            $this->getRootDir().'/lib/Gedmo/Translatable/Mapping/Resources' => 'Gedmo\Translatable\Entity\MappedSuperclass'
         ), '.orm.yml');
 
         $chain = new DriverChain;
         $chain->addDriver($yamlSimplifiedDriver, 'Gedmo\Translatable');
         $chain->addDriver($yamlDriver, 'Fixture\Unmapped');
 
-        $this->em2 = $this->getMockSqliteEntityManager(array(
+        $config = $this->getEntityManagerConfiguration();
+        $config->setMetadataDriverImpl($chain);
+
+        $conn = $this->getDefaultDbalConnectionParams();
+        if (isset($conn['dbname'])) {
+            $conn['dbname'] .= '2'; // should have a different database name
+        }
+        $this->em2 = $this->createEntityManager(null, $conn, $config);
+        $this->createSchema($this->em2, array(
             'Fixture\Unmapped\Translatable',
             'Fixture\Unmapped\TranslatableTranslation',
-        ), $chain);
+        ));
         // DM with standard annotation mapping
-        $this->dm1 = $this->getMockDocumentManager('gedmo_extensions_test');
+        $this->dm1 = $this->createDocumentManager();
+    }
+
+    protected function tearDown()
+    {
+        $this->releaseEntityManager($this->em1);
+        $this->releaseEntityManager($this->em2);
+        $this->releaseDocumentManager($this->dm1);
     }
 
     /**

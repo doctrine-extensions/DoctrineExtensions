@@ -3,52 +3,38 @@
 namespace Translatable\Mapping;
 
 use Doctrine\Common\EventManager;
-use Doctrine\ORM\Mapping\Driver\DriverChain;
+use Doctrine\Common\Persistence\Mapping\Driver\MappingDriverChain;
 use Doctrine\ORM\Mapping\Driver\YamlDriver;
 use Doctrine\ORM\Mapping\Driver\SimplifiedYamlDriver;
 use Gedmo\Translatable\TranslatableListener;
-use Tool\BaseTestCaseOM;
+use TestTool\ObjectManagerTestCase;
 
-class YamlTest extends BaseTestCaseOM
+class YamlTest extends ObjectManagerTestCase
 {
-    /**
-     * @var Doctrine\ORM\EntityManager
-     */
     private $em;
-
-    /**
-     * @var Gedmo\Translatable\TranslatableListener
-     */
     private $translatable;
-
-    private $rootProjectDirectory;
 
     public function setUp()
     {
-        parent::setUp();
-
-        $this->rootProjectDirectory = realpath(__DIR__.'/../../..');
         $yamlDriver = new YamlDriver(array(__DIR__));
         $yamlSimplifiedDriver = new SimplifiedYamlDriver(array(
-            $this->rootProjectDirectory.'/lib/Gedmo/Translatable/Mapping/Resources' => 'Gedmo\Translatable\Entity\MappedSuperclass'
+            $this->getRootDir().'/lib/Gedmo/Translatable/Mapping/Resources' => 'Gedmo\Translatable\Entity\MappedSuperclass'
         ), '.orm.yml');
-        $chain = new DriverChain;
+        $chain = new MappingDriverChain;
         $chain->addDriver($yamlSimplifiedDriver, 'Gedmo\Translatable');
         $chain->addDriver($yamlDriver, 'Fixture\Unmapped');
 
-        $this->evm = new EventManager;
-        $this->evm->addEventSubscriber($this->translatable = new TranslatableListener);
+        $evm = new EventManager;
+        $evm->addEventSubscriber($this->translatable = new TranslatableListener);
 
-        $this->em = $this->getMockSqliteEntityManager(array(
-            'Fixture\Unmapped\Translatable',
-            'Fixture\Unmapped\TranslatableTranslation',
-        ), $chain);
+        $this->em = $this->createEntityManager($evm);
+        $this->em->getConfiguration()->setMetadataDriverImpl($chain);
     }
 
     /**
      * @test
      */
-    function shouldSupportXmlMapping()
+    function shouldSupportYamlMapping()
     {
         $meta = $this->em->getClassMetadata('Fixture\Unmapped\Translatable');
         $config = $this->translatable->getConfiguration($this->em, $meta->name);

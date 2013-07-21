@@ -2,7 +2,7 @@
 
 namespace Mapping;
 
-use Tool\BaseTestCaseMongoODM;
+use TestTool\ObjectManagerTestCase;
 use Doctrine\Common\EventManager;
 use Gedmo\Mapping\ExtensionMetadataFactory;
 use Fixture\Unmapped\Person;
@@ -13,26 +13,27 @@ use Doctrine\ODM\MongoDB\DocumentManager;
 use Doctrine\Common\Persistence\Mapping\Driver\MappingDriver;
 use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 
-class EncoderExtensionWithDocumentManagerTest extends BaseTestCaseMongoODM
+class EncoderExtensionWithDocumentManagerTest extends ObjectManagerTestCase
 {
     const PERSON = 'Fixture\Unmapped\Person';
 
+    private $em;
+    private $encoder;
+
     protected function setUp()
     {
-        parent::setUp();
-
         $evm = new EventManager;
         $evm->addEventSubscriber($this->encoder = new EncoderListener);
 
-        $config = new Configuration;
-        $config->setProxyDir(TESTS_TEMP_DIR);
-        $config->setProxyNamespace('Mapping\Proxy');
+        $config = $this->getMongoDBDocumentManagerConfiguration();
         $config->setMetadataDriverImpl(new EncoderExtensionWithDocumentManagerTestDriver);
-        $config->setHydratorDir(TESTS_TEMP_DIR);
-        $config->setHydratorNamespace('Mapping\Hydrators');
-        $config->setDefaultDB('mapping_encoders');
 
-        $this->dm = DocumentManager::create(new Connection, $config, $evm);
+        $this->dm = $this->createDocumentManager($evm, null, $config);
+    }
+
+    protected function tearDown()
+    {
+        $this->releaseDocumentManager($this->dm);
     }
 
     /**

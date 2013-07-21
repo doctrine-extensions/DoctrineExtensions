@@ -2,28 +2,37 @@
 
 namespace Mapping;
 
-use Tool\BaseTestCaseORM;
+use TestTool\ObjectManagerTestCase;
 use Doctrine\Common\EventManager;
 use Fixture\Unmapped\Address;
 use Gedmo\Mapping\ObjectManagerHelper as OMH;
 use Doctrine\Common\Persistence\Mapping\Driver\MappingDriver;
 use Doctrine\Common\Persistence\Mapping\ClassMetadata;
-use Doctrine\ORM\Configuration;
 
-class ObjectManagerHelperEntityTest extends BaseTestCaseORM
+class ObjectManagerHelperEntityTest extends ObjectManagerTestCase
 {
     const ADDRESS = "Fixture\Unmapped\Address";
 
+    private $em;
+
     protected function setUp()
     {
-        parent::setUp();
-        $config = new Configuration;
-        $config->setProxyDir(TESTS_TEMP_DIR);
-        $config->setProxyNamespace('Mapping\Proxy');
+        $evm = new EventManager;
+
+        $config = $this->getEntityManagerConfiguration();
         $config->setMetadataDriverImpl(new ObjectManagerHelperEntityDriver);
 
-        $this->em = $this->getMockSqliteEntityManager(new EventManager, $config);
+        $this->em = $this->createEntityManager($evm, null, $config);
+        $this->createSchema($this->em, array(
+            self::ADDRESS
+        ));
+
         $this->populate();
+    }
+
+    protected function tearDown()
+    {
+        $this->releaseEntityManager($this->em);
     }
 
     /**
@@ -75,13 +84,6 @@ class ObjectManagerHelperEntityTest extends BaseTestCaseORM
 
         $this->assertTrue(OMH::isProxy($test));
         $this->assertSame(1, OMH::getIdentifier($this->em, $test));
-    }
-
-    protected function getUsedEntityFixtures()
-    {
-        return array(
-            self::ADDRESS
-        );
     }
 
     private function populate()

@@ -2,33 +2,33 @@
 
 namespace Mapping;
 
-use Tool\BaseTestCaseMongoODM;
+use TestTool\ObjectManagerTestCase;
 use Doctrine\Common\EventManager;
 use Fixture\Unmapped\Address;
 use Gedmo\Mapping\ObjectManagerHelper as OMH;
 use Doctrine\Common\Persistence\Mapping\Driver\MappingDriver;
 use Doctrine\Common\Persistence\Mapping\ClassMetadata;
-use Doctrine\ODM\MongoDB\Configuration;
-use Doctrine\ODM\MongoDB\DocumentManager;
-use Doctrine\MongoDB\Connection;
 
-class ObjectManagerHelperDocumentTest extends BaseTestCaseMongoODM
+class ObjectManagerHelperDocumentTest extends ObjectManagerTestCase
 {
     const ADDRESS = "Fixture\Unmapped\Address";
 
+    private $dm;
+
     protected function setUp()
     {
-        parent::setUp();
-        $config = new Configuration;
-        $config->setProxyDir(TESTS_TEMP_DIR);
-        $config->setProxyNamespace('Mapping\Proxy');
-        $config->setMetadataDriverImpl(new ObjectManagerHelperDocumentDriver);
-        $config->setHydratorDir(TESTS_TEMP_DIR);
-        $config->setHydratorNamespace('Mapping\Hydrators');
-        $config->setDefaultDB('gedmo_extensions_test');
+        $evm = new EventManager;
 
-        $this->dm = DocumentManager::create(new Connection, $config, new EventManager);
+        $config = $this->getMongoDBDocumentManagerConfiguration();
+        $config->setMetadataDriverImpl(new ObjectManagerHelperDocumentDriver);
+
+        $this->dm = $this->createDocumentManager($evm, null, $config);
         $this->populate();
+    }
+
+    protected function tearDown()
+    {
+        $this->releaseDocumentManager($this->dm);
     }
 
     /**

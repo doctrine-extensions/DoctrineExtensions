@@ -2,7 +2,7 @@
 
 namespace Translatable\Document;
 
-use Tool\BaseTestCaseMongoODM;
+use TestTool\ObjectManagerTestCase;
 use Doctrine\Common\EventManager;
 use Fixture\Translatable\Document\Post;
 use Fixture\Translatable\Document\PostTranslation;
@@ -10,17 +10,21 @@ use Fixture\Translatable\Document\Comment;
 use Fixture\Translatable\Document\CommentTranslation;
 use Gedmo\Translatable\TranslatableListener;
 
-class TranslationTest extends BaseTestCaseMongoODM
+class TranslationTest extends ObjectManagerTestCase
 {
     private $translatable;
+    private $dm;
 
     protected function setUp()
     {
-        parent::setUp();
-
         $evm = new EventManager;
         $evm->addEventSubscriber($this->translatable = new TranslatableListener);
-        $this->getMockDocumentManager($evm);
+        $this->dm = $this->createDocumentManager($evm);
+    }
+
+    protected function tearDown()
+    {
+        $this->releaseDocumentManager($this->dm);
     }
 
     /**
