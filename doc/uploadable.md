@@ -50,7 +50,8 @@ on how to setup and use the extensions in most optimized way.
     * **pathMethod** - Similar to option "path", but this time it represents the name of a method on the entity that
     will return the path to which the files represented by this entity will be moved. This is useful in several cases.
     For example, you can set specific paths for specific entities, or you can get the path from other sources (like a
-    framework configuration) instead of hardcoding it in the entity. Default: ""
+    framework configuration) instead of hardcoding it in the entity. Default: "". As first argument this method takes
+    default path, so you can return path relative to default.
     * **callback** - This option allows you to set a method name. If this option is set, the method will be called after
     the file is moved. Default value: "". As first argument, this method can receive an array with information about the uploaded file, which
     includes the following keys:
