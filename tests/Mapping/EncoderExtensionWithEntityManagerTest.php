@@ -103,7 +103,7 @@ class EncoderExtensionWithEntityManagerTestDriver implements MappingDriver
                 'fieldName' => 'password',
                 'type' => 'string',
                 'nullable' => false,
-                'length' => 32,
+                'length' => 64,
                 'columnName' => 'password'
             );
 

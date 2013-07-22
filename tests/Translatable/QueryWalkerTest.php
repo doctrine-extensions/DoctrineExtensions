@@ -319,6 +319,10 @@ DQL;
      */
     function shouldIgnoreUnmappedField()
     {
+        if ($this->em->getConnection()->getDatabasePlatform()->getName() === 'postgresql') {
+            // http://stackoverflow.com/questions/10161696/postgresql-group-by-clause-or-be-used-in-an-aggregate-function
+            $this->markTestSkipped('Postgresql database requires GROUP BY statement if it does group count.');
+        }
         $dql = 'SELECT p.title, count(p.id) AS num FROM Fixture\Translatable\Post p ORDER BY p.title';
         $q = $this->em->createQuery($dql);
         $q->setHint(Query::HINT_CUSTOM_OUTPUT_WALKER, self::SQL_WALKER);
