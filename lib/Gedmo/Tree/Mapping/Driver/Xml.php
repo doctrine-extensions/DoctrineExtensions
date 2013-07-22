@@ -161,9 +161,11 @@ class Xml extends BaseXml
                     $manyToOneMapping = $manyToOneMapping->children(self::GEDMO_NAMESPACE_URI);;
                     if (isset($manyToOneMapping->{'tree-parent'})) {
                         $field = $this->_getAttribute($manyToOneMappingDoctrine, 'field');
-                        if ($meta->associationMappings[$field]['targetEntity'] != $meta->name) {
+                        $targetEntity = $meta->associationMappings[$field]['targetEntity'];
+                        $reflectionClass = new \ReflectionClass($targetEntity);
+                        if ($targetEntity != $meta->name && !$reflectionClass->isSubclassOf($meta->name)) {
                             throw new InvalidMappingException("Unable to find ancestor/parent child relation through ancestor field - [{$field}] in class - {$meta->name}");
-                        }
+                        }			
                         $config['parent'] = $field;
                     }
                 }
