@@ -26,6 +26,7 @@ use Gedmo\Tree\TreeListener;
 use Gedmo\Timestampable\TimestampableListener;
 use Gedmo\Loggable\LoggableListener;
 use Gedmo\SoftDeleteable\SoftDeleteableListener;
+use Doctrine\DBAL\DBALException;
 
 /**
  * Base test case contains common mock objects
@@ -114,9 +115,19 @@ abstract class ObjectManagerTestCase extends \PHPUnit_Framework_TestCase
      */
     protected function releaseEntityManager(EntityManager $em)
     {
-        if ($dbname = $em->getConnection()->getDatabase()) {
+        $conn = $em->getConnection();
+        if ($dbname = $conn->getDatabase()) {
             try {
-                $em->getConnection()->getSchemaManager()->dropDatabase($dbname);
+                if ($conn->getDatabasePlatform()->getName() === 'postgresql') {
+                    $params = $conn->getParams();
+                    $params["dbname"] = "postgres";
+                    $conn->close();
+                    $conn = DriverManager::getConnection($params);
+                }
+                $conn->getSchemaManager()->dropDatabase($dbname);
+                $conn->close();
+            } catch(DBALException $e) {
+                // none
             } catch(\PDOException $e) {
                 // none
             }
