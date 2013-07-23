@@ -2,8 +2,8 @@
 
 namespace Gedmo\Timestampable\Mapping\Driver;
 
-use Gedmo\Mapping\Driver\Xml as BaseXml,
-    Gedmo\Exception\InvalidMappingException;
+use Gedmo\Mapping\Driver\Xml as BaseXml;
+use Gedmo\Exception\InvalidMappingException;
 
 /**
  * This is a xml mapping driver for Timestampable
@@ -69,7 +69,10 @@ class Xml extends BaseXml
                         if (!$this->_isAttributeSet($data, 'field')) {
                             throw new InvalidMappingException("Missing parameters on property - {$field}, field must be set on [change] trigger in class - {$meta->name}");
                         }
-                        $trackedFieldAttribute = $this->_getAttribute($data, 'field');
+                        $trackedFieldAttribute = array_map('trim', explode(",", $this->_getAttribute($data, 'field')));
+                        if (count($trackedFieldAttribute) === 1) {
+                            $trackedFieldAttribute = current($trackedFieldAttribute);
+                        }
                         $valueAttribute = $this->_isAttributeSet($data, 'value') ? $this->_getAttribute($data, 'value' ) : null;
                         if (is_array($trackedFieldAttribute) && null !== $valueAttribute) {
                             throw new InvalidMappingException("Timestampable extension does not support multiple value changeset detection yet.");
