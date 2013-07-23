@@ -1,6 +1,6 @@
 <?php
 
-namespace Timestampable\Fixture\Document;
+namespace Fixture\Timestampable\Document;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 
@@ -9,7 +9,9 @@ use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
  */
 class Type
 {
-    /** @ODM\Id */
+    /**
+     * @ODM\Id
+     */
     private $id;
 
     /**
