@@ -1,70 +1,73 @@
 <?php
-namespace Timestampable\Fixture;
+
+namespace Fixture\Timestampable;
 
 use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * @ORM\Entity
  */
 class Article
 {
-    /** @ORM\Id @ORM\GeneratedValue @ORM\Column(type="integer") */
+    /**
+     * @ORM\Id
+     * @ORM\GeneratedValue
+     * @ORM\Column(type="integer")
+     */
     private $id;
 
     /**
-     * @ORM\Column(name="title", type="string", length=128)
+     * @ORM\Column(length=128)
      */
     private $title;
 
     /**
-     * @ORM\Column(name="body", type="string")
+     * @ORM\Column(type="text")
      */
     private $body;
 
     /**
-     * @ORM\OneToMany(targetEntity="Timestampable\Fixture\Comment", mappedBy="article")
+     * @ORM\OneToMany(targetEntity="Comment", mappedBy="article")
      */
     private $comments;
 
     /**
-     * @var datetime $created
-     *
      * @Gedmo\Timestampable(on="create")
-     * @ORM\Column(name="created", type="date")
+     * @ORM\Column(type="date")
      */
     private $created;
 
     /**
-     * @var datetime $updated
-     *
-     * @ORM\Column(name="updated", type="datetime")
+     * @ORM\Column(type="datetime")
      * @Gedmo\Timestampable
      */
     private $updated;
 
     /**
-     * @var datetime $published
-     *
-     * @ORM\Column(name="published", type="datetime", nullable=true)
+     * @ORM\Column(type="datetime", nullable=true)
      * @Gedmo\Timestampable(on="change", field="type.title", value="Published")
      */
     private $published;
 
     /**
-     * @var datetime $contentChanged
-     *
-     * @ORM\Column(name="content_changed", type="datetime", nullable=true)
+     * @ORM\Column(type="datetime", nullable=true)
      * @Gedmo\Timestampable(on="change", field={"title", "body"})
      */
     private $contentChanged;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Type", inversedBy="articles")
+     * @ORM\ManyToOne(targetEntity="Type")
      */
     private $type;
 
-    public function setType($type)
+    public function __construct()
+    {
+        $this->comments = new ArrayCollection;
+    }
+
+    public function setType(Type $type)
     {
         $this->type = $type;
     }
@@ -96,8 +99,10 @@ class Article
 
     public function addComment(Comment $comment)
     {
-        $comment->setArticle($this);
-        $this->comments[] = $comment;
+        if (!$this->comments->contains($comment)) {
+            $comment->setArticle($this);
+            $this->comments[] = $comment;
+        }
     }
 
     public function getComments()

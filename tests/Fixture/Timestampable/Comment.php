@@ -1,6 +1,6 @@
 <?php
 
-namespace Timestampable\Fixture;
+namespace Fixture\Timestampable;
 
 use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
@@ -10,16 +10,20 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Comment
 {
-    /** @ORM\Id @ORM\GeneratedValue @ORM\Column(type="integer") */
+    /**
+     * @ORM\Id
+     * @ORM\GeneratedValue
+     * @ORM\Column(type="integer")
+     */
     private $id;
 
     /**
-     * @ORM\Column(name="message", type="text")
+     * @ORM\Column(type="text")
      */
     private $message;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Timestampable\Fixture\Article", inversedBy="comments")
+     * @ORM\ManyToOne(targetEntity="Article", inversedBy="comments")
      */
     private $article;
 
@@ -29,22 +33,18 @@ class Comment
     private $status;
 
     /**
-     * @var datetime $closed
-     *
-     * @ORM\Column(name="closed", type="datetime", nullable=true)
+     * @ORM\Column(type="datetime", nullable=true)
      * @Gedmo\Timestampable(on="change", field="status", value=1)
      */
     private $closed;
 
     /**
-     * @var datetime $modified
-     *
-     * @ORM\Column(name="modified", type="time")
+     * @ORM\Column(type="time")
      * @Gedmo\Timestampable(on="update")
      */
     private $modified;
 
-    public function setArticle($article)
+    public function setArticle(Article $article)
     {
         $this->article = $article;
     }

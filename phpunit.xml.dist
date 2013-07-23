@@ -20,6 +20,10 @@
             <directory suffix="Test.php">./tests/Translatable/</directory>
         </testsuite>
 
+        <testsuite name="Timestampable Extension">
+            <directory suffix="Test.php">./tests/Timestampable/</directory>
+        </testsuite>
+
     </testsuites>
 
     <!-- uncomment to use a custom pdo database instead of sqlite memory

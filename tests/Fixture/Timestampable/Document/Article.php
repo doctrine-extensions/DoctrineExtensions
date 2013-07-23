@@ -1,6 +1,6 @@
 <?php
 
-namespace Timestampable\Fixture\Document;
+namespace Fixture\Timestampable\Document;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -10,7 +10,9 @@ use Gedmo\Mapping\Annotation as Gedmo;
  */
 class Article
 {
-    /** @ODM\Id */
+    /**
+     * @ODM\Id
+     */
     private $id;
 
     /**
@@ -24,24 +26,18 @@ class Article
     private $type;
 
     /**
-     * @var timestamp $created
-     *
      * @ODM\Timestamp
      * @Gedmo\Timestampable(on="create")
      */
     private $created;
 
     /**
-     * @var date $updated
-     *
      * @ODM\Date
      * @Gedmo\Timestampable
      */
     private $updated;
 
     /**
-     * @var date $published
-     *
      * @ODM\Date
      * @Gedmo\Timestampable(on="change", field="type.title", value="Published")
      */
@@ -49,14 +45,12 @@ class Article
 
 
     /**
-     * @var \DateTime
      * @ODM\Date
      * @Gedmo\Timestampable(on="change", field="isReady", value=true)
      */
     private $ready;
 
     /**
-     * @var bool
      * @ODM\Boolean
      */
     private $isReady = false;
