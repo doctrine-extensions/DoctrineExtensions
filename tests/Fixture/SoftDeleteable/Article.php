@@ -1,6 +1,6 @@
 <?php
 
-namespace SoftDeleteable\Fixture\Entity;
+namespace Fixture\SoftDeleteable;
 
 use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
@@ -8,12 +8,9 @@ use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * @ORM\Entity
- * @ORM\InheritanceType("JOINED")
- * @ORM\DiscriminatorColumn(name="discr", type="string")
- * @ORM\DiscriminatorMap({"page" = "Page", "mega_page" = "MegaPage"})
  * @Gedmo\SoftDeleteable(fieldName="deletedAt")
  */
-class Page
+class Article
 {
     /**
      * @ORM\Column(name="id", type="integer")
@@ -33,14 +30,14 @@ class Page
     private $deletedAt;
 
     /**
-     * @ORM\OneToMany(targetEntity="Module", mappedBy="page", cascade={"persist", "remove"})
+     * @ORM\OneToMany(targetEntity="Comment", mappedBy="article", cascade={"persist", "remove"})
      */
-    private $modules;
+    private $comments;
 
 
     public function __construct()
     {
-        $this->modules = new ArrayCollection();
+        $this->comments = new ArrayCollection();
     }
 
     public function getId()
@@ -68,8 +65,8 @@ class Page
         return $this->deletedAt;
     }
 
-    public function addModule(Module $module)
+    public function addComment(Comment $comment)
     {
-        $this->module[] = $module;
+        $this->comments[] = $comment;
     }
 }

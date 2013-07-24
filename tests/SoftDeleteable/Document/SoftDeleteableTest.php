@@ -1,20 +1,11 @@
 <?php
 
-namespace Gedmo\SoftDeleteable;
+namespace SoftDeleteable\Document;
 
-use Tool\BaseTestCaseMongoODM;
+use TestTool\ObjectManagerTestCase;
 use Doctrine\Common\EventManager;
-use Doctrine\Common\Util\Debug,
-    SoftDeleteable\Fixture\Document\Article,
-    SoftDeleteable\Fixture\Document\Comment,
-    SoftDeleteable\Fixture\Document\User,
-    SoftDeleteable\Fixture\Document\Page,
-    SoftDeleteable\Fixture\Document\MegaPage,
-    SoftDeleteable\Fixture\Document\Module,
-    SoftDeleteable\Fixture\Document\OtherArticle,
-    SoftDeleteable\Fixture\Document\OtherComment,
-    SoftDeleteable\Fixture\Document\Child,
-    Gedmo\SoftDeleteable\SoftDeleteableListener;
+use Fixture\SoftDeleteable\Document\User;
+use Gedmo\SoftDeleteable\SoftDeleteableListener;
 
 /**
  * These are tests for SoftDeleteable behavior
@@ -25,34 +16,30 @@ use Doctrine\Common\Util\Debug,
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class SoftDeleteableDocumentTest extends BaseTestCaseMongoODM
+class SoftDeleteableTest extends ObjectManagerTestCase
 {
-    const ARTICLE_CLASS = 'SoftDeleteable\Fixture\Document\Article';
-    const COMMENT_CLASS = 'SoftDeleteable\Fixture\Document\Comment';
-    const PAGE_CLASS = 'SoftDeleteable\Fixture\Document\Page';
-    const MEGA_PAGE_CLASS = 'SoftDeleteable\Fixture\Document\MegaPage';
-    const MODULE_CLASS = 'SoftDeleteable\Fixture\Document\Module';
-    const OTHER_ARTICLE_CLASS = 'SoftDeleteable\Fixture\Document\OtherArticle';
-    const OTHER_COMMENT_CLASS = 'SoftDeleteable\Fixture\Document\OtherComment';
-    const USER_CLASS = 'SoftDeleteable\Fixture\Document\User';
-    const USER__TIME_AWARE_CLASS = 'SoftDeleteable\Fixture\Document\UserTimeAware';
-    const MAPPED_SUPERCLASS_CHILD_CLASS = 'SoftDeleteable\Fixture\Document\Child';
+    const USER_CLASS = 'Fixture\SoftDeleteable\Document\User';
     const SOFT_DELETEABLE_FILTER_NAME = 'soft-deleteable';
+    const USER__TIME_AWARE_CLASS = 'SoftDeleteable\Fixture\Document\UserTimeAware';
 
-    private $softDeleteableListener;
+    private $softDeleteableListener, $dm;
 
     protected function setUp()
     {
-        parent::setUp();
+        $evm = new EventManager;
+        $evm->addEventSubscriber($this->softDeleteableListener = new SoftDeleteableListener);
 
-        $evm = new EventManager();
-        $this->softDeleteableListener = new SoftDeleteableListener();
-        $evm->addEventSubscriber($this->softDeleteableListener);
-        $config = $this->getMockAnnotatedConfig();
-        $config->addFilter(self::SOFT_DELETEABLE_FILTER_NAME, 'Gedmo\SoftDeleteable\Filter\ODM\SoftDeleteableFilter');
-
-        $this->dm = $this->getMockDocumentManager($evm, $config);
+        $this->dm = $this->createDocumentManager($evm);
+        $this->dm->getConfiguration()->addFilter(
+            self::SOFT_DELETEABLE_FILTER_NAME,
+            'Gedmo\SoftDeleteable\Filter\ODM\SoftDeleteableFilter'
+        );
         $this->dm->getFilterCollection()->enable(self::SOFT_DELETEABLE_FILTER_NAME);
+    }
+
+    protected function tearDown()
+    {
+        $this->releaseDocumentManager($this->dm);
     }
 
     /**
@@ -87,7 +74,7 @@ class SoftDeleteableDocumentTest extends BaseTestCaseMongoODM
      *
      * @test
      */
-    public function testSoftDeleteableFilter()
+    function shouldHandleSoftDeleteableFilter()
     {
         $filter = $this->dm->getFilterCollection()->getFilter(self::SOFT_DELETEABLE_FILTER_NAME);
         $filter->disableForDocument(self::USER_CLASS);
@@ -158,7 +145,11 @@ class SoftDeleteableDocumentTest extends BaseTestCaseMongoODM
         $this->dm->flush();
 
     }
-    public function testPostSoftDeleteEventIsDispatched()
+
+    /**
+     * @test
+     */
+    function shouldDispatchPostSoftDeleteEvent()
     {
         $subscriber = $this->getMock(
             "Doctrine\Common\EventSubscriber",

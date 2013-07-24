@@ -14,6 +14,8 @@ use Doctrine\Common\PropertyChangedListener;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ODM\MongoDB\DocumentManager;
+use Doctrine\ORM\Event\LifecycleEventArgs as OrmLifecycleEventArgs;
+use Doctrine\ODM\MongoDB\Event\LifecycleEventArgs as MongoOdmLifecycleEventArgs;
 
 use Gedmo\Exception\UnsupportedObjectManagerException;
 
@@ -96,6 +98,23 @@ final class ObjectManagerHelper
     static function isProxy($object)
     {
         return $object instanceof OrmObjectProxy || $object instanceof MongoOdmObjectProxy;
+    }
+
+    /**
+     * Creates lifecycle event args instance based on $om and $object
+     *
+     * @param \Doctrine\Common\Persistence\ObjectManager $om
+     * @param Object $object
+     * @return \Doctrine\Common\EventArgs
+     */
+    static function createLifecycleEventArgsInstance(ObjectManager $om, $object)
+    {
+        if ($om instanceof EntityManager) {
+            return new OrmLifecycleEventArgs($object, $om);
+        } elseif ($om instanceof DocumentManager) {
+            return new MongoOdmLifecycleEventArgs($object, $om);
+        }
+        throw new UnsupportedObjectManagerException("Object manager: ".get_class($om)." is not supported");
     }
 
     /**
