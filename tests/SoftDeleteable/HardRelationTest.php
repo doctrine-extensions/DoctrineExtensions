@@ -1,26 +1,34 @@
 <?php
 
-namespace Gedmo\SoftDeleteable;
+namespace SoftDeleteable;
 
-use Tool\BaseTestCaseORM;
+use TestTool\ObjectManagerTestCase;
 use Doctrine\Common\EventManager;
-use SoftDeleteable\Fixture\Entity\Person;
-use SoftDeleteable\Fixture\Entity\Address;
+use Fixture\SoftDeleteable\Person;
+use Fixture\SoftDeleteable\Address;
 use Gedmo\SoftDeleteable\SoftDeleteableListener;
 
-class HardRelationTest extends BaseTestCaseORM
+class HardRelationTest extends ObjectManagerTestCase
 {
-    private $softDeleteableListener;
+    private $softDeleteableListener, $em;
 
     protected function setUp()
     {
-        parent::setUp();
-
-        $evm = new EventManager();
+        $evm = new EventManager;
         $evm->addEventSubscriber($this->softDeleteableListener = new SoftDeleteableListener);
-        $this->getMockSqliteEntityManager($evm);
+
+        $this->em = $this->createEntityManager($evm);
         $this->em->getConfiguration()->addFilter('softdelete', 'Gedmo\SoftDeleteable\Filter\SoftDeleteableFilter');
         $this->em->getFilters()->enable('softdelete');
+        $this->createSchema($this->em, array(
+            'Fixture\SoftDeleteable\Person',
+            'Fixture\SoftDeleteable\Address',
+        ));
+    }
+
+    protected function tearDown()
+    {
+        $this->releaseEntityManager($this->em);
     }
 
     /**
@@ -44,7 +52,7 @@ class HardRelationTest extends BaseTestCaseORM
         $this->em->flush();
         $this->em->clear();
 
-        $person = $this->em->getRepository('SoftDeleteable\Fixture\Entity\Person')->findOneById($person->getId());
+        $person = $this->em->getRepository('Fixture\SoftDeleteable\Person')->findOneById($person->getId());
         $this->assertNull($person, "Softdelete should cascade to hard relation entity");
     }
 
@@ -69,7 +77,7 @@ class HardRelationTest extends BaseTestCaseORM
         $this->em->flush();
         $this->em->clear();
 
-        $address = $this->em->getRepository('SoftDeleteable\Fixture\Entity\Address')->findOneById($address->getId());
+        $address = $this->em->getRepository('Fixture\SoftDeleteable\Address')->findOneById($address->getId());
         $this->assertNull($address, "Softdelete should cascade to hard relation entity");
     }
 
@@ -101,13 +109,5 @@ class HardRelationTest extends BaseTestCaseORM
 
         $person = $this->em->getRepository('SoftDeleteable\Fixture\Entity\Person')->findOneById($person->getId());
         $this->assertNull($person, "Should be softdeleted");
-    }
-
-    protected function getUsedEntityFixtures()
-    {
-        return array(
-            'SoftDeleteable\Fixture\Entity\Person',
-            'SoftDeleteable\Fixture\Entity\Address',
-        );
     }
 }
