@@ -2,13 +2,13 @@
 
 namespace Gedmo\References;
 
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\EventArgs;
-use Doctrine\Common\Persistence\ObjectManager;
 use Gedmo\Exception\InvalidArgumentException;
 use Gedmo\Mapping\MappedEventSubscriber;
 use Gedmo\Mapping\ObjectManagerHelper as OMH;
 use Gedmo\Exception\UnexpectedValueException;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\EventArgs;
+use Doctrine\Common\Persistence\ObjectManager;
 
 /**
  * Listener for loading and persisting cross database references.
@@ -107,25 +107,17 @@ class ReferencesListener extends MappedEventSubscriber
                 if (isset($refConfig['referenceOne'][$mapping['mappedBy']])) {
                     $refMapping = $refConfig['referenceOne'][$mapping['mappedBy']];
                     $identifier = $refMapping['identifier'];
-                    $property->setValue(
-                        $object,
-                        new LazyCollection(
-                            function() use ($id, &$manager, $class, $identifier) {
-                                $results = $manager
-                                    ->getRepository($class)
-                                    ->findBy(array(
-                                        $identifier => $id,
-                                    ));
-
-                                return new ArrayCollection((is_array($results) ? $results : $results->toArray()));
-                            }
-                        )
-                    );
+                    $property->setValue($object, new LazyCollection(function() use ($id, &$manager, $class, $identifier) {
+                        $results = $manager->getRepository($class)->findBy(array(
+                            $identifier => $id,
+                        ));
+                        return new ArrayCollection((is_array($results) ? $results : $results->toArray()));
+                    }));
                 }
             }
         }
 
-        $this->updateManyEmbedReferences($eventArgs);
+        $this->updateManyEmbedReferences($event);
     }
 
     /**
@@ -227,21 +219,25 @@ class ReferencesListener extends MappedEventSubscriber
                 }
             }
         }
-        $this->updateManyEmbedReferences($eventArgs);
+        $this->updateManyEmbedReferences($event);
     }
 
-    public function updateManyEmbedReferences(EventArgs $eventArgs)
+    /**
+     * Updates linked embedded references
+     *
+     * @param \Doctrine\Common\EventArgs $event
+     */
+    public function updateManyEmbedReferences(EventArgs $event)
     {
-        $ea = $this->getEventAdapter($eventArgs);
-        $om = $ea->getObjectManager();
-        $object = $ea->getObject();
+        $om = OMH::getObjectManagerFromEvent($event);
+        $object = OMH::getObjectFromEvent($event);
         $meta = $om->getClassMetadata(get_class($object));
         $config = $this->getConfiguration($om, $meta->name);
         foreach ($config['referenceManyEmbed'] as $mapping) {
             $property = $meta->reflClass->getProperty($mapping['field']);
             $property->setAccessible(true);
 
-            $id = $ea->extractIdentifier($om, $object);
+            $id = OMH::getIdentifier($om, $object);
             $manager = $this->getManager('document');
 
             $class = $mapping['class'];
@@ -249,20 +245,12 @@ class ReferencesListener extends MappedEventSubscriber
             $refConfig = $this->getConfiguration($manager, $refMeta->name);
 
             $identifier = $mapping['identifier'];
-            $property->setValue(
-                $object,
-                new LazyCollection(
-                    function() use ($id, &$manager, $class, $identifier) {
-                        $results = $manager
-                            ->getRepository($class)
-                            ->findBy(array(
-                                $identifier => $id,
-                            ));
-
-                        return new ArrayCollection((is_array($results) ? $results : $results->toArray()));
-                    }
-                )
-            );
+            $property->setValue($object, new LazyCollection(function() use ($id, &$manager, $class, $identifier) {
+                $results = $manager->getRepository($class)->findBy(array(
+                    $identifier => $id,
+                ));
+                return new ArrayCollection((is_array($results) ? $results : $results->toArray()));
+            }));
         }
     }
 }

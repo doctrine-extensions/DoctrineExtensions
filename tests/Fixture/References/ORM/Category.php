@@ -1,10 +1,10 @@
 <?php
 
-namespace References\Fixture\ORM;
+namespace Fixture\References\ORM;
 
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
-use References\Fixture\ODM\MongoDB\Product;
+use Fixture\References\ODM\MongoDB\Product;
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
@@ -15,17 +15,17 @@ class Category
     /**
      * @ORM\Id
      * @ORM\Column(type="integer")
-     * @ORM\GeneratedValue(strategy="IDENTITY")
+     * @ORM\GeneratedValue
      */
     private $id;
 
     /**
-     * @ORM\Column(name="name", type="string", length=128)
+     * @ORM\Column(length=128)
      */
     private $name;
 
     /**
-     * @Gedmo\ReferenceManyEmbed(class="References\Fixture\ODM\MongoDB\Product", identifier="metadatas.categoryId")
+     * @Gedmo\ReferenceManyEmbed(class="Fixture\References\ODM\MongoDB\Product", identifier="metadatas.categoryId")
      */
     private $products;
 
