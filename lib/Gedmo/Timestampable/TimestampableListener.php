@@ -35,22 +35,22 @@ class TimestampableListener extends MappedEventSubscriber
     /**
      * Maps additional metadata for the Entity
      *
-     * @param EventArgs $args
+     * @param EventArgs $event
      */
-    public function loadClassMetadata(EventArgs $args)
+    public function loadClassMetadata(EventArgs $event)
     {
-        $this->loadMetadataForObjectClass(OMH::getObjectManagerFromEvent($args), $args->getClassMetadata());
+        $this->loadMetadataForObjectClass(OMH::getObjectManagerFromEvent($event), $event->getClassMetadata());
     }
 
     /**
      * Looks for Timestampable objects being updated
      * to update modification date
      *
-     * @param EventArgs $args
+     * @param EventArgs $event
      */
-    public function onFlush(EventArgs $args)
+    public function onFlush(EventArgs $event)
     {
-        $om = OMH::getObjectManagerFromEvent($args);
+        $om = OMH::getObjectManagerFromEvent($event);
         $uow = $om->getUnitOfWork();
         // check all scheduled updates
         foreach (OMH::getScheduledObjectUpdates($uow) as $object) {
@@ -128,14 +128,12 @@ class TimestampableListener extends MappedEventSubscriber
      * Checks for persisted Timestampable objects
      * to update creation and modification dates
      *
-     * @param EventArgs $args
-     *
-     * @return void
+     * @param EventArgs $event
      */
-    public function prePersist(EventArgs $args)
+    public function prePersist(EventArgs $event)
     {
-        $om = OMH::getObjectManagerFromEvent($args);
-        $object = OMH::getObjectFromEvent($args);
+        $om = OMH::getObjectManagerFromEvent($event);
+        $object = OMH::getObjectFromEvent($event);
         $meta = $om->getClassMetadata(get_class($object));
 
         if ($config = $this->getConfiguration($om, $meta->getName())) {

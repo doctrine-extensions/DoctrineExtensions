@@ -24,6 +24,10 @@
             <directory suffix="Test.php">./tests/Timestampable/</directory>
         </testsuite>
 
+        <testsuite name="References Extension">
+            <directory suffix="Test.php">./tests/References/</directory>
+        </testsuite>
+
     </testsuites>
 
     <php>

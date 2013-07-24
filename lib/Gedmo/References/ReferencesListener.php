@@ -106,20 +106,13 @@ class ReferencesListener extends MappedEventSubscriber
                 if (isset($refConfig['referenceOne'][$mapping['mappedBy']])) {
                     $refMapping = $refConfig['referenceOne'][$mapping['mappedBy']];
                     $identifier = $refMapping['identifier'];
-                    $property->setValue(
-                        $object,
-                        new LazyCollection(
-                            function () use ($id, &$manager, $class, $identifier) {
-                                $results = $manager
-                                    ->getRepository($class)
-                                    ->findBy(array(
-                                        $identifier => $id,
-                                    ));
+                    $property->setValue($object, new LazyCollection(function () use ($id, &$manager, $class, $identifier) {
+                        $results = $manager->getRepository($class)->findBy(array(
+                            $identifier => $id,
+                        ));
 
-                                return new ArrayCollection((is_array($results) ? $results : $results->toArray()));
-                            }
-                        )
-                    );
+                        return new ArrayCollection((is_array($results) ? $results : $results->toArray()));
+                    }));
                 }
             }
         }
@@ -236,11 +229,15 @@ class ReferencesListener extends MappedEventSubscriber
         $this->updateManyEmbedReferences($event);
     }
 
-    public function updateManyEmbedReferences(EventArgs $eventArgs)
+    /**
+     * Updates linked embedded references
+     *
+     * @param EventArgs $event
+     */
+    public function updateManyEmbedReferences(EventArgs $event)
     {
-        $ea = $this->getEventAdapter($eventArgs);
-        $om = $ea->getObjectManager();
-        $object = $ea->getObject();
+        $om = OMH::getObjectManagerFromEvent($event);
+        $object = OMH::getObjectFromEvent($event);
         $meta = $om->getClassMetadata(get_class($object));
         $config = $this->getConfiguration($om, $meta->name);
 
@@ -248,7 +245,7 @@ class ReferencesListener extends MappedEventSubscriber
             $property = $meta->reflClass->getProperty($mapping['field']);
             $property->setAccessible(true);
 
-            $id = $ea->extractIdentifier($om, $object);
+            $id = OMH::getIdentifier($om, $object);
             $manager = $this->getManager('document');
 
             $class = $mapping['class'];
@@ -257,20 +254,13 @@ class ReferencesListener extends MappedEventSubscriber
             $this->getConfiguration($manager, $refMeta->name);
 
             $identifier = $mapping['identifier'];
-            $property->setValue(
-                $object,
-                new LazyCollection(
-                    function () use ($id, &$manager, $class, $identifier) {
-                        $results = $manager
-                            ->getRepository($class)
-                            ->findBy(array(
-                                $identifier => $id,
-                            ));
+            $property->setValue($object, new LazyCollection(function () use ($id, &$manager, $class, $identifier) {
+                $results = $manager->getRepository($class)->findBy(array(
+                    $identifier => $id,
+                ));
 
-                        return new ArrayCollection((is_array($results) ? $results : $results->toArray()));
-                    }
-                )
-            );
+                return new ArrayCollection((is_array($results) ? $results : $results->toArray()));
+            }));
         }
     }
 }
