@@ -1,15 +1,16 @@
 <?php
 
-namespace SoftDeleteable\Fixture\Entity;
+namespace Fixture\SoftDeleteable;
 
 use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * @ORM\Entity
  * @Gedmo\SoftDeleteable(fieldName="deletedAt")
  */
-class Comment
+class Article
 {
     /**
      * @ORM\Column(name="id", type="integer")
@@ -19,9 +20,9 @@ class Comment
     private $id;
 
     /**
-     * @ORM\Column(name="comment", type="string")
+     * @ORM\Column(name="title", type="string")
      */
-    private $comment;
+    private $title;
 
     /**
      * @ORM\Column(name="deletedAt", type="datetime", nullable=true)
@@ -29,23 +30,28 @@ class Comment
     private $deletedAt;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Article", inversedBy="comments")
+     * @ORM\OneToMany(targetEntity="Comment", mappedBy="article", cascade={"persist", "remove"})
      */
-    private $article;
+    private $comments;
+
+    public function __construct()
+    {
+        $this->comments = new ArrayCollection();
+    }
 
     public function getId()
     {
         return $this->id;
     }
 
-    public function setComment($comment)
+    public function setTitle($title)
     {
-        $this->comment = $comment;
+        $this->title = $title;
     }
 
-    public function getComment()
+    public function getTitle()
     {
-        return $this->comment;
+        return $this->title;
     }
 
     public function setDeletedAt($deletedAt)
@@ -58,8 +64,8 @@ class Comment
         return $this->deletedAt;
     }
 
-    public function getArticle()
+    public function addComment(Comment $comment)
     {
-        return $this->article;
+        $this->comments[] = $comment;
     }
 }

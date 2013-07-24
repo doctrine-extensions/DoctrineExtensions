@@ -8,10 +8,12 @@ use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\Common\Persistence\Proxy;
 use Doctrine\Common\PropertyChangedListener;
 use Doctrine\ODM\MongoDB\DocumentManager;
+use Doctrine\ODM\MongoDB\Event\LifecycleEventArgs as MongoOdmLifecycleEventArgs;
 use Doctrine\ODM\MongoDB\Mapping\ClassMetadataInfo as MongoOdmMetadata;
 use Doctrine\ODM\MongoDB\Proxy\Proxy as MongoOdmObjectProxy;
 use Doctrine\ODM\MongoDB\UnitOfWork as MongoOdmUow;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\Event\LifecycleEventArgs as OrmLifecycleEventArgs;
 use Doctrine\ORM\Mapping\ClassMetadataInfo as OrmMetadata;
 use Doctrine\ORM\Proxy\Proxy as OrmObjectProxy;
 use Doctrine\ORM\UnitOfWork as OrmUow;
@@ -106,9 +108,12 @@ final class ObjectManagerHelper
     {
         if ($meta instanceof OrmMetadata) {
             return $meta->getSingleIdentifierFieldName();
-        } elseif ($meta instanceof MongoOdmMetadata) {
+        }
+
+        if ($meta instanceof MongoOdmMetadata) {
             return $meta->identifier;
         }
+
         throw new UnsupportedObjectManagerException("Could not identify ClassMetadata");
     }
 
@@ -122,6 +127,27 @@ final class ObjectManagerHelper
     public static function isProxy($object)
     {
         return $object instanceof Proxy || $object instanceof OrmObjectProxy || $object instanceof MongoOdmObjectProxy;
+    }
+
+    /**
+     * Creates lifecycle event args instance based on $om and $object
+     *
+     * @param ObjectManager $om
+     * @param object        $object
+     *
+     * @return EventArgs
+     */
+    public static function createLifecycleEventArgsInstance(ObjectManager $om, $object)
+    {
+        if ($om instanceof EntityManager) {
+            return new OrmLifecycleEventArgs($object, $om);
+        }
+
+        if ($om instanceof DocumentManager) {
+            return new MongoOdmLifecycleEventArgs($object, $om);
+        }
+
+        throw new UnsupportedObjectManagerException("Object manager: ".get_class($om)." is not supported");
     }
 
     /**
@@ -161,7 +187,7 @@ final class ObjectManagerHelper
             if ($object instanceof MongoOdmObjectProxy) {
                 $uow = $om->getUnitOfWork();
                 if ($uow->isInIdentityMap($object)) {
-                    $identifier = array($meta->identifier => (string)$uow->getDocumentIdentifier($object));
+                    $identifier = array($meta->identifier => (string) $uow->getDocumentIdentifier($object));
                 } elseif ($object instanceof Proxy && !$object->__isInitialized()) {
                     $object->__load();
                     $identifier = $om->getClassMetadata(get_class($object))->getIdentifierValue($object);

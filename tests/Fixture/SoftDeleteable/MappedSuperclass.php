@@ -1,14 +1,15 @@
 <?php
-namespace SoftDeleteable\Fixture\Entity;
+
+namespace Fixture\SoftDeleteable;
 
 use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity
+ * @ORM\MappedSuperclass
  * @Gedmo\SoftDeleteable(fieldName="deletedAt")
  */
-class User
+class MappedSuperclass
 {
     /**
      * @ORM\Column(name="id", type="integer")
@@ -18,28 +19,13 @@ class User
     private $id;
 
     /**
-     * @ORM\Column(name="username", type="string")
-     */
-    private $username;
-
-    /**
-     * @ORM\Column(name="deleted_time", type="datetime", nullable=true)
+     * @ORM\Column(name="deletedAt", type="datetime", nullable=true)
      */
     private $deletedAt;
 
     public function getId()
     {
         return $this->id;
-    }
-
-    public function setUsername($username)
-    {
-        $this->username = $username;
-    }
-
-    public function getUsername()
-    {
-        return $this->username;
     }
 
     public function setDeletedAt($deletedAt)

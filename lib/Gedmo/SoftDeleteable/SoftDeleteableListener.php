@@ -2,8 +2,9 @@
 
 namespace Gedmo\SoftDeleteable;
 
-use Gedmo\Mapping\MappedEventSubscriber;
 use Doctrine\Common\EventArgs;
+use Gedmo\Mapping\MappedEventSubscriber;
+use Gedmo\Mapping\ObjectManagerHelper as OMH;
 
 /**
  * SoftDeleteable listener
@@ -43,19 +44,15 @@ class SoftDeleteableListener extends MappedEventSubscriber
      * If it's a SoftDeleteable object, update the "deletedAt" field
      * and skip the removal of the object
      *
-     * @param EventArgs $args
-     *
-     * @return void
+     * @param EventArgs $event
      */
-    public function onFlush(EventArgs $args)
+    public function onFlush(EventArgs $event)
     {
-        $ea = $this->getEventAdapter($args);
-        $om = $ea->getObjectManager();
+        $om = OMH::getObjectManagerFromEvent($event);
         $uow = $om->getUnitOfWork();
         $evm = $om->getEventManager();
 
-        //getScheduledDocumentDeletions
-        foreach ($ea->getScheduledObjectDeletions($uow) as $object) {
+        foreach (OMH::getScheduledObjectDeletions($uow) as $object) {
             $meta = $om->getClassMetadata(get_class($object));
             $config = $this->getConfiguration($om, $meta->name);
 
@@ -66,24 +63,16 @@ class SoftDeleteableListener extends MappedEventSubscriber
                     continue; // want to hard delete
                 }
 
-                $evm->dispatchEvent(
-                    self::PRE_SOFT_DELETE,
-                    $ea->createLifecycleEventArgsInstance($object, $om)
-                 );
-
-                $date = new \DateTime();
-                $reflProp->setValue($object, $date);
+                $lifecycleEvent = OMH::createLifecycleEventArgsInstance($om, $object);
+                $evm->dispatchEvent(self::PRE_SOFT_DELETE, $lifecycleEvent);
+                $reflProp->setValue($object, $date = new \DateTime());
 
                 $om->persist($object);
                 $uow->propertyChanged($object, $config['fieldName'], $oldValue, $date);
                 $uow->scheduleExtraUpdate($object, array(
                     $config['fieldName'] => array($oldValue, $date),
                 ));
-
-                $evm->dispatchEvent(
-                    self::POST_SOFT_DELETE,
-                    $ea->createLifecycleEventArgsInstance($object, $om)
-                );
+                $evm->dispatchEvent(self::POST_SOFT_DELETE, $lifecycleEvent);
             }
         }
     }
@@ -91,14 +80,11 @@ class SoftDeleteableListener extends MappedEventSubscriber
     /**
      * Maps additional metadata
      *
-     * @param EventArgs $eventArgs
-     *
-     * @return void
+     * @param EventArgs $event
      */
-    public function loadClassMetadata(EventArgs $eventArgs)
+    public function loadClassMetadata(EventArgs $event)
     {
-        $ea = $this->getEventAdapter($eventArgs);
-        $this->loadMetadataForObjectClass($ea->getObjectManager(), $eventArgs->getClassMetadata());
+        $this->loadMetadataForObjectClass(OMH::getObjectManagerFromEvent($event), $event->getClassMetadata());
     }
 
     /**

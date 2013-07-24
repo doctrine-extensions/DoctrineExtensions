@@ -1,19 +1,15 @@
 <?php
 
-namespace SoftDeleteable\Fixture\Entity;
+namespace Fixture\SoftDeleteable;
 
 use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * @ORM\Entity
- * @ORM\InheritanceType("JOINED")
- * @ORM\DiscriminatorColumn(name="discr", type="string")
- * @ORM\DiscriminatorMap({"page" = "Page", "mega_page" = "MegaPage"})
  * @Gedmo\SoftDeleteable(fieldName="deletedAt")
  */
-class Page
+class Module
 {
     /**
      * @ORM\Column(name="id", type="integer")
@@ -33,28 +29,23 @@ class Page
     private $deletedAt;
 
     /**
-     * @ORM\OneToMany(targetEntity="Module", mappedBy="page", cascade={"persist", "remove"})
+     * @ORM\ManyToOne(targetEntity="Page", inversedBy="modules")
      */
-    private $modules;
-
-    public function __construct()
-    {
-        $this->modules = new ArrayCollection();
-    }
+    private $page;
 
     public function getId()
     {
         return $this->id;
     }
 
-    public function setTitle($title)
+    public function setPage(Page $page)
     {
-        $this->title = $title;
+        $this->page = $page;
     }
 
-    public function getTitle()
+    public function getPage()
     {
-        return $this->title;
+        return $this->page;
     }
 
     public function setDeletedAt($deletedAt)
@@ -67,8 +58,13 @@ class Page
         return $this->deletedAt;
     }
 
-    public function addModule(Module $module)
+    public function setTitle($title)
     {
-        $this->module[] = $module;
+        $this->title = $title;
+    }
+
+    public function getTitle()
+    {
+        return $this->title;
     }
 }
