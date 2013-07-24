@@ -1,30 +1,34 @@
 <?php
 
-namespace References\Fixture\ODM\MongoDB;
+namespace Fixture\References\ODM\MongoDB;
 
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 use Gedmo\Mapping\Annotation as Gedmo;
-use References\Fixture\ORM\Category;
+use Fixture\References\ORM\Category;
 
 /**
  * @ODM\EmbeddedDocument
- * Metadata of type Category
  */
 class Metadata
 {
-    /** @ODM\Field(type="string") */
+    /**
+     * @ODM\Field(type="string")
+     */
     private $name;
 
     /**
-     * @Gedmo\ReferenceOne(type="entity", class="References\Fixture\ORM\Category", identifier="categoryId")
+     * @Gedmo\ReferenceOne(type="entity", class="Fixture\References\ORM\Category", identifier="categoryId")
      */
     private $category;
 
-    /** @ODM\Field(type="int") */
+    /**
+     * @ODM\Field(type="int")
+     */
     private $categoryId;
 
-    function __construct($category) {
+    function __construct(Category $category)
+    {
         $this->setCategory($category);
     }
 

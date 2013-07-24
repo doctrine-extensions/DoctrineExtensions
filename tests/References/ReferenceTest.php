@@ -1,53 +1,48 @@
 <?php
 
-namespace Gedmo\References;
+namespace References;
 
-use Doctrine\Common\Annotations\AnnotationReader;
-use Doctrine\ODM\MongoDB\Mapping\Driver\AnnotationDriver as MongoDBAnnotationDriver;
-use Doctrine\ODM\MongoDB\Configuration;
-use Doctrine\ORM\Mapping\Driver\AnnotationDriver as ORMAnnotationDriver;
-use References\Fixture\ODM\MongoDB\Product;
-use References\Fixture\ODM\MongoDB\Metadata;
-use References\Fixture\ORM\Category;
-use References\Fixture\ORM\StockItem;
-use Tool\BaseTestCaseOM;
+use Doctrine\Common\EventManager;
+use Fixture\References\ODM\MongoDB\Product;
+use Fixture\References\ODM\MongoDB\Metadata;
+use Fixture\References\ORM\Category;
+use Fixture\References\ORM\StockItem;
+use TestTool\ObjectManagerTestCase;
+use Gedmo\References\ReferencesListener;
+use Doctrine\Common\Collections\Collection;
 
-class ReferencesListenerTest extends BaseTestCaseOM
+class ReferenceTest extends ObjectManagerTestCase
 {
     private $em;
     private $dm;
+    private $listener;
 
     protected function setUp()
     {
-        parent::setUp();
+        $evm = new EventManager;
+        $evm->addEventSubscriber($this->listener = new ReferencesListener);
 
-        if (!class_exists('Mongo')) {
-            $this->markTestSkipped('Missing Mongo extension.');
-        }
+        $this->dm = $this->createDocumentManager($evm);
+        $this->listener->registerManager('document', $this->dm);
 
-        $reader = new AnnotationReader();
-
-        $this->dm = $this->getMockDocumentManager('test', new MongoDBAnnotationDriver($reader, __DIR__ . '/Fixture/ODM/MongoDB'));
-
-        $listener = new ReferencesListener(array(
-            'document' => $this->dm
+        $this->em = $this->createEntityManager($evm);
+        $this->createSchema($this->em, array(
+            'Fixture\References\ORM\StockItem',
+            'Fixture\References\ORM\Category'
         ));
-
-        $this->evm->addEventSubscriber($listener);
-
-        $reader = new AnnotationReader();
-
-        $this->em = $this->getMockSqliteEntityManager(
-            array(
-                'References\Fixture\ORM\StockItem',
-                'References\Fixture\ORM\Category'
-            ),
-            new ORMAnnotationDriver($reader, __DIR__ . '/Fixture/ORM')
-        );
-        $listener->registerManager('entity', $this->em);
+        $this->listener->registerManager('entity', $this->em);
     }
 
-    public function testShouldPersistReferencedIdentifiersIntoIdentifierField()
+    protected function tearDown()
+    {
+        $this->releaseEntityManager($this->em);
+        $this->releaseDocumentManager($this->dm);
+    }
+
+    /**
+     * @test
+     */
+    function shouldPersistReferencedIdentifiersIntoIdentifierField()
     {
         $stockItem = new StockItem();
         $stockItem->setName('Apple TV');
@@ -67,7 +62,10 @@ class ReferencesListenerTest extends BaseTestCaseOM
         $this->assertEquals($product->getId(), $stockItem->getProductId());
     }
 
-    public function testShouldPopulateReferenceOneWithProxyFromIdentifierField()
+    /**
+     * @test
+     */
+    function shouldPopulateReferenceOneWithProxyFromIdentifierField()
     {
         $product = new Product();
         $product->setName('Apple TV');
@@ -90,7 +88,10 @@ class ReferencesListenerTest extends BaseTestCaseOM
         $this->assertSame($product, $stockItem->getProduct());
     }
 
-    public function testShouldPopulateReferenceManyWithLazyCollectionInstance()
+    /**
+     * @test
+     */
+    function shouldPopulateReferenceManyWithLazyCollectionInstance()
     {
         $product = new Product();
         $product->setName('Apple TV');
@@ -132,12 +133,15 @@ class ReferencesListenerTest extends BaseTestCaseOM
         $this->assertEquals('AMZN-APP-TV', $last->getSku());
     }
 
-    public function testShouldPopulateReferenceManyEmbedWithLazyCollectionInstance()
+    /**
+     * @test
+     */
+    function shouldPopulateReferenceManyEmbedWithLazyCollectionInstance()
     {
         $tvCategory = new Category();
         $tvCategory->setName("Television");
         $this->em->persist($tvCategory);
-        
+
         $cellPhoneCategory = new Category();
         $cellPhoneCategory->setName("CellPhone");
         $this->em->persist($cellPhoneCategory);
@@ -150,8 +154,6 @@ class ReferencesListenerTest extends BaseTestCaseOM
         $appleTV->setName('Apple TV');
         $this->dm->persist($appleTV);
         $this->dm->clear();
-
-
 
         $samsungTV = new Product();
         $samsungTV->setName('Samsung TV');
@@ -176,15 +178,21 @@ class ReferencesListenerTest extends BaseTestCaseOM
 
         $tvs = $tvCategory->getProducts();
         $this->assertNotNull($tvs);
-        $first = $tvs->first();
-        $last = $tvs->last();
-
-
-        $this->assertInstanceOf(get_class($appleTV), $first);
-        $this->assertEquals('Apple TV', $first->getName());
-        
-        $this->assertInstanceOf(get_class($samsungTV), $last);
-        $this->assertEquals('Samsung TV', $last->getName());
+        $this->assertNotNull($item = $this->findByNameFromCollection($tvs, 'Apple TV'));
+        $this->assertInstanceOf(get_class($appleTV), $item);
+        $this->assertSame($appleTV, $item);
+        $this->assertNotNull($item = $this->findByNameFromCollection($tvs, 'Samsung TV'));
+        $this->assertInstanceOf(get_class($samsungTV), $item);
+        $this->assertSame($samsungTV, $item);
     }
 
+    private function findByNameFromCollection(Collection $col, $name)
+    {
+        foreach ($col as $item) {
+            if ($item->getName() === $name) {
+                return $item;
+            }
+        }
+        return null;
+    }
 }
