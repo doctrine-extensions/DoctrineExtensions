@@ -1,6 +1,6 @@
 <?php
 
-namespace Blameable\Fixture\Document;
+namespace Fixture\Blameable\Document;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -10,7 +10,9 @@ use Gedmo\Mapping\Annotation as Gedmo;
  */
 class Article
 {
-    /** @ODM\Id */
+    /**
+     * @ODM\Id
+     */
     private $id;
 
     /**
@@ -24,34 +26,22 @@ class Article
     private $type;
 
     /**
-     * @var string $created
-     *
-     * @ODM\String
-     * @Gedmo\Blameable(on="create")
-     */
-    private $created;
-
-    /**
-     * @var string $updated
-     *
      * @ODM\String
      * @Gedmo\Blameable
      */
-    private $updated;
+    private $updatedBy;
 
     /**
      * @ODM\ReferenceOne(targetDocument="User")
      * @Gedmo\Blameable(on="create")
      */
-    private $creator;
+    private $createdBy;
 
     /**
-     * @var string $published
-     *
      * @ODM\String
      * @Gedmo\Blameable(on="change", field="type.title", value="Published")
      */
-    private $published;
+    private $publishedBy;
 
     public function getId()
     {
@@ -68,26 +58,6 @@ class Article
         return $this->title;
     }
 
-    public function getCreated()
-    {
-        return $this->created;
-    }
-
-    public function getPublished()
-    {
-        return $this->published;
-    }
-
-    public function getCreator()
-    {
-        return $this->creator;
-    }
-
-    public function getUpdated()
-    {
-        return $this->updated;
-    }
-
     public function setType(Type $type)
     {
         $this->type = $type;
@@ -98,25 +68,36 @@ class Article
         return $this->type;
     }
 
-    public function setCreated($created)
+    public function setCreatedBy(User $createdBy)
     {
-        $this->created = $created;
+        $this->createdBy = $createdBy;
+        return $this;
     }
 
-    public function setPublished($published)
+    public function getCreatedBy()
     {
-        $this->published = $published;
+        return $this->createdBy;
     }
 
-    public function setUpdated($updated)
+    public function setUpdatedBy($updatedBy)
     {
-        $this->updated = $updated;
+        $this->updatedBy = $updatedBy;
+        return $this;
     }
 
-    public function setCreator($creator)
+    public function getUpdatedBy()
     {
-        $this->creator = $creator;
+        return $this->updatedBy;
     }
 
+    public function setPublishedBy($publishedBy)
+    {
+        $this->publishedBy = $publishedBy;
+        return $this;
+    }
 
+    public function getPublishedBy()
+    {
+        return $this->publishedBy;
+    }
 }

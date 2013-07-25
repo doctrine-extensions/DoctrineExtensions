@@ -26,7 +26,6 @@ class TimestampableListener extends MappedEventSubscriber
     public function getSubscribedEvents()
     {
         return array(
-            'prePersist',
             'onFlush',
             'loadClassMetadata'
         );
@@ -54,104 +53,97 @@ class TimestampableListener extends MappedEventSubscriber
         $uow = $om->getUnitOfWork();
         // check all scheduled updates
         foreach (OMH::getScheduledObjectUpdates($uow) as $object) {
-            $meta = $om->getClassMetadata(get_class($object));
-            if ($config = $this->getConfiguration($om, $meta->name)) {
-                $changeSet = OMH::getObjectChangeSet($uow, $object);
-                $needChanges = false;
-
-                if (isset($config['update'])) {
-                    foreach ($config['update'] as $field) {
-                        if (!isset($changeSet[$field])) { // let manual values
-                            $needChanges = true;
-                            $this->updateField($om, $object, $field);
-                        }
-                    }
-                }
-
-                if (isset($config['change'])) {
-                    foreach ($config['change'] as $options) {
-                        if (isset($changeSet[$options['field']])) {
-                            continue; // date/timestamp was set manually
-                        }
-                        $trackedFields = (array)$options['trackedField'];
-                        if (count($trackedFields) > 1 && $options['value'] !== null) {
-                            throw new UnexpectedValueException("If there is more than one field observed for changes, 'value' cannot be set");
-                        }
-                        foreach ($trackedFields as $field) {
-                            $parts = explode('.', $field);
-                            $field = array_pop($parts);
-                            $targetObject = $object;
-                            if ($assoc = array_shift($parts)) {
-								$om->initializeObject($assoc);
-                                if (!$meta->isSingleValuedAssociation($assoc)) {
-                                    throw new UnexpectedValueException(
-                                        "Field - [{$assoc}] is expected to be a single valued association in class - {$meta->name}"
-                                    );
-                                }
-                                if ($assoc = $meta->getReflectionProperty($assoc)->getValue($targetObject)) {
-                                    $assocMeta = $om->getClassMetadata(get_class($assoc));
-                                    if (!$assocMeta->hasField($field)) {
-                                        throw new UnexpectedValueException(
-                                            "Field [$field] - was not found in associated class - {$meta->name}"
-                                        );
-                                    }
-                                    // association is available, check if it is scheduled in UOW
-                                    if ($uow->isScheduledForInsert($assoc) || $uow->isScheduledForUpdate($assoc)) {
-                                        $targetObject = $assoc; // will test field there
-                                    }
-                                }
-                            }
-                            $targetChangeSet = OMH::getObjectChangeSet($uow, $targetObject); // reload, since might be an association
-                            if (isset($targetChangeSet[$field])) {
-                                $value = $targetChangeSet[$field][1];
-                                // comparison is not explicit, because string 'true' value should match true - boolean value
-                                if (null === $options['value'] || $value == $options['value']) {
-                                    $needChanges = true;
-                                    $this->updateField($om, $object, $options['field']);
-                                    if (count($trackedFields) > 1) {
-                                        break; // no point to iterate again
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-
-                if ($needChanges) {
-                    OMH::recomputeSingleObjectChangeSet($uow, $meta, $object);
-                }
-            }
+            $this->process($om, $object);
+        }
+        foreach (OMH::getScheduledObjectInsertions($uow) as $object) {
+            $this->process($om, $object);
         }
     }
 
     /**
-     * Checks for persisted Timestampable objects
-     * to update creation and modification dates
+     * Do the actual updates
      *
-     * @param EventArgs $event
-     * @return void
+     * @param \Doctrine\Common\Persistence\ObjectManager $om
+     * @param $object
      */
-    public function prePersist(EventArgs $event)
+    protected function process(ObjectManager $om, $object)
     {
-        $om = OMH::getObjectManagerFromEvent($event);
-        $object = OMH::getObjectFromEvent($event);
+        $uow = $om->getUnitOfWork();
         $meta = $om->getClassMetadata(get_class($object));
+        if ($config = $this->getConfiguration($om, $meta->name)) {
+            $changeSet = OMH::getObjectChangeSet($uow, $object);
+            $needChanges = false;
 
-        if ($config = $this->getConfiguration($om, $meta->getName())) {
-            if (isset($config['update'])) {
-                foreach ($config['update'] as $field) {
-                    if ($meta->getReflectionProperty($field)->getValue($object) === null) { // let manual values
+            if ($uow->isScheduledForInsert($object) && isset($config['create'])) {
+                foreach ($config['create'] as $field) {
+                    $allow = isset($changeSet[$field]) && null === $changeSet[$field][1];
+                    if ($allow) { // let manual values
+                        $needChanges = true;
                         $this->updateField($om, $object, $field);
                     }
                 }
             }
 
-            if (isset($config['create'])) {
-                foreach ($config['create'] as $field) {
-                    if ($meta->getReflectionProperty($field)->getValue($object) === null) { // let manual values
+            if (isset($config['update'])) {
+                foreach ($config['update'] as $field) {
+                    $allow = ($uow->isScheduledForInsert($object) && null === $changeSet[$field][1]) || !isset($changeSet[$field]);
+                    if ($allow) { // let manual values
+                        $needChanges = true;
                         $this->updateField($om, $object, $field);
                     }
                 }
+            }
+
+            if (isset($config['change'])) {
+                foreach ($config['change'] as $options) {
+                    $allow = ($uow->isScheduledForInsert($object) && null === $changeSet[$options['field']][1]) || !isset($changeSet[$options['field']]);
+                    if (!$allow) {
+                        continue; // date/timestamp was set manually
+                    }
+                    $trackedFields = (array)$options['trackedField'];
+                    if (count($trackedFields) > 1 && $options['value'] !== null) {
+                        throw new UnexpectedValueException("If there is more than one field observed for changes, 'value' cannot be set");
+                    }
+                    foreach ($trackedFields as $field) {
+                        $parts = explode('.', $field);
+                        $field = array_pop($parts);
+                        $targetObject = $object;
+                        if ($assoc = array_shift($parts)) {
+                            if (!$meta->isSingleValuedAssociation($assoc)) {
+                                throw new UnexpectedValueException(
+                                    "Field - [{$assoc}] is expected to be a single valued association in class - {$meta->name}"
+                                );
+                            }
+                            if ($assoc = $meta->getReflectionProperty($assoc)->getValue($targetObject)) {
+                                $assocMeta = $om->getClassMetadata(get_class($assoc));
+                                if (!$assocMeta->hasField($field)) {
+                                    throw new UnexpectedValueException(
+                                        "Field [$field] - was not found in associated class - {$meta->name}"
+                                    );
+                                }
+                                // association is available, check if it is scheduled in UOW
+                                if ($uow->isScheduledForInsert($assoc) || $uow->isScheduledForUpdate($assoc)) {
+                                    $targetObject = $assoc; // will test field there
+                                }
+                            }
+                        }
+                        $targetChangeSet = OMH::getObjectChangeSet($uow, $targetObject); // reload, since might be an association
+                        if (isset($targetChangeSet[$field])) {
+                            $value = $targetChangeSet[$field][1];
+                            // comparison is not explicit, because string 'true' value should match true - boolean value
+                            if (null === $options['value'] || $value == $options['value']) {
+                                $needChanges = true;
+                                $this->updateField($om, $object, $options['field']);
+                                if (count($trackedFields) > 1) {
+                                    break; // no point to iterate again
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            if ($needChanges) {
+                OMH::recomputeSingleObjectChangeSet($uow, $meta, $object);
             }
         }
     }
