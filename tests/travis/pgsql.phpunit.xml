@@ -36,6 +36,10 @@
             <directory suffix="Test.php">./tests/Blameable/</directory>
         </testsuite>
 
+        <testsuite name="ReferenceIntegrity Extension">
+            <directory suffix="Test.php">./tests/ReferenceIntegrity/</directory>
+        </testsuite>
+
     </testsuites>
 
     <php>
