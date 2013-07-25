@@ -3,9 +3,10 @@
 namespace Gedmo\Sortable;
 
 use Doctrine\Common\EventArgs;
+use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 use Gedmo\Mapping\MappedEventSubscriber;
-use Gedmo\Sluggable\Mapping\Event\SortableAdapter;
-use Doctrine\ORM\Proxy\Proxy;
+use Gedmo\Mapping\ObjectManagerHelper as OMH;
 
 /**
  * The SortableListener maintains a sort index on your entities
@@ -39,28 +40,26 @@ class SortableListener extends MappedEventSubscriber
     /**
      * Maps additional metadata
      *
-     * @param EventArgs $args
+     * @param EventArgs $event
      */
-    public function loadClassMetadata(EventArgs $args)
+    public function loadClassMetadata(EventArgs $event)
     {
-        $ea = $this->getEventAdapter($args);
-        $this->loadMetadataForObjectClass($ea->getObjectManager(), $args->getClassMetadata());
+        $this->loadMetadataForObjectClass(OMH::getObjectManagerFromEvent($event), $event->getClassMetadata());
     }
 
     /**
      * Update position on objects being updated during flush
      * if they require changing
      *
-     * @param EventArgs $args
+     * @param EventArgs $event
      */
-    public function onFlush(EventArgs $args)
+    public function onFlush(EventArgs $event)
     {
-        $ea = $this->getEventAdapter($args);
-        $om = $ea->getObjectManager();
+        $om = OMH::getObjectManagerFromEvent($event);
         $uow = $om->getUnitOfWork();
 
         // process all objects being deleted
-        foreach ($ea->getScheduledObjectDeletions($uow) as $object) {
+        foreach (OMH::getScheduledObjectDeletions($uow) as $object) {
             $meta = $om->getClassMetadata(get_class($object));
             if ($config = $this->getConfiguration($om, $meta->name)) {
                 $this->processDeletion($om, $config, $meta, $object);
@@ -68,7 +67,7 @@ class SortableListener extends MappedEventSubscriber
         }
 
         // process all objects being updated
-        foreach ($ea->getScheduledObjectUpdates($uow) as $object) {
+        foreach (OMH::getScheduledObjectUpdates($uow) as $object) {
             $meta = $om->getClassMetadata(get_class($object));
             if ($config = $this->getConfiguration($om, $meta->name)) {
                 $this->processUpdate($om, $config, $meta, $object);
@@ -76,7 +75,7 @@ class SortableListener extends MappedEventSubscriber
         }
 
         // process all objects being inserted
-        foreach ($ea->getScheduledObjectInsertions($uow) as $object) {
+        foreach (OMH::getScheduledObjectInsertions($uow) as $object) {
             $meta = $om->getClassMetadata(get_class($object));
             if ($config = $this->getConfiguration($om, $meta->name)) {
                 $this->processInsert($om, $config, $meta, $object);
@@ -88,14 +87,13 @@ class SortableListener extends MappedEventSubscriber
     /**
      * Update maxPositions as needed
      *
-     * @param EventArgs $args
+     * @param EventArgs $event
      */
-    public function prePersist(EventArgs $args)
+    public function prePersist(EventArgs $event)
     {
-        $ea = $this->getEventAdapter($args);
-        $om = $ea->getObjectManager();
+        $om = OMH::getObjectManagerFromEvent($event);
         $uow = $om->getUnitOfWork();
-        $object = $ea->getObject();
+        $object = OMH::getObjectFromEvent($event);
         $meta = $om->getClassMetadata(get_class($object));
 
         if ($config = $this->getConfiguration($om, $meta->name)) {
@@ -114,15 +112,19 @@ class SortableListener extends MappedEventSubscriber
 
     /**
      * Computes node positions and updates the sort field in memory and in the db
-     * @param object $em ObjectManager
+     *
+     * @param \Doctrine\Common\Persistence\ObjectManager $om
+     * @param array $config
+     * @param \Doctrine\Common\Persistence\Mapping\ClassMetadata $meta
+     * @param Object $object
      */
-    private function processInsert($em, $config, $meta, $object)
+    private function processInsert(ObjectManager $om, array $config, ClassMetadata $meta, $object)
     {
-        $uow = $em->getUnitOfWork();
-        
+        $uow = $om->getUnitOfWork();
+
         $old = $meta->getReflectionProperty($config['position'])->getValue($object);
         $newPosition = $meta->getReflectionProperty($config['position'])->getValue($object);
-        
+
         if (is_null($newPosition)) {
             $newPosition = -1;
         }
@@ -135,7 +137,7 @@ class SortableListener extends MappedEventSubscriber
 
         // Get max position
         if (!isset($this->maxPositions[$hash])) {
-            $this->maxPositions[$hash] = $this->getMaxPosition($em, $meta, $config, $object);
+            $this->maxPositions[$hash] = $this->getMaxPosition($om, $meta, $config, $object);
         }
 
         // Compute position if it is negative
@@ -168,34 +170,43 @@ class SortableListener extends MappedEventSubscriber
         // Set new position
         if ($old < 0 || is_null($old)) {
             $meta->getReflectionProperty($config['position'])->setValue($object, $newPosition);
-            $uow->recomputeSingleEntityChangeSet($meta, $object);
+            OMH::recomputeSingleObjectChangeSet($uow, $meta, $object);
         }
     }
 
     /**
      * Computes node positions and updates the sort field in memory and in the db
-     * @param object $em ObjectManager
+     *
+     * @param \Doctrine\Common\Persistence\ObjectManager $om
+     * @param array $config
+     * @param \Doctrine\Common\Persistence\Mapping\ClassMetadata $meta
+     * @param Object $object
      */
-    private function processUpdate($em, $config, $meta, $object)
+    private function processUpdate(ObjectManager $om, array $config, ClassMetadata $meta, $object)
     {
-        $uow = $em->getUnitOfWork();
+        $uow = $om->getUnitOfWork();
 
         $changed = false;
-        $changeSet = $uow->getEntityChangeSet($object);
+        $changeSet = OMH::getObjectChangeSet($uow, $object);
 
         // Get groups
         $groups = $this->getGroups($meta, $config, $object);
 
         // handle old groups
         foreach (array_keys($groups) as $group) {
-            if(array_key_exists($group, $changeSet))
-            {
+            if (array_key_exists($group, $changeSet)) {
                 $changed = true;
 
                 $oldGroups = array($group => $changeSet[$group][0]);
                 $oldHash = $this->getHash($meta, $oldGroups, $object, $config);
-                $this->maxPositions[$oldHash] = $this->getMaxPosition($em, $meta, $config, $object, $oldGroups);
-                $this->addRelocation($oldHash, $config['useObjectClass'], $oldGroups, $meta->getReflectionProperty($config['position'])->getValue($object) + 1, $this->maxPositions[$oldHash] + 1, -1, true);
+                $this->maxPositions[$oldHash] = $this->getMaxPosition($om, $meta, $config, $object, $oldGroups);
+                $this->addRelocation(
+                    $oldHash,
+                    $config['useObjectClass'],
+                    $oldGroups,
+                    $meta->getReflectionProperty($config['position'])->getValue($object) + 1,
+                    $this->maxPositions[$oldHash] + 1, -1, true
+                );
             }
         }
 
@@ -217,7 +228,7 @@ class SortableListener extends MappedEventSubscriber
 
         // Get max position
         if (!isset($this->maxPositions[$hash])) {
-            $this->maxPositions[$hash] = $this->getMaxPosition($em, $meta, $config, $object);
+            $this->maxPositions[$hash] = $this->getMaxPosition($om, $meta, $config, $object);
         }
 
         // Compute position if it is negative
@@ -275,40 +286,46 @@ class SortableListener extends MappedEventSubscriber
 
         // Set new position
         $meta->getReflectionProperty($config['position'])->setValue($object, $newPosition);
-        $uow->recomputeSingleEntityChangeSet($meta, $object);
+        OMH::recomputeSingleObjectChangeSet($uow, $meta, $object);
     }
 
     /**
      * Computes node positions and updates the sort field in memory and in the db
-     * @param object $em ObjectManager
+     *
+     * @param \Doctrine\Common\Persistence\ObjectManager $om
+     * @param array $config
+     * @param \Doctrine\Common\Persistence\Mapping\ClassMetadata $meta
+     * @param Object $object
      */
-    private function processDeletion($em, $config, $meta, $object)
+    private function processDeletion(ObjectManager $om, array $config, ClassMetadata $meta, $object)
     {
         $position = $meta->getReflectionProperty($config['position'])->getValue($object);
-
         // Get groups
         $groups = $this->getGroups($meta, $config, $object);
-
         // Get hash
         $hash = $this->getHash($meta, $groups, $object, $config);
-
         // Get max position
         if (!isset($this->maxPositions[$hash])) {
-            $this->maxPositions[$hash] = $this->getMaxPosition($em, $meta, $config, $object);
+            $this->maxPositions[$hash] = $this->getMaxPosition($om, $meta, $config, $object);
         }
-
         // Add relocation
         $this->addRelocation($hash, $config['useObjectClass'], $groups, $position, -1, -1);
     }
 
-    private function processRelocations($em)
+    /**
+     * Execute relocations
+     *
+     * @param \Doctrine\Common\Persistence\ObjectManager $om
+     */
+    private function processRelocations(ObjectManager $om)
     {
         foreach ($this->relocations as $hash => $relocation) {
-            $config = $this->getConfiguration($em, $relocation['name']);
+            $config = $this->getConfiguration($om, $relocation['name']);
             foreach ($relocation['deltas'] as $delta) {
                 if ($delta['start'] > $this->maxPositions[$hash] || $delta['delta'] == 0) {
                     continue;
                 }
+                // @TODO: support odm
                 $sign = $delta['delta'] < 0 ? "-" : "+";
                 $absDelta = abs($delta['delta']);
                 $dql = "UPDATE {$relocation['name']} n";
@@ -328,25 +345,25 @@ class SortableListener extends MappedEventSubscriber
                         $params['val___'.$i] = $value;
                     }
                 }
-                $q = $em->createQuery($dql);
+                $q = $om->createQuery($dql);
                 $q->setParameters($params);
                 $q->getSingleScalarResult();
-                $meta = $em->getClassMetadata($relocation['name']);
+                $meta = $om->getClassMetadata($relocation['name']);
 
                 // now walk through the unit of work in memory objects and sync those
-                $uow = $em->getUnitOfWork();
+                $uow = $om->getUnitOfWork();
                 foreach ($uow->getIdentityMap() as $className => $objects) {
                     // for inheritance mapped classes, only root is always in the identity map
-                    if ($className !== $meta->rootEntityName || !$this->getConfiguration($em, $className)) {
+                    if ($className !== $meta->rootEntityName || !$this->getConfiguration($om, $className)) {
                         continue;
                     }
                     foreach ($objects as $object) {
-                        if ($object instanceof Proxy && !$object->__isInitialized__) {
+                        if (OMH::isProxy($object) && !$object->__isInitialized__) {
                             continue;
                         }
 
                         // if the entity's position is already changed, stop now
-                        if (array_key_exists($config['position'], $uow->getEntityChangeSet($object))) {
+                        if (array_key_exists($config['position'], OMH::getObjectChangeSet($uow, $object))) {
                             continue;
                         }
 
@@ -366,7 +383,7 @@ class SortableListener extends MappedEventSubscriber
                         }
                         if ($matches) {
                             $meta->getReflectionProperty($config['position'])->setValue($object, $pos + $delta['delta']);
-                            $em->getUnitOfWork()->setOriginalEntityProperty($oid, $config['position'], $pos + $delta['delta']);
+                            OMH::setOriginalObjectProperty($uow, $oid, $config['position'], $pos + $delta['delta']);
                         }
                     }
                 }
@@ -378,11 +395,20 @@ class SortableListener extends MappedEventSubscriber
         $this->maxPositions = array();
     }
 
-    private function getHash($meta, $groups, $object, &$config)
+    /**
+     * Get specific hash key
+     *
+     * @param \Doctrine\Common\Persistence\Mapping\ClassMetadata $meta
+     * @param array $groups
+     * @param Object $object
+     * @param array $config
+     * @return string
+     */
+    private function getHash(ClassMetadata $meta, array $groups, $object, array $config)
     {
         $data = $config['useObjectClass'];
         foreach ($groups as $group => $val) {
-            if($val instanceof \DateTime) {
+            if ($val instanceof \DateTime) {
                 $val = $val->format('c');
             } elseif (is_object($val)) {
                 $val = spl_object_hash($val);
@@ -392,18 +418,21 @@ class SortableListener extends MappedEventSubscriber
         return md5($data);
     }
 
-    private function getMaxPosition($em, $meta, $config, $object, array $groups = array())
+    /**
+     * Computes node positions and updates the sort field in memory and in the db
+     *
+     * @param \Doctrine\Common\Persistence\ObjectManager $om
+     * @param \Doctrine\Common\Persistence\Mapping\ClassMetadata $meta
+     * @param array $config
+     * @param Object $object
+     * @param array $groups
+     * @return integer
+     */
+    private function getMaxPosition(ObjectManager $om, ClassMetadata $meta, array $config, $object, array $groups = array())
     {
-        $uow = $em->getUnitOfWork();
+        $uow = $om->getUnitOfWork();
         $maxPos = null;
-
-        // Get groups
-        if(!sizeof($groups))
-        {
-            $groups = $this->getGroups($meta, $config, $object);
-        }
-
-        // Get hash
+        $groups = $groups ?: $this->getGroups($meta, $config, $object);
         $hash = $this->getHash($meta, $groups, $object, $config);
 
         // Check for cached max position
@@ -420,7 +449,7 @@ class SortableListener extends MappedEventSubscriber
             }
         }
 
-        $qb = $em->createQueryBuilder();
+        $qb = $om->createQueryBuilder();
         $qb->select('MAX(n.'.$config['position'].')')
            ->from($config['useObjectClass'], 'n');
         $qb = $this->addGroupWhere($qb, $groups);
@@ -429,11 +458,13 @@ class SortableListener extends MappedEventSubscriber
         $query->useResultCache(false);
         $res = $query->getResult();
         $maxPos = $res[0][1];
-        if (is_null($maxPos)) $maxPos = -1;
+        if (is_null($maxPos)) {
+            $maxPos = -1;
+        }
         return intval($maxPos);
     }
 
-    private function addGroupWhere($qb, $groups)
+    private function addGroupWhere($qb, array $groups)
     {
         $i = 1;
         foreach ($groups as $group => $value) {
@@ -442,9 +473,8 @@ class SortableListener extends MappedEventSubscriber
                 $qb->{$whereFunc}($qb->expr()->isNull('n.'.$group));
             } else {
                 $qb->{$whereFunc}('n.'.$group.' = :group__'.$i);
-                $qb->setParameter('group__'.$i, $value);
+                $qb->setParameter('group__'.($i++), $value);
             }
-            $i++;
         }
         return $qb;
     }
@@ -477,13 +507,13 @@ class SortableListener extends MappedEventSubscriber
     }
 
     /**
-     * @param $meta
-     * @param $config
-     * @param $object
+     * @param \Doctrine\Common\Persistence\Mapping\ClassMetadata $meta
+     * @param array $config
+     * @param Object $object
      *
      * @return array
      */
-    private function getGroups($meta, $config, $object)
+    private function getGroups(ClassMetadata $meta, array $config, $object)
     {
         $groups = array();
         if (isset($config['groups'])) {
@@ -491,7 +521,6 @@ class SortableListener extends MappedEventSubscriber
                 $groups[$group] = $meta->getReflectionProperty($group)->getValue($object);
             }
         }
-
         return $groups;
     }
 

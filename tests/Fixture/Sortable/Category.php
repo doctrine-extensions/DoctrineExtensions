@@ -1,14 +1,15 @@
 <?php
 
-namespace Sortable\Fixture;
+namespace Fixture\Sortable;
 
 use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
- * @ORM\Entity(repositoryClass="Gedmo\Sortable\Entity\Repository\SortableRepository")
+ * @ORM\Entity
  */
-class SimpleListItem
+class Category
 {
     /**
      * @ORM\Id
@@ -18,15 +19,19 @@ class SimpleListItem
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(length=255)
      */
     private $name;
 
     /**
-     * @Gedmo\SortablePosition
-     * @ORM\Column(type="integer")
+     * @ORM\OneToMany(targetEntity="Item", mappedBy="category")
      */
-    private $position;
+    private $items;
+
+    public function __construct()
+    {
+        $this->items = new ArrayCollection();
+    }
 
     public function getId()
     {
@@ -41,15 +46,5 @@ class SimpleListItem
     public function getName()
     {
         return $this->name;
-    }
-
-    public function setPosition($position)
-    {
-        $this->position = $position;
-    }
-
-    public function getPosition()
-    {
-        return $this->position;
     }
 }

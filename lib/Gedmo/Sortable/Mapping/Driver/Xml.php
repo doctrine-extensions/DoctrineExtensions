@@ -2,8 +2,8 @@
 
 namespace Gedmo\Sortable\Mapping\Driver;
 
-use Gedmo\Mapping\Driver\Xml as BaseXml,
-    Gedmo\Exception\InvalidMappingException;
+use Gedmo\Mapping\Driver\Xml as BaseXml;
+use Gedmo\Exception\InvalidMappingException;
 
 /**
  * This is a xml mapping driver for Sortable
@@ -16,13 +16,13 @@ use Gedmo\Mapping\Driver\Xml as BaseXml,
  */
 class Xml extends BaseXml
 {
-
     /**
      * List of types which are valid for position field
      *
      * @var array
      */
     private $validTypes = array(
+        'int',
         'integer',
         'smallint',
         'bigint'

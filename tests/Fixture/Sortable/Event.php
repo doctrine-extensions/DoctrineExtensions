@@ -1,6 +1,6 @@
 <?php
 
-namespace Sortable\Fixture;
+namespace Fixture\Sortable;
 
 use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
@@ -11,8 +11,6 @@ use Doctrine\ORM\Mapping as ORM;
 class Event
 {
     /**
-     * @var int
-     *
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
@@ -20,23 +18,17 @@ class Event
     private $id;
 
     /**
-     * @var \DateTime
-     *
      * @Gedmo\SortableGroup
      * @ORM\Column(type="datetime")
      */
     private $dateTime;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(length=255)
      */
     private $name;
 
     /**
-     * @var int
-     *
      * @Gedmo\SortablePosition
      * @ORM\Column(type="integer")
      */

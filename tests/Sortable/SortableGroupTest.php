@@ -3,41 +3,38 @@
 namespace Gedmo\Sortable;
 
 use Doctrine\Common\EventManager;
-use Tool\BaseTestCaseORM;
-use Sortable\Fixture\Transport\Car;
-use Sortable\Fixture\Transport\Bus;
-use Sortable\Fixture\Transport\Vehicle;
-use Sortable\Fixture\Transport\Engine;
+use TestTool\ObjectManagerTestCase;
+use Fixture\Sortable\Transport\Car;
+use Fixture\Sortable\Transport\Bus;
+use Fixture\Sortable\Transport\Vehicle;
+use Fixture\Sortable\Transport\Engine;
 
-/**
- * These are tests for sluggable behavior
- *
- * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @link http://www.gediminasm.org
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
- */
-class SortableGroupTest extends BaseTestCaseORM
+class SortableGroupTest extends ObjectManagerTestCase
 {
-    const CAR = "Sortable\Fixture\Transport\Car";
-    const BUS = "Sortable\Fixture\Transport\Bus";
-    const VEHICLE = "Sortable\Fixture\Transport\Vehicle";
-    const ENGINE = "Sortable\Fixture\Transport\Engine";
+    const CAR = "Fixture\Sortable\Transport\Car";
+    const BUS = "Fixture\Sortable\Transport\Bus";
+    const VEHICLE = "Fixture\Sortable\Transport\Vehicle";
+    const ENGINE = "Fixture\Sortable\Transport\Engine";
+
+    private $em;
 
     protected function setUp()
     {
-        parent::setUp();
-
         $evm = new EventManager;
         $evm->addEventSubscriber(new SortableListener);
 
-        $this->getMockSqliteEntityManager($evm);
-        /*$this->getMockCustomEntityManager(array(
-            'driver' => 'pdo_mysql',
-            'dbname' => 'test',
-            'host' => '127.0.0.1',
-            'user' => 'root',
-            'password' => 'nimda'
-        ), $evm);*/
+        $this->em = $this->createEntityManager($evm);
+        $this->createSchema($this->em, array(
+            self::VEHICLE,
+            self::CAR,
+            self::ENGINE,
+            self::BUS
+        ));
+    }
+
+    protected function tearDown()
+    {
+        $this->releaseEntityManager($this->em);
     }
 
     /**
@@ -49,22 +46,22 @@ class SortableGroupTest extends BaseTestCaseORM
         $carRepo = $this->em->getRepository(self::CAR);
 
         $audi80 = $carRepo->findOneByTitle('Audi-80');
-        $this->assertEquals(0, $audi80->getSortByEngine());
+        $this->assertSame(0, $audi80->getSortByEngine());
 
         $audi80s = $carRepo->findOneByTitle('Audi-80s');
-        $this->assertEquals(1, $audi80s->getSortByEngine());
+        $this->assertSame(1, $audi80s->getSortByEngine());
 
         $icarus = $this->em->getRepository(self::BUS)->findOneByTitle('Icarus');
-        $this->assertEquals(2, $icarus->getSortByEngine());
+        $this->assertSame(2, $icarus->getSortByEngine());
 
         $this->em->remove($audi80);
         $this->em->flush();
 
         $audi80s = $carRepo->findOneByTitle('Audi-80s');
-        $this->assertEquals(0, $audi80s->getSortByEngine());
+        $this->assertSame(0, $audi80s->getSortByEngine());
 
         $icarus = $this->em->getRepository(self::BUS)->findOneByTitle('Icarus');
-        $this->assertEquals(1, $icarus->getSortByEngine());
+        $this->assertSame(1, $icarus->getSortByEngine());
     }
 
     /**
@@ -78,19 +75,19 @@ class SortableGroupTest extends BaseTestCaseORM
 
         // position 0
         $audi80 = $carRepo->findOneByTitle('Audi-80');
-        $this->assertEquals(0, $audi80->getSortByEngine());
+        $this->assertSame(0, $audi80->getSortByEngine());
 
         //position 1
         $audi80s = $carRepo->findOneByTitle('Audi-80s');
-        $this->assertEquals(1, $audi80s->getSortByEngine());
+        $this->assertSame(1, $audi80s->getSortByEngine());
 
         //position 2
         $icarus = $this->em->getRepository(self::BUS)->findOneByTitle('Icarus');
-        $this->assertEquals(2, $icarus->getSortByEngine());
+        $this->assertSame(2, $icarus->getSortByEngine());
 
         // theres only 1 v6 so this should be position:0
         $audiJet = $carRepo->findOneByTitle('Audi-jet');
-        $this->assertEquals(0, $audiJet->getSortByEngine());
+        $this->assertSame(0, $audiJet->getSortByEngine());
 
         // change engines
         $v6engine = $this->em->getRepository(self::ENGINE)->findOneByType('V6');
@@ -100,22 +97,12 @@ class SortableGroupTest extends BaseTestCaseORM
         $this->em->flush();
 
         // v6
-        $this->assertEquals(0, $audiJet->getSortByEngine());
-        $this->assertEquals(1, $audi80s->getSortByEngine());
+        $this->assertSame(0, $audiJet->getSortByEngine());
+        $this->assertSame(1, $audi80s->getSortByEngine());
 
         // v8
-        $this->assertEquals(0, $audi80->getSortByEngine());
-        $this->assertEquals(1, $icarus->getSortByEngine());
-    }
-
-    protected function getUsedEntityFixtures()
-    {
-        return array(
-            self::VEHICLE,
-            self::CAR,
-            self::ENGINE,
-            self::BUS
-        );
+        $this->assertSame(0, $audi80->getSortByEngine());
+        $this->assertSame(1, $icarus->getSortByEngine());
     }
 
     private function populate()

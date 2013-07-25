@@ -2,9 +2,9 @@
 
 namespace Gedmo\Sortable\Mapping\Driver;
 
-use Gedmo\Mapping\Driver\File,
-    Gedmo\Mapping\Driver,
-    Gedmo\Exception\InvalidMappingException;
+use Gedmo\Mapping\Driver\File;
+use Gedmo\Mapping\Driver;
+use Gedmo\Exception\InvalidMappingException;
 
 /**
  * This is a yaml mapping driver for Sortable
@@ -29,6 +29,7 @@ class Yaml extends File implements Driver
      * @var array
      */
     private $validTypes = array(
+        'int',
         'integer',
         'smallint',
         'bigint'

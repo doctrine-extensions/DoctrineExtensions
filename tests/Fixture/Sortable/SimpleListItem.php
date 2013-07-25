@@ -1,6 +1,6 @@
 <?php
 
-namespace Sortable\Fixture;
+namespace Fixture\Sortable;
 
 use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity(repositoryClass="Gedmo\Sortable\Entity\Repository\SortableRepository")
  */
-class Item
+class SimpleListItem
 {
     /**
      * @ORM\Id
@@ -18,7 +18,7 @@ class Item
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(length=255)
      */
     private $name;
 
@@ -27,12 +27,6 @@ class Item
      * @ORM\Column(type="integer")
      */
     private $position;
-
-    /**
-     * @Gedmo\SortableGroup
-     * @ORM\ManyToOne(targetEntity="Category", inversedBy="items")
-     */
-    private $category;
 
     public function getId()
     {
@@ -57,15 +51,5 @@ class Item
     public function getPosition()
     {
         return $this->position;
-    }
-
-    public function setCategory(Category $category = null)
-    {
-        $this->category = $category;
-    }
-
-    public function getCategory()
-    {
-        return $this->category;
     }
 }
