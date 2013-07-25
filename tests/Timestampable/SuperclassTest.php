@@ -41,14 +41,14 @@ class SuperclassTest extends ObjectManagerTestCase
         $this->em->persist($person);
         $this->em->flush();
 
-        $this->assertNull($person->getNameChangedAt());
+        $this->assertNotNull($nameChangedDateBefore = $person->getNameChangedAt());
 
         $person->setName('changed name');
 
         $this->em->persist($person);
         $this->em->flush();
 
-        $this->assertNotNull($person->getNameChangedAt());
+        $this->assertNotSame($nameChangedDateBefore, $person->getNameChangedAt());
 
         $nameChangedDateBefore = $person->getNameChangedAt();
         $person->setName('new name');
