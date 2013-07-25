@@ -1,6 +1,6 @@
 <?php
 
-namespace Sortable\Fixture\Transport;
+namespace Fixture\Sortable\Transport;
 
 use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
@@ -25,7 +25,6 @@ class Vehicle
     private $id;
 
     /**
-     * @Gedmo\SortableGroup
      * @ORM\ManyToOne(targetEntity="Engine")
      */
     private $engine;
@@ -36,7 +35,7 @@ class Vehicle
     private $title;
 
     /**
-     * @Gedmo\SortablePosition
+     * @Gedmo\Sortable(groups={"engine"})
      * @ORM\Column(type="integer")
      */
     private $sortByEngine;

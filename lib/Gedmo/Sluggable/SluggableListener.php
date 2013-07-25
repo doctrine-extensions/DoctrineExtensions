@@ -251,7 +251,6 @@ class SluggableListener extends MappedEventSubscriber
 
         foreach ($config['slugs'] as $slugField => $options) {
             $hasHandlers = count($options['handlers']);
-            $options['useObjectClass'] = $config['useObjectClass'];
             // collect the slug from fields
             $slug = $meta->getReflectionProperty($slugField)->getValue($object);
 

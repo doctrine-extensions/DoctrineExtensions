@@ -1,6 +1,6 @@
 <?php
 
-namespace Sortable\Fixture;
+namespace Fixture\Sortable;
 
 use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity(repositoryClass="Gedmo\Sortable\Entity\Repository\SortableRepository")
  */
-class Item
+class Author
 {
     /**
      * @ORM\Id
@@ -18,54 +18,47 @@ class Item
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column
      */
     private $name;
 
     /**
-     * @Gedmo\SortablePosition
+     * @ORM\ManyToOne(targetEntity="Paper", inversedBy="authors")
+     */
+    private $paper;
+
+    /**
+     * @Gedmo\Sortable(groups={"paper"})
      * @ORM\Column(type="integer")
      */
     private $position;
-
-    /**
-     * @Gedmo\SortableGroup
-     * @ORM\ManyToOne(targetEntity="Category", inversedBy="items")
-     */
-    private $category;
 
     public function getId()
     {
         return $this->id;
     }
-
-    public function setName($name)
-    {
-        $this->name = $name;
-    }
-
     public function getName()
     {
         return $this->name;
     }
-
-    public function setPosition($position)
+    public function setName($name)
     {
-        $this->position = $position;
+        $this->name = $name;
     }
-
+    public function getPaper()
+    {
+        return $this->paper;
+    }
+    public function setPaper($paper)
+    {
+        $this->paper = $paper;
+    }
     public function getPosition()
     {
         return $this->position;
     }
-
-    public function setCategory(Category $category = null)
+    public function setPosition($position)
     {
-        $this->category = $category;
-    }
-
-    public function getCategory()
-    {
-        return $this->category;
+        $this->position = $position;
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace Sortable\Fixture;
+namespace Fixture\Sortable;
 
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -8,7 +8,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 /**
  * @ORM\Entity
  */
-class Category
+class Paper
 {
     /**
      * @ORM\Id
@@ -18,32 +18,37 @@ class Category
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string")
      */
     private $name;
 
     /**
-     * @ORM\OneToMany(targetEntity="Item", mappedBy="category")
+     * @ORM\OneToMany(targetEntity="Author", mappedBy="paper", cascade={"persist", "remove"})
      */
-    private $items;
+    private $authors;
 
     public function __construct()
     {
-        $this->items = new ArrayCollection();
+        $this->authors = new ArrayCollection();
     }
-
     public function getId()
     {
         return $this->id;
     }
-
+    public function getName()
+    {
+        return $this->name;
+    }
     public function setName($name)
     {
         $this->name = $name;
     }
-
-    public function getName()
+    public function getAuthors()
     {
-        return $this->name;
+        return $this->authors;
+    }
+    public function addAuthor($author)
+    {
+        $this->authors->add($author);
     }
 }

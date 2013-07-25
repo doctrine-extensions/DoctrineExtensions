@@ -1,6 +1,6 @@
 <?php
 
-namespace Sortable\Fixture\Transport;
+namespace Fixture\Sortable\Transport;
 
 use Doctrine\ORM\Mapping as ORM;
 
