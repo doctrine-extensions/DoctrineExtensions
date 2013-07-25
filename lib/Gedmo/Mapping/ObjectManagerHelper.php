@@ -101,6 +101,17 @@ final class ObjectManagerHelper
     }
 
     /**
+     * Checks wheter the $object is an uninitialized proxy
+     *
+     * @param Object $object
+     * @return boolean
+     */
+    static function isUninitializedProxy($object)
+    {
+        return self::isProxy($object) && $object->__isInitialized__;
+    }
+
+    /**
      * Creates lifecycle event args instance based on $om and $object
      *
      * @param \Doctrine\Common\Persistence\ObjectManager $om

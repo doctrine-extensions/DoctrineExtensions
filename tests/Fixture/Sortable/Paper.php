@@ -1,6 +1,6 @@
 <?php
 
-namespace Sortable\Fixture;
+namespace Fixture\Sortable;
 
 use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
@@ -19,7 +19,7 @@ class Paper
     private $id;
 
     /**
-     * @ORM\Column(name="name", type="string")
+     * @ORM\Column(type="string")
      */
     private $name;
 

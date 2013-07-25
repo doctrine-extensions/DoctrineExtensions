@@ -1,6 +1,6 @@
 <?php
 
-namespace Sortable\Fixture;
+namespace Fixture\Sortable;
 
 use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
@@ -19,7 +19,7 @@ class Category
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(length=255)
      */
     private $name;
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace Sortable\Fixture;
+namespace Fixture\Sortable;
 
 use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
@@ -18,19 +18,18 @@ class Author
     private $id;
 
     /**
-     * @ORM\Column(name="name", type="string")
+     * @ORM\Column
      */
     private $name;
 
     /**
-     * @Gedmo\SortableGroup
      * @ORM\ManyToOne(targetEntity="Paper", inversedBy="authors")
      */
     private $paper;
 
     /**
-     * @Gedmo\SortablePosition
-     * @ORM\Column(name="position", type="integer")
+     * @Gedmo\Sortable(groups={"paper"})
+     * @ORM\Column(type="integer")
      */
     private $position;
 

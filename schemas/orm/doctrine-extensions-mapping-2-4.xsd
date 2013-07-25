@@ -22,7 +22,6 @@ people to push their own additional attributes/elements into the same field elem
 -->
 
   <!-- entity -->
-  <xs:element name="translation-class" type="gedmo:translation-class"/>
   <xs:element name="tree" type="gedmo:tree"/>
   <xs:element name="tree-closure" type="gedmo:tree-closure"/>
   <xs:element name="loggable" type="gedmo:loggable"/>
@@ -40,14 +39,13 @@ people to push their own additional attributes/elements into the same field elem
   <xs:element name="tree-parent" type="gedmo:emptyType"/>
   <xs:element name="tree-path-source" type="gedmo:emptyType"/>
   <xs:element name="tree-lock-time" type="gedmo:emptyType"/>
-  <xs:element name="sortable-group" type="gedmo:emptyType"/>
-  <xs:element name="sortable-position" type="gedmo:emptyType"/>
+  <xs:element name="sortable" type="gedmo:sortable"/>
   <xs:element name="uploadable-file-mime-type" type="gedmo:emptyType"/>
   <xs:element name="uploadable-file-path" type="gedmo:emptyType"/>
   <xs:element name="uploadable-file-size" type="gedmo:emptyType"/>
 
-  <xs:complexType name="translation-class">
-    <xs:attribute name="name" type="xs:string" use="optional" />
+  <xs:complexType name="sortable">
+    <xs:attribute name="groups" type="xs:string" use="optional" />
   </xs:complexType>
 
   <xs:complexType name="tree">

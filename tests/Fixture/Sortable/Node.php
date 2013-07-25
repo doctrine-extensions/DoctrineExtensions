@@ -1,6 +1,6 @@
 <?php
 
-namespace Sortable\Fixture;
+namespace Fixture\Sortable;
 
 use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity(repositoryClass="Gedmo\Sortable\Entity\Repository\SortableRepository")
  */
-class Item
+class Node
 {
     /**
      * @ORM\Id
@@ -18,21 +18,20 @@ class Item
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(length=255)
      */
     private $name;
 
     /**
-     * @Gedmo\SortablePosition
+     * @ORM\Column(length=255)
+     */
+    private $path;
+
+    /**
+     * @Gedmo\Sortable(groups={"path"})
      * @ORM\Column(type="integer")
      */
     private $position;
-
-    /**
-     * @Gedmo\SortableGroup
-     * @ORM\ManyToOne(targetEntity="Category", inversedBy="items")
-     */
-    private $category;
 
     public function getId()
     {
@@ -49,6 +48,16 @@ class Item
         return $this->name;
     }
 
+    public function setPath($path)
+    {
+        $this->path = $path;
+    }
+
+    public function getPath()
+    {
+        return $this->path;
+    }
+
     public function setPosition($position)
     {
         $this->position = $position;
@@ -57,15 +66,5 @@ class Item
     public function getPosition()
     {
         return $this->position;
-    }
-
-    public function setCategory(Category $category = null)
-    {
-        $this->category = $category;
-    }
-
-    public function getCategory()
-    {
-        return $this->category;
     }
 }

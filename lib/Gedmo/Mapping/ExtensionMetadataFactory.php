@@ -76,7 +76,6 @@ class ExtensionMetadataFactory
         }
         $config = array();
         $cmf = $this->om->getMetadataFactory();
-        $useObjectName = $meta->name;
         // collect metadata from inherited classes
         if (null !== $meta->reflClass) {
             foreach (array_reverse(class_parents($meta->name)) as $parentClass) {
@@ -84,19 +83,9 @@ class ExtensionMetadataFactory
                 if ($cmf->hasMetadataFor($parentClass)) {
                     $class = $this->om->getClassMetadata($parentClass);
                     $this->driver->readExtendedMetadata($class, $config);
-                    $isBaseInheritanceLevel = !$class->isInheritanceTypeNone()
-                        && !$class->parentClasses
-                        && $config
-                    ;
-                    if ($isBaseInheritanceLevel) {
-                        $useObjectName = $class->name;
-                    }
                 }
             }
             $this->driver->readExtendedMetadata($meta, $config);
-        }
-        if ($config) {
-            $config['useObjectClass'] = $useObjectName;
         }
 
         // cache the metadata (even if it's empty)
