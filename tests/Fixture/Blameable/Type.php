@@ -1,20 +1,30 @@
 <?php
 
-namespace Blameable\Fixture\Entity;
+namespace Fixture\Blameable;
 
-use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
  */
-class SupperClassExtension extends MappedSupperClass
+class Type
 {
     /**
+     * @ORM\Id
+     * @ORM\GeneratedValue
+     * @ORM\Column(type="integer")
+     */
+    private $id;
+
+    /**
      * @ORM\Column(length=128)
-     * @Gedmo\Translatable
      */
     private $title;
+
+    public function getId()
+    {
+        return $this->id;
+    }
 
     public function setTitle($title)
     {

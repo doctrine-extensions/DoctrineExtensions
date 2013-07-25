@@ -54,14 +54,11 @@ class Annotation extends AbstractAnnotationDriver
                     throw new InvalidMappingException("Unable to find blameable [{$field}] as mapped property in entity - {$meta->name}");
                 }
                 if ($meta->hasField($field)) {
-                    if ( !$this->isValidField($meta, $field)) {
+                    if (!$this->isValidField($meta, $field)) {
                         throw new InvalidMappingException("Field - [{$field}] type is not valid and must be 'string' or a one-to-many relation in class - {$meta->name}");
                     }
-                } else {
-                    // association
-                    if (! $meta->isSingleValuedAssociation($field)) {
-                        throw new InvalidMappingException("Association - [{$field}] is not valid, it must be a one-to-many relation or a string field - {$meta->name}");
-                    }
+                } elseif (!$meta->isSingleValuedAssociation($field)) {
+                    throw new InvalidMappingException("Association - [{$field}] is not valid, it must be a one-to-many relation or a string field - {$meta->name}");
                 }
                 if (!in_array($blameable->on, array('update', 'create', 'change'))) {
                     throw new InvalidMappingException("Field - [{$field}] trigger 'on' is not one of [update, create, change] in class - {$meta->name}");

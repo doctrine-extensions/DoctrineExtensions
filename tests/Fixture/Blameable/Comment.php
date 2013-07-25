@@ -1,6 +1,6 @@
 <?php
 
-namespace Blameable\Fixture\Entity;
+namespace Fixture\Blameable;
 
 use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
@@ -10,16 +10,20 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Comment
 {
-    /** @ORM\Id @ORM\GeneratedValue @ORM\Column(type="integer") */
+    /**
+     * @ORM\Id
+     * @ORM\GeneratedValue
+     * @ORM\Column(type="integer")
+     */
     private $id;
 
     /**
-     * @ORM\Column(name="message", type="text")
+     * @ORM\Column(type="text")
      */
     private $message;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Blameable\Fixture\Entity\Article", inversedBy="comments")
+     * @ORM\ManyToOne(targetEntity="Article")
      */
     private $article;
 
@@ -29,22 +33,18 @@ class Comment
     private $status;
 
     /**
-     * @var string $closed
-     *
-     * @ORM\Column(name="closed", type="string", nullable=true)
+     * @ORM\Column(nullable=true)
      * @Gedmo\Blameable(on="change", field="status", value=1)
      */
-    private $closed;
+    private $closedBy;
 
     /**
-     * @var string $modified
-     *
-     * @ORM\Column(name="modified", type="string")
+     * @ORM\Column
      * @Gedmo\Blameable(on="update")
      */
-    private $modified;
+    private $modifiedBy;
 
-    public function setArticle($article)
+    public function setArticle(Article $article)
     {
         $this->article = $article;
     }
@@ -74,13 +74,25 @@ class Comment
         return $this->message;
     }
 
-    public function getModified()
+    public function setClosedBy($closedBy)
     {
-        return $this->modified;
+        $this->closedBy = $closedBy;
+        return $this;
     }
 
-    public function getClosed()
+    public function getClosedBy()
     {
-        return $this->closed;
+        return $this->closedBy;
+    }
+
+    public function setModifiedBy($modifiedBy)
+    {
+        $this->modifiedBy = $modifiedBy;
+        return $this;
+    }
+
+    public function getModifiedBy()
+    {
+        return $this->modifiedBy;
     }
 }

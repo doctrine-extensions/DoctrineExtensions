@@ -55,7 +55,7 @@ class TimestampableTest extends ObjectManagerTestCase
 
         $this->assertNotNull($sport->getCreated());
         $this->assertNotNull($sport->getUpdated());
-        $this->assertNull($sport->getContentChanged());
+        $this->assertNotNull($sport->getContentChanged());
         $this->assertNull($sport->getPublished());
 
         $this->assertNotNull($sportComment->getModified());
@@ -77,6 +77,7 @@ class TimestampableTest extends ObjectManagerTestCase
         $updatedDateBefore = $sport->getUpdated();
         $createdDateBefore = $sport->getCreated();
         $publishedDateBefore = $sport->getPublished();
+        $contentChangedDateBefore = $sport->getContentChanged();
 
         $sport->setTitle('Updated');
         $this->em->persist($sport);
@@ -87,7 +88,7 @@ class TimestampableTest extends ObjectManagerTestCase
         $this->assertNotSame($updatedDateBefore, $sport->getUpdated());
         $this->assertSame($createdDateBefore, $sport->getCreated());
         $this->assertSame($publishedDateBefore, $sport->getPublished());
-        $this->assertNotNull($sport->getContentChanged());
+        $this->assertNotSame($contentChangedDateBefore, $sport->getContentChanged());
 
         $updatedDateBefore = $sport->getUpdated();
         $createdDateBefore = $sport->getCreated();

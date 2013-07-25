@@ -59,7 +59,7 @@ class Yaml extends File implements Driver
                         $trackedFieldAttribute = $mappingProperty['field'];
                         $valueAttribute = isset($mappingProperty['value']) ? $mappingProperty['value'] : null;
                         if (is_array($trackedFieldAttribute) && null !== $valueAttribute) {
-                            throw new InvalidMappingException("Blameable extension does not support multiple value changeset detection yet.");
+                            throw new InvalidMappingException("Timestampable extension does not support multiple value changeset detection yet.");
                         }
                         $field = array(
                             'field' => $field,
@@ -82,7 +82,7 @@ class Yaml extends File implements Driver
                     if (!isset($mappingProperty['on']) || !in_array($mappingProperty['on'], array('update', 'create', 'change'))) {
                         throw new InvalidMappingException("Field - [{$field}] trigger 'on' is not one of [update, create, change] in class - {$meta->name}");
                     }
-                
+
                     if ($mappingProperty['on'] == 'change') {
                         if (!isset($mappingProperty['field'])) {
                             throw new InvalidMappingException("Missing parameters on property - {$field}, field must be set on [change] trigger in class - {$meta->name}");
@@ -90,7 +90,7 @@ class Yaml extends File implements Driver
                         $trackedFieldAttribute = $mappingProperty['field'];
                         $valueAttribute = isset($mappingProperty['value']) ? $mappingProperty['value'] : null;
                         if (is_array($trackedFieldAttribute) && null !== $valueAttribute) {
-                            throw new InvalidMappingException("Blameable extension does not support multiple value changeset detection yet.");
+                            throw new InvalidMappingException("Timestampable extension does not support multiple value changeset detection yet.");
                         }
                         $field = array(
                             'field' => $field,

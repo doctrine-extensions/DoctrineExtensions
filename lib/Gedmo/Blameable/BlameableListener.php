@@ -2,12 +2,11 @@
 
 namespace Gedmo\Blameable;
 
-use Doctrine\Common\EventArgs;
 use Doctrine\Common\NotifyPropertyChanged;
+use Doctrine\Common\Persistence\ObjectManager;
 use Gedmo\Exception\InvalidArgumentException;
 use Gedmo\Mapping\MappedEventSubscriber;
 use Gedmo\Timestampable\TimestampableListener;
-use Gedmo\Blameable\Mapping\Event\BlameableAdapter;
 
 /**
  * The Blameable listener handles the update of
@@ -18,6 +17,9 @@ use Gedmo\Blameable\Mapping\Event\BlameableAdapter;
  */
 class BlameableListener extends TimestampableListener
 {
+    /**
+     * @var mixed
+     */
     protected $user;
 
     /**
@@ -30,10 +32,9 @@ class BlameableListener extends TimestampableListener
     public function getUserValue($meta, $field)
     {
         if ($meta->hasAssociation($field)) {
-            if (null !== $this->user && ! is_object($this->user)) {
+            if (null !== $this->user && !is_object($this->user)) {
                 throw new InvalidArgumentException("Blame is reference, user must be an object");
             }
-
             return $this->user;
         }
 
@@ -47,7 +48,6 @@ class BlameableListener extends TimestampableListener
             }
             throw new InvalidArgumentException("Field expects string, user must be a string, or object should have method getUsername or __toString");
         }
-
         return $this->user;
     }
 
@@ -72,21 +72,20 @@ class BlameableListener extends TimestampableListener
     /**
      * Updates a field
      *
+     * @param \Doctrine\Common\Persistence\ObjectManager
      * @param mixed $object
-     * @param BlameableAdapter $ea
-     * @param $meta
      * @param $field
      */
-    protected function updateField($object, $ea, $meta, $field)
+    protected function updateField(ObjectManager $om, $object, $field)
     {
+        $meta = $om->getClassMetadata(get_class($object));
         $property = $meta->getReflectionProperty($field);
         $oldValue = $property->getValue($object);
         $newValue = $this->getUserValue($meta, $field);
 
         $property->setValue($object, $newValue);
         if ($object instanceof NotifyPropertyChanged) {
-            $uow = $ea->getObjectManager()->getUnitOfWork();
-            $uow->propertyChanged($object, $field, $oldValue, $newValue);
+            $om->getUnitOfWork()->propertyChanged($object, $field, $oldValue, $newValue);
         }
     }
 }
