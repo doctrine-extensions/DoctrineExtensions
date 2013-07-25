@@ -1,6 +1,6 @@
 <?php
 
-namespace ReferenceIntegrity\Fixture\Document\ManyNullify;
+namespace Fixture\ReferenceIntegrity\Document\OneNullify;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 

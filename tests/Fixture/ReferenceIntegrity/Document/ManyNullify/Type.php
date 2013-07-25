@@ -1,7 +1,8 @@
 <?php
 
-namespace ReferenceIntegrity\Fixture\Document\OneRestrict;
+namespace Fixture\ReferenceIntegrity\Document\ManyNullify;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
@@ -26,11 +27,16 @@ class Type
     private $identifier;
 
     /**
-     * @ODM\ReferenceOne(targetDocument="Article", mappedBy="type")
-     * @Gedmo\ReferenceIntegrity("restrict")
-     * @var Article
+     * @ODM\ReferenceMany(targetDocument="Article", mappedBy="type")
+     * @Gedmo\ReferenceIntegrity("nullify")
+     * @var ArrayCollection
      */
-    protected $article;
+    protected $articles = array();
+
+    public function __construct()
+    {
+        $this->articles = new ArrayCollection();
+    }
 
     /**
      * @return mixed
@@ -73,18 +79,22 @@ class Type
     }
 
     /**
+     * Add articles
+     *
      * @param Article $article
      */
-    public function setArticle(Article $article)
+    public function addArticle(Article $article)
     {
-        $this->article = $article;
+        $this->articles[] = $article;
     }
 
     /**
-     * @return Article $articles
+     * Get posts
+     *
+     * @return ArrayCollection $articles
      */
-    public function getArticle()
+    public function getArticles()
     {
-        return $this->article;
+        return $this->articles;
     }
 }

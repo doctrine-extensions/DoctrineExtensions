@@ -1,6 +1,6 @@
 <?php
 
-namespace ReferenceIntegrity\Fixture\Document\ManyRestrict;
+namespace Fixture\ReferenceIntegrity\Document\ManyRestrict;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 
