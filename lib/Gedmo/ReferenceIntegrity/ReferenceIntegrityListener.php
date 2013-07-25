@@ -7,6 +7,7 @@ use Gedmo\Exception\InvalidMappingException;
 use Gedmo\Exception\ReferenceIntegrityStrictException;
 use Gedmo\Mapping\MappedEventSubscriber;
 use Gedmo\ReferenceIntegrity\Mapping\Validator;
+use Gedmo\Mapping\ObjectManagerHelper as OMH;
 
 /**
  * The ReferenceIntegrity listener handles the reference integrity on related entities
@@ -30,27 +31,23 @@ class ReferenceIntegrityListener extends MappedEventSubscriber
     /**
      * Maps additional metadata for the Entity
      *
-     * @param  EventArgs $eventArgs
-     * @return void
+     * @param  EventArgs $event
      */
-    public function loadClassMetadata(EventArgs $eventArgs)
+    public function loadClassMetadata(EventArgs $event)
     {
-        $ea = $this->getEventAdapter($eventArgs);
-        $this->loadMetadataForObjectClass($ea->getObjectManager(), $eventArgs->getClassMetadata());
+        $this->loadMetadataForObjectClass(OMH::getObjectManagerFromEvent($event), $event->getClassMetadata());
     }
 
     /**
      * Looks for referenced objects being removed
      * to nullify the relation or throw an exception
      *
-     * @param  EventArgs $args
-     * @return void
+     * @param  EventArgs $event
      */
-    public function preRemove(EventArgs $args)
+    public function preRemove(EventArgs $event)
     {
-        $ea = $this->getEventAdapter($args);
-        $om = $ea->getObjectManager();
-        $object = $ea->getObject();
+        $om = OMH::getObjectManagerFromEvent($event);
+        $object = OMH::getObjectFromEvent($event);
         $class = get_class($object);
         $meta = $om->getClassMetadata($class);
 

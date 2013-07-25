@@ -1,10 +1,10 @@
 <?php
 
-namespace Gedmo\ReferenceIntegrity;
+namespace ReferenceIntegrity\Document;
 
 use Doctrine\Common\EventManager;
 use Gedmo\ReferenceIntegrity\ReferenceIntegrityListener;
-use Tool\BaseTestCaseMongoODM;
+use TestTool\ObjectManagerTestCase;
 
 /**
  * These are tests for the ReferenceIntegrity extension
@@ -12,28 +12,28 @@ use Tool\BaseTestCaseMongoODM;
  * @author Evert Harmeling <evert.harmeling@freshheads.com>
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class ReferenceIntegrityDocumentTest extends BaseTestCaseMongoODM
+class ReferenceIntegrityTest extends ObjectManagerTestCase
 {
-    const TYPE_ONE_NULLIFY_CLASS = 'ReferenceIntegrity\Fixture\Document\OneNullify\Type';
-    const ARTICLE_ONE_NULLIFY_CLASS = 'ReferenceIntegrity\Fixture\Document\OneNullify\Article';
+    const TYPE_ONE_NULLIFY_CLASS = 'Fixture\ReferenceIntegrity\Document\OneNullify\Type';
+    const ARTICLE_ONE_NULLIFY_CLASS = 'Fixture\ReferenceIntegrity\Document\OneNullify\Article';
 
-    const TYPE_MANY_NULLIFY_CLASS = 'ReferenceIntegrity\Fixture\Document\ManyNullify\Type';
-    const ARTICLE_MANY_NULLIFY_CLASS = 'ReferenceIntegrity\Fixture\Document\ManyNullify\Article';
+    const TYPE_MANY_NULLIFY_CLASS = 'Fixture\ReferenceIntegrity\Document\ManyNullify\Type';
+    const ARTICLE_MANY_NULLIFY_CLASS = 'Fixture\ReferenceIntegrity\Document\ManyNullify\Article';
 
-    const TYPE_ONE_RESTRICT_CLASS = 'ReferenceIntegrity\Fixture\Document\OneRestrict\Type';
-    const ARTICLE_ONE_RESTRICT_CLASS = 'ReferenceIntegrity\Fixture\Document\OneRestrict\Article';
+    const TYPE_ONE_RESTRICT_CLASS = 'Fixture\ReferenceIntegrity\Document\OneRestrict\Type';
+    const ARTICLE_ONE_RESTRICT_CLASS = 'Fixture\ReferenceIntegrity\Document\OneRestrict\Article';
 
-    const TYPE_MANY_RESTRICT_CLASS = 'ReferenceIntegrity\Fixture\Document\ManyRestrict\Type';
-    const ARTICLE_MANY_RESTRICT_CLASS = 'ReferenceIntegrity\Fixture\Document\ManyRestrict\Article';
+    const TYPE_MANY_RESTRICT_CLASS = 'Fixture\ReferenceIntegrity\Document\ManyRestrict\Type';
+    const ARTICLE_MANY_RESTRICT_CLASS = 'Fixture\ReferenceIntegrity\Document\ManyRestrict\Article';
+
+    private $dm;
 
     protected function setUp()
     {
-        parent::setUp();
-
         $evm = new EventManager();
         $evm->addEventSubscriber(new ReferenceIntegrityListener());
 
-        $this->dm = $this->getMockDocumentManager($evm, $this->getMockAnnotatedConfig());
+        $this->dm = $this->createDocumentManager($evm);
 
         $this->populateOneNullify();
         $this->populateManyNullify();
@@ -42,7 +42,15 @@ class ReferenceIntegrityDocumentTest extends BaseTestCaseMongoODM
         $this->populateManyRestrict();
     }
 
-    public function testOneNullify()
+    protected function tearDown()
+    {
+        $this->releaseDocumentManager($this->dm);
+    }
+
+    /**
+     * @test
+     */
+    function shouldHandleOneNullify()
     {
         $type = $this->dm->getRepository(self::TYPE_ONE_NULLIFY_CLASS)
             ->findOneByTitle('One Nullify Type');
@@ -65,7 +73,10 @@ class ReferenceIntegrityDocumentTest extends BaseTestCaseMongoODM
         $this->dm->clear();
     }
 
-    public function testManyNullify()
+    /**
+     * @test
+     */
+    function shouldHandleManyNullify()
     {
         $type = $this->dm->getRepository(self::TYPE_MANY_NULLIFY_CLASS)
             ->findOneByTitle('Many Nullify Type');
@@ -92,7 +103,7 @@ class ReferenceIntegrityDocumentTest extends BaseTestCaseMongoODM
      * @test
      * @expectedException Gedmo\Exception\ReferenceIntegrityStrictException
      */
-    public function testOneRestrict()
+    function expectExceptionOneRestrict()
     {
         $type = $this->dm->getRepository(self::TYPE_ONE_RESTRICT_CLASS)
             ->findOneByTitle('One Restrict Type');
@@ -108,7 +119,7 @@ class ReferenceIntegrityDocumentTest extends BaseTestCaseMongoODM
      * @test
      * @expectedException Gedmo\Exception\ReferenceIntegrityStrictException
      */
-    public function testManyRestrict()
+    function expectExceptionManyRestrict()
     {
         $type = $this->dm->getRepository(self::TYPE_MANY_RESTRICT_CLASS)
             ->findOneByTitle('Many Restrict Type');
