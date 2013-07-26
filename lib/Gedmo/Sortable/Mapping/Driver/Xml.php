@@ -51,6 +51,9 @@ class Xml extends BaseXml
                     if (!$this->isValidField($meta, $field)) {
                         throw new InvalidMappingException("Sortable position field - [{$field}] type is not valid and must be 'integer' in class - {$meta->name}");
                     }
+                    if ($meta->isNullable($field)) {
+                        throw new InvalidMappingException("Sortable field: '$field' - cannot be nullable in class - {$meta->name}");
+                    }
                     $config['position'] = $field;
                 }
             }
