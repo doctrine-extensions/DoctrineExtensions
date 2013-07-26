@@ -2,11 +2,14 @@
 
 namespace Gedmo\Sortable;
 
+use Gedmo\Mapping\MappedEventSubscriber;
+use Gedmo\Mapping\ObjectManagerHelper as OMH;
 use Doctrine\Common\EventArgs;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\Common\Persistence\Mapping\ClassMetadata;
-use Gedmo\Mapping\MappedEventSubscriber;
-use Gedmo\Mapping\ObjectManagerHelper as OMH;
+use Doctrine\ODM\MongoDB\DocumentManager;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\QueryBuilder;
 
 /**
  * The SortableListener maintains a sort index on your entities
@@ -33,7 +36,6 @@ class SortableListener extends MappedEventSubscriber
         return array(
             'onFlush',
             'loadClassMetadata',
-            'prePersist',
         );
     }
 
@@ -85,32 +87,6 @@ class SortableListener extends MappedEventSubscriber
     }
 
     /**
-     * Update maxPositions as needed
-     *
-     * @param EventArgs $event
-     */
-    public function prePersist(EventArgs $event)
-    {
-        $om = OMH::getObjectManagerFromEvent($event);
-        $uow = $om->getUnitOfWork();
-        $object = OMH::getObjectFromEvent($event);
-        $meta = $om->getClassMetadata(get_class($object));
-
-        if ($config = $this->getConfiguration($om, $meta->name)) {
-            // Get groups
-            $groups = $this->getGroups($meta, $config, $object);
-
-            // Get hash
-            $hash = $this->getHash($meta, $groups, $object, $config);
-
-            // Get max position
-            if (!isset($this->maxPositions[$hash])) {
-                $this->maxPositions[$hash] = $this->getMaxPosition($om, $meta, $config, $object);
-            }
-        }
-    }
-
-    /**
      * Computes node positions and updates the sort field in memory and in the db
      *
      * @param \Doctrine\Common\Persistence\ObjectManager $om
@@ -131,10 +107,8 @@ class SortableListener extends MappedEventSubscriber
 
         // Get groups
         $groups = $this->getGroups($meta, $config, $object);
-
         // Get hash
         $hash = $this->getHash($meta, $groups, $object, $config);
-
         // Get max position
         if (!isset($this->maxPositions[$hash])) {
             $this->maxPositions[$hash] = $this->getMaxPosition($om, $meta, $config, $object);
@@ -191,7 +165,6 @@ class SortableListener extends MappedEventSubscriber
 
         // Get groups
         $groups = $this->getGroups($meta, $config, $object);
-
         // handle old groups
         foreach (array_keys($groups) as $group) {
             if (array_key_exists($group, $changeSet)) {
@@ -321,44 +294,72 @@ class SortableListener extends MappedEventSubscriber
     {
         foreach ($this->relocations as $hash => $relocation) {
             $config = $this->getConfiguration($om, $relocation['name']);
+            $meta = $om->getClassMetadata($relocation['name']);
             foreach ($relocation['deltas'] as $delta) {
                 if ($delta['start'] > $this->maxPositions[$hash] || $delta['delta'] == 0) {
                     continue;
                 }
-                // @TODO: support odm
                 $sign = $delta['delta'] < 0 ? "-" : "+";
                 $absDelta = abs($delta['delta']);
-                $dql = "UPDATE {$relocation['name']} n";
-                $dql .= " SET n.{$config['position']} = n.{$config['position']} {$sign} {$absDelta}";
-                $dql .= " WHERE n.{$config['position']} >= {$delta['start']}";
-                // if not null, false or 0
-                if ($delta['stop'] > 0) {
-                    $dql .= " AND n.{$config['position']} < {$delta['stop']}";
-                }
-                $i = -1;
-                $params = array();
-                foreach ($relocation['groups'] as $group => $value) {
-                    if (is_null($value)) {
-                        $dql .= " AND n.{$group} IS NULL";
-                    } else {
-                        $dql .= " AND n.{$group} = :val___".(++$i);
-                        $params['val___'.$i] = $value;
+                if ($om instanceof EntityManager) {
+                    $dql = "UPDATE {$relocation['name']} n";
+                    $dql .= " SET n.{$config['position']} = n.{$config['position']} {$sign} {$absDelta}";
+                    $dql .= " WHERE n.{$config['position']} >= {$delta['start']}";
+                    // if not null, false or 0
+                    if ($delta['stop'] > 0) {
+                        $dql .= " AND n.{$config['position']} < {$delta['stop']}";
+                    }
+                    $i = -1;
+                    $params = array();
+                    foreach ($relocation['groups'] as $group => $value) {
+                        if (is_null($value)) {
+                            $dql .= " AND n.{$group} IS NULL";
+                        } else {
+                            $dql .= " AND n.{$group} = :val___".(++$i);
+                            $params['val___'.$i] = $value;
+                        }
+                    }
+                    $q = $om->createQuery($dql);
+                    $q->setParameters($params);
+                    $q->getSingleScalarResult();
+                } elseif ($om instanceof DocumentManager) {
+                    $qb = $om->createQueryBuilder($relocation['name']);
+                    $cond = "this.{$config['position']} >= {$delta['start']}";
+                    if ($delta['stop'] > 0) {
+                        $cond .= " && this.{$config['position']} < {$delta['stop']}";
+                    }
+                    foreach ($relocation['groups'] as $group => $value) {
+                        if ($meta->isSingleValuedAssociation($group) && null !== $value) {
+                            $id = OMH::getIdentifier($om, $value);
+                            $qb->field($group . '.$id')->equals(new \MongoId($id));
+                        } else {
+                            $qb->field($group)->equals($value);
+                        }
+                    }
+                    $qb->where("function() { return {$cond}; }");
+                    if ($cursor = $qb->getQuery()->execute()) {
+                        foreach ($cursor as $object) {
+                            $id = OMH::getIdentifier($om, $object);
+                            $pos = $meta->getReflectionProperty($config['position'])->getValue($object);
+                            $om->createQueryBuilder($relocation['name'])
+                                ->update()
+                                ->field($config['position'])->set($pos + $delta['delta'])
+                                ->field($meta->identifier)->equals($id)
+                                ->getQuery()
+                                ->execute();
+                        }
                     }
                 }
-                $q = $om->createQuery($dql);
-                $q->setParameters($params);
-                $q->getSingleScalarResult();
-                $meta = $om->getClassMetadata($relocation['name']);
 
                 // now walk through the unit of work in memory objects and sync those
                 $uow = $om->getUnitOfWork();
                 foreach ($uow->getIdentityMap() as $className => $objects) {
                     // for inheritance mapped classes, only root is always in the identity map
-                    if ($className !== $meta->rootEntityName || !$this->getConfiguration($om, $className)) {
+                    if ($className !== OMH::getRootObjectClass($meta) || !$this->getConfiguration($om, $className)) {
                         continue;
                     }
                     foreach ($objects as $object) {
-                        if (OMH::isProxy($object) && !$object->__isInitialized__) {
+                        if (OMH::isUninitializedProxy($object)) {
                             continue;
                         }
 
@@ -449,22 +450,40 @@ class SortableListener extends MappedEventSubscriber
             }
         }
 
-        $qb = $om->createQueryBuilder();
-        $qb->select('MAX(n.'.$config['position'].')')
-           ->from($config['useObjectClass'], 'n');
-        $qb = $this->addGroupWhere($qb, $groups);
-        $query = $qb->getQuery();
-        $query->useQueryCache(false);
-        $query->useResultCache(false);
-        $res = $query->getResult();
-        $maxPos = $res[0][1];
-        if (is_null($maxPos)) {
-            $maxPos = -1;
+        if ($om instanceof EntityManager) {
+            $qb = $om->createQueryBuilder();
+            $qb->select('MAX(n.'.$config['position'].')')
+               ->from($config['useObjectClass'], 'n');
+            $qb = $this->addGroupWhere($qb, $groups);
+            $query = $qb->getQuery();
+            $query->useQueryCache(false);
+            $query->useResultCache(false);
+            $res = $query->getResult();
+            $maxPos = $res[0][1];
+        } elseif ($om instanceof DocumentManager) {
+            $qb = $om->createQueryBuilder($config['useObjectClass']);
+            $qb->select($config['position']);
+            $qb->limit(1);
+            $qb->hydrate(false);
+            $qb->sort($config['position'], 'desc');
+            foreach ($groups as $group => $value) {
+                if ($meta->isSingleValuedAssociation($group) && null !== $value) {
+                    $id = OMH::getIdentifier($om, $value);
+                    $qb->field($group . '.$id')->equals(new \MongoId($id));
+                } else {
+                    $qb->field($group)->equals($value);
+                }
+            }
+            if ($cursor = $qb->getQuery()->execute()) {
+                foreach ($cursor as $item) {
+                    $maxPos = $item[$config['position']]; break;
+                }
+            }
         }
-        return intval($maxPos);
+        return is_null($maxPos) ? -1 : intval($maxPos);
     }
 
-    private function addGroupWhere($qb, array $groups)
+    private function addGroupWhere(QueryBuilder $qb, array $groups)
     {
         $i = 1;
         foreach ($groups as $group => $value) {
