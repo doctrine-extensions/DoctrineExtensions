@@ -99,52 +99,49 @@ class SortableListener extends MappedEventSubscriber
         $uow = $om->getUnitOfWork();
         $changed = false;
 
-        foreach ($config['positions'] as $options) {
-            $old = $meta->getReflectionProperty($options['field'])->getValue($object);
-            $newPosition = $meta->getReflectionProperty($options['field'])->getValue($object);
+        foreach ($config as $sortable => $fields) {
+            $old = $new = $meta->getReflectionProperty($sortable)->getValue($object);
 
-            if (is_null($newPosition)) {
-                $newPosition = -1;
+            if (is_null($new)) {
+                $new = -1;
             }
 
             // Get groups
-            $groups = $this->getGroups($meta, $options, $object);
+            $groups = $this->getGroups($meta, $fields, $object);
             // Get hash
-            $hash = $this->getHash($meta, $options['field'], $groups);
+            $hash = $this->getHash($meta, $sortable, $groups);
             // Get max position
-            if (!isset($this->maxPositions[$hash])) {
-                $this->maxPositions[$hash] = $this->getMaxPosition($om, $meta, $options, $object);
-            }
+            $max = $this->getMaxPosition($om, $sortable, $fields, $object, $groups);
 
             // Compute position if it is negative
-            if ($newPosition < 0) {
-                $newPosition += $this->maxPositions[$hash] + 2; // position == -1 => append at end of list
-                if ($newPosition < 0) $newPosition = 0;
+            if ($new < 0) {
+                $new += $max + 2; // position == -1 => append at end of list
+                if ($new < 0) $new = 0;
             }
 
             // Set position to max position if it is too big
-            $newPosition = min(array($this->maxPositions[$hash] + 1, $newPosition));
+            $new = min(array($max + 1, $new));
 
             // Compute relocations
-            $relocation = array($hash, OMH::getRootObjectClass($meta), $options['field'], $groups, $newPosition, -1, +1);
+            $relocation = array($hash, OMH::getRootObjectClass($meta), $sortable, $groups, $new, -1, +1);
 
             // Apply existing relocations
             $applyDelta = 0;
             if (isset($this->relocations[$hash])) {
                 foreach ($this->relocations[$hash]['deltas'] as $delta) {
-                    if ($delta['start'] <= $newPosition
-                            && ($delta['stop'] > $newPosition || $delta['stop'] < 0)) {
+                    if ($delta['start'] <= $new
+                            && ($delta['stop'] > $new || $delta['stop'] < 0)) {
                         $applyDelta += $delta['delta'];
                     }
                 }
             }
-            $newPosition += $applyDelta;
+            $new += $applyDelta;
 
             // Add relocations
             call_user_func_array(array($this, 'addRelocation'), $relocation);
             // Set new position
             if ($old < 0 || is_null($old)) {
-                $meta->getReflectionProperty($options['field'])->setValue($object, $newPosition);
+                $meta->getReflectionProperty($sortable)->setValue($object, $new);
                 $changed = true;
             }
         }
@@ -166,33 +163,32 @@ class SortableListener extends MappedEventSubscriber
         $rootClass = OMH::getRootObjectClass($meta);
         $recompute = false;
 
-        foreach ($config['positions'] as $options) {
+        foreach ($config as $sortable => $fields) {
             $changed = false;
             // Get groups
-            $groups = $this->getGroups($meta, $options, $object);
+            $groups = $this->getGroups($meta, $fields, $object);
             // handle old groups
             foreach (array_keys($groups) as $group) {
                 if (array_key_exists($group, $changeSet)) {
                     $changed = true;
 
                     $oldGroups = array($group => $changeSet[$group][0]);
-                    $oldHash = $this->getHash($meta, $options['field'], $oldGroups);
-                    $this->maxPositions[$oldHash] = $this->getMaxPosition($om, $meta, $options, $object, $oldGroups);
+                    $oldHash = $this->getHash($meta, $sortable, $oldGroups);
+                    $oldMax = $this->getMaxPosition($om, $sortable, $fields, $object, $oldGroups);
                     $this->addRelocation(
                         $oldHash,
                         $rootClass,
-                        $options['field'],
+                        $sortable,
                         $oldGroups,
-                        $meta->getReflectionProperty($options['field'])->getValue($object) + 1,
-                        $this->maxPositions[$oldHash] + 1, -1, true
+                        $meta->getReflectionProperty($sortable)->getValue($object) + 1,
+                        $oldMax + 1, -1, true
                     );
                 }
             }
 
-            if (array_key_exists($options['field'], $changeSet)) {
+            if (array_key_exists($sortable, $changeSet)) {
                 // position was manually updated
-                $oldPosition = $changeSet[$options['field']][0];
-                $newPosition = $changeSet[$options['field']][1];
+                list($oldPosition, $newPosition) = $changeSet[$sortable];
                 $changed = $changed || $oldPosition != $newPosition;
             } elseif ($changed) {
                 // group has changed, so position has to be recalculated
@@ -203,13 +199,9 @@ class SortableListener extends MappedEventSubscriber
             if (!$changed) return;
 
             // Get hash
-            $hash = $this->getHash($meta, $options['field'], $groups);
-
+            $hash = $this->getHash($meta, $sortable, $groups);
             // Get max position
-            if (!isset($this->maxPositions[$hash])) {
-                $this->maxPositions[$hash] = $this->getMaxPosition($om, $meta, $options, $object);
-            }
-
+            $max = $this->getMaxPosition($om, $sortable, $fields, $object, $groups);
             // Compute position if it is negative
             if ($newPosition < 0) {
                 $newPosition += $this->maxPositions[$hash] + 2; // position == -1 => append at end of list
@@ -238,11 +230,11 @@ class SortableListener extends MappedEventSubscriber
             $relocation = null;
             if ($oldPosition === -1) {
                 // special case when group changes
-                $relocation = array($hash, $rootClass, $options['field'], $groups, $newPosition, -1, +1);
+                $relocation = array($hash, $rootClass, $sortable, $groups, $newPosition, -1, +1);
             } elseif ($newPosition < $oldPosition) {
-                $relocation = array($hash, $rootClass, $options['field'], $groups, $newPosition, $oldPosition, +1);
+                $relocation = array($hash, $rootClass, $sortable, $groups, $newPosition, $oldPosition, +1);
             } elseif ($newPosition > $oldPosition) {
-                $relocation = array($hash, $rootClass, $options['field'], $groups, $oldPosition + 1, $newPosition + 1, -1);
+                $relocation = array($hash, $rootClass, $sortable, $groups, $oldPosition + 1, $newPosition + 1, -1);
             }
 
             // Apply existing relocations
@@ -262,7 +254,7 @@ class SortableListener extends MappedEventSubscriber
                 call_user_func_array(array($this, 'addRelocation'), $relocation);
             }
             // Set new position
-            $meta->getReflectionProperty($options['field'])->setValue($object, $newPosition);
+            $meta->getReflectionProperty($sortable)->setValue($object, $newPosition);
             $recompute = true;
         }
         $recompute && OMH::recomputeSingleObjectChangeSet($uow, $meta, $object);
@@ -278,18 +270,16 @@ class SortableListener extends MappedEventSubscriber
      */
     private function processDeletion(ObjectManager $om, array $config, ClassMetadata $meta, $object)
     {
-        foreach ($config['positions'] as $options) {
-            $position = $meta->getReflectionProperty($options['field'])->getValue($object);
+        foreach ($config as $sortable => $fields) {
+            $position = $meta->getReflectionProperty($sortable)->getValue($object);
             // Get groups
-            $groups = $this->getGroups($meta, $options, $object);
+            $groups = $this->getGroups($meta, $fields, $object);
             // Get hash
-            $hash = $this->getHash($meta, $options['field'], $groups);
+            $hash = $this->getHash($meta, $sortable, $groups);
             // Get max position
-            if (!isset($this->maxPositions[$hash])) {
-                $this->maxPositions[$hash] = $this->getMaxPosition($om, $meta, $options, $object);
-            }
+            $max = $this->getMaxPosition($om, $sortable, $fields, $object, $groups);
             // Add relocation
-            $this->addRelocation($hash, OMH::getRootObjectClass($meta), $options['field'], $groups, $position, -1, -1);
+            $this->addRelocation($hash, OMH::getRootObjectClass($meta), $sortable, $groups, $position, -1, -1);
         }
     }
 
@@ -412,9 +402,9 @@ class SortableListener extends MappedEventSubscriber
      * @param array $groups
      * @return string
      */
-    private function getHash(ClassMetadata $meta, $field, array $groups)
+    private function getHash(ClassMetadata $meta, $sortable, array $groups)
     {
-        $data = OMH::getRootObjectClass($meta) . $field;
+        $data = OMH::getRootObjectClass($meta) . $sortable;
         foreach ($groups as $group => $val) {
             if ($val instanceof \DateTime) {
                 $val = $val->format('c');
@@ -430,18 +420,19 @@ class SortableListener extends MappedEventSubscriber
      * Computes node positions and updates the sort field in memory and in the db
      *
      * @param \Doctrine\Common\Persistence\ObjectManager $om
-     * @param \Doctrine\Common\Persistence\Mapping\ClassMetadata $meta
-     * @param array $options - sortable position field options
+     * @param string $sortable - sortable position field
+     * @param array $fields - sortable groups
      * @param Object $object
-     * @param array $groups
+     * @param array $groups - group data
      * @return integer
      */
-    private function getMaxPosition(ObjectManager $om, ClassMetadata $meta, array $options, $object, array $groups = array())
+    private function getMaxPosition(ObjectManager $om, $sortable, array $fields, $object, array $groups = array())
     {
         $uow = $om->getUnitOfWork();
+        $meta = $om->getClassMetadata(get_class($object));
         $maxPos = null;
-        $groups = $groups ?: $this->getGroups($meta, $options, $object);
-        $hash = $this->getHash($meta, $options['field'], $groups);
+        $groups = $groups ?: $this->getGroups($meta, $fields, $object);
+        $hash = $this->getHash($meta, $sortable, $groups);
 
         // Check for cached max position
         if (isset($this->maxPositions[$hash])) {
@@ -453,13 +444,13 @@ class SortableListener extends MappedEventSubscriber
         // see issue #226
         foreach ($groups as $group => $val) {
             if (is_object($val) && $uow->isScheduledForInsert($val)) {
-                return -1;
+                return $this->maxPositions[$hash] = -1;
             }
         }
 
         if ($om instanceof EntityManager) {
             $qb = $om->createQueryBuilder();
-            $qb->select('MAX(n.'.$options['field'].')')
+            $qb->select('MAX(n.'.$sortable.')')
                ->from(OMH::getRootObjectClass($meta), 'n');
             $qb = $this->addGroupWhere($qb, $groups);
             $query = $qb->getQuery();
@@ -469,10 +460,10 @@ class SortableListener extends MappedEventSubscriber
             $maxPos = $res[0][1];
         } elseif ($om instanceof DocumentManager) {
             $qb = $om->createQueryBuilder(OMH::getRootObjectClass($meta));
-            $qb->select($options['field']);
+            $qb->select($sortable);
             $qb->limit(1);
             $qb->hydrate(false);
-            $qb->sort($options['field'], 'desc');
+            $qb->sort($sortable, 'desc');
             foreach ($groups as $group => $value) {
                 if ($meta->isSingleValuedAssociation($group) && null !== $value) {
                     $id = OMH::getIdentifier($om, $value);
@@ -483,11 +474,11 @@ class SortableListener extends MappedEventSubscriber
             }
             if ($cursor = $qb->getQuery()->execute()) {
                 foreach ($cursor as $item) {
-                    $maxPos = $item[$options['field']]; break;
+                    $maxPos = $item[$sortable]; break;
                 }
             }
         }
-        return is_null($maxPos) ? -1 : intval($maxPos);
+        return $this->maxPositions[$hash] = is_null($maxPos) ? -1 : intval($maxPos);
     }
 
     private function addGroupWhere(QueryBuilder $qb, array $groups)
@@ -546,11 +537,11 @@ class SortableListener extends MappedEventSubscriber
      *
      * @return array
      */
-    private function getGroups(ClassMetadata $meta, array $options, $object)
+    private function getGroups(ClassMetadata $meta, array $fields, $object)
     {
         $groups = array();
-        foreach ($options['groups'] as $group) {
-            $groups[$group] = $meta->getReflectionProperty($group)->getValue($object);
+        foreach ($fields as $field) {
+            $groups[$field] = $meta->getReflectionProperty($field)->getValue($object);
         }
         return $groups;
     }

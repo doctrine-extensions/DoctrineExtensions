@@ -64,7 +64,7 @@ class Yaml extends File implements Driver
                             $groups[] = $group;
                         }
                     }
-                    $config['positions'][] = compact('groups', 'field');
+                    $config[$field] = $groups;
                 }
             }
         }

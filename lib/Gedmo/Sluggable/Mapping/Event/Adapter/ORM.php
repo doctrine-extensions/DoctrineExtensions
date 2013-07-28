@@ -6,6 +6,7 @@ use Gedmo\Mapping\Event\Adapter\ORM as BaseAdapterORM;
 use Doctrine\ORM\Query;
 use Gedmo\Sluggable\Mapping\Event\SluggableAdapter;
 use Gedmo\Tool\Wrapper\AbstractWrapper;
+use Gedmo\Mapping\ObjectManagerHelper as OMH;
 
 /**
  * Doctrine event adapter for ORM adapted
@@ -25,7 +26,7 @@ final class ORM extends BaseAdapterORM implements SluggableAdapter
         $wrapped = AbstractWrapper::wrap($object, $em);
         $qb = $em->createQueryBuilder();
         $qb->select('rec.' . $config['slug'])
-            ->from($config['useObjectClass'], 'rec')
+            ->from(OMH::getRootObjectClass($meta), 'rec')
             ->where($qb->expr()->like(
                 'rec.' . $config['slug'],
                 $qb->expr()->literal($slug . '%'))
@@ -60,8 +61,9 @@ final class ORM extends BaseAdapterORM implements SluggableAdapter
     public function replaceRelative($object, array $config, $target, $replacement)
     {
         $em = $this->getObjectManager();
+        $meta = $em->getClassMetadata(get_class($object));
         $qb = $em->createQueryBuilder();
-        $qb->update($config['useObjectClass'], 'rec')
+        $qb->update(OMH::getRootObjectClass($meta), 'rec')
             ->set('rec.'.$config['slug'], $qb->expr()->concat(
                 $qb->expr()->literal($replacement),
                 $qb->expr()->substring('rec.'.$config['slug'], strlen($target))
@@ -82,8 +84,9 @@ final class ORM extends BaseAdapterORM implements SluggableAdapter
     public function replaceInverseRelative($object, array $config, $target, $replacement)
     {
         $em = $this->getObjectManager();
+        $meta = $em->getClassMetadata(get_class($object));
         $qb = $em->createQueryBuilder();
-        $qb->update($config['useObjectClass'], 'rec')
+        $qb->update(OMH::getRootObjectClass($meta), 'rec')
             ->set('rec.'.$config['slug'], $qb->expr()->concat(
                 $qb->expr()->literal($target),
                 $qb->expr()->substring('rec.'.$config['slug'], strlen($replacement)+1)

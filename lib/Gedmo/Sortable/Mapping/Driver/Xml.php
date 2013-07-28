@@ -70,7 +70,7 @@ class Xml extends BaseXml
                             }
                         }
                     }
-                    $config['positions'][] = compact('groups', 'field');
+                    $config[$field] = $groups;
                 }
             }
         }

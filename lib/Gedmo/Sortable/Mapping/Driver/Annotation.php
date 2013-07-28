@@ -70,10 +70,7 @@ class Annotation extends AbstractAnnotationDriver
                             or single valued association property in class {$meta->name}");
                     }
                 }
-                $config['positions'][] = array(
-                    'groups' => $sortable->groups,
-                    'field' => $field,
-                );
+                $config[$field] = $sortable->groups;
             }
         }
     }

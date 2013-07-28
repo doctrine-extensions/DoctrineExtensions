@@ -1,9 +1,9 @@
 <?php
 
-namespace Gedmo\Sortable\Entity\Repository;
+namespace Gedmo\Sortable\Document\Repository;
 
-use Doctrine\ORM\EntityRepository;
-use Doctrine\ORM\EntityManager;
+use Doctrine\ODM\MongoDB\DocumentRepository;
+use Doctrine\ODM\MongoDB\DocumentManager;
 use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 use Gedmo\Sortable\SortableListener;
 use Gedmo\Exception\InvalidMappingException;
@@ -15,7 +15,7 @@ use Gedmo\Mapping\ObjectManagerHelper as OMH;
  * @author Lukas Botsch <lukas.botsch@gmail.com>
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class SortableRepository extends EntityRepository
+class SortableRepository extends DocumentRepository
 {
     /**
      * Sortable listener on event manager
@@ -26,10 +26,10 @@ class SortableRepository extends EntityRepository
 
     protected $config = null;
 
-    public function __construct(EntityManager $em, ClassMetadata $class)
+    public function __construct(DocumentManager $dm, ClassMetadata $class)
     {
-        parent::__construct($em, $class);
-        foreach ($em->getEventManager()->getListeners() as $event => $listeners) {
+        parent::__construct($dm, $class);
+        foreach ($dm->getEventManager()->getListeners() as $event => $listeners) {
             foreach ($listeners as $hash => $listener) {
                 if ($listener instanceof SortableListener) {
                     $this->listener = $listener;
@@ -39,10 +39,9 @@ class SortableRepository extends EntityRepository
         }
 
         if (is_null($this->listener)) {
-            throw new InvalidMappingException('This repository can be attached only to ORM sortable listener');
+            throw new InvalidMappingException('Sortable listener is not hooked to DocumentManager of this repository for class: '.$class->name);
         }
-
-        $this->config = $this->listener->getConfiguration($em, $class->name);
+        $this->config = $this->listener->getConfiguration($dm, $class->name);
     }
 
     public function getBySortableGroupsQuery($sortableField, array $groupValues = array())
@@ -53,27 +52,23 @@ class SortableRepository extends EntityRepository
     public function getBySortableGroupsQueryBuilder($sortableField, array $groupValues = array())
     {
         if (!array_key_exists($sortableField, $this->config)) {
-            throw new InvalidArgumentException("Sortable field: '$sortableField' is not configured to be sortable in class: {$this->_class->name}");
+            throw new InvalidArgumentException("Sortable field: '$sortableField' is not configured to be sortable in class: {$this->class->name}");
         }
 
         foreach ($groupValues as $name => $value) {
             if (!in_array($name, $this->config[$sortableField])) {
-                throw new InvalidArgumentException('Sortable group "'.$name.'" is not defined in class '.$this->_class->name);
+                throw new InvalidArgumentException('Sortable group "'.$name.'" is not defined in class '.$this->class->name);
             }
         }
 
-        $qb = $this->_em->createQueryBuilder()
-            ->select('n')
-            ->from($this->_class->rootEntityName, 'n')
-            ->orderBy('n.'.$sortableField);
-        $i = 1;
+        $qb = $this->dm->createQueryBuilder($this->class->rootDocumentName);
+        $qb->sort($sortable, 'asc');
         foreach ($groupValues as $group => $value) {
-            $whereFunc = is_null($qb->getDQLPart('where')) ? 'where' : 'andWhere';
-            if (is_null($value)) {
-                $qb->{$whereFunc}($qb->expr()->isNull('n.'.$group));
+            if ($this->class->isSingleValuedAssociation($group) && null !== $value) {
+                $id = OMH::getIdentifier($this->dm, $value);
+                $qb->field($group . '.$id')->equals(new \MongoId($id));
             } else {
-                $qb->{$whereFunc}('n.'.$group.' = :group__'.$i);
-                $qb->setParameter('group__'.($i++), $value);
+                $qb->field($group)->equals($value);
             }
         }
         return $qb;
@@ -81,6 +76,6 @@ class SortableRepository extends EntityRepository
 
     public function getBySortableGroups($sortableField, array $groupValues = array())
     {
-        return $this->getBySortableGroupsQuery($sortableField, $groupValues)->getResult();
+        return $this->getBySortableGroupsQuery($sortableField, $groupValues)->execute();
     }
 }
