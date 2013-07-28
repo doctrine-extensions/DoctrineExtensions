@@ -791,9 +791,10 @@ class NestedTreeRepository extends AbstractTreeRepository
     }
 
     /**
+     * NOTE: flush your entity manager after
+     *
      * Tries to recover the tree
      *
-     * @throws RuntimeException - if something fails in transaction
      * @return void
      */
     public function recover()
@@ -801,70 +802,32 @@ class NestedTreeRepository extends AbstractTreeRepository
         if ($this->verify() === true) {
             return;
         }
-        $roots = $this->getRootNodes();
-        foreach ($roots as $root) {
-            $nodes = $this->findBy(
-                array(
-                    'root' => $root->getId()
-                )
-            );
-            $adj = $this->createAdjacencyArray($root, $nodes);
+        $meta = $this->getClassMetadata();
+        $config = $this->listener->getConfiguration($this->_em, $meta->name);
+        $self = $this;
+
+        $doRecover = function($root, &$count) use($meta, $config, $self, &$doRecover) {
+            $lft = $count++;
+            foreach ($self->getChildren($root, true) as $child) {
+                $doRecover($child, $count);
+            }
+            $rgt = $count++;
+            $meta->getReflectionProperty($config['left'])->setValue($root, $lft);
+            $meta->getReflectionProperty($config['right'])->setValue($root, $rgt);
+            $self->getEntityManager()->persist($root);
+        };
+
+        if (isset($config['root'])) {
+            foreach ($this->getRootNodes() as $root) {
+                $count = 1; // reset on every root node
+                $doRecover($root, $count);
+            }
+        } else {
             $count = 1;
-            $this->traverseAndFix($root->getId(), $adj, $count);
-        }
-    }
-
-    /**
-     * Creates an Adjacency array of a node
-     *
-     * @param $root
-     * @param $nodes
-     * @return array
-     */
-    private function createAdjacencyArray($root, $nodes)
-    {
-        $adj = array();
-        // Build a complete copy of the asjacency table in ram
-        foreach ($nodes as $node) {
-            if (!is_null($node->getParent())) {
-                $parentId = $node->getParent()->getId();
-                $id = $node->getId();
-                if (!array_key_exists($parentId, $adj)) {
-                    $adj[$parentId] = array();
-                }
-                $adj[$parentId][] = $id;
+            foreach($this->getChildren(null, true) as $root) {
+                $doRecover($root, $count);
             }
         }
-
-        return $adj;
-    }
-
-    /**
-     * Tranverses an Adjacency array and fixes the nodes within
-     *
-     * @param $rootId
-     * @param $link
-     * @param $count
-     */
-    private function traverseAndFix($rootId, $adj, &$count)
-    {
-        $lft = $count;
-        $count++;
-
-        $children = isset($adj[$rootId]) ? $adj[$rootId] : null;
-
-        if ($children) {
-            foreach ($children as $child) {
-                $this->traverseAndFix($child, $adj, $count);
-            }
-        }
-        $rgt = $count;
-        $count++;
-
-        $node = $this->find($rootId);
-        $node->setLft($lft);
-        $node->setRgt($rgt);
-        $this->getEntityManager()->persist($node);
     }
 
     /**

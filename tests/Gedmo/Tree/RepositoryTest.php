@@ -300,11 +300,10 @@ class RepositoryTest extends BaseTestCaseORM
         $this->assertEquals('node [8] left is less than parent`s [4] left value', $invalidLeft);
 
         // test recover functionality
-        // @todo implement
-        //$repo->recover();
-        //$this->em->clear(); // must clear cached entities
+        $repo->recover();
+        $this->em->flush();
 
-        //$this->assertTrue($repo->verify());
+        $this->assertTrue($repo->verify());
     }
 
     public function testMoveRootNode()
