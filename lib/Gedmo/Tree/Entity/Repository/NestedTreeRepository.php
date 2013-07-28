@@ -805,8 +805,9 @@ class NestedTreeRepository extends AbstractTreeRepository
         $meta = $this->getClassMetadata();
         $config = $this->listener->getConfiguration($this->_em, $meta->name);
         $self = $this;
+        $em = $this->_em;
 
-        $doRecover = function($root, &$count) use($meta, $config, $self, &$doRecover) {
+        $doRecover = function($root, &$count) use($meta, $config, $self, $em, &$doRecover) {
             $lft = $count++;
             foreach ($self->getChildren($root, true) as $child) {
                 $doRecover($child, $count);
@@ -814,7 +815,7 @@ class NestedTreeRepository extends AbstractTreeRepository
             $rgt = $count++;
             $meta->getReflectionProperty($config['left'])->setValue($root, $lft);
             $meta->getReflectionProperty($config['right'])->setValue($root, $rgt);
-            $self->getEntityManager()->persist($root);
+            $em->persist($root);
         };
 
         if (isset($config['root'])) {
