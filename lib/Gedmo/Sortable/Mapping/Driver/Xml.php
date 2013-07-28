@@ -64,7 +64,7 @@ class Xml extends BaseXml
                     if ($this->_isAttributeSet($data, 'groups')) {
                         $groups = array_map('trim', explode(',', (string)$this->_getAttribute($data, 'groups')));
                         foreach ($groups as $group) {
-                            if (!$meta->hasField($group) || !$meta->isSingleValuedAssociation($group)) {
+                            if (!$meta->hasField($group) && !$meta->isSingleValuedAssociation($group)) {
                                 throw new InvalidMappingException("Sortable field: '{$field}' group: {$group} - is not a mapped
                                     or single valued association property in class {$meta->name}");
                             }

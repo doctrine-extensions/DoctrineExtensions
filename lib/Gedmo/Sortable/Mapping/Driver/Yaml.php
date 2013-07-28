@@ -44,7 +44,7 @@ class Yaml extends File implements Driver
 
         if (isset($mapping['fields'])) {
             foreach ($mapping['fields'] as $field => $fieldMapping) {
-                if (isset($fieldMapping['gedmo']['sortable'])) {
+                if (isset($fieldMapping['gedmo']) && array_key_exists('sortable', $fieldMapping['gedmo'])) {
                     if (!$meta->hasField($field)) {
                         throw new InvalidMappingException("Sortable field: '{$field}' - is not a mapped property in class {$meta->name}");
                     }
@@ -57,7 +57,7 @@ class Yaml extends File implements Driver
                     $groups = array();
                     if (isset($fieldMapping['gedmo']['sortable']['groups'])) {
                         foreach ($fieldMapping['gedmo']['sortable']['groups'] as $group) {
-                            if (!$meta->hasField($group) || !$meta->isSingleValuedAssociation($group)) {
+                            if (!$meta->hasField($group) && !$meta->isSingleValuedAssociation($group)) {
                                 throw new InvalidMappingException("Sortable field: '{$field}' group: {$group} - is not a mapped
                                     or single valued association property in class {$meta->name}");
                             }
