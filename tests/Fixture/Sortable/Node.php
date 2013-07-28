@@ -23,13 +23,12 @@ class Node
     private $name;
 
     /**
-     * @Gedmo\SortableGroup
      * @ORM\Column(length=255)
      */
     private $path;
 
     /**
-     * @Gedmo\SortablePosition
+     * @Gedmo\Sortable(groups={"path"})
      * @ORM\Column(type="integer")
      */
     private $position;

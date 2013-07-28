@@ -21,14 +21,13 @@ class Article
     private $title;
 
     /**
-     * @Gedmo\SortableGroup
      * @ODM\ReferenceOne(targetDocument="Type")
      */
     private $type;
 
     /**
      * @ODM\Int
-     * @Gedmo\SortablePosition
+     * @Gedmo\Sortable(groups={"type"})
      */
     private $position;
 

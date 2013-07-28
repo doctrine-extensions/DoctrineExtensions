@@ -44,44 +44,27 @@ class Yaml extends File implements Driver
 
         if (isset($mapping['fields'])) {
             foreach ($mapping['fields'] as $field => $fieldMapping) {
-                if (isset($fieldMapping['gedmo'])) {
-
-                    if (in_array('sortablePosition', $fieldMapping['gedmo'])) {
-                        if (!$this->isValidField($meta, $field)) {
-                            throw new InvalidMappingException("Sortable position field - [{$field}] type is not valid and must be 'integer' in class - {$meta->name}");
-                        }
-                        if ($meta->isNullable($field)) {
-                            throw new InvalidMappingException("Sortable field: '$field' - cannot be nullable in class - {$meta->name}");
-                        }
-                        $config['position'] = $field;
+                if (isset($fieldMapping['gedmo']['sortable'])) {
+                    if (!$meta->hasField($field)) {
+                        throw new InvalidMappingException("Sortable field: '{$field}' - is not a mapped property in class {$meta->name}");
                     }
-                }
-            }
-            $this->readSortableGroups($mapping['fields'], $config);
-        }
-        if (isset($mapping['manyToOne'])) {
-            $this->readSortableGroups($mapping['manyToOne'], $config);
-        }
-        if (isset($mapping['manyToMany'])) {
-            $this->readSortableGroups($mapping['manyToMany'], $config);
-        }
-
-        if (!$meta->isMappedSuperclass && $config) {
-            if (!isset($config['position'])) {
-                throw new InvalidMappingException("Missing property: 'position' in class - {$meta->name}");
-            }
-        }
-    }
-
-    private function readSortableGroups($mapping, array &$config)
-    {
-        foreach ($mapping as $field => $fieldMapping) {
-            if (isset($fieldMapping['gedmo'])) {
-                if (in_array('sortableGroup', $fieldMapping['gedmo'])) {
-                    if (!isset($config['groups'])) {
-                        $config['groups'] = array();
+                    if (!$this->isValidField($meta, $field)) {
+                        throw new InvalidMappingException("Sortable field: '{$field}' - type is not valid and must be 'integer' in class - {$meta->name}");
                     }
-                    $config['groups'][] = $field;
+                    if ($meta->isNullable($field)) {
+                        throw new InvalidMappingException("Sortable field: '$field' - cannot be nullable in class - {$meta->name}");
+                    }
+                    $groups = array();
+                    if (isset($fieldMapping['gedmo']['sortable']['groups'])) {
+                        foreach ($fieldMapping['gedmo']['sortable']['groups'] as $group) {
+                            if (!$meta->hasField($group) || !$meta->isSingleValuedAssociation($group)) {
+                                throw new InvalidMappingException("Sortable field: '{$field}' group: {$group} - is not a mapped
+                                    or single valued association property in class {$meta->name}");
+                            }
+                            $groups[] = $group;
+                        }
+                    }
+                    $config['positions'][] = compact('groups', 'field');
                 }
             }
         }

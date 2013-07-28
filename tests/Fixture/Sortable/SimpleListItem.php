@@ -23,7 +23,7 @@ class SimpleListItem
     private $name;
 
     /**
-     * @Gedmo\SortablePosition
+     * @Gedmo\Sortable
      * @ORM\Column(type="integer")
      */
     private $position;

@@ -23,13 +23,12 @@ class Author
     private $name;
 
     /**
-     * @Gedmo\SortableGroup
      * @ORM\ManyToOne(targetEntity="Paper", inversedBy="authors")
      */
     private $paper;
 
     /**
-     * @Gedmo\SortablePosition
+     * @Gedmo\Sortable(groups={"paper"})
      * @ORM\Column(type="integer")
      */
     private $position;

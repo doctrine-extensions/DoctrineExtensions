@@ -23,13 +23,12 @@ class Item
     private $name;
 
     /**
-     * @Gedmo\SortablePosition
+     * @Gedmo\Sortable(groups={"category"})
      * @ORM\Column(type="integer")
      */
     private $position;
 
     /**
-     * @Gedmo\SortableGroup
      * @ORM\ManyToOne(targetEntity="Category", inversedBy="items")
      */
     private $category;

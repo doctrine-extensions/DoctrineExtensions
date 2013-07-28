@@ -47,52 +47,31 @@ class Xml extends BaseXml
                 $mapping = $mapping->children(self::GEDMO_NAMESPACE_URI);
 
                 $field = $this->_getAttribute($mappingDoctrine, 'name');
-                if (isset($mapping->{'sortable-position'})) {
+                if (isset($mapping->sortable)) {
+
+                    $data = $mapping->sortable;
+
+                    if (!$meta->hasField($field)) {
+                        throw new InvalidMappingException("Sortable field: '{$field}' - is not a mapped property in class {$meta->name}");
+                    }
                     if (!$this->isValidField($meta, $field)) {
-                        throw new InvalidMappingException("Sortable position field - [{$field}] type is not valid and must be 'integer' in class - {$meta->name}");
+                        throw new InvalidMappingException("Sortable field: '{$field}' - type is not valid and must be 'integer' in class - {$meta->name}");
                     }
                     if ($meta->isNullable($field)) {
                         throw new InvalidMappingException("Sortable field: '$field' - cannot be nullable in class - {$meta->name}");
                     }
-                    $config['position'] = $field;
+                    $groups = array();
+                    if ($this->_isAttributeSet($data, 'groups')) {
+                        $groups = array_map('trim', explode(',', (string)$this->_getAttribute($data, 'groups')));
+                        foreach ($groups as $group) {
+                            if (!$meta->hasField($group) || !$meta->isSingleValuedAssociation($group)) {
+                                throw new InvalidMappingException("Sortable field: '{$field}' group: {$group} - is not a mapped
+                                    or single valued association property in class {$meta->name}");
+                            }
+                        }
+                    }
+                    $config['positions'][] = compact('groups', 'field');
                 }
-            }
-            $this->readSortableGroups($xml->field, $config, 'name');
-        }
-
-
-        // Search for sortable-groups in association mappings
-        if (isset($xml->{'many-to-one'})) {
-            $this->readSortableGroups($xml->{'many-to-one'}, $config);
-        }
-
-        // Search for sortable-groups in association mappings
-        if (isset($xml->{'many-to-many'})) {
-            $this->readSortableGroups($xml->{'many-to-many'}, $config);
-        }
-
-        if (!$meta->isMappedSuperclass && $config) {
-            if (!isset($config['position'])) {
-                throw new InvalidMappingException("Missing property: 'position' in class - {$meta->name}");
-            }
-        }
-    }
-
-    private function readSortableGroups($mapping, array &$config, $fieldAttr='field')
-    {
-        foreach ($mapping as $map) {
-            $mappingDoctrine = $map;
-            /**
-             * @var \SimpleXmlElement $mapping
-             */
-            $map = $map->children(self::GEDMO_NAMESPACE_URI);
-
-            $field = $this->_getAttribute($mappingDoctrine, $fieldAttr);
-            if (isset($map->{'sortable-group'})) {
-                if (!isset($config['groups'])) {
-                    $config['groups'] = array();
-                }
-                $config['groups'][] = $field;
             }
         }
     }

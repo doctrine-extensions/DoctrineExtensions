@@ -18,7 +18,6 @@ class Event
     private $id;
 
     /**
-     * @Gedmo\SortableGroup
      * @ORM\Column(type="datetime")
      */
     private $dateTime;
@@ -29,7 +28,7 @@ class Event
     private $name;
 
     /**
-     * @Gedmo\SortablePosition
+     * @Gedmo\Sortable(groups={"dateTime"})
      * @ORM\Column(type="integer")
      */
     private $position;
