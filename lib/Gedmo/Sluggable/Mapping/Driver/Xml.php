@@ -67,22 +67,8 @@ class Xml extends BaseXml
                         }
                     }
 
-                    $handlers = array();
-                    if (isset($slug->handler)) {
-                        foreach ($slug->handler as $handler) {
-                            $class = (string)$this->_getAttribute($handler, 'class');
-                            $handlers[$class] = array();
-                            foreach ($handler->{'handler-option'} as $option) {
-                                $handlers[$class][(string)$this->_getAttribute($option, 'name')]
-                                    = (string)$this->_getAttribute($option, 'value')
-                                ;
-                            }
-                            $class::validate($handlers[$class], $meta);
-                        }
-                    }
-
                     // set all options
-                    $config['slugs'][$field] = array(
+                    $config[$field] = array(
                         'fields' => $fields,
                         'slug' => $field,
                         'style' => $this->_isAttributeSet($slug, 'style') ?
@@ -99,13 +85,12 @@ class Xml extends BaseXml
                             $this->_getAttribute($slug, 'prefix') : '',
                         'suffix' => $this->_isAttributeSet($slug, 'suffix') ?
                             $this->_getAttribute($slug, 'suffix') : '',
-                        'handlers' => $handlers,
                     );
                     if (!$meta->isMappedSuperclass && $meta->isIdentifier($field) && !$config['slugs'][$field]['unique']) {
                         throw new InvalidMappingException("Identifier field - [{$field}] slug must be unique in order to maintain primary key in class - {$meta->name}");
                     }
-                    $ubase = $config['slugs'][$field]['unique_base'];
-                    if ($config['slugs'][$field]['unique'] === false && $ubase) {
+                    $ubase = $config[$field]['unique_base'];
+                    if ($config[$field]['unique'] === false && $ubase) {
                         throw new InvalidMappingException("Slug annotation [unique_base] can not be set if unique is unset or 'false'");
                     }
                     if ($ubase && !$this->isValidField($meta, $ubase) && !$meta->hasAssociation($ubase)) {
