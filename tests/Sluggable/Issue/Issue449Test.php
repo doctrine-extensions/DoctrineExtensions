@@ -1,0 +1,112 @@
+<?php
+
+namespace Sluggable\Issue;
+
+use Doctrine\Common\EventManager;
+use Doctrine\ORM\EntityManager;
+use Fixture\Sluggable\Issue449\Article;
+use Gedmo\Sluggable\SluggableListener;
+use Gedmo\SoftDeleteable\SoftDeleteableListener;
+use TestTool\ObjectManagerTestCase;
+
+/**
+ * These are tests for Sluggable behavior
+ *
+ * @author Craig Marvelley <craig.marvelley@gmail.com>
+ * @link http://marvelley.com
+ * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
+ */
+class Issue449Test extends ObjectManagerTestCase
+{
+    const TARGET = 'Fixture\Sluggable\Issue449\Article';
+    const SOFT_DELETEABLE_FILTER_NAME = 'soft-deleteable';
+
+    private $softDeleteableListener;
+
+    /**
+     * @var EntityManager
+     */
+    private $em;
+
+    protected function setUp()
+    {
+        $evm = new EventManager();
+        $evm->addEventSubscriber(new SluggableListener());
+        $this->softDeleteableListener = new SoftDeleteableListener();
+        $evm->addEventSubscriber($this->softDeleteableListener);
+
+        $config = $this->getEntityManagerConfiguration();
+        $config->addFilter(self::SOFT_DELETEABLE_FILTER_NAME, 'Gedmo\SoftDeleteable\Filter\SoftDeleteableFilter');
+
+        $this->em = $this->createEntityManager($evm, null, $config);
+        $this->createSchema($this->em, array(
+            self::TARGET,
+        ));
+
+        $this->em->getFilters()->enable(self::SOFT_DELETEABLE_FILTER_NAME);
+    }
+
+    protected function tearDown()
+    {
+        $this->releaseEntityManager($this->em);
+    }
+
+    /**
+     * @test
+     */
+    public function shouldBuildUniqueSlugAfterSoftDeleteFilterIsDisabled()
+    {
+        $article = new Article();
+        $article->setTitle('the soft title');
+        $article->setCode('my soft code');
+
+        $this->em->persist($article);
+        $this->em->flush();
+
+        $slug = $article->getSlug();
+
+        $this->em->remove($article);
+        $this->em->flush();
+
+        $article = new Article();
+        $article->setTitle('the soft title');
+        $article->setCode('my soft code');
+
+        $this->em->persist($article);
+        $this->em->flush();
+        $this->em->clear();
+
+        $this->assertNotEquals($slug, $article->getSlug());
+    }
+
+    /**
+     * @test
+     */
+    public function shouldSuccessWhenManagedFilterHasAlreadyBeenDisabled()
+    {
+        // disable one managed doctrine filter
+        $this->em->getFilters()->disable(self::SOFT_DELETEABLE_FILTER_NAME);
+
+        $article = new Article();
+        $article->setTitle('the soft title');
+        $article->setCode('my soft code');
+
+        $this->em->persist($article);
+        $this->em->flush();
+
+        $slug = $article->getSlug();
+
+        $this->em->remove($article);
+        $this->em->flush();
+
+        $article = new Article();
+        $article->setTitle('the soft title');
+        $article->setCode('my soft code');
+
+        $this->em->persist($article);
+        $this->em->flush();
+        $this->em->clear();
+
+        $this->assertNotEquals($slug, $article->getSlug());
+    }
+}
