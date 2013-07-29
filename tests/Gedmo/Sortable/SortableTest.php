@@ -118,10 +118,15 @@ class SortableTest extends BaseTestCaseORM
         $nodes = $repo->getBySortableGroups(array('path' => '/'));
 
         $this->assertEquals('Node1', $nodes[0]->getName());
+        $this->assertEquals(0, $nodes[0]->getPosition());
         $this->assertEquals('Node3', $nodes[1]->getName());
+        $this->assertEquals(1, $nodes[1]->getPosition());
         $this->assertEquals('Node4', $nodes[2]->getName());
+        $this->assertEquals(2, $nodes[2]->getPosition());
         $this->assertEquals('Node2', $nodes[3]->getName());
+        $this->assertEquals(3, $nodes[3]->getPosition());
         $this->assertEquals('Node5', $nodes[4]->getName());
+        $this->assertEquals(4, $nodes[4]->getPosition());
     }
 
     /**
@@ -161,10 +166,15 @@ class SortableTest extends BaseTestCaseORM
         $nodes = $repo->getBySortableGroups(array('path' => '/'));
 
         $this->assertEquals('Node1', $nodes[0]->getName());
+        $this->assertEquals(0, $nodes[0]->getPosition());
         $this->assertEquals('Node4', $nodes[1]->getName());
+        $this->assertEquals(1, $nodes[1]->getPosition());
         $this->assertEquals('Node2', $nodes[2]->getName());
+        $this->assertEquals(2, $nodes[2]->getPosition());
         $this->assertEquals('Node3', $nodes[3]->getName());
+        $this->assertEquals(3, $nodes[3]->getPosition());
         $this->assertEquals('Node5', $nodes[4]->getName());
+        $this->assertEquals(4, $nodes[4]->getPosition());
     }
 
     /**
