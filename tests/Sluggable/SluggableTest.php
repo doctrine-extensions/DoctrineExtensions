@@ -272,7 +272,6 @@ class SluggableTest extends ObjectManagerTestCase
         $this->em->persist($article);
         $this->em->flush();
 
-        $article = $this->em->find(self::ARTICLE, $this->articleId);
         $article->setSlug('');
 
         $this->em->persist($article);

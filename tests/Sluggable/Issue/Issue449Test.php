@@ -1,6 +1,6 @@
 <?php
 
-namespace Sluggable\Issue;
+namespace Sluggable;
 
 use Doctrine\Common\EventManager;
 use Doctrine\ORM\EntityManager;
@@ -9,13 +9,6 @@ use Gedmo\Sluggable\SluggableListener;
 use Gedmo\SoftDeleteable\SoftDeleteableListener;
 use TestTool\ObjectManagerTestCase;
 
-/**
- * These are tests for Sluggable behavior
- *
- * @author Craig Marvelley <craig.marvelley@gmail.com>
- * @link http://marvelley.com
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
- */
 class Issue449Test extends ObjectManagerTestCase
 {
     const TARGET = 'Fixture\Sluggable\Issue449\Article';
@@ -32,18 +25,17 @@ class Issue449Test extends ObjectManagerTestCase
     {
         $evm = new EventManager();
         $evm->addEventSubscriber(new SluggableListener());
-        $this->softDeleteableListener = new SoftDeleteableListener();
-        $evm->addEventSubscriber($this->softDeleteableListener);
+        $evm->addEventSubscriber($this->softDeleteableListener = new SoftDeleteableListener());
 
-        $config = $this->getEntityManagerConfiguration();
-        $config->addFilter(self::SOFT_DELETEABLE_FILTER_NAME, 'Gedmo\SoftDeleteable\Filter\SoftDeleteableFilter');
-
-        $this->em = $this->createEntityManager($evm, null, $config);
+        $this->em = $this->createEntityManager($evm);
+        $this->em->getConfiguration()->addFilter(
+            self::SOFT_DELETEABLE_FILTER_NAME,
+            'Gedmo\SoftDeleteable\Filter\SoftDeleteableFilter'
+        );
+        $this->em->getFilters()->enable(self::SOFT_DELETEABLE_FILTER_NAME);
         $this->createSchema($this->em, array(
             self::TARGET,
         ));
-
-        $this->em->getFilters()->enable(self::SOFT_DELETEABLE_FILTER_NAME);
     }
 
     protected function tearDown()

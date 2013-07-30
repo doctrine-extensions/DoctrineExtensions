@@ -293,14 +293,13 @@ class SluggableListener extends MappedEventSubscriber
                     $slug = null;
                 }
 
-                $meta->getReflectionProperty($slugField)->setValue($object, $slug);
-
                 // make unique slug if requested
                 if ($options['unique'] && null !== $slug) {
-                    $this->makeUniqueSlug($om, $object, $slugField, 0);
-                    $slug = $meta->getReflectionProperty($slugField)->getValue($object);
+                    $slug = $this->makeUniqueSlug($om, $object, $slugField, $slug, 0, false);
                 }
 
+                // set final slug
+                $meta->getReflectionProperty($slugField)->setValue($object, $slug);
                 // notify about changes
                 $uow->propertyChanged($object, $slugField, $oldSlug, $slug);
 
@@ -315,19 +314,20 @@ class SluggableListener extends MappedEventSubscriber
      *
      * @param ObjectManager $om
      * @param object        $object
-     * @param string        $slugField - specific slug field
+     * @param string        $slugField     - specific slug field
+     * @param string        $preferredSlug
      * @param integer       $exponent
+     * @param boolean       $recurse       - status if in recursion
      *
      * @return string - unique slug
      */
-    private function makeUniqueSlug(ObjectManager $om, $object, $slugField, $exponent)
+    private function makeUniqueSlug(ObjectManager $om, $object, $slugField, $preferredSlug, $exponent, $recurse)
     {
         $meta = $om->getClassMetadata(get_class($object));
         $config = $this->getConfiguration($om, $meta->name);
         $options = $config[$slugField]; // only interested in one specific slug field
         $similarPersisted = array();
         $slugProp = $meta->getReflectionProperty($slugField);
-        $preferredSlug = $slugProp->getValue($object);
         $sep = $options['separator']; // shortcut
 
         // extract unique base
@@ -345,29 +345,24 @@ class SluggableListener extends MappedEventSubscriber
                 }
                 $slug = $slugProp->getValue($obj);
                 if (preg_match("@^{$preferredSlug}.*@smi", $slug)) {
-                    $similarPersisted[] = array($slugField => $slug);
+                    $similarPersisted[] = $slug;
                 }
             }
         }
 
         // load similar slugs
-        $result = array_merge($this->getSimilarSlugs($om, $object, $slugField), $similarPersisted);
+        $sameSlugs = array_merge($this->getSimilarSlugs($om, $object, $slugField, $preferredSlug), $similarPersisted);
         // leave only right slugs, if not in recursion
-        if ($exponent === 0) {
+        if (!$recurse) {
             // filter similar slugs
-            foreach ($result as $key => $similar) {
-                if (!preg_match("@{$preferredSlug}($|{$sep}[\d]+$)@smi", $similar[$slugField])) {
-                    unset($result[$key]);
+            foreach ($sameSlugs as $key => $similar) {
+                if (!preg_match("@{$preferredSlug}($|{$sep}[\d]+$)@smi", $similar)) {
+                    unset($sameSlugs[$key]);
                 }
             }
         }
 
-        if ($result) {
-            $sameSlugs = array();
-            foreach ($result as $list) {
-                $sameSlugs[] = $list[$slugField];
-            }
-
+        if ($sameSlugs) {
             $i = pow(10, $exponent);
             do {
                 $generatedSlug = $preferredSlug.$sep.$i++;
@@ -376,16 +371,15 @@ class SluggableListener extends MappedEventSubscriber
             $mapping = $meta->getFieldMapping($slugField);
             if (isset($mapping['length']) && strlen($generatedSlug) > $mapping['length']) {
                 $generatedSlug = substr($generatedSlug, 0, $mapping['length'] - (strlen($i) + strlen($sep)));
-                if (substr($generatedSlug, -strlen($sep)) === $sep) {
+                if (substr($generatedSlug, -strlen($sep)) == $sep) {
                     $generatedSlug = substr($generatedSlug, 0, strlen($generatedSlug) - strlen($sep));
                 }
-                $slugProp->setValue($object, $generatedSlug);
-                $this->makeUniqueSlug($om, $object, $slugField, strlen($i) - 1);
+                $generatedSlug = $this->makeUniqueSlug($om, $object, $slugField, $generatedSlug, strlen($i) - 1, true);
             }
             $preferredSlug = $generatedSlug;
         }
 
-        $slugProp->setValue($object, $preferredSlug);
+        return $preferredSlug;
     }
 
     /**
@@ -394,15 +388,15 @@ class SluggableListener extends MappedEventSubscriber
      * @param ObjectManager $om
      * @param object        $object
      * @param string        $slugField - specific slug field
+     * @param string        $slug
      *
      * @return array
      */
-    protected function getSimilarSlugs(ObjectManager $om, $object, $slugField)
+    protected function getSimilarSlugs(ObjectManager $om, $object, $slugField, $slug)
     {
         $meta = $om->getClassMetadata(get_class($object));
         $config = $this->getConfiguration($om, $meta->name);
         $options = $config[$slugField]; // only interested in one specific slug field
-        $slug = $meta->getReflectionProperty($slugField)->getValue($object);
         $ids = OMH::getIdentifier($om, $object, false);
 
         $similar = array();
@@ -460,6 +454,8 @@ class SluggableListener extends MappedEventSubscriber
             }
         }
 
-        return $similar;
+        return array_map(function (array $item) use ($slugField) {
+            return $item[$slugField];
+        }, $similar);
     }
 }

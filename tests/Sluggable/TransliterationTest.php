@@ -8,13 +8,6 @@ use Fixture\Sluggable\Article;
 use Gedmo\Sluggable\SluggableListener;
 use TestTool\ObjectManagerTestCase;
 
-/**
- * These are tests for sluggable behavior
- *
- * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @link http://www.gediminasm.org
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
- */
 class TransliterationTest extends ObjectManagerTestCase
 {
     const ARTICLE = 'Fixture\Sluggable\Article';
@@ -23,17 +16,20 @@ class TransliterationTest extends ObjectManagerTestCase
      * @var EntityManager
      */
     private $em;
+    /**
+     * @var SluggableListener
+     */
+    private $sluggable;
 
     protected function setUp()
     {
         $evm = new EventManager();
-        $evm->addEventSubscriber(new SluggableListener());
+        $evm->addEventSubscriber($this->sluggable = new SluggableListener());
 
         $this->em = $this->createEntityManager($evm);
         $this->createSchema($this->em, array(
             self::ARTICLE,
         ));
-        $this->populate();
     }
 
     protected function tearDown()
@@ -41,21 +37,51 @@ class TransliterationTest extends ObjectManagerTestCase
         $this->releaseEntityManager($this->em);
     }
 
-    public function testInsertedNewSlug()
+    /**
+     * @test
+     */
+    public function shouldInsertedNewSlug()
     {
+        $this->populate();
         $repo = $this->em->getRepository(self::ARTICLE);
 
         $lithuanian = $repo->findOneByCode('lt');
-        $this->assertEquals('transliteration-test-usage-uz-lt', $lithuanian->getSlug());
-
         $bulgarian = $repo->findOneByCode('bg');
-        $this->assertEquals('tova-ie-tiestovo-zaghlaviie-bg', $bulgarian->getSlug());
-
         $russian = $repo->findOneByCode('ru');
-        $this->assertEquals('eto-tiestovyi-zagholovok-ru', $russian->getSlug());
-
         $german = $repo->findOneByCode('de');
-        $this->assertEquals('fuhren-aktivitaten-haglofs-de', $german->getSlug());
+
+        $this->assertSame('transliteration-test-usage-uz-lt', $lithuanian->getSlug());
+        $this->assertSame('tova-ie-tiestovo-zaghlaviie-bg', $bulgarian->getSlug());
+        $this->assertSame('eto-tiestovyi-zagholovok-ru', $russian->getSlug());
+        $this->assertSame('fuhren-aktivitaten-haglofs-de', $german->getSlug());
+    }
+
+    /**
+     * @test
+     */
+    public function shouldHandleCustomTransliteratorAndUrlizer()
+    {
+        $this->sluggable->setTransliterator(function ($text) {
+            return iconv('UTF-8', 'ASCII//TRANSLIT', $text);
+        });
+        $this->sluggable->setUrlizer(function ($text, $separator) {
+            $urlized = strtolower(trim(preg_replace("/[^a-zA-Z0-9\/_|+ -]/", '', $text), $separator));
+
+            return preg_replace("/[\/_|+ -]+/", $separator, $urlized);
+        });
+
+        $this->populate();
+        $repo = $this->em->getRepository(self::ARTICLE);
+
+        $lithuanian = $repo->findOneByCode('lt');
+        $bulgarian = $repo->findOneByCode('bg');
+        $russian = $repo->findOneByCode('ru');
+        $german = $repo->findOneByCode('de');
+
+        $this->assertSame('transliteration-test-usage-uz-lt', $lithuanian->getSlug());
+        $this->assertSame('-bg', $bulgarian->getSlug());
+        $this->assertSame('-ru', $russian->getSlug());
+        $this->assertSame('fuhren-aktivitaten-haglofs-de', $german->getSlug());
     }
 
     private function populate()
@@ -81,6 +107,5 @@ class TransliterationTest extends ObjectManagerTestCase
         $this->em->persist($russian);
         $this->em->persist($german);
         $this->em->flush();
-        $this->em->clear();
     }
 }

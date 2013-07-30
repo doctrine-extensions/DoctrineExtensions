@@ -9,13 +9,6 @@ use Fixture\Sluggable\Issue116\Country;
 use Gedmo\Sluggable\SluggableListener;
 use TestTool\ObjectManagerTestCase;
 
-/**
- * These are tests for Sluggable behavior
- *
- * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @link http://www.gediminasm.org
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
- */
 class Issue116Test extends ObjectManagerTestCase
 {
     const TARGET = 'Fixture\Sluggable\Issue116\Country';
@@ -30,10 +23,10 @@ class Issue116Test extends ObjectManagerTestCase
         $evm = new EventManager();
         $evm->addEventSubscriber(new SluggableListener());
 
-        $config = $this->getEntityManagerConfiguration();
-        $config->setMetadataDriverImpl(new YamlDriver(array(__DIR__.'/../Fixture/Issue116/Mapping')));
+        $driver = new YamlDriver(array($this->getTestsDir().'/Fixture/Sluggable/Issue116/Mapping'));
 
-        $this->em = $this->createEntityManager($evm, null, $config);
+        $this->em = $this->createEntityManager($evm);
+        $this->em->getConfiguration()->setMetadataDriverImpl($driver);
         $this->createSchema($this->em, array(
             self::TARGET,
         ));
@@ -44,7 +37,10 @@ class Issue116Test extends ObjectManagerTestCase
         $this->releaseEntityManager($this->em);
     }
 
-    public function testSlugGeneration()
+    /**
+     * @test
+     */
+    public function shouldFixIssue116()
     {
         $country = new Country();
         $country->setOriginalName('New Zealand');
@@ -52,6 +48,6 @@ class Issue116Test extends ObjectManagerTestCase
         $this->em->persist($country);
         $this->em->flush();
 
-        $this->assertEquals('new-zealand', $country->getAlias());
+        $this->assertSame('new-zealand', $country->getAlias());
     }
 }

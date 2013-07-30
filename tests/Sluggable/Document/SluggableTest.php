@@ -1,6 +1,6 @@
 <?php
 
-namespace Sluggable;
+namespace Sluggable\Document;
 
 use Doctrine\Common\EventManager;
 use Doctrine\ODM\MongoDB\DocumentManager;
@@ -8,14 +8,7 @@ use Fixture\Sluggable\Document\Article;
 use Gedmo\Sluggable\SluggableListener;
 use TestTool\ObjectManagerTestCase;
 
-/**
- * These are tests for sluggable behavior
- *
- * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @link http://www.gediminasm.org
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
- */
-class SluggableDocumentTest extends ObjectManagerTestCase
+class SluggableTest extends ObjectManagerTestCase
 {
     const ARTICLE = 'Fixture\Sluggable\Document\Article';
 
@@ -28,9 +21,7 @@ class SluggableDocumentTest extends ObjectManagerTestCase
     {
         $evm = new EventManager();
         $evm->addEventSubscriber(new SluggableListener());
-
         $this->dm = $this->createDocumentManager($evm);
-        $this->populate();
     }
 
     protected function tearDown()
@@ -38,8 +29,12 @@ class SluggableDocumentTest extends ObjectManagerTestCase
         $this->releaseDocumentManager($this->dm);
     }
 
-    public function testSlugGeneration()
+    /**
+     * @test
+     */
+    public function shouldGenerateSlug()
     {
+        $this->populate();
         // test insert
         $repo = $this->dm->getRepository(self::ARTICLE);
         $article = $repo->findOneByTitle('My Title');
@@ -57,8 +52,12 @@ class SluggableDocumentTest extends ObjectManagerTestCase
         $this->assertEquals('new-title-the-code', $article->getSlug());
     }
 
-    public function testUniqueSlugGeneration()
+    /**
+     * @test
+     */
+    public function shouldGenerateUniqueSlug()
     {
+        $this->populate();
         for ($i = 0; $i < 12; $i++) {
             $article = new Article();
             $article->setTitle('My Title');
@@ -71,7 +70,10 @@ class SluggableDocumentTest extends ObjectManagerTestCase
         }
     }
 
-    public function testGithubIssue57()
+    /**
+     * @test
+     */
+    public function shouldFixGithubIssue57()
     {
         // slug matched by prefix
         $article = new Article();

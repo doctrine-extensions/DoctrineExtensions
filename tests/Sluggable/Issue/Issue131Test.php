@@ -1,6 +1,6 @@
 <?php
 
-namespace Sluggable\Issue;
+namespace Sluggable;
 
 use Doctrine\Common\EventManager;
 use Doctrine\ORM\EntityManager;
@@ -8,13 +8,6 @@ use Fixture\Sluggable\Issue131\Article;
 use Gedmo\Sluggable\SluggableListener;
 use TestTool\ObjectManagerTestCase;
 
-/**
- * These are tests for Sluggable behavior
- *
- * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @link http://www.gediminasm.org
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
- */
 class Issue131Test extends ObjectManagerTestCase
 {
     const TARGET = 'Fixture\Sluggable\Issue131\Article';
@@ -40,7 +33,10 @@ class Issue131Test extends ObjectManagerTestCase
         $this->releaseEntityManager($this->em);
     }
 
-    public function testSlugGeneration()
+    /**
+     * @test
+     */
+    public function shouldAllowNullableSlug()
     {
         $test = new Article();
         $test->setTitle('');

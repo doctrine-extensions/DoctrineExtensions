@@ -11,9 +11,6 @@ use TestTool\ObjectManagerTestCase;
 class ManySlugTest extends ObjectManagerTestCase
 {
     const ARTICLE = 'Fixture\Sluggable\ArticleManySlug';
-
-    private $articleId;
-
     /**
      * @var EntityManager
      */
@@ -28,7 +25,6 @@ class ManySlugTest extends ObjectManagerTestCase
         $this->createSchema($this->em, array(
             self::ARTICLE,
         ));
-        $this->populate();
     }
 
     protected function tearDown()
@@ -41,9 +37,16 @@ class ManySlugTest extends ObjectManagerTestCase
      */
     public function shouldSupportMultipleSlugs()
     {
-        $article = $this->em->find(self::ARTICLE, $this->articleId);
-        $this->assertEquals('the-title-my-code', $article->getSlug());
-        $this->assertEquals('the-unique-title', $article->getUniqueSlug());
+        $article = new ArticleManySlug();
+        $article->setTitle('the title');
+        $article->setCode('my code');
+        $article->setUniqueTitle('the unique title');
+
+        $this->em->persist($article);
+        $this->em->flush();
+
+        $this->assertSame('the-title-my-code', $article->getSlug());
+        $this->assertSame('the-unique-title', $article->getUniqueSlug());
     }
 
     /**
@@ -51,6 +54,14 @@ class ManySlugTest extends ObjectManagerTestCase
      */
     public function shouldHandleOneOfUniqueSlugs()
     {
+        $article = new ArticleManySlug();
+        $article->setTitle('the title');
+        $article->setCode('my code');
+        $article->setUniqueTitle('the unique title');
+
+        $this->em->persist($article);
+        $this->em->flush();
+
         $a0 = new ArticleManySlug();
         $a0->setTitle('the title');
         $a0->setCode('my code');
@@ -66,22 +77,10 @@ class ManySlugTest extends ObjectManagerTestCase
         $this->em->persist($a1);
         $this->em->flush();
 
-        $this->assertEquals('title', $a0->getUniqueSlug());
-        $this->assertEquals('title-1', $a1->getUniqueSlug());
+        $this->assertSame('title', $a0->getUniqueSlug());
+        $this->assertSame('title-1', $a1->getUniqueSlug());
         // if its translated maybe should be different
-        $this->assertEquals('the-title-my-code-1', $a0->getSlug());
-        $this->assertEquals('the-title-my-code-2', $a1->getSlug());
-    }
-
-    private function populate()
-    {
-        $article = new ArticleManySlug();
-        $article->setTitle('the title');
-        $article->setCode('my code');
-        $article->setUniqueTitle('the unique title');
-
-        $this->em->persist($article);
-        $this->em->flush();
-        $this->articleId = $article->getId();
+        $this->assertSame('the-title-my-code-1', $a0->getSlug());
+        $this->assertSame('the-title-my-code-2', $a1->getSlug());
     }
 }

@@ -8,14 +8,7 @@ use Fixture\Sluggable\Identifier;
 use Gedmo\Sluggable\SluggableListener;
 use TestTool\ObjectManagerTestCase;
 
-/**
- * These are tests for Sluggable behavior
- *
- * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @link http://www.gediminasm.org
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
- */
-class SluggableIdentifierTest extends ObjectManagerTestCase
+class UnrelatedIdentifierTest extends ObjectManagerTestCase
 {
     const TARGET = 'Fixture\Sluggable\Identifier';
 
@@ -26,8 +19,6 @@ class SluggableIdentifierTest extends ObjectManagerTestCase
 
     protected function setUp()
     {
-        parent::setUp();
-
         $evm = new EventManager();
         $evm->addEventSubscriber(new SluggableListener());
 
@@ -52,7 +43,7 @@ class SluggableIdentifierTest extends ObjectManagerTestCase
         $this->em->persist($sport);
         $this->em->flush();
 
-        $this->assertEquals('sport', $sport->getId());
+        $this->assertSame('sport', $sport->getId());
     }
 
     /**
@@ -69,7 +60,7 @@ class SluggableIdentifierTest extends ObjectManagerTestCase
         $this->em->persist($sport2);
         $this->em->flush();
 
-        $this->assertEquals('sport', $sport->getId());
-        $this->assertEquals('sport_1', $sport2->getId());
+        $this->assertSame('sport', $sport->getId());
+        $this->assertSame('sport_1', $sport2->getId());
     }
 }

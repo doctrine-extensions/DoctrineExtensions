@@ -9,10 +9,7 @@ use Gedmo\Sluggable\SluggableListener;
 use TestTool\ObjectManagerTestCase;
 
 /**
- * These are tests for Sluggable behavior
- *
  * @author Derek Clapham <derek.clapham@gmail.com>
- * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class Issue633Test extends ObjectManagerTestCase
