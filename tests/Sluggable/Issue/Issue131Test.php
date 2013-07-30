@@ -1,33 +1,38 @@
 <?php
 
-namespace Gedmo\Sluggable;
+namespace Sluggable;
 
 use Doctrine\Common\EventManager;
-use Tool\BaseTestCaseORM;
+use TestTool\ObjectManagerTestCase;
 use Fixture\Sluggable\Issue131\Article;
+use Gedmo\Sluggable\SluggableListener;
 
-/**
- * These are tests for Sluggable behavior
- *
- * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @link http://www.gediminasm.org
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
- */
-class Issue131Test extends BaseTestCaseORM
+class Issue131Test extends ObjectManagerTestCase
 {
-    const TARGET = 'Sluggable\\Fixture\\Issue131\\Article';
+    const TARGET = 'Fixture\Sluggable\Issue131\Article';
+
+    private $em;
 
     protected function setUp()
     {
-        parent::setUp();
-
         $evm = new EventManager;
         $evm->addEventSubscriber(new SluggableListener);
 
-        $this->getMockSqliteEntityManager($evm);
+        $this->em = $this->createEntityManager($evm);
+        $this->createSchema($this->em, array(
+            self::TARGET,
+        ));
     }
 
-    public function testSlugGeneration()
+    protected function tearDown()
+    {
+        $this->releaseEntityManager($this->em);
+    }
+
+    /**
+     * @test
+     */
+    function shouldAllowNullableSlug()
     {
         $test = new Article;
         $test->setTitle('');
@@ -44,12 +49,5 @@ class Issue131Test extends BaseTestCaseORM
         $this->em->flush();
 
         $this->assertNull($test2->getSlug());
-    }
-
-    protected function getUsedEntityFixtures()
-    {
-        return array(
-            self::TARGET
-        );
     }
 }

@@ -16,7 +16,7 @@ class Article
      * @ORM\Column(type="integer")
      */
     private $id;
-    
+
     /**
      * @ORM\Column(name="code", type="string", length=16)
      */
@@ -37,12 +37,12 @@ class Article
     {
         return $this->id;
     }
-    
+
     public function setCode($code)
     {
         $this->code = $code;
     }
-    
+
     public function getCode()
     {
         return $this->code;

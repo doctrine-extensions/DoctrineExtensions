@@ -5,26 +5,33 @@ namespace Gedmo\Sluggable;
 use Doctrine\Common\EventManager;
 use Tool\BaseTestCaseORM;
 use Fixture\Sluggable\Issue633\Article;
+use TestTool\ObjectManagerTestCase;
+use Gedmo\Sluggable\SluggableListener;
 
 /**
- * These are tests for Sluggable behavior
- *
  * @author Derek Clapham <derek.clapham@gmail.com>
- * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class Issue633Test extends BaseTestCaseORM
+class Issue633Test extends ObjectManagerTestCase
 {
-    const TARGET = 'Sluggable\\Fixture\\Issue633\\Article';
+    const TARGET = 'Fixture\Sluggable\Issue633\Article';
+
+    private $em;
 
     protected function setUp()
     {
-        parent::setUp();
-
         $evm = new EventManager;
         $evm->addEventSubscriber(new SluggableListener);
 
-        $this->getMockSqliteEntityManager($evm);
+        $this->em = $this->createEntityManager($evm);
+        $this->createSchema($this->em, array(
+            self::TARGET,
+        ));
+    }
+
+    protected function tearDown()
+    {
+        $this->releaseEntityManager($this->em);
     }
 
     /**
@@ -87,12 +94,5 @@ class Issue633Test extends BaseTestCaseORM
         $this->assertEquals('unique-to-code', $test->getSlug());
         $this->assertEquals('unique-to-code', $test2->getSlug());
         $this->assertEquals('unique-to-code-1', $test3->getSlug());
-    }
-
-    protected function getUsedEntityFixtures()
-    {
-        return array(
-            self::TARGET
-        );
     }
 }

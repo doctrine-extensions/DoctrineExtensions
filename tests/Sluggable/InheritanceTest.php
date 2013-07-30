@@ -1,60 +1,69 @@
 <?php
 
-namespace Gedmo\Sluggable;
+namespace Sluggable;
 
 use Doctrine\Common\EventManager;
-use Tool\BaseTestCaseORM;
+use TestTool\ObjectManagerTestCase;
+use Fixture\Sluggable\Inheritance\SportCar;
 use Fixture\Sluggable\Inheritance\Car;
 use Fixture\Sluggable\Inheritance\Vehicle;
+use Gedmo\Sluggable\SluggableListener;
 
-/**
- * These are tests for Sluggable behavior
- *
- * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @link http://www.gediminasm.org
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
- */
-class InheritanceTest extends BaseTestCaseORM
+class InheritanceTest extends ObjectManagerTestCase
 {
-    const VEHICLE = 'Sluggable\\Fixture\\Inheritance\\Vehicle';
-    const CAR = 'Sluggable\\Fixture\\Inheritance\\Car';
+    const VEHICLE = 'Fixture\Sluggable\Inheritance\Vehicle';
+    const CAR = 'Fixture\Sluggable\Inheritance\Car';
+    const SPORTCAR = 'Fixture\Sluggable\Inheritance\SportCar';
+
+    private $em;
 
     protected function setUp()
     {
-        parent::setUp();
-
         $evm = new EventManager;
         $evm->addEventSubscriber(new SluggableListener);
 
-        $this->getMockSqliteEntityManager($evm);
-    }
-
-    public function testSlugGeneration()
-    {
-        $audi = new Car;
-        $audi->setDescription('audi car');
-        $audi->setTitle('Audi');
-
-        $this->em->persist($audi);
-
-        $audi2 = new Car;
-        $audi2->setDescription('audi2 car');
-        $audi2->setTitle('Audi');
-
-        $this->em->persist($audi2);
-
-        $audi3 = new Vehicle;
-        $audi3->setTitle('Audi');
-
-        $this->em->persist($audi3);
-        $this->em->flush();
-    }
-
-    protected function getUsedEntityFixtures()
-    {
-        return array(
+        $this->em = $this->createEntityManager($evm);
+        $this->createSchema($this->em, array(
             self::VEHICLE,
-            self::CAR
-        );
+            self::CAR,
+            self::SPORTCAR
+        ));
+    }
+
+    protected function tearDown()
+    {
+        $this->releaseEntityManager($this->em);
+    }
+
+    /**
+     * @test
+     */
+    function shouldSupportInheritance()
+    {
+        $audi80 = new Car;
+        $audi80->setType('Audi');
+        $audi80->setTitle('Audi 80');
+
+        $this->em->persist($audi80);
+
+        $bmw530 = new Car;
+        $bmw530->setType('BMW');
+        $bmw530->setTitle('BMW 530');
+
+        $this->em->persist($bmw530);
+
+        $bmwX5 = new SportCar;
+        $bmwX5->setType('BMW');
+        $bmwX5->setTitle('BMW X5');
+
+        $this->em->persist($bmwX5);
+        $this->em->flush();
+
+        $this->assertSame('audi', $audi80->getTypeSlug());
+        $this->assertSame('audi-80', $audi80->getSlug());
+        $this->assertSame('bmw', $bmw530->getTypeSlug());
+        $this->assertSame('bmw-530', $bmw530->getSlug());
+        $this->assertSame('bmw-1', $bmwX5->getTypeSlug());
+        $this->assertSame('bmw-x5', $bmwX5->getSlug());
     }
 }
