@@ -1,6 +1,6 @@
 <?php
 
-namespace Gedmo\Uploadable\FileInfo;
+namespace Uploadable\FileInfo;
 
 use Gedmo\Uploadable\FileInfo\FileInfoArray;
 
@@ -12,7 +12,6 @@ use Gedmo\Uploadable\FileInfo\FileInfoArray;
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-
 class FileInfoArrayTest extends \PHPUnit_Framework_TestCase
 {
     /**

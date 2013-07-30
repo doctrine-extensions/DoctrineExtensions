@@ -1,6 +1,6 @@
 <?php
 
-namespace Uploadable\Fixture\Entity;
+namespace Fixture\Uploadable;
 
 use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
@@ -8,9 +8,9 @@ use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * @ORM\Entity
- * @Gedmo\Uploadable(allowOverwrite=true, pathMethod="getPath", callback="callbackMethod", maxSize="1")
+ * @Gedmo\Uploadable(allowOverwrite=true, pathMethod="getPath", callback="callbackMethod")
  */
-class FileWithMaxSize
+class File
 {
     /**
      * @ORM\Column(name="id", type="integer")
@@ -29,12 +29,6 @@ class FileWithMaxSize
      * @Gedmo\UploadableFilePath
      */
     private $filePath;
-
-    /**
-     * @ORM\Column(name="size", type="decimal")
-     * @Gedmo\UploadableFileSize
-     */
-    private $fileSize;
 
     /**
      * @ORM\ManyToOne(targetEntity="Article", inversedBy="files")
@@ -80,16 +74,6 @@ class FileWithMaxSize
         return $this->article;
     }
 
-    public function setFileSize($size)
-    {
-        $this->fileSize = $size;
-    }
-
-    public function getFileSize()
-    {
-        return $this->fileSize;
-    }
-
     public function callbackMethod()
     {
         $this->callbackWasCalled = true;
@@ -97,6 +81,6 @@ class FileWithMaxSize
 
     public function getPath()
     {
-        return __DIR__.'/../../../../temp/uploadable';
+        return __DIR__.'/../../temp/uploadable';
     }
 }

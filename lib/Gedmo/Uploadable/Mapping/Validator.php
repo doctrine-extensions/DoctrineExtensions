@@ -197,7 +197,7 @@ class Validator
 
                 if (!$ok) {
                     $msg = 'Class "%s" needs a valid value for filenameGenerator. It can be: SHA1, ALPHANUMERIC, NONE or ';
-                    $msg .= 'a class implementing FileGeneratorInterface.';
+                    $msg .= 'a class implementing FilenameGeneratorInterface.';
 
                     throw new InvalidMappingException(sprintf($msg,
                         $meta->name

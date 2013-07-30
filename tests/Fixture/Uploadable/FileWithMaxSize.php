@@ -1,6 +1,6 @@
 <?php
 
-namespace Uploadable\Fixture\Entity;
+namespace Fixture\Uploadable;
 
 use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
@@ -8,9 +8,9 @@ use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * @ORM\Entity
- * @Gedmo\Uploadable(disallowedTypes="text/css, text/html")
+ * @Gedmo\Uploadable(allowOverwrite=true, pathMethod="getPath", callback="callbackMethod", maxSize="1")
  */
-class FileWithDisallowedTypes
+class FileWithMaxSize
 {
     /**
      * @ORM\Column(name="id", type="integer")
@@ -25,13 +25,13 @@ class FileWithDisallowedTypes
     private $title;
 
     /**
-     * @ORM\Column(name="path", type="string", nullable=true)
+     * @ORM\Column(name="path", type="string")
      * @Gedmo\UploadableFilePath
      */
     private $filePath;
 
     /**
-     * @ORM\Column(name="size", type="decimal", nullable=true)
+     * @ORM\Column(name="size", type="decimal")
      * @Gedmo\UploadableFileSize
      */
     private $fileSize;
@@ -41,6 +41,8 @@ class FileWithDisallowedTypes
      * @ORM\JoinColumn(name="article_id", referencedColumnName="id")
      */
     private $article;
+
+    public $callbackWasCalled = false;
 
 
     public function getId()
@@ -86,5 +88,15 @@ class FileWithDisallowedTypes
     public function getFileSize()
     {
         return $this->fileSize;
+    }
+
+    public function callbackMethod()
+    {
+        $this->callbackWasCalled = true;
+    }
+
+    public function getPath()
+    {
+        return __DIR__.'/../../temp/uploadable';
     }
 }
