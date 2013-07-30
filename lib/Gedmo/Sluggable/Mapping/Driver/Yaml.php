@@ -66,7 +66,7 @@ class Yaml extends File implements Driver
                             throw new InvalidMappingException("Slug must contain at least one field for slug generation in class - {$meta->name}");
                         }
                         foreach ($slug['fields'] as $slugField) {
-                            if (!$meta->hasField($slugField) || $meta->isInheritedField($slugField)) {
+                            if (!$meta->hasField($slugField)) {
                                 throw new InvalidMappingException("Unable to find slug [{$slugField}] as mapped property in entity - {$meta->name}");
                             }
                             if (!$this->isValidField($meta, $slugField)) {
