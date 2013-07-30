@@ -34,7 +34,7 @@ class Category
 
     /**
      * @Gedmo\Translatable
-     * @Gedmo\Slug(fields={"title"})
+     * @Gedmo\Slug(fields={"created", "title"})
      * @ORM\Column(length=64, unique=true)
      */
     private $slug;

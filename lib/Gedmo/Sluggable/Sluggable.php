@@ -29,7 +29,8 @@ interface Sluggable
      *         prefix (optional, default="") - suffix which will be added to the generated slug
      *         suffix (optional, default="") - prefix which will be added to the generated slug
      *         style (optional, default="default") - "default" all letters will be lowercase, "camel" - first word letter will be uppercase
-     *
+     *         dateFormat (optional, default="default") - "default" all letters will be lowercase, "camel" - first word letter will be uppercase
+     * 
      * example:
      * 
      * @gedmo:Slug(style="camel", separator="_", prefix="", suffix="" updatable=false, unique=false)

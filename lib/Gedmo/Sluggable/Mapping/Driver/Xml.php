@@ -28,6 +28,7 @@ class Xml extends BaseXml
         'text',
         'integer',
         'int',
+        'datetime',
     );
 
     /**
@@ -89,6 +90,8 @@ class Xml extends BaseXml
                             $this->_getAttribute($slug, 'style') : 'default',
                         'updatable' => $this->_isAttributeSet($slug, 'updatable') ?
                             $this->_getBooleanAttribute($slug, 'updatable') : true,
+                        'dateFormat' => $this->_isAttributeSet($slug, 'dateFormat') ?
+                            $this->_getAttribute($slug, 'dateFormat') : \DateTime::RFC2822,
                         'unique' => $this->_isAttributeSet($slug, 'unique') ?
                             $this->_getBooleanAttribute($slug, 'unique') : true,
                         'unique_base' => $this->_isAttributeSet($slug, 'unique_base') ?

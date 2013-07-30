@@ -33,6 +33,7 @@ class Yaml extends File implements Driver
         'text',
         'integer',
         'int',
+        'datetime',
     );
 
     /**
@@ -79,6 +80,9 @@ class Yaml extends File implements Driver
                         $config['slugs'][$field]['slug'] = $field;
                         $config['slugs'][$field]['style'] = isset($slug['style']) ?
                             (string)$slug['style'] : 'default';
+
+                        $config['slugs'][$field]['dateFormat'] = isset($slug['dateFormat']) ?
+                            (bool)$slug['dateFormat'] : \DateTime::RFC2822;
 
                         $config['slugs'][$field]['updatable'] = isset($slug['updatable']) ?
                             (bool)$slug['updatable'] : true;

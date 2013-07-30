@@ -15,6 +15,10 @@ Features:
 [blog_reference]: http://gediminasm.org/article/sluggable-behavior-extension-for-doctrine-2 "Sluggable extension for Doctrine 2 makes automatic record field transformations into url friendly names"
 [blog_test]: http://gediminasm.org/test "Test extensions on this blog"
 
+Update **2013-10-26**
+
+- Datetime support with default dateFormat DateTime::RFC2822
+
 Update **2013-08-23**
 
 - Added 'prefix' and 'suffix' configuration parameter #812
@@ -401,7 +405,7 @@ class Article
 {
     // ...
     /**
-     * @Gedmo\Slug(fields={"title"}, style="camel", separator="_", updatable=false, unique=false)
+     * @Gedmo\Slug(fields={"title", "created"}, style="camel", separator="_", updatable=false, unique=false, dateFormat="d/m/Y H-i-s")
      * @Doctrine\ORM\Mapping\Column(length=128, unique=true)
      */
     private $slug;
@@ -409,10 +413,20 @@ class Article
 
     // ...
     /**
+     * @Doctrine\ORM\Mapping\Column(type="datetime", name="created_at")
+     */
+    private $createdAt;
+
+    // ...
+    /**
      * @Doctrine\ORM\Mapping\Column(length=128)
      */
     private $title;
     // ...
+    public function __construct()
+    {
+      $this->createdAt = new \DateTime;
+    }
 }
 ```
 
