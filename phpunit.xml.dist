@@ -48,6 +48,10 @@
             <directory suffix="Test.php">./tests/Sluggable/</directory>
         </testsuite>
 
+        <testsuite name="Uploadable Extension">
+            <directory suffix="Test.php">./tests/Uploadable/</directory>
+        </testsuite>
+
     </testsuites>
 
     <!-- uncomment to use a custom pdo database instead of sqlite memory

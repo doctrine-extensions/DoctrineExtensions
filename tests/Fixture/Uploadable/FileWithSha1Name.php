@@ -1,6 +1,6 @@
 <?php
 
-namespace Uploadable\Fixture\Entity;
+namespace Fixture\Uploadable;
 
 use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
@@ -41,6 +41,6 @@ class FileWithSha1Name
 
     public function getPath()
     {
-        return __DIR__.'/../../../../temp/uploadable';
+        return __DIR__.'/../../temp/uploadable';
     }
 }

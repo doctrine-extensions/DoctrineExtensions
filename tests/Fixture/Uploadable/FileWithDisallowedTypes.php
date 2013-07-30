@@ -1,15 +1,15 @@
 <?php
 
-namespace Uploadable\Fixture\Entity;
+namespace Fixture\Uploadable;
 
 use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
- * @Gedmo\Uploadable(allowOverwrite=true, pathMethod="getPath", callback="callbackMethod")
+ * @Gedmo\Uploadable(disallowedTypes="text/css, text/html")
  */
-class File
+class FileWithDisallowedTypes
 {
     /**
      * @ORM\Column(name="id", type="integer")
@@ -24,18 +24,22 @@ class File
     private $title;
 
     /**
-     * @ORM\Column(name="path", type="string")
+     * @ORM\Column(name="path", type="string", nullable=true)
      * @Gedmo\UploadableFilePath
      */
     private $filePath;
+
+    /**
+     * @ORM\Column(name="size", type="decimal", nullable=true)
+     * @Gedmo\UploadableFileSize
+     */
+    private $fileSize;
 
     /**
      * @ORM\ManyToOne(targetEntity="Article", inversedBy="files")
      * @ORM\JoinColumn(name="article_id", referencedColumnName="id")
      */
     private $article;
-
-    public $callbackWasCalled = false;
 
     public function getId()
     {
@@ -72,13 +76,13 @@ class File
         return $this->article;
     }
 
-    public function callbackMethod()
+    public function setFileSize($size)
     {
-        $this->callbackWasCalled = true;
+        $this->fileSize = $size;
     }
 
-    public function getPath()
+    public function getFileSize()
     {
-        return __DIR__.'/../../../../temp/uploadable';
+        return $this->fileSize;
     }
 }

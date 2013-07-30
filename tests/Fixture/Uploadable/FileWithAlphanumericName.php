@@ -1,15 +1,15 @@
 <?php
 
-namespace Uploadable\Fixture\Entity;
+namespace Fixture\Uploadable;
 
 use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
- * @Gedmo\Uploadable
+ * @Gedmo\Uploadable(pathMethod="getPath", filenameGenerator="ALPHANUMERIC", appendNumber=true)
  */
-class FileWithoutPath
+class FileWithAlphanumericName
 {
     /**
      * @ORM\Column(name="id", type="integer")
@@ -37,5 +37,10 @@ class FileWithoutPath
     public function getFilePath()
     {
         return $this->filePath;
+    }
+
+    public function getPath()
+    {
+        return __DIR__.'/../../temp/uploadable';
     }
 }

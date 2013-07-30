@@ -1,15 +1,15 @@
 <?php
 
-namespace Uploadable\Fixture\Entity;
+namespace Fixture\Uploadable;
 
 use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
- * @Gedmo\Uploadable(disallowedTypes="text/css, text/html")
+ * @Gedmo\Uploadable(pathMethod="getPath")
  */
-class FileWithDisallowedTypes
+class Image
 {
     /**
      * @ORM\Column(name="id", type="integer")
@@ -19,7 +19,7 @@ class FileWithDisallowedTypes
     private $id;
 
     /**
-     * @ORM\Column(name="title", type="string", nullable=true)
+     * @ORM\Column(name="title", type="string")
      */
     private $title;
 
@@ -33,13 +33,15 @@ class FileWithDisallowedTypes
      * @ORM\Column(name="size", type="decimal", nullable=true)
      * @Gedmo\UploadableFileSize
      */
-    private $fileSize;
+    private $size;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Article", inversedBy="files")
-     * @ORM\JoinColumn(name="article_id", referencedColumnName="id")
+     * @ORM\Column(name="mime_type", type="string", nullable=true)
+     * @Gedmo\UploadableFileMimeType
      */
-    private $article;
+    private $mime;
+
+    private $useBasePath = false;
 
     public function getId()
     {
@@ -66,23 +68,37 @@ class FileWithDisallowedTypes
         return $this->filePath;
     }
 
-    public function setArticle(Article $article)
+    public function getPath($basePath = null)
     {
-        $this->article = $article;
+        if ($this->useBasePath) {
+            return $basePath.'/abc/def';
+        }
+
+        return __DIR__.'/../../temp/uploadable';
     }
 
-    public function getArticle()
+    public function setMime($mime)
     {
-        return $this->article;
+        $this->mime = $mime;
     }
 
-    public function setFileSize($size)
+    public function getMime()
     {
-        $this->fileSize = $size;
+        return $this->mime;
     }
 
-    public function getFileSize()
+    public function setSize($size)
     {
-        return $this->fileSize;
+        $this->size = $size;
+    }
+
+    public function getSize()
+    {
+        return $this->size;
+    }
+
+    public function setUseBasePath($useBasePath)
+    {
+        $this->useBasePath = $useBasePath;
     }
 }

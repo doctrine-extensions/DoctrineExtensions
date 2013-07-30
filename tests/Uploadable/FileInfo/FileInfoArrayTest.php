@@ -1,6 +1,6 @@
 <?php
 
-namespace Gedmo\Uploadable\FileInfo;
+namespace Uploadable\FileInfo;
 
 /**
  * These are tests for the FileInfoArray class of the Uploadable behavior
@@ -10,7 +10,6 @@ namespace Gedmo\Uploadable\FileInfo;
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-
 class FileInfoArrayTest extends \PHPUnit_Framework_TestCase
 {
     /**

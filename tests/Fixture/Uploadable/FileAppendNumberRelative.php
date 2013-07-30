@@ -1,14 +1,15 @@
 <?php
 
-namespace Uploadable\Fixture\Entity;
+namespace Fixture\Uploadable;
 
+use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * @ORM\Entity
+ * @Gedmo\Uploadable(appendNumber=true, path="./", filenameGenerator="ALPHANUMERIC")
  */
-class Article
+class FileAppendNumberRelative
 {
     /**
      * @ORM\Column(name="id", type="integer")
@@ -18,19 +19,21 @@ class Article
     private $id;
 
     /**
-     * @ORM\Column(name="title", type="string")
+     * @ORM\Column(name="title", type="string", nullable=true)
      */
     private $title;
 
     /**
-     * @ORM\OneToMany(targetEntity="File", mappedBy="article", cascade={"persist", "remove"})
+     * @ORM\Column(name="path", type="string")
+     * @Gedmo\UploadableFilePath
      */
-    private $files;
+    private $filePath;
 
-    public function __construct()
-    {
-        $this->files = new ArrayCollection();
-    }
+    /**
+     * @ORM\ManyToOne(targetEntity="Article", inversedBy="files")
+     * @ORM\JoinColumn(name="article_id", referencedColumnName="id")
+     */
+    private $article;
 
     public function getId()
     {
@@ -57,13 +60,13 @@ class Article
         return $this->filePath;
     }
 
-    public function getFiles()
+    public function setArticle(Article $article)
     {
-        return $this->files;
+        $this->article = $article;
     }
 
-    public function addFile(File $file)
+    public function getArticle()
     {
-        $this->files[] = $file;
+        return $this->article;
     }
 }

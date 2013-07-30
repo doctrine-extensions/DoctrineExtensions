@@ -1,15 +1,15 @@
 <?php
 
-namespace Uploadable\Fixture\Entity;
+namespace Fixture\Uploadable;
 
 use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
- * @Gedmo\Uploadable(allowedTypes="text/plain,text/html")
+ * @Gedmo\Uploadable(appendNumber=true, pathMethod="getPath")
  */
-class FileWithAllowedTypes
+class FileAppendNumber
 {
     /**
      * @ORM\Column(name="id", type="integer")
@@ -24,16 +24,10 @@ class FileWithAllowedTypes
     private $title;
 
     /**
-     * @ORM\Column(name="path", type="string", nullable=true)
+     * @ORM\Column(name="path", type="string")
      * @Gedmo\UploadableFilePath
      */
     private $filePath;
-
-    /**
-     * @ORM\Column(name="size", type="decimal", nullable=true)
-     * @Gedmo\UploadableFileSize
-     */
-    private $fileSize;
 
     /**
      * @ORM\ManyToOne(targetEntity="Article", inversedBy="files")
@@ -76,13 +70,8 @@ class FileWithAllowedTypes
         return $this->article;
     }
 
-    public function setFileSize($size)
+    public function getPath()
     {
-        $this->fileSize = $size;
-    }
-
-    public function getFileSize()
-    {
-        return $this->fileSize;
+        return __DIR__.'/../../temp/uploadable';
     }
 }
