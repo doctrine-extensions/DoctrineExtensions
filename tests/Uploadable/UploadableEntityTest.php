@@ -1,24 +1,23 @@
 <?php
 
-namespace Gedmo\Uploadable;
+namespace Uploadable;
 
-use Tool\BaseTestCaseORM,
-    Doctrine\Common\EventManager,
-    Doctrine\Common\Util\Debug,
-    Uploadable\Fixture\Entity\Image,
-    Uploadable\Fixture\Entity\Article,
-    Uploadable\Fixture\Entity\File,
-    Uploadable\Fixture\Entity\FileWithoutPath,
-    Uploadable\Fixture\Entity\FileWithSha1Name,
-    Uploadable\Fixture\Entity\FileWithAlphanumericName,
-    Uploadable\Fixture\Entity\FileWithCustomFilenameGenerator,
-    Uploadable\Fixture\Entity\FileAppendNumber,
-    Uploadable\Fixture\Entity\FileWithMaxSize,
-    Uploadable\Fixture\Entity\FileWithAllowedTypes,
-    Uploadable\Fixture\Entity\FileWithDisallowedTypes,
-    Gedmo\Uploadable\Stub\UploadableListenerStub,
-    Gedmo\Uploadable\Stub\MimeTypeGuesserStub,
-    Gedmo\Uploadable\FileInfo\FileInfoArray;
+use TestTool\ObjectManagerTestCase;
+use Doctrine\Common\EventManager;
+use Fixture\Uploadable\Image;
+use Fixture\Uploadable\Article;
+use Fixture\Uploadable\File;
+use Fixture\Uploadable\FileWithoutPath;
+use Fixture\Uploadable\FileWithSha1Name;
+use Fixture\Uploadable\FileWithAlphanumericName;
+use Fixture\Uploadable\FileWithCustomFilenameGenerator;
+use Fixture\Uploadable\FileAppendNumber;
+use Fixture\Uploadable\FileWithMaxSize;
+use Fixture\Uploadable\FileWithAllowedTypes;
+use Fixture\Uploadable\FileWithDisallowedTypes;
+use Fixture\Uploadable\Stub\UploadableListenerStub;
+use Fixture\Uploadable\Stub\MimeTypeGuesserStub;
+use Gedmo\Uploadable\FileInfo\FileInfoArray;
 
 /**
  * These are tests for Uploadable behavior
@@ -28,24 +27,26 @@ use Tool\BaseTestCaseORM,
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class UploadableEntityTest extends BaseTestCaseORM
+class UploadableEntityTest extends ObjectManagerTestCase
 {
-    const IMAGE_CLASS = 'Uploadable\Fixture\Entity\Image';
-    const ARTICLE_CLASS = 'Uploadable\Fixture\Entity\Article';
-    const FILE_CLASS = 'Uploadable\Fixture\Entity\File';
-    const FILE_APPEND_NUMBER_CLASS = 'Uploadable\Fixture\Entity\FileAppendNumber';
-    const FILE_WITHOUT_PATH_CLASS = 'Uploadable\Fixture\Entity\FileWithoutPath';
-    const FILE_WITH_SHA1_NAME_CLASS = 'Uploadable\Fixture\Entity\FileWithSha1Name';
-    const FILE_WITH_ALPHANUMERIC_NAME_CLASS = 'Uploadable\Fixture\Entity\FileWithAlphanumericName';
-    const FILE_WITH_CUSTOM_FILENAME_GENERATOR_CLASS = 'Uploadable\Fixture\Entity\FileWithCustomFilenameGenerator';
-    const FILE_WITH_MAX_SIZE_CLASS = 'Uploadable\Fixture\Entity\FileWithMaxSize';
-    const FILE_WITH_ALLOWED_TYPES_CLASS = 'Uploadable\Fixture\Entity\FileWithAllowedTypes';
-    const FILE_WITH_DISALLOWED_TYPES_CLASS = 'Uploadable\Fixture\Entity\FileWithDisallowedTypes';
+    const IMAGE_CLASS = 'Fixture\Uploadable\Image';
+    const ARTICLE_CLASS = 'Fixture\Uploadable\Article';
+    const FILE_CLASS = 'Fixture\Uploadable\File';
+    const FILE_APPEND_NUMBER_CLASS = 'Fixture\Uploadable\FileAppendNumber';
+    const FILE_WITHOUT_PATH_CLASS = 'Fixture\Uploadable\FileWithoutPath';
+    const FILE_WITH_SHA1_NAME_CLASS = 'Fixture\Uploadable\FileWithSha1Name';
+    const FILE_WITH_ALPHANUMERIC_NAME_CLASS = 'Fixture\Uploadable\FileWithAlphanumericName';
+    const FILE_WITH_CUSTOM_FILENAME_GENERATOR_CLASS = 'Fixture\Uploadable\FileWithCustomFilenameGenerator';
+    const FILE_WITH_MAX_SIZE_CLASS = 'Fixture\Uploadable\FileWithMaxSize';
+    const FILE_WITH_ALLOWED_TYPES_CLASS = 'Fixture\Uploadable\FileWithAllowedTypes';
+    const FILE_WITH_DISALLOWED_TYPES_CLASS = 'Fixture\Uploadable\FileWithDisallowedTypes';
 
     /**
      * @var UploadableListener
      */
     private $listener;
+    private $em;
+
     private $testFile;
     private $testFile2;
     private $testFile3;
@@ -67,21 +68,33 @@ class UploadableEntityTest extends BaseTestCaseORM
 
     protected function setUp()
     {
-        parent::setUp();
-
-        $evm = new EventManager;
         $this->listener = new UploadableListenerStub();
         $this->listener->setMimeTypeGuesser(new MimeTypeGuesserStub('text/plain'));
 
+        $evm = new EventManager;
         $evm->addEventSubscriber($this->listener);
-        $config = $this->getMockAnnotatedConfig();
-        $this->em = $this->getMockSqliteEntityManager($evm, $config);
-        $this->testFile = __DIR__.'/../../data/test.txt';
-        $this->testFile2 = __DIR__.'/../../data/test2.txt';
-        $this->testFile3 = __DIR__.'/../../data/test_3.txt';
-        $this->testFileWithoutExt = __DIR__.'/../../data/test4';
-        $this->testFileWithSpaces = __DIR__.'/../../data/test with spaces.txt';
-        $this->destinationTestDir = __DIR__.'/../../temp/uploadable';
+
+        $this->em = $this->createEntityManager($evm);
+        $this->createSchema($this->em, array(
+            self::IMAGE_CLASS,
+            self::ARTICLE_CLASS,
+            self::FILE_CLASS,
+            self::FILE_WITHOUT_PATH_CLASS,
+            self::FILE_APPEND_NUMBER_CLASS,
+            self::FILE_WITH_ALPHANUMERIC_NAME_CLASS,
+            self::FILE_WITH_SHA1_NAME_CLASS,
+            self::FILE_WITH_CUSTOM_FILENAME_GENERATOR_CLASS,
+            self::FILE_WITH_MAX_SIZE_CLASS,
+            self::FILE_WITH_ALLOWED_TYPES_CLASS,
+            self::FILE_WITH_DISALLOWED_TYPES_CLASS
+        ));
+
+        $this->testFile = $this->getTestsDir() . '/data/test.txt';
+        $this->testFile2 = $this->getTestsDir() . '/data/test2.txt';
+        $this->testFile3 = $this->getTestsDir() . '/data/test_3.txt';
+        $this->testFileWithoutExt = $this->getTestsDir() . '/data/test4';
+        $this->testFileWithSpaces = $this->getTestsDir() . '/data/test with spaces.txt';
+        $this->destinationTestDir = $this->getTestsDir() . '/temp/uploadable';
         $this->destinationTestFile = $this->destinationTestDir.'/test.txt';
         $this->destinationTestFile2 = $this->destinationTestDir.'/test2.txt';
         $this->destinationTestFile3 = $this->destinationTestDir.'/test_3.txt';
@@ -104,6 +117,7 @@ class UploadableEntityTest extends BaseTestCaseORM
 
     public function tearDown()
     {
+        $this->releaseEntityManager($this->em);
         $this->clearFilesAndDirectories();
     }
 
@@ -326,7 +340,7 @@ class UploadableEntityTest extends BaseTestCaseORM
 
     public function testSettingAnotherDefaultFileInfoClass()
     {
-        $fileInfoStubClass = 'Gedmo\Uploadable\Stub\FileInfoStub';
+        $fileInfoStubClass = 'Fixture\Uploadable\Stub\FileInfoStub';
 
         $this->listener->setDefaultFileInfoClass($fileInfoStubClass);
 
@@ -665,7 +679,7 @@ class UploadableEntityTest extends BaseTestCaseORM
             array(''),
             array(false),
             array(null),
-            array('FakeFileInfo'),
+            array('Fixture\Uploadable\Fake\FileInfo'),
             array(array()),
             array(new \DateTime())
         );
@@ -705,23 +719,6 @@ class UploadableEntityTest extends BaseTestCaseORM
         return $info;
     }
 
-    protected function getUsedEntityFixtures()
-    {
-        return array(
-            self::IMAGE_CLASS,
-            self::ARTICLE_CLASS,
-            self::FILE_CLASS,
-            self::FILE_WITHOUT_PATH_CLASS,
-            self::FILE_APPEND_NUMBER_CLASS,
-            self::FILE_WITH_ALPHANUMERIC_NAME_CLASS,
-            self::FILE_WITH_SHA1_NAME_CLASS,
-            self::FILE_WITH_CUSTOM_FILENAME_GENERATOR_CLASS,
-            self::FILE_WITH_MAX_SIZE_CLASS,
-            self::FILE_WITH_ALLOWED_TYPES_CLASS,
-            self::FILE_WITH_DISALLOWED_TYPES_CLASS
-        );
-    }
-
     private function clearFilesAndDirectories()
     {
         if (is_dir($this->destinationTestDir)) {
@@ -741,14 +738,3 @@ class UploadableEntityTest extends BaseTestCaseORM
     }
 }
 
-class FakeFileInfo
-{
-}
-
-class FakeFilenameGenerator implements \Gedmo\Uploadable\FilenameGenerator\FilenameGeneratorInterface
-{
-    public static function generate($filename, $extension, $object = null)
-    {
-        return '123.txt';
-    }
-}

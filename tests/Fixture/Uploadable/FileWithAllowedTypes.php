@@ -1,15 +1,16 @@
 <?php
 
-namespace Uploadable\Fixture\Entity;
+namespace Fixture\Uploadable;
 
 use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * @ORM\Entity
- * @Gedmo\Uploadable(pathMethod="getPath")
+ * @Gedmo\Uploadable(allowedTypes="text/plain,text/html")
  */
-class Image
+class FileWithAllowedTypes
 {
     /**
      * @ORM\Column(name="id", type="integer")
@@ -19,7 +20,7 @@ class Image
     private $id;
 
     /**
-     * @ORM\Column(name="title", type="string")
+     * @ORM\Column(name="title", type="string", nullable=true)
      */
     private $title;
 
@@ -33,15 +34,14 @@ class Image
      * @ORM\Column(name="size", type="decimal", nullable=true)
      * @Gedmo\UploadableFileSize
      */
-    private $size;
+    private $fileSize;
 
     /**
-     * @ORM\Column(name="mime_type", type="string", nullable=true)
-     * @Gedmo\UploadableFileMimeType
+     * @ORM\ManyToOne(targetEntity="Article", inversedBy="files")
+     * @ORM\JoinColumn(name="article_id", referencedColumnName="id")
      */
-    private $mime;
+    private $article;
 
-    private $useBasePath = false;
 
     public function getId()
     {
@@ -68,37 +68,23 @@ class Image
         return $this->filePath;
     }
 
-    public function getPath($basePath = null)
+    public function setArticle(Article $article)
     {
-        if ($this->useBasePath) {
-            return $basePath.'/abc/def';
-        }
-
-        return __DIR__.'/../../../../temp/uploadable';
+        $this->article = $article;
     }
 
-    public function setMime($mime)
+    public function getArticle()
     {
-        $this->mime = $mime;
+        return $this->article;
     }
 
-    public function getMime()
+    public function setFileSize($size)
     {
-        return $this->mime;
+        $this->fileSize = $size;
     }
 
-    public function setSize($size)
+    public function getFileSize()
     {
-        $this->size = $size;
-    }
-
-    public function getSize()
-    {
-        return $this->size;
-    }
-
-    public function setUseBasePath($useBasePath)
-    {
-        $this->useBasePath = $useBasePath;
+        return $this->fileSize;
     }
 }

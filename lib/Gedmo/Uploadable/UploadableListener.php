@@ -2,32 +2,32 @@
 
 namespace Gedmo\Uploadable;
 
-use Doctrine\Common\Persistence\Mapping\ClassMetadata,
-    Doctrine\Common\EventArgs,
-    Doctrine\Common\NotifyPropertyChanged,
-    Doctrine\ORM\UnitOfWork,
-    Gedmo\Mapping\MappedEventSubscriber,
-    Gedmo\Mapping\Event\AdapterInterface,
-    Gedmo\Exception\UploadablePartialException,
-    Gedmo\Exception\UploadableCantWriteException,
-    Gedmo\Exception\UploadableExtensionException,
-    Gedmo\Exception\UploadableFormSizeException,
-    Gedmo\Exception\UploadableIniSizeException,
-    Gedmo\Exception\UploadableNoFileException,
-    Gedmo\Exception\UploadableNoTmpDirException,
-    Gedmo\Exception\UploadableUploadException,
-    Gedmo\Exception\UploadableFileAlreadyExistsException,
-    Gedmo\Exception\UploadableNoPathDefinedException,
-    Gedmo\Exception\UploadableMaxSizeException,
-    Gedmo\Exception\UploadableInvalidMimeTypeException,
-    Gedmo\Exception\UploadableCouldntGuessMimeTypeException,
-    Gedmo\Uploadable\Mapping\Validator,
-    Gedmo\Uploadable\FileInfo\FileInfoInterface,
-    Gedmo\Uploadable\MimeType\MimeTypeGuesser,
-    Gedmo\Uploadable\MimeType\MimeTypeGuesserInterface,
-    Gedmo\Uploadable\Events,
-    Gedmo\Uploadable\Event\UploadablePreFileProcessEventArgs,
-    Gedmo\Uploadable\Event\UploadablePostFileProcessEventArgs;
+use Doctrine\Common\Persistence\Mapping\ClassMetadata;
+use Doctrine\Common\EventArgs;
+use Doctrine\Common\NotifyPropertyChanged;
+use Gedmo\Mapping\MappedEventSubscriber;
+use Gedmo\Mapping\ObjectManagerHelper as OMH;
+use Gedmo\Exception\UploadablePartialException;
+use Gedmo\Exception\UploadableCantWriteException;
+use Gedmo\Exception\UploadableExtensionException;
+use Gedmo\Exception\UploadableFormSizeException;
+use Gedmo\Exception\UploadableIniSizeException;
+use Gedmo\Exception\UploadableNoFileException;
+use Gedmo\Exception\UploadableNoTmpDirException;
+use Gedmo\Exception\UploadableUploadException;
+use Gedmo\Exception\UploadableFileAlreadyExistsException;
+use Gedmo\Exception\UploadableNoPathDefinedException;
+use Gedmo\Exception\UploadableMaxSizeException;
+use Gedmo\Exception\UploadableInvalidMimeTypeException;
+use Gedmo\Exception\UploadableCouldntGuessMimeTypeException;
+use Gedmo\Uploadable\Mapping\Validator;
+use Gedmo\Uploadable\FileInfo\FileInfoInterface;
+use Gedmo\Uploadable\MimeType\MimeTypeGuesser;
+use Gedmo\Uploadable\MimeType\MimeTypeGuesserInterface;
+use Gedmo\Uploadable\Events;
+use Gedmo\Uploadable\Event\UploadablePreFileProcessEventArgs;
+use Gedmo\Uploadable\Event\UploadablePostFileProcessEventArgs;
+use Doctrine\Common\Persistence\ObjectManager;
 
 /**
  * Uploadable listener
@@ -40,7 +40,6 @@ class UploadableListener extends MappedEventSubscriber
 {
     const ACTION_INSERT = 'INSERT';
     const ACTION_UPDATE = 'UPDATE';
-
 
     /**
      * Default path to move files in
@@ -104,17 +103,16 @@ class UploadableListener extends MappedEventSubscriber
      * doctrine thinks the entity has no changes, which produces that the "onFlush" event gets never called.
      * Here we mark the entity as dirty, so the "onFlush" event gets called, and the file is processed.
      *
-     * @param \Doctrine\Common\EventArgs $args
+     * @param \Doctrine\Common\EventArgs $event
      */
-    public function preFlush(EventArgs $args)
+    public function preFlush(EventArgs $event)
     {
         if (empty($this->fileInfoObjects)) {
             // Nothing to do
             return;
         }
 
-        $ea = $this->getEventAdapter($args);
-        $om = $ea->getObjectManager();
+        $om = OMH::getObjectManagerFromEvent($event);
         $uow = $om->getUnitOfWork();
         $first = reset($this->fileInfoObjects);
         $meta = $om->getClassMetadata(get_class($first['entity']));
@@ -140,12 +138,11 @@ class UploadableListener extends MappedEventSubscriber
      * Handle file-uploading depending on the action
      * being done with objects
      *
-     * @param \Doctrine\Common\EventArgs $args
+     * @param \Doctrine\Common\EventArgs $event
      */
-    public function onFlush(EventArgs $args)
+    public function onFlush(EventArgs $event)
     {
-        $ea = $this->getEventAdapter($args);
-        $om = $ea->getObjectManager();
+        $om = OMH::getObjectManagerFromEvent($event);
         $uow = $om->getUnitOfWork();
 
         // Do we need to upload files?
@@ -158,12 +155,12 @@ class UploadableListener extends MappedEventSubscriber
                 false;
 
             if ($action) {
-                $this->processFile($ea, $entity, $action);
+                $this->processFile($om, $entity, $action);
             }
         }
 
         // Do we need to remove any files?
-        foreach ($ea->getScheduledObjectDeletions($uow) as $object) {
+        foreach (OMH::getScheduledObjectDeletions($uow) as $object) {
             $meta = $om->getClassMetadata(get_class($object));
 
             if ($config = $this->getConfiguration($om, $meta->name)) {
@@ -177,9 +174,9 @@ class UploadableListener extends MappedEventSubscriber
     /**
      * Handle removal of files
      *
-     * @param \Doctrine\Common\EventArgs $args
+     * @param \Doctrine\Common\EventArgs $event
      */
-    public function postFlush(EventArgs $args)
+    public function postFlush(EventArgs $event)
     {
         if (!empty($this->pendingFileRemovals)) {
             foreach ($this->pendingFileRemovals as $file) {
@@ -196,7 +193,7 @@ class UploadableListener extends MappedEventSubscriber
      * If it's a Uploadable object, verify if the file was uploaded.
      * If that's the case, process it.
      *
-     * @param \Gedmo\Mapping\Event\AdapterInterface $ea
+     * @param \Doctrine\Common\Persistence\ObjectManager $om
      * @param $object
      * @param $action
      * @throws \Gedmo\Exception\UploadableNoPathDefinedException
@@ -204,10 +201,9 @@ class UploadableListener extends MappedEventSubscriber
      * @throws \Gedmo\Exception\UploadableMaxSizeException
      * @throws \Gedmo\Exception\UploadableInvalidMimeTypeException
      */
-    public function processFile(AdapterInterface $ea, $object, $action)
+    public function processFile(ObjectManager $om, $object, $action)
     {
         $oid = spl_object_hash($object);
-        $om = $ea->getObjectManager();
         $uow = $om->getUnitOfWork();
         $meta = $om->getClassMetadata(get_class($object));
         $config = $this->getConfiguration($om, $meta->name);
@@ -352,18 +348,18 @@ class UploadableListener extends MappedEventSubscriber
         if ($config['fileMimeTypeField']) {
             $changes[$config['fileMimeTypeField']] = array($fileMimeTypeField->getValue($object), $info['fileMimeType']);
 
-            $this->updateField($object, $uow, $ea, $meta, $config['fileMimeTypeField'], $info['fileMimeType']);
+            $this->updateField($om, $object, $config['fileMimeTypeField'], $info['fileMimeType']);
         }
 
         if ($config['fileSizeField']) {
             $changes[$config['fileSizeField']] = array($fileSizeField->getValue($object), $info['fileSize']);
 
-            $this->updateField($object, $uow, $ea, $meta, $config['fileSizeField'], $info['fileSize']);
+            $this->updateField($om, $object, $config['fileSizeField'], $info['fileSize']);
         }
 
-        $this->updateField($object, $uow, $ea, $meta, $config['filePathField'], $info['filePath']);
+        $this->updateField($om, $object, $config['filePathField'], $info['filePath']);
 
-        $ea->recomputeSingleObjectChangeSet($uow, $meta, $object);
+        OMH::recomputeSingleObjectChangeSet($uow, $meta, $object);
 
         if ($evm->hasListeners(Events::uploadablePostFileProcess)) {
             $evm->dispatchEvent(Events::uploadablePostFileProcess, new UploadablePostFileProcessEventArgs(
@@ -547,12 +543,11 @@ class UploadableListener extends MappedEventSubscriber
     /**
      * Maps additional metadata
      *
-     * @param \Doctrine\Common\EventArgs $eventArgs
+     * @param \Doctrine\Common\EventArgs $event
      */
-    public function loadClassMetadata(EventArgs $eventArgs)
+    public function loadClassMetadata(EventArgs $event)
     {
-        $ea = $this->getEventAdapter($eventArgs);
-        $this->loadMetadataForObjectClass($ea->getObjectManager(), $eventArgs->getClassMetadata());
+        $this->loadMetadataForObjectClass(OMH::getObjectManagerFromEvent($event), $event->getClassMetadata());
     }
 
     /**
@@ -675,14 +670,15 @@ class UploadableListener extends MappedEventSubscriber
         return $this->mimeTypeGuesser;
     }
 
-    protected function updateField($object, $uow, AdapterInterface $ea, $meta, $field, $value, $notifyPropertyChanged = true)
+    protected function updateField(ObjectManager $om, $object, $field, $value, $notifyPropertyChanged = true)
     {
+        $meta = $om->getClassMetadata(get_class($object));
         $property = $meta->getReflectionProperty($field);
         $oldValue = $property->getValue($object);
         $property->setValue($object, $value);
 
         if ($notifyPropertyChanged && $object instanceof NotifyPropertyChanged) {
-            $uow = $ea->getObjectManager()->getUnitOfWork();
+            $uow = $om->getUnitOfWork();
             $uow->propertyChanged($object, $field, $oldValue, $value);
         }
     }

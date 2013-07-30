@@ -1,6 +1,6 @@
 <?php
 
-namespace Uploadable\Fixture\Entity;
+namespace Fixture\Uploadable;
 
 use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
@@ -8,7 +8,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * @ORM\Entity
- * @Gedmo\Uploadable(pathMethod="getPath", filenameGenerator="Gedmo\Uploadable\FakeFilenameGenerator")
+ * @Gedmo\Uploadable(pathMethod="getPath", filenameGenerator="Fixture\Uploadable\Fake\FileGenerator")
  */
 class FileWithCustomFilenameGenerator
 {
@@ -43,6 +43,6 @@ class FileWithCustomFilenameGenerator
 
     public function getPath()
     {
-        return __DIR__.'/../../../../temp/uploadable';
+        return __DIR__.'/../../temp/uploadable';
     }
 }

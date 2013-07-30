@@ -1,6 +1,6 @@
 <?php
 
-namespace Gedmo\Uploadable\Stub;
+namespace Fixture\Uploadable\Stub;
 
 use Gedmo\Uploadable\MimeType\MimeTypeGuesserInterface;
 
