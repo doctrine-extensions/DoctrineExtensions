@@ -1,50 +1,40 @@
 <?php
 
-namespace Gedmo\Sluggable;
+namespace Sluggable;
 
 use Doctrine\Common\EventManager;
-use Tool\BaseTestCaseORM;
+use TestTool\ObjectManagerTestCase;
 use Gedmo\SoftDeleteable\SoftDeleteableListener;
 use Fixture\Sluggable\Issue449\Article;
+use Gedmo\Sluggable\SluggableListener;
 
-/**
- * These are tests for Sluggable behavior
- *
- * @author Craig Marvelley <craig.marvelley@gmail.com>
- * @link http://marvelley.com
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
- */
-class Issue449Test extends BaseTestCaseORM
+class Issue449Test extends ObjectManagerTestCase
 {
-    const TARGET = 'Sluggable\\Fixture\\Issue449\\Article';
+    const TARGET = 'Fixture\Sluggable\Issue449\Article';
     const SOFT_DELETEABLE_FILTER_NAME = 'soft-deleteable';
 
-    private $softDeleteableListener;
+    private $softDeleteableListener, $em;
 
     protected function setUp()
     {
-        parent::setUp();
-
         $evm = new EventManager;
-        $sluggableListener = new SluggableListener;
-        $evm->addEventSubscriber($sluggableListener);
+        $evm->addEventSubscriber(new SluggableListener);
+        $evm->addEventSubscriber($this->softDeleteableListener = new SoftDeleteableListener);
 
-        $this->softDeleteableListener = new SoftDeleteableListener();
-        $evm->addEventSubscriber($this->softDeleteableListener);
-
-        $config = $this->getMockAnnotatedConfig();
-        $config->addFilter(self::SOFT_DELETEABLE_FILTER_NAME, 'Gedmo\SoftDeleteable\Filter\SoftDeleteableFilter');
-
-        $this->em = $this->getMockSqliteEntityManager($evm, $config);
-
+        $this->em = $this->createEntityManager($evm);
+        $this->em->getConfiguration()->addFilter(
+            self::SOFT_DELETEABLE_FILTER_NAME,
+            'Gedmo\SoftDeleteable\Filter\SoftDeleteableFilter'
+        );
         $this->em->getFilters()->enable(self::SOFT_DELETEABLE_FILTER_NAME);
+        $this->createSchema($this->em, array(
+            self::TARGET,
+        ));
     }
 
-    protected function getUsedEntityFixtures()
+    protected function tearDown()
     {
-        return array(
-            self::TARGET
-        );
+        $this->releaseEntityManager($this->em);
     }
 
     /**

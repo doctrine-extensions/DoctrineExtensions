@@ -3,43 +3,39 @@
 namespace Gedmo\Sluggable;
 
 use Doctrine\Common\EventManager;
-use Tool\BaseTestCaseORM;
+use TestTool\ObjectManagerTestCase;
 use Fixture\Sluggable\Issue116\Country;
 use Doctrine\ORM\Mapping\Driver\YamlDriver;
-use Doctrine\ORM\Mapping\Driver\DriverChain;
 
-/**
- * These are tests for Sluggable behavior
- *
- * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @link http://www.gediminasm.org
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
- */
-class Issue116Test extends BaseTestCaseORM
+class Issue116Test extends ObjectManagerTestCase
 {
-    const TARGET = 'Sluggable\\Fixture\\Issue116\\Country';
+    const TARGET = 'Fixture\Sluggable\Issue116\Country';
+
+    private $em;
 
     protected function setUp()
     {
-        parent::setUp();
-
         $evm = new EventManager;
         $evm->addEventSubscriber(new SluggableListener);
 
-        $this->getMockSqliteEntityManager($evm);
+        $driver = new YamlDriver(array($this->getTestsDir() . '/Fixture/Sluggable/Issue116/Mapping'));
+
+        $this->em = $this->createEntityManager($evm);
+        $this->em->getConfiguration()->setMetadataDriverImpl($driver);
+        $this->createSchema($this->em, array(
+            self::TARGET,
+        ));
     }
 
-    protected function getMetadataDriverImplementation()
+    protected function tearDown()
     {
-        $chain = new DriverChain;
-        $chain->addDriver(
-            new YamlDriver(array(__DIR__ . '/../Fixture/Issue116/Mapping')),
-            'Fixture\Sluggable\Issue116'
-        );
-        return $chain;
+        $this->releaseEntityManager($this->em);
     }
 
-    public function testSlugGeneration()
+    /**
+     * @test
+     */
+    function shouldFixIssue116()
     {
         $country = new Country;
         $country->setOriginalName('New Zealand');
@@ -47,13 +43,6 @@ class Issue116Test extends BaseTestCaseORM
         $this->em->persist($country);
         $this->em->flush();
 
-        $this->assertEquals('new-zealand', $country->getAlias());
-    }
-
-    protected function getUsedEntityFixtures()
-    {
-        return array(
-            self::TARGET
-        );
+        $this->assertSame('new-zealand', $country->getAlias());
     }
 }

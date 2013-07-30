@@ -213,6 +213,16 @@ abstract class ObjectManagerTestCase extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Get tests directory
+     *
+     * @return string
+     */
+    protected function getTestsDir()
+    {
+        return realpath($this->getRootDir() . '/tests');
+    }
+
+    /**
      * Get annotation mapping configuration
      *
      * @return Doctrine\ORM\Configuration

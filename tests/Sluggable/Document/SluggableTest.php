@@ -1,34 +1,36 @@
 <?php
 
-namespace Gedmo\Sluggable;
+namespace Sluggable\Document;
 
-use Tool\BaseTestCaseMongoODM;
+use TestTool\ObjectManagerTestCase;
 use Doctrine\Common\EventManager;
 use Fixture\Sluggable\Document\Article;
+use Gedmo\Sluggable\SluggableListener;
 
-/**
- * These are tests for sluggable behavior
- *
- * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @link http://www.gediminasm.org
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
- */
-class SluggableDocumentTest extends BaseTestCaseMongoODM
+class SluggableDocumentTest extends ObjectManagerTestCase
 {
-    const ARTICLE = 'Sluggable\\Fixture\\Document\\Article';
+    const ARTICLE = 'Fixture\Sluggable\Document\Article';
+
+    private $dm;
 
     protected function setUp()
     {
-        parent::setUp();
-        $evm = new EventManager();
+        $evm = new EventManager;
         $evm->addEventSubscriber(new SluggableListener);
-
-        $this->getMockDocumentManager($evm);
-        $this->populate();
+        $this->dm = $this->createDocumentManager($evm);
     }
 
-    public function testSlugGeneration()
+    protected function tearDown()
     {
+        $this->releaseDocumentManager($this->dm);
+    }
+
+    /**
+     * @test
+     */
+    function shouldGenerateSlug()
+    {
+        $this->populate();
         // test insert
         $repo = $this->dm->getRepository(self::ARTICLE);
         $article = $repo->findOneByTitle('My Title');
@@ -46,8 +48,12 @@ class SluggableDocumentTest extends BaseTestCaseMongoODM
         $this->assertEquals('new-title-the-code', $article->getSlug());
     }
 
-    public function testUniqueSlugGeneration()
+    /**
+     * @test
+     */
+    function shouldGenerateUniqueSlug()
     {
+        $this->populate();
         for ($i = 0; $i < 12; $i++) {
             $article = new Article();
             $article->setTitle('My Title');
@@ -60,7 +66,10 @@ class SluggableDocumentTest extends BaseTestCaseMongoODM
         }
     }
 
-    public function testGithubIssue57()
+    /**
+     * @test
+     */
+    function shouldFixGithubIssue57()
     {
         // slug matched by prefix
         $article = new Article;

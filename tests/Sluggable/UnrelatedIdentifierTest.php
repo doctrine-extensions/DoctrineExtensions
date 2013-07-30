@@ -1,30 +1,32 @@
 <?php
 
-namespace Gedmo\Sluggable;
+namespace Sluggable;
 
 use Doctrine\Common\EventManager;
-use Tool\BaseTestCaseORM;
+use TestTool\ObjectManagerTestCase;
 use Fixture\Sluggable\Identifier;
+use Gedmo\Sluggable\SluggableListener;
 
-/**
- * These are tests for Sluggable behavior
- *
- * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @link http://www.gediminasm.org
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
- */
-class SluggableIdentifierTest extends BaseTestCaseORM
+class UnrelatedIdentifierTest extends ObjectManagerTestCase
 {
-    const TARGET = 'Sluggable\\Fixture\\Identifier';
+    const TARGET = 'Fixture\Sluggable\Identifier';
+
+    private $em;
 
     protected function setUp()
     {
-        parent::setUp();
-
         $evm = new EventManager;
         $evm->addEventSubscriber(new SluggableListener);
 
-        $this->getMockSqliteEntityManager($evm);
+        $this->em = $this->createEntityManager($evm);
+        $this->createSchema($this->em, array(
+            self::TARGET,
+        ));
+    }
+
+    protected function tearDown()
+    {
+        $this->releaseEntityManager($this->em);
     }
 
     /**
@@ -37,7 +39,7 @@ class SluggableIdentifierTest extends BaseTestCaseORM
         $this->em->persist($sport);
         $this->em->flush();
 
-        $this->assertEquals('sport', $sport->getId());
+        $this->assertSame('sport', $sport->getId());
     }
 
     /**
@@ -54,14 +56,7 @@ class SluggableIdentifierTest extends BaseTestCaseORM
         $this->em->persist($sport2);
         $this->em->flush();
 
-        $this->assertEquals('sport', $sport->getId());
-        $this->assertEquals('sport_1', $sport2->getId());
-    }
-
-    protected function getUsedEntityFixtures()
-    {
-        return array(
-            self::TARGET,
-        );
+        $this->assertSame('sport', $sport->getId());
+        $this->assertSame('sport_1', $sport2->getId());
     }
 }

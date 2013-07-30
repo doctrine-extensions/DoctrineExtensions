@@ -1,4 +1,4 @@
-Sluggable\Fixture\Issue116\Country:
+Fixture\Sluggable\Issue116\Country:
   type: entity
   table: sta_country
   fields:
@@ -8,7 +8,7 @@ Sluggable\Fixture\Issue116\Country:
       unsigned: false
       nullable: false
       generator:
-        strategy: IDENTITY
+        strategy: AUTO
     alias:
       type: string(50)
       fixed: false

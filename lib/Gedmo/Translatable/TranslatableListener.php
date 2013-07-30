@@ -231,7 +231,7 @@ class TranslatableListener extends MappedEventSubscriber
                     $translated = $tmeta->getReflectionProperty('object')->getValue($object);
                     $meta = $om->getClassMetadata(get_class($translated));
                     $changeSet = array();
-                    foreach ($config['slugs'] as $slugField => $options) {
+                    foreach ($config as $slugField => $options) {
                         $slugProp = $meta->getReflectionProperty($slugField);
                         $changeSet[$slugField] = array(
                             $slugProp->getValue($translated), // old slug

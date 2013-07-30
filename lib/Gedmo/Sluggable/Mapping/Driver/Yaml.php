@@ -64,7 +64,6 @@ class Yaml extends File implements Driver
                         }
 
                         $config[$field]['fields'] = $slug['fields'];
-                        $config[$field]['handlers'] = $handlers;
                         $config[$field]['slug'] = $field;
                         $config[$field]['style'] = isset($slug['style']) ?
                             (string)$slug['style'] : 'default';

@@ -7,14 +7,11 @@ use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ORM\Entity
- * @ORM\InheritanceType("SINGLE_TABLE")
- * @ORM\DiscriminatorColumn(name="discriminator", type="string")
- * @ORM\DiscriminatorMap({
- *      "vehicle" = "Vehicle",
- *      "car" = "Car"
- * })
+ * @ORM\InheritanceType("JOINED")
+ * @ORM\DiscriminatorColumn(name="discriment", type="string")
+ * @ORM\DiscriminatorMap({"vehicle" = "Vehicle", "car" = "Car", "sport" = "SportCar"})
  */
-class Vehicle
+abstract class Vehicle extends Transport
 {
     /**
      * @ORM\Id
@@ -26,18 +23,13 @@ class Vehicle
     /**
      * @ORM\Column(length=128)
      */
-    private $title;
+    protected $title;
 
     /**
      * @Gedmo\Slug(fields={"title"})
      * @ORM\Column(length=128, unique=true)
      */
     private $slug;
-
-    public function getId()
-    {
-        return $this->id;
-    }
 
     public function setTitle($title)
     {
@@ -52,5 +44,10 @@ class Vehicle
     public function getSlug()
     {
         return $this->slug;
+    }
+
+    public function getId()
+    {
+        return $this->id;
     }
 }
