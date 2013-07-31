@@ -52,6 +52,10 @@
             <directory suffix="Test.php">./tests/Uploadable/</directory>
         </testsuite>
 
+        <testsuite name="Loggable Extension">
+            <directory suffix="Test.php">./tests/Loggable/</directory>
+        </testsuite>
+
     </testsuites>
 
     <php>

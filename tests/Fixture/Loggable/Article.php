@@ -1,29 +1,28 @@
 <?php
 
-namespace Loggable\Fixture\Document;
+namespace Fixture\Loggable;
 
-use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ODM\Document(collection="articles")
+ * @ORM\Entity
  * @Gedmo\Loggable
  */
 class Article
 {
-    /** @ODM\Id */
+    /**
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
     private $id;
 
     /**
      * @Gedmo\Versioned
-     * @ODM\String
+     * @ORM\Column(name="title", type="string", length=8)
      */
     private $title;
-
-    public function __toString()
-    {
-        return $this->title;
-    }
 
     public function getId()
     {

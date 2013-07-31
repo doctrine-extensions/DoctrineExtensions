@@ -2,10 +2,10 @@
 
 namespace Gedmo\Loggable\Document\Repository;
 
-use Gedmo\Tool\Wrapper\MongoDocumentWrapper;
 use Gedmo\Loggable\LoggableListener;
-use Doctrine\ODM\MongoDB\DocumentRepository,
-    Doctrine\ODM\MongoDB\Cursor;
+use Doctrine\ODM\MongoDB\DocumentRepository;
+use Gedmo\Mapping\ObjectManagerHelper as OMH;
+use Doctrine\ODM\MongoDB\Cursor;
 
 /**
  * The LogEntryRepository has some useful functions
@@ -32,12 +32,12 @@ class LogEntryRepository extends DocumentRepository
      */
     public function getLogEntries($document)
     {
-        $wrapped = new MongoDocumentWrapper($document, $this->dm);
-        $objectId = $wrapped->getIdentifier();
+        $objectId = OMH::getIdentifier($this->dm, $document);
+        $meta = $this->dm->getClassMetadata(get_class($document));
 
         $qb = $this->createQueryBuilder();
         $qb->field('objectId')->equals($objectId);
-        $qb->field('objectClass')->equals($wrapped->getMetadata()->name);
+        $qb->field('objectClass')->equals(OMH::getRootObjectClass($meta));
         $qb->sort('version', 'DESC');
         $q = $qb->getQuery();
 
@@ -61,14 +61,13 @@ class LogEntryRepository extends DocumentRepository
      */
     public function revert($document, $version = 1)
     {
-        $wrapped = new MongoDocumentWrapper($document, $this->dm);
-        $objectMeta = $wrapped->getMetadata();
+        $objectId = OMH::getIdentifier($this->dm, $document);
+        $objectMeta = $this->dm->getClassMetadata(get_class($document));
         $meta = $this->getClassMetadata();
-        $objectId = $wrapped->getIdentifier();
 
         $qb = $this->createQueryBuilder();
         $qb->field('objectId')->equals($objectId);
-        $qb->field('objectClass')->equals($objectMeta->name);
+        $qb->field('objectClass')->equals(OMH::getRootObjectClass($objectMeta));
         $qb->field('version')->lte($version);
         $qb->sort('version', 'ASC');
         $q = $qb->getQuery();
@@ -89,7 +88,7 @@ class LogEntryRepository extends DocumentRepository
                                 $mapping = $objectMeta->getFieldMapping($field);
                                 $value = $value ? $this->dm->getReference($mapping['targetDocument'], $value) : null;
                             }
-                            $wrapped->setPropertyValue($field, $value);
+                            $objectMeta->getReflectionProperty($field)->setValue($document, $value);
                             unset($fields[array_search($field, $fields)]);
                         }
                     }
@@ -116,18 +115,11 @@ class LogEntryRepository extends DocumentRepository
             foreach ($this->dm->getEventManager()->getListeners() as $event => $listeners) {
                 foreach ($listeners as $hash => $listener) {
                     if ($listener instanceof LoggableListener) {
-                        $this->listener = $listener;
-                        break;
+                        return $this->listener = $listener;
                     }
                 }
-                if ($this->listener) {
-                    break;
-                }
             }
-
-            if (is_null($this->listener)) {
-                throw new \Gedmo\Exception\RuntimeException('The loggable listener could not be found');
-            }
+            throw new \Gedmo\Exception\RuntimeException('The loggable listener could not be found');
         }
         return $this->listener;
     }

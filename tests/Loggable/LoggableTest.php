@@ -1,50 +1,54 @@
 <?php
 
-namespace Gedmo\Loggable;
+namespace Loggable;
 
-use Tool\BaseTestCaseORM;
+use TestTool\ObjectManagerTestCase;
 use Doctrine\Common\EventManager;
-use Doctrine\Common\Util\Debug,
-    Loggable\Fixture\Entity\Article,
-    Loggable\Fixture\Entity\RelatedArticle,
-    Loggable\Fixture\Entity\Comment;
+use Fixture\Loggable\Article;
+use Fixture\Loggable\RelatedArticle;
+use Fixture\Loggable\Comment;
+use Gedmo\Loggable\LoggableListener;
 
-/**
- * These are tests for loggable behavior
- *
- * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @link http://www.gediminasm.org
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
- */
-class LoggableEntityTest extends BaseTestCaseORM
+class LoggableTest extends ObjectManagerTestCase
 {
-    const ARTICLE = 'Loggable\Fixture\Entity\Article';
-    const COMMENT = 'Loggable\Fixture\Entity\Comment';
-    const RELATED_ARTICLE = 'Loggable\Fixture\Entity\RelatedArticle';
-    const COMMENT_LOG = 'Loggable\Fixture\Entity\Log\Comment';
+    const ARTICLE = 'Fixture\Loggable\Article';
+    const COMMENT = 'Fixture\Loggable\Comment';
+    const RELATED_ARTICLE = 'Fixture\Loggable\RelatedArticle';
+    const COMMENT_LOG = 'Fixture\Loggable\Log\Comment';
 
-    private $articleId;
-    private $LoggableListener;
+    private $em;
 
     protected function setUp()
     {
-        parent::setUp();
-
         $evm = new EventManager;
-        $this->LoggableListener = new LoggableListener();
-        $this->LoggableListener->setUsername('jules');
-        $evm->addEventSubscriber($this->LoggableListener);
+        $evm->addEventSubscriber($listener = new LoggableListener);
+        $listener->setUsername('jules');
 
-        $this->em = $this->getMockSqliteEntityManager($evm);
+        $this->em = $this->createEntityManager($evm);
+        $this->createSchema($this->em, array(
+            self::ARTICLE,
+            self::COMMENT,
+            self::COMMENT_LOG,
+            self::RELATED_ARTICLE,
+            'Gedmo\Loggable\Entity\LogEntry'
+        ));
     }
 
-    public function testLoggable()
+    protected function tearDown()
+    {
+        $this->releaseEntityManager($this->em);
+    }
+
+    /**
+     * @test
+     */
+    function shouldGenerateLogEntries()
     {
         $logRepo = $this->em->getRepository('Gedmo\Loggable\Entity\LogEntry');
         $articleRepo = $this->em->getRepository(self::ARTICLE);
         $this->assertCount(0, $logRepo->findAll());
 
-        $art0 = new Article();
+        $art0 = new Article;
         $art0->setTitle('Title');
 
         $this->em->persist($art0);
@@ -84,7 +88,10 @@ class LoggableEntityTest extends BaseTestCaseORM
         $this->assertNull($log->getData());
     }
 
-    public function testVersionControl()
+    /**
+     * @test
+     */
+    function shouldHandleVersionControl()
     {
         $this->populate();
         $commentLogRepo = $this->em->getRepository(self::COMMENT_LOG);
@@ -108,17 +115,6 @@ class LoggableEntityTest extends BaseTestCaseORM
         $this->assertCount(6, $logEntries);
         $latest = $logEntries[0];
         $this->assertEquals('update', $latest->getAction());
-    }
-
-    protected function getUsedEntityFixtures()
-    {
-        return array(
-            self::ARTICLE,
-            self::COMMENT,
-            self::COMMENT_LOG,
-            self::RELATED_ARTICLE,
-            'Gedmo\Loggable\Entity\LogEntry'
-        );
     }
 
     private function populate()
@@ -156,6 +152,5 @@ class LoggableEntityTest extends BaseTestCaseORM
         $comment->setMessage('m-v5');
         $this->em->persist($comment);
         $this->em->flush();
-        $this->em->clear();
     }
 }
