@@ -1,36 +1,38 @@
 <?php
 
-namespace Loggable\Fixture\Document;
+namespace Fixture\Loggable;
 
-use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ODM\Document
- * @Gedmo\Loggable(logEntryClass="Loggable\Fixture\Document\Log\Comment")
+ * @ORM\Entity
+ * @Gedmo\Loggable(logEntryClass="Fixture\Loggable\Log\Comment")
  */
 class Comment
 {
     /**
-     * @ODM\Id
+     * @ORM\Id
+     * @ORM\GeneratedValue
+     * @ORM\Column(type="integer")
      */
     private $id;
 
     /**
      * @Gedmo\Versioned
-     * @ODM\String
+     * @ORM\Column(length=128)
      */
     private $subject;
 
     /**
      * @Gedmo\Versioned
-     * @ODM\String
+     * @ORM\Column(type="text")
      */
     private $message;
 
     /**
      * @Gedmo\Versioned
-     * @ODM\ReferenceOne(targetDocument="RelatedArticle", inversedBy="comments")
+     * @ORM\ManyToOne(targetEntity="RelatedArticle", inversedBy="comments")
      */
     private $article;
 

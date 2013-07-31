@@ -1,6 +1,6 @@
 <?php
 
-namespace Loggable\Fixture\Document\Log;
+namespace Fixture\Loggable\Document\Log;
 
 use Gedmo\Loggable\Document\MappedSuperclass\AbstractLogEntry;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;

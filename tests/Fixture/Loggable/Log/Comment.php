@@ -1,6 +1,6 @@
 <?php
 
-namespace Loggable\Fixture\Entity\Log;
+namespace Fixture\Loggable\Log;
 
 use Gedmo\Loggable\Entity\MappedSuperclass\AbstractLogEntry;
 use Doctrine\ORM\Mapping as ORM;
