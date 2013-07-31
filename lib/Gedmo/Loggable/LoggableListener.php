@@ -5,7 +5,12 @@ namespace Gedmo\Loggable;
 use Doctrine\Common\EventArgs;
 use Gedmo\Mapping\MappedEventSubscriber;
 use Gedmo\Loggable\Mapping\Event\LoggableAdapter;
-use Gedmo\Tool\Wrapper\AbstractWrapper;
+use Gedmo\Mapping\ObjectManagerHelper as OMH;
+use Gedmo\Exception\InvalidArgumentException;
+use Doctrine\Common\Persistence\Mapping\ClassMetadata;
+use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ODM\MongoDB\DocumentManager;
 
 /**
  * Loggable listener
@@ -70,7 +75,7 @@ class LoggableListener extends MappedEventSubscriber
         } elseif (is_object($username) && method_exists($username, 'getUsername')) {
             $this->username = (string)$username->getUsername();
         } else {
-            throw new \Gedmo\Exception\InvalidArgumentException("Username must be a string, or object should have method: getUsername");
+            throw new InvalidArgumentException("Username must be a string, or object should have method: getUsername");
         }
     }
 
@@ -89,60 +94,58 @@ class LoggableListener extends MappedEventSubscriber
     /**
      * Get the LogEntry class
      *
-     * @param LoggableAdapter $ea
-     * @param string $class
+     * @param \Doctrine\Common\Persistence\ObjectManager $om
+     * @param \Doctrine\Common\Persistence\Mapping\ClassMetadata $meta
      * @return string
      */
-    protected function getLogEntryClass(LoggableAdapter $ea, $class)
+    protected function getLogEntryClass(ObjectManager $om, ClassMetadata $meta)
     {
-        return isset(self::$configurations[$this->name][$class]['logEntryClass']) ?
-            self::$configurations[$this->name][$class]['logEntryClass'] :
-            $ea->getDefaultLogEntryClass();
+        if (isset(self::$configurations[$this->name][$meta->name]['logEntryClass'])) {
+            return self::$configurations[$this->name][$meta->name]['logEntryClass'];
+        }
+        return $om instanceof EntityManager ? 'Gedmo\Loggable\Entity\LogEntry' : 'Gedmo\Loggable\Document\LogEntry';
     }
 
     /**
      * Mapps additional metadata
      *
-     * @param EventArgs $eventArgs
-     * @return void
+     * @param EventArgs $event
      */
-    public function loadClassMetadata(EventArgs $eventArgs)
+    public function loadClassMetadata(EventArgs $event)
     {
-        $ea = $this->getEventAdapter($eventArgs);
-        $this->loadMetadataForObjectClass($ea->getObjectManager(), $eventArgs->getClassMetadata());
+        $this->loadMetadataForObjectClass(OMH::getObjectManagerFromEvent($event), $event->getClassMetadata());
     }
 
     /**
      * Checks for inserted object to update its logEntry
      * foreign key
      *
-     * @param EventArgs $args
-     * @return void
+     * @param EventArgs $event
      */
-    public function postPersist(EventArgs $args)
+    public function postPersist(EventArgs $event)
     {
-        $ea = $this->getEventAdapter($args);
-        $object = $ea->getObject();
-        $om = $ea->getObjectManager();
+        $object = OMH::getObjectFromEvent($event);
+        $om = OMH::getObjectManagerFromEvent($event);
         $oid = spl_object_hash($object);
         $uow = $om->getUnitOfWork();
         if ($this->pendingLogEntryInserts && array_key_exists($oid, $this->pendingLogEntryInserts)) {
-            $wrapped = AbstractWrapper::wrap($object, $om);
+            $meta = $om->getClassMetadata(get_class($object));
+            $config = $this->getConfiguration($om, $meta->name);
 
             $logEntry = $this->pendingLogEntryInserts[$oid];
             $logEntryMeta = $om->getClassMetadata(get_class($logEntry));
 
-            $id = $wrapped->getIdentifier();
+            $id = OMH::getIdentifier($om, $object);
             $logEntryMeta->getReflectionProperty('objectId')->setValue($logEntry, $id);
             $uow->scheduleExtraUpdate($logEntry, array(
                 'objectId' => array(null, $id)
             ));
-            $ea->setOriginalObjectProperty($uow, spl_object_hash($logEntry), 'objectId', $id);
+            OMH::setOriginalObjectProperty($uow, spl_object_hash($logEntry), 'objectId', $id);
             unset($this->pendingLogEntryInserts[$oid]);
         }
         if ($this->pendingRelatedObjects && array_key_exists($oid, $this->pendingRelatedObjects)) {
-            $wrapped = AbstractWrapper::wrap($object, $om);
-            $identifiers = $wrapped->getIdentifier(false);
+            // document manager should fetch single identifier, it cannot find document by array
+            $identifiers = OMH::getIdentifier($om, $object, $om instanceof DocumentManager);
             foreach ($this->pendingRelatedObjects[$oid] as $props) {
                 $logEntry = $props['log'];
                 $logEntryMeta = $om->getClassMetadata(get_class($logEntry));
@@ -153,7 +156,7 @@ class LoggableListener extends MappedEventSubscriber
                 $uow->scheduleExtraUpdate($logEntry, array(
                     'data' => array($oldData, $data)
                 ));
-                $ea->setOriginalObjectProperty($uow, spl_object_hash($logEntry), 'data', $data);
+                OMH::setOriginalObjectProperty($uow, spl_object_hash($logEntry), 'data', $data);
             }
             unset($this->pendingRelatedObjects[$oid]);
         }
@@ -175,23 +178,21 @@ class LoggableListener extends MappedEventSubscriber
      * Looks for loggable objects being inserted or updated
      * for further processing
      *
-     * @param EventArgs $eventArgs
-     * @return void
+     * @param EventArgs $event
      */
-    public function onFlush(EventArgs $eventArgs)
+    public function onFlush(EventArgs $event)
     {
-        $ea = $this->getEventAdapter($eventArgs);
-        $om = $ea->getObjectManager();
+        $om = OMH::getObjectManagerFromEvent($event);
         $uow = $om->getUnitOfWork();
 
-        foreach ($ea->getScheduledObjectInsertions($uow) as $object) {
-            $this->createLogEntry(self::ACTION_CREATE, $object, $ea);
+        foreach (OMH::getScheduledObjectInsertions($uow) as $object) {
+            $this->createLogEntry(self::ACTION_CREATE, $object, $om);
         }
-        foreach ($ea->getScheduledObjectUpdates($uow) as $object) {
-            $this->createLogEntry(self::ACTION_UPDATE, $object, $ea);
+        foreach (OMH::getScheduledObjectUpdates($uow) as $object) {
+            $this->createLogEntry(self::ACTION_UPDATE, $object, $om);
         }
-        foreach ($ea->getScheduledObjectDeletions($uow) as $object) {
-            $this->createLogEntry(self::ACTION_REMOVE, $object, $ea);
+        foreach (OMH::getScheduledObjectDeletions($uow) as $object) {
+            $this->createLogEntry(self::ACTION_REMOVE, $object, $om);
         }
     }
 
@@ -208,44 +209,39 @@ class LoggableListener extends MappedEventSubscriber
      *
      * @param string $action
      * @param object $object
-     * @param LoggableAdapter $ea
-     * @return void
+     * @param \Doctrine\Common\Persistence\ObjectManager $om
      */
-    protected function createLogEntry($action, $object, LoggableAdapter $ea)
+    protected function createLogEntry($action, $object, ObjectManager $om)
     {
-        $om = $ea->getObjectManager();
-        $wrapped = AbstractWrapper::wrap($object, $om);
-        $meta = $wrapped->getMetadata();
+        $meta = $om->getClassMetadata(get_class($object));
         if ($config = $this->getConfiguration($om, $meta->name)) {
-            $logEntryClass = $this->getLogEntryClass($ea, $meta->name);
+            $logEntryClass = $this->getLogEntryClass($om, $meta);
             $logEntryMeta = $om->getClassMetadata($logEntryClass);
             /** @var \Gedmo\Loggable\Entity\LogEntry $logEntry */
             $logEntry = $logEntryMeta->newInstance();
 
             $logEntry->setAction($action);
             $logEntry->setUsername($this->username);
-            $logEntry->setObjectClass($meta->name);
+            $logEntry->setObjectClass(OMH::getRootObjectClass($meta));
             $logEntry->setLoggedAt();
 
             // check for the availability of the primary key
-            $uow = $om->getUnitOfWork();
-            if ($action === self::ACTION_CREATE && $ea->isPostInsertGenerator($meta)) {
+            if ($action === self::ACTION_CREATE && OMH::isPostInsertIdGenerator($meta)) {
                 $this->pendingLogEntryInserts[spl_object_hash($object)] = $logEntry;
             } else {
-                $logEntry->setObjectId($wrapped->getIdentifier());
+                $logEntry->setObjectId(OMH::getIdentifier($om, $object));
             }
             $newValues = array();
             if ($action !== self::ACTION_REMOVE && isset($config['versioned'])) {
-                foreach ($ea->getObjectChangeSet($uow, $object) as $field => $changes) {
+                foreach (OMH::getObjectChangeSet($uow, $object) as $field => $changes) {
                     if (!in_array($field, $config['versioned'])) {
                         continue;
                     }
                     $value = $changes[1];
                     if ($meta->isSingleValuedAssociation($field) && $value) {
                         $oid = spl_object_hash($value);
-                        $wrappedAssoc = AbstractWrapper::wrap($value, $om);
-                        $value = $wrappedAssoc->getIdentifier(false);
-                        if (!is_array($value) && !$value) {
+                        $value = OMH::getIdentifier($om, $value, false);
+                        if (!$value) {
                             $this->pendingRelatedObjects[$oid][] = array(
                                 'log' => $logEntry,
                                 'field' => $field
@@ -257,13 +253,13 @@ class LoggableListener extends MappedEventSubscriber
                 $logEntry->setData($newValues);
             }
 
-            if($action === self::ACTION_UPDATE && 0 === count($newValues)) {
+            if ($action === self::ACTION_UPDATE && 0 === count($newValues)) {
                 return;
             }
 
             $version = 1;
             if ($action !== self::ACTION_CREATE) {
-                $version = $ea->getNewVersion($logEntryMeta, $object);
+                $version = $this->getNewVersion($om, $logEntryMeta, $object);
                 if (empty($version)) {
                     // was versioned later
                     $version = 1;
@@ -276,5 +272,47 @@ class LoggableListener extends MappedEventSubscriber
             $om->persist($logEntry);
             $uow->computeChangeSet($logEntryMeta, $logEntry);
         }
+    }
+
+    /**
+     * Get the next LogEntry version
+     *
+     * @param \Doctrine\Common\Persistence\ObjectManager $om
+     * @param \Doctrine\Common\Persistence\Mapping\ClassMetadata $logMeta
+     * @param object $object
+     * @return integer
+     */
+    protected function getNewVersion(ObjectManager $om, ClassMetadata $logMeta, $object)
+    {
+        $objectMeta = $om->getClassMetadata(get_class($object));
+        $objectClass = OMH::getRootObjectClass($objectMeta);
+        $id = OMH::getIdentifier($om, $object);
+        $num = 1;
+
+        if ($om instanceof EntityManager) {
+            $dql = "SELECT MAX(log.version) FROM {$logMeta->name} log";
+            $dql .= " WHERE log.objectId = :id";
+            $dql .= " AND log.objectClass = :objectClass";
+
+            $num = $om
+                ->createQuery($dql)
+                ->setParameters(compact('id', 'objectClass'))
+                ->getSingleScalarResult() + 1;
+        } else {
+            $q = $om
+                ->createQueryBuilder($logMeta->name)
+                ->select('version')
+                ->field('objectId')->equals($id)
+                ->field('objectClass')->equals($objectClass)
+                ->sort('version', 'DESC')
+                ->limit(1)
+                ->getQuery();
+
+            $q->setHydrate(false);
+            if ($result = $q->getSingleResult()) {
+                $num = $result['version'] + 1;
+            }
+        }
+        return $num;
     }
 }

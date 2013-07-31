@@ -1,43 +1,43 @@
 <?php
 
-namespace Gedmo\Loggable;
+namespace Loggable\Document;
 
-use Tool\BaseTestCaseMongoODM;
+use TestTool\ObjectManagerTestCase;
 use Doctrine\Common\EventManager;
-use Loggable\Fixture\Document\Article,
-    Loggable\Fixture\Document\RelatedArticle,
-    Loggable\Fixture\Document\Comment;
+use Fixture\Loggable\Document\Article;
+use Fixture\Loggable\Document\RelatedArticle;
+use Fixture\Loggable\Document\Comment;
+use Gedmo\Loggable\LoggableListener;
 
-/**
- * These are tests for loggable behavior
- *
- * @author Boussekeyt Jules <jules.boussekeyt@gmail.com>
- * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- *
- * @link http://www.gediminasm.org
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
- */
-class LoggableDocumentTest extends BaseTestCaseMongoODM
+class LoggableTest extends ObjectManagerTestCase
 {
-    const ARTICLE = 'Loggable\\Fixture\\Document\\Article';
-    const COMMENT = 'Loggable\\Fixture\\Document\\Comment';
-    const RELATED_ARTICLE = 'Loggable\\Fixture\\Document\\RelatedArticle';
-    const COMMENT_LOG = 'Loggable\\Fixture\\Document\\Log\\Comment';
+    const ARTICLE = 'Fixture\Loggable\Document\Article';
+    const COMMENT = 'Fixture\Loggable\Document\Comment';
+    const RELATED_ARTICLE = 'Fixture\Loggable\Document\RelatedArticle';
+    const COMMENT_LOG = 'Fixture\Loggable\Document\Log\Comment';
+
+    private $dm;
 
     protected function setUp()
     {
-        parent::setUp();
-        $evm = new EventManager();
-        $loggableListener = new LoggableListener();
-        $loggableListener->setUsername('jules');
-        $evm->addEventSubscriber($loggableListener);
+        $evm = new EventManager;
+        $evm->addEventSubscriber($listener = new LoggableListener);
+        $listener->setUsername('jules');
 
-        $this->getMockDocumentManager($evm);
+        $this->dm = $this->createDocumentManager($evm);
     }
 
-    public function testLogGeneration()
+    protected function tearDown()
     {
-        $logRepo = $this->dm->getRepository('Gedmo\\Loggable\\Document\\LogEntry');
+        $this->releaseDocumentManager($this->dm);
+    }
+
+    /**
+     * test
+     */
+    function shouldGenerateLogEntries()
+    {
+        $logRepo = $this->dm->getRepository('Gedmo\Loggable\Document\LogEntry');
         $articleRepo = $this->dm->getRepository(self::ARTICLE);
         $this->assertCount(0, $logRepo->findAll());
 
@@ -80,14 +80,16 @@ class LoggableDocumentTest extends BaseTestCaseMongoODM
         $this->assertNull($log->getData());
     }
 
-    public function testVersionControl()
+    /**
+     * @test
+     */
+    function shouldHandleVersionControl()
     {
         $this->populate();
         $commentLogRepo = $this->dm->getRepository(self::COMMENT_LOG);
         $commentRepo = $this->dm->getRepository(self::COMMENT);
 
         $comment = $commentRepo->findOneByMessage('m-v5');
-        $commentId = $comment->getId();
         $this->assertEquals('m-v5', $comment->getMessage());
         $this->assertEquals('s-v3', $comment->getSubject());
         $this->assertEquals('a2-t-v1', $comment->getArticle()->getTitle());

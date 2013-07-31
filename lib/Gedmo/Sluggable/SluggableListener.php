@@ -199,7 +199,7 @@ class SluggableListener extends MappedEventSubscriber
     /**
      * Creates the slug for object being flushed
      *
-     * @param \Doctrine\Common\Persistence\Mapping\ObjectManager $om
+     * @param \Doctrine\Common\Persistence\ObjectManager $om
      * @param object $object
      * @throws UnexpectedValueException - if parameters are missing or invalid
      */
