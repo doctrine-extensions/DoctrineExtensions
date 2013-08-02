@@ -2,9 +2,9 @@
 
 namespace Gedmo\Tree\Strategy\ODM\MongoDB;
 
-use Gedmo\Tree\Strategy\AbstractMaterializedPath;
 use Doctrine\Common\Persistence\ObjectManager;
-use Gedmo\Mapping\Event\AdapterInterface;
+use Doctrine\Common\Persistence\Mapping\ClassMetadata;
+use Gedmo\Tree\Strategy\AbstractMaterializedPath;
 
 /**
  * This strategy makes tree using materialized path strategy
@@ -18,19 +18,18 @@ class MaterializedPath extends AbstractMaterializedPath
     /**
      * {@inheritdoc}
      */
-    public function removeNode($om, $meta, $config, $node)
+    public function removeNode(ObjectManager $om, ClassMetadata $meta, array $config, $node)
     {
         $uow = $om->getUnitOfWork();
         $pathProp = $meta->getReflectionProperty($config['path']);
-        $pathProp->setAccessible(true);
 
         // Remove node's children
         $results = $om->createQueryBuilder()
-            ->find($meta->name)
+            ->find($meta->rootDocumentName)
             ->field($config['path'])->equals(new \MongoRegex('/^'.preg_quote($pathProp->getValue($node)).'.?+/'))
             ->getQuery()
             ->execute();
-        
+
         foreach ($results as $node) {
             $uow->scheduleForDelete($node);
         }
@@ -39,10 +38,10 @@ class MaterializedPath extends AbstractMaterializedPath
     /**
      * {@inheritdoc}
      */
-    public function getChildren($om, $meta, $config, $originalPath)
+    public function getChildren(ObjectManager $om, ClassMetadata $meta, array $config, $originalPath)
     {
         return $om->createQueryBuilder()
-            ->find($meta->name)
+            ->find($meta->rootDocumentName)
             ->field($config['path'])->equals(new \MongoRegex('/^'.preg_quote($originalPath).'.+/'))
             ->sort($config['path'], 'asc')      // This may save some calls to updateNode
             ->getQuery()
@@ -52,7 +51,7 @@ class MaterializedPath extends AbstractMaterializedPath
     /**
      * {@inheritedDoc}
      */
-    protected function lockTrees(ObjectManager $om, AdapterInterface $ea)
+    protected function lockTrees(ObjectManager $om)
     {
         $uow = $om->getUnitOfWork();
 
@@ -60,7 +59,6 @@ class MaterializedPath extends AbstractMaterializedPath
             $meta = $om->getClassMetadata(get_class($root));
             $config = $this->listener->getConfiguration($om, $meta->name);
             $lockTimeProp = $meta->getReflectionProperty($config['lock_time']);
-            $lockTimeProp->setAccessible(true);
             $lockTimeValue = new \MongoDate();
             $lockTimeProp->setValue($root, $lockTimeValue);
             $changes = array(
@@ -68,14 +66,14 @@ class MaterializedPath extends AbstractMaterializedPath
             );
 
             $uow->scheduleExtraUpdate($root, $changes);
-            $ea->setOriginalObjectProperty($uow, $oid, $config['lock_time'], $lockTimeValue);
+            $uow->setOriginalDocumentProperty($oid, $config['lock_time'], $lockTimeValue);
         }
     }
 
     /**
      * {@inheritedDoc}
      */
-    protected function releaseTreeLocks(ObjectManager $om, AdapterInterface $ea)
+    protected function releaseTreeLocks(ObjectManager $om)
     {
         $uow = $om->getUnitOfWork();
 
@@ -83,7 +81,6 @@ class MaterializedPath extends AbstractMaterializedPath
             $meta = $om->getClassMetadata(get_class($root));
             $config = $this->listener->getConfiguration($om, $meta->name);
             $lockTimeProp = $meta->getReflectionProperty($config['lock_time']);
-            $lockTimeProp->setAccessible(true);
             $lockTimeValue = null;
             $lockTimeProp->setValue($root, $lockTimeValue);
             $changes = array(
@@ -91,8 +88,7 @@ class MaterializedPath extends AbstractMaterializedPath
             );
 
             $uow->scheduleExtraUpdate($root, $changes);
-            $ea->setOriginalObjectProperty($uow, $oid, $config['lock_time'], $lockTimeValue);
-
+            $uow->setOriginalDocumentProperty($oid, $config['lock_time'], $lockTimeValue);
             unset($this->rootsOfTreesWhichNeedsLocking[$oid]);
         }
     }

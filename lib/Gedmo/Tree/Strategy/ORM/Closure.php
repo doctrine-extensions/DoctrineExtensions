@@ -4,15 +4,14 @@ namespace Gedmo\Tree\Strategy\ORM;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\ORM\Version;
-use Doctrine\ORM\Proxy\Proxy;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 use Gedmo\Tree\Strategy;
 use Gedmo\Tree\TreeListener;
-use Gedmo\Tool\Wrapper\AbstractWrapper;
 use Gedmo\Exception\RuntimeException;
-use Gedmo\Mapping\Event\AdapterInterface;
+use Gedmo\Exception\UnexpectedValueException;
 
 /**
  * This strategy makes tree act like
@@ -76,7 +75,7 @@ class Closure implements Strategy
     /**
      * {@inheritdoc}
      */
-    public function processMetadataLoad($em, $meta)
+    public function processMetadataLoad(ObjectManager $em, ClassMetadata $meta)
     {
         $config = $this->listener->getConfiguration($em, $meta->name);
         $closureMetadata = $em->getClassMetadata($config['closure']);
@@ -162,13 +161,13 @@ class Closure implements Strategy
     /**
      * {@inheritdoc}
      */
-    public function onFlushEnd($em, AdapterInterface $ea)
+    public function onFlushEnd(ObjectManager $em)
     {}
 
     /**
      * {@inheritdoc}
      */
-    public function processPrePersist($em, $node)
+    public function processPrePersist(ObjectManager $em, $node)
     {
         $this->pendingChildNodeInserts[spl_object_hash($node)] = $node;
     }
@@ -176,25 +175,25 @@ class Closure implements Strategy
     /**
      * {@inheritdoc}
      */
-    public function processPreUpdate($em, $node)
+    public function processPreUpdate(ObjectManager $em, $node)
     {}
 
     /**
      * {@inheritdoc}
      */
-    public function processPreRemove($em, $node)
+    public function processPreRemove(ObjectManager $em, $node)
     {}
 
      /**
      * {@inheritdoc}
      */
-    public function processScheduledInsertion($em, $node, AdapterInterface $ea)
+    public function processScheduledInsertion(ObjectManager $em, $node)
     {}
 
     /**
      * {@inheritdoc}
      */
-    public function processScheduledDelete($em, $entity)
+    public function processScheduledDelete(ObjectManager $em, $entity)
     {}
 
     protected function getJoinColumnFieldName($association)
@@ -209,7 +208,7 @@ class Closure implements Strategy
     /**
      * {@inheritdoc}
      */
-    public function processPostUpdate($em, $entity, AdapterInterface $ea)
+    public function processPostUpdate(ObjectManager $em, $entity)
     {
         $meta = $em->getClassMetadata(get_class($entity));
         $config = $this->listener->getConfiguration($em, $meta->name);
@@ -223,13 +222,13 @@ class Closure implements Strategy
     /**
      * {@inheritdoc}
      */
-    public function processPostRemove($em, $entity, AdapterInterface $ea)
+    public function processPostRemove(ObjectManager $em, $entity)
     {}
 
     /**
      * {@inheritdoc}
      */
-    public function processPostPersist($em, $entity, AdapterInterface $ea)
+    public function processPostPersist(ObjectManager $em, $entity)
     {
         $uow = $em->getUnitOfWork();
 
@@ -278,7 +277,7 @@ class Closure implements Strategy
                 }
             } else if (isset($config['level'])) {
                 $uow->scheduleExtraUpdate($node, array($config['level'] => array(null, 1)));
-                $ea->setOriginalObjectProperty($uow, spl_object_hash($node), $config['level'], 1);
+                $uow->setOriginalEntityProperty(spl_object_hash($node), $config['level'], 1);
             }
 
             foreach ($entries as $closure) {
@@ -324,7 +323,9 @@ class Closure implements Strategy
                 $children = $em->getRepository($meta->name)->children($node);
 
                 foreach ($children as $child) {
-                    $this->pendingNodesLevelProcess[AbstractWrapper::wrap($child, $em)->getIdentifier()] = $child;
+                    $em->initializeObject($child);
+                    $id = $meta->getReflectionProperty($identifier[0])->getValue($child);
+                    $this->pendingNodesLevelProcess[$id] = $child;
                 }
             }
 
@@ -359,7 +360,7 @@ class Closure implements Strategy
     /**
      * {@inheritdoc}
      */
-    public function processScheduledUpdate($em, $node, AdapterInterface $ea)
+    public function processScheduledUpdate(ObjectManager $em, $node)
     {
         $meta = $em->getClassMetadata(get_class($node));
         $config = $this->listener->getConfiguration($em, $meta->name);
@@ -369,9 +370,8 @@ class Closure implements Strategy
         if (array_key_exists($config['parent'], $changeSet)) {
             // If new parent is new, we need to delay the update of the node
             // until it is inserted on DB
-            $parent = $changeSet[$config['parent']][1] ? AbstractWrapper::wrap($changeSet[$config['parent']][1], $em) : null;
-
-            if ($parent && !$parent->getIdentifier()) {
+            $parent = $changeSet[$config['parent']][1] ?: null;
+            if ($parent && !$uow->isInIdentityMap($parent)) {
                 $this->pendingNodeUpdates[spl_object_hash($node)] = array(
                     'node'      => $node,
                     'oldParent' => $changeSet[$config['parent']][0]
@@ -391,13 +391,12 @@ class Closure implements Strategy
      */
     public function updateNode(EntityManager $em, $node, $oldParent)
     {
-        $wrapped = AbstractWrapper::wrap($node, $em);
-        $meta = $wrapped->getMetadata();
+        $meta = $em->getClassMetadata(get_class($node));
         $config = $this->listener->getConfiguration($em, $meta->name);
         $closureMeta = $em->getClassMetadata($config['closure']);
 
-        $nodeId = $wrapped->getIdentifier();
-        $parent = $wrapped->getPropertyValue($config['parent']);
+        $nodeId = $meta->getReflectionProperty($meta->getSingleIdentifierFieldName())->getValue($node);
+        $parent = $meta->getReflectionProperty($config['parent'])->getValue($node);
         $table = $closureMeta->getTableName();
         $conn = $em->getConnection();
         // ensure integrity
@@ -408,7 +407,7 @@ class Closure implements Strategy
             $q = $em->createQuery($dql);
             $q->setParameters(compact('node', 'parent'));
             if ($q->getSingleScalarResult()) {
-                throw new \Gedmo\Exception\UnexpectedValueException("Cannot set child as parent to node: {$nodeId}");
+                throw new UnexpectedValueException("Cannot set child as parent to node: {$nodeId}");
             }
         }
 
@@ -431,8 +430,8 @@ class Closure implements Strategy
         }
 
         if ($parent) {
-            $wrappedParent = AbstractWrapper::wrap($parent, $em);
-            $parentId = $wrappedParent->getIdentifier();
+            $em->initializeObject($parent);
+            $parentId = $meta->getReflectionProperty($meta->getSingleIdentifierFieldName())->getValue($parent);
             $query = "SELECT c1.ancestor, c2.descendant, (c1.depth + c2.depth + 1) AS depth";
             $query .= " FROM {$table} c1, {$table} c2";
             $query .= " WHERE c1.descendant = :parentId";
