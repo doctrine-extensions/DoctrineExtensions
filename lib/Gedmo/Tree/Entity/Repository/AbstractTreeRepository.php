@@ -2,14 +2,14 @@
 
 namespace Gedmo\Tree\Entity\Repository;
 
-use Doctrine\ORM\EntityRepository,
-    Doctrine\ORM\EntityManager,
-    Doctrine\ORM\Mapping\ClassMetadata,
-    Gedmo\Tool\Wrapper\EntityWrapper,
-    Gedmo\Tree\RepositoryUtils,
-    Gedmo\Tree\RepositoryUtilsInterface,
-    Gedmo\Tree\RepositoryInterface,
-    Gedmo\Exception\InvalidArgumentException;
+use Gedmo\Exception\InvalidMappingException;
+use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\Mapping\ClassMetadata;
+use Gedmo\Tree\RepositoryUtils;
+use Gedmo\Tree\RepositoryUtilsInterface;
+use Gedmo\Tree\RepositoryInterface;
+use Gedmo\Exception\InvalidArgumentException;
 
 abstract class AbstractTreeRepository extends EntityRepository implements RepositoryInterface
 {
@@ -31,26 +31,21 @@ abstract class AbstractTreeRepository extends EntityRepository implements Reposi
     public function __construct(EntityManager $em, ClassMetadata $class)
     {
         parent::__construct($em, $class);
-        $treeListener = null;
         foreach ($em->getEventManager()->getListeners() as $listeners) {
             foreach ($listeners as $listener) {
                 if ($listener instanceof \Gedmo\Tree\TreeListener) {
-                    $treeListener = $listener;
-                    break;
+                    $this->listener = $listener;
+                    break 2;
                 }
             }
-            if ($treeListener) {
-                break;
-            }
         }
 
-        if (is_null($treeListener)) {
-            throw new \Gedmo\Exception\InvalidMappingException('Tree listener was not found on your entity manager, it must be hooked into the event manager');
+        if (is_null($this->listener)) {
+            throw new InvalidMappingException('Tree listener was not found on your entity manager, it must be hooked into the event manager');
         }
 
-        $this->listener = $treeListener;
         if (!$this->validate()) {
-            throw new \Gedmo\Exception\InvalidMappingException('This repository cannot be used for tree type: ' . $treeListener->getStrategy($em, $class->name)->getName());
+            throw new InvalidMappingException('This repository cannot be used for tree type: ' . $treeListener->getStrategy($em, $class->name)->getName());
         }
 
         $this->repoUtils = new RepositoryUtils($this->_em, $this->getClassMetadata(), $this->listener, $this);
@@ -91,10 +86,7 @@ abstract class AbstractTreeRepository extends EntityRepository implements Reposi
             if (!($node instanceof $meta->name)) {
                 throw new InvalidArgumentException("Node is not related to this repository");
             }
-
-            $wrapped = new EntityWrapper($node, $this->_em);
-
-            if (!$wrapped->hasValidIdentifier()) {
+            if (!$this->_em->getUnitOfWork()->isInIdentityMap($node)) {
                 throw new InvalidArgumentException("Node is not managed by UnitOfWork");
             }
         }

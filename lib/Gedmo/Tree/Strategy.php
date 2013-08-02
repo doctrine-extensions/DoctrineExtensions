@@ -2,7 +2,8 @@
 
 namespace Gedmo\Tree;
 
-use Gedmo\Mapping\Event\AdapterInterface;
+use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 
 interface Strategy
 {
@@ -38,103 +39,87 @@ interface Strategy
     /**
      * Operations after metadata is loaded
      *
-     * @param object $om
-     * @param object $meta
+     * @param \Doctrine\Common\Persistence\ObjectManager $om
+     * @param \Doctrine\Common\Persistence\Mapping\ClassMetadata $meta
      */
-    function processMetadataLoad($om, $meta);
+    function processMetadataLoad(ObjectManager $om, ClassMetadata $meta);
 
     /**
      * Operations on tree node insertion
      *
-     * @param object $om - object manager
+     * @param \Doctrine\Common\Persistence\ObjectManager $om
      * @param object $object - node
-     * @param AdapterInterface $ea - event adapter
-     * @return void
      */
-    function processScheduledInsertion($om, $object, AdapterInterface $ea);
+    function processScheduledInsertion(ObjectManager $om, $object);
 
     /**
      * Operations on tree node updates
      *
-     * @param object $om - object manager
+     * @param \Doctrine\Common\Persistence\ObjectManager $om
      * @param object $object - node
-     * @param AdapterInterface $ea - event adapter
-     * @return void
      */
-    function processScheduledUpdate($om, $object, AdapterInterface $ea);
+    function processScheduledUpdate(ObjectManager $om, $object);
 
     /**
      * Operations on tree node delete
      *
-     * @param object $om - object manager
+     * @param \Doctrine\Common\Persistence\ObjectManager $om
      * @param object $object - node
-     * @return void
      */
-    function processScheduledDelete($om, $object);
+    function processScheduledDelete(ObjectManager $om, $object);
 
     /**
      * Operations on tree node removal
      *
-     * @param object $om - object manager
+     * @param \Doctrine\Common\Persistence\ObjectManager $om
      * @param object $object - node
-     * @return void
      */
-    function processPreRemove($om, $object);
+    function processPreRemove(ObjectManager $om, $object);
 
     /**
      * Operations on tree node persist
      *
-     * @param object $om - object manager
+     * @param \Doctrine\Common\Persistence\ObjectManager $om
      * @param object $object - node
-     * @return void
      */
-    function processPrePersist($om, $object);
+    function processPrePersist(ObjectManager $om, $object);
 
     /**
      * Operations on tree node update
      *
-     * @param object $om - object manager
+     * @param \Doctrine\Common\Persistence\ObjectManager $om
      * @param object $object - node
-     * @return void
      */
-    function processPreUpdate($om, $object);
+    function processPreUpdate(ObjectManager $om, $object);
 
     /**
      * Operations on tree node insertions
      *
-     * @param object $om - object manager
+     * @param \Doctrine\Common\Persistence\ObjectManager $om
      * @param object $object - node
-     * @param AdapterInterface $ea - event adapter
-     * @return void
      */
-    function processPostPersist($om, $object, AdapterInterface $ea);
+    function processPostPersist(ObjectManager $om, $object);
 
     /**
      * Operations on tree node updates
      *
-     * @param object $om - object manager
+     * @param \Doctrine\Common\Persistence\ObjectManager $om
      * @param object $object - node
-     * @param AdapterInterface $ea - event adapter
-     * @return void
      */
-    function processPostUpdate($om, $object, AdapterInterface $ea);
+    function processPostUpdate(ObjectManager $om, $object);
 
     /**
      * Operations on tree node removals
      *
-     * @param object $om - object manager
+     * @param \Doctrine\Common\Persistence\ObjectManager $om
      * @param object $object - node
-     * @param AdapterInterface $ea - event adapter
-     * @return void
      */
-    function processPostRemove($om, $object, AdapterInterface $ea);
+    function processPostRemove(ObjectManager $om, $object);
 
     /**
      * Operations on the end of flush process
      *
-     * @param object $om - object manager
-     * @param AdapterInterface $ea - event adapter
-     * @return void
+     * @param \Doctrine\Common\Persistence\ObjectManager $om
      */
-    function onFlushEnd($om, AdapterInterface $ea);
+    function onFlushEnd(ObjectManager $om);
 }
