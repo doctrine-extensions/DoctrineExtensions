@@ -3,7 +3,6 @@
 namespace Gedmo\Tree\Entity\Repository;
 
 use Gedmo\Tree\Strategy;
-use Gedmo\Tool\Wrapper\EntityWrapper;
 
 /**
  * The MaterializedPathRepository has some useful functions
@@ -88,13 +87,12 @@ class MaterializedPathRepository extends AbstractTreeRepository
         $path = $config['path'];
         $qb = $this->getQueryBuilder()
             ->select($alias)
-            ->from($config['useObjectClass'], $alias);
+            ->from($meta->rootEntityName, $alias);
         $expr = '';
         $includeNodeExpr = '';
 
         if (is_object($node) && $node instanceof $meta->name) {
-            $node = new EntityWrapper($node, $this->_em);
-            $nodePath = $node->getPropertyValue($path);
+            $nodePath = $meta->getReflectionProperty($path)->getValue($node);
             $expr = $qb->expr()->andx()->add(
                 $qb->expr()->like(
                     $alias.'.'.$path,

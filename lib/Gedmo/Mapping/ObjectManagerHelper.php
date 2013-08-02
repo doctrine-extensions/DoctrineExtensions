@@ -138,7 +138,7 @@ final class ObjectManagerHelper
      */
     public static function isUninitializedProxy($object)
     {
-        return self::isProxy($object) && $object->__isInitialized__;
+        return self::isProxy($object) && !$object->__isInitialized__;
     }
 
     /**

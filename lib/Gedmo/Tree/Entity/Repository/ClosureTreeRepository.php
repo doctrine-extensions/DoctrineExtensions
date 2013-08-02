@@ -4,9 +4,9 @@ namespace Gedmo\Tree\Entity\Repository;
 
 use Gedmo\Exception\InvalidArgumentException;
 use Doctrine\ORM\Query;
+use Gedmo\Mapping\ObjectManagerHelper as OMH;
 use Gedmo\Tree\Entity\MappedSuperclass\AbstractClosure;
 use Gedmo\Tree\Strategy;
-use Gedmo\Tool\Wrapper\EntityWrapper;
 
 /**
  * The ClosureTreeRepository has some useful functions
@@ -31,7 +31,7 @@ class ClosureTreeRepository extends AbstractTreeRepository
         $config = $this->listener->getConfiguration($this->_em, $meta->name);
         $qb = $this->getQueryBuilder();
         $qb->select('node')
-            ->from($config['useObjectClass'], 'node')
+            ->from($meta->rootEntityName, 'node')
             ->where('node.'.$config['parent']." IS NULL");
 
         if ($sortByField) {
@@ -139,7 +139,7 @@ class ClosureTreeRepository extends AbstractTreeRepository
             }
         } else {
             $qb->select('node')
-                ->from($config['useObjectClass'], 'node');
+                ->from($meta->rootEntityName, 'node');
             if ($direct) {
                 $qb->where('node.'.$config['parent'].' IS NULL');
             }
@@ -223,16 +223,14 @@ class ClosureTreeRepository extends AbstractTreeRepository
         if (!$node instanceof $meta->name) {
             throw new InvalidArgumentException("Node is not related to this repository");
         }
-        $wrapped = new EntityWrapper($node, $this->_em);
-        if (!$wrapped->hasValidIdentifier()) {
+        if (!$nodeId = OMH::getIdentifier($this->_em, $node)) {
             throw new InvalidArgumentException("Node is not managed by UnitOfWork");
         }
         $config = $this->listener->getConfiguration($this->_em, $meta->name);
         $pk = $meta->getSingleIdentifierFieldName();
-        $nodeId = $wrapped->getIdentifier();
-        $parent = $wrapped->getPropertyValue($config['parent']);
+        $parent = $meta->getReflectionProperty($config['parent'])->getValue($node);
 
-        $dql = "SELECT node FROM {$config['useObjectClass']} node";
+        $dql = "SELECT node FROM {$meta->rootEntityName} node";
         $dql .= " WHERE node.{$config['parent']} = :node";
         $q = $this->_em->createQuery($dql);
         $q->setParameters(compact('node'));
@@ -244,7 +242,7 @@ class ClosureTreeRepository extends AbstractTreeRepository
                 $id = $meta->getReflectionProperty($pk)->getValue($nodeToReparent);
                 $meta->getReflectionProperty($config['parent'])->setValue($nodeToReparent, $parent);
 
-                $dql = "UPDATE {$config['useObjectClass']} node";
+                $dql = "UPDATE {$meta->rootEntityName} node";
                 $dql .= " SET node.{$config['parent']} = :parent";
                 $dql .= " WHERE node.{$pk} = :id";
 
@@ -260,7 +258,7 @@ class ClosureTreeRepository extends AbstractTreeRepository
                 $this->_em->getUnitOfWork()->setOriginalEntityProperty($oid, $config['parent'], $parent);
             }
 
-            $dql = "DELETE {$config['useObjectClass']} node";
+            $dql = "DELETE {$meta->rootEntityName} node";
             $dql .= " WHERE node.{$pk} = :nodeId";
 
             $q = $this->_em->createQuery($dql);
