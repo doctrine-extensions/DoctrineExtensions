@@ -2,9 +2,9 @@
 
 namespace Gedmo\Blameable\Mapping\Driver;
 
-use Gedmo\Mapping\Driver\AbstractAnnotationDriver,
-    Doctrine\Common\Annotations\AnnotationReader,
-    Gedmo\Exception\InvalidMappingException;
+use Gedmo\Mapping\Driver\AnnotationDriver;
+use Gedmo\Mapping\ExtensionMetadataInterface;
+use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 
 /**
  * This is an annotation mapping driver for Blameable
@@ -15,30 +15,19 @@ use Gedmo\Mapping\Driver\AbstractAnnotationDriver,
  * @author David Buchmann <mail@davidbu.ch>
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class Annotation extends AbstractAnnotationDriver
+class Annotation extends AnnotationDriver
 {
     /**
      * Annotation field is blameable
      */
-    const BLAMEABLE = 'Gedmo\\Mapping\\Annotation\\Blameable';
-
-    /**
-     * List of types which are valid for blame
-     *
-     * @var array
-     */
-    protected $validTypes = array(
-        'one',
-        'string',
-        'int',
-    );
+    const BLAMEABLE = 'Gedmo\Mapping\Annotation\Blameable';
 
     /**
      * {@inheritDoc}
      */
-    public function readExtendedMetadata($meta, array &$config)
+    public function loadExtensionMetadata(ClassMetadata $meta, ExtensionMetadataInterface $exm)
     {
-        $class = $this->getMetaReflectionClass($meta);
+        $class = $meta->reflClass;
         // property annotations
         foreach ($class->getProperties() as $property) {
             if ($meta->isMappedSuperclass && !$property->isPrivate() ||
@@ -49,35 +38,12 @@ class Annotation extends AbstractAnnotationDriver
             }
             if ($blameable = $this->reader->getPropertyAnnotation($property, self::BLAMEABLE)) {
                 $field = $property->getName();
-
-                if (!$meta->hasField($field) && !$meta->hasAssociation($field)) {
-                    throw new InvalidMappingException("Unable to find blameable [{$field}] as mapped property in entity - {$meta->name}");
+                $options = array('on' => strtolower($blameable->on));
+                if (isset($blameable->field)) {
+                    $options['field'] = $blameable->field;
                 }
-                if ($meta->hasField($field)) {
-                    if (!$this->isValidField($meta, $field)) {
-                        throw new InvalidMappingException("Field - [{$field}] type is not valid and must be 'string' or a one-to-many relation in class - {$meta->name}");
-                    }
-                } elseif (!$meta->isSingleValuedAssociation($field)) {
-                    throw new InvalidMappingException("Association - [{$field}] is not valid, it must be a one-to-many relation or a string field - {$meta->name}");
-                }
-                if (!in_array($blameable->on, array('update', 'create', 'change'))) {
-                    throw new InvalidMappingException("Field - [{$field}] trigger 'on' is not one of [update, create, change] in class - {$meta->name}");
-                }
-                if ($blameable->on == 'change') {
-                    if (!isset($blameable->field)) {
-                        throw new InvalidMappingException("Missing parameters on property - {$field}, field must be set on [change] trigger in class - {$meta->name}");
-                    }
-                    if (is_array($blameable->field) && isset($blameable->value)) {
-                        throw new InvalidMappingException("Blameable extension does not support multiple value changeset detection yet.");
-                    }
-                    $field = array(
-                        'field' => $field,
-                        'trackedField' => $blameable->field,
-                        'value' => $blameable->value,
-                    );
-                }
-                // properties are unique and mapper checks that, no risk here
-                $config[$blameable->on][] = $field;
+                $options['value'] = isset($blameable->value) ? $blameable->value : null;
+                $exm->map($field, $options);
             }
         }
     }

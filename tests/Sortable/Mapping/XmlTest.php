@@ -6,9 +6,9 @@ use Doctrine\Common\EventManager;
 use Doctrine\ORM\Mapping\Driver\XmlDriver;
 use Gedmo\Sortable\SortableListener;
 
-require_once __DIR__ . '/SortableMappingTestCase.php';
+require_once __DIR__ . '/MappingTestCase.php';
 
-class XmlTest extends SortableMappingTestCase
+class XmlTest extends MappingTestCase
 {
     /**
      * @test
@@ -24,8 +24,8 @@ class XmlTest extends SortableMappingTestCase
         $em->getConfiguration()->setMetadataDriverImpl($xmlDriver);
 
         $meta = $em->getClassMetadata('Fixture\Sortable\Mapping');
-        $config = $sortable->getConfiguration($em, $meta->name);
+        $exm = $sortable->getConfiguration($em, $meta->name);
 
-        $this->assertSortableMapping($config);
+        $this->assertMapping($exm);
     }
 }

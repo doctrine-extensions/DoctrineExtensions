@@ -2,9 +2,9 @@
 
 namespace Gedmo\Sluggable\Mapping\Driver;
 
-use Gedmo\Mapping\Driver\File;
-use Gedmo\Mapping\Driver;
-use Gedmo\Exception\InvalidMappingException;
+use Gedmo\Mapping\Driver\FileDriver;
+use Gedmo\Mapping\ExtensionMetadataInterface;
+use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 
 /**
  * This is a yaml mapping driver for Sluggable
@@ -15,111 +15,33 @@ use Gedmo\Exception\InvalidMappingException;
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class Yaml extends File implements Driver
+class Yaml extends FileDriver
 {
-    /**
-     * File extension
-     * @var string
-     */
-    protected $_extension = '.dcm.yml';
-
-    /**
-     * List of types which are valid for slug and sluggable fields
-     *
-     * @var array
-     */
-    private $validTypes = array(
-        'string',
-        'text',
-        'integer',
-        'int',
-    );
-
     /**
      * {@inheritDoc}
      */
-    public function readExtendedMetadata($meta, array &$config)
+    public function loadExtensionMetadata(ClassMetadata $meta, ExtensionMetadataInterface $exm)
     {
-        $mapping = $this->_getMapping($meta->name);
-
+        $mapping = $this->getMapping($meta->name);
         if (isset($mapping['fields'])) {
             foreach ($mapping['fields'] as $field => $fieldMapping) {
                 if (isset($fieldMapping['gedmo'])) {
                     if (isset($fieldMapping['gedmo']['slug'])) {
                         $slug = $fieldMapping['gedmo']['slug'];
-                        if (!$this->isValidField($meta, $field)) {
-                            throw new InvalidMappingException("Cannot use field - [{$field}] for slug storage, type is not valid and must be 'string' or 'text' in class - {$meta->name}");
-                        }
-                        // process slug fields
-                        if (empty($slug['fields']) || !is_array($slug['fields'])) {
-                            throw new InvalidMappingException("Slug must contain at least one field for slug generation in class - {$meta->name}");
-                        }
-                        foreach ($slug['fields'] as $slugField) {
-                            if (!$meta->hasField($slugField)) {
-                                throw new InvalidMappingException("Unable to find slug [{$slugField}] as mapped property in entity - {$meta->name}");
-                            }
-                            if (!$this->isValidField($meta, $slugField)) {
-                                throw new InvalidMappingException("Cannot use field - [{$slugField}] for slug storage, type is not valid and must be 'string' or 'text' in class - {$meta->name}");
-                            }
-                        }
-
-                        $config[$field]['fields'] = $slug['fields'];
-                        $config[$field]['slug'] = $field;
-                        $config[$field]['style'] = isset($slug['style']) ?
-                            (string)$slug['style'] : 'default';
-
-                        $config[$field]['updatable'] = isset($slug['updatable']) ?
-                            (bool)$slug['updatable'] : true;
-
-                        $config[$field]['unique'] = isset($slug['unique']) ?
-                            (bool)$slug['unique'] : true;
-
-                        $config[$field]['unique_base'] = isset($slug['unique_base']) ?
-                            $slug['unique_base'] : null;
-
-                        $config[$field]['separator'] = isset($slug['separator']) ?
-                            (string)$slug['separator'] : '-';
-
-                        $config['slugs'][$field]['prefix'] = isset($slug['prefix']) ?
-                            (string)$slug['prefix'] : '';
-
-                        $config['slugs'][$field]['suffix'] = isset($slug['suffix']) ?
-                            (string)$slug['suffix'] : '';
-
-                        if (!$meta->isMappedSuperclass && $meta->isIdentifier($field) && !$config['slugs'][$field]['unique']) {
-                            throw new InvalidMappingException("Identifier field - [{$field}] slug must be unique in order to maintain primary key in class - {$meta->name}");
-                        }
-                        $ubase = $config[$field]['unique_base'];
-                        if ($config[$field]['unique'] === false && $ubase) {
-                            throw new InvalidMappingException("Slug annotation [unique_base] can not be set if unique is unset or 'false'");
-                        }
-                        if ($ubase && !$this->isValidField($meta, $ubase) && !$meta->hasAssociation($ubase)) {
-                            throw new InvalidMappingException("Unable to find [{$ubase}] as mapped property in entity - {$meta->name}");
-                        }
+                        $exm->mapSlugField($field, array(
+                            'fields' => $slug['fields'],
+                            'style' => isset($slug['style']) ? (string)$slug['style'] : 'default',
+                            'updatable' => isset($slug['updatable']) ? (bool)$slug['updatable'] : true,
+                            'unique' => isset($slug['unique']) ? (bool)$slug['unique'] : true,
+                            'unique_base' => isset($slug['unique_base']) ? $slug['unique_base'] : null,
+                            'separator' => isset($slug['separator']) ? (string)$slug['separator'] : '-',
+                            'prefix' => isset($slug['prefix']) ? (string)$slug['prefix'] : '',
+                            'suffix' => isset($slug['suffix']) ? (string)$slug['suffix'] : '',
+                            'rootClass' => $meta->isMappedSuperclass ? null : $meta->name,
+                        ));
                     }
                 }
             }
         }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    protected function _loadMappingFile($file)
-    {
-        return \Symfony\Component\Yaml\Yaml::parse($file);
-    }
-
-    /**
-     * Checks if $field type is valid as Sluggable field
-     *
-     * @param object $meta
-     * @param string $field
-     * @return boolean
-     */
-    protected function isValidField($meta, $field)
-    {
-        $mapping = $meta->getFieldMapping($field);
-        return $mapping && in_array($mapping['type'], $this->validTypes);
     }
 }

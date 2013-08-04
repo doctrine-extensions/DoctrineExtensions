@@ -4,29 +4,32 @@ namespace Sluggable;
 
 use Doctrine\Common\EventManager;
 use TestTool\ObjectManagerTestCase;
-use Fixture\Sluggable\Inheritance\SportCar;
-use Fixture\Sluggable\Inheritance\Car;
-use Fixture\Sluggable\Inheritance\Vehicle;
+use Fixture\Sluggable\Genealogy\Person;
+use Fixture\Sluggable\Genealogy\Man;
+use Fixture\Sluggable\Genealogy\Woman;
+use Fixture\Sluggable\Genealogy\Employee;
 use Gedmo\Sluggable\SluggableListener;
 
 class InheritanceTest extends ObjectManagerTestCase
 {
-    const VEHICLE = 'Fixture\Sluggable\Inheritance\Vehicle';
-    const CAR = 'Fixture\Sluggable\Inheritance\Car';
-    const SPORTCAR = 'Fixture\Sluggable\Inheritance\SportCar';
+    const PERSON = 'Fixture\Sluggable\Genealogy\Person';
+    const MAN = 'Fixture\Sluggable\Genealogy\Man';
+    const WOMAN = 'Fixture\Sluggable\Genealogy\Woman';
+    const EMPLOYEE = 'Fixture\Sluggable\Genealogy\Employee';
 
     private $em;
 
     protected function setUp()
     {
         $evm = new EventManager;
-        $evm->addEventSubscriber($this->listener = new SluggableListener);
+        $evm->addEventSubscriber(new SluggableListener);
 
         $this->em = $this->createEntityManager($evm);
         $this->createSchema($this->em, array(
-            self::VEHICLE,
-            self::CAR,
-            self::SPORTCAR
+            self::PERSON,
+            self::MAN,
+            self::WOMAN,
+            self::EMPLOYEE,
         ));
     }
 
@@ -60,10 +63,10 @@ class InheritanceTest extends ObjectManagerTestCase
         $this->em->flush();
 
         $this->assertSame('audi', $audi80->getTypeSlug());
-        $this->assertSame('audi-80-audi', $audi80->getSlug());
+        $this->assertSame('audi-80', $audi80->getSlug());
         $this->assertSame('bmw', $bmw530->getTypeSlug());
-        $this->assertSame('bmw-530-bmw', $bmw530->getSlug());
+        $this->assertSame('bmw-530', $bmw530->getSlug());
         $this->assertSame('bmw-1', $bmwX5->getTypeSlug());
-        $this->assertSame('bmw-x5-bmw', $bmwX5->getSlug());
+        $this->assertSame('bmw-x5', $bmwX5->getSlug());
     }
 }

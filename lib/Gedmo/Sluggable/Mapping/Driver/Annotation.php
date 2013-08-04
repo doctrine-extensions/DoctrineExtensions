@@ -2,11 +2,9 @@
 
 namespace Gedmo\Sluggable\Mapping\Driver;
 
-use Gedmo\Mapping\Annotation\SlugHandler;
-use Gedmo\Mapping\Annotation\SlugHandlerOption;
-use Gedmo\Mapping\Driver\AbstractAnnotationDriver,
-    Doctrine\Common\Annotations\AnnotationReader,
-    Gedmo\Exception\InvalidMappingException;
+use Gedmo\Mapping\Driver\AnnotationDriver;
+use Gedmo\Mapping\ExtensionMetadataInterface;
+use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 
 /**
  * This is an annotation mapping driver for Sluggable
@@ -17,7 +15,7 @@ use Gedmo\Mapping\Driver\AbstractAnnotationDriver,
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class Annotation extends AbstractAnnotationDriver
+class Annotation extends AnnotationDriver
 {
     /**
      * Annotation to identify field as one which holds the slug
@@ -26,22 +24,11 @@ class Annotation extends AbstractAnnotationDriver
     const SLUG = 'Gedmo\Mapping\Annotation\Slug';
 
     /**
-     * List of types which are valid for slug and sluggable fields
-     *
-     * @var array
-     */
-    protected $validTypes = array(
-        'string',
-        'text',
-        'integer',
-        'int',
-    );
-
-    /**
      * {@inheritDoc}
      */
-    public function readExtendedMetadata($meta, array &$config) {
-        $class = $this->getMetaReflectionClass($meta);
+    public function loadExtensionMetadata(ClassMetadata $meta, ExtensionMetadataInterface $exm)
+    {
+        $class = $meta->reflClass;
         // property annotations
         foreach ($class->getProperties() as $property) {
             if ($meta->isMappedSuperclass && !$property->isPrivate() ||
@@ -52,42 +39,7 @@ class Annotation extends AbstractAnnotationDriver
             }
             // slug property
             if ($slug = $this->reader->getPropertyAnnotation($property, self::SLUG)) {
-                $field = $property->getName();
-                if (!$meta->hasField($field)) {
-                    throw new InvalidMappingException("Unable to find slug [{$field}] as mapped property in entity - {$meta->name}");
-                }
-                if (!$this->isValidField($meta, $field)) {
-                    throw new InvalidMappingException("Cannot use field - [{$field}] for slug storage, type is not valid and must be 'string' or 'text' in class - {$meta->name}");
-                }
-                // process slug fields
-                if (empty($slug->fields) || !is_array($slug->fields)) {
-                    throw new InvalidMappingException("Slug must contain at least one field for slug generation in class - {$meta->name}");
-                }
-                foreach ($slug->fields as $slugField) {
-                    if (!$meta->hasField($slugField)) {
-                        throw new InvalidMappingException("Unable to find slug [{$slugField}] as mapped property in entity - {$meta->name}");
-                    }
-                    if (!$this->isValidField($meta, $slugField)) {
-                        throw new InvalidMappingException("Cannot use field - [{$slugField}] for slug storage, type is not valid and must be 'string' or 'text' in class - {$meta->name}");
-                    }
-                }
-                if (!is_bool($slug->updatable)) {
-                    throw new InvalidMappingException("Slug annotation [updatable], type is not valid and must be 'boolean' in class - {$meta->name}");
-                }
-                if (!is_bool($slug->unique)) {
-                    throw new InvalidMappingException("Slug annotation [unique], type is not valid and must be 'boolean' in class - {$meta->name}");
-                }
-                if (!empty($meta->identifier) && $meta->isIdentifier($field) && !(bool)$slug->unique) {
-                    throw new InvalidMappingException("Identifier field - [{$field}] slug must be unique in order to maintain primary key in class - {$meta->name}");
-                }
-                if ($slug->unique === false && $slug->unique_base) {
-                    throw new InvalidMappingException("Slug annotation [unique_base] can not be set if unique is unset or 'false'");
-                }
-                if ($slug->unique_base && !$meta->hasField($slug->unique_base) && !$meta->hasAssociation($slug->unique_base)) {
-                    throw new InvalidMappingException("Unable to find [{$slug->unique_base}] as mapped property in entity - {$meta->name}");
-                }
-                // set all options
-                $config[$field] = array(
+                $exm->mapSlugField($property->getName(), array(
                     'fields' => $slug->fields,
                     'style' => $slug->style,
                     'updatable' => $slug->updatable,
@@ -96,6 +48,7 @@ class Annotation extends AbstractAnnotationDriver
                     'separator' => $slug->separator,
                     'prefix' => $slug->prefix,
                     'suffix' => $slug->suffix,
+                    'rootClass' => $meta->isMappedSuperclass ? null : $meta->name,
                 );
             }
         }

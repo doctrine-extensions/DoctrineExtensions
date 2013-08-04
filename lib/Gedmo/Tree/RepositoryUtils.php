@@ -51,13 +51,11 @@ class RepositoryUtils implements RepositoryUtilsInterface
 
         if ($node !== null) {
             if ($node instanceof $meta->name) {
-                $wrapperClass = $this->om instanceof \Doctrine\ORM\EntityManager ?
-                    '\Gedmo\Tool\Wrapper\EntityWrapper' :
-                    '\Gedmo\Tool\Wrapper\MongoDocumentWrapper';
-                $wrapped = new $wrapperClass($node, $this->om);
-                if (!$wrapped->hasValidIdentifier()) {
+                if (!$this->om->getUnitOfWork()->isInIdentityMap($node)) {
                     throw new InvalidArgumentException("Node is not managed by UnitOfWork");
                 }
+            } else {
+                throw new InvalidArgumentException("Node is not related to this repository");
             }
         } else {
             $includeNode = true;
@@ -65,7 +63,6 @@ class RepositoryUtils implements RepositoryUtilsInterface
 
         // Gets the array of $node results. It must be ordered by depth
         $nodes = $this->repo->getNodesHierarchy($node, $direct, $options, $includeNode);
-
         return $this->repo->buildTree($nodes, $options);
     }
 

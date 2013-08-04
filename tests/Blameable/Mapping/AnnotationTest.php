@@ -5,9 +5,9 @@ namespace Blameable\Mapping;
 use Doctrine\Common\EventManager;
 use Gedmo\Blameable\BlameableListener;
 
-require_once __DIR__ . '/BlameableMappingTestCase.php';
+require_once __DIR__ . '/MappingTestCase.php';
 
-class AnnotationTest extends BlameableMappingTestCase
+class AnnotationTest extends MappingTestCase
 {
     /**
      * @test
@@ -21,8 +21,8 @@ class AnnotationTest extends BlameableMappingTestCase
         $em = $this->createEntityManager($evm);
 
         $meta = $em->getClassMetadata('Fixture\Blameable\Mapping');
-        $config = $blameable->getConfiguration($em, $meta->name);
+        $exm = $blameable->getConfiguration($em, $meta->name);
 
-        $this->assertBlameableMapping($config);
+        $this->assertMapping($exm);
     }
 }

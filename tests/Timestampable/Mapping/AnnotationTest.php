@@ -5,23 +5,23 @@ namespace Timestampable\Mapping;
 use Doctrine\Common\EventManager;
 use Gedmo\Timestampable\TimestampableListener;
 
-require_once __DIR__ . '/TimestampableMappingTestCase.php';
+require_once __DIR__ . '/MappingTestCase.php';
 
-class AnnotationTest extends TimestampableMappingTestCase
+class AnnotationTest extends MappingTestCase
 {
     /**
      * @test
      */
-    function shouldMapTimestampableEntity()
+    function shouldMapAnnotatedEntity()
     {
         $evm = new EventManager;
         $evm->addEventSubscriber($timestampable = new TimestampableListener);
         $em = $this->createEntityManager($evm);
 
         $meta = $em->getClassMetadata('Fixture\Timestampable\Mapping');
-        $config = $timestampable->getConfiguration($em, $meta->name);
+        $exm = $timestampable->getConfiguration($em, $meta->name);
 
-        $this->assertTimestampableMapping($config);
+        $this->assertMapping($exm);
     }
 }
 

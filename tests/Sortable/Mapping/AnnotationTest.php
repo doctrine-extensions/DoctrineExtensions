@@ -5,9 +5,9 @@ namespace Sortable\Mapping;
 use Doctrine\Common\EventManager;
 use Gedmo\Sortable\SortableListener;
 
-require_once __DIR__ . '/SortableMappingTestCase.php';
+require_once __DIR__ . '/MappingTestCase.php';
 
-class AnnotationTest extends SortableMappingTestCase
+class AnnotationTest extends MappingTestCase
 {
     /**
      * @test
@@ -19,9 +19,9 @@ class AnnotationTest extends SortableMappingTestCase
         $em = $this->createEntityManager($evm);
 
         $meta = $em->getClassMetadata('Fixture\Sortable\Mapping');
-        $config = $sortable->getConfiguration($em, $meta->name);
+        $exm = $sortable->getConfiguration($em, $meta->name);
 
-        $this->assertSortableMapping($config);
+        $this->assertMapping($exm);
     }
 }
 

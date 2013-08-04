@@ -2,8 +2,9 @@
 
 namespace Gedmo\Sortable\Mapping\Driver;
 
-use Gedmo\Mapping\Driver\AbstractAnnotationDriver;
-use Gedmo\Exception\InvalidMappingException;
+use Gedmo\Mapping\Driver\AnnotationDriver;
+use Gedmo\Mapping\ExtensionMetadataInterface;
+use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 
 /**
  * This is an annotation mapping driver for Sortable
@@ -14,31 +15,19 @@ use Gedmo\Exception\InvalidMappingException;
  * @author Lukas Botsch <lukas.botsch@gmail.com>
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class Annotation extends AbstractAnnotationDriver
+class Annotation extends AnnotationDriver
 {
     /**
      * Annotation to mark field as sortable
      */
-    const SORTABLE = 'Gedmo\\Mapping\\Annotation\\Sortable';
-
-    /**
-     * List of types which are valid for position fields
-     *
-     * @var array
-     */
-    protected $validTypes = array(
-        'int',
-        'integer',
-        'smallint',
-        'bigint'
-    );
+    const SORTABLE = 'Gedmo\Mapping\Annotation\Sortable';
 
     /**
      * {@inheritDoc}
      */
-    public function readExtendedMetadata($meta, array &$config)
+    public function loadExtensionMetadata(ClassMetadata $meta, ExtensionMetadataInterface $exm)
     {
-        $class = $this->getMetaReflectionClass($meta);
+        $class = $meta->reflClass;
 
         // property annotations
         foreach ($class->getProperties() as $property) {
@@ -50,27 +39,10 @@ class Annotation extends AbstractAnnotationDriver
             }
             // position
             if ($sortable = $this->reader->getPropertyAnnotation($property, self::SORTABLE)) {
-                $field = $property->getName();
-                if (!$meta->hasField($field)) {
-                    throw new InvalidMappingException("Sortable field: '{$field}' - is not a mapped property in class {$meta->name}");
-                }
-                if (!$this->isValidField($meta, $field)) {
-                    throw new InvalidMappingException("Sortable field: '{$field}' - type is not valid and must be 'integer' in class - {$meta->name}");
-                }
-                if ($meta->isNullable($field)) {
-                    throw new InvalidMappingException("Sortable field: '$field' - cannot be nullable in class - {$meta->name}");
-                }
-                if (!is_array($sortable->groups)) {
-                    throw new InvalidMappingException("Sortable field: '$field' option groups must be an array, containing a list of fields
-                        to use them as group to base sorting on, in class - {$meta->name}");
-                }
-                foreach ($sortable->groups as $group) {
-                    if (!$meta->hasField($group) && !$meta->isSingleValuedAssociation($group)) {
-                        throw new InvalidMappingException("Sortable field: '{$field}' group: {$group} - is not a mapped
-                            or single valued association property in class {$meta->name}");
-                    }
-                }
-                $config[$field] = $sortable->groups;
+                $exm->map($property->getName(), array(
+                    'groups' => $sortable->groups,
+                    'rootClass' => $meta->isMappedSuperclass ? null : $meta->name
+                ));
             }
         }
     }
