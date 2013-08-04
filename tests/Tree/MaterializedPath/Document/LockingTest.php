@@ -20,7 +20,7 @@ class LockingTest extends ObjectManagerTestCase
         $this->dm = $this->createDocumentManager($evm);
 
         $meta = $this->dm->getClassMetadata(self::ARTICLE);
-        $this->config = $this->listener->getConfiguration($this->dm, $meta->name);
+        $this->config = $this->listener->getConfiguration($this->dm, $meta->name)->getMapping();
     }
 
     protected function tearDown()

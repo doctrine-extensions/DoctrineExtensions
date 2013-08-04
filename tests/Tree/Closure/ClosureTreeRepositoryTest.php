@@ -206,7 +206,7 @@ class ClosureTreeRepositoryTest extends ObjectManagerTestCase
         $roots = $repo->getRootNodes();
         $meta = $this->em->getClassMetadata(self::CATEGORY);
         $config = $this->listener->getConfiguration($this->em, $meta->name);
-        $qb = $repo->getNodesHierarchyQueryBuilder($roots[0], false, $config);
+        $qb = $repo->getNodesHierarchyQueryBuilder($roots[0], false, $config->getMapping());
 
         $this->assertFalse(strpos($qb->getQuery()->getDql(), '(SELECT MAX('));
     }
@@ -222,7 +222,7 @@ class ClosureTreeRepositoryTest extends ObjectManagerTestCase
         $roots = $repo->getRootNodes();
         $meta = $this->em->getClassMetadata(self::CATEGORY_WITHOUT_LEVEL);
         $config = $this->listener->getConfiguration($this->em, $meta->name);
-        $qb = $repo->getNodesHierarchyQueryBuilder($roots[0], false, $config);
+        $qb = $repo->getNodesHierarchyQueryBuilder($roots[0], false, $config->getMapping());
 
         $this->assertTrue(((bool) strpos($qb->getQuery()->getDql(), '(SELECT MAX(')));
     }

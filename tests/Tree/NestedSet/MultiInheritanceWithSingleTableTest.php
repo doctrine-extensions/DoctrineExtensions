@@ -3,35 +3,39 @@
 namespace Tree\NestedSet;
 
 use Doctrine\Common\EventManager;
-use Tool\BaseTestCaseORM;
-use Doctrine\Common\Util\Debug;
-use Fixture\Tree\Transport\Car;
-use Fixture\Tree\Transport\Bus;
-use Fixture\Tree\Transport\Vehicle;
-use Fixture\Tree\Transport\Engine;
+use TestTool\ObjectManagerTestCase;
+use Fixture\Tree\NestedSet\Transport\Car;
+use Fixture\Tree\NestedSet\Transport\Bus;
+use Fixture\Tree\NestedSet\Transport\Vehicle;
+use Fixture\Tree\NestedSet\Transport\Engine;
+use Gedmo\Tree\TreeListener;
 
-/**
- * These are tests for Tree behavior
- *
- * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @link http://www.gediminasm.org
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
- */
-class MultiInheritanceWithSingleTableTest extends BaseTestCaseORM
+class MultiInheritanceWithSingleTableTest extends ObjectManagerTestCase
 {
-    const CAR = "Fixture\Tree\Transport\Car";
-    const BUS = "Fixture\Tree\Transport\Bus";
-    const VEHICLE = "Fixture\Tree\Transport\Vehicle";
-    const ENGINE = "Fixture\Tree\Transport\Engine";
+    const CAR = "Fixture\Tree\NestedSet\Transport\Car";
+    const BUS = "Fixture\Tree\NestedSet\Transport\Bus";
+    const VEHICLE = "Fixture\Tree\NestedSet\Transport\Vehicle";
+    const ENGINE = "Fixture\Tree\NestedSet\Transport\Engine";
+
+    private $em;
 
     protected function setUp()
     {
-        parent::setUp();
-
         $evm = new EventManager;
         $evm->addEventSubscriber(new TreeListener);
 
-        $this->getMockSqliteEntityManager($evm);
+        $this->em = $this->createEntityManager($evm);
+        $this->createSchema($this->em, array(
+            self::VEHICLE,
+            self::CAR,
+            self::ENGINE,
+            self::BUS
+        ));
+    }
+
+    protected function tearDown()
+    {
+        $this->releaseEntityManager($this->em);
     }
 
     public function testConsistence()
@@ -93,16 +97,6 @@ class MultiInheritanceWithSingleTableTest extends BaseTestCaseORM
         $this->assertTrue($carRepo->verify());
         var_dump('processed: '.$num);
     }*/
-
-    protected function getUsedEntityFixtures()
-    {
-        return array(
-            self::VEHICLE,
-            self::CAR,
-            self::ENGINE,
-            self::BUS
-        );
-    }
 
     private function populate()
     {

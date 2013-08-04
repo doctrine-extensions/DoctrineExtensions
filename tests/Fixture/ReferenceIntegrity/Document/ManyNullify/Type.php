@@ -29,7 +29,6 @@ class Type
     /**
      * @ODM\ReferenceMany(targetDocument="Article", mappedBy="type")
      * @Gedmo\ReferenceIntegrity("nullify")
-     * @var ArrayCollection
      */
     protected $articles = array();
 

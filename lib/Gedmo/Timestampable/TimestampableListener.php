@@ -70,40 +70,26 @@ class TimestampableListener extends MappedEventSubscriber
     {
         $uow = $om->getUnitOfWork();
         $meta = $om->getClassMetadata(get_class($object));
-        if ($config = $this->getConfiguration($om, $meta->name)) {
+        if ($exm = $this->getConfiguration($om, $meta->name)) {
             $changeSet = OMH::getObjectChangeSet($uow, $object);
             $needChanges = false;
 
-            if ($uow->isScheduledForInsert($object) && isset($config['create'])) {
-                foreach ($config['create'] as $field) {
-                    $allow = isset($changeSet[$field]) && null === $changeSet[$field][1];
-                    if ($allow) { // let manual values
-                        $needChanges = true;
-                        $this->updateField($om, $object, $field);
-                    }
+            foreach ($exm->getFields() as $stamp) {
+                $options = $exm->getOptions($stamp);
+                switch ($options['on']) {
+                    case 'create':
+                        $allow = $uow->isScheduledForInsert($object) && isset($changeSet[$stamp]) && null === $changeSet[$stamp][1];
+                        break;
+                    case 'update':
+                    case 'change':
+                        $allow = ($uow->isScheduledForInsert($object) && null === $changeSet[$stamp][1]) || !isset($changeSet[$stamp]);
+                        break;
                 }
-            }
-
-            if (isset($config['update'])) {
-                foreach ($config['update'] as $field) {
-                    $allow = ($uow->isScheduledForInsert($object) && null === $changeSet[$field][1]) || !isset($changeSet[$field]);
-                    if ($allow) { // let manual values
-                        $needChanges = true;
-                        $this->updateField($om, $object, $field);
-                    }
-                }
-            }
-
-            if (isset($config['change'])) {
-                foreach ($config['change'] as $options) {
-                    $allow = ($uow->isScheduledForInsert($object) && null === $changeSet[$options['field']][1]) || !isset($changeSet[$options['field']]);
-                    if (!$allow) {
-                        continue; // date/timestamp was set manually
-                    }
-                    $trackedFields = (array)$options['trackedField'];
-                    if (count($trackedFields) > 1 && $options['value'] !== null) {
-                        throw new UnexpectedValueException("If there is more than one field observed for changes, 'value' cannot be set");
-                    }
+                if ($allow && in_array($options['on'], array('create', 'update'))) {
+                    $needChanges = true;
+                    $this->updateField($om, $object, $stamp);
+                } elseif ($allow) {
+                    $trackedFields = (array)$options['field'];
                     foreach ($trackedFields as $field) {
                         $parts = explode('.', $field);
                         $field = array_pop($parts);
@@ -133,7 +119,7 @@ class TimestampableListener extends MappedEventSubscriber
                             // comparison is not explicit, because string 'true' value should match true - boolean value
                             if (null === $options['value'] || $value == $options['value']) {
                                 $needChanges = true;
-                                $this->updateField($om, $object, $options['field']);
+                                $this->updateField($om, $object, $stamp);
                                 if (count($trackedFields) > 1) {
                                     break; // no point to iterate again
                                 }
@@ -142,6 +128,7 @@ class TimestampableListener extends MappedEventSubscriber
                     }
                 }
             }
+
             if ($needChanges) {
                 OMH::recomputeSingleObjectChangeSet($uow, $meta, $object);
             }

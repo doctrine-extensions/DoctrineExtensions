@@ -66,33 +66,5 @@ class Annotation extends AbstractAnnotationDriver
 
             Validator::validateConfiguration($meta, $config);
         }
-
-        /*
-        // Code in case we need to identify entities which are not Uploadables, but have associations
-        // with other Uploadable entities
-
-        } else {
-            // We need to check if this class has a relation with Uploadable entities
-            $associations = $meta->getAssociationMappings();
-
-            foreach ($associations as $field => $association) {
-                $refl = new \ReflectionClass($association['targetEntity']);
-
-                if ($annot = $this->reader->getClassAnnotation($refl, self::UPLOADABLE)) {
-                    $config['hasUploadables'] = true;
-
-                    if (!isset($config['uploadables'])) {
-                        $config['uploadables'] = array();
-                    }
-
-                    $config['uploadables'][] = array(
-                        'class'         => $association['targetEntity'],
-                        'property'      => $association['fieldName']
-                    );
-                }
-            }
-        }*/
-
-        $this->validateFullMetadata($meta, $config);
     }
 }

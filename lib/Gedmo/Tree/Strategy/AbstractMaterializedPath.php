@@ -99,10 +99,10 @@ abstract class AbstractMaterializedPath implements Strategy
     public function processScheduledInsertion(ObjectManager $om, $node)
     {
         $meta = $om->getClassMetadata(get_class($node));
-        $config = $this->listener->getConfiguration($om, $meta->name);
-        $fieldMapping = $meta->getFieldMapping($config['path_source']);
+        $tree = $this->listener->getConfiguration($om, $meta->name)->getMapping();
+        $fieldMapping = $meta->getFieldMapping($tree['path_source']);
 
-        if ($meta->isIdentifier($config['path_source']) || $fieldMapping['type'] === 'string') {
+        if ($meta->isIdentifier($tree['path_source']) || $fieldMapping['type'] === 'string') {
             $this->scheduledForPathProcess[spl_object_hash($node)] = $node;
         } else {
             $this->updateNode($om, $node);
@@ -115,12 +115,12 @@ abstract class AbstractMaterializedPath implements Strategy
     public function processScheduledUpdate(ObjectManager $om, $node)
     {
         $meta = $om->getClassMetadata(get_class($node));
-        $config = $this->listener->getConfiguration($om, $meta->name);
+        $tree = $this->listener->getConfiguration($om, $meta->name)->getMapping();
         $uow = $om->getUnitOfWork();
         $changeSet = OMH::getObjectChangeSet($uow, $node);
 
-        if (isset($changeSet[$config['parent']]) || isset($changeSet[$config['path_source']])) {
-            $originalPath = $meta->getReflectionProperty($config['path'])->getValue($node);
+        if (isset($changeSet[$tree['parent']]) || isset($changeSet[$tree['path_source']])) {
+            $originalPath = $meta->getReflectionProperty($tree['path'])->getValue($node);
             $this->updateNode($om, $node);
             $this->updateChildren($om, $node, $originalPath);
         }
@@ -210,9 +210,9 @@ abstract class AbstractMaterializedPath implements Strategy
     public function processScheduledDelete(ObjectManager $om, $node)
     {
         $meta = $om->getClassMetadata(get_class($node));
-        $config = $this->listener->getConfiguration($om, $meta->name);
+        $tree = $this->listener->getConfiguration($om, $meta->name)->getMapping();
 
-        $this->removeNode($om, $meta, $config, $node);
+        $this->removeNode($om, $meta, $tree, $node);
     }
 
     /**
@@ -227,27 +227,27 @@ abstract class AbstractMaterializedPath implements Strategy
     {
         $oid = spl_object_hash($node);
         $meta = $om->getClassMetadata(get_class($node));
-        $config = $this->listener->getConfiguration($om, $meta->name);
+        $tree = $this->listener->getConfiguration($om, $meta->name)->getMapping();
         $uow = $om->getUnitOfWork();
-        $parentProp = $meta->getReflectionProperty($config['parent']);
+        $parentProp = $meta->getReflectionProperty($tree['parent']);
         $parent = $parentProp->getValue($node);
-        $pathProp = $meta->getReflectionProperty($config['path']);
-        $pathSourceProp = $meta->getReflectionProperty($config['path_source']);
+        $pathProp = $meta->getReflectionProperty($tree['path']);
+        $pathSourceProp = $meta->getReflectionProperty($tree['path_source']);
         $path = $pathSourceProp->getValue($node);
 
         // We need to avoid the presence of the path separator in the path source
-        if (strpos($path, $config['path_separator']) !== false) {
+        if (strpos($path, $tree['path_separator']) !== false) {
             $msg = 'You can\'t use the Path separator ("%s") as a character for your PathSource field value.';
 
-            throw new RuntimeException(sprintf($msg, $config['path_separator']));
+            throw new RuntimeException(sprintf($msg, $tree['path_separator']));
         }
 
-        $fieldMapping = $meta->getFieldMapping($config['path_source']);
+        $fieldMapping = $meta->getFieldMapping($tree['path_source']);
 
         // default behavior: if PathSource field is a string, we append the ID to the path
         // path_append_id is true: always append id
         // path_append_id is false: never append id
-        if ($config['path_append_id'] === true || ($fieldMapping['type'] === 'string' && $config['path_append_id']!==false)) {
+        if ($tree['path_append_id'] === true || ($fieldMapping['type'] === 'string' && $tree['path_append_id']!==false)) {
             $identifier = OMH::getIdentifier($om, $node);
             $path .= '-'.$identifier;
         }
@@ -258,7 +258,7 @@ abstract class AbstractMaterializedPath implements Strategy
             $om->initializeObject($parent);
 
             $changeSet = $uow->isScheduledForUpdate($parent) ? OMH::getObjectChangeSet($uow, $parent) : false;
-            $pathOrPathSourceHasChanged = $changeSet && (isset($changeSet[$config['path_source']]) || isset($changeSet[$config['path']]));
+            $pathOrPathSourceHasChanged = $changeSet && (isset($changeSet[$tree['path_source']]) || isset($changeSet[$tree['path']]));
 
             if ($pathOrPathSourceHasChanged || !$pathProp->getValue($parent)) {
                 $this->updateNode($om, $parent);
@@ -266,9 +266,9 @@ abstract class AbstractMaterializedPath implements Strategy
 
             $parentPath = $pathProp->getValue($parent);
             // if parent path not ends with separator
-            if ($parentPath[strlen($parentPath) - 1] !== $config['path_separator']) {
+            if ($parentPath[strlen($parentPath) - 1] !== $tree['path_separator']) {
                 // add separator
-                $path = $pathProp->getValue($parent) . $config['path_separator'] . $path;
+                $path = $pathProp->getValue($parent) . $tree['path_separator'] . $path;
             } else {
                 // don't add separator
                 $path = $pathProp->getValue($parent) . $path;
@@ -277,39 +277,39 @@ abstract class AbstractMaterializedPath implements Strategy
         }
 
 
-        if ($config['path_starts_with_separator'] && (strlen($path) > 0 && $path[0] !== $config['path_separator'])) {
-            $path = $config['path_separator'] . $path;
+        if ($tree['path_starts_with_separator'] && (strlen($path) > 0 && $path[0] !== $tree['path_separator'])) {
+            $path = $tree['path_separator'] . $path;
         }
 
-        if ($config['path_ends_with_separator'] && ($path[strlen($path) - 1] !== $config['path_separator'])) {
-            $path .= $config['path_separator'];
+        if ($tree['path_ends_with_separator'] && ($path[strlen($path) - 1] !== $tree['path_separator'])) {
+            $path .= $tree['path_separator'];
         }
 
         $pathProp->setValue($node, $path);
         $changes = array(
-            $config['path'] => array(null, $path)
+            $tree['path'] => array(null, $path)
         );
 
-        if (isset($config['path_hash'])) {
+        if (isset($tree['path_hash'])) {
             $pathHash = md5($path);
-            $pathHashProp = $meta->getReflectionProperty($config['path_hash']);
+            $pathHashProp = $meta->getReflectionProperty($tree['path_hash']);
             $pathHashProp->setValue($node, $pathHash);
-            $changes[$config['path_hash']] = array(null, $pathHash);
+            $changes[$tree['path_hash']] = array(null, $pathHash);
         }
 
 
-        if (isset($config['level'])) {
-            $level = substr_count($path, $config['path_separator']);
-            $levelProp = $meta->getReflectionProperty($config['level']);
+        if (isset($tree['level'])) {
+            $level = substr_count($path, $tree['path_separator']);
+            $levelProp = $meta->getReflectionProperty($tree['level']);
             $levelProp->setValue($node, $level);
-            $changes[$config['level']] = array(null, $level);
+            $changes[$tree['level']] = array(null, $level);
         }
 
         $uow->scheduleExtraUpdate($node, $changes);
-        OMH::setOriginalObjectProperty($uow, $oid, $config['path'], $path);
+        OMH::setOriginalObjectProperty($uow, $oid, $tree['path'], $path);
 
-        if (isset($config['path_hash'])) {
-            OMH::setOriginalObjectProperty($uow, $oid, $config['path_hash'], $pathHash);
+        if (isset($tree['path_hash'])) {
+            OMH::setOriginalObjectProperty($uow, $oid, $tree['path_hash'], $pathHash);
         }
     }
 
@@ -325,8 +325,8 @@ abstract class AbstractMaterializedPath implements Strategy
     public function updateChildren(ObjectManager $om, $node, $originalPath)
     {
         $meta = $om->getClassMetadata(get_class($node));
-        $config = $this->listener->getConfiguration($om, $meta->name);
-        $children = $this->getChildren($om, $meta, $config, $originalPath);
+        $tree = $this->listener->getConfiguration($om, $meta->name)->getMapping();
+        $children = $this->getChildren($om, $meta, $tree, $originalPath);
 
         foreach ($children as $child) {
             $this->updateNode($om, $child);
@@ -344,10 +344,10 @@ abstract class AbstractMaterializedPath implements Strategy
     public function processPreLockingActions($om, $node, $action)
     {
         $meta = $om->getClassMetadata(get_class($node));
-        $config = $this->listener->getConfiguration($om, $meta->name);
+        $tree = $this->listener->getConfiguration($om, $meta->name)->getMapping();
 
-        if ($config['activate_locking']) {;
-            $parentProp = $meta->getReflectionProperty($config['parent']);
+        if ($tree['lock_timeout']) {;
+            $parentProp = $meta->getReflectionProperty($tree['parent']);
             $parentNode = $node;
 
             while (!is_null($parent = $parentProp->getValue($parentNode))) {
@@ -356,14 +356,14 @@ abstract class AbstractMaterializedPath implements Strategy
             }
 
             // If tree is already locked, we throw an exception
-            $lockTimeProp = $meta->getReflectionProperty($config['lock_time']);
+            $lockTimeProp = $meta->getReflectionProperty($tree['lock']);
             $lockTime = $lockTimeProp->getValue($parentNode);
 
             if (!is_null($lockTime)) {
                 $lockTime = $lockTime instanceof \MongoDate ? $lockTime->sec : $lockTime->getTimestamp();
             }
 
-            if (!is_null($lockTime) && ($lockTime >= (time() - $config['locking_timeout']))) {
+            if (!is_null($lockTime) && ($lockTime >= (time() - $tree['lock_timeout']))) {
                 $msg = 'Tree with root id "%s" is locked.';
                 $id = OMH::getIdentifier($om, $parentNode);
                 throw new TreeLockingException(sprintf($msg, $id));
@@ -403,9 +403,9 @@ abstract class AbstractMaterializedPath implements Strategy
     public function processPostEventsActions(ObjectManager $om, $node, $action)
     {
         $meta = $om->getClassMetadata(get_class($node));
-        $config = $this->listener->getConfiguration($om, $meta->name);
+        $tree = $this->listener->getConfiguration($om, $meta->name)->getMapping();
 
-        if ($config['activate_locking']) {
+        if ($tree['lock_timeout']) {
             switch ($action) {
                 case self::ACTION_INSERT:
                     unset($this->pendingObjectsToInsert[spl_object_hash($node)]);
@@ -459,20 +459,20 @@ abstract class AbstractMaterializedPath implements Strategy
      *
      * @param ObjectManager $om
      * @param object $meta - Metadata
-     * @param object $config - config
+     * @param object $tree - config
      * @param object $node - node to remove
      * @return void
      */
-    abstract public function removeNode(ObjectManager $om, ClassMetadata $meta, array $config, $node);
+    abstract public function removeNode(ObjectManager $om, ClassMetadata $meta, array $tree, $node);
 
     /**
      * Returns children of the node with its original path
      *
      * @param ObjectManager $om
      * @param object $meta - Metadata
-     * @param object $config - config
+     * @param object $tree - config
      * @param string $originalPath - original path of object
      * @return Doctrine\ODM\MongoDB\Cursor
      */
-    abstract public function getChildren(ObjectManager $om, ClassMetadata $meta, array $config, $originalPath);
+    abstract public function getChildren(ObjectManager $om, ClassMetadata $meta, array $tree, $originalPath);
 }

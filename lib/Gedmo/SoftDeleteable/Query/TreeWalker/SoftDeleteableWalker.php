@@ -31,14 +31,14 @@ class SoftDeleteableWalker extends SqlWalker
     protected $alias;
     protected $deletedAtField;
     protected $meta;
-    
+
     /**
      * {@inheritDoc}
      */
     public function __construct($query, $parserResult, array $queryComponents)
     {
         parent::__construct($query, $parserResult, $queryComponents);
-        
+
         $this->conn = $this->getConnection();
         $this->platform = $this->conn->getDatabasePlatform();
         $this->listener = $this->getSoftDeleteableListener();
@@ -76,7 +76,7 @@ class SoftDeleteableWalker extends SqlWalker
         $this->setSQLTableAlias($tableName, $tableName, $deleteClause->aliasIdentificationVariable);
         $quotedTableName = $class->getQuotedTableName($this->platform);
         $quotedColumnName = $class->getQuotedColumnName($this->deletedAtField, $this->platform);
-        
+
         $sql = 'UPDATE '.$quotedTableName.' SET '.$quotedColumnName.' = "'.date('Y-m-d H:i:s').'"';
 
         return $sql;
@@ -97,11 +97,8 @@ class SoftDeleteableWalker extends SqlWalker
                 foreach ($listeners as $hash => $listener) {
                     if ($listener instanceof SoftDeleteableListener) {
                         $this->listener = $listener;
-                        break;
+                        break 2;
                     }
-                }
-                if ($this->listener) {
-                    break;
                 }
             }
 
@@ -122,16 +119,16 @@ class SoftDeleteableWalker extends SqlWalker
     private function extractComponents(array $queryComponents)
     {
         $em = $this->getEntityManager();
-        
+
         foreach ($queryComponents as $alias => $comp) {
             if (!isset($comp['metadata'])) {
                 continue;
             }
             $meta = $comp['metadata'];
-            $config = $this->listener->getConfiguration($em, $meta->name);
-            if ($config && isset($config['softDeleteable']) && $config['softDeleteable']) {
-                $this->configuration = $config;
-                $this->deletedAtField = $config['fieldName'];
+            $exm = $this->listener->getConfiguration($em, $meta->name);
+            if (!$exm->isEmpty()) {
+                $this->configuration = $exm;
+                $this->deletedAtField = $exm->getField();
                 $this->meta = $meta;
             }
         }

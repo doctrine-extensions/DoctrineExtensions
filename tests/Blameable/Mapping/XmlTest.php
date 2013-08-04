@@ -6,9 +6,9 @@ use Doctrine\Common\EventManager;
 use Doctrine\ORM\Mapping\Driver\XmlDriver;
 use Gedmo\Blameable\BlameableListener;
 
-require_once __DIR__ . '/BlameableMappingTestCase.php';
+require_once __DIR__ . '/MappingTestCase.php';
 
-class XmlTest extends BlameableMappingTestCase
+class XmlTest extends MappingTestCase
 {
     /**
      * @test
@@ -25,8 +25,8 @@ class XmlTest extends BlameableMappingTestCase
         $em->getConfiguration()->setMetadataDriverImpl($xmlDriver);
 
         $meta = $em->getClassMetadata('Fixture\Blameable\Mapping');
-        $config = $blameable->getConfiguration($em, $meta->name);
+        $exm = $blameable->getConfiguration($em, $meta->name);
 
-        $this->assertBlameableMapping($config);
+        $this->assertMapping($exm);
     }
 }

@@ -3,6 +3,7 @@
 namespace Gedmo\Exception;
 
 use Gedmo\Exception;
+use Gedmo\Mapping\ExtensionMetadataInterface;
 
 /**
  * InvalidMappingException
@@ -16,16 +17,16 @@ use Gedmo\Exception;
 class InvalidMappingException extends InvalidArgumentException implements Exception
 {
     /**
-     * Extension configuration collected before
+     * Extension metadata collected before
      * an exception was triggered
      *
-     * @var array
+     * @var \Gedmo\Mapping\ExtensionMetadataInterface
      */
-    public $currentConfig;
+    public $exm;
 
-    public function __construct($msg, array $config = array())
+    public function __construct($msg, ExtensionMetadataInterface $exm = null)
     {
-        $this->currentConfig = $config;
+        $this->exm = $exm;
         parent::__construct($msg);
     }
 }

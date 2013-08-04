@@ -81,10 +81,10 @@ class MaterializedPathRepository extends AbstractTreeRepository
     public function getChildrenQueryBuilder($node = null, $direct = false, $sortByField = null, $direction = 'asc', $includeNode = false)
     {
         $meta = $this->getClassMetadata();
-        $config = $this->listener->getConfiguration($this->_em, $meta->name);
-        $separator = addcslashes($config['path_separator'], '%');
+        $tree = $this->listener->getConfiguration($this->_em, $meta->name)->getMapping();
+        $separator = addcslashes($tree['path_separator'], '%');
         $alias = 'materialized_path_entity';
-        $path = $config['path'];
+        $path = $tree['path'];
         $qb = $this->_em->createQueryBuilder($meta->name)
             ->select($alias)
             ->from($meta->rootEntityName, $alias);
@@ -98,7 +98,7 @@ class MaterializedPathRepository extends AbstractTreeRepository
                     $alias.'.'.$path,
                     $qb->expr()->literal(
                         $nodePath
-                        . ($config['path_ends_with_separator'] ? '' : $separator) .'%'
+                        . ($tree['path_ends_with_separator'] ? '' : $separator) .'%'
                     )
                 )
             );
@@ -137,7 +137,7 @@ class MaterializedPathRepository extends AbstractTreeRepository
             $qb->orWhere('('.$includeNodeExpr.')');
         }
 
-        $orderByField = is_null($sortByField) ? $alias.'.'.$config['path'] : $alias.'.'.$sortByField;
+        $orderByField = is_null($sortByField) ? $alias.'.'.$tree['path'] : $alias.'.'.$sortByField;
         $orderByDir = $direction === 'asc' ? 'asc' : 'desc';
         $qb->orderBy($orderByField, $orderByDir);
 

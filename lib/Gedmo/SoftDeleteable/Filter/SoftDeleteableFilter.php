@@ -31,18 +31,17 @@ class SoftDeleteableFilter extends SQLFilter
             return '';
         }
 
-        $config = $this->getListener()->getConfiguration($this->getEntityManager(), $targetEntity->name);
-
-        if (!isset($config['softDeleteable']) || !$config['softDeleteable']) {
+        $exm = $this->getListener()->getConfiguration($this->getEntityManager(), $targetEntity->name);
+        if (!$exm || $exm->isEmpty()) {
             return '';
         }
 
         $conn = $this->getEntityManager()->getConnection();
         $platform = $conn->getDatabasePlatform();
-        $column = $targetEntity->getQuotedColumnName($config['fieldName'], $platform);
+        $column = $targetEntity->getQuotedColumnName($exm->getField()], $platform);
 
         $addCondSql = $platform->getIsNullExpression($targetTableAlias.'.'.$column);
-        if (isset($config['timeAware']) && $config['timeAware']) {
+        if ($exm->timeAware()) {
             $now = $conn->quote(date('Y-m-d H:i:s')); // should use UTC in database and PHP
             $addCondSql = "({$addCondSql} OR {$targetTableAlias}.{$column} > {$now})";
         }
@@ -62,24 +61,18 @@ class SoftDeleteableFilter extends SQLFilter
     protected function getListener()
     {
         if ($this->listener === null) {
-            $em = $this->getEntityManager();
-            $evm = $em->getEventManager();
-
-            foreach ($evm->getListeners() as $listeners) {
+            foreach ($this->getEntityManager()->getEventManager()->getListeners() as $listeners) {
                 foreach ($listeners as $listener) {
                     if ($listener instanceof SoftDeleteableListener) {
                         $this->listener = $listener;
-
                         break 2;
                     }
                 }
             }
-
             if ($this->listener === null) {
                 throw new \RuntimeException('Listener "SoftDeleteableListener" was not added to the EventManager!');
             }
         }
-
         return $this->listener;
     }
 

@@ -18,20 +18,6 @@ use Doctrine\ORM\Internal\Hydration\ObjectHydrator as BaseObjectHydrator;
 class ObjectHydrator extends BaseObjectHydrator
 {
     /**
-     * 2.1 version
-     * {@inheritdoc}
-     */
-    protected function _hydrateAll()
-    {
-        $listener = $this->getTranslatableListener();
-        $listener->setSkipOnLoad(true);
-        $result = parent::_hydrateAll();
-        $listener->setSkipOnLoad(false);
-        return $result;
-    }
-
-    /**
-     * 2.2 version
      * {@inheritdoc}
      */
     protected function hydrateAllData()

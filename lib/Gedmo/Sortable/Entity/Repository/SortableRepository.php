@@ -8,6 +8,7 @@ use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 use Gedmo\Sortable\SortableListener;
 use Gedmo\Exception\InvalidMappingException;
 use Gedmo\Mapping\ObjectManagerHelper as OMH;
+use Gedmo\Exception\InvalidArgumentException;
 
 /**
  * Sortable Repository
@@ -22,9 +23,12 @@ class SortableRepository extends EntityRepository
      *
      * @var SortableListener
      */
-    protected $listener = null;
+    protected $listener;
 
-    protected $config = null;
+    /**
+     * @var \Gedmo\Sortable\Mapping\SortableMetadata
+     */
+    protected $exm;
 
     public function __construct(EntityManager $em, ClassMetadata $class)
     {
@@ -42,7 +46,7 @@ class SortableRepository extends EntityRepository
             throw new InvalidMappingException('This repository can be attached only to ORM sortable listener');
         }
 
-        $this->config = $this->listener->getConfiguration($em, $class->name);
+        $this->exm = $this->listener->getConfiguration($em, $class->name);
     }
 
     public function getBySortableGroupsQuery($sortableField, array $groupValues = array())
@@ -52,19 +56,19 @@ class SortableRepository extends EntityRepository
 
     public function getBySortableGroupsQueryBuilder($sortableField, array $groupValues = array())
     {
-        if (!array_key_exists($sortableField, $this->config)) {
+        if (!$options = $this->exm->getOptions($sortableField)) {
             throw new InvalidArgumentException("Sortable field: '$sortableField' is not configured to be sortable in class: {$this->_class->name}");
         }
 
         foreach ($groupValues as $name => $value) {
-            if (!in_array($name, $this->config[$sortableField])) {
+            if (!in_array($name, $options['groups'])) {
                 throw new InvalidArgumentException('Sortable group "'.$name.'" is not defined in class '.$this->_class->name);
             }
         }
 
         $qb = $this->_em->createQueryBuilder()
             ->select('n')
-            ->from($this->_class->rootEntityName, 'n')
+            ->from($options['rootClass'], 'n')
             ->orderBy('n.'.$sortableField);
         $i = 1;
         foreach ($groupValues as $group => $value) {

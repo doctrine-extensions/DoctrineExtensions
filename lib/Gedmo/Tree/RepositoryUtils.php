@@ -51,13 +51,11 @@ class RepositoryUtils implements RepositoryUtilsInterface
 
         if ($node !== null) {
             if ($node instanceof $meta->name) {
-                $wrapperClass = $this->om instanceof \Doctrine\ORM\EntityManager ?
-                    '\Gedmo\Tool\Wrapper\EntityWrapper' :
-                    '\Gedmo\Tool\Wrapper\MongoDocumentWrapper';
-                $wrapped = new $wrapperClass($node, $this->om);
-                if (!$wrapped->hasValidIdentifier()) {
+                if (!$this->om->getUnitOfWork()->isInIdentityMap($node)) {
                     throw new InvalidArgumentException("Node is not managed by UnitOfWork");
                 }
+            } else {
+                throw new InvalidArgumentException("Node is not related to this repository");
             }
         } else {
             $includeNode = true;
@@ -65,7 +63,6 @@ class RepositoryUtils implements RepositoryUtilsInterface
 
         // Gets the array of $node results. It must be ordered by depth
         $nodes = $this->repo->getNodesHierarchy($node, $direct, $options, $includeNode);
-
         return $this->repo->buildTree($nodes, $options);
     }
 
@@ -129,7 +126,7 @@ class RepositoryUtils implements RepositoryUtilsInterface
     public function buildTreeArray(array $nodes)
     {
         $meta = $this->getClassMetadata();
-        $config = $this->listener->getConfiguration($this->om, $meta->name);
+        $tree = $this->listener->getConfiguration($this->om, $meta->name)->getMapping();
         $nestedTree = array();
         $l = 0;
 
@@ -142,7 +139,7 @@ class RepositoryUtils implements RepositoryUtilsInterface
                 // Number of stack items
                 $l = count($stack);
                 // Check if we're dealing with different levels
-                while($l > 0 && $stack[$l - 1][$config['level']] >= $item[$config['level']]) {
+                while($l > 0 && $stack[$l - 1][$tree['level']] >= $item[$tree['level']]) {
                     array_pop($stack);
                     $l--;
                 }

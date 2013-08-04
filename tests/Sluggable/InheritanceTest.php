@@ -20,7 +20,7 @@ class InheritanceTest extends ObjectManagerTestCase
     protected function setUp()
     {
         $evm = new EventManager;
-        $evm->addEventSubscriber(new SluggableListener);
+        $evm->addEventSubscriber($this->listener = new SluggableListener);
 
         $this->em = $this->createEntityManager($evm);
         $this->createSchema($this->em, array(
@@ -60,10 +60,10 @@ class InheritanceTest extends ObjectManagerTestCase
         $this->em->flush();
 
         $this->assertSame('audi', $audi80->getTypeSlug());
-        $this->assertSame('audi-80', $audi80->getSlug());
+        $this->assertSame('audi-80-audi', $audi80->getSlug());
         $this->assertSame('bmw', $bmw530->getTypeSlug());
-        $this->assertSame('bmw-530', $bmw530->getSlug());
+        $this->assertSame('bmw-530-bmw', $bmw530->getSlug());
         $this->assertSame('bmw-1', $bmwX5->getTypeSlug());
-        $this->assertSame('bmw-x5', $bmwX5->getSlug());
+        $this->assertSame('bmw-x5-bmw', $bmwX5->getSlug());
     }
 }

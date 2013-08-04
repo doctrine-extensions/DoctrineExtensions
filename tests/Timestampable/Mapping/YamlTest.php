@@ -6,9 +6,9 @@ use Doctrine\Common\EventManager;
 use Doctrine\ORM\Mapping\Driver\YamlDriver;
 use Gedmo\Timestampable\TimestampableListener;
 
-require_once __DIR__ . '/TimestampableMappingTestCase.php';
+require_once __DIR__ . '/MappingTestCase.php';
 
-class YamlTest extends TimestampableMappingTestCase
+class YamlTest extends MappingTestCase
 {
     /**
      * @test
@@ -24,8 +24,8 @@ class YamlTest extends TimestampableMappingTestCase
         $em->getConfiguration()->setMetadataDriverImpl($yamlDriver);
 
         $meta = $em->getClassMetadata('Fixture\Timestampable\Mapping');
-        $config = $timestampable->getConfiguration($em, $meta->name);
+        $exm = $timestampable->getConfiguration($em, $meta->name);
 
-        $this->assertTimestampableMapping($config);
+        $this->assertMapping($exm);
     }
 }

@@ -3,35 +3,36 @@
 namespace Tree\NestedSet;
 
 use Doctrine\Common\EventManager;
-use Tool\BaseTestCaseORM;
-use Doctrine\Common\Util\Debug;
+use TestTool\ObjectManagerTestCase;
+use Gedmo\Tree\TreeListener;
 
-/**
- * These are tests for Tree behavior
- * Based on reported github issue #12
- * JOINED table inheritance mapping bug on Tree;
- *
- * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @link http://www.gediminasm.org
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
- */
-class MultiInheritanceWithJoinedTableTest extends BaseTestCaseORM
+class MultiInheritanceWithJoinedTableTest extends ObjectManagerTestCase
 {
-    const USER = "Tree\\Fixture\\User";
-    const GROUP = "Tree\\Fixture\\UserGroup";
-    const ROLE = "Tree\\Fixture\\Role";
-    const USERLDAP = "Tree\\Fixture\\UserLDAP";
+    const USER = "Fixture\Tree\NestedSet\User\User";
+    const GROUP = "Fixture\Tree\NestedSet\User\UserGroup";
+    const ROLE = "Fixture\Tree\NestedSet\User\Role";
+    const USERLDAP = "Fixture\Tree\NestedSet\User\UserLDAP";
+
+    private $em, $listener;
 
     protected function setUp()
     {
-        parent::setUp();
-
         $evm = new EventManager;
-        $this->tree = new TreeListener;
-        $evm->addEventSubscriber($this->tree);
+        $evm->addEventSubscriber($this->listener = new TreeListener);
 
-        $this->getMockSqliteEntityManager($evm);
+        $this->em = $this->createEntityManager($evm);
+        $this->createSchema($this->em, array(
+            self::USER,
+            self::GROUP,
+            self::ROLE,
+            self::USERLDAP
+        ));
         $this->populate();
+    }
+
+    protected function tearDown()
+    {
+        $this->releaseEntityManager($this->em);
     }
 
     /**
@@ -41,7 +42,7 @@ class MultiInheritanceWithJoinedTableTest extends BaseTestCaseORM
     {
         $admins = $this->em->getRepository(self::GROUP)->findOneByName('Admins');
         $adminRight = $admins->getRight();
-        $userLdap = new \Fixture\Tree\UserLDAP('testname');
+        $userLdap = new \Fixture\Tree\NestedSet\User\UserLDAP('testname');
         $userLdap->init();
         $userLdap->setParent($admins);
         $this->em->persist($userLdap);
@@ -58,7 +59,7 @@ class MultiInheritanceWithJoinedTableTest extends BaseTestCaseORM
     public function shouldBeAbleToPopulateTree()
     {
         $admins = $this->em->getRepository(self::GROUP)->findOneByName('Admins');
-        $user3 = new \Fixture\Tree\User('user3@test.com', 'secret');
+        $user3 = new \Fixture\Tree\NestedSet\User\User('user3@test.com', 'secret');
         $user3->init();
         $user3->setParent($admins);
 
@@ -104,31 +105,21 @@ class MultiInheritanceWithJoinedTableTest extends BaseTestCaseORM
         $this->assertEquals(2, $user3->getLevel());
     }
 
-    protected function getUsedEntityFixtures()
-    {
-        return array(
-            self::USER,
-            self::GROUP,
-            self::ROLE,
-            self::USERLDAP
-        );
-    }
-
     private function populate()
     {
-        $everyBody = new \Fixture\Tree\UserGroup('Everybody');
-        $admins = new \Fixture\Tree\UserGroup('Admins');
+        $everyBody = new \Fixture\Tree\NestedSet\User\UserGroup('Everybody');
+        $admins = new \Fixture\Tree\NestedSet\User\UserGroup('Admins');
         $admins->setParent($everyBody);
-        $visitors = new \Fixture\Tree\UserGroup('Visitors');
+        $visitors = new \Fixture\Tree\NestedSet\User\UserGroup('Visitors');
         $visitors->setParent($everyBody);
 
-        $user0 = new \Fixture\Tree\User('user0@test.com', 'secret');
+        $user0 = new \Fixture\Tree\NestedSet\User\User('user0@test.com', 'secret');
         $user0->init();
         $user0->setParent($admins);
-        $user1 = new \Fixture\Tree\User('user1@test.com', 'secret');
+        $user1 = new \Fixture\Tree\NestedSet\User\User('user1@test.com', 'secret');
         $user1->init();
         $user1->setParent($visitors);
-        $user2 = new \Fixture\Tree\User('user2@test.com', 'secret');
+        $user2 = new \Fixture\Tree\NestedSet\User\User('user2@test.com', 'secret');
         $user2->init();
         $user2->setParent($visitors);
 

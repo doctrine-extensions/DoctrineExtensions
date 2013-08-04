@@ -2,10 +2,9 @@
 
 namespace Gedmo\ReferenceIntegrity\Mapping\Driver;
 
-use Gedmo\Mapping\Driver\AbstractAnnotationDriver;
-use Gedmo\Exception\InvalidMappingException;
-use Gedmo\Mapping\Annotation\ReferenceIntegrityAction;
-use Gedmo\ReferenceIntegrity\Mapping\Validator;
+use Gedmo\Mapping\Driver\AnnotationDriver;
+use Gedmo\Mapping\ExtensionMetadataInterface;
+use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 
 /**
  * This is an annotation mapping driver for ReferenceIntegrity
@@ -16,62 +15,22 @@ use Gedmo\ReferenceIntegrity\Mapping\Validator;
  * @author Evert Harmeling <evert.harmeling@freshheads.com>
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class Annotation extends AbstractAnnotationDriver
+class Annotation extends AnnotationDriver
 {
     /**
      * Annotation to identify the fields which manages the reference integrity
      */
-    const REFERENCE_INTEGRITY = 'Gedmo\\Mapping\\Annotation\\ReferenceIntegrity';
-
-    /**
-     * ReferenceIntegrityAction extension annotation
-     */
-    const ACTION = 'Gedmo\\Mapping\\Annotation\\ReferenceIntegrityAction';
+    const REFERENCE_INTEGRITY = 'Gedmo\Mapping\Annotation\ReferenceIntegrity';
 
     /**
      * {@inheritDoc}
      */
-    public function readExtendedMetadata($meta, array &$config)
+    public function loadExtensionMetadata(ClassMetadata $meta, ExtensionMetadataInterface $exm)
     {
-        $validator = new Validator();
-        $reflClass = $this->getMetaReflectionClass($meta);
-
-        foreach ($reflClass->getProperties() as $reflProperty) {
+        $class = $meta->reflClass;
+        foreach ($class->getProperties() as $reflProperty) {
             if ($referenceIntegrity = $this->reader->getPropertyAnnotation($reflProperty, self::REFERENCE_INTEGRITY)) {
-                $property = $reflProperty->getName();
-                if (!$meta->hasField($property)) {
-                    throw new InvalidMappingException(
-                        sprintf(
-                            "Unable to find reference integrity [%s] as mapped property in entity - %s",
-                            $property,
-                            $meta->name
-                        )
-                    );
-                }
-
-                $fieldMapping = $meta->getFieldMapping($property);
-                if (!isset($fieldMapping['mappedBy'])) {
-                    throw new InvalidMappingException(
-                        sprintf(
-                            "'mappedBy' should be set on '%s' in '%s'",
-                            $property,
-                            $meta->name
-                        )
-                    );
-                }
-
-                if (!in_array($referenceIntegrity->value, $validator->getIntegrityActions())) {
-                    throw new InvalidMappingException(
-                        sprintf(
-                            "Field - [%s] does not have a valid integrity option, [%s] in class - %s",
-                            $property,
-                            implode($validator->getIntegrityActions(), ', '),
-                            $meta->name
-                        )
-                    );
-                }
-
-                $config['referenceIntegrity'][$property] = $referenceIntegrity->value;
+                $exm->map($reflProperty->getName(), $referenceIntegrity->value);
             }
         }
     }

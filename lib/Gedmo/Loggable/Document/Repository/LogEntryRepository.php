@@ -6,6 +6,9 @@ use Gedmo\Loggable\LoggableListener;
 use Doctrine\ODM\MongoDB\DocumentRepository;
 use Gedmo\Mapping\ObjectManagerHelper as OMH;
 use Doctrine\ODM\MongoDB\Cursor;
+use Gedmo\Exception\InvalidArgumentException;
+use Gedmo\Exception\UnexpectedValueException;
+use Gedmo\Exception\RuntimeException;
 
 /**
  * The LogEntryRepository has some useful functions
@@ -32,6 +35,11 @@ class LogEntryRepository extends DocumentRepository
      */
     public function getLogEntries($document)
     {
+        if (!$this->dm->getUnitOfWork()->isInIdentityMap($document)) {
+            throw new InvalidArgumentException("Document is not managed by UnitOfWork");
+        }
+        $this->dm->initializeObject($document);
+
         $objectId = OMH::getIdentifier($this->dm, $document);
         $meta = $this->dm->getClassMetadata(get_class($document));
 
@@ -61,6 +69,11 @@ class LogEntryRepository extends DocumentRepository
      */
     public function revert($document, $version = 1)
     {
+        if (!$this->dm->getUnitOfWork()->isInIdentityMap($document)) {
+            throw new InvalidArgumentException("Document is not managed by UnitOfWork");
+        }
+        $this->dm->initializeObject($document);
+
         $objectId = OMH::getIdentifier($this->dm, $document);
         $objectMeta = $this->dm->getClassMetadata(get_class($document));
         $meta = $this->getClassMetadata();
@@ -77,8 +90,8 @@ class LogEntryRepository extends DocumentRepository
             $logs = $logs->toArray();
         }
         if ($logs) {
-            $config = $this->getLoggableListener()->getConfiguration($this->dm, $objectMeta->name);
-            $fields = $config['versioned'];
+            $exm = $this->getLoggableListener()->getConfiguration($this->dm, $objectMeta->name);
+            $fields = $exm->getVersionedFields();
             $filled = false;
             while (($log = array_pop($logs)) && !$filled) {
                 if ($data = $log->getData()) {
@@ -99,7 +112,7 @@ class LogEntryRepository extends DocumentRepository
                 throw new \Gedmo\Exception\UnexpectedValueException('Cound not fully revert the document to version: '.$version);
             }*/
         } else {
-            throw new \Gedmo\Exception\UnexpectedValueException('Count not find any log entries under version: '.$version);
+            throw new UnexpectedValueException('Count not find any log entries under version: '.$version);
         }
     }
 
@@ -119,7 +132,7 @@ class LogEntryRepository extends DocumentRepository
                     }
                 }
             }
-            throw new \Gedmo\Exception\RuntimeException('The loggable listener could not be found');
+            throw new RuntimeException('The loggable listener could not be found');
         }
         return $this->listener;
     }

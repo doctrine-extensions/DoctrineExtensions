@@ -22,9 +22,12 @@ class SortableRepository extends DocumentRepository
      *
      * @var SortableListener
      */
-    protected $listener = null;
+    protected $listener;
 
-    protected $config = null;
+    /**
+     * @var \Gedmo\Sortable\Mapping\SortableMetadata
+     */
+    protected $exm;
 
     public function __construct(DocumentManager $dm, ClassMetadata $class)
     {
@@ -41,7 +44,7 @@ class SortableRepository extends DocumentRepository
         if (is_null($this->listener)) {
             throw new InvalidMappingException('Sortable listener is not hooked to DocumentManager of this repository for class: '.$class->name);
         }
-        $this->config = $this->listener->getConfiguration($dm, $class->name);
+        $this->exm = $this->listener->getConfiguration($dm, $class->name);
     }
 
     public function getBySortableGroupsQuery($sortableField, array $groupValues = array())
@@ -51,17 +54,17 @@ class SortableRepository extends DocumentRepository
 
     public function getBySortableGroupsQueryBuilder($sortableField, array $groupValues = array())
     {
-        if (!array_key_exists($sortableField, $this->config)) {
+        if (!$options = $this->exm->getOptions($sortableField)) {
             throw new InvalidArgumentException("Sortable field: '$sortableField' is not configured to be sortable in class: {$this->class->name}");
         }
 
         foreach ($groupValues as $name => $value) {
-            if (!in_array($name, $this->config[$sortableField])) {
+            if (!in_array($name, $options['groups'])) {
                 throw new InvalidArgumentException('Sortable group "'.$name.'" is not defined in class '.$this->class->name);
             }
         }
 
-        $qb = $this->dm->createQueryBuilder($this->class->rootDocumentName);
+        $qb = $this->dm->createQueryBuilder($options['rootClass']);
         $qb->sort($sortable, 'asc');
         foreach ($groupValues as $group => $value) {
             if ($this->class->isSingleValuedAssociation($group) && null !== $value) {

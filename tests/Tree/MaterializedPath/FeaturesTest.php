@@ -22,7 +22,7 @@ class FeaturesTest extends ObjectManagerTestCase
             self::CATEGORY,
         ));
         $meta = $this->em->getClassMetadata(self::CATEGORY);
-        $this->config = $this->listener->getConfiguration($this->em, $meta->name);
+        $this->config = $this->listener->getConfiguration($this->em, $meta->name)->getMapping();
     }
 
     protected function tearDown()
