@@ -14,7 +14,14 @@ use Doctrine\Common\Collections\Collection;
  */
 class LazyCollection implements Collection
 {
+    /**
+     * @var Collection
+     */
     private $results;
+
+    /**
+     * @var callable
+     */
     private $callback;
 
     public function __construct($callback)

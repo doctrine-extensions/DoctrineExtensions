@@ -12,9 +12,8 @@ class Issue104Test extends ObjectManagerTestCase
 
     /**
      * @test
-     * @expectedException \Gedmo\Exception\InvalidMappingException
      */
-    public function shouldThrowAnExceptionWhenMappedSuperclassProtectedProperty()
+    public function shouldNotThrowAnExceptionWhenMappedSuperclassProtectedProperty()
     {
         $evm = new EventManager();
         $evm->addEventSubscriber(new SluggableListener());

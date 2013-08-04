@@ -41,12 +41,12 @@ class EncoderExtensionWithEntityManagerTest extends ObjectManagerTestCase
     public function shouldLoadEncoderExtensionMetadata()
     {
         $meta = $this->em->getClassMetadata(self::PERSON);
-        $config = $this->encoder->getConfiguration($this->em, self::PERSON);
-        $this->assertArrayHasKey('encode', $config);
-        $this->assertCount(1, $config['encode']);
+        $exm = $this->encoder->getConfiguration($this->em, self::PERSON);
 
-        $this->assertArrayHasKey('password', $config['encode']);
-        $options = $config['encode']['password'];
+        $this->assertCount(1, $fields = $exm->getEncoderFields());
+        $this->assertContains('password', $fields);
+        $this->assertTrue(is_array($options = $exm->getEncoderOptions('password')));
+
         $this->assertEquals('sha1', $options['type']);
         $this->assertEquals('guess', $options['secret']);
     }

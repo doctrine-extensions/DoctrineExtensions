@@ -9,7 +9,13 @@ use TestTool\ObjectManagerTestCase;
 
 class CustomDriverTest extends ObjectManagerTestCase
 {
+    /**
+     * @var \Doctrine\ORM\EntityManager
+     */
     private $em;
+    /**
+     * @var TimestampableListener
+     */
     private $timestampable;
 
     protected function setUp()

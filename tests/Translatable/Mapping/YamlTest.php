@@ -8,9 +8,10 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\Driver\YamlDriver;
 use Doctrine\ORM\Mapping\Driver\SimplifiedYamlDriver;
 use Gedmo\Translatable\TranslatableListener;
-use TestTool\ObjectManagerTestCase;
 
-class YamlTest extends ObjectManagerTestCase
+require_once __DIR__.'/MappingTestCase.php';
+
+class YamlTest extends MappingTestCase
 {
     /**
      * @var EntityManager
@@ -45,15 +46,6 @@ class YamlTest extends ObjectManagerTestCase
     public function shouldSupportYamlMapping()
     {
         $meta = $this->em->getClassMetadata('Fixture\Unmapped\Translatable');
-        $config = $this->translatable->getConfiguration($this->em, $meta->name);
-
-        $this->assertArrayHasKey('translationClass', $config);
-        $this->assertEquals('Fixture\Unmapped\TranslatableTranslation', $config['translationClass']);
-
-        $this->assertArrayHasKey('fields', $config);
-        $this->assertCount(3, $config['fields']);
-        $this->assertArrayHasKey('title', $config['fields']);
-        $this->assertArrayHasKey('content', $config['fields']);
-        $this->assertArrayHasKey('author', $config['fields']);
+        $this->assertMapping($this->translatable->getConfiguration($this->em, $meta->name));
     }
 }

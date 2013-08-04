@@ -2,11 +2,11 @@
 
 namespace Gedmo\Sluggable;
 
-use Doctrine\Common\EventArgs;
 use Gedmo\Mapping\MappedEventSubscriber;
-use Doctrine\Common\Persistence\ObjectManager;
 use Gedmo\Exception\InvalidArgumentException;
 use Gedmo\Mapping\ObjectManagerHelper as OMH;
+use Doctrine\Common\EventArgs;
+use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Doctrine\ODM\MongoDB\Cursor;
@@ -142,8 +142,8 @@ class SluggableListener extends MappedEventSubscriber
         $object = OMH::getObjectFromEvent($event);
         $meta = $om->getClassMetadata(get_class($object));
 
-        if ($config = $this->getConfiguration($om, $meta->name)) {
-            foreach ($config as $slugField => $options) {
+        if ($exm = $this->getConfiguration($om, $meta->name)) {
+            foreach ($exm->getFields() as $slugField) {
                 if ($meta->isIdentifier($slugField)) {
                     $meta->getReflectionProperty($slugField)->setValue($object, '__id__');
                 }
@@ -173,7 +173,6 @@ class SluggableListener extends MappedEventSubscriber
             if ($this->getConfiguration($om, $meta->name)) {
                 // generate first to exclude this object from similar persisted slugs result
                 $this->generateSlug($om, $object);
-                $this->persisted[OMH::getRootObjectClass($meta)][] = $object;
             }
         }
         // we use onFlush and not preUpdate event to let other
@@ -182,7 +181,6 @@ class SluggableListener extends MappedEventSubscriber
             $meta = $om->getClassMetadata(get_class($object));
             if ($this->getConfiguration($om, $meta->name) && !$uow->isScheduledForInsert($object)) {
                 $this->generateSlug($om, $object);
-                $this->persisted[OMH::getRootObjectClass($meta)][] = $object;
             }
         }
 
@@ -202,8 +200,6 @@ class SluggableListener extends MappedEventSubscriber
      *
      * @param ObjectManager $om
      * @param object        $object
-     *
-     * @throws UnexpectedValueException - if parameters are missing or invalid
      */
     private function generateSlug(ObjectManager $om, $object)
     {
@@ -211,14 +207,16 @@ class SluggableListener extends MappedEventSubscriber
         $uow = $om->getUnitOfWork();
         $changeSet = OMH::getObjectChangeSet($uow, $object);
         $isInsert = $uow->isScheduledForInsert($object);
-        $config = $this->getConfiguration($om, $meta->name);
+        $exm = $this->getConfiguration($om, $meta->name);
 
-        foreach ($config as $slugField => $options) {
+        foreach ($exm->getFields() as $slugField) {
+            $options = $exm->getOptions($slugField);
             // collect the slug from fields
             $slug = $meta->getReflectionProperty($slugField)->getValue($object);
 
             // if slug should not be updated, skip it
             if (!$options['updatable'] && !$isInsert && (!isset($changeSet[$slugField]) || $slug === '__id__')) {
+                $this->persisted[$options['rootClass']][] = $object;
                 continue;
             }
             // must fetch the old slug from changeset, since $object holds the new version
@@ -305,6 +303,8 @@ class SluggableListener extends MappedEventSubscriber
 
                 // recompute changeset
                 OMH::recomputeSingleObjectChangeSet($uow, $meta, $object);
+                // keep it for unique check
+                $this->persisted[$options['rootClass']][] = $object;
             }
         }
     }
@@ -324,8 +324,8 @@ class SluggableListener extends MappedEventSubscriber
     private function makeUniqueSlug(ObjectManager $om, $object, $slugField, $preferredSlug, $exponent, $recurse)
     {
         $meta = $om->getClassMetadata(get_class($object));
-        $config = $this->getConfiguration($om, $meta->name);
-        $options = $config[$slugField]; // only interested in one specific slug field
+        $exm = $this->getConfiguration($om, $meta->name);
+        $options = $exm->getOptions($slugField);
         $similarPersisted = array();
         $slugProp = $meta->getReflectionProperty($slugField);
         $sep = $options['separator']; // shortcut
@@ -338,13 +338,12 @@ class SluggableListener extends MappedEventSubscriber
         }
 
         // collect similar persisted slugs during this flush
-        if (isset($this->persisted[$class = OMH::getRootObjectClass($meta)])) {
-            foreach ($this->persisted[$class] as $obj) {
+        if (isset($this->persisted[$options['rootClass']])) {
+            foreach ($this->persisted[$options['rootClass']] as $obj) {
                 if ($base !== false && $meta->getReflectionProperty($options['unique_base'])->getValue($obj) !== $base) {
                     continue; // if unique_base field is not the same, do not take slug as similar
                 }
-                $slug = $slugProp->getValue($obj);
-                if (preg_match("@^{$preferredSlug}.*@smi", $slug)) {
+                if (preg_match("@^{$preferredSlug}.*@smi", $slug = $slugProp->getValue($obj))) {
                     $similarPersisted[] = $slug;
                 }
             }
@@ -395,15 +394,15 @@ class SluggableListener extends MappedEventSubscriber
     protected function getSimilarSlugs(ObjectManager $om, $object, $slugField, $slug)
     {
         $meta = $om->getClassMetadata(get_class($object));
-        $config = $this->getConfiguration($om, $meta->name);
-        $options = $config[$slugField]; // only interested in one specific slug field
+        $exm = $this->getConfiguration($om, $meta->name);
+        $options = $exm->getOptions($slugField);
         $ids = OMH::getIdentifier($om, $object, false);
 
         $similar = array();
         if ($om instanceof EntityManager) {
             $qb = $om->createQueryBuilder();
             $qb->select('rec.'.$slugField)
-                ->from(OMH::getRootObjectClass($meta), 'rec')
+                ->from($options['rootClass'], 'rec')
                 ->where($qb->expr()->like('rec.'.$slugField, ':slug'))
                 ->setParameter('slug', $slug.'%');
 
@@ -429,7 +428,7 @@ class SluggableListener extends MappedEventSubscriber
 
             $similar = $qb->getQuery()->getArrayResult();
         } elseif ($om instanceof DocumentManager) {
-            $qb = $om->createQueryBuilder(OMH::getRootObjectClass($meta));
+            $qb = $om->createQueryBuilder($options['rootClass']);
             if ($ids && ($id = current($ids)) && !$meta->isIdentifier($slugField)) {
                 $qb->field($meta->identifier)->notEqual($id);
             }

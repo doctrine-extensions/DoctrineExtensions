@@ -6,6 +6,7 @@ use Doctrine\ORM\Query\SqlWalker;
 use Doctrine\ORM\Query\AST\DeleteStatement;
 use Doctrine\ORM\Query\AST\DeleteClause;
 use Doctrine\ORM\Query\Exec\SingleTableDeleteUpdateExecutor;
+use Gedmo\Exception\RuntimeException;
 use Gedmo\SoftDeleteable\SoftDeleteableListener;
 use Gedmo\SoftDeleteable\Query\TreeWalker\Exec\MultiTableDeleteExecutor;
 
@@ -75,7 +76,7 @@ class SoftDeleteableWalker extends SqlWalker
         $quotedTableName = $class->getQuotedTableName($this->platform);
         $quotedColumnName = $class->getQuotedColumnName($this->deletedAtField, $this->platform);
 
-        $sql = 'UPDATE '.$quotedTableName.' SET '.$quotedColumnName.' = '.$this->conn->quote(date('Y-m-d H:i:s'));
+        $sql = 'UPDATE '.$quotedTableName.' SET '.$quotedColumnName.' = "'.date('Y-m-d H:i:s').'"';
 
         return $sql;
     }
@@ -83,7 +84,7 @@ class SoftDeleteableWalker extends SqlWalker
     /**
      * Get the currently used SoftDeleteableListener
      *
-     * @throws \Gedmo\Exception\RuntimeException - if listener is not found
+     * @throws RuntimeException - if listener is not found
      *
      * @return SoftDeleteableListener
      */
@@ -96,16 +97,13 @@ class SoftDeleteableWalker extends SqlWalker
                 foreach ($listeners as $hash => $listener) {
                     if ($listener instanceof SoftDeleteableListener) {
                         $this->listener = $listener;
-                        break;
+                        break 2;
                     }
-                }
-                if ($this->listener) {
-                    break;
                 }
             }
 
             if (is_null($this->listener)) {
-                throw new \Gedmo\Exception\RuntimeException('The SoftDeleteable listener could not be found.');
+                throw new RuntimeException('The SoftDeleteable listener could not be found.');
             }
         }
 
@@ -128,10 +126,10 @@ class SoftDeleteableWalker extends SqlWalker
                 continue;
             }
             $meta = $comp['metadata'];
-            $config = $this->listener->getConfiguration($em, $meta->name);
-            if ($config && isset($config['softDeleteable']) && $config['softDeleteable']) {
-                $this->configuration = $config;
-                $this->deletedAtField = $config['fieldName'];
+            $exm = $this->listener->getConfiguration($em, $meta->name);
+            if (!$exm->isEmpty()) {
+                $this->configuration = $exm;
+                $this->deletedAtField = $exm->getField();
                 $this->meta = $meta;
             }
         }

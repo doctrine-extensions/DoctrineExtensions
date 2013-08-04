@@ -78,9 +78,9 @@ class ReferencesListener extends MappedEventSubscriber
         $om = OMH::getObjectManagerFromEvent($event);
         $object = OMH::getObjectFromEvent($event);
         $meta = $om->getClassMetadata(get_class($object));
-        $config = $this->getConfiguration($om, $meta->name);
-        foreach ($config['referenceOne'] as $mapping) {
-            $property = $meta->reflClass->getProperty($mapping['field']);
+        $exm = $this->getConfiguration($om, $meta->name);
+        foreach ($exm->getReferencesOfType('referenceOne') as $field => $mapping) {
+            $property = $meta->reflClass->getProperty($field);
             $property->setAccessible(true);
             if (isset($mapping['identifier'])) {
                 $referencedObjectId = $meta->getFieldValue($object, $mapping['identifier']);
@@ -94,8 +94,8 @@ class ReferencesListener extends MappedEventSubscriber
             }
         }
 
-        foreach ($config['referenceMany'] as $mapping) {
-            $property = $meta->reflClass->getProperty($mapping['field']);
+        foreach ($exm->getReferencesOfType('referenceMany') as $field => $mapping) {
+            $property = $meta->reflClass->getProperty($field);
             $property->setAccessible(true);
             if (isset($mapping['mappedBy'])) {
                 $id = OMH::getIdentifier($om, $object);
@@ -103,9 +103,9 @@ class ReferencesListener extends MappedEventSubscriber
                 $class = $mapping['class'];
                 $refMeta = $manager->getClassMetadata($class);
                 $refConfig = $this->getConfiguration($manager, $refMeta->name);
-                if (isset($refConfig['referenceOne'][$mapping['mappedBy']])) {
-                    $refMapping = $refConfig['referenceOne'][$mapping['mappedBy']];
-                    $identifier = $refMapping['identifier'];
+
+                if ($ref = $refConfig->getReferenceMapping('referenceOne', $mapping['mappedBy'])) {
+                    $identifier = $ref['identifier'];
                     $property->setValue($object, new LazyCollection(function () use ($id, &$manager, $class, $identifier) {
                         $results = $manager->getRepository($class)->findBy(array(
                             $identifier => $id,
@@ -209,11 +209,11 @@ class ReferencesListener extends MappedEventSubscriber
         $om = OMH::getObjectManagerFromEvent($event);
         $object = OMH::getObjectFromEvent($event);
         $meta = $om->getClassMetadata(get_class($object));
-        $config = $this->getConfiguration($om, $meta->name);
+        $exm = $this->getConfiguration($om, $meta->name);
 
-        foreach ($config['referenceOne'] as $mapping) {
+        foreach ($exm->getReferencesOfType('referenceOne') as $field => $mapping) {
             if (isset($mapping['identifier'])) {
-                $property = $meta->reflClass->getProperty($mapping['field']);
+                $property = $meta->reflClass->getProperty($field);
                 $property->setAccessible(true);
                 $referencedObject = $property->getValue($object);
                 if (is_object($referencedObject)) {
@@ -239,10 +239,10 @@ class ReferencesListener extends MappedEventSubscriber
         $om = OMH::getObjectManagerFromEvent($event);
         $object = OMH::getObjectFromEvent($event);
         $meta = $om->getClassMetadata(get_class($object));
-        $config = $this->getConfiguration($om, $meta->name);
+        $exm = $this->getConfiguration($om, $meta->name);
 
-        foreach ($config['referenceManyEmbed'] as $mapping) {
-            $property = $meta->reflClass->getProperty($mapping['field']);
+        foreach ($exm->getReferencesOfType('referenceManyEmbed') as $field => $mapping) {
+            $property = $meta->reflClass->getProperty($field);
             $property->setAccessible(true);
 
             $id = OMH::getIdentifier($om, $object);

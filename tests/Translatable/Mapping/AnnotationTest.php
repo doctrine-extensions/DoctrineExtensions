@@ -36,16 +36,14 @@ class AnnotationTest extends ObjectManagerTestCase
     public function shouldMapTranslatableEntity()
     {
         $meta = $this->em->getClassMetadata('Fixture\Translatable\Post');
-        $config = $this->translatable->getConfiguration($this->em, $meta->name);
+        $exm = $this->translatable->getConfiguration($this->em, $meta->name);
 
-        $this->assertTrue(!empty($config));
-        // translation class
-        $this->assertArrayHasKey('translationClass', $config);
-        $this->assertEquals('Fixture\Translatable\PostTranslation', $config['translationClass']);
-        // translatable fields
-        $this->assertArrayHasKey('fields', $config);
-        $this->assertCount(2, $config['fields']);
-        $this->assertArrayHasKey('title', $config['fields']);
-        $this->assertArrayHasKey('content', $config['fields']);
+        $this->assertFalse($exm->isEmpty());
+        $this->assertCount(2, $fields = $exm->getFields());
+
+        $this->assertContains('title', $fields);
+        $this->assertContains('content', $fields);
+
+        $this->assertSame('Fixture\Translatable\PostTranslation', $exm->getTranslationClass());
     }
 }

@@ -7,7 +7,7 @@ use Doctrine\ODM\MongoDB\Mapping\Annotations as MONGO;
 
 /**
  * @MONGO\Document(repositoryClass="Gedmo\Tree\Document\MongoDB\Repository\MaterializedPathRepository")
- * @Gedmo\Tree(type="materializedPath", activateLocking=true)
+ * @Gedmo\Tree(type="materializedPath", lockingTimeout=3)
  */
 class Article
 {

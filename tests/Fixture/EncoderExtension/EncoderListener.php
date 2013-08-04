@@ -3,6 +3,7 @@
 namespace Fixture\EncoderExtension;
 
 use Doctrine\Common\EventArgs;
+use Fixture\EncoderExtension\Mapping\EncoderExtensionMetadata;
 use Gedmo\Mapping\MappedEventSubscriber;
 use Gedmo\Mapping\ObjectManagerHelper as OMH;
 use Doctrine\Common\Persistence\ObjectManager;
@@ -35,16 +36,16 @@ class EncoderListener extends MappedEventSubscriber
         foreach (OMH::getScheduledObjectUpdates($uow) as $object) {
             $meta = $om->getClassMetadata(get_class($object));
             // if it has our metadata lets encode the properties
-            if ($config = $this->getConfiguration($om, $meta->name)) {
-                $this->encode($om, $object, $config);
+            if ($exm = $this->getConfiguration($om, $meta->name)) {
+                $this->encode($om, $object, $exm);
             }
         }
         // check all pending insertions
         foreach (OMH::getScheduledObjectInsertions($uow) as $object) {
             $meta = $om->getClassMetadata(get_class($object));
             // if it has our metadata lets encode the properties
-            if ($config = $this->getConfiguration($om, $meta->name)) {
-                $this->encode($om, $object, $config);
+            if ($exm = $this->getConfiguration($om, $meta->name)) {
+                $this->encode($om, $object, $exm);
             }
         }
     }
@@ -55,13 +56,14 @@ class EncoderListener extends MappedEventSubscriber
         return __NAMESPACE__;
     }
 
-    private function encode(ObjectManager $om, $object, $config)
+    private function encode(ObjectManager $om, $object, EncoderExtensionMetadata $exm)
     {
         $meta = $om->getClassMetadata(get_class($object));
         $uow = $om->getUnitOfWork();
         // password should be hashed only when it has changed
         $changeSet = OMH::getObjectChangeSet($uow, $object);
-        foreach ($config['encode'] as $field => $options) {
+        foreach ($exm->getEncoderFields() as $field) {
+            $options = $exm->getEncoderOptions($field);
             if (array_key_exists($field, $changeSet)) {
                 $value = $meta->getReflectionProperty($field)->getValue($object);
                 $method = $options['type'];

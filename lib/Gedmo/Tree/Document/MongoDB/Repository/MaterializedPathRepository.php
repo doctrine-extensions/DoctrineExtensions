@@ -4,7 +4,6 @@ namespace Gedmo\Tree\Document\MongoDB\Repository;
 
 use Gedmo\Exception\InvalidArgumentException;
 use Gedmo\Tree\Strategy;
-use Gedmo\Tool\Wrapper\MongoDocumentWrapper;
 
 /**
  * The MaterializedPathRepository has some useful functions
@@ -83,21 +82,17 @@ class MaterializedPathRepository extends AbstractTreeRepository
     public function childCount($node = null, $direct = false)
     {
         $meta = $this->getClassMetadata();
-
-        if (is_object($node)) {
-            if (!($node instanceof $meta->name)) {
-                throw new InvalidArgumentException("Node is not related to this repository");
+        if (null !== $node) {
+            if (!$node instanceof $meta->name) {
+                throw new InvalidArgumentException("Node is not related to this repository - ".get_class($node));
             }
-
-            $wrapped = new MongoDocumentWrapper($node, $this->dm);
-
-            if (!$wrapped->hasValidIdentifier()) {
+            if (!$this->dm->getUnitOfWork()->isInIdentityMap($node)) {
                 throw new InvalidArgumentException("Node is not managed by UnitOfWork");
             }
+            $this->dm->initializeObject($node);
         }
 
         $qb = $this->getChildrenQueryBuilder($node, $direct);
-
         $qb->count();
 
         return (int) $qb->getQuery()->execute();
@@ -109,15 +104,18 @@ class MaterializedPathRepository extends AbstractTreeRepository
     public function getChildrenQueryBuilder($node = null, $direct = false, $sortByField = null, $direction = 'asc', $includeNode = false)
     {
         $meta = $this->getClassMetadata();
-        $config = $this->listener->getConfiguration($this->dm, $meta->name);
-        $separator = preg_quote($config['path_separator']);
+        $tree = $this->listener->getConfiguration($this->dm, $meta->name)->getMapping();
+        $separator = preg_quote($tree['path_separator']);
         $qb = $this->dm->createQueryBuilder()
-            ->find($meta->name);
+            ->find($tree['rootClass']);
         $regex = false;
 
-        if (is_object($node) && $node instanceof $meta->name) {
-            $node = new MongoDocumentWrapper($node, $this->dm);
-            $nodePath = preg_quote($node->getPropertyValue($config['path']));
+        if ($node instanceof $meta->name) {
+            if (!$this->dm->getUnitOfWork()->isInIdentityMap($node)) {
+                throw new InvalidArgumentException("Node is not managed by UnitOfWork");
+            }
+            $this->dm->initializeObject($node);
+            $nodePath = preg_quote($meta->getReflectionProperty($tree['path'])->getValue($node));
 
             if ($direct) {
                 $regex = sprintf('/^%s([^%s]+%s)'.($includeNode ? '?' : '').'$/',
@@ -135,10 +133,10 @@ class MaterializedPathRepository extends AbstractTreeRepository
         }
 
         if ($regex) {
-            $qb->field($config['path'])->equals(new \MongoRegex($regex));
+            $qb->field($tree['path'])->equals(new \MongoRegex($regex));
         }
 
-        $qb->sort(is_null($sortByField) ? $config['path'] : $sortByField, $direction === 'asc' ? 'asc' : 'desc');
+        $qb->sort(is_null($sortByField) ? $tree['path'] : $sortByField, $direction === 'asc' ? 'asc' : 'desc');
 
         return $qb;
     }
