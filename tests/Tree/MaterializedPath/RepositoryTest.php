@@ -22,7 +22,7 @@ class RepositoryTest extends ObjectManagerTestCase
             self::CATEGORY,
         ));
         $meta = $this->em->getClassMetadata(self::CATEGORY);
-        $this->config = $this->listener->getConfiguration($this->em, $meta->name);
+        $this->config = $this->listener->getConfiguration($this->em, $meta->name)->getMapping();
         $this->repo = $this->em->getRepository(self::CATEGORY);
 
         $this->populate();

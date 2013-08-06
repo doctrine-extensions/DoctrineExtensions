@@ -31,7 +31,7 @@ final class SluggableMetadata implements ExtensionMetadataInterface
      *
      * @var array
      */
-    private $validSluggableFieldTypes = array(
+    private $validFieldTypes = array(
         'string',
         'text',
         'integer',
@@ -44,7 +44,7 @@ final class SluggableMetadata implements ExtensionMetadataInterface
      * @param string $field - sluggable field
      * @param array $options - slug options
      */
-    public function mapSlugField($field, array $options)
+    public function map($field, array $options)
     {
         $this->slugs[$field] = $options;
     }
@@ -54,7 +54,7 @@ final class SluggableMetadata implements ExtensionMetadataInterface
      *
      * @return array
      */
-    public function getSlugFields()
+    public function getFields()
     {
         return array_keys($this->slugs);
     }
@@ -65,7 +65,7 @@ final class SluggableMetadata implements ExtensionMetadataInterface
      * @param string $field - slug field
      * @return array - list of options
      */
-    public function getSlugMapping($field)
+    public function getOptions($field)
     {
         return isset($this->slugs[$field]) ? $this->slugs[$field] : null;
     }
@@ -83,8 +83,9 @@ final class SluggableMetadata implements ExtensionMetadataInterface
                 throw new InvalidMappingException("Unable to find slug [{$field}] as mapped property in class - {$meta->name}");
             }
             $mapping = $meta->getFieldMapping($field);
-            if (!in_array($mapping['type'], $this->validSluggableFieldTypes)) {
-                throw new InvalidMappingException("Cannot use field - [{$field}] for slug storage, type is not valid and must be 'string' or 'text' in class - {$meta->name}");
+            if (!in_array($mapping['type'], $this->validFieldTypes)) {
+                $valid = implode(', ', $this->validFieldTypes);
+                throw new InvalidMappingException("Cannot use field - [{$field}] for slug storage, type is not valid and must be one of: {$valid} in class - {$meta->name}");
             }
             if (empty($slug['fields']) || !is_array($slug['fields'])) {
                 throw new InvalidMappingException("Slug must contain at least one field for slug generation in class - {$meta->name}");
@@ -95,8 +96,9 @@ final class SluggableMetadata implements ExtensionMetadataInterface
                     throw new InvalidMappingException("Unable to find slug [{$slugField}] as mapped property in class - {$meta->name}");
                 }
                 $mapping = $meta->getFieldMapping($slugField);
-                if (!in_array($mapping['type'], $this->validSluggableFieldTypes)) {
-                    throw new InvalidMappingException("Cannot use field - [{$slugField}] for slug storage, type is not valid and must be 'string' or 'text' in class - {$meta->name}");
+                if (!in_array($mapping['type'], $this->validFieldTypes)) {
+                    $valid = implode(', ', $this->validFieldTypes);
+                    throw new InvalidMappingException("Cannot use field - [{$slugField}] to slug, type is not valid and must be one of: {$valid} in class - {$meta->name}");
                 }
             }
             // validate options

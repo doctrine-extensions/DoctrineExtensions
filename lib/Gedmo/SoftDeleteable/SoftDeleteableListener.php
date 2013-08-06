@@ -56,10 +56,10 @@ class SoftDeleteableListener extends MappedEventSubscriber
 
         foreach (OMH::getScheduledObjectDeletions($uow) as $object) {
             $meta = $om->getClassMetadata(get_class($object));
-            $config = $this->getConfiguration($om, $meta->name);
+            $exm = $this->getConfiguration($om, $meta->name);
 
-            if (isset($config['softDeleteable']) && $config['softDeleteable']) {
-                $reflProp = $meta->getReflectionProperty($config['fieldName']);
+            if ($exm = $this->getConfiguration($om, $meta->name)) {
+                $reflProp = $meta->getReflectionProperty($exm->getField());
                 $oldValue = $reflProp->getValue($object);
                 if ($oldValue instanceof \Datetime) {
                     continue; // want to hard delete
@@ -70,9 +70,9 @@ class SoftDeleteableListener extends MappedEventSubscriber
                 $reflProp->setValue($object, $date = new \DateTime);
 
                 $om->persist($object);
-                $uow->propertyChanged($object, $config['fieldName'], $oldValue, $date);
+                $uow->propertyChanged($object, $exm->getField(), $oldValue, $date);
                 $uow->scheduleExtraUpdate($object, array(
-                    $config['fieldName'] => array($oldValue, $date)
+                    $exm->getField() => array($oldValue, $date)
                 ));
                 $evm->dispatchEvent(self::POST_SOFT_DELETE, $lifecycleEvent);
             }
@@ -83,7 +83,6 @@ class SoftDeleteableListener extends MappedEventSubscriber
      * Mapps additional metadata
      *
      * @param EventArgs $event
-     * @return void
      */
     public function loadClassMetadata(EventArgs $event)
     {

@@ -6,7 +6,7 @@ use Doctrine\Common\EventArgs;
 use Gedmo\Exception\InvalidMappingException;
 use Gedmo\Exception\ReferenceIntegrityStrictException;
 use Gedmo\Mapping\MappedEventSubscriber;
-use Gedmo\ReferenceIntegrity\Mapping\Validator;
+use Gedmo\ReferenceIntegrity\Mapping\ReferenceIntegrityMetadata;
 use Gedmo\Mapping\ObjectManagerHelper as OMH;
 
 /**
@@ -51,14 +51,14 @@ class ReferenceIntegrityListener extends MappedEventSubscriber
         $class = get_class($object);
         $meta = $om->getClassMetadata($class);
 
-        if ($config = $this->getConfiguration($om, $class)) {
-            foreach ($config['referenceIntegrity'] as $property => $action) {
+        if ($exm = $this->getConfiguration($om, $class)) {
+            foreach ($exm->getFields() as $property => $action) {
                 $reflProp = $meta->getReflectionProperty($property);
                 $refDoc = $reflProp->getValue($object);
                 $fieldMapping = $meta->getFieldMapping($property);
 
                 switch ($action) {
-                    case Validator::NULLIFY:
+                    case ReferenceIntegrityMetadata::NULLIFY:
                         if (!isset($fieldMapping['mappedBy'])) {
                             throw new InvalidMappingException(
                                 sprintf(
@@ -94,7 +94,7 @@ class ReferenceIntegrityListener extends MappedEventSubscriber
                         }
 
                         break;
-                    case Validator::RESTRICT:
+                    case ReferenceIntegrityMetadata::RESTRICT:
                         if ($meta->isCollectionValuedReference($property) && $refDoc->count() > 0) {
                             throw new ReferenceIntegrityStrictException(
                                 sprintf(

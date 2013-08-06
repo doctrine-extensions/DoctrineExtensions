@@ -126,7 +126,7 @@ class RepositoryUtils implements RepositoryUtilsInterface
     public function buildTreeArray(array $nodes)
     {
         $meta = $this->getClassMetadata();
-        $config = $this->listener->getConfiguration($this->om, $meta->name);
+        $tree = $this->listener->getConfiguration($this->om, $meta->name)->getMapping();
         $nestedTree = array();
         $l = 0;
 
@@ -139,7 +139,7 @@ class RepositoryUtils implements RepositoryUtilsInterface
                 // Number of stack items
                 $l = count($stack);
                 // Check if we're dealing with different levels
-                while($l > 0 && $stack[$l - 1][$config['level']] >= $item[$config['level']]) {
+                while($l > 0 && $stack[$l - 1][$tree['level']] >= $item[$tree['level']]) {
                     array_pop($stack);
                     $l--;
                 }

@@ -2,13 +2,13 @@
 
 namespace Gedmo\SoftDeleteable\Mapping\Driver;
 
-use Gedmo\Mapping\Driver\File,
-    Gedmo\Mapping\Driver,
-    Gedmo\Exception\InvalidMappingException,
-    Gedmo\SoftDeleteable\Mapping\Validator;
+use Gedmo\Mapping\Driver\FileDriver;
+use Gedmo\Mapping\ExtensionMetadataInterface;
+use Doctrine\Common\Persistence\Mapping\ClassMetadata;
+use Gedmo\Exception\InvalidMappingException;
 
 /**
- * This is a yaml mapping driver for Timestampable
+ * This is a yaml mapping driver for SoftDeleteable
  * behavioral extension. Used for extraction of extended
  * metadata from yaml specificaly for Timestampable
  * extension.
@@ -17,52 +17,25 @@ use Gedmo\Mapping\Driver\File,
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class Yaml extends File implements Driver
+class Yaml extends FileDriver
 {
-    /**
-     * File extension
-     * @var string
-     */
-    protected $_extension = '.dcm.yml';
-
     /**
      * {@inheritDoc}
      */
-    public function readExtendedMetadata($meta, array &$config)
+    public function loadExtensionMetadata(ClassMetadata $meta, ExtensionMetadataInterface $exm)
     {
-        $mapping = $this->_getMapping($meta->name);
-
+        $mapping = $this->getMapping($meta->name);
         if (isset($mapping['gedmo'])) {
             $classMapping = $mapping['gedmo'];
             if (isset($classMapping['soft_deleteable'])) {
-                $config['softDeleteable'] = true;
-
                 if (!isset($classMapping['soft_deleteable']['field_name'])) {
-                    throw new InvalidMappingException('Field name for SoftDeleteable class is mandatory.');
+                    throw new InvalidMappingException("Field name for SoftDeleteable class is mandatory in class {$meta->name}.");
                 }
 
                 $fieldName = $classMapping['soft_deleteable']['field_name'];
-
-                Validator::validateField($meta, $fieldName);
-
-                $config['fieldName'] = $fieldName;
-
-                $config['timeAware'] = false;
-                if(isset($classMapping['soft_deleteable']['time_aware'])) {
-                    if (!is_bool($classMapping['soft_deleteable']['time_aware'])) {
-                        throw new InvalidMappingException("timeAware must be boolean. ".gettype($classMapping['soft_deleteable']['time_aware'])." provided.");
-                    }
-                    $config['timeAware'] = $classMapping['soft_deleteable']['time_aware'];
-                }
+                $timeAware = isset($classMapping['soft_deleteable']['time_aware']) && $classMapping['soft_deleteable']['time_aware'];
+                $exm->map($fieldName, $timeAware);
             }
         }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    protected function _loadMappingFile($file)
-    {
-        return \Symfony\Component\Yaml\Yaml::parse($file);
     }
 }

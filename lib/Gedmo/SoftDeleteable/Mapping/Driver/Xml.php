@@ -2,9 +2,10 @@
 
 namespace Gedmo\SoftDeleteable\Mapping\Driver;
 
-use Gedmo\Mapping\Driver\Xml as BaseXml,
-    Gedmo\Exception\InvalidMappingException,
-    Gedmo\SoftDeleteable\Mapping\Validator;
+use Gedmo\Mapping\Driver\XmlFileDriver;
+use Gedmo\Mapping\ExtensionMetadataInterface;
+use Doctrine\Common\Persistence\Mapping\ClassMetadata;
+use Gedmo\Exception\InvalidMappingException;
 
 /**
  * This is a xml mapping driver for SoftDeleteable
@@ -17,40 +18,24 @@ use Gedmo\Mapping\Driver\Xml as BaseXml,
  * @author Miha Vrhovnik <miha.vrhovnik@gmail.com>
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class Xml extends BaseXml
+class Xml extends XmlFileDriver
 {
     /**
      * {@inheritDoc}
      */
-    public function readExtendedMetadata($meta, array &$config)
+    public function loadExtensionMetadata(ClassMetadata $meta, ExtensionMetadataInterface $exm)
     {
-        /**
-         * @var \SimpleXmlElement $xml
-         */
-        $xml = $this->_getMapping($meta->name);
+        $xml = $this->getMapping($meta->name);
         $xmlDoctrine = $xml;
         $xml = $xml->children(self::GEDMO_NAMESPACE_URI);
 
         if ($xmlDoctrine->getName() == 'entity' || $xmlDoctrine->getName() == 'mapped-superclass') {
             if (isset($xml->{'soft-deleteable'})) {
-                $field = $this->_getAttribute($xml->{'soft-deleteable'}, 'field-name');
-
-                if (!$field) {
-                    throw new InvalidMappingException('Field name for SoftDeleteable class is mandatory.');
+                if (!$field = $this->getAttribute($xml->{'soft-deleteable'}, 'field-name')) {
+                    throw new InvalidMappingException("Field name for SoftDeleteable class is mandatory in class {$meta->name}.");
                 }
-
-                Validator::validateField($meta, $field);
-
-                $config['softDeleteable'] = true;
-                $config['fieldName'] = $field;
-
-                $config['timeAware'] = false;
-                if($this->_isAttributeSet($xml->{'soft-deleteable'}, 'time-aware')) {
-                    if (!is_bool($this->_getAttribute($xml->{'soft-deleteable'}, 'time-aware'))) {
-                        throw new InvalidMappingException("timeAware must be boolean. ".gettype($this->_getAttribute($xml->{'soft-deleteable'}, 'time-aware'))." provided.");
-                    }
-                    $config['timeAware'] = $this->_getAttribute($xml->{'soft-deleteable'}, 'time-aware');
-                }
+                $exm->map($field, $this->isAttribute($xml->{'soft-deleteable'}, 'time-aware') ?
+					$xml->getAttribute($xml->{'soft-deleteable'}, 'time-aware') : false);
             }
         }
     }

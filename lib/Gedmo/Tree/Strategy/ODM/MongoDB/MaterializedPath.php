@@ -18,15 +18,15 @@ class MaterializedPath extends AbstractMaterializedPath
     /**
      * {@inheritdoc}
      */
-    public function removeNode(ObjectManager $om, ClassMetadata $meta, array $config, $node)
+    public function removeNode(ObjectManager $om, ClassMetadata $meta, array $tree, $node)
     {
         $uow = $om->getUnitOfWork();
-        $pathProp = $meta->getReflectionProperty($config['path']);
+        $pathProp = $meta->getReflectionProperty($tree['path']);
 
         // Remove node's children
         $results = $om->createQueryBuilder()
-            ->find($meta->rootDocumentName)
-            ->field($config['path'])->equals(new \MongoRegex('/^'.preg_quote($pathProp->getValue($node)).'.?+/'))
+            ->find($tree['rootClass'])
+            ->field($tree['path'])->equals(new \MongoRegex('/^'.preg_quote($pathProp->getValue($node)).'.?+/'))
             ->getQuery()
             ->execute();
 
@@ -38,12 +38,12 @@ class MaterializedPath extends AbstractMaterializedPath
     /**
      * {@inheritdoc}
      */
-    public function getChildren(ObjectManager $om, ClassMetadata $meta, array $config, $originalPath)
+    public function getChildren(ObjectManager $om, ClassMetadata $meta, array $tree, $originalPath)
     {
         return $om->createQueryBuilder()
-            ->find($meta->rootDocumentName)
-            ->field($config['path'])->equals(new \MongoRegex('/^'.preg_quote($originalPath).'.+/'))
-            ->sort($config['path'], 'asc')      // This may save some calls to updateNode
+            ->find($tree['rootClass'])
+            ->field($tree['path'])->equals(new \MongoRegex('/^'.preg_quote($originalPath).'.+/'))
+            ->sort($tree['path'], 'asc')      // This may save some calls to updateNode
             ->getQuery()
             ->execute();
     }
@@ -57,16 +57,16 @@ class MaterializedPath extends AbstractMaterializedPath
 
         foreach ($this->rootsOfTreesWhichNeedsLocking as $oid => $root) {
             $meta = $om->getClassMetadata(get_class($root));
-            $config = $this->listener->getConfiguration($om, $meta->name);
-            $lockTimeProp = $meta->getReflectionProperty($config['lock_time']);
+            $tree = $this->listener->getConfiguration($om, $meta->name)->getMapping();
+            $lockTimeProp = $meta->getReflectionProperty($tree['lock']);
             $lockTimeValue = new \MongoDate();
             $lockTimeProp->setValue($root, $lockTimeValue);
             $changes = array(
-                $config['lock_time'] => array(null, $lockTimeValue)
+                $tree['lock'] => array(null, $lockTimeValue)
             );
 
             $uow->scheduleExtraUpdate($root, $changes);
-            $uow->setOriginalDocumentProperty($oid, $config['lock_time'], $lockTimeValue);
+            $uow->setOriginalDocumentProperty($oid, $tree['lock'], $lockTimeValue);
         }
     }
 
@@ -79,16 +79,16 @@ class MaterializedPath extends AbstractMaterializedPath
 
         foreach ($this->rootsOfTreesWhichNeedsLocking as $oid => $root) {
             $meta = $om->getClassMetadata(get_class($root));
-            $config = $this->listener->getConfiguration($om, $meta->name);
-            $lockTimeProp = $meta->getReflectionProperty($config['lock_time']);
+            $tree = $this->listener->getConfiguration($om, $meta->name)->getMapping();
+            $lockTimeProp = $meta->getReflectionProperty($tree['lock']);
             $lockTimeValue = null;
             $lockTimeProp->setValue($root, $lockTimeValue);
             $changes = array(
-                $config['lock_time'] => array(null, null)
+                $tree['lock'] => array(null, null)
             );
 
             $uow->scheduleExtraUpdate($root, $changes);
-            $uow->setOriginalDocumentProperty($oid, $config['lock_time'], $lockTimeValue);
+            $uow->setOriginalDocumentProperty($oid, $tree['lock'], $lockTimeValue);
             unset($this->rootsOfTreesWhichNeedsLocking[$oid]);
         }
     }

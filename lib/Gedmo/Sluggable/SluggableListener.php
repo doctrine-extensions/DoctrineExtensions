@@ -141,7 +141,7 @@ class SluggableListener extends MappedEventSubscriber
         $meta = $om->getClassMetadata(get_class($object));
 
         if ($exm = $this->getConfiguration($om, $meta->name)) {
-            foreach ($exm->getSlugFields() as $slugField) {
+            foreach ($exm->getFields() as $slugField) {
                 if ($meta->isIdentifier($slugField)) {
                     $meta->getReflectionProperty($slugField)->setValue($object, '__id__');
                 }
@@ -172,7 +172,6 @@ class SluggableListener extends MappedEventSubscriber
             if ($this->getConfiguration($om, $meta->name)) {
                 // generate first to exclude this object from similar persisted slugs result
                 $this->generateSlug($om, $object);
-                $this->persisted[OMH::getRootObjectClass($meta)][] = $object;
             }
         }
         // we use onFlush and not preUpdate event to let other
@@ -181,7 +180,6 @@ class SluggableListener extends MappedEventSubscriber
             $meta = $om->getClassMetadata(get_class($object));
             if ($this->getConfiguration($om, $meta->name) && !$uow->isScheduledForInsert($object)) {
                 $this->generateSlug($om, $object);
-                $this->persisted[OMH::getRootObjectClass($meta)][] = $object;
             }
         }
 
@@ -210,12 +208,13 @@ class SluggableListener extends MappedEventSubscriber
         $changeSet = OMH::getObjectChangeSet($uow, $object);
         $isInsert = $uow->isScheduledForInsert($object);
         $exm = $this->getConfiguration($om, $meta->name);
-        foreach ($exm->getSlugFields() as $slugField) {
-            $options = $exm->getSlugMapping($slugField);
+        foreach ($exm->getFields() as $slugField) {
+            $options = $exm->getOptions($slugField);
             // collect the slug from fields
             $slug = $meta->getReflectionProperty($slugField)->getValue($object);
             // if slug should not be updated, skip it
             if (!$options['updatable'] && !$isInsert && (!isset($changeSet[$slugField]) || $slug === '__id__')) {
+                $this->persisted[$options['rootClass']][] = $object;
                 continue;
             }
             // must fetch the old slug from changeset, since $object holds the new version
@@ -296,6 +295,8 @@ class SluggableListener extends MappedEventSubscriber
 
                 // recompute changeset
                 OMH::recomputeSingleObjectChangeSet($uow, $meta, $object);
+                // keep it for unique check
+                $this->persisted[$options['rootClass']][] = $object;
             }
         }
     }
@@ -316,7 +317,7 @@ class SluggableListener extends MappedEventSubscriber
     {
         $meta = $om->getClassMetadata(get_class($object));
         $exm = $this->getConfiguration($om, $meta->name);
-        $options = $exm->getSlugMapping($slugField);
+        $options = $exm->getOptions($slugField);
         $similarPersisted = array();
         $slugProp = $meta->getReflectionProperty($slugField);
         $sep = $options['separator']; // shortcut
@@ -382,7 +383,7 @@ class SluggableListener extends MappedEventSubscriber
     {
         $meta = $om->getClassMetadata(get_class($object));
         $exm = $this->getConfiguration($om, $meta->name);
-        $options = $exm->getSlugMapping($slugField);
+        $options = $exm->getOptions($slugField);
         $ids = OMH::getIdentifier($om, $object, false);
 
         $similar = array();

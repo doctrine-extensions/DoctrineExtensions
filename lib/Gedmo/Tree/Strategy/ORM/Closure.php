@@ -77,8 +77,8 @@ class Closure implements Strategy
      */
     public function processMetadataLoad(ObjectManager $em, ClassMetadata $meta)
     {
-        $config = $this->listener->getConfiguration($em, $meta->name);
-        $closureMetadata = $em->getClassMetadata($config['closure']);
+        $tree = $this->listener->getConfiguration($em, $meta->name)->getMapping();
+        $closureMetadata = $em->getClassMetadata($tree['closure']);
         $cmf = $em->getMetadataFactory();
 
         if (!$closureMetadata->hasAssociation('ancestor')) {
@@ -144,8 +144,8 @@ class Closure implements Strategy
         $indexName = substr(strtoupper("IDX_" . md5($closureMetadata->name)), 0, 20);
         $closureMetadata->table['uniqueConstraints'][$indexName] = array(
             'columns' => array(
-                $this->getJoinColumnFieldName($em->getClassMetadata($config['closure'])->getAssociationMapping('ancestor')),
-                $this->getJoinColumnFieldName($em->getClassMetadata($config['closure'])->getAssociationMapping('descendant'))
+                $this->getJoinColumnFieldName($em->getClassMetadata($tree['closure'])->getAssociationMapping('ancestor')),
+                $this->getJoinColumnFieldName($em->getClassMetadata($tree['closure'])->getAssociationMapping('descendant'))
             )
         );
         // this one may not be very usefull
@@ -210,13 +210,8 @@ class Closure implements Strategy
      */
     public function processPostUpdate(ObjectManager $em, $entity)
     {
-        $meta = $em->getClassMetadata(get_class($entity));
-        $config = $this->listener->getConfiguration($em, $meta->name);
-
         // Process TreeLevel field value
-        if (!empty($config)) {
-            $this->setLevelFieldOnPendingNodes($em);
-        }
+        $this->setLevelFieldOnPendingNodes($em);
     }
 
     /**
@@ -234,19 +229,19 @@ class Closure implements Strategy
 
         while ($node = array_shift($this->pendingChildNodeInserts)) {
             $meta = $em->getClassMetadata(get_class($node));
-            $config = $this->listener->getConfiguration($em, $meta->name);
+            $tree = $this->listener->getConfiguration($em, $meta->name)->getMapping();
 
             $identifier = $meta->getSingleIdentifierFieldName();
             $nodeId = $meta->getReflectionProperty($identifier)->getValue($node);
-            $parent = $meta->getReflectionProperty($config['parent'])->getValue($node);
+            $parent = $meta->getReflectionProperty($tree['parent'])->getValue($node);
 
-            $closureClass = $config['closure'];
+            $closureClass = $tree['closure'];
             $closureMeta = $em->getClassMetadata($closureClass);
             $closureTable = $closureMeta->getTableName();
 
-            $ancestorColumnName = $this->getJoinColumnFieldName($em->getClassMetadata($config['closure'])->getAssociationMapping('ancestor'));
-            $descendantColumnName = $this->getJoinColumnFieldName($em->getClassMetadata($config['closure'])->getAssociationMapping('descendant'));
-            $depthColumnName = $em->getClassMetadata($config['closure'])->getColumnName('depth');
+            $ancestorColumnName = $this->getJoinColumnFieldName($em->getClassMetadata($tree['closure'])->getAssociationMapping('ancestor'));
+            $descendantColumnName = $this->getJoinColumnFieldName($em->getClassMetadata($tree['closure'])->getAssociationMapping('descendant'));
+            $depthColumnName = $em->getClassMetadata($tree['closure'])->getColumnName('depth');
 
             $entries = array(
                 array(
@@ -272,12 +267,12 @@ class Closure implements Strategy
                     );
                 }
 
-                if (isset($config['level'])) {
+                if (isset($tree['level'])) {
                     $this->pendingNodesLevelProcess[$nodeId] = $node;
                 }
-            } else if (isset($config['level'])) {
-                $uow->scheduleExtraUpdate($node, array($config['level'] => array(null, 1)));
-                $uow->setOriginalEntityProperty(spl_object_hash($node), $config['level'], 1);
+            } else if (isset($tree['level'])) {
+                $uow->scheduleExtraUpdate($node, array($tree['level'] => array(null, 1)));
+                $uow->setOriginalEntityProperty(spl_object_hash($node), $tree['level'], 1);
             }
 
             foreach ($entries as $closure) {
@@ -314,8 +309,8 @@ class Closure implements Strategy
             unset($first);
             $identifier = $meta->getIdentifier();
             $mapping = $meta->getFieldMapping($identifier[0]);
-            $config = $this->listener->getConfiguration($em, $meta->name);
-            $closureClass = $config['closure'];
+            $tree = $this->listener->getConfiguration($em, $meta->name)->getMapping();
+            $closureClass = $tree['closure'];
             $closureMeta = $em->getClassMetadata($closureClass);
             $uow = $em->getUnitOfWork();
 
@@ -346,11 +341,11 @@ class Closure implements Strategy
                 $level = $levels[$nodeId];
                 $uow->scheduleExtraUpdate(
                     $node,
-                    array($config['level'] => array(
-                        $meta->getReflectionProperty($config['level'])->getValue($node), $level
+                    array($tree['level'] => array(
+                        $meta->getReflectionProperty($tree['level'])->getValue($node), $level
                     ))
                 );
-                $uow->setOriginalEntityProperty(spl_object_hash($node), $config['level'], $level);
+                $uow->setOriginalEntityProperty(spl_object_hash($node), $tree['level'], $level);
             }
 
             $this->pendingNodesLevelProcess = array();
@@ -363,21 +358,21 @@ class Closure implements Strategy
     public function processScheduledUpdate(ObjectManager $em, $node)
     {
         $meta = $em->getClassMetadata(get_class($node));
-        $config = $this->listener->getConfiguration($em, $meta->name);
+        $tree = $this->listener->getConfiguration($em, $meta->name)->getMapping();
         $uow = $em->getUnitOfWork();
         $changeSet = $uow->getEntityChangeSet($node);
 
-        if (array_key_exists($config['parent'], $changeSet)) {
+        if (array_key_exists($tree['parent'], $changeSet)) {
             // If new parent is new, we need to delay the update of the node
             // until it is inserted on DB
-            $parent = $changeSet[$config['parent']][1] ?: null;
+            $parent = $changeSet[$tree['parent']][1] ?: null;
             if ($parent && !$uow->isInIdentityMap($parent)) {
                 $this->pendingNodeUpdates[spl_object_hash($node)] = array(
                     'node'      => $node,
-                    'oldParent' => $changeSet[$config['parent']][0]
+                    'oldParent' => $changeSet[$tree['parent']][0]
                 );
             } else {
-                $this->updateNode($em, $node, $changeSet[$config['parent']][0]);
+                $this->updateNode($em, $node, $changeSet[$tree['parent']][0]);
             }
         }
     }
@@ -392,11 +387,11 @@ class Closure implements Strategy
     public function updateNode(EntityManager $em, $node, $oldParent)
     {
         $meta = $em->getClassMetadata(get_class($node));
-        $config = $this->listener->getConfiguration($em, $meta->name);
-        $closureMeta = $em->getClassMetadata($config['closure']);
+        $tree = $this->listener->getConfiguration($em, $meta->name)->getMapping();
+        $closureMeta = $em->getClassMetadata($tree['closure']);
 
         $nodeId = $meta->getReflectionProperty($meta->getSingleIdentifierFieldName())->getValue($node);
-        $parent = $meta->getReflectionProperty($config['parent'])->getValue($node);
+        $parent = $meta->getReflectionProperty($tree['parent'])->getValue($node);
         $table = $closureMeta->getTableName();
         $conn = $em->getConnection();
         // ensure integrity
@@ -446,7 +441,7 @@ class Closure implements Strategy
             }
         }
 
-        if (isset($config['level'])) {
+        if (isset($tree['level'])) {
             $this->pendingNodesLevelProcess[$nodeId] = $node;
         }
     }

@@ -1,6 +1,6 @@
 <?php
 
-namespace Tree\MaterializedPath;
+namespace Tree\MaterializedPath\Document;
 
 use Doctrine\Common\EventManager;
 use TestTool\ObjectManagerTestCase;
@@ -20,7 +20,7 @@ class MaterializedPathTest extends ObjectManagerTestCase
         $this->dm = $this->createDocumentManager($evm);
 
         $meta = $this->dm->getClassMetadata(self::CATEGORY);
-        $this->config = $this->listener->getConfiguration($this->dm, $meta->name);
+        $this->config = $this->listener->getConfiguration($this->dm, $meta->name)->getMapping();
     }
 
     protected function tearDown()

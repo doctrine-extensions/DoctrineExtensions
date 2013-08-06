@@ -186,7 +186,7 @@ abstract class MappedEventSubscriber implements EventSubscriber
                 }
             }
         }
-        return $exm;
+        return $exm && !$exm->isEmpty() ? $exm : null;
     }
 
     /**

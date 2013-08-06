@@ -6,6 +6,8 @@ use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\Common\EventArgs;
 use Gedmo\Mapping\MappedEventSubscriber;
 use Gedmo\Mapping\ObjectManagerHelper as OMH;
+use Gedmo\Exception\UnexpectedValueException;
+use Gedmo\Exception\InvalidArgumentException;
 
 /**
  * The tree listener handles the synchronization of
@@ -74,9 +76,9 @@ class TreeListener extends MappedEventSubscriber
     public function getStrategy(ObjectManager $om, $class)
     {
         if (!isset($this->strategies[$class])) {
-            $config = $this->getConfiguration($om, $class);
-            if (!$config) {
-                throw new \Gedmo\Exception\UnexpectedValueException("Tree object class: {$class} must have tree metadata at this point");
+            $exm = $this->getConfiguration($om, $class);
+            if (!$exm) {
+                throw new UnexpectedValueException("Tree object class: {$class} must have tree metadata at this point");
             }
             $managerName = 'UnsupportedManager';
             if ($om instanceof \Doctrine\ORM\EntityManager) {
@@ -84,15 +86,11 @@ class TreeListener extends MappedEventSubscriber
             } elseif ($om instanceof \Doctrine\ODM\MongoDB\DocumentManager) {
                 $managerName = 'ODM\\MongoDB';
             }
-            if (!isset($this->strategyInstances[$config['strategy']])) {
-                $strategyClass = $this->getNamespace().'\\Strategy\\'.$managerName.'\\'.ucfirst($config['strategy']);
-
-                if (!class_exists($strategyClass)) {
-                    throw new \Gedmo\Exception\InvalidArgumentException($managerName." TreeListener does not support tree type: {$config['strategy']}");
-                }
-                $this->strategyInstances[$config['strategy']] = new $strategyClass($this);
+            if (!isset($this->strategyInstances[$exm->getStrategy()])) {
+                $strategyClass = $this->getNamespace().'\\Strategy\\'.$managerName.'\\'.ucfirst($exm->getStrategy());
+                $this->strategyInstances[$exm->getStrategy()] = new $strategyClass($this);
             }
-            $this->strategies[$class] = $config['strategy'];
+            $this->strategies[$class] = $exm->getStrategy();
         }
         return $this->strategyInstances[$this->strategies[$class]];
     }
@@ -112,7 +110,7 @@ class TreeListener extends MappedEventSubscriber
         // check all scheduled updates for TreeNodes
         foreach (OMH::getScheduledObjectInsertions($uow) as $object) {
             $meta = $om->getClassMetadata(get_class($object));
-            if ($config = $this->getConfiguration($om, $meta->name)) {
+            if ($exm = $this->getConfiguration($om, $meta->name)) {
                 $this->usedClassesOnFlush[$meta->name] = null;
                 $this->getStrategy($om, $meta->name)->processScheduledInsertion($om, $object);
                 OMH::recomputeSingleObjectChangeSet($uow, $meta, $object);
@@ -121,7 +119,7 @@ class TreeListener extends MappedEventSubscriber
 
         foreach (OMH::getScheduledObjectUpdates($uow) as $object) {
             $meta = $om->getClassMetadata(get_class($object));
-            if ($config = $this->getConfiguration($om, $meta->name)) {
+            if ($exm = $this->getConfiguration($om, $meta->name)) {
                 $this->usedClassesOnFlush[$meta->name] = null;
                 $this->getStrategy($om, $meta->name)->processScheduledUpdate($om, $object);
             }
@@ -129,7 +127,7 @@ class TreeListener extends MappedEventSubscriber
 
         foreach (OMH::getScheduledObjectDeletions($uow) as $object) {
             $meta = $om->getClassMetadata(get_class($object));
-            if ($config = $this->getConfiguration($om, $meta->name)) {
+            if ($exm = $this->getConfiguration($om, $meta->name)) {
                 $this->usedClassesOnFlush[$meta->name] = null;
                 $this->getStrategy($om, $meta->name)->processScheduledDelete($om, $object);
             }
@@ -262,8 +260,10 @@ class TreeListener extends MappedEventSubscriber
         $om = OMH::getObjectManagerFromEvent($event);
         $meta = $event->getClassMetadata();
         $this->loadMetadataForObjectClass($om, $meta);
-        if (isset(self::$configurations[$this->name][$meta->name]) && self::$configurations[$this->name][$meta->name]) {
-            $this->getStrategy($om, $meta->name)->processMetadataLoad($om, $meta);
+        if (isset(self::$configurations[$this->name][$meta->name]) && ($exm = self::$configurations[$this->name][$meta->name])) {
+            if (!$exm->isEmpty()) {
+                $this->getStrategy($om, $meta->name)->processMetadataLoad($om, $meta);
+            }
         }
     }
 

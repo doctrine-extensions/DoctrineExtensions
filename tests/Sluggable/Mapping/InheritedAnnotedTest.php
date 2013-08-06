@@ -34,48 +34,48 @@ class InheritedAnnotionTest extends ObjectManagerTestCase
         $personMeta = $this->em->getClassMetadata(self::PERSON);
         $pem = $this->listener->getConfiguration($this->em, $personMeta->name);
 
-        $this->assertCount(1, $slugs = $pem->getSlugFields());
+        $this->assertCount(1, $slugs = $pem->getFields());
         $this->assertSame('uri', $slugs[0]);
-        $this->assertTrue(is_array($options = $pem->getSlugMapping('uri')));
+        $this->assertTrue(is_array($options = $pem->getOptions('uri')));
 
         $employeeMeta = $this->em->getClassMetadata(self::EMPLOYEE);
         $eem = $this->listener->getConfiguration($this->em, $employeeMeta->name);
 
-        $this->assertCount(3, $slugs = $eem->getSlugFields());
+        $this->assertCount(3, $slugs = $eem->getFields());
         $this->assertSame('uri', $slugs[0]);
         $this->assertSame('slug', $slugs[1]);
         $this->assertSame('workerSlug', $slugs[2]);
 
-        $this->assertTrue(is_array($options = $eem->getSlugMapping('uri')));
+        $this->assertTrue(is_array($options = $eem->getOptions('uri')));
         $this->assertSame(self::PERSON, $options['rootClass']);
 
-        $this->assertTrue(is_array($options = $eem->getSlugMapping('slug')));
+        $this->assertTrue(is_array($options = $eem->getOptions('slug')));
         $this->assertSame(self::MAN, $options['rootClass']);
 
-        $this->assertTrue(is_array($options = $eem->getSlugMapping('workerSlug')));
+        $this->assertTrue(is_array($options = $eem->getOptions('workerSlug')));
         $this->assertSame(self::EMPLOYEE, $options['rootClass']);
 
         $womanMeta = $this->em->getClassMetadata(self::WOMAN);
         $wem = $this->listener->getConfiguration($this->em, $womanMeta->name);
 
-        $this->assertCount(1, $slugs = $wem->getSlugFields());
+        $this->assertCount(1, $slugs = $wem->getFields());
         $this->assertSame('uri', $slugs[0]);
-        $this->assertTrue(is_array($options = $wem->getSlugMapping('uri')));
+        $this->assertTrue(is_array($options = $wem->getOptions('uri')));
 
-        $this->assertTrue(is_array($options = $wem->getSlugMapping('uri')));
+        $this->assertTrue(is_array($options = $wem->getOptions('uri')));
         $this->assertSame(self::PERSON, $options['rootClass']);
 
         $manMeta = $this->em->getClassMetadata(self::MAN);
         $mem = $this->listener->getConfiguration($this->em, $manMeta->name);
 
-        $this->assertCount(2, $slugs = $mem->getSlugFields());
+        $this->assertCount(2, $slugs = $mem->getFields());
         $this->assertSame('uri', $slugs[0]);
         $this->assertSame('slug', $slugs[1]);
 
-        $this->assertTrue(is_array($options = $mem->getSlugMapping('uri')));
+        $this->assertTrue(is_array($options = $mem->getOptions('uri')));
         $this->assertSame(self::PERSON, $options['rootClass']);
 
-        $this->assertTrue(is_array($options = $mem->getSlugMapping('slug')));
+        $this->assertTrue(is_array($options = $mem->getOptions('slug')));
         $this->assertSame(self::MAN, $options['rootClass']);
     }
 }

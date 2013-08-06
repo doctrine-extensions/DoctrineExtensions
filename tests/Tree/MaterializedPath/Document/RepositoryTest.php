@@ -1,6 +1,6 @@
 <?php
 
-namespace Tree\MaterializedPath;
+namespace Tree\MaterializedPath\Document;
 
 use Doctrine\Common\EventManager;
 use TestTool\ObjectManagerTestCase;

@@ -42,7 +42,7 @@ class Xml extends XmlFileDriver
                      */
                     $slug = $mapping->slug;
                     $fields = array_map('trim', explode(',', (string)$this->_getAttribute($slug, 'fields')));
-                    $exm->mapSlugField($field, array(
+                    $exm->map($field, array(
                         'fields' => $fields,
                         'style' => $this->isAttributeSet($slug, 'style') ?
                             $this->getAttribute($slug, 'style') : 'default',

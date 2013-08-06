@@ -39,7 +39,7 @@ class Annotation extends AnnotationDriver
             }
             // slug property
             if ($slug = $this->reader->getPropertyAnnotation($property, self::SLUG)) {
-                $exm->mapSlugField($property->getName(), array(
+                $exm->map($property->getName(), array(
                     'fields' => $slug->fields,
                     'style' => $slug->style,
                     'updatable' => $slug->updatable,

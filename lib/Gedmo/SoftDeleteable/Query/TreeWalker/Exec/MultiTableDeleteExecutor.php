@@ -6,6 +6,7 @@ use Doctrine\ORM\Query\Exec\MultiTableDeleteExecutor as BaseMultiTableDeleteExec
 use Doctrine\ORM\Query\AST\Node;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
+use Gedmo\SoftDeleteable\Mapping\SoftDeleteableMetadata;
 
 /**
  * This class is used when a DELETE DQL query is called for entities
@@ -21,7 +22,7 @@ class MultiTableDeleteExecutor extends BaseMultiTableDeleteExecutor
     /**
      * {@inheritDoc}
      */
-    public function __construct(Node $AST, $sqlWalker, ClassMetadataInfo $meta, AbstractPlatform $platform, array $config)
+    public function __construct(Node $AST, $sqlWalker, ClassMetadataInfo $meta, AbstractPlatform $platform, SoftDeleteableMetadata $exm)
     {
         parent::__construct($AST, $sqlWalker);
 
@@ -35,8 +36,8 @@ class MultiTableDeleteExecutor extends BaseMultiTableDeleteExecutor
             preg_match('/DELETE FROM (\w+) .+/', $stmt, $matches);
 
             if (isset($matches[1]) && $meta->getQuotedTableName($platform) === $matches[1]) {
-                $sqlStatements[$index] = str_replace('DELETE FROM', 'UPDATE', $stmt);;
-                $sqlStatements[$index] = str_replace('WHERE', 'SET '.$config['fieldName'].' = "'.date('Y-m-d H:i:s').'" WHERE', $sqlStatements[$index]);
+                $sqlStatements[$index] = str_replace('DELETE FROM', 'UPDATE', $stmt);
+                $sqlStatements[$index] = str_replace('WHERE', 'SET '.$exm->getField().' = "'.date('Y-m-d H:i:s').'" WHERE', $sqlStatements[$index]);
             } else {
                 // We have to avoid the removal of registers of child entities of a SoftDeleteable entity
                 unset($sqlStatements[$index]);

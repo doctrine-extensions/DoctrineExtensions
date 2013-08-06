@@ -28,7 +28,7 @@ class Yaml extends FileDriver
                 if (isset($fieldMapping['gedmo'])) {
                     if (isset($fieldMapping['gedmo']['slug'])) {
                         $slug = $fieldMapping['gedmo']['slug'];
-                        $exm->mapSlugField($field, array(
+                        $exm->map($field, array(
                             'fields' => $slug['fields'],
                             'style' => isset($slug['style']) ? (string)$slug['style'] : 'default',
                             'updatable' => isset($slug['updatable']) ? (bool)$slug['updatable'] : true,
