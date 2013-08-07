@@ -223,11 +223,14 @@ class SortableListener extends MappedEventSubscriber
         // Compute position if it is negative
         if ($newPosition < 0) {
             $newPosition += $this->maxPositions[$hash] + 2; // position == -1 => append at end of list
-            if ($newPosition < 0) $newPosition = 0;
+
+            if ($newPosition < 0) {
+                $newPosition = 0;
+            }
+        } else {
+            $newPosition = min(array($this->maxPositions[$hash], $newPosition));
         }
 
-        // Set position to max position if it is too big
-        $newPosition = min(array($this->maxPositions[$hash] + 1, $newPosition));
         // Compute relocations
         /*
         CASE 1: shift backwards
@@ -265,8 +268,10 @@ class SortableListener extends MappedEventSubscriber
         }
         $newPosition += $applyDelta;
 
-        // Add relocation
-        call_user_func_array(array($this, 'addRelocation'), $relocation);
+        if ($relocation) {
+            // Add relocation
+            call_user_func_array(array($this, 'addRelocation'), $relocation);
+        }
 
         // Set new position
         $meta->getReflectionProperty($config['position'])->setValue($object, $newPosition);
