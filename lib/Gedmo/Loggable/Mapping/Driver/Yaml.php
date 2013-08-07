@@ -2,9 +2,10 @@
 
 namespace Gedmo\Loggable\Mapping\Driver;
 
-use Gedmo\Mapping\Driver\File,
-    Gedmo\Mapping\Driver,
-    Gedmo\Exception\InvalidMappingException;
+use Gedmo\Mapping\Driver\FileDriver;
+use Gedmo\Mapping\ExtensionMetadataInterface;
+use Gedmo\Exception\InvalidMappingException;
+use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 
 /**
  * This is a yaml mapping driver for Loggable
@@ -16,20 +17,14 @@ use Gedmo\Mapping\Driver\File,
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class Yaml extends File implements Driver
+class Yaml extends FileDriver
 {
-    /**
-     * File extension
-     * @var string
-     */
-    protected $_extension = '.dcm.yml';
-
     /**
      * {@inheritDoc}
      */
-    public function readExtendedMetadata($meta, array &$config)
+    public function loadExtensionMetadata(ClassMetadata $meta, ExtensionMetadataInterface $exm)
     {
-        $mapping = $this->_getMapping($meta->name);
+        $mapping = $this->getMapping($meta->name);
 
         if (isset($mapping['gedmo'])) {
             $classMapping = $mapping['gedmo'];
@@ -42,7 +37,7 @@ class Yaml extends File implements Driver
                             throw new InvalidMappingException("LogEntry class: {$classMapping['loggable']['logEntryClass']} does not exist.");
                         }
                     }
-                    $config['logEntryClass'] = $name;
+                    $exm->setLogClass($name);
                 }
             }
         }
@@ -50,12 +45,8 @@ class Yaml extends File implements Driver
         if (isset($mapping['fields'])) {
             foreach ($mapping['fields'] as $field => $fieldMapping) {
                 if (isset($fieldMapping['gedmo'])) {
-                    if (in_array('versioned', $fieldMapping['gedmo'])) {
-                        if ($meta->isCollectionValuedAssociation($field)) {
-                            throw new InvalidMappingException("Cannot versioned [{$field}] as it is collection in object - {$meta->name}");
-                        }
-                        // fields cannot be overrided and throws mapping exception
-                        $config['versioned'][] = $field;
+                    if (in_array('versioned', $fieldMapping['gedmo']) || isset($fieldMapping['gedmo']['versioned'])) {
+                        $exm->map($field);
                     }
                 }
             }
@@ -64,12 +55,8 @@ class Yaml extends File implements Driver
         if (isset($mapping['manyToOne'])) {
             foreach ($mapping['manyToOne'] as $field => $fieldMapping) {
                 if (isset($fieldMapping['gedmo'])) {
-                    if (in_array('versioned', $fieldMapping['gedmo'])) {
-                        if ($meta->isCollectionValuedAssociation($field)) {
-                            throw new InvalidMappingException("Cannot versioned [{$field}] as it is collection in object - {$meta->name}");
-                        }
-                        // fields cannot be overrided and throws mapping exception
-                        $config['versioned'][] = $field;
+                    if (in_array('versioned', $fieldMapping['gedmo']) || isset($fieldMapping['gedmo']['versioned'])) {
+                        $exm->map($field);
                     }
                 }
             }
@@ -78,32 +65,11 @@ class Yaml extends File implements Driver
         if (isset($mapping['oneToOne'])) {
             foreach ($mapping['oneToOne'] as $field => $fieldMapping) {
                 if (isset($fieldMapping['gedmo'])) {
-                    if (in_array('versioned', $fieldMapping['gedmo'])) {
-                        if ($meta->isCollectionValuedAssociation($field)) {
-                            throw new InvalidMappingException("Cannot versioned [{$field}] as it is collection in object - {$meta->name}");
-                        }
-                        // fields cannot be overrided and throws mapping exception
-                        $config['versioned'][] = $field;
+                    if (in_array('versioned', $fieldMapping['gedmo']) || isset($fieldMapping['gedmo']['versioned'])) {
+                        $exm->map($field);
                     }
                 }
             }
         }
-
-        if (!$meta->isMappedSuperclass && $config) {
-            if (is_array($meta->identifier) && count($meta->identifier) > 1) {
-                throw new InvalidMappingException("Loggable does not support composite identifiers in class - {$meta->name}");
-            }
-            if (isset($config['versioned']) && !isset($config['loggable'])) {
-                throw new InvalidMappingException("Class must be annoted with Loggable annotation in order to track versioned fields in class - {$meta->name}");
-            }
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    protected function _loadMappingFile($file)
-    {
-        return \Symfony\Component\Yaml\Yaml::parse($file);
     }
 }

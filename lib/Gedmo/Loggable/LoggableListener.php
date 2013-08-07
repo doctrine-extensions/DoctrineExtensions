@@ -92,21 +92,6 @@ class LoggableListener extends MappedEventSubscriber
     }
 
     /**
-     * Get the LogEntry class
-     *
-     * @param \Doctrine\Common\Persistence\ObjectManager $om
-     * @param \Doctrine\Common\Persistence\Mapping\ClassMetadata $meta
-     * @return string
-     */
-    protected function getLogEntryClass(ObjectManager $om, ClassMetadata $meta)
-    {
-        if (isset(self::$configurations[$this->name][$meta->name]['logEntryClass'])) {
-            return self::$configurations[$this->name][$meta->name]['logEntryClass'];
-        }
-        return $om instanceof EntityManager ? 'Gedmo\Loggable\Entity\LogEntry' : 'Gedmo\Loggable\Document\LogEntry';
-    }
-
-    /**
      * Mapps additional metadata
      *
      * @param EventArgs $event
@@ -129,9 +114,6 @@ class LoggableListener extends MappedEventSubscriber
         $oid = spl_object_hash($object);
         $uow = $om->getUnitOfWork();
         if ($this->pendingLogEntryInserts && array_key_exists($oid, $this->pendingLogEntryInserts)) {
-            $meta = $om->getClassMetadata(get_class($object));
-            $config = $this->getConfiguration($om, $meta->name);
-
             $logEntry = $this->pendingLogEntryInserts[$oid];
             $logEntryMeta = $om->getClassMetadata(get_class($logEntry));
 
@@ -214,8 +196,8 @@ class LoggableListener extends MappedEventSubscriber
     protected function createLogEntry($action, $object, ObjectManager $om)
     {
         $meta = $om->getClassMetadata(get_class($object));
-        if ($config = $this->getConfiguration($om, $meta->name)) {
-            $logEntryClass = $this->getLogEntryClass($om, $meta);
+        if ($exm = $this->getConfiguration($om, $meta->name)) {
+            $logEntryClass = $exm->getLogClass();
             $logEntryMeta = $om->getClassMetadata($logEntryClass);
             /** @var \Gedmo\Loggable\Entity\LogEntry $logEntry */
             $logEntry = $logEntryMeta->newInstance();
@@ -233,9 +215,10 @@ class LoggableListener extends MappedEventSubscriber
             $uow = $om->getUnitOfWork();
             $logEntry->setObjectId($objectId);
             $newValues = array();
-            if ($action !== self::ACTION_REMOVE && isset($config['versioned'])) {
+            $versionedFields = $exm->getVersionedFields();
+            if ($action !== self::ACTION_REMOVE) {
                 foreach (OMH::getObjectChangeSet($uow, $object) as $field => $changes) {
-                    if (!in_array($field, $config['versioned'])) {
+                    if (!in_array($field, $versionedFields)) {
                         continue;
                     }
                     $value = $changes[1];

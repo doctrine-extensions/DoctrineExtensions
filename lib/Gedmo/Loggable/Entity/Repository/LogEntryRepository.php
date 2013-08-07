@@ -5,6 +5,9 @@ namespace Gedmo\Loggable\Entity\Repository;
 use Gedmo\Mapping\ObjectManagerHelper as OMH;
 use Doctrine\ORM\EntityRepository;
 use Gedmo\Loggable\LoggableListener;
+use Gedmo\Exception\UnexpectedValueException;
+use Gedmo\Exception\RuntimeException;
+use Gedmo\Exception\InvalidArgumentException;
 
 /**
  * The LogEntryRepository has some useful functions
@@ -43,6 +46,11 @@ class LogEntryRepository extends EntityRepository
      */
     public function getLogEntriesQuery($entity)
     {
+        if (!$this->_em->getUnitOfWork()->isInIdentityMap($entity)) {
+            throw new InvalidArgumentException("Entity is not managed by UnitOfWork");
+        }
+        $this->_em->initializeObject($entity);
+
         $objectClass = OMH::getRootObjectClass($this->_em->getClassMetadata(get_class($entity)));
         $meta = $this->getClassMetadata();
         $dql = "SELECT log FROM {$meta->name} log";
@@ -69,6 +77,11 @@ class LogEntryRepository extends EntityRepository
      */
     public function revert($entity, $version = 1)
     {
+        if (!$this->_em->getUnitOfWork()->isInIdentityMap($entity)) {
+            throw new InvalidArgumentException("Entity is not managed by UnitOfWork");
+        }
+        $this->_em->initializeObject($entity);
+
         $objectMeta = $this->_em->getClassMetadata(get_class($entity));
         $objectClass = OMH::getRootObjectClass($objectMeta);
         $meta = $this->getClassMetadata();
@@ -84,8 +97,8 @@ class LogEntryRepository extends EntityRepository
         $logs = $q->getResult();
 
         if ($logs) {
-            $config = $this->getLoggableListener()->getConfiguration($this->_em, $objectMeta->name);
-            $fields = $config['versioned'];
+            $exm = $this->getLoggableListener()->getConfiguration($this->_em, $objectMeta->name);
+            $fields = $exm->getVersionedFields();
             $filled = false;
             while (($log = array_pop($logs)) && !$filled) {
                 if ($data = $log->getData()) {
@@ -106,7 +119,7 @@ class LogEntryRepository extends EntityRepository
                 throw new \Gedmo\Exception\UnexpectedValueException('Could not fully revert the entity to version: '.$version);
             }*/
         } else {
-            throw new \Gedmo\Exception\UnexpectedValueException('Could not find any log entries under version: '.$version);
+            throw new UnexpectedValueException('Could not find any log entries under version: '.$version);
         }
     }
 
@@ -127,7 +140,7 @@ class LogEntryRepository extends EntityRepository
                 }
             }
 
-            throw new \Gedmo\Exception\RuntimeException('The loggable listener could not be found');
+            throw new RuntimeException('The loggable listener could not be found');
         }
         return $this->listener;
     }
