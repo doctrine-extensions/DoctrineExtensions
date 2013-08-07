@@ -57,10 +57,7 @@ class SortableGroupTest extends ObjectManagerTestCase
         $this->em->remove($audi80);
         $this->em->flush();
 
-        $audi80s = $carRepo->findOneByTitle('Audi-80s');
         $this->assertSame(0, $audi80s->getSortByEngine());
-
-        $icarus = $this->em->getRepository(self::BUS)->findOneByTitle('Icarus');
         $this->assertSame(1, $icarus->getSortByEngine());
     }
 

@@ -10,5 +10,4 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class CategoryClosure extends AbstractClosure
 {
-
 }

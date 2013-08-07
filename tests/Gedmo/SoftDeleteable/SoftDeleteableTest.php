@@ -258,8 +258,7 @@ class SoftDeleteableTest extends ObjectManagerTestCase
         $this->em->persist($module);
         $this->em->flush();
 
-        $dql = sprintf('DELETE FROM %s p',
-            self::PAGE_CLASS);
+        $dql = sprintf('DELETE FROM %s p', self::PAGE_CLASS);
         $query = $this->em->createQuery($dql);
         $query->setHint(
             \Doctrine\ORM\Query::HINT_CUSTOM_OUTPUT_WALKER,
