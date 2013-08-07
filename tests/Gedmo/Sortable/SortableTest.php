@@ -456,6 +456,65 @@ class SortableTest extends BaseTestCaseORM
         $this->assertEquals(5, $node1->getPosition());
     }
 
+    /**
+     * @test
+     */
+    function testIncrementPositionOfLastObjectByOne()
+    {
+        $node0 = $this->em->find(self::NODE, $this->nodeId);
+
+        $nodes = array($node0);
+
+        for ($i = 2; $i <= 5; $i++) {
+            $node = new Node();
+            $node->setName("Node".$i);
+            $node->setPath("/");
+            $this->em->persist($node);
+            $nodes[] = $node;
+        }
+        $this->em->flush();
+
+        $this->assertEquals(4, $nodes[4]->getPosition());
+        
+        $node4NewPosition = $nodes[4]->getPosition();
+        $node4NewPosition++;
+
+        $nodes[4]->setPosition($node4NewPosition);
+
+        $this->em->persist($nodes[4]);
+        $this->em->flush();
+
+        $this->assertEquals(4, $nodes[4]->getPosition());
+    }
+
+    /**
+     * @test
+     */
+    function testSetOutOfBoundsHighPosition()
+    {
+        $node0 = $this->em->find(self::NODE, $this->nodeId);
+
+        $nodes = array($node0);
+
+        for ($i = 2; $i <= 5; $i++) {
+            $node = new Node();
+            $node->setName("Node".$i);
+            $node->setPath("/");
+            $this->em->persist($node);
+            $nodes[] = $node;
+        }
+        $this->em->flush();
+
+        $this->assertEquals(4, $nodes[4]->getPosition());
+
+        $nodes[4]->setPosition(100);
+
+        $this->em->persist($nodes[4]);
+        $this->em->flush();
+
+        $this->assertEquals(4, $nodes[4]->getPosition());
+    }
+
     protected function getUsedEntityFixtures()
     {
         return array(
