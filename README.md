@@ -1,6 +1,6 @@
 # Doctrine2 behavioral extensions
 
-**Version 2.3.7**
+**Version 3.0.0-DEV**
 
 [![Build Status](https://secure.travis-ci.org/l3pp4rd/DoctrineExtensions.png?branch=master)](http://travis-ci.org/l3pp4rd/DoctrineExtensions)
 
@@ -81,13 +81,12 @@ You can also fork or clone this blog from [github repository](https://github.com
 
 ### Running the tests:
 
-PHPUnit 3.6 or newer is required.
 To setup and run tests follow these steps:
 
 - go to the root directory of extensions
 - download composer: **wget https://getcomposer.org/composer.phar**
 - install dev libraries: **php composer.phar install --dev**
-- run: **phpunit -c tests**
+- run: **./bin/phpunit**
 - optional - run mongodb service if targeting mongo tests
 
 <a name="example-demo"></a>

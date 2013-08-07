@@ -18,59 +18,47 @@ use Gedmo\Exception\InvalidMappingException;
  */
 final class UploadableMetadata implements ExtensionMetadataInterface
 {
+    const GENERATOR_SHA1 = 'SHA1';
+    const GENERATOR_ALPHANUMERIC = 'ALPHANUMERIC';
+    const GENERATOR_NONE = 'NONE';
+    const GENERATOR_IFACE = 'Gedmo\Uploadable\FilenameGenerator\FilenameGeneratorInterface';
+
     /**
-     * List of uploadable versionedFields
+     * List of uploadable options
      *
      * @var array
      */
-    private $versionedFields = array();
+    private $options = array();
 
     /**
-     * log class name
+     * Map uploadable options
      *
-     * @var string
+     * @param array $options
      */
-    private $logClass;
-
-    /**
-     * Map a uploadable field
-     *
-     * @param string $field - uploadable field
-     */
-    public function map($field)
+    public function map(array $options)
     {
-        $this->versionedFields[] = $field;
+        $this->options = $options;
     }
 
     /**
-     * Get all available slug field names
+     * Get uploadable options
      *
      * @return array
      */
-    public function getVersionedFields()
+    public function getOptions()
     {
-        return $this->versionedFields;
+        return $this->options;
     }
 
     /**
-     * Get log class name
+     * Get an option by $name
      *
-     * @return string
+     * @param string $name
+     * @return mixed
      */
-    public function getlogClass()
+    public function getOption($name)
     {
-        return $this->logClass;
-    }
-
-    /**
-     * Get log class name
-     *
-     * @param string $class
-     * @return string
-     */
-    public function setlogClass($class)
-    {
-        $this->logClass = $class;
+        return isset($this->options[$name]) ? $this->options[$name] : null;
     }
 
     /**
@@ -81,23 +69,66 @@ final class UploadableMetadata implements ExtensionMetadataInterface
         if ($this->isEmpty()) {
             return;
         }
-        foreach ($this->versionedFields as $field) {
-            if ($meta->isCollectionValuedAssociation($field)) {
-                throw new InvalidMappingException("Cannot version [{$field}] as it is collection in class - {$meta->name}");
-            } elseif (!$meta->isSingleValuedAssociation($field) && !$meta->hasField($field)) {
-                throw new InvalidMappingException("Unable to find versioned [{$field}] as mapped property in class - {$meta->name}");
-            }
+        if (!isset($this->options['filePathField']) || !$this->options['filePathField']) {
+            throw new InvalidMappingException(sprintf('Class "%s" must have an UploadableFilePath field.',
+                $meta->name
+            ));
         }
-        if (is_array($meta->identifier) && count($meta->identifier) > 1) {
-            throw new InvalidMappingException("Uploadable does not support composite identifiers in class - {$meta->name}");
+        $refl = $meta->getReflectionClass();
+
+        if ($this->options['pathMethod'] !== '' && !$refl->hasMethod($this->options['pathMethod'])) {
+            throw new InvalidMappingException(sprintf('Class "%s" doesn\'t have method "%s"!',
+                $meta->name,
+                $this->options['pathMethod']
+            ));
         }
-        if ($this->logClass) {
-            if (!class_exists($this->logClass)) {
-                throw new InvalidMappingException("log class {$this->logClass} for domain object {$meta->name}"
-                    . ", was not found or could not be autoloaded.", $this);
-            }
-        } else {
-            $this->logClass = $om instanceof DocumentManager ? self::DEFAULT_LOG_CLASS_ODM_MONGODB : self::DEFAULT_LOG_CLASS_ORM;
+
+        if ($this->options['callback'] !== '' && !$refl->hasMethod($this->options['callback'])) {
+            throw new InvalidMappingException(sprintf('Class "%s" doesn\'t have method "%s"!',
+                $meta->name,
+                $this->options['callback']
+            ));
+        }
+
+        $this->options['maxSize'] = (double)$this->options['maxSize'];
+
+        if ($this->options['maxSize'] < 0) {
+            throw new InvalidMappingException(sprintf('Option "maxSize" must be a number 0 or higher for class "%s".',
+                $meta->name
+            ));
+        }
+
+        if (!is_array($this->options['allowedTypes'])) {
+            $this->options['allowedTypes'] = array_filter(explode(',', $this->options['allowedTypes']), function($type) {
+                return !empty($type);
+            });
+        }
+        if (!is_array($this->options['disallowedTypes'])) {
+            $this->options['disallowedTypes'] = array_filter(explode(',', $this->options['disallowedTypes']), function($type) {
+                return !empty($type);
+            });
+        }
+        if ($this->options['allowedTypes'] && $this->options['disallowedTypes']) {
+            $msg = 'You\'ve set "allowedTypes" and "disallowedTypes" options. You must set only one in class "%s".';
+            throw new InvalidMappingException(sprintf($msg,
+                $meta->name
+            ));
+        }
+
+        switch ($gen = $this->options['filenameGenerator']) {
+            case self::GENERATOR_ALPHANUMERIC:
+            case self::GENERATOR_SHA1:
+            case self::GENERATOR_NONE:
+                break;
+            default:
+                if (!class_exists($gen) || !($refl = new \ReflectionClass($gen)) || !$refl->implementsInterface(self::GENERATOR_IFACE)) {
+                    $msg = 'Class "%s" needs a valid value for filenameGenerator. It can be: SHA1, ALPHANUMERIC, NONE or ';
+                    $msg .= 'a class implementing FilenameGeneratorInterface.';
+
+                    throw new InvalidMappingException(sprintf($msg,
+                        $meta->name
+                    ));
+                }
         }
     }
 
@@ -106,7 +137,7 @@ final class UploadableMetadata implements ExtensionMetadataInterface
      */
     public function isEmpty()
     {
-        return count($this->versionedFields) === 0;
+        return count($this->options) === 0;
     }
 
     /**
@@ -114,7 +145,7 @@ final class UploadableMetadata implements ExtensionMetadataInterface
      */
     public function toArray()
     {
-        return array($this->logClass => $this->versionedFields);
+        return $this->options;
     }
 
     /**
@@ -122,7 +153,6 @@ final class UploadableMetadata implements ExtensionMetadataInterface
      */
     public function fromArray(array $data)
     {
-        $this->logClass = key($data);
-        $this->versionedFields = current($data);
+        $this->options = $data;
     }
 }

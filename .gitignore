@@ -1,9 +1,9 @@
 /phpunit.xml
-tests/temp/*.php
-scripts/
-vendor/
+/tests/temp/*.php
+/vendor
+/bin
 /om
-tags
-.vimrc.local
+/tags
+/.vimrc.local
 /composer.lock
 /composer.phar

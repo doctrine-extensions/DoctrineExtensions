@@ -2,10 +2,9 @@
 
 namespace Gedmo\Uploadable\Mapping\Driver;
 
-use Gedmo\Mapping\Driver\AbstractAnnotationDriver,
-    Doctrine\Common\Persistence\Mapping\ClassMetadata,
-    Gedmo\Exception\InvalidMappingException,
-    Gedmo\Uploadable\Mapping\Validator;
+use Gedmo\Mapping\Driver\AnnotationDriver;
+use Gedmo\Mapping\ExtensionMetadataInterface;
+use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 
 /**
  * This is an annotation mapping driver for Uploadable
@@ -17,54 +16,55 @@ use Gedmo\Mapping\Driver\AbstractAnnotationDriver,
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class Annotation extends AbstractAnnotationDriver
+class Annotation extends AnnotationDriver
 {
     /**
      * Annotation to define that this object is loggable
      */
-    const UPLOADABLE = 'Gedmo\\Mapping\\Annotation\\Uploadable';
-    const UPLOADABLE_FILE_MIME_TYPE = 'Gedmo\\Mapping\\Annotation\\UploadableFileMimeType';
-    const UPLOADABLE_FILE_PATH = 'Gedmo\\Mapping\\Annotation\\UploadableFilePath';
-    const UPLOADABLE_FILE_SIZE = 'Gedmo\\Mapping\\Annotation\\UploadableFileSize';
+    const UPLOADABLE = 'Gedmo\Mapping\Annotation\Uploadable';
+    const UPLOADABLE_FILE_MIME_TYPE = 'Gedmo\Mapping\Annotation\UploadableFileMimeType';
+    const UPLOADABLE_FILE_PATH = 'Gedmo\Mapping\Annotation\UploadableFilePath';
+    const UPLOADABLE_FILE_SIZE = 'Gedmo\Mapping\Annotation\UploadableFileSize';
 
     /**
      * {@inheritDoc}
      */
-    public function readExtendedMetadata($meta, array &$config)
+    public function loadExtensionMetadata(ClassMetadata $meta, ExtensionMetadataInterface $exm)
     {
-        $class = $this->getMetaReflectionClass($meta);
+        $class = $meta->reflClass;
 
         // class annotations
         if ($annot = $this->reader->getClassAnnotation($class, self::UPLOADABLE)) {
-            $config['uploadable'] = true;
-            $config['allowOverwrite'] = $annot->allowOverwrite;
-            $config['appendNumber'] = $annot->appendNumber;
-            $config['path'] = $annot->path;
-            $config['pathMethod'] = $annot->pathMethod;
-            $config['fileMimeTypeField'] = false;
-            $config['filePathField'] = false;
-            $config['fileSizeField'] = false;
-            $config['callback'] = $annot->callback;
-            $config['filenameGenerator'] = $annot->filenameGenerator;
-            $config['maxSize'] = (double) $annot->maxSize;
-            $config['allowedTypes'] = $annot->allowedTypes;
-            $config['disallowedTypes'] = $annot->disallowedTypes;
+            $options = array(
+                'allowOverwrite' => $annot->allowOverwrite,
+                'appendNumber' => $annot->appendNumber,
+                'path' => $annot->path,
+                'pathMethod' => $annot->pathMethod,
+                'fileMimeTypeField' => false,
+                'filePathField' => false,
+                'fileSizeField' => false,
+                'callback' => $annot->callback,
+                'filenameGenerator' => $annot->filenameGenerator,
+                'maxSize' => (double)$annot->maxSize,
+                'allowedTypes' => $annot->allowedTypes,
+                'disallowedTypes' => $annot->disallowedTypes,
+            );
 
             foreach ($class->getProperties() as $prop) {
                 if ($this->reader->getPropertyAnnotation($prop, self::UPLOADABLE_FILE_MIME_TYPE)) {
-                    $config['fileMimeTypeField'] = $prop->getName();
+                    $options['fileMimeTypeField'] = $prop->getName();
                 }
 
                 if ($this->reader->getPropertyAnnotation($prop, self::UPLOADABLE_FILE_PATH)) {
-                    $config['filePathField'] = $prop->getName();
+                    $options['filePathField'] = $prop->getName();
                 }
 
                 if ($this->reader->getPropertyAnnotation($prop, self::UPLOADABLE_FILE_SIZE)) {
-                    $config['fileSizeField'] = $prop->getName();
+                    $options['fileSizeField'] = $prop->getName();
                 }
             }
 
-            Validator::validateConfiguration($meta, $config);
+            $exm->map($options);
         }
     }
 }

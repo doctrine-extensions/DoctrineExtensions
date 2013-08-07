@@ -12,49 +12,10 @@
 >
     <testsuites>
 
-        <testsuite name="Mapping Extension">
-            <directory suffix="Test.php">./../Mapping/</directory>
+        <testsuite name="All extensions">
+            <directory suffix="Test.php">./../Gedmo/</directory>
         </testsuite>
 
-        <testsuite name="Translatable Extension">
-            <directory suffix="Test.php">./../Translatable/</directory>
-        </testsuite>
-
-        <testsuite name="Timestampable Extension">
-            <directory suffix="Test.php">./tests/Timestampable/</directory>
-        </testsuite>
-
-        <testsuite name="References Extension">
-            <directory suffix="Test.php">./tests/References/</directory>
-        </testsuite>
-
-        <testsuite name="SoftDeleteable Extension">
-            <directory suffix="Test.php">./tests/SoftDeleteable/</directory>
-        </testsuite>
-
-        <testsuite name="Blameable Extension">
-            <directory suffix="Test.php">./tests/Blameable/</directory>
-        </testsuite>
-
-        <testsuite name="ReferenceIntegrity Extension">
-            <directory suffix="Test.php">./tests/ReferenceIntegrity/</directory>
-        </testsuite>
-
-        <testsuite name="Sortable Extension">
-            <directory suffix="Test.php">./tests/Sortable/</directory>
-        </testsuite>
-
-        <testsuite name="Sluggable Extension">
-            <directory suffix="Test.php">./tests/Sluggable/</directory>
-        </testsuite>
-
-        <testsuite name="Uploadable Extension">
-            <directory suffix="Test.php">./tests/Uploadable/</directory>
-        </testsuite>
-
-        <testsuite name="Loggable Extension">
-            <directory suffix="Test.php">./tests/Loggable/</directory>
-        </testsuite>
 
     </testsuites>
 

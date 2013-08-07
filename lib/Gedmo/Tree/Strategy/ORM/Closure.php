@@ -276,6 +276,10 @@ class Closure implements Strategy
             }
 
             foreach ($entries as $closure) {
+                if ($em->getConnection()->getDatabasePlatform()->getName() === 'postgresql') {
+                    $id = $closureMeta->idGenerator->generate($em, null);
+                    $closure['id'] = $id;
+                }
                 if (!$em->getConnection()->insert($closureTable, $closure)) {
                     throw new RuntimeException('Failed to insert new Closure record');
                 }
@@ -435,6 +439,10 @@ class Closure implements Strategy
             $closures = $conn->fetchAll($query, compact('nodeId', 'parentId'));
 
             foreach ($closures as $closure) {
+                if ($conn->getDatabasePlatform()->getName() === 'postgresql') {
+                    $id = $closureMeta->idGenerator->generate($em, null);
+                    $closure['id'] = $id;
+                }
                 if (!$conn->insert($table, $closure)) {
                     throw new RuntimeException('Failed to insert new Closure record');
                 }

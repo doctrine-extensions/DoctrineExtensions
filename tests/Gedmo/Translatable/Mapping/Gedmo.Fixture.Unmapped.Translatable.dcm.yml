@@ -1,0 +1,24 @@
+---
+Gedmo\Fixture\Unmapped\Translatable:
+  type: entity
+  table: translatables
+  id:
+    id:
+      type: integer
+      generator:
+        strategy: AUTO
+  fields:
+    title:
+      type: string
+      length: 64
+      gedmo:
+        translatable: ~
+    content:
+      type: text
+      gedmo:
+        translatable: ~
+    author:
+      type: string
+      length: 128
+      gedmo:
+        translatable: ~

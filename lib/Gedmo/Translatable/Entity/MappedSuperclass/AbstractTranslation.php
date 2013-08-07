@@ -10,7 +10,6 @@ use Gedmo\Translatable\TranslationInterface;
  */
 abstract class AbstractTranslation implements TranslationInterface
 {
-
     /**
      * @var integer $id
      *

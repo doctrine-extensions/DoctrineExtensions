@@ -46,16 +46,21 @@
     "require-dev": {
         "doctrine/mongodb": ">=1.0.3",
         "doctrine/mongodb-odm": ">=1.0.0-BETA9",
-        "doctrine/orm": ">=2.4.0-RC1",
-        "doctrine/common": ">=2.4.0-RC3",
-        "doctrine/dbal": ">=2.4.0-RC1",
-        "symfony/yaml": "2.3.1"
+        "doctrine/orm": ">=2.4.0",
+        "doctrine/common": ">=2.4.1",
+        "doctrine/dbal": ">=2.4.0",
+        "symfony/yaml": "2.3.6",
+        "phpunit/phpunit": "3.7.*",
+        "phpunit/phpunit-mock-objects": "1.2.*"
     },
     "suggest": {
         "doctrine/mongodb": ">=1.0.3",
         "doctrine/mongodb-odm": ">=1.0.0-BETA9",
-        "doctrine/orm": ">=2.4.0-RC2",
-        "doctrine/dbal": ">=2.4.0-RC2"
+        "doctrine/orm": ">=2.4.0",
+        "doctrine/dbal": ">=2.4.0"
+    },
+    "config": {
+        "bin-dir": "bin"
     },
     "autoload": {
         "psr-0": { "Gedmo\\": "lib/" }
