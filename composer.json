@@ -45,11 +45,15 @@
     "require-dev": {
         "doctrine/mongodb-odm": "~1.0-BETA10",
         "doctrine/orm": "~2.4",
-        "symfony/yaml": "~2.3"
+        "symfony/yaml": "~2.3",
+        "phpunit/phpunit": "~4.0"
     },
     "suggest": {
         "doctrine/mongodb-odm": "to use the extensions with the MongoDB ODM",
         "doctrine/orm": "to use the extensions with the ORM"
+    },
+    "config": {
+        "bin-dir": "bin"
     },
     "autoload": {
         "psr-0": { "Gedmo\\": "lib/" }

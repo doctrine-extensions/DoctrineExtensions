@@ -38,9 +38,9 @@ if (!class_exists('PHPUnit_Framework_MockObject_MockBuilder')) {
 $loader = require __DIR__.'/../vendor/autoload.php';
 
 // test tools
-$loader->add('TestTool', __DIR__);
+$loader->add('Gedmo\TestTool', __DIR__);
 // fixtures
-$loader->add('Fixture', __DIR__);
+$loader->add('Gedmo\Fixture', __DIR__);
 
 AnnotationRegistry::registerLoader(array($loader, 'loadClass'));
 Gedmo\DoctrineExtensions::registerAnnotations();

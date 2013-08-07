@@ -2,9 +2,10 @@
 
 namespace Gedmo\Uploadable\Mapping\Driver;
 
-use Gedmo\Mapping\Driver\File;
-use Gedmo\Mapping\Driver;
-use Gedmo\Uploadable\Mapping\Validator;
+use Doctrine\Common\Persistence\Mapping\ClassMetadata;
+use Gedmo\Mapping\Driver\FileDriver;
+use Gedmo\Mapping\ExtensionMetadataInterface;
+use Gedmo\Uploadable\Mapping\UploadableMetadata;
 
 /**
  * This is a yaml mapping driver for Uploadable
@@ -16,20 +17,14 @@ use Gedmo\Uploadable\Mapping\Validator;
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class Yaml extends File implements Driver
+class Yaml extends FileDriver
 {
-    /**
-     * File extension
-     * @var string
-     */
-    protected $_extension = '.dcm.yml';
-
     /**
      * {@inheritDoc}
      */
-    public function readExtendedMetadata($meta, array &$config)
+    public function loadExtensionMetadata(ClassMetadata $meta, ExtensionMetadataInterface $exm)
     {
-        $mapping = $this->_getMapping($meta->name);
+        $mapping = $this->getMapping($meta->name);
 
         if (isset($mapping['gedmo'])) {
             $classMapping = $mapping['gedmo'];
@@ -37,57 +32,48 @@ class Yaml extends File implements Driver
             if (isset($classMapping['uploadable'])) {
                 $uploadable = $classMapping['uploadable'];
 
-                $config['uploadable'] = true;
-                $config['allowOverwrite'] = isset($uploadable['allowOverwrite']) ?
+                $options = array();
+                $options['allowOverwrite'] = isset($uploadable['allowOverwrite']) ?
                     (bool) $uploadable['allowOverwrite'] : false;
-                $config['appendNumber'] = isset($uploadable['appendNumber']) ?
+                $options['appendNumber'] = isset($uploadable['appendNumber']) ?
                     (bool) $uploadable['appendNumber'] : false;
-                $config['path'] = isset($uploadable['path']) ? $uploadable['path'] : '';
-                $config['pathMethod'] = isset($uploadable['pathMethod']) ? $uploadable['pathMethod'] : '';
-                $config['callback'] = isset($uploadable['callback']) ? $uploadable['callback'] : '';
-                $config['fileMimeTypeField'] = false;
-                $config['fileNameField'] = false;
-                $config['filePathField'] = false;
-                $config['fileSizeField'] = false;
-                $config['filenameGenerator'] = isset($uploadable['filenameGenerator']) ?
+                $options['path'] = isset($uploadable['path']) ? $uploadable['path'] : '';
+                $options['pathMethod'] = isset($uploadable['pathMethod']) ? $uploadable['pathMethod'] : '';
+                $options['callback'] = isset($uploadable['callback']) ? $uploadable['callback'] : '';
+                $options['fileMimeTypeField'] = false;
+                $options['fileNameField'] = false;
+                $options['filePathField'] = false;
+                $options['fileSizeField'] = false;
+                $options['filenameGenerator'] = isset($uploadable['filenameGenerator']) ?
                     $uploadable['filenameGenerator'] :
-                    Validator::FILENAME_GENERATOR_NONE;
-                $config['maxSize'] = isset($uploadable['maxSize']) ?
+                    UploadableMetadata::GENERATOR_NONE;
+                $options['maxSize'] = isset($uploadable['maxSize']) ?
                     (double) $uploadable['maxSize'] :
                     (double) 0;
-                $config['allowedTypes'] = isset($uploadable['allowedTypes']) ?
+                $options['allowedTypes'] = isset($uploadable['allowedTypes']) ?
                     $uploadable['allowedTypes'] :
                     '';
-                $config['disallowedTypes'] = isset($uploadable['disallowedTypes']) ?
+                $options['disallowedTypes'] = isset($uploadable['disallowedTypes']) ?
                     $uploadable['disallowedTypes'] :
                     '';
 
                 if (isset($mapping['fields'])) {
                     foreach ($mapping['fields'] as $field => $info) {
-                        if (isset($info['gedmo']) && array_key_exists(0, $info['gedmo'])) {
-                            if ($info['gedmo'][0] === 'uploadableFileMimeType') {
-                                $config['fileMimeTypeField'] = $field;
-                            } elseif ($info['gedmo'][0] === 'uploadableFileSize') {
-                                $config['fileSizeField'] = $field;
-                            } elseif ($info['gedmo'][0] === 'uploadableFileName') {
-                                $config['fileNameField'] = $field;
-                            } elseif ($info['gedmo'][0] === 'uploadableFilePath') {
-                                $config['filePathField'] = $field;
+                        if (isset($info['gedmo'])) {
+                            if (isset($info['gedmo']['uploadableFileMimeType']) || in_array('uploadableFileMimeType', $info['gedmo'])) {
+                                $options['fileMimeTypeField'] = $field;
+                            } elseif (isset($info['gedmo']['uploadableFileSize']) || in_array('uploadableFileSize', $info['gedmo'])) {
+                                $options['fileSizeField'] = $field;
+                            } elseif (isset($info['gedmo']['uploadableFileName']) || in_array('uploadableFileName', $info['gedmo'])) {
+                                $options['filePathField'] = $field;
+                            } elseif (isset($info['gedmo']['uploadableFilePath']) || in_array('uploadableFilePath', $info['gedmo'])) {
+                                $options['filePathField'] = $field;
                             }
                         }
                     }
                 }
-
-                Validator::validateConfiguration($meta, $config);
+                $exm->map($options);
             }
         }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    protected function _loadMappingFile($file)
-    {
-        return \Symfony\Component\Yaml\Yaml::parse($file);
     }
 }

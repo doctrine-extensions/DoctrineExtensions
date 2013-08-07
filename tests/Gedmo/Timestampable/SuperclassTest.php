@@ -1,0 +1,72 @@
+<?php
+
+namespace Gedmo\Timestampable;
+
+use Doctrine\Common\EventManager;
+use Doctrine\ORM\EntityManager;
+use Gedmo\Fixture\Timestampable\Superclassed\Person;
+use Gedmo\TestTool\ObjectManagerTestCase;
+
+class SuperclassTest extends ObjectManagerTestCase
+{
+    const PERSON = 'Gedmo\Fixture\Timestampable\Superclassed\Person';
+
+    /**
+     * @var EntityManager
+     */
+    private $em;
+
+    protected function setUp()
+    {
+        $evm = new EventManager();
+        $evm->addEventSubscriber(new TimestampableListener());
+
+        $this->em = $this->createEntityManager($evm);
+        $this->createSchema($this->em, array(
+            self::PERSON,
+        ));
+    }
+
+    protected function tearDown()
+    {
+        $this->releaseEntityManager($this->em);
+    }
+
+    /**
+     * @test
+     */
+    public function shouldUpdateOnChangeToAnyValue()
+    {
+        $person = new Person();
+        $person->setName('name');
+        $person->setSurname('lastname');
+
+        $this->em->persist($person);
+        $this->em->flush();
+
+        $this->assertNotNull($nameChangedDateBefore = $person->getNameChangedAt());
+
+        $person->setName('changed name');
+
+        $this->em->persist($person);
+        $this->em->flush();
+
+        $this->assertNotSame($nameChangedDateBefore, $person->getNameChangedAt());
+
+        $nameChangedDateBefore = $person->getNameChangedAt();
+        $person->setName('new name');
+
+        $this->em->persist($person);
+        $this->em->flush();
+
+        $this->assertNotSame($nameChangedDateBefore, $person->getNameChangedAt());
+
+        $nameChangedDateBefore = $person->getNameChangedAt();
+        $person->setSurname('new lastname');
+
+        $this->em->persist($person);
+        $this->em->flush();
+
+        $this->assertSame($nameChangedDateBefore, $person->getNameChangedAt());
+    }
+}
