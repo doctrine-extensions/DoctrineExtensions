@@ -2,8 +2,9 @@
 
 namespace Gedmo\Translatable\Mapping\Driver;
 
-use Gedmo\Mapping\Driver\Xml as BaseXml;
-use Gedmo\Exception\InvalidMappingException;
+use Gedmo\Mapping\Driver\XmlFileDriver;
+use Gedmo\Mapping\ExtensionMetadataInterface;
+use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 
 /**
  * This is a xml mapping driver for Translatable
@@ -15,44 +16,25 @@ use Gedmo\Exception\InvalidMappingException;
  * @author Miha Vrhovnik <miha.vrhovnik@gmail.com>
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class Xml extends BaseXml
+class Xml extends XmlFileDriver
 {
     /**
      * {@inheritDoc}
      */
-    public function readExtendedMetadata($meta, array &$config) {
-        /**
-         * @var \SimpleXmlElement $xml
-         */
-        $xml = $this->_getMapping($meta->name);
+    public function loadExtensionMetadata(ClassMetadata $meta, ExtensionMetadataInterface $exm)
+    {
+        $xml = $this->getMapping($meta->name);
         $xmlDoctrine = $xml;
-
         $xml = $xml->children(self::GEDMO_NAMESPACE_URI);
 
         if (isset($xmlDoctrine->field)) {
             foreach ($xmlDoctrine->field as $mapping) {
                 $mappingDoctrine = $mapping;
-                /**
-                 * @var \SimpleXmlElement $mapping
-                 */
                 $mapping = $mapping->children(self::GEDMO_NAMESPACE_URI);
-                $field = $this->_getAttribute($mappingDoctrine, 'name');
+                $field = $this->getAttribute($mappingDoctrine, 'name');
                 if (isset($mapping->translatable)) {
-                    $config['fields'][$field] = array();
+                    $exm->map($field);
                 }
-            }
-        }
-
-        if (!$meta->isMappedSuperclass && $config && !isset($config['translationClass'])) {
-            // ensure identifier is singular
-            if (is_array($meta->identifier) && count($meta->identifier) > 1) {
-                throw new InvalidMappingException("Translatable does not support composite identifiers in class - {$meta->name}");
-            }
-            // try to guess translation class
-            $config['translationClass'] = $meta->name . 'Translation';
-            if (!class_exists($config['translationClass'])) {
-                throw new InvalidMappingException("Translation class {$config['translationClass']} for domain object {$meta->name}"
-                    . ", was not found or could not be autoloaded. If it was not generated yet, use GenerateTranslationsCommand", $config);
             }
         }
     }

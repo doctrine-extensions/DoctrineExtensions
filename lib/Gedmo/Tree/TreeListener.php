@@ -260,7 +260,7 @@ class TreeListener extends MappedEventSubscriber
         $om = OMH::getObjectManagerFromEvent($event);
         $meta = $event->getClassMetadata();
         $this->loadMetadataForObjectClass($om, $meta);
-        if (isset(self::$configurations[$this->name][$meta->name]) && ($exm = self::$configurations[$this->name][$meta->name])) {
+        if (isset($this->extensionMetadatas[$meta->name]) && ($exm = $this->extensionMetadatas[$meta->name])) {
             if (!$exm->isEmpty()) {
                 $this->getStrategy($om, $meta->name)->processMetadataLoad($om, $meta);
             }

@@ -4,12 +4,13 @@ namespace Gedmo\Mapping;
 
 use Doctrine\Common\Persistence\Mapping\Driver\AnnotationDriver as PersistenceAnnotationDriver;
 use Doctrine\Common\Persistence\Mapping\Driver\MappingDriver;
-use Doctrine\Common\Persistence\Mapping\Driver\MappingDriverChain;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 use Gedmo\Mapping\Driver\AnnotationDriver;
 use Doctrine\ORM\Tools\DisconnectedClassMetadataFactory;
 use Gedmo\Exception\RuntimeException;
+use Gedmo\Mapping\Driver\DriverChain;
+use Doctrine\Common\Persistence\Mapping\Driver\MappingDriverChain;
 
 /**
  * The extension metadata factory is responsible for extension driver
@@ -58,7 +59,7 @@ class ExtensionMetadataFactory
         $this->om = $om;
         $this->annotationReader = $annotationReader;
         $this->extensionNamespace = $extensionNamespace;
-        $this->driver = $this->getDriver($om->getConfiguration()->getMetadataDriverImpl());
+        $this->driver = $this->createExtensionDriver($om->getConfiguration()->getMetadataDriverImpl());
     }
 
     /**
@@ -144,17 +145,20 @@ class ExtensionMetadataFactory
      * @throws \Gedmo\Exception\RuntimeException if driver was not found in extension
      * @return \Gedmo\Mapping\Driver
      */
-    protected function getDriver(MappingDriver $omDriver)
+    protected function createExtensionDriver(MappingDriver $omDriver)
     {
         $driver = null;
         $className = get_class($omDriver);
         $driverName = substr($className, strrpos($className, '\\') + 1);
         if ($omDriver instanceof MappingDriverChain || $driverName == 'DriverChain') {
-            $driver = new MappingDriverChain;
+            $driver = new DriverChain;
             foreach ($omDriver->getDrivers() as $namespace => $nestedOmDriver) {
-                $driver->addDriver($this->getDriver($nestedOmDriver), $namespace);
+                $driver->addDriver($this->createExtensionDriver($nestedOmDriver), $namespace);
             }
-            $driver->setDefaultDriver($this->getDriver($omDriver->getDefaultDriver()));
+            // add default driver to the chain as well, will be last to execute
+            if ($defaultDriver = $omDriver->getDefaultDriver()) {
+                $driver->addDriver($this->createExtensionDriver($defaultDriver));
+            }
         } else {
             $driverName = substr($driverName, 0, strpos($driverName, 'Driver'));
             if (substr($driverName, 0, 10) === 'Simplified') {

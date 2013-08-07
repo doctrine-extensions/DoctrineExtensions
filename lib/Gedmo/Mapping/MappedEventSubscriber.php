@@ -28,13 +28,12 @@ use Doctrine\Common\Annotations\AnnotationRegistry;
 abstract class MappedEventSubscriber implements EventSubscriber
 {
     /**
-     * Static List of cached object configurations
-     * leaving it static for reasons to look into
-     * other listener configuration
+     * A list of extension metadatas based on object
+     * class.
      *
      * @var array
      */
-    protected static $configurations = array();
+    protected $extensionMetadatas = array();
 
     /**
      * Listener name, etc: sluggable
@@ -58,13 +57,6 @@ abstract class MappedEventSubscriber implements EventSubscriber
      * @var ExtensionMetadataFactory
      */
     private $extensionMetadataFactory = array();
-
-    /**
-     * List of event adapters used for this listener
-     *
-     * @var array
-     */
-    private $adapters = array();
 
     /**
      * Custom annotation reader
@@ -170,19 +162,19 @@ abstract class MappedEventSubscriber implements EventSubscriber
      */
     public function getConfiguration(ObjectManager $om, $className) {
         $exm = null;
-        if (isset(self::$configurations[$this->name][$className])) {
-            $exm = self::$configurations[$this->name][$className];
+        if (isset($this->extensionMetadatas[$className])) {
+            $exm = $this->extensionMetadatas[$className];
         } else {
             $factory = $om->getMetadataFactory();
             $cacheId = ExtensionMetadataFactory::getCacheId($className, $this->getNamespace());
             if (($cacheDriver = $factory->getCacheDriver()) && ($cached = $cacheDriver->fetch($cacheId)) !== false) {
                 $exm = $this->getExtensionMetadataFactory($om)->getNewExtensionMetadataInstance();
-                self::$configurations[$this->name][$className] = $exm->fromArray($cached);
+                $this->extensionMetadatas[$className] = $exm->fromArray($cached);
             } else {
                 // re-generate metadata on cache miss
                 $this->loadMetadataForObjectClass($om, $factory->getMetadataFor($className));
-                if (isset(self::$configurations[$this->name][$className])) {
-                    $exm = self::$configurations[$this->name][$className];
+                if (isset($this->extensionMetadatas[$className])) {
+                    $exm = $this->extensionMetadatas[$className];
                 }
             }
         }
@@ -239,8 +231,27 @@ abstract class MappedEventSubscriber implements EventSubscriber
             $exm = false; // will not store a cached version, to remap later
         }
         if ($exm) {
-            self::$configurations[$this->name][$metadata->name] = $exm;
+            $this->extensionMetadatas[$metadata->name] = $exm;
         }
+    }
+
+    /**
+     * Try to locate listener attached to $om by it's class name
+     *
+     * @param \Doctrine\Common\Persistence\ObjectManager $om
+     * @param string $listenerClassName
+     * @return \Doctrine\Common\EventSubscriber or null if not found
+     */
+    protected function findListener(ObjectManager $om, $listenerClassName)
+    {
+        foreach ($om->getEventManager()->getListeners() as $listeners) {
+            foreach ($listeners as $listener) {
+                if ($listener instanceof $listenerClassName) {
+                    return $listener;
+                }
+            }
+        }
+        return null;
     }
 
     /**

@@ -2,9 +2,9 @@
 
 namespace Gedmo\Translatable\Mapping\Driver;
 
-use Gedmo\Mapping\Driver\File;
-use Gedmo\Mapping\Driver;
-use Gedmo\Exception\InvalidMappingException;
+use Gedmo\Mapping\Driver\FileDriver;
+use Gedmo\Mapping\ExtensionMetadataInterface;
+use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 
 /**
  * This is a yaml mapping driver for Translatable
@@ -15,51 +15,22 @@ use Gedmo\Exception\InvalidMappingException;
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class Yaml extends File implements Driver
+class Yaml extends FileDriver
 {
-    /**
-     * File extension
-     * @var string
-     */
-    protected $_extension = '.dcm.yml';
-
     /**
      * {@inheritDoc}
      */
-    public function readExtendedMetadata($meta, array &$config)
+    public function loadExtensionMetadata(ClassMetadata $meta, ExtensionMetadataInterface $exm)
     {
-        $mapping = $this->_getMapping($meta->name);
-
+        $mapping = $this->getMapping($meta->name);
         if (isset($mapping['fields'])) {
             foreach ($mapping['fields'] as $field => $fieldMapping) {
                 if (isset($fieldMapping['gedmo'])) {
-                    if (array_key_exists('translatable', $fieldMapping['gedmo'])) {
-                        // fields cannot be overrided and throws mapping exception
-                        $config['fields'][$field] = array();
+                    if (array_key_exists('translatable', $fieldMapping['gedmo']) || isset($fieldMapping['gedmo']['translatable'])) {
+                        $exm->map($field);
                     }
                 }
             }
         }
-
-        if (!$meta->isMappedSuperclass && $config && !isset($config['translationClass'])) {
-            // ensure identifier is singular
-            if (is_array($meta->identifier) && count($meta->identifier) > 1) {
-                throw new InvalidMappingException("Translatable does not support composite identifiers in class - {$meta->name}");
-            }
-            // try to guess translation class
-            $config['translationClass'] = $meta->name . 'Translation';
-            if (!class_exists($config['translationClass'])) {
-                throw new InvalidMappingException("Translation class {$config['translationClass']} for domain object {$meta->name}"
-                    . ", was not found or could not be autoloaded. If it was not generated yet, use GenerateTranslationsCommand", $config);
-            }
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    protected function _loadMappingFile($file)
-    {
-        return \Symfony\Component\Yaml\Yaml::parse($file);
     }
 }

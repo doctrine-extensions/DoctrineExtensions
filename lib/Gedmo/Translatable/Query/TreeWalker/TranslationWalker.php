@@ -122,14 +122,14 @@ class TranslationWalker extends SqlWalker
             $this->getQuery()->setHydrationMode(self::HYDRATE_OBJECT_TRANSLATION);
             $this->getEntityManager()->getConfiguration()->addCustomHydrationMode(
                 self::HYDRATE_OBJECT_TRANSLATION,
-                'Gedmo\\Translatable\\Hydrator\\ORM\\ObjectHydrator'
+                'Gedmo\Translatable\Hydrator\ORM\ObjectHydrator'
             );
             $this->getQuery()->setHint(Query::HINT_REFRESH, true);
         } elseif ($hydrationMode === Query::HYDRATE_SIMPLEOBJECT) {
             $this->getQuery()->setHydrationMode(self::HYDRATE_SIMPLE_OBJECT_TRANSLATION);
             $this->getEntityManager()->getConfiguration()->addCustomHydrationMode(
                 self::HYDRATE_SIMPLE_OBJECT_TRANSLATION,
-                'Gedmo\\Translatable\\Hydrator\\ORM\\SimpleObjectHydrator'
+                'Gedmo\Translatable\Hydrator\ORM\SimpleObjectHydrator'
             );
             $this->getQuery()->setHint(Query::HINT_REFRESH, true);
         }
@@ -275,8 +275,8 @@ class TranslationWalker extends SqlWalker
 
         foreach ($this->translatedComponents as $dqlAlias => $comp) {
             $meta = $comp['metadata'];
-            $config = $this->listener->getConfiguration($em, $meta->name);
-            $tmeta = $em->getClassMetadata($config['translationClass']);
+            $exm = $this->listener->getConfiguration($em, $meta->name);
+            $tmeta = $em->getClassMetadata($exm->getTranslationClass());
 
             // join translation based on current locale
             list($compTblAlias, $tblAlias) = $this->joinTranslationSql($meta, $dqlAlias, $locale, $joinStrategy);
@@ -287,7 +287,7 @@ class TranslationWalker extends SqlWalker
                 $fallbackComponents[] = $tblAliasFallback;
             }
             // organize replacements for sql query
-            foreach ($config['fields'] as $field => $options) {
+            foreach ($exm->getFields() as $field) {
                 $originalField = $compTblAlias.'.'.$meta->getQuotedColumnName($field, $this->platform);
                 $transFieldSql = $fallbackSql = $tblAlias.'.'.$tmeta->getQuotedColumnName($field, $this->platform);
                 foreach (array_reverse($fallbackComponents) as $tblAliasFallback) {
@@ -302,8 +302,8 @@ class TranslationWalker extends SqlWalker
     private function joinTranslationSql(ClassMetadataInfo $cmeta, $dqlAlias, $locale, $joinStrategy = 'LEFT')
     {
         $em = $this->getEntityManager();
-        $config = $this->listener->getConfiguration($em, $cmeta->name);
-        $tmeta = $em->getClassMetadata($config['translationClass']);
+        $exm = $this->listener->getConfiguration($em, $cmeta->name);
+        $tmeta = $em->getClassMetadata($exm->getTranslationClass());
 
         $transTable = $tmeta->getQuotedTableName($this->platform);
         $compTblAlias = $this->walkIdentificationVariable($dqlAlias);
@@ -347,7 +347,7 @@ class TranslationWalker extends SqlWalker
         $em = $this->getEntityManager();
         foreach ($queryComponents as $alias => $comp) {
             if (isset($comp['metadata']) && ($meta = $comp['metadata'])) {
-                if (($config = $this->listener->getConfiguration($em, $meta->name)) && isset($config['fields'])) {
+                if ($this->listener->getConfiguration($em, $meta->name)) {
                     $this->translatedComponents[$alias] = $comp;
                 }
             }
