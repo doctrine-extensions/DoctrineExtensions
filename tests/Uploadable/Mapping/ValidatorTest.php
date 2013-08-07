@@ -64,7 +64,7 @@ class ValidatorTest extends \PHPUnit_Framework_TestCase
         mkdir($dir, 0000, true);
         try {
             Validator::validatePath('/');
-        } catch (\Gedmo\Exception\UploadableCantWriteException $e) {
+        } catch (\Exception\UploadableCantWriteException $e) {
             rmdir($dir);
             return;
         }

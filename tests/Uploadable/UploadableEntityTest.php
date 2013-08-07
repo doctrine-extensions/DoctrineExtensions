@@ -2,21 +2,21 @@
 
 namespace Uploadable;
 
-use TestTool\ObjectManagerTestCase;
+use Gedmo\TestTool\ObjectManagerTestCase;
 use Doctrine\Common\EventManager;
-use Fixture\Uploadable\Image;
-use Fixture\Uploadable\Article;
-use Fixture\Uploadable\File;
-use Fixture\Uploadable\FileWithoutPath;
-use Fixture\Uploadable\FileWithSha1Name;
-use Fixture\Uploadable\FileWithAlphanumericName;
-use Fixture\Uploadable\FileWithCustomFilenameGenerator;
-use Fixture\Uploadable\FileAppendNumber;
-use Fixture\Uploadable\FileWithMaxSize;
-use Fixture\Uploadable\FileWithAllowedTypes;
-use Fixture\Uploadable\FileWithDisallowedTypes;
-use Fixture\Uploadable\Stub\UploadableListenerStub;
-use Fixture\Uploadable\Stub\MimeTypeGuesserStub;
+use Gedmo\Fixture\Uploadable\Image;
+use Gedmo\Fixture\Uploadable\Article;
+use Gedmo\Fixture\Uploadable\File;
+use Gedmo\Fixture\Uploadable\FileWithoutPath;
+use Gedmo\Fixture\Uploadable\FileWithSha1Name;
+use Gedmo\Fixture\Uploadable\FileWithAlphanumericName;
+use Gedmo\Fixture\Uploadable\FileWithCustomFilenameGenerator;
+use Gedmo\Fixture\Uploadable\FileAppendNumber;
+use Gedmo\Fixture\Uploadable\FileWithMaxSize;
+use Gedmo\Fixture\Uploadable\FileWithAllowedTypes;
+use Gedmo\Fixture\Uploadable\FileWithDisallowedTypes;
+use Gedmo\Fixture\Uploadable\Stub\UploadableListenerStub;
+use Gedmo\Fixture\Uploadable\Stub\MimeTypeGuesserStub;
 use Gedmo\Uploadable\FileInfo\FileInfoArray;
 
 /**
@@ -29,17 +29,17 @@ use Gedmo\Uploadable\FileInfo\FileInfoArray;
  */
 class UploadableEntityTest extends ObjectManagerTestCase
 {
-    const IMAGE_CLASS = 'Fixture\Uploadable\Image';
-    const ARTICLE_CLASS = 'Fixture\Uploadable\Article';
-    const FILE_CLASS = 'Fixture\Uploadable\File';
-    const FILE_APPEND_NUMBER_CLASS = 'Fixture\Uploadable\FileAppendNumber';
-    const FILE_WITHOUT_PATH_CLASS = 'Fixture\Uploadable\FileWithoutPath';
-    const FILE_WITH_SHA1_NAME_CLASS = 'Fixture\Uploadable\FileWithSha1Name';
-    const FILE_WITH_ALPHANUMERIC_NAME_CLASS = 'Fixture\Uploadable\FileWithAlphanumericName';
-    const FILE_WITH_CUSTOM_FILENAME_GENERATOR_CLASS = 'Fixture\Uploadable\FileWithCustomFilenameGenerator';
-    const FILE_WITH_MAX_SIZE_CLASS = 'Fixture\Uploadable\FileWithMaxSize';
-    const FILE_WITH_ALLOWED_TYPES_CLASS = 'Fixture\Uploadable\FileWithAllowedTypes';
-    const FILE_WITH_DISALLOWED_TYPES_CLASS = 'Fixture\Uploadable\FileWithDisallowedTypes';
+    const IMAGE_CLASS = 'Gedmo\Fixture\Uploadable\Image';
+    const ARTICLE_CLASS = 'Gedmo\Fixture\Uploadable\Article';
+    const FILE_CLASS = 'Gedmo\Fixture\Uploadable\File';
+    const FILE_APPEND_NUMBER_CLASS = 'Gedmo\Fixture\Uploadable\FileAppendNumber';
+    const FILE_WITHOUT_PATH_CLASS = 'Gedmo\Fixture\Uploadable\FileWithoutPath';
+    const FILE_WITH_SHA1_NAME_CLASS = 'Gedmo\Fixture\Uploadable\FileWithSha1Name';
+    const FILE_WITH_ALPHANUMERIC_NAME_CLASS = 'Gedmo\Fixture\Uploadable\FileWithAlphanumericName';
+    const FILE_WITH_CUSTOM_FILENAME_GENERATOR_CLASS = 'Gedmo\Fixture\Uploadable\FileWithCustomFilenameGenerator';
+    const FILE_WITH_MAX_SIZE_CLASS = 'Gedmo\Fixture\Uploadable\FileWithMaxSize';
+    const FILE_WITH_ALLOWED_TYPES_CLASS = 'Gedmo\Fixture\Uploadable\FileWithAllowedTypes';
+    const FILE_WITH_DISALLOWED_TYPES_CLASS = 'Gedmo\Fixture\Uploadable\FileWithDisallowedTypes';
 
     /**
      * @var UploadableListener
@@ -340,7 +340,7 @@ class UploadableEntityTest extends ObjectManagerTestCase
 
     public function testSettingAnotherDefaultFileInfoClass()
     {
-        $fileInfoStubClass = 'Fixture\Uploadable\Stub\FileInfoStub';
+        $fileInfoStubClass = 'Gedmo\Fixture\Uploadable\Stub\FileInfoStub';
 
         $this->listener->setDefaultFileInfoClass($fileInfoStubClass);
 
@@ -679,7 +679,7 @@ class UploadableEntityTest extends ObjectManagerTestCase
             array(''),
             array(false),
             array(null),
-            array('Fixture\Uploadable\Fake\FileInfo'),
+            array('Gedmo\Fixture\Uploadable\Fake\FileInfo'),
             array(array()),
             array(new \DateTime())
         );
