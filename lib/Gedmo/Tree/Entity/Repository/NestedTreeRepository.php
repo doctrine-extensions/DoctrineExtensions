@@ -804,7 +804,7 @@ class NestedTreeRepository extends AbstractTreeRepository
             $rgt = $count++;
             $meta->getReflectionProperty($tree['left'])->setValue($root, $lft);
             $meta->getReflectionProperty($tree['right'])->setValue($root, $rgt);
-            $this->_em->persist($root);
+            $self->_em->persist($root);
         };
 
         if (isset($tree['root'])) {

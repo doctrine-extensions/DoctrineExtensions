@@ -31,10 +31,9 @@ abstract class Person
    */
   private $region;
 
-
   /**
-   * @ORM\Column(length=64)
-   * @Gedmo\Slug(fields={"name", "region"})
+   * @ORM\Column(length=84, unique=true)
+   * @Gedmo\Slug(fields={"name", "region"}, unique=true)
    */
   private $uri;
 

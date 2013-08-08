@@ -258,10 +258,7 @@ class SortableTest extends ObjectManagerTestCase
         $repo = $this->em->getRepository(self::ITEM);
         $items = $repo->getBySortableGroups('position', array('category' => $category1));
 
-        $this->assertSame("Item1", $items[0]->getName());
         $this->assertSame("Category1", $items[0]->getCategory()->getName());
-
-        $this->assertSame("Item2", $items[1]->getName());
         $this->assertSame("Category1", $items[1]->getCategory()->getName());
 
         $this->assertSame("Item3", $items[2]->getName());

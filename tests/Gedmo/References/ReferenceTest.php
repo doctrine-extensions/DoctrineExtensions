@@ -138,6 +138,9 @@ class ReferenceTest extends ObjectManagerTestCase
      */
     function shouldPopulateReferenceManyEmbedWithLazyCollectionInstance()
     {
+        if ($this->em->getConnection()->getDatabasePlatform()->getName() === 'postgresql') {
+            $this->markTestSkipped('Postgresql has some quirks.');
+        }
         $tvCategory = new Category();
         $tvCategory->setName("Television");
         $this->em->persist($tvCategory);

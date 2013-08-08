@@ -79,13 +79,14 @@ class SluggableTest extends ObjectManagerTestCase
         $this->em->persist($article);
         $this->em->flush();
 
-        $long = 'the title the title the title the title the title the title the title';
+        $long = 'the title the title the title the title the title the titlethetg';
         $article = new Article();
         $article->setTitle($long);
         $article->setCode('my code');
 
         $this->em->persist($article);
         $this->em->flush();
+        $isPsql = $this->em->getConnection()->getDatabasePlatform()->getName() === 'postgresql';
         for ($i = 0; $i < 12; $i++) {
             $article = new Article();
             $article->setTitle($long);
@@ -95,9 +96,9 @@ class SluggableTest extends ObjectManagerTestCase
             $this->em->flush();
 
             $shorten = $article->getSlug();
-            $this->assertSame(64, strlen($shorten));
-            $expected = 'the-title-the-title-the-title-the-title-the-title-the-title-the-';
-            $expected = substr($expected, 0, 64 - (strlen($i+1) + 1)) . '-' . ($i+1);
+            $this->assertSame($isPsql ? 63 : 64, strlen($shorten));
+            $expected = 'the-title-the-title-the-title-the-title-the-title-the-titlethetg';
+            $expected = substr($expected, 0, ($isPsql ? 63 : 64) - (strlen($i+1) + 1)) . '-' . ($i+1);
             $this->assertSame($shorten, $expected);
         }
     }
@@ -120,7 +121,12 @@ class SluggableTest extends ObjectManagerTestCase
         $this->em->persist($article2);
         $this->em->flush();
 
-        $this->assertSame("sample-long-title-which-should-be-correctly-slugged-blablabla-my", $article->getSlug());
+        $isPsql = $this->em->getConnection()->getDatabasePlatform()->getName() === 'postgresql';
+        if ($isPsql) {
+            $this->assertSame("sample-long-title-which-should-be-correctly-slugged-blablabla-m", $article->getSlug());
+        } else {
+            $this->assertSame("sample-long-title-which-should-be-correctly-slugged-blablabla-my", $article->getSlug());
+        }
         // OLD IMPLEMENTATION PRODUCE SLUG sample-long-title-which-should-be-correctly-slugged-blablabla--1
         $this->assertSame("sample-long-title-which-should-be-correctly-slugged-blablabla-1", $article2->getSlug());
     }
