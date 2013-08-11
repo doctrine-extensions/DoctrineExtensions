@@ -3,7 +3,7 @@
 namespace Gedmo\Mapping\Annotation;
 
 use Doctrine\Common\Annotations\Annotation;
-use Gedmo\Uploadable\Mapping\Validator;
+use Gedmo\Uploadable\Mapping\UploadableMetadata;
 
 /**
  * Uploadable annotation for Uploadable behavioral extension
@@ -33,7 +33,7 @@ final class Uploadable extends Annotation
     public $callback = '';
 
     /** @var string */
-    public $filenameGenerator = Validator::FILENAME_GENERATOR_NONE;
+    public $filenameGenerator = UploadableMetadata::GENERATOR_NONE;
 
     /** @var double */
     public $maxSize = 0;

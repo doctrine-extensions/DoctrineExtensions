@@ -1,6 +1,6 @@
 <?php
 
-namespace Uploadable;
+namespace Gedmo\Uploadable;
 
 use Gedmo\TestTool\ObjectManagerTestCase;
 use Doctrine\Common\EventManager;
@@ -539,7 +539,7 @@ class UploadableEntityTest extends ObjectManagerTestCase
 
         $this->em->refresh($file);
 
-        $this->assertEquals($size, $file->getFileSize());
+        $this->assertSame(intval($size), intval($file->getFileSize()));
     }
 
     /**

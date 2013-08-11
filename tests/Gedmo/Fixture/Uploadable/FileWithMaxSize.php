@@ -97,6 +97,6 @@ class FileWithMaxSize
 
     public function getPath()
     {
-        return __DIR__.'/../../temp/uploadable';
+        return __DIR__.'/../../../temp/uploadable';
     }
 }

@@ -2,9 +2,10 @@
 
 namespace Gedmo\Uploadable\Mapping\Driver;
 
-use Gedmo\Mapping\Driver\Xml as BaseXml,
-    Gedmo\Exception\InvalidMappingException,
-    Gedmo\Uploadable\Mapping\Validator;
+use Gedmo\Mapping\Driver\XmlFileDriver;
+use Gedmo\Mapping\ExtensionMetadataInterface;
+use Doctrine\Common\Persistence\Mapping\ClassMetadata;
+use Gedmo\Uploadable\Mapping\UploadableMetadata;
 
 /**
  * This is a xml mapping driver for Uploadable
@@ -17,48 +18,44 @@ use Gedmo\Mapping\Driver\Xml as BaseXml,
  * @author Miha Vrhovnik <miha.vrhovnik@gmail.com>
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class Xml extends BaseXml
+class Xml extends XmlFileDriver
 {
     /**
      * {@inheritDoc}
      */
-    public function readExtendedMetadata($meta, array &$config)
+    public function loadExtensionMetadata(ClassMetadata $meta, ExtensionMetadataInterface $exm)
     {
-        /**
-         * @var \SimpleXmlElement $xml
-         */
-        $xml = $this->_getMapping($meta->name);
+        $xml = $this->getMapping($meta->name);
         $xmlDoctrine = $xml;
         $xml = $xml->children(self::GEDMO_NAMESPACE_URI);
 
-        if ($xmlDoctrine->getName() == 'entity' || $xmlDoctrine->getName() == 'mapped-superclass') {
+        if ($xmlDoctrine->getName() == 'entity' || $xmlDoctrine->getName() == 'document' || $xmlDoctrine->getName() == 'mapped-superclass') {
             if (isset($xml->uploadable)) {
                 $xmlUploadable = $xml->uploadable;
-                $config['uploadable'] = true;
-                $config['allowOverwrite'] = $this->_isAttributeSet($xmlUploadable, 'allow-overwrite') ?
-                    (bool) $this->_getAttribute($xmlUploadable, 'allow-overwrite') : false;
-                $config['appendNumber'] = $this->_isAttributeSet($xmlUploadable, 'append-number') ?
-                    (bool) $this->_getAttribute($xmlUploadable, 'append-number') : false;
-                $config['path'] = $this->_isAttributeSet($xmlUploadable, 'path') ?
-                    $this->_getAttribute($xml->{'uploadable'}, 'path') : '';
-                $config['pathMethod'] = $this->_isAttributeSet($xmlUploadable, 'path-method') ?
-                    $this->_getAttribute($xml->{'uploadable'}, 'path-method') : '';
-                $config['callback'] = $this->_isAttributeSet($xmlUploadable, 'callback') ?
-                    $this->_getAttribute($xml->{'uploadable'}, 'callback') : '';
-                $config['fileMimeTypeField'] = false;
-                $config['filePathField'] = false;
-                $config['fileSizeField'] = false;
-                $config['filenameGenerator'] = $this->_isAttributeSet($xmlUploadable, 'filename-generator') ?
-                    $this->_getAttribute($xml->{'uploadable'}, 'filename-generator') :
-                    Validator::FILENAME_GENERATOR_NONE;
-                $config['maxSize'] = $this->_isAttributeSet($xmlUploadable, 'max-size') ?
-                    (double) $this->_getAttribute($xml->{'uploadable'}, 'max-size') :
+                $options['allowOverwrite'] = $this->isAttributeSet($xmlUploadable, 'allow-overwrite') ?
+                    (bool) $this->getAttribute($xmlUploadable, 'allow-overwrite') : false;
+                $options['appendNumber'] = $this->isAttributeSet($xmlUploadable, 'append-number') ?
+                    (bool) $this->getAttribute($xmlUploadable, 'append-number') : false;
+                $options['path'] = $this->isAttributeSet($xmlUploadable, 'path') ?
+                    $this->getAttribute($xml->{'uploadable'}, 'path') : '';
+                $options['pathMethod'] = $this->isAttributeSet($xmlUploadable, 'path-method') ?
+                    $this->getAttribute($xml->{'uploadable'}, 'path-method') : '';
+                $options['callback'] = $this->isAttributeSet($xmlUploadable, 'callback') ?
+                    $this->getAttribute($xml->{'uploadable'}, 'callback') : '';
+                $options['fileMimeTypeField'] = false;
+                $options['filePathField'] = false;
+                $options['fileSizeField'] = false;
+                $options['filenameGenerator'] = $this->isAttributeSet($xmlUploadable, 'filename-generator') ?
+                    $this->getAttribute($xml->{'uploadable'}, 'filename-generator') :
+                    UploadableMetadata::GENERATOR_NONE;
+                $options['maxSize'] = $this->isAttributeSet($xmlUploadable, 'max-size') ?
+                    (double) $this->getAttribute($xml->{'uploadable'}, 'max-size') :
                     (double) 0;
-                $config['allowedTypes'] = $this->_isAttributeSet($xmlUploadable, 'allowed-types') ?
-                    $this->_getAttribute($xml->{'uploadable'}, 'allowed-types') :
+                $options['allowedTypes'] = $this->isAttributeSet($xmlUploadable, 'allowed-types') ?
+                    $this->getAttribute($xml->{'uploadable'}, 'allowed-types') :
                     '';
-                $config['disallowedTypes'] = $this->_isAttributeSet($xmlUploadable, 'disallowed-types') ?
-                    $this->_getAttribute($xml->{'uploadable'}, 'disallowed-types') :
+                $options['disallowedTypes'] = $this->isAttributeSet($xmlUploadable, 'disallowed-types') ?
+                    $this->getAttribute($xml->{'uploadable'}, 'disallowed-types') :
                     '';
 
                 if (isset($xmlDoctrine->field)) {
@@ -66,19 +63,18 @@ class Xml extends BaseXml
                         $mappingDoctrine = $mapping;
                         $mapping = $mapping->children(self::GEDMO_NAMESPACE_URI);
 
-                        $field = $this->_getAttribute($mappingDoctrine, 'name');
+                        $field = $this->getAttribute($mappingDoctrine, 'name');
 
                         if (isset($mapping->{'uploadable-file-mime-type'})) {
-                            $config['fileMimeTypeField'] = $field;
+                            $options['fileMimeTypeField'] = $field;
                         } else if (isset($mapping->{'uploadable-file-size'})) {
-                            $config['fileSizeField'] = $field;
+                            $options['fileSizeField'] = $field;
                         } else if (isset($mapping->{'uploadable-file-path'})) {
-                            $config['filePathField'] = $field;
+                            $options['filePathField'] = $field;
                         }
                     }
                 }
-
-                Validator::validateConfiguration($meta, $config);
+                $exm->map($options);
             }
         }
     }
