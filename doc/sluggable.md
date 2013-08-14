@@ -466,7 +466,7 @@ Sluggable will ensure uniqueness of the slug.
 ``` php
 <?php
 $entity = new SomeEntity;
-$entity->setSluggableField('won't be taken into account');
+$entity->setSluggableField('won\'t be taken into account');
 $entity->setSlug('the required slug, set manually');
 
 $em->persist($entity);
