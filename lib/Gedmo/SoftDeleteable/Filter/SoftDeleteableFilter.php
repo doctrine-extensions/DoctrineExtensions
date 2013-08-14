@@ -38,8 +38,15 @@ class SoftDeleteableFilter extends SQLFilter
         }
 
         $column = $targetEntity->columnNames[$config['fieldName']];
+        $fullColumnName = $targetTableAlias.'.'.$column;
 
-        return $targetTableAlias.'.'.$column.' IS NULL';
+        if (isset($config['timeAware']) && $config['timeAware']) {
+            $filterString = sprintf('(DATE(%s) > "%s"  OR %s IS NULL)', $fullColumnName, date('Y-m-d H:i:s'), $fullColumnName);
+        } else {
+            $filterString = sprintf('%s IS NULL', $fullColumnName);
+        }
+
+        return $filterString;
     }
 
     public function disableForEntity($class)
