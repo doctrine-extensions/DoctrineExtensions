@@ -17,4 +17,7 @@ final class SoftDeleteable extends Annotation
 {
     /** @var string */
     public $fieldName = 'deletedAt';
+
+    /** @var bool */
+    public $timeAware = false;
 }

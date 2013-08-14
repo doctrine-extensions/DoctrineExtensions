@@ -35,6 +35,7 @@ class SoftDeleteableDocumentTest extends BaseTestCaseMongoODM
     const OTHER_ARTICLE_CLASS = 'SoftDeleteable\Fixture\Document\OtherArticle';
     const OTHER_COMMENT_CLASS = 'SoftDeleteable\Fixture\Document\OtherComment';
     const USER_CLASS = 'SoftDeleteable\Fixture\Document\User';
+    const USER__TIME_AWARE_CLASS = 'SoftDeleteable\Fixture\Document\UserTimeAware';
     const MAPPED_SUPERCLASS_CHILD_CLASS = 'SoftDeleteable\Fixture\Document\Child';
     const SOFT_DELETEABLE_FILTER_NAME = 'soft-deleteable';
 
@@ -114,7 +115,47 @@ class SoftDeleteableDocumentTest extends BaseTestCaseMongoODM
         $user = $repo->findOneBy(array('username' => $username));
         $this->assertNull($user);
     }
+    /**
+     * Tests the filter with time aware option by enabling and disabling it between
+     * some user persists actions.
+     *
+     * @test
+     */
+    public function testSoftDeleteableFilterTimeAware()
+    {
+        $filter = $this->dm->getFilterCollection()->getFilter(self::SOFT_DELETEABLE_FILTER_NAME);
+        $filter->disableForDocument(self::USER__TIME_AWARE_CLASS);
 
+        $repo = $this->dm->getRepository(self::USER__TIME_AWARE_CLASS);
+
+        //Find entity with deletedAt date in future
+        $newUser = new User();
+        $username = 'test_user';
+        $newUser->setUsername($username);
+        $newUser->setDeletedAt(new \DateTime('tomorrow'));
+        $this->dm->persist($newUser);
+        $this->dm->flush();
+
+        $user = $repo->findOneBy(array('username' => $username));
+
+        $this->dm->remove($user);
+        $this->dm->flush();
+
+        //Don't find entity with deletedAt date in past
+        $newUser = new User();
+        $username = 'test_user';
+        $newUser->setUsername($username);
+        $newUser->setDeletedAt(new \DateTime('yesterday'));
+        $this->dm->persist($newUser);
+        $this->dm->flush();
+
+        $user = $repo->findOneBy(array('username' => $username));
+
+        $this->assertNull($user);
+        $this->dm->remove($user);
+        $this->dm->flush();
+
+    }
     public function testPostSoftDeleteEventIsDispatched()
     {
         $subscriber = $this->getMock(

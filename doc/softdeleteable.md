@@ -10,6 +10,7 @@ Features:
 - For now, it works only with the ORM
 - Can be nested with other behaviors
 - Annotation, Yaml and Xml mapping support for extensions
+- Support for 'timeAware' option: When creating an entity set a date of deletion in the future and never worry about cleaning up at expiration time.
 
 [blog_reference]: http://gediminasm.org/article/tree-nestedset-behavior-extension-for-doctrine-2 "Softdeleteable - does not explicitly remove record entries from the database, instead it marks those as deleted and skips in selection queries"
 [blog_test]: http://gediminasm.org/test "Test extensions on this blog"
@@ -79,7 +80,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
- * @Gedmo\SoftDeleteable(fieldName="deletedAt")
+ * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
  */
 class Article
 {
@@ -141,6 +142,7 @@ Entity\Article:
   gedmo:
     soft_deleteable:
       field_name: deletedAt
+      time_aware: false
   id:
     id:
       type: integer
@@ -172,7 +174,7 @@ Entity\Article:
 
         <field name="deletedAt" type="datetime" nullable="true" />
 
-        <gedmo:soft-deleteable field-name="deletedAt" />
+        <gedmo:soft-deleteable field-name="deletedAt" time-aware="false" />
     </entity>
 
 </doctrine-mapping>
