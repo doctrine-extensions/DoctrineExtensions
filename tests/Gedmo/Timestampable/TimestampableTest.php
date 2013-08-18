@@ -196,6 +196,34 @@ class TimestampableTest extends BaseTestCaseORM
         $this->em->clear();
     }
 
+    /**
+     * @test
+     */
+    function shouldSolveIssue767()
+    {
+        $type = new Type;
+        $type->setTitle('Published');
+
+        $this->em->persist($type);
+        $this->em->flush();
+        $this->em->clear();
+
+        $type = $this->em->getReference(self::TYPE, $type->getId());
+        $this->assertInstanceOf('Doctrine\ORM\Proxy\Proxy', $type);
+
+        $art = new Article;
+        $art->setTitle('Art');
+        $art->setBody('body');
+
+        $this->em->persist($art);
+        $this->em->flush();
+
+        $art->setType($type);
+        $this->em->flush(); // in v2.4.x will work on insert too
+
+        $this->assertNotNull($art->getPublished());
+    }
+
     protected function getUsedEntityFixtures()
     {
         return array(

@@ -103,9 +103,8 @@ class TimestampableListener extends MappedEventSubscriber
                                         );
                                     }
                                     $objectMeta = $om->getClassMetadata(get_class($changingObject));
-                                    $trackedChild instanceof Proxy && $om->refresh($trackedChild);
-                                    $value = $objectMeta->getReflectionProperty($trackedChild)
-                                        ->getValue($changingObject);
+                                    $om->initializeObject($changingObject);
+                                    $value = $objectMeta->getReflectionProperty($trackedChild)->getValue($changingObject);
                                 } else {
                                     $value = $changes[1];
                                 }
