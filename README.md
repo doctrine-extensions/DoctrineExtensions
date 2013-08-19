@@ -1,19 +1,10 @@
 # Doctrine2 behavioral extensions
 
-## I'm looking for maintainers of this project
-
-Feel free to open discusion in issue or email message if you are interested in maintaining,
-refactoring doctrine2 extensions. The repository can be moved to the maintainers account and fork
-left on mine. I do not want users to lose availability of stable extensions which they were and are
-used to, at the moment.
-
-**Version 2.3.6**
+**Version 2.3.7**
 
 [![Build Status](https://secure.travis-ci.org/l3pp4rd/DoctrineExtensions.png?branch=master)](http://travis-ci.org/l3pp4rd/DoctrineExtensions)
 
-**Note:** recently doctrine orm and odm were updated to use common doctrine mapping persistense
-layer. The support for it has been made and tagged with **2.3.1** version tag. It will be compatible
-with latest version of doctrine mapping at master branches
+**Note:** Extensions **2.3.x** are compatible with ORM and doctrine common library versions from **2.2.x** to **2.4.x**
 
 ### Latest updates
 
@@ -24,24 +15,6 @@ with latest version of doctrine mapping at master branches
 **2013-03-05**
 
 - A new extension - **References**, which links Entities in Documents and visa versa, [read more about it](https://github.com/l3pp4rd/DoctrineExtensions/blob/master/doc/references.md). It was contributed by @jwage, @avalanche123, @jmikola and @bobthecow, thanks
-
-**2013-02-05**
-
-- **Sluggable** added back slug handler mapping driver support for yaml and xml.
-
-**2012-12-06**
-
-- **Blameable** extension added to allow setting a username string or user object on fields, with the same options as Timestampable.
-
-
-**2012-07-05**
-
-- **Mapping** drivers were updated to support latest doctrine versions.
-
-**2012-05-01**
-
-- **Sluggable** now allows to regenerate slug if its set to empty or null. Also it allows to
-manually set the slug, in that case it would only transliterate it and ensure uniqueness.
 
 ### Summary and features
 
