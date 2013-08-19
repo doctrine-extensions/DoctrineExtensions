@@ -15,6 +15,10 @@ Features:
 [blog_reference]: http://gediminasm.org/article/sluggable-behavior-extension-for-doctrine-2 "Sluggable extension for Doctrine 2 makes automatic record field transformations into url friendly names"
 [blog_test]: http://gediminasm.org/test "Test extensions on this blog"
 
+Update **2013-08-19**
+
+- allow empty slug #807 regenerate slug only if set to `null`
+
 Update **2013-03-10**
 
 - Added 'unique_base' configuration parameter to the Sluggable behaviour
@@ -453,7 +457,7 @@ Set the slug to **null** or empty string.
 ``` php
 <?php
 $entity = $em->find('Entity\Something', $id);
-$entity->setSlug('');
+$entity->setSlug(null);
 
 $em->flush();
 ```

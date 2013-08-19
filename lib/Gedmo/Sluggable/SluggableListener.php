@@ -277,8 +277,8 @@ class SluggableListener extends MappedEventSubscriber
             // must fetch the old slug from changeset, since $object holds the new version
             $oldSlug = isset($changeSet[$slugField]) ? $changeSet[$slugField][0] : $slug;
             $needToChangeSlug = false;
-            // if slug is null or set to empty, regenerate it, or needs an update
-            if (empty($slug) || $slug === '__id__' || !isset($changeSet[$slugField])) {
+            // if slug is null, regenerate it, or needs an update
+            if (null === $slug || $slug === '__id__' || !isset($changeSet[$slugField])) {
                 $slug = '';
                 foreach ($options['fields'] as $sluggableField) {
                     if (isset($changeSet[$sluggableField]) || isset($changeSet[$slugField])) {
@@ -299,10 +299,6 @@ class SluggableListener extends MappedEventSubscriber
             // if slug is changed, do further processing
             if ($needToChangeSlug) {
                 $mapping = $meta->getFieldMapping($slugField);
-                if (!strlen(trim($slug)) && (!isset($mapping['nullable']) || !$mapping['nullable'])) {
-                    throw new \Gedmo\Exception\UnexpectedValueException("Unable to find any non empty sluggable fields for slug [{$slugField}] , make sure they have something at least.");
-                }
-
                 // notify slug handlers --> postSlugBuild
                 $urlized = false;
                 if ($hasHandlers) {
@@ -362,7 +358,7 @@ class SluggableListener extends MappedEventSubscriber
                     $slug = null;
                 }
                 // make unique slug if requested
-                if ($options['unique'] && !is_null($slug)) {
+                if ($options['unique'] && null !== $slug) {
                     $this->exponent = 0;
                     $slug = $this->makeUniqueSlug($ea, $object, $slug, false, $options);
                 }
