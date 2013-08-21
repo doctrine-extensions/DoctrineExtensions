@@ -41,7 +41,7 @@ class SoftDeleteableFilter extends SQLFilter
         $fullColumnName = $targetTableAlias.'.'.$column;
 
         if (isset($config['timeAware']) && $config['timeAware']) {
-            $filterString = sprintf('(DATE(%s) > "%s"  OR %s IS NULL)', $fullColumnName, date('Y-m-d H:i:s'), $fullColumnName);
+            $filterString = sprintf('(%s > NOW() OR %s IS NULL)', $fullColumnName, $fullColumnName);
         } else {
             $filterString = sprintf('%s IS NULL', $fullColumnName);
         }
