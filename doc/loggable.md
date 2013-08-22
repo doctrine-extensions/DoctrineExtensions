@@ -54,7 +54,7 @@ on how to setup and use the extensions in most optimized way.
 ### Loggable annotations:
 
 - **@Gedmo\Mapping\Annotation\Loggable(logEntryClass="my\class")** this class annotation 
-will store logs to optionally specified **logEntryClass**
+will store logs to optionally specified **logEntryClass**. You will still need to specify versioned fields with the following annotation.
 - **@Gedmo\Mapping\Annotation\Versioned** tracks annotated property for changes
 
 ### Loggable username:
