@@ -320,7 +320,7 @@ class SluggableListener extends MappedEventSubscriber
                 if(!$urlized){
                     $slug = call_user_func($this->urlizer, $slug, $options['separator']);
                 }
-                // stylize the slug
+                // Step 3: stylize the slug
                 switch ($options['style']) {
                     case 'camel':
                         $slug = preg_replace_callback('/^[a-z]|' . $options['separator'] . '[a-z]/smi', function ($m) {
@@ -353,6 +353,9 @@ class SluggableListener extends MappedEventSubscriber
                 if (isset($mapping['length']) && strlen($slug) > $mapping['length']) {
                     $slug = substr($slug, 0, $mapping['length']);
                 }
+
+                // add suffix/prefix
+                $slug = $options['prefix'] . $slug . $options['suffix'];
 
                 if (isset($mapping['nullable']) && $mapping['nullable'] && !$slug) {
                     $slug = null;

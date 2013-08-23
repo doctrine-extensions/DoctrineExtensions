@@ -18,7 +18,7 @@ use Composer\Autoload\ClassLoader;
 
 define('TESTS_PATH', __DIR__);
 define('TESTS_TEMP_DIR', __DIR__ . '/temp');
-define('VENDOR_PATH', realpath(__DIR__ . '/../vendor'));
+define('VENDOR_PATH', realpath(__DIR__ . '/../../../../vendor'));
 
 if (!class_exists('PHPUnit_Framework_TestCase') ||
     version_compare(PHPUnit_Runner_Version::id(), '3.5') < 0
@@ -31,7 +31,7 @@ if (!class_exists('PHPUnit_Framework_MockObject_MockBuilder')) {
 }
 
 /** @var $loader ClassLoader */
-$loader = require __DIR__ . '/../vendor/autoload.php';
+$loader = require __DIR__ . '/../../../../vendor/autoload.php';
 
 $loader->add('Gedmo\\Mapping\\Mock', __DIR__);
 $loader->add('Tool', __DIR__ . '/Gedmo');

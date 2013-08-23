@@ -27,6 +27,10 @@ final class Slug extends Annotation
     public $unique_base = null;
     /** @var string */
     public $separator = '-';
+    /** @var string */
+    public $prefix = '';
+    /** @var string */
+    public $suffix = '';
     /** @var array<Gedmo\Mapping\Annotation\SlugHandler> */
     public $handlers = array();
 }
