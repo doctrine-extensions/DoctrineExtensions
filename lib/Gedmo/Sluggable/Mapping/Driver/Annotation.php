@@ -129,6 +129,8 @@ class Annotation extends AbstractAnnotationDriver
                     'unique' => $slug->unique,
                     'unique_base' => $slug->unique_base,
                     'separator' => $slug->separator,
+                    'prefix' => $slug->prefix,
+                    'suffix' => $slug->suffix,
                     'handlers' => $handlers,
                 );
             }

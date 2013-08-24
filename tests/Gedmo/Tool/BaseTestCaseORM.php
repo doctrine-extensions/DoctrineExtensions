@@ -208,7 +208,7 @@ abstract class BaseTestCaseORM extends \PHPUnit_Framework_TestCase
     /**
      * Get annotation mapping configuration
      *
-     * @return Doctrine\ORM\Configuration
+     * @return \Doctrine\ORM\Configuration
      */
     protected function getMockAnnotatedConfig()
     {
