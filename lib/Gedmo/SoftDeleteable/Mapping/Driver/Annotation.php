@@ -37,6 +37,14 @@ class Annotation extends AbstractAnnotationDriver
             Validator::validateField($meta, $annot->fieldName);
 
             $config['fieldName'] = $annot->fieldName;
+
+            $config['timeAware'] = false;
+            if(isset($annot->timeAware)){
+                if (!is_bool($annot->timeAware)) {
+                    throw new InvalidMappingException("timeAware must be boolean. ".gettype($annot->timeAware)." provided.");
+                }
+                $config['timeAware'] = $annot->timeAware;
+            }
         }
 
         $this->validateFullMetadata($meta, $config);

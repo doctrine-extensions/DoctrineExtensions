@@ -60,6 +60,8 @@ class SoftDeleteableMappingTest extends BaseTestCaseOM
 
         $this->assertArrayHasKey('softDeleteable', $config);
         $this->assertTrue($config['softDeleteable']);
+        $this->assertArrayHasKey('timeAware', $config);
+        $this->assertFalse($config['timeAware']);
         $this->assertArrayHasKey('fieldName', $config);
         $this->assertEquals('deletedAt', $config['fieldName']);
     }

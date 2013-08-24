@@ -35,9 +35,16 @@ class SoftDeleteableFilter extends BsonFilter
 
         $column = $targetEntity->fieldMappings[$config['fieldName']];
 
-        return array(
-          $column['fieldName'] => NULL
-        );
+        if (isset($config['timeAware']) && $config['timeAware']) {
+            //@fixme timeAware is not yet respected here!
+            return array(
+                $column['fieldName'] => NULL
+            );
+        } else {
+            return array(
+                $column['fieldName'] => NULL
+            );
+        }
     }
 
     protected function getListener()

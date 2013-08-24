@@ -46,6 +46,14 @@ class Yaml extends File implements Driver
                 Validator::validateField($meta, $fieldName);
 
                 $config['fieldName'] = $fieldName;
+
+                $config['timeAware'] = false;
+                if(isset($classMapping['soft_deleteable']['time_aware'])) {
+                    if (!is_bool($classMapping['soft_deleteable']['time_aware'])) {
+                        throw new InvalidMappingException("timeAware must be boolean. ".gettype($classMapping['soft_deleteable']['time_aware'])." provided.");
+                    }
+                    $config['timeAware'] = $classMapping['soft_deleteable']['time_aware'];
+                }
             }
         }
     }
