@@ -95,6 +95,10 @@ class Xml extends BaseXml
                             $this->_getAttribute($slug, 'unique_base') : null,
                         'separator' => $this->_isAttributeSet($slug, 'separator') ?
                             $this->_getAttribute($slug, 'separator') : '-',
+                        'prefix' => $this->_isAttributeSet($slug, 'prefix') ?
+                            $this->_getAttribute($slug, 'prefix') : '',
+                        'suffix' => $this->_isAttributeSet($slug, 'suffix') ?
+                            $this->_getAttribute($slug, 'suffix') : '',
                         'handlers' => $handlers,
                     );
                     if (!$meta->isMappedSuperclass && $meta->isIdentifier($field) && !$config['slugs'][$field]['unique']) {

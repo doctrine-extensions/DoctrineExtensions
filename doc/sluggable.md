@@ -7,13 +7,17 @@ Features:
 
 - Automatic predifined field transformation into slug
 - ORM and ODM support using same listener
-- Slugs can be unique and styled
+- Slugs can be unique and styled, even with prefixes and/or suffixes
 - Can be nested with other behaviors
 - Annotation, Yaml and Xml mapping support for extensions
 - Multiple slugs, diferent slugs can link to same fields
 
 [blog_reference]: http://gediminasm.org/article/sluggable-behavior-extension-for-doctrine-2 "Sluggable extension for Doctrine 2 makes automatic record field transformations into url friendly names"
 [blog_test]: http://gediminasm.org/test "Test extensions on this blog"
+
+Update **2013-08-23**
+
+- Added 'prefix' and 'suffix' configuration parameter #812
 
 Update **2013-08-19**
 
@@ -326,6 +330,8 @@ echo $article->getSlug();
 - **unique** (optional, default=true) - **true** if slug should be unique and if identical it will be prefixed, **false** - otherwise
 - **unique_base** (optional, default=null) - used in conjunction with **unique**. The name of the entity property that should be used as a key when doing a uniqueness check.
 - **separator** (optional, default="-") - separator which will separate words in slug
+- **prefix** (optional, default="") - prefix which will be added to the generated slug
+- **suffix** (optional, default="") - suffix which will be added to the generated slug
 - **style** (optional, default="default") - **"default"** all letters will be lowercase, **"camel"** - first word letter will be uppercase
 - **handlers** (optional, default=[]) - list of slug handlers, like tree path slug, or customized, for example see bellow
 
@@ -451,8 +457,9 @@ $sluggableListener->setTransliterator($callable);
 
 ### Regenerating slug
 
-In case if you want the slug to regenerate itself based on sluggable fields.
-Set the slug to **null** or empty string.
+In case if you want the slug to regenerate itself based on sluggable fields, set the slug to **null**.
+
+*Note: in previous versions empty strings would also cause the slug to be regenerated. This behaviour was changed in v2.3.8.*
 
 ``` php
 <?php
@@ -543,7 +550,7 @@ class Article
     private $uniqueTitle;
 
     /**
-     * @Gedmo\Slug(fields={"uniqueTitle"})
+     * @Gedmo\Slug(fields={"uniqueTitle"}, prefix="some-prefix-")
      * @ORM\Column(type="string", length=128, unique=true)
      */
     private $uniqueSlug;

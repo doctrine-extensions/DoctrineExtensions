@@ -26,11 +26,13 @@ interface Sluggable
      *         updatable (optional, default=true) - true to update the slug on sluggable field changes, false - otherwise
      *         unique (optional, default=true) - true if slug should be unique and if identical it will be prefixed, false - otherwise
      *         separator (optional, default="-") - separator which will separate words in slug
+     *         prefix (optional, default="") - suffix which will be added to the generated slug
+     *         suffix (optional, default="") - prefix which will be added to the generated slug
      *         style (optional, default="default") - "default" all letters will be lowercase, "camel" - first word letter will be uppercase
      *
      * example:
      * 
-     * @gedmo:Slug(style="camel", separator="_", updatable=false, unique=false)
+     * @gedmo:Slug(style="camel", separator="_", prefix="", suffix="" updatable=false, unique=false)
      * @Column(type="string", length=64)
      * $property
      */
