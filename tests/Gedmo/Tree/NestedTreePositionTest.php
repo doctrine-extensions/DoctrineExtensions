@@ -31,7 +31,6 @@ class NestedTreePositionTest extends BaseTestCaseORM
 
     /**
     * @test
-    * @expectedException UnexpectedValueException
     */
     function shouldFailToPersistRootSibling()
     {
@@ -47,6 +46,9 @@ class NestedTreePositionTest extends BaseTestCaseORM
         $repo->persistAsNextSiblingOf($sport, $food);
 
         $this->em->flush();
+        $this->assertSame(0, $sport->getLevel());
+        $this->assertSame(3, $sport->getLeft());
+        $this->assertSame(4, $sport->getRight());
     }
 
     /**
