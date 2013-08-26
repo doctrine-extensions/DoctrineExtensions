@@ -1,6 +1,6 @@
 <?php
 
-namespace SoftDeleteable\Fixture\Document;
+namespace Gedmo\Fixture\SoftDeleteable\Document;
 
 use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;

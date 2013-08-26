@@ -31,11 +31,15 @@ class Xml extends XmlFileDriver
 
         if ($xmlDoctrine->getName() == 'entity' || $xmlDoctrine->getName() == 'mapped-superclass') {
             if (isset($xml->{'soft-deleteable'})) {
-                if (!$field = $this->getAttribute($xml->{'soft-deleteable'}, 'field-name')) {
+                $data = $xml->{'soft-deleteable'};
+                if (!$field = $this->getAttribute($data, 'field-name')) {
                     throw new InvalidMappingException("Field name for SoftDeleteable class is mandatory in class {$meta->name}.");
                 }
-                $exm->map($field, $this->isAttribute($xml->{'soft-deleteable'}, 'time-aware') ?
-					$xml->getAttribute($xml->{'soft-deleteable'}, 'time-aware') : false);
+                $timeAware = false;
+                if ($this->isAttributeSet($data, 'time-aware')) {
+                    $timeAware = $this->getAttribute($data, 'time-aware') == 'true';
+                }
+                $exm->map($field, $timeAware);
             }
         }
     }

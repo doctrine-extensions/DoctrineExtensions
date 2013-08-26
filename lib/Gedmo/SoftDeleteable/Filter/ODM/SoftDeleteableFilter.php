@@ -32,12 +32,9 @@ class SoftDeleteableFilter extends BsonFilter
             return array();
         }
         $column = $meta->fieldMappings[$exm->getField()];
-        if ($exm->timeAware()) {
+        if ($exm->isTimeAware()) {
             //@fixme timeAware is not yet respected here!
             throw new RuntimeException("Softdeleteable timeAware is not supported in mongodb odm yet");
-            return array(
-                $column['fieldName'] => NULL
-            );
         } else {
             return array(
                 $column['fieldName'] => NULL

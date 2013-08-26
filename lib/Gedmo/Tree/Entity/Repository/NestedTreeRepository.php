@@ -94,7 +94,7 @@ class NestedTreeRepository extends AbstractTreeRepository
                 if (strstr($method,'Sibling')) {
                     $this->_em->initializeObject($parentOrSibling);
                     $newParent = $meta->getReflectionProperty($tree['parent'])->getValue($parentOrSibling);
-                    if (null === $newParent && isset($config['root'])) {
+                    if (null === $newParent && isset($tree['root'])) {
                         throw new UnexpectedValueException("Cannot persist sibling for a root node, tree operation is not possible");
                     }
                     $node->sibling = $parentOrSibling;

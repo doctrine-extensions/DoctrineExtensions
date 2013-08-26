@@ -25,6 +25,14 @@ final class SoftDeleteableMetadata implements ExtensionMetadataInterface
     private $field;
 
     /**
+     * TimeAware will check when object should
+     * be softdeleted
+     *
+     * @var boolean
+     */
+    private $timeAware;
+
+    /**
      * @var array
      */
     private $validFieldTypes = array(
@@ -42,13 +50,15 @@ final class SoftDeleteableMetadata implements ExtensionMetadataInterface
      * Map a softdeleteable field
      *
      * @param string $field
+     * @param boolean $timeAware
      */
-    public function map($field)
+    public function map($field, $timeAware = false)
     {
         if (null !== $this->field) {
             throw new InvalidMappingException("Softdeleteable field was already mapped as {$this->field}");
         }
         $this->field = $field;
+        $this->timeAware = (bool)$timeAware;
     }
 
     /**
@@ -59,6 +69,11 @@ final class SoftDeleteableMetadata implements ExtensionMetadataInterface
     public function getField()
     {
         return $this->field;
+    }
+
+    public function isTimeAware()
+    {
+        return $this->timeAware;
     }
 
     /**

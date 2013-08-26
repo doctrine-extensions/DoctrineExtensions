@@ -49,7 +49,7 @@ class Annotation extends AnnotationDriver
                     'prefix' => $slug->prefix,
                     'suffix' => $slug->suffix,
                     'rootClass' => $meta->isMappedSuperclass ? null : $meta->name,
-                );
+                ));
             }
         }
     }

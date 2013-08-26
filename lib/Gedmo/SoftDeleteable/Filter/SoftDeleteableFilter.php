@@ -35,10 +35,11 @@ class SoftDeleteableFilter extends SQLFilter
             return '';
         }
 
-        $platform = $this->getEntityManager()->getConnection()->getDatabasePlatform();
+        $conn = $this->getEntityManager()->getConnection();
+        $platform = $conn->getDatabasePlatform();
         $column = $meta->getQuotedColumnName($exm->getField(), $platform);
         $addCondSql = $platform->getIsNullExpression($targetTableAlias.'.'.$column);
-        if ($exm->timeAware()) {
+        if ($exm->isTimeAware()) {
             $now = $conn->quote(date('Y-m-d H:i:s')); // should use UTC in database and PHP
             $addCondSql = "({$addCondSql} OR {$targetTableAlias}.{$column} > {$now})";
         }

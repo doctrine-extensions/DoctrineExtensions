@@ -110,9 +110,9 @@ class MaterializedPathRepository extends AbstractTreeRepository
             $expr = $qb->expr()->not(
                 $qb->expr()->like($alias.'.'.$path,
                     $qb->expr()->literal(
-                        ($config['path_starts_with_separator'] ? $separator : '')
+                        ($tree['path_starts_with_separator'] ? $separator : '')
                         . '%' . $separator . '%'
-                        . ($config['path_ends_with_separator'] ? $separator : '')
+                        . ($tree['path_ends_with_separator'] ? $separator : '')
                     )
                 )
             );
