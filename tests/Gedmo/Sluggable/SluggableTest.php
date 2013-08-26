@@ -202,7 +202,7 @@ class SluggableTest extends ObjectManagerTestCase
         $article->setTitle('the title');
         $article->setCode('my code');
         $article->setSlug('my-cust-slug');
-        
+
         $new = new Article;
         $new->setTitle('hey');
         $new->setCode('cc');
@@ -274,15 +274,13 @@ class SluggableTest extends ObjectManagerTestCase
         $this->em->persist($article);
         $this->em->flush();
 
-        $article = $this->em->find(self::ARTICLE, $this->articleId);
         $article->setSlug('');
-
         $this->em->persist($article);
         $this->em->flush();
 
         $this->assertSame('', $article->getSlug());
-        $article->setSlug(null);
 
+        $article->setSlug(null);
         $this->em->persist($article);
         $this->em->flush();
 

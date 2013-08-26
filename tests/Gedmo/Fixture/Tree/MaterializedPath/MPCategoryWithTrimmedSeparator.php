@@ -1,6 +1,6 @@
 <?php
 
-namespace Tree\Fixture;
+namespace Gedmo\Fixture\Tree\MaterializedPath;
 
 use Gedmo\Tree\Node as NodeInterface;
 use Gedmo\Mapping\Annotation as Gedmo;

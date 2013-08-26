@@ -1,68 +1,65 @@
 <?php
+
 /**
  * Created by Dirk Luijk (dirk@luijkwebcreations.nl)
  * 2013
  */
-
 namespace Gedmo\Sluggable;
 
 
 use Doctrine\Common\EventManager;
-use Sluggable\Fixture\Prefix;
-use Sluggable\Fixture\Suffix;
-use Tool\BaseTestCaseORM;
+use Gedmo\Fixture\Sluggable\Prefix;
+use Gedmo\Fixture\Sluggable\Suffix;
+use Gedmo\TestTool\ObjectManagerTestCase;
+use Gedmo\Sluggable\SluggableListener;
 
-class SluggablePrefixSuffixTest extends BaseTestCaseORM {
+class SluggablePrefixSuffixTest extends ObjectManagerTestCase
+{
+    const PREFIX = 'Gedmo\Fixture\Sluggable\Prefix';
+    const SUFFIX = 'Gedmo\Fixture\Sluggable\Suffix';
 
-    const PREFIX = 'Sluggable\\Fixture\\Prefix';
-    const SUFFIX = 'Sluggable\\Fixture\\Suffix';
+    private $em;
 
     protected function setUp()
     {
-        parent::setUp();
-
         $evm = new EventManager;
         $evm->addEventSubscriber(new SluggableListener);
 
-        $this->getMockSqliteEntityManager($evm);
+        $this->em = $this->createEntityManager($evm);
+        $this->createSchema($this->em, array(
+            self::PREFIX,
+            self::SUFFIX,
+        ));
+    }
+
+    protected function tearDown()
+    {
+        $this->releaseEntityManager($this->em);
     }
 
     /**
      * @test
      */
-    function testPrefix()
+    function shouldHandlePrefix()
     {
         $foo = new Prefix();
         $foo->setTitle('Bar');
         $this->em->persist($foo);
         $this->em->flush();
 
-        $this->assertEquals('test-bar', $foo->getSlug());
+        $this->assertSame('test-bar', $foo->getSlug());
     }
 
     /**
      * @test
      */
-    function testSuffix()
+    function shouldHandleSuffix()
     {
         $foo = new Suffix();
         $foo->setTitle('Bar');
         $this->em->persist($foo);
         $this->em->flush();
 
-        $this->assertEquals('bar.test', $foo->getSlug());
-    }
-
-    /**
-     * Get a list of used fixture classes
-     *
-     * @return array
-     */
-    protected function getUsedEntityFixtures()
-    {
-        return array(
-            self::SUFFIX,
-            self::PREFIX,
-        );
+        $this->assertSame('bar.test', $foo->getSlug());
     }
 }

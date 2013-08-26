@@ -1,6 +1,6 @@
 <?php
 
-namespace Sortable\Fixture\Transport;
+namespace Gedmo\Fixture\Sortable\Transport;
 
 use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
@@ -25,19 +25,17 @@ class Reservation {
     /**
      * Bus destination
      *
-     * @Gedmo\SortableGroup
      * @ORM\Column(length=255)
      */
     private $destination;
 
     /**
-     * @Gedmo\SortableGroup
      * @ORM\Column(type="datetime")
      */
     private $travelDate;
 
     /**
-     * @Gedmo\SortablePosition
+     * @Gedmo\Sortable(groups={"travelDate", "destination"})
      * @ORM\Column(type="integer")
      */
     private $seat;

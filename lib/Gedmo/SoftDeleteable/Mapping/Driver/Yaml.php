@@ -31,9 +31,11 @@ class Yaml extends FileDriver
                 if (!isset($classMapping['soft_deleteable']['field_name'])) {
                     throw new InvalidMappingException("Field name for SoftDeleteable class is mandatory in class {$meta->name}.");
                 }
-
+                $timeAware = false;
+                if (isset($classMapping['soft_deleteable']['time_aware'])) {
+                    $timeAware = $classMapping['soft_deleteable']['time_aware'];
+                }
                 $fieldName = $classMapping['soft_deleteable']['field_name'];
-                $timeAware = isset($classMapping['soft_deleteable']['time_aware']) && $classMapping['soft_deleteable']['time_aware'];
                 $exm->map($fieldName, $timeAware);
             }
         }

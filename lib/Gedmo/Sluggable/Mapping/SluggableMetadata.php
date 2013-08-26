@@ -36,6 +36,7 @@ final class SluggableMetadata implements ExtensionMetadataInterface
         'text',
         'integer',
         'int',
+        'datetime',
     );
 
     /**

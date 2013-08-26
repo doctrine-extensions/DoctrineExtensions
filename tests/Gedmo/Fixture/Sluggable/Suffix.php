@@ -4,17 +4,16 @@
  * 2013
  */
 
-namespace Sluggable\Fixture;
+namespace Gedmo\Fixture\Sluggable;
 
 
-use Gedmo\Sluggable\Sluggable;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
  */
-class Prefix implements Sluggable
+class Suffix
 {
     /** @ORM\Id @ORM\GeneratedValue @ORM\Column(type="integer") */
     private $id;
@@ -25,7 +24,7 @@ class Prefix implements Sluggable
     private $title;
 
     /**
-     * @Gedmo\Slug(separator="-", updatable=true, fields={"title"}, prefix="test-")
+     * @Gedmo\Slug(separator="-", updatable=true, fields={"title"}, suffix=".test")
      * @ORM\Column(name="slug", type="string", length=64, unique=true)
      */
     private $slug;

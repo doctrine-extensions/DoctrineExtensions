@@ -2,7 +2,7 @@
 
 namespace Gedmo\SoftDeleteable;
 
-use SoftDeleteable\Fixture\Document\UsingTrait;
+use Gedmo\Fixture\SoftDeleteable\Document\UsingTrait;
 
 /**
  * Test for SoftDeletable Entity Trait

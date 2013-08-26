@@ -99,7 +99,7 @@ class HardRelationTest extends ObjectManagerTestCase
         $this->em->flush();
         $this->em->clear();
 
-        $person = $this->em->getRepository('SoftDeleteable\Fixture\Entity\Person')->findOneById($person->getId());
+        $person = $this->em->getRepository('Gedmo\Fixture\SoftDeleteable\Person')->findOneById($person->getId());
         $this->assertNotNull($person, "Should not be softdeleted");
 
         $person->setDeletedAt(new \DateTime(date('Y-m-d H:i:s', time() - 15 * 3600))); // in an hour
@@ -107,7 +107,7 @@ class HardRelationTest extends ObjectManagerTestCase
         $this->em->flush();
         $this->em->clear();
 
-        $person = $this->em->getRepository('SoftDeleteable\Fixture\Entity\Person')->findOneById($person->getId());
+        $person = $this->em->getRepository('Gedmo\Fixture\SoftDeleteable\Person')->findOneById($person->getId());
         $this->assertNull($person, "Should be softdeleted");
     }
 }

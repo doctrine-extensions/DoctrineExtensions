@@ -3,7 +3,6 @@
 namespace Gedmo\Sluggable;
 
 use Doctrine\Common\EventManager;
-use Tool\BaseTestCaseORM;
 use Gedmo\Fixture\Sluggable\Issue633\Article;
 use Gedmo\TestTool\ObjectManagerTestCase;
 use Gedmo\Sluggable\SluggableListener;

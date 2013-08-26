@@ -8,7 +8,7 @@ use Gedmo\Tree\TreeListener;
 
 class RepositoryTest extends ObjectManagerTestCase
 {
-    const CATEGORY_WITH_TRIMMED_SEPARATOR = "Tree\Fixture\MPCategoryWithTrimmedSeparator";
+    const CATEGORY_WITH_TRIMMED_SEPARATOR = "Gedmo\Fixture\Tree\MaterializedPath\MPCategoryWithTrimmedSeparator";
     const CATEGORY = "Gedmo\Fixture\Tree\MaterializedPath\MPCategory";
 
     private $repo, $config, $em, $listener;
@@ -21,6 +21,7 @@ class RepositoryTest extends ObjectManagerTestCase
         $this->em = $this->createEntityManager($evm);
         $this->createSchema($this->em, array(
             self::CATEGORY,
+            self::CATEGORY_WITH_TRIMMED_SEPARATOR,
         ));
         $meta = $this->em->getClassMetadata(self::CATEGORY);
         $this->config = $this->listener->getConfiguration($this->em, $meta->name)->getMapping();

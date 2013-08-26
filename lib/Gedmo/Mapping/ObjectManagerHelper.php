@@ -90,6 +90,23 @@ final class ObjectManagerHelper
     }
 
     /**
+     * Checks whether an id should be generated post insert
+     *
+     * @param \Doctrine\Common\Persistence\Mapping\ClassMetadata
+     * @return boolean
+     * @throws \Gedmo\Exception\UnsupportedObjectManagerException - if manager is not supported
+     */
+    static function isPostInsertIdGenerator(ClassMetadata $meta)
+    {
+        if ($meta instanceof OrmMetadata) {
+            return $meta->idGenerator->isPostInsertGenerator();
+        } elseif ($meta instanceof MongoOdmMetadata) {
+            return true;
+        }
+        throw new UnsupportedObjectManagerException("Could not identify ClassMetadata");
+    }
+
+    /**
      * Checks if $object is a Proxy
      *
      * @param Object $object
@@ -101,7 +118,7 @@ final class ObjectManagerHelper
     }
 
     /**
-     * Checks wheter the $object is an uninitialized proxy
+     * Checks whether the $object is an uninitialized proxy
      *
      * @param Object $object
      * @return boolean
@@ -109,6 +126,24 @@ final class ObjectManagerHelper
     static function isUninitializedProxy($object)
     {
         return self::isProxy($object) && !$object->__isInitialized__;
+    }
+
+    /**
+     * Checks whether the $object is in managed state in unit of work
+     *
+     * @param \Doctrine\Common\PropertyChangedListener $uow
+     * @param Object - doctrine managed domain object
+     * @return boolean
+     * @throws \Gedmo\Exception\UnsupportedObjectManagerException - if manager is not supported
+     */
+    static function isObjectManaged(PropertyChangedListener $uow, $object)
+    {
+        if ($uow instanceof OrmUow) {
+            return OrmUow::STATE_MANAGED === $uow->getEntityState($object);
+        } elseif ($uow instanceof MongoOdmUow) {
+            return MongoOdmUow::STATE_MANAGED === $uow->getDocumentState($object);
+        }
+        throw new UnsupportedObjectManagerException("Could not identify UnitOfWork");
     }
 
     /**

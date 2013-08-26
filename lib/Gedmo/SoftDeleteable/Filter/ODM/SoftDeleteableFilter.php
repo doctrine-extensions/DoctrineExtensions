@@ -32,7 +32,7 @@ class SoftDeleteableFilter extends BsonFilter
             return array();
         }
         $column = $meta->fieldMappings[$exm->getField()];
-        if ($exm->timeAware()) {
+        if ($exm->isTimeAware()) {
             return array(
                 '$or' => array(
                     array($column['fieldName'] => NULL),

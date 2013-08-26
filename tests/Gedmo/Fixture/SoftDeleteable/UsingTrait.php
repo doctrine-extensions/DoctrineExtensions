@@ -1,6 +1,6 @@
 <?php
 
-namespace SoftDeleteable\Fixture\Entity;
+namespace Gedmo\Fixture\SoftDeleteable;
 
 use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
 

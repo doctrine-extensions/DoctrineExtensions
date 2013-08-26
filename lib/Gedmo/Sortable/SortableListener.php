@@ -169,8 +169,7 @@ class SortableListener extends MappedEventSubscriber
             $options = $exm->getOptions($position);
             $changed = false;
             // Get groups
-            $groups = $this->getGroups($meta, $options['groups'], $object);
-            $oldGroups = $groups;
+            $groups = $oldGroups = $this->getGroups($meta, $options['groups'], $object);
             // handle old groups
             foreach (array_keys($groups) as $group) {
                 if (array_key_exists($group, $changeSet)) {
@@ -202,7 +201,7 @@ class SortableListener extends MappedEventSubscriber
                 $newPosition = -1;
                 // specific case
             }
-            if (!$changed) return;
+            if (!$changed) continue;
 
             // Get hash
             $hash = $this->getHash($options['rootClass'], $position, $groups);
@@ -451,7 +450,7 @@ class SortableListener extends MappedEventSubscriber
         // scheduled for insert, it has no identifier yet and is obviously new
         // see issue #226
         foreach ($groups as $group => $val) {
-            if (is_object($val) && ($uow->isScheduledForInsert($val) || !$em->getMetadataFactory()->isTransient(ClassUtils::getClass($val)) && UnitOfWork::STATE_MANAGED !== $uow->getEntityState($val))) {
+            if (is_object($val) && ($uow->isScheduledForInsert($val) || !$om->getMetadataFactory()->isTransient(ClassUtils::getClass($val)) && !OMH::isObjectManaged($uow, $val))) {
                 return $this->maxPositions[$hash] = -1;
             }
         }

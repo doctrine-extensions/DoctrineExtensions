@@ -411,7 +411,10 @@ class SluggableListener extends MappedEventSubscriber
 
             // use the unique_base to restrict the uniqueness check
             if ($options['unique'] && isset($options['unique_base'])) {
-                if ($ubase = $meta->getReflectionProperty($options['unique_base'])->getValue($object)) {
+                $ubase = $meta->getReflectionProperty($options['unique_base'])->getValue($object);
+                if ($meta->isSingleValuedAssociation($options['unique_base'])) {
+                    $qb->join($meta->getAssociationTargetClass($options['unique_base']), 'unique_'.$options['unique_base']);
+                } elseif ($ubase) {
                     $qb->andWhere('rec.' . $options['unique_base'] . ' = :unique_base');
                     $qb->setParameter(':unique_base', $ubase);
                 } else {
