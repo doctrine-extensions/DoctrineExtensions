@@ -118,6 +118,28 @@ final class ObjectManagerHelper
     }
 
     /**
+     * Checks whether an id should be generated post insert
+     *
+     * @param ClassMetadata $meta
+     *
+     * @return boolean
+     *
+     * @throws UnsupportedObjectManagerException - if manager is not supported
+     */
+    public static function isPostInsertIdGenerator(ClassMetadata $meta)
+    {
+        if ($meta instanceof OrmMetadata) {
+            return $meta->idGenerator->isPostInsertGenerator();
+        }
+
+        if ($meta instanceof MongoOdmMetadata) {
+            return true;
+        }
+
+        throw new UnsupportedObjectManagerException("Could not identify ClassMetadata");
+    }
+
+    /**
      * Checks if $object is a Proxy
      *
      * @param object $object
@@ -130,7 +152,7 @@ final class ObjectManagerHelper
     }
 
     /**
-     * Checks whether the $object is an uninitialized proxy
+     * Checks whether the object is an uninitialized proxy
      *
      * @param object $object
      *
@@ -139,6 +161,29 @@ final class ObjectManagerHelper
     public static function isUninitializedProxy($object)
     {
         return self::isProxy($object) && !$object->__isInitialized__;
+    }
+
+    /**
+     * Checks whether the object is in managed state in unit of work
+     *
+     * @param PropertyChangedListener $uow
+     * @param object                  $object
+     *
+     * @return boolean
+     *
+     * @throws UnsupportedObjectManagerException - if manager is not supported
+     */
+    public static function isObjectManaged(PropertyChangedListener $uow, $object)
+    {
+        if ($uow instanceof OrmUow) {
+            return OrmUow::STATE_MANAGED === $uow->getEntityState($object);
+        }
+
+        if ($uow instanceof MongoOdmUow) {
+            return MongoOdmUow::STATE_MANAGED === $uow->getDocumentState($object);
+        }
+
+        throw new UnsupportedObjectManagerException("Could not identify UnitOfWork");
     }
 
     /**

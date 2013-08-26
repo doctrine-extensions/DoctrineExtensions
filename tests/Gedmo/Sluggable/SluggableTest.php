@@ -278,13 +278,12 @@ class SluggableTest extends ObjectManagerTestCase
         $this->em->flush();
 
         $article->setSlug('');
-
         $this->em->persist($article);
         $this->em->flush();
 
         $this->assertSame('', $article->getSlug());
-        $article->setSlug(null);
 
+        $article->setSlug(null);
         $this->em->persist($article);
         $this->em->flush();
 

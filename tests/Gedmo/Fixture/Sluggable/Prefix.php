@@ -1,19 +1,14 @@
 <?php
-/**
- * Created by Dirk Luijk (dirk@luijkwebcreations.nl)
- * 2013
- */
 
-namespace Sluggable\Fixture;
+namespace Gedmo\Fixture\Sluggable;
 
-use Gedmo\Sluggable\Sluggable;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
  */
-class Prefix implements Sluggable
+class Prefix
 {
     /**
     * @ORM\Id

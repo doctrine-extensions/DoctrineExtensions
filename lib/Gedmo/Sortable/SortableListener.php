@@ -9,7 +9,6 @@ use Doctrine\Common\Util\ClassUtils;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\QueryBuilder;
-use Doctrine\ORM\UnitOfWork;
 use Gedmo\Mapping\MappedEventSubscriber;
 use Gedmo\Mapping\ObjectManagerHelper as OMH;
 use Gedmo\Sortable\Mapping\SortableMetadata;
@@ -172,8 +171,7 @@ class SortableListener extends MappedEventSubscriber
             $options = $exm->getOptions($position);
             $changed = false;
             // Get groups
-            $groups = $this->getGroups($meta, $options['groups'], $object);
-            $oldGroups = $groups;
+            $groups = $oldGroups = $this->getGroups($meta, $options['groups'], $object);
             // handle old groups
             foreach (array_keys($groups) as $group) {
                 if (array_key_exists($group, $changeSet)) {
@@ -206,7 +204,7 @@ class SortableListener extends MappedEventSubscriber
                 // specific case
             }
             if (!$changed) {
-                return;
+                continue;
             }
 
             // Get hash
@@ -461,7 +459,7 @@ class SortableListener extends MappedEventSubscriber
         // scheduled for insert, it has no identifier yet and is obviously new
         // see issue #226
         foreach ($groups as $group => $val) {
-            if (is_object($val) && ($uow->isScheduledForInsert($val) || !$om->getMetadataFactory()->isTransient(ClassUtils::getClass($val)) && UnitOfWork::STATE_MANAGED !== $uow->getEntityState($val))) {
+            if (is_object($val) && ($uow->isScheduledForInsert($val) || !$om->getMetadataFactory()->isTransient(ClassUtils::getClass($val)) && !OMH::isObjectManaged($uow, $val))) {
                 return $this->maxPositions[$hash] = -1;
             }
         }

@@ -31,6 +31,7 @@ class Yaml extends FileDriver
                         $exm->map($field, array(
                             'fields' => $slug['fields'],
                             'style' => isset($slug['style']) ? (string) $slug['style'] : 'default',
+                            'dateFormat' => isset($slug['dateFormat']) ? $slug['dateFormat'] : 'Y-m-d-H:i',
                             'updatable' => isset($slug['updatable']) ? (bool) $slug['updatable'] : true,
                             'unique' => isset($slug['unique']) ? (bool) $slug['unique'] : true,
                             'unique_base' => isset($slug['unique_base']) ? $slug['unique_base'] : null,

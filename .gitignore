@@ -1,5 +1,5 @@
 /phpunit.xml
-/tests/temp/*.php
+/tests/temp/*
 /vendor
 /bin
 /om

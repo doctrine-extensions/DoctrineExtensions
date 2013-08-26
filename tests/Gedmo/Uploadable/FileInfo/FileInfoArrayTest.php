@@ -2,6 +2,8 @@
 
 namespace Uploadable\FileInfo;
 
+use Gedmo\Uploadable\FileInfo\FileInfoArray;
+
 /**
  * These are tests for the FileInfoArray class of the Uploadable behavior
  *
@@ -13,7 +15,7 @@ namespace Uploadable\FileInfo;
 class FileInfoArrayTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @expectedException RuntimeException
+     * @expectedException \RuntimeException
      */
     public function test_constructor_ifKeysAreNotValidOrSomeAreMissingThrowException()
     {

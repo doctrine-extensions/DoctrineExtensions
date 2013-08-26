@@ -217,6 +217,7 @@ class LoggableListener extends MappedEventSubscriber
             }
             $newValues = array();
             $versionedFields = $exm->getVersionedFields();
+            $uow = $om->getUnitOfWork();
             if ($action !== self::ACTION_REMOVE) {
                 foreach (OMH::getObjectChangeSet($uow, $object) as $field => $changes) {
                     if (!in_array($field, $versionedFields)) {

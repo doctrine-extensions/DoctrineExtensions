@@ -40,6 +40,8 @@ class Xml extends XmlFileDriver
                         'fields' => $fields,
                         'style' => $this->isAttributeSet($slug, 'style') ?
                             $this->getAttribute($slug, 'style') : 'default',
+                        'dateFormat' => $this->isAttributeSet($slug, 'dateFormat') ?
+                            $this->getAttribute($slug, 'dateFormat') : 'Y-m-d-H:i',
                         'updatable' => $this->isAttributeSet($slug, 'updatable') ?
                             $this->getBooleanAttribute($slug, 'updatable') : true,
                         'unique' => $this->isAttributeSet($slug, 'unique') ?
