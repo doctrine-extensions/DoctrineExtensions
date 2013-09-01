@@ -411,7 +411,7 @@ class UploadableListener extends MappedEventSubscriber
     public function removeFile($filePath)
     {
         if (is_file($filePath)) {
-            return unlink($filePath);
+            return @unlink($filePath);
         }
 
         return false;
