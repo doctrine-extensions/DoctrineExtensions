@@ -313,7 +313,7 @@ Entity\Category:
 
         <one-to-many field="children" target-entity="NestedTree" mapped-by="parent">
             <order-by>
-                <order-by-field name="lft" direction="ASC" />
+                <order-by-field name="left" direction="ASC" />
             </order-by>
         </one-to-many>
 
