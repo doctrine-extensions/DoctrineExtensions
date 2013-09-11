@@ -15,6 +15,10 @@ Features:
 [blog_reference]: http://gediminasm.org/article/sluggable-behavior-extension-for-doctrine-2 "Sluggable extension for Doctrine 2 makes automatic record field transformations into url friendly names"
 [blog_test]: http://gediminasm.org/test "Test extensions on this blog"
 
+Update **2013-09-11**
+
+- Added support for slug history
+
 Update **2013-08-23**
 
 - Added 'prefix' and 'suffix' configuration parameter #812
@@ -80,6 +84,7 @@ Content:
 - Custom [transliterator](#transliterator)
 - Advanced usage [examples](#advanced-examples)
 - Using [slug handlers](#slug-handlers)
+- Using [slug history](#slug-history) - only for ORM as annotation for now
 
 <a name="including-extension"></a>
 
@@ -769,5 +774,112 @@ echo $gedi->getSlug(); // outputs "knplabs-nantes/gedi"
 ```
 
 **Note:** tree slug handler, takes a parent relation to build slug recursively.
+
+<a name="slug-history"></a>
+
+## Using slug history:
+
+First setup an entity which will store old slugs
+
+``` php
+<?php
+
+namespace Sluggable\Fixture;
+
+use Gedmo\Sluggable\Entity\MappedSuperclass\AbstractSlugEntry;
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * @ORM\Table(name="test_article_slug_entries")
+ * @ORM\Entity(repositoryClass="Gedmo\Sluggable\Entity\Repository\SlugEntryRepository")
+ */
+class History extends AbstractSlugEntry {}
+```
+
+Then you have to tell article that all old slugs should be stored.
+
+``` php
+/**
+ * @ORM\Entity
+ * @Gedmo\SlugHistory(slugEntryClass="Sluggable\Fixture\History")
+ */
+class ArticleWithHistory implements Sluggable {
+
+    /** @ORM\Id @ORM\GeneratedValue @ORM\Column(type="integer") */
+    private $id;
+
+    /**
+     * @ORM\Column(name="title", type="string", length=64)
+     */
+    private $title;
+
+    /**
+     * @ORM\Column(name="code", type="string", length=16)
+     */
+    private $code;
+
+    /**
+     * @Gedmo\Slug(separator="-", updatable=true, fields={"title", "code"})
+     * @ORM\Column(name="slug", type="string", length=64, unique=true)
+     */
+    private $slug;
+
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    public function setTitle($title)
+    {
+        $this->title = $title;
+    }
+
+    public function getTitle()
+    {
+        return $this->title;
+    }
+
+    public function setCode($code)
+    {
+        $this->code = $code;
+    }
+
+    public function getCode()
+    {
+        return $this->code;
+    }
+
+    public function setSlug($slug)
+    {
+        $this->slug = $slug;
+    }
+
+    public function getSlug()
+    {
+        return $this->slug;
+    }
+
+}
+```
+
+Example of usage:
+``` php
+
+$article = new \Sluggable\Fixture\ArticleWithHistory();
+$article->setTitle('the title');
+$article->setCode('my code');
+
+$em->persist($article);
+$em->flush();
+
+$article->setTitle('the updated title');
+$em->persist($article);
+$em->flush();
+
+$repository = $em->getRepository('Sluggable\\Fixture\\ArticleWithHistory');
+// Use findBy* where * is slug property by which you want to search
+$article = $repository->findBySlug('the-title-my-code');
+
+```
 
 Any suggestions on improvements are very welcome

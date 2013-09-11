@@ -9,8 +9,9 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
+ * @Gedmo\SlugHistory(slugEntryClass="Sluggable\Fixture\History")
  */
-class TransArticleManySlug implements Sluggable, Translatable
+class TransArticleManySlugWithHistory implements Sluggable, Translatable
 {
     /**
      * @ORM\Id

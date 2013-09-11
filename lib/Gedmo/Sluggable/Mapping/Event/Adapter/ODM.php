@@ -19,6 +19,14 @@ final class ODM extends BaseAdapterODM implements SluggableAdapter
     /**
      * {@inheritDoc}
      */
+    public function getDefaultSlugEntryClass()
+    {
+        return 'Gedmo\\Sluggable\\Entity\\SlugEntry';
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function getSimilarSlugs($object, $meta, array $config, $slug)
     {
         $dm = $this->getObjectManager();
