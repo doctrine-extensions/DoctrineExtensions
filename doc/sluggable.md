@@ -876,7 +876,7 @@ $article->setTitle('the updated title');
 $em->persist($article);
 $em->flush();
 
-$repository = $em->getRepository('Sluggable\\Fixture\\ArticleWithHistory');
+$repository = $em->getRepository('Sluggable\\Fixture\\History');
 // Use findBy* where * is slug property by which you want to search
 $article = $repository->findBySlug('the-title-my-code');
 
