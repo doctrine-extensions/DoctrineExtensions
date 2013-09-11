@@ -154,8 +154,16 @@ class Nested implements Strategy
             // set back all other changes
             foreach ($changeSet as $field => $set) {
                 if ($field !== $config['left']) {
-                    $uow->setOriginalEntityProperty($oid, $field, $set[0]);
-                    $wrapped->setPropertyValue($field, $set[1]);
+                    if (is_array($set) && array_key_exists(0, $set) && array_key_exists(1, $set))
+                    {
+                        $uow->setOriginalEntityProperty($oid, $field, $set[0]);
+                        $wrapped->setPropertyValue($field, $set[1]);
+                    }
+                    else
+                    {
+                        $uow->setOriginalEntityProperty($oid, $field, $set);
+                        $wrapped->setPropertyValue($field, $set);
+                    }
                 }
             }
             $uow->recomputeSingleEntityChangeSet($meta, $node);
