@@ -13,7 +13,7 @@ use Sluggable\Fixture\Article;
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class SluggableTest extends BaseTestCaseORM
+class SluggableHistoryTest extends BaseTestCaseORM
 {
     const ARTICLE = 'Sluggable\\Fixture\\ArticleWithHistory';
     const ARTICLE_MANY = 'Sluggable\\Fixture\\TransArticleManySlugWithHistory';
