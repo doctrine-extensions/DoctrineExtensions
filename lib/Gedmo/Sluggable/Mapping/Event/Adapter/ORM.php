@@ -34,7 +34,7 @@ final class ORM extends BaseAdapterORM implements SluggableAdapter
 
         // use the unique_base to restrict the uniqueness check
         if ($config['unique'] && isset($config['unique_base'])) {
-            if ($ubase = $wrapped->getPropertyValue($config['unique_base'])) {
+            if ($ubase = $wrapped->getPropertyValue($config['unique_base']) && !array_key_exists($config['unique_base'], $wrapped->getMetadata()->getAssociationMappings())) {
                 $qb->andWhere('rec.' . $config['unique_base'] . ' = :unique_base');
                 $qb->setParameter(':unique_base', $ubase);
             } else {
