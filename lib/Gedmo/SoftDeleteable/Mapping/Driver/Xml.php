@@ -46,7 +46,15 @@ class Xml extends BaseXml
 
                 $config['timeAware'] = false;
                 if($this->_isAttributeSet($xml->{'soft-deleteable'}, 'time-aware')) {
-                    if (!is_bool($this->_getAttribute($xml->{'soft-deleteable'}, 'time-aware'))) {
+                    $timeAware = $this->_getAttribute($xml->{'soft-deleteable'}, 'time-aware');
+                    if (is_string($timeAware)) {
+                        if ($timeAware === 'true') {
+                            $timeAware = true;
+                        } elseif ($timeAware === 'false') {
+                            $timeAware = false;
+                        }
+                    }
+                    if (!is_bool($timeAware)) {
                         throw new InvalidMappingException("timeAware must be boolean. ".gettype($this->_getAttribute($xml->{'soft-deleteable'}, 'time-aware'))." provided.");
                     }
                     $config['timeAware'] = $this->_getAttribute($xml->{'soft-deleteable'}, 'time-aware');
