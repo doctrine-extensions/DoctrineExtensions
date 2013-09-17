@@ -261,7 +261,7 @@ class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
         $this->em->flush();
 
         $this->assertRegexp('/Food\-\d+,New\sNode\-\d+/', $newNode->getPath());
-        $this->assertEquals(2, $newNode->getLevel());
+        $this->assertEquals(1, $newNode->getLevel());
     }
 
     public function test_changeChildrenIndex()
