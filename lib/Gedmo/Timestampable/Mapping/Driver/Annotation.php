@@ -4,7 +4,8 @@ namespace Gedmo\Timestampable\Mapping\Driver;
 
 use Gedmo\Mapping\Driver\AbstractAnnotationDriver,
     Doctrine\Common\Annotations\AnnotationReader,
-    Gedmo\Exception\InvalidMappingException;
+    Gedmo\Exception\InvalidMappingException,
+    Doctrine\DBAL\Types\Type;
 
 /**
  * This is an annotation mapping driver for Timestampable

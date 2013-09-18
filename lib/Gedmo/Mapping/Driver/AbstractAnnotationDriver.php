@@ -4,7 +4,6 @@ namespace Gedmo\Mapping\Driver;
 
 use Gedmo\Mapping\Driver\AnnotationDriverInterface;
 use Doctrine\Common\Persistence\Mapping\ClassMetadata;
-use Doctrine\DBAL\Types\Type;
 
 /**
  * This is an abstract class to implement common functionality
