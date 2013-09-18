@@ -81,17 +81,8 @@ abstract class AbstractAnnotationDriver implements AnnotationDriverInterface
     protected function isValidField($meta, $field)
     {
         $mapping = $meta->getFieldMapping($field);
-        if (empty($mapping)) return false;
 
-        $is_valid = $mapping && in_array($mapping['type'], $this->validTypes);
-        if ($is_valid) return true;
-
-        $fieldType = Type::getType($mapping['type']);
-        foreach($this->validTypes as $type) {
-            $validType = Type::getType($type);
-            if ($fieldType instanceof $validType) return true;
-        }
-        return false;
+        return $mapping && in_array($mapping['type'], $this->validTypes);
     }
 
     /**
