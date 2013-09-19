@@ -334,7 +334,7 @@ class RepositoryTest extends ObjectManagerTestCase
         $this->em->flush();
 
         $this->assertRegexp('/Food\-\d+,New\sNode\-\d+/', $newNode->getPath());
-        $this->assertSame(2, $newNode->getLevel());
+        $this->assertSame(1, $newNode->getLevel());
     }
 
     /**

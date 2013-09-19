@@ -63,10 +63,10 @@ class MaterializedPathTest extends ObjectManagerTestCase
         $this->assertSame($this->generatePath(array('1' => $category->getId(), '2' => $category2->getId())), $category2->getPath());
         $this->assertSame($this->generatePath(array('1' => $category->getId(), '2' => $category2->getId(), '3' => $category3->getId())), $category3->getPath());
         $this->assertSame($this->generatePath(array('4' => $category4->getId())), $category4->getPath());
-        $this->assertSame(1, $category->getLevel());
-        $this->assertSame(2, $category2->getLevel());
-        $this->assertSame(3, $category3->getLevel());
-        $this->assertSame(1, $category4->getLevel());
+        $this->assertSame(0, $category->getLevel());
+        $this->assertSame(1, $category2->getLevel());
+        $this->assertSame(2, $category3->getLevel());
+        $this->assertSame(0, $category4->getLevel());
 
         // Update
         $category2->setParent(null);
@@ -81,10 +81,10 @@ class MaterializedPathTest extends ObjectManagerTestCase
         $this->assertSame($this->generatePath(array('1' => $category->getId())), $category->getPath());
         $this->assertSame($this->generatePath(array('2' => $category2->getId())), $category2->getPath());
         $this->assertSame($this->generatePath(array('2' => $category2->getId(), '3' => $category3->getId())), $category3->getPath());
-        $this->assertSame(1, $category->getLevel());
-        $this->assertSame(1, $category2->getLevel());
-        $this->assertSame(2, $category3->getLevel());
-        $this->assertSame(1, $category4->getLevel());
+        $this->assertSame(0, $category->getLevel());
+        $this->assertSame(0, $category2->getLevel());
+        $this->assertSame(1, $category3->getLevel());
+        $this->assertSame(0, $category4->getLevel());
 
         // Remove
         $this->em->remove($category);
@@ -97,7 +97,7 @@ class MaterializedPathTest extends ObjectManagerTestCase
 
         $this->assertCount(1, $result);
         $this->assertSame('4', $firstResult->getTitle());
-        $this->assertSame(1, $firstResult->getLevel());
+        $this->assertSame(0, $firstResult->getLevel());
     }
 
     /**
