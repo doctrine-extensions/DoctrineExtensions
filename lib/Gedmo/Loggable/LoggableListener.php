@@ -226,6 +226,7 @@ class LoggableListener extends MappedEventSubscriber
 
             $logEntry->setAction($action);
             $logEntry->setUsername($this->username);
+            $logEntry->setLocale($this->locale);            
             $logEntry->setObjectClass($meta->name);
             $logEntry->setLoggedAt();
 
