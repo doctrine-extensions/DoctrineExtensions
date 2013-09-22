@@ -37,6 +37,15 @@ class LoggableListener extends MappedEventSubscriber
      * @var string
      */
     protected $username;
+    
+    /**
+     * Locale which is set on this listener.
+     * If Entity being translated has locale defined it
+     * will override this one
+     *
+     * @var string
+     */
+    protected $username = 'en_US';
 
     /**
      * List of log entries which do not have the foreign
