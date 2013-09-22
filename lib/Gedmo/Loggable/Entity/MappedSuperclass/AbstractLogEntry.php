@@ -74,7 +74,7 @@ abstract class AbstractLogEntry
      *
      * @ORM\Column(type="string", length=8, nullable=true)
      */
-    protected $locale;
+    protected $locale = 'en';
 
     /**
      * Get id
