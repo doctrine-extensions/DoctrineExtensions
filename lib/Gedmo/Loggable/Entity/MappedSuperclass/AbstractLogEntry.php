@@ -68,6 +68,13 @@ abstract class AbstractLogEntry
      * @ORM\Column(length=255, nullable=true)
      */
     protected $username;
+    
+    /**
+     * @var string $locale
+     *
+     * @ORM\Column(type="string", length=8, nullable=true)
+     */
+    protected $locale;
 
     /**
      * Get id
@@ -216,4 +223,24 @@ abstract class AbstractLogEntry
     {
         return $this->version;
     }
+    
+    /**
+     * Set locale
+     * 
+     * @param string $locale
+     */
+    public function setLocale($locale)
+    {
+        $this->locale = $locale;
+    }
+
+    /**
+     * Get locale
+     * 
+     * @return string
+     */
+    public function getLocale()
+    {
+        return $this->locale;
+    }    
 }
