@@ -45,7 +45,7 @@ class LoggableListener extends MappedEventSubscriber
      *
      * @var string
      */
-    protected $username = 'en_US';
+    protected $locale = 'en_US';
 
     /**
      * List of log entries which do not have the foreign
