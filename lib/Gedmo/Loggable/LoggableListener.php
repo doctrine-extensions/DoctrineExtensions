@@ -128,8 +128,6 @@ class LoggableListener extends MappedEventSubscriber
         $uow = $om->getUnitOfWork();
         if ($this->pendingLogEntryInserts && array_key_exists($oid, $this->pendingLogEntryInserts)) {
             $wrapped = AbstractWrapper::wrap($object, $om);
-            $meta = $wrapped->getMetadata();
-            $config = $this->getConfiguration($om, $meta->name);
 
             $logEntry = $this->pendingLogEntryInserts[$oid];
             $logEntryMeta = $om->getClassMetadata(get_class($logEntry));
