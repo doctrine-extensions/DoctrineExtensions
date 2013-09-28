@@ -516,7 +516,7 @@ class CategoryRepository extends NestedTreeRepository
  * @Gedmo\Tree(type="nested")
  * @Entity(repositoryClass="Entity\Repository\CategoryRepository")
  */
-class Category implements Node
+class Category
 {
     //...
 }
