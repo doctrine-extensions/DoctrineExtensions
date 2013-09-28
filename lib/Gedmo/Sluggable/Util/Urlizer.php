@@ -409,7 +409,7 @@ class Urlizer
         $text = preg_replace('/\W/', ' ', $text);
 
         // More stripping. Replace spaces with dashes
-        $text = strtolower(preg_replace('/[^A-Z^a-z^0-9^\/]+/', $separator,
+        $text = strtolower(preg_replace('/[^A-Za-z0-9\/]+/', $separator,
                            preg_replace('/([a-z\d])([A-Z])/', '\1_\2',
                            preg_replace('/([A-Z]+)([A-Z][a-z])/', '\1_\2',
                            preg_replace('/::/', '/', $text)))));
