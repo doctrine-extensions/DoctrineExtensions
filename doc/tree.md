@@ -204,9 +204,9 @@ in the corresponding section).
 - **@Gedmo\Mapping\Annotation\TreeLeft** it will use this field to store tree **left** value
 - **@Gedmo\Mapping\Annotation\TreeRight** it will use this field to store tree **right** value
 - **@Gedmo\Mapping\Annotation\TreeParent** this will identify this column as the relation to **parent node**
-- **@Gedmo\Mapping\Annotation\TreeLevel** it will use this field to store tree**level**
-- **@Gedmo\Mapping\Annotation\TreeRoot** it will use this field to store tree**root** id value
-- **@Gedmo\Mapping\Annotation\TreePath** (Materialized Path only) it will use this field to store the "path". It has an
+- **@Gedmo\Mapping\Annotation\TreeLevel** it will use this field to store tree **level**
+- **@Gedmo\Mapping\Annotation\TreeRoot** it will use this field to store tree **root** id value
+- **@Gedmo\Mapping\Annotation\TreePath** (Materialized Path only) it will use this field to store the **path**. It has an
 optional parameter "separator" to define the separator used in the path
 - **@Gedmo\Mapping\Annotation\TreePathSource** (Materialized Path only) it will use this field as the source to
  construct the "path"
@@ -397,7 +397,7 @@ $em->flush(); // important: flush recovered nodes
 UNSAFE: be sure to backup before runing this method when necessary, if you can use $em->remove($node);
 // which would cascade to children
 // single node removal
-$vegies = $repo->findOneByTitle('Vegitables');
+$vegies = $repo->findOneByTitle('Vegetables');
 $repo->removeFromTree($vegies);
 $em->clear(); // clear cached nodes
 // it will remove this node from tree and reparent all children
@@ -427,7 +427,7 @@ $carrots->setTitle('Carrots');
 $treeRepository
     ->persistAsFirstChild($food)
     ->persistAsFirstChildOf($fruits, $food)
-    ->persistAsLastChildOf($vegitables, $food)
+    ->persistAsLastChildOf($vegetables, $food)
     ->persistAsNextSiblingOf($carrots, $fruits);
 
 $em->flush();
@@ -441,7 +441,7 @@ Tree example:
 
 ```
 /Food
-    /Vegitables
+    /Vegetables
         /Onions
         /Carrots
         /Cabbages
@@ -463,7 +463,7 @@ Tree after moving the Carrots up:
 
 ```
 /Food
-    /Vegitables
+    /Vegetables
         /Carrots <- moved up
         /Onions
         /Cabbages
@@ -485,7 +485,7 @@ Tree after moving the Carrots down as last child:
 
 ```
 /Food
-    /Vegitables
+    /Vegetables
         /Onions
         /Cabbages
         /Potatoes
