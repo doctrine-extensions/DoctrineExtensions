@@ -64,7 +64,7 @@ on how to setup and use the extensions in most optimized way.
     * **filenameGenerator**: This option allows you to set a filename generator for the file. There are two already included
     by the extension: **SHA1**, which generates a sha1 filename for the file, and **ALPHANUMERIC**, which "normalizes"
     the filename, leaving only alphanumeric characters in the filename, and replacing anything else with a "-". You can
-    even create your own FileGenerator class (implementing the FileGeneratorInterface) and set this option with the
+    even create your own FilenameGenerator class (implementing the Gedmo\Uploadable\FilenameGenerator\FilenameGeneratorInterface) and set this option with the
     fully qualified class name. The other option available is "NONE" which, as you may guess, means no generation for the
     filename will occur. Default: "NONE".
     * **maxSize**: This option allows you to set a maximum size for the file in bytes. If file size exceeds the value
