@@ -644,6 +644,6 @@ class UsingTrait
 annotations. If you use mongodb ODM import **Doctrine\ODM\MongoDB\Mapping\Annotations as ODM** and
 **BlameableDocument** instead.
 
-Traits are very simple and if you use different field names I recomment to simply create your
-own ones based per project. These ones are standing as an example.
+The Traits are very simplistic - if you use different field names it is recommended to simply create your
+own Traits specific to your project. The ones provided by this bundle can be used as example.
 
