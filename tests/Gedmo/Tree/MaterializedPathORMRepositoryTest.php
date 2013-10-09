@@ -17,6 +17,7 @@ use Tree\Fixture\RootCategory;
 class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
 {
     const CATEGORY = "Tree\\Fixture\\MPCategory";
+    const CATEGORY_WITH_TRIMMED_SEPARATOR = "Tree\\Fixture\\MPCategoryWithTrimmedSeparator";
 
     /** @var $this->repo \Gedmo\Tree\Entity\Repository\MaterializedPathRepository */
     protected $repo;
@@ -81,6 +82,73 @@ class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
         // Get direct children from the root, NOT including it
         $result = $this->repo->getChildren($root, true, 'title', 'asc');
 
+        $this->assertCount(2, $result);
+        $this->assertEquals('Fruits', $result[0]->getTitle());
+        $this->assertEquals('Vegitables', $result[1]->getTitle());
+
+        // Get direct children from the root, including it
+        $result = $this->repo->getChildren($root, true, 'title', 'asc', true);
+
+        $this->assertCount(3, $result);
+        $this->assertEquals('Food', $result[0]->getTitle());
+        $this->assertEquals('Fruits', $result[1]->getTitle());
+        $this->assertEquals('Vegitables', $result[2]->getTitle());
+
+        // Get ALL nodes
+        $result = $this->repo->getChildren(null, false, 'title');
+
+        $this->assertCount(9, $result);
+        $this->assertEquals('Best Whisky', $result[0]->getTitle());
+        $this->assertEquals('Carrots', $result[1]->getTitle());
+        $this->assertEquals('Drinks', $result[2]->getTitle());
+        $this->assertEquals('Food', $result[3]->getTitle());
+        $this->assertEquals('Fruits', $result[4]->getTitle());
+        $this->assertEquals('Potatoes', $result[5]->getTitle());
+        $this->assertEquals('Sports', $result[6]->getTitle());
+        $this->assertEquals('Vegitables', $result[7]->getTitle());
+        $this->assertEquals('Whisky', $result[8]->getTitle());
+
+        // Get ALL root nodes
+        $result = $this->repo->getChildren(null, true, 'title');
+
+        $this->assertCount(3, $result);
+        $this->assertEquals('Drinks', $result[0]->getTitle());
+        $this->assertEquals('Food', $result[1]->getTitle());
+        $this->assertEquals('Sports', $result[2]->getTitle());
+    }
+
+    /**
+     * @test
+     */
+    function getChildrenForEntityWithTrimmedSeparators()
+    {
+        $meta = $this->em->getClassMetadata(self::CATEGORY_WITH_TRIMMED_SEPARATOR);
+        $this->populate(self::CATEGORY_WITH_TRIMMED_SEPARATOR);
+
+        $this->repo = $this->em->getRepository(self::CATEGORY_WITH_TRIMMED_SEPARATOR);
+        $root = $this->repo->findOneByTitle('Food');
+
+        // Get all children from the root, NOT including it
+        $result = $this->repo->getChildren($root, false, 'title');
+
+        $this->assertCount(4, $result);
+        $this->assertEquals('Carrots', $result[0]->getTitle());
+        $this->assertEquals('Fruits', $result[1]->getTitle());
+        $this->assertEquals('Potatoes', $result[2]->getTitle());
+        $this->assertEquals('Vegitables', $result[3]->getTitle());
+
+        // Get all children from the root, including it
+        $result = $this->repo->getChildren($root, false, 'title', 'asc', true);
+
+        $this->assertCount(5, $result);
+        $this->assertEquals('Carrots', $result[0]->getTitle());
+        $this->assertEquals('Food', $result[1]->getTitle());
+        $this->assertEquals('Fruits', $result[2]->getTitle());
+        $this->assertEquals('Potatoes', $result[3]->getTitle());
+        $this->assertEquals('Vegitables', $result[4]->getTitle());
+
+        // Get direct children from the root, NOT including it
+        $result = $this->repo->getChildren($root, true, 'title', 'asc');
         $this->assertCount(2, $result);
         $this->assertEquals('Fruits', $result[0]->getTitle());
         $this->assertEquals('Vegitables', $result[1]->getTitle());
@@ -277,48 +345,52 @@ class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
     protected function getUsedEntityFixtures()
     {
         return array(
-            self::CATEGORY
+            self::CATEGORY,
+            self::CATEGORY_WITH_TRIMMED_SEPARATOR
         );
     }
 
-    public function createCategory()
+    public function createCategory($class = null)
     {
-        $class = self::CATEGORY;
+        if (!$class) {
+            $class = self::CATEGORY;
+        }
+
         return new $class;
     }
 
-    private function populate()
+    private function populate($class = null)
     {
-        $root = $this->createCategory();
+        $root = $this->createCategory($class);
         $root->setTitle("Food");
 
-        $root2 = $this->createCategory();
+        $root2 = $this->createCategory($class);
         $root2->setTitle("Sports");
 
-        $child = $this->createCategory();
+        $child = $this->createCategory($class);
         $child->setTitle("Fruits");
         $child->setParent($root);
 
-        $child2 = $this->createCategory();
+        $child2 = $this->createCategory($class);
         $child2->setTitle("Vegitables");
         $child2->setParent($root);
 
-        $childsChild = $this->createCategory();
+        $childsChild = $this->createCategory($class);
         $childsChild->setTitle("Carrots");
         $childsChild->setParent($child2);
 
-        $potatoes = $this->createCategory();
+        $potatoes = $this->createCategory($class);
         $potatoes->setTitle("Potatoes");
         $potatoes->setParent($child2);
 
-        $drinks = $this->createCategory();
+        $drinks = $this->createCategory($class);
         $drinks->setTitle('Drinks');
 
-        $whisky = $this->createCategory();
+        $whisky = $this->createCategory($class);
         $whisky->setTitle('Whisky');
         $whisky->setParent($drinks);
 
-        $bestWhisky = $this->createCategory();
+        $bestWhisky = $this->createCategory($class);
         $bestWhisky->setTitle('Best Whisky');
         $bestWhisky->setParent($whisky);
 
