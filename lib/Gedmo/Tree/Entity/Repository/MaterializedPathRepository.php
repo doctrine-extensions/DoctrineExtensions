@@ -90,25 +90,36 @@ class MaterializedPathRepository extends AbstractTreeRepository
             ->select($alias)
             ->from($config['useObjectClass'], $alias);
         $expr = '';
+        $includeNodeExpr = '';
 
         if (is_object($node) && $node instanceof $meta->name) {
             $node = new EntityWrapper($node, $this->_em);
             $nodePath = $node->getPropertyValue($path);
             $expr = $qb->expr()->andx()->add(
-                $qb->expr()->like($alias.'.'.$path, $qb->expr()->literal($nodePath.(substr($nodePath, -1) != $separator ? $separator : '').'%'))
+                $qb->expr()->like(
+                    $alias.'.'.$path,
+                    $qb->expr()->literal(
+                        $nodePath
+                        . ($config['path_ends_with_separator'] ? '' : $separator) .'%'
+                    )
+                )
             );
 
-            if (!$includeNode) {
+            if ($includeNode) {
+                $includeNodeExpr = $qb->expr()->eq($alias.'.'.$path, $qb->expr()->literal($nodePath));
+            } else {
                 $expr->add($qb->expr()->neq($alias.'.'.$path, $qb->expr()->literal($nodePath)));
             }
 
             if ($direct) {
                 $expr->add(
-                    $qb->expr()->not(
-                        $qb->expr()->like($alias.'.'.$path, $qb->expr()->literal($nodePath.'%'.$separator.'%'.$separator))
-                ));
+                    $qb->expr()->orx(
+                        $qb->expr()->eq($alias.'.'.$config['level'], $qb->expr()->literal($node->getPropertyValue($config['level']))),
+                        $qb->expr()->eq($alias.'.'.$config['level'], $qb->expr()->literal($node->getPropertyValue($config['level']) + 1))
+                    )
+                );
             }
-        } else if ($direct) {
+        } elseif ($direct) {
             $expr = $qb->expr()->not(
                 $qb->expr()->like($alias.'.'.$path,
                     $qb->expr()->literal(
@@ -122,6 +133,10 @@ class MaterializedPathRepository extends AbstractTreeRepository
 
         if ($expr) {
             $qb->where('('.$expr.')');
+        }
+
+        if ($includeNodeExpr) {
+            $qb->orWhere('('.$includeNodeExpr.')');
         }
 
         $orderByField = is_null($sortByField) ? $alias.'.'.$config['path'] : $alias.'.'.$sortByField;
