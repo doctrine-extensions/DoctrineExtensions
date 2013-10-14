@@ -203,14 +203,14 @@ $art = $repo->findOneBy(array('title' => 'My Article'));
 $this->assertNull($art);
 
 // But if we disable the filter, the article should appear now
-$em->getFilters()->disable('soft-deleteable');
+$em->getFilters()->disable('softdeleteable');
 
 $art = $repo->findOneBy(array('title' => 'My Article'));
 
 $this->assertTrue(is_object($art));
 
 // Enable / Disable filter filter, for specified entity (default is enabled for all)
-$filter = $em->getFilters()->enable('soft-deleteable');
+$filter = $em->getFilters()->enable('softdeleteable');
 $filter->disableForEntity('Entity\Article');
 $filter->enableForEntity('Entity\Article');
 ```
