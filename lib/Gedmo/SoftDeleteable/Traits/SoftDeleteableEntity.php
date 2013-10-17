@@ -46,6 +46,6 @@ trait SoftDeleteableEntity
      */
     public function isDeleted()
     {
-        return $this->deletedAt ? true : false;
+        return null !== $this->deletedAt;
     }
 }
