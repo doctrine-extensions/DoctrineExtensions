@@ -857,7 +857,7 @@ protected function configureFormFields(FormMapper $formMapper)    {
 }
 ```
 
-Then you can turn it into an 118n Form by providing the following changes.
+Then you can turn it into an i18n Form by providing the following changes.
 
 ``` php
 <?php
