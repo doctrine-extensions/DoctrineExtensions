@@ -796,7 +796,7 @@ use Gedmo\Translatable\Entity\MappedSuperclass\AbstractPersonalTranslation;
 class CategoryTranslation extends AbstractPersonalTranslation
 {
     /**
-     * Convinient constructor
+     * Convenient constructor
      *
      * @param string $locale
      * @param string $field
@@ -857,7 +857,7 @@ protected function configureFormFields(FormMapper $formMapper)    {
 }
 ```
 
-Then you can turn it into an 118n Form by providing the following changes.
+Then you can turn it into an i18n Form by providing the following changes.
 
 ``` php
 <?php
