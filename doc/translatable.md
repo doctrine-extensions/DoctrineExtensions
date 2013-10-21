@@ -796,7 +796,7 @@ use Gedmo\Translatable\Entity\MappedSuperclass\AbstractPersonalTranslation;
 class CategoryTranslation extends AbstractPersonalTranslation
 {
     /**
-     * Convinient constructor
+     * Convenient constructor
      *
      * @param string $locale
      * @param string $field
