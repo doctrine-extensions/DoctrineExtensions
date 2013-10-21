@@ -307,7 +307,7 @@ class TranslationWalker extends SqlWalker
                     $sql .= ' AND '.$tblAlias.'.'.$transMeta->getQuotedColumnName('objectClass', $this->platform)
                         .' = '.$this->conn->quote($meta->name);
                     $sql .= ' AND '.$tblAlias.'.'.$transMeta->getQuotedColumnName('foreignKey', $this->platform)
-                        .' = '.$compTblAlias.'.'.$idColName;
+                        .' = CAST ('.$compTblAlias.'.'.$idColName.' as character varying)';
                 }
                 isset($this->components[$dqlAlias]) ? $this->components[$dqlAlias] .= $sql : $this->components[$dqlAlias] = $sql;
 
