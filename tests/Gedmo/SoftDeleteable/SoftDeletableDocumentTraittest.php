@@ -36,6 +36,6 @@ class SoftDeletableDocumentTraitTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($time, $entity->getDeletedAt(), 'Getter returns a DateTime Object');
         $this->assertTrue($entity->isDeleted(), 'Is deleted is true when deleteAt is not equal to null');
         $this->assertSame($entity, $entity->setDeletedAt(), 'Setting deletedAt to null undeletes object');
-        $this->assertFalse($entity->isDeleted(), 'isDeleted should now reutrn false');
+        $this->assertFalse($entity->isDeleted(), 'isDeleted should now return false');
     }
 }
