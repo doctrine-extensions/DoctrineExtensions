@@ -1,6 +1,6 @@
 <?php
 
-namespace Gedmo\Blameable;
+namespace Gedmo\SoftDeleteable;
 
 use SoftDeleteable\Fixture\Entity\UsingTrait;
 
