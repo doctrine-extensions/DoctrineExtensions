@@ -25,11 +25,11 @@ class SortableGroupTest extends BaseTestCaseORM
     const ENGINE = "Sortable\Fixture\Transport\Engine";
     const RESERVATION = "Sortable\Fixture\Transport\Reservation";
 
-	const SEATS = 3;
+    const SEATS = 3;
 
-	const TRAVEL_DATE_FORMAT = 'Y-m-d H:i';
-	const TODAY = '2013-10-24 12:50';
-	const TOMORROW = '2013-10-25 12:50';
+    const TRAVEL_DATE_FORMAT = 'Y-m-d H:i';
+    const TODAY = '2013-10-24 12:50';
+    const TOMORROW = '2013-10-25 12:50';
 
     protected function setUp()
     {
@@ -122,65 +122,65 @@ class SortableGroupTest extends BaseTestCaseORM
      */
     public function shouldBeAbleToChangeGroupWhenMultiGroups()
     {
-		$this->populate();
+        $this->populate();
 
-		$repo = $this->em->getRepository(self::RESERVATION);
-		$today = \DateTime::createFromFormat(self::TRAVEL_DATE_FORMAT, self::TODAY);
-		$tomorrow = \DateTime::createFromFormat(self::TRAVEL_DATE_FORMAT, self::TOMORROW);
+        $repo = $this->em->getRepository(self::RESERVATION);
+        $today = \DateTime::createFromFormat(self::TRAVEL_DATE_FORMAT, self::TODAY);
+        $tomorrow = \DateTime::createFromFormat(self::TRAVEL_DATE_FORMAT, self::TOMORROW);
 
-		for ($i = 0; $i < self::SEATS; $i++) {
-			$reservation = $repo->findOneByName('Bratislava Today ' . $i);
-			$this->assertNotNull($reservation);
-			$this->assertEquals($i, $reservation->getSeat());
+        for ($i = 0; $i < self::SEATS; $i++) {
+            $reservation = $repo->findOneByName('Bratislava Today ' . $i);
+            $this->assertNotNull($reservation);
+            $this->assertEquals($i, $reservation->getSeat());
 
-			$reservation = $repo->findOneByName('Bratislava Tomorrow ' . $i);
-			$this->assertNotNull($reservation);
-			$this->assertEquals($i, $reservation->getSeat());
+            $reservation = $repo->findOneByName('Bratislava Tomorrow ' . $i);
+            $this->assertNotNull($reservation);
+            $this->assertEquals($i, $reservation->getSeat());
 
-			$reservation = $repo->findOneByName('Prague Today ' . $i);
-			$this->assertNotNull($reservation);
-			$this->assertEquals($i, $reservation->getSeat());
-		}
+            $reservation = $repo->findOneByName('Prague Today ' . $i);
+            $this->assertNotNull($reservation);
+            $this->assertEquals($i, $reservation->getSeat());
+        }
 
-		// Change date of the travel
-		$reservation = $repo->findOneByName('Bratislava Today 1');
-		$reservation->setTravelDate($tomorrow);
-		$this->em->persist($reservation);
-		$this->em->flush();
+        // Change date of the travel
+        $reservation = $repo->findOneByName('Bratislava Today 1');
+        $reservation->setTravelDate($tomorrow);
+        $this->em->persist($reservation);
+        $this->em->flush();
 
-		// Scan all bus lines
-		// Bratislava Today should have 2 seats
-		$bratislavaToday = $repo->findBy(array(
-			'destination' => 'Bratislava',
-			'travelDate' => $today
-		), [ 'seat' => 'asc' ]);
-		$this->assertCount(self::SEATS - 1, $bratislavaToday);
-		// Test seat numbers
-		// Should be [ 0, 1 ]
-		$seats = array_map(function($r) { return $r->getSeat(); }, $bratislavaToday);
-		$this->assertEquals(range(0, self::SEATS - 2), $seats, 'Should be seats [ 0, 1 ] to Bratislava Today');
+        // Scan all bus lines
+        // Bratislava Today should have 2 seats
+        $bratislavaToday = $repo->findBy(array(
+            'destination' => 'Bratislava',
+            'travelDate' => $today
+        ), [ 'seat' => 'asc' ]);
+        $this->assertCount(self::SEATS - 1, $bratislavaToday);
+        // Test seat numbers
+        // Should be [ 0, 1 ]
+        $seats = array_map(function($r) { return $r->getSeat(); }, $bratislavaToday);
+        $this->assertEquals(range(0, self::SEATS - 2), $seats, 'Should be seats [ 0, 1 ] to Bratislava Today');
 
-		// Bratislava Tomorrow should have 4 seats
-		$bratislavaTomorrow = $repo->findBy(array(
-			'destination' => 'Bratislava',
-			'travelDate' => $tomorrow
-		), [ 'seat' => 'asc' ]);
-		$this->assertCount(self::SEATS + 1, $bratislavaTomorrow);
-		// Test seat numbers
-		// Should be [ 0, 1, 2, 3 ]
-		$seats = array_map(function($r) { return $r->getSeat(); }, $bratislavaTomorrow);
-		$this->assertEquals(range(0, self::SEATS), $seats, 'Should be seats [ 0, 1, 2, 3 ] to Bratislava Tomorrow');
+        // Bratislava Tomorrow should have 4 seats
+        $bratislavaTomorrow = $repo->findBy(array(
+            'destination' => 'Bratislava',
+            'travelDate' => $tomorrow
+        ), [ 'seat' => 'asc' ]);
+        $this->assertCount(self::SEATS + 1, $bratislavaTomorrow);
+        // Test seat numbers
+        // Should be [ 0, 1, 2, 3 ]
+        $seats = array_map(function($r) { return $r->getSeat(); }, $bratislavaTomorrow);
+        $this->assertEquals(range(0, self::SEATS), $seats, 'Should be seats [ 0, 1, 2, 3 ] to Bratislava Tomorrow');
 
-		// Prague Today should have 3 seats
-		$pragueToday = $repo->findBy(array(
-			'destination' => 'Prague',
-			'travelDate' => $today
-		), [ 'seat' => 'asc' ]);
-		$this->assertCount(self::SEATS, $pragueToday);
-		// Test seat numbers
-		$seats = array_map(function($r) { return $r->getSeat(); }, $pragueToday);
-		$this->assertEquals(range(0, self::SEATS - 1), $seats, 'Should be seats [ 0, 1, 2 ] to Prague Today');
-	}
+        // Prague Today should have 3 seats
+        $pragueToday = $repo->findBy(array(
+            'destination' => 'Prague',
+            'travelDate' => $today
+        ), [ 'seat' => 'asc' ]);
+        $this->assertCount(self::SEATS, $pragueToday);
+        // Test seat numbers
+        $seats = array_map(function($r) { return $r->getSeat(); }, $pragueToday);
+        $this->assertEquals(range(0, self::SEATS - 1), $seats, 'Should be seats [ 0, 1, 2 ] to Prague Today');
+    }
 
     protected function getUsedEntityFixtures()
     {
@@ -231,31 +231,31 @@ class SortableGroupTest extends BaseTestCaseORM
         $audiJet->setEngine($v6);
         $this->em->persist($audiJet);
 
-		$today = \DateTime::createFromFormat(self::TRAVEL_DATE_FORMAT, self::TODAY);
-		$tomorrow = \DateTime::createFromFormat(self::TRAVEL_DATE_FORMAT, self::TOMORROW);
+        $today = \DateTime::createFromFormat(self::TRAVEL_DATE_FORMAT, self::TODAY);
+        $tomorrow = \DateTime::createFromFormat(self::TRAVEL_DATE_FORMAT, self::TOMORROW);
 
-		for ($i = 0; $i < self::SEATS; $i++) {
-			$reservationBratislava = new Reservation;
-			$reservationBratislava->setBus($icarus);
-			$reservationBratislava->setDestination('Bratislava');
-			$reservationBratislava->setTravelDate($today);
-			$reservationBratislava->setName('Bratislava Today ' . $i);
-			$this->em->persist($reservationBratislava);
+        for ($i = 0; $i < self::SEATS; $i++) {
+            $reservationBratislava = new Reservation;
+            $reservationBratislava->setBus($icarus);
+            $reservationBratislava->setDestination('Bratislava');
+            $reservationBratislava->setTravelDate($today);
+            $reservationBratislava->setName('Bratislava Today ' . $i);
+            $this->em->persist($reservationBratislava);
 
-			$reservationBratislava = new Reservation;
-			$reservationBratislava->setBus($icarus);
-			$reservationBratislava->setDestination('Bratislava');
-			$reservationBratislava->setTravelDate($tomorrow);
-			$reservationBratislava->setName('Bratislava Tomorrow ' . $i);
-			$this->em->persist($reservationBratislava);
+            $reservationBratislava = new Reservation;
+            $reservationBratislava->setBus($icarus);
+            $reservationBratislava->setDestination('Bratislava');
+            $reservationBratislava->setTravelDate($tomorrow);
+            $reservationBratislava->setName('Bratislava Tomorrow ' . $i);
+            $this->em->persist($reservationBratislava);
 
-			$reservationPrague = new Reservation;
-			$reservationPrague->setBus($icarus);
-			$reservationPrague->setDestination('Prague');
-			$reservationPrague->setTravelDate($today);
-			$reservationPrague->setName('Prague Today ' . $i);
-			$this->em->persist($reservationPrague);
-		}
+            $reservationPrague = new Reservation;
+            $reservationPrague->setBus($icarus);
+            $reservationPrague->setDestination('Prague');
+            $reservationPrague->setTravelDate($today);
+            $reservationPrague->setName('Prague Today ' . $i);
+            $this->em->persist($reservationPrague);
+        }
 
         $this->em->flush();
     }

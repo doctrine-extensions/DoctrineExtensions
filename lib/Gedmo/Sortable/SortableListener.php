@@ -187,16 +187,18 @@ class SortableListener extends MappedEventSubscriber
         $groups = $this->getGroups($meta, $config, $object);
 
         // handle old groups
+        $oldGroups = $groups;
         foreach (array_keys($groups) as $group) {
-            if(array_key_exists($group, $changeSet))
-            {
+            if (array_key_exists($group, $changeSet)) {
                 $changed = true;
-
-                $oldGroups = array($group => $changeSet[$group][0]);
-                $oldHash = $this->getHash($meta, $oldGroups, $object, $config);
-                $this->maxPositions[$oldHash] = $this->getMaxPosition($em, $meta, $config, $object, $oldGroups);
-                $this->addRelocation($oldHash, $config['useObjectClass'], $oldGroups, $meta->getReflectionProperty($config['position'])->getValue($object) + 1, $this->maxPositions[$oldHash] + 1, -1, true);
+                $oldGroups[$group] = $changeSet[$group][0];
             }
+        }
+
+        if ($changed) {
+            $oldHash = $this->getHash($meta, $oldGroups, $object, $config);
+            $this->maxPositions[$oldHash] = $this->getMaxPosition($em, $meta, $config, $object, $oldGroups);
+            $this->addRelocation($oldHash, $config['useObjectClass'], $oldGroups, $meta->getReflectionProperty($config['position'])->getValue($object) + 1, $this->maxPositions[$oldHash] + 1, -1, true);
         }
 
         if (array_key_exists($config['position'], $changeSet)) {
