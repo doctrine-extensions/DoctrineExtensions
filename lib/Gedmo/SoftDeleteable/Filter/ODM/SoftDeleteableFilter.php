@@ -37,16 +37,17 @@ class SoftDeleteableFilter extends BsonFilter
         $column = $targetEntity->fieldMappings[$config['fieldName']];
 
         if (isset($config['timeAware']) && $config['timeAware']) {
-            //@fixme timeAware is not yet respected here!
-            throw new RuntimeException("Softdeleteable timeAware is not supported in mongodb odm yet");
             return array(
-                $column['fieldName'] => NULL
-            );
-        } else {
-            return array(
-                $column['fieldName'] => NULL
+                '$or' => array(
+                    array($column['fieldName'] => NULL),
+                    array($column['fieldName'] => array('$gt' => new \DateTime('now'))),
+                ),
             );
         }
+
+        return array(
+            $column['fieldName'] => NULL
+        );
     }
 
     protected function getListener()
