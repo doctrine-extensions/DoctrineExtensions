@@ -153,7 +153,7 @@ class SortableGroupTest extends BaseTestCaseORM
         $bratislavaToday = $repo->findBy(array(
             'destination' => 'Bratislava',
             'travelDate' => $today
-        ), [ 'seat' => 'asc' ]);
+        ), array( 'seat' => 'asc' ));
         $this->assertCount(self::SEATS - 1, $bratislavaToday);
         // Test seat numbers
         // Should be [ 0, 1 ]
@@ -164,7 +164,7 @@ class SortableGroupTest extends BaseTestCaseORM
         $bratislavaTomorrow = $repo->findBy(array(
             'destination' => 'Bratislava',
             'travelDate' => $tomorrow
-        ), [ 'seat' => 'asc' ]);
+        ), array( 'seat' => 'asc' ));
         $this->assertCount(self::SEATS + 1, $bratislavaTomorrow);
         // Test seat numbers
         // Should be [ 0, 1, 2, 3 ]
@@ -175,7 +175,7 @@ class SortableGroupTest extends BaseTestCaseORM
         $pragueToday = $repo->findBy(array(
             'destination' => 'Prague',
             'travelDate' => $today
-        ), [ 'seat' => 'asc' ]);
+        ), array( 'seat' => 'asc' ));
         $this->assertCount(self::SEATS, $pragueToday);
         // Test seat numbers
         $seats = array_map(function($r) { return $r->getSeat(); }, $pragueToday);
