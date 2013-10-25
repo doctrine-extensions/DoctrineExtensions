@@ -14,7 +14,7 @@ use Gedmo\Tool\Wrapper\AbstractWrapper;
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-final class ORM extends BaseAdapterORM implements SluggableAdapter
+class ORM extends BaseAdapterORM implements SluggableAdapter
 {
     /**
      * {@inheritDoc}
