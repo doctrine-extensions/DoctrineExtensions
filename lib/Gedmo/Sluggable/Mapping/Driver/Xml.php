@@ -91,7 +91,7 @@ class Xml extends BaseXml
                         'updatable' => $this->_isAttributeSet($slug, 'updatable') ?
                             $this->_getBooleanAttribute($slug, 'updatable') : true,
                         'dateFormat' => $this->_isAttributeSet($slug, 'dateFormat') ?
-                            $this->_getAttribute($slug, 'dateFormat') : \DateTime::RFC2822,
+                            $this->_getAttribute($slug, 'dateFormat') : 'Y-m-d-H:i',
                         'unique' => $this->_isAttributeSet($slug, 'unique') ?
                             $this->_getBooleanAttribute($slug, 'unique') : true,
                         'unique_base' => $this->_isAttributeSet($slug, 'unique_base') ?

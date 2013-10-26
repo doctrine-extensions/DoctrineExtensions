@@ -17,7 +17,7 @@ Features:
 
 Update **2013-10-26**
 
-- Datetime support with default dateFormat DateTime::RFC2822
+- Datetime support with default dateFormat Y-m-d-H:i
 
 Update **2013-08-23**
 
