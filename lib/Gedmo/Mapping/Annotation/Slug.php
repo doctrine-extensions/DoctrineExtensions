@@ -33,5 +33,6 @@ final class Slug extends Annotation
     public $suffix = '';
     /** @var array<Gedmo\Mapping\Annotation\SlugHandler> */
     public $handlers = array();
+    /** @var string */
+    public $dateFormat = 'Y-m-d-H:i';
 }
-

@@ -284,7 +284,9 @@ class SluggableListener extends MappedEventSubscriber
                     if (isset($changeSet[$sluggableField]) || isset($changeSet[$slugField])) {
                         $needToChangeSlug = true;
                     }
-                    $slug .= $meta->getReflectionProperty($sluggableField)->getValue($object) . ' ';
+                    $value = $meta->getReflectionProperty($sluggableField)->getValue($object);
+                    $slug .= ($value instanceof \DateTime) ? $value->format($options['dateFormat']) : $value;
+                    $slug .= ' ';
                 }
             } else {
                 // slug was set manually
