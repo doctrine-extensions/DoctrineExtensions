@@ -300,6 +300,9 @@ class TranslatableListener extends MappedEventSubscriber
             }
             $reflectionProperty->setAccessible(true);
             $value = $reflectionProperty->getValue($object);
+            if (is_object($value) && method_exists($value, '__toString')) {
+                $value = (string)$value;
+            }
             try {
                 $this->validateLocale($value);
                 $locale = $value;
