@@ -281,7 +281,13 @@ class Closure implements Strategy
                 $ea->setOriginalObjectProperty($uow, spl_object_hash($node), $config['level'], 1);
             }
 
+            $typeId = $meta->fieldMappings[$identifier]['type'];
+            $type = \Doctrine\DBAL\Types\Type::getType($typeId);
+
             foreach ($entries as $closure) {
+                $closure[$ancestorColumnName] = $type->convertToDatabaseValue($closure[$ancestorColumnName], $em->getConnection()->getDatabasePlatform());
+                $closure[$descendantColumnName] = $type->convertToDatabaseValue($closure[$descendantColumnName], $em->getConnection()->getDatabasePlatform());
+
                 if (!$em->getConnection()->insert($closureTable, $closure)) {
                     throw new RuntimeException('Failed to insert new Closure record');
                 }
