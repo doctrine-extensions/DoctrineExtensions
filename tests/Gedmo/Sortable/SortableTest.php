@@ -286,6 +286,33 @@ class SortableTest extends BaseTestCaseORM
     /**
      * @test
      */
+    public function shouldGroupByNewAssociation()
+    {
+        $category1 = new Category();
+        $category1->setName("Category1");
+
+        $item1 = new Item();
+        $item1->setName("Item1");
+        $item1->setPosition(0);
+        $item1->setCategory($category1);
+        $this->em->persist($item1);
+        $this->em->persist($category1);
+        $this->em->flush();
+
+        $repo = $this->em->getRepository(self::CATEGORY);
+        $category1 = $repo->findOneByName('Category1');
+
+        $repo = $this->em->getRepository(self::ITEM);
+
+        $items = $repo->getBySortableGroups(array('category' => $category1));
+
+        $this->assertEquals("Item1", $items[0]->getName());
+        $this->assertEquals("Category1", $items[0]->getCategory()->getName());
+    }
+
+    /**
+     * @test
+     */
     public function shouldGroupByDateTimeValue()
     {
         $event1 = new Event();
@@ -475,7 +502,7 @@ class SortableTest extends BaseTestCaseORM
         $this->em->flush();
 
         $this->assertEquals(4, $nodes[4]->getPosition());
-        
+
         $node4NewPosition = $nodes[4]->getPosition();
         $node4NewPosition++;
 
