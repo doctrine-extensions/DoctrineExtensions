@@ -3,6 +3,7 @@
 namespace Gedmo\Tree\Strategy\ORM;
 
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\Version;
 use Doctrine\ORM\Proxy\Proxy;
 use Doctrine\ORM\EntityManager;
@@ -282,7 +283,7 @@ class Closure implements Strategy
             }
 
             $typeId = $meta->fieldMappings[$identifier]['type'];
-            $type = \Doctrine\DBAL\Types\Type::getType($typeId);
+            $type = Type::getType($typeId);
 
             foreach ($entries as $closure) {
                 $closure[$ancestorColumnName] = $type->convertToDatabaseValue($closure[$ancestorColumnName], $em->getConnection()->getDatabasePlatform());
