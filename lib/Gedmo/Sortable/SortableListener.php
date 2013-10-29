@@ -3,6 +3,7 @@
 namespace Gedmo\Sortable;
 
 use Doctrine\Common\EventArgs;
+use Doctrine\Common\Util\ClassUtils;
 use Doctrine\ORM\UnitOfWork;
 use Gedmo\Mapping\MappedEventSubscriber;
 use Doctrine\ORM\Proxy\Proxy;
@@ -416,7 +417,7 @@ class SortableListener extends MappedEventSubscriber
         // scheduled for insert, it has no identifier yet and is obviously new
         // see issue #226
         foreach ($groups as $val) {
-            if (is_object($val) && UnitOfWork::STATE_MANAGED !== $uow->getEntityState($val)) {
+            if (is_object($val) && ($uow->isScheduledForInsert($val) || !$em->getMetadataFactory()->isTransient(ClassUtils::getClass($val)) && UnitOfWork::STATE_MANAGED !== $uow->getEntityState($val))) {
                 return -1;
             }
         }
