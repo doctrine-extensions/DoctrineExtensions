@@ -3,8 +3,9 @@
 namespace Gedmo\Sortable;
 
 use Doctrine\Common\EventArgs;
+use Doctrine\Common\Util\ClassUtils;
+use Doctrine\ORM\UnitOfWork;
 use Gedmo\Mapping\MappedEventSubscriber;
-use Gedmo\Sluggable\Mapping\Event\SortableAdapter;
 use Doctrine\ORM\Proxy\Proxy;
 
 /**
@@ -94,7 +95,6 @@ class SortableListener extends MappedEventSubscriber
     {
         $ea = $this->getEventAdapter($args);
         $om = $ea->getObjectManager();
-        $uow = $om->getUnitOfWork();
         $object = $ea->getObject();
         $meta = $om->getClassMetadata(get_class($object));
 
@@ -119,10 +119,10 @@ class SortableListener extends MappedEventSubscriber
     private function processInsert($em, $config, $meta, $object)
     {
         $uow = $em->getUnitOfWork();
-        
+
         $old = $meta->getReflectionProperty($config['position'])->getValue($object);
         $newPosition = $meta->getReflectionProperty($config['position'])->getValue($object);
-        
+
         if (is_null($newPosition)) {
             $newPosition = -1;
         }
@@ -416,8 +416,8 @@ class SortableListener extends MappedEventSubscriber
         // Check for groups that are associations. If the value is an object and is
         // scheduled for insert, it has no identifier yet and is obviously new
         // see issue #226
-        foreach ($groups as $group => $val) {
-            if (is_object($val) && $uow->isScheduledForInsert($val)) {
+        foreach ($groups as $val) {
+            if (is_object($val) && ($uow->isScheduledForInsert($val) || !$em->getMetadataFactory()->isTransient(ClassUtils::getClass($val)) && UnitOfWork::STATE_MANAGED !== $uow->getEntityState($val))) {
                 return -1;
             }
         }
