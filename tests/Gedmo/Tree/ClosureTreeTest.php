@@ -2,6 +2,7 @@
 
 namespace Gedmo\Tree;
 
+use Doctrine\DBAL\Types\Type;
 use Doctrine\Common\EventManager;
 use Tool\BaseTestCaseORM;
 use Doctrine\Common\Util\Debug;
@@ -23,6 +24,8 @@ class ClosureTreeTest extends BaseTestCaseORM
 {
     const CATEGORY = "Tree\\Fixture\\Closure\\Category";
     const CLOSURE = "Tree\\Fixture\\Closure\\CategoryClosure";
+    const CUSTOM_CATEGORY = "Tree\\Fixture\\Closure\\CustomCategory";
+    const CUSTOM_CLOSURE = "Tree\\Fixture\\Closure\\CustomCategoryClosure";
     const PERSON = "Tree\\Fixture\\Closure\\Person";
     const USER = "Tree\\Fixture\\Closure\\User";
     const PERSON_CLOSURE = "Tree\\Fixture\\Closure\\PersonClosure";
@@ -35,6 +38,10 @@ class ClosureTreeTest extends BaseTestCaseORM
     protected function setUp()
     {
         parent::setUp();
+
+        if (!Type::hasType('custom_tree')) {
+            Type::addType('custom_tree', 'Tree\Fixture\Type\Custom');
+        }
 
         $this->listener = new TreeListener;
 
@@ -166,6 +173,33 @@ class ClosureTreeTest extends BaseTestCaseORM
         $this->assertFalse($this->hasAncestor($closures, 'Fruits'));
     }
 
+    public function testUpdateOfParentWithCustomPrimaryKey()
+    {
+        $this->populateCustomType(self::CUSTOM_CATEGORY);
+        $repo = $this->em->getRepository(self::CUSTOM_CATEGORY);
+        $cheese = $repo->findOneByTitle('Cheese');
+
+        $test = new \Tree\Fixture\Closure\CustomCategory;
+        $test->setTitle('test');
+        $test->setId(200);
+        $test->setParent($cheese);
+
+        $this->em->persist($test);
+        $this->em->flush();
+
+        $dql = 'SELECT c FROM '.self::CUSTOM_CLOSURE.' c';
+        $dql .= ' WHERE c.descendant = :descendant';
+        $query = $this->em->createQuery($dql);
+        $query->setParameter('descendant', $test);
+
+        $closures = $query->getResult();
+        $this->assertTrue($this->hasAncestor($closures, 'Cheese'));
+        $this->assertTrue($this->hasAncestor($closures, 'Milk'));
+        $this->assertTrue($this->hasAncestor($closures, 'Food'));
+        $this->assertFalse($this->hasAncestor($closures, 'Berries'));
+        $this->assertFalse($this->hasAncestor($closures, 'Fruits'));
+    }
+
     public function testAnotherUpdateOfParent()
     {
         $repo = $this->em->getRepository(self::CATEGORY);
@@ -264,69 +298,147 @@ class ClosureTreeTest extends BaseTestCaseORM
             self::USER,
             self::NEWS,
             self::CATEGORY_WITHOUT_LEVEL,
-            self::CATEGORY_WITHOUT_LEVEL_CLOSURE
+            self::CATEGORY_WITHOUT_LEVEL_CLOSURE,
+            self::CUSTOM_CATEGORY,
+            self::CUSTOM_CLOSURE
         );
     }
 
-    private function populate()
+    private function populate($class = self::CATEGORY)
     {
-        $food = new Category;
+        $food = new $class;
         $food->setTitle("Food");
         $this->em->persist($food);
 
-        $fruits = new Category;
+        $fruits = new $class;
         $fruits->setTitle('Fruits');
         $fruits->setParent($food);
         $this->em->persist($fruits);
 
-        $oranges = new Category;
+        $oranges = new $class;
         $oranges->setTitle('Oranges');
         $oranges->setParent($fruits);
         $this->em->persist($oranges);
 
-        $lemons = new Category;
+        $lemons = new $class;
         $lemons->setTitle('Lemons');
         $lemons->setParent($fruits);
         $this->em->persist($lemons);
 
-        $berries = new Category;
+        $berries = new $class;
         $berries->setTitle('Berries');
         $berries->setParent($fruits);
         $this->em->persist($berries);
 
-        $strawberries = new Category;
+        $strawberries = new $class;
         $strawberries->setTitle('Strawberries');
         $strawberries->setParent($berries);
         $this->em->persist($strawberries);
 
-        $vegitables = new Category;
+        $vegitables = new $class;
         $vegitables->setTitle('Vegitables');
         $vegitables->setParent($food);
         $this->em->persist($vegitables);
 
-        $cabbages = new Category;
+        $cabbages = new $class;
         $cabbages->setTitle('Cabbages');
         $cabbages->setParent($vegitables);
         $this->em->persist($cabbages);
 
-        $carrots = new Category;
+        $carrots = new $class;
         $carrots->setTitle('Carrots');
         $carrots->setParent($vegitables);
         $this->em->persist($carrots);
 
-        $milk = new Category;
+        $milk = new $class;
         $milk->setTitle('Milk');
         $milk->setParent($food);
         $this->em->persist($milk);
 
-        $cheese = new Category;
+        $cheese = new $class;
         $cheese->setTitle('Cheese');
         $cheese->setParent($milk);
         $this->em->persist($cheese);
 
-        $mouldCheese = new Category;
+        $mouldCheese = new $class;
         $mouldCheese->setTitle('Mould cheese');
         $mouldCheese->setParent($cheese);
+        $this->em->persist($mouldCheese);
+
+        $this->em->flush();
+    }
+
+    private function populateCustomType($class = self::CUSTOM_CATEGORY)
+    {
+        $food = new $class;
+        $food->setTitle("Food");
+        $food->setId(1);
+        $this->em->persist($food);
+
+        $fruits = new $class;
+        $fruits->setTitle('Fruits');
+        $fruits->setParent($food);
+        $fruits->setId(2);
+        $this->em->persist($fruits);
+
+        $oranges = new $class;
+        $oranges->setTitle('Oranges');
+        $oranges->setParent($fruits);
+        $oranges->setId(3);
+        $this->em->persist($oranges);
+
+        $lemons = new $class;
+        $lemons->setTitle('Lemons');
+        $lemons->setParent($fruits);
+        $lemons->setId(4);
+        $this->em->persist($lemons);
+
+        $berries = new $class;
+        $berries->setTitle('Berries');
+        $berries->setParent($fruits);
+        $berries->setId(5);
+        $this->em->persist($berries);
+
+        $strawberries = new $class;
+        $strawberries->setTitle('Strawberries');
+        $strawberries->setParent($berries);
+        $strawberries->setId(6);
+        $this->em->persist($strawberries);
+
+        $vegitables = new $class;
+        $vegitables->setTitle('Vegitables');
+        $vegitables->setParent($food);
+        $vegitables->setId(7);
+        $this->em->persist($vegitables);
+
+        $cabbages = new $class;
+        $cabbages->setTitle('Cabbages');
+        $cabbages->setParent($vegitables);
+        $cabbages->setId(8);
+        $this->em->persist($cabbages);
+
+        $carrots = new $class;
+        $carrots->setTitle('Carrots');
+        $carrots->setParent($vegitables);
+        $carrots->setId(9);
+        $this->em->persist($carrots);
+
+        $milk = new $class;
+        $milk->setTitle('Milk');
+        $milk->setParent($food);
+        $milk->setId(10);
+        $this->em->persist($milk);
+
+        $cheese = new $class;
+        $cheese->setTitle('Cheese');
+        $cheese->setParent($milk);
+        $cheese->setId(11);
+        $this->em->persist($cheese);
+
+        $mouldCheese = new $class;
+        $mouldCheese->setTitle('Mould cheese');
+        $mouldCheese->setParent($cheese);
+        $mouldCheese->setId(12);
         $this->em->persist($mouldCheese);
 
         $this->em->flush();
