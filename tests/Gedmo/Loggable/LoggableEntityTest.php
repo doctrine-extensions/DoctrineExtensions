@@ -38,6 +38,30 @@ class LoggableEntityTest extends BaseTestCaseORM
         $this->em = $this->getMockSqliteEntityManager($evm);
     }
 
+    /**
+     * @test
+     */
+    function shouldHandleClonedEntity()
+    {
+        $art0 = new Article();
+        $art0->setTitle('Title');
+
+        $this->em->persist($art0);
+        $this->em->flush();
+
+        $art1 = clone $art0;
+        $art1->setTitle('Cloned');
+        $this->em->persist($art1);
+        $this->em->flush();
+
+        $logRepo = $this->em->getRepository('Gedmo\Loggable\Entity\LogEntry');
+        $logs = $logRepo->findAll();
+        $this->assertSame(2, count($logs));
+        $this->assertSame('create', $logs[0]->getAction());
+        $this->assertSame('create', $logs[1]->getAction());
+        $this->assertTrue($logs[0]->getObjectId() !== $logs[1]->getObjectId());
+    }
+
     public function testLoggable()
     {
         $logRepo = $this->em->getRepository('Gedmo\Loggable\Entity\LogEntry');

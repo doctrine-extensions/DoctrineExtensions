@@ -25,6 +25,14 @@ final class ODM extends BaseAdapterODM implements LoggableAdapter
     /**
      * {@inheritDoc}
      */
+    public function isPostInsertGenerator($meta)
+    {
+        return true;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function getNewVersion($meta, $object)
     {
         $dm = $this->getObjectManager();

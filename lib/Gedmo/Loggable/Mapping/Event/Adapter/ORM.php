@@ -25,6 +25,14 @@ final class ORM extends BaseAdapterORM implements LoggableAdapter
     /**
      * {@inheritDoc}
      */
+    public function isPostInsertGenerator($meta)
+    {
+        return $meta->idGenerator->isPostInsertGenerator();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function getNewVersion($meta, $object)
     {
         $em = $this->getObjectManager();
