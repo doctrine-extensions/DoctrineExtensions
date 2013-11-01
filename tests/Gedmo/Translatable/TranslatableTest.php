@@ -44,6 +44,46 @@ class TranslatableTest extends BaseTestCaseORM
     /**
      * @test
      */
+    function shouldUpdateTranslationInDefaultLocaleIssue751()
+    {
+        $this->translatableListener->setTranslatableLocale('en');
+        $this->translatableListener->setDefaultLocale('en');
+        $repo = $this->em->getRepository(self::ARTICLE);
+
+        $entity = new Article;
+        $entity->setTranslatableLocale('de');
+        $entity->setTitle('test');
+        $this->em->persist($entity);
+        $this->em->flush();
+
+        $entity->setTranslatableLocale('de');
+        $entity->setTitle('test!');
+        $this->em->persist($entity);
+        $this->em->flush();
+        $this->em->clear();
+
+        // this will force it to find translation in "en" locale, since listener has "en" set
+        // and since default locale is "en" current translation will be "test"
+        // setting title to "test" will not even persist entity, since there is no changeset
+        $entity = $repo->findOneById($entity->getId());
+        $entity->setTranslatableLocale('de');
+        $entity->setTitle('test');
+        $this->em->persist($entity);
+        $this->em->flush();
+
+        $this->em->clear();
+        $entity = $repo->findOneById($entity->getId());
+        $repo = $this->em->getRepository(self::TRANSLATION);
+
+        $translations = $repo->findTranslations($entity);
+        $this->assertArrayHasKey('de', $translations);
+        $this->assertSame('test!', $translations['de']['title']); // de translation was not updated, no changeset
+        $this->assertSame('test', $entity->getTitle()); // obviously "test" a default en translation
+    }
+
+    /**
+     * @test
+     */
     function shouldPersistDefaultLocaleTranslationIfRequired()
     {
         $this->translatableListener->setPersistDefaultLocaleTranslation(true);
