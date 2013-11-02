@@ -9,7 +9,7 @@ use Gedmo\Mapping\Driver\Xml as BaseXml,
 /**
  * This is a xml mapping driver for SoftDeleteable
  * behavioral extension. Used for extraction of extended
- * metadata from xml specificaly for SoftDeleteable
+ * metadata from xml specifically for SoftDeleteable
  * extension.
  *
  * @author Gustavo Falco <comfortablynumb84@gmail.com>

@@ -8,7 +8,7 @@ use Gedmo\Mapping\Driver\Xml as BaseXml,
 /**
  * This is a xml mapping driver for Sluggable
  * behavioral extension. Used for extraction of extended
- * metadata from xml specificaly for Sluggable
+ * metadata from xml specifically for Sluggable
  * extension.
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>

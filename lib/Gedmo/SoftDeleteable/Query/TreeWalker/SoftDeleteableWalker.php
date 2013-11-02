@@ -65,7 +65,7 @@ class SoftDeleteableWalker extends SqlWalker
     /**
      * Change a DELETE clause for an UPDATE clause
      *
-     * @param DeleteClause
+     * @param DeleteClause $deleteClause
      * @return string The SQL.
      */
     public function walkDeleteClause(DeleteClause $deleteClause)

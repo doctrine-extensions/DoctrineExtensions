@@ -212,7 +212,7 @@ So what it includes in general? Well it creates services for all extension liste
 You can remove some which you do not use or change at will. **Translatable** for instance,
 sets default locale to `%locale%` parameter, you can configure it differently.
 
-**Note:** if you noticed, theres **Acme\DemoBundle\Listener\DoctrineExtensionListener**
+**Note:** if you noticed, there's **Acme\DemoBundle\Listener\DoctrineExtensionListener**
 you will need to create this listener class if you use **loggable** or **translatable**
 behaviors. This listener will set the **locale used** from request and **username** to
 loggable. So, to finish the setup create **Acme\DemoBundle\Listener\DoctrineExtensionListener**

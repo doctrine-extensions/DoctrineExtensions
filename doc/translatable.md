@@ -1,7 +1,7 @@
 # Translatable behavior extension for Doctrine 2
 
 **Translatable** behavior offers a very handy solution for translating specific record fields
-in diferent languages. Further more, it loads the translations automatically for a locale
+in different languages. Further more, it loads the translations automatically for a locale
 currently used, which can be set to **Translatable Listener** on it`s initialization or later
 for other cases through the **Entity** itself
 
@@ -36,11 +36,11 @@ translations instead left join, override translation fallback
 
 - Thanks to [@acasademont](https://github.com/acasademont) Translatable now does not store translations for default locale. It is always left as original record value.
 So be sure you do not change your default locale per project or per data migration. This way
-it is more rational and unnecessary to store it additionaly in translation table.
+it is more rational and unnecessary to store it additionally in translation table.
 
 Update **2011-04-21**
 
-- Implemented multiple translation persistense through repository
+- Implemented multiple translation persistence through repository
 
 Update **2011-04-16**
 
@@ -60,7 +60,7 @@ and any number of them
 - You can [test live][blog_test] on this blog 
 - Public [Translatable repository](http://github.com/l3pp4rd/DoctrineExtensions "Translatable extension on Github") is available on github
 - Using other extensions on the same Entity fields may result in unexpected way
-- May inpact your application performace since it does an additional query for translation if loaded without query hint
+- May impact your application performance since it does an additional query for translation if loaded without query hint
 - Last update date: **2012-02-15**
 
 **Portability:**
@@ -311,7 +311,7 @@ Entity\Article:
 ## Basic usage examples: {#basic-examples}
 
 Currently a global locale used for translations is "en_us" which was
-set in **TranslationListener** globaly. To save article with its translations:
+set in **TranslationListener** globally. To save article with its translations:
 
 ``` php
 <?php
@@ -326,7 +326,7 @@ This inserted an article and inserted the translations for it in "en_us" locale
 only if **en_us** is not the [default locale](#advanced-examples) in case if default locale
 matches current locale - it uses original record value as translation
 
-Now lets update our article in diferent locale:
+Now lets update our article in different locale:
 
 ``` php
 <?php
@@ -384,7 +384,7 @@ echo $article->getContent();
 
 ## Persisting multiple translations
 
-Usually it is more convinient to persist more translations when creating
+Usually it is more convenient to persist more translations when creating
 or updating a record. **Translatable** allows to do that through translation repository.
 All additional translations will be tracked by listener and when the flush will be executed,
 it will update or persist all additional translations.
@@ -441,7 +441,7 @@ and when you execute the query, no matter which hydration method you use, it aut
 joins the translations for all fields, so you could use ordering filtering or whatever you
 want on **translated fields** instead of original record fields.
 
-And in result there is only one query for all this happyness.
+And in result there is only one query for all this happiness.
 
 If you use translation [fallbacks](#advanced-examples) it will be also in the same single
 query and during the hydration process it will replace the empty fields in case if they
@@ -515,13 +515,13 @@ $query->setHint(
 $articles = $query->getResult(); // object hydration
 ```
 
-Theres no need for any words anymore.. right?
+There's no need for any words anymore.. right?
 I recommend you to use it extensively since it is a way better performance, even in
 cases where you need to load single translated entity.
 
 **Note**: Even in **COUNT** select statements translations are joined to leave a
 possibility to filter by translated field, if you do not need it, just do not set
-the **hint**. Also take into account that it is not possibble to translate components
+the **hint**. Also take into account that it is not possible to translate components
 in **JOIN WITH** statement, example
 
 ```
@@ -580,7 +580,7 @@ would override the translation locale used to translate the resultset.
 ### Default locale
 
 In some cases we need a default translation as a fallback if record does not have
-a translation on globaly used locale. In that case Translation Listener takes the
+a translation on globally used locale. In that case Translation Listener takes the
 current value of Entity. So if **default locale** is specified and it matches the
 locale in which record is being translated - it will not create extra translation
 but use original values instead. If translation fallback is set to **false** it

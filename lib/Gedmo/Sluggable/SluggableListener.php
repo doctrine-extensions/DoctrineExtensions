@@ -11,7 +11,7 @@ use Doctrine\Common\Persistence\ObjectManager;
  * The SluggableListener handles the generation of slugs
  * for documents and entities.
  *
- * This behavior can inpact the performance of your application
+ * This behavior can impact the performance of your application
  * since it does some additional calculations on persisted objects.
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>

@@ -31,7 +31,7 @@ class TimestampableListener extends MappedEventSubscriber
     }
 
     /**
-     * Mapps additional metadata for the Entity
+     * Maps additional metadata for the Entity
      *
      * @param EventArgs $eventArgs
      * @return void

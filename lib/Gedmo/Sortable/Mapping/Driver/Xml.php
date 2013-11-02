@@ -8,7 +8,7 @@ use Gedmo\Mapping\Driver\Xml as BaseXml,
 /**
  * This is a xml mapping driver for Sortable
  * behavioral extension. Used for extraction of extended
- * metadata from xml specificaly for Sortable
+ * metadata from xml specifically for Sortable
  * extension.
  *
  * @author Lukas Botsch <lukas.botsch@gmail.com>

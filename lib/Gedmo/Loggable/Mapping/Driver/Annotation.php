@@ -9,7 +9,7 @@ use Doctrine\Common\Persistence\Mapping\ClassMetadata,
 /**
  * This is an annotation mapping driver for Loggable
  * behavioral extension. Used for extraction of extended
- * metadata from Annotations specificaly for Loggable
+ * metadata from Annotations specifically for Loggable
  * extension.
  *
  * @author Boussekeyt Jules <jules.boussekeyt@gmail.com>
@@ -37,7 +37,7 @@ class Annotation extends AbstractAnnotationDriver
             throw new InvalidMappingException("Loggable does not support composite identifiers in class - {$meta->name}");
         }
         if (isset($config['versioned']) && !isset($config['loggable'])) {
-            throw new InvalidMappingException("Class must be annoted with Loggable annotation in order to track versioned fields in class - {$meta->name}");
+            throw new InvalidMappingException("Class must be annotated with Loggable annotation in order to track versioned fields in class - {$meta->name}");
         }
     }
 
@@ -81,7 +81,7 @@ class Annotation extends AbstractAnnotationDriver
                 throw new InvalidMappingException("Loggable does not support composite identifiers in class - {$meta->name}");
             }
             if (isset($config['versioned']) && !isset($config['loggable'])) {
-                throw new InvalidMappingException("Class must be annoted with Loggable annotation in order to track versioned fields in class - {$meta->name}");
+                throw new InvalidMappingException("Class must be annotated with Loggable annotation in order to track versioned fields in class - {$meta->name}");
             }
         }
     }

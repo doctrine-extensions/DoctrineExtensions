@@ -10,7 +10,7 @@ use Gedmo\Mapping\Driver\AbstractAnnotationDriver,
 /**
  * This is an annotation mapping driver for Uploadable
  * behavioral extension. Used for extraction of extended
- * metadata from Annotations specificaly for Uploadable
+ * metadata from Annotations specifically for Uploadable
  * extension.
  *
  * @author Gustavo Falco <comfortablynumb84@gmail.com>

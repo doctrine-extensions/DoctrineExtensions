@@ -105,11 +105,11 @@ $config->setProxyNamespace('Proxy');
 $config->setAutoGenerateProxyClasses(false); // this can be based on production config.
 // register metadata driver
 $config->setMetadataDriverImpl($driverChain);
-// use our allready initialized cache driver
+// use our already initialized cache driver
 $config->setMetadataCacheImpl($cache);
 $config->setQueryCacheImpl($cache);
 
-// create event manager and hook prefered extension listeners
+// create event manager and hook preferred extension listeners
 $evm = new Doctrine\Common\EventManager();
 // gedmo extension listeners, remove which are not used
 
@@ -170,7 +170,7 @@ to doctrine-common-2.1.x branch and newer.
 
 ## Tree annotations
 
-Tree can use diferent adapters. Currently **Tree** extension supports **NestedSet**
+Tree can use different adapters. Currently **Tree** extension supports **NestedSet**
 and **Closure** strategies which has a difference for annotations used. Note, that 
 tree will automatically map indexes which are considered necessary for best performance.
 
@@ -313,7 +313,7 @@ class Category ...
 
 ## Translatable annotations
 
-Translatable additionaly can have unmapped property, which would override the
+Translatable additionally can have unmapped property, which would override the
 locale used by listener.
 
 ### @Gedmo\Mapping\Annotation\TranslationEntity (optional)
@@ -399,7 +399,7 @@ It will use this **string** property to store the generated slug.
 ### Slug handlers:
 
 - Gedmo\Sluggable\Handler\TreeSlugHandler - transforms a tree slug into path based, example "food/fruits/apricots/king-apricots"
-- Gedmo\Sluggable\Handler\RelativeSlugHandler - takes a raliotion slug and prefixes the slug, example "singers/michael-jackson"
+- Gedmo\Sluggable\Handler\RelativeSlugHandler - takes a relation slug and prefixes the slug, example "singers/michael-jackson"
 in order to synchronize updates regarding the relation changes, you will need to hood **InversedRelativeSlugHandler** to the relation mentioned.
 - Gedmo\Sluggable\Handler\InversedRelativeSlugHandler - updates prefixed slug for an inversed relation which is mapped by **RelativeSlugHandler**
 
@@ -473,7 +473,7 @@ private $slug;
 ## Timestampable annotations
 
 Timestampable will update date fields on create, update or property change. If you set/force
-date manualy it will not update it.
+date manually it will not update it.
 
 ### @Gedmo\Mapping\Annotation\Timestampable (required)
 
@@ -483,7 +483,7 @@ Marks a **date, datetime or time** field as timestampable.
 
 **options:**
 
-- **on** - (string) _optional_ default: **update**, other choise is **create** or **change**
+- **on** - (string) _optional_ default: **update**, other choice is **create** or **change**
 - **field** - (string) _conditional_ required only if it triggers on **change**, name of the **field**
 or if it is a relation **property.field**
 - **value** - (mixed) _conditional_ required only if it triggers on **change**, value of property

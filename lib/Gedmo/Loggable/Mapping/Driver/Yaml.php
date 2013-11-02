@@ -9,7 +9,7 @@ use Gedmo\Mapping\Driver\File,
 /**
  * This is a yaml mapping driver for Loggable
  * behavioral extension. Used for extraction of extended
- * metadata from yaml specificaly for Loggable
+ * metadata from yaml specifically for Loggable
  * extension.
  *
  * @author Boussekeyt Jules <jules.boussekeyt@gmail.com>

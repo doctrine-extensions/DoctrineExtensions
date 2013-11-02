@@ -11,7 +11,7 @@ use Gedmo\Mapping\Driver\AbstractAnnotationDriver,
 /**
  * This is an annotation mapping driver for Sluggable
  * behavioral extension. Used for extraction of extended
- * metadata from Annotations specificaly for Sluggable
+ * metadata from Annotations specifically for Sluggable
  * extension.
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>

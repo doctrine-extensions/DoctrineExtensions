@@ -631,7 +631,7 @@ Or if the user does not have a timezone, we could expand that to use a system/ap
 
 [doctrine_custom_datetime_type]: http://www.doctrine-project.org/docs/orm/2.0/en/cookbook/working-with-datetime.html#handling-different-timezones-with-the-datetime-type "Handling different Timezones with the DateTime Type"
 
-This example is based off [Handling different Timezones with the DateTime Type][doctrine_custom_datetime_type] - however that example may be outdated because it contains some obvioulsy invalid PHP from the TimeZone class.
+This example is based off [Handling different Timezones with the DateTime Type][doctrine_custom_datetime_type] - however that example may be outdated because it contains some obviously invalid PHP from the TimeZone class.
 
 <a name="traits"></a>
 
@@ -680,6 +680,6 @@ class UsingTrait
 annotations. If you use mongodb ODM import **Doctrine\ODM\MongoDB\Mapping\Annotations as ODM** and
 **TimestampableDocument** instead.
 
-Traits are very simple and if you use different field names I recomment to simply create your
+Traits are very simple and if you use different field names I recommend to simply create your
 own ones based per project. These ones are standing as an example.
 

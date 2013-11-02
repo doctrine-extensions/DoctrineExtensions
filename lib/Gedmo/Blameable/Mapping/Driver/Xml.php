@@ -8,7 +8,7 @@ use Gedmo\Mapping\Driver\Xml as BaseXml,
 /**
  * This is a xml mapping driver for Blameable
  * behavioral extension. Used for extraction of extended
- * metadata from xml specificaly for Blameable
+ * metadata from xml specifically for Blameable
  * extension.
  *
  * @author David Buchmann <mail@davidbu.ch>

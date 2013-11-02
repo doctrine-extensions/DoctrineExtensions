@@ -8,7 +8,7 @@ use Gedmo\Mapping\Driver\AbstractAnnotationDriver,
 /**
  * This is an annotation mapping driver for Translatable
  * behavioral extension. Used for extraction of extended
- * metadata from Annotations specificaly for Translatable
+ * metadata from Annotations specifically for Translatable
  * extension.
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
@@ -76,13 +76,13 @@ class Annotation extends AbstractAnnotationDriver
             if ($locale = $this->reader->getPropertyAnnotation($property, self::LOCALE)) {
                 $field = $property->getName();
                 if ($meta->hasField($field)) {
-                    throw new InvalidMappingException("Locale field [{$field}] should not be mapped as column property in entity - {$meta->name}, since it makes no sence");
+                    throw new InvalidMappingException("Locale field [{$field}] should not be mapped as column property in entity - {$meta->name}, since it makes no sense");
                 }
                 $config['locale'] = $field;
             } elseif ($language = $this->reader->getPropertyAnnotation($property, self::LANGUAGE)) {
                 $field = $property->getName();
                 if ($meta->hasField($field)) {
-                    throw new InvalidMappingException("Language field [{$field}] should not be mapped as column property in entity - {$meta->name}, since it makes no sence");
+                    throw new InvalidMappingException("Language field [{$field}] should not be mapped as column property in entity - {$meta->name}, since it makes no sense");
                 }
                 $config['locale'] = $field;
             }

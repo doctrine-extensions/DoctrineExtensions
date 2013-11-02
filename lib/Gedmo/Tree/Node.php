@@ -12,7 +12,7 @@ namespace Gedmo\Tree;
  */
 interface Node
 {
-    // use now annotations instead of predifined methods, this interface is not necessary
+    // use now annotations instead of predefined methods, this interface is not necessary
 
     /**
      * @gedmo:TreeLeft

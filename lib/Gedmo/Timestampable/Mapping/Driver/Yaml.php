@@ -9,7 +9,7 @@ use Gedmo\Mapping\Driver\File,
 /**
  * This is a yaml mapping driver for Timestampable
  * behavioral extension. Used for extraction of extended
- * metadata from yaml specificaly for Timestampable
+ * metadata from yaml specifically for Timestampable
  * extension.
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
