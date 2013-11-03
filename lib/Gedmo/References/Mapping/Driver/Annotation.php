@@ -49,7 +49,7 @@ class Annotation extends AnnotationDriver
     public function loadExtensionMetadata(ClassMetadata $meta, ExtensionMetadataInterface $exm)
     {
         $class = $meta->reflClass;
-        foreach($this->all as $type => $annotation) {
+        foreach ($this->all as $type => $annotation) {
             foreach ($class->getProperties() as $property) {
                 if ($meta->isMappedSuperclass && !$property->isPrivate() ||
                     $meta->isInheritedField($property->name) ||
@@ -61,7 +61,6 @@ class Annotation extends AnnotationDriver
                 if ($reference = $this->reader->getPropertyAnnotation($property, $annotation)) {
                     $exm->map($type, $property->getName(), array(
                         'field'      => $property->getName(),
-                        'type'       => $reference->type,
                         'class'      => $reference->class,
                         'identifier' => $reference->identifier,
                         'mappedBy'   => $reference->mappedBy,

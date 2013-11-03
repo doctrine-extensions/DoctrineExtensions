@@ -14,7 +14,6 @@ use Doctrine\Common\Annotations\Annotation;
  */
 abstract class Reference extends Annotation
 {
-    public $type;
     public $class;
     public $identifier;
     public $mappedBy;
