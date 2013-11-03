@@ -19,7 +19,7 @@ use Doctrine\ORM\Query\AST\Join;
  *
  * Behind the scenes, during the object hydration it forces
  * custom hydrator in order to interact with TranslatableListener
- * and skip postLoad event which would couse automatic retranslation
+ * and skip postLoad event which would cause automatic retranslation
  * of the fields.
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>

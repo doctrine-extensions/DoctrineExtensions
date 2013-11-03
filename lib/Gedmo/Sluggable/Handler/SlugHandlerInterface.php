@@ -9,7 +9,7 @@ use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 /**
  * Sluggable handler interface is a common pattern for all
  * slug handlers which can be attached to the sluggable listener.
- * Usage is intented only for internal access of sluggable.
+ * Usage is intended only for internal access of sluggable.
  * Should not be used outside of sluggable extension
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
@@ -30,7 +30,7 @@ interface SlugHandlerInterface
      * recalculated
      *
      * @param SluggableAdapter $ea
-     * @param array $config
+     * @param array $slugFieldConfig
      * @param object $object
      * @param string $slug
      * @param boolean $needToChangeSlug

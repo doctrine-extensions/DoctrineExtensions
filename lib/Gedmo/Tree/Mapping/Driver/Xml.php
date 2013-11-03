@@ -9,7 +9,7 @@ use Gedmo\Mapping\Driver\Xml as BaseXml,
 /**
  * This is a xml mapping driver for Tree
  * behavioral extension. Used for extraction of extended
- * metadata from xml specificaly for Tree
+ * metadata from xml specifically for Tree
  * extension.
  *
  * @author Gustavo Falco <comfortablynumb84@gmail.com>

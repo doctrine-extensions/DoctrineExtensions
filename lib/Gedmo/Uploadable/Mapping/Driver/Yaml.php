@@ -10,7 +10,7 @@ use Gedmo\Mapping\Driver\File,
 /**
  * This is a yaml mapping driver for Uploadable
  * behavioral extension. Used for extraction of extended
- * metadata from yaml specificaly for Uploadable
+ * metadata from yaml specifically for Uploadable
  * extension.
  *
  * @author Gustavo Falco <comfortablynumb84@gmail.com>

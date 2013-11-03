@@ -10,7 +10,7 @@ use Gedmo\Mapping\Driver\AbstractAnnotationDriver,
 /**
  * This is an annotation mapping driver for SoftDeleteable
  * behavioral extension. Used for extraction of extended
- * metadata from Annotations specificaly for SoftDeleteable
+ * metadata from Annotations specifically for SoftDeleteable
  * extension.
  *
  * @author Gustavo Falco <comfortablynumb84@gmail.com>

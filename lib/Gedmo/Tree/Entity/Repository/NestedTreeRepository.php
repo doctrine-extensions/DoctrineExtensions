@@ -612,14 +612,14 @@ class NestedTreeRepository extends AbstractTreeRepository
                 $parent = $wrapped->getPropertyValue($config['parent']);
                 $parentId = null;
                 if ($parent) {
-                    $wrappedParrent = new EntityWrapper($parent, $this->_em);
-                    $parentId = $wrappedParrent->getIdentifier();
+                    $wrappedParent = new EntityWrapper($parent, $this->_em);
+                    $parentId = $wrappedParent->getIdentifier();
                 }
                 $pk = $meta->getSingleIdentifierFieldName();
                 $nodeId = $wrapped->getIdentifier();
                 $shift = -1;
 
-                // in case if root node is removed, childs become roots
+                // in case if root node is removed, children become roots
                 if (isset($config['root']) && !$parent) {
                     $qb = $this->_em->createQueryBuilder();
                     $qb->select('node.'.$pk, 'node.'.$config['left'], 'node.'.$config['right'])

@@ -8,7 +8,7 @@ use Gedmo\Mapping\Driver\AbstractAnnotationDriver,
 /**
  * This is an annotation mapping driver for Sortable
  * behavioral extension. Used for extraction of extended
- * metadata from Annotations specificaly for Sortable
+ * metadata from Annotations specifically for Sortable
  * extension.
  *
  * @author Lukas Botsch <lukas.botsch@gmail.com>

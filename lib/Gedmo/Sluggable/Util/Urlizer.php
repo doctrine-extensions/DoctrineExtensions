@@ -200,9 +200,9 @@ class Urlizer
     * requiring up to the same amount again as the input string
     *
     * @see http://search.cpan.org/~sburke/Text-Unidecode-0.04/lib/Text/Unidecode.pm
-    * @param string UTF-8 string to convert
+    * @param string $str UTF-8 string to convert
     * @author <hsivonen@iki.fi>
-    * @param string (default = ?) Character use if character unknown
+    * @param string $unknown (default = ?) Character use if character unknown
     * @return string US-ASCII string
     */
     public static function utf8ToAscii($str, $unknown = '?')

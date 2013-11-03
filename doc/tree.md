@@ -53,7 +53,7 @@ Update **2011-02-08**
 
 Update **2011-02-02**
 
-- Refactored the Tree to the ability on supporting diferent tree models
+- Refactored the Tree to the ability on supporting different tree models
 - Changed the repository location in order to support future updates
 
 **Note:**
@@ -394,7 +394,7 @@ $repo->recover();
 $em->flush(); // important: flush recovered nodes
 // if tree has errors it will try to fix all tree nodes
 
-UNSAFE: be sure to backup before runing this method when necessary, if you can use $em->remove($node);
+UNSAFE: be sure to backup before running this method when necessary, if you can use $em->remove($node);
 // which would cascade to children
 // single node removal
 $vegies = $repo->findOneByTitle('Vegetables');
@@ -827,7 +827,7 @@ modifications on the tree could occur. Look at the MongoDB example of schema def
 - **TreePathSource** field can only be of types: id, integer, smallint, bigint, string, int, float (I include here all the
 variations of the field types, including the ORM and ODM for MongoDB ones).
 - **TreeLockTime** must be of type "date" (used only in MongoDB for now).
-- **TreePathHash** allows you to define a field that is automatically filled with the md5 hash of the path. This field could be neccessary if you want to set a unique constraint on the database table.
+- **TreePathHash** allows you to define a field that is automatically filled with the md5 hash of the path. This field could be necessary if you want to set a unique constraint on the database table.
 
 ### ORM Entity example (Annotations)
 

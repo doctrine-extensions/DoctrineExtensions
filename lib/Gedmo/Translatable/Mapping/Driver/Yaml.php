@@ -9,7 +9,7 @@ use Gedmo\Mapping\Driver\File,
 /**
  * This is a yaml mapping driver for Translatable
  * behavioral extension. Used for extraction of extended
- * metadata from yaml specificaly for Translatable
+ * metadata from yaml specifically for Translatable
  * extension.
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>

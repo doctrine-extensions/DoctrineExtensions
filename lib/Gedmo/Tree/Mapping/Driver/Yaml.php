@@ -10,7 +10,7 @@ use Gedmo\Mapping\Driver\File,
 /**
  * This is a yaml mapping driver for Tree
  * behavioral extension. Used for extraction of extended
- * metadata from yaml specificaly for Tree
+ * metadata from yaml specifically for Tree
  * extension.
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>

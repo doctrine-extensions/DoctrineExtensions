@@ -9,7 +9,7 @@ use Gedmo\Mapping\Driver\File,
 /**
  * This is a yaml mapping driver for Sluggable
  * behavioral extension. Used for extraction of extended
- * metadata from yaml specificaly for Sluggable
+ * metadata from yaml specifically for Sluggable
  * extension.
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>

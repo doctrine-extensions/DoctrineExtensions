@@ -8,7 +8,7 @@ use Gedmo\Mapping\Driver\Xml as BaseXml,
 /**
  * This is a xml mapping driver for Timestampable
  * behavioral extension. Used for extraction of extended
- * metadata from xml specificaly for Timestampable
+ * metadata from xml specifically for Timestampable
  * extension.
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>

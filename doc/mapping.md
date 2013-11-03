@@ -27,7 +27,7 @@ Content:
 - Creating [listener](#create-listener)
 - Attaching our [listener](#attach-listener) to the event manager
 - [Entity](#entity-mapping) with some fields to encode
-- Addapting listener to support [different](#different-managers) object managers
+- Adapting listener to support [different](#different-managers) object managers
 - [Customizing](#event-adapter-customize) event adapter for specific functions
 
 <a name="including-extension"></a>
@@ -42,7 +42,7 @@ on how to setup and use the extensions in most optimized way.
 
 ## Tutorial on creation of mapped extension
 
-First, lets asume we will use **Extension** namespace for our additional
+First, lets assume we will use **Extension** namespace for our additional
 extension library. You should create an **Extension** directory in your library
 or vendor directory. After some changes your project might look like:
 
@@ -61,7 +61,7 @@ will use Doctrine\Common\ClassLoader for instance:
 
 ``` php
 <?php
-// path is related to boostrap.php location for example
+// path is related to bootstrap.php location for example
 $classLoader = new \Doctrine\Common\ClassLoader('Extension', "vendor");
 $classLoader->register();
 ```
@@ -411,7 +411,7 @@ we are dealing with. It also uses event arguments to retrieve manager and transf
 the method call in its way. You can extend the event adapter in order to add some
 specific methods for each manager.
 
-Thats it, now it will work on ORM and ODM object managers.
+That's it, now it will work on ORM and ODM object managers.
 
 <a name="event-adapter-customize"></a>
 
@@ -489,6 +489,6 @@ class ODM extends BaseAdapterODM
 ```
 
 It would be useful to make a common interface for those extended adapters.
-Now every possible requirement is fullfilled and this may be useful.
+Now every possible requirement is fulfilled and this may be useful.
 
 Any suggestions on improvements are very welcome

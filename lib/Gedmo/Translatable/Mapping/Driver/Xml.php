@@ -8,7 +8,7 @@ use Gedmo\Mapping\Driver\Xml as BaseXml,
 /**
  * This is a xml mapping driver for Translatable
  * behavioral extension. Used for extraction of extended
- * metadata from xml specificaly for Translatable
+ * metadata from xml specifically for Translatable
  * extension.
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>

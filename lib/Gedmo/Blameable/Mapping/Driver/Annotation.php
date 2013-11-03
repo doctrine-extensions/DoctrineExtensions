@@ -9,7 +9,7 @@ use Gedmo\Mapping\Driver\AbstractAnnotationDriver,
 /**
  * This is an annotation mapping driver for Blameable
  * behavioral extension. Used for extraction of extended
- * metadata from Annotations specificaly for Blameable
+ * metadata from Annotations specifically for Blameable
  * extension.
  *
  * @author David Buchmann <mail@davidbu.ch>

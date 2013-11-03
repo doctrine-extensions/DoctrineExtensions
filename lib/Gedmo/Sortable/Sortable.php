@@ -12,7 +12,7 @@ namespace Gedmo\Sortable;
  */
 interface Sortable
 {
-    // use now annotations instead of predifined methods, this interface is not necessary
+    // use now annotations instead of predefined methods, this interface is not necessary
     
     /**
      * @gedmo:SortablePosition - to mark property which will hold the item position use annotation @gedmo:SortablePosition
