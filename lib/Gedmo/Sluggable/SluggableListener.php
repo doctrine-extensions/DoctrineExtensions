@@ -141,10 +141,21 @@ class SluggableListener extends MappedEventSubscriber
         $meta = $om->getClassMetadata(get_class($object));
 
         if ($exm = $this->getConfiguration($om, $meta->name)) {
+            $uow = $om->getUnitOfWork();
             foreach ($exm->getFields() as $slugField) {
-                if ($meta->isIdentifier($slugField)) {
-                    $meta->getReflectionProperty($slugField)->setValue($object, '__id__');
+                $options = $exm->getOptions($slugField);
+                // generate if was not set manually
+                if (!$slug = $meta->getReflectionProperty($slugField)->getValue($object)) {
+                    $slug = $this->generateSlug($om, $object, $slugField);
                 }
+                // checks length, prefixes, uniquiness
+                $slug = $this->processSlug($om, $object, $slugField, $slug);
+                // set final slug
+                $meta->getReflectionProperty($slugField)->setValue($object, $slug);
+                // notify about changes
+                $uow->propertyChanged($object, $slugField, null, $slug);
+                // keep it for unique check
+                $this->persisted[$options['rootClass']][] = $object;
             }
         }
     }
@@ -158,32 +169,42 @@ class SluggableListener extends MappedEventSubscriber
      */
     public function onFlush(EventArgs $event)
     {
-        $this->persisted = array();
         $om = OMH::getObjectManagerFromEvent($event);
         $uow = $om->getUnitOfWork();
 
-        $this->disableFilters($om);
-
-        // process all objects being inserted, using scheduled insertions instead
-        // of prePersist in case if record will be changed before flushing this will
-        // ensure correct result. No additional overhead is encoutered
-        foreach (OMH::getScheduledObjectInsertions($uow) as $object) {
-            $meta = $om->getClassMetadata(get_class($object));
-            if ($this->getConfiguration($om, $meta->name)) {
-                // generate first to exclude this object from similar persisted slugs result
-                $this->generateSlug($om, $object);
-            }
-        }
         // we use onFlush and not preUpdate event to let other
         // event listeners be nested together
         foreach (OMH::getScheduledObjectUpdates($uow) as $object) {
             $meta = $om->getClassMetadata(get_class($object));
-            if ($this->getConfiguration($om, $meta->name) && !$uow->isScheduledForInsert($object)) {
-                $this->generateSlug($om, $object);
+            if (($exm = $this->getConfiguration($om, $meta->name)) && !$uow->isScheduledForInsert($object)) {
+                $changeSet = OMH::getObjectChangeSet($uow, $object);
+                foreach ($exm->getFields() as $slugField) {
+                    $options = $exm->getOptions($slugField);
+                    // only updatable slug can be updated
+                    if (!$options['updatable'] && !isset($changeSet[$slugField])) {
+                        $this->persisted[$options['rootClass']][] = $object;
+                        continue;
+                    }
+                    $slug = $meta->getReflectionProperty($slugField)->getValue($object);
+                    $oldSlug = isset($changeSet[$slugField]) ? $changeSet[$slugField][0] : $slug;
+                    // if any of slug fields has changed, or slugfield was forced, do update
+                    if (null === $slug || !isset($changeSet[$slugField])) {
+                        $slug = $this->generateSlug($om, $object, $slugField);
+                    }
+                    // checks length, prefixes, uniquiness
+                    $slug = $this->processSlug($om, $object, $slugField, $slug);
+                    // set final slug
+                    $meta->getReflectionProperty($slugField)->setValue($object, $slug);
+                    // notify about changes
+                    $uow->propertyChanged($object, $slugField, $oldSlug, $slug);
+                    // recompute changeset
+                    OMH::recomputeSingleObjectChangeSet($uow, $meta, $object);
+                    // keep it for unique check
+                    $this->persisted[$options['rootClass']][] = $object;
+                }
             }
         }
-
-        $this->enableFilters($om);
+        $this->persisted = array();
     }
 
     /**
@@ -195,118 +216,104 @@ class SluggableListener extends MappedEventSubscriber
     }
 
     /**
-     * Creates the slug for object being flushed
+     * Polishes slug which was newly generated or set
+     * trims it if it was too long and makes it unique
      *
      * @param \Doctrine\Common\Persistence\ObjectManager $om
      * @param object $object
-     * @throws UnexpectedValueException - if parameters are missing or invalid
+     * @param string $slugField
+     * @param string $slug - slug to process
+     * @return string
      */
-    private function generateSlug(ObjectManager $om, $object)
+    private function processSlug(ObjectManager $om, $object, $slugField, $slug)
     {
         $meta = $om->getClassMetadata(get_class($object));
-        $uow = $om->getUnitOfWork();
-        $changeSet = OMH::getObjectChangeSet($uow, $object);
-        $isInsert = $uow->isScheduledForInsert($object);
         $exm = $this->getConfiguration($om, $meta->name);
-        foreach ($exm->getFields() as $slugField) {
-            $options = $exm->getOptions($slugField);
-            // collect the slug from fields
-            $slug = $meta->getReflectionProperty($slugField)->getValue($object);
-            // if slug should not be updated, skip it
-            if (!$options['updatable'] && !$isInsert && (!isset($changeSet[$slugField]) || $slug === '__id__')) {
-                $this->persisted[$options['rootClass']][] = $object;
-                continue;
-            }
-            // must fetch the old slug from changeset, since $object holds the new version
-            $oldSlug = isset($changeSet[$slugField]) ? $changeSet[$slugField][0] : $slug;
-            $needToChangeSlug = false;
-            // if slug is null, regenerate it, or needs an update
-            if (null === $slug || $slug === '__id__' || !isset($changeSet[$slugField])) {
-                $slug = '';
-                foreach ($options['fields'] as $sluggableField) {
-                    if (isset($changeSet[$sluggableField]) || isset($changeSet[$slugField])) {
-                        $needToChangeSlug = true;
-                    }
-                    $value = $meta->getReflectionProperty($sluggableField)->getValue($object);
-                    $slug .= ($value instanceof \DateTime) ? $value->format($options['dateFormat']) : $value;
-                    $slug .= ' ';
+        $options = $exm->getOptions($slugField);
+        $mapping = $meta->getFieldMapping($slugField);
+
+        // build the slug
+        // Step 1: transliteration, changing 北京 to 'Bei Jing'
+        $slug = call_user_func_array(
+            $this->transliterator,
+            array($slug, $options['separator'], $object)
+        );
+        // Step 2: urlization (replace spaces by '-' etc...)
+        $slug = call_user_func($this->urlizer, $slug, $options['separator']);
+        // Step 3: stylize the slug
+        switch ($options['style']) {
+            case 'camel':
+                $slug = preg_replace_callback('/^[a-z]|' . $options['separator'] . '[a-z]/smi', function ($m) {
+                    return strtoupper($m[0]);
+                }, $slug);
+                break;
+
+            case 'lower':
+                if (function_exists('mb_strtolower')) {
+                    $slug = mb_strtolower($slug);
+                } else {
+                    $slug = strtolower($slug);
                 }
-            } else {
-                // slug was set manually
-                $needToChangeSlug = true;
-            }
-            // if slug is changed, do further processing
-            if ($needToChangeSlug) {
-                $mapping = $meta->getFieldMapping($slugField);
-                // build the slug
-                // Step 1: transliteration, changing 北京 to 'Bei Jing'
-                $slug = call_user_func_array(
-                    $this->transliterator,
-                    array($slug, $options['separator'], $object)
-                );
-                // Step 2: urlization (replace spaces by '-' etc...)
-                $slug = call_user_func($this->urlizer, $slug, $options['separator']);
-                // Step 3: stylize the slug
-                switch ($options['style']) {
-                    case 'camel':
-                        $slug = preg_replace_callback('/^[a-z]|' . $options['separator'] . '[a-z]/smi', function ($m) {
-                            return strtoupper($m[0]);
-                        }, $slug);
-                        break;
+                break;
 
-                    case 'lower':
-                        if (function_exists('mb_strtolower')) {
-                            $slug = mb_strtolower($slug);
-                        } else {
-                            $slug = strtolower($slug);
-                        }
-                        break;
-
-                    case 'upper':
-                        if (function_exists('mb_strtoupper')) {
-                            $slug = mb_strtoupper($slug);
-                        } else {
-                            $slug = strtoupper($slug);
-                        }
-                        break;
-
-                    default:
-                        // leave it as is
-                        break;
+            case 'upper':
+                if (function_exists('mb_strtoupper')) {
+                    $slug = mb_strtoupper($slug);
+                } else {
+                    $slug = strtoupper($slug);
                 }
+                break;
 
-                $length = isset($mapping['length']) ? $mapping['length'] : false;
-                if ($length && $om->getConnection()->getDatabasePlatform()->getName() === 'postgresql') {
-                    // special case for postgresql
-                    $length--;
-                }
-                // cut slug if exceeded in length
-                if ($length && strlen($slug) > $length) {
-                    $slug = substr($slug, 0, $length);
-                }
-
-                // add suffix/prefix
-                $slug = $options['prefix'] . $slug . $options['suffix'];
-
-                if (isset($mapping['nullable']) && $mapping['nullable'] && !$slug) {
-                    $slug = null;
-                }
-                // make unique slug if requested
-                if ($options['unique'] && null !== $slug) {
-                    $slug = $this->makeUniqueSlug($om, $object, $slugField, $slug, 0, false);
-                }
-
-                // set final slug
-                $meta->getReflectionProperty($slugField)->setValue($object, $slug);
-                // notify about changes
-                $uow->propertyChanged($object, $slugField, $oldSlug, $slug);
-
-                // recompute changeset
-                OMH::recomputeSingleObjectChangeSet($uow, $meta, $object);
-                // keep it for unique check
-                $this->persisted[$options['rootClass']][] = $object;
-            }
+            default:
+                // leave it as is
+                break;
         }
+        $length = isset($mapping['length']) ? $mapping['length'] : false;
+        if ($length && $om->getConnection()->getDatabasePlatform()->getName() === 'postgresql') {
+            // special case for postgresql
+            $length--;
+        }
+        // cut slug if exceeded in length
+        if ($length && strlen($slug) > $length) {
+            $slug = substr($slug, 0, $length);
+        }
+
+        // add suffix/prefix
+        $slug = $options['prefix'] . $slug . $options['suffix'];
+
+        if (isset($mapping['nullable']) && $mapping['nullable'] && !$slug) {
+            $slug = null;
+        }
+        // make unique slug if requested
+        if ($options['unique'] && null !== $slug) {
+            $this->disableFilters($om);
+            $slug = $this->makeUniqueSlug($om, $object, $slugField, $slug, 0, false);
+            $this->enableFilters($om);
+        }
+        return $slug;
+    }
+
+    /**
+     * Creates the slug from sluggable fields
+     *
+     * @param \Doctrine\Common\Persistence\ObjectManager $om
+     * @param object $object
+     * @param string $slugField
+     * @return string
+     */
+    private function generateSlug(ObjectManager $om, $object, $slugField)
+    {
+        $meta = $om->getClassMetadata(get_class($object));
+        $exm = $this->getConfiguration($om, $meta->name);
+        $options = $exm->getOptions($slugField);
+        // collect the slug from fields
+        $slug = '';
+        foreach ($options['fields'] as $sluggableField) {
+            $value = $meta->getReflectionProperty($sluggableField)->getValue($object);
+            $slug .= ($value instanceof \DateTime) ? $value->format($options['dateFormat']) : $value;
+            $slug .= ' ';
+        }
+        return $slug;
     }
 
     /**
