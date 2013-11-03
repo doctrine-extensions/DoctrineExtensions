@@ -8,6 +8,7 @@ use Doctrine\Common\Persistence\ObjectManager;
 use Gedmo\Exception\UnexpectedValueException;
 use Gedmo\Mapping\MappedEventSubscriber;
 use Gedmo\Mapping\ObjectManagerHelper as OMH;
+use Doctrine\Common\Persistence\ManagerRegistry;
 
 /**
  * Listener for loading and persisting cross database references.
@@ -20,27 +21,21 @@ use Gedmo\Mapping\ObjectManagerHelper as OMH;
 class ReferencesListener extends MappedEventSubscriber
 {
     /**
-     * A list of object managers to link references,
-     * in pairs of
-     *      managerType => ObjectManagerInstance
+     * Object manager registry
      *
-     * Supported types are "entity" and "document"
-     *
-     * @var ObjectManager[]
+     * @var ManagerRegistry
      */
-    private $managers;
+    private $managerRegistry;
 
     /**
-     * Listener can be initialized with a list of managers
+     * Listener should be initialized with manager registry
      * to link references
      *
-     * @param ObjectManager[] $managers - list of managers, check above
+     * @param ManagerRegistry $managerRegistry
      */
-    public function __construct(array $managers = array())
+    public function __construct(ManagerRegistry $managerRegistry)
     {
-        foreach ($managers as $type => $manager) {
-            $this->registerManager($type, $manager);
-        }
+        $this->managerRegistry = $managerRegistry;
     }
 
     /**
@@ -59,7 +54,7 @@ class ReferencesListener extends MappedEventSubscriber
     /**
      * Load the extension metadata
      *
-     * @param \Doctrine\Common\EventArgs $event
+     * @param EventArgs $event
      */
     public function loadClassMetadata(EventArgs $event)
     {
@@ -71,7 +66,7 @@ class ReferencesListener extends MappedEventSubscriber
      * currently it initializes references to foreign manager
      * if any are confihured
      *
-     * @param \Doctrine\Common\EventArgs $event
+     * @param EventArgs $event
      */
     public function postLoad(EventArgs $event)
     {
@@ -85,9 +80,8 @@ class ReferencesListener extends MappedEventSubscriber
             if (isset($mapping['identifier'])) {
                 $referencedObjectId = $meta->getFieldValue($object, $mapping['identifier']);
                 if (null !== $referencedObjectId) {
-                    $manager = $this->getManager($mapping['type']);
-                    if (get_class($manager) === get_class($om)) {
-                        throw new UnexpectedValueException("Referenced manager is of the same type: {$mapping['type']}");
+                    if ($om === $manager = $this->getManager($mapping['class'])) {
+                        throw new UnexpectedValueException("Referenced manager manages the same class: {$mapping['class']}, use standard relation mapping");
                     }
                     $property->setValue($object, $this->getSingleReference($manager, $mapping['class'], $referencedObjectId));
                 }
@@ -99,8 +93,10 @@ class ReferencesListener extends MappedEventSubscriber
             $property->setAccessible(true);
             if (isset($mapping['mappedBy'])) {
                 $id = OMH::getIdentifier($om, $object);
-                $manager = $this->getManager($mapping['type']);
                 $class = $mapping['class'];
+                if ($om === $manager = $this->getManager($mapping['class'])) {
+                    throw new UnexpectedValueException("Referenced manager manages the same class: {$mapping['class']}, use standard relation mapping");
+                }
                 $refMeta = $manager->getClassMetadata($class);
                 $refConfig = $this->getConfiguration($manager, $refMeta->name);
 
@@ -149,38 +145,6 @@ class ReferencesListener extends MappedEventSubscriber
     }
 
     /**
-     * Registeners a $manager of type $type
-     * to support linking references
-     *
-     * @param string        $type    - document or entity
-     * @param ObjectManager $manager
-     *
-     * @return static
-     */
-    public function registerManager($type, ObjectManager $manager)
-    {
-        $this->managers[$type] = $manager;
-
-        return $this;
-    }
-
-    /**
-     * Get a registered manager of $type
-     *
-     * @param string $type - document or entity
-     *
-     * @return ObjectManager
-     */
-    public function getManager($type)
-    {
-        if (!isset($this->managers[$type])) {
-            throw new UnexpectedValueException("Object manager for type: {$type} is not registered");
-        }
-
-        return $this->managers[$type];
-    }
-
-    /**
      * Get a reference to relation managed by another manager $om
      *
      * @param ObjectManager $om
@@ -197,6 +161,22 @@ class ReferencesListener extends MappedEventSubscriber
         }
 
         return $om->getReference($class, $identifier);
+    }
+
+    /**
+     * Get object manager from registry which handles $class
+     *
+     * @param string $class
+     *
+     * @return ObjectManager
+     */
+    private function getManager($class)
+    {
+        if (null === $om = $this->managerRegistry->getManagerForClass($class)) {
+            throw new UnexpectedValueException("Could not find any manager for object class: {$class}");
+        }
+
+        return $om;
     }
 
     /**
@@ -217,11 +197,10 @@ class ReferencesListener extends MappedEventSubscriber
                 $property->setAccessible(true);
                 $referencedObject = $property->getValue($object);
                 if (is_object($referencedObject)) {
-                    $meta->setFieldValue(
-                        $object,
-                        $mapping['identifier'],
-                        OMH::getIdentifier($this->getManager($mapping['type']), $referencedObject)
-                    );
+                    if ($om === $manager = $this->getManager($mapping['class'])) {
+                        throw new UnexpectedValueException("Referenced manager manages the same class: {$mapping['class']}, use standard relation mapping");
+                    }
+                    $meta->setFieldValue($object, $mapping['identifier'], OMH::getIdentifier($manager, $referencedObject));
                 }
             }
         }
@@ -246,7 +225,9 @@ class ReferencesListener extends MappedEventSubscriber
             $property->setAccessible(true);
 
             $id = OMH::getIdentifier($om, $object);
-            $manager = $this->getManager('document');
+            if ($om === $manager = $this->getManager($mapping['class'])) {
+                throw new UnexpectedValueException("Referenced manager manages the same class: {$mapping['class']}, use standard relation mapping");
+            }
 
             $class = $mapping['class'];
             $refMeta = $manager->getClassMetadata($class);

@@ -17,7 +17,7 @@ class Metadata
     private $name;
 
     /**
-     * @Gedmo\ReferenceOne(type="entity", class="Gedmo\Fixture\References\ORM\Category", identifier="categoryId")
+     * @Gedmo\ReferenceOne(class="Gedmo\Fixture\References\ORM\Category", identifier="categoryId")
      */
     private $category;
 

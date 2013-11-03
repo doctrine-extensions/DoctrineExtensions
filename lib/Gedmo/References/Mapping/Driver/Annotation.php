@@ -61,7 +61,6 @@ class Annotation extends AnnotationDriver
                 if ($reference = $this->reader->getPropertyAnnotation($property, $annotation)) {
                     $exm->map($type, $property->getName(), array(
                         'field'      => $property->getName(),
-                        'type'       => $reference->type,
                         'class'      => $reference->class,
                         'identifier' => $reference->identifier,
                         'mappedBy'   => $reference->mappedBy,

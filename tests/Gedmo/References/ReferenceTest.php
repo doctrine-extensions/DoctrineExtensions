@@ -27,17 +27,34 @@ class ReferenceTest extends ObjectManagerTestCase
     protected function setUp()
     {
         $evm = new EventManager();
-        $evm->addEventSubscriber($this->listener = new ReferencesListener());
 
-        $this->dm = $this->createDocumentManager($evm);
-        $this->listener->registerManager('document', $this->dm);
+        $registryMock = $this->getMockBuilder('Doctrine\Common\Persistence\ManagerRegistry')
+            ->disableOriginalConstructor()
+            ->getMock();
 
-        $this->em = $this->createEntityManager($evm);
+        $this->dm = $dm = $this->createDocumentManager($evm);
+        $this->em = $em = $this->createEntityManager($evm);
         $this->createSchema($this->em, array(
             'Gedmo\Fixture\References\ORM\StockItem',
             'Gedmo\Fixture\References\ORM\Category',
         ));
-        $this->listener->registerManager('entity', $this->em);
+        $registryMock
+            ->expects($this->any())
+            ->method('getManagerForClass')
+            ->will($this->returnCallback(function ($class) use ($dm,$em) {
+                switch ($class) {
+                    case 'Gedmo\Fixture\References\ORM\StockItem':
+                    case 'Gedmo\Fixture\References\ORM\Category':
+                        return $em;
+                    case 'Gedmo\Fixture\References\ODM\MongoDB\Metadata':
+                    case 'Gedmo\Fixture\References\ODM\MongoDB\Product':
+                        return $dm;
+                    default:
+                        return null;
+                }
+            }));
+        $this->listener = new ReferencesListener($registryMock);
+        $evm->addEventSubscriber($this->listener);
     }
 
     protected function tearDown()

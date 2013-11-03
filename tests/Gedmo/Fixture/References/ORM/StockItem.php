@@ -34,7 +34,7 @@ class StockItem
     private $quantity;
 
     /**
-     * @Gedmo\ReferenceOne(type="document", class="Gedmo\Fixture\References\ODM\MongoDB\Product", inversedBy="stockItems", identifier="productId")
+     * @Gedmo\ReferenceOne(class="Gedmo\Fixture\References\ODM\MongoDB\Product", inversedBy="stockItems", identifier="productId")
      */
     private $product;
 
