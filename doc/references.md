@@ -21,7 +21,7 @@ The following options are possible on reference one and many associations:
 
 ## Annotations
 
-**@Gedmo\ReferenceOne**
+**@Gedmo\ReferenceMany**
 
 ``` php
 <?php
@@ -32,7 +32,7 @@ The following options are possible on reference one and many associations:
 private $stockItems;
 ```
 
-**@Gedmo\ReferenceMany**
+**@Gedmo\ReferenceOne**
 
 ``` php
 <?php
