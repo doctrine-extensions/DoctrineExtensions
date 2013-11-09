@@ -1,6 +1,6 @@
 # Doctrine2 behavioral extensions
 
-**Version 2.3.7**
+**Version 2.3.8**
 
 [![Build Status](https://secure.travis-ci.org/l3pp4rd/DoctrineExtensions.png?branch=master)](http://travis-ci.org/l3pp4rd/DoctrineExtensions)
 
@@ -8,13 +8,14 @@
 
 ### Latest updates
 
-**2013-03-10**
+**2013-11-09**
 
-- **Sluggable** added 'unique_base' configuration parameter
-
-**2013-03-05**
-
-- A new extension - **References**, which links Entities in Documents and visa versa, [read more about it](https://github.com/l3pp4rd/DoctrineExtensions/blob/master/doc/references.md). It was contributed by @jwage, @avalanche123, @jmikola and @bobthecow, thanks
+- **Loggable** handle cloned objects #876
+- **Sluggable** tree handler slug prefix and suffix #892
+- **Sortable** association group handling #887, #874
+- **SoftDeleteable** odm mongodb filter support for **timeAware** option #877
+- **Sluggable** support for datetime field formatting into slug #795
+- **Sluggable** urlizer regex update to ensure consistency #848
 
 ### Summary and features
 
