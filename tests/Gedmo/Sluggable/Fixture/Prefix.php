@@ -16,7 +16,11 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Prefix implements Sluggable
 {
-    /** @ORM\Id @ORM\GeneratedValue @ORM\Column(type="integer") */
+    /**
+    * @ORM\Id
+    * @ORM\GeneratedValue
+    * @ORM\Column(type="integer")
+    */
     private $id;
 
     /**

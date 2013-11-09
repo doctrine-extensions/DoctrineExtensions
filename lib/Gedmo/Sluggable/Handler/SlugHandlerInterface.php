@@ -22,7 +22,7 @@ interface SlugHandlerInterface
      *
      * @param SluggableListener $sluggable
      */
-    function __construct(SluggableListener $sluggable);
+    public function __construct(SluggableListener $sluggable);
 
     /**
      * Callback on slug handlers before the decision
@@ -30,13 +30,13 @@ interface SlugHandlerInterface
      * recalculated
      *
      * @param SluggableAdapter $ea
-     * @param array $slugFieldConfig
+     * @param array $config
      * @param object $object
      * @param string $slug
      * @param boolean $needToChangeSlug
      * @return void
      */
-    function onChangeDecision(SluggableAdapter $ea, $slugFieldConfig, $object, &$slug, &$needToChangeSlug);
+    public function onChangeDecision(SluggableAdapter $ea, array &$config, $object, &$slug, &$needToChangeSlug);
 
     /**
      * Callback on slug handlers right after the slug is built
@@ -47,7 +47,7 @@ interface SlugHandlerInterface
      * @param string $slug
      * @return void
      */
-    function postSlugBuild(SluggableAdapter $ea, array &$config, $object, &$slug);
+    public function postSlugBuild(SluggableAdapter $ea, array &$config, $object, &$slug);
 
     /**
      * Callback for slug handlers on slug completion
@@ -58,12 +58,12 @@ interface SlugHandlerInterface
      * @param string $slug
      * @return void
      */
-    function onSlugCompletion(SluggableAdapter $ea, array &$config, $object, &$slug);
+    public function onSlugCompletion(SluggableAdapter $ea, array &$config, $object, &$slug);
 
     /**
      * @return boolean whether or not this handler has already urlized the slug
      */
-    function handlesUrlization();
+    public function handlesUrlization();
 
     /**
      * Validate handler options
@@ -71,5 +71,5 @@ interface SlugHandlerInterface
      * @param array $options
      * @param ClassMetadata $meta
      */
-    static function validate(array $options, ClassMetadata $meta);
+    public static function validate(array $options, ClassMetadata $meta);
 }

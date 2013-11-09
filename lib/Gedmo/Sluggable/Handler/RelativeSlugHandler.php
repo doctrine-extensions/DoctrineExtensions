@@ -63,7 +63,7 @@ class RelativeSlugHandler implements SlugHandlerInterface
     /**
      * {@inheritDoc}
      */
-    public function onChangeDecision(SluggableAdapter $ea, $config, $object, &$slug, &$needToChangeSlug)
+    public function onChangeDecision(SluggableAdapter $ea, array &$config, $object, &$slug, &$needToChangeSlug)
     {
         $this->om = $ea->getObjectManager();
         $isInsert = $this->om->getUnitOfWork()->isScheduledForInsert($object);
