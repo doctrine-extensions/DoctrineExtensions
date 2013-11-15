@@ -30,7 +30,7 @@ class ValidatorTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException Gedmo\Exception\InvalidMappingException
+     * @expectedException \Gedmo\Exception\InvalidMappingException
      */
     public function test_validateField_ifFieldIsNotOfAValidTypeThrowException()
     {
@@ -47,7 +47,7 @@ class ValidatorTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException Gedmo\Exception\UploadableInvalidPathException
+     * @expectedException \Gedmo\Exception\UploadableInvalidPathException
      */
     public function test_validatePath_ifPathIsNotAStringOrIsAnEmptyStringThrowException()
     {
@@ -92,17 +92,17 @@ class ValidatorTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException Gedmo\Exception\InvalidMappingException
+     * @expectedException \Gedmo\Exception\InvalidMappingException
      */
-    public function test_validateConfiguration_ifFilePathFieldIsNotDefinedThrowException()
+    public function test_validateConfiguration_ifNeitherFilePathFieldNorFileNameFieldIsNotDefinedThrowException()
     {
-        $config = array('filePathField' => false);
+        $config = array('filePathField' => false, 'fileNameField' => false);
 
         Validator::validateConfiguration($this->meta, $config);
     }
 
     /**
-     * @expectedException Gedmo\Exception\InvalidMappingException
+     * @expectedException \Gedmo\Exception\InvalidMappingException
      */
     public function test_validateConfiguration_ifPathMethodIsNotAValidMethodThrowException()
     {
@@ -119,7 +119,7 @@ class ValidatorTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException Gedmo\Exception\InvalidMappingException
+     * @expectedException \Gedmo\Exception\InvalidMappingException
      */
     public function test_validateConfiguration_ifCallbackMethodIsNotAValidMethodThrowException()
     {
@@ -136,7 +136,7 @@ class ValidatorTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException Gedmo\Exception\InvalidMappingException
+     * @expectedException \Gedmo\Exception\InvalidMappingException
      */
     public function test_validateConfiguration_ifFilenameGeneratorValueIsNotValidThrowException()
     {
@@ -150,6 +150,7 @@ class ValidatorTest extends \PHPUnit_Framework_TestCase
         $config = array(
             'fileMimeTypeField' => '',
             'fileSizeField'     => '',
+            'fileNameField'     => '',
             'filePathField'     => 'someField',
             'pathMethod'        => '',
             'callback'          => '',
@@ -166,7 +167,7 @@ class ValidatorTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException Gedmo\Exception\InvalidMappingException
+     * @expectedException \Gedmo\Exception\InvalidMappingException
      */
     public function test_validateConfiguration_ifFilenameGeneratorValueIsValidButDoesntImplementNeededInterfaceThrowException()
     {
@@ -180,6 +181,7 @@ class ValidatorTest extends \PHPUnit_Framework_TestCase
         $config = array(
             'fileMimeTypeField' => '',
             'fileSizeField'     => '',
+            'fileNameField'     => '',
             'filePathField'     => 'someField',
             'pathMethod'        => '',
             'callback'          => '',
@@ -207,6 +209,7 @@ class ValidatorTest extends \PHPUnit_Framework_TestCase
         $config = array(
             'fileMimeTypeField' => '',
             'fileSizeField'     => '',
+            'fileNameField'     => '',
             'filePathField'     => 'someField',
             'pathMethod'        => '',
             'callback'          => '',
@@ -234,6 +237,7 @@ class ValidatorTest extends \PHPUnit_Framework_TestCase
         $config = array(
             'fileMimeTypeField' => '',
             'fileSizeField'     => '',
+            'fileNameField'     => '',
             'filePathField'     => 'someField',
             'pathMethod'        => '',
             'callback'          => '',
@@ -250,7 +254,7 @@ class ValidatorTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException Gedmo\Exception\InvalidMappingException
+     * @expectedException \Gedmo\Exception\InvalidMappingException
      */
     public function test_validateConfiguration_ifMaxSizeIsLessThanZeroThenThrowException()
     {
@@ -276,7 +280,7 @@ class ValidatorTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException Gedmo\Exception\InvalidMappingException
+     * @expectedException \Gedmo\Exception\InvalidMappingException
      */
     public function test_validateConfiguration_ifAllowedTypesAndDisallowedTypesAreSetThenThrowException()
     {

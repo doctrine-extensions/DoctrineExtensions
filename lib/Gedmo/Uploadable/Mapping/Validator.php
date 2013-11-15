@@ -19,6 +19,7 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 class Validator
 {
     const UPLOADABLE_FILE_MIME_TYPE = 'UploadableFileMimeType';
+    const UPLOADABLE_FILE_NAME = 'UploadableFileName';
     const UPLOADABLE_FILE_PATH = 'UploadableFilePath';
     const UPLOADABLE_FILE_SIZE = 'UploadableFileSize';
     const FILENAME_GENERATOR_SHA1 = 'SHA1';
@@ -39,6 +40,15 @@ class Validator
      * @var array
      */
     public static $validFileMimeTypeTypes = array(
+        'string'
+    );
+
+    /**
+     * List of types which are valid for UploadableFileName field
+     *
+     * @var array
+     */
+    public static $validFileNameTypes = array(
         'string'
     );
 
@@ -68,6 +78,11 @@ class Validator
      */
     public static $validateWritableDirectory = true;
 
+
+    public static function validateFileNameField(ClassMetadataInfo $meta, $field)
+    {
+        self::validateField($meta, $field, self::UPLOADABLE_FILE_NAME, self::$validFileNameTypes);
+    }
 
     public static function validateFileMimeTypeField(ClassMetadataInfo $meta, $field)
     {
@@ -128,8 +143,8 @@ class Validator
 
     public static function validateConfiguration(ClassMetadata $meta, array &$config)
     {
-        if (!$config['filePathField']) {
-            throw new InvalidMappingException(sprintf('Class "%s" must have an UploadableFilePath field.',
+        if (!$config['filePathField'] && !$config['fileNameField']) {
+            throw new InvalidMappingException(sprintf('Class "%s" must have an UploadableFilePath or UploadableFileName field.',
                 $meta->name
             ));
         }
@@ -171,6 +186,14 @@ class Validator
         $config['disallowedTypes'] = $config['disallowedTypes'] ? (strpos($config['disallowedTypes'], ',') !== false ?
             explode(',', $config['disallowedTypes']) : array($config['disallowedTypes'])) : false;
 
+        if ($config['fileNameField']) {
+            self::validateFileNameField($meta, $config['fileNameField']);
+        }
+
+        if ($config['filePathField']) {
+            self::validateFilePathField($meta, $config['filePathField']);
+        }
+
         if ($config['fileMimeTypeField']) {
             self::validateFileMimeTypeField($meta, $config['fileMimeTypeField']);
         }
@@ -204,7 +227,5 @@ class Validator
                     ));
                 }
         }
-
-        self::validateFilePathField($meta, $config['filePathField']);
     }
 }
