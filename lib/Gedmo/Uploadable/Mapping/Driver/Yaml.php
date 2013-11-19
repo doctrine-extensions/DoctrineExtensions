@@ -47,6 +47,7 @@ class Yaml extends File implements Driver
                 $config['pathMethod'] = isset($uploadable['pathMethod']) ? $uploadable['pathMethod'] : '';
                 $config['callback'] = isset($uploadable['callback']) ? $uploadable['callback'] : '';
                 $config['fileMimeTypeField'] = false;
+                $config['fileNameField'] = false;
                 $config['filePathField'] = false;
                 $config['fileSizeField'] = false;
                 $config['filenameGenerator'] = isset($uploadable['filenameGenerator']) ?
@@ -69,6 +70,8 @@ class Yaml extends File implements Driver
                                 $config['fileMimeTypeField'] = $field;
                             } else if ($info['gedmo'][0] === 'uploadableFileSize') {
                                 $config['fileSizeField'] = $field;
+                            } else if ($info['gedmo'][0] === 'uploadableFileName') {
+                                $config['fileNameField'] = $field;
                             } else if ($info['gedmo'][0] === 'uploadableFilePath') {
                                 $config['filePathField'] = $field;
                             }

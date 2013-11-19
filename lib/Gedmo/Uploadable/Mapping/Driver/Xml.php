@@ -46,6 +46,7 @@ class Xml extends BaseXml
                 $config['callback'] = $this->_isAttributeSet($xmlUploadable, 'callback') ?
                     $this->_getAttribute($xml->{'uploadable'}, 'callback') : '';
                 $config['fileMimeTypeField'] = false;
+                $config['fileNameField'] = false;
                 $config['filePathField'] = false;
                 $config['fileSizeField'] = false;
                 $config['filenameGenerator'] = $this->_isAttributeSet($xmlUploadable, 'filename-generator') ?
@@ -72,6 +73,8 @@ class Xml extends BaseXml
                             $config['fileMimeTypeField'] = $field;
                         } else if (isset($mapping->{'uploadable-file-size'})) {
                             $config['fileSizeField'] = $field;
+                        } else if (isset($mapping->{'uploadable-file-name'})) {
+                            $config['fileNameField'] = $field;
                         } else if (isset($mapping->{'uploadable-file-path'})) {
                             $config['filePathField'] = $field;
                         }

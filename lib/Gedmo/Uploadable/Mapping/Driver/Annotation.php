@@ -24,6 +24,7 @@ class Annotation extends AbstractAnnotationDriver
      */
     const UPLOADABLE = 'Gedmo\\Mapping\\Annotation\\Uploadable';
     const UPLOADABLE_FILE_MIME_TYPE = 'Gedmo\\Mapping\\Annotation\\UploadableFileMimeType';
+    const UPLOADABLE_FILE_NAME = 'Gedmo\\Mapping\\Annotation\\UploadableFileName';
     const UPLOADABLE_FILE_PATH = 'Gedmo\\Mapping\\Annotation\\UploadableFilePath';
     const UPLOADABLE_FILE_SIZE = 'Gedmo\\Mapping\\Annotation\\UploadableFileSize';
 
@@ -42,6 +43,7 @@ class Annotation extends AbstractAnnotationDriver
             $config['path'] = $annot->path;
             $config['pathMethod'] = $annot->pathMethod;
             $config['fileMimeTypeField'] = false;
+            $config['fileNameField'] = false;
             $config['filePathField'] = false;
             $config['fileSizeField'] = false;
             $config['callback'] = $annot->callback;
@@ -53,6 +55,10 @@ class Annotation extends AbstractAnnotationDriver
             foreach ($class->getProperties() as $prop) {
                 if ($this->reader->getPropertyAnnotation($prop, self::UPLOADABLE_FILE_MIME_TYPE)) {
                     $config['fileMimeTypeField'] = $prop->getName();
+                }
+
+                if ($this->reader->getPropertyAnnotation($prop, self::UPLOADABLE_FILE_NAME)) {
+                    $config['fileNameField'] = $prop->getName();
                 }
 
                 if ($this->reader->getPropertyAnnotation($prop, self::UPLOADABLE_FILE_PATH)) {
