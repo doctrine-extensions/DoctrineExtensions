@@ -70,6 +70,7 @@ people to push their own additional attributes/elements into the same field elem
   <xs:element name="translatable" type="gedmo:translatable"/>
   <xs:element name="timestampable" type="gedmo:timestampable"/>
   <xs:element name="blameable" type="gedmo:blameable"/>
+  <xs:element name="ip-traceable" type="gedmo:ip-traceable"/>
   <xs:element name="versioned" type="gedmo:emptyType"/>
   <xs:element name="tree-left" type="gedmo:emptyType"/>
   <xs:element name="tree-right" type="gedmo:emptyType"/>
@@ -121,6 +122,12 @@ people to push their own additional attributes/elements into the same field elem
   </xs:complexType>
 
   <xs:complexType name="blameable">
+    <xs:attribute name="on" type="gedmo:timestampable-action" use="optional" />
+    <xs:attribute name="field" type="xs:string" use="optional" />
+    <xs:attribute name="value" type="xs:string" use="optional" />
+  </xs:complexType>
+
+  <xs:complexType name="ip-traceable">
     <xs:attribute name="on" type="gedmo:timestampable-action" use="optional" />
     <xs:attribute name="field" type="xs:string" use="optional" />
     <xs:attribute name="value" type="xs:string" use="optional" />

@@ -29,6 +29,9 @@
         <testsuite name="Blameable Extension">
             <directory suffix="Test.php">./Gedmo/Blameable/</directory>
         </testsuite>
+        <testsuite name="IpTraceable Extension">
+            <directory suffix="Test.php">./Gedmo/IpTraceable/</directory>
+        </testsuite>
         <testsuite name="Mapping Extension">
             <directory suffix="Test.php">./Gedmo/Mapping/</directory>
         </testsuite>
