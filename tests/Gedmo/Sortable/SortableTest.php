@@ -542,6 +542,35 @@ class SortableTest extends BaseTestCaseORM
         $this->assertEquals(4, $nodes[4]->getPosition());
     }
 
+    /**
+     * @test
+     */
+    public function testMoveToLastPosition()
+    {
+        $node0 = $this->em->find(self::NODE, $this->nodeId);
+
+        $nodes = array($node0);
+
+        for ($i = 2; $i <= 5; $i++) {
+            $node = new Node();
+            $node->setName("Node".$i);
+            $node->setPath("/");
+            $this->em->persist($node);
+            $nodes[] = $node;
+        }
+        $this->em->flush();
+
+        $this->assertEquals(4, $nodes[4]->getPosition());
+
+        $node0->setPosition(-1);
+
+        $this->em->persist($node0);
+        $this->em->flush();
+
+        $this->assertEquals(3, $nodes[4]->getPosition());
+        $this->assertEquals(4, $node0->getPosition());
+    }
+
     protected function getUsedEntityFixtures()
     {
         return array(
