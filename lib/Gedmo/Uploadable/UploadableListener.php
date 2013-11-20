@@ -128,9 +128,13 @@ class UploadableListener extends MappedEventSubscriber
             // this will mark the entity as dirty, and the "onFlush" event will be fired, even if there's
             // no other change in the entity's fields apart from the file itself.
             if ($uow->isInIdentityMap($entity)) {
-                $path = $this->getFilePath($meta, $config, $entity);
-
-                $uow->propertyChanged($entity, $config['filePathField'], $path, $path);
+                if ($config['filePathField']) {
+                    $path = $this->getFilePath($meta, $config, $entity);
+                    $uow->propertyChanged($entity, $config['filePathField'], $path, $path);
+                } else {
+                    $fileName = $this->getFileName($meta, $config, $entity);
+                    $uow->propertyChanged($entity, $config['fileNameField'], $fileName, $fileName);
+                }
                 $uow->scheduleForUpdate($entity);
             }
         }
@@ -315,7 +319,11 @@ class UploadableListener extends MappedEventSubscriber
 
         if ($action === self::ACTION_UPDATE) {
             // First we add the original file to the pendingFileRemovals array
-            $this->pendingFileRemovals[] = $this->getFilePath($meta, $config, $object);
+            if ($config['filePathField']) {
+                $this->pendingFileRemovals[] = $this->getFilePath($meta, $config, $object);
+            } else {
+                $this->pendingFileRemovals[] = $this->getFileName($meta, $config, $object);
+            }
         }
 
         // We generate the filename based on configuration
@@ -393,6 +401,23 @@ class UploadableListener extends MappedEventSubscriber
     }
 
     /**
+     * Returns value of the entity's property
+     *
+     * @param \Doctrine\Common\Persistence\Mapping\ClassMetadata $meta
+     * @param $object
+     * @return mixed
+     */
+    protected function getPropertyValueFromObject(ClassMetadata $meta, $propertyName, $object)
+    {
+        $refl = $meta->getReflectionClass();
+        $filePathField = $refl->getProperty($propertyName);
+        $filePathField->setAccessible(true);
+        $filePath = $filePathField->getValue($object);
+
+        return $filePath;
+    }
+
+    /**
      * Returns the path of the entity's file
      *
      * @param \Doctrine\Common\Persistence\Mapping\ClassMetadata $meta
@@ -402,12 +427,20 @@ class UploadableListener extends MappedEventSubscriber
      */
     public function getFilePath(ClassMetadata $meta, array $config, $object)
     {
-        $refl = $meta->getReflectionClass();
-        $filePathField = $refl->getProperty($config['filePathField']);
-        $filePathField->setAccessible(true);
-        $filePath = $filePathField->getValue($object);
+        return $this->getPropertyValueFromObject($meta, $config['filePathField'], $object);
+    }
 
-        return $filePath;
+    /**
+     * Returns the name of the entity's file
+     *
+     * @param \Doctrine\Common\Persistence\Mapping\ClassMetadata $meta
+     * @param array $config
+     * @param $object
+     * @return mixed
+     */
+    public function getFileName(ClassMetadata $meta, array $config, $object)
+    {
+        return $this->getPropertyValueFromObject($meta, $config['fileNameField'], $object);
     }
 
     /**
