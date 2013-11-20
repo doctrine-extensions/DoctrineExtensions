@@ -277,3 +277,9 @@ foreach ($items as $item) {
 // 0: item 2
 // 1: item 1
 ```
+
+To move an item at the end of the list, you can set the position to `-1`:
+
+```
+$item2->setPosition(-1);
+```
