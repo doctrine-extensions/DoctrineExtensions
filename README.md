@@ -47,7 +47,7 @@ So root node now looks like this:
 **Note:** Use 2.1.x tag in order to use extensions based on Doctrine2.1.x versions. Currently
 master branch is based on 2.2.x versions and may not work with 2.1.x
 
-```
+```xml
 <doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
                  xmlns:gedmo="http://gediminasm.org/schemas/orm/doctrine-extensions-mapping">
 ...
@@ -86,24 +86,22 @@ PHPUnit 3.6 or newer is required.
 To setup and run tests follow these steps:
 
 - go to the root directory of extensions
-- download composer: **wget https://getcomposer.org/composer.phar**
-- install dev libraries: **php composer.phar install --dev**
-- run: **phpunit -c tests**
+- download composer: `wget https://getcomposer.org/composer.phar`
+- install dev libraries: `php composer.phar install`
+- run: `phpunit -c tests`
 - optional - run mongodb service if targeting mongo tests
-
-<a name="example-demo"></a>
 
 ### Running the example:
 
 To setup and run example follow these steps:
 
 - go to the root directory of extensions
-- download composer: **wget https://getcomposer.org/composer.phar**
-- install dev libraries: **php composer.phar install --dev**
-- edit **example/em.php** and configure your database on top of the file
-- run: **./example/bin/console** or **php example/bin/console** for console commands
-- run: **./example/bin/console orm:schema-tool:create** to create schema
-- run: **php example/run.php** to run example
+- download composer: `wget https://getcomposer.org/composer.phar`
+- install dev libraries: `php composer.phar install`
+- edit `example/em.php` and configure your database on top of the file
+- run: `./example/bin/console` or `php example/bin/console` for console commands
+- run: `./example/bin/console orm:schema-tool:create` to create schema
+- run: `php example/run.php` to run example
 
 ### Contributors:
 
