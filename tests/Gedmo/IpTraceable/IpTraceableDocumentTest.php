@@ -16,7 +16,7 @@ use IpTraceable\Fixture\Document\Article,
  */
 class IpTraceableDocumentTest extends BaseTestCaseMongoODM
 {
-    const TEST_IP = 'test-ip';
+    const TEST_IP = '34.234.1.10';
 
     const ARTICLE = 'IpTraceable\Fixture\Document\Article';
     const TYPE = 'IpTraceable\Fixture\Document\Type';

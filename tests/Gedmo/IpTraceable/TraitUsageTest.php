@@ -15,6 +15,7 @@ use IpTraceable\Fixture\UsingTrait;
  */
 class TraitUsageTest extends BaseTestCaseORM
 {
+    const TEST_IP = '34.234.1.10';
     const TARGET = "IpTraceable\\Fixture\\UsingTrait";
 
     protected function setUp()
@@ -26,7 +27,9 @@ class TraitUsageTest extends BaseTestCaseORM
         }
 
         $evm = new EventManager;
-        $evm->addEventSubscriber(new IpTraceableListener);
+        $ipTraceableListener = new IpTraceableListener;
+        $ipTraceableListener->setIpValue(self::TEST_IP);
+        $evm->addEventSubscriber($ipTraceableListener);
 
         $this->getMockSqliteEntityManager($evm);
     }
@@ -34,7 +37,7 @@ class TraitUsageTest extends BaseTestCaseORM
     /**
      * @test
      */
-    function shouldTimestampUsingTrait()
+    function shouldIpTraceUsingTrait()
     {
         $sport = new UsingTrait;
         $sport->setTitle('Sport');

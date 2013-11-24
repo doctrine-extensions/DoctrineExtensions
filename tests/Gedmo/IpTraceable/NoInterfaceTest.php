@@ -16,7 +16,7 @@ use Doctrine\Common\Util\Debug,
  */
 class NoInterfaceTest extends BaseTestCaseORM
 {
-    const TEST_IP = 'test-ip no-interface-test';
+    const TEST_IP = '34.234.1.10';
     const FIXTURE = "IpTraceable\\Fixture\\WithoutInterface";
 
     protected function setUp()

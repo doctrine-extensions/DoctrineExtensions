@@ -12,13 +12,13 @@ trait BlameableEntity
 {
     /**
      * @Gedmo\Blameable(on="create")
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="string", nullable=true)
      */
     private $createdBy;
 
     /**
      * @Gedmo\Blameable(on="update")
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="string", nullable=true)
      */
     private $updatedBy;
 

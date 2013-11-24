@@ -18,7 +18,7 @@ use Doctrine\Common\Util\Debug,
  */
 class ChangeTest extends BaseTestCaseORM
 {
-    const TEST_IP = 'test-ip-change';
+    const TEST_IP = '34.234.1.10';
     const FIXTURE = "IpTraceable\\Fixture\\TitledArticle";
 
     protected $listener;
@@ -54,7 +54,7 @@ class ChangeTest extends BaseTestCaseORM
         //Changed
         $this->assertEquals(self::TEST_IP, $test->getChtitle());
 
-        $this->listener->setIpValue('xx.XXX.xx.XX');
+        $this->listener->setIpValue('127.0.0.1');
 
         $test = $this->em->getRepository(self::FIXTURE)->findOneByTitle('New Title');
         $test->setText('New Text');

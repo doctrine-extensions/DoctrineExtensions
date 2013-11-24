@@ -18,7 +18,7 @@ use Doctrine\Common\Util\Debug,
  */
 class IpTraceableTest extends BaseTestCaseORM
 {
-    const TEST_IP = 'test-ip';
+    const TEST_IP = '34.234.1.10';
 
     const ARTICLE = "IpTraceable\\Fixture\\Article";
     const COMMENT = "IpTraceable\\Fixture\\Comment";
@@ -35,6 +35,29 @@ class IpTraceableTest extends BaseTestCaseORM
         $evm->addEventSubscriber($listener);
 
         $this->getMockSqliteEntityManager($evm);
+    }
+
+    public function testInvalidIpShouldThrowInvalidArgumentException()
+    {
+        $listener = new IpTraceableListener;
+
+        $this->setExpectedException('Gedmo\Exception\InvalidArgumentException');
+
+        $listener->setIpValue('xx.xxx.xx.xxx');   
+    }
+
+    public function testIpV4()
+    {
+        $listener = new IpTraceableListener;
+        $listener->setIpValue('123.218.45.39');
+        $this->assertEquals('123.218.45.39', $listener->getIpValue(null, null));  
+    }
+
+    public function testIpV6()
+    {
+        $listener = new IpTraceableListener;
+        $listener->setIpValue('2001:0db8:0000:85a3:0000:0000:ac1f:8001');
+        $this->assertEquals('2001:0db8:0000:85a3:0000:0000:ac1f:8001', $listener->getIpValue(null, null));  
     }
 
     public function testIpTraceable()

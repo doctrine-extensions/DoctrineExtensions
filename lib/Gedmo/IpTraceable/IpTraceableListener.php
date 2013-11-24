@@ -5,7 +5,8 @@ namespace Gedmo\IpTraceable;
 use Doctrine\Common\EventArgs,
     Gedmo\Mapping\MappedEventSubscriber,
     Doctrine\Common\NotifyPropertyChanged,
-    Gedmo\Exception\UnexpectedValueException;
+    Gedmo\Exception\UnexpectedValueException,
+    Gedmo\Exception\InvalidArgumentException;
 use Gedmo\Timestampable\TimestampableListener;
 
 /**
@@ -28,10 +29,6 @@ class IpTraceableListener extends TimestampableListener
      */
     public function getIpValue($meta, $field)
     {
-        if (! isset($this->ip)) {
-            $this->ip = 'n/a';
-        }
-
         return $this->ip;
     }
 
@@ -42,6 +39,10 @@ class IpTraceableListener extends TimestampableListener
      */
     public function setIpValue($ip)
     {
+        if (filter_var($ip, FILTER_VALIDATE_IP) === false) {
+            throw new InvalidArgumentException("ip address is not valid $ip");
+        }
+
         $this->ip = $ip;
     }
 
