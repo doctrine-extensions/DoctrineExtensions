@@ -45,11 +45,11 @@ class Xml extends BaseXml
             foreach ($mapping->field as $fieldMapping) {
                 $fieldMappingDoctrine = $fieldMapping;
                 $fieldMapping = $fieldMapping->children(self::GEDMO_NAMESPACE_URI);
-                if (isset($fieldMapping->ipTraceable)) {
+                if (isset($fieldMapping->{'ip-traceable'})) {
                     /**
                      * @var \SimpleXmlElement $data
                      */
-                    $data = $fieldMapping->ipTraceable;
+                    $data = $fieldMapping->{'ip-traceable'};
 
                     $field = $this->_getAttribute($fieldMappingDoctrine, 'name');
                     if (!$this->isValidField($meta, $field)) {
@@ -83,11 +83,11 @@ class Xml extends BaseXml
             foreach ($mapping->{'many-to-one'} as $fieldMapping) {
                 $field = $this->_getAttribute($fieldMapping, 'field');
                 $fieldMapping = $fieldMapping->children(self::GEDMO_NAMESPACE_URI);
-                if (isset($fieldMapping->ipTraceable)) {
+                if (isset($fieldMapping->{'ip-traceable'})) {
                     /**
                      * @var \SimpleXmlElement $data
                      */
-                    $data = $fieldMapping->ipTraceable;
+                    $data = $fieldMapping->{'ip-traceable'};
                     
                     if (! $meta->isSingleValuedAssociation($field)) {
                         throw new InvalidMappingException("Association - [{$field}] is not valid, it must be a one-to-many relation or a string field - {$meta->name}");
