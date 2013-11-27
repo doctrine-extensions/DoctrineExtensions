@@ -96,7 +96,7 @@ class Article
      * @var string $createdFromIp
      *
      * @Gedmo\IpTraceable(on="create")
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="string", length=45, nullable=true)
      */
     private $createdFromIp;
 
@@ -104,14 +104,14 @@ class Article
      * @var string $updatedFromIp
      *
      * @Gedmo\IpTraceable(on="update")
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="string", length=45, nullable=true)
      */
     private $updatedFromIp;
 
     /**
      * @var datetime $contentChangedFromIp
      *
-     * @ORM\Column(name="content_changed_by", type="string", nullable=true)
+     * @ORM\Column(name="content_changed_by", type="string", nullable=true, length=45)
      * @Gedmo\IpTraceable(on="change", field={"title", "body"})
      */
     private $contentChangedFromIp;
@@ -250,11 +250,15 @@ Entity\Article:
       length: 64
     createdFromIp:
       type: string
+      length: 45
+      nullable: true
       gedmo:
         ipTraceable:
           on: create
     updatedFromIp:
       type: string
+      length: 45
+      nullable: true
       gedmo:
         ipTraceable:
           on: update
@@ -274,13 +278,13 @@ Entity\Article:
             <generator strategy="AUTO"/>
         </id>
 
-        <field name="createdFromIp" type="string">
+        <field name="createdFromIp" type="string", length="45", nullable="true">
             <gedmo:ip-traceable on="create"/>
         </field>
-        <field name="updatedFromIp" type="string">
+        <field name="updatedFromIp" type="string", length="45", nullable="true">
             <gedmo:ip-traceable on="update"/>
         </field>
-        <field name="publishedFromIp" type="string" nullable="true">
+        <field name="publishedFromIp" type="string" nullable="true", length="45">
             <gedmo:ip-traceable on="change" field="status.title" value="Published"/>
         </field>
 
@@ -367,7 +371,7 @@ class Article
      * @var string $createdFromIp
      *
      * @Gedmo\IpTraceable(on="create")
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="string", length=45, nullable=true)
      */
     private $createdFromIp;
 
@@ -375,7 +379,7 @@ class Article
      * @var string $updatedFromIp
      *
      * @Gedmo\IpTraceable(on="update")
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="string", length=45, nullable=true)
      */
     private $updatedFromIp;
 
@@ -387,7 +391,7 @@ class Article
     /**
      * @var string $publishedFromIp
      *
-     * @ORM\Column(type="string", nullable=true)
+     * @ORM\Column(type="string", nullable=true, length=45)
      * @Gedmo\IpTraceable(on="change", field="type.title", value="Published")
      */
     private $publishedFromIp;
@@ -447,16 +451,22 @@ Entity\Article:
       length: 64
     createdFromIp:
       type: string
+      length: 45
+      nullable: true
       gedmo:
         ipTraceable:
           on: create
     updatedFromIp:
       type: string
+      length: 45
+      nullable: true
       gedmo:
         ipTraceable:
           on: update
     publishedFromIp:
       type: string
+      length: 45
+      nullable: true
       gedmo:
         ipTraceable:
           on: change
