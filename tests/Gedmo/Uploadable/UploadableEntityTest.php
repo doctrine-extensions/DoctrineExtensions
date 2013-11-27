@@ -13,6 +13,7 @@ use Tool\BaseTestCaseORM,
     Uploadable\Fixture\Entity\FileWithAlphanumericName,
     Uploadable\Fixture\Entity\FileWithCustomFilenameGenerator,
     Uploadable\Fixture\Entity\FileAppendNumber,
+    Uploadable\Fixture\Entity\FileAppendNumberRelative,
     Uploadable\Fixture\Entity\FileWithMaxSize,
     Uploadable\Fixture\Entity\FileWithAllowedTypes,
     Uploadable\Fixture\Entity\FileWithDisallowedTypes,
@@ -34,6 +35,7 @@ class UploadableEntityTest extends BaseTestCaseORM
     const ARTICLE_CLASS = 'Uploadable\Fixture\Entity\Article';
     const FILE_CLASS = 'Uploadable\Fixture\Entity\File';
     const FILE_APPEND_NUMBER_CLASS = 'Uploadable\Fixture\Entity\FileAppendNumber';
+    const FILE_APPEND_NUMBER__RELATIVE_PATH_CLASS = 'Uploadable\Fixture\Entity\FileAppendNumberRelative';
     const FILE_WITHOUT_PATH_CLASS = 'Uploadable\Fixture\Entity\FileWithoutPath';
     const FILE_WITH_SHA1_NAME_CLASS = 'Uploadable\Fixture\Entity\FileWithSha1Name';
     const FILE_WITH_ALPHANUMERIC_NAME_CLASS = 'Uploadable\Fixture\Entity\FileWithAlphanumericName';
@@ -459,6 +461,34 @@ class UploadableEntityTest extends BaseTestCaseORM
         $this->assertEquals('test-2.txt', $filename);
     }
 
+    public function test_moveFile_usingAppendNumberOptionAppendsNumberToFilenameIfItAlreadyExistsRelativePath()
+    {
+        $currDir = __DIR__;
+        chdir(realpath(__DIR__ . '/../../temp/uploadable'));
+        $file = new FileAppendNumber();
+        $file2 = new FileAppendNumberRelative();
+
+        $file->setTitle('test');
+        $file2->setTitle('test2');
+
+        $fileInfo = $this->generateUploadedFile('image', realpath(__DIR__ . '/../../../tests/data/test'), 'test');
+
+        $this->listener->addEntityFileInfo($file, $fileInfo);
+        $this->em->persist($file);
+        $this->em->flush();
+
+        $this->listener->addEntityFileInfo($file2, $fileInfo);
+
+        $this->em->persist($file2);
+        $this->em->flush();
+
+        $this->em->refresh($file2);
+
+        $this->assertEquals('./test-2', $file2->getFilePath());
+
+        chdir($currDir);
+    }
+
     /**
      * @expectedException Gedmo\Exception\UploadableUploadException
      */
@@ -713,6 +743,7 @@ class UploadableEntityTest extends BaseTestCaseORM
             self::FILE_CLASS,
             self::FILE_WITHOUT_PATH_CLASS,
             self::FILE_APPEND_NUMBER_CLASS,
+            self::FILE_APPEND_NUMBER__RELATIVE_PATH_CLASS,
             self::FILE_WITH_ALPHANUMERIC_NAME_CLASS,
             self::FILE_WITH_SHA1_NAME_CLASS,
             self::FILE_WITH_CUSTOM_FILENAME_GENERATOR_CLASS,
