@@ -37,9 +37,9 @@ class IpTraceableListener extends TimestampableListener
      *
      * @param mixed $ip
      */
-    public function setIpValue($ip)
+    public function setIpValue($ip = null)
     {
-        if (filter_var($ip, FILTER_VALIDATE_IP) === false) {
+        if (isset($ip) && filter_var($ip, FILTER_VALIDATE_IP) === false) {
             throw new InvalidArgumentException("ip address is not valid $ip");
         }
 
