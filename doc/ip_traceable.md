@@ -610,7 +610,9 @@ class IpTraceSubscriber implements EventSubscriberInterface
         // If you use a cache like Varnish, you may want to set a proxy to Request::getClientIp() method 
         // $this->request->setTrustedProxies(array('127.0.0.1'));
 
+        // $ip = $_SERVER['REMOTE_ADDR'];
         $ip = $this->request->getClientIp();
+        
         if (null !== $ip) {
             $this->ipTraceableListener->setIpValue($ip);
         }
