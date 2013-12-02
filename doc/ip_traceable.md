@@ -22,7 +22,7 @@ Features:
 
 **Symfony:**
 
-- **IpTraceable** is NOT YET available as [Bundle](http://github.com/stof/StofDoctrineExtensionsBundle)
+- **IpTraceable** is not yet available as [Bundle](http://github.com/stof/StofDoctrineExtensionsBundle)
 for **Symfony2**, together with all other extensions
 
 This article will cover the basic installation and functionality of **IpTraceable** behavior
@@ -556,3 +556,107 @@ annotations. If you use mongodb ODM import **Doctrine\ODM\MongoDB\Mapping\Annota
 The Traits are very simplistic - if you use different field names it is recommended to simply create your
 own Traits specific to your project. The ones provided by this bundle can be used as example.
 
+
+## Example of implementation in Symfony2
+
+In your Sf2 application, declare an event subscriber that automatically set IP value on IpTraceableListener.
+
+### Code of subscriber class
+
+``` php
+<?php
+
+namespace Acme\DemoBundle\EventListener;
+
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Symfony\Component\HttpKernel\KernelEvents;
+use Symfony\Component\HttpFoundation\Request;
+
+use Gedmo\IpTraceable\IpTraceableListener;
+
+/**
+ * IpTraceSubscriber
+ */
+class IpTraceSubscriber implements EventSubscriberInterface
+{
+    /**
+     * @var Request
+     */
+    private $request;
+
+    /**
+     * @var IpTraceableListener
+     */
+    private $ipTraceableListener;
+
+    public function __construct(IpTraceableListener $ipTraceableListener, Request $request = null)
+    {
+        $this->ipTraceableListener = $ipTraceableListener;
+        $this->request = $request;
+    }
+
+    /**
+     * Set the username from the security context by listening on core.request
+     *
+     * @param GetResponseEvent $event
+     */
+    public function onKernelRequest(GetResponseEvent $event)
+    {
+        if (null === $this->request) {
+            return;
+        }
+
+        // If you use a cache like Varnish, you may want to set a proxy to Request::getClientIp() method 
+        // $this->request->setTrustedProxies(array('127.0.0.1'));
+
+        $ip = $this->request->getClientIp();
+        if (null !== $ip) {
+            $this->ipTraceableListener->setIpValue($ip);
+        }
+    }
+
+    public static function getSubscribedEvents()
+    {
+        return array(
+            KernelEvents::REQUEST => 'onKernelRequest',
+        );
+    }
+}
+
+```
+
+### Configuration for services.xml
+
+``` xml
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <parameters>
+        <parameter key="alterphp_doctrine_extensions.event_listener.ip_trace.class">Acme\DemoBundle\EventListener\IpTraceListener</parameter>
+    </parameters>
+
+    <services>
+        
+        ...
+
+        <service id="gedmo_doctrine_extensions.listener.ip_traceable" class="Gedmo\IpTraceable\IpTraceableListener" public="false">
+            <tag name="doctrine.event_subscriber" connection="default" />
+            <call method="setAnnotationReader">
+                <argument type="service" id="annotation_reader" />
+            </call>
+        </service>
+
+        <service id="alterphp_doctrine_extensions.event_listener.ip_trace" class="%alterphp_doctrine_extensions.event_listener.ip_trace.class%" public="false" scope="request">
+            <argument type="service" id="gedmo_doctrine_extensions.listener.ip_traceable" />
+            <argument type="service" id="request" on-invalid="null" />
+            <tag name="kernel.event_subscriber" />
+        </service>
+
+    </services>
+</container>
+
+```
