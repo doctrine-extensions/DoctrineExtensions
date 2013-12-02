@@ -40,6 +40,7 @@ $loader->add('Translator\\Fixture', __DIR__ . '/Gedmo');
 $loader->add('Translatable\\Fixture', __DIR__ . '/Gedmo');
 $loader->add('Timestampable\\Fixture', __DIR__ . '/Gedmo');
 $loader->add('Blameable\\Fixture', __DIR__.'/Gedmo');
+$loader->add('IpTraceable\\Fixture', __DIR__.'/Gedmo');
 $loader->add('Tree\\Fixture', __DIR__ . '/Gedmo');
 $loader->add('Sluggable\\Fixture', __DIR__ . '/Gedmo');
 $loader->add('Sortable\\Fixture', __DIR__ . '/Gedmo');
