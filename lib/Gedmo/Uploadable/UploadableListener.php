@@ -129,10 +129,10 @@ class UploadableListener extends MappedEventSubscriber
             // no other change in the entity's fields apart from the file itself.
             if ($uow->isInIdentityMap($entity)) {
                 if ($config['filePathField']) {
-                    $path = $this->getFilePath($meta, $config, $entity);
+                    $path = $this->getFilePathFieldValue($meta, $config, $entity);
                     $uow->propertyChanged($entity, $config['filePathField'], $path, $path);
                 } else {
-                    $fileName = $this->getFileName($meta, $config, $entity);
+                    $fileName = $this->getFileNameFieldValue($meta, $config, $entity);
                     $uow->propertyChanged($entity, $config['fileNameField'], $fileName, $fileName);
                 }
                 $uow->scheduleForUpdate($entity);
@@ -172,7 +172,13 @@ class UploadableListener extends MappedEventSubscriber
 
             if ($config = $this->getConfiguration($om, $meta->name)) {
                 if (isset($config['uploadable']) && $config['uploadable']) {
-                    $this->pendingFileRemovals[] = $this->getFilePath($meta, $config, $object);
+                    if ($config['filePathField']) {
+                        $this->pendingFileRemovals[] = $this->getFilePathFieldValue($meta, $config, $object);
+                    } else {
+                        $path     = $this->getPath($meta, $config, $object);
+                        $fileName = $this->getFileNameFieldValue($meta, $config, $object);
+                        $this->pendingFileRemovals[] = $path . DIRECTORY_SEPARATOR . $fileName;
+                    }
                 }
             }
         }
@@ -280,27 +286,7 @@ class UploadableListener extends MappedEventSubscriber
             $filePathField->setAccessible(true);
         }
 
-        $path = $config['path'];
-
-        if ($path === '') {
-            $defaultPath = $this->getDefaultPath();
-            if ($config['pathMethod'] !== '') {
-                $pathMethod = $refl->getMethod($config['pathMethod']);
-                $pathMethod->setAccessible(true);
-                $path = $pathMethod->invokeArgs($object, array($defaultPath));
-            } else if ($defaultPath !== null) {
-                $path = $defaultPath;
-            } else {
-                $msg = 'You have to define the path to save files either in the listener, or in the class "%s"';
-
-                throw new UploadableNoPathDefinedException(
-                    sprintf($msg, $meta->name)
-                );
-            }
-        }
-
-        Validator::validatePath($path);
-        $path = rtrim($path, '\/');
+        $path = $this->getPath($meta, $config, $object);
 
         if ($config['fileNameField']) {
             $fileNameField = $refl->getProperty($config['fileNameField']);
@@ -320,9 +306,9 @@ class UploadableListener extends MappedEventSubscriber
         if ($action === self::ACTION_UPDATE) {
             // First we add the original file to the pendingFileRemovals array
             if ($config['filePathField']) {
-                $this->pendingFileRemovals[] = $this->getFilePath($meta, $config, $object);
+                $this->pendingFileRemovals[] = $this->getFilePathFieldValue($meta, $config, $object);
             } else {
-                $this->pendingFileRemovals[] = $this->getFileName($meta, $config, $object);
+                $this->pendingFileRemovals[] = $this->getFileNameFieldValue($meta, $config, $object);
             }
         }
 
@@ -401,10 +387,48 @@ class UploadableListener extends MappedEventSubscriber
     }
 
     /**
+     * @param ClassMetadata $meta
+     * @param array $config
+     * @param $object Entity
+     *
+     * @return string
+     *
+     * @throws UploadableNoPathDefinedException
+     */
+    protected function getPath(ClassMetadata $meta, array $config, $object)
+    {
+        $path = $config['path'];
+
+        if ($path === '') {
+            $defaultPath = $this->getDefaultPath();
+            if ($config['pathMethod'] !== '') {
+                $pathMethod = $meta->getReflectionClass()->getMethod($config['pathMethod']);
+                $pathMethod->setAccessible(true);
+                $path = $pathMethod->invoke($object, $defaultPath);
+            } else if ($defaultPath !== null) {
+                $path = $defaultPath;
+            } else {
+                $msg = 'You have to define the path to save files either in the listener, or in the class "%s"';
+
+                throw new UploadableNoPathDefinedException(
+                    sprintf($msg, $meta->name)
+                );
+            }
+        }
+
+        Validator::validatePath($path);
+        $path = rtrim($path, '\/');
+
+        return $path;
+    }
+
+    /**
      * Returns value of the entity's property
      *
-     * @param \Doctrine\Common\Persistence\Mapping\ClassMetadata $meta
+     * @param ClassMetadata $meta
+     * @param string $propertyName
      * @param $object
+     *
      * @return mixed
      */
     protected function getPropertyValueFromObject(ClassMetadata $meta, $propertyName, $object)
@@ -420,12 +444,12 @@ class UploadableListener extends MappedEventSubscriber
     /**
      * Returns the path of the entity's file
      *
-     * @param \Doctrine\Common\Persistence\Mapping\ClassMetadata $meta
+     * @param ClassMetadata $meta
      * @param array $config
      * @param $object
      * @return mixed
      */
-    public function getFilePath(ClassMetadata $meta, array $config, $object)
+    protected function getFilePathFieldValue(ClassMetadata $meta, array $config, $object)
     {
         return $this->getPropertyValueFromObject($meta, $config['filePathField'], $object);
     }
@@ -433,12 +457,12 @@ class UploadableListener extends MappedEventSubscriber
     /**
      * Returns the name of the entity's file
      *
-     * @param \Doctrine\Common\Persistence\Mapping\ClassMetadata $meta
+     * @param ClassMetadata $meta
      * @param array $config
      * @param $object
      * @return mixed
      */
-    public function getFileName(ClassMetadata $meta, array $config, $object)
+    protected function getFileNameFieldValue(ClassMetadata $meta, array $config, $object)
     {
         return $this->getPropertyValueFromObject($meta, $config['fileNameField'], $object);
     }
@@ -723,7 +747,7 @@ class UploadableListener extends MappedEventSubscriber
     }
 
     /**
-     * @param \Gedmo\Uploadable\Gedmo\Uploadable\MimeType\MimeTypeGuesserInterface $mimeTypeGuesser
+     * @param \Gedmo\Uploadable\MimeType\MimeTypeGuesserInterface $mimeTypeGuesser
      */
     public function setMimeTypeGuesser(MimeTypeGuesserInterface $mimeTypeGuesser)
     {
@@ -731,7 +755,7 @@ class UploadableListener extends MappedEventSubscriber
     }
 
     /**
-     * @return \Gedmo\Uploadable\Gedmo\Uploadable\MimeType\MimeTypeGuesserInterface
+     * @return \Gedmo\Uploadable\MimeType\MimeTypeGuesserInterface
      */
     public function getMimeTypeGuesser()
     {
