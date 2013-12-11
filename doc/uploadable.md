@@ -285,7 +285,7 @@ Entity\File:
             <gedmo:uploadable-file-size />
         </field>
 
-        <field name="name" column="path" type="string">
+        <field name="name" column="name" type="string">
             <gedmo:uploadable-file-name />
         </field>
 
