@@ -53,7 +53,7 @@ class LogEntryRepository extends EntityRepository
 
         $objectId = $wrapped->getIdentifier();
         $q = $this->_em->createQuery($dql);
-        $q->setParameters(compact('objectId', 'objectClass', 'order'));
+        $q->setParameters(compact('objectId', 'objectClass'));
         return $q;
     }
 
