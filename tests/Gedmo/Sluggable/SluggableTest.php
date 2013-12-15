@@ -45,6 +45,15 @@ class SluggableTest extends BaseTestCaseORM
      */
     function shouldBuildUniqueSlug()
     {
+        $article = new Article();
+        $article->setTitle('the title');
+        $article->setCode('my code');
+
+        $this->em->persist($article);
+        $this->em->flush();
+        $this->em->clear();
+        $this->assertEquals('the-title-my.code', $article->getSlug());
+
         for ($i = 0; $i < 12; $i++) {
             $article = new Article();
             $article->setTitle('the title');
@@ -53,7 +62,7 @@ class SluggableTest extends BaseTestCaseORM
             $this->em->persist($article);
             $this->em->flush();
             $this->em->clear();
-            $this->assertEquals($article->getSlug(), 'the-title-my-code-' . ($i + 1));
+            $this->assertEquals('the-title-my-code-' . ($i + 1), $article->getSlug());
         }
     }
 
@@ -119,6 +128,7 @@ class SluggableTest extends BaseTestCaseORM
 
         $this->em->persist($article);
         $this->em->flush();
+        $this->assertEquals('the-title-my-code-123', $article->getSlug());
         for ($i = 0; $i < 12; $i++) {
             $article = new Article();
             $article->setTitle('the title');
