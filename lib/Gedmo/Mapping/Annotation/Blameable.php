@@ -21,5 +21,7 @@ final class Blameable extends Annotation
     public $field;
     /** @var mixed */
     public $value;
+    /** @var string */
+    public $whom;
 }
 

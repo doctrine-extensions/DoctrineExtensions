@@ -18,7 +18,7 @@ use Gedmo\Blameable\Mapping\Event\BlameableAdapter;
  */
 class BlameableListener extends TimestampableListener
 {
-    protected $user;
+    protected $users = array();
 
     /**
      * Get the user value to set on a blameable field
@@ -27,28 +27,31 @@ class BlameableListener extends TimestampableListener
      * @param string $field
      * @return mixed
      */
-    public function getUserValue($meta, $field)
+    public function getUserValue($meta, $field, $whom)
     {
+        $whom = $whom ?: '__default__';
+        $user = $this->users[$whom];
+
         if ($meta->hasAssociation($field)) {
-            if (null !== $this->user && ! is_object($this->user)) {
+            if (null !== $user && ! is_object($user)) {
                 throw new InvalidArgumentException("Blame is reference, user must be an object");
             }
 
-            return $this->user;
+            return $user;
         }
 
         // ok so its not an association, then it is a string
-        if (is_object($this->user)) {
-            if (method_exists($this->user, 'getUsername')) {
-                return (string)$this->user->getUsername();
+        if (is_object($user)) {
+            if (method_exists($user, 'getUsername')) {
+                return (string)$user->getUsername();
             }
-            if (method_exists($this->user, '__toString')) {
-                return $this->user->__toString();
+            if (method_exists($user, '__toString')) {
+                return $user->__toString();
             }
             throw new InvalidArgumentException("Field expects string, user must be a string, or object should have method getUsername or __toString");
         }
 
-        return $this->user;
+        return $user;
     }
 
     /**
@@ -58,7 +61,12 @@ class BlameableListener extends TimestampableListener
      */
     public function setUserValue($user)
     {
-        $this->user = $user;
+        $this->setUserValueFor('__default__', $user);
+    }
+
+    public function setUserValueFor($whom, $user)
+    {
+        $this->users[$whom] = $user;
     }
 
     /**
@@ -77,11 +85,11 @@ class BlameableListener extends TimestampableListener
      * @param $meta
      * @param $field
      */
-    protected function updateField($object, $ea, $meta, $field)
+    protected function updateField($object, $ea, $meta, $field, array $options = array())
     {
         $property = $meta->getReflectionProperty($field);
         $oldValue = $property->getValue($object);
-        $newValue = $this->getUserValue($meta, $field);
+        $newValue = $this->getUserValue($meta, $field, $options['whom']);
 
         $property->setValue($object, $newValue);
         if ($object instanceof NotifyPropertyChanged) {
