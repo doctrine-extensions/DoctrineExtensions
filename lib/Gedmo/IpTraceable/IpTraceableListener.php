@@ -61,8 +61,9 @@ class IpTraceableListener extends TimestampableListener
      * @param $ea
      * @param $meta
      * @param $field
+     * @param array $options
      */
-    protected function updateField($object, $ea, $meta, $field)
+    protected function updateField($object, $ea, $meta, $field, array $options = array())
     {
         $property = $meta->getReflectionProperty($field);
         $oldValue = $property->getValue($object);

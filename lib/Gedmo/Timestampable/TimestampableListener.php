@@ -179,6 +179,7 @@ class TimestampableListener extends MappedEventSubscriber
      * @param $ea
      * @param $meta
      * @param $field
+     * @param array $options
      */
     protected function updateField($object, $ea, $meta, $field, array $options = array())
     {
