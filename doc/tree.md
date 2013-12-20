@@ -394,7 +394,7 @@ $repo->recover();
 $em->flush(); // important: flush recovered nodes
 // if tree has errors it will try to fix all tree nodes
 
-UNSAFE: be sure to backup before running this method when necessary, if you can use $em->remove($node);
+// UNSAFE: be sure to backup before running this method when necessary, if you can use $em->remove($node);
 // which would cascade to children
 // single node removal
 $vegies = $repo->findOneByTitle('Vegetables');
