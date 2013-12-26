@@ -504,12 +504,12 @@ to query through hints. Otherwise the query will be cached with a first used loc
 // locale
 $query->setHint(
     \Gedmo\Translatable\TranslatableListener::HINT_TRANSLATABLE_LOCALE,
-    'en', // take locale from session or request etc.
+    'en' // take locale from session or request etc.
 );
 // fallback
 $query->setHint(
     \Gedmo\Translatable\TranslatableListener::HINT_FALLBACK,
-    1, // fallback to default values in case if record is not translated
+    1 // fallback to default values in case if record is not translated
 );
 
 $articles = $query->getResult(); // object hydration
