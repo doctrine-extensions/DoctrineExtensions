@@ -45,29 +45,29 @@ class Annotation extends AbstractAnnotationDriver
                 continue;
             }
             if ($ipTraceable = $this->reader->getPropertyAnnotation($property, self::IP_TRACEABLE)) {
-                $field = $property->getName();
+                $name = $property->getName();
+                $field = array(
+                    'name' => $name,
+                );
 
-                if (!$meta->hasField($field)) {
-                    throw new InvalidMappingException("Unable to find ipTraceable [{$field}] as mapped property in entity - {$meta->name}");
+                if (!$meta->hasField($name)) {
+                    throw new InvalidMappingException("Unable to find ipTraceable [{$name}] as mapped property in entity - {$meta->name}");
                 }
-                if ($meta->hasField($field) && !$this->isValidField($meta, $field)) {
-                        throw new InvalidMappingException("Field - [{$field}] type is not valid and must be 'string' - {$meta->name}");
+                if ($meta->hasField($name) && !$this->isValidField($meta, $name)) {
+                        throw new InvalidMappingException("Field - [{$name}] type is not valid and must be 'string' - {$meta->name}");
                 }
                 if (!in_array($ipTraceable->on, array('update', 'create', 'change'))) {
-                    throw new InvalidMappingException("Field - [{$field}] trigger 'on' is not one of [update, create, change] in class - {$meta->name}");
+                    throw new InvalidMappingException("Field - [{$name}] trigger 'on' is not one of [update, create, change] in class - {$meta->name}");
                 }
                 if ($ipTraceable->on == 'change') {
                     if (!isset($ipTraceable->field)) {
-                        throw new InvalidMappingException("Missing parameters on property - {$field}, field must be set on [change] trigger in class - {$meta->name}");
+                        throw new InvalidMappingException("Missing parameters on property - {$name}, field must be set on [change] trigger in class - {$meta->name}");
                     }
                     if (is_array($ipTraceable->field) && isset($ipTraceable->value)) {
                         throw new InvalidMappingException("IpTraceable extension does not support multiple value changeset detection yet.");
                     }
-                    $field = array(
-                        'field' => $field,
-                        'trackedField' => $ipTraceable->field,
-                        'value' => $ipTraceable->value,
-                    );
+                    $field['trackedField'] = $ipTraceable->field;
+                    $field['value'] = $ipTraceable->value;
                 }
                 // properties are unique and mapper checks that, no risk here
                 $config[$ipTraceable->on][] = $field;

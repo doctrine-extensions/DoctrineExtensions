@@ -62,10 +62,11 @@ class TimestampableListener extends MappedEventSubscriber
                 $needChanges = false;
 
                 if (isset($config['update'])) {
-                    foreach ($config['update'] as $field) {
-                        if (!isset($changeSet[$field])) { // let manual values
+                    foreach ($config['update'] as $options) {
+                        $name = $options['name'];
+                        if (!isset($changeSet[$name])) { // let manual values
                             $needChanges = true;
-                            $this->updateField($object, $ea, $meta, $field);
+                            $this->updateField($object, $ea, $meta, $name, $options);
 
                         }
                     }
@@ -73,7 +74,8 @@ class TimestampableListener extends MappedEventSubscriber
 
                 if (isset($config['change'])) {
                     foreach ($config['change'] as $options) {
-                        if (isset($changeSet[$options['field']])) {
+                        $name = $options['name'];
+                        if (isset($changeSet[$name])) {
                             continue; // value was set manually
                         }
 
@@ -99,7 +101,7 @@ class TimestampableListener extends MappedEventSubscriber
                                     $changingObject = $changes[1];
                                     if (!is_object($changingObject)) {
                                         throw new UnexpectedValueException(
-                                            "Field - [{$field}] is expected to be object in class - {$meta->name}"
+                                            "Field - [{$name}] is expected to be object in class - {$meta->name}"
                                         );
                                     }
                                     $objectMeta = $om->getClassMetadata(get_class($changingObject));
@@ -111,7 +113,7 @@ class TimestampableListener extends MappedEventSubscriber
 
                                 if (($singleField && in_array($value, (array)$options['value'])) || $options['value'] === null) {
                                     $needChanges = true;
-                                    $this->updateField($object, $ea, $meta, $options['field']);
+                                    $this->updateField($object, $ea, $meta, $name, $options);
                                 }
                             }
                         }
@@ -144,16 +146,18 @@ class TimestampableListener extends MappedEventSubscriber
 
             if (isset($config['update'])) {
                 foreach ($config['update'] as $field) {
-                    if ($meta->getReflectionProperty($field)->getValue($object) === null) { // let manual values
-                        $this->updateField($object, $ea, $meta, $field);
+                    $name = $field['name'];
+                    if ($meta->getReflectionProperty($name)->getValue($object) === null) { // let manual values
+                        $this->updateField($object, $ea, $meta, $name, $field);
                     }
                 }
             }
 
             if (isset($config['create'])) {
                 foreach ($config['create'] as $field) {
-                    if ($meta->getReflectionProperty($field)->getValue($object) === null) { // let manual values
-                        $this->updateField($object, $ea, $meta, $field);
+                    $name = $field['name'];
+                    if ($meta->getReflectionProperty($name)->getValue($object) === null) { // let manual values
+                        $this->updateField($object, $ea, $meta, $name, $field);
                     }
                 }
             }
@@ -175,8 +179,9 @@ class TimestampableListener extends MappedEventSubscriber
      * @param $ea
      * @param $meta
      * @param $field
+     * @param array $options
      */
-    protected function updateField($object, $ea, $meta, $field)
+    protected function updateField($object, $ea, $meta, $field, array $options = array())
     {
         $property = $meta->getReflectionProperty($field);
         $oldValue = $property->getValue($object);

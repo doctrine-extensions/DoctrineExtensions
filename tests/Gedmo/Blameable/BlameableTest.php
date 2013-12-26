@@ -2,6 +2,7 @@
 
 namespace Gedmo\Blameable;
 
+use Blameable\Fixture\Entity\ArticleWithDifferentWhom;
 use Doctrine\Common\EventManager;
 use Tool\BaseTestCaseORM;
 use Doctrine\Common\Util\Debug,
@@ -15,18 +16,24 @@ use Doctrine\Common\Util\Debug,
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
+ *
+ * @group blameable
  */
 class BlameableTest extends BaseTestCaseORM
 {
     const ARTICLE = "Blameable\\Fixture\\Entity\\Article";
     const COMMENT = "Blameable\\Fixture\\Entity\\Comment";
     const TYPE = "Blameable\\Fixture\\Entity\\Type";
+    const ARTICLE_DIFFERENT_WHOM = "Blameable\\Fixture\\Entity\\ArticleWithDifferentWhom";
+
+    /** @var BlameableListener */
+    private $listener;
 
     protected function setUp()
     {
         parent::setUp();
 
-        $listener = new BlameableListener;
+        $this->listener = $listener = new BlameableListener;
         $listener->setUserValue('testuser');
 
         $evm = new EventManager;
@@ -111,12 +118,45 @@ class BlameableTest extends BaseTestCaseORM
         $this->assertEquals('myuser', $sport->getPublished());
     }
 
+    public function testDifferentWhom()
+    {
+        $this->listener->setUserValueFor('consumer', 'testconsumer');
+
+        $whom = new ArticleWithDifferentWhom();
+        $whom->setTitle('foobar');
+
+        $this->em->persist($whom);
+        $this->em->flush();
+        $this->em->clear();
+
+        $repo = $this->em->getRepository(self::ARTICLE_DIFFERENT_WHOM);
+        $whom = $repo->findOneByTitle('foobar');
+        $this->assertEquals('testuser', $whom->getCreatedUser());
+        $this->assertEquals('testuser', $whom->getUpdatedUser());
+        $this->assertEquals('testconsumer', $whom->getCreatedConsumer());
+        $this->assertEquals('testconsumer', $whom->getUpdatedConsumer());
+
+        $this->listener->setUserValueFor('consumer', 'updatedconsumer');
+        $this->listener->setUserValue('updateduser');
+
+        $whom->setTitle('updated_foobar');
+        $this->em->flush();
+        $this->em->clear();
+        $whom = $repo->findOneByTitle('updated_foobar');
+
+        $this->assertEquals('testuser', $whom->getCreatedUser());
+        $this->assertEquals('updateduser', $whom->getUpdatedUser());
+        $this->assertEquals('testconsumer', $whom->getCreatedConsumer());
+        $this->assertEquals('updatedconsumer', $whom->getUpdatedConsumer());
+    }
+
     protected function getUsedEntityFixtures()
     {
         return array(
             self::ARTICLE,
             self::COMMENT,
-            self::TYPE
+            self::TYPE,
+            self::ARTICLE_DIFFERENT_WHOM
         );
     }
 }
