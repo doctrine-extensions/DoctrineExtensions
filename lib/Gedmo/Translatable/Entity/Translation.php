@@ -12,9 +12,10 @@ use Doctrine\ORM\Mapping\Entity;
  *
  * @Table(
  *         name="ext_translations",
- *         indexes={@index(name="translations_lookup_idx", columns={
- *             "locale", "object_class", "foreign_key"
- *         })},
+ *         indexes={
+ *             @index(name="translations_lookup_idx", columns={"locale", "object_class", "foreign_key"}),
+ *             @index(name="translations_lookup_idx_2", columns={"object_class", "foreign_key"})
+ *         },
  *         uniqueConstraints={@UniqueConstraint(name="lookup_unique_idx", columns={
  *             "locale", "object_class", "field", "foreign_key"
  *         })}
