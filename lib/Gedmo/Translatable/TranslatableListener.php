@@ -8,6 +8,7 @@ use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ODM\MongoDB\Cursor;
 use Doctrine\ODM\MongoDB\DocumentManager;
+use Gedmo\Exception\InvalidMappingException;
 use Gedmo\Mapping\MappedEventSubscriber;
 use Gedmo\Mapping\ObjectManagerHelper as OMH;
 use MongoId;
