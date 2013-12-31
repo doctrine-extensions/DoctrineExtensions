@@ -12,6 +12,7 @@ use MongoId;
 use Gedmo\Mapping\MappedEventSubscriber;
 use Gedmo\Mapping\ObjectManagerHelper as OMH;
 use Gedmo\Translatable\TranslationInterface;
+use Gedmo\Exception\InvalidMappingException;
 
 /**
  * Translatable listener handles the generation and
