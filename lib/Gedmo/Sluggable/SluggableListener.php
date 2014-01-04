@@ -288,6 +288,8 @@ class SluggableListener extends MappedEventSubscriber
                     $slug .= ($value instanceof \DateTime) ? $value->format($options['dateFormat']) : $value;
                     $slug .= ' ';
                 }
+                // trim generated slug as it will have unnecessary trailing space
+                $slug = trim($slug);
             } else {
                 // slug was set manually
                 $needToChangeSlug = true;
@@ -321,7 +323,10 @@ class SluggableListener extends MappedEventSubscriber
 
                 // Step 2: urlization (replace spaces by '-' etc...)
                 if(!$urlized){
-                    $slug = call_user_func($this->urlizer, $slug, $options['separator']);
+                    $slug = call_user_func_array(
+                        $this->urlizer,
+                        array($slug, $options['separator'], $object)
+                    );
                 }
 
                 // add suffix/prefix
