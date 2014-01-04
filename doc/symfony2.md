@@ -56,7 +56,7 @@ Now lets add the **gedmo/doctrine-extensions** into **composer.json**
         }
     }
 
-Update vendors, run: **php bin/vendors update**
+Update vendors, run: **php composer.phar update gedmo/doctrine-extensions**
 Initially in this package you have **doctrine2 orm** included, so we will base our setup
 and configuration for this specific connection. Do not forget to configure your database
 connection parameters, edit **app/config/parameters.ini**
