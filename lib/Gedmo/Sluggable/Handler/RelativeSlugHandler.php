@@ -124,6 +124,14 @@ class RelativeSlugHandler implements SlugHandlerInterface
         if ($relation) {
             $wrappedRelation = AbstractWrapper::wrap($relation, $this->om);
             $slug = $wrappedRelation->getPropertyValue($this->usedOptions['relationSlugField']);
+
+            if (isset($this->usedOptions['urilize']) && $this->usedOptions['urilize']) {
+                $slug = call_user_func_array(
+                    $this->originalTransliterator,
+                    array($slug, $separator, $object)
+                );
+            }
+
             $result = $slug . $this->usedOptions['separator'] . $result;
         }
         $this->sluggable->setTransliterator($this->originalTransliterator);
