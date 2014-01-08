@@ -158,7 +158,7 @@ class Xml extends BaseXml
                      * @var \SimpleXMLElement $manyToOneMapping
                      */
                     $manyToOneMappingDoctrine = $manyToOneMapping;
-                    $manyToOneMapping = $manyToOneMapping->children(self::GEDMO_NAMESPACE_URI);;
+                    $manyToOneMapping = $manyToOneMapping->children(self::GEDMO_NAMESPACE_URI);
                     if (isset($manyToOneMapping->{'tree-parent'})) {
                         $field = $this->_getAttribute($manyToOneMappingDoctrine, 'field');
                         $targetEntity = $meta->associationMappings[$field]['targetEntity'];
@@ -177,7 +177,7 @@ class Xml extends BaseXml
                      * @var \SimpleXMLElement $referenceOneMapping
                      */
                     $referenceOneMappingDoctrine = $referenceOneMapping;
-                    $referenceOneMapping = $referenceOneMapping->children(self::GEDMO_NAMESPACE_URI);;                    
+                    $referenceOneMapping = $referenceOneMapping->children(self::GEDMO_NAMESPACE_URI);
                     if (isset($referenceOneMapping->{'tree-parent'})) {
                         $field = $this->_getAttribute($referenceOneMappingDoctrine, 'field');                        
                         if ($this->_getAttribute($referenceOneMappingDoctrine, 'target-document') != $meta->name) {
