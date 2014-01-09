@@ -35,7 +35,7 @@ class MultiTableDeleteExecutor extends BaseMultiTableDeleteExecutor
             preg_match('/DELETE FROM (\w+) .+/', $stmt, $matches);
 
             if (isset($matches[1]) && $meta->getQuotedTableName($platform) === $matches[1]) {
-                $sqlStatements[$index] = str_replace('DELETE FROM', 'UPDATE', $stmt);;
+                $sqlStatements[$index] = str_replace('DELETE FROM', 'UPDATE', $stmt);
                 $sqlStatements[$index] = str_replace('WHERE', 'SET '.$config['fieldName'].' = "'.date('Y-m-d H:i:s').'" WHERE', $sqlStatements[$index]);
             } else {
                 // We have to avoid the removal of registers of child entities of a SoftDeleteable entity
