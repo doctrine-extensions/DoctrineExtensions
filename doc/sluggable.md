@@ -376,6 +376,29 @@ private $slug;
 private $slug;
 ```
 
+If the relationSlugField you are using is not a slug field but a string field for example you can make
+sure the relationSlugField is also urilized with:
+
+``` php
+<?php
+/**
+ * Person domain object class
+ *
+ * @Gedmo\Mapping\Annotation\Slug(handlers={
+ *      @Gedmo\Mapping\Annotation\SlugHandler(class="Gedmo\Sluggable\Handler\RelativeSlugHandler", options={
+ *          @Gedmo\Mapping\Annotation\SlugHandlerOption(name="relationField", value="category"),
+ *          @Gedmo\Mapping\Annotation\SlugHandlerOption(name="relationSlugField", value="title"),
+ *          @Gedmo\Mapping\Annotation\SlugHandlerOption(name="separator", value="/")
+ *          @Gedmo\Mapping\Annotation\SlugHandlerOption(name="urilize", value=true)
+ *      })
+ * }, fields={"title", "code"})
+ * @Doctrine\ORM\Mapping\Column(length=64, unique=true)
+ */
+private $slug;
+```
+
+This will make sure that the 'title' field in the category entity is url friendly.
+
 **Note:** if you used **RelativeSlugHandler** - relation object should use in order to sync changes:
 
 **InversedRelativeSlugHandler**
