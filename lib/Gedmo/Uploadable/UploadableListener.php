@@ -582,6 +582,7 @@ class UploadableListener extends MappedEventSubscriber
             $info['fileName'] = $filename;
 
             if ($pos = strrpos($info['filePath'], '.')) {
+                // ignores positions like "./file" at 0 see #915
                 $info['fileWithoutExt'] = substr($info['filePath'], 0, $pos);
             } else {
                 $info['fileWithoutExt'] = $info['filePath'];
