@@ -1,6 +1,6 @@
 # Doctrine2 behavioral extensions
 
-**Version 2.3.8**
+**Version 2.3.9**
 
 [![Build Status](https://secure.travis-ci.org/l3pp4rd/DoctrineExtensions.png?branch=master)](http://travis-ci.org/l3pp4rd/DoctrineExtensions)
 
@@ -8,14 +8,13 @@
 
 ### Latest updates
 
-**2013-11-09**
+**2014-01-12**
 
-- **Loggable** handle cloned objects #876
-- **Sluggable** tree handler slug prefix and suffix #892
-- **Sortable** association group handling #887, #874
-- **SoftDeleteable** odm mongodb filter support for **timeAware** option #877
-- **Sluggable** support for datetime field formatting into slug #795
-- **Sluggable** urlizer regex update to ensure consistency #848
+- **Uploadable** filename support #915, #924, #910
+- **Tree-MaterializedPath** fixed issue when a Proxy object was scheduled for removal #937
+- **Sluggable** relation slug handler option to urlize non slug relation field #947
+- **Sluggable** pass an object to urlizer #941
+- **IpTraceable** new extension to trace ip addresses based on timestampable #912
 
 ### Summary and features
 
@@ -36,6 +35,7 @@ records being flushed in the behavioral way. List of extensions:
 - **Softdeleteable** - allows to implicitly remove records
 - **Uploadable** - provides file upload handling in entity fields
 - **References** - supports linking Entities in Documents and visa versa
+- **IpTraceable** - inherited from Timestampable, sets IP address instead of timestamp
 
 Currently these extensions support **Yaml**, **Annotation**  and **Xml** mapping. Additional mapping drivers
 can be easily implemented using Mapping extension to handle the additional metadata mapping.
