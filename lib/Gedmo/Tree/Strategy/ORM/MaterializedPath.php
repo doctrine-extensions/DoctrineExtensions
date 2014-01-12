@@ -5,6 +5,7 @@ namespace Gedmo\Tree\Strategy\ORM;
 use Gedmo\Tree\Strategy\AbstractMaterializedPath;
 use Doctrine\Common\Persistence\ObjectManager;
 use Gedmo\Mapping\Event\AdapterInterface;
+use Gedmo\Tool\Wrapper\AbstractWrapper;
 
 /**
  * This strategy makes tree using materialized path strategy
@@ -21,9 +22,9 @@ class MaterializedPath extends AbstractMaterializedPath
     public function removeNode($om, $meta, $config, $node)
     {
         $uow = $om->getUnitOfWork();
-        $pathProp = $meta->getReflectionProperty($config['path']);
-        $pathProp->setAccessible(true);
-        $path = addcslashes($pathProp->getValue($node), '%');
+        $wrapped = AbstractWrapper::wrap($node, $om);
+
+        $path = addcslashes($wrapped->getPropertyValue($config['path']), '%');
 
         // Remove node's children
         $qb = $om->createQueryBuilder();

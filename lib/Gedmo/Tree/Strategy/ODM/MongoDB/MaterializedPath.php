@@ -5,6 +5,7 @@ namespace Gedmo\Tree\Strategy\ODM\MongoDB;
 use Gedmo\Tree\Strategy\AbstractMaterializedPath;
 use Doctrine\Common\Persistence\ObjectManager;
 use Gedmo\Mapping\Event\AdapterInterface;
+use Gedmo\Tool\Wrapper\AbstractWrapper;
 
 /**
  * This strategy makes tree using materialized path strategy
@@ -21,16 +22,15 @@ class MaterializedPath extends AbstractMaterializedPath
     public function removeNode($om, $meta, $config, $node)
     {
         $uow = $om->getUnitOfWork();
-        $pathProp = $meta->getReflectionProperty($config['path']);
-        $pathProp->setAccessible(true);
+        $wrapped = AbstractWrapper::wrap($node, $om);
 
         // Remove node's children
         $results = $om->createQueryBuilder()
             ->find($meta->name)
-            ->field($config['path'])->equals(new \MongoRegex('/^'.preg_quote($pathProp->getValue($node)).'.?+/'))
+            ->field($config['path'])->equals(new \MongoRegex('/^'.preg_quote($wrapped->getPropertyValue($config['path'])).'.?+/'))
             ->getQuery()
             ->execute();
-        
+
         foreach ($results as $node) {
             $uow->scheduleForDelete($node);
         }
