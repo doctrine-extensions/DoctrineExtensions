@@ -209,7 +209,7 @@ class LoggableListener extends MappedEventSubscriber
      * @param string $action
      * @param object $object
      * @param LoggableAdapter $ea
-     * @return void
+     * @return \Gedmo\Loggable\Entity\MappedSuperclass\AbstractLogEntry|null
      */
     protected function createLogEntry($action, $object, LoggableAdapter $ea)
     {
@@ -257,8 +257,8 @@ class LoggableListener extends MappedEventSubscriber
                 $logEntry->setData($newValues);
             }
 
-            if($action === self::ACTION_UPDATE && 0 === count($newValues)) {
-                return;
+            if ($action === self::ACTION_UPDATE && 0 === count($newValues)) {
+                return null;
             }
 
             $version = 1;
@@ -275,6 +275,9 @@ class LoggableListener extends MappedEventSubscriber
 
             $om->persist($logEntry);
             $uow->computeChangeSet($logEntryMeta, $logEntry);
+
+            return $logEntry;
         }
+        return null;
     }
 }
