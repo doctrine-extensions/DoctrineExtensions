@@ -159,7 +159,7 @@ Next, the heart of extensions are behavioral listeners which pours all the sugar
 create a **yml** service file in our config directory. The setup can be different and located
 in the bundle, it depends what you prefer, edit **app/config/doctrine_extensions.yml**
 
-```yml
+```yaml
 # services to handle doctrine extensions
 # import it in config.yml
 services:
@@ -271,7 +271,7 @@ class DoctrineExtensionListener implements ContainerAwareInterface
 ```
 Do not forget to import **doctrine_extensions.yml** in your **app/config/config.yml** etc.:
 
-```yml
+```yaml
 # file: app/config/config.yml
 imports:
     - { resource: parameters.yml }
