@@ -34,7 +34,7 @@ with composer](http://github.com/KnpLabs/symfony-with-composer). Follow the stan
 
 Now lets add the **gedmo/doctrine-extensions** into **composer.json**
 
-```php
+```json
 {
     "require": {
         "php":              ">=5.3.2",
