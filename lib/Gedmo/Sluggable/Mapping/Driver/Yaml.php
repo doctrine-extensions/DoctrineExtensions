@@ -82,7 +82,7 @@ class Yaml extends File implements Driver
                             (string)$slug['style'] : 'default';
 
                         $config['slugs'][$field]['dateFormat'] = isset($slug['dateFormat']) ?
-                            (bool)$slug['dateFormat'] : 'Y-m-d-H:i';
+                            (string)$slug['dateFormat'] : 'Y-m-d-H:i';
 
                         $config['slugs'][$field]['updatable'] = isset($slug['updatable']) ?
                             (bool)$slug['updatable'] : true;
