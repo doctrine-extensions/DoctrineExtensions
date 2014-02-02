@@ -138,7 +138,7 @@ class TranslationRepository extends EntityRepository
 
     /**
      * Find the entity $class by the translated field.
-     * Result is the first occurence of translated field.
+     * Result is the first occurrence of translated field.
      * Query can be slow, since there are no indexes on such
      * columns
      *

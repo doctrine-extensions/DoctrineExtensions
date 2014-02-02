@@ -140,7 +140,7 @@ class Nested implements Strategy
 
         $changeSet = $uow->getEntityChangeSet($node);
         if (isset($config['root']) && isset($changeSet[$config['root']])) {
-            throw new \Gedmo\Exception\UnexpectedValueException("Root cannot be changed manualy, change parent instead");
+            throw new \Gedmo\Exception\UnexpectedValueException("Root cannot be changed manually, change parent instead");
         }
 
         $oid = spl_object_hash($node);
@@ -551,7 +551,7 @@ class Nested implements Strategy
 
     /**
      * Shift range of right and left values on tree
-     * depending on tree level diference also
+     * depending on tree level difference also
      *
      * @param EntityManager $em
      * @param string $class

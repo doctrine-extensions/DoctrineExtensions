@@ -1,6 +1,6 @@
 # Uploadable behavior extension for Doctrine 2
 
-**Uploadable** behavior provides the tools to manage the persistance of files with
+**Uploadable** behavior provides the tools to manage the persistence of files with
 Doctrine 2, including automatic handling of moving, renaming and removal of files and other features.
 
 Features:

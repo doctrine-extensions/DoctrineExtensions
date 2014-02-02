@@ -87,8 +87,8 @@ final class ODM extends BaseAdapterODM implements SluggableAdapter
     }
 
     /**
-     * This query can couse some data integrity failures since it does not
-     * execute atomicaly
+     * This query can cause some data integrity failures since it does not
+     * execute atomically
      *
      * {@inheritDoc}
      */

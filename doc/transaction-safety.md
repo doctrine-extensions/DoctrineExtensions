@@ -23,7 +23,7 @@ begin the second one which in turn would lock the third one if there would be an
 
 **NOTE:** it is not enough to simply have a transaction.
 
-So how we can achieve this? The simplest solution is [pesimistic locking](http://docs.doctrine-project.org/projects/doctrine-orm/en/latest/reference/transactions-and-concurrency.html#pessimistic-locking) which is supported by ORM.
+So how we can achieve this? The simplest solution is [pessimistic locking](http://docs.doctrine-project.org/projects/doctrine-orm/en/latest/reference/transactions-and-concurrency.html#pessimistic-locking) which is supported by ORM.
 
 So how we can use it correctly to maintain our transactions safe from one another. Lets say we have two entity types in
 our application:
@@ -222,7 +222,7 @@ class CategoryController extends Controller
 
 You may separate locking transaction to run callback function and make it as a service to abstract and prevent
 code duplication. Anyway, my advice would be to use only one transaction per request and best inside controller
-dirrectly, where you would ensure that all operations performed during the action can be safelly rolled back.
+directly, where you would ensure that all operations performed during the action can be safely rolled back.
 
 Also to use this kind of locking, you need an entity which is necessary to read on concurrent request which attempts
 to update the same tree. In this example, **Shop** entity fits the bill perfectly. Otherwise you need to find a way to

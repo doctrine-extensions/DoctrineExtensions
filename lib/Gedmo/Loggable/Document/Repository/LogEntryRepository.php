@@ -97,10 +97,10 @@ class LogEntryRepository extends DocumentRepository
                 $filled = count($fields) === 0;
             }
             /*if (count($fields)) {
-                throw new \Gedmo\Exception\UnexpectedValueException('Cound not fully revert the document to version: '.$version);
+                throw new \Gedmo\Exception\UnexpectedValueException('Could not fully revert the document to version: '.$version);
             }*/
         } else {
-            throw new \Gedmo\Exception\UnexpectedValueException('Count not find any log entries under version: '.$version);
+            throw new \Gedmo\Exception\UnexpectedValueException('Could not find any log entries under version: '.$version);
         }
     }
 

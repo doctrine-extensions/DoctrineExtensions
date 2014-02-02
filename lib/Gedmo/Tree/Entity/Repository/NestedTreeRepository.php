@@ -581,7 +581,7 @@ class NestedTreeRepository extends AbstractTreeRepository
     }
 
     /**
-     * UNSAFE: be sure to backup before runing this method when necessary
+     * UNSAFE: be sure to backup before running this method when necessary
      *
      * Removes given $node from the tree and reparents its descendants
      *

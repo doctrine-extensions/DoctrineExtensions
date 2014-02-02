@@ -132,7 +132,7 @@ class TranslationRepository extends DocumentRepository
 
     /**
      * Find the object $class by the translated field.
-     * Result is the first occurence of translated field.
+     * Result is the first occurrence of translated field.
      * Query can be slow, since there are no indexes on such
      * columns
      *

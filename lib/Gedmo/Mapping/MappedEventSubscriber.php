@@ -16,7 +16,7 @@ use Doctrine\Common\EventArgs;
  * mapping for extensions.
  *
  * It dries up some reusable code which is common for
- * all extensions who mapps additional metadata through
+ * all extensions who maps additional metadata through
  * extended drivers
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
