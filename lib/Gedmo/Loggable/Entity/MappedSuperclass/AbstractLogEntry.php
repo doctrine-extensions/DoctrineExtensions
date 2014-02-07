@@ -37,7 +37,7 @@ abstract class AbstractLogEntry
     /**
      * @var string $objectId
      *
-     * @ORM\Column(name="object_id", length=64, nullable=true)
+     * @ORM\Column(name="object_id", type="integer", nullable=true)
      */
     protected $objectId;
 
