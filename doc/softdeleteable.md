@@ -12,9 +12,6 @@ Features:
 - Annotation, Yaml and Xml mapping support for extensions
 - Support for 'timeAware' option: When creating an entity set a date of deletion in the future and never worry about cleaning up at expiration time.
 
-[blog_reference]: http://gediminasm.org/article/tree-nestedset-behavior-extension-for-doctrine-2 "Softdeleteable - does not explicitly remove record entries from the database, instead it marks those as deleted and skips in selection queries"
-[blog_test]: http://gediminasm.org/test "Test extensions on this blog"
-
 Content:
 
 - [Including](#including-extension) the extension
@@ -54,6 +51,9 @@ $em->getFilters()->enable('soft-deleteable');
 $em->getFilters()->disable('soft-deleteable');
 ```
 
+**NOTE:** by default all filters are disabled, so you must explicitly enable **soft-deleteable** filter in your setup
+or whenever you need it.
+
 <a name="entity-mapping"></a>
 
 ## SoftDeleteable Entity example:
@@ -67,9 +67,9 @@ Available configuration options:
 - **fieldName** - The name of the field that will be used to determine if the object is removed or not (NULL means
 it's not removed. A date value means it was removed). NOTE: The field MUST be nullable.
 
-**Note:** that SoftDeleteable interface is not necessary, except in cases there
+**Note:** that SoftDeleteable interface is not necessary, except in cases where
 you need to identify entity as being SoftDeleteable. The metadata is loaded only once then
-cache is activated
+cache is activated.
 
 ``` php
 <?php
