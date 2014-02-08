@@ -566,7 +566,7 @@ class TranslatableListener extends MappedEventSubscriber
                     }
                 }
             }
-            // check if translation allready is created
+            // check if translation already is created
             if (!$isInsert && !$translation) {
                 $translation = $ea->findTranslation(
                     $wrapped,

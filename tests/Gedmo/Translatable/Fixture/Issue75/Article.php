@@ -40,7 +40,7 @@ class Article
     public function __construct()
     {
         // $images is not an array, its a collection
-        // if you want to do such operations you have to cunstruct it
+        // if you want to do such operations you have to construct it
         $this->images = new \Doctrine\Common\Collections\ArrayCollection();
     }
 

@@ -100,7 +100,7 @@ class SoftDeleteableEntityTest extends BaseTestCaseORM
         $user = $repo->findOneBy(array('username' => $username));
         $this->assertNull($user, "User should be filtered out");
 
-        // now deatcivate filter and attempt to hard delete
+        // now deactivate filter and attempt to hard delete
         $this->em->getFilters()->disable(self::SOFT_DELETEABLE_FILTER_NAME);
         $user = $repo->findOneBy(array('username' => $username));
         $this->assertNotNull($user, "User should be fetched when filter is disabled");

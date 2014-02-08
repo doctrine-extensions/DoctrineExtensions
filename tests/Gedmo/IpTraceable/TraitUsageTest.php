@@ -52,7 +52,7 @@ class TraitUsageTest extends BaseTestCaseORM
     /**
      * @test
      */
-    function traitMethodthShouldReturnObject()
+    function traitMethodShouldReturnObject()
     {
         $sport = new UsingTrait;
         $this->assertInstanceOf('IpTraceable\Fixture\UsingTrait', $sport->setCreatedFromIp('<192 class="158 3 43"></192>'));
