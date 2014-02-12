@@ -36,7 +36,7 @@ class ClosureTreeRepository extends AbstractTreeRepository
             ->where('node.' . $config['parent'] . " IS NULL");
 
         if ($sortByField) {
-            $qb->orderBy($sortByField, strtolower($direction) === 'asc' ? 'asc' : 'desc');
+            $qb->orderBy('node.' .$sortByField, strtolower($direction) === 'asc' ? 'asc' : 'desc');
         }
 
         return $qb;
