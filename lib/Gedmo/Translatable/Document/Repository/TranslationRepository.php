@@ -109,8 +109,17 @@ class TranslationRepository extends DocumentRepository
         if ($wrapped->hasValidIdentifier()) {
             $documentId = $wrapped->getIdentifier();
 
-            $translationMeta = $this->getClassMetadata();
-            $qb = $this->createQueryBuilder();
+            $translationMeta = $this->getClassMetadata(); // table inheritance support
+
+            $config = $this
+                ->getTranslatableListener()
+                ->getConfiguration($this->dm, get_class($document));
+
+            $translationClass = isset($config['translationClass']) ?
+                $config['translationClass'] :
+                $translationMeta->rootDocumentName;
+
+            $qb = $this->dm->createQueryBuilder($translationClass);
             $q = $qb->field('foreignKey')->equals($documentId)
                 ->field('objectClass')->equals($wrapped->getMetadata()->rootDocumentName)
                 ->sort('locale', 'asc')
@@ -210,18 +219,12 @@ class TranslationRepository extends DocumentRepository
             foreach ($this->dm->getEventManager()->getListeners() as $event => $listeners) {
                 foreach ($listeners as $hash => $listener) {
                     if ($listener instanceof TranslatableListener) {
-                        $this->listener = $listener;
-                        break;
+                        return $this->listener = $listener;
                     }
-                }
-                if ($this->listener) {
-                    break;
                 }
             }
 
-            if (is_null($this->listener)) {
-                throw new \Gedmo\Exception\RuntimeException('The translation listener could not be found');
-            }
+            throw new \Gedmo\Exception\RuntimeException('The translation listener could not be found');
         }
         return $this->listener;
     }
