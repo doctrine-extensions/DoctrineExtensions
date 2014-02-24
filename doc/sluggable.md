@@ -387,7 +387,7 @@ sure the relationSlugField is also urilized with:
  *      @Gedmo\Mapping\Annotation\SlugHandler(class="Gedmo\Sluggable\Handler\RelativeSlugHandler", options={
  *          @Gedmo\Mapping\Annotation\SlugHandlerOption(name="relationField", value="category"),
  *          @Gedmo\Mapping\Annotation\SlugHandlerOption(name="relationSlugField", value="title"),
- *          @Gedmo\Mapping\Annotation\SlugHandlerOption(name="separator", value="/")
+ *          @Gedmo\Mapping\Annotation\SlugHandlerOption(name="separator", value="/"),
  *          @Gedmo\Mapping\Annotation\SlugHandlerOption(name="urilize", value=true)
  *      })
  * }, fields={"title", "code"})
