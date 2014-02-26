@@ -316,7 +316,7 @@ class TranslationWalker extends SqlWalker
 
                 // Treat translation as original field type
                 $fieldMapping = $meta->getFieldMapping($field);
-                if (!in_array($fieldMapping["type"], array("datetime"))) {
+                if (!in_array($fieldMapping["type"], array("datetime", "datetimetz", "date", "time"))) {
                     $dbalType = \Doctrine\DBAL\Types\Type::getType($fieldMapping["type"]);
                     $substituteField = 'CAST(' . $substituteField . ' AS ' . $dbalType->getSQLDeclaration($fieldMapping, $this->platform) . ')';
                 }
