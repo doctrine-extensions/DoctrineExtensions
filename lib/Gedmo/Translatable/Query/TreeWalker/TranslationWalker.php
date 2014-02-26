@@ -319,7 +319,12 @@ class TranslationWalker extends SqlWalker
                 if (in_array($fieldMapping["type"], array("integer", "bigint", "tinyint", "int"))) {
                     $substituteField = 'CAST(' . $substituteField . ' AS SIGNED)';
                 }
-
+                
+                // if original field is boolean
+                if (in_array($fieldMapping["type"], array("boolean"))) {
+                    $substituteField = 'CAST(' . $substituteField . ' AS ' . $this->platform->getBooleanTypeDeclarationSQL($fieldMapping) . ')';
+                }
+                
                 // Fallback to original if was asked for
                 if (($this->needsFallback() && (!isset($config['fallback'][$field]) || $config['fallback'][$field]))
                     ||  (!$this->needsFallback() && isset($config['fallback'][$field]) && $config['fallback'][$field])
