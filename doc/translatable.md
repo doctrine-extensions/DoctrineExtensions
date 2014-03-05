@@ -308,7 +308,7 @@ Entity\Article:
 
 <a name="basic-examples"></a>
 
-## Basic usage examples: {#basic-examples}
+## Basic usage examples:
 
 Currently a global locale used for translations is "en_us" which was
 set in **TranslationListener** globally. To save article with its translations:
