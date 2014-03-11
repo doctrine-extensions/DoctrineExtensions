@@ -314,12 +314,13 @@ class TranslationWalker extends SqlWalker
                 $originalField = $compTblAlias.'.'.$meta->getQuotedColumnName($field, $this->platform);
                 $substituteField = $tblAlias . '.' . $transMeta->getQuotedColumnName('content', $this->platform);
 
-                // If original field is integer - treat translation as integer (for ORDER BY, WHERE, etc)
+                // Treat translation as original field type
                 $fieldMapping = $meta->getFieldMapping($field);
-                if (in_array($fieldMapping["type"], array("integer", "bigint", "tinyint", "int"))) {
-                    $substituteField = 'CAST(' . $substituteField . ' AS SIGNED)';
+                if (!in_array($fieldMapping["type"], array("datetime", "datetimetz", "date", "time"))) {
+                    $dbalType = \Doctrine\DBAL\Types\Type::getType($fieldMapping["type"]);
+                    $substituteField = 'CAST(' . $substituteField . ' AS ' . $dbalType->getSQLDeclaration($fieldMapping, $this->platform) . ')';
                 }
-
+                
                 // Fallback to original if was asked for
                 if (($this->needsFallback() && (!isset($config['fallback'][$field]) || $config['fallback'][$field]))
                     ||  (!$this->needsFallback() && isset($config['fallback'][$field]) && $config['fallback'][$field])
