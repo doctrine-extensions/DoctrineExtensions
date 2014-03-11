@@ -51,6 +51,18 @@ $em->getFilters()->enable('soft-deleteable');
 $em->getFilters()->disable('soft-deleteable');
 ```
 
+Or from your DocumentManager (ODM):
+
+``` php
+// This will enable the SoftDeleteable filter, so entities which were "soft-deleted" will not appear
+// in results
+// You should adapt the filter name to your configuration (ex: softdeleteable)
+$em->getFilterCollection()->enable('soft-deleteable');
+
+// This will disable the SoftDeleteable filter, so entities which were "soft-deleted" will appear in results
+$em->getFilterCollection()->disable('soft-deleteable');
+```
+
 **NOTE:** by default all filters are disabled, so you must explicitly enable **soft-deleteable** filter in your setup
 or whenever you need it.
 
