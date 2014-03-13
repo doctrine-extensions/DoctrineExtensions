@@ -124,7 +124,7 @@ class NestedTreeRepository extends AbstractTreeRepository
      *
      * @param object $node
      * @throws InvalidArgumentException - if input is not valid
-     * @return Doctrine\ORM\QueryBuilder
+     * @return \Doctrine\ORM\QueryBuilder
      */
     public function getPathQueryBuilder($node)
     {
@@ -160,7 +160,7 @@ class NestedTreeRepository extends AbstractTreeRepository
      * Get the Tree path query by given $node
      *
      * @param object $node
-     * @return Doctrine\ORM\Query
+     * @return \Doctrine\ORM\Query
      */
     public function getPathQuery($node)
     {
@@ -299,7 +299,7 @@ class NestedTreeRepository extends AbstractTreeRepository
      * @param string $sortByField - field name to sort by
      * @param string $direction - sort direction : "ASC" or "DESC"
      * @throws InvalidArgumentException - if input is not valid
-     * @return Doctrine\ORM\QueryBuilder
+     * @return \Doctrine\ORM\QueryBuilder
      */
     public function getLeafsQueryBuilder($root = null, $sortByField = null, $direction = 'ASC')
     {
@@ -353,7 +353,7 @@ class NestedTreeRepository extends AbstractTreeRepository
      * @param object $root - root node in case of root tree is required
      * @param string $sortByField - field name to sort by
      * @param string $direction - sort direction : "ASC" or "DESC"
-     * @return Doctrine\ORM\Query
+     * @return \Doctrine\ORM\Query
      */
     public function getLeafsQuery($root = null, $sortByField = null, $direction = 'ASC')
     {
@@ -379,7 +379,7 @@ class NestedTreeRepository extends AbstractTreeRepository
      * @param object $node
      * @param bool $includeSelf - include the node itself
      * @throws \Gedmo\Exception\InvalidArgumentException - if input is invalid
-     * @return Doctrine\ORM\QueryBuilder
+     * @return \Doctrine\ORM\QueryBuilder
      */
     public function getNextSiblingsQueryBuilder($node, $includeSelf = false)
     {
@@ -424,7 +424,7 @@ class NestedTreeRepository extends AbstractTreeRepository
      *
      * @param object $node
      * @param bool $includeSelf - include the node itself
-     * @return Doctrine\ORM\Query
+     * @return \Doctrine\ORM\Query
      */
     public function getNextSiblingsQuery($node, $includeSelf = false)
     {
@@ -449,7 +449,7 @@ class NestedTreeRepository extends AbstractTreeRepository
      * @param object $node
      * @param bool $includeSelf - include the node itself
      * @throws \Gedmo\Exception\InvalidArgumentException - if input is invalid
-     * @return Doctrine\ORM\QueryBuilder
+     * @return \Doctrine\ORM\QueryBuilder
      */
     public function getPrevSiblingsQueryBuilder($node, $includeSelf = false)
     {
@@ -495,7 +495,7 @@ class NestedTreeRepository extends AbstractTreeRepository
      * @param object $node
      * @param bool $includeSelf - include the node itself
      * @throws \Gedmo\Exception\InvalidArgumentException - if input is invalid
-     * @return Doctrine\ORM\Query
+     * @return \Doctrine\ORM\Query
      */
     public function getPrevSiblingsQuery($node, $includeSelf = false)
     {
