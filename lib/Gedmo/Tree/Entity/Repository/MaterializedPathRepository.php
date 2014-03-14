@@ -86,7 +86,8 @@ class MaterializedPathRepository extends AbstractTreeRepository
         $separator = addcslashes($config['path_separator'], '%');
         $alias = 'materialized_path_entity';
         $path = $config['path'];
-        $qb = $this->_em->createQueryBuilder($meta->name)
+
+        $qb = $this->createQueryBuilder($meta->name)
             ->select($alias)
             ->from($config['useObjectClass'], $alias);
         $expr = '';

@@ -30,7 +30,7 @@ class ClosureTreeRepository extends AbstractTreeRepository
     {
         $meta = $this->getClassMetadata();
         $config = $this->listener->getConfiguration($this->_em, $meta->name);
-        $qb = $this->_em->createQueryBuilder();
+        $qb = $this->createQueryBuilder();
         $qb->select('node')
             ->from($config['useObjectClass'], 'node')
             ->where('node.' . $config['parent'] . " IS NULL");
@@ -107,7 +107,7 @@ class ClosureTreeRepository extends AbstractTreeRepository
         $meta = $this->getClassMetadata();
         $config = $this->listener->getConfiguration($this->_em, $meta->name);
 
-        $qb = $this->_em->createQueryBuilder();
+        $qb = $this->createQueryBuilder();
         if ($node !== null) {
             if ($node instanceof $meta->name) {
                 if (!$this->_em->getUnitOfWork()->isInIdentityMap($node)) {
