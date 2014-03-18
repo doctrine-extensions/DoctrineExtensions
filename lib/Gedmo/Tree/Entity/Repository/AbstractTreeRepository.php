@@ -57,6 +57,16 @@ abstract class AbstractTreeRepository extends EntityRepository implements Reposi
     }
 
     /**
+     * @param array $options
+     *
+     * @return \Doctrine\ORM\QueryBuilder
+     */
+    protected function getQueryBuilder()
+    {
+        return $this->getEntityManager()->createQueryBuilder();
+    }
+
+    /**
      * Sets the RepositoryUtilsInterface instance
      *
      * @param \Gedmo\Tree\RepositoryUtilsInterface $repoUtils

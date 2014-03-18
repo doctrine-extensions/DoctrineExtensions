@@ -27,7 +27,7 @@ class NestedTreeRepository extends AbstractTreeRepository
     {
         $meta = $this->getClassMetadata();
         $config = $this->listener->getConfiguration($this->_em, $meta->name);
-        $qb = $this->createQueryBuilder();
+        $qb = $this->getQueryBuilder();
         $qb
             ->select('node')
             ->from($config['useObjectClass'], 'node')
@@ -139,7 +139,7 @@ class NestedTreeRepository extends AbstractTreeRepository
         }
         $left = $wrapped->getPropertyValue($config['left']);
         $right = $wrapped->getPropertyValue($config['right']);
-        $qb = $this->createQueryBuilder();
+        $qb = $this->getQueryBuilder();
         $qb->select('node')
             ->from($config['useObjectClass'], 'node')
             ->where($qb->expr()->lte('node.'.$config['left'], $left))
@@ -186,7 +186,7 @@ class NestedTreeRepository extends AbstractTreeRepository
         $meta = $this->getClassMetadata();
         $config = $this->listener->getConfiguration($this->_em, $meta->name);
 
-        $qb = $this->createQueryBuilder();
+        $qb = $this->getQueryBuilder();
         $qb->select('node')
             ->from($config['useObjectClass'], 'node')
         ;
@@ -312,7 +312,7 @@ class NestedTreeRepository extends AbstractTreeRepository
             }
         }
 
-        $qb = $this->createQueryBuilder();
+        $qb = $this->getQueryBuilder();
         $qb->select('node')
             ->from($config['useObjectClass'], 'node')
             ->where($qb->expr()->eq('node.' . $config['right'], '1 + node.' . $config['left']))
@@ -400,7 +400,7 @@ class NestedTreeRepository extends AbstractTreeRepository
 
         $left = $wrapped->getPropertyValue($config['left']);
 
-        $qb = $this->createQueryBuilder();
+        $qb = $this->getQueryBuilder();
         $qb->select('node')
             ->from($config['useObjectClass'], 'node')
             ->where($includeSelf ?
@@ -470,7 +470,7 @@ class NestedTreeRepository extends AbstractTreeRepository
 
         $left = $wrapped->getPropertyValue($config['left']);
 
-        $qb = $this->createQueryBuilder();
+        $qb = $this->getQueryBuilder();
         $qb->select('node')
             ->from($config['useObjectClass'], 'node')
             ->where($includeSelf ?
@@ -621,7 +621,7 @@ class NestedTreeRepository extends AbstractTreeRepository
 
                 // in case if root node is removed, children become roots
                 if (isset($config['root']) && !$parent) {
-                    $qb = $this->createQueryBuilder();
+                    $qb = $this->getQueryBuilder();
                     $qb->select('node.'.$pk, 'node.'.$config['left'], 'node.'.$config['right'])
                         ->from($config['useObjectClass'], 'node')
                         ->where($nodeId === null ?
@@ -637,7 +637,7 @@ class NestedTreeRepository extends AbstractTreeRepository
                         $rootId = $newRoot[$pk];
                         $shift = -($left - 1);
 
-                        $qb = $this->createQueryBuilder();
+                        $qb = $this->getQueryBuilder();
                         $qb->update($config['useObjectClass'], 'node')
                             ->set('node.'.$config['root'], $rootId === null ?
                                 'NULL' :
@@ -649,7 +649,7 @@ class NestedTreeRepository extends AbstractTreeRepository
                         ;
                         $qb->getQuery()->getSingleScalarResult();
 
-                        $qb = $this->createQueryBuilder();
+                        $qb = $this->getQueryBuilder();
                         $qb->update($config['useObjectClass'], 'node')
                             ->set('node.'.$config['parent'], $parentId === null ?
                                 'NULL' :
@@ -674,7 +674,7 @@ class NestedTreeRepository extends AbstractTreeRepository
                             ->shiftRL($this->_em, $config['useObjectClass'], $right, -2, $rootId);
                     }
                 } else {
-                    $qb = $this->createQueryBuilder();
+                    $qb = $this->getQueryBuilder();
                     $qb->update($config['useObjectClass'], 'node')
                         ->set('node.'.$config['parent'], null === $parentId ?
                             'NULL' :
@@ -887,7 +887,7 @@ class NestedTreeRepository extends AbstractTreeRepository
 
         $identifier = $meta->getSingleIdentifierFieldName();
         $rootId = isset($config['root']) ? $meta->getReflectionProperty($config['root'])->getValue($root) : null;
-        $qb = $this->createQueryBuilder();
+        $qb = $this->getQueryBuilder();
         $qb->select($qb->expr()->min('node.'.$config['left']))
             ->from($config['useObjectClass'], 'node')
         ;
@@ -901,7 +901,7 @@ class NestedTreeRepository extends AbstractTreeRepository
         $edge = $this->listener->getStrategy($this->_em, $meta->name)->max($this->_em, $config['useObjectClass'], $rootId);
         // check duplicate right and left values
         for ($i = $min; $i <= $edge; $i++) {
-            $qb = $this->createQueryBuilder();
+            $qb = $this->getQueryBuilder();
             $qb->select($qb->expr()->count('node.'.$identifier))
                 ->from($config['useObjectClass'], 'node')
                 ->where($qb->expr()->orX(
@@ -925,7 +925,7 @@ class NestedTreeRepository extends AbstractTreeRepository
             }
         }
         // check for missing parents
-        $qb = $this->createQueryBuilder();
+        $qb = $this->getQueryBuilder();
         $qb->select('node')
             ->from($config['useObjectClass'], 'node')
             ->leftJoin('node.'.$config['parent'], 'parent')
@@ -946,7 +946,7 @@ class NestedTreeRepository extends AbstractTreeRepository
             return; // loading broken relation can cause infinite loop
         }
 
-        $qb = $this->createQueryBuilder();
+        $qb = $this->getQueryBuilder();
         $qb->select('node')
             ->from($config['useObjectClass'], 'node')
             ->where($qb->expr()->lt('node.'.$config['right'], 'node.'.$config['left']))
@@ -967,7 +967,7 @@ class NestedTreeRepository extends AbstractTreeRepository
             $errors[] = "node [{$id}], left is greater than right" . ($root ? ' on tree root: ' . $rootId : '');
         }
 
-        $qb = $this->createQueryBuilder();
+        $qb = $this->getQueryBuilder();
         $qb->select('node')
             ->from($config['useObjectClass'], 'node')
         ;
@@ -1001,7 +1001,7 @@ class NestedTreeRepository extends AbstractTreeRepository
                     $errors[] = "node [{$id}] right is greater than parent`s [{$parentId}] right value";
                 }
             } else {
-                $qb = $this->createQueryBuilder();
+                $qb = $this->getQueryBuilder();
                 $qb->select($qb->expr()->count('node.'.$identifier))
                     ->from($config['useObjectClass'], 'node')
                     ->where($qb->expr()->lt('node.'.$config['left'], $left))
@@ -1035,7 +1035,7 @@ class NestedTreeRepository extends AbstractTreeRepository
         $pk = $meta->getSingleIdentifierFieldName();
         $nodeId = $wrapped->getIdentifier();
         // prevent from deleting whole branch
-        $qb = $this->createQueryBuilder();
+        $qb = $this->getQueryBuilder();
         $qb->update($config['useObjectClass'], 'node')
             ->set('node.'.$config['left'], 0)
             ->set('node.'.$config['right'], 0)
@@ -1047,7 +1047,7 @@ class NestedTreeRepository extends AbstractTreeRepository
         $qb->getQuery()->getSingleScalarResult();
 
         // remove the node from database
-        $qb = $this->createQueryBuilder();
+        $qb = $this->getQueryBuilder();
         $qb->delete($config['useObjectClass'], 'node')
             ->where($nodeId === null ?
                 $qb->expr()->isNull('node.'.$pk) :
