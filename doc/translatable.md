@@ -538,7 +538,7 @@ In case if **translation query walker** is used, you can additionally override:
 
 ``` php
 <?php
-$query->setHint(Gedmo\TranslationListener::HINT_FALLBACK, 1);
+$query->setHint(\Gedmo\Translatable\TranslatableListener::HINT_FALLBACK, 1);
 ```
 
 will fallback to default locale translations instead of empty values if used.
@@ -546,7 +546,7 @@ And will override the translation listener setting for fallback.
 
 ``` php
 <?php
-$query->setHint(Gedmo\TranslationListener::HINT_FALLBACK, 0);
+$query->setHint(\Gedmo\Translatable\TranslatableListener::HINT_FALLBACK, 0);
 ```
 
 will do the opposite.
@@ -555,7 +555,7 @@ will do the opposite.
 
 ``` php
 <?php
-$query->setHint(Gedmo\TranslationListener::HINT_INNER_JOIN, true);
+$query->setHint(\Gedmo\Translatable\TranslatableListener::HINT_INNER_JOIN, true);
 ```
 
 will use **INNER** joins
@@ -566,7 +566,7 @@ records in your result set for instance.
 
 ``` php
 <?php
-$query->setHint(Gedmo\TranslationListener::HINT_TRANSLATABLE_LOCALE, 'en');
+$query->setHint(\Gedmo\Translatable\TranslatableListener::HINT_TRANSLATABLE_LOCALE, 'en');
 ```
 
 would override the translation locale used to translate the resultset.
