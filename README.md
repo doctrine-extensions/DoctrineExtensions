@@ -8,6 +8,14 @@
 
 ### Latest updates
 
+**2014-03-20**
+
+**DoctrineExtensions** has [new home on github](https://github.com/Atlantic18/DoctrineExtensions) under an unbrella of
+[ORM designer](http://www.orm-designer.com/) organization. I'm sure there it will find much more improvements over the
+time and the original author of extensions will remain a core member of this project.
+The reason why it was moved elsewhere - is mainly because more enthusiastic people would bring more ideas to the project
+and remain interested in it's future, especially when it is related to their daily work and vision.
+
 **2014-01-12**
 
 - **Uploadable** filename support #915, #924, #910
