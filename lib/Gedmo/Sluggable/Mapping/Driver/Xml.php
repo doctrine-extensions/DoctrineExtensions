@@ -41,7 +41,7 @@ class Xml extends XmlFileDriver
                      * @var \SimpleXmlElement $slug
                      */
                     $slug = $mapping->slug;
-                    $fields = array_map('trim', explode(',', (string)$this->_getAttribute($slug, 'fields')));
+                    $fields = array_map('trim', explode(',', (string)$this->getAttribute($slug, 'fields')));
                     $exm->map($field, array(
                         'fields' => $fields,
                         'style' => $this->isAttributeSet($slug, 'style') ?
