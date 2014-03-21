@@ -2,7 +2,7 @@
 
 **Version 2.3.9**
 
-[![Build Status](https://secure.travis-ci.org/l3pp4rd/DoctrineExtensions.png?branch=master)](http://travis-ci.org/l3pp4rd/DoctrineExtensions)
+[![Build Status](https://secure.travis-ci.org/Atlantic18/DoctrineExtensions.png?branch=master)](http://travis-ci.org/Atlantic18/DoctrineExtensions)
 
 **Note:** Extensions **2.3.x** are compatible with ORM and doctrine common library versions from **2.2.x** to **2.4.x**
 
