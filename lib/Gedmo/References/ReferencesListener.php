@@ -74,6 +74,11 @@ class ReferencesListener extends MappedEventSubscriber
         $object = OMH::getObjectFromEvent($event);
         $meta = $om->getClassMetadata(get_class($object));
         $exm = $this->getConfiguration($om, $meta->name);
+
+        if (!$exm) {
+            return;
+        }
+
         foreach ($exm->getReferencesOfType('referenceOne') as $field => $mapping) {
             $property = $meta->reflClass->getProperty($field);
             $property->setAccessible(true);
@@ -119,7 +124,7 @@ class ReferencesListener extends MappedEventSubscriber
     /**
      * Hook to update references
      *
-     * @param \Doctrine\Common\EventArgs $event
+     * @param EventArgs $event
      */
     public function prePersist(EventArgs $event)
     {
@@ -129,7 +134,7 @@ class ReferencesListener extends MappedEventSubscriber
     /**
      * Hook to update references
      *
-     * @param \Doctrine\Common\EventArgs $event
+     * @param EventArgs $event
      */
     public function preUpdate(EventArgs $event)
     {
@@ -191,6 +196,10 @@ class ReferencesListener extends MappedEventSubscriber
         $meta = $om->getClassMetadata(get_class($object));
         $exm = $this->getConfiguration($om, $meta->name);
 
+        if (!$exm) {
+            return;
+        }
+
         foreach ($exm->getReferencesOfType('referenceOne') as $field => $mapping) {
             if (isset($mapping['identifier'])) {
                 $property = $meta->reflClass->getProperty($field);
@@ -219,6 +228,10 @@ class ReferencesListener extends MappedEventSubscriber
         $object = OMH::getObjectFromEvent($event);
         $meta = $om->getClassMetadata(get_class($object));
         $exm = $this->getConfiguration($om, $meta->name);
+
+        if (!$exm) {
+            return;
+        }
 
         foreach ($exm->getReferencesOfType('referenceManyEmbed') as $field => $mapping) {
             $property = $meta->reflClass->getProperty($field);
