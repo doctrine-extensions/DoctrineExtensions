@@ -319,7 +319,8 @@ class TranslationWalker extends SqlWalker
                 $fieldMapping = $meta->getFieldMapping($field);
                 if ((($this->platform instanceof \Doctrine\DBAL\Platforms\MySqlPlatform) && 
                     in_array($fieldMapping["type"], array("decimal"))) ||
-                    !in_array($fieldMapping["type"], array("datetime", "datetimetz", "date", "time"))) {
+                    (!($this->platform instanceof \Doctrine\DBAL\Platforms\MySqlPlatform) && 
+                    !in_array($fieldMapping["type"], array("datetime", "datetimetz", "date", "time")))) {
                     $type = Type::getType($fieldMapping["type"]);
                     $substituteField = 'CAST(' . $substituteField . ' AS ' . $type->getSQLDeclaration($fieldMapping, $this->platform) . ')';
                 }
