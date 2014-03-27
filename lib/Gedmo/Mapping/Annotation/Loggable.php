@@ -17,5 +17,8 @@ final class Loggable extends Annotation
 {
     /** @var string */
     public $logEntryClass;
+
+    /** @var array<string> */
+    public $propertyNames = array();
 }
 
