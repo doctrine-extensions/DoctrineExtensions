@@ -7,9 +7,6 @@ use Doctrine\ORM\ORMInvalidArgumentException;
 use Gedmo\Tool\Wrapper\AbstractWrapper;
 use Gedmo\Mapping\MappedEventSubscriber;
 use Gedmo\Translatable\Mapping\Event\TranslatableAdapter;
-use Gedmo\Translatable\Entity\MappedSuperclass\AbstractPersonalTranslation;
-use Gedmo\Translatable\Entity\MappedSuperclass\AbstractTranslation;
-
 /**
  * The translation listener handles the generation and
  * loading of translations for entities which implements
