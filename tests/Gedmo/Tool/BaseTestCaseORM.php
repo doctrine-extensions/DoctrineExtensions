@@ -53,8 +53,10 @@ abstract class BaseTestCaseORM extends \PHPUnit_Framework_TestCase
      * annotation mapping driver and pdo_sqlite
      * database in memory
      *
-     * @param EventManager $evm
-     * @return EntityManager
+     * @param EventManager                $evm
+     * @param \Doctrine\ORM\Configuration $config
+     *
+     * @return DecoratedEntityManager
      */
     protected function getMockSqliteEntityManager(EventManager $evm = null, Configuration $config = null)
     {
@@ -74,7 +76,7 @@ abstract class BaseTestCaseORM extends \PHPUnit_Framework_TestCase
         $schemaTool->dropSchema(array());
         $schemaTool->createSchema($schema);
 
-        return $this->em = $em;
+        return $this->em = new DecoratedEntityManager($em);
     }
 
     /**
@@ -84,7 +86,7 @@ abstract class BaseTestCaseORM extends \PHPUnit_Framework_TestCase
      *
      * @param array $conn
      * @param EventManager $evm
-     * @return EntityManager
+     * @return DecoratedEntityManager
      */
     protected function getMockCustomEntityManager(array $conn, EventManager $evm = null)
     {
@@ -99,7 +101,7 @@ abstract class BaseTestCaseORM extends \PHPUnit_Framework_TestCase
         $schemaTool->dropSchema(array());
         $schemaTool->createSchema($schema);
 
-        return $this->em = $em;
+        return $this->em = new DecoratedEntityManager($em);
     }
 
     /**
@@ -107,7 +109,7 @@ abstract class BaseTestCaseORM extends \PHPUnit_Framework_TestCase
      * annotation mapping driver
      *
      * @param EventManager $evm
-     * @return EntityManager
+     * @return DecoratedEntityManager
      */
     protected function getMockMappedEntityManager(EventManager $evm = null)
     {
@@ -122,7 +124,7 @@ abstract class BaseTestCaseORM extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue($evm ?: $this->getEventManager()));
 
         $config = $this->getMockAnnotatedConfig();
-        $this->em = EntityManager::create($conn, $config);
+        $this->em = new DecoratedEntityManager(EntityManager::create($conn, $config));
 
         return $this->em;
     }
