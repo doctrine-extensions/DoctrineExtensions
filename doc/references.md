@@ -18,6 +18,9 @@ The following options are possible on reference one and many associations:
 - **type** - The type of association.
 - **class** - The associated class name.
 - **mappedBy** - The property name for the owning side of this association.
+- **sort** - The default sort for the query that loads the reference. (only relevant for ReferenceMany)
+- **limit** - Limit for the query that loads the reference. (only relevant for ReferenceMany)
+- **skip** - Skip for the query that loads the reference. (only relevant for ReferenceMany)
 
 ## Annotations
 
@@ -72,7 +75,7 @@ class Product
     private $name;
 
     /**
-     * @Gedmo\ReferenceMany(type="entity", class="Entity\StockItem", mappedBy="product")
+     * @Gedmo\ReferenceMany(type="entity", class="Entity\StockItem", mappedBy="product", sort={"quantity"="desc"})
      */
     private $stockItems;
 

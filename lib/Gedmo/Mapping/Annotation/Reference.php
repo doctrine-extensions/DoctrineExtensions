@@ -18,4 +18,7 @@ abstract class Reference extends Annotation
     public $identifier;
     public $mappedBy;
     public $inversedBy;
+    public $sort;
+    public $limit;
+    public $skip;
 }
