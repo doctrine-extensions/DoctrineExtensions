@@ -65,6 +65,9 @@ class Annotation extends AnnotationDriver
                         'identifier' => $reference->identifier,
                         'mappedBy'   => $reference->mappedBy,
                         'inversedBy' => $reference->inversedBy,
+                        'sort'       => $reference->sort,
+                        'limit'      => $reference->limit,
+                        'skip'       => $reference->skip,
                     ));
                 }
             }

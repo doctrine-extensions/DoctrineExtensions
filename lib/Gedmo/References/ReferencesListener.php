@@ -95,17 +95,25 @@ class ReferencesListener extends MappedEventSubscriber
                 if (isset($mapping['mappedBy'])) {
                     $id = OMH::getIdentifier($om, $object);
                     $class = $mapping['class'];
-                    if ($om === $manager = $this->getManager($mapping['class'])) {
-                        throw new UnexpectedValueException("Referenced manager manages the same class: {$mapping['class']}, use standard relation mapping");
+                    if ($om === $manager = $this->getManager($class)) {
+                        throw new UnexpectedValueException("Referenced manager manages the same class: $class, use standard relation mapping");
                     }
                     $refMeta = $manager->getClassMetadata($class);
                     $refConfig = $this->getConfiguration($manager, $refMeta->name);
                     if ($ref = $refConfig->getReferenceMapping('referenceOne', $mapping['mappedBy'])) {
                         $identifier = $ref['identifier'];
-                        $property->setValue($object, new LazyCollection(function() use ($id, &$manager, $class, $identifier) {
-                            $results = $manager->getRepository($class)->findBy(array(
-                                $identifier => $id,
-                            ));
+                        $sort = $mapping['sort'];
+                        $limit = $mapping['limit'];
+                        $skip = $mapping['skip'];
+                        $property->setValue($object, new LazyCollection(function() use ($id, &$manager, $class, $identifier, $sort, $limit, $skip) {
+                            $results = $manager->getRepository($class)->findBy(
+                                array(
+                                    $identifier => $id,
+                                ),
+                                $sort,
+                                $limit,
+                                $skip
+                            );
                             return new ArrayCollection((is_array($results) ? $results : $results->toArray()));
                         }));
                     }
@@ -229,10 +237,18 @@ class ReferencesListener extends MappedEventSubscriber
                 $refConfig = $this->getConfiguration($manager, $refMeta->name);
 
                 $identifier = $mapping['identifier'];
-                $property->setValue($object, new LazyCollection(function() use ($id, &$manager, $class, $identifier) {
-                    $results = $manager->getRepository($class)->findBy(array(
-                        $identifier => $id,
-                    ));
+                $sort = $mapping['sort'];
+                $limit = $mapping['limit'];
+                $skip = $mapping['skip'];
+                $property->setValue($object, new LazyCollection(function() use ($id, &$manager, $class, $identifier, $sort, $limit, $skip) {
+                    $results = $manager->getRepository($class)->findBy(
+                        array(
+                            $identifier => $id,
+                        ),
+                        $sort,
+                        $limit,
+                        $skip
+                    );
                     return new ArrayCollection((is_array($results) ? $results : $results->toArray()));
                 }));
             }
