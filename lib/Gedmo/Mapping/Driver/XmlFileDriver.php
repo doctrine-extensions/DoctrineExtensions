@@ -44,7 +44,7 @@ abstract class XmlFileDriver extends FileDriver
      */
     protected function getBooleanAttribute(SimpleXmlElement $node, $attributeName)
     {
-        $rawValue = strtolower($this->_getAttribute($node, $attributeName));
+        $rawValue = strtolower($this->getAttribute($node, $attributeName));
         if ($rawValue === '1' || $rawValue === 'true') {
             return true;
         }
