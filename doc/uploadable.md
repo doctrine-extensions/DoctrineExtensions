@@ -247,7 +247,7 @@ Entity\File:
       type: string
       gedmo:
         - uploadableFilePath
-    path:
+    name:
       type: string
       gedmo:
         - uploadableFileName
