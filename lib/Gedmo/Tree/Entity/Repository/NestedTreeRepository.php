@@ -839,11 +839,19 @@ class NestedTreeRepository extends AbstractTreeRepository
         $meta = $this->getClassMetadata();
         $config = $this->listener->getConfiguration($this->_em, $meta->name);
 
+        if(isset($options['childSort']['field']) && isset($options['childSort']['dir']) ){
+            $sortByField=$options['childSort']['field'];
+            $direction=$options['childSort']['dir'];
+        } else {
+            $sortByField=isset($config['root']) ? array($config['root'], $config['left']) : $config['left'];
+            $direction='ASC';
+        }
+
         return $this->childrenQueryBuilder(
             $node,
             $direct,
-            isset($config['root']) ? array($config['root'], $config['left']) : $config['left'],
-            'ASC',
+            $sortByField,
+            $direction,
             $includeNode
         );
     }
