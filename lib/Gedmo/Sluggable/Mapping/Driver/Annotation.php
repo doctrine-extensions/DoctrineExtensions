@@ -118,7 +118,7 @@ class Annotation extends AbstractAnnotationDriver
                 if ($slug->unique === false && $slug->unique_base) {
                     throw new InvalidMappingException("Slug annotation [unique_base] can not be set if unique is unset or 'false'");
                 }
-                if ($slug->unique_base && !$meta->hasField($slug->unique_base) && !$meta->hasAssociation($slug->unique_base)) {
+                if ($slug->unique_base && !$meta->hasAssociation($slug->unique_base) && !$meta->hasField($slug->unique_base)) {
                     throw new InvalidMappingException("Unable to find [{$slug->unique_base}] as mapped property in entity - {$meta->name}");
                 }
                 // set all options

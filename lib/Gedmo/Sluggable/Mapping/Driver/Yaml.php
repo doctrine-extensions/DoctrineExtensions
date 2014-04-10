@@ -109,7 +109,7 @@ class Yaml extends File implements Driver
                         if ($config['slugs'][$field]['unique'] === false && $ubase) {
                             throw new InvalidMappingException("Slug annotation [unique_base] can not be set if unique is unset or 'false'");
                         }
-                        if ($ubase && !$this->isValidField($meta, $ubase) && !$meta->hasAssociation($ubase)) {
+                        if ($ubase && !$meta->hasAssociation($ubase) && !$this->isValidField($meta, $ubase)) {
                             throw new InvalidMappingException("Unable to find [{$ubase}] as mapped property in entity - {$meta->name}");
                         }
                     }
