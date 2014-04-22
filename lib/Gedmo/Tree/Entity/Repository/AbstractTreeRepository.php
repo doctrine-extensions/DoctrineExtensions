@@ -2,8 +2,8 @@
 
 namespace Gedmo\Tree\Entity\Repository;
 
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository,
-    Doctrine\ORM\EntityManager,
     Doctrine\ORM\Mapping\ClassMetadata,
     Gedmo\Tool\Wrapper\EntityWrapper,
     Gedmo\Tree\RepositoryUtils,
@@ -28,7 +28,7 @@ abstract class AbstractTreeRepository extends EntityRepository implements Reposi
     /**
      * {@inheritdoc}
      */
-    public function __construct(EntityManager $em, ClassMetadata $class)
+    public function __construct(EntityManagerInterface $em, ClassMetadata $class)
     {
         parent::__construct($em, $class);
         $treeListener = null;
