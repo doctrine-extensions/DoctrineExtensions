@@ -225,6 +225,9 @@ $this->assertTrue(is_object($art));
 $filter = $em->getFilters()->enable('soft-deleteable');
 $filter->disableForEntity('Entity\Article');
 $filter->enableForEntity('Entity\Article');
+
+// Undelete the entity by setting the deletedAt field to null
+$article->setDeletedAt(null);
 ```
 
 Easy like that, any suggestions on improvements are very welcome.
