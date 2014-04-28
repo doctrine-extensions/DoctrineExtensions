@@ -156,7 +156,11 @@ class UploadableListener extends MappedEventSubscriber
         foreach ($this->fileInfoObjects as $info) {
             $entity = $info['entity'];
             $scheduledForInsert = $uow->isScheduledForInsert($entity);
-            $scheduledForUpdate = $uow->isScheduledForUpdate($entity);
+            if ($uow instanceof \Doctrine\ODM\MongoDB\UnitOfWork) {
+                $scheduledForUpdate = $uow->isScheduledForUpdate($entity) || $uow->isScheduledForUpsert($entity);
+            } else {
+                $scheduledForUpdate = $uow->isScheduledForUpdate($entity);
+            }
             $action = ($scheduledForInsert || $scheduledForUpdate) ?
                 ($scheduledForInsert ? self::ACTION_INSERT : self::ACTION_UPDATE) :
                 false;
