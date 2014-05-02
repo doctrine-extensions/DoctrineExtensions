@@ -4,7 +4,6 @@ namespace Sluggable\Fixture\Issue939;
 
 use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
-use Sluggable\Fixture\Issue939\Article;
 
 /**
  * @ORM\Entity

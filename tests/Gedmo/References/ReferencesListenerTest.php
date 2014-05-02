@@ -4,7 +4,6 @@ namespace Gedmo\References;
 
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\ODM\MongoDB\Mapping\Driver\AnnotationDriver as MongoDBAnnotationDriver;
-use Doctrine\ODM\MongoDB\Configuration;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver as ORMAnnotationDriver;
 use References\Fixture\ODM\MongoDB\Product;
 use References\Fixture\ODM\MongoDB\Metadata;

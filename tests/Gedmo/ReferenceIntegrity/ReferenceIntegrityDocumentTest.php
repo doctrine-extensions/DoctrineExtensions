@@ -3,7 +3,6 @@
 namespace Gedmo\ReferenceIntegrity;
 
 use Doctrine\Common\EventManager;
-use Gedmo\ReferenceIntegrity\ReferenceIntegrityListener;
 use Tool\BaseTestCaseMongoODM;
 
 /**

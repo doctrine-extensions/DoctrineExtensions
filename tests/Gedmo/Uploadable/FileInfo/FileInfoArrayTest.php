@@ -2,8 +2,6 @@
 
 namespace Gedmo\Uploadable\FileInfo;
 
-use Gedmo\Uploadable\FileInfo\FileInfoArray;
-
 /**
  * These are tests for the FileInfoArray class of the Uploadable behavior
  *

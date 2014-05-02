@@ -3,7 +3,6 @@
 namespace Gedmo\Sortable\Mapping\Event\Adapter;
 
 use Gedmo\Mapping\Event\Adapter\ORM as BaseAdapterORM;
-use Doctrine\ORM\Query;
 use Gedmo\Sortable\Mapping\Event\SortableAdapter;
 
 /**

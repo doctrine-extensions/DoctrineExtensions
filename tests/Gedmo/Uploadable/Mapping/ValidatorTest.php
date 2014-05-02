@@ -2,8 +2,6 @@
 
 namespace Gedmo\Uploadable\Mapping;
 
-use Gedmo\Uploadable\Mapping\Validator;
-
 /**
  * These are tests for the Mapping Validator of the Uploadable behavior
  *

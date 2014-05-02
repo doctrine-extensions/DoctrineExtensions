@@ -3,8 +3,6 @@
 namespace Sluggable\Fixture\Issue939;
 
 use Gedmo\Sluggable\SluggableListener as BaseSluggableListener;
-use Gedmo\Sluggable\Mapping\Event\SluggableAdapter;
-use Sluggable\Fixture\Issue939\Category;
 
 class SluggableListener extends BaseSluggableListener
 {

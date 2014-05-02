@@ -3,9 +3,6 @@
 namespace Gedmo\Tree\Mapping\Event\Adapter;
 
 use Gedmo\Mapping\Event\Adapter\ODM as BaseAdapterODM;
-use Doctrine\ODM\MongoDB\DocumentManager;
-use Doctrine\ODM\MongoDB\Mapping\ClassMetadataInfo;
-use Doctrine\ODM\MongoDB\Cursor;
 use Gedmo\Tree\Mapping\Event\TreeAdapter;
 
 /**

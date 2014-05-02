@@ -2,9 +2,7 @@
 
 namespace Gedmo\Tree;
 
-use Doctrine\Common\EventManager;
 use Tool\BaseTestCaseORM;
-use Doctrine\Common\Util\Debug;
 
 /**
  * These are tests for Tree behavior

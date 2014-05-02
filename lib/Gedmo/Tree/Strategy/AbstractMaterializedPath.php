@@ -3,10 +3,7 @@
 namespace Gedmo\Tree\Strategy;
 
 use Gedmo\Tree\Strategy;
-use Doctrine\ORM\EntityManager;
 use Gedmo\Tree\TreeListener;
-use Doctrine\ORM\Mapping\ClassMetadataInfo;
-use Doctrine\ORM\Query;
 use Doctrine\Common\Persistence\ObjectManager;
 use Gedmo\Mapping\Event\AdapterInterface;
 use Gedmo\Exception\RuntimeException;

@@ -7,7 +7,6 @@
 
 namespace Tree\Fixture\Closure;
 
-use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
 
 /**

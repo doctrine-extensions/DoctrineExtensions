@@ -5,7 +5,6 @@ namespace Gedmo\Mapping;
 use Tool\BaseTestCaseMongoODM;
 use Doctrine\Common\EventManager;
 use Gedmo\Mapping\Mock\Extension\Encoder\EncoderListener;
-use Gedmo\Mapping\ExtensionMetadataFactory;
 use Doctrine\ODM\MongoDB\Event\LoadClassMetadataEventArgs;
 use Mapping\Fixture\Document\User;
 

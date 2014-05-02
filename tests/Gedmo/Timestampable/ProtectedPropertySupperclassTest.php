@@ -6,7 +6,6 @@ use Doctrine\Common\EventManager;
 use Tool\BaseTestCaseORM;
 use Gedmo\Translatable\TranslatableListener;
 use Gedmo\Timestampable\TimestampableListener;
-use Doctrine\Common\Util\Debug;
 use Timestampable\Fixture\SupperClassExtension;
 
 /**

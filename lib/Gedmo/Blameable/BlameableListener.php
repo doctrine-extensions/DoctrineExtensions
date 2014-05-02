@@ -2,10 +2,8 @@
 
 namespace Gedmo\Blameable;
 
-use Doctrine\Common\EventArgs;
 use Doctrine\Common\NotifyPropertyChanged;
 use Gedmo\Exception\InvalidArgumentException;
-use Gedmo\Mapping\MappedEventSubscriber;
 use Gedmo\Timestampable\TimestampableListener;
 use Gedmo\Blameable\Mapping\Event\BlameableAdapter;
 

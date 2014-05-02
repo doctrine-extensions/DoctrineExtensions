@@ -2,7 +2,6 @@
 
 namespace Tree\Fixture;
 
-use Gedmo\Tree\Node as NodeInterface;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
 

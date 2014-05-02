@@ -4,7 +4,6 @@ namespace Gedmo\SoftDeleteable\Mapping\Event\Adapter;
 
 use Gedmo\Mapping\Event\Adapter\ORM as BaseAdapterORM;
 use Gedmo\SoftDeleteable\Mapping\Event\SoftDeleteableAdapter;
-use Gedmo\Exception\InvalidArgumentException;
 
 /**
  * Doctrine event adapter for ORM adapted
