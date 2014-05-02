@@ -14,7 +14,7 @@ use Gedmo\Sluggable\SluggableListener;
 use Gedmo\Tree\TreeListener;
 use Gedmo\Timestampable\TimestampableListener;
 use Gedmo\Loggable\LoggableListener;
-use Gedmo\SoftDeleteable\SoftDeleteableListener;
+use Gedmo\SoftDeletable\SoftDeletableListener;
 use Doctrine\ORM\Mapping\DefaultQuoteStrategy;
 use Doctrine\ORM\Mapping\DefaultNamingStrategy;
 use Doctrine\ORM\Repository\DefaultRepositoryFactory;
@@ -201,7 +201,7 @@ abstract class BaseTestCaseORM extends \PHPUnit_Framework_TestCase
         $evm->addEventSubscriber(new LoggableListener);
         $evm->addEventSubscriber(new TranslatableListener);
         $evm->addEventSubscriber(new TimestampableListener);
-        $evm->addEventSubscriber(new SoftDeleteableListener);
+        $evm->addEventSubscriber(new SoftDeletableListener);
         return $evm;
     }
 

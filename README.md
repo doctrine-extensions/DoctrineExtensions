@@ -40,7 +40,7 @@ records being flushed in the behavioral way. List of extensions:
 - **Loggable** - helps tracking changes and history of objects, also supports version management.
 - **Sortable** - makes any document or entity sortable
 - **Translator** - explicit way to handle translations
-- **Softdeleteable** - allows to implicitly remove records
+- **Softdeletable** - allows to implicitly remove records
 - **Uploadable** - provides file upload handling in entity fields
 - **References** - supports linking Entities in Documents and visa versa
 - **IpTraceable** - inherited from Timestampable, sets IP address instead of timestamp

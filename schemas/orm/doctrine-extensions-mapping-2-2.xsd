@@ -26,7 +26,7 @@ people to push their own additional attributes/elements into the same field elem
   <xs:element name="tree" type="gedmo:tree"/>
   <xs:element name="tree-closure" type="gedmo:tree-closure"/>
   <xs:element name="loggable" type="gedmo:loggable"/>
-  <xs:element name="soft-deleteable" type="gedmo:soft-deleteable"/>
+  <xs:element name="soft-deletable" type="gedmo:soft-deletable"/>
   <xs:element name="uploadable" type="gedmo:uploadable"/>
   <!-- field -->
   <xs:element name="slug" type="gedmo:slug"/>
@@ -85,7 +85,7 @@ people to push their own additional attributes/elements into the same field elem
     <xs:attribute name="suffix" type="xs:string" use="optional" />
   </xs:complexType>
 
-  <xs:complexType name="soft-deleteable">
+  <xs:complexType name="soft-deletable">
     <xs:attribute name="field-name" type="xs:string" use="required" />
   </xs:complexType>
 
