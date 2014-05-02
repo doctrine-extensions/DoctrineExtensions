@@ -10,7 +10,7 @@ use Doctrine\MongoDB\Connection;
 use Gedmo\Translatable\TranslatableListener;
 use Gedmo\Sluggable\SluggableListener;
 use Gedmo\Timestampable\TimestampableListener;
-use Gedmo\SoftDeleteable\SoftDeleteableListener;
+use Gedmo\SoftDeletable\SoftDeletableListener;
 use Gedmo\Loggable\LoggableListener;
 
 /**
@@ -117,7 +117,7 @@ abstract class BaseTestCaseMongoODM extends \PHPUnit_Framework_TestCase
         $evm->addEventSubscriber(new LoggableListener);
         $evm->addEventSubscriber(new TranslatableListener);
         $evm->addEventSubscriber(new TimestampableListener);
-        $evm->addEventSubscriber(new SoftDeleteableListener());
+        $evm->addEventSubscriber(new SoftDeletableListener());
 
         return $evm;
     }
@@ -133,7 +133,7 @@ abstract class BaseTestCaseMongoODM extends \PHPUnit_Framework_TestCase
 
         $config->expects($this->any())
             ->method('getFilterClassName')
-            ->will($this->returnValue('Gedmo\\SoftDeleteable\\Filter\\ODM\\SoftDeleteableFilter'));
+            ->will($this->returnValue('Gedmo\\SoftDeletable\\Filter\\ODM\\SoftDeletableFilter'));
 
         $config->expects($this->once())
             ->method('getProxyDir')

@@ -27,7 +27,7 @@ class UploadableMappingTest extends BaseTestCaseOM
     private $em;
 
     /**
-     * @var Gedmo\SoftDeleteable\UploadableListener
+     * @var Gedmo\SoftDeletable\UploadableListener
      */
     private $listener;
 

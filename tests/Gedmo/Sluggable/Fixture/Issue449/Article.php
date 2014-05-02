@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
- * @Gedmo\SoftDeleteable(fieldName="deletedAt")
+ * @Gedmo\SoftDeletable(fieldName="deletedAt")
  */
 class Article implements Sluggable
 {

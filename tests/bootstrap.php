@@ -46,7 +46,7 @@ $loader->add('Sluggable\\Fixture', __DIR__ . '/Gedmo');
 $loader->add('Sortable\\Fixture', __DIR__ . '/Gedmo');
 $loader->add('Mapping\\Fixture', __DIR__ . '/Gedmo');
 $loader->add('Loggable\\Fixture', __DIR__ . '/Gedmo');
-$loader->add('SoftDeleteable\\Fixture', __DIR__ . '/Gedmo');
+$loader->add('SoftDeletable\\Fixture', __DIR__ . '/Gedmo');
 $loader->add('Uploadable\\Fixture', __DIR__ . '/Gedmo');
 $loader->add('Wrapper\\Fixture', __DIR__ . '/Gedmo');
 $loader->add('ReferenceIntegrity\\Fixture', __DIR__ . '/Gedmo');

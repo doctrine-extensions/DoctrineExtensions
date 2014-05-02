@@ -47,8 +47,8 @@
         <testsuite name="Translator extension">
             <directory suffix="Test.php">./Gedmo/Translator/</directory>
         </testsuite>
-        <testsuite name="SoftDeleteable Extension">
-            <directory suffix="Test.php">./Gedmo/SoftDeleteable/</directory>
+        <testsuite name="SoftDeletable Extension">
+            <directory suffix="Test.php">./Gedmo/SoftDeletable/</directory>
         </testsuite>
         <testsuite name="Uploadable Extension">
             <directory suffix="Test.php">./Gedmo/Uploadable/</directory>

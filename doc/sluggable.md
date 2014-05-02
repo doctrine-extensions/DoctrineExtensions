@@ -60,8 +60,8 @@ does not work on OSX 10.6 its ok starting again from 10.7 version. To overcome t
 you can use your [custom transliterator](#transliterator)
 - Public [Sluggable repository](http://github.com/l3pp4rd/DoctrineExtensions "Sluggable extension on Github") is available on github
 - Last update date: **2012-02-26**
-- For usage together with **SoftDeleteable** in order to take into account softdeleted entities while generating unique
-slug, you must explicitly call **addManagedFilter** with a name of softdeleteable filter, so it can be disabled during
+- For usage together with **SoftDeletable** in order to take into account softdeleted entities while generating unique
+slug, you must explicitly call **addManagedFilter** with a name of softdeletable filter, so it can be disabled during
 slug updates. The best place to do it, is when initializing sluggable listener. That will be automated in the future.
 
 **Portability:**

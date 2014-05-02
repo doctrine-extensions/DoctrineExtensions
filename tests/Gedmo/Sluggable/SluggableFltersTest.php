@@ -18,7 +18,7 @@ class SluggableFltersTest extends BaseTestCaseORM
 {
     const TARGET = 'Sluggable\\Fixture\\Article';
 
-    const SOFT_DELETEABLE_FILTER_NAME = 'soft-deleteable';
+    const SOFT_DELETABLE_FILTER_NAME = 'soft-deletable';
     const FAKE_FILTER_NAME = 'fake-filter';
 
     protected function setUp()
@@ -27,17 +27,17 @@ class SluggableFltersTest extends BaseTestCaseORM
 
         $evm = new EventManager;
         $sluggableListener = new SluggableListener;
-        $sluggableListener->addManagedFilter(self::SOFT_DELETEABLE_FILTER_NAME, true);
+        $sluggableListener->addManagedFilter(self::SOFT_DELETABLE_FILTER_NAME, true);
         $sluggableListener->addManagedFilter(self::FAKE_FILTER_NAME, true);
         $evm->addEventSubscriber($sluggableListener);
 
         $config = $this->getMockAnnotatedConfig();
-        $config->addFilter(self::SOFT_DELETEABLE_FILTER_NAME, 'Gedmo\SoftDeleteable\Filter\SoftDeleteableFilter');
+        $config->addFilter(self::SOFT_DELETABLE_FILTER_NAME, 'Gedmo\SoftDeletable\Filter\SoftDeletableFilter');
         $config->addFilter(self::FAKE_FILTER_NAME, 'Sluggable\Fixture\Doctrine\FakeFilter');
 
         $this->em = $this->getMockSqliteEntityManager($evm, $config);
 
-        $this->em->getFilters()->enable(self::SOFT_DELETEABLE_FILTER_NAME);
+        $this->em->getFilters()->enable(self::SOFT_DELETABLE_FILTER_NAME);
         $this->em->getFilters()->enable(self::FAKE_FILTER_NAME);
     }
 

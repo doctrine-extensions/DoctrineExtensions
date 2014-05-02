@@ -4,7 +4,7 @@ namespace Gedmo\Sluggable;
 
 use Doctrine\Common\EventManager;
 use Tool\BaseTestCaseORM;
-use Gedmo\SoftDeleteable\SoftDeleteableListener;
+use Gedmo\SoftDeletable\SoftDeletableListener;
 use Sluggable\Fixture\Issue449\Article;
 
 /**
@@ -17,9 +17,9 @@ use Sluggable\Fixture\Issue449\Article;
 class Issue449Test extends BaseTestCaseORM
 {
     const TARGET = 'Sluggable\\Fixture\\Issue449\\Article';
-    const SOFT_DELETEABLE_FILTER_NAME = 'soft-deleteable';
+    const SOFT_DELETABLE_FILTER_NAME = 'soft-deletable';
 
-    private $softDeleteableListener;
+    private $softDeletableListener;
 
     protected function setUp()
     {
@@ -27,18 +27,18 @@ class Issue449Test extends BaseTestCaseORM
 
         $evm = new EventManager;
         $sluggableListener = new SluggableListener;
-        $sluggableListener->addManagedFilter(self::SOFT_DELETEABLE_FILTER_NAME, true);
+        $sluggableListener->addManagedFilter(self::SOFT_DELETABLE_FILTER_NAME, true);
         $evm->addEventSubscriber($sluggableListener);
 
-        $this->softDeleteableListener = new SoftDeleteableListener();
-        $evm->addEventSubscriber($this->softDeleteableListener);
+        $this->softDeletableListener = new SoftDeletableListener();
+        $evm->addEventSubscriber($this->softDeletableListener);
 
         $config = $this->getMockAnnotatedConfig();
-        $config->addFilter(self::SOFT_DELETEABLE_FILTER_NAME, 'Gedmo\SoftDeleteable\Filter\SoftDeleteableFilter');
+        $config->addFilter(self::SOFT_DELETABLE_FILTER_NAME, 'Gedmo\SoftDeletable\Filter\SoftDeletableFilter');
 
         $this->em = $this->getMockSqliteEntityManager($evm, $config);
 
-        $this->em->getFilters()->enable(self::SOFT_DELETEABLE_FILTER_NAME);
+        $this->em->getFilters()->enable(self::SOFT_DELETABLE_FILTER_NAME);
     }
 
     protected function getUsedEntityFixtures()
