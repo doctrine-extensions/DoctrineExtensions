@@ -5,8 +5,6 @@ namespace Gedmo\Blameable;
 use Doctrine\Common\EventManager;
 use Tool\BaseTestCaseORM;
 use Gedmo\Translatable\TranslatableListener;
-use Gedmo\Blameable\BlameableListener;
-use Doctrine\Common\Util\Debug;
 use Blameable\Fixture\Entity\SupperClassExtension;
 
 /**

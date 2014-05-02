@@ -2,7 +2,6 @@
 
 namespace Gedmo\Mapping\Driver;
 
-use Gedmo\Mapping\Driver\AnnotationDriverInterface;
 use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 
 /**

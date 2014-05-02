@@ -6,7 +6,6 @@ use Tool\BaseTestCaseORM;
 use Doctrine\Common\EventManager;
 use SoftDeleteable\Fixture\Entity\Person;
 use SoftDeleteable\Fixture\Entity\Address;
-use Gedmo\SoftDeleteable\SoftDeleteableListener;
 
 class HardRelationTest extends BaseTestCaseORM
 {

@@ -2,7 +2,6 @@
 
 namespace Tool;
 
-use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\ODM\MongoDB\Mapping\Driver\AnnotationDriver;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Doctrine\Common\EventManager;

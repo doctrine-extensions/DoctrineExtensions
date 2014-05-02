@@ -4,7 +4,6 @@ namespace Gedmo\Translatable;
 
 use Doctrine\Common\EventManager;
 use Doctrine\ORM\Query;
-use Gedmo\Translatable\TranslatableListener;
 use Gedmo\Translatable\Query\TreeWalker\TranslationWalker;
 use Tool\BaseTestCaseORM;
 use Translatable\Fixture\Personal\Article;

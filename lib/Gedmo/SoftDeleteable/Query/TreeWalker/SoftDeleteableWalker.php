@@ -5,10 +5,7 @@ namespace Gedmo\SoftDeleteable\Query\TreeWalker;
 use Doctrine\ORM\Query\SqlWalker;
 use Doctrine\ORM\Query\AST\DeleteStatement;
 use Doctrine\ORM\Query\AST\DeleteClause;
-use Doctrine\ORM\Query\AST\UpdateClause;
-use Doctrine\ORM\Query\AST\UpdateItem;
 use Doctrine\ORM\Query\Exec\SingleTableDeleteUpdateExecutor;
-use Doctrine\ORM\Query\AST\PathExpression;
 use Gedmo\SoftDeleteable\SoftDeleteableListener;
 use Gedmo\SoftDeleteable\Query\TreeWalker\Exec\MultiTableDeleteExecutor;
 

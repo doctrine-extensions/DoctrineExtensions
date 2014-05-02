@@ -6,7 +6,6 @@ use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\ORM\Mapping\Driver\DriverChain;
 use Doctrine\ORM\Mapping\Driver\YamlDriver;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
-use Gedmo\Mapping\ExtensionMetadataFactory;
 use Tool\BaseTestCaseOM;
 
 /**

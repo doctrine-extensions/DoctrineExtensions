@@ -7,7 +7,6 @@ use Doctrine\ORM\Query;
 use Gedmo\Tree\Strategy;
 use Gedmo\Tree\Strategy\ORM\Closure;
 use Gedmo\Tool\Wrapper\EntityWrapper;
-use Doctrine\ORM\Proxy\Proxy;
 
 /**
  * The ClosureTreeRepository has some useful functions

@@ -3,9 +3,6 @@
 namespace Gedmo\Tree\Mapping\Event\Adapter;
 
 use Gedmo\Mapping\Event\Adapter\ORM as BaseAdapterORM;
-use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\Mapping\ClassMetadataInfo;
-use Doctrine\ORM\Query;
 use Gedmo\Tree\Mapping\Event\TreeAdapter;
 
 /**

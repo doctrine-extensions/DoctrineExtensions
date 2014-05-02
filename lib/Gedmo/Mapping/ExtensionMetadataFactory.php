@@ -10,7 +10,6 @@ use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\Common\Version as CommonLibVer;
 use Gedmo\Mapping\Driver\File as FileDriver;
 use Gedmo\Mapping\Driver\AnnotationDriverInterface;
-use Doctrine\ORM\Tools\DisconnectedClassMetadataFactory;
 
 /**
  * The extension metadata factory is responsible for extension driver

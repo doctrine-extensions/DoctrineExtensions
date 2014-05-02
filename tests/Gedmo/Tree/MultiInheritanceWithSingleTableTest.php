@@ -4,7 +4,6 @@ namespace Gedmo\Tree;
 
 use Doctrine\Common\EventManager;
 use Tool\BaseTestCaseORM;
-use Doctrine\Common\Util\Debug;
 use Tree\Fixture\Transport\Car;
 use Tree\Fixture\Transport\Bus;
 use Tree\Fixture\Transport\Vehicle;

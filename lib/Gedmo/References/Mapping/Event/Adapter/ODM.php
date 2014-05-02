@@ -2,12 +2,10 @@
 
 namespace Gedmo\References\Mapping\Event\Adapter;
 
-use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Doctrine\ODM\MongoDB\Proxy\Proxy as MongoDBProxy;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Proxy\Proxy as ORMProxy;
-use Gedmo\Exception\InvalidArgumentException;
 use Gedmo\Mapping\Event\Adapter\ODM as BaseAdapterODM;
 use Gedmo\References\Mapping\Event\ReferencesAdapter;
 

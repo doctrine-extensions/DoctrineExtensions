@@ -5,7 +5,6 @@ namespace Gedmo\Mapping;
 use Doctrine\Common\EventManager;
 use Tool\BaseTestCaseORM;
 use Gedmo\Mapping\Mock\Extension\Encoder\EncoderListener;
-use Gedmo\Mapping\ExtensionMetadataFactory;
 use Doctrine\ORM\Event\LoadClassMetadataEventArgs;
 use Mapping\Fixture\User;
 

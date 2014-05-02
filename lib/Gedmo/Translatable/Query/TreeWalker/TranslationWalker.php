@@ -7,7 +7,6 @@ use Gedmo\Translatable\TranslatableListener;
 use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\Query\SqlWalker;
-use Doctrine\ORM\Query\TreeWalkerAdapter;
 use Doctrine\ORM\Query\AST\SelectStatement;
 use Doctrine\ORM\Query\Exec\SingleSelectExecutor;
 use Doctrine\ORM\Query\AST\RangeVariableDeclaration;

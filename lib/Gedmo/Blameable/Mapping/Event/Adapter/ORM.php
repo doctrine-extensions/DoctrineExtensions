@@ -4,7 +4,6 @@ namespace Gedmo\Blameable\Mapping\Event\Adapter;
 
 use Gedmo\Mapping\Event\Adapter\ORM as BaseAdapterORM;
 use Gedmo\Blameable\Mapping\Event\BlameableAdapter;
-use Gedmo\Exception\InvalidArgumentException;
 
 /**
  * Doctrine event adapter for ORM adapted

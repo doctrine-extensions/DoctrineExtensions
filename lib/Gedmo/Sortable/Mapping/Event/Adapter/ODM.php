@@ -3,7 +3,6 @@
 namespace Gedmo\Sortable\Mapping\Event\Adapter;
 
 use Gedmo\Mapping\Event\Adapter\ODM as BaseAdapterODM;
-use Doctrine\ODM\MongoDB\Cursor;
 use Gedmo\Sortable\Mapping\Event\SortableAdapter;
 
 /**
