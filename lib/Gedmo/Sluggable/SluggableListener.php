@@ -6,6 +6,7 @@ use Doctrine\Common\EventArgs;
 use Gedmo\Mapping\MappedEventSubscriber;
 use Gedmo\Sluggable\Mapping\Event\SluggableAdapter;
 use Doctrine\Common\Persistence\ObjectManager;
+use Gedmo\Tool\Wrapper\AbstractWrapper;
 
 /**
  * The SluggableListener handles the generation of slugs
@@ -224,6 +225,8 @@ class SluggableListener extends MappedEventSubscriber
         }
 
         $this->manageFiltersAfterGeneration($om);
+
+        AbstractWrapper::clear();
     }
 
     /**
