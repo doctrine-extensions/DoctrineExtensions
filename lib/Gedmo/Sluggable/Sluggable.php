@@ -33,7 +33,7 @@ interface Sluggable
      * 
      * example:
      * 
-     * @gedmo:Slug(style="camel", separator="_", prefix="", suffix="" updatable=false, unique=false)
+     * @gedmo:Slug(style="camel", separator="_", prefix="", suffix="", updatable=false, unique=false)
      * @Column(type="string", length=64)
      * $property
      */
