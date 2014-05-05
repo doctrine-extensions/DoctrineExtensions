@@ -23,7 +23,7 @@ class Product
     private $name;
 
     /**
-     * @Gedmo\ReferenceMany(class="Gedmo\Fixture\References\ORM\StockItem", mappedBy="product")
+     * @Gedmo\ReferenceMany(class="Gedmo\Fixture\References\ORM\StockItem", mappedBy="product", sort={"quantity"="asc"}, limit=2, skip=1)
      */
     private $stockItems;
 

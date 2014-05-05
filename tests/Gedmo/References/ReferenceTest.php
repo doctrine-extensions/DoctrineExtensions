@@ -120,7 +120,7 @@ class ReferenceTest extends ObjectManagerTestCase
         $stockItem = new StockItem();
         $stockItem->setName('Apple TV');
         $stockItem->setSku('APP-TV');
-        $stockItem->setQuantity(25);
+        $stockItem->setQuantity(15);
         $stockItem->setProductId($product->getId());
 
         $this->em->persist($stockItem);
@@ -128,7 +128,23 @@ class ReferenceTest extends ObjectManagerTestCase
         $stockItem = new StockItem();
         $stockItem->setName('Apple TV');
         $stockItem->setSku('AMZN-APP-TV');
-        $stockItem->setQuantity(25);
+        $stockItem->setQuantity(55);
+        $stockItem->setProductId($product->getId());
+
+        $this->em->persist($stockItem);
+
+        $stockItem = new StockItem();
+        $stockItem->setName('Apple TV');
+        $stockItem->setSku('AZ-APP-TV');
+        $stockItem->setQuantity(5);
+        $stockItem->setProductId($product->getId());
+
+        $this->em->persist($stockItem);
+
+        $stockItem = new StockItem();
+        $stockItem->setName('Apple TV');
+        $stockItem->setSku('AZTR-APP-TV');
+        $stockItem->setQuantity(0);
         $stockItem->setProductId($product->getId());
 
         $this->em->persist($stockItem);
@@ -142,12 +158,12 @@ class ReferenceTest extends ObjectManagerTestCase
         $first = $product->getStockItems()->first();
 
         $this->assertInstanceOf(get_class($stockItem), $first);
-        $this->assertEquals('APP-TV', $first->getSku());
+        $this->assertEquals('AZ-APP-TV', $first->getSku());
 
         $last = $product->getStockItems()->last();
 
         $this->assertInstanceOf(get_class($stockItem), $last);
-        $this->assertEquals('AMZN-APP-TV', $last->getSku());
+        $this->assertEquals('APP-TV', $last->getSku());
     }
 
     /**
