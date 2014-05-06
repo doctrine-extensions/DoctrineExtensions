@@ -34,6 +34,9 @@ class Yaml extends File implements Driver
         'integer',
         'int',
         'datetime',
+        'date',
+        'datetimez',
+        'time'
     );
 
     /**
@@ -71,7 +74,8 @@ class Yaml extends File implements Driver
                                 throw new InvalidMappingException("Unable to find slug [{$slugField}] as mapped property in entity - {$meta->name}");
                             }
                             if (!$this->isValidField($meta, $slugField)) {
-                                throw new InvalidMappingException("Cannot use field - [{$slugField}] for slug storage, type is not valid and must be 'string' or 'text' in class - {$meta->name}");
+                                $types = implode(', ', $this->validTypes);
+                                throw new InvalidMappingException("Cannot use field - [{$slugField}] for slug storage, type is not valid and must be [{$types}] in class - {$meta->name}");
                             }
                         }
 
