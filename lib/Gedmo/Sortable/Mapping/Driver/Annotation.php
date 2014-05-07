@@ -34,7 +34,8 @@ class Annotation extends AbstractAnnotationDriver
     protected $validTypes = array(
         'integer',
         'smallint',
-        'bigint'
+        'bigint',
+        'int'
     );
 
     /**
