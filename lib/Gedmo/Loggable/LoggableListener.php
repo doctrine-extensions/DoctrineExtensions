@@ -149,7 +149,6 @@ class LoggableListener extends MappedEventSubscriber
             $identifiers = $wrapped->getIdentifier(false);
             foreach ($this->pendingRelatedObjects[$oid] as $props) {
                 $logEntry = $props['log'];
-                $logEntryMeta = $om->getClassMetadata(get_class($logEntry));
                 $oldData = $data = $logEntry->getData();
                 $data[$props['field']] = $identifiers;
                 $logEntry->setData($data);
@@ -221,6 +220,9 @@ class LoggableListener extends MappedEventSubscriber
         $om = $ea->getObjectManager();
         $wrapped = AbstractWrapper::wrap($object, $om);
         $meta = $wrapped->getMetadata();
+        if (property_exists($meta, 'isEmbeddedDocument') && $meta->isEmbeddedDocument) {
+            return null;
+        }
         if ($config = $this->getConfiguration($om, $meta->name)) {
             $logEntryClass = $this->getLogEntryClass($ea, $meta->name);
             $logEntryMeta = $om->getClassMetadata($logEntryClass);
@@ -241,24 +243,8 @@ class LoggableListener extends MappedEventSubscriber
             }
             $newValues = array();
             if ($action !== self::ACTION_REMOVE && isset($config['versioned'])) {
-                foreach ($ea->getObjectChangeSet($uow, $object) as $field => $changes) {
-                    if (!in_array($field, $config['versioned'])) {
-                        continue;
-                    }
-                    $value = $changes[1];
-                    if ($meta->isSingleValuedAssociation($field) && $value) {
-                        $oid = spl_object_hash($value);
-                        $wrappedAssoc = AbstractWrapper::wrap($value, $om);
-                        $value = $wrappedAssoc->getIdentifier(false);
-                        if (!is_array($value) && !$value) {
-                            $this->pendingRelatedObjects[$oid][] = array(
-                                'log' => $logEntry,
-                                'field' => $field,
-                            );
-                        }
-                    }
-                    $newValues[$field] = $value;
-                }
+
+                $newValues = $this->getLogEntryData($ea, $object, $config, $meta, $logEntry);
                 $logEntry->setData($newValues);
             }
 
@@ -285,5 +271,68 @@ class LoggableListener extends MappedEventSubscriber
         }
 
         return null;
+    }
+
+    /**
+     * return the log data
+     *
+     * @param LoggableAdapter $ea
+     * @param object $object
+     * @param array $config
+     * @param object $meta
+     * @param object $logEntry
+     * @return array
+     */
+    protected function getLogEntryData(LoggableAdapter $ea, $object, array $config, $meta, $logEntry)
+    {
+        $om = $ea->getObjectManager();
+        $uow = $om->getUnitOfWork();
+        $newValues = array();
+
+        foreach ($ea->getObjectChangeSet($uow, $object) as $field => $changes) {
+            if (!in_array($field, $config['versioned'])) {
+                continue;
+            }
+            $value = $changes[1];
+            //check if field is embed many
+            if (method_exists($meta, 'isCollectionValuedEmbed') && $meta->isCollectionValuedEmbed($field) && $value) {
+                $embedValues = array();
+                foreach ($value as $embedValue) {
+                    $wrapped = AbstractWrapper::wrap($embedValue, $om);
+                    $embedValues[] = $this->getLogEntryData(
+                        $ea,
+                        $embedValue,
+                        $this->getConfiguration($om, $wrapped->getMetadata()->name),
+                        $wrapped->getMetadata(),
+                        $logEntry
+                    );
+                }
+                $value = $embedValues;
+                //check if field is embed document
+            } else if (method_exists($meta, 'isSingleValuedEmbed') && $meta->isSingleValuedEmbed($field) && $value) {
+                $wrapped = AbstractWrapper::wrap($value, $om);
+                $value = $this->getLogEntryData(
+                    $ea,
+                    $value,
+                    $this->getConfiguration($om, $wrapped->getMetadata()->name),
+                    $wrapped->getMetadata(),
+                    $logEntry
+                );
+            } else {
+                if ($meta->isSingleValuedAssociation($field) && $value) {
+                    $oid = spl_object_hash($value);
+                    $wrappedAssoc = AbstractWrapper::wrap($value, $om);
+                    $value = $wrappedAssoc->getIdentifier(false);
+                    if (!is_array($value) && !$value) {
+                        $this->pendingRelatedObjects[$oid][] = array(
+                            'log'   => $logEntry,
+                            'field' => $field
+                        );
+                    }
+                }
+            }
+            $newValues[$field] = $value;
+        }
+        return $newValues;
     }
 }
