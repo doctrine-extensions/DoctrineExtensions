@@ -256,6 +256,9 @@ class LoggableListener extends MappedEventSubscriber
                                 'field' => $field,
                             );
                         }
+                    //normal value
+                    } else {
+                        $value = $ea->convertToDatabaseValue($meta,$field, $value);
                     }
                     $newValues[$field] = $value;
                 }

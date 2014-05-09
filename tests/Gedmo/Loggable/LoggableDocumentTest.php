@@ -2,6 +2,7 @@
 
 namespace Gedmo\Loggable;
 
+use Doctrine\ODM\MongoDB\Types\Type;
 use Tool\BaseTestCaseMongoODM;
 use Doctrine\Common\EventManager;
 use Loggable\Fixture\Document\Article;
@@ -33,6 +34,9 @@ class LoggableDocumentTest extends BaseTestCaseMongoODM
         $evm->addEventSubscriber($loggableListener);
 
         $this->getMockDocumentManager($evm);
+        if (!Type::hasType('base64')) {
+            Type::addType('base64', 'Loggable\Fixture\Document\Type\Base64Type');
+        }
     }
 
     public function testLogGeneration()
@@ -90,12 +94,14 @@ class LoggableDocumentTest extends BaseTestCaseMongoODM
         $commentId = $comment->getId();
         $this->assertEquals('m-v5', $comment->getMessage());
         $this->assertEquals('s-v3', $comment->getSubject());
+        $this->assertEquals('b-v4', $comment->getBaseString());
         $this->assertEquals('a2-t-v1', $comment->getArticle()->getTitle());
 
         // test revert
         $commentLogRepo->revert($comment, 3);
         $this->assertEquals('s-v3', $comment->getSubject());
         $this->assertEquals('m-v2', $comment->getMessage());
+        $this->assertEquals('b-v1', $comment->getBaseString());
         $this->assertEquals('a1-t-v1', $comment->getArticle()->getTitle());
         $this->dm->persist($comment);
         $this->dm->flush();
@@ -105,6 +111,8 @@ class LoggableDocumentTest extends BaseTestCaseMongoODM
         $this->assertCount(6, $logEntries);
         $latest = array_shift($logEntries);
         $this->assertEquals('update', $latest->getAction());
+        $data = $latest->getData();
+        $this->assertEquals(base64_encode('b-v1'), $data['baseString']);
     }
 
     private function populate()
@@ -117,6 +125,7 @@ class LoggableDocumentTest extends BaseTestCaseMongoODM
         $comment->setArticle($article);
         $comment->setMessage('m-v1');
         $comment->setSubject('s-v1');
+        $comment->setBaseString('b-v1');
 
         $this->dm->persist($article);
         $this->dm->persist($comment);
@@ -135,6 +144,7 @@ class LoggableDocumentTest extends BaseTestCaseMongoODM
         $article2->setContent('a2-c-v1');
 
         $comment->setArticle($article2);
+        $comment->setBaseString('b-v4');
         $this->dm->persist($article2);
         $this->dm->persist($comment);
         $this->dm->flush();

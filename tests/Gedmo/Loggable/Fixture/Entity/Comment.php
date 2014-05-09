@@ -36,6 +36,22 @@ class Comment
      */
     private $article;
 
+    /**
+     * @Gedmo\Versioned
+     * @ORM\Column(name="baseString", type="base64", length=8)
+     */
+    private $baseString;
+
+    public function getBaseString()
+    {
+        return $this->baseString;
+    }
+
+    public function setBaseString($baseString)
+    {
+        $this->baseString = $baseString;
+    }
+
     public function setArticle($article)
     {
         $this->article = $article;
