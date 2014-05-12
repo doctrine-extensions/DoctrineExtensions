@@ -6,7 +6,7 @@ use Gedmo\Mapping\Event\Adapter\ORM as BaseAdapterORM;
 use Doctrine\ORM\Query;
 use Gedmo\Sluggable\Mapping\Event\SluggableAdapter;
 use Gedmo\Tool\Wrapper\AbstractWrapper;
-
+use Doctrine\ORM\Mapping\ClassMetadataInfo;
 /**
  * Doctrine event adapter for ORM adapted
  * for sluggable behavior
@@ -23,14 +23,25 @@ class ORM extends BaseAdapterORM implements SluggableAdapter
     {
         $em = $this->getObjectManager();
         $wrapped = AbstractWrapper::wrap($object, $em);
+        $entityName = $config['useObjectClass'];
+        if($wrapped->getMetadata()->inheritanceType == ClassMetadataInfo::INHERITANCE_TYPE_SINGLE_TABLE) {
+            foreach($wrapped->getMetadata()->parentClasses as $parentClass) {
+                if($em->getClassMetadata($parentClass)->hasField($config['slug'])) {
+                    $entityName = $parentClass;
+                } else {
+                    break;
+                }
+            }
+        }
         $qb = $em->createQueryBuilder();
         $qb->select('rec.' . $config['slug'])
-            ->from($config['useObjectClass'], 'rec')
+            ->from($entityName, 'rec')
             ->where($qb->expr()->like(
                 'rec.' . $config['slug'],
-                $qb->expr()->literal($slug . '%'))
+                ':slug')
             )
         ;
+        $qb->setParameter('slug',$slug . '%');
 
         // use the unique_base to restrict the uniqueness check
         if ($config['unique'] && isset($config['unique_base'])) {
