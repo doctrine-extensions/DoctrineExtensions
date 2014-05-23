@@ -601,6 +601,12 @@ class UploadableListener extends MappedEventSubscriber
                 do {
                     $info['filePath'] = $info['fileWithoutExt'].'-'.(++$counter).$info['fileExtension'];
                 } while (is_file($info['filePath']));
+                
+                if ($pos = strrpos($info['filePath'], '/')) {
+                    $info['fileName'] = substr($info['filePath'], $pos + 1);
+                } else {
+                    $info['fileName'] = $info['filePath'];
+                }
             } else {
                 throw new UploadableFileAlreadyExistsException(sprintf('File "%s" already exists!',
                     $info['filePath']
