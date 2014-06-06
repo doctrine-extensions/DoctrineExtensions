@@ -11,12 +11,14 @@ namespace Gedmo\IpTraceable\Traits;
 trait IpTraceableEntity
 {
     /**
+     * @var string
      * @Gedmo\IpTraceable(on="create")
      * @ORM\Column(type="string", length=45, nullable=true)
      */
     protected $createdFromIp;
 
     /**
+     * @var string
      * @Gedmo\IpTraceable(on="update")
      * @ORM\Column(type="string", length=45, nullable=true)
      */
