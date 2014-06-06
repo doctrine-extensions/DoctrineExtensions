@@ -11,12 +11,14 @@ namespace Gedmo\Timestampable\Traits;
 trait TimestampableDocument
 {
     /**
+     * @var \DateTime
      * @Gedmo\Timestampable(on="create")
      * @ODM\Date
      */
     private $createdAt;
 
     /**
+     * @var \DateTime
      * @Gedmo\Timestampable(on="update")
      * @ODM\Date
      */

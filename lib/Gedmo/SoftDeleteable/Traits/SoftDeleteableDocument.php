@@ -11,6 +11,7 @@ namespace Gedmo\SoftDeleteable\Traits;
 trait SoftDeleteableDocument
 {
     /**
+     * @var \DateTime
      * @ODM\Date
      */
     protected $deletedAt;
