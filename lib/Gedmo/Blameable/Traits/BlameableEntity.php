@@ -11,12 +11,14 @@ namespace Gedmo\Blameable\Traits;
 trait BlameableEntity
 {
     /**
+     * @var string
      * @Gedmo\Blameable(on="create")
      * @ORM\Column(type="string", nullable=true)
      */
     private $createdBy;
 
     /**
+     * @var string
      * @Gedmo\Blameable(on="update")
      * @ORM\Column(type="string", nullable=true)
      */

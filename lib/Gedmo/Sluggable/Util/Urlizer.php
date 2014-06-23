@@ -405,6 +405,11 @@ class Urlizer
             $text = strtolower($text);
         }
 
+        // Should remove apostrophes prior to none-word characters,
+        //   as replacing with hyphens isn't ideal.
+        // Consider: Bon Jovi's Tour Cancelled (bon-jovi-s-tour-cancelled)
+        $text = preg_replace("/'/", '', $text);
+
         // Remove all none word characters
         $text = preg_replace('/\W/', ' ', $text);
 

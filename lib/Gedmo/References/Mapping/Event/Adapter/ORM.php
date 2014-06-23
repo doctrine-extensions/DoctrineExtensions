@@ -2,7 +2,6 @@
 
 namespace Gedmo\References\Mapping\Event\Adapter;
 
-use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Doctrine\ODM\MongoDB\Proxy\Proxy as MongoDBProxy;
 use Doctrine\ORM\EntityManager;

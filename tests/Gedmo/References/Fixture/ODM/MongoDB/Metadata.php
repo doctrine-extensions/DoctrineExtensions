@@ -2,7 +2,6 @@
 
 namespace References\Fixture\ODM\MongoDB;
 
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use References\Fixture\ORM\Category;

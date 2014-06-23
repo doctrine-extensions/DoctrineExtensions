@@ -3,7 +3,6 @@
 namespace Sluggable\Fixture\Issue104;
 
 use Doctrine\ORM\Mapping as ORM;
-use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ORM\MappedSuperclass

@@ -4,7 +4,6 @@ namespace Gedmo\Tree;
 
 use Doctrine\Common\EventManager;
 use Tool\BaseTestCaseMongoODM;
-use Tree\Fixture\RootCategory;
 
 /**
  * These are tests for Tree behavior

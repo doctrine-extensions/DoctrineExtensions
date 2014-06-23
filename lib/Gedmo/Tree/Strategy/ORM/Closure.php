@@ -4,7 +4,6 @@ namespace Gedmo\Tree\Strategy\ORM;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\ORM\Version;
-use Doctrine\ORM\Proxy\Proxy;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Doctrine\Common\Persistence\ObjectManager;

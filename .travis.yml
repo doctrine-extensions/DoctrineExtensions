@@ -16,3 +16,4 @@ script: phpunit --coverage-text -c tests/
 notifications:
   email:
     - gediminas.morkevicius@gmail.com
+    - developers@atlantic18.com

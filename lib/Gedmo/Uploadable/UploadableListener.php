@@ -308,7 +308,9 @@ class UploadableListener extends MappedEventSubscriber
             if ($config['filePathField']) {
                 $this->pendingFileRemovals[] = $this->getFilePathFieldValue($meta, $config, $object);
             } else {
-                $this->pendingFileRemovals[] = $this->getFileNameFieldValue($meta, $config, $object);
+                $path     = $this->getPath($meta, $config, $object);
+                $fileName = $this->getFileNameFieldValue($meta, $config, $object);
+                $this->pendingFileRemovals[] = $path . DIRECTORY_SEPARATOR . $fileName;
             }
         }
 

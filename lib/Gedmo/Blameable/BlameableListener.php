@@ -2,10 +2,8 @@
 
 namespace Gedmo\Blameable;
 
-use Doctrine\Common\EventArgs;
 use Doctrine\Common\NotifyPropertyChanged;
 use Gedmo\Exception\InvalidArgumentException;
-use Gedmo\Mapping\MappedEventSubscriber;
 use Gedmo\Timestampable\TimestampableListener;
 use Gedmo\Blameable\Mapping\Event\BlameableAdapter;
 
@@ -83,6 +81,10 @@ class BlameableListener extends TimestampableListener
         $oldValue = $property->getValue($object);
         $newValue = $this->getUserValue($meta, $field);
 
+        //if blame is reference, persist object
+        if ($meta->hasAssociation($field)) {
+            $ea->getObjectManager()->persist($newValue);
+        }
         $property->setValue($object, $newValue);
         if ($object instanceof NotifyPropertyChanged) {
             $uow = $ea->getObjectManager()->getUnitOfWork();

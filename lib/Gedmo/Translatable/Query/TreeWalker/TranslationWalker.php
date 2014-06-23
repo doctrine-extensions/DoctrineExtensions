@@ -7,7 +7,6 @@ use Gedmo\Translatable\TranslatableListener;
 use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\Query\SqlWalker;
-use Doctrine\ORM\Query\TreeWalkerAdapter;
 use Doctrine\ORM\Query\AST\SelectStatement;
 use Doctrine\ORM\Query\Exec\SingleSelectExecutor;
 use Doctrine\ORM\Query\AST\RangeVariableDeclaration;
@@ -317,7 +316,10 @@ class TranslationWalker extends SqlWalker
 
                 // Treat translation as original field type
                 $fieldMapping = $meta->getFieldMapping($field);
-                if (!in_array($fieldMapping["type"], array("datetime", "datetimetz", "date", "time"))) {
+                if ((($this->platform instanceof \Doctrine\DBAL\Platforms\MySqlPlatform) && 
+                    in_array($fieldMapping["type"], array("decimal"))) ||
+                    (!($this->platform instanceof \Doctrine\DBAL\Platforms\MySqlPlatform) && 
+                    !in_array($fieldMapping["type"], array("datetime", "datetimetz", "date", "time")))) {
                     $type = Type::getType($fieldMapping["type"]);
                     $substituteField = 'CAST(' . $substituteField . ' AS ' . $type->getSQLDeclaration($fieldMapping, $this->platform) . ')';
                 }

@@ -2,9 +2,6 @@
 
 namespace Gedmo\Translatable;
 
-use Doctrine\ORM\Mapping\Driver\DriverChain;
-use Doctrine\ORM\Mapping\Driver\SimplifiedXmlDriver;
-use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
 use Doctrine\Common\EventManager;
 use Tool\BaseTestCaseORM;
 use Translatable\Fixture\Article;

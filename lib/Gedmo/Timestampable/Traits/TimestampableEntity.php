@@ -11,12 +11,14 @@ namespace Gedmo\Timestampable\Traits;
 trait TimestampableEntity
 {
     /**
+     * @var \DateTime
      * @Gedmo\Timestampable(on="create")
      * @ORM\Column(type="datetime")
      */
     protected $createdAt;
 
     /**
+     * @var \DateTime
      * @Gedmo\Timestampable(on="update")
      * @ORM\Column(type="datetime")
      */

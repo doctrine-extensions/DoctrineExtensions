@@ -2,7 +2,6 @@
 
 namespace Gedmo\References\Mapping\Event;
 
-use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 use Doctrine\Common\Persistence\ObjectManager;
 use Gedmo\Mapping\Event\AdapterInterface;
 
