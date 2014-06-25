@@ -284,12 +284,15 @@ class Nested implements Strategy
     public function updateNode(EntityManager $em, $node, $parent, $position = 'FirstChild')
     {
         $wrapped = AbstractWrapper::wrap($node, $em);
+	
+        $nodeId = $wrapped->getIdentifier();
+        if (!$nodeId) return;
+
         $meta = $wrapped->getMetadata();
         $config = $this->listener->getConfiguration($em, $meta->name);
 
         $rootId = isset($config['root']) ? $wrapped->getPropertyValue($config['root']) : null;
         $identifierField = $meta->getSingleIdentifierFieldName();
-        $nodeId = $wrapped->getIdentifier();
 
         $left = $wrapped->getPropertyValue($config['left']);
         $right = $wrapped->getPropertyValue($config['right']);
