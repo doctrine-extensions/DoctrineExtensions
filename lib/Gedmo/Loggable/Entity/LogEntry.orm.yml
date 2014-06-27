@@ -1,0 +1,44 @@
+Gedmo\Loggable\Entity\LogEntry:
+    type: entity
+    table: ext_log_entries
+    repositoryClass: Gedmo\Loggable\Entity\Repository\LogEntryRepository
+    indexes:
+        log_class_lookup_idx:
+            columns: [ object_class ]
+        log_date_lookup_idx:
+            columns: [ logged_at ]
+        log_user_lookup_idx:
+            columns: [ username ]
+        log_version_lookup_idx:
+            columns: [ object_id, object_class, version ]
+    fields:
+        id:
+            id: true
+            type: integer
+            generator:
+                strategy: IDENTITY
+        action:
+            type: string
+            length: 8
+        loggedAt:
+            type: datetime
+            column: logged_at
+        objectId:
+            type: string
+            nullable: true
+            length: 64
+            column: object_id
+        objectClass:
+            type: string
+            length: 255
+            column: object_class
+        version:
+            type: integer
+            nullable: true
+        data:
+            type: array
+            nullable: true
+        username:
+            type: string
+            nullable: true
+            length: 255
