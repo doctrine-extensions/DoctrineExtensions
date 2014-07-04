@@ -82,7 +82,8 @@ class LoggableListener extends MappedEventSubscriber
         return array(
             'onFlush',
             'loadClassMetadata',
-            'postPersist'
+            'postPersist',
+            'postSoftDelete'
         );
     }
 
@@ -193,6 +194,16 @@ class LoggableListener extends MappedEventSubscriber
         foreach ($ea->getScheduledObjectDeletions($uow) as $object) {
             $this->createLogEntry(self::ACTION_REMOVE, $object, $ea);
         }
+    }
+    
+    /**
+     * Compatibility with softdeletable
+     * 
+     * @param LifecycleEventArgs $args
+     */
+    public function postSoftDelete(LifecycleEventArgs $args) {
+    	$ea = $this->getEventAdapter($args);
+    	$this->createLogEntry(self::ACTION_REMOVE, $args->getObject(), $ea);
     }
 
     /**
