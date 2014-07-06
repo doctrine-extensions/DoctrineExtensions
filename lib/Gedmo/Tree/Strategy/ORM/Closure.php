@@ -266,7 +266,7 @@ class Closure implements Strategy
 
                 foreach ($ancestors as $ancestor) {
                     $entries[] = array(
-                        $ancestorColumnName => $ancestor['ancestor']['id'],
+                        $ancestorColumnName => $ancestor['ancestor'][$identifier],
                         $descendantColumnName => $nodeId,
                         $depthColumnName => $ancestor['depth'] + 1
                     );
