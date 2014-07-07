@@ -34,7 +34,7 @@ final class ODM extends BaseAdapterODM implements SluggableAdapter
             if (is_object($ubase = $wrapped->getPropertyValue($config['unique_base']))) {
                 $qb->field($config['unique_base'] . '.$id')->equals(new \MongoId($ubase->getId()));
             } elseif ($ubase) {
-                $qb->where('/^' . preg_quote($ubase, '/') . '/.test(this.' . $config['unique_base'] . ')');
+                $qb->field($config['unique_base'])->equals($ubase);
             } else {
                 $qb->field($config['unique_base'])->equals(null);
             }
