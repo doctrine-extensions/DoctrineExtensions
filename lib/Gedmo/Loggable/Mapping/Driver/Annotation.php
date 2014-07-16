@@ -63,7 +63,7 @@ class Annotation extends AbstractAnnotationDriver
             }
         }
 
-        $versionedFieldList = [];
+        $versionedFieldList = array();
         if ($annotation = $this->reader->getClassAnnotation($class, self::VERSIONED_CLASS_AND_INHERITED_FIELDS)) {
             $versionedFieldList = $annotation->getFieldList();
         }
@@ -104,7 +104,7 @@ class Annotation extends AbstractAnnotationDriver
      */
     protected function compareWithClassAndInheritedFields($field, $versionedFieldList)
     {
-        if ([] != $versionedFieldList) {
+        if (is_array($versionedFieldList)) {
             if (in_array($field, $versionedFieldList)) {
                 return $field;
             }
