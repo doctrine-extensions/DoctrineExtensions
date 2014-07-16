@@ -63,6 +63,7 @@ class Annotation extends AbstractAnnotationDriver
             }
         }
 
+        $versionedFieldList = null;
         if ($annotation = $this->reader->getClassAnnotation($class, self::VERSIONED_CLASS_AND_INHERITED_FIELDS)) {
             $versionedFieldList = $annotation->getFieldList();
         }
