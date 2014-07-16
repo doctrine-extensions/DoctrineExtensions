@@ -64,7 +64,7 @@ class Annotation extends AbstractAnnotationDriver
         }
 
         if ($annotation = $this->reader->getClassAnnotation($class, self::VERSIONED_CLASS_AND_INHERITED_FIELDS)) {
-            $versionedFiledList = $annotation->getFiledList();
+            $versionedFieldList = $annotation->getFieldList();
         }
 
         // property annotations
@@ -82,7 +82,7 @@ class Annotation extends AbstractAnnotationDriver
                     throw new InvalidMappingException("Cannot versioned [{$field}] as it is collection in object - {$meta->name}");
                 }
                 // fields cannot be overrided and throws mapping exception
-                $config['versioned'][] = $this->compareWithClassAndInheritedFields($field, $versionedFiledList);
+                $config['versioned'][] = $this->compareWithClassAndInheritedFields($field, $versionedFieldList);
             }
         }
 
@@ -98,15 +98,17 @@ class Annotation extends AbstractAnnotationDriver
 
     /**
      * @param $field
-     * @param $versionedFiledList
-     * @return string
+     * @param $versionedFieldList
+     * @return mixed
      */
-    protected function compareWithClassAndInheritedFields($field, $versionedFiledList)
+    protected function compareWithClassAndInheritedFields($field, $versionedFieldList)
     {
-        if (null != $versionedFiledList) {
-            if (in_array($field, $versionedFiledList)) {
+        if (null != $versionedFieldList) {
+            if (in_array($field, $versionedFieldList)) {
                 return $field;
             }
         }
+
+        return $field;
     }
 }

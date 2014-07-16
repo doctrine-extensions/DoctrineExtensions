@@ -5,7 +5,7 @@ namespace Gedmo\Mapping\Annotation;
 use Doctrine\Common\Annotations\Annotation;
 
 /**
- * Loggable annotation for Loggable behavioral extension
+ * VersionedClassAndInheritedFields annotation for Loggable behavioral extension
  *
  * @Annotation
  * @Target("CLASS")
@@ -15,9 +15,15 @@ use Doctrine\Common\Annotations\Annotation;
  */
 final class VersionedClassAndInheritedFields extends Annotation
 {
+    /**
+     * @var array
+     */
     protected $fieldList;
 
-    public function getFiledList()
+    /**
+     * @return array
+     */
+    public function getFieldList()
     {
         return $this->fieldList;
     }
