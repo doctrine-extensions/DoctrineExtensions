@@ -29,6 +29,11 @@ class Annotation extends AbstractAnnotationDriver
     const VERSIONED = 'Gedmo\\Mapping\\Annotation\\Versioned';
 
     /**
+     * Annotation to define versioned fields in object with those inherited one
+     */
+    const VERSIONED_CLASS_AND_INHERITED_FIELDS = 'Gedmo\\Mapping\\Annotation\\VersionedClassAndInheritedFields';
+
+    /**
      * {@inheritDoc}
      */
     public function validateFullMetadata(ClassMetadata $meta, array $config)
@@ -57,6 +62,11 @@ class Annotation extends AbstractAnnotationDriver
                 $config['logEntryClass'] = $annot->logEntryClass;
             }
         }
+
+        if ($annotation = $this->reader->getClassAnnotation($class, self::VERSIONED_CLASS_AND_INHERITED_FIELDS)) {
+            $versionedFiledList = $annotation->getFiledList();
+        }
+
         // property annotations
         foreach ($class->getProperties() as $property) {
             if ($meta->isMappedSuperclass && !$property->isPrivate() ||
@@ -72,7 +82,7 @@ class Annotation extends AbstractAnnotationDriver
                     throw new InvalidMappingException("Cannot versioned [{$field}] as it is collection in object - {$meta->name}");
                 }
                 // fields cannot be overrided and throws mapping exception
-                $config['versioned'][] = $field;
+                $config['versioned'][] = $this->compareWithClassAndInheritedFields($field, $versionedFiledList);
             }
         }
 
@@ -82,6 +92,20 @@ class Annotation extends AbstractAnnotationDriver
             }
             if (isset($config['versioned']) && !isset($config['loggable'])) {
                 throw new InvalidMappingException("Class must be annotated with Loggable annotation in order to track versioned fields in class - {$meta->name}");
+            }
+        }
+    }
+
+    /**
+     * @param $field
+     * @param $versionedFiledList
+     * @return string
+     */
+    protected function compareWithClassAndInheritedFields($field, $versionedFiledList)
+    {
+        if (null != $versionedFiledList) {
+            if (in_array($field, $versionedFiledList)) {
+                return $field;
             }
         }
     }
