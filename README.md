@@ -80,6 +80,7 @@ List of extensions which support ODM
 - Translator
 - Tree (Materialized Path strategy for now)
 - References
+- Sortable
 
 All these extensions can be nested together and mapped in traditional ways - annotations,
 xml or yaml

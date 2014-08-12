@@ -29,6 +29,7 @@ class Yaml extends File implements Driver
      * @var array
      */
     private $validTypes = array(
+        'int',
         'integer',
         'smallint',
         'bigint'

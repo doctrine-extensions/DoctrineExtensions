@@ -95,6 +95,14 @@ class ORM implements AdapterInterface
     /**
      * {@inheritdoc}
      */
+    public function getObjectState($uow, $object)
+    {
+        return $uow->getEntityState($object);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getObjectChangeSet($uow, $object)
     {
         return $uow->getEntityChangeSet($object);

@@ -83,6 +83,14 @@ class ODM implements AdapterInterface
     /**
      * {@inheritdoc}
      */
+    public function getObjectState($uow, $object)
+    {
+        return $uow->getDocumentState($object);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function __call($method, $args)
     {
         if (is_null($this->args)) {

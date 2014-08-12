@@ -14,5 +14,40 @@ use Gedmo\Sortable\Mapping\Event\SortableAdapter;
  */
 final class ODM extends BaseAdapterODM implements SortableAdapter
 {
+
+    public function getMaxPosition(array $config, $meta, $groups)
+    {
+        $dm = $this->getObjectManager();
+        
+        $qb = $dm->createQueryBuilder($config['useObjectClass']);
+        foreach ($groups as $group => $value) {
+            $qb->field($group)->equals($value);
+        }
+        $qb->sort($config['position'], 'desc');
+        $document = $qb->getQuery()->getSingleResult();
+        
+        return $meta->getReflectionProperty($config['position'])->getValue($document);
+    }
     
+    public function updatePositions($relocation, $delta, $config)
+    {
+        $dm = $this->getObjectManager();
+        
+        $delta = array_map('intval', $delta);
+        
+        $qb = $dm->createQueryBuilder($config['useObjectClass']);
+        $qb->update();
+        $qb->multiple(true);
+        $qb->field($config['position'])->inc($delta['delta']);
+        $qb->field($config['position'])->gte($delta['start']);
+        if ($delta['stop'] > 0) {
+            $qb->field($config['position'])->lt($delta['stop']);
+        }
+        foreach ($relocation['groups'] as $group => $value) {
+            $qb->field($group)->equals($value);
+        }
+        
+        $qb->getQuery()->execute();
+    }
+
 }
