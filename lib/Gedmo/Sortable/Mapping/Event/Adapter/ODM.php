@@ -26,7 +26,11 @@ final class ODM extends BaseAdapterODM implements SortableAdapter
         $qb->sort($config['position'], 'desc');
         $document = $qb->getQuery()->getSingleResult();
         
-        return $meta->getReflectionProperty($config['position'])->getValue($document);
+        if ($document) {
+            return $meta->getReflectionProperty($config['position'])->getValue($document);
+        }
+        
+        return -1;
     }
     
     public function updatePositions($relocation, $delta, $config)
