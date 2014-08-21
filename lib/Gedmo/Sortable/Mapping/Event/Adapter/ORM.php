@@ -22,7 +22,7 @@ final class ORM extends BaseAdapterORM implements SortableAdapter
         $qb = $em->createQueryBuilder();
         $qb->select('MAX(n.'.$config['position'].')')
            ->from($config['useObjectClass'], 'n');
-        $qb = $this->addGroupWhere($qb, $groups);
+        $this->addGroupWhere($qb, $groups);
         $query = $qb->getQuery();
         $query->useQueryCache(false);
         $query->useResultCache(false);
