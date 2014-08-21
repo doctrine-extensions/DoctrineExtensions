@@ -276,7 +276,22 @@ foreach ($items as $item) {
 // prints:
 // 0: item 2
 // 1: item 1
+
 ```
+
+### Using a foreign_key / relation as SortableGroup
+
+If you want to use a foreign key / relation as sortable group, you have to put @Gedmo\SortableGroup annotation on ManyToOne annotation:
+
+```
+/**
+ * @Gedmo\SortableGroup
+ * @ORM\ManyToOne(targetEntity="Item", inversedBy="children")
+ * @ORM\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="SET NULL")
+ */
+private $parent;
+```
+
 
 To move an item at the end of the list, you can set the position to `-1`:
 
