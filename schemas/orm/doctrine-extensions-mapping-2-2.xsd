@@ -78,6 +78,7 @@ people to push their own additional attributes/elements into the same field elem
     </xs:sequence>
     <xs:attribute name="fields" type="xs:string" use="required"/>
     <xs:attribute name="unique" type="xs:boolean" use="optional" />
+    <xs:attribute name="unique-base" type="xs:string" use="optional" />
     <xs:attribute name="updatable" type="xs:boolean" use="optional" />
     <xs:attribute name="separator" type="xs:string" use="optional" />
     <xs:attribute name="style" type="gedmo:slug-style" use="optional" />
