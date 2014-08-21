@@ -64,7 +64,7 @@ interface AdapterInterface
      * Get object state
      *
      * @param UnitOfWork $uow
-     * @param Object $object
+     * @param object $object
      * @return int The document state.
      */
     function getObjectState($uow, $object);

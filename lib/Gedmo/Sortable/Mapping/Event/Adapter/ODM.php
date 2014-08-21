@@ -14,7 +14,6 @@ use Gedmo\Sortable\Mapping\Event\SortableAdapter;
  */
 final class ODM extends BaseAdapterODM implements SortableAdapter
 {
-
     public function getMaxPosition(array $config, $meta, $groups)
     {
         $dm = $this->getObjectManager();
@@ -53,5 +52,4 @@ final class ODM extends BaseAdapterODM implements SortableAdapter
         
         $qb->getQuery()->execute();
     }
-
 }

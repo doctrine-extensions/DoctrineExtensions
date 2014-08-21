@@ -7,6 +7,7 @@ use Doctrine\Common\Util\ClassUtils;
 use Doctrine\ORM\UnitOfWork;
 use Gedmo\Mapping\MappedEventSubscriber;
 use Doctrine\ORM\Proxy\Proxy;
+use Gedmo\Sortable\Mapping\Event\SortableAdapter;
 
 /**
  * The SortableListener maintains a sort index on your entities
@@ -44,8 +45,8 @@ class SortableListener extends MappedEventSubscriber
      */
     public function loadClassMetadata(EventArgs $args)
     {
-        $eventAdapter = $this->getEventAdapter($args);
-        $this->loadMetadataForObjectClass($eventAdapter->getObjectManager(), $args->getClassMetadata());
+        $ea = $this->getEventAdapter($args);
+        $this->loadMetadataForObjectClass($ea->getObjectManager(), $args->getClassMetadata());
     }
 
     /**
@@ -56,34 +57,34 @@ class SortableListener extends MappedEventSubscriber
      */
     public function onFlush(EventArgs $args)
     {
-        $eventAdapter = $this->getEventAdapter($args);
-        $om = $eventAdapter->getObjectManager();
+        $ea = $this->getEventAdapter($args);
+        $om = $ea->getObjectManager();
         $uow = $om->getUnitOfWork();
 
         // process all objects being deleted
-        foreach ($eventAdapter->getScheduledObjectDeletions($uow) as $object) {
+        foreach ($ea->getScheduledObjectDeletions($uow) as $object) {
             $meta = $om->getClassMetadata(get_class($object));
             if ($config = $this->getConfiguration($om, $meta->name)) {
-                $this->processDeletion($eventAdapter, $config, $meta, $object);
+                $this->processDeletion($ea, $config, $meta, $object);
             }
         }
 
         // process all objects being updated
-        foreach ($eventAdapter->getScheduledObjectUpdates($uow) as $object) {
+        foreach ($ea->getScheduledObjectUpdates($uow) as $object) {
             $meta = $om->getClassMetadata(get_class($object));
             if ($config = $this->getConfiguration($om, $meta->name)) {
-                $this->processUpdate($eventAdapter, $config, $meta, $object);
+                $this->processUpdate($ea, $config, $meta, $object);
             }
         }
 
         // process all objects being inserted
-        foreach ($eventAdapter->getScheduledObjectInsertions($uow) as $object) {
+        foreach ($ea->getScheduledObjectInsertions($uow) as $object) {
             $meta = $om->getClassMetadata(get_class($object));
             if ($config = $this->getConfiguration($om, $meta->name)) {
-                $this->processInsert($eventAdapter, $config, $meta, $object);
+                $this->processInsert($ea, $config, $meta, $object);
             }
         }
-        $this->processRelocations($eventAdapter);
+        $this->processRelocations($ea);
     }
 
     /**
@@ -93,9 +94,9 @@ class SortableListener extends MappedEventSubscriber
      */
     public function prePersist(EventArgs $args)
     {
-        $eventAdapter = $this->getEventAdapter($args);
-        $om = $eventAdapter->getObjectManager();
-        $object = $eventAdapter->getObject();
+        $ea = $this->getEventAdapter($args);
+        $om = $ea->getObjectManager();
+        $object = $ea->getObject();
         $meta = $om->getClassMetadata(get_class($object));
 
         if ($config = $this->getConfiguration($om, $meta->name)) {
@@ -107,18 +108,18 @@ class SortableListener extends MappedEventSubscriber
 
             // Get max position
             if (!isset($this->maxPositions[$hash])) {
-                $this->maxPositions[$hash] = $this->getMaxPosition($eventAdapter, $meta, $config, $object);
+                $this->maxPositions[$hash] = $this->getMaxPosition($ea, $meta, $config, $object);
             }
         }
     }
 
     /**
      * Computes node positions and updates the sort field in memory and in the db
-     * @param object $eventAdapter \Gedmo\Sortable\Mapping\Event\SortableAdapter
+     * @param object $ea SortableAdapter
      */
-    private function processInsert($eventAdapter, $config, $meta, $object)
+    private function processInsert(SortableAdapter $ea, $config, $meta, $object)
     {
-        $em = $eventAdapter->getObjectManager();
+        $em = $ea->getObjectManager();
         $uow = $em->getUnitOfWork();
 
         $old = $meta->getReflectionProperty($config['position'])->getValue($object);
@@ -169,21 +170,21 @@ class SortableListener extends MappedEventSubscriber
         // Set new position
         if ($old < 0 || is_null($old)) {
             $meta->getReflectionProperty($config['position'])->setValue($object, $newPosition);
-            $eventAdapter->recomputeSingleObjectChangeSet($uow, $meta, $object);
+            $ea->recomputeSingleObjectChangeSet($uow, $meta, $object);
         }
     }
 
     /**
      * Computes node positions and updates the sort field in memory and in the db
-     * @param object $eventAdapter \Gedmo\Sortable\Mapping\Event\SortableAdapter
+     * @param object $ea SortableAdapter
      */
-    private function processUpdate($eventAdapter, $config, $meta, $object)
+    private function processUpdate(SortableAdapter $ea, $config, $meta, $object)
     {
-        $em = $eventAdapter->getObjectManager();
+        $em = $ea->getObjectManager();
         $uow = $em->getUnitOfWork();
 
         $changed = false;
-        $changeSet = $eventAdapter->getObjectChangeSet($uow, $object);
+        $changeSet = $ea->getObjectChangeSet($uow, $object);
 
         // Get groups
         $groups = $this->getGroups($meta, $config, $object);
@@ -199,7 +200,7 @@ class SortableListener extends MappedEventSubscriber
 
         if ($changed) {
             $oldHash = $this->getHash($meta, $oldGroups, $object, $config);
-            $this->maxPositions[$oldHash] = $this->getMaxPosition($eventAdapter, $meta, $config, $object, $oldGroups);
+            $this->maxPositions[$oldHash] = $this->getMaxPosition($ea, $meta, $config, $object, $oldGroups);
             $this->addRelocation($oldHash, $config['useObjectClass'], $oldGroups, $meta->getReflectionProperty($config['position'])->getValue($object) + 1, $this->maxPositions[$oldHash] + 1, -1, true);
         }
 
@@ -221,7 +222,7 @@ class SortableListener extends MappedEventSubscriber
 
         // Get max position
         if (!isset($this->maxPositions[$hash])) {
-            $this->maxPositions[$hash] = $this->getMaxPosition($eventAdapter, $meta, $config, $object);
+            $this->maxPositions[$hash] = $this->getMaxPosition($ea, $meta, $config, $object);
         }
 
         // Compute position if it is negative
@@ -279,14 +280,14 @@ class SortableListener extends MappedEventSubscriber
 
         // Set new position
         $meta->getReflectionProperty($config['position'])->setValue($object, $newPosition);
-        $eventAdapter->recomputeSingleObjectChangeSet($uow, $meta, $object);
+        $ea->recomputeSingleObjectChangeSet($uow, $meta, $object);
     }
 
     /**
      * Computes node positions and updates the sort field in memory and in the db
-     * @param object $eventAdapter \Gedmo\Sortable\Mapping\Event\SortableAdapter
+     * @param object $ea SortableAdapter
      */
-    private function processDeletion($eventAdapter, $config, $meta, $object)
+    private function processDeletion(SortableAdapter $ea, $config, $meta, $object)
     {
         $position = $meta->getReflectionProperty($config['position'])->getValue($object);
 
@@ -298,23 +299,26 @@ class SortableListener extends MappedEventSubscriber
 
         // Get max position
         if (!isset($this->maxPositions[$hash])) {
-            $this->maxPositions[$hash] = $this->getMaxPosition($eventAdapter, $meta, $config, $object);
+            $this->maxPositions[$hash] = $this->getMaxPosition($ea, $meta, $config, $object);
         }
 
         // Add relocation
         $this->addRelocation($hash, $config['useObjectClass'], $groups, $position, -1, -1);
     }
 
-    private function processRelocations($eventAdapter)
+    /**
+     * @param SortableAdapter $ea
+     */
+    private function processRelocations(SortableAdapter $ea)
     {
-        $em = $eventAdapter->getObjectManager();
+        $em = $ea->getObjectManager();
         foreach ($this->relocations as $hash => $relocation) {
             $config = $this->getConfiguration($em, $relocation['name']);
             foreach ($relocation['deltas'] as $delta) {
                 if ($delta['start'] > $this->maxPositions[$hash] || $delta['delta'] == 0) {
                     continue;
                 }
-                $eventAdapter->updatePositions($relocation, $delta, $config);
+                $ea->updatePositions($relocation, $delta, $config);
                 $meta = $em->getClassMetadata($relocation['name']);
                 if (property_exists($meta, 'rootDocumentName')) {
                     $metaRootObjectName = $meta->rootDocumentName;
@@ -335,7 +339,7 @@ class SortableListener extends MappedEventSubscriber
                         }
 
                         // if the entity's position is already changed, stop now
-                        if (array_key_exists($config['position'], $eventAdapter->getObjectChangeSet($uow, $object))) {
+                        if (array_key_exists($config['position'], $ea->getObjectChangeSet($uow, $object))) {
                             continue;
                         }
 
@@ -355,7 +359,7 @@ class SortableListener extends MappedEventSubscriber
                         }
                         if ($matches) {
                             $meta->getReflectionProperty($config['position'])->setValue($object, $pos + $delta['delta']);
-                            $eventAdapter->setOriginalObjectProperty($uow, $oid, $config['position'], $pos + $delta['delta']);
+                            $ea->setOriginalObjectProperty($uow, $oid, $config['position'], $pos + $delta['delta']);
                         }
                     }
                 }
@@ -381,9 +385,9 @@ class SortableListener extends MappedEventSubscriber
         return md5($data);
     }
 
-    private function getMaxPosition($eventAdapter, $meta, $config, $object, array $groups = array())
+    private function getMaxPosition(SortableAdapter $ea, $meta, $config, $object, array $groups = array())
     {
-        $em = $eventAdapter->getObjectManager();
+        $em = $ea->getObjectManager();
         $uow = $em->getUnitOfWork();
         $maxPos = null;
 
@@ -405,12 +409,12 @@ class SortableListener extends MappedEventSubscriber
         // scheduled for insert, it has no identifier yet and is obviously new
         // see issue #226
         foreach ($groups as $val) {
-            if (is_object($val) && ($uow->isScheduledForInsert($val) || !$em->getMetadataFactory()->isTransient(ClassUtils::getClass($val)) && UnitOfWork::STATE_MANAGED !== $eventAdapter->getObjectState($uow, $val))) {
+            if (is_object($val) && ($uow->isScheduledForInsert($val) || !$em->getMetadataFactory()->isTransient(ClassUtils::getClass($val)) && UnitOfWork::STATE_MANAGED !== $ea->getObjectState($uow, $val))) {
                 return -1;
             }
         }
 
-        $maxPos = $eventAdapter->getMaxPosition($config, $meta, $groups);
+        $maxPos = $ea->getMaxPosition($config, $meta, $groups);
         if (is_null($maxPos)) $maxPos = -1;
         
         return intval($maxPos);

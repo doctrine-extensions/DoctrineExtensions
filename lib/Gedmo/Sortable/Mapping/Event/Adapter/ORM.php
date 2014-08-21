@@ -4,6 +4,7 @@ namespace Gedmo\Sortable\Mapping\Event\Adapter;
 
 use Gedmo\Mapping\Event\Adapter\ORM as BaseAdapterORM;
 use Gedmo\Sortable\Mapping\Event\SortableAdapter;
+use Doctrine\ORM\QueryBuilder;
 
 /**
  * Doctrine event adapter for ORM adapted
@@ -14,7 +15,6 @@ use Gedmo\Sortable\Mapping\Event\SortableAdapter;
  */
 final class ORM extends BaseAdapterORM implements SortableAdapter
 {
-
     public function getMaxPosition(array $config, $meta, $groups)
     {
         $em = $this->getObjectManager();
@@ -31,20 +31,18 @@ final class ORM extends BaseAdapterORM implements SortableAdapter
         return $res[0][1];
     }
 
-    private function addGroupWhere($qb, $groups)
+    private function addGroupWhere(QueryBuilder $qb, $groups)
     {
         $i = 1;
         foreach ($groups as $group => $value) {
-            $whereFunc = is_null($qb->getDQLPart('where')) ? 'where' : 'andWhere';
             if (is_null($value)) {
-                $qb->{$whereFunc}($qb->expr()->isNull('n.'.$group));
+                $qb->andWhere($qb->expr()->isNull('n.'.$group));
             } else {
-                $qb->{$whereFunc}('n.'.$group.' = :group__'.$i);
+                $qb->andWhere('n.'.$group.' = :group__'.$i);
                 $qb->setParameter('group__'.$i, $value);
             }
             $i++;
         }
-        return $qb;
     }
 
     public function updatePositions($relocation, $delta, $config)
@@ -74,5 +72,4 @@ final class ORM extends BaseAdapterORM implements SortableAdapter
         $q->setParameters($params);
         $q->getSingleScalarResult();
     }
-
 }
