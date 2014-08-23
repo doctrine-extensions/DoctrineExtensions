@@ -68,16 +68,20 @@ class SortableListener extends MappedEventSubscriber
             }
         }
 
+        $scheduledObjectInsertions = $ea->getScheduledObjectInsertions($uow);
+
         // process all objects being updated
-        foreach ($ea->getScheduledObjectUpdates($uow) as $object) {
+        foreach ($ea->getScheduledObjectUpdates($uow) as $hash => $object) {
             $meta = $om->getClassMetadata(get_class($object));
             if ($config = $this->getConfiguration($om, $meta->name)) {
-                $this->processUpdate($om, $config, $meta, $object);
+                // Check if the current object is also scheduled for insertion.
+                $isInsert = isset($scheduledObjectInsertions[$hash]);
+                $this->processUpdate($om, $config, $meta, $object, $isInsert);
             }
         }
 
         // process all objects being inserted
-        foreach ($ea->getScheduledObjectInsertions($uow) as $object) {
+        foreach ($scheduledObjectInsertions as $object) {
             $meta = $om->getClassMetadata(get_class($object));
             if ($config = $this->getConfiguration($om, $meta->name)) {
                 $this->processInsert($om, $config, $meta, $object);
@@ -176,7 +180,7 @@ class SortableListener extends MappedEventSubscriber
      * Computes node positions and updates the sort field in memory and in the db
      * @param object $em ObjectManager
      */
-    private function processUpdate($em, $config, $meta, $object)
+    private function processUpdate($em, $config, $meta, $object, $isInsert)
     {
         $uow = $em->getUnitOfWork();
 
@@ -230,7 +234,7 @@ class SortableListener extends MappedEventSubscriber
                 $newPosition = 0;
             }
         } else {
-            $newPosition = min(array($this->maxPositions[$hash], $newPosition));
+            $newPosition = min(array($this->maxPositions[$hash] + (int)$isInsert, $newPosition));
         }
 
         // Compute relocations
