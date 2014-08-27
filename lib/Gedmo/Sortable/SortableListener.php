@@ -320,17 +320,12 @@ class SortableListener extends MappedEventSubscriber
                 }
                 $ea->updatePositions($relocation, $delta, $config);
                 $meta = $em->getClassMetadata($relocation['name']);
-                if (property_exists($meta, 'rootDocumentName')) {
-                    $metaRootObjectName = $meta->rootDocumentName;
-                } else {
-                    $metaRootObjectName = $meta->rootEntityName;
-                }
 
                 // now walk through the unit of work in memory objects and sync those
                 $uow = $em->getUnitOfWork();
                 foreach ($uow->getIdentityMap() as $className => $objects) {
                     // for inheritance mapped classes, only root is always in the identity map
-                    if ($className !== $metaRootObjectName || !$this->getConfiguration($em, $className)) {
+                    if ($className !== $ea->getRootObjectClass($meta) || !$this->getConfiguration($em, $className)) {
                         continue;
                     }
                     foreach ($objects as $object) {
