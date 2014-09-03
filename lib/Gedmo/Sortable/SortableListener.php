@@ -7,6 +7,7 @@ use Doctrine\Common\Util\ClassUtils;
 use Doctrine\ORM\UnitOfWork;
 use Gedmo\Mapping\MappedEventSubscriber;
 use Doctrine\ORM\Proxy\Proxy;
+use Gedmo\Sortable\Mapping\Event\SortableAdapter;
 
 /**
  * The SortableListener maintains a sort index on your entities
@@ -64,7 +65,7 @@ class SortableListener extends MappedEventSubscriber
         foreach ($ea->getScheduledObjectDeletions($uow) as $object) {
             $meta = $om->getClassMetadata(get_class($object));
             if ($config = $this->getConfiguration($om, $meta->name)) {
-                $this->processDeletion($om, $config, $meta, $object);
+                $this->processDeletion($ea, $config, $meta, $object);
             }
         }
 
@@ -72,7 +73,7 @@ class SortableListener extends MappedEventSubscriber
         foreach ($ea->getScheduledObjectUpdates($uow) as $object) {
             $meta = $om->getClassMetadata(get_class($object));
             if ($config = $this->getConfiguration($om, $meta->name)) {
-                $this->processUpdate($om, $config, $meta, $object);
+                $this->processUpdate($ea, $config, $meta, $object);
             }
         }
 
@@ -80,10 +81,10 @@ class SortableListener extends MappedEventSubscriber
         foreach ($ea->getScheduledObjectInsertions($uow) as $object) {
             $meta = $om->getClassMetadata(get_class($object));
             if ($config = $this->getConfiguration($om, $meta->name)) {
-                $this->processInsert($om, $config, $meta, $object);
+                $this->processInsert($ea, $config, $meta, $object);
             }
         }
-        $this->processRelocations($om);
+        $this->processRelocations($ea);
     }
 
     /**
@@ -107,17 +108,18 @@ class SortableListener extends MappedEventSubscriber
 
             // Get max position
             if (!isset($this->maxPositions[$hash])) {
-                $this->maxPositions[$hash] = $this->getMaxPosition($om, $meta, $config, $object);
+                $this->maxPositions[$hash] = $this->getMaxPosition($ea, $meta, $config, $object);
             }
         }
     }
 
     /**
      * Computes node positions and updates the sort field in memory and in the db
-     * @param object $em ObjectManager
+     * @param object $ea SortableAdapter
      */
-    private function processInsert($em, $config, $meta, $object)
+    private function processInsert(SortableAdapter $ea, $config, $meta, $object)
     {
+        $em = $ea->getObjectManager();
         $uow = $em->getUnitOfWork();
 
         $old = $meta->getReflectionProperty($config['position'])->getValue($object);
@@ -168,20 +170,21 @@ class SortableListener extends MappedEventSubscriber
         // Set new position
         if ($old < 0 || is_null($old)) {
             $meta->getReflectionProperty($config['position'])->setValue($object, $newPosition);
-            $uow->recomputeSingleEntityChangeSet($meta, $object);
+            $ea->recomputeSingleObjectChangeSet($uow, $meta, $object);
         }
     }
 
     /**
      * Computes node positions and updates the sort field in memory and in the db
-     * @param object $em ObjectManager
+     * @param object $ea SortableAdapter
      */
-    private function processUpdate($em, $config, $meta, $object)
+    private function processUpdate(SortableAdapter $ea, $config, $meta, $object)
     {
+        $em = $ea->getObjectManager();
         $uow = $em->getUnitOfWork();
 
         $changed = false;
-        $changeSet = $uow->getEntityChangeSet($object);
+        $changeSet = $ea->getObjectChangeSet($uow, $object);
 
         // Get groups
         $groups = $this->getGroups($meta, $config, $object);
@@ -197,7 +200,7 @@ class SortableListener extends MappedEventSubscriber
 
         if ($changed) {
             $oldHash = $this->getHash($meta, $oldGroups, $object, $config);
-            $this->maxPositions[$oldHash] = $this->getMaxPosition($em, $meta, $config, $object, $oldGroups);
+            $this->maxPositions[$oldHash] = $this->getMaxPosition($ea, $meta, $config, $object, $oldGroups);
             $this->addRelocation($oldHash, $config['useObjectClass'], $oldGroups, $meta->getReflectionProperty($config['position'])->getValue($object) + 1, $this->maxPositions[$oldHash] + 1, -1, true);
         }
 
@@ -219,7 +222,7 @@ class SortableListener extends MappedEventSubscriber
 
         // Get max position
         if (!isset($this->maxPositions[$hash])) {
-            $this->maxPositions[$hash] = $this->getMaxPosition($em, $meta, $config, $object);
+            $this->maxPositions[$hash] = $this->getMaxPosition($ea, $meta, $config, $object);
         }
 
         // Compute position if it is negative
@@ -277,14 +280,14 @@ class SortableListener extends MappedEventSubscriber
 
         // Set new position
         $meta->getReflectionProperty($config['position'])->setValue($object, $newPosition);
-        $uow->recomputeSingleEntityChangeSet($meta, $object);
+        $ea->recomputeSingleObjectChangeSet($uow, $meta, $object);
     }
 
     /**
      * Computes node positions and updates the sort field in memory and in the db
-     * @param object $em ObjectManager
+     * @param object $ea SortableAdapter
      */
-    private function processDeletion($em, $config, $meta, $object)
+    private function processDeletion(SortableAdapter $ea, $config, $meta, $object)
     {
         $position = $meta->getReflectionProperty($config['position'])->getValue($object);
 
@@ -296,50 +299,33 @@ class SortableListener extends MappedEventSubscriber
 
         // Get max position
         if (!isset($this->maxPositions[$hash])) {
-            $this->maxPositions[$hash] = $this->getMaxPosition($em, $meta, $config, $object);
+            $this->maxPositions[$hash] = $this->getMaxPosition($ea, $meta, $config, $object);
         }
 
         // Add relocation
         $this->addRelocation($hash, $config['useObjectClass'], $groups, $position, -1, -1);
     }
 
-    private function processRelocations($em)
+    /**
+     * @param SortableAdapter $ea
+     */
+    private function processRelocations(SortableAdapter $ea)
     {
+        $em = $ea->getObjectManager();
         foreach ($this->relocations as $hash => $relocation) {
             $config = $this->getConfiguration($em, $relocation['name']);
             foreach ($relocation['deltas'] as $delta) {
                 if ($delta['start'] > $this->maxPositions[$hash] || $delta['delta'] == 0) {
                     continue;
                 }
-                $sign = $delta['delta'] < 0 ? "-" : "+";
-                $absDelta = abs($delta['delta']);
-                $dql = "UPDATE {$relocation['name']} n";
-                $dql .= " SET n.{$config['position']} = n.{$config['position']} {$sign} {$absDelta}";
-                $dql .= " WHERE n.{$config['position']} >= {$delta['start']}";
-                // if not null, false or 0
-                if ($delta['stop'] > 0) {
-                    $dql .= " AND n.{$config['position']} < {$delta['stop']}";
-                }
-                $i = -1;
-                $params = array();
-                foreach ($relocation['groups'] as $group => $value) {
-                    if (is_null($value)) {
-                        $dql .= " AND n.{$group} IS NULL";
-                    } else {
-                        $dql .= " AND n.{$group} = :val___".(++$i);
-                        $params['val___'.$i] = $value;
-                    }
-                }
-                $q = $em->createQuery($dql);
-                $q->setParameters($params);
-                $q->getSingleScalarResult();
+                $ea->updatePositions($relocation, $delta, $config);
                 $meta = $em->getClassMetadata($relocation['name']);
 
                 // now walk through the unit of work in memory objects and sync those
                 $uow = $em->getUnitOfWork();
                 foreach ($uow->getIdentityMap() as $className => $objects) {
                     // for inheritance mapped classes, only root is always in the identity map
-                    if ($className !== $meta->rootEntityName || !$this->getConfiguration($em, $className)) {
+                    if ($className !== $ea->getRootObjectClass($meta) || !$this->getConfiguration($em, $className)) {
                         continue;
                     }
                     foreach ($objects as $object) {
@@ -348,7 +334,7 @@ class SortableListener extends MappedEventSubscriber
                         }
 
                         // if the entity's position is already changed, stop now
-                        if (array_key_exists($config['position'], $uow->getEntityChangeSet($object))) {
+                        if (array_key_exists($config['position'], $ea->getObjectChangeSet($uow, $object))) {
                             continue;
                         }
 
@@ -368,7 +354,7 @@ class SortableListener extends MappedEventSubscriber
                         }
                         if ($matches) {
                             $meta->getReflectionProperty($config['position'])->setValue($object, $pos + $delta['delta']);
-                            $em->getUnitOfWork()->setOriginalEntityProperty($oid, $config['position'], $pos + $delta['delta']);
+                            $ea->setOriginalObjectProperty($uow, $oid, $config['position'], $pos + $delta['delta']);
                         }
                     }
                 }
@@ -394,8 +380,9 @@ class SortableListener extends MappedEventSubscriber
         return md5($data);
     }
 
-    private function getMaxPosition($em, $meta, $config, $object, array $groups = array())
+    private function getMaxPosition(SortableAdapter $ea, $meta, $config, $object, array $groups = array())
     {
+        $em = $ea->getObjectManager();
         $uow = $em->getUnitOfWork();
         $maxPos = null;
 
@@ -417,38 +404,15 @@ class SortableListener extends MappedEventSubscriber
         // scheduled for insert, it has no identifier yet and is obviously new
         // see issue #226
         foreach ($groups as $val) {
-            if (is_object($val) && ($uow->isScheduledForInsert($val) || !$em->getMetadataFactory()->isTransient(ClassUtils::getClass($val)) && UnitOfWork::STATE_MANAGED !== $uow->getEntityState($val))) {
+            if (is_object($val) && ($uow->isScheduledForInsert($val) || !$em->getMetadataFactory()->isTransient(ClassUtils::getClass($val)) && UnitOfWork::STATE_MANAGED !== $ea->getObjectState($uow, $val))) {
                 return -1;
             }
         }
 
-        $qb = $em->createQueryBuilder();
-        $qb->select('MAX(n.'.$config['position'].')')
-           ->from($config['useObjectClass'], 'n');
-        $qb = $this->addGroupWhere($qb, $groups);
-        $query = $qb->getQuery();
-        $query->useQueryCache(false);
-        $query->useResultCache(false);
-        $res = $query->getResult();
-        $maxPos = $res[0][1];
+        $maxPos = $ea->getMaxPosition($config, $meta, $groups);
         if (is_null($maxPos)) $maxPos = -1;
+        
         return intval($maxPos);
-    }
-
-    private function addGroupWhere($qb, $groups)
-    {
-        $i = 1;
-        foreach ($groups as $group => $value) {
-            $whereFunc = is_null($qb->getDQLPart('where')) ? 'where' : 'andWhere';
-            if (is_null($value)) {
-                $qb->{$whereFunc}($qb->expr()->isNull('n.'.$group));
-            } else {
-                $qb->{$whereFunc}('n.'.$group.' = :group__'.$i);
-                $qb->setParameter('group__'.$i, $value);
-            }
-            $i++;
-        }
-        return $qb;
     }
 
     /**

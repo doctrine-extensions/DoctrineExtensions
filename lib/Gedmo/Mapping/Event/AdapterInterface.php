@@ -61,6 +61,15 @@ interface AdapterInterface
     function getObjectManager();
 
     /**
+     * Get object state
+     *
+     * @param UnitOfWork $uow
+     * @param object $object
+     * @return int The document state.
+     */
+    function getObjectState($uow, $object);
+
+    /**
      * Get the object changeset from a UnitOfWork
      *
      * @param UnitOfWork $uow
