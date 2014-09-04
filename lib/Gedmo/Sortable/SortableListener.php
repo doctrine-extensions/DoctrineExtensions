@@ -137,7 +137,7 @@ class SortableListener extends MappedEventSubscriber
 
         // Get max position
         if (!isset($this->maxPositions[$hash])) {
-            $this->maxPositions[$hash] = $this->getMaxPosition($em, $meta, $config, $object);
+            $this->maxPositions[$hash] = $this->getMaxPosition($ea, $meta, $config, $object);
         }
 
         // Compute position if it is negative
