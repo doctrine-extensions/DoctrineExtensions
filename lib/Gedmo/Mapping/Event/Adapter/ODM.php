@@ -129,7 +129,10 @@ class ODM implements AdapterInterface
      */
     public function getScheduledObjectUpdates($uow)
     {
-        return $uow->getScheduledDocumentUpdates();
+        $updates = $uow->getScheduledDocumentUpdates();
+        $upserts = $uow->getScheduledDocumentUpserts();
+
+        return array_merge($updates, $upserts);
     }
 
     /**
