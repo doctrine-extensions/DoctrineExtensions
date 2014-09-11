@@ -2,6 +2,8 @@
 
 namespace Gedmo\IpTraceable\Traits;
 
+use Gedmo\Mapping\Annotation as Gedmo;
+
 /**
  * IpTraceable Trait, usable with PHP >= 5.4
  *

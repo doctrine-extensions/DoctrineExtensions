@@ -2,6 +2,8 @@
 
 namespace Gedmo\Timestampable\Traits;
 
+use Gedmo\Mapping\Annotation as Gedmo;
+
 /**
  * Timestampable Trait, usable with PHP >= 5.4
  *

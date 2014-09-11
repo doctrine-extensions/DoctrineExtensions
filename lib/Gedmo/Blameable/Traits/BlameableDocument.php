@@ -2,6 +2,8 @@
 
 namespace Gedmo\Blameable\Traits;
 
+use Gedmo\Mapping\Annotation as Gedmo;
+
 /**
  * Blameable Trait, usable with PHP >= 5.4
  *
