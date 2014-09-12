@@ -2,6 +2,8 @@
 
 namespace Gedmo\Tree\Traits;
 
+use Gedmo\Mapping\Annotation as Gedmo;
+
 /**
  * NestedSet Trait, usable with PHP >= 5.4
  *
