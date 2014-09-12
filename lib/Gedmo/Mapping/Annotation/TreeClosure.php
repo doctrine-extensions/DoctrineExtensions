@@ -15,7 +15,7 @@ use Doctrine\Common\Annotations\Annotation;
  */
 final class TreeClosure extends Annotation
 {
-    /** @var string @required */
+    /** @var string @Required */
     public $class;
 }
 
