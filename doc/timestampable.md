@@ -106,7 +106,7 @@ class Article
     private $body;
 
     /**
-     * @var datetime $created
+     * @var \DateTime $created
      *
      * @Gedmo\Timestampable(on="create")
      * @ORM\Column(type="datetime")
@@ -114,7 +114,7 @@ class Article
     private $created;
 
     /**
-     * @var datetime $updated
+     * @var \DateTime $updated
      *
      * @Gedmo\Timestampable(on="update")
      * @ORM\Column(type="datetime")
@@ -122,7 +122,7 @@ class Article
     private $updated;
 
     /**
-     * @var datetime $contentChanged
+     * @var \DateTime $contentChanged
      *
      * @ORM\Column(name="content_changed", type="datetime", nullable=true)
      * @Gedmo\Timestampable(on="change", field={"title", "body"})
@@ -217,7 +217,7 @@ class Article
     private $updated;
 
     /**
-     * @var datetime $contentChanged
+     * @var \DateTime $contentChanged
      *
      * @ODM\Date
      * @Gedmo\Timestampable(on="change", field={"title", "body"})
@@ -404,7 +404,7 @@ class Article
     private $title;
 
     /**
-     * @var datetime $created
+     * @var \DateTime $created
      *
      * @Gedmo\Timestampable(on="create")
      * @ORM\Column(type="datetime")
@@ -412,7 +412,7 @@ class Article
     private $created;
 
     /**
-     * @var datetime $updated
+     * @var \DateTime $updated
      *
      * @Gedmo\Timestampable(on="update")
      * @ORM\Column(type="datetime")
@@ -425,7 +425,7 @@ class Article
     private $type;
 
     /**
-     * @var datetime $published
+     * @var \DateTime $published
      *
      * @ORM\Column(type="datetime", nullable=true)
      * @Gedmo\Timestampable(on="change", field="type.title", value="Published")
@@ -605,7 +605,7 @@ And our Entity properties look as expected:
 ``` php
 <?php
 /**
- * @var datetime $dateCreated
+ * @var \DateTime $dateCreated
  *
  * @ORM\Column(name="date_created", type="datetime")
  * @Gedmo\Timestampable(on="create")
@@ -613,7 +613,7 @@ And our Entity properties look as expected:
 private $dateCreated;
 
 /**
- * @var datetime $dateLastModified
+ * @var \DateTime $dateLastModified
  *
  * @Gedmo\Timestampable(on="update")
  * @ORM\Column(name="date_last_modified", type="datetime")
