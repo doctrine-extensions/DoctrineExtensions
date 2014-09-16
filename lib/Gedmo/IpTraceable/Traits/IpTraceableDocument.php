@@ -17,14 +17,14 @@ trait IpTraceableDocument
      * @Gedmo\IpTraceable(on="create")
      * @ODM\String
      */
-    private $createdFromIp;
+    protected $createdFromIp;
 
     /**
      * @var string
      * @Gedmo\IpTraceable(on="update")
      * @ODM\String
      */
-    private $updatedFromIp;
+    protected $updatedFromIp;
 
     /**
      * Sets createdFromIp.
