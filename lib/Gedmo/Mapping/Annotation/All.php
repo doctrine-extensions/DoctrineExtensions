@@ -14,6 +14,7 @@ include __DIR__.'/Loggable.php';
 include __DIR__.'/Slug.php';
 include __DIR__.'/SlugHandler.php';
 include __DIR__.'/SlugHandlerOption.php';
+include __DIR__.'/SlugHistory.php';
 include __DIR__.'/SoftDeleteable.php';
 include __DIR__.'/SortableGroup.php';
 include __DIR__.'/SortablePosition.php';

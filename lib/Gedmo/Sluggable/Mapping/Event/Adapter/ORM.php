@@ -19,6 +19,14 @@ class ORM extends BaseAdapterORM implements SluggableAdapter
     /**
      * {@inheritDoc}
      */
+    public function getDefaultSlugEntryClass()
+    {
+        return 'Gedmo\\Sluggable\\Entity\\SlugEntry';
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function getSimilarSlugs($object, $meta, array $config, $slug)
     {
         $em = $this->getObjectManager();

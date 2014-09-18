@@ -316,6 +316,12 @@ abstract class AbstractMaterializedPath implements Strategy
 
         if (isset($config['level'])) {
             $level = substr_count($path, $config['path_separator']);
+            if ($config['path_starts_with_separator']) {
+                $level--;
+            }
+            if ($config['path_ends_with_separator']) {
+                $level--;
+            }
             $levelProp = $meta->getReflectionProperty($config['level']);
             $levelProp->setAccessible(true);
             $levelProp->setValue($node, $level);

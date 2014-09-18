@@ -14,6 +14,13 @@ use Gedmo\Mapping\Event\AdapterInterface;
 interface SluggableAdapter extends AdapterInterface
 {
     /**
+     * Get default SlugEntry class used to store the slugs
+     *
+     * @return string
+     */
+    function getDefaultSlugEntryClass();
+
+    /**
      * Loads the similar slugs
      *
      * @param object $object
