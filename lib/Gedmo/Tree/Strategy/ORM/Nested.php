@@ -435,8 +435,9 @@ class Nested implements Strategy
             }
             $qb->set('node.' . $config['left'], $left + $diff);
             $qb->set('node.' . $config['right'], $right + $diff);
-            // node id cannot be null
-            $qb->where($qb->expr()->eq('node.'.$identifierField, is_string($nodeId) ? $qb->expr()->literal($nodeId) : $nodeId));
+            if ($nodeId) {
+                $qb->where($qb->expr()->eq('node.'.$identifierField, is_string($nodeId) ? $qb->expr()->literal($nodeId) : $nodeId));
+            }
             $qb->getQuery()->getSingleScalarResult();
             $wrapped->setPropertyValue($config['left'], $left + $diff);
             $wrapped->setPropertyValue($config['right'], $right + $diff);
