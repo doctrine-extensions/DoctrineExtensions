@@ -96,6 +96,16 @@ class Xml extends BaseXml
     protected function isValidField($meta, $field)
     {
         $mapping = $meta->getFieldMapping($field);
-        return $mapping && in_array($mapping['type'], $this->validTypes);
+        if (empty($mapping)) return false;
+
+        $is_valid = $mapping && in_array($mapping['type'], $this->validTypes);
+        if ($is_valid) return true;
+
+        $fieldType = Type::getType($mapping['type']);
+        foreach($this->validTypes as $type) {
+            $validType = Type::getType($type);
+            if ($fieldType instanceof $validType) return true;
+        }
+        return false;
     }
 }

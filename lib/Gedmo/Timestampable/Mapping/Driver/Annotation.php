@@ -4,7 +4,8 @@ namespace Gedmo\Timestampable\Mapping\Driver;
 
 use Gedmo\Mapping\Driver\AbstractAnnotationDriver,
     Doctrine\Common\Annotations\AnnotationReader,
-    Gedmo\Exception\InvalidMappingException;
+    Gedmo\Exception\InvalidMappingException,
+    Doctrine\DBAL\Types\Type;
 
 /**
  * This is an annotation mapping driver for Timestampable
@@ -80,4 +81,29 @@ class Annotation extends AbstractAnnotationDriver
             }
         }
     }
+
+    /**
+     * Checks if $field type is valid
+     *
+     * @param object $meta
+     * @param string $field
+     *
+     * @return boolean
+     */
+    protected function isValidField($meta, $field)
+    {
+        $mapping = $meta->getFieldMapping($field);
+        if (empty($mapping)) return false;
+
+        $is_valid = $mapping && in_array($mapping['type'], $this->validTypes);
+        if ($is_valid) return true;
+
+        $fieldType = Type::getType($mapping['type']);
+        foreach($this->validTypes as $type) {
+            $validType = Type::getType($type);
+            if ($fieldType instanceof $validType) return true;
+        }
+        return false;
+    }
+
 }
