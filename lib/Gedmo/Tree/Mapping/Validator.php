@@ -45,6 +45,7 @@ class Validator
      */
     private $validPathSourceTypes = array(
         'id',
+        'custom_id',
         'integer',
         'smallint',
         'bigint',
