@@ -57,7 +57,7 @@ final class ORM extends BaseAdapterORM implements LoggableAdapter
     /**
      * {@inheritDoc}
      */
-    function convertToDatabaseValue($meta, $field, $value)
+    public function convertToDatabaseValue($meta, $field, $value)
     {
         return Type::getType($meta->getTypeOfField($field))->convertToDatabaseValue($value, $this->getObjectManager()->getConnection()->getDatabasePlatform());
     }

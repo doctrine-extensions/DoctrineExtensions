@@ -61,7 +61,7 @@ final class ODM extends BaseAdapterODM implements LoggableAdapter
     /**
      * {@inheritDoc}
      */
-    function convertToDatabaseValue($meta, $field, $value)
+    public function convertToDatabaseValue($meta, $field, $value)
     {
         return Type::getType($meta->getTypeOfField($field))->convertToDatabaseValue($value);
     }
