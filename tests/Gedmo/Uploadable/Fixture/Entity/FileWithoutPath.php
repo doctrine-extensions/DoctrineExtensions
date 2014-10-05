@@ -24,7 +24,6 @@ class FileWithoutPath
      */
     private $filePath;
 
-
     public function getId()
     {
         return $this->id;

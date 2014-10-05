@@ -157,7 +157,7 @@ class Category
         return $this->description;
     }
 
-	public function setParent($parent)
+    public function setParent($parent)
     {
         $this->parent = $parent;
     }
@@ -184,10 +184,10 @@ class Category
 
     public function getLeft()
     {
-    	return $this->lft;
+        return $this->lft;
     }
 
-	public function getRight()
+    public function getRight()
     {
         return $this->rgt;
     }

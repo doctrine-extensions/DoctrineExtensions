@@ -41,7 +41,6 @@ class FileWithDisallowedTypes
      */
     private $article;
 
-
     public function getId()
     {
         return $this->id;

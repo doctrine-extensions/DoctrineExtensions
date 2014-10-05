@@ -1,6 +1,6 @@
 <?php
 
-namespace Gedmo\Mapping\Xml;
+namespace Gedmo\Mapping\Xml\Simplified;
 
 use Doctrine\Common\EventManager;
 use Doctrine\ORM\Mapping\Driver\DriverChain;
@@ -15,7 +15,7 @@ use Tool\BaseTestCaseORM;
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class SimplifiedTimestampableMappingTest extends BaseTestCaseORM
+class TimestampableMappingTest extends BaseTestCaseORM
 {
     /**
      * @var Gedmo\Timestampable\TimestampableListener
@@ -26,8 +26,8 @@ class SimplifiedTimestampableMappingTest extends BaseTestCaseORM
     {
         parent::setUp();
 
-        $this->timestampable = new TimestampableListener;
-        $evm = new EventManager;
+        $this->timestampable = new TimestampableListener();
+        $evm = new EventManager();
         $evm->addEventSubscriber($this->timestampable);
 
         $this->getMockSqliteEntityManager($evm);
@@ -36,11 +36,12 @@ class SimplifiedTimestampableMappingTest extends BaseTestCaseORM
     protected function getMetadataDriverImplementation()
     {
         $xmlDriver = new SimplifiedXmlDriver(array(
-            __DIR__.'/../../Driver/Xml' => 'Mapping\Fixture\Xml'
+            __DIR__.'/../../Driver/Xml' => 'Mapping\Fixture\Xml',
         ));
 
-        $chain = new DriverChain;
+        $chain = new DriverChain();
         $chain->addDriver($xmlDriver, 'Mapping\Fixture\Xml');
+
         return $chain;
     }
 

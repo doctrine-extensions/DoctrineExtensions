@@ -24,7 +24,6 @@ class FileWithSha1Name
      */
     private $filePath;
 
-
     public function getId()
     {
         return $this->id;

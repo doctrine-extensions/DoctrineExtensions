@@ -26,8 +26,8 @@ class SluggableMappingTest extends BaseTestCaseORM
     {
         parent::setUp();
 
-        $this->sluggable = new SluggableListener;
-        $evm = new EventManager;
+        $this->sluggable = new SluggableListener();
+        $evm = new EventManager();
         $evm->addEventSubscriber($this->sluggable);
 
         $this->getMockSqliteEntityManager($evm);
@@ -42,8 +42,9 @@ class SluggableMappingTest extends BaseTestCaseORM
     {
         $xmlDriver = new XmlDriver(__DIR__.'/../Driver/Xml');
 
-        $chain = new DriverChain;
+        $chain = new DriverChain();
         $chain->addDriver($xmlDriver, 'Mapping\Fixture\Xml');
+
         return $chain;
     }
 

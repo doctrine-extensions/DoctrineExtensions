@@ -14,7 +14,7 @@ use Tool\BaseTestCaseORM;
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class MultiInheritanceWithJoinedTableTest extends BaseTestCaseORM
+class MultInheritanceWithJoinedTableTest extends BaseTestCaseORM
 {
     const USER = "Tree\\Fixture\\User";
     const GROUP = "Tree\\Fixture\\UserGroup";
@@ -25,8 +25,8 @@ class MultiInheritanceWithJoinedTableTest extends BaseTestCaseORM
     {
         parent::setUp();
 
-        $evm = new EventManager;
-        $this->tree = new TreeListener;
+        $evm = new EventManager();
+        $this->tree = new TreeListener();
         $evm->addEventSubscriber($this->tree);
 
         $this->getMockSqliteEntityManager($evm);
@@ -109,7 +109,7 @@ class MultiInheritanceWithJoinedTableTest extends BaseTestCaseORM
             self::USER,
             self::GROUP,
             self::ROLE,
-            self::USERLDAP
+            self::USERLDAP,
         );
     }
 

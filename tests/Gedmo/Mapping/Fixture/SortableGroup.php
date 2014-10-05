@@ -16,7 +16,7 @@ class SortableGroup
      * @ORM\GeneratedValue
      */
     private $id;
-    
+
     /**
      * @ORM\Column(length=64)
      */

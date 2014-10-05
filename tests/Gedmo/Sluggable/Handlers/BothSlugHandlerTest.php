@@ -24,9 +24,9 @@ class BothSlugHandlerTest extends BaseTestCaseORM
     {
         parent::setUp();
 
-        $evm = new EventManager;
-        $evm->addEventSubscriber(new TreeListener);
-        $evm->addEventSubscriber(new SluggableListener);
+        $evm = new EventManager();
+        $evm->addEventSubscriber(new TreeListener());
+        $evm->addEventSubscriber(new SluggableListener());
 
         $this->getMockSqliteEntityManager($evm);
     }
@@ -78,7 +78,7 @@ class BothSlugHandlerTest extends BaseTestCaseORM
     {
         return array(
             self::OCCUPATION,
-            self::PERSON
+            self::PERSON,
         );
     }
 
@@ -86,22 +86,22 @@ class BothSlugHandlerTest extends BaseTestCaseORM
     {
         $repo = $this->em->getRepository(self::OCCUPATION);
 
-        $web = new Occupation;
+        $web = new Occupation();
         $web->setTitle('Web');
 
-        $developer = new Occupation;
+        $developer = new Occupation();
         $developer->setTitle('Developer');
 
-        $designer = new Occupation;
+        $designer = new Occupation();
         $designer->setTitle('Designer');
 
-        $php = new Occupation;
+        $php = new Occupation();
         $php->setTitle('PHP');
 
-        $singer = new Occupation;
+        $singer = new Occupation();
         $singer->setTitle('Singer');
 
-        $rock = new Occupation;
+        $rock = new Occupation();
         $rock->setTitle('Rock');
 
         $repo
@@ -113,17 +113,17 @@ class BothSlugHandlerTest extends BaseTestCaseORM
             ->persistAsLastChildOf($rock, $singer)
         ;
 
-        $herzult = new Person;
+        $herzult = new Person();
         $herzult->setName('Herzult');
         $herzult->setOccupation($php);
         $this->em->persist($herzult);
 
-        $gedi = new Person;
+        $gedi = new Person();
         $gedi->setName('Gedi');
         $gedi->setOccupation($developer);
         $this->em->persist($gedi);
 
-        $hurty = new Person;
+        $hurty = new Person();
         $hurty->setName('Hurty');
         $hurty->setOccupation($singer);
         $this->em->persist($hurty);

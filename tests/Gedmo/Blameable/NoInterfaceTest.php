@@ -4,8 +4,7 @@ namespace Gedmo\Blameable;
 
 use Doctrine\Common\EventManager;
 use Tool\BaseTestCaseORM;
-use Doctrine\Common\Util\Debug,
-    Blameable\Fixture\Entity\WithoutInterface;
+use Blameable\Fixture\Entity\WithoutInterface;
 
 /**
  * These are tests for Blameable behavior
@@ -22,8 +21,8 @@ class NoInterfaceTest extends BaseTestCaseORM
     {
         parent::setUp();
 
-        $evm = new EventManager;
-        $blameableListener = new BlameableListener;
+        $evm = new EventManager();
+        $blameableListener = new BlameableListener();
         $blameableListener->setUserValue('testuser');
         $evm->addEventSubscriber($blameableListener);
 

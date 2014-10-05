@@ -49,6 +49,7 @@ class Post
     public function setPublishedAt($publishedAt)
     {
         $this->publishedAt = $publishedAt;
+
         return $this;
     }
 
@@ -60,6 +61,7 @@ class Post
     public function setTimestampAt($timestampAt)
     {
         $this->timestampAt = $timestampAt;
+
         return $this;
     }
 
@@ -71,6 +73,7 @@ class Post
     public function setDateAt($dateAt)
     {
         $this->dateAt = $dateAt;
+
         return $this;
     }
 
@@ -82,6 +85,7 @@ class Post
     public function setBoolean($boolean)
     {
         $this->boolean = $boolean;
+
         return $this;
     }
 

@@ -2,7 +2,6 @@
 namespace Blameable\Fixture\Entity;
 
 use Gedmo\Blameable\Traits\BlameableEntity;
-use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
 
 /**

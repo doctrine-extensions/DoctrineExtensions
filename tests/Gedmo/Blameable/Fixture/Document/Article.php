@@ -117,6 +117,4 @@ class Article
     {
         $this->creator = $creator;
     }
-
-
 }

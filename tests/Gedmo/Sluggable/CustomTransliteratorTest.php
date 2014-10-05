@@ -4,8 +4,7 @@ namespace Gedmo\Sluggable;
 
 use Doctrine\Common\EventManager;
 use Tool\BaseTestCaseORM;
-use Doctrine\Common\Util\Debug,
-    Sluggable\Fixture\Article;
+use Sluggable\Fixture\Article;
 
 /**
  * These are tests for sluggable behavior
@@ -20,8 +19,8 @@ class CustomTransliteratorTest extends BaseTestCaseORM
 
     public function testStandardTransliteratorFailsOnChineseCharacters()
     {
-        $evm = new EventManager;
-        $evm->addEventSubscriber(new SluggableListener);
+        $evm = new EventManager();
+        $evm->addEventSubscriber(new SluggableListener());
 
         $this->getMockSqliteEntityManager($evm);
         $this->populate();
@@ -34,8 +33,8 @@ class CustomTransliteratorTest extends BaseTestCaseORM
 
     public function testCanUseCustomTransliterator()
     {
-        $evm = new EventManager;
-        $evm->addEventSubscriber(new MySluggableListener);
+        $evm = new EventManager();
+        $evm->addEventSubscriber(new MySluggableListener());
 
         $this->getMockSqliteEntityManager($evm);
         $this->populate();
@@ -48,7 +47,7 @@ class CustomTransliteratorTest extends BaseTestCaseORM
 
     private function populate()
     {
-        $chinese = new Article;
+        $chinese = new Article();
         $chinese->setTitle('北京');
         $chinese->setCode('zh');
         $this->em->persist($chinese);
@@ -59,14 +58,15 @@ class CustomTransliteratorTest extends BaseTestCaseORM
     protected function getUsedEntityFixtures()
     {
         return array(
-            self::ARTICLE
+            self::ARTICLE,
         );
     }
 }
 
 class MySluggableListener extends SluggableListener
 {
-    public function __construct(){
+    public function __construct()
+    {
         $this->setTransliterator(array('\Gedmo\Sluggable\Transliterator', 'transliterate'));
     }
 }

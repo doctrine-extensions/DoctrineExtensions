@@ -4,10 +4,9 @@ namespace Gedmo\Blameable;
 
 use Doctrine\Common\EventManager;
 use Tool\BaseTestCaseORM;
-use Doctrine\Common\Util\Debug,
-    Blameable\Fixture\Entity\Article,
-    Blameable\Fixture\Entity\Comment,
-    Blameable\Fixture\Entity\Type;
+use Blameable\Fixture\Entity\Article;
+use Blameable\Fixture\Entity\Comment;
+use Blameable\Fixture\Entity\Type;
 
 /**
  * These are tests for Blameable behavior
@@ -26,10 +25,10 @@ class BlameableTest extends BaseTestCaseORM
     {
         parent::setUp();
 
-        $listener = new BlameableListener;
+        $listener = new BlameableListener();
         $listener->setUserValue('testuser');
 
-        $evm = new EventManager;
+        $evm = new EventManager();
         $evm->addEventSubscriber($listener);
 
         $this->getMockSqliteEntityManager($evm);
@@ -116,7 +115,7 @@ class BlameableTest extends BaseTestCaseORM
         return array(
             self::ARTICLE,
             self::COMMENT,
-            self::TYPE
+            self::TYPE,
         );
     }
 }

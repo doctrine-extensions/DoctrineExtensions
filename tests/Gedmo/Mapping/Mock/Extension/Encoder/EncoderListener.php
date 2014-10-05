@@ -14,7 +14,7 @@ class EncoderListener extends MappedEventSubscriber
     {
         return array(
             'onFlush',
-            'loadClassMetadata'
+            'loadClassMetadata',
         );
     }
 

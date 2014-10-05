@@ -2,12 +2,10 @@
 
 namespace Gedmo\Tree;
 
-use Doctrine\Common\Util\Debug,
-    Doctrine\ORM\Mapping\Driver\YamlDriver,
-    Doctrine\ORM\Mapping\Driver\DriverChain,
-    Mapping\Fixture\Yaml\Category,
-    Gedmo\Mapping\ExtensionMetadataFactory,
-    Gedmo\Tree\TreeListener;
+use Doctrine\ORM\Mapping\Driver\YamlDriver;
+use Doctrine\ORM\Mapping\Driver\DriverChain;
+use Mapping\Fixture\Yaml\Category;
+use Gedmo\Mapping\ExtensionMetadataFactory;
 
 /**
  * These are mapping tests for tree extension
@@ -27,13 +25,13 @@ class TreeMappingTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $config = new \Doctrine\ORM\Configuration();
-        $config->setMetadataCacheImpl(new \Doctrine\Common\Cache\ApcCache);
-        $config->setQueryCacheImpl(new \Doctrine\Common\Cache\ArrayCache);
+        $config->setMetadataCacheImpl(new \Doctrine\Common\Cache\ApcCache());
+        $config->setQueryCacheImpl(new \Doctrine\Common\Cache\ArrayCache());
         $config->setProxyDir(TESTS_TEMP_DIR);
         $config->setProxyNamespace('Gedmo\Mapping\Proxy');
-        $chainDriverImpl = new DriverChain;
+        $chainDriverImpl = new DriverChain();
         $chainDriverImpl->addDriver(
-            new YamlDriver(array(__DIR__ . '/Driver/Yaml')),
+            new YamlDriver(array(__DIR__.'/Driver/Yaml')),
             'Mapping\Fixture\Yaml'
         );
         $chainDriverImpl->addDriver(
@@ -51,7 +49,7 @@ class TreeMappingTest extends \PHPUnit_Framework_TestCase
             'memory' => true,
         );
 
-        $this->listener = new TreeListener;
+        $this->listener = new TreeListener();
         $evm = new \Doctrine\Common\EventManager();
         $evm->addEventSubscriber(new TreeListener());
         $this->em = \Doctrine\ORM\EntityManager::create($conn, $config, $evm);

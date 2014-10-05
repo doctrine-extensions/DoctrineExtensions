@@ -24,18 +24,18 @@ class ProtectedPropertySupperclassTest extends BaseTestCaseORM
     {
         parent::setUp();
 
-        $evm = new EventManager;
-        $translatableListener = new TranslatableListener;
+        $evm = new EventManager();
+        $translatableListener = new TranslatableListener();
         $translatableListener->setTranslatableLocale('en_US');
         $evm->addEventSubscriber($translatableListener);
-        $evm->addEventSubscriber(new TimestampableListener);
+        $evm->addEventSubscriber(new TimestampableListener());
 
         $this->getMockSqliteEntityManager($evm);
     }
 
     public function testProtectedProperty()
     {
-        $test = new SupperClassExtension;
+        $test = new SupperClassExtension();
         $test->setName('name');
         $test->setTitle('title');
 
@@ -54,7 +54,7 @@ class ProtectedPropertySupperclassTest extends BaseTestCaseORM
     {
         return array(
             self::TRANSLATION,
-            self::SUPERCLASS
+            self::SUPERCLASS,
         );
     }
 }

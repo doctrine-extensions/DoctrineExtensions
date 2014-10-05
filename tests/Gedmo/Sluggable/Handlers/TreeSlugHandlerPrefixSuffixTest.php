@@ -2,7 +2,6 @@
 
 namespace Gedmo\Sluggable;
 
-
 use Doctrine\Common\EventManager;
 use Gedmo\Tree\TreeListener;
 use Sluggable\Fixture\Handler\TreeSlugPrefixSuffix;
@@ -16,9 +15,9 @@ class TreeSlugHandlerPrefixSuffixTest extends BaseTestCaseORM
     {
         parent::setUp();
 
-        $evm = new EventManager;
-        $evm->addEventSubscriber(new SluggableListener);
-        $evm->addEventSubscriber(new TreeListener);
+        $evm = new EventManager();
+        $evm->addEventSubscriber(new SluggableListener());
+        $evm->addEventSubscriber(new TreeListener());
 
         $this->getMockSqliteEntityManager($evm);
     }
@@ -48,8 +47,7 @@ class TreeSlugHandlerPrefixSuffixTest extends BaseTestCaseORM
     protected function getUsedEntityFixtures()
     {
         return array(
-            self::TARGET
+            self::TARGET,
         );
     }
-
-} 
+}

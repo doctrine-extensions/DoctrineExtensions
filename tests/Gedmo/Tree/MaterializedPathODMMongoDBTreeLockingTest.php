@@ -25,9 +25,9 @@ class MaterializedPathODMMongoDBTreeLockingTest extends BaseTestCaseMongoODM
     {
         parent::setUp();
 
-        $this->listener = new TreeListenerMock;
+        $this->listener = new TreeListenerMock();
 
-        $evm = new EventManager;
+        $evm = new EventManager();
         $evm->addEventSubscriber($this->listener);
 
         $this->getMockDocumentManager($evm);
@@ -81,7 +81,7 @@ class MaterializedPathODMMongoDBTreeLockingTest extends BaseTestCaseMongoODM
 
         // These one will release the lock as normal
         $this->listener->setReleaseLocks(true);
-        
+
         $article3 = $this->createArticle();
         $article3->setTitle('3');
 
@@ -91,10 +91,10 @@ class MaterializedPathODMMongoDBTreeLockingTest extends BaseTestCaseMongoODM
         // This should NOT throw an exception
         $article3->setTitle('New title');
         $this->dm->flush();
-        
+
         // But this should throw it, because the root of its tree ($article) is still locked
         $this->setExpectedException('Gedmo\Exception\TreeLockingException');
-        
+
         $repo = $this->dm->getRepository(self::ARTICLE);
         $article2 = $repo->findOneByTitle('2');
         $article2->setTitle('New title 2');
@@ -105,6 +105,7 @@ class MaterializedPathODMMongoDBTreeLockingTest extends BaseTestCaseMongoODM
     public function createArticle()
     {
         $class = self::ARTICLE;
-        return new $class;
+
+        return new $class();
     }
 }

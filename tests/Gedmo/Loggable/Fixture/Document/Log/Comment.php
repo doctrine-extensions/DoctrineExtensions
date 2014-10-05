@@ -13,5 +13,4 @@ use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
  */
 class Comment extends AbstractLogEntry
 {
-
 }

@@ -4,17 +4,15 @@ namespace Gedmo\SoftDeleteable;
 
 use Tool\BaseTestCaseORM;
 use Doctrine\Common\EventManager;
-use Doctrine\Common\Util\Debug,
-    SoftDeleteable\Fixture\Entity\Article,
-    SoftDeleteable\Fixture\Entity\Comment,
-    SoftDeleteable\Fixture\Entity\User,
-    SoftDeleteable\Fixture\Entity\Page,
-    SoftDeleteable\Fixture\Entity\MegaPage,
-    SoftDeleteable\Fixture\Entity\Module,
-    SoftDeleteable\Fixture\Entity\OtherArticle,
-    SoftDeleteable\Fixture\Entity\OtherComment,
-    SoftDeleteable\Fixture\Entity\Child,
-    Gedmo\SoftDeleteable\SoftDeleteableListener;
+use SoftDeleteable\Fixture\Entity\Article;
+use SoftDeleteable\Fixture\Entity\Comment;
+use SoftDeleteable\Fixture\Entity\User;
+use SoftDeleteable\Fixture\Entity\Page;
+use SoftDeleteable\Fixture\Entity\MegaPage;
+use SoftDeleteable\Fixture\Entity\Module;
+use SoftDeleteable\Fixture\Entity\OtherArticle;
+use SoftDeleteable\Fixture\Entity\OtherComment;
+use SoftDeleteable\Fixture\Entity\Child;
 
 /**
  * These are tests for SoftDeleteable behavior
@@ -186,7 +184,6 @@ class SoftDeleteableEntityTest extends BaseTestCaseORM
         $this->assertTrue(is_object($art->getDeletedAt()));
         $this->assertTrue($art->getDeletedAt() instanceof \DateTime);
 
-
         // Inheritance tree DELETE DQL
         $this->em->getFilters()->enable(self::SOFT_DELETEABLE_FILTER_NAME);
 
@@ -267,7 +264,6 @@ class SoftDeleteableEntityTest extends BaseTestCaseORM
         $this->assertTrue($foundArt->getDeletedAt() instanceof \DateTime);
         $this->assertTrue(is_object($foundComment));
         $this->assertInstanceOf(self::OTHER_COMMENT_CLASS, $foundComment);
-
     }
 
     /**
@@ -329,7 +325,7 @@ class SoftDeleteableEntityTest extends BaseTestCaseORM
             array(
                 "getSubscribedEvents",
                 "preSoftDelete",
-                "postSoftDelete"
+                "postSoftDelete",
             )
         );
 
@@ -370,7 +366,7 @@ class SoftDeleteableEntityTest extends BaseTestCaseORM
 
         $this->em->remove($art);
         $this->em->flush();
-     }
+    }
 
     protected function getUsedEntityFixtures()
     {

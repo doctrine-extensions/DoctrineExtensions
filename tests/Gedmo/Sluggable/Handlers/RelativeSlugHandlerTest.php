@@ -23,8 +23,8 @@ class RelativeSlugHandlerTest extends BaseTestCaseORM
     {
         parent::setUp();
 
-        $evm = new EventManager;
-        $evm->addEventSubscriber(new SluggableListener);
+        $evm = new EventManager();
+        $evm->addEventSubscriber(new SluggableListener());
 
         $this->getMockSqliteEntityManager($evm);
     }
@@ -83,38 +83,38 @@ class RelativeSlugHandlerTest extends BaseTestCaseORM
     {
         return array(
             self::SLUG,
-            self::ARTICLE
+            self::ARTICLE,
         );
     }
 
     private function populate()
     {
-        $sport = new Article;
+        $sport = new Article();
         $sport->setTitle('Sport');
         $sport->setCode('test');
         $this->em->persist($sport);
 
-        $cars = new Article;
+        $cars = new Article();
         $cars->setTitle('Cars');
         $cars->setCode('code');
         $this->em->persist($cars);
 
-        $thomas = new ArticleRelativeSlug;
+        $thomas = new ArticleRelativeSlug();
         $thomas->setTitle('Thomas');
         $thomas->setArticle($sport);
         $this->em->persist($thomas);
 
-        $jen = new ArticleRelativeSlug;
+        $jen = new ArticleRelativeSlug();
         $jen->setTitle('Jen');
         $jen->setArticle($sport);
         $this->em->persist($jen);
 
-        $john = new ArticleRelativeSlug;
+        $john = new ArticleRelativeSlug();
         $john->setTitle('John');
         $john->setArticle($cars);
         $this->em->persist($john);
 
-        $single = new ArticleRelativeSlug;
+        $single = new ArticleRelativeSlug();
         $single->setTitle('Single');
         $this->em->persist($single);
 

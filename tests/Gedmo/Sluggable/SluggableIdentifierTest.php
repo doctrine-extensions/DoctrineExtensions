@@ -21,8 +21,8 @@ class SluggableIdentifierTest extends BaseTestCaseORM
     {
         parent::setUp();
 
-        $evm = new EventManager;
-        $evm->addEventSubscriber(new SluggableListener);
+        $evm = new EventManager();
+        $evm->addEventSubscriber(new SluggableListener());
 
         $this->getMockSqliteEntityManager($evm);
     }
@@ -30,9 +30,9 @@ class SluggableIdentifierTest extends BaseTestCaseORM
     /**
      * @test
      */
-    function shouldBePossibleToSlugIdentifiers()
+    public function shouldBePossibleToSlugIdentifiers()
     {
-        $sport = new Identifier;
+        $sport = new Identifier();
         $sport->setTitle('Sport');
         $this->em->persist($sport);
         $this->em->flush();
@@ -43,13 +43,13 @@ class SluggableIdentifierTest extends BaseTestCaseORM
     /**
      * @test
      */
-    function shouldPersistMultipleNonConflictingIdentifierSlugs()
+    public function shouldPersistMultipleNonConflictingIdentifierSlugs()
     {
-        $sport = new Identifier;
+        $sport = new Identifier();
         $sport->setTitle('Sport');
         $this->em->persist($sport);
 
-        $sport2 = new Identifier;
+        $sport2 = new Identifier();
         $sport2->setTitle('Sport');
         $this->em->persist($sport2);
         $this->em->flush();

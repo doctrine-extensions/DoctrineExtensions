@@ -30,14 +30,14 @@ class Issue109Test extends BaseTestCaseORM
     {
         parent::setUp();
 
-        $evm = new EventManager;
+        $evm = new EventManager();
         $this->translatableListener = new TranslatableListener();
         $this->translatableListener->setTranslatableLocale('en');
         $this->translatableListener->setDefaultLocale('en');
         $evm->addEventSubscriber($this->translatableListener);
 
         $this->getMockSqliteEntityManager($evm);
-         $this->populate();
+        $this->populate();
     }
 
     public function testIssue109()
@@ -71,28 +71,28 @@ class Issue109Test extends BaseTestCaseORM
         return array(
             self::ARTICLE,
             self::TRANSLATION,
-            self::COMMENT
+            self::COMMENT,
         );
     }
 
     public function populate()
     {
-        $text0 = new Article;
+        $text0 = new Article();
         $text0->setTitle('text0');
 
         $this->em->persist($text0);
 
-        $text1 = new Article;
+        $text1 = new Article();
         $text1->setTitle('text1');
 
         $this->em->persist($text1);
 
-        $na = new Article;
+        $na = new Article();
         $na->setTitle('NA');
 
         $this->em->persist($na);
 
-        $out = new Article;
+        $out = new Article();
         $out->setTitle('Out');
 
         $this->em->persist($out);

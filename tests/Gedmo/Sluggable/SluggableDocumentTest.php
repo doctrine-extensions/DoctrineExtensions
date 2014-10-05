@@ -21,7 +21,7 @@ class SluggableDocumentTest extends BaseTestCaseMongoODM
     {
         parent::setUp();
         $evm = new EventManager();
-        $evm->addEventSubscriber(new SluggableListener);
+        $evm->addEventSubscriber(new SluggableListener());
 
         $this->getMockDocumentManager($evm);
         $this->populate();
@@ -56,19 +56,19 @@ class SluggableDocumentTest extends BaseTestCaseMongoODM
             $this->dm->persist($article);
             $this->dm->flush();
             $this->dm->clear();
-            $this->assertEquals('my-title-the-code-' . ($i + 1), $article->getSlug());
+            $this->assertEquals('my-title-the-code-'.($i + 1), $article->getSlug());
         }
     }
 
     public function testGithubIssue57()
     {
         // slug matched by prefix
-        $article = new Article;
+        $article = new Article();
         $article->setTitle('my');
         $article->setCode('slug');
         $this->dm->persist($article);
 
-        $article2 = new Article;
+        $article2 = new Article();
         $article2->setTitle('my');
         $article2->setCode('s');
         $this->dm->persist($article2);

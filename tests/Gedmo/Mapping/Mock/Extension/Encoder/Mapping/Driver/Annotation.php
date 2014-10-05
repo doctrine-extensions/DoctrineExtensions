@@ -14,9 +14,10 @@ class Annotation implements Driver
      */
     protected $_originalDriver = null;
 
-    public function readExtendedMetadata($meta, array &$config) {
+    public function readExtendedMetadata($meta, array &$config)
+    {
         // load our available annotations
-        require_once __DIR__ . '/../Annotations.php';
+        require_once __DIR__.'/../Annotations.php';
         $reader = new AnnotationReader();
         // set annotation namespace and alias
         //$reader->setAnnotationNamespaceAlias('Gedmo\Mapping\Mock\Extension\Encoder\Mapping\\', 'ext');
@@ -50,7 +51,7 @@ class Annotation implements Driver
                 // store the metadata
                 $config['encode'][$field] = array(
                     'type' => $encode->type,
-                    'secret' => $encode->secret
+                    'secret' => $encode->secret,
                 );
             }
         }

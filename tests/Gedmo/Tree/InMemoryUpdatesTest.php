@@ -21,8 +21,8 @@ class InMemoryUpdatesTest extends BaseTestCaseORM
     {
         parent::setUp();
 
-        $evm = new EventManager;
-        $evm->addEventSubscriber(new TreeListener);
+        $evm = new EventManager();
+        $evm->addEventSubscriber(new TreeListener());
 
         $this->getMockSqliteEntityManager($evm);
     }
@@ -89,7 +89,7 @@ class InMemoryUpdatesTest extends BaseTestCaseORM
     protected function getUsedEntityFixtures()
     {
         return array(
-            self::CATEGORY
+            self::CATEGORY,
         );
     }
 }

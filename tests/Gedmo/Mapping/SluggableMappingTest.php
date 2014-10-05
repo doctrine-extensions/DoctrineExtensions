@@ -2,11 +2,10 @@
 
 namespace Gedmo\Sluggable;
 
-use Doctrine\Common\Util\Debug,
-    Doctrine\ORM\Mapping\Driver\YamlDriver,
-    Doctrine\ORM\Mapping\Driver\DriverChain,
-    Mapping\Fixture\Yaml\Category,
-    Gedmo\Mapping\ExtensionMetadataFactory;
+use Doctrine\ORM\Mapping\Driver\YamlDriver;
+use Doctrine\ORM\Mapping\Driver\DriverChain;
+use Mapping\Fixture\Yaml\Category;
+use Gedmo\Mapping\ExtensionMetadataFactory;
 
 /**
  * These are mapping tests for sluggable extension
@@ -24,19 +23,19 @@ class SluggableMappingTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $config = new \Doctrine\ORM\Configuration();
-        $config->setMetadataCacheImpl(new \Doctrine\Common\Cache\ArrayCache);
-        $config->setQueryCacheImpl(new \Doctrine\Common\Cache\ArrayCache);
+        $config->setMetadataCacheImpl(new \Doctrine\Common\Cache\ArrayCache());
+        $config->setQueryCacheImpl(new \Doctrine\Common\Cache\ArrayCache());
         $config->setProxyDir(TESTS_TEMP_DIR);
         $config->setProxyNamespace('Gedmo\Mapping\Proxy');
-        $chainDriverImpl = new DriverChain;
+        $chainDriverImpl = new DriverChain();
         $chainDriverImpl->addDriver(
-            new YamlDriver(array(__DIR__ . '/Driver/Yaml')),
+            new YamlDriver(array(__DIR__.'/Driver/Yaml')),
             'Mapping\Fixture\Yaml'
         );
         $reader = new \Doctrine\Common\Annotations\AnnotationReader();
         \Doctrine\Common\Annotations\AnnotationRegistry::registerAutoloadNamespace(
             'Gedmo\\Mapping\\Annotation',
-            VENDOR_PATH . '/../lib'
+            VENDOR_PATH.'/../lib'
         );
         $chainDriverImpl->addDriver(
             new \Doctrine\ORM\Mapping\Driver\AnnotationDriver($reader),
@@ -57,7 +56,7 @@ class SluggableMappingTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    function shouldBeAbleToMapSluggableUsingYamlDriver()
+    public function shouldBeAbleToMapSluggableUsingYamlDriver()
     {
         $meta = $this->em->getClassMetadata(self::TEST_YAML_ENTITY_CLASS);
         $cacheId = ExtensionMetadataFactory::getCacheId(
@@ -108,7 +107,7 @@ class SluggableMappingTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    function shouldBeAbleToMapSluggableUsingAnnotationDriver()
+    public function shouldBeAbleToMapSluggableUsingAnnotationDriver()
     {
         $meta = $this->em->getClassMetadata(self::SLUGGABLE);
         $cacheId = ExtensionMetadataFactory::getCacheId(

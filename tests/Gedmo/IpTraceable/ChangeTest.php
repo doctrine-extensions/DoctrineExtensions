@@ -4,14 +4,11 @@ namespace Gedmo\IpTraceable;
 
 use Doctrine\Common\EventManager;
 use Tool\BaseTestCaseORM;
-use Doctrine\Common\Util\Debug,
-    IpTraceable\Fixture\TitledArticle,
-    Gedmo\Mapping\Event\Adapter\ORM as BaseAdapterORM,
-    Doctrine\Common\EventArgs;
+use IpTraceable\Fixture\TitledArticle;
 
 /**
  * These are tests for IpTraceable behavior
- * 
+ *
  * @author Pierre-Charles Bertineau <pc.bertineau@alterphp.com>
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
@@ -27,10 +24,10 @@ class ChangeTest extends BaseTestCaseORM
     {
         parent::setUp();
 
-        $this->listener = new IpTraceableListener;
+        $this->listener = new IpTraceableListener();
         $this->listener->setIpValue(self::TEST_IP);
 
-        $evm = new EventManager;
+        $evm = new EventManager();
         $evm->addEventSubscriber($this->listener);
 
         $this->getMockSqliteEntityManager($evm);

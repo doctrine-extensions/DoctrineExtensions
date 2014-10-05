@@ -11,5 +11,4 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Comment extends AbstractLogEntry
 {
-
 }

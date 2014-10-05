@@ -41,6 +41,7 @@ class Address
     public function setStreet($street)
     {
         $this->street = $street;
+
         return $this;
     }
 
@@ -52,6 +53,7 @@ class Address
     public function setDeletedAt($deletedAt)
     {
         $this->deletedAt = $deletedAt;
+
         return $this;
     }
 
@@ -63,6 +65,7 @@ class Address
     public function setOwner(Person $owner)
     {
         $this->owner = $owner;
+
         return $this;
     }
 

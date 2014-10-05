@@ -4,8 +4,7 @@ namespace Gedmo\Sluggable;
 
 use Doctrine\Common\EventManager;
 use Tool\BaseTestCaseORM;
-use Doctrine\Common\Util\Debug,
-    Sluggable\Fixture\ConfigurationArticle;
+use Sluggable\Fixture\ConfigurationArticle;
 
 /**
  * These are tests for Sluggable behavior
@@ -24,8 +23,8 @@ class SluggableConfigurationTest extends BaseTestCaseORM
     {
         parent::setUp();
 
-        $evm = new EventManager;
-        $evm->addEventSubscriber(new SluggableListener);
+        $evm = new EventManager();
+        $evm->addEventSubscriber(new SluggableListener());
 
         $this->getMockSqliteEntityManager($evm);
         $this->populate();
@@ -98,4 +97,3 @@ class SluggableConfigurationTest extends BaseTestCaseORM
         $this->articleId = $article->getId();
     }
 }
-

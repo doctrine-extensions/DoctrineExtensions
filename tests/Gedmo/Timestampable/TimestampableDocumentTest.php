@@ -4,8 +4,8 @@ namespace Gedmo\Timestampable;
 
 use Tool\BaseTestCaseMongoODM;
 use Doctrine\Common\EventManager;
-use Timestampable\Fixture\Document\Article,
-    Timestampable\Fixture\Document\Type;
+use Timestampable\Fixture\Document\Article;
+use Timestampable\Fixture\Document\Type;
 
 /**
  * These are tests for Timestampable behavior ODM implementation
@@ -23,7 +23,7 @@ class TimestampableDocumentTest extends BaseTestCaseMongoODM
     {
         parent::setUp();
         $evm = new EventManager();
-        $evm->addEventSubscriber(new TimestampableListener);
+        $evm->addEventSubscriber(new TimestampableListener());
 
         $this->getMockDocumentManager($evm);
         $this->populate();
@@ -36,14 +36,14 @@ class TimestampableDocumentTest extends BaseTestCaseMongoODM
 
         $date = new \DateTime();
         $now = time();
-        $created = intval((string)$article->getCreated());
+        $created = intval((string) $article->getCreated());
         $this->assertTrue($created > $now - 5 && $created < $now + 5); // 5 seconds interval if lag
         $this->assertEquals(
             $date->format('Y-m-d H:i'),
             $article->getUpdated()->format('Y-m-d H:i')
         );
 
-        $published = new Type;
+        $published = new Type();
         $published->setIdentifier('published');
         $published->setTitle('Published');
 
@@ -77,14 +77,14 @@ class TimestampableDocumentTest extends BaseTestCaseMongoODM
         $sport = $repo->findOneByTitle('sport forced');
         $this->assertEquals(
             $created,
-            (string)$sport->getCreated()
+            (string) $sport->getCreated()
         );
         $this->assertEquals(
             '2000-01-01 12:00:00',
             $sport->getUpdated()->format('Y-m-d H:i:s')
         );
 
-        $published = new Type;
+        $published = new Type();
         $published->setIdentifier('published');
         $published->setTitle('Published');
 
@@ -105,7 +105,7 @@ class TimestampableDocumentTest extends BaseTestCaseMongoODM
     /**
      * @test
      */
-    function shouldHandleOnChangeWithBooleanValue()
+    public function shouldHandleOnChangeWithBooleanValue()
     {
         $repo = $this->dm->getRepository(self::ARTICLE);
         $article = $repo->findOneByTitle('Timestampable Article');

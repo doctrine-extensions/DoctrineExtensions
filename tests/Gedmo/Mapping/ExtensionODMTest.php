@@ -19,8 +19,8 @@ class ExtensionODMTest extends BaseTestCaseMongoODM
         parent::setUp();
 
         require_once __DIR__.'/Mock/Extension/Encoder/Mapping/Annotations.php';
-        $evm = new EventManager;
-        $this->encoderListener = new EncoderListener;
+        $evm = new EventManager();
+        $this->encoderListener = new EncoderListener();
         $evm->addEventSubscriber($this->encoderListener);
 
         $this->getMockDocumentManager($evm);
@@ -46,7 +46,7 @@ class ExtensionODMTest extends BaseTestCaseMongoODM
 
     public function testGeneratedValues()
     {
-        $user = new User;
+        $user = new User();
         $user->setName('encode me');
         $user->setPassword('secret');
         $this->dm->persist($user);

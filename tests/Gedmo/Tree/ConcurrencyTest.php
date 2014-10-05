@@ -4,10 +4,9 @@ namespace Gedmo\Tree;
 
 use Doctrine\Common\EventManager;
 use Tool\BaseTestCaseORM;
-use Doctrine\Common\Util\Debug,
-    Tree\Fixture\Category,
-    Tree\Fixture\Article,
-    Tree\Fixture\Comment;
+use Tree\Fixture\Category;
+use Tree\Fixture\Article;
+use Tree\Fixture\Comment;
 
 /**
  * These are tests for Tree behavior
@@ -26,8 +25,8 @@ class ConcurrencyTest extends BaseTestCaseORM
     {
         parent::setUp();
 
-        $evm = new EventManager;
-        $evm->addEventSubscriber(new TreeListener);
+        $evm = new EventManager();
+        $evm->addEventSubscriber(new TreeListener());
 
         $this->getMockSqliteEntityManager($evm);
         $this->populate();
@@ -120,7 +119,7 @@ class ConcurrencyTest extends BaseTestCaseORM
         return array(
             self::CATEGORY,
             self::ARTICLE,
-            self::COMMENT
+            self::COMMENT,
         );
     }
 

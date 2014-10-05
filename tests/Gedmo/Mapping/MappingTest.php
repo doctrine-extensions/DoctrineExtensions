@@ -2,9 +2,7 @@
 
 namespace Gedmo\Mapping;
 
-use Doctrine\Common\Util\Debug,
-    Tree\Fixture\BehavioralCategory,
-    Gedmo\Mapping\ExtensionMetadataFactory;
+use Tree\Fixture\BehavioralCategory;
 
 /**
  * These are mapping extension tests
@@ -46,7 +44,7 @@ class MappingTest extends \PHPUnit_Framework_TestCase
         $schemaTool->dropSchema(array());
         $schemaTool->createSchema(array(
             $this->em->getClassMetadata(self::TEST_ENTITY_CATEGORY),
-            $this->em->getClassMetadata(self::TEST_ENTITY_TRANSLATION)
+            $this->em->getClassMetadata(self::TEST_ENTITY_TRANSLATION),
         ));
     }
 

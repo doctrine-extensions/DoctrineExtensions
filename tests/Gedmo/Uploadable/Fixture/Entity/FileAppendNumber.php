@@ -35,7 +35,6 @@ class FileAppendNumber
      */
     private $article;
 
-
     public function getId()
     {
         return $this->id;

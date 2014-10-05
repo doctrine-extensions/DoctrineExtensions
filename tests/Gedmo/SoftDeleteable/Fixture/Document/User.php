@@ -23,7 +23,8 @@ class User
     /**
      * Sets deletedAt.
      *
-     * @param  Datetime $deletedAt
+     * @param Datetime $deletedAt
+     *
      * @return $this
      */
     public function setDeletedAt(\DateTime $deletedAt)

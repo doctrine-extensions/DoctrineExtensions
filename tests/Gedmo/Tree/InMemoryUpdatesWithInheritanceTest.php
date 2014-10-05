@@ -16,7 +16,6 @@ use Tree\Fixture\Genealogy\Woman;
  */
 class InMemoryUpdatesWithInheritanceTest extends BaseTestCaseORM
 {
-
     const PERSON = "Tree\\Fixture\\Genealogy\\Person";
     const MAN = "Tree\\Fixture\\Genealogy\\Man";
     const WOMAN = "Tree\\Fixture\\Genealogy\\Woman";
@@ -25,8 +24,8 @@ class InMemoryUpdatesWithInheritanceTest extends BaseTestCaseORM
     {
         parent::setUp();
 
-        $evm = new EventManager;
-        $evm->addEventSubscriber(new TreeListener);
+        $evm = new EventManager();
+        $evm->addEventSubscriber(new TreeListener());
 
         $this->getMockSqliteEntityManager($evm);
     }
@@ -86,7 +85,7 @@ class InMemoryUpdatesWithInheritanceTest extends BaseTestCaseORM
         return array(
             self::PERSON,
             self::MAN,
-            self::WOMAN
+            self::WOMAN,
         );
     }
 }

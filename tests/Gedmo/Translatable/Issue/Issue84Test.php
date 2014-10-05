@@ -25,7 +25,7 @@ class Issue84Test extends BaseTestCaseORM
     {
         parent::setUp();
 
-        $evm = new EventManager;
+        $evm = new EventManager();
         $this->translatableListener = new TranslatableListener();
         $this->translatableListener->setTranslatableLocale('en');
         $evm->addEventSubscriber($this->translatableListener);
@@ -37,7 +37,7 @@ class Issue84Test extends BaseTestCaseORM
     {
         $repo = $this->em->getRepository(self::TRANSLATION);
 
-        $article = new Article;
+        $article = new Article();
         $article->setTitle('en art');
         $article->setContent('content');
         $this->em->persist($article);
@@ -55,7 +55,7 @@ class Issue84Test extends BaseTestCaseORM
     {
         return array(
             self::ARTICLE,
-            self::TRANSLATION
+            self::TRANSLATION,
         );
     }
 }

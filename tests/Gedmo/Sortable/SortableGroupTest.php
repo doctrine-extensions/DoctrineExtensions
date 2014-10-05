@@ -35,8 +35,8 @@ class SortableGroupTest extends BaseTestCaseORM
     {
         parent::setUp();
 
-        $evm = new EventManager;
-        $evm->addEventSubscriber(new SortableListener);
+        $evm = new EventManager();
+        $evm->addEventSubscriber(new SortableListener());
 
         $this->getMockSqliteEntityManager($evm);
         /*$this->getMockCustomEntityManager(array(
@@ -129,15 +129,15 @@ class SortableGroupTest extends BaseTestCaseORM
         $tomorrow = \DateTime::createFromFormat(self::TRAVEL_DATE_FORMAT, self::TOMORROW);
 
         for ($i = 0; $i < self::SEATS; $i++) {
-            $reservation = $repo->findOneByName('Bratislava Today ' . $i);
+            $reservation = $repo->findOneByName('Bratislava Today '.$i);
             $this->assertNotNull($reservation);
             $this->assertEquals($i, $reservation->getSeat());
 
-            $reservation = $repo->findOneByName('Bratislava Tomorrow ' . $i);
+            $reservation = $repo->findOneByName('Bratislava Tomorrow '.$i);
             $this->assertNotNull($reservation);
             $this->assertEquals($i, $reservation->getSeat());
 
-            $reservation = $repo->findOneByName('Prague Today ' . $i);
+            $reservation = $repo->findOneByName('Prague Today '.$i);
             $this->assertNotNull($reservation);
             $this->assertEquals($i, $reservation->getSeat());
         }
@@ -152,33 +152,33 @@ class SortableGroupTest extends BaseTestCaseORM
         // Bratislava Today should have 2 seats
         $bratislavaToday = $repo->findBy(array(
             'destination' => 'Bratislava',
-            'travelDate' => $today
+            'travelDate' => $today,
         ), array( 'seat' => 'asc' ));
         $this->assertCount(self::SEATS - 1, $bratislavaToday);
         // Test seat numbers
         // Should be [ 0, 1 ]
-        $seats = array_map(function($r) { return $r->getSeat(); }, $bratislavaToday);
+        $seats = array_map(function ($r) { return $r->getSeat(); }, $bratislavaToday);
         $this->assertEquals(range(0, self::SEATS - 2), $seats, 'Should be seats [ 0, 1 ] to Bratislava Today');
 
         // Bratislava Tomorrow should have 4 seats
         $bratislavaTomorrow = $repo->findBy(array(
             'destination' => 'Bratislava',
-            'travelDate' => $tomorrow
+            'travelDate' => $tomorrow,
         ), array( 'seat' => 'asc' ));
         $this->assertCount(self::SEATS + 1, $bratislavaTomorrow);
         // Test seat numbers
         // Should be [ 0, 1, 2, 3 ]
-        $seats = array_map(function($r) { return $r->getSeat(); }, $bratislavaTomorrow);
+        $seats = array_map(function ($r) { return $r->getSeat(); }, $bratislavaTomorrow);
         $this->assertEquals(range(0, self::SEATS), $seats, 'Should be seats [ 0, 1, 2, 3 ] to Bratislava Tomorrow');
 
         // Prague Today should have 3 seats
         $pragueToday = $repo->findBy(array(
             'destination' => 'Prague',
-            'travelDate' => $today
+            'travelDate' => $today,
         ), array( 'seat' => 'asc' ));
         $this->assertCount(self::SEATS, $pragueToday);
         // Test seat numbers
-        $seats = array_map(function($r) { return $r->getSeat(); }, $pragueToday);
+        $seats = array_map(function ($r) { return $r->getSeat(); }, $pragueToday);
         $this->assertEquals(range(0, self::SEATS - 1), $seats, 'Should be seats [ 0, 1, 2 ] to Prague Today');
     }
 
@@ -189,19 +189,19 @@ class SortableGroupTest extends BaseTestCaseORM
             self::CAR,
             self::ENGINE,
             self::BUS,
-            self::RESERVATION
+            self::RESERVATION,
         );
     }
 
     private function populate()
     {
         // engines
-        $v8 = new Engine;
+        $v8 = new Engine();
         $v8->setType('V8');
         $v8->setValves(8);
         $this->em->persist($v8);
 
-        $v6 = new Engine;
+        $v6 = new Engine();
         $v6->setType('V6');
         $v6->setValves(8);
         $this->em->persist($v6);
@@ -209,23 +209,23 @@ class SortableGroupTest extends BaseTestCaseORM
 
         // cars
 
-        $audi80 = new Car;
+        $audi80 = new Car();
         $audi80->setEngine($v8);
         $audi80->setTitle('Audi-80');
         $this->em->persist($audi80);
 
-        $audi80s = new Car;
+        $audi80s = new Car();
         $audi80s->setParent($audi80);
         $audi80s->setTitle('Audi-80s');
         $audi80s->setEngine($v8);
         $this->em->persist($audi80s);
 
-        $icarus = new Bus;
+        $icarus = new Bus();
         $icarus->setEngine($v8);
         $icarus->setTitle('Icarus');
         $this->em->persist($icarus);
 
-        $audiJet = new Car;
+        $audiJet = new Car();
         $audiJet->setParent($audi80);
         $audiJet->setTitle('Audi-jet');
         $audiJet->setEngine($v6);
@@ -235,25 +235,25 @@ class SortableGroupTest extends BaseTestCaseORM
         $tomorrow = \DateTime::createFromFormat(self::TRAVEL_DATE_FORMAT, self::TOMORROW);
 
         for ($i = 0; $i < self::SEATS; $i++) {
-            $reservationBratislava = new Reservation;
+            $reservationBratislava = new Reservation();
             $reservationBratislava->setBus($icarus);
             $reservationBratislava->setDestination('Bratislava');
             $reservationBratislava->setTravelDate($today);
-            $reservationBratislava->setName('Bratislava Today ' . $i);
+            $reservationBratislava->setName('Bratislava Today '.$i);
             $this->em->persist($reservationBratislava);
 
-            $reservationBratislava = new Reservation;
+            $reservationBratislava = new Reservation();
             $reservationBratislava->setBus($icarus);
             $reservationBratislava->setDestination('Bratislava');
             $reservationBratislava->setTravelDate($tomorrow);
-            $reservationBratislava->setName('Bratislava Tomorrow ' . $i);
+            $reservationBratislava->setName('Bratislava Tomorrow '.$i);
             $this->em->persist($reservationBratislava);
 
-            $reservationPrague = new Reservation;
+            $reservationPrague = new Reservation();
             $reservationPrague->setBus($icarus);
             $reservationPrague->setDestination('Prague');
             $reservationPrague->setTravelDate($today);
-            $reservationPrague->setName('Prague Today ' . $i);
+            $reservationPrague->setName('Prague Today '.$i);
             $this->em->persist($reservationPrague);
         }
 

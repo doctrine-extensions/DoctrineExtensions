@@ -3,7 +3,6 @@
 namespace Translatable\Fixture;
 
 use Doctrine\ORM\Mapping as ORM;
-
 use Gedmo\Translatable\Entity\MappedSuperclass\AbstractTranslation;
 
 /**
@@ -20,5 +19,4 @@ use Gedmo\Translatable\Entity\MappedSuperclass\AbstractTranslation;
  */
 class PersonTranslation extends AbstractTranslation
 {
-
 }

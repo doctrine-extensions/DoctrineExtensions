@@ -13,9 +13,9 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\DiscriminatorMap({"man" = "Man", "woman" = "Woman"})
  * @Gedmo\Tree(type="nested")
  */
-abstract class Person {
-
-  /**
+abstract class Person
+{
+    /**
    * @ORM\Column(name="id", type="integer")
    * @ORM\Id
    * @ORM\GeneratedValue
@@ -63,36 +63,40 @@ abstract class Person {
   /**
    * @param string $name
    */
-  public function __construct($name) {
-    $this->name = $name;
-    $this->children = new ArrayCollection();
+  public function __construct($name)
+  {
+      $this->name = $name;
+      $this->children = new ArrayCollection();
   }
 
   /**
    * @param Person $parent
    * @return Person
    */
-  public function setParent(Person $parent) {
-    $this->parent = $parent;
-    return $this;
-  }
-
-  public function getName() {
-    return $this->name;
-  }
-
-  public function getLeft()
+  public function setParent(Person $parent)
   {
-      return $this->lft;
+      $this->parent = $parent;
+
+      return $this;
   }
 
-  public function getRight()
-  {
-      return $this->rgt;
-  }
+    public function getName()
+    {
+        return $this->name;
+    }
 
-  public function getLevel()
-  {
-      return $this->lvl;
-  }
+    public function getLeft()
+    {
+        return $this->lft;
+    }
+
+    public function getRight()
+    {
+        return $this->rgt;
+    }
+
+    public function getLevel()
+    {
+        return $this->lvl;
+    }
 }

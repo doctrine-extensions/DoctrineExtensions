@@ -28,7 +28,6 @@ class Sport
      */
     private $description;
 
-
     public function getId()
     {
         return $this->id;

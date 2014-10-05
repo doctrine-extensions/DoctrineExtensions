@@ -33,7 +33,6 @@ class Person
      */
     private $address;
 
-
     public function getId()
     {
         return $this->id;
@@ -42,6 +41,7 @@ class Person
     public function setName($name)
     {
         $this->name = $name;
+
         return $this;
     }
 
@@ -54,6 +54,7 @@ class Person
     {
         $this->address = $address;
         $address->setOwner($this);
+
         return $this;
     }
 
@@ -65,6 +66,7 @@ class Person
     public function setDeletedAt($deletedAt)
     {
         $this->deletedAt = $deletedAt;
+
         return $this;
     }
 

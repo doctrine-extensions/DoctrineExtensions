@@ -48,7 +48,7 @@ class TitledArticle implements Timestampable
      */
     private $chtitle;
 
-    /**    
+    /**
      * @var \DateTime $closed
      *
      * @ORM\Column(name="closed", type="datetime", nullable=true)

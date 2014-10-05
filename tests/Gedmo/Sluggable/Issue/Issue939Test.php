@@ -24,19 +24,19 @@ class Issue939Test extends BaseTestCaseORM
     {
         parent::setUp();
 
-        $evm = new EventManager;
-        $evm->addEventSubscriber(new SluggableListenerIssue939);
+        $evm = new EventManager();
+        $evm->addEventSubscriber(new SluggableListenerIssue939());
 
         $this->getMockSqliteEntityManager($evm);
     }
 
     public function testSlugGeneration()
     {
-        $category = new Category;
+        $category = new Category();
         $category->setTitle('Misc articles');
         $this->em->persist($category);
 
-        $article = new Article;
+        $article = new Article();
         $article->setTitle('Is there water on the moon?');
         $article->setCategory($category);
 
@@ -51,7 +51,7 @@ class Issue939Test extends BaseTestCaseORM
     {
         return array(
             self::ARTICLE,
-            self::CATEGORY
+            self::CATEGORY,
         );
     }
 }

@@ -3,7 +3,6 @@
 namespace Translator\Fixture;
 
 use Doctrine\ORM\Mapping as ORM;
-
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
@@ -53,14 +52,9 @@ class PersonCustom
         return $this->description;
     }
 
-
-
-
     //
     // TRANSLATIONS DEFINITION:
     //
-
-
 
 
     /**

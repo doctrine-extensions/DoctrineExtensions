@@ -3,7 +3,7 @@
 namespace Translatable\Fixture\Issue173;
 
 use Gedmo\Mapping\Annotation as Gedmo;
-use Doctrine\ORM\Mapping as ORM; 
+use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
@@ -22,13 +22,12 @@ class Product
      * @ORM\Column(name="title", type="string", length=128)
      */
     private $title;
-    
+
     /**
      * @ORM\ManyToOne(targetEntity="Category", inversedBy="products")
      */
     private $category;
 
-    
     public function getId()
     {
         return $this->id;
@@ -43,12 +42,12 @@ class Product
     {
         return $this->title;
     }
-    
+
     public function setCategory(Category $category)
     {
         $this->category = $category;
     }
-    
+
     public function getCategory()
     {
         return $this->category;

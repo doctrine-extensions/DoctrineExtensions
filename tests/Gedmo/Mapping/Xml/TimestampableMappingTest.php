@@ -33,11 +33,11 @@ class TimestampableMappingTest extends BaseTestCaseOM
 
         $xmlDriver = new XmlDriver(__DIR__.'/../Driver/Xml');
 
-        $chain = new DriverChain;
+        $chain = new DriverChain();
         $chain->addDriver($xmlDriver, 'Mapping\Fixture\Xml');
 
-        $this->timestampable = new TimestampableListener;
-        $this->evm = new EventManager;
+        $this->timestampable = new TimestampableListener();
+        $this->evm = new EventManager();
         $this->evm->addEventSubscriber($this->timestampable);
 
         $this->em = $this->getMockSqliteEntityManager(array(

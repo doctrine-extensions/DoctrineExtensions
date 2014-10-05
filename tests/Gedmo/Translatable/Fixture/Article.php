@@ -90,12 +90,12 @@ class Article implements Translatable
         $this->locale = $locale;
     }
 
-    public function setViews ($views)
+    public function setViews($views)
     {
         $this->views = $views;
     }
 
-    public function getViews ()
+    public function getViews()
     {
         return $this->views;
     }

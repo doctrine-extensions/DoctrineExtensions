@@ -34,7 +34,6 @@ class Article
      */
     private $comments;
 
-
     public function __construct()
     {
         $this->comments = new ArrayCollection();

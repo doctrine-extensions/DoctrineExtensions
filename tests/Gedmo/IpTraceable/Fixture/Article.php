@@ -140,5 +140,4 @@ class Article implements IpTraceable
     {
         return $this->contentChanged;
     }
-
 }

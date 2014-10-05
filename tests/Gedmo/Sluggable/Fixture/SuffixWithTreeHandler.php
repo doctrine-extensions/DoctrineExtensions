@@ -6,7 +6,6 @@
 
 namespace Sluggable\Fixture;
 
-
 use Gedmo\Sluggable\Sluggable;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
@@ -197,6 +196,4 @@ class SuffixWithTreeHandler implements Sluggable
     {
         return $this->root;
     }
-
-
 }

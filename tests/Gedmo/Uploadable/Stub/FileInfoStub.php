@@ -6,5 +6,4 @@ use Gedmo\Uploadable\FileInfo\FileInfoArray;
 
 class FileInfoStub extends FileInfoArray
 {
-
 }

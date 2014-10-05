@@ -2,7 +2,6 @@
 
 namespace Gedmo\Sluggable;
 
-
 use Doctrine\Common\EventManager;
 use Gedmo\Tree\TreeListener;
 use Sluggable\Fixture\Prefix;
@@ -11,8 +10,8 @@ use Sluggable\Fixture\Suffix;
 use Sluggable\Fixture\SuffixWithTreeHandler;
 use Tool\BaseTestCaseORM;
 
-class SluggablePrefixSuffixTest extends BaseTestCaseORM {
-
+class SluggablePrefixSuffixTest extends BaseTestCaseORM
+{
     const PREFIX = 'Sluggable\\Fixture\\Prefix';
     const SUFFIX = 'Sluggable\\Fixture\\Suffix';
     const SUFFIX_TREE = 'Sluggable\\Fixture\\SuffixWithTreeHandler';
@@ -22,9 +21,9 @@ class SluggablePrefixSuffixTest extends BaseTestCaseORM {
     {
         parent::setUp();
 
-        $evm = new EventManager;
-        $evm->addEventSubscriber(new SluggableListener);
-        $evm->addEventSubscriber(new TreeListener);
+        $evm = new EventManager();
+        $evm->addEventSubscriber(new SluggableListener());
+        $evm->addEventSubscriber(new TreeListener());
 
         $this->getMockSqliteEntityManager($evm);
     }
@@ -32,7 +31,7 @@ class SluggablePrefixSuffixTest extends BaseTestCaseORM {
     /**
      * @test
      */
-    function testPrefix()
+    public function testPrefix()
     {
         $foo = new Prefix();
         $foo->setTitle('Foo');
@@ -45,7 +44,7 @@ class SluggablePrefixSuffixTest extends BaseTestCaseORM {
     /**
      * @test
      */
-    function testSuffix()
+    public function testSuffix()
     {
         $foo = new Suffix();
         $foo->setTitle('Foo');
@@ -58,7 +57,7 @@ class SluggablePrefixSuffixTest extends BaseTestCaseORM {
     /**
      * @test
      */
-    function testNoDuplicateSuffixes()
+    public function testNoDuplicateSuffixes()
     {
         $foo = new SuffixWithTreeHandler();
         $foo->setTitle('Foo');
@@ -82,7 +81,7 @@ class SluggablePrefixSuffixTest extends BaseTestCaseORM {
     /**
      * @test
      */
-    function testNoDuplicatePrefixes()
+    public function testNoDuplicatePrefixes()
     {
         $foo = new PrefixWithTreeHandler();
         $foo->setTitle('Foo');

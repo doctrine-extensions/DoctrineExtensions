@@ -16,7 +16,7 @@ use Sluggable\Fixture\MappedSuperclass\Car;
 class MappedSuperclassTest extends BaseTestCaseORM
 {
     const CAR = 'Sluggable\\Fixture\\MappedSuperclass\\Car';
-    
+
     protected function setUp()
     {
         parent::setUp();
@@ -29,23 +29,22 @@ class MappedSuperclassTest extends BaseTestCaseORM
      */
     public function shouldntGenerateNotice()
     {
-        $evm = new EventManager;
-        $evm->addEventSubscriber(new SluggableListener);
+        $evm = new EventManager();
+        $evm->addEventSubscriber(new SluggableListener());
         $this->getMockSqliteEntityManager($evm);
 
-        $audi = new Car;
+        $audi = new Car();
         $audi->setDescription('audi car');
         $audi->setTitle('Audi');
 
         $this->em->persist($audi);
         $this->em->flush();
-        
     }
 
     protected function getUsedEntityFixtures()
     {
         return array(
-            self::CAR
+            self::CAR,
         );
     }
 }

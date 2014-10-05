@@ -2,20 +2,19 @@
 
 namespace Gedmo\Loggable;
 
-use Doctrine\Common\Util\Debug,
-    Doctrine\ORM\Mapping\Driver\YamlDriver,
-    Doctrine\ORM\Mapping\Driver\DriverChain,
-    Mapping\Fixture\Yaml\Category,
-    Gedmo\Mapping\ExtensionMetadataFactory;
+use Doctrine\ORM\Mapping\Driver\YamlDriver;
+use Doctrine\ORM\Mapping\Driver\DriverChain;
+use Mapping\Fixture\Yaml\Category;
+use Gedmo\Mapping\ExtensionMetadataFactory;
 
 /**
  * These are mapping tests for tree extension
- * 
+ *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class TreeMappingTest extends \PHPUnit_Framework_TestCase
+class LoggableMappingTest extends \PHPUnit_Framework_TestCase
 {
     const YAML_CATEGORY = 'Mapping\Fixture\Yaml\Category';
     private $em;
@@ -23,13 +22,13 @@ class TreeMappingTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $config = new \Doctrine\ORM\Configuration();
-        $config->setMetadataCacheImpl(new \Doctrine\Common\Cache\ArrayCache);
-        $config->setQueryCacheImpl(new \Doctrine\Common\Cache\ArrayCache);
+        $config->setMetadataCacheImpl(new \Doctrine\Common\Cache\ArrayCache());
+        $config->setQueryCacheImpl(new \Doctrine\Common\Cache\ArrayCache());
         $config->setProxyDir(TESTS_TEMP_DIR);
         $config->setProxyNamespace('Gedmo\Mapping\Proxy');
-        $chainDriverImpl = new DriverChain;
+        $chainDriverImpl = new DriverChain();
         $chainDriverImpl->addDriver(
-            new YamlDriver(array(__DIR__ . '/Driver/Yaml')), 
+            new YamlDriver(array(__DIR__.'/Driver/Yaml')),
             'Mapping\Fixture\Yaml'
         );
         $config->setMetadataDriverImpl($chainDriverImpl);

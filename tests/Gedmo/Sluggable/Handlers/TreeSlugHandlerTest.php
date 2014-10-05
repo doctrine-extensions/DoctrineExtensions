@@ -22,9 +22,9 @@ class TreeSlugHandlerTest extends BaseTestCaseORM
     {
         parent::setUp();
 
-        $evm = new EventManager;
-        $evm->addEventSubscriber(new SluggableListener);
-        $evm->addEventSubscriber(new TreeListener);
+        $evm = new EventManager();
+        $evm->addEventSubscriber(new SluggableListener());
+        $evm->addEventSubscriber(new TreeListener());
 
         $this->getMockSqliteEntityManager($evm);
     }
@@ -125,7 +125,7 @@ class TreeSlugHandlerTest extends BaseTestCaseORM
     protected function getUsedEntityFixtures()
     {
         return array(
-            self::TARGET
+            self::TARGET,
         );
     }
 
@@ -133,34 +133,34 @@ class TreeSlugHandlerTest extends BaseTestCaseORM
     {
         $repo = $this->em->getRepository(self::TARGET);
 
-        $food = new TreeSlug;
+        $food = new TreeSlug();
         $food->setTitle('Food');
 
-        $fruits = new TreeSlug;
+        $fruits = new TreeSlug();
         $fruits->setTitle('Fruits');
 
-        $vegitables = new TreeSlug;
+        $vegitables = new TreeSlug();
         $vegitables->setTitle('Vegitables');
 
-        $milk = new TreeSlug;
+        $milk = new TreeSlug();
         $milk->setTitle('Milk');
 
-        $meat = new TreeSlug;
+        $meat = new TreeSlug();
         $meat->setTitle('Meat');
 
-        $oranges = new TreeSlug;
+        $oranges = new TreeSlug();
         $oranges->setTitle('Oranges');
 
-        $citrons = new TreeSlug;
+        $citrons = new TreeSlug();
         $citrons->setTitle('Citrons');
 
-        $apple = new TreeSlug;
+        $apple = new TreeSlug();
         $apple->setTitle('Apple');
 
-        $kiwi = new TreeSlug;
+        $kiwi = new TreeSlug();
         $kiwi->setTitle('Kiwi');
 
-        $banana = new TreeSlug;
+        $banana = new TreeSlug();
         $banana->setTitle('Banana');
 
         $repo

@@ -35,8 +35,8 @@ class SortableTest extends BaseTestCaseORM
     {
         parent::setUp();
 
-        $evm = new EventManager;
-        $evm->addEventSubscriber(new SortableListener);
+        $evm = new EventManager();
+        $evm->addEventSubscriber(new SortableListener());
 
         $this->getMockSqliteEntityManager($evm);
         $this->populate();
@@ -155,7 +155,6 @@ class SortableTest extends BaseTestCaseORM
 
         $this->em->flush();
         $this->assertEquals(3, $node2->getPosition());
-
 
         $node2->setPosition(1);
         $this->em->persist($node2);
@@ -433,7 +432,7 @@ class SortableTest extends BaseTestCaseORM
     /**
      * @test
      */
-    function shouldFixIssue275()
+    public function shouldFixIssue275()
     {
         $nodes = array();
         for ($i = 2; $i <= 10; $i++) {
@@ -459,7 +458,7 @@ class SortableTest extends BaseTestCaseORM
     /**
      * @test
      */
-    function positionShouldBeTheSameAfterFlush()
+    public function positionShouldBeTheSameAfterFlush()
     {
         $nodes = array();
         for ($i = 2; $i <= 10; $i++) {
@@ -486,7 +485,7 @@ class SortableTest extends BaseTestCaseORM
     /**
      * @test
      */
-    function testIncrementPositionOfLastObjectByOne()
+    public function testIncrementPositionOfLastObjectByOne()
     {
         $node0 = $this->em->find(self::NODE, $this->nodeId);
 
@@ -517,7 +516,7 @@ class SortableTest extends BaseTestCaseORM
     /**
      * @test
      */
-    function testSetOutOfBoundsHighPosition()
+    public function testSetOutOfBoundsHighPosition()
     {
         $node0 = $this->em->find(self::NODE, $this->nodeId);
 

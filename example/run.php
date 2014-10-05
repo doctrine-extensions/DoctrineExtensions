@@ -19,21 +19,21 @@ $repository = $em->getRepository('Entity\Category');
 $food = $repository->findOneByTitle('Food');
 if (!$food) {
     // lets create some categories
-    $food = new Entity\Category;
+    $food = new Entity\Category();
     $food->setTitle('Food');
     $food->addTranslation(new Entity\CategoryTranslation('lt', 'title', 'Maistas'));
 
-    $fruits = new Entity\Category;
+    $fruits = new Entity\Category();
     $fruits->setParent($food);
     $fruits->setTitle('Fruits');
     $fruits->addTranslation(new Entity\CategoryTranslation('lt', 'title', 'Vaisiai'));
 
-    $apple = new Entity\Category;
+    $apple = new Entity\Category();
     $apple->setParent($fruits);
     $apple->setTitle('Apple');
     $apple->addTranslation(new Entity\CategoryTranslation('lt', 'title', 'Obuolys'));
 
-    $milk = new Entity\Category;
+    $milk = new Entity\Category();
     $milk->setParent($food);
     $milk->setTitle('Milk');
     $milk->addTranslation(new Entity\CategoryTranslation('lt', 'title', 'Pienas'));
@@ -64,9 +64,9 @@ $treeDecorationOptions = array(
     'rootClose' => '',
     'childOpen' => '',
     'childClose' => '',
-    'nodeDecorator' => function($node) {
+    'nodeDecorator' => function ($node) {
         return str_repeat('-', $node['level']).$node['title'].PHP_EOL;
-    }
+    },
 );
 // build tree in english
 echo $repository->buildTree($query->getArrayResult(), $treeDecorationOptions).PHP_EOL.PHP_EOL;

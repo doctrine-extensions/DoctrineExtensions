@@ -47,7 +47,6 @@ class Article
      */
     private $published;
 
-
     /**
      * @var string
      * @ODM\String
@@ -119,6 +118,7 @@ class Article
     public function setReady($ready)
     {
         $this->ready = $ready;
+
         return $this;
     }
 
@@ -130,6 +130,7 @@ class Article
     public function setIsReady($isReady)
     {
         $this->isReady = $isReady;
+
         return $this;
     }
 

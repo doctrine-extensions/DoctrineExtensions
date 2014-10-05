@@ -6,5 +6,4 @@ use Gedmo\Mapping\Event\Adapter\ODM as BaseAdapterODM;
 
 final class ODM extends BaseAdapterODM
 {
-
 }

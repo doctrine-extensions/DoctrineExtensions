@@ -21,8 +21,8 @@ class Issue633Test extends BaseTestCaseORM
     {
         parent::setUp();
 
-        $evm = new EventManager;
-        $evm->addEventSubscriber(new SluggableListener);
+        $evm = new EventManager();
+        $evm->addEventSubscriber(new SluggableListener());
 
         $this->getMockSqliteEntityManager($evm);
     }
@@ -30,9 +30,9 @@ class Issue633Test extends BaseTestCaseORM
     /**
      * @test
      */
-    function shouldHandleUniqueBasedSlug()
+    public function shouldHandleUniqueBasedSlug()
     {
-        $test = new Article;
+        $test = new Article();
         $test->setTitle('Unique to code');
         $test->setCode('CODE001');
 
@@ -41,7 +41,7 @@ class Issue633Test extends BaseTestCaseORM
 
         $this->assertEquals('unique-to-code', $test->getSlug());
 
-        $test2 = new Article;
+        $test2 = new Article();
         $test2->setTitle('Unique to code');
         $test2->setCode('CODE002');
 
@@ -50,7 +50,7 @@ class Issue633Test extends BaseTestCaseORM
 
         $this->assertEquals('unique-to-code', $test2->getSlug());
 
-        $test3 = new Article;
+        $test3 = new Article();
         $test3->setTitle('Unique to code');
         $test3->setCode('CODE001');
 
@@ -63,21 +63,21 @@ class Issue633Test extends BaseTestCaseORM
     /**
      * @test
      */
-    function handlePersistedSlugsForUniqueBased()
+    public function handlePersistedSlugsForUniqueBased()
     {
-        $test = new Article;
+        $test = new Article();
         $test->setTitle('Unique to code');
         $test->setCode('CODE001');
 
         $this->em->persist($test);
 
-        $test2 = new Article;
+        $test2 = new Article();
         $test2->setTitle('Unique to code');
         $test2->setCode('CODE002');
 
         $this->em->persist($test2);
 
-        $test3 = new Article;
+        $test3 = new Article();
         $test3->setTitle('Unique to code');
         $test3->setCode('CODE001');
 
@@ -92,7 +92,7 @@ class Issue633Test extends BaseTestCaseORM
     protected function getUsedEntityFixtures()
     {
         return array(
-            self::TARGET
+            self::TARGET,
         );
     }
 }

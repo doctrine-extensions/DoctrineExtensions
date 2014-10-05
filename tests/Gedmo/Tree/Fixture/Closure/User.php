@@ -14,7 +14,6 @@ class User extends Person
      */
     private $username;
 
-
     public function setUsername($username)
     {
         $this->username = $username;

@@ -22,13 +22,12 @@ class Article
      * @ORM\Column(name="title", type="string", length=128)
      */
     private $title;
-    
+
     /**
      * @ORM\ManyToOne(targetEntity="Category", inversedBy="articles")
      */
     private $category;
 
-    
     public function getId()
     {
         return $this->id;
@@ -43,15 +42,14 @@ class Article
     {
         return $this->title;
     }
-    
+
     public function setCategory(Category $category)
     {
         $this->category = $category;
     }
-    
+
     public function getCategory()
     {
         return $this->category;
     }
 }
-

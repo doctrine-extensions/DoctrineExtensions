@@ -32,23 +32,23 @@ class SortableMappingTest extends BaseTestCaseOM
     public function setUp()
     {
         parent::setUp();
-        
+
         $reader = new AnnotationReader();
         $annotationDriver = new AnnotationDriver($reader);
 
         $yamlDriver = new YamlDriver(__DIR__.'/Driver/Yaml');
 
-        $chain = new DriverChain;
+        $chain = new DriverChain();
         $chain->addDriver($yamlDriver, 'Mapping\Fixture\Yaml');
         $chain->addDriver($annotationDriver, 'Mapping\Fixture');
 
-        $this->sortable = new SortableListener;
-        $this->evm = new EventManager;
+        $this->sortable = new SortableListener();
+        $this->evm = new EventManager();
         $this->evm->addEventSubscriber($this->sortable);
 
         $this->em = $this->getMockSqliteEntityManager(array(
             'Mapping\Fixture\Yaml\Sortable',
-            'Mapping\Fixture\SortableGroup'
+            'Mapping\Fixture\SortableGroup',
         ), $chain);
     }
 
@@ -56,7 +56,7 @@ class SortableMappingTest extends BaseTestCaseOM
     {
         $meta = $this->em->getClassMetadata('Mapping\Fixture\Yaml\Sortable');
         $config = $this->sortable->getConfiguration($this->em, $meta->name);
-        
+
         $this->assertArrayHasKey('position', $config);
         $this->assertEquals('position', $config['position']);
         $this->assertArrayHasKey('groups', $config);

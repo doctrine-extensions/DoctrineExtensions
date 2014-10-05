@@ -29,7 +29,6 @@ class Article
      */
     private $titleTest;
 
-
     public function getId()
     {
         return $this->id;
@@ -55,4 +54,3 @@ class Article
         return $this->titleTest;
     }
 }
-

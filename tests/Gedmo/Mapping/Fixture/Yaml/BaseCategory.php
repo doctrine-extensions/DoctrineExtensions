@@ -27,7 +27,7 @@ class BaseCategory
      * @Column(name="lvl", type="integer")
      */
     private $lvl;
-    
+
     /**
      * @var integer $root
      *

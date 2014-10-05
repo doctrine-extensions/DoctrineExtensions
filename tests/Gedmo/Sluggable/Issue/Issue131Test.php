@@ -21,15 +21,15 @@ class Issue131Test extends BaseTestCaseORM
     {
         parent::setUp();
 
-        $evm = new EventManager;
-        $evm->addEventSubscriber(new SluggableListener);
+        $evm = new EventManager();
+        $evm->addEventSubscriber(new SluggableListener());
 
         $this->getMockSqliteEntityManager($evm);
     }
 
     public function testSlugGeneration()
     {
-        $test = new Article;
+        $test = new Article();
         $test->setTitle('');
 
         $this->em->persist($test);
@@ -37,7 +37,7 @@ class Issue131Test extends BaseTestCaseORM
 
         $this->assertNull($test->getSlug());
 
-        $test2 = new Article;
+        $test2 = new Article();
         $test2->setTitle('');
 
         $this->em->persist($test2);
@@ -49,7 +49,7 @@ class Issue131Test extends BaseTestCaseORM
     protected function getUsedEntityFixtures()
     {
         return array(
-            self::TARGET
+            self::TARGET,
         );
     }
 }

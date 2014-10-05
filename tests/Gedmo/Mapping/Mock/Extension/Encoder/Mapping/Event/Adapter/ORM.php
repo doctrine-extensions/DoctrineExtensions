@@ -6,5 +6,4 @@ use Gedmo\Mapping\Event\Adapter\ORM as BaseAdapterORM;
 
 final class ORM extends BaseAdapterORM
 {
-
 }

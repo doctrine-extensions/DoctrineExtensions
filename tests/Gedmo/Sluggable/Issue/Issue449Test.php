@@ -25,8 +25,8 @@ class Issue449Test extends BaseTestCaseORM
     {
         parent::setUp();
 
-        $evm = new EventManager;
-        $sluggableListener = new SluggableListener;
+        $evm = new EventManager();
+        $sluggableListener = new SluggableListener();
         $sluggableListener->addManagedFilter(self::SOFT_DELETEABLE_FILTER_NAME, true);
         $evm->addEventSubscriber($sluggableListener);
 
@@ -44,7 +44,7 @@ class Issue449Test extends BaseTestCaseORM
     protected function getUsedEntityFixtures()
     {
         return array(
-            self::TARGET
+            self::TARGET,
         );
     }
 

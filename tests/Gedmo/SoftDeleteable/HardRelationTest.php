@@ -16,7 +16,7 @@ class HardRelationTest extends BaseTestCaseORM
         parent::setUp();
 
         $evm = new EventManager();
-        $evm->addEventSubscriber($this->softDeleteableListener = new SoftDeleteableListener);
+        $evm->addEventSubscriber($this->softDeleteableListener = new SoftDeleteableListener());
         $this->getMockSqliteEntityManager($evm);
         $this->em->getConfiguration()->addFilter('softdelete', 'Gedmo\SoftDeleteable\Filter\SoftDeleteableFilter');
         $this->em->getFilters()->enable('softdelete');
@@ -25,12 +25,12 @@ class HardRelationTest extends BaseTestCaseORM
     /**
      * @test
      */
-    function shouldCascadeSoftdeleteForHardRelations()
+    public function shouldCascadeSoftdeleteForHardRelations()
     {
-        $address = new Address;
+        $address = new Address();
         $address->setStreet('13 Boulangerie, 404');
 
-        $person = new Person;
+        $person = new Person();
         $person->setName('Gedi');
         $person->setAddress($address);
 
@@ -50,12 +50,12 @@ class HardRelationTest extends BaseTestCaseORM
     /**
      * @test
      */
-    function shouldCascadeToInversedRelationAsWell()
+    public function shouldCascadeToInversedRelationAsWell()
     {
-        $address = new Address;
+        $address = new Address();
         $address->setStreet('13 Boulangerie, 404');
 
-        $person = new Person;
+        $person = new Person();
         $person->setName('Gedi');
         $person->setAddress($address);
 
@@ -75,12 +75,12 @@ class HardRelationTest extends BaseTestCaseORM
     /**
      * @test
      */
-    function shouldHandleTimeAwareSoftDeleteable()
+    public function shouldHandleTimeAwareSoftDeleteable()
     {
-        $address = new Address;
+        $address = new Address();
         $address->setStreet('13 Boulangerie, 404');
 
-        $person = new Person;
+        $person = new Person();
         $person->setName('Gedi');
         $person->setDeletedAt(new \DateTime(date('Y-m-d H:i:s', time() + 15 * 3600))); // in an hour
         $person->setAddress($address);

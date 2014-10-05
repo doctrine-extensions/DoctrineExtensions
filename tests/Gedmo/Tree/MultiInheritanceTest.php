@@ -75,7 +75,7 @@ class MultiInheritanceTest extends BaseTestCaseORM
             self::NODE,
             self::ANODE,
             self::TRANSLATION,
-            self::BASE_NODE
+            self::BASE_NODE,
         );
     }
 

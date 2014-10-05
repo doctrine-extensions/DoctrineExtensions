@@ -26,10 +26,10 @@ class TranslatableDocumentTest extends BaseTestCaseMongoODM
     {
         parent::setUp();
         $evm = new EventManager();
-        $this->translatableListener = new TranslatableListener;
+        $this->translatableListener = new TranslatableListener();
         $this->translatableListener->setDefaultLocale('en_us');
         $this->translatableListener->setTranslatableLocale('en_us');
-        $evm->addEventSubscriber(new SluggableListener);
+        $evm->addEventSubscriber(new SluggableListener());
         $evm->addEventSubscriber($this->translatableListener);
 
         $this->getMockDocumentManager($evm);

@@ -27,7 +27,6 @@ class Article
      */
     private $files;
 
-
     public function __construct()
     {
         $this->files = new ArrayCollection();

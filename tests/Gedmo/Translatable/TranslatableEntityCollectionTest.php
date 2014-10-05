@@ -26,7 +26,7 @@ class TranslatableEntityCollectionTest extends BaseTestCaseORM
     {
         parent::setUp();
 
-        $evm = new EventManager;
+        $evm = new EventManager();
         $this->translatableListener = new TranslatableListener();
         $this->translatableListener->setTranslatableLocale('en_us');
         $this->translatableListener->setDefaultLocale('en_us');
@@ -37,7 +37,7 @@ class TranslatableEntityCollectionTest extends BaseTestCaseORM
             'host' => '127.0.0.1',
             'dbname' => 'test',
             'user' => 'root',
-            'password' => 'nimda'
+            'password' => 'nimda',
         );
         //$this->getMockCustomEntityManager($conn, $evm);
         $this->getMockSqliteEntityManager($evm);
@@ -46,13 +46,13 @@ class TranslatableEntityCollectionTest extends BaseTestCaseORM
     /**
      * @test
      */
-    function shouldEnsureSolvedIssue234()
+    public function shouldEnsureSolvedIssue234()
     {
         $this->translatableListener->setTranslatableLocale('de');
         $this->translatableListener->setDefaultLocale('en');
         $this->translatableListener->setPersistDefaultLocaleTranslation(true);
         $repo = $this->em->getRepository(self::TRANSLATION);
-        $entity = new Article;
+        $entity = new Article();
         $entity->setTitle('he'); // is translated to de
 
         $repo
@@ -76,7 +76,7 @@ class TranslatableEntityCollectionTest extends BaseTestCaseORM
     /**
      * @test
      */
-    function shouldPersistMultipleTranslations()
+    public function shouldPersistMultipleTranslations()
     {
         $this->populate();
         $repo = $this->em->getRepository(self::TRANSLATION);
@@ -101,7 +101,7 @@ class TranslatableEntityCollectionTest extends BaseTestCaseORM
     /**
      * @test
      */
-    function shouldUpdateTranslation()
+    public function shouldUpdateTranslation()
     {
         $this->populate();
         $repo = $this->em->getRepository(self::TRANSLATION);
@@ -125,7 +125,7 @@ class TranslatableEntityCollectionTest extends BaseTestCaseORM
     /**
      * @test
      */
-    function shouldUpdateMultipleTranslations()
+    public function shouldUpdateMultipleTranslations()
     {
         $this->populate();
         $repo = $this->em->getRepository(self::TRANSLATION);
@@ -168,7 +168,7 @@ class TranslatableEntityCollectionTest extends BaseTestCaseORM
     private function populate()
     {
         $repo = $this->em->getRepository(self::TRANSLATION);
-        $sport = new Article;
+        $sport = new Article();
         $sport->setTitle('Sport');
         $sport->setContent('about sport');
 
@@ -188,7 +188,7 @@ class TranslatableEntityCollectionTest extends BaseTestCaseORM
         return array(
             self::ARTICLE,
             self::TRANSLATION,
-            self::COMMENT
+            self::COMMENT,
         );
     }
 }

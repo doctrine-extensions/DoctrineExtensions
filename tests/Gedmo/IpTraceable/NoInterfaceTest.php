@@ -4,8 +4,7 @@ namespace Gedmo\IpTraceable;
 
 use Doctrine\Common\EventManager;
 use Tool\BaseTestCaseORM;
-use Doctrine\Common\Util\Debug,
-    IpTraceable\Fixture\WithoutInterface;
+use IpTraceable\Fixture\WithoutInterface;
 
 /**
  * These are tests for IpTraceable behavior
@@ -23,8 +22,8 @@ class NoInterfaceTest extends BaseTestCaseORM
     {
         parent::setUp();
 
-        $evm = new EventManager;
-        $ipTraceableListener = new IpTraceableListener;
+        $evm = new EventManager();
+        $ipTraceableListener = new IpTraceableListener();
         $ipTraceableListener->setIpValue(self::TEST_IP);
         $evm->addEventSubscriber($ipTraceableListener);
 

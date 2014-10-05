@@ -4,11 +4,10 @@ namespace Gedmo\Sluggable;
 
 use Doctrine\Common\EventManager;
 use Tool\BaseTestCaseORM;
-use Doctrine\Common\Util\Debug,
-    Gedmo\Translatable\Translatable,
-    Gedmo\Translatable\Entity\Translation,
-    Gedmo\Translatable\TranslatableListener,
-    Sluggable\Fixture\TransArticleManySlug;
+use Gedmo\Translatable\Translatable;
+use Gedmo\Translatable\Entity\Translation;
+use Gedmo\Translatable\TranslatableListener;
+use Sluggable\Fixture\TransArticleManySlug;
 
 /**
  * These are tests for Sluggable behavior
@@ -29,10 +28,10 @@ class TranslatableManySlugTest extends BaseTestCaseORM
     {
         parent::setUp();
 
-        $evm = new EventManager;
+        $evm = new EventManager();
         $this->translatableListener = new TranslatableListener();
         $this->translatableListener->setTranslatableLocale('en_US');
-        $evm->addEventSubscriber(new SluggableListener);
+        $evm->addEventSubscriber(new SluggableListener());
         $evm->addEventSubscriber($this->translatableListener);
 
         $this->getMockSqliteEntityManager($evm);
@@ -73,33 +72,33 @@ class TranslatableManySlugTest extends BaseTestCaseORM
 
     public function testUniqueness()
     {
-       $a0 = new TransArticleManySlug;
-       $a0->setTitle('the title');
-       $a0->setCode('my code');
-       $a0->setUniqueTitle('title');
+        $a0 = new TransArticleManySlug();
+        $a0->setTitle('the title');
+        $a0->setCode('my code');
+        $a0->setUniqueTitle('title');
 
-       $this->em->persist($a0);
+        $this->em->persist($a0);
 
-       $a1 = new TransArticleManySlug;
-       $a1->setTitle('the title');
-       $a1->setCode('my code');
-       $a1->setUniqueTitle('title');
+        $a1 = new TransArticleManySlug();
+        $a1->setTitle('the title');
+        $a1->setCode('my code');
+        $a1->setUniqueTitle('title');
 
-       $this->em->persist($a1);
-       $this->em->flush();
+        $this->em->persist($a1);
+        $this->em->flush();
 
-       $this->assertEquals('title', $a0->getUniqueSlug());
-       $this->assertEquals('title-1', $a1->getUniqueSlug());
+        $this->assertEquals('title', $a0->getUniqueSlug());
+        $this->assertEquals('title-1', $a1->getUniqueSlug());
        // if its translated maybe should be different
        $this->assertEquals('the-title-my-code-1', $a0->getSlug());
-       $this->assertEquals('the-title-my-code-2', $a1->getSlug());
+        $this->assertEquals('the-title-my-code-2', $a1->getSlug());
     }
 
     protected function getUsedEntityFixtures()
     {
         return array(
             self::ARTICLE,
-            self::TRANSLATION
+            self::TRANSLATION,
         );
     }
 

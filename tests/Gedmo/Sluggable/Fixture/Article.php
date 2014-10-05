@@ -65,4 +65,3 @@ class Article implements Sluggable
         return $this->slug;
     }
 }
-

@@ -43,7 +43,6 @@ class FileWithMaxSize
 
     public $callbackWasCalled = false;
 
-
     public function getId()
     {
         return $this->id;

@@ -36,22 +36,22 @@ class UploadableMappingTest extends BaseTestCaseOM
         parent::setUp();
 
         Validator::$enableMimeTypesConfigException = false;
-        
+
         $reader = new AnnotationReader();
         $annotationDriver = new AnnotationDriver($reader);
 
         $yamlDriver = new YamlDriver(__DIR__.'/Driver/Yaml');
 
-        $chain = new DriverChain;
+        $chain = new DriverChain();
         $chain->addDriver($yamlDriver, 'Mapping\Fixture\Yaml');
         $chain->addDriver($annotationDriver, 'Mapping\Fixture');
 
         $this->listener = new UploadableListener();
-        $this->evm = new EventManager;
+        $this->evm = new EventManager();
         $this->evm->addEventSubscriber($this->listener);
 
         $this->em = $this->getMockSqliteEntityManager(array(
-            'Mapping\Fixture\Yaml\Uploadable'
+            'Mapping\Fixture\Yaml\Uploadable',
         ), $chain);
     }
 
@@ -59,7 +59,7 @@ class UploadableMappingTest extends BaseTestCaseOM
     {
         $meta = $this->em->getClassMetadata('Mapping\Fixture\Yaml\Uploadable');
         $config = $this->listener->getConfiguration($this->em, $meta->name);
-        
+
         $this->assertTrue($config['uploadable']);
         $this->assertTrue($config['allowOverwrite']);
         $this->assertTrue($config['appendNumber']);

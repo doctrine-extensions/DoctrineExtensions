@@ -24,7 +24,7 @@ class TranslatableTest extends BaseTestCaseORM
     {
         parent::setUp();
 
-        $evm = new EventManager;
+        $evm = new EventManager();
         $this->getMockSqliteEntityManager($evm);
     }
 
@@ -89,7 +89,7 @@ class TranslatableTest extends BaseTestCaseORM
     /**
      * @test
      */
-    function shouldTranslateRelation()
+    public function shouldTranslateRelation()
     {
         $person = new Person();
         $person->setName('Jen');
@@ -121,7 +121,7 @@ class TranslatableTest extends BaseTestCaseORM
     /**
      * @test
      */
-    function shouldHandleDomainObjectProxy()
+    public function shouldHandleDomainObjectProxy()
     {
         $person = new Person();
         $person->setName('Jen');
@@ -138,7 +138,7 @@ class TranslatableTest extends BaseTestCaseORM
         $name = $personProxy->translate('ru_RU')->getName();
         $this->assertSame('Женя', $name);
     }
-    
+
     public function testTranslatableProxyWithUpperCaseProperty()
     {
         $person = new Person();

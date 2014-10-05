@@ -48,7 +48,7 @@ class Category extends BaseCategory
      * })
      */
     private $parent;
-    
+
     private $changed;
 
     /**

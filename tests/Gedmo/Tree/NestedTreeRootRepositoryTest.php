@@ -21,8 +21,8 @@ class NestedTreeRootRepositoryTest extends BaseTestCaseORM
     {
         parent::setUp();
 
-        $evm = new EventManager;
-        $evm->addEventSubscriber(new TreeListener);
+        $evm = new EventManager();
+        $evm->addEventSubscriber(new TreeListener());
 
         $this->getMockSqliteEntityManager($evm);
         $this->populate();
@@ -33,12 +33,12 @@ class NestedTreeRootRepositoryTest extends BaseTestCaseORM
      *
      * @test
      */
-    function shouldBeAbleToShiftRootNode()
+    public function shouldBeAbleToShiftRootNode()
     {
         $repo = $this->em->getRepository(self::CATEGORY);
 
         $food = $repo->findOneByTitle('Food');
-        $acme = new RootCategory;
+        $acme = new RootCategory();
         $acme->setTitle('Acme');
 
         $food->setParent($acme);
@@ -60,7 +60,7 @@ class NestedTreeRootRepositoryTest extends BaseTestCaseORM
     /**
      * @test
      */
-    function shouldSupportChildrenHierarchyAsArray()
+    public function shouldSupportChildrenHierarchyAsArray()
     {
         $repo = $this->em->getRepository(self::CATEGORY);
         $result = $repo->childrenHierarchy();
@@ -124,7 +124,7 @@ class NestedTreeRootRepositoryTest extends BaseTestCaseORM
     /**
      * @test
      */
-    function shouldSupportChildrenHierarchyAsHtml()
+    public function shouldSupportChildrenHierarchyAsHtml()
     {
         $repo = $this->em->getRepository(self::CATEGORY);
         $food = $repo->findOneByTitle('Food');
@@ -137,7 +137,7 @@ class NestedTreeRootRepositoryTest extends BaseTestCaseORM
         );
 
         // custom title
-        $nodeDecorator = function($node) {
+        $nodeDecorator = function ($node) {
             return '<span>'.$node['title'].'</span>';
         };
 
@@ -156,7 +156,7 @@ class NestedTreeRootRepositoryTest extends BaseTestCaseORM
         $rootClose = '';
         $childOpen = '';
         $childClose = '';
-        $nodeDecorator = function($node) {
+        $nodeDecorator = function ($node) {
             return str_repeat('-', $node['level']).$node['title']."\n";
         };
 
@@ -177,7 +177,7 @@ class NestedTreeRootRepositoryTest extends BaseTestCaseORM
             return '<li class="depth'.$node['level'].'">';
         };
         // check support of the closures in childClose
-        $childClose = function(&$node) {
+        $childClose = function (&$node) {
             return '</li><!--childCloseClosure-->';
         };
         $decoratedHtmlTree = $repo->childrenHierarchy(
@@ -195,7 +195,7 @@ class NestedTreeRootRepositoryTest extends BaseTestCaseORM
     /**
      * @test
      */
-    function shouldSupportChildrenHierarchyByBuildTreeFunction()
+    public function shouldSupportChildrenHierarchyByBuildTreeFunction()
     {
         $repo = $this->em->getRepository(self::CATEGORY);
         $q = $this->em
@@ -288,7 +288,7 @@ class NestedTreeRootRepositoryTest extends BaseTestCaseORM
 
         $this->assertTrue($repo->verify());
 
-        $dql = 'UPDATE ' . self::CATEGORY . ' node';
+        $dql = 'UPDATE '.self::CATEGORY.' node';
         $dql .= ' SET node.lft = 5';
         $dql .= ' WHERE node.id = 4';
         $this->em->createQuery($dql)->getSingleScalarResult();
@@ -443,7 +443,7 @@ class NestedTreeRootRepositoryTest extends BaseTestCaseORM
     protected function getUsedEntityFixtures()
     {
         return array(
-            self::CATEGORY
+            self::CATEGORY,
         );
     }
 

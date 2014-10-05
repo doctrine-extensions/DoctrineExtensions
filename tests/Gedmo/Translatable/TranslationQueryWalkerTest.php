@@ -30,7 +30,7 @@ class TranslationQueryWalkerTest extends BaseTestCaseORM
     {
         parent::setUp();
 
-        $evm = new EventManager;
+        $evm = new EventManager();
         $this->translatableListener = new TranslatableListener();
         $this->translatableListener->setTranslatableLocale('en_us');
         $this->translatableListener->setDefaultLocale('en_us');
@@ -43,7 +43,7 @@ class TranslationQueryWalkerTest extends BaseTestCaseORM
     /**
      * @test
      */
-    function shouldHandleQueryCache()
+    public function shouldHandleQueryCache()
     {
         $cache = new \Doctrine\Common\Cache\ArrayCache();
         $this->em
@@ -52,7 +52,7 @@ class TranslationQueryWalkerTest extends BaseTestCaseORM
             ->method('getQueryCacheImpl')
             ->will($this->returnValue($cache))
         ;
-        $dql = 'SELECT a FROM ' . self::ARTICLE . ' a';
+        $dql = 'SELECT a FROM '.self::ARTICLE.' a';
         $q = $this->em->createQuery($dql);
         $q->setHint(Query::HINT_CUSTOM_OUTPUT_WALKER, self::TREE_WALKER_TRANSLATION);
 
@@ -70,8 +70,8 @@ class TranslationQueryWalkerTest extends BaseTestCaseORM
     public function testSubselectByTranslatedField()
     {
         $this->populateMore();
-        $dql = 'SELECT a FROM ' . self::ARTICLE . ' a';
-        $subSelect = 'SELECT a2.title FROM ' . self::ARTICLE . ' a2';
+        $dql = 'SELECT a FROM '.self::ARTICLE.' a';
+        $subSelect = 'SELECT a2.title FROM '.self::ARTICLE.' a2';
         $subSelect .= " WHERE a2.title LIKE '%ab%'";
         $dql .= " WHERE a.title IN ({$subSelect})";
         $dql .= ' ORDER BY a.title';
@@ -89,8 +89,8 @@ class TranslationQueryWalkerTest extends BaseTestCaseORM
     public function testSubselectStatements()
     {
         $this->populateMore();
-        $dql = 'SELECT a FROM ' . self::ARTICLE . ' a';
-        $subSelect = 'SELECT a2.id FROM ' . self::ARTICLE . ' a2';
+        $dql = 'SELECT a FROM '.self::ARTICLE.' a';
+        $subSelect = 'SELECT a2.id FROM '.self::ARTICLE.' a2';
         $subSelect .= " WHERE a2.title LIKE '%ab%'";
         $dql .= " WHERE a.id IN ({$subSelect})";
         $dql .= ' ORDER BY a.title';
@@ -108,7 +108,7 @@ class TranslationQueryWalkerTest extends BaseTestCaseORM
     public function testJoinedWithStatements()
     {
         $this->populateMore();
-        $dql = 'SELECT a, c FROM ' . self::ARTICLE . ' a';
+        $dql = 'SELECT a, c FROM '.self::ARTICLE.' a';
         $dql .= ' LEFT JOIN a.comments c WITH c.subject LIKE :lookup';
         $dql .= ' WHERE a.title LIKE :filter';
         $dql .= ' ORDER BY a.title';
@@ -137,7 +137,7 @@ class TranslationQueryWalkerTest extends BaseTestCaseORM
             ->with(TranslationWalker::HYDRATE_SIMPLE_OBJECT_TRANSLATION)
             ->will($this->returnValue('Gedmo\\Translatable\\Hydrator\\ORM\\SimpleObjectHydrator'));
 
-        $dql = 'SELECT a FROM ' . self::ARTICLE . ' a';
+        $dql = 'SELECT a FROM '.self::ARTICLE.' a';
         $q = $this->em->createQuery($dql);
         $q->setHint(Query::HINT_CUSTOM_OUTPUT_WALKER, self::TREE_WALKER_TRANSLATION);
 
@@ -162,7 +162,7 @@ class TranslationQueryWalkerTest extends BaseTestCaseORM
 
     public function testSelectWithTranslationFallbackOnArrayHydration()
     {
-        $dql = 'SELECT a, c FROM ' . self::ARTICLE . ' a';
+        $dql = 'SELECT a, c FROM '.self::ARTICLE.' a';
         $dql .= ' LEFT JOIN a.comments c';
         $q = $this->em->createQuery($dql);
         $q->setHint(Query::HINT_CUSTOM_OUTPUT_WALKER, self::TREE_WALKER_TRANSLATION);
@@ -195,7 +195,7 @@ class TranslationQueryWalkerTest extends BaseTestCaseORM
             ->with(TranslationWalker::HYDRATE_SIMPLE_OBJECT_TRANSLATION)
             ->will($this->returnValue('Gedmo\\Translatable\\Hydrator\\ORM\\SimpleObjectHydrator'));
 
-        $dql = 'SELECT a FROM ' . self::ARTICLE . ' a';
+        $dql = 'SELECT a FROM '.self::ARTICLE.' a';
         $q = $this->em->createQuery($dql);
         $q->setHint(Query::HINT_CUSTOM_OUTPUT_WALKER, self::TREE_WALKER_TRANSLATION);
 
@@ -225,7 +225,7 @@ class TranslationQueryWalkerTest extends BaseTestCaseORM
      */
     public function shouldBeAbleToUseInnerJoinStrategyForTranslations()
     {
-        $dql = 'SELECT a FROM ' . self::ARTICLE . ' a';
+        $dql = 'SELECT a FROM '.self::ARTICLE.' a';
         $q = $this->em->createQuery($dql);
         $q->setHint(Query::HINT_CUSTOM_OUTPUT_WALKER, self::TREE_WALKER_TRANSLATION);
         $q->setHint(TranslatableListener::HINT_INNER_JOIN, true);
@@ -247,7 +247,7 @@ class TranslationQueryWalkerTest extends BaseTestCaseORM
         $this->translatableListener->setTranslatableLocale('lt_lt');
         $this->translatableListener->setTranslationFallback(false);
 
-        $dql = 'SELECT a FROM ' . self::ARTICLE . ' a';
+        $dql = 'SELECT a FROM '.self::ARTICLE.' a';
         $q = $this->em->createQuery($dql);
         $q->setHint(Query::HINT_CUSTOM_OUTPUT_WALKER, self::TREE_WALKER_TRANSLATION);
         $q->setHint(TranslatableListener::HINT_TRANSLATABLE_LOCALE, 'undefined');
@@ -265,7 +265,6 @@ class TranslationQueryWalkerTest extends BaseTestCaseORM
         $result = $q->getArrayResult();
         $this->assertCount(1, $result);
         $this->assertEquals(null, $result[0]['title']);
-
     }
 
     /**
@@ -273,7 +272,7 @@ class TranslationQueryWalkerTest extends BaseTestCaseORM
      */
     public function shouldBeAbleToOverrideTranslatableLocale()
     {
-        $dql = 'SELECT a FROM ' . self::ARTICLE . ' a';
+        $dql = 'SELECT a FROM '.self::ARTICLE.' a';
         $q = $this->em->createQuery($dql);
         $q->setHint(Query::HINT_CUSTOM_OUTPUT_WALKER, self::TREE_WALKER_TRANSLATION);
         $q->setHint(TranslatableListener::HINT_TRANSLATABLE_LOCALE, 'lt_lt');
@@ -296,7 +295,7 @@ class TranslationQueryWalkerTest extends BaseTestCaseORM
             ->with(TranslationWalker::HYDRATE_OBJECT_TRANSLATION)
             ->will($this->returnValue('Gedmo\\Translatable\\Hydrator\\ORM\\ObjectHydrator'));
 
-        $dql = 'SELECT a FROM ' . self::ARTICLE . ' a';
+        $dql = 'SELECT a FROM '.self::ARTICLE.' a';
         $q = $this->em->createQuery($dql);
         $q->setHint(Query::HINT_CUSTOM_OUTPUT_WALKER, self::TREE_WALKER_TRANSLATION);
 
@@ -339,7 +338,7 @@ class TranslationQueryWalkerTest extends BaseTestCaseORM
 
     public function testSelectCountStatement()
     {
-        $dql = 'SELECT COUNT(a) FROM ' . self::ARTICLE . ' a';
+        $dql = 'SELECT COUNT(a) FROM '.self::ARTICLE.' a';
         $dql .= ' WHERE a.title LIKE :title';
         $q = $this->em->createQuery($dql);
         $q->setHint(Query::HINT_CUSTOM_OUTPUT_WALKER, self::TREE_WALKER_TRANSLATION);
@@ -370,7 +369,7 @@ class TranslationQueryWalkerTest extends BaseTestCaseORM
             ->will($this->returnValue('Gedmo\\Translatable\\Hydrator\\ORM\\ObjectHydrator'));
 
         $this->populateMore();
-        $dql = 'SELECT a, c FROM ' . self::ARTICLE . ' a';
+        $dql = 'SELECT a, c FROM '.self::ARTICLE.' a';
         $dql .= ' LEFT JOIN a.comments c';
         $dql .= ' ORDER BY a.title';
         $q = $this->em->createQuery($dql);
@@ -415,7 +414,7 @@ class TranslationQueryWalkerTest extends BaseTestCaseORM
     {
         // Given
         $this->populateMore();
-        $dql = 'SELECT a.title, a.views FROM ' . self::ARTICLE . ' a';
+        $dql = 'SELECT a.title, a.views FROM '.self::ARTICLE.' a';
         $dql .= ' ORDER BY a.views';
         $q = $this->em->createQuery($dql);
         $q->setHint(Query::HINT_CUSTOM_OUTPUT_WALKER, self::TREE_WALKER_TRANSLATION);
@@ -423,7 +422,7 @@ class TranslationQueryWalkerTest extends BaseTestCaseORM
         // Test original
         $this->translatableListener->setTranslatableLocale('en_us');
         $result = $q->getArrayResult();
-        array_walk($result, function($value, $key) use(&$result) {
+        array_walk($result, function ($value, $key) use (&$result) {
             // Make each record be a "Title - Views" string
             $result[$key] = implode(" - ", $value);
         });
@@ -434,7 +433,7 @@ class TranslationQueryWalkerTest extends BaseTestCaseORM
 
         $this->translatableListener->setTranslatableLocale('lt_lt');
         $result = $q->getArrayResult();
-        array_walk($result, function($value, $key) use(&$result) {
+        array_walk($result, function ($value, $key) use (&$result) {
             // Make each record be a "Title - Views" string
             $result[$key] = implode(" - ", $value);
         });
@@ -453,7 +452,7 @@ class TranslationQueryWalkerTest extends BaseTestCaseORM
             ->with(TranslationWalker::HYDRATE_OBJECT_TRANSLATION)
             ->will($this->returnValue('Gedmo\\Translatable\\Hydrator\\ORM\\ObjectHydrator'));
 
-        $dql = 'SELECT a, c FROM ' . self::ARTICLE . ' a';
+        $dql = 'SELECT a, c FROM '.self::ARTICLE.' a';
         $dql .= ' LEFT JOIN a.comments c';
         $q = $this->em->createQuery($dql);
         $q->setHint(Query::HINT_CUSTOM_OUTPUT_WALKER, self::TREE_WALKER_TRANSLATION);
@@ -537,7 +536,7 @@ class TranslationQueryWalkerTest extends BaseTestCaseORM
             ->with(TranslationWalker::HYDRATE_OBJECT_TRANSLATION)
             ->will($this->returnValue('Gedmo\\Translatable\\Hydrator\\ORM\\ObjectHydrator'));
 
-        $dql = 'SELECT a.title FROM ' . self::ARTICLE . ' a';
+        $dql = 'SELECT a.title FROM '.self::ARTICLE.' a';
         $q = $this->em->createQuery($dql);
         $q->setHint(Query::HINT_CUSTOM_OUTPUT_WALKER, self::TREE_WALKER_TRANSLATION);
 
@@ -579,7 +578,7 @@ class TranslationQueryWalkerTest extends BaseTestCaseORM
             ->with(TranslationWalker::HYDRATE_OBJECT_TRANSLATION)
             ->will($this->returnValue('Gedmo\\Translatable\\Hydrator\\ORM\\ObjectHydrator'));
 
-        $dql = 'SELECT a FROM ' . self::ARTICLE . ' a';
+        $dql = 'SELECT a FROM '.self::ARTICLE.' a';
         $q = $this->em->createQuery($dql);
         $q->setHint(Query::HINT_CUSTOM_OUTPUT_WALKER, self::TREE_WALKER_TRANSLATION);
 
@@ -621,7 +620,7 @@ class TranslationQueryWalkerTest extends BaseTestCaseORM
      */
     public function testSelectWithUnmappedField()
     {
-        $dql = 'SELECT a.title, count(a.id) AS num FROM ' . self::ARTICLE . ' a';
+        $dql = 'SELECT a.title, count(a.id) AS num FROM '.self::ARTICLE.' a';
         $dql .= ' ORDER BY a.title';
         $q = $this->em->createQuery($dql);
         $q->setHint(Query::HINT_CUSTOM_OUTPUT_WALKER, self::TREE_WALKER_TRANSLATION);
@@ -639,7 +638,7 @@ class TranslationQueryWalkerTest extends BaseTestCaseORM
         return array(
             self::ARTICLE,
             self::TRANSLATION,
-            self::COMMENT
+            self::COMMENT,
         );
     }
 
@@ -649,17 +648,17 @@ class TranslationQueryWalkerTest extends BaseTestCaseORM
         $commentRepo = $this->em->getRepository(self::COMMENT);
 
         $this->translatableListener->setTranslatableLocale('en_us');
-        $alfabet = new Article;
+        $alfabet = new Article();
         $alfabet->setTitle('Alfabet');
         $alfabet->setContent('hey wtf!');
         $alfabet->setViews(1);
 
-        $woman = new Article;
+        $woman = new Article();
         $woman->setTitle('Woman');
         $woman->setContent('i like them');
         $woman->setViews(3333);
 
-        $cabbages = new Article;
+        $cabbages = new Article();
         $cabbages->setTitle('Cabbages');
         $cabbages->setContent('where went the woman?');
         $cabbages->setViews(2222);
@@ -698,18 +697,18 @@ class TranslationQueryWalkerTest extends BaseTestCaseORM
         $repo = $this->em->getRepository(self::ARTICLE);
         $commentRepo = $this->em->getRepository(self::COMMENT);
 
-        $food = new Article;
+        $food = new Article();
         $food->setTitle('Food');
         $food->setContent('about food');
         $food->setAuthor('John Doe');
         $food->setViews(99);
 
-        $goodFood = new Comment;
+        $goodFood = new Comment();
         $goodFood->setArticle($food);
         $goodFood->setMessage('food is good');
         $goodFood->setSubject('good');
 
-        $badFood = new Comment;
+        $badFood = new Comment();
         $badFood->setArticle($food);
         $badFood->setMessage('food is bad');
         $badFood->setSubject('bad');

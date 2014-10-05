@@ -13,9 +13,9 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\DiscriminatorMap({"user" = "User", "usergroup" = "UserGroup", "userldap" = "UserLDAP"})
  * @Gedmo\Tree(type="nested")
  */
-abstract class Role {
-
-  /**
+abstract class Role
+{
+    /**
    * @ORM\Column(name="id", type="integer")
    * @ORM\Id
    * @ORM\GeneratedValue
@@ -60,55 +60,64 @@ abstract class Role {
    */
   private $role;
 
-  public function __construct() {
-    $this->children      = new ArrayCollection();
-  }
+    public function __construct()
+    {
+        $this->children      = new ArrayCollection();
+    }
 
   /**
    * @return UserGroup
    */
-  public function getParent() {
-    return $this->parent;
+  public function getParent()
+  {
+      return $this->parent;
   }
 
   /**
    * @param UserGroup $parent
    * @return Role
    */
-  public function setParent(UserGroup $parent) {
-    $this->parent = $parent;
-    return $this;
-  }
-
-  public function getRoleId() {
-    return $this->role;
-  }
-
-  protected function setRoleId($roleId) {
-    $this->role = (string)$roleId;
-    return $this;
-  }
-
-  public function __toString() {
-    return $this->getRoleId();
-  }
-
-  public function getId() {
-    return $this->id;
-  }
-
-  public function getLeft()
+  public function setParent(UserGroup $parent)
   {
-      return $this->lft;
+      $this->parent = $parent;
+
+      return $this;
   }
 
-  public function getRight()
-  {
-      return $this->rgt;
-  }
+    public function getRoleId()
+    {
+        return $this->role;
+    }
 
-  public function getLevel()
-  {
-      return $this->lvl;
-  }
+    protected function setRoleId($roleId)
+    {
+        $this->role = (string) $roleId;
+
+        return $this;
+    }
+
+    public function __toString()
+    {
+        return $this->getRoleId();
+    }
+
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    public function getLeft()
+    {
+        return $this->lft;
+    }
+
+    public function getRight()
+    {
+        return $this->rgt;
+    }
+
+    public function getLevel()
+    {
+        return $this->lvl;
+    }
 }

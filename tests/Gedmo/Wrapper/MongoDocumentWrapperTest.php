@@ -22,7 +22,7 @@ class MongoDocumentWrapperTest extends BaseTestCaseMongoODM
     protected function setUp()
     {
         parent::setUp();
-        $this->getMockDocumentManager(new EventManager);
+        $this->getMockDocumentManager(new EventManager());
         $this->populate();
     }
 
@@ -75,7 +75,7 @@ class MongoDocumentWrapperTest extends BaseTestCaseMongoODM
 
     public function testSomeFunctions()
     {
-        $test = new Article;
+        $test = new Article();
         $wrapped = new MongoDocumentWrapper($test, $this->dm);
 
         $wrapped->populate(array('title' => 'test'));
@@ -86,7 +86,7 @@ class MongoDocumentWrapperTest extends BaseTestCaseMongoODM
 
     private function populate()
     {
-        $test = new Article;
+        $test = new Article();
         $test->setTitle("test");
         $this->dm->persist($test);
         $this->dm->flush();

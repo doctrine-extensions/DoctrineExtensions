@@ -4,8 +4,8 @@ namespace Gedmo\IpTraceable;
 
 use Tool\BaseTestCaseMongoODM;
 use Doctrine\Common\EventManager;
-use IpTraceable\Fixture\Document\Article,
-    IpTraceable\Fixture\Document\Type;
+use IpTraceable\Fixture\Document\Article;
+use IpTraceable\Fixture\Document\Type;
 
 /**
  * These are tests for IpTraceable behavior ODM implementation
@@ -25,7 +25,7 @@ class IpTraceableDocumentTest extends BaseTestCaseMongoODM
     {
         parent::setUp();
 
-        $listener = new IpTraceableListener;
+        $listener = new IpTraceableListener();
         $listener->setIpValue(self::TEST_IP);
 
         $evm = new EventManager();
@@ -43,7 +43,7 @@ class IpTraceableDocumentTest extends BaseTestCaseMongoODM
         $this->assertEquals(self::TEST_IP, $article->getCreated());
         $this->assertEquals(self::TEST_IP, $article->getUpdated());
 
-        $published = new Type;
+        $published = new Type();
         $published->setIdentifier('published');
         $published->setTitle('Published');
 
@@ -72,10 +72,10 @@ class IpTraceableDocumentTest extends BaseTestCaseMongoODM
 
         $repo = $this->dm->getRepository(self::ARTICLE);
         $sport = $repo->findOneByTitle('sport forced');
-        $this->assertEquals(self::TEST_IP, (string)$sport->getCreated());
+        $this->assertEquals(self::TEST_IP, (string) $sport->getCreated());
         $this->assertEquals(self::TEST_IP, $sport->getUpdated());
 
-        $published = new Type;
+        $published = new Type();
         $published->setIdentifier('published');
         $published->setTitle('Published');
 

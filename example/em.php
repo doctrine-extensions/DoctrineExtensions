@@ -11,7 +11,7 @@ $connection = array(
     'user' => 'root',
     'password' => 'nimda',
     'dbname' => 'test',
-    'driver' => 'pdo_mysql'
+    'driver' => 'pdo_mysql',
 );
 if (!file_exists(__DIR__.'/../vendor/autoload.php')) {
     die('cannot find vendors, read README.md how to use composer');
@@ -32,9 +32,9 @@ Doctrine\Common\Annotations\AnnotationRegistry::registerFile(
 
 // Second configure ORM
 // globally used cache driver, in production use APC or memcached
-$cache = new Doctrine\Common\Cache\ArrayCache;
+$cache = new Doctrine\Common\Cache\ArrayCache();
 // standard annotation reader
-$annotationReader = new Doctrine\Common\Annotations\AnnotationReader;
+$annotationReader = new Doctrine\Common\Annotations\AnnotationReader();
 $cachedAnnotationReader = new Doctrine\Common\Annotations\CachedReader(
     $annotationReader, // use reader
     $cache // and a cache driver
@@ -59,7 +59,7 @@ $annotationDriver = new Doctrine\ORM\Mapping\Driver\AnnotationDriver(
 $driverChain->addDriver($annotationDriver, 'Entity');
 
 // general ORM configuration
-$config = new Doctrine\ORM\Configuration;
+$config = new Doctrine\ORM\Configuration();
 $config->setProxyDir(sys_get_temp_dir());
 $config->setProxyNamespace('Proxy');
 $config->setAutoGenerateProxyClasses(false); // this can be based on production config.
@@ -74,13 +74,13 @@ $evm = new Doctrine\Common\EventManager();
 // gedmo extension listeners
 
 // sluggable
-$sluggableListener = new Gedmo\Sluggable\SluggableListener;
+$sluggableListener = new Gedmo\Sluggable\SluggableListener();
 // you should set the used annotation reader to listener, to avoid creating new one for mapping drivers
 $sluggableListener->setAnnotationReader($cachedAnnotationReader);
 $evm->addEventSubscriber($sluggableListener);
 
 // tree
-$treeListener = new Gedmo\Tree\TreeListener;
+$treeListener = new Gedmo\Tree\TreeListener();
 $treeListener->setAnnotationReader($cachedAnnotationReader);
 $evm->addEventSubscriber($treeListener);
 
@@ -91,7 +91,7 @@ $evm->addEventSubscriber($treeListener);
 //$evm->addEventSubscriber($loggableListener);
 
 // timestampable
-$timestampableListener = new Gedmo\Timestampable\TimestampableListener;
+$timestampableListener = new Gedmo\Timestampable\TimestampableListener();
 $timestampableListener->setAnnotationReader($cachedAnnotationReader);
 $evm->addEventSubscriber($timestampableListener);
 
@@ -102,9 +102,8 @@ $blameableListener->setAnnotationReader($cachedAnnotationReader);
 $blameableListener->setUserValue('MyUsername'); // determine from your environment
 $evm->addEventSubscriber($blameableListener);
 
-
 // translatable
-$translatableListener = new Gedmo\Translatable\TranslatableListener;
+$translatableListener = new Gedmo\Translatable\TranslatableListener();
 // current translation locale should be set from session or hook later into the listener
 // most important, before entity manager is flushed
 $translatableListener->setTranslatableLocale('en');
@@ -121,4 +120,3 @@ $evm->addEventSubscriber($translatableListener);
 $evm->addEventSubscriber(new Doctrine\DBAL\Event\Listeners\MysqlSessionInit());
 // Finally, create entity manager
 return Doctrine\ORM\EntityManager::create($connection, $config, $evm);
-

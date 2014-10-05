@@ -35,9 +35,9 @@ class ClosureTreeTest extends BaseTestCaseORM
     {
         parent::setUp();
 
-        $this->listener = new TreeListener;
+        $this->listener = new TreeListener();
 
-        $evm = new EventManager;
+        $evm = new EventManager();
         $evm->addEventSubscriber($this->listener);
 
         $this->getMockSqliteEntityManager($evm);
@@ -250,6 +250,7 @@ class ClosureTreeTest extends BaseTestCaseORM
                 break;
             }
         }
+
         return $result;
     }
 
@@ -263,67 +264,67 @@ class ClosureTreeTest extends BaseTestCaseORM
             self::USER,
             self::NEWS,
             self::CATEGORY_WITHOUT_LEVEL,
-            self::CATEGORY_WITHOUT_LEVEL_CLOSURE
+            self::CATEGORY_WITHOUT_LEVEL_CLOSURE,
         );
     }
 
     private function populate()
     {
-        $food = new Category;
+        $food = new Category();
         $food->setTitle("Food");
         $this->em->persist($food);
 
-        $fruits = new Category;
+        $fruits = new Category();
         $fruits->setTitle('Fruits');
         $fruits->setParent($food);
         $this->em->persist($fruits);
 
-        $oranges = new Category;
+        $oranges = new Category();
         $oranges->setTitle('Oranges');
         $oranges->setParent($fruits);
         $this->em->persist($oranges);
 
-        $lemons = new Category;
+        $lemons = new Category();
         $lemons->setTitle('Lemons');
         $lemons->setParent($fruits);
         $this->em->persist($lemons);
 
-        $berries = new Category;
+        $berries = new Category();
         $berries->setTitle('Berries');
         $berries->setParent($fruits);
         $this->em->persist($berries);
 
-        $strawberries = new Category;
+        $strawberries = new Category();
         $strawberries->setTitle('Strawberries');
         $strawberries->setParent($berries);
         $this->em->persist($strawberries);
 
-        $vegitables = new Category;
+        $vegitables = new Category();
         $vegitables->setTitle('Vegitables');
         $vegitables->setParent($food);
         $this->em->persist($vegitables);
 
-        $cabbages = new Category;
+        $cabbages = new Category();
         $cabbages->setTitle('Cabbages');
         $cabbages->setParent($vegitables);
         $this->em->persist($cabbages);
 
-        $carrots = new Category;
+        $carrots = new Category();
         $carrots->setTitle('Carrots');
         $carrots->setParent($vegitables);
         $this->em->persist($carrots);
 
-        $milk = new Category;
+        $milk = new Category();
         $milk->setTitle('Milk');
         $milk->setParent($food);
         $this->em->persist($milk);
 
-        $cheese = new Category;
+        $cheese = new Category();
         $cheese->setTitle('Cheese');
         $cheese->setParent($milk);
         $this->em->persist($cheese);
 
-        $mouldCheese = new Category;
+        $mouldCheese = new Category();
         $mouldCheese->setTitle('Mould cheese');
         $mouldCheese->setParent($cheese);
         $this->em->persist($mouldCheese);

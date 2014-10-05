@@ -59,6 +59,7 @@ abstract class BaseTestCaseMongoODM extends \PHPUnit_Framework_TestCase
      * annotation mapping driver and database
      *
      * @param EventManager $evm
+     *
      * @return DocumentManager
      */
     protected function getMockDocumentManager(EventManager $evm = null, $config = null)
@@ -73,6 +74,7 @@ abstract class BaseTestCaseMongoODM extends \PHPUnit_Framework_TestCase
         } catch (\MongoException $e) {
             $this->markTestSkipped('Doctrine MongoDB ODM failed to connect');
         }
+
         return $this->dm;
     }
 
@@ -81,6 +83,7 @@ abstract class BaseTestCaseMongoODM extends \PHPUnit_Framework_TestCase
      * annotation mapping driver
      *
      * @param EventManager $evm
+     *
      * @return DocumentManager
      */
     protected function getMockMappedDocumentManager(EventManager $evm = null, $config = null)
@@ -111,11 +114,11 @@ abstract class BaseTestCaseMongoODM extends \PHPUnit_Framework_TestCase
      */
     private function getEventManager()
     {
-        $evm = new EventManager;
-        $evm->addEventSubscriber(new SluggableListener);
-        $evm->addEventSubscriber(new LoggableListener);
-        $evm->addEventSubscriber(new TranslatableListener);
-        $evm->addEventSubscriber(new TimestampableListener);
+        $evm = new EventManager();
+        $evm->addEventSubscriber(new SluggableListener());
+        $evm->addEventSubscriber(new LoggableListener());
+        $evm->addEventSubscriber(new TranslatableListener());
+        $evm->addEventSubscriber(new TimestampableListener());
         $evm->addEventSubscriber(new SoftDeleteableListener());
 
         return $evm;

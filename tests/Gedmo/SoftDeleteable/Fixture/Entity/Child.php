@@ -23,5 +23,4 @@ class Child extends MappedSuperclass
     {
         return $this->title;
     }
-
 }

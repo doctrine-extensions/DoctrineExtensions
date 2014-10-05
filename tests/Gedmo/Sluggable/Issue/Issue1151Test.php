@@ -18,7 +18,7 @@ class Issue1151Test extends BaseTestCaseMongoODM
      */
     public function testSlugCreateOnNewArticle()
     {
-        $article = new Article;
+        $article = new Article();
         $article->setId('ABC123');
         $article->setTitle('Test');
         $this->dm->persist($article);
@@ -34,7 +34,7 @@ class Issue1151Test extends BaseTestCaseMongoODM
     {
         parent::setUp();
         $evm = new EventManager();
-        $evm->addEventSubscriber(new SluggableListener);
+        $evm->addEventSubscriber(new SluggableListener());
 
         $this->getMockDocumentManager($evm);
     }

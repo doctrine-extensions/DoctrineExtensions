@@ -56,11 +56,11 @@ class Article
 
     public function setCategory(Category $category)
     {
-      $this->category = $category;
+        $this->category = $category;
     }
 
     public function getCategory()
     {
-      return $this->category;
+        return $this->category;
     }
 }

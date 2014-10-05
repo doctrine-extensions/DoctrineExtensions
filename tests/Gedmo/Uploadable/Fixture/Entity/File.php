@@ -37,7 +37,6 @@ class File
 
     public $callbackWasCalled = false;
 
-
     public function getId()
     {
         return $this->id;

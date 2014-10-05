@@ -37,4 +37,3 @@ foreach ($helpers as $name => $helper) {
 }
 
 return $cli;
-

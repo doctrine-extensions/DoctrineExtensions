@@ -30,7 +30,7 @@ class Issue173Test extends BaseTestCaseORM
     {
         parent::setUp();
 
-        $evm = new EventManager;
+        $evm = new EventManager();
         $this->translatableListener = new TranslatableListener();
         $this->translatableListener->setTranslatableLocale('en');
         $this->translatableListener->setDefaultLocale('en');
@@ -53,7 +53,6 @@ class Issue173Test extends BaseTestCaseORM
 
         $categories = $this->getCategoriesThatHasNoAssociations();
         $this->assertEquals(count($categories), 1, '$category3 has no associations');
-
     }
 
     public function getCategoriesThatHasNoAssociations()
@@ -89,13 +88,13 @@ class Issue173Test extends BaseTestCaseORM
     private function populate()
     {
         //Categories
-        $category1 = new Category;
+        $category1 = new Category();
         $category1->setTitle('en category1');
 
-        $category2 = new Category;
+        $category2 = new Category();
         $category2->setTitle('en category2');
 
-        $category3 = new Category;
+        $category3 = new Category();
         $category3->setTitle('en category3');
 
         $this->em->persist($category1);
@@ -104,12 +103,12 @@ class Issue173Test extends BaseTestCaseORM
         $this->em->flush();
 
         //Articles
-        $article1 = new Article;
+        $article1 = new Article();
         $article1->setTitle('en article1');
         $article1->setCategory($category1);
 
         //Products
-        $product1 = new Product;
+        $product1 = new Product();
         $product1->setTitle('en product1');
         $product1->setCategory($category2);
 

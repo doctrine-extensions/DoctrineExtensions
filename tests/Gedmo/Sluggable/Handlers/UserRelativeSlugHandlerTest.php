@@ -23,19 +23,19 @@ class UserRelativeSlugHandlerTest extends BaseTestCaseORM
     {
         parent::setUp();
 
-        $evm = new EventManager;
-        $evm->addEventSubscriber(new SluggableListener);
+        $evm = new EventManager();
+        $evm->addEventSubscriber(new SluggableListener());
 
         $this->getMockSqliteEntityManager($evm);
     }
 
     public function testRelativeSlug()
     {
-        $company = new Company;
+        $company = new Company();
         $company->setTitle('KnpLabs');
         $this->em->persist($company);
 
-        $gedi = new User;
+        $gedi = new User();
         $gedi->setUsername('Gedi');
         $gedi->setCompany($company);
         $this->em->persist($gedi);
@@ -55,7 +55,7 @@ class UserRelativeSlugHandlerTest extends BaseTestCaseORM
     {
         return array(
             self::USER,
-            self::COMPANY
+            self::COMPANY,
         );
     }
 }

@@ -29,7 +29,7 @@ class TranslatableTest extends BaseTestCaseORM
     {
         parent::setUp();
 
-        $evm = new EventManager;
+        $evm = new EventManager();
         $this->translatableListener = new TranslatableListener();
         $this->translatableListener->setTranslatableLocale('en_us');
         $this->translatableListener->setDefaultLocale('en_us');
@@ -41,13 +41,13 @@ class TranslatableTest extends BaseTestCaseORM
     /**
      * @test
      */
-    function shouldUpdateTranslationInDefaultLocaleIssue751()
+    public function shouldUpdateTranslationInDefaultLocaleIssue751()
     {
         $this->translatableListener->setTranslatableLocale('en');
         $this->translatableListener->setDefaultLocale('en');
         $repo = $this->em->getRepository(self::ARTICLE);
 
-        $entity = new Article;
+        $entity = new Article();
         $entity->setTranslatableLocale('de');
         $entity->setTitle('test');
         $this->em->persist($entity);
@@ -81,7 +81,7 @@ class TranslatableTest extends BaseTestCaseORM
     /**
      * @test
      */
-    function shouldPersistDefaultLocaleTranslationIfRequired()
+    public function shouldPersistDefaultLocaleTranslationIfRequired()
     {
         $this->translatableListener->setPersistDefaultLocaleTranslation(true);
 
@@ -102,7 +102,7 @@ class TranslatableTest extends BaseTestCaseORM
     /**
      * @test
      */
-    function shouldGenerateTranslations()
+    public function shouldGenerateTranslations()
     {
         $this->populate();
         $repo = $this->em->getRepository(self::TRANSLATION);
@@ -225,19 +225,19 @@ class TranslatableTest extends BaseTestCaseORM
     /**
      * @test
      */
-    function shouldSolveTranslationFallbackGithubIssue9()
+    public function shouldSolveTranslationFallbackGithubIssue9()
     {
         $this->populate();
         $this->translatableListener->setTranslationFallback(false);
         $this->translatableListener->setTranslatableLocale('ru_RU');
 
         $article = $this->em->find(self::ARTICLE, $this->articleId);
-        $this->assertFalse((bool)$article->getTitle());
-        $this->assertFalse((bool)$article->getContent());
+        $this->assertFalse((bool) $article->getTitle());
+        $this->assertFalse((bool) $article->getContent());
 
         foreach ($article->getComments() as $comment) {
-            $this->assertFalse((bool)$comment->getSubject());
-            $this->assertFalse((bool)$comment->getMessage());
+            $this->assertFalse((bool) $comment->getSubject());
+            $this->assertFalse((bool) $comment->getMessage());
         }
         $this->em->clear();
         $this->translatableListener->setTranslationFallback(true);
@@ -250,9 +250,9 @@ class TranslatableTest extends BaseTestCaseORM
     /**
      * @test
      */
-    function shouldSolveGithubIssue64()
+    public function shouldSolveGithubIssue64()
     {
-        $judo = new Sport;
+        $judo = new Sport();
         $judo->setTitle('Judo');
         $judo->setDescription('Whatever');
 
@@ -286,9 +286,9 @@ class TranslatableTest extends BaseTestCaseORM
     /**
      * @test
      */
-    function shouldRespectFallbackOption()
+    public function shouldRespectFallbackOption()
     {
-        $article = new Article;
+        $article = new Article();
         $article->setTitle('Euro2012');
         $article->setAuthor('Shevchenko');
         $article->setViews(10);
@@ -319,7 +319,7 @@ class TranslatableTest extends BaseTestCaseORM
             self::ARTICLE,
             self::TRANSLATION,
             self::COMMENT,
-            self::SPORT
+            self::SPORT,
         );
     }
 

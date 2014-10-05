@@ -3,7 +3,6 @@
 namespace Translator\Fixture;
 
 use Doctrine\ORM\Mapping as ORM;
-
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
@@ -27,7 +26,7 @@ class Person
      * @ORM\Column(name="desc", type="string", length=128)
      */
     public $description;
-    
+
     /**
      * @ORM\Column(name="last_name", type="string", length=128, nullable=true)
      */
@@ -57,25 +56,20 @@ class Person
     {
         return $this->description;
     }
-    
+
     public function getLastName()
     {
         return $this->lastName;
     }
-    
+
     public function setLastName($name)
     {
         $this->lastName = $name;
     }
 
-
-
-
     //
     // TRANSLATIONS DEFINITION:
     //
-
-
 
 
     /**

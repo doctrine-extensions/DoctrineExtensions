@@ -74,7 +74,8 @@ class CategoryUuid implements NodeInterface
      * @return void
      * @ORM\PrePersist
      */
-    public function createId(){
+    public function createId()
+    {
         $this->id = bin2hex(pack('N2', mt_rand(), mt_rand()));
     }
 

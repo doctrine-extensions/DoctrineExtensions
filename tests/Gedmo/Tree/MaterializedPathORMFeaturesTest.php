@@ -24,9 +24,9 @@ class MaterializedPathORMFeaturesTest extends BaseTestCaseORM
     {
         parent::setUp();
 
-        $this->listener = new TreeListener;
+        $this->listener = new TreeListener();
 
-        $evm = new EventManager;
+        $evm = new EventManager();
         $evm->addEventSubscriber($this->listener);
 
         $this->getMockSqliteEntityManager($evm);
@@ -38,7 +38,7 @@ class MaterializedPathORMFeaturesTest extends BaseTestCaseORM
     /**
      * @test
      */
-    function checkPathsAndHash()
+    public function checkPathsAndHash()
     {
         $category = $this->createCategory();
         $category->setTitle('1');
@@ -74,19 +74,17 @@ class MaterializedPathORMFeaturesTest extends BaseTestCaseORM
         $this->assertEquals($this->generatePathHash(array('4' => $category4->getId())), $category4->getPathHash());
     }
 
-
-
-
     public function createCategory()
     {
         $class = self::CATEGORY;
-        return new $class;
+
+        return new $class();
     }
 
     protected function getUsedEntityFixtures()
     {
         return array(
-            self::CATEGORY
+            self::CATEGORY,
         );
     }
 
@@ -94,7 +92,7 @@ class MaterializedPathORMFeaturesTest extends BaseTestCaseORM
     {
         $path = '';
         foreach ($sources as $p => $id) {
-            $path .= $this->config['path_separator'] . $p;
+            $path .= $this->config['path_separator'].$p;
         }
 
         return $path;
@@ -102,7 +100,6 @@ class MaterializedPathORMFeaturesTest extends BaseTestCaseORM
 
     public function generatePathHash(array $sources)
     {
-
         return md5($this->generatePath($sources));
     }
 }

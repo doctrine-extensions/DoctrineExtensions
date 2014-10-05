@@ -23,7 +23,8 @@ class Metadata
     /** @ODM\Field(type="int") */
     private $categoryId;
 
-    function __construct($category) {
+    public function __construct($category)
+    {
         $this->setCategory($category);
     }
 
@@ -47,5 +48,4 @@ class Metadata
     {
         return $this->category;
     }
-
 }

@@ -21,16 +21,16 @@ class AnnotationValidationTest extends BaseTestCaseORM
      * @test
      * @expectedException Gedmo\Exception\InvalidMappingException
      */
-    function shouldFailValidationOnInvalidAnnotation()
+    public function shouldFailValidationOnInvalidAnnotation()
     {
-        $evm = new EventManager;
-        $evm->addEventSubscriber(new SluggableListener);
+        $evm = new EventManager();
+        $evm->addEventSubscriber(new SluggableListener());
         $this->getMockSqliteEntityManager($evm);
 
-        $slug = new Validate;
+        $slug = new Validate();
         $slug->setTitle('My Slug');
 
-        $slug2 = new Validate;
+        $slug2 = new Validate();
         $slug2->setTitle('My Slug');
 
         $this->em->persist($slug);
@@ -43,7 +43,7 @@ class AnnotationValidationTest extends BaseTestCaseORM
     protected function getUsedEntityFixtures()
     {
         return array(
-            self::TARGET
+            self::TARGET,
         );
     }
 }

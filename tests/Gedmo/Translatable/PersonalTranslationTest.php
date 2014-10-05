@@ -28,7 +28,7 @@ class PersonalTranslationTest extends BaseTestCaseORM
     {
         parent::setUp();
 
-        $evm = new EventManager;
+        $evm = new EventManager();
         $this->translatableListener = new TranslatableListener();
         $this->translatableListener->setTranslatableLocale('en');
         $this->translatableListener->setDefaultLocale('en');
@@ -39,7 +39,7 @@ class PersonalTranslationTest extends BaseTestCaseORM
             'host' => '127.0.0.1',
             'dbname' => 'test',
             'user' => 'root',
-            'password' => 'nimda'
+            'password' => 'nimda',
         );
         //$this->getMockCustomEntityManager($conn, $evm);
         $this->getMockSqliteEntityManager($evm);
@@ -48,7 +48,7 @@ class PersonalTranslationTest extends BaseTestCaseORM
     /**
      * @test
      */
-    function shouldPersistDefaultLocaleTranslationIfRequired()
+    public function shouldPersistDefaultLocaleTranslationIfRequired()
     {
         $this->translatableListener->setPersistDefaultLocaleTranslation(true);
         $this->populate();
@@ -60,7 +60,7 @@ class PersonalTranslationTest extends BaseTestCaseORM
     /**
      * @test
      */
-    function shouldCreateTranslations()
+    public function shouldCreateTranslations()
     {
         $this->populate();
         $article = $this->em->find(self::ARTICLE, array('id' => 1));
@@ -71,7 +71,7 @@ class PersonalTranslationTest extends BaseTestCaseORM
     /**
      * @test
      */
-    function shouldTranslateTheRecord()
+    public function shouldTranslateTheRecord()
     {
         $this->populate();
         $this->translatableListener->setTranslatableLocale('lt');
@@ -88,7 +88,7 @@ class PersonalTranslationTest extends BaseTestCaseORM
     /**
      * @test
      */
-    function shouldCascadeDeletionsByForeignKeyConstraints()
+    public function shouldCascadeDeletionsByForeignKeyConstraints()
     {
         if ($this->em->getConnection()->getDatabasePlatform()->getName() == 'sqlite') {
             $this->markTestSkipped('Foreign key constraints does not map in sqlite.');
@@ -103,13 +103,13 @@ class PersonalTranslationTest extends BaseTestCaseORM
     /**
      * @test
      */
-    function shouldOverrideTranslationInEntityBeingTranslated()
+    public function shouldOverrideTranslationInEntityBeingTranslated()
     {
         $this->translatableListener->setDefaultLocale('de');
-        $article = new Article;
+        $article = new Article();
         $article->setTitle('override');
 
-        $enTranslation = new PersonalArticleTranslation;
+        $enTranslation = new PersonalArticleTranslation();
         $enTranslation
             ->setField('title')
             ->setContent('en')
@@ -129,13 +129,13 @@ class PersonalTranslationTest extends BaseTestCaseORM
      * Covers issue #438
      * @test
      */
-    function shouldPersistDefaultLocaleValue()
+    public function shouldPersistDefaultLocaleValue()
     {
         $this->translatableListener->setTranslatableLocale('de');
-        $article = new Article;
+        $article = new Article();
         $article->setTitle('de');
 
-        $deTranslation = new PersonalArticleTranslation;
+        $deTranslation = new PersonalArticleTranslation();
         $deTranslation
             ->setField('title')
             ->setContent('de')
@@ -144,7 +144,7 @@ class PersonalTranslationTest extends BaseTestCaseORM
         ;
         $this->em->persist($deTranslation);
 
-        $enTranslation = new PersonalArticleTranslation;
+        $enTranslation = new PersonalArticleTranslation();
         $enTranslation
             ->setField('title')
             ->setContent('en')
@@ -161,7 +161,7 @@ class PersonalTranslationTest extends BaseTestCaseORM
         $this->assertEquals('en', $articles[0]['title']);
         $trans = $this->em->createQuery('SELECT t FROM '.self::TRANSLATION.' t')->getArrayResult();
         $this->assertCount(2, $trans);
-        foreach ($trans as $item){
+        foreach ($trans as $item) {
             $this->assertEquals($item['locale'], $item['content']);
         }
     }
@@ -169,12 +169,12 @@ class PersonalTranslationTest extends BaseTestCaseORM
     /**
      * @test
      */
-    function shouldFindFromIdentityMap()
+    public function shouldFindFromIdentityMap()
     {
-        $article = new Article;
+        $article = new Article();
         $article->setTitle('en');
 
-        $ltTranslation = new PersonalArticleTranslation;
+        $ltTranslation = new PersonalArticleTranslation();
         $ltTranslation
             ->setField('title')
             ->setContent('lt')
@@ -199,10 +199,10 @@ class PersonalTranslationTest extends BaseTestCaseORM
     /**
      * @test
      */
-    function shouldBeAbleToUseTranslationQueryHint()
+    public function shouldBeAbleToUseTranslationQueryHint()
     {
         $this->populate();
-        $dql = 'SELECT a.title FROM ' . self::ARTICLE . ' a';
+        $dql = 'SELECT a.title FROM '.self::ARTICLE.' a';
         $query = $this
             ->em->createQuery($dql)
             ->setHint(Query::HINT_CUSTOM_OUTPUT_WALKER, self::TREE_WALKER_TRANSLATION)
@@ -221,7 +221,7 @@ class PersonalTranslationTest extends BaseTestCaseORM
 
     private function populate()
     {
-        $article = new Article;
+        $article = new Article();
         $article->setTitle('en');
 
         $this->em->persist($article);
@@ -230,7 +230,7 @@ class PersonalTranslationTest extends BaseTestCaseORM
         $this->translatableListener->setTranslatableLocale('de');
         $article->setTitle('de');
 
-        $ltTranslation = new PersonalArticleTranslation;
+        $ltTranslation = new PersonalArticleTranslation();
         $ltTranslation
             ->setField('title')
             ->setContent('lt')
@@ -247,7 +247,7 @@ class PersonalTranslationTest extends BaseTestCaseORM
     {
         return array(
             self::ARTICLE,
-            self::TRANSLATION
+            self::TRANSLATION,
         );
     }
 }

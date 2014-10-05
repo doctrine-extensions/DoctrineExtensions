@@ -27,7 +27,7 @@ class Issue138Test extends BaseTestCaseORM
     {
         parent::setUp();
 
-        $evm = new EventManager;
+        $evm = new EventManager();
         $this->translatableListener = new TranslatableListener();
         $this->translatableListener->setTranslatableLocale('en');
         $this->translatableListener->setDefaultLocale('en');
@@ -40,7 +40,7 @@ class Issue138Test extends BaseTestCaseORM
     public function testIssue138()
     {
         $this->populate();
-        $dql = 'SELECT a FROM ' . self::ARTICLE . ' a';
+        $dql = 'SELECT a FROM '.self::ARTICLE.' a';
         $dql .= " WHERE a.title LIKE '%foo%'";
         $q = $this->em->createQuery($dql);
         $q->setHint(Query::HINT_CUSTOM_OUTPUT_WALKER, self::TREE_WALKER_TRANSLATION);
@@ -66,11 +66,11 @@ class Issue138Test extends BaseTestCaseORM
     {
         $repo = $this->em->getRepository(self::ARTICLE);
 
-        $food = new Article;
+        $food = new Article();
         $food->setTitle('Food');
         $food->setTitleTest('about food');
 
-        $citron = new Article;
+        $citron = new Article();
         $citron->setTitle('Citron');
         $citron->setTitleTest('something citron');
 

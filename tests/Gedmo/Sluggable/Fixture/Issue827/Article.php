@@ -16,7 +16,7 @@ class Article
      * @ORM\Column(type="integer")
      */
     private $id;
-    
+
     /**
      * @ORM\Column(name="title", length=64)
      */
@@ -33,12 +33,12 @@ class Article
      * @ORM\Column(length=64, nullable=true)
      */
     private $slug;
-    
+
     public function getId()
     {
         return $this->id;
     }
-    
+
     public function setTitle($title)
     {
         $this->title = $title;
@@ -53,14 +53,14 @@ class Article
     {
         return $this->slug;
     }
-    
+
     public function setCategory(Category $category)
     {
-      $this->category = $category;
+        $this->category = $category;
     }
-    
+
     public function getCategory()
     {
-      return $this->category;
+        return $this->category;
     }
 }

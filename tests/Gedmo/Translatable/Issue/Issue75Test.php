@@ -28,7 +28,7 @@ class Issue75Test extends BaseTestCaseORM
     {
         parent::setUp();
 
-        $evm = new EventManager;
+        $evm = new EventManager();
         $this->translatableListener = new TranslatableListener();
         $this->translatableListener->setTranslatableLocale('en');
         $this->translatableListener->setDefaultLocale('en');
@@ -42,7 +42,7 @@ class Issue75Test extends BaseTestCaseORM
         $repo = $this->em->getRepository(self::TRANSLATION);
 
         // Step1: article creation in default locale
-        $image1 = new Image;
+        $image1 = new Image();
         $image1->setTitle('img1');
         $this->em->persist($image1);
 
@@ -50,18 +50,18 @@ class Issue75Test extends BaseTestCaseORM
         $image2->setTitle('img2');
         $this->em->persist($image2);*/
 
-        $article = new Article;
+        $article = new Article();
         $article->setTitle('en art');
         // images is not an array
         //$article->setImages(array($image1, $image2));
         $this->em->persist($article);
 
         //$this->em->flush();*/
-        $image2 = new Image;  //line 62
+        $image2 = new Image();  //line 62
         $image2->setTitle('en img2');
         $this->em->persist($image2);
 
-        $image32 = new Image; // +
+        $image32 = new Image(); // +
         $image32->setTitle('en img3');  // +
         $this->em->persist($image32); // +
 
@@ -96,7 +96,7 @@ class Issue75Test extends BaseTestCaseORM
             self::ARTICLE,
             self::TRANSLATION,
             self::IMAGE,
-            self::FILE
+            self::FILE,
         );
     }
 }

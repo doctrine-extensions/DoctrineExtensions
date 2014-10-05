@@ -6,7 +6,6 @@ use Doctrine\Common\EventManager;
 use Tool\BaseTestCaseORM;
 use Sluggable\Fixture\Article;
 
-
 /**
  * These are tests for Sluggable behavior
  *
@@ -25,8 +24,8 @@ class SluggableFltersTest extends BaseTestCaseORM
     {
         parent::setUp();
 
-        $evm = new EventManager;
-        $sluggableListener = new SluggableListener;
+        $evm = new EventManager();
+        $sluggableListener = new SluggableListener();
         $sluggableListener->addManagedFilter(self::SOFT_DELETEABLE_FILTER_NAME, true);
         $sluggableListener->addManagedFilter(self::FAKE_FILTER_NAME, true);
         $evm->addEventSubscriber($sluggableListener);
@@ -44,19 +43,19 @@ class SluggableFltersTest extends BaseTestCaseORM
     protected function getUsedEntityFixtures()
     {
         return array(
-            self::TARGET
+            self::TARGET,
         );
     }
 
     /**
      * @test
      */
-    function shouldSuccessWhenManagedFilterHasAlreadyBeenDisabled()
+    public function shouldSuccessWhenManagedFilterHasAlreadyBeenDisabled()
     {
         // disable one managed doctrine filter
         $this->em->getFilters()->disable(self::FAKE_FILTER_NAME);
 
-        $slug = new Article;
+        $slug = new Article();
         $slug->setCode('My code');
         $slug->setTitle('My title');
 

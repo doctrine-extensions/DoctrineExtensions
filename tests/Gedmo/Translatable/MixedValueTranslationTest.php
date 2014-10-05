@@ -5,8 +5,7 @@ namespace Gedmo\Translatable;
 use Doctrine\Common\EventManager;
 use Tool\BaseTestCaseORM;
 use Doctrine\DBAL\Types\Type;
-use Doctrine\Common\Util\Debug,
-    Translatable\Fixture\MixedValue;
+use Translatable\Fixture\MixedValue;
 
 /**
  * These are tests for translatable behavior
@@ -30,10 +29,10 @@ class MixedValueTranslationTest extends BaseTestCaseORM
             Type::addType('custom', 'Translatable\Fixture\Type\Custom');
         }
 
-        $evm = new EventManager;
+        $evm = new EventManager();
         $this->translatableListener = new TranslatableListener();
         $this->translatableListener->setTranslatableLocale('en_us');
-        $this->translatableListener->setDefaultLocale('en_us');        
+        $this->translatableListener->setDefaultLocale('en_us');
         $evm->addEventSubscriber($this->translatableListener);
 
         $this->getMockSqliteEntityManager($evm);
@@ -81,13 +80,13 @@ class MixedValueTranslationTest extends BaseTestCaseORM
     {
         return array(
             self::MIXED,
-            self::TRANSLATION
+            self::TRANSLATION,
         );
     }
 
     private function populate()
     {
-        $mixedEn = new MixedValue;
+        $mixedEn = new MixedValue();
         $mixedEn->setDate(new \DateTime());
         $cust = new \stdClass();
         $cust->test = 'en';

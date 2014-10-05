@@ -11,8 +11,8 @@ class Sortable
     private $position;
 
     private $grouping;
-    
+
     private $sortable_group;
-    
+
     private $sortable_groups;
 }

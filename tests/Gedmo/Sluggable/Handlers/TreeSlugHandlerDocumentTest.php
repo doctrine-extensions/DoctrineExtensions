@@ -21,7 +21,7 @@ class TreeSlugHandlerDocumentTest extends BaseTestCaseMongoODM
     {
         parent::setUp();
         $evm = new EventManager();
-        $evm->addEventSubscriber(new SluggableListener);
+        $evm->addEventSubscriber(new SluggableListener());
 
         $this->getMockDocumentManager($evm);
     }
@@ -76,36 +76,36 @@ class TreeSlugHandlerDocumentTest extends BaseTestCaseMongoODM
 
     private function populate()
     {
-        $food = new TreeSlug;
+        $food = new TreeSlug();
         $food->setTitle('Food');
         $this->dm->persist($food);
 
-        $fruits = new TreeSlug;
+        $fruits = new TreeSlug();
         $fruits->setTitle('Fruits');
         $fruits->setParent($food);
         $this->dm->persist($fruits);
 
-        $vegitables = new TreeSlug;
+        $vegitables = new TreeSlug();
         $vegitables->setTitle('Vegitables');
         $vegitables->setParent($food);
         $this->dm->persist($vegitables);
 
-        $milk = new TreeSlug;
+        $milk = new TreeSlug();
         $milk->setTitle('Milk');
         $milk->setParent($food);
         $this->dm->persist($milk);
 
-        $meat = new TreeSlug;
+        $meat = new TreeSlug();
         $meat->setTitle('Meat');
         $meat->setParent($food);
         $this->dm->persist($meat);
 
-        $oranges = new TreeSlug;
+        $oranges = new TreeSlug();
         $oranges->setTitle('Oranges');
         $oranges->setParent($fruits);
         $this->dm->persist($oranges);
 
-        $citrons = new TreeSlug;
+        $citrons = new TreeSlug();
         $citrons->setTitle('Citrons');
         $citrons->setParent($fruits);
         $this->dm->persist($citrons);

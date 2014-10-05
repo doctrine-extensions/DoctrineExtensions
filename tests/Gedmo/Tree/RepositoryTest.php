@@ -4,9 +4,8 @@ namespace Gedmo\Tree;
 
 use Doctrine\Common\EventManager;
 use Tool\BaseTestCaseORM;
-use Doctrine\Common\Util\Debug,
-    Tree\Fixture\Category,
-    Tree\Fixture\CategoryUuid;
+use Tree\Fixture\Category;
+use Tree\Fixture\CategoryUuid;
 
 /**
  * These are tests for Tree behavior
@@ -24,8 +23,8 @@ class RepositoryTest extends BaseTestCaseORM
     {
         parent::setUp();
 
-        $evm = new EventManager;
-        $evm->addEventSubscriber(new TreeListener);
+        $evm = new EventManager();
+        $evm->addEventSubscriber(new TreeListener());
 
         $this->getMockSqliteEntityManager($evm);
         $this->populate();
@@ -274,7 +273,7 @@ class RepositoryTest extends BaseTestCaseORM
 
         // now lets brake something
 
-        $dql = 'UPDATE ' . self::CATEGORY . ' node';
+        $dql = 'UPDATE '.self::CATEGORY.' node';
         $dql .= ' SET node.lft = 1';
         $dql .= ' WHERE node.id = 8';
         $q = $this->em->createQuery($dql);

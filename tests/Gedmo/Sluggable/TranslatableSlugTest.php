@@ -4,13 +4,12 @@ namespace Gedmo\Sluggable;
 
 use Doctrine\Common\EventManager;
 use Tool\BaseTestCaseORM;
-use Doctrine\Common\Util\Debug,
-    Gedmo\Translatable\Translatable,
-    Gedmo\Translatable\Entity\Translation,
-    Gedmo\Translatable\TranslatableListener,
-    Sluggable\Fixture\TranslatableArticle,
-    Sluggable\Fixture\Comment,
-    Sluggable\Fixture\Page;
+use Gedmo\Translatable\Translatable;
+use Gedmo\Translatable\Entity\Translation;
+use Gedmo\Translatable\TranslatableListener;
+use Sluggable\Fixture\TranslatableArticle;
+use Sluggable\Fixture\Comment;
+use Sluggable\Fixture\Page;
 
 /**
  * These are tests for Sluggable behavior
@@ -33,10 +32,10 @@ class TranslatableSlugTest extends BaseTestCaseORM
     {
         parent::setUp();
 
-        $evm = new EventManager;
+        $evm = new EventManager();
         $this->translatableListener = new TranslatableListener();
         $this->translatableListener->setTranslatableLocale('en_US');
-        $evm->addEventSubscriber(new SluggableListener);
+        $evm->addEventSubscriber(new SluggableListener());
         $evm->addEventSubscriber($this->translatableListener);
 
         $this->getMockSqliteEntityManager($evm);
@@ -80,10 +79,10 @@ class TranslatableSlugTest extends BaseTestCaseORM
 
     public function testConcurrentChanges()
     {
-        $page = new Page;
+        $page = new Page();
         $page->setContent('cont test');
 
-        $a0Page = new Page;
+        $a0Page = new Page();
         $a0Page->setContent('bi vv');
 
         $article0 = $this->em->find(self::ARTICLE, $this->articleId);
@@ -91,7 +90,7 @@ class TranslatableSlugTest extends BaseTestCaseORM
         $article0->setTitle('xx gg');
         $a0Page->addArticle($article0);
 
-        $a0Comment = new Comment;
+        $a0Comment = new Comment();
         $a0Comment->setMessage('the xx message');
         $article0->addComment($a0Comment);
         $this->em->persist($a0Comment);
@@ -109,9 +108,9 @@ class TranslatableSlugTest extends BaseTestCaseORM
         $page->addArticle($article1);
         $page->addArticle($article2);
 
-        $comment1 = new Comment;
+        $comment1 = new Comment();
         $comment1->setMessage('mes1-test');
-        $comment2 = new Comment;
+        $comment2 = new Comment();
         $comment2->setMessage('mes2 test');
 
         $article1->addComment($comment1);
@@ -134,7 +133,7 @@ class TranslatableSlugTest extends BaseTestCaseORM
             self::ARTICLE,
             self::COMMENT,
             self::PAGE,
-            self::TRANSLATION
+            self::TRANSLATION,
         );
     }
 

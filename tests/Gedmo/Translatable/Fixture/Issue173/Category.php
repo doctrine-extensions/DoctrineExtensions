@@ -22,7 +22,7 @@ class Category
      * @ORM\Column(name="title", type="string", length=128)
      */
     private $title;
-    
+
     /**
      * @ORM\OneToMany(targetEntity="Article", mappedBy="category", cascade={"persist", "remove"})
      */
@@ -32,27 +32,27 @@ class Category
      * @ORM\OneToMany(targetEntity="Product", mappedBy="category", cascade={"persist", "remove"})
      */
     private $products;
-    
+
     public function getId()
     {
         return $this->id;
     }
-    
+
     public function setTitle($title)
     {
         $this->title = $title;
     }
-    
+
     public function getTitle()
     {
         return $this->title;
     }
-    
+
     public function addArticles(Article $article)
     {
         $this->articles[] = $article;
     }
-    
+
     public function getArticles()
     {
         return $this->articles;
@@ -68,4 +68,3 @@ class Category
         return $this->products;
     }
 }
-

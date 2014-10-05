@@ -23,27 +23,27 @@ class InheritanceTest extends BaseTestCaseORM
     {
         parent::setUp();
 
-        $evm = new EventManager;
-        $evm->addEventSubscriber(new SluggableListener);
+        $evm = new EventManager();
+        $evm->addEventSubscriber(new SluggableListener());
 
         $this->getMockSqliteEntityManager($evm);
     }
 
     public function testSlugGeneration()
     {
-        $audi = new Car;
+        $audi = new Car();
         $audi->setDescription('audi car');
         $audi->setTitle('Audi');
 
         $this->em->persist($audi);
 
-        $audi2 = new Car;
+        $audi2 = new Car();
         $audi2->setDescription('audi2 car');
         $audi2->setTitle('Audi');
 
         $this->em->persist($audi2);
 
-        $audi3 = new Vehicle;
+        $audi3 = new Vehicle();
         $audi3->setTitle('Audi');
 
         $this->em->persist($audi3);
@@ -54,7 +54,7 @@ class InheritanceTest extends BaseTestCaseORM
     {
         return array(
             self::VEHICLE,
-            self::CAR
+            self::CAR,
         );
     }
 }

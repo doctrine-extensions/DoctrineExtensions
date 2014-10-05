@@ -22,7 +22,7 @@ class Post
      * @ORM\Column(length=64, nullable=true)
      */
     private $slug;
-    
+
     /**
      * @ORM\OneToMany(targetEntity="Comment", mappedBy="Post")
      */

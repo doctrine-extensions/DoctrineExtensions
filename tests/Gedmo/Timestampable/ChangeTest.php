@@ -4,11 +4,10 @@ namespace Gedmo\Timestampable;
 
 use Doctrine\Common\EventManager;
 use Tool\BaseTestCaseORM;
-use Doctrine\Common\Util\Debug,
-    Timestampable\Fixture\TitledArticle,
-    Gedmo\Mapping\Event\Adapter\ORM as BaseAdapterORM,
-    Gedmo\Timestampable\Mapping\Event\TimestampableAdapter,
-    Doctrine\Common\EventArgs;
+use Timestampable\Fixture\TitledArticle;
+use Gedmo\Mapping\Event\Adapter\ORM as BaseAdapterORM;
+use Gedmo\Timestampable\Mapping\Event\TimestampableAdapter;
+use Doctrine\Common\EventArgs;
 
 /**
  * These are tests for Timestampable behavior
@@ -30,7 +29,7 @@ class ChangeTest extends BaseTestCaseORM
         $this->listener = new TimestampableListenerStub();
         $this->listener->eventAdapter = new EventAdapterORMStub();
 
-        $evm = new EventManager;
+        $evm = new EventManager();
         $evm->addEventSubscriber($this->listener);
 
         $this->getMockSqliteEntityManager($evm);

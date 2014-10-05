@@ -32,23 +32,23 @@ class SortableMappingTest extends BaseTestCaseOM
     public function setUp()
     {
         parent::setUp();
-        
+
         $reader = new AnnotationReader();
         $annotationDriver = new AnnotationDriver($reader);
 
         $xmlDriver = new XmlDriver(__DIR__.'/../Driver/Xml');
 
-        $chain = new DriverChain;
+        $chain = new DriverChain();
         $chain->addDriver($xmlDriver, 'Mapping\Fixture\Xml');
         $chain->addDriver($annotationDriver, 'Mapping\Fixture');
 
-        $this->sortable = new SortableListener;
-        $this->evm = new EventManager;
+        $this->sortable = new SortableListener();
+        $this->evm = new EventManager();
         $this->evm->addEventSubscriber($this->sortable);
 
         $this->em = $this->getMockSqliteEntityManager(array(
             'Mapping\Fixture\Xml\Sortable',
-            'Mapping\Fixture\SortableGroup'
+            'Mapping\Fixture\SortableGroup',
         ), $chain);
     }
 

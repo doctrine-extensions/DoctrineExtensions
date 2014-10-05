@@ -4,11 +4,7 @@ namespace Gedmo\Blameable;
 
 use Doctrine\Common\EventManager;
 use Tool\BaseTestCaseORM;
-use Doctrine\Common\Util\Debug,
-    Blameable\Fixture\Entity\TitledArticle,
-    Gedmo\Mapping\Event\Adapter\ORM as BaseAdapterORM,
-    Gedmo\Blameable\Mapping\Event\BlameableAdapter,
-    Doctrine\Common\EventArgs;
+use Blameable\Fixture\Entity\TitledArticle;
 
 /**
  * These are tests for Blameable behavior
@@ -27,7 +23,7 @@ class ChangeTest extends BaseTestCaseORM
     {
         parent::setUp();
 
-        $evm = new EventManager;
+        $evm = new EventManager();
         $this->listener = new BlameableListener();
         $this->listener->setUserValue('testuser');
         $evm->addEventSubscriber($this->listener);

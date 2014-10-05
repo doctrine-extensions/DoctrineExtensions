@@ -33,11 +33,11 @@ class NestedTreeMappingTest extends BaseTestCaseOM
 
         $xmlDriver = new XmlDriver(__DIR__.'/../Driver/Xml');
 
-        $chain = new DriverChain;
+        $chain = new DriverChain();
         $chain->addDriver($xmlDriver, 'Mapping\Fixture\Xml');
 
-        $this->tree = new TreeListener;
-        $this->evm = new EventManager;
+        $this->tree = new TreeListener();
+        $this->evm = new EventManager();
         $this->evm->addEventSubscriber($this->tree);
 
         $this->em = $this->getMockSqliteEntityManager(array(

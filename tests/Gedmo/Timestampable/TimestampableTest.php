@@ -4,10 +4,9 @@ namespace Gedmo\Timestampable;
 
 use Doctrine\Common\EventManager;
 use Tool\BaseTestCaseORM;
-use Doctrine\Common\Util\Debug,
-    Timestampable\Fixture\Article,
-    Timestampable\Fixture\Comment,
-    Timestampable\Fixture\Type;
+use Timestampable\Fixture\Article;
+use Timestampable\Fixture\Comment;
+use Timestampable\Fixture\Type;
 
 /**
  * These are tests for Timestampable behavior
@@ -26,8 +25,8 @@ class TimestampableTest extends BaseTestCaseORM
     {
         parent::setUp();
 
-        $evm = new EventManager;
-        $evm->addEventSubscriber(new TimestampableListener);
+        $evm = new EventManager();
+        $evm->addEventSubscriber(new TimestampableListener());
 
         $this->getMockSqliteEntityManager($evm);
     }
@@ -199,9 +198,9 @@ class TimestampableTest extends BaseTestCaseORM
     /**
      * @test
      */
-    function shouldSolveIssue767()
+    public function shouldSolveIssue767()
     {
-        $type = new Type;
+        $type = new Type();
         $type->setTitle('Published');
 
         $this->em->persist($type);
@@ -211,7 +210,7 @@ class TimestampableTest extends BaseTestCaseORM
         $type = $this->em->getReference(self::TYPE, $type->getId());
         $this->assertInstanceOf('Doctrine\ORM\Proxy\Proxy', $type);
 
-        $art = new Article;
+        $art = new Article();
         $art->setTitle('Art');
         $art->setBody('body');
 
@@ -229,7 +228,7 @@ class TimestampableTest extends BaseTestCaseORM
         return array(
             self::ARTICLE,
             self::COMMENT,
-            self::TYPE
+            self::TYPE,
         );
     }
 }

@@ -30,4 +30,3 @@ Mapping\Fixture\Yaml\Sortable:
       targetEntity: Mapping\Fixture\SortableGroup
       gedmo:
         - sortableGroup
-

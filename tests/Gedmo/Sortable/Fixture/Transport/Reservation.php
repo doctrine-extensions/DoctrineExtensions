@@ -8,8 +8,8 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity
  */
-class Reservation {
-
+class Reservation
+{
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -47,47 +47,58 @@ class Reservation {
      */
     private $name;
 
-    public function getId() {
+    public function getId()
+    {
         return $this->id;
     }
 
-    public function setBus(Bus $bus) {
+    public function setBus(Bus $bus)
+    {
         $this->bus = $bus;
     }
 
-    public function getBus() {
+    public function getBus()
+    {
         return $this->bus;
     }
 
-	public function setDestination($destination) {
+    public function setDestination($destination)
+    {
         $this->destination = $destination;
     }
 
-    public function getDestination() {
+    public function getDestination()
+    {
         return $this->destination;
     }
 
-    public function setTravelDate(\DateTime $date) {
+    public function setTravelDate(\DateTime $date)
+    {
         $this->travelDate = $date;
     }
 
-    public function getTravelDate() {
+    public function getTravelDate()
+    {
         return $this->travelDate;
     }
 
-    public function setSeat($seat) {
+    public function setSeat($seat)
+    {
         $this->seat = $seat;
     }
 
-    public function getSeat() {
+    public function getSeat()
+    {
         return $this->seat;
     }
 
-    public function setName($name) {
+    public function setName($name)
+    {
         $this->name = $name;
     }
 
-    public function getName() {
+    public function getName()
+    {
         return $this->name;
     }
 }

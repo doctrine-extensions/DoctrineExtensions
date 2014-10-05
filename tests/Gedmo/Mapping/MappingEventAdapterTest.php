@@ -47,7 +47,7 @@ class MappingEventAdapterTest extends \PHPUnit_Framework_TestCase
         $eventArgsMock->expects($this->once())
             ->method('getEntity');
 
-        $eventAdapter = new EventAdapterORM;
+        $eventAdapter = new EventAdapterORM();
         $eventAdapter->setEventArgs($eventArgsMock);
         $eventAdapter->getObjectManager();
         $eventAdapter->getObject();

@@ -25,8 +25,8 @@ class TraitUsageTest extends BaseTestCaseORM
             $this->markTestSkipped('PHP >= 5.4 version required for this test.');
         }
 
-        $evm = new EventManager;
-        $evm->addEventSubscriber(new TimestampableListener);
+        $evm = new EventManager();
+        $evm->addEventSubscriber(new TimestampableListener());
 
         $this->getMockSqliteEntityManager($evm);
     }
@@ -34,9 +34,9 @@ class TraitUsageTest extends BaseTestCaseORM
     /**
      * @test
      */
-    function shouldTimestampUsingTrait()
+    public function shouldTimestampUsingTrait()
     {
-        $sport = new UsingTrait;
+        $sport = new UsingTrait();
         $sport->setTitle('Sport');
 
         $this->em->persist($sport);
@@ -49,9 +49,9 @@ class TraitUsageTest extends BaseTestCaseORM
     /**
      * @test
      */
-    function traitMethodthShouldReturnObject()
+    public function traitMethodthShouldReturnObject()
     {
-        $sport = new UsingTrait;
+        $sport = new UsingTrait();
         $this->assertInstanceOf('Timestampable\Fixture\UsingTrait', $sport->setCreatedAt(new \DateTime()));
         $this->assertInstanceOf('Timestampable\Fixture\UsingTrait', $sport->setUpdatedAt(new \DateTime()));
     }
@@ -59,7 +59,7 @@ class TraitUsageTest extends BaseTestCaseORM
     protected function getUsedEntityFixtures()
     {
         return array(
-            self::TARGET
+            self::TARGET,
         );
     }
 }

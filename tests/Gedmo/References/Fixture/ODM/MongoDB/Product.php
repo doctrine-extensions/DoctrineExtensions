@@ -32,7 +32,8 @@ class Product
      */
     private $metadatas;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->metadatas = new ArrayCollection();
     }
 
@@ -66,12 +67,12 @@ class Product
         $this->stockItems = $stockItems;
     }
 
-    public function addMetadata( $metadata )
+    public function addMetadata($metadata)
     {
         $this->metadatas[] = $metadata;
     }
 
-    public function removeMetadata( $metadata )
+    public function removeMetadata($metadata)
     {
         $this->metadatas->removeElement( $metadata );
     }

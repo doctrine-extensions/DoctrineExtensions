@@ -4,10 +4,9 @@ namespace Gedmo\IpTraceable;
 
 use Doctrine\Common\EventManager;
 use Tool\BaseTestCaseORM;
-use Doctrine\Common\Util\Debug,
-    IpTraceable\Fixture\Article,
-    IpTraceable\Fixture\Comment,
-    IpTraceable\Fixture\Type;
+use IpTraceable\Fixture\Article;
+use IpTraceable\Fixture\Comment;
+use IpTraceable\Fixture\Type;
 
 /**
  * These are tests for IpTraceable behavior
@@ -28,10 +27,10 @@ class IpTraceableTest extends BaseTestCaseORM
     {
         parent::setUp();
 
-        $listener = new IpTraceableListener;
+        $listener = new IpTraceableListener();
         $listener->setIpValue(self::TEST_IP);
 
-        $evm = new EventManager;
+        $evm = new EventManager();
         $evm->addEventSubscriber($listener);
 
         $this->getMockSqliteEntityManager($evm);
@@ -39,25 +38,25 @@ class IpTraceableTest extends BaseTestCaseORM
 
     public function testInvalidIpShouldThrowInvalidArgumentException()
     {
-        $listener = new IpTraceableListener;
+        $listener = new IpTraceableListener();
 
         $this->setExpectedException('Gedmo\Exception\InvalidArgumentException');
 
-        $listener->setIpValue('xx.xxx.xx.xxx');   
+        $listener->setIpValue('xx.xxx.xx.xxx');
     }
 
     public function testIpV4()
     {
-        $listener = new IpTraceableListener;
+        $listener = new IpTraceableListener();
         $listener->setIpValue('123.218.45.39');
-        $this->assertEquals('123.218.45.39', $listener->getIpValue(null, null));  
+        $this->assertEquals('123.218.45.39', $listener->getIpValue(null, null));
     }
 
     public function testIpV6()
     {
-        $listener = new IpTraceableListener;
+        $listener = new IpTraceableListener();
         $listener->setIpValue('2001:0db8:0000:85a3:0000:0000:ac1f:8001');
-        $this->assertEquals('2001:0db8:0000:85a3:0000:0000:ac1f:8001', $listener->getIpValue(null, null));  
+        $this->assertEquals('2001:0db8:0000:85a3:0000:0000:ac1f:8001', $listener->getIpValue(null, null));
     }
 
     public function testIpTraceable()
@@ -141,7 +140,7 @@ class IpTraceableTest extends BaseTestCaseORM
         return array(
             self::ARTICLE,
             self::COMMENT,
-            self::TYPE
+            self::TYPE,
         );
     }
 }

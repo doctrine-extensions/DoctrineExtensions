@@ -4,17 +4,15 @@ namespace Gedmo\SoftDeleteable;
 
 use Tool\BaseTestCaseMongoODM;
 use Doctrine\Common\EventManager;
-use Doctrine\Common\Util\Debug,
-    SoftDeleteable\Fixture\Document\Article,
-    SoftDeleteable\Fixture\Document\Comment,
-    SoftDeleteable\Fixture\Document\User,
-    SoftDeleteable\Fixture\Document\Page,
-    SoftDeleteable\Fixture\Document\MegaPage,
-    SoftDeleteable\Fixture\Document\Module,
-    SoftDeleteable\Fixture\Document\OtherArticle,
-    SoftDeleteable\Fixture\Document\OtherComment,
-    SoftDeleteable\Fixture\Document\Child,
-    Gedmo\SoftDeleteable\SoftDeleteableListener;
+use SoftDeleteable\Fixture\Document\Article;
+use SoftDeleteable\Fixture\Document\Comment;
+use SoftDeleteable\Fixture\Document\User;
+use SoftDeleteable\Fixture\Document\Page;
+use SoftDeleteable\Fixture\Document\MegaPage;
+use SoftDeleteable\Fixture\Document\Module;
+use SoftDeleteable\Fixture\Document\OtherArticle;
+use SoftDeleteable\Fixture\Document\OtherComment;
+use SoftDeleteable\Fixture\Document\Child;
 
 /**
  * These are tests for SoftDeleteable behavior
@@ -81,6 +79,7 @@ class SoftDeleteableDocumentTest extends BaseTestCaseMongoODM
 
         $this->assertNull($user);
     }
+
     /**
      * Tests the filter by enabling and disabling it between
      * some user persists actions.
@@ -156,7 +155,6 @@ class SoftDeleteableDocumentTest extends BaseTestCaseMongoODM
         $this->assertNull($user);
         $this->dm->remove($user);
         $this->dm->flush();
-
     }
     public function testPostSoftDeleteEventIsDispatched()
     {
@@ -165,7 +163,7 @@ class SoftDeleteableDocumentTest extends BaseTestCaseMongoODM
             array(
                 "getSubscribedEvents",
                 "preSoftDelete",
-                "postSoftDelete"
+                "postSoftDelete",
             )
         );
 

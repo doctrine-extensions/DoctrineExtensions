@@ -23,25 +23,26 @@ class Issue116Test extends BaseTestCaseORM
     {
         parent::setUp();
 
-        $evm = new EventManager;
-        $evm->addEventSubscriber(new SluggableListener);
+        $evm = new EventManager();
+        $evm->addEventSubscriber(new SluggableListener());
 
         $this->getMockSqliteEntityManager($evm);
     }
 
     protected function getMetadataDriverImplementation()
     {
-        $chain = new DriverChain;
+        $chain = new DriverChain();
         $chain->addDriver(
-            new YamlDriver(array(__DIR__ . '/../Fixture/Issue116/Mapping')),
+            new YamlDriver(array(__DIR__.'/../Fixture/Issue116/Mapping')),
             'Sluggable\Fixture\Issue116'
         );
+
         return $chain;
     }
 
     public function testSlugGeneration()
     {
-        $country = new Country;
+        $country = new Country();
         $country->setOriginalName('New Zealand');
 
         $this->em->persist($country);
@@ -53,7 +54,7 @@ class Issue116Test extends BaseTestCaseORM
     protected function getUsedEntityFixtures()
     {
         return array(
-            self::TARGET
+            self::TARGET,
         );
     }
 }

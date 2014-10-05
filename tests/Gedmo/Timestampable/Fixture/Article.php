@@ -155,5 +155,4 @@ class Article implements Timestampable
     {
         return $this->contentChanged;
     }
-
 }

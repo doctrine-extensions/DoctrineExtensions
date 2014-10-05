@@ -37,7 +37,6 @@ class Page
      */
     private $modules;
 
-
     public function __construct()
     {
         $this->modules = new ArrayCollection();

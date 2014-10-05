@@ -33,23 +33,23 @@ class SoftDeleteableMappingTest extends BaseTestCaseOM
     public function setUp()
     {
         parent::setUp();
-        
+
         $reader = new AnnotationReader();
         $annotationDriver = new AnnotationDriver($reader);
 
         $yamlDriver = new YamlDriver(__DIR__.'/Driver/Yaml');
 
-        $chain = new DriverChain;
+        $chain = new DriverChain();
         $chain->addDriver($yamlDriver, 'Mapping\Fixture\Yaml');
         $chain->addDriver($annotationDriver, 'Mapping\Fixture');
 
         $this->softDeleteable = new SoftDeleteableListener();
-        $this->evm = new EventManager;
+        $this->evm = new EventManager();
         $this->evm->addEventSubscriber($this->softDeleteable);
 
         $this->em = $this->getMockSqliteEntityManager(array(
             'Mapping\Fixture\Yaml\SoftDeleteable',
-            'Mapping\Fixture\SoftDeleteable'
+            'Mapping\Fixture\SoftDeleteable',
         ), $chain);
     }
 
@@ -57,7 +57,7 @@ class SoftDeleteableMappingTest extends BaseTestCaseOM
     {
         $meta = $this->em->getClassMetadata('Mapping\Fixture\Yaml\SoftDeleteable');
         $config = $this->softDeleteable->getConfiguration($this->em, $meta->name);
-        
+
         $this->assertArrayHasKey('softDeleteable', $config);
         $this->assertTrue($config['softDeleteable']);
         $this->assertArrayHasKey('timeAware', $config);

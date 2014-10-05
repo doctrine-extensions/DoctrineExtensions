@@ -21,7 +21,7 @@ class EntityWrapperTest extends BaseTestCaseORM
     protected function setUp()
     {
         parent::setUp();
-        $this->getMockSqliteEntityManager(new EventManager);
+        $this->getMockSqliteEntityManager(new EventManager());
         $this->populate();
     }
 
@@ -77,7 +77,7 @@ class EntityWrapperTest extends BaseTestCaseORM
 
     public function testSomeFunctions()
     {
-        $test = new Article;
+        $test = new Article();
         $wrapped = new EntityWrapper($test, $this->em);
 
         $wrapped->populate(array('title' => 'test'));
@@ -89,13 +89,13 @@ class EntityWrapperTest extends BaseTestCaseORM
     protected function getUsedEntityFixtures()
     {
         return array(
-            self::ARTICLE
+            self::ARTICLE,
         );
     }
 
     private function populate()
     {
-        $test = new Article;
+        $test = new Article();
         $test->setTitle("test");
         $this->em->persist($test);
         $this->em->flush();

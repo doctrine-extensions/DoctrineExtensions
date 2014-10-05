@@ -26,8 +26,8 @@ class TraitUsageTest extends BaseTestCaseORM
             $this->markTestSkipped('PHP >= 5.4 version required for this test.');
         }
 
-        $evm = new EventManager;
-        $ipTraceableListener = new IpTraceableListener;
+        $evm = new EventManager();
+        $ipTraceableListener = new IpTraceableListener();
         $ipTraceableListener->setIpValue(self::TEST_IP);
         $evm->addEventSubscriber($ipTraceableListener);
 
@@ -37,9 +37,9 @@ class TraitUsageTest extends BaseTestCaseORM
     /**
      * @test
      */
-    function shouldIpTraceUsingTrait()
+    public function shouldIpTraceUsingTrait()
     {
-        $sport = new UsingTrait;
+        $sport = new UsingTrait();
         $sport->setTitle('Sport');
 
         $this->em->persist($sport);
@@ -52,9 +52,9 @@ class TraitUsageTest extends BaseTestCaseORM
     /**
      * @test
      */
-    function traitMethodShouldReturnObject()
+    public function traitMethodShouldReturnObject()
     {
-        $sport = new UsingTrait;
+        $sport = new UsingTrait();
         $this->assertInstanceOf('IpTraceable\Fixture\UsingTrait', $sport->setCreatedFromIp('<192 class="158 3 43"></192>'));
         $this->assertInstanceOf('IpTraceable\Fixture\UsingTrait', $sport->setUpdatedFromIp('<192 class="158 3 43"></192>'));
     }
@@ -62,7 +62,7 @@ class TraitUsageTest extends BaseTestCaseORM
     protected function getUsedEntityFixtures()
     {
         return array(
-            self::TARGET
+            self::TARGET,
         );
     }
 }

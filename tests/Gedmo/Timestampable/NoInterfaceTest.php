@@ -4,8 +4,7 @@ namespace Gedmo\Timestampable;
 
 use Doctrine\Common\EventManager;
 use Tool\BaseTestCaseORM;
-use Doctrine\Common\Util\Debug,
-    Timestampable\Fixture\WithoutInterface;
+use Timestampable\Fixture\WithoutInterface;
 
 /**
  * These are tests for Timestampable behavior
@@ -22,8 +21,8 @@ class NoInterfaceTest extends BaseTestCaseORM
     {
         parent::setUp();
 
-        $evm = new EventManager;
-        $evm->addEventSubscriber(new TimestampableListener);
+        $evm = new EventManager();
+        $evm->addEventSubscriber(new TimestampableListener());
 
         $this->getMockSqliteEntityManager($evm);
     }

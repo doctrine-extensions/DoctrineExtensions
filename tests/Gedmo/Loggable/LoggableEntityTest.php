@@ -4,10 +4,9 @@ namespace Gedmo\Loggable;
 
 use Tool\BaseTestCaseORM;
 use Doctrine\Common\EventManager;
-use Doctrine\Common\Util\Debug,
-    Loggable\Fixture\Entity\Article,
-    Loggable\Fixture\Entity\RelatedArticle,
-    Loggable\Fixture\Entity\Comment;
+use Loggable\Fixture\Entity\Article;
+use Loggable\Fixture\Entity\RelatedArticle;
+use Loggable\Fixture\Entity\Comment;
 
 /**
  * These are tests for loggable behavior
@@ -30,7 +29,7 @@ class LoggableEntityTest extends BaseTestCaseORM
     {
         parent::setUp();
 
-        $evm = new EventManager;
+        $evm = new EventManager();
         $this->LoggableListener = new LoggableListener();
         $this->LoggableListener->setUsername('jules');
         $evm->addEventSubscriber($this->LoggableListener);
@@ -41,7 +40,7 @@ class LoggableEntityTest extends BaseTestCaseORM
     /**
      * @test
      */
-    function shouldHandleClonedEntity()
+    public function shouldHandleClonedEntity()
     {
         $art0 = new Article();
         $art0->setTitle('Title');
@@ -141,17 +140,17 @@ class LoggableEntityTest extends BaseTestCaseORM
             self::COMMENT,
             self::COMMENT_LOG,
             self::RELATED_ARTICLE,
-            'Gedmo\Loggable\Entity\LogEntry'
+            'Gedmo\Loggable\Entity\LogEntry',
         );
     }
 
     private function populate()
     {
-        $article = new RelatedArticle;
+        $article = new RelatedArticle();
         $article->setTitle('a1-t-v1');
         $article->setContent('a1-c-v1');
 
-        $comment = new Comment;
+        $comment = new Comment();
         $comment->setArticle($article);
         $comment->setMessage('m-v1');
         $comment->setSubject('s-v1');
@@ -168,7 +167,7 @@ class LoggableEntityTest extends BaseTestCaseORM
         $this->em->persist($comment);
         $this->em->flush();
 
-        $article2 = new RelatedArticle;
+        $article2 = new RelatedArticle();
         $article2->setTitle('a2-t-v1');
         $article2->setContent('a2-c-v1');
 

@@ -2,7 +2,6 @@
 namespace IpTraceable\Fixture;
 
 use Gedmo\IpTraceable\Traits\IpTraceableEntity;
-use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
 
 /**

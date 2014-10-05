@@ -22,7 +22,6 @@ class Identifier
      */
     private $title;
 
-
     public function getId()
     {
         return $this->id;

@@ -23,7 +23,7 @@ class RelativeSlugHandlerDocumentTest extends BaseTestCaseMongoODM
     {
         parent::setUp();
         $evm = new EventManager();
-        $evm->addEventSubscriber(new SluggableListener);
+        $evm->addEventSubscriber(new SluggableListener());
 
         $this->getMockDocumentManager($evm);
     }
@@ -82,32 +82,32 @@ class RelativeSlugHandlerDocumentTest extends BaseTestCaseMongoODM
 
     private function populate()
     {
-        $sport = new Article;
+        $sport = new Article();
         $sport->setTitle('Sport');
         $sport->setCode('test');
         $this->dm->persist($sport);
 
-        $cars = new Article;
+        $cars = new Article();
         $cars->setTitle('Cars');
         $cars->setCode('code');
         $this->dm->persist($cars);
 
-        $thomas = new RelativeSlug;
+        $thomas = new RelativeSlug();
         $thomas->setTitle('Thomas');
         $thomas->setArticle($sport);
         $this->dm->persist($thomas);
 
-        $jen = new RelativeSlug;
+        $jen = new RelativeSlug();
         $jen->setTitle('Jen');
         $jen->setArticle($sport);
         $this->dm->persist($jen);
 
-        $john = new RelativeSlug;
+        $john = new RelativeSlug();
         $john->setTitle('John');
         $john->setArticle($cars);
         $this->dm->persist($john);
 
-        $single = new RelativeSlug;
+        $single = new RelativeSlug();
         $single->setTitle('Single');
         $this->dm->persist($single);
 

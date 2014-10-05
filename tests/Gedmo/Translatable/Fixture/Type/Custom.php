@@ -30,6 +30,7 @@ class Custom extends Type
         if ($val === false && $value !== 'b:0;') {
             new \Exception('Conversion failed');
         }
+
         return $val;
     }
 
@@ -37,5 +38,4 @@ class Custom extends Type
     {
         return self::NAME;
     }
-
 }

@@ -4,9 +4,9 @@ namespace Gedmo\Blameable;
 
 use Tool\BaseTestCaseMongoODM;
 use Doctrine\Common\EventManager;
-use Blameable\Fixture\Document\Article,
-    Blameable\Fixture\Document\Type,
-    Blameable\Fixture\Document\User;
+use Blameable\Fixture\Document\Article;
+use Blameable\Fixture\Document\Type;
+use Blameable\Fixture\Document\User;
 
 /**
  * These are tests for Blameable behavior ODM implementation
@@ -51,7 +51,7 @@ class BlameableDocumentTest extends BaseTestCaseMongoODM
         $this->assertEquals(self::TEST_USERNAME, $article->getCreated());
         $this->assertEquals(self::TEST_USERNAME, $article->getUpdated());
 
-        $published = new Type;
+        $published = new Type();
         $published->setIdentifier('published');
         $published->setTitle('Published');
 
@@ -83,7 +83,7 @@ class BlameableDocumentTest extends BaseTestCaseMongoODM
         $this->assertEquals(self::TEST_USERNAME, $sport->getCreated());
         $this->assertEquals(self::TEST_USERNAME, $sport->getUpdated());
 
-        $published = new Type;
+        $published = new Type();
         $published->setIdentifier('published');
         $published->setTitle('Published');
 

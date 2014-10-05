@@ -21,7 +21,7 @@ class Issue922Test extends BaseTestCaseORM
     {
         parent::setUp();
 
-        $evm = new EventManager;
+        $evm = new EventManager();
         $this->translatableListener = new TranslatableListener();
         $this->translatableListener->setTranslatableLocale('en');
         $this->translatableListener->setDefaultLocale('en');
@@ -34,12 +34,12 @@ class Issue922Test extends BaseTestCaseORM
     /**
      * @test
      */
-    function shouldTranslateDateFields()
+    public function shouldTranslateDateFields()
     {
-        $p1 = new Post;
-        $p1->setPublishedAt(new \DateTime);
-        $p1->setTimestampAt(new \DateTime);
-        $p1->setDateAt(new \DateTime);
+        $p1 = new Post();
+        $p1->setPublishedAt(new \DateTime());
+        $p1->setTimestampAt(new \DateTime());
+        $p1->setDateAt(new \DateTime());
         $p1->setBoolean(true);
 
         $this->em->persist($p1);
@@ -69,7 +69,7 @@ class Issue922Test extends BaseTestCaseORM
             ->with(TranslationWalker::HYDRATE_OBJECT_TRANSLATION)
             ->will($this->returnValue('Gedmo\Translatable\Hydrator\ORM\ObjectHydrator'));
 
-        $q = $this->em->createQuery('SELECT p FROM ' . self::POST . ' p');
+        $q = $this->em->createQuery('SELECT p FROM '.self::POST.' p');
         $q->setHint(Query::HINT_CUSTOM_OUTPUT_WALKER, self::TREE_WALKER_TRANSLATION);
         $q->setHint(TranslatableListener::HINT_TRANSLATABLE_LOCALE, 'de');
 

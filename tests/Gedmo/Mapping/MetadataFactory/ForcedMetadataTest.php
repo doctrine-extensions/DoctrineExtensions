@@ -89,7 +89,7 @@ class ForcedMetadataTest extends \PHPUnit_Framework_TestCase
         );
         $this->assertTrue(isset($conf['create']));
 
-        $test = new Timestampable;
+        $test = new Timestampable();
         $this->em->persist($test);
         $this->em->flush();
 

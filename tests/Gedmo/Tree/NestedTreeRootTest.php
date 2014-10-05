@@ -21,8 +21,8 @@ class NestedTreeRootTest extends BaseTestCaseORM
     {
         parent::setUp();
 
-        $evm = new EventManager;
-        $evm->addEventSubscriber(new TreeListener);
+        $evm = new EventManager();
+        $evm->addEventSubscriber(new TreeListener());
 
         $this->getMockSqliteEntityManager($evm);
         $this->populate();
@@ -31,7 +31,7 @@ class NestedTreeRootTest extends BaseTestCaseORM
     /**
      * @test
      */
-    function shouldRemoveAndSynchronize()
+    public function shouldRemoveAndSynchronize()
     {
         $repo = $this->em->getRepository(self::CATEGORY);
         $vegies = $repo->findOneByTitle('Vegitables');
@@ -44,7 +44,7 @@ class NestedTreeRootTest extends BaseTestCaseORM
         $this->assertEquals(1, $food->getLeft());
         $this->assertEquals(4, $food->getRight());
 
-        $vegies = new RootCategory;
+        $vegies = new RootCategory();
         $vegies->setTitle('Vegies');
         $repo->persistAsFirstChildOf($vegies, $food);
 
@@ -323,7 +323,7 @@ class NestedTreeRootTest extends BaseTestCaseORM
     protected function getUsedEntityFixtures()
     {
         return array(
-            self::CATEGORY
+            self::CATEGORY,
         );
     }
 

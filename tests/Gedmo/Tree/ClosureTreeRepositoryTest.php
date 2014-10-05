@@ -29,9 +29,9 @@ class ClosureTreeRepositoryTest extends BaseTestCaseORM
     {
         parent::setUp();
 
-        $this->listener = new TreeListener;
+        $this->listener = new TreeListener();
 
-        $evm = new EventManager;
+        $evm = new EventManager();
         $evm->addEventSubscriber($this->listener);
 
         $this->getMockSqliteEntityManager($evm);
@@ -225,7 +225,7 @@ class ClosureTreeRepositoryTest extends BaseTestCaseORM
         $repo = $this->em->getRepository($class);
         $sortOption =  array('childSort' => array('field' => 'title', 'dir' => 'asc'));
 
-        $testClosure = function(ClosureTreeRepositoryTest $phpUnit, array $tree, $includeNode = false, $whichTree = 'both', $includeNewNode = false) {
+        $testClosure = function (ClosureTreeRepositoryTest $phpUnit, array $tree, $includeNode = false, $whichTree = 'both', $includeNewNode = false) {
             if ($whichTree === 'both' || $whichTree === 'first') {
                 $boringFood = $includeNewNode ? ($includeNode ? $tree[0]['__children'][0] : $tree[0]) : null;
                 $fruitsIndex = $includeNewNode ? 1 : 0;
@@ -371,7 +371,6 @@ class ClosureTreeRepositoryTest extends BaseTestCaseORM
             true
         );
 
-
         $this->assertEquals('Fruits', $tree[0]['title']);
         $this->assertEquals('Berries', $tree[0]['__children'][0]['title']);
         $this->assertEquals('Strawberries', $tree[0]['__children'][0]['__children'][0]['title']);
@@ -414,7 +413,7 @@ class ClosureTreeRepositoryTest extends BaseTestCaseORM
         $this->assertEquals('Milk', $tree[2]['title']);
 
         // Helper Closures
-        $getTree = function($includeNode) use ($repo, $roots, $sortOption) {
+        $getTree = function ($includeNode) use ($repo, $roots, $sortOption) {
             return $repo->childrenHierarchy(
                 $roots[0],
                 true,
@@ -422,7 +421,7 @@ class ClosureTreeRepositoryTest extends BaseTestCaseORM
                 $includeNode
             );
         };
-        $getTreeHtml = function($includeNode) {
+        $getTreeHtml = function ($includeNode) {
             $baseHtml = '<li>Boring Food<ul><li>Vegitables<ul><li>Cabbages</li><li>Carrots</li></ul></li></ul></li><li>Fruits<ul><li>Berries<ul><li>Strawberries</li></ul></li><li>Lemons</li><li>Oranges</li></ul></li><li>Milk<ul><li>Cheese<ul><li>Mould cheese</li></ul></li></ul></li></ul>';
 
             return $includeNode ? '<ul><li>Food<ul>'.$baseHtml.'</li></ul>' : '<ul>'.$baseHtml;
@@ -441,81 +440,81 @@ class ClosureTreeRepositoryTest extends BaseTestCaseORM
             self::CATEGORY,
             self::CLOSURE,
             self::CATEGORY_WITHOUT_LEVEL,
-            self::CATEGORY_WITHOUT_LEVEL_CLOSURE
+            self::CATEGORY_WITHOUT_LEVEL_CLOSURE,
         );
     }
 
     private function populate($class = self::CATEGORY)
     {
-        $food = new $class;
+        $food = new $class();
         $food->setTitle("Food");
         $this->em->persist($food);
 
-        $vegitables = new $class;
+        $vegitables = new $class();
         $vegitables->setTitle('Vegitables');
         $vegitables->setParent($food);
         $this->em->persist($vegitables);
 
-        $fruits = new $class;
+        $fruits = new $class();
         $fruits->setTitle('Fruits');
         $fruits->setParent($food);
         $this->em->persist($fruits);
 
-        $oranges = new $class;
+        $oranges = new $class();
         $oranges->setTitle('Oranges');
         $oranges->setParent($fruits);
         $this->em->persist($oranges);
 
-        $lemons = new $class;
+        $lemons = new $class();
         $lemons->setTitle('Lemons');
         $lemons->setParent($fruits);
         $this->em->persist($lemons);
 
-        $berries = new $class;
+        $berries = new $class();
         $berries->setTitle('Berries');
         $berries->setParent($fruits);
         $this->em->persist($berries);
 
-        $strawberries = new $class;
+        $strawberries = new $class();
         $strawberries->setTitle('Strawberries');
         $strawberries->setParent($berries);
         $this->em->persist($strawberries);
 
-        $cabbages = new $class;
+        $cabbages = new $class();
         $cabbages->setTitle('Cabbages');
         $cabbages->setParent($vegitables);
         $this->em->persist($cabbages);
 
-        $carrots = new $class;
+        $carrots = new $class();
         $carrots->setTitle('Carrots');
         $carrots->setParent($vegitables);
         $this->em->persist($carrots);
 
-        $milk = new $class;
+        $milk = new $class();
         $milk->setTitle('Milk');
         $milk->setParent($food);
         $this->em->persist($milk);
 
-        $cheese = new $class;
+        $cheese = new $class();
         $cheese->setTitle('Cheese');
         $cheese->setParent($milk);
         $this->em->persist($cheese);
 
-        $mouldCheese = new $class;
+        $mouldCheese = new $class();
         $mouldCheese->setTitle('Mould cheese');
         $mouldCheese->setParent($cheese);
         $this->em->persist($mouldCheese);
 
-        $sports = new $class;
+        $sports = new $class();
         $sports->setTitle('Sports');
         $this->em->persist($sports);
 
-        $soccer = new $class;
+        $soccer = new $class();
         $soccer->setTitle('Soccer');
         $soccer->setParent($sports);
         $this->em->persist($soccer);
 
-        $indoorSoccer = new $class;
+        $indoorSoccer = new $class();
         $indoorSoccer->setTitle('Indoor Soccer');
         $indoorSoccer->setParent($soccer);
         $this->em->persist($indoorSoccer);

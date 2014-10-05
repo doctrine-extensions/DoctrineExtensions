@@ -21,8 +21,8 @@ class SluggablePositionTest extends BaseTestCaseORM
     {
         parent::setUp();
 
-        $evm = new EventManager;
-        $evm->addEventSubscriber(new SluggableListener);
+        $evm = new EventManager();
+        $evm->addEventSubscriber(new SluggableListener());
 
         $this->getMockSqliteEntityManager($evm);
         $this->populate();
@@ -48,7 +48,7 @@ class SluggablePositionTest extends BaseTestCaseORM
     private function populate()
     {
         $meta = $this->em->getClassMetadata(self::POSITION);
-        $object = new Position;
+        $object = new Position();
         $meta->getReflectionProperty('title')->setValue($object, 'title');
         $meta->getReflectionProperty('prop')->setValue($object, 'prop');
         $meta->getReflectionProperty('code')->setValue($object, 'code');

@@ -43,7 +43,7 @@ class Article
     {
         $this->position = $position;
     }
-    
+
     public function getPosition()
     {
         return $this->position;
