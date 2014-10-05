@@ -8,7 +8,6 @@ use Gedmo\Tool\Wrapper\AbstractWrapper;
 use Gedmo\Tree\Strategy;
 use Doctrine\ORM\EntityManager;
 use Gedmo\Tree\TreeListener;
-use Doctrine\ORM\Query;
 use Gedmo\Mapping\Event\AdapterInterface;
 
 /**

@@ -4,7 +4,6 @@ namespace Gedmo\ReferenceIntegrity\Mapping\Driver;
 
 use Gedmo\Mapping\Driver\AbstractAnnotationDriver;
 use Gedmo\Exception\InvalidMappingException;
-use Gedmo\Mapping\Annotation\ReferenceIntegrityAction;
 use Gedmo\ReferenceIntegrity\Mapping\Validator;
 
 /**

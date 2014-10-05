@@ -759,7 +759,7 @@ class NestedTreeRepository extends AbstractTreeRepository
     public function reorder($node, $sortByField = null, $direction = 'ASC', $verify = true)
     {
         $meta = $this->getClassMetadata();
-        if ($node instanceof $meta->name || $node == null) {
+        if ($node instanceof $meta->name || $node === null) {
             $config = $this->listener->getConfiguration($this->_em, $meta->name);
             if ($verify && is_array($this->verify())) {
                 return false;

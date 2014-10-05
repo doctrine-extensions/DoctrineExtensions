@@ -6,7 +6,6 @@ use Gedmo\Exception\InvalidArgumentException;
 use Doctrine\ORM\Query;
 use Gedmo\Tree\Entity\MappedSuperclass\AbstractClosure;
 use Gedmo\Tree\Strategy;
-use Gedmo\Tree\Strategy\ORM\Closure;
 use Gedmo\Tool\Wrapper\EntityWrapper;
 
 /**

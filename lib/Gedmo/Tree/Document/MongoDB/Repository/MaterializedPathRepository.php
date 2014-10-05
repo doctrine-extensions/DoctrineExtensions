@@ -4,7 +4,6 @@ namespace Gedmo\Tree\Document\MongoDB\Repository;
 
 use Gedmo\Exception\InvalidArgumentException;
 use Gedmo\Tree\Strategy;
-use Gedmo\Tree\Strategy\ODM\MongoDB\MaterializedPath;
 use Gedmo\Tool\Wrapper\MongoDocumentWrapper;
 
 /**
@@ -21,7 +20,7 @@ class MaterializedPathRepository extends AbstractTreeRepository
     /**
      * Get tree query builder
      *
-     * @param object Root node
+     * @param object $rootNode
      *
      * @return \Doctrine\ODM\MongoDB\Query\Builder
      */
@@ -33,7 +32,7 @@ class MaterializedPathRepository extends AbstractTreeRepository
     /**
      * Get tree query
      *
-     * @param object Root node
+     * @param object $rootNode
      *
      * @return \Doctrine\ODM\MongoDB\Query\Query
      */
@@ -45,7 +44,7 @@ class MaterializedPathRepository extends AbstractTreeRepository
     /**
      * Get tree
      *
-     * @param object Root node
+     * @param object $rootNode
      *
      * @return \Doctrine\ODM\MongoDB\Cursor
      */
