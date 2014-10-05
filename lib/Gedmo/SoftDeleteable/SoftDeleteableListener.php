@@ -2,12 +2,8 @@
 
 namespace Gedmo\SoftDeleteable;
 
-use Doctrine\Common\Persistence\ObjectManager,
-    Doctrine\Common\Persistence\Mapping\ClassMetadata,
-    Gedmo\Mapping\MappedEventSubscriber,
-    Gedmo\Loggable\Mapping\Event\LoggableAdapter,
-    Doctrine\Common\EventArgs
-;
+use Gedmo\Mapping\MappedEventSubscriber;
+use Doctrine\Common\EventArgs;
 
 /**
  * SoftDeleteable listener
@@ -39,7 +35,7 @@ class SoftDeleteableListener extends MappedEventSubscriber
     {
         return array(
             'loadClassMetadata',
-            'onFlush'
+            'onFlush',
         );
     }
 
@@ -48,6 +44,7 @@ class SoftDeleteableListener extends MappedEventSubscriber
      * and skip the removal of the object
      *
      * @param EventArgs $args
+     *
      * @return void
      */
     public function onFlush(EventArgs $args)
@@ -63,7 +60,6 @@ class SoftDeleteableListener extends MappedEventSubscriber
             $config = $this->getConfiguration($om, $meta->name);
 
             if (isset($config['softDeleteable']) && $config['softDeleteable']) {
-
                 $reflProp = $meta->getReflectionProperty($config['fieldName']);
                 $oldValue = $reflProp->getValue($object);
                 if ($oldValue instanceof \Datetime) {
@@ -81,7 +77,7 @@ class SoftDeleteableListener extends MappedEventSubscriber
                 $om->persist($object);
                 $uow->propertyChanged($object, $config['fieldName'], $oldValue, $date);
                 $uow->scheduleExtraUpdate($object, array(
-                    $config['fieldName'] => array($oldValue, $date)
+                    $config['fieldName'] => array($oldValue, $date),
                 ));
 
                 $evm->dispatchEvent(
@@ -96,6 +92,7 @@ class SoftDeleteableListener extends MappedEventSubscriber
      * Maps additional metadata
      *
      * @param EventArgs $eventArgs
+     *
      * @return void
      */
     public function loadClassMetadata(EventArgs $eventArgs)

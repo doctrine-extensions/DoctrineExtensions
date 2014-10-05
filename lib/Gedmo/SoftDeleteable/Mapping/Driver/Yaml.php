@@ -2,10 +2,10 @@
 
 namespace Gedmo\SoftDeleteable\Mapping\Driver;
 
-use Gedmo\Mapping\Driver\File,
-    Gedmo\Mapping\Driver,
-    Gedmo\Exception\InvalidMappingException,
-    Gedmo\SoftDeleteable\Mapping\Validator;
+use Gedmo\Mapping\Driver\File;
+use Gedmo\Mapping\Driver;
+use Gedmo\Exception\InvalidMappingException;
+use Gedmo\SoftDeleteable\Mapping\Validator;
 
 /**
  * This is a yaml mapping driver for Timestampable
@@ -48,7 +48,7 @@ class Yaml extends File implements Driver
                 $config['fieldName'] = $fieldName;
 
                 $config['timeAware'] = false;
-                if(isset($classMapping['soft_deleteable']['time_aware'])) {
+                if (isset($classMapping['soft_deleteable']['time_aware'])) {
                     if (!is_bool($classMapping['soft_deleteable']['time_aware'])) {
                         throw new InvalidMappingException("timeAware must be boolean. ".gettype($classMapping['soft_deleteable']['time_aware'])." provided.");
                     }

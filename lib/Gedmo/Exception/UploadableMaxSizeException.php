@@ -14,4 +14,5 @@ use Gedmo\Exception;
 class UploadableMaxSizeException
     extends UploadableException
     implements Exception
-{}
+{
+}

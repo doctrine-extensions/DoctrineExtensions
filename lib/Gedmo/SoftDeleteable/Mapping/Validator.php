@@ -26,9 +26,8 @@ class Validator
         'datetime',
         'datetimetz',
         'timestamp',
-        'zenddate'
+        'zenddate',
     );
-
 
     public static function validateField(ClassMetadata $meta, $field)
     {

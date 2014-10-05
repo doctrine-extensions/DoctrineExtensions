@@ -25,4 +25,3 @@ final class TreePath extends Annotation
 
     public $endsWithSeparator = true;
 }
-

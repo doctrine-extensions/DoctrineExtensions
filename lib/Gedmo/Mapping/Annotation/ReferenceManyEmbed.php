@@ -9,5 +9,4 @@ use Doctrine\Common\Annotations\Annotation;
  */
 class ReferenceManyEmbed extends Reference
 {
-
 }

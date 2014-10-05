@@ -2,10 +2,9 @@
 
 namespace Gedmo\Mapping\Driver;
 
-use Gedmo\Mapping\Driver,
-    Gedmo\Exception\InvalidMappingException,
-    SimpleXMLElement;
-
+use Gedmo\Mapping\Driver;
+use Gedmo\Exception\InvalidMappingException;
+use SimpleXMLElement;
 
 /**
  * The mapping XmlDriver abstract class, defines the
@@ -33,14 +32,15 @@ abstract class Xml extends File
      * As we are supporting namespaces the only way to get to the attributes under a node is to use attributes function on it
      *
      * @param SimpleXMLElement $node
-     * @param string $attributeName
+     * @param string           $attributeName
+     *
      * @return string
      */
     protected function _getAttribute(SimpleXmlElement $node, $attributeName)
     {
         $attributes = $node->attributes();
 
-        return (string)$attributes[$attributeName];
+        return (string) $attributes[$attributeName];
     }
 
     /**
@@ -48,7 +48,8 @@ abstract class Xml extends File
      * As we are supporting namespaces the only way to get to the attributes under a node is to use attributes function on it
      *
      * @param SimpleXMLElement $node
-     * @param string $attributeName
+     * @param string           $attributeName
+     *
      * @return boolean
      */
     protected function _getBooleanAttribute(SimpleXmlElement $node, $attributeName)
@@ -68,7 +69,8 @@ abstract class Xml extends File
      * As we are supporting namespaces the only way to get to the attributes under a node is to use attributes function on it
      *
      * @param SimpleXMLElement $node
-     * @param string $attributeName
+     * @param string           $attributeName
+     *
      * @return string
      */
     protected function _isAttributeSet(SimpleXmlElement $node, $attributeName)
@@ -92,12 +94,13 @@ abstract class Xml extends File
                 $entityName = $this->_getAttribute($entityElement, 'name');
                 $result[$entityName] = $entityElement;
             }
-        } else if (isset($xmlElement->{'mapped-superclass'})) {
+        } elseif (isset($xmlElement->{'mapped-superclass'})) {
             foreach ($xmlElement->{'mapped-superclass'} as $mappedSuperClass) {
                 $className = $this->_getAttribute($mappedSuperClass, 'name');
                 $result[$className] = $mappedSuperClass;
             }
         }
+
         return $result;
     }
 }

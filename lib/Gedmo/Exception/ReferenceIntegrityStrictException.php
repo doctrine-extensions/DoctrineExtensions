@@ -11,4 +11,5 @@ use Gedmo\Exception;
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class ReferenceIntegrityStrictException extends RuntimeException
-{}
+{
+}

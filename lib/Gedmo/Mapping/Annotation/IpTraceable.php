@@ -22,4 +22,3 @@ final class IpTraceable extends Annotation
     /** @var mixed */
     public $value;
 }
-

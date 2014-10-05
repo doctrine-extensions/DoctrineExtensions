@@ -19,23 +19,24 @@ interface AdapterInterface
      *
      * @param \Doctrine\Common\EventArgs $args
      */
-    function setEventArgs(EventArgs $args);
+    public function setEventArgs(EventArgs $args);
 
     /**
      * Call specific method on event args
      *
      * @param string $method
-     * @param array $args
+     * @param array  $args
+     *
      * @return mixed
      */
-    function __call($method, $args);
+    public function __call($method, $args);
 
     /**
      * Get the name of domain object
      *
      * @return string
      */
-    function getDomainObjectName();
+    public function getDomainObjectName();
 
     /**
      * Get the name of used manager for this
@@ -43,99 +44,108 @@ interface AdapterInterface
      *
      * @return string
      */
-    function getManagerName();
+    public function getManagerName();
 
     /**
      * Get the root object class, handles inheritance
      *
-     * @param \Doctrine\Common\Persistence\Mapping\ClassMetadata
+     * @param \Doctrine\Common\Persistence\Mapping\ClassMetadata $meta
+     *
      * @return string
      */
-    function getRootObjectClass($meta);
+    public function getRootObjectClass($meta);
 
     /**
      * Get used object manager
      *
      * @return \Doctrine\Common\Persistence\ObjectManager
      */
-    function getObjectManager();
+    public function getObjectManager();
 
     /**
      * Get object state
      *
      * @param UnitOfWork $uow
-     * @param object $object
+     * @param object     $object
+     *
      * @return int The document state.
      */
-    function getObjectState($uow, $object);
+    public function getObjectState($uow, $object);
 
     /**
      * Get the object changeset from a UnitOfWork
      *
      * @param UnitOfWork $uow
-     * @param Object $object
+     * @param object     $object
+     *
      * @return array
      */
-    function getObjectChangeSet($uow, $object);
+    public function getObjectChangeSet($uow, $object);
 
     /**
      * Get the single identifier field name
      *
-     * @param ClassMetadata $meta
+     * @param \Doctrine\Common\Persistence\Mapping\ClassMetadata $meta
+     *
      * @return string
      */
-    function getSingleIdentifierFieldName($meta);
+    public function getSingleIdentifierFieldName($meta);
 
     /**
      * Recompute the single object changeset from a UnitOfWork
      *
-     * @param UnitOfWork $uow
-     * @param ClassMetadata $meta
-     * @param Object $object
+     * @param UnitOfWork                                         $uow
+     * @param \Doctrine\Common\Persistence\Mapping\ClassMetadata $meta
+     * @param object                                             $object
+     *
      * @return void
      */
-    function recomputeSingleObjectChangeSet($uow, $meta, $object);
+    public function recomputeSingleObjectChangeSet($uow, $meta, $object);
 
     /**
      * Get the scheduled object updates from a UnitOfWork
      *
      * @param UnitOfWork $uow
+     *
      * @return array
      */
-    function getScheduledObjectUpdates($uow);
+    public function getScheduledObjectUpdates($uow);
 
     /**
      * Get the scheduled object insertions from a UnitOfWork
      *
      * @param UnitOfWork $uow
+     *
      * @return array
      */
-    function getScheduledObjectInsertions($uow);
+    public function getScheduledObjectInsertions($uow);
 
     /**
      * Get the scheduled object deletions from a UnitOfWork
      *
      * @param UnitOfWork $uow
+     *
      * @return array
      */
-    function getScheduledObjectDeletions($uow);
+    public function getScheduledObjectDeletions($uow);
 
     /**
      * Sets a property value of the original data array of an object
      *
      * @param UnitOfWork $uow
-     * @param string $oid
-     * @param string $property
-     * @param mixed $value
+     * @param string     $oid
+     * @param string     $property
+     * @param mixed      $value
+     *
      * @return void
      */
-    function setOriginalObjectProperty($uow, $oid, $property, $value);
+    public function setOriginalObjectProperty($uow, $oid, $property, $value);
 
     /**
      * Clears the property changeset of the object with the given OID.
      *
      * @param UnitOfWork $uow
-     * @param string $oid The object's OID.
+     * @param string     $oid The object's OID.
      */
-    function clearObjectChangeSet($uow, $oid);
+    public function clearObjectChangeSet($uow, $oid);
 }

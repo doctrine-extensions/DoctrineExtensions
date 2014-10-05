@@ -18,4 +18,3 @@ final class TranslationEntity extends Annotation
     /** @var string @Required */
     public $class;
 }
-

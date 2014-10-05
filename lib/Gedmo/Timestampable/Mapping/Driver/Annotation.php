@@ -2,9 +2,8 @@
 
 namespace Gedmo\Timestampable\Mapping\Driver;
 
-use Gedmo\Mapping\Driver\AbstractAnnotationDriver,
-    Doctrine\Common\Annotations\AnnotationReader,
-    Gedmo\Exception\InvalidMappingException;
+use Gedmo\Mapping\Driver\AbstractAnnotationDriver;
+use Gedmo\Exception\InvalidMappingException;
 
 /**
  * This is an annotation mapping driver for Timestampable
@@ -35,13 +34,14 @@ class Annotation extends AbstractAnnotationDriver
         'timestamp',
         'zenddate',
         'vardatetime',
-        'integer'
+        'integer',
     );
 
     /**
      * {@inheritDoc}
      */
-    public function readExtendedMetadata($meta, array &$config) {
+    public function readExtendedMetadata($meta, array &$config)
+    {
         $class = $this->getMetaReflectionClass($meta);
         // property annotations
         foreach ($class->getProperties() as $property) {

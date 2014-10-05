@@ -53,6 +53,7 @@ final class ODM extends BaseAdapterODM implements LoggableAdapter
         if ($result) {
             $result = $result['version'] + 1;
         }
+
         return $result;
     }
 }

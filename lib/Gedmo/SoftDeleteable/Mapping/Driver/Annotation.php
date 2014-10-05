@@ -2,10 +2,9 @@
 
 namespace Gedmo\SoftDeleteable\Mapping\Driver;
 
-use Gedmo\Mapping\Driver\AbstractAnnotationDriver,
-    Doctrine\Common\Persistence\Mapping\ClassMetadata,
-    Gedmo\Exception\InvalidMappingException,
-    Gedmo\SoftDeleteable\Mapping\Validator;
+use Gedmo\Mapping\Driver\AbstractAnnotationDriver;
+use Gedmo\Exception\InvalidMappingException;
+use Gedmo\SoftDeleteable\Mapping\Validator;
 
 /**
  * This is an annotation mapping driver for SoftDeleteable
@@ -39,7 +38,7 @@ class Annotation extends AbstractAnnotationDriver
             $config['fieldName'] = $annot->fieldName;
 
             $config['timeAware'] = false;
-            if(isset($annot->timeAware)){
+            if (isset($annot->timeAware)) {
                 if (!is_bool($annot->timeAware)) {
                     throw new InvalidMappingException("timeAware must be boolean. ".gettype($annot->timeAware)." provided.");
                 }

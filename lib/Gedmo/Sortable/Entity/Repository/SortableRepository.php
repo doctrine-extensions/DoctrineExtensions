@@ -2,9 +2,10 @@
 
 namespace Gedmo\Sortable\Entity\Repository;
 
-use Doctrine\ORM\EntityRepository,
-    Doctrine\ORM\EntityManager,
-    Doctrine\ORM\Mapping\ClassMetadata;
+use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\Mapping\ClassMetadata;
+use Gedmo\Sortable\SortableListener;
 
 /**
  * Sortable Repository
@@ -20,17 +21,17 @@ class SortableRepository extends EntityRepository
      * @var SortableListener
      */
     protected $listener = null;
-    
+
     protected $config = null;
     protected $meta = null;
-    
+
     public function __construct(EntityManager $em, ClassMetadata $class)
     {
         parent::__construct($em, $class);
         $sortableListener = null;
         foreach ($em->getEventManager()->getListeners() as $event => $listeners) {
             foreach ($listeners as $hash => $listener) {
-                if ($listener instanceof \Gedmo\Sortable\SortableListener) {
+                if ($listener instanceof SortableListener) {
                     $sortableListener = $listener;
                     break;
                 }
@@ -48,13 +49,13 @@ class SortableRepository extends EntityRepository
         $this->meta = $this->getClassMetadata();
         $this->config = $this->listener->getConfiguration($this->_em, $this->meta->name);
     }
-    
-    public function getBySortableGroupsQuery(array $groupValues=array())
+
+    public function getBySortableGroupsQuery(array $groupValues = array())
     {
         return $this->getBySortableGroupsQueryBuilder($groupValues)->getQuery();
     }
-    
-    public function getBySortableGroupsQueryBuilder(array $groupValues=array())
+
+    public function getBySortableGroupsQueryBuilder(array $groupValues = array())
     {
         $groups = array_combine(array_values($this->config['groups']), array_keys($this->config['groups']));
         foreach ($groupValues as $name => $value) {
@@ -67,7 +68,7 @@ class SortableRepository extends EntityRepository
             throw new \InvalidArgumentException(
                 'You need to specify values for the following groups to select by sortable groups: '.implode(", ", array_keys($groups)));
         }
-        
+
         $qb = $this->createQueryBuilder('n');
         $qb->orderBy('n.'.$this->config['position']);
         $i = 1;
@@ -76,12 +77,14 @@ class SortableRepository extends EntityRepository
                ->setParameter('group'.$i, $value);
             $i++;
         }
+
         return $qb;
     }
-    
-    public function getBySortableGroups(array $groupValues=array())
+
+    public function getBySortableGroups(array $groupValues = array())
     {
         $query = $this->getBySortableGroupsQuery($groupValues);
+
         return $query->getResult();
     }
 }

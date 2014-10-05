@@ -16,6 +16,4 @@ use Doctrine\Common\Annotations\Annotation;
  */
 final class TreePathSource extends Annotation
 {
-
 }
-

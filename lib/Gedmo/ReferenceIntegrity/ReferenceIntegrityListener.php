@@ -23,7 +23,7 @@ class ReferenceIntegrityListener extends MappedEventSubscriber
     {
         return array(
             'loadClassMetadata',
-            'preRemove'
+            'preRemove',
         );
     }
 

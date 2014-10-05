@@ -12,7 +12,6 @@ use Gedmo\Mapping\Annotation as Gedmo;
  */
 trait NestedSetEntity
 {
-
     /**
      * @var integer
      * @Gedmo\TreeRoot
@@ -40,5 +39,4 @@ trait NestedSetEntity
      * @ORM\Column(name="rgt", type="integer")
      */
     private $right;
-
 }

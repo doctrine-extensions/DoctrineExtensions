@@ -2,8 +2,8 @@
 
 namespace Gedmo\Loggable\Mapping\Driver;
 
-use Gedmo\Mapping\Driver\Xml as BaseXml,
-    Gedmo\Exception\InvalidMappingException;
+use Gedmo\Mapping\Driver\Xml as BaseXml;
+use Gedmo\Exception\InvalidMappingException;
 
 /**
  * This is a xml mapping driver for Loggable
@@ -34,7 +34,7 @@ class Xml extends BaseXml
         if ($xmlDoctrine->getName() == 'entity' || $xmlDoctrine->getName() == 'document' || $xmlDoctrine->getName() == 'mapped-superclass') {
             if (isset($xml->loggable)) {
                 /**
-                 * @var SimpleXMLElement $data;
+                 * @var \SimpleXMLElement $data;
                  */
                 $data = $xml->loggable;
                 $config['loggable'] = true;
@@ -74,9 +74,9 @@ class Xml extends BaseXml
     /**
      * Searches mappings on element for versioned fields
      *
-     * @param SimpleXMLElement $element
-     * @param array $config
-     * @param object $meta
+     * @param \SimpleXMLElement $element
+     * @param array             $config
+     * @param object            $meta
      */
     private function inspectElementForVersioned(\SimpleXMLElement $element, array &$config, $meta)
     {

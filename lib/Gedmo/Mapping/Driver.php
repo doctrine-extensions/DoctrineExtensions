@@ -17,7 +17,8 @@ interface Driver
      * a single mapped class
      *
      * @param object $meta
-     * @param array $config
+     * @param array  $config
+     *
      * @return void
      */
     public function readExtendedMetadata($meta, array &$config);
@@ -25,7 +26,8 @@ interface Driver
     /**
      * Passes in the original driver
      *
-     * @param $driver
+     * @param object $driver
+     *
      * @return void
      */
     public function setOriginalDriver($driver);

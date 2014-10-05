@@ -21,7 +21,7 @@ class Validator
      */
     private $integrityActions = array(
         self::RESTRICT,
-        self::NULLIFY
+        self::NULLIFY,
     );
 
     /**

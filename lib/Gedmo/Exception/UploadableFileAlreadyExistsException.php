@@ -14,4 +14,5 @@ use Gedmo\Exception;
 class UploadableFileAlreadyExistsException
     extends UploadableException
     implements Exception
-{}
+{
+}

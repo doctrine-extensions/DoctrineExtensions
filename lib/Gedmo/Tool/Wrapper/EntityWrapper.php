@@ -31,7 +31,7 @@ class EntityWrapper extends AbstractWrapper
     /**
      * Wrap entity
      *
-     * @param object $entity
+     * @param object                      $entity
      * @param \Doctrine\ORM\EntityManager $em
      */
     public function __construct($entity, EntityManager $em)
@@ -47,6 +47,7 @@ class EntityWrapper extends AbstractWrapper
     public function getPropertyValue($property)
     {
         $this->initialize();
+
         return $this->meta->getReflectionProperty($property)->getValue($this->object);
     }
 
@@ -57,6 +58,7 @@ class EntityWrapper extends AbstractWrapper
     {
         $this->initialize();
         $this->meta->getReflectionProperty($property)->setValue($this->object, $value);
+
         return $this;
     }
 
@@ -107,6 +109,7 @@ class EntityWrapper extends AbstractWrapper
         if ($single && is_array($this->identifier)) {
             return reset($this->identifier);
         }
+
         return $this->identifier;
     }
 

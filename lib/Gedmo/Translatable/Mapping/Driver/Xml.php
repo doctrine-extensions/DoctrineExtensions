@@ -2,8 +2,8 @@
 
 namespace Gedmo\Translatable\Mapping\Driver;
 
-use Gedmo\Mapping\Driver\Xml as BaseXml,
-    Gedmo\Exception\InvalidMappingException;
+use Gedmo\Mapping\Driver\Xml as BaseXml;
+use Gedmo\Exception\InvalidMappingException;
 
 /**
  * This is a xml mapping driver for Translatable
@@ -20,7 +20,8 @@ class Xml extends BaseXml
     /**
      * {@inheritDoc}
      */
-    public function readExtendedMetadata($meta, array &$config) {
+    public function readExtendedMetadata($meta, array &$config)
+    {
         /**
          * @var \SimpleXmlElement $xml
          */

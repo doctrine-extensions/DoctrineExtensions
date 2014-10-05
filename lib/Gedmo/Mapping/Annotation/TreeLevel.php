@@ -15,6 +15,4 @@ use Doctrine\Common\Annotations\Annotation;
  */
 final class TreeLevel extends Annotation
 {
-
 }
-

@@ -89,6 +89,7 @@ class QueryAnalyzer implements SQLLogger
         $this->queries = array();
         $this->queryExecutionTimes = array();
         $this->totalExecutionTime = 0;
+
         return $this;
     }
 
@@ -96,22 +97,24 @@ class QueryAnalyzer implements SQLLogger
      * Dump the statistics of executed queries
      *
      * @param boolean $dumpOnlySql
-     * @return void
+     *
+     * @return string
      */
     public function getOutput($dumpOnlySql = false)
     {
         $output = '';
         if (!$dumpOnlySql) {
-            $output .= 'Platform: ' . $this->platform->getName() . PHP_EOL;
-            $output .= 'Executed queries: ' . count($this->queries) . ', total time: ' . $this->totalExecutionTime . ' ms' . PHP_EOL;
+            $output .= 'Platform: '.$this->platform->getName().PHP_EOL;
+            $output .= 'Executed queries: '.count($this->queries).', total time: '.$this->totalExecutionTime.' ms'.PHP_EOL;
         }
         foreach ($this->queries as $index => $sql) {
             if (!$dumpOnlySql) {
-                $output .= 'Query(' . ($index+1) . ') - ' . $this->queryExecutionTimes[$index] . ' ms' . PHP_EOL;
+                $output .= 'Query('.($index+1).') - '.$this->queryExecutionTimes[$index].' ms'.PHP_EOL;
             }
-            $output .= $sql . ';' . PHP_EOL;
+            $output .= $sql.';'.PHP_EOL;
         }
         $output .= PHP_EOL;
+
         return $output;
     }
 
@@ -130,6 +133,7 @@ class QueryAnalyzer implements SQLLogger
                 $index = $i;
             }
         }
+
         return $index;
     }
 
@@ -177,9 +181,10 @@ class QueryAnalyzer implements SQLLogger
      * Create the SQL with mapped parameters
      *
      * @param string $sql
-     * @param array $params
-     * @param array $types
-     * @return string sql
+     * @param array  $params
+     * @param array  $types
+     *
+     * @return string
      */
     private function generateSql($sql, $params, $types)
     {
@@ -189,14 +194,15 @@ class QueryAnalyzer implements SQLLogger
         $converted = $this->getConvertedParams($params, $types);
         if (is_int(key($params))) {
             $index = key($converted);
-            $sql = preg_replace_callback('@\?@sm', function($match) use (&$index, $converted) {
+            $sql = preg_replace_callback('@\?@sm', function ($match) use (&$index, $converted) {
                 return $converted[$index++];
             }, $sql);
         } else {
             foreach ($converted as $key => $value) {
-                $sql = str_replace(':' . $key, $value, $sql);
+                $sql = str_replace(':'.$key, $value, $sql);
             }
         }
+
         return $sql;
     }
 
@@ -205,6 +211,7 @@ class QueryAnalyzer implements SQLLogger
      *
      * @param array $params
      * @param array $types
+     *
      * @return array
      */
     private function getConvertedParams($params, $types)
@@ -234,6 +241,7 @@ class QueryAnalyzer implements SQLLogger
             }
             $result[$position] = $value;
         }
+
         return $result;
     }
 }

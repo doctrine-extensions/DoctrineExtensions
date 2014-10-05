@@ -22,4 +22,3 @@ final class Blameable extends Annotation
     /** @var mixed */
     public $value;
 }
-

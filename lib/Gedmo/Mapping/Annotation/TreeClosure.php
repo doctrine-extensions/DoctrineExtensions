@@ -18,4 +18,3 @@ final class TreeClosure extends Annotation
     /** @var string @Required */
     public $class;
 }
-

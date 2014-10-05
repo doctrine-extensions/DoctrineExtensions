@@ -14,4 +14,5 @@ use Gedmo\Exception;
 class UploadableIniSizeException
     extends UploadableException
     implements Exception
-{}
+{
+}

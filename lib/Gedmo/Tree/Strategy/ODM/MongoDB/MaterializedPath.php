@@ -50,7 +50,7 @@ class MaterializedPath extends AbstractMaterializedPath
     }
 
     /**
-     * {@inheritedDoc}
+     * {@inheritdoc}
      */
     protected function lockTrees(ObjectManager $om, AdapterInterface $ea)
     {
@@ -64,7 +64,7 @@ class MaterializedPath extends AbstractMaterializedPath
             $lockTimeValue = new \MongoDate();
             $lockTimeProp->setValue($root, $lockTimeValue);
             $changes = array(
-                $config['lock_time'] => array(null, $lockTimeValue)
+                $config['lock_time'] => array(null, $lockTimeValue),
             );
 
             $uow->scheduleExtraUpdate($root, $changes);
@@ -73,7 +73,7 @@ class MaterializedPath extends AbstractMaterializedPath
     }
 
     /**
-     * {@inheritedDoc}
+     * {@inheritdoc}
      */
     protected function releaseTreeLocks(ObjectManager $om, AdapterInterface $ea)
     {
@@ -87,7 +87,7 @@ class MaterializedPath extends AbstractMaterializedPath
             $lockTimeValue = null;
             $lockTimeProp->setValue($root, $lockTimeValue);
             $changes = array(
-                $config['lock_time'] => array(null, null)
+                $config['lock_time'] => array(null, null),
             );
 
             $uow->scheduleExtraUpdate($root, $changes);

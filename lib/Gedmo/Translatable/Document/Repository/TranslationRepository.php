@@ -46,8 +46,9 @@ class TranslationRepository extends DocumentRepository
      * @param object $document
      * @param string $field
      * @param string $locale
-     * @param mixed $value
-     * @return TranslationRepository
+     * @param mixed  $value
+     *
+     * @return static
      */
     public function translate($document, $field, $locale, $value)
     {
@@ -92,6 +93,7 @@ class TranslationRepository extends DocumentRepository
                 $listener->addPendingTranslationInsert($oid, $trans);
             }
         }
+
         return $this;
     }
 
@@ -100,6 +102,7 @@ class TranslationRepository extends DocumentRepository
      * fields from the given entity
      *
      * @param object $document
+     *
      * @return array list of translations in locale groups
      */
     public function findTranslations($document)
@@ -136,6 +139,7 @@ class TranslationRepository extends DocumentRepository
                 }
             }
         }
+
         return $result;
     }
 
@@ -148,6 +152,7 @@ class TranslationRepository extends DocumentRepository
      * @param string $field
      * @param string $value
      * @param string $class
+     *
      * @return object - instance of $class or null if not found
      */
     public function findObjectByTranslatedField($field, $value, $class)
@@ -172,6 +177,7 @@ class TranslationRepository extends DocumentRepository
                 $document = $this->dm->find($class, $id);
             }
         }
+
         return $document;
     }
 
@@ -180,6 +186,7 @@ class TranslationRepository extends DocumentRepository
      * fields by a given document primary key
      *
      * @param mixed $id - primary key value of document
+     *
      * @return array
      */
     public function findTranslationsByObjectId($id)
@@ -204,6 +211,7 @@ class TranslationRepository extends DocumentRepository
                 }
             }
         }
+
         return $result;
     }
 
@@ -211,6 +219,7 @@ class TranslationRepository extends DocumentRepository
      * Get the currently used TranslatableListener
      *
      * @throws \Gedmo\Exception\RuntimeException - if listener is not found
+     *
      * @return TranslatableListener
      */
     private function getTranslatableListener()
@@ -226,6 +235,7 @@ class TranslationRepository extends DocumentRepository
 
             throw new \Gedmo\Exception\RuntimeException('The translation listener could not be found');
         }
+
         return $this->listener;
     }
 

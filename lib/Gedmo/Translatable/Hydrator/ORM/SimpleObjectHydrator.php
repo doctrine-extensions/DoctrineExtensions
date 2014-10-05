@@ -26,6 +26,7 @@ class SimpleObjectHydrator extends BaseSimpleObjectHydrator
         $listener->setSkipOnLoad(true);
         $result = parent::_hydrateAll();
         $listener->setSkipOnLoad(false);
+
         return $result;
     }
 
@@ -39,6 +40,7 @@ class SimpleObjectHydrator extends BaseSimpleObjectHydrator
         $listener->setSkipOnLoad(true);
         $result = parent::hydrateAllData();
         $listener->setSkipOnLoad(false);
+
         return $result;
     }
 
@@ -46,6 +48,7 @@ class SimpleObjectHydrator extends BaseSimpleObjectHydrator
      * Get the currently used TranslatableListener
      *
      * @throws \Gedmo\Exception\RuntimeException - if listener is not found
+     *
      * @return TranslatableListener
      */
     protected function getTranslatableListener()
@@ -66,6 +69,7 @@ class SimpleObjectHydrator extends BaseSimpleObjectHydrator
         if (is_null($translatableListener)) {
             throw new \Gedmo\Exception\RuntimeException('The translation listener could not be found');
         }
+
         return $translatableListener;
     }
 }

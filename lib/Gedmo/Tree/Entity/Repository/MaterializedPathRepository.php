@@ -2,8 +2,8 @@
 
 namespace Gedmo\Tree\Entity\Repository;
 
-use Gedmo\Tree\Strategy,
-    Gedmo\Tool\Wrapper\EntityWrapper;
+use Gedmo\Tree\Strategy;
+use Gedmo\Tool\Wrapper\EntityWrapper;
 
 /**
  * The MaterializedPathRepository has some useful functions
@@ -19,9 +19,9 @@ class MaterializedPathRepository extends AbstractTreeRepository
     /**
      * Get tree query builder
      *
-     * @param object Root node
+     * @param object $rootNode
      *
-     * @return Doctrine\ORM\QueryBuilder
+     * @return \Doctrine\ORM\QueryBuilder
      */
     public function getTreeQueryBuilder($rootNode = null)
     {
@@ -31,9 +31,9 @@ class MaterializedPathRepository extends AbstractTreeRepository
     /**
      * Get tree query
      *
-     * @param object Root node
+     * @param object $rootNode
      *
-     * @return Doctrine\ORM\Query
+     * @return \Doctrine\ORM\Query
      */
     public function getTreeQuery($rootNode = null)
     {
@@ -43,7 +43,7 @@ class MaterializedPathRepository extends AbstractTreeRepository
     /**
      * Get tree
      *
-     * @param object Root node
+     * @param object $rootNode
      *
      * @return array
      */
@@ -100,7 +100,7 @@ class MaterializedPathRepository extends AbstractTreeRepository
                     $alias.'.'.$path,
                     $qb->expr()->literal(
                         $nodePath
-                        . ($config['path_ends_with_separator'] ? '' : $separator) .'%'
+                        .($config['path_ends_with_separator'] ? '' : $separator).'%'
                     )
                 )
             );
@@ -124,8 +124,8 @@ class MaterializedPathRepository extends AbstractTreeRepository
                 $qb->expr()->like($alias.'.'.$path,
                     $qb->expr()->literal(
                         ($config['path_starts_with_separator'] ? $separator : '')
-                        . '%' . $separator . '%'
-                        . ($config['path_ends_with_separator'] ? $separator : '')
+                        .'%'.$separator.'%'
+                        .($config['path_ends_with_separator'] ? $separator : '')
                     )
                 )
             );
@@ -169,7 +169,7 @@ class MaterializedPathRepository extends AbstractTreeRepository
     {
         $sortBy = array(
             'field'     => null,
-            'dir'       => 'asc'
+            'dir'       => 'asc',
         );
 
         if (isset($options['childSort'])) {

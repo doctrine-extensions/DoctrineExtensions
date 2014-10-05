@@ -15,5 +15,4 @@ use Doctrine\Common\Annotations\Annotation;
  */
 final class SortablePosition extends Annotation
 {
-
 }

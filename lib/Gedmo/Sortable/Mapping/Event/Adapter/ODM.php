@@ -17,27 +17,27 @@ final class ODM extends BaseAdapterODM implements SortableAdapter
     public function getMaxPosition(array $config, $meta, $groups)
     {
         $dm = $this->getObjectManager();
-        
+
         $qb = $dm->createQueryBuilder($config['useObjectClass']);
         foreach ($groups as $group => $value) {
             $qb->field($group)->equals($value);
         }
         $qb->sort($config['position'], 'desc');
         $document = $qb->getQuery()->getSingleResult();
-        
+
         if ($document) {
             return $meta->getReflectionProperty($config['position'])->getValue($document);
         }
-        
+
         return -1;
     }
-    
+
     public function updatePositions($relocation, $delta, $config)
     {
         $dm = $this->getObjectManager();
-        
+
         $delta = array_map('intval', $delta);
-        
+
         $qb = $dm->createQueryBuilder($config['useObjectClass']);
         $qb->update();
         $qb->multiple(true);
@@ -49,7 +49,7 @@ final class ODM extends BaseAdapterODM implements SortableAdapter
         foreach ($relocation['groups'] as $group => $value) {
             $qb->field($group)->equals($value);
         }
-        
+
         $qb->getQuery()->execute();
     }
 }

@@ -2,21 +2,22 @@
 
 namespace Gedmo\Tree\Entity\Repository;
 
-use Doctrine\ORM\EntityRepository,
-    Doctrine\ORM\EntityManager,
-    Doctrine\ORM\Mapping\ClassMetadata,
-    Gedmo\Tool\Wrapper\EntityWrapper,
-    Gedmo\Tree\RepositoryUtils,
-    Gedmo\Tree\RepositoryUtilsInterface,
-    Gedmo\Tree\RepositoryInterface,
-    Gedmo\Exception\InvalidArgumentException;
+use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\Mapping\ClassMetadata;
+use Gedmo\Tool\Wrapper\EntityWrapper;
+use Gedmo\Tree\RepositoryUtils;
+use Gedmo\Tree\RepositoryUtilsInterface;
+use Gedmo\Tree\RepositoryInterface;
+use Gedmo\Exception\InvalidArgumentException;
+use Gedmo\Tree\TreeListener;
 
 abstract class AbstractTreeRepository extends EntityRepository implements RepositoryInterface
 {
     /**
      * Tree listener on event manager
      *
-     * @var AbstractTreeListener
+     * @var TreeListener
      */
     protected $listener = null;
 
@@ -34,7 +35,7 @@ abstract class AbstractTreeRepository extends EntityRepository implements Reposi
         $treeListener = null;
         foreach ($em->getEventManager()->getListeners() as $listeners) {
             foreach ($listeners as $listener) {
-                if ($listener instanceof \Gedmo\Tree\TreeListener) {
+                if ($listener instanceof TreeListener) {
                     $treeListener = $listener;
                     break;
                 }
@@ -50,15 +51,13 @@ abstract class AbstractTreeRepository extends EntityRepository implements Reposi
 
         $this->listener = $treeListener;
         if (!$this->validate()) {
-            throw new \Gedmo\Exception\InvalidMappingException('This repository cannot be used for tree type: ' . $treeListener->getStrategy($em, $class->name)->getName());
+            throw new \Gedmo\Exception\InvalidMappingException('This repository cannot be used for tree type: '.$treeListener->getStrategy($em, $class->name)->getName());
         }
 
         $this->repoUtils = new RepositoryUtils($this->_em, $this->getClassMetadata(), $this->listener, $this);
     }
 
     /**
-     * @param array $options
-     *
      * @return \Doctrine\ORM\QueryBuilder
      */
     protected function getQueryBuilder()
@@ -71,7 +70,7 @@ abstract class AbstractTreeRepository extends EntityRepository implements Reposi
      *
      * @param \Gedmo\Tree\RepositoryUtilsInterface $repoUtils
      *
-     * @return $this
+     * @return static
      */
     public function setRepoUtils(RepositoryUtilsInterface $repoUtils)
     {
@@ -200,9 +199,9 @@ abstract class AbstractTreeRepository extends EntityRepository implements Reposi
     /**
      * Returns a QueryBuilder configured to return an array of nodes suitable for buildTree method
      *
-     * @param object $node - Root node
-     * @param bool $direct - Obtain direct children?
-     * @param array $options - Options
+     * @param object  $node        - Root node
+     * @param bool    $direct      - Obtain direct children?
+     * @param array   $options     - Options
      * @param boolean $includeNode - Include node in results?
      *
      * @return \Doctrine\ORM\QueryBuilder - QueryBuilder object
@@ -212,9 +211,9 @@ abstract class AbstractTreeRepository extends EntityRepository implements Reposi
     /**
      * Returns a Query configured to return an array of nodes suitable for buildTree method
      *
-     * @param object $node - Root node
-     * @param bool $direct - Obtain direct children?
-     * @param array $options - Options
+     * @param object  $node        - Root node
+     * @param bool    $direct      - Obtain direct children?
+     * @param array   $options     - Options
      * @param boolean $includeNode - Include node in results?
      *
      * @return \Doctrine\ORM\Query - Query object
@@ -224,11 +223,11 @@ abstract class AbstractTreeRepository extends EntityRepository implements Reposi
     /**
      * Get list of children followed by given $node. This returns a QueryBuilder object
      *
-     * @param object $node - if null, all tree nodes will be taken
-     * @param boolean $direct - true to take only direct children
-     * @param string $sortByField - field name to sort by
-     * @param string $direction - sort direction : "ASC" or "DESC"
-     * @param bool $includeNode - Include the root node in results?
+     * @param object  $node        - if null, all tree nodes will be taken
+     * @param boolean $direct      - true to take only direct children
+     * @param string  $sortByField - field name to sort by
+     * @param string  $direction   - sort direction : "ASC" or "DESC"
+     * @param bool    $includeNode - Include the root node in results?
      *
      * @return \Doctrine\ORM\QueryBuilder - QueryBuilder object
      */
@@ -237,11 +236,11 @@ abstract class AbstractTreeRepository extends EntityRepository implements Reposi
     /**
      * Get list of children followed by given $node. This returns a Query
      *
-     * @param object $node - if null, all tree nodes will be taken
-     * @param boolean $direct - true to take only direct children
-     * @param string $sortByField - field name to sort by
-     * @param string $direction - sort direction : "ASC" or "DESC"
-     * @param bool $includeNode - Include the root node in results?
+     * @param object  $node        - if null, all tree nodes will be taken
+     * @param boolean $direct      - true to take only direct children
+     * @param string  $sortByField - field name to sort by
+     * @param string  $direction   - sort direction : "ASC" or "DESC"
+     * @param bool    $includeNode - Include the root node in results?
      *
      * @return \Doctrine\ORM\Query - Query object
      */

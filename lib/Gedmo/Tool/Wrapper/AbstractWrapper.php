@@ -6,7 +6,7 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Doctrine\Common\Persistence\ObjectManager;
 use Gedmo\Tool\WrapperInterface;
-use Gedmo\Exception\UnsupportedObjectManager;
+use Gedmo\Exception\UnsupportedObjectManagerException;
 
 /**
  * Wraps entity or proxy for more convenient
@@ -48,9 +48,11 @@ abstract class AbstractWrapper implements WrapperInterface
     /**
      * Wrap object factory method
      *
-     * @param object $object
-     * @param \Doctrine\Common\Persistence\ObjectManager $om
-     * @throws \Gedmo\Exception\UnsupportedObjectManager
+     * @param object        $object
+     * @param ObjectManager $om
+     *
+     * @throws \Gedmo\Exception\UnsupportedObjectManagerException
+     *
      * @return \Gedmo\Tool\WrapperInterface
      */
     public static function wrap($object, ObjectManager $om)
@@ -62,9 +64,10 @@ abstract class AbstractWrapper implements WrapperInterface
             } elseif ($om instanceof DocumentManager) {
                 self::$wrappedObjectReferences[$oid] = new MongoDocumentWrapper($object, $om);
             } else {
-                throw new UnsupportedObjectManager('Given object manager is not managed by wrapper');
+                throw new UnsupportedObjectManagerException('Given object manager is not managed by wrapper');
             }
         }
+
         return self::$wrappedObjectReferences[$oid];
     }
 
@@ -97,6 +100,7 @@ abstract class AbstractWrapper implements WrapperInterface
         foreach ($data as $field => $value) {
             $this->setPropertyValue($field, $value);
         }
+
         return $this;
     }
 }

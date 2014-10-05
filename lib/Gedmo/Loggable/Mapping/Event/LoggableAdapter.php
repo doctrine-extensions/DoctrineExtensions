@@ -18,21 +18,22 @@ interface LoggableAdapter extends AdapterInterface
      *
      * @return string
      */
-    function getDefaultLogEntryClass();
+    public function getDefaultLogEntryClass();
 
     /**
      * Checks whether an id should be generated post insert
      *
      * @return boolean
      */
-    function isPostInsertGenerator($meta);
+    public function isPostInsertGenerator($meta);
 
     /**
      * Get new version number
      *
      * @param object $meta
      * @param object $object
+     *
      * @return integer
      */
-    function getNewVersion($meta, $object);
+    public function getNewVersion($meta, $object);
 }

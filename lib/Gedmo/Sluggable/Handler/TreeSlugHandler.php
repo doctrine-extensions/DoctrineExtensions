@@ -105,10 +105,10 @@ class TreeSlugHandler implements SlugHandlerInterface
             $this->parentSlug = $parent->getPropertyValue($config['slug']);
 
             // if needed, remove suffix from parentSlug, so we can use it to prepend it to our slug
-            if(isset($options['suffix'])) {
+            if (isset($options['suffix'])) {
                 $suffix = $options['suffix'];
 
-                if(substr($this->parentSlug, -strlen($suffix)) === $suffix) { //endsWith
+                if (substr($this->parentSlug, -strlen($suffix)) === $suffix) { //endsWith
                     $this->parentSlug = substr_replace($this->parentSlug, '', -1 * strlen($suffix));
                 }
             }
@@ -168,6 +168,7 @@ class TreeSlugHandler implements SlugHandlerInterface
      * @param string $text
      * @param string $separator
      * @param object $object
+     *
      * @return string
      */
     public function transliterate($text, $separator, $object)
@@ -175,11 +176,10 @@ class TreeSlugHandler implements SlugHandlerInterface
         $slug = $text;
 
         if (strlen($this->parentSlug)) {
-            $slug = $this->parentSlug . $this->usedPathSeparator . $slug . $this->suffix;
-        }
-        else {
+            $slug = $this->parentSlug.$this->usedPathSeparator.$slug.$this->suffix;
+        } else {
             // if no parentSlug, apply our prefix
-            $slug = $this->prefix . $slug;
+            $slug = $this->prefix.$slug;
         }
 
         return $slug;

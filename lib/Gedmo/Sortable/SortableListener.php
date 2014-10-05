@@ -3,6 +3,7 @@
 namespace Gedmo\Sortable;
 
 use Doctrine\Common\EventArgs;
+use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 use Doctrine\Common\Util\ClassUtils;
 use Doctrine\ORM\UnitOfWork;
 use Gedmo\Mapping\MappedEventSubscriber;
@@ -115,9 +116,13 @@ class SortableListener extends MappedEventSubscriber
 
     /**
      * Computes node positions and updates the sort field in memory and in the db
-     * @param object $ea SortableAdapter
+     *
+     * @param SortableAdapter $ea
+     * @param array           $config
+     * @param ClassMetadata   $meta
+     * @param object          $object
      */
-    private function processInsert(SortableAdapter $ea, $config, $meta, $object)
+    private function processInsert(SortableAdapter $ea, array $config, $meta, $object)
     {
         $em = $ea->getObjectManager();
         $uow = $em->getUnitOfWork();
@@ -143,7 +148,9 @@ class SortableListener extends MappedEventSubscriber
         // Compute position if it is negative
         if ($newPosition < 0) {
             $newPosition += $this->maxPositions[$hash] + 2; // position == -1 => append at end of list
-            if ($newPosition < 0) $newPosition = 0;
+            if ($newPosition < 0) {
+                $newPosition = 0;
+            }
         }
 
         // Set position to max position if it is too big
@@ -176,9 +183,13 @@ class SortableListener extends MappedEventSubscriber
 
     /**
      * Computes node positions and updates the sort field in memory and in the db
-     * @param object $ea SortableAdapter
+     *
+     * @param SortableAdapter $ea
+     * @param array           $config
+     * @param ClassMetadata   $meta
+     * @param object          $object
      */
-    private function processUpdate(SortableAdapter $ea, $config, $meta, $object)
+    private function processUpdate(SortableAdapter $ea, array $config, $meta, $object)
     {
         $em = $ea->getObjectManager();
         $uow = $em->getUnitOfWork();
@@ -215,7 +226,9 @@ class SortableListener extends MappedEventSubscriber
             $newPosition = -1;
             // specific case
         }
-        if (!$changed) return;
+        if (!$changed) {
+            return;
+        }
 
         // Get hash
         $hash = $this->getHash($meta, $groups, $object, $config);
@@ -285,9 +298,13 @@ class SortableListener extends MappedEventSubscriber
 
     /**
      * Computes node positions and updates the sort field in memory and in the db
-     * @param object $ea SortableAdapter
+     *
+     * @param SortableAdapter $ea
+     * @param array           $config
+     * @param ClassMetadata   $meta
+     * @param object          $object
      */
-    private function processDeletion(SortableAdapter $ea, $config, $meta, $object)
+    private function processDeletion(SortableAdapter $ea, array $config, $meta, $object)
     {
         $position = $meta->getReflectionProperty($config['position'])->getValue($object);
 
@@ -370,13 +387,14 @@ class SortableListener extends MappedEventSubscriber
     {
         $data = $config['useObjectClass'];
         foreach ($groups as $group => $val) {
-            if($val instanceof \DateTime) {
+            if ($val instanceof \DateTime) {
                 $val = $val->format('c');
             } elseif (is_object($val)) {
                 $val = spl_object_hash($val);
             }
             $data .= $group.$val;
         }
+
         return md5($data);
     }
 
@@ -387,8 +405,7 @@ class SortableListener extends MappedEventSubscriber
         $maxPos = null;
 
         // Get groups
-        if(!sizeof($groups))
-        {
+        if (!sizeof($groups)) {
             $groups = $this->getGroups($meta, $config, $object);
         }
 
@@ -410,19 +427,22 @@ class SortableListener extends MappedEventSubscriber
         }
 
         $maxPos = $ea->getMaxPosition($config, $meta, $groups);
-        if (is_null($maxPos)) $maxPos = -1;
-        
+        if (is_null($maxPos)) {
+            $maxPos = -1;
+        }
+
         return intval($maxPos);
     }
 
     /**
      * Add a relocation rule
-     * @param string $hash The hash of the sorting group
-     * @param string $class The object class
-     * @param array $groups The sorting groups
-     * @param int $start Inclusive index to start relocation from
-     * @param int $stop Exclusive index to stop relocation at
-     * @param int $delta The delta to add to relocated nodes
+     *
+     * @param string $hash   The hash of the sorting group
+     * @param string $class  The object class
+     * @param array  $groups The sorting groups
+     * @param int    $start  Inclusive index to start relocation from
+     * @param int    $stop   Exclusive index to stop relocation at
+     * @param int    $delta  The delta to add to relocated nodes
      */
     private function addRelocation($hash, $class, $groups, $start, $stop, $delta)
     {
@@ -432,20 +452,22 @@ class SortableListener extends MappedEventSubscriber
 
         try {
             $newDelta = array('start' => $start, 'stop' => $stop, 'delta' => $delta);
-            array_walk($this->relocations[$hash]['deltas'], function(&$val, $idx, $needle) {
+            array_walk($this->relocations[$hash]['deltas'], function (&$val, $idx, $needle) {
                 if ($val['start'] == $needle['start'] && $val['stop'] == $needle['stop']) {
                     $val['delta'] += $needle['delta'];
                     throw new \Exception("Found delta. No need to add it again.");
                 }
             }, $newDelta);
             $this->relocations[$hash]['deltas'][] = $newDelta;
-        } catch (\Exception $e) {}
+        } catch (\Exception $e) {
+        }
     }
 
     /**
-     * @param $meta
-     * @param $config
-     * @param $object
+     *
+     * @param array         $config
+     * @param ClassMetadata $meta
+     * @param object        $object
      *
      * @return array
      */

@@ -27,11 +27,13 @@ class LogEntryRepository extends EntityRepository
      * given $entity
      *
      * @param object $entity
+     *
      * @return array
      */
     public function getLogEntries($entity)
     {
         $q = $this->getLogEntriesQuery($entity);
+
         return $q->getResult();
     }
 
@@ -39,6 +41,7 @@ class LogEntryRepository extends EntityRepository
      * Get the query for loading of log entries
      *
      * @param object $entity
+     *
      * @return Query
      */
     public function getLogEntriesQuery($entity)
@@ -54,6 +57,7 @@ class LogEntryRepository extends EntityRepository
         $objectId = $wrapped->getIdentifier();
         $q = $this->_em->createQuery($dql);
         $q->setParameters(compact('objectId', 'objectClass'));
+
         return $q;
     }
 
@@ -63,9 +67,11 @@ class LogEntryRepository extends EntityRepository
      * After this operation you will need to
      * persist and flush the $entity.
      *
-     * @param object $entity
+     * @param object  $entity
      * @param integer $version
+     *
      * @throws \Gedmo\Exception\UnexpectedValueException
+     *
      * @return void
      */
     public function revert($entity, $version = 1)
@@ -117,6 +123,7 @@ class LogEntryRepository extends EntityRepository
      * Get the currently used LoggableListener
      *
      * @throws \Gedmo\Exception\RuntimeException - if listener is not found
+     *
      * @return LoggableListener
      */
     private function getLoggableListener()
@@ -138,6 +145,7 @@ class LogEntryRepository extends EntityRepository
                 throw new \Gedmo\Exception\RuntimeException('The loggable listener could not be found');
             }
         }
+
         return $this->listener;
     }
 }

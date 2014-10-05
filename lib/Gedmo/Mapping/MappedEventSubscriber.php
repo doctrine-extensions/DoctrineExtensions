@@ -2,8 +2,7 @@
 
 namespace Gedmo\Mapping;
 
-use Doctrine\Common\Annotations\AnnotationReader;
-use Doctrine\Common\Annotations\CachedReader;
+use Doctrine\Common\Annotations\Reader;
 use Doctrine\Common\Cache\ArrayCache;
 use Doctrine\Common\EventSubscriber;
 use Doctrine\Common\Persistence\ObjectManager;
@@ -80,7 +79,9 @@ abstract class MappedEventSubscriber implements EventSubscriber
      * methods
      *
      * @param EventArgs $args
+     *
      * @throws \Gedmo\Exception\InvalidArgumentException - if event is not recognized
+     *
      * @return \Gedmo\Mapping\Event\AdapterInterface
      */
     protected function getEventAdapter(EventArgs $args)
@@ -88,13 +89,14 @@ abstract class MappedEventSubscriber implements EventSubscriber
         $class = get_class($args);
         if (preg_match('@Doctrine\\\([^\\\]+)@', $class, $m) && in_array($m[1], array('ODM', 'ORM'))) {
             if (!isset($this->adapters[$m[1]])) {
-                $adapterClass = $this->getNamespace() . '\\Mapping\\Event\\Adapter\\' . $m[1];
+                $adapterClass = $this->getNamespace().'\\Mapping\\Event\\Adapter\\'.$m[1];
                 if (!class_exists($adapterClass)) {
                     $adapterClass = 'Gedmo\\Mapping\\Event\\Adapter\\'.$m[1];
                 }
-                $this->adapters[$m[1]] = new $adapterClass;
+                $this->adapters[$m[1]] = new $adapterClass();
             }
             $this->adapters[$m[1]]->setEventArgs($args);
+
             return $this->adapters[$m[1]];
         } else {
             throw new \Gedmo\Exception\InvalidArgumentException('Event mapper does not support event arg class: '.$class);
@@ -106,10 +108,12 @@ abstract class MappedEventSubscriber implements EventSubscriber
      * if cache driver is present it scans it also
      *
      * @param ObjectManager $objectManager
-     * @param string $class
+     * @param string        $class
+     *
      * @return array
      */
-    public function getConfiguration(ObjectManager $objectManager, $class) {
+    public function getConfiguration(ObjectManager $objectManager, $class)
+    {
         $config = array();
         if (isset(self::$configurations[$this->name][$class])) {
             $config = self::$configurations[$this->name][$class];
@@ -133,9 +137,9 @@ abstract class MappedEventSubscriber implements EventSubscriber
                 if ($objectClass !== $class) {
                     $this->getConfiguration($objectManager, $objectClass);
                 }
-
             }
         }
+
         return $config;
     }
 
@@ -143,6 +147,7 @@ abstract class MappedEventSubscriber implements EventSubscriber
      * Get extended metadata mapping reader
      *
      * @param ObjectManager $objectManager
+     *
      * @return ExtensionMetadataFactory
      */
     public function getExtensionMetadataFactory(ObjectManager $objectManager)
@@ -159,6 +164,7 @@ abstract class MappedEventSubscriber implements EventSubscriber
                 $this->annotationReader
             );
         }
+
         return $this->extensionMetadataFactory[$oid];
     }
 
@@ -171,7 +177,7 @@ abstract class MappedEventSubscriber implements EventSubscriber
      *     getPropertyAnnotations([reflectionProperty])
      *     getPropertyAnnotation([reflectionProperty], [name])
      *
-     * @param object $reader - annotation reader class
+     * @param Reader $reader - annotation reader class
      */
     public function setAnnotationReader($reader)
     {
@@ -182,8 +188,8 @@ abstract class MappedEventSubscriber implements EventSubscriber
      * Scans the objects for extended annotations
      * event subscribers must subscribe to loadClassMetadata event
      *
-     * @param ObjectManager $objectManager
-     * @param object $metadata
+     * @param  ObjectManager $objectManager
+     * @param  object        $metadata
      * @return void
      */
     public function loadMetadataForObjectClass(ObjectManager $objectManager, $metadata)
@@ -221,18 +227,18 @@ abstract class MappedEventSubscriber implements EventSubscriber
                 $reader = new \Doctrine\Common\Annotations\AnnotationReader();
                 \Doctrine\Common\Annotations\AnnotationRegistry::registerAutoloadNamespace(
                     'Gedmo\\Mapping\\Annotation',
-                    __DIR__ . '/../../'
+                    __DIR__.'/../../'
                 );
                 $reader = new \Doctrine\Common\Annotations\CachedReader($reader, new ArrayCache());
-            } else if (version_compare(\Doctrine\Common\Version::VERSION, '2.1.0RC4-DEV', '>=')) {
+            } elseif (version_compare(\Doctrine\Common\Version::VERSION, '2.1.0RC4-DEV', '>=')) {
                 $reader = new \Doctrine\Common\Annotations\AnnotationReader();
                 \Doctrine\Common\Annotations\AnnotationRegistry::registerAutoloadNamespace(
                     'Gedmo\\Mapping\\Annotation',
-                    __DIR__ . '/../../'
+                    __DIR__.'/../../'
                 );
                 $reader->setDefaultAnnotationNamespace('Doctrine\ORM\Mapping\\');
                 $reader = new \Doctrine\Common\Annotations\CachedReader($reader, new ArrayCache());
-            } else if (version_compare(\Doctrine\Common\Version::VERSION, '2.1.0-BETA3-DEV', '>=')) {
+            } elseif (version_compare(\Doctrine\Common\Version::VERSION, '2.1.0-BETA3-DEV', '>=')) {
                 $reader = new \Doctrine\Common\Annotations\AnnotationReader();
                 $reader->setDefaultAnnotationNamespace('Doctrine\ORM\Mapping\\');
                 $reader->setIgnoreNotImportedAnnotations(true);
@@ -250,6 +256,7 @@ abstract class MappedEventSubscriber implements EventSubscriber
             }
             self::$defaultAnnotationReader = $reader;
         }
+
         return self::$defaultAnnotationReader;
     }
 }

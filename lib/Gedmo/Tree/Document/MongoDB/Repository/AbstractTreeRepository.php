@@ -2,13 +2,13 @@
 
 namespace Gedmo\Tree\Document\MongoDB\Repository;
 
-use Doctrine\ODM\MongoDB\DocumentRepository,
-    Doctrine\ODM\MongoDB\DocumentManager,
-    Doctrine\ODM\MongoDB\Mapping\ClassMetadata,
-    Doctrine\ODM\MongoDB\UnitOfWork,
-    Gedmo\Tree\RepositoryUtils,
-    Gedmo\Tree\RepositoryUtilsInterface,
-    Gedmo\Tree\RepositoryInterface;
+use Doctrine\ODM\MongoDB\DocumentRepository;
+use Doctrine\ODM\MongoDB\DocumentManager;
+use Doctrine\ODM\MongoDB\Mapping\ClassMetadata;
+use Doctrine\ODM\MongoDB\UnitOfWork;
+use Gedmo\Tree\RepositoryUtils;
+use Gedmo\Tree\RepositoryUtilsInterface;
+use Gedmo\Tree\RepositoryInterface;
 
 abstract class AbstractTreeRepository extends DocumentRepository implements RepositoryInterface
 {
@@ -49,7 +49,7 @@ abstract class AbstractTreeRepository extends DocumentRepository implements Repo
 
         $this->listener = $treeListener;
         if (!$this->validate()) {
-            throw new \Gedmo\Exception\InvalidMappingException('This repository cannot be used for tree type: ' . $treeListener->getStrategy($em, $class->name)->getName());
+            throw new \Gedmo\Exception\InvalidMappingException('This repository cannot be used for tree type: '.$treeListener->getStrategy($em, $class->name)->getName());
         }
 
         $this->repoUtils = new RepositoryUtils($this->dm, $this->getClassMetadata(), $this->listener, $this);
@@ -150,9 +150,9 @@ abstract class AbstractTreeRepository extends DocumentRepository implements Repo
     /**
      * Returns a QueryBuilder configured to return an array of nodes suitable for buildTree method
      *
-     * @param object $node - Root node
-     * @param bool $direct - Obtain direct children?
-     * @param array $options - Options
+     * @param object  $node        - Root node
+     * @param bool    $direct      - Obtain direct children?
+     * @param array   $options     - Options
      * @param boolean $includeNode - Include node in results?
      *
      * @return \Doctrine\MongoDB\Query\Builder - QueryBuilder object
@@ -162,9 +162,9 @@ abstract class AbstractTreeRepository extends DocumentRepository implements Repo
     /**
      * Returns a Query configured to return an array of nodes suitable for buildTree method
      *
-     * @param object $node - Root node
-     * @param bool $direct - Obtain direct children?
-     * @param array $options - Options
+     * @param object  $node        - Root node
+     * @param bool    $direct      - Obtain direct children?
+     * @param array   $options     - Options
      * @param boolean $includeNode - Include node in results?
      *
      * @return \Doctrine\MongoDB\Query\Query - Query object
@@ -174,11 +174,11 @@ abstract class AbstractTreeRepository extends DocumentRepository implements Repo
     /**
      * Get list of children followed by given $node. This returns a QueryBuilder object
      *
-     * @param object $node - if null, all tree nodes will be taken
-     * @param boolean $direct - true to take only direct children
-     * @param string $sortByField - field name to sort by
-     * @param string $direction - sort direction : "ASC" or "DESC"
-     * @param bool $includeNode - Include the root node in results?
+     * @param object  $node        - if null, all tree nodes will be taken
+     * @param boolean $direct      - true to take only direct children
+     * @param string  $sortByField - field name to sort by
+     * @param string  $direction   - sort direction : "ASC" or "DESC"
+     * @param bool    $includeNode - Include the root node in results?
      *
      * @return \Doctrine\MongoDB\Query\Builder - QueryBuilder object
      */
@@ -187,11 +187,11 @@ abstract class AbstractTreeRepository extends DocumentRepository implements Repo
     /**
      * Get list of children followed by given $node. This returns a Query
      *
-     * @param object $node - if null, all tree nodes will be taken
-     * @param boolean $direct - true to take only direct children
-     * @param string $sortByField - field name to sort by
-     * @param string $direction - sort direction : "ASC" or "DESC"
-     * @param bool $includeNode - Include the root node in results?
+     * @param object  $node        - if null, all tree nodes will be taken
+     * @param boolean $direct      - true to take only direct children
+     * @param string  $sortByField - field name to sort by
+     * @param string  $direction   - sort direction : "ASC" or "DESC"
+     * @param bool    $includeNode - Include the root node in results?
      *
      * @return \Doctrine\MongoDB\Query\Query - Query object
      */

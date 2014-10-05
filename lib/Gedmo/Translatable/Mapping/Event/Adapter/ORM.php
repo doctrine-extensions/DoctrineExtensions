@@ -61,7 +61,7 @@ final class ORM extends BaseAdapterORM implements TranslatableAdapter
                         if ($trans->getLocale() === $locale) {
                             $result[] = array(
                                 'field' => $trans->getField(),
-                                'content' => $trans->getContent()
+                                'content' => $trans->getContent(),
                             );
                         }
                     }
@@ -71,7 +71,7 @@ final class ORM extends BaseAdapterORM implements TranslatableAdapter
             }
             // if collection is not set, fetch it through relation
             if (!$found) {
-                $dql = 'SELECT t.content, t.field FROM ' . $translationClass . ' t';
+                $dql = 'SELECT t.content, t.field FROM '.$translationClass.' t';
                 $dql .= ' WHERE t.locale = :locale';
                 $dql .= ' AND t.object = :object';
 
@@ -83,7 +83,7 @@ final class ORM extends BaseAdapterORM implements TranslatableAdapter
             // load translated content for all translatable fields
             $objectId = $wrapped->getIdentifier();
             // construct query
-            $dql = 'SELECT t.content, t.field FROM ' . $translationClass . ' t';
+            $dql = 'SELECT t.content, t.field FROM '.$translationClass.' t';
             $dql .= ' WHERE t.foreignKey = :objectId';
             $dql .= ' AND t.locale = :locale';
             $dql .= ' AND t.objectClass = :objectClass';
@@ -92,6 +92,7 @@ final class ORM extends BaseAdapterORM implements TranslatableAdapter
             $q->setParameters(compact('objectId', 'locale', 'objectClass'));
             $result = $q->getArrayResult();
         }
+
         return $result;
     }
 
@@ -150,6 +151,7 @@ final class ORM extends BaseAdapterORM implements TranslatableAdapter
         if ($result) {
             return array_shift($result);
         }
+
         return null;
     }
 
@@ -174,6 +176,7 @@ final class ORM extends BaseAdapterORM implements TranslatableAdapter
             $qb->setParameter('objectId', $wrapped->getIdentifier());
             $qb->setParameter('class', $objectClass);
         }
+
         return $qb->getQuery()->getSingleScalarResult();
     }
 
@@ -210,6 +213,7 @@ final class ORM extends BaseAdapterORM implements TranslatableAdapter
         if ($value === false) {
             $value = $wrapped->getPropertyValue($field);
         }
+
         return $type->convertToDatabaseValue($value, $em->getConnection()->getDatabasePlatform());
     }
 

@@ -39,7 +39,7 @@ class Validator
      * @var array
      */
     public static $validFileMimeTypeTypes = array(
-        'string'
+        'string',
     );
 
     /**
@@ -48,7 +48,7 @@ class Validator
      * @var array
      */
     public static $validFileNameTypes = array(
-        'string'
+        'string',
     );
 
     /**
@@ -57,7 +57,7 @@ class Validator
      * @var array
      */
     public static $validFilePathTypes = array(
-        'string'
+        'string',
     );
 
     /**
@@ -66,16 +66,16 @@ class Validator
      * @var array
      */
     public static $validFileSizeTypes = array(
-        'decimal'
+        'decimal',
     );
-    
+
     /**
      * List of types which are valid for UploadableFileSize field for ODM
      *
      * @var array
      */
     public static $validFileSizeTypesODM = array(
-        'float'
+        'float',
     );
 
     /**
@@ -85,7 +85,6 @@ class Validator
      * @var bool
      */
     public static $validateWritableDirectory = true;
-
 
     public static function validateFileNameField(ClassMetadata $meta, $field)
     {
@@ -104,7 +103,7 @@ class Validator
 
     public static function validateFileSizeField(ClassMetadata $meta, $field)
     {
-        if($meta instanceof \Doctrine\ODM\MongoDB\Mapping\ClassMetadataInfo) {
+        if ($meta instanceof \Doctrine\ODM\MongoDB\Mapping\ClassMetadataInfo) {
             self::validateField($meta, $field, self::UPLOADABLE_FILE_SIZE, self::$validFileSizeTypesODM);
         } else {
             self::validateField($meta, $field, self::UPLOADABLE_FILE_SIZE, self::$validFileSizeTypes);

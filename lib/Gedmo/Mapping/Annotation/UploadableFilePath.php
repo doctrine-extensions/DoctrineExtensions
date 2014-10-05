@@ -17,4 +17,3 @@ use Doctrine\Common\Annotations\Annotation;
 final class UploadableFilePath extends Annotation
 {
 }
-

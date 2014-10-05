@@ -18,7 +18,8 @@ interface TimestampableAdapter extends AdapterInterface
      *
      * @param object $meta
      * @param string $field
+     *
      * @return mixed
      */
-    function getDateValue($meta, $field);
+    public function getDateValue($meta, $field);
 }

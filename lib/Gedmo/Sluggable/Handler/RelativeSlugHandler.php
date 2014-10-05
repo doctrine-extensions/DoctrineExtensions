@@ -102,7 +102,8 @@ class RelativeSlugHandler implements SlugHandlerInterface
      * {@inheritDoc}
      */
     public function onSlugCompletion(SluggableAdapter $ea, array &$config, $object, &$slug)
-    {}
+    {
+    }
 
     /**
      * Transliterates the slug and prefixes the slug
@@ -111,6 +112,7 @@ class RelativeSlugHandler implements SlugHandlerInterface
      * @param string $text
      * @param string $separator
      * @param object $object
+     *
      * @return string
      */
     public function transliterate($text, $separator, $object)
@@ -132,9 +134,10 @@ class RelativeSlugHandler implements SlugHandlerInterface
                 );
             }
 
-            $result = $slug . $this->usedOptions['separator'] . $result;
+            $result = $slug.$this->usedOptions['separator'].$result;
         }
         $this->sluggable->setTransliterator($this->originalTransliterator);
+
         return $result;
     }
 

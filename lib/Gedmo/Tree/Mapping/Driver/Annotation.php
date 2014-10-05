@@ -2,9 +2,9 @@
 
 namespace Gedmo\Tree\Mapping\Driver;
 
-use Gedmo\Mapping\Driver\AbstractAnnotationDriver,
-    Gedmo\Exception\InvalidMappingException,
-    Gedmo\Tree\Mapping\Validator;
+use Gedmo\Mapping\Driver\AbstractAnnotationDriver;
+use Gedmo\Exception\InvalidMappingException;
+use Gedmo\Tree\Mapping\Validator;
 
 /**
  * This is an annotation mapping driver for Tree
@@ -81,7 +81,7 @@ class Annotation extends AbstractAnnotationDriver
     protected $strategies = array(
         'nested',
         'closure',
-        'materializedPath'
+        'materializedPath',
     );
 
     /**
@@ -212,7 +212,6 @@ class Annotation extends AbstractAnnotationDriver
                     throw new InvalidMappingException("Tree PathHash field - [{$field}] type is not valid. It can be any of the integer variants, double, float or string in class - {$meta->name}");
                 }
                 $config['path_hash'] = $field;
-
             }
             // lock time
 
@@ -237,7 +236,7 @@ class Annotation extends AbstractAnnotationDriver
                 if (is_array($meta->identifier) && count($meta->identifier) > 1) {
                     throw new InvalidMappingException("Tree does not support composite identifiers in class - {$meta->name}");
                 }
-                $method = 'validate' . ucfirst($config['strategy']) . 'TreeMetadata';
+                $method = 'validate'.ucfirst($config['strategy']).'TreeMetadata';
                 $validator->$method($meta, $config);
             } else {
                 throw new InvalidMappingException("Cannot find Tree type for class: {$meta->name}");

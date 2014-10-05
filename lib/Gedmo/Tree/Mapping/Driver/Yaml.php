@@ -2,10 +2,10 @@
 
 namespace Gedmo\Tree\Mapping\Driver;
 
-use Gedmo\Mapping\Driver\File,
-    Gedmo\Mapping\Driver,
-    Gedmo\Exception\InvalidMappingException,
-    Gedmo\Tree\Mapping\Validator;
+use Gedmo\Mapping\Driver\File;
+use Gedmo\Mapping\Driver;
+use Gedmo\Exception\InvalidMappingException;
+use Gedmo\Tree\Mapping\Validator;
 
 /**
  * This is a yaml mapping driver for Tree
@@ -32,7 +32,7 @@ class Yaml extends File implements Driver
     private $strategies = array(
         'nested',
         'closure',
-        'materializedPath'
+        'materializedPath',
     );
 
     /**
@@ -178,7 +178,7 @@ class Yaml extends File implements Driver
                 if (is_array($meta->identifier) && count($meta->identifier) > 1) {
                     throw new InvalidMappingException("Tree does not support composite identifiers in class - {$meta->name}");
                 }
-                $method = 'validate' . ucfirst($config['strategy']) . 'TreeMetadata';
+                $method = 'validate'.ucfirst($config['strategy']).'TreeMetadata';
                 $validator->$method($meta, $config);
             } else {
                 throw new InvalidMappingException("Cannot find Tree type for class: {$meta->name}");

@@ -61,10 +61,11 @@ final class ODM extends BaseAdapterODM implements TranslatableAdapter
                         if ($trans->getLocale() === $locale) {
                             $result[] = array(
                                 'field' => $trans->getField(),
-                                'content' => $trans->getContent()
+                                'content' => $trans->getContent(),
                             );
                         }
                     }
+
                     return $result;
                 }
             }
@@ -90,6 +91,7 @@ final class ODM extends BaseAdapterODM implements TranslatableAdapter
         if ($result instanceof Cursor) {
             $result = $result->toArray();
         }
+
         return $result;
     }
 
@@ -116,6 +118,7 @@ final class ODM extends BaseAdapterODM implements TranslatableAdapter
         if ($result instanceof Cursor) {
             $result = current($result->toArray());
         }
+
         return $result;
     }
 
@@ -136,6 +139,7 @@ final class ODM extends BaseAdapterODM implements TranslatableAdapter
             $qb->field('objectClass')->equals($objectClass);
         }
         $q = $qb->getQuery();
+
         return $q->execute();
     }
 
@@ -173,6 +177,7 @@ final class ODM extends BaseAdapterODM implements TranslatableAdapter
         if ($value === false) {
             $value = $wrapped->getPropertyValue($field);
         }
+
         return $type->convertToDatabaseValue($value);
     }
 

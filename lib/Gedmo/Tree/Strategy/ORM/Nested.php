@@ -45,7 +45,7 @@ class Nested implements Strategy
     /**
      * TreeListener
      *
-     * @var AbstractTreeListener
+     * @var TreeListener
      */
     protected $listener = null;
 
@@ -101,7 +101,7 @@ class Nested implements Strategy
             self::FIRST_CHILD,
             self::LAST_CHILD,
             self::NEXT_SIBLING,
-            self::PREV_SIBLING
+            self::PREV_SIBLING,
         );
         if (!in_array($position, $valid, false)) {
             throw new \Gedmo\Exception\InvalidArgumentException("Position: {$position} is not valid in nested set tree");
@@ -152,13 +152,10 @@ class Nested implements Strategy
             // set back all other changes
             foreach ($changeSet as $field => $set) {
                 if ($field !== $config['left']) {
-                    if (is_array($set) && array_key_exists(0, $set) && array_key_exists(1, $set))
-                    {
+                    if (is_array($set) && array_key_exists(0, $set) && array_key_exists(1, $set)) {
                         $uow->setOriginalEntityProperty($oid, $field, $set[0]);
                         $wrapped->setPropertyValue($field, $set[1]);
-                    }
-                    else
-                    {
+                    } else {
                         $uow->setOriginalEntityProperty($oid, $field, $set);
                         $wrapped->setPropertyValue($field, $set);
                     }
@@ -217,7 +214,7 @@ class Nested implements Strategy
             $q = $qb->getQuery();
             // get nodes for deletion
             $nodes = $q->getResult();
-            foreach ((array)$nodes as $removalNode) {
+            foreach ((array) $nodes as $removalNode) {
                 $uow->scheduleForDelete($removalNode);
             }
         }
@@ -231,55 +228,60 @@ class Nested implements Strategy
     {
         // reset values
         $this->treeEdges = array();
-        $this->updatesOnNodeClasses = array();
     }
 
     /**
      * {@inheritdoc}
      */
     public function processPreRemove($em, $node)
-    {}
+    {
+    }
 
     /**
      * {@inheritdoc}
      */
     public function processPrePersist($em, $node)
-    {}
+    {
+    }
 
     /**
      * {@inheritdoc}
      */
     public function processPreUpdate($em, $node)
-    {}
+    {
+    }
 
     /**
      * {@inheritdoc}
      */
     public function processMetadataLoad($em, $meta)
-    {}
+    {
+    }
 
     /**
      * {@inheritdoc}
      */
     public function processPostUpdate($em, $entity, AdapterInterface $ea)
-    {}
+    {
+    }
 
     /**
      * {@inheritdoc}
      */
     public function processPostRemove($em, $entity, AdapterInterface $ea)
-    {}
+    {
+    }
 
     /**
      * Update the $node with a diferent $parent
      * destination
      *
      * @param EntityManager $em
-     * @param object $node - target node
-     * @param object $parent - destination node
-     * @param string $position
-     * @throws Gedmo\Exception\UnexpectedValueException
-     * @return void
+     * @param object        $node     - target node
+     * @param object        $parent   - destination node
+     * @param string        $position
+     *
+     * @throws \Gedmo\Exception\UnexpectedValueException
      */
     public function updateNode(EntityManager $em, $node, $parent, $position = 'FirstChild')
     {
@@ -321,6 +323,7 @@ class Nested implements Strategy
                     $this->delayedNodes[$parentOid] = array();
                 }
                 $this->delayedNodes[$parentOid][] = array('node' => $node, 'position' => $position);
+
                 return;
             }
             if (!$isNewNode && $rootId === $parentRootId && $parentLeft >= $left && $parentRight <= $right) {
@@ -419,7 +422,7 @@ class Nested implements Strategy
                 $em->getUnitOfWork()->setOriginalEntityProperty($oid, $config['root'], $newRootId);
             }
             if (isset($config['level'])) {
-                $qb->set('node.' . $config['level'], $level);
+                $qb->set('node.'.$config['level'], $level);
                 $wrapped->setPropertyValue($config['level'], $level);
                 $em->getUnitOfWork()->setOriginalEntityProperty($oid, $config['level'], $level);
             }
@@ -433,8 +436,8 @@ class Nested implements Strategy
                 $wrapped->setPropertyValue($config['parent'], $newParent);
                 $em->getUnitOfWork()->setOriginalEntityProperty($oid, $config['parent'], $newParent);
             }
-            $qb->set('node.' . $config['left'], $left + $diff);
-            $qb->set('node.' . $config['right'], $right + $diff);
+            $qb->set('node.'.$config['left'], $left + $diff);
+            $qb->set('node.'.$config['right'], $right + $diff);
             // node id cannot be null
             $qb->where($qb->expr()->eq('node.'.$identifierField, is_string($nodeId) ? $qb->expr()->literal($nodeId) : $nodeId));
             $qb->getQuery()->getSingleScalarResult();
@@ -444,7 +447,7 @@ class Nested implements Strategy
             $em->getUnitOfWork()->setOriginalEntityProperty($oid, $config['right'], $right + $diff);
         }
         if (isset($this->delayedNodes[$oid])) {
-            foreach($this->delayedNodes[$oid] as $nodeData) {
+            foreach ($this->delayedNodes[$oid] as $nodeData) {
                 $this->updateNode($em, $nodeData['node'], $node, $nodeData['position']);
             }
         }
@@ -454,8 +457,9 @@ class Nested implements Strategy
      * Get the edge of tree
      *
      * @param EntityManager $em
-     * @param string $class
-     * @param integer $rootId
+     * @param string        $class
+     * @param integer       $rootId
+     *
      * @return integer
      */
     public function max(EntityManager $em, $class, $rootId = 0)
@@ -475,18 +479,18 @@ class Nested implements Strategy
         }
         $query = $qb->getQuery();
         $right = $query->getSingleScalarResult();
+
         return intval($right);
     }
 
     /**
      * Shift tree left and right values by delta
      *
-     * @param EntityManager $em
-     * @param string $class
-     * @param integer $first
-     * @param integer $delta
+     * @param EntityManager  $em
+     * @param string         $class
+     * @param integer        $first
+     * @param integer        $delta
      * @param integer|string $rootId
-     * @return void
      */
     public function shiftRL(EntityManager $em, $class, $first, $delta, $rootId = null)
     {
@@ -551,15 +555,14 @@ class Nested implements Strategy
      * Shift range of right and left values on tree
      * depending on tree level difference also
      *
-     * @param EntityManager $em
-     * @param string $class
-     * @param integer $first
-     * @param integer $last
-     * @param integer $delta
+     * @param EntityManager  $em
+     * @param string         $class
+     * @param integer        $first
+     * @param integer        $last
+     * @param integer        $delta
      * @param integer|string $rootId
      * @param integer|string $destRootId
-     * @param integer $levelDelta
-     * @return void
+     * @param integer        $levelDelta
      */
     public function shiftRangeRL(EntityManager $em, $class, $first, $last, $delta, $rootId = null, $destRootId = null, $levelDelta = null)
     {

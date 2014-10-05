@@ -4,9 +4,8 @@ namespace Gedmo\Sluggable\Mapping\Driver;
 
 use Gedmo\Mapping\Annotation\SlugHandler;
 use Gedmo\Mapping\Annotation\SlugHandlerOption;
-use Gedmo\Mapping\Driver\AbstractAnnotationDriver,
-    Doctrine\Common\Annotations\AnnotationReader,
-    Gedmo\Exception\InvalidMappingException;
+use Gedmo\Mapping\Driver\AbstractAnnotationDriver;
+use Gedmo\Exception\InvalidMappingException;
 
 /**
  * This is an annotation mapping driver for Sluggable
@@ -33,7 +32,7 @@ class Annotation extends AbstractAnnotationDriver
     /**
      * SlugHandler option annotation
      */
-    const HANDLER_OPTION ='Gedmo\\Mapping\\Annotation\\SlugHandlerOption';
+    const HANDLER_OPTION = 'Gedmo\\Mapping\\Annotation\\SlugHandlerOption';
 
     /**
      * List of types which are valid for slug and sluggable fields
@@ -51,7 +50,8 @@ class Annotation extends AbstractAnnotationDriver
     /**
      * {@inheritDoc}
      */
-    public function readExtendedMetadata($meta, array &$config) {
+    public function readExtendedMetadata($meta, array &$config)
+    {
         $class = $this->getMetaReflectionClass($meta);
         // property annotations
         foreach ($class->getProperties() as $property) {
@@ -82,7 +82,7 @@ class Annotation extends AbstractAnnotationDriver
                         }
                         $class = $handler->class;
                         $handlers[$class] = array();
-                        foreach ((array)$handler->options as $option) {
+                        foreach ((array) $handler->options as $option) {
                             if (!$option instanceof SlugHandlerOption) {
                                 throw new InvalidMappingException("SlugHandlerOption: {$option} should be instance of SlugHandlerOption annotation in entity - {$meta->name}");
                             }
@@ -112,7 +112,7 @@ class Annotation extends AbstractAnnotationDriver
                 if (!is_bool($slug->unique)) {
                     throw new InvalidMappingException("Slug annotation [unique], type is not valid and must be 'boolean' in class - {$meta->name}");
                 }
-                if (!empty($meta->identifier) && $meta->isIdentifier($field) && !(bool)$slug->unique) {
+                if (!empty($meta->identifier) && $meta->isIdentifier($field) && !(bool) $slug->unique) {
                     throw new InvalidMappingException("Identifier field - [{$field}] slug must be unique in order to maintain primary key in class - {$meta->name}");
                 }
                 if ($slug->unique === false && $slug->unique_base) {

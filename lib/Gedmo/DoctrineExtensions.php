@@ -29,14 +29,14 @@ final class DoctrineExtensions
      * Hooks all extensions metadata mapping drivers
      * into given $driverChain of drivers for ORM
      *
-     * @param \Doctrine\Common\Persistence\Mapping\Driver\MappingDriverChain $driverChain
-     * @param \Doctrine\Common\Annotations\Reader $reader
+     * @param MappingDriverChain $driverChain
+     * @param Reader|null        $reader
      */
     public static function registerMappingIntoDriverChainORM(MappingDriverChain $driverChain, Reader $reader = null)
     {
         self::registerAnnotations();
         if (!$reader) {
-            $reader = new CachedReader(new AnnotationReader, new ArrayCache);
+            $reader = new CachedReader(new AnnotationReader(), new ArrayCache());
         }
         $annotationDriver = new DriverORM\AnnotationDriver($reader, array(
             __DIR__.'/Translatable/Entity',
@@ -50,14 +50,14 @@ final class DoctrineExtensions
      * Hooks only superclass metadata mapping drivers
      * into given $driverChain of drivers for ORM
      *
-     * @param \Doctrine\Common\Persistence\Mapping\Driver\MappingDriverChain $driverChain
-     * @param \Doctrine\Common\Annotations\Reader $reader
+     * @param MappingDriverChain $driverChain
+     * @param Reader|null        $reader
      */
     public static function registerAbstractMappingIntoDriverChainORM(MappingDriverChain $driverChain, Reader $reader = null)
     {
         self::registerAnnotations();
         if (!$reader) {
-            $reader = new CachedReader(new AnnotationReader, new ArrayCache);
+            $reader = new CachedReader(new AnnotationReader(), new ArrayCache());
         }
         $annotationDriver = new DriverORM\AnnotationDriver($reader, array(
             __DIR__.'/Translatable/Entity/MappedSuperclass',
@@ -71,14 +71,14 @@ final class DoctrineExtensions
      * Hooks all extensions metadata mapping drivers
      * into given $driverChain of drivers for ODM MongoDB
      *
-     * @param \Doctrine\Common\Persistence\Mapping\Driver\MappingDriverChain $driverChain
-     * @param \Doctrine\Common\Annotations\Reader $reader
+     * @param MappingDriverChain $driverChain
+     * @param Reader|null        $reader
      */
     public static function registerMappingIntoDriverChainMongodbODM(MappingDriverChain $driverChain, Reader $reader = null)
     {
         self::registerAnnotations();
         if (!$reader) {
-            $reader = new CachedReader(new AnnotationReader, new ArrayCache);
+            $reader = new CachedReader(new AnnotationReader(), new ArrayCache());
         }
         $annotationDriver = new DriverMongodbODM\AnnotationDriver($reader, array(
             __DIR__.'/Translatable/Document',
@@ -91,14 +91,14 @@ final class DoctrineExtensions
      * Hooks only superclass metadata mapping drivers
      * into given $driverChain of drivers for ODM MongoDB
      *
-     * @param \Doctrine\Common\Persistence\Mapping\Driver\MappingDriverChain $driverChain
-     * @param \Doctrine\Common\Annotations\Reader $reader
+     * @param MappingDriverChain $driverChain
+     * @param Reader|null        $reader
      */
     public static function registerAbstractMappingIntoDriverChainMongodbODM(MappingDriverChain $driverChain, Reader $reader = null)
     {
         self::registerAnnotations();
         if (!$reader) {
-            $reader = new CachedReader(new AnnotationReader, new ArrayCache);
+            $reader = new CachedReader(new AnnotationReader(), new ArrayCache());
         }
         $annotationDriver = new DriverMongodbODM\AnnotationDriver($reader, array(
             __DIR__.'/Translatable/Document/MappedSuperclass',

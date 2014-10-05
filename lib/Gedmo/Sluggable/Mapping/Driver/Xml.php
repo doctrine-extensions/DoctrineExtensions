@@ -2,8 +2,8 @@
 
 namespace Gedmo\Sluggable\Mapping\Driver;
 
-use Gedmo\Mapping\Driver\Xml as BaseXml,
-    Gedmo\Exception\InvalidMappingException;
+use Gedmo\Mapping\Driver\Xml as BaseXml;
+use Gedmo\Exception\InvalidMappingException;
 
 /**
  * This is a xml mapping driver for Sluggable
@@ -17,7 +17,6 @@ use Gedmo\Mapping\Driver\Xml as BaseXml,
  */
 class Xml extends BaseXml
 {
-
     /**
      * List of types which are valid for slug and sluggable fields
      *
@@ -58,7 +57,7 @@ class Xml extends BaseXml
                     if (!$this->isValidField($meta, $field)) {
                         throw new InvalidMappingException("Cannot use field - [{$field}] for slug storage, type is not valid and must be 'string' in class - {$meta->name}");
                     }
-                    $fields = array_map('trim', explode(',', (string)$this->_getAttribute($slug, 'fields')));
+                    $fields = array_map('trim', explode(',', (string) $this->_getAttribute($slug, 'fields')));
                     foreach ($fields as $slugField) {
                         if (!$meta->hasField($slugField)) {
                             throw new InvalidMappingException("Unable to find slug [{$slugField}] as mapped property in entity - {$meta->name}");
@@ -71,11 +70,11 @@ class Xml extends BaseXml
                     $handlers = array();
                     if (isset($slug->handler)) {
                         foreach ($slug->handler as $handler) {
-                            $class = (string)$this->_getAttribute($handler, 'class');
+                            $class = (string) $this->_getAttribute($handler, 'class');
                             $handlers[$class] = array();
                             foreach ($handler->{'handler-option'} as $option) {
-                                $handlers[$class][(string)$this->_getAttribute($option, 'name')]
-                                    = (string)$this->_getAttribute($option, 'value')
+                                $handlers[$class][(string) $this->_getAttribute($option, 'name')]
+                                    = (string) $this->_getAttribute($option, 'value')
                                 ;
                             }
                             $class::validate($handlers[$class], $meta);
@@ -124,11 +123,13 @@ class Xml extends BaseXml
      *
      * @param object $meta
      * @param string $field
+     *
      * @return boolean
      */
     protected function isValidField($meta, $field)
     {
         $mapping = $meta->getFieldMapping($field);
+
         return $mapping && in_array($mapping['type'], $this->validTypes);
     }
 }

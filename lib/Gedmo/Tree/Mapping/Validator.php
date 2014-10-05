@@ -25,7 +25,7 @@ class Validator
         'integer',
         'smallint',
         'bigint',
-        'int'
+        'int',
     );
 
     /**
@@ -35,7 +35,7 @@ class Validator
      */
     private $validPathTypes = array(
         'string',
-        'text'
+        'text',
     );
 
     /**
@@ -50,7 +50,7 @@ class Validator
         'bigint',
         'string',
         'int',
-        'float'
+        'float',
     );
 
     /**
@@ -59,7 +59,7 @@ class Validator
      * @var array
      */
     private $validPathHashTypes = array(
-        'string'
+        'string',
     );
 
     /**
@@ -72,7 +72,7 @@ class Validator
         'smallint',
         'bigint',
         'int',
-        'string'
+        'string',
     );
 
     /**
@@ -80,11 +80,13 @@ class Validator
      *
      * @param object $meta
      * @param string $field
+     *
      * @return boolean
      */
     public function isValidField($meta, $field)
     {
         $mapping = $meta->getFieldMapping($field);
+
         return $mapping && in_array($mapping['type'], $this->validTypes);
     }
 
@@ -93,11 +95,13 @@ class Validator
      *
      * @param object $meta
      * @param string $field
+     *
      * @return boolean
      */
     public function isValidFieldForPath($meta, $field)
     {
         $mapping = $meta->getFieldMapping($field);
+
         return $mapping && in_array($mapping['type'], $this->validPathTypes);
     }
 
@@ -106,11 +110,13 @@ class Validator
      *
      * @param object $meta
      * @param string $field
+     *
      * @return boolean
      */
     public function isValidFieldForPathSource($meta, $field)
     {
         $mapping = $meta->getFieldMapping($field);
+
         return $mapping && in_array($mapping['type'], $this->validPathSourceTypes);
     }
 
@@ -119,11 +125,13 @@ class Validator
      *
      * @param object $meta
      * @param string $field
+     *
      * @return boolean
      */
     public function isValidFieldForPathHash($meta, $field)
     {
         $mapping = $meta->getFieldMapping($field);
+
         return $mapping && in_array($mapping['type'], $this->validPathHashTypes);
     }
 
@@ -132,11 +140,13 @@ class Validator
      *
      * @param object $meta
      * @param string $field
+     *
      * @return boolean
      */
     public function isValidFieldForLockTime($meta, $field)
     {
         $mapping = $meta->getFieldMapping($field);
+
         return $mapping && ($mapping['type'] === 'date' || $mapping['type'] === 'datetime' || $mapping['type'] === 'timestamp');
     }
 
@@ -145,11 +155,13 @@ class Validator
      *
      * @param object $meta
      * @param string $field
+     *
      * @return boolean
      */
     public function isValidFieldForRoot($meta, $field)
     {
         $mapping = $meta->getFieldMapping($field);
+
         return $mapping && in_array($mapping['type'], $this->validRootTypes);
     }
 
@@ -157,9 +169,9 @@ class Validator
      * Validates metadata for nested type tree
      *
      * @param object $meta
-     * @param array $config
+     * @param array  $config
+     *
      * @throws InvalidMappingException
-     * @return void
      */
     public function validateNestedTreeMetadata($meta, array $config)
     {
@@ -174,7 +186,7 @@ class Validator
             $missingFields[] = 'right';
         }
         if ($missingFields) {
-            throw new InvalidMappingException("Missing properties: " . implode(', ', $missingFields) . " in class - {$meta->name}");
+            throw new InvalidMappingException("Missing properties: ".implode(', ', $missingFields)." in class - {$meta->name}");
         }
     }
 
@@ -182,9 +194,9 @@ class Validator
      * Validates metadata for closure type tree
      *
      * @param object $meta
-     * @param array $config
+     * @param array  $config
+     *
      * @throws InvalidMappingException
-     * @return void
      */
     public function validateClosureTreeMetadata($meta, array $config)
     {
@@ -196,7 +208,7 @@ class Validator
             $missingFields[] = 'closure class';
         }
         if ($missingFields) {
-            throw new InvalidMappingException("Missing properties: " . implode(', ', $missingFields) . " in class - {$meta->name}");
+            throw new InvalidMappingException("Missing properties: ".implode(', ', $missingFields)." in class - {$meta->name}");
         }
     }
 
@@ -204,9 +216,9 @@ class Validator
      * Validates metadata for materialized path type tree
      *
      * @param object $meta
-     * @param array $config
+     * @param array  $config
+     *
      * @throws InvalidMappingException
-     * @return void
      */
     public function validateMaterializedPathTreeMetadata($meta, array $config)
     {
@@ -221,7 +233,7 @@ class Validator
             $missingFields[] = 'path_source';
         }
         if ($missingFields) {
-            throw new InvalidMappingException("Missing properties: " . implode(', ', $missingFields) . " in class - {$meta->name}");
+            throw new InvalidMappingException("Missing properties: ".implode(', ', $missingFields)." in class - {$meta->name}");
         }
     }
 }

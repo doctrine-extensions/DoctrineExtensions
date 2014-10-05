@@ -2,8 +2,8 @@
 
 namespace Gedmo\IpTraceable\Mapping\Driver;
 
-use Gedmo\Mapping\Driver\Xml as BaseXml,
-    Gedmo\Exception\InvalidMappingException;
+use Gedmo\Mapping\Driver\Xml as BaseXml;
+use Gedmo\Exception\InvalidMappingException;
 
 /**
  * This is a xml mapping driver for IpTraceable
@@ -18,7 +18,6 @@ use Gedmo\Mapping\Driver\Xml as BaseXml,
  */
 class Xml extends BaseXml
 {
-
     /**
      * List of types which are valid for IP
      *
@@ -88,7 +87,7 @@ class Xml extends BaseXml
                      * @var \SimpleXmlElement $data
                      */
                     $data = $fieldMapping->{'ip-traceable'};
-                    
+
                     if (! $meta->isSingleValuedAssociation($field)) {
                         throw new InvalidMappingException("Association - [{$field}] is not valid, it must be a one-to-many relation or a string field - {$meta->name}");
                     }
@@ -122,11 +121,13 @@ class Xml extends BaseXml
      *
      * @param object $meta
      * @param string $field
+     *
      * @return boolean
      */
     protected function isValidField($meta, $field)
     {
         $mapping = $meta->getFieldMapping($field);
+
         return $mapping && in_array($mapping['type'], $this->validTypes);
     }
 }

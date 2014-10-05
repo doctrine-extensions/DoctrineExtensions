@@ -14,4 +14,5 @@ use Gedmo\Exception;
 class UploadableInvalidFileException
     extends UploadableException
     implements Exception
-{}
+{
+}

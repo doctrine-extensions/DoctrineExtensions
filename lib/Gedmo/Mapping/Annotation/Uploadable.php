@@ -44,4 +44,3 @@ final class Uploadable extends Annotation
     /** @var array */
     public $disallowedTypes = '';
 }
-

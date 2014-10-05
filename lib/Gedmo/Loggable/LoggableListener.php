@@ -61,6 +61,7 @@ class LoggableListener extends MappedEventSubscriber
      * Set username for identification
      *
      * @param mixed $username
+     *
      * @throws \Gedmo\Exception\InvalidArgumentException Invalid username
      */
     public function setUsername($username)
@@ -68,7 +69,7 @@ class LoggableListener extends MappedEventSubscriber
         if (is_string($username)) {
             $this->username = $username;
         } elseif (is_object($username) && method_exists($username, 'getUsername')) {
-            $this->username = (string)$username->getUsername();
+            $this->username = (string) $username->getUsername();
         } else {
             throw new \Gedmo\Exception\InvalidArgumentException("Username must be a string, or object should have method: getUsername");
         }
@@ -82,7 +83,7 @@ class LoggableListener extends MappedEventSubscriber
         return array(
             'onFlush',
             'loadClassMetadata',
-            'postPersist'
+            'postPersist',
         );
     }
 
@@ -90,7 +91,8 @@ class LoggableListener extends MappedEventSubscriber
      * Get the LogEntry class
      *
      * @param LoggableAdapter $ea
-     * @param string $class
+     * @param string          $class
+     *
      * @return string
      */
     protected function getLogEntryClass(LoggableAdapter $ea, $class)
@@ -104,6 +106,7 @@ class LoggableListener extends MappedEventSubscriber
      * Maps additional metadata
      *
      * @param EventArgs $eventArgs
+     *
      * @return void
      */
     public function loadClassMetadata(EventArgs $eventArgs)
@@ -117,6 +120,7 @@ class LoggableListener extends MappedEventSubscriber
      * foreign key
      *
      * @param EventArgs $args
+     *
      * @return void
      */
     public function postPersist(EventArgs $args)
@@ -135,7 +139,7 @@ class LoggableListener extends MappedEventSubscriber
             $id = $wrapped->getIdentifier();
             $logEntryMeta->getReflectionProperty('objectId')->setValue($logEntry, $id);
             $uow->scheduleExtraUpdate($logEntry, array(
-                'objectId' => array(null, $id)
+                'objectId' => array(null, $id),
             ));
             $ea->setOriginalObjectProperty($uow, spl_object_hash($logEntry), 'objectId', $id);
             unset($this->pendingLogEntryInserts[$oid]);
@@ -151,7 +155,7 @@ class LoggableListener extends MappedEventSubscriber
                 $logEntry->setData($data);
 
                 $uow->scheduleExtraUpdate($logEntry, array(
-                    'data' => array($oldData, $data)
+                    'data' => array($oldData, $data),
                 ));
                 $ea->setOriginalObjectProperty($uow, spl_object_hash($logEntry), 'data', $data);
             }
@@ -168,7 +172,6 @@ class LoggableListener extends MappedEventSubscriber
      */
     protected function prePersistLogEntry($logEntry, $object)
     {
-
     }
 
     /**
@@ -176,6 +179,7 @@ class LoggableListener extends MappedEventSubscriber
      * for further processing
      *
      * @param EventArgs $eventArgs
+     *
      * @return void
      */
     public function onFlush(EventArgs $eventArgs)
@@ -206,9 +210,10 @@ class LoggableListener extends MappedEventSubscriber
     /**
      * Create a new Log instance
      *
-     * @param string $action
-     * @param object $object
+     * @param string          $action
+     * @param object          $object
      * @param LoggableAdapter $ea
+     *
      * @return \Gedmo\Loggable\Entity\MappedSuperclass\AbstractLogEntry|null
      */
     protected function createLogEntry($action, $object, LoggableAdapter $ea)
@@ -248,7 +253,7 @@ class LoggableListener extends MappedEventSubscriber
                         if (!is_array($value) && !$value) {
                             $this->pendingRelatedObjects[$oid][] = array(
                                 'log' => $logEntry,
-                                'field' => $field
+                                'field' => $field,
                             );
                         }
                     }
@@ -278,6 +283,7 @@ class LoggableListener extends MappedEventSubscriber
 
             return $logEntry;
         }
+
         return null;
     }
 }

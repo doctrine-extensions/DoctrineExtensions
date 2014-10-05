@@ -50,8 +50,8 @@ class ExtensionMetadataFactory
      * Initializes extension driver
      *
      * @param ObjectManager $objectManager
-     * @param string $extensionNamespace
-     * @param object $annotationReader
+     * @param string        $extensionNamespace
+     * @param object        $annotationReader
      */
     public function __construct(ObjectManager $objectManager, $extensionNamespace, $annotationReader)
     {
@@ -65,8 +65,8 @@ class ExtensionMetadataFactory
     /**
      * Reads extension metadata
      *
-     * @param object $meta
-     * @return array - the metatada configuration
+     * @param  object $meta
+     * @return array  - the metatada configuration
      */
     public function getExtensionMetadata($meta)
     {
@@ -111,20 +111,20 @@ class ExtensionMetadataFactory
     /**
      * Get the cache id
      *
-     * @param string $className
-     * @param string $extensionNamespace
+     * @param  string $className
+     * @param  string $extensionNamespace
      * @return string
      */
     public static function getCacheId($className, $extensionNamespace)
     {
-        return $className . '\\$' . strtoupper(str_replace('\\', '_', $extensionNamespace)) . '_CLASSMETADATA';
+        return $className.'\\$'.strtoupper(str_replace('\\', '_', $extensionNamespace)).'_CLASSMETADATA';
     }
 
     /**
      * Get the extended driver instance which will
      * read the metadata required by extension
      *
-     * @param object $omDriver
+     * @param  object                            $omDriver
      * @throws \Gedmo\Exception\RuntimeException if driver was not found in extension
      * @return \Gedmo\Mapping\Driver
      */
@@ -150,9 +150,9 @@ class ExtensionMetadataFactory
                 $isSimplified = true;
             }
             // create driver instance
-            $driverClassName = $this->extensionNamespace . '\Mapping\Driver\\' . $driverName;
+            $driverClassName = $this->extensionNamespace.'\Mapping\Driver\\'.$driverName;
             if (!class_exists($driverClassName)) {
-                $driverClassName = $this->extensionNamespace . '\Mapping\Driver\Annotation';
+                $driverClassName = $this->extensionNamespace.'\Mapping\Driver\Annotation';
                 if (!class_exists($driverClassName)) {
                     throw new \Gedmo\Exception\RuntimeException("Failed to fallback to annotation driver: ({$driverClassName}), extension driver was not found.");
                 }
@@ -174,6 +174,7 @@ class ExtensionMetadataFactory
                 $driver->setAnnotationReader($this->annotationReader);
             }
         }
+
         return $driver;
     }
 }

@@ -2,9 +2,9 @@
 
 namespace Gedmo\Timestampable\Mapping\Driver;
 
-use Gedmo\Mapping\Driver\File,
-    Gedmo\Mapping\Driver,
-    Gedmo\Exception\InvalidMappingException;
+use Gedmo\Mapping\Driver\File;
+use Gedmo\Mapping\Driver;
+use Gedmo\Exception\InvalidMappingException;
 
 /**
  * This is a yaml mapping driver for Timestampable
@@ -36,7 +36,7 @@ class Yaml extends File implements Driver
         'timestamp',
         'zenddate',
         'vardatetime',
-        'integer'
+        'integer',
     );
 
     /**
@@ -91,11 +91,13 @@ class Yaml extends File implements Driver
      *
      * @param object $meta
      * @param string $field
+     *
      * @return boolean
      */
     protected function isValidField($meta, $field)
     {
         $mapping = $meta->getFieldMapping($field);
+
         return $mapping && in_array($mapping['type'], $this->validTypes);
     }
 }

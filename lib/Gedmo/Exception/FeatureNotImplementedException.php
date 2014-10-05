@@ -14,4 +14,5 @@ use Gedmo\Exception;
 class FeatureNotImplementedException
     extends \RuntimeException
     implements Exception
-{}
+{
+}

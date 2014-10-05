@@ -24,4 +24,3 @@ final class Tree extends Annotation
     /** @var integer */
     public $lockingTimeout = 3;
 }
-

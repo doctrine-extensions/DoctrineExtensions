@@ -2,9 +2,9 @@
 
 namespace Gedmo\SoftDeleteable\Mapping\Driver;
 
-use Gedmo\Mapping\Driver\Xml as BaseXml,
-    Gedmo\Exception\InvalidMappingException,
-    Gedmo\SoftDeleteable\Mapping\Validator;
+use Gedmo\Mapping\Driver\Xml as BaseXml;
+use Gedmo\Exception\InvalidMappingException;
+use Gedmo\SoftDeleteable\Mapping\Validator;
 
 /**
  * This is a xml mapping driver for SoftDeleteable
@@ -45,7 +45,7 @@ class Xml extends BaseXml
                 $config['fieldName'] = $field;
 
                 $config['timeAware'] = false;
-                if($this->_isAttributeSet($xml->{'soft-deleteable'}, 'time-aware')) {
+                if ($this->_isAttributeSet($xml->{'soft-deleteable'}, 'time-aware')) {
                     $config['timeAware'] = $this->_getBooleanAttribute($xml->{'soft-deleteable'}, 'time-aware');
                 }
             }

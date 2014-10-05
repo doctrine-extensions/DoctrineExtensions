@@ -2,10 +2,10 @@
 
 namespace Gedmo\Tree\Document\MongoDB\Repository;
 
-use Gedmo\Exception\InvalidArgumentException,
-    Gedmo\Tree\Strategy,
-    Gedmo\Tree\Strategy\ODM\MongoDB\MaterializedPath,
-    Gedmo\Tool\Wrapper\MongoDocumentWrapper;
+use Gedmo\Exception\InvalidArgumentException;
+use Gedmo\Tree\Strategy;
+use Gedmo\Tree\Strategy\ODM\MongoDB\MaterializedPath;
+use Gedmo\Tool\Wrapper\MongoDocumentWrapper;
 
 /**
  * The MaterializedPathRepository has some useful functions
@@ -125,12 +125,11 @@ class MaterializedPathRepository extends AbstractTreeRepository
                      $nodePath,
                      $separator,
                      $separator);
-                
             } else {
                 $regex = sprintf('/^%s(.+)'.($includeNode ? '?' : '').'/',
                      $nodePath);
             }
-        } else if ($direct) {
+        } elseif ($direct) {
             $regex = sprintf('/^([^%s]+)'.($includeNode ? '?' : '').'%s$/',
                 $separator,
                 $separator);
@@ -168,7 +167,7 @@ class MaterializedPathRepository extends AbstractTreeRepository
     {
         $sortBy = array(
             'field'     => null,
-            'dir'       => 'asc'
+            'dir'       => 'asc',
         );
 
         if (isset($options['childSort'])) {

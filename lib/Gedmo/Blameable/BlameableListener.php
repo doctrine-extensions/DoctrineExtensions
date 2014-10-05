@@ -23,6 +23,7 @@ class BlameableListener extends TimestampableListener
      *
      * @param object $meta
      * @param string $field
+     *
      * @return mixed
      */
     public function getUserValue($meta, $field)
@@ -38,7 +39,7 @@ class BlameableListener extends TimestampableListener
         // ok so its not an association, then it is a string
         if (is_object($this->user)) {
             if (method_exists($this->user, 'getUsername')) {
-                return (string)$this->user->getUsername();
+                return (string) $this->user->getUsername();
             }
             if (method_exists($this->user, '__toString')) {
                 return $this->user->__toString();
@@ -70,7 +71,7 @@ class BlameableListener extends TimestampableListener
     /**
      * Updates a field
      *
-     * @param mixed $object
+     * @param object           $object
      * @param BlameableAdapter $ea
      * @param $meta
      * @param $field

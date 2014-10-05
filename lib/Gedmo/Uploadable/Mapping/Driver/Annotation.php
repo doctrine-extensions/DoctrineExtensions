@@ -2,10 +2,8 @@
 
 namespace Gedmo\Uploadable\Mapping\Driver;
 
-use Gedmo\Mapping\Driver\AbstractAnnotationDriver,
-    Doctrine\Common\Persistence\Mapping\ClassMetadata,
-    Gedmo\Exception\InvalidMappingException,
-    Gedmo\Uploadable\Mapping\Validator;
+use Gedmo\Mapping\Driver\AbstractAnnotationDriver;
+use Gedmo\Uploadable\Mapping\Validator;
 
 /**
  * This is an annotation mapping driver for Uploadable

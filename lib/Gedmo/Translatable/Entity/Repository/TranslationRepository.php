@@ -47,8 +47,10 @@ class TranslationRepository extends EntityRepository
      * @param string $field
      * @param string $locale
      * @param mixed  $value
+     *
      * @throws \Gedmo\Exception\InvalidArgumentException
-     * @return TranslationRepository
+     *
+     * @return static
      */
     public function translate($entity, $field, $locale, $value)
     {
@@ -97,6 +99,7 @@ class TranslationRepository extends EntityRepository
                 }
             }
         }
+
         return $this;
     }
 
@@ -105,6 +108,7 @@ class TranslationRepository extends EntityRepository
      * fields from the given entity
      *
      * @param object $entity Must implement Translatable
+     *
      * @return array list of translations in locale groups
      */
     public function findTranslations($entity)
@@ -141,6 +145,7 @@ class TranslationRepository extends EntityRepository
                 }
             }
         }
+
         return $result;
     }
 
@@ -153,6 +158,7 @@ class TranslationRepository extends EntityRepository
      * @param string $field
      * @param string $value
      * @param string $class
+     *
      * @return object - instance of $class or null if not found
      */
     public function findObjectByTranslatedField($field, $value, $class)
@@ -175,6 +181,7 @@ class TranslationRepository extends EntityRepository
                 $entity = $this->_em->find($class, $id);
             }
         }
+
         return $entity;
     }
 
@@ -183,6 +190,7 @@ class TranslationRepository extends EntityRepository
      * fields by a given entity primary key
      *
      * @param mixed $id - primary key value of an entity
+     *
      * @return array
      */
     public function findTranslationsByObjectId($id)
@@ -207,6 +215,7 @@ class TranslationRepository extends EntityRepository
                 }
             }
         }
+
         return $result;
     }
 
@@ -214,6 +223,7 @@ class TranslationRepository extends EntityRepository
      * Get the currently used TranslatableListener
      *
      * @throws \Gedmo\Exception\RuntimeException - if listener is not found
+     *
      * @return TranslatableListener
      */
     private function getTranslatableListener()
@@ -229,6 +239,7 @@ class TranslationRepository extends EntityRepository
 
             throw new \Gedmo\Exception\RuntimeException('The translation listener could not be found');
         }
+
         return $this->listener;
     }
 }

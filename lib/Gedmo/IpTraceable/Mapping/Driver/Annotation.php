@@ -2,9 +2,8 @@
 
 namespace Gedmo\IpTraceable\Mapping\Driver;
 
-use Gedmo\Mapping\Driver\AbstractAnnotationDriver,
-    Doctrine\Common\Annotations\AnnotationReader,
-    Gedmo\Exception\InvalidMappingException;
+use Gedmo\Mapping\Driver\AbstractAnnotationDriver;
+use Gedmo\Exception\InvalidMappingException;
 
 /**
  * This is an annotation mapping driver for IpTraceable
@@ -34,7 +33,8 @@ class Annotation extends AbstractAnnotationDriver
     /**
      * {@inheritDoc}
      */
-    public function readExtendedMetadata($meta, array &$config) {
+    public function readExtendedMetadata($meta, array &$config)
+    {
         $class = $this->getMetaReflectionClass($meta);
         // property annotations
         foreach ($class->getProperties() as $property) {
@@ -51,7 +51,7 @@ class Annotation extends AbstractAnnotationDriver
                     throw new InvalidMappingException("Unable to find ipTraceable [{$field}] as mapped property in entity - {$meta->name}");
                 }
                 if ($meta->hasField($field) && !$this->isValidField($meta, $field)) {
-                        throw new InvalidMappingException("Field - [{$field}] type is not valid and must be 'string' - {$meta->name}");
+                    throw new InvalidMappingException("Field - [{$field}] type is not valid and must be 'string' - {$meta->name}");
                 }
                 if (!in_array($ipTraceable->on, array('update', 'create', 'change'))) {
                     throw new InvalidMappingException("Field - [{$field}] trigger 'on' is not one of [update, create, change] in class - {$meta->name}");

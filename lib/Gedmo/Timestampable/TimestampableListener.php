@@ -2,10 +2,11 @@
 
 namespace Gedmo\Timestampable;
 
-use Doctrine\Common\EventArgs,
-    Gedmo\Mapping\MappedEventSubscriber,
-    Doctrine\Common\NotifyPropertyChanged,
-    Gedmo\Exception\UnexpectedValueException;
+use Doctrine\Common\EventArgs;
+use Gedmo\Mapping\MappedEventSubscriber;
+use Doctrine\Common\NotifyPropertyChanged;
+use Gedmo\Exception\UnexpectedValueException;
+use Gedmo\Timestampable\Mapping\Event\TimestampableAdapter;
 
 /**
  * The Timestampable listener handles the update of
@@ -26,7 +27,7 @@ class TimestampableListener extends MappedEventSubscriber
         return array(
             'prePersist',
             'onFlush',
-            'loadClassMetadata'
+            'loadClassMetadata',
         );
     }
 
@@ -34,6 +35,7 @@ class TimestampableListener extends MappedEventSubscriber
      * Maps additional metadata for the Entity
      *
      * @param EventArgs $eventArgs
+     *
      * @return void
      */
     public function loadClassMetadata(EventArgs $eventArgs)
@@ -47,6 +49,7 @@ class TimestampableListener extends MappedEventSubscriber
      * to update modification date
      *
      * @param EventArgs $args
+     *
      * @return void
      */
     public function onFlush(EventArgs $args)
@@ -66,7 +69,6 @@ class TimestampableListener extends MappedEventSubscriber
                         if (!isset($changeSet[$field])) { // let manual values
                             $needChanges = true;
                             $this->updateField($object, $ea, $meta, $field);
-
                         }
                     }
                 }
@@ -109,7 +111,7 @@ class TimestampableListener extends MappedEventSubscriber
                                     $value = $changes[1];
                                 }
 
-                                if (($singleField && in_array($value, (array)$options['value'])) || $options['value'] === null) {
+                                if (($singleField && in_array($value, (array) $options['value'])) || $options['value'] === null) {
                                     $needChanges = true;
                                     $this->updateField($object, $ea, $meta, $options['field']);
                                 }
@@ -130,6 +132,7 @@ class TimestampableListener extends MappedEventSubscriber
      * to update creation and modification dates
      *
      * @param EventArgs $args
+     *
      * @return void
      */
     public function prePersist(EventArgs $args)
@@ -141,7 +144,6 @@ class TimestampableListener extends MappedEventSubscriber
         $meta = $om->getClassMetadata(get_class($object));
 
         if ($config = $this->getConfiguration($om, $meta->getName())) {
-
             if (isset($config['update'])) {
                 foreach ($config['update'] as $field) {
                     if ($meta->getReflectionProperty($field)->getValue($object) === null) { // let manual values
@@ -171,10 +173,10 @@ class TimestampableListener extends MappedEventSubscriber
     /**
      * Updates a field
      *
-     * @param $object
-     * @param $ea
-     * @param $meta
-     * @param $field
+     * @param object               $object
+     * @param TimestampableAdapter $ea
+     * @param object               $meta
+     * @param string               $field
      */
     protected function updateField($object, $ea, $meta, $field)
     {

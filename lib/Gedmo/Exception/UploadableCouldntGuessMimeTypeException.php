@@ -14,4 +14,5 @@ use Gedmo\Exception;
 class UploadableCouldntGuessMimeTypeException
     extends UploadableException
     implements Exception
-{}
+{
+}

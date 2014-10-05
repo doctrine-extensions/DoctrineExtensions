@@ -30,10 +30,11 @@ interface SlugHandlerInterface
      * recalculated
      *
      * @param SluggableAdapter $ea
-     * @param array $config
-     * @param object $object
-     * @param string $slug
-     * @param boolean $needToChangeSlug
+     * @param array            $config
+     * @param object           $object
+     * @param string           $slug
+     * @param boolean          $needToChangeSlug
+     *
      * @return void
      */
     public function onChangeDecision(SluggableAdapter $ea, array &$config, $object, &$slug, &$needToChangeSlug);
@@ -42,9 +43,10 @@ interface SlugHandlerInterface
      * Callback on slug handlers right after the slug is built
      *
      * @param SluggableAdapter $ea
-     * @param array $config
-     * @param object $object
-     * @param string $slug
+     * @param array            $config
+     * @param object           $object
+     * @param string           $slug
+     *
      * @return void
      */
     public function postSlugBuild(SluggableAdapter $ea, array &$config, $object, &$slug);
@@ -53,9 +55,10 @@ interface SlugHandlerInterface
      * Callback for slug handlers on slug completion
      *
      * @param SluggableAdapter $ea
-     * @param array $config
-     * @param object $object
-     * @param string $slug
+     * @param array            $config
+     * @param object           $object
+     * @param string           $slug
+     *
      * @return void
      */
     public function onSlugCompletion(SluggableAdapter $ea, array &$config, $object, &$slug);
@@ -68,7 +71,7 @@ interface SlugHandlerInterface
     /**
      * Validate handler options
      *
-     * @param array $options
+     * @param array         $options
      * @param ClassMetadata $meta
      */
     public static function validate(array $options, ClassMetadata $meta);

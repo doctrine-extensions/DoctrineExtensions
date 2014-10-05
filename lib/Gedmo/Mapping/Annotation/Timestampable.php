@@ -22,4 +22,3 @@ final class Timestampable extends Annotation
     /** @var mixed */
     public $value;
 }
-

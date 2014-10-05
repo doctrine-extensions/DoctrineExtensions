@@ -18,7 +18,7 @@ final class ORM extends BaseAdapterORM implements SortableAdapter
     public function getMaxPosition(array $config, $meta, $groups)
     {
         $em = $this->getObjectManager();
-        
+
         $qb = $em->createQueryBuilder();
         $qb->select('MAX(n.'.$config['position'].')')
            ->from($config['useObjectClass'], 'n');
@@ -27,7 +27,7 @@ final class ORM extends BaseAdapterORM implements SortableAdapter
         $query->useQueryCache(false);
         $query->useResultCache(false);
         $res = $query->getResult();
-        
+
         return $res[0][1];
     }
 
@@ -66,7 +66,7 @@ final class ORM extends BaseAdapterORM implements SortableAdapter
                 $params['val___'.$i] = $value;
             }
         }
-        
+
         $em = $this->getObjectManager();
         $q = $em->createQuery($dql);
         $q->setParameters($params);

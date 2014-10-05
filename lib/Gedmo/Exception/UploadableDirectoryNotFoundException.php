@@ -14,4 +14,5 @@ use Gedmo\Exception;
 class UploadableDirectoryNotFoundException
     extends UploadableException
     implements Exception
-{}
+{
+}

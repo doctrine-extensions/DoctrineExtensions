@@ -47,11 +47,13 @@ abstract class AbstractClosure
      * Set ancestor
      *
      * @param object $ancestor
-     * @return AbstractClosure
+     *
+     * @return static
      */
     public function setAncestor($ancestor)
     {
         $this->ancestor = $ancestor;
+
         return $this;
     }
 
@@ -69,11 +71,13 @@ abstract class AbstractClosure
      * Set descendant
      *
      * @param object $descendant
-     * @return AbstractClosure
+     *
+     * @return static
      */
     public function setDescendant($descendant)
     {
         $this->descendant = $descendant;
+
         return $this;
     }
 
@@ -91,11 +95,13 @@ abstract class AbstractClosure
      * Set depth
      *
      * @param integer $depth
-     * @return AbstractClosure
+     *
+     * @return static
      */
     public function setDepth($depth)
     {
         $this->depth = $depth;
+
         return $this;
     }
 

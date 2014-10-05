@@ -2,9 +2,9 @@
 
 namespace Gedmo\Sluggable\Mapping\Driver;
 
-use Gedmo\Mapping\Driver\File,
-    Gedmo\Mapping\Driver,
-    Gedmo\Exception\InvalidMappingException;
+use Gedmo\Mapping\Driver\File;
+use Gedmo\Mapping\Driver;
+use Gedmo\Exception\InvalidMappingException;
 
 /**
  * This is a yaml mapping driver for Sluggable
@@ -79,28 +79,28 @@ class Yaml extends File implements Driver
                         $config['slugs'][$field]['handlers'] = $handlers;
                         $config['slugs'][$field]['slug'] = $field;
                         $config['slugs'][$field]['style'] = isset($slug['style']) ?
-                            (string)$slug['style'] : 'default';
+                            (string) $slug['style'] : 'default';
 
                         $config['slugs'][$field]['dateFormat'] = isset($slug['dateFormat']) ?
-                            (string)$slug['dateFormat'] : 'Y-m-d-H:i';
+                            (string) $slug['dateFormat'] : 'Y-m-d-H:i';
 
                         $config['slugs'][$field]['updatable'] = isset($slug['updatable']) ?
-                            (bool)$slug['updatable'] : true;
+                            (bool) $slug['updatable'] : true;
 
                         $config['slugs'][$field]['unique'] = isset($slug['unique']) ?
-                            (bool)$slug['unique'] : true;
+                            (bool) $slug['unique'] : true;
 
                         $config['slugs'][$field]['unique_base'] = isset($slug['unique_base']) ?
                             $slug['unique_base'] : null;
 
                         $config['slugs'][$field]['separator'] = isset($slug['separator']) ?
-                            (string)$slug['separator'] : '-';
+                            (string) $slug['separator'] : '-';
 
                         $config['slugs'][$field]['prefix'] = isset($slug['prefix']) ?
-                            (string)$slug['prefix'] : '';
+                            (string) $slug['prefix'] : '';
 
                         $config['slugs'][$field]['suffix'] = isset($slug['suffix']) ?
-                            (string)$slug['suffix'] : '';
+                            (string) $slug['suffix'] : '';
 
                         if (!$meta->isMappedSuperclass && $meta->isIdentifier($field) && !$config['slugs'][$field]['unique']) {
                             throw new InvalidMappingException("Identifier field - [{$field}] slug must be unique in order to maintain primary key in class - {$meta->name}");
@@ -131,11 +131,13 @@ class Yaml extends File implements Driver
      *
      * @param object $meta
      * @param string $field
+     *
      * @return boolean
      */
     protected function isValidField($meta, $field)
     {
         $mapping = $meta->getFieldMapping($field);
+
         return $mapping && in_array($mapping['type'], $this->validTypes);
     }
 }

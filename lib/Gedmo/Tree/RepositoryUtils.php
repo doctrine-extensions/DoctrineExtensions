@@ -28,7 +28,6 @@ class RepositoryUtils implements RepositoryUtilsInterface
      */
     protected $childrenIndex = '__children';
 
-
     public function __construct(ObjectManager $om, ClassMetadata $meta, $listener, $repo)
     {
         $this->om = $om;
@@ -92,8 +91,9 @@ class RepositoryUtils implements RepositoryUtilsInterface
                 } else {
                     throw new InvalidArgumentException("Cannot find any representation field");
                 }
+
                 return $node[$field];
-            }
+            },
         );
         $options = array_merge($default, $options);
         // If you don't want any html output it will return the nested array
@@ -107,7 +107,7 @@ class RepositoryUtils implements RepositoryUtilsInterface
 
         $childrenIndex = $this->childrenIndex;
 
-        $build = function($tree) use (&$build, &$options, $childrenIndex) {
+        $build = function ($tree) use (&$build, &$options, $childrenIndex) {
             $output = is_string($options['rootOpen']) ? $options['rootOpen'] : $options['rootOpen']($tree);
             foreach ($tree as $node) {
                 $output .= is_string($options['childOpen']) ? $options['childOpen'] : $options['childOpen']($node);
@@ -117,7 +117,8 @@ class RepositoryUtils implements RepositoryUtilsInterface
                 }
                 $output .= is_string($options['childClose']) ? $options['childClose'] : $options['childClose']($node);
             }
-            return $output . (is_string($options['rootClose']) ? $options['rootClose'] : $options['rootClose']($tree));
+
+            return $output.(is_string($options['rootClose']) ? $options['rootClose'] : $options['rootClose']($tree));
         };
 
         return $build($nestedTree);
@@ -142,7 +143,7 @@ class RepositoryUtils implements RepositoryUtilsInterface
                 // Number of stack items
                 $l = count($stack);
                 // Check if we're dealing with different levels
-                while($l > 0 && $stack[$l - 1][$config['level']] >= $item[$config['level']]) {
+                while ($l > 0 && $stack[$l - 1][$config['level']] >= $item[$config['level']]) {
                     array_pop($stack);
                     $l--;
                 }

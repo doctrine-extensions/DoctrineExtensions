@@ -54,14 +54,13 @@ abstract class UploadableBaseEventArgs extends EventArgs
      */
     private $action;
 
-
     /**
-     * @param \Gedmo\Uploadable\UploadableListener $listener
+     * @param UploadableListener          $listener
      * @param \Doctrine\ORM\EntityManager $em
-     * @param array $config
-     * @param \Gedmo\Uploadable\FileInfo\FileInfoInterface $fileInfo
-     * @param $entity
-     * @param $action
+     * @param array                       $config
+     * @param FileInfoInterface           $fileInfo
+     * @param object                      $entity
+     * @param string                      $action
      */
     public function __construct(UploadableListener $listener, EntityManager $em, array $config, FileInfoInterface $fileInfo, $entity, $action)
     {

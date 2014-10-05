@@ -3,7 +3,6 @@
 namespace Gedmo\Translator\Entity;
 
 use Gedmo\Translator\Translation as BaseTranslation;
-
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\MappedSuperclass;
 use Doctrine\ORM\Mapping\Id;

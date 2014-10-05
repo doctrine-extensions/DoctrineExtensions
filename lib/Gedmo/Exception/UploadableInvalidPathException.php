@@ -14,4 +14,5 @@ use Gedmo\Exception;
 class UploadableInvalidPathException
     extends UploadableException
     implements Exception
-{}
+{
+}

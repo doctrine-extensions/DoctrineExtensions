@@ -15,55 +15,56 @@ interface TranslationInterface
      *
      * @param string $translatable
      */
-    function setTranslatable($translatable);
+    public function setTranslatable($translatable);
 
     /**
      * Get translatable
      *
-     * @return string $translatable
+     * @return string
      */
-    function getTranslatable();
+    public function getTranslatable();
 
     /**
      * Set locale
      *
      * @param string $locale
      */
-    function setLocale($locale);
+    public function setLocale($locale);
 
     /**
      * Get locale
      *
-     * @return string $locale
+     * @return string
      */
-    function getLocale();
+    public function getLocale();
 
     /**
      * Set property
      *
      * @param string $property
      */
-    function setProperty($property);
+    public function setProperty($property);
 
     /**
      * Get property
      *
-     * @return string $field
+     * @return string
      */
-    function getProperty();
+    public function getProperty();
 
     /**
      * Set value
      *
      * @param string $value
-     * @return TranslationInterface
+     *
+     * @return static
      */
-    function setValue($value);
+    public function setValue($value);
 
     /**
      * Get value
      *
-     * @return string $value
+     * @return string
      */
-    function getValue();
+    public function getValue();
 }

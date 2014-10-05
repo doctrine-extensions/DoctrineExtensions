@@ -2,9 +2,8 @@
 
 namespace Gedmo\Uploadable\Mapping\Driver;
 
-use Gedmo\Mapping\Driver\Xml as BaseXml,
-    Gedmo\Exception\InvalidMappingException,
-    Gedmo\Uploadable\Mapping\Validator;
+use Gedmo\Mapping\Driver\Xml as BaseXml;
+use Gedmo\Uploadable\Mapping\Validator;
 
 /**
  * This is a xml mapping driver for Uploadable
@@ -71,11 +70,11 @@ class Xml extends BaseXml
 
                         if (isset($mapping->{'uploadable-file-mime-type'})) {
                             $config['fileMimeTypeField'] = $field;
-                        } else if (isset($mapping->{'uploadable-file-size'})) {
+                        } elseif (isset($mapping->{'uploadable-file-size'})) {
                             $config['fileSizeField'] = $field;
-                        } else if (isset($mapping->{'uploadable-file-name'})) {
+                        } elseif (isset($mapping->{'uploadable-file-name'})) {
                             $config['fileNameField'] = $field;
-                        } else if (isset($mapping->{'uploadable-file-path'})) {
+                        } elseif (isset($mapping->{'uploadable-file-path'})) {
                             $config['filePathField'] = $field;
                         }
                     }

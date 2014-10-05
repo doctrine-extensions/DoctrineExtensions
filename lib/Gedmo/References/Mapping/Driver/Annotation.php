@@ -2,10 +2,7 @@
 
 namespace Gedmo\References\Mapping\Driver;
 
-use Gedmo\Mapping\Driver\AnnotationDriverInterface,
-    Doctrine\Common\Annotations\AnnotationReader,
-    Doctrine\Common\Persistence\Mapping\ClassMetadata,
-    Gedmo\Exception\InvalidMappingException;
+use Gedmo\Mapping\Driver\AnnotationDriverInterface;
 
 /**
  * This is an annotation mapping driver for References
@@ -65,7 +62,7 @@ class Annotation implements AnnotationDriverInterface
     public function readExtendedMetadata($meta, array &$config)
     {
         $class = $meta->getReflectionClass();
-        foreach($this->annotations as $key => $annotation) {
+        foreach ($this->annotations as $key => $annotation) {
             $config[$key] = array();
             foreach ($class->getProperties() as $property) {
                 if ($meta->isMappedSuperclass && !$property->isPrivate() ||

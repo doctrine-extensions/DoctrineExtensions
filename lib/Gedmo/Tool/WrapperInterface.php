@@ -16,59 +16,63 @@ interface WrapperInterface
      *
      * @return object
      */
-    function getObject();
+    public function getObject();
 
     /**
      * Extract property value from object
      *
      * @param string $property
+     *
      * @return mixed
      */
-    function getPropertyValue($property);
+    public function getPropertyValue($property);
 
     /**
      * Set the property
      *
      * @param string $property
-     * @param mixed $value
+     * @param mixed  $value
+     *
      * @return \Gedmo\Tool\WrapperInterface
      */
-    function setPropertyValue($property, $value);
+    public function setPropertyValue($property, $value);
 
     /**
      * Populates the object with given property values
      *
      * @param array $data
-     * @return \Gedmo\Tool\WrapperInterface
+     *
+     * @return static
      */
-    function populate(array $data);
+    public function populate(array $data);
 
     /**
      * Checks if identifier is valid
      *
      * @return boolean
      */
-    function hasValidIdentifier();
+    public function hasValidIdentifier();
 
     /**
      * Get metadata
      *
      * @return object
      */
-    function getMetadata();
+    public function getMetadata();
 
     /**
-     * Get the object identifier, $single or composite
+     * Get the object identifier, single or composite
      *
      * @param boolean $single
+     *
      * @return array|mixed
      */
-    function getIdentifier($single = true);
+    public function getIdentifier($single = true);
 
     /**
      * Get root object class name
      *
      * @return string
      */
-    function getRootObjectName();
+    public function getRootObjectName();
 }

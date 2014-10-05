@@ -5,7 +5,6 @@ namespace Gedmo\SoftDeleteable\Filter\ODM;
 use Doctrine\ODM\MongoDB\Query\Filter\BsonFilter;
 use Doctrine\ODM\MongoDB\Mapping\ClassMetaData;
 use Gedmo\SoftDeleteable\SoftDeleteableListener;
-use Gedmo\Exception\RuntimeException;
 
 class SoftDeleteableFilter extends BsonFilter
 {
@@ -15,6 +14,8 @@ class SoftDeleteableFilter extends BsonFilter
 
     /**
      * Gets the criteria part to add to a query.
+     *
+     * @param ClassMetaData $targetEntity
      *
      * @return array The criteria array, if there is available, empty array otherwise
      */
@@ -27,7 +28,6 @@ class SoftDeleteableFilter extends BsonFilter
             return array();
         }
 
-
         $config = $this->getListener()->getConfiguration($this->getDocumentManager(), $targetEntity->name);
 
         if (!isset($config['softDeleteable']) || !$config['softDeleteable']) {
@@ -39,14 +39,14 @@ class SoftDeleteableFilter extends BsonFilter
         if (isset($config['timeAware']) && $config['timeAware']) {
             return array(
                 '$or' => array(
-                    array($column['fieldName'] => NULL),
+                    array($column['fieldName'] => null),
                     array($column['fieldName'] => array('$gt' => new \DateTime('now'))),
                 ),
             );
         }
 
         return array(
-            $column['fieldName'] => NULL
+            $column['fieldName'] => null,
         );
     }
 
@@ -55,7 +55,6 @@ class SoftDeleteableFilter extends BsonFilter
         if ($this->listener === null) {
             $em = $this->getDocumentManager();
             $evm = $em->getEventManager();
-
 
             foreach ($evm->getListeners() as $listeners) {
                 foreach ($listeners as $listener) {
@@ -95,5 +94,4 @@ class SoftDeleteableFilter extends BsonFilter
     {
         $this->disabled[$class] = false;
     }
-
 }

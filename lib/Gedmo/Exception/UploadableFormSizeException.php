@@ -14,4 +14,5 @@ use Gedmo\Exception;
 class UploadableFormSizeException
     extends UploadableException
     implements Exception
-{}
+{
+}

@@ -14,4 +14,5 @@ use Gedmo\Exception;
 class UploadableExtensionException
     extends UploadableException
     implements Exception
-{}
+{
+}

@@ -2,8 +2,8 @@
 
 namespace Gedmo\Sortable\Mapping\Driver;
 
-use Gedmo\Mapping\Driver\AbstractAnnotationDriver,
-    Gedmo\Exception\InvalidMappingException;
+use Gedmo\Mapping\Driver\AbstractAnnotationDriver;
+use Gedmo\Exception\InvalidMappingException;
 
 /**
  * This is an annotation mapping driver for Sortable
@@ -35,7 +35,7 @@ class Annotation extends AbstractAnnotationDriver
         'int',
         'integer',
         'smallint',
-        'bigint'
+        'bigint',
     );
 
     /**

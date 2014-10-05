@@ -18,4 +18,3 @@ final class Translatable extends Annotation
     /** @var boolean */
     public $fallback;
 }
-

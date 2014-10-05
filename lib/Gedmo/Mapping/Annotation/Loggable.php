@@ -18,4 +18,3 @@ final class Loggable extends Annotation
     /** @var string */
     public $logEntryClass;
 }
-
