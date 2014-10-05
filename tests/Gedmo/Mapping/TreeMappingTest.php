@@ -4,7 +4,6 @@ namespace Gedmo\Tree;
 
 use Doctrine\ORM\Mapping\Driver\YamlDriver;
 use Doctrine\ORM\Mapping\Driver\DriverChain;
-use Mapping\Fixture\Yaml\Category;
 use Gedmo\Mapping\ExtensionMetadataFactory;
 
 /**
@@ -19,7 +18,15 @@ class TreeMappingTest extends \PHPUnit_Framework_TestCase
     const TEST_YAML_ENTITY_CLASS = 'Mapping\Fixture\Yaml\Category';
     const YAML_CLOSURE_CATEGORY = 'Mapping\Fixture\Yaml\ClosureCategory';
     const YAML_MATERIALIZED_PATH_CATEGORY = 'Mapping\Fixture\Yaml\MaterializedPathCategory';
+
+    /**
+     * @var \Doctrine\ORM\EntityManager
+     */
     private $em;
+
+    /**
+     * @var TreeListener
+     */
     private $listener;
 
     public function setUp()
@@ -35,11 +42,11 @@ class TreeMappingTest extends \PHPUnit_Framework_TestCase
             'Mapping\Fixture\Yaml'
         );
         $chainDriverImpl->addDriver(
-            $config->newDefaultAnnotationDriver(),
+            $config->newDefaultAnnotationDriver(array(), false),
             'Tree\Fixture'
         );
         $chainDriverImpl->addDriver(
-            $config->newDefaultAnnotationDriver(),
+            $config->newDefaultAnnotationDriver(array(), false),
             'Gedmo\Tree'
         );
         $config->setMetadataDriverImpl($chainDriverImpl);
@@ -60,7 +67,7 @@ class TreeMappingTest extends \PHPUnit_Framework_TestCase
         if (!extension_loaded('apc') || !ini_get('apc.enable_cli')) {
             $this->markTestSkipped('APC extension is not loaded.');
         }
-        $meta = $this->em->getClassMetadata(self::YAML_CLOSURE_CATEGORY);
+        $this->em->getClassMetadata(self::YAML_CLOSURE_CATEGORY);
         $this->em->getClassMetadata('Tree\Fixture\Closure\CategoryClosure');
 
         $meta = $this->em->getMetadataFactory()->getCacheDriver()->fetch(
@@ -75,7 +82,7 @@ class TreeMappingTest extends \PHPUnit_Framework_TestCase
         if (!extension_loaded('apc') || !ini_get('apc.enable_cli')) {
             $this->markTestSkipped('APC extension is not loaded.');
         }
-        $meta = $this->em->getClassMetadata(self::TEST_YAML_ENTITY_CLASS);
+        $this->em->getClassMetadata(self::TEST_YAML_ENTITY_CLASS);
         $cacheId = ExtensionMetadataFactory::getCacheId(
             self::TEST_YAML_ENTITY_CLASS,
             'Gedmo\Tree'
