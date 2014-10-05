@@ -121,7 +121,6 @@ class EntityWrapper extends AbstractWrapper
     {
         if (!$this->initialized) {
             if ($this->object instanceof Proxy) {
-                $uow = $this->om->getUnitOfWork();
                 if (!$this->object->__isInitialized__) {
                     $this->object->__load();
                 }

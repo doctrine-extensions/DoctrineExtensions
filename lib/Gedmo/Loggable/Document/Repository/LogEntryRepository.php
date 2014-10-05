@@ -67,7 +67,6 @@ class LogEntryRepository extends DocumentRepository
     {
         $wrapped = new MongoDocumentWrapper($document, $this->dm);
         $objectMeta = $wrapped->getMetadata();
-        $meta = $this->getClassMetadata();
         $objectId = $wrapped->getIdentifier();
 
         $qb = $this->createQueryBuilder();

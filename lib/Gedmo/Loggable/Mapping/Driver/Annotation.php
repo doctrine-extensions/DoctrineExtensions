@@ -57,6 +57,7 @@ class Annotation extends AbstractAnnotationDriver
                 $config['logEntryClass'] = $annot->logEntryClass;
             }
         }
+
         // property annotations
         foreach ($class->getProperties() as $property) {
             if ($meta->isMappedSuperclass && !$property->isPrivate() ||
@@ -65,8 +66,9 @@ class Annotation extends AbstractAnnotationDriver
             ) {
                 continue;
             }
+
             // versioned property
-            if ($versioned = $this->reader->getPropertyAnnotation($property, self::VERSIONED)) {
+            if ($this->reader->getPropertyAnnotation($property, self::VERSIONED)) {
                 $field = $property->getName();
                 if ($meta->isCollectionValuedAssociation($field)) {
                     throw new InvalidMappingException("Cannot versioned [{$field}] as it is collection in object - {$meta->name}");

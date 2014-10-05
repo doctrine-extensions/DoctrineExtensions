@@ -2,6 +2,7 @@
 
 namespace Gedmo\Loggable\Entity\Repository;
 
+use Doctrine\ORM\Query;
 use Gedmo\Tool\Wrapper\EntityWrapper;
 use Doctrine\ORM\EntityRepository;
 use Gedmo\Loggable\LoggableListener;
@@ -23,8 +24,7 @@ class LogEntryRepository extends EntityRepository
     private $listener;
 
     /**
-     * Loads all log entries for the
-     * given $entity
+     * Loads all log entries for the given entity
      *
      * @param object $entity
      *
@@ -79,7 +79,6 @@ class LogEntryRepository extends EntityRepository
         $wrapped = new EntityWrapper($entity, $this->_em);
         $objectMeta = $wrapped->getMetadata();
         $objectClass = $objectMeta->name;
-        //$objectMeta = $this->_em->getClassMetadata($objectClass);
         $meta = $this->getClassMetadata();
         $dql = "SELECT log FROM {$meta->name} log";
         $dql .= " WHERE log.objectId = :objectId";

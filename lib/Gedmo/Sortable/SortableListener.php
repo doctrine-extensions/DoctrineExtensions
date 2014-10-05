@@ -105,7 +105,7 @@ class SortableListener extends MappedEventSubscriber
             $groups = $this->getGroups($meta, $config, $object);
 
             // Get hash
-            $hash = $this->getHash($meta, $groups, $object, $config);
+            $hash = $this->getHash($groups, $config);
 
             // Get max position
             if (!isset($this->maxPositions[$hash])) {
@@ -138,7 +138,7 @@ class SortableListener extends MappedEventSubscriber
         $groups = $this->getGroups($meta, $config, $object);
 
         // Get hash
-        $hash = $this->getHash($meta, $groups, $object, $config);
+        $hash = $this->getHash($groups, $config);
 
         // Get max position
         if (!isset($this->maxPositions[$hash])) {
@@ -210,7 +210,7 @@ class SortableListener extends MappedEventSubscriber
         }
 
         if ($changed) {
-            $oldHash = $this->getHash($meta, $oldGroups, $object, $config);
+            $oldHash = $this->getHash($oldGroups, $config);
             $this->maxPositions[$oldHash] = $this->getMaxPosition($ea, $meta, $config, $object, $oldGroups);
             $this->addRelocation($oldHash, $config['useObjectClass'], $oldGroups, $meta->getReflectionProperty($config['position'])->getValue($object) + 1, $this->maxPositions[$oldHash] + 1, -1, true);
         }
@@ -231,7 +231,7 @@ class SortableListener extends MappedEventSubscriber
         }
 
         // Get hash
-        $hash = $this->getHash($meta, $groups, $object, $config);
+        $hash = $this->getHash($groups, $config);
 
         // Get max position
         if (!isset($this->maxPositions[$hash])) {
@@ -312,7 +312,7 @@ class SortableListener extends MappedEventSubscriber
         $groups = $this->getGroups($meta, $config, $object);
 
         // Get hash
-        $hash = $this->getHash($meta, $groups, $object, $config);
+        $hash = $this->getHash($groups, $config);
 
         // Get max position
         if (!isset($this->maxPositions[$hash])) {
@@ -383,7 +383,7 @@ class SortableListener extends MappedEventSubscriber
         $this->maxPositions = array();
     }
 
-    private function getHash($meta, $groups, $object, &$config)
+    private function getHash($groups, array $config)
     {
         $data = $config['useObjectClass'];
         foreach ($groups as $group => $val) {
@@ -410,7 +410,7 @@ class SortableListener extends MappedEventSubscriber
         }
 
         // Get hash
-        $hash = $this->getHash($meta, $groups, $object, $config);
+        $hash = $this->getHash($groups, $config);
 
         // Check for cached max position
         if (isset($this->maxPositions[$hash])) {

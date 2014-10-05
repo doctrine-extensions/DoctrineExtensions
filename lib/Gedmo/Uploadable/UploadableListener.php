@@ -277,27 +277,7 @@ class UploadableListener extends MappedEventSubscriber
             }
         }
 
-        if ($config['filePathField']) {
-            $filePathField = $refl->getProperty($config['filePathField']);
-            $filePathField->setAccessible(true);
-        }
-
         $path = $this->getPath($meta, $config, $object);
-
-        if ($config['fileNameField']) {
-            $fileNameField = $refl->getProperty($config['fileNameField']);
-            $fileNameField->setAccessible(true);
-        }
-
-        if ($config['fileMimeTypeField']) {
-            $fileMimeTypeField = $refl->getProperty($config['fileMimeTypeField']);
-            $fileMimeTypeField->setAccessible(true);
-        }
-
-        if ($config['fileSizeField']) {
-            $fileSizeField = $refl->getProperty($config['fileSizeField']);
-            $fileSizeField->setAccessible(true);
-        }
 
         if ($action === self::ACTION_UPDATE) {
             // First we add the original file to the pendingFileRemovals array
@@ -342,29 +322,19 @@ class UploadableListener extends MappedEventSubscriber
             $callbackMethod->invokeArgs($object, array($info));
         }
 
-        $changes = array();
-
         if ($config['filePathField']) {
-            $changes[$config['filePathField']] = array($filePathField->getValue($object), $info['filePath']);
-
             $this->updateField($object, $uow, $ea, $meta, $config['filePathField'], $info['filePath']);
         }
 
         if ($config['fileNameField']) {
-            $changes[$config['fileNameField']] = array($fileNameField->getValue($object), $info['fileName']);
-
             $this->updateField($object, $uow, $ea, $meta, $config['fileNameField'], $info['fileName']);
         }
 
         if ($config['fileMimeTypeField']) {
-            $changes[$config['fileMimeTypeField']] = array($fileMimeTypeField->getValue($object), $info['fileMimeType']);
-
             $this->updateField($object, $uow, $ea, $meta, $config['fileMimeTypeField'], $info['fileMimeType']);
         }
 
         if ($config['fileSizeField']) {
-            $changes[$config['fileSizeField']] = array($fileSizeField->getValue($object), $info['fileSize']);
-
             $this->updateField($object, $uow, $ea, $meta, $config['fileSizeField'], $info['fileSize']);
         }
 
