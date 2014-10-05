@@ -49,7 +49,7 @@
     },
     "suggest": {
         "doctrine/mongodb-odm": "to use the extensions with the MongoDB ODM",
-        "doctrine/orm": ">=2.3.2to use the extensions with the ORM"
+        "doctrine/orm": "to use the extensions with the ORM"
     },
     "autoload": {
         "psr-0": { "Gedmo\\": "lib/" }
