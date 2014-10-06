@@ -3,10 +3,11 @@
 namespace Gedmo\IpTraceable;
 
 use Doctrine\Common\EventManager;
-use Tool\BaseTestCaseORM;
-use IpTraceable\Fixture\Article;
-use IpTraceable\Fixture\Comment;
-use IpTraceable\Fixture\Type;
+use Doctrine\ORM\EntityManager;
+use Gedmo\Fixture\IpTraceable\Article;
+use Gedmo\Fixture\IpTraceable\Comment;
+use Gedmo\Fixture\IpTraceable\Type;
+use Gedmo\TestTool\ObjectManagerTestCase;
 
 /**
  * These are tests for IpTraceable behavior
@@ -15,25 +16,37 @@ use IpTraceable\Fixture\Type;
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class IpTraceableTest extends BaseTestCaseORM
+class IpTraceableTest extends ObjectManagerTestCase
 {
     const TEST_IP = '34.234.1.10';
 
-    const ARTICLE = "IpTraceable\\Fixture\\Article";
-    const COMMENT = "IpTraceable\\Fixture\\Comment";
-    const TYPE = "IpTraceable\\Fixture\\Type";
+    const ARTICLE = 'Gedmo\Fixture\IpTraceable\Article';
+    const COMMENT = 'Gedmo\Fixture\IpTraceable\Comment';
+    const TYPE = 'Gedmo\Fixture\IpTraceable\Type';
+
+    /**
+     * @var EntityManager
+     */
+    private $em;
 
     protected function setUp()
     {
-        parent::setUp();
-
-        $listener = new IpTraceableListener();
-        $listener->setIpValue(self::TEST_IP);
-
         $evm = new EventManager();
-        $evm->addEventSubscriber($listener);
+        $ipTraceableListener = new IpTraceableListener();
+        $ipTraceableListener->setIpValue(self::TEST_IP);
+        $evm->addEventSubscriber($ipTraceableListener);
 
-        $this->getMockSqliteEntityManager($evm);
+        $this->em = $this->createEntityManager($evm);
+        $this->createSchema($this->em, array(
+            self::ARTICLE,
+            self::COMMENT,
+            self::TYPE,
+        ));
+    }
+
+    protected function tearDown()
+    {
+        $this->releaseEntityManager($this->em);
     }
 
     public function testInvalidIpShouldThrowInvalidArgumentException()
@@ -49,14 +62,16 @@ class IpTraceableTest extends BaseTestCaseORM
     {
         $listener = new IpTraceableListener();
         $listener->setIpValue('123.218.45.39');
-        $this->assertEquals('123.218.45.39', $listener->getIpValue(null, null));
+        $meta = $this->em->getClassMetadata(self::ARTICLE);
+        $this->assertEquals('123.218.45.39', $listener->getIpValue($meta, null));
     }
 
     public function testIpV6()
     {
         $listener = new IpTraceableListener();
         $listener->setIpValue('2001:0db8:0000:85a3:0000:0000:ac1f:8001');
-        $this->assertEquals('2001:0db8:0000:85a3:0000:0000:ac1f:8001', $listener->getIpValue(null, null));
+        $meta = $this->em->getClassMetadata(self::ARTICLE);
+        $this->assertEquals('2001:0db8:0000:85a3:0000:0000:ac1f:8001', $listener->getIpValue($meta, null));
     }
 
     public function testIpTraceable()
@@ -64,14 +79,10 @@ class IpTraceableTest extends BaseTestCaseORM
         $sport = new Article();
         $sport->setTitle('Sport');
 
-        $this->assertTrue($sport instanceof IpTraceable);
-
         $sportComment = new Comment();
         $sportComment->setMessage('hello');
         $sportComment->setArticle($sport);
         $sportComment->setStatus(0);
-
-        $this->assertTrue($sportComment instanceof IpTraceable);
 
         $this->em->persist($sport);
         $this->em->persist($sportComment);
@@ -79,12 +90,12 @@ class IpTraceableTest extends BaseTestCaseORM
         $this->em->clear();
 
         $sport = $this->em->getRepository(self::ARTICLE)->findOneByTitle('Sport');
-        $this->assertEquals(self::TEST_IP, $sport->getCreated());
-        $this->assertEquals(self::TEST_IP, $sport->getUpdated());
+        $this->assertSame(self::TEST_IP, $sport->getCreated());
+        $this->assertSame(self::TEST_IP, $sport->getUpdated());
         $this->assertNull($sport->getPublished());
 
         $sportComment = $this->em->getRepository(self::COMMENT)->findOneByMessage('hello');
-        $this->assertEquals(self::TEST_IP, $sportComment->getModified());
+        $this->assertSame(self::TEST_IP, $sportComment->getModified());
         $this->assertNull($sportComment->getClosed());
 
         $sportComment->setStatus(1);
@@ -100,9 +111,9 @@ class IpTraceableTest extends BaseTestCaseORM
         $this->em->clear();
 
         $sportComment = $this->em->getRepository(self::COMMENT)->findOneByMessage('hello');
-        $this->assertEquals(self::TEST_IP, $sportComment->getClosed());
+        $this->assertSame(self::TEST_IP, $sportComment->getClosed());
 
-        $this->assertEquals(self::TEST_IP, $sport->getPublished());
+        $this->assertSame(self::TEST_IP, $sport->getPublished());
     }
 
     public function testForcedValues()
@@ -118,8 +129,8 @@ class IpTraceableTest extends BaseTestCaseORM
 
         $repo = $this->em->getRepository(self::ARTICLE);
         $sport = $repo->findOneByTitle('sport forced');
-        $this->assertEquals(self::TEST_IP, $sport->getCreated());
-        $this->assertEquals(self::TEST_IP, $sport->getUpdated());
+        $this->assertSame(self::TEST_IP, $sport->getCreated());
+        $this->assertSame(self::TEST_IP, $sport->getUpdated());
 
         $published = new Type();
         $published->setTitle('Published');
@@ -132,15 +143,6 @@ class IpTraceableTest extends BaseTestCaseORM
         $this->em->clear();
 
         $sport = $repo->findOneByTitle('sport forced');
-        $this->assertEquals(self::TEST_IP, $sport->getPublished());
-    }
-
-    protected function getUsedEntityFixtures()
-    {
-        return array(
-            self::ARTICLE,
-            self::COMMENT,
-            self::TYPE,
-        );
+        $this->assertSame(self::TEST_IP, $sport->getPublished());
     }
 }

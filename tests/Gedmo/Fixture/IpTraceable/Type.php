@@ -1,5 +1,5 @@
 <?php
-namespace IpTraceable\Fixture;
+namespace Gedmo\Fixture\IpTraceable;
 
 use Doctrine\ORM\Mapping as ORM;
 

@@ -1,5 +1,6 @@
 <?php
-namespace IpTraceable\Fixture;
+
+namespace Gedmo\Fixture\IpTraceable;
 
 use Gedmo\IpTraceable\Traits\IpTraceableEntity;
 use Doctrine\ORM\Mapping as ORM;

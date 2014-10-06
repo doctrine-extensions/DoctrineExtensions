@@ -1,11 +1,13 @@
 <?php
 
-namespace Gedmo\IpTraceable;
+namespace Gedmo\IpTraceable\Document;
 
-use Tool\BaseTestCaseMongoODM;
 use Doctrine\Common\EventManager;
-use IpTraceable\Fixture\Document\Article;
-use IpTraceable\Fixture\Document\Type;
+use Doctrine\ODM\MongoDB\DocumentManager;
+use Gedmo\Fixture\IpTraceable\Document\Article;
+use Gedmo\Fixture\IpTraceable\Document\Type;
+use Gedmo\IpTraceable\IpTraceableListener;
+use Gedmo\TestTool\ObjectManagerTestCase;
 
 /**
  * These are tests for IpTraceable behavior ODM implementation
@@ -14,25 +16,33 @@ use IpTraceable\Fixture\Document\Type;
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class IpTraceableDocumentTest extends BaseTestCaseMongoODM
+class IpTraceableTest extends ObjectManagerTestCase
 {
     const TEST_IP = '34.234.1.10';
 
-    const ARTICLE = 'IpTraceable\Fixture\Document\Article';
-    const TYPE = 'IpTraceable\Fixture\Document\Type';
+    const ARTICLE = 'Gedmo\Fixture\IpTraceable\Document\Article';
+    const TYPE = 'Gedmo\Fixture\IpTraceable\Document\Type';
+
+    /**
+     * @var DocumentManager
+     */
+    private $dm;
 
     protected function setUp()
     {
-        parent::setUp();
-
         $listener = new IpTraceableListener();
         $listener->setIpValue(self::TEST_IP);
 
         $evm = new EventManager();
         $evm->addEventSubscriber($listener);
 
-        $this->getMockDocumentManager($evm);
+        $this->dm = $this->createDocumentManager($evm);
         $this->populate();
+    }
+
+    protected function tearDown()
+    {
+        $this->releaseDocumentManager($this->dm);
     }
 
     public function testIpTraceable()

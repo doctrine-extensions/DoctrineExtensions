@@ -3,6 +3,8 @@
 namespace Gedmo\IpTraceable;
 
 use Doctrine\Common\NotifyPropertyChanged;
+use Doctrine\Common\Persistence\Mapping\ClassMetadata;
+use Doctrine\Common\Persistence\ObjectManager;
 use Gedmo\Exception\InvalidArgumentException;
 use Gedmo\Timestampable\TimestampableListener;
 
@@ -20,12 +22,12 @@ class IpTraceableListener extends TimestampableListener
     /**
      * Get the ipValue value to set on a ip field
      *
-     * @param object $meta
-     * @param string $field
+     * @param ClassMetadata $meta
+     * @param string        $field
      *
      * @return string|null
      */
-    public function getIpValue($meta, $field)
+    public function getIpValue(ClassMetadata $meta, $field)
     {
         return $this->ip;
     }
@@ -33,7 +35,7 @@ class IpTraceableListener extends TimestampableListener
     /**
      * Set a ip value to return
      *
-     * @param string $ip
+     * @param string|null $ip
      */
     public function setIpValue($ip = null)
     {
@@ -55,21 +57,20 @@ class IpTraceableListener extends TimestampableListener
     /**
      * Updates a field
      *
-     * @param $object
-     * @param $ea
-     * @param $meta
-     * @param $field
+     * @param ObjectManager $om
+     * @param object        $object
+     * @param string        $field
      */
-    protected function updateField($object, $ea, $meta, $field)
+    protected function updateField(ObjectManager $om, $object, $field)
     {
+        $meta = $om->getClassMetadata(get_class($object));
         $property = $meta->getReflectionProperty($field);
         $oldValue = $property->getValue($object);
         $newValue = $this->getIpValue($meta, $field);
 
         $property->setValue($object, $newValue);
         if ($object instanceof NotifyPropertyChanged) {
-            $uow = $ea->getObjectManager()->getUnitOfWork();
-            $uow->propertyChanged($object, $field, $oldValue, $newValue);
+            $om->getUnitOfWork()->propertyChanged($object, $field, $oldValue, $newValue);
         }
     }
 }

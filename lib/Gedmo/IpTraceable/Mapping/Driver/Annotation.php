@@ -2,8 +2,9 @@
 
 namespace Gedmo\IpTraceable\Mapping\Driver;
 
-use Gedmo\Mapping\Driver\AbstractAnnotationDriver;
-use Gedmo\Exception\InvalidMappingException;
+use Doctrine\Common\Persistence\Mapping\ClassMetadata;
+use Gedmo\Mapping\Driver\AnnotationDriver;
+use Gedmo\Mapping\ExtensionMetadataInterface;
 
 /**
  * This is an annotation mapping driver for IpTraceable
@@ -14,28 +15,19 @@ use Gedmo\Exception\InvalidMappingException;
  * @author Pierre-Charles Bertineau <pc.bertineau@alterphp.com>
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class Annotation extends AbstractAnnotationDriver
+class Annotation extends AnnotationDriver
 {
     /**
      * Annotation field is ipTraceable
      */
-    const IP_TRACEABLE = 'Gedmo\\Mapping\\Annotation\\IpTraceable';
-
-    /**
-     * List of types which are valid for IP
-     *
-     * @var array
-     */
-    protected $validTypes = array(
-        'string',
-    );
+    const IP_TRACEABLE = 'Gedmo\Mapping\Annotation\IpTraceable';
 
     /**
      * {@inheritDoc}
      */
-    public function readExtendedMetadata($meta, array &$config)
+    public function loadExtensionMetadata(ClassMetadata $meta, ExtensionMetadataInterface $exm)
     {
-        $class = $this->getMetaReflectionClass($meta);
+        $class = $meta->getReflectionClass();
         // property annotations
         foreach ($class->getProperties() as $property) {
             if ($meta->isMappedSuperclass && !$property->isPrivate() ||
@@ -46,31 +38,12 @@ class Annotation extends AbstractAnnotationDriver
             }
             if ($ipTraceable = $this->reader->getPropertyAnnotation($property, self::IP_TRACEABLE)) {
                 $field = $property->getName();
-
-                if (!$meta->hasField($field)) {
-                    throw new InvalidMappingException("Unable to find ipTraceable [{$field}] as mapped property in entity - {$meta->name}");
+                $options = array('on' => strtolower($ipTraceable->on));
+                if (isset($ipTraceable->field)) {
+                    $options['field'] = $ipTraceable->field;
                 }
-                if ($meta->hasField($field) && !$this->isValidField($meta, $field)) {
-                    throw new InvalidMappingException("Field - [{$field}] type is not valid and must be 'string' - {$meta->name}");
-                }
-                if (!in_array($ipTraceable->on, array('update', 'create', 'change'))) {
-                    throw new InvalidMappingException("Field - [{$field}] trigger 'on' is not one of [update, create, change] in class - {$meta->name}");
-                }
-                if ($ipTraceable->on == 'change') {
-                    if (!isset($ipTraceable->field)) {
-                        throw new InvalidMappingException("Missing parameters on property - {$field}, field must be set on [change] trigger in class - {$meta->name}");
-                    }
-                    if (is_array($ipTraceable->field) && isset($ipTraceable->value)) {
-                        throw new InvalidMappingException("IpTraceable extension does not support multiple value changeset detection yet.");
-                    }
-                    $field = array(
-                        'field' => $field,
-                        'trackedField' => $ipTraceable->field,
-                        'value' => $ipTraceable->value,
-                    );
-                }
-                // properties are unique and mapper checks that, no risk here
-                $config[$ipTraceable->on][] = $field;
+                $options['value'] = isset($ipTraceable->value) ? $ipTraceable->value : null;
+                $exm->map($field, $options);
             }
         }
     }

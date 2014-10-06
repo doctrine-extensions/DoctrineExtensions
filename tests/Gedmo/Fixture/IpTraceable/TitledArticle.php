@@ -1,14 +1,14 @@
 <?php
-namespace IpTraceable\Fixture;
 
-use Gedmo\IpTraceable\IpTraceable;
+namespace Gedmo\Fixture\IpTraceable;
+
 use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
  */
-class TitledArticle implements IpTraceable
+class TitledArticle
 {
     /**
      * @ORM\Id

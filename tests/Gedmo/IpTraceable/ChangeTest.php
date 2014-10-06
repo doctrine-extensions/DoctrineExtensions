@@ -3,8 +3,9 @@
 namespace Gedmo\IpTraceable;
 
 use Doctrine\Common\EventManager;
-use Tool\BaseTestCaseORM;
-use IpTraceable\Fixture\TitledArticle;
+use Doctrine\ORM\EntityManager;
+use Gedmo\Fixture\IpTraceable\TitledArticle;
+use Gedmo\TestTool\ObjectManagerTestCase;
 
 /**
  * These are tests for IpTraceable behavior
@@ -13,24 +14,36 @@ use IpTraceable\Fixture\TitledArticle;
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class ChangeTest extends BaseTestCaseORM
+class ChangeTest extends ObjectManagerTestCase
 {
     const TEST_IP = '34.234.1.10';
-    const FIXTURE = "IpTraceable\\Fixture\\TitledArticle";
+    const FIXTURE = 'Gedmo\Fixture\IpTraceable\TitledArticle';
 
-    protected $listener;
+    /**
+     * @var IpTraceableListener
+     */
+    private $listener;
+    /**
+     * @var EntityManager
+     */
+    private $em;
 
     protected function setUp()
     {
-        parent::setUp();
-
+        $evm = new EventManager();
         $this->listener = new IpTraceableListener();
         $this->listener->setIpValue(self::TEST_IP);
-
-        $evm = new EventManager();
         $evm->addEventSubscriber($this->listener);
 
-        $this->getMockSqliteEntityManager($evm);
+        $this->em = $this->createEntityManager($evm);
+        $this->createSchema($this->em, array(
+            self::FIXTURE,
+        ));
+    }
+
+    protected function tearDown()
+    {
+        $this->releaseEntityManager($this->em);
     }
 
     public function testChange()
@@ -60,12 +73,5 @@ class ChangeTest extends BaseTestCaseORM
         $this->em->clear();
         //Not Changed
         $this->assertEquals(self::TEST_IP, $test->getChtitle());
-    }
-
-    protected function getUsedEntityFixtures()
-    {
-        return array(
-            self::FIXTURE,
-        );
     }
 }
