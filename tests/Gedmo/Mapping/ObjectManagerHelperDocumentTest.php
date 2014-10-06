@@ -2,6 +2,7 @@
 
 namespace Gedmo\Mapping;
 
+use Doctrine\ODM\MongoDB\DocumentManager;
 use Gedmo\TestTool\ObjectManagerTestCase;
 use Doctrine\Common\EventManager;
 use Gedmo\Fixture\Unmapped\Address;
@@ -11,9 +12,13 @@ use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 
 class ObjectManagerHelperDocumentTest extends ObjectManagerTestCase
 {
-    const ADDRESS = "Gedmo\Fixture\Unmapped\Address";
+    const ADDRESS = 'Gedmo\Fixture\Unmapped\Address';
 
+    /**
+     * @var DocumentManager
+     */
     private $dm;
+    private $id;
 
     protected function setUp()
     {
@@ -80,13 +85,6 @@ class ObjectManagerHelperDocumentTest extends ObjectManagerTestCase
 
         $this->assertTrue(OMH::isProxy($test));
         $this->assertSame($this->id, OMH::getIdentifier($this->dm, $test));
-    }
-
-    protected function getUsedEntityFixtures()
-    {
-        return array(
-            self::ADDRESS,
-        );
     }
 
     private function populate()

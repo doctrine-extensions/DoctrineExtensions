@@ -326,13 +326,6 @@ class RootTest extends ObjectManagerTestCase
         $this->assertEquals(4, $node->getRight());
     }
 
-    protected function getUsedEntityFixtures()
-    {
-        return array(
-            self::CATEGORY,
-        );
-    }
-
     private function populate()
     {
         $root = new RootCategory();

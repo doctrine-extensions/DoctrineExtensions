@@ -47,7 +47,7 @@ class EncoderExtensionWithEntityManagerTest extends ObjectManagerTestCase
      */
     public function shouldLoadEncoderExtensionMetadata()
     {
-        $meta = $this->em->getClassMetadata(self::PERSON);
+        $this->em->getClassMetadata(self::PERSON);
         $exm = $this->encoder->getConfiguration($this->em, self::PERSON);
 
         $this->assertCount(1, $fields = $exm->getEncoderFields());
@@ -70,13 +70,6 @@ class EncoderExtensionWithEntityManagerTest extends ObjectManagerTestCase
         $this->em->flush();
 
         $this->assertSame(sha1('guess'.'secret'), $user->getPassword());
-    }
-
-    protected function getUsedEntityFixtures()
-    {
-        return array(
-            self::PERSON,
-        );
     }
 }
 

@@ -445,13 +445,6 @@ class RootRepositoryTest extends ObjectManagerTestCase
         $this->assertInternalType('array', $tree[0][$childrenIndex]);
     }
 
-    protected function getUsedEntityFixtures()
-    {
-        return array(
-            self::CATEGORY,
-        );
-    }
-
     private function populateMore()
     {
         $vegies = $this->em->getRepository(self::CATEGORY)
