@@ -242,7 +242,7 @@ class SluggableListener extends MappedEventSubscriber
             array($slug, $options['separator'], $object)
         );
         // Step 2: urlization (replace spaces by '-' etc...)
-        $slug = call_user_func($this->urlizer, $slug, $options['separator']);
+        $slug = call_user_func($this->urlizer, $slug, $options['separator'], $object);
         // Step 3: stylize the slug
         switch ($options['style']) {
             case 'camel':
@@ -322,7 +322,8 @@ class SluggableListener extends MappedEventSubscriber
             $slug .= ' ';
         }
 
-        return $slug;
+        // trim generated slug as it will have unnecessary trailing space
+        return trim($slug);
     }
 
     /**

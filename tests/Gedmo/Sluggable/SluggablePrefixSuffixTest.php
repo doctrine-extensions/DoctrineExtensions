@@ -45,7 +45,7 @@ class SluggablePrefixSuffixTest extends ObjectManagerTestCase
         $this->em->persist($foo);
         $this->em->flush();
 
-        $this->assertSame('test-bar', $foo->getSlug());
+        $this->assertSame('test-foo', $foo->getSlug());
     }
 
     /**

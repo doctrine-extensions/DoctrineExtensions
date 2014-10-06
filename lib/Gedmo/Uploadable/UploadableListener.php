@@ -316,11 +316,11 @@ class UploadableListener extends MappedEventSubscriber
         }
 
         if ($options['filePathField']) {
-            $this->updateField($om, $object, $meta, $options['filePathField'], $info['filePath']);
+            $this->updateField($om, $object, $options['filePathField'], $info['filePath']);
         }
 
         if ($options['fileNameField']) {
-            $this->updateField($om, $object, $meta, $options['fileNameField'], $info['fileName']);
+            $this->updateField($om, $object, $options['fileNameField'], $info['fileName']);
         }
 
         if ($options['fileMimeTypeField']) {
