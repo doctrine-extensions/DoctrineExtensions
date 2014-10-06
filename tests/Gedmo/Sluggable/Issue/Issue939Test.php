@@ -1,12 +1,13 @@
 <?php
 
-namespace Gedmo\Sluggable;
+namespace Gedmo\Sluggable\Issue;
 
 use Doctrine\Common\EventManager;
-use Tool\BaseTestCaseORM;
-use Sluggable\Fixture\Issue939\SluggableListener as SluggableListenerIssue939;
-use Sluggable\Fixture\Issue939\Article;
-use Sluggable\Fixture\Issue939\Category;
+use Doctrine\ORM\EntityManager;
+use Gedmo\Fixture\Sluggable\Issue939\SluggableListener;
+use Gedmo\Fixture\Sluggable\Issue939\Article;
+use Gedmo\Fixture\Sluggable\Issue939\Category;
+use Gedmo\TestTool\ObjectManagerTestCase;
 
 /**
  * These are tests for Sluggable behavior
@@ -15,19 +16,31 @@ use Sluggable\Fixture\Issue939\Category;
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class Issue939Test extends BaseTestCaseORM
+class Issue939Test extends ObjectManagerTestCase
 {
-    const ARTICLE = 'Sluggable\\Fixture\\Issue939\\Article';
-    const CATEGORY = 'Sluggable\\Fixture\\Issue939\\Category';
+    const ARTICLE = 'Gedmo\Fixture\Sluggable\Issue939\Article';
+    const CATEGORY = 'Gedmo\Fixture\Sluggable\Issue939\Category';
+
+    /**
+     * @var EntityManager
+     */
+    private $em;
 
     protected function setUp()
     {
-        parent::setUp();
-
         $evm = new EventManager();
-        $evm->addEventSubscriber(new SluggableListenerIssue939());
+        $evm->addEventSubscriber(new SluggableListener());
 
-        $this->getMockSqliteEntityManager($evm);
+        $this->em = $this->createEntityManager($evm);
+        $this->createSchema($this->em, array(
+            self::ARTICLE,
+            self::CATEGORY,
+        ));
+    }
+
+    protected function tearDown()
+    {
+        $this->releaseEntityManager($this->em);
     }
 
     public function testSlugGeneration()
@@ -45,13 +58,5 @@ class Issue939Test extends BaseTestCaseORM
 
         $this->assertEquals('Is there water on the moon?', $article->getSlug());
         $this->assertEquals('misc-articles', $category->getSlug());
-    }
-
-    protected function getUsedEntityFixtures()
-    {
-        return array(
-            self::ARTICLE,
-            self::CATEGORY,
-        );
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace Sluggable\Fixture\Issue939;
+namespace Gedmo\Fixture\Sluggable\Issue939;
 
 use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity
  */
-class Category
+class Article
 {
     /**
      * @ORM\Id
@@ -23,15 +23,16 @@ class Category
     private $title;
 
     /**
-     * @Gedmo\Slug(updatable=true, unique=true, fields={"title"})
+     * @ORM\ManyToOne(targetEntity="Category", inversedBy="articles")
+     * @ORM\JoinColumn(name="category_id", referencedColumnName="id", nullable=false)
+     */
+    private $category;
+
+    /**
+     * @Gedmo\Slug(updatable=true, unique=true, unique_base="category", fields={"title"})
      * @ORM\Column(length=64, nullable=true)
      */
     private $slug;
-
-    /**
-     * @ORM\OneToMany(targetEntity="Article", mappedBy="category")
-     */
-    private $articles;
 
     public function getId()
     {
@@ -51,5 +52,15 @@ class Category
     public function getSlug()
     {
         return $this->slug;
+    }
+
+    public function setCategory(Category $category)
+    {
+        $this->category = $category;
+    }
+
+    public function getCategory()
+    {
+        return $this->category;
     }
 }

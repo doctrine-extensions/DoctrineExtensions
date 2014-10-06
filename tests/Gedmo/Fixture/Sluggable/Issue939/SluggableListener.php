@@ -1,6 +1,6 @@
 <?php
 
-namespace Sluggable\Fixture\Issue939;
+namespace Gedmo\Fixture\Sluggable\Issue939;
 
 use Gedmo\Sluggable\SluggableListener as BaseSluggableListener;
 

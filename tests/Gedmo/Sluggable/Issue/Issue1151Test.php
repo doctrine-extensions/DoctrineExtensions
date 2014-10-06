@@ -1,18 +1,36 @@
 <?php
 
-namespace Gedmo\Sluggable;
+namespace Gedmo\Sluggable\Issue;
 
 use Doctrine\Common\EventManager;
-use Sluggable\Fixture\Issue1151\Article;
-use Tool\BaseTestCaseMongoODM;
+use Doctrine\ODM\MongoDB\DocumentManager;
+use Gedmo\Fixture\Sluggable\Issue1151\Article;
+use Gedmo\Sluggable\SluggableListener;
+use Gedmo\TestTool\ObjectManagerTestCase;
 
 /**
- * Gedmo\Sluggable\Issue1151Test
- *
  * @author Vaidas Lažauskas <vaidas@notrix.lt>
  */
-class Issue1151Test extends BaseTestCaseMongoODM
+class Issue1151Test extends ObjectManagerTestCase
 {
+    /**
+     * @var DocumentManager
+     */
+    private $dm;
+
+    protected function setUp()
+    {
+        $evm = new EventManager();
+        $evm->addEventSubscriber(new SluggableListener());
+
+        $this->dm = $this->createDocumentManager($evm);
+    }
+
+    protected function tearDown()
+    {
+        $this->releaseDocumentManager($this->dm);
+    }
+
     /**
      * Test if new object with predefined id will be processed by sluggable listener
      */
@@ -25,17 +43,5 @@ class Issue1151Test extends BaseTestCaseMongoODM
 
         $this->dm->flush();
         $this->assertEquals('test', $article->getSlug());
-    }
-
-    /**
-     * Set up test
-     */
-    protected function setUp()
-    {
-        parent::setUp();
-        $evm = new EventManager();
-        $evm->addEventSubscriber(new SluggableListener());
-
-        $this->getMockDocumentManager($evm);
     }
 }
