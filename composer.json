@@ -1,5 +1,5 @@
 {
-    "name": "gedmo/doctrine-extensions",
+    "name": "karser/doctrine-extensions",
     "type": "library",
     "description": "Doctrine2 behavioral extensions",
     "keywords": [
@@ -57,6 +57,9 @@
         "doctrine/mongodb-odm": ">=1.0.0-BETA7",
         "doctrine/orm": ">=2.3.2",
         "doctrine/dbal": ">=2.3.2"
+    },
+    "replace": {
+        "gedmo/doctrine-extensions": "2.3.x-dev"
     },
     "autoload": {
         "psr-0": { "Gedmo\\": "lib/" }
