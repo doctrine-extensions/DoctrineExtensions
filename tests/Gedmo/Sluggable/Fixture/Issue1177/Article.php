@@ -1,6 +1,6 @@
 <?php
 
-namespace Sluggable\Fixture\IssueXXX;
+namespace Sluggable\Fixture\Issue1177;
 
 use Gedmo\Sluggable\Sluggable;
 use Gedmo\Mapping\Annotation as Gedmo;
