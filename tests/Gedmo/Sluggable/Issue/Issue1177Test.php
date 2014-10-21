@@ -4,7 +4,7 @@ namespace Gedmo\Sluggable;
 
 use Doctrine\Common\EventManager;
 use Tool\BaseTestCaseORM;
-use Sluggable\Fixture\IssueXXX\Article;
+use Sluggable\Fixture\Issue1177\Article;
 
 /**
  * These are tests for sluggable behavior
@@ -13,9 +13,9 @@ use Sluggable\Fixture\IssueXXX\Article;
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class IssueXXXTest extends BaseTestCaseORM
+class Issue1177Test extends BaseTestCaseORM
 {
-    const ARTICLE = 'Sluggable\\Fixture\\IssueXXX\\Article';
+    const ARTICLE = 'Sluggable\\Fixture\\Issue1177\\Article';
 
     protected function setUp()
     {
