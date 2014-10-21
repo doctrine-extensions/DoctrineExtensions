@@ -456,6 +456,7 @@ class SluggableListener extends MappedEventSubscriber
         }
 
         if ($result) {
+            $generatedSlug = $preferredSlug;
             $sameSlugs = array();
 
             foreach ((array) $result as $list) {
@@ -463,9 +464,11 @@ class SluggableListener extends MappedEventSubscriber
             }
 
             $i = pow(10, $this->exponent);
-            do {
-                $generatedSlug = $preferredSlug.$config['separator'].$i++;
-            } while (in_array($generatedSlug, $sameSlugs));
+            if ($recursing || in_array($generatedSlug, $sameSlugs)) {
+                do {
+                    $generatedSlug = $preferredSlug.$config['separator'].$i++;
+                } while (in_array($generatedSlug, $sameSlugs));
+            }
 
             $mapping = $meta->getFieldMapping($config['slug']);
             if (isset($mapping['length']) && strlen($generatedSlug) > $mapping['length']) {
