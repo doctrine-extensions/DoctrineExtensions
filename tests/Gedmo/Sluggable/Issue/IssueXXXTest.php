@@ -4,7 +4,6 @@ namespace Gedmo\Sluggable;
 
 use Doctrine\Common\EventManager;
 use Tool\BaseTestCaseORM;
-use Gedmo\Sluggable\SluggableListener;
 use Sluggable\Fixture\IssueXXX\Article;
 
 /**
@@ -26,7 +25,6 @@ class IssueXXXTest extends BaseTestCaseORM
         $evm->addEventSubscriber(new SluggableListener);
 
         $this->getMockSqliteEntityManager($evm);
-//         $this->populate();
     }
 
     /**
