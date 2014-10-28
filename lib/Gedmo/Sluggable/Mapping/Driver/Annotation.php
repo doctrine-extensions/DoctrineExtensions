@@ -121,19 +121,33 @@ class Annotation extends AbstractAnnotationDriver
                 if ($slug->unique_base && !$meta->hasField($slug->unique_base) && !$meta->hasAssociation($slug->unique_base)) {
                     throw new InvalidMappingException("Unable to find [{$slug->unique_base}] as mapped property in entity - {$meta->name}");
                 }
+                if (!is_array($slug->transliterator)) {
+                    throw new InvalidMappingException("Slug must have defined transliterator as array");
+                }
+                if ($slug->transliterator && !is_callable($slug->transliterator)) {
+                    throw new InvalidMappingException("Slug must have callable transliterator \"{$slug->transliterator[0]}::{$slug->transliterator[1]}\"");
+                }
+                if (!is_array($slug->urlizer)) {
+                    throw new InvalidMappingException("Slug must have defined urlizer as array");
+                }
+                if ($slug->urlizer && !is_callable($slug->urlizer)) {
+                    throw new InvalidMappingException("Slug must have callable urlizer \"{$slug->urlizer[0]}::{$slug->urlizer[1]}\"");
+                }
                 // set all options
                 $config['slugs'][$field] = array(
-                    'fields' => $slug->fields,
-                    'slug' => $field,
-                    'style' => $slug->style,
-                    'dateFormat' => $slug->dateFormat,
-                    'updatable' => $slug->updatable,
-                    'unique' => $slug->unique,
-                    'unique_base' => $slug->unique_base,
-                    'separator' => $slug->separator,
-                    'prefix' => $slug->prefix,
-                    'suffix' => $slug->suffix,
-                    'handlers' => $handlers,
+                    'fields'            => $slug->fields,
+                    'slug'              => $field,
+                    'style'             => $slug->style,
+                    'dateFormat'        => $slug->dateFormat,
+                    'updatable'         => $slug->updatable,
+                    'unique'            => $slug->unique,
+                    'unique_base'       => $slug->unique_base,
+                    'separator'         => $slug->separator,
+                    'prefix'            => $slug->prefix,
+                    'suffix'            => $slug->suffix,
+                    'handlers'          => $handlers,
+                    'transliterator'    => $slug->transliterator,
+                    'urlizer'           => $slug->urlizer,
                 );
             }
         }

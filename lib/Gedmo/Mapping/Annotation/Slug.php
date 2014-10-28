@@ -35,4 +35,8 @@ final class Slug extends Annotation
     public $handlers = array();
     /** @var string */
     public $dateFormat = 'Y-m-d-H:i';
+    /** @var array<string> class for transliterate */
+    public $transliterator = array();
+    /** @var array<string> class for urlize */
+    public $urlizer = array();
 }

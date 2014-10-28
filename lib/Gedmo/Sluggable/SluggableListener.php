@@ -317,14 +317,14 @@ class SluggableListener extends MappedEventSubscriber
                 // build the slug
                 // Step 1: transliteration, changing 北京 to 'Bei Jing'
                 $slug = call_user_func_array(
-                    $this->transliterator,
+                    $options['transliterator'] ? : $this->transliterator,
                     array($slug, $options['separator'], $object)
                 );
 
                 // Step 2: urlization (replace spaces by '-' etc...)
-                if(!$urlized){
+                if (!$urlized){
                     $slug = call_user_func_array(
-                        $this->urlizer,
+                        $options['urlizer'] ? : $this->urlizer,
                         array($slug, $options['separator'], $object)
                     );
                 }
