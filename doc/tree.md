@@ -282,7 +282,7 @@ Entity\Category:
 <doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
                   xmlns:gedmo="http://gediminasm.org/schemas/orm/doctrine-extensions-mapping">
 
-    <entity name="Mapping\Fixture\Xml\NestedTree" table="nested_trees">
+    <entity name="Mapping\Fixture\Xml\NestedTree" table="nested_trees" repository-class="Gedmo\Tree\Entity\Repository\NestedTreeRepository">
 
         <indexes>
             <index name="name_idx" columns="name"/>

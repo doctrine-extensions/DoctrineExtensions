@@ -114,11 +114,19 @@ class TranslationRepository extends EntityRepository
         if ($wrapped->hasValidIdentifier()) {
             $entityId = $wrapped->getIdentifier();
             $entityClass = $wrapped->getMetadata()->rootEntityName;
-
             $translationMeta = $this->getClassMetadata(); // table inheritance support
+
+            $config = $this
+                ->getTranslatableListener()
+                ->getConfiguration($this->_em, get_class($entity));
+
+            $translationClass = isset($config['translationClass']) ?
+                $config['translationClass'] :
+                $translationMeta->rootEntityName;
+
             $qb = $this->_em->createQueryBuilder();
             $qb->select('trans.content, trans.field, trans.locale')
-                ->from($translationMeta->rootEntityName, 'trans')
+                ->from($translationClass, 'trans')
                 ->where('trans.foreignKey = :entityId', 'trans.objectClass = :entityClass')
                 ->orderBy('trans.locale');
             $q = $qb->getQuery();
@@ -138,7 +146,7 @@ class TranslationRepository extends EntityRepository
 
     /**
      * Find the entity $class by the translated field.
-     * Result is the first occurence of translated field.
+     * Result is the first occurrence of translated field.
      * Query can be slow, since there are no indexes on such
      * columns
      *
@@ -214,18 +222,12 @@ class TranslationRepository extends EntityRepository
             foreach ($this->_em->getEventManager()->getListeners() as $event => $listeners) {
                 foreach ($listeners as $hash => $listener) {
                     if ($listener instanceof TranslatableListener) {
-                        $this->listener = $listener;
-                        break;
+                        return $this->listener = $listener;
                     }
-                }
-                if ($this->listener) {
-                    break;
                 }
             }
 
-            if (is_null($this->listener)) {
-                throw new \Gedmo\Exception\RuntimeException('The translation listener could not be found');
-            }
+            throw new \Gedmo\Exception\RuntimeException('The translation listener could not be found');
         }
         return $this->listener;
     }

@@ -12,9 +12,6 @@ Features:
 - Annotation, Yaml and Xml mapping support for extensions
 - Multiple slugs, different slugs can link to same fields
 
-[blog_reference]: http://gediminasm.org/article/sluggable-behavior-extension-for-doctrine-2 "Sluggable extension for Doctrine 2 makes automatic record field transformations into url friendly names"
-[blog_test]: http://gediminasm.org/test "Test extensions on this blog"
-
 Update **2013-10-26**
 
 - Datetime support with default dateFormat Y-m-d-H:i
@@ -61,9 +58,11 @@ no more exceptions during concurrent flushes.
 - There is a reported [issue](https://github.com/l3pp4rd/DoctrineExtensions/issues/254) that sluggable transliterator
 does not work on OSX 10.6 its ok starting again from 10.7 version. To overcome the problem
 you can use your [custom transliterator](#transliterator)
-- You can [test live][blog_test] on this blog
 - Public [Sluggable repository](http://github.com/l3pp4rd/DoctrineExtensions "Sluggable extension on Github") is available on github
 - Last update date: **2012-02-26**
+- For usage together with **SoftDeleteable** in order to take into account softdeleted entities while generating unique
+slug, you must explicitly call **addManagedFilter** with a name of softdeleteable filter, so it can be disabled during
+slug updates. The best place to do it, is when initializing sluggable listener. That will be automated in the future.
 
 **Portability:**
 
@@ -388,7 +387,7 @@ sure the relationSlugField is also urilized with:
  *      @Gedmo\Mapping\Annotation\SlugHandler(class="Gedmo\Sluggable\Handler\RelativeSlugHandler", options={
  *          @Gedmo\Mapping\Annotation\SlugHandlerOption(name="relationField", value="category"),
  *          @Gedmo\Mapping\Annotation\SlugHandlerOption(name="relationSlugField", value="title"),
- *          @Gedmo\Mapping\Annotation\SlugHandlerOption(name="separator", value="/")
+ *          @Gedmo\Mapping\Annotation\SlugHandlerOption(name="separator", value="/"),
  *          @Gedmo\Mapping\Annotation\SlugHandlerOption(name="urilize", value=true)
  *      })
  * }, fields={"title", "code"})

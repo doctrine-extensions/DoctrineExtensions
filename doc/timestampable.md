@@ -76,7 +76,7 @@ should be updated
 - **field** - only valid if **on="change"** is specified, tracks property or a list of properties for changes
 - **value** - only valid if **on="change"** is specified and the tracked field is a single field (not an array), if the tracked field has this **value**
 
-**Note:** that Timestampable interface is not necessary, except in cases there
+**Note:** that Timestampable interface is not necessary, except in cases where
 you need to identify entity as being Timestampable. The metadata is loaded only once then
 cache is activated
 

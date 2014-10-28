@@ -217,7 +217,7 @@ class PersonalTranslationTest extends BaseTestCaseORM
         $this->assertEquals('lt', $result[0]['title']);
         $sqlQueriesExecuted = $this->queryAnalyzer->getExecutedQueries();
         $this->assertCount(1, $sqlQueriesExecuted);
-        $this->assertEquals("SELECT t1_.content AS title0 FROM Article a0_ LEFT JOIN article_translations t1_ ON t1_.locale = 'lt' AND t1_.field = 'title' AND t1_.object_id = a0_.id", $sqlQueriesExecuted[0]);
+        $this->assertEquals("SELECT CAST(t1_.content AS VARCHAR(128)) AS title0 FROM Article a0_ LEFT JOIN article_translations t1_ ON t1_.locale = 'lt' AND t1_.field = 'title' AND t1_.object_id = a0_.id", $sqlQueriesExecuted[0]);
     }
 
     private function populate()

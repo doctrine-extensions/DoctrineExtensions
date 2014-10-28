@@ -4,6 +4,7 @@ namespace Gedmo\Translatable\Query\TreeWalker;
 
 use Gedmo\Translatable\Mapping\Event\Adapter\ORM as TranslatableEventAdapter;
 use Gedmo\Translatable\TranslatableListener;
+use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\Query\SqlWalker;
 use Doctrine\ORM\Query\TreeWalkerAdapter;
@@ -211,7 +212,7 @@ class TranslationWalker extends SqlWalker
         $result = parent::walkSimpleSelectClause($simpleSelectClause);
         return $this->replace($this->replacements, $result);
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -314,10 +315,11 @@ class TranslationWalker extends SqlWalker
                 $originalField = $compTblAlias.'.'.$meta->getQuotedColumnName($field, $this->platform);
                 $substituteField = $tblAlias . '.' . $transMeta->getQuotedColumnName('content', $this->platform);
 
-                // If original field is integer - treat translation as integer (for ORDER BY, WHERE, etc)
+                // Treat translation as original field type
                 $fieldMapping = $meta->getFieldMapping($field);
-                if (in_array($fieldMapping["type"], array("integer", "bigint", "tinyint", "int"))) {
-                    $substituteField = 'CAST(' . $substituteField . ' AS SIGNED)';
+                if (!in_array($fieldMapping["type"], array("datetime", "datetimetz", "date", "time"))) {
+                    $type = Type::getType($fieldMapping["type"]);
+                    $substituteField = 'CAST(' . $substituteField . ' AS ' . $type->getSQLDeclaration($fieldMapping, $this->platform) . ')';
                 }
 
                 // Fallback to original if was asked for
@@ -379,24 +381,16 @@ class TranslationWalker extends SqlWalker
      */
     private function getTranslatableListener()
     {
-        $translatableListener = null;
         $em = $this->getEntityManager();
         foreach ($em->getEventManager()->getListeners() as $event => $listeners) {
             foreach ($listeners as $hash => $listener) {
                 if ($listener instanceof TranslatableListener) {
-                    $translatableListener = $listener;
-                    break;
+                    return $listener;
                 }
-            }
-            if ($translatableListener) {
-                break;
             }
         }
 
-        if (is_null($translatableListener)) {
-            throw new \Gedmo\Exception\RuntimeException('The translation listener could not be found');
-        }
-        return $translatableListener;
+        throw new \Gedmo\Exception\RuntimeException('The translation listener could not be found');
     }
 
     /**

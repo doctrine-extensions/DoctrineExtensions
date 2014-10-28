@@ -447,7 +447,7 @@ class TranslatableListener extends MappedEventSubscriber
             return;
         }
 
-        if (isset($config['fields']) && $locale !== $this->defaultLocale) {
+        if (isset($config['fields']) && ($locale !== $this->defaultLocale || $this->persistDefaultLocaleTranslation)) {
             // fetch translations
             $translationClass = $this->getTranslationClass($ea, $config['useObjectClass']);
             $result = $ea->loadTranslations(
@@ -566,7 +566,7 @@ class TranslatableListener extends MappedEventSubscriber
                     }
                 }
             }
-            // check if translation allready is created
+            // check if translation already is created
             if (!$isInsert && !$translation) {
                 $translation = $ea->findTranslation(
                     $wrapped,

@@ -149,7 +149,7 @@ class Closure implements Strategy
                 $this->getJoinColumnFieldName($em->getClassMetadata($config['closure'])->getAssociationMapping('descendant'))
             )
         );
-        // this one may not be very usefull
+        // this one may not be very useful
         $indexName = substr(strtoupper("IDX_" . md5($meta->name . 'depth')), 0, 20);
         $closureMetadata->table['indexes'][$indexName] = array(
             'columns' => array('depth')

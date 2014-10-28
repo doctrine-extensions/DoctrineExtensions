@@ -162,7 +162,9 @@ class Yaml extends File implements Driver
             foreach ($mapping['manyToOne'] as $field => $relationMapping) {
                 if (isset($relationMapping['gedmo'])) {
                     if (in_array('treeParent', $relationMapping['gedmo'])) {
-                        if ($relationMapping['targetEntity'] != $meta->name) {
+                        $reflectionClass = new \ReflectionClass($meta->name);
+                        if ($relationMapping['targetEntity'] != $meta->name &&
+                            !$reflectionClass->implementsInterface($relationMapping['targetEntity'])) {
                             throw new InvalidMappingException("Unable to find ancestor/parent child relation through ancestor field - [{$field}] in class - {$meta->name}");
                         }
                         $config['parent'] = $field;
