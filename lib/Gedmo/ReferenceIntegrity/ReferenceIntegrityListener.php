@@ -3,6 +3,7 @@
 namespace Gedmo\ReferenceIntegrity;
 
 use Doctrine\Common\EventArgs;
+use Doctrine\Common\Util\ClassUtils;
 use Gedmo\Exception\InvalidMappingException;
 use Gedmo\Exception\ReferenceIntegrityStrictException;
 use Gedmo\Mapping\MappedEventSubscriber;
@@ -51,7 +52,7 @@ class ReferenceIntegrityListener extends MappedEventSubscriber
         $ea = $this->getEventAdapter($args);
         $om = $ea->getObjectManager();
         $object = $ea->getObject();
-        $class = get_class($object);
+        $class = ClassUtils::getClass($object);
         $meta = $om->getClassMetadata($class);
 
         if ($config = $this->getConfiguration($om, $class)) {
