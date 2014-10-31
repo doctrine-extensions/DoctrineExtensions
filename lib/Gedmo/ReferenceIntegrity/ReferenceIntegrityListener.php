@@ -88,9 +88,9 @@ class ReferenceIntegrityListener extends MappedEventSubscriber
                         $refReflProp = $subMeta->getReflectionProperty($fieldMapping['mappedBy']);
 
                         if ($meta->isCollectionValuedReference($property)) {
-                            foreach ($refDoc as $object) {
-                                $refReflProp->setValue($object, null);
-                                $om->persist($object);
+                            foreach ($refDoc as $collObject) {
+                                $refReflProp->setValue($collObject, null);
+                                $om->persist($collObject);
                             }
                         } else {
                             $refReflProp->setValue($refDoc, null);
