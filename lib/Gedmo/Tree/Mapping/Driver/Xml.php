@@ -68,6 +68,20 @@ class Xml extends BaseXml
             }
             $config['closure'] = $class;
         }
+        if (isset($xmlDoctrine->id)) {
+            foreach ($xmlDoctrine->id as $mapping) {
+                $mappingDoctrine = $mapping;
+                $mapping = $mapping->children(self::GEDMO_NAMESPACE_URI);
+                $field = $this->_getAttribute($mappingDoctrine, 'name');
+
+                if (isset($mapping->{'tree-path-source'})) {
+                    if (!$validator->isValidFieldForPathSource($meta, $field)) {
+                        throw new InvalidMappingException("Tree PathSource field - [{$field}] type is not valid. It can be any of the integer variants, double, float or string in class - {$meta->name}");
+                    }
+                    $config['path_source'] = $field;
+                }
+            }
+        }
         if (isset($xmlDoctrine->field)) {
             foreach ($xmlDoctrine->field as $mapping) {
                 $mappingDoctrine = $mapping;

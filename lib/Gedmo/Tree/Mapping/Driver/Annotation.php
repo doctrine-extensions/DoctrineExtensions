@@ -114,7 +114,7 @@ class Annotation extends AbstractAnnotationDriver
         // property annotations
         foreach ($class->getProperties() as $property) {
             if ($meta->isMappedSuperclass && !$property->isPrivate() ||
-                $meta->isInheritedField($property->name) ||
+                ($meta->isInheritedField($property->name) && !$meta->isIdentifier($property->name)) ||
                 isset($meta->associationMappings[$property->name]['inherited'])
             ) {
                 continue;
