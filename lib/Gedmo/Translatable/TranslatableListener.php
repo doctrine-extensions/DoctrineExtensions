@@ -139,6 +139,16 @@ class TranslatableListener extends MappedEventSubscriber
 
         return $this;
     }
+    
+    /**
+     * gets whether the listener skips translation loading
+     * 
+     * @return boolean
+     */
+    public function getSkipOnLoad()
+    {
+        return $this->skipOnLoad;
+    }
 
     /**
      * Whether or not, to persist default locale
