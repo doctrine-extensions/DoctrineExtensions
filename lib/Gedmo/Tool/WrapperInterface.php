@@ -75,4 +75,13 @@ interface WrapperInterface
      * @return string
      */
     public function getRootObjectName();
+
+    /**
+     * Chechks if association is embedded
+     *
+     * @param string $field
+     *
+     * @return bool
+     */
+    public function isEmbeddedAssociation($field);
 }

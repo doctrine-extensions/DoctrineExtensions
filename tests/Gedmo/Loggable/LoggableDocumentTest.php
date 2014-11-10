@@ -7,6 +7,8 @@ use Doctrine\Common\EventManager;
 use Loggable\Fixture\Document\Article;
 use Loggable\Fixture\Document\RelatedArticle;
 use Loggable\Fixture\Document\Comment;
+use Loggable\Fixture\Document\Author;
+use Composer\Autoload\ClassLoader;
 
 /**
  * These are tests for loggable behavior
@@ -44,6 +46,12 @@ class LoggableDocumentTest extends BaseTestCaseMongoODM
         $art0 = new Article();
         $art0->setTitle('Title');
 
+        $author = new Author();
+        $author->setName('John Doe');
+        $author->setEmail('john@doe.com');
+
+        $art0->setAuthor($author);
+
         $this->dm->persist($art0);
         $this->dm->flush();
 
@@ -55,9 +63,11 @@ class LoggableDocumentTest extends BaseTestCaseMongoODM
         $this->assertEquals('jules', $log->getUsername());
         $this->assertEquals(1, $log->getVersion());
         $data = $log->getData();
-        $this->assertCount(1, $data);
+        $this->assertCount(2, $data);
         $this->assertArrayHasKey('title', $data);
         $this->assertEquals($data['title'], 'Title');
+        $this->assertArrayHasKey('author', $data);
+        $this->assertEquals($data['author'], array('name' => 'John Doe', 'email' => 'john@doe.com'));
 
         // test update
         $article = $articleRepo->findOneByTitle('Title');
@@ -91,12 +101,16 @@ class LoggableDocumentTest extends BaseTestCaseMongoODM
         $this->assertEquals('m-v5', $comment->getMessage());
         $this->assertEquals('s-v3', $comment->getSubject());
         $this->assertEquals('a2-t-v1', $comment->getArticle()->getTitle());
+        $this->assertEquals('Jane Doe', $comment->getAuthor()->getName());
+        $this->assertEquals('jane@doe.com', $comment->getAuthor()->getEmail());
 
         // test revert
         $commentLogRepo->revert($comment, 3);
         $this->assertEquals('s-v3', $comment->getSubject());
         $this->assertEquals('m-v2', $comment->getMessage());
         $this->assertEquals('a1-t-v1', $comment->getArticle()->getTitle());
+        $this->assertEquals('John Doe', $comment->getAuthor()->getName());
+        $this->assertEquals('john@doe.com', $comment->getAuthor()->getEmail());
         $this->dm->persist($comment);
         $this->dm->flush();
 
@@ -113,8 +127,13 @@ class LoggableDocumentTest extends BaseTestCaseMongoODM
         $article->setTitle('a1-t-v1');
         $article->setContent('a1-c-v1');
 
+        $author = new Author();
+        $author->setName('John Doe');
+        $author->setEmail('john@doe.com');
+
         $comment = new Comment();
         $comment->setArticle($article);
+        $comment->setAuthor($author);
         $comment->setMessage('m-v1');
         $comment->setSubject('s-v1');
 
@@ -134,6 +153,11 @@ class LoggableDocumentTest extends BaseTestCaseMongoODM
         $article2->setTitle('a2-t-v1');
         $article2->setContent('a2-c-v1');
 
+        $author2 = new Author();
+        $author2->setName('Jane Doe');
+        $author2->setEmail('jane@doe.com');
+
+        $comment->setAuthor($author2);
         $comment->setArticle($article2);
         $this->dm->persist($article2);
         $this->dm->persist($comment);

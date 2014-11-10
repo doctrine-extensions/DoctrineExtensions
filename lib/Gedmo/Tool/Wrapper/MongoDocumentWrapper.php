@@ -126,4 +126,12 @@ class MongoDocumentWrapper extends AbstractWrapper
             }
         }
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function isEmbeddedAssociation($field)
+    {
+        return $this->getMetadata()->isSingleValuedEmbed($field);
+    }
 }

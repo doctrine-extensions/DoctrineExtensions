@@ -34,6 +34,12 @@ class Comment
      */
     private $article;
 
+    /**
+     * @ODM\EmbedOne(targetDocument="Author")
+     * @Gedmo\Versioned
+     */
+    private $author;
+
     public function setArticle($article)
     {
         $this->article = $article;
@@ -67,5 +73,15 @@ class Comment
     public function getMessage()
     {
         return $this->message;
+    }
+
+    public function setAuthor($author)
+    {
+        $this->author = $author;
+    }
+
+    public function getAuthor()
+    {
+        return $this->author;
     }
 }
