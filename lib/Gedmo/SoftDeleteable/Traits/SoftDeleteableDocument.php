@@ -2,6 +2,8 @@
 
 namespace Gedmo\SoftDeleteable\Traits;
 
+use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
+
 /**
  * SoftDeletable Trait, usable with PHP >= 5.4
  *

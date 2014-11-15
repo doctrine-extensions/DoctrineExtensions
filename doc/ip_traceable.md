@@ -521,7 +521,6 @@ to use the Traits provided by extensions.
 namespace IpTraceable\Fixture;
 
 use Gedmo\IpTraceable\Traits\IpTraceableEntity;
-use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -548,10 +547,6 @@ class UsingTrait
     private $title;
 }
 ```
-
-**Note:** you must import **Gedmo\Mapping\Annotation as Gedmo** and **Doctrine\ORM\Mapping as ORM**
-annotations. If you use mongodb ODM import **Doctrine\ODM\MongoDB\Mapping\Annotations as ODM** and
-**IpTraceableDocument** instead.
 
 The Traits are very simplistic - if you use different field names it is recommended to simply create your
 own Traits specific to your project. The ones provided by this bundle can be used as example.
