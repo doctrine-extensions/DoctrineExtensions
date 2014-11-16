@@ -83,7 +83,7 @@ class BlameableListener extends TimestampableListener
         $newValue = $this->getUserValue($meta, $field);
 
         //if blame is reference, persist object
-        if ($meta->hasAssociation($field)) {
+        if ($newValue !== null && $meta->hasAssociation($field)) {
             $ea->getObjectManager()->persist($newValue);
         }
         $property->setValue($object, $newValue);
