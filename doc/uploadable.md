@@ -369,7 +369,7 @@ class CustomFileInfo implements FileInfoInterface
     // This returns the actual path of the file
     public function getTmpName()
     {
-        return $path;
+        return $this->path;
     }
 
     // This returns the filename
