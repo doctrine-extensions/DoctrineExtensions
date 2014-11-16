@@ -354,6 +354,7 @@ use Gedmo\Uploadable\FileInfo\FileInfoInterface;
 class CustomFileInfo implements FileInfoInterface
 {
     protected $path;
+    protected $name;
     protected $size;
     protected $type;
     protected $filename;
