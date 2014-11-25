@@ -10,6 +10,7 @@ use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\Common\Version as CommonLibVer;
 use Gedmo\Mapping\Driver\File as FileDriver;
 use Gedmo\Mapping\Driver\AnnotationDriverInterface;
+use Doctrine\ORM\Tools\DisconnectedClassMetadataFactory;
 
 /**
  * The extension metadata factory is responsible for extension driver
@@ -73,8 +74,18 @@ class ExtensionMetadataFactory
         if ($meta->isMappedSuperclass) {
             return; // ignore mappedSuperclasses for now
         }
-        $config = array();
+        
         $cmf = $this->objectManager->getMetadataFactory();
+        $cacheId = self::getCacheId($meta->name, $this->extensionNamespace);
+        
+        if ($cacheDriver = $cmf->getCacheDriver()) {
+            if ($cacheDriver->contains($cacheId)){
+                return $cacheDriver->fetch($cacheId);
+            }
+        }
+        
+        $config = array();
+        
         $useObjectName = $meta->name;
         // collect metadata from inherited classes
         if (null !== $meta->reflClass) {
@@ -100,7 +111,6 @@ class ExtensionMetadataFactory
 
         // cache the metadata (even if it's empty)
         // caching empty metadata will prevent re-parsing non-existent annotations
-        $cacheId = self::getCacheId($meta->name, $this->extensionNamespace);
         if ($cacheDriver = $cmf->getCacheDriver()) {
             $cacheDriver->save($cacheId, $config, null);
         }
