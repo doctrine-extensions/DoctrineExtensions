@@ -1,5 +1,5 @@
 <?php
-namespace Tree\Fixture\Issue1167;
+namespace Tree\Fixture\Document;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -8,7 +8,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
  * @MongoDB\Document(repositoryClass="Gedmo\Tree\Document\MongoDB\Repository\MaterializedPathRepository")
  * @Gedmo\Tree(type="materializedPath", activateLocking=true)
  */
-class Category
+class CategoryCustomId
 {
     /**
      * @MongoDB\Id(strategy="NONE")
