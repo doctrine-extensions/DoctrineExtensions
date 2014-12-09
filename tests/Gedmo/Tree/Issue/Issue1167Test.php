@@ -9,7 +9,7 @@ use Tree\Fixture\Issue1167\Category;
 
 class Issue1167Test extends BaseTestCaseMongoODM
 {
-    public function testPersistWith()
+    public function testPersistWithCustomId()
     {
         $c = new Category();
         $c->setId('new_id');
