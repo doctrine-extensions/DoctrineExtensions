@@ -43,7 +43,7 @@ class CategoryCustomId
      * @MongoDB\ReferenceMany(targetDocument="Category", mappedBy="parent")
      * @var Category[]
      */
-    private $children = [];
+    private $children = array();
 
     /**
      * @MongoDB\Date
