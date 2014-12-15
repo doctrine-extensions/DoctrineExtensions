@@ -16,7 +16,7 @@ abstract class AbstractTranslation
      *
      * @ORM\Column(type="integer")
      * @ORM\Id
-     * @ORM\GeneratedValue
+     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     protected $id;
 
