@@ -156,7 +156,7 @@ class ExtensionMetadataFactory
         $driver = null;
         $className = get_class($omDriver);
         $driverName = substr($className, strrpos($className, '\\') + 1);
-        if ($omDriver instanceof MappingDriverChain || $driverName == 'DriverChain') {
+        if ($omDriver instanceof MappingDriverChain || in_array($driverName, array('DriverChain', 'MappingDriverChain'))) {
             $driver = new DriverChain();
             foreach ($omDriver->getDrivers() as $namespace => $nestedOmDriver) {
                 $driver->addDriver($this->createExtensionDriver($nestedOmDriver), $namespace);
