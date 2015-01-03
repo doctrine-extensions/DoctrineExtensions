@@ -22,7 +22,7 @@ trait TimestampableEntity
     /**
      * @var \DateTime
      * @Gedmo\Timestampable(on="update")
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(type="datetime", nullable=true)
      */
     protected $updatedAt;
 
