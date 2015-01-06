@@ -44,28 +44,28 @@ class UploadableListener extends MappedEventSubscriber
      *
      * @var string
      */
-    private $defaultPath;
+    protected $defaultPath;
 
     /**
      * Mime type guesser
      *
      * @var \Gedmo\Uploadable\MimeType\MimeTypeGuesserInterface
      */
-    private $mimeTypeGuesser;
+    protected $mimeTypeGuesser;
 
     /**
      * Default FileInfoInterface class
      *
      * @var string
      */
-    private $defaultFileInfoClass = 'Gedmo\Uploadable\FileInfo\FileInfoArray';
+    protected $defaultFileInfoClass = 'Gedmo\Uploadable\FileInfo\FileInfoArray';
 
     /**
      * Array of files to remove on postFlush
      *
      * @var array
      */
-    private $pendingFileRemovals = array();
+    protected $pendingFileRemovals = array();
 
     /**
      * Array of FileInfoInterface objects. The index is the hash of the entity owner
@@ -73,7 +73,7 @@ class UploadableListener extends MappedEventSubscriber
      *
      * @var array
      */
-    private $fileInfoObjects = array();
+    protected $fileInfoObjects = array();
 
     public function __construct(MimeTypeGuesserInterface $mimeTypeGuesser = null)
     {
