@@ -116,19 +116,23 @@ class UploadableListener extends MappedEventSubscriber
         $config = $this->getConfiguration($om, $meta->name);
 
         foreach ($this->fileInfoObjects as $info) {
+            
             $entity = $info['entity'];
+            $property = $info['property'];
+            
+            $propertyConfig = $config[$property];
 
             // If the entity is in the identity map, it means it will be updated. We need to force the
             // "dirty check" here by "modifying" the path. We are actually setting the same value, but
             // this will mark the entity as dirty, and the "onFlush" event will be fired, even if there's
             // no other change in the entity's fields apart from the file itself.
             if ($uow->isInIdentityMap($entity)) {
-                if ($config['filePathField']) {
-                    $path = $this->getFilePathFieldValue($meta, $config, $entity);
-                    $uow->propertyChanged($entity, $config['filePathField'], $path, $path);
+                if ($propertyConfig['filePathField']) {
+                    $path = $this->getFilePathFieldValue($meta, $propertyConfig, $entity);
+                    $uow->propertyChanged($entity, $propertyConfig['filePathField'], $path, $path);
                 } else {
-                    $fileName = $this->getFileNameFieldValue($meta, $config, $entity);
-                    $uow->propertyChanged($entity, $config['fileNameField'], $fileName, $fileName);
+                    $fileName = $this->getFileNameFieldValue($meta, $propertyConfig, $entity);
+                    $uow->propertyChanged($entity, $propertyConfig['fileNameField'], $fileName, $fileName);
                 }
                 $uow->scheduleForUpdate($entity);
             }
@@ -150,6 +154,8 @@ class UploadableListener extends MappedEventSubscriber
         // Do we need to upload files?
         foreach ($this->fileInfoObjects as $info) {
             $entity = $info['entity'];
+            $property = $info['property'];
+            
             $scheduledForInsert = $uow->isScheduledForInsert($entity);
             $scheduledForUpdate = $uow->isScheduledForUpdate($entity);
             $action = ($scheduledForInsert || $scheduledForUpdate) ?
@@ -157,22 +163,25 @@ class UploadableListener extends MappedEventSubscriber
                 false;
 
             if ($action) {
-                $this->processFile($ea, $entity, $action);
+                $this->processFile($ea, $entity, $property, $action);
             }
         }
 
+        // TODO handle that!
         // Do we need to remove any files?
         foreach ($ea->getScheduledObjectDeletions($uow) as $object) {
             $meta = $om->getClassMetadata(get_class($object));
 
             if ($config = $this->getConfiguration($om, $meta->name)) {
-                if (isset($config['uploadable']) && $config['uploadable']) {
-                    if ($config['filePathField']) {
-                        $this->pendingFileRemovals[] = $this->getFilePathFieldValue($meta, $config, $object);
-                    } else {
-                        $path     = $this->getPath($meta, $config, $object);
-                        $fileName = $this->getFileNameFieldValue($meta, $config, $object);
-                        $this->pendingFileRemovals[] = $path.DIRECTORY_SEPARATOR.$fileName;
+                foreach ($config as $propertyConfig) {
+                    if (isset($propertyConfig['uploadable']) && $propertyConfig['uploadable']) {
+                        if ($propertyConfig['filePathField']) {
+                            $this->pendingFileRemovals[] = $this->getFilePathFieldValue($meta, $propertyConfig, $object);
+                        } else {
+                            $path     = $this->getPath($meta, $propertyConfig, $object);
+                            $fileName = $this->getFileNameFieldValue($meta, $propertyConfig, $object);
+                            $this->pendingFileRemovals[] = $path . DIRECTORY_SEPARATOR . $fileName;
+                        }
                     }
                 }
             }
@@ -196,181 +205,234 @@ class UploadableListener extends MappedEventSubscriber
 
         $this->fileInfoObjects = array();
     }
-
+    
     /**
      * If it's a Uploadable object, verify if the file was uploaded.
      * If that's the case, process it.
      *
      * @param \Gedmo\Mapping\Event\AdapterInterface $ea
-     * @param object                                $object
-     * @param string                                $action
-     *
+     * @param $object
+     * @param $action
      * @throws \Gedmo\Exception\UploadableNoPathDefinedException
      * @throws \Gedmo\Exception\UploadableCouldntGuessMimeTypeException
      * @throws \Gedmo\Exception\UploadableMaxSizeException
      * @throws \Gedmo\Exception\UploadableInvalidMimeTypeException
      */
-    public function processFile(AdapterInterface $ea, $object, $action)
+    public function processFile(AdapterInterface $ea, $object, $property, $action)
     {
-        $oid = spl_object_hash($object);
+        $oid = spl_object_hash($object) . $property;
         $om = $ea->getObjectManager();
         $uow = $om->getUnitOfWork();
         $meta = $om->getClassMetadata(get_class($object));
         $config = $this->getConfiguration($om, $meta->name);
-
-        if (!$config || !isset($config['uploadable']) || !$config['uploadable']) {
+    
+        $propertyConfig = $config[$property];
+        
+        if (!$propertyConfig || !isset($propertyConfig['uploadable']) || !$propertyConfig['uploadable']) {
             // Nothing to do
             return;
         }
-
+    
         $refl = $meta->getReflectionClass();
         $fileInfo = $this->fileInfoObjects[$oid]['fileInfo'];
         $evm = $om->getEventManager();
-
+    
         if ($evm->hasListeners(Events::uploadablePreFileProcess)) {
             $evm->dispatchEvent(Events::uploadablePreFileProcess, new UploadablePreFileProcessEventArgs(
                 $this,
                 $om,
-                $config,
+                $propertyConfig,
                 $fileInfo,
                 $object,
                 $action
             ));
         }
-
-        // Validations
-        if ($config['maxSize'] > 0 && $fileInfo->getSize() > $config['maxSize']) {
-            $msg = 'File "%s" exceeds the maximum allowed size of %d bytes. File size: %d bytes';
-
-            throw new UploadableMaxSizeException(sprintf($msg,
-                $fileInfo->getName(),
-                $config['maxSize'],
-                $fileInfo->getSize()
-            ));
+    
+        if ($propertyConfig['filePathField']) {
+            $filePathField = $refl->getProperty($propertyConfig['filePathField']);
+            $filePathField->setAccessible(true);
         }
-
-        $mime = $this->mimeTypeGuesser->guess($fileInfo->getTmpName());
-
-        if (!$mime) {
-            throw new UploadableCouldntGuessMimeTypeException(sprintf('Couldn\'t guess mime type for file "%s".',
-                $fileInfo->getName()
-            ));
+    
+        if ($propertyConfig['fileNameField']) {
+            $fileNameField = $refl->getProperty($propertyConfig['fileNameField']);
+            $fileNameField->setAccessible(true);
         }
-
-        if ($config['allowedTypes'] || $config['disallowedTypes']) {
-            $ok = $config['allowedTypes'] ? false : true;
-            $mimes = $config['allowedTypes'] ? $config['allowedTypes'] : $config['disallowedTypes'];
-
-            foreach ($mimes as $m) {
-                if ($mime === $m) {
-                    $ok = $config['allowedTypes'] ? true : false;
-
-                    break;
-                }
+    
+        if ($propertyConfig['fileMimeTypeField']) {
+            $fileMimeTypeField = $refl->getProperty($propertyConfig['fileMimeTypeField']);
+            $fileMimeTypeField->setAccessible(true);
+        }
+    
+        if ($propertyConfig['fileSizeField']) {
+            $fileSizeField = $refl->getProperty($propertyConfig['fileSizeField']);
+            $fileSizeField->setAccessible(true);
+        }
+    
+        if ($fileInfo instanceof FileInfo\FileDelete) {
+            // just remove the file
+    
+            if ($propertyConfig['filePathField']) {
+                $this->pendingFileRemovals[] = $this->getFilePathFieldValue($meta, $propertyConfig, $object);
+            } else {
+                $this->pendingFileRemovals[] = $this->getFileNameFieldValue($meta, $propertyConfig, $object);
             }
-
-            if (!$ok) {
-                throw new UploadableInvalidMimeTypeException(sprintf('Invalid mime type "%s" for file "%s".',
-                    $mime,
+    
+            $info = array(
+                'fileName'          => null,
+                'fileExtension'     => null,
+                'fileWithoutExt'    => null,
+                'origFileName'      => null,
+                'filePath'          => null,
+                'fileMimeType'      => null,
+                'fileSize'          => null
+            );
+    
+        } else {
+    
+            // Validations
+            if ($propertyConfig['maxSize'] > 0 && $fileInfo->getSize() > $propertyConfig['maxSize']) {
+                $msg = 'File "%s" exceeds the maximum allowed size of %d bytes. File size: %d bytes';
+    
+                throw new UploadableMaxSizeException(sprintf($msg,
+                    $fileInfo->getName(),
+                    $propertyConfig['maxSize'],
+                    $fileInfo->getSize()
+                ));
+            }
+    
+            $mime = $this->mimeTypeGuesser->guess($fileInfo->getTmpName());
+    
+            if (!$mime) {
+                throw new UploadableCouldntGuessMimeTypeException(sprintf('Couldn\'t guess mime type for file "%s".',
                     $fileInfo->getName()
                 ));
             }
-        }
-
-        $path = $this->getPath($meta, $config, $object);
-
-        if ($action === self::ACTION_UPDATE) {
-            // First we add the original file to the pendingFileRemovals array
-            if ($config['filePathField']) {
-                $this->pendingFileRemovals[] = $this->getFilePathFieldValue($meta, $config, $object);
-            } else {
-                $path     = $this->getPath($meta, $config, $object);
-                $fileName = $this->getFileNameFieldValue($meta, $config, $object);
-                $this->pendingFileRemovals[] = $path.DIRECTORY_SEPARATOR.$fileName;
+    
+            if ($propertyConfig['allowedTypes'] || $propertyConfig['disallowedTypes']) {
+                $ok = $propertyConfig['allowedTypes'] ? false : true;
+                $mimes = $propertyConfig['allowedTypes'] ? $propertyConfig['allowedTypes'] : $propertyConfig['disallowedTypes'];
+    
+                foreach ($mimes as $m) {
+                    if ($mime === $m) {
+                        $ok = $propertyConfig['allowedTypes'] ? true : false;
+    
+                        break;
+                    }
+                }
+    
+                if (!$ok) {
+                    throw new UploadableInvalidMimeTypeException(sprintf('Invalid mime type "%s" for file "%s".',
+                        $mime,
+                        $fileInfo->getName()
+                    ));
+                }
             }
+    
+    
+            $path = $this->getPath($meta, $propertyConfig, $object);
+    
+            if ($action === self::ACTION_UPDATE) {
+                // First we add the original file to the pendingFileRemovals array
+                if ($propertyConfig['filePathField']) {
+                    $this->pendingFileRemovals[] = $this->getFilePathFieldValue($meta, $propertyConfig, $object);
+                } else {
+                    $this->pendingFileRemovals[] = $this->getFileNameFieldValue($meta, $propertyConfig, $object);
+                }
+            }
+    
+            // We generate the filename based on configuration
+            $generatorNamespace = 'Gedmo\Uploadable\FilenameGenerator';
+    
+            switch ($propertyConfig['filenameGenerator']) {
+                case Validator::FILENAME_GENERATOR_ALPHANUMERIC:
+                    $generatorClass = $generatorNamespace .'\FilenameGeneratorAlphanumeric';
+    
+                    break;
+                case Validator::FILENAME_GENERATOR_SHA1:
+                    $generatorClass = $generatorNamespace .'\FilenameGeneratorSha1';
+    
+                    break;
+                case Validator::FILENAME_GENERATOR_NONE:
+                    $generatorClass = false;
+    
+                    break;
+                default:
+                    $generatorClass = $propertyConfig['filenameGenerator'];
+            }
+    
+            $info = $this->moveFile($fileInfo, $path, $generatorClass, $propertyConfig['allowOverwrite'], $propertyConfig['appendNumber'], $object);
+    
+            // We override the mime type with the guessed one
+            $info['fileMimeType'] = $mime;
         }
-
-        // We generate the filename based on configuration
-        $generatorNamespace = 'Gedmo\Uploadable\FilenameGenerator';
-
-        switch ($config['filenameGenerator']) {
-            case Validator::FILENAME_GENERATOR_ALPHANUMERIC:
-                $generatorClass = $generatorNamespace.'\FilenameGeneratorAlphanumeric';
-
-                break;
-            case Validator::FILENAME_GENERATOR_SHA1:
-                $generatorClass = $generatorNamespace.'\FilenameGeneratorSha1';
-
-                break;
-            case Validator::FILENAME_GENERATOR_NONE:
-                $generatorClass = false;
-
-                break;
-            default:
-                $generatorClass = $config['filenameGenerator'];
-        }
-
-        $info = $this->moveFile($fileInfo, $path, $generatorClass, $config['allowOverwrite'], $config['appendNumber'], $object);
-
-        // We override the mime type with the guessed one
-        $info['fileMimeType'] = $mime;
-
-        if ($config['callback'] !== '') {
-            $callbackMethod = $refl->getMethod($config['callback']);
+    
+    
+        if ($propertyConfig['callback'] !== '') {
+            $callbackMethod = $refl->getMethod($propertyConfig['callback']);
             $callbackMethod->setAccessible(true);
-
+    
             $callbackMethod->invokeArgs($object, array($info));
         }
-
-        if ($config['filePathField']) {
-            $this->updateField($object, $uow, $ea, $meta, $config['filePathField'], $info['filePath']);
+    
+        $changes = array();
+    
+        if ($propertyConfig['filePathField']) {
+            $changes[$propertyConfig['filePathField']] = array($filePathField->getValue($object), $info['filePath']);
+    
+            $this->updateField($object, $uow, $ea, $meta, $propertyConfig['filePathField'], $info['filePath']);
         }
-
-        if ($config['fileNameField']) {
-            $this->updateField($object, $uow, $ea, $meta, $config['fileNameField'], $info['fileName']);
+    
+        if ($propertyConfig['fileNameField']) {
+            $changes[$propertyConfig['fileNameField']] = array($fileNameField->getValue($object), $info['fileName']);
+    
+            $this->updateField($object, $uow, $ea, $meta, $propertyConfig['fileNameField'], $info['fileName']);
         }
-
-        if ($config['fileMimeTypeField']) {
-            $this->updateField($object, $uow, $ea, $meta, $config['fileMimeTypeField'], $info['fileMimeType']);
+    
+        if ($propertyConfig['fileMimeTypeField']) {
+            $changes[$propertyConfig['fileMimeTypeField']] = array($fileMimeTypeField->getValue($object), $info['fileMimeType']);
+    
+            $this->updateField($object, $uow, $ea, $meta, $propertyConfig['fileMimeTypeField'], $info['fileMimeType']);
         }
-
-        if ($config['fileSizeField']) {
-            $this->updateField($object, $uow, $ea, $meta, $config['fileSizeField'], $info['fileSize']);
+    
+        if ($propertyConfig['fileSizeField']) {
+            $changes[$propertyConfig['fileSizeField']] = array($fileSizeField->getValue($object), $info['fileSize']);
+    
+            $this->updateField($object, $uow, $ea, $meta, $propertyConfig['fileSizeField'], $info['fileSize']);
         }
-
+    
         $ea->recomputeSingleObjectChangeSet($uow, $meta, $object);
-
+    
         if ($evm->hasListeners(Events::uploadablePostFileProcess)) {
             $evm->dispatchEvent(Events::uploadablePostFileProcess, new UploadablePostFileProcessEventArgs(
                 $this,
                 $om,
-                $config,
+                $propertyConfig,
                 $fileInfo,
                 $object,
                 $action
             ));
         }
-
+    
         unset($this->fileInfoObjects[$oid]);
     }
 
     /**
      * @param ClassMetadata $meta
-     * @param array         $config
+     * @param array         $propertyConfig
      * @param object        $object Entity
      *
      * @return string
      *
      * @throws UploadableNoPathDefinedException
      */
-    protected function getPath(ClassMetadata $meta, array $config, $object)
+    protected function getPath(ClassMetadata $meta, array $propertyConfig, $object)
     {
-        $path = $config['path'];
+        $path = $propertyConfig['path'];
 
         if ($path === '') {
             $defaultPath = $this->getDefaultPath();
-            if ($config['pathMethod'] !== '') {
-                $pathMethod = $meta->getReflectionClass()->getMethod($config['pathMethod']);
+            if ($propertyConfig['pathMethod'] !== '') {
+                $pathMethod = $meta->getReflectionClass()->getMethod($propertyConfig['pathMethod']);
                 $pathMethod->setAccessible(true);
                 $path = $pathMethod->invoke($object, $defaultPath);
             } elseif ($defaultPath !== null) {
@@ -413,28 +475,28 @@ class UploadableListener extends MappedEventSubscriber
      * Returns the path of the entity's file
      *
      * @param ClassMetadata $meta
-     * @param array         $config
+     * @param array         $propertyConfig
      * @param object        $object
      *
      * @return string
      */
-    protected function getFilePathFieldValue(ClassMetadata $meta, array $config, $object)
+    protected function getFilePathFieldValue(ClassMetadata $meta, array $propertyConfig, $object)
     {
-        return $this->getPropertyValueFromObject($meta, $config['filePathField'], $object);
+        return $this->getPropertyValueFromObject($meta, $propertyConfig['filePathField'], $object);
     }
 
     /**
      * Returns the name of the entity's file
      *
      * @param ClassMetadata $meta
-     * @param array         $config
+     * @param array         $propertyConfig
      * @param object        $object
      *
      * @return string
      */
-    protected function getFileNameFieldValue(ClassMetadata $meta, array $config, $object)
+    protected function getFileNameFieldValue(ClassMetadata $meta, array $propertyConfig, $object)
     {
-        return $this->getPropertyValueFromObject($meta, $config['fileNameField'], $object);
+        return $this->getPropertyValueFromObject($meta, $propertyConfig['fileNameField'], $object);
     }
 
     /**
@@ -676,11 +738,12 @@ class UploadableListener extends MappedEventSubscriber
      * Adds a FileInfoInterface object for the given entity
      *
      * @param object                  $entity
+     * @param string                  $property
      * @param array|FileInfoInterface $fileInfo
      *
      * @throws \RuntimeException
      */
-    public function addEntityFileInfo($entity, $fileInfo)
+    public function addEntityFileInfo($entity, $property, $fileInfo)
     {
         $fileInfoClass = $this->getDefaultFileInfoClass();
         $fileInfo = is_array($fileInfo) ? new $fileInfoClass($fileInfo) : $fileInfo;
@@ -691,9 +754,10 @@ class UploadableListener extends MappedEventSubscriber
             throw new \RuntimeException(sprintf($msg, get_class($entity)));
         }
 
-        $this->fileInfoObjects[spl_object_hash($entity)] = array(
+        $this->fileInfoObjects[spl_object_hash($entity) . $property] = array(
             'entity'        => $entity,
             'fileInfo'      => $fileInfo,
+            'property'      => $property
         );
     }
 
@@ -702,9 +766,9 @@ class UploadableListener extends MappedEventSubscriber
      *
      * @return FileInfoInterface
      */
-    public function getEntityFileInfo($entity)
+    public function getEntityFileInfo($entity, $property)
     {
-        $oid = spl_object_hash($entity);
+        $oid = spl_object_hash($entity) . $property;
 
         if (!isset($this->fileInfoObjects[$oid])) {
             throw new \RuntimeException(sprintf('There\'s no FileInfoInterface object for entity of class "%s".',
