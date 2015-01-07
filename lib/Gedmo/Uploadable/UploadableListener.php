@@ -167,7 +167,6 @@ class UploadableListener extends MappedEventSubscriber
             }
         }
 
-        // TODO handle that!
         // Do we need to remove any files?
         foreach ($ea->getScheduledObjectDeletions($uow) as $object) {
             $meta = $om->getClassMetadata(get_class($object));

@@ -62,7 +62,12 @@ class Annotation extends AbstractAnnotationDriver
                 
                 Validator::validateConfiguration($meta, $tmp);
                 
-                $config[$uploadable->filePathProperty] = $tmp;
+                $key = $uploadable->filePathProperty;
+                if (empty($key)) {
+                    $key = $uploadable->fileNameProperty;
+                }
+                
+                $config[$key] = $tmp;
             }
         } else {
             // single element
