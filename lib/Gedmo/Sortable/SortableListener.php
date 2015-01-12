@@ -40,7 +40,7 @@ class SortableListener extends MappedEventSubscriber
             'prePersist',
             'postPersist',
             'preUpdate',
-            'preRemove',
+            'postRemove',
             'postFlush',
         );
     }
@@ -60,7 +60,7 @@ class SortableListener extends MappedEventSubscriber
      * Collect position updates on objects being updated during flush
      * if they require changing.
      *
-     * Persisting of positions is done later during prePersist, preUpdate and preRemove
+     * Persisting of positions is done later during prePersist, preUpdate and postRemove
      * events, otherwise the queries won't be executed within the transaction.
      *
      * The synchronization of the objects in memory is done in postFlush. This
@@ -141,7 +141,7 @@ class SortableListener extends MappedEventSubscriber
         $this->persistRelocations($this->getEventAdapter($args));
     }
 
-    public function preRemove(EventArgs $args)
+    public function postRemove(EventArgs $args)
     {
         // persist position updates here, so that the update queries
         // are executed within transaction
