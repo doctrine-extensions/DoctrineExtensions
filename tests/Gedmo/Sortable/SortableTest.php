@@ -203,8 +203,16 @@ class SortableTest extends BaseTestCaseORM
         $this->em->remove($node2);
         $this->em->flush();
 
+        // test if synced on objects in memory correctly
         $this->assertEquals(0, $node1->getPosition());
         $this->assertEquals(1, $node3->getPosition());
+
+        // test if persisted correctly
+        $this->em->clear();
+        $nodes = $repo->findAll();
+        $this->assertCount(2, $nodes);
+        $this->assertEquals(0, $nodes[0]->getPosition());
+        $this->assertEquals(1, $nodes[1]->getPosition());
     }
 
     /**
