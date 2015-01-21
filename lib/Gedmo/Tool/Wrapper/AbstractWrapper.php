@@ -57,18 +57,12 @@ abstract class AbstractWrapper implements WrapperInterface
      */
     public static function wrap($object, ObjectManager $om)
     {
-        $oid = spl_object_hash($object);
-        if (!isset(self::$wrappedObjectReferences[$oid])) {
-            if ($om instanceof EntityManager) {
-                self::$wrappedObjectReferences[$oid] = new EntityWrapper($object, $om);
-            } elseif ($om instanceof DocumentManager) {
-                self::$wrappedObjectReferences[$oid] = new MongoDocumentWrapper($object, $om);
-            } else {
-                throw new UnsupportedObjectManagerException('Given object manager is not managed by wrapper');
-            }
+        if ($om instanceof EntityManager) {
+            return new EntityWrapper($object, $om);
+        } elseif ($om instanceof DocumentManager) {
+            return new MongoDocumentWrapper($object, $om);
         }
-
-        return self::$wrappedObjectReferences[$oid];
+        throw new UnsupportedObjectManagerException('Given object manager is not managed by wrapper');
     }
 
     public static function clear()
