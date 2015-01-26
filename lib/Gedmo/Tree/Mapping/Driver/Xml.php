@@ -164,7 +164,7 @@ class Xml extends BaseXml
                         $field = $this->_getAttribute($manyToOneMappingDoctrine, 'field');
                         $targetEntity = $meta->associationMappings[$field]['targetEntity'];
                         $reflectionClass = new \ReflectionClass($targetEntity);
-                        if ($targetEntity != $meta->name && !$reflectionClass->isSubclassOf($meta->name)) {
+                        if ($targetEntity != $meta->name && !$reflectionClass->implementsInterface($meta->name)) {
                             throw new InvalidMappingException("Unable to find ancestor/parent child relation through ancestor field - [{$field}] in class - {$meta->name}");
                         }
                         $config['parent'] = $field;
