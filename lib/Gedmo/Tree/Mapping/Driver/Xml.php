@@ -63,10 +63,10 @@ class Xml extends BaseXml
         }
         if (isset($xml->{'tree-closure'}) && $this->_isAttributeSet($xml->{'tree-closure'}, 'class')) {
             $class = $this->_getAttribute($xml->{'tree-closure'}, 'class');
-            if (!class_exists($class)) {
+            if (!$cl = $this->getRelatedClassName($meta, $class)) {
                 throw new InvalidMappingException("Tree closure class: {$class} does not exist.");
             }
-            $config['closure'] = $class;
+            $config['closure'] = $cl;
         }
         if (isset($xmlDoctrine->field)) {
             foreach ($xmlDoctrine->field as $mapping) {
@@ -163,8 +163,7 @@ class Xml extends BaseXml
                     if (isset($manyToOneMapping->{'tree-parent'})) {
                         $field = $this->_getAttribute($manyToOneMappingDoctrine, 'field');
                         $targetEntity = $meta->associationMappings[$field]['targetEntity'];
-                        $reflectionClass = new \ReflectionClass($targetEntity);
-                        if ($targetEntity != $meta->name && !$reflectionClass->isSubclassOf($meta->name)) {
+                        if (!$cl = $this->getRelatedClassName($meta, $targetEntity)) {
                             throw new InvalidMappingException("Unable to find ancestor/parent child relation through ancestor field - [{$field}] in class - {$meta->name}");
                         }
                         $config['parent'] = $field;
@@ -181,7 +180,7 @@ class Xml extends BaseXml
                     $referenceOneMapping = $referenceOneMapping->children(self::GEDMO_NAMESPACE_URI);
                     if (isset($referenceOneMapping->{'tree-parent'})) {
                         $field = $this->_getAttribute($referenceOneMappingDoctrine, 'field');
-                        if ($this->_getAttribute($referenceOneMappingDoctrine, 'target-document') != $meta->name) {
+                        if (!$cl = $this->getRelatedClassName($meta, $this->_getAttribute($referenceOneMappingDoctrine, 'target-document'))) {
                             throw new InvalidMappingException("Unable to find ancestor/parent child relation through ancestor field - [{$field}] in class - {$meta->name}");
                         }
                         $config['parent'] = $field;

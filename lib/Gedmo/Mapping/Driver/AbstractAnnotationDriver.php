@@ -90,4 +90,22 @@ abstract class AbstractAnnotationDriver implements AnnotationDriverInterface
     public function validateFullMetadata(ClassMetadata $meta, array $config)
     {
     }
+
+    /**
+     * Try to find out related class name out of mapping
+     *
+     * @param $metadata - the mapped class metadata
+     * @param $name - the related object class name
+     * @return string - related class name or empty string if does not exist
+     */
+    protected function getRelatedClassName($metadata, $name)
+    {
+        if (class_exists($name)) {
+            return $name;
+        }
+        $refl = $metadata->getReflectionClass();
+        $ns = $refl->getNamespaceName();
+        $className = $ns . '\\' . $name;
+        return class_exists($className) ? $className : '';
+    }
 }

@@ -46,10 +46,10 @@ class Annotation extends AbstractAnnotationDriver
         $class = $this->getMetaReflectionClass($meta);
         // class annotations
         if ($annot = $this->reader->getClassAnnotation($class, self::ENTITY_CLASS)) {
-            if (!class_exists($annot->class)) {
+            if (!$cl = $this->getRelatedClassName($meta, $annot->class)) {
                 throw new InvalidMappingException("Translation class: {$annot->class} does not exist.");
             }
-            $config['translationClass'] = $annot->class;
+            $config['translationClass'] = $cl;
         }
 
         // property annotations

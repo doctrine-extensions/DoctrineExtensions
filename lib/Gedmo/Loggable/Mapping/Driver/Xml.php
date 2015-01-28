@@ -40,10 +40,10 @@ class Xml extends BaseXml
                 $config['loggable'] = true;
                 if ($this->_isAttributeSet($data, 'log-entry-class')) {
                     $class = $this->_getAttribute($data, 'log-entry-class');
-                    if (!class_exists($class)) {
+                    if (!$cl = $this->getRelatedClassName($meta, $class)) {
                         throw new InvalidMappingException("LogEntry class: {$class} does not exist.");
                     }
-                    $config['logEntryClass'] = $class;
+                    $config['logEntryClass'] = $cl;
                 }
             }
         }

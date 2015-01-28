@@ -34,10 +34,10 @@ class Yaml extends File implements Driver
             $classMapping = $mapping['gedmo'];
             if (isset($classMapping['translation']['entity'])) {
                 $translationEntity = $classMapping['translation']['entity'];
-                if (!class_exists($translationEntity)) {
+                if (!$cl = $this->getRelatedClassName($meta, $translationEntity)) {
                     throw new InvalidMappingException("Translation entity class: {$translationEntity} does not exist.");
                 }
-                $config['translationClass'] = $translationEntity;
+                $config['translationClass'] = $cl;
             }
             if (isset($classMapping['translation']['locale'])) {
                 $config['locale'] = $classMapping['translation']['locale'];

@@ -61,9 +61,8 @@ class Yaml extends File implements Driver
                 }
             }
             if (isset($classMapping['tree']['closure'])) {
-                $class = $classMapping['tree']['closure'];
-                if (!class_exists($class)) {
-                    throw new InvalidMappingException("Tree closure class: {$class} does not exist.");
+                if (!$class = $this->getRelatedClassName($meta, $classMapping['tree']['closure'])) {
+                    throw new InvalidMappingException("Tree closure class: {$classMapping['tree']['closure']} does not exist.");
                 }
                 $config['closure'] = $class;
             }
@@ -162,9 +161,7 @@ class Yaml extends File implements Driver
             foreach ($mapping['manyToOne'] as $field => $relationMapping) {
                 if (isset($relationMapping['gedmo'])) {
                     if (in_array('treeParent', $relationMapping['gedmo'])) {
-                        $reflectionClass = new \ReflectionClass($meta->name);
-                        if ($relationMapping['targetEntity'] != $meta->name &&
-                            !$reflectionClass->implementsInterface($relationMapping['targetEntity'])) {
+                        if (!$rel = $this->getRelatedClassName($meta, $relationMapping['targetEntity'])) {
                             throw new InvalidMappingException("Unable to find ancestor/parent child relation through ancestor field - [{$field}] in class - {$meta->name}");
                         }
                         $config['parent'] = $field;

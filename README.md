@@ -8,6 +8,11 @@
 
 ### Latest updates
 
+**2015-01-28**
+
+Fixed the issue for all mappings, which caused related class mapping failures, when a relation or class name
+was in the same namespace, but extensions required it to be mapped as full classname.
+
 **2015-01-21**
 
 Fixed memory leak issue with entity or document wrappers for convenient metadata retrieval.
