@@ -23,9 +23,10 @@ class SimpleObjectHydrator extends BaseSimpleObjectHydrator
     protected function _hydrateAll()
     {
         $listener = $this->getTranslatableListener();
+        $skipTranslationLoading = $listener->getSkipOnLoad();
         $listener->setSkipOnLoad(true);
         $result = parent::_hydrateAll();
-        $listener->setSkipOnLoad(false);
+        $listener->setSkipOnLoad($skipTranslationLoading);
 
         return $result;
     }
@@ -37,9 +38,10 @@ class SimpleObjectHydrator extends BaseSimpleObjectHydrator
     protected function hydrateAllData()
     {
         $listener = $this->getTranslatableListener();
+        $skipTranslationLoading = $listener->getSkipOnLoad();
         $listener->setSkipOnLoad(true);
         $result = parent::hydrateAllData();
-        $listener->setSkipOnLoad(false);
+        $listener->setSkipOnLoad($skipTranslationLoading);
 
         return $result;
     }
