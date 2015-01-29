@@ -2,6 +2,8 @@
 
 namespace Gedmo\SoftDeleteable\Traits;
 
+use Doctrine\ORM\Mapping as ORM;
+
 /**
  * SoftDeletable Trait, usable with PHP >= 5.4
  *

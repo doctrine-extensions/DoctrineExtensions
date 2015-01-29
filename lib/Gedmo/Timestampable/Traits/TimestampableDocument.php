@@ -2,6 +2,7 @@
 
 namespace Gedmo\Timestampable\Traits;
 
+use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 /**

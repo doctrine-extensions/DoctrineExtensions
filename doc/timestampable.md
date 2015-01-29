@@ -648,7 +648,6 @@ to use the Traits provided by extensions.
 namespace Timestampable\Fixture;
 
 use Gedmo\Timestampable\Traits\TimestampableEntity;
-use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -675,10 +674,6 @@ class UsingTrait
     private $title;
 }
 ```
-
-**Note:** you must import **Gedmo\Mapping\Annotation as Gedmo** and **Doctrine\ORM\Mapping as ORM**
-annotations. If you use mongodb ODM import **Doctrine\ODM\MongoDB\Mapping\Annotations as ODM** and
-**TimestampableDocument** instead.
 
 Traits are very simple and if you use different field names I recommend to simply create your
 own ones based per project. These ones are standing as an example.
