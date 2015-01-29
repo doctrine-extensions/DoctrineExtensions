@@ -105,10 +105,10 @@ class Annotation extends AbstractAnnotationDriver
             }
         }
         if ($annot = $this->reader->getClassAnnotation($class, self::CLOSURE)) {
-            if (!class_exists($annot->class)) {
+            if (!$cl = $this->getRelatedClassName($meta, $annot->class)) {
                 throw new InvalidMappingException("Tree closure class: {$annot->class} does not exist.");
             }
-            $config['closure'] = $annot->class;
+            $config['closure'] = $cl;
         }
 
         // property annotations

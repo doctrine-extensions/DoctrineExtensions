@@ -57,7 +57,7 @@ and any number of them
 
 **Note list:**
 
-- You can [test live][blog_test] on this blog 
+- You can [test live][blog_test] on this blog
 - Public [Translatable repository](http://github.com/l3pp4rd/DoctrineExtensions "Translatable extension on Github") is available on github
 - Using other extensions on the same Entity fields may result in unexpected way
 - May impact your application performance since it does an additional query for translation if loaded without query hint
@@ -432,7 +432,7 @@ $em->flush();
 
 By default, behind the scenes, when you load a record - translatable hooks into **postLoad**
 event and issues additional query to translate all fields. Imagine that, when you load a collection,
-it may issue a lot of queries just to translate those fields. Including array hydration, 
+it may issue a lot of queries just to translate those fields. Including array hydration,
 it is not possible to hook any **postLoad** event since it is not an
 entity being hydrated. These are the main reasons why **TranslationWalker** was created.
 
@@ -530,7 +530,7 @@ JOIN a.comments c WITH c.message LIKE '%will_not_be_translated%'`
 
 **Note**: any **find** related method calls cannot hook this hint automagically, we
 will use a different approach when **persister overriding feature** will be
-available in **Doctrine** 
+available in **Doctrine**
 
 In case if **translation query walker** is used, you can additionally override:
 
@@ -678,7 +678,7 @@ or other possible choices, which user can make.
 Personal translations uses foreign key constraint which is fully managed by ORM and
 allows to have a collection of related translations. User can use it anyway he likes, etc.:
 implementing array access on entity, using left join to fill collection and so on.
- 
+
 Note: that [query hint](#orm-query-hint) will work on personal translations the same way.
 You can always use a left join like for standard doctrine collections.
 

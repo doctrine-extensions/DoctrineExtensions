@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
- * @Gedmo\TranslationEntity(class="Translatable\Fixture\PersonTranslation")
+ * @Gedmo\TranslationEntity(class="PersonTranslation")
  */
 class Person
 {
