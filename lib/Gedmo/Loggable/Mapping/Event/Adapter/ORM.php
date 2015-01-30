@@ -2,6 +2,7 @@
 
 namespace Gedmo\Loggable\Mapping\Event\Adapter;
 
+use Doctrine\DBAL\Types\Type;
 use Gedmo\Mapping\Event\Adapter\ORM as BaseAdapterORM;
 use Gedmo\Loggable\Mapping\Event\LoggableAdapter;
 
@@ -51,5 +52,13 @@ final class ORM extends BaseAdapterORM implements LoggableAdapter
         ));
 
         return $q->getSingleScalarResult() + 1;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function convertToDatabaseValue($meta, $field, $value)
+    {
+        return Type::getType($meta->getTypeOfField($field))->convertToDatabaseValue($value, $this->getObjectManager()->getConnection()->getDatabasePlatform());
     }
 }

@@ -2,6 +2,7 @@
 
 namespace Gedmo\Loggable\Mapping\Event\Adapter;
 
+use Doctrine\ODM\MongoDB\Types\Type;
 use Gedmo\Mapping\Event\Adapter\ODM as BaseAdapterODM;
 use Gedmo\Loggable\Mapping\Event\LoggableAdapter;
 
@@ -55,5 +56,13 @@ final class ODM extends BaseAdapterODM implements LoggableAdapter
         }
 
         return $result;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function convertToDatabaseValue($meta, $field, $value)
+    {
+        return Type::getType($meta->getTypeOfField($field))->convertToDatabaseValue($value);
     }
 }

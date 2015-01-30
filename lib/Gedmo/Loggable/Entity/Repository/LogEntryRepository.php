@@ -2,6 +2,7 @@
 
 namespace Gedmo\Loggable\Entity\Repository;
 
+use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\Query;
 use Gedmo\Tool\Wrapper\EntityWrapper;
 use Doctrine\ORM\EntityRepository;
@@ -102,6 +103,9 @@ class LogEntryRepository extends EntityRepository
                             if ($objectMeta->isSingleValuedAssociation($field)) {
                                 $mapping = $objectMeta->getAssociationMapping($field);
                                 $value = $value ? $this->_em->getReference($mapping['targetEntity'], $value) : null;
+                            } else {
+                                //normal value
+                                $value = Type::getType($objectMeta->getTypeOfField($field))->convertToPHPValue($value, $this->_em->getConnection()->getDatabasePlatform());
                             }
                             $wrapped->setPropertyValue($field, $value);
                             unset($fields[array_search($field, $fields)]);

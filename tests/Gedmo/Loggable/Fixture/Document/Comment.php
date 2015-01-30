@@ -34,6 +34,12 @@ class Comment
      */
     private $article;
 
+    /**
+     * @Gedmo\Versioned
+     * @ODM\Field(type="base64")
+     */
+    private $baseString;
+
     public function setArticle($article)
     {
         $this->article = $article;
@@ -67,5 +73,15 @@ class Comment
     public function getMessage()
     {
         return $this->message;
+    }
+
+    public function getBaseString()
+    {
+        return $this->baseString;
+    }
+
+    public function setBaseString($baseString)
+    {
+        $this->baseString = $baseString;
     }
 }

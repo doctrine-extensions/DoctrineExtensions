@@ -36,4 +36,15 @@ interface LoggableAdapter extends AdapterInterface
      * @return integer
      */
     public function getNewVersion($meta, $object);
+
+    /**
+     * convert a value to database value with concrete mapping type for the field
+     *
+     * @param object $meta
+     * @param string $field
+     * @param mixed $value
+     *
+     * @return mixed
+     */
+    public function convertToDatabaseValue($meta, $field, $value);
 }

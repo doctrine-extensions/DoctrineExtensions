@@ -2,6 +2,7 @@
 
 namespace Gedmo\Loggable\Document\Repository;
 
+use Doctrine\ODM\MongoDB\Types\Type;
 use Gedmo\Tool\Wrapper\MongoDocumentWrapper;
 use Gedmo\Loggable\LoggableListener;
 use Doctrine\ODM\MongoDB\DocumentRepository;
@@ -91,6 +92,9 @@ class LogEntryRepository extends DocumentRepository
                             if ($objectMeta->isSingleValuedAssociation($field)) {
                                 $mapping = $objectMeta->getFieldMapping($field);
                                 $value = $value ? $this->dm->getReference($mapping['targetDocument'], $value) : null;
+                            } else {
+                                //normal value
+                                $value = Type::getType($objectMeta->getTypeOfField($field))->convertToPHPValue($value);
                             }
                             $wrapped->setPropertyValue($field, $value);
                             unset($fields[array_search($field, $fields)]);

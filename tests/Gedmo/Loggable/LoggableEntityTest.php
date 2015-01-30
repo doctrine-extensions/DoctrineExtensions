@@ -2,6 +2,7 @@
 
 namespace Gedmo\Loggable;
 
+use Doctrine\DBAL\Types\Type;
 use Tool\BaseTestCaseORM;
 use Doctrine\Common\EventManager;
 use Loggable\Fixture\Entity\Article;
@@ -33,7 +34,9 @@ class LoggableEntityTest extends BaseTestCaseORM
         $this->LoggableListener = new LoggableListener();
         $this->LoggableListener->setUsername('jules');
         $evm->addEventSubscriber($this->LoggableListener);
-
+        if (!Type::hasType('base64')) {
+            Type::addType('base64', 'Loggable\Fixture\Entity\Type\Base64Type');
+        }
         $this->em = $this->getMockSqliteEntityManager($evm);
     }
 
@@ -116,12 +119,14 @@ class LoggableEntityTest extends BaseTestCaseORM
         $comment = $commentRepo->find(1);
         $this->assertEquals('m-v5', $comment->getMessage());
         $this->assertEquals('s-v3', $comment->getSubject());
+        $this->assertEquals('b-v4', $comment->getBaseString());
         $this->assertEquals(2, $comment->getArticle()->getId());
 
         // test revert
         $commentLogRepo->revert($comment, 3);
         $this->assertEquals('s-v3', $comment->getSubject());
         $this->assertEquals('m-v2', $comment->getMessage());
+        $this->assertEquals('b-v1', $comment->getBaseString());
         $this->assertEquals(1, $comment->getArticle()->getId());
         $this->em->persist($comment);
         $this->em->flush();
@@ -131,6 +136,8 @@ class LoggableEntityTest extends BaseTestCaseORM
         $this->assertCount(6, $logEntries);
         $latest = $logEntries[0];
         $this->assertEquals('update', $latest->getAction());
+        $data = $latest->getData();
+        $this->assertEquals(base64_encode('b-v1'), $data['baseString']);
     }
 
     protected function getUsedEntityFixtures()
@@ -154,6 +161,7 @@ class LoggableEntityTest extends BaseTestCaseORM
         $comment->setArticle($article);
         $comment->setMessage('m-v1');
         $comment->setSubject('s-v1');
+        $comment->setBaseString('b-v1');
 
         $this->em->persist($article);
         $this->em->persist($comment);
@@ -172,6 +180,7 @@ class LoggableEntityTest extends BaseTestCaseORM
         $article2->setContent('a2-c-v1');
 
         $comment->setArticle($article2);
+        $comment->setBaseString('b-v4');
         $this->em->persist($article2);
         $this->em->persist($comment);
         $this->em->flush();
