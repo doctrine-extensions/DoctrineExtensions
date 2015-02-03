@@ -19,7 +19,7 @@ trait EnableEntity
     protected $enabled;
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function isEnabled()
     {
@@ -27,7 +27,7 @@ trait EnableEntity
     }
 
     /**
-     * @param boolean $enabled
+     * @param bool $enabled
      * @return $this
      */
     public function setEnabled($enabled)
