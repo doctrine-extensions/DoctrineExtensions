@@ -119,7 +119,6 @@ class UploadableListener extends MappedEventSubscriber
             
             $entity = $info['entity'];
             $property = $info['property'];
-            
             $propertyConfig = $config[$property];
 
             // If the entity is in the identity map, it means it will be updated. We need to force the
@@ -171,6 +170,7 @@ class UploadableListener extends MappedEventSubscriber
         foreach ($ea->getScheduledObjectDeletions($uow) as $object) {
             $meta = $om->getClassMetadata(get_class($object));
 
+            // TODO we should call the callback here
             if ($config = $this->getConfiguration($om, $meta->name)) {
                 foreach ($config as $propertyConfig) {
                     if (isset($propertyConfig['uploadable']) && $propertyConfig['uploadable']) {
