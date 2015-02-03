@@ -7,3 +7,7 @@ tags
 /composer.lock
 /composer.phar
 .idea
+atlassian-ide-plugin.xml
+.buildpath
+.project
+.settings
