@@ -1,7 +1,7 @@
 # Timestampable behavior extension for Doctrine 2
 
 **Timestampable** behavior will automate the update of date fields
-on your Entities or Documents. It works through annotations and can update 
+on your Entities or Documents. It works through annotations and can update
 fields on creation, update, property subset update, or even on specific property value change.
 
 Features:
@@ -9,12 +9,9 @@ Features:
 - Automatic predefined date field update on creation, update, property subset update, and even on record property changes
 - ORM and ODM support using same listener
 - Specific annotations for properties, and no interface required
-- Can react to specific property or relation changes to specific value 
-- Can be nested with other behaviors 
+- Can react to specific property or relation changes to specific value
+- Can be nested with other behaviors
 - Annotation, Yaml and Xml mapping support for extensions
-
-[blog_reference]: http://gediminasm.org/article/timestampable-behavior-extension-for-doctrine-2 "Timestampable extension for Doctrine 2 helps automate update of dates"
-[blog_test]: http://gediminasm.org/test "Test extensions on this blog"
 
 Update **2012-06-26**
 
@@ -25,14 +22,11 @@ Update **2012-03-10**
 - Add [Timestampable traits](#traits)
 
 Update **2011-04-04**
- 
+
 - Made single listener, one instance can be used for any object manager
 and any number of them
 
 **Note:**
-
-- You can [test live][blog_test] on this blog
-- Public [Timestampable repository](http://github.com/l3pp4rd/DoctrineExtensions "Timestampable extension on Github") is available on github
 - Last update date: **2012-01-02**
 
 **Portability:**
@@ -71,7 +65,7 @@ type it will trigger an exception.
 
 Available configuration options:
 
-- **on** - is main option and can be **create, update, change** this tells when it 
+- **on** - is main option and can be **create, update, change** this tells when it
 should be updated
 - **field** - only valid if **on="change"** is specified, tracks property or a list of properties for changes
 - **value** - only valid if **on="change"** is specified and the tracked field is a single field (not an array), if the tracked field has this **value**
@@ -596,7 +590,7 @@ Now in Symfony2, we register and override the **datetime** type. **WARNING:** th
 ```
 doctrine:
     dbal:
-        types: 
+        types:
             datetime: Acme\DoctrineExtensions\DBAL\Types\UTCDateTimeType
 ```
 

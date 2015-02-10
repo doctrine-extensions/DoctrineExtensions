@@ -4,8 +4,6 @@ Bellow you will find all annotation descriptions used in these extensions.
 There will be introduction on usage with examples. For more detailed usage
 on extensions, refer to their specific documentation.
 
-[blog_reference]: http://gediminasm.org/article/annotation-reference-for-extensions "Doctrine2 extensions annotation reference and examples"
-
 Content:
 
 - Best [practices](#em-setup) for setting up
@@ -39,13 +37,13 @@ class Article
      * @ORM\Column(length=32, unique=true)
      */
     private $id;
-    
+
     /**
      * @Gedmo\Translatable
      * @ORM\Column(length=64)
      */
     private $title;
-    
+
     /**
      * @Gedmo\Timestampable(on="create")
      * @ORM\Column(type="datetime")
@@ -171,7 +169,7 @@ to doctrine-common-2.1.x branch and newer.
 ## Tree annotations
 
 Tree can use different adapters. Currently **Tree** extension supports **NestedSet**
-and **Closure** strategies which has a difference for annotations used. Note, that 
+and **Closure** strategies which has a difference for annotations used. Note, that
 tree will automatically map indexes which are considered necessary for best performance.
 
 ### @Gedmo\Mapping\Annotation\Tree (required for all tree strategies)
@@ -355,7 +353,7 @@ example:
  */
 private $content;
 ```
-    
+
 ### @Gedmo\Mapping\Annotation\Locale or @Gedmo\Mapping\Annotation\Language (optional)
 
 **unmapped property** annotation

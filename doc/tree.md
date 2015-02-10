@@ -16,9 +16,6 @@ Features:
 - Can be nested with other extensions
 - Annotation, Yaml and Xml mapping support for extensions
 
-[blog_reference]: http://gediminasm.org/article/tree-nestedset-behavior-extension-for-doctrine-2 "Tree - Nestedset or Closure extension for Doctrine 2 makes tree implementation on entities"
-[blog_test]: http://gediminasm.org/test "Test extensions on this blog"
-
 Thanks for contributions to:
 
 - **[comfortablynumb](http://github.com/comfortablynumb) Gustavo Falco** for Closure and Materialized Path strategy
@@ -58,7 +55,6 @@ Update **2011-02-02**
 
 **Note:**
 
-- You can [test live][blog_test] on this blog
 - After using a NestedTreeRepository functions: **verify, recover, removeFromTree** it is recommended to clear EntityManager cache
 because nodes may have changed values in database but not in memory. Flushing dirty nodes can lead to unexpected behaviour.
 - Closure tree implementation is experimental and not fully functional, so far not documented either

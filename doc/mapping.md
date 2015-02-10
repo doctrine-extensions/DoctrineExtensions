@@ -11,16 +11,13 @@ Features:
 - Mapping drivers for annotation and yaml
 - Conventional extension points for metadata extraction and object manager abstraction
 
-[blog_reference]: http://gediminasm.org/article/mapping-extension-for-doctrine2 "Mapping extension for Doctrine2 makes it easy to create extensions based on annotation, xml, yaml mapping drivers"
-[blog_test]: http://gediminasm.org/test "Test extensions on this blog"
-
 - Public [Mapping repository](http://github.com/l3pp4rd/DoctrineExtensions "Mapping extension on Github") is available on github
 - Last update date: **2012-01-02**
 
 This article will cover the basic installation and usage of **Mapping** extension
 
 Content:
-    
+
 - [Including](#including-extension) the extension
 - [Creating](#create-extension) an extension
 - Defining [annotations](#annotations)
@@ -483,7 +480,7 @@ class ODM extends BaseAdapterODM
 {
     public function someSpecificMethod()
     {
- 
+
     }
 }
 ```

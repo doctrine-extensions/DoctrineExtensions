@@ -5,15 +5,12 @@ This post will show you - how to create a simple configuration file to manage ex
 ability to use all features it provides.
 Interested? then bear with me! and don't be afraid, we're not diving into security component :)
 
-[blog_reference]: http://gediminasm.org/article/mapping-extension-for-doctrine2 "Mapping extension for Doctrine2 makes it easy to create extensions based on annotation, xml, yaml mapping drivers"
-[blog_test]: http://gediminasm.org/test "Test extensions on this blog"
-
 This post will put some light over the shed of extension installation and mapping configuration
 of Doctrine2. It does not require any additional dependencies and gives you full power
 over management of extensions.
 
 Content:
-    
+
 - [Symfony2](#sf2-app) application
 - Extensions metadata [mapping](#ext-mapping)
 - Extension [listeners](#ext-listeners)
@@ -79,7 +76,7 @@ doctrine:
     orm:
         auto_generate_proxy_classes: %kernel.debug%
         auto_mapping: true
-# only these lines are added additionally 
+# only these lines are added additionally
         mappings:
             translatable:
                 type: annotation
@@ -131,7 +128,7 @@ everything extensions provide:
 orm:
     auto_generate_proxy_classes: %kernel.debug%
     auto_mapping: true
-# only these lines are added additionally 
+# only these lines are added additionally
     mappings:
         translatable:
             type: annotation
@@ -182,7 +179,7 @@ services:
             - { name: doctrine.event_subscriber, connection: default }
         calls:
             - [ setAnnotationReader, [ @annotation_reader ] ]
-            
+
     gedmo.listener.translatable:
         class: Gedmo\Translatable\TranslatableListener
         tags:
@@ -191,28 +188,28 @@ services:
             - [ setAnnotationReader, [ @annotation_reader ] ]
             - [ setDefaultLocale, [ %locale% ] ]
             - [ setTranslationFallback, [ false ] ]
-    
+
     gedmo.listener.timestampable:
         class: Gedmo\Timestampable\TimestampableListener
         tags:
             - { name: doctrine.event_subscriber, connection: default }
         calls:
             - [ setAnnotationReader, [ @annotation_reader ] ]
-    
+
     gedmo.listener.sluggable:
         class: Gedmo\Sluggable\SluggableListener
         tags:
             - { name: doctrine.event_subscriber, connection: default }
         calls:
             - [ setAnnotationReader, [ @annotation_reader ] ]
-    
+
     gedmo.listener.sortable:
         class: Gedmo\Sortable\SortableListener
         tags:
             - { name: doctrine.event_subscriber, connection: default }
         calls:
             - [ setAnnotationReader, [ @annotation_reader ] ]
-    
+
     gedmo.listener.loggable:
         class: Gedmo\Loggable\LoggableListener
         tags:
