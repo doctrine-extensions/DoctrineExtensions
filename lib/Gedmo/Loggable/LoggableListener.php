@@ -91,7 +91,7 @@ class LoggableListener extends MappedEventSubscriber
      * Get the LogEntry class
      *
      * @param LoggableAdapter $ea
-     * @param string          $class
+     * @param string $class
      *
      * @return string
      */
@@ -152,6 +152,7 @@ class LoggableListener extends MappedEventSubscriber
                 $logEntryMeta = $om->getClassMetadata(get_class($logEntry));
                 $oldData = $data = $logEntry->getData();
                 $data[$props['field']] = $identifiers;
+
                 $logEntry->setData($data);
 
                 $uow->scheduleExtraUpdate($logEntry, array(
@@ -172,6 +173,7 @@ class LoggableListener extends MappedEventSubscriber
      */
     protected function prePersistLogEntry($logEntry, $object)
     {
+
     }
 
     /**
@@ -208,6 +210,50 @@ class LoggableListener extends MappedEventSubscriber
     }
 
     /**
+     * Returns an objects changeset data
+     *
+     * @param LoggableAdapter $ea
+     * @param object $object
+     * @param object $logEntry
+     *
+     * @return array
+     */
+    protected function getObjectChangeSetData($ea, $object, $logEntry)
+    {
+        $om        = $ea->getObjectManager();
+        $wrapped   = AbstractWrapper::wrap($object, $om);
+        $meta      = $wrapped->getMetadata();
+        $config    = $this->getConfiguration($om, $meta->name);
+        $uow       = $om->getUnitOfWork();
+        $newValues = array();
+
+        foreach ($ea->getObjectChangeSet($uow, $object) as $field => $changes) {
+            if (empty($config['versioned']) || !in_array($field, $config['versioned'])) {
+                continue;
+            }
+            $value = $changes[1];
+            if ($meta->isSingleValuedAssociation($field) && $value) {
+                if ($wrapped->isEmbeddedAssociation($field)) {
+                    $value = $this->getObjectChangeSetData($ea, $value, $logEntry);
+                } else {
+                    $oid          = spl_object_hash($value);
+                    $wrappedAssoc = AbstractWrapper::wrap($value, $om);
+                    $value        = $wrappedAssoc->getIdentifier(false);
+                    if (!is_array($value) && !$value) {
+                        $this->pendingRelatedObjects[$oid][] = array(
+                            'log'   => $logEntry,
+                            'field' => $field,
+                        );
+                    }
+                }
+            }
+            $newValues[$field] = $value;
+        }
+
+        return $newValues;
+    }
+
+    /**
      * Create a new Log instance
      *
      * @param string          $action
@@ -221,6 +267,13 @@ class LoggableListener extends MappedEventSubscriber
         $om = $ea->getObjectManager();
         $wrapped = AbstractWrapper::wrap($object, $om);
         $meta = $wrapped->getMetadata();
+
+        // Filter embedded documents
+        $ident = $meta->getIdentifier();
+        if (empty($ident) || empty($ident[0])) {
+            return;
+        }
+
         if ($config = $this->getConfiguration($om, $meta->name)) {
             $logEntryClass = $this->getLogEntryClass($ea, $meta->name);
             $logEntryMeta = $om->getClassMetadata($logEntryClass);
@@ -241,28 +294,11 @@ class LoggableListener extends MappedEventSubscriber
             }
             $newValues = array();
             if ($action !== self::ACTION_REMOVE && isset($config['versioned'])) {
-                foreach ($ea->getObjectChangeSet($uow, $object) as $field => $changes) {
-                    if (!in_array($field, $config['versioned'])) {
-                        continue;
-                    }
-                    $value = $changes[1];
-                    if ($meta->isSingleValuedAssociation($field) && $value) {
-                        $oid = spl_object_hash($value);
-                        $wrappedAssoc = AbstractWrapper::wrap($value, $om);
-                        $value = $wrappedAssoc->getIdentifier(false);
-                        if (!is_array($value) && !$value) {
-                            $this->pendingRelatedObjects[$oid][] = array(
-                                'log' => $logEntry,
-                                'field' => $field,
-                            );
-                        }
-                    }
-                    $newValues[$field] = $value;
-                }
+                $newValues = $this->getObjectChangeSetData($ea, $object, $logEntry);
                 $logEntry->setData($newValues);
             }
 
-            if ($action === self::ACTION_UPDATE && 0 === count($newValues)) {
+            if($action === self::ACTION_UPDATE && 0 === count($newValues)) {
                 return null;
             }
 
