@@ -626,7 +626,7 @@ $controller = $this;
 
 ### Nesting Translatatable and Sluggable extensions
 
-If you want to attach **TranslationListener** also add it to EventManager after
+If you want to attach **TranslatableListener** also add it to EventManager after
 the **SluggableListener** and **TreeListener**. It is important because slug must be generated first
 before the creation of it`s translation.
 
@@ -637,7 +637,7 @@ $treeListener = new \Gedmo\Tree\TreeListener();
 $evm->addEventSubscriber($treeListener);
 $sluggableListener = new \Gedmo\Sluggable\SluggableListener();
 $evm->addEventSubscriber($sluggableListener);
-$translatableListener = new \Gedmo\Translatable\TranslationListener();
+$translatableListener = new \Gedmo\Translatable\TranslatableListener();
 $translatableListener->setTranslatableLocale('en_us');
 $evm->addEventSubscriber($translatableListener);
 // now this event manager should be passed to entity manager constructor
