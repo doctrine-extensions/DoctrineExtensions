@@ -4,6 +4,7 @@ namespace Gedmo\Sortable\Mapping\Event\Adapter;
 
 use Gedmo\Mapping\Event\Adapter\ODM as BaseAdapterODM;
 use Gedmo\Sortable\Mapping\Event\SortableAdapter;
+use Doctrine\Common\Util\ClassUtils;
 
 /**
  * Doctrine event adapter for ODM adapted
@@ -20,7 +21,11 @@ final class ODM extends BaseAdapterODM implements SortableAdapter
 
         $qb = $dm->createQueryBuilder($config['useObjectClass']);
         foreach ($groups as $group => $value) {
-            $qb->field($group)->equals($value);
+            if (is_object($value) && !$dm->getMetadataFactory()->isTransient(ClassUtils::getClass($value))) {
+                $qb->field($group)->references($value);
+            } else {
+                $qb->field($group)->equals($value);
+            }
         }
         $qb->sort($config['position'], 'desc');
         $document = $qb->getQuery()->getSingleResult();
@@ -47,7 +52,11 @@ final class ODM extends BaseAdapterODM implements SortableAdapter
             $qb->field($config['position'])->lt($delta['stop']);
         }
         foreach ($relocation['groups'] as $group => $value) {
-            $qb->field($group)->equals($value);
+            if (is_object($value) && !$dm->getMetadataFactory()->isTransient(ClassUtils::getClass($value))) {
+                $qb->field($group)->references($value);
+            } else {
+                $qb->field($group)->equals($value);
+            }
         }
 
         $qb->getQuery()->execute();
