@@ -457,3 +457,7 @@ to understand how you can use it in your projects.
 ## Alternative over configuration
 
 You can use [StofDoctrineExtensionsBundle](http://github.com/stof/StofDoctrineExtensionsBundle) which is a wrapper of these extensions
+
+## Troubleshooting
+
+- Make sure there are no *.orm.yml or *.orm.xml files for your Entities in your Bundles Resources/config/doctrine directory. With those files in place the annotations wont be taken into account.
