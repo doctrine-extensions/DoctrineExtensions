@@ -18,14 +18,14 @@ trait BlameableDocument
      * @Gedmo\Blameable(on="create")
      * @ODM\String
      */
-    private $createdBy;
+    protected $createdBy;
 
     /**
      * @var string
      * @Gedmo\Blameable(on="update")
      * @ODM\String
      */
-    private $updatedBy;
+    protected $updatedBy;
 
     /**
      * Sets createdBy.
