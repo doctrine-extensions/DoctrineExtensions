@@ -137,7 +137,11 @@ final class ORM extends BaseAdapterORM implements TranslatableAdapter
         $qb->setParameters(compact('locale', 'field'));
         if ($this->usesPersonalTranslation($translationClass)) {
             $qb->andWhere('trans.object = :object');
-            $qb->setParameter('object', $wrapped->getObject());
+            if($wrapped->getIdentifier()) {
+                $qb->setParameter('object', $wrapped->getObject());
+            } else {
+                $qb->setParameter('object', null);
+            }
         } else {
             $qb->andWhere('trans.foreignKey = :objectId');
             $qb->andWhere('trans.objectClass = :objectClass');
