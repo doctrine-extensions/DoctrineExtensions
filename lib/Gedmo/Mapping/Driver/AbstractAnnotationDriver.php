@@ -100,7 +100,7 @@ abstract class AbstractAnnotationDriver implements AnnotationDriverInterface
      */
     protected function getRelatedClassName($metadata, $name)
     {
-        if (class_exists($name)) {
+        if (class_exists($name) || interface_exists($name)) {
             return $name;
         }
         $refl = $metadata->getReflectionClass();

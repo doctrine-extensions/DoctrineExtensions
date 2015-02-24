@@ -121,7 +121,7 @@ abstract class File implements Driver
      */
     protected function getRelatedClassName($metadata, $name)
     {
-        if (class_exists($name)) {
+        if (class_exists($name) || interface_exists($name)) {
             return $name;
         }
         $refl = $metadata->getReflectionClass();

@@ -1,6 +1,6 @@
 # Doctrine2 behavioral extensions
 
-**Version 2.3.10**
+**Version 2.3.11**
 
 [![Build Status](https://secure.travis-ci.org/Atlantic18/DoctrineExtensions.png?branch=master)](http://travis-ci.org/Atlantic18/DoctrineExtensions)
 
