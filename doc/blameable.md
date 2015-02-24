@@ -603,6 +603,7 @@ Easy like that, any suggestions on improvements are very welcome
 
 You can use blameable traits for quick **createdBy** **updatedBy** string definitions
 when using annotation mapping.
+There is also a trait without annotations for easy integration purposes.
 
 **Note:** this feature is only available since php **5.4.0**. And you are not required
 to use the Traits provided by extensions.
