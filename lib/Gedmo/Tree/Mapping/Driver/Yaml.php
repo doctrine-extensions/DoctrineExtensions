@@ -67,6 +67,22 @@ class Yaml extends File implements Driver
                 $config['closure'] = $class;
             }
         }
+        
+        if (isset($mapping['id'])) {
+            foreach($mapping['id'] as $field => $fieldMapping) {
+                if (isset($fieldMapping['gedmo'])) {
+                    if (in_array('treePathSource', $fieldMapping['gedmo'])) {
+                        if (!$validator->isValidFieldForPathSource($meta, $field)) {
+                            throw new InvalidMappingException(
+                                "Tree PathSource field - [{$field}] type is not valid. It can be any of the integer variants, double, float or string in class - {$meta->name}"
+                            );
+                        }
+                        $config['path_source'] = $field;
+                    }
+                }
+            }
+        }
+        
         if (isset($mapping['fields'])) {
             foreach ($mapping['fields'] as $field => $fieldMapping) {
                 if (isset($fieldMapping['gedmo'])) {
