@@ -67,6 +67,30 @@ final class ORM extends BaseAdapterORM implements SortableAdapter
             }
         }
 
+        // add excludes
+        if (!empty($delta['exclude'])) {
+            $meta = $this->getObjectManager()->getClassMetadata($relocation['name']);
+            if (count($meta->identifier) == 1) {
+                // if we only have one identifier, we can use IN syntax, for better performance
+                $params['excluded'] = array();
+                foreach ($delta['exclude'] as $entity) {
+                    $params['excluded'][] = $meta->getFieldValue($entity, $meta->identifier[0]);
+                }
+                $dql .= " AND n.{$meta->identifier[0]} NOT IN (:excluded)";
+            } else if (count($meta->identifier) > 1) {
+                foreach ($delta['exclude'] as $entity) {
+                    $j = 0;
+                    $dql .= " AND NOT (";
+                    foreach ($meta->getIdentifierValues($entity) as $id => $value) {
+                        $dql .= ($j > 0 ? " AND " : "") . "n.{$id} = :val___".(++$i);
+                        $params['val___'.$i] = $value;
+                        $j++;
+                    }
+                    $dql .=  ")";
+                }
+            }
+        }
+
         $em = $this->getObjectManager();
         $q = $em->createQuery($dql);
         $q->setParameters($params);

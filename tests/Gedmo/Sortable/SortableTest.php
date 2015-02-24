@@ -3,6 +3,7 @@
 namespace Gedmo\Sortable;
 
 use Doctrine\Common\EventManager;
+use Doctrine\DBAL\Exception\ForeignKeyConstraintViolationException;
 use Tool\BaseTestCaseORM;
 use Sortable\Fixture\Node;
 use Sortable\Fixture\Item;
@@ -11,6 +12,8 @@ use Sortable\Fixture\SimpleListItem;
 use Sortable\Fixture\Author;
 use Sortable\Fixture\Paper;
 use Sortable\Fixture\Event;
+use Sortable\Fixture\Customer;
+use Sortable\Fixture\CustomerType;
 
 /**
  * These are tests for sortable behavior
@@ -28,6 +31,8 @@ class SortableTest extends BaseTestCaseORM
     const AUTHOR = 'Sortable\\Fixture\\Author';
     const PAPER = 'Sortable\\Fixture\\Paper';
     const EVENT = 'Sortable\\Fixture\\Event';
+    const CUSTOMER = 'Sortable\\Fixture\\Customer';
+    const CUSTOMER_TYPE = 'Sortable\\Fixture\\CustomerType';
 
     private $nodeId;
 
@@ -198,8 +203,61 @@ class SortableTest extends BaseTestCaseORM
         $this->em->remove($node2);
         $this->em->flush();
 
+        // test if synced on objects in memory correctly
         $this->assertEquals(0, $node1->getPosition());
         $this->assertEquals(1, $node3->getPosition());
+
+        // test if persisted correctly
+        $this->em->clear();
+        $nodes = $repo->findAll();
+        $this->assertCount(2, $nodes);
+        $this->assertEquals(0, $nodes[0]->getPosition());
+        $this->assertEquals(1, $nodes[1]->getPosition());
+    }
+
+    /**
+     * This is a test case for issue #1209
+     * @test
+     */
+    public function shouldRollbackPositionAfterExceptionOnDelete()
+    {
+        $repo = $this->em->getRepository(self::CUSTOMER_TYPE);
+
+        $customerType1 = new CustomerType();
+        $customerType1->setName("CustomerType1");
+        $this->em->persist($customerType1);
+
+        $customerType2 = new CustomerType();
+        $customerType2->setName("CustomerType2");
+        $this->em->persist($customerType2);
+
+        $customerType3 = new CustomerType();
+        $customerType3->setName("CustomerType3");
+        $this->em->persist($customerType3);
+
+        $customer = new Customer();
+        $customer->setName("Customer");
+        $customer->setType($customerType2);
+        $this->em->persist($customer);
+
+        $this->em->flush();
+
+        try {
+            // now delete the second customer type, which should fail
+            // because of the foreign key reference
+            $this->em->remove($customerType2);
+            $this->em->flush();
+
+            $this->fail('Foreign key constraint violation exception not thrown.');
+        } catch (ForeignKeyConstraintViolationException $e) {
+            $customerTypes = $repo->findAll();
+
+            $this->assertCount(3, $customerTypes);
+
+            $this->assertEquals(0, $customerTypes[0]->getPosition(), 'The sorting position has not been rolled back.');
+            $this->assertEquals(1, $customerTypes[1]->getPosition(), 'The sorting position has not been rolled back.');
+            $this->assertEquals(2, $customerTypes[2]->getPosition(), 'The sorting position has not been rolled back.');
+        }
     }
 
     /**
@@ -551,6 +609,8 @@ class SortableTest extends BaseTestCaseORM
             self::AUTHOR,
             self::PAPER,
             self::EVENT,
+            self::CUSTOMER,
+            self::CUSTOMER_TYPE,
         );
     }
 
