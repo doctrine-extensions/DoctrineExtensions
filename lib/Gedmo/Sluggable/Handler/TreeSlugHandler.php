@@ -173,10 +173,10 @@ class TreeSlugHandler implements SlugHandlerInterface
      */
     public function transliterate($text, $separator, $object)
     {
-        $slug = $text;
+        $slug = $text . $this->suffix;
 
         if (strlen($this->parentSlug)) {
-            $slug = $this->parentSlug.$this->usedPathSeparator.$slug.$this->suffix;
+            $slug = $this->parentSlug.$this->usedPathSeparator.$slug;
         } else {
             // if no parentSlug, apply our prefix
             $slug = $this->prefix.$slug;
