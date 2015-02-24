@@ -563,6 +563,14 @@ class UploadableListener extends MappedEventSubscriber
 
         if (is_file($info['filePath'])) {
             if ($overwrite) {
+                
+                $k = array_search($info['filePath'], $this->pendingFileRemovals);
+                
+                if ($k !== false)
+                {
+                    unset($this->pendingFileRemovals[$k]);
+                }
+                
                 $this->removeFile($info['filePath']);
             } elseif ($appendNumber) {
                 $counter = 1;
