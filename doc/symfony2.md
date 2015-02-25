@@ -168,7 +168,7 @@ services:
         tags:
             # translatable sets locale after router processing
             - { name: kernel.event_listener, event: kernel.request, method: onLateKernelRequest, priority: -10 }
-            # loggable hooks user username if one is in security context
+            # loggable and blameable hook user username if one is in security context
             - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
 
 
@@ -262,6 +262,8 @@ class DoctrineExtensionListener implements ContainerAwareInterface
         if (null !== $securityContext && null !== $securityContext->getToken() && $securityContext->isGranted('IS_AUTHENTICATED_REMEMBERED')) {
             $loggable = $this->container->get('gedmo.listener.loggable');
             $loggable->setUsername($securityContext->getToken()->getUsername());
+            $blameable = $this->container->get('gedmo.listener.blameable');
+            $blameable->setUserValue(($securityContext->getToken()->getUsername()));
         }
     }
 }
