@@ -31,46 +31,80 @@ class TimestampableTest extends BaseTestCaseORM
         $this->getMockSqliteEntityManager($evm);
     }
 
-    public function testTimestampable()
+    /**
+     * issue #1255
+     * @test
+     */
+    function shouldHandleDetatchedAndMergedBackEntities()
     {
         $sport = new Article();
         $sport->setTitle('Sport');
         $sport->setBody('Sport article body.');
 
-        $this->assertTrue($sport instanceof Timestampable);
+        $this->em->detach($sport);
+        $newSport = $this->em->merge($sport);
+
+        $this->em->persist($newSport);
+        $this->em->flush();
+
+        $this->assertNotNull($newSport->getUpdated());
+    }
+
+    /**
+     * issue #1255
+     * @test
+     */
+    function shouldHandleDetatchedAndMergedBackEntitiesAfterPersist()
+    {
+        $sport = new Article();
+        $sport->setTitle('Sport');
+        $sport->setBody('Sport article body.');
+
+        $this->em->persist($sport);
+        $this->em->flush();
+        $updated = $sport->getUpdated();
+
+        $this->em->detach($sport);
+        $newSport = $this->em->merge($sport);
+
+        $this->em->persist($newSport);
+        $this->em->flush();
+
+        $this->assertSame($newSport->getUpdated(), $updated, "There was no change, should remain the same");
+
+        $newSport->setTitle('updated');
+        $this->em->persist($newSport);
+        $this->em->flush();
+
+        $this->assertNotSame($newSport->getUpdated(), $updated, "There was a change, should not remain the same");
+    }
+
+    /**
+     * @test
+     */
+    function shouldHandleStandardBehavior()
+    {
+        $sport = new Article();
+        $sport->setTitle('Sport');
+        $sport->setBody('Sport article body.');
 
         $sportComment = new Comment();
         $sportComment->setMessage('hello');
         $sportComment->setArticle($sport);
         $sportComment->setStatus(0);
 
-        $this->assertTrue($sportComment instanceof Timestampable);
-
-        $dateCreated = new \DateTime('now');
         $this->em->persist($sport);
         $this->em->persist($sportComment);
         $this->em->flush();
 
         $sport = $this->em->getRepository(self::ARTICLE)->findOneByTitle('Sport');
-        $this->assertEquals(
-            $dateCreated->format('Y-m-d'),
-            $sport->getCreated()->format('Y-m-d')
-        );
-        $this->assertEquals(
-            $dateCreated->format('Y-m-d H:i'),
-            $sport->getUpdated()->format('Y-m-d H:i')
-        );
-        $this->assertEquals(
-            null,
-            $sport->getContentChanged()
-        );
+        $this->assertNotNull($sc = $sport->getCreated());
+        $this->assertNotNull($su = $sport->getUpdated());
+        $this->assertNull($sport->getContentChanged());
         $this->assertNull($sport->getPublished());
 
         $sportComment = $this->em->getRepository(self::COMMENT)->findOneByMessage('hello');
-        $this->assertEquals(
-            $dateCreated->format('H:i'),
-            $sportComment->getModified()->format('H:i')
-        );
+        $this->assertNotNull($scm = $sportComment->getModified());
         $this->assertNull($sportComment->getClosed());
 
         $sportComment->setStatus(1);
@@ -78,79 +112,42 @@ class TimestampableTest extends BaseTestCaseORM
         $published->setTitle('Published');
 
         $sport->setType($published);
-        $datePublished = new \DateTime('now');
         $this->em->persist($sport);
         $this->em->persist($published);
         $this->em->persist($sportComment);
         $this->em->flush();
 
         $sportComment = $this->em->getRepository(self::COMMENT)->findOneByMessage('hello');
-        $this->assertEquals(
-            $datePublished->format('Y-m-d H:i'),
-            $sportComment->getClosed()->format('Y-m-d H:i')
-        );
+        $this->assertNotNull($scc = $sportComment->getClosed());
+        $this->assertNotNull($sp = $sport->getPublished());
 
-        $this->assertEquals(
-            $datePublished->format('Y-m-d H:i'),
-            $sport->getPublished()->format('Y-m-d H:i')
-        );
-
-        sleep(1);
-
-        $dateUpdated1 = new \DateTime('now');
         $sport->setTitle('Updated');
         $this->em->persist($sport);
         $this->em->persist($published);
         $this->em->persist($sportComment);
         $this->em->flush();
 
-        $this->assertEquals(
-            $dateCreated->format('Y-m-d'),
-            $sport->getCreated()->format('Y-m-d')
-        );
-        $this->assertEquals(
-            $dateUpdated1->format('Y-m-d H:i:s'),
-            $sport->getUpdated()->format('Y-m-d H:i:s')
-        );
-        $this->assertEquals(
-            $datePublished->format('Y-m-d H:i:s'),
-            $sport->getPublished()->format('Y-m-d H:i:s')
-        );
-        $this->assertEquals(
-            $dateUpdated1->format('Y-m-d H:i:s'),
-            $sport->getContentChanged()->format('Y-m-d H:i:s')
-        );
+        $this->assertSame($sport->getCreated(), $sc, "Date created should remain same after update");
+        $this->assertNotSame($su2 = $sport->getUpdated(), $su, "Date updated should change after update");
+        $this->assertSame($sport->getPublished(), $sp, "Date published should remain the same after update");
+        $this->assertNotSame($scc2 = $sport->getContentChanged(), $scc, "Content must have changed after update");
 
-        sleep(1);
-
-        $dateUpdated2 = new \DateTime('now');
         $sport->setBody('Body updated');
         $this->em->persist($sport);
         $this->em->persist($published);
         $this->em->persist($sportComment);
         $this->em->flush();
 
-        $this->assertEquals(
-            $dateCreated->format('Y-m-d'),
-            $sport->getCreated()->format('Y-m-d')
-        );
-        $this->assertEquals(
-            $dateUpdated2->format('Y-m-d H:i:s'),
-            $sport->getUpdated()->format('Y-m-d H:i:s')
-        );
-        $this->assertEquals(
-            $datePublished->format('Y-m-d H:i:s'),
-            $sport->getPublished()->format('Y-m-d H:i:s')
-        );
-        $this->assertEquals(
-            $dateUpdated2->format('Y-m-d H:i:s'),
-            $sport->getContentChanged()->format('Y-m-d H:i:s')
-        );
-
-        $this->em->clear();
+        $this->assertSame($sport->getCreated(), $sc, "Date created should remain same after update");
+        $this->assertNotSame($sport->getUpdated(), $su2, "Date updated should change after update");
+        $this->assertSame($sport->getPublished(), $sp, "Date published should remain the same after update");
+        $this->assertNotSame($sport->getContentChanged(), $scc2, "Content must have changed after update");
     }
 
-    public function testForcedValues()
+    /**
+     * @test
+     */
+    function shouldBeAbleToForceDates()
     {
         $sport = new Article();
         $sport->setTitle('sport forced');
@@ -198,7 +195,7 @@ class TimestampableTest extends BaseTestCaseORM
     /**
      * @test
      */
-    public function shouldSolveIssue767()
+    function shouldSolveIssue767()
     {
         $type = new Type();
         $type->setTitle('Published');

@@ -25,7 +25,6 @@ class TimestampableListener extends MappedEventSubscriber
     public function getSubscribedEvents()
     {
         return array(
-            'prePersist',
             'onFlush',
             'loadClassMetadata',
         );
@@ -58,106 +57,84 @@ class TimestampableListener extends MappedEventSubscriber
         $om = $ea->getObjectManager();
         $uow = $om->getUnitOfWork();
         // check all scheduled updates
-        foreach ($ea->getScheduledObjectUpdates($uow) as $object) {
+        $all = array_merge($ea->getScheduledObjectInsertions($uow), $ea->getScheduledObjectUpdates($uow));
+        foreach ($all as $object) {
             $meta = $om->getClassMetadata(get_class($object));
-            if ($config = $this->getConfiguration($om, $meta->name)) {
-                $changeSet = $ea->getObjectChangeSet($uow, $object);
-                $needChanges = false;
+            if (!$config = $this->getConfiguration($om, $meta->name)) {
+                continue;
+            }
+            $changeSet = $ea->getObjectChangeSet($uow, $object);
+            $needChanges = false;
 
-                if (isset($config['update'])) {
-                    foreach ($config['update'] as $field) {
-                        if (!isset($changeSet[$field])) { // let manual values
-                            $needChanges = true;
-                            $this->updateField($object, $ea, $meta, $field);
-                        }
+            if ($uow->isScheduledForInsert($object) && isset($config['create'])) {
+                foreach ($config['create'] as $field) {
+                    list(, $new) = $changeSet[$field];
+                    if ($new === null) { // let manual values
+                        $needChanges = true;
+                        $this->updateField($object, $ea, $meta, $field);
                     }
-                }
-
-                if (isset($config['change'])) {
-                    foreach ($config['change'] as $options) {
-                        if (isset($changeSet[$options['field']])) {
-                            continue; // value was set manually
-                        }
-
-                        if (!is_array($options['trackedField'])) {
-                            $singleField = true;
-                            $trackedFields = array($options['trackedField']);
-                        } else {
-                            $singleField = false;
-                            $trackedFields = $options['trackedField'];
-                        }
-
-                        foreach ($trackedFields as $tracked) {
-                            $trackedChild = null;
-                            $parts = explode('.', $tracked);
-                            if (isset($parts[1])) {
-                                $tracked = $parts[0];
-                                $trackedChild = $parts[1];
-                            }
-
-                            if (isset($changeSet[$tracked])) {
-                                $changes = $changeSet[$tracked];
-                                if (isset($trackedChild)) {
-                                    $changingObject = $changes[1];
-                                    if (!is_object($changingObject)) {
-                                        throw new UnexpectedValueException(
-                                            "Field - [{$field}] is expected to be object in class - {$meta->name}"
-                                        );
-                                    }
-                                    $objectMeta = $om->getClassMetadata(get_class($changingObject));
-                                    $om->initializeObject($changingObject);
-                                    $value = $objectMeta->getReflectionProperty($trackedChild)->getValue($changingObject);
-                                } else {
-                                    $value = $changes[1];
-                                }
-
-                                if (($singleField && in_array($value, (array) $options['value'])) || $options['value'] === null) {
-                                    $needChanges = true;
-                                    $this->updateField($object, $ea, $meta, $options['field']);
-                                }
-                            }
-                        }
-                    }
-                }
-
-                if ($needChanges) {
-                    $ea->recomputeSingleObjectChangeSet($uow, $meta, $object);
                 }
             }
-        }
-    }
 
-    /**
-     * Checks for persisted Timestampable objects
-     * to update creation and modification dates
-     *
-     * @param EventArgs $args
-     *
-     * @return void
-     */
-    public function prePersist(EventArgs $args)
-    {
-        $ea = $this->getEventAdapter($args);
-        $om = $ea->getObjectManager();
-        $object = $ea->getObject();
-
-        $meta = $om->getClassMetadata(get_class($object));
-
-        if ($config = $this->getConfiguration($om, $meta->getName())) {
             if (isset($config['update'])) {
                 foreach ($config['update'] as $field) {
-                    if ($meta->getReflectionProperty($field)->getValue($object) === null) { // let manual values
+                    $isInsertAndNull = $uow->isScheduledForInsert($object) && $changeSet[$field][1] === null;
+                    if (!isset($changeSet[$field]) || $isInsertAndNull) { // let manual values
+                        $needChanges = true;
                         $this->updateField($object, $ea, $meta, $field);
                     }
                 }
             }
 
-            if (isset($config['create'])) {
-                foreach ($config['create'] as $field) {
-                    if ($meta->getReflectionProperty($field)->getValue($object) === null) { // let manual values
-                        $this->updateField($object, $ea, $meta, $field);
+            if (!$uow->isScheduledForInsert($object) && isset($config['change'])) {
+                foreach ($config['change'] as $options) {
+                    if (isset($changeSet[$options['field']])) {
+                        continue; // value was set manually
+                    }
+
+                    if (!is_array($options['trackedField'])) {
+                        $singleField = true;
+                        $trackedFields = array($options['trackedField']);
+                    } else {
+                        $singleField = false;
+                        $trackedFields = $options['trackedField'];
+                    }
+
+                    foreach ($trackedFields as $tracked) {
+                        $trackedChild = null;
+                        $parts = explode('.', $tracked);
+                        if (isset($parts[1])) {
+                            $tracked = $parts[0];
+                            $trackedChild = $parts[1];
+                        }
+
+                        if (isset($changeSet[$tracked])) {
+                            $changes = $changeSet[$tracked];
+                            if (isset($trackedChild)) {
+                                $changingObject = $changes[1];
+                                if (!is_object($changingObject)) {
+                                    throw new UnexpectedValueException(
+                                        "Field - [{$field}] is expected to be object in class - {$meta->name}"
+                                    );
+                                }
+                                $objectMeta = $om->getClassMetadata(get_class($changingObject));
+                                $om->initializeObject($changingObject);
+                                $value = $objectMeta->getReflectionProperty($trackedChild)->getValue($changingObject);
+                            } else {
+                                $value = $changes[1];
+                            }
+
+                            if (($singleField && in_array($value, (array) $options['value'])) || $options['value'] === null) {
+                                $needChanges = true;
+                                $this->updateField($object, $ea, $meta, $options['field']);
+                            }
+                        }
                     }
                 }
+            }
+
+            if ($needChanges) {
+                $ea->recomputeSingleObjectChangeSet($uow, $meta, $object);
             }
         }
     }
