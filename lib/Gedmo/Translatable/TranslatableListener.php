@@ -51,17 +51,6 @@ class TranslatableListener extends MappedEventSubscriber
     protected $locale = 'en_US';
 
     /**
-     * Default locale, this changes behavior
-     * to not update the original record field if locale
-     * which is used for updating is not default. This
-     * will load the default translation in other locales
-     * if record is not translated yet
-     *
-     * @var string
-     */
-    private $defaultLocale = 'en_US';
-
-    /**
      * If this is set to false, when if entity does
      * not have a translation for requested locale
      * it will show a blank value
@@ -109,6 +98,22 @@ class TranslatableListener extends MappedEventSubscriber
      * @var array
      */
     private $translationInDefaultLocale = array();
+
+    /**
+     * @var LocaleResolver
+     */
+    private $localeResolver;
+
+    /**
+     * Constructor.
+     *
+     */
+    public function __construct()
+    {
+        parent::__construct();
+
+        $this->localeResolver = new LocaleResolver();
+    }
 
     /**
      * Specifies the list of events to listen
@@ -176,6 +181,14 @@ class TranslatableListener extends MappedEventSubscriber
     public function addPendingTranslationInsert($oid, $translation)
     {
         $this->pendingTranslationInserts[$oid][] = $translation;
+    }
+
+    /**
+     * @param $localeResolver
+     */
+    public function setLocaleResolver($localeResolver)
+    {
+        $this->localeResolver = $localeResolver;
     }
 
     /**
@@ -259,7 +272,7 @@ class TranslatableListener extends MappedEventSubscriber
     public function setDefaultLocale($locale)
     {
         $this->validateLocale($locale);
-        $this->defaultLocale = $locale;
+        $this->localeResolver->setDefaultLocale($locale);
 
         return $this;
     }
@@ -271,7 +284,7 @@ class TranslatableListener extends MappedEventSubscriber
      */
     public function getDefaultLocale()
     {
-        return $this->defaultLocale;
+        return $this->localeResolver->getDefaultLocale();
     }
 
     /**
@@ -453,7 +466,7 @@ class TranslatableListener extends MappedEventSubscriber
             return;
         }
 
-        if (isset($config['fields']) && ($locale !== $this->defaultLocale || $this->persistDefaultLocaleTranslation)) {
+        if (isset($config['fields']) && ($locale !== $this->localeResolver->getDefaultLocale($object) || $this->persistDefaultLocaleTranslation)) {
             // fetch translations
             $translationClass = $this->getTranslationClass($ea, $config['useObjectClass']);
             $result = $ea->loadTranslations(
@@ -535,6 +548,7 @@ class TranslatableListener extends MappedEventSubscriber
         $objectId = $wrapped->getIdentifier();
         // load the currently used locale
         $locale = $this->getTranslatableLocale($object, $meta);
+        $defaultLocale = $this->localeResolver->getDefaultLocale($object, $meta);
 
         $uow = $om->getUnitOfWork();
         $oid = spl_object_hash($object);
@@ -549,9 +563,9 @@ class TranslatableListener extends MappedEventSubscriber
             }
             $translation = null;
             foreach ($ea->getScheduledObjectInsertions($uow) as $trans) {
-                if ($locale !== $this->defaultLocale
+                if ($locale !== $defaultLocale
                     && get_class($trans) === $translationClass
-                    && $trans->getLocale() === $this->defaultLocale
+                    && $trans->getLocale() === $defaultLocale
                     && $trans->getField() === $field
                     && $this->belongsToObject($ea, $trans, $object)) {
                     $this->setTranslationInDefaultLocale($oid, $field, $trans);
@@ -585,7 +599,7 @@ class TranslatableListener extends MappedEventSubscriber
 
             // create new translation if translation not already created and locale is different from default locale, otherwise, we have the date in the original record
             $persistNewTranslation = !$translation
-                && ($locale !== $this->defaultLocale || $this->persistDefaultLocaleTranslation)
+                && ($locale !== $defaultLocale || $this->persistDefaultLocaleTranslation)
             ;
             if ($persistNewTranslation) {
                 $translation = $translationMetadata->newInstance();
@@ -633,12 +647,12 @@ class TranslatableListener extends MappedEventSubscriber
         }
         $this->translatedInLocale[$oid] = $locale;
         // check if we have default translation and need to reset the translation
-        if (!$isInsert && strlen($this->defaultLocale)) {
-            $this->validateLocale($this->defaultLocale);
+        if (!$isInsert && strlen($defaultLocale)) {
+            $this->validateLocale($defaultLocale);
             $modifiedChangeSet = $changeSet;
             foreach ($changeSet as $field => $changes) {
                 if (in_array($field, $translatableFields)) {
-                    if ($locale !== $this->defaultLocale) {
+                    if ($locale !== $defaultLocale) {
                         $ea->setOriginalObjectProperty($uow, $oid, $field, $changes[0]);
                         unset($modifiedChangeSet[$field]);
                     }
@@ -646,7 +660,7 @@ class TranslatableListener extends MappedEventSubscriber
             }
             $ea->recomputeSingleObjectChangeset($uow, $meta, $object);
             // cleanup current changeset only if working in a another locale different than de default one, otherwise the changeset will always be reverted
-            if ($locale !== $this->defaultLocale) {
+            if ($locale !== $defaultLocale) {
                 $ea->clearObjectChangeSet($uow, $oid);
                 // recompute changeset only if there are changes other than reverted translations
                 if ($modifiedChangeSet || $this->hasTranslationsInDefaultLocale($oid)) {
