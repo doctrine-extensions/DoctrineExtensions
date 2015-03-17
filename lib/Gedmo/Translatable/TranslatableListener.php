@@ -184,11 +184,19 @@ class TranslatableListener extends MappedEventSubscriber
     }
 
     /**
-     * @param $localeResolver
+     * @param LocaleResolverInterface $localeResolver
      */
     public function setLocaleResolver($localeResolver)
     {
         $this->localeResolver = $localeResolver;
+    }
+
+    /**
+     * @return LocaleResolverInterface
+     */
+    public function getLocaleResolver()
+    {
+        return $this->localeResolver;
     }
 
     /**
