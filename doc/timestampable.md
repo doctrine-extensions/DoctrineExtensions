@@ -425,7 +425,7 @@ class Article
      * @Gedmo\Timestampable(on="change", field="type.title", value="Published")
      *
      * or for example
-     * @Gedmo\Timestambable(on="change", field="type.title", value={"Published", "Closed"})
+     * @Gedmo\Timestampable(on="change", field="type.title", value={"Published", "Closed"})
      */
     private $published;
 
