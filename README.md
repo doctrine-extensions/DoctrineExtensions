@@ -1,12 +1,16 @@
 # Doctrine2 behavioral extensions
 
-**Version 2.3.11**
+**Version 2.4.0**
 
 [![Build Status](https://secure.travis-ci.org/Atlantic18/DoctrineExtensions.png?branch=master)](http://travis-ci.org/Atlantic18/DoctrineExtensions)
 
 **Note:** Extensions **2.3.x** are compatible with ORM and doctrine common library versions from **2.2.x** to **2.4.x**
 
 ### Latest updates
+
+**2015-03-26**
+
+Support for ORM and Common library **2.5.0**. A minor version bump, because of trait column changes.
 
 **2015-01-28**
 
