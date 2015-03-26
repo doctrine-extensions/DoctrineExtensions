@@ -81,7 +81,7 @@ class PersonalTranslationTest extends BaseTestCaseORM
 
         $sqlQueriesExecuted = $this->queryAnalyzer->getExecutedQueries();
         $this->assertCount(2, $sqlQueriesExecuted);
-        $this->assertEquals('SELECT t0.id AS id1, t0.locale AS locale2, t0.field AS field3, t0.content AS content4, t0.object_id AS object_id5 FROM article_translations t0 WHERE t0.object_id = 1', $sqlQueriesExecuted[1]);
+        $this->assertEquals('SELECT t0.id AS id_1, t0.locale AS locale_2, t0.field AS field_3, t0.content AS content_4, t0.object_id AS object_id_5 FROM article_translations t0 WHERE t0.object_id = 1', $sqlQueriesExecuted[1]);
         $this->assertEquals('lt', $article->getTitle());
     }
 
@@ -216,7 +216,7 @@ class PersonalTranslationTest extends BaseTestCaseORM
         $this->assertEquals('lt', $result[0]['title']);
         $sqlQueriesExecuted = $this->queryAnalyzer->getExecutedQueries();
         $this->assertCount(1, $sqlQueriesExecuted);
-        $this->assertEquals("SELECT CAST(t1_.content AS VARCHAR(128)) AS title0 FROM Article a0_ LEFT JOIN article_translations t1_ ON t1_.locale = 'lt' AND t1_.field = 'title' AND t1_.object_id = a0_.id", $sqlQueriesExecuted[0]);
+        $this->assertEquals("SELECT CAST(t1_.content AS VARCHAR(128)) AS title_0 FROM Article a0_ LEFT JOIN article_translations t1_ ON t1_.locale = 'lt' AND t1_.field = 'title' AND t1_.object_id = a0_.id", $sqlQueriesExecuted[0]);
     }
 
     private function populate()
