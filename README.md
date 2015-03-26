@@ -4,6 +4,7 @@
 
 [![Build Status](https://secure.travis-ci.org/Atlantic18/DoctrineExtensions.png?branch=master)](http://travis-ci.org/Atlantic18/DoctrineExtensions)
 
+**Note:** Extensions **2.4.x** are compatible with ORM and doctrine common library versions from **2.2.x** to **2.5.x**
 **Note:** Extensions **2.3.x** are compatible with ORM and doctrine common library versions from **2.2.x** to **2.4.x**
 
 ### Latest updates
