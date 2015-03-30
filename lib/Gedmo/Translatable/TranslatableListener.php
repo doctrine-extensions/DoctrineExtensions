@@ -558,20 +558,28 @@ class TranslatableListener extends MappedEventSubscriber
                     break;
                 }
             }
+
             // lookup persisted translations
-            if ($ea->usesPersonalTranslation($translationClass)) {
-                foreach ($ea->getScheduledObjectInsertions($uow) as $trans) {
-                    $wasPersistedSeparetely = get_class($trans) === $translationClass
-                        && $trans->getLocale() === $locale
-                        && $trans->getField() === $field
-                        && $trans->getObject() === $object
-                    ;
-                    if ($wasPersistedSeparetely) {
-                        $translation = $trans;
-                        break;
-                    }
+            foreach ($ea->getScheduledObjectInsertions($uow) as $trans) {
+                if (get_class($trans) !== $translationClass
+                    || $trans->getLocale() !== $locale
+                    || $trans->getField() !== $field) {
+                    continue;
+                }
+
+                if ($ea->usesPersonalTranslation($translationClass)) {
+                    $wasPersistedSeparetely = $trans->getObject() === $object;
+                } else {
+                    $wasPersistedSeparetely = $trans->getObjectClass() === $config['useObjectClass']
+                        && $trans->getForeignKey() === $objectId;
+                }
+
+                if ($wasPersistedSeparetely) {
+                    $translation = $trans;
+                    break;
                 }
             }
+
             // check if translation already is created
             if (!$isInsert && !$translation) {
                 $translation = $ea->findTranslation(
