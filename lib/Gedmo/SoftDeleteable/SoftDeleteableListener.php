@@ -2,6 +2,8 @@
 
 namespace Gedmo\SoftDeleteable;
 
+use Doctrine\ORM\Event\LifecycleEventArgs;
+use Doctrine\ORM\Event\ListenersInvoker;
 use Gedmo\Mapping\MappedEventSubscriber;
 use Doctrine\Common\EventArgs;
 
@@ -52,6 +54,8 @@ class SoftDeleteableListener extends MappedEventSubscriber
         $ea = $this->getEventAdapter($args);
         $om = $ea->getObjectManager();
         $uow = $om->getUnitOfWork();
+        $listenerInvoker = new ListenersInvoker($om);
+
         $evm = $om->getEventManager();
 
         //getScheduledDocumentDeletions
@@ -64,6 +68,11 @@ class SoftDeleteableListener extends MappedEventSubscriber
                 $oldValue = $reflProp->getValue($object);
                 if ($oldValue instanceof \Datetime) {
                     continue; // want to hard delete
+                }
+
+                $invoke = $listenerInvoker->getSubscribedSystems($meta, self::PRE_SOFT_DELETE);
+                if ($invoke !== ListenersInvoker::INVOKE_NONE) {
+                    $listenerInvoker->invoke($meta, self::PRE_SOFT_DELETE, $object, $ea->createLifecycleEventArgsInstance($object, $om), $invoke);
                 }
 
                 $evm->dispatchEvent(
@@ -79,6 +88,11 @@ class SoftDeleteableListener extends MappedEventSubscriber
                 $uow->scheduleExtraUpdate($object, array(
                     $config['fieldName'] => array($oldValue, $date),
                 ));
+
+                $invoke = $listenerInvoker->getSubscribedSystems($meta, self::POST_SOFT_DELETE);
+                if ($invoke !== ListenersInvoker::INVOKE_NONE) {
+                    $listenerInvoker->invoke($meta, self::POST_SOFT_DELETE, $object, $ea->createLifecycleEventArgsInstance($object, $om), $invoke);
+                }
 
                 $evm->dispatchEvent(
                     self::POST_SOFT_DELETE,
