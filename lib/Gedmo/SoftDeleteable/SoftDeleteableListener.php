@@ -2,6 +2,8 @@
 
 namespace Gedmo\SoftDeleteable;
 
+use Doctrine\Entity;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\ListenersInvoker;
 use Gedmo\Mapping\MappedEventSubscriber;
@@ -54,7 +56,10 @@ class SoftDeleteableListener extends MappedEventSubscriber
         $ea = $this->getEventAdapter($args);
         $om = $ea->getObjectManager();
         $uow = $om->getUnitOfWork();
-        $listenerInvoker = new ListenersInvoker($om);
+
+        if ( $om instanceof EntityManagerInterface ) {
+            $listenerInvoker = new ListenersInvoker($om);
+        }
 
         $evm = $om->getEventManager();
 
@@ -70,15 +75,17 @@ class SoftDeleteableListener extends MappedEventSubscriber
                     continue; // want to hard delete
                 }
 
-                $invoke = $listenerInvoker->getSubscribedSystems($meta, self::PRE_SOFT_DELETE);
-                if ($invoke !== ListenersInvoker::INVOKE_NONE) {
-                    $listenerInvoker->invoke($meta, self::PRE_SOFT_DELETE, $object, $ea->createLifecycleEventArgsInstance($object, $om), $invoke);
+                if ( $om instanceof EntityManagerInterface && isset($listenerInvoker) ) {
+                    $invoke = $listenerInvoker->getSubscribedSystems($meta, self::PRE_SOFT_DELETE);
+                    if ($invoke !== ListenersInvoker::INVOKE_NONE) {
+                        $listenerInvoker->invoke($meta, self::PRE_SOFT_DELETE, $object, $ea->createLifecycleEventArgsInstance($object, $om), $invoke);
+                    }
+                } else {
+                    $evm->dispatchEvent(
+                        self::PRE_SOFT_DELETE,
+                        $ea->createLifecycleEventArgsInstance($object, $om)
+                    );
                 }
-
-                $evm->dispatchEvent(
-                    self::PRE_SOFT_DELETE,
-                    $ea->createLifecycleEventArgsInstance($object, $om)
-                 );
 
                 $date = new \DateTime();
                 $reflProp->setValue($object, $date);
@@ -89,15 +96,18 @@ class SoftDeleteableListener extends MappedEventSubscriber
                     $config['fieldName'] => array($oldValue, $date),
                 ));
 
-                $invoke = $listenerInvoker->getSubscribedSystems($meta, self::POST_SOFT_DELETE);
-                if ($invoke !== ListenersInvoker::INVOKE_NONE) {
-                    $listenerInvoker->invoke($meta, self::POST_SOFT_DELETE, $object, $ea->createLifecycleEventArgsInstance($object, $om), $invoke);
+                if ( $om instanceof EntityManagerInterface && isset($listenerInvoker) ) {
+                    $invoke = $listenerInvoker->getSubscribedSystems($meta, self::POST_SOFT_DELETE);
+                    if ($invoke !== ListenersInvoker::INVOKE_NONE) {
+                        $listenerInvoker->invoke($meta, self::POST_SOFT_DELETE, $object, $ea->createLifecycleEventArgsInstance($object, $om), $invoke);
+                    }
+                } else {
+                    $evm->dispatchEvent(
+                        self::POST_SOFT_DELETE,
+                        $ea->createLifecycleEventArgsInstance($object, $om)
+                    );
                 }
 
-                $evm->dispatchEvent(
-                    self::POST_SOFT_DELETE,
-                    $ea->createLifecycleEventArgsInstance($object, $om)
-                );
             }
         }
     }
