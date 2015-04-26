@@ -17,6 +17,14 @@ use Doctrine\ORM\Proxy\Proxy;
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
+ * @method persistAsFirstChild($node)
+ * @method persistAsFirstChildOf($node, $parent)
+ * @method persistAsLastChild($node)
+ * @method persistAsLastChildOf($node, $parent)
+ * @method persistAsNextSibling($node)
+ * @method persistAsNextSiblingOf($node, $sibling)
+ * @method persistAsPrevSibling($node)
+ * @method persistAsPrevSiblingOf($node, $sibling)
  */
 class NestedTreeRepository extends AbstractTreeRepository
 {
