@@ -16,14 +16,14 @@ trait BlameableEntity
     /**
      * @var string
      * @Gedmo\Blameable(on="create")
-     * @ORM\Column(name="created_by", nullable=true)
+     * @ORM\Column(nullable=true)
      */
     protected $createdBy;
 
     /**
      * @var string
      * @Gedmo\Blameable(on="update")
-     * @ORM\Column(name="updated_by", nullable=true)
+     * @ORM\Column(nullable=true)
      */
     protected $updatedBy;
 

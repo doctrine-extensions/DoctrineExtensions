@@ -19,7 +19,7 @@ trait SoftDeleteable
      * Sets deletedAt.
      *
      * @param \Datetime|null $deletedAt
-     * 
+     *
      * @return $this
      */
     public function setDeletedAt(\DateTime $deletedAt = null)
@@ -38,10 +38,10 @@ trait SoftDeleteable
     {
         return $this->deletedAt;
     }
-    
+
     /**
      * Is deleted?
-     * 
+     *
      * @return bool
      */
     public function isDeleted()

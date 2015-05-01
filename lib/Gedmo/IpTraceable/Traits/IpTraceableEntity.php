@@ -16,14 +16,14 @@ trait IpTraceableEntity
     /**
      * @var string
      * @Gedmo\IpTraceable(on="create")
-     * @ORM\Column(name="created_from_ip", length=45, nullable=true)
+     * @ORM\Column(length=45, nullable=true)
      */
     protected $createdFromIp;
 
     /**
      * @var string
      * @Gedmo\IpTraceable(on="update")
-     * @ORM\Column(name="updated_from_ip", length=45, nullable=true)
+     * @ORM\Column(length=45, nullable=true)
      */
     protected $updatedFromIp;
 
