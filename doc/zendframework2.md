@@ -17,9 +17,9 @@ Add DoctrineModule, DoctrineORMModule and DoctrineExtensions to composer.json fi
     }
 }
 ```
-    
+
 Then run `composer.phar update`.
-    
+
 ### Configuration
 
 Once libraries are installed, you can tell Doctrine which behaviors you want to use, by declaring appropriate subscribers in Event Manager settings. Together with [entity mapping options](https://github.com/doctrine/DoctrineORMModule#entities-settings), your module configuration file should look like following:
@@ -30,7 +30,7 @@ return array(
         'eventmanager' => array(
             'orm_default' => array(
                 'subscribers' => array(
-                
+
                     // pick any listeners you need
                     'Gedmo\Tree\TreeListener',
                     'Gedmo\Timestampable\TimestampableListener',

@@ -14,9 +14,6 @@ Features:
 - Can be nested with other behaviors
 - Annotation, Yaml and Xml mapping support for extensions
 
-[blog_reference]: http://gediminasm.org/article/translatable-behavior-extension-for-doctrine-2 "Translatable extension for Doctrine 2 makes automatic record field translations and their loading depending on language used"
-[blog_test]: http://gediminasm.org/test "Test extensions on this blog"
-
 **2012-01-28**
 
 - Created personal translation which maps through real foreign key
@@ -57,7 +54,6 @@ and any number of them
 
 **Note list:**
 
-- You can [test live][blog_test] on this blog
 - Public [Translatable repository](http://github.com/l3pp4rd/DoctrineExtensions "Translatable extension on Github") is available on github
 - Using other extensions on the same Entity fields may result in unexpected way
 - May impact your application performance since it does an additional query for translation if loaded without query hint

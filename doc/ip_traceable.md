@@ -512,6 +512,7 @@ Easy like that, any suggestions on improvements are very welcome
 
 You can use IpTraceable traits for quick **createdFromIp** **updatedFromIp** string definitions
 when using annotation mapping.
+There is also a trait without annotations for easy integration purposes.
 
 **Note:** this feature is only available since php **5.4.0**. And you are not required
 to use the Traits provided by extensions.
@@ -521,7 +522,6 @@ to use the Traits provided by extensions.
 namespace IpTraceable\Fixture;
 
 use Gedmo\IpTraceable\Traits\IpTraceableEntity;
-use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -548,10 +548,6 @@ class UsingTrait
     private $title;
 }
 ```
-
-**Note:** you must import **Gedmo\Mapping\Annotation as Gedmo** and **Doctrine\ORM\Mapping as ORM**
-annotations. If you use mongodb ODM import **Doctrine\ODM\MongoDB\Mapping\Annotations as ODM** and
-**IpTraceableDocument** instead.
 
 The Traits are very simplistic - if you use different field names it is recommended to simply create your
 own Traits specific to your project. The ones provided by this bundle can be used as example.

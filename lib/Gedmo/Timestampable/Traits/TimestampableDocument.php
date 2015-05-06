@@ -2,6 +2,7 @@
 
 namespace Gedmo\Timestampable\Traits;
 
+use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
@@ -17,14 +18,14 @@ trait TimestampableDocument
      * @Gedmo\Timestampable(on="create")
      * @ODM\Date
      */
-    private $createdAt;
+    protected $createdAt;
 
     /**
      * @var \DateTime
      * @Gedmo\Timestampable(on="update")
      * @ODM\Date
      */
-    private $updatedAt;
+    protected $updatedAt;
 
     /**
      * Sets createdAt.

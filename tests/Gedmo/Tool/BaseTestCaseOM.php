@@ -298,6 +298,10 @@ abstract class BaseTestCaseOM extends \PHPUnit_Framework_TestCase
             ->method('getProxyNamespace')
             ->will($this->returnValue('Proxy'));
 
+        $config->expects($this->any())
+            ->method('getDefaultQueryHints')
+            ->will($this->returnValue(array()));
+
         $config->expects($this->once())
             ->method('getAutoGenerateProxyClasses')
             ->will($this->returnValue(true));

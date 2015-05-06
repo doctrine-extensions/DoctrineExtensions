@@ -38,9 +38,8 @@ class BlameableDocumentTest extends BaseTestCaseMongoODM
 
         $manager = $this->getMockDocumentManager($evm);
         $manager->persist($user);
-        $manager->flush();
-
         $this->populate();
+        $manager->flush();
     }
 
     public function testBlameable()
@@ -59,7 +58,6 @@ class BlameableDocumentTest extends BaseTestCaseMongoODM
         $this->dm->persist($article);
         $this->dm->persist($published);
         $this->dm->flush();
-        $this->dm->clear();
 
         $article = $repo->findOneByTitle('Blameable Article');
 
@@ -76,7 +74,6 @@ class BlameableDocumentTest extends BaseTestCaseMongoODM
 
         $this->dm->persist($sport);
         $this->dm->flush();
-        $this->dm->clear();
 
         $repo = $this->dm->getRepository(self::ARTICLE);
         $sport = $repo->findOneByTitle('sport forced');
@@ -92,7 +89,6 @@ class BlameableDocumentTest extends BaseTestCaseMongoODM
         $this->dm->persist($sport);
         $this->dm->persist($published);
         $this->dm->flush();
-        $this->dm->clear();
 
         $sport = $repo->findOneByTitle('sport forced');
         $this->assertEquals(self::TEST_USERNAME, $sport->getPublished());
@@ -104,7 +100,5 @@ class BlameableDocumentTest extends BaseTestCaseMongoODM
         $art0->setTitle('Blameable Article');
 
         $this->dm->persist($art0);
-        $this->dm->flush();
-        $this->dm->clear();
     }
 }

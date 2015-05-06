@@ -1,12 +1,24 @@
 # Doctrine2 behavioral extensions
 
-**Version 2.3.10**
+**Version 2.4.1**
 
 [![Build Status](https://secure.travis-ci.org/Atlantic18/DoctrineExtensions.png?branch=master)](http://travis-ci.org/Atlantic18/DoctrineExtensions)
+
+**Note:** Extensions **2.4.x** are compatible with ORM and doctrine common library versions from **2.2.x** to **2.5.x**.
+ORM 2.5.x versions require **PHP 5.4** or higher.
 
 **Note:** Extensions **2.3.x** are compatible with ORM and doctrine common library versions from **2.2.x** to **2.4.x**
 
 ### Latest updates
+
+**2015-05-01**
+
+- Reverted back [1272](https://github.com/Atlantic18/DoctrineExtensions/pull/1272) and see [1263](https://github.com/Atlantic18/DoctrineExtensions/issues/1263). Use [naming strategy](http://stackoverflow.com/questions/12702657/how-to-configure-naming-strategy-in-doctrine-2) for your use cases.
+- Fixed bug for sortable [1279](https://github.com/Atlantic18/DoctrineExtensions/pull/1279)
+
+**2015-03-26**
+
+Support for ORM and Common library **2.5.0**. A minor version bump, because of trait column changes.
 
 **2015-01-28**
 
@@ -16,22 +28,6 @@ was in the same namespace, but extensions required it to be mapped as full class
 **2015-01-21**
 
 Fixed memory leak issue with entity or document wrappers for convenient metadata retrieval.
-
-**2014-03-20**
-
-**DoctrineExtensions** has [new home on github](https://github.com/Atlantic18/DoctrineExtensions) under an unbrella of
-[ORM designer](http://www.orm-designer.com/) organization. I'm sure there it will find much more improvements over the
-time and the original author of extensions will remain a core member of this project.
-The reason why it was moved elsewhere - is mainly because more enthusiastic people would bring more ideas to the project
-and remain interested in it's future, especially when it is related to their daily work and vision.
-
-**2014-01-12**
-
-- **Uploadable** filename support #915, #924, #910
-- **Tree-MaterializedPath** fixed issue when a Proxy object was scheduled for removal #937
-- **Sluggable** relation slug handler option to urlize non slug relation field #947
-- **Sluggable** pass an object to urlizer #941
-- **IpTraceable** new extension to trace ip addresses based on timestampable #912
 
 ### Summary and features
 
@@ -93,10 +89,6 @@ List of extensions which support ODM
 
 All these extensions can be nested together and mapped in traditional ways - annotations,
 xml or yaml
-
-You can test these extensions on [my blog](http://gediminasm.org/demo "Test doctrine behavioral extensions").
-All tutorials for basic usage examples are on [my blog](http://gediminasm.org "Tutorials for extensions") too.
-You can also fork or clone this blog from [github repository](https://github.com/l3pp4rd/gediminasm.org)
 
 ### Running the tests:
 

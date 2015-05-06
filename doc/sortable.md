@@ -10,9 +10,6 @@ Features:
 - Can be nested with other behaviors
 - Annotation, Yaml and Xml mapping support for extensions
 
-[blog_reference]: http://gediminasm.org/article/sortable-behavior-extension-for-doctrine2 "Sortable extension will enable ordering on any entity or its relation"
-[blog_test]: http://gediminasm.org/test "Test extensions on this blog"
-
 **Note:**
 
 - Public [Sortable repository](http://github.com/l3pp4rd/DoctrineExtensions "Sortable extension on Github") is available on github
@@ -116,12 +113,12 @@ class Item
     {
         return $this->position;
     }
-    
+
     public function setCategory($category)
     {
         $this->category = $category;
     }
-    
+
     public function getCategory()
     {
         return $this->category;

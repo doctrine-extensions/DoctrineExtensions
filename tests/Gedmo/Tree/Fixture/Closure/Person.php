@@ -15,7 +15,7 @@ use Doctrine\ORM\Mapping as ORM;
     "user" = "User"
     })
  */
-class Person
+abstract class Person
 {
     /**
      * @ORM\Column(name="id", type="integer")

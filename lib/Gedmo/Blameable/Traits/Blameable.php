@@ -2,30 +2,23 @@
 
 namespace Gedmo\Blameable\Traits;
 
-use Doctrine\ORM\Mapping as ORM;
-use Gedmo\Mapping\Annotation as Gedmo;
-
 /**
  * Blameable Trait, usable with PHP >= 5.4
  *
  * @author David Buchmann <mail@davidbu.ch>
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-trait BlameableEntity
+trait Blameable
 {
     /**
      * @var string
-     * @Gedmo\Blameable(on="create")
-     * @ORM\Column(nullable=true)
      */
-    protected $createdBy;
+    private $createdBy;
 
     /**
      * @var string
-     * @Gedmo\Blameable(on="update")
-     * @ORM\Column(nullable=true)
      */
-    protected $updatedBy;
+    private $updatedBy;
 
     /**
      * Sets createdBy.

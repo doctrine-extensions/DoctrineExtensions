@@ -16,9 +16,6 @@ Features:
 - Can be nested with other extensions
 - Annotation, Yaml and Xml mapping support for extensions
 
-[blog_reference]: http://gediminasm.org/article/tree-nestedset-behavior-extension-for-doctrine-2 "Tree - Nestedset or Closure extension for Doctrine 2 makes tree implementation on entities"
-[blog_test]: http://gediminasm.org/test "Test extensions on this blog"
-
 Thanks for contributions to:
 
 - **[comfortablynumb](http://github.com/comfortablynumb) Gustavo Falco** for Closure and Materialized Path strategy
@@ -58,8 +55,7 @@ Update **2011-02-02**
 
 **Note:**
 
-- You can [test live][blog_test] on this blog
-- After using a NestedTreeRepository functions: **verify, recover, removeFromTree** it is recommended to clear EntityManager cache
+- After using a NestedTreeRepository functions: **verify, recover, removeFromTree** it is recommended to clear the EntityManager cache
 because nodes may have changed values in database but not in memory. Flushing dirty nodes can lead to unexpected behaviour.
 - Closure tree implementation is experimental and not fully functional, so far not documented either
 - Public [Tree repository](http://github.com/l3pp4rd/DoctrineExtensions "Tree extension on Github") is available on github
@@ -92,14 +88,14 @@ Content:
 
 Read the [documentation](http://github.com/l3pp4rd/DoctrineExtensions/blob/master/doc/annotations.md#em-setup)
 or check the [example code](http://github.com/l3pp4rd/DoctrineExtensions/tree/master/example)
-on how to setup and use the extensions in most optimized way.
+on how to setup and use the extensions in the most optimized way.
 
 <a name="entity-mapping"></a>
 
 ## Tree Entity example:
 
-**Note:** that Node interface is not necessary, except in cases there
-you need to identify entity as being Tree Node. The metadata is loaded only once then
+**Note:** Node interface is not necessary, except in cases where
+you need to identify and entity as being a Tree Node. The metadata is loaded only once when the
 cache is activated
 
 ``` php
@@ -197,20 +193,20 @@ class Category
 
 ### Tree annotations:
 
-- **@Gedmo\Mapping\Annotation\Tree(type="strategy")** this **class annotation** is used to set the tree strategy by **type** parameter.
+- **@Gedmo\Mapping\Annotation\Tree(type="strategy")** this **class annotation** sets the tree strategy by using the **type** parameter.
 Currently **nested**, **closure** or **materializedPath** strategies are supported. An additional "activateLocking" parameter
 is available if you use the "Materialized Path" strategy with MongoDB. It's used to activate the locking mechanism (more on that
 in the corresponding section).
-- **@Gedmo\Mapping\Annotation\TreeLeft** it will use this field to store tree **left** value
-- **@Gedmo\Mapping\Annotation\TreeRight** it will use this field to store tree **right** value
-- **@Gedmo\Mapping\Annotation\TreeParent** this will identify this column as the relation to **parent node**
-- **@Gedmo\Mapping\Annotation\TreeLevel** it will use this field to store tree **level**
-- **@Gedmo\Mapping\Annotation\TreeRoot** it will use this field to store tree **root** id value
-- **@Gedmo\Mapping\Annotation\TreePath** (Materialized Path only) it will use this field to store the **path**. It has an
-optional parameter "separator" to define the separator used in the path
-- **@Gedmo\Mapping\Annotation\TreePathSource** (Materialized Path only) it will use this field as the source to
+- **@Gedmo\Mapping\Annotation\TreeLeft** field is used to store the tree **left** value
+- **@Gedmo\Mapping\Annotation\TreeRight** field is used to store the tree **right** value
+- **@Gedmo\Mapping\Annotation\TreeParent** will identify the column as the relation to **parent node**
+- **@Gedmo\Mapping\Annotation\TreeLevel** field is used to store the tree **level**
+- **@Gedmo\Mapping\Annotation\TreeRoot** field is used to store the tree **root** id value
+- **@Gedmo\Mapping\Annotation\TreePath** (Materialized Path only) field is used to store the **path**. It has an
+optional parameter "separator" to define the separator used in the path.
+- **@Gedmo\Mapping\Annotation\TreePathSource** (Materialized Path only) field is used as the source to
  construct the "path"
-- **@Gedmo\Mapping\Annotation\TreeLockTime** (Materialized Path - ODM MongoDB only) this field is used if you need to
+- **@Gedmo\Mapping\Annotation\TreeLockTime** (Materialized Path - ODM MongoDB only) field is used if you need to
 use the locking mechanism with MongoDB. It persists the lock time if a root node is locked (more on that in the corresponding
 section).
 
@@ -493,8 +489,8 @@ Tree after moving the Carrots down as last child:
     /Fruits
 ```
 
-**Note:** tree repository functions: **verify, recover, removeFromTree**.
-Will require to clear the cache of Entity Manager because left-right values will differ.
+**Note:** the tree repository functions **verify, recover, removeFromTree**
+will require you to clear the cache of the Entity Manager because left-right values will differ.
 So after that use **$em->clear();** if you will continue using the nodes after these operations.
 
 ### If you need a repository for your TreeNode Entity simply extend it
@@ -526,9 +522,9 @@ class Category
 
 ## Create html tree:
 
-### Retrieving whole tree as array
+### Retrieving the whole tree as an array
 
-If you would like to load whole tree as node array hierarchy use:
+If you would like to load the whole tree as a node array hierarchy use:
 
 ``` php
 <?php
@@ -536,11 +532,11 @@ $repo = $em->getRepository('Entity\Category');
 $arrayTree = $repo->childrenHierarchy();
 ```
 
-All node children will stored under **__children** key for each node.
+All node children are stored under the **__children** key for each node.
 
 ### Retrieving as html tree
 
-To load a tree as **ul - li** html tree use:
+To load a tree as a **ul - li** html tree use:
 
 ``` php
 <?php
@@ -579,7 +575,7 @@ $htmlTree = $repo->childrenHierarchy(
 
 ```
 
-### Generate own node list
+### Generate your own node list
 
 ``` php
 <?php
@@ -628,9 +624,9 @@ $controller = $this;
 
 ## Advanced examples:
 
-### Nesting Translatatable and Sluggable extensions
+### Nesting Translatable and Sluggable extensions
 
-If you want to attach **TranslationListener** also add it to EventManager after
+If you want to attach **TranslatableListener** and also add it to EventManager after
 the **SluggableListener** and **TreeListener**. It is important because slug must be generated first
 before the creation of it`s translation.
 
@@ -641,7 +637,7 @@ $treeListener = new \Gedmo\Tree\TreeListener();
 $evm->addEventSubscriber($treeListener);
 $sluggableListener = new \Gedmo\Sluggable\SluggableListener();
 $evm->addEventSubscriber($sluggableListener);
-$translatableListener = new \Gedmo\Translatable\TranslationListener();
+$translatableListener = new \Gedmo\Translatable\TranslatableListener();
 $translatableListener->setTranslatableLocale('en_us');
 $evm->addEventSubscriber($translatableListener);
 // now this event manager should be passed to entity manager constructor
@@ -802,12 +798,12 @@ Entity\Category:
       mappedBy: parent
 ```
 
-**Note:** that using dql without object hydration, the nodes will not be
-translated. Because the postLoad event never will be triggered
+**Note:** If you use dql without object hydration, the nodes will not be
+translated, because the postLoad event never will be triggered
 
-Now the generated treenode slug will be translated by Translatable behavior
+Now the generated treenode slug will be translated by Translatable behavior.
 
-Easy like that, any suggestions on improvements are very welcome
+It's as easy as that. Any suggestions on improvements are very welcome.
 
 <a name="materialized-path"></a>
 
@@ -1080,7 +1076,7 @@ YourNamespace\Document\Category:
 ### Path generation
 
 When an entity is inserted, a path is generated using the value of the field configured as the TreePathSource.
-If For example:
+For example:
 
 ``` php
 $food = new Category();
@@ -1107,13 +1103,13 @@ echo $fruits->getPath();
 
 ### Locking mechanism for MongoDB
 
-Why you need a locking mechanism for MongoDB? Sadly, MongoDB lacks of full transactional support, so if two or more
+Why do we need a locking mechanism for MongoDB? Sadly, MongoDB lacks full transactional support, so if two or more
 users try to modify the same tree concurrently, it could lead to an inconsistent tree. So we've implemented a simple
 locking mechanism to avoid this type of problems. It works like this: As soon as a user tries to modify a node of a tree,
 it first check if the root node is locked (or if the current lock has expired).
 
 If it is locked, then it throws an exception of type "Gedmo\Exception\TreeLockingException". If it's not locked,
-it locks the tree and proceed with the modification. After all the modifications are done, the lock is freed.
+it locks the tree and proceeds with the modification. After all the modifications are done, the lock is freed.
 
 If, for some reason, the lock couldn't get freed, there's a lock timeout configured with a default time of 3 seconds.
 You can change this value using the **lockingTimeout** parameter under the Tree annotation (or equivalent in XML and YML).
@@ -1125,7 +1121,7 @@ You must pass a value in seconds to this parameter.
 ## Closure Table
 
 To be able to use this strategy, you'll need an additional entity which represents the closures. We already provide you an abstract
-entity, so you'd only need to extend it.
+entity, so you only need to extend it.
 
 ### Closure Entity
 

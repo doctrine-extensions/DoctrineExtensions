@@ -127,4 +127,12 @@ class EntityWrapper extends AbstractWrapper
             }
         }
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function isEmbeddedAssociation($field)
+    {
+        return false;
+    }
 }

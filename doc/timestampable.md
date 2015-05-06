@@ -1,7 +1,7 @@
 # Timestampable behavior extension for Doctrine 2
 
 **Timestampable** behavior will automate the update of date fields
-on your Entities or Documents. It works through annotations and can update 
+on your Entities or Documents. It works through annotations and can update
 fields on creation, update, property subset update, or even on specific property value change.
 
 Features:
@@ -9,12 +9,9 @@ Features:
 - Automatic predefined date field update on creation, update, property subset update, and even on record property changes
 - ORM and ODM support using same listener
 - Specific annotations for properties, and no interface required
-- Can react to specific property or relation changes to specific value 
-- Can be nested with other behaviors 
+- Can react to specific property or relation changes to specific value
+- Can be nested with other behaviors
 - Annotation, Yaml and Xml mapping support for extensions
-
-[blog_reference]: http://gediminasm.org/article/timestampable-behavior-extension-for-doctrine-2 "Timestampable extension for Doctrine 2 helps automate update of dates"
-[blog_test]: http://gediminasm.org/test "Test extensions on this blog"
 
 Update **2012-06-26**
 
@@ -25,14 +22,11 @@ Update **2012-03-10**
 - Add [Timestampable traits](#traits)
 
 Update **2011-04-04**
- 
+
 - Made single listener, one instance can be used for any object manager
 and any number of them
 
 **Note:**
-
-- You can [test live][blog_test] on this blog
-- Public [Timestampable repository](http://github.com/l3pp4rd/DoctrineExtensions "Timestampable extension on Github") is available on github
 - Last update date: **2012-01-02**
 
 **Portability:**
@@ -71,7 +65,7 @@ type it will trigger an exception.
 
 Available configuration options:
 
-- **on** - is main option and can be **create, update, change** this tells when it 
+- **on** - is main option and can be **create, update, change** this tells when it
 should be updated
 - **field** - only valid if **on="change"** is specified, tracks property or a list of properties for changes
 - **value** - only valid if **on="change"** is specified and the tracked field is a single field (not an array), if the tracked field has this **value**
@@ -274,7 +268,7 @@ Now on update and creation these annotated fields will be automatically updated
 
 Yaml mapped Article: **/mapping/yaml/Entity.Article.dcm.yml**
 
-```
+```yaml
 ---
 Entity\Article:
   type: entity
@@ -431,7 +425,7 @@ class Article
      * @Gedmo\Timestampable(on="change", field="type.title", value="Published")
      *
      * or for example
-     * @Gedmo\Timestambable(on="change", field="type.title", value={"Published", "Closed"})
+     * @Gedmo\Timestampable(on="change", field="type.title", value={"Published", "Closed"})
      */
     private $published;
 
@@ -474,7 +468,7 @@ class Article
 
 Yaml mapped Article: **/mapping/yaml/Entity.Article.dcm.yml**
 
-```
+``` yaml
 ---
 Entity\Article:
   type: entity
@@ -593,10 +587,10 @@ class UTCDateTimeType extends DateTimeType
 
 Now in Symfony2, we register and override the **datetime** type. **WARNING:** this will override the **datetime** type for all your entities and for all entities in external bundles or extensions, so if you have some entities that require the standard **datetime** type from Doctrine, you must modify the above type and use a different name (such as **utcdatetime**). Additionally, you'll need to modify **Timestampable** so that it includes **utcdatetime** as a valid type.
 
-```
+``` yaml
 doctrine:
     dbal:
-        types: 
+        types:
             datetime: Acme\DoctrineExtensions\DBAL\Types\UTCDateTimeType
 ```
 
@@ -623,7 +617,7 @@ private $dateLastModified;
 
 Now, in our view (suppose we are using Symfony2 and Twig), we can display the datetime (which is persisted in UTC format) in our user's time zone:
 
-``` html
+``` twig
 {{ myEntity.dateCreated | date("d/m/Y g:i a", app.user.timezone) }}
 ```
 
@@ -639,6 +633,7 @@ This example is based off [Handling different Timezones with the DateTime Type][
 
 You can use timestampable traits for quick **createdAt** **updatedAt** timestamp definitions
 when using annotation mapping.
+There is also a trait without annotations for easy integration purposes.
 
 **Note:** this feature is only available since php **5.4.0**. And you are not required
 to use the Traits provided by extensions.
@@ -648,7 +643,6 @@ to use the Traits provided by extensions.
 namespace Timestampable\Fixture;
 
 use Gedmo\Timestampable\Traits\TimestampableEntity;
-use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -675,10 +669,6 @@ class UsingTrait
     private $title;
 }
 ```
-
-**Note:** you must import **Gedmo\Mapping\Annotation as Gedmo** and **Doctrine\ORM\Mapping as ORM**
-annotations. If you use mongodb ODM import **Doctrine\ODM\MongoDB\Mapping\Annotations as ODM** and
-**TimestampableDocument** instead.
 
 Traits are very simple and if you use different field names I recommend to simply create your
 own ones based per project. These ones are standing as an example.

@@ -73,6 +73,7 @@ class Validator
         'bigint',
         'int',
         'string',
+        'guid',
     );
 
     /**

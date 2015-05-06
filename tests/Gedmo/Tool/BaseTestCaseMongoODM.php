@@ -137,6 +137,10 @@ abstract class BaseTestCaseMongoODM extends \PHPUnit_Framework_TestCase
             ->method('getFilterClassName')
             ->will($this->returnValue('Gedmo\\SoftDeleteable\\Filter\\ODM\\SoftDeleteableFilter'));
 
+        $config->expects($this->any())
+            ->method('getFilterParameters')
+            ->will($this->returnValue(array()));
+
         $config->expects($this->once())
             ->method('getProxyDir')
             ->will($this->returnValue(__DIR__.'/../../temp'));

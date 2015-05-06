@@ -244,6 +244,12 @@ abstract class BaseTestCaseORM extends \PHPUnit_Framework_TestCase
         ;
 
         $config
+            ->expects($this->any())
+            ->method('getDefaultQueryHints')
+            ->will($this->returnValue(array()))
+        ;
+
+        $config
             ->expects($this->once())
             ->method('getAutoGenerateProxyClasses')
             ->will($this->returnValue(true))

@@ -2,7 +2,7 @@
 
 **Loggable** behavior tracks your record changes and is able to
 manage versions.
-    
+
 Features:
 
 - Automatic storage of log entries in database
@@ -11,20 +11,10 @@ Features:
 - Objects can be reverted to previous versions
 - Annotation, Yaml and Xml mapping support for extensions
 
-[blog_reference]: http://gediminasm.org/article/loggable-behavioral-extension-for-doctrine2 "Loggable extension for Doctrine2 tracks record changes and version management"
-[blog_test]: http://gediminasm.org/test "Test extensions on this blog"
-
 Update **2011-04-04**
 
 - Made single listener, one instance can be used for any object manager
 and any number of them
-
-
-**Note:**
-
-- You can [test live][blog_test] on this blog
-- Public [Loggable repository](http://github.com/l3pp4rd/DoctrineExtensions "Loggable extension on Github") is available on github
-- Last update date: **2012-01-02**
 
 **Portability:**
 
@@ -35,7 +25,7 @@ This article will cover the basic installation and functionality of **Loggable**
 behavior
 
 Content:
-    
+
 - [Including](#including-extension) the extension
 - Entity [example](#entity-mapping)
 - Document [example](#document-mapping)
@@ -53,7 +43,7 @@ on how to setup and use the extensions in most optimized way.
 
 ### Loggable annotations:
 
-- **@Gedmo\Mapping\Annotation\Loggable(logEntryClass="my\class")** this class annotation 
+- **@Gedmo\Mapping\Annotation\Loggable(logEntryClass="my\class")** this class annotation
 will store logs to optionally specified **logEntryClass**. You will still need to specify versioned fields with the following annotation.
 - **@Gedmo\Mapping\Annotation\Versioned** tracks annotated property for changes
 
