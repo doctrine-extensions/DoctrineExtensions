@@ -111,14 +111,14 @@ class UploadableListener extends MappedEventSubscriber
         $ea = $this->getEventAdapter($args);
         $om = $ea->getObjectManager();
         $uow = $om->getUnitOfWork();
-        $first = reset($this->fileInfoObjects);
-        $meta = $om->getClassMetadata(get_class($first['entity']));
-        $config = $this->getConfiguration($om, $meta->name);
 
         foreach ($this->fileInfoObjects as $info) {
-            
             $entity = $info['entity'];
             $property = $info['property'];
+
+            $meta = $om->getClassMetadata(get_class($entity));
+            $config = $this->getConfiguration($om, $meta->name);
+
             $propertyConfig = $config[$property];
 
             // If the entity is in the identity map, it means it will be updated. We need to force the
