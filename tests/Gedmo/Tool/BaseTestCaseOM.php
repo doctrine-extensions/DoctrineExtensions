@@ -42,7 +42,7 @@ abstract class BaseTestCaseOM extends \PHPUnit_Framework_TestCase
     /**
      * Initialized document managers
      *
-     * @var array
+     * @var DocumentManager[]
      */
     private $dms = array();
 
@@ -75,8 +75,8 @@ abstract class BaseTestCaseOM extends \PHPUnit_Framework_TestCase
      * DocumentManager mock object together with
      * annotation mapping driver and database
      *
-     * @param string                                     $dbName
-     * @param Doctrine\ODM\MongoDB\Mapping\Driver\Driver $mappingDriver
+     * @param string        $dbName
+     * @param MappingDriver $mappingDriver
      *
      * @return DocumentManager
      */
@@ -103,8 +103,8 @@ abstract class BaseTestCaseOM extends \PHPUnit_Framework_TestCase
      * DocumentManager mock object with
      * annotation mapping driver
      *
-     * @param string                                     $dbName
-     * @param Doctrine\ODM\MongoDB\Mapping\Driver\Driver $mappingDriver
+     * @param string        $dbName
+     * @param MappingDriver $mappingDriver
      *
      * @return DocumentManager
      */
@@ -123,8 +123,8 @@ abstract class BaseTestCaseOM extends \PHPUnit_Framework_TestCase
      * annotation mapping driver and pdo_sqlite
      * database in memory
      *
-     * @param array                              $fixtures
-     * @param Doctrine\ORM\Mapping\Driver\Driver $mappingDriver
+     * @param array         $fixtures
+     * @param MappingDriver $mappingDriver
      *
      * @return EntityManager
      */
@@ -153,7 +153,7 @@ abstract class BaseTestCaseOM extends \PHPUnit_Framework_TestCase
      * EntityManager mock object with
      * annotation mapping driver
      *
-     * @param Doctrine\ORM\Mapping\Driver\Driver $mappingDriver
+     * @param MappingDriver $mappingDriver
      *
      * @return EntityManager
      */
@@ -178,7 +178,7 @@ abstract class BaseTestCaseOM extends \PHPUnit_Framework_TestCase
     /**
      * Creates default mapping driver
      *
-     * @return \Doctrine\ORM\Mapping\Driver\Driver
+     * @return MappingDriver
      */
     protected function getDefaultORMMetadataDriverImplementation()
     {
@@ -188,7 +188,7 @@ abstract class BaseTestCaseOM extends \PHPUnit_Framework_TestCase
     /**
      * Creates default mapping driver
      *
-     * @return \Doctrine\ODM\MongoDB\Mapping\Driver\Driver
+     * @return MappingDriver
      */
     protected function getDefaultMongoODMMetadataDriverImplementation()
     {
@@ -218,9 +218,9 @@ abstract class BaseTestCaseOM extends \PHPUnit_Framework_TestCase
      * Get annotation mapping configuration
      *
      * @param string                                     $dbName
-     * @param Doctrine\ODM\MongoDB\Mapping\Driver\Driver $mappingDriver
+     * @param MappingDriver $mappingDriver
      *
-     * @return Doctrine\ORM\Configuration
+     * @return \Doctrine\ORM\Configuration
      */
     private function getMockAnnotatedODMMongoDBConfig($dbName, MappingDriver $mappingDriver = null)
     {
@@ -283,9 +283,9 @@ abstract class BaseTestCaseOM extends \PHPUnit_Framework_TestCase
     /**
      * Get annotation mapping configuration for ORM
      *
-     * @param Doctrine\ORM\Mapping\Driver\Driver $mappingDriver
+     * @param MappingDriver $mappingDriver
      *
-     * @return Doctrine\ORM\Configuration
+     * @return \Doctrine\ORM\Configuration
      */
     private function getMockAnnotatedORMConfig(MappingDriver $mappingDriver = null)
     {

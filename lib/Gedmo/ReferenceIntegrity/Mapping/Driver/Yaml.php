@@ -66,7 +66,7 @@ class Yaml extends File implements Driver
                         );
                     }
 
-                    $config['referenceIntegrities'][$property][$mapping['fields'][$property]['mappedBy']] =
+                    $config['referenceIntegrity'][$property][$mapping['fields'][$property]['mappedBy']] =
                         $fieldMapping['gedmo']['referenceIntegrity'];
                 }
             }
