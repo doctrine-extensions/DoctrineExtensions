@@ -313,13 +313,17 @@ class TranslationWalker extends SqlWalker
                 $identifier = $meta->getSingleIdentifierFieldName();
                 $idColName = $meta->getQuotedColumnName($identifier, $this->platform);
                 if ($ea->usesPersonalTranslation($transClass)) {
-                    $sql .= ' AND '.$tblAlias.'.'.$transMeta->getSingleAssociationJoinColumnName('object')
-                        .' = '.$compTblAlias.'.'.$idColName;
+                    $sql .= ' AND '.$tblAlias.'.'.$transMeta->getSingleAssociationJoinColumnName('object');
                 } else {
                     $sql .= ' AND '.$tblAlias.'.'.$transMeta->getQuotedColumnName('objectClass', $this->platform)
                         .' = '.$this->conn->quote($meta->name);
-                    $sql .= ' AND '.$tblAlias.'.'.$transMeta->getQuotedColumnName('foreignKey', $this->platform)
-                        .' = '.$compTblAlias.'.'.$idColName;
+                    $sql .= ' AND '.$tblAlias.'.'.$transMeta->getQuotedColumnName('foreignKey', $this->platform);
+                }
+                //Add fix for postgresql casts of foreignKey field
+                if ($this->platform instanceof \Doctrine\DBAL\Platforms\PostgreSqlPlatform) {
+                    $sql .= ' = CAST('.$compTblAlias.'.'.$idColName.' AS "varchar")';
+                } else {
+                    $sql .' = '.$compTblAlias.'.'.$idColName;
                 }
                 isset($this->components[$dqlAlias]) ? $this->components[$dqlAlias] .= $sql : $this->components[$dqlAlias] = $sql;
 
