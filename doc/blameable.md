@@ -6,7 +6,7 @@ fields on creation, update, property subset update, or even on specific property
 
 This is very similar to Timestampable but sets a string or user object for a user association.
 
-If you map the blame onto a string field, Tthis extension will try to assign the user name.
+If you map the blame onto a string field, this extension will try to assign the user name.
 If you map the blame onto a association field, this extension will try to assign the user
 object to it.
 
