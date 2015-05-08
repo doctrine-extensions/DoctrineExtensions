@@ -6,7 +6,7 @@ fields on creation, update, property subset update, or even on specific property
 
 This is very similar to Timestampable but sets a string or user object for a user association.
 
-If you map the blame onto a string field, this extension will try to assign the user name.
+If you map the blame onto a string field, Tthis extension will try to assign the user name.
 If you map the blame onto a association field, this extension will try to assign the user
 object to it.
 
@@ -115,10 +115,10 @@ class Article
     private $updatedBy;
 
     /**
-     * @var datetime $contentChangedBy
+     * @var string $contentChangedBy
      *
      * @ORM\Column(name="content_changed_by", type="string", nullable=true)
-     * @Gedmo\Timestampable(on="change", field={"title", "body"})
+     * @Gedmo\Blameable(on="change", fields={"title", "body"})
      */
     private $contentChangedBy;
 
@@ -212,7 +212,7 @@ class Article
     /**
      * @var User $contentChangedBy
      *
-     * @Gedmo\Timestampable(on="change", fields={"title", "body"})
+     * @Gedmo\Blameable(on="change", fields={"title", "body"})
      * @ORM\ManyToOne(targetEntity="Path\To\Entity\User")
      * @ORM\JoinColumn(name="content_changed_by", referencedColumnName="id")
      */
