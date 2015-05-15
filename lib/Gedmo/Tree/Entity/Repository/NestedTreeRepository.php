@@ -222,7 +222,7 @@ class NestedTreeRepository extends AbstractTreeRepository
                 } else {
                     $left = $wrapped->getPropertyValue($config['left']);
                     $right = $wrapped->getPropertyValue($config['right']);
-                    if ($left && $right) {
+                    if ($left !== NULL && $right) {
                         $qb
                             ->where($qb->expr()->lt('node.'.$config['right'], $right))
                             ->andWhere($qb->expr()->gt('node.'.$config['left'], $left))
