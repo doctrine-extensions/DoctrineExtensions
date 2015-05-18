@@ -13,8 +13,8 @@ use Tool\BaseTestCaseOM;
 
 class ReferencesListenerTest extends BaseTestCaseOM
 {
-    private $em;
     private $dm;
+    private $em;
 
     protected function setUp()
     {
@@ -26,10 +26,12 @@ class ReferencesListenerTest extends BaseTestCaseOM
 
         $reader = new AnnotationReader();
 
+        $documentRegistry = $this->getMockRegistry();
         $this->dm = $this->getMockDocumentManager('test', new MongoDBAnnotationDriver($reader, __DIR__.'/Fixture/ODM/MongoDB'));
+        $documentRegistry->expects($this->any())->method('getManagerForClass')->willReturn($this->dm);
 
         $listener = new ReferencesListener(array(
-            'document' => $this->dm,
+            'document' => $documentRegistry,
         ));
 
         $this->evm->addEventSubscriber($listener);
@@ -43,7 +45,11 @@ class ReferencesListenerTest extends BaseTestCaseOM
             ),
             new ORMAnnotationDriver($reader, __DIR__.'/Fixture/ORM')
         );
-        $listener->registerManager('entity', $this->em);
+
+        $entityRegistry = $this->getMockRegistry();
+        $entityRegistry->expects($this->any())->method('getManagerForClass')->willReturn($this->em);
+
+        $listener->setRegistry('entity', $entityRegistry);
     }
 
     public function testShouldPersistReferencedIdentifiersIntoIdentifierField()
@@ -179,5 +185,13 @@ class ReferencesListenerTest extends BaseTestCaseOM
 
         $this->assertInstanceOf(get_class($samsungTV), $last);
         $this->assertEquals('Samsung TV', $last->getName());
+    }
+
+    /**
+     * @return \PHPUnit_Framework_MockObject_MockObject|\Doctrine\Common\Persistence\ManagerRegistry
+     */
+    private function getMockRegistry()
+    {
+        return $this->getMock('Doctrine\Common\Persistence\ManagerRegistry');
     }
 }

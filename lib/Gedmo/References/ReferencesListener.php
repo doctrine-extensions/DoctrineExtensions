@@ -4,7 +4,9 @@ namespace Gedmo\References;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\EventArgs;
+use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\Common\Persistence\ObjectManager;
+use Gedmo\Exception\RuntimeException;
 use Gedmo\Mapping\MappedEventSubscriber;
 
 /**
@@ -17,11 +19,14 @@ use Gedmo\Mapping\MappedEventSubscriber;
  */
 class ReferencesListener extends MappedEventSubscriber
 {
-    private $managers;
+    /**
+     * @var ManagerRegistry[]
+     */
+    private $registries;
 
-    public function __construct(array $managers = array())
+    public function __construct(array $registries = array())
     {
-        $this->managers = $managers;
+        $this->registries = $registries;
     }
 
     public function loadClassMetadata(EventArgs $eventArgs)
@@ -48,7 +53,7 @@ class ReferencesListener extends MappedEventSubscriber
                     $property->setValue(
                         $object,
                         $ea->getSingleReference(
-                            $this->getManager($mapping['type']),
+                            $this->getManager($mapping['type'], $mapping['class']),
                             $mapping['class'],
                             $referencedObjectId
                         )
@@ -62,7 +67,7 @@ class ReferencesListener extends MappedEventSubscriber
             $property->setAccessible(true);
             if (isset($mapping['mappedBy'])) {
                 $id = $ea->extractIdentifier($om, $object);
-                $manager = $this->getManager($mapping['type']);
+                $manager = $this->getManager($mapping['type'], $mapping['class']);
                 $class = $mapping['class'];
                 $refMeta = $manager->getClassMetadata($class);
                 $refConfig = $this->getConfiguration($manager, $refMeta->name);
@@ -110,19 +115,36 @@ class ReferencesListener extends MappedEventSubscriber
         );
     }
 
-    public function registerManager($type, $manager)
+    /**
+     * @param string $type
+     * @param ManagerRegistry $registry
+     */
+    public function setRegistry($type, ManagerRegistry $registry)
     {
-        $this->managers[$type] = $manager;
+        $this->registries[$type] = $registry;
     }
 
     /**
      * @param string $type
-     *
+     * @param string $class
      * @return ObjectManager
      */
-    public function getManager($type)
+    public function getManager($type, $class)
     {
-        return $this->managers[$type];
+        if (!isset($this->registries[$type])) {
+            throw new RuntimeException(
+                sprintf('Could not find Registry with required type "%s".', $type)
+            );
+        }
+
+        $manager = $this->registries[$type]->getManagerForClass($class);
+        if (!$manager) {
+            throw new RuntimeException(
+                sprintf('Could not find Manager type "%s" for class "%s".', $type, $class)
+            );
+        }
+
+        return $manager;
     }
 
     protected function getNamespace()
@@ -147,7 +169,7 @@ class ReferencesListener extends MappedEventSubscriber
                         $object,
                         $mapping['identifier'],
                         $ea->getIdentifier(
-                            $this->getManager($mapping['type']),
+                            $this->getManager($mapping['type'], $mapping['class']),
                             $referencedObject
                         )
                     );
@@ -170,7 +192,7 @@ class ReferencesListener extends MappedEventSubscriber
             $property->setAccessible(true);
 
             $id = $ea->extractIdentifier($om, $object);
-            $manager = $this->getManager('document');
+            $manager = $this->getManager('document', $mapping['class']);
 
             $class = $mapping['class'];
             $refMeta = $manager->getClassMetadata($class);
