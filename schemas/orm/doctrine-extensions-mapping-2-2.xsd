@@ -28,6 +28,10 @@ people to push their own additional attributes/elements into the same field elem
   <xs:element name="loggable" type="gedmo:loggable"/>
   <xs:element name="soft-deleteable" type="gedmo:soft-deleteable"/>
   <xs:element name="uploadable" type="gedmo:uploadable"/>
+  <xs:element name="reference-one" type="gedmo:reference"/>
+  <xs:element name="reference-many" type="gedmo:reference"/>
+  <xs:element name="reference-many-embed" type="gedmo:reference"/>
+
   <!-- field -->
   <xs:element name="slug" type="gedmo:slug"/>
   <xs:element name="translatable" type="gedmo:translatable"/>
@@ -163,4 +167,19 @@ people to push their own additional attributes/elements into the same field elem
     <xs:attribute name="disallowed-types" type="xs:string" use="optional" />
   </xs:complexType>
 
+  <xs:simpleType name="reference-type">
+    <xs:restriction base="xs:token">
+      <xs:enumeration value="entity"/>
+      <xs:enumeration value="document"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:complexType name="reference">
+    <xs:attribute name="field" type="xs:string" use="required" />
+    <xs:attribute name="type" type="gedmo:reference-type" use="required" />
+    <xs:attribute name="class" type="xs:string" use="required" />
+    <xs:attribute name="identifier" type="xs:string" use="required" />
+    <xs:attribute name="inversed-by" type="xs:string" use="optional" />
+    <xs:attribute name="mapped-by" type="xs:string" use="optional" />
+  </xs:complexType>
 </xs:schema>
