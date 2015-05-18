@@ -42,6 +42,8 @@ class Xml extends BaseXml
         $gedmoMapping = $mapping->children(self::GEDMO_NAMESPACE_URI);
 
         foreach (self::$referenceTypes as $type => $tagName) {
+            $config[$type] = array();
+
             if (isset($gedmoMapping->{$tagName})) {
                 foreach ($gedmoMapping->{$tagName} as $referenceConfig) {
                     $config[$type][] = $this->createReferenceConfig($tagName, $referenceConfig);
@@ -58,12 +60,12 @@ class Xml extends BaseXml
     private function createReferenceConfig($type, \SimpleXMLElement $referenceConfig)
     {
         $config = array();
-        $config['field'] = (string) $referenceConfig->{'field'};
-        $config['type'] = (string) $referenceConfig->{'type'};
-        $config['class'] = (string) $referenceConfig->{'class'};
-        $config['identifier'] = (string) $referenceConfig->{'identifier'};
-        $config['inversedBy'] = (string) $referenceConfig->{'inversed-by'};
-        $config['mappedBy'] = (string) $referenceConfig->{'mappedBy'};
+        $config['field'] = $this->_getAttribute($referenceConfig, 'field');
+        $config['type'] = $this->_getAttribute($referenceConfig, 'type');
+        $config['class'] =  $this->_getAttribute($referenceConfig, 'class');
+        $config['identifier'] =  $this->_getAttribute($referenceConfig, 'identifier');
+        $config['inversedBy'] =  $this->_getAttribute($referenceConfig, 'inversed-by');
+        $config['mappedBy'] =  $this->_getAttribute($referenceConfig, 'mapped-by');
 
         return $config;
     }
