@@ -47,7 +47,7 @@ records being flushed in the behavioral way. List of extensions:
 - **Translator** - explicit way to handle translations
 - **Softdeleteable** - allows to implicitly remove records
 - **Uploadable** - provides file upload handling in entity fields
-- **References** - supports linking Entities in Documents and visa versa
+- **References** - supports linking Entities in Documents and vice versa
 - **IpTraceable** - inherited from Timestampable, sets IP address instead of timestamp
 
 Currently these extensions support **Yaml**, **Annotation**  and **Xml** mapping. Additional mapping drivers
