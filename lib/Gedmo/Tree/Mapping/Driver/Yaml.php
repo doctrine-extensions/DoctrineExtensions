@@ -67,7 +67,7 @@ class Yaml extends File implements Driver
                 $config['closure'] = $class;
             }
         }
-        
+
         if (isset($mapping['id'])) {
             foreach($mapping['id'] as $field => $fieldMapping) {
                 if (isset($fieldMapping['gedmo'])) {
@@ -82,7 +82,7 @@ class Yaml extends File implements Driver
                 }
             }
         }
-        
+
         if (isset($mapping['fields'])) {
             foreach ($mapping['fields'] as $field => $fieldMapping) {
                 if (isset($fieldMapping['gedmo'])) {
@@ -204,6 +204,6 @@ class Yaml extends File implements Driver
      */
     protected function _loadMappingFile($file)
     {
-        return \Symfony\Component\Yaml\Yaml::parse($file);
+        return \Symfony\Component\Yaml\Yaml::parse(file_get_contents($file));
     }
 }
