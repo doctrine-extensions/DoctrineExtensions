@@ -21,7 +21,8 @@ use Gedmo\Sluggable\SluggableListener;
 use Gedmo\Tree\TreeListener;
 use Gedmo\Timestampable\TimestampableListener;
 use Gedmo\Loggable\LoggableListener;
-use Doctrine\ORM\Repository\DefaultRepositoryFactory;
+use Doctrine\ORM\Repository\DefaultRepositoryFactory as DefaultRepositoryFactoryORM;
+use Doctrine\ODM\MongoDB\Repository\DefaultRepositoryFactory as DefaultRepositoryFactoryODM;
 
 /**
  * Base test case contains common mock objects
@@ -277,6 +278,14 @@ abstract class BaseTestCaseOM extends \PHPUnit_Framework_TestCase
             ->method('getMetadataDriverImpl')
             ->will($this->returnValue($mappingDriver));
 
+        $config->expects($this->any())
+            ->method('getRepositoryFactory')
+            ->will($this->returnValue(new DefaultRepositoryFactoryODM()));
+
+        $config->expects($this->any())
+            ->method('getDefaultRepositoryClassName')
+            ->will($this->returnValue('Doctrine\\ODM\\MongoDB\\DocumentRepository'));
+
         return $config;
     }
 
@@ -338,7 +347,7 @@ abstract class BaseTestCaseOM extends \PHPUnit_Framework_TestCase
         $config
             ->expects($this->once())
             ->method('getRepositoryFactory')
-            ->will($this->returnValue(new DefaultRepositoryFactory()));
+            ->will($this->returnValue(new DefaultRepositoryFactoryORM()));
 
         return $config;
     }
