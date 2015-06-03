@@ -335,7 +335,7 @@ echo $article->getSlug();
 - **separator** (optional, default="-") - separator which will separate words in slug
 - **prefix** (optional, default="") - prefix which will be added to the generated slug
 - **suffix** (optional, default="") - suffix which will be added to the generated slug
-- **style** (optional, default="default") - **"default"** all letters will be lowercase, **"camel"** - first word letter will be uppercase
+- **style** (optional, default="default") - **"default"** all letters will be lowercase, **"camel"** - first word letter will be uppercase, **"upper"**- all word letter will be uppercase and **"lower"**- all word letter will be lowercase
 - **handlers** (optional, default=[]) - list of slug handlers, like tree path slug, or customized, for example see bellow
 
 **Note**: handlers are totally optional
