@@ -2,14 +2,14 @@
 
 ## About this fork
 
-This fork modifies the original Uploadable behavior to add support of multiple uploadable files in a single entity. The aim is same as [FranzBruckner's fork](https://github.com/FranzBruckner/DoctrineExtensions), but with a different approach and implementation. Although this implementation also breaks BC, I want to keep as much BC as possible. In specific, the original annotation will still work for entities with a single file entry.
+This fork modifies the original Uploadable behavior to add support of multiple uploadable files in a single entity. Its goal is the same as [FranzBruckner's fork](https://github.com/FranzBruckner/DoctrineExtensions), but with a slightly different approach and implementation. Although this implementation also breaks BC, my aim is to preseve as much BC as possible. In this fork, the original annotation will still work for entities with a single file entry.
 
 ### Usage
 
 Here is an example of an entity with multiple Uploadable fields.
 
 **Notes:**
-- You don't need to change your original annotation if you have only one uploadable field in an entity. The `@Uploadable` annotation should still work.
+- As mentioned above, you **don't** need to change your original annotation if there is only one uploadable field in an entity. The `@Uploadable` annotation should still work.
 - Support for multiple uploadable fields is only added to annotations. I didn't touch the XML and YML mapping parts, so they probably **won't** work.
 
 #### Entity definition
@@ -57,59 +57,54 @@ class Product
 ```
 
 Explanations:
-- A new annotation `@Uploadables` is added, which accepts an array of the original `@Uploadable` definitions. This is how you define multiple uploadable fields in an entity.
-- A new property `identifier` has been added to the original `@Uploadable` annotation. This is a unique identifier to distinguish different uploadable entries.
-- This new property `identifier` is also added to the annotations `@UploadableFileMimeType`, `@UploadableFileName`, `@UploadableFilePath`, and `@UploadableFileSize`. In case of multiple uploadables, you need to specify the identifier a field is referring to.
+- A new annotation `@Uploadables` (in plural) is added, which accepts an array of the original `@Uploadable` definitions. This is how you define multiple uploadable fields in an entity.
+- A new property `identifier` has been added to the original `@Uploadable` annotation. This is a unique identifier to distinguish different uploadable configurations.
+- A new property, also named `identifier`, is added to the following annotations: `@UploadableFileMimeType`, `@UploadableFileName`, `@UploadableFilePath`, and `@UploadableFileSize`. In case of multiple uploadables, you need to specify which configuration the annotation refers to using this identifier.
 
-The `identifier` field will default to `_default` when not specified. This ensurse that the original annotation still works.
+The `identifier` field will default to `_default` when not specified. This ensures that original annotations still works.
 
-#### Adding files to a single entity
+#### Marking multiple uploaded files in an entity
 
 To add files to an entity, do this:
 
 ```php
 $entity = new Product();
-$listener->addEntityFileInfo($file, new FileInfoArray($fileInfo, 'image_large'));
-$listener->addEntityFileInfo($file, new FileInfoArray($fileInfo, 'image_thumb'));
+$listener->addEntityFileInfo($entity, new FileInfoArray($fileInfo), 'image_large');
+$listener->addEntityFileInfo($entity, new FileInfoArray($fileInfo), 'image_thumb');
 ```
 
 Explanations:
-- A new method `FileInfoInterface::getIdentifier()` is added. This mean that any object implementing `FileInfoInterface` will be bound to a specific uploadable identifier.
-- To support this, a second argument has been added to the constructor of `FileInfoArray` which accepts an optional `$identifier`. Usage is shown in the above example. When unspecified, its value will be `_default`.
-- Originally, ``addEntityFileInfo()`` also accepts an array as the second parameter. This is still supported, but the identifier will always be `_default` because internally the listener will just create an instance of `FileInfoInterface` (which is `FileInfoArray` by default) and store the array. You may override this behavior by setting your own class with `$listener->setDefaultFileInfoClass()`.
+- `addEntityFileInfo` now accepts a third optional parameter indicating the uploadable identifier. If not specified, its value will be `_default`.
 
 That's it.
 
 ### Other changes
 
-- `identifier` is also added to `FilenameGeneratorInterface::generate()` as the forth argument. Currently this is used by the `FilenameGeneratorSha1` class to prevent having the same SHA1 result when the same filename is passed to different file fields in the same entity.
-- Visibility of method `processFile` in `UploadableListener` is changed from `public` to `protected` because I need to change its signature and it doesn't look like a public method. This may break when the method is actually called elsewhere.
+- A new parameter `identifier` is also added to `FilenameGeneratorInterface::generate()` as the forth argument. Currently this is used by the `FilenameGeneratorSha1` class to prevent having the same SHA1 result when the same filename and extension are passed to different file fields (with different identifiers) in the same entity.
+- Visibility of method `processFile()` and `moveFile()` in `UploadableListener`  changed from `public` to `protected` because their signature are changed and they don't look right to be public.
 
-### Other remarks
+### Final remarks
 
 - Testing is very limited.
-- Due to a change in `FileInfoInterface`, stof's [DoctrineExtensionsBundle](https://github.com/stof/StofDoctrineExtensionsBundle/) won't work out of the box. It can be solved by modifying `Stof\DoctrineExtensionsBundle\Uploadable\UploadedFileInfo` like below:
+- Changes to stof's [DoctrineExtensionsBundle](https://github.com/stof/StofDoctrineExtensionsBundle/) is needed to support multiple uploadables in a single entity. Modify the `markEntityToUpload()` method of  `\Stof\DoctrineExtensionsBundle\Uploadable\UploadableManager` as below:
 
 ```php
-class UploadedFileInfo implements FileInfoInterface
-{
-    private $identifier;
-
-    private $uploadedFile;
-
-    public function __construct(UploadedFile $uploadedFile, $identifier = '_default')
+    public function markEntityToUpload($entity, $fileInfo, $identifier = '_default')
     {
-        $this->identifier = $identifier;
-        $this->uploadedFile = $uploadedFile;
+        if (is_object($fileInfo) && $fileInfo instanceof UploadedFile) {
+            $fileInfoClass = $this->fileInfoClass;
+
+            $fileInfo = new $fileInfoClass($fileInfo);
+        }
+
+        $this->listener->addEntityFileInfo($entity, $fileInfo, $identifier);
     }
 
-    public function getIdentifier()
-    {
-        return $this->identifier;
-    }
+```
 
-    // Other methods remain unchanged
-}
+Usage of this method will become:
+```php
+$manager->markEntityToUpload($file, $uploadedFile, 'image_thumb');
 ```
 
 ## The original README

@@ -119,7 +119,7 @@ class UploadableListener extends MappedEventSubscriber
         foreach ($this->fileInfoObjects as $items) {
             foreach ($items as $info) {
 
-                $config = $configs[$info['fileInfo']->getIdentifier()];
+                $config = $configs[$info['identifier']];
                 $entity = $info['entity'];
 
                 // If the entity is in the identity map, it means it will be updated. We need to force the
@@ -163,7 +163,7 @@ class UploadableListener extends MappedEventSubscriber
                     false;
 
                 if ($action) {
-                    $this->processFile($ea, $entity, $info['fileInfo'], $action);
+                    $this->processFile($ea, $entity, $info['fileInfo'], $info['identifier'], $action);
                 }
             }
         }
@@ -220,14 +220,14 @@ class UploadableListener extends MappedEventSubscriber
      * @throws \Gedmo\Exception\UploadableMaxSizeException
      * @throws \Gedmo\Exception\UploadableInvalidMimeTypeException
      */
-    protected function processFile(AdapterInterface $ea, $object, $fileInfo, $action)
+    protected function processFile(AdapterInterface $ea, $object, $fileInfo, $identifier, $action)
     {
         $oid = spl_object_hash($object);
         $om = $ea->getObjectManager();
         $uow = $om->getUnitOfWork();
         $meta = $om->getClassMetadata(get_class($object));
         $configs = $this->getConfiguration($om, $meta->name);
-        $config = $configs[$fileInfo->getIdentifier()];
+        $config = $configs[$identifier];
 
         if (!$config || !isset($config['uploadable']) || !$config['uploadable']) {
             // Nothing to do
@@ -245,7 +245,8 @@ class UploadableListener extends MappedEventSubscriber
                 $config,
                 $fileInfo,
                 $object,
-                $action
+                $action,
+                $identifier
             ));
         }
 
@@ -321,7 +322,7 @@ class UploadableListener extends MappedEventSubscriber
                 $generatorClass = $config['filenameGenerator'];
         }
 
-        $info = $this->moveFile($fileInfo, $path, $generatorClass, $config['allowOverwrite'], $config['appendNumber'], $object);
+        $info = $this->moveFile($fileInfo, $path, $generatorClass, $config['allowOverwrite'], $config['appendNumber'], $object, $identifier);
 
         // We override the mime type with the guessed one
         $info['fileMimeType'] = $mime;
@@ -486,7 +487,7 @@ class UploadableListener extends MappedEventSubscriber
      * @throws \Gedmo\Exception\UploadableNoTmpDirException
      * @throws \Gedmo\Exception\UploadableCantWriteException
      */
-    public function moveFile(FileInfoInterface $fileInfo, $path, $filenameGeneratorClass = false, $overwrite = false, $appendNumber = false, $object)
+    protected function moveFile(FileInfoInterface $fileInfo, $path, $filenameGeneratorClass = false, $overwrite = false, $appendNumber = false, $object, $identifier = '_default')
     {
         if ($fileInfo->getError() > 0) {
             switch ($fileInfo->getError()) {
@@ -555,7 +556,8 @@ class UploadableListener extends MappedEventSubscriber
             $filename = $filenameGeneratorClass::generate(
                 str_replace($path.'/', '', $info['fileWithoutExt']),
                 $info['fileExtension'],
-                $object
+                $object,
+                $identifier
             );
             $info['filePath'] = str_replace(
                 '/'.$info['fileName'],
@@ -696,10 +698,11 @@ class UploadableListener extends MappedEventSubscriber
      *
      * @param object                  $entity
      * @param array|FileInfoInterface $fileInfo
+     * @param string                  $identifier
      *
      * @throws \RuntimeException
      */
-    public function addEntityFileInfo($entity, $fileInfo)
+    public function addEntityFileInfo($entity, $fileInfo, $identifier = '_default')
     {
         $fileInfoClass = $this->getDefaultFileInfoClass();
         $fileInfo = is_array($fileInfo) ? new $fileInfoClass($fileInfo) : $fileInfo;
@@ -710,9 +713,10 @@ class UploadableListener extends MappedEventSubscriber
             throw new \RuntimeException(sprintf($msg, get_class($entity)));
         }
 
-        $this->fileInfoObjects[spl_object_hash($entity)][$fileInfo->getIdentifier()] = array(
+        $this->fileInfoObjects[spl_object_hash($entity)][$identifier] = array(
             'entity'        => $entity,
             'fileInfo'      => $fileInfo,
+            'identifier'    => $identifier,
         );
     }
 

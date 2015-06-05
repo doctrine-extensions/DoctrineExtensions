@@ -437,8 +437,8 @@ class UploadableEntityTest extends BaseTestCaseORM
         $fileInfo1 = $this->generateUploadedFile('file', $this->testFile, 'test1.txt');
         $fileInfo2 = $this->generateUploadedFile('file', $this->testFile2, 'test2.txt');
 
-        $this->listener->addEntityFileInfo($file, new FileInfoArray($fileInfo1, 'first'));
-        $this->listener->addEntityFileInfo($file, new FileInfoArray($fileInfo2, 'second'));
+        $this->listener->addEntityFileInfo($file, new FileInfoArray($fileInfo1), 'first');
+        $this->listener->addEntityFileInfo($file, new FileInfoArray($fileInfo2), 'second');
 
         $this->em->persist($file);
 
