@@ -10,12 +10,14 @@ namespace Gedmo\Uploadable\FileInfo;
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 
-class FileInfoArray implements FileInfoInterface
+class FileInfoArray extends BaseFileInfo implements FileInfoInterface
 {
     protected $fileInfo;
 
-    public function __construct(array $fileInfo)
+    public function __construct(array $fileInfo, $identifier = '_default')
     {
+        parent::__construct($identifier);
+
         $keys = array('error', 'size', 'type', 'tmp_name', 'name');
 
         foreach ($keys as $k) {

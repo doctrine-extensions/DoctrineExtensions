@@ -19,6 +19,13 @@ interface FileInfoInterface
     public function getError();
 
     /**
+     * Returns the identifier of the uploadable field
+     *
+     * @return string
+     */
+    public function getIdentifier();
+
+    /**
      * This method must return true if the file is coming from $_FILES, or false instead.
      *
      * @return bool
