@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
- * @Gedmo\Uploadables(uploadables={
+ * @Gedmo\Uploadables(configurations={
  *   @Gedmo\Uploadable(identifier="first", allowOverwrite=true, pathMethod="getPath"),
  *   @Gedmo\Uploadable(identifier="second", allowOverwrite=true, pathMethod="getPath", callback="callbackMethod2")
  * })

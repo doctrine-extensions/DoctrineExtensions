@@ -18,5 +18,5 @@ use Gedmo\Uploadable\Mapping\Validator;
 final class Uploadables extends Annotation
 {
     /** @var array<Uploadable> @Required */
-    public $uploadables = array();
+    public $configurations = array();
 }

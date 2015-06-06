@@ -37,7 +37,7 @@ class Annotation extends AbstractAnnotationDriver
 
         // class annotations
         if ($annot = $this->reader->getClassAnnotation($class, self::UPLOADABLES)) {
-            foreach ($annot->uploadables as $uploadable) {
+            foreach ($annot->configurations as $uploadable) {
                 /* @var $uploadable \Gedmo\Mapping\Annotation\Uploadable */
                 $config[$uploadable->identifier] = $this->readUploadableMetadata($class, $uploadable, $meta);
             }

@@ -2,7 +2,7 @@
 
 ## About this fork
 
-This fork modifies the original Uploadable behavior to add support of multiple uploadable files in a single entity. Its goal is the same as [FranzBruckner's fork](https://github.com/FranzBruckner/DoctrineExtensions), but with a slightly different approach and implementation. Although this implementation also breaks BC, my aim is to preseve as much BC as possible. In this fork, the original annotation will still work for entities with a single file entry.
+This fork modifies the original Uploadable behavior to add support of multiple uploadable files in a single entity. Its goal is the same as [FranzBruckner's fork](https://github.com/FranzBruckner/DoctrineExtensions), but with a slightly different approach and implementation. The aim of this fork is to preseve as much BC as possible. The original way of annotation will still work for entities with a single file entry.
 
 ### Usage
 
@@ -10,14 +10,14 @@ Here is an example of an entity with multiple Uploadable fields.
 
 **Notes:**
 - As mentioned above, you **don't** need to change your original annotation if there is only one uploadable field in an entity. The `@Uploadable` annotation should still work.
-- Support for multiple uploadable fields is only added to annotations. I didn't touch the XML and YML mapping parts, so they probably **won't** work.
+- Currently, support for multiple uploadable configurations is only added to annotations. I didn't touch the XML and YML mapping parts, so they probably **won't** work.
 
 #### Entity definition
 
 ```php
 /**
  * @ORM\Entity
- * @Gedmo\Uploadables(uploadables={
+ * @Gedmo\Uploadables(configurations={
  *   @Gedmo\Uploadable(identifier="image_large", pathMethod="getPath"),
  *   @Gedmo\Uploadable(identifier="image_thumb", pathMethod="getPath")
  * })
@@ -57,7 +57,7 @@ class Product
 ```
 
 Explanations:
-- A new annotation `@Uploadables` (in plural) is added, which accepts an array of the original `@Uploadable` definitions. This is how you define multiple uploadable fields in an entity.
+- A new annotation `@Uploadables` (in plural) is added, which accepts an array of the original `@Uploadable` definitions. This is how you define multiple uploadable configurations in an entity.
 - A new property `identifier` has been added to the original `@Uploadable` annotation. This is a unique identifier to distinguish different uploadable configurations.
 - A new property, also named `identifier`, is added to the following annotations: `@UploadableFileMimeType`, `@UploadableFileName`, `@UploadableFilePath`, and `@UploadableFileSize`. In case of multiple uploadables, you need to specify which configuration the annotation refers to using this identifier.
 
