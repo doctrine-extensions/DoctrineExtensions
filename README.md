@@ -126,3 +126,4 @@ And especially ones who create and maintain new extensions:
 - Kudryashov Konstantin [everzet](http://github.com/everzet)
 - David Buchmann [dbu](https://github.com/dbu)
 
+.
