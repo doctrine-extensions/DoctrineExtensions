@@ -15,6 +15,10 @@ use Doctrine\Common\Annotations\Annotation;
  */
 final class TreeLevel extends Annotation
 {
-    /** @var integer */
+    /**
+     * The level which root nodes will have
+     *
+     * @var integer
+     */
     public $base = 0;
 }

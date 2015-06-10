@@ -845,26 +845,33 @@ class NestedTreeRepository extends AbstractTreeRepository
         $self = $this;
         $em = $this->_em;
 
-        $doRecover = function ($root, &$count) use ($meta, $config, $self, $em, &$doRecover) {
+        $doRecover = function ($root, &$count, $level) use ($meta, $config, $self, $em, &$doRecover) {
             $lft = $count++;
             foreach ($self->getChildren($root, true) as $child) {
-                $doRecover($child, $count);
+                $doRecover($child, $count, $level+1);
             }
             $rgt = $count++;
             $meta->getReflectionProperty($config['left'])->setValue($root, $lft);
             $meta->getReflectionProperty($config['right'])->setValue($root, $rgt);
+            if (isset($config['level'])) {
+                $meta->getReflectionProperty($config['level'])->setValue($root, $level);
+            }
             $em->persist($root);
         };
 
         if (isset($config['root'])) {
             foreach ($this->getRootNodes() as $root) {
-                $count = 1; // reset on every root node
-                $doRecover($root, $count);
+                // reset on every root node
+                $count = 1;
+                $level = isset($config['level_base']) ? $config['level_base'] : 0;
+
+                $doRecover($root, $count, $level);
             }
         } else {
             $count = 1;
+            $level = isset($config['level_base']) ? $config['level_base'] : 0;
             foreach ($this->getChildren(null, true) as $root) {
-                $doRecover($root, $count);
+                $doRecover($root, $count, $level);
             }
         }
     }
@@ -984,6 +991,7 @@ class NestedTreeRepository extends AbstractTreeRepository
             return; // loading broken relation can cause infinite loop
         }
 
+        // check for nodes that have right value lower than the left
         $qb = $this->getQueryBuilder();
         $qb->select('node')
             ->from($config['useObjectClass'], 'node')
@@ -1038,7 +1046,28 @@ class NestedTreeRepository extends AbstractTreeRepository
                 } elseif ($right > $parentRight) {
                     $errors[] = "node [{$id}] right is greater than parent`s [{$parentId}] right value";
                 }
+
+                // check that level of node is exactly after it's parent's level
+                if (isset($config['level'])) {
+                    $parentLevel = $meta->getReflectionProperty($config['level'])->getValue($parent);
+                    $level = $meta->getReflectionProperty($config['level'])->getValue($node);
+                    if ($level != $parentLevel + 1) {
+                        $errors[] = "node [{$id}] should be on the level right after its parent`s [{$parentId}] level";
+                    }
+
+                }
+
             } else {
+                // check that level of the root node is the base level defined
+                if (isset($config['level'])) {
+                    $baseLevel = isset($config['level_base']) ? $config['level_base'] : 0;
+                    $level = $meta->getReflectionProperty($config['level'])->getValue($node);
+                    if ($level != $baseLevel) {
+                        $errors[] = "node [{$id}] should be on level {$baseLevel}, not {$level}";
+                    }
+                }
+
+                // get number of parents of node, based on left and right values
                 $qb = $this->getQueryBuilder();
                 $qb->select($qb->expr()->count('node.'.$identifier))
                     ->from($config['useObjectClass'], 'node')
