@@ -27,8 +27,9 @@ class ReferencesListenerTest extends BaseTestCaseOM
         $reader = new AnnotationReader();
 
         $documentRegistry = $this->getMockRegistry();
+
         $this->dm = $this->getMockDocumentManager('test', new MongoDBAnnotationDriver($reader, __DIR__.'/Fixture/ODM/MongoDB'));
-        $documentRegistry->expects($this->any())->method('getManagerForClass')->willReturn($this->dm);
+        $documentRegistry->expects($this->any())->method('getManagers')->willReturn(array('default' => $this->dm));
 
         $listener = new ReferencesListener(array(
             'document' => $documentRegistry,
@@ -47,7 +48,7 @@ class ReferencesListenerTest extends BaseTestCaseOM
         );
 
         $entityRegistry = $this->getMockRegistry();
-        $entityRegistry->expects($this->any())->method('getManagerForClass')->willReturn($this->em);
+        $entityRegistry->expects($this->any())->method('getManagers')->willReturn(array('default' => $this->em));
 
         $listener->setRegistry('entity', $entityRegistry);
     }

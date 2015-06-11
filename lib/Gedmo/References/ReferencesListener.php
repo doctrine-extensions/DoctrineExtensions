@@ -137,14 +137,21 @@ class ReferencesListener extends MappedEventSubscriber
             );
         }
 
-        $manager = $this->registries[$type]->getManagerForClass($class);
+        $registry = $this->registries[$type];
+        foreach ($registry->getManagers() as $manager) {
+            try {
+                $manager->getClassMetadata($class);
+
+                return $manager;
+            } catch (\Exception $e) {
+            }
+        }
+
         if (!$manager) {
             throw new RuntimeException(
                 sprintf('Could not find Manager type "%s" for class "%s".', $type, $class)
             );
         }
-
-        return $manager;
     }
 
     protected function getNamespace()
@@ -192,7 +199,7 @@ class ReferencesListener extends MappedEventSubscriber
             $property->setAccessible(true);
 
             $id = $ea->extractIdentifier($om, $object);
-            $manager = $this->getManager('document', $mapping['class']);
+            $manager = $this->getManager(RegistryTypes::DOCUMENT, $mapping['class']);
 
             $class = $mapping['class'];
             $refMeta = $manager->getClassMetadata($class);
