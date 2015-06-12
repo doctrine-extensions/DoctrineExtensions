@@ -842,11 +842,11 @@ class NestedTreeRepository extends AbstractTreeRepository
      *
      * Tries to recover the tree
      *
-     * @return void
+     * @param bool $verifyFirst Whether to verify the tree first, before attempting recovery
      */
-    public function recover()
+    public function recover($verifyFirst = true)
     {
-        if ($this->verify() === true) {
+        if ($verifyFirst && $this->verify() === true) {
             return;
         }
         $meta = $this->getClassMetadata();
