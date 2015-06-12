@@ -638,6 +638,7 @@ class NestedTreeRepository extends AbstractTreeRepository
             $left = $wrapped->getPropertyValue($config['left']);
             $rootId = isset($config['root']) ? $wrapped->getPropertyValue($config['root']) : null;
 
+            // if node has no children
             if ($right == $left + 1) {
                 $this->removeSingle($wrapped);
                 $this->listener
@@ -646,6 +647,7 @@ class NestedTreeRepository extends AbstractTreeRepository
 
                 return; // node was a leaf
             }
+
             // process updates in transaction
             $this->_em->getConnection()->beginTransaction();
             try {
@@ -661,6 +663,7 @@ class NestedTreeRepository extends AbstractTreeRepository
 
                 // in case if root node is removed, children become roots
                 if (isset($config['root']) && !$parent) {
+                    // get node's children
                     $qb = $this->getQueryBuilder();
                     $qb->select('node.'.$pk, 'node.'.$config['left'], 'node.'.$config['right'])
                         ->from($config['useObjectClass'], 'node')
@@ -671,12 +674,14 @@ class NestedTreeRepository extends AbstractTreeRepository
                     ;
                     $nodes = $qb->getQuery()->getArrayResult();
 
+                    // go through each of the node's children
                     foreach ($nodes as $newRoot) {
                         $left = $newRoot[$config['left']];
                         $right = $newRoot[$config['right']];
                         $rootId = $newRoot[$pk];
                         $shift = -($left - 1);
 
+                        // set the root of this child node and its children to the newly formed tree
                         $qb = $this->getQueryBuilder();
                         $qb->update($config['useObjectClass'], 'node')
                             ->set('node.'.$config['root'], $rootId === null ?
@@ -689,9 +694,10 @@ class NestedTreeRepository extends AbstractTreeRepository
                         ;
                         $qb->getQuery()->getSingleScalarResult();
 
+                        // Set the parent to NULL for this child node, i.e. make it root
                         $qb = $this->getQueryBuilder();
                         $qb->update($config['useObjectClass'], 'node')
-                            ->set('node.'.$config['parent'], $parentId === null ?
+                            ->set('node.'.$config['parent'], $parentId === null ? // TODO: parentId is always null here
                                 'NULL' :
                                 (is_string($parentId) ? $qb->expr()->literal($parentId) : $parentId)
                             )
@@ -706,6 +712,7 @@ class NestedTreeRepository extends AbstractTreeRepository
                         ;
                         $qb->getQuery()->getSingleScalarResult();
 
+                        // fix left, right and level values for the newly formed tree
                         $this->listener
                             ->getStrategy($this->_em, $meta->name)
                             ->shiftRangeRL($this->_em, $config['useObjectClass'], $left, $right, $shift, $rootId, $rootId, - 1);
@@ -714,6 +721,7 @@ class NestedTreeRepository extends AbstractTreeRepository
                             ->shiftRL($this->_em, $config['useObjectClass'], $right, -2, $rootId);
                     }
                 } else {
+                    // set parent of all direct children to be the parent of the node being deleted
                     $qb = $this->getQueryBuilder();
                     $qb->update($config['useObjectClass'], 'node')
                         ->set('node.'.$config['parent'], null === $parentId ?
@@ -733,6 +741,7 @@ class NestedTreeRepository extends AbstractTreeRepository
                     }
                     $qb->getQuery()->getSingleScalarResult();
 
+                    // fix left, right and level values for the node's children
                     $this->listener
                         ->getStrategy($this->_em, $meta->name)
                         ->shiftRangeRL($this->_em, $config['useObjectClass'], $left, $right, $shift, $rootId, $rootId, - 1);
