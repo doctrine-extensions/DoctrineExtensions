@@ -135,13 +135,21 @@ class NestedTreeRepository extends AbstractTreeRepository
      * Get the Tree path query builder by given $node
      *
      * @param object $node
+     * @param array  $options
+     *
+     * $options['includeNode']          = (bool) Whether to include the node itself (default: true)
      *
      * @throws InvalidArgumentException - if input is not valid
      *
      * @return \Doctrine\ORM\QueryBuilder
      */
-    public function getPathQueryBuilder($node)
+    public function getPathQueryBuilder($node, array $options = array())
     {
+        $defaultOptions = array(
+            'includeNode' => true,
+        );
+        $options = array_merge($defaultOptions, $options);
+
         $meta = $this->getClassMetadata();
         if (!$node instanceof $meta->name) {
             throw new InvalidArgumentException("Node is not related to this repository");
@@ -156,10 +164,16 @@ class NestedTreeRepository extends AbstractTreeRepository
         $qb = $this->getQueryBuilder();
         $qb->select('node')
             ->from($config['useObjectClass'], 'node')
-            ->where($qb->expr()->lte('node.'.$config['left'], $left))
-            ->andWhere($qb->expr()->gte('node.'.$config['right'], $right))
-            ->orderBy('node.'.$config['left'], 'ASC')
-        ;
+            ->orderBy('node.'.$config['left'], 'ASC');
+
+        if ($options['includeNode']) {
+            $qb->where($qb->expr()->lte('node.' . $config['left'], $left))
+                ->andWhere($qb->expr()->gte('node.' . $config['right'], $right));
+        } else {
+            $qb->where($qb->expr()->lt('node.' . $config['left'], $left))
+                ->andWhere($qb->expr()->gt('node.' . $config['right'], $right));
+        }
+
         if (isset($config['root'])) {
             $rootId = $wrapped->getPropertyValue($config['root']);
             $qb->andWhere($rootId === null ?
@@ -175,45 +189,55 @@ class NestedTreeRepository extends AbstractTreeRepository
      * Get the Tree path query by given $node
      *
      * @param object $node
-     *
-     * @return \Doctrine\ORM\Query
+     * @param array  $options
+     * @return Query
      */
-    public function getPathQuery($node)
+    public function getPathQuery($node, array $options = array())
     {
-        return $this->getPathQueryBuilder($node)->getQuery();
+        return $this->getPathQueryBuilder($node, $options)->getQuery();
     }
 
     /**
      * Get the Tree path of Nodes by given $node
      *
      * @param object $node
+     * @param array  $options
      *
      * @return array - list of Nodes in path
      */
-    public function getPath($node)
+    public function getPath($node, array $options = array())
     {
-        return $this->getPathQuery($node)->getResult();
+        return $this->getPathQuery($node, $options)->getResult();
     }
 
     /**
      * Get the Tree path of Nodes by given $node as a string
      *
      * @param object $node
-     * @param string $separator
-     * @param string $stringMethod Entity method returning its displayable name.
-     *                             If not provided, entity must have __toString method
+     * @param array  $options
      *
+     * $options['includeNode']  = (bool) Whether to include the node itself (default: true)
+     * $options['separator']    = (string) The string separating the nodes of the tree
+     * $options['stringMethod'] = Entity method returning its displayable name.
+     *                            If not provided, entity must have __toString method
      * @return string
      */
-    public function getPathAsString($node, $separator = ' > ', $stringMethod = null)
+    public function getPathAsString($node, array $options = array())
     {
+        $defaultOptions = array(
+            'includeNode'   => true,
+            'separator'     => ' > ',
+            'stringMethod'  => null,
+        );
+        $options = array_merge($defaultOptions, $options);
+
         $path = array();
-        $pathNodes = $this->getPath($node);
+        $pathNodes = $this->getPath($node, $options);
         foreach ($pathNodes as $pathNode) {
-            $path[] = $stringMethod ? $pathNode->{$stringMethod}() : (string) $pathNode;
+            $path[] = $options['stringMethod'] ? $pathNode->{$options['stringMethod']}() : (string) $pathNode;
         }
 
-        return implode($separator, $path);
+        return implode($options['separator'], $path);
     }
 
     /**
