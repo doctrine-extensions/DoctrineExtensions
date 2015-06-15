@@ -294,6 +294,7 @@ class NestedTreeRepository extends AbstractTreeRepository
                 $qb->where($qb->expr()->isNull('node.'.$config['parent']));
             }
         }
+
         if (!$sortByField) {
             $qb->orderBy('node.'.$config['left'], 'ASC');
         } elseif (is_array($sortByField)) {
@@ -808,17 +809,18 @@ class NestedTreeRepository extends AbstractTreeRepository
     }
 
     /**
-     * Reorders $node's sibling nodes and child nodes,
+     * Reorders $node's child nodes,
      * according to the $sortByField and $direction specified
      *
      * @param object|null $node        - node from which to start reordering the tree; null will reorder everything
      * @param string      $sortByField - field name to sort by
      * @param string      $direction   - sort direction : "ASC" or "DESC"
      * @param boolean     $verify      - true to verify tree first
+     * @param boolean     $recursive   - true to also reorder grandchildren recursively
      *
      * @return bool|null
      */
-    public function reorder($node, $sortByField = null, $direction = 'ASC', $verify = true)
+    public function reorder($node, $sortByField = null, $direction = 'ASC', $verify = true, $recursive = true)
     {
         $meta = $this->getClassMetadata();
         if ($node instanceof $meta->name || $node === null) {
@@ -833,7 +835,7 @@ class NestedTreeRepository extends AbstractTreeRepository
                 $right = $wrapped->getPropertyValue($config['right']);
                 $left = $wrapped->getPropertyValue($config['left']);
                 $this->moveDown($node, true);
-                if ($left != ($right - 1)) {
+                if ($recursive && $left != ($right - 1)) {
                     $this->reorder($node, $sortByField, $direction, false);
                 }
             }
@@ -889,7 +891,7 @@ class NestedTreeRepository extends AbstractTreeRepository
      *
      * @param bool $verifyFirst Whether to verify the tree first, before attempting recovery
      */
-    public function recover($verifyFirst = true)
+    public function recover($verifyFirst = true, $sortByField = null, $direction = 'ASC')
     {
         if ($verifyFirst && $this->verify() === true) {
             return;
@@ -899,9 +901,9 @@ class NestedTreeRepository extends AbstractTreeRepository
         $self = $this;
         $em = $this->_em;
 
-        $doRecover = function ($root, &$count, $level) use ($meta, $config, $self, $em, &$doRecover) {
+        $doRecover = function ($root, &$count, $level) use ($meta, $config, $self, $em, $sortByField, $direction, &$doRecover) {
             $lft = $count++;
-            foreach ($self->getChildren($root, true) as $child) {
+            foreach ($self->getChildren($root, true, $sortByField, $direction) as $child) {
                 $doRecover($child, $count, $level+1);
             }
             $rgt = $count++;
@@ -914,7 +916,7 @@ class NestedTreeRepository extends AbstractTreeRepository
         };
 
         if (isset($config['root'])) {
-            foreach ($this->getRootNodes() as $root) {
+            foreach ($this->getRootNodes($sortByField, $direction) as $root) {
                 // reset on every root node
                 $count = 1;
                 $level = isset($config['level_base']) ? $config['level_base'] : 0;
