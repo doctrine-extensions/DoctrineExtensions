@@ -196,6 +196,27 @@ class NestedTreeRepository extends AbstractTreeRepository
     }
 
     /**
+     * Get the Tree path of Nodes by given $node as a string
+     *
+     * @param object $node
+     * @param string $separator
+     * @param string $stringMethod Entity method returning its displayable name.
+     *                             If not provided, entity must have __toString method
+     *
+     * @return string
+     */
+    public function getPathAsString($node, $separator = ' > ', $stringMethod = null)
+    {
+        $path = array();
+        $pathNodes = $this->getPath($node);
+        foreach ($pathNodes as $pathNode) {
+            $path[] = $stringMethod ? $pathNode->{$stringMethod}() : (string) $pathNode;
+        }
+
+        return implode($separator, $path);
+    }
+
+    /**
      * @see getChildrenQueryBuilder
      */
     public function childrenQueryBuilder($node = null, $direct = false, $sortByField = null, $direction = 'ASC', $includeNode = false)
