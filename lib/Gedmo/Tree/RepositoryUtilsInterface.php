@@ -18,7 +18,7 @@ interface RepositoryUtilsInterface
      *                             nodeDecorator: Closure (null) - uses $node as argument and returns decorated item as string
      *                             rootOpen: string || Closure ('<ul>') - branch start, closure will be given $children as a parameter
      *                             rootClose: string ('</ul>') - branch close
-     *                             childStart: string || Closure ('<li>') - start of node, closure will be given $node as a parameter
+     *                             childOpen: string || Closure ('<li>') - start of node, closure will be given $node as a parameter
      *                             childClose: string ('</li>') - close of node
      *                             childSort: array || keys allowed: field: field to sort on, dir: direction. 'asc' or 'desc'
      * @param boolean $includeNode - Include node on results?
@@ -41,7 +41,7 @@ interface RepositoryUtilsInterface
      *                       nodeDecorator: Closure (null) - uses $node as argument and returns decorated item as string
      *                       rootOpen: string || Closure ('<ul>') - branch start, closure will be given $children as a parameter
      *                       rootClose: string ('</ul>') - branch close
-     *                       childStart: string || Closure ('<li>') - start of node, closure will be given $node as a parameter
+     *                       childOpen: string || Closure ('<li>') - start of node, closure will be given $node as a parameter
      *                       childClose: string ('</li>') - close of node
      *
      * @return array|string
