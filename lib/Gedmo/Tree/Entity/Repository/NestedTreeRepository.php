@@ -298,12 +298,9 @@ class NestedTreeRepository extends AbstractTreeRepository
         if (!$sortByField) {
             $qb->orderBy('node.'.$config['left'], 'ASC');
         } elseif (is_array($sortByField)) {
-            $fields = '';
-            foreach ($sortByField as $field) {
-                $fields .= 'node.'.$field.',';
+            foreach ($sortByField as $key => $field) {
+                $qb->addOrderBy('node.'.$field, is_array($direction) ? $direction[$key] : $direction);
             }
-            $fields = rtrim($fields, ',');
-            $qb->orderBy($fields, $direction);
         } else {
             if ($meta->hasField($sortByField) && in_array(strtolower($direction), array('asc', 'desc'))) {
                 $qb->orderBy('node.'.$sortByField, $direction);

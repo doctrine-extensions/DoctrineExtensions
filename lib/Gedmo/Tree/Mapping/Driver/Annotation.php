@@ -162,7 +162,7 @@ class Annotation extends AbstractAnnotationDriver
                 $config['root'] = $field;
             }
             // level
-            if ($pathAnnotation = $this->reader->getPropertyAnnotation($property, self::LEVEL)) {
+            if ($levelAnnotation = $this->reader->getPropertyAnnotation($property, self::LEVEL)) {
                 $field = $property->getName();
                 if (!$meta->hasField($field)) {
                     throw new InvalidMappingException("Unable to find 'level' - [{$field}] as mapped property in entity - {$meta->name}");
@@ -171,7 +171,7 @@ class Annotation extends AbstractAnnotationDriver
                     throw new InvalidMappingException("Tree level field - [{$field}] type is not valid and must be 'integer' in class - {$meta->name}");
                 }
                 $config['level'] = $field;
-                $config['level_base'] = (int) $pathAnnotation->base;
+                $config['level_base'] = (int) $levelAnnotation->base;
             }
             // path
             if ($pathAnnotation = $this->reader->getPropertyAnnotation($property, self::PATH)) {
