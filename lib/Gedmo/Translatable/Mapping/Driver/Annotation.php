@@ -88,6 +88,23 @@ class Annotation extends AbstractAnnotationDriver
             }
         }
 
+        // Embedded entity
+        if (property_exists($meta, 'embeddedClasses') && $meta->embeddedClasses) {
+            foreach ($meta->embeddedClasses as $propertyName => $embeddedClassInfo) {
+                $embeddedClass = new \ReflectionClass($embeddedClassInfo['class']);
+                foreach ($embeddedClass->getProperties() as $embeddedProperty) {
+                    if ($translatable = $this->reader->getPropertyAnnotation($embeddedProperty, self::TRANSLATABLE)) {
+                        $field = $propertyName . '.' . $embeddedProperty->getName();
+
+                        $config['fields'][] = $field;
+                        if (isset($translatable->fallback)) {
+                            $config['fallback'][$field] = $translatable->fallback;
+                        }
+                    }
+                }
+            }
+        }
+
         if (!$meta->isMappedSuperclass && $config) {
             if (is_array($meta->identifier) && count($meta->identifier) > 1) {
                 throw new InvalidMappingException("Translatable does not support composite identifiers in class - {$meta->name}");
