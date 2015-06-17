@@ -11,6 +11,8 @@ use Doctrine\ORM\Query\AST\SelectStatement;
 use Doctrine\ORM\Query\Exec\SingleSelectExecutor;
 use Doctrine\ORM\Query\AST\RangeVariableDeclaration;
 use Doctrine\ORM\Query\AST\Join;
+use Doctrine\DBAL\Platforms\MySqlPlatform;
+use Doctrine\DBAL\Platforms\PostgreSqlPlatform;
 
 /**
  * The translation sql output walker makes it possible
@@ -302,6 +304,7 @@ class TranslationWalker extends SqlWalker
             $transClass = $this->listener->getTranslationClass($ea, $meta->name);
             $transMeta = $em->getClassMetadata($transClass);
             $transTable = $transMeta->getQuotedTableName($this->platform);
+            $castFK = ($this->platform instanceof PostgreSqlPlatform) ? '::VARCHAR' : '';
             foreach ($config['fields'] as $field) {
                 $compTblAlias = $this->walkIdentificationVariable($dqlAlias, $field);
                 $tblAlias = $this->getSQLTableAlias('trans'.$compTblAlias.$field);
@@ -314,12 +317,12 @@ class TranslationWalker extends SqlWalker
                 $idColName = $meta->getQuotedColumnName($identifier, $this->platform);
                 if ($ea->usesPersonalTranslation($transClass)) {
                     $sql .= ' AND '.$tblAlias.'.'.$transMeta->getSingleAssociationJoinColumnName('object')
-                        .' = '.$compTblAlias.'.'.$idColName;
+                        .' = '.$compTblAlias.'.'.$idColName.$castFK;
                 } else {
                     $sql .= ' AND '.$tblAlias.'.'.$transMeta->getQuotedColumnName('objectClass', $this->platform)
                         .' = '.$this->conn->quote($config['useObjectClass']);
                     $sql .= ' AND '.$tblAlias.'.'.$transMeta->getQuotedColumnName('foreignKey', $this->platform)
-                        .' = '.$compTblAlias.'.'.$idColName;
+                        .' = '.$compTblAlias.'.'.$idColName.$castFK;
                 }
                 isset($this->components[$dqlAlias]) ? $this->components[$dqlAlias] .= $sql : $this->components[$dqlAlias] = $sql;
 
@@ -328,9 +331,9 @@ class TranslationWalker extends SqlWalker
 
                 // Treat translation as original field type
                 $fieldMapping = $meta->getFieldMapping($field);
-                if ((($this->platform instanceof \Doctrine\DBAL\Platforms\MySqlPlatform) &&
+                if ((($this->platform instanceof MySqlPlatform) &&
                     in_array($fieldMapping["type"], array("decimal"))) ||
-                    (!($this->platform instanceof \Doctrine\DBAL\Platforms\MySqlPlatform) &&
+                    (!($this->platform instanceof MySqlPlatform) &&
                     !in_array($fieldMapping["type"], array("datetime", "datetimetz", "date", "time")))) {
                     $type = Type::getType($fieldMapping["type"]);
                     $substituteField = 'CAST('.$substituteField.' AS '.$type->getSQLDeclaration($fieldMapping, $this->platform).')';
