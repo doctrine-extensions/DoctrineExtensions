@@ -317,7 +317,7 @@ class TranslationWalker extends SqlWalker
                         .' = '.$compTblAlias.'.'.$idColName;
                 } else {
                     $sql .= ' AND '.$tblAlias.'.'.$transMeta->getQuotedColumnName('objectClass', $this->platform)
-                        .' = '.$this->conn->quote($meta->name);
+                        .' = '.$this->conn->quote($config['useObjectClass']);
                     $sql .= ' AND '.$tblAlias.'.'.$transMeta->getQuotedColumnName('foreignKey', $this->platform)
                         .' = '.$compTblAlias.'.'.$idColName;
                 }
