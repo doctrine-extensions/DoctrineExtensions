@@ -6,16 +6,11 @@ use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
- * @ODM\Document
- * @Gedmo\Loggable(logEntryClass="Loggable\Fixture\Document\Log\Comment")
+ * @ODM\EmbeddedDocument
+ * @Gedmo\Loggable
  */
-class Comment
+class EmbeddedComment
 {
-    /**
-     * @ODM\Id
-     */
-    private $id;
-
     /**
      * @Gedmo\Versioned
      * @ODM\String
@@ -27,22 +22,6 @@ class Comment
      * @ODM\String
      */
     private $message;
-
-    /**
-     * @Gedmo\Versioned
-     * @ODM\ReferenceOne(targetDocument="RelatedArticle", inversedBy="comments")
-     */
-    private $article;
-
-    public function setArticle($article)
-    {
-        $this->article = $article;
-    }
-
-    public function getArticle()
-    {
-        return $this->article;
-    }
 
     public function getId()
     {

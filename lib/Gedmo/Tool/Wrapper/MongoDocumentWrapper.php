@@ -92,6 +92,9 @@ class MongoDocumentWrapper extends AbstractWrapper
                     $this->initialize();
                 }
             }
+            if ($this->meta->isEmbeddedDocument) {
+                return false;
+            }
             if (!$this->identifier) {
                 $this->identifier = (string) $this->getPropertyValue($this->meta->identifier);
             }
@@ -125,13 +128,5 @@ class MongoDocumentWrapper extends AbstractWrapper
                 }
             }
         }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function isEmbeddedAssociation($field)
-    {
-        return $this->getMetadata()->isSingleValuedEmbed($field);
     }
 }

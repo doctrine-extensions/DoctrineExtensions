@@ -21,10 +21,16 @@ class Article
     private $title;
 
     /**
-     * @ODM\EmbedOne(targetDocument="Author")
      * @Gedmo\Versioned
+     * @ODM\EmbedOne(targetDocument="User")
      */
     private $author;
+
+    /**
+     * @Gedmo\Versioned
+     * @ODM\EmbedMany(targetDocument="EmbeddedComment")
+     */
+    private $comments;
 
     public function __toString()
     {
@@ -46,13 +52,28 @@ class Article
         return $this->title;
     }
 
-    public function setAuthor($author)
+    public function getAuthor()
+    {
+        return $this->author;
+    }
+
+    public function setAuthor(User $author = null)
     {
         $this->author = $author;
     }
 
-    public function getAuthor()
+    public function addComment(EmbeddedComment $comment)
     {
-        return $this->author;
+        $this->comments[] = $comment;
+    }
+
+    public function getComments()
+    {
+        return $this->comments;
+    }
+
+    public function setComments($comments)
+    {
+        $this->comments = $comments;
     }
 }

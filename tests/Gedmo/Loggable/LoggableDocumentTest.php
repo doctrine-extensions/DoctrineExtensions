@@ -2,13 +2,13 @@
 
 namespace Gedmo\Loggable;
 
+use Loggable\Fixture\Document\EmbeddedComment;
+use Loggable\Fixture\Document\User;
 use Tool\BaseTestCaseMongoODM;
 use Doctrine\Common\EventManager;
 use Loggable\Fixture\Document\Article;
 use Loggable\Fixture\Document\RelatedArticle;
 use Loggable\Fixture\Document\Comment;
-use Loggable\Fixture\Document\Author;
-use Composer\Autoload\ClassLoader;
 
 /**
  * These are tests for loggable behavior
@@ -42,53 +42,75 @@ class LoggableDocumentTest extends BaseTestCaseMongoODM
         $logRepo = $this->dm->getRepository('Gedmo\\Loggable\\Document\\LogEntry');
         $articleRepo = $this->dm->getRepository(self::ARTICLE);
         $this->assertCount(0, $logRepo->findAll());
+        $this->populateEmbbedDocument();
 
-        $art0 = new Article();
-        $art0->setTitle('Title');
-
-        $author = new Author();
-        $author->setName('John Doe');
-        $author->setEmail('john@doe.com');
-
-        $art0->setAuthor($author);
-
-        $this->dm->persist($art0);
-        $this->dm->flush();
-
-        $log = $logRepo->findOneByObjectId($art0->getId());
+        /** @var $article Article */
+        $article = $articleRepo->findOneByTitle('New');
+        $log = $logRepo->findOneBy(array('version' => 1, 'objectId' => $article->getId()));
 
         $this->assertNotNull($log);
         $this->assertEquals('create', $log->getAction());
-        $this->assertEquals(get_class($art0), $log->getObjectClass());
+        $this->assertEquals(self::ARTICLE, $log->getObjectClass());
         $this->assertEquals('jules', $log->getUsername());
         $this->assertEquals(1, $log->getVersion());
         $data = $log->getData();
-        $this->assertCount(2, $data);
+        $this->assertCount(3, $data);
         $this->assertArrayHasKey('title', $data);
         $this->assertEquals($data['title'], 'Title');
         $this->assertArrayHasKey('author', $data);
-        $this->assertEquals($data['author'], array('name' => 'John Doe', 'email' => 'john@doe.com'));
+        $this->assertCount(2, $data['author']);
+        $this->assertArrayHasKey('firstName', $data['author']);
+        $this->assertArrayHasKey('lastName', $data['author']);
+        $this->assertEquals($data['author']['firstName'], 'firstName');
+        $this->assertEquals($data['author']['lastName'], 'lastName');
+        $this->assertArrayHasKey('comments', $data);
+        $this->assertCount(3, $data['comments']);
+        $this->assertCount(2, $data['comments'][0]);
+        $this->assertCount(2, $data['comments'][1]);
+        $this->assertCount(2, $data['comments'][2]);
+        $this->assertArrayHasKey('subject', $data['comments'][0]);
+        $this->assertArrayHasKey('message', $data['comments'][0]);
+        $this->assertEquals($data['comments'][0]['subject'], 's0-v1');
+        $this->assertEquals($data['comments'][0]['message'], 'm0-v1');
+        $this->assertArrayHasKey('subject', $data['comments'][1]);
+        $this->assertArrayHasKey('message', $data['comments'][1]);
+        $this->assertEquals($data['comments'][1]['subject'], 's1-v1');
+        $this->assertEquals($data['comments'][1]['message'], 'm1-v1');
 
         // test update
-        $article = $articleRepo->findOneByTitle('Title');
-        $article->setTitle('New');
-        $this->dm->persist($article);
-        $this->dm->flush();
-        $this->dm->clear();
-
         $log = $logRepo->findOneBy(array('version' => 2, 'objectId' => $article->getId()));
+        $data = $log->getData();
         $this->assertEquals('update', $log->getAction());
+        $this->assertCount(2, $data['comments']);
+        $this->assertCount(0, $data['comments'][0]);
+        $this->assertCount(1, $data['comments'][1]);
+
+        $log = $logRepo->findOneBy(array('version' => 3, 'objectId' => $article->getId()));
+        $data = $log->getData();
+        $this->assertArrayHasKey('author', $data);
+        $this->assertNull($data['author']);
 
         // test delete
         $article = $articleRepo->findOneByTitle('New');
         $this->dm->remove($article);
         $this->dm->flush();
-        $this->dm->clear();
 
-        $log = $logRepo->findOneBy(array('version' => 3, 'objectId' => $article->getId()));
+        $log = $logRepo->findOneBy(array('version' => 5, 'objectId' => $article->getId()));
         $this->assertEquals('remove', $log->getAction());
         $this->assertNull($log->getData());
     }
+
+    public function testGetWrongVersion()
+    {
+        $logRepo = $this->dm->getRepository('Gedmo\\Loggable\\Document\\LogEntry');
+
+        $this->setExpectedException('\Gedmo\Exception\UnexpectedValueException', 'Could not find any log entries under version: 1');
+
+        $article = new Article();
+
+        $logRepo->revert($article, 1);
+    }
+
 
     public function testVersionControl()
     {
@@ -97,20 +119,15 @@ class LoggableDocumentTest extends BaseTestCaseMongoODM
         $commentRepo = $this->dm->getRepository(self::COMMENT);
 
         $comment = $commentRepo->findOneByMessage('m-v5');
-        $commentId = $comment->getId();
         $this->assertEquals('m-v5', $comment->getMessage());
         $this->assertEquals('s-v3', $comment->getSubject());
         $this->assertEquals('a2-t-v1', $comment->getArticle()->getTitle());
-        $this->assertEquals('Jane Doe', $comment->getAuthor()->getName());
-        $this->assertEquals('jane@doe.com', $comment->getAuthor()->getEmail());
 
         // test revert
         $commentLogRepo->revert($comment, 3);
         $this->assertEquals('s-v3', $comment->getSubject());
         $this->assertEquals('m-v2', $comment->getMessage());
         $this->assertEquals('a1-t-v1', $comment->getArticle()->getTitle());
-        $this->assertEquals('John Doe', $comment->getAuthor()->getName());
-        $this->assertEquals('john@doe.com', $comment->getAuthor()->getEmail());
         $this->dm->persist($comment);
         $this->dm->flush();
 
@@ -121,19 +138,100 @@ class LoggableDocumentTest extends BaseTestCaseMongoODM
         $this->assertEquals('update', $latest->getAction());
     }
 
+    public function testVersionControlWithEmbbed()
+    {
+        $this->populateEmbbedDocument();
+        $logRepo = $this->dm->getRepository('Gedmo\\Loggable\\Document\\LogEntry');
+        $articleRepo = $this->dm->getRepository(self::ARTICLE);
+
+        $article = $articleRepo->findOneByTitle('New');
+        $this->assertNull($article->getAuthor());
+        $article->getComments();
+        $this->assertNull($article->getComments());
+
+        // test revert
+        $logRepo->revert($article, 2);
+        $this->assertEquals('OtherName', $article->getAuthor()->getFirstName());
+        $comments = $article->getComments();
+        $this->assertCount(2, $comments);
+        $this->assertEquals('m1-v2', $comments[1]->getMessage());
+        $this->dm->persist($article);
+        $this->dm->flush();
+
+        $logRepo->revert($article, 1);
+        $this->assertEquals('firstName', $article->getAuthor()->getFirstName());
+        $comments = $article->getComments();
+        $this->assertCount(3, $comments);
+        $this->assertEquals('m1-v1', $comments[1]->getMessage());
+        $this->assertEquals('m2-v1', $comments[2]->getMessage());
+        $this->dm->persist($article);
+        $this->dm->flush();
+
+        $logRepo->revert($article, 3);
+        $this->assertNull($article->getAuthor());
+        $comments = $article->getComments();
+        $this->assertEquals('m1-v2', $comments[1]->getMessage());
+        $this->dm->persist($article);
+        $this->dm->flush();
+
+        // test get log entries
+        $logEntries = $logRepo->getLogEntries($article);
+        $this->assertCount(7, $logEntries);
+        $latest = array_shift($logEntries);
+        $this->assertEquals('update', $latest->getAction());
+    }
+
+    private function populateEmbbedDocument()
+    {
+        $com0 = new EmbeddedComment();
+        $com0->setMessage('m0-v1');
+        $com0->setSubject('s0-v1');
+        $com1 = new EmbeddedComment();
+        $com1->setMessage('m1-v1');
+        $com1->setSubject('s1-v1');
+        $com2 = new EmbeddedComment();
+        $com2->setMessage('m2-v1');
+        $com2->setSubject('s2-v1');
+        $author0 = new User();
+        $author0->setFirstName('firstName');
+        $author0->setLastName('lastName');
+        $article = new Article();
+        $article->setTitle('Title');
+        $article->setAuthor($author0);
+        $article->addComment($com0);
+        $article->addComment($com1);
+        $article->addComment($com2);
+
+        $this->dm->persist($article);
+        $this->dm->flush();
+
+        $article->setTitle('New');
+        $article->getAuthor()->setFirstName('OtherName');
+        $comments = $article->getComments();
+        $comments[1]->setMessage('m1-v2');
+        unset($comments[2]);
+        $this->dm->persist($article);
+        $this->dm->flush();
+
+        $article->setAuthor(null);
+        $this->dm->persist($article);
+        $this->dm->flush();
+
+        $article->setComments(null);
+        $this->dm->persist($article);
+        $this->dm->flush();
+
+
+    }
+
     private function populate()
     {
         $article = new RelatedArticle();
         $article->setTitle('a1-t-v1');
         $article->setContent('a1-c-v1');
 
-        $author = new Author();
-        $author->setName('John Doe');
-        $author->setEmail('john@doe.com');
-
         $comment = new Comment();
         $comment->setArticle($article);
-        $comment->setAuthor($author);
         $comment->setMessage('m-v1');
         $comment->setSubject('s-v1');
 
@@ -153,11 +251,6 @@ class LoggableDocumentTest extends BaseTestCaseMongoODM
         $article2->setTitle('a2-t-v1');
         $article2->setContent('a2-c-v1');
 
-        $author2 = new Author();
-        $author2->setName('Jane Doe');
-        $author2->setEmail('jane@doe.com');
-
-        $comment->setAuthor($author2);
         $comment->setArticle($article2);
         $this->dm->persist($article2);
         $this->dm->persist($comment);
