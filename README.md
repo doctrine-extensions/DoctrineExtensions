@@ -36,19 +36,19 @@ offer new functionality or tools to use Doctrine2 more efficiently. This package
 used behaviors which can be easily attached to your event system of Doctrine2 and handle the
 records being flushed in the behavioral way. List of extensions:
 
-- **Tree** - this extension automates the tree handling process and adds some tree specific functions on repository.
+- [**Tree**](/doc/tree.md) - this extension automates the tree handling process and adds some tree specific functions on repository.
 (**closure**, **nestedset** or **materialized path**)
-- **Translatable** - gives you a very handy solution for translating records into different languages. Easy to setup, easier to use.
-- **Sluggable** - urlizes your specified fields into single unique slug
-- **Timestampable** - updates date fields on create, update and even property change.
-- **Blameable** - updates string or reference fields on create, update and even property change with a string or object (e.g. user).
-- **Loggable** - helps tracking changes and history of objects, also supports version management.
-- **Sortable** - makes any document or entity sortable
-- **Translator** - explicit way to handle translations
-- **Softdeleteable** - allows to implicitly remove records
-- **Uploadable** - provides file upload handling in entity fields
-- **References** - supports linking Entities in Documents and vice versa
-- **IpTraceable** - inherited from Timestampable, sets IP address instead of timestamp
+- [**Translatable**](/doc/translatable.md) - gives you a very handy solution for translating records into different languages. Easy to setup, easier to use.
+- [**Sluggable**](/doc/sluggable.md) - urlizes your specified fields into single unique slug
+- [**Timestampable**](/doc/timestampable.md) - updates date fields on create, update and even property change.
+- [**Blameable**](/doc/blameable.md) - updates string or reference fields on create, update and even property change with a string or object (e.g. user).
+- [**Loggable**](/doc/loggable.md) - helps tracking changes and history of objects, also supports version management.
+- [**Sortable**](/doc/sortable.md) - makes any document or entity sortable
+- [**Translator**](/doc/translatable.md) - explicit way to handle translations
+- [**Softdeleteable**](/doc/softdeleteable.md) - allows to implicitly remove records
+- [**Uploadable**](/doc/uploadable.md) - provides file upload handling in entity fields
+- [**References**](/doc/references.md) - supports linking Entities in Documents and vice versa
+- [**IpTraceable**](/doc/ip_traceable.md) - inherited from Timestampable, sets IP address instead of timestamp
 
 Currently these extensions support **Yaml**, **Annotation**  and **Xml** mapping. Additional mapping drivers
 can be easily implemented using Mapping extension to handle the additional metadata mapping.
