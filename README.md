@@ -1,6 +1,6 @@
 # Doctrine2 behavioral extensions
 
-**Version 2.4.1**
+**Version 2.4.2**
 
 [![Build Status](https://secure.travis-ci.org/Atlantic18/DoctrineExtensions.png?branch=master)](http://travis-ci.org/Atlantic18/DoctrineExtensions)
 
@@ -45,9 +45,10 @@ records being flushed in the behavioral way. List of extensions:
 - [**Loggable**](/doc/loggable.md) - helps tracking changes and history of objects, also supports version management.
 - [**Sortable**](/doc/sortable.md) - makes any document or entity sortable
 - [**Translator**](/doc/translatable.md) - explicit way to handle translations
-- [**Softdeleteable**](/doc/softdeleteable.md) - allows to implicitly remove records
+- [**SoftDeleteable**](/doc/softdeleteable.md) - allows to implicitly remove records
 - [**Uploadable**](/doc/uploadable.md) - provides file upload handling in entity fields
 - [**References**](/doc/references.md) - supports linking Entities in Documents and vice versa
+- [**RererenceIntegrity**](/doc/reference_integrity) - constrains ODM MongoDB Document references
 - [**IpTraceable**](/doc/ip_traceable.md) - inherited from Timestampable, sets IP address instead of timestamp
 
 Currently these extensions support **Yaml**, **Annotation**  and **Xml** mapping. Additional mapping drivers
@@ -85,14 +86,14 @@ List of extensions which support ODM
 - Translator
 - Tree (Materialized Path strategy for now)
 - References
-- Sortable
+- ReferenceIntegrity
 
-All these extensions can be nested together and mapped in traditional ways - annotations,
-xml or yaml
+All these extensions can be nested together and mapped in traditional ways - **annotations**,
+**xml** or **yaml**
 
 ### Running the tests:
 
-PHPUnit 3.6 or newer is required. **pdo-sqlite** extension is necessary.
+**pdo-sqlite** extension is necessary.
 To setup and run tests follow these steps:
 
 - go to the root directory of extensions
