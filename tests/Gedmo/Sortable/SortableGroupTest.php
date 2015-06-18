@@ -3,6 +3,8 @@
 namespace Gedmo\Sortable;
 
 use Doctrine\Common\EventManager;
+use Sortable\Fixture\Category;
+use Sortable\Fixture\Item;
 use Tool\BaseTestCaseORM;
 use Sortable\Fixture\Transport\Car;
 use Sortable\Fixture\Transport\Bus;
@@ -24,6 +26,8 @@ class SortableGroupTest extends BaseTestCaseORM
     const VEHICLE = "Sortable\Fixture\Transport\Vehicle";
     const ENGINE = "Sortable\Fixture\Transport\Engine";
     const RESERVATION = "Sortable\Fixture\Transport\Reservation";
+    const ITEM = "Sortable\Fixture\Item";
+    const CATEGORY = "Sortable\Fixture\Category";
 
     const SEATS = 3;
 
@@ -182,6 +186,66 @@ class SortableGroupTest extends BaseTestCaseORM
         $this->assertEquals(range(0, self::SEATS - 1), $seats, 'Should be seats [ 0, 1, 2 ] to Prague Today');
     }
 
+    /**
+     * @test
+     * @group failing
+     */
+    public function shouldBeAbleToChangeGroupAndPosition()
+    {
+        $this->populate();
+
+        $this->startQueryLog();
+        $repo = $this->em->getRepository(self::ITEM);
+        $repoCategory = $this->em->getRepository(self::CATEGORY);
+
+        $vehicle = $repoCategory->findOneByName('Vehicle');
+
+        $vehicles = $repo->findBy(array('category' => $vehicle), array('position' => 'asc'));
+        $position = 1;
+        foreach ($vehicles as $item) {
+            $this->assertEquals($position, $item->getPosition());
+            $position++;
+        }
+        $this->assertEquals(31, $position);
+
+        $accessory = $repoCategory->findOneByName('Accessory');
+
+        $accessories = $repo->findBy(array('category' => $accessory), array('position' => 'asc'));
+        $position = 1;
+        foreach ($accessories as $item) {
+            $this->assertEquals($position, $item->getPosition());
+            $position++;
+        }
+        $this->assertEquals(31, $position);
+
+        $item = $repo->findOneBy(array('category' => $accessory, 'position' => 7));
+        $item->setCategory($vehicle);
+        $item->setPosition(4);
+        $this->em->persist($item);
+        $this->em->flush();
+        $this->stopQueryLog(false, true);
+
+        unset ($vehicles, $accessories);
+
+        $vehicles = $repo->findBy(array('category' => $vehicle), array('position' => 'asc'));
+        $position = 1;
+        foreach ($vehicles as $item) {
+            $this->assertEquals($position, $item->getPosition());
+            $position++;
+        }
+        $this->assertEquals(32, $position);
+
+        $accessory = $repoCategory->findOneByName('Accessory');
+
+        $accessories = $repo->findBy(array('category' => $accessory), array('position' => 'asc'));
+        $position = 1;
+        foreach ($accessories as $item) {
+            $this->assertEquals($position, $item->getPosition());
+            $position++;
+        }
+        $this->assertEquals(30, $position);
+    }
+
     protected function getUsedEntityFixtures()
     {
         return array(
@@ -190,6 +254,8 @@ class SortableGroupTest extends BaseTestCaseORM
             self::ENGINE,
             self::BUS,
             self::RESERVATION,
+            self::ITEM,
+            self::CATEGORY,
         );
     }
 
@@ -255,6 +321,28 @@ class SortableGroupTest extends BaseTestCaseORM
             $reservationPrague->setTravelDate($today);
             $reservationPrague->setName('Prague Today '.$i);
             $this->em->persist($reservationPrague);
+        }
+
+        $categoryVehicle = new Category();
+        $categoryVehicle->setName('Vehicle');
+        $this->em->persist($categoryVehicle);
+
+        $categoryAccessory = new Category;
+        $categoryAccessory->setName('Accessory');
+        $this->em->persist($categoryAccessory);
+
+        for ($i = 1; $i <= 60; $i++)
+        {
+            $item = new Item();
+            $item->setName('Item ' . $i);
+            if ($i <= 30) {
+                $item->setCategory($categoryVehicle);
+                $item->setPosition($i);
+            } else {
+                $item->setCategory($categoryAccessory);
+                $item->setPosition($i - 30);
+            }
+            $this->em->persist($item);
         }
 
         $this->em->flush();
