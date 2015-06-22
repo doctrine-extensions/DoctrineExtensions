@@ -292,12 +292,13 @@ class TranslatableListener extends MappedEventSubscriber
      *
      * @param object $object
      * @param object $meta
+     * @param object $om
      *
      * @throws \Gedmo\Exception\RuntimeException - if language or locale property is not
      *                                           found in entity
      * @return string
      */
-    public function getTranslatableLocale($object, $meta, $om)
+    public function getTranslatableLocale($object, $meta, $om = null)
     {
         $locale = $this->locale;
         if (isset(self::$configurations[$this->name][$meta->name]['locale'])) {
