@@ -886,7 +886,9 @@ class NestedTreeRepository extends AbstractTreeRepository
      *
      * Tries to recover the tree
      *
-     * @param bool $verifyFirst Whether to verify the tree first, before attempting recovery
+     * @param bool   $verifyFirst Whether to verify the tree first, before attempting recovery
+     * @param string $sortByField Optional field to sort siblings by, while recovering
+     * @param string $direction   Direction for the sorting
      */
     public function recover($verifyFirst = true, $sortByField = null, $direction = 'ASC')
     {
