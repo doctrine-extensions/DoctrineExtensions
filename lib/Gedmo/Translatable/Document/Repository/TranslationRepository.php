@@ -59,7 +59,7 @@ class TranslationRepository extends DocumentRepository
             throw new \Gedmo\Exception\InvalidArgumentException("Document: {$meta->name} does not translate field - {$field}");
         }
         $modRecordValue = (!$listener->getPersistDefaultLocaleTranslation() && $locale === $listener->getDefaultLocale())
-            || $listener->getTranslatableLocale($document, $meta) === $locale
+            || $listener->getTranslatableLocale($document, $meta, $this->getDocumentManager()) === $locale
         ;
         if ($modRecordValue) {
             $meta->getReflectionProperty($field)->setValue($document, $value);
