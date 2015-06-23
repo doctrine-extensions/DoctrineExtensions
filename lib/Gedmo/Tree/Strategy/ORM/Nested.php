@@ -272,7 +272,7 @@ class Nested implements Strategy
     }
 
     /**
-     * Update the $node with a diferent $parent
+     * Update the $node with a different $parent
      * destination
      *
      * @param EntityManager $em
@@ -305,7 +305,7 @@ class Nested implements Strategy
         if (isset($this->nodePositions[$oid])) {
             $position = $this->nodePositions[$oid];
         }
-        $level = 0;
+        $level = isset($config['level_base']) ? $config['level_base'] : 0;
         $treeSize = $right - $left + 1;
         $newRootId = null;
         if ($parent) {

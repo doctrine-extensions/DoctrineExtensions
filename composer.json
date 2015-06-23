@@ -1,5 +1,5 @@
 {
-    "name": "gedmo/doctrine-extensions",
+    "name": "pmishev/doctrine-extensions",
     "type": "library",
     "description": "Doctrine2 behavioral extensions",
     "keywords": [
