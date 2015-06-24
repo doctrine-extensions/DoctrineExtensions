@@ -1,114 +1,5 @@
 # Uploadable behavior extension for Doctrine 2
 
-## About this fork
-
-This fork modifies the original Uploadable behavior to add support of multiple uploadable files in a single entity. Its goal is the same as [FranzBruckner's fork](https://github.com/FranzBruckner/DoctrineExtensions), but with a slightly different approach and implementation. The aim of this fork is to preseve as much BC as possible. The original way of annotation will still work for entities with a single file entry.
-
-### Usage
-
-Here is an example of an entity with multiple Uploadable fields.
-
-**Notes:**
-- As mentioned above, you **don't** need to change your original annotation if there is only one uploadable field in an entity. The `@Uploadable` annotation should still work.
-- Currently, support for multiple uploadable configurations is only added to annotations. I didn't touch the XML and YML mapping parts, so they probably **won't** work.
-
-#### Entity definition
-
-```php
-/**
- * @ORM\Entity
- * @Gedmo\Uploadables(configurations={
- *   @Gedmo\Uploadable(identifier="image_large", pathMethod="getPath"),
- *   @Gedmo\Uploadable(identifier="image_thumb", pathMethod="getPath")
- * })
- */
-class Product
-{
-    /**
-     * @ORM\Column(type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
-     */
-    private $id;
-
-    /**
-     * @ORM\Column(type="string")
-     */
-    private $title;
-
-    /**
-     * @ORM\Column(type="string")
-     * @Gedmo\UploadableFileName(identifier="image_thumb")
-     */
-    private $thumbnailImageFile;
-
-    /**
-     * @ORM\Column(type="string")
-     * @Gedmo\UploadableFileName(identifier="image_large")
-     */
-    private $largeImageFile;
-
-    public function getPath()
-    {
-        return '/tmp/path_to_upload';
-    }
-}
-
-```
-
-Explanations:
-- A new annotation `@Uploadables` (in plural) is added, which accepts an array of the original `@Uploadable` definitions. This is how you define multiple uploadable configurations in an entity.
-- A new property `identifier` has been added to the original `@Uploadable` annotation. This is a unique identifier to distinguish different uploadable configurations.
-- A new property, also named `identifier`, is added to the following annotations: `@UploadableFileMimeType`, `@UploadableFileName`, `@UploadableFilePath`, and `@UploadableFileSize`. In case of multiple uploadables, you need to specify which configuration the annotation refers to using this identifier.
-
-The `identifier` field will default to `_default` when not specified. This ensures that original annotations still works.
-
-#### Marking multiple uploaded files in an entity
-
-To add files to an entity, do this:
-
-```php
-$entity = new Product();
-$listener->addEntityFileInfo($entity, new FileInfoArray($fileInfo), 'image_large');
-$listener->addEntityFileInfo($entity, new FileInfoArray($fileInfo), 'image_thumb');
-```
-
-Explanations:
-- `addEntityFileInfo` now accepts a third optional parameter indicating the uploadable identifier. If not specified, its value will be `_default`.
-
-That's it.
-
-### Other changes
-
-- A new parameter `identifier` is also added to `FilenameGeneratorInterface::generate()` as the forth argument. Currently this is used by the `FilenameGeneratorSha1` class to prevent having the same SHA1 result when the same filename and extension are passed to different file fields (with different identifiers) in the same entity.
-- Visibility of method `processFile()` and `moveFile()` in `UploadableListener`  changed from `public` to `protected` because their signature are changed and they don't look right to be public.
-
-### Final remarks
-
-- Testing is very limited.
-- Changes to stof's [DoctrineExtensionsBundle](https://github.com/stof/StofDoctrineExtensionsBundle/) is needed to support multiple uploadables in a single entity. Modify the `markEntityToUpload()` method of  `\Stof\DoctrineExtensionsBundle\Uploadable\UploadableManager` as below:
-
-```php
-    public function markEntityToUpload($entity, $fileInfo, $identifier = '_default')
-    {
-        if (is_object($fileInfo) && $fileInfo instanceof UploadedFile) {
-            $fileInfoClass = $this->fileInfoClass;
-
-            $fileInfo = new $fileInfoClass($fileInfo);
-        }
-
-        $this->listener->addEntityFileInfo($entity, $fileInfo, $identifier);
-    }
-
-```
-
-Usage of this method will become:
-```php
-$manager->markEntityToUpload($file, $uploadedFile, 'image_thumb');
-```
-
-## The original README
-
 **Uploadable** behavior provides the tools to manage the persistence of files with
 Doctrine 2, including automatic handling of moving, renaming and removal of files and other features.
 
@@ -574,3 +465,74 @@ way:
 $listener->setMimeTypeGuesser(new MyCustomMimeTypeGuesser());
 
 ```
+
+### Multiple uploadables in a single entity
+ 
+It is possible to configure a single entity with more than one uploadable. To do this, you need to:
+ 
+* Have all Uploadable annotations under the **@Gedmo\Mapping\Annotation\Uploadables** annotation, and give every Uploadable a unique identifier.
+* Specify the working configuration identifier in the field configurations. 
+
+**Important note: Multiple uploadables is currently supported via annotations only.**
+
+Here is an example:
+
+```php
+/**
+ * @ORM\Entity
+ * @Gedmo\Uploadables(configurations={
+ *   @Gedmo\Uploadable(identifier="image_large", pathMethod="getPath"),
+ *   @Gedmo\Uploadable(identifier="image_thumb", pathMethod="getPath")
+ * })
+ */
+class Product
+{
+    /**
+     * @ORM\Column(type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
+
+    /**
+     * @ORM\Column(type="string")
+     */
+    private $title;
+
+    /**
+     * @ORM\Column(type="string")
+     * @Gedmo\UploadableFileName(identifier="image_thumb")
+     */
+    private $thumbnailImageFile;
+
+    /**
+     * @ORM\Column(type="string")
+     * @Gedmo\UploadableFileName(identifier="image_large")
+     */
+    private $largeImageFile;
+
+    public function getPath()
+    {
+        return '/tmp/path_to_upload';
+    }
+}
+
+```
+
+Explanations:
+
+- The class is annotated with a new annotation, `@Uploadables`, which accepts an array of the original `@Uploadable` definitions. 
+- Each Uploadable is given a unique `identifier`. This is used to distinguish different uploadable configurations.
+- You also need to specify which configuration the field refers to via the `identifier` property in `@UploadableFileMimeType`, `@UploadableFileName`, `@UploadableFilePath`, and `@UploadableFileSize`. 
+
+*Note: Behind the scene, `identifier` will default to `_default` when not specified, so you don't need to worry about it in case of single upload field.*
+
+Similarly, you need to specify which configuration the file refers to when adding file to the entity. Just pass the identifier as the third parameter of `addEntityFileInfo`, like below:
+ 
+```php
+$entity = new Product();
+$listener->addEntityFileInfo($entity, new FileInfoArray($fileInfo), 'image_large');
+$listener->addEntityFileInfo($entity, new FileInfoArray($fileInfo), 'image_thumb');
+```
+
+*Note: Again, this optional third parameter will default to `_default`, which is why you don't need to specify one in case of single upload.*
