@@ -163,7 +163,7 @@ class ReferencesListenerTest extends BaseTestCaseOM
         $appleTV->addMetadata( $tvMetadata );
         $samsungTV->addMetadata( $tvMetadata );
         $this->dm->persist( $samsungTV );
-        $this->dm->persist($appleTV);
+        $this->dm->persist( $appleTV );
         $this->dm->flush();
 
         $this->assertEquals($appleTV->getMetadatas()->first(), $tvMetadata);

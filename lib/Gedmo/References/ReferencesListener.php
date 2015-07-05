@@ -154,12 +154,6 @@ class ReferencesListener extends MappedEventSubscriber
                         $manager = $this->getManager($mapping['type']);
                         $identifier = $ea->getIdentifier($manager, $referencedObject);
 
-                        if (null === $identifier) {
-                            $manager->persist($referencedObject);
-                            $manager->flush();
-                            $identifier = $ea->getIdentifier($manager, $referencedObject);
-                        }
-
                         $meta->setFieldValue(
                             $object,
                             $mapping['identifier'],
