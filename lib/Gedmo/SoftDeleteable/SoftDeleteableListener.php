@@ -76,9 +76,12 @@ class SoftDeleteableListener extends MappedEventSubscriber
 
                 $om->persist($object);
                 $uow->propertyChanged($object, $config['fieldName'], $oldValue, $date);
-                $uow->scheduleExtraUpdate($object, array(
-                    $config['fieldName'] => array($oldValue, $date),
-                ));
+                $ea->recomputeSingleObjectChangeSet($uow, $meta, $object);
+                if ($ea instanceof Mapping\Event\Adapter\ORM) {
+                    $uow->scheduleExtraUpdate($object, array(
+                        $config['fieldName'] => array($oldValue, $date),
+                    ));
+                }
 
                 $evm->dispatchEvent(
                     self::POST_SOFT_DELETE,

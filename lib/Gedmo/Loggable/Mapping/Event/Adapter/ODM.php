@@ -27,7 +27,7 @@ final class ODM extends BaseAdapterODM implements LoggableAdapter
      */
     public function isPostInsertGenerator($meta)
     {
-        return true;
+        return false;
     }
 
     /**
