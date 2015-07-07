@@ -2,10 +2,12 @@
 
 namespace Gedmo\References\Mapping\Event\Adapter;
 
-use Doctrine\ODM\MongoDB\DocumentManager;
+use Doctrine\ODM\MongoDB\DocumentManager as MongoDocumentManager;
 use Doctrine\ODM\MongoDB\Proxy\Proxy as MongoDBProxy;
+use Doctrine\ODM\PHPCR\DocumentManager as PhpcrDocumentManager;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Proxy\Proxy as ORMProxy;
+use Gedmo\Exception\InvalidArgumentException;
 use Gedmo\Mapping\Event\Adapter\ORM as BaseAdapterORM;
 use Gedmo\References\Mapping\Event\ReferencesAdapter;
 
@@ -28,13 +30,24 @@ final class ORM extends BaseAdapterORM implements ReferencesAdapter
             return $this->extractIdentifier($om, $object, $single);
         }
 
-        if ($om instanceof DocumentManager) {
+        if ($om instanceof MongoDocumentManager) {
             $meta = $om->getClassMetadata(get_class($object));
             if ($object instanceof MongoDBProxy) {
                 $id = $om->getUnitOfWork()->getDocumentIdentifier($object);
             } else {
                 $id = $meta->getReflectionProperty($meta->identifier)->getValue($object);
             }
+
+            if ($single || !$id) {
+                return $id;
+            }
+
+            return array($meta->identifier => $id);
+        }
+
+        if ($om instanceof PhpcrDocumentManager) {
+            $meta = $om->getClassMetadata(get_class($object));
+            $id = $meta->getReflectionProperty($meta->identifier)->getValue($object);
 
             if ($single || !$id) {
                 return $id;
@@ -52,8 +65,10 @@ final class ORM extends BaseAdapterORM implements ReferencesAdapter
         $this->throwIfNotDocumentManager($om);
         $meta = $om->getClassMetadata($class);
 
-        if (!$meta->isInheritanceTypeNone()) {
-            return $om->find($class, $identifier);
+        if ($om instanceof MongoDocumentManager) {
+            if (!$meta->isInheritanceTypeNone()) {
+                return $om->find($class, $identifier);
+            }
         }
 
         return $om->getReference($class, $identifier);
@@ -88,7 +103,17 @@ final class ORM extends BaseAdapterORM implements ReferencesAdapter
     /**
      * Override so we don't get an exception. We want to allow this.
      */
-    private function throwIfNotDocumentManager(DocumentManager $dm)
+    private function throwIfNotDocumentManager($dm)
     {
+        if (!($dm instanceof MongoDocumentManager) && !($dm instanceof PhpcrDocumentManager)) {
+            throw new InvalidArgumentException(
+                sprintf(
+                    'Expected a %s or %s instance but got "%s"',
+                    'Doctrine\ODM\MongoDB\DocumentManager',
+                    'Doctrine\ODM\PHPCR\DocumentManager',
+                    is_object($dm) ? get_class($dm) : gettype($dm)
+                )
+            );
+        }
     }
 }
