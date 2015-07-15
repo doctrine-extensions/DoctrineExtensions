@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
-    targetNamespace="http://gediminasm.org/schemas/orm/doctrine-extensions-mapping"
-    xmlns:gedmo="http://gediminasm.org/schemas/orm/doctrine-extensions-mapping"
-    elementFormDefault="qualified">
+           targetNamespace="http://gediminasm.org/schemas/orm/doctrine-extensions-mapping"
+           xmlns:gedmo="http://gediminasm.org/schemas/orm/doctrine-extensions-mapping"
+           elementFormDefault="qualified">
 
   <xs:annotation>
     <xs:documentation><![CDATA[
@@ -14,12 +14,12 @@
      ]]></xs:documentation>
   </xs:annotation>
 
-<!--
-It would be nice if we could force the gedmo with only necessary elements into each of doctrine elements.
-Patches that do that are more than welcome.
-Please note, that marking e.g filed element in xml document with xsi:type is not an option as we need to allow other
-people to push their own additional attributes/elements into the same field element and they should not extend our schema
--->
+  <!--
+  It would be nice if we could force the gedmo with only necessary elements into each of doctrine elements.
+  Patches that do that are more than welcome.
+  Please note, that marking e.g filed element in xml document with xsi:type is not an option as we need to allow other
+  people to push their own additional attributes/elements into the same field element and they should not extend our schema
+  -->
 
   <!-- entity -->
   <xs:element name="translation" type="gedmo:translation"/>
@@ -59,6 +59,22 @@ people to push their own additional attributes/elements into the same field elem
     <xs:attribute name="activate-locking" type="xs:boolean" default="false" />
     <xs:attribute name="locking-timeout" type="xs:integer" default="3" />
   </xs:complexType>
+
+  <xs:complexType name="reference">
+    <xs:attribute name="type" type="gedmo:reference-type" use="required" />
+    <xs:attribute name="field" type="xs:string" use="required" />
+    <xs:attribute name="identifier" type="xs:string" use="required" />
+    <xs:attribute name="class" type="xs:string" use="required" />
+    <xs:attribute name="mappedBy" type="xs:string" use="optional" />
+    <xs:attribute name="inversedBy" type="xs:string" use="optional" />
+  </xs:complexType>
+
+  <xs:simpleType name="reference-type">
+    <xs:restriction base="xs:token">
+      <xs:enumeration value="document"/>
+      <xs:enumeration value="entity"/>
+    </xs:restriction>
+  </xs:simpleType>
 
   <xs:complexType name="tree-closure">
     <xs:attribute name="class" type="xs:string" use="required" />

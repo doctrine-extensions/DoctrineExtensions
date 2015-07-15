@@ -230,6 +230,7 @@ class SortableListener extends MappedEventSubscriber
         $uow = $em->getUnitOfWork();
 
         $changed = false;
+        $groupHasChanged = false;
         $changeSet = $ea->getObjectChangeSet($uow, $object);
 
         // Get groups
@@ -247,7 +248,13 @@ class SortableListener extends MappedEventSubscriber
         if ($changed) {
             $oldHash = $this->getHash($oldGroups, $config);
             $this->maxPositions[$oldHash] = $this->getMaxPosition($ea, $meta, $config, $object, $oldGroups);
-            $this->addRelocation($oldHash, $config['useObjectClass'], $oldGroups, $meta->getReflectionProperty($config['position'])->getValue($object) + 1, $this->maxPositions[$oldHash] + 1, -1);
+            if (array_key_exists($config['position'], $changeSet)) {
+                $oldPosition = $changeSet[$config['position']][0];
+            } else {
+                $oldPosition = $meta->getReflectionProperty($config['position'])->getValue($object);
+            }
+            $this->addRelocation($oldHash, $config['useObjectClass'], $oldGroups, $oldPosition + 1, $this->maxPositions[$oldHash] + 1, -1);
+            $groupHasChanged = true;
         }
 
         if (array_key_exists($config['position'], $changeSet)) {
@@ -260,6 +267,9 @@ class SortableListener extends MappedEventSubscriber
             $oldPosition = -1;
             $newPosition = -1;
             // specific case
+        }
+        if ($groupHasChanged) {
+            $oldPosition = -1;
         }
         if (!$changed) {
             return;

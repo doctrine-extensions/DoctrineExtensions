@@ -158,6 +158,18 @@ class Issue827Test extends BaseTestCaseORM
 
         $this->assertEquals('post-2', $testPost2->getSlug());
 
+        // we have to refresh entities to ensure that Doctrine are aware of the sluggable generated identifiers
+        $this->em->clear();
+
+        $testPost1 = $this->em->find(
+            self::POST,
+            array('title' => $testPost1->getTitle(), 'slug' => $testPost1->getSlug())
+        );
+        $testPost2 = $this->em->find(
+            self::POST,
+            array('title' => $testPost2->getTitle(), 'slug' => $testPost2->getSlug())
+        );
+
         // Creating comments
 
         $test = new Comment();

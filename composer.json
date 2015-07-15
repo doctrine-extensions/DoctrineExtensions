@@ -43,9 +43,9 @@
         "doctrine/common": "~2.4"
     },
     "require-dev": {
-        "doctrine/mongodb-odm": ">=1.0.0-BETA12",
-        "doctrine/orm": ">=2.5.0-RC1",
-        "doctrine/common": ">=2.5.0-BETA1",
+        "doctrine/mongodb-odm": "dev-master",
+        "doctrine/orm": ">=2.5.0",
+        "doctrine/common": ">=2.5.0",
         "symfony/yaml": "~2.6",
         "phpunit/phpunit": "~4.4",
         "phpunit/phpunit-mock-objects": "~2.3"

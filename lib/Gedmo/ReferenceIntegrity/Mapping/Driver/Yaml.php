@@ -66,7 +66,7 @@ class Yaml extends File implements Driver
                         );
                     }
 
-                    $config['referenceIntegrities'][$property][$mapping['fields'][$property]['mappedBy']] =
+                    $config['referenceIntegrity'][$property][$mapping['fields'][$property]['mappedBy']] =
                         $fieldMapping['gedmo']['referenceIntegrity'];
                 }
             }
@@ -78,6 +78,6 @@ class Yaml extends File implements Driver
      */
     protected function _loadMappingFile($file)
     {
-        return \Symfony\Component\Yaml\Yaml::parse($file);
+        return \Symfony\Component\Yaml\Yaml::parse(file_get_contents($file));
     }
 }

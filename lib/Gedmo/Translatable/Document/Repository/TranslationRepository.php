@@ -59,7 +59,7 @@ class TranslationRepository extends DocumentRepository
             throw new \Gedmo\Exception\InvalidArgumentException("Document: {$meta->name} does not translate field - {$field}");
         }
         $modRecordValue = (!$listener->getPersistDefaultLocaleTranslation() && $locale === $listener->getDefaultLocale())
-            || $listener->getTranslatableLocale($document, $meta) === $locale
+            || $listener->getTranslatableLocale($document, $meta, $this->getDocumentManager()) === $locale
         ;
         if ($modRecordValue) {
             $meta->getReflectionProperty($field)->setValue($document, $value);
@@ -125,6 +125,7 @@ class TranslationRepository extends DocumentRepository
             $qb = $this->dm->createQueryBuilder($translationClass);
             $q = $qb->field('foreignKey')->equals($documentId)
                 ->field('objectClass')->equals($wrapped->getMetadata()->rootDocumentName)
+                ->field('content')->exists(true)->notEqual(null)
                 ->sort('locale', 'asc')
                 ->getQuery();
 
@@ -194,6 +195,7 @@ class TranslationRepository extends DocumentRepository
         if ($id) {
             $qb = $this->createQueryBuilder();
             $q = $qb->field('foreignKey')->equals($id)
+                ->field('content')->exists(true)->notEqual(null)
                 ->sort('locale', 'asc')
                 ->getQuery();
 
