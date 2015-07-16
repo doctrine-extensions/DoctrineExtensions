@@ -314,10 +314,8 @@ class TranslatableListener extends MappedEventSubscriber
             if (is_object($value) && method_exists($value, '__toString')) {
                 $value = (string) $value;
             }
-            try {
-                $this->validateLocale($value);
+            if (is_string($value) && strlen($locale)) {
                 $locale = $value;
-            } catch (\Gedmo\Exception\InvalidArgumentException $e) {
             }
         } elseif ($om instanceof DocumentManager) {
             list($mapping, $parentObject) = $om->getUnitOfWork()->getParentAssociation($object);
