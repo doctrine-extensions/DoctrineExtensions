@@ -314,7 +314,7 @@ class TranslatableListener extends MappedEventSubscriber
             if (is_object($value) && method_exists($value, '__toString')) {
                 $value = (string) $value;
             }
-            if (is_string($value) && strlen($locale)) {
+            if ($this->isValidLocale($value)) {
                 $locale = $value;
             }
         } elseif ($om instanceof DocumentManager) {
@@ -512,9 +512,21 @@ class TranslatableListener extends MappedEventSubscriber
      */
     protected function validateLocale($locale)
     {
-        if (!is_string($locale) || !strlen($locale)) {
+        if (!$this->isValidLocale($locale)) {
             throw new \Gedmo\Exception\InvalidArgumentException('Locale or language cannot be empty and must be set through Listener or Entity');
         }
+    }
+    
+    /**
+     * Check if the given locale is valid
+     *
+     * @param string $locale - locale to check
+     *
+     * @return bool
+     */
+    private function isValidlocale($locale)
+    {
+        return is_string($locale) && strlen($locale);
     }
 
     /**
