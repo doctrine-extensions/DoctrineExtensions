@@ -24,6 +24,9 @@ class TranslationQueryWalkerTest extends BaseTestCaseORM
 
     const TREE_WALKER_TRANSLATION = 'Gedmo\\Translatable\\Query\\TreeWalker\\TranslationWalker';
 
+    /**
+     * @var TranslatableListener
+     */
     private $translatableListener;
 
     protected function setUp()
@@ -671,6 +674,54 @@ class TranslationQueryWalkerTest extends BaseTestCaseORM
         $this->assertCount(1, $result);
         $this->assertEquals('Food', $result[0]['title']);
         $this->assertEquals(1, $result[0]['num']);
+    }
+
+    /**
+     * @test
+     */
+    function shouldPreserveSkipOnLoadForSimpleHydrator()
+    {
+        $this->em
+            ->getConfiguration()
+            ->expects($this->any())
+            ->method('getCustomHydrationMode')
+            ->with(TranslationWalker::HYDRATE_SIMPLE_OBJECT_TRANSLATION)
+            ->will($this->returnValue('Gedmo\\Translatable\\Hydrator\\ORM\\SimpleObjectHydrator'));
+        $dql = 'SELECT a FROM '.self::ARTICLE.' a';
+        $dql .= ' ORDER BY a.title';
+        $q = $this->em->createQuery($dql);
+        $q->setHint(Query::HINT_CUSTOM_OUTPUT_WALKER, self::TREE_WALKER_TRANSLATION);
+
+        // array hydration
+        $this->translatableListener->setTranslatableLocale('en_us');
+        $this->translatableListener->setSkipOnLoad(true);
+        $q->getResult(Query::HYDRATE_SIMPLEOBJECT);
+
+        $this->assertTrue($this->translatableListener->isSkipOnLoad());
+    }
+
+    /**
+     * @test
+     */
+    function shouldPreserveSkipOnLoadForObjectHydrator()
+    {
+        $this->em
+            ->getConfiguration()
+            ->expects($this->any())
+            ->method('getCustomHydrationMode')
+            ->with(TranslationWalker::HYDRATE_OBJECT_TRANSLATION)
+            ->will($this->returnValue('Gedmo\\Translatable\\Hydrator\\ORM\\ObjectHydrator'));
+        $dql = 'SELECT a FROM '.self::ARTICLE.' a';
+        $dql .= ' ORDER BY a.title';
+        $q = $this->em->createQuery($dql);
+        $q->setHint(Query::HINT_CUSTOM_OUTPUT_WALKER, self::TREE_WALKER_TRANSLATION);
+
+        // array hydration
+        $this->translatableListener->setTranslatableLocale('en_us');
+        $this->translatableListener->setSkipOnLoad(true);
+        $q->getResult(Query::HYDRATE_OBJECT);
+
+        $this->assertTrue($this->translatableListener->isSkipOnLoad());
     }
 
     protected function getUsedEntityFixtures()

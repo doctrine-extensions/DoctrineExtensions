@@ -707,6 +707,14 @@ class TranslatableListener extends MappedEventSubscriber
     }
 
     /**
+     * @return boolean
+     */
+    public function isSkipOnLoad()
+    {
+        return $this->skipOnLoad;
+    }
+
+    /**
      * Removes translation object which represents translation in default language.
      * This is for internal use only.
      *
