@@ -97,7 +97,7 @@ class ReferenceIntegrityListener extends MappedEventSubscriber
                         }
 
                         break;
-					case Validator::PULL:
+                    case Validator::PULL:
                         if (!isset($fieldMapping['mappedBy'])) {
                             throw new InvalidMappingException(
                                 sprintf(
