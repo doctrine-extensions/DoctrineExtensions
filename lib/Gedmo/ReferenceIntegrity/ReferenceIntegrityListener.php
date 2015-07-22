@@ -120,7 +120,7 @@ class ReferenceIntegrityListener extends MappedEventSubscriber
                             );
                         }
 
-                        if (!$meta->isCollectionValuedReference($fieldMapping['mappedBy'])) {
+                        if (!$subMeta->isCollectionValuedReference($fieldMapping['mappedBy'])) {
                             throw new InvalidMappingException(
                                 sprintf(
                                     "Reference integrity [%s] mapped property in entity - %s should be a Reference Many",
