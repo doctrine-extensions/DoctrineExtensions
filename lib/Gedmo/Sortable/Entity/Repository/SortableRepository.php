@@ -57,7 +57,7 @@ class SortableRepository extends EntityRepository
 
     public function getBySortableGroupsQueryBuilder(array $groupValues = array())
     {
-        $groups = array_combine(array_values($this->config['groups']), array_keys($this->config['groups']));
+        $groups = isset($this->config['groups']) ? array_combine(array_values($this->config['groups']), array_keys($this->config['groups'])) : array();
         foreach ($groupValues as $name => $value) {
             if (!in_array($name, $this->config['groups'])) {
                 throw new \InvalidArgumentException('Sortable group "'.$name.'" is not defined in Entity '.$this->meta->name);
