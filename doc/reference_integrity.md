@@ -7,7 +7,7 @@ So let's say you have a Type which is referenced to multiple Articles, when dele
 would still have a reference to Type, since Mongo doesn't care. When setting the ReferenceIntegrity to 'nullify' it
 would then automatically remove the reference from Article.
 
-When the owning side (Article#types) is a ReferenceMany and ReferenceIntegrity is set to 'pull', the referenced  document would automatically be pulled from the collection of referenced documents.
+When the owning side (Article#types) is a ReferenceMany and ReferenceIntegrity is set to 'pull', the removed document would automatically be pulled from Article#types.
 
 Features:
 
