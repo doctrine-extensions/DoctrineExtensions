@@ -103,16 +103,16 @@ class ReferenceIntegrityDocumentTest extends BaseTestCaseMongoODM
         $type2 = $this->dm->getRepository(self::TYPE_ONE_PULL_CLASS)
             ->findOneByTitle('One Pull Type 2');
 
-        $this->assertFalse(is_null($typ1));
+        $this->assertFalse(is_null($type1));
         $this->assertTrue(is_object($type1));
 
-        $this->assertFalse(is_null($typ2));
+        $this->assertFalse(is_null($type2));
         $this->assertTrue(is_object($type2));
 
         $this->dm->remove($type2);
         $this->dm->flush();
 
-        $type1 = $this->dm->getRepository(self::TYPE_ONE_PULL_CLASS)
+        $type2 = $this->dm->getRepository(self::TYPE_ONE_PULL_CLASS)
             ->findOneByTitle('One Pull Type 2');
         $this->assertNull($type2);
 
@@ -133,18 +133,18 @@ class ReferenceIntegrityDocumentTest extends BaseTestCaseMongoODM
         $type2 = $this->dm->getRepository(self::TYPE_ONE_PULL_CLASS)
             ->findOneByTitle('Many Pull Type 2');
 
-        $this->assertFalse(is_null($typ1));
+        $this->assertFalse(is_null($type1));
         $this->assertTrue(is_object($type1));
 
-        $this->assertFalse(is_null($typ2));
+        $this->assertFalse(is_null($type2));
         $this->assertTrue(is_object($type2));
 
         $this->dm->remove($type2);
         $this->dm->flush();
 
-        $type = $this->dm->getRepository(self::TYPE_MANY_PULL_CLASS)
+        $type2 = $this->dm->getRepository(self::TYPE_MANY_PULL_CLASS)
             ->findOneByTitle('Many Pull Type 2');
-        $this->assertNull($type);
+        $this->assertNull($type2);
 
         $article = $this->dm->getRepository(self::ARTICLE_MANY_PULL_CLASS)
             ->findOneByTitle('Many Pull Article');
