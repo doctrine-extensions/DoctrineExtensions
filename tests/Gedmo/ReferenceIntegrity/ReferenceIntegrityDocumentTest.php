@@ -263,8 +263,8 @@ class ReferenceIntegrityDocumentTest extends BaseTestCaseMongoODM
         $article->addType($type2);
 
         $this->dm->persist($article);
-        $this->dm->persist($typ1);
-        $this->dm->persist($typ2);
+        $this->dm->persist($type1);
+        $this->dm->persist($type2);
 
         $this->dm->flush();
         $this->dm->clear();
