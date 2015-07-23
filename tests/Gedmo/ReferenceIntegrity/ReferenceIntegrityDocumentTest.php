@@ -121,7 +121,7 @@ class ReferenceIntegrityDocumentTest extends BaseTestCaseMongoODM
         
         $types = $article->getTypes();
         $this->assertTrue(count($types)===1);
-        $this->assertTrue($types[0] === $type1);
+        $this->assertEquals('One Pull Type 1',$types[0]->getTitle());
     
         $this->dm->clear();
     }
@@ -151,7 +151,7 @@ class ReferenceIntegrityDocumentTest extends BaseTestCaseMongoODM
         
         $types = $article->getTypes();
         $this->assertTrue(count($types)===1);
-        $this->assertTrue($types[0] === $type1);
+        $this->assertEquals('Many Pull Type 1',$types[0]->getTitle());
 
         $this->dm->clear();
     }
