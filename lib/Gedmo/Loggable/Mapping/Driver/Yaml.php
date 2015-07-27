@@ -42,6 +42,14 @@ class Yaml extends File implements Driver
                     $config['logEntryClass'] = $cl;
                 }
             }
+
+            if (isset($classMapping['versioned'])) {
+                if (isset ($classMapping['versioned']['fields'])) {
+                    foreach ($classMapping['versioned']['fields'] as $field) {
+                        $config['versioned'][] = $field;
+                    }
+                }
+            }
         }
 
         if (isset($mapping['fields'])) {
