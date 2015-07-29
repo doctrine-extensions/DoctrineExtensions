@@ -2,6 +2,7 @@
 
 namespace Gedmo\Loggable\Document\Repository;
 
+use Gedmo\Loggable\Document\LogEntry;
 use Gedmo\Tool\Wrapper\MongoDocumentWrapper;
 use Gedmo\Loggable\LoggableListener;
 use Doctrine\ODM\MongoDB\DocumentRepository;
@@ -29,7 +30,7 @@ class LogEntryRepository extends DocumentRepository
      *
      * @param object $document
      *
-     * @return array
+     * @return LogEntry[]
      */
     public function getLogEntries($document)
     {
