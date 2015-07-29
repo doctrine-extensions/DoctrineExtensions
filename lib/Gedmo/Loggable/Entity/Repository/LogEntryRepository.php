@@ -3,6 +3,7 @@
 namespace Gedmo\Loggable\Entity\Repository;
 
 use Doctrine\ORM\Query;
+use Gedmo\Loggable\Entity\LogEntry;
 use Gedmo\Tool\Wrapper\EntityWrapper;
 use Doctrine\ORM\EntityRepository;
 use Gedmo\Loggable\LoggableListener;
@@ -28,7 +29,7 @@ class LogEntryRepository extends EntityRepository
      *
      * @param object $entity
      *
-     * @return array
+     * @return LogEntry[]
      */
     public function getLogEntries($entity)
     {
