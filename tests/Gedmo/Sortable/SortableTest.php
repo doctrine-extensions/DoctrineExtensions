@@ -64,6 +64,37 @@ class SortableTest extends BaseTestCaseORM
     /**
      * @test
      */
+    public function testMoveLastPosition()
+    {
+        for ($i = 2; $i <= 10; $i++) {
+            $node = new Node();
+            $node->setName("Node".$i);
+            $node->setPath("/");
+            $this->em->persist($node);
+        }
+        $this->em->flush();  
+
+        $repo = $this->em->getRepository(self::NODE);
+
+        $node = $repo->findOneByPosition(0);
+        $node->setPosition(-1);
+        $this->em->flush();
+
+        for ($i = 0; $i <= 8; $i++) {
+            $node = $repo->findOneByPosition($i);
+            $this->assertNotNull($node);
+            $this->assertEquals('Node'.($i+2), $node->getName());
+        }
+
+        $node = $repo->findOneByPosition(9);
+        $this->assertNotNull($node);
+        $this->assertEquals('Node1', $node->getName());
+    
+    }
+
+    /**
+     * @test
+     */
     public function shouldSortManyNewNodes()
     {
         for ($i = 2; $i <= 10; $i++) {
