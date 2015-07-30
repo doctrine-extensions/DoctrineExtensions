@@ -4,9 +4,9 @@ namespace Gedmo\Sortable;
 
 use Doctrine\Common\EventArgs;
 use Doctrine\Common\Persistence\Mapping\ClassMetadata;
+use Doctrine\Common\Persistence\Proxy;
 use Doctrine\Common\Util\ClassUtils;
 use Gedmo\Mapping\MappedEventSubscriber;
-use Doctrine\ORM\Proxy\Proxy;
 use Gedmo\Sortable\Mapping\Event\SortableAdapter;
 
 /**
