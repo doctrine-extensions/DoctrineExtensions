@@ -55,7 +55,7 @@ $annotationDriver = new Doctrine\ORM\Mapping\Driver\AnnotationDriver(
     array(__DIR__.'/app/Entity') // paths to look in
 );
 // NOTE: driver for application Entity can be different, Yaml, Xml or whatever
-// register annotation driver for our application Entity namespace
+// register annotation driver for our application Entity fully qualified namespace
 $driverChain->addDriver($annotationDriver, 'Entity');
 
 // general ORM configuration
