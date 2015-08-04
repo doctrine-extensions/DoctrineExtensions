@@ -339,12 +339,20 @@ class Closure implements Strategy
             $type = 'integer' === $mapping['type'] ? Connection::PARAM_INT_ARRAY : Connection::PARAM_STR_ARRAY;
 
             // We calculate levels for all nodes
-            $sql = 'SELECT c.descendant, MAX(c.depth) + 1 AS level ';
+            $sql = 'SELECT c.descendant, MAX(c.depth) + 1 AS levelNum ';
             $sql .= 'FROM '.$closureMeta->getTableName().' c ';
             $sql .= 'WHERE c.descendant IN (?) ';
             $sql .= 'GROUP BY c.descendant';
 
-            $levels = $em->getConnection()->executeQuery($sql, array(array_keys($this->pendingNodesLevelProcess)), array($type))->fetchAll(\PDO::FETCH_KEY_PAIR);
+            $levelsAssoc = $em->getConnection()->executeQuery($sql, array(array_keys($this->pendingNodesLevelProcess)), array($type))->fetchAll(\PDO::FETCH_NUM);
+            
+            //create key pair array with resultset
+            $levels = array();
+            foreach( $levelsAssoc as $level )
+            {
+                $levels[$level[0]] = $level[1];
+            }
+            $levelsAssoc = null;
 
             // Now we update levels
             foreach ($this->pendingNodesLevelProcess as $nodeId => $node) {
