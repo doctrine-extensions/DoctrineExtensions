@@ -286,6 +286,8 @@ class Closure implements Strategy
             } elseif (isset($config['level'])) {
                 $uow->scheduleExtraUpdate($node, array($config['level'] => array(null, 1)));
                 $ea->setOriginalObjectProperty($uow, spl_object_hash($node), $config['level'], 1);
+                $levelProp = $meta->getReflectionProperty($config['level']);
+                $levelProp->setValue($node, 1);
             }
 
             foreach ($entries as $closure) {
@@ -350,12 +352,14 @@ class Closure implements Strategy
             foreach ($this->pendingNodesLevelProcess as $nodeId => $node) {
                 // Update new level
                 $level = $levels[$nodeId];
+                $levelProp = $meta->getReflectionProperty($config['level']);
                 $uow->scheduleExtraUpdate(
                     $node,
                     array($config['level'] => array(
-                        $meta->getReflectionProperty($config['level'])->getValue($node), $level,
+                        $levelProp->getValue($node), $level,
                     ))
                 );
+                $levelProp->setValue($node, $level);
                 $uow->setOriginalEntityProperty(spl_object_hash($node), $config['level'], $level);
             }
 
