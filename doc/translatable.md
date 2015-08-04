@@ -97,8 +97,8 @@ used to override the global locale
 
 ## Translatable Entity example:
 
-**Note:** that Translatable interface is not necessary, except in cases there
-you need to identify entity as being Translatable. The metadata is loaded only once then
+**Note:** that Translatable interface is not necessary, except in cases where
+you need to identify an entity as being Translatable. The metadata is loaded only once then
 cache is activated
 
 ``` php
