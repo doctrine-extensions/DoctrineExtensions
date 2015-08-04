@@ -502,6 +502,7 @@ In case if you want the slug to regenerate itself based on sluggable fields, set
 $entity = $em->find('Entity\Something', $id);
 $entity->setSlug(null);
 
+$em->persist($entity);
 $em->flush();
 ```
 
