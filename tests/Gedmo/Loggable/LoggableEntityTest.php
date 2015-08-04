@@ -179,6 +179,8 @@ class LoggableEntityTest extends BaseTestCaseORM
         $this->em->persist($address);
         $this->em->flush();
 
+        $address->setStreet('street-v2');
+
         $this->em->persist($address);
         $this->em->flush();
 
