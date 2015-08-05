@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xmlns:gedmo="http://gediminasm.org/schemas/orm/doctrine-extensions-mapping">
+
+    <embeddable name="Mapping\Fixture\Xml\Embedded">
+
+        <field name="subtitle" type="string" length="255" />
+    </embeddable>
+
+</doctrine-mapping>

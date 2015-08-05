@@ -49,6 +49,8 @@ class LoggableMappingTest extends BaseTestCaseOM
         $this->em = $this->getMockSqliteEntityManager(array(
             'Gedmo\Loggable\Entity\LogEntry',
             'Mapping\Fixture\Xml\Loggable',
+            'Mapping\Fixture\Xml\LoggableWithEmbedded',
+            'Mapping\Fixture\Xml\Embedded',
             'Mapping\Fixture\Xml\Status',
         ), $chain);
     }
@@ -67,5 +69,22 @@ class LoggableMappingTest extends BaseTestCaseOM
         $this->assertCount(2, $config['versioned']);
         $this->assertContains('title', $config['versioned']);
         $this->assertContains('status', $config['versioned']);
+    }
+
+    public function testLoggableMetadataWithEmbedded()
+    {
+        $meta = $this->em->getClassMetadata('Mapping\Fixture\Xml\LoggableWithEmbedded');
+        $config = $this->loggable->getConfiguration($this->em, $meta->name);
+
+        $this->assertArrayHasKey('logEntryClass', $config);
+        $this->assertEquals('Gedmo\Loggable\Entity\LogEntry', $config['logEntryClass']);
+        $this->assertArrayHasKey('loggable', $config);
+        $this->assertTrue($config['loggable']);
+
+        $this->assertArrayHasKey('versioned', $config);
+        $this->assertCount(3, $config['versioned']);
+        $this->assertContains('title', $config['versioned']);
+        $this->assertContains('status', $config['versioned']);
+        $this->assertContains('embedded', $config['versioned']);
     }
 }
