@@ -15,6 +15,7 @@ Features:
 Content:
 
 - [Including](#including-extension) the extension
+- [config.yml example](#config-example)
 - Entity [example](#entity-mapping)
 - [Yaml](#yaml-mapping) mapping example
 - [Xml](#xml-mapping) mapping example
@@ -65,6 +66,29 @@ $em->getFilterCollection()->disable('soft-deleteable');
 
 **NOTE:** by default all filters are disabled, so you must explicitly enable **soft-deleteable** filter in your setup
 or whenever you need it.
+
+<a name="config-example"></a>
+
+## SoftDeleteable config.yml example:
+```
+stof_doctrine_extensions:
+    orm:
+        default:
+            ...
+            softdeleteable: true
+
+doctrine:
+    ...
+    orm:
+        entity_managers:
+            default:
+                ...
+                filters:
+                    softdeleteable:
+                        class: Gedmo\SoftDeleteable\Filter\SoftDeleteableFilter
+                        enabled: true
+                ...
+```
 
 <a name="entity-mapping"></a>
 
