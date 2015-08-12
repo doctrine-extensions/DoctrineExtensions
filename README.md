@@ -8,6 +8,7 @@
 ORM 2.5.x versions require **PHP 5.4** or higher.
 
 **Note:** Extensions **2.3.x** are compatible with ORM and doctrine common library versions from **2.2.x** to **2.4.x**
+**Note:** If you are setting up entity manager without a framework, see the [example](/example/em.php) to prevent issues like #1310
 
 ### Latest updates
 
