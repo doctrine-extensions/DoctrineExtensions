@@ -71,4 +71,12 @@ class TranslatableMappingTest extends BaseTestCaseOM
         $this->assertTrue($config['fallback']['author']);
         $this->assertFalse($config['fallback']['views']);
     }
+
+    public function testTranslatableMetadataWithEmbedded()
+    {
+        $meta = $this->em->getClassMetadata('Mapping\Fixture\Xml\TranslatableWithEmbedded');
+        $config = $this->translatable->getConfiguration($this->em, $meta->name);
+
+        $this->assertContains('embedded.subtitle', $config['fields']);
+    }
 }
