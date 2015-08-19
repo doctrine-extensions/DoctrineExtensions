@@ -170,6 +170,8 @@ services:
             - { name: kernel.event_listener, event: kernel.request, method: onLateKernelRequest, priority: -10 }
             # loggable hooks user username if one is in security context
             - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
+            # translatable sets locale such as default application locale before command execute
+            - { name: kernel.event_listener, event: console.command, method: onConsoleCommand, priority: -10 }
 
 
     # Doctrine Extension listeners to handle behaviors
@@ -254,6 +256,12 @@ class DoctrineExtensionListener implements ContainerAwareInterface
     {
         $translatable = $this->container->get('gedmo.listener.translatable');
         $translatable->setTranslatableLocale($event->getRequest()->getLocale());
+    }
+    
+    public function onConsoleCommand()
+    {
+        $this->container->get('gedmo.listener.translatable')
+            ->setTranslatableLocale($this->container->get('translator')->getLocale());
     }
 
     public function onKernelRequest(GetResponseEvent $event)
