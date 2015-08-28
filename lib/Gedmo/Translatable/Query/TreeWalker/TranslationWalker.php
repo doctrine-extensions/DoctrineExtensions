@@ -368,9 +368,8 @@ class TranslationWalker extends SqlWalker
             $fallback = $this->listener->getTranslationFallback();
         }
 
-        return (bool) $fallback
-            && $q->getHydrationMode() !== Query::HYDRATE_SCALAR
-            && $q->getHydrationMode() !== Query::HYDRATE_SINGLE_SCALAR;
+        // applies fallbacks to scalar hydration as well
+        return (bool) $fallback;
     }
 
     /**
