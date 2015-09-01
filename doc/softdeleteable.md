@@ -19,6 +19,7 @@ Content:
 - [Yaml](#yaml-mapping) mapping example
 - [Xml](#xml-mapping) mapping example
 - Usage [examples](#usage)
+- Using [Traits](#traits)
 
 <a name="including-extension"></a>
 
@@ -231,3 +232,51 @@ $article->setDeletedAt(null);
 ```
 
 Easy like that, any suggestions on improvements are very welcome.
+
+<a name="traits"></a>
+
+## Traits
+
+You can use softDeleteable traits for quick **deletedAt** timestamp definitions
+when using annotation mapping.
+There is also a trait without annotations for easy integration purposes.
+
+**Note:** this feature is only available since php **5.4.0**. And you are not required
+to use the Traits provided by extensions.
+
+``` php
+<?php
+namespace SoftDeleteable\Fixture;
+
+use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
+use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
+
+/**
+ * @ORM\Entity
+ * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
+ */
+class UsingTrait
+{
+    /**
+     * Hook SoftDeleteable behavior
+     * updates deletedAt field
+     */
+    use SoftDeleteableEntity;
+
+    /**
+     * @ORM\Id
+     * @ORM\GeneratedValue
+     * @ORM\Column(type="integer")
+     */
+    private $id;
+
+    /**
+     * @ORM\Column(length=128)
+     */
+    private $title;
+}
+```
+
+Traits are very simple and if you use different field names I recommend to simply create your
+own ones based per project. These ones are standing as an example.
