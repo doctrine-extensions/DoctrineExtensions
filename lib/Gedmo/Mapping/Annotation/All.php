@@ -7,8 +7,9 @@
 * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
 * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
 */
-
-foreach (glob(__DIR__ . "/*.php") as $filename) {
+$files = glob(__DIR__ . "/*.php");
+asort($files);
+foreach ($files as $filename) {
     if (basename($filename, '.php') === 'All') {
         continue;
     }
