@@ -140,10 +140,12 @@ class ReferenceIntegrityListener extends MappedEventSubscriber
                                 $om->persist($refObj);
                             }
                         } else {
-                            $collection = $refReflProp->getValue($refDoc);
-                            $collection->removeElement($object);
-                            $refReflProp->setValue($refDoc, $collection);
-                            $om->persist($refDoc);
+                            if(is_object($refDoc)) {
+                                $collection = $refReflProp->getValue($refDoc);
+                                $collection->removeElement($object);
+                                $refReflProp->setValue($refDoc, $collection);
+                                $om->persist($refDoc);
+                            }
                         }
 
                         break;
