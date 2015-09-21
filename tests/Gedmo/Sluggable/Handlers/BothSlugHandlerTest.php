@@ -74,6 +74,28 @@ class BothSlugHandlerTest extends BaseTestCaseORM
         $this->assertEquals('artist/hurty', $hurty->getSlug());
     }
 
+    public function test1093()
+    {
+        $this->populate();
+        $personRepo = $this->em->getRepository(self::PERSON);
+        $occupationRepo = $this->em->getRepository(self::OCCUPATION);
+
+        $herzult = $personRepo->findOneByName('Herzult');
+        $this->assertEquals('web/developer/php/herzult', $herzult->getSlug());
+
+        $developer = $occupationRepo->findOneByTitle('Developer');
+        $developer->setTitle('Enthusiast');
+
+        $this->em->persist($developer);
+        $this->em->flush();
+
+        // It works if the following line is removed.
+        $this->em->clear();
+
+        $herzult = $personRepo->findOneByName('Herzult');
+        $this->assertEquals('web/enthusiast/php/herzult', $herzult->getSlug());
+    }
+
     protected function getUsedEntityFixtures()
     {
         return array(
@@ -104,6 +126,15 @@ class BothSlugHandlerTest extends BaseTestCaseORM
         $rock = new Occupation();
         $rock->setTitle('Rock');
 
+        // Singer
+        // > Hurty
+        // -- Rock
+        // Web
+        // -- Designer
+        // -- Developer
+        // -- -- PHP
+        // -- -- > Herzult
+        // -- > Gedi
         $repo
             ->persistAsFirstChild($web)
             ->persistAsFirstChild($singer)
