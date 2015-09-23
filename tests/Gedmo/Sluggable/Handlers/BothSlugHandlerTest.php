@@ -89,9 +89,15 @@ class BothSlugHandlerTest extends BaseTestCaseORM
         $this->em->persist($developer);
         $this->em->flush();
 
-        // It works if the following line is removed.
+
+        // Works (but is not updated in the actual DB)
+        $herzult = $personRepo->findOneByName('Herzult');
+        $this->assertEquals('web/enthusiast/php/herzult', $herzult->getSlug());
+
+
         $this->em->clear();
 
+        // Does not work.
         $herzult = $personRepo->findOneByName('Herzult');
         $this->assertEquals('web/enthusiast/php/herzult', $herzult->getSlug());
     }
