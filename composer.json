@@ -43,7 +43,7 @@
         "doctrine/common": "~2.4"
     },
     "require-dev": {
-        "doctrine/mongodb-odm": "dev-master",
+        "doctrine/mongodb-odm": ">=1.0.2",
         "doctrine/orm": ">=2.5.0",
         "doctrine/common": ">=2.5.0",
         "symfony/yaml": "~2.6",
