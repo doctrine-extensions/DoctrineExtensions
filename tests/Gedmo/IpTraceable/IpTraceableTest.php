@@ -49,14 +49,14 @@ class IpTraceableTest extends BaseTestCaseORM
     {
         $listener = new IpTraceableListener();
         $listener->setIpValue('123.218.45.39');
-        $this->assertEquals('123.218.45.39', $listener->getIpValue(null, null));
+        $this->assertEquals('123.218.45.39', $listener->getFieldValue(null, null, null));
     }
 
     public function testIpV6()
     {
         $listener = new IpTraceableListener();
         $listener->setIpValue('2001:0db8:0000:85a3:0000:0000:ac1f:8001');
-        $this->assertEquals('2001:0db8:0000:85a3:0000:0000:ac1f:8001', $listener->getIpValue(null, null));
+        $this->assertEquals('2001:0db8:0000:85a3:0000:0000:ac1f:8001', $listener->getFieldValue(null, null, null));
     }
 
     public function testIpTraceable()
