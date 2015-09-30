@@ -1,5 +1,6 @@
 tests/phpunit.xml
 tests/temp/*.php
+tests/temp/*.log
 /vendor
 /bin
 /composer.lock

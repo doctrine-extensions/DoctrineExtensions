@@ -56,6 +56,7 @@ class TimestampableListener extends MappedEventSubscriber
     {
         $ea = $this->getEventAdapter($args);
         $om = $ea->getObjectManager();
+        /** @var \Doctrine\ODM\MongoDB\UnitOfWork|\Doctrine\ORM\UnitOfWork $uow */
         $uow = $om->getUnitOfWork();
         // check all scheduled updates
         $all = array_merge($ea->getScheduledObjectInsertions($uow), $ea->getScheduledObjectUpdates($uow));
@@ -69,7 +70,8 @@ class TimestampableListener extends MappedEventSubscriber
 
             if ($uow->isScheduledForInsert($object) && isset($config['create'])) {
                 foreach ($config['create'] as $field) {
-                    list(, $new) = $changeSet[$field];
+                    // Field can not exist in change set, when persisting embedded document without parent for example
+                    $new = array_key_exists($field, $changeSet) ? $changeSet[$field][1] : false;
                     if ($new === null) { // let manual values
                         $needChanges = true;
                         $this->updateField($object, $ea, $meta, $field);
@@ -79,7 +81,9 @@ class TimestampableListener extends MappedEventSubscriber
 
             if (isset($config['update'])) {
                 foreach ($config['update'] as $field) {
-                    $isInsertAndNull = $uow->isScheduledForInsert($object) && $changeSet[$field][1] === null;
+                    $isInsertAndNull = $uow->isScheduledForInsert($object)
+                        && array_key_exists($field, $changeSet)
+                        && $changeSet[$field][1] === null;
                     if (!isset($changeSet[$field]) || $isInsertAndNull) { // let manual values
                         $needChanges = true;
                         $this->updateField($object, $ea, $meta, $field);
