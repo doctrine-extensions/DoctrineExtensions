@@ -2,10 +2,8 @@
 
 namespace Gedmo\Timestampable;
 
-use Doctrine\Common\EventArgs;
-use Gedmo\Mapping\MappedEventSubscriber;
-use Doctrine\Common\NotifyPropertyChanged;
-use Gedmo\Exception\UnexpectedValueException;
+use Doctrine\Common\Persistence\Mapping\ClassMetadata;
+use Gedmo\AbstractTrackingListener;
 use Gedmo\Timestampable\Mapping\Event\TimestampableAdapter;
 
 /**
@@ -15,165 +13,17 @@ use Gedmo\Timestampable\Mapping\Event\TimestampableAdapter;
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class TimestampableListener extends MappedEventSubscriber
+class TimestampableListener extends AbstractTrackingListener
 {
     /**
-     * Specifies the list of events to listen
-     *
-     * @return array
+     * @param ClassMetadata $meta
+     * @param string $field
+     * @param TimestampableAdapter $eventAdapter
+     * @return mixed
      */
-    public function getSubscribedEvents()
+    protected function getFieldValue($meta, $field, $eventAdapter)
     {
-        return array(
-            'prePersist',
-            'onFlush',
-            'loadClassMetadata',
-        );
-    }
-
-    /**
-     * Maps additional metadata for the Entity
-     *
-     * @param EventArgs $eventArgs
-     *
-     * @return void
-     */
-    public function loadClassMetadata(EventArgs $eventArgs)
-    {
-        $ea = $this->getEventAdapter($eventArgs);
-        $this->loadMetadataForObjectClass($ea->getObjectManager(), $eventArgs->getClassMetadata());
-    }
-
-    /**
-     * Looks for Timestampable objects being updated
-     * to update modification date
-     *
-     * @param EventArgs $args
-     *
-     * @return void
-     */
-    public function onFlush(EventArgs $args)
-    {
-        $ea = $this->getEventAdapter($args);
-        $om = $ea->getObjectManager();
-        /** @var \Doctrine\ODM\MongoDB\UnitOfWork|\Doctrine\ORM\UnitOfWork $uow */
-        $uow = $om->getUnitOfWork();
-        // check all scheduled updates
-        $all = array_merge($ea->getScheduledObjectInsertions($uow), $ea->getScheduledObjectUpdates($uow));
-        foreach ($all as $object) {
-            $meta = $om->getClassMetadata(get_class($object));
-            if (!$config = $this->getConfiguration($om, $meta->name)) {
-                continue;
-            }
-            $changeSet = $ea->getObjectChangeSet($uow, $object);
-            $needChanges = false;
-
-            if ($uow->isScheduledForInsert($object) && isset($config['create'])) {
-                foreach ($config['create'] as $field) {
-                    // Field can not exist in change set, when persisting embedded document without parent for example
-                    $new = array_key_exists($field, $changeSet) ? $changeSet[$field][1] : false;
-                    if ($new === null) { // let manual values
-                        $needChanges = true;
-                        $this->updateField($object, $ea, $meta, $field);
-                    }
-                }
-            }
-
-            if (isset($config['update'])) {
-                foreach ($config['update'] as $field) {
-                    $isInsertAndNull = $uow->isScheduledForInsert($object)
-                        && array_key_exists($field, $changeSet)
-                        && $changeSet[$field][1] === null;
-                    if (!isset($changeSet[$field]) || $isInsertAndNull) { // let manual values
-                        $needChanges = true;
-                        $this->updateField($object, $ea, $meta, $field);
-                    }
-                }
-            }
-
-            if (!$uow->isScheduledForInsert($object) && isset($config['change'])) {
-                foreach ($config['change'] as $options) {
-                    if (isset($changeSet[$options['field']])) {
-                        continue; // value was set manually
-                    }
-
-                    if (!is_array($options['trackedField'])) {
-                        $singleField = true;
-                        $trackedFields = array($options['trackedField']);
-                    } else {
-                        $singleField = false;
-                        $trackedFields = $options['trackedField'];
-                    }
-
-                    foreach ($trackedFields as $tracked) {
-                        $trackedChild = null;
-                        $parts = explode('.', $tracked);
-                        if (isset($parts[1])) {
-                            $tracked = $parts[0];
-                            $trackedChild = $parts[1];
-                        }
-
-                        if (isset($changeSet[$tracked])) {
-                            $changes = $changeSet[$tracked];
-                            if (isset($trackedChild)) {
-                                $changingObject = $changes[1];
-                                if (!is_object($changingObject)) {
-                                    throw new UnexpectedValueException(
-                                        "Field - [{$field}] is expected to be object in class - {$meta->name}"
-                                    );
-                                }
-                                $objectMeta = $om->getClassMetadata(get_class($changingObject));
-                                $om->initializeObject($changingObject);
-                                $value = $objectMeta->getReflectionProperty($trackedChild)->getValue($changingObject);
-                            } else {
-                                $value = $changes[1];
-                            }
-
-                            if (($singleField && in_array($value, (array) $options['value'])) || $options['value'] === null) {
-                                $needChanges = true;
-                                $this->updateField($object, $ea, $meta, $options['field']);
-                            }
-                        }
-                    }
-                }
-            }
-
-            if ($needChanges) {
-                $ea->recomputeSingleObjectChangeSet($uow, $meta, $object);
-            }
-        }
-    }
-
-    /**
-     * Checks for persisted Timestampable objects
-     * to update creation and modification dates
-     *
-     * @param EventArgs $args
-     *
-     * @return void
-     */
-    public function prePersist(EventArgs $args)
-    {
-        $ea = $this->getEventAdapter($args);
-        $om = $ea->getObjectManager();
-        $object = $ea->getObject();
-        $meta = $om->getClassMetadata(get_class($object));
-        if ($config = $this->getConfiguration($om, $meta->getName())) {
-            if (isset($config['update'])) {
-                foreach ($config['update'] as $field) {
-                    if ($meta->getReflectionProperty($field)->getValue($object) === null) { // let manual values
-                        $this->updateField($object, $ea, $meta, $field);
-                    }
-                }
-            }
-            if (isset($config['create'])) {
-                foreach ($config['create'] as $field) {
-                    if ($meta->getReflectionProperty($field)->getValue($object) === null) { // let manual values
-                        $this->updateField($object, $ea, $meta, $field);
-                    }
-                }
-            }
-        }
+        return $eventAdapter->getDateValue($meta, $field);
     }
 
     /**
@@ -182,25 +32,5 @@ class TimestampableListener extends MappedEventSubscriber
     protected function getNamespace()
     {
         return __NAMESPACE__;
-    }
-
-    /**
-     * Updates a field
-     *
-     * @param object               $object
-     * @param TimestampableAdapter $ea
-     * @param object               $meta
-     * @param string               $field
-     */
-    protected function updateField($object, $ea, $meta, $field)
-    {
-        $property = $meta->getReflectionProperty($field);
-        $oldValue = $property->getValue($object);
-        $newValue = $ea->getDateValue($meta, $field);
-        $property->setValue($object, $newValue);
-        if ($object instanceof NotifyPropertyChanged) {
-            $uow = $ea->getObjectManager()->getUnitOfWork();
-            $uow->propertyChanged($object, $field, $oldValue, $newValue);
-        }
     }
 }

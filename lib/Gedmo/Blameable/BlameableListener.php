@@ -3,6 +3,8 @@
 namespace Gedmo\Blameable;
 
 use Doctrine\Common\NotifyPropertyChanged;
+use Doctrine\Common\Persistence\Mapping\ClassMetadata;
+use Gedmo\AbstractTrackingListener;
 use Gedmo\Exception\InvalidArgumentException;
 use Gedmo\Timestampable\TimestampableListener;
 use Gedmo\Blameable\Mapping\Event\BlameableAdapter;
@@ -14,7 +16,7 @@ use Gedmo\Blameable\Mapping\Event\BlameableAdapter;
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class BlameableListener extends TimestampableListener
+class BlameableListener extends AbstractTrackingListener
 {
     protected $user;
 
@@ -26,7 +28,7 @@ class BlameableListener extends TimestampableListener
      *
      * @return mixed
      */
-    public function getUserValue($meta, $field)
+    public function getFieldValue($meta, $field, $eventAdapter)
     {
         if ($meta->hasAssociation($field)) {
             if (null !== $this->user && ! is_object($this->user)) {
@@ -66,30 +68,5 @@ class BlameableListener extends TimestampableListener
     protected function getNamespace()
     {
         return __NAMESPACE__;
-    }
-
-    /**
-     * Updates a field
-     *
-     * @param object           $object
-     * @param BlameableAdapter $ea
-     * @param $meta
-     * @param $field
-     */
-    protected function updateField($object, $ea, $meta, $field)
-    {
-        $property = $meta->getReflectionProperty($field);
-        $oldValue = $property->getValue($object);
-        $newValue = $this->getUserValue($meta, $field);
-
-        //if blame is reference, persist object
-        if ($meta->hasAssociation($field) && $newValue) {
-            $ea->getObjectManager()->persist($newValue);
-        }
-        $property->setValue($object, $newValue);
-        if ($object instanceof NotifyPropertyChanged) {
-            $uow = $ea->getObjectManager()->getUnitOfWork();
-            $uow->propertyChanged($object, $field, $oldValue, $newValue);
-        }
     }
 }
