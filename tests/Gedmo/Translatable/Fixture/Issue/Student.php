@@ -1,15 +1,42 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: adactive
- * Date: 08/10/15
- * Time: 14:01
- */
 
 namespace Translatable\Fixture\Issue;
 
+use Gedmo\Mapping\Annotation as Gedmo;
+use Doctrine\ORM\Mapping as ORM;
 
-class Student
+/**
+ * Class Student
+ * @ORM\Entity
+ */
+class Student extends Person
 {
+    /**
+     * @var string
+     * @Gedmo\Translatable
+     * @ORM\Column(name="course", type="string", length=128)
+     */
+    protected $course;
+
+    /**
+     * @return string
+     */
+    public function getCourse()
+    {
+        return $this->course;
+    }
+
+    /**
+     * @param string $course
+     *
+     * @return $this
+     */
+    public function setCourse($course)
+    {
+        $this->course = $course;
+
+        return $this;
+    }
+
 
 }

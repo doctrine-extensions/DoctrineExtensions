@@ -6,25 +6,23 @@ use Doctrine\Common\EventManager;
 use Tool\BaseTestCaseORM;
 use Doctrine\ORM\Query;
 use Gedmo\Translatable\Query\TreeWalker\TranslationWalker;
-use Translatable\Fixture\Article;
-use Translatable\Fixture\Comment;
+use Translatable\Fixture\Issue\Person;
+use Translatable\Fixture\Issue\PersonTranslation;
+use Translatable\Fixture\Issue\Staff;
+use Translatable\Fixture\Issue\Student;
 
 /**
  * These are tests for translation query walker
- *
- * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @link http://www.gediminasm.org
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class Issue135Test extends BaseTestCaseORM
+class IssueTest extends BaseTestCaseORM
 {
-    const ARTICLE = 'Translatable\\Fixture\\Article';
-    const COMMENT = 'Translatable\\Fixture\\Comment';
-    const TRANSLATION = 'Gedmo\\Translatable\\Entity\\Translation';
-
-    const TREE_WALKER_TRANSLATION = 'Gedmo\\Translatable\\Query\\TreeWalker\\TranslationWalker';
+    private $id;
 
     private $translatableListener;
+
+    const ROLE_EN = 'Teacher';
+    const ROLE_FR = 'Professeur';
+    const NAME = 'Moroine';
 
     protected function setUp()
     {
@@ -32,72 +30,117 @@ class Issue135Test extends BaseTestCaseORM
 
         $evm = new EventManager();
         $this->translatableListener = new TranslatableListener();
-        $this->translatableListener->setTranslatableLocale('en_us');
-        $this->translatableListener->setDefaultLocale('en_us');
+        $this->translatableListener->setTranslatableLocale('en');
+        $this->translatableListener->setDefaultLocale('en');
         $evm->addEventSubscriber($this->translatableListener);
 
         $this->getMockSqliteEntityManager($evm);
         $this->populate();
     }
 
-    public function testIssue135()
+    /**
+     * It fails
+     */
+    public function testHydrateSubClassTranslationViaHint()
+    {
+        $query = $this->getSearchQuery();
+
+        $query->setHint(Query::HINT_CUSTOM_OUTPUT_WALKER, TranslationWalker::class)
+            ->setHint(TranslatableListener::HINT_TRANSLATABLE_LOCALE, 'fr');
+
+        $person = $query->getOneOrNullResult();
+
+        static::assertEquals(self::ROLE_FR, $person->getRole());
+    }
+
+    /**
+     * It fails
+     */
+    public function testHydrateSubClassTranslationViaSwitchLocaleWithoutClearEntityManager()
+    {
+        $query = $this->getSearchQuery();
+        $this->translatableListener->setTranslatableLocale('fr');
+
+        $person = $query->getOneOrNullResult();
+
+        static::assertEquals(self::ROLE_FR, $person->getRole());
+    }
+
+    /**
+     * It success
+     */
+    public function testHydrateSubClassTranslationViaSwitchLocaleWithClearEntityManager()
+    {
+        $query = $this->getSearchQuery();
+        $this->translatableListener->setTranslatableLocale('fr');
+
+        $this->em->clear();
+
+        $person = $query->getOneOrNullResult();
+
+        static::assertEquals(self::ROLE_FR, $person->getRole());
+    }
+
+    /**
+     * It success
+     */
+    public function testHydrateSubClassTranslationAlreadyManaged()
+    {
+        $this->anExternalFunctionThatLoadTheObjectWithoutClearEntityManager();
+
+        $query = $this->getSearchQuery();
+        $person = $query->getOneOrNullResult();
+        $this->translatableListener->setTranslatableLocale('fr');
+
+        static::assertEquals(self::ROLE_FR, $person->getRole());
+    }
+
+    private function anExternalFunctionThatLoadTheObjectWithoutClearEntityManager()
+    {
+        $this->getSearchQuery()->getOneOrNullResult();
+    }
+
+    /**
+     * @return Query
+     */
+    private function getSearchQuery()
     {
         $query = $this->em->createQueryBuilder();
-        $query->select('a')
-            ->from(self::ARTICLE, 'a')
-            ->add('where', $query->expr()->not($query->expr()->eq('a.title', ':title')))
-            ->setParameter('title', 'NA')
-        ;
+        $query->select('p')
+            ->from(Person::class, 'p')
+            ->where($query->expr()->eq('p.id', ':id'))
+            ->setParameter('id', $this->id);
 
-        $this->translatableListener->setTranslatableLocale('en');
-        $this->translatableListener->setTranslationFallback(true);
-        $query = $query->getQuery();
-        $query->setHint(Query::HINT_CUSTOM_OUTPUT_WALKER, self::TREE_WALKER_TRANSLATION);
-
-        $count = 0;
-        str_replace("locale = 'en'", '', $query->getSql(), $count);
-        $this->assertEquals(0, $count);
+        return $query->getQuery();
     }
 
     protected function getUsedEntityFixtures()
     {
-        return array(
-            self::ARTICLE,
-            self::TRANSLATION,
-            self::COMMENT,
-        );
+        return [
+            Person::class,
+            Staff::class,
+            Student::class,
+            PersonTranslation::class,
+        ];
     }
 
     public function populate()
     {
-        $this->translatableListener->setTranslatableLocale('en');
-        $this->translatableListener->setDefaultLocale('en');
-        $text0 = new Article();
-        $text0->setTitle('text0');
+        $staff = new Staff();
+        $staff->setName(self::NAME);
+        $staff->setRole(self::ROLE_EN);
+        $staff->setTranslatableLocale('en');
 
-        $this->em->persist($text0);
-
-        $text1 = new Article();
-        $text1->setTitle('text1');
-
-        $this->em->persist($text1);
-
-        $na = new Article();
-        $na->setTitle('NA');
-
-        $this->em->persist($na);
-
-        $out = new Article();
-        $out->setTitle('Out');
-
-        $this->em->persist($out);
+        $this->em->persist($staff);
         $this->em->flush();
-        $this->translatableListener->setTranslatableLocale('es');
 
-        $text1->setTitle('texto1');
-        $text0->setTitle('texto0');
-        $this->em->persist($text1);
-        $this->em->persist($text0);
+        $staff->setRole(self::ROLE_FR);
+        $staff->setTranslatableLocale('fr');
+        $this->em->persist($staff);
         $this->em->flush();
+
+        $this->em->clear();
+
+        $this->id = $staff->getId();
     }
 }
