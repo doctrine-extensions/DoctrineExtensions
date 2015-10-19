@@ -81,7 +81,7 @@ final class ORM extends BaseAdapterORM implements TranslatableAdapter
             }
         } else {
             // load translated content for all translatable fields
-            $objectId = $wrapped->getIdentifier();
+            $objectId = (string)$wrapped->getIdentifier();
             // construct query
             $dql = 'SELECT t.content, t.field FROM '.$translationClass.' t';
             $dql .= ' WHERE t.foreignKey = :objectId';
