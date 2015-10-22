@@ -43,7 +43,7 @@ class SoftDeleteableFilter extends SQLFilter
 
         $addCondSql = $platform->getIsNullExpression($targetTableAlias.'.'.$column);
         if (isset($config['timeAware']) && $config['timeAware']) {
-            $now = $conn->quote(date('Y-m-d H:i:s')); // should use UTC in database and PHP
+            $now = $conn->quote(date($platform->getDateTimeFormatString())); // should use UTC in database and PHP
             $addCondSql = "({$addCondSql} OR {$targetTableAlias}.{$column} > {$now})";
         }
 
