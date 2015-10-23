@@ -70,6 +70,7 @@ class SortableRepository extends EntityRepository
         }
 
         $qb = $this->createQueryBuilder('n');
+        $qb->orderBy('n.'.$this->config['position']);
         $i = 1;
         foreach ($groupValues as $group => $value) {
             $qb->andWhere('n.'.$group.' = :group'.$i)
@@ -87,12 +88,4 @@ class SortableRepository extends EntityRepository
         return $query->getResult();
     }
 
-    public function createQueryBuilder($alias, $indexBy = null)
-    {
-        $qb = parent::createQueryBuilder($alias, $indexBy);
-
-        $qb->orderBy($alias.'.'.$this->config['position']);
-
-        return $qb;
-    }
 }
