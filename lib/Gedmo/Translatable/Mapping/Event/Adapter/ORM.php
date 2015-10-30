@@ -109,7 +109,14 @@ final class ORM extends BaseAdapterORM implements TranslatableAdapter
         $em = $this->getObjectManager();
         $meta = $em->getClassMetadata($className);
         $type = Type::getType($meta->getTypeOfField('foreignKey'));
-        return $type->convertToPHPValue($key, $em->getConnection()->getDatabasePlatform());
+        switch ($type->getName()) {
+        case Type::BIGINT:
+        case Type::INTEGER:
+        case Type::SMALLINT:
+            return intval($key);
+        default:
+            return (string)$key;
+        }
     }
 
     /**
