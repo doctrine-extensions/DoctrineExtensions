@@ -73,6 +73,10 @@ class Annotation extends AbstractAnnotationDriver
                 if ($meta->isCollectionValuedAssociation($field)) {
                     throw new InvalidMappingException("Cannot versioned [{$field}] as it is collection in object - {$meta->name}");
                 }
+                if (isset($meta->embeddedClasses[$field])) {
+                    $this->inspectEmbeddedForVersioned($field, $config, $meta);
+                    continue;
+                }
                 // fields cannot be overrided and throws mapping exception
                 $config['versioned'][] = $field;
             }
@@ -82,8 +86,30 @@ class Annotation extends AbstractAnnotationDriver
             if (is_array($meta->identifier) && count($meta->identifier) > 1) {
                 throw new InvalidMappingException("Loggable does not support composite identifiers in class - {$meta->name}");
             }
-            if (isset($config['versioned']) && !isset($config['loggable'])) {
+            if (isset($config['versioned']) && !isset($config['loggable']) &&
+                (!isset($meta->isEmbeddedClass) || !$meta->isEmbeddedClass)
+            ) {
                 throw new InvalidMappingException("Class must be annotated with Loggable annotation in order to track versioned fields in class - {$meta->name}");
+            }
+        }
+    }
+
+    /**
+     * Searches properties of embedded object for versioned fields
+     *
+     * @param string $field
+     * @param array $config
+     * @param \Doctrine\ORM\Mapping\ClassMetadata $meta
+     */
+    private function inspectEmbeddedForVersioned($field, array &$config, \Doctrine\ORM\Mapping\ClassMetadata $meta)
+    {
+        $сlass = new \ReflectionClass($meta->embeddedClasses[$field]['class']);
+
+        // property annotations
+        foreach ($сlass->getProperties() as $property) {
+            // versioned property
+            if ($this->reader->getPropertyAnnotation($property, self::VERSIONED)) {
+                $config['versioned'][] = $field . '.' . $property->getName();
             }
         }
     }

@@ -143,7 +143,7 @@ class LoggableEntityTest extends BaseTestCaseORM
 
         $logEntries = $logRepo->getLogEntries($address);
 
-        $this->assertCount(3, $logEntries);
+        $this->assertCount(4, $logEntries);
 
     }
 
@@ -175,6 +175,12 @@ class LoggableEntityTest extends BaseTestCaseORM
 
         $geo2 = new Geo(2.0000, 2.0000);
         $address->setGeo($geo2);
+
+        $this->em->persist($address);
+        $this->em->flush();
+
+        $address->getGeo()->setLatitude(3.0000);
+        $address->getGeo()->setLongitude(3.0000);
 
         $this->em->persist($address);
         $this->em->flush();
