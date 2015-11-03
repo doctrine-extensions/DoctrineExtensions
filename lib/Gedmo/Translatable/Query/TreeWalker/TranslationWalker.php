@@ -303,7 +303,7 @@ class TranslationWalker extends SqlWalker
             $config = $this->listener->getConfiguration($em, $meta->name);
             $transClass = $this->listener->getTranslationClass($ea, $meta->name);
             $transMeta = $em->getClassMetadata($transClass);
-            $transTable = $transMeta->getQuotedTableName($this->platform);
+            $transTable = $em->getConfiguration()->getQuoteStrategy()->getTableName($transMeta, $this->platform);
             foreach ($config['fields'] as $field) {
                 $compTblAlias = $this->walkIdentificationVariable($dqlAlias, $field);
                 $tblAlias = $this->getSQLTableAlias('trans'.$compTblAlias.$field);
