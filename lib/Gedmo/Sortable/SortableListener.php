@@ -256,30 +256,39 @@ class SortableListener extends MappedEventSubscriber
             $groupHasChanged = true;
         }
 
-        if (array_key_exists($config['position'], $changeSet)) {
-            // position was manually updated
-            $oldPosition = $changeSet[$config['position']][0];
-            $newPosition = $changeSet[$config['position']][1];
-            $changed = $changed || $oldPosition != $newPosition;
-        } elseif ($changed) {
-            // group has changed, so position has to be recalculated
-            $oldPosition = -1;
-            $newPosition = -1;
-            // specific case
-        }
-        if ($groupHasChanged) {
-            $oldPosition = -1;
-        }
-        if (!$changed) {
-            return;
-        }
-
         // Get hash
         $hash = $this->getHash($groups, $config);
 
         // Get max position
         if (!isset($this->maxPositions[$hash])) {
             $this->maxPositions[$hash] = $this->getMaxPosition($ea, $meta, $config, $object);
+        }
+
+        if (array_key_exists($config['position'], $changeSet)) {
+            if ($changed && -1 === $this->maxPositions[$hash]) {
+                // position has changed
+                // the group of element has changed
+                // and the target group has no children before
+                $oldPosition = -1;
+                $newPosition = -1;
+            } else {
+                // position was manually updated
+                $oldPosition = $changeSet[$config['position']][0];
+                $newPosition = $changeSet[$config['position']][1];
+                $changed = $changed || $oldPosition != $newPosition;
+            }
+        } elseif ($changed) {
+            // group has changed, so position has to be recalculated
+            $oldPosition = -1;
+            $newPosition = -1;
+            // specific case
+        }
+
+        if ($groupHasChanged) {
+            $oldPosition = -1;
+        }
+        if (!$changed) {
+            return;
         }
 
         // Compute position if it is negative

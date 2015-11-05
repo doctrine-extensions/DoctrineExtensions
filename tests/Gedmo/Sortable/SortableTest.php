@@ -586,6 +586,53 @@ class SortableTest extends BaseTestCaseORM
     /**
      * @test
      */
+    public function shouldFixIssue1445()
+    {
+        $paper1 = new Paper();
+        $paper1->setName("Paper1");
+        $this->em->persist($paper1);
+
+        $paper2 = new Paper();
+        $paper2->setName("Paper2");
+        $this->em->persist($paper2);
+
+        $author1 = new Author();
+        $author1->setName("Author1");
+        $author1->setPaper($paper1);
+
+        $author2 = new Author();
+        $author2->setName("Author2");
+        $author2->setPaper($paper1);
+
+        $this->em->persist($author1);
+        $this->em->persist($author2);
+        $this->em->flush();
+
+        $this->assertEquals(0, $author1->getPosition());
+        $this->assertEquals(1, $author2->getPosition());
+
+        //update position
+        $author2->setPaper($paper2);
+        $author2->setPosition(0); // Position has changed author2 was at position 1 in paper1 and now 0 in paper2, so it can be in changeSets
+        $this->em->persist($author2);
+        $this->em->flush();
+
+        $this->assertEquals(0, $author1->getPosition());
+        $this->assertEquals(0, $author2->getPosition());
+
+        $this->em->clear(); // @TODO: this should not be required
+
+        $repo = $this->em->getRepository(self::AUTHOR);
+        $author1 = $repo->findOneBy(['id' => $author1->getId()]);
+        $author2 = $repo->findOneBy(['id' => $author2->getId()]);
+
+        $this->assertEquals(0, $author1->getPosition());
+        $this->assertEquals(0, $author2->getPosition());
+    }
+
+    /**
+     * @test
+     */
     public function positionShouldBeTheSameAfterFlush()
     {
         $nodes = array();
