@@ -27,6 +27,7 @@ final class ORM extends BaseAdapterORM implements TimestampableAdapter
             return new \Zend_Date();
         }
 
-        return \DateTime::createFromFormat('U.u', microtime(true))->setTimeZone(new \DateTimeZone(date_default_timezone_get()));
+        return \DateTime::createFromFormat('U.u', number_format(microtime(true), 6, '.', ''))
+            ->setTimeZone(new \DateTimeZone(date_default_timezone_get()));
     }
 }
