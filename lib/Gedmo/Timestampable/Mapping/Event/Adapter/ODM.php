@@ -27,6 +27,7 @@ final class ODM extends BaseAdapterODM implements TimestampableAdapter
             return new \Zend_Date();
         }
 
-        return new \DateTime();
+        return \DateTime::createFromFormat('U.u', number_format(microtime(true), 6, '.', ''))
+            ->setTimeZone(new \DateTimeZone(date_default_timezone_get()));
     }
 }
