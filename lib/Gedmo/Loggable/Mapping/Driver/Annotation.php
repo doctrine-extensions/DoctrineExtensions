@@ -3,7 +3,6 @@
 namespace Gedmo\Loggable\Mapping\Driver;
 
 use Doctrine\Common\Persistence\Mapping\ClassMetadata;
-use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Gedmo\Exception\InvalidMappingException;
 use Gedmo\Mapping\Driver\AbstractAnnotationDriver;
 
@@ -94,23 +93,23 @@ class Annotation extends AbstractAnnotationDriver
     }
 
     /**
-     * @param ClassMetadataInfo $meta
-     * @param string            $field
+     * @param ClassMetadata $meta
+     * @param string        $field
      *
      * @return bool
      */
-    protected function isMappingValid(ClassMetadataInfo $meta, $field)
+    protected function isMappingValid(ClassMetadata $meta, $field)
     {
         return $meta->isCollectionValuedAssociation($field) == false;
     }
 
     /**
-     * @param       $meta
-     * @param array $config
+     * @param ClassMetadata $meta
+     * @param array         $config
      *
      * @return bool
      */
-    protected function isClassAnnotationInValid($meta, array &$config)
+    protected function isClassAnnotationInValid(ClassMetadata $meta, array &$config)
     {
         return isset($config['versioned']) && !isset($config['loggable']) && (!isset($meta->isEmbeddedClass) || !$meta->isEmbeddedClass);
     }
