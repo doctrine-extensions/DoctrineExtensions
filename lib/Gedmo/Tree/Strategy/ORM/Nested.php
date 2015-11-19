@@ -581,14 +581,16 @@ class Nested implements Strategy
             ->andWhere($qb->expr()->lte('node.'.$config['right'], $last))
         ;
         if (isset($config['root'])) {
-            $qb->set(
-                'node.'.$config['root'],
-                is_string($destRootId) ? $qb->expr()->literal($destRootId) : $destRootId
-            );
-            $qb->andWhere($rootId === null ?
-                $qb->expr()->isNull('node.'.$config['root']) :
-                $qb->expr()->eq('node.'.$config['root'], is_string($rootId) ? $qb->expr()->literal($rootId) : $rootId)
-            );
+            if ($destRootId === null) {
+                $qb->set('node.'.$config['root'], 'NULL');
+                $qb->andWhere($qb->expr()->isNull('node.'.$config['root']));
+            } else {
+                $qb->set(
+                    'node.'.$config['root'],
+                    is_string($destRootId) ? $qb->expr()->literal($destRootId) : $destRootId
+                );
+                $qb->andWhere($qb->expr()->eq('node.'.$config['root'], is_string($rootId) ? $qb->expr()->literal($rootId) : $rootId));
+            }
         }
         if (isset($config['level'])) {
             $qb->set('node.'.$config['level'], "node.{$config['level']} {$levelSign} {$absLevelDelta}");
