@@ -192,7 +192,18 @@ class MaterializedPathRepository extends AbstractTreeRepository
      */
     public function getNodesHierarchy($node = null, $direct = false, array $options = array(), $includeNode = false)
     {
-        return $this->getNodesHierarchyQuery($node, $direct, $options, $includeNode)->getArrayResult();
+        $meta = $this->getClassMetadata();
+        $config = $this->listener->getConfiguration($this->_em, $meta->name);
+        $path = $config['path'];
+
+        $nodes = $this->getNodesHierarchyQuery($node, $direct, $options, $includeNode)->getArrayResult();
+        usort(
+            $nodes,
+            function ($a, $b) use ($path) {
+                return strcmp($a[$path], $b[$path]);
+            }
+        );
+        return $nodes;
     }
 
     /**
