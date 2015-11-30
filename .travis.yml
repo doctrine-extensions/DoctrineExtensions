@@ -15,7 +15,9 @@ matrix:
 services: mongodb
 
 before_install:
-  - if [[ $TRAVIS_PHP_VERSION != 'hhvm' && `php-config --vernum` -ge 50500 ]]; then yes ''| pecl install apcu-beta; else echo 'extension="apc.so"' >> ./tests/travis/php.ini; fi
+  - if [[ $TRAVIS_PHP_VERSION == 'hhvm' ]]; then echo 'extension="apc.so"' >> ./tests/travis/php.ini; fi
+  - if [[ $TRAVIS_PHP_VERSION != 'hhvm' && `php-config --vernum` -ge 70000 ]]; then yes ''| pecl install apcu-beta; fi
+  - if [[ $TRAVIS_PHP_VERSION != 'hhvm' && `php-config --vernum` -ge 50500 && `php-config --vernum` -le 70000 ]]; then yes ''| pecl install apcu; fi
   - if [ $TRAVIS_PHP_VERSION != 'hhvm' ]; then phpenv config-add ./tests/travis/php.ini; fi
   # Allow dev versions for HHVM as the Doctrine HHVM support is not yet released
   - if [ $TRAVIS_PHP_VERSION = 'hhvm' ]; then composer require --dev --no-update doctrine/orm "~2.5@dev" doctrine/dbal "~2.5@dev"; fi
