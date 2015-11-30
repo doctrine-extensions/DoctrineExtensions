@@ -4,7 +4,6 @@ namespace Gedmo;
 
 use Doctrine\Common\EventArgs;
 use Doctrine\Common\NotifyPropertyChanged;
-use Doctrine\Common\Persistence\Event\LoadClassMetadataEventArgs;
 use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 use Gedmo\Exception\UnexpectedValueException;
 use Gedmo\Mapping\Event\AdapterInterface;
@@ -36,13 +35,14 @@ abstract class AbstractTrackingListener extends MappedEventSubscriber
     /**
      * Maps additional metadata for the Entity
      *
-     * @param LoadClassMetadataEventArgs $eventArgs
+     * @param EventArgs $eventArgs
      *
      * @return void
      */
-    public function loadClassMetadata(LoadClassMetadataEventArgs $eventArgs)
+    public function loadClassMetadata(EventArgs $eventArgs)
     {
-        $this->loadMetadataForObjectClass($eventArgs->getObjectManager(), $eventArgs->getClassMetadata());
+        $ea = $this->getEventAdapter($eventArgs);
+        $this->loadMetadataForObjectClass($ea->getObjectManager(), $eventArgs->getClassMetadata());
     }
 
     /**
