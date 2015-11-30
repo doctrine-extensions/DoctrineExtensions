@@ -536,10 +536,9 @@ class SortableTest extends BaseTestCaseORM
         $this->em->persist($author3);
         $this->em->flush();
 
-        $this->assertEquals(0, $author1->getPosition());
-        $this->assertEquals(1, $author2->getPosition());
-        // it is 2 because the changeset for position is NONE and theres a new group, it will recalculate
-        $this->assertEquals(2, $author3->getPosition());
+        $this->assertEquals(1, $author1->getPosition());
+        $this->assertEquals(2, $author2->getPosition());
+        $this->assertEquals(0, $author3->getPosition());
 
         // this is failing for whatever reasons
         $author3->setPosition(0);
@@ -628,6 +627,82 @@ class SortableTest extends BaseTestCaseORM
 
         $this->assertEquals(0, $author1->getPosition());
         $this->assertEquals(0, $author2->getPosition());
+    }
+
+    /**
+     * @test
+     */
+    public function shouldFixIssue1462()
+    {
+        $paper1 = new Paper();
+        $paper1->setName("Paper1");
+        $this->em->persist($paper1);
+
+        $paper2 = new Paper();
+        $paper2->setName("Paper2");
+        $this->em->persist($paper2);
+
+        $author1 = new Author();
+        $author1->setName("Author1");
+        $author1->setPaper($paper1);
+
+        $author2 = new Author();
+        $author2->setName("Author2");
+        $author2->setPaper($paper1);
+
+        $author3 = new Author();
+        $author3->setName("Author3");
+        $author3->setPaper($paper2);
+
+        $author4 = new Author();
+        $author4->setName("Author4");
+        $author4->setPaper($paper2);
+
+        $author5 = new Author();
+        $author5->setName("Author5");
+        $author5->setPaper($paper1);
+
+        $this->em->persist($author1);
+        $this->em->persist($author2);
+        $this->em->persist($author3);
+        $this->em->persist($author4);
+        $this->em->persist($author5);
+        $this->em->flush();
+
+        $this->assertEquals(0, $author1->getPosition());
+        $this->assertEquals(1, $author2->getPosition());
+        $this->assertEquals(2, $author5->getPosition());
+
+        $this->assertEquals(0, $author3->getPosition());
+        $this->assertEquals(1, $author4->getPosition());
+
+        // update paper: the position is still 1.
+        $author4->setPaper($paper1);
+        $this->em->persist($author4);
+        $this->em->flush();
+
+        $this->assertEquals(0, $author1->getPosition());
+        $this->assertEquals(1, $author4->getPosition());
+        $this->assertEquals(2, $author2->getPosition());
+        $this->assertEquals(3, $author5->getPosition());
+
+        $this->assertEquals(0, $author3->getPosition());
+
+        $this->em->clear(); // @TODO: this should not be required
+
+        $repo = $this->em->getRepository(self::AUTHOR);
+        $author1 = $repo->findOneBy(['id' => $author1->getId()]);
+        $author2 = $repo->findOneBy(['id' => $author2->getId()]);
+        $author3 = $repo->findOneBy(['id' => $author3->getId()]);
+        $author4 = $repo->findOneBy(['id' => $author4->getId()]);
+        $author5 = $repo->findOneBy(['id' => $author5->getId()]);
+
+        $this->assertEquals(0, $author1->getPosition());
+        $this->assertEquals(1, $author4->getPosition());
+        $this->assertEquals(2, $author2->getPosition());
+        $this->assertEquals(3, $author5->getPosition());
+
+        $this->assertEquals(0, $author3->getPosition());
     }
 
     /**
