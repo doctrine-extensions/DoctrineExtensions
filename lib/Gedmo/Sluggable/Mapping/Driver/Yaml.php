@@ -34,6 +34,7 @@ class Yaml extends File implements Driver
         'integer',
         'int',
         'datetime',
+        'citext',
     );
 
     /**
