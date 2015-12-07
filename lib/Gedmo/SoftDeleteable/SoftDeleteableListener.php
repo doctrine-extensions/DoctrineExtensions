@@ -56,7 +56,7 @@ class SoftDeleteableListener extends MappedEventSubscriber
         $uow = $om->getUnitOfWork();
         $evm = $om->getEventManager();
 
-        if ($om instanceof EntityManager && !$om->getFilters()->isEnabled('softdeleteable')) {
+        if ($om instanceof EntityManager && !$om->getFilters()->isEnabled('softdeleteable') && !$om->getFilters()->isEnabled('soft-deleteable')) {
             return;
         }
 
