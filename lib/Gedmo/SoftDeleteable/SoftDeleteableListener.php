@@ -5,6 +5,7 @@ namespace Gedmo\SoftDeleteable;
 use Gedmo\Mapping\MappedEventSubscriber;
 use Doctrine\Common\EventArgs;
 use Doctrine\ODM\MongoDB\UnitOfWork as MongoDBUnitOfWork;
+use Doctrine\ORM\EntityManager;
 
 /**
  * SoftDeleteable listener
@@ -55,7 +56,7 @@ class SoftDeleteableListener extends MappedEventSubscriber
         $uow = $om->getUnitOfWork();
         $evm = $om->getEventManager();
 
-        if (!$om->getFilters()->isEnabled('softdeleteable')) {
+        if ($om instanceof EntityManager && !$om->getFilters()->isEnabled('softdeleteable')) {
             return;
         }
 
