@@ -55,6 +55,10 @@ class SoftDeleteableListener extends MappedEventSubscriber
         $uow = $om->getUnitOfWork();
         $evm = $om->getEventManager();
 
+        if (!$om->getFilters()->isEnabled('softdeleteable')) {
+            return;
+        }
+
         //getScheduledDocumentDeletions
         foreach ($ea->getScheduledObjectDeletions($uow) as $object) {
             $meta = $om->getClassMetadata(get_class($object));
