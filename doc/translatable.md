@@ -9,7 +9,7 @@ Features:
 
 - Automatic storage of translations in database
 - ORM and ODM support using same listener
-- Automatic translation of Entity or Document fields then loaded
+- Automatic translation of Entity or Document fields when loaded
 - ORM query can use **hint** to translate all records without issuing additional queries
 - Can be nested with other behaviors
 - Annotation, Yaml and Xml mapping support for extensions
@@ -98,7 +98,7 @@ used to override the global locale
 ## Translatable Entity example:
 
 **Note:** that Translatable interface is not necessary, except in cases where
-you need to identify an entity as being Translatable. The metadata is loaded only once then
+you need to identify an entity as being Translatable. The metadata is loaded only once when
 cache is activated
 
 ``` php
