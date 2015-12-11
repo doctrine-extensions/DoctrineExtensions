@@ -202,7 +202,9 @@ abstract class AbstractTrackingListener extends MappedEventSubscriber
 
         // if field value is reference, persist object
         if ($meta->hasAssociation($field) && is_object($newValue)) {
-            $eventAdapter->getObjectManager()->persist($newValue);
+            if($eventAdapter->getObjectManager()->getUnitOfWork()->getEntityState($newValue) !== UnitOfWork::STATE_MANAGED) {
+                $eventAdapter->getObjectManager()->persist($newValue);
+            }
         }
 
         $property->setValue($object, $newValue);
