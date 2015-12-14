@@ -162,10 +162,8 @@ class NestedTreeRepository extends AbstractTreeRepository
         ;
         if (isset($config['root'])) {
             $rootId = $wrapped->getPropertyValue($config['root']);
-            $qb->andWhere($rootId === null ?
-                $qb->expr()->isNull('node.'.$config['root']) :
-                $qb->expr()->eq('node.'.$config['root'], is_string($rootId) ? $qb->expr()->literal($rootId) : $rootId)
-            );
+            $qb->andWhere($qb->expr()->eq('node.'.$config['root'], ':rid'));
+            $qb->setParameter('rid', $rootId);
         }
 
         return $qb;
@@ -214,27 +212,19 @@ class NestedTreeRepository extends AbstractTreeRepository
                     throw new InvalidArgumentException("Node is not managed by UnitOfWork");
                 }
                 if ($direct) {
-                    $id = $wrapped->getIdentifier();
-                    $qb->where($id === null ?
-                        $qb->expr()->isNull('node.'.$config['parent']) :
-                        $qb->expr()->eq('node.'.$config['parent'], is_string($id) ? $qb->expr()->literal($id) : $id)
-                    );
+                    $qb->where($qb->expr()->eq('node.'.$config['parent'], ':pid'));
+                    $qb->setParameter('pid', $wrapped->getIdentifier());
                 } else {
                     $left = $wrapped->getPropertyValue($config['left']);
                     $right = $wrapped->getPropertyValue($config['right']);
                     if ($left && $right) {
-                        $qb
-                            ->where($qb->expr()->lt('node.'.$config['right'], $right))
-                            ->andWhere($qb->expr()->gt('node.'.$config['left'], $left))
-                        ;
+                        $qb->where($qb->expr()->lt('node.'.$config['right'], $right));
+                        $qb->andWhere($qb->expr()->gt('node.'.$config['left'], $left));
                     }
                 }
                 if (isset($config['root'])) {
-                    $rootId = $wrapped->getPropertyValue($config['root']);
-                    $qb->andWhere($rootId === null ?
-                        $qb->expr()->isNull('node.'.$config['root']) :
-                        $qb->expr()->eq('node.'.$config['root'], is_string($rootId) ? $qb->expr()->literal($rootId) : $rootId)
-                    );
+                    $qb->andWhere($qb->expr()->eq('node.'.$config['root'], ':rid'));
+                    $qb->setParameter('rid', $wrapped->getPropertyValue($config['root']));
                 }
                 if ($includeNode) {
                     $idField = $meta->getSingleIdentifierFieldName();
@@ -345,10 +335,8 @@ class NestedTreeRepository extends AbstractTreeRepository
                 if (!$rootId) {
                     throw new InvalidArgumentException("Root node must be managed");
                 }
-                $qb->andWhere($rootId === null ?
-                    $qb->expr()->isNull('node.'.$config['root']) :
-                    $qb->expr()->eq('node.'.$config['root'], is_string($rootId) ? $qb->expr()->literal($rootId) : $rootId)
-                );
+                $qb->andWhere($qb->expr()->eq('node.'.$config['root'], ':rid'));
+                $qb->setParameter('rid', $rootId);
             } else {
                 throw new InvalidArgumentException("Node is not related to this repository");
             }
@@ -437,8 +425,8 @@ class NestedTreeRepository extends AbstractTreeRepository
         ;
         if ($parent) {
             $wrappedParent = new EntityWrapper($parent, $this->_em);
-            $parentId = $wrappedParent->getIdentifier();
-            $qb->andWhere($qb->expr()->eq('node.'.$config['parent'], is_string($parentId) ? $qb->expr()->literal($parentId) : $parentId));
+            $qb->andWhere($qb->expr()->eq('node.'.$config['parent'], ':pid'));
+            $qb->setParameter('pid', $wrappedParent->getIdentifier());
         } else {
             $qb->andWhere($qb->expr()->isNull('node.'.$config['parent']));
         }
@@ -512,8 +500,8 @@ class NestedTreeRepository extends AbstractTreeRepository
         ;
         if ($parent) {
             $wrappedParent = new EntityWrapper($parent, $this->_em);
-            $parentId = $wrappedParent->getIdentifier();
-            $qb->andWhere($qb->expr()->eq('node.'.$config['parent'], is_string($parentId) ? $qb->expr()->literal($parentId) : $parentId));
+            $qb->andWhere($qb->expr()->eq('node.'.$config['parent'], ':pid'));
+            $qb->setParameter('pid', $wrappedParent->getIdentifier());
         } else {
             $qb->andWhere($qb->expr()->isNull('node.'.$config['parent']));
         }
@@ -663,12 +651,10 @@ class NestedTreeRepository extends AbstractTreeRepository
                 if (isset($config['root']) && !$parent) {
                     $qb = $this->getQueryBuilder();
                     $qb->select('node.'.$pk, 'node.'.$config['left'], 'node.'.$config['right'])
-                        ->from($config['useObjectClass'], 'node')
-                        ->where($nodeId === null ?
-                            $qb->expr()->isNull('node.'.$config['parent']) :
-                            $qb->expr()->eq('node.'.$config['parent'], is_string($nodeId) ? $qb->expr()->literal($nodeId) : $nodeId)
-                        )
-                    ;
+                        ->from($config['useObjectClass'], 'node');
+
+                    $qb->andWhere($qb->expr()->eq('node.'.$config['parent'], ':pid'));
+                    $qb->setParameter('pid', $nodeId);
                     $nodes = $qb->getQuery()->getArrayResult();
 
                     foreach ($nodes as $newRoot) {
@@ -678,32 +664,23 @@ class NestedTreeRepository extends AbstractTreeRepository
                         $shift = -($left - 1);
 
                         $qb = $this->getQueryBuilder();
-                        $qb->update($config['useObjectClass'], 'node')
-                            ->set('node.'.$config['root'], $rootId === null ?
-                                'NULL' :
-                                (is_string($rootId) ? $qb->expr()->literal($rootId) : $rootId)
-                            )
-                            ->where($qb->expr()->eq('node.'.$config['root'], is_string($nodeId) ? $qb->expr()->literal($nodeId) : $nodeId))
-                            ->andWhere($qb->expr()->gte('node.'.$config['left'], $left))
-                            ->andWhere($qb->expr()->lte('node.'.$config['right'], $right))
-                        ;
+                        $qb->update($config['useObjectClass'], 'node');
+                        $qb->set('node.'.$config['root'], ':rid');
+                        $qb->setParameter('rid', $rootId);
+                        $qb->where($qb->expr()->eq('node.'.$config['root'], ':rpid'));
+                        $qb->setParameter('rpid', $nodeId);
+                        $qb->andWhere($qb->expr()->gte('node.'.$config['left'], $left));
+                        $qb->andWhere($qb->expr()->lte('node.'.$config['right'], $right));
                         $qb->getQuery()->getSingleScalarResult();
 
                         $qb = $this->getQueryBuilder();
-                        $qb->update($config['useObjectClass'], 'node')
-                            ->set('node.'.$config['parent'], $parentId === null ?
-                                'NULL' :
-                                (is_string($parentId) ? $qb->expr()->literal($parentId) : $parentId)
-                            )
-                            ->where($nodeId === null ?
-                                $qb->expr()->isNull('node.'.$config['parent']) :
-                                $qb->expr()->eq('node.'.$config['parent'], is_string($nodeId) ? $qb->expr()->literal($nodeId) : $nodeId)
-                            )
-                            ->andWhere($rootId === null ?
-                                $qb->expr()->isNull('node.'.$config['root']) :
-                                $qb->expr()->eq('node.'.$config['root'], is_string($rootId) ? $qb->expr()->literal($rootId) : $rootId)
-                            )
-                        ;
+                        $qb->update($config['useObjectClass'], 'node');
+                        $qb->set('node.'.$config['parent'], ':pid');
+                        $qb->setParameter('pid', $parentId);
+                        $qb->where($qb->expr()->eq('node.'.$config['parent'], ':rpid'));
+                        $qb->setParameter('rpid', $nodeId);
+                        $qb->andWhere($qb->expr()->eq('node.'.$config['root'], ':rid'));
+                        $qb->setParameter('rid', $rootId);
                         $qb->getQuery()->getSingleScalarResult();
 
                         $this->listener
@@ -715,21 +692,14 @@ class NestedTreeRepository extends AbstractTreeRepository
                     }
                 } else {
                     $qb = $this->getQueryBuilder();
-                    $qb->update($config['useObjectClass'], 'node')
-                        ->set('node.'.$config['parent'], null === $parentId ?
-                            'NULL' :
-                            (is_string($parentId) ? $qb->expr()->literal($parentId) : $parentId)
-                        )
-                        ->where($nodeId === null ?
-                            $qb->expr()->isNull('node.'.$config['parent']) :
-                            $qb->expr()->eq('node.'.$config['parent'], is_string($nodeId) ? $qb->expr()->literal($nodeId) : $nodeId)
-                        )
-                    ;
+                    $qb->update($config['useObjectClass'], 'node');
+                    $qb->set('node.'.$config['parent'], ':pid');
+                    $qb->setParameter('pid', $parentId);
+                    $qb->where($qb->expr()->eq('node.'.$config['parent'], ':rpid'));
+                    $qb->setParameter('rpid', $nodeId);
                     if (isset($config['root'])) {
-                        $qb->andWhere($rootId === null ?
-                            $qb->expr()->isNull('node.'.$config['root']) :
-                            $qb->expr()->eq('node.'.$config['root'], is_string($rootId) ? $qb->expr()->literal($rootId) : $rootId)
-                        );
+                        $qb->andWhere($qb->expr()->eq('node.'.$config['root'], ':rid'));
+                        $qb->setParameter('rid', $rootId);
                     }
                     $qb->getQuery()->getSingleScalarResult();
 
@@ -929,10 +899,8 @@ class NestedTreeRepository extends AbstractTreeRepository
             ->from($config['useObjectClass'], 'node')
         ;
         if (isset($config['root'])) {
-            $qb->where($rootId === null ?
-                $qb->expr()->isNull('node.'.$config['root']) :
-                $qb->expr()->eq('node.'.$config['root'], is_string($rootId) ? $qb->expr()->literal($rootId) : $rootId)
-            );
+            $qb->where($qb->expr()->eq('node.'.$config['root'], ':rid'));
+            $qb->setParameter('rid', $rootId);
         }
         $min = intval($qb->getQuery()->getSingleScalarResult());
         $edge = $this->listener->getStrategy($this->_em, $meta->name)->max($this->_em, $config['useObjectClass'], $rootId);
@@ -947,10 +915,8 @@ class NestedTreeRepository extends AbstractTreeRepository
                 ))
             ;
             if (isset($config['root'])) {
-                $qb->andWhere($rootId === null ?
-                    $qb->expr()->isNull('node.'.$config['root']) :
-                    $qb->expr()->eq('node.'.$config['root'], is_string($rootId) ? $qb->expr()->literal($rootId) : $rootId)
-                );
+                $qb->andWhere($qb->expr()->eq('node.'.$config['root'], ':rid'));
+                $qb->setParameter('rid', $rootId);
             }
             $count = intval($qb->getQuery()->getSingleScalarResult());
             if ($count !== 1) {
@@ -970,10 +936,8 @@ class NestedTreeRepository extends AbstractTreeRepository
             ->andWhere($qb->expr()->isNull('parent.'.$identifier))
         ;
         if (isset($config['root'])) {
-            $qb->andWhere($rootId === null ?
-                $qb->expr()->isNull('node.'.$config['root']) :
-                $qb->expr()->eq('node.'.$config['root'], is_string($rootId) ? $qb->expr()->literal($rootId) : $rootId)
-            );
+            $qb->andWhere($qb->expr()->eq('node.'.$config['root'], ':rid'));
+            $qb->setParameter('rid', $rootId);
         }
         $nodes = $qb->getQuery()->getArrayResult();
         if (count($nodes)) {
@@ -990,10 +954,8 @@ class NestedTreeRepository extends AbstractTreeRepository
             ->where($qb->expr()->lt('node.'.$config['right'], 'node.'.$config['left']))
         ;
         if (isset($config['root'])) {
-            $qb->andWhere($rootId === null ?
-                $qb->expr()->isNull('node.'.$config['root']) :
-                $qb->expr()->eq('node.'.$config['root'], is_string($rootId) ? $qb->expr()->literal($rootId) : $rootId)
-            );
+            $qb->andWhere($qb->expr()->eq('node.'.$config['root'], ':rid'));
+            $qb->setParameter('rid', $rootId);
         }
         $result = $qb->getQuery()
             ->setMaxResults(1)
@@ -1010,10 +972,8 @@ class NestedTreeRepository extends AbstractTreeRepository
             ->from($config['useObjectClass'], 'node')
         ;
         if (isset($config['root'])) {
-            $qb->where($rootId === null ?
-                $qb->expr()->isNull('node.'.$config['root']) :
-                $qb->expr()->eq('node.'.$config['root'], is_string($rootId) ? $qb->expr()->literal($rootId) : $rootId)
-            );
+            $qb->andWhere($qb->expr()->eq('node.'.$config['root'], ':rid'));
+            $qb->setParameter('rid', $rootId);
         }
         $nodes = $qb->getQuery()->getResult(Query::HYDRATE_OBJECT);
 
@@ -1046,10 +1006,8 @@ class NestedTreeRepository extends AbstractTreeRepository
                     ->andWhere($qb->expr()->gt('node.'.$config['right'], $right))
                 ;
                 if (isset($config['root'])) {
-                    $qb->andWhere($rootId === null ?
-                        $qb->expr()->isNull('node.'.$config['root']) :
-                        $qb->expr()->eq('node.'.$config['root'], is_string($rootId) ? $qb->expr()->literal($rootId) : $rootId)
-                    );
+                    $qb->andWhere($qb->expr()->eq('node.'.$config['root'], ':rid'));
+                    $qb->setParameter('rid', $rootId);
                 }
                 if ($count = intval($qb->getQuery()->getSingleScalarResult())) {
                     $errors[] = "node [{$id}] parent field is blank, but it has a parent";
@@ -1076,22 +1034,17 @@ class NestedTreeRepository extends AbstractTreeRepository
         $qb = $this->getQueryBuilder();
         $qb->update($config['useObjectClass'], 'node')
             ->set('node.'.$config['left'], 0)
-            ->set('node.'.$config['right'], 0)
-            ->where($nodeId === null ?
-                $qb->expr()->isNull('node.'.$pk) :
-                $qb->expr()->eq('node.'.$pk, is_string($nodeId) ? $qb->expr()->literal($nodeId) : $nodeId)
-            )
-        ;
+            ->set('node.'.$config['right'], 0);
+
+        $qb->andWhere($qb->expr()->eq('node.'.$pk, ':id'));
+        $qb->setParameter('id', $nodeId);
         $qb->getQuery()->getSingleScalarResult();
 
         // remove the node from database
         $qb = $this->getQueryBuilder();
-        $qb->delete($config['useObjectClass'], 'node')
-            ->where($nodeId === null ?
-                $qb->expr()->isNull('node.'.$pk) :
-                $qb->expr()->eq('node.'.$pk, is_string($nodeId) ? $qb->expr()->literal($nodeId) : $nodeId)
-            )
-        ;
+        $qb->delete($config['useObjectClass'], 'node');
+        $qb->andWhere($qb->expr()->eq('node.'.$pk, ':id'));
+        $qb->setParameter('id', $nodeId);
         $qb->getQuery()->getSingleScalarResult();
 
         // remove from identity map
