@@ -49,7 +49,7 @@ records being flushed in the behavioral way. List of extensions:
 - [**SoftDeleteable**](/doc/softdeleteable.md) - allows to implicitly remove records
 - [**Uploadable**](/doc/uploadable.md) - provides file upload handling in entity fields
 - [**References**](/doc/references.md) - supports linking Entities in Documents and vice versa
-- [**RererenceIntegrity**](/doc/reference_integrity.md) - constrains ODM MongoDB Document references
+- [**ReferenceIntegrity**](/doc/reference_integrity.md) - constrains ODM MongoDB Document references
 - [**IpTraceable**](/doc/ip_traceable.md) - inherited from Timestampable, sets IP address instead of timestamp
 
 Currently these extensions support **Yaml**, **Annotation**  and **Xml** mapping. Additional mapping drivers
