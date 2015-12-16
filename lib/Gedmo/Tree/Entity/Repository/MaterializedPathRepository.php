@@ -77,6 +77,76 @@ class MaterializedPathRepository extends AbstractTreeRepository
     }
 
     /**
+     * Get the Tree path query builder by given $node
+     *
+     * @param object $node
+     *
+     * @return \Doctrine\ORM\QueryBuilder
+     */
+    public function getPathQueryBuilder($node)
+    {
+        $meta = $this->getClassMetadata();
+        $config = $this->listener->getConfiguration($this->_em, $meta->name);
+        $alias = 'materialized_path_entity';
+        $qb = $this->getQueryBuilder()
+            ->select($alias)
+            ->from($config['useObjectClass'], $alias);
+
+        $node = new EntityWrapper($node, $this->_em);
+        $nodePath = $node->getPropertyValue($config['path']);
+        $paths = [];
+        $nodePathLength = strlen($nodePath);
+        $separatorMatchOffset = 0;
+        while ($separatorMatchOffset < $nodePathLength) {
+            $separatorPos = strpos($nodePath, $config['path_separator'], $separatorMatchOffset);
+
+            if ($separatorPos === false || $separatorPos === $nodePathLength - 1) {
+                // last node, done
+                $paths[] = $nodePath;
+                $separatorMatchOffset = $nodePathLength;
+            } elseif ($separatorPos === 0) {
+                // path starts with separator, continue
+                $separatorMatchOffset = 1;
+            } else {
+                // add node
+                $paths[] = substr($nodePath, 0, $config['path_ends_with_separator'] ? $separatorPos + 1 : $separatorPos);
+                $separatorMatchOffset = $separatorPos + 1;
+            }
+        }
+        $qb->where($qb->expr()->in(
+            $alias.'.'.$config['path'],
+            $paths
+        ));
+        $qb->orderBy($alias.'.'.$config['level'], 'ASC');
+
+        return $qb;
+    }
+
+    /**
+     * Get the Tree path query by given $node
+     *
+     * @param object $node
+     *
+     * @return \Doctrine\ORM\Query
+     */
+    public function getPathQuery($node)
+    {
+        return $this->getPathQueryBuilder($node)->getQuery();
+    }
+
+    /**
+     * Get the Tree path of Nodes by given $node
+     *
+     * @param object $node
+     *
+     * @return array - list of Nodes in path
+     */
+    public function getPath($node)
+    {
+        return $this->getPathQuery($node)->getResult();
+    }
+
+    /**
      * {@inheritDoc}
      */
     public function getChildrenQueryBuilder($node = null, $direct = false, $sortByField = null, $direction = 'asc', $includeNode = false)
