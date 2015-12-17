@@ -55,6 +55,28 @@ class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
     /**
      * @test
      */
+    public function getPath()
+    {
+        $childNode = $this->repo->findOneByTitle('Carrots');
+
+        $result = $this->repo->getPath($childNode);
+
+        $this->assertCount(3, $result);
+        $this->assertEquals('Food', $result[0]->getTitle());
+        $this->assertEquals('Vegitables', $result[1]->getTitle());
+        $this->assertEquals('Carrots', $result[2]->getTitle());
+
+        $rootNode = $this->repo->findOneByTitle('Sports');
+
+        $result = $this->repo->getPath($rootNode);
+
+        $this->assertCount(1, $result);
+        $this->assertEquals('Sports', $result[0]->getTitle());
+    }
+
+    /**
+     * @test
+     */
     public function getChildren()
     {
         $root = $this->repo->findOneByTitle('Food');
