@@ -202,7 +202,7 @@ abstract class AbstractTrackingListener extends MappedEventSubscriber
         $newValue = $this->getFieldValue($meta, $field, $eventAdapter);
 
         // if field value is reference, persist object
-        if ($meta->hasAssociation($field) && is_object($newValue)) {
+        if ($meta->hasAssociation($field) && is_object($newValue) && !$eventAdapter->getObjectManager()->contains($newValue)) {
             $uow = $eventAdapter->getObjectManager()->getUnitOfWork();
 
             // Check to persist only when the entity isn't already managed, persists always for MongoDB
