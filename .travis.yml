@@ -1,5 +1,7 @@
 language: php
 
+sudo: false
+
 php:
   - 5.4
   - 5.5
@@ -12,8 +14,11 @@ matrix:
 
 services: mongodb
 
-before_script:
-  - echo 'extension=mongo.so' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
+before_install:
+  - if [[ "$TRAVIS_PHP_VERSION" = 5.* ]]; then echo 'extension=mongo.so' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini; fi
+  - if [[ "$TRAVIS_PHP_VERSION" != 5.* ]]; then composer remove doctrine/mongodb-odm --no-update --dev; fi
+
+install:
   - composer install --prefer-dist
 
 script:
