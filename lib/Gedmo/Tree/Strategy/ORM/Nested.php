@@ -497,10 +497,8 @@ class Nested implements Strategy
             ->where($qb->expr()->gte('node.'.$config['left'], $first))
         ;
         if (isset($config['root'])) {
-            $qb->andWhere($rootId === null ?
-                $qb->expr()->isNull('node.'.$config['root']) :
-                $qb->expr()->eq('node.'.$config['root'], is_string($rootId) ? $qb->expr()->literal($rootId) : $rootId)
-            );
+            $qb->andWhere($qb->expr()->eq('node.'.$config['root'], ':rid'));
+            $qb->setParameter('rid', $rootId);
         }
         $qb->getQuery()->getSingleScalarResult();
 
