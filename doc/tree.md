@@ -1265,3 +1265,14 @@ There are repository methods that are available for you in all the strategies:
 
 This list is not complete yet. We're working on including more methods in the common API offered by repositories of all the strategies.
 Soon we'll be adding more helpful methods here.
+
+## Repository Methods (Closure Trees only)
+
+It is possible to obtain all ancestors from a particular node in a efficient way when using the Closure Tree strategy. These are the repository methods:
+
+* **getAncestors** / **getAncestorsQuery** / **getAncestorsQueryBuilder**: Returns an array of ancestors nodes. Arguments:
+  - *node*: If you pass a node, the method will return its ancestors. Defaults to "null" (this means it will return ALL nodes).
+  - *direct*: If you pass true as a value for this argument, you'll get only the direct ancestors of the node
+  - *sortByField*: An optional field to sort the children. Defaults to "null".
+  - *direction*: If you use the "sortByField" argument, this allows you to set the direction: "asc" or "desc". Defaults to "asc".
+  - *includeNode*: Using "true", this argument allows you to include in the result the node you passed as the first argument. Defaults to "false".
