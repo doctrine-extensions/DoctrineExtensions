@@ -103,10 +103,30 @@ class ClosureTreeRepository extends AbstractTreeRepository
     }
 
     /**
-     * @see getChildrenQueryBuilder
+     * Get list of nodes related to a given $node
+     * @param string  $way         - search direction: "down" (for children) or "up" (for ancestors)
+     * @param object  $node        - if null, all tree nodes will be taken
+     * @param boolean $direct      - true to take only direct children or parents
+     * @param string  $sortByField - field name to sort by
+     * @param string  $direction   - sort direction : "ASC" or "DESC"
+     * @param bool    $includeNode - Include the root node in results?
+     *
+     * @return array - list of given $node parents, null on failure
      */
-    public function childrenQueryBuilder($node = null, $direct = false, $sortByField = null, $direction = 'ASC', $includeNode = false)
+    public function closureLocateQueryBuilder($way = 'down', $node = null, $direct = false, $sortByField = null, $direction = 'ASC', $includeNode = false)
     {
+        switch($way) {
+            case 'down':
+                $first = 'ancestor';
+                $second = 'descendant';
+                break;
+            case 'up':
+                $first = 'descendant';
+                $second = 'ancestor';
+                break;
+            default:
+                throw new InvalidArgumentException("Direction must be 'up' or 'down' but '$way' found");
+        }
         $meta = $this->getClassMetadata();
         $config = $this->listener->getConfiguration($this->_em, $meta->name);
 
@@ -114,25 +134,25 @@ class ClosureTreeRepository extends AbstractTreeRepository
         if ($node !== null) {
             if ($node instanceof $meta->name) {
                 if (!$this->_em->getUnitOfWork()->isInIdentityMap($node)) {
-                    throw new InvalidArgumentException("Node is not managed by UnitOfWork");
+                    throw new InvalidArgumentException('Node is not managed by UnitOfWork');
                 }
 
-                $where = 'c.ancestor = :node AND ';
+                $where = "c.$first = :node AND ";
 
                 $qb->select('c, node')
                     ->from($config['closure'], 'c')
-                    ->innerJoin('c.descendant', 'node');
+                    ->innerJoin("c.$second", 'node');
 
                 if ($direct) {
                     $where .= 'c.depth = 1';
                 } else {
-                    $where .= 'c.descendant <> :node';
+                    $where .= "c.$second <> :node";
                 }
 
                 $qb->where($where);
 
                 if ($includeNode) {
-                    $qb->orWhere('c.ancestor = :node AND c.descendant = :node');
+                    $qb->orWhere("c.$first = :node AND c.$second = :node");
                 }
             } else {
                 throw new \InvalidArgumentException("Node is not related to this repository");
@@ -158,6 +178,14 @@ class ClosureTreeRepository extends AbstractTreeRepository
         }
 
         return $qb;
+    }
+
+    /**
+     * @see getChildrenQueryBuilder
+     */
+    public function childrenQueryBuilder($node = null, $direct = false, $sortByField = null, $direction = 'ASC', $includeNode = false)
+    {
+        return $this->closureLocateQueryBuilder('down', $node, $direct, $sortByField, $direction, $includeNode);
     }
 
     /**
@@ -205,6 +233,123 @@ class ClosureTreeRepository extends AbstractTreeRepository
     public function getChildren($node = null, $direct = false, $sortByField = null, $direction = 'ASC', $includeNode = false)
     {
         return $this->children($node, $direct, $sortByField, $direction, $includeNode);
+    }
+
+    /**
+     * @see getAncestorsQueryBuilder
+     */
+    public function ancestorsQueryBuilder($node = null, $direct = false, $sortByField = null, $direction = 'ASC', $includeNode = false)
+    {
+        return $this->closureLocateQueryBuilder('up', $node, $direct, $sortByField, $direction, $includeNode);
+    }
+    /**
+     * @see getAncestorsQuery
+     */
+    public function ancestorsQuery($node = null, $direct = false, $sortByField = null, $direction = 'ASC', $includeNode = false)
+    {
+        return $this->ancestorsQueryBuilder($node, $direct, $sortByField, $direction, $includeNode)->getQuery();
+    }
+
+    /**
+     * @see getAncestors
+     */
+    public function ancestors($node = null, $direct = false, $sortByField = null, $direction = 'ASC', $includeNode = false)
+    {
+        $result = $this->ancestorsQuery($node, $direct, $sortByField, $direction, $includeNode)->getResult();
+        if ($node) {
+            $result = array_map(function (AbstractClosure $closure) {
+                return $closure->getAncestor();
+            }, $result);
+        }
+
+        return $result;
+    }
+
+    /**
+     * Get the list of ancestors that lead to the given $node. This returns a QueryBuilder object
+     *
+     * @param object  $node        - if null, all tree nodes will be taken
+     * @param boolean $direct      - true to take only direct children
+     * @param string  $sortByField - field name to sort by
+     * @param string  $direction   - sort direction : "ASC" or "DESC"
+     * @param bool    $includeNode - Include the root node in results?
+     *
+     * @return QueryBuilder - QueryBuilder object
+     */
+    public function getAncestorsQueryBuilder($node = null, $direct = false, $sortByField = null, $direction = 'ASC', $includeNode = false)
+    {
+        return $this->ancestorsQueryBuilder($node, $direct, $sortByField, $direction, $includeNode);
+    }
+
+    /**
+     * Get the list of ancestors that lead to the given $node. This returns a Query object
+     *
+     * @param object  $node        - if null, all tree nodes will be taken
+     * @param boolean $direct      - true to take only direct children
+     * @param string  $sortByField - field name to sort by
+     * @param string  $direction   - sort direction : "ASC" or "DESC"
+     * @param bool    $includeNode - Include the root node in results?
+     *
+     * @return Query - Query object
+     */
+    public function getAncestorsQuery($node = null, $direct = false, $sortByField = null, $direction = 'ASC', $includeNode = false)
+    {
+        return $this->ancestorsQuery($node, $direct, $sortByField, $direction, $includeNode);
+    }
+
+    /**
+     * Get the list of ancestors that lead to the given $node
+     *
+     * @param object  $node        - if null, all tree nodes will be taken
+     * @param boolean $direct      - true to take only direct children
+     * @param string  $sortByField - field name to sort by
+     * @param string  $direction   - sort direction : "ASC" or "DESC"
+     * @param bool    $includeNode - Include the root node in results?
+     *
+     * @return array - list of given $node parents, null on failure
+     */
+    public function getAncestors($node = null, $direct = false, $sortByField = null, $direction = 'ASC', $includeNode = false)
+    {
+        return $this->ancestors($node, $direct, $sortByField, $direction, $includeNode);
+    }
+
+    /**
+     * @see childrenCount
+     */
+    public function ancestorsCount($node = null, $direct = false)
+    {
+        $meta = $this->getClassMetadata();
+
+        if (is_object($node)) {
+            if (!($node instanceof $meta->name)) {
+                throw new InvalidArgumentException("Node is not related to this repository");
+            }
+
+            $wrapped = new EntityWrapper($node, $this->_em);
+
+            if (!$wrapped->hasValidIdentifier()) {
+                throw new InvalidArgumentException("Node is not managed by UnitOfWork");
+            }
+        }
+
+        $qb = $this->getAncestorsQueryBuilder($node, $direct);
+
+        // We need to remove the ORDER BY DQL part since some vendors could throw an error
+        // in count queries
+        $dqlParts = $qb->getDQLParts();
+
+        // We need to check first if there's an ORDER BY DQL part, because resetDQLPart doesn't
+        // check if its internal array has an "orderby" index
+        if (isset($dqlParts['orderBy'])) {
+            $qb->resetDQLPart('orderBy');
+        }
+
+        $aliases = $qb->getRootAliases();
+        $alias = $aliases[0];
+
+        $qb->select('COUNT('.$alias.')');
+
+        return (int) $qb->getQuery()->getSingleScalarResult();
     }
 
     /**
