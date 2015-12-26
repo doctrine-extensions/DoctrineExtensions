@@ -1,5 +1,6 @@
 <?php
-namespace Entity;
+
+namespace Example\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -8,8 +9,8 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @Gedmo\Tree(type="nested")
  * @ORM\Table(name="ext_categories")
- * @ORM\Entity(repositoryClass="Entity\Repository\CategoryRepository")
- * @Gedmo\TranslationEntity(class="Entity\CategoryTranslation")
+ * @ORM\Entity(repositoryClass="Example\Repository\CategoryRepository")
+ * @Gedmo\TranslationEntity(class="Example\Entity\CategoryTranslation")
  */
 class Category
 {

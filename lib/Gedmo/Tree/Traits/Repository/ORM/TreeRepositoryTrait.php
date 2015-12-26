@@ -1,39 +1,66 @@
 <?php
 
-namespace Gedmo\Tree\Document\MongoDB\Repository;
+namespace Gedmo\Tree\Traits\Repository\ORM;
 
-use Doctrine\ODM\MongoDB\DocumentRepository;
-use Doctrine\ODM\MongoDB\DocumentManager;
-use Doctrine\ODM\MongoDB\Mapping\ClassMetadata;
-use Doctrine\ODM\MongoDB\UnitOfWork;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\Mapping\ClassMetadata;
+use Gedmo\Tool\Wrapper\EntityWrapper;
 use Gedmo\Tree\RepositoryUtils;
 use Gedmo\Tree\RepositoryUtilsInterface;
-use Gedmo\Tree\RepositoryInterface;
+use Gedmo\Exception\InvalidArgumentException;
+use Gedmo\Tree\TreeListener;
 
-abstract class AbstractTreeRepository extends DocumentRepository implements RepositoryInterface
+trait TreeRepositoryTrait
 {
     /**
      * Tree listener on event manager
      *
-     * @var \Gedmo\Tree\TreeListener
+     * @var TreeListener
      */
     protected $listener = null;
 
     /**
      * Repository utils
+     *
+     * @var RepositoryUtils
      */
     protected $repoUtils = null;
 
     /**
-     * {@inheritdoc}
+     * @return EntityManager
      */
-    public function __construct(DocumentManager $em, UnitOfWork $uow, ClassMetadata $class)
+    abstract protected function getEntityManager();
+
+    /**
+     * @return ClassMetadata
+     */
+    abstract protected function getClassMetadata();
+
+    /**
+     * This method should be called in your repository __construct().
+     * Example:
+     *
+     * class MyTreeRepository extends EntityRepository
+     * {
+     *     use NestedTreeRepository; // or ClosureTreeRepository, or MaterializedPathRepository.
+     *
+     *     public function __construct(EntityManager $em, ClassMetadata $class)
+     *     {
+     *         parent::__construct($em, $class);
+     *
+     *         $this->initializeTreeRepository($em, $class);
+     *     }
+     *
+     *     // ...
+     * }
+     *
+     */
+    public function initializeTreeRepository(EntityManager $em, ClassMetadata $class)
     {
-        parent::__construct($em, $uow, $class);
         $treeListener = null;
         foreach ($em->getEventManager()->getListeners() as $listeners) {
             foreach ($listeners as $listener) {
-                if ($listener instanceof \Gedmo\Tree\TreeListener) {
+                if ($listener instanceof TreeListener) {
                     $treeListener = $listener;
                     break;
                 }
@@ -44,7 +71,7 @@ abstract class AbstractTreeRepository extends DocumentRepository implements Repo
         }
 
         if (is_null($treeListener)) {
-            throw new \Gedmo\Exception\InvalidMappingException('This repository can be attached only to ODM MongoDB tree listener');
+            throw new \Gedmo\Exception\InvalidMappingException('Tree listener was not found on your entity manager, it must be hooked into the event manager');
         }
 
         $this->listener = $treeListener;
@@ -52,7 +79,15 @@ abstract class AbstractTreeRepository extends DocumentRepository implements Repo
             throw new \Gedmo\Exception\InvalidMappingException('This repository cannot be used for tree type: '.$treeListener->getStrategy($em, $class->name)->getName());
         }
 
-        $this->repoUtils = new RepositoryUtils($this->dm, $this->getClassMetadata(), $this->listener, $this);
+        $this->repoUtils = new RepositoryUtils($this->getEntityManager(), $this->getClassMetadata(), $this->listener, $this);
+    }
+
+    /**
+     * @return \Doctrine\ORM\QueryBuilder
+     */
+    protected function getQueryBuilder()
+    {
+        return $this->getEntityManager()->createQueryBuilder();
     }
 
     /**
@@ -60,7 +95,7 @@ abstract class AbstractTreeRepository extends DocumentRepository implements Repo
      *
      * @param \Gedmo\Tree\RepositoryUtilsInterface $repoUtils
      *
-     * @return $this
+     * @return static
      */
     public function setRepoUtils(RepositoryUtilsInterface $repoUtils)
     {
@@ -82,17 +117,64 @@ abstract class AbstractTreeRepository extends DocumentRepository implements Repo
     /**
      * {@inheritDoc}
      */
+    public function childCount($node = null, $direct = false)
+    {
+        $meta = $this->getClassMetadata();
+
+        if (is_object($node)) {
+            if (!($node instanceof $meta->name)) {
+                throw new InvalidArgumentException("Node is not related to this repository");
+            }
+
+            $wrapped = new EntityWrapper($node, $this->getEntityManager());
+
+            if (!$wrapped->hasValidIdentifier()) {
+                throw new InvalidArgumentException("Node is not managed by UnitOfWork");
+            }
+        }
+
+        $qb = $this->getChildrenQueryBuilder($node, $direct);
+
+        // We need to remove the ORDER BY DQL part since some vendors could throw an error
+        // in count queries
+        $dqlParts = $qb->getDQLParts();
+
+        // We need to check first if there's an ORDER BY DQL part, because resetDQLPart doesn't
+        // check if its internal array has an "orderby" index
+        if (isset($dqlParts['orderBy'])) {
+            $qb->resetDQLPart('orderBy');
+        }
+
+        $aliases = $qb->getRootAliases();
+        $alias = $aliases[0];
+
+        $qb->select('COUNT('.$alias.')');
+
+        return (int) $qb->getQuery()->getSingleScalarResult();
+    }
+
+    /**
+     * @see \Gedmo\Tree\RepositoryUtilsInterface::childrenHierarchy
+     */
     public function childrenHierarchy($node = null, $direct = false, array $options = array(), $includeNode = false)
     {
         return $this->repoUtils->childrenHierarchy($node, $direct, $options, $includeNode);
     }
 
     /**
-     * {@inheritDoc}
+     * @see \Gedmo\Tree\RepositoryUtilsInterface::buildTree
      */
     public function buildTree(array $nodes, array $options = array())
     {
         return $this->repoUtils->buildTree($nodes, $options);
+    }
+
+    /**
+     * @see \Gedmo\Tree\RepositoryUtilsInterface::buildTreeArray
+     */
+    public function buildTreeArray(array $nodes)
+    {
+        return $this->repoUtils->buildTreeArray($nodes);
     }
 
     /**
@@ -112,14 +194,6 @@ abstract class AbstractTreeRepository extends DocumentRepository implements Repo
     }
 
     /**
-     * {@inheritDoc}
-     */
-    public function buildTreeArray(array $nodes)
-    {
-        return $this->repoUtils->buildTreeArray($nodes);
-    }
-
-    /**
      * Checks if current repository is right
      * for currently used tree strategy
      *
@@ -133,7 +207,7 @@ abstract class AbstractTreeRepository extends DocumentRepository implements Repo
      * @param string - Sort by field
      * @param string - Sort direction ("asc" or "desc")
      *
-     * @return \Doctrine\MongoDB\Query\Builder - QueryBuilder object
+     * @return \Doctrine\ORM\QueryBuilder - QueryBuilder object
      */
     abstract public function getRootNodesQueryBuilder($sortByField = null, $direction = 'asc');
 
@@ -143,7 +217,7 @@ abstract class AbstractTreeRepository extends DocumentRepository implements Repo
      * @param string - Sort by field
      * @param string - Sort direction ("asc" or "desc")
      *
-     * @return \Doctrine\MongoDB\Query\Query - Query object
+     * @return \Doctrine\ORM\Query - Query object
      */
     abstract public function getRootNodesQuery($sortByField = null, $direction = 'asc');
 
@@ -155,7 +229,7 @@ abstract class AbstractTreeRepository extends DocumentRepository implements Repo
      * @param array   $options     - Options
      * @param boolean $includeNode - Include node in results?
      *
-     * @return \Doctrine\MongoDB\Query\Builder - QueryBuilder object
+     * @return \Doctrine\ORM\QueryBuilder - QueryBuilder object
      */
     abstract public function getNodesHierarchyQueryBuilder($node = null, $direct = false, array $options = array(), $includeNode = false);
 
@@ -167,7 +241,7 @@ abstract class AbstractTreeRepository extends DocumentRepository implements Repo
      * @param array   $options     - Options
      * @param boolean $includeNode - Include node in results?
      *
-     * @return \Doctrine\MongoDB\Query\Query - Query object
+     * @return \Doctrine\ORM\Query - Query object
      */
     abstract public function getNodesHierarchyQuery($node = null, $direct = false, array $options = array(), $includeNode = false);
 
@@ -180,7 +254,7 @@ abstract class AbstractTreeRepository extends DocumentRepository implements Repo
      * @param string  $direction   - sort direction : "ASC" or "DESC"
      * @param bool    $includeNode - Include the root node in results?
      *
-     * @return \Doctrine\MongoDB\Query\Builder - QueryBuilder object
+     * @return \Doctrine\ORM\QueryBuilder - QueryBuilder object
      */
     abstract public function getChildrenQueryBuilder($node = null, $direct = false, $sortByField = null, $direction = 'ASC', $includeNode = false);
 
@@ -193,7 +267,7 @@ abstract class AbstractTreeRepository extends DocumentRepository implements Repo
      * @param string  $direction   - sort direction : "ASC" or "DESC"
      * @param bool    $includeNode - Include the root node in results?
      *
-     * @return \Doctrine\MongoDB\Query\Query - Query object
+     * @return \Doctrine\ORM\Query - Query object
      */
     abstract public function getChildrenQuery($node = null, $direct = false, $sortByField = null, $direction = 'ASC', $includeNode = false);
 }
