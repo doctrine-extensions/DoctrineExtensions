@@ -22,6 +22,10 @@ Thanks for contributions to:
 - **[everzet](http://github.com/everzet) Kudryashov Konstantin** for TreeLevel implementation
 - **[stof](http://github.com/stof) Christophe Coevoet** for getTreeLeafs function
 
+Update **2015-12-23**
+
+- Added Tree repository traits for easier extending tree functionalities in your repositories. [Usage example here](#tree-repositories)
+
 Update **2012-06-28**
 
 - Added "buildTree" functionality support for Closure and Materialized Path strategies
@@ -359,8 +363,53 @@ The result after flush will generate the food tree:
         /carrots (5-6)
 ```
 
-### Using repository functions
+## Tree Repositories
+To add tree funtionalities and methods to your repository you can use traits `NestedTreeRepository`, `MaterializedPathRepository` or `ClosureTreeRepository` like below:
 
+```php
+namespace YourNamespace\Repository;
+
+use Gedmo\Tree\Traits\Repository\ORM\NestedTreeRepositoryTrait;
+
+class CategoryRepository extends EntityRepository
+{
+    use NestedTreeRepositoryTrait; // or MaterializedPathRepositoryTrait or ClosureTreeRepositoryTrait.
+
+    public function __construct(EntityManager $em, ClassMetadata $class)
+    {
+        parent::__construct($em, $class);
+        
+        $this->initializeTreeRepository($em, $class);
+    }
+
+    // ONLY WHEN USING NestedTreeRepository which adds persistAs*() methods
+    public function __call($method, $args)
+    {
+        $result = $this->callTreeUtilMethods($method, $args);
+
+        if (null !== $result)
+        {
+            return $result;
+        }
+
+        return parent::__call($method, $args);
+    }
+}
+```
+```php
+namespace YourNamespace\Repository;
+
+/**
+ * @Gedmo\Tree(type="nested")
+ * @Entity(repositoryClass="YourNamespace\Repository\CategoryRepository")
+ */
+class Category
+{
+    //...
+}
+```
+
+### Using functions
 ``` php
 <?php
 $repo = $em->getRepository('Entity\Category');
@@ -493,11 +542,12 @@ Tree after moving the Carrots down as last child:
 will require you to clear the cache of the Entity Manager because left-right values will differ.
 So after that use **$em->clear();** if you will continue using the nodes after these operations.
 
-### If you need a repository for your TreeNode Entity simply extend it
+### Extend abstract repositores
+If you do not want to use traits and need a simple tree repository you can extend like below:
 
 ``` php
 <?php
-namespace Entity\Repository;
+namespace YourNamespace\Repository;
 
 use Gedmo\Tree\Entity\Repository\NestedTreeRepository;
 
@@ -510,7 +560,7 @@ class CategoryRepository extends NestedTreeRepository
 
 /**
  * @Gedmo\Tree(type="nested")
- * @Entity(repositoryClass="Entity\Repository\CategoryRepository")
+ * @Entity(repositoryClass="YourNamespace\Repository\CategoryRepository")
  */
 class Category
 {
