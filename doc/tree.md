@@ -378,7 +378,7 @@ class CategoryRepository extends EntityRepository
     public function __construct(EntityManager $em, ClassMetadata $class)
     {
         parent::__construct($em, $class);
-        
+
         $this->initializeTreeRepository($em, $class);
     }
 

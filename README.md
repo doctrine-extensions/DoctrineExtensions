@@ -1,34 +1,24 @@
 # Doctrine2 behavioral extensions
 
-**Version 2.4.9**
+**Version 2.5.0**
 
 [![Build Status](https://secure.travis-ci.org/Atlantic18/DoctrineExtensions.png?branch=master)](http://travis-ci.org/Atlantic18/DoctrineExtensions)
 
 **Note:** Extensions **2.4.x** are compatible with ORM and doctrine common library versions from **2.2.x** to **2.5.x**.
-ORM 2.5.x versions require **PHP 5.4** or higher.
-
-**Note:** Extensions **2.3.x** are compatible with ORM and doctrine common library versions from **2.2.x** to **2.4.x**
-**Note:** If you are setting up entity manager without a framework, see the [example](/example/em.php) to prevent issues like #1310
+ORM 2.5.x versions require **PHP 5.4** or higher same as doctrine extensions **2.5.x**.
 
 ### Latest updates
+
+**2015-12-27**
+
+- From now on, extensions will require **php 5.4** or higher.
+- All trait column names will refer to naming strategy and won't be explicitly set by extensions.
+- Tree repositories are now using traits, for easier extensions.
 
 **2015-05-01**
 
 - Reverted back [1272](https://github.com/Atlantic18/DoctrineExtensions/pull/1272) and see [1263](https://github.com/Atlantic18/DoctrineExtensions/issues/1263). Use [naming strategy](http://stackoverflow.com/questions/12702657/how-to-configure-naming-strategy-in-doctrine-2) for your use cases.
 - Fixed bug for sortable [1279](https://github.com/Atlantic18/DoctrineExtensions/pull/1279)
-
-**2015-03-26**
-
-Support for ORM and Common library **2.5.0**. A minor version bump, because of trait column changes.
-
-**2015-01-28**
-
-Fixed the issue for all mappings, which caused related class mapping failures, when a relation or class name
-was in the same namespace, but extensions required it to be mapped as full classname.
-
-**2015-01-21**
-
-Fixed memory leak issue with entity or document wrappers for convenient metadata retrieval.
 
 ### Summary and features
 
