@@ -112,7 +112,20 @@ class LoggableListener extends MappedEventSubscriber
     public function loadClassMetadata(EventArgs $eventArgs)
     {
         $ea = $this->getEventAdapter($eventArgs);
-        $this->loadMetadataForObjectClass($ea->getObjectManager(), $eventArgs->getClassMetadata());
+        $meta = $eventArgs->getClassMetadata();
+        $this->loadMetadataForObjectClass($ea->getObjectManager(), $meta);
+
+        // map indexes
+        if ($meta->name === 'Gedmo\Loggable\Entity\LogEntry') {
+            $meta->table['indexes']['log_class_lookup_idx']['columns'] = [$meta->columnNames['objectClass']];
+            $meta->table['indexes']['log_date_lookup_idx']['columns'] = [$meta->columnNames['loggedAt']];
+            $meta->table['indexes']['log_user_lookup_idx']['columns'] = [$meta->columnNames['username']];
+            $meta->table['indexes']['log_version_lookup_idx']['columns'] = [
+                $meta->columnNames['objectId'],
+                $meta->columnNames['objectClass'],
+                $meta->columnNames['username'],
+            ];
+        }
     }
 
     /**
