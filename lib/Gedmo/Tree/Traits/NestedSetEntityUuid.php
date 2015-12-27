@@ -19,7 +19,7 @@ trait NestedSetEntityUuid
     /**
      * @var string
      * @Gedmo\TreeRoot
-     * @ORM\Column(name="root", type="string", nullable=true)
+     * @ORM\Column(nullable=true)
      */
     private $root;
 }

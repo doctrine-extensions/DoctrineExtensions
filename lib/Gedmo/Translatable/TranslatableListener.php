@@ -187,7 +187,42 @@ class TranslatableListener extends MappedEventSubscriber
     public function loadClassMetadata(EventArgs $eventArgs)
     {
         $ea = $this->getEventAdapter($eventArgs);
-        $this->loadMetadataForObjectClass($ea->getObjectManager(), $eventArgs->getClassMetadata());
+        $meta = $eventArgs->getClassMetadata();
+        $this->loadMetadataForObjectClass($ea->getObjectManager(), $meta);
+
+        // map indexes
+        if ($meta->name === 'Gedmo\Translatable\Entity\Translation') {
+            $meta->table['indexes']['translations_lookup_idx']['columns'] = [
+                $meta->columnNames['locale'],
+                $meta->columnNames['objectClass'],
+                $meta->columnNames['foreignKey'],
+            ];
+            $meta->table['uniqueConstraints']['lookup_unique_idx']['columns'] = [
+                $meta->columnNames['locale'],
+                $meta->columnNames['objectClass'],
+                $meta->columnNames['field'],
+                $meta->columnNames['foreignKey'],
+            ];
+        }
+        if ($meta->name === 'Gedmo\Translatable\Document\Translation') {
+            $meta->indexes[] = [
+                'keys' => [
+                    $meta->fieldMappings['locale']['name'],
+                    $meta->fieldMappings['objectClass']['name'],
+                    $meta->fieldMappings['foreignKey']['name'],
+                ],
+                'options' => ['name' => 'translations_lookup_idx', 'unique' => false, 'sparse' => false],
+            ];
+            $meta->indexes[] = [
+                'keys' => [
+                    $meta->fieldMappings['locale']['name'],
+                    $meta->fieldMappings['objectClass']['name'],
+                    $meta->fieldMappings['foreignKey']['name'],
+                    $meta->fieldMappings['field']['name'],
+                ],
+                'options' => ['name' => 'lookup_unique_idx', 'unique' => true, 'sparse' => false],
+            ];
+        }
     }
 
     /**
@@ -516,7 +551,7 @@ class TranslatableListener extends MappedEventSubscriber
             throw new \Gedmo\Exception\InvalidArgumentException('Locale or language cannot be empty and must be set through Listener or Entity');
         }
     }
-    
+
     /**
      * Check if the given locale is valid
      *

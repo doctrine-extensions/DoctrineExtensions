@@ -42,7 +42,7 @@ abstract class AbstractTranslation
     /**
      * @var string $foreignKey
      *
-     * @MongoODM\String(name="foreign_key")
+     * @MongoODM\String
      */
     protected $foreignKey;
 

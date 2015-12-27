@@ -23,14 +23,14 @@ abstract class AbstractPersonalTranslation
     /**
      * @var string $locale
      *
-     * @ORM\Column(type="string", length=8)
+     * @ORM\Column(length=8)
      */
     protected $locale;
 
     /**
      * @var string $field
      *
-     * @ORM\Column(type="string", length=32)
+     * @ORM\Column(length=32)
      */
     protected $field;
 
