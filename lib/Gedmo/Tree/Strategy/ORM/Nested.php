@@ -331,8 +331,8 @@ class Nested implements Strategy
             }
             switch ($position) {
                 case self::PREV_SIBLING:
-                    if (property_exists($node, 'sibling')) {
-                        $wrappedSibling = AbstractWrapper::wrap($node->sibling, $em);
+                    if (property_exists($node, '__sibling')) {
+                        $wrappedSibling = AbstractWrapper::wrap($node->__sibling, $em);
                         $start = $wrappedSibling->getPropertyValue($config['left']);
                         $level++;
                     } else {
@@ -347,8 +347,8 @@ class Nested implements Strategy
                     break;
 
                 case self::NEXT_SIBLING:
-                    if (property_exists($node, 'sibling')) {
-                        $wrappedSibling = AbstractWrapper::wrap($node->sibling, $em);
+                    if (property_exists($node, '__sibling')) {
+                        $wrappedSibling = AbstractWrapper::wrap($node->__sibling, $em);
                         $start = $wrappedSibling->getPropertyValue($config['right']) + 1;
                         $level++;
                     } else {

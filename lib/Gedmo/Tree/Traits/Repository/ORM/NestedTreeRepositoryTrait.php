@@ -17,14 +17,6 @@ use Doctrine\ORM\Proxy\Proxy;
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
- * @method persistAsFirstChild($node)
- * @method persistAsFirstChildOf($node, $parent)
- * @method persistAsLastChild($node)
- * @method persistAsLastChildOf($node, $parent)
- * @method persistAsNextSibling($node)
- * @method persistAsNextSiblingOf($node, $sibling)
- * @method persistAsPrevSibling($node)
- * @method persistAsPrevSiblingOf($node, $sibling)
  */
 trait NestedTreeRepositoryTrait
 {
@@ -70,92 +62,129 @@ trait NestedTreeRepositoryTrait
     }
 
     /**
-     * To use this utility methods you have to call this in your __call() like below:
-     *
-     * class MyTreeRepository extends EntityRepository
-     * {
-     *     use NestedTreeRepositoryTrait;
-     *
-     *     // ...
-     *
-     *     public function __call($method, $args)
-     *     {
-     *         $result = $this->callTreeUtilMethods($method, $args);
-     *
-     *         if (null !== $result)
-     *         {
-     *             return $result;
-     *         }
-     *
-     *         return parent::__call($method, $args);
-     *     }
-     * }
-     *
-     * Allows the following 'virtual' methods:
-     * - persistAsFirstChild($node)
-     * - persistAsFirstChildOf($node, $parent)
-     * - persistAsLastChild($node)
-     * - persistAsLastChildOf($node, $parent)
-     * - persistAsNextSibling($node)
-     * - persistAsNextSiblingOf($node, $sibling)
-     * - persistAsPrevSibling($node)
-     * - persistAsPrevSiblingOf($node, $sibling)
-     * Inherited virtual methods:
-     * - find*
-     *
-     * @see \Doctrine\ORM\EntityRepository
-     *
-     * @throws InvalidArgumentException - If arguments are invalid
-     * @throws \BadMethodCallException  - If the method called is an invalid find* or persistAs* method
-     *                                  or no find* either persistAs* method at all and therefore an invalid method call.
-     *
-     * @return mixed - TreeNestedRepository if persistAs* is called
+     * Persists node in given position strategy
      */
-    public function callTreeUtilMethods($method, $args)
+    protected function persistAs($node, $child = null, $position = Nested::FIRST_CHILD)
     {
-        if (substr($method, 0, 9) === 'persistAs') {
-            if (!isset($args[0])) {
-                throw new \Gedmo\Exception\InvalidArgumentException('Node to persist must be available as first argument');
-            }
+        $em = $this->getEntityManager();
+        $wrapped = new EntityWrapper($node, $em);
+        $meta = $this->getClassMetadata();
+        $config = $this->listener->getConfiguration($em, $meta->name);
 
-            $em = $this->getEntityManager();
-            $node = $args[0];
-            $wrapped = new EntityWrapper($node, $em);
-            $meta = $this->getClassMetadata();
-            $config = $this->listener->getConfiguration($em, $meta->name);
-            $position = substr($method, 9);
-
-            if (substr($method, -2) === 'Of') {
-                if (!isset($args[1])) {
-                    throw new \Gedmo\Exception\InvalidArgumentException('If "Of" is specified you must provide parent or sibling as the second argument');
+        if ($child !== null) {
+            switch ($position) {
+            case Nested::PREV_SIBLING:
+            case Nested::NEXT_SIBLING:
+                $sibling = new EntityWrapper($child, $em);
+                $newParent = $sibling->getPropertyValue($config['parent']);
+                if (null === $newParent && isset($config['root'])) {
+                    throw new UnexpectedValueException("Cannot persist sibling for a root node, tree operation is not possible");
                 }
-                $parentOrSibling = $args[1];
-                if (strstr($method,'Sibling')) {
-                    $wrappedParentOrSibling = new EntityWrapper($parentOrSibling, $em);
-                    $newParent = $wrappedParentOrSibling->getPropertyValue($config['parent']);
-                    if (null === $newParent && isset($config['root'])) {
-                        throw new UnexpectedValueException("Cannot persist sibling for a root node, tree operation is not possible");
-                    }
-                    $node->sibling = $parentOrSibling;
-                    $parentOrSibling = $newParent;
-                }
-                $wrapped->setPropertyValue($config['parent'], $parentOrSibling);
-                $position = substr($position, 0, -2);
+                $node->__sibling = $child;
+                $child = $newParent;
+                break;
             }
-
-            $wrapped->setPropertyValue($config['left'], 0); // simulate changeset
-            $oid = spl_object_hash($node);
-            $this->listener
-                ->getStrategy($em, $meta->name)
-                ->setNodePosition($oid, $position)
-            ;
-
-            $em->persist($node);
-
-            return $this;
+            $wrapped->setPropertyValue($config['parent'], $child);
         }
 
-        return null;
+        $wrapped->setPropertyValue($config['left'], 0); // simulate changeset
+        $oid = spl_object_hash($node);
+        $this->listener->getStrategy($em, $meta->name)->setNodePosition($oid, $position);
+        $em->persist($node);
+
+        return $this;
+    }
+
+    /**
+     * Persists given $node as first child of tree
+     *
+     * @param $node
+     * @return self
+     */
+    public function persistAsFirstChild($node)
+    {
+        return $this->persistAs($node, null, Nested::FIRST_CHILD);
+    }
+
+    /**
+     * Persists given $node as first child of $parent node
+     *
+     * @param $node
+     * @param $parent
+     * @return self
+     */
+    public function persistAsFirstChildOf($node, $parent)
+    {
+        return $this->persistAs($node, $parent, Nested::FIRST_CHILD);
+    }
+
+    /**
+     * Persists given $node as last child of tree
+     *
+     * @param $node
+     * @return self
+     */
+    public function persistAsLastChild($node)
+    {
+        return $this->persistAs($node, null, Nested::LAST_CHILD);
+    }
+
+    /**
+     * Persists given $node as last child of $parent node
+     *
+     * @param $node
+     * @param $parent
+     * @return self
+     */
+    public function persistAsLastChildOf($node, $parent)
+    {
+        return $this->persistAs($node, $parent, Nested::LAST_CHILD);
+    }
+
+    /**
+     * Persists given $node next to $sibling node
+     *
+     * @param $node
+     * @param $sibling
+     * @return self
+     */
+    public function persistAsNextSiblingOf($node, $sibling)
+    {
+        return $this->persistAs($node, $sibling, Nested::NEXT_SIBLING);
+    }
+
+    /**
+     * Persists given $node previous to $sibling node
+     *
+     * @param $node
+     * @param $sibling
+     * @return self
+     */
+    public function persistAsPrevSiblingOf($node, $sibling)
+    {
+        return $this->persistAs($node, $sibling, Nested::PREV_SIBLING);
+    }
+
+    /**
+     * Persists given $node same as first child of it's parent
+     *
+     * @param $node
+     * @return self
+     */
+    public function persistAsNextSibling($node)
+    {
+        return $this->persistAs($node, null, Nested::NEXT_SIBLING);
+    }
+
+    /**
+     * Persists given $node same as last child of it's parent
+     *
+     * @param $node
+     * @return self
+     */
+    public function persistAsPrevSibling($node)
+    {
+        return $this->persistAs($node, null, Nested::PREV_SIBLING);
     }
 
     /**

@@ -31,19 +31,4 @@ class NestedTreeRepository extends EntityRepository implements RepositoryInterfa
 
         $this->initializeTreeRepository($em, $class);
     }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function __call($method, $args)
-    {
-        $result = $this->callTreeUtilMethods($method, $args);
-
-        if (null !== $result)
-        {
-            return $result;
-        }
-
-        return parent::__call($method, $args);
-    }
 }
