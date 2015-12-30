@@ -71,6 +71,7 @@ trait NestedTreeRepositoryTrait
         $meta = $this->getClassMetadata();
         $config = $this->listener->getConfiguration($em, $meta->name);
 
+        $siblingInPosition = null;
         if ($child !== null) {
             switch ($position) {
             case Nested::PREV_SIBLING:
@@ -80,7 +81,7 @@ trait NestedTreeRepositoryTrait
                 if (null === $newParent && isset($config['root'])) {
                     throw new UnexpectedValueException("Cannot persist sibling for a root node, tree operation is not possible");
                 }
-                $node->__sibling = $child;
+                $siblingInPosition = $child;
                 $child = $newParent;
                 break;
             }
@@ -89,7 +90,7 @@ trait NestedTreeRepositoryTrait
 
         $wrapped->setPropertyValue($config['left'], 0); // simulate changeset
         $oid = spl_object_hash($node);
-        $this->listener->getStrategy($em, $meta->name)->setNodePosition($oid, $position);
+        $this->listener->getStrategy($em, $meta->name)->setNodePosition($oid, $position, $siblingInPosition);
         $em->persist($node);
 
         return $this;

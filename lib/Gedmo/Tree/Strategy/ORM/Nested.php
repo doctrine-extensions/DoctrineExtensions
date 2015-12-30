@@ -94,7 +94,7 @@ class Nested implements Strategy
      * @param string $oid
      * @param string $position
      */
-    public function setNodePosition($oid, $position)
+    public function setNodePosition($oid, $position, $sibling = null)
     {
         $valid = array(
             self::FIRST_CHILD,
@@ -105,7 +105,7 @@ class Nested implements Strategy
         if (!in_array($position, $valid, false)) {
             throw new \Gedmo\Exception\InvalidArgumentException("Position: {$position} is not valid in nested set tree");
         }
-        $this->nodePositions[$oid] = $position;
+        $this->nodePositions[$oid] = array($position, $sibling);
     }
 
     /**
@@ -225,6 +225,8 @@ class Nested implements Strategy
     {
         // reset values
         $this->treeEdges = array();
+        // $this->nodePositions = array();
+        // $this->delayedNodes = array();
     }
 
     /**
@@ -277,10 +279,11 @@ class Nested implements Strategy
      * @param object        $node     - target node
      * @param object        $parent   - destination node
      * @param string        $position
+     * @param object        $siblingInPosition - used for persist as
      *
      * @throws \Gedmo\Exception\UnexpectedValueException
      */
-    public function updateNode(EntityManager $em, $node, $parent, $position = 'FirstChild')
+    public function updateNode(EntityManager $em, $node, $parent, $position = 'FirstChild', $siblingInPosition = null)
     {
         $wrapped = AbstractWrapper::wrap($node, $em);
         $meta = $wrapped->getMetadata();
@@ -301,7 +304,7 @@ class Nested implements Strategy
 
         $oid = spl_object_hash($node);
         if (isset($this->nodePositions[$oid])) {
-            $position = $this->nodePositions[$oid];
+            list($position, $siblingInPosition) = $this->nodePositions[$oid];
         }
         $level = 0;
         $treeSize = $right - $left + 1;
@@ -319,7 +322,7 @@ class Nested implements Strategy
                 if (!isset($this->delayedNodes[$parentOid])) {
                     $this->delayedNodes[$parentOid] = array();
                 }
-                $this->delayedNodes[$parentOid][] = array('node' => $node, 'position' => $position);
+                $this->delayedNodes[$parentOid][] = compact('node', 'position', 'siblingInPosition');
 
                 return;
             }
@@ -331,8 +334,8 @@ class Nested implements Strategy
             }
             switch ($position) {
                 case self::PREV_SIBLING:
-                    if (property_exists($node, '__sibling')) {
-                        $wrappedSibling = AbstractWrapper::wrap($node->__sibling, $em);
+                    if (null !== $siblingInPosition) {
+                        $wrappedSibling = AbstractWrapper::wrap($siblingInPosition, $em);
                         $start = $wrappedSibling->getPropertyValue($config['left']);
                         $level++;
                     } else {
@@ -347,8 +350,8 @@ class Nested implements Strategy
                     break;
 
                 case self::NEXT_SIBLING:
-                    if (property_exists($node, '__sibling')) {
-                        $wrappedSibling = AbstractWrapper::wrap($node->__sibling, $em);
+                    if (null !== $siblingInPosition) {
+                        $wrappedSibling = AbstractWrapper::wrap($siblingInPosition, $em);
                         $start = $wrappedSibling->getPropertyValue($config['right']) + 1;
                         $level++;
                     } else {
@@ -442,7 +445,7 @@ class Nested implements Strategy
         }
         if (isset($this->delayedNodes[$oid])) {
             foreach ($this->delayedNodes[$oid] as $nodeData) {
-                $this->updateNode($em, $nodeData['node'], $node, $nodeData['position']);
+                $this->updateNode($em, $nodeData['node'], $node, $nodeData['position'], $nodeData['siblingInPosition']);
             }
         }
     }
