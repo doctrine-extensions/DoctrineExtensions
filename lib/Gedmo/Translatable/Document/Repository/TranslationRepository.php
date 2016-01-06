@@ -116,7 +116,7 @@ class TranslationRepository extends DocumentRepository
 
             $config = $this
                 ->getTranslatableListener()
-                ->getConfiguration($this->_em, $wrapped->getMetadata()->name);
+                ->getConfiguration($this->dm, $wrapped->getMetadata()->name);
 
             if (!$config) {
                 return $result;
