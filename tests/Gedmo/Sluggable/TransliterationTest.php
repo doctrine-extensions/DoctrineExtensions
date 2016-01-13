@@ -42,7 +42,7 @@ class TransliterationTest extends BaseTestCaseORM
         $this->assertEquals('eto-tiestovyi-zagholovok-ru', $russian->getSlug());
 
         $german = $repo->findOneByCode('de');
-        $this->assertEquals('fuhren-aktivitaten-haglofs-de', $german->getSlug());
+        $this->assertEquals('fuehren-aktivitaeten-hagloefs-de', $german->getSlug());
     }
 
     private function populate()
