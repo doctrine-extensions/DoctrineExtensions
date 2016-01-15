@@ -164,7 +164,7 @@ services:
     extension.listener:
         class: Acme\DemoBundle\Listener\DoctrineExtensionListener
         calls:
-            - [ setContainer, [ @service_container ] ]
+            - [ setContainer, [ "@service_container" ] ]
         tags:
             # translatable sets locale after router processing
             - { name: kernel.event_listener, event: kernel.request, method: onLateKernelRequest, priority: -10 }
