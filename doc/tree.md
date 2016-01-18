@@ -381,19 +381,6 @@ class CategoryRepository extends EntityRepository
 
         $this->initializeTreeRepository($em, $class);
     }
-
-    // ONLY WHEN USING NestedTreeRepository which adds persistAs*() methods
-    public function __call($method, $args)
-    {
-        $result = $this->callTreeUtilMethods($method, $args);
-
-        if (null !== $result)
-        {
-            return $result;
-        }
-
-        return parent::__call($method, $args);
-    }
 }
 ```
 ```php
@@ -478,7 +465,7 @@ $treeRepository
 $em->flush();
 ```
 
-For more details you can check the **NestedTreeRepository** __call function
+For more details you can check the **NestedTreeRepository**
 
 Moving up and down the nodes in same level:
 
