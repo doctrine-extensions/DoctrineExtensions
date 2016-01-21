@@ -15,7 +15,7 @@ $em = include 'em.php';
  */
 $translatable;
 
-$repository = $em->getRepository('Entity\Category');
+$repository = $em->getRepository('Example\Entity\Category');
 $food = $repository->findOneByTitle('Food');
 if (!$food) {
     // lets create some categories
@@ -49,7 +49,7 @@ if (!$food) {
 $query = $em
     ->createQueryBuilder()
     ->select('node')
-    ->from('Entity\Category', 'node')
+    ->from('Example\Entity\Category', 'node')
     ->orderBy('node.root, node.lft', 'ASC')
     ->getQuery()
 ;

@@ -52,11 +52,11 @@ Gedmo\DoctrineExtensions::registerAbstractMappingIntoDriverChainORM(
 // for that we need another metadata driver used for Example namespace
 $annotationDriver = new Doctrine\ORM\Mapping\Driver\AnnotationDriver(
     $cachedAnnotationReader, // our cached annotation reader
-    array(__DIR__.'/app/Example') // paths to look in
+    array(__DIR__.'/app/Example/Entity') // paths to look in
 );
 // NOTE: driver for application Example can be different, Yaml, Xml or whatever
 // register annotation driver for our application Example fully qualified namespace
-$driverChain->addDriver($annotationDriver, 'Example');
+$driverChain->addDriver($annotationDriver, 'Example\Entity');
 
 // general ORM configuration
 $config = new Doctrine\ORM\Configuration();
