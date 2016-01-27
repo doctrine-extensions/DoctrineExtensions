@@ -1,6 +1,6 @@
 # Doctrine2 behavioral extensions
 
-**Version 2.4.9**
+**Version 2.4.11**
 
 [![Build Status](https://secure.travis-ci.org/Atlantic18/DoctrineExtensions.png?branch=master)](http://travis-ci.org/Atlantic18/DoctrineExtensions)
 
@@ -11,6 +11,10 @@ ORM 2.5.x versions require **PHP 5.4** or higher.
 **Note:** If you are setting up entity manager without a framework, see the [example](/example/em.php) to prevent issues like #1310
 
 ### Latest updates
+
+**2016-01-27**
+
+- Nested tree now allows root field as association.
 
 **2015-05-01**
 
