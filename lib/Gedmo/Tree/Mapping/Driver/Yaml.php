@@ -182,6 +182,12 @@ class Yaml extends File implements Driver
                         }
                         $config['parent'] = $field;
                     }
+                    if (in_array('treeRoot', $relationMapping['gedmo'])) {
+                        if (!$rel = $this->getRelatedClassName($meta, $relationMapping['targetEntity'])) {
+                            throw new InvalidMappingException("Unable to find root-descendant relation through root field - [{$field}] in class - {$meta->name}");
+                        }
+                        $config['root'] = $field;
+                    }
                 }
             }
         }

@@ -145,7 +145,8 @@ class Category
 
     /**
      * @Gedmo\TreeRoot
-     * @ORM\Column(name="root", type="integer", nullable=true)
+     * @ORM\ManyToOne(targetEntity="Category")
+     * @ORM\JoinColumn(name="tree_root", referencedColumnName="id", onDelete="CASCADE")
      */
     private $root;
 
@@ -177,6 +178,11 @@ class Category
         return $this->title;
     }
 
+    public function getRoot()
+    {
+        return $this->root;
+    }
+
     public function setParent(Category $parent = null)
     {
         $this->parent = $parent;
@@ -201,7 +207,7 @@ in the corresponding section).
 - **@Gedmo\Mapping\Annotation\TreeRight** field is used to store the tree **right** value
 - **@Gedmo\Mapping\Annotation\TreeParent** will identify the column as the relation to **parent node**
 - **@Gedmo\Mapping\Annotation\TreeLevel** field is used to store the tree **level**
-- **@Gedmo\Mapping\Annotation\TreeRoot** field is used to store the tree **root** id value
+- **@Gedmo\Mapping\Annotation\TreeRoot** field is used to store the tree **root** id value or identify the column as the relation to **root node**
 - **@Gedmo\Mapping\Annotation\TreePath** (Materialized Path only) field is used to store the **path**. It has an
 optional parameter "separator" to define the separator used in the path.
 - **@Gedmo\Mapping\Annotation\TreePathSource** (Materialized Path only) field is used as the source to
@@ -252,6 +258,14 @@ Entity\Category:
       gedmo:
         - treeLevel
   manyToOne:
+    root:
+      targetEntity: Entity\Category
+      joinColumn:
+        name: tree_root
+        referencedColumnName: id
+        onDelete: CASCADE
+      gedmo:
+        - treeRoot
     parent:
       targetEntity: Entity\Category
       inversedBy: children
@@ -301,6 +315,11 @@ Entity\Category:
         <field name="level" column="lvl" type="integer">
             <gedmo:tree-level/>
         </field>
+
+        <many-to-one field="root" target-entity="NestedTree">
+            <join-column name="tree_root" referenced-column-name="id" on-delete="CASCADE"/>
+            <gedmo:tree-root/>
+        </many-to-one>
 
         <many-to-one field="parent" target-entity="NestedTree" inversed-by="children">
             <join-column name="parent_id" referenced-column-name="id" on-delete="CASCADE"/>
@@ -691,6 +710,13 @@ class Category
     private $lvl;
 
     /**
+     * @Gedmo\TreeRoot
+     * @ORM\ManyToOne(targetEntity="Category")
+     * @ORM\JoinColumn(name="tree_root", referencedColumnName="id", onDelete="CASCADE")
+     */
+    private $root;
+
+    /**
      * @Gedmo\TreeParent
      * @ORM\ManyToOne(targetEntity="Category", inversedBy="children")
      * @ORM\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="CASCADE")
@@ -727,6 +753,11 @@ class Category
     public function getTitle()
     {
         return $this->title;
+    }
+
+    public function getRoot()
+    {
+        return $this->root;
     }
 
     public function setParent(Category $parent)
@@ -783,6 +814,14 @@ Entity\Category:
         - translatable
         - slug
   manyToOne:
+    root:
+      targetEntity: Entity\Category
+      joinColumn:
+        name: tree_root
+        referencedColumnName: id
+        onDelete: CASCADE
+      gedmo:
+        - treeRoot
     parent:
       targetEntity: Entity\Category
       inversedBy: children
