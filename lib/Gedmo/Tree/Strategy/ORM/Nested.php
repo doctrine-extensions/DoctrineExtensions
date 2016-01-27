@@ -2,6 +2,7 @@
 
 namespace Gedmo\Tree\Strategy\ORM;
 
+use Doctrine\ORM\Mapping\ClassMetadata;
 use Gedmo\Exception\UnexpectedValueException;
 use Doctrine\ORM\Proxy\Proxy;
 use Gedmo\Tool\Wrapper\AbstractWrapper;
@@ -113,6 +114,7 @@ class Nested implements Strategy
      */
     public function processScheduledInsertion($em, $node, AdapterInterface $ea)
     {
+        /** @var ClassMetadata $meta */
         $meta = $em->getClassMetadata(get_class($node));
         $config = $this->listener->getConfiguration($em, $meta->name);
 
@@ -121,7 +123,7 @@ class Nested implements Strategy
         if (isset($config['level'])) {
             $meta->getReflectionProperty($config['level'])->setValue($node, 0);
         }
-        if (isset($config['root'])) {
+        if (isset($config['root']) && !$meta->hasAssociation($config['root'])) {
             $meta->getReflectionProperty($config['root'])->setValue($node, 0);
         }
     }
@@ -173,6 +175,7 @@ class Nested implements Strategy
     public function processPostPersist($em, $node, AdapterInterface $ea)
     {
         $meta = $em->getClassMetadata(get_class($node));
+
         $config = $this->listener->getConfiguration($em, $meta->name);
         $parent = $meta->getReflectionProperty($config['parent'])->getValue($node);
         $this->updateNode($em, $node, $parent, self::LAST_CHILD);
