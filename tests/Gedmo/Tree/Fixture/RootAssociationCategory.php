@@ -9,7 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity(repositoryClass="Gedmo\Tree\Entity\Repository\NestedTreeRepository")
  * @Gedmo\Tree(type="nested")
  */
-class RootRelationCategory
+class RootAssociationCategory
 {
     /**
      * @ORM\Column(name="id", type="integer")
@@ -37,7 +37,7 @@ class RootRelationCategory
 
     /**
      * @Gedmo\TreeParent
-     * @ORM\ManyToOne(targetEntity="RootRelationCategory", inversedBy="children")
+     * @ORM\ManyToOne(targetEntity="RootAssociationCategory", inversedBy="children")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="CASCADE")
      * })
@@ -46,7 +46,7 @@ class RootRelationCategory
 
     /**
      * @Gedmo\TreeRoot
-     * @ORM\ManyToOne(targetEntity="RootRelationCategory")
+     * @ORM\ManyToOne(targetEntity="RootAssociationCategory")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="tree_root", referencedColumnName="id", onDelete="CASCADE")
      * })
@@ -60,7 +60,7 @@ class RootRelationCategory
      private $level;
 
     /**
-     * @ORM\OneToMany(targetEntity="RootRelationCategory", mappedBy="parent")
+     * @ORM\OneToMany(targetEntity="RootAssociationCategory", mappedBy="parent")
      */
     private $children;
 
@@ -79,7 +79,7 @@ class RootRelationCategory
         return $this->title;
     }
 
-    public function setParent(RootRelationCategory $parent = null)
+    public function setParent(RootAssociationCategory $parent = null)
     {
         $this->parent = $parent;
     }
