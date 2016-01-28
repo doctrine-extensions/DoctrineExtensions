@@ -218,9 +218,9 @@ trait NestedTreeRepositoryTrait
             ->orderBy('node.'.$config['left'], 'ASC')
         ;
         if (isset($config['root'])) {
-            $rootId = $wrapped->getPropertyValue($config['root']);
+            $root = $wrapped->getPropertyValue($config['root']);
             $qb->andWhere($qb->expr()->eq('node.'.$config['root'], ':rid'));
-            $qb->setParameter('rid', $rootId);
+            $qb->setParameter('rid', $root);
         }
 
         return $qb;

@@ -4,7 +4,7 @@ namespace Gedmo\Tree;
 
 use Doctrine\Common\EventManager;
 use Tool\BaseTestCaseORM;
-use Tree\Fixture\RootRelationCategory;
+use Tree\Fixture\RootAssociationCategory;
 
 /**
  * These are tests for Tree behavior
@@ -13,9 +13,9 @@ use Tree\Fixture\RootRelationCategory;
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class NestedTreeRootRelationTest extends BaseTestCaseORM
+class NestedTreeRootAssociationTest extends BaseTestCaseORM
 {
-    const CATEGORY = "Tree\\Fixture\\RootRelationCategory";
+    const CATEGORY = "Tree\\Fixture\\RootAssociationCategory";
 
     protected function setUp()
     {
@@ -62,25 +62,25 @@ class NestedTreeRootRelationTest extends BaseTestCaseORM
 
     private function populate()
     {
-        $root = new RootRelationCategory();
+        $root = new RootAssociationCategory();
         $root->setTitle("Food");
 
-        $root2 = new RootRelationCategory();
+        $root2 = new RootAssociationCategory();
         $root2->setTitle("Sports");
 
-        $child = new RootRelationCategory();
+        $child = new RootAssociationCategory();
         $child->setTitle("Fruits");
         $child->setParent($root);
 
-        $child2 = new RootRelationCategory();
+        $child2 = new RootAssociationCategory();
         $child2->setTitle("Vegetables");
         $child2->setParent($root);
 
-        $childsChild = new RootRelationCategory();
+        $childsChild = new RootAssociationCategory();
         $childsChild->setTitle("Carrots");
         $childsChild->setParent($child2);
 
-        $potatoes = new RootRelationCategory();
+        $potatoes = new RootAssociationCategory();
         $potatoes->setTitle("Potatoes");
         $potatoes->setParent($child2);
 

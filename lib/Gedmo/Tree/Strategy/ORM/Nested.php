@@ -228,8 +228,6 @@ class Nested implements Strategy
     {
         // reset values
         $this->treeEdges = array();
-        // $this->nodePositions = array();
-        // $this->delayedNodes = array();
     }
 
     /**
@@ -289,10 +287,12 @@ class Nested implements Strategy
     public function updateNode(EntityManager $em, $node, $parent, $position = 'FirstChild', $siblingInPosition = null)
     {
         $wrapped = AbstractWrapper::wrap($node, $em);
+
+        /** @var ClassMetadata $meta */
         $meta = $wrapped->getMetadata();
         $config = $this->listener->getConfiguration($em, $meta->name);
 
-        $rootId = isset($config['root']) ? $wrapped->getPropertyValue($config['root']) : null;
+        $root = isset($config['root']) ? $wrapped->getPropertyValue($config['root']) : null;
         $identifierField = $meta->getSingleIdentifierFieldName();
         $nodeId = $wrapped->getIdentifier();
 
@@ -311,11 +311,11 @@ class Nested implements Strategy
         }
         $level = 0;
         $treeSize = $right - $left + 1;
-        $newRootId = null;
+        $newRoot = null;
         if ($parent) {
             $wrappedParent = AbstractWrapper::wrap($parent, $em);
 
-            $parentRootId = isset($config['root']) ? $wrappedParent->getPropertyValue($config['root']) : null;
+            $parentRoot = isset($config['root']) ? $wrappedParent->getPropertyValue($config['root']) : null;
             $parentOid = spl_object_hash($parent);
             $parentLeft = $wrappedParent->getPropertyValue($config['left']);
             $parentRight = $wrappedParent->getPropertyValue($config['right']);
@@ -329,7 +329,7 @@ class Nested implements Strategy
 
                 return;
             }
-            if (!$isNewNode && $rootId === $parentRootId && $parentLeft >= $left && $parentRight <= $right) {
+            if (!$isNewNode && $root === $parentRoot && $parentLeft >= $left && $parentRight <= $right) {
                 throw new UnexpectedValueException("Cannot set child as parent to node: {$nodeId}");
             }
             if (isset($config['level'])) {
@@ -379,16 +379,16 @@ class Nested implements Strategy
                     $level++;
                     break;
             }
-            $this->shiftRL($em, $config['useObjectClass'], $start, $treeSize, $parentRootId);
-            if (!$isNewNode && $rootId === $parentRootId && $left >= $start) {
+            $this->shiftRL($em, $config['useObjectClass'], $start, $treeSize, $parentRoot);
+            if (!$isNewNode && $root === $parentRoot && $left >= $start) {
                 $left += $treeSize;
                 $wrapped->setPropertyValue($config['left'], $left);
             }
-            if (!$isNewNode && $rootId === $parentRootId && $right >= $start) {
+            if (!$isNewNode && $root === $parentRoot && $right >= $start) {
                 $right += $treeSize;
                 $wrapped->setPropertyValue($config['right'], $right);
             }
-            $newRootId = $parentRootId;
+            $newRoot = $parentRoot;
         } elseif (!isset($config['root'])) {
             $start = isset($this->treeEdges[$meta->name]) ?
                 $this->treeEdges[$meta->name] : $this->max($em, $config['useObjectClass']);
@@ -396,7 +396,12 @@ class Nested implements Strategy
             $start++;
         } else {
             $start = 1;
-            $newRootId = $nodeId;
+
+            if ($meta->isSingleValuedAssociation($config['root'])) {
+                $newRoot = $node;
+            } else {
+                $newRoot = $wrapped->getIdentifier();
+            }
         }
 
         $diff = $start - $left;
@@ -408,19 +413,19 @@ class Nested implements Strategy
                 $left,
                 $right,
                 $diff,
-                $rootId,
-                $newRootId,
+                $root,
+                $newRoot,
                 $levelDiff
             );
-            $this->shiftRL($em, $config['useObjectClass'], $left, -$treeSize, $rootId);
+            $this->shiftRL($em, $config['useObjectClass'], $left, -$treeSize, $root);
         } else {
             $qb = $em->createQueryBuilder();
             $qb->update($config['useObjectClass'], 'node');
             if (isset($config['root'])) {
                 $qb->set('node.'.$config['root'], ':rid');
-                $qb->setParameter('rid', $newRootId);
-                $wrapped->setPropertyValue($config['root'], $newRootId);
-                $em->getUnitOfWork()->setOriginalEntityProperty($oid, $config['root'], $newRootId);
+                $qb->setParameter('rid', $newRoot);
+                $wrapped->setPropertyValue($config['root'], $newRoot);
+                $em->getUnitOfWork()->setOriginalEntityProperty($oid, $config['root'], $newRoot);
             }
             if (isset($config['level'])) {
                 $qb->set('node.'.$config['level'], $level);
@@ -488,9 +493,9 @@ class Nested implements Strategy
      * @param string         $class
      * @param integer        $first
      * @param integer        $delta
-     * @param integer|string $rootId
+     * @param integer|string $root
      */
-    public function shiftRL(EntityManager $em, $class, $first, $delta, $rootId = null)
+    public function shiftRL(EntityManager $em, $class, $first, $delta, $root = null)
     {
         $meta = $em->getClassMetadata($class);
         $config = $this->listener->getConfiguration($em, $class);
@@ -504,7 +509,7 @@ class Nested implements Strategy
         ;
         if (isset($config['root'])) {
             $qb->andWhere($qb->expr()->eq('node.'.$config['root'], ':rid'));
-            $qb->setParameter('rid', $rootId);
+            $qb->setParameter('rid', $root);
         }
         $qb->getQuery()->getSingleScalarResult();
 
@@ -515,7 +520,7 @@ class Nested implements Strategy
         ;
         if (isset($config['root'])) {
             $qb->andWhere($qb->expr()->eq('node.'.$config['root'], ':rid'));
-            $qb->setParameter('rid', $rootId);
+            $qb->setParameter('rid', $root);
         }
 
         $qb->getQuery()->getSingleScalarResult();
@@ -531,13 +536,13 @@ class Nested implements Strategy
                 }
                 $oid = spl_object_hash($node);
                 $left = $meta->getReflectionProperty($config['left'])->getValue($node);
-                $root = isset($config['root']) ? $meta->getReflectionProperty($config['root'])->getValue($node) : null;
-                if ($root === $rootId && $left >= $first) {
+                $currentRoot = isset($config['root']) ? $meta->getReflectionProperty($config['root'])->getValue($node) : null;
+                if ($currentRoot === $root && $left >= $first) {
                     $meta->getReflectionProperty($config['left'])->setValue($node, $left + $delta);
                     $em->getUnitOfWork()->setOriginalEntityProperty($oid, $config['left'], $left + $delta);
                 }
                 $right = $meta->getReflectionProperty($config['right'])->getValue($node);
-                if ($root === $rootId && $right >= $first) {
+                if ($currentRoot === $root && $right >= $first) {
                     $meta->getReflectionProperty($config['right'])->setValue($node, $right + $delta);
                     $em->getUnitOfWork()->setOriginalEntityProperty($oid, $config['right'], $right + $delta);
                 }
@@ -554,11 +559,11 @@ class Nested implements Strategy
      * @param integer        $first
      * @param integer        $last
      * @param integer        $delta
-     * @param integer|string $rootId
-     * @param integer|string $destRootId
+     * @param integer|string $root
+     * @param integer|string $destRoot
      * @param integer        $levelDelta
      */
-    public function shiftRangeRL(EntityManager $em, $class, $first, $last, $delta, $rootId = null, $destRootId = null, $levelDelta = null)
+    public function shiftRangeRL(EntityManager $em, $class, $first, $last, $delta, $root = null, $destRoot = null, $levelDelta = null)
     {
         $meta = $em->getClassMetadata($class);
         $config = $this->listener->getConfiguration($em, $class);
@@ -577,9 +582,9 @@ class Nested implements Strategy
         ;
         if (isset($config['root'])) {
             $qb->set('node.'.$config['root'], ':drid');
-            $qb->setParameter('drid', $destRootId);
+            $qb->setParameter('drid', $destRoot);
             $qb->andWhere($qb->expr()->eq('node.'.$config['root'], ':rid'));
-            $qb->setParameter('rid', $rootId);
+            $qb->setParameter('rid', $root);
         }
         if (isset($config['level'])) {
             $qb->set('node.'.$config['level'], "node.{$config['level']} {$levelSign} {$absLevelDelta}");
@@ -597,8 +602,8 @@ class Nested implements Strategy
                 }
                 $left = $meta->getReflectionProperty($config['left'])->getValue($node);
                 $right = $meta->getReflectionProperty($config['right'])->getValue($node);
-                $root = isset($config['root']) ? $meta->getReflectionProperty($config['root'])->getValue($node) : null;
-                if ($root === $rootId && $left >= $first && $right <= $last) {
+                $currentRoot = isset($config['root']) ? $meta->getReflectionProperty($config['root'])->getValue($node) : null;
+                if ($currentRoot === $root && $left >= $first && $right <= $last) {
                     $oid = spl_object_hash($node);
                     $uow = $em->getUnitOfWork();
 
@@ -607,8 +612,8 @@ class Nested implements Strategy
                     $meta->getReflectionProperty($config['right'])->setValue($node, $right + $delta);
                     $uow->setOriginalEntityProperty($oid, $config['right'], $right + $delta);
                     if (isset($config['root'])) {
-                        $meta->getReflectionProperty($config['root'])->setValue($node, $destRootId);
-                        $uow->setOriginalEntityProperty($oid, $config['root'], $destRootId);
+                        $meta->getReflectionProperty($config['root'])->setValue($node, $destRoot);
+                        $uow->setOriginalEntityProperty($oid, $config['root'], $destRoot);
                     }
                     if (isset($config['level'])) {
                         $level = $meta->getReflectionProperty($config['level'])->getValue($node);
