@@ -9,6 +9,10 @@ ORM 2.5.x versions require **PHP 5.4** or higher same as doctrine extensions **2
 
 ### Latest updates
 
+**2016-01-27**
+
+- Nested tree now allows **root** field as association.
+
 **2015-12-27**
 
 - From now on, extensions will require **php 5.4** or higher.
