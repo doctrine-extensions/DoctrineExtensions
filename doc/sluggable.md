@@ -588,11 +588,9 @@ class Article
 
     /**
      * @Gedmo\Slug(fields={"uniqueTitle"}, prefix="some-prefix-")
-     * @ORM\Column(type="string", length=128, unique=true)
+     * @ORM\Column(length=128, unique=true)
      */
     private $uniqueSlug;
-
-
 
     public function getId()
     {

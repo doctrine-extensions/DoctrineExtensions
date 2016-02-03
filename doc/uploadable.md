@@ -154,7 +154,7 @@ class File
     // Other fields..
 
     /**
-     * @ORM\Column(name="path", type="string")
+     * @ORM\Column
      * @Gedmo\UploadableFilePath
      */
     private $path;
@@ -177,32 +177,32 @@ use Doctrine\ORM\Mapping as ORM;
 class File
 {
     /**
-     * @ORM\Column(name="id", type="integer")
+     * @ORM\Column(type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $id;
 
     /**
-     * @ORM\Column(name="path", type="string")
+     * @ORM\Column
      * @Gedmo\UploadableFilePath
      */
     private $path;
 
     /**
-     * @ORM\Column(name="name", type="string")
+     * @ORM\Column
      * @Gedmo\UploadableFileName
      */
     private $name;
 
     /**
-     * @ORM\Column(name="mime_type", type="string")
+     * @ORM\Column
      * @Gedmo\UploadableFileMimeType
      */
     private $mimeType;
 
     /**
-     * @ORM\Column(name="size", type="decimal")
+     * @ORM\Column(type="decimal")
      * @Gedmo\UploadableFileSize
      */
     private $size;

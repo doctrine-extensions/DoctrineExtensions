@@ -79,7 +79,7 @@ use Doctrine\ORM\Mapping as ORM;
 class Article
 {
     /**
-     * @ORM\Column(name="id", type="integer")
+     * @ORM\Column(type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
@@ -87,7 +87,7 @@ class Article
 
     /**
      * @Gedmo\Versioned
-     * @ORM\Column(name="title", type="string", length=8)
+     * @ORM\Column(length=8)
      */
     private $title;
 

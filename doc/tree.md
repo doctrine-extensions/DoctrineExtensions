@@ -118,46 +118,46 @@ use Doctrine\ORM\Mapping as ORM;
 class Category
 {
     /**
-     * @ORM\Column(name="id", type="integer")
+     * @ORM\Column(type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue
      */
     private $id;
 
     /**
-     * @ORM\Column(name="title", type="string", length=64)
+     * @ORM\Column(length=64)
      */
     private $title;
 
     /**
      * @Gedmo\TreeLeft
-     * @ORM\Column(name="lft", type="integer")
+     * @ORM\Column(type="integer")
      */
     private $lft;
 
     /**
      * @Gedmo\TreeLevel
-     * @ORM\Column(name="lvl", type="integer")
+     * @ORM\Column(type="integer")
      */
     private $lvl;
 
     /**
      * @Gedmo\TreeRight
-     * @ORM\Column(name="rgt", type="integer")
+     * @ORM\Column(type="integer")
      */
     private $rgt;
 
     /**
      * @Gedmo\TreeRoot
      * @ORM\ManyToOne(targetEntity="Category")
-     * @ORM\JoinColumn(name="tree_root", referencedColumnName="id", onDelete="CASCADE")
+     * @ORM\JoinColumn(referencedColumnName="id", onDelete="CASCADE")
      */
     private $root;
 
     /**
      * @Gedmo\TreeParent
      * @ORM\ManyToOne(targetEntity="Category", inversedBy="children")
-     * @ORM\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="CASCADE")
+     * @ORM\JoinColumn(referencedColumnName="id", onDelete="CASCADE")
      */
     private $parent;
 
@@ -265,7 +265,6 @@ Entity\Category:
     root:
       targetEntity: Entity\Category
       joinColumn:
-        name: tree_root
         referencedColumnName: id
         onDelete: CASCADE
       gedmo:
@@ -274,7 +273,6 @@ Entity\Category:
       targetEntity: Entity\Category
       inversedBy: children
       joinColumn:
-        name: parent_id
         referencedColumnName: id
         onDelete: CASCADE
       gedmo:
@@ -715,7 +713,7 @@ use Doctrine\ORM\Mapping as ORM;
 class Category
 {
     /**
-     * @ORM\Column(name="id", type="integer")
+     * @ORM\Column(type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue
      */
@@ -724,39 +722,39 @@ class Category
     /**
      * @Gedmo\Translatable
      * @Gedmo\Sluggable
-     * @ORM\Column(name="title", type="string", length=64)
+     * @ORM\Column(length=64)
      */
     private $title;
 
     /**
      * @Gedmo\TreeLeft
-     * @ORM\Column(name="lft", type="integer")
+     * @ORM\Column(type="integer")
      */
     private $lft;
 
     /**
      * @Gedmo\TreeRight
-     * @ORM\Column(name="rgt", type="integer")
+     * @ORM\Column(type="integer")
      */
     private $rgt;
 
     /**
      * @Gedmo\TreeLevel
-     * @ORM\Column(name="lvl", type="integer")
+     * @ORM\Column(type="integer")
      */
     private $lvl;
 
     /**
      * @Gedmo\TreeRoot
      * @ORM\ManyToOne(targetEntity="Category")
-     * @ORM\JoinColumn(name="tree_root", referencedColumnName="id", onDelete="CASCADE")
+     * @ORM\JoinColumn(referencedColumnName="id", onDelete="CASCADE")
      */
     private $root;
 
     /**
      * @Gedmo\TreeParent
      * @ORM\ManyToOne(targetEntity="Category", inversedBy="children")
-     * @ORM\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="CASCADE")
+     * @ORM\JoinColumn(referencedColumnName="id", onDelete="CASCADE")
      */
     private $parent;
 
@@ -768,7 +766,7 @@ class Category
     /**
      * @Gedmo\Translatable
      * @Gedmo\Slug
-     * @ORM\Column(name="slug", type="string", length=128)
+     * @ORM\Column(length=128)
      */
     private $slug;
 
@@ -854,7 +852,6 @@ Entity\Category:
     root:
       targetEntity: Entity\Category
       joinColumn:
-        name: tree_root
         referencedColumnName: id
         onDelete: CASCADE
       gedmo:
@@ -863,7 +860,6 @@ Entity\Category:
       targetEntity: Entity\Category
       inversedBy: children
       joinColumn:
-        name: parent_id
         referencedColumnName: id
         onDelete: CASCADE
       gedmo:
@@ -925,28 +921,26 @@ class Category
 
     /**
      * @Gedmo\TreePath
-     * @ORM\Column(name="path", type="string", length=3000, nullable=true)
+     * @ORM\Column(length=3000, nullable=true)
      */
     private $path;
 
     /**
      * @Gedmo\TreePathSource
-     * @ORM\Column(name="title", type="string", length=64)
+     * @ORM\Column(length=64)
      */
     private $title;
 
     /**
      * @Gedmo\TreeParent
      * @ORM\ManyToOne(targetEntity="Category", inversedBy="children")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="CASCADE")
-     * })
+     * @ORM\JoinColumn(referencedColumnName="id", onDelete="CASCADE")
      */
     private $parent;
 
     /**
      * @Gedmo\TreeLevel
-     * @ORM\Column(name="lvl", type="integer", nullable=true)
+     * @ORM\Column(type="integer", nullable=true)
      */
     private $level;
 
@@ -1127,7 +1121,6 @@ YourNamespace\Document\Category:
                     endsWithSeparator:   true   # default
         level:
             type:   int
-            name:   lvl
             nullable:   true
             gedmo:
                 -   treeLevel
@@ -1237,28 +1230,28 @@ use Doctrine\ORM\Mapping as ORM;
 class Category
 {
     /**
-     * @ORM\Column(name="id", type="integer")
+     * @ORM\Column(type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue
      */
     private $id;
 
     /**
-     * @ORM\Column(name="title", type="string", length=64)
+     * @ORM\Column(length=64)
      */
     private $title;
 
     /**
      * This parameter is optional for the closure strategy
      *
-     * @ORM\Column(name="level", type="integer", nullable=true)
+     * @ORM\Column(type="integer", nullable=true)
      * @Gedmo\TreeLevel
      */
     private $level;
 
     /**
      * @Gedmo\TreeParent
-     * @ORM\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="CASCADE")
+     * @ORM\JoinColumn(referencedColumnName="id", onDelete="CASCADE")
      * @ORM\ManyToOne(targetEntity="Category", inversedBy="children")
      */
     private $parent;

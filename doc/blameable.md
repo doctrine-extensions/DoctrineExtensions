@@ -89,12 +89,12 @@ class Article
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=128)
+     * @ORM\Column(length=128)
      */
     private $title;
 
     /**
-     * @ORM\Column(name="body", type="string")
+     * @ORM\Column
      */
     private $body;
 
@@ -102,7 +102,7 @@ class Article
      * @var string $createdBy
      *
      * @Gedmo\Blameable(on="create")
-     * @ORM\Column(type="string")
+     * @ORM\Column
      */
     private $createdBy;
 
@@ -110,14 +110,14 @@ class Article
      * @var string $updatedBy
      *
      * @Gedmo\Blameable(on="update")
-     * @ORM\Column(type="string")
+     * @ORM\Column
      */
     private $updatedBy;
 
     /**
      * @var string $contentChangedBy
      *
-     * @ORM\Column(name="content_changed_by", type="string", nullable=true)
+     * @ORM\Column(nullable=true)
      * @Gedmo\Blameable(on="change", field={"title", "body"})
      */
     private $contentChangedBy;
@@ -182,12 +182,12 @@ class Article
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=128)
+     * @ORM\Column(length=128)
      */
     private $title;
 
     /**
-     * @ODM\String
+     * @ORM\Column
      */
     private $body;
 
@@ -196,7 +196,7 @@ class Article
      *
      * @Gedmo\Blameable(on="create")
      * @ORM\ManyToOne(targetEntity="Path\To\Entity\User")
-     * @ORM\JoinColumn(name="created_by", referencedColumnName="id")
+     * @ORM\JoinColumn(referencedColumnName="id")
      */
     private $createdBy;
 
@@ -205,7 +205,7 @@ class Article
      *
      * @Gedmo\Blameable(on="update")
      * @ORM\ManyToOne(targetEntity="Path\To\Entity\User")
-     * @ORM\JoinColumn(name="updated_by", referencedColumnName="id")
+     * @ORM\JoinColumn(referencedColumnName="id")
      */
     private $updatedBy;
 
@@ -214,7 +214,7 @@ class Article
      *
      * @Gedmo\Blameable(on="change", fields={"title", "body"})
      * @ORM\ManyToOne(targetEntity="Path\To\Entity\User")
-     * @ORM\JoinColumn(name="content_changed_by", referencedColumnName="id")
+     * @ORM\JoinColumn(referencedColumnName="id")
      */
     private $contentChangedBy;
 
@@ -416,7 +416,7 @@ class Type
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=128)
+     * @ORM\Column(length=128)
      */
     private $title;
 
@@ -460,7 +460,7 @@ class Article
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=128)
+     * @ORM\Column(length=128)
      */
     private $title;
 
@@ -468,7 +468,7 @@ class Article
      * @var string $createdBy
      *
      * @Gedmo\Blameable(on="create")
-     * @ORM\Column(type="string")
+     * @ORM\Column
      */
     private $createdBy;
 
@@ -476,7 +476,7 @@ class Article
      * @var string $updatedBy
      *
      * @Gedmo\Blameable(on="update")
-     * @ORM\Column(type="string")
+     * @ORM\Column
      */
     private $updatedBy;
 
@@ -488,7 +488,7 @@ class Article
     /**
      * @var string $publishedBy
      *
-     * @ORM\Column(type="string", nullable=true)
+     * @ORM\Column(nullable=true)
      * @Gedmo\Blameable(on="change", field="type.title", value="Published")
      */
     private $publishedBy;

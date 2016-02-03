@@ -73,19 +73,19 @@ class Item
     private $id;
 
     /**
-     * @ORM\Column(name="name", type="string", length=64)
+     * @ORM\Column(length=64)
      */
     private $name;
 
     /**
      * @Gedmo\SortablePosition
-     * @ORM\Column(name="position", type="integer")
+     * @ORM\Column(type="integer")
      */
     private $position;
 
     /**
      * @Gedmo\SortableGroup
-     * @ORM\Column(name="category", type="string", length=128)
+     * @ORM\Column(length=128)
      */
     private $category;
 
@@ -284,7 +284,7 @@ If you want to use a foreign key / relation as sortable group, you have to put @
 /**
  * @Gedmo\SortableGroup
  * @ORM\ManyToOne(targetEntity="Item", inversedBy="children")
- * @ORM\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="SET NULL")
+ * @ORM\JoinColumn(referencedColumnName="id", onDelete="SET NULL")
  */
 private $parent;
 ```

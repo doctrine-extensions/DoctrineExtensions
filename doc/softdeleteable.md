@@ -105,12 +105,12 @@ class Article
     private $id;
 
     /**
-     * @ORM\Column(name="title", type="string")
+     * @ORM\Column
      */
     private $title;
 
     /**
-     * @ORM\Column(name="deletedAt", type="datetime", nullable=true)
+     * @ORM\Column(type="datetime", nullable=true)
      */
     private $deletedAt;
 

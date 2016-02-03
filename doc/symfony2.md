@@ -257,7 +257,7 @@ class DoctrineExtensionListener implements ContainerAwareInterface
         $translatable = $this->container->get('gedmo.listener.translatable');
         $translatable->setTranslatableLocale($event->getRequest()->getLocale());
     }
-    
+
     public function onConsoleCommand()
     {
         $this->container->get('gedmo.listener.translatable')
@@ -323,12 +323,12 @@ class BlogPost
 
     /**
      * @Gedmo\Timestampable(on="create")
-     * @ORM\Column(name="created", type="datetime")
+     * @ORM\Column(type="datetime")
      */
     private $created;
 
     /**
-     * @ORM\Column(name="updated", type="datetime")
+     * @ORM\Column(type="datetime")
      * @Gedmo\Timestampable(on="update")
      */
     private $updated;

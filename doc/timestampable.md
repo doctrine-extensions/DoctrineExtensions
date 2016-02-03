@@ -90,12 +90,12 @@ class Article
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=128)
+     * @ORM\Column(length=128)
      */
     private $title;
 
     /**
-     * @ORM\Column(name="body", type="string")
+     * @ORM\Column
      */
     private $body;
 
@@ -118,7 +118,7 @@ class Article
     /**
      * @var \DateTime $contentChanged
      *
-     * @ORM\Column(name="content_changed", type="datetime", nullable=true)
+     * @ORM\Column(type="datetime", nullable=true)
      * @Gedmo\Timestampable(on="change", field={"title", "body"})
      */
     private $contentChanged;
@@ -349,7 +349,7 @@ class Type
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=128)
+     * @ORM\Column(length=128)
      */
     private $title;
 
@@ -393,7 +393,7 @@ class Article
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=128)
+     * @ORM\Column(length=128)
      */
     private $title;
 
