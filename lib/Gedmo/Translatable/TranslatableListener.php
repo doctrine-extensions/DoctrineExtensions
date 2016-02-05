@@ -667,17 +667,23 @@ class TranslatableListener extends MappedEventSubscriber
                 // check if need to update in database
                 $transWrapper = AbstractWrapper::wrap($translation, $om);
                 if (((is_null($content) && !$isInsert) || is_bool($content) || is_int($content) || (is_string($content) && strlen($content) > 0) || !empty($content)) && ($isInsert || !$transWrapper->getIdentifier() || isset($changeSet[$field]))) {
-                    if ($isInsert && !$objectId && !$ea->usesPersonalTranslation($translationClass)) {
-                        // if we do not have the primary key yet available
-                        // keep this translation in memory to insert it later with foreign key
-                        $this->pendingTranslationInserts[spl_object_hash($object)][] = $translation;
+                    if (is_null($content)) {
+                        if (!$persistNewTranslation) {
+                            $uow->scheduleForDelete($translation);
+                        }
                     } else {
-                        // persist and compute change set for translation
-                        if ($wasPersistedSeparetely) {
-                            $ea->recomputeSingleObjectChangeset($uow, $translationMetadata, $translation);
+                        if ($isInsert && !$objectId && !$ea->usesPersonalTranslation($translationClass)) {
+                            // if we do not have the primary key yet available
+                            // keep this translation in memory to insert it later with foreign key
+                            $this->pendingTranslationInserts[spl_object_hash($object)][] = $translation;
                         } else {
-                            $om->persist($translation);
-                            $uow->computeChangeSet($translationMetadata, $translation);
+                            // persist and compute change set for translation
+                            if ($wasPersistedSeparetely) {
+                                $ea->recomputeSingleObjectChangeset($uow, $translationMetadata, $translation);
+                            } else {
+                                $om->persist($translation);
+                                $uow->computeChangeSet($translationMetadata, $translation);
+                            }
                         }
                     }
                 }
