@@ -64,7 +64,7 @@ class ORM implements AdapterInterface
      */
     public function __call($method, $args)
     {
-        if (is_null($this->args)) {
+        if (null === $this->args) {
             throw new RuntimeException("Event args must be set before calling its methods");
         }
         $method = str_replace('Object', $this->getDomainObjectName(), $method);
@@ -87,7 +87,7 @@ class ORM implements AdapterInterface
      */
     public function getObjectManager()
     {
-        if (!is_null($this->em)) {
+        if (null !== $this->em) {
             return $this->em;
         }
 

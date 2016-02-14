@@ -211,7 +211,7 @@ trait MaterializedPathRepositoryTrait
             $qb->orWhere('('.$includeNodeExpr.')');
         }
 
-        $orderByField = is_null($sortByField) ? $alias.'.'.$config['path'] : $alias.'.'.$sortByField;
+        $orderByField = null === $sortByField ? $alias.'.'.$config['path'] : $alias.'.'.$sortByField;
         $orderByDir = $direction === 'asc' ? 'asc' : 'desc';
         $qb->orderBy($orderByField, $orderByDir);
 

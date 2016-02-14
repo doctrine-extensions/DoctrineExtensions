@@ -41,7 +41,7 @@ class SortableRepository extends EntityRepository
             }
         }
 
-        if (is_null($sortableListener)) {
+        if (null === $sortableListener) {
             throw new \Gedmo\Exception\InvalidMappingException('This repository can be attached only to ORM sortable listener');
         }
 

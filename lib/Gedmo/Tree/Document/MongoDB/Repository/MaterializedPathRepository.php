@@ -138,7 +138,7 @@ class MaterializedPathRepository extends AbstractTreeRepository
             $qb->field($config['path'])->equals(new \MongoRegex($regex));
         }
 
-        $qb->sort(is_null($sortByField) ? $config['path'] : $sortByField, $direction === 'asc' ? 'asc' : 'desc');
+        $qb->sort(null === $sortByField ? $config['path'] : $sortByField, $direction === 'asc' ? 'asc' : 'desc');
 
         return $qb;
     }

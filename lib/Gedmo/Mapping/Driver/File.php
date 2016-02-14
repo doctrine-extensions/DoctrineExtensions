@@ -85,14 +85,14 @@ abstract class File implements Driver
     {
         //try loading mapping from original driver first
         $mapping = null;
-        if (!is_null($this->_originalDriver)) {
+        if (null !== $this->_originalDriver) {
             if ($this->_originalDriver instanceof FileDriver || $this->_originalDriver instanceof AbstractFileDriver) {
                 $mapping = $this->_originalDriver->getElement($className);
             }
         }
 
         //if no mapping found try to load mapping file again
-        if (is_null($mapping)) {
+        if (null === $mapping) {
             $yaml = $this->_loadMappingFile($this->locator->findMappingFile($className));
             $mapping = $yaml[$className];
         }

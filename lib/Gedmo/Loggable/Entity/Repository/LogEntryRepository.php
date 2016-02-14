@@ -141,7 +141,7 @@ class LogEntryRepository extends EntityRepository
      */
     private function getLoggableListener()
     {
-        if (is_null($this->listener)) {
+        if (null === $this->listener) {
             foreach ($this->_em->getEventManager()->getListeners() as $event => $listeners) {
                 foreach ($listeners as $hash => $listener) {
                     if ($listener instanceof LoggableListener) {
@@ -154,7 +154,7 @@ class LogEntryRepository extends EntityRepository
                 }
             }
 
-            if (is_null($this->listener)) {
+            if (null === $this->listener) {
                 throw new \Gedmo\Exception\RuntimeException('The loggable listener could not be found');
             }
         }

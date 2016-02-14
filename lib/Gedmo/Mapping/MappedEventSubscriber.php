@@ -154,7 +154,7 @@ abstract class MappedEventSubscriber implements EventSubscriber
     {
         $oid = spl_object_hash($objectManager);
         if (!isset($this->extensionMetadataFactory[$oid])) {
-            if (is_null($this->annotationReader)) {
+            if (null === $this->annotationReader) {
                 // create default annotation reader for extensions
                 $this->annotationReader = $this->getDefaultAnnotationReader();
             }
