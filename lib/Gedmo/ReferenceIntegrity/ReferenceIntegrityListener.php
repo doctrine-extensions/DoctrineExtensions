@@ -156,7 +156,7 @@ class ReferenceIntegrityListener extends MappedEventSubscriber
                                 )
                             );
                         }
-                        if ($meta->isSingleValuedReference($property) && !is_null($refDoc)) {
+                        if ($meta->isSingleValuedReference($property) && null !== $refDoc) {
                             throw new ReferenceIntegrityStrictException(
                                 sprintf(
                                     "The reference integrity for the '%s' document is restricted",

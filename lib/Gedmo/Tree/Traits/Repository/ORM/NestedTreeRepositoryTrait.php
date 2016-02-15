@@ -374,10 +374,8 @@ trait NestedTreeRepositoryTrait
         $meta = $this->getClassMetadata();
         $config = $this->listener->getConfiguration($this->getEntityManager(), $meta->name);
 
-        if (isset($config['root']) && is_null($root)) {
-            if (is_null($root)) {
-                throw new InvalidArgumentException("If tree has root, getLeafs method requires any node of this tree");
-            }
+        if (isset($config['root']) && null === $root) {
+            throw new InvalidArgumentException("If tree has root, getLeafs method requires any node of this tree");
         }
 
         $qb = $this->getQueryBuilder();
