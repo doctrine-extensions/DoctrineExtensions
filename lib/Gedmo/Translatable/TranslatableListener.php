@@ -667,8 +667,7 @@ class TranslatableListener extends MappedEventSubscriber
                 // check if need to update in database
                 $transWrapper = AbstractWrapper::wrap($translation, $om);
                 if ($content === null && !$isInsert) {
-                    // if the $content is null'ed remove the full translation to avoid fragments
-                    $om->clear($translation);
+                    // if the $content is null'ed remove the translation to avoid fragments
                     $om->remove($translation);
                 } elseif ((is_bool($content) || is_int($content) || (is_string($content) && strlen($content) > 0) || !empty($content)) && ($isInsert || !$transWrapper->getIdentifier() || isset($changeSet[$field]))) {
                     if ($isInsert && !$objectId && !$ea->usesPersonalTranslation($translationClass)) {
