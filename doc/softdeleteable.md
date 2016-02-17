@@ -280,3 +280,47 @@ class UsingTrait
 
 Traits are very simple and if you use different field names I recommend to simply create your
 own ones based per project. These ones are standing as an example.
+
+## Extra
+
+By default it is too complicated to manage extension dependencies so you may have issues when combining some of the extensions. You can how ever create your own listeners to help you out. 
+
+Here is an example of a soft delete listener to move your item to the end of the list when you delete it, so you prevent later collision.
+
+*Services.yml*
+
+```
+app.soft_delete_listener:
+    class: AppBundle\Events\SoftDeleteListener
+    tags:
+        - { name: doctrine.event_listener, event: preRemove, priority: 10 }
+```
+
+*SoftDeleteListener.php*
+
+```
+<?php
+
+namespace AppBundle\Events;
+
+use Doctrine\Common\Persistence\Event\LifecycleEventArgs;
+use Gedmo\Sortable\Sortable;
+
+class SoftDeleteListener
+{
+    public function preRemove(LifecycleEventArgs $event)
+    {
+        $entity = $event->getObject();
+        $om = $event->getObjectManager();
+
+        if ($entity instanceof Sortable) {
+            $entity->setPosition(-1);
+        }
+
+        $om->persist($entity);
+        $om->flush();
+    }
+}
+```
+
+By setting the position to -1 you will send the entity to the last position before it will be removed. See [sortable](https://github.com/Atlantic18/DoctrineExtensions/blob/master/doc/sortable.md) documentation for more information.
