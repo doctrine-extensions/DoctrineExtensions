@@ -94,7 +94,7 @@ class MaterializedPathRepository extends AbstractTreeRepository
 
         $node = new EntityWrapper($node, $this->_em);
         $nodePath = $node->getPropertyValue($config['path']);
-        $paths = [];
+        $paths = array();
         $nodePathLength = strlen($nodePath);
         $separatorMatchOffset = 0;
         while ($separatorMatchOffset < $nodePathLength) {
