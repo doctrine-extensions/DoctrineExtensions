@@ -63,8 +63,11 @@ class SoftDeleteableListener extends MappedEventSubscriber
             if (isset($config['softDeleteable']) && $config['softDeleteable']) {
                 $reflProp = $meta->getReflectionProperty($config['fieldName']);
                 $oldValue = $reflProp->getValue($object);
-                if ($oldValue instanceof \Datetime) {
-                    continue; // want to hard delete
+
+                $date = new \DateTime();
+
+                if ($oldValue instanceof \Datetime && $oldValue <= $date) {
+                    continue; // want to hard delete. Future (time aware) deletions will be soft deleted now.
                 }
 
                 $evm->dispatchEvent(
@@ -72,7 +75,6 @@ class SoftDeleteableListener extends MappedEventSubscriber
                     $ea->createLifecycleEventArgsInstance($object, $om)
                  );
 
-                $date = new \DateTime();
                 $reflProp->setValue($object, $date);
 
                 $om->persist($object);
