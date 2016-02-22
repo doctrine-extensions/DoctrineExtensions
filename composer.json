@@ -47,8 +47,7 @@
         "doctrine/orm": ">=2.5.0",
         "doctrine/common": ">=2.5.0",
         "symfony/yaml": "~2.6",
-        "phpunit/phpunit": "~4.4",
-        "phpunit/phpunit-mock-objects": "~2.3"
+        "phpunit/phpunit": "*"
     },
     "suggest": {
         "doctrine/mongodb-odm": "to use the extensions with the MongoDB ODM",
