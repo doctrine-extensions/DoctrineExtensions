@@ -31,11 +31,11 @@ Mapping\Fixture\Yaml\Category:
           fields:
             - title
           handlers:
-            "Gedmo\Sluggable\Handler\RelativeSlugHandler":
+            Gedmo\Sluggable\Handler\RelativeSlugHandler:
               relationField: parent
               relationSlugField: slug
               separator: /
-            "Gedmo\Sluggable\Handler\TreeSlugHandler":
+            Gedmo\Sluggable\Handler\TreeSlugHandler:
               parentRelationField: parent
               separator: /
     changed:
