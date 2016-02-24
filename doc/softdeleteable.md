@@ -311,14 +311,14 @@ class SoftDeleteListener
     public function preRemove(LifecycleEventArgs $event)
     {
         $entity = $event->getObject();
-        $om = $event->getObjectManager();
 
         if ($entity instanceof Sortable) {
             $entity->setPosition(-1);
-        }
 
-        $om->persist($entity);
-        $om->flush();
+            $om = $event->getObjectManager();
+            $om->persist($entity);
+            $om->flush();
+        }
     }
 }
 ```
