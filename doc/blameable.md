@@ -643,3 +643,36 @@ class UsingTrait
 The Traits are very simplistic - if you use different field names it is recommended to simply create your
 own Traits specific to your project. The ones provided by this bundle can be used as example.
 
+## ORM - ODM Hybrid databases
+
+You can use blameable with hybrid databases. If your user is an entity, but your blameable is a document, you can use
+an `int` field to store the user ID.
+
+```php
+/**
+ * @var int
+ *
+ * @Gedmo\Blameable(on="create")
+ * @ODM\Int()
+ */
+protected $createdById;
+```
+
+It also works well with the [references extension](references.md):
+
+```php
+/**
+ * @var User
+ *
+ * @Gedmo\ReferenceOne(type="entity", class=User::class, identifier="createdById")
+ */
+protected $createdBy;
+
+/**
+ * @var int
+ *
+ * @Gedmo\Blameable(on="create")
+ * @ODM\Int()
+ */
+protected $createdById;
+```
