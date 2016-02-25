@@ -252,11 +252,6 @@ Entity\Category:
       type: integer
       gedmo:
         - treeRight
-    root:
-      type: integer
-      nullable: true
-      gedmo:
-        - treeRoot
     lvl:
       type: integer
       gedmo:
@@ -310,9 +305,6 @@ Entity\Category:
         </field>
         <field name="right" column="rgt" type="integer">
             <gedmo:tree-right/>
-        </field>
-        <field name="root" type="integer" nullable="true">
-            <gedmo:tree-root/>
         </field>
         <field name="level" column="lvl" type="integer">
             <gedmo:tree-level/>
