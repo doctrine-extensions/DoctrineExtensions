@@ -59,12 +59,15 @@ class BlameableListener extends AbstractTrackingListener
         } elseif (in_array($meta->getTypeOfField($field), ['int', 'integer']) && !is_int($this->user)) {
             if (is_object($this->user)) {
                 if (method_exists($this->user, 'getId')) {
-                    return $this->user->getId();
+                    $id = $this->user->getId();
+                    if (is_int($id)) {
+                        return $id;
+                    }
                 }
             }
 
             throw new InvalidArgumentException(
-                "Field expects int, user must be an int, or object should have method getId"
+                "Field expects int, user must be an int, or object should have method getId, which returns an int."
             );
         }
 
