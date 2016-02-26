@@ -117,9 +117,6 @@ class SortableMultipleTest extends BaseTestCaseORM
 
         $book3->setPositionByAuthor(0);
         $this->em->flush();
-        $this->em->refresh($book1);
-        $this->em->refresh($book2);
-        $this->em->refresh($book3);
 
         // author position should update
         $this->assertEquals(1, $book1->getPositionByAuthor());
@@ -157,9 +154,6 @@ class SortableMultipleTest extends BaseTestCaseORM
         $book3->setPositionByAuthor(0);
         $book3->setPositionByCategory(0);
         $this->em->flush();
-        $this->em->refresh($book1);
-        $this->em->refresh($book2);
-        $this->em->refresh($book3);
 
         $this->assertEquals(1, $book1->getPositionByAuthor());
         $this->assertEquals(2, $book2->getPositionByAuthor());
@@ -194,9 +188,6 @@ class SortableMultipleTest extends BaseTestCaseORM
 
         $book3->setAuthor(null);
         $this->em->flush();
-        $this->em->refresh($book1);
-        $this->em->refresh($book2);
-        $this->em->refresh($book3);
 
         $this->assertEquals(0, $book1->getPositionByAuthor());
         $this->assertEquals(1, $book2->getPositionByAuthor());
@@ -209,9 +200,6 @@ class SortableMultipleTest extends BaseTestCaseORM
 
         $book3->setCategory(null);
         $this->em->flush();
-        $this->em->refresh($book1);
-        $this->em->refresh($book2);
-        $this->em->refresh($book3);
 
         $this->assertEquals(0, $book1->getPositionByAuthor());
         $this->assertEquals(1, $book2->getPositionByAuthor());
@@ -246,9 +234,6 @@ class SortableMultipleTest extends BaseTestCaseORM
 
         $book3->setPublisher('penguin');
         $this->em->flush();
-        $this->em->refresh($book1);
-        $this->em->refresh($book2);
-        $this->em->refresh($book3);
 
         $this->assertEquals(0, $book1->getPositionByAuthor());
         $this->assertEquals(1, $book2->getPositionByAuthor());
@@ -260,9 +245,6 @@ class SortableMultipleTest extends BaseTestCaseORM
 
         $book2->setPublisher('penguin');
         $this->em->flush();
-        $this->em->refresh($book1);
-        $this->em->refresh($book2);
-        $this->em->refresh($book3);
 
         $this->assertEquals(0, $book1->getPositionByAuthor());
         $this->assertEquals(1, $book2->getPositionByAuthor());
@@ -274,9 +256,6 @@ class SortableMultipleTest extends BaseTestCaseORM
 
         $book1->setPublisher('penguin');
         $this->em->flush();
-        $this->em->refresh($book1);
-        $this->em->refresh($book2);
-        $this->em->refresh($book3);
 
         $this->assertEquals(0, $book1->getPositionByAuthor());
         $this->assertEquals(2, $book2->getPositionByAuthor());

@@ -433,63 +433,62 @@ class SortableListener extends MappedEventSubscriber
         $em = $ea->getObjectManager();
         foreach ($this->relocations as $hash => $relocation) {
             $config = $this->getConfiguration($em, $relocation['name']);
+            $config = $config['sortables'][$relocation['field']];
 
-            foreach ($config['sortables'] as $config) {
-                foreach ($relocation['deltas'] as $delta) {
-                    if ($delta['start'] > $this->maxPositions[$hash] || $delta['delta'] == 0) {
+            foreach ($relocation['deltas'] as $delta) {
+                if ($delta['start'] > $this->maxPositions[$hash] || $delta['delta'] == 0) {
+                    continue;
+                }
+
+                $meta = $em->getClassMetadata($relocation['name']);
+
+                // now walk through the unit of work in memory objects and sync those
+                $uow = $em->getUnitOfWork();
+                foreach ($uow->getIdentityMap() as $className => $objects) {
+                    // for inheritance mapped classes, only root is always in the identity map
+                    if ($className !== $ea->getRootObjectClass($meta) || !$this->getConfiguration($em, $className)) {
                         continue;
                     }
-
-                    $meta = $em->getClassMetadata($relocation['name']);
-
-                    // now walk through the unit of work in memory objects and sync those
-                    $uow = $em->getUnitOfWork();
-                    foreach ($uow->getIdentityMap() as $className => $objects) {
-                        // for inheritance mapped classes, only root is always in the identity map
-                        if ($className !== $ea->getRootObjectClass($meta) || !$this->getConfiguration($em, $className)) {
+                    foreach ($objects as $object) {
+                        if ($object instanceof Proxy && !$object->__isInitialized__) {
                             continue;
                         }
-                        foreach ($objects as $object) {
-                            if ($object instanceof Proxy && !$object->__isInitialized__) {
-                                continue;
-                            }
 
-                            $changeSet = $ea->getObjectChangeSet($uow, $object);
+                        $changeSet = $ea->getObjectChangeSet($uow, $object);
 
-                            // if the entity's position is already changed, stop now
-                            if (array_key_exists($config['position'], $changeSet)) {
-                                continue;
-                            }
+                        // if the entity's position is already changed, stop now
+                        if (array_key_exists($config['position'], $changeSet)) {
+                            continue;
+                        }
 
-                            // if the entity's group has changed, we stop now
-                            $groups = $this->getGroups($meta, $config, $object);
-                            foreach (array_keys($groups) as $group) {
-                                if (array_key_exists($group, $changeSet)) {
-                                    continue 2;
-                                }
+                        // if the entity's group has changed, we stop now
+                        $groups = $this->getGroups($meta, $config, $object);
+                        foreach (array_keys($groups) as $group) {
+                            if (array_key_exists($group, $changeSet)) {
+                                continue 2;
                             }
+                        }
 
-                            $oid = spl_object_hash($object);
-                            $pos = $meta->getReflectionProperty($config['position'])->getValue($object);
-                            $matches = $pos >= $delta['start'];
-                            $matches = $matches && ($delta['stop'] <= 0 || $pos < $delta['stop']);
-                            $value = reset($relocation['groups']);
-                            while ($matches && ($group = key($relocation['groups']))) {
-                                $gr = $meta->getReflectionProperty($group)->getValue($object);
-                                if (null === $value) {
-                                    $matches = $gr === null;
-                                } elseif (is_object($gr) && is_object($value) && $gr !== $value) {
-                                    // Special case for equal objects but different instances.
-                                    $matches = $gr == $value;
-                                } else {
-                                    $matches = $gr === $value;
-                                }
-                                $value = next($relocation['groups']);
+                        $oid = spl_object_hash($object);
+                        $pos = $meta->getReflectionProperty($config['position'])->getValue($object);
+                        $matches = $pos >= $delta['start'];
+                        $matches = $matches && ($delta['stop'] <= 0 || $pos < $delta['stop']);
+                        $value = reset($relocation['groups']);
+                        while ($matches && ($group = key($relocation['groups']))) {
+                            $gr = $meta->getReflectionProperty($group)->getValue($object);
+                            if (null === $value) {
+                                $matches = $gr === null;
+                            } elseif (is_object($gr) && is_object($value) && $gr !== $value) {
+                                // Special case for equal objects but different instances.
+                                $matches = $gr == $value;
+                            } else {
+                                $matches = $gr === $value;
                             }
-                            if ($matches) {
-                                $meta->getReflectionProperty($config['position'])->setValue($object, $pos + $delta['delta']);
-                                $ea->setOriginalObjectProperty($uow, $oid, $config['position'], $pos + $delta['delta']);
-                            }
+                            $value = next($relocation['groups']);
+                        }
+                        if ($matches) {
+                            $meta->getReflectionProperty($config['position'])->setValue($object, $pos + $delta['delta']);
+                            $ea->setOriginalObjectProperty($uow, $oid, $config['position'], $pos + $delta['delta']);
                         }
                     }
                 }
