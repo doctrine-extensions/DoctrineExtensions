@@ -25,7 +25,6 @@ class Vehicle
     private $id;
 
     /**
-     * @Gedmo\SortableGroup
      * @ORM\ManyToOne(targetEntity="Engine")
      */
     private $engine;
@@ -36,7 +35,7 @@ class Vehicle
     private $title;
 
     /**
-     * @Gedmo\SortablePosition
+     * @Gedmo\Sortable(groups={"engine"})
      * @ORM\Column(type="integer")
      */
     private $sortByEngine;

@@ -151,7 +151,7 @@ class SortableTest extends BaseTestCaseORM
         $this->em->flush();
 
         $repo = $this->em->getRepository(self::NODE);
-        $nodes = $repo->getBySortableGroups(array('path' => '/'));
+        $nodes = $repo->getBySortableGroups('position', array('path' => '/'));
 
         $this->assertEquals('Node1', $nodes[0]->getName());
         $this->assertEquals('Node3', $nodes[1]->getName());
@@ -198,7 +198,7 @@ class SortableTest extends BaseTestCaseORM
         $this->em->clear(); // to reload from database
 
         $repo = $this->em->getRepository(self::NODE);
-        $nodes = $repo->getBySortableGroups(array('path' => '/'));
+        $nodes = $repo->getBySortableGroups('position', array('path' => '/'));
 
         $this->assertEquals('Node1', $nodes[0]->getName());
         $this->assertEquals('Node4', $nodes[1]->getName());
@@ -348,7 +348,7 @@ class SortableTest extends BaseTestCaseORM
 
         $repo = $this->em->getRepository(self::ITEM);
 
-        $items = $repo->getBySortableGroups(array('category' => $category1));
+        $items = $repo->getBySortableGroups('position', array('category' => $category1));
 
         $this->assertEquals("Item1", $items[0]->getName());
         $this->assertEquals("Category1", $items[0]->getCategory()->getName());
@@ -362,7 +362,7 @@ class SortableTest extends BaseTestCaseORM
         $this->assertEquals("Item4", $items[3]->getName());
         $this->assertEquals("Category1", $items[3]->getCategory()->getName());
 
-        $items = $repo->getBySortableGroups(array('category' => $category2));
+        $items = $repo->getBySortableGroups('position', array('category' => $category2));
 
         $this->assertEquals("Item1_2", $items[0]->getName());
         $this->assertEquals("Category2", $items[0]->getCategory()->getName());
@@ -392,7 +392,7 @@ class SortableTest extends BaseTestCaseORM
 
         $repo = $this->em->getRepository(self::ITEM);
 
-        $items = $repo->getBySortableGroups(array('category' => $category1));
+        $items = $repo->getBySortableGroups('position', array('category' => $category1));
 
         $this->assertEquals("Item1", $items[0]->getName());
         $this->assertEquals("Category1", $items[0]->getCategory()->getName());
