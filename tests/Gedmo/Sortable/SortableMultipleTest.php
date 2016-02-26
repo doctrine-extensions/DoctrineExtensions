@@ -222,6 +222,71 @@ class SortableMultipleTest extends BaseTestCaseORM
         $this->assertEquals(0, $book3->getPositionByCategory());
     }
 
+    /**
+     * @test
+     */
+    public function shouldUpdateBothPositionsOnMutualCategoryChange()
+    {
+        /**
+         * @var Author $author
+         * @var Category $category
+         * @var Book $book1
+         * @var Book $book2
+         * @var Book $book3
+         */
+        extract($this->get3Books());
+
+        $this->assertEquals(0, $book1->getPositionByAuthor());
+        $this->assertEquals(1, $book2->getPositionByAuthor());
+        $this->assertEquals(2, $book3->getPositionByAuthor());
+
+        $this->assertEquals(0, $book1->getPositionByCategory());
+        $this->assertEquals(1, $book2->getPositionByCategory());
+        $this->assertEquals(2, $book3->getPositionByCategory());
+
+        $book3->setPublisher('penguin');
+        $this->em->flush();
+        $this->em->refresh($book1);
+        $this->em->refresh($book2);
+        $this->em->refresh($book3);
+
+        $this->assertEquals(0, $book1->getPositionByAuthor());
+        $this->assertEquals(1, $book2->getPositionByAuthor());
+        $this->assertEquals(0, $book3->getPositionByAuthor());
+
+        $this->assertEquals(0, $book1->getPositionByCategory());
+        $this->assertEquals(1, $book2->getPositionByCategory());
+        $this->assertEquals(0, $book3->getPositionByCategory());
+
+        $book2->setPublisher('penguin');
+        $this->em->flush();
+        $this->em->refresh($book1);
+        $this->em->refresh($book2);
+        $this->em->refresh($book3);
+
+        $this->assertEquals(0, $book1->getPositionByAuthor());
+        $this->assertEquals(1, $book2->getPositionByAuthor());
+        $this->assertEquals(0, $book3->getPositionByAuthor());
+
+        $this->assertEquals(0, $book1->getPositionByCategory());
+        $this->assertEquals(1, $book2->getPositionByCategory());
+        $this->assertEquals(0, $book3->getPositionByCategory());
+
+        $book1->setPublisher('penguin');
+        $this->em->flush();
+        $this->em->refresh($book1);
+        $this->em->refresh($book2);
+        $this->em->refresh($book3);
+
+        $this->assertEquals(0, $book1->getPositionByAuthor());
+        $this->assertEquals(2, $book2->getPositionByAuthor());
+        $this->assertEquals(1, $book3->getPositionByAuthor());
+
+        $this->assertEquals(0, $book1->getPositionByCategory());
+        $this->assertEquals(2, $book2->getPositionByCategory());
+        $this->assertEquals(1, $book3->getPositionByCategory());
+    }
+
     protected function getUsedEntityFixtures()
     {
         return array(

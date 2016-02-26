@@ -23,7 +23,7 @@ class Book
     private $category;
 
     /**
-     * @Gedmo\Sortable(groups={"category"})
+     * @Gedmo\Sortable(groups={"category", "publisher"})
      * @ORM\Column(name="position_by_category", type="integer")
      */
     private $positionByCategory;
@@ -34,10 +34,15 @@ class Book
     private $author;
 
     /**
-     * @Gedmo\Sortable(groups={"author"})
+     * @Gedmo\Sortable(groups={"author", "publisher"})
      * @ORM\Column(name="position_by_author", type="integer")
      */
     private $positionByAuthor;
+
+    /**
+     * @ORM\Column(type="string", nullable=true)
+     */
+    private $publisher;
 
     /**
      * @return mixed
@@ -109,5 +114,21 @@ class Book
     public function setPositionByAuthor($positionByAuthor)
     {
         $this->positionByAuthor = $positionByAuthor;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPublisher()
+    {
+        return $this->publisher;
+    }
+
+    /**
+     * @param mixed $publisher
+     */
+    public function setPublisher($publisher)
+    {
+        $this->publisher = $publisher;
     }
 }
