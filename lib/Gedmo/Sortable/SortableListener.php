@@ -194,7 +194,7 @@ class SortableListener extends MappedEventSubscriber
             // Compute relocations
             // New inserted entities should not be relocated by position update, so we exclude it.
             // Otherwise they could be relocated unintentionally.
-            $relocation = array($hash, $config['useObjectClass'], $groups, $newPosition, -1, +1, array($object));
+            $relocation = [$hash, $config['useObjectClass'], $config['position'], $groups, $newPosition, -1, +1, [$object]];
 
             // Apply existing relocations
             $applyDelta = 0;
@@ -257,7 +257,15 @@ class SortableListener extends MappedEventSubscriber
                 } else {
                     $oldPosition = $meta->getReflectionProperty($config['position'])->getValue($object);
                 }
-                $this->addRelocation($oldHash, $config['useObjectClass'], $oldGroups, $oldPosition + 1, $this->maxPositions[$oldHash] + 1, -1);
+                $this->addRelocation(
+                    $oldHash,
+                    $config['useObjectClass'],
+                    $config['position'],
+                    $oldGroups,
+                    $oldPosition + 1,
+                    $this->maxPositions[$oldHash] + 1,
+                    -1
+                );
                 $groupHasChanged = true;
             }
 
@@ -290,7 +298,7 @@ class SortableListener extends MappedEventSubscriber
                 $oldPosition = -1;
             }
             if (!$changed) {
-                return;
+                continue;
             }
 
             // Compute position if it is negative
@@ -332,11 +340,11 @@ class SortableListener extends MappedEventSubscriber
             $relocation = null;
             if ($oldPosition === -1) {
                 // special case when group changes
-                $relocation = array($hash, $config['useObjectClass'], $groups, $newPosition, -1, +1);
+                $relocation = [$hash, $config['useObjectClass'], $config['position'], $groups, $newPosition, -1, +1];
             } elseif ($newPosition < $oldPosition) {
-                $relocation = array($hash, $config['useObjectClass'], $groups, $newPosition, $oldPosition, +1);
+                $relocation = [$hash, $config['useObjectClass'], $config['position'], $groups, $newPosition, $oldPosition, +1];
             } elseif ($newPosition > $oldPosition) {
-                $relocation = array($hash, $config['useObjectClass'], $groups, $oldPosition + 1, $newPosition + 1, -1);
+                $relocation = [$hash, $config['useObjectClass'], $config['position'], $groups, $oldPosition + 1, $newPosition + 1, -1];
             }
 
             // Apply existing relocations
@@ -387,7 +395,7 @@ class SortableListener extends MappedEventSubscriber
             }
 
             // Add relocation
-            $this->addRelocation($hash, $config['useObjectClass'], $groups, $position, -1, -1);
+            $this->addRelocation($hash, $config['useObjectClass'], $config['position'], $groups, $position, -1, -1);
         }
     }
 
@@ -405,13 +413,11 @@ class SortableListener extends MappedEventSubscriber
         foreach ($this->relocations as $hash => $relocation) {
             $config = $this->getConfiguration($em, $relocation['name']);
 
-            foreach ($config['sortables'] as $config) {
-                foreach ($relocation['deltas'] as $delta) {
-                    if ($delta['start'] > $this->maxPositions[$hash] || $delta['delta'] == 0) {
-                        continue;
-                    }
-                    $ea->updatePositions($relocation, $delta, $config);
+            foreach ($relocation['deltas'] as $delta) {
+                if ($delta['start'] > $this->maxPositions[$hash] || $delta['delta'] == 0) {
+                    continue;
                 }
+                $ea->updatePositions($relocation, $delta, $config['sortables'][$relocation['field']]);
             }
         }
 
@@ -487,17 +493,17 @@ class SortableListener extends MappedEventSubscriber
                         }
                     }
                 }
-
-                // Clear relocations
-                unset($this->relocations[$hash]);
-                unset($this->maxPositions[$hash]); // unset only if relocations has been processed
             }
+
+            // Clear relocations
+            unset($this->relocations[$hash]);
+            unset($this->maxPositions[$hash]); // unset only if relocations has been processed
         }
     }
 
     private function getHash($groups, array $config)
     {
-        $data = $config['useObjectClass'];
+        $data = $config['useObjectClass'].$config['position'];
         foreach ($groups as $group => $val) {
             if ($val instanceof \DateTime) {
                 $val = $val->format('c');
@@ -551,16 +557,22 @@ class SortableListener extends MappedEventSubscriber
      *
      * @param string $hash    The hash of the sorting group
      * @param string $class   The object class
+     * @param string $field   The sortable field
      * @param array  $groups  The sorting groups
      * @param int    $start   Inclusive index to start relocation from
      * @param int    $stop    Exclusive index to stop relocation at
      * @param int    $delta   The delta to add to relocated nodes
      * @param array  $exclude Objects to be excluded from relocation
      */
-    private function addRelocation($hash, $class, $groups, $start, $stop, $delta, array $exclude = array())
+    private function addRelocation($hash, $class, $field, $groups, $start, $stop, $delta, array $exclude = array())
     {
         if (!array_key_exists($hash, $this->relocations)) {
-            $this->relocations[$hash] = array('name' => $class, 'groups' => $groups, 'deltas' => array());
+            $this->relocations[$hash] = [
+                'name' => $class,
+                'field' => $field,
+                'groups' => $groups,
+                'deltas' => []
+            ];
         }
 
         try {
