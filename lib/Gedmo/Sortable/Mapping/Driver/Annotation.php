@@ -56,6 +56,14 @@ class Annotation extends AbstractAnnotationDriver
                 if (!$this->isValidField($meta, $field)) {
                     throw new InvalidMappingException("Sortable position field - [{$field}] type is not valid and must be 'integer' in class - {$meta->name}");
                 }
+
+                foreach ($sortable->groups as $group) {
+                    if (!$meta->hasField($group) && !$meta->isSingleValuedAssociation($group)) {
+                        throw new InvalidMappingException("Sortable field: '{$field}' group: {$group} - is not a mapped
+                                    or single valued association property in class {$meta->name}");
+                    }
+                }
+
                 $config['sortables'][$field] = [
                     'position' => $field,
                     'groups' => $sortable->groups,

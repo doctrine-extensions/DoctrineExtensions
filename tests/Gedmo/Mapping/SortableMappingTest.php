@@ -57,12 +57,16 @@ class SortableMappingTest extends BaseTestCaseOM
         $meta = $this->em->getClassMetadata('Mapping\Fixture\Yaml\Sortable');
         $config = $this->sortable->getConfiguration($this->em, $meta->name);
 
+        $this->assertArrayHasKey('sortables', $config);
+        $this->assertArrayHasKey('position', $config['sortables']);
+
+        $config = $config['sortables']['position'];
+
         $this->assertArrayHasKey('position', $config);
         $this->assertEquals('position', $config['position']);
         $this->assertArrayHasKey('groups', $config);
-        $this->assertCount(3, $config['groups']);
+        $this->assertCount(2, $config['groups']);
         $this->assertEquals('grouping', $config['groups'][0]);
         $this->assertEquals('sortable_group', $config['groups'][1]);
-        $this->assertEquals('sortable_groups', $config['groups'][2]);
     }
 }
