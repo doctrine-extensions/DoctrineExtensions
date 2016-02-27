@@ -30,6 +30,10 @@ class BlameableListener extends AbstractTrackingListener
      */
     public function getFieldValue($meta, $field, $eventAdapter)
     {
+        if ($this->user === null) {
+            return null;
+        }
+
         if ($meta->hasAssociation($field)) {
             if (null !== $this->user && ! is_object($this->user)) {
                 throw new InvalidArgumentException("Blame is reference, user must be an object");
@@ -38,15 +42,33 @@ class BlameableListener extends AbstractTrackingListener
             return $this->user;
         }
 
-        // ok so its not an association, then it is a string
-        if (is_object($this->user)) {
-            if (method_exists($this->user, 'getUsername')) {
-                return (string) $this->user->getUsername();
+        if ($meta->getTypeOfField($field) === 'string' && !is_string($this->user)) {
+            if (is_object($this->user)) {
+                if (method_exists($this->user, 'getUsername')) {
+                    return (string) $this->user->getUsername();
+                }
+                if (method_exists($this->user, '__toString')) {
+                    return $this->user->__toString();
+                }
             }
-            if (method_exists($this->user, '__toString')) {
-                return $this->user->__toString();
+
+            throw new InvalidArgumentException(
+                "Field expects string, user must be a string, ".
+                "or object should have method getUsername or __toString"
+            );
+        } elseif (in_array($meta->getTypeOfField($field), ['int', 'integer']) && !is_int($this->user)) {
+            if (is_object($this->user)) {
+                if (method_exists($this->user, 'getId')) {
+                    $id = $this->user->getId();
+                    if (is_int($id)) {
+                        return $id;
+                    }
+                }
             }
-            throw new InvalidArgumentException("Field expects string, user must be a string, or object should have method getUsername or __toString");
+
+            throw new InvalidArgumentException(
+                "Field expects int, user must be an int, or object should have method getId, which returns an int."
+            );
         }
 
         return $this->user;
