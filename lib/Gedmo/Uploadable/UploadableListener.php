@@ -553,12 +553,8 @@ class UploadableListener extends MappedEventSubscriber
             );
             $info['fileName'] = $filename;
 
-            if ($pos = strrpos($info['filePath'], '.')) {
-                // ignores positions like "./file" at 0 see #915
-                $info['fileWithoutExt'] = substr($info['filePath'], 0, $pos);
-            } else {
-                $info['fileWithoutExt'] = $info['filePath'];
-            }
+            $pathInfo = pathinfo($info['filePath']);
+            $info['fileWithoutExt'] = $pathInfo['dirname'] . '/' . $pathInfo['filename'];
         }
 
         if (is_file($info['filePath'])) {
@@ -574,11 +570,14 @@ class UploadableListener extends MappedEventSubscriber
                 $this->removeFile($info['filePath']);
             } elseif ($appendNumber) {
                 $counter = 1;
-                $info['filePath'] = $info['fileWithoutExt'].'-'.$counter.$info['fileExtension'];
+                $pathInfo = pathinfo($info['filePath']);
 
-                do {
-                    $info['filePath'] = $info['fileWithoutExt'].'-'.(++$counter).$info['fileExtension'];
-                } while (is_file($info['filePath']));
+                while (is_file($info['filePath'])) {
+                    $appendedFileName = $pathInfo['filename'] . '-' . ++$counter;
+                    $info['fileName'] = $appendedFileName . $info['fileExtension'];
+                    $info['fileWithoutExt'] = $pathInfo['dirname'] . '/' . $appendedFileName;
+                    $info['filePath'] = $info['fileWithoutExt'] . $info['fileExtension'];
+                }
             } else {
                 throw new UploadableFileAlreadyExistsException(sprintf('File "%s" already exists!',
                     $info['filePath']
@@ -595,7 +594,7 @@ class UploadableListener extends MappedEventSubscriber
 
         return $info;
     }
-
+    
     /**
      * Simple wrapper method used to move the file. If it's an uploaded file
      * it will use the "move_uploaded_file method. If it's not, it will
