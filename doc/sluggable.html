@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctrine Extensions 3.0.0</title>
+
+    <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Roboto+Slab:400,700|Inconsolata:400,700&subset=latin,cyrillic'
+          rel='stylesheet' type='text/css'>
+
+    <link rel="stylesheet" href="http://Atlantic18.github.io/DoctrineExtensions/css/theme.css" type="text/css"/>
+    <link rel="stylesheet" href="http://Atlantic18.github.io/DoctrineExtensions/css/theme-fixes.css" type="text/css"/>
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/github.min.css">
+</head>
+<body class="wy-body-for-nav">
+
+    <div class="wy-grid-for-nav">
+
+        <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+            <div class="wy-side-nav-search">
+                <a href="http://Atlantic18.github.io/DoctrineExtensions/" class="fa fa-home"> Doctrine Extensions 3.0.0</a>
+            </div>
+
+            <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+                <ul>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/tree.html">
+                                Tree
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/translatable.html">
+                                Translatable
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/sluggable.html">
+                                Sluggable
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/timestampable.html">
+                                Timestampable
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/blameable.html">
+                                Blameable
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/loggable.html">
+                                Loggable
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/sortable.html">
+                                Sortable
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/translatable.html">
+                                Translator
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/softdeleteable.html">
+                                SoftDeleteable
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/uploadable.html">
+                                Uploadable
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/references.html">
+                                References
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/reference_integrity.html">
+                                ReferenceIntegrity
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/ip_traceable.html">
+                                IpTraceable
+                            </a>
+                        </li>
+                                    </ul>
+            </div>
+            &nbsp;
+        </nav>
+
+        <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+                        <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+                <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+                <a href="http://Atlantic18.github.io/DoctrineExtensions/">Doctrine Extensions 3.0.0</a>
+            </nav>
+
+
+                        <div class="wy-nav-content">
+                <div class="rst-content">
+                    <div role="main" class="document">
+                        <h1 id="sluggable-behavior-extension-for-doctrine-2">Sluggable behavior extension for Doctrine 2</h1>
+<p><strong>Sluggable</strong> behavior will build the slug of predefined fields on a given field
+which should store the slug</p>
+<p>Features:</p>
+<ul>
+<li>Automatic predefined field transformation into slug</li>
+<li>ORM and ODM support using same listener</li>
+<li>Slugs can be unique and styled, even with prefixes and/or suffixes</li>
+<li>Can be nested with other behaviors</li>
+<li>Annotation, Yaml and Xml mapping support for extensions</li>
+<li>Multiple slugs, different slugs can link to same fields</li>
+</ul>
+<p>Update <strong>2013-10-26</strong></p>
+<ul>
+<li>Datetime support with default dateFormat Y-m-d-H:i</li>
+</ul>
+<p>Update <strong>2013-08-23</strong></p>
+<ul>
+<li>Added 'prefix' and 'suffix' configuration parameter #812</li>
+</ul>
+<p>Update <strong>2013-08-19</strong></p>
+<ul>
+<li>allow empty slug #807 regenerate slug only if set to <code>null</code></li>
+</ul>
+<p>Update <strong>2013-03-10</strong></p>
+<ul>
+<li>Added 'unique_base' configuration parameter to the Sluggable behaviour</li>
+</ul>
+<p>Update <strong>2012-11-30</strong></p>
+<ul>
+<li>Recreated slug handlers, as they are used by many people</li>
+</ul>
+<p>Update <strong>2012-02-26</strong></p>
+<ul>
+<li>Remove slug handlers were removed because of complications it brought together</li>
+</ul>
+<p>Update <strong>2011-09-11</strong></p>
+<ul>
+<li>Refactored sluggable for doctrine2.2 by specifying slug fields directly in slug annotation</li>
+<li>Slug handler functionality, possibility to create custom ones or use built-in
+tree path handler or linked slug through single valued association</li>
+<li>Updated documentation mapping examples for 2.1.x version or higher</li>
+</ul>
+<p>Update <strong>2011-04-04</strong></p>
+<ul>
+<li>Made single listener, one instance can be used for any object manager and any number of them</li>
+</ul>
+<p>Update <strong>2010-12-23</strong></p>
+<ul>
+<li>Full support for unique index on slug field,
+no more exceptions during concurrent flushes.</li>
+</ul>
+<p><strong>Note:</strong></p>
+<ul>
+<li>There is a reported <a href="https://github.com/l3pp4rd/DoctrineExtensions/issues/254">issue</a> that sluggable transliterator
+does not work on OSX 10.6 its ok starting again from 10.7 version. To overcome the problem
+you can use your <a href="#transliterator">custom transliterator</a></li>
+<li>Public <a href="http://github.com/l3pp4rd/DoctrineExtensions" title="Sluggable extension on Github">Sluggable repository</a> is available on github</li>
+<li>Last update date: <strong>2012-02-26</strong></li>
+<li>For usage together with <strong>SoftDeleteable</strong> in order to take into account softdeleted entities while generating unique
+slug, you must explicitly call <strong>addManagedFilter</strong> with a name of softdeleteable filter, so it can be disabled during
+slug updates. The best place to do it, is when initializing sluggable listener. That will be automated in the future.</li>
+</ul>
+<p><strong>Portability:</strong></p>
+<ul>
+<li><strong>Sluggable</strong> is now available as <a href="http://github.com/stof/StofDoctrineExtensionsBundle">Bundle</a>
+ported to <strong>Symfony2</strong> by <strong>Christophe Coevoet</strong>, together with all other extensions</li>
+</ul>
+<p>This article will cover the basic installation and functionality of <strong>Sluggable</strong>
+behavior</p>
+<p>Content:</p>
+<ul>
+<li><a href="#including-extension">Including</a> the extension</li>
+<li>Entity <a href="#entity-mapping">example</a></li>
+<li>Document <a href="#document-mapping">example</a></li>
+<li><a href="#yaml-mapping">Yaml</a> mapping example</li>
+<li><a href="#xml-mapping">Xml</a> mapping example</li>
+<li>Basic usage <a href="#basic-examples">examples</a></li>
+<li>Custom <a href="#transliterator">transliterator</a></li>
+<li>Advanced usage <a href="#advanced-examples">examples</a></li>
+<li>Using <a href="#slug-handlers">slug handlers</a></li>
+</ul>
+<p><a name="including-extension"></a></p>
+<h2 id="setup-and-autoloading">Setup and autoloading</h2>
+<p>Read the <a href="http://github.com/l3pp4rd/DoctrineExtensions/blob/master/doc/annotations.html#em-setup">documentation</a>
+or check the <a href="http://github.com/l3pp4rd/DoctrineExtensions/tree/master/example">example code</a>
+on how to setup and use the extensions in most optimized way.</p>
+<p><a name="entity-mapping"></a></p>
+<h2 id="sluggable-entity-example">Sluggable Entity example:</h2>
+<h3 id="sluggable-annotations">Sluggable annotations:</h3>
+<ul>
+<li><strong>@Gedmo\Mapping\Annotation\Slug</strong> it will use this column to store <strong>slug</strong> generated
+<strong>fields</strong> option must be specified, an array of field names to slug</li>
+</ul>
+<p><strong>Note:</strong> that Sluggable interface is not necessary, except in cases there
+you need to identify entity as being Sluggable. The metadata is loaded only once then
+cache is activated</p>
+<p><strong>Note:</strong> 2.0.x version of extensions used @Gedmo\Mapping\Annotation\Sluggable to identify
+the field for slug</p>
+<pre><code class="language-php">&lt;?php
+namespace Entity;
+
+use Gedmo\Mapping\Annotation as Gedmo;
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * @ORM\Table(name="articles")
+ * @ORM\Entity
+ */
+class Article
+{
+    /**
+     * @ORM\Id
+     * @ORM\GeneratedValue
+     * @ORM\Column(type="integer")
+     */
+    private $id;
+
+    /**
+     * @ORM\Column(length=64)
+     */
+    private $title;
+
+    /**
+     * @ORM\Column(length=16)
+     */
+    private $code;
+
+    /**
+     * @Gedmo\Slug(fields={"title", "code"})
+     * @ORM\Column(length=128, unique=true)
+     */
+    private $slug;
+
+    public function getId()
+    {
+        return $this-&gt;id;
+    }
+
+    public function setTitle($title)
+    {
+        $this-&gt;title = $title;
+    }
+
+    public function getTitle()
+    {
+        return $this-&gt;title;
+    }
+
+    public function setCode($code)
+    {
+        $this-&gt;code = $code;
+    }
+
+    public function getCode()
+    {
+        return $this-&gt;code;
+    }
+
+    public function getSlug()
+    {
+        return $this-&gt;slug;
+    }
+}</code></pre>
+<p><a name="document-mapping"></a></p>
+<h2 id="sluggable-document-example">Sluggable Document example:</h2>
+<pre><code class="language-php">&lt;?php
+namespace Document;
+
+use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
+use Gedmo\Mapping\Annotation as Gedmo;
+
+/**
+ * @ODM\Document(collection="articles")
+ */
+class Article
+{
+    /**
+     * @ODM\Id
+     */
+    private $id;
+
+    /**
+     * @ODM\String
+     */
+    private $title;
+
+    /**
+     * @ODM\String
+     */
+    private $code;
+
+    /**
+     * @Gedmo\Slug(fields={"title", "code"})
+     * @ODM\String
+     */
+    private $slug;
+
+    public function getId()
+    {
+        return $this-&gt;id;
+    }
+
+    public function setTitle($title)
+    {
+        $this-&gt;title = $title;
+    }
+
+    public function getTitle()
+    {
+        return $this-&gt;title;
+    }
+
+    public function setCode($code)
+    {
+        $this-&gt;code = $code;
+    }
+
+    public function getCode()
+    {
+        return $this-&gt;code;
+    }
+
+    public function getSlug()
+    {
+        return $this-&gt;slug;
+    }
+}</code></pre>
+<p><a name="yaml-mapping"></a></p>
+<h2 id="yaml-mapping-example">Yaml mapping example</h2>
+<p>Yaml mapped Article: <strong>/mapping/yaml/Entity.Article.dcm.yml</strong></p>
+<pre><code>---
+Entity\Article:
+  type: entity
+  table: articles
+  id:
+    id:
+      type: integer
+      generator:
+        strategy: AUTO
+  fields:
+    title:
+      type: string
+      length: 64
+    code:
+      type: string
+      length: 16
+    slug:
+      type: string
+      length: 128
+      gedmo:
+        slug:
+          separator: _
+          style: camel
+          fields:
+            - title
+            - code
+  indexes:
+    search_idx:
+      columns: slug</code></pre>
+<p><a name="xml-mapping"></a></p>
+<h2 id="xml-mapping-example">Xml mapping example</h2>
+<p><strong>Note:</strong> xml driver is not yet adapted for single slug mapping</p>
+<pre><code class="language-xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xmlns:gedmo="http://gediminasm.org/schemas/orm/doctrine-extensions-mapping"&gt;
+    &lt;entity name="Entity\Article" table="sluggables"&gt;
+        &lt;id name="id" type="integer" column="id"&gt;
+            &lt;generator strategy="AUTO"/&gt;
+        &lt;/id&gt;
+
+        &lt;field name="title" type="string" length="128"/&gt;
+        &lt;field name="code" type="string" length="16"/&gt;
+        &lt;field name="ean" type="string" length="13"/&gt;
+        &lt;field name="slug" type="string" length="156" unique="true"&gt;
+            &lt;gedmo:slug unique="true" style="camel" updatable="false" separator="_" fields="title,code,ean" /&gt;
+        &lt;/field&gt;
+    &lt;/entity&gt;
+&lt;/doctrine-mapping&gt;</code></pre>
+<p><a name="basic-examples"></a></p>
+<h2 id="basic-usage-examples">Basic usage examples:</h2>
+<h3 id="to-save">To save <strong>Article</strong> and generate slug simply use:</h3>
+<pre><code class="language-php">&lt;?php
+$article = new Article();
+$article-&gt;setTitle('the title');
+$article-&gt;setCode('my code');
+$this-&gt;em-&gt;persist($article);
+$this-&gt;em-&gt;flush();
+
+echo $article-&gt;getSlug();
+// prints: the-title-my-code</code></pre>
+<h3 id="some-other-configuration-options-for">Some other configuration options for <strong>slug</strong> annotation:</h3>
+<ul>
+<li><strong>fields</strong> (required, default=[]) - list of fields for slug</li>
+<li><strong>updatable</strong> (optional, default=true) - <strong>true</strong> to update the slug on sluggable field changes, <strong>false</strong> - otherwise</li>
+<li><strong>unique</strong> (optional, default=true) - <strong>true</strong> if slug should be unique and if identical it will be prefixed, <strong>false</strong> - otherwise</li>
+<li><strong>unique_base</strong> (optional, default=null) - used in conjunction with <strong>unique</strong>. The name of the entity property that should be used as a key when doing a uniqueness check.</li>
+<li><strong>separator</strong> (optional, default=&quot;-&quot;) - separator which will separate words in slug</li>
+<li><strong>prefix</strong> (optional, default=&quot;&quot;) - prefix which will be added to the generated slug</li>
+<li><strong>suffix</strong> (optional, default=&quot;&quot;) - suffix which will be added to the generated slug</li>
+<li><strong>style</strong> (optional, default=&quot;default&quot;) - <strong>&quot;default&quot;</strong> all letters will be lowercase, <strong>&quot;camel&quot;</strong> - first word letter will be uppercase, <strong>&quot;upper&quot;</strong>- all word letter will be uppercase and <strong>&quot;lower&quot;</strong>- all word letter will be lowercase</li>
+<li><strong>handlers</strong> (optional, default=[]) - list of slug handlers, like tree path slug, or customized, for example see bellow</li>
+</ul>
+<p><strong>Note</strong>: handlers are totally optional</p>
+<p><strong>TreeSlugHandler</strong></p>
+<pre><code class="language-php">&lt;?php
+/**
+ * @Gedmo\Mapping\Annotation\Slug(handlers={
+ *      @Gedmo\Mapping\Annotation\SlugHandler(class="Gedmo\Sluggable\Handler\TreeSlugHandler", options={
+ *          @Gedmo\Mapping\Annotation\SlugHandlerOption(name="parentRelationField", value="parent"),
+ *          @Gedmo\Mapping\Annotation\SlugHandlerOption(name="separator", value="/")
+ *      })
+ * }, fields={"title", "code"})
+ * @Doctrine\ORM\Mapping\Column(length=64, unique=true)
+ */
+private $slug;</code></pre>
+<p><strong>RelativeSlugHandler</strong>:</p>
+<pre><code class="language-php">&lt;?php
+/**
+ * Person domain object class
+ *
+ * @Gedmo\Mapping\Annotation\Slug(handlers={
+ *      @Gedmo\Mapping\Annotation\SlugHandler(class="Gedmo\Sluggable\Handler\RelativeSlugHandler", options={
+ *          @Gedmo\Mapping\Annotation\SlugHandlerOption(name="relationField", value="category"),
+ *          @Gedmo\Mapping\Annotation\SlugHandlerOption(name="relationSlugField", value="slug"),
+ *          @Gedmo\Mapping\Annotation\SlugHandlerOption(name="separator", value="/")
+ *      })
+ * }, fields={"title", "code"})
+ * @Doctrine\ORM\Mapping\Column(length=64, unique=true)
+ */
+private $slug;</code></pre>
+<p>If the relationSlugField you are using is not a slug field but a string field for example you can make
+sure the relationSlugField is also urilized with:</p>
+<pre><code class="language-php">&lt;?php
+/**
+ * Person domain object class
+ *
+ * @Gedmo\Mapping\Annotation\Slug(handlers={
+ *      @Gedmo\Mapping\Annotation\SlugHandler(class="Gedmo\Sluggable\Handler\RelativeSlugHandler", options={
+ *          @Gedmo\Mapping\Annotation\SlugHandlerOption(name="relationField", value="category"),
+ *          @Gedmo\Mapping\Annotation\SlugHandlerOption(name="relationSlugField", value="title"),
+ *          @Gedmo\Mapping\Annotation\SlugHandlerOption(name="separator", value="/"),
+ *          @Gedmo\Mapping\Annotation\SlugHandlerOption(name="urilize", value=true)
+ *      })
+ * }, fields={"title", "code"})
+ * @Doctrine\ORM\Mapping\Column(length=64, unique=true)
+ */
+private $slug;</code></pre>
+<p>This will make sure that the 'title' field in the category entity is url friendly.</p>
+<p><strong>Note:</strong> if you used <strong>RelativeSlugHandler</strong> - relation object should use in order to sync changes:</p>
+<p><strong>InversedRelativeSlugHandler</strong></p>
+<pre><code class="language-php">&lt;?php
+/**
+ * Category domain object class
+ *
+ * @Gedmo\Mapping\Annotation\Slug(handlers={
+ *      @Gedmo\Mapping\Annotation\SlugHandler(class="Gedmo\Sluggable\Handler\InversedRelativeSlugHandler", options={
+ *          @Gedmo\Mapping\Annotation\SlugHandlerOption(name="relationClass", value="App\Entity\Person"),
+ *          @Gedmo\Mapping\Annotation\SlugHandlerOption(name="mappedBy", value="category"),
+ *          @Gedmo\Mapping\Annotation\SlugHandlerOption(name="inverseSlugField", value="slug")
+ *      })
+ * }, fields={"title"})
+ * @Doctrine\ORM\Mapping\Column(length=64, unique=true)
+ */
+private $slug;</code></pre>
+<h3 id="example">Example</h3>
+<pre><code class="language-php">&lt;?php
+class Article
+{
+    // ...
+    /**
+     * @Gedmo\Slug(fields={"title", "created"}, style="camel", separator="_", updatable=false, unique=false, dateFormat="d/m/Y H-i-s")
+     * @Doctrine\ORM\Mapping\Column(length=128, unique=true)
+     */
+    private $slug;
+    // ...
+
+    // ...
+    /**
+     * @Doctrine\ORM\Mapping\Column(type="datetime", name="created_at")
+     */
+    private $createdAt;
+
+    // ...
+    /**
+     * @Doctrine\ORM\Mapping\Column(length=128)
+     */
+    private $title;
+    // ...
+    public function __construct()
+    {
+      $this-&gt;createdAt = new \DateTime;
+    }
+}</code></pre>
+<p>And now test the result:</p>
+<pre><code class="language-php">&lt;?php
+$article = new Article();
+$article-&gt;setTitle('the title');
+$article-&gt;setCode('my code');
+$this-&gt;em-&gt;persist($article);
+$this-&gt;em-&gt;flush();
+
+echo $article-&gt;getSlug();
+// prints: The_Title_My_Code</code></pre>
+<p><a name="transliterator"></a></p>
+<h2 id="custom-transliterator">Custom transliterator</h2>
+<p>To set your own custom transliterator, which would be used to generate the slug, use:</p>
+<pre><code class="language-php">&lt;?php
+
+$callable = array('My\Class', 'transliterationMethod');
+$sluggableListener-&gt;setTransliterator($callable);
+
+// or use a closure
+
+$callable = function($text, $separatorUsed, $objectBeingSlugged) {
+    // ...
+    return $transliteratedText;
+};
+$sluggableListener-&gt;setTransliterator($callable);</code></pre>
+<p><a name="advanced-examples"></a></p>
+<h2 id="advanced-examples">Advanced examples:</h2>
+<h3 id="regenerating-slug">Regenerating slug</h3>
+<p>In case if you want the slug to regenerate itself based on sluggable fields, set the slug to <strong>null</strong>.</p>
+<p><em>Note: in previous versions empty strings would also cause the slug to be regenerated. This behaviour was changed in v2.3.8.</em></p>
+<pre><code class="language-php">&lt;?php
+$entity = $em-&gt;find('Entity\Something', $id);
+$entity-&gt;setSlug(null);
+
+$em-&gt;persist($entity);
+$em-&gt;flush();</code></pre>
+<h3 id="setting-the-slug-manually">Setting the slug manually</h3>
+<p>Sometimes you might need to set it manually, etc if generated one does not look satisfying enough.
+Sluggable will ensure uniqueness of the slug.</p>
+<pre><code class="language-php">&lt;?php
+$entity = new SomeEntity;
+$entity-&gt;setSluggableField('won\'t be taken into account');
+$entity-&gt;setSlug('the required slug, set manually');
+
+$em-&gt;persist($entity);
+$em-&gt;flush();
+
+echo $entity-&gt;getSlug(); // outputs: "the-required-slug-set-manually"</code></pre>
+<h3 id="using-translatablelistener-to-translate-our-slug">Using TranslatableListener to translate our slug</h3>
+<p>If you want to attach <strong>TranslatableListener</strong> also add it to EventManager after
+the <strong>SluggableListener</strong>. It is important because slug must be generated first
+before the creation of it`s translation.</p>
+<pre><code class="language-php">&lt;?php
+$evm = new \Doctrine\Common\EventManager();
+$sluggableListener = new \Gedmo\Sluggable\SluggableListener();
+$evm-&gt;addEventSubscriber($sluggableListener);
+$translatableListener = new \Gedmo\Translatable\TranslatableListener();
+$translatableListener-&gt;setTranslatableLocale('en_us');
+$evm-&gt;addEventSubscriber($translatableListener);
+// now this event manager should be passed to entity manager constructor</code></pre>
+<p>And the Entity should look like:</p>
+<pre><code class="language-php">&lt;?php
+namespace Entity;
+
+use Gedmo\Mapping\Annotation as Gedmo;
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * @ORM\Table(name="articles")
+ * @ORM\Entity
+ */
+class Article
+{
+    /**
+     * @ORM\Id
+     * @ORM\GeneratedValue
+     * @ORM\Column(type="integer")
+     */
+    private $id;
+
+    /**
+     * @Gedmo\Translatable
+     * @ORM\Column(length=64)
+     */
+    private $title;
+
+    /**
+     * @Gedmo\Translatable
+     * @ORM\Column(length=16)
+     */
+    private $code;
+
+    /**
+     * @Gedmo\Translatable
+     * @Gedmo\Slug(fields={"title", "code"})
+     * @ORM\Column(length=128, unique=true)
+     */
+    private $slug;
+
+    /**
+     * @ORM\Column(type="string", length=64)
+     */
+    private $uniqueTitle;
+
+    /**
+     * @Gedmo\Slug(fields={"uniqueTitle"}, prefix="some-prefix-")
+     * @ORM\Column(length=128, unique=true)
+     */
+    private $uniqueSlug;
+
+    public function getId()
+    {
+        return $this-&gt;id;
+    }
+
+    public function setTitle($title)
+    {
+        $this-&gt;title = $title;
+    }
+
+    public function getTitle()
+    {
+        return $this-&gt;title;
+    }
+
+    public function setCode($code)
+    {
+        $this-&gt;code = $code;
+    }
+
+    public function getCode()
+    {
+        return $this-&gt;code;
+    }
+
+    public function getSlug()
+    {
+        return $this-&gt;slug;
+    }
+
+    public function getUniqueSlug()
+    {
+        return $this-&gt;uniqueSlug;
+    }
+}</code></pre>
+<p>Now the generated slug will be translated by Translatable behavior</p>
+<p><a name="slug-handlers"></a></p>
+<h2 id="using-slug-handlers">Using slug handlers:</h2>
+<p>There are built-in slug handlers like described in configuration options of slug, but there
+can be also customized slug handlers depending on use cases. Usually the most logic use case
+is for related slug. For instance if user has a <strong>ManyToOne relation to a </strong>Company<strong> we
+would like to have a url like </strong><a href="http://example.com/knplabs/gedi">http://example.com/knplabs/gedi</a> where <strong>KnpLabs</strong>
+is a company and user name is <strong>Gedi</strong>. In this case relation has a path separator <strong>/</strong></p>
+<p>User entity example:</p>
+<pre><code class="language-php">&lt;?php
+namespace Sluggable\Fixture\Handler;
+
+use Gedmo\Mapping\Annotation as Gedmo;
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * @ORM\Entity
+ */
+class User
+{
+    /**
+     * @ORM\Id
+     * @ORM\GeneratedValue
+     * @ORM\Column(type="integer")
+     */
+    private $id;
+
+    /**
+     * @ORM\Column(length=64)
+     */
+    private $username;
+
+    /**
+     * @Gedmo\Slug(handlers={
+     *      @Gedmo\SlugHandler(class="Gedmo\Sluggable\Handler\RelativeSlugHandler", options={
+     *          @Gedmo\SlugHandlerOption(name="relationField", value="company"),
+     *          @Gedmo\SlugHandlerOption(name="relationSlugField", value="alias"),
+     *          @Gedmo\SlugHandlerOption(name="separator", value="/")
+     *      })
+     * }, separator="-", updatable=true, fields={"username"})
+     * @ORM\Column(length=64, unique=true)
+     */
+    private $slug;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Company")
+     */
+    private $company;
+
+    public function setCompany(Company $company = null)
+    {
+        $this-&gt;company = $company;
+    }
+
+    public function getCompany()
+    {
+        return $this-&gt;company;
+    }
+
+    public function getId()
+    {
+        return $this-&gt;id;
+    }
+
+    public function setName($name)
+    {
+        $this-&gt;name = $name;
+    }
+
+    public function getName()
+    {
+        return $this-&gt;name;
+    }
+
+    public function getSlug()
+    {
+        return $this-&gt;slug;
+    }
+}</code></pre>
+<p>Company entity example:</p>
+<pre><code class="language-php">&lt;?php
+namespace Sluggable\Fixture\Handler;
+
+use Gedmo\Mapping\Annotation as Gedmo;
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * @ORM\Entity
+ */
+class Company
+{
+    /**
+     * @ORM\Id
+     * @ORM\GeneratedValue
+     * @ORM\Column(type="integer")
+     */
+    private $id;
+
+    /**
+     * @ORM\Column(length=64)
+     */
+    private $title;
+
+    /**
+     * @Gedmo\Slug(handlers={
+     *      @Gedmo\SlugHandler(class="Gedmo\Sluggable\Handler\InversedRelativeSlugHandler", options={
+     *          @Gedmo\SlugHandlerOption(name="relationClass", value="Sluggable\Fixture\Handler\User"),
+     *          @Gedmo\SlugHandlerOption(name="mappedBy", value="company"),
+     *          @Gedmo\SlugHandlerOption(name="inverseSlugField", value="slug")
+     *      })
+     * }, fields={"title"})
+     * @ORM\Column(length=64, unique=true)
+     */
+    private $alias;
+
+    public function getId()
+    {
+        return $this-&gt;id;
+    }
+
+    public function setTitle($title)
+    {
+        $this-&gt;title = $title;
+    }
+
+    public function getTitle()
+    {
+        return $this-&gt;title;
+    }
+
+    public function getAlias()
+    {
+        return $this-&gt;alias;
+    }
+}</code></pre>
+<p>For other mapping drivers see
+<a href="https://github.com/l3pp4rd/DoctrineExtensions/blob/master/tests/Gedmo/Mapping/Driver/Xml/Mapping.Fixture.Xml.Sluggable.dcm.xml">xml</a> or <a href="https://github.com/l3pp4rd/DoctrineExtensions/blob/master/tests/Gedmo/Mapping/Driver/Yaml/Mapping.Fixture.Yaml.Category.dcm.yml">yaml</a> examples from tests</p>
+<p>And the example usage:</p>
+<pre><code class="language-php">&lt;?php
+$company = new Company;
+$company-&gt;setTitle('KnpLabs');
+$em-&gt;persist($company);
+
+$gedi = new User;
+$gedi-&gt;setUsername('Gedi');
+$gedi-&gt;setCompany($company);
+$em-&gt;persist($gedi);
+
+$em-&gt;flush();
+
+echo $gedi-&gt;getSlug(); // outputs "knplabs/gedi"
+
+$company-&gt;setTitle('KnpLabs Nantes');
+$em-&gt;persist($company);
+$em-&gt;flush();
+
+echo $gedi-&gt;getSlug(); // outputs "knplabs-nantes/gedi"</code></pre>
+<p><strong>Note:</strong> tree slug handler, takes a parent relation to build slug recursively.</p>
+<p>Any suggestions on improvements are very welcome</p>
+                    </div>
+
+                    <footer>
+                        <hr/>
+                                                    <div role="contentinfo">
+                                <p>
+                                    Find Doctrine Extensions 3.0.0 on <a href="https://github.com/Atlantic18/DoctrineExtensions">GitHub</a>.
+                                </p>
+                            </div>
+                                                Built with <a href="http://couscous.io/">Couscous</a> using a <a href="https://github.com/CouscousPHP/Template-ReadTheDocs">theme</a> based on <a href="https://readthedocs.org/">Read the Docs</a>.
+                    </footer>
+
+                </div>
+            </div>
+
+        </section>
+
+    </div>
+
+    <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script>
+    <script src="http://Atlantic18.github.io/DoctrineExtensions/js/theme.js"></script>
+
+    <script>
+        $(function() {
+            // Syntax highlighting
+            hljs.initHighlightingOnLoad();
+        });
+    </script>
+
+</body>
+</html>

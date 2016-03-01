@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctrine Extensions 3.0.0</title>
+
+    <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Roboto+Slab:400,700|Inconsolata:400,700&subset=latin,cyrillic'
+          rel='stylesheet' type='text/css'>
+
+    <link rel="stylesheet" href="http://Atlantic18.github.io/DoctrineExtensions/css/theme.css" type="text/css"/>
+    <link rel="stylesheet" href="http://Atlantic18.github.io/DoctrineExtensions/css/theme-fixes.css" type="text/css"/>
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/github.min.css">
+</head>
+<body class="wy-body-for-nav">
+
+    <div class="wy-grid-for-nav">
+
+        <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+            <div class="wy-side-nav-search">
+                <a href="http://Atlantic18.github.io/DoctrineExtensions/" class="fa fa-home"> Doctrine Extensions 3.0.0</a>
+            </div>
+
+            <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+                <ul>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/tree.html">
+                                Tree
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/translatable.html">
+                                Translatable
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/sluggable.html">
+                                Sluggable
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/timestampable.html">
+                                Timestampable
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/blameable.html">
+                                Blameable
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/loggable.html">
+                                Loggable
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/sortable.html">
+                                Sortable
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/translatable.html">
+                                Translator
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/softdeleteable.html">
+                                SoftDeleteable
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/uploadable.html">
+                                Uploadable
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/references.html">
+                                References
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/reference_integrity.html">
+                                ReferenceIntegrity
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/ip_traceable.html">
+                                IpTraceable
+                            </a>
+                        </li>
+                                    </ul>
+            </div>
+            &nbsp;
+        </nav>
+
+        <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+                        <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+                <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+                <a href="http://Atlantic18.github.io/DoctrineExtensions/">Doctrine Extensions 3.0.0</a>
+            </nav>
+
+
+                        <div class="wy-nav-content">
+                <div class="rst-content">
+                    <div role="main" class="document">
+                        <h1 id="softdeleteable-behavior-extension-for-doctrine-2">SoftDeleteable behavior extension for Doctrine 2</h1>
+<p><strong>SoftDeleteable</strong> behavior allows to &quot;soft delete&quot; objects, filtering them
+at SELECT time by marking them as with a timestamp, but not explicitly removing them from the database.</p>
+<p>Features:</p>
+<ul>
+<li>Works with DQL DELETE queries (using a Query Hint).</li>
+<li>All SELECT queries will be filtered, not matter from where they are executed (Repositories, DQL SELECT queries, etc).</li>
+<li>For now, it works only with the ORM</li>
+<li>Can be nested with other behaviors</li>
+<li>Annotation, Yaml and Xml mapping support for extensions</li>
+<li>Support for 'timeAware' option: When creating an entity set a date of deletion in the future and never worry about cleaning up at expiration time.</li>
+</ul>
+<p>Content:</p>
+<ul>
+<li><a href="#including-extension">Including</a> the extension</li>
+<li>Entity <a href="#entity-mapping">example</a></li>
+<li><a href="#yaml-mapping">Yaml</a> mapping example</li>
+<li><a href="#xml-mapping">Xml</a> mapping example</li>
+<li>Usage <a href="#usage">examples</a></li>
+<li>Using <a href="#traits">Traits</a></li>
+</ul>
+<p><a name="including-extension"></a></p>
+<h2 id="setup-and-autoloading">Setup and autoloading</h2>
+<p>Read the <a href="http://github.com/l3pp4rd/DoctrineExtensions/blob/master/doc/annotations.html#em-setup">documentation</a>
+or check the <a href="http://github.com/l3pp4rd/DoctrineExtensions/tree/master/example">example code</a>
+on how to setup and use the extensions in most optimized way.</p>
+<p>With SoftDeleteable there's one more step you need to do. You need to add the filter to your configuration:</p>
+<pre><code class="language-php">
+$config = new Doctrine\ORM\Configuration;
+
+// Your configs..
+
+$config-&gt;addFilter('soft-deleteable', 'Gedmo\SoftDeleteable\Filter\SoftDeleteableFilter');</code></pre>
+<p>And then you can access the filter from your EntityManager to enable or disable it with the following code:</p>
+<pre><code class="language-php">// This will enable the SoftDeleteable filter, so entities which were "soft-deleted" will not appear
+// in results
+// You should adapt the filter name to your configuration (ex: softdeleteable)
+$em-&gt;getFilters()-&gt;enable('soft-deleteable');
+
+// This will disable the SoftDeleteable filter, so entities which were "soft-deleted" will appear in results
+$em-&gt;getFilters()-&gt;disable('soft-deleteable');</code></pre>
+<p>Or from your DocumentManager (ODM):</p>
+<pre><code class="language-php">// This will enable the SoftDeleteable filter, so entities which were "soft-deleted" will not appear
+// in results
+// You should adapt the filter name to your configuration (ex: softdeleteable)
+$em-&gt;getFilterCollection()-&gt;enable('soft-deleteable');
+
+// This will disable the SoftDeleteable filter, so entities which were "soft-deleted" will appear in results
+$em-&gt;getFilterCollection()-&gt;disable('soft-deleteable');</code></pre>
+<p><strong>NOTE:</strong> by default all filters are disabled, so you must explicitly enable <strong>soft-deleteable</strong> filter in your setup
+or whenever you need it.</p>
+<p><a name="entity-mapping"></a></p>
+<h2 id="softdeleteable-entity-example">SoftDeleteable Entity example:</h2>
+<h3 id="softdeleteable-annotations">SoftDeleteable annotations:</h3>
+<ul>
+<li><strong>@Gedmo\Mapping\Annotation\SoftDeleteable</strong> this class annotation tells if a class is SoftDeleteable. It has a
+mandatory parameter &quot;fieldName&quot;, which is the name of the field to be used to hold the known &quot;deletedAt&quot; field. It
+must be of any of the date types.</li>
+</ul>
+<p>Available configuration options:</p>
+<ul>
+<li><strong>fieldName</strong> - The name of the field that will be used to determine if the object is removed or not (NULL means
+it's not removed. A date value means it was removed). NOTE: The field MUST be nullable.</li>
+</ul>
+<p><strong>Note:</strong> that SoftDeleteable interface is not necessary, except in cases where
+you need to identify entity as being SoftDeleteable. The metadata is loaded only once then
+cache is activated.</p>
+<pre><code class="language-php">&lt;?php
+namespace Entity;
+
+use Gedmo\Mapping\Annotation as Gedmo;
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * @ORM\Entity
+ * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
+ */
+class Article
+{
+    /**
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
+
+    /**
+     * @ORM\Column
+     */
+    private $title;
+
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $deletedAt;
+
+    public function getId()
+    {
+        return $this-&gt;id;
+    }
+
+    public function setTitle($title)
+    {
+        $this-&gt;title = $title;
+    }
+
+    public function getTitle()
+    {
+        return $this-&gt;title;
+    }
+
+    public function getDeletedAt()
+    {
+        return $this-&gt;deletedAt;
+    }
+
+    public function setDeletedAt($deletedAt)
+    {
+        $this-&gt;deletedAt = $deletedAt;
+    }
+}</code></pre>
+<p><a name="yaml-mapping"></a></p>
+<h2 id="yaml-mapping-example">Yaml mapping example:</h2>
+<p>Yaml mapped Article: <strong>/mapping/yaml/Entity.Article.dcm.yml</strong></p>
+<pre><code>---
+Entity\Article:
+  type: entity
+  table: articles
+  gedmo:
+    soft_deleteable:
+      field_name: deletedAt
+      time_aware: false
+  id:
+    id:
+      type: integer
+      generator:
+        strategy: AUTO
+  fields:
+    title:
+      type: string
+    deletedAt:
+      type: date
+      nullable: true</code></pre>
+<p><a name="xml-mapping"></a></p>
+<h2 id="xml-mapping-example">Xml mapping example</h2>
+<pre><code class="language-xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xmlns:gedmo="http://gediminasm.org/schemas/orm/doctrine-extensions-mapping"&gt;
+
+    &lt;entity name="Mapping\Fixture\Xml\Timestampable" table="timestampables"&gt;
+        &lt;id name="id" type="integer" column="id"&gt;
+            &lt;generator strategy="AUTO"/&gt;
+        &lt;/id&gt;
+
+        &lt;field name="title" type="string" /&gt;
+
+        &lt;field name="deletedAt" type="datetime" nullable="true" /&gt;
+
+        &lt;gedmo:soft-deleteable field-name="deletedAt" time-aware="false" /&gt;
+    &lt;/entity&gt;
+
+&lt;/doctrine-mapping&gt;</code></pre>
+<p><a name="usage"></a></p>
+<h2 id="usage">Usage:</h2>
+<pre><code class="language-php">&lt;?php
+$article = new Article;
+$article-&gt;setTitle('My Article');
+
+$em-&gt;persist($article);
+$em-&gt;flush();
+
+// Now if we remove it, it will set the deletedAt field to the actual date
+$em-&gt;remove($article);
+$em-&gt;flush();
+
+$repo = $em-&gt;getRepository('Article');
+$art = $repo-&gt;findOneBy(array('title' =&gt; 'My Article'));
+
+// It should NOT return the article now
+$this-&gt;assertNull($art);
+
+// But if we disable the filter, the article should appear now
+$em-&gt;getFilters()-&gt;disable('soft-deleteable');
+
+$art = $repo-&gt;findOneBy(array('title' =&gt; 'My Article'));
+
+$this-&gt;assertTrue(is_object($art));
+
+// Enable / Disable filter filter, for specified entity (default is enabled for all)
+$filter = $em-&gt;getFilters()-&gt;enable('soft-deleteable');
+$filter-&gt;disableForEntity('Entity\Article');
+$filter-&gt;enableForEntity('Entity\Article');
+
+// Undelete the entity by setting the deletedAt field to null
+$article-&gt;setDeletedAt(null);</code></pre>
+<p>Easy like that, any suggestions on improvements are very welcome.</p>
+<p><a name="traits"></a></p>
+<h2 id="traits">Traits</h2>
+<p>You can use softDeleteable traits for quick <strong>deletedAt</strong> timestamp definitions
+when using annotation mapping.
+There is also a trait without annotations for easy integration purposes.</p>
+<p><strong>Note:</strong> this feature is only available since php <strong>5.4.0</strong>. And you are not required
+to use the Traits provided by extensions.</p>
+<pre><code class="language-php">&lt;?php
+namespace SoftDeleteable\Fixture;
+
+use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
+use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
+
+/**
+ * @ORM\Entity
+ * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
+ */
+class UsingTrait
+{
+    /**
+     * Hook SoftDeleteable behavior
+     * updates deletedAt field
+     */
+    use SoftDeleteableEntity;
+
+    /**
+     * @ORM\Id
+     * @ORM\GeneratedValue
+     * @ORM\Column(type="integer")
+     */
+    private $id;
+
+    /**
+     * @ORM\Column(length=128)
+     */
+    private $title;
+}</code></pre>
+<p>Traits are very simple and if you use different field names I recommend to simply create your
+own ones based per project. These ones are standing as an example.</p>
+<h2 id="extra">Extra</h2>
+<p>By default it is too complicated to manage extension dependencies so you may have issues when combining some of the extensions. You can how ever create your own listeners to help you out. </p>
+<p>Here is an example of a soft delete listener to move your item to the end of the list when you delete it, so you prevent later collision.</p>
+<p><em>Services.yml</em></p>
+<pre><code>app.soft_delete_listener:
+    class: AppBundle\Events\SoftDeleteListener
+    tags:
+        - { name: doctrine.event_listener, event: preRemove, priority: 10 }</code></pre>
+<p><em>SoftDeleteListener.php</em></p>
+<pre><code>&lt;?php
+
+namespace AppBundle\Events;
+
+use Doctrine\Common\Persistence\Event\LifecycleEventArgs;
+use Gedmo\Sortable\Sortable;
+
+class SoftDeleteListener
+{
+    public function preRemove(LifecycleEventArgs $event)
+    {
+        $entity = $event-&gt;getObject();
+
+        if ($entity instanceof Sortable) {
+            $entity-&gt;setPosition(-1);
+
+            $om = $event-&gt;getObjectManager();
+            $om-&gt;persist($entity);
+            $om-&gt;flush();
+        }
+    }
+}</code></pre>
+<p>By setting the position to -1 you will send the entity to the last position before it will be removed. See <a href="https://github.com/Atlantic18/DoctrineExtensions/blob/master/doc/sortable.html">sortable</a> documentation for more information.</p>
+                    </div>
+
+                    <footer>
+                        <hr/>
+                                                    <div role="contentinfo">
+                                <p>
+                                    Find Doctrine Extensions 3.0.0 on <a href="https://github.com/Atlantic18/DoctrineExtensions">GitHub</a>.
+                                </p>
+                            </div>
+                                                Built with <a href="http://couscous.io/">Couscous</a> using a <a href="https://github.com/CouscousPHP/Template-ReadTheDocs">theme</a> based on <a href="https://readthedocs.org/">Read the Docs</a>.
+                    </footer>
+
+                </div>
+            </div>
+
+        </section>
+
+    </div>
+
+    <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script>
+    <script src="http://Atlantic18.github.io/DoctrineExtensions/js/theme.js"></script>
+
+    <script>
+        $(function() {
+            // Syntax highlighting
+            hljs.initHighlightingOnLoad();
+        });
+    </script>
+
+</body>
+</html>

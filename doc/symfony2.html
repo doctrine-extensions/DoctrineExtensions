@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctrine Extensions 3.0.0</title>
+
+    <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Roboto+Slab:400,700|Inconsolata:400,700&subset=latin,cyrillic'
+          rel='stylesheet' type='text/css'>
+
+    <link rel="stylesheet" href="http://Atlantic18.github.io/DoctrineExtensions/css/theme.css" type="text/css"/>
+    <link rel="stylesheet" href="http://Atlantic18.github.io/DoctrineExtensions/css/theme-fixes.css" type="text/css"/>
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/github.min.css">
+</head>
+<body class="wy-body-for-nav">
+
+    <div class="wy-grid-for-nav">
+
+        <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+            <div class="wy-side-nav-search">
+                <a href="http://Atlantic18.github.io/DoctrineExtensions/" class="fa fa-home"> Doctrine Extensions 3.0.0</a>
+            </div>
+
+            <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+                <ul>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/tree.html">
+                                Tree
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/translatable.html">
+                                Translatable
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/sluggable.html">
+                                Sluggable
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/timestampable.html">
+                                Timestampable
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/blameable.html">
+                                Blameable
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/loggable.html">
+                                Loggable
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/sortable.html">
+                                Sortable
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/translatable.html">
+                                Translator
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/softdeleteable.html">
+                                SoftDeleteable
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/uploadable.html">
+                                Uploadable
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/references.html">
+                                References
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/reference_integrity.html">
+                                ReferenceIntegrity
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/ip_traceable.html">
+                                IpTraceable
+                            </a>
+                        </li>
+                                    </ul>
+            </div>
+            &nbsp;
+        </nav>
+
+        <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+                        <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+                <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+                <a href="http://Atlantic18.github.io/DoctrineExtensions/">Doctrine Extensions 3.0.0</a>
+            </nav>
+
+
+                        <div class="wy-nav-content">
+                <div class="rst-content">
+                    <div role="main" class="document">
+                        <h1 id="install-gedmo-doctrine2-extensions-in-symfony2">Install Gedmo Doctrine2 extensions in Symfony2</h1>
+<p>Configure full featured <a href="http://github.com/l3pp4rd/DoctrineExtensions">Doctrine2 extensions</a> for your symfony2 project.
+This post will show you - how to create a simple configuration file to manage extensions with
+ability to use all features it provides.
+Interested? then bear with me! and don't be afraid, we're not diving into security component :)</p>
+<p>This post will put some light over the shed of extension installation and mapping configuration
+of Doctrine2. It does not require any additional dependencies and gives you full power
+over management of extensions.</p>
+<p>Content:</p>
+<ul>
+<li><a href="#sf2-app">Symfony2</a> application</li>
+<li>Extensions metadata <a href="#ext-mapping">mapping</a></li>
+<li>Extension <a href="#ext-listeners">listeners</a></li>
+<li>Usage <a href="#ext-example">example</a></li>
+<li>Some <a href="#more-tips">tips</a></li>
+<li><a href="#alternative">Alternative</a> over configuration</li>
+</ul>
+<p><a name="sf2-app"></a></p>
+<h2 id="symfony2-application">Symfony2 application</h2>
+<p>First of all, we will need a symfony2 startup application, let's say <a href="http://github.com/KnpLabs/symfony-with-composer">symfony-standard edition
+with composer</a>. Follow the standard setup:</p>
+<ul>
+<li><code>git clone git://github.com/KnpLabs/symfony-with-composer.git example</code></li>
+<li><code>cd example &amp;&amp; rm -rf .git &amp;&amp; php bin/vendors install</code></li>
+<li>ensure your application loads and meets requirements, by following the url: <strong><a href="http://your_virtual_host/app_dev.php">http://your_virtual_host/app_dev.php</a></strong></li>
+</ul>
+<p>Now let's add the <strong>gedmo/doctrine-extensions</strong> into <strong>composer.json</strong></p>
+<pre><code class="language-json">{
+    "require": {
+        "php":              "&gt;=5.3.2",
+        "symfony/symfony":  "&gt;=2.0.9,&lt;2.1.0-dev",
+        "doctrine/orm":     "&gt;=2.1.0,&lt;2.2.0-dev",
+        "twig/extensions":  "*",
+
+        "symfony/assetic-bundle":         "*",
+        "sensio/generator-bundle":        "2.0.*",
+        "sensio/framework-extra-bundle":  "2.0.*",
+        "sensio/distribution-bundle":     "2.0.*",
+        "jms/security-extra-bundle":      "1.0.*",
+        "gedmo/doctrine-extensions":      "dev-master"
+    },
+
+    "autoload": {
+        "psr-0": {
+            "Acme": "src/"
+        }
+    }
+}</code></pre>
+<p>Update vendors, run: <strong>php composer.phar update gedmo/doctrine-extensions</strong>
+Initially in this package you have <strong>doctrine2 orm</strong> included, so we will base our setup
+and configuration for this specific connection. Do not forget to configure your database
+connection parameters, edit <strong>app/config/parameters.yml</strong></p>
+<p><a name="ext-mapping"></a></p>
+<h2 id="mapping">Mapping</h2>
+<p>Let's start from the mapping. In case you use the <strong>translatable</strong>, <strong>tree</strong> or <strong>loggable</strong>
+extension you will need to map those abstract mapped superclasses for your ORM to be aware of.
+To do so, add some mapping info to your <strong>doctrine.orm</strong> configuration, edit <strong>app/config/config.yml</strong>:</p>
+<pre><code class="language-yaml">doctrine:
+    dbal:
+# your dbal config here
+
+    orm:
+        auto_generate_proxy_classes: %kernel.debug%
+        auto_mapping: true
+# only these lines are added additionally
+        mappings:
+            translatable:
+                type: annotation
+                alias: Gedmo
+                prefix: Gedmo\Translatable\Entity
+                # make sure vendor library location is correct
+                dir: "%kernel.root_dir%/../vendor/gedmo/doctrine-extensions/lib/Gedmo/Translatable/Entity"</code></pre>
+<p>After that, running <strong>php app/console doctrine:mapping:info</strong> you should see the output:</p>
+<pre><code>Found 3 entities mapped in entity manager default:
+[OK]   Gedmo\Translatable\Entity\MappedSuperclass\AbstractPersonalTranslation
+[OK]   Gedmo\Translatable\Entity\MappedSuperclass\AbstractTranslation
+[OK]   Gedmo\Translatable\Entity\Translation</code></pre>
+<p>Well, we mapped only <strong>translatable</strong> for now, it really depends on your needs, which extensions
+your application uses.</p>
+<p><strong>Note:</strong> there is <strong>Gedmo\Translatable\Entity\Translation</strong> which is not a super class, in that case
+if you create a doctrine schema, it will add <strong>ext_translations</strong> table, which might not be useful
+to you also. To skip mapping of these entities, you can map <strong>only superclasses</strong></p>
+<pre><code class="language-yaml">mappings:
+    translatable:
+        type: annotation
+        alias: Gedmo
+        prefix: Gedmo\Translatable\Entity
+        # make sure vendor library location is correct
+        dir: "%kernel.root_dir%/../vendor/gedmo/doctrine-extensions/lib/Gedmo/Translatable/Entity/MappedSuperclass"</code></pre>
+<p>The configuration above, adds a <strong>/MappedSuperclass</strong> into directory depth, after running
+<strong>php app/console doctrine:mapping:info</strong> you should only see now:</p>
+<pre><code>Found 2 entities mapped in entity manager default:
+[OK]   Gedmo\Translatable\Entity\MappedSuperclass\AbstractPersonalTranslation
+[OK]   Gedmo\Translatable\Entity\MappedSuperclass\AbstractTranslation</code></pre>
+<p>This is very useful for advanced requirements and quite simple to understand. So now let's map
+everything the extensions provide:</p>
+<pre><code class="language-yaml"># only orm config branch of doctrine
+orm:
+    auto_generate_proxy_classes: %kernel.debug%
+    auto_mapping: true
+# only these lines are added additionally
+    mappings:
+        translatable:
+            type: annotation
+            alias: Gedmo
+            prefix: Gedmo\Translatable\Entity
+            # make sure vendor library location is correct
+            dir: "%kernel.root_dir%/../vendor/gedmo/doctrine-extensions/lib/Gedmo/Translatable/Entity"
+        loggable:
+            type: annotation
+            alias: Gedmo
+            prefix: Gedmo\Loggable\Entity
+            dir: "%kernel.root_dir%/../vendor/gedmo/doctrine-extensions/lib/Gedmo/Loggable/Entity"
+        tree:
+            type: annotation
+            alias: Gedmo
+            prefix: Gedmo\Tree\Entity
+            dir: "%kernel.root_dir%/../vendor/gedmo/doctrine-extensions/lib/Gedmo/Tree/Entity"</code></pre>
+<p><a name="ext-listeners"></a></p>
+<h2 id="doctrine-extension-listener-services">Doctrine extension listener services</h2>
+<p>Next, the heart of extensions are behavioral listeners which pours all the sugar. We will
+create a <strong>yml</strong> service file in our config directory. The setup can be different, your config could be located
+in the bundle, it depends on your preferences. Edit <strong>app/config/doctrine_extensions.yml</strong></p>
+<pre><code class="language-yaml"># services to handle doctrine extensions
+# import it in config.yml
+services:
+    # KernelRequest listener
+    extension.listener:
+        class: Acme\DemoBundle\Listener\DoctrineExtensionListener
+        calls:
+            - [ setContainer, [ "@service_container" ] ]
+        tags:
+            # translatable sets locale after router processing
+            - { name: kernel.event_listener, event: kernel.request, method: onLateKernelRequest, priority: -10 }
+            # loggable hooks user username if one is in security context
+            - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
+            # translatable sets locale such as default application locale before command execute
+            - { name: kernel.event_listener, event: console.command, method: onConsoleCommand, priority: -10 }
+
+    # Doctrine Extension listeners to handle behaviors
+    gedmo.listener.tree:
+        class: Gedmo\Tree\TreeListener
+        tags:
+            - { name: doctrine.event_subscriber, connection: default }
+        calls:
+            - [ setAnnotationReader, [ "@annotation_reader" ] ]
+
+    gedmo.listener.translatable:
+        class: Gedmo\Translatable\TranslatableListener
+        tags:
+            - { name: doctrine.event_subscriber, connection: default }
+        calls:
+            - [ setAnnotationReader, [ "@annotation_reader" ] ]
+            - [ setDefaultLocale, [ %locale% ] ]
+            - [ setTranslationFallback, [ false ] ]
+
+    gedmo.listener.timestampable:
+        class: Gedmo\Timestampable\TimestampableListener
+        tags:
+            - { name: doctrine.event_subscriber, connection: default }
+        calls:
+            - [ setAnnotationReader, [ "@annotation_reader" ] ]
+
+    gedmo.listener.sluggable:
+        class: Gedmo\Sluggable\SluggableListener
+        tags:
+            - { name: doctrine.event_subscriber, connection: default }
+        calls:
+            - [ setAnnotationReader, [ "@annotation_reader" ] ]
+
+    gedmo.listener.sortable:
+        class: Gedmo\Sortable\SortableListener
+        tags:
+            - { name: doctrine.event_subscriber, connection: default }
+        calls:
+            - [ setAnnotationReader, [ "@annotation_reader" ] ]
+
+    gedmo.listener.loggable:
+        class: Gedmo\Loggable\LoggableListener
+        tags:
+            - { name: doctrine.event_subscriber, connection: default }
+        calls:
+            - [ setAnnotationReader, [ "@annotation_reader" ] ]</code></pre>
+<p>So what does it include in general? Well, it creates services for all extension listeners.
+You can remove some which you do not use, or change them as you need. <strong>Translatable</strong> for instance,
+sets the default locale to the value of your <code>%locale%</code> parameter, you can configure it differently.</p>
+<p><strong>Note:</strong> In case you noticed, there is <strong>Acme\DemoBundle\Listener\DoctrineExtensionListener</strong>.
+You will need to create this listener class if you use <strong>loggable</strong> or <strong>translatable</strong>
+behaviors. This listener will set the <strong>locale used</strong> from request and <strong>username</strong> to
+loggable. So, to finish the setup create <strong>Acme\DemoBundle\Listener\DoctrineExtensionListener</strong></p>
+<pre><code class="language-php">&lt;?php
+
+// file: src/Acme/DemoBundle/Listener/DoctrineExtensionListener.php
+
+namespace Acme\DemoBundle\Listener;
+
+use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+
+class DoctrineExtensionListener implements ContainerAwareInterface
+{
+    /**
+     * @var ContainerInterface
+     */
+    protected $container;
+
+    public function setContainer(ContainerInterface $container = null)
+    {
+        $this-&gt;container = $container;
+    }
+
+    public function onLateKernelRequest(GetResponseEvent $event)
+    {
+        $translatable = $this-&gt;container-&gt;get('gedmo.listener.translatable');
+        $translatable-&gt;setTranslatableLocale($event-&gt;getRequest()-&gt;getLocale());
+    }
+
+    public function onConsoleCommand()
+    {
+        $this-&gt;container-&gt;get('gedmo.listener.translatable')
+            -&gt;setTranslatableLocale($this-&gt;container-&gt;get('translator')-&gt;getLocale());
+    }
+
+    public function onKernelRequest(GetResponseEvent $event)
+    {
+        $securityContext = $this-&gt;container-&gt;get('security.context', ContainerInterface::NULL_ON_INVALID_REFERENCE);
+        if (null !== $securityContext &amp;&amp; null !== $securityContext-&gt;getToken() &amp;&amp; $securityContext-&gt;isGranted('IS_AUTHENTICATED_REMEMBERED')) {
+            $loggable = $this-&gt;container-&gt;get('gedmo.listener.loggable');
+            $loggable-&gt;setUsername($securityContext-&gt;getToken()-&gt;getUsername());
+        }
+    }
+}</code></pre>
+<p>Do not forget to import <strong>doctrine_extensions.yml</strong> in your <strong>app/config/config.yml</strong>:</p>
+<pre><code class="language-yaml"># file: app/config/config.yml
+imports:
+    - { resource: parameters.yml }
+    - { resource: security.yml }
+    - { resource: doctrine_extensions.yml }
+
+# ... configuration follows</code></pre>
+<p><a name="ext-example"></a></p>
+<h2 id="example">Example</h2>
+<p>After that, you have your extensions set up and ready to be used! Too easy right? Well,
+if you do not believe me, let's create a simple entity in our <strong>Acme</strong> project:</p>
+<pre><code class="language-php">&lt;?php
+
+// file: src/Acme/DemoBundle/Entity/BlogPost.php
+
+namespace Acme\DemoBundle\Entity;
+
+use Gedmo\Mapping\Annotation as Gedmo; // gedmo annotations
+use Doctrine\ORM\Mapping as ORM; // doctrine orm annotations
+
+/**
+ * @ORM\Entity
+ */
+class BlogPost
+{
+    /**
+     * @Gedmo\Slug(fields={"title"}, updatable=false, separator="_")
+     * @ORM\Id
+     * @ORM\Column(length=32, unique=true)
+     */
+    private $id;
+
+    /**
+     * @Gedmo\Translatable
+     * @ORM\Column(length=64)
+     */
+    private $title;
+
+    /**
+     * @Gedmo\Timestampable(on="create")
+     * @ORM\Column(type="datetime")
+     */
+    private $created;
+
+    /**
+     * @ORM\Column(type="datetime")
+     * @Gedmo\Timestampable(on="update")
+     */
+    private $updated;
+
+    public function getId()
+    {
+        return $this-&gt;id;
+    }
+
+    public function setTitle($title)
+    {
+        $this-&gt;title = $title;
+    }
+
+    public function getTitle()
+    {
+        return $this-&gt;title;
+    }
+
+    public function getCreated()
+    {
+        return $this-&gt;created;
+    }
+
+    public function getUpdated()
+    {
+        return $this-&gt;updated;
+    }
+}</code></pre>
+<p>Now, let's have some fun:</p>
+<ul>
+<li>if you have not created the database yet, run <code>php app/console doctrine:database:create</code></li>
+<li>create the schema <code>php app/console doctrine:schema:create</code></li>
+</ul>
+<p>Everything will work just fine, you can modify the <strong>Acme\DemoBundle\Controller\DemoController</strong>
+and add an action to test how it works:</p>
+<pre><code class="language-php">// file: src/Acme/DemoBundle/Controller/DemoController.php
+// include this code portion
+
+/**
+ * @Route("/posts", name="_demo_posts")
+ */
+public function postsAction()
+{
+    $em = $this-&gt;getDoctrine()-&gt;getEntityManager();
+    $repository = $em-&gt;getRepository('AcmeDemoBundle:BlogPost');
+    // create some posts in case if there aren't any
+    if (!$repository-&gt;findOneById('hello_world')) {
+        $post = new \Acme\DemoBundle\Entity\BlogPost();
+        $post-&gt;setTitle('Hello world');
+
+        $next = new \Acme\DemoBundle\Entity\BlogPost();
+        $next-&gt;setTitle('Doctrine extensions');
+
+        $em-&gt;persist($post);
+        $em-&gt;persist($next);
+        $em-&gt;flush();
+    }
+    $posts = $em
+        -&gt;createQuery('SELECT p FROM AcmeDemoBundle:BlogPost p')
+        -&gt;getArrayResult()
+    ;
+    die(var_dump($posts));
+}</code></pre>
+<p>Now if you follow the url: <strong><a href="http://your_virtual_host/app_dev.php/demo/posts">http://your_virtual_host/app_dev.php/demo/posts</a></strong> you
+should see a print of posts, this is only an extension demo, we will not create a template.</p>
+<p><a name="more-tips"></a></p>
+<h2 id="more-tips">More tips</h2>
+<p>Regarding, the setup, I do not think it's too complicated to use, in general it is simple
+enough, and lets you understand at least small parts on how you can hook mappings into doctrine, and
+how easily extension services are added. This configuration does not hide anything behind
+curtains and allows you to modify the configuration as you require.</p>
+<h3 id="multiple-entity-managers">Multiple entity managers</h3>
+<p>If you use more than one entity manager, you can simply tag the listener
+with other the manager name:</p>
+<pre><code class="language-yaml">services:
+    # tree behavior
+    gedmo.listener.tree:
+        class: Gedmo\Tree\TreeListener
+        tags:
+            - { name: doctrine.event_subscriber, connection: default }
+            # additional ORM subscriber
+            - { name: doctrine.event_subscriber, connection: other_connection }
+            # ODM MongoDb subscriber, where **default** is manager name
+            - { name: doctrine_mongodb.odm.event_subscriber }
+        calls:
+            - [ setAnnotationReader, [ @annotation_reader ] ]</code></pre>
+<p>Regarding, mapping of ODM mongodb, it's basically the same:</p>
+<pre><code class="language-yaml">doctrine_mongodb:
+    default_database: 'my_database'
+    default_connection: 'default'
+    default_document_manager: 'default'
+    connections:
+        default: ~
+    document_managers:
+        default:
+            connection: 'default'
+            auto_mapping: true
+            mappings:
+                translatable:
+                    type: annotation
+                    alias: GedmoDocument
+                    prefix: Gedmo\Translatable\Document
+                    # make sure vendor library location is correct
+                    dir: "%kernel.root_dir%/../vendor/gedmo/doctrine-extensions/lib/Gedmo/Translatable/Document"</code></pre>
+<p>This also shows, how to make mappings based on single manager. All what differs is that <strong>Document</strong>
+instead of <strong>Entity</strong> is used. I haven't tested it with mongo though.</p>
+<p><strong>Note:</strong> <a href="http://github.com/l3pp4rd/DoctrineExtensions">extension repository</a> contains all
+<a href="http://github.com/l3pp4rd/DoctrineExtensions/tree/master/doc">documentation</a> you may need
+to understand how you can use it in your projects.</p>
+<p><a name="alternative"></a></p>
+<h2 id="alternative-over-configuration">Alternative over configuration</h2>
+<p>You can use <a href="http://github.com/stof/StofDoctrineExtensionsBundle">StofDoctrineExtensionsBundle</a> which is a wrapper of these extensions</p>
+<h2 id="troubleshooting">Troubleshooting</h2>
+<ul>
+<li>Make sure there are no <em>.orm.yml or </em>.orm.xml files for your Entities in your bundles Resources/config/doctrine directory. With those files in place the annotations won't be taken into account.</li>
+</ul>
+                    </div>
+
+                    <footer>
+                        <hr/>
+                                                    <div role="contentinfo">
+                                <p>
+                                    Find Doctrine Extensions 3.0.0 on <a href="https://github.com/Atlantic18/DoctrineExtensions">GitHub</a>.
+                                </p>
+                            </div>
+                                                Built with <a href="http://couscous.io/">Couscous</a> using a <a href="https://github.com/CouscousPHP/Template-ReadTheDocs">theme</a> based on <a href="https://readthedocs.org/">Read the Docs</a>.
+                    </footer>
+
+                </div>
+            </div>
+
+        </section>
+
+    </div>
+
+    <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script>
+    <script src="http://Atlantic18.github.io/DoctrineExtensions/js/theme.js"></script>
+
+    <script>
+        $(function() {
+            // Syntax highlighting
+            hljs.initHighlightingOnLoad();
+        });
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctrine Extensions 3.0.0</title>
+
+    <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Roboto+Slab:400,700|Inconsolata:400,700&subset=latin,cyrillic'
+          rel='stylesheet' type='text/css'>
+
+    <link rel="stylesheet" href="http://Atlantic18.github.io/DoctrineExtensions/css/theme.css" type="text/css"/>
+    <link rel="stylesheet" href="http://Atlantic18.github.io/DoctrineExtensions/css/theme-fixes.css" type="text/css"/>
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/github.min.css">
+</head>
+<body class="wy-body-for-nav">
+
+    <div class="wy-grid-for-nav">
+
+        <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+            <div class="wy-side-nav-search">
+                <a href="http://Atlantic18.github.io/DoctrineExtensions/" class="fa fa-home"> Doctrine Extensions 3.0.0</a>
+            </div>
+
+            <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+                <ul>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/tree.html">
+                                Tree
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/translatable.html">
+                                Translatable
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/sluggable.html">
+                                Sluggable
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/timestampable.html">
+                                Timestampable
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/blameable.html">
+                                Blameable
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/loggable.html">
+                                Loggable
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/sortable.html">
+                                Sortable
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/translatable.html">
+                                Translator
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/softdeleteable.html">
+                                SoftDeleteable
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/uploadable.html">
+                                Uploadable
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/references.html">
+                                References
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/reference_integrity.html">
+                                ReferenceIntegrity
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/ip_traceable.html">
+                                IpTraceable
+                            </a>
+                        </li>
+                                    </ul>
+            </div>
+            &nbsp;
+        </nav>
+
+        <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+                        <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+                <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+                <a href="http://Atlantic18.github.io/DoctrineExtensions/">Doctrine Extensions 3.0.0</a>
+            </nav>
+
+
+                        <div class="wy-nav-content">
+                <div class="rst-content">
+                    <div role="main" class="document">
+                        <h3 id="making-safe-transactions-in-concurrent-environment">Making safe transactions in concurrent environment</h3>
+<p>Some extensions are using atomic updates, which need some extra attention
+in order to maintain data integrity. If you are using one of these extensions
+listed below, you should read further and take the appropriate actions:</p>
+<ul>
+<li>Sortable</li>
+<li>Tree - NestedSet strategy</li>
+<li>Tree - MaterializedPath strategy</li>
+</ul>
+<p>So let me explain first, why and what actions are needed to be applied to
+maintain your data integrity.</p>
+<p>Imagine two concurrent requests are being issued with some entity updates which does
+some actions for one or more of these extensions listed. One request starts a transaction
+to do atomic updates and another at the same time, while the first transaction executes
+starts the second transaction. The second transaction might be performing updates based
+on data which is outdated or even still running in the first transaction. The possibility
+to have broken data increases with concurrency.</p>
+<p>We need to lock one transaction so the other would wait until the first finishes and then we can
+begin the second one which in turn would lock the third one if there would be any.</p>
+<p><strong>NOTE:</strong> it is not enough to simply have a transaction.</p>
+<p>So how we can achieve this? The simplest solution is <a href="http://docs.doctrine-project.org/projects/doctrine-orm/en/latest/reference/transactions-and-concurrency.html#pessimistic-locking">pessimistic locking</a> which is supported by ORM.</p>
+<p>So how we can use it correctly to maintain our transactions safe from one another. Lets say we have two entity types in
+our application:</p>
+<ul>
+<li><strong>Shop</strong> - lets say our ecommerce platform we are creating, supports multiple shops.</li>
+<li><strong>Category</strong> - every shop might have a different category set for products and other features.</li>
+</ul>
+<p>So the <strong>Category</strong> should be a <strong>nested set tree</strong> strategy based, where atomic updates might be executed
+if a category is being moved, inserted or removed.</p>
+<p>To start with, I'll make the simple definitions of these two entities:</p>
+<pre><code class="language-php">&lt;?php
+
+namespace App\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * @ORM\Entity
+ */
+class Shop
+{
+    /**
+     * @ORM\Column(type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue
+     */
+    private $id;
+
+    /**
+     * @ORM\Column(length=64)
+     */
+    private $name;
+
+    public function setName($name)
+    {
+        $this-&gt;name = $name;
+        return $this;
+    }
+
+    public function getName()
+    {
+        return $this-&gt;name;
+    }
+}</code></pre>
+<p>It should have owner and so many more attributes, but lets keep it simple. Here follows Category:</p>
+<pre><code class="language-php">&lt;?php
+
+namespace App\Entity;
+
+use Gedmo\Mapping\Annotation as Gedmo;
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * @Gedmo\Tree(type="nested")
+ * @ORM\Entity(repositoryClass="Gedmo\Tree\Entity\Repository\NestedTreeRepository")
+ */
+class Category
+{
+    /**
+     * @ORM\Column(type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue
+     */
+    private $id;
+
+    /**
+     * @ORM\Column(length=64)
+     */
+    private $title;
+
+    /**
+     * @Gedmo\TreeLeft
+     * @ORM\Column(type="integer")
+     */
+    private $lft;
+
+    /**
+     * @Gedmo\TreeRight
+     * @ORM\Column(type="integer")
+     */
+    private $rgt;
+
+    /**
+     * @Gedmo\TreeParent
+     * @ORM\ManyToOne(targetEntity="Category")
+     * @ORM\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="CASCADE")
+     */
+    private $parent;
+
+    /**
+     * @Gedmo\TreeRoot
+     * @ORM\ManyToOne(targetEntity="Shop")
+     */
+    private $shop;
+
+    /**
+     * @Gedmo\TreeLevel
+     * @ORM\Column(name="lvl", type="integer")
+     */
+    private $level;
+
+    public function setTitle($title)
+    {
+        $this-&gt;title = $title;
+    }
+
+    public function getTitle()
+    {
+        return $this-&gt;title;
+    }
+
+    public function setParent(Category $parent = null)
+    {
+        $this-&gt;parent = $parent;
+    }
+
+    public function getParent()
+    {
+        return $this-&gt;parent;
+    }
+
+    public function getLevel()
+    {
+        return $this-&gt;level;
+    }
+
+    public function setShop(Shop $shop)
+    {
+        $this-&gt;shop = $shop;
+        return $this;
+    }
+
+    public function getShop()
+    {
+        return $this-&gt;shop;
+    }
+}</code></pre>
+<p><strong>NOTE:</strong> it would be perfect if we could use tree root as a shop relation. But it is not currently supported and
+might be available only in next versions.</p>
+<p>Now everytime we do <strong>insert</strong>, <strong>move</strong> or <strong>remove</strong> actions for Category:</p>
+<pre><code class="language-php">&lt;?php
+
+use Doctrine\DBAL\LockMode;
+
+class CategoryController extends Controller
+{
+    function postCategoryAction($currentShopId)
+    {
+        $em = $this-&gt;getEntityManager();
+        $conn = $em-&gt;getConnection();
+        $categoryRepository = $em-&gt;getRepository("App\Entity\Category");
+        // start transaction
+        $conn-&gt;beginTransaction();
+        try {
+            // select shop for update - locks it for any read attempts until this transaction ends
+            $shop = $em-&gt;find("App\Entity\Shop", $currentShopId, LockMode::PESSIMISTIC_WRITE);
+
+            // create a new category
+            $category = new Category;
+            $category-&gt;setTitle($_POST["title"]);
+            $category-&gt;setShop($shop);
+            $parent = $categoryRepository-&gt;findOneById($_POST["parent_id"]);
+
+            // persist and flush
+            $categoryRepository-&gt;persistAsFirstChildOf($category, $parent);
+            $em-&gt;flush();
+
+            $conn-&gt;commit();
+        } catch (Exception $e) {
+            $conn-&gt;rollback();
+            throw $e;
+        }
+
+        // if all went well, we can set flash message or whatever
+        // other operations which attempts to select in lock mode, will wait till this transaction ends.
+    }
+}</code></pre>
+<p>You may separate locking transaction to run callback function and make it as a service to abstract and prevent
+code duplication. Anyway, my advice would be to use only one transaction per request and best inside controller
+directly, where you would ensure that all operations performed during the action can be safely rolled back.</p>
+<p>Also to use this kind of locking, you need an entity which is necessary to read on concurrent request which attempts
+to update the same tree. In this example, <strong>Shop</strong> entity fits the bill perfectly. Otherwise you need to find a way to
+safely lock the tree table.</p>
+<p>The point of this example is: that concurrently atomic updates, might cause other parallel actions to use outdated
+information, based on which it may perform falsely calculated consequent updates. And you need to prevent this from
+happening in order to maintain your data. Extensions and ORM cannot perform such actions automatically.</p>
+                    </div>
+
+                    <footer>
+                        <hr/>
+                                                    <div role="contentinfo">
+                                <p>
+                                    Find Doctrine Extensions 3.0.0 on <a href="https://github.com/Atlantic18/DoctrineExtensions">GitHub</a>.
+                                </p>
+                            </div>
+                                                Built with <a href="http://couscous.io/">Couscous</a> using a <a href="https://github.com/CouscousPHP/Template-ReadTheDocs">theme</a> based on <a href="https://readthedocs.org/">Read the Docs</a>.
+                    </footer>
+
+                </div>
+            </div>
+
+        </section>
+
+    </div>
+
+    <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script>
+    <script src="http://Atlantic18.github.io/DoctrineExtensions/js/theme.js"></script>
+
+    <script>
+        $(function() {
+            // Syntax highlighting
+            hljs.initHighlightingOnLoad();
+        });
+    </script>
+
+</body>
+</html>

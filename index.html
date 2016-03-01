@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctrine Extensions 3.0.0</title>
+
+    <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Roboto+Slab:400,700|Inconsolata:400,700&subset=latin,cyrillic'
+          rel='stylesheet' type='text/css'>
+
+    <link rel="stylesheet" href="http://Atlantic18.github.io/DoctrineExtensions/css/theme.css" type="text/css"/>
+    <link rel="stylesheet" href="http://Atlantic18.github.io/DoctrineExtensions/css/theme-fixes.css" type="text/css"/>
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/github.min.css">
+</head>
+<body class="wy-body-for-nav">
+
+    <div class="wy-grid-for-nav">
+
+        <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+            <div class="wy-side-nav-search">
+                <a href="http://Atlantic18.github.io/DoctrineExtensions/" class="fa fa-home"> Doctrine Extensions 3.0.0</a>
+            </div>
+
+            <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+                <ul>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/tree.html">
+                                Tree
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/translatable.html">
+                                Translatable
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/sluggable.html">
+                                Sluggable
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/timestampable.html">
+                                Timestampable
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/blameable.html">
+                                Blameable
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/loggable.html">
+                                Loggable
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/sortable.html">
+                                Sortable
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/translatable.html">
+                                Translator
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/softdeleteable.html">
+                                SoftDeleteable
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/uploadable.html">
+                                Uploadable
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/references.html">
+                                References
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/reference_integrity.html">
+                                ReferenceIntegrity
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/ip_traceable.html">
+                                IpTraceable
+                            </a>
+                        </li>
+                                    </ul>
+            </div>
+            &nbsp;
+        </nav>
+
+        <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+                        <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+                <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+                <a href="http://Atlantic18.github.io/DoctrineExtensions/">Doctrine Extensions 3.0.0</a>
+            </nav>
+
+
+                        <div class="wy-nav-content">
+                <div class="rst-content">
+                    <div role="main" class="document">
+                        <h1 id="doctrine2-behavioral-extensions">Doctrine2 behavioral extensions</h1>
+<p><strong>Version 3.0.0</strong></p>
+<p><a href="http://travis-ci.org/Atlantic18/DoctrineExtensions"><img src="https://secure.travis-ci.org/Atlantic18/DoctrineExtensions.png?branch=master" alt="Build Status" /></a></p>
+<p><strong>Note:</strong> Extensions <strong>2.4.x</strong> are compatible with ORM and doctrine common library versions from <strong>2.2.x</strong> to <strong>2.5.x</strong>.
+ORM 2.5.x versions require <strong>PHP 5.4</strong> or higher same as doctrine extensions <strong>3.x</strong>.</p>
+<h3 id="latest-updates">Latest updates</h3>
+<p><strong>2016-01-27</strong></p>
+<ul>
+<li>Nested tree now allows <strong>root</strong> field as association.</li>
+</ul>
+<p><strong>2015-12-27</strong></p>
+<ul>
+<li>From now on, extensions will require <strong>php 5.4</strong> or higher.</li>
+<li>All trait column names will refer to naming strategy and won't be explicitly set by extensions.</li>
+<li>Tree repositories are now using traits, for easier extensions.</li>
+</ul>
+<h3 id="extensions-and-documentation">Extensions and Documentation</h3>
+<p>This package contains extensions for Doctrine2 that hook into the facilities of Doctrine and
+offer new functionality or tools to use Doctrine2 more efficiently. This package contains mostly
+used behaviors which can be easily attached to your event system of Doctrine2 and handle the
+records being flushed in the behavioral way. List of extensions:</p>
+<ul>
+<li><a href="/doc/tree.html"><strong>Tree</strong></a> - this extension automates the tree handling process and adds some tree specific functions on repository.
+(<strong>closure</strong>, <strong>nestedset</strong> or <strong>materialized path</strong>)</li>
+<li><a href="/doc/translatable.html"><strong>Translatable</strong></a> - gives you a very handy solution for translating records into different languages. Easy to setup, easier to use.</li>
+<li><a href="/doc/sluggable.html"><strong>Sluggable</strong></a> - urlizes your specified fields into single unique slug</li>
+<li><a href="/doc/timestampable.html"><strong>Timestampable</strong></a> - updates date fields on create, update and even property change.</li>
+<li><a href="/doc/blameable.html"><strong>Blameable</strong></a> - updates string or reference fields on create, update and even property change with a string or object (e.g. user).</li>
+<li><a href="/doc/loggable.html"><strong>Loggable</strong></a> - helps tracking changes and history of objects, also supports version management.</li>
+<li><a href="/doc/sortable.html"><strong>Sortable</strong></a> - makes any document or entity sortable</li>
+<li><a href="/doc/translatable.html"><strong>Translator</strong></a> - explicit way to handle translations</li>
+<li><a href="/doc/softdeleteable.html"><strong>SoftDeleteable</strong></a> - allows to implicitly remove records</li>
+<li><a href="/doc/uploadable.html"><strong>Uploadable</strong></a> - provides file upload handling in entity fields</li>
+<li><a href="/doc/references.html"><strong>References</strong></a> - supports linking Entities in Documents and vice versa</li>
+<li><a href="/doc/reference_integrity.html"><strong>ReferenceIntegrity</strong></a> - constrains ODM MongoDB Document references</li>
+<li><a href="/doc/ip_traceable.html"><strong>IpTraceable</strong></a> - inherited from Timestampable, sets IP address instead of timestamp</li>
+</ul>
+<p>Currently these extensions support <strong>Yaml</strong>, <strong>Annotation</strong>  and <strong>Xml</strong> mapping.</p>
+<p><strong>Note:</strong> Please note, that xml mapping needs to be in a different namespace, the declared namespace for
+Doctrine extensions is <a href="/schemas/orm/doctrine-extensions.xsd">doctrine-extensions.xsd</a>
+So root node now looks like this:</p>
+<pre><code class="language-xml">&lt;doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-extensions.xsd"
+                 xmlns:gedmo="http://Atlantic18.github.io/DoctrineExtensions/schemas/orm/doctrine-extensions.xsd"&gt;
+...
+&lt;/doctrine-mapping&gt;</code></pre>
+<p>XML mapping xsd schemas are also versioned and can be used by version suffix:</p>
+<ul>
+<li>Latest version - <strong><a href="http://Atlantic18.github.io/DoctrineExtensions/schemas/orm/doctrine-extensions.xsd">http://Atlantic18.github.io/DoctrineExtensions/schemas/orm/doctrine-extensions.xsd</a></strong></li>
+<li>2.4.x version - <strong><a href="http://Atlantic18.github.io/DoctrineExtensions/schemas/orm/doctrine-extensions-2.4.xsd">http://Atlantic18.github.io/DoctrineExtensions/schemas/orm/doctrine-extensions-2.4.xsd</a></strong></li>
+</ul>
+<h3 id="odm-mongodb-support">ODM MongoDB support</h3>
+<p>List of extensions which support ODM</p>
+<ul>
+<li>Translatable</li>
+<li>Sluggable</li>
+<li>Timestampable</li>
+<li>Blameable</li>
+<li>Loggable</li>
+<li>Translator</li>
+<li>Tree (Materialized Path strategy for now)</li>
+<li>References</li>
+<li>ReferenceIntegrity</li>
+</ul>
+<p>All these extensions can be nested together and mapped in traditional ways - <strong>annotations</strong>,
+<strong>xml</strong> or <strong>yaml</strong></p>
+<h3 id="running-the-tests">Running the tests:</h3>
+<p><strong>pdo-sqlite</strong> extension is necessary.
+To setup and run tests follow these steps:</p>
+<ul>
+<li>install dev libraries: <code>composer install</code></li>
+<li>run: <code>bin/phpunit -c tests</code></li>
+<li>optional - run mongodb service if targeting mongo tests</li>
+</ul>
+<h3 id="running-the-example">Running the example:</h3>
+<p>To setup and run example follow these steps:</p>
+<ul>
+<li>go to the root directory of extensions</li>
+<li>install dev libraries: <code>composer install</code></li>
+<li>edit <code>example/em.php</code> and configure your database on top of the file</li>
+<li>run: <code>./example/bin/console</code> or <code>php example/bin/console</code> for console commands</li>
+<li>run: <code>./example/bin/console orm:schema-tool:create</code> to create schema</li>
+<li>run: <code>php example/run.php</code> to run example</li>
+</ul>
+<h3 id="contributors">Contributors:</h3>
+<p>Thanks to <a href="http://github.com/l3pp4rd/DoctrineExtensions/contributors">everyone participating</a> in
+the development of these great Doctrine2 extensions!</p>
+<p>And especially ones who create and maintain new extensions:</p>
+<ul>
+<li>Lukas Botsch <a href="http://github.com/lbotsch">lbotsch</a></li>
+<li>Gustavo Adrian <a href="http://github.com/comfortablynumb">comfortablynumb</a></li>
+<li>Boussekeyt Jules <a href="http://github.com/gordonslondon">gordonslondon</a></li>
+<li>Kudryashov Konstantin <a href="http://github.com/everzet">everzet</a></li>
+<li>David Buchmann <a href="https://github.com/dbu">dbu</a></li>
+</ul>
+                    </div>
+
+                    <footer>
+                        <hr/>
+                                                    <div role="contentinfo">
+                                <p>
+                                    Find Doctrine Extensions 3.0.0 on <a href="https://github.com/Atlantic18/DoctrineExtensions">GitHub</a>.
+                                </p>
+                            </div>
+                                                Built with <a href="http://couscous.io/">Couscous</a> using a <a href="https://github.com/CouscousPHP/Template-ReadTheDocs">theme</a> based on <a href="https://readthedocs.org/">Read the Docs</a>.
+                    </footer>
+
+                </div>
+            </div>
+
+        </section>
+
+    </div>
+
+    <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script>
+    <script src="http://Atlantic18.github.io/DoctrineExtensions/js/theme.js"></script>
+
+    <script>
+        $(function() {
+            // Syntax highlighting
+            hljs.initHighlightingOnLoad();
+        });
+    </script>
+
+</body>
+</html>

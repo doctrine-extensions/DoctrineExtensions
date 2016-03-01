@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctrine Extensions 3.0.0</title>
+
+    <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Roboto+Slab:400,700|Inconsolata:400,700&subset=latin,cyrillic'
+          rel='stylesheet' type='text/css'>
+
+    <link rel="stylesheet" href="http://Atlantic18.github.io/DoctrineExtensions/css/theme.css" type="text/css"/>
+    <link rel="stylesheet" href="http://Atlantic18.github.io/DoctrineExtensions/css/theme-fixes.css" type="text/css"/>
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/github.min.css">
+</head>
+<body class="wy-body-for-nav">
+
+    <div class="wy-grid-for-nav">
+
+        <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+            <div class="wy-side-nav-search">
+                <a href="http://Atlantic18.github.io/DoctrineExtensions/" class="fa fa-home"> Doctrine Extensions 3.0.0</a>
+            </div>
+
+            <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+                <ul>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/tree.html">
+                                Tree
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/translatable.html">
+                                Translatable
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/sluggable.html">
+                                Sluggable
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/timestampable.html">
+                                Timestampable
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/blameable.html">
+                                Blameable
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/loggable.html">
+                                Loggable
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/sortable.html">
+                                Sortable
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/translatable.html">
+                                Translator
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/softdeleteable.html">
+                                SoftDeleteable
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/uploadable.html">
+                                Uploadable
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/references.html">
+                                References
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/reference_integrity.html">
+                                ReferenceIntegrity
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/ip_traceable.html">
+                                IpTraceable
+                            </a>
+                        </li>
+                                    </ul>
+            </div>
+            &nbsp;
+        </nav>
+
+        <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+                        <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+                <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+                <a href="http://Atlantic18.github.io/DoctrineExtensions/">Doctrine Extensions 3.0.0</a>
+            </nav>
+
+
+                        <div class="wy-nav-content">
+                <div class="rst-content">
+                    <div role="main" class="document">
+                        <h1 id="mapping-extension-for-doctrine2">Mapping extension for Doctrine2</h1>
+<p><strong>Mapping</strong> extension makes it easy to map additional metadata for event listeners.
+It supports <strong>Yaml</strong>, <strong>Xml</strong> and <strong>Annotation</strong> drivers which will be chosen depending on
+currently used mapping driver for your domain objects. <strong>Mapping</strong> extension also
+provides abstraction layer of <strong>EventArgs</strong> to make it possible to use single listener
+for different object managers like <strong>ODM</strong> and <strong>ORM</strong>.</p>
+<p>Features:</p>
+<ul>
+<li>Mapping drivers for annotation and yaml</li>
+<li>
+<p>Conventional extension points for metadata extraction and object manager abstraction</p>
+</li>
+<li>Public <a href="http://github.com/l3pp4rd/DoctrineExtensions" title="Mapping extension on Github">Mapping repository</a> is available on github</li>
+<li>Last update date: <strong>2012-01-02</strong></li>
+</ul>
+<p>This article will cover the basic installation and usage of <strong>Mapping</strong> extension</p>
+<p>Content:</p>
+<ul>
+<li><a href="#including-extension">Including</a> the extension</li>
+<li><a href="#create-extension">Creating</a> an extension</li>
+<li>Defining <a href="#annotations">annotations</a></li>
+<li>Creating <a href="#create-listener">listener</a></li>
+<li>Attaching our <a href="#attach-listener">listener</a> to the event manager</li>
+<li><a href="#entity-mapping">Entity</a> with some fields to encode</li>
+<li>Adapting listener to support <a href="#different-managers">different</a> object managers</li>
+<li><a href="#event-adapter-customize">Customizing</a> event adapter for specific functions</li>
+</ul>
+<p><a name="including-extension"></a></p>
+<h2 id="setup-and-autoloading">Setup and autoloading</h2>
+<p>Read the <a href="http://github.com/l3pp4rd/DoctrineExtensions/blob/master/doc/annotations.html#em-setup">documentation</a>
+or check the <a href="http://github.com/l3pp4rd/DoctrineExtensions/tree/master/example">example code</a>
+on how to setup and use the extensions in most optimized way.</p>
+<p><a name="create-extension"></a></p>
+<h2 id="tutorial-on-creation-of-mapped-extension">Tutorial on creation of mapped extension</h2>
+<p>First, lets assume we will use <strong>Extension</strong> namespace for our additional
+extension library. You should create an <strong>Extension</strong> directory in your library
+or vendor directory. After some changes your project might look like:</p>
+<pre><code>project
+    ...
+    bootstrap.php
+    vendor
+        Extension
+        ...
+...</code></pre>
+<p>Now you can use any namespace autoloader class and register this namespace. We
+will use Doctrine\Common\ClassLoader for instance:</p>
+<pre><code class="language-php">&lt;?php
+// path is related to bootstrap.php location for example
+$classLoader = new \Doctrine\Common\ClassLoader('Extension', "vendor");
+$classLoader-&gt;register();</code></pre>
+<p>Now lets create some files which are necessary for our extension:</p>
+<pre><code>project
+    ...
+    bootstrap.php
+    vendor
+        Extension
+            Encoder
+                Mapping
+                    Driver
+                        Annotation.php
+                    Annotations.php
+                EncoderListener.php
+...</code></pre>
+<p><strong>Note:</strong> that extension will look for mapping in <strong>ExtensionNamespace/Mapping</strong>
+directory. And <strong>Driver</strong> directory should be named as Driver. These are the conventions
+of <strong>Mapping</strong> extension.</p>
+<p>That is all we will need for now. As you may noticed we will create an encoding
+listener which could encode your fields by specified annotations. In real life it
+may not be useful since object will not know how to match the value.</p>
+<p><a name="annotations"></a></p>
+<h2 id="now-lets-define-available-annotations-and-setup-drivers">Now lets define available annotations and setup drivers</h2>
+<p>Edit <strong>Annotations.php</strong> file:</p>
+<pre><code class="language-php">&lt;?php
+// file: vendor/Extension/Encoder/Mapping/Annotations.php
+
+namespace Extension\Encoder\Mapping;
+
+use Doctrine\Common\Annotations\Annotation;
+
+final class Encode extends Annotation
+{
+    public $type = 'md5';
+    public $secret;
+}</code></pre>
+<p>Edit <strong>Annotation.php</strong> driver file:</p>
+<pre><code class="language-php">&lt;?php
+// file: vendor/Extension/Encoder/Mapping/Driver/Annotation.php
+
+namespace Extension\Encoder\Mapping\Driver;
+
+use Gedmo\Mapping\Driver;
+use Doctrine\Common\Annotations\AnnotationReader;
+
+class Annotation implements Driver
+{
+    public function readExtendedMetadata($meta, array &amp;$config) {
+        // load our available annotations
+        require_once __DIR__ . '/../Annotations.php';
+        $reader = new AnnotationReader();
+
+        $class = $meta-&gt;getReflectionClass();
+        // check only property annotations
+        foreach ($class-&gt;getProperties() as $property) {
+            // skip inherited properties
+            if ($meta-&gt;isMappedSuperclass &amp;&amp; !$property-&gt;isPrivate() ||
+                $meta-&gt;isInheritedField($property-&gt;name) ||
+                isset($meta-&gt;associationMappings[$property-&gt;name]['inherited'])
+            ) {
+                continue;
+            }
+            // now lets check if property has our annotation
+            if ($encode = $reader-&gt;getPropertyAnnotation($property, 'Extension\Encoder\Mapping\Encode')) {
+                $field = $property-&gt;getName();
+                // check if field is mapped
+                if (!$meta-&gt;hasField($field)) {
+                    throw new \Exception("Field is not mapped as object property");
+                }
+                // allow encoding only strings
+                if (!in_array($encode-&gt;type, array('sha1', 'md5'))) {
+                    throw new \Exception("Invalid encoding type supplied");
+                }
+                // validate encoding type
+                $mapping = $meta-&gt;getFieldMapping($field);
+                if ($mapping['type'] != 'string') {
+                    throw new \Exception("Only strings can be encoded");
+                }
+                // store the metadata
+                $config['encode'][$field] = array(
+                    'type' =&gt; $encode-&gt;type,
+                    'secret' =&gt; $encode-&gt;secret
+                );
+            }
+        }
+    }
+}</code></pre>
+<p><a name="create-listener"></a></p>
+<h2 id="finally-lets-create-the-listener">Finally, lets create the listener</h2>
+<p><strong>Note:</strong> this version of listener will support only ORM Entities</p>
+<pre><code class="language-php">&lt;?php
+// file: vendor/Extension/Encoder/EncoderListener.php
+
+namespace Extension\Encoder;
+
+use Doctrine\Common\EventArgs;
+use Gedmo\Mapping\MappedEventSubscriber;
+
+class EncoderListener extends MappedEventSubscriber
+{
+    public function getSubscribedEvents()
+    {
+        return array(
+            'onFlush',
+            'loadClassMetadata'
+        );
+    }
+
+    public function loadClassMetadata(EventArgs $args)
+    {
+        // this will check for our metadata
+        $this-&gt;loadMetadataForObjectClass(
+            $args-&gt;getEntityManager(),
+            $args-&gt;getClassMetadata()
+        );
+    }
+
+    public function onFlush(EventArgs $args)
+    {
+        $em = $args-&gt;getEntityManager();
+        $uow = $em-&gt;getUnitOfWork();
+
+        // check all pending updates
+        foreach ($uow-&gt;getScheduledEntityUpdates() as $object) {
+            $meta = $em-&gt;getClassMetadata(get_class($object));
+            // if it has our metadata lets encode the properties
+            if ($config = $this-&gt;getConfiguration($em, $meta-&gt;name)) {
+                $this-&gt;encode($em, $object, $config);
+            }
+        }
+        // check all pending insertions
+        foreach ($uow-&gt;getScheduledEntityInsertions() as $object) {
+            $meta = $em-&gt;getClassMetadata(get_class($object));
+            // if it has our metadata lets encode the properties
+            if ($config = $this-&gt;getConfiguration($em, $meta-&gt;name)) {
+                $this-&gt;encode($em, $object, $config);
+            }
+            // recalculate changeset
+            $em-&gt;getUnitOfWork()-&gt;recomputeSingleEntityChangeSet($meta, $object);
+        }
+    }
+
+    protected function getNamespace()
+    {
+        // mapper must know the namespace of extension
+        return __NAMESPACE__;
+    }
+
+    private function encode($em, $object, $config)
+    {
+        $meta = $em-&gt;getClassMetadata(get_class($object));
+        foreach ($config['encode'] as $field =&gt; $options) {
+            $value = $meta-&gt;getReflectionProperty($field)-&gt;getValue($object);
+            $method = $options['type'];
+            $encoded = $method($options['secret'].$value);
+            $meta-&gt;getReflectionProperty($field)-&gt;setValue($object, $encoded);
+        }
+        // recalculate changeset
+        $em-&gt;getUnitOfWork()-&gt;recomputeSingleEntityChangeSet($meta, $object);
+    }
+}</code></pre>
+<p>Our <strong>Encoder</strong> extension is ready, now if we want to test it, we need
+to attach our <strong>EncoderListener</strong> to the EventManager and create an entity
+with some fields to encode.</p>
+<p><a name="attach-listener"></a></p>
+<h3 id="attaching-the-encoderlistener">Attaching the EncoderListener</h3>
+<pre><code class="language-php">&lt;?php
+$evm = new \Doctrine\Common\EventManager();
+$encoderListener = new \Extension\Encoder\EncoderListener;
+$evm-&gt;addEventSubscriber($encoderListener);
+// now this event manager should be passed to entity manager constructor</code></pre>
+<p><a name="entity-mapping"></a></p>
+<h3 id="create-an-entity-with-some-fields-to-encode">Create an entity with some fields to encode</h3>
+<pre><code class="language-php">&lt;?php
+namespace YourNamespace\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+use Extension\Encoder\Mapping as EXT;
+
+/**
+ * @ORM\Table(name="test_users")
+ * @ORM\Entity
+ */
+class User
+{
+    /**
+     * @ORM\Column(type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue
+     */
+    private $id;
+
+    /**
+     * @EXT\Encode(type="sha1", secret="xxx")
+     * @ORM\Column(length=64)
+     */
+    private $name;
+
+    /**
+     * @EXT\Encode(type="md5")
+     * @ORM\Column(length=32)
+     */
+    private $password;
+
+    public function setName($name)
+    {
+        $this-&gt;name = $name;
+    }
+
+    public function getName()
+    {
+        return $this-&gt;name;
+    }
+
+    public function setPassword($password)
+    {
+        $this-&gt;password = $password;
+    }
+
+    public function getPassword()
+    {
+        return $this-&gt;password;
+    }
+}</code></pre>
+<p>If you will try to create a new <strong>User</strong> you will get encoded fields in database.</p>
+<p><a name="different-managers"></a></p>
+<h2 id="adapting-listener-to-support-other-object-managers">Adapting listener to support other object managers</h2>
+<p>Now the event adapter comes into play, lets slightly modify our listener:</p>
+<pre><code class="language-php">&lt;?php
+// file: vendor/Extension/Encoder/EncoderListener.php
+
+use Doctrine\Common\EventArgs;
+use Gedmo\Mapping\MappedEventSubscriber;
+use Gedmo\Mapping\Event\AdapterInterface as EventAdapterInterface;
+
+class EncoderListener extends MappedEventSubscriber
+{
+    public function getSubscribedEvents()
+    {
+        return array(
+            'onFlush',
+            'loadClassMetadata'
+        );
+    }
+
+    public function loadClassMetadata(EventArgs $args)
+    {
+        $ea = $this-&gt;getEventAdapter($args);
+        // this will check for our metadata
+        $this-&gt;loadMetadataForObjectClass(
+            $ea-&gt;getObjectManager(),
+            $args-&gt;getClassMetadata()
+        );
+    }
+
+    public function onFlush(EventArgs $args)
+    {
+        $ea = $this-&gt;getEventAdapter($args);
+        $om = $ea-&gt;getObjectManager();
+        $uow = $om-&gt;getUnitOfWork();
+
+        // check all pending updates
+        foreach ($ea-&gt;getScheduledObjectUpdates($uow) as $object) {
+            $meta = $om-&gt;getClassMetadata(get_class($object));
+            // if it has our metadata lets encode the properties
+            if ($config = $this-&gt;getConfiguration($om, $meta-&gt;name)) {
+                $this-&gt;encode($ea, $object, $config);
+            }
+        }
+        // check all pending insertions
+        foreach ($ea-&gt;getScheduledObjectInsertions($uow) as $object) {
+            $meta = $om-&gt;getClassMetadata(get_class($object));
+            // if it has our metadata lets encode the properties
+            if ($config = $this-&gt;getConfiguration($om, $meta-&gt;name)) {
+                $this-&gt;encode($ea, $object, $config);
+            }
+            // recalculate changeset
+            $ea-&gt;recomputeSingleObjectChangeSet($uow, $meta, $object);
+        }
+    }
+
+    protected function getNamespace()
+    {
+        // mapper must know the namespace of extension
+        return __NAMESPACE__;
+    }
+
+    private function encode(EventAdapterInterface $ea, $object, $config)
+    {
+        $om = $ea-&gt;getObjectManager();
+        $meta = $om-&gt;getClassMetadata(get_class($object));
+        $uow = $om-&gt;getUnitOfWork();
+        foreach ($config['encode'] as $field =&gt; $options) {
+            $value = $meta-&gt;getReflectionProperty($field)-&gt;getValue($object);
+            $method = $options['type'];
+            $encoded = $method($options['secret'].$value);
+            $meta-&gt;getReflectionProperty($field)-&gt;setValue($object, $encoded);
+        }
+        // recalculate changeset
+        $ea-&gt;recomputeSingleObjectChangeSet($uow, $meta, $object);
+    }
+}</code></pre>
+<p><strong>Note:</strong> event adapter uses <strong>EventArgs</strong> to recognize with which manager
+we are dealing with. It also uses event arguments to retrieve manager and transforms
+the method call in its way. You can extend the event adapter in order to add some
+specific methods for each manager.</p>
+<p>That's it, now it will work on ORM and ODM object managers.</p>
+<p><a name="event-adapter-customize"></a></p>
+<h2 id="customizing-event-adapter-for-specific-functions">Customizing event adapter for specific functions</h2>
+<p>In most cases event listener will need specific functionality which will differ
+for every object manager. For instance, a query to load users will differ. The
+example bellow will illustrate how to handle such situations. You will need to
+extend default ORM and ODM event adapters to implement specific functions which
+will be available through the event adapter. First we will need to follow the
+mapping convention to use those extension points.</p>
+<h3 id="extending-default-event-adapters">Extending default event adapters</h3>
+<p>Update your directory structure:</p>
+<pre><code>project
+    ...
+    bootstrap.php
+    vendor
+        Extension
+            Encoder
+                Mapping
+                    Driver
+                        Annotation.php
+                    Event
+                        Adapter
+                            ORM.php
+                            ODM.php
+                    Annotations.php
+                EncoderListener.php
+...</code></pre>
+<p>Now <strong>Mapping</strong> extension will automatically create event adapter instances
+from the extended ones.</p>
+<p>Create extended ORM event adapter:</p>
+<pre><code class="language-php">&lt;?php
+// file: vendor/Extension/Encoder/Mapping/Event/Adapter/ORM.php
+
+namespace Extension\Encoder\Mapping\Event\Adapter;
+
+use Gedmo\Mapping\Event\Adapter\ORM as BaseAdapterORM;
+
+class ORM extends BaseAdapterORM
+{
+    public function someSpecificMethod()
+    {
+
+    }
+}</code></pre>
+<p>Create extended ODM event adapter:</p>
+<pre><code class="language-php">&lt;?php
+// file: vendor/Extension/Encoder/Mapping/Event/Adapter/ODM.php
+
+namespace Extension\Encoder\Mapping\Event\Adapter;
+
+use Gedmo\Mapping\Event\Adapter\ODM as BaseAdapterODM;
+
+class ODM extends BaseAdapterODM
+{
+    public function someSpecificMethod()
+    {
+
+    }
+}</code></pre>
+<p>It would be useful to make a common interface for those extended adapters.
+Now every possible requirement is fulfilled and this may be useful.</p>
+<p>Any suggestions on improvements are very welcome</p>
+                    </div>
+
+                    <footer>
+                        <hr/>
+                                                    <div role="contentinfo">
+                                <p>
+                                    Find Doctrine Extensions 3.0.0 on <a href="https://github.com/Atlantic18/DoctrineExtensions">GitHub</a>.
+                                </p>
+                            </div>
+                                                Built with <a href="http://couscous.io/">Couscous</a> using a <a href="https://github.com/CouscousPHP/Template-ReadTheDocs">theme</a> based on <a href="https://readthedocs.org/">Read the Docs</a>.
+                    </footer>
+
+                </div>
+            </div>
+
+        </section>
+
+    </div>
+
+    <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script>
+    <script src="http://Atlantic18.github.io/DoctrineExtensions/js/theme.js"></script>
+
+    <script>
+        $(function() {
+            // Syntax highlighting
+            hljs.initHighlightingOnLoad();
+        });
+    </script>
+
+</body>
+</html>

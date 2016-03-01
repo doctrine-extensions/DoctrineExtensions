@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctrine Extensions 3.0.0</title>
+
+    <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Roboto+Slab:400,700|Inconsolata:400,700&subset=latin,cyrillic'
+          rel='stylesheet' type='text/css'>
+
+    <link rel="stylesheet" href="http://Atlantic18.github.io/DoctrineExtensions/css/theme.css" type="text/css"/>
+    <link rel="stylesheet" href="http://Atlantic18.github.io/DoctrineExtensions/css/theme-fixes.css" type="text/css"/>
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/github.min.css">
+</head>
+<body class="wy-body-for-nav">
+
+    <div class="wy-grid-for-nav">
+
+        <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+            <div class="wy-side-nav-search">
+                <a href="http://Atlantic18.github.io/DoctrineExtensions/" class="fa fa-home"> Doctrine Extensions 3.0.0</a>
+            </div>
+
+            <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+                <ul>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/tree.html">
+                                Tree
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/translatable.html">
+                                Translatable
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/sluggable.html">
+                                Sluggable
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/timestampable.html">
+                                Timestampable
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/blameable.html">
+                                Blameable
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/loggable.html">
+                                Loggable
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/sortable.html">
+                                Sortable
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/translatable.html">
+                                Translator
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/softdeleteable.html">
+                                SoftDeleteable
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/uploadable.html">
+                                Uploadable
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/references.html">
+                                References
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/reference_integrity.html">
+                                ReferenceIntegrity
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/ip_traceable.html">
+                                IpTraceable
+                            </a>
+                        </li>
+                                    </ul>
+            </div>
+            &nbsp;
+        </nav>
+
+        <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+                        <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+                <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+                <a href="http://Atlantic18.github.io/DoctrineExtensions/">Doctrine Extensions 3.0.0</a>
+            </nav>
+
+
+                        <div class="wy-nav-content">
+                <div class="rst-content">
+                    <div role="main" class="document">
+                        <h1 id="timestampable-behavior-extension-for-doctrine-2">Timestampable behavior extension for Doctrine 2</h1>
+<p><strong>Timestampable</strong> behavior will automate the update of date fields
+on your Entities or Documents. It works through annotations and can update
+fields on creation, update, property subset update, or even on specific property value change.</p>
+<p>Features:</p>
+<ul>
+<li>Automatic predefined date field update on creation, update, property subset update, and even on record property changes</li>
+<li>ORM and ODM support using same listener</li>
+<li>Specific annotations for properties, and no interface required</li>
+<li>Can react to specific property or relation changes to specific value</li>
+<li>Can be nested with other behaviors</li>
+<li>Annotation, Yaml and Xml mapping support for extensions</li>
+</ul>
+<p>Update <strong>2012-06-26</strong></p>
+<ul>
+<li>Allow multiple values for on=&quot;change&quot;</li>
+</ul>
+<p>Update <strong>2012-03-10</strong></p>
+<ul>
+<li>Add <a href="#traits">Timestampable traits</a></li>
+</ul>
+<p>Update <strong>2011-04-04</strong></p>
+<ul>
+<li>Made single listener, one instance can be used for any object manager
+and any number of them</li>
+</ul>
+<p><strong>Note:</strong></p>
+<ul>
+<li>Last update date: <strong>2012-01-02</strong></li>
+</ul>
+<p><strong>Portability:</strong></p>
+<ul>
+<li><strong>Timestampable</strong> is now available as <a href="http://github.com/stof/StofDoctrineExtensionsBundle">Bundle</a>
+ported to <strong>Symfony2</strong> by <strong>Christophe Coevoet</strong>, together with all other extensions</li>
+</ul>
+<p>This article will cover the basic installation and functionality of <strong>Timestampable</strong> behavior</p>
+<p>Content:</p>
+<ul>
+<li><a href="#including-extension">Including</a> the extension</li>
+<li>Entity <a href="#entity-mapping">example</a></li>
+<li>Document <a href="#document-mapping">example</a></li>
+<li><a href="#yaml-mapping">Yaml</a> mapping example</li>
+<li><a href="#xml-mapping">Xml</a> mapping example</li>
+<li>Advanced usage <a href="#advanced-examples">examples</a></li>
+<li>Using <a href="#traits">Traits</a></li>
+</ul>
+<p><a name="including-extension"></a></p>
+<h2 id="setup-and-autoloading">Setup and autoloading</h2>
+<p>Read the <a href="http://github.com/l3pp4rd/DoctrineExtensions/blob/master/doc/annotations.html#em-setup">documentation</a>
+or check the <a href="http://github.com/l3pp4rd/DoctrineExtensions/tree/master/example">example code</a>
+on how to setup and use the extensions in most optimized way.</p>
+<p><a name="entity-mapping"></a></p>
+<h2 id="timestampable-entity-example">Timestampable Entity example:</h2>
+<h3 id="timestampable-annotations">Timestampable annotations:</h3>
+<ul>
+<li><strong>@Gedmo\Mapping\Annotation\Timestampable</strong> this annotation tells that this column is timestampable
+by default it updates this column on update. If column is not date, datetime or time
+type it will trigger an exception.</li>
+</ul>
+<p>Available configuration options:</p>
+<ul>
+<li><strong>on</strong> - is main option and can be <strong>create, update, change</strong> this tells when it
+should be updated</li>
+<li><strong>field</strong> - only valid if <strong>on=&quot;change&quot;</strong> is specified, tracks property or a list of properties for changes</li>
+<li><strong>value</strong> - only valid if <strong>on=&quot;change&quot;</strong> is specified and the tracked field is a single field (not an array), if the tracked field has this <strong>value</strong></li>
+</ul>
+<p><strong>Note:</strong> that Timestampable interface is not necessary, except in cases where
+you need to identify entity as being Timestampable. The metadata is loaded only once then
+cache is activated</p>
+<pre><code class="language-php">&lt;?php
+namespace Entity;
+
+use Gedmo\Mapping\Annotation as Gedmo;
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * @ORM\Entity
+ */
+class Article
+{
+    /** @ORM\Id @ORM\GeneratedValue @ORM\Column(type="integer") */
+    private $id;
+
+    /**
+     * @ORM\Column(length=128)
+     */
+    private $title;
+
+    /**
+     * @ORM\Column
+     */
+    private $body;
+
+    /**
+     * @var \DateTime $created
+     *
+     * @Gedmo\Timestampable(on="create")
+     * @ORM\Column(type="datetime")
+     */
+    private $created;
+
+    /**
+     * @var \DateTime $updated
+     *
+     * @Gedmo\Timestampable(on="update")
+     * @ORM\Column(type="datetime")
+     */
+    private $updated;
+
+    /**
+     * @var \DateTime $contentChanged
+     *
+     * @ORM\Column(type="datetime", nullable=true)
+     * @Gedmo\Timestampable(on="change", field={"title", "body"})
+     */
+    private $contentChanged;
+
+    public function getId()
+    {
+        return $this-&gt;id;
+    }
+
+    public function setTitle($title)
+    {
+        $this-&gt;title = $title;
+    }
+
+    public function getTitle()
+    {
+        return $this-&gt;title;
+    }
+
+    public function setBody($body)
+    {
+        $this-&gt;body = $body;
+    }
+
+    public function getBody()
+    {
+        return $this-&gt;body;
+    }
+
+    public function getCreated()
+    {
+        return $this-&gt;created;
+    }
+
+    public function getUpdated()
+    {
+        return $this-&gt;updated;
+    }
+
+    public function getContentChanged()
+    {
+        return $this-&gt;contentChanged;
+    }
+}</code></pre>
+<p><a name="document-mapping"></a></p>
+<h2 id="timestampable-document-example">Timestampable Document example:</h2>
+<pre><code class="language-php">&lt;?php
+namespace Document;
+
+use Gedmo\Mapping\Annotation as Gedmo;
+use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
+
+/**
+ * @ODM\Document(collection="articles")
+ */
+class Article
+{
+    /** @ODM\Id */
+    private $id;
+
+    /**
+     * @ODM\String
+     */
+    private $title;
+
+    /**
+     * @ODM\String
+     */
+    private $body;
+
+    /**
+     * @var date $created
+     *
+     * @ODM\Date
+     * @Gedmo\Timestampable(on="create")
+     */
+    private $created;
+
+    /**
+     * @var date $updated
+     *
+     * @ODM\Date
+     * @Gedmo\Timestampable
+     */
+    private $updated;
+
+    /**
+     * @var \DateTime $contentChanged
+     *
+     * @ODM\Date
+     * @Gedmo\Timestampable(on="change", field={"title", "body"})
+     */
+    private $contentChanged;
+
+    public function getId()
+    {
+        return $this-&gt;id;
+    }
+
+    public function setTitle($title)
+    {
+        $this-&gt;title = $title;
+    }
+
+    public function getTitle()
+    {
+        return $this-&gt;title;
+    }
+
+    public function setBody($body)
+    {
+        $this-&gt;body = $body;
+    }
+
+    public function getBody()
+    {
+        return $this-&gt;body;
+    }
+
+    public function getCreated()
+    {
+        return $this-&gt;created;
+    }
+
+    public function getUpdated()
+    {
+        return $this-&gt;updated;
+    }
+
+    public function getContentChanged()
+    {
+        return $this-&gt;contentChanged;
+    }
+}</code></pre>
+<p>Now on update and creation these annotated fields will be automatically updated</p>
+<p><a name="yaml-mapping"></a></p>
+<h2 id="yaml-mapping-example">Yaml mapping example:</h2>
+<p>Yaml mapped Article: <strong>/mapping/yaml/Entity.Article.dcm.yml</strong></p>
+<pre><code class="language-yaml">---
+Entity\Article:
+  type: entity
+  table: articles
+  id:
+    id:
+      type: integer
+      generator:
+        strategy: AUTO
+  fields:
+    title:
+      type: string
+      length: 64
+    created:
+      type: date
+      gedmo:
+        timestampable:
+          on: create
+    updated:
+      type: datetime
+      gedmo:
+        timestampable:
+          on: update</code></pre>
+<p><a name="xml-mapping"></a></p>
+<h2 id="xml-mapping-example">Xml mapping example</h2>
+<pre><code class="language-xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xmlns:gedmo="http://gediminasm.org/schemas/orm/doctrine-extensions-mapping"&gt;
+
+    &lt;entity name="Mapping\Fixture\Xml\Timestampable" table="timestampables"&gt;
+        &lt;id name="id" type="integer" column="id"&gt;
+            &lt;generator strategy="AUTO"/&gt;
+        &lt;/id&gt;
+
+        &lt;field name="created" type="datetime"&gt;
+            &lt;gedmo:timestampable on="create"/&gt;
+        &lt;/field&gt;
+        &lt;field name="updated" type="datetime"&gt;
+            &lt;gedmo:timestampable on="update"/&gt;
+        &lt;/field&gt;
+        &lt;field name="published" type="datetime" nullable="true"&gt;
+            &lt;gedmo:timestampable on="change" field="status.title" value="Published"/&gt;
+        &lt;/field&gt;
+
+        &lt;many-to-one field="status" target-entity="Status"&gt;
+            &lt;join-column name="status_id" referenced-column-name="id"/&gt;
+        &lt;/many-to-one&gt;
+    &lt;/entity&gt;
+
+&lt;/doctrine-mapping&gt;</code></pre>
+<p><a name="advanced-examples"></a></p>
+<h2 id="advanced-examples">Advanced examples:</h2>
+<h3 id="using-dependency-of-property-changes">Using dependency of property changes</h3>
+<p>Add another entity which would represent Article Type:</p>
+<pre><code class="language-php">&lt;?php
+namespace Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * @ORM\Entity
+ */
+class Type
+{
+    /** @ORM\Id @ORM\GeneratedValue @ORM\Column(type="integer") */
+    private $id;
+
+    /**
+     * @ORM\Column(length=128)
+     */
+    private $title;
+
+    /**
+     * @ORM\OneToMany(targetEntity="Article", mappedBy="type")
+     */
+    private $articles;
+
+    public function getId()
+    {
+        return $this-&gt;id;
+    }
+
+    public function setTitle($title)
+    {
+        $this-&gt;title = $title;
+    }
+
+    public function getTitle()
+    {
+        return $this-&gt;title;
+    }
+}</code></pre>
+<p>Now update the Article Entity to reflect published date on Type change:</p>
+<pre><code class="language-php">&lt;?php
+namespace Entity;
+
+use Gedmo\Mapping\Annotation as Gedmo;
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * @ORM\Entity
+ */
+class Article
+{
+    /** @ORM\Id @ORM\GeneratedValue @ORM\Column(type="integer") */
+    private $id;
+
+    /**
+     * @ORM\Column(length=128)
+     */
+    private $title;
+
+    /**
+     * @var \DateTime $created
+     *
+     * @Gedmo\Timestampable(on="create")
+     * @ORM\Column(type="datetime")
+     */
+    private $created;
+
+    /**
+     * @var \DateTime $updated
+     *
+     * @Gedmo\Timestampable(on="update")
+     * @ORM\Column(type="datetime")
+     */
+    private $updated;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Type", inversedBy="articles")
+     */
+    private $type;
+
+    /**
+     * @var \DateTime $published
+     *
+     * @ORM\Column(type="datetime", nullable=true)
+     * @Gedmo\Timestampable(on="change", field="type.title", value="Published")
+     *
+     * or for example
+     * @Gedmo\Timestampable(on="change", field="type.title", value={"Published", "Closed"})
+     */
+    private $published;
+
+    public function setType($type)
+    {
+        $this-&gt;type = $type;
+    }
+
+    public function getId()
+    {
+        return $this-&gt;id;
+    }
+
+    public function setTitle($title)
+    {
+        $this-&gt;title = $title;
+    }
+
+    public function getTitle()
+    {
+        return $this-&gt;title;
+    }
+
+    public function getCreated()
+    {
+        return $this-&gt;created;
+    }
+
+    public function getUpdated()
+    {
+        return $this-&gt;updated;
+    }
+
+    public function getPublished()
+    {
+        return $this-&gt;published;
+    }
+}</code></pre>
+<p>Yaml mapped Article: <strong>/mapping/yaml/Entity.Article.dcm.yml</strong></p>
+<pre><code class="language-yaml">---
+Entity\Article:
+  type: entity
+  table: articles
+  id:
+    id:
+      type: integer
+      generator:
+        strategy: AUTO
+  fields:
+    title:
+      type: string
+      length: 64
+    created:
+      type: date
+      gedmo:
+        timestampable:
+          on: create
+    updated:
+      type: datetime
+      gedmo:
+        timestampable:
+          on: update
+    published:
+      type: datetime
+      gedmo:
+        timestampable:
+          on: change
+          field: type.title
+          value: Published
+  manyToOne:
+    type:
+      targetEntity: Entity\Type
+      inversedBy: articles</code></pre>
+<p>Now few operations to get it all done:</p>
+<pre><code class="language-php">&lt;?php
+$article = new Article;
+$article-&gt;setTitle('My Article');
+
+$em-&gt;persist($article);
+$em-&gt;flush();
+// article: $created, $updated were set
+
+$type = new Type;
+$type-&gt;setTitle('Published');
+
+$article = $em-&gt;getRepository('Entity\Article')-&gt;findByTitle('My Article');
+$article-&gt;setType($type);
+
+$em-&gt;persist($article);
+$em-&gt;persist($type);
+$em-&gt;flush();
+// article: $published, $updated were set
+
+$article-&gt;getPublished()-&gt;format('Y-m-d'); // the date article type changed to published</code></pre>
+<p>Easy like that, any suggestions on improvements are very welcome</p>
+<h3 id="creating-a-utc-datetime-type-that-stores-your-datetimes-in-utc">Creating a UTC DateTime type that stores your datetimes in UTC</h3>
+<p>First, we define our custom data type (note the type name is datetime and the type extends DateTimeType which simply overrides the default Doctrine type):</p>
+<pre><code class="language-php">&lt;?php
+
+namespace Acme\DoctrineExtensions\DBAL\Types;
+
+use Doctrine\DBAL\Types\DateTimeType;
+use Doctrine\DBAL\Platforms\AbstractPlatform;
+use Doctrine\DBAL\Types\ConversionException;
+
+class UTCDateTimeType extends DateTimeType
+{
+    static private $utc = null;
+
+    public function convertToDatabaseValue($value, AbstractPlatform $platform)
+    {
+        if ($value === null) {
+            return null;
+        }
+
+        if (is_null(self::$utc)) {
+            self::$utc = new \DateTimeZone('UTC');
+        }
+
+        $value-&gt;setTimeZone(self::$utc);
+
+        return $value-&gt;format($platform-&gt;getDateTimeFormatString());
+    }
+
+    public function convertToPHPValue($value, AbstractPlatform $platform)
+    {
+        if ($value === null) {
+            return null;
+        }
+
+        if (is_null(self::$utc)) {
+            self::$utc = new \DateTimeZone('UTC');
+        }
+
+        $val = \DateTime::createFromFormat($platform-&gt;getDateTimeFormatString(), $value, self::$utc);
+
+        if (!$val) {
+            throw ConversionException::conversionFailed($value, $this-&gt;getName());
+        }
+
+        return $val;
+    }
+}</code></pre>
+<p>Now in Symfony2, we register and override the <strong>datetime</strong> type. <strong>WARNING:</strong> this will override the <strong>datetime</strong> type for all your entities and for all entities in external bundles or extensions, so if you have some entities that require the standard <strong>datetime</strong> type from Doctrine, you must modify the above type and use a different name (such as <strong>utcdatetime</strong>). Additionally, you'll need to modify <strong>Timestampable</strong> so that it includes <strong>utcdatetime</strong> as a valid type.</p>
+<pre><code class="language-yaml">doctrine:
+    dbal:
+        types:
+            datetime: Acme\DoctrineExtensions\DBAL\Types\UTCDateTimeType</code></pre>
+<p>And our Entity properties look as expected:</p>
+<pre><code class="language-php">&lt;?php
+/**
+ * @var \DateTime $dateCreated
+ *
+ * @ORM\Column(name="date_created", type="datetime")
+ * @Gedmo\Timestampable(on="create")
+ */
+private $dateCreated;
+
+/**
+ * @var \DateTime $dateLastModified
+ *
+ * @Gedmo\Timestampable(on="update")
+ * @ORM\Column(name="date_last_modified", type="datetime")
+ */
+private $dateLastModified;</code></pre>
+<p>Now, in our view (suppose we are using Symfony2 and Twig), we can display the datetime (which is persisted in UTC format) in our user's time zone:</p>
+<pre><code class="language-twig">{{ myEntity.dateCreated | date("d/m/Y g:i a", app.user.timezone) }}</code></pre>
+<p>Or if the user does not have a timezone, we could expand that to use a system/app/PHP default timezone.</p>
+<p>This example is based off <a href="http://www.doctrine-project.org/docs/orm/2.0/en/cookbook/working-with-datetime.html#handling-different-timezones-with-the-datetime-type" title="Handling different Timezones with the DateTime Type">Handling different Timezones with the DateTime Type</a> - however that example may be outdated because it contains some obviously invalid PHP from the TimeZone class.</p>
+<p><a name="traits"></a></p>
+<h2 id="traits">Traits</h2>
+<p>You can use timestampable traits for quick <strong>createdAt</strong> <strong>updatedAt</strong> timestamp definitions
+when using annotation mapping.
+There is also a trait without annotations for easy integration purposes.</p>
+<p><strong>Note:</strong> this feature is only available since php <strong>5.4.0</strong>. And you are not required
+to use the Traits provided by extensions.</p>
+<pre><code class="language-php">&lt;?php
+namespace Timestampable\Fixture;
+
+use Gedmo\Timestampable\Traits\TimestampableEntity;
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * @ORM\Entity
+ */
+class UsingTrait
+{
+    /**
+     * Hook timestampable behavior
+     * updates createdAt, updatedAt fields
+     */
+    use TimestampableEntity;
+
+    /**
+     * @ORM\Id
+     * @ORM\GeneratedValue
+     * @ORM\Column(type="integer")
+     */
+    private $id;
+
+    /**
+     * @ORM\Column(length=128)
+     */
+    private $title;
+}</code></pre>
+<p>Traits are very simple and if you use different field names I recommend to simply create your
+own ones based per project. These ones are standing as an example.</p>
+                    </div>
+
+                    <footer>
+                        <hr/>
+                                                    <div role="contentinfo">
+                                <p>
+                                    Find Doctrine Extensions 3.0.0 on <a href="https://github.com/Atlantic18/DoctrineExtensions">GitHub</a>.
+                                </p>
+                            </div>
+                                                Built with <a href="http://couscous.io/">Couscous</a> using a <a href="https://github.com/CouscousPHP/Template-ReadTheDocs">theme</a> based on <a href="https://readthedocs.org/">Read the Docs</a>.
+                    </footer>
+
+                </div>
+            </div>
+
+        </section>
+
+    </div>
+
+    <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script>
+    <script src="http://Atlantic18.github.io/DoctrineExtensions/js/theme.js"></script>
+
+    <script>
+        $(function() {
+            // Syntax highlighting
+            hljs.initHighlightingOnLoad();
+        });
+    </script>
+
+</body>
+</html>

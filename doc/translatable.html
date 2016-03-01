@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctrine Extensions 3.0.0</title>
+
+    <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Roboto+Slab:400,700|Inconsolata:400,700&subset=latin,cyrillic'
+          rel='stylesheet' type='text/css'>
+
+    <link rel="stylesheet" href="http://Atlantic18.github.io/DoctrineExtensions/css/theme.css" type="text/css"/>
+    <link rel="stylesheet" href="http://Atlantic18.github.io/DoctrineExtensions/css/theme-fixes.css" type="text/css"/>
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/github.min.css">
+</head>
+<body class="wy-body-for-nav">
+
+    <div class="wy-grid-for-nav">
+
+        <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+            <div class="wy-side-nav-search">
+                <a href="http://Atlantic18.github.io/DoctrineExtensions/" class="fa fa-home"> Doctrine Extensions 3.0.0</a>
+            </div>
+
+            <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+                <ul>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/tree.html">
+                                Tree
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/translatable.html">
+                                Translatable
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/sluggable.html">
+                                Sluggable
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/timestampable.html">
+                                Timestampable
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/blameable.html">
+                                Blameable
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/loggable.html">
+                                Loggable
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/sortable.html">
+                                Sortable
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/translatable.html">
+                                Translator
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/softdeleteable.html">
+                                SoftDeleteable
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/uploadable.html">
+                                Uploadable
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/references.html">
+                                References
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/reference_integrity.html">
+                                ReferenceIntegrity
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/ip_traceable.html">
+                                IpTraceable
+                            </a>
+                        </li>
+                                    </ul>
+            </div>
+            &nbsp;
+        </nav>
+
+        <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+                        <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+                <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+                <a href="http://Atlantic18.github.io/DoctrineExtensions/">Doctrine Extensions 3.0.0</a>
+            </nav>
+
+
+                        <div class="wy-nav-content">
+                <div class="rst-content">
+                    <div role="main" class="document">
+                        <h1 id="translatable-behavior-extension-for-doctrine-2">Translatable behavior extension for Doctrine 2</h1>
+<p><strong>Translatable</strong> behavior offers a very handy solution for translating specific record fields
+in different languages. Further more, it loads the translations automatically for a locale
+currently used, which can be set to <strong>Translatable Listener</strong> on it`s initialization or later
+for other cases through the <strong>Entity</strong> itself</p>
+<p>Features:</p>
+<ul>
+<li>Automatic storage of translations in database</li>
+<li>ORM and ODM support using same listener</li>
+<li>Automatic translation of Entity or Document fields when loaded</li>
+<li>ORM query can use <strong>hint</strong> to translate all records without issuing additional queries</li>
+<li>Can be nested with other behaviors</li>
+<li>Annotation, Yaml and Xml mapping support for extensions</li>
+</ul>
+<p><strong>2016-02-03</strong></p>
+<ul>
+<li>Since extensions do not explicitly define column names for translation entity, because
+now it relies on <a href="http://stackoverflow.com/questions/12702657/how-to-configure-naming-strategy-in-doctrine-2">naming strategy</a>.
+If you explicitly define indexes be sure that column names match your naming strategy.</li>
+</ul>
+<p><strong>Note list:</strong></p>
+<ul>
+<li>Public <a href="http://github.com/l3pp4rd/DoctrineExtensions" title="Translatable extension on Github">Translatable repository</a> is available on github</li>
+<li>Using other extensions on the same Entity fields may result in unexpected way</li>
+<li>May impact your application performance since it does an additional query for translation if loaded without query hint</li>
+<li>Last update date: <strong>2016-02-03</strong></li>
+</ul>
+<p><strong>Portability:</strong></p>
+<ul>
+<li><strong>Translatable</strong> is now available as <a href="http://github.com/stof/StofDoctrineExtensionsBundle">Bundle</a>
+ported to <strong>Symfony2</strong> by <strong>Christophe Coevoet</strong>, together with all other extensions</li>
+</ul>
+<p>This article will cover the basic installation and functionality of <strong>Translatable</strong> behavior</p>
+<p>Content:</p>
+<ul>
+<li><a href="#including-extension">Including</a> the extension</li>
+<li>Entity <a href="#entity-domain-object">example</a></li>
+<li>Document <a href="#document-domain-object">example</a></li>
+<li><a href="#yaml-mapping">Yaml</a> mapping example</li>
+<li><a href="#xml-mapping">Xml</a> mapping example</li>
+<li>Basic usage <a href="#basic-examples">examples</a></li>
+<li><a href="#multi-translations">Persisting</a> multiple translations</li>
+<li>Using ORM query <a href="#orm-query-hint">hint</a></li>
+<li>Advanced usage <a href="#advanced-examples">examples</a></li>
+<li>Personal <a href="#personal-translations">translations</a></li>
+</ul>
+<p><a name="including-extension"></a></p>
+<h2 id="setup-and-autoloading">Setup and autoloading</h2>
+<p>Read the <a href="http://github.com/l3pp4rd/DoctrineExtensions/blob/master/doc/annotations.html#em-setup">documentation</a>
+or check the <a href="http://github.com/l3pp4rd/DoctrineExtensions/tree/master/example">example code</a>
+on how to setup and use the extensions in most optimized way.</p>
+<h3 id="translatable-annotations">Translatable annotations:</h3>
+<ul>
+<li><strong>@Gedmo\Mapping\Annotation\Translatable</strong> it will <strong>translate</strong> this field</li>
+<li><strong>@Gedmo\Mapping\Annotation\TranslationEntity(class=&quot;my\class&quot;)</strong> it will use this class to store <strong>translations</strong> generated</li>
+<li><strong>@Gedmo\Mapping\Annotation\Locale or @Gedmo\Mapping\Annotation\Language</strong> this will identify this column as <strong>locale</strong> or <strong>language</strong>
+used to override the global locale</li>
+</ul>
+<p><a name="entity-domain-object"></a></p>
+<h2 id="translatable-entity-example">Translatable Entity example:</h2>
+<p><strong>Note:</strong> that Translatable interface is not necessary, except in cases where
+you need to identify an entity as being Translatable. The metadata is loaded only once when
+cache is activated</p>
+<pre><code class="language-php">&lt;?php
+namespace Entity;
+
+use Gedmo\Mapping\Annotation as Gedmo;
+use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Translatable\Translatable;
+
+/**
+ * @ORM\Table(name="articles")
+ * @ORM\Entity
+ */
+class Article implements Translatable
+{
+    /** @ORM\Id @ORM\GeneratedValue @ORM\Column(type="integer") */
+    private $id;
+
+    /**
+     * @Gedmo\Translatable
+     * @ORM\Column(length=128)
+     */
+    private $title;
+
+    /**
+     * @Gedmo\Translatable
+     * @ORM\Column(type="text")
+     */
+    private $content;
+
+    /**
+     * @Gedmo\Locale
+     * Used locale to override Translation listener`s locale
+     * this is not a mapped field of entity metadata, just a simple property
+     * and it is not necessary because globally locale can be set in listener
+     */
+    private $locale;
+
+    public function getId()
+    {
+        return $this-&gt;id;
+    }
+
+    public function setTitle($title)
+    {
+        $this-&gt;title = $title;
+    }
+
+    public function getTitle()
+    {
+        return $this-&gt;title;
+    }
+
+    public function setContent($content)
+    {
+        $this-&gt;content = $content;
+    }
+
+    public function getContent()
+    {
+        return $this-&gt;content;
+    }
+
+    public function setTranslatableLocale($locale)
+    {
+        $this-&gt;locale = $locale;
+    }
+}</code></pre>
+<p><a name="document-domain-object"></a></p>
+<h2 id="translatable-document-example">Translatable Document example:</h2>
+<pre><code class="language-php">&lt;?php
+namespace Document;
+
+use Gedmo\Mapping\Annotation as Gedmo;
+use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
+use Gedmo\Translatable\Translatable;
+
+/**
+ * @ODM\Document(collection="articles")
+ */
+class Article implements Translatable
+{
+    /** @ODM\Id */
+    private $id;
+
+    /**
+     * @Gedmo\Translatable
+     * @ODM\String
+     */
+    private $title;
+
+    /**
+     * @Gedmo\Translatable
+     * @ODM\String
+     */
+    private $content;
+
+    /**
+     * @Gedmo\Locale
+     * Used locale to override Translation listener`s locale
+     * this is not a mapped field of entity metadata, just a simple property
+     */
+    private $locale;
+
+    public function getId()
+    {
+        return $this-&gt;id;
+    }
+
+    public function setTitle($title)
+    {
+        $this-&gt;title = $title;
+    }
+
+    public function getTitle()
+    {
+        return $this-&gt;title;
+    }
+
+    public function setContent($content)
+    {
+        $this-&gt;content = $content;
+    }
+
+    public function getContent()
+    {
+        return $this-&gt;content;
+    }
+
+    public function setTranslatableLocale($locale)
+    {
+        $this-&gt;locale = $locale;
+    }
+}</code></pre>
+<p><a name="yaml-mapping"></a></p>
+<h2 id="yaml-mapping-example">Yaml mapping example</h2>
+<p>Yaml mapped Article: <strong>/mapping/yaml/Entity.Article.dcm.yml</strong></p>
+<pre><code>---
+Entity\Article:
+  type: entity
+  table: articles
+  gedmo:
+    translation:
+      locale: localeField
+# using specific personal translation class:
+#     entity: Translatable\Fixture\CategoryTranslation
+  id:
+    id:
+      type: integer
+      generator:
+        strategy: AUTO
+  fields:
+    title:
+      type: string
+      length: 64
+      gedmo:
+        - translatable
+    content:
+      type: text
+      gedmo:
+        - translatable</code></pre>
+<p><a name="xml-mapping"></a></p>
+<h2 id="xml-mapping-example">Xml mapping example</h2>
+<pre><code class="language-xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xmlns:gedmo="http://gediminasm.org/schemas/orm/doctrine-extensions-mapping"&gt;
+
+    &lt;entity name="Mapping\Fixture\Xml\Translatable" table="translatables"&gt;
+
+        &lt;id name="id" type="integer" column="id"&gt;
+            &lt;generator strategy="AUTO"/&gt;
+        &lt;/id&gt;
+
+        &lt;field name="title" type="string" length="128"&gt;
+            &lt;gedmo:translatable/&gt;
+        &lt;/field&gt;
+        &lt;field name="content" type="text"&gt;
+            &lt;gedmo:translatable/&gt;
+        &lt;/field&gt;
+
+        &lt;gedmo:translation entity="Gedmo\Translatable\Entity\Translation" locale="locale"/&gt;
+
+    &lt;/entity&gt;
+
+&lt;/doctrine-mapping&gt;</code></pre>
+<p><a name="basic-examples"></a></p>
+<h2 id="basic-usage-examples">Basic usage examples:</h2>
+<p>Currently a global locale used for translations is &quot;en_us&quot; which was
+set in <strong>TranslationListener</strong> globally. To save article with its translations:</p>
+<pre><code class="language-php">&lt;?php
+$article = new Entity\Article;
+$article-&gt;setTitle('my title in en');
+$article-&gt;setContent('my content in en');
+$em-&gt;persist($article);
+$em-&gt;flush();</code></pre>
+<p>This inserted an article and inserted the translations for it in &quot;en_us&quot; locale
+only if <strong>en_us</strong> is not the <a href="#advanced-examples">default locale</a> in case if default locale
+matches current locale - it uses original record value as translation</p>
+<p>Now lets update our article in different locale:</p>
+<pre><code class="language-php">&lt;?php
+// first load the article
+$article = $em-&gt;find('Entity\Article', 1 /*article id*/);
+$article-&gt;setTitle('my title in de');
+$article-&gt;setContent('my content in de');
+$article-&gt;setTranslatableLocale('de_de'); // change locale
+$em-&gt;persist($article);
+$em-&gt;flush();</code></pre>
+<p>This updated an article and inserted the translations for it in &quot;de_de&quot; locale
+To see and load all translations of <strong>Translatable</strong> Entity:</p>
+<pre><code class="language-php">&lt;?php
+// reload in different language
+$article = $em-&gt;find('Entity\Article', 1 /*article id*/);
+$article-&gt;setLocale('ru_ru');
+$em-&gt;refresh($article);
+
+$article = $em-&gt;find('Entity\Article', 1 /*article id*/);
+$repository = $em-&gt;getRepository('Gedmo\Translatable\Entity\Translation');
+$translations = $repository-&gt;findTranslations($article);
+/* $translations contains:
+Array (
+    [de_de] =&gt; Array
+        (
+            [title] =&gt; my title in de
+            [content] =&gt; my content in de
+        )
+
+    [en_us] =&gt; Array
+        (
+            [title] =&gt; my title in en
+            [content] =&gt; my content in en
+        )
+)*/</code></pre>
+<p>As far as our global locale is now &quot;en_us&quot; and updated article has &quot;de_de&quot; values.
+Lets try to load it and it should be translated in English</p>
+<pre><code class="language-php">&lt;?php
+$article = $em-&gt;getRepository('Entity\Article')-&gt;find(1/* id of article */);
+echo $article-&gt;getTitle();
+// prints: "my title in en"
+echo $article-&gt;getContent();
+// prints: "my content in en"</code></pre>
+<p><a name="multi-translations"></a></p>
+<h2 id="persisting-multiple-translations">Persisting multiple translations</h2>
+<p>Usually it is more convenient to persist more translations when creating
+or updating a record. <strong>Translatable</strong> allows to do that through translation repository.
+All additional translations will be tracked by listener and when the flush will be executed,
+it will update or persist all additional translations.</p>
+<p><strong>Note:</strong> these translations will not be processed as ordinary fields of your object,
+in case if you translate a <strong>slug</strong> additional translation will not know how to generate
+the slug, so the value as an additional translation should be processed when creating it.</p>
+<h3 id="example-of-multiple-translations">Example of multiple translations:</h3>
+<pre><code class="language-php">&lt;?php
+// persisting multiple translations, assume default locale is EN
+$repository = $em-&gt;getRepository('Gedmo\\Translatable\\Entity\\Translation');
+// it works for ODM also
+$article = new Article;
+$article-&gt;setTitle('My article en');
+$article-&gt;setContent('content en');
+
+$repository-&gt;translate($article, 'title', 'de', 'my article de')
+    -&gt;translate($article, 'content', 'de', 'content de')
+    -&gt;translate($article, 'title', 'ru', 'my article ru')
+    -&gt;translate($article, 'content', 'ru', 'content ru')
+;
+
+$em-&gt;persist($article);
+$em-&gt;flush();
+
+// updating same article also having one new translation
+
+$repo
+    -&gt;translate($article, 'title', 'lt', 'title lt')
+    -&gt;translate($article, 'content', 'lt', 'content lt')
+    -&gt;translate($article, 'title', 'ru', 'title ru change')
+    -&gt;translate($article, 'content', 'ru', 'content ru change')
+    -&gt;translate($article, 'title', 'en', 'title en (default locale) update')
+    -&gt;translate($article, 'content', 'en', 'content en (default locale) update')
+;
+$em-&gt;flush();</code></pre>
+<p><a name="orm-query-hint"></a></p>
+<h2 id="using-orm-query-hint">Using ORM query hint</h2>
+<p>By default, behind the scenes, when you load a record - translatable hooks into <strong>postLoad</strong>
+event and issues additional query to translate all fields. Imagine that, when you load a collection,
+it may issue a lot of queries just to translate those fields. Including array hydration,
+it is not possible to hook any <strong>postLoad</strong> event since it is not an
+entity being hydrated. These are the main reasons why <strong>TranslationWalker</strong> was created.</p>
+<p><strong>TranslationWalker</strong> uses a query <strong>hint</strong> to hook into any <strong>select type query</strong>,
+and when you execute the query, no matter which hydration method you use, it automatically
+joins the translations for all fields, so you could use ordering filtering or whatever you
+want on <strong>translated fields</strong> instead of original record fields.</p>
+<p>And in result there is only one query for all this happiness.</p>
+<p>If you use translation <a href="#advanced-examples">fallbacks</a> it will be also in the same single
+query and during the hydration process it will replace the empty fields in case if they
+do not have a translation in currently used locale.</p>
+<p>Now enough talking, here is an example:</p>
+<pre><code class="language-php">&lt;?php
+$dql = &lt;&lt;&lt;___SQL
+  SELECT a, c, u
+  FROM Article a
+  LEFT JOIN a.comments c
+  JOIN c.author u
+  WHERE a.title LIKE '%translated_title%'
+  ORDER BY a.title
+___SQL;
+
+$query = $em-&gt;createQuery($dql);
+// set the translation query hint
+$query-&gt;setHint(
+    \Doctrine\ORM\Query::HINT_CUSTOM_OUTPUT_WALKER,
+    'Gedmo\\Translatable\\Query\\TreeWalker\\TranslationWalker'
+);
+
+$articles = $query-&gt;getResult(); // object hydration
+$articles = $query-&gt;getArrayResult(); // array hydration</code></pre>
+<p>And even a subselect:</p>
+<pre><code class="language-php">&lt;?php
+$dql = &lt;&lt;&lt;___SQL
+  SELECT a, c, u
+  FROM Article a
+  LEFT JOIN a.comments c
+  JOIN c.author u
+  WHERE a.id IN (
+    SELECT a2.id
+    FROM Article a2
+    WHERE a2.title LIKE '%something_translated%'
+      AND a2.status = 1
+  )
+  ORDER BY a.title
+___SQL;
+
+$query = $em-&gt;createQuery($dql);
+$query-&gt;setHint(
+    \Doctrine\ORM\Query::HINT_CUSTOM_OUTPUT_WALKER,
+    'Gedmo\\Translatable\\Query\\TreeWalker\\TranslationWalker'
+);</code></pre>
+<p><strong>NOTE:</strong> if you use memcache or apc. You should set locale and other options like fallbacks
+to query through hints. Otherwise the query will be cached with a first used locale</p>
+<pre><code class="language-php">&lt;?php
+// locale
+$query-&gt;setHint(
+    \Gedmo\Translatable\TranslatableListener::HINT_TRANSLATABLE_LOCALE,
+    'en' // take locale from session or request etc.
+);
+// fallback
+$query-&gt;setHint(
+    \Gedmo\Translatable\TranslatableListener::HINT_FALLBACK,
+    1 // fallback to default values in case if record is not translated
+);
+
+$articles = $query-&gt;getResult(); // object hydration</code></pre>
+<p>There's no need for any words anymore.. right?
+I recommend you to use it extensively since it is a way better performance, even in
+cases where you need to load single translated entity.</p>
+<p><strong>Note</strong>: Even in <strong>COUNT</strong> select statements translations are joined to leave a
+possibility to filter by translated field, if you do not need it, just do not set
+the <strong>hint</strong>. Also take into account that it is not possible to translate components
+in <strong>JOIN WITH</strong> statement, example</p>
+<pre><code>JOIN a.comments c WITH c.message LIKE '%will_not_be_translated%'`</code></pre>
+<p><strong>Note</strong>: any <strong>find</strong> related method calls cannot hook this hint automagically, we
+will use a different approach when <strong>persister overriding feature</strong> will be
+available in <strong>Doctrine</strong></p>
+<p>In case if <strong>translation query walker</strong> is used, you can additionally override:</p>
+<h3 id="overriding-translation-fallback">Overriding translation fallback</h3>
+<pre><code class="language-php">&lt;?php
+$query-&gt;setHint(\Gedmo\Translatable\TranslatableListener::HINT_FALLBACK, 1);</code></pre>
+<p>will fallback to default locale translations instead of empty values if used.
+And will override the translation listener setting for fallback.</p>
+<pre><code class="language-php">&lt;?php
+$query-&gt;setHint(\Gedmo\Translatable\TranslatableListener::HINT_FALLBACK, 0);</code></pre>
+<p>will do the opposite.</p>
+<h3 id="using-inner-join-strategy">Using inner join strategy</h3>
+<pre><code class="language-php">&lt;?php
+$query-&gt;setHint(\Gedmo\Translatable\TranslatableListener::HINT_INNER_JOIN, true);</code></pre>
+<p>will use <strong>INNER</strong> joins
+for translations instead of <strong>LEFT</strong> joins, so that in case if you do not want untranslated
+records in your result set for instance.</p>
+<h3 id="overriding-translatable-locale">Overriding translatable locale</h3>
+<pre><code class="language-php">&lt;?php
+$query-&gt;setHint(\Gedmo\Translatable\TranslatableListener::HINT_TRANSLATABLE_LOCALE, 'en');</code></pre>
+<p>would override the translation locale used to translate the resultset.</p>
+<p><strong>Note:</strong> all these query hints lasts only for the specific query.</p>
+<p><a name="advanced-examples"></a></p>
+<h2 id="advanced-examples">Advanced examples:</h2>
+<h3 id="default-locale">Default locale</h3>
+<p>In some cases we need a default translation as a fallback if record does not have
+a translation on globally used locale. In that case Translation Listener takes the
+current value of Entity. So if <strong>default locale</strong> is specified and it matches the
+locale in which record is being translated - it will not create extra translation
+but use original values instead. If translation fallback is set to <strong>false</strong> it
+will fill untranslated values as blanks</p>
+<p>To set the default locale:</p>
+<pre><code class="language-php">&lt;?php
+$translatableListener-&gt;setDefaultLocale('en_us');</code></pre>
+<p>To set translation fallback:</p>
+<pre><code class="language-php">&lt;?php
+$translatableListener-&gt;setTranslationFallback(true); // default is false</code></pre>
+<p><strong>Note</strong>: Default locale should be set on the <strong>TranslatableListener</strong> initialization
+once, since it can impact your current records if it will be changed. As it
+will not store extra record in translation table by default.</p>
+<p>If you need to store translation in default locale, set:</p>
+<pre><code class="language-php">&lt;?php
+$translatableListener-&gt;setPersistDefaultLocaleTranslation(true); // default is false</code></pre>
+<p>This would always store translations in all locales, also keeping original record
+translated field values in default locale set.</p>
+<h3 id="translation-entity">Translation Entity</h3>
+<p>In some cases if there are thousands of records or even more.. we would like to
+have a single table for translations of this Entity in order to increase the performance
+on translation loading speed. This example will show how to specify a different Entity for
+your translations by extending the mapped superclass.</p>
+<p>ArticleTranslation Entity:</p>
+<pre><code class="language-php">&lt;?php
+namespace Entity\Translation;
+
+use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Translatable\Entity\MappedSuperclass\AbstractTranslation;
+
+/**
+ * @ORM\Table(name="article_translations", indexes={
+ *      @ORM\Index(name="article_translation_idx", columns={"locale", "object_class", "field", "foreign_key"})
+ * })
+ * @ORM\Entity(repositoryClass="Gedmo\Translatable\Entity\Repository\TranslationRepository")
+ */
+class ArticleTranslation extends AbstractTranslation
+{
+    /**
+     * All required columns are mapped through inherited superclass
+     */
+}</code></pre>
+<p><strong>Note:</strong> Be careful. Since extensions do not explicitly define column names for translation entity, because
+now it relies on <a href="http://stackoverflow.com/questions/12702657/how-to-configure-naming-strategy-in-doctrine-2">naming strategy</a>.
+If you explicitly define indexes be sure that column names match your naming strategy.</p>
+<p><strong>Note:</strong> We specified the repository class to be used from extension.
+It is handy for specific methods common to the Translation Entity</p>
+<p><strong>Note:</strong> This Entity will be used instead of default Translation Entity
+only if we specify a class annotation @Gedmo\TranslationEntity(class=&quot;my\translation\entity&quot;):</p>
+<pre><code class="language-php">&lt;?php
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * @ORM\Table(name="articles")
+ * @ORM\Entity
+ * @Gedmo\TranslationEntity(class="Entity\Translation\ArticleTranslation")
+ */
+class Article
+{
+    // ...
+}</code></pre>
+<p>Now all translations of Article will be stored and queried from specific table</p>
+<p><a name="personal-translations"></a></p>
+<h2 id="personal-translations">Personal translations</h2>
+<p>Translatable has <strong>AbstractPersonalTranslation</strong> mapped superclass, which must
+be extended and mapped based on your <strong>entity</strong> which you want to translate.
+Note: translations are not automapped because of user preference based on cascades
+or other possible choices, which user can make.
+Personal translations uses foreign key constraint which is fully managed by ORM and
+allows to have a collection of related translations. User can use it anyway he likes, etc.:
+implementing array access on entity, using left join to fill collection and so on.</p>
+<p>Note: that <a href="#orm-query-hint">query hint</a> will work on personal translations the same way.
+You can always use a left join like for standard doctrine collections.</p>
+<p>Usage example:</p>
+<pre><code class="language-php">&lt;?php
+namespace Entity;
+
+use Doctrine\Common\Collections\ArrayCollection;
+use Gedmo\Mapping\Annotation as Gedmo;
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * @ORM\Entity
+ * @Gedmo\TranslationEntity(class="Entity\CategoryTranslation")
+ */
+class Category
+{
+    /**
+     * @ORM\Column(type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue
+     */
+    private $id;
+
+    /**
+     * @Gedmo\Translatable
+     * @ORM\Column(length=64)
+     */
+    private $title;
+
+    /**
+     * @Gedmo\Translatable
+     * @ORM\Column(type="text", nullable=true)
+     */
+    private $description;
+
+    /**
+     * @ORM\OneToMany(
+     *   targetEntity="CategoryTranslation",
+     *   mappedBy="object",
+     *   cascade={"persist", "remove"}
+     * )
+     */
+    private $translations;
+
+    public function __construct()
+    {
+        $this-&gt;translations = new ArrayCollection();
+    }
+
+    public function getTranslations()
+    {
+        return $this-&gt;translations;
+    }
+
+    public function addTranslation(CategoryTranslation $t)
+    {
+        if (!$this-&gt;translations-&gt;contains($t)) {
+            $this-&gt;translations[] = $t;
+            $t-&gt;setObject($this);
+        }
+    }
+
+    public function getId()
+    {
+        return $this-&gt;id;
+    }
+
+    public function setTitle($title)
+    {
+        $this-&gt;title = $title;
+    }
+
+    public function getTitle()
+    {
+        return $this-&gt;title;
+    }
+
+    public function setDescription($description)
+    {
+        $this-&gt;description = $description;
+    }
+
+    public function getDescription()
+    {
+        return $this-&gt;description;
+    }
+
+    public function __toString()
+    {
+        return $this-&gt;getTitle();
+    }
+}</code></pre>
+<p>Now the translation entity for the Category:</p>
+<pre><code class="language-php">&lt;?php
+namespace Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Translatable\Entity\MappedSuperclass\AbstractPersonalTranslation;
+
+/**
+ * @ORM\Entity
+ * @ORM\Table(name="category_translations",
+ *     uniqueConstraints={@ORM\UniqueConstraint(name="lookup_unique_idx", columns={
+ *         "locale", "object_id", "field"
+ *     })}
+ * )
+ */
+class CategoryTranslation extends AbstractPersonalTranslation
+{
+    /**
+     * Convenient constructor
+     *
+     * @param string $locale
+     * @param string $field
+     * @param string $value
+     */
+    public function __construct($locale, $field, $value)
+    {
+        $this-&gt;setLocale($locale);
+        $this-&gt;setField($field);
+        $this-&gt;setContent($value);
+    }
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Category", inversedBy="translations")
+     * @ORM\JoinColumn(name="object_id", referencedColumnName="id", onDelete="CASCADE")
+     */
+    protected $object;
+}</code></pre>
+<p>Some example code to persist with translations:</p>
+<pre><code class="language-php">&lt;?php
+// assumes default locale is "en"
+$food = new Entity\Category;
+$food-&gt;setTitle('Food');
+$food-&gt;addTranslation(new Entity\CategoryTranslation('lt', 'title', 'Maistas'));
+
+$fruits = new Entity\Category;
+$fruits-&gt;setParent($food);
+$fruits-&gt;setTitle('Fruits');
+$fruits-&gt;addTranslation(new Entity\CategoryTranslation('lt', 'title', 'Vaisiai'));
+$fruits-&gt;addTranslation(new Entity\CategoryTranslation('ru', 'title', 'rus trans'));
+
+$em-&gt;persist($food);
+$em-&gt;persist($fruits);
+$em-&gt;flush();</code></pre>
+<p>This would create translations for english and lithuanian, and for fruits, <strong>ru</strong> additionally.</p>
+<p>Easy like that, any suggestions on improvements are very welcome</p>
+<h3 id="example-code-to-use-personal-translations-with-symfony2-sonata-i18n-forms">Example code to use Personal Translations with (Symfony2 Sonata) i18n Forms:</h3>
+<p>Suppose you have a Sonata Backend with a simple form like:</p>
+<pre><code class="language-php">&lt;?php
+protected function configureFormFields(FormMapper $formMapper)    {
+    $formMapper
+        -&gt;with('General')
+        -&gt;add('title', 'text')
+        -&gt;end()
+    ;
+}</code></pre>
+<p>Then you can turn it into an i18n Form by providing the following changes.</p>
+<pre><code class="language-php">&lt;?php
+protected function configureFormFields(FormMapper $formMapper)
+{
+    $formMapper
+        -&gt;with('General')
+            -&gt;add('title', 'translatable_field', array(
+                'field'                =&gt; 'title',
+                'personal_translation' =&gt; 'ExampleBundle\Entity\Translation\ProductTranslation',
+                'property_path'        =&gt; 'translations',
+            ))
+        -&gt;end()
+    ;
+}
+</code></pre>
+<p>To accomplish this you can add the following code in your bundle:</p>
+<p><a href="https://gist.github.com/2437078">https://gist.github.com/2437078</a></p>
+<bundle>/Form/TranslatedFieldType.php
+<bundle>/Form/EventListener/addTranslatedFieldSubscriber.php
+<bundle>/Resources/services.yml
+
+Then you can change to your needs:
+
+``` php
+    'field'                =&gt; 'title', //you need to provide which field you wish to translate
+    'personal_translation' =&gt; 'ExampleBundle\Entity\Translation\ProductTranslation', //the personal translation entity
+
+```
+
+### Translations field type using Personal Translations with Symfony2:
+
+You can use [A2lixTranslationFormBundle](https://github.com/a2lix/TranslationFormBundle) to facilitate your translations.</bundle></bundle></bundle>
+                    </div>
+
+                    <footer>
+                        <hr/>
+                                                    <div role="contentinfo">
+                                <p>
+                                    Find Doctrine Extensions 3.0.0 on <a href="https://github.com/Atlantic18/DoctrineExtensions">GitHub</a>.
+                                </p>
+                            </div>
+                                                Built with <a href="http://couscous.io/">Couscous</a> using a <a href="https://github.com/CouscousPHP/Template-ReadTheDocs">theme</a> based on <a href="https://readthedocs.org/">Read the Docs</a>.
+                    </footer>
+
+                </div>
+            </div>
+
+        </section>
+
+    </div>
+
+    <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script>
+    <script src="http://Atlantic18.github.io/DoctrineExtensions/js/theme.js"></script>
+
+    <script>
+        $(function() {
+            // Syntax highlighting
+            hljs.initHighlightingOnLoad();
+        });
+    </script>
+
+</body>
+</html>

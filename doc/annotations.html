@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctrine Extensions 3.0.0</title>
+
+    <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Roboto+Slab:400,700|Inconsolata:400,700&subset=latin,cyrillic'
+          rel='stylesheet' type='text/css'>
+
+    <link rel="stylesheet" href="http://Atlantic18.github.io/DoctrineExtensions/css/theme.css" type="text/css"/>
+    <link rel="stylesheet" href="http://Atlantic18.github.io/DoctrineExtensions/css/theme-fixes.css" type="text/css"/>
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/github.min.css">
+</head>
+<body class="wy-body-for-nav">
+
+    <div class="wy-grid-for-nav">
+
+        <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+            <div class="wy-side-nav-search">
+                <a href="http://Atlantic18.github.io/DoctrineExtensions/" class="fa fa-home"> Doctrine Extensions 3.0.0</a>
+            </div>
+
+            <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+                <ul>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/tree.html">
+                                Tree
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/translatable.html">
+                                Translatable
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/sluggable.html">
+                                Sluggable
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/timestampable.html">
+                                Timestampable
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/blameable.html">
+                                Blameable
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/loggable.html">
+                                Loggable
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/sortable.html">
+                                Sortable
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/translatable.html">
+                                Translator
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/softdeleteable.html">
+                                SoftDeleteable
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/uploadable.html">
+                                Uploadable
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/references.html">
+                                References
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/reference_integrity.html">
+                                ReferenceIntegrity
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/ip_traceable.html">
+                                IpTraceable
+                            </a>
+                        </li>
+                                    </ul>
+            </div>
+            &nbsp;
+        </nav>
+
+        <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+                        <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+                <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+                <a href="http://Atlantic18.github.io/DoctrineExtensions/">Doctrine Extensions 3.0.0</a>
+            </nav>
+
+
+                        <div class="wy-nav-content">
+                <div class="rst-content">
+                    <div role="main" class="document">
+                        <h1 id="annotation-reference">Annotation reference</h1>
+<p>Bellow you will find all annotation descriptions used in these extensions.
+There will be introduction on usage with examples. For more detailed usage
+on extensions, refer to their specific documentation.</p>
+<p>Content:</p>
+<ul>
+<li>Best <a href="#em-setup">practices</a> for setting up</li>
+<li><a href="#gedmo-tree">Tree</a></li>
+<li><a href="#gedmo-translatable">Translatable</a></li>
+<li><a href="#gedmo-sluggable">Sluggable</a></li>
+<li><a href="#gedmo-timestampable">Timestampable</a></li>
+<li><a href="#gedmo-loggable">Loggable</a></li>
+</ul>
+<h2 id="annotation-mapping">Annotation mapping</h2>
+<p>Starting from <strong>doctrine2.1.x</strong> versions you have to import all used annotations
+by an <strong>use</strong> statement, see example bellow:</p>
+<pre><code class="language-php">namespace MyApp\Entity;
+
+use Gedmo\Mapping\Annotation as Gedmo; // this will be like an alias for Gedmo extensions annotations
+use Doctrine\ORM\Mapping\Id; // includes single annotation
+use Doctrine\ORM\Mapping as ORM; // alias for doctrine ORM annotations
+
+/**
+ * @ORM\Entity
+ * @Gedmo\TranslationEntity(class="something")
+ */
+class Article
+{
+    /**
+     * @Id
+     * @Gedmo\Slug(fields={"title"}, updatable=false, separator="_")
+     * @ORM\Column(length=32, unique=true)
+     */
+    private $id;
+
+    /**
+     * @Gedmo\Translatable
+     * @ORM\Column(length=64)
+     */
+    private $title;
+
+    /**
+     * @Gedmo\Timestampable(on="create")
+     * @ORM\Column(type="datetime")
+     */
+    private $created;
+}</code></pre>
+<p><strong>Note:</strong> this mapping applies only if you use <strong>doctrine-common</strong> library at version <strong>2.1.x</strong> or higher,
+extension library still supports old mapping styles if you manually set the mapping drivers</p>
+<p><a name="em-setup"></a></p>
+<h2 id="best-practices-for-setting-up-with-annotations">Best practices for setting up with annotations</h2>
+<p>New annotation reader does not depend on any namespaces, for that reason you can use
+single reader instance for whole project. The example bellow shows how to setup the
+mapping and listeners:</p>
+<p><strong>Note:</strong> using this repository you can test and check the <a href="https://github.com/l3pp4rd/DoctrineExtensions/blob/master/example/em.php">example demo configuration</a></p>
+<pre><code class="language-php">&lt;?php
+// WARNING: setup, assumes that autoloaders are set
+
+// globally used cache driver, in production use APC or memcached
+$cache = new Doctrine\Common\Cache\ArrayCache;
+// standard annotation reader
+$annotationReader = new Doctrine\Common\Annotations\AnnotationReader;
+$cachedAnnotationReader = new Doctrine\Common\Annotations\CachedReader(
+    $annotationReader, // use reader
+    $cache // and a cache driver
+);
+// create a driver chain for metadata reading
+$driverChain = new Doctrine\ORM\Mapping\Driver\DriverChain();
+// load superclass metadata mapping only, into driver chain
+// also registers Gedmo annotations.NOTE: you can personalize it
+Gedmo\DoctrineExtensions::registerAbstractMappingIntoDriverChainORM(
+    $driverChain, // our metadata driver chain, to hook into
+    $cachedAnnotationReader // our cached annotation reader
+);
+
+// now we want to register our application entities,
+// for that we need another metadata driver used for Entity namespace
+$annotationDriver = new Doctrine\ORM\Mapping\Driver\AnnotationDriver(
+    $cachedAnnotationReader, // our cached annotation reader
+    array(__DIR__.'/app/Entity') // paths to look in
+);
+// NOTE: driver for application Entity can be different, Yaml, Xml or whatever
+// register annotation driver for our application Entity namespace
+$driverChain-&gt;addDriver($annotationDriver, 'Entity');
+
+// general ORM configuration
+$config = new Doctrine\ORM\Configuration;
+$config-&gt;setProxyDir(sys_get_temp_dir());
+$config-&gt;setProxyNamespace('Proxy');
+$config-&gt;setAutoGenerateProxyClasses(false); // this can be based on production config.
+// register metadata driver
+$config-&gt;setMetadataDriverImpl($driverChain);
+// use our already initialized cache driver
+$config-&gt;setMetadataCacheImpl($cache);
+$config-&gt;setQueryCacheImpl($cache);
+
+// create event manager and hook preferred extension listeners
+$evm = new Doctrine\Common\EventManager();
+// gedmo extension listeners, remove which are not used
+
+// sluggable
+$sluggableListener = new Gedmo\Sluggable\SluggableListener;
+// you should set the used annotation reader to listener, to avoid creating new one for mapping drivers
+$sluggableListener-&gt;setAnnotationReader($cachedAnnotationReader);
+$evm-&gt;addEventSubscriber($sluggableListener);
+
+// tree
+$treeListener = new Gedmo\Tree\TreeListener;
+$treeListener-&gt;setAnnotationReader($cachedAnnotationReader);
+$evm-&gt;addEventSubscriber($treeListener);
+
+// loggable, not used in example
+$loggableListener = new Gedmo\Loggable\LoggableListener;
+$loggableListener-&gt;setAnnotationReader($cachedAnnotationReader);
+$evm-&gt;addEventSubscriber($loggableListener);
+
+// timestampable
+$timestampableListener = new Gedmo\Timestampable\TimestampableListener;
+$timestampableListener-&gt;setAnnotationReader($cachedAnnotationReader);
+$evm-&gt;addEventSubscriber($timestampableListener);
+
+// translatable
+$translatableListener = new Gedmo\Translatable\TranslatableListener;
+// current translation locale should be set from session or hook later into the listener
+// most important, before entity manager is flushed
+$translatableListener-&gt;setTranslatableLocale('en');
+$translatableListener-&gt;setDefaultLocale('en');
+$translatableListener-&gt;setAnnotationReader($cachedAnnotationReader);
+$evm-&gt;addEventSubscriber($translatableListener);
+
+// sortable, not used in example
+$sortableListener = new Gedmo\Sortable\SortableListener;
+$sortableListener-&gt;setAnnotationReader($cachedAnnotationReader);
+$evm-&gt;addEventSubscriber($sortableListener);
+
+// mysql set names UTF-8 if required
+$evm-&gt;addEventSubscriber(new Doctrine\DBAL\Event\Listeners\MysqlSessionInit());
+// DBAL connection
+$connection = array(
+    'driver' =&gt; 'pdo_mysql',
+    'host' =&gt; '127.0.0.1',
+    'dbname' =&gt; 'test',
+    'user' =&gt; 'root',
+    'password' =&gt; ''
+);
+// Finally, create entity manager
+$em = Doctrine\ORM\EntityManager::create($connection, $config, $evm);</code></pre>
+<p><strong>Note:</strong> that symfony2 StofDoctrineExtensionsBundle does it automatically this
+way you will maintain a single instance of annotation reader. It relates only
+to doctrine-common-2.1.x branch and newer.</p>
+<p><a name="gedmo-tree"></a></p>
+<h2 id="tree-annotations">Tree annotations</h2>
+<p>Tree can use different adapters. Currently <strong>Tree</strong> extension supports <strong>NestedSet</strong>
+and <strong>Closure</strong> strategies which has a difference for annotations used. Note, that
+tree will automatically map indexes which are considered necessary for best performance.</p>
+<h3 id="gedmomappingannotationtree-required-for-all-tree-strategies">@Gedmo\Mapping\Annotation\Tree (required for all tree strategies)</h3>
+<p><strong>class</strong> annotation</p>
+<p>Is the main identificator of tree used for domain object which should <strong>act as Tree</strong>.</p>
+<p><strong>options:</strong></p>
+<ul>
+<li><strong>type</strong> - (string) <em>optional</em> default: <strong>nested</strong></li>
+</ul>
+<p>example:</p>
+<pre><code class="language-php">&lt;?php
+/**
+ * @Gedmo\Mapping\Annotation\Tree(type="nested")
+ * @Doctrine\ORM\Mapping\Entity(repositoryClass="Gedmo\Tree\Entity\Repository\NestedTreeRepository")
+ */
+class Category ...</code></pre>
+<h3 id="gedmomappingannotationtreeparent-required-for-all-tree-strategies">@Gedmo\Mapping\Annotation\TreeParent (required for all tree strategies)</h3>
+<p><strong>property</strong> annotation</p>
+<p>This annotation forces to specify the <strong>parent</strong> field, which must be a <strong>ManyToOne</strong>
+relation</p>
+<p>example:</p>
+<pre><code class="language-php">&lt;?php
+/**
+ * @Gedmo\Mapping\Annotation\TreeParent
+ * @Doctrine\ORM\Mapping\ManyToOne(targetEntity="Category")
+ * @Doctrine\ORM\Mapping\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="CASCADE")
+ */
+private $parent;</code></pre>
+<h3 id="gedmomappingannotationtreeleft-required-for-nested-tree">@Gedmo\Mapping\Annotation\TreeLeft (required for nested tree)</h3>
+<p><strong>property</strong> annotation</p>
+<p>This annotation forces to specify the <strong>left</strong> field, which will be used for generation
+of nestedset left values. Property must be <strong>integer</strong> type.</p>
+<p>example:</p>
+<pre><code class="language-php">&lt;?php
+/**
+ * @Gedmo\Mapping\Annotation\TreeLeft
+ * @Doctrine\ORM\Mapping\Column(type=integer)
+ */
+private $lft;</code></pre>
+<h3 id="gedmomappingannotationtreeright-required-for-nested-tree">@Gedmo\Mapping\Annotation\TreeRight (required for nested tree)</h3>
+<p><strong>property</strong> annotation</p>
+<p>This annotation forces to specify the <strong>right</strong> field, which will be used for generation
+of nestedset right values. Property must be <strong>integer</strong> type.</p>
+<p>example:</p>
+<pre><code class="language-php">&lt;?php
+/**
+ * @Gedmo\Mapping\Annotation\TreeRight
+ * @Doctrine\ORM\Mapping\Column(type=integer)
+ */
+private $rgt;</code></pre>
+<h3 id="gedmomappingannotationtreeroot-optional-for-nested-tree">@Gedmo\Mapping\Annotation\TreeRoot (optional for nested tree)</h3>
+<p><strong>property</strong> annotation</p>
+<p>This annotation will use <strong>integer</strong> type field to specify the root of tree. This way
+updating tree will cost less because each root will act as separate tree.</p>
+<p>example:</p>
+<pre><code class="language-php">&lt;?php
+/**
+ * @Gedmo\Mapping\Annotation\TreeRoot
+ * @Doctrine\ORM\Mapping\Column(type=integer, nullable=true)
+ */
+private $root;</code></pre>
+<h3 id="gedmomappingannotationtreelevel-optional-for-nested-tree">@Gedmo\Mapping\Annotation\TreeLevel (optional for nested tree)</h3>
+<p><strong>property</strong> annotation</p>
+<p>This annotation lets to store the <strong>level</strong> of each node in the tree, in other word it
+is depth. Can be used for indentation for instance. Property must be <strong>integer</strong> type.</p>
+<p>example:</p>
+<pre><code class="language-php">&lt;?php
+/**
+ * @Gedmo\Mapping\Annotation\TreeLevel
+ * @Doctrine\ORM\Mapping\Column(type=integer)
+ */
+private $lvl;</code></pre>
+<h3 id="gedmomappingannotationtreeclosure-required-for-closure-tree">@Gedmo\Mapping\Annotation\TreeClosure (required for closure tree)</h3>
+<p><strong>class</strong> annotation</p>
+<p>This annotation forces to specify the closure domain object, which must
+extend <strong>AbstractClosure</strong> in order to have personal closures.</p>
+<p><strong>options:</strong></p>
+<ul>
+<li><strong>class</strong> - (string) <em>required</em></li>
+</ul>
+<p>example:</p>
+<pre><code class="language-php">&lt;?php
+/**
+ * @Gedmo\Mapping\Annotation\Tree(type="closure")
+ * @Gedmo\Mapping\Annotation\TreeClosure(class="Entity\CategoryClosure")
+ * @Doctrine\ORM\Mapping\Entity(repositoryClass="Gedmo\Tree\Entity\Repository\ClosureTreeRepository")
+ */
+class Category ...</code></pre>
+<p><a name="gedmo-translatable"></a></p>
+<h2 id="translatable-annotations">Translatable annotations</h2>
+<p>Translatable additionally can have unmapped property, which would override the
+locale used by listener.</p>
+<h3 id="gedmomappingannotationtranslationentity-optional">@Gedmo\Mapping\Annotation\TranslationEntity (optional)</h3>
+<p><strong>class</strong> annotation</p>
+<p>This class annotation can force translatable to use <strong>personal Entity</strong> to store
+translations. In large tables this can be very handy.</p>
+<p><strong>options:</strong></p>
+<ul>
+<li><strong>class</strong> - (string) <em>required</em></li>
+</ul>
+<p>example:</p>
+<pre><code class="language-php">&lt;?php
+/**
+ * @Gedmo\Mapping\Annotation\TranslationEntity(class="Entity\ProductTranslation")
+ * @Doctrine\ORM\Mapping\Entity
+ */
+class Product ...</code></pre>
+<h3 id="gedmomappingannotationtranslatable-required-in-order-to-translate">@Gedmo\Mapping\Annotation\Translatable (required in order to translate)</h3>
+<p><strong>property</strong> annotation</p>
+<p>This annotation simply marks <strong>any type</strong> of field to be tracked and translated into
+currently used locale. Locale can be forced through entity or set by <strong>TranslationListener</strong>.</p>
+<p>example:</p>
+<pre><code class="language-php">&lt;?php
+/**
+ * @Gedmo\Mapping\Annotation\Translatable
+ * @Doctrine\ORM\Mapping\Column(type=text)
+ */
+private $content;</code></pre>
+<h3 id="gedmomappingannotationlocale-or-gedmomappingannotationlanguage-optional">@Gedmo\Mapping\Annotation\Locale or @Gedmo\Mapping\Annotation\Language (optional)</h3>
+<p><strong>unmapped property</strong> annotation</p>
+<p>Both annotations will do exactly the same - mark property as one which can override
+the locale set by <strong>TranslationListener</strong>. Property must not be mapped, that means
+it cannot be stored in database.</p>
+<p>example:</p>
+<pre><code class="language-php">&lt;?php
+/**
+ * @Gedmo\Mapping\Annotation\Locale
+ */
+private $locale;</code></pre>
+<p><a name="gedmo-sluggable"></a></p>
+<h2 id="sluggable-annotations">Sluggable annotations</h2>
+<p>Sluggable ensures unique slugs and correct length of the slug. It also uses utf8 to ascii
+table map to create correct ascii slugs.</p>
+<h3 id="gedmomappingannotationslug-required">@Gedmo\Mapping\Annotation\Slug (required)</h3>
+<p><strong>property</strong> annotation</p>
+<p>It will use this <strong>string</strong> property to store the generated slug.</p>
+<p><strong>options:</strong></p>
+<ul>
+<li><strong>fields</strong> - (array) <em>required</em>, must at least contain one field</li>
+<li><strong>updatable</strong> - (boolean) <em>optional</em> default: <strong>true</strong></li>
+<li><strong>separator</strong> - (string) <em>optional</em> default: <strong>-</strong></li>
+<li><strong>unique</strong> - (boolean) <em>optional</em> default: <strong>true</strong></li>
+<li><strong>style</strong> - (string) <em>optional</em> default: <strong>default</strong> lowercase, can be <strong>camel</strong> also</li>
+<li><strong>handlers</strong> - (array) <em>optional</em> default: empty array, refer to the documentation below, possible elements: <strong>Gedmo\Mapping\Annotation\SlugHandler</strong></li>
+</ul>
+<h3 id="slug-handlers">Slug handlers:</h3>
+<ul>
+<li>Gedmo\Sluggable\Handler\TreeSlugHandler - transforms a tree slug into path based, example &quot;food/fruits/apricots/king-apricots&quot;</li>
+<li>Gedmo\Sluggable\Handler\RelativeSlugHandler - takes a relation slug and prefixes the slug, example &quot;singers/michael-jackson&quot;
+in order to synchronize updates regarding the relation changes, you will need to hood <strong>InversedRelativeSlugHandler</strong> to the relation mentioned.</li>
+<li>Gedmo\Sluggable\Handler\InversedRelativeSlugHandler - updates prefixed slug for an inversed relation which is mapped by <strong>RelativeSlugHandler</strong></li>
+</ul>
+<p>examples:</p>
+<pre><code class="language-php">&lt;?php
+/**
+ * @Gedmo\Mapping\Annotation\Slug
+ * @Doctrine\ORM\Mapping\Column(length=64, unique=true)
+ */
+private $slug;</code></pre>
+<p>with TreeSlugHandler</p>
+<pre><code class="language-php">&lt;?php
+/**
+ * @Gedmo\Mapping\Annotation\Slug(handlers={
+ *      @Gedmo\Mapping\Annotation\SlugHandler(class="Gedmo\Sluggable\Handler\TreeSlugHandler", options={
+ *          @Gedmo\Mapping\Annotation\SlugHandlerOption(name="parentRelationField", value="parent"),
+ *          @Gedmo\Mapping\Annotation\SlugHandlerOption(name="separator", value="/")
+ *      })
+ * }, separator="-", updatable=true)
+ * @Doctrine\ORM\Mapping\Column(length=64, unique=true)
+ */
+private $slug;</code></pre>
+<p>with <strong>RelativeSlugHandler</strong>:</p>
+<pre><code class="language-php">&lt;?php
+/**
+ * Person domain object class
+ *
+ * @Gedmo\Mapping\Annotation\Slug(handlers={
+ *      @Gedmo\Mapping\Annotation\SlugHandler(class="Gedmo\Sluggable\Handler\RelativeSlugHandler", options={
+ *          @Gedmo\Mapping\Annotation\SlugHandlerOption(name="relationField", value="category"),
+ *          @Gedmo\Mapping\Annotation\SlugHandlerOption(name="relationSlugField", value="slug"),
+ *          @Gedmo\Mapping\Annotation\SlugHandlerOption(name="separator", value="/")
+ *      })
+ * })
+ * @Doctrine\ORM\Mapping\Column(length=64, unique=true)
+ */
+private $slug;</code></pre>
+<p>if you used <strong>RelativeSlugHandler</strong> - relation object should use <strong>InversedRelativeSlugHandler</strong>:</p>
+<pre><code class="language-php">&lt;?php
+/**
+ * Category domain object class
+ *
+ * @Gedmo\Mapping\Annotation\Slug(handlers={
+ *      @Gedmo\Mapping\Annotation\SlugHandler(class="Gedmo\Sluggable\Handler\InversedRelativeSlugHandler", options={
+ *          @Gedmo\Mapping\Annotation\SlugHandlerOption(name="relationClass", value="App\Entity\Person"),
+ *          @Gedmo\Mapping\Annotation\SlugHandlerOption(name="mappedBy", value="category"),
+ *          @Gedmo\Mapping\Annotation\SlugHandlerOption(name="inverseSlugField", value="slug")
+ *      })
+ * })
+ * @Doctrine\ORM\Mapping\Column(length=64, unique=true)
+ */
+private $slug;</code></pre>
+<p><a name="gedmo-timestampable"></a></p>
+<h2 id="timestampable-annotations">Timestampable annotations</h2>
+<p>Timestampable will update date fields on create, update or property change. If you set/force
+date manually it will not update it.</p>
+<h3 id="gedmomappingannotationtimestampable-required">@Gedmo\Mapping\Annotation\Timestampable (required)</h3>
+<p><strong>property</strong> annotation</p>
+<p>Marks a <strong>date, datetime or time</strong> field as timestampable.</p>
+<p><strong>options:</strong></p>
+<ul>
+<li><strong>on</strong> - (string) <em>optional</em> default: <strong>update</strong>, other choice is <strong>create</strong> or <strong>change</strong></li>
+<li><strong>field</strong> - (string) <em>conditional</em> required only if it triggers on <strong>change</strong>, name of the <strong>field</strong>
+or if it is a relation <strong>property.field</strong></li>
+<li><strong>value</strong> - (mixed) <em>conditional</em> required only if it triggers on <strong>change</strong>, value of property
+which would trigger an update.</li>
+</ul>
+<p>example:</p>
+<pre><code class="language-php">&lt;?php
+/**
+ * @Gedmo\Mapping\Annotation\Timestampable(on="create")
+ * @Doctrine\ORM\Mapping\Column(type="datetime")
+ */
+private $created;
+
+/**
+ * @Gedmo\Mapping\Annotation\Timestampable(on="change", field="status.title", value="Published")
+ * @Doctrine\ORM\Mapping\Column(type="date")
+ */
+private $published;
+
+/**
+ * @Doctrine\ORM\Mapping\ManyToOne(targetEntity="Status")
+ */
+private $status;</code></pre>
+<p><a name="gedmo-loggable"></a></p>
+<h2 id="loggable-annotations">Loggable annotations</h2>
+<p>Loggable is used to log all actions made on annotated object class, it logs insert, update
+and remove actions for a username which currently is logged in for instance.
+Further more, it stores all <strong>Versioned</strong> property changes in the log which allows
+a version management implementation for this object.</p>
+<h3 id="gedmomappingannotationloggable-required">@Gedmo\Mapping\Annotation\Loggable (required)</h3>
+<p><strong>class</strong> annotation</p>
+<p>This class annotation marks object as being loggable and logs all actions being done to
+this class records.</p>
+<p><strong>options:</strong></p>
+<ul>
+<li><strong>logEntryClass</strong> - (string) <em>optional</em> personal log storage class</li>
+</ul>
+<p>example:</p>
+<pre><code class="language-php">&lt;?php
+/**
+ * @Gedmo\Mapping\Annotation\Loggable(logEntryClass="Entity\ProductLogEntry")
+ * @Doctrine\ORM\Mapping\Entity
+ */
+class Product ...</code></pre>
+<h3 id="gedmomappingannotationversioned-optional">@Gedmo\Mapping\Annotation\Versioned (optional)</h3>
+<p><strong>property</strong> annotation</p>
+<p>Tracks the marked property for changes to be logged, can be set to single valued associations
+but not for collections. Using these log entries as revisions, objects can be reverted to
+a specific version.</p>
+<p>example:</p>
+<pre><code class="language-php">&lt;?php
+/**
+ * @Gedmo\Mapping\Annotation\Versioned
+ * @Doctrine\ORM\Mapping\Column(type="text")
+ */
+private $content;
+
+/**
+ * @Gedmo\Mapping\Annotation\Versioned
+ * @Doctrine\ORM\Mapping\ManyToOne(targetEntity="Article", inversedBy="comments")
+ */
+private $article;</code></pre>
+                    </div>
+
+                    <footer>
+                        <hr/>
+                                                    <div role="contentinfo">
+                                <p>
+                                    Find Doctrine Extensions 3.0.0 on <a href="https://github.com/Atlantic18/DoctrineExtensions">GitHub</a>.
+                                </p>
+                            </div>
+                                                Built with <a href="http://couscous.io/">Couscous</a> using a <a href="https://github.com/CouscousPHP/Template-ReadTheDocs">theme</a> based on <a href="https://readthedocs.org/">Read the Docs</a>.
+                    </footer>
+
+                </div>
+            </div>
+
+        </section>
+
+    </div>
+
+    <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script>
+    <script src="http://Atlantic18.github.io/DoctrineExtensions/js/theme.js"></script>
+
+    <script>
+        $(function() {
+            // Syntax highlighting
+            hljs.initHighlightingOnLoad();
+        });
+    </script>
+
+</body>
+</html>

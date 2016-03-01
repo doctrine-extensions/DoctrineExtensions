@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctrine Extensions 3.0.0</title>
+
+    <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Roboto+Slab:400,700|Inconsolata:400,700&subset=latin,cyrillic'
+          rel='stylesheet' type='text/css'>
+
+    <link rel="stylesheet" href="http://Atlantic18.github.io/DoctrineExtensions/css/theme.css" type="text/css"/>
+    <link rel="stylesheet" href="http://Atlantic18.github.io/DoctrineExtensions/css/theme-fixes.css" type="text/css"/>
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/github.min.css">
+</head>
+<body class="wy-body-for-nav">
+
+    <div class="wy-grid-for-nav">
+
+        <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+            <div class="wy-side-nav-search">
+                <a href="http://Atlantic18.github.io/DoctrineExtensions/" class="fa fa-home"> Doctrine Extensions 3.0.0</a>
+            </div>
+
+            <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+                <ul>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/tree.html">
+                                Tree
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/translatable.html">
+                                Translatable
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/sluggable.html">
+                                Sluggable
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/timestampable.html">
+                                Timestampable
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/blameable.html">
+                                Blameable
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/loggable.html">
+                                Loggable
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/sortable.html">
+                                Sortable
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/translatable.html">
+                                Translator
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/softdeleteable.html">
+                                SoftDeleteable
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/uploadable.html">
+                                Uploadable
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/references.html">
+                                References
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/reference_integrity.html">
+                                ReferenceIntegrity
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/ip_traceable.html">
+                                IpTraceable
+                            </a>
+                        </li>
+                                    </ul>
+            </div>
+            &nbsp;
+        </nav>
+
+        <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+                        <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+                <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+                <a href="http://Atlantic18.github.io/DoctrineExtensions/">Doctrine Extensions 3.0.0</a>
+            </nav>
+
+
+                        <div class="wy-nav-content">
+                <div class="rst-content">
+                    <div role="main" class="document">
+                        <h1 id="cross-object-mapper-references-behavior-extension-for-doctrine-2">Cross Object Mapper References behavior extension for Doctrine 2</h1>
+<p>Create documents and entities that contain references to each other.</p>
+<h2 id="options">Options</h2>
+<p>The following options are possible on reference one and many associations:</p>
+<p><strong>Owning Side</strong></p>
+<ul>
+<li><strong>type</strong> - The type of association.</li>
+<li><strong>class</strong> - The associated class name.</li>
+<li><strong>inversedBy</strong> - The property name for the inverse side of this association.</li>
+<li><strong>identifier</strong> - The property name to store the associated object id in.</li>
+</ul>
+<p><strong>Inverse Side</strong></p>
+<ul>
+<li><strong>type</strong> - The type of association.</li>
+<li><strong>class</strong> - The associated class name.</li>
+<li><strong>mappedBy</strong> - The property name for the owning side of this association.</li>
+</ul>
+<h2 id="annotations">Annotations</h2>
+<p><strong>@Gedmo\ReferenceMany</strong></p>
+<pre><code class="language-php">&lt;?php
+
+/**
+ * @Gedmo\ReferenceMany(type="entity", class="Entity\StockItem", mappedBy="product")
+ */
+private $stockItems;</code></pre>
+<p><strong>@Gedmo\ReferenceOne</strong></p>
+<pre><code class="language-php">&lt;?php
+
+/**
+ * @Gedmo\ReferenceOne(type="document", class="Document\Product", inversedBy="stockItems", identifier="productId")
+ */
+private $product;</code></pre>
+<h2 id="example">Example</h2>
+<p>Here is an example where you have a Product which is mapped using the Doctrine MongoDB ODM project and it contains a property <code>$stockItems</code> that is populated from the Doctrine2 ORM.</p>
+<pre><code class="language-php">&lt;?php
+
+namespace Document;
+
+use Doctrine\Common\Collections\Collection;
+use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
+use Gedmo\Mapping\Annotation as Gedmo;
+
+/**
+ * @ODM\Document
+ */
+class Product
+{
+    /**
+     * @ODM\Id
+     */
+    private $id;
+
+    /**
+     * @ODM\String
+     */
+    private $name;
+
+    /**
+     * @Gedmo\ReferenceMany(type="entity", class="Entity\StockItem", mappedBy="product")
+     */
+    private $stockItems;
+
+    public function getId()
+    {
+        return $this-&gt;id;
+    }
+
+    public function setId($id)
+    {
+        $this-&gt;id = $id;
+    }
+
+    public function getName()
+    {
+        return $this-&gt;name;
+    }
+
+    public function setName($name)
+    {
+        $this-&gt;name = $name;
+    }
+
+    public function getStockItems()
+    {
+        return $this-&gt;stockItems;
+    }
+
+    public function setStockItems(Collection $stockItems)
+    {
+        $this-&gt;stockItems = $stockItems;
+    }
+}</code></pre>
+<p>The <code>StockItem</code> has a reference to the <code>Product</code> as well.</p>
+<pre><code class="language-php">&lt;?php
+
+namespace Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
+use References\Fixture\ODM\MongoDB\Product;
+
+/**
+ * @ORM\Entity
+ */
+class StockItem
+{
+    /**
+     * @ORM\Id
+     * @ORM\Column(type="integer")
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
+
+    /**
+     * @ORM\Column
+     */
+    private $name;
+
+    /**
+     * @ORM\Column
+     */
+    private $sku;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $quantity;
+
+    /**
+     * @Gedmo\ReferenceOne(type="document", class="Document\Product", inversedBy="stockItems", identifier="productId")
+     */
+    private $product;
+
+    /**
+     * @ORM\Column
+     */
+    private $productId;
+
+    public function getId()
+    {
+        return $this-&gt;id;
+    }
+
+    public function setId($id)
+    {
+        $this-&gt;id = $id;
+    }
+
+    public function getName()
+    {
+        return $this-&gt;name;
+    }
+
+    public function setName($name)
+    {
+        $this-&gt;name = $name;
+    }
+
+    public function getSku()
+    {
+        return $this-&gt;sku;
+    }
+
+    public function setSku($sku)
+    {
+        $this-&gt;sku = $sku;
+    }
+
+    public function getQuantity()
+    {
+        return $this-&gt;quantity;
+    }
+
+    public function setQuantity($quantity)
+    {
+        $this-&gt;quantity = $quantity;
+    }
+
+    public function setProduct(Product $product)
+    {
+        $this-&gt;product = $product;
+    }
+
+    public function getProduct()
+    {
+        return $this-&gt;product;
+    }
+
+    public function setProductId($productId)
+    {
+        $this-&gt;productId = $productId;
+    }
+
+    public function getProductId()
+    {
+        return $this-&gt;productId;
+    }
+}</code></pre>
+                    </div>
+
+                    <footer>
+                        <hr/>
+                                                    <div role="contentinfo">
+                                <p>
+                                    Find Doctrine Extensions 3.0.0 on <a href="https://github.com/Atlantic18/DoctrineExtensions">GitHub</a>.
+                                </p>
+                            </div>
+                                                Built with <a href="http://couscous.io/">Couscous</a> using a <a href="https://github.com/CouscousPHP/Template-ReadTheDocs">theme</a> based on <a href="https://readthedocs.org/">Read the Docs</a>.
+                    </footer>
+
+                </div>
+            </div>
+
+        </section>
+
+    </div>
+
+    <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script>
+    <script src="http://Atlantic18.github.io/DoctrineExtensions/js/theme.js"></script>
+
+    <script>
+        $(function() {
+            // Syntax highlighting
+            hljs.initHighlightingOnLoad();
+        });
+    </script>
+
+</body>
+</html>

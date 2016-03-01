@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctrine Extensions 3.0.0</title>
+
+    <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Roboto+Slab:400,700|Inconsolata:400,700&subset=latin,cyrillic'
+          rel='stylesheet' type='text/css'>
+
+    <link rel="stylesheet" href="http://Atlantic18.github.io/DoctrineExtensions/css/theme.css" type="text/css"/>
+    <link rel="stylesheet" href="http://Atlantic18.github.io/DoctrineExtensions/css/theme-fixes.css" type="text/css"/>
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/github.min.css">
+</head>
+<body class="wy-body-for-nav">
+
+    <div class="wy-grid-for-nav">
+
+        <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+            <div class="wy-side-nav-search">
+                <a href="http://Atlantic18.github.io/DoctrineExtensions/" class="fa fa-home"> Doctrine Extensions 3.0.0</a>
+            </div>
+
+            <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+                <ul>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/tree.html">
+                                Tree
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/translatable.html">
+                                Translatable
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/sluggable.html">
+                                Sluggable
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/timestampable.html">
+                                Timestampable
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/blameable.html">
+                                Blameable
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/loggable.html">
+                                Loggable
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/sortable.html">
+                                Sortable
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/translatable.html">
+                                Translator
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/softdeleteable.html">
+                                SoftDeleteable
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/uploadable.html">
+                                Uploadable
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/references.html">
+                                References
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/reference_integrity.html">
+                                ReferenceIntegrity
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/ip_traceable.html">
+                                IpTraceable
+                            </a>
+                        </li>
+                                    </ul>
+            </div>
+            &nbsp;
+        </nav>
+
+        <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+                        <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+                <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+                <a href="http://Atlantic18.github.io/DoctrineExtensions/">Doctrine Extensions 3.0.0</a>
+            </nav>
+
+
+                        <div class="wy-nav-content">
+                <div class="rst-content">
+                    <div role="main" class="document">
+                        <h1 id="uploadable-behavior-extension-for-doctrine-2">Uploadable behavior extension for Doctrine 2</h1>
+<p><strong>Uploadable</strong> behavior provides the tools to manage the persistence of files with
+Doctrine 2, including automatic handling of moving, renaming and removal of files and other features.</p>
+<p>Features:</p>
+<ul>
+<li>Extension moves, removes and renames files according to configuration automatically</li>
+<li>Lots of options: Allow overwrite, append a number if file exists, filename generators, post-move callbacks, etc.</li>
+<li>It can be extended to work not only with uploaded files, but with files coming from any source (an URL, another
+file in the same server, etc).</li>
+<li>Validation of size and mime type</li>
+</ul>
+<p>Content:</p>
+<ul>
+<li><a href="#including-extension">Including</a> the extension</li>
+<li>Entity <a href="#entity-mapping">example</a></li>
+<li><a href="#yaml-mapping">Yaml</a> mapping example</li>
+<li><a href="#xml-mapping">Xml</a> mapping example</li>
+<li>Usage <a href="#usage">examples</a></li>
+<li><a href="#additional-usages">Using</a> the extension to handle not only uploaded files</li>
+<li><a href="#custom-mime-type-guessers">Custom</a> mime type guessers</li>
+</ul>
+<p><a name="including-extension"></a></p>
+<h2 id="setup-and-autoloading">Setup and autoloading</h2>
+<p>Read the <a href="http://github.com/l3pp4rd/DoctrineExtensions/blob/master/doc/annotations.html#em-setup">documentation</a>
+or check the <a href="http://github.com/l3pp4rd/DoctrineExtensions/tree/master/example">example code</a>
+on how to setup and use the extensions in most optimized way.</p>
+<p><a name="entity-mapping"></a></p>
+<h2 id="uploadable-entity-example">Uploadable Entity example:</h2>
+<h3 id="uploadable-annotations">Uploadable annotations:</h3>
+<ol>
+<li><strong>@Gedmo\Mapping\Annotation\Uploadable</strong> this class annotation tells if a class is Uploadable. Available configuration options:
+<ul>
+<li><strong>allowOverwrite</strong> - If this option is true, it will overwrite a file if it already exists. If you set &quot;false&quot;, an
+exception will be thrown. Default: false</li>
+<li><strong>appendNumber</strong> - If this option is true and &quot;allowOverwrite&quot; is false, in the case that the file already exists,
+it will append a number to the filename. Example: if you're uploading a file named &quot;test.txt&quot;, if the file already
+exists and this option is true, the extension will modify the name of the uploaded file to &quot;test-1.txt&quot;, where &quot;1&quot;
+could be any number. The extension will check if the file exists until it finds a filename with a number as its postfix that is not used.
+If you use a filename generator and this option is true, it will append a number to the filename anyway if a file with
+the same name already exists.
+Default value: false</li>
+<li><strong>path</strong> - This option expects a string containing the path where the files represented by this entity will be moved.
+Default: &quot;&quot;. Path can be set in other ways: From the listener or from a method. More details later.</li>
+<li><strong>pathMethod</strong> - Similar to option &quot;path&quot;, but this time it represents the name of a method on the entity that
+will return the path to which the files represented by this entity will be moved. This is useful in several cases.
+For example, you can set specific paths for specific entities, or you can get the path from other sources (like a
+framework configuration) instead of hardcoding it in the entity. Default: &quot;&quot;. As first argument this method takes
+default path, so you can return path relative to default.</li>
+<li><strong>callback</strong> - This option allows you to set a method name. If this option is set, the method will be called after
+the file is moved. Default value: &quot;&quot;. As first argument, this method can receive an array with information about the uploaded file, which
+includes the following keys:
+<ol>
+<li><strong>fileName</strong>: The filename.</li>
+<li><strong>fileExtension</strong>: The extension of the file (including the dot). Example: .jpg</li>
+<li><strong>fileWithoutExt</strong>: The filename without the extension.</li>
+<li><strong>filePath</strong>: The file path. Example: /my/path/filename.jpg</li>
+<li><strong>fileMimeType</strong>: The mime-type of the file. Example: text/plain.</li>
+<li><strong>fileSize</strong>: Size of the file in bytes. Example: 140000.</li>
+</ol></li>
+<li><strong>filenameGenerator</strong>: This option allows you to set a filename generator for the file. There are two already included
+by the extension: <strong>SHA1</strong>, which generates a sha1 filename for the file, and <strong>ALPHANUMERIC</strong>, which &quot;normalizes&quot;
+the filename, leaving only alphanumeric characters in the filename, and replacing anything else with a &quot;-&quot;. You can
+even create your own FilenameGenerator class (implementing the Gedmo\Uploadable\FilenameGenerator\FilenameGeneratorInterface) and set this option with the
+fully qualified class name. The other option available is &quot;NONE&quot; which, as you may guess, means no generation for the
+filename will occur. Default: &quot;NONE&quot;.</li>
+<li><strong>maxSize</strong>: This option allows you to set a maximum size for the file in bytes. If file size exceeds the value
+set in this configuration, an exception of type &quot;UploadableMaxSizeException&quot; will be thrown. By default, its value is set to 0, meaning
+that no size validation will occur.</li>
+<li><strong>allowedTypes</strong>: With this option you can set a comma-separated list of allowed mime types for the file. The extension
+will use a simple mime type guesser to guess the file type, and then it will compare it to the list of allowed types.
+If the mime type is not valid, then an exception of type &quot;UploadableInvalidMimeTypeException&quot; will be thrown. If you
+set this option, you can't set the <strong>disallowedTypes</strong> option described next. By default, no validation of mime type
+occurs. If you want to use a custom mime type guesser, see <a href="#custom-mime-type-guessers">this</a>.</li>
+<li><strong>disallowedTypes</strong>: Similar to the option <strong>allowedTypes</strong>, but with this one you configure a &quot;black list&quot; of
+mime types. If the mime type of the file is on this list, n exception of type &quot;UploadableInvalidMimeTypeException&quot; will be thrown. If you
+set this option, you can't set the <strong>allowedTypes</strong> option described next. By default, no validation of mime type
+occurs. If you want to use a custom mime type guesser, see <a href="#custom-mime-type-guessers">this</a>.</li>
+</ul></li>
+<li><strong>@Gedmo\Mapping\Annotation\UploadableFilePath</strong>: This annotation is used to set which field will receive the path
+to the file. The field MUST be of type &quot;string&quot;. Either this one or UploadableFileName annotation is REQUIRED to be set.</li>
+<li><strong>@Gedmo\Mapping\Annotation\UploadableFileName</strong>: This annotation is used to set which field will receive the name
+of the file. The field MUST be of type &quot;string&quot;. Either this one or UploadableFilePath annotation is REQUIRED to be set.</li>
+<li><strong>@Gedmo\Mapping\Annotation\UploadableFileMimeType</strong>: This is an optional annotation used to set which field will
+receive the mime type of the file as its value. This field MUST be of type &quot;string&quot;.</li>
+<li><strong>@Gedmo\Mapping\Annotation\UploadableFileSize</strong>: This is an optional annotation used to set which field will
+receive the size in bytes of the file as its value. This field MUST be of type &quot;decimal&quot;.</li>
+</ol>
+<h3 id="notes-about-setting-the-path-where-the-files-will-be-moved">Notes about setting the path where the files will be moved:</h3>
+<p>You have three choices to configure the path. You can set a default path on the listener, which will be used on every
+entity which doesn't have a path or pathMethod defined:</p>
+<pre><code class="language-php">$listener-&gt;setDefaultPath('/my/path');</code></pre>
+<p>You can use the Uploadable &quot;path&quot; option to set the path:</p>
+<pre><code class="language-php">/**
+ * @ORM\Entity
+ * @Gedmo\Uploadable(path="/my/path")
+ */
+class File
+{
+    //...
+}</code></pre>
+<p>Or you can use the Uploadable &quot;pathMethod&quot; option to set the name of the method which will return the path:</p>
+<pre><code class="language-php">/**
+ * @ORM\Entity
+ * @Gedmo\Uploadable(pathMethod="getPath")
+ */
+class File
+{
+    public function getPath()
+    {
+        return '/my/path';
+    }
+}</code></pre>
+<h3 id="note-regarding-the-uploadable-interface">Note regarding the Uploadable interface:</h3>
+<p>The Uploadable interface is not necessary, except in cases there
+you need to identify an entity as Uploadable. The metadata is loaded only once then
+you need to identify an entity as Uploadable. The metadata is loaded only once then
+cache is activated</p>
+<h3 id="minimum-configuration-needed">Minimum configuration needed:</h3>
+<pre><code class="language-php">&lt;?php
+namespace Entity;
+
+use Gedmo\Mapping\Annotation as Gedmo;
+use Doctrine\ORM\Mapping as ORM;
+
+// If you don't set the path here, remember that you must set it on the listener!
+
+/**
+ * @ORM\Entity
+ * @Gedmo\Uploadable
+ */
+class File
+{
+    // Other fields..
+
+    /**
+     * @ORM\Column
+     * @Gedmo\UploadableFilePath
+     */
+    private $path;
+}</code></pre>
+<h3 id="example-of-an-entity-with-all-the-configurations-set">Example of an entity with all the configurations set:</h3>
+<pre><code class="language-php">&lt;?php
+namespace Entity;
+
+use Gedmo\Mapping\Annotation as Gedmo;
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * @ORM\Entity
+ * @Gedmo\Uploadable(path="/my/path", callback="myCallbackMethod", filenameGenerator="SHA1", allowOverwrite=true, appendNumber=true)
+ */
+class File
+{
+    /**
+     * @ORM\Column(type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
+
+    /**
+     * @ORM\Column
+     * @Gedmo\UploadableFilePath
+     */
+    private $path;
+
+    /**
+     * @ORM\Column
+     * @Gedmo\UploadableFileName
+     */
+    private $name;
+
+    /**
+     * @ORM\Column
+     * @Gedmo\UploadableFileMimeType
+     */
+    private $mimeType;
+
+    /**
+     * @ORM\Column(type="decimal")
+     * @Gedmo\UploadableFileSize
+     */
+    private $size;
+
+    public function myCallbackMethod(array $info)
+    {
+        // Do some stuff with the file..
+    }
+
+    // Other methods..
+}</code></pre>
+<p><a name="yaml-mapping"></a></p>
+<h2 id="yaml-mapping-example">Yaml mapping example:</h2>
+<p>Yaml mapped Article: <strong>/mapping/yaml/Entity.Article.dcm.yml</strong></p>
+<pre><code>---
+Entity\File:
+  type: entity
+  table: files
+  gedmo:
+    uploadable:
+      allowOverwrite: true
+      appendNumber: true
+      path: '/my/path'
+      pathMethod: getPath
+      callback: callbackMethod
+      filenameGenerator: SHA1
+  id:
+    id:
+      type: integer
+      generator:
+        strategy: AUTO
+  fields:
+    path:
+      type: string
+      gedmo:
+        - uploadableFilePath
+    name:
+      type: string
+      gedmo:
+        - uploadableFileName
+    mimeType:
+      type: string
+      gedmo:
+        - uploadableFileMimeType
+    size:
+      type: decimal
+      gedmo:
+        - uploadableFileSize</code></pre>
+<p><a name="xml-mapping"></a></p>
+<h2 id="xml-mapping-example">Xml mapping example</h2>
+<pre><code class="language-xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+
+&lt;doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xmlns:gedmo="http://gediminasm.org/schemas/orm/doctrine-extensions-mapping"&gt;
+
+    &lt;entity name="Entity\File" table="files"&gt;
+
+        &lt;id name="id" type="integer" column="id"&gt;
+            &lt;generator strategy="AUTO"/&gt;
+        &lt;/id&gt;
+
+        &lt;field name="mimeType" column="mime" type="string"&gt;
+            &lt;gedmo:uploadable-file-mime-type /&gt;
+        &lt;/field&gt;
+
+        &lt;field name="size" column="size" type="decimal"&gt;
+            &lt;gedmo:uploadable-file-size /&gt;
+        &lt;/field&gt;
+
+        &lt;field name="name" column="name" type="string"&gt;
+            &lt;gedmo:uploadable-file-name /&gt;
+        &lt;/field&gt;
+
+        &lt;field name="path" column="path" type="string"&gt;
+            &lt;gedmo:uploadable-file-path /&gt;
+        &lt;/field&gt;
+
+        &lt;gedmo:uploadable
+            allow-overwrite="true"
+            append-number="true"
+            path="/my/path"
+            path-method="getPath"
+            callback="callbackMethod"
+            filename-generator="SHA1" /&gt;
+
+    &lt;/entity&gt;
+
+&lt;/doctrine-mapping&gt;</code></pre>
+<p><a name="usage"></a></p>
+<h2 id="usage">Usage:</h2>
+<pre><code class="language-php">&lt;?php
+// Example setting the path directly on the listener:
+
+$listener-&gt;setDefaultPath('/my/app/web/upload');
+
+if (isset($_FILES['images']) &amp;&amp; is_array($_FILES['images'])) {
+    foreach ($_FILES['images'] as $fileInfo) {
+        $file = new File();
+
+        $listener-&gt;addEntityFileInfo($file, $fileInfo);
+
+        // You can set the file info directly with a FileInfoInterface object, like this:
+        //
+        // $listener-&gt;addEntityFileInfo($file, new FileInfoArray($fileInfo));
+        //
+        // Or create your own class which implements FileInfoInterface
+        //
+        // $listener-&gt;addEntityFileInfo($file, new MyOwnFileInfo($fileInfo));
+
+        $em-&gt;persist($file);
+    }
+}
+
+$em-&gt;flush();</code></pre>
+<p>Easy like that, any suggestions on improvements are very welcome.</p>
+<p><a name="additional-usages"></a></p>
+<h3 id="using-the-extension-to-handle-not-only-uploaded-files">Using the extension to handle not only uploaded files</h3>
+<p>Maybe you want to handle files obtained from an URL, or even files that are already located in the same server than your app.
+This can be handled in a very simple way. First, you need to create a class that implements the FileInfoInterface
+interface. As an example:</p>
+<pre><code class="language-php">use Gedmo\Uploadable\FileInfo\FileInfoInterface;
+
+class CustomFileInfo implements FileInfoInterface
+{
+    protected $path;
+    protected $name;
+    protected $size;
+    protected $type;
+    protected $filename;
+    protected $error = 0;
+
+    public function __construct($path)
+    {
+        $this-&gt;path = $path;
+
+        // Now, process the file and fill the rest of the properties.
+    }
+
+    // This returns the actual path of the file
+    public function getTmpName()
+    {
+        return $this-&gt;path;
+    }
+
+    // This returns the filename
+    public function getName()
+    {
+        return $this-&gt;name;
+    }
+
+    // This returns the file size in bytes
+    public function getSize()
+    {
+        return $this-&gt;size;
+    }
+
+    // This returns the mime type
+    public function getType()
+    {
+        return $this-&gt;type;
+    }
+
+    public function getError()
+    {
+        // This should return 0, as it's only used to return the codes from PHP file upload errors.
+        return $this-&gt;error;
+    }
+
+    // If this method returns true, it will produce that the extension uses "move_uploaded_file" function to move
+    // the file. If it returns false, the extension will use the "copy" function.
+    public function isUploadedFile()
+    {
+        return false;
+    }
+}</code></pre>
+<p>Or you could simply extend the FileInfoArray class and do the following:</p>
+<pre><code class="language-php">use Gedmo\Uploadable\FileInfo\FileInfoArray;
+
+class CustomFileInfo extends FileInfoArray
+{
+    public function __construct($path)
+    {
+        // There's already a $fileInfo property, which needs to be an array with the
+        // following keys: tmp_name, name, size, type, error
+        $this-&gt;fileInfo = array(
+            'tmp_name'      =&gt; '',
+            'name'          =&gt; '',
+            'size'          =&gt; 0,
+            'type'          =&gt; '',
+            'error'         =&gt; 0
+        );
+
+        // Now process the file at $path and fill the keys with the correct values.
+        //
+        // In this example we use a $path as the first argument, but it could be an URL
+        // to the file we need to obtain, etc.
+    }
+
+    public function isUploadedFile()
+    {
+        // Remember to set this to false so we use "copy" instead of "move_uploaded_file"
+
+        return false;
+    }
+}</code></pre>
+<p>And that's it. Then, instead of getting the file info from the $_FILES array, you would do:</p>
+<pre><code class="language-php">// We set the default path in the listener again
+$listener-&gt;setDefaultPath('/my/path');
+
+$file = new File();
+
+$listener-&gt;addEntityFileInfo($file, new CustomFileInfo('/path/to/file.txt'));
+
+$em-&gt;persist($file);
+$em-&gt;flush();</code></pre>
+<p><a name="custom-mime-type-guessers"></a></p>
+<h3 id="custom-mime-type-guessers">Custom Mime type guessers</h3>
+<p>If you want to use your own mime type guesser, you need to implement the interface &quot;Gedmo\Uploadable\MimeType\MimeTypeGuesserInterface&quot;,
+which has only one method: &quot;guess($filePath)&quot;. Then, you can set the mime type guesser used on the listener in the following
+way:</p>
+<pre><code class="language-php">$listener-&gt;setMimeTypeGuesser(new MyCustomMimeTypeGuesser());
+</code></pre>
+                    </div>
+
+                    <footer>
+                        <hr/>
+                                                    <div role="contentinfo">
+                                <p>
+                                    Find Doctrine Extensions 3.0.0 on <a href="https://github.com/Atlantic18/DoctrineExtensions">GitHub</a>.
+                                </p>
+                            </div>
+                                                Built with <a href="http://couscous.io/">Couscous</a> using a <a href="https://github.com/CouscousPHP/Template-ReadTheDocs">theme</a> based on <a href="https://readthedocs.org/">Read the Docs</a>.
+                    </footer>
+
+                </div>
+            </div>
+
+        </section>
+
+    </div>
+
+    <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script>
+    <script src="http://Atlantic18.github.io/DoctrineExtensions/js/theme.js"></script>
+
+    <script>
+        $(function() {
+            // Syntax highlighting
+            hljs.initHighlightingOnLoad();
+        });
+    </script>
+
+</body>
+</html>

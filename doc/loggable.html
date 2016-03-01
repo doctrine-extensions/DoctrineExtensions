@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctrine Extensions 3.0.0</title>
+
+    <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Roboto+Slab:400,700|Inconsolata:400,700&subset=latin,cyrillic'
+          rel='stylesheet' type='text/css'>
+
+    <link rel="stylesheet" href="http://Atlantic18.github.io/DoctrineExtensions/css/theme.css" type="text/css"/>
+    <link rel="stylesheet" href="http://Atlantic18.github.io/DoctrineExtensions/css/theme-fixes.css" type="text/css"/>
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/github.min.css">
+</head>
+<body class="wy-body-for-nav">
+
+    <div class="wy-grid-for-nav">
+
+        <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+            <div class="wy-side-nav-search">
+                <a href="http://Atlantic18.github.io/DoctrineExtensions/" class="fa fa-home"> Doctrine Extensions 3.0.0</a>
+            </div>
+
+            <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+                <ul>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/tree.html">
+                                Tree
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/translatable.html">
+                                Translatable
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/sluggable.html">
+                                Sluggable
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/timestampable.html">
+                                Timestampable
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/blameable.html">
+                                Blameable
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/loggable.html">
+                                Loggable
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/sortable.html">
+                                Sortable
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/translatable.html">
+                                Translator
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/softdeleteable.html">
+                                SoftDeleteable
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/uploadable.html">
+                                Uploadable
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/references.html">
+                                References
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/reference_integrity.html">
+                                ReferenceIntegrity
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/ip_traceable.html">
+                                IpTraceable
+                            </a>
+                        </li>
+                                    </ul>
+            </div>
+            &nbsp;
+        </nav>
+
+        <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+                        <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+                <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+                <a href="http://Atlantic18.github.io/DoctrineExtensions/">Doctrine Extensions 3.0.0</a>
+            </nav>
+
+
+                        <div class="wy-nav-content">
+                <div class="rst-content">
+                    <div role="main" class="document">
+                        <h1 id="loggable-behavioral-extension-for-doctrine2">Loggable behavioral extension for Doctrine2</h1>
+<p><strong>Loggable</strong> behavior tracks your record changes and is able to
+manage versions.</p>
+<p>Features:</p>
+<ul>
+<li>Automatic storage of log entries in database</li>
+<li>ORM and ODM support using same listener</li>
+<li>Can be nested with other behaviors</li>
+<li>Objects can be reverted to previous versions</li>
+<li>Annotation, Yaml and Xml mapping support for extensions</li>
+</ul>
+<p>Update <strong>2011-04-04</strong></p>
+<ul>
+<li>Made single listener, one instance can be used for any object manager
+and any number of them</li>
+</ul>
+<p><strong>Portability:</strong></p>
+<ul>
+<li><strong>Loggable</strong> is now available as <a href="http://github.com/stof/StofDoctrineExtensionsBundle">Bundle</a>
+ported to <strong>Symfony2</strong> by <strong>Christophe Coevoet</strong>, together with all other extensions</li>
+</ul>
+<p>This article will cover the basic installation and functionality of <strong>Loggable</strong>
+behavior</p>
+<p>Content:</p>
+<ul>
+<li><a href="#including-extension">Including</a> the extension</li>
+<li>Entity <a href="#entity-mapping">example</a></li>
+<li>Document <a href="#document-mapping">example</a></li>
+<li><a href="#yaml-mapping">Yaml</a> mapping example</li>
+<li><a href="#xml-mapping">Xml</a> mapping example</li>
+<li>Basic usage <a href="#basic-examples">examples</a></li>
+</ul>
+<p><a name="including-extension"></a></p>
+<h2 id="setup-and-autoloading">Setup and autoloading</h2>
+<p>Read the <a href="http://github.com/l3pp4rd/DoctrineExtensions/blob/master/doc/annotations.html#em-setup">documentation</a>
+or check the <a href="http://github.com/l3pp4rd/DoctrineExtensions/tree/master/example">example code</a>
+on how to setup and use the extensions in most optimized way.</p>
+<h3 id="loggable-annotations">Loggable annotations:</h3>
+<ul>
+<li><strong>@Gedmo\Mapping\Annotation\Loggable(logEntryClass=&quot;my\class&quot;)</strong> this class annotation
+will store logs to optionally specified <strong>logEntryClass</strong>. You will still need to specify versioned fields with the following annotation.</li>
+<li><strong>@Gedmo\Mapping\Annotation\Versioned</strong> tracks annotated property for changes</li>
+</ul>
+<h3 id="loggable-username">Loggable username:</h3>
+<p>In order to set the username, when adding the loggable listener you need to set it this way:</p>
+<pre><code class="language-php">$loggableListener = new Gedmo\Loggable\LoggableListener;
+$loggableListener-&gt;setAnnotationReader($cachedAnnotationReader);
+$loggableListener-&gt;setUsername('admin');
+$evm-&gt;addEventSubscriber($loggableListener);</code></pre>
+<p><a name="entity-mapping"></a></p>
+<h2 id="loggable-entity-example">Loggable Entity example:</h2>
+<p><strong>Note:</strong> that Loggable interface is not necessary, except in cases there
+you need to identify entity as being Loggable. The metadata is loaded only once when
+cache is active</p>
+<pre><code class="language-php">&lt;?php
+namespace Entity;
+
+use Gedmo\Mapping\Annotation as Gedmo;
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * @Entity
+ * @Gedmo\Loggable
+ */
+class Article
+{
+    /**
+     * @ORM\Column(type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
+
+    /**
+     * @Gedmo\Versioned
+     * @ORM\Column(length=8)
+     */
+    private $title;
+
+    public function getId()
+    {
+        return $this-&gt;id;
+    }
+
+    public function setTitle($title)
+    {
+        $this-&gt;title = $title;
+    }
+
+    public function getTitle()
+    {
+        return $this-&gt;title;
+    }
+}</code></pre>
+<p><a name="document-mapping"></a></p>
+<h2 id="loggable-document-example">Loggable Document example:</h2>
+<pre><code class="language-php">&lt;?php
+namespace Document;
+
+use Gedmo\Mapping\Annotation as Gedmo;
+use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
+
+/**
+ * @ODM\Document(collection="articles")
+ * @Gedmo\Loggable
+ */
+class Article
+{
+    /** @ODM\Id */
+    private $id;
+
+    /**
+     * @ODM\String
+     * @Gedmo\Versioned
+     */
+    private $title;
+
+    public function __toString()
+    {
+        return $this-&gt;title;
+    }
+
+    public function getId()
+    {
+        return $this-&gt;id;
+    }
+
+    public function setTitle($title)
+    {
+        $this-&gt;title = $title;
+    }
+
+    public function getTitle()
+    {
+        return $this-&gt;title;
+    }
+}</code></pre>
+<p><a name="yaml-mapping"></a></p>
+<h2 id="yaml-mapping-example">Yaml mapping example</h2>
+<p>Yaml mapped Article: <strong>/mapping/yaml/Entity.Article.dcm.yml</strong></p>
+<pre><code>---
+Entity\Article:
+  type: entity
+  table: articles
+  gedmo:
+    loggable:
+# using specific personal LogEntryClass class:
+      logEntryClass: My\LogEntry
+# without specifying the LogEntryClass class:
+#   loggable: true
+  id:
+    id:
+      type: integer
+      generator:
+        strategy: AUTO
+  fields:
+    title:
+      type: string
+      length: 64
+      gedmo:
+        - versioned
+    content:
+      type: text</code></pre>
+<p><a name="xml-mapping"></a></p>
+<h2 id="xml-mapping-example">Xml mapping example</h2>
+<pre><code class="language-xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xmlns:gedmo="http://gediminasm.org/schemas/orm/doctrine-extensions-mapping"&gt;
+
+    &lt;entity name="Mapping\Fixture\Xml\Loggable" table="loggables"&gt;
+
+        &lt;id name="id" type="integer" column="id"&gt;
+            &lt;generator strategy="AUTO"/&gt;
+        &lt;/id&gt;
+
+        &lt;field name="title" type="string" length="128"&gt;
+            &lt;gedmo:versioned/&gt;
+        &lt;/field&gt;
+        &lt;many-to-one field="status" target-entity="Status"&gt;
+            &lt;join-column name="status_id" referenced-column-name="id"/&gt;
+            &lt;gedmo:versioned/&gt;
+        &lt;/many-to-one&gt;
+
+        &lt;gedmo:loggable log-entry-class="Gedmo\Loggable\Entity\LogEntry"/&gt;
+
+    &lt;/entity&gt;
+&lt;/doctrine-mapping&gt;</code></pre>
+<p><a name="basic-examples"></a></p>
+<h2 id="basic-usage-examples">Basic usage examples:</h2>
+<pre><code class="language-php">&lt;?php
+$article = new Entity\Article;
+$article-&gt;setTitle('my title');
+$em-&gt;persist($article);
+$em-&gt;flush();</code></pre>
+<p>This inserted an article and inserted the logEntry for it, which contains
+all new changeset. In case if there is <strong>OneToOne or ManyToOne</strong> relation,
+it will store only identifier of that object to avoid storing proxies</p>
+<p>Now lets update our article:</p>
+<pre><code class="language-php">&lt;?php
+// first load the article
+$article = $em-&gt;find('Entity\Article', 1 /*article id*/);
+$article-&gt;setTitle('my new title');
+$em-&gt;persist($article);
+$em-&gt;flush();</code></pre>
+<p>This updated an article and inserted the logEntry for update action with new changeset
+Now lets revert it to previous version:</p>
+<pre><code class="language-php">&lt;?php
+// first check our log entries
+$repo = $em-&gt;getRepository('Gedmo\Loggable\Entity\LogEntry'); // we use default log entry class
+$article = $em-&gt;find('Entity\Article', 1 /*article id*/);
+$logs = $repo-&gt;getLogEntries($article);
+/* $logs contains 2 logEntries */
+// lets revert to first version
+$repo-&gt;revert($article, 1/*version*/);
+// notice article is not persisted yet, you need to persist and flush it
+echo $article-&gt;getTitle(); // prints "my title"
+$em-&gt;persist($article);
+$em-&gt;flush();
+// if article had changed relation, it would be reverted also.</code></pre>
+<p>Easy like that, any suggestions on improvements are very welcome</p>
+                    </div>
+
+                    <footer>
+                        <hr/>
+                                                    <div role="contentinfo">
+                                <p>
+                                    Find Doctrine Extensions 3.0.0 on <a href="https://github.com/Atlantic18/DoctrineExtensions">GitHub</a>.
+                                </p>
+                            </div>
+                                                Built with <a href="http://couscous.io/">Couscous</a> using a <a href="https://github.com/CouscousPHP/Template-ReadTheDocs">theme</a> based on <a href="https://readthedocs.org/">Read the Docs</a>.
+                    </footer>
+
+                </div>
+            </div>
+
+        </section>
+
+    </div>
+
+    <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script>
+    <script src="http://Atlantic18.github.io/DoctrineExtensions/js/theme.js"></script>
+
+    <script>
+        $(function() {
+            // Syntax highlighting
+            hljs.initHighlightingOnLoad();
+        });
+    </script>
+
+</body>
+</html>

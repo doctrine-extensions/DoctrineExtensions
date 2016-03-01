@@ -1,0 +1,1343 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctrine Extensions 3.0.0</title>
+
+    <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Roboto+Slab:400,700|Inconsolata:400,700&subset=latin,cyrillic'
+          rel='stylesheet' type='text/css'>
+
+    <link rel="stylesheet" href="http://Atlantic18.github.io/DoctrineExtensions/css/theme.css" type="text/css"/>
+    <link rel="stylesheet" href="http://Atlantic18.github.io/DoctrineExtensions/css/theme-fixes.css" type="text/css"/>
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/github.min.css">
+</head>
+<body class="wy-body-for-nav">
+
+    <div class="wy-grid-for-nav">
+
+        <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+            <div class="wy-side-nav-search">
+                <a href="http://Atlantic18.github.io/DoctrineExtensions/" class="fa fa-home"> Doctrine Extensions 3.0.0</a>
+            </div>
+
+            <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+                <ul>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/tree.html">
+                                Tree
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/translatable.html">
+                                Translatable
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/sluggable.html">
+                                Sluggable
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/timestampable.html">
+                                Timestampable
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/blameable.html">
+                                Blameable
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/loggable.html">
+                                Loggable
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/sortable.html">
+                                Sortable
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/translatable.html">
+                                Translator
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/softdeleteable.html">
+                                SoftDeleteable
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/uploadable.html">
+                                Uploadable
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/references.html">
+                                References
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/reference_integrity.html">
+                                ReferenceIntegrity
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/ip_traceable.html">
+                                IpTraceable
+                            </a>
+                        </li>
+                                    </ul>
+            </div>
+            &nbsp;
+        </nav>
+
+        <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+                        <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+                <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+                <a href="http://Atlantic18.github.io/DoctrineExtensions/">Doctrine Extensions 3.0.0</a>
+            </nav>
+
+
+                        <div class="wy-nav-content">
+                <div class="rst-content">
+                    <div role="main" class="document">
+                        <h1 id="tree---nestedset-behavior-extension-for-doctrine-2">Tree - Nestedset behavior extension for Doctrine 2</h1>
+<p><strong>Tree</strong> nested behavior will implement the standard Nested-Set behavior
+on your Entity. Tree supports different strategies. Currently it supports
+<strong>nested-set</strong>, <strong>closure-table</strong> and <strong>materialized-path</strong>. Also this behavior can be nested
+with other extensions to translate or generated slugs of your tree nodes.</p>
+<p>Features:</p>
+<ul>
+<li>Materialized Path strategy for ORM and ODM (MongoDB)</li>
+<li>Closure tree strategy, may be faster in some cases where ordering does not matter</li>
+<li>Support for multiple roots in nested-set</li>
+<li>No need for other managers, implementation is through event listener</li>
+<li>Synchronization of left, right values is automatic</li>
+<li>Can support concurrent flush with many objects being persisted and updated</li>
+<li>Can be nested with other extensions</li>
+<li>Annotation, Yaml and Xml mapping support for extensions</li>
+</ul>
+<p>Thanks for contributions to:</p>
+<ul>
+<li><strong><a href="http://github.com/comfortablynumb">comfortablynumb</a> Gustavo Falco</strong> for Closure and Materialized Path strategy</li>
+<li><strong><a href="http://github.com/everzet">everzet</a> Kudryashov Konstantin</strong> for TreeLevel implementation</li>
+<li><strong><a href="http://github.com/stof">stof</a> Christophe Coevoet</strong> for getTreeLeafs function</li>
+</ul>
+<p>Update <strong>2015-12-23</strong></p>
+<ul>
+<li>Added Tree repository traits for easier extending tree functionalities in your repositories. <a href="#tree-repositories">Usage example here</a></li>
+</ul>
+<p>Update <strong>2012-06-28</strong></p>
+<ul>
+<li>Added &quot;buildTree&quot; functionality support for Closure and Materialized Path strategies</li>
+</ul>
+<p>Update <strong>2012-02-23</strong></p>
+<ul>
+<li>Added a new strategy to support the &quot;Materialized Path&quot; tree model. It works with ODM (MongoDB) and ORM.</li>
+</ul>
+<p>Update <strong>2011-05-07</strong></p>
+<ul>
+<li>Tree is now able to act as <strong>closure</strong> tree, this strategy was refactored
+and now fully functional. It is much faster for file-folder trees for instance
+where you do not care about tree ordering.</li>
+</ul>
+<p>Update <strong>2011-04-11</strong></p>
+<ul>
+<li>Made in memory node synchronization, this change does not require clearing the cached nodes after any updates
+to nodes, except <strong>recover, verify and removeFromTree</strong> operations.</li>
+</ul>
+<p>Update <strong>2011-02-08</strong></p>
+<ul>
+<li>Refactored to support multiple roots</li>
+<li>Changed the repository name, relevant to strategy used</li>
+<li>New <a href="#annotations">annotations</a> were added</li>
+</ul>
+<p>Update <strong>2011-02-02</strong></p>
+<ul>
+<li>Refactored the Tree to the ability on supporting different tree models</li>
+<li>Changed the repository location in order to support future updates</li>
+</ul>
+<p><strong>Note:</strong></p>
+<ul>
+<li>After using a NestedTreeRepository functions: <strong>verify, recover, removeFromTree</strong> it is recommended to clear the EntityManager cache
+because nodes may have changed values in database but not in memory. Flushing dirty nodes can lead to unexpected behaviour.</li>
+<li>Closure tree implementation is experimental and not fully functional, so far not documented either</li>
+<li>Public <a href="http://github.com/l3pp4rd/DoctrineExtensions" title="Tree extension on Github">Tree repository</a> is available on github</li>
+<li>Last update date: <strong>2012-02-23</strong></li>
+</ul>
+<p><strong>Portability:</strong></p>
+<ul>
+<li><strong>Tree</strong> is now available as <a href="http://github.com/stof/StofDoctrineExtensionsBundle">Bundle</a>
+ported to <strong>Symfony2</strong> by <strong>Christophe Coevoet</strong>, together with all other extensions</li>
+</ul>
+<p>This article will cover the basic installation and functionality of <strong>Tree</strong> behavior</p>
+<p>Content:</p>
+<ul>
+<li><a href="#including-extension">Including</a> the extension</li>
+<li>Tree <a href="#annotations">annotations</a></li>
+<li>Entity <a href="#entity-mapping">example</a></li>
+<li><a href="#yaml-mapping">Yaml</a> mapping example</li>
+<li><a href="#xml-mapping">Xml</a> mapping example</li>
+<li>Basic usage <a href="#basic-examples">examples</a></li>
+<li>Build <a href="#html-tree">html tree</a></li>
+<li>Advanced usage <a href="#advanced-examples">examples</a></li>
+<li><a href="#materialized-path">Materialized Path</a></li>
+<li><a href="#closure-table">Closure Table</a></li>
+<li><a href="#repository-methods">Repository methods (all strategies)</a></li>
+</ul>
+<p><a name="including-extension"></a></p>
+<h2 id="setup-and-autoloading">Setup and autoloading</h2>
+<p>Read the <a href="http://github.com/l3pp4rd/DoctrineExtensions/blob/master/doc/annotations.html#em-setup">documentation</a>
+or check the <a href="http://github.com/l3pp4rd/DoctrineExtensions/tree/master/example">example code</a>
+on how to setup and use the extensions in the most optimized way.</p>
+<p><a name="entity-mapping"></a></p>
+<h2 id="tree-entity-example">Tree Entity example:</h2>
+<p><strong>Note:</strong> Node interface is not necessary, except in cases where
+you need to identify and entity as being a Tree Node. The metadata is loaded only once when the
+cache is activated</p>
+<pre><code class="language-php">&lt;?php
+namespace Entity;
+
+use Gedmo\Mapping\Annotation as Gedmo;
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * @Gedmo\Tree(type="nested")
+ * @ORM\Table(name="categories")
+ * use repository for handy tree functions
+ * @ORM\Entity(repositoryClass="Gedmo\Tree\Entity\Repository\NestedTreeRepository")
+ */
+class Category
+{
+    /**
+     * @ORM\Column(type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue
+     */
+    private $id;
+
+    /**
+     * @ORM\Column(length=64)
+     */
+    private $title;
+
+    /**
+     * @Gedmo\TreeLeft
+     * @ORM\Column(type="integer")
+     */
+    private $lft;
+
+    /**
+     * @Gedmo\TreeLevel
+     * @ORM\Column(type="integer")
+     */
+    private $lvl;
+
+    /**
+     * @Gedmo\TreeRight
+     * @ORM\Column(type="integer")
+     */
+    private $rgt;
+
+    /**
+     * @Gedmo\TreeRoot
+     * @ORM\ManyToOne(targetEntity="Category")
+     * @ORM\JoinColumn(referencedColumnName="id", onDelete="CASCADE")
+     */
+    private $root;
+
+    /**
+     * @Gedmo\TreeParent
+     * @ORM\ManyToOne(targetEntity="Category", inversedBy="children")
+     * @ORM\JoinColumn(referencedColumnName="id", onDelete="CASCADE")
+     */
+    private $parent;
+
+    /**
+     * @ORM\OneToMany(targetEntity="Category", mappedBy="parent")
+     * @ORM\OrderBy({"lft" = "ASC"})
+     */
+    private $children;
+
+    public function getId()
+    {
+        return $this-&gt;id;
+    }
+
+    public function setTitle($title)
+    {
+        $this-&gt;title = $title;
+    }
+
+    public function getTitle()
+    {
+        return $this-&gt;title;
+    }
+
+    public function getRoot()
+    {
+        return $this-&gt;root;
+    }
+
+    public function setParent(Category $parent = null)
+    {
+        $this-&gt;parent = $parent;
+    }
+
+    public function getParent()
+    {
+        return $this-&gt;parent;
+    }
+}</code></pre>
+<p><a name="annotations"></a></p>
+<h3 id="tree-annotations">Tree annotations:</h3>
+<ul>
+<li><strong>@Gedmo\Mapping\Annotation\Tree(type=&quot;strategy&quot;)</strong> this <strong>class annotation</strong> sets the tree strategy by using the <strong>type</strong> parameter.
+Currently <strong>nested</strong>, <strong>closure</strong> or <strong>materializedPath</strong> strategies are supported. An additional &quot;activateLocking&quot; parameter
+is available if you use the &quot;Materialized Path&quot; strategy with MongoDB. It's used to activate the locking mechanism (more on that
+in the corresponding section).</li>
+<li><strong>@Gedmo\Mapping\Annotation\TreeLeft</strong> field is used to store the tree <strong>left</strong> value</li>
+<li><strong>@Gedmo\Mapping\Annotation\TreeRight</strong> field is used to store the tree <strong>right</strong> value</li>
+<li><strong>@Gedmo\Mapping\Annotation\TreeParent</strong> will identify the column as the relation to <strong>parent node</strong></li>
+<li><strong>@Gedmo\Mapping\Annotation\TreeLevel</strong> field is used to store the tree <strong>level</strong></li>
+<li><strong>@Gedmo\Mapping\Annotation\TreeRoot</strong> field is used to store the tree <strong>root</strong> id value or identify the column as the relation to <strong>root node</strong></li>
+<li><strong>@Gedmo\Mapping\Annotation\TreePath</strong> (Materialized Path only) field is used to store the <strong>path</strong>. It has an
+optional parameter &quot;separator&quot; to define the separator used in the path.</li>
+<li><strong>@Gedmo\Mapping\Annotation\TreePathSource</strong> (Materialized Path only) field is used as the source to
+construct the &quot;path&quot;</li>
+<li><strong>@Gedmo\Mapping\Annotation\TreeLockTime</strong> (Materialized Path - ODM MongoDB only) field is used if you need to
+use the locking mechanism with MongoDB. It persists the lock time if a root node is locked (more on that in the corresponding
+section).</li>
+</ul>
+<p><a name="yaml-mapping"></a></p>
+<h2 id="yaml-mapping-example">Yaml mapping example</h2>
+<p>Yaml mapped Category: <strong>/mapping/yaml/Entity.Category.dcm.yml</strong></p>
+<pre><code>---
+Entity\Category:
+  type: entity
+  repositoryClass: Gedmo\Tree\Entity\Repository\NestedTreeRepository
+  table: categories
+  gedmo:
+    tree:
+      type: nested
+  id:
+    id:
+      type: integer
+      generator:
+        strategy: AUTO
+  fields:
+    title:
+      type: string
+      length: 64
+    lft:
+      type: integer
+      gedmo:
+        - treeLeft
+    rgt:
+      type: integer
+      gedmo:
+        - treeRight
+    lvl:
+      type: integer
+      gedmo:
+        - treeLevel
+  manyToOne:
+    root:
+      targetEntity: Entity\Category
+      joinColumn:
+        referencedColumnName: id
+        onDelete: CASCADE
+      gedmo:
+        - treeRoot
+    parent:
+      targetEntity: Entity\Category
+      inversedBy: children
+      joinColumn:
+        referencedColumnName: id
+        onDelete: CASCADE
+      gedmo:
+        - treeParent
+  oneToMany:
+    children:
+      targetEntity: Entity\Category
+      mappedBy: parent
+      orderBy:
+        lft: ASC</code></pre>
+<p><a name="xml-mapping"></a></p>
+<h2 id="xml-mapping-example">Xml mapping example</h2>
+<pre><code class="language-xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xmlns:gedmo="http://gediminasm.org/schemas/orm/doctrine-extensions-mapping"&gt;
+
+    &lt;entity name="Mapping\Fixture\Xml\NestedTree" table="nested_trees" repository-class="Gedmo\Tree\Entity\Repository\NestedTreeRepository"&gt;
+
+        &lt;indexes&gt;
+            &lt;index name="name_idx" columns="name"/&gt;
+        &lt;/indexes&gt;
+
+        &lt;id name="id" type="integer" column="id"&gt;
+            &lt;generator strategy="AUTO"/&gt;
+        &lt;/id&gt;
+
+        &lt;field name="name" type="string" length="128"/&gt;
+        &lt;field name="left" column="lft" type="integer"&gt;
+            &lt;gedmo:tree-left/&gt;
+        &lt;/field&gt;
+        &lt;field name="right" column="rgt" type="integer"&gt;
+            &lt;gedmo:tree-right/&gt;
+        &lt;/field&gt;
+        &lt;field name="level" column="lvl" type="integer"&gt;
+            &lt;gedmo:tree-level/&gt;
+        &lt;/field&gt;
+
+        &lt;many-to-one field="root" target-entity="NestedTree"&gt;
+            &lt;join-column name="tree_root" referenced-column-name="id" on-delete="CASCADE"/&gt;
+            &lt;gedmo:tree-root/&gt;
+        &lt;/many-to-one&gt;
+
+        &lt;many-to-one field="parent" target-entity="NestedTree" inversed-by="children"&gt;
+            &lt;join-column name="parent_id" referenced-column-name="id" on-delete="CASCADE"/&gt;
+            &lt;gedmo:tree-parent/&gt;
+        &lt;/many-to-one&gt;
+
+        &lt;one-to-many field="children" target-entity="NestedTree" mapped-by="parent"&gt;
+            &lt;order-by&gt;
+                &lt;order-by-field name="left" direction="ASC" /&gt;
+            &lt;/order-by&gt;
+        &lt;/one-to-many&gt;
+
+        &lt;gedmo:tree type="nested"/&gt;
+
+    &lt;/entity&gt;
+
+&lt;/doctrine-mapping&gt;</code></pre>
+<p><a name="basic-examples"></a></p>
+<h2 id="basic-usage-examples">Basic usage examples:</h2>
+<h3 id="to-save-some">To save some <strong>Categories</strong> and generate tree:</h3>
+<pre><code class="language-php">&lt;?php
+$food = new Category();
+$food-&gt;setTitle('Food');
+
+$fruits = new Category();
+$fruits-&gt;setTitle('Fruits');
+$fruits-&gt;setParent($food);
+
+$vegetables = new Category();
+$vegetables-&gt;setTitle('Vegetables');
+$vegetables-&gt;setParent($food);
+
+$carrots = new Category();
+$carrots-&gt;setTitle('Carrots');
+$carrots-&gt;setParent($vegetables);
+
+$this-&gt;em-&gt;persist($food);
+$this-&gt;em-&gt;persist($fruits);
+$this-&gt;em-&gt;persist($vegetables);
+$this-&gt;em-&gt;persist($carrots);
+$this-&gt;em-&gt;flush();</code></pre>
+<p>The result after flush will generate the food tree:</p>
+<pre><code>/food (1-8)
+    /fruits (2-3)
+    /vegetables (4-7)
+        /carrots (5-6)</code></pre>
+<h2 id="tree-repositories">Tree Repositories</h2>
+<p>To add tree funtionalities and methods to your repository you can use traits <code>NestedTreeRepository</code>, <code>MaterializedPathRepository</code> or <code>ClosureTreeRepository</code> like below:</p>
+<pre><code class="language-php">namespace YourNamespace\Repository;
+
+use Gedmo\Tree\Traits\Repository\ORM\NestedTreeRepositoryTrait;
+
+class CategoryRepository extends EntityRepository
+{
+    use NestedTreeRepositoryTrait; // or MaterializedPathRepositoryTrait or ClosureTreeRepositoryTrait.
+
+    public function __construct(EntityManager $em, ClassMetadata $class)
+    {
+        parent::__construct($em, $class);
+
+        $this-&gt;initializeTreeRepository($em, $class);
+    }
+}</code></pre>
+<pre><code class="language-php">namespace YourNamespace\Repository;
+
+/**
+ * @Gedmo\Tree(type="nested")
+ * @Entity(repositoryClass="YourNamespace\Repository\CategoryRepository")
+ */
+class Category
+{
+    //...
+}</code></pre>
+<h3 id="using-functions">Using functions</h3>
+<pre><code class="language-php">&lt;?php
+$repo = $em-&gt;getRepository('Entity\Category');
+
+$food = $repo-&gt;findOneByTitle('Food');
+echo $repo-&gt;childCount($food);
+// prints: 3
+echo $repo-&gt;childCount($food, true/*direct*/);
+// prints: 2
+$children = $repo-&gt;children($food);
+// $children contains:
+// 3 nodes
+$children = $repo-&gt;children($food, false, 'title');
+// will sort the children by title
+$carrots = $repo-&gt;findOneByTitle('Carrots');
+$path = $repo-&gt;getPath($carrots);
+/* $path contains:
+   0 =&gt; Food
+   1 =&gt; Vegetables
+   2 =&gt; Carrots
+*/
+
+// verification and recovery of tree
+$repo-&gt;verify();
+// can return TRUE if tree is valid, or array of errors found on tree
+$repo-&gt;recover();
+$em-&gt;flush(); // important: flush recovered nodes
+// if tree has errors it will try to fix all tree nodes
+
+// UNSAFE: be sure to backup before running this method when necessary, if you can use $em-&gt;remove($node);
+// which would cascade to children
+// single node removal
+$vegies = $repo-&gt;findOneByTitle('Vegetables');
+$repo-&gt;removeFromTree($vegies);
+$em-&gt;clear(); // clear cached nodes
+// it will remove this node from tree and reparent all children
+
+// reordering the tree
+$food = $repo-&gt;findOneByTitle('Food');
+$repo-&gt;reorder($food, 'title');
+// it will reorder all "Food" tree node left-right values by the title</code></pre>
+<h3 id="inserting-node-in-different-positions">Inserting node in different positions</h3>
+<pre><code class="language-php">&lt;?php
+$food = new Category();
+$food-&gt;setTitle('Food');
+
+$fruits = new Category();
+$fruits-&gt;setTitle('Fruits');
+
+$vegetables = new Category();
+$vegetables-&gt;setTitle('Vegetables');
+
+$carrots = new Category();
+$carrots-&gt;setTitle('Carrots');
+
+$treeRepository
+    -&gt;persistAsFirstChild($food)
+    -&gt;persistAsFirstChildOf($fruits, $food)
+    -&gt;persistAsLastChildOf($vegetables, $food)
+    -&gt;persistAsNextSiblingOf($carrots, $fruits);
+
+$em-&gt;flush();</code></pre>
+<p>For more details you can check the <strong>NestedTreeRepository</strong></p>
+<p>Moving up and down the nodes in same level:</p>
+<p>Tree example:</p>
+<pre><code>/Food
+    /Vegetables
+        /Onions
+        /Carrots
+        /Cabbages
+        /Potatoes
+    /Fruits</code></pre>
+<p>Now move <strong>carrots</strong> up by one position</p>
+<pre><code class="language-php">&lt;?php
+$repo = $em-&gt;getRepository('Entity\Category');
+$carrots = $repo-&gt;findOneByTitle('Carrots');
+// move it up by one position
+$repo-&gt;moveUp($carrots, 1);</code></pre>
+<p>Tree after moving the Carrots up:</p>
+<pre><code>/Food
+    /Vegetables
+        /Carrots &lt;- moved up
+        /Onions
+        /Cabbages
+        /Potatoes
+    /Fruits</code></pre>
+<p>Moving <strong>carrots</strong> down to the last position</p>
+<pre><code class="language-php">&lt;?php
+$repo = $em-&gt;getRepository('Entity\Category');
+$carrots = $repo-&gt;findOneByTitle('Carrots');
+// move it down to the end
+$repo-&gt;moveDown($carrots, true);</code></pre>
+<p>Tree after moving the Carrots down as last child:</p>
+<pre><code>/Food
+    /Vegetables
+        /Onions
+        /Cabbages
+        /Potatoes
+        /Carrots &lt;- moved down to the end
+    /Fruits</code></pre>
+<p><strong>Note:</strong> the tree repository functions <strong>verify, recover, removeFromTree</strong>
+will require you to clear the cache of the Entity Manager because left-right values will differ.
+So after that use <strong>$em-&gt;clear();</strong> if you will continue using the nodes after these operations.</p>
+<h3 id="extend-abstract-repositores">Extend abstract repositores</h3>
+<p>If you do not want to use traits and need a simple tree repository you can extend like below:</p>
+<pre><code class="language-php">&lt;?php
+namespace YourNamespace\Repository;
+
+use Gedmo\Tree\Entity\Repository\NestedTreeRepository;
+
+class CategoryRepository extends NestedTreeRepository
+{
+    // your code here
+}
+
+// and then on your entity link to this repository
+
+/**
+ * @Gedmo\Tree(type="nested")
+ * @Entity(repositoryClass="YourNamespace\Repository\CategoryRepository")
+ */
+class Category
+{
+    //...
+}</code></pre>
+<p><a name="html-tree"></a></p>
+<h2 id="create-html-tree">Create html tree:</h2>
+<h3 id="retrieving-the-whole-tree-as-an-array">Retrieving the whole tree as an array</h3>
+<p>If you would like to load the whole tree as a node array hierarchy use:</p>
+<pre><code class="language-php">&lt;?php
+$repo = $em-&gt;getRepository('Entity\Category');
+$arrayTree = $repo-&gt;childrenHierarchy();</code></pre>
+<p>All node children are stored under the <strong>__children</strong> key for each node.</p>
+<h3 id="retrieving-as-html-tree">Retrieving as html tree</h3>
+<p>To load a tree as a <strong>ul - li</strong> html tree use:</p>
+<pre><code class="language-php">&lt;?php
+$repo = $em-&gt;getRepository('Entity\Category');
+$htmlTree = $repo-&gt;childrenHierarchy(
+    null, /* starting from root nodes */
+    false, /* false: load all children, true: only direct */
+    array(
+        'decorate' =&gt; true,
+        'representationField' =&gt; 'slug',
+        'html' =&gt; true
+    )
+);</code></pre>
+<h3 id="customize-html-tree-output">Customize html tree output</h3>
+<pre><code class="language-php">&lt;?php
+$repo = $em-&gt;getRepository('Entity\Category');
+$options = array(
+    'decorate' =&gt; true,
+    'rootOpen' =&gt; '&lt;ul&gt;',
+    'rootClose' =&gt; '&lt;/ul&gt;',
+    'childOpen' =&gt; '&lt;li&gt;',
+    'childClose' =&gt; '&lt;/li&gt;',
+    'nodeDecorator' =&gt; function($node) {
+        return '&lt;a href="/page/'.$node['slug'].'"&gt;'.$node[$field].'&lt;/a&gt;';
+    }
+);
+$htmlTree = $repo-&gt;childrenHierarchy(
+    null, /* starting from root nodes */
+    false, /* false: load all children, true: only direct */
+    $options
+);
+</code></pre>
+<h3 id="generate-your-own-node-list">Generate your own node list</h3>
+<pre><code class="language-php">&lt;?php
+$repo = $em-&gt;getRepository('Entity\Category');
+$query = $entityManager
+    -&gt;createQueryBuilder()
+    -&gt;select('node')
+    -&gt;from('Entity\Category', 'node')
+    -&gt;orderBy('node.root, node.lft', 'ASC')
+    -&gt;where('node.root = 1')
+    -&gt;getQuery()
+;
+$options = array('decorate' =&gt; true);
+$tree = $repo-&gt;buildTree($query-&gt;getArrayResult(), $options);</code></pre>
+<h3 id="using-routes-in-decorator-show-only-selected-items-return-unlimited-levels-items-as-2-levels">Using routes in decorator, show only selected items, return unlimited levels items as 2 levels</h3>
+<pre><code class="language-php">&lt;?php
+$controller = $this;
+        $tree = $root-&gt;childrenHierarchy(null,false,array('decorate' =&gt; true,
+            'rootOpen' =&gt; function($tree) {
+                if(count($tree) &amp;&amp; ($tree[0]['lvl'] == 0)){
+                        return '&lt;div class="catalog-list"&gt;';
+                }
+            },
+            'rootClose' =&gt; function($child) {
+                if(count($child) &amp;&amp; ($child[0]['lvl'] == 0)){
+                                return '&lt;/div&gt;';
+                }
+             },
+            'childOpen' =&gt; '',
+            'childClose' =&gt; '',
+            'nodeDecorator' =&gt; function($node) use (&amp;$controller) {
+                if($node['lvl'] == 1) {
+                    return '&lt;h1&gt;'.$node['title'].'&lt;/h1&gt;';
+                }elseif($node["isVisibleOnHome"]) {
+                    return '&lt;a href="'.$controller-&gt;generateUrl("wareTree",array("id"=&gt;$node['id'])).'"&gt;'.$node['title'].'&lt;/a&gt;&amp;nbsp;';
+                }
+            }
+        ));</code></pre>
+<p><a name="advanced-examples"></a></p>
+<h2 id="advanced-examples">Advanced examples:</h2>
+<h3 id="nesting-translatable-and-sluggable-extensions">Nesting Translatable and Sluggable extensions</h3>
+<p>If you want to attach <strong>TranslatableListener</strong> and also add it to EventManager after
+the <strong>SluggableListener</strong> and <strong>TreeListener</strong>. It is important because slug must be generated first
+before the creation of it`s translation.</p>
+<pre><code class="language-php">&lt;?php
+$evm = new \Doctrine\Common\EventManager();
+$treeListener = new \Gedmo\Tree\TreeListener();
+$evm-&gt;addEventSubscriber($treeListener);
+$sluggableListener = new \Gedmo\Sluggable\SluggableListener();
+$evm-&gt;addEventSubscriber($sluggableListener);
+$translatableListener = new \Gedmo\Translatable\TranslatableListener();
+$translatableListener-&gt;setTranslatableLocale('en_us');
+$evm-&gt;addEventSubscriber($translatableListener);
+// now this event manager should be passed to entity manager constructor</code></pre>
+<p>And the Entity should look like:</p>
+<pre><code class="language-php">&lt;?php
+namespace Entity;
+
+use Gedmo\Mapping\Annotation as Gedmo;
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * @Gedmo\Tree(type="nested")
+ * @ORM\Entity(repositoryClass="Gedmo\Tree\Entity\Repository\NestedTreeRepository")
+ */
+class Category
+{
+    /**
+     * @ORM\Column(type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue
+     */
+    private $id;
+
+    /**
+     * @Gedmo\Translatable
+     * @Gedmo\Sluggable
+     * @ORM\Column(length=64)
+     */
+    private $title;
+
+    /**
+     * @Gedmo\TreeLeft
+     * @ORM\Column(type="integer")
+     */
+    private $lft;
+
+    /**
+     * @Gedmo\TreeRight
+     * @ORM\Column(type="integer")
+     */
+    private $rgt;
+
+    /**
+     * @Gedmo\TreeLevel
+     * @ORM\Column(type="integer")
+     */
+    private $lvl;
+
+    /**
+     * @Gedmo\TreeRoot
+     * @ORM\ManyToOne(targetEntity="Category")
+     * @ORM\JoinColumn(referencedColumnName="id", onDelete="CASCADE")
+     */
+    private $root;
+
+    /**
+     * @Gedmo\TreeParent
+     * @ORM\ManyToOne(targetEntity="Category", inversedBy="children")
+     * @ORM\JoinColumn(referencedColumnName="id", onDelete="CASCADE")
+     */
+    private $parent;
+
+    /**
+     * @ORM\OneToMany(targetEntity="Category", mappedBy="parent")
+     */
+    private $children;
+
+    /**
+     * @Gedmo\Translatable
+     * @Gedmo\Slug
+     * @ORM\Column(length=128)
+     */
+    private $slug;
+
+    public function getId()
+    {
+        return $this-&gt;id;
+    }
+
+    public function getSlug()
+    {
+        return $this-&gt;slug;
+    }
+
+    public function setTitle($title)
+    {
+        $this-&gt;title = $title;
+    }
+
+    public function getTitle()
+    {
+        return $this-&gt;title;
+    }
+
+    public function getRoot()
+    {
+        return $this-&gt;root;
+    }
+
+    public function setParent(Category $parent)
+    {
+        $this-&gt;parent = $parent;
+    }
+
+    public function getParent()
+    {
+        return $this-&gt;parent;
+    }
+}</code></pre>
+<p>Yaml mapped Category: <strong>/mapping/yaml/Entity.Category.dcm.yml</strong></p>
+<pre><code>---
+Entity\Category:
+  type: entity
+  repositoryClass: Gedmo\Tree\Entity\Repository\NestedTreeRepository
+  table: categories
+  gedmo:
+    tree:
+      type: nested
+  id:
+    id:
+      type: integer
+      generator:
+        strategy: AUTO
+  fields:
+    title:
+      type: string
+      length: 64
+      gedmo:
+        - translatable
+        - sluggable
+    lft:
+      type: integer
+      gedmo:
+        - treeLeft
+    rgt:
+      type: integer
+      gedmo:
+        - treeRight
+    lvl:
+      type: integer
+      gedmo:
+        - treeLevel
+    slug:
+      type: string
+      length: 128
+      gedmo:
+        - translatable
+        - slug
+  manyToOne:
+    root:
+      targetEntity: Entity\Category
+      joinColumn:
+        referencedColumnName: id
+        onDelete: CASCADE
+      gedmo:
+        - treeRoot
+    parent:
+      targetEntity: Entity\Category
+      inversedBy: children
+      joinColumn:
+        referencedColumnName: id
+        onDelete: CASCADE
+      gedmo:
+        - treeParent
+  oneToMany:
+    children:
+      targetEntity: Entity\Category
+      mappedBy: parent</code></pre>
+<p><strong>Note:</strong> If you use dql without object hydration, the nodes will not be
+translated, because the postLoad event never will be triggered</p>
+<p>Now the generated treenode slug will be translated by Translatable behavior.</p>
+<p>It's as easy as that. Any suggestions on improvements are very welcome.</p>
+<p><a name="materialized-path"></a></p>
+<h2 id="materialized-path">Materialized Path</h2>
+<h3 id="important-notes-before-defining-the-schema">Important notes before defining the schema</h3>
+<ul>
+<li>If you use MongoDB you should activate the locking mechanism provided to avoid inconsistencies in cases where concurrent
+modifications on the tree could occur. Look at the MongoDB example of schema definition to see how it must be configured.</li>
+<li>If your <strong>TreePathSource</strong> field is of type &quot;string&quot;, then the primary key will be concatenated in the form: &quot;value-id&quot;.
+This is to allow you to use non-unique values as the path source. For example, this could be very useful if you need to
+use the date as the path source (maybe to create a tree of comments and order them by date). If you want to change this
+default behaviour you can set the attribute &quot;appendId&quot; of <strong>TreePath</strong> to true or false. By default the path does not start
+with the given separator but ends with it. You can customize this behaviour with &quot;startsWithSeparator&quot; and &quot;endsWithSeparator&quot;.
+<code>@Gedmo\TreePath(appendId=false, startsWithSeparator=true, endsWithSeparator=false)</code></li>
+<li><strong>TreePath</strong> field can only be of types: string, text</li>
+<li><strong>TreePathSource</strong> field can only be of types: id, integer, smallint, bigint, string, int, float (I include here all the
+variations of the field types, including the ORM and ODM for MongoDB ones).</li>
+<li><strong>TreeLockTime</strong> must be of type &quot;date&quot; (used only in MongoDB for now).</li>
+<li><strong>TreePathHash</strong> allows you to define a field that is automatically filled with the md5 hash of the path. This field could be necessary if you want to set a unique constraint on the database table.</li>
+</ul>
+<h3 id="orm-entity-example-annotations">ORM Entity example (Annotations)</h3>
+<pre><code class="language-php">&lt;?php
+
+namespace Entity;
+
+use Gedmo\Mapping\Annotation as Gedmo;
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * @ORM\Entity(repositoryClass="Gedmo\Tree\Entity\Repository\MaterializedPathRepository")
+ * @Gedmo\Tree(type="materializedPath")
+ */
+class Category
+{
+    /**
+     * @ORM\Id
+     * @ORM\GeneratedValue
+     */
+    private $id;
+
+    /**
+     * @Gedmo\TreePath
+     * @ORM\Column(length=3000, nullable=true)
+     */
+    private $path;
+
+    /**
+     * @Gedmo\TreePathSource
+     * @ORM\Column(length=64)
+     */
+    private $title;
+
+    /**
+     * @Gedmo\TreeParent
+     * @ORM\ManyToOne(targetEntity="Category", inversedBy="children")
+     * @ORM\JoinColumn(referencedColumnName="id", onDelete="CASCADE")
+     */
+    private $parent;
+
+    /**
+     * @Gedmo\TreeLevel
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $level;
+
+    /**
+     * @ORM\OneToMany(targetEntity="Category", mappedBy="parent")
+     */
+    private $children;
+
+    public function getId()
+    {
+        return $this-&gt;id;
+    }
+
+    public function setTitle($title)
+    {
+        $this-&gt;title = $title;
+    }
+
+    public function getTitle()
+    {
+        return $this-&gt;title;
+    }
+
+    public function setParent(Category $parent = null)
+    {
+        $this-&gt;parent = $parent;
+    }
+
+    public function getParent()
+    {
+        return $this-&gt;parent;
+    }
+
+    public function setPath($path)
+    {
+        $this-&gt;path = $path;
+    }
+
+    public function getPath()
+    {
+        return $this-&gt;path;
+    }
+
+    public function getLevel()
+    {
+        return $this-&gt;level;
+    }
+}
+</code></pre>
+<h3 id="mongodb-example-annotations">MongoDB example (Annotations)</h3>
+<pre><code class="language-php">&lt;?php
+
+namespace Document;
+
+use Gedmo\Mapping\Annotation as Gedmo;
+use Doctrine\ODM\MongoDB\Mapping\Annotations as MONGO;
+
+/**
+ * @MONGO\Document(repositoryClass="Gedmo\Tree\Document\MongoDB\Repository\MaterializedPathRepository")
+ * @Gedmo\Tree(type="materializedPath", activateLocking=true)
+ */
+class Category
+{
+    /**
+     * @MONGO\Id
+     */
+    private $id;
+
+    /**
+     * @MONGO\Field(type="string")
+     * @Gedmo\TreePathSource
+     */
+    private $title;
+
+    /**
+     * @MONGO\Field(type="string")
+     * @Gedmo\TreePath(separator="|")
+     */
+    private $path;
+
+    /**
+     * @Gedmo\TreeParent
+     * @MONGO\ReferenceOne(targetDocument="Category")
+     */
+    private $parent;
+
+    /**
+     * @Gedmo\TreeLevel
+     * @MONGO\Field(type="int")
+     */
+    private $level;
+
+    /**
+     * @Gedmo\TreeLockTime
+     * @MONGO\Field(type="date")
+     */
+    private $lockTime;
+
+    public function getId()
+    {
+        return $this-&gt;id;
+    }
+
+    public function setTitle($title)
+    {
+        $this-&gt;title = $title;
+    }
+
+    public function getTitle()
+    {
+        return $this-&gt;title;
+    }
+
+    public function setParent(Category $parent = null)
+    {
+        $this-&gt;parent = $parent;
+    }
+
+    public function getParent()
+    {
+        return $this-&gt;parent;
+    }
+
+    public function getLevel()
+    {
+        return $this-&gt;level;
+    }
+
+    public function getPath()
+    {
+        return $this-&gt;path;
+    }
+
+    public function getLockTime()
+    {
+        return $this-&gt;lockTime;
+    }
+}
+</code></pre>
+<h3 id="mongodb-example-yaml">MongoDB example (Yaml)</h3>
+<pre><code>YourNamespace\Document\Category:
+    type:               mappedSuperclass
+    repositoryClass:    Gedmo\Tree\Document\MongoDB\Repository\MaterializedPathRepository
+    collection:         categories
+    gedmo:
+        tree:
+            type: materializedPath
+            activateLocking: true
+    fields:
+        id:
+            id:     true
+        title:
+            type:   string
+            gedmo:
+                -   sluggable
+        slug:
+            type:   string
+            gedmo:
+                0:  treePathSource
+                slug:
+                    unique:     false
+                    fields:
+                        - title
+        path:
+            type:   string
+            gedmo:
+                treePath:
+                    separator:           '/'
+                    appendId:            false
+                    startsWithSeparator: false  # default
+                    endsWithSeparator:   true   # default
+        level:
+            type:   int
+            nullable:   true
+            gedmo:
+                -   treeLevel
+        lockTime:
+            type:   date
+            gedmo:
+                -   treeLockTime
+        hash:
+            type:   string
+            gedmo:
+                -   treePathHash
+        parent:
+            reference:  true
+            type:       one
+            inversedBy: children
+            targetDocument: YourNamespace\Document\Category
+            simple:     true
+            gedmo:
+                -   treeParent</code></pre>
+<h3 id="path-generation">Path generation</h3>
+<p>When an entity is inserted, a path is generated using the value of the field configured as the TreePathSource.
+For example:</p>
+<pre><code class="language-php">$food = new Category();
+$food-&gt;setTitle('Food');
+
+$em-&gt;persist($food);
+$em-&gt;flush();
+
+// This would print "Food-1" assuming the id is 1.
+echo $food-&gt;getPath();
+
+$fruits = new Category();
+$fruits-&gt;setTitle('Fruits');
+$fruits-&gt;setParent($food);
+
+$em-&gt;persist($fruits);
+$em-&gt;flush();
+
+// This would print "Food-1,Fruits-2" assuming that $food id is 1,
+// $fruits id is 2 and separator = "," (the default value)
+echo $fruits-&gt;getPath();
+</code></pre>
+<h3 id="locking-mechanism-for-mongodb">Locking mechanism for MongoDB</h3>
+<p>Why do we need a locking mechanism for MongoDB? Sadly, MongoDB lacks full transactional support, so if two or more
+users try to modify the same tree concurrently, it could lead to an inconsistent tree. So we've implemented a simple
+locking mechanism to avoid this type of problems. It works like this: As soon as a user tries to modify a node of a tree,
+it first check if the root node is locked (or if the current lock has expired).</p>
+<p>If it is locked, then it throws an exception of type &quot;Gedmo\Exception\TreeLockingException&quot;. If it's not locked,
+it locks the tree and proceeds with the modification. After all the modifications are done, the lock is freed.</p>
+<p>If, for some reason, the lock couldn't get freed, there's a lock timeout configured with a default time of 3 seconds.
+You can change this value using the <strong>lockingTimeout</strong> parameter under the Tree annotation (or equivalent in XML and YML).
+You must pass a value in seconds to this parameter.</p>
+<p><a name="closure-table"></a></p>
+<h2 id="closure-table">Closure Table</h2>
+<p>To be able to use this strategy, you'll need an additional entity which represents the closures. We already provide you an abstract
+entity, so you only need to extend it.</p>
+<h3 id="closure-entity">Closure Entity</h3>
+<pre><code class="language-php">&lt;?php
+
+namespace YourNamespace\Entity;
+
+use Gedmo\Tree\Entity\MappedSuperclass\AbstractClosure;
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * @ORM\Entity
+ */
+class CategoryClosure extends AbstractClosure
+{
+}</code></pre>
+<p>Next step, define your entity.</p>
+<h3 id="orm-entity-example-annotations-1">ORM Entity example (Annotations)</h3>
+<pre><code class="language-php">&lt;?php
+
+namespace YourNamespace\Entity;
+
+use Gedmo\Mapping\Annotation as Gedmo;
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * @Gedmo\Tree(type="closure")
+ * @Gedmo\TreeClosure(class="YourNamespace\Entity\CategoryClosure")
+ * @ORM\Entity(repositoryClass="Gedmo\Tree\Entity\Repository\ClosureTreeRepository")
+ */
+class Category
+{
+    /**
+     * @ORM\Column(type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue
+     */
+    private $id;
+
+    /**
+     * @ORM\Column(length=64)
+     */
+    private $title;
+
+    /**
+     * This parameter is optional for the closure strategy
+     *
+     * @ORM\Column(type="integer", nullable=true)
+     * @Gedmo\TreeLevel
+     */
+    private $level;
+
+    /**
+     * @Gedmo\TreeParent
+     * @ORM\JoinColumn(referencedColumnName="id", onDelete="CASCADE")
+     * @ORM\ManyToOne(targetEntity="Category", inversedBy="children")
+     */
+    private $parent;
+
+    public function getId()
+    {
+        return $this-&gt;id;
+    }
+
+    public function setTitle($title)
+    {
+        $this-&gt;title = $title;
+    }
+
+    public function getTitle()
+    {
+        return $this-&gt;title;
+    }
+
+    public function setParent(Category $parent = null)
+    {
+        $this-&gt;parent = $parent;
+    }
+
+    public function getParent()
+    {
+        return $this-&gt;parent;
+    }
+
+    public function addClosure(CategoryClosure $closure)
+    {
+        $this-&gt;closures[] = $closure;
+    }
+
+    public function setLevel($level)
+    {
+        $this-&gt;level = $level;
+    }
+
+    public function getLevel()
+    {
+        return $this-&gt;level;
+    }
+}
+</code></pre>
+<p>And that's it!</p>
+<p><a name="repository-methods"></a></p>
+<h2 id="repository-methods-all-strategies">Repository Methods (All strategies)</h2>
+<p>There are repository methods that are available for you in all the strategies:</p>
+<ul>
+<li><strong>getRootNodes</strong> / <strong>getRootNodesQuery</strong> / <strong>getRootNodesQueryBuilder</strong>: Returns an array with the available root nodes. Arguments:
+<ul>
+<li><em>sortByField</em>: An optional field to order the root nodes. Defaults to &quot;null&quot;.</li>
+<li><em>direction</em>: In case the first argument is used, you can pass the direction here: &quot;asc&quot; or &quot;desc&quot;. Defaults to &quot;asc&quot;.</li>
+</ul></li>
+<li><strong>getChildren</strong> / <strong>getChildrenQuery</strong> / <strong>getChildrenQueryBuilder</strong>: Returns an array of children nodes. Arguments:
+<ul>
+<li><em>node</em>: If you pass a node, the method will return its children. Defaults to &quot;null&quot; (this means it will return ALL nodes).</li>
+<li><em>direct</em>: If you pass true as a value for this argument, you'll get only the direct children of the node
+(or only the root nodes if you pass &quot;null&quot; to the &quot;node&quot; argument).</li>
+<li><em>sortByField</em>: An optional field to sort the children. Defaults to &quot;null&quot;.</li>
+<li><em>direction</em>: If you use the &quot;sortByField&quot; argument, this allows you to set the direction: &quot;asc&quot; or &quot;desc&quot;. Defaults to &quot;asc&quot;.</li>
+<li><em>includeNode</em>: Using &quot;true&quot;, this argument allows you to include in the result the node you passed as the first argument. Defaults to &quot;false&quot;.</li>
+</ul></li>
+<li><strong>childrenHierarchy</strong>: This useful method allows you to build an array of nodes representing the hierarchy of a tree. Arguments:
+<ul>
+<li><em>node</em>: If you pass a node, the method will return its children. Defaults to &quot;null&quot; (this means it will return ALL nodes).</li>
+<li><em>direct</em>: If you pass true as a value for this argument, you'll get only the direct children of the node</li>
+<li><em>options</em>: An array of options that allows you to decorate the results with HTML. Available options:
+<ul>
+<li>decorate: boolean (false) - retrieves tree as UL-&gt;LI tree</li>
+<li>nodeDecorator: Closure (null) - uses $node as argument and returns decorated item as string</li>
+<li>rootOpen: string || Closure ('\&lt;ul>') - branch start, closure will be given $children as a parameter</li>
+<li>rootClose: string ('\&lt;/ul>') - branch close</li>
+<li>childStart: string || Closure ('\&lt;li>') - start of node, closure will be given $node as a parameter</li>
+<li>childClose: string ('\&lt;/li>') - close of node</li>
+<li>childSort: array || keys allowed: field: field to sort on, dir: direction. 'asc' or 'desc'</li>
+</ul></li>
+<li><em>includeNode</em>: Using &quot;true&quot;, this argument allows you to include in the result the node you passed as the first argument. Defaults to &quot;false&quot;.</li>
+</ul></li>
+<li><strong>setChildrenIndex</strong> / <strong>getChildrenIndex</strong>: These methods allow you to change the default index used to hold the children when you use the <strong>childrenHierarchy</strong> method. Index defaults to &quot;__children&quot;.</li>
+</ul>
+<p>This list is not complete yet. We're working on including more methods in the common API offered by repositories of all the strategies.
+Soon we'll be adding more helpful methods here.</p>
+<h2 id="repository-methods-closure-trees-only">Repository Methods (Closure Trees only)</h2>
+<p>It is possible to obtain all ancestors from a particular node in a efficient way when using the Closure Tree strategy. These are the repository methods:</p>
+<ul>
+<li><strong>getAncestors</strong> / <strong>getAncestorsQuery</strong> / <strong>getAncestorsQueryBuilder</strong>: Returns an array of ancestors nodes. Arguments:
+<ul>
+<li><em>node</em>: If you pass a node, the method will return its ancestors. Defaults to &quot;null&quot; (this means it will return ALL nodes).</li>
+<li><em>direct</em>: If you pass true as a value for this argument, you'll get only the direct ancestors of the node</li>
+<li><em>sortByField</em>: An optional field to sort the children. Defaults to &quot;null&quot;.</li>
+<li><em>direction</em>: If you use the &quot;sortByField&quot; argument, this allows you to set the direction: &quot;asc&quot; or &quot;desc&quot;. Defaults to &quot;asc&quot;.</li>
+<li><em>includeNode</em>: Using &quot;true&quot;, this argument allows you to include in the result the node you passed as the first argument. Defaults to &quot;false&quot;.</li>
+</ul></li>
+</ul>
+                    </div>
+
+                    <footer>
+                        <hr/>
+                                                    <div role="contentinfo">
+                                <p>
+                                    Find Doctrine Extensions 3.0.0 on <a href="https://github.com/Atlantic18/DoctrineExtensions">GitHub</a>.
+                                </p>
+                            </div>
+                                                Built with <a href="http://couscous.io/">Couscous</a> using a <a href="https://github.com/CouscousPHP/Template-ReadTheDocs">theme</a> based on <a href="https://readthedocs.org/">Read the Docs</a>.
+                    </footer>
+
+                </div>
+            </div>
+
+        </section>
+
+    </div>
+
+    <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script>
+    <script src="http://Atlantic18.github.io/DoctrineExtensions/js/theme.js"></script>
+
+    <script>
+        $(function() {
+            // Syntax highlighting
+            hljs.initHighlightingOnLoad();
+        });
+    </script>
+
+</body>
+</html>

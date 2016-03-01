@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctrine Extensions 3.0.0</title>
+
+    <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Roboto+Slab:400,700|Inconsolata:400,700&subset=latin,cyrillic'
+          rel='stylesheet' type='text/css'>
+
+    <link rel="stylesheet" href="http://Atlantic18.github.io/DoctrineExtensions/css/theme.css" type="text/css"/>
+    <link rel="stylesheet" href="http://Atlantic18.github.io/DoctrineExtensions/css/theme-fixes.css" type="text/css"/>
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/github.min.css">
+</head>
+<body class="wy-body-for-nav">
+
+    <div class="wy-grid-for-nav">
+
+        <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+            <div class="wy-side-nav-search">
+                <a href="http://Atlantic18.github.io/DoctrineExtensions/" class="fa fa-home"> Doctrine Extensions 3.0.0</a>
+            </div>
+
+            <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+                <ul>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/tree.html">
+                                Tree
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/translatable.html">
+                                Translatable
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/sluggable.html">
+                                Sluggable
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/timestampable.html">
+                                Timestampable
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/blameable.html">
+                                Blameable
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/loggable.html">
+                                Loggable
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/sortable.html">
+                                Sortable
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/translatable.html">
+                                Translator
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/softdeleteable.html">
+                                SoftDeleteable
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/uploadable.html">
+                                Uploadable
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/references.html">
+                                References
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/reference_integrity.html">
+                                ReferenceIntegrity
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/ip_traceable.html">
+                                IpTraceable
+                            </a>
+                        </li>
+                                    </ul>
+            </div>
+            &nbsp;
+        </nav>
+
+        <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+                        <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+                <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+                <a href="http://Atlantic18.github.io/DoctrineExtensions/">Doctrine Extensions 3.0.0</a>
+            </nav>
+
+
+                        <div class="wy-nav-content">
+                <div class="rst-content">
+                    <div role="main" class="document">
+                        <h1 id="reference-integrity-behavior-extension-for-doctrine-2">Reference Integrity behavior extension for Doctrine 2</h1>
+<p><strong>ReferenceIntegrity</strong> behavior will automate the reference integrity for referenced documents.
+It works through annotations and yaml, and supports 'nullify', 'pull' and 'restrict' which throws an exception.</p>
+<p>So let's say you have a Type which is referenced to multiple Articles, when deleting the Type, by default the Article
+would still have a reference to Type, since Mongo doesn't care. When setting the ReferenceIntegrity to 'nullify' it
+would then automatically remove the reference from Article.</p>
+<p>When the owning side (Article#types) is a ReferenceMany and ReferenceIntegrity is set to 'pull', the removed document would automatically be pulled from Article#types.</p>
+<p>Features:</p>
+<ul>
+<li>Automatically remove referenced association</li>
+<li>ODM only</li>
+<li>ReferenceOne and ReferenceMany support</li>
+<li>'nullify', 'pull' and 'restrict' support</li>
+<li>Annotation and Yaml mapping support for extensions</li>
+</ul>
+<p><strong>Symfony:</strong></p>
+<ul>
+<li><strong>ReferenceIntegrity</strong> is available as <a href="http://github.com/stof/StofDoctrineExtensionsBundle">Bundle</a>
+for <strong>Symfony2</strong>, together with all other extensions</li>
+</ul>
+<p>This article will cover the basic installation and functionality of <strong>ReferenceIntegrity</strong> behavior</p>
+<p>Content:</p>
+<ul>
+<li><a href="#including-extension">Including</a> the extension</li>
+<li>Document <a href="#document-mapping">example</a></li>
+<li><a href="#yaml-mapping">Yaml</a> mapping example</li>
+<li>Usage <a href="#advanced-examples">examples</a></li>
+</ul>
+<p><a name="including-extension"></a></p>
+<h2 id="setup-and-autoloading">Setup and autoloading</h2>
+<p>Read the <a href="http://github.com/l3pp4rd/DoctrineExtensions/blob/master/doc/annotations.html#em-setup">documentation</a>
+or check the <a href="http://github.com/l3pp4rd/DoctrineExtensions/tree/master/example">example code</a>
+on how to setup and use the extensions in most optimized way.</p>
+<p><a name="document-mapping"></a></p>
+<h2 id="referenceintegrity-document-example">ReferenceIntegrity Document example:</h2>
+<pre><code class="language-php">&lt;?php
+namespace Document;
+
+use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
+use Gedmo\Mapping\Annotation as Gedmo;
+
+/**
+ * @ODM\Document(collection="types")
+ */
+class Type
+{
+    /**
+     * @ODM\Id
+     */
+    private $id;
+
+    /**
+     * @ODM\String
+     */
+    private $title;
+
+    /**
+     * @ODM\ReferenceOne(targetDocument="Article", mappedBy="type")
+     * @Gedmo\ReferenceIntegrity("nullify")
+     * @var Article
+     */
+    protected $article;
+
+    // ...
+}</code></pre>
+<p>It is necessary to have the 'mappedBy' option set, to be able to access the referenced documents.
+On removal of Type, on the referenced Article the Type reference will be nullified (removed)</p>
+<p><a name="yaml-mapping"></a></p>
+<h2 id="yaml-mapping-example">Yaml mapping example:</h2>
+<p>Yaml mapped Article: <strong>/mapping/yaml/Documents.Article.dcm.yml</strong></p>
+<pre><code>---
+Document\Type:
+  type: document
+  collection: types
+  fields:
+      id:
+          id:     true
+      title:
+          type:   string
+      article:
+          reference: true
+          type: one
+          mappedBy: type
+          targetDocument: Document\Article
+          gedmo:
+              referenceIntegrity: nullify   # or pull or restrict
+</code></pre>
+<p>It is necessary to have the 'mappedBy' option set, to be able to access the referenced documents.</p>
+<p><a name="advanced-examples"></a></p>
+<h2 id="usage-examples">Usage examples:</h2>
+<p>Few operations to see 'nullify' in action:</p>
+<pre><code class="language-php">&lt;?php
+$article = new Article;
+$article-&gt;setTitle('My Article');
+
+$type = new Type;
+$type-&gt;setTitle('Published');
+
+$article-&gt;setType($type);
+
+$em-&gt;persist($article);
+$em-&gt;persist($type);
+$em-&gt;flush();
+
+$type = $em-&gt;getRepository('Document\Type')-&gt;findByTitle('Published');
+$em-&gt;remove($type);
+$em-&gt;flush();
+
+$article = $em-&gt;getRepository('Document\Article')-&gt;findByTitle('My Article');
+$article-&gt;getType(); // won't be referenced to Type anymore</code></pre>
+<p>Few operations to see 'pull' in action:</p>
+<pre><code class="language-php">&lt;?php
+$article = new Article;
+$article-&gt;setTitle('My Article');
+
+$type1 = new Type;
+$type1-&gt;setTitle('Published');
+
+$type2 = new Type;
+$type2-&gt;setTitle('Info');
+
+$article-&gt;addType($type1);
+$article-&gt;addType($type2);
+
+$em-&gt;persist($article);
+$em-&gt;persist($type1);
+$em-&gt;persist($type2);
+$em-&gt;flush();
+
+$type2 = $em-&gt;getRepository('Document\Type')-&gt;findByTitle('Info');
+$em-&gt;remove($type2);
+$em-&gt;flush();
+
+$article = $em-&gt;getRepository('Document\Article')-&gt;findByTitle('My Article');
+$article-&gt;getTypes(); // will only contain $type1 ('Published')</code></pre>
+<p>When 'ReferenceIntegrity' is set to 'restrict' a <code>ReferenceIntegrityStrictException</code> will be thrown, only when there
+is a referenced document.</p>
+<p>Easy like that, any suggestions on improvements are very welcome</p>
+                    </div>
+
+                    <footer>
+                        <hr/>
+                                                    <div role="contentinfo">
+                                <p>
+                                    Find Doctrine Extensions 3.0.0 on <a href="https://github.com/Atlantic18/DoctrineExtensions">GitHub</a>.
+                                </p>
+                            </div>
+                                                Built with <a href="http://couscous.io/">Couscous</a> using a <a href="https://github.com/CouscousPHP/Template-ReadTheDocs">theme</a> based on <a href="https://readthedocs.org/">Read the Docs</a>.
+                    </footer>
+
+                </div>
+            </div>
+
+        </section>
+
+    </div>
+
+    <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script>
+    <script src="http://Atlantic18.github.io/DoctrineExtensions/js/theme.js"></script>
+
+    <script>
+        $(function() {
+            // Syntax highlighting
+            hljs.initHighlightingOnLoad();
+        });
+    </script>
+
+</body>
+</html>

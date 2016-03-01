@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctrine Extensions 3.0.0</title>
+
+    <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Roboto+Slab:400,700|Inconsolata:400,700&subset=latin,cyrillic'
+          rel='stylesheet' type='text/css'>
+
+    <link rel="stylesheet" href="http://Atlantic18.github.io/DoctrineExtensions/css/theme.css" type="text/css"/>
+    <link rel="stylesheet" href="http://Atlantic18.github.io/DoctrineExtensions/css/theme-fixes.css" type="text/css"/>
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/github.min.css">
+</head>
+<body class="wy-body-for-nav">
+
+    <div class="wy-grid-for-nav">
+
+        <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+            <div class="wy-side-nav-search">
+                <a href="http://Atlantic18.github.io/DoctrineExtensions/" class="fa fa-home"> Doctrine Extensions 3.0.0</a>
+            </div>
+
+            <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+                <ul>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/tree.html">
+                                Tree
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/translatable.html">
+                                Translatable
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/sluggable.html">
+                                Sluggable
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/timestampable.html">
+                                Timestampable
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/blameable.html">
+                                Blameable
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/loggable.html">
+                                Loggable
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/sortable.html">
+                                Sortable
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/translatable.html">
+                                Translator
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/softdeleteable.html">
+                                SoftDeleteable
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/uploadable.html">
+                                Uploadable
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/references.html">
+                                References
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/reference_integrity.html">
+                                ReferenceIntegrity
+                            </a>
+                        </li>
+                                            <li class="toctree-l1 ">
+                            <a class="reference internal "
+                               href="http://Atlantic18.github.io/DoctrineExtensions/doc/ip_traceable.html">
+                                IpTraceable
+                            </a>
+                        </li>
+                                    </ul>
+            </div>
+            &nbsp;
+        </nav>
+
+        <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+                        <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+                <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+                <a href="http://Atlantic18.github.io/DoctrineExtensions/">Doctrine Extensions 3.0.0</a>
+            </nav>
+
+
+                        <div class="wy-nav-content">
+                <div class="rst-content">
+                    <div role="main" class="document">
+                        <h2 id="using-gedmo-doctrine-extensions-in-zend-framework-2">Using Gedmo Doctrine Extensions in Zend Framework 2</h2>
+<p>Assuming you are familiar with <a href="https://github.com/doctrine/DoctrineModule">DoctrineModule</a> (if not, you should definitely start there!), integrating Doctrine Extensions with Zend Framework 2 application is super-easy.</p>
+<h3 id="composer">Composer</h3>
+<p>Add DoctrineModule, DoctrineORMModule and DoctrineExtensions to composer.json file:</p>
+<pre><code class="language-json">{
+    "require": {
+        "php": "&gt;=5.3.3",
+        "zendframework/zendframework": "2.1.*",
+        "doctrine/doctrine-module": "0.*",
+        "doctrine/doctrine-orm-module": "0.*",
+        "gedmo/doctrine-extensions": "2.3.*",
+    }
+}</code></pre>
+<p>Then run <code>composer.phar update</code>.</p>
+<h3 id="configuration">Configuration</h3>
+<p>Once libraries are installed, you can tell Doctrine which behaviors you want to use, by declaring appropriate subscribers in Event Manager settings. Together with <a href="https://github.com/doctrine/DoctrineORMModule#entities-settings">entity mapping options</a>, your module configuration file should look like following:</p>
+<pre><code class="language-php">return array(
+    'doctrine' =&gt; array(
+        'eventmanager' =&gt; array(
+            'orm_default' =&gt; array(
+                'subscribers' =&gt; array(
+
+                    // pick any listeners you need
+                    'Gedmo\Tree\TreeListener',
+                    'Gedmo\Timestampable\TimestampableListener',
+                    'Gedmo\Sluggable\SluggableListener',
+                    'Gedmo\Loggable\LoggableListener',
+                    'Gedmo\Sortable\SortableListener'
+                ),
+            ),
+        ),
+        'driver' =&gt; array(
+            'my_driver' =&gt; array(
+                'class' =&gt; 'Doctrine\ORM\Mapping\Driver\AnnotationDriver',
+                'cache' =&gt; 'array',
+                'paths' =&gt; array(__DIR__ . '/../src/MyModule/Entity')
+            ),
+            'orm_default' =&gt; array(
+                'drivers' =&gt; array(
+                    'MyModule\Entity' =&gt; 'my_driver'
+                ),
+            ),
+        ),
+    ),
+);</code></pre>
+<p>That's it! From now on you can use Gedmo annotations, just as it is described in <a href="https://github.com/mtymek/DoctrineExtensions/blob/master/doc/annotations.html">documentation</a>.</p>
+<h4 id="note-you-may-need-to-provide-additional-settings-for-some-of-the-available-listeners">Note: You may need to provide additional settings for some of the available listeners.</h4>
+<p>For instance, <code>Translatable</code> requires additional metadata driver in order to manage translation tables:</p>
+<pre><code class="language-php">return array(
+    'doctrine' =&gt; array(
+        'eventmanager' =&gt; array(
+            'orm_default' =&gt; array(
+                'subscribers' =&gt; array(
+                    'Gedmo\Translatable\TranslatableListener',
+                ),
+            ),
+        ),
+        'driver' =&gt; array(
+            'my_driver' =&gt; array(
+                'class' =&gt; 'Doctrine\ORM\Mapping\Driver\AnnotationDriver',
+                'cache' =&gt; 'array',
+                'paths' =&gt; array(__DIR__ . '/../src/MyModule/Entity')
+            ),
+            'translatable_metadata_driver' =&gt; array(
+                'class' =&gt; 'Doctrine\ORM\Mapping\Driver\AnnotationDriver',
+                'cache' =&gt; 'array',
+                'paths' =&gt; array(
+                    'vendor/gedmo/doctrine-extensions/lib/Gedmo/Translatable/Entity',
+                ),
+            ),
+            'orm_default' =&gt; array(
+                'drivers' =&gt; array(
+                    'MyModule\Entity' =&gt; 'my_driver',
+                    'Gedmo\Translatable\Entity' =&gt; 'translatable_metadata_driver',
+                ),
+            ),
+        ),
+    ),
+);</code></pre>
+                    </div>
+
+                    <footer>
+                        <hr/>
+                                                    <div role="contentinfo">
+                                <p>
+                                    Find Doctrine Extensions 3.0.0 on <a href="https://github.com/Atlantic18/DoctrineExtensions">GitHub</a>.
+                                </p>
+                            </div>
+                                                Built with <a href="http://couscous.io/">Couscous</a> using a <a href="https://github.com/CouscousPHP/Template-ReadTheDocs">theme</a> based on <a href="https://readthedocs.org/">Read the Docs</a>.
+                    </footer>
+
+                </div>
+            </div>
+
+        </section>
+
+    </div>
+
+    <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script>
+    <script src="http://Atlantic18.github.io/DoctrineExtensions/js/theme.js"></script>
+
+    <script>
+        $(function() {
+            // Syntax highlighting
+            hljs.initHighlightingOnLoad();
+        });
+    </script>
+
+</body>
+</html>
