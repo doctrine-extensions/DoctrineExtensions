@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           targetNamespace="http://gediminasm.org/schemas/orm/doctrine-extensions-mapping"
+           xmlns:gedmo="http://gediminasm.org/schemas/orm/doctrine-extensions-mapping"
+           elementFormDefault="qualified">
+
+  <xs:annotation>
+    <xs:documentation><![CDATA[
+       This is the XML Schema for the object/relational
+       mapping file used by the Doctrine Extensions by Gedmo
+       extensions
+       Doctrine component version support: 2.2.x
+     ]]></xs:documentation>
+  </xs:annotation>
+
+  <!--
+  It would be nice if we could force the gedmo with only necessary elements into each of doctrine elements.
+  Patches that do that are more than welcome.
+  Please note, that marking e.g filed element in xml document with xsi:type is not an option as we need to allow other
+  people to push their own additional attributes/elements into the same field element and they should not extend our schema
+  -->
+
+  <!-- entity -->
+  <xs:element name="translation" type="gedmo:translation"/>
+  <xs:element name="tree" type="gedmo:tree"/>
+  <xs:element name="tree-closure" type="gedmo:tree-closure"/>
+  <xs:element name="loggable" type="gedmo:loggable"/>
+  <xs:element name="soft-deleteable" type="gedmo:soft-deleteable"/>
+  <xs:element name="uploadable" type="gedmo:uploadable"/>
+  <!-- field -->
+  <xs:element name="slug" type="gedmo:slug"/>
+  <xs:element name="translatable" type="gedmo:translatable"/>
+  <xs:element name="timestampable" type="gedmo:timestampable"/>
+  <xs:element name="blameable" type="gedmo:blameable"/>
+  <xs:element name="ip-traceable" type="gedmo:ip-traceable"/>
+  <xs:element name="versioned" type="gedmo:emptyType"/>
+  <xs:element name="tree-left" type="gedmo:emptyType"/>
+  <xs:element name="tree-right" type="gedmo:emptyType"/>
+  <xs:element name="tree-level" type="gedmo:emptyType"/>
+  <xs:element name="tree-root" type="gedmo:emptyType"/>
+  <xs:element name="tree-parent" type="gedmo:emptyType"/>
+  <xs:element name="tree-path-source" type="gedmo:emptyType"/>
+  <xs:element name="tree-lock-time" type="gedmo:emptyType"/>
+  <xs:element name="sortable-group" type="gedmo:emptyType"/>
+  <xs:element name="sortable-position" type="gedmo:emptyType"/>
+  <xs:element name="uploadable-file-mime-type" type="gedmo:emptyType"/>
+  <xs:element name="uploadable-file-path" type="gedmo:emptyType"/>
+  <xs:element name="uploadable-file-size" type="gedmo:emptyType"/>
+
+  <xs:complexType name="translation">
+    <xs:attribute name="entity" type="xs:string" use="optional" />
+    <xs:attribute name="locale" type="xs:string" use="optional" />
+    <xs:attribute name="language" type="xs:string" use="optional" />
+  </xs:complexType>
+
+  <xs:complexType name="tree">
+    <xs:attribute name="type" type="gedmo:tree-type" default="nested" />
+    <xs:attribute name="activate-locking" type="xs:boolean" default="false" />
+    <xs:attribute name="locking-timeout" type="xs:integer" default="3" />
+  </xs:complexType>
+
+  <xs:complexType name="reference">
+    <xs:attribute name="type" type="gedmo:reference-type" use="required" />
+    <xs:attribute name="field" type="xs:string" use="required" />
+    <xs:attribute name="identifier" type="xs:string" use="required" />
+    <xs:attribute name="class" type="xs:string" use="required" />
+    <xs:attribute name="mappedBy" type="xs:string" use="optional" />
+    <xs:attribute name="inversedBy" type="xs:string" use="optional" />
+  </xs:complexType>
+
+  <xs:simpleType name="reference-type">
+    <xs:restriction base="xs:token">
+      <xs:enumeration value="document"/>
+      <xs:enumeration value="entity"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:complexType name="tree-closure">
+    <xs:attribute name="class" type="xs:string" use="required" />
+  </xs:complexType>
+
+  <xs:complexType name="tree-path">
+    <xs:attribute name="separator" type="xs:string" use="optional" default="|" />
+  </xs:complexType>
+
+  <xs:complexType name="loggable">
+    <xs:attribute name="log-entry-class" type="xs:string" use="optional" />
+  </xs:complexType>
+
+  <xs:complexType name="slug">
+    <xs:sequence>
+      <xs:element name="handler" type="gedmo:handler" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="fields" type="xs:string" use="required"/>
+    <xs:attribute name="unique" type="xs:boolean" use="optional" />
+    <xs:attribute name="unique-base" type="xs:string" use="optional" />
+    <xs:attribute name="updatable" type="xs:boolean" use="optional" />
+    <xs:attribute name="separator" type="xs:string" use="optional" />
+    <xs:attribute name="style" type="gedmo:slug-style" use="optional" />
+    <xs:attribute name="prefix" type="xs:string" use="optional" />
+    <xs:attribute name="suffix" type="xs:string" use="optional" />
+  </xs:complexType>
+
+  <xs:complexType name="soft-deleteable">
+    <xs:attribute name="field-name" type="xs:string" use="required" />
+  </xs:complexType>
+
+  <xs:complexType name="handler">
+    <xs:sequence>
+      <xs:element name="handler-option" type="gedmo:handler-option" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="class" type="xs:string" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="handler-option">
+    <xs:attribute name="name" type="xs:string" use="required"/>
+    <xs:attribute name="value" type="xs:string" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="timestampable">
+    <xs:attribute name="on" type="gedmo:timestampable-action" use="optional" />
+    <xs:attribute name="field" type="xs:string" use="optional" />
+    <xs:attribute name="value" type="xs:string" use="optional" />
+  </xs:complexType>
+
+  <xs:complexType name="blameable">
+    <xs:attribute name="on" type="gedmo:timestampable-action" use="optional" />
+    <xs:attribute name="field" type="xs:string" use="optional" />
+    <xs:attribute name="value" type="xs:string" use="optional" />
+  </xs:complexType>
+
+  <xs:complexType name="ip-traceable">
+    <xs:attribute name="on" type="gedmo:timestampable-action" use="optional" />
+    <xs:attribute name="field" type="xs:string" use="optional" />
+    <xs:attribute name="value" type="xs:string" use="optional" />
+  </xs:complexType>
+
+  <xs:complexType name="translatable">
+    <xs:attribute name="fallback" type="xs:boolean" use="optional" />
+  </xs:complexType>
+
+  <xs:complexType name="emptyType">
+  </xs:complexType>
+
+  <xs:simpleType name="tree-type">
+    <xs:restriction base="xs:token">
+      <xs:enumeration value="nested"/>
+      <xs:enumeration value="closure"/>
+      <xs:enumeration value="materializedPath"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="slug-style">
+    <xs:restriction base="xs:token">
+      <xs:enumeration value="default"/>
+      <xs:enumeration value="camel"/>
+      <xs:enumeration value="upper"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="timestampable-action">
+    <xs:restriction base="xs:token">
+      <xs:enumeration value="create"/>
+      <xs:enumeration value="update"/>
+      <xs:enumeration value="change"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:complexType name="uploadable">
+    <xs:attribute name="allow-overwrite" type="xs:boolean" use="optional" />
+    <xs:attribute name="append-number" type="xs:boolean" use="optional" />
+    <xs:attribute name="callback" type="xs:string" use="optional" />
+    <xs:attribute name="path" type="xs:string" use="optional" />
+    <xs:attribute name="path-method" type="xs:string" use="optional" />
+    <xs:attribute name="filename-generator" type="xs:string" use="optional" />
+    <xs:attribute name="max-size" type="xs:double" use="optional" default="0" />
+    <xs:attribute name="allowed-types" type="xs:string" use="optional" />
+    <xs:attribute name="disallowed-types" type="xs:string" use="optional" />
+  </xs:complexType>
+
+</xs:schema>

@@ -1,11 +1,11 @@
 # Doctrine2 behavioral extensions
 
-**Version 2.5.0**
+**Version 3.0.0**
 
 [![Build Status](https://secure.travis-ci.org/Atlantic18/DoctrineExtensions.png?branch=master)](http://travis-ci.org/Atlantic18/DoctrineExtensions)
 
 **Note:** Extensions **2.4.x** are compatible with ORM and doctrine common library versions from **2.2.x** to **2.5.x**.
-ORM 2.5.x versions require **PHP 5.4** or higher same as doctrine extensions **2.5.x**.
+ORM 2.5.x versions require **PHP 5.4** or higher same as doctrine extensions **3.x**.
 
 ### Latest updates
 
@@ -19,12 +19,7 @@ ORM 2.5.x versions require **PHP 5.4** or higher same as doctrine extensions **2
 - All trait column names will refer to naming strategy and won't be explicitly set by extensions.
 - Tree repositories are now using traits, for easier extensions.
 
-**2015-05-01**
-
-- Reverted back [1272](https://github.com/Atlantic18/DoctrineExtensions/pull/1272) and see [1263](https://github.com/Atlantic18/DoctrineExtensions/issues/1263). Use [naming strategy](http://stackoverflow.com/questions/12702657/how-to-configure-naming-strategy-in-doctrine-2) for your use cases.
-- Fixed bug for sortable [1279](https://github.com/Atlantic18/DoctrineExtensions/pull/1279)
-
-### Summary and features
+### Extensions and Documentation
 
 This package contains extensions for Doctrine2 that hook into the facilities of Doctrine and
 offer new functionality or tools to use Doctrine2 more efficiently. This package contains mostly
@@ -46,28 +41,23 @@ records being flushed in the behavioral way. List of extensions:
 - [**ReferenceIntegrity**](/doc/reference_integrity.md) - constrains ODM MongoDB Document references
 - [**IpTraceable**](/doc/ip_traceable.md) - inherited from Timestampable, sets IP address instead of timestamp
 
-Currently these extensions support **Yaml**, **Annotation**  and **Xml** mapping. Additional mapping drivers
-can be easily implemented using Mapping extension to handle the additional metadata mapping.
+Currently these extensions support **Yaml**, **Annotation**  and **Xml** mapping.
 
 **Note:** Please note, that xml mapping needs to be in a different namespace, the declared namespace for
-Doctrine extensions is http://gediminasm.org/schemas/orm/doctrine-extensions-mapping
+Doctrine extensions is [doctrine-extensions.xsd](http://atlantic18.github.io/DoctrineExtensions/schemas/orm/doctrine-extensions.xsd)
 So root node now looks like this:
 
-**Note:** Use 2.1.x tag in order to use extensions based on Doctrine2.1.x versions. Currently
-master branch is based on 2.2.x versions and may not work with 2.1.x
-
 ```xml
-<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
-                 xmlns:gedmo="http://gediminasm.org/schemas/orm/doctrine-extensions-mapping">
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-extensions.xsd"
+                 xmlns:gedmo="http://Atlantic18.github.io/DoctrineExtensions/schemas/orm/doctrine-extensions.xsd">
 ...
 </doctrine-mapping>
 ```
 
 XML mapping xsd schemas are also versioned and can be used by version suffix:
 
-- Latest version - **http://gediminasm.org/schemas/orm/doctrine-extensions-mapping**
-- 2.2.x version - **http://gediminasm.org/schemas/orm/doctrine-extensions-mapping-2-2**
-- 2.1.x version - **http://gediminasm.org/schemas/orm/doctrine-extensions-mapping-2-1**
+- Latest version - **http://Atlantic18.github.io/DoctrineExtensions/schemas/orm/doctrine-extensions.xsd**
+- 2.4.x version - **http://Atlantic18.github.io/DoctrineExtensions/schemas/orm/doctrine-extensions-2.4.xsd**
 
 ### ODM MongoDB support
 
@@ -91,9 +81,7 @@ All these extensions can be nested together and mapped in traditional ways - **a
 **pdo-sqlite** extension is necessary.
 To setup and run tests follow these steps:
 
-- go to the root directory of extensions
-- download composer: `wget https://getcomposer.org/composer.phar`
-- install dev libraries: `php composer.phar install`
+- install dev libraries: `composer install`
 - run: `bin/phpunit -c tests`
 - optional - run mongodb service if targeting mongo tests
 
@@ -102,8 +90,7 @@ To setup and run tests follow these steps:
 To setup and run example follow these steps:
 
 - go to the root directory of extensions
-- download composer: `wget https://getcomposer.org/composer.phar`
-- install dev libraries: `php composer.phar install`
+- install dev libraries: `composer install`
 - edit `example/em.php` and configure your database on top of the file
 - run: `./example/bin/console` or `php example/bin/console` for console commands
 - run: `./example/bin/console orm:schema-tool:create` to create schema
