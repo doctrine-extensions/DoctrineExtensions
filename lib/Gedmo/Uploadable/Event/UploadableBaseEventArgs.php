@@ -49,8 +49,8 @@ abstract class UploadableBaseEventArgs extends EventArgs
     private $fileInfo;
 
     /**
-     * @var string $action - Is the file being created, updated or removed?
-     *                       This value can be: CREATE, UPDATE or DELETE.
+     * @var string $action - Is the file being inserted, updated or removed?
+     *                       This value can be: INSERT, UPDATE or DELETE.
      */
     private $action;
 
@@ -123,7 +123,7 @@ abstract class UploadableBaseEventArgs extends EventArgs
     }
 
     /**
-     * Retrieve the action being performed to the entity: CREATE, UPDATE or DELETE
+     * Retrieve the action being performed to the entity: INSERT, UPDATE or DELETE
      *
      * @return string
      */
