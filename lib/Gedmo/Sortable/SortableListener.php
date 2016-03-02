@@ -308,6 +308,7 @@ class SortableListener extends MappedEventSubscriber
                 $absDelta = abs($delta['delta']);
                 $dql = "UPDATE {$relocation['name']} n";
                 $dql .= " SET n.{$config['position']} = n.{$config['position']} {$sign} {$absDelta}";
+                $delta['start'] = intval($delta['start']); // add hot fix for issue #370 by @ksn135
                 $dql .= " WHERE n.{$config['position']} >= {$delta['start']}";
                 // if not null, false or 0
                 if ($delta['stop'] > 0) {
