@@ -39,10 +39,36 @@ final class ORM extends BaseAdapterORM implements SortableAdapter
                 $qb->andWhere($qb->expr()->isNull('n.'.$group));
             } else {
                 $qb->andWhere('n.'.$group.' = :group__'.$i);
-                $qb->setParameter('group__'.$i, $value);
+                $qb->setParameter('group__'.$i, $this->getGroupValue($value), $this->getGroupType($value));
             }
             $i++;
         }
+    }
+
+    /**
+     * @param $value
+     * @return mixed
+     */
+    private function getGroupValue($value)
+    {
+        if (!is_object($value)) {
+            return $value;
+        }
+        return $this->getObjectManager()->getUnitOfWork()->getSingleIdentifierValue($value);
+    }
+
+    /**
+     * @param $value
+     * @return \Doctrine\DBAL\Types\Type|null|string
+     */
+    private function getGroupType($value)
+    {
+        if (!is_object($value)) {
+            return null;
+        }
+        $metaData = $this->getObjectManager()->getClassMetadata(get_class($value));
+        $id = $metaData->getIdentifier();
+        return $metaData->getTypeOfField($id[0]);
     }
 
     public function updatePositions($relocation, $delta, $config)
@@ -99,6 +125,11 @@ final class ORM extends BaseAdapterORM implements SortableAdapter
         $em = $this->getObjectManager();
         $q = $em->createQuery($dql);
         $q->setParameters($params);
+        foreach ($relocation['groups'] as $group => $value) {
+            if (!is_null($value)) {
+                $q->setParameter('val___' . $i, $this->getGroupValue($value), $this->getGroupType($value));
+            }
+        }        
         $q->getSingleScalarResult();
     }
 }
