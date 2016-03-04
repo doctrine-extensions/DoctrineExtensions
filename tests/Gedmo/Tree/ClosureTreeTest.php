@@ -361,20 +361,21 @@ class ClosureTreeTest extends BaseTestCaseORM
         $emOne = $this->getMockSqliteEntityManager($evm);
         $emTwo = $this->getMockSqliteEntityManager($evm);
 
-        $politicsOne = new Category();
-        $politicsOne->setTitle('Politics');
-        $newsOne = new News('Lorem ipsum', $politicsOne);
+        $categoryOne = new Category();
+        $categoryOne->setTitle('Politics');
 
-        $politicsTwo = new Category();
-        $politicsTwo->setTitle('Politics');
-        $newsTwo = new News('Lorem ipsum', $politicsTwo);
+        $categoryTwo = new Category();
+        $categoryTwo->setTitle('Politics');
 
         // Persist and Flush on different times !
-        $emOne->persist($newsOne);
+        $emOne->persist($categoryOne);
 
-        $emTwo->persist($newsTwo);
+        $emTwo->persist($categoryTwo);
         $emTwo->flush();
 
         $emOne->flush();
+
+        $this->assertNotNull($categoryOne->getId());
+        $this->assertNotNull($categoryTwo->getId());
     }
 }
