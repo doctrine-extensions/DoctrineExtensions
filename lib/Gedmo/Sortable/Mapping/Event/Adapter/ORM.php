@@ -2,6 +2,7 @@
 
 namespace Gedmo\Sortable\Mapping\Event\Adapter;
 
+use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 use Doctrine\Common\Util\ClassUtils;
 use Doctrine\ORM\QueryBuilder;
 use Gedmo\Mapping\Event\Adapter\ORM as BaseAdapterORM;
@@ -23,7 +24,7 @@ final class ORM extends BaseAdapterORM implements SortableAdapter
         $qb = $em->createQueryBuilder();
         $qb->select('MAX(n.' . $config['position'] . ')')
             ->from($config['useObjectClass'], 'n');
-        $this->addGroupWhere($qb, $groups);
+        $this->addGroupWhere($qb, $groups, $meta);
         $query = $qb->getQuery();
         $query->useQueryCache(false);
         $query->useResultCache(false);
@@ -32,7 +33,7 @@ final class ORM extends BaseAdapterORM implements SortableAdapter
         return $res[0][1];
     }
 
-    private function addGroupWhere(QueryBuilder $qb, $groups)
+    private function addGroupWhere(QueryBuilder $qb, $groups, $meta)
     {
         $i = 1;
         foreach ($groups as $group => $value) {
@@ -40,7 +41,7 @@ final class ORM extends BaseAdapterORM implements SortableAdapter
                 $qb->andWhere($qb->expr()->isNull('n.' . $group));
             } else {
                 $qb->andWhere('n.' . $group . ' = :group__' . $i);
-                $qb->setParameter('group__' . $i, $this->getGroupValue($value), $this->getGroupType($value));
+                $qb->setParameter('group__' . $i, $this->getGroupValue($value), $this->getGroupType($group, $value, $meta));
             }
             $i++;
         }
@@ -71,9 +72,12 @@ final class ORM extends BaseAdapterORM implements SortableAdapter
      * @param $value
      * @return \Doctrine\DBAL\Types\Type|null|string
      */
-    private function getGroupType($value)
+    private function getGroupType($group, $value, $meta)
     {
         if (!$this->isEntity($value)) {
+            if ($meta instanceof ClassMetadata) {
+                return $meta->getTypeOfField($group);
+            }
             return null;
         }
 
@@ -107,6 +111,7 @@ final class ORM extends BaseAdapterORM implements SortableAdapter
             }
         }
 
+        $meta = $this->getObjectManager()->getClassMetadata($relocation['name']);
         // add excludes
         if (!empty($delta['exclude'])) {
             $meta = $this->getObjectManager()->getClassMetadata($relocation['name']);
@@ -143,7 +148,7 @@ final class ORM extends BaseAdapterORM implements SortableAdapter
         $q->setParameters($params);
         foreach ($relocation['groups'] as $group => $value) {
             if (!is_null($value)) {
-                $q->setParameter('val___' . $i, $this->getGroupValue($value), $this->getGroupType($value));
+                $q->setParameter('val___' . $i, $this->getGroupValue($value), $this->getGroupType($group, $value, $meta));
             }
         }
         $q->getSingleScalarResult();
