@@ -361,9 +361,6 @@ class ClosureTreeTest extends BaseTestCaseORM
         $emOne = $this->getMockSqliteEntityManager($evm);
         $emTwo = $this->getMockSqliteEntityManager($evm);
 
-        $uowOne = $emOne->getUnitOfWork();
-        $uowTwo = $emTwo->getUnitOfWork();
-
         $politicsOne = new Category();
         $politicsOne->setTitle('Politics');
         $newsOne = new News('Lorem ipsum', $politicsOne);
