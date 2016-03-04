@@ -14,8 +14,8 @@ class SortableGroupCustomTypeTest extends BaseTestCaseORM
     protected function getUsedEntityFixtures()
     {
         return array(
-            Paper::class,
-            Author::class,
+            'Sortable\Fixture\CustomType\Paper',
+            'Sortable\Fixture\CustomType\Author',
         );
     }
 
@@ -26,7 +26,7 @@ class SortableGroupCustomTypeTest extends BaseTestCaseORM
         $evm = new EventManager();
         $evm->addEventSubscriber(new SortableListener());
         require_once 'CustomType.php';
-        Type::addType('mytype',  CustomType::class);
+        Type::addType('mytype',  'Gedmo\Sortable\CustomType');
 
         $this->getMockSqliteEntityManager($evm);
 
@@ -55,7 +55,7 @@ class SortableGroupCustomTypeTest extends BaseTestCaseORM
         $this->em->flush();
         $this->em->clear();
 
-        $repo = $this->em->getRepository(Author::class);
+        $repo = $this->em->getRepository('Sortable\Fixture\CustomType\Author');
 
         $one = $repo->findOneBy(array('name' => 'a7'));
         $one->setPosition(4);
