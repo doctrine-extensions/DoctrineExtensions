@@ -2,9 +2,10 @@
 
 namespace Gedmo\Sortable\Mapping\Event\Adapter;
 
+use Doctrine\Common\Util\ClassUtils;
+use Doctrine\ORM\QueryBuilder;
 use Gedmo\Mapping\Event\Adapter\ORM as BaseAdapterORM;
 use Gedmo\Sortable\Mapping\Event\SortableAdapter;
-use Doctrine\ORM\QueryBuilder;
 
 /**
  * Doctrine event adapter for ORM adapted
@@ -20,8 +21,8 @@ final class ORM extends BaseAdapterORM implements SortableAdapter
         $em = $this->getObjectManager();
 
         $qb = $em->createQueryBuilder();
-        $qb->select('MAX(n.'.$config['position'].')')
-           ->from($config['useObjectClass'], 'n');
+        $qb->select('MAX(n.' . $config['position'] . ')')
+            ->from($config['useObjectClass'], 'n');
         $this->addGroupWhere($qb, $groups);
         $query = $qb->getQuery();
         $query->useQueryCache(false);
@@ -36,13 +37,22 @@ final class ORM extends BaseAdapterORM implements SortableAdapter
         $i = 1;
         foreach ($groups as $group => $value) {
             if (null === $value) {
-                $qb->andWhere($qb->expr()->isNull('n.'.$group));
+                $qb->andWhere($qb->expr()->isNull('n.' . $group));
             } else {
-                $qb->andWhere('n.'.$group.' = :group__'.$i);
-                $qb->setParameter('group__'.$i, $this->getGroupValue($value), $this->getGroupType($value));
+                $qb->andWhere('n.' . $group . ' = :group__' . $i);
+                $qb->setParameter('group__' . $i, $this->getGroupValue($value), $this->getGroupType($value));
             }
             $i++;
         }
+    }
+
+    /**
+     * @param $value
+     * @return bool
+     */
+    private function isEntity($value)
+    {
+        return (is_object($value) && $this->getObjectManager()->getMetadataFactory()->hasMetadataFor(ClassUtils::getClass($value)));
     }
 
     /**
@@ -51,7 +61,7 @@ final class ORM extends BaseAdapterORM implements SortableAdapter
      */
     private function getGroupValue($value)
     {
-        if (!is_object($value)) {
+        if (!$this->isEntity($value)) {
             return $value;
         }
         return $this->getObjectManager()->getUnitOfWork()->getSingleIdentifierValue($value);
@@ -63,12 +73,16 @@ final class ORM extends BaseAdapterORM implements SortableAdapter
      */
     private function getGroupType($value)
     {
-        if (!is_object($value)) {
+        if (!$this->isEntity($value)) {
             return null;
         }
-        $metaData = $this->getObjectManager()->getClassMetadata(get_class($value));
-        $id = $metaData->getIdentifier();
-        return $metaData->getTypeOfField($id[0]);
+
+        $metaData = $this->getObjectManager()->getClassMetadata(ClassUtils::getClass($value));
+        $ids = $metaData->getIdentifier();
+        if (count($ids) > 1) {
+            return null;
+        }
+        return $metaData->getTypeOfField($ids[0]);
     }
 
     public function updatePositions($relocation, $delta, $config)
@@ -88,8 +102,8 @@ final class ORM extends BaseAdapterORM implements SortableAdapter
             if (null === $value) {
                 $dql .= " AND n.{$group} IS NULL";
             } else {
-                $dql .= " AND n.{$group} = :val___".(++$i);
-                $params['val___'.$i] = $value;
+                $dql .= " AND n.{$group} = :val___" . (++$i);
+                $params['val___' . $i] = $value;
             }
         }
 
@@ -108,16 +122,18 @@ final class ORM extends BaseAdapterORM implements SortableAdapter
                     $params['excluded'] = $excludedIds;
                     $dql .= " AND n.{$meta->identifier[0]} NOT IN (:excluded)";
                 }
-            } else if (count($meta->identifier) > 1) {
-                foreach ($delta['exclude'] as $entity) {
-                    $j = 0;
-                    $dql .= " AND NOT (";
-                    foreach ($meta->getIdentifierValues($entity) as $id => $value) {
-                        $dql .= ($j > 0 ? " AND " : "") . "n.{$id} = :val___".(++$i);
-                        $params['val___'.$i] = $value;
-                        $j++;
+            } else {
+                if (count($meta->identifier) > 1) {
+                    foreach ($delta['exclude'] as $entity) {
+                        $j = 0;
+                        $dql .= " AND NOT (";
+                        foreach ($meta->getIdentifierValues($entity) as $id => $value) {
+                            $dql .= ($j > 0 ? " AND " : "") . "n.{$id} = :val___" . (++$i);
+                            $params['val___' . $i] = $value;
+                            $j++;
+                        }
+                        $dql .= ")";
                     }
-                    $dql .=  ")";
                 }
             }
         }
@@ -129,7 +145,7 @@ final class ORM extends BaseAdapterORM implements SortableAdapter
             if (!is_null($value)) {
                 $q->setParameter('val___' . $i, $this->getGroupValue($value), $this->getGroupType($value));
             }
-        }        
+        }
         $q->getSingleScalarResult();
     }
 }
