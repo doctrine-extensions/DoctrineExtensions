@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <xs:complexType xmlns:xs="http://www.w3.org/2001/XMLSchema"
-           targetNamespace="http://gediminasm.org/schemas/orm/doctrine-extensions-mapping"
-           xmlns:gedmo="http://gediminasm.org/schemas/orm/doctrine-extensions-mapping"
+           targetNamespace="http://Atlantic18.github.io/DoctrineExtensions/schemas/orm/doctrine-extensions-3.0.xsd"
+           xmlns:gedmo="http://Atlantic18.github.io/DoctrineExtensions/schemas/orm/doctrine-extensions-3.0.xsd"
            elementFormDefault="qualified">
 
   <xs:annotation>
@@ -10,7 +10,7 @@
        This is the XML Schema for the object/relational
        mapping file used by the Doctrine Extensions by Gedmo
        extensions
-       Doctrine component version support: 2.2.x
+       Doctrine component version support: 3.0.x
      ]]></xs:documentation>
   </xs:annotation>
 
