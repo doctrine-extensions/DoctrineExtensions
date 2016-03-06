@@ -2,6 +2,8 @@
 
 namespace Gedmo\SoftDeleteable;
 
+use SoftDeleteable\Fixture\Entity\EagerTest\Address;
+use SoftDeleteable\Fixture\Entity\EagerTest\Person;
 use Tool\BaseTestCaseORM;
 use Doctrine\Common\EventManager;
 use SoftDeleteable\Fixture\Entity\Article;
@@ -25,9 +27,11 @@ use SoftDeleteable\Fixture\Entity\Child;
  */
 class SoftDeleteableEntityTest extends BaseTestCaseORM
 {
+    const ADDRESS_CLASS = 'SoftDeleteable\Fixture\Entity\EagerTest\Address';
     const ARTICLE_CLASS = 'SoftDeleteable\Fixture\Entity\Article';
     const COMMENT_CLASS = 'SoftDeleteable\Fixture\Entity\Comment';
     const PAGE_CLASS = 'SoftDeleteable\Fixture\Entity\Page';
+    const PERSON_CLASS = 'SoftDeleteable\Fixture\Entity\EagerTest\Person';
     const MEGA_PAGE_CLASS = 'SoftDeleteable\Fixture\Entity\MegaPage';
     const MODULE_CLASS = 'SoftDeleteable\Fixture\Entity\Module';
     const OTHER_ARTICLE_CLASS = 'SoftDeleteable\Fixture\Entity\OtherArticle';
@@ -368,11 +372,41 @@ class SoftDeleteableEntityTest extends BaseTestCaseORM
         $this->em->flush();
     }
 
+    /**
+     * @test
+     */
+    public function oneToOneBidirectional()
+    {
+        $person = new Person();
+        $person->setName('Test');
+
+        $address = new Address();
+        $address->setOwner($person);
+        $address->setStreet('test');
+
+        $person->setAddress($address);
+
+        $this->em->persist($person);
+        $this->em->persist($address);
+        $this->em->flush();
+
+        $id = $address->getId();
+
+        $this->em->remove($person);
+        $this->em->flush();
+        $this->em->clear();
+
+        $address = $this->em->find(self::ADDRESS_CLASS, $id);
+        $this->assertNull($address->getOwner());
+    }
+
     protected function getUsedEntityFixtures()
     {
         return array(
+            self::ADDRESS_CLASS,
             self::ARTICLE_CLASS,
             self::PAGE_CLASS,
+            self::PERSON_CLASS,
             self::MEGA_PAGE_CLASS,
             self::MODULE_CLASS,
             self::COMMENT_CLASS,
