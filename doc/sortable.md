@@ -46,8 +46,7 @@ on how to setup and use the extensions in most optimized way.
 
 ### Sortable annotations:
 
-- **@Gedmo\Mapping\Annotation\SortableGroup** it will use this field for **grouping**
-- **@Gedmo\Mapping\Annotation\SortablePosition** it will use this column to store **position** index
+- **@Gedmo\Mapping\Annotation\Sortable
 
 **Note:** that Sortable interface is not necessary, except in cases there
 you need to identify entity as being Sortable. The metadata is loaded only once then
@@ -78,13 +77,12 @@ class Item
     private $name;
 
     /**
-     * @Gedmo\SortablePosition
+     * @Gedmo\Sortable(groups={"category"})
      * @ORM\Column(type="integer")
      */
     private $position;
 
     /**
-     * @Gedmo\SortableGroup
      * @ORM\Column(length=128)
      */
     private $category;
@@ -149,12 +147,11 @@ Entity\Item:
     position:
       type: integer
       gedmo:
-        - sortablePosition
+        sortable:
+          groups: [category]
     category:
       type: string
       length: 128
-      gedmo:
-        - sortableGroup
 ```
 
 <a name="xml-mapping"></a>
@@ -174,11 +171,9 @@ Entity\Item:
         </field>
 
         <field name="position" type="integer">
-            <gedmo:sortable-position/>
+            <gedmo:sortable groups="category"/>
         </field>
-        <field name="category" type="string" length="128">
-            <gedmo:sortable-group />
-        </field>
+        <field name="category" type="string" length="128"/>
     </entity>
 </doctrine-mapping>
 ```

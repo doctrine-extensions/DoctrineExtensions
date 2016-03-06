@@ -19,13 +19,12 @@ class Kid
     private $lastname;
 
     /**
-     * @Gedmo\SortablePosition
+     * @Gedmo\Sortable(groups={"birthdate"})
      * @ODM\Field(type="int")
      */
     protected $position;
 
     /**
-     * @Gedmo\SortableGroup
      * @ODM\Field(type="date")
      */
     protected $birthdate;

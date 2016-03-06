@@ -2,6 +2,7 @@
 
 namespace Gedmo\Sortable\Mapping\Driver;
 
+use Gedmo\Mapping\Annotation\Sortable;
 use Gedmo\Mapping\Driver\AbstractAnnotationDriver;
 use Gedmo\Exception\InvalidMappingException;
 
@@ -16,15 +17,7 @@ use Gedmo\Exception\InvalidMappingException;
  */
 class Annotation extends AbstractAnnotationDriver
 {
-    /**
-     * Annotation to mark field as one which will store node position
-     */
-    const POSITION = 'Gedmo\\Mapping\\Annotation\\SortablePosition';
-
-    /**
-     * Annotation to mark field as sorting group
-     */
-    const GROUP = 'Gedmo\\Mapping\\Annotation\\SortableGroup';
+    const SORTABLE = 'Gedmo\\Mapping\\Annotation\\Sortable';
 
     /**
      * List of types which are valid for position fields
@@ -54,8 +47,8 @@ class Annotation extends AbstractAnnotationDriver
                 continue;
             }
 
-            // position
-            if ($this->reader->getPropertyAnnotation($property, self::POSITION)) {
+            /** @var Sortable $sortable */
+            if ($sortable = $this->reader->getPropertyAnnotation($property, self::SORTABLE)) {
                 $field = $property->getName();
                 if (!$meta->hasField($field)) {
                     throw new InvalidMappingException("Unable to find 'position' - [{$field}] as mapped property in entity - {$meta->name}");
@@ -63,25 +56,19 @@ class Annotation extends AbstractAnnotationDriver
                 if (!$this->isValidField($meta, $field)) {
                     throw new InvalidMappingException("Sortable position field - [{$field}] type is not valid and must be 'integer' in class - {$meta->name}");
                 }
-                $config['position'] = $field;
-            }
 
-            // group
-            if ($this->reader->getPropertyAnnotation($property, self::GROUP)) {
-                $field = $property->getName();
-                if (!$meta->hasField($field) && !$meta->hasAssociation($field)) {
-                    throw new InvalidMappingException("Unable to find 'group' - [{$field}] as mapped property in entity - {$meta->name}");
+                foreach ($sortable->groups as $group) {
+                    if (!$meta->hasField($group) && !$meta->isSingleValuedAssociation($group)) {
+                        throw new InvalidMappingException("Sortable field: '{$field}' group: {$group} - is not a mapped
+                                    or single valued association property in class {$meta->name}");
+                    }
                 }
-                if (!isset($config['groups'])) {
-                    $config['groups'] = array();
-                }
-                $config['groups'][] = $field;
-            }
-        }
 
-        if (!$meta->isMappedSuperclass && $config) {
-            if (!isset($config['position'])) {
-                throw new InvalidMappingException("Missing property: 'position' in class - {$meta->name}");
+                $config['sortables'][$field] = [
+                    'position' => $field,
+                    'groups' => $sortable->groups,
+                    'useObjectClass' => $meta->name
+                ];
             }
         }
     }
