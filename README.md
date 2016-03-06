@@ -58,6 +58,7 @@ XML mapping xsd schemas are also versioned and can be used by version suffix:
 
 - Latest version - **http://Atlantic18.github.io/DoctrineExtensions/schemas/orm/doctrine-extensions.xsd**
 - 2.4.x version - **http://Atlantic18.github.io/DoctrineExtensions/schemas/orm/doctrine-extensions-2.4.xsd**
+- 3.0.x version - **http://Atlantic18.github.io/DoctrineExtensions/schemas/orm/doctrine-extensions-3.0.xsd**
 
 ### ODM MongoDB support
 
