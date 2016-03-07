@@ -103,7 +103,7 @@
   </xs:complexType>
 
   <xs:complexType name="sortable">
-    <xs:attribute name="groups" type="xs:string" use="required"/>
+    <xs:attribute name="groups" type="xs:string" use="optional"/>
   </xs:complexType>
 
   <xs:complexType name="soft-deleteable">
