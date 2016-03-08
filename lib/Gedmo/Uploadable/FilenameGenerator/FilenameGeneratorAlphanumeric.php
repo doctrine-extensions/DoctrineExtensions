@@ -18,7 +18,7 @@ class FilenameGeneratorAlphanumeric implements FilenameGeneratorInterface
     /**
      * @inheritDoc
      */
-    public static function generate($filename, $extension, $object = null)
+    public static function generate($filename, $extension, $object = null, $identifier = null)
     {
         return preg_replace('/[^a-z0-9]+/', '-', strtolower($filename)).$extension;
     }

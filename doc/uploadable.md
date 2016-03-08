@@ -466,3 +466,74 @@ way:
 $listener->setMimeTypeGuesser(new MyCustomMimeTypeGuesser());
 
 ```
+
+### Multiple uploadables in a single entity
+ 
+It is possible to configure a single entity with more than one uploadable. To do this, you need to:
+ 
+* Have all Uploadable annotations under the **@Gedmo\Mapping\Annotation\Uploadables** annotation, and give every Uploadable a unique identifier.
+* Specify the working configuration identifier in the field configurations. 
+
+**Important note: Multiple uploadables is currently supported via annotations only.**
+
+Here is an example:
+
+```php
+/**
+ * @ORM\Entity
+ * @Gedmo\Uploadables(configurations={
+ *   @Gedmo\Uploadable(identifier="image_large", pathMethod="getPath"),
+ *   @Gedmo\Uploadable(identifier="image_thumb", pathMethod="getPath")
+ * })
+ */
+class Product
+{
+    /**
+     * @ORM\Column(type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
+
+    /**
+     * @ORM\Column(type="string")
+     */
+    private $title;
+
+    /**
+     * @ORM\Column(type="string")
+     * @Gedmo\UploadableFileName(identifier="image_thumb")
+     */
+    private $thumbnailImageFile;
+
+    /**
+     * @ORM\Column(type="string")
+     * @Gedmo\UploadableFileName(identifier="image_large")
+     */
+    private $largeImageFile;
+
+    public function getPath()
+    {
+        return '/tmp/path_to_upload';
+    }
+}
+
+```
+
+Explanations:
+
+- The class is annotated with a new annotation, `@Uploadables`, which accepts an array of the original `@Uploadable` definitions. 
+- Each Uploadable is given a unique `identifier`. This is used to distinguish different uploadable configurations.
+- You also need to specify which configuration the field refers to via the `identifier` property in `@UploadableFileMimeType`, `@UploadableFileName`, `@UploadableFilePath`, and `@UploadableFileSize`. 
+
+*Note: Behind the scene, `identifier` will default to `_default` when not specified, so you don't need to worry about it in case of single upload field.*
+
+Similarly, you need to specify which configuration the file refers to when adding file to the entity. Just pass the identifier as the third parameter of `addEntityFileInfo`, like below:
+ 
+```php
+$entity = new Product();
+$listener->addEntityFileInfo($entity, new FileInfoArray($fileInfo), 'image_large');
+$listener->addEntityFileInfo($entity, new FileInfoArray($fileInfo), 'image_thumb');
+```
+
+*Note: Again, this optional third parameter will default to `_default`, which is why you don't need to specify one in case of single upload.*
