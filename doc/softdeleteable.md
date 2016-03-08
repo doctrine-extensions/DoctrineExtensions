@@ -176,7 +176,7 @@ Entity\Article:
 ``` xml
 <?xml version="1.0" encoding="UTF-8"?>
 <doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
-                  xmlns:gedmo="http://gediminasm.org/schemas/orm/doctrine-extensions-mapping">
+                  xmlns:gedmo="http://Atlantic18.github.io/DoctrineExtensions/schemas/orm/doctrine-extensions-3.0.xsd">
 
     <entity name="Mapping\Fixture\Xml\Timestampable" table="timestampables">
         <id name="id" type="integer" column="id">
@@ -283,7 +283,7 @@ own ones based per project. These ones are standing as an example.
 
 ## Extra
 
-By default it is too complicated to manage extension dependencies so you may have issues when combining some of the extensions. You can how ever create your own listeners to help you out. 
+By default it is too complicated to manage extension dependencies so you may have issues when combining some of the extensions. You can how ever create your own listeners to help you out.
 
 Here is an example of a soft delete listener to move your item to the end of the list when you delete it, so you prevent later collision.
 

@@ -3,15 +3,19 @@
 **Version 3.0.0**
 
 [![Build Status](https://secure.travis-ci.org/Atlantic18/DoctrineExtensions.png?branch=master)](http://travis-ci.org/Atlantic18/DoctrineExtensions)
+[![Total Downloads](https://poser.pugx.org/gedmo/doctrine-extensions/downloads.png)](https://packagist.org/packages/gedmo/doctrine-extensions)
+[![Latest Stable Version](https://poser.pugx.org/gedmo/doctrine-extensions/v/stable.png)](https://packagist.org/packages/gedmo/doctrine-extensions)
 
-**Note:** Extensions **2.4.x** are compatible with ORM and doctrine common library versions from **2.2.x** to **2.5.x**.
-ORM 2.5.x versions require **PHP 5.4** or higher same as doctrine extensions **3.x**.
+**Note:** Extensions **3.0.x** are compatible with **ORM** and doctrine common libraries from **2.5.x** and requires **PHP 5.4** or higher.
+Extensions **2.4.x** are compatible with ORM and doctrine common library versions from **2.2.x** to **2.5.x**
 
 ### Latest updates
 
 **2016-01-27**
 
 - Nested tree now allows **root** field as association.
+- Sortable supports more than one sortable field per entity, has **BC** changes.
+- Uploadable supports more than one file per entity, may have implicit **BC** change if users have used their custom **FilenameGeneratorInterface** see [#1342](https://github.com/Atlantic18/DoctrineExtensions/pull/1342).
 
 **2015-12-27**
 

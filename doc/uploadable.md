@@ -269,7 +269,7 @@ Entity\File:
 <?xml version="1.0" encoding="UTF-8"?>
 
 <doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
-                  xmlns:gedmo="http://gediminasm.org/schemas/orm/doctrine-extensions-mapping">
+                  xmlns:gedmo="http://Atlantic18.github.io/DoctrineExtensions/schemas/orm/doctrine-extensions-3.0.xsd">
 
     <entity name="Entity\File" table="files">
 
@@ -468,11 +468,11 @@ $listener->setMimeTypeGuesser(new MyCustomMimeTypeGuesser());
 ```
 
 ### Multiple uploadables in a single entity
- 
+
 It is possible to configure a single entity with more than one uploadable. To do this, you need to:
- 
+
 * Have all Uploadable annotations under the **@Gedmo\Mapping\Annotation\Uploadables** annotation, and give every Uploadable a unique identifier.
-* Specify the working configuration identifier in the field configurations. 
+* Specify the working configuration identifier in the field configurations.
 
 **Important note: Multiple uploadables is currently supported via annotations only.**
 
@@ -522,14 +522,14 @@ class Product
 
 Explanations:
 
-- The class is annotated with a new annotation, `@Uploadables`, which accepts an array of the original `@Uploadable` definitions. 
+- The class is annotated with a new annotation, `@Uploadables`, which accepts an array of the original `@Uploadable` definitions.
 - Each Uploadable is given a unique `identifier`. This is used to distinguish different uploadable configurations.
-- You also need to specify which configuration the field refers to via the `identifier` property in `@UploadableFileMimeType`, `@UploadableFileName`, `@UploadableFilePath`, and `@UploadableFileSize`. 
+- You also need to specify which configuration the field refers to via the `identifier` property in `@UploadableFileMimeType`, `@UploadableFileName`, `@UploadableFilePath`, and `@UploadableFileSize`.
 
 *Note: Behind the scene, `identifier` will default to `_default` when not specified, so you don't need to worry about it in case of single upload field.*
 
 Similarly, you need to specify which configuration the file refers to when adding file to the entity. Just pass the identifier as the third parameter of `addEntityFileInfo`, like below:
- 
+
 ```php
 $entity = new Product();
 $listener->addEntityFileInfo($entity, new FileInfoArray($fileInfo), 'image_large');

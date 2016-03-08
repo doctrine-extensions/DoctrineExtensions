@@ -287,7 +287,7 @@ Entity\Category:
 ``` xml
 <?xml version="1.0" encoding="UTF-8"?>
 <doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
-                  xmlns:gedmo="http://gediminasm.org/schemas/orm/doctrine-extensions-mapping">
+                  xmlns:gedmo="http://Atlantic18.github.io/DoctrineExtensions/schemas/orm/doctrine-extensions-3.0.xsd">
 
     <entity name="Mapping\Fixture\Xml\NestedTree" table="nested_trees" repository-class="Gedmo\Tree\Entity\Repository\NestedTreeRepository">
 
