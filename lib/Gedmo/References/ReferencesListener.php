@@ -73,15 +73,20 @@ class ReferencesListener extends MappedEventSubscriber
                     if (isset($refConfig['referenceOne'][$mapping['mappedBy']])) {
                         $refMapping = $refConfig['referenceOne'][$mapping['mappedBy']];
                         $identifier = $refMapping['identifier'];
+                        $orderBy = $mapping['orderBy'];
                         $property->setValue(
                             $object,
                             new LazyCollection(
-                                function () use ($id, &$manager, $class, $identifier) {
+                                function () use ($id, &$manager, $class, $identifier, $orderBy) {
                                     $results = $manager
                                         ->getRepository($class)
-                                        ->findBy(array(
-                                            $identifier => $id,
-                                        ));
+                                        ->findBy(
+                                            [
+                                                $identifier => $id,
+                                            ],
+                                            $orderBy
+                                        )
+                                    ;
 
                                     return new ArrayCollection((is_array($results) ? $results : $results->toArray()));
                                 }

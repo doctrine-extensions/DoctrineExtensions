@@ -2,6 +2,7 @@
 
 namespace Gedmo\References\Mapping\Driver;
 
+use Gedmo\Mapping\Annotation\ReferenceMany;
 use Gedmo\Mapping\Driver\AnnotationDriverInterface;
 
 /**
@@ -81,6 +82,10 @@ class Annotation implements AnnotationDriverInterface
                         'mappedBy'   => $reference->mappedBy,
                         'inversedBy' => $reference->inversedBy,
                     );
+
+                    if ($reference instanceof ReferenceMany) {
+                        $config[$key][$property->getName()]['orderBy'] = $reference->orderBy;
+                    }
                 }
             }
         }

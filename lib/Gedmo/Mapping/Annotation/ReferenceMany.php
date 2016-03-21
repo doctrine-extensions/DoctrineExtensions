@@ -12,4 +12,5 @@ namespace Gedmo\Mapping\Annotation;
  */
 class ReferenceMany extends Reference
 {
+    public $orderBy = [];
 }
