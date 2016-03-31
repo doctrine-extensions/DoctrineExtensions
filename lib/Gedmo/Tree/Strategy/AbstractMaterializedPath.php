@@ -5,6 +5,7 @@ namespace Gedmo\Tree\Strategy;
 use Gedmo\Tree\Strategy;
 use Gedmo\Tree\TreeListener;
 use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\ODM\MongoDB\UnitOfWork as MongoDBUnitOfWork;
 use Gedmo\Mapping\Event\AdapterInterface;
 use Gedmo\Exception\RuntimeException;
 use Gedmo\Exception\TreeLockingException;
@@ -320,9 +321,12 @@ abstract class AbstractMaterializedPath implements Strategy
             $changes[$config['level']] = array(null, $level);
         }
 
-        $uow->scheduleExtraUpdate($node, $changes);
-        $ea->setOriginalObjectProperty($uow, $oid, $config['path'], $path);
-
+        if (!$uow instanceof MongoDBUnitOfWork) {
+            $ea->setOriginalObjectProperty($uow, $oid, $config['path'], $path);
+            $uow->scheduleExtraUpdate($node, $changes);
+        } else {
+            $ea->recomputeSingleObjectChangeSet($uow, $meta, $node);
+        }
         if (isset($config['path_hash'])) {
             $ea->setOriginalObjectProperty($uow, $oid, $config['path_hash'], $pathHash);
         }
@@ -369,7 +373,7 @@ abstract class AbstractMaterializedPath implements Strategy
             $parentProp->setAccessible(true);
             $parentNode = $node;
 
-            while (!is_null($parent = $parentProp->getValue($parentNode))) {
+            while (null !== $parent = $parentProp->getValue($parentNode)) {
                 $parentNode = $parent;
             }
 
@@ -388,11 +392,11 @@ abstract class AbstractMaterializedPath implements Strategy
             $lockTimeProp->setAccessible(true);
             $lockTime = $lockTimeProp->getValue($parentNode);
 
-            if (!is_null($lockTime)) {
+            if (null !== $lockTime) {
                 $lockTime = $lockTime instanceof \MongoDate ? $lockTime->sec : $lockTime->getTimestamp();
             }
 
-            if (!is_null($lockTime) && ($lockTime >= (time() - $config['locking_timeout']))) {
+            if (null !== $lockTime && ($lockTime >= (time() - $config['locking_timeout']))) {
                 $msg = 'Tree with root id "%s" is locked.';
                 $id = $meta->getIdentifierValue($parentNode);
 

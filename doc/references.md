@@ -152,7 +152,7 @@ class StockItem
     private $product;
 
     /**
-     * @ORM\Column(type="string")
+     * @ORM\Column
      */
     private $productId;
 

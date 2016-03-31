@@ -121,15 +121,10 @@ class Category
     private $parent;
 
     /**
+     * @Gedmo\TreeRoot
      * @ORM\ManyToOne(targetEntity="Shop")
      */
     private $shop;
-
-    /**
-     * @Gedmo\TreeRoot
-     * @ORM\Column(type="integer", nullable=true)
-     */
-    private $root;
 
     /**
      * @Gedmo\TreeLevel

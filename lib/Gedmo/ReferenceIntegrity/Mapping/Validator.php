@@ -12,6 +12,7 @@ namespace Gedmo\ReferenceIntegrity\Mapping;
 class Validator
 {
     const NULLIFY = 'nullify';
+    const PULL = 'pull';
     const RESTRICT = 'restrict';
 
     /**
@@ -20,8 +21,9 @@ class Validator
      * @var array
      */
     private $integrityActions = array(
-        self::RESTRICT,
         self::NULLIFY,
+        self::PULL,
+        self::RESTRICT,
     );
 
     /**

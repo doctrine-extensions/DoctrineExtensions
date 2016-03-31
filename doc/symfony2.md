@@ -22,14 +22,14 @@ Content:
 
 ## Symfony2 application
 
-First of all, we will need a symfony2 startup application, lets say [symfony-standard edition
+First of all, we will need a symfony2 startup application, let's say [symfony-standard edition
 with composer](http://github.com/KnpLabs/symfony-with-composer). Follow the standard setup:
 
 - `git clone git://github.com/KnpLabs/symfony-with-composer.git example`
 - `cd example && rm -rf .git && php bin/vendors install`
-- ensure your application loads and meet requirements, by following the url: **http://your_virtual_host/app_dev.php**
+- ensure your application loads and meets requirements, by following the url: **http://your_virtual_host/app_dev.php**
 
-Now lets add the **gedmo/doctrine-extensions** into **composer.json**
+Now let's add the **gedmo/doctrine-extensions** into **composer.json**
 
 ```json
 {
@@ -64,8 +64,8 @@ connection parameters, edit **app/config/parameters.yml**
 
 ## Mapping
 
-Lets start from the mapping, in case if you use **translatable**, **tree** or **loggable**
-extension you will need to map those abstract mappedsuperclasses for you ORM to be aware of.
+Let's start from the mapping. In case you use the **translatable**, **tree** or **loggable**
+extension you will need to map those abstract mapped superclasses for your ORM to be aware of.
 To do so, add some mapping info to your **doctrine.orm** configuration, edit **app/config/config.yml**:
 
 ```yaml
@@ -94,11 +94,11 @@ Found 3 entities mapped in entity manager default:
 [OK]   Gedmo\Translatable\Entity\MappedSuperclass\AbstractTranslation
 [OK]   Gedmo\Translatable\Entity\Translation
 ```
-Well we mapped only **translatable** for now, it really depends on your needs, which extensions
+Well, we mapped only **translatable** for now, it really depends on your needs, which extensions
 your application uses.
 
 **Note:** there is **Gedmo\Translatable\Entity\Translation** which is not a super class, in that case
-if you create doctrine schema, it will add **ext_translations** table, which might not be useful
+if you create a doctrine schema, it will add **ext_translations** table, which might not be useful
 to you also. To skip mapping of these entities, you can map **only superclasses**
 
 ```yaml
@@ -120,8 +120,8 @@ Found 2 entities mapped in entity manager default:
 [OK]   Gedmo\Translatable\Entity\MappedSuperclass\AbstractTranslation
 ```
 
-This is very useful for advanced requirements and quite simple to understand. So lets map now
-everything extensions provide:
+This is very useful for advanced requirements and quite simple to understand. So now let's map
+everything the extensions provide:
 
 ```yaml
 # only orm config branch of doctrine
@@ -153,8 +153,8 @@ orm:
 ## Doctrine extension listener services
 
 Next, the heart of extensions are behavioral listeners which pours all the sugar. We will
-create a **yml** service file in our config directory. The setup can be different and located
-in the bundle, it depends what you prefer, edit **app/config/doctrine_extensions.yml**
+create a **yml** service file in our config directory. The setup can be different, your config could be located
+in the bundle, it depends on your preferences. Edit **app/config/doctrine_extensions.yml**
 
 ```yaml
 # services to handle doctrine extensions
@@ -164,12 +164,14 @@ services:
     extension.listener:
         class: Acme\DemoBundle\Listener\DoctrineExtensionListener
         calls:
-            - [ setContainer, [ @service_container ] ]
+            - [ setContainer, [ "@service_container" ] ]
         tags:
             # translatable sets locale after router processing
             - { name: kernel.event_listener, event: kernel.request, method: onLateKernelRequest, priority: -10 }
             # loggable hooks user username if one is in security context
             - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
+            # translatable sets locale such as default application locale before command execute
+            - { name: kernel.event_listener, event: console.command, method: onConsoleCommand, priority: -10 }
 
 
     # Doctrine Extension listeners to handle behaviors
@@ -178,14 +180,14 @@ services:
         tags:
             - { name: doctrine.event_subscriber, connection: default }
         calls:
-            - [ setAnnotationReader, [ @annotation_reader ] ]
+            - [ setAnnotationReader, [ "@annotation_reader" ] ]
 
     gedmo.listener.translatable:
         class: Gedmo\Translatable\TranslatableListener
         tags:
             - { name: doctrine.event_subscriber, connection: default }
         calls:
-            - [ setAnnotationReader, [ @annotation_reader ] ]
+            - [ setAnnotationReader, [ "@annotation_reader" ] ]
             - [ setDefaultLocale, [ %locale% ] ]
             - [ setTranslationFallback, [ false ] ]
 
@@ -194,36 +196,36 @@ services:
         tags:
             - { name: doctrine.event_subscriber, connection: default }
         calls:
-            - [ setAnnotationReader, [ @annotation_reader ] ]
+            - [ setAnnotationReader, [ "@annotation_reader" ] ]
 
     gedmo.listener.sluggable:
         class: Gedmo\Sluggable\SluggableListener
         tags:
             - { name: doctrine.event_subscriber, connection: default }
         calls:
-            - [ setAnnotationReader, [ @annotation_reader ] ]
+            - [ setAnnotationReader, [ "@annotation_reader" ] ]
 
     gedmo.listener.sortable:
         class: Gedmo\Sortable\SortableListener
         tags:
             - { name: doctrine.event_subscriber, connection: default }
         calls:
-            - [ setAnnotationReader, [ @annotation_reader ] ]
+            - [ setAnnotationReader, [ "@annotation_reader" ] ]
 
     gedmo.listener.loggable:
         class: Gedmo\Loggable\LoggableListener
         tags:
             - { name: doctrine.event_subscriber, connection: default }
         calls:
-            - [ setAnnotationReader, [ @annotation_reader ] ]
+            - [ setAnnotationReader, [ "@annotation_reader" ] ]
 ```
 
-So what it includes in general? Well it creates services for all extension listeners.
-You can remove some which you do not use or change at will. **Translatable** for instance,
-sets default locale to `%locale%` parameter, you can configure it differently.
+So what does it include in general? Well, it creates services for all extension listeners.
+You can remove some which you do not use, or change them as you need. **Translatable** for instance,
+sets the default locale to the value of your `%locale%` parameter, you can configure it differently.
 
-**Note:** if you noticed, there's **Acme\DemoBundle\Listener\DoctrineExtensionListener**
-you will need to create this listener class if you use **loggable** or **translatable**
+**Note:** In case you noticed, there is **Acme\DemoBundle\Listener\DoctrineExtensionListener**.
+You will need to create this listener class if you use **loggable** or **translatable**
 behaviors. This listener will set the **locale used** from request and **username** to
 loggable. So, to finish the setup create **Acme\DemoBundle\Listener\DoctrineExtensionListener**
 
@@ -256,6 +258,12 @@ class DoctrineExtensionListener implements ContainerAwareInterface
         $translatable->setTranslatableLocale($event->getRequest()->getLocale());
     }
 
+    public function onConsoleCommand()
+    {
+        $this->container->get('gedmo.listener.translatable')
+            ->setTranslatableLocale($this->container->get('translator')->getLocale());
+    }
+
     public function onKernelRequest(GetResponseEvent $event)
     {
         $securityContext = $this->container->get('security.context', ContainerInterface::NULL_ON_INVALID_REFERENCE);
@@ -266,7 +274,7 @@ class DoctrineExtensionListener implements ContainerAwareInterface
     }
 }
 ```
-Do not forget to import **doctrine_extensions.yml** in your **app/config/config.yml** etc.:
+Do not forget to import **doctrine_extensions.yml** in your **app/config/config.yml**:
 
 ```yaml
 # file: app/config/config.yml
@@ -282,8 +290,8 @@ imports:
 
 ## Example
 
-Well after that, you have your extensions setup and ready to be used! Too easy right? Well
-if you do not believe me, lets create a simple entity in our **Acme** project:
+After that, you have your extensions set up and ready to be used! Too easy right? Well,
+if you do not believe me, let's create a simple entity in our **Acme** project:
 
 ```php
 <?php
@@ -315,12 +323,12 @@ class BlogPost
 
     /**
      * @Gedmo\Timestampable(on="create")
-     * @ORM\Column(name="created", type="datetime")
+     * @ORM\Column(type="datetime")
      */
     private $created;
 
     /**
-     * @ORM\Column(name="updated", type="datetime")
+     * @ORM\Column(type="datetime")
      * @Gedmo\Timestampable(on="update")
      */
     private $updated;
@@ -352,12 +360,12 @@ class BlogPost
 }
 ```
 
-Now, lets have some fun:
+Now, let's have some fun:
 
-- if you have not created database yet, run `php app/console doctrine:database:create`
+- if you have not created the database yet, run `php app/console doctrine:database:create`
 - create the schema `php app/console doctrine:schema:create`
 
-Well, everything will work just fine, you can modify the **Acme\DemoBundle\Controller\DemoController**
+Everything will work just fine, you can modify the **Acme\DemoBundle\Controller\DemoController**
 and add an action to test how it works:
 
 ```php
@@ -392,21 +400,21 @@ public function postsAction()
 ```
 
 Now if you follow the url: **http://your_virtual_host/app_dev.php/demo/posts** you
-should see a print of posts, this is only an extension demo, we will not create template.
+should see a print of posts, this is only an extension demo, we will not create a template.
 
 <a name="more-tips"></a>
 
 ## More tips
 
-Regarding, the setup, I do not think its too complicated to use, in general it is simple
-enough, and lets you understand at least small parts on how you can hook mapping into doctrine,
+Regarding, the setup, I do not think it's too complicated to use, in general it is simple
+enough, and lets you understand at least small parts on how you can hook mappings into doctrine, and
 how easily extension services are added. This configuration does not hide anything behind
 curtains and allows you to modify the configuration as you require.
 
 ### Multiple entity managers
 
 If you use more than one entity manager, you can simply tag the listener
-with other manager name:
+with other the manager name:
 
 ```yaml
 services:
@@ -423,7 +431,7 @@ services:
             - [ setAnnotationReader, [ @annotation_reader ] ]
 ```
 
-Well regarding, mapping of ODM mongodb, its basically the same:
+Regarding, mapping of ODM mongodb, it's basically the same:
 
 ```yaml
 doctrine_mongodb:
@@ -445,8 +453,8 @@ doctrine_mongodb:
                     dir: "%kernel.root_dir%/../vendor/gedmo/doctrine-extensions/lib/Gedmo/Translatable/Document"
 ```
 
-This also shows, how to make mappings based on single manager. All what differs is **Document**
-instead of **Entity** used. Haven't tested it with mongo though.
+This also shows, how to make mappings based on single manager. All what differs is that **Document**
+instead of **Entity** is used. I haven't tested it with mongo though.
 
 **Note:** [extension repository](http://github.com/l3pp4rd/DoctrineExtensions) contains all
 [documentation](http://github.com/l3pp4rd/DoctrineExtensions/tree/master/doc) you may need
@@ -460,4 +468,4 @@ You can use [StofDoctrineExtensionsBundle](http://github.com/stof/StofDoctrineEx
 
 ## Troubleshooting
 
-- Make sure there are no *.orm.yml or *.orm.xml files for your Entities in your Bundles Resources/config/doctrine directory. With those files in place the annotations wont be taken into account.
+- Make sure there are no *.orm.yml or *.orm.xml files for your Entities in your bundles Resources/config/doctrine directory. With those files in place the annotations won't be taken into account.

@@ -29,7 +29,8 @@ class Annotation extends AbstractAnnotationDriver
     protected $validTypes = array(
         'one',
         'string',
-        'int',
+        'int', // mongodb driver has both int and integer types
+        'integer',
     );
 
     /**

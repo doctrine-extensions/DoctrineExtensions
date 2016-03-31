@@ -254,6 +254,9 @@ class Closure implements Strategy
             $descendantColumnName = $this->getJoinColumnFieldName($em->getClassMetadata($config['closure'])->getAssociationMapping('descendant'));
             $depthColumnName = $em->getClassMetadata($config['closure'])->getColumnName('depth');
 
+            $referenceMapping = $em->getClassMetadata($config['closure'])->getAssociationMapping('ancestor');
+            $referenceId = $referenceMapping['sourceToTargetKeyColumns'][$ancestorColumnName];
+            
             $entries = array(
                 array(
                     $ancestorColumnName => $nodeId,
@@ -272,7 +275,7 @@ class Closure implements Strategy
 
                 foreach ($ancestors as $ancestor) {
                     $entries[] = array(
-                        $ancestorColumnName => $ancestor['ancestor']['id'],
+                        $ancestorColumnName => $ancestor['ancestor'][$referenceId],
                         $descendantColumnName => $nodeId,
                         $depthColumnName => $ancestor['depth'] + 1,
                     );
@@ -284,6 +287,8 @@ class Closure implements Strategy
             } elseif (isset($config['level'])) {
                 $uow->scheduleExtraUpdate($node, array($config['level'] => array(null, 1)));
                 $ea->setOriginalObjectProperty($uow, spl_object_hash($node), $config['level'], 1);
+                $levelProp = $meta->getReflectionProperty($config['level']);
+                $levelProp->setValue($node, 1);
             }
 
             foreach ($entries as $closure) {
@@ -337,23 +342,33 @@ class Closure implements Strategy
             $type = 'integer' === $mapping['type'] ? Connection::PARAM_INT_ARRAY : Connection::PARAM_STR_ARRAY;
 
             // We calculate levels for all nodes
-            $sql = 'SELECT c.descendant, MAX(c.depth) + 1 AS level ';
+            $sql = 'SELECT c.descendant, MAX(c.depth) + 1 AS levelNum ';
             $sql .= 'FROM '.$closureMeta->getTableName().' c ';
             $sql .= 'WHERE c.descendant IN (?) ';
             $sql .= 'GROUP BY c.descendant';
 
-            $levels = $em->getConnection()->executeQuery($sql, array(array_keys($this->pendingNodesLevelProcess)), array($type))->fetchAll(\PDO::FETCH_KEY_PAIR);
+            $levelsAssoc = $em->getConnection()->executeQuery($sql, array(array_keys($this->pendingNodesLevelProcess)), array($type))->fetchAll(\PDO::FETCH_NUM);
+            
+            //create key pair array with resultset
+            $levels = array();
+            foreach( $levelsAssoc as $level )
+            {
+                $levels[$level[0]] = $level[1];
+            }
+            $levelsAssoc = null;
 
             // Now we update levels
             foreach ($this->pendingNodesLevelProcess as $nodeId => $node) {
                 // Update new level
                 $level = $levels[$nodeId];
+                $levelProp = $meta->getReflectionProperty($config['level']);
                 $uow->scheduleExtraUpdate(
                     $node,
                     array($config['level'] => array(
-                        $meta->getReflectionProperty($config['level'])->getValue($node), $level,
+                        $levelProp->getValue($node), $level,
                     ))
                 );
+                $levelProp->setValue($node, $level);
                 $uow->setOriginalEntityProperty(spl_object_hash($node), $config['level'], $level);
             }
 

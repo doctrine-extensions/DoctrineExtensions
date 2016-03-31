@@ -2,6 +2,7 @@
 
 namespace Gedmo\Loggable\Document\Repository;
 
+use Gedmo\Loggable\Document\LogEntry;
 use Gedmo\Tool\Wrapper\MongoDocumentWrapper;
 use Gedmo\Loggable\LoggableListener;
 use Doctrine\ODM\MongoDB\DocumentRepository;
@@ -29,7 +30,7 @@ class LogEntryRepository extends DocumentRepository
      *
      * @param object $document
      *
-     * @return array
+     * @return LogEntry[]
      */
     public function getLogEntries($document)
     {
@@ -71,7 +72,7 @@ class LogEntryRepository extends DocumentRepository
         $qb = $this->createQueryBuilder();
         $qb->field('objectId')->equals($objectId);
         $qb->field('objectClass')->equals($objectMeta->name);
-        $qb->field('version')->lte($version);
+        $qb->field('version')->lte(intval($version));
         $qb->sort('version', 'ASC');
         $q = $qb->getQuery();
 
@@ -138,7 +139,7 @@ class LogEntryRepository extends DocumentRepository
      */
     private function getLoggableListener()
     {
-        if (is_null($this->listener)) {
+        if (null === $this->listener) {
             foreach ($this->dm->getEventManager()->getListeners() as $event => $listeners) {
                 foreach ($listeners as $hash => $listener) {
                     if ($listener instanceof LoggableListener) {
@@ -151,7 +152,7 @@ class LogEntryRepository extends DocumentRepository
                 }
             }
 
-            if (is_null($this->listener)) {
+            if (null === $this->listener) {
                 throw new \Gedmo\Exception\RuntimeException('The loggable listener could not be found');
             }
         }

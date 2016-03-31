@@ -4,9 +4,11 @@ namespace Gedmo\Loggable;
 
 use Tool\BaseTestCaseORM;
 use Doctrine\Common\EventManager;
+use Loggable\Fixture\Entity\Address;
 use Loggable\Fixture\Entity\Article;
 use Loggable\Fixture\Entity\RelatedArticle;
 use Loggable\Fixture\Entity\Comment;
+use Loggable\Fixture\Entity\Geo;
 
 /**
  * These are tests for loggable behavior
@@ -133,6 +135,18 @@ class LoggableEntityTest extends BaseTestCaseORM
         $this->assertEquals('update', $latest->getAction());
     }
 
+    public function testLogEmbedded()
+    {
+        $address = $this->populateEmbedded();
+
+        $logRepo = $this->em->getRepository('Gedmo\Loggable\Entity\LogEntry');
+
+        $logEntries = $logRepo->getLogEntries($address);
+
+        $this->assertCount(4, $logEntries);
+
+    }
+
     protected function getUsedEntityFixtures()
     {
         return array(
@@ -141,7 +155,42 @@ class LoggableEntityTest extends BaseTestCaseORM
             self::COMMENT_LOG,
             self::RELATED_ARTICLE,
             'Gedmo\Loggable\Entity\LogEntry',
+            'Loggable\Fixture\Entity\Address',
+            'Loggable\Fixture\Entity\Geo',
         );
+    }
+
+    private function populateEmbedded()
+    {
+        $address = new Address();
+        $address->setCity('city-v1');
+        $address->setStreet('street-v1');
+
+        $geo = new Geo(1.0000, 1.0000);
+
+        $address->setGeo($geo);
+
+        $this->em->persist($address);
+        $this->em->flush();
+
+        $geo2 = new Geo(2.0000, 2.0000);
+        $address->setGeo($geo2);
+
+        $this->em->persist($address);
+        $this->em->flush();
+
+        $address->getGeo()->setLatitude(3.0000);
+        $address->getGeo()->setLongitude(3.0000);
+
+        $this->em->persist($address);
+        $this->em->flush();
+
+        $address->setStreet('street-v2');
+
+        $this->em->persist($address);
+        $this->em->flush();
+
+        return $address;
     }
 
     private function populate()

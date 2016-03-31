@@ -15,28 +15,28 @@ $em = include 'em.php';
  */
 $translatable;
 
-$repository = $em->getRepository('Entity\Category');
+$repository = $em->getRepository('Example\Entity\Category');
 $food = $repository->findOneByTitle('Food');
 if (!$food) {
     // lets create some categories
-    $food = new Entity\Category();
+    $food = new Example\Entity\Category();
     $food->setTitle('Food');
-    $food->addTranslation(new Entity\CategoryTranslation('lt', 'title', 'Maistas'));
+    $food->addTranslation(new Example\Entity\CategoryTranslation('lt', 'title', 'Maistas'));
 
-    $fruits = new Entity\Category();
+    $fruits = new Example\Entity\Category();
     $fruits->setParent($food);
     $fruits->setTitle('Fruits');
-    $fruits->addTranslation(new Entity\CategoryTranslation('lt', 'title', 'Vaisiai'));
+    $fruits->addTranslation(new Example\Entity\CategoryTranslation('lt', 'title', 'Vaisiai'));
 
-    $apple = new Entity\Category();
+    $apple = new Example\Entity\Category();
     $apple->setParent($fruits);
     $apple->setTitle('Apple');
-    $apple->addTranslation(new Entity\CategoryTranslation('lt', 'title', 'Obuolys'));
+    $apple->addTranslation(new Example\Entity\CategoryTranslation('lt', 'title', 'Obuolys'));
 
-    $milk = new Entity\Category();
+    $milk = new Example\Entity\Category();
     $milk->setParent($food);
     $milk->setTitle('Milk');
-    $milk->addTranslation(new Entity\CategoryTranslation('lt', 'title', 'Pienas'));
+    $milk->addTranslation(new Example\Entity\CategoryTranslation('lt', 'title', 'Pienas'));
 
     $em->persist($food);
     $em->persist($milk);
@@ -49,7 +49,7 @@ if (!$food) {
 $query = $em
     ->createQueryBuilder()
     ->select('node')
-    ->from('Entity\Category', 'node')
+    ->from('Example\Entity\Category', 'node')
     ->orderBy('node.root, node.lft', 'ASC')
     ->getQuery()
 ;

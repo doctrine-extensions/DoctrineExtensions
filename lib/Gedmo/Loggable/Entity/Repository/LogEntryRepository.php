@@ -2,7 +2,9 @@
 
 namespace Gedmo\Loggable\Entity\Repository;
 
+use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Query;
+use Gedmo\Loggable\Entity\LogEntry;
 use Gedmo\Tool\Wrapper\EntityWrapper;
 use Doctrine\ORM\EntityRepository;
 use Gedmo\Loggable\LoggableListener;
@@ -28,7 +30,7 @@ class LogEntryRepository extends EntityRepository
      *
      * @param object $entity
      *
-     * @return array
+     * @return LogEntry[]
      */
     public function getLogEntries($entity)
     {
@@ -99,10 +101,7 @@ class LogEntryRepository extends EntityRepository
                 if ($data = $log->getData()) {
                     foreach ($data as $field => $value) {
                         if (in_array($field, $fields)) {
-                            if ($objectMeta->isSingleValuedAssociation($field)) {
-                                $mapping = $objectMeta->getAssociationMapping($field);
-                                $value = $value ? $this->_em->getReference($mapping['targetEntity'], $value) : null;
-                            }
+                            $this->mapValue($objectMeta, $field, $value);
                             $wrapped->setPropertyValue($field, $value);
                             unset($fields[array_search($field, $fields)]);
                         }
@@ -119,6 +118,21 @@ class LogEntryRepository extends EntityRepository
     }
 
     /**
+     * @param ClassMetadata $objectMeta
+     * @param string        $field
+     * @param mixed         $value
+     */
+    protected function mapValue(ClassMetadata $objectMeta, $field, &$value)
+    {
+        if (!$objectMeta->isSingleValuedAssociation($field)) {
+            return;
+        }
+        
+        $mapping = $objectMeta->getAssociationMapping($field);
+        $value   = $value ? $this->_em->getReference($mapping['targetEntity'], $value) : null;
+    }
+
+    /**
      * Get the currently used LoggableListener
      *
      * @throws \Gedmo\Exception\RuntimeException - if listener is not found
@@ -127,7 +141,7 @@ class LogEntryRepository extends EntityRepository
      */
     private function getLoggableListener()
     {
-        if (is_null($this->listener)) {
+        if (null === $this->listener) {
             foreach ($this->_em->getEventManager()->getListeners() as $event => $listeners) {
                 foreach ($listeners as $hash => $listener) {
                     if ($listener instanceof LoggableListener) {
@@ -140,7 +154,7 @@ class LogEntryRepository extends EntityRepository
                 }
             }
 
-            if (is_null($this->listener)) {
+            if (null === $this->listener) {
                 throw new \Gedmo\Exception\RuntimeException('The loggable listener could not be found');
             }
         }

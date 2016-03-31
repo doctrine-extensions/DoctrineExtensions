@@ -13,6 +13,10 @@ use Doctrine\Common\Annotations\Annotation;
  * @Annotation
  * @Target("PROPERTY")
  */
-final class SortablePosition extends Annotation
+final class Sortable extends Annotation
 {
+    /**
+     * @var array<string>
+     */
+    public $groups = [];
 }

@@ -348,7 +348,8 @@ class SluggableListener extends MappedEventSubscriber
                 // Step 3: stylize the slug
                 switch ($options['style']) {
                     case 'camel':
-                        $slug = preg_replace_callback('/^[a-z]|'.$options['separator'].'[a-z]/smi', function ($m) {
+                        $quotedSeparator = preg_quote($options['separator']);
+                        $slug = preg_replace_callback('/^[a-z]|'.$quotedSeparator.'[a-z]/smi', function ($m) {
                             return strtoupper($m[0]);
                         }, $slug);
                         break;
@@ -398,10 +399,11 @@ class SluggableListener extends MappedEventSubscriber
 
                 // set the final slug
                 $meta->getReflectionProperty($slugField)->setValue($object, $slug);
-                $uow->propertyChanged($object, $slugField, $oldSlug, $slug);
-
                 // recompute changeset
                 $ea->recomputeSingleObjectChangeSet($uow, $meta, $object);
+                // overwrite changeset (to set old value)
+                $uow->propertyChanged($object, $slugField, $oldSlug, $slug);
+
             }
         }
     }
@@ -436,7 +438,8 @@ class SluggableListener extends MappedEventSubscriber
                     continue; // if unique_base field is not the same, do not take slug as similar
                 }
                 $slug = $meta->getReflectionProperty($config['slug'])->getValue($obj);
-                if (preg_match("@^{$preferredSlug}.*@smi", $slug)) {
+                $quotedPreferredSlug = preg_quote($preferredSlug);
+                if (preg_match("@^{$quotedPreferredSlug}.*@smi", $slug)) {
                     $similarPersisted[] = array($config['slug'] => $slug);
                 }
             }
@@ -448,14 +451,17 @@ class SluggableListener extends MappedEventSubscriber
 
         if (!$recursing) {
             // filter similar slugs
+            $quotedSeparator = preg_quote($config['separator']);
+            $quotedPreferredSlug = preg_quote($preferredSlug);
             foreach ($result as $key => $similar) {
-                if (!preg_match("@{$preferredSlug}($|{$config['separator']}[\d]+$)@smi", $similar[$config['slug']])) {
+                if (!preg_match("@{$quotedPreferredSlug}($|{$quotedSeparator}[\d]+$)@smi", $similar[$config['slug']])) {
                     unset($result[$key]);
                 }
             }
         }
 
         if ($result) {
+            $generatedSlug = $preferredSlug;
             $sameSlugs = array();
 
             foreach ((array) $result as $list) {
@@ -463,9 +469,11 @@ class SluggableListener extends MappedEventSubscriber
             }
 
             $i = pow(10, $this->exponent);
-            do {
-                $generatedSlug = $preferredSlug.$config['separator'].$i++;
-            } while (in_array($generatedSlug, $sameSlugs));
+            if ($recursing || in_array($generatedSlug, $sameSlugs)) {
+                do {
+                    $generatedSlug = $preferredSlug.$config['separator'].$i++;
+                } while (in_array($generatedSlug, $sameSlugs));
+            }
 
             $mapping = $meta->getFieldMapping($config['slug']);
             if (isset($mapping['length']) && strlen($generatedSlug) > $mapping['length']) {

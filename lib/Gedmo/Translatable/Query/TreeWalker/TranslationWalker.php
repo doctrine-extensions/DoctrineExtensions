@@ -11,6 +11,8 @@ use Doctrine\ORM\Query\AST\SelectStatement;
 use Doctrine\ORM\Query\Exec\SingleSelectExecutor;
 use Doctrine\ORM\Query\AST\RangeVariableDeclaration;
 use Doctrine\ORM\Query\AST\Join;
+use Doctrine\DBAL\Platforms\MySqlPlatform;
+use Doctrine\DBAL\Platforms\PostgreSqlPlatform;
 
 /**
  * The translation sql output walker makes it possible
@@ -301,7 +303,7 @@ class TranslationWalker extends SqlWalker
             $config = $this->listener->getConfiguration($em, $meta->name);
             $transClass = $this->listener->getTranslationClass($ea, $meta->name);
             $transMeta = $em->getClassMetadata($transClass);
-            $transTable = $transMeta->getQuotedTableName($this->platform);
+            $transTable = $em->getConfiguration()->getQuoteStrategy()->getTableName($transMeta, $this->platform);
             foreach ($config['fields'] as $field) {
                 $compTblAlias = $this->walkIdentificationVariable($dqlAlias, $field);
                 $tblAlias = $this->getSQLTableAlias('trans'.$compTblAlias.$field);
@@ -317,9 +319,13 @@ class TranslationWalker extends SqlWalker
                         .' = '.$compTblAlias.'.'.$idColName;
                 } else {
                     $sql .= ' AND '.$tblAlias.'.'.$transMeta->getQuotedColumnName('objectClass', $this->platform)
-                        .' = '.$this->conn->quote($meta->name);
+                        .' = '.$this->conn->quote($config['useObjectClass']);
+
+                    $mappingFK = $transMeta->getFieldMapping('foreignKey');
+                    $mappingPK = $meta->getFieldMapping($identifier);
+                    $fkColName = $this->getCastedForeignKey($compTblAlias.'.'.$idColName, $mappingFK['type'], $mappingPK['type']);
                     $sql .= ' AND '.$tblAlias.'.'.$transMeta->getQuotedColumnName('foreignKey', $this->platform)
-                        .' = '.$compTblAlias.'.'.$idColName;
+                        .' = '.$fkColName;
                 }
                 isset($this->components[$dqlAlias]) ? $this->components[$dqlAlias] .= $sql : $this->components[$dqlAlias] = $sql;
 
@@ -328,9 +334,9 @@ class TranslationWalker extends SqlWalker
 
                 // Treat translation as original field type
                 $fieldMapping = $meta->getFieldMapping($field);
-                if ((($this->platform instanceof \Doctrine\DBAL\Platforms\MySqlPlatform) &&
+                if ((($this->platform instanceof MySqlPlatform) &&
                     in_array($fieldMapping["type"], array("decimal"))) ||
-                    (!($this->platform instanceof \Doctrine\DBAL\Platforms\MySqlPlatform) &&
+                    (!($this->platform instanceof MySqlPlatform) &&
                     !in_array($fieldMapping["type"], array("datetime", "datetimetz", "date", "time")))) {
                     $type = Type::getType($fieldMapping["type"]);
                     $substituteField = 'CAST('.$substituteField.' AS '.$type->getSQLDeclaration($fieldMapping, $this->platform).')';
@@ -362,9 +368,8 @@ class TranslationWalker extends SqlWalker
             $fallback = $this->listener->getTranslationFallback();
         }
 
-        return (bool) $fallback
-            && $q->getHydrationMode() !== Query::HYDRATE_SCALAR
-            && $q->getHydrationMode() !== Query::HYDRATE_SINGLE_SCALAR;
+        // applies fallbacks to scalar hydration as well
+        return (bool) $fallback;
     }
 
     /**
@@ -426,5 +431,37 @@ class TranslationWalker extends SqlWalker
         }
 
         return $str;
+    }
+
+    /**
+     * Casts a foreign key if needed
+     * @NOTE: personal translations manages that for themselves.
+     *
+     * @param $component - a column with an alias to cast
+     * @param $typeFK - translation table foreign key type
+     * @param $typePK - primary key type which references translation table
+     * @return string - modified $component if needed
+     */
+    private function getCastedForeignKey($component, $typeFK, $typePK)
+    {
+        // the keys are of same type
+        if ($typeFK === $typePK) {
+            return $component;
+        }
+
+        // try to look at postgres casting
+        if ($this->platform instanceof PostgreSqlPlatform) {
+            switch ($typeFK) {
+            case 'string':
+            case 'guid':
+                // need to cast to VARCHAR
+                $component = $component . '::VARCHAR';
+                break;
+            }
+        }
+
+        // @TODO may add the same thing for MySQL for performance to match index
+
+        return $component;
     }
 }

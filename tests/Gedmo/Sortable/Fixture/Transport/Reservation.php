@@ -25,19 +25,17 @@ class Reservation
     /**
      * Bus destination
      *
-     * @Gedmo\SortableGroup
      * @ORM\Column(length=255)
      */
     private $destination;
 
     /**
-     * @Gedmo\SortableGroup
      * @ORM\Column(type="datetime")
      */
     private $travelDate;
 
     /**
-     * @Gedmo\SortablePosition
+     * @Gedmo\Sortable(groups={"destination", "travelDate"})
      * @ORM\Column(type="integer")
      */
     private $seat;

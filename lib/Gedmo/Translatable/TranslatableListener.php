@@ -3,6 +3,7 @@
 namespace Gedmo\Translatable;
 
 use Doctrine\Common\EventArgs;
+use Doctrine\ODM\MongoDB\DocumentManager;
 use Doctrine\ORM\ORMInvalidArgumentException;
 use Gedmo\Tool\Wrapper\AbstractWrapper;
 use Gedmo\Mapping\MappedEventSubscriber;
@@ -186,7 +187,42 @@ class TranslatableListener extends MappedEventSubscriber
     public function loadClassMetadata(EventArgs $eventArgs)
     {
         $ea = $this->getEventAdapter($eventArgs);
-        $this->loadMetadataForObjectClass($ea->getObjectManager(), $eventArgs->getClassMetadata());
+        $meta = $eventArgs->getClassMetadata();
+        $this->loadMetadataForObjectClass($ea->getObjectManager(), $meta);
+
+        // map indexes
+        if ($meta->name === 'Gedmo\Translatable\Entity\Translation') {
+            $meta->table['indexes']['translations_lookup_idx']['columns'] = [
+                $meta->columnNames['locale'],
+                $meta->columnNames['objectClass'],
+                $meta->columnNames['foreignKey'],
+            ];
+            $meta->table['uniqueConstraints']['lookup_unique_idx']['columns'] = [
+                $meta->columnNames['locale'],
+                $meta->columnNames['objectClass'],
+                $meta->columnNames['field'],
+                $meta->columnNames['foreignKey'],
+            ];
+        }
+        if ($meta->name === 'Gedmo\Translatable\Document\Translation') {
+            $meta->indexes[] = [
+                'keys' => [
+                    $meta->fieldMappings['locale']['name'],
+                    $meta->fieldMappings['objectClass']['name'],
+                    $meta->fieldMappings['foreignKey']['name'],
+                ],
+                'options' => ['name' => 'translations_lookup_idx', 'unique' => false, 'sparse' => false],
+            ];
+            $meta->indexes[] = [
+                'keys' => [
+                    $meta->fieldMappings['locale']['name'],
+                    $meta->fieldMappings['objectClass']['name'],
+                    $meta->fieldMappings['foreignKey']['name'],
+                    $meta->fieldMappings['field']['name'],
+                ],
+                'options' => ['name' => 'lookup_unique_idx', 'unique' => true, 'sparse' => false],
+            ];
+        }
     }
 
     /**
@@ -291,12 +327,13 @@ class TranslatableListener extends MappedEventSubscriber
      *
      * @param object $object
      * @param object $meta
+     * @param object $om
      *
      * @throws \Gedmo\Exception\RuntimeException - if language or locale property is not
      *                                           found in entity
      * @return string
      */
-    public function getTranslatableLocale($object, $meta)
+    public function getTranslatableLocale($object, $meta, $om = null)
     {
         $locale = $this->locale;
         if (isset(self::$configurations[$this->name][$meta->name]['locale'])) {
@@ -312,10 +349,14 @@ class TranslatableListener extends MappedEventSubscriber
             if (is_object($value) && method_exists($value, '__toString')) {
                 $value = (string) $value;
             }
-            try {
-                $this->validateLocale($value);
+            if ($this->isValidLocale($value)) {
                 $locale = $value;
-            } catch (\Gedmo\Exception\InvalidArgumentException $e) {
+            }
+        } elseif ($om instanceof DocumentManager) {
+            list($mapping, $parentObject) = $om->getUnitOfWork()->getParentAssociation($object);
+            if ($parentObject != null) {
+                $parentMeta = $om->getClassMetadata(get_class($parentObject));
+                $locale = $this->getTranslatableLocale($parentObject, $parentMeta, $om);
             }
         }
 
@@ -444,7 +485,7 @@ class TranslatableListener extends MappedEventSubscriber
         $meta = $om->getClassMetadata(get_class($object));
         $config = $this->getConfiguration($om, $meta->name);
         if (isset($config['fields'])) {
-            $locale = $this->getTranslatableLocale($object, $meta);
+            $locale = $this->getTranslatableLocale($object, $meta, $om);
             $oid = spl_object_hash($object);
             $this->translatedInLocale[$oid] = $locale;
         }
@@ -467,7 +508,7 @@ class TranslatableListener extends MappedEventSubscriber
                 $translated = '';
                 foreach ((array) $result as $entry) {
                     if ($entry['field'] == $field) {
-                        $translated = $entry['content'];
+                        $translated = isset($entry['content']) ? $entry['content'] : null;
                         break;
                     }
                 }
@@ -506,9 +547,21 @@ class TranslatableListener extends MappedEventSubscriber
      */
     protected function validateLocale($locale)
     {
-        if (!is_string($locale) || !strlen($locale)) {
+        if (!$this->isValidLocale($locale)) {
             throw new \Gedmo\Exception\InvalidArgumentException('Locale or language cannot be empty and must be set through Listener or Entity');
         }
+    }
+
+    /**
+     * Check if the given locale is valid
+     *
+     * @param string $locale - locale to check
+     *
+     * @return bool
+     */
+    private function isValidlocale($locale)
+    {
+        return is_string($locale) && strlen($locale);
     }
 
     /**
@@ -534,7 +587,7 @@ class TranslatableListener extends MappedEventSubscriber
         // check for the availability of the primary key
         $objectId = $wrapped->getIdentifier();
         // load the currently used locale
-        $locale = $this->getTranslatableLocale($object, $meta);
+        $locale = $this->getTranslatableLocale($object, $meta, $om);
 
         $uow = $om->getUnitOfWork();
         $oid = spl_object_hash($object);
@@ -613,7 +666,7 @@ class TranslatableListener extends MappedEventSubscriber
                 $translation->setContent($content);
                 // check if need to update in database
                 $transWrapper = AbstractWrapper::wrap($translation, $om);
-                if (((is_null($content) && !$isInsert) || is_bool($content) || is_int($content) || (is_string($content) && strlen($content) > 0) || !empty($content)) && ($isInsert || !$transWrapper->getIdentifier() || isset($changeSet[$field]))) {
+                if (((null === $content && !$isInsert) || is_bool($content) || is_int($content) || (is_string($content) && strlen($content) > 0) || !empty($content)) && ($isInsert || !$transWrapper->getIdentifier() || isset($changeSet[$field]))) {
                     if ($isInsert && !$objectId && !$ea->usesPersonalTranslation($translationClass)) {
                         // if we do not have the primary key yet available
                         // keep this translation in memory to insert it later with foreign key
@@ -686,6 +739,14 @@ class TranslatableListener extends MappedEventSubscriber
             $this->translationInDefaultLocale[$oid] = array();
         }
         $this->translationInDefaultLocale[$oid][$field] = $trans;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isSkipOnLoad()
+    {
+        return $this->skipOnLoad;
     }
 
     /**

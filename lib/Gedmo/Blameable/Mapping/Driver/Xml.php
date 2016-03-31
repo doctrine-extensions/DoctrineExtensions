@@ -24,7 +24,8 @@ class Xml extends BaseXml
     private $validTypes = array(
         'one',
         'string',
-        'int',
+        'int', // mongodb driver has both int and integer types
+        'integer',
     );
 
     /**

@@ -2,19 +2,19 @@
 Mapping\Fixture\Yaml\BaseCategory:
   type: mappedSuperclass
   fields:
-    lft:
+    left:
       type: integer
       gedmo:
         - treeLeft
-    rgt:
+    right:
       type: integer
       gedmo:
         - treeRight
-    root:
+    rooted:
       type: integer
       gedmo:
         - treeRoot
-    lvl:
+    level:
       type: integer
       gedmo:
         - treeLevel

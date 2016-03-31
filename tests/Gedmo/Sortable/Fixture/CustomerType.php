@@ -27,7 +27,7 @@ class CustomerType
     private $name;
 
     /**
-     * @Gedmo\SortablePosition
+     * @Gedmo\Sortable
      * @ORM\Column(name="position", type="integer")
      */
     private $position;

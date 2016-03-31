@@ -168,6 +168,14 @@ class Xml extends BaseXml
                         }
                         $config['parent'] = $field;
                     }
+                    if (isset($manyToOneMapping->{'tree-root'})) {
+                        $field = $this->_getAttribute($manyToOneMappingDoctrine, 'field');
+                        $targetEntity = $meta->associationMappings[$field]['targetEntity'];
+                        if (!$cl = $this->getRelatedClassName($meta, $targetEntity)) {
+                            throw new InvalidMappingException("Unable to find root descendant relation through root field - [{$field}] in class - {$meta->name}");
+                        }
+                        $config['root'] = $field;
+                    }
                 }
             } elseif (isset($xmlDoctrine->{'reference-one'})) {
                 foreach ($xmlDoctrine->{'reference-one'} as $referenceOneMapping) {
@@ -182,6 +190,13 @@ class Xml extends BaseXml
                             throw new InvalidMappingException("Unable to find ancestor/parent child relation through ancestor field - [{$field}] in class - {$meta->name}");
                         }
                         $config['parent'] = $field;
+                    }
+                    if (isset($referenceOneMapping->{'tree-root'})) {
+                        $field = $this->_getAttribute($referenceOneMappingDoctrine, 'field');
+                        if (!$cl = $this->getRelatedClassName($meta, $this->_getAttribute($referenceOneMappingDoctrine, 'target-document'))) {
+                            throw new InvalidMappingException("Unable to find root descendant relation through root field - [{$field}] in class - {$meta->name}");
+                        }
+                        $config['root'] = $field;
                     }
                 }
             }
@@ -201,6 +216,14 @@ class Xml extends BaseXml
                         }
                         $config['parent'] = $field;
                     }
+                    if (isset($manyToOneMapping->{'tree-root'})) {
+                        $field = $this->_getAttribute($manyToOneMappingDoctrine, 'field');
+                        $targetEntity = $meta->associationMappings[$field]['targetEntity'];
+                        if (!$cl = $this->getRelatedClassName($meta, $targetEntity)) {
+                            throw new InvalidMappingException("Unable to find root descendant relation through root field - [{$field}] in class - {$meta->name}");
+                        }
+                        $config['root'] = $field;
+                    }
                 }
             }
         } elseif ($xmlDoctrine->getName() == 'document') {
@@ -217,6 +240,13 @@ class Xml extends BaseXml
                             throw new InvalidMappingException("Unable to find ancestor/parent child relation through ancestor field - [{$field}] in class - {$meta->name}");
                         }
                         $config['parent'] = $field;
+                    }
+                    if (isset($referenceOneMapping->{'tree-root'})) {
+                        $field = $this->_getAttribute($referenceOneMappingDoctrine, 'field');
+                        if (!$cl = $this->getRelatedClassName($meta, $this->_getAttribute($referenceOneMappingDoctrine, 'target-document'))) {
+                            throw new InvalidMappingException("Unable to find root descendant relation through root field - [{$field}] in class - {$meta->name}");
+                        }
+                        $config['root'] = $field;
                     }
                 }
             }

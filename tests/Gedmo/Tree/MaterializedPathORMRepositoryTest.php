@@ -18,7 +18,9 @@ class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
     const CATEGORY = "Tree\\Fixture\\MPCategory";
     const CATEGORY_WITH_TRIMMED_SEPARATOR = "Tree\\Fixture\\MPCategoryWithTrimmedSeparator";
 
-    /** @var $this->repo \Gedmo\Tree\Entity\Repository\MaterializedPathRepository */
+    /**
+     * @var \Gedmo\Tree\Entity\Repository\MaterializedPathRepository
+     */
     protected $repo;
 
     protected function setUp()
@@ -50,6 +52,28 @@ class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
         $this->assertEquals('Drinks', $result[0]->getTitle());
         $this->assertEquals('Food', $result[1]->getTitle());
         $this->assertEquals('Sports', $result[2]->getTitle());
+    }
+
+    /**
+     * @test
+     */
+    public function getPath()
+    {
+        $childNode = $this->repo->findOneByTitle('Carrots');
+
+        $result = $this->repo->getPath($childNode);
+
+        $this->assertCount(3, $result);
+        $this->assertEquals('Food', $result[0]->getTitle());
+        $this->assertEquals('Vegitables', $result[1]->getTitle());
+        $this->assertEquals('Carrots', $result[2]->getTitle());
+
+        $rootNode = $this->repo->findOneByTitle('Sports');
+
+        $result = $this->repo->getPath($rootNode);
+
+        $this->assertCount(1, $result);
+        $this->assertEquals('Sports', $result[0]->getTitle());
     }
 
     /**

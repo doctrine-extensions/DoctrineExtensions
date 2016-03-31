@@ -61,7 +61,7 @@ class TranslationRepository extends EntityRepository
             throw new \Gedmo\Exception\InvalidArgumentException("Entity: {$meta->name} does not translate field - {$field}");
         }
         $needsPersist = true;
-        if ($locale === $listener->getTranslatableLocale($entity, $meta)) {
+        if ($locale === $listener->getTranslatableLocale($entity, $meta, $this->getEntityManager())) {
             $meta->getReflectionProperty($field)->setValue($entity, $value);
             $this->_em->persist($entity);
         } else {
@@ -82,7 +82,7 @@ class TranslationRepository extends EntityRepository
                 $transMeta->getReflectionProperty('field')->setValue($trans, $field);
                 $transMeta->getReflectionProperty('locale')->setValue($trans, $locale);
             }
-            if ($listener->getDefaultLocale() != $listener->getTranslatableLocale($entity, $meta) &&
+            if ($listener->getDefaultLocale() != $listener->getTranslatableLocale($entity, $meta, $this->getEntityManager()) &&
                 $locale === $listener->getDefaultLocale()) {
                 $listener->setTranslationInDefaultLocale(spl_object_hash($entity), $field, $trans);
                 $needsPersist = $listener->getPersistDefaultLocaleTranslation();
@@ -117,12 +117,16 @@ class TranslationRepository extends EntityRepository
         $wrapped = new EntityWrapper($entity, $this->_em);
         if ($wrapped->hasValidIdentifier()) {
             $entityId = $wrapped->getIdentifier();
-            $entityClass = $wrapped->getMetadata()->rootEntityName;
-            $translationMeta = $this->getClassMetadata(); // table inheritance support
-
             $config = $this
                 ->getTranslatableListener()
-                ->getConfiguration($this->_em, get_class($entity));
+                ->getConfiguration($this->_em, $wrapped->getMetadata()->name);
+
+            if (!$config) {
+                return $result;
+            }
+
+            $entityClass = $config['useObjectClass'];
+            $translationMeta = $this->getClassMetadata(); // table inheritance support
 
             $translationClass = isset($config['translationClass']) ?
                 $config['translationClass'] :

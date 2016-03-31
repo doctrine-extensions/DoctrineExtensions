@@ -292,7 +292,7 @@ Entity\Article:
 ``` xml
 <?xml version="1.0" encoding="UTF-8"?>
 <doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
-                  xmlns:gedmo="http://gediminasm.org/schemas/orm/doctrine-extensions-mapping">
+                  xmlns:gedmo="http://Atlantic18.github.io/DoctrineExtensions/schemas/orm/doctrine-extensions-3.0.xsd">
     <entity name="Entity\Article" table="sluggables">
         <id name="id" type="integer" column="id">
             <generator strategy="AUTO"/>
@@ -335,7 +335,7 @@ echo $article->getSlug();
 - **separator** (optional, default="-") - separator which will separate words in slug
 - **prefix** (optional, default="") - prefix which will be added to the generated slug
 - **suffix** (optional, default="") - suffix which will be added to the generated slug
-- **style** (optional, default="default") - **"default"** all letters will be lowercase, **"camel"** - first word letter will be uppercase
+- **style** (optional, default="default") - **"default"** all letters will be lowercase, **"camel"** - first word letter will be uppercase, **"upper"**- all word letter will be uppercase and **"lower"**- all word letter will be lowercase
 - **handlers** (optional, default=[]) - list of slug handlers, like tree path slug, or customized, for example see bellow
 
 **Note**: handlers are totally optional
@@ -502,6 +502,7 @@ In case if you want the slug to regenerate itself based on sluggable fields, set
 $entity = $em->find('Entity\Something', $id);
 $entity->setSlug(null);
 
+$em->persist($entity);
 $em->flush();
 ```
 
@@ -522,9 +523,9 @@ $em->flush();
 echo $entity->getSlug(); // outputs: "the-required-slug-set-manually"
 ```
 
-### Using TranslationListener to translate our slug
+### Using TranslatableListener to translate our slug
 
-If you want to attach **TranslationListener** also add it to EventManager after
+If you want to attach **TranslatableListener** also add it to EventManager after
 the **SluggableListener**. It is important because slug must be generated first
 before the creation of it`s translation.
 
@@ -533,7 +534,7 @@ before the creation of it`s translation.
 $evm = new \Doctrine\Common\EventManager();
 $sluggableListener = new \Gedmo\Sluggable\SluggableListener();
 $evm->addEventSubscriber($sluggableListener);
-$translatableListener = new \Gedmo\Translatable\TranslationListener();
+$translatableListener = new \Gedmo\Translatable\TranslatableListener();
 $translatableListener->setTranslatableLocale('en_us');
 $evm->addEventSubscriber($translatableListener);
 // now this event manager should be passed to entity manager constructor
@@ -587,11 +588,9 @@ class Article
 
     /**
      * @Gedmo\Slug(fields={"uniqueTitle"}, prefix="some-prefix-")
-     * @ORM\Column(type="string", length=128, unique=true)
+     * @ORM\Column(length=128, unique=true)
      */
     private $uniqueSlug;
-
-
 
     public function getId()
     {

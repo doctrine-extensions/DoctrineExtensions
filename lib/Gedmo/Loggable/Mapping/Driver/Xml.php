@@ -60,6 +60,9 @@ class Xml extends BaseXml
         if (isset($xmlDoctrine->{'reference-one'})) {
             $this->inspectElementForVersioned($xmlDoctrine->{'reference-one'}, $config, $meta);
         }
+        if (isset($xmlDoctrine->{'embedded'})) {
+            $this->inspectElementForVersioned($xmlDoctrine->{'embedded'}, $config, $meta);
+        }
 
         if (!$meta->isMappedSuperclass && $config) {
             if (is_array($meta->identifier) && count($meta->identifier) > 1) {

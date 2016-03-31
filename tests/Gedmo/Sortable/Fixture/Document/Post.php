@@ -20,13 +20,12 @@ class Post
     private $title;
 
     /**
-     * @Gedmo\SortablePosition
+     * @Gedmo\Sortable(groups={"category"})
      * @ODM\Field(type="int")
      */
     protected $position;
 
     /**
-     * @Gedmo\SortableGroup
      * @ODM\ReferenceOne(targetDocument="Sortable\Fixture\Document\Category")
      */
     protected $category;

@@ -28,7 +28,7 @@ class CustomTransliteratorTest extends BaseTestCaseORM
         $repo = $this->em->getRepository(self::ARTICLE);
 
         $chinese = $repo->findOneByCode('zh');
-        $this->assertEquals('zh', $chinese->getSlug());
+        $this->assertEquals('bei-jing-zh', $chinese->getSlug());
     }
 
     public function testCanUseCustomTransliterator()

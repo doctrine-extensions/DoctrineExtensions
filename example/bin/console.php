@@ -30,7 +30,6 @@ $cli->addCommands(array(
 $helpers = array(
     'db' => new Doctrine\DBAL\Tools\Console\Helper\ConnectionHelper($em->getConnection()),
     'em' => new Doctrine\ORM\Tools\Console\Helper\EntityManagerHelper($em),
-    'dialog' => new Symfony\Component\Console\Helper\DialogHelper(),
 );
 foreach ($helpers as $name => $helper) {
     $cli->getHelperSet()->set($helper, $name);

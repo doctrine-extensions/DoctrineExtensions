@@ -8,32 +8,24 @@ namespace Mapping\Fixture\Yaml;
 class BaseCategory
 {
     /**
-     * @var integer $lft
-     *
-     * @Column(name="lft", type="integer")
+     * @Column(type="integer")
      */
-    private $lft;
+    private $left;
 
     /**
-     * @var integer $rgt
-     *
-     * @Column(name="rgt", type="integer")
+     * @Column(type="integer")
      */
-    private $rgt;
+    private $right;
 
     /**
-     * @var integer $lvl
-     *
-     * @Column(name="lvl", type="integer")
+     * @Column(type="integer")
      */
-    private $lvl;
+    private $level;
 
     /**
-     * @var integer $root
-     *
-     * @Column(name="root", type="integer")
+     * @Column(type="integer")
      */
-    private $root;
+    private $rooted;
 
     /**
      * @var datetime $created
@@ -48,66 +40,6 @@ class BaseCategory
      * @Column(name="updated", type="date")
      */
     private $updated;
-
-    /**
-     * Set lft
-     *
-     * @param integer $lft
-     */
-    public function setLft($lft)
-    {
-        $this->lft = $lft;
-    }
-
-    /**
-     * Get lft
-     *
-     * @return integer $lft
-     */
-    public function getLft()
-    {
-        return $this->lft;
-    }
-
-    /**
-     * Set rgt
-     *
-     * @param integer $rgt
-     */
-    public function setRgt($rgt)
-    {
-        $this->rgt = $rgt;
-    }
-
-    /**
-     * Get rgt
-     *
-     * @return integer $rgt
-     */
-    public function getRgt()
-    {
-        return $this->rgt;
-    }
-
-    /**
-     * Set lvl
-     *
-     * @param integer $lvl
-     */
-    public function setLvl($lvl)
-    {
-        $this->lvl = $lvl;
-    }
-
-    /**
-     * Get lvl
-     *
-     * @return integer $lvl
-     */
-    public function getLvl()
-    {
-        return $this->lvl;
-    }
 
     /**
      * Set created
@@ -147,5 +79,49 @@ class BaseCategory
     public function getUpdated()
     {
         return $this->updated;
+    }
+
+    public function setLeft($left)
+    {
+        $this->left = $left;
+        return $this;
+    }
+
+    public function getLeft()
+    {
+        return $this->left;
+    }
+
+    public function setRight($right)
+    {
+        $this->right = $right;
+        return $this;
+    }
+
+    public function getRight()
+    {
+        return $this->right;
+    }
+
+    public function setLevel($level)
+    {
+        $this->level = $level;
+        return $this;
+    }
+
+    public function getLevel()
+    {
+        return $this->level;
+    }
+
+    public function setRooted($rooted)
+    {
+        $this->rooted = $rooted;
+        return $this;
+    }
+
+    public function getRooted()
+    {
+        return $this->rooted;
     }
 }

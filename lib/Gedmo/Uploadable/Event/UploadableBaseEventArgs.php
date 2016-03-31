@@ -49,10 +49,15 @@ abstract class UploadableBaseEventArgs extends EventArgs
     private $fileInfo;
 
     /**
-     * @var string $action - Is the file being created, updated or removed?
-     *                       This value can be: CREATE, UPDATE or DELETE.
+     * @var string $action - Is the file being inserted, updated or removed?
+     *                       This value can be: INSERT, UPDATE or DELETE.
      */
     private $action;
+
+    /**
+     * @var string $identifier - The identifier this upload belongs to.
+     */
+    private $identifier;
 
     /**
      * @param UploadableListener          $listener
@@ -61,8 +66,9 @@ abstract class UploadableBaseEventArgs extends EventArgs
      * @param FileInfoInterface           $fileInfo
      * @param object                      $entity
      * @param string                      $action
+     * @param string                      $identifier
      */
-    public function __construct(UploadableListener $listener, EntityManager $em, array $config, FileInfoInterface $fileInfo, $entity, $action)
+    public function __construct(UploadableListener $listener, EntityManager $em, array $config, FileInfoInterface $fileInfo, $entity, $action, $identifier = '_default')
     {
         $this->uploadableListener = $listener;
         $this->em = $em;
@@ -70,6 +76,7 @@ abstract class UploadableBaseEventArgs extends EventArgs
         $this->fileInfo = $fileInfo;
         $this->entity = $entity;
         $this->action = $action;
+        $this->identifier = $identifier;
     }
 
     /**
@@ -123,7 +130,7 @@ abstract class UploadableBaseEventArgs extends EventArgs
     }
 
     /**
-     * Retrieve the action being performed to the entity: CREATE, UPDATE or DELETE
+     * Retrieve the action being performed to the entity: INSERT, UPDATE or DELETE
      *
      * @return string
      */
@@ -131,4 +138,15 @@ abstract class UploadableBaseEventArgs extends EventArgs
     {
         return $this->action;
     }
+
+    /**
+     * Retrieve the identifier this upload belongs to
+     *
+     * @return string
+     */
+    public function getIdentifier()
+    {
+        return $this->identifier;
+    }
+
 }

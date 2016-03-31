@@ -23,28 +23,28 @@ abstract class AbstractTranslation
     /**
      * @var string $locale
      *
-     * @ORM\Column(type="string", length=8)
+     * @ORM\Column(length=8)
      */
     protected $locale;
 
     /**
      * @var string $objectClass
      *
-     * @ORM\Column(name="object_class", type="string", length=255)
+     * @ORM\Column(length=255)
      */
     protected $objectClass;
 
     /**
      * @var string $field
      *
-     * @ORM\Column(type="string", length=32)
+     * @ORM\Column(length=32)
      */
     protected $field;
 
     /**
      * @var string $foreignKey
      *
-     * @ORM\Column(name="foreign_key", type="string", length=64)
+     * @ORM\Column(length=64)
      */
     protected $foreignKey;
 

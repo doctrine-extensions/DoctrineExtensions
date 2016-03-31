@@ -3,8 +3,8 @@
 namespace Gedmo\Loggable\Mapping\Driver;
 
 use Doctrine\Common\Persistence\Mapping\ClassMetadata;
-use Gedmo\Mapping\Driver\AbstractAnnotationDriver;
 use Gedmo\Exception\InvalidMappingException;
+use Gedmo\Mapping\Driver\AbstractAnnotationDriver;
 
 /**
  * This is an annotation mapping driver for Loggable
@@ -70,8 +70,12 @@ class Annotation extends AbstractAnnotationDriver
             // versioned property
             if ($this->reader->getPropertyAnnotation($property, self::VERSIONED)) {
                 $field = $property->getName();
-                if ($meta->isCollectionValuedAssociation($field)) {
+                if (!$this->isMappingValid($meta, $field)) {
                     throw new InvalidMappingException("Cannot versioned [{$field}] as it is collection in object - {$meta->name}");
+                }
+                if (isset($meta->embeddedClasses[$field])) {
+                    $this->inspectEmbeddedForVersioned($field, $config, $meta);
+                    continue;
                 }
                 // fields cannot be overrided and throws mapping exception
                 $config['versioned'][] = $field;
@@ -82,8 +86,50 @@ class Annotation extends AbstractAnnotationDriver
             if (is_array($meta->identifier) && count($meta->identifier) > 1) {
                 throw new InvalidMappingException("Loggable does not support composite identifiers in class - {$meta->name}");
             }
-            if (isset($config['versioned']) && !isset($config['loggable'])) {
+            if ($this->isClassAnnotationInValid($meta, $config)) {
                 throw new InvalidMappingException("Class must be annotated with Loggable annotation in order to track versioned fields in class - {$meta->name}");
+            }
+        }
+    }
+
+    /**
+     * @param ClassMetadata $meta
+     * @param string        $field
+     *
+     * @return bool
+     */
+    protected function isMappingValid(ClassMetadata $meta, $field)
+    {
+        return $meta->isCollectionValuedAssociation($field) == false;
+    }
+
+    /**
+     * @param ClassMetadata $meta
+     * @param array         $config
+     *
+     * @return bool
+     */
+    protected function isClassAnnotationInValid(ClassMetadata $meta, array &$config)
+    {
+        return isset($config['versioned']) && !isset($config['loggable']) && (!isset($meta->isEmbeddedClass) || !$meta->isEmbeddedClass);
+    }
+
+    /**
+     * Searches properties of embedded object for versioned fields
+     *
+     * @param string $field
+     * @param array $config
+     * @param \Doctrine\ORM\Mapping\ClassMetadata $meta
+     */
+    private function inspectEmbeddedForVersioned($field, array &$config, \Doctrine\ORM\Mapping\ClassMetadata $meta)
+    {
+        $сlass = new \ReflectionClass($meta->embeddedClasses[$field]['class']);
+
+        // property annotations
+        foreach ($сlass->getProperties() as $property) {
+            // versioned property
+            if ($this->reader->getPropertyAnnotation($property, self::VERSIONED)) {
+                $config['versioned'][] = $field . '.' . $property->getName();
             }
         }
     }

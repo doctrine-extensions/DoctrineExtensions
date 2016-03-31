@@ -1,6 +1,6 @@
 <?php
 
-namespace Entity;
+namespace Example\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Translatable\Entity\MappedSuperclass\AbstractPersonalTranslation;
@@ -16,7 +16,7 @@ use Gedmo\Translatable\Entity\MappedSuperclass\AbstractPersonalTranslation;
 class CategoryTranslation extends AbstractPersonalTranslation
 {
     /**
-     * Convinient constructor
+     * Convenient constructor
      *
      * @param string $locale
      * @param string $field

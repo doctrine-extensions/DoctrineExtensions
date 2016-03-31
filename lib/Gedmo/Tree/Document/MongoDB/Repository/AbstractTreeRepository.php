@@ -15,7 +15,7 @@ abstract class AbstractTreeRepository extends DocumentRepository implements Repo
     /**
      * Tree listener on event manager
      *
-     * @var AbstractTreeListener
+     * @var \Gedmo\Tree\TreeListener
      */
     protected $listener = null;
 
@@ -43,7 +43,7 @@ abstract class AbstractTreeRepository extends DocumentRepository implements Repo
             }
         }
 
-        if (is_null($treeListener)) {
+        if (null === $treeListener) {
             throw new \Gedmo\Exception\InvalidMappingException('This repository can be attached only to ODM MongoDB tree listener');
         }
 

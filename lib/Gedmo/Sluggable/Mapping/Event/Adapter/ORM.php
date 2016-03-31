@@ -2,6 +2,7 @@
 
 namespace Gedmo\Sluggable\Mapping\Event\Adapter;
 
+use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Gedmo\Mapping\Event\Adapter\ORM as BaseAdapterORM;
 use Doctrine\ORM\Query;
 use Gedmo\Sluggable\Mapping\Event\SluggableAdapter;
@@ -35,12 +36,24 @@ class ORM extends BaseAdapterORM implements SluggableAdapter
 
         // use the unique_base to restrict the uniqueness check
         if ($config['unique'] && isset($config['unique_base'])) {
-            if (($ubase = $wrapped->getPropertyValue($config['unique_base'])) && !array_key_exists($config['unique_base'], $wrapped->getMetadata()->getAssociationMappings())) {
+            $ubase = $wrapped->getPropertyValue($config['unique_base']);
+            if (array_key_exists($config['unique_base'], $wrapped->getMetadata()->getAssociationMappings())) {
+                $mapping = $wrapped->getMetadata()->getAssociationMapping($config['unique_base']);
+            } else {
+                $mapping = false;
+            }
+            if ($ubase && !$mapping) {
                 $qb->andWhere('rec.'.$config['unique_base'].' = :unique_base');
                 $qb->setParameter(':unique_base', $ubase);
-            } elseif (array_key_exists($config['unique_base'], $wrapped->getMetadata()->getAssociationMappings())) {
-                $associationMappings = $wrapped->getMetadata()->getAssociationMappings();
-                $qb->join($associationMappings[$config['unique_base']]['targetEntity'], 'unique_'.$config['unique_base']);
+            } elseif ($ubase && $mapping && in_array($mapping['type'], array(ClassMetadataInfo::ONE_TO_ONE, ClassMetadataInfo::MANY_TO_ONE))) {
+                $mappedAlias = 'mapped_'.$config['unique_base'];
+                $wrappedUbase = AbstractWrapper::wrap($ubase, $em);
+                $qb->innerJoin('rec.'.$config['unique_base'], $mappedAlias);
+                foreach (array_keys($mapping['targetToSourceKeyColumns']) as $i => $mappedKey) {
+                    $mappedProp = $wrappedUbase->getMetadata()->fieldNames[$mappedKey];
+                    $qb->andWhere($qb->expr()->eq($mappedAlias.'.'.$mappedProp, ':assoc'.$i));
+                    $qb->setParameter(':assoc'.$i, $wrappedUbase->getPropertyValue($mappedProp));
+                }
             } else {
                 $qb->andWhere($qb->expr()->isNull('rec.'.$config['unique_base']));
             }
@@ -94,10 +107,9 @@ class ORM extends BaseAdapterORM implements SluggableAdapter
                 $qb->expr()->literal($target),
                 $qb->expr()->substring('rec.'.$config['slug'], strlen($replacement)+1)
             ))
-            ->where('rec.'.$config['mappedBy'].' = :object')
+            ->where($qb->expr()->like('rec.'.$config['slug'], $qb->expr()->literal($replacement . '%')))
         ;
         $q = $qb->getQuery();
-        $q->setParameters(compact('object'));
 
         return $q->execute();
     }

@@ -1,0 +1,14 @@
+---
+Mapping\Fixture\Yaml\Referencer:
+    type: entity
+    fields:
+        id:
+            type: id
+            id: true
+        referencedDocuments:
+            reference: true
+            type: many
+            targetDocument: Gedmo\Mapping\Fixture\Yaml\Referenced
+            mappedBy: referencer
+            gedmo:
+                referenceIntegrity: nullify

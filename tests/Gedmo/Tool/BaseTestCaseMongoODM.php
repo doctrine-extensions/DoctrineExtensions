@@ -200,6 +200,15 @@ abstract class BaseTestCaseMongoODM extends \PHPUnit_Framework_TestCase
             ->method('getMetadataDriverImpl')
             ->will($this->returnValue($mappingDriver));
 
+        $config->expects($this->any())
+            ->method('getRepositoryFactory')
+            ->will($this->returnValue(new DefaultRepositoryFactory()));
+
+        $config->expects($this->any())
+            ->method('getDefaultRepositoryClassName')
+            ->will($this->returnValue('Doctrine\\ODM\\MongoDB\\DocumentRepository'));
+
+
         return $config;
     }
 }

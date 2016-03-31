@@ -28,6 +28,7 @@ class Xml extends BaseXml
         'integer',
         'int',
         'datetime',
+        'citext',
     );
 
     /**
