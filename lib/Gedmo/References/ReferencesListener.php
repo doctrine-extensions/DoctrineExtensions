@@ -21,6 +21,8 @@ class ReferencesListener extends MappedEventSubscriber
 
     public function __construct(array $managers = array())
     {
+        parent::__construct();
+
         $this->managers = $managers;
     }
 
