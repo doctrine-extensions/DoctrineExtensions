@@ -77,6 +77,8 @@ class UploadableListener extends MappedEventSubscriber
 
     public function __construct(MimeTypeGuesserInterface $mimeTypeGuesser = null)
     {
+        parent::__construct();
+
         $this->mimeTypeGuesser = $mimeTypeGuesser ? $mimeTypeGuesser : new MimeTypeGuesser();
     }
 
