@@ -257,6 +257,9 @@ class Closure implements Strategy
             $referenceMapping = $em->getClassMetadata($config['closure'])->getAssociationMapping('ancestor');
             $referenceId = $referenceMapping['sourceToTargetKeyColumns'][$ancestorColumnName];
             
+            //get the field of the entity when the column_name is not the same name of the entity field
+            $referenceId  = $em->getClassMetadata($config['useObjectClass'])->getFieldForColumn($referenceId);
+             
             $entries = array(
                 array(
                     $ancestorColumnName => $nodeId,
