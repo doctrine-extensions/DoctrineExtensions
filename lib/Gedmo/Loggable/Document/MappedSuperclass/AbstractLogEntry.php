@@ -63,7 +63,7 @@ abstract class AbstractLogEntry
     protected $data;
 
     /**
-     * @var string $data
+     * @var string $username
      *
      * @MongoODM\Index
      * @MongoODM\Field(type="string", nullable=true)
