@@ -287,7 +287,9 @@ class SortableListener extends MappedEventSubscriber
                 } else {
                     // position was manually updated
                     $oldPosition = $changeSet[$config['position']][0];
-                    $newPosition = $changeSet[$config['position']][1];
+                    $newPosition = $changeSet[$config['position']][1] === null
+                        ? -1
+                        : $changeSet[$config['position']][1];
                     $changed = $changed || $oldPosition != $newPosition;
                 }
             } elseif ($changed) {
