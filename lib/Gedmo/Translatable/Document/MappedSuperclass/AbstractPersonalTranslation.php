@@ -21,7 +21,7 @@ abstract class AbstractPersonalTranslation
     /**
      * @var string $locale
      *
-     * @MongoODM\String
+     * @MongoODM\Field(type="string")
      */
     protected $locale;
 
@@ -34,14 +34,14 @@ abstract class AbstractPersonalTranslation
     /**
      * @var string $field
      *
-     * @MongoODM\String
+     * @MongoODM\Field(type="string")
      */
     protected $field;
 
     /**
      * @var string $content
      *
-     * @MongoODM\String
+     * @MongoODM\Field(type="string")
      */
     protected $content;
 
