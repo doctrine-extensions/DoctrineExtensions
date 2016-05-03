@@ -3,6 +3,7 @@
 namespace Gedmo\Tree;
 
 use Doctrine\Common\EventManager;
+use Gedmo\Tree\TreeListener;
 use Tool\BaseTestCaseORM;
 use Tree\Fixture\Closure\Category;
 use Tree\Fixture\Closure\News;
@@ -350,5 +351,31 @@ class ClosureTreeTest extends BaseTestCaseORM
                     ->getResult();
 
         $this->assertCount(1, $closure);
+    }
+
+    public function testPersistOnRightEmInstance()
+    {
+        $evm = new EventManager();
+        $evm->addEventSubscriber(new TreeListener());
+
+        $emOne = $this->getMockSqliteEntityManager($evm);
+        $emTwo = $this->getMockSqliteEntityManager($evm);
+
+        $categoryOne = new Category();
+        $categoryOne->setTitle('Politics');
+
+        $categoryTwo = new Category();
+        $categoryTwo->setTitle('Politics');
+
+        // Persist and Flush on different times !
+        $emOne->persist($categoryOne);
+
+        $emTwo->persist($categoryTwo);
+        $emTwo->flush();
+
+        $emOne->flush();
+
+        $this->assertNotNull($categoryOne->getId());
+        $this->assertNotNull($categoryTwo->getId());
     }
 }
