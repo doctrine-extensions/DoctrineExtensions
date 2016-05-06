@@ -80,6 +80,9 @@ Available configuration options:
 - **fieldName** - The name of the field that will be used to determine if the object is removed or not (NULL means
 it's not removed. A date value means it was removed). NOTE: The field MUST be nullable.
 
+- **timeAware** - Defaults to false. If set to true, softDeletable will also return results where the value of
+`fieldName` is in the future. This is very handy if at the time of creation you already know when an item should be deleted.
+
 **Note:** that SoftDeleteable interface is not necessary, except in cases where
 you need to identify entity as being SoftDeleteable. The metadata is loaded only once then
 cache is activated.
