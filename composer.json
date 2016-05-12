@@ -39,10 +39,10 @@
     },
     "require": {
         "php": ">=5.4",
-        "behat/transliterator": "~1.0",
         "doctrine/common": "~2.4"
     },
     "require-dev": {
+        "behat/transliterator": "~1.0",
         "doctrine/mongodb-odm": ">=1.0.2",
         "doctrine/orm": ">=2.5.0",
         "doctrine/common": ">=2.5.0",
@@ -50,6 +50,7 @@
         "phpunit/phpunit": "*"
     },
     "suggest": {
+        "behat/transliterator": "(~1.0) to use the Sluggable extension",
         "doctrine/mongodb-odm": "to use the extensions with the MongoDB ODM",
         "doctrine/orm": "to use the extensions with the ORM"
     },
