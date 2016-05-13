@@ -66,7 +66,7 @@ trait TimestampableDocument
     /**
      * Returns updatedAt.
      *
-     * @return \Datetime
+     * @return \DateTime
      */
     public function getUpdatedAt()
     {
