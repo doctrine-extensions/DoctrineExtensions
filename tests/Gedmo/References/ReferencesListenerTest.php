@@ -9,6 +9,7 @@ use References\Fixture\ODM\MongoDB\Product;
 use References\Fixture\ODM\MongoDB\Metadata;
 use References\Fixture\ORM\Category;
 use References\Fixture\ORM\StockItem;
+use References\Fixture\ORM\StockItem2;
 use Tool\BaseTestCaseOM;
 
 class ReferencesListenerTest extends BaseTestCaseOM
@@ -39,6 +40,7 @@ class ReferencesListenerTest extends BaseTestCaseOM
         $this->em = $this->getMockSqliteEntityManager(
             array(
                 'References\Fixture\ORM\StockItem',
+                'References\Fixture\ORM\StockItem2',
                 'References\Fixture\ORM\Category',
             ),
             new ORMAnnotationDriver($reader, __DIR__.'/Fixture/ORM')
@@ -87,6 +89,54 @@ class ReferencesListenerTest extends BaseTestCaseOM
         $stockItem = $this->em->find(get_class($stockItem), $stockItem->getId());
 
         $this->assertSame($product, $stockItem->getProduct());
+    }
+
+    public function testShouldUseProxyWhenEnabled()
+    {
+        $product = new Product();
+        $product->setName('Apple TV');
+
+        $this->dm->persist($product);
+        $this->dm->flush();
+
+        $stockItem = new StockItem();
+        $stockItem->setName('Apple TV');
+        $stockItem->setSku('APP-TV');
+        $stockItem->setQuantity(25);
+        $stockItem->setProductId($product->getId());
+
+        $this->em->persist($stockItem);
+        $this->em->flush();
+        $this->em->clear();
+        $this->dm->clear();
+
+        $stockItem = $this->em->find(get_class($stockItem), $stockItem->getId());
+
+        $this->assertInstanceOf('Doctrine\Common\Persistence\Proxy', $stockItem->getProduct());
+    }
+
+    public function testShouldNotUseProxyWhenDisabled()
+    {
+        $product = new Product();
+        $product->setName('Apple TV');
+
+        $this->dm->persist($product);
+        $this->dm->flush();
+
+        $stockItem = new StockItem2();
+        $stockItem->setName('Apple TV');
+        $stockItem->setSku('APP-TV');
+        $stockItem->setQuantity(25);
+        $stockItem->setProductId($product->getId());
+
+        $this->em->persist($stockItem);
+        $this->em->flush();
+        $this->em->clear();
+        $this->dm->clear();
+
+        $stockItem = $this->em->find(get_class($stockItem), $stockItem->getId());
+
+        $this->assertNotInstanceOf('Doctrine\Common\Persistence\Proxy', $stockItem->getProduct());
     }
 
     public function testShouldPopulateReferenceManyWithLazyCollectionInstance()

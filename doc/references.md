@@ -34,11 +34,24 @@ private $stockItems;
 
 **@Gedmo\ReferenceOne**
 
+**Unique options**
+
+- **useProxies** - Only use proxies, or hydrate objects on the spot. Default: true
+- **disableFilters** - An array of filters to disable. Especially handy with `soft-deleteable`.
+Will only try to disable enabled filters. Re-enables disabled filters when done.
+
 ``` php
 <?php
 
 /**
- * @Gedmo\ReferenceOne(type="document", class="Document\Product", inversedBy="stockItems", identifier="productId")
+ * @Gedmo\ReferenceOne(
+ *     type="document",
+ *     class="Document\Product",
+ *     inversedBy="stockItems",
+ *     identifier="productId",
+ *     useProxies=false,
+ *     disableFilters={"soft-deleteable"}
+ * )
  */
 private $product;
 ```

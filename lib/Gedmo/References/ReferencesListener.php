@@ -53,8 +53,7 @@ class ReferencesListener extends MappedEventSubscriber
                             $value = $ea->getSingleReference(
                                 $this->getManager($mapping['type']),
                                 $mapping['class'],
-                                $referencedObjectId,
-                                $mapping['disableFilters']
+                                $referencedObjectId
                             );
                         } else {
                             $value = $ea->getSingleObject(
