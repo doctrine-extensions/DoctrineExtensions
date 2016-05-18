@@ -348,7 +348,7 @@ class SluggableListener extends MappedEventSubscriber
                 // Step 3: stylize the slug
                 switch ($options['style']) {
                     case 'camel':
-                        $quotedSeparator = preg_quote($options['separator']);
+                        $quotedSeparator = preg_quote($options['separator'], '/');
                         $slug = preg_replace_callback('/^[a-z]|'.$quotedSeparator.'[a-z]/smi', function ($m) {
                             return strtoupper($m[0]);
                         }, $slug);
