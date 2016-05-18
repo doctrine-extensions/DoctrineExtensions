@@ -32,8 +32,22 @@ interface ReferencesAdapter extends AdapterInterface
      * @param ObjectManager    $om
      * @param string           $class
      * @param array|string|int $identifier
-     **/
+     *
+     * @return
+     */
     public function getSingleReference($om, $class, $identifier);
+
+    /**
+     * Gets a single object (entity/document) for the given ObjectManager, class and identifier.
+     *
+     * @param ObjectManager    $om
+     * @param string           $class
+     * @param array|string|int $identifier
+     * @param array            $disabledFilters
+     *
+     * @return
+     */
+    public function getSingleObject($om, $class, $identifier, $disabledFilters = []);
 
     /**
      * Extracts identifiers from object or proxy.

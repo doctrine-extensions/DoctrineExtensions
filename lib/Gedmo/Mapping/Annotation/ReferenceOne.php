@@ -12,4 +12,6 @@ namespace Gedmo\Mapping\Annotation;
  */
 class ReferenceOne extends Reference
 {
+    public $useProxies = true;
+    public $disableFilters = [];
 }

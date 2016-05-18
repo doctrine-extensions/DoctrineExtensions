@@ -81,6 +81,12 @@ class Annotation implements AnnotationDriverInterface
                         'mappedBy'   => $reference->mappedBy,
                         'inversedBy' => $reference->inversedBy,
                     );
+
+                    $referenceOne = self::REFERENCE_ONE;
+                    if ($reference instanceof $referenceOne) {
+                        $config[$key][$property->getName()]['useProxies'] = $reference->useProxies;
+                        $config[$key][$property->getName()]['disableFilters'] = $reference->disableFilters;
+                    }
                 }
             }
         }

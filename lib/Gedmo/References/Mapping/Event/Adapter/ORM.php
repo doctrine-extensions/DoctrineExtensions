@@ -77,6 +77,33 @@ final class ORM extends BaseAdapterORM implements ReferencesAdapter
     /**
      * @inheritDoc
      */
+    public function getSingleObject($om, $class, $identifier, $disabledFilters = [])
+    {
+        $this->throwIfNotDocumentManager($om);
+        /** @var MongoDocumentManager|PhpcrDocumentManager $om */
+
+        $filters = $om->getFilterCollection();
+        $disabled = [];
+
+        foreach ($disabledFilters as $filter) {
+            if ($filters->isEnabled($filter)) {
+                $filters->disable($filter);
+                $disabled[] = $filter;
+            }
+        }
+
+        $object = $om->find($class, $identifier);
+
+        foreach ($disabled as $filter) {
+            $filters->enable($filter);
+        }
+
+        return $object;
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function extractIdentifier($om, $object, $single = true)
     {
         if ($object instanceof ORMProxy) {

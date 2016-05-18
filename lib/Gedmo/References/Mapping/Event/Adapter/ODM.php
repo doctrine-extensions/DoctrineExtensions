@@ -69,6 +69,33 @@ final class ODM extends BaseAdapterODM implements ReferencesAdapter
     /**
      * @inheritDoc
      */
+    public function getSingleObject($om, $class, $identifier, $disabledFilters = [])
+    {
+        $this->throwIfNotEntityManager($om);
+        /** @var EntityManager $om */
+
+        $filters = $om->getFilters();
+        $disabled = [];
+
+        foreach ($disabledFilters as $filter) {
+            if ($filters->isEnabled($filter)) {
+                $filters->disable($filter);
+                $disabled[] = $filter;
+            }
+        }
+
+        $object = $om->find($class, $identifier);
+
+        foreach ($disabled as $filter) {
+            $filters->enable($filter);
+        }
+
+        return $object;
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function extractIdentifier($om, $object, $single = true)
     {
         $meta = $om->getClassMetadata(get_class($object));

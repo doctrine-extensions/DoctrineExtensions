@@ -21,6 +21,8 @@ class ReferencesListener extends MappedEventSubscriber
 
     public function __construct(array $managers = array())
     {
+        parent::__construct();
+
         $this->managers = $managers;
     }
 
@@ -47,14 +49,23 @@ class ReferencesListener extends MappedEventSubscriber
                 if (isset($mapping['identifier'])) {
                     $referencedObjectId = $meta->getFieldValue($object, $mapping['identifier']);
                     if (null !== $referencedObjectId) {
-                        $property->setValue(
-                            $object,
-                            $ea->getSingleReference(
+                        if ($mapping['useProxies']) {
+                            $value = $ea->getSingleReference(
                                 $this->getManager($mapping['type']),
                                 $mapping['class'],
-                                $referencedObjectId
-                            )
-                        );
+                                $referencedObjectId,
+                                $mapping['disableFilters']
+                            );
+                        } else {
+                            $value = $ea->getSingleObject(
+                                $this->getManager($mapping['type']),
+                                $mapping['class'],
+                                $referencedObjectId,
+                                $mapping['disableFilters']
+                            );
+                        }
+
+                        $property->setValue($object, $value);
                     }
                 }
             }
