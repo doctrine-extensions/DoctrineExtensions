@@ -73,8 +73,9 @@ class Yaml extends File implements Driver
             }
         }
 
-        if (isset($mapping['manyToOne'])) {
-            foreach ($mapping['manyToOne'] as $field => $fieldMapping) {
+        if (isset($mapping['manyToOne']) || isset($mapping['referenceOne'])) {
+            $associationKey = isset($mapping['manyToOne']) ? 'manyToOne' : 'referenceOne'; // support orm or odm
+            foreach ($mapping[$associationKey] as $field => $fieldMapping) {
                 if (isset($fieldMapping['gedmo']['blameable'])) {
                     $mappingProperty = $fieldMapping['gedmo']['blameable'];
                     if (! $meta->isSingleValuedAssociation($field)) {
