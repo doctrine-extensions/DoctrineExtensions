@@ -2,6 +2,7 @@
 
 namespace Gedmo\References\Mapping\Event\Adapter;
 
+use Doctrine\Common\Proxy\Proxy;
 use Doctrine\ODM\MongoDB\DocumentManager as MongoDocumentManager;
 use Doctrine\ODM\MongoDB\Proxy\Proxy as MongoDBProxy;
 use Doctrine\ODM\PHPCR\DocumentManager as PhpcrDocumentManager;
@@ -93,6 +94,10 @@ final class ORM extends BaseAdapterORM implements ReferencesAdapter
         }
 
         $object = $om->find($class, $identifier);
+
+        if ($object instanceof Proxy) {
+            $object->__load();
+        }
 
         foreach ($disabled as $filter) {
             $filters->enable($filter);
