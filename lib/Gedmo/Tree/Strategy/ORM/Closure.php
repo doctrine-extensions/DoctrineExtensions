@@ -255,12 +255,6 @@ class Closure implements Strategy
             $descendantColumnName = $this->getJoinColumnFieldName($em->getClassMetadata($config['closure'])->getAssociationMapping('descendant'));
             $depthColumnName = $em->getClassMetadata($config['closure'])->getColumnName('depth');
 
-            $referenceMapping = $em->getClassMetadata($config['closure'])->getAssociationMapping('ancestor');
-            $referenceIdField = $referenceMapping['sourceToTargetKeyColumns'][$ancestorColumnName];
-
-            //get the field of the entity when the column_name is not the same name of the entity field
-            $referenceId  = $em->getClassMetadata($config['useObjectClass'])->getFieldForColumn($referenceIdField);
-             
             $entries = array(
                 array(
                     $ancestorColumnName => $nodeId,
@@ -279,7 +273,7 @@ class Closure implements Strategy
 
                 foreach ($ancestors as $ancestor) {
                     $entries[] = array(
-                        $ancestorColumnName => $ancestor['ancestor'][$referenceId],
+                        $ancestorColumnName => $ancestor['ancestor'][$identifier],
                         $descendantColumnName => $nodeId,
                         $depthColumnName => $ancestor['depth'] + 1,
                     );
