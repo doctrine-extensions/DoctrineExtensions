@@ -194,6 +194,25 @@ class MaterializedPathRepository extends AbstractTreeRepository
 
         return $query->toArray();
     }
+    
+    /**
+     * removeFromTree
+     * @param object $node
+     */
+    public function removeFromTree($node)
+    {
+        $meta = $this->getClassMetadata();
+        
+        if ($node instanceof $meta->name) {
+            $config = $this->listener->getConfiguration($this->dm, $meta->name);
+            
+            $this->listener
+                ->getStrategy($this->dm, $meta->name)
+                ->removeNode($this->dm, $meta, $config, $node);
+                
+            $this->dm->flush();
+        }
+    }
 
     /**
      * {@inheritdoc}
