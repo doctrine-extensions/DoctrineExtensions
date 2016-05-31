@@ -289,7 +289,7 @@ $em->flush();
 
 This inserted an article and inserted the translations for it in "en_us" locale
 only if **en_us** is not the [default locale](#advanced-examples) in case if default locale
-matches current locale - it uses original record value as translation
+matches current locale - it uses original record value as translation.
 
 Now lets update our article in different locale:
 
@@ -304,16 +304,22 @@ $em->persist($article);
 $em->flush();
 ```
 
-This updated an article and inserted the translations for it in "de_de" locale
-To see and load all translations of **Translatable** Entity:
+This updated an article and inserted the translations for it in "de_de" locale.
+
+To load the article with its "de_de" translations: 
 
 ``` php
 <?php
 // reload in different language
 $article = $em->find('Entity\Article', 1 /*article id*/);
-$article->setLocale('ru_ru');
+$article->setTranslatableLocale('de_de');
 $em->refresh($article);
+```
 
+To see and load all translations of **Translatable** Entity:
+
+``` php
+<?php
 $article = $em->find('Entity\Article', 1 /*article id*/);
 $repository = $em->getRepository('Gedmo\Translatable\Entity\Translation');
 $translations = $repository->findTranslations($article);
