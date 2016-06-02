@@ -4,6 +4,8 @@ namespace Gedmo\Tree;
 
 use Doctrine\Common\EventManager;
 use Tool\BaseTestCaseMongoODM;
+use Tree\Fixture\RootCategory;
+use Tree\Fixture\Document\Category;
 
 /**
  * These are tests for Tree behavior
@@ -224,6 +226,30 @@ class MaterializedPathODMMongoDBRepositoryTest extends BaseTestCaseMongoODM
         $count = $this->repo->childCount($food, true);
 
         $this->assertEquals(2, $count);
+    }
+
+    /**
+     * @test
+     */
+    public function testRemoveFromTree()
+    {
+        $repo = $this->dm->getRepository(self::CATEGORY);
+
+        $category = new Category();
+
+        $title = 'New Category';
+        $category->setTitle($title);
+
+        $this->dm->persist($category);
+        $this->dm->flush();
+
+        $category = $repo->findOneBy(array('title' => $title));
+
+        $repo->removeFromTree($category);
+
+        $category = $repo->findOneBy(array('title' => $title));
+
+        $this->assertNull($category);
     }
 
     /**
