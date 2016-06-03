@@ -33,6 +33,13 @@ class RelatedArticle
      */
     private $comments;
 
+    /**
+     * @ODM\EmbedMany(targetDocument="Reference")
+     * @Gedmo\Versioned
+     */
+    private $references;
+
+
     public function getId()
     {
         return $this->id;
@@ -67,5 +74,15 @@ class RelatedArticle
     public function getContent()
     {
         return $this->content;
+    }
+
+    public function getReferences()
+    {
+        return $this->references;
+    }
+
+    public function setReferences($references)
+    {
+        $this->references = $references;
     }
 }

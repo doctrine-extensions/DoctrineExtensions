@@ -70,7 +70,13 @@ class Annotation extends AbstractAnnotationDriver
             // versioned property
             if ($this->reader->getPropertyAnnotation($property, self::VERSIONED)) {
                 $field = $property->getName();
-                if (!$this->isMappingValid($meta, $field)) {
+
+                $isEmbedMany = false;
+                if (method_exists($meta, 'isCollectionValuedEmbed')) {
+                    $isEmbedMany = $meta->isCollectionValuedEmbed($field);
+                }
+
+                if ($meta->isCollectionValuedAssociation($field) && !$isEmbedMany) {
                     throw new InvalidMappingException("Cannot versioned [{$field}] as it is collection in object - {$meta->name}");
                 }
                 if (isset($meta->embeddedClasses[$field])) {
