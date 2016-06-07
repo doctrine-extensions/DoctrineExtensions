@@ -434,10 +434,12 @@ class SluggableListener extends MappedEventSubscriber
         // collect similar persisted slugs during this flush
         if (isset($this->persisted[$class = $ea->getRootObjectClass($meta)])) {
             foreach ($this->persisted[$class] as $obj) {
-                if ($base !== false && $meta->getReflectionProperty($config['unique_base'])->getValue($obj) !== $base) {
+                $similarMeta = $om->getClassMetadata(get_class($obj));
+                if ($base !== false && $similarMeta->getReflectionProperty($config['unique_base'])->getValue($obj) !== $base) {
                     continue; // if unique_base field is not the same, do not take slug as similar
                 }
-                $slug = $meta->getReflectionProperty($config['slug'])->getValue($obj);
+                $slugRefl = $similarMeta->getReflectionProperty($config['slug']);
+                $slug = $slugRefl->getValue($obj);
                 $quotedPreferredSlug = preg_quote($preferredSlug);
                 if (preg_match("@^{$quotedPreferredSlug}.*@smi", $slug)) {
                     $similarPersisted[] = array($config['slug'] => $slug);
