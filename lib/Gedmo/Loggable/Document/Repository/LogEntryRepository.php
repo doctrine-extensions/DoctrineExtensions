@@ -2,6 +2,7 @@
 
 namespace Gedmo\Loggable\Document\Repository;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Gedmo\Loggable\Document\LogEntry;
 use Gedmo\Tool\Wrapper\MongoDocumentWrapper;
 use Gedmo\Loggable\LoggableListener;
@@ -109,13 +110,16 @@ class LogEntryRepository extends DocumentRepository
             }
             $mapping = $objectMeta->getFieldMapping($field);
             // Fill the embedded document
-            if ($wrapped->isEmbeddedAssociation($field)) {
+            if ($wrapped->isEmbeddedCollectionAssociation($field)) {
                 if (!empty($value)) {
-                    $embeddedMetadata = $this->dm->getClassMetadata($mapping['targetDocument']);
-                    $document = $embeddedMetadata->newInstance();
-                    $this->fillDocument($document, $value);
-                    $value = $document;
+                    $items = [];
+                    foreach ($value as $item) {
+                        $items[] = $this->fillEmbeddedDocument($item, $mapping);
+                    }
+                    $value = new ArrayCollection($items);
                 }
+            } elseif ($wrapped->isEmbeddedAssociation($field)) {
+                $value = $this->fillEmbeddedDocument($value, $mapping);
             } elseif ($objectMeta->isSingleValuedAssociation($field)) {
                 $value = $value ? $this->dm->getReference($mapping['targetDocument'], $value) : null;
             }
@@ -128,6 +132,21 @@ class LogEntryRepository extends DocumentRepository
             throw new \Gedmo\Exception\UnexpectedValueException('Cound not fully revert the document to version: '.$version);
         }
         */
+    }
+
+    /**
+     * @param $value
+     * @param $mapping
+     * @return object
+     */
+    protected function fillEmbeddedDocument($value, $mapping) {
+        if (!empty($value)) {
+            $embeddedMetadata = $this->dm->getClassMetadata($mapping['targetDocument']);
+            $document = $embeddedMetadata->newInstance();
+            $this->fillDocument($document, $value);
+            return $document;
+        }
+        return $value;
     }
 
     /**
