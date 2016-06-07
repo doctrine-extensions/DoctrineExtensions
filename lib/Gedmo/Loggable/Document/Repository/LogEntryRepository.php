@@ -84,7 +84,15 @@ class LogEntryRepository extends DocumentRepository
         if ($logs) {
             $data = array();
             while (($log = array_shift($logs))) {
-                $data = array_merge($data, $log->getData());
+                $logData = $log->getData();
+                foreach ($logData as $field => $value) {
+                    if ($value && $wrapped->isEmbeddedCollectionAssociation($field)) {
+                        foreach ($value as $i => $item) {
+                            $logData[$field][$i] = array_merge(@$data[$field][$i] ?: [], $item);
+                        }
+                    }
+                }
+                $data = array_merge($data, $logData);
             }
             $this->fillDocument($document, $data, $objectMeta);
         } else {
