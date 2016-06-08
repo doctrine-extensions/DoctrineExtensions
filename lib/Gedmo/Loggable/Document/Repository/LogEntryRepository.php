@@ -44,10 +44,10 @@ class LogEntryRepository extends DocumentRepository
         $qb->field('objectId')->equals($objectId);
         $qb->field('objectClass')->equals($wrapped->getMetadata()->name);
         $qb->sort('version', 'DESC');
-        if($limit) {
+        if ($limit) {
             $qb->limit($limit);
         }
-        if($skip) {
+        if ($skip) {
             $qb->skip($skip);
         }
         $q = $qb->getQuery();
