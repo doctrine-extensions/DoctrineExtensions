@@ -30,10 +30,12 @@ class LogEntryRepository extends DocumentRepository
      * given $document
      *
      * @param object $document
+     * @param null|int $limit
+     * @param null|int $skip
      *
      * @return LogEntry[]
      */
-    public function getLogEntries($document)
+    public function getLogEntries($document, $limit = null, $skip = null)
     {
         $wrapped = new MongoDocumentWrapper($document, $this->dm);
         $objectId = $wrapped->getIdentifier();
@@ -42,6 +44,12 @@ class LogEntryRepository extends DocumentRepository
         $qb->field('objectId')->equals($objectId);
         $qb->field('objectClass')->equals($wrapped->getMetadata()->name);
         $qb->sort('version', 'DESC');
+        if($limit) {
+            $qb->limit($limit);
+        }
+        if($skip) {
+            $qb->skip($skip);
+        }
         $q = $qb->getQuery();
 
         $result = $q->execute();
