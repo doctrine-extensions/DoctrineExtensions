@@ -15,20 +15,20 @@ class Article
 
     /**
      * @Gedmo\Translatable
-     * @MongoODM\String
+     * @MongoODM\Field(type="string")
      */
     private $title;
 
     /**
      * @Gedmo\Translatable
-     * @MongoODM\String
+     * @MongoODM\Field(type="string")
      */
     private $code;
 
     /**
      * @Gedmo\Slug(fields={"title", "code"})
      * @Gedmo\Translatable
-     * @MongoODM\String
+     * @MongoODM\Field(type="string")
      */
     private $slug;
 

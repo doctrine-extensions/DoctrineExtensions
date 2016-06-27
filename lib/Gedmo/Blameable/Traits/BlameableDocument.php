@@ -16,14 +16,14 @@ trait BlameableDocument
     /**
      * @var string
      * @Gedmo\Blameable(on="create")
-     * @ODM\String
+     * @ODM\Field(type="string")
      */
     protected $createdBy;
 
     /**
      * @var string
      * @Gedmo\Blameable(on="update")
-     * @ODM\String
+     * @ODM\Field(type="string")
      */
     protected $updatedBy;
 

@@ -17,13 +17,13 @@ class User
 
     /**
      * @Ext\Encode(type="sha1", secret="xxx")
-     * @ODM\String
+     * @ODM\Field(type="string")
      */
     private $name;
 
     /**
      * @Ext\Encode(type="md5")
-     * @ODM\String
+     * @ODM\Field(type="string")
      */
     private $password;
 

@@ -15,18 +15,18 @@ class SimpleArticle
 
     /**
      * @Gedmo\Translatable
-     * @MongoODM\String
+     * @MongoODM\Field(type="string")
      */
     private $title;
 
     /**
      * @Gedmo\Translatable
-     * @MongoODM\String
+     * @MongoODM\Field(type="string")
      */
     private $content;
 
     /**
-     * @MongoODM\String
+     * @MongoODM\Field(type="string")
      */
     private $untranslated;
 

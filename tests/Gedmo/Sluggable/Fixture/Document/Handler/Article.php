@@ -14,12 +14,12 @@ class Article
     private $id;
 
     /**
-     * @ODM\String
+     * @ODM\Field(type="string")
      */
     private $title;
 
     /**
-     * @ODM\String
+     * @ODM\Field(type="string")
      */
     private $code;
 
@@ -31,7 +31,7 @@ class Article
      *          @Gedmo\SlugHandlerOption(name="inverseSlugField", value="alias")
      *      })
      * }, separator="-", updatable=true, fields={"title", "code"})
-     * @ODM\String
+     * @ODM\Field(type="string")
      */
     private $slug;
 

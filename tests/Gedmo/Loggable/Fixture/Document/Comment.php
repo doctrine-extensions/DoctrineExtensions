@@ -18,13 +18,13 @@ class Comment
 
     /**
      * @Gedmo\Versioned
-     * @ODM\String
+     * @ODM\Field(type="string")
      */
     private $subject;
 
     /**
      * @Gedmo\Versioned
-     * @ODM\String
+     * @ODM\Field(type="string")
      */
     private $message;
 
