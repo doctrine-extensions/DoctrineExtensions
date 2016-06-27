@@ -14,7 +14,7 @@ class Kid
     private $id;
 
     /**
-     * @ODM\String
+     * @ODM\Field(type="string")
      */
     private $lastname;
 

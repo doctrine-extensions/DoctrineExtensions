@@ -191,13 +191,13 @@ class Article implements Translatable
 
     /**
      * @Gedmo\Translatable
-     * @ODM\String
+     * @ODM\Field(type="string")
      */
     private $title;
 
     /**
      * @Gedmo\Translatable
-     * @ODM\String
+     * @ODM\Field(type="string")
      */
     private $content;
 

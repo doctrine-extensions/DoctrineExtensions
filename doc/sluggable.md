@@ -198,18 +198,18 @@ class Article
     private $id;
 
     /**
-     * @ODM\String
+     * @ODM\Field(type="string")
      */
     private $title;
 
     /**
-     * @ODM\String
+     * @ODM\Field(type="string")
      */
     private $code;
 
     /**
      * @Gedmo\Slug(fields={"title", "code"})
-     * @ODM\String
+     * @ODM\Field(type="string")
      */
     private $slug;
 

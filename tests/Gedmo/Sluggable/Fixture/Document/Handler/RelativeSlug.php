@@ -16,7 +16,7 @@ class RelativeSlug
     private $id;
 
     /**
-     * @ODM\String
+     * @ODM\Field(type="string")
      */
     private $title;
 
@@ -28,7 +28,7 @@ class RelativeSlug
      *          @Gedmo\SlugHandlerOption(name="separator", value="/")
      *      })
      * }, separator="-", updatable=true, fields={"title"})
-     * @ODM\String
+     * @ODM\Field(type="string")
      */
     private $alias;
 

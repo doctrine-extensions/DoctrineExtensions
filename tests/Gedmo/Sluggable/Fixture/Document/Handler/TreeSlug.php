@@ -16,7 +16,7 @@ class TreeSlug
     private $id;
 
     /**
-     * @ODM\String
+     * @ODM\Field(type="string")
      */
     private $title;
 
@@ -27,7 +27,7 @@ class TreeSlug
      *          @Gedmo\SlugHandlerOption(name="separator", value="/")
      *      })
      * }, separator="-", updatable=true, fields={"title"})
-     * @ODM\String
+     * @ODM\Field(type="string")
      */
     private $alias;
 

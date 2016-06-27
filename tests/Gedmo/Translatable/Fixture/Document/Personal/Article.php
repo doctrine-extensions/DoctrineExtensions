@@ -16,7 +16,7 @@ class Article
 
     /**
      * @Gedmo\Translatable
-     * @MongoODM\String
+     * @MongoODM\Field(type="string")
      */
     private $title;
 

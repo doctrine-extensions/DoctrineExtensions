@@ -16,7 +16,7 @@ class Article
 
     /**
      * @Gedmo\Versioned
-     * @ODM\String
+     * @ODM\Field(type="string")
      */
     private $title;
 
