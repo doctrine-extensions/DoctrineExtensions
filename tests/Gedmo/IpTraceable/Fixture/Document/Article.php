@@ -14,7 +14,7 @@ class Article
     private $id;
 
     /**
-     * @ODM\String
+     * @ODM\Field(type="string")
      */
     private $title;
 
@@ -26,7 +26,7 @@ class Article
     /**
      * @var string $created
      *
-     * @ODM\String
+     * @ODM\Field(type="string")
      * @Gedmo\IpTraceable(on="create")
      */
     private $created;
@@ -34,7 +34,7 @@ class Article
     /**
      * @var string $updated
      *
-     * @ODM\String
+     * @ODM\Field(type="string")
      * @Gedmo\IpTraceable
      */
     private $updated;
@@ -42,14 +42,14 @@ class Article
     /**
      * @var string $published
      *
-     * @ODM\String
+     * @ODM\Field(type="string")
      * @Gedmo\IpTraceable(on="change", field="type.title", value="Published")
      */
     private $published;
 
     /**
      * @var string
-     * @ODM\String
+     * @ODM\Field(type="string")
      * @Gedmo\IpTraceable(on="change", field="isReady", value=true)
      */
     private $ready;

@@ -129,7 +129,7 @@ class Article
     private $id;
 
     /**
-     * @ODM\String
+     * @ODM\Field(type="string")
      * @Gedmo\Versioned
      */
     private $title;

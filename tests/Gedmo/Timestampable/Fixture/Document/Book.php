@@ -19,7 +19,7 @@ class Book
     protected $id;
 
     /**
-     * @ODM\String()
+     * @ODM\Field(type="string")
      * @var string
      */
     protected $title;

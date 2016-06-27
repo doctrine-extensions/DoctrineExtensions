@@ -18,13 +18,13 @@ class Article
     protected $id;
 
     /**
-     * @ODM\String
+     * @ODM\Field(type="string")
      */
     protected $title;
 
     /**
      * @Gedmo\Slug(separator="-", updatable=true, fields={"title"})
-     * @ODM\String
+     * @ODM\Field(type="string")
      */
     protected $slug;
 

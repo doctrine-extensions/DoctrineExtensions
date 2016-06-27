@@ -179,14 +179,14 @@ class Article
     private $id;
 
     /**
-     * @ODM\String
+     * @ODM\Field(type="string")
      */
     private $title;
 
     /**
      * @var string $createdFromIp
      *
-     * @ODM\String
+     * @ODM\Field(type="string")
      * @Gedmo\IpTraceable(on="create")
      */
     private $createdFromIp;
@@ -194,7 +194,7 @@ class Article
     /**
      * @var string $updatedFromIp
      *
-     * @ODM\String
+     * @ODM\Field(type="string")
      * @Gedmo\IpTraceable
      */
     private $updatedFromIp;

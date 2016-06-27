@@ -18,13 +18,13 @@ class RelatedArticle
 
     /**
      * @Gedmo\Versioned
-     * @ODM\String
+     * @ODM\Field(type="string")
      */
     private $title;
 
     /**
      * @Gedmo\Versioned
-     * @ODM\String
+     * @ODM\Field(type="string")
      */
     private $content;
 
