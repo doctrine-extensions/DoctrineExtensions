@@ -34,7 +34,7 @@ class Log
     /**
      * @var int $updated
      *
-     * @ODM\Int
+     * @ODM\Field(type="int")
      * @Gedmo\Blameable
      */
     private $updated;
