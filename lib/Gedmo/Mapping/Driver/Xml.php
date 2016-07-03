@@ -18,7 +18,7 @@ use SimpleXMLElement;
  */
 abstract class Xml extends File
 {
-    const GEDMO_NAMESPACE_URI = 'http://gediminasm.org/schemas/orm/doctrine-extensions-mapping';
+    const GEDMO_NAMESPACE_URI = 'http://Atlantic18.github.io/DoctrineExtensions/schemas/orm/doctrine-extensions-3.0.xsd';
     const DOCTRINE_NAMESPACE_URI = 'http://doctrine-project.org/schemas/orm/doctrine-mapping';
 
     /**
