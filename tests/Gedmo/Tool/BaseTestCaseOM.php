@@ -230,7 +230,7 @@ abstract class BaseTestCaseOM extends \PHPUnit_Framework_TestCase
         $config->setProxyNamespace('Proxies');
         $config->setHydratorDir(__DIR__.'/../../temp');
         $config->setHydratorNamespace('Hydrators');
-        $config->setMetadataDriverImpl($this->getDefaultMongoODMMetadataDriverImplementation());
+        $config->setMetadataDriverImpl($mappingDriver ?: $this->getDefaultMongoODMMetadataDriverImplementation());
         $config->setDefaultDB("gedmo_extensions_test");
         $config->addFilter("soft-deleteable", 'Gedmo\\SoftDeleteable\\Filter\\ODM\\SoftDeleteableFilter');
         return $config;
