@@ -9,6 +9,8 @@
 **Note:** Extensions **3.0.x** are compatible with **ORM** and doctrine common libraries from **2.5.x** and requires **PHP 5.4** or higher.
 Extensions **2.4.x** are compatible with ORM and doctrine common library versions from **2.2.x** to **2.5.x**
 
+Since the author has stopped working with PHP, looking for maintainers to ensure stability of doctrine extensions.
+
 ### Latest updates
 
 **2016-01-27**
@@ -90,6 +92,9 @@ To setup and run tests follow these steps:
 - run: `bin/phpunit -c tests`
 - optional - run mongodb service if targeting mongo tests
 
+**NOTE:** if php7 is used with **mongodb** install extension and dependencies using composer7.json.
+This is a temporary hack until the better ODM support is available.
+
 ### Running the example:
 
 To setup and run example follow these steps:
@@ -102,6 +107,8 @@ To setup and run example follow these steps:
 - run: `php example/run.php` to run example
 
 ### Contributors:
+
+**NOTE:** composer7.json is only used to test extensions with ODM mongodb using php7, same for travis.
 
 Thanks to [everyone participating](http://github.com/l3pp4rd/DoctrineExtensions/contributors) in
 the development of these great Doctrine2 extensions!
