@@ -873,14 +873,17 @@ trait NestedTreeRepositoryTrait
         $config = $this->listener->getConfiguration($em, $meta->name);
         $self = $this;
 
-        $doRecover = function ($root, &$count) use ($meta, $config, $self, $em, &$doRecover) {
+        $doRecover = function ($root, &$count, $level = 0) use ($meta, $config, $self, $em, &$doRecover) {
             $lft = $count++;
             foreach ($self->getChildren($root, true) as $child) {
-                $doRecover($child, $count);
+                $doRecover($child, $count, $level + 1);
             }
             $rgt = $count++;
             $meta->getReflectionProperty($config['left'])->setValue($root, $lft);
             $meta->getReflectionProperty($config['right'])->setValue($root, $rgt);
+            if (isset($config['level'])) {
+                $meta->getReflectionProperty($config['level'])->setValue($root, $level);
+            }
             $em->persist($root);
         };
 
