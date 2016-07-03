@@ -48,50 +48,12 @@ class MultiInheritanceWithSingleTableTest extends BaseTestCaseORM
         $path = $carRepo->getPath($children[0]);
         $this->assertCount(2, $path);
 
-        $carRepo->moveDown($children[0]);
-        $this->assertEquals(4, $children[0]->getLeft());
-        $this->assertEquals(5, $children[0]->getRight());
+        $carRepo->moveDown($children[1]);
+        $this->assertEquals(4, $children[1]->getLeft());
+        $this->assertEquals(5, $children[1]->getRight());
 
         $this->assertTrue($carRepo->verify());
     }
-
-    /*public function testHeavyLoad()
-    {
-        $carRepo = $this->em->getRepository(self::CAR);
-        $parent = null;
-        $num = 100;
-        for($i = 0; $i < 100; $i++) {
-            $engine = new Engine;
-            $engine->setType('e'.$i);
-            $engine->setValves(8);
-            $this->em->persist($engine);
-
-            $car = new Car;
-            $car->setParent($parent);
-            $car->setTitle('car'.$i);
-            $car->setEngine($engine);
-            $this->em->persist($car);
-            // siblings
-            $rnd = rand(0, 3);
-            for ($j = 0; $j < $rnd; $j++) {
-                $siblingEngine = new Engine;
-                $siblingEngine->setType('e'.$i.$j);
-                $siblingEngine->setValves(8);
-                $this->em->persist($siblingEngine);
-
-                $siblingCar = new Car;
-                $siblingCar->setTitle('car'.$i.$j);
-                $siblingCar->setEngine($siblingEngine);
-                $siblingCar->setParent($car);
-                $this->em->persist($siblingCar);
-            }
-            $num += $rnd;
-            $parent = $car;
-        }
-        $this->em->flush();
-        $this->assertTrue($carRepo->verify());
-        var_dump('processed: '.$num);
-    }*/
 
     protected function getUsedEntityFixtures()
     {
