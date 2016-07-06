@@ -111,7 +111,7 @@ abstract class BaseTestCaseOM extends \PHPUnit_Framework_TestCase
      */
     protected function getMockMappedDocumentManager($dbName, MappingDriver $mappingDriver = null)
     {
-        $conn = $this->getMock('Doctrine\\MongoDB\\Connection');
+        $conn = $this->getMockBuilder('Doctrine\\MongoDB\\Connection')->getMock();
         $config = $this->getMockAnnotatedODMMongoDBConfig($dbName, $mappingDriver);
 
         $dm = DocumentManager::create($conn, $config, $this->getEventManager());
@@ -160,20 +160,21 @@ abstract class BaseTestCaseOM extends \PHPUnit_Framework_TestCase
      */
     protected function getMockMappedEntityManager(MappingDriver $mappingDriver = null)
     {
-        $driver = $this->getMock('Doctrine\DBAL\Driver');
+        $driver = $this->getMockBuilder('Doctrine\DBAL\Driver')->getMock();
         $driver->expects($this->once())
             ->method('getDatabasePlatform')
-            ->will($this->returnValue($this->getMock('Doctrine\DBAL\Platforms\MySqlPlatform')));
+            ->will($this->returnValue($this->getMockBuilder('Doctrine\DBAL\Platforms\MySqlPlatform')->getMock()));
 
-        $conn = $this->getMock('Doctrine\DBAL\Connection', array(), array(array(), $driver));
+        $conn = $this->getMockBuilder('Doctrine\DBAL\Connection')
+            ->setConstructorArgs(array(), $driver)
+            ->getMock();
+
         $conn->expects($this->once())
             ->method('getEventManager')
-            ->will($this->returnValue($this->getEventManager()));
+            ->will($this->returnValue($evm ?: $this->getEventManager()));
 
-        $config = $this->getMockAnnotatedORMConfig($mappingDriver);
-        $em = EntityManager::create($conn, $config);
-
-        return $em;
+        $config = $this->getMockAnnotatedConfig();
+        return EntityManager::create($conn, $config);
     }
 
     /**
@@ -245,7 +246,7 @@ abstract class BaseTestCaseOM extends \PHPUnit_Framework_TestCase
      */
     private function getMockAnnotatedORMConfig(MappingDriver $mappingDriver = null)
     {
-        $config = $this->getMock('Doctrine\ORM\Configuration');
+        $config = $this->getMockBuilder('Doctrine\ORM\Configuration')->getMock();
         $config->expects($this->once())
             ->method('getProxyDir')
             ->will($this->returnValue(__DIR__.'/../../temp'));

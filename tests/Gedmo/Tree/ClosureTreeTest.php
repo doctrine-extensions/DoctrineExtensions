@@ -220,8 +220,12 @@ class ClosureTreeTest extends BaseTestCaseORM
 
     public function testIfEntityHasNotIncludedTreeLevelFieldThenDontProcessIt()
     {
-        $listener = $this->getMock('Gedmo\Tree\TreeListener', array('getStrategy'));
-        $strategy = $this->getMock('Gedmo\Tree\Strategy\ORM\Closure', array('setLevelFieldOnPendingNodes'), array($listener));
+        $listener = $this->getMockBuilder('Gedmo\Tree\TreeListener')->getMock();
+        $strategy = $this->getMockBuilder('Gedmo\Tree\Strategy\ORM\Closure')
+            ->setMethods(array('setLevelFieldOnPendingNodes'))
+            ->setConstructorArgs([$listener])
+            ->getMock();
+
         $listener->expects($this->any())
             ->method('getStrategy')
             ->will($this->returnValue($strategy));

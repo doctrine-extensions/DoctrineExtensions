@@ -320,18 +320,20 @@ class SoftDeleteableEntityTest extends BaseTestCaseORM
 
     public function testPostSoftDeleteEventIsDispatched()
     {
-        $subscriber = $this->getMock(
-            "Doctrine\Common\EventSubscriber",
-            array(
+        $subscriber = $this->getMockBuilder("Doctrine\Common\EventSubscriber")
+            ->setMethods(array(
                 "getSubscribedEvents",
                 "preSoftDelete",
                 "postSoftDelete",
-            )
-        );
+            ))
+            ->getMock();
 
         $subscriber->expects($this->once())
                    ->method("getSubscribedEvents")
-                   ->will($this->returnValue(array(SoftDeleteableListener::PRE_SOFT_DELETE, SoftDeleteableListener::POST_SOFT_DELETE)));
+                   ->will($this->returnValue(array(
+                       SoftDeleteableListener::PRE_SOFT_DELETE,
+                       SoftDeleteableListener::POST_SOFT_DELETE
+                   )));
 
         $subscriber->expects($this->exactly(2))
                    ->method("preSoftDelete")
