@@ -49,12 +49,7 @@ class TranslationQueryWalkerTest extends BaseTestCaseORM
     function shouldHandleQueryCache()
     {
         $cache = new \Doctrine\Common\Cache\ArrayCache();
-        $this->em
-            ->getConfiguration()
-            ->expects($this->any())
-            ->method('getQueryCacheImpl')
-            ->will($this->returnValue($cache))
-        ;
+        $this->em->getConfiguration()->setQueryCacheImpl($cache);
         $dql = 'SELECT a FROM '.self::ARTICLE.' a';
         $q = $this->em->createQuery($dql);
         $q->setHint(Query::HINT_CUSTOM_OUTPUT_WALKER, self::TREE_WALKER_TRANSLATION);
@@ -145,12 +140,10 @@ class TranslationQueryWalkerTest extends BaseTestCaseORM
      */
     function shouldSelectWithTranslationFallbackOnSimpleObjectHydration()
     {
-        $this->em
-            ->getConfiguration()
-            ->expects($this->any())
-            ->method('getCustomHydrationMode')
-            ->with(TranslationWalker::HYDRATE_SIMPLE_OBJECT_TRANSLATION)
-            ->will($this->returnValue('Gedmo\\Translatable\\Hydrator\\ORM\\SimpleObjectHydrator'));
+        $this->em->getConfiguration()->addCustomHydrationMode(
+            TranslationWalker::HYDRATE_SIMPLE_OBJECT_TRANSLATION,
+            'Gedmo\\Translatable\\Hydrator\\ORM\\SimpleObjectHydrator'
+        );
 
         $dql = 'SELECT a FROM '.self::ARTICLE.' a';
         $q = $this->em->createQuery($dql);
@@ -209,12 +202,10 @@ class TranslationQueryWalkerTest extends BaseTestCaseORM
      */
     function selectWithOptionalFallbackOnSimpleObjectHydration()
     {
-        $this->em
-            ->getConfiguration()
-            ->expects($this->any())
-            ->method('getCustomHydrationMode')
-            ->with(TranslationWalker::HYDRATE_SIMPLE_OBJECT_TRANSLATION)
-            ->will($this->returnValue('Gedmo\\Translatable\\Hydrator\\ORM\\SimpleObjectHydrator'));
+        $this->em->getConfiguration()->addCustomHydrationMode(
+            TranslationWalker::HYDRATE_SIMPLE_OBJECT_TRANSLATION,
+            'Gedmo\\Translatable\\Hydrator\\ORM\\SimpleObjectHydrator'
+        );
 
         $dql = 'SELECT a FROM '.self::ARTICLE.' a';
         $q = $this->em->createQuery($dql);
@@ -312,12 +303,10 @@ class TranslationQueryWalkerTest extends BaseTestCaseORM
      */
     function shouldSelectWithTranslationFallbackOnObjectHydration()
     {
-        $this->em
-            ->getConfiguration()
-            ->expects($this->any())
-            ->method('getCustomHydrationMode')
-            ->with(TranslationWalker::HYDRATE_OBJECT_TRANSLATION)
-            ->will($this->returnValue('Gedmo\\Translatable\\Hydrator\\ORM\\ObjectHydrator'));
+        $this->em->getConfiguration()->addCustomHydrationMode(
+            TranslationWalker::HYDRATE_OBJECT_TRANSLATION,
+            'Gedmo\\Translatable\\Hydrator\\ORM\\ObjectHydrator'
+        );
 
         $dql = 'SELECT a FROM '.self::ARTICLE.' a';
         $q = $this->em->createQuery($dql);
@@ -391,12 +380,10 @@ class TranslationQueryWalkerTest extends BaseTestCaseORM
      */
     function shouldSelectOrderedJoinedComponentTranslation()
     {
-        $this->em
-            ->getConfiguration()
-            ->expects($this->any())
-            ->method('getCustomHydrationMode')
-            ->with(TranslationWalker::HYDRATE_OBJECT_TRANSLATION)
-            ->will($this->returnValue('Gedmo\\Translatable\\Hydrator\\ORM\\ObjectHydrator'));
+        $this->em->getConfiguration()->addCustomHydrationMode(
+            TranslationWalker::HYDRATE_OBJECT_TRANSLATION,
+            'Gedmo\\Translatable\\Hydrator\\ORM\\ObjectHydrator'
+        );
 
         $this->populateMore();
         $dql = 'SELECT a, c FROM '.self::ARTICLE.' a';
@@ -481,12 +468,10 @@ class TranslationQueryWalkerTest extends BaseTestCaseORM
      */
     function shouldSelectSecondJoinedComponentTranslation()
     {
-        $this->em
-            ->getConfiguration()
-            ->expects($this->any())
-            ->method('getCustomHydrationMode')
-            ->with(TranslationWalker::HYDRATE_OBJECT_TRANSLATION)
-            ->will($this->returnValue('Gedmo\\Translatable\\Hydrator\\ORM\\ObjectHydrator'));
+        $this->em->getConfiguration()->addCustomHydrationMode(
+            TranslationWalker::HYDRATE_OBJECT_TRANSLATION,
+            'Gedmo\\Translatable\\Hydrator\\ORM\\ObjectHydrator'
+        );
 
         $dql = 'SELECT a, c FROM '.self::ARTICLE.' a';
         $dql .= ' LEFT JOIN a.comments c';
@@ -568,12 +553,10 @@ class TranslationQueryWalkerTest extends BaseTestCaseORM
      */
     function shouldSelectSinglePartializedComponentTranslation()
     {
-        $this->em
-            ->getConfiguration()
-            ->expects($this->any())
-            ->method('getCustomHydrationMode')
-            ->with(TranslationWalker::HYDRATE_OBJECT_TRANSLATION)
-            ->will($this->returnValue('Gedmo\\Translatable\\Hydrator\\ORM\\ObjectHydrator'));
+        $this->em->getConfiguration()->addCustomHydrationMode(
+            TranslationWalker::HYDRATE_OBJECT_TRANSLATION,
+            'Gedmo\\Translatable\\Hydrator\\ORM\\ObjectHydrator'
+        );
 
         $dql = 'SELECT a.title FROM '.self::ARTICLE.' a';
         $q = $this->em->createQuery($dql);
@@ -613,12 +596,10 @@ class TranslationQueryWalkerTest extends BaseTestCaseORM
      */
     function shouldSelectSingleComponentTranslation()
     {
-        $this->em
-            ->getConfiguration()
-            ->expects($this->any())
-            ->method('getCustomHydrationMode')
-            ->with(TranslationWalker::HYDRATE_OBJECT_TRANSLATION)
-            ->will($this->returnValue('Gedmo\\Translatable\\Hydrator\\ORM\\ObjectHydrator'));
+        $this->em->getConfiguration()->addCustomHydrationMode(
+            TranslationWalker::HYDRATE_OBJECT_TRANSLATION,
+            'Gedmo\\Translatable\\Hydrator\\ORM\\ObjectHydrator'
+        );
 
         $dql = 'SELECT a FROM '.self::ARTICLE.' a';
         $q = $this->em->createQuery($dql);
@@ -681,12 +662,10 @@ class TranslationQueryWalkerTest extends BaseTestCaseORM
      */
     function shouldPreserveSkipOnLoadForSimpleHydrator()
     {
-        $this->em
-            ->getConfiguration()
-            ->expects($this->any())
-            ->method('getCustomHydrationMode')
-            ->with(TranslationWalker::HYDRATE_SIMPLE_OBJECT_TRANSLATION)
-            ->will($this->returnValue('Gedmo\\Translatable\\Hydrator\\ORM\\SimpleObjectHydrator'));
+        $this->em->getConfiguration()->addCustomHydrationMode(
+            TranslationWalker::HYDRATE_SIMPLE_OBJECT_TRANSLATION,
+            'Gedmo\\Translatable\\Hydrator\\ORM\\SimpleObjectHydrator'
+        );
         $dql = 'SELECT a FROM '.self::ARTICLE.' a';
         $dql .= ' ORDER BY a.title';
         $q = $this->em->createQuery($dql);
@@ -705,12 +684,10 @@ class TranslationQueryWalkerTest extends BaseTestCaseORM
      */
     function shouldPreserveSkipOnLoadForObjectHydrator()
     {
-        $this->em
-            ->getConfiguration()
-            ->expects($this->any())
-            ->method('getCustomHydrationMode')
-            ->with(TranslationWalker::HYDRATE_OBJECT_TRANSLATION)
-            ->will($this->returnValue('Gedmo\\Translatable\\Hydrator\\ORM\\ObjectHydrator'));
+        $this->em->getConfiguration()->addCustomHydrationMode(
+            TranslationWalker::HYDRATE_OBJECT_TRANSLATION,
+            'Gedmo\\Translatable\\Hydrator\\ORM\\ObjectHydrator'
+        );
         $dql = 'SELECT a FROM '.self::ARTICLE.' a';
         $dql .= ' ORDER BY a.title';
         $q = $this->em->createQuery($dql);

@@ -112,12 +112,15 @@ abstract class BaseTestCaseORM extends \PHPUnit_Framework_TestCase
      */
     protected function getMockMappedEntityManager(EventManager $evm = null)
     {
-        $driver = $this->getMock('Doctrine\DBAL\Driver');
+        $driver = $this->getMockBuilder('Doctrine\DBAL\Driver')->getMock();
         $driver->expects($this->once())
             ->method('getDatabasePlatform')
-            ->will($this->returnValue($this->getMock('Doctrine\DBAL\Platforms\MySqlPlatform')));
+            ->will($this->returnValue($this->getMockBuilder('Doctrine\DBAL\Platforms\MySqlPlatform')->getMock()));
 
-        $conn = $this->getMock('Doctrine\DBAL\Connection', array(), array(array(), $driver));
+        $conn = $this->getMockBuilder('Doctrine\DBAL\Connection')
+            ->setConstructorArgs(array(), $driver)
+            ->getMock();
+
         $conn->expects($this->once())
             ->method('getEventManager')
             ->will($this->returnValue($evm ?: $this->getEventManager()));
@@ -139,11 +142,7 @@ abstract class BaseTestCaseORM extends \PHPUnit_Framework_TestCase
             throw new \RuntimeException('EntityManager and database platform must be initialized');
         }
         $this->queryAnalyzer = new QueryAnalyzer($this->em->getConnection()->getDatabasePlatform());
-        $this->em
-            ->getConfiguration()
-            ->expects($this->any())
-            ->method('getSQLLogger')
-            ->will($this->returnValue($this->queryAnalyzer));
+        $this->em->getConfiguration()->setSQLLogger($this->queryAnalyzer);
     }
 
     /**
@@ -215,84 +214,10 @@ abstract class BaseTestCaseORM extends \PHPUnit_Framework_TestCase
      */
     protected function getMockAnnotatedConfig()
     {
-        // We need to mock every method except the ones which
-        // handle the filters
-        $configurationClass = 'Doctrine\ORM\Configuration';
-        $refl = new \ReflectionClass($configurationClass);
-        $methods = $refl->getMethods();
-
-        $mockMethods = array();
-
-        foreach ($methods as $method) {
-            if ($method->name !== 'addFilter' && $method->name !== 'getFilterClassName') {
-                $mockMethods[] = $method->name;
-            }
-        }
-
-        $config = $this->getMock($configurationClass, $mockMethods);
-
-        $config
-            ->expects($this->once())
-            ->method('getProxyDir')
-            ->will($this->returnValue(__DIR__.'/../../temp'))
-        ;
-
-        $config
-            ->expects($this->once())
-            ->method('getProxyNamespace')
-            ->will($this->returnValue('Proxy'))
-        ;
-
-        $config
-            ->expects($this->any())
-            ->method('getDefaultQueryHints')
-            ->will($this->returnValue(array()))
-        ;
-
-        $config
-            ->expects($this->once())
-            ->method('getAutoGenerateProxyClasses')
-            ->will($this->returnValue(true))
-        ;
-
-        $config
-            ->expects($this->once())
-            ->method('getClassMetadataFactoryName')
-            ->will($this->returnValue('Doctrine\\ORM\\Mapping\\ClassMetadataFactory'))
-        ;
-
-        $mappingDriver = $this->getMetadataDriverImplementation();
-
-        $config
-            ->expects($this->any())
-            ->method('getMetadataDriverImpl')
-            ->will($this->returnValue($mappingDriver))
-        ;
-
-        $config
-            ->expects($this->any())
-            ->method('getDefaultRepositoryClassName')
-            ->will($this->returnValue('Doctrine\\ORM\\EntityRepository'))
-        ;
-
-        $config
-            ->expects($this->any())
-            ->method('getQuoteStrategy')
-            ->will($this->returnValue(new DefaultQuoteStrategy()))
-        ;
-
-        $config
-            ->expects($this->any())
-            ->method('getNamingStrategy')
-            ->will($this->returnValue(new DefaultNamingStrategy()))
-        ;
-
-        $config
-            ->expects($this->once())
-            ->method('getRepositoryFactory')
-            ->will($this->returnValue(new DefaultRepositoryFactory()))
-        ;
-
+        $config = new Configuration();
+        $config->setProxyDir(__DIR__.'/../../temp');
+        $config->setProxyNamespace('Proxy');
+        $config->setMetadataDriverImpl($this->getMetadataDriverImplementation());
         return $config;
     }
 }

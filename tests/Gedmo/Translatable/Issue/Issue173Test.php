@@ -43,13 +43,10 @@ class Issue173Test extends BaseTestCaseORM
 
     public function testIssue173()
     {
-        $this->em
-            ->getConfiguration()
-            ->expects($this->any())
-            ->method('getCustomHydrationMode')
-            ->with(TranslationWalker::HYDRATE_OBJECT_TRANSLATION)
-            ->will($this->returnValue('Gedmo\\Translatable\\Hydrator\\ORM\\ObjectHydrator'))
-        ;
+        $this->em->getConfiguration()->addCustomHydrationMode(
+            TranslationWalker::HYDRATE_OBJECT_TRANSLATION,
+            'Gedmo\\Translatable\\Hydrator\\ORM\\ObjectHydrator'
+        );
 
         $categories = $this->getCategoriesThatHasNoAssociations();
         $this->assertEquals(count($categories), 1, '$category3 has no associations');

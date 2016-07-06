@@ -158,14 +158,13 @@ class SoftDeleteableDocumentTest extends BaseTestCaseMongoODM
     }
     public function testPostSoftDeleteEventIsDispatched()
     {
-        $subscriber = $this->getMock(
-            "Doctrine\Common\EventSubscriber",
-            array(
+        $subscriber = $this->getMockBuilder("Doctrine\Common\EventSubscriber")
+            ->setMethods(array(
                 "getSubscribedEvents",
                 "preSoftDelete",
                 "postSoftDelete",
-            )
-        );
+            ))
+            ->getMock();
 
         $subscriber->expects($this->once())
             ->method("getSubscribedEvents")
