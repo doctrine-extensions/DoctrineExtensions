@@ -397,4 +397,209 @@ class ClosureTreeRepository extends AbstractTreeRepository
     {
         return $this->listener->getStrategy($this->_em, $this->getClassMetadata()->name)->getName() === Strategy::CLOSURE;
     }
+
+    public function verify()
+    {
+        $nodeMeta = $this->getClassMetadata();
+        $nodeIdField = $nodeMeta->getSingleIdentifierFieldName();
+        $config = $this->listener->getConfiguration($this->_em, $nodeMeta->name);
+        $closureMeta = $this->_em->getClassMetadata($config['closure']);
+        $errors = [];
+
+        $q = $this->_em->createQuery("
+          SELECT COUNT(node)
+          FROM {$nodeMeta->name} AS node
+          LEFT JOIN {$closureMeta->name} AS c WITH c.ancestor = node AND c.depth = 0
+          WHERE c.id IS NULL
+        ");
+
+        if ($missingSelfRefsCount = intval($q->getSingleScalarResult())) {
+            $errors[] = "Missing $missingSelfRefsCount self referencing closures";
+        }
+
+        $q = $this->_em->createQuery("
+          SELECT COUNT(node)
+          FROM {$nodeMeta->name} AS node
+          INNER JOIN {$closureMeta->name} AS c1 WITH c1.descendant = node.{$config['parent']}
+          LEFT  JOIN {$closureMeta->name} AS c2 WITH c2.descendant = node.$nodeIdField AND c2.ancestor = c1.ancestor
+          WHERE c2.id IS NULL AND node.$nodeIdField <> c1.ancestor
+        ");
+
+        if ($missingClosuresCount = intval($q->getSingleScalarResult())) {
+            $errors[] = "Missing $missingClosuresCount closures";
+        }
+
+        $q = $this->_em->createQuery("
+            SELECT COUNT(c1.id)
+            FROM {$closureMeta->name} AS c1
+            LEFT JOIN {$nodeMeta->name} AS node WITH c1.descendant = node.$nodeIdField
+            LEFT JOIN {$closureMeta->name} AS c2 WITH c2.descendant = node.{$config['parent']} AND c2.ancestor = c1.ancestor
+            WHERE c2.id IS NULL AND c1.descendant <> c1.ancestor
+        ");
+
+        if ($invalidClosuresCount = intval($q->getSingleScalarResult())) {
+            $errors[] = "Found $invalidClosuresCount invalid closures";
+        }
+
+        if (!empty($config['level'])) {
+            $levelField = $config['level'];
+            $maxResults = 1000;
+            $q = $this->_em->createQuery("
+                SELECT node.$nodeIdField AS id, node.$levelField AS node_level, MAX(c.depth) AS closure_level
+                FROM {$nodeMeta->name} AS node
+                INNER JOIN {$closureMeta->name} AS c WITH c.descendant = node.$nodeIdField
+                GROUP BY node.id, node.level
+                HAVING node_level IS NULL OR node_level <> closure_level
+            ")->setMaxResults($maxResults);
+
+            if ($invalidLevelsCount = count($q->getScalarResult())) {
+                $errors[] = "Found $invalidLevelsCount invalid level values";
+            }
+        }
+
+        return $errors ?: true;
+    }
+
+    public function recover()
+    {
+        if ($this->verify() === true) {
+            return;
+        }
+
+        $this->cleanUpClosure();
+        $this->rebuildClosure();
+    }
+
+    public function rebuildClosure()
+    {
+        $nodeMeta = $this->getClassMetadata();
+        $config = $this->listener->getConfiguration($this->_em, $nodeMeta->name);
+        $closureMeta = $this->_em->getClassMetadata($config['closure']);
+
+        $insertClosures = function ($entries) use ($closureMeta) {
+            $closureTable = $closureMeta->getTableName();
+            $ancestorColumnName = $this->getJoinColumnFieldName($closureMeta->getAssociationMapping('ancestor'));
+            $descendantColumnName = $this->getJoinColumnFieldName($closureMeta->getAssociationMapping('descendant'));
+            $depthColumnName = $closureMeta->getColumnName('depth');
+
+            $conn = $this->_em->getConnection();
+            $conn->beginTransaction();
+            foreach ($entries as $entry) {
+                $conn->insert($closureTable, array_combine(
+                    [$ancestorColumnName, $descendantColumnName, $depthColumnName],
+                    $entry
+                ));
+            }
+            $conn->commit();
+        };
+
+        $buildClosures = function ($dql) use ($insertClosures) {
+            $newClosuresCount = 0;
+            $batchSize = 1000;
+            $q = $this->_em->createQuery($dql)->setMaxResults($batchSize)->setCacheable(false);
+            do {
+                $entries = $q->getScalarResult();
+                $insertClosures($entries);
+                $newClosuresCount += count($entries);
+            } while (count($entries) > 0);
+            return $newClosuresCount;
+        };
+
+        $nodeIdField = $nodeMeta->getSingleIdentifierFieldName();
+        $newClosuresCount = $buildClosures("
+          SELECT node.id AS ancestor, node.$nodeIdField AS descendant, 0 AS depth
+          FROM {$nodeMeta->name} AS node
+          LEFT JOIN {$closureMeta->name} AS c WITH c.ancestor = node AND c.depth = 0
+          WHERE c.id IS NULL
+        ");
+        $newClosuresCount += $buildClosures("
+          SELECT IDENTITY(c1.ancestor) AS ancestor, node.$nodeIdField AS descendant, c1.depth + 1 AS depth
+          FROM {$nodeMeta->name} AS node
+          INNER JOIN {$closureMeta->name} AS c1 WITH c1.descendant = node.{$config['parent']}
+          LEFT  JOIN {$closureMeta->name} AS c2 WITH c2.descendant = node.$nodeIdField AND c2.ancestor = c1.ancestor
+          WHERE c2.id IS NULL AND node.$nodeIdField <> c1.ancestor
+        ");
+
+        return $newClosuresCount;
+    }
+
+    public function cleanUpClosure()
+    {
+        $conn = $this->_em->getConnection();
+        $nodeMeta = $this->getClassMetadata();
+        $nodeIdField = $nodeMeta->getSingleIdentifierFieldName();
+        $config = $this->listener->getConfiguration($this->_em, $nodeMeta->name);
+        $closureMeta = $this->_em->getClassMetadata($config['closure']);
+        $closureTableName = $closureMeta->getTableName();
+
+        $dql = "
+            SELECT c1.id AS id
+            FROM {$closureMeta->name} AS c1
+            LEFT JOIN {$nodeMeta->name} AS node WITH c1.descendant = node.$nodeIdField
+            LEFT JOIN {$closureMeta->name} AS c2 WITH c2.descendant = node.{$config['parent']} AND c2.ancestor = c1.ancestor
+            WHERE c2.id IS NULL AND c1.descendant <> c1.ancestor
+        ";
+
+        $deletedClosuresCount = 0;
+        $batchSize = 1000;
+        $q = $this->_em->createQuery($dql)->setMaxResults($batchSize)->setCacheable(false);
+
+        while (($ids = $q->getScalarResult()) && !empty($ids)) {
+            $ids = array_map(function ($el) {
+                return $el['id'];
+            }, $ids);
+            $query = "DELETE FROM {$closureTableName} WHERE id IN (".implode(', ', $ids).")";
+            if (!$conn->executeQuery($query)) {
+                throw new \RuntimeException('Failed to remove incorrect closures');
+            }
+            $deletedClosuresCount += count($ids);
+        }
+
+        return $deletedClosuresCount;
+    }
+
+    public function updateLevelValues()
+    {
+        $nodeMeta = $this->getClassMetadata();
+        $config = $this->listener->getConfiguration($this->_em, $nodeMeta->name);
+        $levelUpdatesCount = 0;
+
+        if (!empty($config['level'])) {
+            $levelField = $config['level'];
+            $nodeIdField = $nodeMeta->getSingleIdentifierFieldName();
+            $closureMeta = $this->_em->getClassMetadata($config['closure']);
+
+            $batchSize = 1000;
+            $q = $this->_em->createQuery("
+                SELECT node.$nodeIdField AS id, node.$levelField AS node_level, MAX(c.depth) AS closure_level
+                FROM {$nodeMeta->name} AS node
+                INNER JOIN {$closureMeta->name} AS c WITH c.descendant = node.$nodeIdField
+                GROUP BY node.id, node.level
+                HAVING node_level IS NULL OR node_level <> closure_level
+            ")->setMaxResults($batchSize)->setCacheable(false);
+            do {
+                $entries = $q->getScalarResult();
+                $this->_em->getConnection()->beginTransaction();
+                foreach ($entries as $entry) {
+                    unset($entry['node_level']);
+                    $this->_em->createQuery("
+                      UPDATE {$nodeMeta->name} AS node SET node.$levelField = :closure_level WHERE node.$nodeIdField = :id
+                    ")->execute($entry);
+                }
+                $this->_em->getConnection()->commit();
+                $levelUpdatesCount += count($entries);
+            } while (count($entries) > 0);
+        }
+
+        return $levelUpdatesCount;
+    }
+
+    protected function getJoinColumnFieldName($association)
+    {
+        if (count($association['joinColumnFieldNames']) > 1) {
+            throw new \RuntimeException('More association on field ' . $association['fieldName']);
+        }
+
+        return array_shift($association['joinColumnFieldNames']);
+    }
 }
