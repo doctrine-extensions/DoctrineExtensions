@@ -50,7 +50,7 @@ class Xml extends BaseXml
             foreach ($mapping->field as $fieldMapping) {
                 $fieldMappingDoctrine = $fieldMapping;
                 $fieldMapping = $fieldMapping->children(self::GEDMO_NAMESPACE_URI);
-                if (isset($fieldMapping->timestampable)) {
+                if ($fieldMapping->count() > 0 && isset($fieldMapping->timestampable)) {
                     /**
                      * @var \SimpleXmlElement $data
                      */

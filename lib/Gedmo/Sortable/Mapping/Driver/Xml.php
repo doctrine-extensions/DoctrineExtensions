@@ -43,7 +43,7 @@ class Xml extends BaseXml
                 $mapping = $mappingDoctrine->children(self::GEDMO_NAMESPACE_URI);
 
                 $field = $this->_getAttribute($mappingDoctrine, 'name');
-                if (isset($mapping->sortable)) {
+                if ($mapping->count() > 0 && isset($mapping->sortable)) {
                     $sortable = $mapping->sortable;
                     if (!$this->isValidField($meta, $field)) {
                         throw new InvalidMappingException("Sortable position field - [{$field}] type is not valid and must be 'integer' in class - {$meta->name}");

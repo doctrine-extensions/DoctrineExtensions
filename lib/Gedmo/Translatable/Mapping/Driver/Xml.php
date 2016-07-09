@@ -31,7 +31,7 @@ class Xml extends BaseXml
         $xml = $xml->children(self::GEDMO_NAMESPACE_URI);
 
         if (($xmlDoctrine->getName() == 'entity' || $xmlDoctrine->getName() == 'mapped-superclass')) {
-            if (isset($xml->translation)) {
+            if ($xml->count() && isset($xml->translation)) {
                 /**
                  * @var \SimpleXmlElement $data
                  */
@@ -80,7 +80,7 @@ class Xml extends BaseXml
              */
             $mapping = $mapping->children(self::GEDMO_NAMESPACE_URI);
             $field = null !== $prefix ? $prefix . '.' . $this->_getAttribute($mappingDoctrine, 'name') : $this->_getAttribute($mappingDoctrine, 'name');
-            if (isset($mapping->translatable)) {
+            if ($mapping->count() > 0 && isset($mapping->translatable)) {
                 $config['fields'][] = $field;
                 /** @var \SimpleXmlElement $data */
                 $data = $mapping->translatable;

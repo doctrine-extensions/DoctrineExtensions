@@ -50,7 +50,7 @@ class Xml extends BaseXml
                 $mapping = $mapping->children(self::GEDMO_NAMESPACE_URI);
 
                 $field = $this->_getAttribute($mappingDoctrine, 'name');
-                if (isset($mapping->slug)) {
+                if ($mapping->count() > 0 && isset($mapping->slug)) {
                     /**
                      * @var \SimpleXmlElement $slug
                      */
