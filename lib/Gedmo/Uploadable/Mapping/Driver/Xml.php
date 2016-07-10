@@ -30,7 +30,7 @@ class Xml extends BaseXml
         $xmlDoctrine = $xml;
         $xml = $xml->children(self::GEDMO_NAMESPACE_URI);
 
-        if ($xmlDoctrine->getName() == 'entity' || $xmlDoctrine->getName() == 'mapped-superclass') {
+        if ($xml->count() > 0 && ($xmlDoctrine->getName() == 'entity' || $xmlDoctrine->getName() == 'mapped-superclass')) {
             if (isset($xml->uploadable)) {
                 $xmlUploadable = $xml->uploadable;
                 $config['uploadable'] = true;
@@ -66,16 +66,17 @@ class Xml extends BaseXml
                         $mappingDoctrine = $mapping;
                         $mapping = $mapping->children(self::GEDMO_NAMESPACE_URI);
 
-                        $field = $this->_getAttribute($mappingDoctrine, 'name');
-
-                        if (isset($mapping->{'uploadable-file-mime-type'})) {
-                            $config['fileMimeTypeField'] = $field;
-                        } elseif (isset($mapping->{'uploadable-file-size'})) {
-                            $config['fileSizeField'] = $field;
-                        } elseif (isset($mapping->{'uploadable-file-name'})) {
-                            $config['fileNameField'] = $field;
-                        } elseif (isset($mapping->{'uploadable-file-path'})) {
-                            $config['filePathField'] = $field;
+                        if($mapping->count() > 0) {
+                            $field = $this->_getAttribute($mappingDoctrine, 'name');
+                            if (isset($mapping->{'uploadable-file-mime-type'})) {
+                                $config['fileMimeTypeField'] = $field;
+                            } elseif (isset($mapping->{'uploadable-file-size'})) {
+                                $config['fileSizeField'] = $field;
+                            } elseif (isset($mapping->{'uploadable-file-name'})) {
+                                $config['fileNameField'] = $field;
+                            } elseif (isset($mapping->{'uploadable-file-path'})) {
+                                $config['filePathField'] = $field;
+                            }
                         }
                     }
                 }
