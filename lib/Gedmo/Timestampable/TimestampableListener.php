@@ -5,6 +5,7 @@ namespace Gedmo\Timestampable;
 use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 use Gedmo\AbstractTrackingListener;
 use Gedmo\Timestampable\Mapping\Event\TimestampableAdapter;
+use Gedmo\Mapping\Event\AdapterInterface;
 
 /**
  * The Timestampable listener handles the update of
@@ -21,7 +22,7 @@ class TimestampableListener extends AbstractTrackingListener
      * @param TimestampableAdapter $eventAdapter
      * @return mixed
      */
-    protected function getFieldValue(ClassMetadata $meta, $field, TimestampableAdapter $eventAdapter)
+    protected function getFieldValue(ClassMetadata $meta, $field, AdapterInterface $eventAdapter)
     {
         return $eventAdapter->getDateValue($meta, $field);
     }
