@@ -184,7 +184,7 @@ abstract class AbstractTrackingListener extends MappedEventSubscriber
      * @param string           $field
      * @param AdapterInterface $eventAdapter
      */
-    abstract protected function getFieldValue($meta, $field, $eventAdapter);
+    abstract protected function getFieldValue(ClassMetadata $meta, $field, AdapterInterface $eventAdapter);
 
     /**
      * Updates a field
