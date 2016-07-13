@@ -21,7 +21,7 @@ class TimestampableListener extends AbstractTrackingListener
      * @param TimestampableAdapter $eventAdapter
      * @return mixed
      */
-    protected function getFieldValue($meta, $field, $eventAdapter)
+    protected function getFieldValue(ClassMetadata $meta, $field, TimestampableAdapter $eventAdapter)
     {
         return $eventAdapter->getDateValue($meta, $field);
     }
