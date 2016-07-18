@@ -73,9 +73,9 @@ class Yaml extends File implements Driver
         return \Symfony\Component\Yaml\Yaml::parse(file_get_contents($file));
     }
 
-    private function buildFieldConfiguration($field, array $fieldMapping, array &$config)
+    private function buildFieldConfiguration($field, $fieldMapping, array &$config)
     {
-        if (isset($fieldMapping['gedmo'])) {
+        if (is_array($fieldMapping) && isset($fieldMapping['gedmo'])) {
             if (in_array('translatable', $fieldMapping['gedmo']) || isset($fieldMapping['gedmo']['translatable'])) {
                 // fields cannot be overrided and throws mapping exception
                 $config['fields'][] = $field;
