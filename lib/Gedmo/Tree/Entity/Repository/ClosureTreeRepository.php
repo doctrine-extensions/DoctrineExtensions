@@ -404,7 +404,7 @@ class ClosureTreeRepository extends AbstractTreeRepository
         $nodeIdField = $nodeMeta->getSingleIdentifierFieldName();
         $config = $this->listener->getConfiguration($this->_em, $nodeMeta->name);
         $closureMeta = $this->_em->getClassMetadata($config['closure']);
-        $errors = [];
+        $errors = array();
 
         $q = $this->_em->createQuery("
           SELECT COUNT(node)
@@ -486,7 +486,7 @@ class ClosureTreeRepository extends AbstractTreeRepository
             $conn->beginTransaction();
             foreach ($entries as $entry) {
                 $conn->insert($closureTable, array_combine(
-                    [$ancestorColumnName, $descendantColumnName, $depthColumnName],
+                    array($ancestorColumnName, $descendantColumnName, $depthColumnName),
                     $entry
                 ));
             }
