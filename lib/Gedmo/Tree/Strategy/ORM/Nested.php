@@ -533,9 +533,13 @@ class Nested implements Strategy
                 if ($node instanceof Proxy && !$node->__isInitialized__) {
                     continue;
                 }
-                if ($em->getClassMetadata(get_class($node))->name !== $meta->name) {
+
+                $nodeMeta = $em->getClassMetadata(get_class($node));
+
+                if (!array_key_exists($config['left'], $nodeMeta->getReflectionProperties())) {
                     continue;
                 }
+
                 $oid = spl_object_hash($node);
                 $left = $meta->getReflectionProperty($config['left'])->getValue($node);
                 $currentRoot = isset($config['root']) ? $meta->getReflectionProperty($config['root'])->getValue($node) : null;
@@ -602,9 +606,13 @@ class Nested implements Strategy
                 if ($node instanceof Proxy && !$node->__isInitialized__) {
                     continue;
                 }
-                if ($em->getClassMetadata(get_class($node))->name !== $meta->name) {
+
+                $nodeMeta = $em->getClassMetadata(get_class($node));
+
+                if (!array_key_exists($config['left'], $nodeMeta->getReflectionProperties())) {
                     continue;
                 }
+
                 $left = $meta->getReflectionProperty($config['left'])->getValue($node);
                 $right = $meta->getReflectionProperty($config['right'])->getValue($node);
                 $currentRoot = isset($config['root']) ? $meta->getReflectionProperty($config['root'])->getValue($node) : null;
