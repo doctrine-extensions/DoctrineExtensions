@@ -533,7 +533,7 @@ class Nested implements Strategy
                 if ($node instanceof Proxy && !$node->__isInitialized__) {
                     continue;
                 }
-                if (get_class($node) !== $class) {
+                if ($em->getClassMetadata(get_class($node))->name !== $meta->name) {
                     continue;
                 }
                 $oid = spl_object_hash($node);
@@ -602,7 +602,7 @@ class Nested implements Strategy
                 if ($node instanceof Proxy && !$node->__isInitialized__) {
                     continue;
                 }
-                if (get_class($node) !== $class) {
+                if ($em->getClassMetadata(get_class($node))->name !== $meta->name) {
                     continue;
                 }
                 $left = $meta->getReflectionProperty($config['left'])->getValue($node);
