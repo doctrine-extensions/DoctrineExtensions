@@ -538,6 +538,7 @@ Tree after moving the Carrots down as last child:
 will require you to clear the cache of the Entity Manager because left-right values will differ.
 So after that use **$em->clear();** if you will continue using the nodes after these operations.
 
+
 ### Extend abstract repositores
 If you do not want to use traits and need a simple tree repository you can extend like below:
 
@@ -1290,6 +1291,15 @@ class Category
 }
 
 ```
+
+### Get all entries related to tree children (ex. all entries in the category and its subcategories) 
+
+```` php
+    public function getContractsInCategory(Category $category){
+    	return $this->getChildrenQueryBuilder($category, false, null,'ASC', true)
+            ->join(Entry::class, 'e', Join::WITH, 'node.id = e.category')->select(['e']);
+    }
+````
 
 And that's it!
 
