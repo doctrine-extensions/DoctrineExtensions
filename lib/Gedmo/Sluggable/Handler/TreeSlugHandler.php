@@ -17,7 +17,7 @@ use Gedmo\Exception\InvalidMappingException;
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class TreeSlugHandler implements SlugHandlerInterface
+class TreeSlugHandler implements SlugHandlerWithUniqueCallbackInterface
 {
     const SEPARATOR = '/';
 
@@ -128,10 +128,16 @@ class TreeSlugHandler implements SlugHandlerInterface
     /**
      * {@inheritDoc}
      */
-    public function onSlugCompletion(SluggableAdapter $ea, array &$config, $object, &$slug)
+    public function beforeMakingUnique(SluggableAdapter $ea, array &$config, $object, &$slug)
     {
         $slug = $this->transliterate($slug, $config['separator'], $object);
+    }
 
+    /**
+     * {@inheritDoc}
+     */
+    public function onSlugCompletion(SluggableAdapter $ea, array &$config, $object, &$slug)
+    {
         if (!$this->isInsert) {
             $wrapped = AbstractWrapper::wrap($object, $this->om);
             $meta = $wrapped->getMetadata();
