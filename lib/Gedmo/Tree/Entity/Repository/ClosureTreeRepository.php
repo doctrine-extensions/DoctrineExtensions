@@ -449,7 +449,7 @@ class ClosureTreeRepository extends AbstractTreeRepository
                 FROM {$nodeMeta->name} AS node
                 INNER JOIN {$closureMeta->name} AS c WITH c.descendant = node.$nodeIdField
                 GROUP BY node.$nodeIdField, node.$levelField
-                HAVING node.$levelField IS NULL OR node.$levelField <> MAX(c.depth)
+                HAVING node.$levelField IS NULL OR node.$levelField <> MAX(c.depth) + 1
             ")->setMaxResults($maxResults);
 
             if ($invalidLevelsCount = count($q->getScalarResult())) {
@@ -575,7 +575,7 @@ class ClosureTreeRepository extends AbstractTreeRepository
                 FROM {$nodeMeta->name} AS node
                 INNER JOIN {$closureMeta->name} AS c WITH c.descendant = node.$nodeIdField
                 GROUP BY node.$nodeIdField, node.$levelField
-                HAVING node.$levelField IS NULL OR node.$levelField <> MAX(c.depth)
+                HAVING node.$levelField IS NULL OR node.$levelField <> MAX(c.depth) + 1
             ")->setMaxResults($batchSize)->setCacheable(false);
             do {
                 $entries = $q->getScalarResult();
@@ -583,7 +583,7 @@ class ClosureTreeRepository extends AbstractTreeRepository
                 foreach ($entries as $entry) {
                     unset($entry['node_level']);
                     $this->_em->createQuery("
-                      UPDATE {$nodeMeta->name} AS node SET node.$levelField = :closure_level WHERE node.$nodeIdField = :id
+                      UPDATE {$nodeMeta->name} AS node SET node.$levelField = (:closure_level + 1) WHERE node.$nodeIdField = :id
                     ")->execute($entry);
                 }
                 $this->_em->getConnection()->commit();
