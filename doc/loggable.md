@@ -108,6 +108,38 @@ class Article
 }
 ```
 
+<a name="entity-mapping-custom-logentry"></a>
+
+## Loggable Entity example with your custom logEntryClass:
+
+
+If you want to add some of yours logic to store logs in DB, you can create your own Entity (for example, Logs), where you can override some methods or add your own, in Entity you should extends AbstractLogEntry. 
+
+```php
+<?php
+
+namespace AppBundle\Entity;
+
+use Gedmo\Loggable\Entity\MappedSuperclass\AbstractLogEntry;
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * @ORM\Table(name="logs")
+ * @ORM\Entity(repositoryClass="Gedmo\Loggable\Entity\Repository\LogEntryRepository")
+ *
+ */
+class Logs extends AbstractLogEntry
+{
+}
+```
+And then add to you Entity (ex. Article) next annotations:
+- **@Gedmo\Loggable(logEntryClass="AppBundle\Entity\Logs")**
+
+Choose fields that you need to logging in next way:
+- **@Gedmo\Versioned**
+
+Add don't forget to update scheme.
+
 <a name="document-mapping"></a>
 
 ## Loggable Document example:
