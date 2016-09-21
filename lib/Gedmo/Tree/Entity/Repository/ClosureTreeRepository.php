@@ -448,8 +448,8 @@ class ClosureTreeRepository extends AbstractTreeRepository
                 SELECT node.$nodeIdField AS id, node.$levelField AS node_level, MAX(c.depth) AS closure_level
                 FROM {$nodeMeta->name} AS node
                 INNER JOIN {$closureMeta->name} AS c WITH c.descendant = node.$nodeIdField
-                GROUP BY node.id, node.level
-                HAVING node_level IS NULL OR node_level <> closure_level
+                GROUP BY node.$nodeIdField, node.$levelField
+                HAVING node.$levelField IS NULL OR node.$levelField <> MAX(c.depth)
             ")->setMaxResults($maxResults);
 
             if ($invalidLevelsCount = count($q->getScalarResult())) {
@@ -574,8 +574,8 @@ class ClosureTreeRepository extends AbstractTreeRepository
                 SELECT node.$nodeIdField AS id, node.$levelField AS node_level, MAX(c.depth) AS closure_level
                 FROM {$nodeMeta->name} AS node
                 INNER JOIN {$closureMeta->name} AS c WITH c.descendant = node.$nodeIdField
-                GROUP BY node.id, node.level
-                HAVING node_level IS NULL OR node_level <> closure_level
+                GROUP BY node.$nodeIdField, node.$levelField
+                HAVING node.$levelField IS NULL OR node.$levelField <> MAX(c.depth)
             ")->setMaxResults($batchSize)->setCacheable(false);
             do {
                 $entries = $q->getScalarResult();
