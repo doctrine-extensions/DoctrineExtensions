@@ -130,14 +130,6 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Logs extends AbstractLogEntry
 {
-    /**
-     * For example, set your time zone
-     */
-    public function setLoggedAt()
-    {
-        $this->loggedAt = new \DateTime();
-        $this->loggedAt->setTimezone(new \DateTimeZone("UTC"));
-    }
 }
 ```
 And then add to you Entity (ex. Article) next annotations:
