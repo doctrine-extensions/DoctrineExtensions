@@ -18,7 +18,7 @@ Features:
 **Portability:**
 
 - **Sortable** is now available as [Bundle](http://github.com/stof/StofDoctrineExtensionsBundle)
-ported to **Symfony2** by **Christophe Coevoet**, together with all other extensions
+ported to **Symfony 2.x/3.x** by **Christophe Coevoet**, together with all other extensions
 
 This article will cover the basic installation and functionality of **Sortable**
 behavior
@@ -36,9 +36,7 @@ Content:
 
 ## Setup and autoloading
 
-Read the [documentation](http://github.com/l3pp4rd/DoctrineExtensions/blob/master/doc/annotations.md#em-setup)
-or check the [example code](http://github.com/l3pp4rd/DoctrineExtensions/tree/master/example)
-on how to setup and use the extensions in most optimized way.
+Read the [documentation](./annotations.md#em-setup) or check the [example code](../example) on how to setup and use the extensions in most optimized way.
 
 <a name="entity-mapping"></a>
 
@@ -46,7 +44,8 @@ on how to setup and use the extensions in most optimized way.
 
 ### Sortable annotations:
 
-- **@Gedmo\Mapping\Annotation\Sortable
+- **@Gedmo\Mapping\Annotation\SortablePosition** field that holds the position number
+- **@Gedmo\Mapping\Annotation\SortableGroup** optional, field that groups positions, e.g. unique positions for all entities that have the same group value only
 
 **Note:** that Sortable interface is not necessary, except in cases there
 you need to identify entity as being Sortable. The metadata is loaded only once then
@@ -77,12 +76,13 @@ class Item
     private $name;
 
     /**
-     * @Gedmo\Sortable(groups={"category"})
+     * @Gedmo\SortablePosition()
      * @ORM\Column(type="integer")
      */
     private $position;
 
     /**
+     * @Gedmo\SortableGroup()
      * @ORM\Column(length=128)
      */
     private $category;
