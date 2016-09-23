@@ -210,6 +210,35 @@ class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
     /**
      * @test
      */
+    public function getChildrenForEntityWithEmptyRootAndTrimmedSeparatorWithoutId()
+    {
+        $class = self::CATEGORY_WITH_TRIMMED_SEPARATOR;
+
+        $root = $this->createCategory($class);
+        $root->setTitle('');
+
+        $child = $this->createCategory($class);
+        $child->setTitle('Fruits');
+        $child->setParent($root);
+
+        $child2 = $this->createCategory($class);
+        $child2->setTitle('Drinks');
+        $child2->setParent($root);
+
+        $this->em->persist($root);
+        $this->em->persist($child);
+        $this->em->persist($child2);
+        $this->em->flush();
+
+        $this->repo = $this->em->getRepository(self::CATEGORY_WITH_TRIMMED_SEPARATOR);
+        $result = $this->repo->getChildren($root, true, 'title');
+
+        $this->assertCount(2, $result);
+    }
+
+    /**
+     * @test
+     */
     public function getTree()
     {
         $tree = $this->repo->getTree();
