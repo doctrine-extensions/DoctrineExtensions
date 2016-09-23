@@ -293,8 +293,8 @@ abstract class AbstractMaterializedPath implements Strategy
                 $path = $parentPath.$path;
             }
         }
-
-        if (empty($path) && !$parent && $config['path_starts_with_separator']) {
+        $isRootAndStartsWithSeparator = empty($path) && !$parent && $config['path_starts_with_separator'];
+        if ($isRootAndStartsWithSeparator) {
             $path = $config['path_separator'];
         }
 
@@ -320,7 +320,7 @@ abstract class AbstractMaterializedPath implements Strategy
         }
 
         if (isset($config['level'])) {
-            $level = substr_count($path, $config['path_separator']);
+            $level = $isRootAndStartsWithSeparator ? 0 : substr_count($path, $config['path_separator']);
             $levelProp = $meta->getReflectionProperty($config['level']);
             $levelProp->setAccessible(true);
             $levelProp->setValue($node, $level);
