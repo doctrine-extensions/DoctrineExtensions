@@ -33,7 +33,7 @@ class MaterializedPath extends AbstractMaterializedPath
         if (isset($config['level'])) {
             $lvlField = $config['level'];
             $lvl = $wrapped->getPropertyValue($lvlField);
-            if (!empty($lvl) && $meta->hasField($lvlField)) {
+            if (!empty($lvl)) {
                 $qb->andWhere($qb->expr()->gt('e.' . $lvlField, $qb->expr()->literal($lvl)));
             }
         }
