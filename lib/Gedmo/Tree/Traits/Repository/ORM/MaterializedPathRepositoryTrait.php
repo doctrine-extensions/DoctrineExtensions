@@ -192,15 +192,7 @@ trait MaterializedPathRepositoryTrait
                 );
             }
         } elseif ($direct) {
-            $expr = $qb->expr()->not(
-                $qb->expr()->like($alias.'.'.$path,
-                    $qb->expr()->literal(
-                        ($config['path_starts_with_separator'] ? $separator : '')
-                        .'%'.$separator.'%'
-                        .($config['path_ends_with_separator'] ? $separator : '')
-                    )
-                )
-            );
+            $expr = $qb->expr()->isNull($alias.'.'.$config['parent']);
         }
 
         if ($expr) {
