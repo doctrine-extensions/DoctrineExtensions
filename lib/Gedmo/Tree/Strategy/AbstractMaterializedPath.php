@@ -283,12 +283,12 @@ abstract class AbstractMaterializedPath implements Strategy
 
             $parentPath = $pathProp->getValue($parent);
             // if parent path not ends with separator
-            if (!empty($parentPath) && $parentPath[strlen($parentPath) - 1] !== $config['path_separator']) {
+            if ($parentPath[strlen($parentPath) - 1] !== $config['path_separator']) {
                 // add separator
-                $path = $parentPath.$config['path_separator'].$path;
+                $path = $pathProp->getValue($parent).$config['path_separator'].$path;
             } else {
                 // don't add separator
-                $path = $parentPath.$path;
+                $path = $pathProp->getValue($parent).$path;
             }
         }
 
