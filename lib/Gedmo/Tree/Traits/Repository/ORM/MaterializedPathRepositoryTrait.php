@@ -155,7 +155,6 @@ trait MaterializedPathRepositoryTrait
     {
         $meta = $this->getClassMetadata();
         $config = $this->listener->getConfiguration($this->getEntityManager(), $meta->name);
-        $separator = addcslashes($config['path_separator'], '%');
         $alias = 'materialized_path_entity';
         $path = $config['path'];
         $qb = $this->getQueryBuilder()
@@ -167,6 +166,8 @@ trait MaterializedPathRepositoryTrait
         if (is_object($node) && $node instanceof $meta->name) {
             $node = new EntityWrapper($node, $this->getEntityManager());
             $nodePath = $node->getPropertyValue($path);
+            $isRootPath = $config['path_separator'] === $nodePath;
+            $separator = $isRootPath ? '' : addcslashes($config['path_separator'], '%');
             $expr = $qb->expr()->andx()->add(
                 $qb->expr()->like(
                     $alias.'.'.$path,

@@ -225,15 +225,26 @@ class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
         $child2->setTitle('Drinks');
         $child2->setParent($root);
 
+        $child3 = $this->createCategory($class);
+        $child3->setTitle('Coke');
+        $child3->setParent($child2);
+
         $this->em->persist($root);
         $this->em->persist($child);
         $this->em->persist($child2);
+        $this->em->persist($child3);
         $this->em->flush();
 
         $this->repo = $this->em->getRepository(self::CATEGORY_WITH_TRIMMED_SEPARATOR);
         $result = $this->repo->getChildren($root, true, 'title');
 
-        $this->assertCount(2, $result);
+        $this->assertCount(2, $result, 'should correctly count if queries only direct children');
+
+        $result = $this->repo->getChildren($root, false, 'title');
+        $this->assertCount(3, $result, 'should correctly count if queries all children');
+
+        $result = $this->repo->getChildren($root, false, 'title', 'asc', true);
+        $this->assertCount(4, $result, 'should correctly count when self is included');
     }
 
     /**
