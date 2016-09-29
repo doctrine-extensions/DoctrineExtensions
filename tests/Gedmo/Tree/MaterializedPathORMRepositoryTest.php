@@ -245,6 +245,9 @@ class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
 
         $result = $this->repo->getChildren($root, false, 'title', 'asc', true);
         $this->assertCount(4, $result, 'should correctly count when self is included');
+
+        $result = $this->repo->getChildren($child2, false, 'title');
+        $this->assertCount(1, $result, 'should correctly count children');
     }
 
     /**
