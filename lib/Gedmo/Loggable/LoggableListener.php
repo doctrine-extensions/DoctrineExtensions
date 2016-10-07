@@ -162,7 +162,6 @@ class LoggableListener extends MappedEventSubscriber
             $identifiers = $wrapped->getIdentifier(false);
             foreach ($this->pendingRelatedObjects[$oid] as $props) {
                 $logEntry = $props['log'];
-                $logEntryMeta = $om->getClassMetadata(get_class($logEntry));
                 $oldData = $data = $logEntry->getData();
                 $data[$props['field']] = $identifiers;
 
