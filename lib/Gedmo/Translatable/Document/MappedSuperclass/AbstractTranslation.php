@@ -21,35 +21,35 @@ abstract class AbstractTranslation
     /**
      * @var string $locale
      *
-     * @MongoODM\String
+     * @MongoODM\Field(type="string")
      */
     protected $locale;
 
     /**
      * @var string $objectClass
      *
-     * @MongoODM\String
+     * @MongoODM\Field(type="string")
      */
     protected $objectClass;
 
     /**
      * @var string $field
      *
-     * @MongoODM\String
+     * @MongoODM\Field(type="string")
      */
     protected $field;
 
     /**
      * @var string $foreignKey
      *
-     * @MongoODM\String(name="foreign_key")
+     * @MongoODM\Field(type="string")(name="foreign_key")
      */
     protected $foreignKey;
 
     /**
      * @var string $content
      *
-     * @MongoODM\String
+     * @MongoODM\Field(type="string")
      */
     protected $content;
 
