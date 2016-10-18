@@ -333,6 +333,65 @@ class NestedTreePositionTest extends BaseTestCaseORM
         $this->assertTrue($repo->verify());
     }
 
+    public function testRootlessTreeTopLevelInserts()
+    {
+        $repo = $this->em->getRepository(self::CATEGORY);
+
+        // test top level positioned inserts
+        $fruits = new Category();
+        $fruits->setTitle('Fruits');
+
+        $vegetables = new Category();
+        $vegetables->setTitle('Vegetables');
+
+        $milk = new Category();
+        $milk->setTitle('Milk');
+
+        $meat = new Category();
+        $meat->setTitle('Meat');
+
+        $repo
+            ->persistAsFirstChild($fruits)
+            ->persistAsFirstChild($vegetables)
+            ->persistAsLastChild($milk)
+            ->persistAsLastChild($meat);
+
+        $this->em->flush();
+
+        $this->assertEquals(3, $fruits->getLeft());
+        $this->assertEquals(4, $fruits->getRight());
+
+        $this->assertEquals(1, $vegetables->getLeft());
+        $this->assertEquals(2, $vegetables->getRight());
+
+        $this->assertEquals(5, $milk->getLeft());
+        $this->assertEquals(6, $milk->getRight());
+
+        $this->assertEquals(7, $meat->getLeft());
+        $this->assertEquals(8, $meat->getRight());
+
+        // test sibling positioned inserts
+        $cookies = new Category();
+        $cookies->setTitle('Cookies');
+
+        $drinks = new Category();
+        $drinks->setTitle('Drinks');
+
+        $repo
+            ->persistAsNextSiblingOf($cookies, $milk)
+            ->persistAsPrevSiblingOf($drinks, $milk);
+
+        $this->em->flush();
+
+        $this->assertEquals(5, $drinks->getLeft());
+        $this->assertEquals(6, $drinks->getRight());
+
+        $this->assertEquals(9, $cookies->getLeft());
+        $this->assertEquals(10, $cookies->getRight());
+
+        $this->assertTrue($repo->verify());
+    }
+
     public function testSimpleTreePositionedInserts()
     {
         $repo = $this->em->getRepository(self::CATEGORY);
