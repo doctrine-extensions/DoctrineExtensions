@@ -390,10 +390,59 @@ class Nested implements Strategy
             }
             $newRoot = $parentRoot;
         } elseif (!isset($config['root'])) {
-            $start = isset($this->treeEdges[$meta->name]) ?
-                $this->treeEdges[$meta->name] : $this->max($em, $config['useObjectClass']);
-            $this->treeEdges[$meta->name] = $start + 2;
-            $start++;
+
+            if (!isset($this->treeEdges[$meta->name])) {
+                $this->treeEdges[$meta->name] = $this->max($em, $config['useObjectClass']) + 1;
+            }
+
+            $level = 0;
+            $parentLeft = 0;
+            $parentRight = $this->treeEdges[$meta->name];
+            $this->treeEdges[$meta->name] += 2;
+
+            switch ($position) {
+                case self::PREV_SIBLING:
+                    if (null !== $siblingInPosition) {
+                        $wrappedSibling = AbstractWrapper::wrap($siblingInPosition, $em);
+                        $start = $wrappedSibling->getPropertyValue($config['left']);
+                    } else {
+                        $wrapped->setPropertyValue($config['parent'], null);
+                        $em->getUnitOfWork()->recomputeSingleEntityChangeSet($meta, $node);
+                        $start = $parentLeft + 1;
+                    }
+                    break;
+
+                case self::NEXT_SIBLING:
+                    if (null !== $siblingInPosition) {
+                        $wrappedSibling = AbstractWrapper::wrap($siblingInPosition, $em);
+                        $start = $wrappedSibling->getPropertyValue($config['right']) + 1;
+                    } else {
+                        $wrapped->setPropertyValue($config['parent'], null);
+                        $em->getUnitOfWork()->recomputeSingleEntityChangeSet($meta, $node);
+                        $start = $parentRight;
+                    }
+                    break;
+
+                case self::LAST_CHILD:
+                    $start = $parentRight;
+                    break;
+
+                case self::FIRST_CHILD:
+                default:
+                    $start = $parentLeft + 1;
+                    break;
+            }
+
+            $this->shiftRL($em, $config['useObjectClass'], $start, $treeSize, null);
+
+            if (!$isNewNode && $left >= $start) {
+                $left += $treeSize;
+                $wrapped->setPropertyValue($config['left'], $left);
+            }
+            if (!$isNewNode && $right >= $start) {
+                $right += $treeSize;
+                $wrapped->setPropertyValue($config['right'], $right);
+            }
         } else {
             $start = 1;
 
@@ -405,6 +454,7 @@ class Nested implements Strategy
         }
 
         $diff = $start - $left;
+
         if (!$isNewNode) {
             $levelDiff = isset($config['level']) ? $level - $wrapped->getPropertyValue($config['level']) : null;
             $this->shiftRangeRL(
