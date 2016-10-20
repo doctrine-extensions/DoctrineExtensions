@@ -815,26 +815,32 @@ class NestedTreeRepository extends AbstractTreeRepository
         $self = $this;
         $em = $this->_em;
 
-        $doRecover = function ($root, &$count) use ($meta, $config, $self, $em, &$doRecover) {
+        $doRecover = function ($root, &$count, &$lvl) use ($meta, $config, $self, $em, &$doRecover) {
             $lft = $count++;
             foreach ($self->getChildren($root, true) as $child) {
-                $doRecover($child, $count);
+                $depth = ($lvl + 1);
+                $doRecover($child, $count, $depth);
             }
             $rgt = $count++;
             $meta->getReflectionProperty($config['left'])->setValue($root, $lft);
             $meta->getReflectionProperty($config['right'])->setValue($root, $rgt);
+            if (isset($config['level'])) {
+                $meta->getReflectionProperty($config['level'])->setValue($root, $lvl);
+            }
             $em->persist($root);
         };
 
         if (isset($config['root'])) {
             foreach ($this->getRootNodes() as $root) {
                 $count = 1; // reset on every root node
-                $doRecover($root, $count);
+                $lvl = 0;
+                $doRecover($root, $count, $lvl);
             }
         } else {
             $count = 1;
+            $lvl = 0;
             foreach ($this->getChildren(null, true) as $root) {
-                $doRecover($root, $count);
+                $doRecover($root, $count, $lvl);
             }
         }
     }
