@@ -470,7 +470,10 @@ class TranslatableListener extends MappedEventSubscriber
             );
             // translate object's translatable properties
             foreach ($config['fields'] as $field) {
-                $translated = '';
+                // we use `new \stdClass` to mean "this has not been translated"
+                // we do this because `false`, `null`, `"0"` and the empty string are valid translations and we can't use them to determine if a translation was found or not, but we can never get an object as a translation value
+                // additionally, doing this helps contain the meta-information of "not translated" in a single variable without the chance of forgetting to set a separate `$is_translated` flag in the future
+                $translated = new \stdClass;
                 foreach ((array) $result as $entry) {
                     if ($entry['field'] == $field) {
                         $translated = $entry['content'];
@@ -478,7 +481,7 @@ class TranslatableListener extends MappedEventSubscriber
                     }
                 }
                 // update translation
-                if ($translated
+                if (!is_object($translated)
                     || (!$this->translationFallback && (!isset($config['fallback'][$field]) || !$config['fallback'][$field]))
                     || ($this->translationFallback && isset($config['fallback'][$field]) && !$config['fallback'][$field])
                 ) {
