@@ -106,12 +106,17 @@ abstract class AbstractTrackingListener extends MappedEventSubscriber
                         $trackedFields = $options['trackedField'];
                     }
 
-                    foreach ($trackedFields as $tracked) {
+                    foreach ($trackedFields as $trackedField) {
                         $trackedChild = null;
-                        $parts = explode('.', $tracked);
+                        $parts = explode('.', $trackedField);
                         if (isset($parts[1])) {
                             $tracked = $parts[0];
                             $trackedChild = $parts[1];
+                        }
+
+                        if (!isset($tracked) || array_key_exists($trackedField, $changeSet)) {
+                            $tracked = $trackedField;
+                            unset($trackedChild);
                         }
 
                         if (isset($changeSet[$tracked])) {
