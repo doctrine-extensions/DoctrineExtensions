@@ -144,7 +144,7 @@ class TimestampableTest extends BaseTestCaseORM
         $this->assertNotSame($su2 = $sport->getUpdated(), $su, "Date updated should change after update");
         $this->assertSame($sport->getPublished(), $sp, "Date published should remain the same after update");
         $this->assertNotSame($scc2 = $sport->getContentChanged(), $scc, "Content must have changed after update");
-        $this->assertSame($sport->authorChanged(), $sa, "Author should remain same after update");
+        $this->assertSame($sport->getAuthorChanged(), $sa, "Author should remain same after update");
 
         $author = $sport->getAuthor();
         $author->setName('Third author');

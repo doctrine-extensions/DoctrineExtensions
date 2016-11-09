@@ -177,4 +177,9 @@ class Article implements Timestampable
     {
         return $this->contentChanged;
     }
+
+    public function getAuthorChanged()
+    {
+        return $this->authorChanged;
+    }
 }

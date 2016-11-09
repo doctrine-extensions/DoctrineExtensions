@@ -11,12 +11,12 @@ use Doctrine\ORM\Mapping as ORM;
 class Author
 {
     /**
-     * @ORM\Column(name="author_name", type="string", length=128)
+     * @ORM\Column(name="author_name", type="string", length=128, nullable=true)
      */
     private $name;
 
     /**
-     * @ORM\Column(name="author_email", type="string", length=50)
+     * @ORM\Column(name="author_email", type="string", length=50, nullable=true)
      */
     private $email;
 
