@@ -99,7 +99,7 @@ on how to setup and use the extensions in the most optimized way.
 ## Tree Entity example:
 
 **Note:** Node interface is not necessary, except in cases where
-you need to identify and entity as being a Tree Node. The metadata is loaded only once when the
+you need to identify an entity as being a Tree Node. The metadata is loaded only once when the
 cache is activated
 
 ``` php
