@@ -42,7 +42,7 @@ class ORM extends BaseAdapterORM implements SluggableAdapter
             } else {
                 $mapping = false;
             }
-            if ($ubase && !$mapping) {
+            if (($ubase || $ubase === 0) && !$mapping) {
                 $qb->andWhere('rec.'.$config['unique_base'].' = :unique_base');
                 $qb->setParameter(':unique_base', $ubase);
             } elseif ($ubase && $mapping && in_array($mapping['type'], array(ClassMetadataInfo::ONE_TO_ONE, ClassMetadataInfo::MANY_TO_ONE))) {
