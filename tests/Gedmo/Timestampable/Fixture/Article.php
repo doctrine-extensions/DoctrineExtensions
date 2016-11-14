@@ -29,6 +29,11 @@ class Article implements Timestampable
     private $comments;
 
     /**
+     * @ORM\Embedded(class="Timestampable\Fixture\Author")
+     */
+    private $author;
+
+    /**
      * @var datetime $created
      *
      * @Gedmo\Timestampable(on="create")
@@ -59,6 +64,13 @@ class Article implements Timestampable
      * @Gedmo\Timestampable(on="change", field={"title", "body"})
      */
     private $contentChanged;
+    /**
+     * @var datetime $authorChanged
+     *
+     * @ORM\Column(name="author_changed", type="datetime", nullable=true)
+     * @Gedmo\Timestampable(on="change", field={"author.name", "author.email"})
+     */
+    private $authorChanged;
 
     /**
      * @ORM\ManyToOne(targetEntity="Type", inversedBy="articles")
@@ -104,6 +116,16 @@ class Article implements Timestampable
     public function getComments()
     {
         return $this->comments;
+    }
+
+    public function getAuthor()
+    {
+        return $this->author;
+    }
+
+    public function setAuthor(Author $author)
+    {
+        $this->author = $author;
     }
 
     /**
@@ -154,5 +176,10 @@ class Article implements Timestampable
     public function getContentChanged()
     {
         return $this->contentChanged;
+    }
+
+    public function getAuthorChanged()
+    {
+        return $this->authorChanged;
     }
 }
