@@ -167,13 +167,7 @@ class UploadableListener extends MappedEventSubscriber
 
             if ($config = $this->getConfiguration($om, $meta->name)) {
                 if (isset($config['uploadable']) && $config['uploadable']) {
-                    if ($config['filePathField']) {
-                        $this->pendingFileRemovals[] = $this->getFilePathFieldValue($meta, $config, $object);
-                    } else {
-                        $path     = $this->getPath($meta, $config, $object);
-                        $fileName = $this->getFileNameFieldValue($meta, $config, $object);
-                        $this->pendingFileRemovals[] = $path.DIRECTORY_SEPARATOR.$fileName;
-                    }
+                    $this->addFileRemoval($meta, $config, $object);
                 }
             }
         }
@@ -281,13 +275,7 @@ class UploadableListener extends MappedEventSubscriber
 
         if ($action === self::ACTION_UPDATE) {
             // First we add the original file to the pendingFileRemovals array
-            if ($config['filePathField']) {
-                $this->pendingFileRemovals[] = $this->getFilePathFieldValue($meta, $config, $object);
-            } else {
-                $path     = $this->getPath($meta, $config, $object);
-                $fileName = $this->getFileNameFieldValue($meta, $config, $object);
-                $this->pendingFileRemovals[] = $path.DIRECTORY_SEPARATOR.$fileName;
-            }
+            $this->addFileRemoval($meta, $config, $object);
         }
 
         // We generate the filename based on configuration
@@ -388,6 +376,34 @@ class UploadableListener extends MappedEventSubscriber
         $path = rtrim($path, '\/');
 
         return $path;
+    }
+
+    /**
+     * @param ClassMetadata $meta
+     * @param array         $config
+     * @param object        $object Entity
+     */
+    protected function addFileRemoval($meta, $config, $object)
+    {
+        if ($config['filePathField']) {
+            $this->pendingFileRemovals[] = $this->getFilePathFieldValue($meta, $config, $object);
+        } else {
+            $path     = $this->getPath($meta, $config, $object);
+            $fileName = $this->getFileNameFieldValue($meta, $config, $object);
+            $this->pendingFileRemovals[] = $path.DIRECTORY_SEPARATOR.$fileName;
+        }
+    }
+
+    /**
+     * @param string $filePath
+     */
+    protected function cancelFileRemoval($filePath)
+    {
+        $k = array_search($filePath, $this->pendingFileRemovals, true);
+
+        if (false !== $k) {
+            unset($this->pendingFileRemovals[$k]);
+        }
     }
 
     /**
@@ -563,14 +579,7 @@ class UploadableListener extends MappedEventSubscriber
 
         if (is_file($info['filePath'])) {
             if ($overwrite) {
-                
-                $k = array_search($info['filePath'], $this->pendingFileRemovals);
-                
-                if ($k !== false)
-                {
-                    unset($this->pendingFileRemovals[$k]);
-                }
-                
+                $this->cancelFileRemoval($info['filePath']);
                 $this->removeFile($info['filePath']);
             } elseif ($appendNumber) {
                 $counter = 1;
