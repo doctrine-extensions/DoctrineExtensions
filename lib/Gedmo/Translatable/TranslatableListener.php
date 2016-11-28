@@ -471,14 +471,16 @@ class TranslatableListener extends MappedEventSubscriber
             // translate object's translatable properties
             foreach ($config['fields'] as $field) {
                 $translated = '';
+                $is_translated = false;
                 foreach ((array) $result as $entry) {
                     if ($entry['field'] == $field) {
                         $translated = $entry['content'];
+                        $is_translated = true;
                         break;
                     }
                 }
                 // update translation
-                if ($translated
+                if ($is_translated
                     || (!$this->translationFallback && (!isset($config['fallback'][$field]) || !$config['fallback'][$field]))
                     || ($this->translationFallback && isset($config['fallback'][$field]) && !$config['fallback'][$field])
                 ) {
