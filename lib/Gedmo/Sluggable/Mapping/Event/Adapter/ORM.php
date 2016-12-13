@@ -82,7 +82,7 @@ class ORM extends BaseAdapterORM implements SluggableAdapter
         $qb->update($config['useObjectClass'], 'rec')
             ->set('rec.'.$config['slug'], $qb->expr()->concat(
                 $qb->expr()->literal($replacement),
-                $qb->expr()->substring('rec.'.$config['slug'], strlen($target))
+                $qb->expr()->substring('rec.'.$config['slug'], mb_strlen($target))
             ))
             ->where($qb->expr()->like(
                 'rec.'.$config['slug'],
