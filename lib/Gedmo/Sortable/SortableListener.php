@@ -461,7 +461,13 @@ class SortableListener extends MappedEventSubscriber
                                 $matches = $gr === null;
                             } elseif (is_object($gr) && is_object($value) && $gr !== $value) {
                                 // Special case for equal objects but different instances.
-                                $matches = $gr == $value;
+                                // If the object implements Comparable interface we can use its compareTo method
+                                // Otherwise we fallback to normal object comparison
+                                if ($gr instanceof Comparable) {
+                                    $matches = $gr->compareTo($value);
+                                } else {
+                                    $matches = $gr == $value;
+                                }
                             } else {
                                 $matches = $gr === $value;
                             }
