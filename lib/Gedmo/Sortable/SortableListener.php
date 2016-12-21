@@ -2,6 +2,7 @@
 
 namespace Gedmo\Sortable;
 
+use Doctrine\Common\Comparable;
 use Doctrine\Common\EventArgs;
 use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 use Doctrine\Common\Persistence\Proxy;
