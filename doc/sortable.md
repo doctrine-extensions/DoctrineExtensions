@@ -30,6 +30,7 @@ Content:
 - [Yaml](#yaml-mapping) mapping example
 - [Xml](#xml-mapping) mapping example
 - Basic usage [examples](#basic-examples)
+- Custom comparison method (#custom-comparisons)
 
 
 <a name="including-extension"></a>
@@ -294,4 +295,34 @@ To move an item at the end of the list, you can set the position to `-1`:
 
 ```
 $item2->setPosition(-1);
+```
+
+<a name="custom-comparisons"></a>
+
+## Custom comparison:
+
+Sortable works by comparing objects in the same group to see how they should be positioned. From time to time you may want to customize the way these
+objects are compared by simply implementing the Doctrine\Common\Comparable interface
+
+``` php
+<?php
+namespace Entity;
+
+use Doctrine\Common\Comparable;
+
+/**
+ * @ORM\Table(name="items")
+ * @ORM\Entity(repositoryClass="Gedmo\Sortable\Entity\Repository\SortableRepository")
+ */
+class Item implements Comparable
+{
+    public function compareTo($other)
+    {
+        // return 1 if this object is considered greater than the compare value
+        
+        // return -1 if this object is considered less than the compare value
+        
+        // return 0 if this object is considered equal to the compare value
+    }
+}
 ```
