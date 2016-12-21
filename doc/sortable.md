@@ -30,7 +30,7 @@ Content:
 - [Yaml](#yaml-mapping) mapping example
 - [Xml](#xml-mapping) mapping example
 - Basic usage [examples](#basic-examples)
-- Custom comparison method (#custom-comparisons)
+- Custom comparison [method](#custom-comparisons) 
 
 
 <a name="including-extension"></a>
