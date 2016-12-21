@@ -301,8 +301,8 @@ $item2->setPosition(-1);
 
 ## Custom comparison:
 
-Sortable works be comparing objects in the same group to see how they should be positioned. From time to time you may want to customize the way these
-objects are compared by implementing the Doctrine\Common\Comparable interface
+Sortable works by comparing objects in the same group to see how they should be positioned. From time to time you may want to customize the way these
+objects are compared by simply implementing the Doctrine\Common\Comparable interface
 
 ``` php
 <?php
