@@ -15,4 +15,6 @@ class Sluggable
     private $slug;
 
     private $parent;
+
+    private $slugWithCallback;
 }

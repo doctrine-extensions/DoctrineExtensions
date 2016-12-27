@@ -298,9 +298,28 @@ class SluggableListener extends MappedEventSubscriber
                         $needToChangeSlug = true;
                     }
                     $value = $meta->getReflectionProperty($sluggableField)->getValue($object);
-                    $slug .= ($value instanceof \DateTime) ? $value->format($options['dateFormat']) : $value;
-                    $slug .= ' ';
+                    $slug = $this->addSlugToken($slug, $value, $options);
                 }
+
+
+                if (!empty($options['callback'])) {
+                    $callback = $options['callback'];
+                    $value = $object->$callback();
+
+                    if (!is_array($value)) {
+                        $value = array($value);
+                    }
+
+                    foreach ($value as $valueToken) {
+                        $slug = $this->addSlugToken($slug, $valueToken, $options);
+                    }
+
+                    if ($oldSlug !== $slug) {
+                        $needToChangeSlug = true;
+                    }
+                }
+
+                
                 // trim generated slug as it will have unnecessary trailing space
                 $slug = trim($slug);
             } else {
@@ -417,6 +436,23 @@ class SluggableListener extends MappedEventSubscriber
 
             }
         }
+    }
+
+    /**
+     * Adds token to current slug
+     * 
+     * @param string $slug
+     * @param mixed  $token
+     * @param array  $options
+     *
+     * @return string Updated token
+     */
+    private function addSlugToken($slug, $token, array $options)
+    {
+        $slug .= ($token instanceof \DateTime) ? $token->format($options['dateFormat']) : $token;
+        $slug .= ' ';
+
+        return $slug;
     }
 
     /**

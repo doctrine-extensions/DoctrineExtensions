@@ -58,15 +58,6 @@ class Xml extends BaseXml
                     if (!$this->isValidField($meta, $field)) {
                         throw new InvalidMappingException("Cannot use field - [{$field}] for slug storage, type is not valid and must be 'string' in class - {$meta->name}");
                     }
-                    $fields = array_map('trim', explode(',', (string) $this->_getAttribute($slug, 'fields')));
-                    foreach ($fields as $slugField) {
-                        if (!$meta->hasField($slugField)) {
-                            throw new InvalidMappingException("Unable to find slug [{$slugField}] as mapped property in entity - {$meta->name}");
-                        }
-                        if (!$this->isValidField($meta, $slugField)) {
-                            throw new InvalidMappingException("Cannot use field - [{$slugField}] for slug storage, type is not valid and must be 'string' or 'text' in class - {$meta->name}");
-                        }
-                    }
 
                     $handlers = array();
                     if (isset($slug->handler)) {
@@ -84,7 +75,9 @@ class Xml extends BaseXml
 
                     // set all options
                     $config['slugs'][$field] = array(
-                        'fields' => $fields,
+                        'fields' => $this->getFields($slug, $meta),
+                        'callback' => $this->_isAttributeSet($slug, 'callback') ?
+                            $this->_getAttribute($slug, 'callback') : null,
                         'slug' => $field,
                         'style' => $this->_isAttributeSet($slug, 'style') ?
                             $this->_getAttribute($slug, 'style') : 'default',
@@ -117,6 +110,36 @@ class Xml extends BaseXml
                 }
             }
         }
+    }
+
+    /**
+     * Get fields from attribute
+     *
+     * @param \SimpleXMLElement $slug
+     * @param object $meta
+     *
+     * @throws InvalidMappingException
+     *
+     * @return array
+     */
+    protected function getFields(\SimpleXMLElement $slug, $meta)
+    {
+        if (!$this->_isAttributeSet($slug, 'fields')) {
+            return array();
+        }
+
+        $fields = array_map('trim', explode(',', (string) $this->_getAttribute($slug, 'fields')));
+        
+        foreach ($fields as $slugField) {
+            if (!$meta->hasField($slugField)) {
+                throw new InvalidMappingException("Unable to find slug [{$slugField}] as mapped property in entity - {$meta->name}");
+            }
+            if (!$this->isValidField($meta, $slugField)) {
+                throw new InvalidMappingException("Cannot use field - [{$slugField}] for slug storage, type is not valid and must be 'string' or 'text' in class - {$meta->name}");
+            }
+        }
+
+        return $fields;
     }
 
     /**

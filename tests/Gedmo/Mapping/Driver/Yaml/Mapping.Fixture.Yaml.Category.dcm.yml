@@ -38,6 +38,12 @@ Mapping\Fixture\Yaml\Category:
             "Gedmo\Sluggable\Handler\TreeSlugHandler":
               parentRelationField: parent
               separator: /
+    slugWithCallback:
+      type: string
+      length: 256
+      gedmo:
+        slug:
+          callback: "getSlugTokens"
     changed:
       type: date
       gedmo:

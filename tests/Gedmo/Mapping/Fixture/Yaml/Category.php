@@ -33,6 +33,13 @@ class Category extends BaseCategory
     private $slug;
 
     /**
+     * @var string $slugWithCallback
+     *
+     * @Column(name="slug_with_callback", type="string", length=256)
+     */
+    private $slugWithCallback;
+
+    /**
      * @var Entity\Category
      *
      * @OneToMany(targetEntity="Category", mappedBy="parent")
@@ -99,6 +106,26 @@ class Category extends BaseCategory
     public function getSlug()
     {
         return $this->slug;
+    }
+
+    /**
+     * Set slug with callback
+     *
+     * @param string $slugWithCallback
+     */
+    public function setSlugWithCallback($slugWithCallback)
+    {
+        $this->slugWithCallback = $slugWithCallback;
+    }
+
+    /**
+     * Get slug with callback
+     *
+     * @return string
+     */
+    public function getSlugWithCallback()
+    {
+        return $this->slugWithCallback;
     }
 
     /**

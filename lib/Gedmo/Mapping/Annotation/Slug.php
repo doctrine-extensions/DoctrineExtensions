@@ -15,8 +15,10 @@ use Doctrine\Common\Annotations\Annotation;
  */
 final class Slug extends Annotation
 {
-    /** @var array<string> @Required */
+    /** @var array<string> */
     public $fields = array();
+    /** @var string */
+    public $callback = null;
     /** @var boolean */
     public $updatable = true;
     /** @var string */

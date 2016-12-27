@@ -26,5 +26,9 @@
         <many-to-one field="parent" target-entity="Sluggable">
             <join-column name="parent_id" referenced-column-name="id" on-delete="CASCADE"/>
         </many-to-one>
+
+        <field name="slugWithCallback" type="string" length="256" unique="true">
+            <gedmo:slug callback="getSlugTokens" />
+        </field>
     </entity>
 </doctrine-mapping>
