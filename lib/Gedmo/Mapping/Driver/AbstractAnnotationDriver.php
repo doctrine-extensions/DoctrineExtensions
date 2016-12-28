@@ -84,7 +84,7 @@ abstract class AbstractAnnotationDriver implements AnnotationDriverInterface
     }
 
     /**
-     * @param \Doctrine\Common\Persistence\Mapping\ClassMetaData $meta
+     * @param \Doctrine\Common\Persistence\Mapping\ClassMetadata $meta
      * @param array                                              $config
      */
     public function validateFullMetadata(ClassMetadata $meta, array $config)
@@ -94,7 +94,7 @@ abstract class AbstractAnnotationDriver implements AnnotationDriverInterface
     /**
      * Try to find out related class name out of mapping
      *
-     * @param $metadata - the mapped class metadata
+     * @param ClassMetadata $metadata - the mapped class metadata
      * @param $name - the related object class name
      * @return string - related class name or empty string if does not exist
      */

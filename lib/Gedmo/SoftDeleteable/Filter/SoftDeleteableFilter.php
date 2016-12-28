@@ -2,7 +2,8 @@
 
 namespace Gedmo\SoftDeleteable\Filter;
 
-use Doctrine\ORM\Mapping\ClassMetaData;
+use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Query\Filter\SQLFilter;
 use Gedmo\SoftDeleteable\SoftDeleteableListener;
 
@@ -18,10 +19,26 @@ use Gedmo\SoftDeleteable\SoftDeleteableListener;
 
 class SoftDeleteableFilter extends SQLFilter
 {
+    /**
+     * @var SoftDeleteableListener
+     */
     protected $listener;
+
+    /**
+     * @var EntityManagerInterface
+     */
     protected $entityManager;
+
+    /**
+     * @var string[bool]
+     */
     protected $disabled = array();
 
+    /**
+     * @param ClassMetadata $targetEntity
+     * @param string        $targetTableAlias
+     * @return string
+     */
     public function addFilterConstraint(ClassMetadata $targetEntity, $targetTableAlias)
     {
         $class = $targetEntity->getName();
@@ -50,16 +67,26 @@ class SoftDeleteableFilter extends SQLFilter
         return $addCondSql;
     }
 
+    /**
+     * @param string $class
+     */
     public function disableForEntity($class)
     {
         $this->disabled[$class] = true;
     }
 
+    /**
+     * @param string $class
+     */
     public function enableForEntity($class)
     {
         $this->disabled[$class] = false;
     }
 
+    /**
+     * @return SoftDeleteableListener
+     * @throws \RuntimeException
+     */
     protected function getListener()
     {
         if ($this->listener === null) {
@@ -84,6 +111,9 @@ class SoftDeleteableFilter extends SQLFilter
         return $this->listener;
     }
 
+    /**
+     * @return EntityManagerInterface
+     */
     protected function getEntityManager()
     {
         if ($this->entityManager === null) {

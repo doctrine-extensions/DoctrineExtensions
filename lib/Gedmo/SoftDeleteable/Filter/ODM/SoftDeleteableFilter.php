@@ -3,7 +3,7 @@
 namespace Gedmo\SoftDeleteable\Filter\ODM;
 
 use Doctrine\ODM\MongoDB\Query\Filter\BsonFilter;
-use Doctrine\ODM\MongoDB\Mapping\ClassMetaData;
+use Doctrine\ODM\MongoDB\Mapping\ClassMetadata;
 use Gedmo\SoftDeleteable\SoftDeleteableListener;
 
 class SoftDeleteableFilter extends BsonFilter
@@ -15,7 +15,7 @@ class SoftDeleteableFilter extends BsonFilter
     /**
      * Gets the criteria part to add to a query.
      *
-     * @param ClassMetaData $targetEntity
+     * @param ClassMetadata $targetEntity
      *
      * @return array The criteria array, if there is available, empty array otherwise
      */
