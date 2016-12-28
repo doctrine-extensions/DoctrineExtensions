@@ -2,7 +2,7 @@
 
 namespace Sluggable\Fixture\Doctrine;
 
-use Doctrine\ORM\Mapping\ClassMetaData;
+use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Query\Filter\SQLFilter;
 
 class FakeFilter extends SQLFilter

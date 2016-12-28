@@ -3,7 +3,7 @@
 namespace Gedmo\SoftDeleteable\Filter;
 
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\Mapping\ClassMetaData;
+use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Query\Filter\SQLFilter;
 use Gedmo\SoftDeleteable\SoftDeleteableListener;
 
@@ -35,7 +35,7 @@ class SoftDeleteableFilter extends SQLFilter
     protected $disabled = array();
 
     /**
-     * @param ClassMetaData $targetEntity
+     * @param ClassMetadata $targetEntity
      * @param string        $targetTableAlias
      * @return string
      */
