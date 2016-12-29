@@ -107,6 +107,9 @@ trait MaterializedPathRepositoryTrait
                 $paths[] = $nodePath;
                 $separatorMatchOffset = $nodePathLength;
             } elseif ($separatorPos === 0) {
+                if ($config['path_starts_with_separator']) {
+                    $paths[] = $config['path_separator'];
+                }
                 // path starts with separator, continue
                 $separatorMatchOffset = 1;
             } else {
