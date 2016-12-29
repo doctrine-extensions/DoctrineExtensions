@@ -119,10 +119,10 @@ trait MaterializedPathRepositoryTrait
             }
         }
         $qb->where($qb->expr()->in(
-            $alias.'.'.$config['path'],
+            $alias . '.' . $config['path'],
             $paths
         ));
-        $qb->orderBy($alias.'.'.$config['level'], 'ASC');
+        $qb->orderBy($alias . '.' . $config['level'], 'ASC');
 
         return $qb;
     }
@@ -154,8 +154,13 @@ trait MaterializedPathRepositoryTrait
     /**
      * {@inheritDoc}
      */
-    public function getChildrenQueryBuilder($node = null, $direct = false, $sortByField = null, $direction = 'asc', $includeNode = false)
-    {
+    public function getChildrenQueryBuilder(
+        $node = null,
+        $direct = false,
+        $sortByField = null,
+        $direction = 'asc',
+        $includeNode = false
+    ) {
         $meta = $this->getClassMetadata();
         $config = $this->listener->getConfiguration($this->getEntityManager(), $meta->name);
         $alias = 'materialized_path_entity';
@@ -173,41 +178,43 @@ trait MaterializedPathRepositoryTrait
             $separator = $isRootPath ? '' : addcslashes($config['path_separator'], '%');
             $expr = $qb->expr()->andx()->add(
                 $qb->expr()->like(
-                    $alias.'.'.$path,
+                    $alias . '.' . $path,
                     $qb->expr()->literal(
                         $nodePath
-                        .($config['path_ends_with_separator'] ? '' : $separator).'%'
+                        . ($config['path_ends_with_separator'] ? '' : $separator) . '%'
                     )
                 )
             );
 
             if ($includeNode) {
-                $includeNodeExpr = $qb->expr()->eq($alias.'.'.$path, $qb->expr()->literal($nodePath));
+                $includeNodeExpr = $qb->expr()->eq($alias . '.' . $path, $qb->expr()->literal($nodePath));
             } else {
-                $expr->add($qb->expr()->neq($alias.'.'.$path, $qb->expr()->literal($nodePath)));
+                $expr->add($qb->expr()->neq($alias . '.' . $path, $qb->expr()->literal($nodePath)));
             }
 
             if ($direct) {
                 $expr->add(
                     $qb->expr()->orx(
-                        $qb->expr()->eq($alias.'.'.$config['level'], $qb->expr()->literal($node->getPropertyValue($config['level']))),
-                        $qb->expr()->eq($alias.'.'.$config['level'], $qb->expr()->literal($node->getPropertyValue($config['level']) + 1))
+                        $qb->expr()->eq($alias . '.' .
+                            $config['level'], $qb->expr()->literal($node->getPropertyValue($config['level']))),
+                        $qb->expr()->eq($alias . '.' .
+                            $config['level'], $qb->expr()->literal($node->getPropertyValue($config['level']) + 1))
                     )
                 );
             }
         } elseif ($direct) {
-            $expr = $qb->expr()->isNull($alias.'.'.$config['parent']);
+            $expr = $qb->expr()->isNull($alias . '.' . $config['parent']);
         }
 
         if ($expr) {
-            $qb->where('('.$expr.')');
+            $qb->where('(' . $expr . ')');
         }
 
         if ($includeNodeExpr) {
-            $qb->orWhere('('.$includeNodeExpr.')');
+            $qb->orWhere('(' . $includeNodeExpr . ')');
         }
 
-        $orderByField = null === $sortByField ? $alias.'.'.$config['path'] : $alias.'.'.$sortByField;
+        $orderByField = null === $sortByField ? $alias . '.' . $config['path'] : $alias . '.' . $sortByField;
         $orderByDir = $direction === 'asc' ? 'asc' : 'desc';
         $qb->orderBy($orderByField, $orderByDir);
 
@@ -217,27 +224,41 @@ trait MaterializedPathRepositoryTrait
     /**
      * {@inheritDoc}
      */
-    public function getChildrenQuery($node = null, $direct = false, $sortByField = null, $direction = 'asc', $includeNode = false)
-    {
+    public function getChildrenQuery(
+        $node = null,
+        $direct = false,
+        $sortByField = null,
+        $direction = 'asc',
+        $includeNode = false
+    ) {
         return $this->getChildrenQueryBuilder($node, $direct, $sortByField, $direction, $includeNode)->getQuery();
     }
 
     /**
      * {@inheritDoc}
      */
-    public function getChildren($node = null, $direct = false, $sortByField = null, $direction = 'asc', $includeNode = false)
-    {
+    public function getChildren(
+        $node = null,
+        $direct = false,
+        $sortByField = null,
+        $direction = 'asc',
+        $includeNode = false
+    ) {
         return $this->getChildrenQuery($node, $direct, $sortByField, $direction, $includeNode)->execute();
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getNodesHierarchyQueryBuilder($node = null, $direct = false, array $options = array(), $includeNode = false)
-    {
+    public function getNodesHierarchyQueryBuilder(
+        $node = null,
+        $direct = false,
+        array $options = array(),
+        $includeNode = false
+    ) {
         $sortBy = array(
-            'field'     => null,
-            'dir'       => 'asc',
+            'field' => null,
+            'dir' => 'asc',
         );
 
         if (isset($options['childSort'])) {
@@ -279,6 +300,10 @@ trait MaterializedPathRepositoryTrait
      */
     protected function validate()
     {
-        return $this->listener->getStrategy($this->getEntityManager(), $this->getClassMetadata()->name)->getName() === Strategy::MATERIALIZED_PATH;
+        return $this->listener->getStrategy(
+            $this->getEntityManager(),
+            $this->getClassMetadata()->name
+        )
+            ->getName() === Strategy::MATERIALIZED_PATH;
     }
 }
