@@ -99,7 +99,7 @@ on how to setup and use the extensions in the most optimized way.
 ## Tree Entity example:
 
 **Note:** Node interface is not necessary, except in cases where
-you need to identify and entity as being a Tree Node. The metadata is loaded only once when the
+you need to identify an entity as being a Tree Node. The metadata is loaded only once when the
 cache is activated
 
 ``` php
@@ -1318,7 +1318,7 @@ There are repository methods that are available for you in all the strategies:
       * nodeDecorator: Closure (null) - uses $node as argument and returns decorated item as string
       * rootOpen: string || Closure ('\<ul\>') - branch start, closure will be given $children as a parameter
       * rootClose: string ('\</ul\>') - branch close
-      * childStart: string || Closure ('\<li\>') - start of node, closure will be given $node as a parameter
+      * childOpen: string || Closure ('\<li\>') - start of node, closure will be given $node as a parameter
       * childClose: string ('\</li\>') - close of node
       * childSort: array || keys allowed: field: field to sort on, dir: direction. 'asc' or 'desc'
   - *includeNode*: Using "true", this argument allows you to include in the result the node you passed as the first argument. Defaults to "false".
