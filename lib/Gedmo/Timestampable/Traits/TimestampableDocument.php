@@ -14,14 +14,14 @@ use Gedmo\Mapping\Annotation as Gedmo;
 trait TimestampableDocument
 {
     /**
-     * @var \DateTime
+     * @var \DateTimeInterface
      * @Gedmo\Timestampable(on="create")
      * @ODM\Date
      */
     protected $createdAt;
 
     /**
-     * @var \DateTime
+     * @var \DateTimeInterface
      * @Gedmo\Timestampable(on="update")
      * @ODM\Date
      */
@@ -43,7 +43,7 @@ trait TimestampableDocument
     /**
      * Returns createdAt.
      *
-     * @return \DateTime
+     * @return \DateTimeInterface
      */
     public function getCreatedAt()
     {
@@ -66,7 +66,7 @@ trait TimestampableDocument
     /**
      * Returns updatedAt.
      *
-     * @return \Datetime
+     * @return \DateTimeInterface
      */
     public function getUpdatedAt()
     {
