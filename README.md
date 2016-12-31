@@ -3,8 +3,6 @@
 [![Build Status](https://secure.travis-ci.org/Atlantic18/DoctrineExtensions.png?branch=master)](http://travis-ci.org/Atlantic18/DoctrineExtensions)
 [![Latest Stable Version](https://poser.pugx.org/gedmo/doctrine-extensions/version)](https://packagist.org/packages/gedmo/doctrine-extensions)
 
-[![Latest Stable Version](https://poser.pugx.org/phpunit/phpunit/version)](https://packagist.org/packages/phpunit/phpunit)
-
 **Note:** extensions might not evolve more after **2.4.x** it will remain stable and backward compatible. Unless
 new interested maintainers will take over the development and continue with **3.x** versions onward.
 
