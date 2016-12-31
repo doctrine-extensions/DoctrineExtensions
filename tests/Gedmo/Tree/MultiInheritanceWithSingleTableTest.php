@@ -36,6 +36,8 @@ class MultiInheritanceWithSingleTableTest extends BaseTestCaseORM
     public function testConsistence()
     {
         $this->populate();
+        $this->em->clear();
+
         $carRepo = $this->em->getRepository(self::CAR);
         $audi = $carRepo->findOneByTitle('Audi-80');
         $this->assertEquals(2, $carRepo->childCount($audi));
