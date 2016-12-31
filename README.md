@@ -1,7 +1,12 @@
 # Doctrine2 behavioral extensions
 
 [![Build Status](https://secure.travis-ci.org/Atlantic18/DoctrineExtensions.png?branch=master)](http://travis-ci.org/Atlantic18/DoctrineExtensions)
-[![Latest Stable Version](https://poser.pugx.org/Atlantic18/DoctrineExtensions/version)](https://packagist.org/packages/gedmo/doctrine-extensions)
+[![Latest Stable Version](https://poser.pugx.org/gedmo/doctrine-extensions/version)](https://packagist.org/packages/gedmo/doctrine-extensions)
+
+[![Latest Stable Version](https://poser.pugx.org/phpunit/phpunit/version)](https://packagist.org/packages/phpunit/phpunit)
+
+**Note:** extensions might not evolve more after **2.4.x** it will remain stable and backward compatible. Unless
+new interested maintainers will take over the development and continue with **3.x** versions onward.
 
 **Note:** Extensions **2.4.x** are compatible with ORM and doctrine common library versions from **2.2.x** to **2.5.x**.
 ORM 2.5.x versions require **PHP 5.4** or higher.
