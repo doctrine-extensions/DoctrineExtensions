@@ -30,10 +30,10 @@ trait TimestampableDocument
     /**
      * Sets createdAt.
      *
-     * @param  \Datetime $createdAt
+     * @param  \DateTimeInterface $createdAt
      * @return $this
      */
-    public function setCreatedAt(\DateTime $createdAt)
+    public function setCreatedAt(\DateTimeInterface $createdAt)
     {
         $this->createdAt = $createdAt;
 
@@ -53,10 +53,10 @@ trait TimestampableDocument
     /**
      * Sets updatedAt.
      *
-     * @param  \DateTime $updatedAt
+     * @param  \DateTimeInterface $updatedAt
      * @return $this
      */
-    public function setUpdatedAt(\DateTime $updatedAt)
+    public function setUpdatedAt(\DateTimeInterface $updatedAt)
     {
         $this->updatedAt = $updatedAt;
 

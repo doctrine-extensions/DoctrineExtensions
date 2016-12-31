@@ -30,10 +30,10 @@ trait TimestampableEntity
     /**
      * Sets createdAt.
      *
-     * @param  \DateTime $createdAt
+     * @param  \DateTimeInterface $createdAt
      * @return $this
      */
-    public function setCreatedAt(\DateTime $createdAt)
+    public function setCreatedAt(\DateTimeInterface $createdAt)
     {
         $this->createdAt = $createdAt;
 
@@ -53,10 +53,10 @@ trait TimestampableEntity
     /**
      * Sets updatedAt.
      *
-     * @param  \DateTime $updatedAt
+     * @param  \DateTimeInterface $updatedAt
      * @return $this
      */
-    public function setUpdatedAt(\DateTime $updatedAt)
+    public function setUpdatedAt(\DateTimeInterface $updatedAt)
     {
         $this->updatedAt = $updatedAt;
 
