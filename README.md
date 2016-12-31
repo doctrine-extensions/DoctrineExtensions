@@ -1,8 +1,7 @@
 # Doctrine2 behavioral extensions
 
-**Version 2.4.13**
-
 [![Build Status](https://secure.travis-ci.org/Atlantic18/DoctrineExtensions.png?branch=master)](http://travis-ci.org/Atlantic18/DoctrineExtensions)
+[![Latest Stable Version](https://poser.pugx.org/Atlantic18/DoctrineExtensions/version)](https://packagist.org/packages/gedmo/doctrine-extensions)
 
 **Note:** Extensions **2.4.x** are compatible with ORM and doctrine common library versions from **2.2.x** to **2.5.x**.
 ORM 2.5.x versions require **PHP 5.4** or higher.
