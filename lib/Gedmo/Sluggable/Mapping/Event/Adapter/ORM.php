@@ -62,8 +62,9 @@ class ORM extends BaseAdapterORM implements SluggableAdapter
         // include identifiers
         foreach ((array) $wrapped->getIdentifier(false) as $id => $value) {
             if (!$meta->isIdentifier($config['slug'])) {
-                $qb->andWhere($qb->expr()->neq('rec.'.$id, ':'.$id));
-                $qb->setParameter($id, $value);
+                $namedId = str_replace('.', '_', $id);
+                $qb->andWhere($qb->expr()->neq('rec.'.$id, ':'.$namedId));
+                $qb->setParameter($namedId, $value);
             }
         }
         $q = $qb->getQuery();
