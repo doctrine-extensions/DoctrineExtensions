@@ -13,7 +13,6 @@ $em = include 'em.php';
  *
  * Gedmo\Translatable\TranslationListener
  */
-$translatable;
 
 $repository = $em->getRepository('Entity\Category');
 $food = $repository->findOneByTitle('Food');
