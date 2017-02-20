@@ -8,6 +8,7 @@ use Gedmo\Sluggable\Handler\SlugHandlerWithUniqueCallbackInterface;
 use Gedmo\Sluggable\Mapping\Event\SluggableAdapter;
 use Doctrine\Common\Persistence\ObjectManager;
 use Gedmo\Tool\Wrapper\AbstractWrapper;
+use Symfony\Component\PropertyAccess\PropertyAccess;
 
 /**
  * The SluggableListener handles the generation of slugs
@@ -226,6 +227,22 @@ class SluggableListener extends MappedEventSubscriber
             if ($this->getConfiguration($om, $meta->name) && !$uow->isScheduledForInsert($object)) {
                 $this->generateSlug($ea, $object);
                 $this->persisted[$ea->getRootObjectClass($meta)][] = $object;
+
+            }
+            foreach ($meta->embeddedClasses as $fieldName => $embeddedClass) {
+                if ($this->getConfiguration($om, $embeddedClass['class']) && !$uow->isScheduledForInsert($object)) {
+                    $path = explode('.', $fieldName);
+                    $embedded = $object;
+                    $embeddedMeta = $meta->getReflectionClass();
+                    foreach ($path as $item) {
+                        $reflectionProperty = $embeddedMeta->getProperty($item);
+                        $reflectionProperty->setAccessible(true);
+                        $embedded = $reflectionProperty->getValue($embedded);
+                        $embeddedMeta = new \ReflectionObject($embedded);
+                    }
+                    $this->generateSlug($ea, $embedded, $object, $fieldName);
+                    $this->persisted[$ea->getRootObjectClass($meta)][] = $object;
+                }
             }
         }
 
@@ -266,12 +283,12 @@ class SluggableListener extends MappedEventSubscriber
      *
      * @return void
      */
-    private function generateSlug(SluggableAdapter $ea, $object)
+    private function generateSlug(SluggableAdapter $ea, $object, $parent = null, $parentField = null)
     {
         $om = $ea->getObjectManager();
         $meta = $om->getClassMetadata(get_class($object));
         $uow = $om->getUnitOfWork();
-        $changeSet = $ea->getObjectChangeSet($uow, $object);
+        $changeSet = $ea->getObjectChangeSet($uow, $parent ? : $object);
         $isInsert = $uow->isScheduledForInsert($object);
         $config = $this->getConfiguration($om, $meta->name);
 
@@ -285,6 +302,7 @@ class SluggableListener extends MappedEventSubscriber
             if (!$options['updatable'] && !$isInsert && (!isset($changeSet[$slugField]) || $slug === '__id__')) {
                 continue;
             }
+
             // must fetch the old slug from changeset, since $object holds the new version
             $oldSlug = isset($changeSet[$slugField]) ? $changeSet[$slugField][0] : $slug;
             $needToChangeSlug = false;
@@ -294,7 +312,12 @@ class SluggableListener extends MappedEventSubscriber
                 $slug = '';
 
                 foreach ($options['fields'] as $sluggableField) {
-                    if (isset($changeSet[$sluggableField]) || isset($changeSet[$slugField])) {
+                    if ($parentField) {
+                        $checkField = "{$parentField}.{$sluggableField}";
+                    } else {
+                        $checkField = $sluggableField;
+                    }
+                    if (isset($changeSet[$checkField]) || isset($changeSet[$slugField])) {
                         $needToChangeSlug = true;
                     }
                     $value = $meta->getReflectionProperty($sluggableField)->getValue($object);
@@ -411,9 +434,15 @@ class SluggableListener extends MappedEventSubscriber
                 // set the final slug
                 $meta->getReflectionProperty($slugField)->setValue($object, $slug);
                 // recompute changeset
-                $ea->recomputeSingleObjectChangeSet($uow, $meta, $object);
-                // overwrite changeset (to set old value)
-                $uow->propertyChanged($object, $slugField, $oldSlug, $slug);
+                if ($parent) {
+                    $ea->recomputeSingleObjectChangeSet($uow, $om->getClassMetadata(get_class($parent)), $parent);
+                    // overwrite changeset (to set old value)
+                    $uow->propertyChanged($parent, "{$parentField}.{$slugField}", $oldSlug, $slug);
+                } else {
+                    $ea->recomputeSingleObjectChangeSet($uow, $meta, $object);
+                    // overwrite changeset (to set old value)
+                    $uow->propertyChanged($object, $slugField, $oldSlug, $slug);
+                }
 
             }
         }
