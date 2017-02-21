@@ -505,7 +505,7 @@ trait ClosureTreeRepositoryTrait
             ->select('c, node, p.'.$idField.' AS parent_id'.$subQuery)
             ->from($config['closure'], 'c')
             ->innerJoin('c.descendant', 'node')
-            ->leftJoin('node.parent', 'p')
+            ->leftJoin('node.'.$config['parent'], 'p')
             ->addOrderBy(($hasLevelProp ? 'node.'.$config['level'] : ClosureTreeRepository::SUBQUERY_LEVEL), 'asc');
 
         if ($node !== null) {
