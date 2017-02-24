@@ -41,6 +41,60 @@ class MappedSuperclassTest extends BaseTestCaseORM
         $this->em->flush();
     }
 
+    /**
+     * @test
+     */
+    public function shouldntMaintainUniqueSlug()
+    {
+        $evm = new EventManager();
+        $evm->addEventSubscriber(new SluggableListener());
+        $this->getMockSqliteEntityManager($evm);
+
+        $a = new Car();
+        $a->setTitle('di 1');
+        $a->setDescription("a");
+        $this->em->persist($a);
+        $this->em->flush();
+
+        $b = new Car();
+        $b->setTitle('di');
+        $b->setDescription("b");
+        $this->em->persist($b);
+        $this->em->flush();
+
+        $c = new Car();
+        $c->setTitle('di');
+        $c->setDescription("c");
+        $this->em->persist($c);
+        $this->em->flush();
+    }
+
+    /**
+     * @test
+     */
+    public function shouldntMaintainUniqueSlugInSingleTransaction()
+    {
+        $evm = new EventManager();
+        $evm->addEventSubscriber(new SluggableListener());
+        $this->getMockSqliteEntityManager($evm);
+
+        $a = new Car();
+        $a->setTitle('di 1');
+        $a->setDescription("a");
+        $this->em->persist($a);
+
+        $b = new Car();
+        $b->setTitle('di');
+        $b->setDescription("b");
+        $this->em->persist($b);
+
+        $c = new Car();
+        $c->setTitle('di');
+        $c->setDescription("c");
+        $this->em->persist($c);
+        $this->em->flush();
+    }
+
     protected function getUsedEntityFixtures()
     {
         return array(
