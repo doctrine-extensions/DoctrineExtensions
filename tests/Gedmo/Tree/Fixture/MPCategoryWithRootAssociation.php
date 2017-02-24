@@ -9,9 +9,10 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity(repositoryClass="Gedmo\Tree\Entity\Repository\MaterializedPathRepository")
  * @Gedmo\Tree(type="materializedPath")
  */
-class MPCategory
+class MPCategoryWithRootAssociation
 {
     /**
+     * @Gedmo\TreePathSource
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -25,14 +26,13 @@ class MPCategory
     private $path;
 
     /**
-     * @Gedmo\TreePathSource
      * @ORM\Column(name="title", type="string", length=64)
      */
     private $title;
 
     /**
      * @Gedmo\TreeParent
-     * @ORM\ManyToOne(targetEntity="MPCategory", inversedBy="children")
+     * @ORM\ManyToOne(targetEntity="MPCategoryWithRootAssociation", inversedBy="children")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="CASCADE")
      * })
@@ -47,9 +47,12 @@ class MPCategory
 
     /**
      * @Gedmo\TreeRoot
-     * @ORM\Column(name="tree_root_value", type="string", nullable=true)
+     * @ORM\ManyToOne(targetEntity="MPCategoryWithRootAssociation")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="tree_root_entity", referencedColumnName="id", onDelete="CASCADE")
+     * })
      */
-    private $treeRootValue;
+    private $treeRootEntity;
 
     /**
      * @ORM\OneToMany(targetEntity="MPCategory", mappedBy="parent")
@@ -76,7 +79,7 @@ class MPCategory
         return $this->title;
     }
 
-    public function setParent(MPCategory $parent = null)
+    public function setParent(MPCategoryWithRootAssociation $parent = null)
     {
         $this->parentId = $parent;
     }
@@ -101,8 +104,8 @@ class MPCategory
         return $this->level;
     }
 
-    public function getTreeRootValue()
+    public function getTreeRootEntity()
     {
-        return $this->treeRootValue;
+        return $this->treeRootEntity;
     }
 }

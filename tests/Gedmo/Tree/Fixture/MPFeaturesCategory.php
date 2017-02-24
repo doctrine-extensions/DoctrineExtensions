@@ -51,6 +51,13 @@ class MPFeaturesCategory
      */
     private $level;
 
+
+    /**
+     * @Gedmo\TreeRoot
+     * @ORM\Column(name="tree_root_value", type="string", nullable=true)
+     */
+    private $treeRootValue;
+
     /**
      * @ORM\OneToMany(targetEntity="MPFeaturesCategory", mappedBy="parent")
      */
@@ -99,6 +106,11 @@ class MPFeaturesCategory
     public function getLevel()
     {
         return $this->level;
+    }
+
+    public function getTreeRootValue()
+    {
+        return $this->treeRootValue;
     }
 
     public function getPathHash()

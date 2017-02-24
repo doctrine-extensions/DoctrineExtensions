@@ -13,9 +13,9 @@ use Tool\BaseTestCaseORM;
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class MaterializedPathORMTest extends BaseTestCaseORM
+class MaterializedPathORMRootAssociationTest extends BaseTestCaseORM
 {
-    const CATEGORY = "Tree\\Fixture\\MPCategory";
+    const CATEGORY = "Tree\\Fixture\\MPCategoryWithRootAssociation";
 
     protected $config;
     protected $listener;
@@ -64,19 +64,19 @@ class MaterializedPathORMTest extends BaseTestCaseORM
         $this->em->refresh($category3);
         $this->em->refresh($category4);
 
-        $this->assertEquals($this->generatePath(array('1' => $category->getId())), $category->getPath());
-        $this->assertEquals($this->generatePath(array('1' => $category->getId(), '2' => $category2->getId())), $category2->getPath());
-        $this->assertEquals($this->generatePath(array('1' => $category->getId(), '2' => $category2->getId(), '3' => $category3->getId())), $category3->getPath());
-        $this->assertEquals($this->generatePath(array('4' => $category4->getId())), $category4->getPath());
+        $this->assertEquals($this->generatePath(array($category->getId())), $category->getPath());
+        $this->assertEquals($this->generatePath(array($category->getId(), $category2->getId())), $category2->getPath());
+        $this->assertEquals($this->generatePath(array($category->getId(), $category2->getId(), $category3->getId())), $category3->getPath());
+        $this->assertEquals($this->generatePath(array($category4->getId())), $category4->getPath());
         $this->assertEquals(1, $category->getLevel());
         $this->assertEquals(2, $category2->getLevel());
         $this->assertEquals(3, $category3->getLevel());
         $this->assertEquals(1, $category4->getLevel());
 
-        $this->assertEquals('1-4', $category->getTreeRootValue());
-        $this->assertEquals('1-4', $category2->getTreeRootValue());
-        $this->assertEquals('1-4', $category3->getTreeRootValue());
-        $this->assertEquals('4-1', $category4->getTreeRootValue());
+        $this->assertEquals($category, $category->getTreeRootEntity());
+        $this->assertEquals($category, $category2->getTreeRootEntity());
+        $this->assertEquals($category, $category3->getTreeRootEntity());
+        $this->assertEquals($category4, $category4->getTreeRootEntity());
 
         // Update
         $category2->setParent(null);
@@ -88,18 +88,18 @@ class MaterializedPathORMTest extends BaseTestCaseORM
         $this->em->refresh($category2);
         $this->em->refresh($category3);
 
-        $this->assertEquals($this->generatePath(array('1' => $category->getId())), $category->getPath());
-        $this->assertEquals($this->generatePath(array('2' => $category2->getId())), $category2->getPath());
-        $this->assertEquals($this->generatePath(array('2' => $category2->getId(), '3' => $category3->getId())), $category3->getPath());
+        $this->assertEquals($this->generatePath(array($category->getId())), $category->getPath());
+        $this->assertEquals($this->generatePath(array($category2->getId())), $category2->getPath());
+        $this->assertEquals($this->generatePath(array($category2->getId(), $category3->getId())), $category3->getPath());
         $this->assertEquals(1, $category->getLevel());
         $this->assertEquals(1, $category2->getLevel());
         $this->assertEquals(2, $category3->getLevel());
         $this->assertEquals(1, $category4->getLevel());
 
-        $this->assertEquals('1-4', $category->getTreeRootValue());
-        $this->assertEquals('2-3', $category2->getTreeRootValue());
-        $this->assertEquals('2-3', $category3->getTreeRootValue());
-        $this->assertEquals('4-1', $category4->getTreeRootValue());
+        $this->assertEquals($category, $category->getTreeRootEntity());
+        $this->assertEquals($category2, $category2->getTreeRootEntity());
+        $this->assertEquals($category2, $category3->getTreeRootEntity());
+        $this->assertEquals($category4, $category4->getTreeRootEntity());
 
         // Remove
         $this->em->remove($category);
@@ -113,21 +113,7 @@ class MaterializedPathORMTest extends BaseTestCaseORM
         $this->assertCount(1, $result);
         $this->assertEquals('4', $firstResult->getTitle());
         $this->assertEquals(1, $firstResult->getLevel());
-        $this->assertEquals('4-1', $firstResult->getTreeRootValue());
-    }
-
-    /**
-     * @test
-     */
-    public function useOfSeparatorInPathSourceShouldThrowAnException()
-    {
-        $this->setExpectedException('Gedmo\Exception\RuntimeException');
-
-        $category = $this->createCategory();
-        $category->setTitle('1'.$this->config['path_separator']);
-
-        $this->em->persist($category);
-        $this->em->flush();
+        $this->assertEquals($category4, $firstResult->getTreeRootEntity());
     }
 
     public function createCategory()
@@ -148,8 +134,8 @@ class MaterializedPathORMTest extends BaseTestCaseORM
     {
         $path = '';
 
-        foreach ($sources as $p => $id) {
-            $path .= $p.'-'.$id.$this->config['path_separator'];
+        foreach ($sources as $id) {
+            $path .= $id.$this->config['path_separator'];
         }
 
         return $path;

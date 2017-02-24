@@ -72,6 +72,11 @@ class MaterializedPathORMFeaturesTest extends BaseTestCaseORM
         $this->assertEquals($this->generatePathHash(array('1' => $category->getId(), '2' => $category2->getId())), $category2->getPathHash());
         $this->assertEquals($this->generatePathHash(array('1' => $category->getId(), '2' => $category2->getId(), '3' => $category3->getId())), $category3->getPathHash());
         $this->assertEquals($this->generatePathHash(array('4' => $category4->getId())), $category4->getPathHash());
+
+        $this->assertEquals($category->getTitle(), $category->getTreeRootValue());
+        $this->assertEquals($category->getTitle(), $category2->getTreeRootValue());
+        $this->assertEquals($category->getTitle(), $category3->getTreeRootValue());
+        $this->assertEquals($category4->getTitle(), $category4->getTreeRootValue());
     }
 
     public function createCategory()
