@@ -2,6 +2,8 @@
 
 namespace Gedmo\SoftDeleteable;
 
+use SoftDeleteable\Fixture\Entity\One;
+use SoftDeleteable\Fixture\Entity\Two;
 use Tool\BaseTestCaseORM;
 use Doctrine\Common\EventManager;
 use SoftDeleteable\Fixture\Entity\Article;
@@ -34,6 +36,8 @@ class SoftDeleteableEntityTest extends BaseTestCaseORM
     const OTHER_COMMENT_CLASS = 'SoftDeleteable\Fixture\Entity\OtherComment';
     const USER_CLASS = 'SoftDeleteable\Fixture\Entity\User';
     const MAPPED_SUPERCLASS_CHILD_CLASS = 'SoftDeleteable\Fixture\Entity\Child';
+    const ONE_CLASS = 'SoftDeleteable\Fixture\Entity\One';
+    const TWO_CLASS = 'SoftDeleteable\Fixture\Entity\Two';
     const SOFT_DELETEABLE_FILTER_NAME = 'soft-deleteable';
 
     private $softDeleteableListener;
@@ -49,6 +53,36 @@ class SoftDeleteableEntityTest extends BaseTestCaseORM
         $config->addFilter(self::SOFT_DELETEABLE_FILTER_NAME, 'Gedmo\SoftDeleteable\Filter\SoftDeleteableFilter');
         $this->em = $this->getMockSqliteEntityManager($evm, $config);
         $this->em->getFilters()->enable(self::SOFT_DELETEABLE_FILTER_NAME);
+    }
+
+    public function testDeleteAssociation()
+    {
+        $oneRepo = $this->em->getRepository(self::ONE_CLASS);
+
+        $one = new One();
+        $one->setTwo($two = new Two());
+
+        $this->em->persist($one);
+        $this->em->persist($two);
+        $this->em->flush();
+        $this->em->clear();
+
+        /** @var One $one */
+        $one = $oneRepo->find(1);
+        $this->assertNotNull($one);
+        $this->assertNotNull($one->getTwo()->getId());
+        $this->assertNull($one->getTwo()->getDeletedAt());
+
+        $this->em->remove($one->getTwo());
+        $this->em->flush();
+        $this->em->clear();
+
+        /** @var One $one */
+        $one = $oneRepo->find(1);
+        $this->assertNotNull($one);
+
+        $one->getTwo()->getDeletedAt(); //will throw exception
+        $this->assertNull($one->getTwo()); //should fail too
     }
 
     /**
@@ -382,6 +416,8 @@ class SoftDeleteableEntityTest extends BaseTestCaseORM
             self::OTHER_ARTICLE_CLASS,
             self::OTHER_COMMENT_CLASS,
             self::MAPPED_SUPERCLASS_CHILD_CLASS,
+            self::ONE_CLASS,
+            self::TWO_CLASS
         );
     }
 }
