@@ -56,6 +56,16 @@ class Annotation extends AbstractAnnotationDriver
                 }
                 $config['logEntryClass'] = $cl;
             }
+
+            if ($annot->propertyNames) {
+                foreach($annot->propertyNames as $name) {
+                    if (!$class->hasProperty($name)) {
+                        throw new InvalidMappingException("Property {$meta->name}{$name} does not exists.");
+                    }
+                    $config['versioned'][] = $name;
+                }
+            }
+
         }
 
         // property annotations
