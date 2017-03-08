@@ -229,19 +229,22 @@ class SluggableListener extends MappedEventSubscriber
                 $this->persisted[$ea->getRootObjectClass($meta)][] = $object;
 
             }
-            foreach ($meta->embeddedClasses as $fieldName => $embeddedClass) {
-                if ($this->getConfiguration($om, $embeddedClass['class']) && !$uow->isScheduledForInsert($object)) {
-                    $path = explode('.', $fieldName);
-                    $embedded = $object;
-                    $embeddedMeta = $meta->getReflectionClass();
-                    foreach ($path as $item) {
-                        $reflectionProperty = $embeddedMeta->getProperty($item);
-                        $reflectionProperty->setAccessible(true);
-                        $embedded = $reflectionProperty->getValue($embedded);
-                        $embeddedMeta = new \ReflectionObject($embedded);
+
+            if (property_exists($meta, 'embeddedClasses') && $meta->embeddedClasses) {
+                foreach ($meta->embeddedClasses as $fieldName => $embeddedClass) {
+                    if ($this->getConfiguration($om, $embeddedClass['class']) && !$uow->isScheduledForInsert($object)) {
+                        $path = explode('.', $fieldName);
+                        $embedded = $object;
+                        $embeddedMeta = $meta->getReflectionClass();
+                        foreach ($path as $item) {
+                            $reflectionProperty = $embeddedMeta->getProperty($item);
+                            $reflectionProperty->setAccessible(true);
+                            $embedded = $reflectionProperty->getValue($embedded);
+                            $embeddedMeta = new \ReflectionObject($embedded);
+                        }
+                        $this->generateSlug($ea, $embedded, $object, $fieldName);
+                        $this->persisted[$ea->getRootObjectClass($meta)][] = $object;
                     }
-                    $this->generateSlug($ea, $embedded, $object, $fieldName);
-                    $this->persisted[$ea->getRootObjectClass($meta)][] = $object;
                 }
             }
         }
