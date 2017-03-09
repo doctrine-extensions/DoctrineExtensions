@@ -11,6 +11,7 @@ Features:
 - Can be nested with other behaviors
 - Annotation, Yaml and Xml mapping support for extensions
 - Support for 'timeAware' option: When creating an entity set a date of deletion in the future and never worry about cleaning up at expiration time.
+- Support for **only** selecting **soft deleted** entries by swapping from the `SoftDeleteable` filter to the `SoftDeleted` filter.
 
 Content:
 
