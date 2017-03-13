@@ -218,6 +218,13 @@ services:
             - { name: doctrine.event_subscriber, connection: default }
         calls:
             - [ setAnnotationReader, [ "@annotation_reader" ] ]
+            
+    gedmo.listener.blameable:
+        class: Gedmo\Blameable\BlameableListener
+        tags:
+            - { name: doctrine.event_subscriber, connection: default }
+        calls:
+            - [ setAnnotationReader, [ "@annotation_reader" ] ]            
 ```
 
 So what does it include in general? Well, it creates services for all extension listeners.
