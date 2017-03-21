@@ -440,11 +440,12 @@ class Closure implements Strategy
                 $ids = array_map(function ($el) {
                     return $el['id'];
                 }, $ids);
-            }
-            // using subquery directly, sqlite acts unfriendly
-            $query = "DELETE FROM {$table} WHERE id IN (".implode(', ', $ids).")";
-            if (!empty($ids) && !$conn->executeQuery($query)) {
-                throw new RuntimeException('Failed to remove old closures');
+            
+                // using subquery directly, sqlite acts unfriendly
+                $query = "DELETE FROM {$table} WHERE id IN (".implode(', ', $ids).")";
+                if (!empty($ids) && !$conn->executeQuery($query)) {
+                    throw new RuntimeException('Failed to remove old closures');
+                }
             }
         }
 
