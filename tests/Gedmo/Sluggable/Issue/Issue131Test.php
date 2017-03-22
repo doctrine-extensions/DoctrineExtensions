@@ -46,6 +46,20 @@ class Issue131Test extends BaseTestCaseORM
         $this->assertNull($test2->getSlug());
     }
 
+    /**
+     * @test
+     */
+    public function shouldHandleOnlyZeroInSlug()
+    {
+        $article = new Article();
+        $article->setTitle('0');
+
+        $this->em->persist($article);
+        $this->em->flush();
+
+        $this->assertEquals('0', $article->getSlug());
+    }
+
     protected function getUsedEntityFixtures()
     {
         return array(
