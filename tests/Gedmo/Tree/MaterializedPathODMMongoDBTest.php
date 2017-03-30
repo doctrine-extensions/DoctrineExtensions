@@ -68,10 +68,10 @@ class MaterializedPathODMMongoDBTest extends BaseTestCaseMongoODM
         $this->assertEquals($this->generatePath(array('1' => $category->getId(), '2' => $category2->getId())), $category2->getPath());
         $this->assertEquals($this->generatePath(array('1' => $category->getId(), '2' => $category2->getId(), '3' => $category3->getId())), $category3->getPath());
         $this->assertEquals($this->generatePath(array('4' => $category4->getId())), $category4->getPath());
-        $this->assertEquals(1, $category->getLevel());
-        $this->assertEquals(2, $category2->getLevel());
-        $this->assertEquals(3, $category3->getLevel());
-        $this->assertEquals(1, $category4->getLevel());
+        $this->assertEquals(0, $category->getLevel());
+        $this->assertEquals(1, $category2->getLevel());
+        $this->assertEquals(2, $category3->getLevel());
+        $this->assertEquals(0, $category4->getLevel());
 
         // Update
         $category2->setParent(null);
@@ -86,10 +86,10 @@ class MaterializedPathODMMongoDBTest extends BaseTestCaseMongoODM
         $this->assertEquals($this->generatePath(array('1' => $category->getId())), $category->getPath());
         $this->assertEquals($this->generatePath(array('2' => $category2->getId())), $category2->getPath());
         $this->assertEquals($this->generatePath(array('2' => $category2->getId(), '3' => $category3->getId())), $category3->getPath());
-        $this->assertEquals(1, $category->getLevel());
-        $this->assertEquals(1, $category2->getLevel());
-        $this->assertEquals(2, $category3->getLevel());
-        $this->assertEquals(1, $category4->getLevel());
+        $this->assertEquals(0, $category->getLevel());
+        $this->assertEquals(0, $category2->getLevel());
+        $this->assertEquals(1, $category3->getLevel());
+        $this->assertEquals(0, $category4->getLevel());
 
         // Remove
         $this->dm->remove($category);
@@ -102,7 +102,7 @@ class MaterializedPathODMMongoDBTest extends BaseTestCaseMongoODM
 
         $this->assertEquals(1, $result->count());
         $this->assertEquals('4', $firstResult->getTitle());
-        $this->assertEquals(1, $firstResult->getLevel());
+        $this->assertEquals(0, $firstResult->getLevel());
     }
 
     /**
