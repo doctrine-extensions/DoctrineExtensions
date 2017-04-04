@@ -44,7 +44,7 @@ abstract class AbstractLogEntry
     /**
      * @var string $objectClass
      *
-     * @ORM\Column(name="object_class", type="string", length=255)
+     * @ORM\Column(name="object_class", type="string", length=191)
      */
     protected $objectClass;
 
@@ -65,7 +65,7 @@ abstract class AbstractLogEntry
     /**
      * @var string $data
      *
-     * @ORM\Column(length=255, nullable=true)
+     * @ORM\Column(length=191, nullable=true)
      */
     protected $username;
 
