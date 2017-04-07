@@ -248,11 +248,6 @@ Entity\Category:
       type: integer
       gedmo:
         - treeRight
-    root:
-      type: integer
-      nullable: true
-      gedmo:
-        - treeRoot
     lvl:
       type: integer
       gedmo:
