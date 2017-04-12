@@ -2,17 +2,31 @@
 
 namespace Gedmo\Tree\Hydrator\ORM;
 
-use Doctrine\ORM\Internal\Hydration\ObjectHydrator as BaseObjectHydrator;
+use Doctrine\Common\Collections\AbstractLazyCollection;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Internal\Hydration\ObjectHydrator;
 use Gedmo\Tool\Wrapper\EntityWrapper;
 use Gedmo\Tree\TreeListener;
 
-class ObjectHydrator extends BaseObjectHydrator
+/**
+ * Automatically maps the parent and children properties of Tree nodes
+ *
+ * @author Ilija Tovilo <ilija.tovilo@me.com>
+ * @link http://www.gediminasm.org
+ * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
+ */
+class TreeObjectHydrator extends ObjectHydrator
 {
     /**
      * @var array
      */
     private $config;
+
+    /**
+     * @var string
+     */
+    private $idField;
 
     /**
      * @var string
@@ -40,6 +54,7 @@ class ObjectHydrator extends BaseObjectHydrator
         $listener = $this->getTreeListener($this->_em);
         $entityClass = $this->getEntityClassFromHydratedData($data);
         $this->config = $listener->getConfiguration($this->_em, $entityClass);
+        $this->idField = $this->getIdField($entityClass);
         $this->parentField = $this->getParentField();
         $this->childrenField = $this->getChildrenField($entityClass);
 
@@ -70,10 +85,12 @@ class ObjectHydrator extends BaseObjectHydrator
         foreach ($nodes as $node) {
             $wrapper = new EntityWrapper($node, $this->_em);
             $parentProxy = $wrapper->getPropertyValue($this->config['parent']);
+            $parentId = null;
 
-            $parentId = $parentProxy !== null
-                ? $parentProxy->getId()
-                : null;
+            if ($parentProxy !== null) {
+                $parentWrapper = new EntityWrapper($parentProxy, $this->_em);
+                $parentId = $parentWrapper->getPropertyValue($this->idField);
+            }
 
             $r[$parentId][] = $node;
         }
@@ -89,19 +106,38 @@ class ObjectHydrator extends BaseObjectHydrator
     {
         foreach ($nodes as $node) {
             $wrapper = new EntityWrapper($node, $this->_em);
+            $nodeId = $wrapper->getPropertyValue($this->idField);
             $childrenCollection = $wrapper->getPropertyValue($this->childrenField);
 
-            // Mark all children collections as initialized to avoid select queries
-            $childrenCollection->setInitialized(true);
+            if ($childrenCollection === null) {
+                $childrenCollection = new ArrayCollection();
+                $wrapper->setPropertyValue($this->childrenField, $childrenCollection);
+            }
 
-            if (!isset($childrenHashmap[$node->getId()])) { continue; }
+            // Mark all children collections as initialized to avoid select queries
+            if ($childrenCollection instanceof AbstractLazyCollection) {
+                $childrenCollection->setInitialized(true);
+            }
+
+            if (!isset($childrenHashmap[$nodeId])) {
+                continue;
+            }
 
             $childrenCollection->clear();
 
-            foreach ($childrenHashmap[$node->getId()] as $child) {
+            foreach ($childrenHashmap[$nodeId] as $child) {
                 $childrenCollection->add($child);
             }
         }
+    }
+
+    /**
+     * @return string
+     */
+    protected function getIdField($entityClass)
+    {
+        $meta = $this->getClassMetadata($entityClass);
+        return $meta->getSingleIdentifierFieldName();
     }
 
     /**
@@ -126,11 +162,16 @@ class ObjectHydrator extends BaseObjectHydrator
         foreach ($meta->getReflectionProperties() as $property) {
 
             // Skip properties that have no association
-            if (!$meta->hasAssociation($property->getName())) { continue; }
+            if (!$meta->hasAssociation($property->getName())) {
+                continue;
+            }
+
             $associationMapping = $meta->getAssociationMapping($property->getName());
 
             // Make sure the association is mapped by the parent property
-            if ($associationMapping['mappedBy'] !== $this->parentField) { continue; }
+            if ($associationMapping['mappedBy'] !== $this->parentField) {
+                continue;
+            }
 
             return $associationMapping['fieldName'];
         }
