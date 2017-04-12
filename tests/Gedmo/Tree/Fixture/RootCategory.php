@@ -105,4 +105,14 @@ class RootCategory
     {
         return $this->level;
     }
+
+    public function getChildren()
+    {
+        return $this->children;
+    }
+
+    public function setChildren($children)
+    {
+        $this->children = $children;
+    }
 }
