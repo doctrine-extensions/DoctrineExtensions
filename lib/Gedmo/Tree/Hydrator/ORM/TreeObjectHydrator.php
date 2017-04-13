@@ -6,6 +6,7 @@ use Doctrine\Common\Collections\AbstractLazyCollection;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Internal\Hydration\ObjectHydrator;
+use Doctrine\ORM\Proxy\Proxy;
 use Gedmo\Tool\Wrapper\EntityWrapper;
 use Gedmo\Tree\TreeListener;
 
@@ -58,14 +59,13 @@ class TreeObjectHydrator extends ObjectHydrator
         $this->parentField = $this->getParentField();
         $this->childrenField = $this->getChildrenField($entityClass);
 
+
         $childrenHashmap = $this->buildChildrenHashmap($data);
         $this->populateChildrenArray($data, $childrenHashmap);
 
-        // Only return root elements
+        // Only return root elements or elements who's parents haven't been fetched
         // The sub-nodes will be accessible via the `children` property
-        return isset($childrenHashmap[null])
-            ? $childrenHashmap[null]
-            : array();
+        return $this->getRootNodes($data);
     }
 
     /**
@@ -83,13 +83,11 @@ class TreeObjectHydrator extends ObjectHydrator
         $r = array();
 
         foreach ($nodes as $node) {
-            $wrapper = new EntityWrapper($node, $this->_em);
-            $parentProxy = $wrapper->getPropertyValue($this->config['parent']);
+            $parentProxy = $this->getPropertyValue($node, $this->config['parent']);
             $parentId = null;
 
             if ($parentProxy !== null) {
-                $parentWrapper = new EntityWrapper($parentProxy, $this->_em);
-                $parentId = $parentWrapper->getPropertyValue($this->idField);
+                $parentId = $this->getPropertyValue($parentProxy, $this->idField);
             }
 
             $r[$parentId][] = $node;
@@ -105,13 +103,12 @@ class TreeObjectHydrator extends ObjectHydrator
     protected function populateChildrenArray($nodes, $childrenHashmap)
     {
         foreach ($nodes as $node) {
-            $wrapper = new EntityWrapper($node, $this->_em);
-            $nodeId = $wrapper->getPropertyValue($this->idField);
-            $childrenCollection = $wrapper->getPropertyValue($this->childrenField);
+            $nodeId = $this->getPropertyValue($node, $this->idField);
+            $childrenCollection = $this->getPropertyValue($node, $this->childrenField);
 
             if ($childrenCollection === null) {
                 $childrenCollection = new ArrayCollection();
-                $wrapper->setPropertyValue($this->childrenField, $childrenCollection);
+                $this->setPropertyValue($node, $this->childrenField, $childrenCollection);
             }
 
             // Mark all children collections as initialized to avoid select queries
@@ -129,6 +126,53 @@ class TreeObjectHydrator extends ObjectHydrator
                 $childrenCollection->add($child);
             }
         }
+    }
+
+    /**
+     * @param array $nodes
+     * @return array
+     */
+    protected function getRootNodes($nodes)
+    {
+        $idHashmap = $this->buildIdHashmap($nodes);
+        $rootNodes = array();
+
+        foreach ($nodes as $node) {
+            $parentProxy = $this->getPropertyValue($node, $this->config['parent']);
+            $parentId = null;
+
+            if ($parentProxy !== null) {
+                $parentId = $this->getPropertyValue($parentProxy, $this->idField);
+            }
+
+            if ($parentId === null || !key_exists($parentId, $idHashmap)) {
+                $rootNodes[] = $node;
+            }
+        }
+
+        return $rootNodes;
+    }
+
+    /**
+     * Creates a hashmap of all nodes returned in the query
+     *
+     * ```
+     * [node1.id => true, node2.id => true, ...]
+     * ```
+     *
+     * @param array $nodes
+     * @return array
+     */
+    protected function buildIdHashmap(array $nodes)
+    {
+        $ids = array();
+
+        foreach ($nodes as $node) {
+            $id = $this->getPropertyValue($node, $this->idField);
+            $ids[$id] = true;
+        }
+
+        return $ids;
     }
 
     /**
@@ -205,5 +249,17 @@ class TreeObjectHydrator extends ObjectHydrator
         $firstMappedEntity = array_values($data);
         $firstMappedEntity = $firstMappedEntity[0];
         return get_class($firstMappedEntity);
+    }
+
+    protected function getPropertyValue($object, $property)
+    {
+        $meta = $this->_em->getClassMetadata(get_class($object));
+        return $meta->getReflectionProperty($property)->getValue($object);
+    }
+
+    public function setPropertyValue($object, $property, $value)
+    {
+        $meta = $this->_em->getClassMetadata(get_class($object));
+        $meta->getReflectionProperty($property)->setValue($object, $value);
     }
 }
