@@ -37,6 +37,15 @@ class LoggableListener extends MappedEventSubscriber
      * @var string
      */
     protected $username;
+    
+    /**
+     * Locale which is set on this listener.
+     * If Entity being translated has locale defined it
+     * will override this one
+     *
+     * @var string
+     */
+    protected $locale = 'en_US';
 
     /**
      * List of log entries which do not have the foreign
@@ -301,6 +310,7 @@ class LoggableListener extends MappedEventSubscriber
 
             $logEntry->setAction($action);
             $logEntry->setUsername($this->username);
+            $logEntry->setLocale($this->locale);            
             $logEntry->setObjectClass($meta->name);
             $logEntry->setLoggedAt();
 
