@@ -30,7 +30,7 @@ abstract class AbstractTranslation
     /**
      * @var string $objectClass
      *
-     * @ORM\Column(length=255)
+     * @ORM\Column(name="object_class", length=255)
      */
     protected $objectClass;
 
@@ -44,7 +44,7 @@ abstract class AbstractTranslation
     /**
      * @var string $foreignKey
      *
-     * @ORM\Column(length=64)
+     * @ORM\Column(name="foreign_key", length=64)
      */
     protected $foreignKey;
 
