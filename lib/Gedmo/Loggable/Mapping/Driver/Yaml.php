@@ -100,6 +100,21 @@ class Yaml extends File implements Driver
             }
         }
 
+        if (isset($mapping['embedded'])) {
+            foreach ($mapping['embedded'] as $field => $fieldMapping) {
+                if (isset($fieldMapping['gedmo'])) {
+                    if (in_array('versioned', $fieldMapping['gedmo'])) {
+                        if ($meta->isCollectionValuedAssociation($field)) {
+                            throw new InvalidMappingException("Cannot versioned [{$field}] as it is collection in object - {$meta->name}");
+                        }
+                        // fields cannot be overrided and throws mapping exception
+                        $mapping = $this->_getMapping($fieldMapping['class']);
+                        $this->inspectEmbeddedForVersioned($field, $mapping, $config);
+                    }
+                }
+            }
+        }
+
         if (!$meta->isMappedSuperclass && $config) {
             if (is_array($meta->identifier) && count($meta->identifier) > 1) {
                 throw new InvalidMappingException("Loggable does not support composite identifiers in class - {$meta->name}");
@@ -116,5 +131,19 @@ class Yaml extends File implements Driver
     protected function _loadMappingFile($file)
     {
         return \Symfony\Component\Yaml\Yaml::parse(file_get_contents($file));
+    }
+
+    /**
+     * @param string $field
+     * @param array $mapping
+     * @param array $config
+     */
+    private function inspectEmbeddedForVersioned($field, array $mapping, array &$config)
+    {
+        if (isset($mapping['fields'])) {
+            foreach ($mapping['fields'] as $property => $fieldMapping) {
+                $config['versioned'][] = $field . '.' . $property;
+            }
+        }
     }
 }
