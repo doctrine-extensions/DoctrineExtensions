@@ -22,6 +22,10 @@ Thanks for contributions to:
 - **[everzet](http://github.com/everzet) Kudryashov Konstantin** for TreeLevel implementation
 - **[stof](http://github.com/stof) Christophe Coevoet** for getTreeLeafs function
 
+Update **2017-04-22**
+
+- Added the `TreeObjectHydrator` class for building trees from entities
+
 Update **2012-06-28**
 
 - Added "buildTree" functionality support for Closure and Materialized Path strategies
@@ -635,6 +639,31 @@ $controller = $this;
 ```
 
 <a name="advanced-examples"></a>
+
+## Building trees from your entities
+
+You can use the `childrenHierarchy` method to build an array tree from your result set.
+However, sometimes it is more convenient to work with the entities directly. The `TreeObjectHydrator`
+lets you build a tree from your entities instead, without triggering any more queries.
+
+First, you have to register the hydrator in your Doctrine entity manager.
+
+```php
+<?php
+$em->getConfiguration()->addCustomHydrationMode('tree', 'Gedmo\Tree\Hydrator\ORM\TreeObjectHydrator');
+```
+
+The hydrator requires the `HINT_INCLUDE_META_COLUMNS` query hint. Without it the hydrator will not work!
+Other than that, the usage is straight-forward.
+
+```php
+<?php
+$repo = $em->getRepository('Entity\Category');
+
+$tree = $repo->createQueryBuilder('node')->getQuery()
+    ->setHint(\Doctrine\ORM\Query::HINT_INCLUDE_META_COLUMNS, true)
+    ->getResult('tree');
+```
 
 ## Advanced examples:
 
