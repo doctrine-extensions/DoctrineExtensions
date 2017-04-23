@@ -85,7 +85,7 @@ class Annotation extends AbstractAnnotationDriver
      * @param $fieldNamePrefix
      * @return array
      */
-    private function retrieveSlug($meta, array &$config, $property, $fieldNamePrefix): array
+    private function retrieveSlug($meta, array &$config, $property, $fieldNamePrefix)
     {
         $fieldName = $fieldNamePrefix ? ($fieldNamePrefix . '.' . $property->getName()) : $property->getName();
 // slug property
