@@ -39,7 +39,7 @@
     },
     "require": {
         "php": ">=5.3.2",
-        "behat/transliterator": "1.1",
+        "behat/transliterator": "~1.2",
         "doctrine/common": "~2.4"
     },
     "require-dev": {
