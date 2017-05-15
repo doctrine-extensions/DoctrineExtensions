@@ -248,7 +248,7 @@ class TreeObjectHydrator extends ObjectHydrator
     {
         $firstMappedEntity = array_values($data);
         $firstMappedEntity = $firstMappedEntity[0];
-        return get_class($firstMappedEntity);
+        return $this->_em->getClassMetadata(get_class($firstMappedEntity))->rootEntityName;
     }
 
     protected function getPropertyValue($object, $property)
