@@ -701,6 +701,9 @@ class TranslatableListener extends MappedEventSubscriber
                 if (in_array($field, $translatableFields)) {
                     if ($locale !== $this->defaultLocale) {
                         $ea->setOriginalObjectProperty($uow, $oid, $field, $changes[0]);
+                        if($changes[0]!=null && !is_object( $changes[0])){
+                            $ea->setTranslationValue($object, $field, $changes[0]);
+                        }
                         unset($modifiedChangeSet[$field]);
                     }
                 }
@@ -713,6 +716,9 @@ class TranslatableListener extends MappedEventSubscriber
                 if ($modifiedChangeSet || $this->hasTranslationsInDefaultLocale($oid)) {
                     foreach ($modifiedChangeSet as $field => $changes) {
                         $ea->setOriginalObjectProperty($uow, $oid, $field, $changes[0]);
+                        if($changes[0]!=null && !is_object( $changes[0])){
+                            $ea->setTranslationValue($object, $field, $changes[0]);
+                        }                        
                     }
                     foreach ($translatableFields as $field) {
                         if ($this->getTranslationInDefaultLocale($oid, $field) !== null) {
