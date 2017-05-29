@@ -128,7 +128,12 @@ class Annotation extends AbstractAnnotationDriver
         foreach ($сlass->getProperties() as $property) {
             // versioned property
             if ($this->reader->getPropertyAnnotation($property, self::VERSIONED)) {
-                $config['versioned'][] = $field . '.' . $property->getName();
+                $embeddedField = $field . '.' . $property->getName();
+                $config['versioned'][] = $embeddedField;
+
+                if (isset($meta->embeddedClasses[$embeddedField])) {
+                    $this->inspectEmbeddedForVersioned($embeddedField, $config, $meta);
+                }
             }
         }
     }

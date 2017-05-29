@@ -29,14 +29,24 @@ class Geo
     protected $longitude;
 
     /**
-     * Geo constructor.
-     * @param string $latitude
-     * @param string $longitude
+     * @var GeoLocation $geoLocation
+     * @ORM\Embedded(class="Loggable\Fixture\Entity\GeoLocation")
+     * @Gedmo\Versioned()
      */
-    public function __construct($latitude, $longitude)
+    protected $geoLocation;
+
+    /**
+     * Geo constructor.
+     *
+     * @param string      $latitude
+     * @param string      $longitude
+     * @param GeoLocation $geoLocation
+     */
+    public function __construct($latitude, $longitude, GeoLocation $geoLocation)
     {
         $this->latitude = $latitude;
         $this->longitude = $longitude;
+        $this->geoLocation = $geoLocation;
     }
 
     /**
@@ -69,5 +79,21 @@ class Geo
     public function setLongitude($longitude)
     {
         $this->longitude = $longitude;
+    }
+
+    /**
+     * @return GeoLocation
+     */
+    public function getGeoLocation()
+    {
+        return $this->geoLocation;
+    }
+
+    /**
+     * @param GeoLocation $geoLocation
+     */
+    public function setGeoLocation($geoLocation)
+    {
+        $this->geoLocation = $geoLocation;
     }
 }

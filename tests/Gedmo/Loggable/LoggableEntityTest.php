@@ -2,6 +2,7 @@
 
 namespace Gedmo\Loggable;
 
+use Loggable\Fixture\Entity\GeoLocation;
 use Tool\BaseTestCaseORM;
 use Doctrine\Common\EventManager;
 use Loggable\Fixture\Entity\Address;
@@ -144,7 +145,10 @@ class LoggableEntityTest extends BaseTestCaseORM
         $logEntries = $logRepo->getLogEntries($address);
 
         $this->assertCount(4, $logEntries);
-
+        $this->assertCount(1, $logEntries[0]->getData());
+        $this->assertCount(2, $logEntries[1]->getData());
+        $this->assertCount(3, $logEntries[2]->getData());
+        $this->assertCount(5, $logEntries[3]->getData());
     }
 
     protected function getUsedEntityFixtures()
@@ -166,14 +170,14 @@ class LoggableEntityTest extends BaseTestCaseORM
         $address->setCity('city-v1');
         $address->setStreet('street-v1');
 
-        $geo = new Geo(1.0000, 1.0000);
+        $geo = new Geo(1.0000, 1.0000, new GeoLocation('Online'));
 
         $address->setGeo($geo);
 
         $this->em->persist($address);
         $this->em->flush();
 
-        $geo2 = new Geo(2.0000, 2.0000);
+        $geo2 = new Geo(2.0000, 2.0000, new GeoLocation('Offline'));
         $address->setGeo($geo2);
 
         $this->em->persist($address);
