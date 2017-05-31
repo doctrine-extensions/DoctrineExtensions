@@ -14,14 +14,14 @@ use Gedmo\Mapping\Annotation as Gedmo;
 trait TimestampableEntity
 {
     /**
-     * @var \DateTime
+     * @var \DateTimeInterface
      * @Gedmo\Timestampable(on="create")
      * @ORM\Column(type="datetime")
      */
     protected $createdAt;
 
     /**
-     * @var \DateTime
+     * @var \DateTimeInterface
      * @Gedmo\Timestampable(on="update")
      * @ORM\Column(type="datetime")
      */
@@ -30,10 +30,10 @@ trait TimestampableEntity
     /**
      * Sets createdAt.
      *
-     * @param  \DateTime $createdAt
+     * @param  \DateTimeInterface $createdAt
      * @return $this
      */
-    public function setCreatedAt(\DateTime $createdAt)
+    public function setCreatedAt(\DateTimeInterface $createdAt)
     {
         $this->createdAt = $createdAt;
 
@@ -43,7 +43,7 @@ trait TimestampableEntity
     /**
      * Returns createdAt.
      *
-     * @return \DateTime
+     * @return \DateTimeInterface
      */
     public function getCreatedAt()
     {
@@ -53,10 +53,10 @@ trait TimestampableEntity
     /**
      * Sets updatedAt.
      *
-     * @param  \DateTime $updatedAt
+     * @param  \DateTimeInterface $updatedAt
      * @return $this
      */
-    public function setUpdatedAt(\DateTime $updatedAt)
+    public function setUpdatedAt(\DateTimeInterface $updatedAt)
     {
         $this->updatedAt = $updatedAt;
 
@@ -66,7 +66,7 @@ trait TimestampableEntity
     /**
      * Returns updatedAt.
      *
-     * @return \DateTime
+     * @return \DateTimeInterface
      */
     public function getUpdatedAt()
     {

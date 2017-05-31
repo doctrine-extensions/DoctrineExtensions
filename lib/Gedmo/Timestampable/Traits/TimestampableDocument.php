@@ -14,14 +14,14 @@ use Gedmo\Mapping\Annotation as Gedmo;
 trait TimestampableDocument
 {
     /**
-     * @var \DateTime
+     * @var \DateTimeInterface
      * @Gedmo\Timestampable(on="create")
      * @ODM\Date
      */
     protected $createdAt;
 
     /**
-     * @var \DateTime
+     * @var \DateTimeInterface
      * @Gedmo\Timestampable(on="update")
      * @ODM\Date
      */
@@ -30,10 +30,10 @@ trait TimestampableDocument
     /**
      * Sets createdAt.
      *
-     * @param  \Datetime $createdAt
+     * @param  \DateTimeInterface $createdAt
      * @return $this
      */
-    public function setCreatedAt(\DateTime $createdAt)
+    public function setCreatedAt(\DateTimeInterface $createdAt)
     {
         $this->createdAt = $createdAt;
 
@@ -43,7 +43,7 @@ trait TimestampableDocument
     /**
      * Returns createdAt.
      *
-     * @return \DateTime
+     * @return \DateTimeInterface
      */
     public function getCreatedAt()
     {
@@ -53,10 +53,10 @@ trait TimestampableDocument
     /**
      * Sets updatedAt.
      *
-     * @param  \DateTime $updatedAt
+     * @param  \DateTimeInterface $updatedAt
      * @return $this
      */
-    public function setUpdatedAt(\DateTime $updatedAt)
+    public function setUpdatedAt(\DateTimeInterface $updatedAt)
     {
         $this->updatedAt = $updatedAt;
 
@@ -66,7 +66,7 @@ trait TimestampableDocument
     /**
      * Returns updatedAt.
      *
-     * @return \Datetime
+     * @return \DateTimeInterface
      */
     public function getUpdatedAt()
     {
