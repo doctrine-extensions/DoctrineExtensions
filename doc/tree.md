@@ -62,7 +62,7 @@ Update **2011-02-02**
 - After using a NestedTreeRepository functions: **verify, recover, removeFromTree** it is recommended to clear the EntityManager cache
 because nodes may have changed values in database but not in memory. Flushing dirty nodes can lead to unexpected behaviour.
 - Closure tree implementation is experimental and not fully functional, so far not documented either
-- Public [Tree repository](http://github.com/l3pp4rd/DoctrineExtensions "Tree extension on Github") is available on github
+- Public [Tree repository](http://github.com/Atlantic18/DoctrineExtensions "Tree extension on Github") is available on github
 - Last update date: **2012-02-23**
 
 **Portability:**
@@ -90,8 +90,8 @@ Content:
 
 ## Setup and autoloading
 
-Read the [documentation](http://github.com/l3pp4rd/DoctrineExtensions/blob/master/doc/annotations.md#em-setup)
-or check the [example code](http://github.com/l3pp4rd/DoctrineExtensions/tree/master/example)
+Read the [documentation](http://github.com/Atlantic18/DoctrineExtensions/blob/master/doc/annotations.md#em-setup)
+or check the [example code](http://github.com/Atlantic18/DoctrineExtensions/tree/master/example)
 on how to setup and use the extensions in the most optimized way.
 
 <a name="entity-mapping"></a>

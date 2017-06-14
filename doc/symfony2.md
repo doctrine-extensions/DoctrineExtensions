@@ -1,6 +1,6 @@
 # Install Gedmo Doctrine2 extensions in Symfony2
 
-Configure full featured [Doctrine2 extensions](http://github.com/l3pp4rd/DoctrineExtensions) for your symfony2 project.
+Configure full featured [Doctrine2 extensions](http://github.com/Atlantic18/DoctrineExtensions) for your symfony2 project.
 This post will show you - how to create a simple configuration file to manage extensions with
 ability to use all features it provides.
 Interested? then bear with me! and don't be afraid, we're not diving into security component :)
@@ -218,14 +218,14 @@ services:
             - { name: doctrine.event_subscriber, connection: default }
         calls:
             - [ setAnnotationReader, [ "@annotation_reader" ] ]
-            
+
     gedmo.listener.blameable:
         class: Gedmo\Blameable\BlameableListener
         tags:
             - { name: doctrine.event_subscriber, connection: default }
         calls:
-            - [ setAnnotationReader, [ "@annotation_reader" ] ]            
-            
+            - [ setAnnotationReader, [ "@annotation_reader" ] ]
+
 ```
 
 So what does it include in general? Well, it creates services for all extension listeners.
@@ -266,7 +266,7 @@ class DoctrineExtensionListener implements ContainerAwareInterface
         $translatable = $this->container->get('gedmo.listener.translatable');
         $translatable->setTranslatableLocale($event->getRequest()->getLocale());
     }
-    
+
     public function onConsoleCommand()
     {
         $this->container->get('gedmo.listener.translatable')
@@ -281,7 +281,7 @@ class DoctrineExtensionListener implements ContainerAwareInterface
                 # for loggable behavior
                 $loggable = $this->container->get('gedmo.listener.loggable');
                 $loggable->setUsername($securityContext->getToken()->getUsername());
-                
+
                 # for blameable behavior
                 $blameable = $this->container->get('gedmo.listener.blameable');
                 $blameable->setUserValue($securityContext->getToken()->getUser());
@@ -294,7 +294,7 @@ class DoctrineExtensionListener implements ContainerAwareInterface
                 # for loggable behavior
                 $loggable = $this->container->get('gedmo.listener.loggable');
                 $loggable->setUsername($tokenStorage->getUser());
-                
+
                 # for blameable behavior
                 $blameable = $this->container->get('gedmo.listener.blameable');
                 $blameable->setUserValue($tokenStorage->getUser());
@@ -485,8 +485,8 @@ doctrine_mongodb:
 This also shows, how to make mappings based on single manager. All what differs is that **Document**
 instead of **Entity** is used. I haven't tested it with mongo though.
 
-**Note:** [extension repository](http://github.com/l3pp4rd/DoctrineExtensions) contains all
-[documentation](http://github.com/l3pp4rd/DoctrineExtensions/tree/master/doc) you may need
+**Note:** [extension repository](http://github.com/Atlantic18/DoctrineExtensions) contains all
+[documentation](http://github.com/Atlantic18/DoctrineExtensions/tree/master/doc) you may need
 to understand how you can use it in your projects.
 
 <a name="alternative"></a>

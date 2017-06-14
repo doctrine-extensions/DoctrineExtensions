@@ -50,8 +50,8 @@ Content:
 
 ## Setup and autoloading
 
-Read the [documentation](http://github.com/l3pp4rd/DoctrineExtensions/blob/master/doc/annotations.md#em-setup)
-or check the [example code](http://github.com/l3pp4rd/DoctrineExtensions/tree/master/example)
+Read the [documentation](http://github.com/Atlantic18/DoctrineExtensions/blob/master/doc/annotations.md#em-setup)
+or check the [example code](http://github.com/Atlantic18/DoctrineExtensions/tree/master/example)
 on how to setup and use the extensions in most optimized way.
 
 <a name="entity-mapping"></a>
@@ -672,4 +672,3 @@ class UsingTrait
 
 Traits are very simple and if you use different field names I recommend to simply create your
 own ones based per project. These ones are standing as an example.
-

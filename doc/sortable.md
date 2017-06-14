@@ -12,7 +12,7 @@ Features:
 
 **Note:**
 
-- Public [Sortable repository](http://github.com/l3pp4rd/DoctrineExtensions "Sortable extension on Github") is available on github
+- Public [Sortable repository](http://github.com/Atlantic18/DoctrineExtensions "Sortable extension on Github") is available on github
 - Last update date: **2012-01-02**
 
 **Portability:**
@@ -30,15 +30,15 @@ Content:
 - [Yaml](#yaml-mapping) mapping example
 - [Xml](#xml-mapping) mapping example
 - Basic usage [examples](#basic-examples)
-- Custom comparison [method](#custom-comparisons) 
+- Custom comparison [method](#custom-comparisons)
 
 
 <a name="including-extension"></a>
 
 ## Setup and autoloading
 
-Read the [documentation](http://github.com/l3pp4rd/DoctrineExtensions/blob/master/doc/annotations.md#em-setup)
-or check the [example code](http://github.com/l3pp4rd/DoctrineExtensions/tree/master/example)
+Read the [documentation](http://github.com/Atlantic18/DoctrineExtensions/blob/master/doc/annotations.md#em-setup)
+or check the [example code](http://github.com/Atlantic18/DoctrineExtensions/tree/master/example)
 on how to setup and use the extensions in most optimized way.
 
 <a name="entity-mapping"></a>
@@ -319,9 +319,9 @@ class Item implements Comparable
     public function compareTo($other)
     {
         // return 1 if this object is considered greater than the compare value
-        
+
         // return -1 if this object is considered less than the compare value
-        
+
         // return 0 if this object is considered equal to the compare value
     }
 }

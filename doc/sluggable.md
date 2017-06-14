@@ -55,10 +55,10 @@ no more exceptions during concurrent flushes.
 
 **Note:**
 
-- There is a reported [issue](https://github.com/l3pp4rd/DoctrineExtensions/issues/254) that sluggable transliterator
+- There is a reported [issue](https://github.com/Atlantic18/DoctrineExtensions/issues/254) that sluggable transliterator
 does not work on OSX 10.6 its ok starting again from 10.7 version. To overcome the problem
 you can use your [custom transliterator](#transliterator)
-- Public [Sluggable repository](http://github.com/l3pp4rd/DoctrineExtensions "Sluggable extension on Github") is available on github
+- Public [Sluggable repository](http://github.com/Atlantic18/DoctrineExtensions "Sluggable extension on Github") is available on github
 - Last update date: **2012-02-26**
 - For usage together with **SoftDeleteable** in order to take into account softdeleted entities while generating unique
 slug, you must explicitly call **addManagedFilter** with a name of softdeleteable filter, so it can be disabled during
@@ -88,8 +88,8 @@ Content:
 
 ## Setup and autoloading
 
-Read the [documentation](http://github.com/l3pp4rd/DoctrineExtensions/blob/master/doc/annotations.md#em-setup)
-or check the [example code](http://github.com/l3pp4rd/DoctrineExtensions/tree/master/example)
+Read the [documentation](http://github.com/Atlantic18/DoctrineExtensions/blob/master/doc/annotations.md#em-setup)
+or check the [example code](http://github.com/Atlantic18/DoctrineExtensions/tree/master/example)
 on how to setup and use the extensions in most optimized way.
 
 <a name="entity-mapping"></a>
@@ -779,7 +779,7 @@ class Company
 ```
 
 For other mapping drivers see
-[xml](https://github.com/l3pp4rd/DoctrineExtensions/blob/master/tests/Gedmo/Mapping/Driver/Xml/Mapping.Fixture.Xml.Sluggable.dcm.xml) or [yaml](https://github.com/l3pp4rd/DoctrineExtensions/blob/master/tests/Gedmo/Mapping/Driver/Yaml/Mapping.Fixture.Yaml.Category.dcm.yml) examples from tests
+[xml](https://github.com/Atlantic18/DoctrineExtensions/blob/master/tests/Gedmo/Mapping/Driver/Xml/Mapping.Fixture.Xml.Sluggable.dcm.xml) or [yaml](https://github.com/Atlantic18/DoctrineExtensions/blob/master/tests/Gedmo/Mapping/Driver/Yaml/Mapping.Fixture.Yaml.Category.dcm.yml) examples from tests
 
 And the example usage:
 

@@ -41,8 +41,8 @@ Content:
 
 ## Setup and autoloading
 
-Read the [documentation](http://github.com/l3pp4rd/DoctrineExtensions/blob/master/doc/annotations.md#em-setup)
-or check the [example code](http://github.com/l3pp4rd/DoctrineExtensions/tree/master/example)
+Read the [documentation](http://github.com/Atlantic18/DoctrineExtensions/blob/master/doc/annotations.md#em-setup)
+or check the [example code](http://github.com/Atlantic18/DoctrineExtensions/tree/master/example)
 on how to setup and use the extensions in most optimized way.
 
 <a name="entity-mapping"></a>
@@ -603,12 +603,12 @@ class IpTraceSubscriber implements EventSubscriberInterface
             return;
         }
 
-        // If you use a cache like Varnish, you may want to set a proxy to Request::getClientIp() method 
+        // If you use a cache like Varnish, you may want to set a proxy to Request::getClientIp() method
         // $this->request->setTrustedProxies(array('127.0.0.1'));
 
         // $ip = $_SERVER['REMOTE_ADDR'];
         $ip = $this->request->getClientIp();
-        
+
         if (null !== $ip) {
             $this->ipTraceableListener->setIpValue($ip);
         }
@@ -638,7 +638,7 @@ class IpTraceSubscriber implements EventSubscriberInterface
     </parameters>
 
     <services>
-        
+
         ...
 
         <service id="gedmo_doctrine_extensions.listener.ip_traceable" class="Gedmo\IpTraceable\IpTraceableListener" public="false">
