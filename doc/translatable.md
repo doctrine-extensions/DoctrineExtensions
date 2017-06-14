@@ -22,7 +22,7 @@ constraint. This dramatically improves the management of translations
 **2012-01-04**
 
 - Refactored translatable to be able to persist, update many translations
-using repository, [issue #224](https://github.com/l3pp4rd/DoctrineExtensions/issues/224)
+using repository, [issue #224](https://github.com/Atlantic18/DoctrineExtensions/issues/224)
 
 **2011-12-11**
 
@@ -54,7 +54,7 @@ and any number of them
 
 **Note list:**
 
-- Public [Translatable repository](http://github.com/l3pp4rd/DoctrineExtensions "Translatable extension on Github") is available on github
+- Public [Translatable repository](http://github.com/Atlantic18/DoctrineExtensions "Translatable extension on Github") is available on github
 - Using other extensions on the same Entity fields may result in unexpected way
 - May impact your application performance since it does an additional query for translation if loaded without query hint
 - Last update date: **2012-02-15**
@@ -83,8 +83,8 @@ Content:
 
 ## Setup and autoloading
 
-Read the [documentation](http://github.com/l3pp4rd/DoctrineExtensions/blob/master/doc/annotations.md#em-setup)
-or check the [example code](http://github.com/l3pp4rd/DoctrineExtensions/tree/master/example)
+Read the [documentation](http://github.com/Atlantic18/DoctrineExtensions/blob/master/doc/annotations.md#em-setup)
+or check the [example code](http://github.com/Atlantic18/DoctrineExtensions/tree/master/example)
 on how to setup and use the extensions in most optimized way.
 
 ### Translatable annotations:
