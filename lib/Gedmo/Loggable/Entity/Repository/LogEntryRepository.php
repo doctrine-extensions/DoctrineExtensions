@@ -64,6 +64,34 @@ class LogEntryRepository extends EntityRepository
     }
 
     /**
+     * Reverts given $entity to $n-th previous revision.
+     *
+     * @param object $entity
+     * @param integer $n
+     *
+     * @throws \Gedmo\Exception\UnexpectedValueException
+     *
+     * @return void
+     */
+    public function revertToPrevious($entity, $n = 1)
+    {
+        if ($n < 1) {
+            throw new \Gedmo\Exception\UnexpectedValueException(sprintf('You must revert at least one revision back, you tried %d revisions', $n));
+        }
+
+        $logs = $this->getLogEntries($entity);
+        $target = array_shift($logs); // current version we don't care about
+
+        while ($n-- > 0) {
+            $target = array_shift($logs);
+        }
+
+        if ($target) {
+            $this->revert($entity, $target->getVersion());
+        }
+    }
+
+    /**
      * Reverts given $entity to $revision by
      * restoring all fields from that $revision.
      * After this operation you will need to
@@ -127,7 +155,7 @@ class LogEntryRepository extends EntityRepository
         if (!$objectMeta->isSingleValuedAssociation($field)) {
             return;
         }
-        
+
         $mapping = $objectMeta->getAssociationMapping($field);
         $value   = $value ? $this->_em->getReference($mapping['targetEntity'], $value) : null;
     }
