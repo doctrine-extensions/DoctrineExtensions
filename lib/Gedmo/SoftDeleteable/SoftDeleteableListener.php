@@ -70,7 +70,7 @@ class SoftDeleteableListener extends MappedEventSubscriber
                 $evm->dispatchEvent(
                     self::PRE_SOFT_DELETE,
                     $ea->createLifecycleEventArgsInstance($object, $om)
-                 );
+                );
 
                 $date = new \DateTime();
                 $reflProp->setValue($object, $date);
