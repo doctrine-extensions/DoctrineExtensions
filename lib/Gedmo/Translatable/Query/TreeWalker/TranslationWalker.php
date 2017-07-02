@@ -2,6 +2,7 @@
 
 namespace Gedmo\Translatable\Query\TreeWalker;
 
+use Doctrine\ORM\Mapping\ClassMetadata;
 use Gedmo\Translatable\Mapping\Event\Adapter\ORM as TranslatableEventAdapter;
 use Gedmo\Translatable\TranslatableListener;
 use Doctrine\DBAL\Types\Type;
@@ -296,41 +297,43 @@ class TranslationWalker extends SqlWalker
         $em = $this->getEntityManager();
         $ea = new TranslatableEventAdapter();
         $ea->setEntityManager($em);
+        $quoteStrategy = $em->getConfiguration()->getQuoteStrategy();
         $joinStrategy = $q->getHint(TranslatableListener::HINT_INNER_JOIN) ? 'INNER' : 'LEFT';
 
         foreach ($this->translatedComponents as $dqlAlias => $comp) {
+            /** @var ClassMetadata $meta */
             $meta = $comp['metadata'];
             $config = $this->listener->getConfiguration($em, $meta->name);
             $transClass = $this->listener->getTranslationClass($ea, $meta->name);
             $transMeta = $em->getClassMetadata($transClass);
-            $transTable = $em->getConfiguration()->getQuoteStrategy()->getTableName($transMeta, $this->platform);
+            $transTable = $quoteStrategy->getTableName($transMeta, $this->platform);
             foreach ($config['fields'] as $field) {
                 $compTblAlias = $this->walkIdentificationVariable($dqlAlias, $field);
                 $tblAlias = $this->getSQLTableAlias('trans'.$compTblAlias.$field);
                 $sql = " {$joinStrategy} JOIN ".$transTable.' '.$tblAlias;
-                $sql .= ' ON '.$tblAlias.'.'.$transMeta->getQuotedColumnName('locale', $this->platform)
+                $sql .= ' ON '.$tblAlias.'.'.$quoteStrategy->getColumnName('locale', $transMeta, $this->platform)
                     .' = '.$this->conn->quote($locale);
-                $sql .= ' AND '.$tblAlias.'.'.$transMeta->getQuotedColumnName('field', $this->platform)
+                $sql .= ' AND '.$tblAlias.'.'.$quoteStrategy->getColumnName('field', $transMeta, $this->platform)
                     .' = '.$this->conn->quote($field);
                 $identifier = $meta->getSingleIdentifierFieldName();
-                $idColName = $meta->getQuotedColumnName($identifier, $this->platform);
+                $idColName = $quoteStrategy->getColumnName($identifier, $meta, $this->platform);
                 if ($ea->usesPersonalTranslation($transClass)) {
                     $sql .= ' AND '.$tblAlias.'.'.$transMeta->getSingleAssociationJoinColumnName('object')
                         .' = '.$compTblAlias.'.'.$idColName;
                 } else {
-                    $sql .= ' AND '.$tblAlias.'.'.$transMeta->getQuotedColumnName('objectClass', $this->platform)
+                    $sql .= ' AND '.$tblAlias.'.'.$quoteStrategy->getColumnName('objectClass', $transMeta, $this->platform)
                         .' = '.$this->conn->quote($config['useObjectClass']);
 
                     $mappingFK = $transMeta->getFieldMapping('foreignKey');
                     $mappingPK = $meta->getFieldMapping($identifier);
                     $fkColName = $this->getCastedForeignKey($compTblAlias.'.'.$idColName, $mappingFK['type'], $mappingPK['type']);
-                    $sql .= ' AND '.$tblAlias.'.'.$transMeta->getQuotedColumnName('foreignKey', $this->platform)
+                    $sql .= ' AND '.$tblAlias.'.'.$quoteStrategy->getColumnName('foreignKey', $transMeta, $this->platform)
                         .' = '.$fkColName;
                 }
                 isset($this->components[$dqlAlias]) ? $this->components[$dqlAlias] .= $sql : $this->components[$dqlAlias] = $sql;
 
-                $originalField = $compTblAlias.'.'.$meta->getQuotedColumnName($field, $this->platform);
-                $substituteField = $tblAlias.'.'.$transMeta->getQuotedColumnName('content', $this->platform);
+                $originalField = $compTblAlias.'.'.$quoteStrategy->getColumnName($field, $meta, $this->platform);
+                $substituteField = $tblAlias.'.'.$quoteStrategy->getColumnName('content', $transMeta, $this->platform);
 
                 // Treat translation as original field type
                 $fieldMapping = $meta->getFieldMapping($field);
