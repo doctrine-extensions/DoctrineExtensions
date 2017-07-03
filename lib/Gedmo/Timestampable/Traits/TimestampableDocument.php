@@ -16,14 +16,14 @@ trait TimestampableDocument
     /**
      * @var \DateTime
      * @Gedmo\Timestampable(on="create")
-     * @ODM\Date
+     * @ODM\Field(type="date")
      */
     protected $createdAt;
 
     /**
      * @var \DateTime
      * @Gedmo\Timestampable(on="update")
-     * @ODM\Date
+     * @ODM\Field(type="date")
      */
     protected $updatedAt;
 
