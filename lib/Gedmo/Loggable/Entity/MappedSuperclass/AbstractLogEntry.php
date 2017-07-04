@@ -28,7 +28,7 @@ abstract class AbstractLogEntry
     protected $action;
 
     /**
-     * @var string $loggedAt
+     * @var \DateTime $loggedAt
      *
      * @ORM\Column(name="logged_at", type="datetime")
      */
@@ -56,7 +56,7 @@ abstract class AbstractLogEntry
     protected $version;
 
     /**
-     * @var string $data
+     * @var array $data
      *
      * @ORM\Column(type="array", nullable=true)
      */
