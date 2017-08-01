@@ -40,7 +40,8 @@
     "require": {
         "php": ">=5.3.2",
         "behat/transliterator": "~1.2",
-        "doctrine/common": "~2.4"
+        "doctrine/common": "~2.4",
+        "symfony/property-access": "~2.7|~3.0"
     },
     "require-dev": {
         "doctrine/mongodb-odm": ">=1.0.2",

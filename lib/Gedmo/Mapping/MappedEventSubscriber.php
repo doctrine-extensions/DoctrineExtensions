@@ -7,6 +7,8 @@ use Doctrine\Common\Cache\ArrayCache;
 use Doctrine\Common\EventSubscriber;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\Common\EventArgs;
+use Symfony\Component\PropertyAccess\PropertyAccessor;
+use Symfony\Component\PropertyAccess\PropertyAccess;
 
 /**
  * This is extension of event subscriber class and is
@@ -64,7 +66,13 @@ abstract class MappedEventSubscriber implements EventSubscriber
      * @var \Doctrine\Common\Annotations\AnnotationReader
      */
     private static $defaultAnnotationReader;
-
+    
+    /**
+     * 
+     * @var PropertyAccessor
+     */
+    private $propertyAccessor;
+    
     /**
      * Constructor
      */
@@ -259,4 +267,25 @@ abstract class MappedEventSubscriber implements EventSubscriber
 
         return self::$defaultAnnotationReader;
     }
+    
+    /**
+     * @return \Symfony\Component\PropertyAccess\PropertyAccessor
+     */
+    public function getPropertyAccessor()
+    {
+        if($this->propertyAccessor === null)
+        {
+            $this->propertyAccessor = PropertyAccess::createPropertyAccessor();
+        }
+        return $this->propertyAccessor;
+    }
+    
+    /**
+     * @param \Symfony\Component\PropertyAccess\PropertyAccessor $propertyAccessor
+     */
+    public function setPropertyAccessor($propertyAccessor)
+    {
+        $this->propertyAccessor = $propertyAccessor;
+    }
+    
 }

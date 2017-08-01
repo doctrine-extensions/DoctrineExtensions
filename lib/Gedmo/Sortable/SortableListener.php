@@ -159,10 +159,10 @@ class SortableListener extends MappedEventSubscriber
     {
         $em = $ea->getObjectManager();
         $uow = $em->getUnitOfWork();
+        $accessor = $this->getPropertyAccessor();
 
-        $old = $meta->getReflectionProperty($config['position'])->getValue($object);
-        $newPosition = $meta->getReflectionProperty($config['position'])->getValue($object);
-
+        $old = $accessor->getValue($object, $config['position']);
+        $newPosition = $accessor->getValue($object, $config['position']);
         if (is_null($newPosition)) {
             $newPosition = -1;
         }
@@ -211,7 +211,7 @@ class SortableListener extends MappedEventSubscriber
 
         // Set new position
         if ($old < 0 || is_null($old)) {
-            $meta->getReflectionProperty($config['position'])->setValue($object, $newPosition);
+            $accessor->setValue($object, $config['position'], $newPosition);
             $ea->recomputeSingleObjectChangeSet($uow, $meta, $object);
         }
     }
@@ -228,6 +228,7 @@ class SortableListener extends MappedEventSubscriber
     {
         $em = $ea->getObjectManager();
         $uow = $em->getUnitOfWork();
+        $accessor = $this->getPropertyAccessor();
 
         $changed = false;
         $groupHasChanged = false;
@@ -251,7 +252,7 @@ class SortableListener extends MappedEventSubscriber
             if (array_key_exists($config['position'], $changeSet)) {
                 $oldPosition = $changeSet[$config['position']][0];
             } else {
-                $oldPosition = $meta->getReflectionProperty($config['position'])->getValue($object);
+                $oldPosition = $accessor->getValue($object, $config['position']);
             }
             $this->addRelocation($oldHash, $config['useObjectClass'], $oldGroups, $oldPosition + 1, $this->maxPositions[$oldHash] + 1, -1);
             $groupHasChanged = true;
@@ -353,7 +354,7 @@ class SortableListener extends MappedEventSubscriber
         }
 
         // Set new position
-        $meta->getReflectionProperty($config['position'])->setValue($object, $newPosition);
+        $accessor->setValue($object, $config['position'], $newPosition);
         $ea->recomputeSingleObjectChangeSet($uow, $meta, $object);
     }
 
@@ -367,7 +368,8 @@ class SortableListener extends MappedEventSubscriber
      */
     private function processDeletion(SortableAdapter $ea, array $config, $meta, $object)
     {
-        $position = $meta->getReflectionProperty($config['position'])->getValue($object);
+        $accessor = $this->getPropertyAccessor();
+        $position = $accessor->getValue($object, $config['position']);
 
         // Get groups
         $groups = $this->getGroups($meta, $config, $object);
@@ -415,6 +417,7 @@ class SortableListener extends MappedEventSubscriber
     {
         $ea = $this->getEventAdapter($args);
         $em = $ea->getObjectManager();
+        $accessor = $this->getPropertyAccessor();
         foreach ($this->relocations as $hash => $relocation) {
             $config = $this->getConfiguration($em, $relocation['name']);
             foreach ($relocation['deltas'] as $delta) {
@@ -452,12 +455,12 @@ class SortableListener extends MappedEventSubscriber
                         }
 
                         $oid = spl_object_hash($object);
-                        $pos = $meta->getReflectionProperty($config['position'])->getValue($object);
+                        $pos = $accessor->getValue($object, $config['position']);
                         $matches = $pos >= $delta['start'];
                         $matches = $matches && ($delta['stop'] <= 0 || $pos < $delta['stop']);
                         $value = reset($relocation['groups']);
                         while ($matches && ($group = key($relocation['groups']))) {
-                            $gr = $meta->getReflectionProperty($group)->getValue($object);
+                            $gr = $accessor->getValue($object, $group);
                             if (null === $value) {
                                 $matches = $gr === null;
                             } elseif (is_object($gr) && is_object($value) && $gr !== $value) {
@@ -475,8 +478,9 @@ class SortableListener extends MappedEventSubscriber
                             $value = next($relocation['groups']);
                         }
                         if ($matches) {
-                            $meta->getReflectionProperty($config['position'])->setValue($object, $pos + $delta['delta']);
-                            $ea->setOriginalObjectProperty($uow, $oid, $config['position'], $pos + $delta['delta']);
+                            $newValue = $pos + $delta['delta'];
+                            $accessor->setValue($object, $config['position'], $newValue);
+                            $ea->setOriginalObjectProperty($uow, $oid, $config['position'], $newValue);
                         }
                     }
                 }
@@ -580,10 +584,11 @@ class SortableListener extends MappedEventSubscriber
      */
     private function getGroups($meta, $config, $object)
     {
+        $accessor = $this->getPropertyAccessor();
         $groups = array();
         if (isset($config['groups'])) {
             foreach ($config['groups'] as $group) {
-                $groups[$group] = $meta->getReflectionProperty($group)->getValue($object);
+                $groups[$group] = $accessor->getValue($object, $group);
             }
         }
 
