@@ -798,15 +798,15 @@ class SortableTest extends BaseTestCaseORM
      */
     public function shouldFixIssue1809()
     {
-        $em = $this->em;
+        $manager = $this->em;
         $nodes = [];
         for ($i = 1; $i <= 3; $i++) {
             $node = new NotifyNode();
             $node->setName("Node".$i);
             $node->setPath("/");
-            $em->persist($node);
+            $manager->persist($node);
             $nodes[] = $node;
-            $this->em->flush();
+            $manager->flush();
         }
         foreach($nodes as $i => $node)
         {
