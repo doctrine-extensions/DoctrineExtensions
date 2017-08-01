@@ -7,8 +7,7 @@ use Doctrine\Common\Cache\ArrayCache;
 use Doctrine\Common\EventSubscriber;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\Common\EventArgs;
-use Symfony\Component\PropertyAccess\PropertyAccessor;
-use Symfony\Component\PropertyAccess\PropertyAccess;
+use Gedmo\Mapping\Event\AdapterInterface;
 
 /**
  * This is extension of event subscriber class and is
@@ -66,13 +65,7 @@ abstract class MappedEventSubscriber implements EventSubscriber
      * @var \Doctrine\Common\Annotations\AnnotationReader
      */
     private static $defaultAnnotationReader;
-    
-    /**
-     * 
-     * @var PropertyAccessor
-     */
-    private $propertyAccessor;
-    
+
     /**
      * Constructor
      */
@@ -269,23 +262,22 @@ abstract class MappedEventSubscriber implements EventSubscriber
     }
     
     /**
-     * @return \Symfony\Component\PropertyAccess\PropertyAccessor
+     * Sets the value for a mapped field
+     * 
+     * @param AdapterInterface $adapter
+     * @param object $object
+     * @param string $field
+     * @param mixed $oldValue
+     * @param mixed $newValue
      */
-    public function getPropertyAccessor()
+    protected function setFieldValue(AdapterInterface $adapter, $object, $field, $oldValue, $newValue)
     {
-        if($this->propertyAccessor === null)
-        {
-            $this->propertyAccessor = PropertyAccess::createPropertyAccessor();
-        }
-        return $this->propertyAccessor;
+        $manager = $adapter->getObjectManager();
+        $meta = $manager->getClassMetadata(get_class($object));
+        $uow = $manager->getUnitOfWork();
+        
+        $meta->getReflectionProperty($field)->setValue($object, $newValue);
+        $uow->propertyChanged($object, $field, $oldValue, $newValue);
+        $adapter->recomputeSingleObjectChangeSet($uow, $meta, $object);
     }
-    
-    /**
-     * @param \Symfony\Component\PropertyAccess\PropertyAccessor $propertyAccessor
-     */
-    public function setPropertyAccessor($propertyAccessor)
-    {
-        $this->propertyAccessor = $propertyAccessor;
-    }
-    
 }

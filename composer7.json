@@ -40,8 +40,7 @@
     "require": {
         "php": ">=5.4",
         "behat/transliterator": "~1.2",
-        "doctrine/common": "~2.4",
-        "symfony/property-access": "~2.7|~3.0"
+        "doctrine/common": "~2.4"
     },
     "replace": {
         "ext-mongo": "1.6.12"
