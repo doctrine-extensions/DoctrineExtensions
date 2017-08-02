@@ -14,6 +14,7 @@ use Sortable\Fixture\Paper;
 use Sortable\Fixture\Event;
 use Sortable\Fixture\Customer;
 use Sortable\Fixture\CustomerType;
+use Sortable\Fixture\NotifyNode;
 
 /**
  * These are tests for sortable behavior
@@ -25,6 +26,7 @@ use Sortable\Fixture\CustomerType;
 class SortableTest extends BaseTestCaseORM
 {
     const NODE = 'Sortable\\Fixture\\Node';
+    const NOTIFY_NODE = 'Sortable\\Fixture\\NotifyNode';
     const ITEM = 'Sortable\\Fixture\\Item';
     const CATEGORY = 'Sortable\\Fixture\\Category';
     const SIMPLE_LIST_ITEM = 'Sortable\\Fixture\\SimpleListItem';
@@ -790,11 +792,34 @@ class SortableTest extends BaseTestCaseORM
 
         $this->assertEquals(4, $nodes[4]->getPosition());
     }
+    
+    /**
+     * @test
+     */
+    public function shouldFixIssue1809()
+    {
+        $manager = $this->em;
+        $nodes = [];
+        for ($i = 1; $i <= 3; $i++) {
+            $node = new NotifyNode();
+            $node->setName("Node".$i);
+            $node->setPath("/");
+            $manager->persist($node);
+            $nodes[] = $node;
+            $manager->flush();
+        }
+        foreach($nodes as $i => $node)
+        {
+            $position = $node->getPosition();
+            $this->assertEquals($i, $position);
+        }
+    }
 
     protected function getUsedEntityFixtures()
     {
-        return array(
+        return [
             self::NODE,
+            self::NOTIFY_NODE,
             self::ITEM,
             self::CATEGORY,
             self::SIMPLE_LIST_ITEM,
@@ -803,7 +828,7 @@ class SortableTest extends BaseTestCaseORM
             self::EVENT,
             self::CUSTOMER,
             self::CUSTOMER_TYPE,
-        );
+        ];
     }
 
     private function populate()

@@ -211,8 +211,7 @@ class SortableListener extends MappedEventSubscriber
 
         // Set new position
         if ($old < 0 || is_null($old)) {
-            $meta->getReflectionProperty($config['position'])->setValue($object, $newPosition);
-            $ea->recomputeSingleObjectChangeSet($uow, $meta, $object);
+            $this->setFieldValue($ea, $object, $config['position'], $old, $newPosition);
         }
     }
 
@@ -353,8 +352,7 @@ class SortableListener extends MappedEventSubscriber
         }
 
         // Set new position
-        $meta->getReflectionProperty($config['position'])->setValue($object, $newPosition);
-        $ea->recomputeSingleObjectChangeSet($uow, $meta, $object);
+        $this->setFieldValue($ea, $object, $config['position'], $oldPosition, $newPosition);
     }
 
     /**
@@ -475,8 +473,7 @@ class SortableListener extends MappedEventSubscriber
                             $value = next($relocation['groups']);
                         }
                         if ($matches) {
-                            $meta->getReflectionProperty($config['position'])->setValue($object, $pos + $delta['delta']);
-                            $ea->setOriginalObjectProperty($uow, $oid, $config['position'], $pos + $delta['delta']);
+                            $this->setFieldValue($ea, $object, $config['position'], $pos, $pos + $delta['delta']);
                         }
                     }
                 }

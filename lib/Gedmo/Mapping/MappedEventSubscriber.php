@@ -7,6 +7,7 @@ use Doctrine\Common\Cache\ArrayCache;
 use Doctrine\Common\EventSubscriber;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\Common\EventArgs;
+use Gedmo\Mapping\Event\AdapterInterface;
 
 /**
  * This is extension of event subscriber class and is
@@ -258,5 +259,25 @@ abstract class MappedEventSubscriber implements EventSubscriber
         }
 
         return self::$defaultAnnotationReader;
+    }
+    
+    /**
+     * Sets the value for a mapped field
+     * 
+     * @param AdapterInterface $adapter
+     * @param object $object
+     * @param string $field
+     * @param mixed $oldValue
+     * @param mixed $newValue
+     */
+    protected function setFieldValue(AdapterInterface $adapter, $object, $field, $oldValue, $newValue)
+    {
+        $manager = $adapter->getObjectManager();
+        $meta = $manager->getClassMetadata(get_class($object));
+        $uow = $manager->getUnitOfWork();
+        
+        $meta->getReflectionProperty($field)->setValue($object, $newValue);
+        $uow->propertyChanged($object, $field, $oldValue, $newValue);
+        $adapter->recomputeSingleObjectChangeSet($uow, $meta, $object);
     }
 }
