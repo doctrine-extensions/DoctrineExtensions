@@ -77,7 +77,7 @@ on how to setup and use the extensions in most optimized way.
     occurs. If you want to use a custom mime type guesser, see [this](#custom-mime-type-guessers).
     * **disallowedTypes**: Similar to the option **allowedTypes**, but with this one you configure a "black list" of
     mime types. If the mime type of the file is on this list, n exception of type "UploadableInvalidMimeTypeException" will be thrown. If you
-    set this option, you can't set the **allowedTypes** option described next. By default, no validation of mime type
+    set this option, you can't set the **allowedTypes** option described above. By default, no validation of mime type
     occurs. If you want to use a custom mime type guesser, see [this](#custom-mime-type-guessers).
 2. **@Gedmo\Mapping\Annotation\UploadableFilePath**: This annotation is used to set which field will receive the path
  to the file. The field MUST be of type "string". Either this one or UploadableFileName annotation is REQUIRED to be set.
