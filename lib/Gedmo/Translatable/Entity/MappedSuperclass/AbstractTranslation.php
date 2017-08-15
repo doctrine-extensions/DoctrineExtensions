@@ -9,7 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\MappedSuperclass
  */
-abstract class AbstractTranslation
+abstract class AbstractTranslation implements TranslationInterface
 {
     /**
      * @var integer $id

@@ -71,26 +71,19 @@ final class ORM extends BaseAdapterORM implements TranslatableAdapter
             }
             // if collection is not set, fetch it through relation
             if (!$found) {
-                $dql = 'SELECT t.content, t.field FROM '.$translationClass.' t';
-                $dql .= ' WHERE t.locale = :locale';
-                $dql .= ' AND t.object = :object';
-
-                $q = $em->createQuery($dql);
-                $q->setParameters(compact('object', 'locale'));
-                $result = $q->getArrayResult();
+                $result = $em->getRepository($translationClass)->findBy([
+                    'locale' => $locale,
+                    'object' => $object
+                ]);
             }
         } else {
             // load translated content for all translatable fields
             $objectId = $this->foreignKey($wrapped->getIdentifier(), $translationClass);
-            // construct query
-            $dql = 'SELECT t.content, t.field FROM '.$translationClass.' t';
-            $dql .= ' WHERE t.foreignKey = :objectId';
-            $dql .= ' AND t.locale = :locale';
-            $dql .= ' AND t.objectClass = :objectClass';
-            // fetch results
-            $q = $em->createQuery($dql);
-            $q->setParameters(compact('objectId', 'locale', 'objectClass'));
-            $result = $q->getArrayResult();
+            $result = $em->getRepository($translationClass)->findBy([
+                'foreignKey' => $objectId,
+                'locale' => $locale,
+                'objectClass' => $objectClass
+            ]);
         }
 
         return $result;

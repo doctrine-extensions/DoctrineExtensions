@@ -7,6 +7,7 @@ use Doctrine\ODM\MongoDB\DocumentManager;
 use Doctrine\ORM\ORMInvalidArgumentException;
 use Gedmo\Tool\Wrapper\AbstractWrapper;
 use Gedmo\Mapping\MappedEventSubscriber;
+use Gedmo\Translatable\Entity\MappedSuperclass\TranslationInterface;
 use Gedmo\Translatable\Mapping\Event\TranslatableAdapter;
 
 /**
@@ -473,6 +474,12 @@ class TranslatableListener extends MappedEventSubscriber
                 $translated = '';
                 $is_translated = false;
                 foreach ((array) $result as $entry) {
+                    if($entry instanceof TranslationInterface) {
+                       $entry = [
+                           'field' => $entry->getField(),
+                           'content' => $entry->getContent()
+                       ];
+                    }
                     if ($entry['field'] == $field) {
                         $translated = $entry['content'];
                         $is_translated = true;
