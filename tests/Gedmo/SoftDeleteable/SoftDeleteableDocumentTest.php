@@ -34,6 +34,7 @@ class SoftDeleteableDocumentTest extends BaseTestCaseMongoODM
     const OTHER_COMMENT_CLASS = 'SoftDeleteable\Fixture\Document\OtherComment';
     const USER_CLASS = 'SoftDeleteable\Fixture\Document\User';
     const USER__TIME_AWARE_CLASS = 'SoftDeleteable\Fixture\Document\UserTimeAware';
+    const USER__ALLOW_HARD_DELETE_CLASS = 'SoftDeleteable\Fixture\Document\UserAllowHardDelete';
     const MAPPED_SUPERCLASS_CHILD_CLASS = 'SoftDeleteable\Fixture\Document\Child';
     const SOFT_DELETEABLE_FILTER_NAME = 'soft-deleteable';
 
@@ -116,6 +117,80 @@ class SoftDeleteableDocumentTest extends BaseTestCaseMongoODM
     }
 
     /**
+     * Tests deletion if hard deletion is allowed
+     *
+     * @test
+     */
+    public function shouldHardDeleteIfAllowed()
+    {
+        $filter = $this->dm->getFilterCollection()->getFilter(self::SOFT_DELETEABLE_FILTER_NAME);
+        $filter->disableForDocument(self::USER_CLASS);
+
+        $repo = $this->dm->getRepository(self::USER_CLASS);
+
+        $newUser = new User();
+        $username = 'test_user';
+        $newUser->setUsername($username);
+
+        $this->dm->persist($newUser);
+        $this->dm->flush();
+
+        $user = $repo->findOneBy(array('username' => $username));
+        $this->assertNull($user->getDeletedAt());
+
+        // Soft delete
+        $this->dm->remove($user);
+        $this->dm->flush();
+
+        $user = $repo->findOneBy(array('username' => $username));
+        $this->assertNotNull($user->getDeletedAt());
+
+        // Hard delete
+        $this->dm->remove($user);
+        $this->dm->flush();
+
+        $user = $repo->findOneBy(array('username' => $username));
+        $this->assertNull($user);
+    }
+
+    /**
+     * Tests deletion if hard deletion is disallowed
+     *
+     * @test
+     */
+    public function shouldNotHardDeleteIfNotAllowed()
+    {
+        $filter = $this->dm->getFilterCollection()->getFilter(self::SOFT_DELETEABLE_FILTER_NAME);
+        $filter->disableForDocument(self::USER__ALLOW_HARD_DELETE_CLASS);
+
+        $repo = $this->dm->getRepository(self::USER__ALLOW_HARD_DELETE_CLASS);
+
+        $newUser = new User();
+        $username = 'test_user';
+        $newUser->setUsername($username);
+
+        $this->dm->persist($newUser);
+        $this->dm->flush();
+
+        $user = $repo->findOneBy(array('username' => $username));
+        $this->assertNull($user->getDeletedAt());
+
+        // Soft delete
+        $this->dm->remove($user);
+        $this->dm->flush();
+
+        $user = $repo->findOneBy(array('username' => $username));
+        $this->assertNotNull($user->getDeletedAt());
+
+        // Second delete shouldn't trigger a hard delete
+        $this->dm->remove($user);
+        $this->dm->flush();
+
+        $user = $repo->findOneBy(array('username' => $username));
+        $this->assertNotNull($user);
+    }
+
+    /**
      * Tests the filter with time aware option by enabling and disabling it between
      * some user persists actions.
      *
@@ -156,6 +231,7 @@ class SoftDeleteableDocumentTest extends BaseTestCaseMongoODM
         $this->dm->remove($user);
         $this->dm->flush();
     }
+
     public function testPostSoftDeleteEventIsDispatched()
     {
         $subscriber = $this->getMockBuilder("Doctrine\Common\EventSubscriber")

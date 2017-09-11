@@ -7,6 +7,7 @@ use Doctrine\Common\EventManager;
 use SoftDeleteable\Fixture\Entity\Article;
 use SoftDeleteable\Fixture\Entity\Comment;
 use SoftDeleteable\Fixture\Entity\User;
+use SoftDeleteable\Fixture\Entity\UserAllowHardDelete;
 use SoftDeleteable\Fixture\Entity\Page;
 use SoftDeleteable\Fixture\Entity\MegaPage;
 use SoftDeleteable\Fixture\Entity\Module;
@@ -33,6 +34,7 @@ class SoftDeleteableEntityTest extends BaseTestCaseORM
     const OTHER_ARTICLE_CLASS = 'SoftDeleteable\Fixture\Entity\OtherArticle';
     const OTHER_COMMENT_CLASS = 'SoftDeleteable\Fixture\Entity\OtherComment';
     const USER_CLASS = 'SoftDeleteable\Fixture\Entity\User';
+    const USER__ALLOW_HARD_DELETE_CLASS = 'SoftDeleteable\Fixture\Entity\UserAllowHardDelete';
     const MAPPED_SUPERCLASS_CHILD_CLASS = 'SoftDeleteable\Fixture\Entity\Child';
     const SOFT_DELETEABLE_FILTER_NAME = 'soft-deleteable';
 
@@ -318,6 +320,80 @@ class SoftDeleteableEntityTest extends BaseTestCaseORM
         $this->assertNull($user);
     }
 
+    /**
+     * Tests deletion if hard deletion is allowed
+     *
+     * @test
+     */
+    public function shouldHardDeleteIfAllowed()
+    {
+        $filter = $this->em->getFilters()->enable(self::SOFT_DELETEABLE_FILTER_NAME);
+        $filter->disableForEntity(self::USER_CLASS);
+
+        $repo = $this->em->getRepository(self::USER_CLASS);
+
+        $newUser = new User();
+        $username = 'test_user';
+        $newUser->setUsername($username);
+
+        $this->em->persist($newUser);
+        $this->em->flush();
+
+        $user = $repo->findOneBy(array('username' => $username));
+        $this->assertNull($user->getDeletedAt());
+
+        // Soft delete
+        $this->em->remove($user);
+        $this->em->flush();
+
+        $user = $repo->findOneBy(array('username' => $username));
+        $this->assertNotNull($user->getDeletedAt());
+
+        // Hard delete
+        $this->em->remove($user);
+        $this->em->flush();
+
+        $user = $repo->findOneBy(array('username' => $username));
+        $this->assertNull($user);
+    }
+
+    /**
+     * Tests deletion if hard deletion is disallowed
+     *
+     * @test
+     */
+    public function shouldNotHardDeleteIfNotAllowed()
+    {
+        $filter = $this->em->getFilters()->enable(self::SOFT_DELETEABLE_FILTER_NAME);
+        $filter->disableForEntity(self::USER__ALLOW_HARD_DELETE_CLASS);
+
+        $repo = $this->em->getRepository(self::USER__ALLOW_HARD_DELETE_CLASS);
+
+        $newUser = new UserAllowHardDelete();
+        $username = 'test_user';
+        $newUser->setUsername($username);
+
+        $this->em->persist($newUser);
+        $this->em->flush();
+
+        $user = $repo->findOneBy(array('username' => $username));
+        $this->assertNull($user->getDeletedAt());
+
+        // Soft delete
+        $this->em->remove($user);
+        $this->em->flush();
+
+        $user = $repo->findOneBy(array('username' => $username));
+        $this->assertNotNull($user->getDeletedAt());
+
+        // Second delete shouldn't trigger a hard delete
+        $this->em->remove($user);
+        $this->em->flush();
+
+        $user = $repo->findOneBy(array('username' => $username));
+        $this->assertNotNull($user);
+    }
+
     public function testPostSoftDeleteEventIsDispatched()
     {
         $subscriber = $this->getMockBuilder("Doctrine\Common\EventSubscriber")
@@ -379,6 +455,7 @@ class SoftDeleteableEntityTest extends BaseTestCaseORM
             self::MODULE_CLASS,
             self::COMMENT_CLASS,
             self::USER_CLASS,
+            self::USER__ALLOW_HARD_DELETE_CLASS,
             self::OTHER_ARTICLE_CLASS,
             self::OTHER_COMMENT_CLASS,
             self::MAPPED_SUPERCLASS_CHILD_CLASS,
