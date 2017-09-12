@@ -1,18 +1,20 @@
 # Reference Integrity behavior extension for Doctrine 2
 
 **ReferenceIntegrity** behavior will automate the reference integrity for referenced documents.
-It works through annotations and yaml, and supports 'nullify' and 'restrict' which throws an exception.
+It works through annotations and yaml, and supports 'nullify', 'pull' and 'restrict' which throws an exception.
 
 So let's say you have a Type which is referenced to multiple Articles, when deleting the Type, by default the Article
 would still have a reference to Type, since Mongo doesn't care. When setting the ReferenceIntegrity to 'nullify' it
 would then automatically remove the reference from Article.
+
+When the owning side (Article#types) is a ReferenceMany and ReferenceIntegrity is set to 'pull', the removed document would automatically be pulled from Article#types.
 
 Features:
 
 - Automatically remove referenced association
 - ODM only
 - ReferenceOne and ReferenceMany support
-- 'nullify' and 'restrict' support
+- 'nullify', 'pull' and 'restrict' support
 - Annotation and Yaml mapping support for extensions
 
 
@@ -60,7 +62,7 @@ class Type
     private $id;
 
     /**
-     * @ODM\String
+     * @ODM\Field(type="string")
      */
     private $title;
 
@@ -100,7 +102,7 @@ Document\Type:
           mappedBy: type
           targetDocument: Document\Article
           gedmo:
-              referenceIntegrity: nullify   # or restrict
+              referenceIntegrity: nullify   # or pull or restrict
 
 ```
 
@@ -110,7 +112,7 @@ It is necessary to have the 'mappedBy' option set, to be able to access the refe
 
 ## Usage examples:
 
-Few operations to see it in action:
+Few operations to see 'nullify' in action:
 
 ``` php
 <?php
@@ -120,19 +122,47 @@ $article->setTitle('My Article');
 $type = new Type;
 $type->setTitle('Published');
 
-$article = $em->getRepository('Entity\Article')->findByTitle('My Article');
 $article->setType($type);
 
 $em->persist($article);
 $em->persist($type);
 $em->flush();
 
-$type = $em->getRepository('Entity\Type')->findByTitle('Published');
+$type = $em->getRepository('Document\Type')->findByTitle('Published');
 $em->remove($type);
 $em->flush();
 
-$article = $em->getRepository('Entity\Article')->findByTitle('My Article');
+$article = $em->getRepository('Document\Article')->findByTitle('My Article');
 $article->getType(); // won't be referenced to Type anymore
+```
+
+Few operations to see 'pull' in action:
+
+``` php
+<?php
+$article = new Article;
+$article->setTitle('My Article');
+
+$type1 = new Type;
+$type1->setTitle('Published');
+
+$type2 = new Type;
+$type2->setTitle('Info');
+
+$article->addType($type1);
+$article->addType($type2);
+
+$em->persist($article);
+$em->persist($type1);
+$em->persist($type2);
+$em->flush();
+
+$type2 = $em->getRepository('Document\Type')->findByTitle('Info');
+$em->remove($type2);
+$em->flush();
+
+$article = $em->getRepository('Document\Article')->findByTitle('My Article');
+$article->getTypes(); // will only contain $type1 ('Published')
 ```
 
 When 'ReferenceIntegrity' is set to 'restrict' a `ReferenceIntegrityStrictException` will be thrown, only when there

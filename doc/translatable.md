@@ -9,55 +9,23 @@ Features:
 
 - Automatic storage of translations in database
 - ORM and ODM support using same listener
-- Automatic translation of Entity or Document fields then loaded
+- Automatic translation of Entity or Document fields when loaded
 - ORM query can use **hint** to translate all records without issuing additional queries
 - Can be nested with other behaviors
 - Annotation, Yaml and Xml mapping support for extensions
 
-**2012-01-28**
+**2016-02-03**
 
-- Created personal translation which maps through real foreign key
-constraint. This dramatically improves the management of translations
-
-**2012-01-04**
-
-- Refactored translatable to be able to persist, update many translations
-using repository, [issue #224](https://github.com/l3pp4rd/DoctrineExtensions/issues/224)
-
-**2011-12-11**
-
-- Added more useful translation query hints: Override translatable locale, inner join
-translations instead left join, override translation fallback
-
-**2011-11-08**
-
-- Thanks to [@acasademont](https://github.com/acasademont) Translatable now does not store translations for default locale. It is always left as original record value.
-So be sure you do not change your default locale per project or per data migration. This way
-it is more rational and unnecessary to store it additionally in translation table.
-
-Update **2011-04-21**
-
-- Implemented multiple translation persistence through repository
-
-Update **2011-04-16**
-
-- Made an ORM query **hint** to hook into any select type query, which will join the translations
-and let you **filter, order or search** by translated fields directly. It also will translate
-all selected **collections or simple components** without issuing additional queries. It also
-supports translation fallbacks
-- For performance reasons, translation fallbacks are disabled by default
-
-Update **2011-04-04**
-
-- Made single listener, one instance can be used for any object manager
-and any number of them
+- Since extensions do not explicitly define column names for translation entity, because
+now it relies on [naming strategy](http://stackoverflow.com/questions/12702657/how-to-configure-naming-strategy-in-doctrine-2).
+If you explicitly define indexes be sure that column names match your naming strategy.
 
 **Note list:**
 
 - Public [Translatable repository](http://github.com/l3pp4rd/DoctrineExtensions "Translatable extension on Github") is available on github
 - Using other extensions on the same Entity fields may result in unexpected way
 - May impact your application performance since it does an additional query for translation if loaded without query hint
-- Last update date: **2012-02-15**
+- Last update date: **2016-02-03**
 
 **Portability:**
 
@@ -97,8 +65,8 @@ used to override the global locale
 
 ## Translatable Entity example:
 
-**Note:** that Translatable interface is not necessary, except in cases there
-you need to identify entity as being Translatable. The metadata is loaded only once then
+**Note:** that Translatable interface is not necessary, except in cases where
+you need to identify an entity as being Translatable. The metadata is loaded only once when
 cache is activated
 
 ``` php
@@ -120,13 +88,13 @@ class Article implements Translatable
 
     /**
      * @Gedmo\Translatable
-     * @ORM\Column(name="title", type="string", length=128)
+     * @ORM\Column(length=128)
      */
     private $title;
 
     /**
      * @Gedmo\Translatable
-     * @ORM\Column(name="content", type="text")
+     * @ORM\Column(type="text")
      */
     private $content;
 
@@ -134,6 +102,7 @@ class Article implements Translatable
      * @Gedmo\Locale
      * Used locale to override Translation listener`s locale
      * this is not a mapped field of entity metadata, just a simple property
+     * and it is not necessary because globally locale can be set in listener
      */
     private $locale;
 
@@ -191,13 +160,13 @@ class Article implements Translatable
 
     /**
      * @Gedmo\Translatable
-     * @ODM\String
+     * @ODM\Field(type="string")
      */
     private $title;
 
     /**
      * @Gedmo\Translatable
-     * @ODM\String
+     * @ODM\Field(type="string")
      */
     private $content;
 
@@ -280,7 +249,7 @@ Entity\Article:
 ``` xml
 <?xml version="1.0" encoding="UTF-8"?>
 <doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
-                  xmlns:gedmo="http://gediminasm.org/schemas/orm/doctrine-extensions-mapping">
+                  xmlns:gedmo="http://Atlantic18.github.io/DoctrineExtensions/schemas/orm/doctrine-extensions-3.0.xsd">
 
     <entity name="Mapping\Fixture\Xml\Translatable" table="translatables">
 
@@ -320,7 +289,7 @@ $em->flush();
 
 This inserted an article and inserted the translations for it in "en_us" locale
 only if **en_us** is not the [default locale](#advanced-examples) in case if default locale
-matches current locale - it uses original record value as translation
+matches current locale - it uses original record value as translation.
 
 Now lets update our article in different locale:
 
@@ -335,16 +304,22 @@ $em->persist($article);
 $em->flush();
 ```
 
-This updated an article and inserted the translations for it in "de_de" locale
-To see and load all translations of **Translatable** Entity:
+This updated an article and inserted the translations for it in "de_de" locale.
+
+To load the article with its "de_de" translations: 
 
 ``` php
 <?php
 // reload in different language
 $article = $em->find('Entity\Article', 1 /*article id*/);
-$article->setLocale('ru_ru');
+$article->setTranslatableLocale('de_de');
 $em->refresh($article);
+```
 
+To see and load all translations of **Translatable** Entity:
+
+``` php
+<?php
 $article = $em->find('Entity\Article', 1 /*article id*/);
 $repository = $em->getRepository('Gedmo\Translatable\Entity\Translation');
 $translations = $repository->findTranslations($article);
@@ -639,6 +614,9 @@ class ArticleTranslation extends AbstractTranslation
      */
 }
 ```
+**Note:** Be careful. Since extensions do not explicitly define column names for translation entity, because
+now it relies on [naming strategy](http://stackoverflow.com/questions/12702657/how-to-configure-naming-strategy-in-doctrine-2).
+If you explicitly define indexes be sure that column names match your naming strategy.
 
 **Note:** We specified the repository class to be used from extension.
 It is handy for specific methods common to the Translation Entity

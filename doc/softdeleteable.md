@@ -19,6 +19,7 @@ Content:
 - [Yaml](#yaml-mapping) mapping example
 - [Xml](#xml-mapping) mapping example
 - Usage [examples](#usage)
+- Using [Traits](#traits)
 
 <a name="including-extension"></a>
 
@@ -79,6 +80,9 @@ Available configuration options:
 - **fieldName** - The name of the field that will be used to determine if the object is removed or not (NULL means
 it's not removed. A date value means it was removed). NOTE: The field MUST be nullable.
 
+- **timeAware** - Defaults to false. If set to true, softDeletable will also return results where the value of
+`fieldName` is in the future. This is very handy if at the time of creation you already know when an item should be deleted.
+
 **Note:** that SoftDeleteable interface is not necessary, except in cases where
 you need to identify entity as being SoftDeleteable. The metadata is loaded only once then
 cache is activated.
@@ -104,12 +108,12 @@ class Article
     private $id;
 
     /**
-     * @ORM\Column(name="title", type="string")
+     * @ORM\Column
      */
     private $title;
 
     /**
-     * @ORM\Column(name="deletedAt", type="datetime", nullable=true)
+     * @ORM\Column(type="datetime", nullable=true)
      */
     private $deletedAt;
 
@@ -175,7 +179,7 @@ Entity\Article:
 ``` xml
 <?xml version="1.0" encoding="UTF-8"?>
 <doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
-                  xmlns:gedmo="http://gediminasm.org/schemas/orm/doctrine-extensions-mapping">
+                  xmlns:gedmo="http://Atlantic18.github.io/DoctrineExtensions/schemas/orm/doctrine-extensions-3.0.xsd">
 
     <entity name="Mapping\Fixture\Xml\Timestampable" table="timestampables">
         <id name="id" type="integer" column="id">
@@ -231,3 +235,95 @@ $article->setDeletedAt(null);
 ```
 
 Easy like that, any suggestions on improvements are very welcome.
+
+<a name="traits"></a>
+
+## Traits
+
+You can use softDeleteable traits for quick **deletedAt** timestamp definitions
+when using annotation mapping.
+There is also a trait without annotations for easy integration purposes.
+
+**Note:** this feature is only available since php **5.4.0**. And you are not required
+to use the Traits provided by extensions.
+
+``` php
+<?php
+namespace SoftDeleteable\Fixture;
+
+use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
+use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
+
+/**
+ * @ORM\Entity
+ * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
+ */
+class UsingTrait
+{
+    /**
+     * Hook SoftDeleteable behavior
+     * updates deletedAt field
+     */
+    use SoftDeleteableEntity;
+
+    /**
+     * @ORM\Id
+     * @ORM\GeneratedValue
+     * @ORM\Column(type="integer")
+     */
+    private $id;
+
+    /**
+     * @ORM\Column(length=128)
+     */
+    private $title;
+}
+```
+
+Traits are very simple and if you use different field names I recommend to simply create your
+own ones based per project. These ones are standing as an example.
+
+## Extra
+
+By default it is too complicated to manage extension dependencies so you may have issues when combining some of the extensions. You can how ever create your own listeners to help you out.
+
+Here is an example of a soft delete listener to move your item to the end of the list when you delete it, so you prevent later collision.
+
+*Services.yml*
+
+```
+app.soft_delete_listener:
+    class: AppBundle\Events\SoftDeleteListener
+    tags:
+        - { name: doctrine.event_listener, event: preRemove, priority: 10 }
+```
+
+*SoftDeleteListener.php*
+
+```
+<?php
+
+namespace AppBundle\Events;
+
+use Doctrine\Common\Persistence\Event\LifecycleEventArgs;
+use Gedmo\Sortable\Sortable;
+
+class SoftDeleteListener
+{
+    public function preRemove(LifecycleEventArgs $event)
+    {
+        $entity = $event->getObject();
+
+        if ($entity instanceof Sortable) {
+            $entity->setPosition(-1);
+
+            $om = $event->getObjectManager();
+            $om->persist($entity);
+            $om->flush();
+        }
+    }
+}
+```
+
+By setting the position to -1 you will send the entity to the last position before it will be removed. See [sortable](https://github.com/Atlantic18/DoctrineExtensions/blob/master/doc/sortable.md) documentation for more information.

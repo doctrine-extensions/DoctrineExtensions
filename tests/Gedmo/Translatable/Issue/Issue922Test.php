@@ -62,12 +62,10 @@ class Issue922Test extends BaseTestCaseORM
 
         // clear and test query hint hydration
         $this->em->clear();
-        $this->em
-            ->getConfiguration()
-            ->expects($this->any())
-            ->method('getCustomHydrationMode')
-            ->with(TranslationWalker::HYDRATE_OBJECT_TRANSLATION)
-            ->will($this->returnValue('Gedmo\Translatable\Hydrator\ORM\ObjectHydrator'));
+        $this->em->getConfiguration()->addCustomHydrationMode(
+            TranslationWalker::HYDRATE_OBJECT_TRANSLATION,
+            'Gedmo\\Translatable\\Hydrator\\ORM\\ObjectHydrator'
+        );
 
         $q = $this->em->createQuery('SELECT p FROM '.self::POST.' p');
         $q->setHint(Query::HINT_CUSTOM_OUTPUT_WALKER, self::TREE_WALKER_TRANSLATION);

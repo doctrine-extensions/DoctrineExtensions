@@ -33,8 +33,7 @@ class TimestampableTest extends BaseTestCaseORM
 
     /**
      * issue #1255
-     * actually seems like an ORM issue
-     * test
+     * @test
      */
     function shouldHandleDetatchedAndMergedBackEntities()
     {

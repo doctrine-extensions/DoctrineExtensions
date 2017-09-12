@@ -45,6 +45,7 @@ class Annotation extends AbstractAnnotationDriver
         'integer',
         'int',
         'datetime',
+        'citext',
     );
 
     /**

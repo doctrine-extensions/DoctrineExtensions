@@ -170,7 +170,7 @@ class Closure implements Strategy
      */
     public function processPrePersist($em, $node)
     {
-        $this->pendingChildNodeInserts[spl_object_hash($node)] = $node;
+        $this->pendingChildNodeInserts[spl_object_hash($em)][spl_object_hash($node)] = $node;
     }
 
     /**
@@ -237,8 +237,9 @@ class Closure implements Strategy
     public function processPostPersist($em, $entity, AdapterInterface $ea)
     {
         $uow = $em->getUnitOfWork();
+        $emHash = spl_object_hash($em);
 
-        while ($node = array_shift($this->pendingChildNodeInserts)) {
+        while ($node = array_shift($this->pendingChildNodeInserts[$emHash])) {
             $meta = $em->getClassMetadata(get_class($node));
             $config = $this->listener->getConfiguration($em, $meta->name);
 
@@ -272,7 +273,7 @@ class Closure implements Strategy
 
                 foreach ($ancestors as $ancestor) {
                     $entries[] = array(
-                        $ancestorColumnName => $ancestor['ancestor']['id'],
+                        $ancestorColumnName => $ancestor['ancestor'][$identifier],
                         $descendantColumnName => $nodeId,
                         $depthColumnName => $ancestor['depth'] + 1,
                     );
@@ -284,6 +285,8 @@ class Closure implements Strategy
             } elseif (isset($config['level'])) {
                 $uow->scheduleExtraUpdate($node, array($config['level'] => array(null, 1)));
                 $ea->setOriginalObjectProperty($uow, spl_object_hash($node), $config['level'], 1);
+                $levelProp = $meta->getReflectionProperty($config['level']);
+                $levelProp->setValue($node, 1);
             }
 
             foreach ($entries as $closure) {
@@ -337,23 +340,33 @@ class Closure implements Strategy
             $type = 'integer' === $mapping['type'] ? Connection::PARAM_INT_ARRAY : Connection::PARAM_STR_ARRAY;
 
             // We calculate levels for all nodes
-            $sql = 'SELECT c.descendant, MAX(c.depth) + 1 AS level ';
+            $sql = 'SELECT c.descendant, MAX(c.depth) + 1 AS levelNum ';
             $sql .= 'FROM '.$closureMeta->getTableName().' c ';
             $sql .= 'WHERE c.descendant IN (?) ';
             $sql .= 'GROUP BY c.descendant';
 
-            $levels = $em->getConnection()->executeQuery($sql, array(array_keys($this->pendingNodesLevelProcess)), array($type))->fetchAll(\PDO::FETCH_KEY_PAIR);
+            $levelsAssoc = $em->getConnection()->executeQuery($sql, array(array_keys($this->pendingNodesLevelProcess)), array($type))->fetchAll(\PDO::FETCH_NUM);
+
+            //create key pair array with resultset
+            $levels = array();
+            foreach( $levelsAssoc as $level )
+            {
+                $levels[$level[0]] = $level[1];
+            }
+            $levelsAssoc = null;
 
             // Now we update levels
             foreach ($this->pendingNodesLevelProcess as $nodeId => $node) {
                 // Update new level
                 $level = $levels[$nodeId];
+                $levelProp = $meta->getReflectionProperty($config['level']);
                 $uow->scheduleExtraUpdate(
                     $node,
                     array($config['level'] => array(
-                        $meta->getReflectionProperty($config['level'])->getValue($node), $level,
+                        $levelProp->getValue($node), $level,
                     ))
                 );
+                $levelProp->setValue($node, $level);
                 $uow->setOriginalEntityProperty(spl_object_hash($node), $config['level'], $level);
             }
 
@@ -430,7 +443,7 @@ class Closure implements Strategy
             }
             // using subquery directly, sqlite acts unfriendly
             $query = "DELETE FROM {$table} WHERE id IN (".implode(', ', $ids).")";
-            if (!$conn->executeQuery($query)) {
+            if (!empty($ids) && !$conn->executeQuery($query)) {
                 throw new RuntimeException('Failed to remove old closures');
             }
         }

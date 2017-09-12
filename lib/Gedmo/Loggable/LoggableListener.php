@@ -112,7 +112,20 @@ class LoggableListener extends MappedEventSubscriber
     public function loadClassMetadata(EventArgs $eventArgs)
     {
         $ea = $this->getEventAdapter($eventArgs);
-        $this->loadMetadataForObjectClass($ea->getObjectManager(), $eventArgs->getClassMetadata());
+        $meta = $eventArgs->getClassMetadata();
+        $this->loadMetadataForObjectClass($ea->getObjectManager(), $meta);
+
+        // map indexes
+        if ($meta->name === 'Gedmo\Loggable\Entity\LogEntry') {
+            $meta->table['indexes']['log_class_lookup_idx']['columns'] = [$meta->columnNames['objectClass']];
+            $meta->table['indexes']['log_date_lookup_idx']['columns'] = [$meta->columnNames['loggedAt']];
+            $meta->table['indexes']['log_user_lookup_idx']['columns'] = [$meta->columnNames['username']];
+            $meta->table['indexes']['log_version_lookup_idx']['columns'] = [
+                $meta->columnNames['objectId'],
+                $meta->columnNames['objectClass'],
+                $meta->columnNames['username'],
+            ];
+        }
     }
 
     /**
@@ -149,7 +162,6 @@ class LoggableListener extends MappedEventSubscriber
             $identifiers = $wrapped->getIdentifier(false);
             foreach ($this->pendingRelatedObjects[$oid] as $props) {
                 $logEntry = $props['log'];
-                $logEntryMeta = $om->getClassMetadata(get_class($logEntry));
                 $oldData = $data = $logEntry->getData();
                 $data[$props['field']] = $identifiers;
 
@@ -232,6 +244,14 @@ class LoggableListener extends MappedEventSubscriber
                 continue;
             }
             $value = $changes[1];
+            if (method_exists($meta, 'isCollectionValuedEmbed') && $meta->isCollectionValuedEmbed($field) && $value) {
+                $embedValues = array();
+                foreach ($value as $embedValue) {
+                    $wrapped = AbstractWrapper::wrap($embedValue, $om);
+                    $embedValues[] = $this->getObjectChangeSetData($ea, $embedValue, $logEntry);
+                }
+                $value = $embedValues;
+            }
             if ($meta->isSingleValuedAssociation($field) && $value) {
                 if ($wrapped->isEmbeddedAssociation($field)) {
                     $value = $this->getObjectChangeSetData($ea, $value, $logEntry);

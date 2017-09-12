@@ -27,8 +27,8 @@ interface Sluggable
      *         unique (optional, default=true) - true if slug should be unique and if identical it will be prefixed, false - otherwise
      *         unique_base (optional, default="") - used in conjunction with unique. The name of the entity property that should be used as a key when doing a uniqueness check
      *         separator (optional, default="-") - separator which will separate words in slug
-     *         prefix (optional, default="") - suffix which will be added to the generated slug
-     *         suffix (optional, default="") - prefix which will be added to the generated slug
+     *         prefix (optional, default="") - prefix which will be added to the generated slug
+     *         suffix (optional, default="") - suffix which will be added to the generated slug
      *         style (optional, default="default") - "default" all letters will be lowercase, "camel" - first word letter will be uppercase
      *         dateFormat (optional, default="default") - "default" all letters will be lowercase, "camel" - first word letter will be uppercase
      *

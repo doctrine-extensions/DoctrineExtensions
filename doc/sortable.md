@@ -46,8 +46,7 @@ on how to setup and use the extensions in most optimized way.
 
 ### Sortable annotations:
 
-- **@Gedmo\Mapping\Annotation\SortableGroup** it will use this field for **grouping**
-- **@Gedmo\Mapping\Annotation\SortablePosition** it will use this column to store **position** index
+- **@Gedmo\Mapping\Annotation\Sortable
 
 **Note:** that Sortable interface is not necessary, except in cases there
 you need to identify entity as being Sortable. The metadata is loaded only once then
@@ -73,19 +72,18 @@ class Item
     private $id;
 
     /**
-     * @ORM\Column(name="name", type="string", length=64)
+     * @ORM\Column(length=64)
      */
     private $name;
 
     /**
-     * @Gedmo\SortablePosition
-     * @ORM\Column(name="position", type="integer")
+     * @Gedmo\Sortable(groups={"category"})
+     * @ORM\Column(type="integer")
      */
     private $position;
 
     /**
-     * @Gedmo\SortableGroup
-     * @ORM\Column(name="category", type="string", length=128)
+     * @ORM\Column(length=128)
      */
     private $category;
 
@@ -149,12 +147,11 @@ Entity\Item:
     position:
       type: integer
       gedmo:
-        - sortablePosition
+        sortable:
+          groups: [category]
     category:
       type: string
       length: 128
-      gedmo:
-        - sortableGroup
 ```
 
 <a name="xml-mapping"></a>
@@ -164,7 +161,7 @@ Entity\Item:
 ``` xml
 <?xml version="1.0" encoding="UTF-8"?>
 <doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
-                  xmlns:gedmo="http://gediminasm.org/schemas/orm/doctrine-extensions-mapping">
+                  xmlns:gedmo="http://Atlantic18.github.io/DoctrineExtensions/schemas/orm/doctrine-extensions-3.0.xsd">
     <entity name="Entity\Item" table="items">
         <id name="id" type="integer" column="id">
             <generator strategy="AUTO"/>
@@ -174,11 +171,9 @@ Entity\Item:
         </field>
 
         <field name="position" type="integer">
-            <gedmo:sortable-position/>
+            <gedmo:sortable groups="category"/>
         </field>
-        <field name="category" type="string" length="128">
-            <gedmo:sortable-group />
-        </field>
+        <field name="category" type="string" length="128"/>
     </entity>
 </doctrine-mapping>
 ```
@@ -284,7 +279,7 @@ If you want to use a foreign key / relation as sortable group, you have to put @
 /**
  * @Gedmo\SortableGroup
  * @ORM\ManyToOne(targetEntity="Item", inversedBy="children")
- * @ORM\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="SET NULL")
+ * @ORM\JoinColumn(referencedColumnName="id", onDelete="SET NULL")
  */
 private $parent;
 ```

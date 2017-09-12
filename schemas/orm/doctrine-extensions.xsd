@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
-           targetNamespace="http://gediminasm.org/schemas/orm/doctrine-extensions-mapping"
-           xmlns:gedmo="http://gediminasm.org/schemas/orm/doctrine-extensions-mapping"
+           targetNamespace="http://Atlantic18.github.io/DoctrineExtensions/schemas/orm/doctrine-extensions.xsd"
+           xmlns:gedmo="http://Atlantic18.github.io/DoctrineExtensions/schemas/orm/doctrine-extensions.xsd"
            elementFormDefault="qualified">
 
   <xs:annotation>
@@ -10,7 +10,7 @@
        This is the XML Schema for the object/relational
        mapping file used by the Doctrine Extensions by Gedmo
        extensions
-       Doctrine component version support: 2.2.x
+       Doctrine component version support: 3.0.x
      ]]></xs:documentation>
   </xs:annotation>
 
@@ -42,11 +42,11 @@
   <xs:element name="tree-parent" type="gedmo:emptyType"/>
   <xs:element name="tree-path-source" type="gedmo:emptyType"/>
   <xs:element name="tree-lock-time" type="gedmo:emptyType"/>
-  <xs:element name="sortable-group" type="gedmo:emptyType"/>
-  <xs:element name="sortable-position" type="gedmo:emptyType"/>
   <xs:element name="uploadable-file-mime-type" type="gedmo:emptyType"/>
   <xs:element name="uploadable-file-path" type="gedmo:emptyType"/>
   <xs:element name="uploadable-file-size" type="gedmo:emptyType"/>
+
+  <xs:element name="sortable" type="gedmo:sortable"/>
 
   <xs:complexType name="translation">
     <xs:attribute name="entity" type="xs:string" use="optional" />
@@ -100,6 +100,10 @@
     <xs:attribute name="style" type="gedmo:slug-style" use="optional" />
     <xs:attribute name="prefix" type="xs:string" use="optional" />
     <xs:attribute name="suffix" type="xs:string" use="optional" />
+  </xs:complexType>
+
+  <xs:complexType name="sortable">
+    <xs:attribute name="groups" type="xs:string" use="optional"/>
   </xs:complexType>
 
   <xs:complexType name="soft-deleteable">

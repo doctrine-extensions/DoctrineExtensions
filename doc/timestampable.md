@@ -50,8 +50,8 @@ Content:
 
 ## Setup and autoloading
 
-Read the [documentation](http://github.com/l3pp4rd/DoctrineExtensions/blob/master/doc/annotations.md#em-setup)
-or check the [example code](http://github.com/l3pp4rd/DoctrineExtensions/tree/master/example)
+Read the [documentation](http://github.com/Atlantic18/DoctrineExtensions/blob/master/doc/annotations.md#em-setup)
+or check the [example code](http://github.com/Atlantic18/DoctrineExtensions/tree/master/example)
 on how to setup and use the extensions in most optimized way.
 
 <a name="entity-mapping"></a>
@@ -90,12 +90,12 @@ class Article
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=128)
+     * @ORM\Column(length=128)
      */
     private $title;
 
     /**
-     * @ORM\Column(name="body", type="string")
+     * @ORM\Column
      */
     private $body;
 
@@ -118,7 +118,7 @@ class Article
     /**
      * @var \DateTime $contentChanged
      *
-     * @ORM\Column(name="content_changed", type="datetime", nullable=true)
+     * @ORM\Column(type="datetime", nullable=true)
      * @Gedmo\Timestampable(on="change", field={"title", "body"})
      */
     private $contentChanged;
@@ -185,12 +185,12 @@ class Article
     private $id;
 
     /**
-     * @ODM\String
+     * @ODM\Field(type="string")
      */
     private $title;
 
     /**
-     * @ODM\String
+     * @ODM\Field(type="string")
      */
     private $body;
 
@@ -301,7 +301,7 @@ Entity\Article:
 ``` xml
 <?xml version="1.0" encoding="UTF-8"?>
 <doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
-                  xmlns:gedmo="http://gediminasm.org/schemas/orm/doctrine-extensions-mapping">
+                  xmlns:gedmo="http://Atlantic18.github.io/DoctrineExtensions/schemas/orm/doctrine-extensions-3.0.xsd">
 
     <entity name="Mapping\Fixture\Xml\Timestampable" table="timestampables">
         <id name="id" type="integer" column="id">
@@ -349,7 +349,7 @@ class Type
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=128)
+     * @ORM\Column(length=128)
      */
     private $title;
 
@@ -393,7 +393,7 @@ class Article
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=128)
+     * @ORM\Column(length=128)
      */
     private $title;
 

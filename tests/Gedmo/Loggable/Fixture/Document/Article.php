@@ -16,7 +16,7 @@ class Article
 
     /**
      * @Gedmo\Versioned
-     * @ODM\String
+     * @ODM\Field(type="string")
      */
     private $title;
 
@@ -25,6 +25,12 @@ class Article
      * @Gedmo\Versioned
      */
     private $author;
+
+    /**
+     * @ODM\EmbedMany(targetDocument="Reference")
+     * @Gedmo\Versioned
+     */
+    private $references;
 
     public function __toString()
     {
@@ -54,5 +60,15 @@ class Article
     public function getAuthor()
     {
         return $this->author;
+    }
+
+    public function getReferences()
+    {
+        return $this->references;
+    }
+
+    public function setReferences($references)
+    {
+        $this->references = $references;
     }
 }

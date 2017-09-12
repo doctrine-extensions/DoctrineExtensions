@@ -75,7 +75,9 @@ class SoftDeleteableWalker extends SqlWalker
         $quotedTableName = $class->getQuotedTableName($this->platform);
         $quotedColumnName = $class->getQuotedColumnName($this->deletedAtField, $this->platform);
 
-        $sql = 'UPDATE '.$quotedTableName.' SET '.$quotedColumnName.' = '.$this->conn->quote(date('Y-m-d H:i:s'));
+        $sql = 'UPDATE '.$quotedTableName.' SET '.$quotedColumnName.' = '.$this->conn->quote(date(
+            $this->platform->getDateTimeFormatString()
+        ));
 
         return $sql;
     }
@@ -89,7 +91,7 @@ class SoftDeleteableWalker extends SqlWalker
      */
     private function getSoftDeleteableListener()
     {
-        if (is_null($this->listener)) {
+        if (null === $this->listener) {
             $em = $this->getEntityManager();
 
             foreach ($em->getEventManager()->getListeners() as $event => $listeners) {
@@ -104,7 +106,7 @@ class SoftDeleteableWalker extends SqlWalker
                 }
             }
 
-            if (is_null($this->listener)) {
+            if (null === $this->listener) {
                 throw new \Gedmo\Exception\RuntimeException('The SoftDeleteable listener could not be found.');
             }
         }

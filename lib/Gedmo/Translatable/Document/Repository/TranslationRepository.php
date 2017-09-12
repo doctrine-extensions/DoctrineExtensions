@@ -116,7 +116,13 @@ class TranslationRepository extends DocumentRepository
 
             $config = $this
                 ->getTranslatableListener()
-                ->getConfiguration($this->dm, get_class($document));
+                ->getConfiguration($this->dm, $wrapped->getMetadata()->name);
+
+            if (!$config) {
+                return $result;
+            }
+
+            $documentClass = $config['useObjectClass'];
 
             $translationClass = isset($config['translationClass']) ?
                 $config['translationClass'] :
@@ -124,7 +130,7 @@ class TranslationRepository extends DocumentRepository
 
             $qb = $this->dm->createQueryBuilder($translationClass);
             $q = $qb->field('foreignKey')->equals($documentId)
-                ->field('objectClass')->equals($wrapped->getMetadata()->rootDocumentName)
+                ->field('objectClass')->equals($documentClass)
                 ->field('content')->exists(true)->notEqual(null)
                 ->sort('locale', 'asc')
                 ->getQuery();

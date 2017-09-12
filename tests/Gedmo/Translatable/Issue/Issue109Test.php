@@ -42,13 +42,10 @@ class Issue109Test extends BaseTestCaseORM
 
     public function testIssue109()
     {
-        $this->em
-            ->getConfiguration()
-            ->expects($this->any())
-            ->method('getCustomHydrationMode')
-            ->with(TranslationWalker::HYDRATE_OBJECT_TRANSLATION)
-            ->will($this->returnValue('Gedmo\\Translatable\\Hydrator\\ORM\\ObjectHydrator'))
-        ;
+        $this->em->getConfiguration()->addCustomHydrationMode(
+            TranslationWalker::HYDRATE_OBJECT_TRANSLATION,
+            'Gedmo\\Translatable\\Hydrator\\ORM\\ObjectHydrator'
+        );
         $query = $this->em->createQueryBuilder();
         $query->select('a')
             ->from(self::ARTICLE, 'a')

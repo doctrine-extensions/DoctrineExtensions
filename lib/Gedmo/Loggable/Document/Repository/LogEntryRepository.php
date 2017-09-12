@@ -2,6 +2,8 @@
 
 namespace Gedmo\Loggable\Document\Repository;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Gedmo\Loggable\Document\LogEntry;
 use Gedmo\Tool\Wrapper\MongoDocumentWrapper;
 use Gedmo\Loggable\LoggableListener;
 use Doctrine\ODM\MongoDB\DocumentRepository;
@@ -28,10 +30,12 @@ class LogEntryRepository extends DocumentRepository
      * given $document
      *
      * @param object $document
+     * @param null|int $limit
+     * @param null|int $skip
      *
-     * @return array
+     * @return LogEntry[]
      */
-    public function getLogEntries($document)
+    public function getLogEntries($document, $limit = null, $skip = null)
     {
         $wrapped = new MongoDocumentWrapper($document, $this->dm);
         $objectId = $wrapped->getIdentifier();
@@ -40,6 +44,12 @@ class LogEntryRepository extends DocumentRepository
         $qb->field('objectId')->equals($objectId);
         $qb->field('objectClass')->equals($wrapped->getMetadata()->name);
         $qb->sort('version', 'DESC');
+        if ($limit) {
+            $qb->limit($limit);
+        }
+        if ($skip) {
+            $qb->skip($skip);
+        }
         $q = $qb->getQuery();
 
         $result = $q->execute();
@@ -71,7 +81,7 @@ class LogEntryRepository extends DocumentRepository
         $qb = $this->createQueryBuilder();
         $qb->field('objectId')->equals($objectId);
         $qb->field('objectClass')->equals($objectMeta->name);
-        $qb->field('version')->lte($version);
+        $qb->field('version')->lte(intval($version));
         $qb->sort('version', 'ASC');
         $q = $qb->getQuery();
 
@@ -82,7 +92,15 @@ class LogEntryRepository extends DocumentRepository
         if ($logs) {
             $data = array();
             while (($log = array_shift($logs))) {
-                $data = array_merge($data, $log->getData());
+                $logData = $log->getData();
+                foreach ($logData as $field => $value) {
+                    if ($value && $wrapped->isEmbeddedCollectionAssociation($field)) {
+                        foreach ($value as $i => $item) {
+                            $logData[$field][$i] = array_merge(@$data[$field][$i] ?: [], $item);
+                        }
+                    }
+                }
+                $data = array_merge($data, $logData);
             }
             $this->fillDocument($document, $data, $objectMeta);
         } else {
@@ -108,13 +126,16 @@ class LogEntryRepository extends DocumentRepository
             }
             $mapping = $objectMeta->getFieldMapping($field);
             // Fill the embedded document
-            if ($wrapped->isEmbeddedAssociation($field)) {
+            if ($wrapped->isEmbeddedCollectionAssociation($field)) {
                 if (!empty($value)) {
-                    $embeddedMetadata = $this->dm->getClassMetadata($mapping['targetDocument']);
-                    $document = $embeddedMetadata->newInstance();
-                    $this->fillDocument($document, $value);
-                    $value = $document;
+                    $items = [];
+                    foreach ($value as $item) {
+                        $items[] = $this->fillEmbeddedDocument($item, $mapping);
+                    }
+                    $value = new ArrayCollection($items);
                 }
+            } elseif ($wrapped->isEmbeddedAssociation($field)) {
+                $value = $this->fillEmbeddedDocument($value, $mapping);
             } elseif ($objectMeta->isSingleValuedAssociation($field)) {
                 $value = $value ? $this->dm->getReference($mapping['targetDocument'], $value) : null;
             }
@@ -130,6 +151,21 @@ class LogEntryRepository extends DocumentRepository
     }
 
     /**
+     * @param $value
+     * @param $mapping
+     * @return object
+     */
+    protected function fillEmbeddedDocument($value, $mapping) {
+        if (!empty($value)) {
+            $embeddedMetadata = $this->dm->getClassMetadata($mapping['targetDocument']);
+            $document = $embeddedMetadata->newInstance();
+            $this->fillDocument($document, $value);
+            return $document;
+        }
+        return $value;
+    }
+
+    /**
      * Get the currently used LoggableListener
      *
      * @throws \Gedmo\Exception\RuntimeException - if listener is not found
@@ -138,7 +174,7 @@ class LogEntryRepository extends DocumentRepository
      */
     private function getLoggableListener()
     {
-        if (is_null($this->listener)) {
+        if (null === $this->listener) {
             foreach ($this->dm->getEventManager()->getListeners() as $event => $listeners) {
                 foreach ($listeners as $hash => $listener) {
                     if ($listener instanceof LoggableListener) {
@@ -151,7 +187,7 @@ class LogEntryRepository extends DocumentRepository
                 }
             }
 
-            if (is_null($this->listener)) {
+            if (null === $this->listener) {
                 throw new \Gedmo\Exception\RuntimeException('The loggable listener could not be found');
             }
         }

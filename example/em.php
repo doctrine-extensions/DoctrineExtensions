@@ -9,7 +9,7 @@ $connection = array(
     'host' => '127.0.0.1',
     'port' => 3306,
     'user' => 'root',
-    'password' => 'nimda',
+    'password' => null,
     'dbname' => 'test',
     'driver' => 'pdo_mysql',
 );
@@ -22,8 +22,8 @@ $loader = require __DIR__.'/../vendor/autoload.php';
 // gedmo extensions
 $loader->add('Gedmo', __DIR__.'/../lib');
 
-// autoloader for Entity namespace
-$loader->add('Entity', __DIR__.'/app');
+// autoloader for Example namespace
+$loader->add('Example', __DIR__.'/app');
 
 // ensure standard doctrine annotations are registered
 Doctrine\Common\Annotations\AnnotationRegistry::registerFile(
@@ -49,14 +49,14 @@ Gedmo\DoctrineExtensions::registerAbstractMappingIntoDriverChainORM(
 );
 
 // now we want to register our application entities,
-// for that we need another metadata driver used for Entity namespace
+// for that we need another metadata driver used for Example namespace
 $annotationDriver = new Doctrine\ORM\Mapping\Driver\AnnotationDriver(
     $cachedAnnotationReader, // our cached annotation reader
-    array(__DIR__.'/app/Entity') // paths to look in
+    array(__DIR__.'/app/Example/Entity') // paths to look in
 );
-// NOTE: driver for application Entity can be different, Yaml, Xml or whatever
-// register annotation driver for our application Entity namespace
-$driverChain->addDriver($annotationDriver, 'Entity');
+// NOTE: driver for application Example can be different, Yaml, Xml or whatever
+// register annotation driver for our application Example fully qualified namespace
+$driverChain->addDriver($annotationDriver, 'Example\Entity');
 
 // general ORM configuration
 $config = new Doctrine\ORM\Configuration();

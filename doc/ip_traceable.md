@@ -83,12 +83,12 @@ class Article
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=128)
+     * @ORM\Column(length=128)
      */
     private $title;
 
     /**
-     * @ORM\Column(name="body", type="string")
+     * @ORM\Column
      */
     private $body;
 
@@ -96,7 +96,7 @@ class Article
      * @var string $createdFromIp
      *
      * @Gedmo\IpTraceable(on="create")
-     * @ORM\Column(type="string", length=45, nullable=true)
+     * @ORM\Column(length=45, nullable=true)
      */
     private $createdFromIp;
 
@@ -104,14 +104,14 @@ class Article
      * @var string $updatedFromIp
      *
      * @Gedmo\IpTraceable(on="update")
-     * @ORM\Column(type="string", length=45, nullable=true)
+     * @ORM\Column(length=45, nullable=true)
      */
     private $updatedFromIp;
 
     /**
-     * @var datetime $contentChangedFromIp
+     * @var string $contentChangedFromIp
      *
-     * @ORM\Column(name="content_changed_by", type="string", nullable=true, length=45)
+     * @ORM\Column(nullable=true, length=45)
      * @Gedmo\IpTraceable(on="change", field={"title", "body"})
      */
     private $contentChangedFromIp;
@@ -179,14 +179,14 @@ class Article
     private $id;
 
     /**
-     * @ODM\String
+     * @ODM\Field(type="string")
      */
     private $title;
 
     /**
      * @var string $createdFromIp
      *
-     * @ODM\String
+     * @ODM\Field(type="string")
      * @Gedmo\IpTraceable(on="create")
      */
     private $createdFromIp;
@@ -194,7 +194,7 @@ class Article
     /**
      * @var string $updatedFromIp
      *
-     * @ODM\String
+     * @ODM\Field(type="string")
      * @Gedmo\IpTraceable
      */
     private $updatedFromIp;
@@ -271,7 +271,7 @@ Entity\Article:
 ``` xml
 <?xml version="1.0" encoding="UTF-8"?>
 <doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
-                  xmlns:gedmo="http://gediminasm.org/schemas/orm/doctrine-extensions-mapping">
+                  xmlns:gedmo="http://Atlantic18.github.io/DoctrineExtensions/schemas/orm/doctrine-extensions-3.0.xsd">
 
     <entity name="Mapping\Fixture\Xml\IpTraceable" table="ip-traceable">
         <id name="id" type="integer" column="id">
@@ -319,7 +319,7 @@ class Type
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=128)
+     * @ORM\Column(length=128)
      */
     private $title;
 
@@ -363,7 +363,7 @@ class Article
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=128)
+     * @ORM\Column(length=128)
      */
     private $title;
 
@@ -371,7 +371,7 @@ class Article
      * @var string $createdFromIp
      *
      * @Gedmo\IpTraceable(on="create")
-     * @ORM\Column(type="string", length=45, nullable=true)
+     * @ORM\Column(length=45, nullable=true)
      */
     private $createdFromIp;
 
@@ -379,7 +379,7 @@ class Article
      * @var string $updatedFromIp
      *
      * @Gedmo\IpTraceable(on="update")
-     * @ORM\Column(type="string", length=45, nullable=true)
+     * @ORM\Column(length=45, nullable=true)
      */
     private $updatedFromIp;
 
@@ -391,7 +391,7 @@ class Article
     /**
      * @var string $publishedFromIp
      *
-     * @ORM\Column(type="string", nullable=true, length=45)
+     * @ORM\Column(nullable=true, length=45)
      * @Gedmo\IpTraceable(on="change", field="type.title", value="Published")
      */
     private $publishedFromIp;
@@ -603,12 +603,12 @@ class IpTraceSubscriber implements EventSubscriberInterface
             return;
         }
 
-        // If you use a cache like Varnish, you may want to set a proxy to Request::getClientIp() method 
+        // If you use a cache like Varnish, you may want to set a proxy to Request::getClientIp() method
         // $this->request->setTrustedProxies(array('127.0.0.1'));
 
         // $ip = $_SERVER['REMOTE_ADDR'];
         $ip = $this->request->getClientIp();
-        
+
         if (null !== $ip) {
             $this->ipTraceableListener->setIpValue($ip);
         }
@@ -638,7 +638,7 @@ class IpTraceSubscriber implements EventSubscriberInterface
     </parameters>
 
     <services>
-        
+
         ...
 
         <service id="gedmo_doctrine_extensions.listener.ip_traceable" class="Gedmo\IpTraceable\IpTraceableListener" public="false">

@@ -47,7 +47,7 @@ class Xml extends BaseXml
         $xml = $xml->children(self::GEDMO_NAMESPACE_URI);
 
         if ($xmlDoctrine->getName() === 'entity' || $xmlDoctrine->getName() === 'document' || $xmlDoctrine->getName() === 'mapped-superclass') {
-            if (isset($xml->reference)) {
+            if ($xml->count() > 0 && isset($xml->reference)) {
                 /**
                  * @var \SimpleXMLElement $element
                  */

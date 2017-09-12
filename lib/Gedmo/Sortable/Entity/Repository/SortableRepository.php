@@ -41,7 +41,7 @@ class SortableRepository extends EntityRepository
             }
         }
 
-        if (is_null($sortableListener)) {
+        if (null === $sortableListener) {
             throw new \Gedmo\Exception\InvalidMappingException('This repository can be attached only to ORM sortable listener');
         }
 
@@ -50,16 +50,18 @@ class SortableRepository extends EntityRepository
         $this->config = $this->listener->getConfiguration($this->_em, $this->meta->name);
     }
 
-    public function getBySortableGroupsQuery(array $groupValues = array())
+    public function getBySortableGroupsQuery($positionField, array $groupValues = array())
     {
-        return $this->getBySortableGroupsQueryBuilder($groupValues)->getQuery();
+        return $this->getBySortableGroupsQueryBuilder($positionField, $groupValues)->getQuery();
     }
 
-    public function getBySortableGroupsQueryBuilder(array $groupValues = array())
+    public function getBySortableGroupsQueryBuilder($positionField, array $groupValues = array())
     {
-        $groups = array_combine(array_values($this->config['groups']), array_keys($this->config['groups']));
+        $config = $this->config['sortables'][$positionField];
+
+        $groups = isset($config['groups']) ? array_combine(array_values($config['groups']), array_keys($config['groups'])) : array();
         foreach ($groupValues as $name => $value) {
-            if (!in_array($name, $this->config['groups'])) {
+            if (!in_array($name, $config['groups'])) {
                 throw new \InvalidArgumentException('Sortable group "'.$name.'" is not defined in Entity '.$this->meta->name);
             }
             unset($groups[$name]);
@@ -70,6 +72,7 @@ class SortableRepository extends EntityRepository
         }
 
         $qb = $this->createQueryBuilder('n');
+        $qb->orderBy('n.'.$config['position']);
         $i = 1;
         foreach ($groupValues as $group => $value) {
             $qb->andWhere('n.'.$group.' = :group'.$i)
@@ -80,19 +83,11 @@ class SortableRepository extends EntityRepository
         return $qb;
     }
 
-    public function getBySortableGroups(array $groupValues = array())
+    public function getBySortableGroups($positionField, array $groupValues = array())
     {
-        $query = $this->getBySortableGroupsQuery($groupValues);
+        $query = $this->getBySortableGroupsQuery($positionField, $groupValues);
 
         return $query->getResult();
     }
 
-    public function createQueryBuilder($alias, $indexBy = null)
-    {
-        $qb = parent::createQueryBuilder($alias, $indexBy);
-
-        $qb->orderBy($alias.'.'.$this->config['position']);
-
-        return $qb;
-    }
 }

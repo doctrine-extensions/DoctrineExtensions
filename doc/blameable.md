@@ -89,12 +89,12 @@ class Article
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=128)
+     * @ORM\Column(length=128)
      */
     private $title;
 
     /**
-     * @ORM\Column(name="body", type="string")
+     * @ORM\Column
      */
     private $body;
 
@@ -102,7 +102,7 @@ class Article
      * @var string $createdBy
      *
      * @Gedmo\Blameable(on="create")
-     * @ORM\Column(type="string")
+     * @ORM\Column
      */
     private $createdBy;
 
@@ -110,15 +110,15 @@ class Article
      * @var string $updatedBy
      *
      * @Gedmo\Blameable(on="update")
-     * @ORM\Column(type="string")
+     * @ORM\Column
      */
     private $updatedBy;
 
     /**
      * @var string $contentChangedBy
      *
-     * @ORM\Column(name="content_changed_by", type="string", nullable=true)
-     * @Gedmo\Blameable(on="change", fields={"title", "body"})
+     * @ORM\Column(nullable=true)
+     * @Gedmo\Blameable(on="change", field={"title", "body"})
      */
     private $contentChangedBy;
 
@@ -182,12 +182,12 @@ class Article
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=128)
+     * @ORM\Column(length=128)
      */
     private $title;
 
     /**
-     * @ODM\String
+     * @ORM\Column
      */
     private $body;
 
@@ -196,7 +196,7 @@ class Article
      *
      * @Gedmo\Blameable(on="create")
      * @ORM\ManyToOne(targetEntity="Path\To\Entity\User")
-     * @ORM\JoinColumn(name="created_by", referencedColumnName="id")
+     * @ORM\JoinColumn(referencedColumnName="id")
      */
     private $createdBy;
 
@@ -205,16 +205,16 @@ class Article
      *
      * @Gedmo\Blameable(on="update")
      * @ORM\ManyToOne(targetEntity="Path\To\Entity\User")
-     * @ORM\JoinColumn(name="updated_by", referencedColumnName="id")
+     * @ORM\JoinColumn(referencedColumnName="id")
      */
     private $updatedBy;
 
     /**
      * @var User $contentChangedBy
      *
-     * @Gedmo\Blameable(on="change", fields={"title", "body"})
+     * @Gedmo\Blameable(on="change", field={"title", "body"})
      * @ORM\ManyToOne(targetEntity="Path\To\Entity\User")
-     * @ORM\JoinColumn(name="content_changed_by", referencedColumnName="id")
+     * @ORM\JoinColumn(referencedColumnName="id")
      */
     private $contentChangedBy;
 
@@ -280,14 +280,14 @@ class Article
     private $id;
 
     /**
-     * @ODM\String
+     * @ODM\Field(type="string")
      */
     private $title;
 
     /**
      * @var string $createdBy
      *
-     * @ODM\String
+     * @ODM\Field(type="string")
      * @Gedmo\Blameable(on="create")
      */
     private $createdBy;
@@ -295,7 +295,7 @@ class Article
     /**
      * @var string $updatedBy
      *
-     * @ODM\String
+     * @ODM\Field(type="string")
      * @Gedmo\Blameable
      */
     private $updatedBy;
@@ -368,7 +368,7 @@ Entity\Article:
 ``` xml
 <?xml version="1.0" encoding="UTF-8"?>
 <doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
-                  xmlns:gedmo="http://gediminasm.org/schemas/orm/doctrine-extensions-mapping">
+                  xmlns:gedmo="http://Atlantic18.github.io/DoctrineExtensions/schemas/orm/doctrine-extensions-3.0.xsd">
 
     <entity name="Mapping\Fixture\Xml\Blameable" table="blameables">
         <id name="id" type="integer" column="id">
@@ -416,7 +416,7 @@ class Type
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=128)
+     * @ORM\Column(length=128)
      */
     private $title;
 
@@ -460,7 +460,7 @@ class Article
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=128)
+     * @ORM\Column(length=128)
      */
     private $title;
 
@@ -468,7 +468,7 @@ class Article
      * @var string $createdBy
      *
      * @Gedmo\Blameable(on="create")
-     * @ORM\Column(type="string")
+     * @ORM\Column
      */
     private $createdBy;
 
@@ -476,7 +476,7 @@ class Article
      * @var string $updatedBy
      *
      * @Gedmo\Blameable(on="update")
-     * @ORM\Column(type="string")
+     * @ORM\Column
      */
     private $updatedBy;
 
@@ -488,7 +488,7 @@ class Article
     /**
      * @var string $publishedBy
      *
-     * @ORM\Column(type="string", nullable=true)
+     * @ORM\Column(nullable=true)
      * @Gedmo\Blameable(on="change", field="type.title", value="Published")
      */
     private $publishedBy;
@@ -643,3 +643,36 @@ class UsingTrait
 The Traits are very simplistic - if you use different field names it is recommended to simply create your
 own Traits specific to your project. The ones provided by this bundle can be used as example.
 
+## ORM - ODM Hybrid databases
+
+You can use blameable with hybrid databases. If your user is an entity, but your blameable is a document, you can use
+an `int` field to store the user ID.
+
+```php
+/**
+ * @var int
+ *
+ * @Gedmo\Blameable(on="create")
+ * @ODM\Int()
+ */
+protected $createdById;
+```
+
+It also works well with the [references extension](references.md):
+
+```php
+/**
+ * @var User
+ *
+ * @Gedmo\ReferenceOne(type="entity", class=User::class, identifier="createdById")
+ */
+protected $createdBy;
+
+/**
+ * @var int
+ *
+ * @Gedmo\Blameable(on="create")
+ * @ODM\Int()
+ */
+protected $createdById;
+```

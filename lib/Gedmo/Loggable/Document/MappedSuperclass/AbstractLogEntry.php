@@ -21,7 +21,7 @@ abstract class AbstractLogEntry
     /**
      * @var string $action
      *
-     * @MongoODM\String
+     * @MongoODM\Field(type="string")
      */
     protected $action;
 
@@ -29,14 +29,14 @@ abstract class AbstractLogEntry
      * @var \DateTime $loggedAt
      *
      * @MongoODM\Index
-     * @MongoODM\Date
+     * @MongoODM\Field(type="date")
      */
     protected $loggedAt;
 
     /**
      * @var string $objectId
      *
-     * @MongoODM\String(nullable=true)
+     * @MongoODM\Field(type="string", nullable=true)
      */
     protected $objectId;
 
@@ -44,14 +44,14 @@ abstract class AbstractLogEntry
      * @var string $objectClass
      *
      * @MongoODM\Index
-     * @MongoODM\String
+     * @MongoODM\Field(type="string")
      */
     protected $objectClass;
 
     /**
      * @var integer $version
      *
-     * @MongoODM\Int
+     * @MongoODM\Field(type="int")
      */
     protected $version;
 
@@ -63,10 +63,10 @@ abstract class AbstractLogEntry
     protected $data;
 
     /**
-     * @var string $data
+     * @var string $username
      *
      * @MongoODM\Index
-     * @MongoODM\String(nullable=true)
+     * @MongoODM\Field(type="string", nullable=true)
      */
     protected $username;
 

@@ -70,7 +70,7 @@ class Occupation
      */
     private $level;
 
-    public function setParent(TreeSlug $parent = null)
+    public function setParent(Occupation $parent = null)
     {
         $this->parent = $parent;
     }

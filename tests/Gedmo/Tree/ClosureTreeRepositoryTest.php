@@ -37,6 +37,27 @@ class ClosureTreeRepositoryTest extends BaseTestCaseORM
         $this->getMockSqliteEntityManager($evm);
     }
 
+    public function testParentCount()
+    {
+        $this->populate();
+
+        $repo = $this->em->getRepository(self::CATEGORY);
+
+        // Count all, but only direct ones
+        $count = $repo->ancestorsCount(null, true);
+        $this->assertEquals(2, $count);
+
+        // Count food ancestors
+        $berries = $repo->findOneByTitle('Berries');
+        $count = $repo->ancestorsCount($berries);
+        $this->assertEquals(2, $count);
+
+        // Count food ancestors, but only direct ones
+        $berries = $repo->findOneByTitle('Berries');
+        $count = $repo->ancestorsCount($berries, true);
+        $this->assertEquals(1, $count);
+    }
+
     public function testChildCount()
     {
         $this->populate();
@@ -132,6 +153,32 @@ class ClosureTreeRepositoryTest extends BaseTestCaseORM
         // all tree
         $children = $repo->children();
         $this->assertCount(15, $children);
+    }
+
+    public function testAncestors()
+    {
+        $this->populate();
+
+        $repo = $this->em->getRepository(self::CATEGORY);
+        $berries = $repo->findOneByTitle('Berries');
+
+        // ancestors of node
+        $ancestors = $repo->ancestors($berries, false);
+        $this->assertCount(2, $ancestors);
+        $this->assertEquals('Fruits', $ancestors[0]->getTitle());
+        $this->assertEquals('Food', $ancestors[1]->getTitle());
+
+        // ancestors of node, sorted by title ascending order. including the starting node
+        $ancestors = $repo->ancestors($berries, false, 'title', 'asc', true);
+        $this->assertCount(3, $ancestors);
+        $this->assertEquals('Berries', $ancestors[0]->getTitle());
+        $this->assertEquals('Food', $ancestors[1]->getTitle());
+        $this->assertEquals('Fruits', $ancestors[2]->getTitle());
+
+        // direct ancestor nodes
+        $ancestors = $repo->ancestors($berries, true);
+        $this->assertCount(1, $ancestors);
+        $this->assertEquals('Fruits', $ancestors[0]->getTitle());
     }
 
     public function testSingleNodeRemoval()

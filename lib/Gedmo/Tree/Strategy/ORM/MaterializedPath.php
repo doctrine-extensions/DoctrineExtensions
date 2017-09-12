@@ -29,6 +29,15 @@ class MaterializedPath extends AbstractMaterializedPath
         $qb->select('e')
             ->from($config['useObjectClass'], 'e')
             ->where($qb->expr()->like('e.'.$config['path'], $qb->expr()->literal($path.'%')));
+
+        if (isset($config['level'])) {
+            $lvlField = $config['level'];
+            $lvl = $wrapped->getPropertyValue($lvlField);
+            if (!empty($lvl)) {
+                $qb->andWhere($qb->expr()->gt('e.' . $lvlField, $qb->expr()->literal($lvl)));
+            }
+        }
+
         $results = $qb->getQuery()
             ->execute();
 

@@ -17,11 +17,22 @@ use Doctrine\ORM\Internal\Hydration\SimpleObjectHydrator as BaseSimpleObjectHydr
 class SimpleObjectHydrator extends BaseSimpleObjectHydrator
 {
     /**
+     * State of skipOnLoad for listener between hydrations
+     *
+     * @see SimpleObjectHydrator::prepare()
+     * @see SimpleObjectHydrator::cleanup()
+     *
+     * @var bool
+     */
+    private $savedSkipOnLoad;
+
+    /**
      * {@inheritdoc}
      */
     protected function prepare()
     {
         $listener = $this->getTranslatableListener();
+        $this->savedSkipOnLoad = $listener->isSkipOnLoad();
         $listener->setSkipOnLoad(true);
         parent::prepare();
     }
@@ -33,7 +44,7 @@ class SimpleObjectHydrator extends BaseSimpleObjectHydrator
     {
         parent::cleanup();
         $listener = $this->getTranslatableListener();
-        $listener->setSkipOnLoad(false);
+        $listener->setSkipOnLoad($this->savedSkipOnLoad !== null ? $this->savedSkipOnLoad : false);
     }
 
     /**
@@ -58,7 +69,7 @@ class SimpleObjectHydrator extends BaseSimpleObjectHydrator
             }
         }
 
-        if (is_null($translatableListener)) {
+        if (null === $translatableListener) {
             throw new \Gedmo\Exception\RuntimeException('The translation listener could not be found');
         }
 

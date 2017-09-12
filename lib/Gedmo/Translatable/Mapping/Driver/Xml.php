@@ -31,7 +31,7 @@ class Xml extends BaseXml
         $xml = $xml->children(self::GEDMO_NAMESPACE_URI);
 
         if (($xmlDoctrine->getName() == 'entity' || $xmlDoctrine->getName() == 'mapped-superclass')) {
-            if (isset($xml->translation)) {
+            if ($xml->count() && isset($xml->translation)) {
                 /**
                  * @var \SimpleXmlElement $data
                  */
@@ -51,28 +51,54 @@ class Xml extends BaseXml
             }
         }
 
-        if (isset($xmlDoctrine->field)) {
-            foreach ($xmlDoctrine->field as $mapping) {
-                $mappingDoctrine = $mapping;
-                /**
-                 * @var \SimpleXmlElement $mapping
-                 */
-                $mapping = $mapping->children(self::GEDMO_NAMESPACE_URI);
-                $field = $this->_getAttribute($mappingDoctrine, 'name');
-                if (isset($mapping->translatable)) {
-                    $config['fields'][] = $field;
-                    /** @var \SimpleXmlElement $data */
-                    $data = $mapping->translatable;
-                    if ($this->_isAttributeSet($data, 'fallback')) {
-                        $config['fallback'][$field] = 'true' == $this->_getAttribute($data, 'fallback') ? true : false;
-                    }
-                }
+        if (property_exists($meta, 'embeddedClasses') && $meta->embeddedClasses) {
+            foreach ($meta->embeddedClasses as $propertyName => $embeddedClassInfo) {
+                $xmlEmbeddedClass = $this->_getMapping($embeddedClassInfo['class']);
+                $this->inspectElementsForTranslatableFields($xmlEmbeddedClass, $config, $propertyName);
             }
         }
+
+        if ($xmlDoctrine->{'attribute-overrides'}->count() > 0) {
+            foreach ($xmlDoctrine->{'attribute-overrides'}->{'attribute-override'} as $overrideMapping) {
+                $this->buildFieldConfiguration($this->_getAttribute($overrideMapping, 'name'), $overrideMapping->field, $config);
+            }
+        }
+
+        $this->inspectElementsForTranslatableFields($xmlDoctrine, $config);
 
         if (!$meta->isMappedSuperclass && $config) {
             if (is_array($meta->identifier) && count($meta->identifier) > 1) {
                 throw new InvalidMappingException("Translatable does not support composite identifiers in class - {$meta->name}");
+            }
+        }
+    }
+
+    private function inspectElementsForTranslatableFields(\SimpleXMLElement $xml, array &$config, $prefix = null)
+    {
+        if (!isset($xml->field)) {
+            return;
+        }
+
+        foreach ($xml->field as $mapping) {
+            $mappingDoctrine = $mapping;
+
+            $fieldName = $this->_getAttribute($mappingDoctrine, 'name');
+            if ($prefix !== null) {
+                $fieldName = $prefix . '.' . $fieldName;
+            }
+            $this->buildFieldConfiguration($fieldName, $mapping, $config);
+        }
+    }
+
+    private function buildFieldConfiguration($fieldName, \SimpleXMLElement $mapping, array &$config)
+    {
+        $mapping = $mapping->children(self::GEDMO_NAMESPACE_URI);
+        if ($mapping->count() > 0 && isset($mapping->translatable)) {
+            $config['fields'][] = $fieldName;
+            /** @var \SimpleXmlElement $data */
+            $data = $mapping->translatable;
+            if ($this->_isAttributeSet($data, 'fallback')) {
+                $config['fallback'][$fieldName] = 'true' == $this->_getAttribute($data, 'fallback') ? true : false;
             }
         }
     }

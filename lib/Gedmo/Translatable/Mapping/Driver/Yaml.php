@@ -45,17 +45,16 @@ class Yaml extends File implements Driver
                 $config['locale'] = $classMapping['translation']['language'];
             }
         }
+
         if (isset($mapping['fields'])) {
             foreach ($mapping['fields'] as $field => $fieldMapping) {
-                if (isset($fieldMapping['gedmo'])) {
-                    if (in_array('translatable', $fieldMapping['gedmo']) || isset($fieldMapping['gedmo']['translatable'])) {
-                        // fields cannot be overrided and throws mapping exception
-                        $config['fields'][] = $field;
-                        if (isset($fieldMapping['gedmo']['translatable']['fallback'])) {
-                            $config['fallback'][$field] = $fieldMapping['gedmo']['translatable']['fallback'];
-                        }
-                    }
-                }
+                $this->buildFieldConfiguration($field, $fieldMapping, $config);
+            }
+        }
+
+        if (isset($mapping['attributeOverride'])) {
+            foreach ($mapping['attributeOverride'] as $field => $overrideMapping) {
+                $this->buildFieldConfiguration($field, $overrideMapping, $config);
             }
         }
 
@@ -72,5 +71,18 @@ class Yaml extends File implements Driver
     protected function _loadMappingFile($file)
     {
         return \Symfony\Component\Yaml\Yaml::parse(file_get_contents($file));
+    }
+
+    private function buildFieldConfiguration($field, $fieldMapping, array &$config)
+    {
+        if (is_array($fieldMapping) && isset($fieldMapping['gedmo'])) {
+            if (in_array('translatable', $fieldMapping['gedmo']) || isset($fieldMapping['gedmo']['translatable'])) {
+                // fields cannot be overrided and throws mapping exception
+                $config['fields'][] = $field;
+                if (isset($fieldMapping['gedmo']['translatable']['fallback'])) {
+                    $config['fallback'][$field] = $fieldMapping['gedmo']['translatable']['fallback'];
+                }
+            }
+        }
     }
 }

@@ -38,17 +38,16 @@
         "wiki": "https://github.com/Atlantic18/DoctrineExtensions/tree/master/doc"
     },
     "require": {
-        "php": ">=5.3.2",
+        "php": ">=5.4",
         "behat/transliterator": "~1.0",
         "doctrine/common": "~2.4"
     },
     "require-dev": {
-        "doctrine/mongodb-odm": "dev-master",
+        "doctrine/mongodb-odm": "~1.0",
         "doctrine/orm": ">=2.5.0",
         "doctrine/common": ">=2.5.0",
-        "symfony/yaml": "~2.6",
-        "phpunit/phpunit": "~4.4",
-        "phpunit/phpunit-mock-objects": "~2.3"
+        "symfony/yaml": "~2.6|~3.0",
+        "phpunit/phpunit": "*"
     },
     "suggest": {
         "doctrine/mongodb-odm": "to use the extensions with the MongoDB ODM",
@@ -62,7 +61,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "2.4.x-dev"
+            "dev-master": "3.0.x-dev"
         }
     }
 }

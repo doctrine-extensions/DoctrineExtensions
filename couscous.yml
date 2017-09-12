@@ -1,0 +1,65 @@
+template:
+  url: https://github.com/CouscousPHP/Template-ReadTheDocs
+
+exclude:
+  - vendor
+  - lib
+  - bin
+  - example
+  - tests
+
+scripts:
+  after:
+    - cp -R schemas .couscous/generated/.
+
+github:
+  user: Atlantic18
+  repo: DoctrineExtensions
+
+title: Doctrine Extensions 3.0.0
+subTitle: Behaviors for Doctrine2 ORM and ODM
+
+baseUrl: http://Atlantic18.github.io/DoctrineExtensions
+
+menu:
+  items:
+    tree:
+      text: Tree
+      relativeUrl: doc/tree.html
+    translatable:
+      text: Translatable
+      relativeUrl: doc/translatable.html
+    sluggable:
+      text: Sluggable
+      relativeUrl: doc/sluggable.html
+    timestampable:
+      text: Timestampable
+      relativeUrl: doc/timestampable.html
+    blameable:
+      text: Blameable
+      relativeUrl: doc/blameable.html
+    loggable:
+      text: Loggable
+      relativeUrl: doc/loggable.html
+    sortable:
+      text: Sortable
+      relativeUrl: doc/sortable.html
+    translator:
+      text: Translator
+      relativeUrl: doc/translatable.html
+    softdeleteable:
+      text: SoftDeleteable
+      relativeUrl: doc/softdeleteable.html
+    uploadable:
+      text: Uploadable
+      relativeUrl: doc/uploadable.html
+    references:
+      text: References
+      relativeUrl: doc/references.html
+    reference-integrity:
+      text: ReferenceIntegrity
+      relativeUrl: doc/reference_integrity.html
+    iptraceable:
+      text: IpTraceable
+      relativeUrl: doc/ip_traceable.html
+

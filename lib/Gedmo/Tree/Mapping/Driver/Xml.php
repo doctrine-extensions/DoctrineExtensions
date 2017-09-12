@@ -43,7 +43,7 @@ class Xml extends BaseXml
         $xml = $xml->children(self::GEDMO_NAMESPACE_URI);
         $validator = new Validator();
 
-        if (isset($xml->tree) && $this->_isAttributeSet($xml->tree, 'type')) {
+        if ($xml->count() > 0 && isset($xml->tree) && $this->_isAttributeSet($xml->tree, 'type')) {
             $strategy = $this->_getAttribute($xml->tree, 'type');
             if (!in_array($strategy, $this->strategies)) {
                 throw new InvalidMappingException("Tree type: $strategy is not available.");
@@ -88,76 +88,78 @@ class Xml extends BaseXml
                 $mapping = $mapping->children(self::GEDMO_NAMESPACE_URI);
 
                 $field = $this->_getAttribute($mappingDoctrine, 'name');
-                if (isset($mapping->{'tree-left'})) {
-                    if (!$validator->isValidField($meta, $field)) {
-                        throw new InvalidMappingException("Tree left field - [{$field}] type is not valid and must be 'integer' in class - {$meta->name}");
-                    }
-                    $config['left'] = $field;
-                } elseif (isset($mapping->{'tree-right'})) {
-                    if (!$validator->isValidField($meta, $field)) {
-                        throw new InvalidMappingException("Tree right field - [{$field}] type is not valid and must be 'integer' in class - {$meta->name}");
-                    }
-                    $config['right'] = $field;
-                } elseif (isset($mapping->{'tree-root'})) {
-                    if (!$validator->isValidFieldForRoot($meta, $field)) {
-                        throw new InvalidMappingException("Tree root field - [{$field}] type is not valid and must be any of the 'integer' types or 'string' in class - {$meta->name}");
-                    }
-                    $config['root'] = $field;
-                } elseif (isset($mapping->{'tree-level'})) {
-                    if (!$validator->isValidField($meta, $field)) {
-                        throw new InvalidMappingException("Tree level field - [{$field}] type is not valid and must be 'integer' in class - {$meta->name}");
-                    }
-                    $config['level'] = $field;
-                } elseif (isset($mapping->{'tree-path'})) {
-                    if (!$validator->isValidFieldForPath($meta, $field)) {
-                        throw new InvalidMappingException("Tree Path field - [{$field}] type is not valid. It must be string or text in class - {$meta->name}");
-                    }
+                if($mapping->count() > 0) {
+                    if (isset($mapping->{'tree-left'})) {
+                        if (!$validator->isValidField($meta, $field)) {
+                            throw new InvalidMappingException("Tree left field - [{$field}] type is not valid and must be 'integer' in class - {$meta->name}");
+                        }
+                        $config['left'] = $field;
+                    } elseif (isset($mapping->{'tree-right'})) {
+                        if (!$validator->isValidField($meta, $field)) {
+                            throw new InvalidMappingException("Tree right field - [{$field}] type is not valid and must be 'integer' in class - {$meta->name}");
+                        }
+                        $config['right'] = $field;
+                    } elseif (isset($mapping->{'tree-root'})) {
+                        if (!$validator->isValidFieldForRoot($meta, $field)) {
+                            throw new InvalidMappingException("Tree root field - [{$field}] type is not valid and must be any of the 'integer' types or 'string' in class - {$meta->name}");
+                        }
+                        $config['root'] = $field;
+                    } elseif (isset($mapping->{'tree-level'})) {
+                        if (!$validator->isValidField($meta, $field)) {
+                            throw new InvalidMappingException("Tree level field - [{$field}] type is not valid and must be 'integer' in class - {$meta->name}");
+                        }
+                        $config['level'] = $field;
+                    } elseif (isset($mapping->{'tree-path'})) {
+                        if (!$validator->isValidFieldForPath($meta, $field)) {
+                            throw new InvalidMappingException("Tree Path field - [{$field}] type is not valid. It must be string or text in class - {$meta->name}");
+                        }
 
-                    $separator = $this->_getAttribute($mapping->{'tree-path'}, 'separator');
+                        $separator = $this->_getAttribute($mapping->{'tree-path'}, 'separator');
 
-                    if (strlen($separator) > 1) {
-                        throw new InvalidMappingException("Tree Path field - [{$field}] Separator {$separator} is invalid. It must be only one character long.");
+                        if (strlen($separator) > 1) {
+                            throw new InvalidMappingException("Tree Path field - [{$field}] Separator {$separator} is invalid. It must be only one character long.");
+                        }
+
+                        $appendId = $this->_getAttribute($mapping->{'tree-path'}, 'append_id');
+
+                        if (!$appendId) {
+                            $appendId = true;
+                        } else {
+                            $appendId = strtolower($appendId) == 'false' ? false : true;
+                        }
+
+                        $startsWithSeparator = $this->_getAttribute($mapping->{'tree-path'}, 'starts_with_separator');
+
+                        if (!$startsWithSeparator) {
+                            $startsWithSeparator = false;
+                        } else {
+                            $startsWithSeparator = strtolower($startsWithSeparator) == 'false' ? false : true;
+                        }
+
+                        $endsWithSeparator = $this->_getAttribute($mapping->{'tree-path'}, 'ends_with_separator');
+
+                        if (!$endsWithSeparator) {
+                            $endsWithSeparator = true;
+                        } else {
+                            $endsWithSeparator = strtolower($endsWithSeparator) == 'false' ? false : true;
+                        }
+
+                        $config['path'] = $field;
+                        $config['path_separator'] = $separator;
+                        $config['path_append_id'] = $appendId;
+                        $config['path_starts_with_separator'] = $startsWithSeparator;
+                        $config['path_ends_with_separator'] = $endsWithSeparator;
+                    } elseif (isset($mapping->{'tree-path-source'})) {
+                        if (!$validator->isValidFieldForPathSource($meta, $field)) {
+                            throw new InvalidMappingException("Tree PathSource field - [{$field}] type is not valid. It can be any of the integer variants, double, float or string in class - {$meta->name}");
+                        }
+                        $config['path_source'] = $field;
+                    } elseif (isset($mapping->{'tree-lock-time'})) {
+                        if (!$validator->isValidFieldForLockTime($meta, $field)) {
+                            throw new InvalidMappingException("Tree LockTime field - [{$field}] type is not valid. It must be \"date\" in class - {$meta->name}");
+                        }
+                        $config['lock_time'] = $field;
                     }
-
-                    $appendId = $this->_getAttribute($mapping->{'tree-path'}, 'append_id');
-
-                    if (!$appendId) {
-                        $appendId = true;
-                    } else {
-                        $appendId = strtolower($appendId) == 'false' ? false : true;
-                    }
-
-                    $startsWithSeparator = $this->_getAttribute($mapping->{'tree-path'}, 'starts_with_separator');
-
-                    if (!$startsWithSeparator) {
-                        $startsWithSeparator = false;
-                    } else {
-                        $startsWithSeparator = strtolower($startsWithSeparator) == 'false' ? false : true;
-                    }
-
-                    $endsWithSeparator = $this->_getAttribute($mapping->{'tree-path'}, 'ends_with_separator');
-
-                    if (!$endsWithSeparator) {
-                        $endsWithSeparator = true;
-                    } else {
-                        $endsWithSeparator = strtolower($endsWithSeparator) == 'false' ? false : true;
-                    }
-
-                    $config['path'] = $field;
-                    $config['path_separator'] = $separator;
-                    $config['path_append_id'] = $appendId;
-                    $config['path_starts_with_separator'] = $startsWithSeparator;
-                    $config['path_ends_with_separator'] = $endsWithSeparator;
-                } elseif (isset($mapping->{'tree-path-source'})) {
-                    if (!$validator->isValidFieldForPathSource($meta, $field)) {
-                        throw new InvalidMappingException("Tree PathSource field - [{$field}] type is not valid. It can be any of the integer variants, double, float or string in class - {$meta->name}");
-                    }
-                    $config['path_source'] = $field;
-                } elseif (isset($mapping->{'tree-lock-time'})) {
-                    if (!$validator->isValidFieldForLockTime($meta, $field)) {
-                        throw new InvalidMappingException("Tree LockTime field - [{$field}] type is not valid. It must be \"date\" in class - {$meta->name}");
-                    }
-                    $config['lock_time'] = $field;
                 }
             }
         }
@@ -174,13 +176,23 @@ class Xml extends BaseXml
                      */
                     $manyToOneMappingDoctrine = $manyToOneMapping;
                     $manyToOneMapping = $manyToOneMapping->children(self::GEDMO_NAMESPACE_URI);
-                    if (isset($manyToOneMapping->{'tree-parent'})) {
-                        $field = $this->_getAttribute($manyToOneMappingDoctrine, 'field');
-                        $targetEntity = $meta->associationMappings[$field]['targetEntity'];
-                        if (!$cl = $this->getRelatedClassName($meta, $targetEntity)) {
-                            throw new InvalidMappingException("Unable to find ancestor/parent child relation through ancestor field - [{$field}] in class - {$meta->name}");
+                    if($manyToOneMapping->count() > 0) {
+                        if (isset($manyToOneMapping->{'tree-parent'})) {
+                            $field = $this->_getAttribute($manyToOneMappingDoctrine, 'field');
+                            $targetEntity = $meta->associationMappings[$field]['targetEntity'];
+                            if (!$cl = $this->getRelatedClassName($meta, $targetEntity)) {
+                                throw new InvalidMappingException("Unable to find ancestor/parent child relation through ancestor field - [{$field}] in class - {$meta->name}");
+                            }
+                            $config['parent'] = $field;
                         }
-                        $config['parent'] = $field;
+                        if (isset($manyToOneMapping->{'tree-root'})) {
+                            $field = $this->_getAttribute($manyToOneMappingDoctrine, 'field');
+                            $targetEntity = $meta->associationMappings[$field]['targetEntity'];
+                            if (!$cl = $this->getRelatedClassName($meta, $targetEntity)) {
+                                throw new InvalidMappingException("Unable to find root descendant relation through root field - [{$field}] in class - {$meta->name}");
+                            }
+                            $config['root'] = $field;
+                        }
                     }
                 }
             } elseif (isset($xmlDoctrine->{'reference-one'})) {
@@ -190,12 +202,21 @@ class Xml extends BaseXml
                      */
                     $referenceOneMappingDoctrine = $referenceOneMapping;
                     $referenceOneMapping = $referenceOneMapping->children(self::GEDMO_NAMESPACE_URI);
-                    if (isset($referenceOneMapping->{'tree-parent'})) {
-                        $field = $this->_getAttribute($referenceOneMappingDoctrine, 'field');
-                        if (!$cl = $this->getRelatedClassName($meta, $this->_getAttribute($referenceOneMappingDoctrine, 'target-document'))) {
-                            throw new InvalidMappingException("Unable to find ancestor/parent child relation through ancestor field - [{$field}] in class - {$meta->name}");
+                    if($referenceOneMapping->count() > 0) {
+                        if (isset($referenceOneMapping->{'tree-parent'})) {
+                            $field = $this->_getAttribute($referenceOneMappingDoctrine, 'field');
+                            if (!$cl = $this->getRelatedClassName($meta, $this->_getAttribute($referenceOneMappingDoctrine, 'target-document'))) {
+                                throw new InvalidMappingException("Unable to find ancestor/parent child relation through ancestor field - [{$field}] in class - {$meta->name}");
+                            }
+                            $config['parent'] = $field;
                         }
-                        $config['parent'] = $field;
+                        if (isset($referenceOneMapping->{'tree-root'})) {
+                            $field = $this->_getAttribute($referenceOneMappingDoctrine, 'field');
+                            if (!$cl = $this->getRelatedClassName($meta, $this->_getAttribute($referenceOneMappingDoctrine, 'target-document'))) {
+                                throw new InvalidMappingException("Unable to find root descendant relation through root field - [{$field}] in class - {$meta->name}");
+                            }
+                            $config['root'] = $field;
+                        }
                     }
                 }
             }
@@ -207,13 +228,23 @@ class Xml extends BaseXml
                      */
                     $manyToOneMappingDoctrine = $manyToOneMapping;
                     $manyToOneMapping = $manyToOneMapping->children(self::GEDMO_NAMESPACE_URI);
-                    if (isset($manyToOneMapping->{'tree-parent'})) {
-                        $field = $this->_getAttribute($manyToOneMappingDoctrine, 'field');
-                        $targetEntity = $meta->associationMappings[$field]['targetEntity'];
-                        if (!$cl = $this->getRelatedClassName($meta, $targetEntity)) {
-                            throw new InvalidMappingException("Unable to find ancestor/parent child relation through ancestor field - [{$field}] in class - {$meta->name}");
+                    if($manyToOneMapping->count() > 0) {
+                        if (isset($manyToOneMapping->{'tree-parent'})) {
+                            $field = $this->_getAttribute($manyToOneMappingDoctrine, 'field');
+                            $targetEntity = $meta->associationMappings[$field]['targetEntity'];
+                            if (!$cl = $this->getRelatedClassName($meta, $targetEntity)) {
+                                throw new InvalidMappingException("Unable to find ancestor/parent child relation through ancestor field - [{$field}] in class - {$meta->name}");
+                            }
+                            $config['parent'] = $field;
                         }
-                        $config['parent'] = $field;
+                        if (isset($manyToOneMapping->{'tree-root'})) {
+                            $field = $this->_getAttribute($manyToOneMappingDoctrine, 'field');
+                            $targetEntity = $meta->associationMappings[$field]['targetEntity'];
+                            if (!$cl = $this->getRelatedClassName($meta, $targetEntity)) {
+                                throw new InvalidMappingException("Unable to find root descendant relation through root field - [{$field}] in class - {$meta->name}");
+                            }
+                            $config['root'] = $field;
+                        }
                     }
                 }
             }
@@ -225,12 +256,21 @@ class Xml extends BaseXml
                      */
                     $referenceOneMappingDoctrine = $referenceOneMapping;
                     $referenceOneMapping = $referenceOneMapping->children(self::GEDMO_NAMESPACE_URI);
-                    if (isset($referenceOneMapping->{'tree-parent'})) {
-                        $field = $this->_getAttribute($referenceOneMappingDoctrine, 'field');
-                        if (!$cl = $this->getRelatedClassName($meta, $this->_getAttribute($referenceOneMappingDoctrine, 'target-document'))) {
-                            throw new InvalidMappingException("Unable to find ancestor/parent child relation through ancestor field - [{$field}] in class - {$meta->name}");
+                    if($referenceOneMapping->count() > 0) {
+                        if (isset($referenceOneMapping->{'tree-parent'})) {
+                            $field = $this->_getAttribute($referenceOneMappingDoctrine, 'field');
+                            if (!$cl = $this->getRelatedClassName($meta, $this->_getAttribute($referenceOneMappingDoctrine, 'target-document'))) {
+                                throw new InvalidMappingException("Unable to find ancestor/parent child relation through ancestor field - [{$field}] in class - {$meta->name}");
+                            }
+                            $config['parent'] = $field;
                         }
-                        $config['parent'] = $field;
+                        if (isset($referenceOneMapping->{'tree-root'})) {
+                            $field = $this->_getAttribute($referenceOneMappingDoctrine, 'field');
+                            if (!$cl = $this->getRelatedClassName($meta, $this->_getAttribute($referenceOneMappingDoctrine, 'target-document'))) {
+                                throw new InvalidMappingException("Unable to find root descendant relation through root field - [{$field}] in class - {$meta->name}");
+                            }
+                            $config['root'] = $field;
+                        }
                     }
                 }
             }

@@ -31,7 +31,8 @@ class Yaml extends File implements Driver
     private $validTypes = array(
         'one',
         'string',
-        'int',
+        'int', // mongodb driver has both int and integer types
+        'integer',
     );
 
     /**
@@ -72,8 +73,9 @@ class Yaml extends File implements Driver
             }
         }
 
-        if (isset($mapping['manyToOne'])) {
-            foreach ($mapping['manyToOne'] as $field => $fieldMapping) {
+        if (isset($mapping['manyToOne']) || isset($mapping['referenceOne'])) {
+            $associationKey = isset($mapping['manyToOne']) ? 'manyToOne' : 'referenceOne'; // support orm or odm
+            foreach ($mapping[$associationKey] as $field => $fieldMapping) {
                 if (isset($fieldMapping['gedmo']['blameable'])) {
                     $mappingProperty = $fieldMapping['gedmo']['blameable'];
                     if (! $meta->isSingleValuedAssociation($field)) {

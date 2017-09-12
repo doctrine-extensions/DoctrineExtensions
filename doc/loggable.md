@@ -79,7 +79,7 @@ use Doctrine\ORM\Mapping as ORM;
 class Article
 {
     /**
-     * @ORM\Column(name="id", type="integer")
+     * @ORM\Column(type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
@@ -87,7 +87,7 @@ class Article
 
     /**
      * @Gedmo\Versioned
-     * @ORM\Column(name="title", type="string", length=8)
+     * @ORM\Column(length=8)
      */
     private $title;
 
@@ -107,6 +107,38 @@ class Article
     }
 }
 ```
+
+<a name="entity-mapping-custom-logentry"></a>
+
+## Loggable Entity example with your custom logEntryClass:
+
+
+If you want to add some of yours logic to store logs in DB, you can create your own Entity (for example, Logs), where you can override some methods or add your own, in Entity you should extends AbstractLogEntry. 
+
+```php
+<?php
+
+namespace AppBundle\Entity;
+
+use Gedmo\Loggable\Entity\MappedSuperclass\AbstractLogEntry;
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * @ORM\Table(name="logs")
+ * @ORM\Entity(repositoryClass="Gedmo\Loggable\Entity\Repository\LogEntryRepository")
+ *
+ */
+class Logs extends AbstractLogEntry
+{
+}
+```
+And then add to you Entity (ex. Article) next annotations:
+- **@Gedmo\Loggable(logEntryClass="AppBundle\Entity\Logs")**
+
+Choose fields that you need to logging in next way:
+- **@Gedmo\Versioned**
+
+Add don't forget to update scheme.
 
 <a name="document-mapping"></a>
 
@@ -129,7 +161,7 @@ class Article
     private $id;
 
     /**
-     * @ODM\String
+     * @ODM\Field(type="string")
      * @Gedmo\Versioned
      */
     private $title;
@@ -195,7 +227,7 @@ Entity\Article:
 ``` xml
 <?xml version="1.0" encoding="UTF-8"?>
 <doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
-                  xmlns:gedmo="http://gediminasm.org/schemas/orm/doctrine-extensions-mapping">
+                  xmlns:gedmo="http://Atlantic18.github.io/DoctrineExtensions/schemas/orm/doctrine-extensions-3.0.xsd">
 
     <entity name="Mapping\Fixture\Xml\Loggable" table="loggables">
 

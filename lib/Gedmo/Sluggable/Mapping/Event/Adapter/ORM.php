@@ -107,10 +107,9 @@ class ORM extends BaseAdapterORM implements SluggableAdapter
                 $qb->expr()->literal($target),
                 $qb->expr()->substring('rec.'.$config['slug'], strlen($replacement)+1)
             ))
-            ->where('rec.'.$config['mappedBy'].' = :object')
+            ->where($qb->expr()->like('rec.'.$config['slug'], $qb->expr()->literal($replacement . '%')))
         ;
         $q = $qb->getQuery();
-        $q->setParameters(compact('object'));
 
         return $q->execute();
     }

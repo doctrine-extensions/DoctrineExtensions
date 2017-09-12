@@ -19,12 +19,18 @@ class ReferenceIntegrityDocumentTest extends BaseTestCaseMongoODM
     const TYPE_MANY_NULLIFY_CLASS = 'ReferenceIntegrity\Fixture\Document\ManyNullify\Type';
     const ARTICLE_MANY_NULLIFY_CLASS = 'ReferenceIntegrity\Fixture\Document\ManyNullify\Article';
 
+    const TYPE_ONE_PULL_CLASS = 'ReferenceIntegrity\Fixture\Document\OnePull\Type';
+    const ARTICLE_ONE_PULL_CLASS = 'ReferenceIntegrity\Fixture\Document\OnePull\Article';
+
+    const TYPE_MANY_PULL_CLASS = 'ReferenceIntegrity\Fixture\Document\ManyPull\Type';
+    const ARTICLE_MANY_PULL_CLASS = 'ReferenceIntegrity\Fixture\Document\ManyPull\Article';
+
     const TYPE_ONE_RESTRICT_CLASS = 'ReferenceIntegrity\Fixture\Document\OneRestrict\Type';
     const ARTICLE_ONE_RESTRICT_CLASS = 'ReferenceIntegrity\Fixture\Document\OneRestrict\Article';
 
     const TYPE_MANY_RESTRICT_CLASS = 'ReferenceIntegrity\Fixture\Document\ManyRestrict\Type';
     const ARTICLE_MANY_RESTRICT_CLASS = 'ReferenceIntegrity\Fixture\Document\ManyRestrict\Article';
-
+    
     protected function setUp()
     {
         parent::setUp();
@@ -36,6 +42,9 @@ class ReferenceIntegrityDocumentTest extends BaseTestCaseMongoODM
 
         $this->populateOneNullify();
         $this->populateManyNullify();
+
+        $this->populateOnePull();
+        $this->populateManyPull();
 
         $this->populateOneRestrict();
         $this->populateManyRestrict();
@@ -83,6 +92,66 @@ class ReferenceIntegrityDocumentTest extends BaseTestCaseMongoODM
             ->findOneByTitle('Many Nullify Article');
 
         $this->assertNull($article->getType());
+
+        $this->dm->clear();
+    }
+
+    public function testOnePull()
+    {
+        $type1 = $this->dm->getRepository(self::TYPE_ONE_PULL_CLASS)
+            ->findOneByTitle('One Pull Type 1');
+        $type2 = $this->dm->getRepository(self::TYPE_ONE_PULL_CLASS)
+            ->findOneByTitle('One Pull Type 2');
+
+        $this->assertFalse(is_null($type1));
+        $this->assertTrue(is_object($type1));
+
+        $this->assertFalse(is_null($type2));
+        $this->assertTrue(is_object($type2));
+
+        $this->dm->remove($type2);
+        $this->dm->flush();
+
+        $type2 = $this->dm->getRepository(self::TYPE_ONE_PULL_CLASS)
+            ->findOneByTitle('One Pull Type 2');
+        $this->assertNull($type2);
+
+        $article = $this->dm->getRepository(self::ARTICLE_ONE_PULL_CLASS)
+            ->findOneByTitle('One Pull Article');
+        
+        $types = $article->getTypes();
+        $this->assertTrue(count($types)===1);
+        $this->assertEquals('One Pull Type 1',$types[0]->getTitle());
+    
+        $this->dm->clear();
+    }
+
+    public function testManyPull()
+    {
+        $type1 = $this->dm->getRepository(self::TYPE_ONE_PULL_CLASS)
+            ->findOneByTitle('Many Pull Type 1');
+        $type2 = $this->dm->getRepository(self::TYPE_ONE_PULL_CLASS)
+            ->findOneByTitle('Many Pull Type 2');
+
+        $this->assertFalse(is_null($type1));
+        $this->assertTrue(is_object($type1));
+
+        $this->assertFalse(is_null($type2));
+        $this->assertTrue(is_object($type2));
+
+        $this->dm->remove($type2);
+        $this->dm->flush();
+
+        $type2 = $this->dm->getRepository(self::TYPE_MANY_PULL_CLASS)
+            ->findOneByTitle('Many Pull Type 2');
+        $this->assertNull($type2);
+
+        $article = $this->dm->getRepository(self::ARTICLE_MANY_PULL_CLASS)
+            ->findOneByTitle('Many Pull Article');
+        
+        $types = $article->getTypes();
+        $this->assertTrue(count($types)===1);
+        $this->assertEquals('Many Pull Type 1',$types[0]->getTitle());
 
         $this->dm->clear();
     }
@@ -150,6 +219,52 @@ class ReferenceIntegrityDocumentTest extends BaseTestCaseMongoODM
 
         $this->dm->persist($article);
         $this->dm->persist($type);
+
+        $this->dm->flush();
+        $this->dm->clear();
+    }
+
+    private function populateOnePull()
+    {
+        $typeClass = self::TYPE_ONE_PULL_CLASS;
+        $type1 = new $typeClass();
+        $type1->setTitle('One Pull Type 1');
+
+        $type2 = new $typeClass();
+        $type2->setTitle('One Pull Type 2');
+
+        $articleClass = self::ARTICLE_ONE_PULL_CLASS;
+        $article = new $articleClass();
+        $article->setTitle('One Pull Article');
+        $article->addType($type1);
+        $article->addType($type2);
+
+        $this->dm->persist($article);
+        $this->dm->persist($type1);
+        $this->dm->persist($type2);
+
+        $this->dm->flush();
+        $this->dm->clear();
+    }
+
+    private function populateManyPull()
+    {
+        $typeClass = self::TYPE_MANY_PULL_CLASS;
+        $type1 = new $typeClass();
+        $type1->setTitle('Many Pull Type 1');
+
+        $type2 = new $typeClass();
+        $type2->setTitle('Many Pull Type 2');
+
+        $articleClass = self::ARTICLE_MANY_PULL_CLASS;
+        $article = new $articleClass();
+        $article->setTitle('Many Pull Article');
+        $article->addType($type1);
+        $article->addType($type2);
+
+        $this->dm->persist($article);
+        $this->dm->persist($type1);
+        $this->dm->persist($type2);
 
         $this->dm->flush();
         $this->dm->clear();

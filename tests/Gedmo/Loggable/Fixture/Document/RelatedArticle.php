@@ -18,13 +18,13 @@ class RelatedArticle
 
     /**
      * @Gedmo\Versioned
-     * @ODM\String
+     * @ODM\Field(type="string")
      */
     private $title;
 
     /**
      * @Gedmo\Versioned
-     * @ODM\String
+     * @ODM\Field(type="string")
      */
     private $content;
 
@@ -32,6 +32,13 @@ class RelatedArticle
      * @ODM\ReferenceMany(targetDocument="Comment", mappedBy="article")
      */
     private $comments;
+
+    /**
+     * @ODM\EmbedMany(targetDocument="Reference")
+     * @Gedmo\Versioned
+     */
+    private $references;
+
 
     public function getId()
     {
@@ -67,5 +74,15 @@ class RelatedArticle
     public function getContent()
     {
         return $this->content;
+    }
+
+    public function getReferences()
+    {
+        return $this->references;
+    }
+
+    public function setReferences($references)
+    {
+        $this->references = $references;
     }
 }

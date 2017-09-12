@@ -1,0 +1,71 @@
+{
+    "name": "gedmo/doctrine-extensions",
+    "type": "library",
+    "description": "Doctrine2 behavioral extensions",
+    "keywords": [
+        "behaviors",
+        "doctrine2",
+        "extensions",
+        "gedmo",
+        "sluggable",
+        "loggable",
+        "translatable",
+        "tree",
+        "nestedset",
+        "sortable",
+        "timestampable",
+        "blameable",
+        "uploadable"
+    ],
+    "homepage": "http://gediminasm.org/",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Gediminas Morkevicius",
+            "email": "gediminas.morkevicius@gmail.com"
+        },
+        {
+            "name": "Gustavo Falco",
+            "email": "comfortablynumb84@gmail.com"
+        },
+        {
+            "name": "David Buchmann",
+            "email": "david@liip.ch"
+        }
+    ],
+    "support": {
+        "email": "gediminas.morkevicius@gmail.com",
+        "wiki": "https://github.com/Atlantic18/DoctrineExtensions/tree/master/doc"
+    },
+    "require": {
+        "php": ">=5.4",
+        "behat/transliterator": "~1.0",
+        "doctrine/common": "~2.4"
+    },
+    "replace": {
+        "ext-mongo": "1.6.12"
+    },
+    "require-dev": {
+        "alcaeus/mongo-php-adapter": "~1.0.4",
+        "doctrine/mongodb-odm": "~1.0",
+        "doctrine/orm": ">=2.5.0",
+        "doctrine/common": ">=2.5.0",
+        "symfony/yaml": "~2.6|~3.0",
+        "phpunit/phpunit": "*"
+    },
+    "suggest": {
+        "doctrine/mongodb-odm": "to use the extensions with the MongoDB ODM",
+        "doctrine/orm": "to use the extensions with the ORM"
+    },
+    "autoload": {
+        "psr-0": { "Gedmo\\": "lib/" }
+    },
+    "config": {
+        "bin-dir": "bin"
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "3.0.x-dev"
+        }
+    }
+}

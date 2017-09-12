@@ -14,12 +14,12 @@ class Article
     private $id;
 
     /**
-     * @ODM\String
+     * @ODM\Field(type="string")
      */
     private $title;
 
     /**
-     * @Gedmo\SortablePosition
+     * @Gedmo\Sortable
      * @ODM\Field(type="int")
      */
     protected $position;

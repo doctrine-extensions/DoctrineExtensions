@@ -44,7 +44,7 @@ class Xml extends BaseXml
             foreach ($mapping->field as $fieldMapping) {
                 $fieldMappingDoctrine = $fieldMapping;
                 $fieldMapping = $fieldMapping->children(self::GEDMO_NAMESPACE_URI);
-                if (isset($fieldMapping->{'ip-traceable'})) {
+                if ($fieldMapping->count() > 0 && isset($fieldMapping->{'ip-traceable'})) {
                     /**
                      * @var \SimpleXmlElement $data
                      */
@@ -82,7 +82,7 @@ class Xml extends BaseXml
             foreach ($mapping->{'many-to-one'} as $fieldMapping) {
                 $field = $this->_getAttribute($fieldMapping, 'field');
                 $fieldMapping = $fieldMapping->children(self::GEDMO_NAMESPACE_URI);
-                if (isset($fieldMapping->{'ip-traceable'})) {
+                if ($fieldMapping->count() > 0 && isset($fieldMapping->{'ip-traceable'})) {
                     /**
                      * @var \SimpleXmlElement $data
                      */

@@ -138,7 +138,7 @@ class MaterializedPathRepository extends AbstractTreeRepository
             $qb->field($config['path'])->equals(new \MongoRegex($regex));
         }
 
-        $qb->sort(is_null($sortByField) ? $config['path'] : $sortByField, $direction === 'asc' ? 'asc' : 'desc');
+        $qb->sort(null === $sortByField ? $config['path'] : $sortByField, $direction === 'asc' ? 'asc' : 'desc');
 
         return $qb;
     }
@@ -193,6 +193,25 @@ class MaterializedPathRepository extends AbstractTreeRepository
         $query->setHydrate(false);
 
         return $query->toArray();
+    }
+    
+    /**
+     * removeFromTree
+     * @param object $node
+     */
+    public function removeFromTree($node)
+    {
+        $meta = $this->getClassMetadata();
+        
+        if ($node instanceof $meta->name) {
+            $config = $this->listener->getConfiguration($this->dm, $meta->name);
+            
+            $this->listener
+                ->getStrategy($this->dm, $meta->name)
+                ->removeNode($this->dm, $meta, $config, $node);
+                
+            $this->dm->flush();
+        }
     }
 
     /**

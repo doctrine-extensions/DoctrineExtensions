@@ -14,7 +14,7 @@ class Article
     private $id;
 
     /**
-     * @ODM\String
+     * @ODM\Field(type="string")
      */
     private $title;
 
@@ -26,7 +26,7 @@ class Article
     /**
      * @var string $created
      *
-     * @ODM\String
+     * @ODM\Field(type="string")
      * @Gedmo\Blameable(on="create")
      */
     private $created;
@@ -34,7 +34,7 @@ class Article
     /**
      * @var string $updated
      *
-     * @ODM\String
+     * @ODM\Field(type="string")
      * @Gedmo\Blameable
      */
     private $updated;
@@ -48,7 +48,7 @@ class Article
     /**
      * @var string $published
      *
-     * @ODM\String
+     * @ODM\Field(type="string")
      * @Gedmo\Blameable(on="change", field="type.title", value="Published")
      */
     private $published;

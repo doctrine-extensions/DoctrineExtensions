@@ -1,29 +1,25 @@
 language: php
 
+sudo: false
+
 php:
   - 5.4
   - 5.5
   - 5.6
-  - hhvm
-
-matrix:
-  allow_failures:
-    - php: hhvm
+  - 7.0
 
 services: mongodb
 
 before_install:
-  - if [[ $TRAVIS_PHP_VERSION != 'hhvm' && `php-config --vernum` -ge 50500 ]]; then yes ''| pecl install apcu-beta; else echo 'extension="apc.so"' >> ./tests/travis/php.ini; fi
-  - if [ $TRAVIS_PHP_VERSION != 'hhvm' ]; then phpenv config-add ./tests/travis/php.ini; fi
-  # Allow dev versions for HHVM as the Doctrine HHVM support is not yet released
-  - if [ $TRAVIS_PHP_VERSION = 'hhvm' ]; then composer require --dev --no-update doctrine/orm "~2.5@dev" doctrine/dbal "~2.5@dev"; fi
-  # Remove the ODM requirement on HHVM as it does not support mongo
-  - if [ $TRAVIS_PHP_VERSION = 'hhvm' ]; then grep -v "doctrine/mongodb-odm" composer.json > composer.json.new && mv composer.json.new composer.json; fi
+  - if [[ "$TRAVIS_PHP_VERSION" = 5.* ]]; then echo 'extension=mongo.so' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini; fi
+  - if [[ "$TRAVIS_PHP_VERSION" != 5.* ]]; then echo 'extension=mongodb.so' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini; fi
+  - if [[ "$TRAVIS_PHP_VERSION" != 5.* ]]; then cp composer7.json composer.json; fi
 
 install:
   - composer install --prefer-dist
 
-script: bin/phpunit -c tests/
+script:
+  - bin/phpunit -c tests/
 
 notifications:
   email:

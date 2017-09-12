@@ -198,18 +198,18 @@ class Article
     private $id;
 
     /**
-     * @ODM\String
+     * @ODM\Field(type="string")
      */
     private $title;
 
     /**
-     * @ODM\String
+     * @ODM\Field(type="string")
      */
     private $code;
 
     /**
      * @Gedmo\Slug(fields={"title", "code"})
-     * @ODM\String
+     * @ODM\Field(type="string")
      */
     private $slug;
 
@@ -292,7 +292,7 @@ Entity\Article:
 ``` xml
 <?xml version="1.0" encoding="UTF-8"?>
 <doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
-                  xmlns:gedmo="http://gediminasm.org/schemas/orm/doctrine-extensions-mapping">
+                  xmlns:gedmo="http://Atlantic18.github.io/DoctrineExtensions/schemas/orm/doctrine-extensions-3.0.xsd">
     <entity name="Entity\Article" table="sluggables">
         <id name="id" type="integer" column="id">
             <generator strategy="AUTO"/>
@@ -502,6 +502,7 @@ In case if you want the slug to regenerate itself based on sluggable fields, set
 $entity = $em->find('Entity\Something', $id);
 $entity->setSlug(null);
 
+$em->persist($entity);
 $em->flush();
 ```
 
@@ -587,11 +588,9 @@ class Article
 
     /**
      * @Gedmo\Slug(fields={"uniqueTitle"}, prefix="some-prefix-")
-     * @ORM\Column(type="string", length=128, unique=true)
+     * @ORM\Column(length=128, unique=true)
      */
     private $uniqueSlug;
-
-
 
     public function getId()
     {

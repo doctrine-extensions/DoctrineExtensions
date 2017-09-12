@@ -67,7 +67,7 @@ class Product
     private $id;
 
     /**
-     * @ODM\String
+     * @ODM\Field(type="string")
      */
     private $name;
 
@@ -152,7 +152,7 @@ class StockItem
     private $product;
 
     /**
-     * @ORM\Column(type="string")
+     * @ORM\Column
      */
     private $productId;
 

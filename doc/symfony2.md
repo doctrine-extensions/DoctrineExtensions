@@ -164,12 +164,14 @@ services:
     extension.listener:
         class: Acme\DemoBundle\Listener\DoctrineExtensionListener
         calls:
-            - [ setContainer, [ @service_container ] ]
+            - [ setContainer, [ "@service_container" ] ]
         tags:
             # translatable sets locale after router processing
             - { name: kernel.event_listener, event: kernel.request, method: onLateKernelRequest, priority: -10 }
             # loggable hooks user username if one is in security context
             - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
+            # translatable sets locale such as default application locale before command execute
+            - { name: kernel.event_listener, event: console.command, method: onConsoleCommand, priority: -10 }
 
 
     # Doctrine Extension listeners to handle behaviors
@@ -178,14 +180,14 @@ services:
         tags:
             - { name: doctrine.event_subscriber, connection: default }
         calls:
-            - [ setAnnotationReader, [ @annotation_reader ] ]
+            - [ setAnnotationReader, [ "@annotation_reader" ] ]
 
     gedmo.listener.translatable:
         class: Gedmo\Translatable\TranslatableListener
         tags:
             - { name: doctrine.event_subscriber, connection: default }
         calls:
-            - [ setAnnotationReader, [ @annotation_reader ] ]
+            - [ setAnnotationReader, [ "@annotation_reader" ] ]
             - [ setDefaultLocale, [ %locale% ] ]
             - [ setTranslationFallback, [ false ] ]
 
@@ -194,28 +196,28 @@ services:
         tags:
             - { name: doctrine.event_subscriber, connection: default }
         calls:
-            - [ setAnnotationReader, [ @annotation_reader ] ]
+            - [ setAnnotationReader, [ "@annotation_reader" ] ]
 
     gedmo.listener.sluggable:
         class: Gedmo\Sluggable\SluggableListener
         tags:
             - { name: doctrine.event_subscriber, connection: default }
         calls:
-            - [ setAnnotationReader, [ @annotation_reader ] ]
+            - [ setAnnotationReader, [ "@annotation_reader" ] ]
 
     gedmo.listener.sortable:
         class: Gedmo\Sortable\SortableListener
         tags:
             - { name: doctrine.event_subscriber, connection: default }
         calls:
-            - [ setAnnotationReader, [ @annotation_reader ] ]
+            - [ setAnnotationReader, [ "@annotation_reader" ] ]
 
     gedmo.listener.loggable:
         class: Gedmo\Loggable\LoggableListener
         tags:
             - { name: doctrine.event_subscriber, connection: default }
         calls:
-            - [ setAnnotationReader, [ @annotation_reader ] ]
+            - [ setAnnotationReader, [ "@annotation_reader" ] ]
 ```
 
 So what does it include in general? Well, it creates services for all extension listeners.
@@ -237,6 +239,7 @@ namespace Acme\DemoBundle\Listener;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpKernel\Kernel;
 
 class DoctrineExtensionListener implements ContainerAwareInterface
 {
@@ -256,12 +259,30 @@ class DoctrineExtensionListener implements ContainerAwareInterface
         $translatable->setTranslatableLocale($event->getRequest()->getLocale());
     }
 
+    public function onConsoleCommand()
+    {
+        $this->container->get('gedmo.listener.translatable')
+            ->setTranslatableLocale($this->container->get('translator')->getLocale());
+    }
+
     public function onKernelRequest(GetResponseEvent $event)
     {
-        $securityContext = $this->container->get('security.context', ContainerInterface::NULL_ON_INVALID_REFERENCE);
-        if (null !== $securityContext && null !== $securityContext->getToken() && $securityContext->isGranted('IS_AUTHENTICATED_REMEMBERED')) {
-            $loggable = $this->container->get('gedmo.listener.loggable');
-            $loggable->setUsername($securityContext->getToken()->getUsername());
+        if (Kernel::MAJOR_VERSION == 2 && Kernel::MINOR_VERSION < 6) {
+            $securityContext = $this->container->get('security.context', ContainerInterface::NULL_ON_INVALID_REFERENCE);
+            if (null !== $securityContext && null !== $securityContext->getToken() && $securityContext->isGranted('IS_AUTHENTICATED_REMEMBERED')) {
+                $loggable = $this->container->get('gedmo.listener.loggable');
+                $loggable->setUsername($securityContext->getToken()->getUsername());
+            }
+        }
+        else {
+            $tokenStorage = $this->container->get('security.token_storage')->getToken();
+            $authorizationChecker = $this->container->get('security.authorization_checker');
+            if (null !== $tokenStorage && $authorizationChecker->isGranted('IS_AUTHENTICATED_REMEMBERED')) {
+                $loggable = $this->container->get('gedmo.listener.loggable');
+                $loggable->setUsername($tokenStorage->getUser());
+                $blameable = $this->container->get('gedmo.listener.blameable');
+                $blameable->setUserValue($tokenStorage->getUser());
+            }
         }
     }
 }
@@ -315,12 +336,12 @@ class BlogPost
 
     /**
      * @Gedmo\Timestampable(on="create")
-     * @ORM\Column(name="created", type="datetime")
+     * @ORM\Column(type="datetime")
      */
     private $created;
 
     /**
-     * @ORM\Column(name="updated", type="datetime")
+     * @ORM\Column(type="datetime")
      * @Gedmo\Timestampable(on="update")
      */
     private $updated;

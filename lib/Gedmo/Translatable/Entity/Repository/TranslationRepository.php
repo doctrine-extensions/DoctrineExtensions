@@ -117,12 +117,16 @@ class TranslationRepository extends EntityRepository
         $wrapped = new EntityWrapper($entity, $this->_em);
         if ($wrapped->hasValidIdentifier()) {
             $entityId = $wrapped->getIdentifier();
-            $entityClass = $wrapped->getMetadata()->rootEntityName;
-            $translationMeta = $this->getClassMetadata(); // table inheritance support
-
             $config = $this
                 ->getTranslatableListener()
-                ->getConfiguration($this->_em, get_class($entity));
+                ->getConfiguration($this->_em, $wrapped->getMetadata()->name);
+
+            if (!$config) {
+                return $result;
+            }
+
+            $entityClass = $config['useObjectClass'];
+            $translationMeta = $this->getClassMetadata(); // table inheritance support
 
             $translationClass = isset($config['translationClass']) ?
                 $config['translationClass'] :

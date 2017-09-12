@@ -152,13 +152,18 @@ class Annotation extends AbstractAnnotationDriver
             // root
             if ($this->reader->getPropertyAnnotation($property, self::ROOT)) {
                 $field = $property->getName();
-                if (!$meta->hasField($field)) {
-                    throw new InvalidMappingException("Unable to find 'root' - [{$field}] as mapped property in entity - {$meta->name}");
+                if (!$meta->isSingleValuedAssociation($field)) {
+                    if (!$meta->hasField($field)) {
+                        throw new InvalidMappingException("Unable to find 'root' - [{$field}] as mapped property in entity - {$meta->name}");
+                    }
+
+                    if (!$validator->isValidFieldForRoot($meta, $field)) {
+                        throw new InvalidMappingException(
+                            "Tree root field should be either a literal property ('integer' types or 'string') or a many-to-one association through root field - [{$field}] in class - {$meta->name}"
+                        );
+                    }
                 }
 
-                if (!$validator->isValidFieldForRoot($meta, $field)) {
-                    throw new InvalidMappingException("Tree root field - [{$field}] type is not valid and must be any of the 'integer' types or 'string' in class - {$meta->name}");
-                }
                 $config['root'] = $field;
             }
             // level

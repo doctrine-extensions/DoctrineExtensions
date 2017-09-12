@@ -4,6 +4,7 @@ namespace Tool;
 
 use Doctrine\ODM\MongoDB\Mapping\Driver\AnnotationDriver;
 use Doctrine\ODM\MongoDB\DocumentManager;
+use Doctrine\ODM\MongoDB\Configuration;
 use Doctrine\Common\EventManager;
 use Doctrine\MongoDB\Connection;
 use Doctrine\ODM\MongoDB\Repository\DefaultRepositoryFactory;
@@ -89,7 +90,7 @@ abstract class BaseTestCaseMongoODM extends \PHPUnit_Framework_TestCase
      */
     protected function getMockMappedDocumentManager(EventManager $evm = null, $config = null)
     {
-        $conn = $this->getMock('Doctrine\\MongoDB\\Connection');
+        $conn = $this->getMockBuilder('Doctrine\\MongoDB\\Connection')->getMock();
 
         $config = $config ? $config : $this->getMockAnnotatedConfig();
 
@@ -132,74 +133,14 @@ abstract class BaseTestCaseMongoODM extends \PHPUnit_Framework_TestCase
      */
     protected function getMockAnnotatedConfig()
     {
-        $config = $this->getMock('Doctrine\\ODM\\MongoDB\\Configuration');
-
-        $config->expects($this->any())
-            ->method('getFilterClassName')
-            ->will($this->returnValue('Gedmo\\SoftDeleteable\\Filter\\ODM\\SoftDeleteableFilter'));
-
-        $config->expects($this->any())
-            ->method('getFilterParameters')
-            ->will($this->returnValue(array()));
-
-        $config->expects($this->once())
-            ->method('getProxyDir')
-            ->will($this->returnValue(__DIR__.'/../../temp'));
-
-        $config->expects($this->once())
-            ->method('getProxyNamespace')
-            ->will($this->returnValue('Proxy'));
-
-        $config->expects($this->once())
-            ->method('getHydratorDir')
-            ->will($this->returnValue(__DIR__.'/../../temp'));
-
-        $config->expects($this->once())
-            ->method('getHydratorNamespace')
-            ->will($this->returnValue('Hydrator'));
-
-        $config->expects($this->any())
-            ->method('getDefaultDB')
-            ->will($this->returnValue('gedmo_extensions_test'));
-
-        $config->expects($this->once())
-            ->method('getAutoGenerateProxyClasses')
-            ->will($this->returnValue(true));
-
-        $config->expects($this->once())
-            ->method('getAutoGenerateHydratorClasses')
-            ->will($this->returnValue(true));
-
-        $config->expects($this->once())
-            ->method('getClassMetadataFactoryName')
-            ->will($this->returnValue('Doctrine\\ODM\\MongoDB\\Mapping\\ClassMetadataFactory'));
-
-        $config
-            ->expects($this->any())
-            ->method('getMongoCmd')
-            ->will($this->returnValue('$'))
-        ;
-
-        $config
-            ->expects($this->any())
-            ->method('getDefaultCommitOptions')
-            ->will($this->returnValue(array('safe' => true)))
-        ;
-
-        $mappingDriver = $this->getMetadataDriverImplementation();
-
-        $config->expects($this->any())
-            ->method('getMetadataDriverImpl')
-            ->will($this->returnValue($mappingDriver));
-
-        $config->expects($this->any())
-            ->method('getRepositoryFactory')
-            ->will($this->returnValue(new DefaultRepositoryFactory()));
-
-        $config->expects($this->any())
-            ->method('getDefaultRepositoryClassName')
-            ->will($this->returnValue('Doctrine\\ODM\\MongoDB\\DocumentRepository'));
-
+        $config = new Configuration();
+        $config->setProxyDir(__DIR__.'/../../temp');
+        $config->setProxyNamespace('Proxies');
+        $config->setHydratorDir(__DIR__.'/../../temp');
+        $config->setHydratorNamespace('Hydrators');
+        $config->setMetadataDriverImpl($this->getMetadataDriverImplementation());
+        $config->setDefaultDB("gedmo_extensions_test");
+        $config->addFilter("soft-deleteable", 'Gedmo\\SoftDeleteable\\Filter\\ODM\\SoftDeleteableFilter');
 
         return $config;
     }

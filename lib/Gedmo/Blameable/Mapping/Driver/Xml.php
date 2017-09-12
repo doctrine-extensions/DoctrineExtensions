@@ -24,7 +24,8 @@ class Xml extends BaseXml
     private $validTypes = array(
         'one',
         'string',
-        'int',
+        'int', // mongodb driver has both int and integer types
+        'integer',
     );
 
     /**
@@ -44,7 +45,7 @@ class Xml extends BaseXml
             foreach ($mapping->field as $fieldMapping) {
                 $fieldMappingDoctrine = $fieldMapping;
                 $fieldMapping = $fieldMapping->children(self::GEDMO_NAMESPACE_URI);
-                if (isset($fieldMapping->blameable)) {
+                if ($fieldMapping->count() > 0 && isset($fieldMapping->blameable)) {
                     /**
                      * @var \SimpleXmlElement $data
                      */
@@ -82,7 +83,7 @@ class Xml extends BaseXml
             foreach ($mapping->{'many-to-one'} as $fieldMapping) {
                 $field = $this->_getAttribute($fieldMapping, 'field');
                 $fieldMapping = $fieldMapping->children(self::GEDMO_NAMESPACE_URI);
-                if (isset($fieldMapping->blameable)) {
+                if ($fieldMapping->count() > 0 && isset($fieldMapping->blameable)) {
                     $data = $fieldMapping->blameable;
                     if (! $meta->isSingleValuedAssociation($field)) {
                         throw new InvalidMappingException("Association - [{$field}] is not valid, it must be a one-to-many relation or a string field - {$meta->name}");
