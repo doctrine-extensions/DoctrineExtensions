@@ -79,6 +79,8 @@ must be of any of the date types.
 Available configuration options:
 - **fieldName** - The name of the field that will be used to determine if the object is removed or not (NULL means
 it's not removed. A date value means it was removed). NOTE: The field MUST be nullable.
+- **timeAware** A boolean making soft-deleted entities time aware (date value for the _fieldName_ in the future won't mark the entity as deleted). Default: false
+- **allowHardDelete** - A boolean specifying if deleting a soft-deleted entity will hard delete it. Default: true.
 
 **Note:** that SoftDeleteable interface is not necessary, except in cases where
 you need to identify entity as being SoftDeleteable. The metadata is loaded only once then
