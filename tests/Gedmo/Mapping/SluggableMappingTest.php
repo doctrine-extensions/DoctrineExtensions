@@ -102,6 +102,11 @@ class SluggableMappingTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('parent', $second['relationField']);
         $this->assertEquals('slug', $second['relationSlugField']);
         $this->assertEquals('/', $second['separator']);
+
+        // Callback slug
+        $this->assertEquals('slugWithCallback', $config['slugs']['slugWithCallback']['slug']);
+        $this->assertArrayHasKey('callback', $config['slugs']['slugWithCallback']);
+        $this->assertEquals('getSlugTokens', $config['slugs']['slugWithCallback']['callback']);
     }
 
     /**

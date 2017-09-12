@@ -92,7 +92,8 @@
     <xs:sequence>
       <xs:element name="handler" type="gedmo:handler" minOccurs="0" maxOccurs="unbounded"/>
     </xs:sequence>
-    <xs:attribute name="fields" type="xs:string" use="required"/>
+    <xs:attribute name="fields" type="xs:string" use="optional"/>
+    <xs:attribute name="callback" type="xs:string" use="optional"/>
     <xs:attribute name="unique" type="xs:boolean" use="optional" />
     <xs:attribute name="unique-base" type="xs:string" use="optional" />
     <xs:attribute name="updatable" type="xs:boolean" use="optional" />

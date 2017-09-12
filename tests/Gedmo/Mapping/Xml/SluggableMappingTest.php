@@ -58,6 +58,9 @@ class SluggableMappingTest extends BaseTestCaseORM
 
         $this->assertArrayHasKey('slug', $config['slugs']);
         $this->assertCount(1, $config['slugs']);
+        $this->assertCount(2, $config['slugs']);
+
+        $callbackConfig = $config['slugs']['slugWithCallback'];
         $config = $config['slugs']['slug'];
 
         $this->assertEquals('slug', $config['slug']);
@@ -100,5 +103,10 @@ class SluggableMappingTest extends BaseTestCaseORM
         $this->assertEquals('parent', $second['relationField']);
         $this->assertEquals('test', $second['relationSlugField']);
         $this->assertEquals('-', $second['separator']);
+
+        // Callback slug
+        $this->assertEquals('slugWithCallback', $callbackConfig['slug']);
+        $this->assertArrayHasKey('callback', $callbackConfig);
+        $this->assertEquals('getSlugTokens', $callbackConfig['callback']);
     }
 }

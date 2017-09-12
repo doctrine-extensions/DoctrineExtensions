@@ -12,6 +12,10 @@ Features:
 - Annotation, Yaml and Xml mapping support for extensions
 - Multiple slugs, different slugs can link to same fields
 
+Update **2016-12-28**
+
+- Callback support
+
 Update **2013-10-26**
 
 - Datetime support with default dateFormat Y-m-d-H:i
@@ -328,7 +332,8 @@ echo $article->getSlug();
 
 ### Some other configuration options for **slug** annotation:
 
-- **fields** (required, default=[]) - list of fields for slug
+- **fields** (required if **callback** is not defined, default=[]) - list of fields for slug
+- **callback** (required if **fields** is not defined, default=null) - callback method name to get slug tokens
 - **updatable** (optional, default=true) - **true** to update the slug on sluggable field changes, **false** - otherwise
 - **unique** (optional, default=true) - **true** if slug should be unique and if identical it will be prefixed, **false** - otherwise
 - **unique_base** (optional, default=null) - used in conjunction with **unique**. The name of the entity property that should be used as a key when doing a uniqueness check.
@@ -522,6 +527,52 @@ $em->flush();
 
 echo $entity->getSlug(); // outputs: "the-required-slug-set-manually"
 ```
+
+### Using a callback to define the tokens that will form the slug
+
+You can use the `callback` attribute instead of the `fields` one to define the
+parts that will form the slug. This is useful for generating slugs with pieces
+of data coming from the entity relationships and can serve as an alternative to
+the `RelativeSlugHandler`, with one limitation: it doesn't have a counterpart for
+the `InversedRelativeSlugHandler`, meaning that if the relationship changes,
+the slug won't get updated.
+
+    <?php
+    class Product
+    {
+        /**
+         * @ORM\ManyToOne(targetEntity="Brand")
+         */
+        protected $brand;
+
+        /**
+         * @ORM\Column(name="model", type="string", length=128)
+         */
+        protected $model;
+
+        /**
+         * @Gedmo\Slug(callback="getSlugTokens")
+         */
+        protected $slug;
+
+        public function getBrand()
+        {
+            return $this->getBrand();
+        }
+
+        public function getModel()
+        {
+            return $this->getModel();
+        }
+
+        public function getSlugTokens()
+        {
+            return [
+                $this->getBrand()->getName(),
+                $this->getModel(),
+            ];
+        }
+    }
 
 ### Using TranslatableListener to translate our slug
 

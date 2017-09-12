@@ -63,9 +63,12 @@ class Yaml extends File implements Driver
                                 $handlerClass::validate($handlers[$handlerClass], $meta);
                             }
                         }
-                        // process slug fields
-                        if (empty($slug['fields']) || !is_array($slug['fields'])) {
-                            throw new InvalidMappingException("Slug must contain at least one field for slug generation in class - {$meta->name}");
+                        // process slug fields or callback
+                        if ((empty($slug['fields']) || !is_array($slug['fields'])) && empty($slug['callback'])) {
+                            throw new InvalidMappingException("Slug must contain at least one field or a callback for slug generation in class - {$meta->name}");
+                        }
+                        if (empty($slug['fields'])) {
+                            $slug['fields'] = array();
                         }
                         foreach ($slug['fields'] as $slugField) {
                             if (!$meta->hasField($slugField)) {
@@ -77,6 +80,8 @@ class Yaml extends File implements Driver
                         }
 
                         $config['slugs'][$field]['fields'] = $slug['fields'];
+                        $config['slugs'][$field]['callback'] = isset($slug['callback']) ?
+                            (string) $slug['callback'] : null;
                         $config['slugs'][$field]['handlers'] = $handlers;
                         $config['slugs'][$field]['slug'] = $field;
                         $config['slugs'][$field]['style'] = isset($slug['style']) ?
