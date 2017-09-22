@@ -2,6 +2,10 @@
 
 namespace Gedmo\SoftDeleteable;
 
+use Doctrine\Entity;
+use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Event\LifecycleEventArgs;
+use Doctrine\ORM\Event\ListenersInvoker;
 use Gedmo\Mapping\MappedEventSubscriber;
 use Doctrine\Common\EventArgs;
 use Doctrine\ODM\MongoDB\UnitOfWork as MongoDBUnitOfWork;
@@ -53,6 +57,11 @@ class SoftDeleteableListener extends MappedEventSubscriber
         $ea = $this->getEventAdapter($args);
         $om = $ea->getObjectManager();
         $uow = $om->getUnitOfWork();
+
+        if ( $om instanceof EntityManagerInterface ) {
+            $listenerInvoker = new ListenersInvoker($om);
+        }
+
         $evm = $om->getEventManager();
 
         //getScheduledDocumentDeletions
@@ -70,10 +79,17 @@ class SoftDeleteableListener extends MappedEventSubscriber
                     continue; // want to hard delete. Future (time aware) deletions will be soft deleted now.
                 }
 
-                $evm->dispatchEvent(
-                    self::PRE_SOFT_DELETE,
-                    $ea->createLifecycleEventArgsInstance($object, $om)
-                 );
+                if ( $om instanceof EntityManagerInterface && isset($listenerInvoker) ) {
+                    $invoke = $listenerInvoker->getSubscribedSystems($meta, self::PRE_SOFT_DELETE);
+                    if ($invoke !== ListenersInvoker::INVOKE_NONE) {
+                        $listenerInvoker->invoke($meta, self::PRE_SOFT_DELETE, $object, $ea->createLifecycleEventArgsInstance($object, $om), $invoke);
+                    }
+                } else {
+                    $evm->dispatchEvent(
+                        self::PRE_SOFT_DELETE,
+                        $ea->createLifecycleEventArgsInstance($object, $om)
+                    );
+                }
 
                 $reflProp->setValue($object, $date);
 
@@ -87,10 +103,18 @@ class SoftDeleteableListener extends MappedEventSubscriber
                     ));
                 }
 
-                $evm->dispatchEvent(
-                    self::POST_SOFT_DELETE,
-                    $ea->createLifecycleEventArgsInstance($object, $om)
-                );
+                if ( $om instanceof EntityManagerInterface && isset($listenerInvoker) ) {
+                    $invoke = $listenerInvoker->getSubscribedSystems($meta, self::POST_SOFT_DELETE);
+                    if ($invoke !== ListenersInvoker::INVOKE_NONE) {
+                        $listenerInvoker->invoke($meta, self::POST_SOFT_DELETE, $object, $ea->createLifecycleEventArgsInstance($object, $om), $invoke);
+                    }
+                } else {
+                    $evm->dispatchEvent(
+                        self::POST_SOFT_DELETE,
+                        $ea->createLifecycleEventArgsInstance($object, $om)
+                    );
+                }
+
             }
         }
     }
