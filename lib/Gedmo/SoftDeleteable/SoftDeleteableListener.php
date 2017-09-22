@@ -2,6 +2,8 @@
 
 namespace Gedmo\SoftDeleteable;
 
+use Doctrine\ORM\Event\LifecycleEventArgs;
+use Doctrine\ORM\Event\ListenersInvoker;
 use Gedmo\Mapping\MappedEventSubscriber;
 use Doctrine\Common\EventArgs;
 use Doctrine\ODM\MongoDB\UnitOfWork as MongoDBUnitOfWork;
@@ -53,6 +55,8 @@ class SoftDeleteableListener extends MappedEventSubscriber
         $ea = $this->getEventAdapter($args);
         $om = $ea->getObjectManager();
         $uow = $om->getUnitOfWork();
+        $listenerInvoker = new ListenersInvoker($om);
+
         $evm = $om->getEventManager();
 
         //getScheduledDocumentDeletions
@@ -70,6 +74,11 @@ class SoftDeleteableListener extends MappedEventSubscriber
                     continue; // want to hard delete. Future (time aware) deletions will be soft deleted now.
                 }
 
+                $invoke = $listenerInvoker->getSubscribedSystems($meta, self::PRE_SOFT_DELETE);
+                if ($invoke !== ListenersInvoker::INVOKE_NONE) {
+                    $listenerInvoker->invoke($meta, self::PRE_SOFT_DELETE, $object, $ea->createLifecycleEventArgsInstance($object, $om), $invoke);
+                }
+
                 $evm->dispatchEvent(
                     self::PRE_SOFT_DELETE,
                     $ea->createLifecycleEventArgsInstance($object, $om)
@@ -85,6 +94,11 @@ class SoftDeleteableListener extends MappedEventSubscriber
                     $uow->scheduleExtraUpdate($object, array(
                         $config['fieldName'] => array($oldValue, $date),
                     ));
+                }
+
+                $invoke = $listenerInvoker->getSubscribedSystems($meta, self::POST_SOFT_DELETE);
+                if ($invoke !== ListenersInvoker::INVOKE_NONE) {
+                    $listenerInvoker->invoke($meta, self::POST_SOFT_DELETE, $object, $ea->createLifecycleEventArgsInstance($object, $om), $invoke);
                 }
 
                 $evm->dispatchEvent(
