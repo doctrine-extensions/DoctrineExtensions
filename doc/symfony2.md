@@ -175,6 +175,14 @@ services:
 
 
     # Doctrine Extension listeners to handle behaviors
+    gedmo.listener.blameable:
+      class: Gedmo\Blameable\BlameableListener
+      tags:
+        - { name: doctrine.event_subscriber, connection: default }
+      calls:
+        - [ setAnnotationReader, [ "@annotation_reader" ] ]
+        - [ setUserValue, [ "@security.token_storage" ] ]
+        
     gedmo.listener.tree:
         class: Gedmo\Tree\TreeListener
         tags:
