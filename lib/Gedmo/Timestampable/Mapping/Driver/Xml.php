@@ -24,9 +24,13 @@ class Xml extends BaseXml
      */
     private $validTypes = array(
         'date',
+        'date_immutable',
         'time',
+        'time_immutable',
         'datetime',
+        'datetime_immutable',
         'datetimetz',
+        'datetimetz_immutable',
         'timestamp',
         'zenddate',
         'vardatetime',

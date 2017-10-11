@@ -26,6 +26,9 @@ final class ORM extends BaseAdapterORM implements TimestampableAdapter
         if (isset($mapping['type']) && $mapping['type'] == 'zenddate') {
             return new \Zend_Date();
         }
+        if (isset($mapping['type']) && in_array($mapping['type'], array('date_immutable', 'time_immutable', 'datetime_immutable', 'datetimetz_immutable'), true)) {
+            return new \DateTimeImmutable();
+        }
 
         return \DateTime::createFromFormat('U.u', number_format(microtime(true), 6, '.', ''))
             ->setTimeZone(new \DateTimeZone(date_default_timezone_get()));
