@@ -193,8 +193,7 @@ final class ORM extends BaseAdapterORM implements TranslatableAdapter
             ->delete($transClass, 'trans')
         ;
         if ($this->usesPersonalTranslation($transClass)) {
-            $qb->where('trans.object = :object');
-            $qb->setParameter('object', $wrapped->getObject());
+            $this->addObjectJoin($qb, $transClass, $objectClass, $wrapped);
         } else {
             $qb->where(
                 'trans.foreignKey = :objectId',
