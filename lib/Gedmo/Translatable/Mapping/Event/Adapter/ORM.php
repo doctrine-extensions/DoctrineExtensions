@@ -187,23 +187,33 @@ final class ORM extends BaseAdapterORM implements TranslatableAdapter
      */
     public function removeAssociatedTranslations(AbstractWrapper $wrapped, $transClass, $objectClass)
     {
-        $qb = $this
-            ->getObjectManager()
-            ->createQueryBuilder()
-            ->delete($transClass, 'trans')
-        ;
         if ($this->usesPersonalTranslation($transClass)) {
+            $qb = $this->getObjectManager()
+                ->createQueryBuilder()
+                ->select('trans')
+                ->from($transClass, 'trans');
             $this->addObjectJoin($qb, $transClass, $objectClass, $wrapped);
+
+            $translations = $qb->getQuery()->execute();
+            foreach($translations as $translation) {
+                $this->getObjectManager()->remove($translation);
+            }
+
+            return count($translations);
         } else {
-            $qb->where(
-                'trans.foreignKey = :objectId',
-                'trans.objectClass = :class'
-            );
+            $qb = $this
+                ->getObjectManager()
+                ->createQueryBuilder()
+                ->delete($transClass, 'trans')
+                ->where(
+                    'trans.foreignKey = :objectId',
+                    'trans.objectClass = :class'
+                );
             $qb->setParameter('objectId', $this->foreignKey($wrapped->getIdentifier(), $transClass));
             $qb->setParameter('class', $objectClass);
-        }
 
-        return $qb->getQuery()->getSingleScalarResult();
+            return $qb->getQuery()->getSingleScalarResult();
+        }
     }
 
     /**
