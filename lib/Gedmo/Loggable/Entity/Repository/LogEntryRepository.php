@@ -56,7 +56,7 @@ class LogEntryRepository extends EntityRepository
         $dql .= " AND log.objectClass = :objectClass";
         $dql .= " ORDER BY log.version DESC";
 
-        $objectId = $wrapped->getIdentifier();
+        $objectId = (string) $wrapped->getIdentifier();
         $q = $this->_em->createQuery($dql);
         $q->setParameters(compact('objectId', 'objectClass'));
 
