@@ -40,9 +40,17 @@ class Annotation extends AbstractAnnotationDriver
             $config['timeAware'] = false;
             if (isset($annot->timeAware)) {
                 if (!is_bool($annot->timeAware)) {
-                    throw new InvalidMappingException("timeAware must be boolean. ".gettype($annot->timeAware)." provided.");
+                    throw new InvalidMappingException("timeAware must be a boolean. ".gettype($annot->timeAware)." provided.");
                 }
                 $config['timeAware'] = $annot->timeAware;
+            }
+
+            $config['allowHardDelete'] = true;
+            if (isset($annot->allowHardDelete)) {
+                if (!is_bool($annot->allowHardDelete)) {
+                    throw new InvalidMappingException("allowHardDelete must be a boolean. ".gettype($annot->allowHardDelete)." provided.");
+                }
+                $config['allowHardDelete'] = $annot->allowHardDelete;
             }
         }
 

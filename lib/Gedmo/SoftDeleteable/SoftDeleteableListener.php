@@ -63,7 +63,7 @@ class SoftDeleteableListener extends MappedEventSubscriber
             if (isset($config['softDeleteable']) && $config['softDeleteable']) {
                 $reflProp = $meta->getReflectionProperty($config['fieldName']);
                 $oldValue = $reflProp->getValue($object);
-                if ($oldValue instanceof \Datetime) {
+                if ($oldValue instanceof \Datetime && $config['allowHardDelete']) {
                     continue; // want to hard delete
                 }
 
