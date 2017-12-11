@@ -64,7 +64,7 @@ class ORM extends BaseAdapterORM implements SluggableAdapter
             if (!$meta->isIdentifier($config['slug'])) {
                 $namedId = str_replace('.', '_', $id);
                 $qb->andWhere($qb->expr()->neq('rec.'.$id, ':'.$namedId));
-                $qb->setParameter($namedId, $value);
+                $qb->setParameter($namedId, $value, $meta->getTypeOfField($namedId));                
             }
         }
         $q = $qb->getQuery();
