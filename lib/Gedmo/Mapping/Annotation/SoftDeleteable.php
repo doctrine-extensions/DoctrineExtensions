@@ -20,4 +20,7 @@ final class SoftDeleteable extends Annotation
 
     /** @var bool */
     public $timeAware = false;
+
+    /** @var bool */
+    public $hardDelete = true;
 }
