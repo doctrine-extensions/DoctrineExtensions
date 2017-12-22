@@ -48,6 +48,11 @@ class Xml extends BaseXml
                 if ($this->_isAttributeSet($xml->{'soft-deleteable'}, 'time-aware')) {
                     $config['timeAware'] = $this->_getBooleanAttribute($xml->{'soft-deleteable'}, 'time-aware');
                 }
+
+                $config['hardDelete'] = false;
+                if ($this->_isAttributeSet($xml->{'soft-deleteable'}, 'hard-delete')) {
+                    $config['hardDelete'] = $this->_getBooleanAttribute($xml->{'soft-deleteable'}, 'hard-delete');
+                }
             }
         }
     }

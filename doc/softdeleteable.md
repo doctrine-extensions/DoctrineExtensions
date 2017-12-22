@@ -11,6 +11,7 @@ Features:
 - Can be nested with other behaviors
 - Annotation, Yaml and Xml mapping support for extensions
 - Support for 'timeAware' option: When creating an entity set a date of deletion in the future and never worry about cleaning up at expiration time.
+- Support for 'hardDelete' option: When deleting a second time it allows to disable hard delete.
 
 Content:
 
@@ -80,6 +81,8 @@ Available configuration options:
 - **fieldName** - The name of the field that will be used to determine if the object is removed or not (NULL means
 it's not removed. A date value means it was removed). NOTE: The field MUST be nullable.
 
+- **hardDelete** - A boolean to enable or disable hard delete after soft delete has already been done. NOTE: Set to true by default.
+
 **Note:** that SoftDeleteable interface is not necessary, except in cases where
 you need to identify entity as being SoftDeleteable. The metadata is loaded only once then
 cache is activated.
@@ -93,7 +96,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
- * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
+ * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false, hardDelete=true)
  */
 class Article
 {
@@ -156,6 +159,7 @@ Entity\Article:
     soft_deleteable:
       field_name: deletedAt
       time_aware: false
+      hard_delete: true
   id:
     id:
       type: integer
@@ -187,7 +191,7 @@ Entity\Article:
 
         <field name="deletedAt" type="datetime" nullable="true" />
 
-        <gedmo:soft-deleteable field-name="deletedAt" time-aware="false" />
+        <gedmo:soft-deleteable field-name="deletedAt" time-aware="false" hard-delete="true" />
     </entity>
 
 </doctrine-mapping>
@@ -254,7 +258,7 @@ use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
 
 /**
  * @ORM\Entity
- * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
+ * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false, hardDelete=true)
  */
 class UsingTrait
 {
