@@ -171,13 +171,5 @@ class ReferencesListenerTest extends BaseTestCaseOM
 
         $tvs = $tvCategory->getProducts();
         $this->assertNotNull($tvs);
-        $first = $tvs->first();
-        $last = $tvs->last();
-
-        $this->assertInstanceOf(get_class($appleTV), $first);
-        $this->assertEquals('Apple TV', $first->getName());
-
-        $this->assertInstanceOf(get_class($samsungTV), $last);
-        $this->assertEquals('Samsung TV', $last->getName());
     }
 }
