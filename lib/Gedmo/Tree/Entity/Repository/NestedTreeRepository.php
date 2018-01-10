@@ -900,8 +900,14 @@ class NestedTreeRepository extends AbstractTreeRepository
 
         $identifier = $meta->getSingleIdentifierFieldName();
         if (isset($config['root'])) {
-            $object = $meta->getReflectionProperty($config['root'])->getValue($root);
-            $rootId = $object ? $meta->getReflectionProperty($identifier)->getValue($object): null;
+            if (isset($config['root'])) {
+                $rootId = $meta->getReflectionProperty($config['root'])->getValue($root);
+                if (is_object($rootId)) {
+                    $rootId = $meta->getReflectionProperty($identifier)->getValue($rootId);
+                }
+            } else {
+                $rootId = null;
+            }
         } else {
             $rootId = null;
         }
