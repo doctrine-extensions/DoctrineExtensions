@@ -899,7 +899,13 @@ class NestedTreeRepository extends AbstractTreeRepository
         $config = $this->listener->getConfiguration($this->_em, $meta->name);
 
         $identifier = $meta->getSingleIdentifierFieldName();
-        $rootId = isset($config['root']) ? $meta->getReflectionProperty($config['root'])->getValue($root) : null;
+        if (isset($config['root'])) {
+            $object = $meta->getReflectionProperty($config['root'])->getValue($root);
+            $rootId = $object ? $meta->getReflectionProperty($identifier)->getValue($object): null;
+        } else {
+            $rootId = null;
+        }
+
         $qb = $this->getQueryBuilder();
         $qb->select($qb->expr()->min('node.'.$config['left']))
             ->from($config['useObjectClass'], 'node')
