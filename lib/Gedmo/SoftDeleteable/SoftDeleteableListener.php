@@ -114,7 +114,7 @@ class SoftDeleteableListener extends MappedEventSubscriber
      *
      * @return void
      */
-    public function postFlush(PostFlushEventArgs $args): void
+    public function postFlush(PostFlushEventArgs $args)
     {
         $ea = $this->getEventAdapter($args);
         $om = $ea->getObjectManager();
