@@ -99,9 +99,7 @@ class SoftDeleteableListener extends MappedEventSubscriber
                     $ea->createLifecycleEventArgsInstance($object, $om)
                 );
 
-                if (isset($config['detachOnDelete']) && $config['detachOnDelete']) {
-                    $this->softDeletedObjects[] = $object;
-                }
+                $this->softDeletedObjects[] = $object;
             }
         }
     }
@@ -112,6 +110,8 @@ class SoftDeleteableListener extends MappedEventSubscriber
      * @param \Doctrine\Common\EventArgs $args
      *
      * @return void
+     *
+     * @throws \Gedmo\Exception\InvalidArgumentException
      */
     public function postFlush(EventArgs $args)
     {
@@ -119,13 +119,7 @@ class SoftDeleteableListener extends MappedEventSubscriber
         $om = $ea->getObjectManager();
 
         foreach ($this->softDeletedObjects as $index => $object) {
-            $meta = $om->getClassMetadata(get_class($object));
-            $config = $this->getConfiguration($om, $meta->name);
-
-            if (isset($config['detachOnDelete']) && $config['detachOnDelete']) {
-                $om->detach($object);
-            }
-
+            $om->detach($object);
             unset($this->softDeletedObjects[$index]);
         }
     }

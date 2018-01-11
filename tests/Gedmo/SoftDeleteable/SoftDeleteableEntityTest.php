@@ -2,7 +2,6 @@
 
 namespace Gedmo\SoftDeleteable;
 
-use SoftDeleteable\Fixture\Entity\UserDetachOnDelete;
 use SoftDeleteable\Fixture\Entity\UserNoHardDelete;
 use Tool\BaseTestCaseORM;
 use Doctrine\Common\EventManager;
@@ -38,7 +37,6 @@ class SoftDeleteableEntityTest extends BaseTestCaseORM
     const MAPPED_SUPERCLASS_CHILD_CLASS = 'SoftDeleteable\Fixture\Entity\Child';
     const SOFT_DELETEABLE_FILTER_NAME = 'soft-deleteable';
     const USER_NO_HARD_DELETE_CLASS = 'SoftDeleteable\Fixture\Entity\UserNoHardDelete';
-    const USER_DETACH_ON_DELETE = 'SoftDeleteable\Fixture\Entity\UserDetachOnDelete';
 
     private $softDeleteableListener;
 
@@ -81,39 +79,12 @@ class SoftDeleteableEntityTest extends BaseTestCaseORM
     /**
      * @test
      */
-    public function shouldNeedToClearEntityManagerNotToFetchSoftDeletedItemById()
+    public function shouldNotFetchSoftDeletedItemByIdIfDetachOnDeleteEnabled()
     {
         $repo = $this->em->getRepository(self::USER_CLASS);
 
         $newUser = new User();
-        $newUser->setUsername($username = 'test_user');
-
-        $this->em->persist($newUser);
-        $this->em->flush();
-
-        $userId = $newUser->getId();
-
-        $this->em->remove($newUser);
-        $this->em->flush();
-
-        $user = $repo->find($userId);
-        $this->assertInstanceOf(self::USER_CLASS, $user);
-
-        $this->em->clear();
-
-        $user = $repo->find($userId);
-        $this->assertNull($user);
-    }
-
-    /**
-     * @test
-     */
-    public function shouldNotFetchSoftDeletedItemByIdIfDetachOnDeleteEnabled()
-    {
-        $repo = $this->em->getRepository(self::USER_DETACH_ON_DELETE);
-
-        $newUser = new UserDetachOnDelete();
-        $newUser->setUsername($username = 'test_user');
+        $newUser->setUsername('test_user');
 
         $this->em->persist($newUser);
         $this->em->flush();
@@ -471,8 +442,7 @@ class SoftDeleteableEntityTest extends BaseTestCaseORM
             self::OTHER_ARTICLE_CLASS,
             self::OTHER_COMMENT_CLASS,
             self::MAPPED_SUPERCLASS_CHILD_CLASS,
-            self::USER_NO_HARD_DELETE_CLASS,
-            self::USER_DETACH_ON_DELETE
+            self::USER_NO_HARD_DELETE_CLASS
         );
     }
 }

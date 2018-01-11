@@ -52,14 +52,6 @@ class Annotation extends AbstractAnnotationDriver
                 }
                 $config['hardDelete'] = $annot->hardDelete;
             }
-
-            $config['detachOnDelete'] = false;
-            if (isset($annot->detachOnDelete)) {
-                if (!is_bool($annot->detachOnDelete)) {
-                    throw new InvalidMappingException("detachOnDelete must be boolean. ".gettype($annot->detachOnDelete)." provided.");
-                }
-                $config['detachOnDelete'] = $annot->detachOnDelete;
-            }
         }
 
         $this->validateFullMetadata($meta, $config);
