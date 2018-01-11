@@ -62,6 +62,14 @@ class Yaml extends File implements Driver
                     }
                     $config['hardDelete'] = $classMapping['soft_deleteable']['hard_delete'];
                 }
+
+                $config['detachOnDelete'] = true;
+                if (isset($classMapping['soft_deleteable']['detach_on_delete'])) {
+                    if (!is_bool($classMapping['soft_deleteable']['detach_on_delete'])) {
+                        throw new InvalidMappingException("detachOnDelete must be boolean. ".gettype($classMapping['soft_deleteable']['detach_on_delete'])." provided.");
+                    }
+                    $config['detachOnDelete'] = $classMapping['soft_deleteable']['detach_on_delete'];
+                }
             }
         }
     }

@@ -2,6 +2,7 @@
 
 namespace Gedmo\SoftDeleteable;
 
+use Doctrine\ORM\Event\PostFlushEventArgs;
 use Gedmo\Mapping\MappedEventSubscriber;
 use Doctrine\Common\EventArgs;
 use Doctrine\ODM\MongoDB\UnitOfWork as MongoDBUnitOfWork;
@@ -30,6 +31,13 @@ class SoftDeleteableListener extends MappedEventSubscriber
     const POST_SOFT_DELETE = "postSoftDelete";
 
     /**
+     * Objects soft-deleted on flush.
+     *
+     * @var array
+     */
+    private $softDeletedObjects = [];
+
+    /**
      * {@inheritdoc}
      */
     public function getSubscribedEvents()
@@ -37,6 +45,7 @@ class SoftDeleteableListener extends MappedEventSubscriber
         return array(
             'loadClassMetadata',
             'onFlush',
+            'postFlush'
         );
     }
 
@@ -90,7 +99,35 @@ class SoftDeleteableListener extends MappedEventSubscriber
                     self::POST_SOFT_DELETE,
                     $ea->createLifecycleEventArgsInstance($object, $om)
                 );
+
+                if (isset($config['detachOnDelete']) && $config['detachOnDelete']) {
+                    $this->softDeletedObjects[] = $object;
+                }
             }
+        }
+    }
+
+    /**
+     * Detach soft-deleted objects from object manager.
+     *
+     * @param \Doctrine\ORM\Event\PostFlushEventArgs $args
+     *
+     * @return void
+     */
+    public function postFlush(PostFlushEventArgs $args): void
+    {
+        $ea = $this->getEventAdapter($args);
+        $om = $ea->getObjectManager();
+
+        foreach ($this->softDeletedObjects as $index => $object) {
+            $meta = $om->getClassMetadata(get_class($object));
+            $config = $this->getConfiguration($om, $meta->name);
+
+            if (isset($config['detachOnDelete']) && $config['detachOnDelete']) {
+                $om->detach($object);
+            }
+
+            unset($this->softDeletedObjects[$index]);
         }
     }
 
