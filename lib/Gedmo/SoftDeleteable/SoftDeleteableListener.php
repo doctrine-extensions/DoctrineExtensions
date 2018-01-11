@@ -2,7 +2,6 @@
 
 namespace Gedmo\SoftDeleteable;
 
-use Doctrine\ORM\Event\PostFlushEventArgs;
 use Gedmo\Mapping\MappedEventSubscriber;
 use Doctrine\Common\EventArgs;
 use Doctrine\ODM\MongoDB\UnitOfWork as MongoDBUnitOfWork;
@@ -110,11 +109,11 @@ class SoftDeleteableListener extends MappedEventSubscriber
     /**
      * Detach soft-deleted objects from object manager.
      *
-     * @param \Doctrine\ORM\Event\PostFlushEventArgs $args
+     * @param \Doctrine\Common\EventArgs $args
      *
      * @return void
      */
-    public function postFlush(PostFlushEventArgs $args)
+    public function postFlush(EventArgs $args)
     {
         $ea = $this->getEventAdapter($args);
         $om = $ea->getObjectManager();
