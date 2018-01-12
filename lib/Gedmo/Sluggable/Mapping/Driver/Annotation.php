@@ -148,7 +148,7 @@ class Annotation extends AbstractAnnotationDriver
             if ($slug->unique_base && !$meta->hasField($slug->unique_base) && !$meta->hasAssociation($slug->unique_base)) {
                 throw new InvalidMappingException("Unable to find [{$slug->unique_base}] as mapped property in entity - {$meta->name}");
             }
-            $sluggableFields = [];
+            $sluggableFields = array();
             foreach ($slug->fields as $field) {
                 $sluggableFields[] = $fieldNamePrefix ? ($fieldNamePrefix . '.' . $field) : $field;
             }
