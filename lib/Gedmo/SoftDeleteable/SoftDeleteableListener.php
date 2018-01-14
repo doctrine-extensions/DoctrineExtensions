@@ -34,7 +34,7 @@ class SoftDeleteableListener extends MappedEventSubscriber
      *
      * @var array
      */
-    private $softDeletedObjects = [];
+    private $softDeletedObjects = array();
 
     /**
      * {@inheritdoc}
