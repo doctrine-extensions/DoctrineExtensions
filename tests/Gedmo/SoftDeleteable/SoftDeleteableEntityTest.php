@@ -79,6 +79,28 @@ class SoftDeleteableEntityTest extends BaseTestCaseORM
     /**
      * @test
      */
+    public function shouldNotFetchSoftDeletedItemByIdIfDetachOnDeleteEnabled()
+    {
+        $repo = $this->em->getRepository(self::USER_CLASS);
+
+        $newUser = new User();
+        $newUser->setUsername('test_user');
+
+        $this->em->persist($newUser);
+        $this->em->flush();
+
+        $userId = $newUser->getId();
+
+        $this->em->remove($newUser);
+        $this->em->flush();
+
+        $user = $repo->find($userId);
+        $this->assertNull($user);
+    }
+
+    /**
+     * @test
+     */
     public function shouldSoftlyDeleteIfColumnNameDifferFromPropertyName()
     {
         $repo = $this->em->getRepository(self::USER_CLASS);
@@ -420,7 +442,7 @@ class SoftDeleteableEntityTest extends BaseTestCaseORM
             self::OTHER_ARTICLE_CLASS,
             self::OTHER_COMMENT_CLASS,
             self::MAPPED_SUPERCLASS_CHILD_CLASS,
-            self::USER_NO_HARD_DELETE_CLASS,
+            self::USER_NO_HARD_DELETE_CLASS
         );
     }
 }
