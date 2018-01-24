@@ -428,7 +428,7 @@ class TranslationWalker extends SqlWalker
     private function replace(array $repl, $str)
     {
         foreach ($repl as $target => $result) {
-            $str = preg_replace_callback('/(\s|\()('.$target.')(,?)(\s|\))/smi', function ($m) use ($result) {
+            $str = preg_replace_callback('/(\s|\()('.$target.')(,?)(\s|\)|$)/smi', function ($m) use ($result) {
                 return $m[1].$result.$m[3].$m[4];
             }, $str);
         }
