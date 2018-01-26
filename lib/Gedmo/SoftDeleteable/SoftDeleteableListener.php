@@ -72,7 +72,8 @@ class SoftDeleteableListener extends MappedEventSubscriber
                 $reflProp = $meta->getReflectionProperty($config['fieldName']);
                 $oldValue = $reflProp->getValue($object);
 
-                if (isset($config['hardDelete']) && $config['hardDelete'] && $oldValue instanceof \Datetime) {
+                // Remove `$oldValue instanceof \DateTime` check when PHP version is bumped to >=5.5
+                if (isset($config['hardDelete']) && $config['hardDelete'] && ($oldValue instanceof \DateTime || $oldValue instanceof \DateTimeInterface)) {
                     continue; // want to hard delete
                 }
 

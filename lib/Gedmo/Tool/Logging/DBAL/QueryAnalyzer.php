@@ -227,7 +227,8 @@ class QueryAnalyzer implements SQLLogger
                     $value = $type->convertToDatabaseValue($value, $this->platform);
                 }
             } else {
-                if (is_object($value) && $value instanceof \DateTime) {
+                // Remove `$value instanceof \DateTime` check when PHP version is bumped to >=5.5
+                if (is_object($value) && ($value instanceof \DateTime || $value instanceof \DateTimeInterface)) {
                     $value = $value->format($this->platform->getDateTimeFormatString());
                 } elseif (!is_null($value)) {
                     $type = Type::getType(gettype($value));
