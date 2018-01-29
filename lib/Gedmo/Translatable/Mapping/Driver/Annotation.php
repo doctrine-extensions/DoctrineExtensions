@@ -4,6 +4,7 @@ namespace Gedmo\Translatable\Mapping\Driver;
 
 use Gedmo\Mapping\Driver\AbstractAnnotationDriver;
 use Gedmo\Exception\InvalidMappingException;
+use Gedmo\Translatable\Entity\MappedSuperclass\AbstractPersonalTranslation;
 
 /**
  * This is an annotation mapping driver for Translatable
@@ -105,8 +106,12 @@ class Annotation extends AbstractAnnotationDriver
             }
         }
 
+        $translationEntityClass = $annot ? new \ReflectionClass($annot->class) : null;
+
         if (!$meta->isMappedSuperclass && $config) {
-            if (is_array($meta->identifier) && count($meta->identifier) > 1) {
+            if (is_array($meta->identifier)
+                && count($meta->identifier) > 1
+                && (!$translationEntityClass || !$translationEntityClass->isSubclassOf('Gedmo\Translatable\Entity\MappedSuperclass\AbstractPersonalTranslation'))) {
                 throw new InvalidMappingException("Translatable does not support composite identifiers in class - {$meta->name}");
             }
         }

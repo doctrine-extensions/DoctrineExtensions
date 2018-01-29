@@ -5,7 +5,9 @@ namespace Gedmo\Translatable\Mapping\Event\Adapter;
 use Doctrine\Common\Proxy\Proxy;
 use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Doctrine\ORM\QueryBuilder;
 use Gedmo\Mapping\Event\Adapter\ORM as BaseAdapterORM;
+use Gedmo\Tool\WrapperInterface;
 use Gedmo\Translatable\Mapping\Event\TranslatableAdapter;
 use Gedmo\Tool\Wrapper\AbstractWrapper;
 
@@ -71,12 +73,14 @@ final class ORM extends BaseAdapterORM implements TranslatableAdapter
             }
             // if collection is not set, fetch it through relation
             if (!$found) {
-                $dql = 'SELECT t.content, t.field FROM '.$translationClass.' t';
-                $dql .= ' WHERE t.locale = :locale';
-                $dql .= ' AND t.object = :object';
+                $qb = $em->createQueryBuilder();
+                $qb->select(array('t.content', 't.field'))
+                    ->from($translationClass, 't')
+                    ->where('t.locale = :locale');
+                $this->addObjectJoin($qb, $translationClass, $objectClass, $wrapped);
 
-                $q = $em->createQuery($dql);
-                $q->setParameters(compact('object', 'locale'));
+                $qb->setParameter('locale', $locale);
+                $q = $qb->getQuery();
                 $result = $q->getArrayResult();
             }
         } else {
@@ -160,12 +164,7 @@ final class ORM extends BaseAdapterORM implements TranslatableAdapter
         ;
         $qb->setParameters(compact('locale', 'field'));
         if ($this->usesPersonalTranslation($translationClass)) {
-            $qb->andWhere('trans.object = :object');
-            if ($wrapped->getIdentifier()) {
-                $qb->setParameter('object', $wrapped->getObject());
-            } else {
-                $qb->setParameter('object', null);
-            }
+            $this->addObjectJoin($qb, $translationClass, $objectClass, $wrapped);
         } else {
             $qb->andWhere('trans.foreignKey = :objectId');
             $qb->andWhere('trans.objectClass = :objectClass');
@@ -188,24 +187,33 @@ final class ORM extends BaseAdapterORM implements TranslatableAdapter
      */
     public function removeAssociatedTranslations(AbstractWrapper $wrapped, $transClass, $objectClass)
     {
-        $qb = $this
-            ->getObjectManager()
-            ->createQueryBuilder()
-            ->delete($transClass, 'trans')
-        ;
         if ($this->usesPersonalTranslation($transClass)) {
-            $qb->where('trans.object = :object');
-            $qb->setParameter('object', $wrapped->getObject());
+            $qb = $this->getObjectManager()
+                ->createQueryBuilder()
+                ->select('trans')
+                ->from($transClass, 'trans');
+            $this->addObjectJoin($qb, $transClass, $objectClass, $wrapped);
+
+            $translations = $qb->getQuery()->execute();
+            foreach($translations as $translation) {
+                $this->getObjectManager()->remove($translation);
+            }
+
+            return count($translations);
         } else {
-            $qb->where(
-                'trans.foreignKey = :objectId',
-                'trans.objectClass = :class'
-            );
+            $qb = $this
+                ->getObjectManager()
+                ->createQueryBuilder()
+                ->delete($transClass, 'trans')
+                ->where(
+                    'trans.foreignKey = :objectId',
+                    'trans.objectClass = :class'
+                );
             $qb->setParameter('objectId', $this->foreignKey($wrapped->getIdentifier(), $transClass));
             $qb->setParameter('class', $objectClass);
-        }
 
-        return $qb->getQuery()->getSingleScalarResult();
+            return $qb->getQuery()->getSingleScalarResult();
+        }
     }
 
     /**
@@ -256,5 +264,34 @@ final class ORM extends BaseAdapterORM implements TranslatableAdapter
         $type = Type::getType($meta->getTypeOfField($field));
         $value = $type->convertToPHPValue($value, $em->getConnection()->getDatabasePlatform());
         $wrapped->setPropertyValue($field, $value);
+    }
+
+    /**
+     * @param QueryBuilder $qb
+     * @param string $translationClass
+     * @param string $objectClass
+     * @param WrapperInterface $wrapped
+     */
+    protected function addObjectJoin($qb, $translationClass, $objectClass, $wrapped) {
+        $em = $this->getObjectManager();
+        $translationMeta = $em->getClassMetadata($translationClass);
+        $classMeta = $em->getClassMetadata($objectClass);
+        foreach($translationMeta->getAssociationMappings() as $mapping) {
+            if($mapping['targetEntity'] == $objectClass) {
+                break;
+            }
+        }
+
+        $qb->join('trans.object', 'obj');
+        $identifier = $wrapped->getIdentifier(false);
+        foreach($mapping['joinColumns'] as $i => $joinColumn) {
+            $primaryFieldName = $classMeta->getFieldForColumn($joinColumn['referencedColumnName']);
+            $qb->andWhere("obj.{$primaryFieldName} = :val{$i}");
+            if ($identifier) {
+                $qb->setParameter("val$i", $identifier[$primaryFieldName]);
+            } else {
+                $qb->setParameter("val$i", null);
+            }
+        }
     }
 }
