@@ -298,7 +298,8 @@ class SluggableListener extends MappedEventSubscriber
                         $needToChangeSlug = true;
                     }
                     $value = $meta->getReflectionProperty($sluggableField)->getValue($object);
-                    $slug .= ($value instanceof \DateTime) ? $value->format($options['dateFormat']) : $value;
+                    // Remove `$value instanceof \DateTime` check when PHP version is bumped to >=5.5
+                    $slug .= ($value instanceof \DateTime || $value instanceof \DateTimeInterface) ? $value->format($options['dateFormat']) : $value;
                     $slug .= ' ';
                 }
                 // trim generated slug as it will have unnecessary trailing space
