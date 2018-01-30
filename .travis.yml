@@ -12,6 +12,10 @@ matrix:
         - php: 7.1
         - php: 7.2
 
+cache:
+    directories:
+        - $HOME/.composer/cache
+
 services: mongodb
 
 before_install:
