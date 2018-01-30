@@ -22,7 +22,7 @@ use Gedmo\Loggable\LoggableListener;
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-abstract class BaseTestCaseMongoODM extends \PHPUnit_Framework_TestCase
+abstract class BaseTestCaseMongoODM extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var DocumentManager

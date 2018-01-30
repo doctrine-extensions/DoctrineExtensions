@@ -313,7 +313,7 @@ class UploadableEntityTest extends BaseTestCaseORM
      */
     public function testUploadExceptions($error, $exceptionClass)
     {
-        $this->setExpectedException($exceptionClass);
+        $this->expectException($exceptionClass);
 
         $file = new File();
         $fileInfo = $this->generateUploadedFile();

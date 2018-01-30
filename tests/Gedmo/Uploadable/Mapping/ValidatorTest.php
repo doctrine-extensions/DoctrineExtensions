@@ -11,7 +11,7 @@ namespace Gedmo\Uploadable\Mapping;
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 
-class ValidatorTest extends \PHPUnit_Framework_TestCase
+class ValidatorTest extends \PHPUnit\Framework\TestCase
 {
     protected $meta;
 

@@ -40,7 +40,7 @@ class IpTraceableTest extends BaseTestCaseORM
     {
         $listener = new IpTraceableListener();
 
-        $this->setExpectedException('Gedmo\Exception\InvalidArgumentException');
+        $this->expectException('Gedmo\Exception\InvalidArgumentException');
 
         $listener->setIpValue('xx.xxx.xx.xxx');
     }

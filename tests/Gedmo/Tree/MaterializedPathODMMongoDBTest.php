@@ -110,7 +110,7 @@ class MaterializedPathODMMongoDBTest extends BaseTestCaseMongoODM
      */
     public function useOfSeparatorInPathSourceShouldThrowAnException()
     {
-        $this->setExpectedException('Gedmo\Exception\RuntimeException');
+        $this->expectException('Gedmo\Exception\RuntimeException');
 
         $category = $this->createCategory();
         $category->setTitle('1'.$this->config['path_separator']);

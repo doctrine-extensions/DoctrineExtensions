@@ -12,7 +12,7 @@ use Gedmo\Uploadable\FilenameGenerator\FilenameGeneratorAlphanumeric;
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class FilenameGeneratorAlphanumericTest extends \PHPUnit_Framework_TestCase
+class FilenameGeneratorAlphanumericTest extends \PHPUnit\Framework\TestCase
 {
     public function testGenerator()
     {

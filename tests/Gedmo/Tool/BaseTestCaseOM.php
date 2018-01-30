@@ -33,7 +33,7 @@ use Doctrine\ODM\MongoDB\Repository\DefaultRepositoryFactory as DefaultRepositor
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-abstract class BaseTestCaseOM extends \PHPUnit_Framework_TestCase
+abstract class BaseTestCaseOM extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var EventManager

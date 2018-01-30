@@ -14,7 +14,7 @@ use Gedmo\Mapping\ExtensionMetadataFactory;
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class TranslatableMappingTest extends \PHPUnit_Framework_TestCase
+class TranslatableMappingTest extends \PHPUnit\Framework\TestCase
 {
     const TEST_YAML_ENTITY_CLASS = 'Mapping\Fixture\Yaml\User';
     private $em;

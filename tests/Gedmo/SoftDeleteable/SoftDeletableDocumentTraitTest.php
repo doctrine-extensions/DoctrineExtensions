@@ -11,7 +11,7 @@ use SoftDeleteable\Fixture\Document\UsingTrait;
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class SoftDeletableDocumentTraitTest extends \PHPUnit_Framework_TestCase
+class SoftDeletableDocumentTraitTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var UsingTrait
