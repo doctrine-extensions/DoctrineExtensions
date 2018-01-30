@@ -14,7 +14,7 @@ use Gedmo\Mapping\ExtensionMetadataFactory;
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class TimestampableMappingTest extends \PHPUnit_Framework_TestCase
+class TimestampableMappingTest extends \PHPUnit\Framework\TestCase
 {
     const TEST_YAML_ENTITY_CLASS = 'Mapping\Fixture\Yaml\Category';
     private $em;

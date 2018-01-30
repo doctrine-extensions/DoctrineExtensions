@@ -11,7 +11,7 @@ use Doctrine\ORM\Version;
 * @link http://www.gediminasm.org
 * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
 */
-class ForcedMetadataTest extends \PHPUnit_Framework_TestCase
+class ForcedMetadataTest extends \PHPUnit\Framework\TestCase
 {
     public function setUp()
     {

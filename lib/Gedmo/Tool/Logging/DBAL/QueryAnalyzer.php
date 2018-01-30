@@ -180,15 +180,15 @@ class QueryAnalyzer implements SQLLogger
     /**
      * Create the SQL with mapped parameters
      *
-     * @param string $sql
-     * @param array  $params
-     * @param array  $types
+     * @param string      $sql
+     * @param null|array  $params
+     * @param null|array  $types
      *
      * @return string
      */
     private function generateSql($sql, $params, $types)
     {
-        if (!count($params)) {
+        if (null === $params || !count($params)) {
             return $sql;
         }
         $converted = $this->getConvertedParams($params, $types);

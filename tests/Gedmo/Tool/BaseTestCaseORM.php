@@ -27,7 +27,7 @@ use Doctrine\ORM\Repository\DefaultRepositoryFactory;
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-abstract class BaseTestCaseORM extends \PHPUnit_Framework_TestCase
+abstract class BaseTestCaseORM extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var EntityManager
@@ -44,6 +44,18 @@ abstract class BaseTestCaseORM extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function expectException($exception)
+    {
+        if (method_exists('PHPUnit\\Framework\\TestCase', 'setExpectedException')) {
+            return parent::setExpectedException($exception);
+        }
+
+        return parent::expectException($exception);
     }
 
     /**

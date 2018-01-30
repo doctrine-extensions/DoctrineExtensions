@@ -13,7 +13,7 @@ use Gedmo\Mapping\ExtensionMetadataFactory;
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class TreeMappingTest extends \PHPUnit_Framework_TestCase
+class TreeMappingTest extends \PHPUnit\Framework\TestCase
 {
     const TEST_YAML_ENTITY_CLASS = 'Mapping\Fixture\Yaml\Category';
     const YAML_CLOSURE_CATEGORY = 'Mapping\Fixture\Yaml\ClosureCategory';

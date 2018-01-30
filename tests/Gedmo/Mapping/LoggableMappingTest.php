@@ -14,7 +14,7 @@ use Gedmo\Mapping\ExtensionMetadataFactory;
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class LoggableMappingTest extends \PHPUnit_Framework_TestCase
+class LoggableMappingTest extends \PHPUnit\Framework\TestCase
 {
     const YAML_CATEGORY = 'Mapping\Fixture\Yaml\Category';
     private $em;

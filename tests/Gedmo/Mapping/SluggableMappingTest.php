@@ -14,7 +14,7 @@ use Gedmo\Mapping\ExtensionMetadataFactory;
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class SluggableMappingTest extends \PHPUnit_Framework_TestCase
+class SluggableMappingTest extends \PHPUnit\Framework\TestCase
 {
     const TEST_YAML_ENTITY_CLASS = 'Mapping\Fixture\Yaml\Category';
     const SLUGGABLE = 'Mapping\Fixture\Sluggable';

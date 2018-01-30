@@ -11,7 +11,7 @@ use Tree\Fixture\BehavioralCategory;
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class MappingTest extends \PHPUnit_Framework_TestCase
+class MappingTest extends \PHPUnit\Framework\TestCase
 {
     const TEST_ENTITY_CATEGORY = "Tree\Fixture\BehavioralCategory";
     const TEST_ENTITY_TRANSLATION = "Gedmo\Translatable\Entity\Translation";

@@ -11,7 +11,7 @@ namespace Gedmo\Uploadable\FileInfo;
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 
-class FileInfoArrayTest extends \PHPUnit_Framework_TestCase
+class FileInfoArrayTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @expectedException RuntimeException
