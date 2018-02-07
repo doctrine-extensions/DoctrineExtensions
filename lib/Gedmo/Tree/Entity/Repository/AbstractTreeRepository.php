@@ -245,4 +245,30 @@ abstract class AbstractTreeRepository extends EntityRepository implements Reposi
      * @return \Doctrine\ORM\Query - Query object
      */
     abstract public function getChildrenQuery($node = null, $direct = false, $sortByField = null, $direction = 'ASC', $includeNode = false);
+
+    /**
+     * Get list of ancestors followed by given $node. This returns a QueryBuilder object
+     *
+     * @param object  $node        - if null, all tree nodes will be taken
+     * @param boolean $direct      - true to take only direct children
+     * @param string  $sortByField - field name to sort by
+     * @param string  $direction   - sort direction : "ASC" or "DESC"
+     * @param bool    $includeNode - Include the root node in results?
+     *
+     * @return \Doctrine\ORM\QueryBuilder - QueryBuilder object
+     */
+    abstract public function getAncestorsQueryBuilder($node = null, $direct = false, $sortByField = null, $direction = 'ASC', $includeNode = false);
+
+    /**
+     * Get list of ancestors followed by given $node. This returns a Query
+     *
+     * @param object  $node        - if null, all tree nodes will be taken
+     * @param boolean $direct      - true to take only direct children
+     * @param string  $sortByField - field name to sort by
+     * @param string  $direction   - sort direction : "ASC" or "DESC"
+     * @param bool    $includeNode - Include the root node in results?
+     *
+     * @return \Doctrine\ORM\Query - Query object
+     */
+    abstract public function getAncestorsQuery($node = null, $direct = false, $sortByField = null, $direction = 'ASC', $includeNode = false);
 }
