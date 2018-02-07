@@ -359,9 +359,9 @@ trait NestedTreeRepositoryTrait
     }
 
     /**
-     * @see getAncestorQueryBuilder
+     * @see getAncestorsQueryBuilder
      */
-    public function ancestorQueryBuilder($node = null, $direct = false, $sortByField = null, $direction = 'ASC', $includeNode = false)
+    public function ancestorsQueryBuilder($node = null, $direct = false, $sortByField = null, $direction = 'ASC', $includeNode = false)
     {
         $meta = $this->getClassMetadata();
         $config = $this->listener->getConfiguration($this->getEntityManager(), $meta->name);
@@ -425,19 +425,19 @@ trait NestedTreeRepositoryTrait
     }
 
     /**
-     * @see getAncestorQuery
+     * @see getAncestorsQuery
      */
-    public function ancestorQuery($node = null, $direct = false, $sortByField = null, $direction = 'ASC', $includeNode = false)
+    public function ancestorsQuery($node = null, $direct = false, $sortByField = null, $direction = 'ASC', $includeNode = false)
     {
-        return $this->ancestorQueryBuilder($node, $direct, $sortByField, $direction, $includeNode)->getQuery();
+        return $this->ancestorsQueryBuilder($node, $direct, $sortByField, $direction, $includeNode)->getQuery();
     }
 
     /**
-     * @see getChildren
+     * @see getAncestors
      */
-    public function ancestor($node = null, $direct = false, $sortByField = null, $direction = 'ASC', $includeNode = false)
+    public function ancestors($node = null, $direct = false, $sortByField = null, $direction = 'ASC', $includeNode = false)
     {
-        $q = $this->ancestorQuery($node, $direct, $sortByField, $direction, $includeNode);
+        $q = $this->ancestorsQuery($node, $direct, $sortByField, $direction, $includeNode);
 
         return $q->getResult();
     }
@@ -445,25 +445,25 @@ trait NestedTreeRepositoryTrait
     /**
      * {@inheritDoc}
      */
-    public function getAncestorQueryBuilder($node = null, $direct = false, $sortByField = null, $direction = 'ASC', $includeNode = false)
+    public function getAncestorsQueryBuilder($node = null, $direct = false, $sortByField = null, $direction = 'ASC', $includeNode = false)
     {
-        return $this->ancestorQueryBuilder($node, $direct, $sortByField, $direction, $includeNode);
+        return $this->ancestorsQueryBuilder($node, $direct, $sortByField, $direction, $includeNode);
     }
 
     /**
      * {@inheritDoc}
      */
-    public function getAncestorQuery($node = null, $direct = false, $sortByField = null, $direction = 'ASC', $includeNode = false)
+    public function getAncestorsQuery($node = null, $direct = false, $sortByField = null, $direction = 'ASC', $includeNode = false)
     {
-        return $this->ancestorQuery($node, $direct, $sortByField, $direction, $includeNode);
+        return $this->ancestorsQuery($node, $direct, $sortByField, $direction, $includeNode);
     }
 
     /**
      * {@inheritDoc}
      */
-    public function getAncestor($node = null, $direct = false, $sortByField = null, $direction = 'ASC', $includeNode = false)
+    public function getAncestors($node = null, $direct = false, $sortByField = null, $direction = 'ASC', $includeNode = false)
     {
-        return $this->ancestor($node, $direct, $sortByField, $direction, $includeNode);
+        return $this->ancestors($node, $direct, $sortByField, $direction, $includeNode);
     }
 
     /**

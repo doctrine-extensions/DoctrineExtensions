@@ -282,7 +282,7 @@ trait TreeRepositoryTrait
      *
      * @return \Doctrine\ORM\QueryBuilder - QueryBuilder object
      */
-    abstract public function getAncestorQueryBuilder($node = null, $direct = false, $sortByField = null, $direction = 'ASC', $includeNode = false);
+    abstract public function getAncestorsQueryBuilder($node = null, $direct = false, $sortByField = null, $direction = 'ASC', $includeNode = false);
 
     /**
      * Get list of ancestors followed by given $node. This returns a Query
@@ -295,5 +295,5 @@ trait TreeRepositoryTrait
      *
      * @return \Doctrine\ORM\Query - Query object
      */
-    abstract public function getAncestorQuery($node = null, $direct = false, $sortByField = null, $direction = 'ASC', $includeNode = false);
+    abstract public function getAncestorsQuery($node = null, $direct = false, $sortByField = null, $direction = 'ASC', $includeNode = false);
 }
