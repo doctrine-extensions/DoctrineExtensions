@@ -54,7 +54,7 @@
         "doctrine/orm": "to use the extensions with the ORM"
     },
     "autoload": {
-        "psr-0": { "Gedmo\\": "lib/" }
+        "psr-4": { "Gedmo\\": "src/Gedmo" }
     },
     "config": {
         "bin-dir": "bin"

@@ -342,12 +342,12 @@ class Nested implements Strategy
                     } else {
                         $newParent = $wrappedParent->getPropertyValue($config['parent']);
 
-                        if ((is_null($newParent) && (isset($config['root']) && $config['root'] == $config['parent']) || $isNewNode)) {     // Check root is the same column from parent
-                            throw new UnexpectedValueException("Cannot persist sibling for a root node, tree operation is not possible");   // Then throw Exception
-                        } else if (is_null($newParent) && (isset($config['root']) || $isNewNode)) {                                         // if root column is different from parent column
-                            // root is a different column from parent (pointing to another table?), do nothing                              // don't set the parent!
-                        } else {                                                                                                            // else proceed as normal
-                            $wrapped->setPropertyValue($config['parent'], $newParent);                                                      // set the parent
+                        if (is_null($newParent) && ((isset($config['root']) && $config['root'] == $config['parent']) || $isNewNode)) {
+                            throw new UnexpectedValueException("Cannot persist sibling for a root node, tree operation is not possible");
+                        } else if (is_null($newParent) && (isset($config['root']) || $isNewNode)) {
+                            // root is a different column from parent (pointing to another table?), do nothing
+                        } else {
+                            $wrapped->setPropertyValue($config['parent'], $newParent);
                         }
 
                         $em->getUnitOfWork()->recomputeSingleEntityChangeSet($meta, $node);
@@ -362,13 +362,12 @@ class Nested implements Strategy
                         $level++;
                     } else {
                         $newParent = $wrappedParent->getPropertyValue($config['parent']);
-
-                        if ((is_null($newParent) && (isset($config['root']) && $config['root'] == $config['parent']) || $isNewNode)) {   // Check root is the same column from parent
-                            throw new UnexpectedValueException("Cannot persist sibling for a root node, tree operation is not possible"); // Then throw Exception
-                        } else if (is_null($newParent) && (isset($config['root']) || $isNewNode)) {                                       // Root column is different from parent column
-                            // root is a different column from parent (pointing to another table?), do nothing                            // don't set the parent!
-                        } else {                                                                                                          // else proceed as normal
-                            $wrapped->setPropertyValue($config['parent'], $newParent);                                                    // set the parent
+                        if (is_null($newParent) && ((isset($config['root']) && $config['root'] == $config['parent']) || $isNewNode)) {
+                            throw new UnexpectedValueException("Cannot persist sibling for a root node, tree operation is not possible");
+                        } else if (is_null($newParent) && (isset($config['root']) || $isNewNode)) {
+                            // root is a different column from parent (pointing to another table?), do nothing
+                        } else {
+                            $wrapped->setPropertyValue($config['parent'], $newParent);
                         }
 
                         $em->getUnitOfWork()->recomputeSingleEntityChangeSet($meta, $node);
