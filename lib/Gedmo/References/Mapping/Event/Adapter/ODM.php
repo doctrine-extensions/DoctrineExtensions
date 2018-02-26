@@ -4,7 +4,7 @@ namespace Gedmo\References\Mapping\Event\Adapter;
 
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Doctrine\ODM\MongoDB\Proxy\Proxy as MongoDBProxy;
-use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Proxy\Proxy as ORMProxy;
 use Gedmo\Mapping\Event\Adapter\ODM as BaseAdapterODM;
 use Gedmo\References\Mapping\Event\ReferencesAdapter;
@@ -28,7 +28,7 @@ final class ODM extends BaseAdapterODM implements ReferencesAdapter
             return $this->extractIdentifier($om, $object, $single);
         }
 
-        if ($om instanceof EntityManager) {
+        if ($om instanceof EntityManagerInterface) {
             if ($object instanceof ORMProxy) {
                 $id = $om->getUnitOfWork()->getEntityIdentifier($object);
             } else {
@@ -88,7 +88,7 @@ final class ODM extends BaseAdapterODM implements ReferencesAdapter
     /**
      * Override so we don't get an exception. We want to allow this.
      */
-    private function throwIfNotEntityManager(EntityManager $em)
+    private function throwIfNotEntityManager(EntityManagerInterface $em)
     {
     }
 }

@@ -72,7 +72,7 @@ class TreeListener extends MappedEventSubscriber
                 throw new \Gedmo\Exception\UnexpectedValueException("Tree object class: {$class} must have tree metadata at this point");
             }
             $managerName = 'UnsupportedManager';
-            if ($om instanceof \Doctrine\ORM\EntityManager) {
+            if ($om instanceof \Doctrine\ORM\EntityManagerInterface) {
                 $managerName = 'ORM';
             } elseif ($om instanceof \Doctrine\ODM\MongoDB\DocumentManager) {
                 $managerName = 'ODM\\MongoDB';

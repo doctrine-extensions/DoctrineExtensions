@@ -2,7 +2,7 @@
 
 namespace Gedmo\Tool\Wrapper;
 
-use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Proxy\Proxy;
 
 /**
@@ -32,9 +32,9 @@ class EntityWrapper extends AbstractWrapper
      * Wrap entity
      *
      * @param object                      $entity
-     * @param \Doctrine\ORM\EntityManager $em
+     * @param \Doctrine\ORM\EntityManagerInterface $em
      */
-    public function __construct($entity, EntityManager $em)
+    public function __construct($entity, EntityManagerInterface $em)
     {
         $this->om = $em;
         $this->object = $entity;
