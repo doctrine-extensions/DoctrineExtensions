@@ -6,7 +6,6 @@ use Doctrine\Common\EventManager;
 use Gedmo\Tree\Entity\Repository\NestedTreeRepository;
 use Tool\BaseTestCaseORM;
 use Tree\Fixture\ForeignRootCategory;
-use Tree\Fixture\RootAssociationCategory;
 use Tree\Fixture\RootCategory;
 
 /**
@@ -28,7 +27,7 @@ class NestedTreeRootTest extends BaseTestCaseORM
         $evm->addEventSubscriber(new TreeListener());
 
         $this->getMockSqliteEntityManager($evm);
-//        $this->populate();
+        $this->populate();
     }
 
     /**
