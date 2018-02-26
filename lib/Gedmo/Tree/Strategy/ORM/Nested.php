@@ -2,6 +2,8 @@
 
 namespace Gedmo\Tree\Strategy\ORM;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Gedmo\Exception\UnexpectedValueException;
 use Doctrine\ORM\Proxy\Proxy;
@@ -123,7 +125,9 @@ class Nested implements Strategy
         if (isset($config['level'])) {
             $meta->getReflectionProperty($config['level'])->setValue($node, 0);
         }
-        if (isset($config['root']) && !$meta->hasAssociation($config['root'])) {
+        if (isset($config['root']) && !$meta->hasAssociation($config['root']) && !$config['rootIdentifierMethod']) {
+            $meta->getReflectionProperty($config['root'])->setValue($node, 0);
+        } else if (isset($config['rootIdentifierMethod']) && is_null($meta->getReflectionProperty($config['root'])->getValue($node))) {
             $meta->getReflectionProperty($config['root'])->setValue($node, 0);
         }
     }
@@ -310,7 +314,7 @@ class Nested implements Strategy
         $level = 0;
         $treeSize = $right - $left + 1;
         $newRoot = null;
-        if ($parent) {
+        if ($parent) {    // || (!$parent && isset($config['rootIdentifierMethod']))
             $wrappedParent = AbstractWrapper::wrap($parent, $em);
 
             $parentRoot = isset($config['root']) ? $wrappedParent->getPropertyValue($config['root']) : null;
@@ -453,8 +457,23 @@ class Nested implements Strategy
             }
         } else {
             $start = 1;
+            if (isset($config['rootIdentifierMethod'])) {
+                $method = $config['rootIdentifierMethod'];
+                $newRoot = $node->$method();
+                $repo = $em->getRepository($config['useObjectClass']);
 
-            if ($meta->isSingleValuedAssociation($config['root'])) {
+                $criteria = new Criteria();
+                $criteria->andWhere(Criteria::expr()->notIn($wrapped->getMetadata()->identifier[0], [$wrapped->getIdentifier()]));
+                $criteria->andWhere(Criteria::expr()->eq($config['root'], $node->$method()));
+                $criteria->andWhere(Criteria::expr()->isNull($config['parent']));
+                $criteria->andWhere(Criteria::expr()->eq($config['level'], 0));
+                $criteria->orderBy([$config['right'] => Criteria::ASC]);
+                $roots = $repo->matching($criteria)->toArray();
+                $last = array_pop($roots);
+
+                $start = ($last) ? $meta->getFieldValue($last, $config['right']) + 1 : 1;
+
+            } else if ($meta->isSingleValuedAssociation($config['root'])) {
                 $newRoot = $node;
             } else {
                 $newRoot = $wrapped->getIdentifier();

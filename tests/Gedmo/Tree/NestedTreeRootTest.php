@@ -3,7 +3,10 @@
 namespace Gedmo\Tree;
 
 use Doctrine\Common\EventManager;
+use Gedmo\Tree\Entity\Repository\NestedTreeRepository;
 use Tool\BaseTestCaseORM;
+use Tree\Fixture\ForeignRootCategory;
+use Tree\Fixture\RootAssociationCategory;
 use Tree\Fixture\RootCategory;
 
 /**
@@ -25,7 +28,7 @@ class NestedTreeRootTest extends BaseTestCaseORM
         $evm->addEventSubscriber(new TreeListener());
 
         $this->getMockSqliteEntityManager($evm);
-        $this->populate();
+//        $this->populate();
     }
 
     /**
@@ -320,13 +323,186 @@ class NestedTreeRootTest extends BaseTestCaseORM
         $this->assertEquals(4, $node->getRight());
     }
 
+
+    /**
+     * @throws \Doctrine\ORM\OptimisticLockException
+     */
+    public function testTreeWithRootPointingAtAnotherTable()
+    {
+        // depopulate, i don't want the other stuff in db
+        /** @var NestedTreeRepository $repo */
+        $repo = $this->em->getRepository(ForeignRootCategory::class);
+        $all = $repo->findAll();
+        foreach ($all as $one) {
+            $this->em->remove($one);
+        }
+        $this->em->flush();
+
+        $fiction = new ForeignRootCategory();
+        $fiction->setTitle('Fiction Books');
+        $fiction->setRoot(1);  // Lets pretend this points to another table, and root id 1 is "Books"
+
+        $fact = new ForeignRootCategory();
+        $fact->setTitle('Fact Books');
+        $fact->setRoot(1);
+
+        $action = new ForeignRootCategory();
+        $action->setTitle('Action');
+        $action->setRoot(2); // Lets pretend this points to another table, and root id 2 is "Movies"
+
+        $comedy = new ForeignRootCategory();
+        $comedy->setTitle('Comedy');
+        $comedy->setRoot(2);
+
+        $horror = new ForeignRootCategory();
+        $horror->setTitle('Horror');
+        $horror->setRoot(2);
+
+        // Child categories now
+        $lotr = new ForeignRootCategory();
+        $lotr->setTitle('Lord of the Rings');
+        $lotr->setParent($fiction);
+        $lotr->setRoot(1);
+
+        $warlock = new ForeignRootCategory();
+        $warlock->setTitle('The Warlock of Firetop Mountain');
+        $warlock->setParent($fiction);
+        $warlock->setRoot(1);
+
+        $php = new ForeignRootCategory();
+        $php->setTitle('PHP open source development');
+        $php->setParent($fact);
+        $php->setRoot(1);
+
+        $dracula = new ForeignRootCategory();
+        $dracula->setTitle('Hammer Horror Dracula');
+        $dracula->setParent($horror);
+        $dracula->setRoot(2);
+
+        $frankenstein = new ForeignRootCategory();
+        $frankenstein->setTitle('Hammer Horror Frankenstein');
+        $frankenstein->setParent($horror);
+        $frankenstein->setRoot(2);
+
+        $this->em->persist($fact);
+        $this->em->persist($fiction);
+        $this->em->persist($comedy);
+        $this->em->persist($horror);
+        $this->em->persist($action);
+        $this->em->persist($lotr);
+        $this->em->persist($warlock);
+        $this->em->persist($php);
+        $this->em->persist($dracula);
+        $this->em->persist($frankenstein);
+        $this->em->flush();
+
+        $this->assertEquals(1, $fact->getLeft());
+        $this->assertEquals(4, $fact->getRight());
+        $this->assertEquals(0, $fact->getLevel());
+        $this->assertEquals(1, $fact->getRoot());
+        $this->assertNull($fact->getParent());
+
+        $this->assertEquals(5, $fiction->getLeft());
+        $this->assertEquals(10, $fiction->getRight());
+        $this->assertEquals(0, $fiction->getLevel());
+        $this->assertEquals(1, $fiction->getRoot());
+        $this->assertNull($fiction->getParent());
+
+        $this->assertEquals(6, $lotr->getLeft());
+        $this->assertEquals(7, $lotr->getRight());
+        $this->assertEquals(1, $lotr->getLevel());
+        $this->assertEquals(1, $lotr->getRoot());
+        $this->assertEquals($fiction, $lotr->getParent());
+
+        $this->assertEquals(8, $warlock->getLeft());
+        $this->assertEquals(9, $warlock->getRight());
+        $this->assertEquals(1, $warlock->getLevel());
+        $this->assertEquals(1, $warlock->getRoot());
+        $this->assertEquals($fiction, $warlock->getParent());
+
+        $this->assertEquals(2, $php->getLeft());
+        $this->assertEquals(3, $php->getRight());
+        $this->assertEquals(1, $php->getLevel());
+        $this->assertEquals(1, $php->getRoot());
+        $this->assertEquals($fact, $php->getParent());
+
+        $this->assertEquals(1, $comedy->getLeft());
+        $this->assertEquals(2, $comedy->getRight());
+        $this->assertEquals(0, $comedy->getLevel());
+        $this->assertEquals(2, $comedy->getRoot());
+        $this->assertNull($comedy->getParent());
+
+        $this->assertEquals(3, $horror->getLeft());
+        $this->assertEquals(8, $horror->getRight());
+        $this->assertEquals(0, $horror->getLevel());
+        $this->assertEquals(2, $horror->getRoot());
+        $this->assertNull($horror->getParent());
+
+        $this->assertEquals(9, $action->getLeft());
+        $this->assertEquals(10, $action->getRight());
+        $this->assertEquals(0, $action->getLevel());
+        $this->assertEquals(2, $action->getRoot());
+        $this->assertNull($action->getParent());
+
+        $this->assertEquals(4, $dracula->getLeft());
+        $this->assertEquals(5, $dracula->getRight());
+        $this->assertEquals(1, $dracula->getLevel());
+        $this->assertEquals(2, $dracula->getRoot());
+        $this->assertEquals($horror, $dracula->getParent());
+
+        $this->assertEquals(6, $frankenstein->getLeft());
+        $this->assertEquals(7, $frankenstein->getRight());
+        $this->assertEquals(1, $frankenstein->getLevel());
+        $this->assertEquals(2, $frankenstein->getRoot());
+        $this->assertEquals($horror, $frankenstein->getParent());
+
+        // Now move the action movie category up
+        $repo->moveUp($action);
+
+        $this->assertEquals(1, $comedy->getLeft());
+        $this->assertEquals(2, $comedy->getRight());
+        $this->assertEquals(0, $comedy->getLevel());
+        $this->assertEquals(2, $comedy->getRoot());
+        $this->assertNull($comedy->getParent());
+
+        $this->assertEquals(3, $action->getLeft());
+        $this->assertEquals(4, $action->getRight());
+        $this->assertEquals(0, $action->getLevel());
+        $this->assertEquals(2, $action->getRoot());
+        $this->assertNull($action->getParent());
+
+        $this->assertEquals(5, $horror->getLeft());
+        $this->assertEquals(10, $horror->getRight());
+        $this->assertEquals(0, $horror->getLevel());
+        $this->assertEquals(2, $horror->getRoot());
+        $this->assertNull($horror->getParent());
+
+        $this->assertEquals(6, $dracula->getLeft());
+        $this->assertEquals(7, $dracula->getRight());
+        $this->assertEquals(1, $dracula->getLevel());
+        $this->assertEquals(2, $dracula->getRoot());
+        $this->assertEquals($horror, $dracula->getParent());
+
+        $this->assertEquals(8, $frankenstein->getLeft());
+        $this->assertEquals(9, $frankenstein->getRight());
+        $this->assertEquals(1, $frankenstein->getLevel());
+        $this->assertEquals(2, $frankenstein->getRoot());
+        $this->assertEquals($horror, $frankenstein->getParent());
+
+        $this->em->clear();
+    }
+
     protected function getUsedEntityFixtures()
     {
         return array(
             self::CATEGORY,
+            ForeignRootCategory::class,
         );
     }
 
+    /**
+     * @throws \Doctrine\ORM\OptimisticLockException
+     */
     private function populate()
     {
         $root = new RootCategory();
