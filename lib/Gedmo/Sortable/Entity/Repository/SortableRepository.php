@@ -2,8 +2,8 @@
 
 namespace Gedmo\Sortable\Entity\Repository;
 
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
-use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Gedmo\Sortable\SortableListener;
 
@@ -25,7 +25,7 @@ class SortableRepository extends EntityRepository
     protected $config = null;
     protected $meta = null;
 
-    public function __construct(EntityManager $em, ClassMetadata $class)
+    public function __construct(EntityManagerInterface $em, ClassMetadata $class)
     {
         parent::__construct($em, $class);
         $sortableListener = null;

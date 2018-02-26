@@ -3,8 +3,8 @@
 namespace Gedmo\Tree\Strategy\ORM;
 
 use Doctrine\DBAL\Connection;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Version;
-use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Doctrine\Common\Persistence\ObjectManager;
 use Gedmo\Tree\Strategy;
@@ -403,11 +403,11 @@ class Closure implements Strategy
     /**
      * Update node and closures
      *
-     * @param EntityManager $em
+     * @param EntityManagerInterface $em
      * @param object        $node
      * @param object        $oldParent
      */
-    public function updateNode(EntityManager $em, $node, $oldParent)
+    public function updateNode(EntityManagerInterface $em, $node, $oldParent)
     {
         $wrapped = AbstractWrapper::wrap($node, $em);
         $meta = $wrapped->getMetadata();
