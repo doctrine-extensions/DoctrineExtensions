@@ -330,7 +330,7 @@ class NestedTreeRootTest extends BaseTestCaseORM
     {
         // depopulate, i don't want the other stuff in db
         /** @var NestedTreeRepository $repo */
-        $repo = $this->em->getRepository(ForeignRootCategory::class);
+        $repo = $this->em->getRepository("Tree\\Fixture\\ForeignRootCategory");
         $all = $repo->findAll();
         foreach ($all as $one) {
             $this->em->remove($one);
@@ -495,7 +495,7 @@ class NestedTreeRootTest extends BaseTestCaseORM
     {
         return array(
             self::CATEGORY,
-            ForeignRootCategory::class,
+            "Tree\\Fixture\\ForeignRootCategory",
         );
     }
 
