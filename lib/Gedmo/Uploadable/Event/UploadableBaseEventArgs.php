@@ -3,7 +3,7 @@
 namespace Gedmo\Uploadable\Event;
 
 use Doctrine\Common\EventArgs;
-use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Gedmo\Uploadable\FileInfo\FileInfoInterface;
 use Gedmo\Uploadable\UploadableListener;
 
@@ -25,7 +25,7 @@ abstract class UploadableBaseEventArgs extends EventArgs
     private $uploadableListener;
 
     /**
-     * @var \Doctrine\ORM\EntityManager
+     * @var \Doctrine\ORM\EntityManagerInterface
      */
     private $em;
 
@@ -56,13 +56,13 @@ abstract class UploadableBaseEventArgs extends EventArgs
 
     /**
      * @param UploadableListener          $listener
-     * @param \Doctrine\ORM\EntityManager $em
+     * @param \Doctrine\ORM\EntityManagerInterface $em
      * @param array                       $config
      * @param FileInfoInterface           $fileInfo
      * @param object                      $entity
      * @param string                      $action
      */
-    public function __construct(UploadableListener $listener, EntityManager $em, array $config, FileInfoInterface $fileInfo, $entity, $action)
+    public function __construct(UploadableListener $listener, EntityManagerInterface $em, array $config, FileInfoInterface $fileInfo, $entity, $action)
     {
         $this->uploadableListener = $listener;
         $this->em = $em;
@@ -85,7 +85,7 @@ abstract class UploadableBaseEventArgs extends EventArgs
     /**
      * Retrieve associated EntityManager
      *
-     * @return \Doctrine\ORM\EntityManager
+     * @return \Doctrine\ORM\EntityManagerInterface
      */
     public function getEntityManager()
     {

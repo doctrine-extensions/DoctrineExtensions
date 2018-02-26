@@ -2,9 +2,9 @@
 
 namespace Gedmo\Tool\Wrapper;
 
-use Doctrine\ORM\EntityManager;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Gedmo\Tool\WrapperInterface;
 use Gedmo\Exception\UnsupportedObjectManagerException;
 
@@ -57,7 +57,7 @@ abstract class AbstractWrapper implements WrapperInterface
      */
     public static function wrap($object, ObjectManager $om)
     {
-        if ($om instanceof EntityManager) {
+        if ($om instanceof EntityManagerInterface) {
             return new EntityWrapper($object, $om);
         } elseif ($om instanceof DocumentManager) {
             return new MongoDocumentWrapper($object, $om);

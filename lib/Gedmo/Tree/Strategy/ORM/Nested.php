@@ -4,12 +4,12 @@ namespace Gedmo\Tree\Strategy\ORM;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Criteria;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Gedmo\Exception\UnexpectedValueException;
 use Doctrine\ORM\Proxy\Proxy;
 use Gedmo\Tool\Wrapper\AbstractWrapper;
 use Gedmo\Tree\Strategy;
-use Doctrine\ORM\EntityManager;
 use Gedmo\Tree\TreeListener;
 use Gedmo\Mapping\Event\AdapterInterface;
 
@@ -279,14 +279,14 @@ class Nested implements Strategy
      * Update the $node with a diferent $parent
      * destination
      *
-     * @param EntityManager $em
-     * @param object $node - target node
-     * @param object $parent - destination node
-     * @param string $position
+     * @param EntityManagerInterface $em
+     * @param object        $node     - target node
+     * @param object        $parent   - destination node
+     * @param string        $position
      *
      * @throws \Gedmo\Exception\UnexpectedValueException
      */
-    public function updateNode(EntityManager $em, $node, $parent, $position = 'FirstChild')
+    public function updateNode(EntityManagerInterface $em, $node, $parent, $position = 'FirstChild')
     {
         $wrapped = AbstractWrapper::wrap($node, $em);
 
@@ -538,13 +538,13 @@ class Nested implements Strategy
     /**
      * Get the edge of tree
      *
-     * @param EntityManager $em
-     * @param string $class
-     * @param integer $rootId
+     * @param EntityManagerInterface $em
+     * @param string        $class
+     * @param integer       $rootId
      *
      * @return integer
      */
-    public function max(EntityManager $em, $class, $rootId = 0)
+    public function max(EntityManagerInterface $em, $class, $rootId = 0)
     {
         $meta = $em->getClassMetadata($class);
         $config = $this->listener->getConfiguration($em, $meta->name);
@@ -569,9 +569,13 @@ class Nested implements Strategy
      * @param string $class
      * @param integer $first
      * @param integer $delta
+     * @param EntityManagerInterface  $em
+     * @param string         $class
+     * @param integer        $first
+     * @param integer        $delta
      * @param integer|string $root
      */
-    public function shiftRL(EntityManager $em, $class, $first, $delta, $root = null)
+    public function shiftRL(EntityManagerInterface $em, $class, $first, $delta, $root = null)
     {
         $meta = $em->getClassMetadata($class);
         $config = $this->listener->getConfiguration($em, $class);
@@ -635,16 +639,16 @@ class Nested implements Strategy
      * Shift range of right and left values on tree
      * depending on tree level difference also
      *
-     * @param EntityManager $em
-     * @param string $class
-     * @param integer $first
-     * @param integer $last
-     * @param integer $delta
+     * @param EntityManagerInterface  $em
+     * @param string         $class
+     * @param integer        $first
+     * @param integer        $last
+     * @param integer        $delta
      * @param integer|string $root
      * @param integer|string $destRoot
      * @param integer $levelDelta
      */
-    public function shiftRangeRL(EntityManager $em, $class, $first, $last, $delta, $root = null, $destRoot = null, $levelDelta = null)
+    public function shiftRangeRL(EntityManagerInterface $em, $class, $first, $last, $delta, $root = null, $destRoot = null, $levelDelta = null)
     {
         $meta = $em->getClassMetadata($class);
         $config = $this->listener->getConfiguration($em, $class);
