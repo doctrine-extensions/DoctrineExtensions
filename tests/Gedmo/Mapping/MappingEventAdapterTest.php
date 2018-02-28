@@ -8,7 +8,7 @@ use Gedmo\Mapping\Event\Adapter\ORM as EventAdapterORM;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Gedmo\Mapping\Mock\Mapping\Event\Adapter\ORM as CustomizedORMAdapter;
 
-class MappingEventAdapterTest extends \PHPUnit_Framework_TestCase
+class MappingEventAdapterTest extends \PHPUnit\Framework\TestCase
 {
     public function testCustomizedAdapter()
     {

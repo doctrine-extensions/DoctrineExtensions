@@ -11,7 +11,7 @@ use SoftDeleteable\Fixture\Entity\UsingTrait;
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class SoftDeletableEntityTraitTest extends \PHPUnit_Framework_TestCase
+class SoftDeletableEntityTraitTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var UsingTrait

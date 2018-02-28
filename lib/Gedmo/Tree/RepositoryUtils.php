@@ -50,7 +50,7 @@ class RepositoryUtils implements RepositoryUtilsInterface
 
         if ($node !== null) {
             if ($node instanceof $meta->name) {
-                $wrapperClass = $this->om instanceof \Doctrine\ORM\EntityManager ?
+                $wrapperClass = $this->om instanceof \Doctrine\ORM\EntityManagerInterface ?
                     '\Gedmo\Tool\Wrapper\EntityWrapper' :
                     '\Gedmo\Tool\Wrapper\MongoDocumentWrapper';
                 $wrapped = new $wrapperClass($node, $this->om);

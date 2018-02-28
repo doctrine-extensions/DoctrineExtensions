@@ -5,7 +5,7 @@ namespace Gedmo\References\Mapping\Event\Adapter;
 use Doctrine\ODM\MongoDB\DocumentManager as MongoDocumentManager;
 use Doctrine\ODM\MongoDB\Proxy\Proxy as MongoDBProxy;
 use Doctrine\ODM\PHPCR\DocumentManager as PhpcrDocumentManager;
-use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Proxy\Proxy as ORMProxy;
 use Gedmo\Exception\InvalidArgumentException;
 use Gedmo\Mapping\Event\Adapter\ORM as BaseAdapterORM;
@@ -26,7 +26,7 @@ final class ORM extends BaseAdapterORM implements ReferencesAdapter
      */
     public function getIdentifier($om, $object, $single = true)
     {
-        if ($om instanceof EntityManager) {
+        if ($om instanceof EntityManagerInterface) {
             return $this->extractIdentifier($om, $object, $single);
         }
 

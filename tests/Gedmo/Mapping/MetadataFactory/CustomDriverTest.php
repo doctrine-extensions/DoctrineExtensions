@@ -11,7 +11,7 @@ use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 * @link http://www.gediminasm.org
 * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
 */
-class CustomDriverTest extends \PHPUnit_Framework_TestCase
+class CustomDriverTest extends \PHPUnit\Framework\TestCase
 {
     public function setUp()
     {

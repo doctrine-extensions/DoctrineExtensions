@@ -18,7 +18,7 @@ class NotifyNode extends AbstractNode implements NotifyPropertyChanged
      * 
      * @var PropertyChangedListener[]
      */
-    private $_propertyChangedListeners = [];
+    private $_propertyChangedListeners = array();
     
     /**
      * Adds a listener that wants to be notified about property changes.

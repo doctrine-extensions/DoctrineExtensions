@@ -22,7 +22,7 @@ use Gedmo\Loggable\LoggableListener;
  * @link http://www.gediminasm.org
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-abstract class BaseTestCaseMongoODM extends \PHPUnit_Framework_TestCase
+abstract class BaseTestCaseMongoODM extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var DocumentManager
@@ -37,6 +37,18 @@ abstract class BaseTestCaseMongoODM extends \PHPUnit_Framework_TestCase
         if (!class_exists('Mongo')) {
             $this->markTestSkipped('Missing Mongo extension.');
         }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function expectException($exception)
+    {
+        if (method_exists('PHPUnit\\Framework\\TestCase', 'setExpectedException')) {
+            return parent::setExpectedException($exception);
+        }
+
+        return parent::expectException($exception);
     }
 
     /**

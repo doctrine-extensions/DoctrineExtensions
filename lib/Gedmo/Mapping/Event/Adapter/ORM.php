@@ -2,10 +2,10 @@
 
 namespace Gedmo\Mapping\Event\Adapter;
 
+use Doctrine\ORM\EntityManagerInterface;
 use Gedmo\Mapping\Event\AdapterInterface;
 use Gedmo\Exception\RuntimeException;
 use Doctrine\Common\EventArgs;
-use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 
 /**
@@ -23,7 +23,7 @@ class ORM implements AdapterInterface
     private $args;
 
     /**
-     * @var \Doctrine\ORM\EntityManager
+     * @var \Doctrine\ORM\EntityManagerInterface
      */
     private $em;
 
@@ -75,9 +75,9 @@ class ORM implements AdapterInterface
     /**
      * Set the entity manager
      *
-     * @param \Doctrine\ORM\EntityManager $em
+     * @param \Doctrine\ORM\EntityManagerInterface $em
      */
-    public function setEntityManager(EntityManager $em)
+    public function setEntityManager(EntityManagerInterface $em)
     {
         $this->em = $em;
     }
