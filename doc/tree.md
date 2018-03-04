@@ -22,6 +22,15 @@ Thanks for contributions to:
 - **[everzet](http://github.com/everzet) Kudryashov Konstantin** for TreeLevel implementation
 - **[stof](http://github.com/stof) Christophe Coevoet** for getTreeLeafs function
 
+Update **2018-02-26**
+
+- Nodes with no Parent can now be sorted based on a tree root id being an id from another table. Existing behaviour 
+  is unchanged unless you add properties to the `@TreeRoot` annotation. Example: You have two categories with no parent, 
+  horror and comedy, which are actually categories of 'Movie', which is in another table. Usually calling `moveUp()` or 
+  `moveDown()` would be impossible, but now you can add `@TreeRoot(identifierMethod="getRoot")`, where `getRoot` is the 
+  name of your class method returning the root id/entity.
+
+
 Update **2017-04-22**
 
 - Added the `TreeObjectHydrator` class for building trees from entities

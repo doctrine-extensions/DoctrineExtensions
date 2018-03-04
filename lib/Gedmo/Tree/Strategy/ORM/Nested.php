@@ -2,6 +2,8 @@
 
 namespace Gedmo\Tree\Strategy\ORM;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Gedmo\Exception\UnexpectedValueException;
@@ -123,7 +125,9 @@ class Nested implements Strategy
         if (isset($config['level'])) {
             $meta->getReflectionProperty($config['level'])->setValue($node, 0);
         }
-        if (isset($config['root']) && !$meta->hasAssociation($config['root'])) {
+        if (isset($config['root']) && !$meta->hasAssociation($config['root']) && !$config['rootIdentifierMethod']) {
+            $meta->getReflectionProperty($config['root'])->setValue($node, 0);
+        } else if (isset($config['rootIdentifierMethod']) && is_null($meta->getReflectionProperty($config['root'])->getValue($node))) {
             $meta->getReflectionProperty($config['root'])->setValue($node, 0);
         }
     }
@@ -203,18 +207,17 @@ class Nested implements Strategy
             $qb = $em->createQueryBuilder();
             $qb->select('node')
                 ->from($config['useObjectClass'], 'node')
-                ->where($qb->expr()->between('node.'.$config['left'], '?1', '?2'))
-                ->setParameters(array(1 => $leftValue, 2 => $rightValue))
-            ;
+                ->where($qb->expr()->between('node.' . $config['left'], '?1', '?2'))
+                ->setParameters(array(1 => $leftValue, 2 => $rightValue));
 
             if (isset($config['root'])) {
-                $qb->andWhere($qb->expr()->eq('node.'.$config['root'], ':rid'));
+                $qb->andWhere($qb->expr()->eq('node.' . $config['root'], ':rid'));
                 $qb->setParameter('rid', $rootId);
             }
             $q = $qb->getQuery();
             // get nodes for deletion
             $nodes = $q->getResult();
-            foreach ((array) $nodes as $removalNode) {
+            foreach ((array)$nodes as $removalNode) {
                 $uow->scheduleForDelete($removalNode);
             }
         }
@@ -311,7 +314,7 @@ class Nested implements Strategy
         $level = 0;
         $treeSize = $right - $left + 1;
         $newRoot = null;
-        if ($parent) {
+        if ($parent) {    // || (!$parent && isset($config['rootIdentifierMethod']))
             $wrappedParent = AbstractWrapper::wrap($parent, $em);
 
             $parentRoot = isset($config['root']) ? $wrappedParent->getPropertyValue($config['root']) : null;
@@ -342,10 +345,15 @@ class Nested implements Strategy
                         $level++;
                     } else {
                         $newParent = $wrappedParent->getPropertyValue($config['parent']);
-                        if (is_null($newParent) && (isset($config['root']) || $isNewNode)) {
+
+                        if (is_null($newParent) && ((isset($config['root']) && $config['root'] == $config['parent']) || $isNewNode)) {
                             throw new UnexpectedValueException("Cannot persist sibling for a root node, tree operation is not possible");
+                        } else if (is_null($newParent) && (isset($config['root']) || $isNewNode)) {
+                            // root is a different column from parent (pointing to another table?), do nothing
+                        } else {
+                            $wrapped->setPropertyValue($config['parent'], $newParent);
                         }
-                        $wrapped->setPropertyValue($config['parent'], $newParent);
+
                         $em->getUnitOfWork()->recomputeSingleEntityChangeSet($meta, $node);
                         $start = $parentLeft;
                     }
@@ -358,10 +366,14 @@ class Nested implements Strategy
                         $level++;
                     } else {
                         $newParent = $wrappedParent->getPropertyValue($config['parent']);
-                        if (is_null($newParent) && (isset($config['root']) || $isNewNode)) {
+                        if (is_null($newParent) && ((isset($config['root']) && $config['root'] == $config['parent']) || $isNewNode)) {
                             throw new UnexpectedValueException("Cannot persist sibling for a root node, tree operation is not possible");
+                        } else if (is_null($newParent) && (isset($config['root']) || $isNewNode)) {
+                            // root is a different column from parent (pointing to another table?), do nothing
+                        } else {
+                            $wrapped->setPropertyValue($config['parent'], $newParent);
                         }
-                        $wrapped->setPropertyValue($config['parent'], $newParent);
+
                         $em->getUnitOfWork()->recomputeSingleEntityChangeSet($meta, $node);
                         $start = $parentRight + 1;
                     }
@@ -445,8 +457,23 @@ class Nested implements Strategy
             }
         } else {
             $start = 1;
+            if (isset($config['rootIdentifierMethod'])) {
+                $method = $config['rootIdentifierMethod'];
+                $newRoot = $node->$method();
+                $repo = $em->getRepository($config['useObjectClass']);
 
-            if ($meta->isSingleValuedAssociation($config['root'])) {
+                $criteria = new Criteria();
+                $criteria->andWhere(Criteria::expr()->notIn($wrapped->getMetadata()->identifier[0], [$wrapped->getIdentifier()]));
+                $criteria->andWhere(Criteria::expr()->eq($config['root'], $node->$method()));
+                $criteria->andWhere(Criteria::expr()->isNull($config['parent']));
+                $criteria->andWhere(Criteria::expr()->eq($config['level'], 0));
+                $criteria->orderBy([$config['right'] => Criteria::ASC]);
+                $roots = $repo->matching($criteria)->toArray();
+                $last = array_pop($roots);
+
+                $start = ($last) ? $meta->getFieldValue($last, $config['right']) + 1 : 1;
+
+            } else if ($meta->isSingleValuedAssociation($config['root'])) {
                 $newRoot = $node;
             } else {
                 $newRoot = $wrapped->getIdentifier();
@@ -472,28 +499,28 @@ class Nested implements Strategy
             $qb = $em->createQueryBuilder();
             $qb->update($config['useObjectClass'], 'node');
             if (isset($config['root'])) {
-                $qb->set('node.'.$config['root'], ':rid');
+                $qb->set('node.' . $config['root'], ':rid');
                 $qb->setParameter('rid', $newRoot);
                 $wrapped->setPropertyValue($config['root'], $newRoot);
                 $em->getUnitOfWork()->setOriginalEntityProperty($oid, $config['root'], $newRoot);
             }
             if (isset($config['level'])) {
-                $qb->set('node.'.$config['level'], $level);
+                $qb->set('node.' . $config['level'], $level);
                 $wrapped->setPropertyValue($config['level'], $level);
                 $em->getUnitOfWork()->setOriginalEntityProperty($oid, $config['level'], $level);
             }
             if (isset($newParent)) {
                 $wrappedNewParent = AbstractWrapper::wrap($newParent, $em);
                 $newParentId = $wrappedNewParent->getIdentifier();
-                $qb->set('node.'.$config['parent'], ':pid');
+                $qb->set('node.' . $config['parent'], ':pid');
                 $qb->setParameter('pid', $newParentId);
                 $wrapped->setPropertyValue($config['parent'], $newParent);
                 $em->getUnitOfWork()->setOriginalEntityProperty($oid, $config['parent'], $newParent);
             }
-            $qb->set('node.'.$config['left'], $left + $diff);
-            $qb->set('node.'.$config['right'], $right + $diff);
+            $qb->set('node.' . $config['left'], $left + $diff);
+            $qb->set('node.' . $config['right'], $right + $diff);
             // node id cannot be null
-            $qb->where($qb->expr()->eq('node.'.$identifierField, ':id'));
+            $qb->where($qb->expr()->eq('node.' . $identifierField, ':id'));
             $qb->setParameter('id', $nodeId);
             $qb->getQuery()->getSingleScalarResult();
             $wrapped->setPropertyValue($config['left'], $left + $diff);
@@ -522,12 +549,11 @@ class Nested implements Strategy
         $meta = $em->getClassMetadata($class);
         $config = $this->listener->getConfiguration($em, $meta->name);
         $qb = $em->createQueryBuilder();
-        $qb->select($qb->expr()->max('node.'.$config['right']))
-            ->from($config['useObjectClass'], 'node')
-        ;
+        $qb->select($qb->expr()->max('node.' . $config['right']))
+            ->from($config['useObjectClass'], 'node');
 
         if (isset($config['root']) && $rootId) {
-            $qb->where($qb->expr()->eq('node.'.$config['root'], ':rid'));
+            $qb->where($qb->expr()->eq('node.' . $config['root'], ':rid'));
             $qb->setParameter('rid', $rootId);
         }
         $query = $qb->getQuery();
@@ -539,6 +565,10 @@ class Nested implements Strategy
     /**
      * Shift tree left and right values by delta
      *
+     * @param EntityManager $em
+     * @param string $class
+     * @param integer $first
+     * @param integer $delta
      * @param EntityManagerInterface  $em
      * @param string         $class
      * @param integer        $first
@@ -554,22 +584,20 @@ class Nested implements Strategy
         $absDelta = abs($delta);
         $qb = $em->createQueryBuilder();
         $qb->update($config['useObjectClass'], 'node')
-            ->set('node.'.$config['left'], "node.{$config['left']} {$sign} {$absDelta}")
-            ->where($qb->expr()->gte('node.'.$config['left'], $first))
-        ;
+            ->set('node.' . $config['left'], "node.{$config['left']} {$sign} {$absDelta}")
+            ->where($qb->expr()->gte('node.' . $config['left'], $first));
         if (isset($config['root'])) {
-            $qb->andWhere($qb->expr()->eq('node.'.$config['root'], ':rid'));
+            $qb->andWhere($qb->expr()->eq('node.' . $config['root'], ':rid'));
             $qb->setParameter('rid', $root);
         }
         $qb->getQuery()->getSingleScalarResult();
 
         $qb = $em->createQueryBuilder();
         $qb->update($config['useObjectClass'], 'node')
-            ->set('node.'.$config['right'], "node.{$config['right']} {$sign} {$absDelta}")
-            ->where($qb->expr()->gte('node.'.$config['right'], $first))
-        ;
+            ->set('node.' . $config['right'], "node.{$config['right']} {$sign} {$absDelta}")
+            ->where($qb->expr()->gte('node.' . $config['right'], $first));
         if (isset($config['root'])) {
-            $qb->andWhere($qb->expr()->eq('node.'.$config['root'], ':rid'));
+            $qb->andWhere($qb->expr()->eq('node.' . $config['root'], ':rid'));
             $qb->setParameter('rid', $root);
         }
 
@@ -618,7 +646,7 @@ class Nested implements Strategy
      * @param integer        $delta
      * @param integer|string $root
      * @param integer|string $destRoot
-     * @param integer        $levelDelta
+     * @param integer $levelDelta
      */
     public function shiftRangeRL(EntityManagerInterface $em, $class, $first, $last, $delta, $root = null, $destRoot = null, $levelDelta = null)
     {
@@ -632,19 +660,18 @@ class Nested implements Strategy
 
         $qb = $em->createQueryBuilder();
         $qb->update($config['useObjectClass'], 'node')
-            ->set('node.'.$config['left'], "node.{$config['left']} {$sign} {$absDelta}")
-            ->set('node.'.$config['right'], "node.{$config['right']} {$sign} {$absDelta}")
-            ->where($qb->expr()->gte('node.'.$config['left'], $first))
-            ->andWhere($qb->expr()->lte('node.'.$config['right'], $last))
-        ;
+            ->set('node.' . $config['left'], "node.{$config['left']} {$sign} {$absDelta}")
+            ->set('node.' . $config['right'], "node.{$config['right']} {$sign} {$absDelta}")
+            ->where($qb->expr()->gte('node.' . $config['left'], $first))
+            ->andWhere($qb->expr()->lte('node.' . $config['right'], $last));
         if (isset($config['root'])) {
-            $qb->set('node.'.$config['root'], ':drid');
+            $qb->set('node.' . $config['root'], ':drid');
             $qb->setParameter('drid', $destRoot);
-            $qb->andWhere($qb->expr()->eq('node.'.$config['root'], ':rid'));
+            $qb->andWhere($qb->expr()->eq('node.' . $config['root'], ':rid'));
             $qb->setParameter('rid', $root);
         }
         if (isset($config['level'])) {
-            $qb->set('node.'.$config['level'], "node.{$config['level']} {$levelSign} {$absLevelDelta}");
+            $qb->set('node.' . $config['level'], "node.{$config['level']} {$levelSign} {$absLevelDelta}");
         }
         $qb->getQuery()->getSingleScalarResult();
         // update in memory nodes increases performance, saves some IO

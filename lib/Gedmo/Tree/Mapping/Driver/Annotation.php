@@ -163,7 +163,8 @@ class Annotation extends AbstractAnnotationDriver
                         );
                     }
                 }
-
+                $annotation = $this->reader->getPropertyAnnotation($property, self::ROOT);
+                $config['rootIdentifierMethod'] =  $annotation->identifierMethod;
                 $config['root'] = $field;
             }
             // level
