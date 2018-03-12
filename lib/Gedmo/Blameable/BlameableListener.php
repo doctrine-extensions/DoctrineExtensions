@@ -30,6 +30,10 @@ class BlameableListener extends AbstractTrackingListener
      */
     public function getFieldValue($meta, $field, $eventAdapter)
     {
+        if(!$this->user) {
+            $this->setUserValue(\Auth::getProvider()->user());
+        }
+
         if ($meta->hasAssociation($field)) {
             if (null !== $this->user && ! is_object($this->user)) {
                 throw new InvalidArgumentException("Blame is reference, user must be an object");
@@ -40,8 +44,8 @@ class BlameableListener extends AbstractTrackingListener
 
         // ok so its not an association, then it is a string
         if (is_object($this->user)) {
-            if (method_exists($this->user, 'getUsername')) {
-                return (string) $this->user->getUsername();
+            if (method_exists($this->user, 'getName')) {
+                return (string) $this->user->getName();
             }
             if (method_exists($this->user, '__toString')) {
                 return $this->user->__toString();
