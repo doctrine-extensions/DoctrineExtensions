@@ -2,49 +2,68 @@
 
 namespace Gedmo\IpTraceable;
 
-/**
- * This interface is not necessary but can be implemented for
- * Entities which in some cases needs to be identified as
- * IpTraceable
- *
- * @author Pierre-Charles Bertineau <pc.bertineau@alterphp.com>
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
- */
-interface IpTraceable
+use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
+
+trait IpTraceable
 {
-    // ipTraceable expects annotations on properties
-
     /**
-     * @gedmo:IpTraceable(on="create")
-     * strings which should be updated on insert only
+     * @var string
+     * @Gedmo\IpTraceable(on="create")
+     * @ORM\Column(length=45, nullable=true)
      */
+    protected $createdFromIp;
 
     /**
-     * @gedmo:IpTraceable(on="update")
-     * strings which should be updated on update and insert
+     * @var string
+     * @Gedmo\IpTraceable(on="update")
+     * @ORM\Column(length=45, nullable=true)
      */
+    protected $updatedFromIp;
 
     /**
-     * @gedmo:IpTraceable(on="change", field="field", value="value")
-     * strings which should be updated on changed "property"
-     * value and become equal to given "value"
-     */
-
-    /**
-     * @gedmo:IpTraceable(on="change", field="field")
-     * strings which should be updated on changed "property"
-     */
-
-    /**
-     * @gedmo:IpTraceable(on="change", fields={"field1", "field2"})
-     * strings which should be updated if at least one of the given fields changed
-     */
-
-    /**
-     * example
+     * Sets createdFromIp.
      *
-     * @gedmo:IpTraceable(on="create")
-     * @Column(type="string")
-     * $created
+     * @param string $createdFromIp
+     *
+     * @return $this
      */
+    public function setCreatedFromIp($createdFromIp)
+    {
+        $this->createdFromIp = $createdFromIp;
+
+        return $this;
+    }
+
+    /**
+     * Returns createdFromIp.
+     * @return string
+     */
+    public function getCreatedFromIp()
+    {
+        return $this->createdFromIp;
+    }
+
+    /**
+     * Sets updatedFromIp.
+     *
+     * @param string $updatedFromIp
+     *
+     * @return $this
+     */
+    public function setUpdatedFromIp($updatedFromIp)
+    {
+        $this->updatedFromIp = $updatedFromIp;
+
+        return $this;
+    }
+
+    /**
+     * Returns updatedFromIp.
+     * @return string
+     */
+    public function getUpdatedFromIp()
+    {
+        return $this->updatedFromIp;
+    }
 }
