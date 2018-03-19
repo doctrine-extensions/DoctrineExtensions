@@ -72,6 +72,15 @@ class TranslatableListener extends MappedEventSubscriber
     private $translationFallback = false;
 
     /**
+     * If this is set to false, when if entity has
+     * an empty translation for requested locale
+     * it will show a blank value
+     *
+     * @var boolean
+     */
+    private $fallbackEmptyTranslations = false;
+
+    /**
      * List of translations which do not have the foreign
      * key generated yet - MySQL case. These translations
      * will be updated with new keys on postPersist event
@@ -231,6 +240,22 @@ class TranslatableListener extends MappedEventSubscriber
     public function getTranslationFallback()
     {
         return $this->translationFallback;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isFallbackEmptyTranslations()
+    {
+        return $this->fallbackEmptyTranslations;
+    }
+
+    /**
+     * @param boolean $fallbackEmptyTranslations
+     */
+    public function setFallbackEmptyTranslations($fallbackEmptyTranslations)
+    {
+        $this->fallbackEmptyTranslations = $fallbackEmptyTranslations;
     }
 
     /**
@@ -480,7 +505,7 @@ class TranslatableListener extends MappedEventSubscriber
                     }
                 }
                 // update translation
-                if ($is_translated
+                if (($is_translated && (!empty($translated) || !$this->fallbackEmptyTranslations))
                     || (!$this->translationFallback && (!isset($config['fallback'][$field]) || !$config['fallback'][$field]))
                     || ($this->translationFallback && isset($config['fallback'][$field]) && !$config['fallback'][$field])
                 ) {
