@@ -5,12 +5,15 @@ sudo: false
 matrix:
     include:
         - php: 5.4
-          env: phpunit_exclude_groups=datetimeinterface
+          env: phpunit_exclude_groups=datetimeinterface dependencies=lowest
         - php: 5.5
         - php: 5.6
         - php: 7.0
         - php: 7.1
+        - php: 7.1
+          env: dependencies=lowest
         - php: 7.2
+          env: dependencies=lowest
 
 cache:
     directories:
@@ -24,15 +27,18 @@ before_install:
     - if [[ "$TRAVIS_PHP_VERSION" != 5.* ]]; then cp composer7.json composer.json; fi
 
 install:
-    - composer install --prefer-dist
+    - |
+        if [[ "$dependencies" = "lowest" ]]; then
+            composer update --prefer-lowest --prefer-stable -n
+        else
+            composer install --prefer-dist
+        fi
 
 script:
     - |
         if [[ ! $phpunit_exclude_groups ]]; then
-            echo "Debug: 'bin/phpunit -c tests/'"
             bin/phpunit -c tests/
         else
-            echo "Debug: 'bin/phpunit -c tests/ --exclude-group $phpunit_exclude_groups'"
             bin/phpunit -c tests/ --exclude-group $phpunit_exclude_groups
         fi
 
