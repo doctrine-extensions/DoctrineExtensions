@@ -12,6 +12,7 @@ use Doctrine\ORM\Mapping\Entity;
  *
  * @Table(
  *         name="ext_translations",
+ *         options={"row_format":"DYNAMIC"},
  *         indexes={@Index(name="translations_lookup_idx", columns={
  *             "locale", "object_class", "foreign_key"
  *         })},
