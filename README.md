@@ -1,6 +1,6 @@
 # Doctrine2 behavioral extensions
 
-[![Build Status](https://secure.travis-ci.org/Atlantic18/DoctrineExtensions.png?branch=master)](http://travis-ci.org/Atlantic18/DoctrineExtensions)
+[![Build Status](https://secure.travis-ci.org/Atlantic18/DoctrineExtensions.png)](http://travis-ci.org/Atlantic18/DoctrineExtensions)
 [![Latest Stable Version](https://poser.pugx.org/gedmo/doctrine-extensions/version)](https://packagist.org/packages/gedmo/doctrine-extensions)
 
 **Note:** extensions might not evolve more after **2.4.x** it will remain stable and backward compatible. Unless
