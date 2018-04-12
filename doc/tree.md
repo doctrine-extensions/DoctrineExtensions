@@ -133,19 +133,19 @@ class Category
      * @Gedmo\TreeLeft
      * @ORM\Column(type="integer")
      */
-    private $lft;
+    private $left;
 
     /**
      * @Gedmo\TreeLevel
      * @ORM\Column(type="integer")
      */
-    private $lvl;
+    private $level;
 
     /**
      * @Gedmo\TreeRight
      * @ORM\Column(type="integer")
      */
-    private $rgt;
+    private $right;
 
     /**
      * @Gedmo\TreeRoot
