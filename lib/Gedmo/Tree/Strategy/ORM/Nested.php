@@ -125,7 +125,7 @@ class Nested implements Strategy
         if (isset($config['level'])) {
             $meta->getReflectionProperty($config['level'])->setValue($node, 0);
         }
-        if (isset($config['root']) && !$meta->hasAssociation($config['root']) && !$config['rootIdentifierMethod']) {
+        if (isset($config['root']) && !$meta->hasAssociation($config['root']) && !isset($config['rootIdentifierMethod'])) {
             $meta->getReflectionProperty($config['root'])->setValue($node, 0);
         } else if (isset($config['rootIdentifierMethod']) && is_null($meta->getReflectionProperty($config['root'])->getValue($node))) {
             $meta->getReflectionProperty($config['root'])->setValue($node, 0);
