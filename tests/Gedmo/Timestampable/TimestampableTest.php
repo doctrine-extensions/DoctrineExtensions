@@ -107,9 +107,9 @@ class TimestampableTest extends BaseTestCaseORM
         $sport = $this->em->getRepository(self::ARTICLE)->findOneByTitle('Sport');
         $this->assertNotNull($sc = $sport->getCreated());
         $this->assertNotNull($su = $sport->getUpdated());
-        $this->assertNull($sport->getContentChanged());
+        $this->assertNotNull($scc = $sport->getContentChanged());
         $this->assertNull($sport->getPublished());
-        $this->assertNull($sport->getAuthorChanged());
+        $this->assertNotNull($sport->getAuthorChanged());
 
         $author = $sport->getAuthor();
         $author->setName('New author');
@@ -130,7 +130,7 @@ class TimestampableTest extends BaseTestCaseORM
         $this->em->flush();
 
         $sportComment = $this->em->getRepository(self::COMMENT)->findOneByMessage('hello');
-        $this->assertNotNull($scc = $sportComment->getClosed());
+        $this->assertNotNull($sportComment->getClosed());
         $this->assertNotNull($sp = $sport->getPublished());
         $this->assertNotNull($sa = $sport->getAuthorChanged());
 
