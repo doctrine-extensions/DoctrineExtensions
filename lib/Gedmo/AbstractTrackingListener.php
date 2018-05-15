@@ -92,7 +92,7 @@ abstract class AbstractTrackingListener extends MappedEventSubscriber
                 }
             }
 
-            if (!$uow->isScheduledForInsert($object) && isset($config['change'])) {
+            if (isset($config['change'])) {
                 foreach ($config['change'] as $options) {
                     if (isset($changeSet[$options['field']])) {
                         continue; // value was set manually
