@@ -107,7 +107,16 @@ class ORM implements AdapterInterface
      */
     public function getObjectChangeSet($uow, $object)
     {
-        return $uow->getEntityChangeSet($object);
+        $realObjectChangeSet = array();
+
+        $objectChangeSet = $uow->getEntityChangeSet($object);
+        foreach ($objectChangeSet as $propertyName => $propertyChangeSet) {
+            if ($propertyChangeSet[0] !== $propertyChangeSet[1]) {
+                $realObjectChangeSet[$propertyName] = $propertyChangeSet;
+            }
+        }
+
+        return $realObjectChangeSet;
     }
 
     /**
