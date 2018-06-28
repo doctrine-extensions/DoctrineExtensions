@@ -247,7 +247,6 @@ class LoggableListener extends MappedEventSubscriber
             if (method_exists($meta, 'isCollectionValuedEmbed') && $meta->isCollectionValuedEmbed($field) && $value) {
                 $embedValues = array();
                 foreach ($value as $embedValue) {
-                    $wrapped = AbstractWrapper::wrap($embedValue, $om);
                     $embedValues[] = $this->getObjectChangeSetData($ea, $embedValue, $logEntry);
                 }
                 $value = $embedValues;
