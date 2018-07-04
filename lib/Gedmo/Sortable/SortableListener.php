@@ -413,6 +413,9 @@ class SortableListener extends MappedEventSubscriber
     {
         $ea = $this->getEventAdapter($args);
         $em = $ea->getObjectManager();
+
+        $updatedObjects = [];
+
         foreach ($this->relocations as $hash => $relocation) {
             $config = $this->getConfiguration($em, $relocation['name']);
             foreach ($relocation['deltas'] as $delta) {
@@ -473,10 +476,26 @@ class SortableListener extends MappedEventSubscriber
                             $value = next($relocation['groups']);
                         }
                         if ($matches) {
-                            $this->setFieldValue($ea, $object, $config['position'], $pos, $pos + $delta['delta']);
+                            // We cannot use `$this->setFieldValue()` here, because it will create a change set, that will
+                            // prevent from other relocations being executed on this object.
+                            // We just update the object value and will create the change set later.
+                            if (!isset($updatedObjects[$oid])) {
+                                $updatedObjects[$oid] = array(
+                                    'object' => $object,
+                                    'field' => $config['position'],
+                                    'oldValue' => $pos,
+                                );
+                            }
+                            $updatedObjects[$oid]['newValue'] = $pos + $delta['delta'];
+
+                            $meta->getReflectionProperty($config['position'])->setValue($object, $updatedObjects[$oid]['newValue']);
                         }
                     }
                 }
+            }
+
+            foreach ($updatedObjects as $updateData) {
+                $this->setFieldValue($ea, $updateData['object'], $updateData['field'], $updateData['oldValue'], $updateData['newValue']);
             }
 
             // Clear relocations

@@ -74,7 +74,7 @@ class SortableTest extends BaseTestCaseORM
             $node->setPath("/");
             $this->em->persist($node);
         }
-        $this->em->flush();  
+        $this->em->flush();
 
         $repo = $this->em->getRepository(self::NODE);
 
@@ -91,7 +91,7 @@ class SortableTest extends BaseTestCaseORM
         $node = $repo->findOneByPosition(9);
         $this->assertNotNull($node);
         $this->assertEquals('Node1', $node->getName());
-    
+
     }
 
     /**
@@ -239,6 +239,56 @@ class SortableTest extends BaseTestCaseORM
         // test if synced on objects in memory correctly
         $this->assertEquals(0, $node1->getPosition());
         $this->assertEquals(1, $node3->getPosition());
+
+        // test if persisted correctly
+        $this->em->clear();
+        $nodes = $repo->findAll();
+        $this->assertCount(2, $nodes);
+        $this->assertEquals(0, $nodes[0]->getPosition());
+        $this->assertEquals(1, $nodes[1]->getPosition());
+    }
+
+    /**
+     * Test if the sorting is correct if multiple items are deleted.
+     *
+     * Example:
+     *     Position | Element | Action | Expected Position
+     *            0 | Node1   |        |                 0
+     *            1 | Node2   | delete |
+     *            2 | Node3   | delete |
+     *            3 | Node4   |        |                 1
+     *
+     * @test
+     */
+    public function shouldSyncPositionAfterMultipleDeletes()
+    {
+        $repo = $this->em->getRepository(self::NODE);
+
+        $node2 = new Node();
+        $node2->setName("Node2");
+        $node2->setPath("/");
+        $this->em->persist($node2);
+
+        $node3 = new Node();
+        $node3->setName("Node3");
+        $node3->setPath("/");
+        $this->em->persist($node3);
+
+        $node4 = new Node();
+        $node4->setName("Node4");
+        $node4->setPath("/");
+        $this->em->persist($node4);
+
+        $this->em->flush();
+
+        $node1 = $repo->findOneByName('Node1');
+        $this->em->remove($node2);
+        $this->em->remove($node3);
+        $this->em->flush();
+
+        // test if synced on objects in memory correctly
+        $this->assertEquals(0, $node1->getPosition());
+        $this->assertEquals(1, $node4->getPosition());
 
         // test if persisted correctly
         $this->em->clear();
@@ -792,7 +842,7 @@ class SortableTest extends BaseTestCaseORM
 
         $this->assertEquals(4, $nodes[4]->getPosition());
     }
-    
+
     /**
      * @test
      */
