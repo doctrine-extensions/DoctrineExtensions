@@ -579,6 +579,10 @@ class SortableListener extends MappedEventSubscriber
                     $val['delta'] += $needle['delta'];
                     $val['exclude'] = array_merge($val['exclude'], $needle['exclude']);
                     throw new \Exception("Found delta. No need to add it again.");
+                // For every deletion relocation add newly created object to the list of excludes
+                // otherwise position update queries will run for created objects as well.
+                } elseif (-1 == $val['delta'] && 1 == $needle['delta']) {
+                    $val['exclude'] = array_merge($val['exclude'], $needle['exclude']);
                 }
             }, $newDelta);
             $this->relocations[$hash]['deltas'][] = $newDelta;
