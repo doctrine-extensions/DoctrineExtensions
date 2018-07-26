@@ -299,6 +299,79 @@ class SortableTest extends BaseTestCaseORM
     }
 
     /**
+     * Test if the sorting is correct if multiple items are added and deleted.
+     *
+     * Example:
+     *     Position | Element | Action | Expected Position
+     *            0 | Node1   |        |                 0
+     *            1 | Node2   | delete |
+     *            2 | Node3   | delete |
+     *            3 | Node4   |        |                 1
+     *              | Node5   | add    |                 2
+     *              | Node6   | add    |                 3
+     *
+     * @test
+     */
+    public function shouldSyncPositionAfterMultipleAddsAndMultipleDeletes()
+    {
+        $repo = $this->em->getRepository(self::NODE);
+
+        $node2 = new Node();
+        $node2->setName("Node2");
+        $node2->setPath("/");
+        $this->em->persist($node2);
+
+        $node3 = new Node();
+        $node3->setName("Node3");
+        $node3->setPath("/");
+        $this->em->persist($node3);
+
+        $node4 = new Node();
+        $node4->setName("Node4");
+        $node4->setPath("/");
+        $this->em->persist($node4);
+
+        $this->em->flush();
+
+        $node1 = $repo->findOneByName('Node1');
+
+        $this->em->remove($node2);
+
+        $node5 = new Node();
+        $node5->setName("Node5");
+        $node5->setPath("/");
+        $this->em->persist($node5);
+
+        $node6 = new Node();
+        $node6->setName("Node6");
+        $node6->setPath("/");
+        $this->em->persist($node6);
+
+        $this->em->remove($node3);
+
+        $this->em->flush();
+
+        // test if synced on objects in memory correctly
+        $this->assertEquals(0, $node1->getPosition());
+        $this->assertEquals(1, $node4->getPosition());
+        $this->assertEquals(2, $node5->getPosition());
+        $this->assertEquals(3, $node6->getPosition());
+
+        // test if persisted correctly
+        $this->em->clear();
+        $nodes = $repo->findAll();
+        $this->assertCount(4, $nodes);
+        $this->assertEquals(0, $nodes[0]->getPosition());
+        $this->assertEquals("Node1", $nodes[0]->getName());
+        $this->assertEquals(1, $nodes[1]->getPosition());
+        $this->assertEquals("Node4", $nodes[1]->getName());
+        $this->assertEquals(2, $nodes[2]->getPosition());
+        $this->assertEquals("Node5", $nodes[2]->getName());
+        $this->assertEquals(3, $nodes[3]->getPosition());
+        $this->assertEquals("Node6", $nodes[3]->getName());
+    }
+
+    /**
      * This is a test case for issue #1209
      * @test
      */
