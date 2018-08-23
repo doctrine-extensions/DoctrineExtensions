@@ -1,0 +1,13 @@
+<?php
+
+$finder = PhpCsFixer\Finder::create()
+    ->in(__DIR__.'/lib')
+    ->in(__DIR__.'/example');
+
+return PhpCsFixer\Config::create()
+    ->setRules(array(
+        '@Symfony' => true,
+        'array_syntax' => array('syntax' => 'long'),
+        'ordered_imports' => array('sort_algorithm' => 'alpha'),
+    ))
+    ->setFinder($finder);
