@@ -20,6 +20,8 @@ a release.
 
 ## [Unreleased]
 ### Fixed
+- `Gedmo\Mapping\Driver\Xml::_loadMappingFile()` behavior in scenarios where `libxml_disable_entity_loader(true)` was previously
+  called.
 - Loggable: Missing support for `versioned` fields at `attribute-override` in XML mapping.
 
 ## [3.3.0] - 2021-11-15
