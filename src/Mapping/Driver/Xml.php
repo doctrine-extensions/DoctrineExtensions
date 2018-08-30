@@ -84,7 +84,11 @@ abstract class Xml extends File
     protected function _loadMappingFile($file)
     {
         $result = [];
-        $xmlElement = simplexml_load_file($file);
+        // We avoid calling `simplexml_load_file()` in order to prevent file operations in libXML.
+        // If `libxml_disable_entity_loader(true)` is called before, `simplexml_load_file()` fails,
+        // that's why we use `simplexml_load_string()` instead.
+        // @see https://bugs.php.net/bug.php?id=62577.
+        $xmlElement = simplexml_load_string(file_get_contents($file));
         $xmlElement = $xmlElement->children(self::DOCTRINE_NAMESPACE_URI);
 
         if (isset($xmlElement->entity)) {
