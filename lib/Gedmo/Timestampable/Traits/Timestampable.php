@@ -11,22 +11,22 @@ namespace Gedmo\Timestampable\Traits;
 trait Timestampable
 {
     /**
-     * @var \DateTime
+     * @var \DateTimeInterface
      */
     protected $createdAt;
 
     /**
-     * @var \DateTime
+     * @var \DateTimeInterface
      */
     protected $updatedAt;
 
     /**
      * Sets createdAt.
      *
-     * @param  \DateTime $createdAt
+     * @param  \DateTimeInterface $createdAt
      * @return $this
      */
-    public function setCreatedAt(\DateTime $createdAt)
+    public function setCreatedAt(\DateTimeInterface $createdAt)
     {
         $this->createdAt = $createdAt;
 
@@ -36,7 +36,7 @@ trait Timestampable
     /**
      * Returns createdAt.
      *
-     * @return \DateTime
+     * @return \DateTimeInterface
      */
     public function getCreatedAt()
     {
@@ -46,10 +46,10 @@ trait Timestampable
     /**
      * Sets updatedAt.
      *
-     * @param  \DateTime $updatedAt
+     * @param  \DateTimeInterface $updatedAt
      * @return $this
      */
-    public function setUpdatedAt(\DateTime $updatedAt)
+    public function setUpdatedAt(\DateTimeInterface $updatedAt)
     {
         $this->updatedAt = $updatedAt;
 
@@ -59,7 +59,7 @@ trait Timestampable
     /**
      * Returns updatedAt.
      *
-     * @return \DateTime
+     * @return \DateTimeInterface
      */
     public function getUpdatedAt()
     {
