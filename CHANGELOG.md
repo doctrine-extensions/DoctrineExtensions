@@ -20,6 +20,7 @@ a release.
 
 ## [Unreleased]
 ### Fixed
+- Tree: Missing support for `tree-path-hash` fields in XML mapping.
 - Tree: Check for affected rows at `ClosureTreeRepository::cleanUpClosure()` and `Closure::updateNode()`.
 - `Gedmo\Mapping\Driver\Xml::_loadMappingFile()` behavior in scenarios where `libxml_disable_entity_loader(true)` was previously
   called.
