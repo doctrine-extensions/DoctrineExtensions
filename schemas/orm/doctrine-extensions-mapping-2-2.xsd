@@ -43,6 +43,7 @@
   <xs:element name="tree-parent" type="gedmo:emptyType"/>
   <xs:element name="tree-path-source" type="gedmo:emptyType"/>
   <xs:element name="tree-lock-time" type="gedmo:emptyType"/>
+  <xs:element name="tree-path-hash" type="gedmo:emptyType"/>
   <xs:element name="sortable-group" type="gedmo:emptyType"/>
   <xs:element name="sortable-position" type="gedmo:emptyType"/>
   <xs:element name="uploadable-file-mime-type" type="gedmo:emptyType"/>

@@ -19,6 +19,9 @@
         <field name="lockTime" type="datetime">
             <gedmo:tree-lock-time/>
         </field>
+        <field name="pathHash" type="string" nullable="true">
+            <gedmo:tree-path-hash/>
+        </field>
         <many-to-one field="parent" target-entity="MaterializedPathTree">
             <join-column name="parent_id" referenced-column-name="id" on-delete="CASCADE"/>
             <gedmo:tree-parent/>

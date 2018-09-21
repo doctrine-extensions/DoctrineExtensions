@@ -12,6 +12,8 @@ class MaterializedPathTree
 
     private $lockTime;
 
+    private $pathHash;
+
     private $parent;
 
     private $level;

@@ -77,5 +77,7 @@ final class MaterializedPathTreeMappingTest extends BaseTestCaseOM
         static::assertEquals('path', $config['path']);
         static::assertArrayHasKey('lock_time', $config);
         static::assertEquals('lockTime', $config['lock_time']);
+        static::assertArrayHasKey('path_hash', $config);
+        static::assertEquals('pathHash', $config['path_hash']);
     }
 }
