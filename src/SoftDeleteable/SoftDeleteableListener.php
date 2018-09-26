@@ -49,6 +49,7 @@ class SoftDeleteableListener extends MappedEventSubscriber
     public function onFlush(EventArgs $args)
     {
         $ea = $this->getEventAdapter($args);
+        /** @var \Doctrine\ORM\EntityManagerInterface $om */
         $om = $ea->getObjectManager();
         $uow = $om->getUnitOfWork();
         $evm = $om->getEventManager();
