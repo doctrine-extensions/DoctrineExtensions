@@ -37,14 +37,18 @@ class SoftDeleteableFilter extends SQLFilter
     /**
      * @param ClassMetadata $targetEntity
      * @param string        $targetTableAlias
+     *
      * @return string
+     *
+     * @throws \Doctrine\DBAL\DBALException
      */
     public function addFilterConstraint(ClassMetadata $targetEntity, $targetTableAlias)
     {
         $class = $targetEntity->getName();
-        if (array_key_exists($class, $this->disabled) && $this->disabled[$class] === true) {
+        if (isset($this->disabled[$class]) && true === $this->disabled[$class]) {
             return '';
-        } elseif (array_key_exists($targetEntity->rootEntityName, $this->disabled) && $this->disabled[$targetEntity->rootEntityName] === true) {
+        }
+        if (isset($this->disabled[$targetEntity->rootEntityName]) && true === $this->disabled[$targetEntity->rootEntityName]) {
             return '';
         }
 
@@ -54,8 +58,7 @@ class SoftDeleteableFilter extends SQLFilter
             return '';
         }
 
-        $conn = $this->getEntityManager()->getConnection();
-        $platform = $conn->getDatabasePlatform();
+        $platform = $this->getConnection()->getDatabasePlatform();
         $column = $targetEntity->getQuotedColumnName($config['fieldName'], $platform);
 
         $addCondSql = $platform->getIsNullExpression($targetTableAlias.'.'.$column);
@@ -89,8 +92,7 @@ class SoftDeleteableFilter extends SQLFilter
     protected function getListener()
     {
         if ($this->listener === null) {
-            $em = $this->getEntityManager();
-            $evm = $em->getEventManager();
+            $evm = $this->getEntityManager()->getEventManager();
 
             foreach ($evm->getListeners() as $listeners) {
                 foreach ($listeners as $listener) {
