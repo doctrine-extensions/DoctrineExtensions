@@ -24,11 +24,7 @@ class MultiTableDeleteExecutor extends BaseMultiTableDeleteExecutor
     {
         parent::__construct($AST, $sqlWalker);
 
-        $getSqlStatements = \Closure::bind(function (): array {
-            return $this->_sqlStatements;
-        }, $this, static::class);
-
-        $sqlStatements = $getSqlStatements();
+        $sqlStatements = $this->_sqlStatements;
 
         foreach ($sqlStatements as $index => $stmt) {
             $matches = [];
@@ -47,10 +43,6 @@ class MultiTableDeleteExecutor extends BaseMultiTableDeleteExecutor
             }
         }
 
-        $setSqlStatements = \Closure::bind(function (array $sqlStatements): void {
-            $this->_sqlStatements = $sqlStatements;
-        }, $this, static::class);
-
-        $setSqlStatements($sqlStatements);
+        $this->_sqlStatements = $sqlStatements;
     }
 }
