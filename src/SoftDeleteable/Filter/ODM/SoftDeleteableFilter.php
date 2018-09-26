@@ -23,9 +23,10 @@ class SoftDeleteableFilter extends BsonFilter
     public function addFilterCriteria(ClassMetadata $targetEntity): array
     {
         $class = $targetEntity->getName();
-        if (array_key_exists($class, $this->disabled) && true === $this->disabled[$class]) {
+        if (true === ($this->disabled[$class] ?? false)) {
             return [];
-        } elseif (array_key_exists($targetEntity->rootDocumentName, $this->disabled) && true === $this->disabled[$targetEntity->rootDocumentName]) {
+        }
+        if (true === ($this->disabled[$targetEntity->rootDocumentName] ?? false)) {
             return [];
         }
 
