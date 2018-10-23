@@ -5,6 +5,7 @@ namespace Gedmo\Loggable\Mapping\Driver;
 use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 use Gedmo\Exception\InvalidMappingException;
 use Gedmo\Mapping\Driver\AbstractAnnotationDriver;
+use Gedmo\Mapping\Annotation\Versioned;
 
 /**
  * This is an annotation mapping driver for Loggable
@@ -80,7 +81,7 @@ class Annotation extends AbstractAnnotationDriver
                     throw new InvalidMappingException("Cannot versioned [{$field}] as it is collection in object - {$meta->name}");
                 }
                 if (isset($meta->embeddedClasses[$field])) {
-                    $this->inspectEmbeddedForVersioned($field, $config, $meta);
+                    $this->inspectEmbeddedForVersioned($field, $config, $meta, $this->reader->getPropertyAnnotation($property, self::VERSIONED));
                     continue;
                 }
                 // fields cannot be overrided and throws mapping exception
@@ -134,7 +135,8 @@ class Annotation extends AbstractAnnotationDriver
         // property annotations
         foreach ($сlass->getProperties() as $property) {
             // versioned property
-            if ($this->reader->getPropertyAnnotation($property, self::VERSIONED)) {
+            if ($this->reader->getPropertyAnnotation($property, self::VERSIONED)
+                || ($parentPropertyVersioned instanceof Versioned && !$property->isStatic())) {
                 $config['versioned'][] = $field . '.' . $property->getName();
             }
         }
