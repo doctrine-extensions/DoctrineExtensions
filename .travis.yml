@@ -14,6 +14,8 @@ matrix:
           env: dependencies=lowest
         - php: 7.2
           env: dependencies=lowest
+        - php: 7.3
+          env: dependencies=lowest
 
 cache:
     directories:
