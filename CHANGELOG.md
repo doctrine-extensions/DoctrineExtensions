@@ -19,6 +19,8 @@ a release.
 ---
 
 ## [Unreleased]
+### Fixed
+- Loggable: Missing support for `versioned` fields at `attribute-override` in XML mapping.
 
 ## [3.3.0] - 2021-11-15
 ### Added
