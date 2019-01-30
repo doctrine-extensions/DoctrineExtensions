@@ -57,11 +57,12 @@ class TreeListener extends MappedEventSubscriber
     }
 
     /**
-    * @param straing  $name
+     * @param straing  $name
      * @param Strategy $instance
      * @return self
      */
-    public function addStrategyInstance($name, $instance) {
+    public function addStrategyInstance($name, $instance)
+    {
         if (!isset($this->strategyInstances[$name])) {
             $this->strategyInstances[$name] = $instance;
         }
