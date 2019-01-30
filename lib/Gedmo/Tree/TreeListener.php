@@ -57,22 +57,16 @@ class TreeListener extends MappedEventSubscriber
     }
 
     /**
-	 * @param straing  $name
-	 * @param Strategy $instance
-	 * @return self
+    * @param straing  $name
+     * @param Strategy $instance
+     * @return self
      */
-	public function addStrategyInstance($name, $instance) {
-		$instances = $this->getStrategyInstances();
-		if (!isset($instances[$name])) {
-			$instances[$name] = $instance;
-			$rClass  = new \ReflectionClass(TreeListenerBase::class);
-			$rProp = $rClass->getProperty('strategyInstances');
-			$rProp->setAccessible(true);
-			$rProp->setValue($this, $instances);
-		}
-		return $this;
-	}
-    
+    public function addStrategyInstance($name, $instance) {
+        if (!isset($this->strategyInstances[$name])) {
+            $this->strategyInstances[$name] = $instance;
+        }
+    }
+		  
     /**
      * Get the used strategy for tree processing
      *
