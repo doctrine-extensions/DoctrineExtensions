@@ -57,7 +57,7 @@ class TreeListener extends MappedEventSubscriber
     }
 
     /**
-     * @param straing  $name
+     * @param string   $name
      * @param Strategy $instance
      * @return self
      */
