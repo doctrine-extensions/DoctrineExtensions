@@ -19,3 +19,6 @@ a release.
 ---
 
 ## [Unreleased]
+### Translatable
+#### Fixed
+- Bugfix to load null value translations (#1990)
