@@ -87,7 +87,7 @@ class TreeObjectHydrator extends ObjectHydrator
             $parentId = null;
 
             if ($parentProxy !== null) {
-                $parentId = $this->getPropertyValue($parentProxy, $this->idField);
+                $parentId = $this->getIdPropertyType($parentProxy);
             }
 
             $r[$parentId][] = $node;
@@ -103,7 +103,7 @@ class TreeObjectHydrator extends ObjectHydrator
     protected function populateChildrenArray($nodes, $childrenHashmap)
     {
         foreach ($nodes as $node) {
-            $nodeId = $this->getPropertyValue($node, $this->idField);
+            $nodeId = $this->getIdPropertyType($node);
             $childrenCollection = $this->getPropertyValue($node, $this->childrenField);
 
             if ($childrenCollection === null) {
@@ -142,7 +142,7 @@ class TreeObjectHydrator extends ObjectHydrator
             $parentId = null;
 
             if ($parentProxy !== null) {
-                $parentId = $this->getPropertyValue($parentProxy, $this->idField);
+                $parentId = $this->getIdPropertyType($parentProxy);
             }
 
             if ($parentId === null || !key_exists($parentId, $idHashmap)) {
@@ -168,7 +168,7 @@ class TreeObjectHydrator extends ObjectHydrator
         $ids = array();
 
         foreach ($nodes as $node) {
-            $id = $this->getPropertyValue($node, $this->idField);
+            $id = $this->getIdPropertyType($node);
             $ids[$id] = true;
         }
 
@@ -249,6 +249,21 @@ class TreeObjectHydrator extends ObjectHydrator
         $firstMappedEntity = array_values($data);
         $firstMappedEntity = $firstMappedEntity[0];
         return $this->_em->getClassMetadata(get_class($firstMappedEntity))->rootEntityName;
+    }
+
+    protected function getIdPropertyType($object)
+    {
+        $id = $this->getPropertyValue($object, $this->idField);
+        if (is_object($id)) {
+            if (method_exists($id, '__toString')) {
+                $id = $id->__toString();
+            } else {
+                $class = get_class($id);
+                throw new \LogicException(
+                    "Id on class {$class} is a object, please add a __toString method to the object"
+                );
+            }
+        }
     }
 
     protected function getPropertyValue($object, $property)
