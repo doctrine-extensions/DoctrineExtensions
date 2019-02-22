@@ -58,7 +58,7 @@ class TreeListener extends MappedEventSubscriber
 
     /**
      * @param string   $name
-     * @param Strategy $instance
+     * @param Gedmo\Tree\Strategy $instance
      * @return self
      */
     public function addStrategyInstance($name, $instance)
