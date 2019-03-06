@@ -52,11 +52,15 @@ trait TimestampableEntity
      *
      * @param  bool $mutable
      * @return \DateTimeInterface
+     * @throws \Exception
      */
     public function getCreatedAt($mutable = true)
     {
-        if (!$mutable) {
-            return \DateTimeImmutable::createFromMutable($this->createdAt);
+        if (!$mutable && !empty($this->createdAt)) {
+            $immutable = new \DateTimeImmutable(null, $this->createdAt->getTimezone());
+            $immutable->setTimestamp($this->createdAt->getTimestamp());
+
+            return $immutable;
         }
 
         return $this->createdAt;
@@ -87,11 +91,15 @@ trait TimestampableEntity
      *
      * @param  bool $mutable
      * @return \DateTimeInterface
+     * @throws \Exception
      */
     public function getUpdatedAt($mutable = true)
     {
-        if (!$mutable) {
-            return \DateTimeImmutable::createFromMutable($this->updatedAt);
+        if (!$mutable && !empty($this->updatedAt)) {
+            $immutable = new \DateTimeImmutable(null, $this->updatedAt->getTimezone());
+            $immutable->setTimestamp($this->updatedAt->getTimestamp());
+
+            return $immutable;
         }
 
         return $this->updatedAt;
