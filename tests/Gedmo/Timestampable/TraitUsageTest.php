@@ -42,8 +42,21 @@ class TraitUsageTest extends BaseTestCaseORM
         $this->em->persist($sport);
         $this->em->flush();
 
-        $this->assertNotNull($sport->getCreatedAt());
-        $this->assertNotNull($sport->getUpdatedAt());
+        $createdAt = $sport->getCreatedAt();
+        $updatedAt = $sport->getUpdatedAt();
+
+        $this->assertNotNull($createdAt);
+        $this->assertNotNull($updatedAt);
+        $this->assertInstanceOf('DateTime', $createdAt);
+        $this->assertInstanceOf('DateTime', $updatedAt);
+
+        $createdAt = $sport->getCreatedAt(false);
+        $updatedAt = $sport->getUpdatedAt(false);
+
+        $this->assertNotNull($createdAt);
+        $this->assertNotNull($updatedAt);
+        $this->assertInstanceOf('DateTimeImmutable', $createdAt);
+        $this->assertInstanceOf('DateTimeImmutable', $updatedAt);
     }
 
     /**
@@ -52,8 +65,12 @@ class TraitUsageTest extends BaseTestCaseORM
     public function traitMethodthShouldReturnObject()
     {
         $sport = new UsingTrait();
+
         $this->assertInstanceOf('Timestampable\Fixture\UsingTrait', $sport->setCreatedAt(new \DateTime()));
         $this->assertInstanceOf('Timestampable\Fixture\UsingTrait', $sport->setUpdatedAt(new \DateTime()));
+
+        $this->assertInstanceOf('Timestampable\Fixture\UsingTrait', $sport->setCreatedAt(new \DateTimeImmutable()));
+        $this->assertInstanceOf('Timestampable\Fixture\UsingTrait', $sport->setUpdatedAt(new \DateTimeImmutable()));
     }
 
     protected function getUsedEntityFixtures()
