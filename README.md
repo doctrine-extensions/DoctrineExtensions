@@ -7,6 +7,23 @@ This package contains extensions for Doctrine ORM and MongoDB ODM that offer new
 more efficiently. These behaviors can be easily attached to the event system of Doctrine and handle the records being
 flushed in a behavioral way.
 
+---
+
+##### :warning: The `master` branch is for development on Doctrine Extensions 3.0.
+
+3.0 will focus on refreshing this package for today's PHP. This includes:
+
+- Bumping minimum version requirements of PHP, Doctrine, and other dependencies
+- Updating the test suite, add code and style standards, and other needed build tools
+- Cleaning up documentation, code, comments, etc.
+
+While major code changes are not expected initially for 3.0, it will be a major release due to changes in
+requirements and toolsets.
+
+For the current stable version, see the [v2.4.x branch][v2.4.x].
+
+---
+
 ## Installation
 
     $ composer require gedmo/doctrine-extensions
