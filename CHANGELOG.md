@@ -19,6 +19,8 @@ a release.
 ---
 
 ## [Unreleased]
+
+## [2.4.37] - 2019-03-17
 ### Translatable
 #### Fixed
 - Bugfix to load null value translations (#1990)
