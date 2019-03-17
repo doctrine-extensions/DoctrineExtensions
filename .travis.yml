@@ -1,18 +1,12 @@
-dist: trusty
 language: php
 
 sudo: false
 
-matrix:
-    include:
-        - php: 7.1
-          env: MONGODB_SERVER=
-        - php: 7.1
-          env: MONGODB_SERVER= dependencies=lowest
-        - php: 7.2
-          env: MONGODB_SERVER=
-        - php: 7.2
-          env: MONGODB_SERVER= dependencies=lowest
+php:
+    - 7.1
+    - 7.2
+
+env: MONGODB_SERVER=
 
 cache:
     directories:
@@ -20,14 +14,11 @@ cache:
 
 services: mongodb
 
-before_install:
-    - echo 'extension=mongodb.so' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
+before_install: echo 'extension=mongodb.so' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
 
-install:
-    - composer install --prefer-dist
+install: composer install --prefer-dist
 
-script:
-    - bin/phpunit -c tests/
+script: bin/phpunit -c tests/
 
 notifications:
     email:
