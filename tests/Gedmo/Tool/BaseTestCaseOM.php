@@ -98,7 +98,7 @@ abstract class BaseTestCaseOM extends \PHPUnit\Framework\TestCase
         if (!class_exists('Mongo')) {
             $this->markTestSkipped('Missing Mongo extension.');
         }
-        $conn = new Connection('mongodb://mongodb:27017');
+        $conn = new Connection($_ENV['MONGODB_SERVER']);
         $config = $this->getMockAnnotatedODMMongoDBConfig($dbName, $mappingDriver);
 
         $dm = null;

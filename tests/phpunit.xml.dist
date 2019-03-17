@@ -66,4 +66,8 @@
             <directory>../lib</directory>
         </whitelist>
     </filter>
+
+    <php>
+        <env name="MONGODB_SERVER" value="mongodb://mongodb:27017" />
+    </php>
 </phpunit>

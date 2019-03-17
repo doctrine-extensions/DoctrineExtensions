@@ -12,6 +12,9 @@ matrix:
         - php: 7.2
           env: dependencies=lowest
 
+env:
+    - MONGODB_SERVER=
+
 cache:
     directories:
         - $HOME/.composer/cache
