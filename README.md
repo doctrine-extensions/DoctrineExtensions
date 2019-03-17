@@ -20,7 +20,7 @@ flushed in a behavioral way.
 While major code changes are not expected initially for 3.0, it will be a major release due to changes in
 requirements and toolsets.
 
-For the current stable version, see the [v2.4.x branch][v2.4.x].
+For the current stable version, see the [v2.4.x branch](https://github.com/Atlantic18/DoctrineExtensions/tree/v2.4.x).
 
 ---
 
