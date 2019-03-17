@@ -6,14 +6,13 @@ sudo: false
 matrix:
     include:
         - php: 7.1
+          env: MONGODB_SERVER=
         - php: 7.1
-          env: dependencies=lowest
+          env: MONGODB_SERVER= dependencies=lowest
         - php: 7.2
+          env: MONGODB_SERVER=
         - php: 7.2
-          env: dependencies=lowest
-
-env:
-    - MONGODB_SERVER=
+          env: MONGODB_SERVER= dependencies=lowest
 
 cache:
     directories:
