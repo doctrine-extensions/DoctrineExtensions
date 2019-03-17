@@ -19,6 +19,8 @@ a release.
 ---
 
 ## [Unreleased]
+### Breaking Changes
+- Change `/lib/Gedmo` to `/src`
 
 ## [2.4.38] - 2019-11-08
 ### Global / Shared

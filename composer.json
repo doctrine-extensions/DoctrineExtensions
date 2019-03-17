@@ -68,7 +68,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Gedmo\\": "lib/Gedmo"
+            "Gedmo\\": "src/"
         }
     },
     "support": {
