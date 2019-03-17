@@ -91,15 +91,12 @@ XML mapping xsd schemas are also versioned and can be used by version suffix:
 
 ### Running Tests
 
-**pdo-sqlite** extension is necessary.
-
 To set up and run the tests, follow these steps:
 
-- go to the root directory of extensions
-- download composer: `wget https://getcomposer.org/composer.phar`
-- install dev libraries: `php composer.phar install`
-- run: `bin/phpunit -c tests`
-- optional - run mongodb service if targeting mongo tests
+- Install [Lando](https://docs.devwithlando.io/), a Docker-based dev environment tool
+- Run `lando start` from the project root
+- Make sure you `composer install` project dependencies
+- Run `lando php bin/phpunit -c tests`
 
 ### Running the Example
 
