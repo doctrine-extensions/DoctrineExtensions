@@ -11,8 +11,9 @@ use Gedmo\Tree\RepositoryUtilsInterface;
 use Gedmo\Tree\RepositoryInterface;
 use Gedmo\Exception\InvalidArgumentException;
 use Gedmo\Tree\TreeListener;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
-abstract class AbstractTreeRepository extends EntityRepository implements RepositoryInterface
+abstract class AbstractTreeRepository extends ServiceEntityRepository implements RepositoryInterface
 {
     /**
      * Tree listener on event manager
@@ -29,9 +30,10 @@ abstract class AbstractTreeRepository extends EntityRepository implements Reposi
     /**
      * {@inheritdoc}
      */
-    public function __construct(EntityManagerInterface $em, ClassMetadata $class)
+    public function __construct(RegistryInterface $registry, EntityManagerInterface $em, ClassMetadata $class)
     {
-        parent::__construct($em, $class);
+        parent::__construct($registry, $class);
+
         $treeListener = null;
         foreach ($em->getEventManager()->getListeners() as $listeners) {
             foreach ($listeners as $listener) {

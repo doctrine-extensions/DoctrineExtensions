@@ -528,9 +528,18 @@ namespace Entity\Repository;
 
 use Gedmo\Tree\Entity\Repository\NestedTreeRepository;
 
+/**
+ * @method ApiReseller|null find($id, $lockMode = null, $lockVersion = null)
+ * @method ApiReseller|null findOneBy(array $criteria, array $orderBy = null)
+ * @method ApiReseller[]    findAll()
+ * @method ApiReseller[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ */
 class CategoryRepository extends NestedTreeRepository
 {
-    // your code here
+    public function __construct(RegistryInterface $registry, EntityManagerInterface $em)
+    {
+        parent::__construct($registry, $em, ApiReseller::class);
+    }
 }
 
 // and then on your entity link to this repository
