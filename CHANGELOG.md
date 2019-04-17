@@ -21,7 +21,7 @@ a release.
 ## [Unreleased]
 ### Loggable
 #### Fixed
-- Added missing string casting of `objectId` in `LogEntryRepository::revert()` method
+- Added missing string casting of `objectId` in `LogEntryRepository::revert()` method (#2009)
 
 ## [2.4.37] - 2019-03-17
 ### Translatable
