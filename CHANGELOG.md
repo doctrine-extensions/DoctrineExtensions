@@ -23,6 +23,10 @@ a release.
 #### Fixed
 - Added missing string casting of `objectId` in `LogEntryRepository::revert()` method (#2009)
 
+### Translatable
+#### Fixed
+- Return `parent` instead of throwing Exception for Translatable (#2018)
+
 ## [2.4.37] - 2019-03-17
 ### Translatable
 #### Fixed
