@@ -23,6 +23,10 @@ a release.
 #### Fixed
 - Added missing string casting of `objectId` in `LogEntryRepository::revert()` method (#2009)
 
+### Tree
+#### Fixed
+- Remove hard-coded parent column name in repository prev/next sibling queries [#2020]
+
 ## [2.4.37] - 2019-03-17
 ### Translatable
 #### Fixed
