@@ -27,6 +27,10 @@ a release.
 #### Fixed
 - Remove hard-coded parent column name in repository prev/next sibling queries [#2020]
 
+### ReferenceIntegrity
+#### Fixed
+- Get class from meta in ReferenceIntegrityListener [#2021]
+
 ## [2.4.37] - 2019-03-17
 ### Translatable
 #### Fixed
