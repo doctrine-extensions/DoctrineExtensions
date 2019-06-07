@@ -22,6 +22,7 @@ class ReferencesListener extends MappedEventSubscriber
     public function __construct(array $managers = array())
     {
         $this->managers = $managers;
+        parent::__construct();
     }
 
     public function loadClassMetadata(EventArgs $eventArgs)
