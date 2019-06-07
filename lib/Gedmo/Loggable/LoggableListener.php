@@ -57,6 +57,11 @@ class LoggableListener extends MappedEventSubscriber
      */
     protected $pendingRelatedObjects = array();
 
+    public function __construct()
+    {
+        parent::__construct();
+    }
+
     /**
      * Set username for identification
      *
