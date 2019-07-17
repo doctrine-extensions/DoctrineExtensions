@@ -25,7 +25,11 @@ a release.
 
 ### Translatable
 #### Fixed
-- Return `parent` instead of throwing Exception for Translatable (#2018)
+- Return default AST executor instead of throwing Exception in Walker (#2018)
+
+### Tree
+#### Fixed
+- Remove hard-coded parent column name in repository prev/next sibling queries [#2020]
 
 ## [2.4.37] - 2019-03-17
 ### Translatable
