@@ -23,6 +23,10 @@ a release.
 #### Fixed
 - Added missing string casting of `objectId` in `LogEntryRepository::revert()` method (#2009)
 
+### Translatable
+#### Fixed
+- Return default AST executor instead of throwing Exception in Walker (#2018)
+
 ### Tree
 #### Fixed
 - Remove hard-coded parent column name in repository prev/next sibling queries [#2020]
