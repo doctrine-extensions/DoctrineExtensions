@@ -69,40 +69,40 @@ class ORM extends BaseAdapterORM implements SluggableAdapter
             }
         }
 
-		$softDeletableName = $this->getSoftDeletableFilterName();
+        $softDeletableName = $this->getSoftDeletableFilterName();
 
-		if ($softDeletableName) {
-			$em->getFilters()->disable($softDeletableName);
-		}
+        if ($softDeletableName) {
+            $em->getFilters()->disable($softDeletableName);
+        }
 
         $q = $qb->getQuery();
         $q->setHydrationMode(Query::HYDRATE_ARRAY);
 
-		$result = $q->execute();
+        $result = $q->execute();
 
-		if ($softDeletableName) {
-			$em->getFilters()->enable($softDeletableName);
-		}
+        if ($softDeletableName) {
+            $em->getFilters()->enable($softDeletableName);
+        }
 
-		return $result;
+        return $result;
     }
 
-	/**
-	 * @return string|null
-	 */
-	private function getSoftDeletableFilterName()
-	{
-		$em = $this->getObjectManager();
-		$filters = $em->getFilters()->getEnabledFilters();
+    /**
+     * @return string|null
+     */
+    private function getSoftDeletableFilterName()
+    {
+        $em = $this->getObjectManager();
+        $filters = $em->getFilters()->getEnabledFilters();
 
-		foreach ($filters as $key => $filter) {
-			if ($filter instanceof SoftDeleteableFilter) {
-				return $key;
-			}
-		}
+        foreach ($filters as $key => $filter) {
+            if ($filter instanceof SoftDeleteableFilter) {
+                return $key;
+            }
+        }
 
-		return null;
-	}
+        return null;
+    }
 
     /**
      * {@inheritDoc}
