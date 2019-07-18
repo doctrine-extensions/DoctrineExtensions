@@ -19,6 +19,10 @@ a release.
 ---
 
 ## [Unreleased]
+### Global / Shared
+#### Fixed
+- Add `parent::__construct()` calls to Listeners w/ custom constructors (#2012)
+
 ### Loggable
 #### Fixed
 - Added missing string casting of `objectId` in `LogEntryRepository::revert()` method (#2009)
