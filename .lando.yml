@@ -8,14 +8,8 @@ services:
     run_as_root:
     - pecl install mongodb
     - docker-php-ext-enable mongodb
-    overrides:
-      services:
-        # Environment variables for the PHP app server
-        environment:
-          # Use the PHP 7 Composer file for all Composer commands
-          COMPOSER: composer7.json
   mongodb:
-    type: mongo:3.4
+    type: mongo
 tooling:
   mongo:
     service: mongodb
