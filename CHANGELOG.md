@@ -22,6 +22,7 @@ a release.
 ### Global / Shared
 #### Fixed
 - Add `parent::__construct()` calls to Listeners w/ custom constructors (#2012)
+- Add upcoming Doctrine ODM 2.0 to `composer.json` conflicts (#2027)
 
 ### Loggable
 #### Fixed
