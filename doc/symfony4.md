@@ -22,14 +22,14 @@ Content:
 
 ## Symfony 4 application
 
-First of all, we will need a symfony4 startup application, let's say [symfony-standard edition
+First of all, we will need a symfony 4 startup application, let's say [symfony-standard edition
 with composer](https://symfony.com/doc/current/best_practices/creating-the-project.html)
 
 - `composer create-project symfony/skeleton [project name]`
 
 Now let's add the **gedmo/doctrine-extensions**
 
-You can find the doctrine-extensions on packagist: https://packagist.org/packages/gedmo/doctrine-extensions
+You can find the doctrine-extensions project on packagist: https://packagist.org/packages/gedmo/doctrine-extensions
 
 To add it to your project: 
 - `composer require gedmo/doctrine-extensions`
