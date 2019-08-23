@@ -4,7 +4,6 @@ namespace Gedmo\Translatable\Mapping\Event\Adapter;
 
 use Gedmo\Mapping\Event\Adapter\ODM as BaseAdapterODM;
 use Gedmo\Tool\Wrapper\AbstractWrapper;
-use Doctrine\ODM\MongoDB\Mapping\ClassMetadataInfo;
 use Doctrine\ODM\MongoDB\Cursor;
 use Gedmo\Translatable\Mapping\Event\TranslatableAdapter;
 
@@ -50,8 +49,11 @@ final class ODM extends BaseAdapterODM implements TranslatableAdapter
         if ($this->usesPersonalTranslation($translationClass)) {
             // first try to load it using collection
             foreach ($wrapped->getMetadata()->fieldMappings as $mapping) {
+                $association = true === class_exists('Doctrine\ODM\MongoDB\Mapping\ClassMetadataInfo') ?
+                    \Doctrine\ODM\MongoDB\Mapping\ClassMetadataInfo::REFERENCE_MANY :
+                    \Doctrine\ODM\MongoDB\Mapping\ClassMetadata::REFERENCE_MANY;
                 $isRightCollection = isset($mapping['association'])
-                    && $mapping['association'] === ClassMetadataInfo::REFERENCE_MANY
+                    && $mapping['association'] === $association
                     && $mapping['targetDocument'] === $translationClass
                     && $mapping['mappedBy'] === 'object'
                 ;
@@ -88,7 +90,8 @@ final class ODM extends BaseAdapterODM implements TranslatableAdapter
         }
         $q->setHydrate(false);
         $result = $q->execute();
-        if ($result instanceof Cursor) {
+        if (class_exists('Doctrine\ODM\MongoDB\Cursor') && $result instanceof Cursor ||
+            false === class_exists('Doctrine\ODM\MongoDB\Cursor')) {
             $result = $result->toArray();
         }
 
@@ -115,7 +118,8 @@ final class ODM extends BaseAdapterODM implements TranslatableAdapter
         }
         $q = $qb->getQuery();
         $result = $q->execute();
-        if ($result instanceof Cursor) {
+        if (class_exists('Doctrine\ODM\MongoDB\Cursor') && $result instanceof Cursor ||
+            false === class_exists('Doctrine\ODM\MongoDB\Cursor')) {
             $result = current($result->toArray());
         }
 
