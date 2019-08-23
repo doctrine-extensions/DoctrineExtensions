@@ -27,12 +27,24 @@ final class ODM extends BaseAdapterODM implements SluggableAdapter
         if (($identifier = $wrapped->getIdentifier()) && !$meta->isIdentifier($config['slug'])) {
             $qb->field($meta->identifier)->notEqual($identifier);
         }
-        $qb->field($config['slug'])->equals(new \MongoRegex('/^'.preg_quote($slug, '/').'/'));
+        if (true === class_exists('\MongoDB\BSON\Regex')) {
+            // ODM 2.x
+            $qb->field($config['slug'])->equals(new \MongoDB\BSON\Regex('^' . preg_quote($slug, '/'), 'i'));
+        } else {
+            // ODM 1.x
+            $qb->field($config['slug'])->equals(new \MongoRegex('/^' . preg_quote($slug, '/') . '/'));
+        }
 
         // use the unique_base to restrict the uniqueness check
         if ($config['unique'] && isset($config['unique_base'])) {
             if (is_object($ubase = $wrapped->getPropertyValue($config['unique_base']))) {
-                $qb->field($config['unique_base'].'.$id')->equals(new \MongoId($ubase->getId()));
+                if (true === class_exists('\MongoDB\BSON\ObjectId')) {
+                    // ODM 2.x
+                    $qb->field($config['unique_base'].'.$id')->equals(new \MongoDB\BSON\ObjectId($ubase->getId()));
+                } else {
+                    // ODM 1.x
+                    $qb->field($config['unique_base'] . '.$id')->equals(new \MongoId($ubase->getId()));
+                }
             } elseif ($ubase) {
                 $qb->where('/^'.preg_quote($ubase, '/').'/.test(this.'.$config['unique_base'].')');
             } else {
@@ -44,7 +56,8 @@ final class ODM extends BaseAdapterODM implements SluggableAdapter
         $q->setHydrate(false);
 
         $result = $q->execute();
-        if ($result instanceof Cursor) {
+        if (class_exists('Doctrine\ODM\MongoDB\Cursor') && $result instanceof Cursor ||
+            false === class_exists('Doctrine\ODM\MongoDB\Cursor')) {
             $result = $result->toArray();
         }
 
@@ -71,7 +84,8 @@ final class ODM extends BaseAdapterODM implements SluggableAdapter
         ;
         $q->setHydrate(false);
         $result = $q->execute();
-        if ($result instanceof Cursor) {
+        if (class_exists('Doctrine\ODM\MongoDB\Cursor') && $result instanceof Cursor ||
+            false === class_exists('Doctrine\ODM\MongoDB\Cursor')) {
             $result = $result->toArray();
             foreach ($result as $targetObject) {
                 $slug = preg_replace("@^{$target}@smi", $replacement.$config['pathSeparator'], $targetObject[$config['slug']]);
@@ -105,7 +119,8 @@ final class ODM extends BaseAdapterODM implements SluggableAdapter
         ;
         $q->setHydrate(false);
         $result = $q->execute();
-        if ($result instanceof Cursor) {
+        if (class_exists('Doctrine\ODM\MongoDB\Cursor') && $result instanceof Cursor ||
+            false === class_exists('Doctrine\ODM\MongoDB\Cursor')) {
             $result = $result->toArray();
             foreach ($result as $targetObject) {
                 $slug = preg_replace("@^{$replacement}@smi", $target, $targetObject[$config['slug']]);
