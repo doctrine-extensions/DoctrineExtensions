@@ -414,7 +414,7 @@ class SortableListener extends MappedEventSubscriber
         $ea = $this->getEventAdapter($args);
         $em = $ea->getObjectManager();
 
-        $updatedObjects = [];
+        $updatedObjects = array();
 
         foreach ($this->relocations as $hash => $relocation) {
             $config = $this->getConfiguration($em, $relocation['name']);
