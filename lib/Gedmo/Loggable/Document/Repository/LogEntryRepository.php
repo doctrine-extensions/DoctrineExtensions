@@ -5,7 +5,7 @@ namespace Gedmo\Loggable\Document\Repository;
 use Gedmo\Loggable\Document\LogEntry;
 use Gedmo\Tool\Wrapper\MongoDocumentWrapper;
 use Gedmo\Loggable\LoggableListener;
-use Doctrine\ODM\MongoDB\DocumentRepository;
+use Gedmo\MiddleManDocumentRepository;
 use Doctrine\ODM\MongoDB\Cursor;
 
 /**
@@ -15,7 +15,7 @@ use Doctrine\ODM\MongoDB\Cursor;
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class LogEntryRepository extends DocumentRepository
+class LogEntryRepository extends MiddleManDocumentRepository
 {
     /**
      * Currently used loggable listener

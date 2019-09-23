@@ -2,15 +2,15 @@
 
 namespace Gedmo\Tree\Document\MongoDB\Repository;
 
-use Doctrine\ODM\MongoDB\DocumentRepository;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Doctrine\ODM\MongoDB\Mapping\ClassMetadata;
 use Doctrine\ODM\MongoDB\UnitOfWork;
+use Gedmo\MiddleManDocumentRepository;
 use Gedmo\Tree\RepositoryUtils;
 use Gedmo\Tree\RepositoryUtilsInterface;
 use Gedmo\Tree\RepositoryInterface;
 
-abstract class AbstractTreeRepository extends DocumentRepository implements RepositoryInterface
+abstract class AbstractTreeRepository extends MiddleManDocumentRepository implements RepositoryInterface
 {
     /**
      * Tree listener on event manager

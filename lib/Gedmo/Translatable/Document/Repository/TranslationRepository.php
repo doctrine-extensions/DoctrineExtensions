@@ -2,8 +2,8 @@
 
 namespace Gedmo\Translatable\Document\Repository;
 
+use Gedmo\MiddleManDocumentRepository;
 use Gedmo\Translatable\TranslatableListener;
-use Doctrine\ODM\MongoDB\DocumentRepository;
 use Doctrine\ODM\MongoDB\Cursor;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Doctrine\ODM\MongoDB\UnitOfWork;
@@ -18,7 +18,7 @@ use Gedmo\Translatable\Mapping\Event\Adapter\ODM as TranslatableAdapterODM;
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class TranslationRepository extends DocumentRepository
+class TranslationRepository extends MiddleManDocumentRepository
 {
     /**
      * Current TranslatableListener instance used
