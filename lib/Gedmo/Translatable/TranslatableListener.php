@@ -60,7 +60,7 @@ class TranslatableListener extends MappedEventSubscriber
      *
      * @var string
      */
-    private $defaultLocale = 'en_US';
+    protected $defaultLocale = 'en_US';
 
     /**
      * If this is set to false, when if entity does
@@ -69,7 +69,7 @@ class TranslatableListener extends MappedEventSubscriber
      *
      * @var boolean
      */
-    private $translationFallback = false;
+    protected $translationFallback = false;
 
     /**
      * List of translations which do not have the foreign
@@ -78,7 +78,7 @@ class TranslatableListener extends MappedEventSubscriber
      *
      * @var array
      */
-    private $pendingTranslationInserts = array();
+    protected $pendingTranslationInserts = array();
 
     /**
      * Currently in case if there is TranslationQueryWalker
@@ -87,14 +87,14 @@ class TranslatableListener extends MappedEventSubscriber
      *
      * @var boolean
      */
-    private $skipOnLoad = false;
+    protected $skipOnLoad = false;
 
     /**
      * Tracks locale the objects currently translated in
      *
      * @var array
      */
-    private $translatedInLocale = array();
+    protected $translatedInLocale = array();
 
     /**
      * Whether or not, to persist default locale
@@ -102,14 +102,14 @@ class TranslatableListener extends MappedEventSubscriber
      *
      * @var boolean
      */
-    private $persistDefaultLocaleTranslation = false;
+    protected $persistDefaultLocaleTranslation = false;
 
     /**
      * Tracks translation object for default locale
      *
      * @var array
      */
-    private $translationInDefaultLocale = array();
+    protected $translationInDefaultLocale = array();
 
     /**
      * Specifies the list of events to listen
@@ -526,7 +526,7 @@ class TranslatableListener extends MappedEventSubscriber
      *
      * @return bool
      */
-    private function isValidlocale($locale)
+    protected function isValidlocale($locale)
     {
         return is_string($locale) && strlen($locale);
     }
@@ -541,7 +541,7 @@ class TranslatableListener extends MappedEventSubscriber
      * @throws \UnexpectedValueException - if locale is not valid, or
      *                                   primary key is composite, missing or invalid
      */
-    private function handleTranslatableObjectUpdate(TranslatableAdapter $ea, $object, $isInsert)
+    protected function handleTranslatableObjectUpdate(TranslatableAdapter $ea, $object, $isInsert)
     {
         $om = $ea->getObjectManager();
         $wrapped = AbstractWrapper::wrap($object, $om);
@@ -723,7 +723,7 @@ class TranslatableListener extends MappedEventSubscriber
      * @param string $oid   hash of the basic entity
      * @param string $field field of basic entity
      */
-    private function removeTranslationInDefaultLocale($oid, $field)
+    protected function removeTranslationInDefaultLocale($oid, $field)
     {
         if (isset($this->translationInDefaultLocale[$oid])) {
             if (isset($this->translationInDefaultLocale[$oid][$field])) {
@@ -747,7 +747,7 @@ class TranslatableListener extends MappedEventSubscriber
      *
      * @return mixed Returns translation object if it exists or NULL otherwise
      */
-    private function getTranslationInDefaultLocale($oid, $field)
+    protected function getTranslationInDefaultLocale($oid, $field)
     {
         if (array_key_exists($oid, $this->translationInDefaultLocale)) {
             if (array_key_exists($field, $this->translationInDefaultLocale[$oid])) {
@@ -784,7 +784,7 @@ class TranslatableListener extends MappedEventSubscriber
      *
      * @return boolean
      */
-    private function belongsToObject(TranslatableAdapter $ea, $trans, $object)
+    protected function belongsToObject(TranslatableAdapter $ea, $trans, $object)
     {
         if ($ea->usesPersonalTranslation(get_class($trans))) {
             return $trans->getObject() === $object;

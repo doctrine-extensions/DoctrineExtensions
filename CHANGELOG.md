@@ -23,6 +23,7 @@ a release.
 #### Fixed
 - Add `parent::__construct()` calls to Listeners w/ custom constructors (#2012)
 - Add upcoming Doctrine ODM 2.0 to `composer.json` conflicts (#2027)
+- Change private to protected in listener (#1721)
 
 ### Loggable
 #### Fixed

@@ -22,9 +22,9 @@ use Gedmo\Sortable\Mapping\Event\SortableAdapter;
  */
 class SortableListener extends MappedEventSubscriber
 {
-    private $relocations = array();
-    private $persistenceNeeded = false;
-    private $maxPositions = array();
+    protected $relocations = array();
+    protected $persistenceNeeded = false;
+    protected $maxPositions = array();
 
     /**
      * Specifies the list of events to listen

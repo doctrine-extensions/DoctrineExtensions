@@ -21,21 +21,21 @@ class TreeListener extends MappedEventSubscriber
      *
      * @var array
      */
-    private $strategies = array();
+    protected $strategies = array();
 
     /**
      * List of strategy instances
      *
      * @var array
      */
-    private $strategyInstances = array();
+    protected $strategyInstances = array();
 
     /**
      * List of used classes on flush
      *
      * @var array
      */
-    private $usedClassesOnFlush = array();
+    protected $usedClassesOnFlush = array();
 
     /**
      * Specifies the list of events to listen

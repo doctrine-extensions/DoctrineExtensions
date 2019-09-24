@@ -17,7 +17,7 @@ use Gedmo\Mapping\MappedEventSubscriber;
  */
 class ReferencesListener extends MappedEventSubscriber
 {
-    private $managers;
+    protected $managers;
 
     public function __construct(array $managers = array())
     {
@@ -137,7 +137,7 @@ class ReferencesListener extends MappedEventSubscriber
         return __NAMESPACE__;
     }
 
-    private function updateReferences(EventArgs $eventArgs)
+    protected function updateReferences(EventArgs $eventArgs)
     {
         $ea = $this->getEventAdapter($eventArgs);
         $om = $ea->getObjectManager();
