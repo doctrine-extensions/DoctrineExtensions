@@ -289,8 +289,8 @@ class SluggableListener extends MappedEventSubscriber
             $oldSlug = isset($changeSet[$slugField]) ? $changeSet[$slugField][0] : $slug;
             $needToChangeSlug = false;
 
-            // if slug is null, regenerate it, or needs an update
-            if (null === $slug || $slug === '__id__' || !isset($changeSet[$slugField])) {
+            // if slug is null or empty, regenerate it, or needs an update
+            if (null === $slug || '' === $slug || $slug === '__id__' || !isset($changeSet[$slugField])) {
                 $slug = '';
 
                 foreach ($options['fields'] as $sluggableField) {
