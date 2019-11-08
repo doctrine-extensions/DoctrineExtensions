@@ -20,8 +20,3 @@ before_install: echo 'extension=mongodb.so' >> ~/.phpenv/versions/$(phpenv versi
 install: composer install --prefer-dist
 
 script: bin/phpunit -c tests/
-
-notifications:
-    email:
-        - gediminas.morkevicius@gmail.com
-        - developers@atlantic18.com
