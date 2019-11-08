@@ -40,6 +40,10 @@ a release.
 #### Fixed
 - Remove hard-coded parent column name in repository prev/next sibling queries [#2020]
 
+### Translatable
+#### Fixed
+- Fix duplicate inherited properties [#2029]
+
 ## [2.4.37] - 2019-03-17
 ### Translatable
 #### Fixed

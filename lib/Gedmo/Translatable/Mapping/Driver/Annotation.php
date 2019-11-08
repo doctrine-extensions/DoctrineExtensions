@@ -91,6 +91,9 @@ class Annotation extends AbstractAnnotationDriver
         // Embedded entity
         if (property_exists($meta, 'embeddedClasses') && $meta->embeddedClasses) {
             foreach ($meta->embeddedClasses as $propertyName => $embeddedClassInfo) {
+                if ($meta->isInheritedEmbeddedClass($propertyName)) {
+                    continue;
+                }
                 $embeddedClass = new \ReflectionClass($embeddedClassInfo['class']);
                 foreach ($embeddedClass->getProperties() as $embeddedProperty) {
                     if ($translatable = $this->reader->getPropertyAnnotation($embeddedProperty, self::TRANSLATABLE)) {
