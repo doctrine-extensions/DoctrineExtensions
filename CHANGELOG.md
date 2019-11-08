@@ -19,6 +19,8 @@ a release.
 ---
 
 ## [Unreleased]
+
+## [2.4.38] - 2019-11-08
 ### Global / Shared
 #### Fixed
 - Add `parent::__construct()` calls to Listeners w/ custom constructors (#2012)
@@ -30,19 +32,16 @@ a release.
 
 ### ReferenceIntegrity
 #### Fixed
-- Get class from meta in ReferenceIntegrityListener [#2021]
+- Get class from meta in ReferenceIntegrityListener (#2021)
 
 ### Translatable
 #### Fixed
 - Return default AST executor instead of throwing Exception in Walker (#2018)
+- Fix duplicate inherited properties (#2029)
 
 ### Tree
 #### Fixed
-- Remove hard-coded parent column name in repository prev/next sibling queries [#2020]
-
-### Translatable
-#### Fixed
-- Fix duplicate inherited properties [#2029]
+- Remove hard-coded parent column name in repository prev/next sibling queries (#2020)
 
 ## [2.4.37] - 2019-03-17
 ### Translatable
