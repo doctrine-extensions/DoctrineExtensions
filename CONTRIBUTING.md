@@ -2,15 +2,11 @@
 
 Thank you for your interest in contributing to Doctrine Extensions!
 
-## Release Cycle
+## Which Branch Should I Contribute To?
 
-Because Doctrine Extensions is maintained as a single repository, we do not
-want to push major and minor releases when only one or two extensions have
-been updated. As such, major and minor releases may happen less frequently,
-in order to allow all extensions the opportunity to be included in a release.
+All pull requests should target the `master` branch, with a planned 3.0 major release. 
 
-The Doctrine Extensions team is currently working to determine
-a well-defined release cycle for the future. Stay tuned!
+:warning: The `v.2.4.x` branch has been marked as legacy/deprecated.
 
 ## Pull Request Titles
 
@@ -18,18 +14,6 @@ Please include the name(s) of the related extensions as a "tag" in the
 pull request title.
 
 > [Tree] Add a new Oak Tree branching style
-
-## Branching
-
-Pull requests should be made to one of the following branches, depending on
-the nature of your change(s):
-
-* `2.4.x` - The current stable version branch  
-  PRs accepted: bug fixes and patches
-* `2.5` - The next minor release  
-  PRs accepted: new features and other non-breaking changes
-* `master` - The next major release  
-  PRs accepted: major new features and breaking changes
   
 ## Changelog
 
