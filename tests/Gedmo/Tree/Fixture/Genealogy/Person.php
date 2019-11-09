@@ -55,7 +55,7 @@ abstract class Person
   private $lvl;
 
   /**
-   * @ORM\Column(name="name", type="string", length=255, nullable=false)
+   * @ORM\Column(name="name", type="string", length=191, nullable=false)
    * @var string
    */
   private $name;

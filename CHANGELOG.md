@@ -19,8 +19,9 @@ a release.
 ---
 
 ## [Unreleased]
-### Breaking Changes
-- Change `/lib/Gedmo` to `/src`
+### Notable & Breaking Changes
+- Source files moved from `/lib/Gedmo` to `/src`
+- All string column type annotations changed to 191 character length (#1941)
 
 ## [2.4.38] - 2019-11-08
 ### Global / Shared

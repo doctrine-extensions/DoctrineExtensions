@@ -5,7 +5,7 @@
 
     <embeddable name="Mapping\Fixture\Xml\Embedded">
 
-        <field name="subtitle" type="string" length="255" />
+        <field name="subtitle" type="string" length="191" />
     </embeddable>
 
 </doctrine-mapping>

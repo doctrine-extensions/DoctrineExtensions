@@ -30,7 +30,7 @@ abstract class AbstractTranslation
     /**
      * @var string $objectClass
      *
-     * @ORM\Column(name="object_class", type="string", length=255)
+     * @ORM\Column(name="object_class", type="string", length=191)
      */
     protected $objectClass;
 

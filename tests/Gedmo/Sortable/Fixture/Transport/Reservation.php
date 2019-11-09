@@ -26,7 +26,7 @@ class Reservation
      * Bus destination
      *
      * @Gedmo\SortableGroup
-     * @ORM\Column(length=255)
+     * @ORM\Column(length=191)
      */
     private $destination;
 
@@ -43,7 +43,7 @@ class Reservation
     private $seat;
 
     /**
-     * @ORM\Column(length=255)
+     * @ORM\Column(length=191)
      */
     private $name;
 
