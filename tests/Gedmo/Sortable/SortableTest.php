@@ -604,26 +604,6 @@ class SortableTest extends BaseTestCaseORM
     /**
      * @test
      */
-    public function shouldFixIssue219()
-    {
-        $item1 = new SimpleListItem();
-        $item1->setName("Item 1");
-        $this->em->persist($item1);
-
-        $this->em->flush();
-
-        $item1->setName("Update...");
-        $item1->setPosition(1);
-        $this->em->persist($item1);
-        $this->em->flush();
-
-        $this->em->remove($item1);
-        $this->em->flush();
-    }
-
-    /**
-     * @test
-     */
     public function shouldFixIssue226()
     {
         $paper1 = new Paper();
@@ -679,32 +659,6 @@ class SortableTest extends BaseTestCaseORM
         $this->assertEquals(1, $author1->getPosition());
         $this->assertEquals(2, $author2->getPosition());
         $this->assertEquals(0, $author3->getPosition());
-    }
-
-    /**
-     * @test
-     */
-    public function shouldFixIssue275()
-    {
-        $nodes = array();
-        for ($i = 2; $i <= 10; $i++) {
-            $node = new Node();
-            $node->setName("Node".$i);
-            $node->setPath("/");
-            $this->em->persist($node);
-            $nodes[] = $node;
-        }
-        $this->em->flush();
-
-        $node1 = $this->em->find(self::NODE, $this->nodeId);
-        $this->em->remove($node1);
-        $this->em->flush();
-
-        for ($i = 1; $i <= 9; $i++) {
-            $nodes[$i-1]->setPosition($i);
-            $this->em->persist($nodes[$i-1]);
-        }
-        $this->em->flush();
     }
 
     /**

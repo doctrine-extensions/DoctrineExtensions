@@ -593,20 +593,6 @@ class UploadableEntityTest extends BaseTestCaseORM
         $this->em->flush();
     }
 
-    public function test_allowedTypesOption_ifMimeTypeIsValidThenDontThrowException()
-    {
-        // We set the default path on the listener
-        $this->listener->setDefaultPath($this->destinationTestDir);
-
-        $file = new FileWithAllowedTypes();
-        $fileInfo = $this->generateUploadedFile();
-
-        $this->listener->addEntityFileInfo($file, $fileInfo);
-
-        $this->em->persist($file);
-        $this->em->flush();
-    }
-
     /**
      * @expectedException Gedmo\Exception\UploadableInvalidMimeTypeException
      */
@@ -615,21 +601,6 @@ class UploadableEntityTest extends BaseTestCaseORM
         // We set the default path on the listener
         $this->listener->setDefaultPath($this->destinationTestDir);
         $this->listener->setMimeTypeGuesser(new MimeTypeGuesserStub('text/css'));
-
-        $file = new FileWithDisallowedTypes();
-        $fileInfo = $this->generateUploadedFile();
-
-        $this->listener->addEntityFileInfo($file, $fileInfo);
-
-        $this->em->persist($file);
-        $this->em->flush();
-    }
-
-    public function test_disallowedTypesOption_ifMimeTypeIsValidThenDontThrowException()
-    {
-        // We set the default path on the listener
-        $this->listener->setDefaultPath($this->destinationTestDir);
-        $this->listener->setMimeTypeGuesser(new MimeTypeGuesserStub('video/jpeg'));
 
         $file = new FileWithDisallowedTypes();
         $fileInfo = $this->generateUploadedFile();

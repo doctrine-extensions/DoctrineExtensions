@@ -27,19 +27,6 @@ class TimestampableEmbeddedDocumentTest extends BaseTestCaseMongoODM
         $this->getMockDocumentManager($evm);
     }
 
-    /**
-     * Test that no php notice is triggered while processing timestampable properties of embedded document
-     */
-    public function testPersistOnlyEmbeddedDocument()
-    {
-        $tag = new Tag();
-        $tag->setName('cats');
-
-        $this->dm->persist($tag);
-        $this->dm->flush();
-        $this->dm->clear();
-    }
-
     public function testPersistEmbeddedDocumentWithParent()
     {
         $tag1 = new Tag();
