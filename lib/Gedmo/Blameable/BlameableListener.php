@@ -19,6 +19,7 @@ use Gedmo\Blameable\Mapping\Event\BlameableAdapter;
 class BlameableListener extends AbstractTrackingListener
 {
     protected $user;
+    protected $lazyUser;
 
     /**
      * Get the user value to set on a blameable field
@@ -30,6 +31,10 @@ class BlameableListener extends AbstractTrackingListener
      */
     public function getFieldValue($meta, $field, $eventAdapter)
     {
+        if (null !== $this->lazyUser) {
+            $this->user = call_user_func($this->lazyUser);
+        }
+
         if ($meta->hasAssociation($field)) {
             if (null !== $this->user && ! is_object($this->user)) {
                 throw new InvalidArgumentException("Blame is reference, user must be an object");
@@ -60,6 +65,16 @@ class BlameableListener extends AbstractTrackingListener
     public function setUserValue($user)
     {
         $this->user = $user;
+        $this->lazyUser = null;
+    }
+    
+    /**
+     * Set a lazy user value to return
+     */
+    public function setLazyUserValue(callable $user)
+    {
+        $this->lazyUser = $user;
+        $this->user = null;
     }
 
     /**
