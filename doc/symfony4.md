@@ -60,7 +60,7 @@ doctrine:
                 dir: "%kernel.root_dir%/../vendor/gedmo/doctrine-extensions/lib/Gedmo/Translatable/Entity"
 ```
 
-After that, running **php app/console doctrine:mapping:info** you should see the output:
+After that, running **php bin/console doctrine:mapping:info** you should see the output:
 
 ```
 Found 3 entities mapped in entity manager default:
@@ -86,7 +86,7 @@ mappings:
 ```
 
 The configuration above, adds a **/MappedSuperclass** into directory depth, after running
-**php app/console doctrine:mapping:info** you should only see now:
+**php bin/console doctrine:mapping:info** you should only see now:
 
 ```
 Found 2 entities mapped in entity manager default:
@@ -339,8 +339,8 @@ class BlogPost
 
 Now, let's have some fun:
 
-- if you have not created the database yet, run `php app/console doctrine:database:create`
-- create the schema `php app/console doctrine:schema:create`
+- if you have not created the database yet, run `php bin/console doctrine:database:create`
+- create the schema `php bin/console doctrine:schema:create`
 
 Everything will work just fine, you can modify the **App\Controller\DemoController**
 and add an action to test how it works:
