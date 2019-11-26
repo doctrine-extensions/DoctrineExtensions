@@ -27,8 +27,8 @@ final class ODM extends BaseAdapterODM implements SluggableAdapter
         if (($identifier = $wrapped->getIdentifier()) && !$meta->isIdentifier($config['slug'])) {
             $qb->field($meta->identifier)->notEqual($identifier);
         }
-        $qb->field($config['slug'])->equals(new \MongoRegex('/^'.preg_quote($slug, '/').'/'));
-
+        $qb->field($config['slug'])->equals(new \MongoDB\BSON\Regex('^'.$slug));
+        
         // use the unique_base to restrict the uniqueness check
         if ($config['unique'] && isset($config['unique_base'])) {
             if (is_object($ubase = $wrapped->getPropertyValue($config['unique_base']))) {
@@ -39,16 +39,13 @@ final class ODM extends BaseAdapterODM implements SluggableAdapter
                 $qb->field($config['unique_base'])->equals(null);
             }
         }
-
+        
         $q = $qb->getQuery();
         $q->setHydrate(false);
-
+        
         $result = $q->execute();
-        if ($result instanceof Cursor) {
-            $result = $result->toArray();
-        }
 
-        return $result;
+        return $result->toArray();
     }
 
     /**
