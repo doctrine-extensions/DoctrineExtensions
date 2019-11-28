@@ -27,6 +27,10 @@ a release.
 #### Fixed
 - Removed `null` parameter from `Doctrine\Common\Cache\Cache::save()` calls (#1996)
 
+### Tree
+#### Fixed
+- The value of path source property is cast to string type for Materialized Path Tree strategy (#2061)
+
 ## [2.4.38] - 2019-11-08
 ### Global / Shared
 #### Fixed
