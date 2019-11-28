@@ -244,7 +244,7 @@ abstract class AbstractMaterializedPath implements Strategy
         $pathProp->setAccessible(true);
         $pathSourceProp = $meta->getReflectionProperty($config['path_source']);
         $pathSourceProp->setAccessible(true);
-        $path = $pathSourceProp->getValue($node);
+        $path = (string) $pathSourceProp->getValue($node);
 
         // We need to avoid the presence of the path separator in the path source
         if (strpos($path, $config['path_separator']) !== false) {
