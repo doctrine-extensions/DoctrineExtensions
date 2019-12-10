@@ -32,7 +32,11 @@ class BlameableListener extends AbstractTrackingListener
     {
         if ($meta->hasAssociation($field)) {
             if (null !== $this->value && ! is_object($this->value)) {
-                throw new InvalidArgumentException("Blame is reference, user must be an object");
+                throw new InvalidArgumentException("Blame is reference, user must be an object or callable");
+            }
+
+            if (\is_callable($this->value)) {
+                return ($this->value)();
             }
 
             return $this->value;
@@ -47,10 +51,6 @@ class BlameableListener extends AbstractTrackingListener
                 return $this->value->__toString();
             }
             throw new InvalidArgumentException("Field expects string, user must be a string, or object should have method getUsername or __toString");
-        }
-
-        if (\is_callable($this->value)) {
-            return ($this->value)();
         }
 
         return $this->value;
