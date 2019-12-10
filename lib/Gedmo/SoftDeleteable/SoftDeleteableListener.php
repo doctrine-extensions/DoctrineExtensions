@@ -63,7 +63,18 @@ class SoftDeleteableListener extends MappedEventSubscriber
             if (isset($config['softDeleteable']) && $config['softDeleteable']) {
                 $reflProp = $meta->getReflectionProperty($config['fieldName']);
                 $oldValue = $reflProp->getValue($object);
-                $date = new \DateTime();
+                
+                // Determine the field type in order to set the date to the respective value
+                $mapping = $meta->getFieldMapping($config['fieldName']);
+                if (isset($mapping['type']) && $mapping['type'] === 'integer') {
+                    $date = time();
+                } else if (isset($mapping['type']) && $mapping['type'] === 'zenddate') {
+                    $date = new \Zend_Date();
+                } else if (isset($mapping['type']) && in_array($mapping['type'], array('date_immutable', 'time_immutable', 'datetime_immutable', 'datetimetz_immutable'), true)) {
+                    $date = new \DateTimeImmutable();
+                } else {
+                    $date = new \DateTime();
+                }
 
                 // Remove `$oldValue instanceof \DateTime` check when PHP version is bumped to >=5.5
                 if (isset($config['hardDelete']) && $config['hardDelete'] && ($oldValue instanceof \DateTime || $oldValue instanceof \DateTimeInterface) && $oldValue <= $date) {
