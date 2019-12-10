@@ -18,7 +18,7 @@ use Gedmo\Blameable\Mapping\Event\BlameableAdapter;
  */
 class BlameableListener extends AbstractTrackingListener
 {
-    protected $user;
+    protected $value;
 
     /**
      * Get the user value to set on a blameable field
@@ -31,35 +31,39 @@ class BlameableListener extends AbstractTrackingListener
     public function getFieldValue($meta, $field, $eventAdapter)
     {
         if ($meta->hasAssociation($field)) {
-            if (null !== $this->user && ! is_object($this->user)) {
+            if (null !== $this->value && ! is_object($this->value)) {
                 throw new InvalidArgumentException("Blame is reference, user must be an object");
             }
 
-            return $this->user;
+            return $this->value;
         }
 
         // ok so its not an association, then it is a string
-        if (is_object($this->user)) {
-            if (method_exists($this->user, 'getUsername')) {
-                return (string) $this->user->getUsername();
+        if (is_object($this->value)) {
+            if (method_exists($this->value, 'getUsername')) {
+                return (string) $this->value->getUsername();
             }
-            if (method_exists($this->user, '__toString')) {
-                return $this->user->__toString();
+            if (method_exists($this->value, '__toString')) {
+                return $this->value->__toString();
             }
             throw new InvalidArgumentException("Field expects string, user must be a string, or object should have method getUsername or __toString");
         }
 
-        return $this->user;
+        if (\is_callable($this->value)) {
+            return ($this->value)();
+        }
+
+        return $this->value;
     }
 
     /**
      * Set a user value to return
      *
-     * @param mixed $user
+     * @param mixed $value
      */
-    public function setUserValue($user)
+    public function setUserValue($value)
     {
-        $this->user = $user;
+        $this->value = $value;
     }
 
     /**
