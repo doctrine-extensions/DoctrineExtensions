@@ -474,7 +474,7 @@ class TranslationQueryWalkerTest extends BaseTestCaseORM
         );
 
         $dql = 'SELECT a, c FROM '.self::ARTICLE.' a';
-        $dql .= ' LEFT JOIN a.comments c';
+        $dql .= ' LEFT JOIN a.comments c ORDER BY c.id ASC';
         $q = $this->em->createQuery($dql);
         $q->setHint(Query::HINT_CUSTOM_OUTPUT_WALKER, self::TREE_WALKER_TRANSLATION);
 
