@@ -23,6 +23,10 @@ a release.
 - Source files moved from `/lib/Gedmo` to `/src`
 - All string column type annotations changed to 191 character length (#1941)
 
+### Global / Shared
+#### Fixed
+- Removed `null` parameter from `Doctrine\Common\Cache\Cache::save()` calls (#1996)
+
 ## [2.4.38] - 2019-11-08
 ### Global / Shared
 #### Fixed

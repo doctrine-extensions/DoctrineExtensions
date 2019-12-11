@@ -2,6 +2,7 @@
 
 namespace Gedmo\Tree\Strategy\ORM;
 
+use Doctrine\Common\Cache\Cache;
 use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Version;
@@ -153,8 +154,11 @@ class Closure implements Strategy
         $closureMetadata->table['indexes'][$indexName] = array(
             'columns' => array('depth'),
         );
-        if ($cacheDriver = $cmf->getCacheDriver()) {
-            $cacheDriver->save($closureMetadata->name."\$CLASSMETADATA", $closureMetadata, null);
+
+        $cacheDriver = $cmf->getCacheDriver();
+
+        if ($cacheDriver instanceof Cache) {
+            $cacheDriver->save($closureMetadata->name . '$CLASSMETADATA', $closureMetadata);
         }
     }
 
