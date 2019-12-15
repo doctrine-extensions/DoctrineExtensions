@@ -122,6 +122,15 @@ $treeListener = new Gedmo\Tree\TreeListener;
 $treeListener->setAnnotationReader($cachedAnnotationReader);
 $evm->addEventSubscriber($treeListener);
 
+// blameable
+$actor = new App\Actor(); // Extends Gedmo\Blameable\BlameableActorInterface
+$blameableListener = new Gedmo\Blameable\BlameableListener();
+$blameableListener->setAnnotationReader($cachedAnnotationReader);
+// Also can pass raw object or string to setActor, but using an Actor proxy object
+// allows for deferred actor assignment
+$blameableListener->setActor($actor);
+$eventManager->addEventSubscriber($blameableListener);
+
 // loggable, not used in example
 $loggableListener = new Gedmo\Loggable\LoggableListener;
 $loggableListener->setAnnotationReader($cachedAnnotationReader);

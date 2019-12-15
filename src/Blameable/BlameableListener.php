@@ -18,7 +18,7 @@ use Gedmo\Blameable\Mapping\Event\BlameableAdapter;
  */
 class BlameableListener extends AbstractTrackingListener
 {
-    protected $user;
+    protected $actor;
 
     /**
      * Get the user value to set on a blameable field
@@ -31,35 +31,54 @@ class BlameableListener extends AbstractTrackingListener
     public function getFieldValue($meta, $field, $eventAdapter)
     {
         if ($meta->hasAssociation($field)) {
-            if (null !== $this->user && ! is_object($this->user)) {
+            if (null !== $this->actor && ! is_object($this->actor)) {
                 throw new InvalidArgumentException("Blame is reference, user must be an object");
             }
 
-            return $this->user;
+            return $this->actor;
         }
 
-        // ok so its not an association, then it is a string
-        if (is_object($this->user)) {
-            if (method_exists($this->user, 'getUsername')) {
-                return (string) $this->user->getUsername();
+        // Ok so its not an association, then it is a string
+        if (is_object($this->actor)) {
+            if ($this->actor instanceof BlameableActorInterface) {
+                return $this->actor->getActor();
             }
-            if (method_exists($this->user, '__toString')) {
-                return $this->user->__toString();
+
+            if (method_exists($this->actor, 'getUsername')) {
+                return (string) $this->actor->getUsername();
             }
+
+            if (method_exists($this->actor, '__toString')) {
+                return $this->actor->__toString();
+            }
+
             throw new InvalidArgumentException("Field expects string, user must be a string, or object should have method getUsername or __toString");
         }
 
-        return $this->user;
+        return $this->actor;
     }
 
     /**
      * Set a user value to return
      *
+     * @deprecated 2019/12/15 Replaced by setActor which is less opinionated
+     * @see setActor
+     *
      * @param mixed $user
      */
-    public function setUserValue($user)
+    public function setUserValue($actor)
     {
-        $this->user = $user;
+        $this->setActor($actor);
+    }
+
+    /**
+     * Sets the actor used for Blameable
+     *
+     * @param mixed $actor
+     */
+    public function setActor($actor)
+    {
+        $this->actor = $actor;
     }
 
     /**
