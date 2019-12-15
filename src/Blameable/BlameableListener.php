@@ -35,6 +35,10 @@ class BlameableListener extends AbstractTrackingListener
                 throw new InvalidArgumentException("Blame is reference, user must be an object");
             }
 
+            if ($this->actor instanceof BlameableActorInterface) {
+                return $this->actor->getActor();
+            }
+
             return $this->actor;
         }
 
