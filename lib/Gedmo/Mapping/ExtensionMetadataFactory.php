@@ -8,6 +8,7 @@ use Doctrine\Common\Persistence\Mapping\Driver\MappingDriver;
 use Doctrine\Common\Persistence\Mapping\Driver\MappingDriverChain;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\Common\Version as CommonLibVer;
+use Doctrine\Persistence\Mapping\MappingException;
 use Gedmo\Mapping\Driver\File as FileDriver;
 use Gedmo\Mapping\Driver\AnnotationDriverInterface;
 
@@ -80,7 +81,12 @@ class ExtensionMetadataFactory
         if (null !== $meta->reflClass) {
             foreach (array_reverse(class_parents($meta->name)) as $parentClass) {
                 // read only inherited mapped classes
-                $class = $this->objectManager->getClassMetadata($parentClass);
+                try {
+                    // try to load mapping, skip when not found
+                    $class = $this->objectManager->getClassMetadata($parentClass);
+                } catch (MappingException $e) {
+                    continue;
+                }
                 $this->driver->readExtendedMetadata($class, $config);
                 $isBaseInheritanceLevel = !$class->isInheritanceTypeNone()
                     && !$class->parentClasses
