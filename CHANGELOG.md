@@ -19,6 +19,8 @@ a release.
 ---
 
 ## [Unreleased]
+
+## [2.4.39] - 2020-01-18
 ### Tree
 ### Fixed
 - The value of path source property is cast to string type for Materialized Path Tree strategy (#2061)
