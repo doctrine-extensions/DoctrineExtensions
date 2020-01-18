@@ -57,18 +57,6 @@ abstract class BaseTestCaseOM extends \PHPUnit\Framework\TestCase
     /**
      * {@inheritdoc}
      */
-    public function expectException($exception)
-    {
-        if (method_exists('PHPUnit\\Framework\\TestCase', 'setExpectedException')) {
-            return parent::setExpectedException($exception);
-        }
-
-        return parent::expectException($exception);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     protected function tearDown()
     {
         foreach ($this->dms as $dm) {

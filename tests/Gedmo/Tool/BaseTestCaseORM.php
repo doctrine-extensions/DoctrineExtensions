@@ -47,18 +47,6 @@ abstract class BaseTestCaseORM extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * {@inheritdoc}
-     */
-    public function expectException($exception)
-    {
-        if (method_exists('PHPUnit\\Framework\\TestCase', 'setExpectedException')) {
-            return parent::setExpectedException($exception);
-        }
-
-        return parent::expectException($exception);
-    }
-
-    /**
      * EntityManager mock object together with
      * annotation mapping driver and pdo_sqlite
      * database in memory
