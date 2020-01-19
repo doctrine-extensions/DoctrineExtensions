@@ -1259,6 +1259,11 @@ class Category
      */
     private $parent;
 
+    /**
+     * @ORM\OneToMany(targetEntity="Category", mappedBy="parent")
+     */
+    private $children;
+
     public function getId()
     {
         return $this->id;
