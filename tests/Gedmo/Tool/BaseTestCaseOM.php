@@ -6,6 +6,7 @@ namespace Tool;
 use Doctrine\Common\EventManager;
 use Doctrine\Common\Persistence\Mapping\Driver\MappingDriver;
 // orm specific
+use Doctrine\ODM\MongoDB\Configuration;
 use Doctrine\ORM\Mapping\DefaultQuoteStrategy;
 use Doctrine\ORM\Mapping\DefaultNamingStrategy;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver as AnnotationDriverORM;
@@ -23,6 +24,7 @@ use Gedmo\Timestampable\TimestampableListener;
 use Gedmo\Loggable\LoggableListener;
 use Doctrine\ORM\Repository\DefaultRepositoryFactory as DefaultRepositoryFactoryORM;
 use Doctrine\ODM\MongoDB\Repository\DefaultRepositoryFactory as DefaultRepositoryFactoryODM;
+use MongoDB\Client;
 
 /**
  * Base test case contains common mock objects
@@ -86,18 +88,11 @@ abstract class BaseTestCaseOM extends \PHPUnit\Framework\TestCase
         if (!class_exists('Mongo')) {
             $this->markTestSkipped('Missing Mongo extension.');
         }
-        $conn = new Connection($_ENV['MONGODB_SERVER']);
+
+        $client = new Client($_ENV['MONGODB_SERVER'], [], ['typeMap' => DocumentManager::CLIENT_TYPEMAP]);
         $config = $this->getMockAnnotatedODMMongoDBConfig($dbName, $mappingDriver);
 
-        $dm = null;
-        try {
-            $dm = DocumentManager::create($conn, $config, $this->getEventManager());
-            $dm->getConnection()->connect();
-        } catch (\MongoException $e) {
-            $this->markTestSkipped('Doctrine MongoDB ODM failed to connect');
-        }
-
-        return $dm;
+        return DocumentManager::create($client, $config, $this->getEventManager());
     }
 
     /**
@@ -222,21 +217,21 @@ abstract class BaseTestCaseOM extends \PHPUnit\Framework\TestCase
      * @param string                                     $dbName
      * @param MappingDriver $mappingDriver
      *
-     * @return \Doctrine\ORM\Configuration
+     * @return Configuration
      */
-    private function getMockAnnotatedODMMongoDBConfig($dbName, MappingDriver $mappingDriver = null)
+    private function getMockAnnotatedODMMongoDBConfig($dbName, MappingDriver $mappingDriver = null): Configuration
     {
         if (null === $mappingDriver) {
             $mappingDriver = $this->getDefaultMongoODMMetadataDriverImplementation();
         }
-        $config = new \Doctrine\ODM\MongoDB\Configuration();
+        $config = new Configuration();
         $config->addFilter("softdeleteable", 'Gedmo\\SoftDeleteable\\Filter\\ODM\\SoftDeleteableFilter');
         $config->setProxyDir(__DIR__."/../../temp");
         $config->setHydratorDir(__DIR__."/../../temp");
         $config->setProxyNamespace("Proxy");
         $config->setHydratorNamespace("Hydrator");
         $config->setDefaultDB("gedmo_extensions_test");
-        $config->setAutoGenerateProxyClasses(true);
+        $config->setAutoGenerateProxyClasses(Configuration::AUTOGENERATE_EVAL);
         $config->setAutoGenerateHydratorClasses(true);
         $config->setMetadataDriverImpl($mappingDriver);
         return $config;
