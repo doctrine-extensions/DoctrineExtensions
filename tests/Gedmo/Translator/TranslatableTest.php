@@ -20,7 +20,7 @@ class TranslatableTest extends BaseTestCaseORM
     const PERSON = 'Translator\\Fixture\\Person';
     const PERSON_CUSTOM_PROXY = 'Translator\\Fixture\\PersonCustom';
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

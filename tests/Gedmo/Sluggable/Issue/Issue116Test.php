@@ -19,7 +19,7 @@ class Issue116Test extends BaseTestCaseORM
 {
     const TARGET = 'Sluggable\\Fixture\\Issue116\\Country';
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

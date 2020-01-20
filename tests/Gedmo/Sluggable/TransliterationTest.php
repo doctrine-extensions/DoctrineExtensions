@@ -17,7 +17,7 @@ class TransliterationTest extends BaseTestCaseORM
 {
     const ARTICLE = 'Sluggable\\Fixture\\Article';
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

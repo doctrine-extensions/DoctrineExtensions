@@ -50,14 +50,14 @@ abstract class BaseTestCaseOM extends \PHPUnit\Framework\TestCase
     /**
      * {@inheritdoc}
      */
-    protected function setUp()
+    protected function setUp(): void
     {
     }
 
     /**
      * {@inheritdoc}
      */
-    protected function tearDown()
+    protected function tearDown(): void
     {
         foreach ($this->dms as $dm) {
             if ($dm) {

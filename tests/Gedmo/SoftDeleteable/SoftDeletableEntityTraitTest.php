@@ -18,7 +18,7 @@ class SoftDeletableEntityTraitTest extends \PHPUnit\Framework\TestCase
      */
     protected $entity;
 
-    public function setUp()
+    public function setUp(): void
     {
         if (version_compare(PHP_VERSION, '5.4.0') < 0) {
             $this->markTestSkipped('PHP >= 5.4 version required for this test.');

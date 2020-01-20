@@ -17,7 +17,7 @@ class NestedTreeRootAssociationTest extends BaseTestCaseORM
 {
     const CATEGORY = "Tree\\Fixture\\RootAssociationCategory";
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

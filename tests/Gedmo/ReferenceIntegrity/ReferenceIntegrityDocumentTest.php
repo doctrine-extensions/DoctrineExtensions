@@ -31,7 +31,7 @@ class ReferenceIntegrityDocumentTest extends BaseTestCaseMongoODM
     const TYPE_MANY_RESTRICT_CLASS = 'ReferenceIntegrity\Fixture\Document\ManyRestrict\Type';
     const ARTICLE_MANY_RESTRICT_CLASS = 'ReferenceIntegrity\Fixture\Document\ManyRestrict\Article';
     
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -158,10 +158,10 @@ class ReferenceIntegrityDocumentTest extends BaseTestCaseMongoODM
 
     /**
      * @test
-     * @expectedException Gedmo\Exception\ReferenceIntegrityStrictException
      */
     public function testOneRestrict()
     {
+        $this->expectException('Gedmo\Exception\ReferenceIntegrityStrictException');
         $type = $this->dm->getRepository(self::TYPE_ONE_RESTRICT_CLASS)
             ->findOneByTitle('One Restrict Type');
 
@@ -174,10 +174,10 @@ class ReferenceIntegrityDocumentTest extends BaseTestCaseMongoODM
 
     /**
      * @test
-     * @expectedException Gedmo\Exception\ReferenceIntegrityStrictException
      */
     public function testManyRestrict()
     {
+        $this->expectException('Gedmo\Exception\ReferenceIntegrityStrictException');
         $type = $this->dm->getRepository(self::TYPE_MANY_RESTRICT_CLASS)
             ->findOneByTitle('Many Restrict Type');
 

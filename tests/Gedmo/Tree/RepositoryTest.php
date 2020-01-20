@@ -19,7 +19,7 @@ class RepositoryTest extends BaseTestCaseORM
     const CATEGORY = "Tree\\Fixture\\Category";
     const CATEGORY_UUID = "Tree\\Fixture\\CategoryUuid";
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

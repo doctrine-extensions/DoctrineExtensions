@@ -11,7 +11,7 @@ class TreeSlugHandlerPrefixSuffixTest extends BaseTestCaseORM
 {
     const TARGET = "Sluggable\\Fixture\\Handler\\TreeSlugPrefixSuffix";
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

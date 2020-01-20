@@ -16,7 +16,7 @@ class NoUserTest extends BaseTestCaseMongoODM
 {
     const ARTICLE = 'Blameable\Fixture\Document\Article';
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

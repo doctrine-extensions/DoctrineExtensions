@@ -38,7 +38,7 @@ class SortableTest extends BaseTestCaseORM
 
     private $nodeId;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -49,7 +49,7 @@ class SortableTest extends BaseTestCaseORM
         $this->populate();
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         //$this->stopQueryLog();
     }

@@ -22,7 +22,7 @@ class SluggableMappingTest extends BaseTestCaseORM
      */
     private $sluggable;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 

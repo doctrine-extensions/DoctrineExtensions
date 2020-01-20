@@ -23,7 +23,7 @@ class MultiInheritanceWithSingleTableTest extends BaseTestCaseORM
     const VEHICLE = "Tree\Fixture\Transport\Vehicle";
     const ENGINE = "Tree\Fixture\Transport\Engine";
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

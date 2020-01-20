@@ -22,7 +22,7 @@ class TimestampableTest extends BaseTestCaseORM
     const COMMENT = "Timestampable\\Fixture\\Comment";
     const TYPE = "Timestampable\\Fixture\\Type";
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

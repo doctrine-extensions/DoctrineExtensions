@@ -14,7 +14,7 @@ class ExtensionORMTest extends BaseTestCaseORM
 
     private $encoderListener;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

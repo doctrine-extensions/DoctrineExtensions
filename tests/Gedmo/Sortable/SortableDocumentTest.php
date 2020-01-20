@@ -16,7 +16,7 @@ class SortableDocumentTest extends BaseTestCaseMongoODM
 {
     const ARTICLE = 'Sortable\\Fixture\\Document\\Article';
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $evm = new EventManager();

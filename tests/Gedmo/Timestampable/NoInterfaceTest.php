@@ -17,7 +17,7 @@ class NoInterfaceTest extends BaseTestCaseORM
 {
     const FIXTURE = "Timestampable\\Fixture\\WithoutInterface";
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

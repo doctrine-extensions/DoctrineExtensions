@@ -29,7 +29,7 @@ class LoggableMappingTest extends BaseTestCaseOM
      */
     private $loggable;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 

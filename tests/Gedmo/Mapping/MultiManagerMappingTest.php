@@ -32,7 +32,7 @@ class MultiManagerMappingTest extends BaseTestCaseOM
      */
     private $dm1;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         // EM with standard annotation mapping

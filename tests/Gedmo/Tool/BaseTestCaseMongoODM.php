@@ -32,7 +32,7 @@ abstract class BaseTestCaseMongoODM extends \PHPUnit\Framework\TestCase
     /**
      * {@inheritdoc}
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         if (!class_exists('Mongo')) {
             $this->markTestSkipped('Missing Mongo extension.');
@@ -42,7 +42,7 @@ abstract class BaseTestCaseMongoODM extends \PHPUnit\Framework\TestCase
     /**
      * {@inheritdoc}
      */
-    protected function tearDown()
+    protected function tearDown(): void
     {
         if ($this->dm) {
             foreach ($this->dm->getDocumentDatabases() as $db) {

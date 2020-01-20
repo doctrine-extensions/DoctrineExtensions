@@ -28,7 +28,7 @@ class ReferenceIntegrityMappingTest extends BaseTestCaseOM
      */
     private $referenceIntegrity;
 
-    public function setUp()
+    public function setUp(): void
     {
         if (!class_exists('Doctrine\ODM\MongoDB\Mapping\Driver\YamlDriver')) {
             $this->markTestSkipped('The Mongo ODM is not installed');

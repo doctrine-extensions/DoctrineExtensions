@@ -26,7 +26,7 @@ class LoggableDocumentTest extends BaseTestCaseMongoODM
     const RELATED_ARTICLE = 'Loggable\\Fixture\\Document\\RelatedArticle';
     const COMMENT_LOG = 'Loggable\\Fixture\\Document\\Log\\Comment';
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $evm = new EventManager();

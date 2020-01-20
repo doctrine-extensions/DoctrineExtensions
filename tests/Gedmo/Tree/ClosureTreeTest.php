@@ -32,7 +32,7 @@ class ClosureTreeTest extends BaseTestCaseORM
 
     protected $listener;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -205,11 +205,9 @@ class ClosureTreeTest extends BaseTestCaseORM
         // pdo_sqlite will not cascade
     }
 
-    /**
-     * @expectedException Gedmo\Exception\UnexpectedValueException
-     */
     public function testSettingParentToChild()
     {
+        $this->expectException('Gedmo\Exception\UnexpectedValueException');
         $repo = $this->em->getRepository(self::CATEGORY);
         $fruits = $repo->findOneByTitle('Fruits');
         $strawberries = $repo->findOneByTitle('Strawberries');

@@ -21,7 +21,7 @@ class TreeObjectHydratorTest extends BaseTestCaseORM
     const CATEGORY = "Tree\\Fixture\\Category";
     const ROOT_CATEGORY = "Tree\\Fixture\\RootCategory";
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

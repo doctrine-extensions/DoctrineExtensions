@@ -19,7 +19,7 @@ class MongoDocumentWrapperTest extends BaseTestCaseMongoODM
     const ARTICLE = "Wrapper\\Fixture\\Document\\Article";
     private $articleId;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->getMockDocumentManager(new EventManager());

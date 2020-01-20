@@ -30,7 +30,7 @@ class Issue1151Test extends BaseTestCaseMongoODM
     /**
      * Set up test
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $evm = new EventManager();

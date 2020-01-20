@@ -17,7 +17,7 @@ class InMemoryUpdatesTest extends BaseTestCaseORM
 {
     const CATEGORY = "Tree\\Fixture\\Category";
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

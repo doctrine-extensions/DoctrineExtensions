@@ -30,7 +30,7 @@ class SoftDeleteableMappingTest extends BaseTestCaseOM
      */
     private $softDeleteable;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 

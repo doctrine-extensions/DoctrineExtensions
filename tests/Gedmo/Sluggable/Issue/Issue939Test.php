@@ -20,7 +20,7 @@ class Issue939Test extends BaseTestCaseORM
     const ARTICLE = 'Sluggable\\Fixture\\Issue939\\Article';
     const CATEGORY = 'Sluggable\\Fixture\\Issue939\\Category';
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

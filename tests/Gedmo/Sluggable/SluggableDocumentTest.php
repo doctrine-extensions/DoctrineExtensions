@@ -17,7 +17,7 @@ class SluggableDocumentTest extends BaseTestCaseMongoODM
 {
     const ARTICLE = 'Sluggable\\Fixture\\Document\\Article';
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $evm = new EventManager();

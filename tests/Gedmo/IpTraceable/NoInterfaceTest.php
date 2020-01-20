@@ -18,7 +18,7 @@ class NoInterfaceTest extends BaseTestCaseORM
     const TEST_IP = '34.234.1.10';
     const FIXTURE = "IpTraceable\\Fixture\\WithoutInterface";
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

@@ -25,7 +25,7 @@ class ClosureTreeRepositoryTest extends BaseTestCaseORM
 
     protected $listener;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -215,7 +215,7 @@ class ClosureTreeRepositoryTest extends BaseTestCaseORM
 
         $tree = $repo->childrenHierarchy();
 
-        $this->assertInternalType('array', $tree[0][$childrenIndex]);
+        $this->assertIsArray($tree[0][$childrenIndex]);
     }
 
     // Utility Methods

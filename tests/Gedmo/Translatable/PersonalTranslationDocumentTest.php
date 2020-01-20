@@ -22,7 +22,7 @@ class PersonalTranslationDocumentTest extends BaseTestCaseMongoODM
     private $translatableListener;
     private $id;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

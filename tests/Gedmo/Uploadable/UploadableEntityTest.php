@@ -66,7 +66,7 @@ class UploadableEntityTest extends BaseTestCaseORM
     private $testFileSize;
     private $testFileMimeType;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -103,7 +103,7 @@ class UploadableEntityTest extends BaseTestCaseORM
         };
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         $this->clearFilesAndDirectories();
     }
@@ -262,11 +262,9 @@ class UploadableEntityTest extends BaseTestCaseORM
         $this->assertPathEquals($file3Path, $files[2]->getFilePath());
     }
 
-    /**
-     * @expectedException Gedmo\Exception\UploadableNoPathDefinedException
-     */
     public function testNoPathDefinedOnEntityOrListenerThrowsException()
     {
+        $this->expectException('Gedmo\Exception\UploadableNoPathDefinedException');
         $file = new FileWithoutPath();
 
         $fileInfo = $this->generateUploadedFile();
@@ -409,11 +407,9 @@ class UploadableEntityTest extends BaseTestCaseORM
         $this->assertPathEquals($filePath, $file->getFilePath());
     }
 
-    /**
-     * @expectedException Gedmo\Exception\UploadableFileAlreadyExistsException
-     */
     public function testFileAlreadyExistsException()
     {
+        $this->expectException('Gedmo\Exception\UploadableFileAlreadyExistsException');
         $file = new Image();
         $file->setTitle('test');
         $fileInfo = $this->generateUploadedFile('image', $this->testFileWithoutExt, $this->testFilenameWithoutExt);
@@ -488,11 +484,9 @@ class UploadableEntityTest extends BaseTestCaseORM
         chdir($currDir);
     }
 
-    /**
-     * @expectedException Gedmo\Exception\UploadableUploadException
-     */
     public function test_moveFile_ifUploadedFileCantBeMovedThrowException()
     {
+        $this->expectException('Gedmo\Exception\UploadableUploadException');
         $this->listener->returnFalseOnMoveUploadedFile = true;
 
         $file = new Image();
@@ -505,27 +499,21 @@ class UploadableEntityTest extends BaseTestCaseORM
         $this->em->flush();
     }
 
-    /**
-     * @expectedException RuntimeException
-     */
     public function test_addEntityFileInfo_ifFileInfoIsNotValidThrowException()
     {
+        $this->expectException('RuntimeException');
         $this->listener->addEntityFileInfo(new Image(), 'invalidFileInfo');
     }
 
-    /**
-     * @expectedException RuntimeException
-     */
     public function test_getEntityFileInfo_ifTheresNoFileInfoForEntityThrowException()
     {
+        $this->expectException('RuntimeException');
         $this->listener->getEntityFileInfo(new Image());
     }
 
-    /**
-     * @expectedException Gedmo\Exception\UploadableMaxSizeException
-     */
     public function test_fileExceedingMaximumAllowedSizeThrowsException()
     {
+        $this->expectException('Gedmo\Exception\UploadableMaxSizeException');
         // We set the default path on the listener
         $this->listener->setDefaultPath($this->destinationTestDir);
 
@@ -557,11 +545,9 @@ class UploadableEntityTest extends BaseTestCaseORM
         $this->assertEquals($size, $file->getFileSize());
     }
 
-    /**
-     * @expectedException Gedmo\Exception\UploadableCouldntGuessMimeTypeException
-     */
     public function test_ifMimeTypeGuesserCantResolveTypeThrowException()
     {
+        $this->expectException('Gedmo\Exception\UploadableCouldntGuessMimeTypeException');
         // We set the default path on the listener
         $this->listener->setDefaultPath($this->destinationTestDir);
         $this->listener->setMimeTypeGuesser(new MimeTypeGuesserStub(null));
@@ -575,11 +561,9 @@ class UploadableEntityTest extends BaseTestCaseORM
         $this->em->flush();
     }
 
-    /**
-     * @expectedException Gedmo\Exception\UploadableInvalidMimeTypeException
-     */
     public function test_allowedTypesOption_ifMimeTypeIsInvalidThrowException()
     {
+        $this->expectException('Gedmo\Exception\UploadableInvalidMimeTypeException');
         // We set the default path on the listener
         $this->listener->setDefaultPath($this->destinationTestDir);
         $this->listener->setMimeTypeGuesser(new MimeTypeGuesserStub('text/css'));
@@ -593,11 +577,9 @@ class UploadableEntityTest extends BaseTestCaseORM
         $this->em->flush();
     }
 
-    /**
-     * @expectedException Gedmo\Exception\UploadableInvalidMimeTypeException
-     */
     public function test_disallowedTypesOption_ifMimeTypeIsInvalidThrowException()
     {
+        $this->expectException('Gedmo\Exception\UploadableInvalidMimeTypeException');
         // We set the default path on the listener
         $this->listener->setDefaultPath($this->destinationTestDir);
         $this->listener->setMimeTypeGuesser(new MimeTypeGuesserStub('text/css'));
@@ -612,11 +594,11 @@ class UploadableEntityTest extends BaseTestCaseORM
     }
 
     /**
-     * @expectedException Gedmo\Exception\InvalidArgumentException
      * @dataProvider invalidFileInfoClassesProvider
      */
     public function test_setDefaultFileInfoClass_throwExceptionIfInvalidClassArePassed($class)
     {
+        $this->expectException('Gedmo\Exception\InvalidArgumentException');
         $this->listener->setDefaultFileInfoClass($class);
     }
 

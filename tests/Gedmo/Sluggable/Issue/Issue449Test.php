@@ -21,7 +21,7 @@ class Issue449Test extends BaseTestCaseORM
 
     private $softDeleteableListener;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

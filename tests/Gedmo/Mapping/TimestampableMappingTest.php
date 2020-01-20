@@ -19,7 +19,7 @@ class TimestampableMappingTest extends \PHPUnit\Framework\TestCase
     const TEST_YAML_ENTITY_CLASS = 'Mapping\Fixture\Yaml\Category';
     private $em;
 
-    public function setUp()
+    public function setUp(): void
     {
         $config = new \Doctrine\ORM\Configuration();
         $config->setMetadataCacheImpl(new \Doctrine\Common\Cache\ArrayCache());

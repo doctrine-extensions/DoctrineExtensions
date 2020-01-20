@@ -35,7 +35,7 @@ class SortableGroupTest extends BaseTestCaseORM
     const TODAY = '2013-10-24 12:50';
     const TOMORROW = '2013-10-25 12:50';
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

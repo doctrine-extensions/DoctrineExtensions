@@ -17,7 +17,7 @@ class NestedTreeRootRepositoryTest extends BaseTestCaseORM
 {
     const CATEGORY = "Tree\\Fixture\\RootCategory";
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -437,7 +437,7 @@ class NestedTreeRootRepositoryTest extends BaseTestCaseORM
 
         $tree = $repo->childrenHierarchy();
 
-        $this->assertInternalType('array', $tree[0][$childrenIndex]);
+        $this->assertIsArray($tree[0][$childrenIndex]);
     }
 
     protected function getUsedEntityFixtures()

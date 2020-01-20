@@ -18,7 +18,7 @@ class TimestampableEmbeddedDocumentTest extends BaseTestCaseMongoODM
 {
     const BOOK = 'Timestampable\Fixture\Document\Book';
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $evm = new EventManager();

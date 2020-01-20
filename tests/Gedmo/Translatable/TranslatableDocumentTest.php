@@ -22,7 +22,7 @@ class TranslatableDocumentTest extends BaseTestCaseMongoODM
     private $translatableListener;
     private $articleId;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $evm = new EventManager();

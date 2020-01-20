@@ -18,7 +18,7 @@ class MultiInheritanceTest extends BaseTestCaseORM
     const ANODE = "Tree\\Fixture\\ANode";
     const TRANSLATION = "Gedmo\\Translatable\\Entity\\Translation";
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
