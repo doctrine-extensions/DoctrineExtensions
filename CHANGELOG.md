@@ -20,6 +20,7 @@ a release.
 
 ## [Unreleased]
 ### Notable & Breaking Changes
+- Minimum PHP version requirement of 7.2
 - Source files moved from `/lib/Gedmo` to `/src`
 - All string column type annotations changed to 191 character length (#1941)
 
