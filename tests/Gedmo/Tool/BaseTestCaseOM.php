@@ -61,15 +61,9 @@ abstract class BaseTestCaseOM extends \PHPUnit\Framework\TestCase
      */
     protected function tearDown(): void
     {
-        foreach ($this->dms as $dm) {
-            if ($dm) {
-                foreach ($dm->getDocumentDatabases() as $db) {
-                    foreach ($db->listCollections() as $collection) {
-                        $collection->drop();
-                    }
-                }
-                $dm->getConnection()->close();
-                $dm = null;
+        foreach ($this->dms as $documentManager) {
+            foreach ($documentManager->getDocumentDatabases() as $documentDatabase) {
+                $documentDatabase->drop();
             }
         }
     }
