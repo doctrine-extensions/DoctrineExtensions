@@ -45,8 +45,8 @@
         "alcaeus/mongo-php-adapter": "^1.1",
         "doctrine/mongodb-odm": "^1.2",
         "doctrine/orm": "^2.6",
-        "symfony/yaml": "^4.1",
-        "phpunit/phpunit": "^7.5"
+        "phpunit/phpunit": "^7.5",
+        "symfony/yaml": "^4.1"
     },
     "conflict": {
         "doctrine/annotations": "<1.2",
