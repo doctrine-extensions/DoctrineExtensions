@@ -33,6 +33,10 @@ For the current stable version, see the [v2.4.x branch](https://github.com/Atlan
 * [Laravel 5](https://www.laraveldoctrine.org/docs/1.3/extensions)
 * [Zend Framework 2](/doc/zendframework2.md)
 
+### Upgrading
+
+* [From v2.4.x to v3.0](/doc/upgrading/upgrade-v2.4-to-v3.0.md)
+
 ## Extensions
 
 #### ORM & MongoDB ODM
