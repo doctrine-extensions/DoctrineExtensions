@@ -47,15 +47,15 @@ abstract class BaseTestCaseMongoODM extends \PHPUnit\Framework\TestCase
      */
     protected function tearDown(): void
     {
-        if ($this->dm) {
-            foreach ($this->dm->getDocumentDatabases() as $db) {
-                foreach ($db->listCollections() as $collection) {
-                    $collection->drop();
-                }
-            }
-            $this->dm->getConnection()->close();
-            $this->dm = null;
+        if (null === $this->dm) {
+            return;
         }
+
+        foreach ($this->dm->getDocumentDatabases() as $documentDatabase) {
+            $documentDatabase->drop();
+        }
+
+        unset($this->dm);
     }
 
     /**
