@@ -2,10 +2,10 @@
 
 namespace Gedmo\Loggable\Document\Repository;
 
+use Doctrine\ODM\MongoDB\Repository\DocumentRepository;
 use Gedmo\Loggable\Document\LogEntry;
 use Gedmo\Tool\Wrapper\MongoDocumentWrapper;
 use Gedmo\Loggable\LoggableListener;
-use Doctrine\ODM\MongoDB\DocumentRepository;
 use Doctrine\ODM\MongoDB\Cursor;
 
 /**

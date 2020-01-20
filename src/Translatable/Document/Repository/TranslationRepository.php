@@ -2,8 +2,8 @@
 
 namespace Gedmo\Translatable\Document\Repository;
 
+use Doctrine\ODM\MongoDB\Repository\DocumentRepository;
 use Gedmo\Translatable\TranslatableListener;
-use Doctrine\ODM\MongoDB\DocumentRepository;
 use Doctrine\ODM\MongoDB\Cursor;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Doctrine\ODM\MongoDB\UnitOfWork;

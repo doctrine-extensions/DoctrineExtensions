@@ -19,7 +19,7 @@ class SoftDeleteableFilter extends BsonFilter
      *
      * @return array The criteria array, if there is available, empty array otherwise
      */
-    public function addFilterCriteria(ClassMetadata $targetEntity)
+    public function addFilterCriteria(ClassMetadata $targetEntity): array
     {
         $class = $targetEntity->getName();
         if (array_key_exists($class, $this->disabled) && $this->disabled[$class] === true) {
