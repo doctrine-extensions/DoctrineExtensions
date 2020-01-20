@@ -472,7 +472,7 @@ class TranslatableListener extends MappedEventSubscriber
             foreach ($config['fields'] as $field) {
                 $translated = '';
                 $is_translated = false;
-                foreach ((array) $result as $entry) {
+                foreach ($result as $entry) {
                     if ($entry['field'] == $field) {
                         $translated = isset($entry['content']) ? $entry['content'] : null;
                         $is_translated = true;

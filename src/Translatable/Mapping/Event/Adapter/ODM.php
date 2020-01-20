@@ -2,10 +2,11 @@
 
 namespace Gedmo\Translatable\Mapping\Event\Adapter;
 
+use Doctrine\MongoDB\Cursor;
+use Doctrine\ODM\MongoDB\Iterator\Iterator;
 use Gedmo\Mapping\Event\Adapter\ODM as BaseAdapterODM;
 use Gedmo\Tool\Wrapper\AbstractWrapper;
 use Doctrine\ODM\MongoDB\Mapping\ClassMetadataInfo;
-use Doctrine\ODM\MongoDB\Cursor;
 use Gedmo\Translatable\Mapping\Event\TranslatableAdapter;
 
 /**
@@ -114,12 +115,8 @@ final class ODM extends BaseAdapterODM implements TranslatableAdapter
             $qb->field('objectClass')->equals($objectClass);
         }
         $q = $qb->getQuery();
-        $result = $q->execute();
-        if ($result instanceof Cursor) {
-            $result = current($result->toArray());
-        }
 
-        return $result;
+        return $q->getSingleResult();
     }
 
     /**
