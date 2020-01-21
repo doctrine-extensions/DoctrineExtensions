@@ -45,7 +45,7 @@ class BlameableDocumentTest extends BaseTestCaseMongoODM
     public function testBlameable()
     {
         $repo = $this->dm->getRepository(self::ARTICLE);
-        $article = $repo->findOneByTitle('Blameable Article');
+        $article = $repo->findOneBy(['title' => 'Blameable Article']);
 
         $this->assertEquals(self::TEST_USERNAME, $article->getCreated());
         $this->assertEquals(self::TEST_USERNAME, $article->getUpdated());
@@ -59,7 +59,7 @@ class BlameableDocumentTest extends BaseTestCaseMongoODM
         $this->dm->persist($published);
         $this->dm->flush();
 
-        $article = $repo->findOneByTitle('Blameable Article');
+        $article = $repo->findOneBy(['title' => 'Blameable Article']);
 
         $this->assertEquals(self::TEST_USERNAME, $article->getPublished());
         $this->assertEquals(self::TEST_USERNAME, $article->getCreator()->getUsername());
@@ -76,7 +76,7 @@ class BlameableDocumentTest extends BaseTestCaseMongoODM
         $this->dm->flush();
 
         $repo = $this->dm->getRepository(self::ARTICLE);
-        $sport = $repo->findOneByTitle('sport forced');
+        $sport = $repo->findOneBy(['title' => 'sport forced']);
         $this->assertEquals(self::TEST_USERNAME, $sport->getCreated());
         $this->assertEquals(self::TEST_USERNAME, $sport->getUpdated());
 
@@ -90,7 +90,7 @@ class BlameableDocumentTest extends BaseTestCaseMongoODM
         $this->dm->persist($published);
         $this->dm->flush();
 
-        $sport = $repo->findOneByTitle('sport forced');
+        $sport = $repo->findOneBy(['title' => 'sport forced']);
         $this->assertEquals(self::TEST_USERNAME, $sport->getPublished());
     }
 
