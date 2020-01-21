@@ -38,7 +38,7 @@ class IpTraceableDocumentTest extends BaseTestCaseMongoODM
     public function testIpTraceable()
     {
         $repo = $this->dm->getRepository(self::ARTICLE);
-        $article = $repo->findOneByTitle('IpTraceable Article');
+        $article = $repo->findOneBy(['title' => 'IpTraceable Article']);
 
         $this->assertEquals(self::TEST_IP, $article->getCreated());
         $this->assertEquals(self::TEST_IP, $article->getUpdated());
@@ -53,7 +53,7 @@ class IpTraceableDocumentTest extends BaseTestCaseMongoODM
         $this->dm->flush();
         $this->dm->clear();
 
-        $article = $repo->findOneByTitle('IpTraceable Article');
+        $article = $repo->findOneBy(['title' => 'IpTraceable Article']);
 
         $this->assertEquals(self::TEST_IP, $article->getPublished());
         $this->assertEquals(self::TEST_IP, $article->getCreated());
@@ -71,7 +71,7 @@ class IpTraceableDocumentTest extends BaseTestCaseMongoODM
         $this->dm->clear();
 
         $repo = $this->dm->getRepository(self::ARTICLE);
-        $sport = $repo->findOneByTitle('sport forced');
+        $sport = $repo->findOneBy(['title' => 'sport forced']);
         $this->assertEquals(self::TEST_IP, (string) $sport->getCreated());
         $this->assertEquals(self::TEST_IP, $sport->getUpdated());
 
@@ -86,7 +86,7 @@ class IpTraceableDocumentTest extends BaseTestCaseMongoODM
         $this->dm->flush();
         $this->dm->clear();
 
-        $sport = $repo->findOneByTitle('sport forced');
+        $sport = $repo->findOneBy(['title' => 'sport forced']);
         $this->assertEquals(self::TEST_IP, $sport->getPublished());
     }
 

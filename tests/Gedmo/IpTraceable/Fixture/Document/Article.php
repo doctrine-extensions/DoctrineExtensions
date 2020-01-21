@@ -19,7 +19,7 @@ class Article
     private $title;
 
     /**
-     * @ODM\ReferenceOne(targetDocument="Type")
+     * @ODM\ReferenceOne(targetDocument="IpTraceable\Fixture\Document\Type")
      */
     private $type;
 
@@ -56,7 +56,7 @@ class Article
 
     /**
      * @var bool
-     * @ODM\Boolean
+     * @ODM\Field(type="boolean")
      */
     private $isReady = false;
 
