@@ -21,7 +21,7 @@ class Article
     private $title;
 
     /**
-     * @MongoODM\ReferenceMany(targetDocument="ArticleTranslation", mappedBy="object")
+     * @MongoODM\ReferenceMany(targetDocument="Translatable\Fixture\Document\Personal\ArticleTranslation", mappedBy="object")
      */
     private $translations;
 
