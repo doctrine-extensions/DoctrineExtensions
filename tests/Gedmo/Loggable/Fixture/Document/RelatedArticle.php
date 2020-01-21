@@ -29,7 +29,7 @@ class RelatedArticle
     private $content;
 
     /**
-     * @ODM\ReferenceMany(targetDocument="Comment", mappedBy="article")
+     * @ODM\ReferenceMany(targetDocument="Loggable\Fixture\Document\Comment", mappedBy="article")
      */
     private $comments;
 
