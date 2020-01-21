@@ -55,7 +55,7 @@ class LoggableDocumentTest extends BaseTestCaseMongoODM
         $this->dm->persist($art0);
         $this->dm->flush();
 
-        $log = $logRepo->findOneByObjectId($art0->getId());
+        $log = $logRepo->findOneBy(['objectId' => $art0->getId()]);
 
         $this->assertNotNull($log);
         $this->assertEquals('create', $log->getAction());
@@ -70,7 +70,7 @@ class LoggableDocumentTest extends BaseTestCaseMongoODM
         $this->assertEquals($data['author'], array('name' => 'John Doe', 'email' => 'john@doe.com'));
 
         // test update
-        $article = $articleRepo->findOneByTitle('Title');
+        $article = $articleRepo->findOneBy(['title' => 'Title']);
         $article->setTitle('New');
         $this->dm->persist($article);
         $this->dm->flush();
@@ -80,7 +80,7 @@ class LoggableDocumentTest extends BaseTestCaseMongoODM
         $this->assertEquals('update', $log->getAction());
 
         // test delete
-        $article = $articleRepo->findOneByTitle('New');
+        $article = $articleRepo->findOneBy(['title' => 'New']);
         $this->dm->remove($article);
         $this->dm->flush();
         $this->dm->clear();
@@ -96,7 +96,7 @@ class LoggableDocumentTest extends BaseTestCaseMongoODM
         $commentLogRepo = $this->dm->getRepository(self::COMMENT_LOG);
         $commentRepo = $this->dm->getRepository(self::COMMENT);
 
-        $comment = $commentRepo->findOneByMessage('m-v5');
+        $comment = $commentRepo->findOneBy(['message' => 'm-v5']);
         $commentId = $comment->getId();
         $this->assertEquals('m-v5', $comment->getMessage());
         $this->assertEquals('s-v3', $comment->getSubject());

@@ -30,12 +30,12 @@ class Comment
 
     /**
      * @Gedmo\Versioned
-     * @ODM\ReferenceOne(targetDocument="RelatedArticle", inversedBy="comments")
+     * @ODM\ReferenceOne(targetDocument="Loggable\Fixture\Document\RelatedArticle", inversedBy="comments")
      */
     private $article;
 
     /**
-     * @ODM\EmbedOne(targetDocument="Author")
+     * @ODM\EmbedOne(targetDocument="Loggable\Fixture\Document\Author")
      * @Gedmo\Versioned
      */
     private $author;

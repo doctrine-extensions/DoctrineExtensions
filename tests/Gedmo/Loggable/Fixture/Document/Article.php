@@ -21,7 +21,7 @@ class Article
     private $title;
 
     /**
-     * @ODM\EmbedOne(targetDocument="Author")
+     * @ODM\EmbedOne(targetDocument="Loggable\Fixture\Document\Author")
      * @Gedmo\Versioned
      */
     private $author;
