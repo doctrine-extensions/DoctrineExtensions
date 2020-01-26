@@ -458,7 +458,8 @@ class SluggableListener extends MappedEventSubscriber
         }
 
         // load similar slugs
-        $result = array_merge((array) $ea->getSimilarSlugs($object, $meta, $config, $preferredSlug), $similarPersisted);
+        $result = array_merge($ea->getSimilarSlugs($object, $meta, $config, $preferredSlug), $similarPersisted);
+
         // leave only right slugs
 
         if (!$recursing) {

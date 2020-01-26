@@ -2,8 +2,9 @@
 
 namespace Gedmo\Sluggable\Mapping\Event\Adapter;
 
+use Doctrine\MongoDB\Cursor;
+use Doctrine\ODM\MongoDB\Iterator\Iterator;
 use Gedmo\Mapping\Event\Adapter\ODM as BaseAdapterODM;
-use Doctrine\ODM\MongoDB\Cursor;
 use Gedmo\Sluggable\Mapping\Event\SluggableAdapter;
 use Gedmo\Tool\Wrapper\AbstractWrapper;
 
@@ -44,7 +45,7 @@ final class ODM extends BaseAdapterODM implements SluggableAdapter
         $q->setHydrate(false);
 
         $result = $q->execute();
-        if ($result instanceof Cursor) {
+        if ($result instanceof Cursor || $result instanceof Iterator) {
             $result = $result->toArray();
         }
 
