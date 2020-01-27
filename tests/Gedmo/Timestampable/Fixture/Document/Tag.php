@@ -17,14 +17,14 @@ class Tag
     protected $name;
 
     /**
-     * @ODM\Date
+     * @ODM\Field(type="date")
      * @Gedmo\Timestampable(on="create")
      * @var \DateTime
      */
     protected $created;
 
     /**
-     * @ODM\Date
+     * @ODM\Field(type="date")
      * @Gedmo\Timestampable
      * @var \DateTime
      */

@@ -19,44 +19,46 @@ class Article
     private $title;
 
     /**
-     * @ODM\ReferenceOne(targetDocument="Type")
+     * @ODM\ReferenceOne(targetDocument="Timestampable\Fixture\Document\Type")
      */
     private $type;
 
     /**
-     * @var timestamp $created
+     * @var string $created
      *
-     * @ODM\Timestamp
+     * @ODM\Field(type="timestamp")
      * @Gedmo\Timestampable(on="create")
      */
     private $created;
 
     /**
-     * @var date $updated
+     * @var \DateTime $updated
      *
-     * @ODM\Date
+     * @ODM\Field(type="date")
      * @Gedmo\Timestampable
      */
     private $updated;
 
     /**
-     * @var date $published
+     * @var \DateTime $published
      *
-     * @ODM\Date
+     * @ODM\Field(type="date")
      * @Gedmo\Timestampable(on="change", field="type.title", value="Published")
      */
     private $published;
 
     /**
      * @var \DateTime
-     * @ODM\Date
+     *
+     * @ODM\Field(type="date")
      * @Gedmo\Timestampable(on="change", field="isReady", value=true)
      */
     private $ready;
 
     /**
      * @var bool
-     * @ODM\Boolean
+     *
+     * @ODM\Field(type="boolean")
      */
     private $isReady = false;
 
