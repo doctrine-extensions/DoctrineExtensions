@@ -27,7 +27,7 @@ class Type
     private $identifier;
 
     /**
-     * @ODM\ReferenceMany(targetDocument="Article", mappedBy="type")
+     * @ODM\ReferenceMany(targetDocument="ReferenceIntegrity\Fixture\Document\ManyRestrict\Article", mappedBy="type")
      * @Gedmo\ReferenceIntegrity("restrict")
      * @var ArrayCollection
      */

@@ -20,7 +20,7 @@ class Article
     private $title;
 
     /**
-     * @ODM\ReferenceOne(targetDocument="Type", simple="true", inversedBy="articles")
+     * @ODM\ReferenceOne(targetDocument="ReferenceIntegrity\Fixture\Document\OneNullify\Type", inversedBy="articles")
      * @var Type
      */
     private $type;
