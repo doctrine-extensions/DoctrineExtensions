@@ -76,7 +76,7 @@ class LoggableEntityTest extends BaseTestCaseORM
         $this->em->persist($art0);
         $this->em->flush();
 
-        $log = $logRepo->findOneByObjectId($art0->getId());
+        $log = $logRepo->findOneBy(['objectId' => $art0->getId()]);
 
         $this->assertNotNull($log);
         $this->assertEquals('create', $log->getAction());
@@ -89,7 +89,7 @@ class LoggableEntityTest extends BaseTestCaseORM
         $this->assertEquals($data['title'], 'Title');
 
         // test update
-        $article = $articleRepo->findOneByTitle('Title');
+        $article = $articleRepo->findOneBy(['title' => 'Title']);
 
         $article->setTitle('New');
         $this->em->persist($article);
@@ -100,7 +100,7 @@ class LoggableEntityTest extends BaseTestCaseORM
         $this->assertEquals('update', $log->getAction());
 
         // test delete
-        $article = $articleRepo->findOneByTitle('New');
+        $article = $articleRepo->findOneBy(['title' => 'New']);
         $this->em->remove($article);
         $this->em->flush();
         $this->em->clear();

@@ -62,14 +62,14 @@ class TranslatableTest extends BaseTestCaseORM
         // this will force it to find translation in "en" locale, since listener has "en" set
         // and since default locale is "en" current translation will be "test"
         // setting title to "test" will not even persist entity, since there is no changeset
-        $entity = $repo->findOneById($entity->getId());
+        $entity = $repo->findOneBy(['id' => $entity->getId()]);
         $entity->setTranslatableLocale('de');
         $entity->setTitle('test');
         $this->em->persist($entity);
         $this->em->flush();
 
         $this->em->clear();
-        $entity = $repo->findOneById($entity->getId());
+        $entity = $repo->findOneBy(['id' => $entity->getId()]);
         $repo = $this->em->getRepository(self::TRANSLATION);
 
         $translations = $repo->findTranslations($entity);

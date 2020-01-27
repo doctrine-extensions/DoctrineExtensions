@@ -40,7 +40,7 @@ class TranslatableDocumentTest extends BaseTestCaseMongoODM
     {
         // test inserted translations
         $repo = $this->dm->getRepository(self::ARTICLE);
-        /*$article = $repo->findOneByTitle('Title EN');
+        /*$article = $repo->findOneBy(['title' => 'Title EN']);
 
         $transRepo = $this->dm->getRepository(self::TRANSLATION);
         $this->assertTrue($transRepo instanceof Document\Repository\TranslationRepository);

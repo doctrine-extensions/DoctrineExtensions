@@ -63,7 +63,7 @@ class TranslatableWithEmbeddedTest extends BaseTestCaseORM
         $repo = $this->em->getRepository(self::FIXTURE);
 
         /** @var Company $entity */
-        $entity = $repo->findOneById(1);
+        $entity = $repo->findOneBy(['id' => 1]);
 
         $repo = $this->em->getRepository(self::TRANSLATION);
 
@@ -83,7 +83,7 @@ class TranslatableWithEmbeddedTest extends BaseTestCaseORM
 
         $this->translatableListener->setTranslatableLocale('de');
         $repo = $this->em->getRepository(self::FIXTURE);
-        $entity = $repo->findOneById($entity->getId());
+        $entity = $repo->findOneBy(['id' => $entity->getId()]);
 
         $this->assertSame('website-de', $entity->getLink()->getWebsite());
         $this->assertSame('facebook-de', $entity->getLink()->getFacebook());

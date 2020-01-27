@@ -46,7 +46,7 @@ class TranslatableTest extends BaseTestCaseORM
         $this->em->clear();
 
         // retrieve record (translations would be fetched later - by demand)
-        $person = $this->em->getRepository(self::PERSON)->findOneByName('Jen');
+        $person = $this->em->getRepository(self::PERSON)->findOneBy(['name' => 'Jen']);
 
         $this->assertSame('Jen', $person->getName());
         $this->assertSame('Женя', $person->translate('ru_RU')->getName());
@@ -110,7 +110,7 @@ class TranslatableTest extends BaseTestCaseORM
         $this->em->flush();
         $this->em->clear();
 
-        $person = $this->em->getRepository(self::PERSON)->findOneByName('Jen');
+        $person = $this->em->getRepository(self::PERSON)->findOneBy(['name' => 'Jen']);
         $this->assertSame('Женя', $person->translate('ru')->getName());
         $parent = $person->getParent();
         $this->assertTrue($parent instanceof Proxy);
@@ -193,7 +193,7 @@ class TranslatableTest extends BaseTestCaseORM
         $this->em->clear();
 
         // retrieve record (translations would be fetched later - by demand)
-        $person = $this->em->getRepository(self::PERSON_CUSTOM_PROXY)->findOneByName('Jen');
+        $person = $this->em->getRepository(self::PERSON_CUSTOM_PROXY)->findOneBy(['name' => 'Jen']);
 
         $this->assertSame('Jen', $person->getName());
         $this->assertSame('Женя', $person->translate('ru_RU')->getName());

@@ -38,7 +38,7 @@ class NoInterfaceTest extends BaseTestCaseORM
         $this->em->flush();
         $this->em->clear();
 
-        $test = $this->em->getRepository(self::FIXTURE)->findOneByTitle('Test');
+        $test = $this->em->getRepository(self::FIXTURE)->findOneBy(['title' => 'Test']);
         $this->assertEquals('testuser', $test->getCreated());
         $this->assertEquals('testuser', $test->getUpdated());
     }

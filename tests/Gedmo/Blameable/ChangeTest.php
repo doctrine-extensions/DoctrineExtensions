@@ -41,7 +41,7 @@ class ChangeTest extends BaseTestCaseORM
         $this->em->flush();
         $this->em->clear();
 
-        $test = $this->em->getRepository(self::FIXTURE)->findOneByTitle('Test');
+        $test = $this->em->getRepository(self::FIXTURE)->findOneBy(['title' => 'Test']);
         $test->setTitle('New Title');
         $this->em->persist($test);
         $this->em->flush();
@@ -51,7 +51,7 @@ class ChangeTest extends BaseTestCaseORM
 
         $this->listener->setUserValue('otheruser');
 
-        $test = $this->em->getRepository(self::FIXTURE)->findOneByTitle('New Title');
+        $test = $this->em->getRepository(self::FIXTURE)->findOneBy(['title' => 'New Title']);
         $test->setText('New Text');
         $this->em->persist($test);
         $this->em->flush();

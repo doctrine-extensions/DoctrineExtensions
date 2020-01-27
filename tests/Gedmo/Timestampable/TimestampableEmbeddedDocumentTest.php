@@ -46,7 +46,7 @@ class TimestampableEmbeddedDocumentTest extends BaseTestCaseMongoODM
 
         $repo = $this->dm->getRepository(self::BOOK);
 
-        $bookFromRepo = $repo->findOneByTitle('Cats & Dogs');
+        $bookFromRepo = $repo->findOneBy(['title' => 'Cats & Dogs']);
 
         $this->assertNotNull($bookFromRepo);
 

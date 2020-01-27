@@ -97,7 +97,7 @@ class MaterializedPathODMMongoDBTreeLockingTest extends BaseTestCaseMongoODM
         $this->expectException('Gedmo\Exception\TreeLockingException');
 
         $repo = $this->dm->getRepository(self::ARTICLE);
-        $article2 = $repo->findOneByTitle('2');
+        $article2 = $repo->findOneBy(['title' => '2']);
         $article2->setTitle('New title 2');
 
         $this->dm->flush();

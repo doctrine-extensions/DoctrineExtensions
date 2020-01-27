@@ -46,7 +46,7 @@ class TranslatableSluggableTreeTest extends BaseTestCaseORM
     public function testNestedBehaviors()
     {
         $vegies = $this->em->getRepository(self::CATEGORY)
-            ->findOneByTitle('Vegitables');
+            ->findOneBy(['title' => 'Vegitables']);
 
         $childCount = $this->em->getRepository(self::CATEGORY)
             ->childCount($vegies);
@@ -118,10 +118,10 @@ class TranslatableSluggableTreeTest extends BaseTestCaseORM
     {
         $this->translatableListener->setTranslatableLocale('de_DE');
         $repo = $this->em->getRepository(self::CATEGORY);
-        $food = $repo->findOneByTitle('Food');
+        $food = $repo->findOneBy(['title' => 'Food']);
         $food->setTitle('Lebensmittel');
 
-        $vegies = $repo->findOneByTitle('Vegitables');
+        $vegies = $repo->findOneBy(['title' => 'Vegitables']);
         $vegies->setTitle('Gemüse');
 
         $this->em->persist($food);

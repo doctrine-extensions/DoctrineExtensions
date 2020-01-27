@@ -76,12 +76,12 @@ class ClosureTreeTest extends BaseTestCaseORM
         $dumpTime($start, $num.' - inserts took:');
         $start = microtime(true);
         // test moving
-        $target = $repo->findOneByTitle('cat300');
-        $dest = $repo->findOneByTitle('cat2000');
+        $target = $repo->findOneBy(['title' => 'cat300']);
+        $dest = $repo->findOneBy(['title' => 'cat2000']);
         $target->setParent($dest);
 
-        $target2 = $repo->findOneByTitle('cat450');
-        $dest2 = $repo->findOneByTitle('cat2500');
+        $target2 = $repo->findOneBy(['title' => 'cat450']);
+        $dest2 = $repo->findOneBy(['title' => 'cat2500']);
         $target2->setParent($dest2);
 
         $this->em->flush();
@@ -93,7 +93,7 @@ class ClosureTreeTest extends BaseTestCaseORM
         $repo = $this->em->getRepository(self::CATEGORY);
         $closureRepo = $this->em->getRepository(self::CLOSURE);
 
-        $food = $repo->findOneByTitle('Food');
+        $food = $repo->findOneBy(['title' => 'Food']);
         $dql = 'SELECT c FROM '.self::CLOSURE.' c';
         $dql .= ' WHERE c.ancestor = :ancestor';
         $query = $this->em->createQuery($dql);
@@ -146,8 +146,8 @@ class ClosureTreeTest extends BaseTestCaseORM
     public function testUpdateOfParent()
     {
         $repo = $this->em->getRepository(self::CATEGORY);
-        $strawberries = $repo->findOneByTitle('Strawberries');
-        $cheese = $repo->findOneByTitle('Cheese');
+        $strawberries = $repo->findOneBy(['title' => 'Strawberries']);
+        $cheese = $repo->findOneBy(['title' => 'Cheese']);
 
         $strawberries->setParent($cheese);
         $this->em->persist($strawberries);
@@ -169,7 +169,7 @@ class ClosureTreeTest extends BaseTestCaseORM
     public function testAnotherUpdateOfParent()
     {
         $repo = $this->em->getRepository(self::CATEGORY);
-        $strawberries = $repo->findOneByTitle('Strawberries');
+        $strawberries = $repo->findOneBy(['title' => 'Strawberries']);
 
         $strawberries->setParent(null);
         $this->em->persist($strawberries);
@@ -188,7 +188,7 @@ class ClosureTreeTest extends BaseTestCaseORM
     public function testBranchRemoval()
     {
         $repo = $this->em->getRepository(self::CATEGORY);
-        $fruits = $repo->findOneByTitle('Fruits');
+        $fruits = $repo->findOneBy(['title' => 'Fruits']);
 
         $id = $fruits->getId();
         $this->em->remove($fruits);
@@ -209,8 +209,8 @@ class ClosureTreeTest extends BaseTestCaseORM
     {
         $this->expectException('Gedmo\Exception\UnexpectedValueException');
         $repo = $this->em->getRepository(self::CATEGORY);
-        $fruits = $repo->findOneByTitle('Fruits');
-        $strawberries = $repo->findOneByTitle('Strawberries');
+        $fruits = $repo->findOneBy(['title' => 'Fruits']);
+        $strawberries = $repo->findOneBy(['title' => 'Strawberries']);
 
         $fruits->setParent($strawberries);
         $this->em->flush();

@@ -78,12 +78,12 @@ class IpTraceableTest extends BaseTestCaseORM
         $this->em->flush();
         $this->em->clear();
 
-        $sport = $this->em->getRepository(self::ARTICLE)->findOneByTitle('Sport');
+        $sport = $this->em->getRepository(self::ARTICLE)->findOneBy(['title' => 'Sport']);
         $this->assertEquals(self::TEST_IP, $sport->getCreated());
         $this->assertEquals(self::TEST_IP, $sport->getUpdated());
         $this->assertNull($sport->getPublished());
 
-        $sportComment = $this->em->getRepository(self::COMMENT)->findOneByMessage('hello');
+        $sportComment = $this->em->getRepository(self::COMMENT)->findOneBy(['message' => 'hello']);
         $this->assertEquals(self::TEST_IP, $sportComment->getModified());
         $this->assertNull($sportComment->getClosed());
 
@@ -99,7 +99,7 @@ class IpTraceableTest extends BaseTestCaseORM
         $this->em->flush();
         $this->em->clear();
 
-        $sportComment = $this->em->getRepository(self::COMMENT)->findOneByMessage('hello');
+        $sportComment = $this->em->getRepository(self::COMMENT)->findOneBy(['message' => 'hello']);
         $this->assertEquals(self::TEST_IP, $sportComment->getClosed());
 
         $this->assertEquals(self::TEST_IP, $sport->getPublished());
@@ -117,7 +117,7 @@ class IpTraceableTest extends BaseTestCaseORM
         $this->em->clear();
 
         $repo = $this->em->getRepository(self::ARTICLE);
-        $sport = $repo->findOneByTitle('sport forced');
+        $sport = $repo->findOneBy(['title' => 'sport forced']);
         $this->assertEquals(self::TEST_IP, $sport->getCreated());
         $this->assertEquals(self::TEST_IP, $sport->getUpdated());
 
@@ -131,7 +131,7 @@ class IpTraceableTest extends BaseTestCaseORM
         $this->em->flush();
         $this->em->clear();
 
-        $sport = $repo->findOneByTitle('sport forced');
+        $sport = $repo->findOneBy(['title' => 'sport forced']);
         $this->assertEquals(self::TEST_IP, $sport->getPublished());
     }
 

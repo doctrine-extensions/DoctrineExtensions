@@ -198,8 +198,8 @@ class TreeTest extends BaseTestCaseORM
         $this->em->flush();
         $this->em->clear();
 
-        $subNode = $repo->findOneByTitle('sub-node');
-        $node1 = $repo->findOneByTitle('node1');
+        $subNode = $repo->findOneBy(['title' => 'sub-node']);
+        $node1 = $repo->findOneBy(['title' => 'node1']);
         $subNode->setParent($node1);
 
         $this->em->persist($subNode);
@@ -207,13 +207,13 @@ class TreeTest extends BaseTestCaseORM
         $this->em->clear();
 
         $meta = $this->em->getClassMetadata(self::CATEGORY);
-        $subNode = $repo->findOneByTitle('sub-node');
+        $subNode = $repo->findOneBy(['title' => 'sub-node']);
         $left = $meta->getReflectionProperty('lft')->getValue($subNode);
         $right = $meta->getReflectionProperty('rgt')->getValue($subNode);
         $this->assertEquals(3, $left);
         $this->assertEquals(4, $right);
 
-        $node1 = $repo->findOneByTitle('node1');
+        $node1 = $repo->findOneBy(['title' => 'node1']);
         $left = $meta->getReflectionProperty('lft')->getValue($node1);
         $right = $meta->getReflectionProperty('rgt')->getValue($node1);
         $this->assertEquals(2, $left);
