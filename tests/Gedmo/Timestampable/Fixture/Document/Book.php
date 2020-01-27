@@ -25,7 +25,7 @@ class Book
     protected $title;
 
     /**
-     * @ODM\EmbedMany(targetDocument="Tag")
+     * @ODM\EmbedMany(targetDocument="Timestampable\Fixture\Document\Tag")
      * @var Tag[]|Collection
      */
     protected $tags;
