@@ -27,7 +27,7 @@ class Type
     private $identifier;
 
     /**
-     * @ODM\ReferenceMany(targetDocument="Article", mappedBy="types")
+     * @ODM\ReferenceMany(targetDocument="ReferenceIntegrity\Fixture\Document\ManyPull\Article", mappedBy="types")
      * @Gedmo\ReferenceIntegrity("pull")
      * @var ArrayCollection
      */

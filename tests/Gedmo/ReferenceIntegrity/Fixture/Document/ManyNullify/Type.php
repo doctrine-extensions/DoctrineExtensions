@@ -27,7 +27,7 @@ class Type
     private $identifier;
 
     /**
-     * @ODM\ReferenceMany(targetDocument="Article", mappedBy="type")
+     * @ODM\ReferenceMany(targetDocument="ReferenceIntegrity\Fixture\Document\ManyNullify\Article", mappedBy="type")
      * @Gedmo\ReferenceIntegrity("nullify")
      * @var ArrayCollection
      */
