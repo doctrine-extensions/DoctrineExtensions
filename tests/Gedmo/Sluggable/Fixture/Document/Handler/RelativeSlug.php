@@ -33,7 +33,7 @@ class RelativeSlug
     private $alias;
 
     /**
-     * @ODM\ReferenceOne(targetDocument="Article")
+     * @ODM\ReferenceOne(targetDocument="Sluggable\Fixture\Document\Handler\Article")
      */
     private $article;
 
