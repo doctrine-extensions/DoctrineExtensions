@@ -440,7 +440,7 @@ class SoftDeleteableEntityTest extends BaseTestCaseORM
         $this->em->clear();
 
         $repo = $this->em->getRepository(self::MAPPED_SUPERCLASS_CHILD_CLASS);
-        $this->assertNull($repo->findOneBy(['id' => $child->getId())]);
+        $this->assertNull($repo->findOneBy(['id' => $child->getId()]));
 
         $this->em->getFilters()->enable(self::SOFT_DELETEABLE_FILTER_NAME);
         $this->assertNotNull($repo->findById($child->getId()));
