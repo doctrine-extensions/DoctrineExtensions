@@ -42,7 +42,7 @@ class MixedValueTranslationTest extends BaseTestCaseORM
     public function testFixtureGeneratedTranslations()
     {
         $repo = $this->em->getRepository(self::MIXED);
-        $mixed = $repo->findOneById(1);
+        $mixed = $repo->findOneBy(['id' => 1]);
 
         $this->assertTrue($mixed->getDate() instanceof \DateTime);
         $this->assertTrue($mixed->getCust() instanceof \stdClass);
@@ -52,7 +52,7 @@ class MixedValueTranslationTest extends BaseTestCaseORM
     public function testOtherTranslation()
     {
         $repo = $this->em->getRepository(self::MIXED);
-        $mixed = $repo->findOneById(1);
+        $mixed = $repo->findOneBy(['id' => 1]);
 
         $this->translatableListener->setTranslatableLocale('de_de');
         $mixed->setDate(new \DateTime('2000-00-00 00:00:00'));
@@ -64,7 +64,7 @@ class MixedValueTranslationTest extends BaseTestCaseORM
         $this->em->flush();
         $this->em->clear();
 
-        $mixed = $repo->findOneById(1);
+        $mixed = $repo->findOneBy(['id' => 1]);
         $transRepo = $this->em->getRepository(self::TRANSLATION);
         $translations = $transRepo->findTranslations($mixed);
 

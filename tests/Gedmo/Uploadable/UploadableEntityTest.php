@@ -251,7 +251,7 @@ class UploadableEntityTest extends BaseTestCaseORM
 
         $this->em->flush();
 
-        $art = $artRepo->findOneByTitle('Test');
+        $art = $artRepo->findOneBy(['title' => 'Test']);
         $files = $art->getFiles();
         $file1Path = $file1->getPath().'/'.$fileInfo['name'];
         $file2Path = $file2->getPath().'/'.$fileInfo['name'];

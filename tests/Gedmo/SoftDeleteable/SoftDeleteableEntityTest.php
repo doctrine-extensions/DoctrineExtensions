@@ -258,8 +258,8 @@ class SoftDeleteableEntityTest extends BaseTestCaseORM
 
         $this->em->getFilters()->disable(self::SOFT_DELETEABLE_FILTER_NAME);
 
-        $foundArt = $otherArticleRepo->findOneById($artId);
-        $foundComment = $otherCommentRepo->findOneById($commentId);
+        $foundArt = $otherArticleRepo->findOneBy(['id' => $artId]);
+        $foundComment = $otherCommentRepo->findOneBy(['id' => $commentId]);
 
         $this->assertTrue(is_object($foundArt));
         $this->assertTrue(is_object($foundArt->getDeletedAt()));
@@ -414,8 +414,8 @@ class SoftDeleteableEntityTest extends BaseTestCaseORM
 
         $this->em->getFilters()->disable(self::SOFT_DELETEABLE_FILTER_NAME);
 
-        $foundArt = $otherArticleRepo->findOneById($artId);
-        $foundComment = $otherCommentRepo->findOneById($commentId);
+        $foundArt = $otherArticleRepo->findOneBy(['id' => $artId]);
+        $foundComment = $otherCommentRepo->findOneBy(['id' => $commentId]);
 
         $this->assertIsObject($foundArt);
         $this->assertIsObject($foundArt->getDeletedAt());
@@ -440,7 +440,7 @@ class SoftDeleteableEntityTest extends BaseTestCaseORM
         $this->em->clear();
 
         $repo = $this->em->getRepository(self::MAPPED_SUPERCLASS_CHILD_CLASS);
-        $this->assertNull($repo->findOneById($child->getId()));
+        $this->assertNull($repo->findOneBy(['id' => $child->getId())]);
 
         $this->em->getFilters()->enable(self::SOFT_DELETEABLE_FILTER_NAME);
         $this->assertNotNull($repo->findById($child->getId()));

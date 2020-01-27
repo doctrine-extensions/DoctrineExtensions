@@ -43,7 +43,7 @@ class ChangeTest extends BaseTestCaseORM
         $this->em->flush();
         $this->em->clear();
 
-        $test = $this->em->getRepository(self::FIXTURE)->findOneByTitle('Test');
+        $test = $this->em->getRepository(self::FIXTURE)->findOneBy(['title' => 'Test']);
         $test->setTitle('New Title');
         $this->em->persist($test);
         $this->em->flush();
@@ -53,7 +53,7 @@ class ChangeTest extends BaseTestCaseORM
 
         $this->listener->setIpValue('127.0.0.1');
 
-        $test = $this->em->getRepository(self::FIXTURE)->findOneByTitle('New Title');
+        $test = $this->em->getRepository(self::FIXTURE)->findOneBy(['title' => 'New Title']);
         $test->setText('New Text');
         $this->em->persist($test);
         $this->em->flush();

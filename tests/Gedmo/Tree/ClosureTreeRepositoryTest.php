@@ -42,7 +42,7 @@ class ClosureTreeRepositoryTest extends BaseTestCaseORM
         $this->populate();
 
         $repo = $this->em->getRepository(self::CATEGORY);
-        $food = $repo->findOneByTitle('Food');
+        $food = $repo->findOneBy(['title' => 'Food']);
 
         // Count all
         $count = $repo->childCount();
@@ -53,12 +53,12 @@ class ClosureTreeRepositoryTest extends BaseTestCaseORM
         $this->assertEquals(2, $count);
 
         // Count food children
-        $food = $repo->findOneByTitle('Food');
+        $food = $repo->findOneBy(['title' => 'Food']);
         $count = $repo->childCount($food);
         $this->assertEquals(11, $count);
 
         // Count food children, but only direct ones
-        $food = $repo->findOneByTitle('Food');
+        $food = $repo->findOneBy(['title' => 'Food']);
         $count = $repo->childCount($food, true);
         $this->assertEquals(3, $count);
     }
@@ -68,14 +68,14 @@ class ClosureTreeRepositoryTest extends BaseTestCaseORM
         $this->populate();
 
         $repo = $this->em->getRepository(self::CATEGORY);
-        $fruits = $repo->findOneByTitle('Fruits');
+        $fruits = $repo->findOneBy(['title' => 'Fruits']);
 
         $path = $repo->getPath($fruits);
         $this->assertCount(2, $path);
         $this->assertEquals('Food', $path[0]->getTitle());
         $this->assertEquals('Fruits', $path[1]->getTitle());
 
-        $strawberries = $repo->findOneByTitle('Strawberries');
+        $strawberries = $repo->findOneBy(['title' => 'Strawberries']);
         $path = $repo->getPath($strawberries);
         $this->assertCount(4, $path);
         $this->assertEquals('Food', $path[0]->getTitle());
@@ -89,7 +89,7 @@ class ClosureTreeRepositoryTest extends BaseTestCaseORM
         $this->populate();
 
         $repo = $this->em->getRepository(self::CATEGORY);
-        $fruits = $repo->findOneByTitle('Fruits');
+        $fruits = $repo->findOneBy(['title' => 'Fruits']);
 
         // direct children of node, sorted by title ascending order. NOT including the root node
         $children = $repo->children($fruits, true, 'title');
@@ -139,25 +139,25 @@ class ClosureTreeRepositoryTest extends BaseTestCaseORM
         $this->populate();
 
         $repo = $this->em->getRepository(self::CATEGORY);
-        $fruits = $repo->findOneByTitle('Fruits');
+        $fruits = $repo->findOneBy(['title' => 'Fruits']);
 
         $repo->removeFromTree($fruits);
         // ensure in memory node integrity
         $this->em->flush();
 
-        $food = $repo->findOneByTitle('Food');
+        $food = $repo->findOneBy(['title' => 'Food']);
         $children = $repo->children($food, true);
         $this->assertCount(5, $children);
 
-        $berries = $repo->findOneByTitle('Berries');
+        $berries = $repo->findOneBy(['title' => 'Berries']);
         $this->assertEquals(1, $repo->childCount($berries, true));
 
-        $lemons = $repo->findOneByTitle('Lemons');
+        $lemons = $repo->findOneBy(['title' => 'Lemons']);
         $this->assertEquals(0, $repo->childCount($lemons, true));
 
         $repo->removeFromTree($food);
 
-        $vegitables = $repo->findOneByTitle('Vegitables');
+        $vegitables = $repo->findOneBy(['title' => 'Vegitables']);
         $this->assertEquals(2, $repo->childCount($vegitables, true));
         $this->assertNull($vegitables->getParent());
 
@@ -312,8 +312,8 @@ class ClosureTreeRepositoryTest extends BaseTestCaseORM
 
         $testClosure($this, $tree, false, 'second');
 
-        $food = $repo->findOneByTitle('Food');
-        $vegitables = $repo->findOneByTitle('Vegitables');
+        $food = $repo->findOneBy(['title' => 'Food']);
+        $vegitables = $repo->findOneBy(['title' => 'Vegitables']);
 
         $boringFood = new $class();
         $boringFood->setTitle('Boring Food');
@@ -363,7 +363,7 @@ class ClosureTreeRepositoryTest extends BaseTestCaseORM
         $testClosure($this, $tree, false, 'second', false);
 
         // Test a subtree, including node
-        $node = $repo->findOneByTitle('Fruits');
+        $node = $repo->findOneBy(['title' => 'Fruits']);
         $tree = $repo->childrenHierarchy(
             $node,
             false,
@@ -375,7 +375,7 @@ class ClosureTreeRepositoryTest extends BaseTestCaseORM
         $this->assertEquals('Berries', $tree[0]['__children'][0]['title']);
         $this->assertEquals('Strawberries', $tree[0]['__children'][0]['__children'][0]['title']);
 
-        $node = $repo->findOneByTitle('Fruits');
+        $node = $repo->findOneBy(['title' => 'Fruits']);
         $tree = $repo->childrenHierarchy(
             $node,
             false,

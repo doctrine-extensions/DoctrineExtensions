@@ -78,17 +78,17 @@ class SortableTest extends BaseTestCaseORM
 
         $repo = $this->em->getRepository(self::NODE);
 
-        $node = $repo->findOneByPosition(0);
+        $node = $repo->findOneBy(['position' => 0]);
         $node->setPosition(-1);
         $this->em->flush();
 
         for ($i = 0; $i <= 8; $i++) {
-            $node = $repo->findOneByPosition($i);
+            $node = $repo->findOneBy(['position' => $i]);
             $this->assertNotNull($node);
             $this->assertEquals('Node'.($i+2), $node->getName());
         }
 
-        $node = $repo->findOneByPosition(9);
+        $node = $repo->findOneBy(['position' => 9]);
         $this->assertNotNull($node);
         $this->assertEquals('Node1', $node->getName());
 
@@ -232,7 +232,7 @@ class SortableTest extends BaseTestCaseORM
 
         $this->em->flush();
 
-        $node1 = $repo->findOneByName('Node1');
+        $node1 = $repo->findOneBy(['name' => 'Node1']);
         $this->em->remove($node2);
         $this->em->flush();
 
@@ -281,7 +281,7 @@ class SortableTest extends BaseTestCaseORM
 
         $this->em->flush();
 
-        $node1 = $repo->findOneByName('Node1');
+        $node1 = $repo->findOneBy(['name' => 'Node1']);
         $this->em->remove($node2);
         $this->em->remove($node3);
         $this->em->flush();
@@ -333,7 +333,7 @@ class SortableTest extends BaseTestCaseORM
 
         $this->em->flush();
 
-        $node1 = $repo->findOneByName('Node1');
+        $node1 = $repo->findOneBy(['name' => 'Node1']);
 
         $this->em->remove($node2);
 
@@ -468,8 +468,8 @@ class SortableTest extends BaseTestCaseORM
         $this->em->flush();
 
         $repo = $this->em->getRepository(self::CATEGORY);
-        $category1 = $repo->findOneByName('Category1');
-        $category2 = $repo->findOneByName('Category2');
+        $category1 = $repo->findOneBy(['name' => 'Category1']);
+        $category2 = $repo->findOneBy(['name' => 'Category2']);
 
         $repo = $this->em->getRepository(self::ITEM);
 
@@ -513,7 +513,7 @@ class SortableTest extends BaseTestCaseORM
         $this->em->flush();
 
         $repo = $this->em->getRepository(self::CATEGORY);
-        $category1 = $repo->findOneByName('Category1');
+        $category1 = $repo->findOneBy(['name' => 'Category1']);
 
         $repo = $this->em->getRepository(self::ITEM);
 

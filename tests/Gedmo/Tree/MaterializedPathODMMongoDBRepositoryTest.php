@@ -50,7 +50,7 @@ class MaterializedPathODMMongoDBRepositoryTest extends BaseTestCaseMongoODM
      */
     public function getChildren()
     {
-        $root = $this->repo->findOneByTitle('Food');
+        $root = $this->repo->findOneBy(['title' => 'Food']);
 
         // Get all children from the root, including it
         $result = $this->repo->getChildren($root, false, 'title', 'asc', true);
@@ -215,7 +215,7 @@ class MaterializedPathODMMongoDBRepositoryTest extends BaseTestCaseMongoODM
         $this->assertEquals(3, $count);
 
         // Count food children
-        $food = $this->repo->findOneByTitle('Food');
+        $food = $this->repo->findOneBy(['title' => 'Food']);
         $count = $this->repo->childCount($food);
 
         $this->assertEquals(4, $count);

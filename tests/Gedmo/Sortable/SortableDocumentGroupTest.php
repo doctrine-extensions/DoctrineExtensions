@@ -88,7 +88,7 @@ class SortableDocumentGroupTest extends BaseTestCaseMongoODM
     {
         $repo = $this->dm->getRepository(self::KID);
 
-        $kid = $repo->findOneByLastname('kid2');
+        $kid = $repo->findOneBy(['lastname' => 'kid2']);
         $this->assertInstanceOf(self::KID, $kid);
 
         $kid->setPosition(0);
@@ -124,7 +124,7 @@ class SortableDocumentGroupTest extends BaseTestCaseMongoODM
         $repo_category = $this->dm->getRepository(self::CATEGORY);
         $repo_post = $this->dm->getRepository(self::POST);
 
-        $category = $repo_category->findOneByName('category1');
+        $category = $repo_category->findOneBy(['name' => 'category1']);
         $this->assertInstanceOf(self::CATEGORY, $category);
 
         $post = $repo_post->findOneBy(array(
@@ -156,7 +156,7 @@ class SortableDocumentGroupTest extends BaseTestCaseMongoODM
         $repo_category = $this->dm->getRepository(self::CATEGORY);
         $repo_post = $this->dm->getRepository(self::POST);
 
-        $category = $repo_category->findOneByName('category1');
+        $category = $repo_category->findOneBy(['name' => 'category1']);
         $this->assertInstanceOf(self::CATEGORY, $category);
 
         $post = $repo_post->findOneBy(array(

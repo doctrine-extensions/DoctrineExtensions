@@ -33,23 +33,23 @@ class NestedTreeRootAssociationTest extends BaseTestCaseORM
         $repo = $this->em->getRepository(self::CATEGORY);
 
         // Foods
-        $food = $repo->findOneByTitle('Food');
+        $food = $repo->findOneBy(['title' => 'Food']);
         $this->assertEquals($food->getId(), $food->getRoot()->getId());
 
-        $fruits = $repo->findOneByTitle('Fruits');
+        $fruits = $repo->findOneBy(['title' => 'Fruits']);
         $this->assertEquals($food->getId(), $fruits->getRoot()->getId());
 
-        $vegetables = $repo->findOneByTitle('Vegetables');
+        $vegetables = $repo->findOneBy(['title' => 'Vegetables']);
         $this->assertEquals($food->getId(), $vegetables->getRoot()->getId());
 
-        $carrots = $repo->findOneByTitle('Carrots');
+        $carrots = $repo->findOneBy(['title' => 'Carrots']);
         $this->assertEquals($food->getId(), $carrots->getRoot()->getId());
 
-        $potatoes = $repo->findOneByTitle('Potatoes');
+        $potatoes = $repo->findOneBy(['title' => 'Potatoes']);
         $this->assertEquals($food->getId(), $potatoes->getRoot()->getId());
 
         // Sports
-        $sports = $repo->findOneByTitle('Sports');
+        $sports = $repo->findOneBy(['title' => 'Sports']);
         $this->assertEquals($sports->getId(), $sports->getRoot()->getId());
     }
 

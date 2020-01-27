@@ -33,10 +33,10 @@ class RepositoryTest extends BaseTestCaseORM
     public function testBasicFunctions()
     {
         $vegies = $this->em->getRepository(self::CATEGORY)
-            ->findOneByTitle('Vegitables');
+            ->findOneBy(['title' => 'Vegitables']);
 
         $food = $this->em->getRepository(self::CATEGORY)
-            ->findOneByTitle('Food');
+            ->findOneBy(['title' => 'Food']);
 
         // test childCount
 
@@ -96,7 +96,7 @@ class RepositoryTest extends BaseTestCaseORM
         $this->assertEquals('Vegitables', $path[1]->getTitle());
 
         $carrots = $this->em->getRepository(self::CATEGORY)
-            ->findOneByTitle('Carrots');
+            ->findOneBy(['title' => 'Carrots']);
 
         $path = $this->em->getRepository(self::CATEGORY)
             ->getPath($carrots);
@@ -122,7 +122,7 @@ class RepositoryTest extends BaseTestCaseORM
     {
         $this->populateMore();
         $onions = $this->em->getRepository(self::CATEGORY)
-            ->findOneByTitle('Onions');
+            ->findOneBy(['title' => 'Onions']);
         $repo = $this->em->getRepository(self::CATEGORY);
         $meta = $this->em->getClassMetadata(self::CATEGORY);
 
@@ -164,11 +164,11 @@ class RepositoryTest extends BaseTestCaseORM
         // test tree reordering
         // reorder tree by title
 
-        $food = $repo->findOneByTitle('Food');
+        $food = $repo->findOneBy(['title' => 'Food']);
         $repo->reorder($food, 'title');
 
         $node = $this->em->getRepository(self::CATEGORY)
-            ->findOneByTitle('Cabbages');
+            ->findOneBy(['title' => 'Cabbages']);
         $left = $meta->getReflectionProperty('lft')->getValue($node);
         $right = $meta->getReflectionProperty('rgt')->getValue($node);
 
@@ -176,7 +176,7 @@ class RepositoryTest extends BaseTestCaseORM
         $this->assertEquals(6, $right);
 
         $node = $this->em->getRepository(self::CATEGORY)
-            ->findOneByTitle('Carrots');
+            ->findOneBy(['title' => 'Carrots']);
         $left = $meta->getReflectionProperty('lft')->getValue($node);
         $right = $meta->getReflectionProperty('rgt')->getValue($node);
 
@@ -184,7 +184,7 @@ class RepositoryTest extends BaseTestCaseORM
         $this->assertEquals(8, $right);
 
         $node = $this->em->getRepository(self::CATEGORY)
-            ->findOneByTitle('Onions');
+            ->findOneBy(['title' => 'Onions']);
         $left = $meta->getReflectionProperty('lft')->getValue($node);
         $right = $meta->getReflectionProperty('rgt')->getValue($node);
 
@@ -192,7 +192,7 @@ class RepositoryTest extends BaseTestCaseORM
         $this->assertEquals(10, $right);
 
         $node = $this->em->getRepository(self::CATEGORY)
-            ->findOneByTitle('Potatoes');
+            ->findOneBy(['title' => 'Potatoes']);
         $left = $meta->getReflectionProperty('lft')->getValue($node);
         $right = $meta->getReflectionProperty('rgt')->getValue($node);
 
@@ -202,19 +202,19 @@ class RepositoryTest extends BaseTestCaseORM
         // test removal with reparenting
 
         $vegies = $this->em->getRepository(self::CATEGORY)
-            ->findOneByTitle('Vegitables');
+            ->findOneBy(['title' => 'Vegitables']);
 
         $repo->removeFromTree($vegies);
 
         $this->em->clear(); // clear all cached nodes
 
         $vegies = $this->em->getRepository(self::CATEGORY)
-            ->findOneByTitle('Vegitables');
+            ->findOneBy(['title' => 'Vegitables']);
 
         $this->assertNull($vegies);
 
         $node = $this->em->getRepository(self::CATEGORY)
-            ->findOneByTitle('Fruits');
+            ->findOneBy(['title' => 'Fruits']);
         $left = $meta->getReflectionProperty('lft')->getValue($node);
         $right = $meta->getReflectionProperty('rgt')->getValue($node);
 
@@ -223,7 +223,7 @@ class RepositoryTest extends BaseTestCaseORM
         $this->assertEquals('Food', $node->getParent()->getTitle());
 
         $node = $this->em->getRepository(self::CATEGORY)
-            ->findOneByTitle('Cabbages');
+            ->findOneBy(['title' => 'Cabbages']);
         $left = $meta->getReflectionProperty('lft')->getValue($node);
         $right = $meta->getReflectionProperty('rgt')->getValue($node);
 
@@ -238,14 +238,14 @@ class RepositoryTest extends BaseTestCaseORM
         $meta = $this->em->getClassMetadata(self::CATEGORY);
         $this->populateMore();
 
-        $food = $repo->findOneByTitle('Food');
+        $food = $repo->findOneBy(['title' => 'Food']);
         $repo->removeFromTree($food);
         $this->em->clear();
 
-        $food = $repo->findOneByTitle('Food');
+        $food = $repo->findOneBy(['title' => 'Food']);
         $this->assertNull($food);
 
-        $node = $repo->findOneByTitle('Fruits');
+        $node = $repo->findOneBy(['title' => 'Fruits']);
         $left = $meta->getReflectionProperty('lft')->getValue($node);
         $right = $meta->getReflectionProperty('rgt')->getValue($node);
 
@@ -253,7 +253,7 @@ class RepositoryTest extends BaseTestCaseORM
         $this->assertEquals(2, $right);
         $this->assertNull($node->getParent());
 
-        $node = $repo->findOneByTitle('Vegitables');
+        $node = $repo->findOneBy(['title' => 'Vegitables']);
         $left = $meta->getReflectionProperty('lft')->getValue($node);
         $right = $meta->getReflectionProperty('rgt')->getValue($node);
 
@@ -308,7 +308,7 @@ class RepositoryTest extends BaseTestCaseORM
     public function testMoveRootNode()
     {
         $repo = $this->em->getRepository(self::CATEGORY);
-        $food = $repo->findOneByTitle('Food');
+        $food = $repo->findOneBy(['title' => 'Food']);
 
         $repo->moveDown($food, 1);
 
@@ -329,10 +329,10 @@ class RepositoryTest extends BaseTestCaseORM
         $this->populateUuid();
 
         $vegies = $this->em->getRepository(self::CATEGORY_UUID)
-            ->findOneByTitle('Vegitables');
+            ->findOneBy(['title' => 'Vegitables']);
 
         $food = $this->em->getRepository(self::CATEGORY_UUID)
-            ->findOneByTitle('Food');
+            ->findOneBy(['title' => 'Food']);
 
         // test childCount
 
@@ -392,7 +392,7 @@ class RepositoryTest extends BaseTestCaseORM
         $this->assertEquals('Vegitables', $path[1]->getTitle());
 
         $carrots = $this->em->getRepository(self::CATEGORY_UUID)
-            ->findOneByTitle('Carrots');
+            ->findOneBy(['title' => 'Carrots']);
 
         $path = $this->em->getRepository(self::CATEGORY_UUID)
             ->getPath($carrots);
@@ -424,7 +424,7 @@ class RepositoryTest extends BaseTestCaseORM
     private function populateMore()
     {
         $vegies = $this->em->getRepository(self::CATEGORY)
-            ->findOneByTitle('Vegitables');
+            ->findOneBy(['title' => 'Vegitables']);
 
         $cabbages = new Category();
         $cabbages->setParent($vegies);

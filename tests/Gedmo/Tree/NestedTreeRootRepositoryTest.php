@@ -37,7 +37,7 @@ class NestedTreeRootRepositoryTest extends BaseTestCaseORM
     {
         $repo = $this->em->getRepository(self::CATEGORY);
 
-        $food = $repo->findOneByTitle('Food');
+        $food = $repo->findOneBy(['title' => 'Food']);
         $acme = new RootCategory();
         $acme->setTitle('Acme');
 
@@ -67,7 +67,7 @@ class NestedTreeRootRepositoryTest extends BaseTestCaseORM
         $this->assertCount(2, $result);
         $this->assertTrue(isset($result[0]['__children'][0]['__children']));
 
-        $vegies = $repo->findOneByTitle('Vegitables');
+        $vegies = $repo->findOneBy(['title' => 'Vegitables']);
         $result = $repo->childrenHierarchy($vegies);
         $this->assertCount(2, $result);
         $this->assertCount(0, $result[0]['__children']);
@@ -127,7 +127,7 @@ class NestedTreeRootRepositoryTest extends BaseTestCaseORM
     public function shouldSupportChildrenHierarchyAsHtml()
     {
         $repo = $this->em->getRepository(self::CATEGORY);
-        $food = $repo->findOneByTitle('Food');
+        $food = $repo->findOneBy(['title' => 'Food']);
         $decorate = true;
         $defaultHtmlTree = $repo->childrenHierarchy($food, false, compact('decorate'));
 
@@ -222,21 +222,21 @@ class NestedTreeRootRepositoryTest extends BaseTestCaseORM
         $repo = $this->em->getRepository(self::CATEGORY);
         $this->populateMore();
 
-        $food = $repo->findOneByTitle('Food');
+        $food = $repo->findOneBy(['title' => 'Food']);
         $repo->removeFromTree($food);
         $this->em->clear();
 
-        $food = $repo->findOneByTitle('Food');
+        $food = $repo->findOneBy(['title' => 'Food']);
         $this->assertNull($food);
 
-        $node = $repo->findOneByTitle('Fruits');
+        $node = $repo->findOneBy(['title' => 'Fruits']);
 
         $this->assertEquals(1, $node->getLeft());
         $this->assertEquals(2, $node->getRight());
         $this->assertEquals(3, $node->getRoot());
         $this->assertNull($node->getParent());
 
-        $node = $repo->findOneByTitle('Vegitables');
+        $node = $repo->findOneBy(['title' => 'Vegitables']);
 
         $this->assertEquals(1, $node->getLeft());
         $this->assertEquals(10, $node->getRight());
@@ -250,7 +250,7 @@ class NestedTreeRootRepositoryTest extends BaseTestCaseORM
     public function shouldHandleBasicRepositoryMethods()
     {
         $repo = $this->em->getRepository(self::CATEGORY);
-        $carrots = $repo->findOneByTitle('Carrots');
+        $carrots = $repo->findOneBy(['title' => 'Carrots']);
 
         $path = $repo->getPath($carrots);
         $this->assertCount(3, $path);
@@ -258,11 +258,11 @@ class NestedTreeRootRepositoryTest extends BaseTestCaseORM
         $this->assertEquals('Vegitables', $path[1]->getTitle());
         $this->assertEquals('Carrots', $path[2]->getTitle());
 
-        $vegies = $repo->findOneByTitle('Vegitables');
+        $vegies = $repo->findOneBy(['title' => 'Vegitables']);
         $childCount = $repo->childCount($vegies);
         $this->assertEquals(2, $childCount);
 
-        $food = $repo->findOneByTitle('Food');
+        $food = $repo->findOneBy(['title' => 'Food']);
         $childCount = $repo->childCount($food, true);
         $this->assertEquals(2, $childCount);
 
@@ -306,7 +306,7 @@ class NestedTreeRootRepositoryTest extends BaseTestCaseORM
         $this->assertTrue($repo->verify());
 
         $this->em->clear();
-        $onions = $repo->findOneByTitle('Onions');
+        $onions = $repo->findOneBy(['title' => 'Onions']);
 
         $this->assertEquals(11, $onions->getLeft());
         $this->assertEquals(12, $onions->getRight());
@@ -332,25 +332,25 @@ class NestedTreeRootRepositoryTest extends BaseTestCaseORM
 
         // reorder
 
-        $node = $repo->findOneByTitle('Food');
+        $node = $repo->findOneBy(['title' => 'Food']);
         $repo->reorder($node, 'title', 'ASC', false);
 
-        $node = $repo->findOneByTitle('Cabbages');
+        $node = $repo->findOneBy(['title' => 'Cabbages']);
 
         $this->assertEquals(5, $node->getLeft());
         $this->assertEquals(6, $node->getRight());
 
-        $node = $repo->findOneByTitle('Carrots');
+        $node = $repo->findOneBy(['title' => 'Carrots']);
 
         $this->assertEquals(7, $node->getLeft());
         $this->assertEquals(8, $node->getRight());
 
-        $node = $repo->findOneByTitle('Onions');
+        $node = $repo->findOneBy(['title' => 'Onions']);
 
         $this->assertEquals(9, $node->getLeft());
         $this->assertEquals(10, $node->getRight());
 
-        $node = $repo->findOneByTitle('Potatoes');
+        $node = $repo->findOneBy(['title' => 'Potatoes']);
 
         $this->assertEquals(11, $node->getLeft());
         $this->assertEquals(12, $node->getRight());
@@ -367,20 +367,20 @@ class NestedTreeRootRepositoryTest extends BaseTestCaseORM
 
         // remove
 
-        $node = $repo->findOneByTitle('Fruits');
+        $node = $repo->findOneBy(['title' => 'Fruits']);
         $id = $node->getId();
         $repo->removeFromTree($node);
 
         $this->assertNull($repo->find($id));
 
-        $node = $repo->findOneByTitle('Vegitables');
+        $node = $repo->findOneBy(['title' => 'Vegitables']);
         $id = $node->getId();
         $repo->removeFromTree($node);
 
         $this->assertNull($repo->find($id));
         $this->em->clear();
 
-        $node = $repo->findOneByTitle('Cabbages');
+        $node = $repo->findOneBy(['title' => 'Cabbages']);
 
         $this->assertEquals(1, $node->getRoot());
         $this->assertEquals(1, $node->getParent()->getId());
@@ -393,14 +393,14 @@ class NestedTreeRootRepositoryTest extends BaseTestCaseORM
     {
         $this->populateMore();
         $repo = $this->em->getRepository(self::CATEGORY);
-        $onions = $repo->findOneByTitle('Onions');
+        $onions = $repo->findOneBy(['title' => 'Onions']);
         $id = $onions->getId();
         $repo->removeFromTree($onions);
 
         $this->assertNull($repo->find($id));
         $this->em->clear();
 
-        $vegies = $repo->findOneByTitle('Vegitables');
+        $vegies = $repo->findOneBy(['title' => 'Vegitables']);
         $this->assertTrue($repo->verify());
     }
 
@@ -450,7 +450,7 @@ class NestedTreeRootRepositoryTest extends BaseTestCaseORM
     private function populateMore()
     {
         $vegies = $this->em->getRepository(self::CATEGORY)
-            ->findOneByTitle('Vegitables');
+            ->findOneBy(['title' => 'Vegitables']);
 
         $cabbages = new RootCategory();
         $cabbages->setParent($vegies);

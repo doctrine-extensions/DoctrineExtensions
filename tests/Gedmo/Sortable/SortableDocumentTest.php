@@ -41,7 +41,7 @@ class SortableDocumentTest extends BaseTestCaseMongoODM
     {
         $repo = $this->dm->getRepository(self::ARTICLE);
         for ($i = 0; $i <= 4; $i++) {
-            $article = $repo->findOneByPosition($i);
+            $article = $repo->findOneBy(['position' => $i]);
             $this->assertEquals('article'.$i, $article->getTitle());
         }
     }
@@ -50,12 +50,12 @@ class SortableDocumentTest extends BaseTestCaseMongoODM
     {
         $repo = $this->dm->getRepository(self::ARTICLE);
 
-        $article = $repo->findOneByPosition(4);
+        $article = $repo->findOneBy(['position' => 4]);
         $article->setPosition(0);
         $this->dm->flush();
 
         for ($i = 1; $i <= 4; $i++) {
-            $article = $repo->findOneByPosition($i);
+            $article = $repo->findOneBy(['position' => $i]);
             $this->assertEquals('article'.($i-1), $article->getTitle());
         }
     }
@@ -64,15 +64,15 @@ class SortableDocumentTest extends BaseTestCaseMongoODM
     {
         $repo = $this->dm->getRepository(self::ARTICLE);
 
-        $article = $repo->findOneByPosition(0);
+        $article = $repo->findOneBy(['position' => 0]);
         $article->setPosition(-1);
         $this->dm->flush();
 
         for ($i = 0; $i <= 3; $i++) {
-            $article = $repo->findOneByPosition($i);
+            $article = $repo->findOneBy(['position' => $i]);
             $this->assertEquals('article'.($i+1), $article->getTitle());
         }
-        $article = $repo->findOneByPosition(4);
+        $article = $repo->findOneBy(['position' => 4]);
         $this->assertEquals('article0', $article->getTitle());
     }
 
@@ -80,12 +80,12 @@ class SortableDocumentTest extends BaseTestCaseMongoODM
     {
         $repo = $this->dm->getRepository(self::ARTICLE);
 
-        $article = $repo->findOneByPosition(0);
+        $article = $repo->findOneBy(['position' => 0]);
         $this->dm->remove($article);
         $this->dm->flush();
 
         for ($i = 0; $i <= 3; $i++) {
-            $article = $repo->findOneByPosition($i);
+            $article = $repo->findOneBy(['position' => $i]);
             $this->assertEquals('article'.($i+1), $article->getTitle());
         }
     }

@@ -39,7 +39,7 @@ class MultiInheritanceWithSingleTableTest extends BaseTestCaseORM
         $this->em->clear();
 
         $carRepo = $this->em->getRepository(self::CAR);
-        $audi = $carRepo->findOneByTitle('Audi-80');
+        $audi = $carRepo->findOneBy(['title' => 'Audi-80']);
         $this->assertEquals(2, $carRepo->childCount($audi));
         $this->assertEquals(1, $audi->getLeft());
         $this->assertEquals(6, $audi->getRight());

@@ -53,12 +53,12 @@ class BlameableTest extends BaseTestCaseORM
         $this->em->flush();
         $this->em->clear();
 
-        $sport = $this->em->getRepository(self::ARTICLE)->findOneByTitle('Sport');
+        $sport = $this->em->getRepository(self::ARTICLE)->findOneBy(['title' => 'Sport']);
         $this->assertEquals('testuser', $sport->getCreated());
         $this->assertEquals('testuser', $sport->getUpdated());
         $this->assertNull($sport->getPublished());
 
-        $sportComment = $this->em->getRepository(self::COMMENT)->findOneByMessage('hello');
+        $sportComment = $this->em->getRepository(self::COMMENT)->findOneBy(['message' => 'hello']);
         $this->assertEquals('testuser', $sportComment->getModified());
         $this->assertNull($sportComment->getClosed());
 
@@ -74,7 +74,7 @@ class BlameableTest extends BaseTestCaseORM
         $this->em->flush();
         $this->em->clear();
 
-        $sportComment = $this->em->getRepository(self::COMMENT)->findOneByMessage('hello');
+        $sportComment = $this->em->getRepository(self::COMMENT)->findOneBy(['message' => 'hello']);
         $this->assertEquals('testuser', $sportComment->getClosed());
 
         $this->assertEquals('testuser', $sport->getPublished());
@@ -92,7 +92,7 @@ class BlameableTest extends BaseTestCaseORM
         $this->em->clear();
 
         $repo = $this->em->getRepository(self::ARTICLE);
-        $sport = $repo->findOneByTitle('sport forced');
+        $sport = $repo->findOneBy(['title' => 'sport forced']);
         $this->assertEquals('myuser', $sport->getCreated());
         $this->assertEquals('myuser', $sport->getUpdated());
 
@@ -106,7 +106,7 @@ class BlameableTest extends BaseTestCaseORM
         $this->em->flush();
         $this->em->clear();
 
-        $sport = $repo->findOneByTitle('sport forced');
+        $sport = $repo->findOneBy(['title' => 'sport forced']);
         $this->assertEquals('myuser', $sport->getPublished());
     }
 

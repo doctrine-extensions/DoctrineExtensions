@@ -31,7 +31,7 @@ class MultiInheritanceTest extends BaseTestCaseORM
         $meta = $this->em->getClassMetadata(self::NODE);
         $repo = $this->em->getRepository(self::NODE);
 
-        $food = $repo->findOneByIdentifier('food');
+        $food = $repo->findOneBy(['identifier' => 'food']);
         $left = $meta->getReflectionProperty('lft')->getValue($food);
         $right = $meta->getReflectionProperty('rgt')->getValue($food);
 
@@ -54,7 +54,7 @@ class MultiInheritanceTest extends BaseTestCaseORM
     public function testCaseGithubIssue7()
     {
         $repo = $this->em->getRepository(self::NODE);
-        $vegies = $repo->findOneByTitle('Vegitables');
+        $vegies = $repo->findOneBy(['title' => 'Vegitables']);
 
         $count = $repo->childCount($vegies, true/*direct*/);
         $this->assertEquals(3, $count);
@@ -64,7 +64,7 @@ class MultiInheritanceTest extends BaseTestCaseORM
 
         // node repository will not find it
         $baseNodeRepo = $this->em->getRepository(self::BASE_NODE);
-        $cabbage = $baseNodeRepo->findOneByIdentifier('cabbage');
+        $cabbage = $baseNodeRepo->findOneBy(['identifier' => 'cabbage']);
         $path = $baseNodeRepo->getPath($cabbage);
         $this->assertCount(3, $path);
     }

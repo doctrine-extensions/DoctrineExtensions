@@ -31,7 +31,7 @@ class SluggableDocumentTest extends BaseTestCaseMongoODM
     {
         // test insert
         $repo = $this->dm->getRepository(self::ARTICLE);
-        $article = $repo->findOneByTitle('My Title');
+        $article = $repo->findOneBy(['title' => 'My Title']);
 
         $this->assertEquals('my-title-the-code', $article->getSlug());
 
@@ -42,7 +42,7 @@ class SluggableDocumentTest extends BaseTestCaseMongoODM
         $this->dm->flush();
         $this->dm->clear();
 
-        $article = $repo->findOneByTitle('New Title');
+        $article = $repo->findOneBy(['title' => 'New Title']);
         $this->assertEquals('new-title-the-code', $article->getSlug());
     }
 

@@ -57,7 +57,7 @@ class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
      */
     public function getPath()
     {
-        $childNode = $this->repo->findOneByTitle('Carrots');
+        $childNode = $this->repo->findOneBy(['title' => 'Carrots']);
 
         $result = $this->repo->getPath($childNode);
 
@@ -66,7 +66,7 @@ class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
         $this->assertEquals('Vegitables', $result[1]->getTitle());
         $this->assertEquals('Carrots', $result[2]->getTitle());
 
-        $rootNode = $this->repo->findOneByTitle('Sports');
+        $rootNode = $this->repo->findOneBy(['title' => 'Sports']);
 
         $result = $this->repo->getPath($rootNode);
 
@@ -79,7 +79,7 @@ class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
      */
     public function getChildren()
     {
-        $root = $this->repo->findOneByTitle('Food');
+        $root = $this->repo->findOneBy(['title' => 'Food']);
 
         // Get all children from the root, NOT including it
         $result = $this->repo->getChildren($root, false, 'title');
@@ -147,7 +147,7 @@ class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
         $this->populate(self::CATEGORY_WITH_TRIMMED_SEPARATOR);
 
         $this->repo = $this->em->getRepository(self::CATEGORY_WITH_TRIMMED_SEPARATOR);
-        $root = $this->repo->findOneByTitle('Food');
+        $root = $this->repo->findOneBy(['title' => 'Food']);
 
         // Get all children from the root, NOT including it
         $result = $this->repo->getChildren($root, false, 'title');
@@ -305,7 +305,7 @@ class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
         $this->assertEquals(3, $count);
 
         // Count food children
-        $food = $this->repo->findOneByTitle('Food');
+        $food = $this->repo->findOneBy(['title' => 'Food']);
         $count = $this->repo->childCount($food);
 
         $this->assertEquals(4, $count);
@@ -332,7 +332,7 @@ class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
     {
         $this->em->clear();
 
-        $node = $this->repo->findOneByTitle('Fruits');
+        $node = $this->repo->findOneBy(['title' => 'Fruits']);
         $newNode = $this->createCategory();
         $parent = $node->getParent();
 

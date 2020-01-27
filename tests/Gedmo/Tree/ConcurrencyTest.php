@@ -35,7 +35,7 @@ class ConcurrencyTest extends BaseTestCaseORM
     public function testConcurrentEntitiesInOneFlush()
     {
         $repo = $this->em->getRepository(self::CATEGORY);
-        $sport = $repo->findOneByTitle('Root2');
+        $sport = $repo->findOneBy(['title' => 'Root2']);
         $sport->setTitle('Sport');
 
         $skiing = new Category();
@@ -73,14 +73,14 @@ class ConcurrencyTest extends BaseTestCaseORM
         $this->em->clear();
 
         $meta = $this->em->getClassMetadata(self::CATEGORY);
-        $sport = $repo->findOneByTitle('Sport');
+        $sport = $repo->findOneBy(['title' => 'Sport']);
         $left = $meta->getReflectionProperty('lft')->getValue($sport);
         $right = $meta->getReflectionProperty('rgt')->getValue($sport);
 
         $this->assertEquals(9, $left);
         $this->assertEquals(16, $right);
 
-        $skiing = $repo->findOneByTitle('Skiing');
+        $skiing = $repo->findOneBy(['title' => 'Skiing']);
         $left = $meta->getReflectionProperty('lft')->getValue($skiing);
         $right = $meta->getReflectionProperty('rgt')->getValue($skiing);
 
@@ -93,17 +93,17 @@ class ConcurrencyTest extends BaseTestCaseORM
         $repo = $this->em->getRepository(self::CATEGORY);
         $meta = $this->em->getClassMetadata(self::CATEGORY);
 
-        $root = $repo->findOneByTitle('Root');
+        $root = $repo->findOneBy(['title' => 'Root']);
 
         $this->assertEquals(1, $root->getLeft());
         $this->assertEquals(8, $root->getRight());
 
-        $root2 = $repo->findOneByTitle('Root2');
+        $root2 = $repo->findOneBy(['title' => 'Root2']);
 
         $this->assertEquals(9, $root2->getLeft());
         $this->assertEquals(10, $root2->getRight());
 
-        $child2Child = $repo->findOneByTitle('childs2_child');
+        $child2Child = $repo->findOneBy(['title' => 'childs2_child']);
 
         $this->assertEquals(5, $child2Child->getLeft());
         $this->assertEquals(6, $child2Child->getRight());

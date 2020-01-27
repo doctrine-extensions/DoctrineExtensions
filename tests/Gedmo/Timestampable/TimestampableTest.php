@@ -104,7 +104,7 @@ class TimestampableTest extends BaseTestCaseORM
         $this->em->persist($sportComment);
         $this->em->flush();
 
-        $sport = $this->em->getRepository(self::ARTICLE)->findOneByTitle('Sport');
+        $sport = $this->em->getRepository(self::ARTICLE)->findOneBy(['title' => 'Sport']);
         $this->assertNotNull($sc = $sport->getCreated());
         $this->assertNotNull($su = $sport->getUpdated());
         $this->assertNull($sport->getContentChanged());
@@ -115,7 +115,7 @@ class TimestampableTest extends BaseTestCaseORM
         $author->setName('New author');
         $sport->setAuthor($author);
 
-        $sportComment = $this->em->getRepository(self::COMMENT)->findOneByMessage('hello');
+        $sportComment = $this->em->getRepository(self::COMMENT)->findOneBy(['message' => 'hello']);
         $this->assertNotNull($scm = $sportComment->getModified());
         $this->assertNull($sportComment->getClosed());
 
@@ -129,7 +129,7 @@ class TimestampableTest extends BaseTestCaseORM
         $this->em->persist($sportComment);
         $this->em->flush();
 
-        $sportComment = $this->em->getRepository(self::COMMENT)->findOneByMessage('hello');
+        $sportComment = $this->em->getRepository(self::COMMENT)->findOneBy(['message' => 'hello']);
         $this->assertNotNull($scc = $sportComment->getClosed());
         $this->assertNotNull($sp = $sport->getPublished());
         $this->assertNotNull($sa = $sport->getAuthorChanged());
@@ -179,7 +179,7 @@ class TimestampableTest extends BaseTestCaseORM
         $this->em->flush();
 
         $repo = $this->em->getRepository(self::ARTICLE);
-        $sport = $repo->findOneByTitle('sport forced');
+        $sport = $repo->findOneBy(['title' => 'sport forced']);
         $this->assertEquals(
             '2000-01-01',
             $sport->getCreated()->format('Y-m-d')
@@ -202,7 +202,7 @@ class TimestampableTest extends BaseTestCaseORM
         $this->em->persist($published);
         $this->em->flush();
 
-        $sport = $repo->findOneByTitle('sport forced');
+        $sport = $repo->findOneBy(['title' => 'sport forced']);
         $this->assertEquals(
             '2000-01-01 12:00:00',
             $sport->getPublished()->format('Y-m-d H:i:s')
