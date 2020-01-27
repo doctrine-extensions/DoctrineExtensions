@@ -44,8 +44,7 @@ final class ODM extends BaseAdapterODM implements SortableAdapter
         $delta = array_map('intval', $delta);
 
         $qb = $dm->createQueryBuilder($config['useObjectClass']);
-        $qb->update();
-        $qb->multiple(true);
+        $qb->updateMany();
         $qb->field($config['position'])->inc($delta['delta']);
         $qb->field($config['position'])->gte($delta['start']);
         if ($delta['stop'] > 0) {
