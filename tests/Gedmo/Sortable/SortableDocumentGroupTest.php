@@ -76,7 +76,7 @@ class SortableDocumentGroupTest extends BaseTestCaseMongoODM
         $repo = $this->dm->getRepository(self::KID);
 
         for ($i = 0; $i < 2; $i++) {
-            $kids = $repo->findByPosition($i);
+            $kids = $repo->findBy(['position' => $i]);
             $this->assertCount(2, $kids);
         }
     }
@@ -94,7 +94,7 @@ class SortableDocumentGroupTest extends BaseTestCaseMongoODM
         $kid->setPosition(0);
         $this->dm->flush();
 
-        $kids = $repo->findByBirthdate(new \DateTime(self::KID_DATE1));
+        $kids = $repo->findBy(['birthdate' => new \DateTime(self::KID_DATE1)]);
         $this->assertCount(2, $kids);
 
         for ($i=0; $i < 2; $i++) {
@@ -111,7 +111,7 @@ class SortableDocumentGroupTest extends BaseTestCaseMongoODM
         $repo = $this->dm->getRepository(self::POST);
 
         for ($i = 0; $i < 3; $i++) {
-            $posts = $repo->findByPosition($i);
+            $posts = $repo->findBy(['position' => $i]);
             $this->assertCount(2, $posts);
         }
     }
