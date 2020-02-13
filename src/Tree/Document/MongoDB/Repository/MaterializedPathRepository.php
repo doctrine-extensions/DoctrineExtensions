@@ -5,6 +5,7 @@ namespace Gedmo\Tree\Document\MongoDB\Repository;
 use Gedmo\Exception\InvalidArgumentException;
 use Gedmo\Tree\Strategy;
 use Gedmo\Tool\Wrapper\MongoDocumentWrapper;
+use MongoDB\BSON\Regex;
 
 /**
  * The MaterializedPathRepository has some useful functions
@@ -120,22 +121,22 @@ class MaterializedPathRepository extends AbstractTreeRepository
             $nodePath = preg_quote($node->getPropertyValue($config['path']));
 
             if ($direct) {
-                $regex = sprintf('/^%s([^%s]+%s)'.($includeNode ? '?' : '').'$/',
+                $regex = sprintf('^%s([^%s]+%s)'.($includeNode ? '?' : '').'$',
                      $nodePath,
                      $separator,
                      $separator);
             } else {
-                $regex = sprintf('/^%s(.+)'.($includeNode ? '?' : '').'/',
+                $regex = sprintf('^%s(.+)'.($includeNode ? '?' : ''),
                      $nodePath);
             }
         } elseif ($direct) {
-            $regex = sprintf('/^([^%s]+)'.($includeNode ? '?' : '').'%s$/',
+            $regex = sprintf('^([^%s]+)'.($includeNode ? '?' : '').'%s$',
                 $separator,
                 $separator);
         }
 
         if ($regex) {
-            $qb->field($config['path'])->equals(new \MongoRegex($regex));
+            $qb->field($config['path'])->equals(new Regex($regex));
         }
 
         $qb->sort(is_null($sortByField) ? $config['path'] : $sortByField, $direction === 'asc' ? 'asc' : 'desc');
