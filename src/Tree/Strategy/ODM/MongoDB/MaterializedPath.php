@@ -6,6 +6,7 @@ use Gedmo\Tree\Strategy\AbstractMaterializedPath;
 use Doctrine\Common\Persistence\ObjectManager;
 use Gedmo\Mapping\Event\AdapterInterface;
 use Gedmo\Tool\Wrapper\AbstractWrapper;
+use MongoDB\BSON\Regex;
 
 /**
  * This strategy makes tree using materialized path strategy
@@ -27,7 +28,7 @@ class MaterializedPath extends AbstractMaterializedPath
         // Remove node's children
         $results = $om->createQueryBuilder()
             ->find($meta->name)
-            ->field($config['path'])->equals(new \MongoRegex('/^'.preg_quote($wrapped->getPropertyValue($config['path'])).'.?+/'))
+            ->field($config['path'])->equals(new Regex('^'.preg_quote($wrapped->getPropertyValue($config['path'])).'.?+'))
             ->getQuery()
             ->execute();
 
@@ -43,7 +44,7 @@ class MaterializedPath extends AbstractMaterializedPath
     {
         return $om->createQueryBuilder()
             ->find($meta->name)
-            ->field($config['path'])->equals(new \MongoRegex('/^'.preg_quote($originalPath).'.+/'))
+            ->field($config['path'])->equals(new Regex('^'.preg_quote($originalPath).'.+'))
             ->sort($config['path'], 'asc')      // This may save some calls to updateNode
             ->getQuery()
             ->execute();
