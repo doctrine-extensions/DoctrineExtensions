@@ -743,7 +743,7 @@ class NestedTreeRepository extends AbstractTreeRepository
         $meta = $this->getClassMetadata();
         if ($node instanceof $meta->name || $node === null) {
             $config = $this->listener->getConfiguration($this->_em, $meta->name);
-            if ($verify && is_array($this->verify())) {
+            if ($verify && is_array($this->verify($node))) {
                 return false;
             }
 
@@ -778,25 +778,31 @@ class NestedTreeRepository extends AbstractTreeRepository
      * Verifies that current tree is valid.
      * If any error is detected it will return an array
      * with a list of errors found on tree
-     *
+     * 
+     * @param $node - specific root node to verify (if null, then verify all nodes)
      * @return array|bool - true on success,error list on failure
      */
-    public function verify()
+    public function verify($node = null)
     {
-        if (!$this->childCount()) {
+        if (!$this->childCount($node)) {
             return true; // tree is empty
         }
 
         $errors = array();
-        $meta = $this->getClassMetadata();
-        $config = $this->listener->getConfiguration($this->_em, $meta->name);
-        if (isset($config['root'])) {
-            $trees = $this->getRootNodes();
-            foreach ($trees as $tree) {
-                $this->verifyTree($errors, $tree);
+        if($node == null){
+            $meta = $this->getClassMetadata();
+            $config = $this->listener->getConfiguration($this->_em, $meta->name);
+            if (isset($config['root'])) {
+                $trees = $this->getRootNodes();
+                foreach ($trees as $tree) {
+                    $this->verifyTree($errors, $tree);
+                }
+            } else {
+                $this->verifyTree($errors);
             }
-        } else {
-            $this->verifyTree($errors);
+        }
+        else {
+            $this->verifyTree($errors, $node);
         }
 
         return $errors ?: true;
@@ -809,11 +815,14 @@ class NestedTreeRepository extends AbstractTreeRepository
      *
      * @return void
      */
-    public function recover()
+    public function recover($node = null)
     {
-        if ($this->verify() === true) {
+        if ($this->verify($node) === true) {
             return;
         }
+
+        //@todo $doRecover for only $node
+
         $meta = $this->getClassMetadata();
         $config = $this->listener->getConfiguration($this->_em, $meta->name);
         $self = $this;
@@ -949,6 +958,10 @@ class NestedTreeRepository extends AbstractTreeRepository
                 }
             }
         }
+
+        //@todo provjeri children nodea koji je dodjeljen na neki root_id nema isti taj root_id
+        //odnosno, provjeri sve childrene nekog root nodea dali svi imaju isti root_id
+
         // check for missing parents
         $qb = $this->getQueryBuilder();
         $qb->select('node')
