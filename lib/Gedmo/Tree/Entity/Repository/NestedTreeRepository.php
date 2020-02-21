@@ -821,8 +821,6 @@ class NestedTreeRepository extends AbstractTreeRepository
             return;
         }
 
-        //@todo $doRecover for only $node
-
         $meta = $this->getClassMetadata();
         $config = $this->listener->getConfiguration($this->_em, $meta->name);
         $self = $this;
@@ -843,18 +841,27 @@ class NestedTreeRepository extends AbstractTreeRepository
             $em->persist($root);
         };
 
-        if (isset($config['root'])) {
-            foreach ($this->getRootNodes() as $root) {
-                $count = 1; // reset on every root node
+        if($node == null)
+        {
+            if (isset($config['root'])) {
+                foreach ($this->getRootNodes() as $root) {
+                    $count = 1; // reset on every root node
+                    $lvl = 0;
+                    $doRecover($root, $count, $lvl);
+                }
+            } else {
+                $count = 1;
                 $lvl = 0;
-                $doRecover($root, $count, $lvl);
+                foreach ($this->getChildren(null, true) as $root) {
+                    $doRecover($root, $count, $lvl);
+                }
             }
-        } else {
+        }
+        else
+        {
             $count = 1;
             $lvl = 0;
-            foreach ($this->getChildren(null, true) as $root) {
-                $doRecover($root, $count, $lvl);
-            }
+            $doRecover($node, $count, $lvl);
         }
     }
 
