@@ -19,15 +19,36 @@ a release.
 ---
 
 ## [Unreleased]
-### Notable & Breaking Changes
-- Minimum PHP version requirement of 7.2
-- Source files moved from `/lib/Gedmo` to `/src`
-- All string column type annotations changed to 191 character length (#1941)
 
+## [2.4.39] - 2020-01-18
+### Tree
+### Fixed
+- The value of path source property is cast to string type for Materialized Path Tree strategy (#2061)
+
+## [2.4.38] - 2019-11-08
 ### Global / Shared
 #### Fixed
-- Removed `null` parameter from `Doctrine\Common\Cache\Cache::save()` calls (#1996)
+- Add `parent::__construct()` calls to Listeners w/ custom constructors (#2012)
+- Add upcoming Doctrine ODM 2.0 to `composer.json` conflicts (#2027)
+
+### Loggable
+#### Fixed
+- Added missing string casting of `objectId` in `LogEntryRepository::revert()` method (#2009)
+
+### ReferenceIntegrity
+#### Fixed
+- Get class from meta in ReferenceIntegrityListener (#2021)
+
+### Translatable
+#### Fixed
+- Return default AST executor instead of throwing Exception in Walker (#2018)
+- Fix duplicate inherited properties (#2029)
 
 ### Tree
 #### Fixed
-- The value of path source property is cast to string type for Materialized Path Tree strategy (#2061)
+- Remove hard-coded parent column name in repository prev/next sibling queries (#2020)
+
+## [2.4.37] - 2019-03-17
+### Translatable
+#### Fixed
+- Bugfix to load null value translations (#1990)
