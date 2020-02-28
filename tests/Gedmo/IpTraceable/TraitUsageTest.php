@@ -18,7 +18,7 @@ class TraitUsageTest extends BaseTestCaseORM
     const TEST_IP = '34.234.1.10';
     const TARGET = "IpTraceable\\Fixture\\UsingTrait";
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

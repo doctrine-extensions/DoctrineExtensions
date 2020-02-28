@@ -16,7 +16,7 @@ class ReferencesListenerTest extends BaseTestCaseOM
     private $em;
     private $dm;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

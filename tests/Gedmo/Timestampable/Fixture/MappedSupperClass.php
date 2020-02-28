@@ -30,7 +30,7 @@ class MappedSupperClass
     * @var string $title
     *
     * @Gedmo\Translatable
-    * @ORM\Column(name="name", type="string", length=255)
+    * @ORM\Column(name="name", type="string", length=191)
     */
     protected $name;
 

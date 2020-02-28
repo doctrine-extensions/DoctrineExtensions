@@ -19,10 +19,10 @@ class AnnotationValidationTest extends BaseTestCaseORM
 
     /**
      * @test
-     * @expectedException Gedmo\Exception\InvalidMappingException
      */
     public function shouldFailValidationOnInvalidAnnotation()
     {
+        $this->expectException('Gedmo\Exception\InvalidMappingException');
         $evm = new EventManager();
         $evm->addEventSubscriber(new SluggableListener());
         $this->getMockSqliteEntityManager($evm);

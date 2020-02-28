@@ -50,26 +50,14 @@ abstract class BaseTestCaseOM extends \PHPUnit\Framework\TestCase
     /**
      * {@inheritdoc}
      */
-    protected function setUp()
+    protected function setUp(): void
     {
     }
 
     /**
      * {@inheritdoc}
      */
-    public function expectException($exception)
-    {
-        if (method_exists('PHPUnit\\Framework\\TestCase', 'setExpectedException')) {
-            return parent::setExpectedException($exception);
-        }
-
-        return parent::expectException($exception);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function tearDown()
+    protected function tearDown(): void
     {
         foreach ($this->dms as $dm) {
             if ($dm) {
@@ -98,7 +86,7 @@ abstract class BaseTestCaseOM extends \PHPUnit\Framework\TestCase
         if (!class_exists('Mongo')) {
             $this->markTestSkipped('Missing Mongo extension.');
         }
-        $conn = new Connection();
+        $conn = new Connection($_ENV['MONGODB_SERVER']);
         $config = $this->getMockAnnotatedODMMongoDBConfig($dbName, $mappingDriver);
 
         $dm = null;

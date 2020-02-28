@@ -17,7 +17,7 @@ class TreeSlugHandlerDocumentTest extends BaseTestCaseMongoODM
 {
     const SLUG = 'Sluggable\\Fixture\\Document\\Handler\\TreeSlug';
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $evm = new EventManager();

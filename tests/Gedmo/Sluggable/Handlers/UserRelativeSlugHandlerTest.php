@@ -19,7 +19,7 @@ class UserRelativeSlugHandlerTest extends BaseTestCaseORM
     const USER = "Sluggable\\Fixture\\Handler\\User";
     const COMPANY = "Sluggable\\Fixture\\Handler\\Company";
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

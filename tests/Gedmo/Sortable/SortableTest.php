@@ -38,7 +38,7 @@ class SortableTest extends BaseTestCaseORM
 
     private $nodeId;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -49,7 +49,7 @@ class SortableTest extends BaseTestCaseORM
         $this->populate();
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         //$this->stopQueryLog();
     }
@@ -526,45 +526,6 @@ class SortableTest extends BaseTestCaseORM
     /**
      * @test
      */
-    public function shouldInsertInbetween()
-    {
-        $this->markTestIncomplete('Currently it is not supported to change the position of a record and insert a new one in front of it in one step.');
-
-        $item1 = new Item();
-        $item1->setName("Item1");
-        $this->em->persist($item1);
-
-        $item3 = new Item();
-        $item3->setName("Item3");
-        $this->em->persist($item3);
-
-        $this->em->flush();
-
-        // update $item3's position
-        $item3->setPosition(2);
-
-        // and insert a further item between $item1 and $item3
-        $item2 = new Item();
-        $item2->setName("Item2");
-        $item2->setPosition(1);
-        $this->em->persist($item2);
-
-        $this->em->flush();
-
-        $repo = $this->em->getRepository(self::ITEM);
-        $items = $repo->findBy(array(), array('position' => 'asc'));
-
-        $this->assertEquals("Item1", $items[0]->getName());
-        $this->assertEquals(0, $items[0]->getPosition());
-        $this->assertEquals("Item2", $items[1]->getName());
-        $this->assertEquals(1, $items[1]->getPosition());
-        $this->assertEquals("Item3", $items[2]->getName());
-        $this->assertEquals(2, $items[2]->getPosition());
-    }
-
-    /**
-     * @test
-     */
     public function shouldGroupByDateTimeValue()
     {
         $event1 = new Event();
@@ -599,26 +560,6 @@ class SortableTest extends BaseTestCaseORM
         $this->assertEquals(0, $event3->getPosition());
         $this->assertEquals(2, $event4->getPosition());
         $this->assertEquals(1, $event5->getPosition());
-    }
-
-    /**
-     * @test
-     */
-    public function shouldFixIssue219()
-    {
-        $item1 = new SimpleListItem();
-        $item1->setName("Item 1");
-        $this->em->persist($item1);
-
-        $this->em->flush();
-
-        $item1->setName("Update...");
-        $item1->setPosition(1);
-        $this->em->persist($item1);
-        $this->em->flush();
-
-        $this->em->remove($item1);
-        $this->em->flush();
     }
 
     /**
@@ -679,32 +620,6 @@ class SortableTest extends BaseTestCaseORM
         $this->assertEquals(1, $author1->getPosition());
         $this->assertEquals(2, $author2->getPosition());
         $this->assertEquals(0, $author3->getPosition());
-    }
-
-    /**
-     * @test
-     */
-    public function shouldFixIssue275()
-    {
-        $nodes = array();
-        for ($i = 2; $i <= 10; $i++) {
-            $node = new Node();
-            $node->setName("Node".$i);
-            $node->setPath("/");
-            $this->em->persist($node);
-            $nodes[] = $node;
-        }
-        $this->em->flush();
-
-        $node1 = $this->em->find(self::NODE, $this->nodeId);
-        $this->em->remove($node1);
-        $this->em->flush();
-
-        for ($i = 1; $i <= 9; $i++) {
-            $nodes[$i-1]->setPosition($i);
-            $this->em->persist($nodes[$i-1]);
-        }
-        $this->em->flush();
     }
 
     /**

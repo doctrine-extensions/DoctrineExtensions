@@ -25,14 +25,14 @@ class Address
 
     /**
      * @var string $street
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=191)
      * @Gedmo\Versioned()
      */
     protected $street;
 
     /**
      * @var string $city
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=191)
      * @Gedmo\Versioned()
      */
     protected $city;

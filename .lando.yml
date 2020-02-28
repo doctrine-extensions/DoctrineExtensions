@@ -1,0 +1,15 @@
+name: doctrine-extensions
+recipe: lemp
+config:
+  php: 7.2
+  webroot: .
+services:
+  appserver:
+    run_as_root:
+    - pecl install mongodb
+    - docker-php-ext-enable mongodb
+  mongodb:
+    type: mongo
+tooling:
+  mongo:
+    service: mongodb

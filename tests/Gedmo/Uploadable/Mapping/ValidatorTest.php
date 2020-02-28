@@ -15,7 +15,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
 {
     protected $meta;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->meta = $this->getMockBuilder('Doctrine\ORM\Mapping\ClassMetadata')
             ->setConstructorArgs(array('', null))
@@ -24,16 +24,14 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
         Validator::$enableMimeTypesConfigException = false;
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         Validator::$enableMimeTypesConfigException = true;
     }
 
-    /**
-     * @expectedException \Gedmo\Exception\InvalidMappingException
-     */
     public function test_validateField_ifFieldIsNotOfAValidTypeThrowException()
     {
+        $this->expectException('Gedmo\Exception\InvalidMappingException');
         $this->meta->expects($this->once())
             ->method('getFieldMapping')
             ->will($this->returnValue(array('type' => 'someType')));
@@ -46,34 +44,10 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    /**
-     * @expectedException \Gedmo\Exception\UploadableInvalidPathException
-     */
     public function test_validatePath_ifPathIsNotAStringOrIsAnEmptyStringThrowException()
     {
+        $this->expectException('Gedmo\Exception\UploadableInvalidPathException');
         Validator::validatePath('');
-    }
-
-    public function test_validatePath_ifPassedDirIsNotAValidDirectoryOrIsNotWriteableThrowException()
-    {
-        if (defined('PHP_WINDOWS_VERSION_BUILD')) {
-            $this->markTestSkipped('Not possible to test on Windows');
-        }
-
-        $dir = sys_get_temp_dir().'/readonly-directory-12312432423';
-        mkdir($dir, 0000, true);
-        try {
-            Validator::validatePath('/');
-        } catch (\Gedmo\Exception\UploadableCantWriteException $e) {
-            rmdir($dir);
-
-            return;
-        }
-
-        rmdir($dir);
-        $this->fail(
-            sprintf('An expected exception "%s" has not been raised.', 'Gedmo\Exception\UploadableCantWriteException')
-        );
     }
 
     public function test_validatePathCreatesNewDirectoryWhenItNotExists()
@@ -85,28 +59,17 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
         rmdir(dirname($dir));
     }
 
-    public function test_validatePath_ifPassedDirIsNotAValidDirectoryOrIsNotWriteableDoesNotThrowExceptionIfDisabled()
-    {
-        Validator::$validateWritableDirectory = false;
-        Validator::validatePath('/invalid/directory/12312432423');
-        Validator::$validateWritableDirectory = true;
-    }
-
-    /**
-     * @expectedException \Gedmo\Exception\InvalidMappingException
-     */
     public function test_validateConfiguration_ifNeitherFilePathFieldNorFileNameFieldIsNotDefinedThrowException()
     {
+        $this->expectException('Gedmo\Exception\InvalidMappingException');
         $config = array('filePathField' => false, 'fileNameField' => false);
 
         Validator::validateConfiguration($this->meta, $config);
     }
 
-    /**
-     * @expectedException \Gedmo\Exception\InvalidMappingException
-     */
     public function test_validateConfiguration_ifPathMethodIsNotAValidMethodThrowException()
     {
+        $this->expectException('Gedmo\Exception\InvalidMappingException');
         $this->meta->expects($this->once())
             ->method('getReflectionClass')
             ->will($this->returnValue(new \ReflectionClass(new FakeEntity())));
@@ -119,11 +82,9 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    /**
-     * @expectedException \Gedmo\Exception\InvalidMappingException
-     */
     public function test_validateConfiguration_ifCallbackMethodIsNotAValidMethodThrowException()
     {
+        $this->expectException('Gedmo\Exception\InvalidMappingException');
         $this->meta->expects($this->once())
             ->method('getReflectionClass')
             ->will($this->returnValue(new \ReflectionClass(new FakeEntity())));
@@ -136,11 +97,9 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    /**
-     * @expectedException \Gedmo\Exception\InvalidMappingException
-     */
     public function test_validateConfiguration_ifFilenameGeneratorValueIsNotValidThrowException()
     {
+        $this->expectException('Gedmo\Exception\InvalidMappingException');
         $this->meta->expects($this->once())
             ->method('getReflectionClass')
             ->will($this->returnValue(new \ReflectionClass(new FakeEntity())));
@@ -167,11 +126,9 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    /**
-     * @expectedException \Gedmo\Exception\InvalidMappingException
-     */
     public function test_validateConfiguration_ifFilenameGeneratorValueIsValidButDoesntImplementNeededInterfaceThrowException()
     {
+        $this->expectException('Gedmo\Exception\InvalidMappingException');
         $this->meta->expects($this->once())
             ->method('getReflectionClass')
             ->will($this->returnValue(new \ReflectionClass(new FakeEntity())));
@@ -254,11 +211,9 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    /**
-     * @expectedException \Gedmo\Exception\InvalidMappingException
-     */
     public function test_validateConfiguration_ifMaxSizeIsLessThanZeroThenThrowException()
     {
+        $this->expectException('Gedmo\Exception\InvalidMappingException');
         $this->meta->expects($this->once())
             ->method('getReflectionClass')
             ->will($this->returnValue(new \ReflectionClass(new FakeEntity())));
@@ -280,11 +235,9 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    /**
-     * @expectedException \Gedmo\Exception\InvalidMappingException
-     */
     public function test_validateConfiguration_ifAllowedTypesAndDisallowedTypesAreSetThenThrowException()
     {
+        $this->expectException('Gedmo\Exception\InvalidMappingException');
         $this->meta->expects($this->once())
             ->method('getReflectionClass')
             ->will($this->returnValue(new \ReflectionClass(new FakeEntity())));

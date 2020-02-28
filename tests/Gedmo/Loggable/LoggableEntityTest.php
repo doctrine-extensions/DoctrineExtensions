@@ -28,7 +28,7 @@ class LoggableEntityTest extends BaseTestCaseORM
     private $articleId;
     private $LoggableListener;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

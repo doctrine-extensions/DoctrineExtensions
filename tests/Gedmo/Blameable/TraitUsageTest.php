@@ -17,7 +17,7 @@ class TraitUsageTest extends BaseTestCaseORM
 {
     const TARGET = "Blameable\\Fixture\\Entity\\UsingTrait";
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

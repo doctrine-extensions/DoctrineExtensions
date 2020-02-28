@@ -17,7 +17,7 @@ class SluggablePositionTest extends BaseTestCaseORM
 {
     const POSITION = 'Sluggable\\Fixture\\Position';
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

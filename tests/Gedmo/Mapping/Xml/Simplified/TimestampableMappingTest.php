@@ -22,7 +22,7 @@ class TimestampableMappingTest extends BaseTestCaseORM
      */
     private $timestampable;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 

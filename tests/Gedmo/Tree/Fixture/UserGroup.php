@@ -12,7 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
 class UserGroup extends Role
 {
     /**
-   * @ORM\Column(name="name", type="string", length=255)
+   * @ORM\Column(name="name", type="string", length=191)
    * @var string
    */
   private $name;

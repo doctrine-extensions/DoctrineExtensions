@@ -23,7 +23,7 @@ class Issue827Test extends BaseTestCaseORM
     const COMMENT = 'Sluggable\\Fixture\\Issue827\\Comment';
     const POST = 'Sluggable\\Fixture\\Issue827\\Post';
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

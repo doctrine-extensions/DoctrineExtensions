@@ -20,7 +20,7 @@ class MaterializedPathORMFeaturesTest extends BaseTestCaseORM
     protected $config;
     protected $listener;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

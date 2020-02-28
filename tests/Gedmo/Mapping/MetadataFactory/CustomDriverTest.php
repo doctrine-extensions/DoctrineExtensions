@@ -13,7 +13,7 @@ use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 */
 class CustomDriverTest extends \PHPUnit\Framework\TestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
         $config = new \Doctrine\ORM\Configuration();
         $config->setProxyDir(TESTS_TEMP_DIR);

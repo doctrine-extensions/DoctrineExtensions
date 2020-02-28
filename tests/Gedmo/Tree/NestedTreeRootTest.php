@@ -19,7 +19,7 @@ class NestedTreeRootTest extends BaseTestCaseORM
 {
     const CATEGORY = "Tree\\Fixture\\RootCategory";
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -254,11 +254,9 @@ class NestedTreeRootTest extends BaseTestCaseORM
         $this->assertEquals(8, $node->getRight());
     }
 
-    /**
-     * @expectedException UnexpectedValueException
-     */
     public function testTreeUpdateShiftToChildParent()
     {
+        $this->expectException('UnexpectedValueException');
         $repo = $this->em->getRepository(self::CATEGORY);
         $vegies = $repo->findOneByTitle('Vegitables');
         $food = $repo->findOneByTitle('Food');

@@ -20,7 +20,7 @@ class ProtectedPropertySupperclassTest extends BaseTestCaseORM
     const SUPERCLASS = "Timestampable\\Fixture\\SupperClassExtension";
     const TRANSLATION = "Gedmo\\Translatable\\Entity\\Translation";
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

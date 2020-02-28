@@ -13,7 +13,7 @@ class CompanyEmbedLink
     /**
      * @var string
      *
-     * @ORM\Column(name="website", type="string", length=255, nullable=true)
+     * @ORM\Column(name="website", type="string", length=191, nullable=true)
      * @Gedmo\Translatable
      */
     protected $website;
@@ -21,7 +21,7 @@ class CompanyEmbedLink
     /**
      * @var string
      *
-     * @ORM\Column(name="facebook", type="string", length=255, nullable=true)
+     * @ORM\Column(name="facebook", type="string", length=191, nullable=true)
      * @Gedmo\Translatable
      */
     protected $facebook;

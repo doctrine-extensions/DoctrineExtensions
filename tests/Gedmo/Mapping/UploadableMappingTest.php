@@ -31,7 +31,7 @@ class UploadableMappingTest extends BaseTestCaseOM
      */
     private $listener;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 

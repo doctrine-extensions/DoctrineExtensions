@@ -17,7 +17,7 @@ class SluggableIdentifierTest extends BaseTestCaseORM
 {
     const TARGET = 'Sluggable\\Fixture\\Identifier';
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

@@ -20,7 +20,7 @@ class SluggableFltersTest extends BaseTestCaseORM
     const SOFT_DELETEABLE_FILTER_NAME = 'soft-deleteable';
     const FAKE_FILTER_NAME = 'fake-filter';
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

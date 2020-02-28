@@ -20,7 +20,7 @@ class InMemoryUpdatesWithInheritanceTest extends BaseTestCaseORM
     const MAN = "Tree\\Fixture\\Genealogy\\Man";
     const WOMAN = "Tree\\Fixture\\Genealogy\\Woman";
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

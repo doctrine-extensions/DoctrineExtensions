@@ -354,6 +354,7 @@ use Gedmo\Uploadable\FileInfo\FileInfoInterface;
 class CustomFileInfo implements FileInfoInterface
 {
     protected $path;
+    protected $name;
     protected $size;
     protected $type;
     protected $filename;
@@ -369,7 +370,7 @@ class CustomFileInfo implements FileInfoInterface
     // This returns the actual path of the file
     public function getTmpName()
     {
-        return $path;
+        return $this->path;
     }
 
     // This returns the filename

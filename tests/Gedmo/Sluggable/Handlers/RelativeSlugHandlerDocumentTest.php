@@ -19,7 +19,7 @@ class RelativeSlugHandlerDocumentTest extends BaseTestCaseMongoODM
     const ARTICLE = 'Sluggable\\Fixture\\Document\\Handler\\Article';
     const SLUG = 'Sluggable\\Fixture\\Document\\Handler\\RelativeSlug';
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $evm = new EventManager();

@@ -13,11 +13,9 @@ namespace Gedmo\Uploadable\FileInfo;
 
 class FileInfoArrayTest extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * @expectedException RuntimeException
-     */
     public function test_constructor_ifKeysAreNotValidOrSomeAreMissingThrowException()
     {
+        $this->expectException('RuntimeException');
         $fileInfo = new FileInfoArray(array());
     }
 }

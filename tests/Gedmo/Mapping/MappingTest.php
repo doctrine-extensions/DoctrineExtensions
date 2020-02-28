@@ -19,7 +19,7 @@ class MappingTest extends \PHPUnit\Framework\TestCase
     private $em;
     private $timestampable;
 
-    public function setUp()
+    public function setUp(): void
     {
         $config = new \Doctrine\ORM\Configuration();
         $config->setProxyDir(TESTS_TEMP_DIR);

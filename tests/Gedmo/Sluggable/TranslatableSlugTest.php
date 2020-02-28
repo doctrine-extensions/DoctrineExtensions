@@ -28,7 +28,7 @@ class TranslatableSlugTest extends BaseTestCaseORM
     const PAGE = 'Sluggable\\Fixture\\Page';
     const TRANSLATION = 'Gedmo\\Translatable\\Entity\\Translation';
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

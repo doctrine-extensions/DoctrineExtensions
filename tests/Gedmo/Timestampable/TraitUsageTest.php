@@ -17,7 +17,7 @@ class TraitUsageTest extends BaseTestCaseORM
 {
     const TARGET = "Timestampable\\Fixture\\UsingTrait";
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

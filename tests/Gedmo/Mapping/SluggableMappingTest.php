@@ -20,7 +20,7 @@ class SluggableMappingTest extends \PHPUnit\Framework\TestCase
     const SLUGGABLE = 'Mapping\Fixture\Sluggable';
     private $em;
 
-    public function setUp()
+    public function setUp(): void
     {
         $config = new \Doctrine\ORM\Configuration();
         $config->setMetadataCacheImpl(new \Doctrine\Common\Cache\ArrayCache());

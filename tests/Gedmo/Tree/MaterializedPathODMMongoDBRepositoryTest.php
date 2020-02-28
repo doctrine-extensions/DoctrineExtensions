@@ -19,7 +19,7 @@ class MaterializedPathODMMongoDBRepositoryTest extends BaseTestCaseMongoODM
     /** @var $this->repo \Gedmo\Tree\Document\MongoDB\Repository\MaterializedPathRepository */
     protected $repo;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -226,19 +226,15 @@ class MaterializedPathODMMongoDBRepositoryTest extends BaseTestCaseMongoODM
         $this->assertEquals(2, $count);
     }
 
-    /**
-     * @expectedException \Gedmo\Exception\InvalidArgumentException
-     */
     public function testChildCount_ifAnObjectIsPassedWhichIsNotAnInstanceOfTheEntityClassThrowException()
     {
+        $this->expectException('Gedmo\Exception\InvalidArgumentException');
         $this->repo->childCount(new \DateTime());
     }
 
-    /**
-     * @expectedException \Gedmo\Exception\InvalidArgumentException
-     */
     public function testChildCount_ifAnObjectIsPassedIsAnInstanceOfTheEntityClassButIsNotHandledByUnitOfWorkThrowException()
     {
+        $this->expectException('Gedmo\Exception\InvalidArgumentException');
         $this->repo->childCount($this->createCategory());
     }
 
@@ -249,7 +245,7 @@ class MaterializedPathODMMongoDBRepositoryTest extends BaseTestCaseMongoODM
 
         $tree = $this->repo->childrenHierarchy();
 
-        $this->assertInternalType('array', $tree[0][$childrenIndex]);
+        $this->assertIsArray($tree[0][$childrenIndex]);
     }
 
     protected function getUsedEntityFixtures()

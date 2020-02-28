@@ -18,7 +18,7 @@ class SluggableTest extends BaseTestCaseORM
     const ARTICLE = 'Sluggable\\Fixture\\Article';
     private $articleId;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

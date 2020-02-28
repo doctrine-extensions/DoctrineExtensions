@@ -21,7 +21,7 @@ class ConcurrencyTest extends BaseTestCaseORM
     const ARTICLE = "Tree\\Fixture\\Article";
     const COMMENT = "Tree\\Fixture\\Comment";
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

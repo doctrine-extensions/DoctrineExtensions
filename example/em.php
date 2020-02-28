@@ -9,8 +9,8 @@ $connection = array(
     'host' => '127.0.0.1',
     'port' => 3306,
     'user' => 'root',
-    'password' => null,
-    'dbname' => 'test',
+    'password' => "",
+    'dbname' => 'dextensions',
     'driver' => 'pdo_mysql',
 );
 if (!file_exists(__DIR__.'/../vendor/autoload.php')) {

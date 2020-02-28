@@ -42,20 +42,8 @@ abstract class BaseTestCaseORM extends \PHPUnit\Framework\TestCase
     /**
      * {@inheritdoc}
      */
-    protected function setUp()
+    protected function setUp(): void
     {
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function expectException($exception)
-    {
-        if (method_exists('PHPUnit\\Framework\\TestCase', 'setExpectedException')) {
-            return parent::setExpectedException($exception);
-        }
-
-        return parent::expectException($exception);
     }
 
     /**

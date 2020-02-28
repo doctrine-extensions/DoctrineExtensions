@@ -19,7 +19,7 @@ class Issue1058Test extends BaseTestCaseORM
     const ARTICLE = 'Sluggable\\Fixture\\Issue1058\\Page';
     const USER = 'Sluggable\\Fixture\\Issue1058\\User';
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

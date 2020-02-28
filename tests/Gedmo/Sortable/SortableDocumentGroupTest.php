@@ -22,7 +22,7 @@ class SortableDocumentGroupTest extends BaseTestCaseMongoODM
     const KID_DATE1 = '1999-12-31';
     const KID_DATE2 = '2000-01-01';
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $evm = new EventManager();

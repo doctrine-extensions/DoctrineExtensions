@@ -20,7 +20,7 @@ class BothSlugHandlerTest extends BaseTestCaseORM
     const OCCUPATION = "Sluggable\\Fixture\\Handler\\People\\Occupation";
     const PERSON = "Sluggable\\Fixture\\Handler\\People\\Person";
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

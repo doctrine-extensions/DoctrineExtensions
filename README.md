@@ -7,6 +7,23 @@ This package contains extensions for Doctrine ORM and MongoDB ODM that offer new
 more efficiently. These behaviors can be easily attached to the event system of Doctrine and handle the records being
 flushed in a behavioral way.
 
+---
+
+##### :warning: The `master` branch is for development on Doctrine Extensions 3.0.
+
+3.0 will focus on refreshing this package for today's PHP. This includes:
+
+- Bumping minimum version requirements of PHP, Doctrine, and other dependencies
+- Updating the test suite, add code and style standards, and other needed build tools
+- Cleaning up documentation, code, comments, etc.
+
+While major code changes are not expected initially for 3.0, it will be a major release due to changes in
+requirements and toolsets.
+
+For the current stable version, see the [v2.4.x branch](https://github.com/Atlantic18/DoctrineExtensions/tree/v2.4.x).
+
+---
+
 ## Installation
 
     $ composer require gedmo/doctrine-extensions
@@ -15,6 +32,10 @@ flushed in a behavioral way.
 * [Symfony 4](/doc/symfony4.md)
 * [Laravel 5](https://www.laraveldoctrine.org/docs/1.3/extensions)
 * [Zend Framework 2](/doc/zendframework2.md)
+
+### Upgrading
+
+* [From v2.4.x to v3.0](/doc/upgrading/upgrade-v2.4-to-v3.0.md)
 
 ## Extensions
 
@@ -74,15 +95,12 @@ XML mapping xsd schemas are also versioned and can be used by version suffix:
 
 ### Running Tests
 
-**pdo-sqlite** extension is necessary.
-
 To set up and run the tests, follow these steps:
 
-- go to the root directory of extensions
-- download composer: `wget https://getcomposer.org/composer.phar`
-- install dev libraries: `php composer.phar install`
-- run: `bin/phpunit -c tests`
-- optional - run mongodb service if targeting mongo tests
+- Install [Lando](https://docs.devwithlando.io/), a Docker-based dev environment tool
+- Run `lando start` from the project root
+- Make sure you `composer install` project dependencies
+- Run `lando php bin/phpunit -c tests`
 
 ### Running the Example
 

@@ -29,7 +29,7 @@ class TranslatableMappingTest extends BaseTestCaseOM
      */
     private $translatable;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 

@@ -14,7 +14,7 @@ class ExtensionODMTest extends BaseTestCaseMongoODM
 
     private $encoderListener;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

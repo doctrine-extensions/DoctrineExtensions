@@ -2,6 +2,7 @@
 
 namespace Gedmo\Mapping;
 
+use Doctrine\Common\Cache\Cache;
 use Doctrine\Common\Persistence\Mapping\Driver\DefaultFileLocator;
 use Doctrine\Common\Persistence\Mapping\Driver\SymfonyFileLocator;
 use Doctrine\Common\Persistence\Mapping\Driver\MappingDriver;
@@ -98,11 +99,13 @@ class ExtensionMetadataFactory
             $config['useObjectClass'] = $useObjectName;
         }
 
-        // cache the metadata (even if it's empty)
-        // caching empty metadata will prevent re-parsing non-existent annotations
-        $cacheId = self::getCacheId($meta->name, $this->extensionNamespace);
-        if ($cacheDriver = $cmf->getCacheDriver()) {
-            $cacheDriver->save($cacheId, $config, null);
+        $cacheDriver = $cmf->getCacheDriver();
+
+        if ($cacheDriver instanceof Cache) {
+            // Cache the result, even if it's empty, to prevent re-parsing non-existent annotations.
+            $cacheId = self::getCacheId($meta->name, $this->extensionNamespace);
+
+            $cacheDriver->save($cacheId, $config);
         }
 
         return $config;

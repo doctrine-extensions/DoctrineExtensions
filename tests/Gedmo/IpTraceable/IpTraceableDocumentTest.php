@@ -21,7 +21,7 @@ class IpTraceableDocumentTest extends BaseTestCaseMongoODM
     const ARTICLE = 'IpTraceable\Fixture\Document\Article';
     const TYPE = 'IpTraceable\Fixture\Document\Type';
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

@@ -82,7 +82,7 @@ return array(
                 'class' => 'Doctrine\ORM\Mapping\Driver\AnnotationDriver',
                 'cache' => 'array',
                 'paths' => array(
-                    'vendor/gedmo/doctrine-extensions/lib/Gedmo/Translatable/Entity',
+                    'vendor/gedmo/doctrine-extensions/src/Translatable/Entity',
                 ),
             ),
             'orm_default' => array(

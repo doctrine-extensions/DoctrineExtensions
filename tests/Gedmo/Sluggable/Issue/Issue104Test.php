@@ -17,17 +17,17 @@ class Issue104Test extends BaseTestCaseORM
 {
     const CAR = 'Sluggable\\Fixture\\Issue104\\Car';
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
     }
 
     /**
      * @test
-     * @expectedException Gedmo\Exception\InvalidMappingException
      */
     public function shouldThrowAnExceptionWhenMappedSuperclassProtectedProperty()
     {
+        $this->expectException('Gedmo\Exception\InvalidMappingException');
         $evm = new EventManager();
         $evm->addEventSubscriber(new SluggableListener());
         $this->getMockSqliteEntityManager($evm);

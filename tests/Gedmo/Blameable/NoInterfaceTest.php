@@ -17,7 +17,7 @@ class NoInterfaceTest extends BaseTestCaseORM
 {
     const FIXTURE = "Blameable\\Fixture\\Entity\\WithoutInterface";
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

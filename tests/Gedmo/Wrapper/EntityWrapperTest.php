@@ -18,7 +18,7 @@ class EntityWrapperTest extends BaseTestCaseORM
 {
     const ARTICLE = "Wrapper\\Fixture\\Entity\\Article";
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->getMockSqliteEntityManager(new EventManager());

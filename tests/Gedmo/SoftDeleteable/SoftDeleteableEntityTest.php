@@ -40,7 +40,7 @@ class SoftDeleteableEntityTest extends BaseTestCaseORM
 
     private $softDeleteableListener;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -304,11 +304,11 @@ class SoftDeleteableEntityTest extends BaseTestCaseORM
         $this->em->getFilters()->disable(self::SOFT_DELETEABLE_FILTER_NAME);
 
         $art = $repo->findOneBy(array($field => $value));
-        $this->assertInternalType('object', $art);
-        $this->assertInternalType('object', $art->getDeletedAt());
+        $this->assertIsObject($art);
+        $this->assertIsObject($art->getDeletedAt());
         $this->assertInstanceOf('DateTimeInterface', $art->getDeletedAt());
         $comment = $commentRepo->findOneBy(array($commentField => $commentValue));
-        $this->assertInternalType('object', $comment);
+        $this->assertIsObject($comment);
         $this->assertNull($comment->getDeletedAt());
 
         $this->em->createQuery('UPDATE '.self::ARTICLE_CLASS.' a SET a.deletedAt = NULL')->execute();
@@ -338,8 +338,8 @@ class SoftDeleteableEntityTest extends BaseTestCaseORM
 
         $art = $repo->findOneBy(array($field => $value));
 
-        $this->assertInternalType('object', $art);
-        $this->assertInternalType('object', $art->getDeletedAt());
+        $this->assertIsObject($art);
+        $this->assertIsObject($art->getDeletedAt());
         $this->assertInstanceOf('DateTimeInterface', $art->getDeletedAt());
 
         // Inheritance tree DELETE DQL
@@ -376,8 +376,8 @@ class SoftDeleteableEntityTest extends BaseTestCaseORM
 
         $p = $megaPageRepo->findOneBy(array('title' => 'Page 1'));
 
-        $this->assertInternalType('object', $p);
-        $this->assertInternalType('object', $p->getDeletedAt());
+        $this->assertIsObject($p);
+        $this->assertIsObject($p->getDeletedAt());
         $this->assertInstanceOf('DateTimeInterface', $p->getDeletedAt());
 
         // Test of #301
@@ -409,7 +409,7 @@ class SoftDeleteableEntityTest extends BaseTestCaseORM
         $foundComment = $otherCommentRepo->findOneBy(array('id' => $commentId));
 
         $this->assertNull($foundArt);
-        $this->assertInternalType('object', $foundComment);
+        $this->assertIsObject($foundComment);
         $this->assertInstanceOf(self::OTHER_COMMENT_CLASS, $foundComment);
 
         $this->em->getFilters()->disable(self::SOFT_DELETEABLE_FILTER_NAME);
@@ -417,10 +417,10 @@ class SoftDeleteableEntityTest extends BaseTestCaseORM
         $foundArt = $otherArticleRepo->findOneById($artId);
         $foundComment = $otherCommentRepo->findOneById($commentId);
 
-        $this->assertInternalType('object', $foundArt);
-        $this->assertInternalType('object', $foundArt->getDeletedAt());
+        $this->assertIsObject($foundArt);
+        $this->assertIsObject($foundArt->getDeletedAt());
         $this->assertInstanceOf('DateTimeInterface', $foundArt->getDeletedAt());
-        $this->assertInternalType('object', $foundComment);
+        $this->assertIsObject($foundComment);
         $this->assertInstanceOf(self::OTHER_COMMENT_CLASS, $foundComment);
     }
 

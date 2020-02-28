@@ -60,7 +60,7 @@ class Yaml extends File implements Driver
                             sprintf(
                                 "Field - [%s] does not have a valid integrity option, [%s] in class - %s",
                                 $property,
-                                implode($validator->getIntegrityActions(), ', '),
+                                implode(', ', $validator->getIntegrityActions()),
                                 $meta->name
                             )
                         );

@@ -32,7 +32,7 @@ abstract class BaseTestCaseMongoODM extends \PHPUnit\Framework\TestCase
     /**
      * {@inheritdoc}
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         if (!class_exists('Mongo')) {
             $this->markTestSkipped('Missing Mongo extension.');
@@ -42,19 +42,7 @@ abstract class BaseTestCaseMongoODM extends \PHPUnit\Framework\TestCase
     /**
      * {@inheritdoc}
      */
-    public function expectException($exception)
-    {
-        if (method_exists('PHPUnit\\Framework\\TestCase', 'setExpectedException')) {
-            return parent::setExpectedException($exception);
-        }
-
-        return parent::expectException($exception);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function tearDown()
+    protected function tearDown(): void
     {
         if ($this->dm) {
             foreach ($this->dm->getDocumentDatabases() as $db) {
@@ -77,7 +65,7 @@ abstract class BaseTestCaseMongoODM extends \PHPUnit\Framework\TestCase
      */
     protected function getMockDocumentManager(EventManager $evm = null, $config = null)
     {
-        $conn = new Connection();
+        $conn = new Connection($_ENV['MONGODB_SERVER']);
 
         $config = $config ? $config : $this->getMockAnnotatedConfig();
 

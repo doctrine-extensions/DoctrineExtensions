@@ -55,7 +55,7 @@ abstract class Role
   private $lvl;
 
   /**
-   * @ORM\Column(name="role", type="string", length=255, nullable=false)
+   * @ORM\Column(name="role", type="string", length=191, nullable=false)
    * @var string
    */
   private $role;

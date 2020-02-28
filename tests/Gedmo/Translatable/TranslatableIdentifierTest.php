@@ -21,7 +21,7 @@ class TranslatableIdentifierTest extends BaseTestCaseORM
     private $testObjectId;
     private $translatableListener;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

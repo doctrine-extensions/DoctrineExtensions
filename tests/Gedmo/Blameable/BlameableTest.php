@@ -21,7 +21,7 @@ class BlameableTest extends BaseTestCaseORM
     const COMMENT = "Blameable\\Fixture\\Entity\\Comment";
     const TYPE = "Blameable\\Fixture\\Entity\\Type";
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

@@ -23,7 +23,7 @@ class IpTraceableTest extends BaseTestCaseORM
     const COMMENT = "IpTraceable\\Fixture\\Comment";
     const TYPE = "IpTraceable\\Fixture\\Type";
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

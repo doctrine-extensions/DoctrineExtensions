@@ -19,7 +19,7 @@ class TimestampableDocumentTest extends BaseTestCaseMongoODM
     const ARTICLE = 'Timestampable\Fixture\Document\Article';
     const TYPE = 'Timestampable\Fixture\Document\Type';
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $evm = new EventManager();

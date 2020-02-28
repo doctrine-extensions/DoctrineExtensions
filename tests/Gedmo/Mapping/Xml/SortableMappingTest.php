@@ -29,7 +29,7 @@ class SortableMappingTest extends BaseTestCaseOM
      */
     private $sortable;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 

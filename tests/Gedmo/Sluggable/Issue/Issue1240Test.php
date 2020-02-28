@@ -17,7 +17,7 @@ class Issue1240Test extends BaseTestCaseORM
 {
     const ARTICLE = 'Sluggable\\Fixture\\Issue1240\\Article';
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

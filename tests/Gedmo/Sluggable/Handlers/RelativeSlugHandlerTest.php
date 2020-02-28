@@ -19,7 +19,7 @@ class RelativeSlugHandlerTest extends BaseTestCaseORM
     const SLUG = "Sluggable\\Fixture\\Handler\\ArticleRelativeSlug";
     const ARTICLE = "Sluggable\\Fixture\\Handler\\Article";
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

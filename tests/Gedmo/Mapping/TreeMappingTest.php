@@ -29,7 +29,7 @@ class TreeMappingTest extends \PHPUnit\Framework\TestCase
      */
     private $listener;
 
-    public function setUp()
+    public function setUp(): void
     {
         $config = new \Doctrine\ORM\Configuration();
         $config->setMetadataCacheImpl(new \Doctrine\Common\Cache\ArrayCache());
