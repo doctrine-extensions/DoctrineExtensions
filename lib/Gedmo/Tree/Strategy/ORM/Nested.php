@@ -2,16 +2,17 @@
 
 namespace Gedmo\Tree\Strategy\ORM;
 
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Criteria;
-use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\Mapping\ClassMetadata;
-use Gedmo\Exception\UnexpectedValueException;
-use Doctrine\ORM\Proxy\Proxy;
-use Gedmo\Tool\Wrapper\AbstractWrapper;
+use Doctrine\ORM\Query;
 use Gedmo\Tree\Strategy;
 use Gedmo\Tree\TreeListener;
+use Doctrine\ORM\Proxy\Proxy;
+use Doctrine\ORM\Mapping\ClassMetadata;
+use Gedmo\Tool\Wrapper\AbstractWrapper;
+use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\Common\Collections\Criteria;
 use Gedmo\Mapping\Event\AdapterInterface;
+use Gedmo\Exception\UnexpectedValueException;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * This strategy makes the tree act like a nested set.
@@ -522,7 +523,7 @@ class Nested implements Strategy
             // node id cannot be null
             $qb->where($qb->expr()->eq('node.' . $identifierField, ':id'));
             $qb->setParameter('id', $nodeId);
-            $qb->getQuery()->getSingleScalarResult();
+            $qb->getQuery()->setHint(Query::HINT_CACHE_EVICT, true)->getSingleScalarResult();
             $wrapped->setPropertyValue($config['left'], $left + $diff);
             $wrapped->setPropertyValue($config['right'], $right + $diff);
             $em->getUnitOfWork()->setOriginalEntityProperty($oid, $config['left'], $left + $diff);
@@ -590,7 +591,7 @@ class Nested implements Strategy
             $qb->andWhere($qb->expr()->eq('node.' . $config['root'], ':rid'));
             $qb->setParameter('rid', $root);
         }
-        $qb->getQuery()->getSingleScalarResult();
+        $qb->getQuery()->setHint(Query::HINT_CACHE_EVICT, true)->getSingleScalarResult();
 
         $qb = $em->createQueryBuilder();
         $qb->update($config['useObjectClass'], 'node')
@@ -601,7 +602,7 @@ class Nested implements Strategy
             $qb->setParameter('rid', $root);
         }
 
-        $qb->getQuery()->getSingleScalarResult();
+        $qb->getQuery()->setHint(Query::HINT_CACHE_EVICT, true)->getSingleScalarResult();
         // update in memory nodes increases performance, saves some IO
         foreach ($em->getUnitOfWork()->getIdentityMap() as $className => $nodes) {
             // for inheritance mapped classes, only root is always in the identity map
@@ -673,7 +674,7 @@ class Nested implements Strategy
         if (isset($config['level'])) {
             $qb->set('node.' . $config['level'], "node.{$config['level']} {$levelSign} {$absLevelDelta}");
         }
-        $qb->getQuery()->getSingleScalarResult();
+        $qb->getQuery()->setHint(Query::HINT_CACHE_EVICT, true)->getSingleScalarResult();
         // update in memory nodes increases performance, saves some IO
         foreach ($em->getUnitOfWork()->getIdentityMap() as $className => $nodes) {
             // for inheritance mapped classes, only root is always in the identity map
