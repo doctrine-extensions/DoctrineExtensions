@@ -212,7 +212,7 @@ class Article
     /**
      * @var User $contentChangedBy
      *
-     * @Gedmo\Blameable(on="change", fields={"title", "body"})
+     * @Gedmo\Blameable(on="change", field={"title", "body"})
      * @ORM\ManyToOne(targetEntity="Path\To\Entity\User")
      * @ORM\JoinColumn(name="content_changed_by", referencedColumnName="id")
      */
