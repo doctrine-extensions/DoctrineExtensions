@@ -211,10 +211,11 @@ class Nested implements Strategy
                 ->setParameters(array(1 => $leftValue, 2 => $rightValue));
 
             if (isset($config['root'])) {
-                $qb->andWhere($qb->expr()->eq('node.' . $config['root'], ':rid'));
-                $qb->setParameter('rid', $rootId,
-                    $meta->getTypeOfField($meta->getSingleIdentifierFieldName())
+                $type = $meta->getTypeOfField(
+                    $meta->getSingleIdentifierFieldName()
                 );
+                $qb->andWhere($qb->expr()->eq('node.' . $config['root'], ':rid'));
+                $qb->setParameter('rid', $rootId, $type);
             }
             $q = $qb->getQuery();
             // get nodes for deletion
@@ -500,13 +501,12 @@ class Nested implements Strategy
         } else {
             $qb = $em->createQueryBuilder();
             $qb->update($config['useObjectClass'], 'node');
+            $type = $meta->getTypeOfField($identifierField);
             if (isset($config['root'])) {
                 $wrappedNewRoot = AbstractWrapper::wrap($newRoot, $em);
                 $newRootId = $wrappedNewRoot->getIdentifier();
                 $qb->set('node.' . $config['root'], ':pid');
-                $qb->setParameter('pid', $newRootId,
-                    $meta->getTypeOfField($identifierField)
-                );
+                $qb->setParameter('pid', $newRootId, $type);
                 $wrapped->setPropertyValue($config['root'], $newRoot);
                 $em->getUnitOfWork()->setOriginalEntityProperty($oid, $config['root'], $newRoot);
             }
@@ -519,9 +519,7 @@ class Nested implements Strategy
                 $wrappedNewParent = AbstractWrapper::wrap($newParent, $em);
                 $newParentId = $wrappedNewParent->getIdentifier();
                 $qb->set('node.' . $config['parent'], ':pid');
-                $qb->setParameter('pid', $newParentId,
-                    $meta->getTypeOfField($identifierField)
-                );
+                $qb->setParameter('pid', $newParentId, $type);
                 $wrapped->setPropertyValue($config['parent'], $newParent);
                 $em->getUnitOfWork()->setOriginalEntityProperty($oid, $config['parent'], $newParent);
             }
@@ -529,9 +527,7 @@ class Nested implements Strategy
             $qb->set('node.' . $config['right'], $right + $diff);
             // node id cannot be null
             $qb->where($qb->expr()->eq('node.' . $identifierField, ':id'));
-            $qb->setParameter('id', $nodeId,
-                $meta->getTypeOfField($identifierField)
-            );
+            $qb->setParameter('id', $nodeId, $type);
             $qb->getQuery()->getSingleScalarResult();
             $wrapped->setPropertyValue($config['left'], $left + $diff);
             $wrapped->setPropertyValue($config['right'], $right + $diff);
@@ -563,10 +559,11 @@ class Nested implements Strategy
             ->from($config['useObjectClass'], 'node');
 
         if (isset($config['root']) && $rootId) {
-            $qb->where($qb->expr()->eq('node.' . $config['root'], ':rid'));
-            $qb->setParameter('rid', $rootId,
-                $meta->getTypeOfField($meta->getSingleIdentifierFieldName())
+            $type = $meta->getTypeOfField(
+                $meta->getSingleIdentifierFieldName()
             );
+            $qb->where($qb->expr()->eq('node.' . $config['root'], ':rid'));
+            $qb->setParameter('rid', $rootId, $type);
         }
         $query = $qb->getQuery();
         $right = $query->getSingleScalarResult();
@@ -600,9 +597,10 @@ class Nested implements Strategy
             ->where($qb->expr()->gte('node.' . $config['left'], $first));
         if (isset($config['root'])) {
             $qb->andWhere($qb->expr()->eq('node.' . $config['root'], ':rid'));
-            $qb->setParameter('rid', $root,
-                $meta->getTypeOfField($meta->getSingleIdentifierFieldName())
+            $type = $meta->getTypeOfField(
+                $meta->getSingleIdentifierFieldName()
             );
+            $qb->setParameter('rid', $root, $type);
         }
         $qb->getQuery()->getSingleScalarResult();
 
@@ -612,9 +610,10 @@ class Nested implements Strategy
             ->where($qb->expr()->gte('node.' . $config['right'], $first));
         if (isset($config['root'])) {
             $qb->andWhere($qb->expr()->eq('node.' . $config['root'], ':rid'));
-            $qb->setParameter('rid', $root,
-                $meta->getTypeOfField($meta->getSingleIdentifierFieldName())
+            $type = $meta->getTypeOfField(
+                $meta->getSingleIdentifierFieldName()
             );
+            $qb->setParameter('rid', $root, $type);
         }
 
         $qb->getQuery()->getSingleScalarResult();
@@ -681,14 +680,13 @@ class Nested implements Strategy
             ->where($qb->expr()->gte('node.' . $config['left'], $first))
             ->andWhere($qb->expr()->lte('node.' . $config['right'], $last));
         if (isset($config['root'])) {
+            $type = $meta->getTypeOfField(
+                $meta->getSingleIdentifierFieldName()
+            );
             $qb->set('node.' . $config['root'], ':drid');
-            $qb->setParameter('drid', $destRoot,
-                $meta->getTypeOfField($meta->getSingleIdentifierFieldName())
-            );
+            $qb->setParameter('drid', $destRoot, $type);
             $qb->andWhere($qb->expr()->eq('node.' . $config['root'], ':rid'));
-            $qb->setParameter('rid', $root,
-                $meta->getTypeOfField($meta->getSingleIdentifierFieldName())
-            );
+            $qb->setParameter('rid', $root, $type);
         }
         if (isset($config['level'])) {
             $qb->set('node.' . $config['level'], "node.{$config['level']} {$levelSign} {$absLevelDelta}");
