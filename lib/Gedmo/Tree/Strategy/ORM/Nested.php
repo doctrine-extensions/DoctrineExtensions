@@ -499,8 +499,13 @@ class Nested implements Strategy
             $qb = $em->createQueryBuilder();
             $qb->update($config['useObjectClass'], 'node');
             if (isset($config['root'])) {
-                $qb->set('node.' . $config['root'], ':rid');
-                $qb->setParameter('rid', $newRoot);
+                $wrappedNewRoot = AbstractWrapper::wrap($newRoot, $em);
+                $newRootId = $wrappedNewRoot->getIdentifier();
+                $qb->set('node.' . $config['root'], ':pid');
+                $qb->setParameter('pid', $newRootId,
+                    $wrappedNewRoot->getMetadata()
+                                   ->getTypeOfField($identifierField)
+                );
                 $wrapped->setPropertyValue($config['root'], $newRoot);
                 $em->getUnitOfWork()->setOriginalEntityProperty($oid, $config['root'], $newRoot);
             }
@@ -521,7 +526,9 @@ class Nested implements Strategy
             $qb->set('node.' . $config['right'], $right + $diff);
             // node id cannot be null
             $qb->where($qb->expr()->eq('node.' . $identifierField, ':id'));
-            $qb->setParameter('id', $nodeId);
+            $qb->setParameter('id', $nodeId,
+                $wrapped->getMetadata()->getTypeOfField($identifierField)
+            );
             $qb->getQuery()->getSingleScalarResult();
             $wrapped->setPropertyValue($config['left'], $left + $diff);
             $wrapped->setPropertyValue($config['right'], $right + $diff);
