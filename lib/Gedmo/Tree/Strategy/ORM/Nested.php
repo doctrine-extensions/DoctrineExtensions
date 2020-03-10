@@ -211,12 +211,12 @@ class Nested implements Strategy
                 ->setParameters(array(1 => $leftValue, 2 => $rightValue));
 
             if (isset($config['root'])) {
-                $wrappedRoot = AbstractWrapper::wrap($root, $em);
+                $wrappedRootId = AbstractWrapper::wrap($rootId, $em);
                 $type = $meta->getTypeOfField(
                     $meta->getSingleIdentifierFieldName()
                 );
                 $qb->andWhere($qb->expr()->eq('node.' . $config['root'], ':rid'));
-                $qb->setParameter('rid', $wrappedRoot->getIdentifier(), $type);
+                $qb->setParameter('rid', $wrappedRootId->getIdentifier(), $type);
             }
             $q = $qb->getQuery();
             // get nodes for deletion
