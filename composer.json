@@ -46,6 +46,7 @@
         "doctrine/mongodb-odm": "^1.2",
         "doctrine/orm": "^2.6",
         "phpunit/phpunit": "^8.5",
+        "ramsey/uuid-doctrine": "^1.6",
         "symfony/yaml": "^4.1"
     },
     "conflict": {
