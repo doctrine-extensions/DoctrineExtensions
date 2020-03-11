@@ -8,7 +8,7 @@ use Tool\BaseTestCaseORM;
 use Tree\Fixture\CustomIdCategory;
 
 /**
- * Test Tree Behavious with a custom Doctrine type for the ID property.
+ * Test Tree behaviour with a custom Doctrine type for the ID property.
  *
  * @author Paul Dugas <paul@dugasent.com>
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
@@ -29,12 +29,12 @@ class NestedTreeCustomIdTest extends BaseTestCaseORM
              ->registerDoctrineTypeMapping('uuid_binary', 'binary');
     }
 
-    public function testCustomIdType() 
+    public function testPersist() 
     {
         /** @var NestedTreeRepository */
         $repo = $this->em->getRepository(CustomIdCategory::class);
 
-        // Create the first root node, "root1"
+        // Create a root node, "root1"
         $root1 = new CustomIdCategory();
         $root1->setTitle('root1');
         $this->em->persist($root1);
@@ -49,6 +49,7 @@ class NestedTreeCustomIdTest extends BaseTestCaseORM
         $this->assertEquals($root1->getId(), $node->getId());
 
         // Should be able to read it back by ID 
+        $this->em->clear();
         $node = $repo->findOneById($root1->getId());
         $this->assertNotNull($node);
         $this->assertInstanceOf(CustomIdCategory::class, $node);
