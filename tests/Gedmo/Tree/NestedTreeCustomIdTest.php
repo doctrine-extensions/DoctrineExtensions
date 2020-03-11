@@ -64,6 +64,13 @@ class NestedTreeCustomIdTest extends BaseTestCaseORM
         $this->assertEquals(0, $node->getLevel());
         $this->assertEquals(1, $node->getLeft());
         $this->assertEquals(2, $node->getRight());
+
+        // Delete it and can't find it any more
+        $this->em->remove($node);
+        $this->em->flush();
+        $this->em->clear();
+        $node = $repo->findOneById($root1->getId());
+        $this->assertNull($node);
     }
 
     protected function getUsedEntityFixtures()

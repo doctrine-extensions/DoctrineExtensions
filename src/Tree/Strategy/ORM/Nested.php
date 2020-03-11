@@ -212,7 +212,13 @@ class Nested implements Strategy
 
             if (isset($config['root'])) {
                 $qb->andWhere($qb->expr()->eq('node.' . $config['root'], ':rid'));
-                $qb->setParameter('rid', $rootId);
+                if (is_object($rootId)) {
+                    $wrappedRootId = AbstractWrapper::wrap($rootId, $em);
+                    $idType = $meta->getTypeOfField($meta->getSingleIdentifierFieldName());
+                    $qb->setParameter('rid', $wrappedRootId->getIdentifier(), $idType);
+                } else {
+                    $qb->setParameter('rid', $rootId);
+                }
             }
             $q = $qb->getQuery();
             // get nodes for deletion
@@ -499,13 +505,11 @@ class Nested implements Strategy
             $qb = $em->createQueryBuilder();
             $qb->update($config['useObjectClass'], 'node');
             $idType = $meta->getTypeOfField($identifierField);
-            if ($idType === 'integer' || $idType === 'string') { $idType = null; } // TODO better test
             if (isset($config['root'])) {
                 $qb->set('node.' . $config['root'], ':rid');
-                if ($idType) {
+                if (is_object($newRoot)) {
                     $wrappedNewRoot = AbstractWrapper::wrap($newRoot, $em);
-                    $newRootId = $wrappedNewRoot->getIdentifier();
-                    $qb->setParameter('rid', $newRootId, $idType);
+                    $qb->setParameter('rid', $wrappedNewRoot->getIdentifier(), $idType);
                 } else {
                     $qb->setParameter('rid', $newRoot);
                 }
@@ -562,7 +566,13 @@ class Nested implements Strategy
 
         if (isset($config['root']) && $rootId) {
             $qb->where($qb->expr()->eq('node.' . $config['root'], ':rid'));
-            $qb->setParameter('rid', $rootId);
+            if (is_object($rootId)) {
+                $wrappedRootId = AbstractWrapper::wrap($rootId, $em);
+                $idType = $meta->getTypeOfField($meta->getSingleIdentifierFieldName());
+                $qb->setParameter('rid', $wrappedRootId->getIdentifier(), $idType);
+            } else {
+                $qb->setParameter('rid', $rootId);
+            }
         }
         $query = $qb->getQuery();
         $right = $query->getSingleScalarResult();
@@ -588,6 +598,12 @@ class Nested implements Strategy
         $meta = $em->getClassMetadata($class);
         $config = $this->listener->getConfiguration($em, $class);
 
+        if (is_object($root)) {
+            $wrappedRoot = AbstractWrapper::wrap($root, $em);
+            $idType = $meta->getTypeOfField($meta->getSingleIdentifierFieldName());
+            $rootId = $wrappedRoot->getIdentifier();
+        }
+
         $sign = ($delta >= 0) ? ' + ' : ' - ';
         $absDelta = abs($delta);
         $qb = $em->createQueryBuilder();
@@ -596,7 +612,11 @@ class Nested implements Strategy
             ->where($qb->expr()->gte('node.' . $config['left'], $first));
         if (isset($config['root'])) {
             $qb->andWhere($qb->expr()->eq('node.' . $config['root'], ':rid'));
-            $qb->setParameter('rid', $root);
+            if (is_object($root)) {
+                $qb->setParameter('rid', $rootId, $idType);
+            } else {
+                $qb->setParameter('rid', $root);
+            }
         }
         $qb->getQuery()->getSingleScalarResult();
 
@@ -606,7 +626,11 @@ class Nested implements Strategy
             ->where($qb->expr()->gte('node.' . $config['right'], $first));
         if (isset($config['root'])) {
             $qb->andWhere($qb->expr()->eq('node.' . $config['root'], ':rid'));
-            $qb->setParameter('rid', $root);
+            if (is_object($root)) {
+                $qb->setParameter('rid', $rootId, $idType);
+            } else {
+                $qb->setParameter('rid', $root);
+            }
         }
 
         $qb->getQuery()->getSingleScalarResult();
@@ -674,9 +698,21 @@ class Nested implements Strategy
             ->andWhere($qb->expr()->lte('node.' . $config['right'], $last));
         if (isset($config['root'])) {
             $qb->set('node.' . $config['root'], ':drid');
-            $qb->setParameter('drid', $destRoot);
+            if (is_object($destRoot)) {
+                $wrappedDestRoot = AbstractWrapper::wrap($destRoot, $em);
+                $idType = $meta->getTypeOfField($meta->getSingleIdentifierFieldName());
+                $qb->setParameter('drid', $wrappedDestRoot->getIdentifier(), $idType);
+            } else {
+                $qb->setParameter('drid', $destRoot);
+            }
             $qb->andWhere($qb->expr()->eq('node.' . $config['root'], ':rid'));
-            $qb->setParameter('rid', $root);
+            if (is_object($root)) {
+                $wrappedRoot = AbstractWrapper::wrap($root, $em);
+                $idType = $meta->getTypeOfField($meta->getSingleIdentifierFieldName());
+                $qb->setParameter('rid', $wrappedRoot->getIdentifier(), $idType);
+            } else {
+                $qb->setParameter('rid', $root);
+            }
         }
         if (isset($config['level'])) {
             $qb->set('node.' . $config['level'], "node.{$config['level']} {$levelSign} {$absLevelDelta}");
