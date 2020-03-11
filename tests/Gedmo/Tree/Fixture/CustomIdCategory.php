@@ -7,10 +7,12 @@ use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid;
 
 /**
+ * Modified version of RootCategory to use binary UUID for $id.
+ *
  * @ORM\Entity(repositoryClass="Gedmo\Tree\Entity\Repository\NestedTreeRepository")
  * @Gedmo\Tree(type="nested")
  */
-class UuidCategory
+class CustomIdCategory
 {
     /**
      * @ORM\Column(name="id", type="uuid_binary")
@@ -37,7 +39,7 @@ class UuidCategory
 
     /**
      * @Gedmo\TreeParent
-     * @ORM\ManyToOne(targetEntity="UuidCategory", inversedBy="children")
+     * @ORM\ManyToOne(targetEntity="CustomIdCategory", inversedBy="children")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="CASCADE")
      * })
@@ -46,7 +48,7 @@ class UuidCategory
 
     /**
      * @Gedmo\TreeRoot
-     * @ORM\ManyToOne(targetEntity="UuidCategory")
+     * @ORM\ManyToOne(targetEntity="CustomIdCategory")
      */
     private $root;
 
@@ -57,7 +59,7 @@ class UuidCategory
      private $level;
 
     /**
-     * @ORM\OneToMany(targetEntity="UuidCategory", mappedBy="parent")
+     * @ORM\OneToMany(targetEntity="CustomIdCategory", mappedBy="parent")
      */
     private $children;
 
@@ -81,7 +83,7 @@ class UuidCategory
         return $this->title;
     }
 
-    public function setParent(UuidCategory $parent = null)
+    public function setParent(CustomIdCategory $parent = null)
     {
         $this->parent = $parent;
     }
