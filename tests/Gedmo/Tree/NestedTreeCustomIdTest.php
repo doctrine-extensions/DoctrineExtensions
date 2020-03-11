@@ -29,7 +29,7 @@ class NestedTreeCustomIdTest extends BaseTestCaseORM
              ->registerDoctrineTypeMapping('uuid_binary', 'binary');
     }
 
-    public function testPersist() 
+    public function test() 
     {
         /** @var NestedTreeRepository */
         $repo = $this->em->getRepository(CustomIdCategory::class);
@@ -65,11 +65,68 @@ class NestedTreeCustomIdTest extends BaseTestCaseORM
         $this->assertEquals(1, $node->getLeft());
         $this->assertEquals(2, $node->getRight());
 
-        // Delete it and can't find it any more
+        // Create another root node, "root2"
+        $this->em->clear();
+        $root2 = new CustomIdCategory();
+        $root2->setTitle('root2');
+        $this->em->persist($root2);
+        $this->em->flush();
+        $this->em->clear();
+        $node = $repo->findOneById($root2->getId());
+        $this->assertNull($node->getParent());
+        $this->assertNotNull($node->getRoot());
+        $this->assertEquals($node->getId(), $node->getRoot()->getId());
+        $this->assertEquals(0, $node->getLevel());
+        $this->assertEquals(1, $node->getLeft());
+        $this->assertEquals(2, $node->getRight());
+
+        // Create a child of $root2
+        $this->em->clear();
+        $parent = $repo->findOneById($root2->getId());
+        $this->assertNotNull($parent);
+        $child1 = new CustomIdCategory();
+        $child1->setTitle('child1');
+        $child1->setParent($parent);
+        $this->em->persist($child1);
+        $this->em->flush();
+        $this->em->clear();
+        $node = $repo->findOneById($root2->getId());
+        $this->assertNotNull($node);
+        $this->assertNotNull($node->getRoot());
+        $this->assertEquals($node->getId(), $node->getRoot()->getId());
+        $this->assertEquals(0, $node->getLevel());
+        $this->assertEquals(1, $node->getLeft());
+        $this->assertEquals(4, $node->getRight());
+        $this->assertCount(1, $node->getChildren());
+        $this->assertEquals($child1->getId(), $node->getChildren()[0]->getId());
+        $node = $repo->findOneById($child1->getId());
+        $this->assertNotNull($node);
+        $this->assertNotNull($node->getRoot());
+        $this->assertEquals($root2->getId(), $node->getRoot()->getId());
+        $this->assertEquals($root2->getId(), $node->getParent()->getId());
+        $this->assertEquals(1, $node->getLevel());
+        $this->assertEquals(2, $node->getLeft());
+        $this->assertEquals(3, $node->getRight());
+        $this->assertCount(0, $node->getChildren());
+
+        // Delete $root1 and can't find it any more
+        $node = $repo->findOneById($root1->getId());
+        $this->assertNotNull($node);
         $this->em->remove($node);
         $this->em->flush();
         $this->em->clear();
         $node = $repo->findOneById($root1->getId());
+        $this->assertNull($node);
+
+        // Can still find $root2, delete it, can't find it then
+        $node = $repo->findOneById($root2->getId());
+        $this->assertNotNull($node);
+        $this->em->remove($node);
+        $this->em->flush();
+        $this->em->clear();
+        $node = $repo->findOneById($root2->getId());
+        $this->assertNull($node);
+        $node = $repo->findOneById($child1->getId());
         $this->assertNull($node);
     }
 
