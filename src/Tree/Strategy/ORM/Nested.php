@@ -212,13 +212,11 @@ class Nested implements Strategy
 
             if (isset($config['root'])) {
                 $qb->andWhere($qb->expr()->eq('node.' . $config['root'], ':rid'));
-                if (is_object($rootId)) {
-                    $wrappedRootId = AbstractWrapper::wrap($rootId, $em);
-                    $idType = $meta->getTypeOfField($meta->getSingleIdentifierFieldName());
-                    $qb->setParameter('rid', $wrappedRootId->getIdentifier(), $idType);
-                } else {
-                    $qb->setParameter('rid', $rootId);
+                if ($rootId instanceof $node) {
+                    $rootId = AbstractWrapper::wrap($rootId, $em)->getIdentifier();
                 }
+                $idType = $meta->getTypeOfField($meta->getSingleIdentifierFieldName());
+                $qb->setParameter('rid', $rootId, $idType);
             }
             $q = $qb->getQuery();
             // get nodes for deletion
@@ -507,11 +505,11 @@ class Nested implements Strategy
             $idType = $meta->getTypeOfField($identifierField);
             if (isset($config['root'])) {
                 $qb->set('node.' . $config['root'], ':rid');
-                if (is_object($newRoot)) {
+                if ($newRoot instanceof $node) {
                     $wrappedNewRoot = AbstractWrapper::wrap($newRoot, $em);
                     $qb->setParameter('rid', $wrappedNewRoot->getIdentifier(), $idType);
                 } else {
-                    $qb->setParameter('rid', $newRoot);
+                    $qb->setParameter('rid', $newRoot, $idType);
                 }
                 $wrapped->setPropertyValue($config['root'], $newRoot);
                 $em->getUnitOfWork()->setOriginalEntityProperty($oid, $config['root'], $newRoot);
@@ -612,7 +610,7 @@ class Nested implements Strategy
             ->where($qb->expr()->gte('node.' . $config['left'], $first));
         if (isset($config['root'])) {
             $qb->andWhere($qb->expr()->eq('node.' . $config['root'], ':rid'));
-            $qb->setParameter('rid', $rootId, $idType);
+            $qb->setParameter('rid', $root);
         }
         $qb->getQuery()->getSingleScalarResult();
 
@@ -622,7 +620,7 @@ class Nested implements Strategy
             ->where($qb->expr()->gte('node.' . $config['right'], $first));
         if (isset($config['root'])) {
             $qb->andWhere($qb->expr()->eq('node.' . $config['root'], ':rid'));
-            $qb->setParameter('rid', $rootId, $idType);
+            $qb->setParameter('rid', $root);
         }
 
         $qb->getQuery()->getSingleScalarResult();
