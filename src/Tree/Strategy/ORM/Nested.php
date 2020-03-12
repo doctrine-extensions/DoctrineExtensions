@@ -532,7 +532,9 @@ class Nested implements Strategy
             // node id cannot be null
             $qb->where($qb->expr()->eq('node.' . $identifierField, ':id'));
             $qb->setParameter('id', $nodeId, $idType);
-            $qb->getQuery()->getSingleScalarResult();
+            if (!$qb->getQuery()->getSingleScalarResult()) {
+                throw new \LogicException('Update failed to match a record!');
+            }
             $wrapped->setPropertyValue($config['left'], $left + $diff);
             $wrapped->setPropertyValue($config['right'], $right + $diff);
             $em->getUnitOfWork()->setOriginalEntityProperty($oid, $config['left'], $left + $diff);
@@ -612,7 +614,9 @@ class Nested implements Strategy
             $qb->andWhere($qb->expr()->eq('node.' . $config['root'], ':rid'));
             $qb->setParameter('rid', $root);
         }
-        $qb->getQuery()->getSingleScalarResult();
+        if (!$qb->getQuery()->getSingleScalarResult()) {
+            throw new \LogicException('Update query failed to match a record');
+        }
 
         $qb = $em->createQueryBuilder();
         $qb->update($config['useObjectClass'], 'node')
@@ -623,7 +627,9 @@ class Nested implements Strategy
             $qb->setParameter('rid', $root);
         }
 
-        $qb->getQuery()->getSingleScalarResult();
+        if (!$qb->getQuery()->getSingleScalarResult()) {
+            throw new \LogicException('Update query failed to match a record');
+        }
         // update in memory nodes increases performance, saves some IO
         foreach ($em->getUnitOfWork()->getIdentityMap() as $className => $nodes) {
             // for inheritance mapped classes, only root is always in the identity map
@@ -697,7 +703,9 @@ class Nested implements Strategy
         if (isset($config['level'])) {
             $qb->set('node.' . $config['level'], "node.{$config['level']} {$levelSign} {$absLevelDelta}");
         }
-        $qb->getQuery()->getSingleScalarResult();
+        if (!$qb->getQuery()->getSingleScalarResult()) {
+            throw new \LogicException('Update query failed to match a record');
+        }
         // update in memory nodes increases performance, saves some IO
         foreach ($em->getUnitOfWork()->getIdentityMap() as $className => $nodes) {
             // for inheritance mapped classes, only root is always in the identity map
