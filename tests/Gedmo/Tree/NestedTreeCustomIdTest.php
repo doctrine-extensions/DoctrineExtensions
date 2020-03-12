@@ -109,11 +109,67 @@ class NestedTreeCustomIdTest extends BaseTestCaseORM
         $this->assertEquals(3, $node->getRight());
         $this->assertCount(0, $node->getChildren());
 
-        // Delete $root1 and can't find it any more
+        // Create a child of $child1
+        $this->em->clear();
+        $parent = $repo->findOneById($child1->getId());
+        $this->assertNotNull($parent);
+        $child2 = new CustomIdCategory();
+        $child2->setTitle('child2');
+        $child2->setParent($parent);
+        $this->em->persist($child2);
+        $this->em->flush();
+        $this->em->clear();
+        $node = $repo->findOneById($root2->getId());
+        $this->assertNotNull($node);
+        $this->assertNotNull($node->getRoot());
+        $this->assertEquals($node->getId(), $node->getRoot()->getId());
+        $this->assertEquals(0, $node->getLevel());
+        $this->assertEquals(1, $node->getLeft());
+        $this->assertEquals(6, $node->getRight());
+        $this->assertCount(1, $node->getChildren());
+        $this->assertEquals($child1->getId(), $node->getChildren()[0]->getId());
+        $node = $repo->findOneById($child1->getId());
+        $this->assertNotNull($node);
+        $this->assertNotNull($node->getRoot());
+        $this->assertEquals($root2->getId(), $node->getRoot()->getId());
+        $this->assertEquals($root2->getId(), $node->getParent()->getId());
+        $this->assertEquals(1, $node->getLevel());
+        $this->assertEquals(2, $node->getLeft());
+        $this->assertEquals(5, $node->getRight());
+        $this->assertCount(1, $node->getChildren());
+        $this->assertEquals($child2->getId(), $node->getChildren()[0]->getId());
+        $node = $repo->findOneById($child2->getId());
+        $this->assertNotNull($node);
+        $this->assertNotNull($node->getRoot());
+        $this->assertEquals($root2->getId(), $node->getRoot()->getId());
+        $this->assertEquals($child1->getId(), $node->getParent()->getId());
+        $this->assertEquals(2, $node->getLevel());
+        $this->assertEquals(3, $node->getLeft());
+        $this->assertEquals(4, $node->getRight());
+        $this->assertCount(0, $node->getChildren());
+
+        // Remove $child1
+        $this->em->clear();
+        $node = $repo->findOneById($child1->getId());
+        $this->assertNotNull($node);
+        $repo->removeFromTree($node);
+        $this->em->clear();
+        $node = $repo->findOneById($child1->getId());
+        $this->assertTrue($node === true);
         $node = $repo->findOneById($root1->getId());
         $this->assertNotNull($node);
-        $this->em->remove($node);
-        $this->em->flush();
+        $this->assertNotNull($node->getRoot());
+        $this->assertEquals($node->getId(), $node->getRoot()->getId());
+        $this->assertEquals(0, $node->getLevel());
+        $this->assertEquals(1, $node->getLeft());
+        $this->assertEquals(4, $node->getRight());
+        $this->assertCount(1, $node->getChildren());
+        $this->assertEquals($child2->getId(), $node->getChildren()[0]->getId());
+
+        // Remove $root1 and can't find it any more
+        $node = $repo->findOneById($root1->getId());
+        $this->assertNotNull($node);
+        $repo->removeFromTree($node);
         $this->em->clear();
         $node = $repo->findOneById($root1->getId());
         $this->assertNull($node);
@@ -121,8 +177,7 @@ class NestedTreeCustomIdTest extends BaseTestCaseORM
         // Can still find $root2, delete it, can't find it then
         $node = $repo->findOneById($root2->getId());
         $this->assertNotNull($node);
-        $this->em->remove($node);
-        $this->em->flush();
+        $repo->removeFromTree($node);
         $this->em->clear();
         $node = $repo->findOneById($root2->getId());
         $this->assertNull($node);

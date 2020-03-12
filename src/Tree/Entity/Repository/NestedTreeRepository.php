@@ -629,6 +629,11 @@ class NestedTreeRepository extends AbstractTreeRepository
             $right = $wrapped->getPropertyValue($config['right']);
             $left = $wrapped->getPropertyValue($config['left']);
             $rootId = isset($config['root']) ? $wrapped->getPropertyValue($config['root']) : null;
+            if (is_object($rootId)) {
+                $wrappedRoot = new EntityWrapper($rootId, $this->_em);
+                $rootId = $wrappedRoot->getIdentifier();
+            }
+            $idType = $meta->getTypeOfField($meta->getSingleIdentifierFieldName());
 
             if ($right == $left + 1) {
                 $this->removeSingle($wrapped);
@@ -698,12 +703,12 @@ class NestedTreeRepository extends AbstractTreeRepository
                     $qb = $this->getQueryBuilder();
                     $qb->update($config['useObjectClass'], 'node');
                     $qb->set('node.'.$config['parent'], ':pid');
-                    $qb->setParameter('pid', $parentId);
+                    $qb->setParameter('pid', $parentId, $idType);
                     $qb->where($qb->expr()->eq('node.'.$config['parent'], ':rpid'));
-                    $qb->setParameter('rpid', $nodeId);
+                    $qb->setParameter('rpid', $nodeId, $idType);
                     if (isset($config['root'])) {
                         $qb->andWhere($qb->expr()->eq('node.'.$config['root'], ':rid'));
-                        $qb->setParameter('rid', $rootId);
+                        $qb->setParameter('rid', $rootId, $idType);
                     }
                     $qb->getQuery()->getSingleScalarResult();
 
