@@ -507,7 +507,8 @@ class Nested implements Strategy
                 $qb->set('node.' . $config['root'], ':rid');
                 if ($newRoot instanceof $node) {
                     $wrappedNewRoot = AbstractWrapper::wrap($newRoot, $em);
-                    $qb->setParameter('rid', $wrappedNewRoot->getIdentifier(), $idType);
+                    $wrappedNewRootId = $wrappedNewRoot->getIdentifier();
+                    $qb->setParameter('rid', $wrappedNewRootId, $idType);
                 } else {
                     $qb->setParameter('rid', $newRoot, $idType);
                 }
@@ -523,7 +524,7 @@ class Nested implements Strategy
                 $wrappedNewParent = AbstractWrapper::wrap($newParent, $em);
                 $newParentId = $wrappedNewParent->getIdentifier();
                 $qb->set('node.' . $config['parent'], ':pid');
-                $qb->setParameter('pid', $newParentId);
+                $qb->setParameter('pid', $newParentId, $idType);
                 $wrapped->setPropertyValue($config['parent'], $newParent);
                 $em->getUnitOfWork()->setOriginalEntityProperty($oid, $config['parent'], $newParent);
             }
@@ -566,7 +567,7 @@ class Nested implements Strategy
 
         if (isset($config['root']) && $rootId) {
             $qb->where($qb->expr()->eq('node.' . $config['root'], ':rid'));
-            if (is_object($rootId)) {
+            if ($rootId instanceof $class) {
                 $wrappedRootId = AbstractWrapper::wrap($rootId, $em);
                 $idType = $meta->getTypeOfField($meta->getSingleIdentifierFieldName());
                 $qb->setParameter('rid', $wrappedRootId->getIdentifier(), $idType);
@@ -608,6 +609,7 @@ class Nested implements Strategy
 
         $sign = ($delta >= 0) ? ' + ' : ' - ';
         $absDelta = abs($delta);
+
         $qb = $em->createQueryBuilder();
         $qb->update($config['useObjectClass'], 'node')
             ->set('node.' . $config['left'], "node.{$config['left']} {$sign} {$absDelta}")
@@ -616,7 +618,7 @@ class Nested implements Strategy
             $qb->andWhere($qb->expr()->eq('node.' . $config['root'], ':rid'));
             $qb->setParameter('rid', $rootId, $idType);
         }
-        $qb->getQuery()->getSingleScalarResult();
+        $matches = $qb->getQuery()->getSingleScalarResult();
 
         $qb = $em->createQueryBuilder();
         $qb->update($config['useObjectClass'], 'node')
@@ -626,8 +628,8 @@ class Nested implements Strategy
             $qb->andWhere($qb->expr()->eq('node.' . $config['root'], ':rid'));
             $qb->setParameter('rid', $rootId, $idType);
         }
+        $matches = $qb->getQuery()->getSingleScalarResult();
 
-        $qb->getQuery()->getSingleScalarResult();
         // update in memory nodes increases performance, saves some IO
         foreach ($em->getUnitOfWork()->getIdentityMap() as $className => $nodes) {
             // for inheritance mapped classes, only root is always in the identity map
@@ -701,7 +703,7 @@ class Nested implements Strategy
         if (isset($config['level'])) {
             $qb->set('node.' . $config['level'], "node.{$config['level']} {$levelSign} {$absLevelDelta}");
         }
-        if (!$qb->getQuery()->getSingleScalarResult()) {
+        if (!($matches = $qb->getQuery()->getSingleScalarResult())) {
             throw new \LogicException('Update query failed to match a record');
         }
         // update in memory nodes increases performance, saves some IO

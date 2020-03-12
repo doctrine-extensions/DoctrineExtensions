@@ -304,12 +304,13 @@ class NestedTreeCustomIdTest extends BaseTestCaseORM
         //             -$child4
         //
         $this->em->clear();
+        $this->assertSame(true, $repo->verify());
         $node = $repo->findOneById($child1->getId());
         $this->assertNotNull($node);
         $repo->removeFromTree($node);
         $this->em->clear();
+        $this->assertSame(true, $repo->verify());
         $node = $repo->findOneById($child1->getId());
-        $this->assertTrue($node === null);
         $this->assertNull($node);
         $node = $repo->findOneById($root1->getId());
         $this->assertNotNull($node);
@@ -331,32 +332,42 @@ class NestedTreeCustomIdTest extends BaseTestCaseORM
         $this->assertEquals($child3->getId(), $node->getChildren()[1]->getId());
 
         // Remove $root1 and can't find it any more
+        //
+        //     - $root2
+        //         -$child2
+        //         -$child3
+        //             -$child4
+        //
         $node = $repo->findOneById($root1->getId());
         $this->assertNotNull($node);
         $repo->removeFromTree($node);
         $this->em->clear();
+        $this->assertSame(true, $repo->verify());
         $node = $repo->findOneById($root1->getId());
         $this->assertNull($node);
 
         // Can still find $root2, remove it, can't find it then
+        //
+        //     -$child2
+        //     -$child3
+        //         -$child4
+        //
         $node = $repo->findOneById($root2->getId());
         $this->assertNotNull($node);
         $repo->removeFromTree($node);
         $this->em->clear();
+        $this->assertSame(true, $repo->verify());
         $node = $repo->findOneById($root2->getId());
         $this->assertNull($node);
-
-        // $child2 should have been promoted to be a root
         $node = $repo->findOneById($child2->getId());
         $this->assertNotNull($node);
+        $this->assertNull($node->getParent());
         $this->assertNotNull($node->getRoot());
         $this->assertEquals($node->getId(), $node->getRoot()->getId());
         $this->assertEquals(0, $node->getLevel());
         $this->assertEquals(1, $node->getLeft());
         $this->assertEquals(2, $node->getRight());
         $this->assertCount(0, $node->getChildren());
-
-        // $child3 should have been promoted to be a root
         $node = $repo->findOneById($child3->getId());
         $this->assertNotNull($node);
         $this->assertNotNull($node->getRoot());
@@ -366,6 +377,43 @@ class NestedTreeCustomIdTest extends BaseTestCaseORM
         $this->assertEquals(4, $node->getRight());
         $this->assertCount(1, $node->getChildren());
         $this->assertEquals($child4->getId(), $node->getChildren()[0]->getId());
+        $node = $repo->findOneById($child4->getId());
+        $this->assertNotNull($node);
+        $this->assertNotNull($node->getRoot());
+        $this->assertEquals($child3->getId(), $node->getRoot()->getId());
+        $this->assertEquals(1, $node->getLevel());
+        $this->assertEquals(2, $node->getLeft());
+        $this->assertEquals(3, $node->getRight());
+        $this->assertCount(0, $node->getChildren());
+
+        // Remove $child4
+        //
+        //     -$child2
+        //     -$child3
+        //
+        $node = $repo->findOneById($child4->getId());
+        $this->assertNotNull($node);
+        $repo->removeFromTree($node);
+        $this->em->clear();
+        $this->assertSame(true, $repo->verify());
+        $node = $repo->findOneById($child4->getId());
+        $this->assertNull($node);
+        $node = $repo->findOneById($child2->getId());
+        $this->assertNotNull($node);
+        $this->assertNotNull($node->getRoot());
+        $this->assertEquals($node->getId(), $node->getRoot()->getId());
+        $this->assertEquals(0, $node->getLevel());
+        $this->assertEquals(1, $node->getLeft());
+        $this->assertEquals(2, $node->getRight());
+        $this->assertCount(0, $node->getChildren());
+        $node = $repo->findOneById($child3->getId());
+        $this->assertNotNull($node);
+        $this->assertNotNull($node->getRoot());
+        $this->assertEquals($node->getId(), $node->getRoot()->getId());
+        $this->assertEquals(0, $node->getLevel());
+        $this->assertEquals(1, $node->getLeft());
+        $this->assertEquals(2, $node->getRight());
+        $this->assertCount(0, $node->getChildren());
     }
 
     protected function getUsedEntityFixtures()
