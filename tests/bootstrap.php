@@ -51,6 +51,7 @@ $reader = new AnnotationReader();
 $reader = new CachedReader($reader, new ArrayCache());
 $_ENV['annotation_reader'] = $reader;
 
+// For tests/Gedmo/Tree/NestedTreeCustomIdTest.php
 Doctrine\DBAL\Types\Type::addType(
     'uuid_binary',
     'Ramsey\Uuid\Doctrine\UuidBinaryType'
