@@ -2,6 +2,7 @@
 
 namespace Gedmo\Tree\Document\MongoDB\Repository;
 
+use Doctrine\ODM\MongoDB\Iterator\Iterator;
 use Gedmo\Exception\InvalidArgumentException;
 use Gedmo\Tree\Strategy;
 use Gedmo\Tool\Wrapper\MongoDocumentWrapper;
@@ -46,10 +47,8 @@ class MaterializedPathRepository extends AbstractTreeRepository
      * Get tree
      *
      * @param object $rootNode
-     *
-     * @return \Doctrine\ODM\MongoDB\Cursor
      */
-    public function getTree($rootNode = null)
+    public function getTree($rootNode = null): Iterator
     {
         return $this->getTreeQuery($rootNode)->execute();
     }
