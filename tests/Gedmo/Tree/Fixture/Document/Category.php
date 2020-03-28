@@ -30,7 +30,7 @@ class Category
 
     /**
      * @Gedmo\TreeParent
-     * @MONGO\ReferenceOne(targetDocument="Category")
+     * @MONGO\ReferenceOne(targetDocument="Tree\Fixture\Document\Category")
      */
     private $parent;
 

@@ -4,6 +4,7 @@ namespace Gedmo\Tree;
 
 use Doctrine\Common\EventManager;
 use Tool\BaseTestCaseMongoODM;
+use Tree\Fixture\Document\Category;
 
 /**
  * These are tests for Tree behavior
@@ -15,7 +16,7 @@ use Tool\BaseTestCaseMongoODM;
  */
 class MaterializedPathODMMongoDBTest extends BaseTestCaseMongoODM
 {
-    const CATEGORY = "Tree\\Fixture\\Document\\Category";
+    private const CATEGORY = Category::class;
 
     protected $config;
     protected $listener;
@@ -98,9 +99,10 @@ class MaterializedPathODMMongoDBTest extends BaseTestCaseMongoODM
 
         $result = $this->dm->createQueryBuilder()->find(self::CATEGORY)->getQuery()->execute();
 
-        $firstResult = $result->getNext();
+        /** @var Category $firstResult */
+        $firstResult = $result->current();
 
-        $this->assertEquals(1, $result->count());
+        $this->assertCount(1, $result->toArray());
         $this->assertEquals('4', $firstResult->getTitle());
         $this->assertEquals(1, $firstResult->getLevel());
     }
