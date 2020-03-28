@@ -2,9 +2,9 @@
 
 namespace Gedmo\Translatable\Document\Repository;
 
+use Doctrine\ODM\MongoDB\Iterator\Iterator;
 use Doctrine\ODM\MongoDB\Repository\DocumentRepository;
 use Gedmo\Translatable\TranslatableListener;
-use Doctrine\ODM\MongoDB\Cursor;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Doctrine\ODM\MongoDB\UnitOfWork;
 use Doctrine\ODM\MongoDB\Mapping\ClassMetadata;
@@ -137,7 +137,7 @@ class TranslationRepository extends DocumentRepository
 
             $q->setHydrate(false);
             $data = $q->execute();
-            if ($data instanceof Cursor) {
+            if ($data instanceof Iterator) {
                 $data = $data->toArray();
             }
             if ($data && is_array($data) && count($data)) {
