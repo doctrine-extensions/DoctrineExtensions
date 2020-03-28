@@ -44,7 +44,8 @@ class MongoDocumentWrapperTest extends BaseTestCaseMongoODM
     {
         $this->dm->clear();
         $test = $this->dm->getReference(self::ARTICLE, $this->articleId);
-        $this->assertInstanceOf('Doctrine\\ODM\\MongoDB\\Proxy\\Proxy', $test);
+        $this->assertStringStartsWith('Proxy', get_class($test));
+        $this->assertInstanceOf(self::ARTICLE, $test);
         $wrapped = new MongoDocumentWrapper($test, $this->dm);
 
         $id = $wrapped->getIdentifier(false);
