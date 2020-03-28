@@ -9,6 +9,7 @@ use Doctrine\ODM\MongoDB\UnitOfWork as MongoDBUnitOfWork;
 use Gedmo\Mapping\Event\AdapterInterface;
 use Gedmo\Exception\RuntimeException;
 use Gedmo\Exception\TreeLockingException;
+use MongoDB\BSON\UTCDateTime;
 
 /**
  * This strategy makes tree using materialized path strategy
@@ -414,7 +415,7 @@ abstract class AbstractMaterializedPath implements Strategy
             $lockTime = $lockTimeProp->getValue($parentNode);
 
             if (!is_null($lockTime)) {
-                $lockTime = $lockTime instanceof \MongoDate ? $lockTime->sec : $lockTime->getTimestamp();
+                $lockTime = $lockTime instanceof UTCDateTime ? $lockTime->toDateTime()->getTimestamp() : $lockTime->getTimestamp();
             }
 
             if (!is_null($lockTime) && ($lockTime >= (time() - $config['locking_timeout']))) {
