@@ -7,6 +7,7 @@ use Doctrine\Common\Persistence\ObjectManager;
 use Gedmo\Mapping\Event\AdapterInterface;
 use Gedmo\Tool\Wrapper\AbstractWrapper;
 use MongoDB\BSON\Regex;
+use MongoDB\BSON\UTCDateTime;
 
 /**
  * This strategy makes tree using materialized path strategy
@@ -62,7 +63,7 @@ class MaterializedPath extends AbstractMaterializedPath
             $config = $this->listener->getConfiguration($om, $meta->name);
             $lockTimeProp = $meta->getReflectionProperty($config['lock_time']);
             $lockTimeProp->setAccessible(true);
-            $lockTimeValue = new \MongoDate();
+            $lockTimeValue = new UTCDateTime();
             $lockTimeProp->setValue($root, $lockTimeValue);
             $changes = array(
                 $config['lock_time'] => array(null, $lockTimeValue),
