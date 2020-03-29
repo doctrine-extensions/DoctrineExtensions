@@ -1,6 +1,6 @@
 # Doctrine Behavioral Extensions
 
-[![Build Status](https://secure.travis-ci.org/Atlantic18/DoctrineExtensions.png)](http://travis-ci.org/Atlantic18/DoctrineExtensions)
+[![Build Status](https://travis-ci.org/Atlantic18/DoctrineExtensions.svg?branch=master)](https://travis-ci.org/Atlantic18/DoctrineExtensions)
 [![Latest Stable Version](https://poser.pugx.org/gedmo/doctrine-extensions/version)](https://packagist.org/packages/gedmo/doctrine-extensions)
 
 This package contains extensions for Doctrine ORM and MongoDB ODM that offer new functionality or tools to use Doctrine
@@ -18,7 +18,7 @@ flushed in a behavioral way.
 - Cleaning up documentation, code, comments, etc.
 
 While major code changes are not expected initially for 3.0, it will be a major release due to changes in
-requirements and toolsets.
+requirements and toolsets. [Read the Upgrade Doc for more info.](/doc/upgrading/upgrade-v2.4-to-v3.0.md)
 
 For the current stable version, see the [v2.4.x branch](https://github.com/Atlantic18/DoctrineExtensions/tree/v2.4.x).
 
