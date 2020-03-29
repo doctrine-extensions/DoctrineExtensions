@@ -24,6 +24,11 @@ a release.
 - Source files moved from `/lib/Gedmo` to `/src`
 - All string column type annotations changed to 191 character length (#1941)
 
+### MongoDB
+- Requires the `ext-mongodb` PHP extension. Usage of `ext-mongo` is deprecated and will be removed in the next major version.
+- Minimum Doctrine MongoDB ODM requirement of 2.0
+- Usages of `\MongoDate` replaced with `MongoDB\BSON\UTCDateTime`
+
 ### Global / Shared
 #### Fixed
 - Removed `null` parameter from `Doctrine\Common\Cache\Cache::save()` calls (#1996)
