@@ -46,6 +46,7 @@
         "doctrine/mongodb": "^1.6",
         "doctrine/mongodb-odm": "^2.0",
         "doctrine/orm": "^2.6",
+        "friendsofphp/php-cs-fixer": "^2.16",
         "phpunit/phpunit": "^8.5",
         "symfony/yaml": "^4.1"
     },
@@ -72,6 +73,9 @@
         "psr-4": {
             "Gedmo\\": "src/"
         }
+    },
+    "scripts": {
+        "fix-cs": "php bin/php-cs-fixer fix --config=.php_cs.dist"
     },
     "support": {
         "email": "gediminas.morkevicius@gmail.com",
