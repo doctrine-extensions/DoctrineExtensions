@@ -24,7 +24,7 @@ class Article
     private $type;
 
     /**
-     * @var string $created
+     * @var string
      *
      * @ODM\Field(type="timestamp")
      * @Gedmo\Timestampable(on="create")
@@ -32,7 +32,7 @@ class Article
     private $created;
 
     /**
-     * @var \DateTime $updated
+     * @var \DateTime
      *
      * @ODM\Field(type="date")
      * @Gedmo\Timestampable
@@ -40,7 +40,7 @@ class Article
     private $updated;
 
     /**
-     * @var \DateTime $published
+     * @var \DateTime
      *
      * @ODM\Field(type="date")
      * @Gedmo\Timestampable(on="change", field="type.title", value="Published")

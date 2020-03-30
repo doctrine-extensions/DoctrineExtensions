@@ -9,7 +9,6 @@ use Gedmo\Mapping\Annotation as Gedmo;
  * NestedSet Trait with UUid, usable with PHP >= 5.4
  *
  * @author Benjamin Lazarecki <benjamin.lazarecki@sensiolabs.com>
- *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 trait NestedSetEntityUuid

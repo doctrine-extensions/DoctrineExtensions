@@ -17,10 +17,8 @@ interface SlugHandlerWithUniqueCallbackInterface extends SlugHandlerInterface
     /**
      * Callback for slug handlers before it is made unique
      *
-     * @param SluggableAdapter $ea
-     * @param array            $config
-     * @param object           $object
-     * @param string           $slug
+     * @param object $object
+     * @param string $slug
      *
      * @return void
      */

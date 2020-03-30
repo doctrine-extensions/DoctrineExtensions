@@ -3,19 +3,21 @@
 namespace Gedmo\Timestampable;
 
 use Doctrine\Common\EventManager;
-use Tool\BaseTestCaseORM;
 use Timestampable\Fixture\WithoutInterface;
+use Tool\BaseTestCaseORM;
 
 /**
  * These are tests for Timestampable behavior
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @link http://www.gediminasm.org
+ *
+ * @see http://www.gediminasm.org
+ *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class NoInterfaceTest extends BaseTestCaseORM
 {
-    const FIXTURE = "Timestampable\\Fixture\\WithoutInterface";
+    const FIXTURE = 'Timestampable\\Fixture\\WithoutInterface';
 
     protected function setUp(): void
     {
@@ -50,8 +52,8 @@ class NoInterfaceTest extends BaseTestCaseORM
 
     protected function getUsedEntityFixtures()
     {
-        return array(
+        return [
             self::FIXTURE,
-        );
+        ];
     }
 }

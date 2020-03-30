@@ -14,7 +14,7 @@ interface Loggable
 {
     // this interface is not necessary to implement
 
-    /**
+    /*
      * @gedmo:Loggable
      * to mark the class as loggable use class annotation @gedmo:Loggable
      * this object will contain now a history

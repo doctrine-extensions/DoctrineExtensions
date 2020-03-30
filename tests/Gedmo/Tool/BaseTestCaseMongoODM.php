@@ -2,18 +2,16 @@
 
 namespace Tool;
 
-use Doctrine\ODM\MongoDB\Configuration;
-use Doctrine\ODM\MongoDB\Mapping\Driver\AnnotationDriver;
-use Doctrine\ODM\MongoDB\DocumentManager;
 use Doctrine\Common\EventManager;
-use Doctrine\MongoDB\Connection;
-use Doctrine\ODM\MongoDB\Repository\DefaultRepositoryFactory;
+use Doctrine\ODM\MongoDB\Configuration;
+use Doctrine\ODM\MongoDB\DocumentManager;
+use Doctrine\ODM\MongoDB\Mapping\Driver\AnnotationDriver;
 use Doctrine\Persistence\Mapping\Driver\MappingDriver;
-use Gedmo\Translatable\TranslatableListener;
-use Gedmo\Sluggable\SluggableListener;
-use Gedmo\Timestampable\TimestampableListener;
-use Gedmo\SoftDeleteable\SoftDeleteableListener;
 use Gedmo\Loggable\LoggableListener;
+use Gedmo\Sluggable\SluggableListener;
+use Gedmo\SoftDeleteable\SoftDeleteableListener;
+use Gedmo\Timestampable\TimestampableListener;
+use Gedmo\Translatable\TranslatableListener;
 use MongoDB\Client;
 
 /**
@@ -22,7 +20,9 @@ use MongoDB\Client;
  * ORM object manager
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @link http://www.gediminasm.org
+ *
+ * @see http://www.gediminasm.org
+ *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 abstract class BaseTestCaseMongoODM extends \PHPUnit\Framework\TestCase
@@ -61,10 +61,7 @@ abstract class BaseTestCaseMongoODM extends \PHPUnit\Framework\TestCase
     /**
      * DocumentManager mock object together with annotation mapping driver and database.
      *
-     * @param EventManager       $evm
-     * @param Configuration|null $config
-     *
-     * @return DocumentManager
+     * @param EventManager $evm
      */
     protected function getMockDocumentManager(?EventManager $evm = null, ?Configuration $config = null): DocumentManager
     {
@@ -97,8 +94,6 @@ abstract class BaseTestCaseMongoODM extends \PHPUnit\Framework\TestCase
 
     /**
      * Creates default mapping driver
-     *
-     * @return MappingDriver
      */
     protected function getMetadataDriverImplementation(): MappingDriver
     {
@@ -124,21 +119,20 @@ abstract class BaseTestCaseMongoODM extends \PHPUnit\Framework\TestCase
 
     /**
      * Get annotation mapping configuration
-     *
-     * @return Configuration
      */
     protected function getMockAnnotatedConfig(): Configuration
     {
         $config = new Configuration();
-        $config->addFilter("softdeleteable", 'Gedmo\\SoftDeleteable\\Filter\\ODM\\SoftDeleteableFilter');
-        $config->setProxyDir(__DIR__."/../../temp");
-        $config->setHydratorDir(__DIR__."/../../temp");
-        $config->setProxyNamespace("Proxy");
-        $config->setHydratorNamespace("Hydrator");
-        $config->setDefaultDB("gedmo_extensions_test");
+        $config->addFilter('softdeleteable', 'Gedmo\\SoftDeleteable\\Filter\\ODM\\SoftDeleteableFilter');
+        $config->setProxyDir(__DIR__.'/../../temp');
+        $config->setHydratorDir(__DIR__.'/../../temp');
+        $config->setProxyNamespace('Proxy');
+        $config->setHydratorNamespace('Hydrator');
+        $config->setDefaultDB('gedmo_extensions_test');
         $config->setAutoGenerateProxyClasses(Configuration::AUTOGENERATE_EVAL);
         $config->setAutoGenerateHydratorClasses(true);
         $config->setMetadataDriverImpl($this->getMetadataDriverImplementation());
+
         return $config;
     }
 }

@@ -2,8 +2,8 @@
 
 namespace SoftDeleteable\Fixture\Document;
 
-use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ODM\Document(collection="users")

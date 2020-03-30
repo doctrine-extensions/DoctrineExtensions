@@ -2,10 +2,10 @@
 
 namespace Gedmo\Uploadable\Mapping;
 
+use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 use Gedmo\Exception\InvalidMappingException;
 use Gedmo\Exception\UploadableCantWriteException;
 use Gedmo\Exception\UploadableInvalidPathException;
-use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 
 /**
  * This class is used to validate mapping information
@@ -14,7 +14,6 @@ use Doctrine\Common\Persistence\Mapping\ClassMetadata;
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-
 class Validator
 {
     const UPLOADABLE_FILE_MIME_TYPE = 'UploadableFileMimeType';
@@ -38,45 +37,45 @@ class Validator
      *
      * @var array
      */
-    public static $validFileMimeTypeTypes = array(
+    public static $validFileMimeTypeTypes = [
         'string',
-    );
+    ];
 
     /**
      * List of types which are valid for UploadableFileName field
      *
      * @var array
      */
-    public static $validFileNameTypes = array(
+    public static $validFileNameTypes = [
         'string',
-    );
+    ];
 
     /**
      * List of types which are valid for UploadableFilePath field
      *
      * @var array
      */
-    public static $validFilePathTypes = array(
+    public static $validFilePathTypes = [
         'string',
-    );
+    ];
 
     /**
      * List of types which are valid for UploadableFileSize field for ORM
      *
      * @var array
      */
-    public static $validFileSizeTypes = array(
+    public static $validFileSizeTypes = [
         'decimal',
-    );
+    ];
 
     /**
      * List of types which are valid for UploadableFileSize field for ODM
      *
      * @var array
      */
-    public static $validFileSizeTypesODM = array(
+    public static $validFileSizeTypesODM = [
         'float',
-    );
+    ];
 
     /**
      * Whether to validate if the directory of the file exists and is writable, useful to disable it when using
@@ -121,17 +120,13 @@ class Validator
         if (!in_array($fieldMapping['type'], $validFieldTypes)) {
             $msg = 'Field "%s" to work as an "%s" field must be of one of the following types: "%s".';
 
-            throw new InvalidMappingException(sprintf($msg,
-                $field,
-                $uploadableField,
-                implode(', ', $validFieldTypes)
-            ));
+            throw new InvalidMappingException(sprintf($msg, $field, $uploadableField, implode(', ', $validFieldTypes)));
         }
     }
 
     public static function validatePath($path)
     {
-        if (!is_string($path) || $path === '') {
+        if (!is_string($path) || '' === $path) {
             throw new UploadableInvalidPathException('Path must be a string containing the path to a valid directory.');
         }
 
@@ -140,62 +135,46 @@ class Validator
         }
 
         if (!is_dir($path) && !@mkdir($path, 0777, true)) {
-            throw new UploadableInvalidPathException(sprintf('Unable to create "%s" directory.',
-                $path
-            ));
+            throw new UploadableInvalidPathException(sprintf('Unable to create "%s" directory.', $path));
         }
 
         if (!is_writable($path)) {
-            throw new UploadableCantWriteException(sprintf('Directory "%s" does is not writable.',
-                $path
-            ));
+            throw new UploadableCantWriteException(sprintf('Directory "%s" does is not writable.', $path));
         }
     }
 
     public static function validateConfiguration(ClassMetadata $meta, array &$config)
     {
         if (!$config['filePathField'] && !$config['fileNameField']) {
-            throw new InvalidMappingException(sprintf('Class "%s" must have an UploadableFilePath or UploadableFileName field.',
-                $meta->name
-            ));
+            throw new InvalidMappingException(sprintf('Class "%s" must have an UploadableFilePath or UploadableFileName field.', $meta->name));
         }
 
         $refl = $meta->getReflectionClass();
 
-        if ($config['pathMethod'] !== '' && !$refl->hasMethod($config['pathMethod'])) {
-            throw new InvalidMappingException(sprintf('Class "%s" doesn\'t have method "%s"!',
-                $meta->name,
-                $config['pathMethod']
-            ));
+        if ('' !== $config['pathMethod'] && !$refl->hasMethod($config['pathMethod'])) {
+            throw new InvalidMappingException(sprintf('Class "%s" doesn\'t have method "%s"!', $meta->name, $config['pathMethod']));
         }
 
-        if ($config['callback'] !== '' && !$refl->hasMethod($config['callback'])) {
-            throw new InvalidMappingException(sprintf('Class "%s" doesn\'t have method "%s"!',
-                $meta->name,
-                $config['callback']
-            ));
+        if ('' !== $config['callback'] && !$refl->hasMethod($config['callback'])) {
+            throw new InvalidMappingException(sprintf('Class "%s" doesn\'t have method "%s"!', $meta->name, $config['callback']));
         }
 
-        $config['maxSize'] = (double) $config['maxSize'];
+        $config['maxSize'] = (float) $config['maxSize'];
 
         if ($config['maxSize'] < 0) {
-            throw new InvalidMappingException(sprintf('Option "maxSize" must be a number >= 0 for class "%s".',
-                $meta->name
-            ));
+            throw new InvalidMappingException(sprintf('Option "maxSize" must be a number >= 0 for class "%s".', $meta->name));
         }
 
-        if (self::$enableMimeTypesConfigException && ($config['allowedTypes'] !== '' && $config['disallowedTypes'] !== '')) {
+        if (self::$enableMimeTypesConfigException && ('' !== $config['allowedTypes'] && '' !== $config['disallowedTypes'])) {
             $msg = 'You\'ve set "allowedTypes" and "disallowedTypes" options. You must set only one in class "%s".';
 
-            throw new InvalidMappingException(sprintf($msg,
-                $meta->name
-            ));
+            throw new InvalidMappingException(sprintf($msg, $meta->name));
         }
 
-        $config['allowedTypes'] = $config['allowedTypes'] ? (strpos($config['allowedTypes'], ',') !== false ?
-            explode(',', $config['allowedTypes']) : array($config['allowedTypes'])) : false;
-        $config['disallowedTypes'] = $config['disallowedTypes'] ? (strpos($config['disallowedTypes'], ',') !== false ?
-            explode(',', $config['disallowedTypes']) : array($config['disallowedTypes'])) : false;
+        $config['allowedTypes'] = $config['allowedTypes'] ? (false !== strpos($config['allowedTypes'], ',') ?
+            explode(',', $config['allowedTypes']) : [$config['allowedTypes']]) : false;
+        $config['disallowedTypes'] = $config['disallowedTypes'] ? (false !== strpos($config['disallowedTypes'], ',') ?
+            explode(',', $config['disallowedTypes']) : [$config['disallowedTypes']]) : false;
 
         if ($config['fileNameField']) {
             self::validateFileNameField($meta, $config['fileNameField']);
@@ -233,9 +212,7 @@ class Validator
                     $msg = 'Class "%s" needs a valid value for filenameGenerator. It can be: SHA1, ALPHANUMERIC, NONE or ';
                     $msg .= 'a class implementing FileGeneratorInterface.';
 
-                    throw new InvalidMappingException(sprintf($msg,
-                        $meta->name
-                    ));
+                    throw new InvalidMappingException(sprintf($msg, $meta->name));
                 }
         }
     }

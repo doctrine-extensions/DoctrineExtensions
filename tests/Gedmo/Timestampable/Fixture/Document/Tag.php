@@ -12,6 +12,7 @@ class Tag
 {
     /**
      * @ODM\Field(type="string")
+     *
      * @var string
      */
     protected $name;
@@ -19,6 +20,7 @@ class Tag
     /**
      * @ODM\Field(type="date")
      * @Gedmo\Timestampable(on="create")
+     *
      * @var \DateTime
      */
     protected $created;
@@ -26,6 +28,7 @@ class Tag
     /**
      * @ODM\Field(type="date")
      * @Gedmo\Timestampable
+     *
      * @var \DateTime
      */
     protected $updated;
@@ -54,9 +57,6 @@ class Tag
         return $this->created;
     }
 
-    /**
-     * @param \DateTime $created
-     */
     public function setCreated(\DateTime $created)
     {
         $this->created = $created;
@@ -70,9 +70,6 @@ class Tag
         return $this->updated;
     }
 
-    /**
-     * @param \DateTime $updated
-     */
     public function setUpdated(\DateTime $updated)
     {
         $this->updated = $updated;

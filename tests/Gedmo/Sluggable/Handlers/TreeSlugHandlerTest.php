@@ -3,20 +3,22 @@
 namespace Gedmo\Sluggable;
 
 use Doctrine\Common\EventManager;
-use Tool\BaseTestCaseORM;
-use Sluggable\Fixture\Handler\TreeSlug;
 use Gedmo\Tree\TreeListener;
+use Sluggable\Fixture\Handler\TreeSlug;
+use Tool\BaseTestCaseORM;
 
 /**
  * These are tests for Sluggable behavior
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @link http://www.gediminasm.org
+ *
+ * @see http://www.gediminasm.org
+ *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class TreeSlugHandlerTest extends BaseTestCaseORM
 {
-    const TARGET = "Sluggable\\Fixture\\Handler\\TreeSlug";
+    const TARGET = 'Sluggable\\Fixture\\Handler\\TreeSlug';
 
     protected function setUp(): void
     {
@@ -124,9 +126,9 @@ class TreeSlugHandlerTest extends BaseTestCaseORM
 
     protected function getUsedEntityFixtures()
     {
-        return array(
+        return [
             self::TARGET,
-        );
+        ];
     }
 
     private function populate()

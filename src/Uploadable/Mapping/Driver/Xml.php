@@ -19,18 +19,18 @@ use Gedmo\Uploadable\Mapping\Validator;
 class Xml extends BaseXml
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function readExtendedMetadata($meta, array &$config)
     {
         /**
-         * @var \SimpleXmlElement $xml
+         * @var \SimpleXmlElement
          */
         $xml = $this->_getMapping($meta->name);
         $xmlDoctrine = $xml;
         $xml = $xml->children(self::GEDMO_NAMESPACE_URI);
 
-        if ($xmlDoctrine->getName() == 'entity' || $xmlDoctrine->getName() == 'mapped-superclass') {
+        if ('entity' == $xmlDoctrine->getName() || 'mapped-superclass' == $xmlDoctrine->getName()) {
             if (isset($xml->uploadable)) {
                 $xmlUploadable = $xml->uploadable;
                 $config['uploadable'] = true;
@@ -52,8 +52,8 @@ class Xml extends BaseXml
                     $this->_getAttribute($xml->{'uploadable'}, 'filename-generator') :
                     Validator::FILENAME_GENERATOR_NONE;
                 $config['maxSize'] = $this->_isAttributeSet($xmlUploadable, 'max-size') ?
-                    (double) $this->_getAttribute($xml->{'uploadable'}, 'max-size') :
-                    (double) 0;
+                    (float) $this->_getAttribute($xml->{'uploadable'}, 'max-size') :
+                    (float) 0;
                 $config['allowedTypes'] = $this->_isAttributeSet($xmlUploadable, 'allowed-types') ?
                     $this->_getAttribute($xml->{'uploadable'}, 'allowed-types') :
                     '';

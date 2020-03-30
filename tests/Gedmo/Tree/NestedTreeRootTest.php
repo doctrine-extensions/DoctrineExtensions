@@ -12,12 +12,14 @@ use Tree\Fixture\RootCategory;
  * These are tests for Tree behavior
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @link http://www.gediminasm.org
+ *
+ * @see http://www.gediminasm.org
+ *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class NestedTreeRootTest extends BaseTestCaseORM
 {
-    const CATEGORY = "Tree\\Fixture\\RootCategory";
+    const CATEGORY = 'Tree\\Fixture\\RootCategory';
 
     protected function setUp(): void
     {
@@ -320,7 +322,6 @@ class NestedTreeRootTest extends BaseTestCaseORM
         $this->assertEquals(4, $node->getRight());
     }
 
-
     /**
      * @throws \Doctrine\ORM\OptimisticLockException
      */
@@ -328,7 +329,7 @@ class NestedTreeRootTest extends BaseTestCaseORM
     {
         // depopulate, i don't want the other stuff in db
         /** @var NestedTreeRepository $repo */
-        $repo = $this->em->getRepository("Tree\\Fixture\\ForeignRootCategory");
+        $repo = $this->em->getRepository('Tree\\Fixture\\ForeignRootCategory');
         $all = $repo->findAll();
         foreach ($all as $one) {
             $this->em->remove($one);
@@ -491,10 +492,10 @@ class NestedTreeRootTest extends BaseTestCaseORM
 
     protected function getUsedEntityFixtures()
     {
-        return array(
+        return [
             self::CATEGORY,
-            "Tree\\Fixture\\ForeignRootCategory",
-        );
+            'Tree\\Fixture\\ForeignRootCategory',
+        ];
     }
 
     /**
@@ -503,25 +504,25 @@ class NestedTreeRootTest extends BaseTestCaseORM
     private function populate()
     {
         $root = new RootCategory();
-        $root->setTitle("Food");
+        $root->setTitle('Food');
 
         $root2 = new RootCategory();
-        $root2->setTitle("Sports");
+        $root2->setTitle('Sports');
 
         $child = new RootCategory();
-        $child->setTitle("Fruits");
+        $child->setTitle('Fruits');
         $child->setParent($root);
 
         $child2 = new RootCategory();
-        $child2->setTitle("Vegitables");
+        $child2->setTitle('Vegitables');
         $child2->setParent($root);
 
         $childsChild = new RootCategory();
-        $childsChild->setTitle("Carrots");
+        $childsChild->setTitle('Carrots');
         $childsChild->setParent($child2);
 
         $potatoes = new RootCategory();
-        $potatoes->setTitle("Potatoes");
+        $potatoes->setTitle('Potatoes');
         $potatoes->setParent($child2);
 
         $this->em->persist($root);

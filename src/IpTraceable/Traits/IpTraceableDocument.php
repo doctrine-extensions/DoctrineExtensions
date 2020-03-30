@@ -30,7 +30,8 @@ trait IpTraceableDocument
     /**
      * Sets createdFromIp.
      *
-     * @param  string $createdFromIp
+     * @param string $createdFromIp
+     *
      * @return $this
      */
     public function setCreatedFromIp($createdFromIp)
@@ -53,7 +54,8 @@ trait IpTraceableDocument
     /**
      * Sets updatedFromIp.
      *
-     * @param  string $updatedFromIp
+     * @param string $updatedFromIp
+     *
      * @return $this
      */
     public function setUpdatedFromIp($updatedFromIp)

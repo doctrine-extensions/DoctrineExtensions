@@ -11,8 +11,6 @@ use Gedmo\Exception;
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class UploadableNoPathDefinedException
-    extends UploadableException
-    implements Exception
+class UploadableNoPathDefinedException extends UploadableException implements Exception
 {
 }

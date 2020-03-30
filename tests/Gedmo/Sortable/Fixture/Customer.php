@@ -3,7 +3,6 @@
 namespace Sortable\Fixture;
 
 use Doctrine\ORM\Mapping as ORM;
-use Sortable\Fixture\CustomerType;
 
 /**
  * @ORM\Entity

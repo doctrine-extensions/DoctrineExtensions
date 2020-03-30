@@ -17,8 +17,6 @@ interface AdapterInterface
 {
     /**
      * Set the eventargs
-     *
-     * @param \Doctrine\Common\EventArgs $args
      */
     public function setEventArgs(EventArgs $args);
 
@@ -69,7 +67,7 @@ interface AdapterInterface
      * @param UnitOfWork $uow
      * @param object     $object
      *
-     * @return int The document state.
+     * @return int the document state
      */
     public function getObjectState($uow, $object);
 
@@ -146,7 +144,7 @@ interface AdapterInterface
      * Clears the property changeset of the object with the given OID.
      *
      * @param UnitOfWork $uow
-     * @param string     $oid The object's OID.
+     * @param string     $oid the object's OID
      */
     public function clearObjectChangeSet($uow, $oid);
 }

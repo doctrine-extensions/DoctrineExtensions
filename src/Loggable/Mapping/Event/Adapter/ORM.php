@@ -2,8 +2,8 @@
 
 namespace Gedmo\Loggable\Mapping\Event\Adapter;
 
-use Gedmo\Mapping\Event\Adapter\ORM as BaseAdapterORM;
 use Gedmo\Loggable\Mapping\Event\LoggableAdapter;
+use Gedmo\Mapping\Event\Adapter\ORM as BaseAdapterORM;
 
 /**
  * Doctrine event adapter for ORM adapted
@@ -15,7 +15,7 @@ use Gedmo\Loggable\Mapping\Event\LoggableAdapter;
 final class ORM extends BaseAdapterORM implements LoggableAdapter
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getDefaultLogEntryClass()
     {
@@ -23,7 +23,7 @@ final class ORM extends BaseAdapterORM implements LoggableAdapter
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function isPostInsertGenerator($meta)
     {
@@ -31,7 +31,7 @@ final class ORM extends BaseAdapterORM implements LoggableAdapter
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getNewVersion($meta, $object)
     {
@@ -41,14 +41,14 @@ final class ORM extends BaseAdapterORM implements LoggableAdapter
         $objectId = (string) $objectMeta->getReflectionProperty($identifierField)->getValue($object);
 
         $dql = "SELECT MAX(log.version) FROM {$meta->name} log";
-        $dql .= " WHERE log.objectId = :objectId";
-        $dql .= " AND log.objectClass = :objectClass";
+        $dql .= ' WHERE log.objectId = :objectId';
+        $dql .= ' AND log.objectClass = :objectClass';
 
         $q = $em->createQuery($dql);
-        $q->setParameters(array(
+        $q->setParameters([
             'objectId' => $objectId,
             'objectClass' => $objectMeta->name,
-        ));
+        ]);
 
         return $q->getSingleScalarResult() + 1;
     }

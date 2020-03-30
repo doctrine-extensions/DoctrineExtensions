@@ -2,8 +2,8 @@
 
 namespace Gedmo\Blameable\Mapping\Event\Adapter;
 
-use Gedmo\Mapping\Event\Adapter\ODM as BaseAdapterODM;
 use Gedmo\Blameable\Mapping\Event\BlameableAdapter;
+use Gedmo\Mapping\Event\Adapter\ODM as BaseAdapterODM;
 
 /**
  * Doctrine event adapter for ODM adapted

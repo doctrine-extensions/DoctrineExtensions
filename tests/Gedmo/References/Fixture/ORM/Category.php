@@ -4,7 +4,6 @@ namespace References\Fixture\ORM;
 
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
-use References\Fixture\ODM\MongoDB\Product;
 
 /**
  * @ORM\Entity

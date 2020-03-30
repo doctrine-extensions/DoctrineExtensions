@@ -19,7 +19,7 @@ class ReferencesListener extends MappedEventSubscriber
 {
     private $managers;
 
-    public function __construct(array $managers = array())
+    public function __construct(array $managers = [])
     {
         parent::__construct();
 
@@ -81,9 +81,9 @@ class ReferencesListener extends MappedEventSubscriber
                                 function () use ($id, &$manager, $class, $identifier) {
                                     $results = $manager
                                         ->getRepository($class)
-                                        ->findBy(array(
+                                        ->findBy([
                                             $identifier => $id,
-                                        ));
+                                        ]);
 
                                     return new ArrayCollection((is_array($results) ? $results : $results->toArray()));
                                 }
@@ -109,12 +109,12 @@ class ReferencesListener extends MappedEventSubscriber
 
     public function getSubscribedEvents()
     {
-        return array(
+        return [
             'postLoad',
             'loadClassMetadata',
             'prePersist',
             'preUpdate',
-        );
+        ];
     }
 
     public function registerManager($type, $manager)
@@ -197,9 +197,9 @@ class ReferencesListener extends MappedEventSubscriber
                         function () use ($id, &$manager, $class, $identifier) {
                             $results = $manager
                                 ->getRepository($class)
-                                ->findBy(array(
+                                ->findBy([
                                     $identifier => $id,
-                                ));
+                                ]);
 
                             return new ArrayCollection((is_array($results) ? $results : $results->toArray()));
                         }

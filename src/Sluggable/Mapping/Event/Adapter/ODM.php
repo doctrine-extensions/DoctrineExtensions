@@ -19,7 +19,7 @@ use MongoDB\BSON\Regex;
 final class ODM extends BaseAdapterODM implements SluggableAdapter
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getSimilarSlugs($object, $meta, array $config, $slug)
     {
@@ -57,7 +57,7 @@ final class ODM extends BaseAdapterODM implements SluggableAdapter
      * This query can cause some data integrity failures since it does not
      * execute automatically
      *
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function replaceRelative($object, array $config, $target, $replacement)
     {
@@ -93,7 +93,7 @@ final class ODM extends BaseAdapterODM implements SluggableAdapter
      * This query can cause some data integrity failures since it does not
      * execute atomically
      *
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function replaceInverseRelative($object, array $config, $target, $replacement)
     {

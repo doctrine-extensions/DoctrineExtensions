@@ -2,8 +2,8 @@
 
 namespace Gedmo\IpTraceable\Mapping\Driver;
 
-use Gedmo\Mapping\Driver\AbstractAnnotationDriver;
 use Gedmo\Exception\InvalidMappingException;
+use Gedmo\Mapping\Driver\AbstractAnnotationDriver;
 
 /**
  * This is an annotation mapping driver for IpTraceable
@@ -26,12 +26,12 @@ class Annotation extends AbstractAnnotationDriver
      *
      * @var array
      */
-    protected $validTypes = array(
+    protected $validTypes = [
         'string',
-    );
+    ];
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function readExtendedMetadata($meta, array &$config)
     {
@@ -53,21 +53,21 @@ class Annotation extends AbstractAnnotationDriver
                 if ($meta->hasField($field) && !$this->isValidField($meta, $field)) {
                     throw new InvalidMappingException("Field - [{$field}] type is not valid and must be 'string' - {$meta->name}");
                 }
-                if (!in_array($ipTraceable->on, array('update', 'create', 'change'))) {
+                if (!in_array($ipTraceable->on, ['update', 'create', 'change'])) {
                     throw new InvalidMappingException("Field - [{$field}] trigger 'on' is not one of [update, create, change] in class - {$meta->name}");
                 }
-                if ($ipTraceable->on == 'change') {
+                if ('change' == $ipTraceable->on) {
                     if (!isset($ipTraceable->field)) {
                         throw new InvalidMappingException("Missing parameters on property - {$field}, field must be set on [change] trigger in class - {$meta->name}");
                     }
                     if (is_array($ipTraceable->field) && isset($ipTraceable->value)) {
-                        throw new InvalidMappingException("IpTraceable extension does not support multiple value changeset detection yet.");
+                        throw new InvalidMappingException('IpTraceable extension does not support multiple value changeset detection yet.');
                     }
-                    $field = array(
+                    $field = [
                         'field' => $field,
                         'trackedField' => $ipTraceable->field,
                         'value' => $ipTraceable->value,
-                    );
+                    ];
                 }
                 // properties are unique and mapper checks that, no risk here
                 $config[$ipTraceable->on][] = $field;

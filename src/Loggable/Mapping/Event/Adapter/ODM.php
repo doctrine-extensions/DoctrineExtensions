@@ -2,8 +2,8 @@
 
 namespace Gedmo\Loggable\Mapping\Event\Adapter;
 
-use Gedmo\Mapping\Event\Adapter\ODM as BaseAdapterODM;
 use Gedmo\Loggable\Mapping\Event\LoggableAdapter;
+use Gedmo\Mapping\Event\Adapter\ODM as BaseAdapterODM;
 
 /**
  * Doctrine event adapter for ODM adapted
@@ -15,7 +15,7 @@ use Gedmo\Loggable\Mapping\Event\LoggableAdapter;
 final class ODM extends BaseAdapterODM implements LoggableAdapter
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getDefaultLogEntryClass()
     {
@@ -23,7 +23,7 @@ final class ODM extends BaseAdapterODM implements LoggableAdapter
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function isPostInsertGenerator($meta)
     {
@@ -31,7 +31,7 @@ final class ODM extends BaseAdapterODM implements LoggableAdapter
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getNewVersion($meta, $object)
     {

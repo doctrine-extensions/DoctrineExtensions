@@ -2,8 +2,8 @@
 
 namespace Gedmo\Sortable\Mapping\Driver;
 
-use Gedmo\Mapping\Driver\AbstractAnnotationDriver;
 use Gedmo\Exception\InvalidMappingException;
+use Gedmo\Mapping\Driver\AbstractAnnotationDriver;
 
 /**
  * This is an annotation mapping driver for Sortable
@@ -31,15 +31,15 @@ class Annotation extends AbstractAnnotationDriver
      *
      * @var array
      */
-    protected $validTypes = array(
+    protected $validTypes = [
         'int',
         'integer',
         'smallint',
         'bigint',
-    );
+    ];
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function readExtendedMetadata($meta, array &$config)
     {
@@ -73,7 +73,7 @@ class Annotation extends AbstractAnnotationDriver
                     throw new InvalidMappingException("Unable to find 'group' - [{$field}] as mapped property in entity - {$meta->name}");
                 }
                 if (!isset($config['groups'])) {
-                    $config['groups'] = array();
+                    $config['groups'] = [];
                 }
                 $config['groups'][] = $field;
             }

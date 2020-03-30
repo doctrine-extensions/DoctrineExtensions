@@ -2,12 +2,8 @@
 
 namespace Gedmo\Blameable;
 
-use Doctrine\Common\NotifyPropertyChanged;
-use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 use Gedmo\AbstractTrackingListener;
 use Gedmo\Exception\InvalidArgumentException;
-use Gedmo\Timestampable\TimestampableListener;
-use Gedmo\Blameable\Mapping\Event\BlameableAdapter;
 
 /**
  * The Blameable listener handles the update of
@@ -31,8 +27,8 @@ class BlameableListener extends AbstractTrackingListener
     public function getFieldValue($meta, $field, $eventAdapter)
     {
         if ($meta->hasAssociation($field)) {
-            if (null !== $this->user && ! is_object($this->user)) {
-                throw new InvalidArgumentException("Blame is reference, user must be an object");
+            if (null !== $this->user && !is_object($this->user)) {
+                throw new InvalidArgumentException('Blame is reference, user must be an object');
             }
 
             return $this->user;
@@ -46,7 +42,7 @@ class BlameableListener extends AbstractTrackingListener
             if (method_exists($this->user, '__toString')) {
                 return $this->user->__toString();
             }
-            throw new InvalidArgumentException("Field expects string, user must be a string, or object should have method getUsername or __toString");
+            throw new InvalidArgumentException('Field expects string, user must be a string, or object should have method getUsername or __toString');
         }
 
         return $this->user;
@@ -63,7 +59,7 @@ class BlameableListener extends AbstractTrackingListener
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     protected function getNamespace()
     {

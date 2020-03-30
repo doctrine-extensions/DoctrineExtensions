@@ -2,10 +2,10 @@
 
 namespace Gedmo\Translator\Document;
 
-use Gedmo\Translator\Translation as BaseTranslation;
-use Doctrine\ODM\MongoDB\Mapping\Annotations\MappedSuperclass;
-use Doctrine\ODM\MongoDB\Mapping\Annotations\Id;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
+use Doctrine\ODM\MongoDB\Mapping\Annotations\Id;
+use Doctrine\ODM\MongoDB\Mapping\Annotations\MappedSuperclass;
+use Gedmo\Translator\Translation as BaseTranslation;
 
 /**
  * Document translation class.
@@ -23,21 +23,21 @@ abstract class Translation extends BaseTranslation
     protected $id;
 
     /**
-     * @var string $locale
+     * @var string
      *
      * @ODM\Field(type="string")
      */
     protected $locale;
 
     /**
-     * @var string $property
+     * @var string
      *
      * @ODM\Field(type="string")
      */
     protected $property;
 
     /**
-     * @var string $value
+     * @var string
      *
      * @ODM\Field(type="string")
      */
@@ -46,7 +46,7 @@ abstract class Translation extends BaseTranslation
     /**
      * Get id
      *
-     * @return integer $id
+     * @return int $id
      */
     public function getId()
     {

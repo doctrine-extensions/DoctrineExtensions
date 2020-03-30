@@ -2,8 +2,8 @@
 
 namespace Gedmo\SoftDeleteable\Mapping\Driver;
 
-use Gedmo\Mapping\Driver\AbstractAnnotationDriver;
 use Gedmo\Exception\InvalidMappingException;
+use Gedmo\Mapping\Driver\AbstractAnnotationDriver;
 use Gedmo\SoftDeleteable\Mapping\Validator;
 
 /**
@@ -24,13 +24,13 @@ class Annotation extends AbstractAnnotationDriver
     const SOFT_DELETEABLE = 'Gedmo\\Mapping\\Annotation\\SoftDeleteable';
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function readExtendedMetadata($meta, array &$config)
     {
         $class = $this->getMetaReflectionClass($meta);
         // class annotations
-        if ($class !== null && $annot = $this->reader->getClassAnnotation($class, self::SOFT_DELETEABLE)) {
+        if (null !== $class && $annot = $this->reader->getClassAnnotation($class, self::SOFT_DELETEABLE)) {
             $config['softDeleteable'] = true;
 
             Validator::validateField($meta, $annot->fieldName);
@@ -40,7 +40,7 @@ class Annotation extends AbstractAnnotationDriver
             $config['timeAware'] = false;
             if (isset($annot->timeAware)) {
                 if (!is_bool($annot->timeAware)) {
-                    throw new InvalidMappingException("timeAware must be boolean. ".gettype($annot->timeAware)." provided.");
+                    throw new InvalidMappingException('timeAware must be boolean. '.gettype($annot->timeAware).' provided.');
                 }
                 $config['timeAware'] = $annot->timeAware;
             }
@@ -48,7 +48,7 @@ class Annotation extends AbstractAnnotationDriver
             $config['hardDelete'] = true;
             if (isset($annot->hardDelete)) {
                 if (!is_bool($annot->hardDelete)) {
-                    throw new InvalidMappingException("hardDelete must be boolean. ".gettype($annot->hardDelete)." provided.");
+                    throw new InvalidMappingException('hardDelete must be boolean. '.gettype($annot->hardDelete).' provided.');
                 }
                 $config['hardDelete'] = $annot->hardDelete;
             }

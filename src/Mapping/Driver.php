@@ -17,7 +17,6 @@ interface Driver
      * a single mapped class
      *
      * @param object $meta
-     * @param array  $config
      *
      * @return void
      */

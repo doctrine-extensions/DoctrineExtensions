@@ -2,21 +2,21 @@
 
 namespace Gedmo\Sluggable\Handler;
 
-use Doctrine\Common\Persistence\ObjectManager;
-use Gedmo\Sluggable\SluggableListener;
-use Gedmo\Sluggable\Mapping\Event\SluggableAdapter;
-use Gedmo\Tool\Wrapper\AbstractWrapper;
-use Gedmo\Exception\InvalidMappingException;
 use Doctrine\Common\Persistence\Mapping\ClassMetadata;
+use Doctrine\Common\Persistence\ObjectManager;
+use Gedmo\Exception\InvalidMappingException;
+use Gedmo\Sluggable\Mapping\Event\SluggableAdapter;
+use Gedmo\Sluggable\SluggableListener;
+use Gedmo\Tool\Wrapper\AbstractWrapper;
 
 /**
-* Sluggable handler which should be used for inversed relation mapping
-* used together with RelativeSlugHandler. Updates back related slug on
-* relation changes
-*
-* @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
-* @license MIT License (http://www.opensource.org/licenses/mit-license.php)
-*/
+ * Sluggable handler which should be used for inversed relation mapping
+ * used together with RelativeSlugHandler. Updates back related slug on
+ * relation changes
+ *
+ * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
+ * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
+ */
 class InversedRelativeSlugHandler implements SlugHandlerInterface
 {
     /**
@@ -35,7 +35,7 @@ class InversedRelativeSlugHandler implements SlugHandlerInterface
      *     'inverseSlugField' => 'slug',
      *     'mappedBy' => 'relationField'
      * )
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function __construct(SluggableListener $sluggable)
     {
@@ -43,21 +43,21 @@ class InversedRelativeSlugHandler implements SlugHandlerInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function onChangeDecision(SluggableAdapter $ea, array &$config, $object, &$slug, &$needToChangeSlug)
     {
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function postSlugBuild(SluggableAdapter $ea, array &$config, $object, &$slug)
     {
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public static function validate(array $options, ClassMetadata $meta)
     {
@@ -73,7 +73,7 @@ class InversedRelativeSlugHandler implements SlugHandlerInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function onSlugCompletion(SluggableAdapter $ea, array &$config, $object, &$slug)
     {
@@ -90,7 +90,7 @@ class InversedRelativeSlugHandler implements SlugHandlerInterface
             if ($mappedByConfig) {
                 $meta = $this->om->getClassMetadata($options['relationClass']);
                 if (!$meta->isSingleValuedAssociation($options['mappedBy'])) {
-                    throw new InvalidMappingException("Unable to find ".$wrapped->getMetadata()->name." relation - [{$options['mappedBy']}] in class - {$meta->name}");
+                    throw new InvalidMappingException('Unable to find '.$wrapped->getMetadata()->name." relation - [{$options['mappedBy']}] in class - {$meta->name}");
                 }
                 if (!isset($mappedByConfig['slugs'][$options['inverseSlugField']])) {
                     throw new InvalidMappingException("Unable to find slug field - [{$options['inverseSlugField']}] in class - {$meta->name}");
@@ -123,7 +123,7 @@ class InversedRelativeSlugHandler implements SlugHandlerInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function handlesUrlization()
     {

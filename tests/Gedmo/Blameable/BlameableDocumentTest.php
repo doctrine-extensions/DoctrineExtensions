@@ -2,17 +2,19 @@
 
 namespace Gedmo\Blameable;
 
-use Tool\BaseTestCaseMongoODM;
-use Doctrine\Common\EventManager;
 use Blameable\Fixture\Document\Article;
 use Blameable\Fixture\Document\Type;
 use Blameable\Fixture\Document\User;
+use Doctrine\Common\EventManager;
+use Tool\BaseTestCaseMongoODM;
 
 /**
  * These are tests for Blameable behavior ODM implementation
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @link http://www.gediminasm.org
+ *
+ * @see http://www.gediminasm.org
+ *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class BlameableDocumentTest extends BaseTestCaseMongoODM

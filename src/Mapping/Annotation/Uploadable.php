@@ -17,10 +17,10 @@ use Gedmo\Uploadable\Mapping\Validator;
  */
 final class Uploadable extends Annotation
 {
-    /** @var boolean */
+    /** @var bool */
     public $allowOverwrite = false;
 
-    /** @var boolean */
+    /** @var bool */
     public $appendNumber = false;
 
     /** @var string */
@@ -35,7 +35,7 @@ final class Uploadable extends Annotation
     /** @var string */
     public $filenameGenerator = Validator::FILENAME_GENERATOR_NONE;
 
-    /** @var double */
+    /** @var float */
     public $maxSize = 0;
 
     /** @var array */

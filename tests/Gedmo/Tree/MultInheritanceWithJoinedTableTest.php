@@ -11,15 +11,17 @@ use Tool\BaseTestCaseORM;
  * JOINED table inheritance mapping bug on Tree;
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @link http://www.gediminasm.org
+ *
+ * @see http://www.gediminasm.org
+ *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class MultInheritanceWithJoinedTableTest extends BaseTestCaseORM
 {
-    const USER = "Tree\\Fixture\\User";
-    const GROUP = "Tree\\Fixture\\UserGroup";
-    const ROLE = "Tree\\Fixture\\Role";
-    const USERLDAP = "Tree\\Fixture\\UserLDAP";
+    const USER = 'Tree\\Fixture\\User';
+    const GROUP = 'Tree\\Fixture\\UserGroup';
+    const ROLE = 'Tree\\Fixture\\Role';
+    const USERLDAP = 'Tree\\Fixture\\UserLDAP';
 
     protected function setUp(): void
     {
@@ -105,12 +107,12 @@ class MultInheritanceWithJoinedTableTest extends BaseTestCaseORM
 
     protected function getUsedEntityFixtures()
     {
-        return array(
+        return [
             self::USER,
             self::GROUP,
             self::ROLE,
             self::USERLDAP,
-        );
+        ];
     }
 
     private function populate()

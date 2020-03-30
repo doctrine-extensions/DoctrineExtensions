@@ -40,8 +40,6 @@ interface WrapperInterface
     /**
      * Populates the object with given property values
      *
-     * @param array $data
-     *
      * @return static
      */
     public function populate(array $data);
@@ -49,7 +47,7 @@ interface WrapperInterface
     /**
      * Checks if identifier is valid
      *
-     * @return boolean
+     * @return bool
      */
     public function hasValidIdentifier();
 
@@ -63,7 +61,7 @@ interface WrapperInterface
     /**
      * Get the object identifier, single or composite
      *
-     * @param boolean $single
+     * @param bool $single
      *
      * @return array|mixed
      */

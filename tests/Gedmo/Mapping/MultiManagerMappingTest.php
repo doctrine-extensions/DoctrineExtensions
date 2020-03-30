@@ -3,16 +3,18 @@
 namespace Gedmo\Mapping;
 
 use Doctrine\Common\Annotations\AnnotationReader;
+use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
 use Doctrine\ORM\Mapping\Driver\DriverChain;
 use Doctrine\ORM\Mapping\Driver\YamlDriver;
-use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
 use Tool\BaseTestCaseOM;
 
 /**
  * These are mapping extension tests
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @link http://www.gediminasm.org
+ *
+ * @see http://www.gediminasm.org
+ *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class MultiManagerMappingTest extends BaseTestCaseOM
@@ -36,9 +38,9 @@ class MultiManagerMappingTest extends BaseTestCaseOM
     {
         parent::setUp();
         // EM with standard annotation mapping
-        $this->em1 = $this->getMockSqliteEntityManager(array(
+        $this->em1 = $this->getMockSqliteEntityManager([
             'Sluggable\Fixture\Article',
-        ));
+        ]);
         // EM with yaml and annotation mapping
         $reader = new AnnotationReader();
         $annotationDriver = new AnnotationDriver($reader);
@@ -53,10 +55,10 @@ class MultiManagerMappingTest extends BaseTestCaseOM
         $chain->addDriver($yamlDriver, 'Mapping\Fixture\Yaml');
         $chain->addDriver($annotationDriver2, 'Gedmo\Translatable');
 
-        $this->em2 = $this->getMockSqliteEntityManager(array(
+        $this->em2 = $this->getMockSqliteEntityManager([
             'Translatable\Fixture\PersonTranslation',
             'Mapping\Fixture\Yaml\User',
-        ), $chain);
+        ], $chain);
         // DM with standard annotation mapping
         $this->dm1 = $this->getMockDocumentManager('gedmo_extensions_test');
     }

@@ -14,7 +14,6 @@ use Gedmo\Uploadable\UploadableListener;
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-
 abstract class UploadableBaseEventArgs extends EventArgs
 {
     /**
@@ -32,14 +31,14 @@ abstract class UploadableBaseEventArgs extends EventArgs
     /**
      * The Uploadable entity
      *
-     * @var object $entity
+     * @var object
      */
     private $entity;
 
     /**
      * The configuration of the Uploadable extension for this entity class
      *
-     * @var array $extensionConfiguration
+     * @var array
      */
     private $extensionConfiguration;
 
@@ -49,18 +48,14 @@ abstract class UploadableBaseEventArgs extends EventArgs
     private $fileInfo;
 
     /**
-     * @var string $action - Is the file being created, updated or removed?
-     *                       This value can be: CREATE, UPDATE or DELETE.
+     * @var string - Is the file being created, updated or removed?
+     *             This value can be: CREATE, UPDATE or DELETE
      */
     private $action;
 
     /**
-     * @param UploadableListener          $listener
-     * @param \Doctrine\ORM\EntityManagerInterface $em
-     * @param array                       $config
-     * @param FileInfoInterface           $fileInfo
-     * @param object                      $entity
-     * @param string                      $action
+     * @param object $entity
+     * @param string $action
      */
     public function __construct(UploadableListener $listener, EntityManagerInterface $em, array $config, FileInfoInterface $fileInfo, $entity, $action)
     {

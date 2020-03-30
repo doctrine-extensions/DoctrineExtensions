@@ -11,21 +11,21 @@ interface RepositoryUtilsInterface
      *
      * @throws \Gedmo\Exception\InvalidArgumentException
      *
-     * @param object  $node        - from which node to start reordering the tree
-     * @param boolean $direct      - true to take only direct children
-     * @param array   $options     :
-     *                             decorate: boolean (false) - retrieves tree as UL->LI tree
-     *                             nodeDecorator: Closure (null) - uses $node as argument and returns decorated item as string
-     *                             rootOpen: string || Closure ('<ul>') - branch start, closure will be given $children as a parameter
-     *                             rootClose: string ('</ul>') - branch close
-     *                             childStart: string || Closure ('<li>') - start of node, closure will be given $node as a parameter
-     *                             childClose: string ('</li>') - close of node
-     *                             childSort: array || keys allowed: field: field to sort on, dir: direction. 'asc' or 'desc'
-     * @param boolean $includeNode - Include node on results?
+     * @param object $node        - from which node to start reordering the tree
+     * @param bool   $direct      - true to take only direct children
+     * @param array  $options     :
+     *                            decorate: boolean (false) - retrieves tree as UL->LI tree
+     *                            nodeDecorator: Closure (null) - uses $node as argument and returns decorated item as string
+     *                            rootOpen: string || Closure ('<ul>') - branch start, closure will be given $children as a parameter
+     *                            rootClose: string ('</ul>') - branch close
+     *                            childStart: string || Closure ('<li>') - start of node, closure will be given $node as a parameter
+     *                            childClose: string ('</li>') - close of node
+     *                            childSort: array || keys allowed: field: field to sort on, dir: direction. 'asc' or 'desc'
+     * @param bool   $includeNode - Include node on results?
      *
      * @return array|string
      */
-    public function childrenHierarchy($node = null, $direct = false, array $options = array(), $includeNode = false);
+    public function childrenHierarchy($node = null, $direct = false, array $options = [], $includeNode = false);
 
     /**
      * Retrieves the nested array or the decorated output.
@@ -46,7 +46,7 @@ interface RepositoryUtilsInterface
      *
      * @return array|string
      */
-    public function buildTree(array $nodes, array $options = array());
+    public function buildTree(array $nodes, array $options = []);
 
     /**
      * Process nodes and produce an array with the

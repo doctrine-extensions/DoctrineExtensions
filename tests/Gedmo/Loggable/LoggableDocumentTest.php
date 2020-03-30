@@ -2,13 +2,12 @@
 
 namespace Gedmo\Loggable;
 
-use Tool\BaseTestCaseMongoODM;
 use Doctrine\Common\EventManager;
 use Loggable\Fixture\Document\Article;
-use Loggable\Fixture\Document\RelatedArticle;
-use Loggable\Fixture\Document\Comment;
 use Loggable\Fixture\Document\Author;
-use Composer\Autoload\ClassLoader;
+use Loggable\Fixture\Document\Comment;
+use Loggable\Fixture\Document\RelatedArticle;
+use Tool\BaseTestCaseMongoODM;
 
 /**
  * These are tests for loggable behavior
@@ -16,7 +15,8 @@ use Composer\Autoload\ClassLoader;
  * @author Boussekeyt Jules <jules.boussekeyt@gmail.com>
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  *
- * @link http://www.gediminasm.org
+ * @see http://www.gediminasm.org
+ *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class LoggableDocumentTest extends BaseTestCaseMongoODM
@@ -67,7 +67,7 @@ class LoggableDocumentTest extends BaseTestCaseMongoODM
         $this->assertArrayHasKey('title', $data);
         $this->assertEquals($data['title'], 'Title');
         $this->assertArrayHasKey('author', $data);
-        $this->assertEquals($data['author'], array('name' => 'John Doe', 'email' => 'john@doe.com'));
+        $this->assertEquals($data['author'], ['name' => 'John Doe', 'email' => 'john@doe.com']);
 
         // test update
         $article = $articleRepo->findOneBy(['title' => 'Title']);
@@ -76,7 +76,7 @@ class LoggableDocumentTest extends BaseTestCaseMongoODM
         $this->dm->flush();
         $this->dm->clear();
 
-        $log = $logRepo->findOneBy(array('version' => 2, 'objectId' => $article->getId()));
+        $log = $logRepo->findOneBy(['version' => 2, 'objectId' => $article->getId()]);
         $this->assertEquals('update', $log->getAction());
 
         // test delete
@@ -85,7 +85,7 @@ class LoggableDocumentTest extends BaseTestCaseMongoODM
         $this->dm->flush();
         $this->dm->clear();
 
-        $log = $logRepo->findOneBy(array('version' => 3, 'objectId' => $article->getId()));
+        $log = $logRepo->findOneBy(['version' => 3, 'objectId' => $article->getId()]);
         $this->assertEquals('remove', $log->getAction());
         $this->assertNull($log->getData());
     }

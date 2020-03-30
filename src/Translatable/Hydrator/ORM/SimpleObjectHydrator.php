@@ -2,8 +2,8 @@
 
 namespace Gedmo\Translatable\Hydrator\ORM;
 
-use Gedmo\Translatable\TranslatableListener;
 use Doctrine\ORM\Internal\Hydration\SimpleObjectHydrator as BaseSimpleObjectHydrator;
+use Gedmo\Translatable\TranslatableListener;
 
 /**
  * If query uses TranslationQueryWalker and is hydrating
@@ -44,7 +44,7 @@ class SimpleObjectHydrator extends BaseSimpleObjectHydrator
     {
         parent::cleanup();
         $listener = $this->getTranslatableListener();
-        $listener->setSkipOnLoad($this->savedSkipOnLoad !== null ? $this->savedSkipOnLoad : false);
+        $listener->setSkipOnLoad(null !== $this->savedSkipOnLoad ? $this->savedSkipOnLoad : false);
     }
 
     /**

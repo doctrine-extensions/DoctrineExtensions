@@ -5,8 +5,8 @@ namespace Gedmo\Translatable;
 use Doctrine\Common\EventArgs;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Doctrine\ORM\ORMInvalidArgumentException;
-use Gedmo\Tool\Wrapper\AbstractWrapper;
 use Gedmo\Mapping\MappedEventSubscriber;
+use Gedmo\Tool\Wrapper\AbstractWrapper;
 use Gedmo\Translatable\Mapping\Event\TranslatableAdapter;
 
 /**
@@ -67,7 +67,7 @@ class TranslatableListener extends MappedEventSubscriber
      * not have a translation for requested locale
      * it will show a blank value
      *
-     * @var boolean
+     * @var bool
      */
     private $translationFallback = false;
 
@@ -78,14 +78,14 @@ class TranslatableListener extends MappedEventSubscriber
      *
      * @var array
      */
-    private $pendingTranslationInserts = array();
+    private $pendingTranslationInserts = [];
 
     /**
      * Currently in case if there is TranslationQueryWalker
      * in charge. We need to skip issuing additional queries
      * on load
      *
-     * @var boolean
+     * @var bool
      */
     private $skipOnLoad = false;
 
@@ -94,13 +94,13 @@ class TranslatableListener extends MappedEventSubscriber
      *
      * @var array
      */
-    private $translatedInLocale = array();
+    private $translatedInLocale = [];
 
     /**
      * Whether or not, to persist default locale
      * translation or keep it in original record
      *
-     * @var boolean
+     * @var bool
      */
     private $persistDefaultLocaleTranslation = false;
 
@@ -109,7 +109,7 @@ class TranslatableListener extends MappedEventSubscriber
      *
      * @var array
      */
-    private $translationInDefaultLocale = array();
+    private $translationInDefaultLocale = [];
 
     /**
      * Specifies the list of events to listen
@@ -118,19 +118,19 @@ class TranslatableListener extends MappedEventSubscriber
      */
     public function getSubscribedEvents()
     {
-        return array(
+        return [
             'postLoad',
             'postPersist',
             'preFlush',
             'onFlush',
             'loadClassMetadata',
-        );
+        ];
     }
 
     /**
      * Set to skip or not onLoad event
      *
-     * @param boolean $bool
+     * @param bool $bool
      *
      * @return static
      */
@@ -145,7 +145,7 @@ class TranslatableListener extends MappedEventSubscriber
      * Whether or not, to persist default locale
      * translation or keep it in original record
      *
-     * @param boolean $bool
+     * @param bool $bool
      *
      * @return static
      */
@@ -160,7 +160,7 @@ class TranslatableListener extends MappedEventSubscriber
      * Check if should persist default locale
      * translation or keep it in original record
      *
-     * @return boolean
+     * @return bool
      */
     public function getPersistDefaultLocaleTranslation()
     {
@@ -181,8 +181,6 @@ class TranslatableListener extends MappedEventSubscriber
 
     /**
      * Maps additional metadata
-     *
-     * @param EventArgs $eventArgs
      */
     public function loadClassMetadata(EventArgs $eventArgs)
     {
@@ -194,8 +192,7 @@ class TranslatableListener extends MappedEventSubscriber
      * Get the translation class to be used
      * for the object $class
      *
-     * @param TranslatableAdapter $ea
-     * @param string              $class
+     * @param string $class
      *
      * @return string
      */
@@ -211,7 +208,7 @@ class TranslatableListener extends MappedEventSubscriber
      * Enable or disable translation fallback
      * to original record value
      *
-     * @param boolean $bool
+     * @param bool $bool
      *
      * @return static
      */
@@ -226,7 +223,7 @@ class TranslatableListener extends MappedEventSubscriber
      * Weather or not is using the translation
      * fallback to original record
      *
-     * @return boolean
+     * @return bool
      */
     public function getTranslationFallback()
     {
@@ -296,6 +293,7 @@ class TranslatableListener extends MappedEventSubscriber
      *
      * @throws \Gedmo\Exception\RuntimeException - if language or locale property is not
      *                                           found in entity
+     *
      * @return string
      */
     public function getTranslatableLocale($object, $meta, $om = null)
@@ -319,7 +317,7 @@ class TranslatableListener extends MappedEventSubscriber
             }
         } elseif ($om instanceof DocumentManager) {
             list($mapping, $parentObject) = $om->getUnitOfWork()->getParentAssociation($object);
-            if ($parentObject != null) {
+            if (null != $parentObject) {
                 $parentMeta = $om->getClassMetadata(get_class($parentObject));
                 $locale = $this->getTranslatableLocale($parentObject, $parentMeta, $om);
             }
@@ -333,8 +331,6 @@ class TranslatableListener extends MappedEventSubscriber
      *
      * This has to be done in the preFlush because, when an entity has been loaded
      * in a different locale, no changes will be detected.
-     *
-     * @param EventArgs $args
      */
     public function preFlush(EventArgs $args)
     {
@@ -367,8 +363,6 @@ class TranslatableListener extends MappedEventSubscriber
     /**
      * Looks for translatable objects being inserted or updated
      * for further processing
-     *
-     * @param EventArgs $args
      */
     public function onFlush(EventArgs $args)
     {
@@ -403,11 +397,9 @@ class TranslatableListener extends MappedEventSubscriber
         }
     }
 
-     /**
+    /**
      * Checks for inserted object to update their translation
      * foreign keys
-     *
-     * @param EventArgs $args
      */
     public function postPersist(EventArgs $args)
     {
@@ -439,8 +431,6 @@ class TranslatableListener extends MappedEventSubscriber
     /**
      * After object is loaded, listener updates the translations
      * by currently used locale
-     *
-     * @param EventArgs $args
      */
     public function postLoad(EventArgs $args)
     {
@@ -498,7 +488,7 @@ class TranslatableListener extends MappedEventSubscriber
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     protected function getNamespace()
     {
@@ -518,7 +508,7 @@ class TranslatableListener extends MappedEventSubscriber
             throw new \Gedmo\Exception\InvalidArgumentException('Locale or language cannot be empty and must be set through Listener or Entity');
         }
     }
-    
+
     /**
      * Check if the given locale is valid
      *
@@ -534,9 +524,8 @@ class TranslatableListener extends MappedEventSubscriber
     /**
      * Creates the translation for object being flushed
      *
-     * @param TranslatableAdapter $ea
-     * @param object              $object
-     * @param boolean             $isInsert
+     * @param object $object
+     * @param bool   $isInsert
      *
      * @throws \UnexpectedValueException - if locale is not valid, or
      *                                   primary key is composite, missing or invalid
@@ -650,7 +639,7 @@ class TranslatableListener extends MappedEventSubscriber
                 }
             }
 
-            if ($isInsert && $this->getTranslationInDefaultLocale($oid, $field) !== null) {
+            if ($isInsert && null !== $this->getTranslationInDefaultLocale($oid, $field)) {
                 // We can't rely on object field value which is created in non-default locale.
                 // If we provide translation for default locale as well, the latter is considered to be trusted
                 // and object content should be overridden.
@@ -682,7 +671,7 @@ class TranslatableListener extends MappedEventSubscriber
                         $ea->setOriginalObjectProperty($uow, $oid, $field, $changes[0]);
                     }
                     foreach ($translatableFields as $field) {
-                        if ($this->getTranslationInDefaultLocale($oid, $field) !== null) {
+                        if (null !== $this->getTranslationInDefaultLocale($oid, $field)) {
                             $wrapped->setPropertyValue($field, $this->getTranslationInDefaultLocale($oid, $field)->getContent());
                             $this->removeTranslationInDefaultLocale($oid, $field);
                         }
@@ -703,13 +692,13 @@ class TranslatableListener extends MappedEventSubscriber
     public function setTranslationInDefaultLocale($oid, $field, $trans)
     {
         if (!isset($this->translationInDefaultLocale[$oid])) {
-            $this->translationInDefaultLocale[$oid] = array();
+            $this->translationInDefaultLocale[$oid] = [];
         }
         $this->translationInDefaultLocale[$oid][$field] = $trans;
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function isSkipOnLoad()
     {
@@ -729,7 +718,7 @@ class TranslatableListener extends MappedEventSubscriber
             if (isset($this->translationInDefaultLocale[$oid][$field])) {
                 unset($this->translationInDefaultLocale[$oid][$field]);
             }
-            if (! $this->translationInDefaultLocale[$oid]) {
+            if (!$this->translationInDefaultLocale[$oid]) {
                 // We removed the final remaining elements from the
                 // translationInDefaultLocale[$oid] array, so we might as well
                 // completely remove the entry at $oid.
@@ -778,11 +767,10 @@ class TranslatableListener extends MappedEventSubscriber
     /**
      * Checks if the translation entity belongs to the object in question
      *
-     * @param TranslatableAdapter $ea
-     * @param object              $trans
-     * @param object              $object
+     * @param object $trans
+     * @param object $object
      *
-     * @return boolean
+     * @return bool
      */
     private function belongsToObject(TranslatableAdapter $ea, $trans, $object)
     {
@@ -790,7 +778,7 @@ class TranslatableListener extends MappedEventSubscriber
             return $trans->getObject() === $object;
         }
 
-        return ($trans->getForeignKey() === $object->getId()
-            && ($trans->getObjectClass() === get_class($object)));
+        return $trans->getForeignKey() === $object->getId()
+            && ($trans->getObjectClass() === get_class($object));
     }
 }

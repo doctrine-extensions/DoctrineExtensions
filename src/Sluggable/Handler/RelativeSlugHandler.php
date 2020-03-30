@@ -2,22 +2,22 @@
 
 namespace Gedmo\Sluggable\Handler;
 
-use Doctrine\Common\Persistence\ObjectManager;
-use Gedmo\Sluggable\SluggableListener;
-use Gedmo\Sluggable\Mapping\Event\SluggableAdapter;
-use Gedmo\Tool\Wrapper\AbstractWrapper;
-use Gedmo\Exception\InvalidMappingException;
 use Doctrine\Common\Persistence\Mapping\ClassMetadata;
+use Doctrine\Common\Persistence\ObjectManager;
+use Gedmo\Exception\InvalidMappingException;
+use Gedmo\Sluggable\Mapping\Event\SluggableAdapter;
+use Gedmo\Sluggable\SluggableListener;
+use Gedmo\Tool\Wrapper\AbstractWrapper;
 
 /**
-* Sluggable handler which should be used in order to prefix
-* a slug of related object. For instance user may belong to a company
-* in this case user slug could look like 'company-name/user-firstname'
-* where path separator separates the relative slug
-*
-* @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
-* @license MIT License (http://www.opensource.org/licenses/mit-license.php)
-*/
+ * Sluggable handler which should be used in order to prefix
+ * a slug of related object. For instance user may belong to a company
+ * in this case user slug could look like 'company-name/user-firstname'
+ * where path separator separates the relative slug
+ *
+ * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
+ * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
+ */
 class RelativeSlugHandler implements SlugHandlerInterface
 {
     const SEPARATOR = '/';
@@ -53,7 +53,7 @@ class RelativeSlugHandler implements SlugHandlerInterface
      *     'relationField' => 'something',
      *     'relationSlugField' => 'slug'
      * )
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function __construct(SluggableListener $sluggable)
     {
@@ -61,7 +61,7 @@ class RelativeSlugHandler implements SlugHandlerInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function onChangeDecision(SluggableAdapter $ea, array &$config, $object, &$slug, &$needToChangeSlug)
     {
@@ -80,16 +80,16 @@ class RelativeSlugHandler implements SlugHandlerInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function postSlugBuild(SluggableAdapter $ea, array &$config, $object, &$slug)
     {
         $this->originalTransliterator = $this->sluggable->getTransliterator();
-        $this->sluggable->setTransliterator(array($this, 'transliterate'));
+        $this->sluggable->setTransliterator([$this, 'transliterate']);
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public static function validate(array $options, ClassMetadata $meta)
     {
@@ -99,7 +99,7 @@ class RelativeSlugHandler implements SlugHandlerInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function onSlugCompletion(SluggableAdapter $ea, array &$config, $object, &$slug)
     {
@@ -119,7 +119,7 @@ class RelativeSlugHandler implements SlugHandlerInterface
     {
         $result = call_user_func_array(
             $this->originalTransliterator,
-            array($text, $separator, $object)
+            [$text, $separator, $object]
         );
         $wrapped = AbstractWrapper::wrap($object, $this->om);
         $relation = $wrapped->getPropertyValue($this->usedOptions['relationField']);
@@ -130,7 +130,7 @@ class RelativeSlugHandler implements SlugHandlerInterface
             if (isset($this->usedOptions['urilize']) && $this->usedOptions['urilize']) {
                 $slug = call_user_func_array(
                     $this->originalTransliterator,
-                    array($slug, $separator, $object)
+                    [$slug, $separator, $object]
                 );
             }
 
@@ -142,7 +142,7 @@ class RelativeSlugHandler implements SlugHandlerInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function handlesUrlization()
     {

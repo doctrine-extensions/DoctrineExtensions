@@ -2,8 +2,8 @@
 
 namespace Gedmo\Blameable\Mapping\Driver;
 
-use Gedmo\Mapping\Driver\Xml as BaseXml;
 use Gedmo\Exception\InvalidMappingException;
+use Gedmo\Mapping\Driver\Xml as BaseXml;
 
 /**
  * This is a xml mapping driver for Blameable
@@ -21,32 +21,32 @@ class Xml extends BaseXml
      *
      * @var array
      */
-    private $validTypes = array(
+    private $validTypes = [
         'one',
         'string',
         'int',
-    );
+    ];
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function readExtendedMetadata($meta, array &$config)
     {
         /**
-         * @var \SimpleXmlElement $mapping
+         * @var \SimpleXmlElement
          */
         $mapping = $this->_getMapping($meta->name);
 
         if (isset($mapping->field)) {
             /**
-             * @var \SimpleXmlElement $fieldMapping
+             * @var \SimpleXmlElement
              */
             foreach ($mapping->field as $fieldMapping) {
                 $fieldMappingDoctrine = $fieldMapping;
                 $fieldMapping = $fieldMapping->children(self::GEDMO_NAMESPACE_URI);
                 if (isset($fieldMapping->blameable)) {
                     /**
-                     * @var \SimpleXmlElement $data
+                     * @var \SimpleXmlElement
                      */
                     $data = $fieldMapping->blameable;
 
@@ -54,24 +54,24 @@ class Xml extends BaseXml
                     if (!$this->isValidField($meta, $field)) {
                         throw new InvalidMappingException("Field - [{$field}] type is not valid and must be 'string' or a reference in class - {$meta->name}");
                     }
-                    if (!$this->_isAttributeSet($data, 'on') || !in_array($this->_getAttribute($data, 'on'), array('update', 'create', 'change'))) {
+                    if (!$this->_isAttributeSet($data, 'on') || !in_array($this->_getAttribute($data, 'on'), ['update', 'create', 'change'])) {
                         throw new InvalidMappingException("Field - [{$field}] trigger 'on' is not one of [update, create, change] in class - {$meta->name}");
                     }
 
-                    if ($this->_getAttribute($data, 'on') == 'change') {
+                    if ('change' == $this->_getAttribute($data, 'on')) {
                         if (!$this->_isAttributeSet($data, 'field')) {
                             throw new InvalidMappingException("Missing parameters on property - {$field}, field must be set on [change] trigger in class - {$meta->name}");
                         }
                         $trackedFieldAttribute = $this->_getAttribute($data, 'field');
-                        $valueAttribute = $this->_isAttributeSet($data, 'value') ? $this->_getAttribute($data, 'value' ) : null;
+                        $valueAttribute = $this->_isAttributeSet($data, 'value') ? $this->_getAttribute($data, 'value') : null;
                         if (is_array($trackedFieldAttribute) && null !== $valueAttribute) {
-                            throw new InvalidMappingException("Blameable extension does not support multiple value changeset detection yet.");
+                            throw new InvalidMappingException('Blameable extension does not support multiple value changeset detection yet.');
                         }
-                        $field = array(
+                        $field = [
                             'field' => $field,
                             'trackedField' => $trackedFieldAttribute,
                             'value' => $valueAttribute,
-                        );
+                        ];
                     }
                     $config[$this->_getAttribute($data, 'on')][] = $field;
                 }
@@ -84,27 +84,27 @@ class Xml extends BaseXml
                 $fieldMapping = $fieldMapping->children(self::GEDMO_NAMESPACE_URI);
                 if (isset($fieldMapping->blameable)) {
                     $data = $fieldMapping->blameable;
-                    if (! $meta->isSingleValuedAssociation($field)) {
+                    if (!$meta->isSingleValuedAssociation($field)) {
                         throw new InvalidMappingException("Association - [{$field}] is not valid, it must be a one-to-many relation or a string field - {$meta->name}");
                     }
-                    if (!$this->_isAttributeSet($data, 'on') || !in_array($this->_getAttribute($data, 'on'), array('update', 'create', 'change'))) {
+                    if (!$this->_isAttributeSet($data, 'on') || !in_array($this->_getAttribute($data, 'on'), ['update', 'create', 'change'])) {
                         throw new InvalidMappingException("Field - [{$field}] trigger 'on' is not one of [update, create, change] in class - {$meta->name}");
                     }
 
-                    if ($this->_getAttribute($data, 'on') == 'change') {
+                    if ('change' == $this->_getAttribute($data, 'on')) {
                         if (!$this->_isAttributeSet($data, 'field')) {
                             throw new InvalidMappingException("Missing parameters on property - {$field}, field must be set on [change] trigger in class - {$meta->name}");
                         }
                         $trackedFieldAttribute = $this->_getAttribute($data, 'field');
-                        $valueAttribute = $this->_isAttributeSet($data, 'value') ? $this->_getAttribute($data, 'value' ) : null;
+                        $valueAttribute = $this->_isAttributeSet($data, 'value') ? $this->_getAttribute($data, 'value') : null;
                         if (is_array($trackedFieldAttribute) && null !== $valueAttribute) {
-                            throw new InvalidMappingException("Blameable extension does not support multiple value changeset detection yet.");
+                            throw new InvalidMappingException('Blameable extension does not support multiple value changeset detection yet.');
                         }
-                        $field = array(
+                        $field = [
                             'field' => $field,
                             'trackedField' => $trackedFieldAttribute,
                             'value' => $valueAttribute,
-                        );
+                        ];
                     }
                     $config[$this->_getAttribute($data, 'on')][] = $field;
                 }
@@ -118,7 +118,7 @@ class Xml extends BaseXml
      * @param object $meta
      * @param string $field
      *
-     * @return boolean
+     * @return bool
      */
     protected function isValidField($meta, $field)
     {

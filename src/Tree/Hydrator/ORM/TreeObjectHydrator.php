@@ -6,15 +6,15 @@ use Doctrine\Common\Collections\AbstractLazyCollection;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Internal\Hydration\ObjectHydrator;
-use Doctrine\ORM\Proxy\Proxy;
-use Gedmo\Tool\Wrapper\EntityWrapper;
 use Gedmo\Tree\TreeListener;
 
 /**
  * Automatically maps the parent and children properties of Tree nodes
  *
  * @author Ilija Tovilo <ilija.tovilo@me.com>
- * @link http://www.gediminasm.org
+ *
+ * @see http://www.gediminasm.org
+ *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class TreeObjectHydrator extends ObjectHydrator
@@ -48,7 +48,7 @@ class TreeObjectHydrator extends ObjectHydrator
     {
         $data = parent::hydrateAllData();
 
-        if (count($data) === 0) {
+        if (0 === count($data)) {
             return $data;
         }
 
@@ -58,7 +58,6 @@ class TreeObjectHydrator extends ObjectHydrator
         $this->idField = $this->getIdField($entityClass);
         $this->parentField = $this->getParentField();
         $this->childrenField = $this->getChildrenField($entityClass);
-
 
         $childrenHashmap = $this->buildChildrenHashmap($data);
         $this->populateChildrenArray($data, $childrenHashmap);
@@ -76,17 +75,18 @@ class TreeObjectHydrator extends ObjectHydrator
      * ```
      *
      * @param array $nodes
+     *
      * @return array
      */
     protected function buildChildrenHashmap($nodes)
     {
-        $r = array();
+        $r = [];
 
         foreach ($nodes as $node) {
             $parentProxy = $this->getPropertyValue($node, $this->config['parent']);
             $parentId = null;
 
-            if ($parentProxy !== null) {
+            if (null !== $parentProxy) {
                 $parentId = $this->getPropertyValue($parentProxy, $this->idField);
             }
 
@@ -106,7 +106,7 @@ class TreeObjectHydrator extends ObjectHydrator
             $nodeId = $this->getPropertyValue($node, $this->idField);
             $childrenCollection = $this->getPropertyValue($node, $this->childrenField);
 
-            if ($childrenCollection === null) {
+            if (null === $childrenCollection) {
                 $childrenCollection = new ArrayCollection();
                 $this->setPropertyValue($node, $this->childrenField, $childrenCollection);
             }
@@ -130,22 +130,23 @@ class TreeObjectHydrator extends ObjectHydrator
 
     /**
      * @param array $nodes
+     *
      * @return array
      */
     protected function getRootNodes($nodes)
     {
         $idHashmap = $this->buildIdHashmap($nodes);
-        $rootNodes = array();
+        $rootNodes = [];
 
         foreach ($nodes as $node) {
             $parentProxy = $this->getPropertyValue($node, $this->config['parent']);
             $parentId = null;
 
-            if ($parentProxy !== null) {
+            if (null !== $parentProxy) {
                 $parentId = $this->getPropertyValue($parentProxy, $this->idField);
             }
 
-            if ($parentId === null || !key_exists($parentId, $idHashmap)) {
+            if (null === $parentId || !key_exists($parentId, $idHashmap)) {
                 $rootNodes[] = $node;
             }
         }
@@ -160,12 +161,11 @@ class TreeObjectHydrator extends ObjectHydrator
      * [node1.id => true, node2.id => true, ...]
      * ```
      *
-     * @param array $nodes
      * @return array
      */
     protected function buildIdHashmap(array $nodes)
     {
-        $ids = array();
+        $ids = [];
 
         foreach ($nodes as $node) {
             $id = $this->getPropertyValue($node, $this->idField);
@@ -181,6 +181,7 @@ class TreeObjectHydrator extends ObjectHydrator
     protected function getIdField($entityClass)
     {
         $meta = $this->getClassMetadata($entityClass);
+
         return $meta->getSingleIdentifierFieldName();
     }
 
@@ -204,7 +205,6 @@ class TreeObjectHydrator extends ObjectHydrator
         $meta = $this->getClassMetadata($entityClass);
 
         foreach ($meta->getReflectionProperties() as $property) {
-
             // Skip properties that have no association
             if (!$meta->hasAssociation($property->getName())) {
                 continue;
@@ -224,7 +224,6 @@ class TreeObjectHydrator extends ObjectHydrator
     }
 
     /**
-     * @param EntityManagerInterface $em
      * @return TreeListener
      */
     protected function getTreeListener(EntityManagerInterface $em)
@@ -242,18 +241,21 @@ class TreeObjectHydrator extends ObjectHydrator
 
     /**
      * @param array $data
+     *
      * @return string
      */
     protected function getEntityClassFromHydratedData($data)
     {
         $firstMappedEntity = array_values($data);
         $firstMappedEntity = $firstMappedEntity[0];
+
         return $this->_em->getClassMetadata(get_class($firstMappedEntity))->rootEntityName;
     }
 
     protected function getPropertyValue($object, $property)
     {
         $meta = $this->_em->getClassMetadata(get_class($object));
+
         return $meta->getReflectionProperty($property)->getValue($object);
     }
 

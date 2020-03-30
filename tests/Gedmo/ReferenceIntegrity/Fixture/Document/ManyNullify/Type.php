@@ -29,9 +29,10 @@ class Type
     /**
      * @ODM\ReferenceMany(targetDocument="ReferenceIntegrity\Fixture\Document\ManyNullify\Article", mappedBy="type")
      * @Gedmo\ReferenceIntegrity("nullify")
+     *
      * @var ArrayCollection
      */
-    protected $articles = array();
+    protected $articles = [];
 
     public function __construct()
     {
@@ -80,8 +81,6 @@ class Type
 
     /**
      * Add articles
-     *
-     * @param Article $article
      */
     public function addArticle(Article $article)
     {

@@ -3,8 +3,8 @@
 namespace Gedmo\Tool\Logging\DBAL;
 
 use Doctrine\DBAL\Logging\SQLLogger;
-use Doctrine\DBAL\Types\Type;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
+use Doctrine\DBAL\Types\Type;
 
 /**
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
@@ -22,14 +22,14 @@ class QueryAnalyzer implements SQLLogger
     /**
      * Start time of currently executed query
      *
-     * @var integer
+     * @var int
      */
     private $queryStartTime = null;
 
     /**
      * Total execution time of all queries
      *
-     * @var integer
+     * @var int
      */
     private $totalExecutionTime = 0;
 
@@ -38,7 +38,7 @@ class QueryAnalyzer implements SQLLogger
      *
      * @var array
      */
-    private $queries = array();
+    private $queries = [];
 
     /**
      * Query execution times indexed
@@ -46,14 +46,12 @@ class QueryAnalyzer implements SQLLogger
      *
      * @var array
      */
-    private $queryExecutionTimes = array();
+    private $queryExecutionTimes = [];
 
     /**
      * Initialize log listener with database
      * platform, which is needed for parameter
      * conversion
-     *
-     * @param AbstractPlatform $platform
      */
     public function __construct(AbstractPlatform $platform)
     {
@@ -86,8 +84,8 @@ class QueryAnalyzer implements SQLLogger
      */
     public function cleanUp()
     {
-        $this->queries = array();
-        $this->queryExecutionTimes = array();
+        $this->queries = [];
+        $this->queryExecutionTimes = [];
         $this->totalExecutionTime = 0;
 
         return $this;
@@ -96,7 +94,7 @@ class QueryAnalyzer implements SQLLogger
     /**
      * Dump the statistics of executed queries
      *
-     * @param boolean $dumpOnlySql
+     * @param bool $dumpOnlySql
      *
      * @return string
      */
@@ -109,7 +107,7 @@ class QueryAnalyzer implements SQLLogger
         }
         foreach ($this->queries as $index => $sql) {
             if (!$dumpOnlySql) {
-                $output .= 'Query('.($index+1).') - '.$this->queryExecutionTimes[$index].' ms'.PHP_EOL;
+                $output .= 'Query('.($index + 1).') - '.$this->queryExecutionTimes[$index].' ms'.PHP_EOL;
             }
             $output .= $sql.';'.PHP_EOL;
         }
@@ -121,7 +119,7 @@ class QueryAnalyzer implements SQLLogger
     /**
      * Index of the slowest query executed
      *
-     * @return integer
+     * @return int
      */
     public function getSlowestQueryIndex()
     {
@@ -140,7 +138,7 @@ class QueryAnalyzer implements SQLLogger
     /**
      * Get total execution time of queries
      *
-     * @return integer
+     * @return int
      */
     public function getTotalExecutionTime()
     {
@@ -160,7 +158,7 @@ class QueryAnalyzer implements SQLLogger
     /**
      * Get number of executed queries
      *
-     * @return integer
+     * @return int
      */
     public function getNumExecutedQueries()
     {
@@ -180,9 +178,9 @@ class QueryAnalyzer implements SQLLogger
     /**
      * Create the SQL with mapped parameters
      *
-     * @param string      $sql
-     * @param null|array  $params
-     * @param null|array  $types
+     * @param string     $sql
+     * @param array|null $params
+     * @param array|null $types
      *
      * @return string
      */
@@ -216,7 +214,7 @@ class QueryAnalyzer implements SQLLogger
      */
     private function getConvertedParams($params, $types)
     {
-        $result = array();
+        $result = [];
         foreach ($params as $position => $value) {
             if (isset($types[$position])) {
                 $type = $types[$position];

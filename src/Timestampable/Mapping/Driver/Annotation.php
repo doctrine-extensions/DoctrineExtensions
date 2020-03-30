@@ -2,8 +2,8 @@
 
 namespace Gedmo\Timestampable\Mapping\Driver;
 
-use Gedmo\Mapping\Driver\AbstractAnnotationDriver;
 use Gedmo\Exception\InvalidMappingException;
+use Gedmo\Mapping\Driver\AbstractAnnotationDriver;
 
 /**
  * This is an annotation mapping driver for Timestampable
@@ -26,7 +26,7 @@ class Annotation extends AbstractAnnotationDriver
      *
      * @var array
      */
-    protected $validTypes = array(
+    protected $validTypes = [
         'date',
         'date_immutable',
         'time',
@@ -39,10 +39,10 @@ class Annotation extends AbstractAnnotationDriver
         'zenddate',
         'vardatetime',
         'integer',
-    );
+    ];
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function readExtendedMetadata($meta, array &$config)
     {
@@ -63,21 +63,21 @@ class Annotation extends AbstractAnnotationDriver
                 if (!$this->isValidField($meta, $field)) {
                     throw new InvalidMappingException("Field - [{$field}] type is not valid and must be 'date', 'datetime' or 'time' in class - {$meta->name}");
                 }
-                if (!in_array($timestampable->on, array('update', 'create', 'change'))) {
+                if (!in_array($timestampable->on, ['update', 'create', 'change'])) {
                     throw new InvalidMappingException("Field - [{$field}] trigger 'on' is not one of [update, create, change] in class - {$meta->name}");
                 }
-                if ($timestampable->on == 'change') {
+                if ('change' == $timestampable->on) {
                     if (!isset($timestampable->field)) {
                         throw new InvalidMappingException("Missing parameters on property - {$field}, field must be set on [change] trigger in class - {$meta->name}");
                     }
                     if (is_array($timestampable->field) && isset($timestampable->value)) {
-                        throw new InvalidMappingException("Timestampable extension does not support multiple value changeset detection yet.");
+                        throw new InvalidMappingException('Timestampable extension does not support multiple value changeset detection yet.');
                     }
-                    $field = array(
+                    $field = [
                         'field' => $field,
                         'trackedField' => $timestampable->field,
                         'value' => $timestampable->value,
-                    );
+                    ];
                 }
                 // properties are unique and mapper checks that, no risk here
                 $config[$timestampable->on][] = $field;

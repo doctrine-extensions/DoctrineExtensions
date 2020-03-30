@@ -2,16 +2,18 @@
 
 namespace Gedmo\Sluggable;
 
-use Tool\BaseTestCaseMongoODM;
 use Doctrine\Common\EventManager;
 use Sluggable\Fixture\Document\Handler\Article;
 use Sluggable\Fixture\Document\Handler\RelativeSlug;
+use Tool\BaseTestCaseMongoODM;
 
 /**
  * These are tests for sluggable behavior
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @link http://www.gediminasm.org
+ *
+ * @see http://www.gediminasm.org
+ *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class RelativeSlugHandlerDocumentTest extends BaseTestCaseMongoODM

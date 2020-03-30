@@ -8,7 +8,6 @@ namespace Gedmo\ReferenceIntegrity\Mapping;
  * @author Evert Harmeling <evert.harmeling@freshheads.com>
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-
 class Validator
 {
     const NULLIFY = 'nullify';
@@ -20,11 +19,11 @@ class Validator
      *
      * @var array
      */
-    private $integrityActions = array(
+    private $integrityActions = [
         self::NULLIFY,
         self::PULL,
         self::RESTRICT,
-    );
+    ];
 
     /**
      * Returns a list of available integrity actions

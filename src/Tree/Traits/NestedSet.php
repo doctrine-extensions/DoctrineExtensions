@@ -10,25 +10,23 @@ namespace Gedmo\Tree\Traits;
  */
 trait NestedSet
 {
-
     /**
-     * @var integer
+     * @var int
      */
     private $root;
 
     /**
-     * @var integer
+     * @var int
      */
     private $level;
 
     /**
-     * @var integer
+     * @var int
      */
     private $left;
 
     /**
-     * @var integer
+     * @var int
      */
     private $right;
-
 }

@@ -2,8 +2,8 @@
 
 namespace Gedmo\Translatable\Mapping\Driver;
 
-use Gedmo\Mapping\Driver\AbstractAnnotationDriver;
 use Gedmo\Exception\InvalidMappingException;
+use Gedmo\Mapping\Driver\AbstractAnnotationDriver;
 
 /**
  * This is an annotation mapping driver for Translatable
@@ -39,7 +39,7 @@ class Annotation extends AbstractAnnotationDriver
     const LANGUAGE = 'Gedmo\\Mapping\\Annotation\\Language';
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function readExtendedMetadata($meta, array &$config)
     {
@@ -97,7 +97,7 @@ class Annotation extends AbstractAnnotationDriver
                 $embeddedClass = new \ReflectionClass($embeddedClassInfo['class']);
                 foreach ($embeddedClass->getProperties() as $embeddedProperty) {
                     if ($translatable = $this->reader->getPropertyAnnotation($embeddedProperty, self::TRANSLATABLE)) {
-                        $field = $propertyName . '.' . $embeddedProperty->getName();
+                        $field = $propertyName.'.'.$embeddedProperty->getName();
 
                         $config['fields'][] = $field;
                         if (isset($translatable->fallback)) {

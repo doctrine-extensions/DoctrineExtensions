@@ -2,9 +2,9 @@
 
 namespace Gedmo\Blameable;
 
+use Blameable\Fixture\Document\Article;
 use Doctrine\Common\EventManager;
 use Tool\BaseTestCaseMongoODM;
-use Blameable\Fixture\Document\Article;
 
 /**
  * These are tests for Blameable behavior, when no user is available

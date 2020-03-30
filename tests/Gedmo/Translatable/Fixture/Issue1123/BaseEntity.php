@@ -2,8 +2,6 @@
 
 namespace Translatable\Fixture\Issue1123;
 
-use Gedmo\Translatable\Translatable;
-use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -25,5 +23,4 @@ abstract class BaseEntity
      * @ORM\Column(type="integer")
      */
     protected $id;
-
 }

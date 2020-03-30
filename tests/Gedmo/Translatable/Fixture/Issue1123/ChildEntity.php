@@ -2,10 +2,9 @@
 
 namespace Translatable\Fixture\Issue1123;
 
-use Gedmo\Translatable\Translatable;
-use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
-use Translatable\Fixture\Issue1123\BaseEntity;
+use Gedmo\Mapping\Annotation as Gedmo;
+use Gedmo\Translatable\Translatable;
 
 /**
  * @ORM\Entity
@@ -26,11 +25,13 @@ class ChildEntity extends BaseEntity implements Translatable
      */
     private $locale = 'en';
 
-    public function getChildTitle() {
+    public function getChildTitle()
+    {
         return $this->childTitle;
     }
 
-    public function setChildTitle($childTitle) {
+    public function setChildTitle($childTitle)
+    {
         $this->childTitle = $childTitle;
     }
 

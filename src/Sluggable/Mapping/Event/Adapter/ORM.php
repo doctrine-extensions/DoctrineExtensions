@@ -3,8 +3,8 @@
 namespace Gedmo\Sluggable\Mapping\Event\Adapter;
 
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
-use Gedmo\Mapping\Event\Adapter\ORM as BaseAdapterORM;
 use Doctrine\ORM\Query;
+use Gedmo\Mapping\Event\Adapter\ORM as BaseAdapterORM;
 use Gedmo\Sluggable\Mapping\Event\SluggableAdapter;
 use Gedmo\Tool\Wrapper\AbstractWrapper;
 
@@ -18,7 +18,7 @@ use Gedmo\Tool\Wrapper\AbstractWrapper;
 class ORM extends BaseAdapterORM implements SluggableAdapter
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getSimilarSlugs($object, $meta, array $config, $slug)
     {
@@ -32,7 +32,7 @@ class ORM extends BaseAdapterORM implements SluggableAdapter
                 ':slug')
             )
         ;
-        $qb->setParameter('slug',$slug.'%');
+        $qb->setParameter('slug', $slug.'%');
 
         // use the unique_base to restrict the uniqueness check
         if ($config['unique'] && isset($config['unique_base'])) {
@@ -42,10 +42,10 @@ class ORM extends BaseAdapterORM implements SluggableAdapter
             } else {
                 $mapping = false;
             }
-            if (($ubase || $ubase === 0) && !$mapping) {
+            if (($ubase || 0 === $ubase) && !$mapping) {
                 $qb->andWhere('rec.'.$config['unique_base'].' = :unique_base');
                 $qb->setParameter(':unique_base', $ubase);
-            } elseif ($ubase && $mapping && in_array($mapping['type'], array(ClassMetadataInfo::ONE_TO_ONE, ClassMetadataInfo::MANY_TO_ONE))) {
+            } elseif ($ubase && $mapping && in_array($mapping['type'], [ClassMetadataInfo::ONE_TO_ONE, ClassMetadataInfo::MANY_TO_ONE])) {
                 $mappedAlias = 'mapped_'.$config['unique_base'];
                 $wrappedUbase = AbstractWrapper::wrap($ubase, $em);
                 $qb->innerJoin('rec.'.$config['unique_base'], $mappedAlias);
@@ -64,7 +64,7 @@ class ORM extends BaseAdapterORM implements SluggableAdapter
             if (!$meta->isIdentifier($config['slug'])) {
                 $namedId = str_replace('.', '_', $id);
                 $qb->andWhere($qb->expr()->neq('rec.'.$id, ':'.$namedId));
-                $qb->setParameter($namedId, $value, $meta->getTypeOfField($namedId));                
+                $qb->setParameter($namedId, $value, $meta->getTypeOfField($namedId));
             }
         }
         $q = $qb->getQuery();
@@ -74,7 +74,7 @@ class ORM extends BaseAdapterORM implements SluggableAdapter
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function replaceRelative($object, array $config, $target, $replacement)
     {
@@ -97,7 +97,7 @@ class ORM extends BaseAdapterORM implements SluggableAdapter
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function replaceInverseRelative($object, array $config, $target, $replacement)
     {
@@ -106,9 +106,9 @@ class ORM extends BaseAdapterORM implements SluggableAdapter
         $qb->update($config['useObjectClass'], 'rec')
             ->set('rec.'.$config['slug'], $qb->expr()->concat(
                 $qb->expr()->literal($target),
-                $qb->expr()->substring('rec.'.$config['slug'], mb_strlen($replacement)+1)
+                $qb->expr()->substring('rec.'.$config['slug'], mb_strlen($replacement) + 1)
             ))
-            ->where($qb->expr()->like('rec.'.$config['slug'], $qb->expr()->literal($replacement . '%')))
+            ->where($qb->expr()->like('rec.'.$config['slug'], $qb->expr()->literal($replacement.'%')))
         ;
         $q = $qb->getQuery();
 

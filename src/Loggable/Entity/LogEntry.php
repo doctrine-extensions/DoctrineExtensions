@@ -21,7 +21,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class LogEntry extends MappedSuperclass\AbstractLogEntry
 {
-    /**
+    /*
      * All required columns are mapped through inherited superclass
      */
 }

@@ -19,7 +19,7 @@ use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoODM;
  */
 class LogEntry extends MappedSuperclass\AbstractLogEntry
 {
-    /**
+    /*
      * All required columns are mapped through inherited superclass
      */
 }

@@ -16,12 +16,12 @@ use Doctrine\Common\Annotations\Annotation;
 final class Slug extends Annotation
 {
     /** @var array<string> @Required */
-    public $fields = array();
-    /** @var boolean */
+    public $fields = [];
+    /** @var bool */
     public $updatable = true;
     /** @var string */
     public $style = 'default'; // or "camel"
-    /** @var boolean */
+    /** @var bool */
     public $unique = true;
     /** @var string */
     public $unique_base = null;
@@ -32,7 +32,7 @@ final class Slug extends Annotation
     /** @var string */
     public $suffix = '';
     /** @var array<Gedmo\Mapping\Annotation\SlugHandler> */
-    public $handlers = array();
+    public $handlers = [];
     /** @var string */
     public $dateFormat = 'Y-m-d-H:i';
 }

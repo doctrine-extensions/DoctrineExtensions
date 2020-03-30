@@ -5,49 +5,49 @@ namespace Gedmo\Translatable\Document\MappedSuperclass;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoODM;
 
 /**
-* Gedmo\Translatable\Document\MappedSuperclass\AbstractTranslation
-*
-* @MongoODM\MappedSuperclass
-*/
+ * Gedmo\Translatable\Document\MappedSuperclass\AbstractTranslation
+ *
+ * @MongoODM\MappedSuperclass
+ */
 abstract class AbstractTranslation
 {
     /**
-     * @var integer $id
+     * @var int
      *
      * @MongoODM\Id
      */
     protected $id;
 
     /**
-     * @var string $locale
+     * @var string
      *
      * @MongoODM\Field(type="string")
      */
     protected $locale;
 
     /**
-     * @var string $objectClass
+     * @var string
      *
      * @MongoODM\Field(type="string")
      */
     protected $objectClass;
 
     /**
-     * @var string $field
+     * @var string
      *
      * @MongoODM\Field(type="string")
      */
     protected $field;
 
     /**
-     * @var string $foreignKey
+     * @var string
      *
      * @MongoODM\Field(type="string", name="foreign_key")
      */
     protected $foreignKey;
 
     /**
-     * @var string $content
+     * @var string
      *
      * @MongoODM\Field(type="string")
      */
@@ -56,7 +56,7 @@ abstract class AbstractTranslation
     /**
      * Get id
      *
-     * @return integer $id
+     * @return int $id
      */
     public function getId()
     {

@@ -24,23 +24,23 @@ interface RepositoryInterface extends RepositoryUtilsInterface
     /**
      * Returns an array of nodes suitable for method buildTree
      *
-     * @param object  $node        - Root node
-     * @param bool    $direct      - Obtain direct children?
-     * @param array   $options     - Options
-     * @param boolean $includeNode - Include node in results?
+     * @param object $node        - Root node
+     * @param bool   $direct      - Obtain direct children?
+     * @param array  $options     - Options
+     * @param bool   $includeNode - Include node in results?
      *
      * @return array - Array of nodes
      */
-    public function getNodesHierarchy($node = null, $direct = false, array $options = array(), $includeNode = false);
+    public function getNodesHierarchy($node = null, $direct = false, array $options = [], $includeNode = false);
 
     /**
      * Get list of children followed by given $node
      *
-     * @param object  $node        - if null, all tree nodes will be taken
-     * @param boolean $direct      - true to take only direct children
-     * @param string  $sortByField - field name to sort by
-     * @param string  $direction   - sort direction : "ASC" or "DESC"
-     * @param bool    $includeNode - Include the root node in results?
+     * @param object $node        - if null, all tree nodes will be taken
+     * @param bool   $direct      - true to take only direct children
+     * @param string $sortByField - field name to sort by
+     * @param string $direction   - sort direction : "ASC" or "DESC"
+     * @param bool   $includeNode - Include the root node in results?
      *
      * @return array - list of given $node children, null on failure
      */
@@ -49,12 +49,12 @@ interface RepositoryInterface extends RepositoryUtilsInterface
     /**
      * Counts the children of given TreeNode
      *
-     * @param object  $node   - if null counts all records in tree
-     * @param boolean $direct - true to count only direct children
+     * @param object $node   - if null counts all records in tree
+     * @param bool   $direct - true to count only direct children
      *
      * @throws \Gedmo\Exception\InvalidArgumentException - if input is not valid
      *
-     * @return integer
+     * @return int
      */
     public function childCount($node = null, $direct = false);
 }

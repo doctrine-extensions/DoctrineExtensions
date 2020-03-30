@@ -2,10 +2,10 @@
 
 namespace Gedmo\SoftDeleteable\Query\TreeWalker\Exec;
 
-use Doctrine\ORM\Query\Exec\MultiTableDeleteExecutor as BaseMultiTableDeleteExecutor;
-use Doctrine\ORM\Query\AST\Node;
-use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
+use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Doctrine\ORM\Query\AST\Node;
+use Doctrine\ORM\Query\Exec\MultiTableDeleteExecutor as BaseMultiTableDeleteExecutor;
 
 /**
  * This class is used when a DELETE DQL query is called for entities
@@ -15,11 +15,10 @@ use Doctrine\DBAL\Platforms\AbstractPlatform;
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-
 class MultiTableDeleteExecutor extends BaseMultiTableDeleteExecutor
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function __construct(Node $AST, $sqlWalker, ClassMetadataInfo $meta, AbstractPlatform $platform, array $config)
     {
@@ -31,7 +30,7 @@ class MultiTableDeleteExecutor extends BaseMultiTableDeleteExecutor
         $sqlStatements = $reflProp->getValue($this);
 
         foreach ($sqlStatements as $index => $stmt) {
-            $matches = array();
+            $matches = [];
             preg_match('/DELETE FROM (\w+) .+/', $stmt, $matches);
 
             if (isset($matches[1]) && $meta->getQuotedTableName($platform) === $matches[1]) {

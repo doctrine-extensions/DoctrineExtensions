@@ -2,9 +2,9 @@
 
 namespace Gedmo\SoftDeleteable\Mapping\Driver;
 
-use Gedmo\Mapping\Driver\File;
-use Gedmo\Mapping\Driver;
 use Gedmo\Exception\InvalidMappingException;
+use Gedmo\Mapping\Driver;
+use Gedmo\Mapping\Driver\File;
 use Gedmo\SoftDeleteable\Mapping\Validator;
 
 /**
@@ -21,12 +21,13 @@ class Yaml extends File implements Driver
 {
     /**
      * File extension
+     *
      * @var string
      */
     protected $_extension = '.dcm.yml';
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function readExtendedMetadata($meta, array &$config)
     {
@@ -50,7 +51,7 @@ class Yaml extends File implements Driver
                 $config['timeAware'] = false;
                 if (isset($classMapping['soft_deleteable']['time_aware'])) {
                     if (!is_bool($classMapping['soft_deleteable']['time_aware'])) {
-                        throw new InvalidMappingException("timeAware must be boolean. ".gettype($classMapping['soft_deleteable']['time_aware'])." provided.");
+                        throw new InvalidMappingException('timeAware must be boolean. '.gettype($classMapping['soft_deleteable']['time_aware']).' provided.');
                     }
                     $config['timeAware'] = $classMapping['soft_deleteable']['time_aware'];
                 }
@@ -58,7 +59,7 @@ class Yaml extends File implements Driver
                 $config['hardDelete'] = true;
                 if (isset($classMapping['soft_deleteable']['hard_delete'])) {
                     if (!is_bool($classMapping['soft_deleteable']['hard_delete'])) {
-                        throw new InvalidMappingException("hardDelete must be boolean. ".gettype($classMapping['soft_deleteable']['hard_delete'])." provided.");
+                        throw new InvalidMappingException('hardDelete must be boolean. '.gettype($classMapping['soft_deleteable']['hard_delete']).' provided.');
                     }
                     $config['hardDelete'] = $classMapping['soft_deleteable']['hard_delete'];
                 }
@@ -67,7 +68,7 @@ class Yaml extends File implements Driver
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     protected function _loadMappingFile($file)
     {

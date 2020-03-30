@@ -2,9 +2,9 @@
 
 namespace Blameable\Fixture\Entity;
 
+use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Blameable\Blameable;
 use Gedmo\Mapping\Annotation as Gedmo;
-use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
@@ -30,7 +30,7 @@ class Comment implements Blameable
     private $status;
 
     /**
-     * @var string $closed
+     * @var string
      *
      * @ORM\Column(name="closed", type="string", nullable=true)
      * @Gedmo\Blameable(on="change", field="status", value=1)
@@ -38,7 +38,7 @@ class Comment implements Blameable
     private $closed;
 
     /**
-     * @var string $modified
+     * @var string
      *
      * @ORM\Column(name="modified", type="string")
      * @Gedmo\Blameable(on="update")

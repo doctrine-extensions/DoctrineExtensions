@@ -2,8 +2,8 @@
 
 namespace Gedmo\Uploadable\Mapping\Driver;
 
-use Gedmo\Mapping\Driver\File;
 use Gedmo\Mapping\Driver;
+use Gedmo\Mapping\Driver\File;
 use Gedmo\Uploadable\Mapping\Validator;
 
 /**
@@ -20,12 +20,13 @@ class Yaml extends File implements Driver
 {
     /**
      * File extension
+     *
      * @var string
      */
     protected $_extension = '.dcm.yml';
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function readExtendedMetadata($meta, array &$config)
     {
@@ -53,8 +54,8 @@ class Yaml extends File implements Driver
                     $uploadable['filenameGenerator'] :
                     Validator::FILENAME_GENERATOR_NONE;
                 $config['maxSize'] = isset($uploadable['maxSize']) ?
-                    (double) $uploadable['maxSize'] :
-                    (double) 0;
+                    (float) $uploadable['maxSize'] :
+                    (float) 0;
                 $config['allowedTypes'] = isset($uploadable['allowedTypes']) ?
                     $uploadable['allowedTypes'] :
                     '';
@@ -65,13 +66,13 @@ class Yaml extends File implements Driver
                 if (isset($mapping['fields'])) {
                     foreach ($mapping['fields'] as $field => $info) {
                         if (isset($info['gedmo']) && array_key_exists(0, $info['gedmo'])) {
-                            if ($info['gedmo'][0] === 'uploadableFileMimeType') {
+                            if ('uploadableFileMimeType' === $info['gedmo'][0]) {
                                 $config['fileMimeTypeField'] = $field;
-                            } elseif ($info['gedmo'][0] === 'uploadableFileSize') {
+                            } elseif ('uploadableFileSize' === $info['gedmo'][0]) {
                                 $config['fileSizeField'] = $field;
-                            } elseif ($info['gedmo'][0] === 'uploadableFileName') {
+                            } elseif ('uploadableFileName' === $info['gedmo'][0]) {
                                 $config['fileNameField'] = $field;
-                            } elseif ($info['gedmo'][0] === 'uploadableFilePath') {
+                            } elseif ('uploadableFilePath' === $info['gedmo'][0]) {
                                 $config['filePathField'] = $field;
                             }
                         }
@@ -84,7 +85,7 @@ class Yaml extends File implements Driver
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     protected function _loadMappingFile($file)
     {

@@ -2,9 +2,9 @@
 
 namespace Gedmo\Sortable\Mapping\Driver;
 
-use Gedmo\Mapping\Driver\File;
-use Gedmo\Mapping\Driver;
 use Gedmo\Exception\InvalidMappingException;
+use Gedmo\Mapping\Driver;
+use Gedmo\Mapping\Driver\File;
 
 /**
  * This is a yaml mapping driver for Sortable
@@ -19,6 +19,7 @@ class Yaml extends File implements Driver
 {
     /**
      * File extension
+     *
      * @var string
      */
     protected $_extension = '.dcm.yml';
@@ -28,15 +29,15 @@ class Yaml extends File implements Driver
      *
      * @var array
      */
-    private $validTypes = array(
+    private $validTypes = [
         'int',
         'integer',
         'smallint',
         'bigint',
-    );
+    ];
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function readExtendedMetadata($meta, array &$config)
     {
@@ -75,7 +76,7 @@ class Yaml extends File implements Driver
             if (isset($fieldMapping['gedmo'])) {
                 if (in_array('sortableGroup', $fieldMapping['gedmo'])) {
                     if (!isset($config['groups'])) {
-                        $config['groups'] = array();
+                        $config['groups'] = [];
                     }
                     $config['groups'][] = $field;
                 }
@@ -84,7 +85,7 @@ class Yaml extends File implements Driver
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     protected function _loadMappingFile($file)
     {
@@ -97,7 +98,7 @@ class Yaml extends File implements Driver
      * @param object $meta
      * @param string $field
      *
-     * @return boolean
+     * @return bool
      */
     protected function isValidField($meta, $field)
     {

@@ -3,14 +3,13 @@
 namespace Mapping\Fixture\Yaml;
 
 /**
- *
  * @Table(name="categories")
  * @Entity
  */
 class Category extends BaseCategory
 {
     /**
-     * @var integer $id
+     * @var int
      *
      * @Column(name="id", type="integer")
      * @Id
@@ -19,14 +18,14 @@ class Category extends BaseCategory
     private $id;
 
     /**
-     * @var string $title
+     * @var string
      *
      * @Column(name="title", type="string", length=64)
      */
     private $title;
 
     /**
-     * @var string $slug
+     * @var string
      *
      * @Column(name="slug", type="string", length=64)
      */
@@ -54,7 +53,7 @@ class Category extends BaseCategory
     /**
      * Get id
      *
-     * @return integer $id
+     * @return int $id
      */
     public function getId()
     {

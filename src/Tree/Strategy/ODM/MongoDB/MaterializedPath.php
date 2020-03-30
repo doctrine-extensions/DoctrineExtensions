@@ -2,10 +2,10 @@
 
 namespace Gedmo\Tree\Strategy\ODM\MongoDB;
 
-use Gedmo\Tree\Strategy\AbstractMaterializedPath;
 use Doctrine\Common\Persistence\ObjectManager;
 use Gedmo\Mapping\Event\AdapterInterface;
 use Gedmo\Tool\Wrapper\AbstractWrapper;
+use Gedmo\Tree\Strategy\AbstractMaterializedPath;
 use MongoDB\BSON\Regex;
 use MongoDB\BSON\UTCDateTime;
 
@@ -65,9 +65,9 @@ class MaterializedPath extends AbstractMaterializedPath
             $lockTimeProp->setAccessible(true);
             $lockTimeValue = new UTCDateTime();
             $lockTimeProp->setValue($root, $lockTimeValue);
-            $changes = array(
-                $config['lock_time'] => array(null, $lockTimeValue),
-            );
+            $changes = [
+                $config['lock_time'] => [null, $lockTimeValue],
+            ];
 
             $ea->recomputeSingleObjectChangeSet($uow, $meta, $root);
         }
@@ -87,9 +87,9 @@ class MaterializedPath extends AbstractMaterializedPath
             $lockTimeProp->setAccessible(true);
             $lockTimeValue = null;
             $lockTimeProp->setValue($root, $lockTimeValue);
-            $changes = array(
-                $config['lock_time'] => array(null, null),
-            );
+            $changes = [
+                $config['lock_time'] => [null, null],
+            ];
 
             $ea->recomputeSingleObjectChangeSet($uow, $meta, $root);
 

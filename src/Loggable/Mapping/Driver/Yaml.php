@@ -2,9 +2,9 @@
 
 namespace Gedmo\Loggable\Mapping\Driver;
 
-use Gedmo\Mapping\Driver\File;
-use Gedmo\Mapping\Driver;
 use Gedmo\Exception\InvalidMappingException;
+use Gedmo\Mapping\Driver;
+use Gedmo\Mapping\Driver\File;
 
 /**
  * This is a yaml mapping driver for Loggable
@@ -20,12 +20,13 @@ class Yaml extends File implements Driver
 {
     /**
      * File extension
+     *
      * @var string
      */
     protected $_extension = '.dcm.yml';
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function readExtendedMetadata($meta, array &$config)
     {
@@ -35,7 +36,7 @@ class Yaml extends File implements Driver
             $classMapping = $mapping['gedmo'];
             if (isset($classMapping['loggable'])) {
                 $config['loggable'] = true;
-                if (isset ($classMapping['loggable']['logEntryClass'])) {
+                if (isset($classMapping['loggable']['logEntryClass'])) {
                     if (!$cl = $this->getRelatedClassName($meta, $classMapping['loggable']['logEntryClass'])) {
                         throw new InvalidMappingException("LogEntry class: {$classMapping['loggable']['logEntryClass']} does not exist.");
                     }
@@ -126,7 +127,7 @@ class Yaml extends File implements Driver
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     protected function _loadMappingFile($file)
     {
@@ -135,14 +136,12 @@ class Yaml extends File implements Driver
 
     /**
      * @param string $field
-     * @param array $mapping
-     * @param array $config
      */
     private function inspectEmbeddedForVersioned($field, array $mapping, array &$config)
     {
         if (isset($mapping['fields'])) {
             foreach ($mapping['fields'] as $property => $fieldMapping) {
-                $config['versioned'][] = $field . '.' . $property;
+                $config['versioned'][] = $field.'.'.$property;
             }
         }
     }

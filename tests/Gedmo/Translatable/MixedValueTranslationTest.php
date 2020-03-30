@@ -3,15 +3,17 @@
 namespace Gedmo\Translatable;
 
 use Doctrine\Common\EventManager;
-use Tool\BaseTestCaseORM;
 use Doctrine\DBAL\Types\Type;
+use Tool\BaseTestCaseORM;
 use Translatable\Fixture\MixedValue;
 
 /**
  * These are tests for translatable behavior
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @link http://www.gediminasm.org
+ *
+ * @see http://www.gediminasm.org
+ *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class MixedValueTranslationTest extends BaseTestCaseORM
@@ -78,10 +80,10 @@ class MixedValueTranslationTest extends BaseTestCaseORM
 
     protected function getUsedEntityFixtures()
     {
-        return array(
+        return [
             self::MIXED,
             self::TRANSLATION,
-        );
+        ];
     }
 
     private function populate()

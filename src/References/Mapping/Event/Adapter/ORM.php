@@ -22,7 +22,7 @@ use Gedmo\References\Mapping\Event\ReferencesAdapter;
 final class ORM extends BaseAdapterORM implements ReferencesAdapter
 {
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function getIdentifier($om, $object, $single = true)
     {
@@ -42,7 +42,7 @@ final class ORM extends BaseAdapterORM implements ReferencesAdapter
                 return $id;
             }
 
-            return array($meta->identifier => $id);
+            return [$meta->identifier => $id];
         }
 
         if ($om instanceof PhpcrDocumentManager) {
@@ -53,12 +53,12 @@ final class ORM extends BaseAdapterORM implements ReferencesAdapter
                 return $id;
             }
 
-            return array($meta->identifier => $id);
+            return [$meta->identifier => $id];
         }
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function getSingleReference($om, $class, $identifier)
     {
@@ -75,7 +75,7 @@ final class ORM extends BaseAdapterORM implements ReferencesAdapter
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function extractIdentifier($om, $object, $single = true)
     {
@@ -83,7 +83,7 @@ final class ORM extends BaseAdapterORM implements ReferencesAdapter
             $id = $om->getUnitOfWork()->getEntityIdentifier($object);
         } else {
             $meta = $om->getClassMetadata(get_class($object));
-            $id = array();
+            $id = [];
             foreach ($meta->identifier as $name) {
                 $id[$name] = $meta->getReflectionProperty($name)->getValue($object);
                 // return null if one of identifiers is missing
@@ -106,14 +106,7 @@ final class ORM extends BaseAdapterORM implements ReferencesAdapter
     private function throwIfNotDocumentManager($dm)
     {
         if (!($dm instanceof MongoDocumentManager) && !($dm instanceof PhpcrDocumentManager)) {
-            throw new InvalidArgumentException(
-                sprintf(
-                    'Expected a %s or %s instance but got "%s"',
-                    'Doctrine\ODM\MongoDB\DocumentManager',
-                    'Doctrine\ODM\PHPCR\DocumentManager',
-                    is_object($dm) ? get_class($dm) : gettype($dm)
-                )
-            );
+            throw new InvalidArgumentException(sprintf('Expected a %s or %s instance but got "%s"', 'Doctrine\ODM\MongoDB\DocumentManager', 'Doctrine\ODM\PHPCR\DocumentManager', is_object($dm) ? get_class($dm) : gettype($dm)));
         }
     }
 }

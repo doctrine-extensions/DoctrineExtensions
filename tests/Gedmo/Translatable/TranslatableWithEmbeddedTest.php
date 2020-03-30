@@ -111,9 +111,9 @@ class TranslatableWithEmbeddedTest extends BaseTestCaseORM
 
     protected function getUsedEntityFixtures()
     {
-        return array(
+        return [
             self::FIXTURE,
             self::TRANSLATION,
-        );
+        ];
     }
 }

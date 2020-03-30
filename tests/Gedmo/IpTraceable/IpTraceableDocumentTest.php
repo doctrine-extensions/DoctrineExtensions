@@ -2,16 +2,18 @@
 
 namespace Gedmo\IpTraceable;
 
-use Tool\BaseTestCaseMongoODM;
 use Doctrine\Common\EventManager;
 use IpTraceable\Fixture\Document\Article;
 use IpTraceable\Fixture\Document\Type;
+use Tool\BaseTestCaseMongoODM;
 
 /**
  * These are tests for IpTraceable behavior ODM implementation
  *
  * @author Pierre-Charles Bertineau <pc.bertineau@alterphp.com>
- * @link http://www.gediminasm.org
+ *
+ * @see http://www.gediminasm.org
+ *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class IpTraceableDocumentTest extends BaseTestCaseMongoODM

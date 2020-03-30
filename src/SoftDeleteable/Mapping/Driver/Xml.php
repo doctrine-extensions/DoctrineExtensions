@@ -2,8 +2,8 @@
 
 namespace Gedmo\SoftDeleteable\Mapping\Driver;
 
-use Gedmo\Mapping\Driver\Xml as BaseXml;
 use Gedmo\Exception\InvalidMappingException;
+use Gedmo\Mapping\Driver\Xml as BaseXml;
 use Gedmo\SoftDeleteable\Mapping\Validator;
 
 /**
@@ -20,18 +20,18 @@ use Gedmo\SoftDeleteable\Mapping\Validator;
 class Xml extends BaseXml
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function readExtendedMetadata($meta, array &$config)
     {
         /**
-         * @var \SimpleXmlElement $xml
+         * @var \SimpleXmlElement
          */
         $xml = $this->_getMapping($meta->name);
         $xmlDoctrine = $xml;
         $xml = $xml->children(self::GEDMO_NAMESPACE_URI);
 
-        if (in_array($xmlDoctrine->getName(), array('mapped-superclass', 'entity', 'document', 'embedded-document'))) {
+        if (in_array($xmlDoctrine->getName(), ['mapped-superclass', 'entity', 'document', 'embedded-document'])) {
             if (isset($xml->{'soft-deleteable'})) {
                 $field = $this->_getAttribute($xml->{'soft-deleteable'}, 'field-name');
 

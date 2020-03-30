@@ -5,7 +5,7 @@ $em = include __DIR__.'/../em.php';
 $cli = new Symfony\Component\Console\Application('My CLI interface', '1.0.0');
 $cli->setCatchExceptions(true);
 // commands
-$cli->addCommands(array(
+$cli->addCommands([
     // DBAL Commands
     new Doctrine\DBAL\Tools\Console\Command\RunSqlCommand(),
     new Doctrine\DBAL\Tools\Console\Command\ImportCommand(),
@@ -25,12 +25,12 @@ $cli->addCommands(array(
     new Doctrine\ORM\Tools\Console\Command\ConvertMappingCommand(),
     new Doctrine\ORM\Tools\Console\Command\RunDqlCommand(),
     new Doctrine\ORM\Tools\Console\Command\ValidateSchemaCommand(),
-));
+]);
 // helpers
-$helpers = array(
+$helpers = [
     'db' => new Doctrine\DBAL\Tools\Console\Helper\ConnectionHelper($em->getConnection()),
     'em' => new Doctrine\ORM\Tools\Console\Helper\EntityManagerHelper($em),
-);
+];
 foreach ($helpers as $name => $helper) {
     $cli->getHelperSet()->set($helper, $name);
 }

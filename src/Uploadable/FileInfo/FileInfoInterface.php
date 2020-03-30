@@ -9,13 +9,16 @@ namespace Gedmo\Uploadable\FileInfo;
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-
 interface FileInfoInterface
 {
     public function getTmpName();
+
     public function getName();
+
     public function getSize();
+
     public function getType();
+
     public function getError();
 
     /**

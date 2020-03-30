@@ -1,12 +1,12 @@
 <?php
 
-use Doctrine\Common\Annotations\AnnotationRegistry;
+use Composer\Autoload\ClassLoader;
 use Doctrine\Common\Annotations\AnnotationReader;
+use Doctrine\Common\Annotations\AnnotationRegistry;
 use Doctrine\Common\Annotations\CachedReader;
 use Doctrine\Common\Cache\ArrayCache;
-use Composer\Autoload\ClassLoader;
 
-/**
+/*
  * This is bootstrap for phpUnit unit tests,
  * use README.md for more details
  *
@@ -44,7 +44,7 @@ $loader->add('References\\Fixture', __DIR__.'/Gedmo');
 // stubs
 $loader->add('Gedmo\\Uploadable\\Stub', __DIR__);
 
-AnnotationRegistry::registerLoader(array($loader, 'loadClass'));
+AnnotationRegistry::registerLoader([$loader, 'loadClass']);
 Gedmo\DoctrineExtensions::registerAnnotations();
 
 $reader = new AnnotationReader();

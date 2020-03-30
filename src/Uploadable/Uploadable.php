@@ -15,7 +15,7 @@ interface Uploadable
 {
     // this interface is not necessary to implement
 
-    /**
+    /*
      * @gedmo:Uploadable
      * to mark the class as Uploadable use class annotation @gedmo:Uploadable
      * this object will be able Uploadable

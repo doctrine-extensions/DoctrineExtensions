@@ -2,9 +2,9 @@
 
 namespace Gedmo\SoftDeleteable;
 
-use Gedmo\Mapping\MappedEventSubscriber;
 use Doctrine\Common\EventArgs;
 use Doctrine\ODM\MongoDB\UnitOfWork as MongoDBUnitOfWork;
+use Gedmo\Mapping\MappedEventSubscriber;
 
 /**
  * SoftDeleteable listener
@@ -20,31 +20,29 @@ class SoftDeleteableListener extends MappedEventSubscriber
      *
      * @var string
      */
-    const PRE_SOFT_DELETE = "preSoftDelete";
+    const PRE_SOFT_DELETE = 'preSoftDelete';
 
     /**
      * Post soft-delete event
      *
      * @var string
      */
-    const POST_SOFT_DELETE = "postSoftDelete";
+    const POST_SOFT_DELETE = 'postSoftDelete';
 
     /**
      * {@inheritdoc}
      */
     public function getSubscribedEvents()
     {
-        return array(
+        return [
             'loadClassMetadata',
             'onFlush',
-        );
+        ];
     }
 
     /**
      * If it's a SoftDeleteable object, update the "deletedAt" field
      * and skip the removal of the object
-     *
-     * @param EventArgs $args
      *
      * @return void
      */
@@ -75,7 +73,6 @@ class SoftDeleteableListener extends MappedEventSubscriber
                     $ea->createLifecycleEventArgsInstance($object, $om)
                 );
 
-
                 $reflProp->setValue($object, $date);
 
                 $om->persist($object);
@@ -83,9 +80,9 @@ class SoftDeleteableListener extends MappedEventSubscriber
                 if ($uow instanceof MongoDBUnitOfWork && !method_exists($uow, 'scheduleExtraUpdate')) {
                     $ea->recomputeSingleObjectChangeSet($uow, $meta, $object);
                 } else {
-                    $uow->scheduleExtraUpdate($object, array(
-                        $config['fieldName'] => array($oldValue, $date),
-                    ));
+                    $uow->scheduleExtraUpdate($object, [
+                        $config['fieldName'] => [$oldValue, $date],
+                    ]);
                 }
 
                 $evm->dispatchEvent(
@@ -99,8 +96,6 @@ class SoftDeleteableListener extends MappedEventSubscriber
     /**
      * Maps additional metadata
      *
-     * @param EventArgs $eventArgs
-     *
      * @return void
      */
     public function loadClassMetadata(EventArgs $eventArgs)
@@ -110,7 +105,7 @@ class SoftDeleteableListener extends MappedEventSubscriber
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     protected function getNamespace()
     {

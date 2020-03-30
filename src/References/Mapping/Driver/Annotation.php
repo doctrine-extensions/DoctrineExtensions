@@ -30,11 +30,11 @@ class Annotation implements AnnotationDriverInterface
      */
     const REFERENCE_MANY_EMBED = 'Gedmo\\Mapping\\Annotation\\ReferenceManyEmbed';
 
-    private $annotations = array(
-        'referenceOne'  => self::REFERENCE_ONE,
+    private $annotations = [
+        'referenceOne' => self::REFERENCE_ONE,
         'referenceMany' => self::REFERENCE_MANY,
         'referenceManyEmbed' => self::REFERENCE_MANY_EMBED,
-    );
+    ];
 
     /**
      * Annotation reader instance
@@ -49,7 +49,7 @@ class Annotation implements AnnotationDriverInterface
     protected $_originalDriver = null;
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function setAnnotationReader($reader)
     {
@@ -57,13 +57,13 @@ class Annotation implements AnnotationDriverInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function readExtendedMetadata($meta, array &$config)
     {
         $class = $meta->getReflectionClass();
         foreach ($this->annotations as $key => $annotation) {
-            $config[$key] = array();
+            $config[$key] = [];
             foreach ($class->getProperties() as $property) {
                 if ($meta->isMappedSuperclass && !$property->isPrivate() ||
                     $meta->isInheritedField($property->name) ||
@@ -73,14 +73,14 @@ class Annotation implements AnnotationDriverInterface
                 }
 
                 if ($reference = $this->reader->getPropertyAnnotation($property, $annotation)) {
-                    $config[$key][$property->getName()] = array(
-                        'field'      => $property->getName(),
-                        'type'       => $reference->type,
-                        'class'      => $reference->class,
+                    $config[$key][$property->getName()] = [
+                        'field' => $property->getName(),
+                        'type' => $reference->type,
+                        'class' => $reference->class,
                         'identifier' => $reference->identifier,
-                        'mappedBy'   => $reference->mappedBy,
+                        'mappedBy' => $reference->mappedBy,
                         'inversedBy' => $reference->inversedBy,
-                    );
+                    ];
                 }
             }
         }
@@ -90,6 +90,7 @@ class Annotation implements AnnotationDriverInterface
      * Passes in the mapping read by original driver
      *
      * @param $driver
+     *
      * @return void
      */
     public function setOriginalDriver($driver)

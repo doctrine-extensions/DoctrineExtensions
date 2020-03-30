@@ -30,10 +30,10 @@ abstract class AbstractAnnotationDriver implements AnnotationDriverInterface
      *
      * @var array
      */
-    protected $validTypes = array();
+    protected $validTypes = [];
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function setAnnotationReader($reader)
     {
@@ -74,7 +74,7 @@ abstract class AbstractAnnotationDriver implements AnnotationDriverInterface
      * @param object $meta
      * @param string $field
      *
-     * @return boolean
+     * @return bool
      */
     protected function isValidField($meta, $field)
     {
@@ -83,10 +83,6 @@ abstract class AbstractAnnotationDriver implements AnnotationDriverInterface
         return $mapping && in_array($mapping['type'], $this->validTypes);
     }
 
-    /**
-     * @param \Doctrine\Common\Persistence\Mapping\ClassMetadata $meta
-     * @param array                                              $config
-     */
     public function validateFullMetadata(ClassMetadata $meta, array $config)
     {
     }
@@ -96,6 +92,7 @@ abstract class AbstractAnnotationDriver implements AnnotationDriverInterface
      *
      * @param ClassMetadata $metadata - the mapped class metadata
      * @param $name - the related object class name
+     *
      * @return string - related class name or empty string if does not exist
      */
     protected function getRelatedClassName($metadata, $name)
@@ -105,7 +102,8 @@ abstract class AbstractAnnotationDriver implements AnnotationDriverInterface
         }
         $refl = $metadata->getReflectionClass();
         $ns = $refl->getNamespaceName();
-        $className = $ns . '\\' . $name;
+        $className = $ns.'\\'.$name;
+
         return class_exists($className) ? $className : '';
     }
 }

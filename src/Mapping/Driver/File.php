@@ -6,7 +6,6 @@ use Doctrine\Common\Persistence\Mapping\Driver\FileDriver;
 use Doctrine\Common\Persistence\Mapping\Driver\FileLocator;
 use Doctrine\ORM\Mapping\Driver\AbstractFileDriver;
 use Gedmo\Mapping\Driver;
-use Gedmo\Exception\InvalidMappingException;
 
 /**
  * The mapping FileDriver abstract class, defines the
@@ -26,6 +25,7 @@ abstract class File implements Driver
 
     /**
      * File extension, must be set in child class
+     *
      * @var string
      */
     protected $_extension;
@@ -68,7 +68,7 @@ abstract class File implements Driver
      * Loads a mapping file with the given name and returns a map
      * from class/entity names to their corresponding elements.
      *
-     * @param string $file The mapping file to load.
+     * @param string $file the mapping file to load
      *
      * @return array
      */
@@ -79,7 +79,7 @@ abstract class File implements Driver
      *
      * @param string $className
      *
-     * @return null|array|object
+     * @return array|object|null
      */
     protected function _getMapping($className)
     {
@@ -117,6 +117,7 @@ abstract class File implements Driver
      *
      * @param $metadata - the mapped class metadata
      * @param $name - the related object class name
+     *
      * @return string - related class name or empty string if does not exist
      */
     protected function getRelatedClassName($metadata, $name)
@@ -126,7 +127,8 @@ abstract class File implements Driver
         }
         $refl = $metadata->getReflectionClass();
         $ns = $refl->getNamespaceName();
-        $className = $ns . '\\' . $name;
+        $className = $ns.'\\'.$name;
+
         return class_exists($className) ? $className : '';
     }
 }

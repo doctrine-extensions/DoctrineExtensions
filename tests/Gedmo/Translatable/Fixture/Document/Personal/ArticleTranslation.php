@@ -1,4 +1,5 @@
 <?php
+
 namespace Translatable\Fixture\Document\Personal;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoODM;

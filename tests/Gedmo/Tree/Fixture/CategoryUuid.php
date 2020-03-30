@@ -2,9 +2,9 @@
 
 namespace Tree\Fixture;
 
-use Gedmo\Tree\Node as NodeInterface;
-use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
+use Gedmo\Tree\Node as NodeInterface;
 
 /**
  * @ORM\Entity(repositoryClass="Gedmo\Tree\Entity\Repository\NestedTreeRepository")
@@ -50,13 +50,13 @@ class CategoryUuid implements NodeInterface
      * @Gedmo\TreeLevel
      * @ORM\Column(name="lvl", type="integer")
      */
-     private $level;
+    private $level;
 
     /**
      * @Gedmo\TreeRoot
      * @ORM\Column(name="root", type="string")
      */
-     private $root;
+    private $root;
 
     /**
      * @ORM\OneToMany(targetEntity="CategoryUuid", mappedBy="parent")

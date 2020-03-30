@@ -12,7 +12,9 @@ use Translatable\Fixture\Sport;
  * These are tests for translatable behavior
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @link http://www.gediminasm.org
+ *
+ * @see http://www.gediminasm.org
+ *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class TranslatableTest extends BaseTestCaseORM
@@ -137,7 +139,7 @@ class TranslatableTest extends BaseTestCaseORM
             ->where('art.id = :id');
         $q = $qb->getQuery();
         $result = $q->execute(
-            array('id' => $article->getId()),
+            ['id' => $article->getId()],
             \Doctrine\ORM\Query::HYDRATE_ARRAY
         );
         $this->assertCount(1, $result);
@@ -315,12 +317,12 @@ class TranslatableTest extends BaseTestCaseORM
 
     protected function getUsedEntityFixtures()
     {
-        return array(
+        return [
             self::ARTICLE,
             self::TRANSLATION,
             self::COMMENT,
             self::SPORT,
-        );
+        ];
     }
 
     private function populate()

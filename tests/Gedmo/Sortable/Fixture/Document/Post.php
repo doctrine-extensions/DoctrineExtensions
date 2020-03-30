@@ -4,7 +4,6 @@ namespace Sortable\Fixture\Document;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 use Gedmo\Mapping\Annotation as Gedmo;
-use Sortable\Fixture\Document\Category;
 
 /**
  * @ODM\Document(collection="posts")

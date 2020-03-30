@@ -22,14 +22,14 @@ class Chain implements Driver
 
     /**
      * List of drivers nested
+     *
      * @var Driver[]
      */
-    private $_drivers = array();
+    private $_drivers = [];
 
     /**
      * Add a nested driver.
      *
-     * @param Driver $nestedDriver
      * @param string $namespace
      */
     public function addDriver(Driver $nestedDriver, $namespace)
@@ -59,8 +59,6 @@ class Chain implements Driver
 
     /**
      * Set the default driver.
-     *
-     * @param Driver $driver
      */
     public function setDefaultDriver(Driver $driver)
     {
@@ -68,12 +66,12 @@ class Chain implements Driver
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function readExtendedMetadata($meta, array &$config)
     {
         foreach ($this->_drivers as $namespace => $driver) {
-            if (strpos($meta->name, $namespace) === 0) {
+            if (0 === strpos($meta->name, $namespace)) {
                 $driver->readExtendedMetadata($meta, $config);
 
                 return;
@@ -94,6 +92,7 @@ class Chain implements Driver
      * Passes in the mapping read by original driver
      *
      * @param $driver
+     *
      * @return void
      */
     public function setOriginalDriver($driver)

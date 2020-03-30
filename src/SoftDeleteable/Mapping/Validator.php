@@ -2,8 +2,8 @@
 
 namespace Gedmo\SoftDeleteable\Mapping;
 
-use Gedmo\Exception\InvalidMappingException;
 use Doctrine\Common\Persistence\Mapping\ClassMetadata;
+use Gedmo\Exception\InvalidMappingException;
 
 /**
  * This class is used to validate mapping information
@@ -12,7 +12,6 @@ use Doctrine\Common\Persistence\Mapping\ClassMetadata;
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-
 class Validator
 {
     /**
@@ -20,7 +19,7 @@ class Validator
      *
      * @var array
      */
-    public static $validTypes = array(
+    public static $validTypes = [
         'date',
         'date_immutable',
         'time',
@@ -31,7 +30,7 @@ class Validator
         'datetimetz_immutable',
         'timestamp',
         'zenddate',
-    );
+    ];
 
     public static function validateField(ClassMetadata $meta, $field)
     {
@@ -42,11 +41,7 @@ class Validator
         $fieldMapping = $meta->getFieldMapping($field);
 
         if (!in_array($fieldMapping['type'], self::$validTypes)) {
-            throw new InvalidMappingException(sprintf('Field "%s" (type "%s") must be of one of the following types: "%s" in entity %s',
-                $field,
-                $fieldMapping['type'],
-                implode(', ', self::$validTypes),
-                $meta->name));
+            throw new InvalidMappingException(sprintf('Field "%s" (type "%s") must be of one of the following types: "%s" in entity %s', $field, $fieldMapping['type'], implode(', ', self::$validTypes), $meta->name));
         }
     }
 }

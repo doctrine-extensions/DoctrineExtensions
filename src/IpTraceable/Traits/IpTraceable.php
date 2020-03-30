@@ -23,7 +23,8 @@ trait IpTraceable
     /**
      * Sets createdFromIp.
      *
-     * @param  string $createdFromIp
+     * @param string $createdFromIp
+     *
      * @return $this
      */
     public function setCreatedFromIp($createdFromIp)
@@ -46,7 +47,8 @@ trait IpTraceable
     /**
      * Sets updatedFromIp.
      *
-     * @param  string $updatedFromIp
+     * @param string $updatedFromIp
+     *
      * @return $this
      */
     public function setUpdatedFromIp($updatedFromIp)

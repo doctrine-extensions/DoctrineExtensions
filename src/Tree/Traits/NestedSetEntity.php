@@ -14,28 +14,28 @@ use Gedmo\Mapping\Annotation as Gedmo;
 trait NestedSetEntity
 {
     /**
-     * @var integer
+     * @var int
      * @Gedmo\TreeRoot
      * @ORM\Column(name="root", type="integer", nullable=true)
      */
     private $root;
 
     /**
-     * @var integer
+     * @var int
      * @Gedmo\TreeLevel
      * @ORM\Column(name="lvl", type="integer")
      */
     private $level;
 
     /**
-     * @var integer
+     * @var int
      * @Gedmo\TreeLeft
      * @ORM\Column(name="lft", type="integer")
      */
     private $left;
 
     /**
-     * @var integer
+     * @var int
      * @Gedmo\TreeRight
      * @ORM\Column(name="rgt", type="integer")
      */

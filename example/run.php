@@ -13,7 +13,6 @@ $em = include 'em.php';
  *
  * Gedmo\Translatable\TranslationListener
  */
-
 $repository = $em->getRepository('Entity\Category');
 $food = $repository->findOneByTitle('Food');
 if (!$food) {
@@ -57,7 +56,7 @@ $query->setHint(
     Doctrine\ORM\Query::HINT_CUSTOM_OUTPUT_WALKER,
     'Gedmo\\Translatable\\Query\\TreeWalker\\TranslationWalker'
 );
-$treeDecorationOptions = array(
+$treeDecorationOptions = [
     'decorate' => true,
     'rootOpen' => '',
     'rootClose' => '',
@@ -66,7 +65,7 @@ $treeDecorationOptions = array(
     'nodeDecorator' => function ($node) {
         return str_repeat('-', $node['level']).$node['title'].PHP_EOL;
     },
-);
+];
 // build tree in english
 echo $repository->buildTree($query->getArrayResult(), $treeDecorationOptions).PHP_EOL.PHP_EOL;
 // change locale

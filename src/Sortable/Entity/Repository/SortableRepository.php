@@ -50,14 +50,14 @@ class SortableRepository extends EntityRepository
         $this->config = $this->listener->getConfiguration($this->_em, $this->meta->name);
     }
 
-    public function getBySortableGroupsQuery(array $groupValues = array())
+    public function getBySortableGroupsQuery(array $groupValues = [])
     {
         return $this->getBySortableGroupsQueryBuilder($groupValues)->getQuery();
     }
 
-    public function getBySortableGroupsQueryBuilder(array $groupValues = array())
+    public function getBySortableGroupsQueryBuilder(array $groupValues = [])
     {
-        $groups = isset($this->config['groups']) ? array_combine(array_values($this->config['groups']), array_keys($this->config['groups'])) : array();
+        $groups = isset($this->config['groups']) ? array_combine(array_values($this->config['groups']), array_keys($this->config['groups'])) : [];
         foreach ($groupValues as $name => $value) {
             if (!in_array($name, $this->config['groups'])) {
                 throw new \InvalidArgumentException('Sortable group "'.$name.'" is not defined in Entity '.$this->meta->name);
@@ -65,8 +65,7 @@ class SortableRepository extends EntityRepository
             unset($groups[$name]);
         }
         if (count($groups) > 0) {
-            throw new \InvalidArgumentException(
-                'You need to specify values for the following groups to select by sortable groups: '.implode(", ", array_keys($groups)));
+            throw new \InvalidArgumentException('You need to specify values for the following groups to select by sortable groups: '.implode(', ', array_keys($groups)));
         }
 
         $qb = $this->createQueryBuilder('n');
@@ -75,17 +74,16 @@ class SortableRepository extends EntityRepository
         foreach ($groupValues as $group => $value) {
             $qb->andWhere('n.'.$group.' = :group'.$i)
                ->setParameter('group'.$i, $value);
-            $i++;
+            ++$i;
         }
 
         return $qb;
     }
 
-    public function getBySortableGroups(array $groupValues = array())
+    public function getBySortableGroups(array $groupValues = [])
     {
         $query = $this->getBySortableGroupsQuery($groupValues);
 
         return $query->getResult();
     }
-
 }

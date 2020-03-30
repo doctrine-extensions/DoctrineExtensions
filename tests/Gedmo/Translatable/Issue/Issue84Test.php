@@ -5,13 +5,14 @@ namespace Gedmo\Translatable;
 use Doctrine\Common\EventManager;
 use Tool\BaseTestCaseORM;
 use Translatable\Fixture\Article;
-use Doctrine\ORM\Proxy\Proxy;
 
 /**
  * These are tests for translatable behavior
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @link http://www.gediminasm.org
+ *
+ * @see http://www.gediminasm.org
+ *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class Issue84Test extends BaseTestCaseORM
@@ -53,9 +54,9 @@ class Issue84Test extends BaseTestCaseORM
 
     protected function getUsedEntityFixtures()
     {
-        return array(
+        return [
             self::ARTICLE,
             self::TRANSLATION,
-        );
+        ];
     }
 }

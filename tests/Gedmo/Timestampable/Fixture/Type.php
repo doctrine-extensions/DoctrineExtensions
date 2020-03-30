@@ -1,4 +1,5 @@
 <?php
+
 namespace Timestampable\Fixture;
 
 use Doctrine\ORM\Mapping as ORM;

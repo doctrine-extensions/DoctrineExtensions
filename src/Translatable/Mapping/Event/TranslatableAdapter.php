@@ -20,7 +20,7 @@ interface TranslatableAdapter extends AdapterInterface
      *
      * @param string $translationClassName
      *
-     * @return boolean
+     * @return bool
      */
     public function usesPersonalTranslation($translationClassName);
 
@@ -46,11 +46,10 @@ interface TranslatableAdapter extends AdapterInterface
     /**
      * Search for existing translation record
      *
-     * @param AbstractWrapper $wrapped
-     * @param string          $locale
-     * @param string          $field
-     * @param string          $translationClass
-     * @param string          $objectClass
+     * @param string $locale
+     * @param string $field
+     * @param string $translationClass
+     * @param string $objectClass
      *
      * @return mixed - null if nothing is found, Translation otherwise
      */
@@ -59,9 +58,8 @@ interface TranslatableAdapter extends AdapterInterface
     /**
      * Removes all associated translations for given object
      *
-     * @param AbstractWrapper $wrapped
-     * @param string          $transClass
-     * @param string          $objectClass
+     * @param string $transClass
+     * @param string $objectClass
      */
     public function removeAssociatedTranslations(AbstractWrapper $wrapped, $transClass, $objectClass);
 

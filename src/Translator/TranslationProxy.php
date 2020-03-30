@@ -14,7 +14,7 @@ class TranslationProxy
 {
     protected $locale;
     protected $translatable;
-    protected $properties = array();
+    protected $properties = [];
     protected $class;
     /**
      * @var Collection|TranslationInterface[]
@@ -35,23 +35,20 @@ class TranslationProxy
     public function __construct($translatable, $locale, array $properties, $class, Collection $coll)
     {
         $this->translatable = $translatable;
-        $this->locale       = $locale;
-        $this->properties   = $properties;
-        $this->class        = $class;
-        $this->coll         = $coll;
+        $this->locale = $locale;
+        $this->properties = $properties;
+        $this->class = $class;
+        $this->coll = $coll;
 
         $translationClass = new \ReflectionClass($class);
         if (!$translationClass->implementsInterface('Gedmo\Translator\TranslationInterface')) {
-            throw new \InvalidArgumentException(sprintf(
-                'Translation class should implement Gedmo\Translator\TranslationInterface, "%s" given',
-                $class
-            ));
+            throw new \InvalidArgumentException(sprintf('Translation class should implement Gedmo\Translator\TranslationInterface, "%s" given', $class));
         }
     }
 
     public function __call($method, $arguments)
     {
-        $matches = array();
+        $matches = [];
         if (preg_match('/^(set|get)(.*)$/', $method, $matches)) {
             $property = lcfirst($matches[2]);
 
@@ -69,7 +66,7 @@ class TranslationProxy
             }
         }
 
-        $return = call_user_func_array(array($this->translatable, $method), $arguments);
+        $return = call_user_func_array([$this->translatable, $method], $arguments);
 
         if ($this->translatable === $return) {
             return $this;
@@ -163,7 +160,7 @@ class TranslationProxy
         }
 
         /** @var TranslationInterface $translation */
-        $translation = new $this->class;
+        $translation = new $this->class();
         $translation->setTranslatable($this->translatable);
         $translation->setProperty($property);
         $translation->setLocale($locale);

@@ -3,21 +3,23 @@
 namespace Gedmo\Sluggable;
 
 use Doctrine\Common\EventManager;
-use Tool\BaseTestCaseORM;
 use Sluggable\Fixture\Handler\Article;
 use Sluggable\Fixture\Handler\ArticleRelativeSlug;
+use Tool\BaseTestCaseORM;
 
 /**
  * These are tests for Sluggable behavior
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @link http://www.gediminasm.org
+ *
+ * @see http://www.gediminasm.org
+ *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class RelativeSlugHandlerTest extends BaseTestCaseORM
 {
-    const SLUG = "Sluggable\\Fixture\\Handler\\ArticleRelativeSlug";
-    const ARTICLE = "Sluggable\\Fixture\\Handler\\Article";
+    const SLUG = 'Sluggable\\Fixture\\Handler\\ArticleRelativeSlug';
+    const ARTICLE = 'Sluggable\\Fixture\\Handler\\Article';
 
     protected function setUp(): void
     {
@@ -81,10 +83,10 @@ class RelativeSlugHandlerTest extends BaseTestCaseORM
 
     protected function getUsedEntityFixtures()
     {
-        return array(
+        return [
             self::SLUG,
             self::ARTICLE,
-        );
+        ];
     }
 
     private function populate()

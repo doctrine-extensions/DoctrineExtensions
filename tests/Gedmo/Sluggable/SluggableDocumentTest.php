@@ -2,15 +2,17 @@
 
 namespace Gedmo\Sluggable;
 
-use Tool\BaseTestCaseMongoODM;
 use Doctrine\Common\EventManager;
 use Sluggable\Fixture\Document\Article;
+use Tool\BaseTestCaseMongoODM;
 
 /**
  * These are tests for sluggable behavior
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @link http://www.gediminasm.org
+ *
+ * @see http://www.gediminasm.org
+ *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class SluggableDocumentTest extends BaseTestCaseMongoODM
@@ -48,7 +50,7 @@ class SluggableDocumentTest extends BaseTestCaseMongoODM
 
     public function testUniqueSlugGeneration()
     {
-        for ($i = 0; $i < 12; $i++) {
+        for ($i = 0; $i < 12; ++$i) {
             $article = new Article();
             $article->setTitle('My Title');
             $article->setCode('The Code');

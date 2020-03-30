@@ -7,10 +7,11 @@ namespace Gedmo\Uploadable\Mapping;
  *
  * @author Gustavo Falco <comfortablynumb84@gmail.com>
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @link http://www.gediminasm.org
+ *
+ * @see http://www.gediminasm.org
+ *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-
 class ValidatorTest extends \PHPUnit\Framework\TestCase
 {
     protected $meta;
@@ -18,7 +19,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
     public function setUp(): void
     {
         $this->meta = $this->getMockBuilder('Doctrine\ORM\Mapping\ClassMetadata')
-            ->setConstructorArgs(array('', null))
+            ->setConstructorArgs(['', null])
             ->getMock();
 
         Validator::$enableMimeTypesConfigException = false;
@@ -34,7 +35,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
         $this->expectException('Gedmo\Exception\InvalidMappingException');
         $this->meta->expects($this->once())
             ->method('getFieldMapping')
-            ->will($this->returnValue(array('type' => 'someType')));
+            ->will($this->returnValue(['type' => 'someType']));
 
         Validator::validateField(
             $this->meta,
@@ -62,7 +63,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
     public function test_validateConfiguration_ifNeitherFilePathFieldNorFileNameFieldIsNotDefinedThrowException()
     {
         $this->expectException('Gedmo\Exception\InvalidMappingException');
-        $config = array('filePathField' => false, 'fileNameField' => false);
+        $config = ['filePathField' => false, 'fileNameField' => false];
 
         Validator::validateConfiguration($this->meta, $config);
     }
@@ -74,7 +75,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
             ->method('getReflectionClass')
             ->will($this->returnValue(new \ReflectionClass(new FakeEntity())));
 
-        $config = array('filePathField' => 'someField', 'pathMethod' => 'invalidMethod');
+        $config = ['filePathField' => 'someField', 'pathMethod' => 'invalidMethod'];
 
         Validator::validateConfiguration(
             $this->meta,
@@ -89,7 +90,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
             ->method('getReflectionClass')
             ->will($this->returnValue(new \ReflectionClass(new FakeEntity())));
 
-        $config = array('filePathField' => 'someField', 'pathMethod' => '', 'callback' => 'invalidMethod');
+        $config = ['filePathField' => 'someField', 'pathMethod' => '', 'callback' => 'invalidMethod'];
 
         Validator::validateConfiguration(
             $this->meta,
@@ -105,20 +106,20 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
             ->will($this->returnValue(new \ReflectionClass(new FakeEntity())));
         $this->meta->expects($this->any())
             ->method('getFieldMapping')
-            ->will($this->returnValue(array('type' => 'someType')));
+            ->will($this->returnValue(['type' => 'someType']));
 
-        $config = array(
+        $config = [
             'fileMimeTypeField' => '',
-            'fileSizeField'     => '',
-            'fileNameField'     => '',
-            'filePathField'     => 'someField',
-            'pathMethod'        => '',
-            'callback'          => '',
+            'fileSizeField' => '',
+            'fileNameField' => '',
+            'filePathField' => 'someField',
+            'pathMethod' => '',
+            'callback' => '',
             'filenameGenerator' => 'invalidClass',
-            'maxSize'           => 0,
-            'allowedTypes'      => '',
-            'disallowedTypes'   => '',
-        );
+            'maxSize' => 0,
+            'allowedTypes' => '',
+            'disallowedTypes' => '',
+        ];
 
         Validator::validateConfiguration(
             $this->meta,
@@ -134,20 +135,20 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
             ->will($this->returnValue(new \ReflectionClass(new FakeEntity())));
         $this->meta->expects($this->any())
             ->method('getFieldMapping')
-            ->will($this->returnValue(array('type' => 'someType')));
+            ->will($this->returnValue(['type' => 'someType']));
 
-        $config = array(
+        $config = [
             'fileMimeTypeField' => '',
-            'fileSizeField'     => '',
-            'fileNameField'     => '',
-            'filePathField'     => 'someField',
-            'pathMethod'        => '',
-            'callback'          => '',
+            'fileSizeField' => '',
+            'fileNameField' => '',
+            'filePathField' => 'someField',
+            'pathMethod' => '',
+            'callback' => '',
             'filenameGenerator' => 'DateTime',
-            'maxSize'           => 0,
-            'allowedTypes'      => '',
-            'disallowedTypes'   => '',
-        );
+            'maxSize' => 0,
+            'allowedTypes' => '',
+            'disallowedTypes' => '',
+        ];
 
         Validator::validateConfiguration(
             $this->meta,
@@ -162,20 +163,20 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
             ->will($this->returnValue(new \ReflectionClass(new FakeEntity())));
         $this->meta->expects($this->any())
             ->method('getFieldMapping')
-            ->will($this->returnValue(array('type' => 'string')));
+            ->will($this->returnValue(['type' => 'string']));
 
-        $config = array(
+        $config = [
             'fileMimeTypeField' => '',
-            'fileSizeField'     => '',
-            'fileNameField'     => '',
-            'filePathField'     => 'someField',
-            'pathMethod'        => '',
-            'callback'          => '',
+            'fileSizeField' => '',
+            'fileNameField' => '',
+            'filePathField' => 'someField',
+            'pathMethod' => '',
+            'callback' => '',
             'filenameGenerator' => 'SHA1',
-            'maxSize'           => 0,
-            'allowedTypes'      => '',
-            'disallowedTypes'   => '',
-        );
+            'maxSize' => 0,
+            'allowedTypes' => '',
+            'disallowedTypes' => '',
+        ];
 
         Validator::validateConfiguration(
             $this->meta,
@@ -190,20 +191,20 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
             ->will($this->returnValue(new \ReflectionClass(new FakeEntity())));
         $this->meta->expects($this->any())
             ->method('getFieldMapping')
-            ->will($this->returnValue(array('type' => 'string')));
+            ->will($this->returnValue(['type' => 'string']));
 
-        $config = array(
+        $config = [
             'fileMimeTypeField' => '',
-            'fileSizeField'     => '',
-            'fileNameField'     => '',
-            'filePathField'     => 'someField',
-            'pathMethod'        => '',
-            'callback'          => '',
+            'fileSizeField' => '',
+            'fileNameField' => '',
+            'filePathField' => 'someField',
+            'pathMethod' => '',
+            'callback' => '',
             'filenameGenerator' => 'Gedmo\Uploadable\FilenameGenerator\FilenameGeneratorSha1',
-            'maxSize'           => 0,
-            'allowedTypes'      => '',
-            'disallowedTypes'   => '',
-        );
+            'maxSize' => 0,
+            'allowedTypes' => '',
+            'disallowedTypes' => '',
+        ];
 
         Validator::validateConfiguration(
             $this->meta,
@@ -218,16 +219,16 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
             ->method('getReflectionClass')
             ->will($this->returnValue(new \ReflectionClass(new FakeEntity())));
 
-        $config = array(
+        $config = [
             'fileMimeTypeField' => 'someField',
-            'filePathField'     => 'someField',
-            'fileSizeField'     => '',
-            'pathMethod'        => '',
-            'callback'          => '',
-            'maxSize'           => -123,
-            'allowedTypes'      => '',
-            'disallowedTypes'   => '',
-        );
+            'filePathField' => 'someField',
+            'fileSizeField' => '',
+            'pathMethod' => '',
+            'callback' => '',
+            'maxSize' => -123,
+            'allowedTypes' => '',
+            'disallowedTypes' => '',
+        ];
 
         Validator::validateConfiguration(
             $this->meta,
@@ -244,16 +245,16 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
 
         Validator::$enableMimeTypesConfigException = true;
 
-        $config = array(
+        $config = [
             'fileMimeTypeField' => 'someField',
-            'filePathField'     => 'someField',
-            'fileSizeField'     => '',
-            'pathMethod'        => '',
-            'callback'          => '',
-            'maxSize'           => 0,
-            'allowedTypes'      => 'text/plain',
-            'disallowedTypes'   => 'text/css',
-        );
+            'filePathField' => 'someField',
+            'fileSizeField' => '',
+            'pathMethod' => '',
+            'callback' => '',
+            'maxSize' => 0,
+            'allowedTypes' => 'text/plain',
+            'disallowedTypes' => 'text/css',
+        ];
 
         Validator::validateConfiguration(
             $this->meta,

@@ -16,7 +16,7 @@ abstract class MimeTypesExtensionsMap
      *
      * @var array
      */
-    public static $map = array(
+    public static $map = [
         'application/andrew-inset' => 'ez',
         'application/applixware' => 'aw',
         'application/atom+xml' => 'atom',
@@ -718,5 +718,5 @@ abstract class MimeTypesExtensionsMap
         'video/x-msvideo' => 'avi',
         'video/x-sgi-movie' => 'movie',
         'x-conference/x-cooltalk' => 'ice',
-    );
+    ];
 }

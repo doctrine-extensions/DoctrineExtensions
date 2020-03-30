@@ -2,9 +2,9 @@
 
 namespace Translatable\Fixture;
 
-use Translatable\Fixture\Template\ArticleTemplate;
-use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
+use Translatable\Fixture\Template\ArticleTemplate;
 
 /**
  * @ORM\Entity

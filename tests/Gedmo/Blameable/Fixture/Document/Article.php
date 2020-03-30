@@ -24,7 +24,7 @@ class Article
     private $type;
 
     /**
-     * @var string $created
+     * @var string
      *
      * @ODM\Field(type="string")
      * @Gedmo\Blameable(on="create")
@@ -32,7 +32,7 @@ class Article
     private $created;
 
     /**
-     * @var string $updated
+     * @var string
      *
      * @ODM\Field(type="string")
      * @Gedmo\Blameable
@@ -46,7 +46,7 @@ class Article
     private $creator;
 
     /**
-     * @var string $published
+     * @var string
      *
      * @ODM\Field(type="string")
      * @Gedmo\Blameable(on="change", field="type.title", value="Published")

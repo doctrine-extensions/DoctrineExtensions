@@ -30,7 +30,7 @@ class ReferenceIntegrityDocumentTest extends BaseTestCaseMongoODM
 
     const TYPE_MANY_RESTRICT_CLASS = 'ReferenceIntegrity\Fixture\Document\ManyRestrict\Type';
     const ARTICLE_MANY_RESTRICT_CLASS = 'ReferenceIntegrity\Fixture\Document\ManyRestrict\Article';
-    
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -118,11 +118,11 @@ class ReferenceIntegrityDocumentTest extends BaseTestCaseMongoODM
 
         $article = $this->dm->getRepository(self::ARTICLE_ONE_PULL_CLASS)
             ->findOneBy(['title' => 'One Pull Article']);
-        
+
         $types = $article->getTypes();
-        $this->assertTrue(count($types)===1);
-        $this->assertEquals('One Pull Type 1',$types[0]->getTitle());
-    
+        $this->assertTrue(1 === count($types));
+        $this->assertEquals('One Pull Type 1', $types[0]->getTitle());
+
         $this->dm->clear();
     }
 
@@ -148,10 +148,10 @@ class ReferenceIntegrityDocumentTest extends BaseTestCaseMongoODM
 
         $article = $this->dm->getRepository(self::ARTICLE_MANY_PULL_CLASS)
             ->findOneBy(['title' => 'Many Pull Article']);
-        
+
         $types = $article->getTypes();
-        $this->assertTrue(count($types)===1);
-        $this->assertEquals('Many Pull Type 1',$types[0]->getTitle());
+        $this->assertTrue(1 === count($types));
+        $this->assertEquals('Many Pull Type 1', $types[0]->getTitle());
 
         $this->dm->clear();
     }

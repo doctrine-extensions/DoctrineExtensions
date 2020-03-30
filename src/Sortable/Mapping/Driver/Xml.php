@@ -2,8 +2,8 @@
 
 namespace Gedmo\Sortable\Mapping\Driver;
 
-use Gedmo\Mapping\Driver\Xml as BaseXml;
 use Gedmo\Exception\InvalidMappingException;
+use Gedmo\Mapping\Driver\Xml as BaseXml;
 
 /**
  * This is a xml mapping driver for Sortable
@@ -21,20 +21,20 @@ class Xml extends BaseXml
      *
      * @var array
      */
-    private $validTypes = array(
+    private $validTypes = [
         'int',
         'integer',
         'smallint',
         'bigint',
-    );
+    ];
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function readExtendedMetadata($meta, array &$config)
     {
         /**
-         * @var \SimpleXmlElement $xml
+         * @var \SimpleXmlElement
          */
         $xml = $this->_getMapping($meta->name);
 
@@ -72,7 +72,6 @@ class Xml extends BaseXml
 
     /**
      * @param \SimpleXMLElement[] $mapping
-     * @param array               $config
      * @param string              $fieldAttr
      */
     private function readSortableGroups($mapping, array &$config, $fieldAttr = 'field')
@@ -83,7 +82,7 @@ class Xml extends BaseXml
             $field = $this->_getAttribute($mappingDoctrine, $fieldAttr);
             if (isset($map->{'sortable-group'})) {
                 if (!isset($config['groups'])) {
-                    $config['groups'] = array();
+                    $config['groups'] = [];
                 }
                 $config['groups'][] = $field;
             }
@@ -96,7 +95,7 @@ class Xml extends BaseXml
      * @param object $meta
      * @param string $field
      *
-     * @return boolean
+     * @return bool
      */
     protected function isValidField($meta, $field)
     {

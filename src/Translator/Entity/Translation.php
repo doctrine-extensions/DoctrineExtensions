@@ -2,11 +2,11 @@
 
 namespace Gedmo\Translator\Entity;
 
-use Gedmo\Translator\Translation as BaseTranslation;
 use Doctrine\ORM\Mapping\Column;
-use Doctrine\ORM\Mapping\MappedSuperclass;
-use Doctrine\ORM\Mapping\Id;
 use Doctrine\ORM\Mapping\GeneratedValue;
+use Doctrine\ORM\Mapping\Id;
+use Doctrine\ORM\Mapping\MappedSuperclass;
+use Gedmo\Translator\Translation as BaseTranslation;
 
 /**
  * Entity translation class.
@@ -19,7 +19,7 @@ use Doctrine\ORM\Mapping\GeneratedValue;
 abstract class Translation extends BaseTranslation
 {
     /**
-     * @var integer $id
+     * @var int
      *
      * @Column(type="integer")
      * @Id
@@ -28,21 +28,21 @@ abstract class Translation extends BaseTranslation
     protected $id;
 
     /**
-     * @var string $locale
+     * @var string
      *
      * @Column(type="string", length=8)
      */
     protected $locale;
 
     /**
-     * @var string $property
+     * @var string
      *
      * @Column(type="string", length=32)
      */
     protected $property;
 
     /**
-     * @var string $value
+     * @var string
      *
      * @Column(type="text", nullable=true)
      */
@@ -51,7 +51,7 @@ abstract class Translation extends BaseTranslation
     /**
      * Get id
      *
-     * @return integer $id
+     * @return int $id
      */
     public function getId()
     {

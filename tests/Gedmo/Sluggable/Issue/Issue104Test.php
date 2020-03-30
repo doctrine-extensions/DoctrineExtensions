@@ -3,14 +3,16 @@
 namespace Gedmo\Sluggable;
 
 use Doctrine\Common\EventManager;
-use Tool\BaseTestCaseORM;
 use Sluggable\Fixture\Issue104\Car;
+use Tool\BaseTestCaseORM;
 
 /**
  * These are tests for Sluggable behavior
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @link http://www.gediminasm.org
+ *
+ * @see http://www.gediminasm.org
+ *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class Issue104Test extends BaseTestCaseORM
@@ -42,8 +44,8 @@ class Issue104Test extends BaseTestCaseORM
 
     protected function getUsedEntityFixtures()
     {
-        return array(
+        return [
             self::CAR,
-        );
+        ];
     }
 }

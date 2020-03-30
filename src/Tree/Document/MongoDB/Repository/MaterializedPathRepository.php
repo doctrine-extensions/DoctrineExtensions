@@ -4,8 +4,8 @@ namespace Gedmo\Tree\Document\MongoDB\Repository;
 
 use Doctrine\ODM\MongoDB\Iterator\Iterator;
 use Gedmo\Exception\InvalidArgumentException;
-use Gedmo\Tree\Strategy;
 use Gedmo\Tool\Wrapper\MongoDocumentWrapper;
+use Gedmo\Tree\Strategy;
 use MongoDB\BSON\Regex;
 
 /**
@@ -54,7 +54,7 @@ class MaterializedPathRepository extends AbstractTreeRepository
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getRootNodesQueryBuilder($sortByField = null, $direction = 'asc')
     {
@@ -62,7 +62,7 @@ class MaterializedPathRepository extends AbstractTreeRepository
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getRootNodesQuery($sortByField = null, $direction = 'asc')
     {
@@ -70,7 +70,7 @@ class MaterializedPathRepository extends AbstractTreeRepository
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getRootNodes($sortByField = null, $direction = 'asc')
     {
@@ -78,7 +78,7 @@ class MaterializedPathRepository extends AbstractTreeRepository
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function childCount($node = null, $direct = false)
     {
@@ -86,13 +86,13 @@ class MaterializedPathRepository extends AbstractTreeRepository
 
         if (is_object($node)) {
             if (!($node instanceof $meta->name)) {
-                throw new InvalidArgumentException("Node is not related to this repository");
+                throw new InvalidArgumentException('Node is not related to this repository');
             }
 
             $wrapped = new MongoDocumentWrapper($node, $this->dm);
 
             if (!$wrapped->hasValidIdentifier()) {
-                throw new InvalidArgumentException("Node is not managed by UnitOfWork");
+                throw new InvalidArgumentException('Node is not managed by UnitOfWork');
             }
         }
 
@@ -104,7 +104,7 @@ class MaterializedPathRepository extends AbstractTreeRepository
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getChildrenQueryBuilder($node = null, $direct = false, $sortByField = null, $direction = 'asc', $includeNode = false)
     {
@@ -138,13 +138,13 @@ class MaterializedPathRepository extends AbstractTreeRepository
             $qb->field($config['path'])->equals(new Regex($regex));
         }
 
-        $qb->sort(is_null($sortByField) ? $config['path'] : $sortByField, $direction === 'asc' ? 'asc' : 'desc');
+        $qb->sort(is_null($sortByField) ? $config['path'] : $sortByField, 'asc' === $direction ? 'asc' : 'desc');
 
         return $qb;
     }
 
     /**
-     * G{@inheritDoc}
+     * G{@inheritdoc}
      */
     public function getChildrenQuery($node = null, $direct = false, $sortByField = null, $direction = 'asc', $includeNode = false)
     {
@@ -152,7 +152,7 @@ class MaterializedPathRepository extends AbstractTreeRepository
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getChildren($node = null, $direct = false, $sortByField = null, $direction = 'asc', $includeNode = false)
     {
@@ -160,14 +160,14 @@ class MaterializedPathRepository extends AbstractTreeRepository
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
-    public function getNodesHierarchyQueryBuilder($node = null, $direct = false, array $options = array(), $includeNode = false)
+    public function getNodesHierarchyQueryBuilder($node = null, $direct = false, array $options = [], $includeNode = false)
     {
-        $sortBy = array(
-            'field'     => null,
-            'dir'       => 'asc',
-        );
+        $sortBy = [
+            'field' => null,
+            'dir' => 'asc',
+        ];
 
         if (isset($options['childSort'])) {
             $sortBy = array_merge($sortBy, $options['childSort']);
@@ -177,17 +177,17 @@ class MaterializedPathRepository extends AbstractTreeRepository
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
-    public function getNodesHierarchyQuery($node = null, $direct = false, array $options = array(), $includeNode = false)
+    public function getNodesHierarchyQuery($node = null, $direct = false, array $options = [], $includeNode = false)
     {
         return $this->getNodesHierarchyQueryBuilder($node, $direct, $options, $includeNode)->getQuery();
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
-    public function getNodesHierarchy($node = null, $direct = false, array $options = array(), $includeNode = false)
+    public function getNodesHierarchy($node = null, $direct = false, array $options = [], $includeNode = false)
     {
         $query = $this->getNodesHierarchyQuery($node, $direct, $options, $includeNode);
         $query->setHydrate(false);
@@ -200,6 +200,6 @@ class MaterializedPathRepository extends AbstractTreeRepository
      */
     protected function validate()
     {
-        return $this->listener->getStrategy($this->dm, $this->getClassMetadata()->name)->getName() === Strategy::MATERIALIZED_PATH;
+        return Strategy::MATERIALIZED_PATH === $this->listener->getStrategy($this->dm, $this->getClassMetadata()->name)->getName();
     }
 }

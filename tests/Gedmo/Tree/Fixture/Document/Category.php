@@ -2,8 +2,8 @@
 
 namespace Tree\Fixture\Document;
 
-use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as MONGO;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @MONGO\Document(repositoryClass="Gedmo\Tree\Document\MongoDB\Repository\MaterializedPathRepository")

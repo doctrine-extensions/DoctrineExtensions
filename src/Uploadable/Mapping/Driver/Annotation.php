@@ -27,7 +27,7 @@ class Annotation extends AbstractAnnotationDriver
     const UPLOADABLE_FILE_SIZE = 'Gedmo\\Mapping\\Annotation\\UploadableFileSize';
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function readExtendedMetadata($meta, array &$config)
     {
@@ -46,7 +46,7 @@ class Annotation extends AbstractAnnotationDriver
             $config['fileSizeField'] = false;
             $config['callback'] = $annot->callback;
             $config['filenameGenerator'] = $annot->filenameGenerator;
-            $config['maxSize'] = (double) $annot->maxSize;
+            $config['maxSize'] = (float) $annot->maxSize;
             $config['allowedTypes'] = $annot->allowedTypes;
             $config['disallowedTypes'] = $annot->disallowedTypes;
 

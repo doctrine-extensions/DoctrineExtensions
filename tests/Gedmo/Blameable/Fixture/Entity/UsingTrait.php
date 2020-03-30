@@ -1,15 +1,16 @@
 <?php
+
 namespace Blameable\Fixture\Entity;
 
-use Gedmo\Blameable\Traits\BlameableEntity;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Blameable\Traits\BlameableEntity;
 
 /**
  * @ORM\Entity
  */
 class UsingTrait
 {
-    /**
+    /*
      * Hook Blameable behavior
      * updates createdAt, updatedAt fields
      */

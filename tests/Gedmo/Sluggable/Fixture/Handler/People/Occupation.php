@@ -2,8 +2,8 @@
 
 namespace Sluggable\Fixture\Handler\People;
 
-use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @Gedmo\Tree(type="nested")
@@ -64,7 +64,7 @@ class Occupation
      */
     private $root;
 
-/**
+    /**
      * @Gedmo\TreeLevel
      * @ORM\Column(name="lvl", type="integer")
      */

@@ -2,18 +2,17 @@
 
 namespace Gedmo\SoftDeleteable;
 
-use SoftDeleteable\Fixture\Entity\UserNoHardDelete;
-use Tool\BaseTestCaseORM;
 use Doctrine\Common\EventManager;
 use SoftDeleteable\Fixture\Entity\Article;
+use SoftDeleteable\Fixture\Entity\Child;
 use SoftDeleteable\Fixture\Entity\Comment;
-use SoftDeleteable\Fixture\Entity\User;
-use SoftDeleteable\Fixture\Entity\Page;
 use SoftDeleteable\Fixture\Entity\MegaPage;
 use SoftDeleteable\Fixture\Entity\Module;
 use SoftDeleteable\Fixture\Entity\OtherArticle;
 use SoftDeleteable\Fixture\Entity\OtherComment;
-use SoftDeleteable\Fixture\Entity\Child;
+use SoftDeleteable\Fixture\Entity\User;
+use SoftDeleteable\Fixture\Entity\UserNoHardDelete;
+use Tool\BaseTestCaseORM;
 
 /**
  * These are tests for SoftDeleteable behavior
@@ -21,7 +20,9 @@ use SoftDeleteable\Fixture\Entity\Child;
  * @author Gustavo Falco <comfortablynumb84@gmail.com>
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  * @author Patrik Votoček <patrik@votocek.cz>
- * @link http://www.gediminasm.org
+ *
+ * @see http://www.gediminasm.org
+ *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class SoftDeleteableEntityTest extends BaseTestCaseORM
@@ -66,13 +67,13 @@ class SoftDeleteableEntityTest extends BaseTestCaseORM
         $this->em->persist($newUser);
         $this->em->flush();
 
-        $user = $repo->findOneBy(array('username' => $username));
+        $user = $repo->findOneBy(['username' => $username]);
         $this->assertNull($user->getDeletedAt());
 
         $this->em->remove($user);
         $this->em->flush();
 
-        $user = $repo->findOneBy(array('username' => $username));
+        $user = $repo->findOneBy(['username' => $username]);
         $this->assertNull($user);
     }
 
@@ -90,26 +91,26 @@ class SoftDeleteableEntityTest extends BaseTestCaseORM
         $this->em->persist($newUser);
         $this->em->flush();
 
-        $user = $repo->findOneBy(array('username' => $username));
+        $user = $repo->findOneBy(['username' => $username]);
 
         $this->assertNull($user->getDeletedAt());
 
         $this->em->remove($user);
         $this->em->flush();
 
-        $user = $repo->findOneBy(array('username' => $username));
-        $this->assertNull($user, "User should be filtered out");
+        $user = $repo->findOneBy(['username' => $username]);
+        $this->assertNull($user, 'User should be filtered out');
 
         // now deactivate filter and attempt to hard delete
         $this->em->getFilters()->disable(self::SOFT_DELETEABLE_FILTER_NAME);
-        $user = $repo->findOneBy(array('username' => $username));
-        $this->assertNotNull($user, "User should be fetched when filter is disabled");
+        $user = $repo->findOneBy(['username' => $username]);
+        $this->assertNotNull($user, 'User should be fetched when filter is disabled');
 
         $this->em->remove($user);
         $this->em->flush();
 
-        $user = $repo->findOneBy(array('username' => $username));
-        $this->assertNull($user, "User is still available after hard delete");
+        $user = $repo->findOneBy(['username' => $username]);
+        $this->assertNull($user, 'User is still available after hard delete');
     }
 
     public function testSoftDeleteable()
@@ -130,7 +131,7 @@ class SoftDeleteableEntityTest extends BaseTestCaseORM
         $this->em->persist($art0);
         $this->em->flush();
 
-        $art = $repo->findOneBy(array($field => $value));
+        $art = $repo->findOneBy([$field => $value]);
 
         $this->assertNull($art->getDeletedAt());
         $this->assertNull($comment->getDeletedAt());
@@ -138,19 +139,19 @@ class SoftDeleteableEntityTest extends BaseTestCaseORM
         $this->em->remove($art);
         $this->em->flush();
 
-        $art = $repo->findOneBy(array($field => $value));
+        $art = $repo->findOneBy([$field => $value]);
         $this->assertNull($art);
-        $comment = $commentRepo->findOneBy(array($commentField => $commentValue));
+        $comment = $commentRepo->findOneBy([$commentField => $commentValue]);
         $this->assertNull($comment);
 
         // Now we deactivate the filter so we test if the entity appears in the result
         $this->em->getFilters()->disable(self::SOFT_DELETEABLE_FILTER_NAME);
 
-        $art = $repo->findOneBy(array($field => $value));
+        $art = $repo->findOneBy([$field => $value]);
         $this->assertTrue(is_object($art));
         $this->assertTrue(is_object($art->getDeletedAt()));
         $this->assertTrue($art->getDeletedAt() instanceof \DateTime);
-        $comment = $commentRepo->findOneBy(array($commentField => $commentValue));
+        $comment = $commentRepo->findOneBy([$commentField => $commentValue]);
         $this->assertTrue(is_object($comment));
         $this->assertTrue(is_object($comment->getDeletedAt()));
         $this->assertTrue($comment->getDeletedAt() instanceof \DateTime);
@@ -173,14 +174,14 @@ class SoftDeleteableEntityTest extends BaseTestCaseORM
 
         $query->execute();
 
-        $art = $repo->findOneBy(array($field => $value));
+        $art = $repo->findOneBy([$field => $value]);
         $this->assertNull($art);
 
         // Now we deactivate the filter so we test if the entity appears in the result
         $this->em->getFilters()->disable(self::SOFT_DELETEABLE_FILTER_NAME);
         $this->em->clear();
 
-        $art = $repo->findOneBy(array($field => $value));
+        $art = $repo->findOneBy([$field => $value]);
 
         $this->assertTrue(is_object($art));
         $this->assertTrue(is_object($art->getDeletedAt()));
@@ -211,14 +212,14 @@ class SoftDeleteableEntityTest extends BaseTestCaseORM
 
         $query->execute();
 
-        $p = $megaPageRepo->findOneBy(array('title' => 'Page 1'));
+        $p = $megaPageRepo->findOneBy(['title' => 'Page 1']);
         $this->assertNull($p);
 
         // Now we deactivate the filter so we test if the entity appears in the result
         $this->em->getFilters()->disable(self::SOFT_DELETEABLE_FILTER_NAME);
         $this->em->clear();
 
-        $p = $megaPageRepo->findOneBy(array('title' => 'Page 1'));
+        $p = $megaPageRepo->findOneBy(['title' => 'Page 1']);
 
         $this->assertTrue(is_object($p));
         $this->assertTrue(is_object($p->getDeletedAt()));
@@ -249,8 +250,8 @@ class SoftDeleteableEntityTest extends BaseTestCaseORM
         $this->em->remove($otherArt);
         $this->em->flush();
 
-        $foundArt = $otherArticleRepo->findOneBy(array('id' => $artId));
-        $foundComment = $otherCommentRepo->findOneBy(array('id' => $commentId));
+        $foundArt = $otherArticleRepo->findOneBy(['id' => $artId]);
+        $foundComment = $otherCommentRepo->findOneBy(['id' => $commentId]);
 
         $this->assertNull($foundArt);
         $this->assertTrue(is_object($foundComment));
@@ -289,7 +290,7 @@ class SoftDeleteableEntityTest extends BaseTestCaseORM
         $this->em->persist($art0);
         $this->em->flush();
 
-        $art = $repo->findOneBy(array($field => $value));
+        $art = $repo->findOneBy([$field => $value]);
 
         $this->assertNull($art->getDeletedAt());
         $this->assertNull($comment->getDeletedAt());
@@ -297,17 +298,17 @@ class SoftDeleteableEntityTest extends BaseTestCaseORM
         $art->setDeletedAt(new \DateTimeImmutable());
         $this->em->flush();
 
-        $art = $repo->findOneBy(array($field => $value));
+        $art = $repo->findOneBy([$field => $value]);
         $this->assertNull($art);
 
         // Now we deactivate the filter so we test if the entity appears in the result
         $this->em->getFilters()->disable(self::SOFT_DELETEABLE_FILTER_NAME);
 
-        $art = $repo->findOneBy(array($field => $value));
+        $art = $repo->findOneBy([$field => $value]);
         $this->assertIsObject($art);
         $this->assertIsObject($art->getDeletedAt());
         $this->assertInstanceOf('DateTimeInterface', $art->getDeletedAt());
-        $comment = $commentRepo->findOneBy(array($commentField => $commentValue));
+        $comment = $commentRepo->findOneBy([$commentField => $commentValue]);
         $this->assertIsObject($comment);
         $this->assertNull($comment->getDeletedAt());
 
@@ -329,14 +330,14 @@ class SoftDeleteableEntityTest extends BaseTestCaseORM
 
         $query->execute();
 
-        $art = $repo->findOneBy(array($field => $value));
+        $art = $repo->findOneBy([$field => $value]);
         $this->assertNull($art);
 
         // Now we deactivate the filter so we test if the entity appears in the result
         $this->em->getFilters()->disable(self::SOFT_DELETEABLE_FILTER_NAME);
         $this->em->clear();
 
-        $art = $repo->findOneBy(array($field => $value));
+        $art = $repo->findOneBy([$field => $value]);
 
         $this->assertIsObject($art);
         $this->assertIsObject($art->getDeletedAt());
@@ -367,14 +368,14 @@ class SoftDeleteableEntityTest extends BaseTestCaseORM
 
         $query->execute();
 
-        $p = $megaPageRepo->findOneBy(array('title' => 'Page 1'));
+        $p = $megaPageRepo->findOneBy(['title' => 'Page 1']);
         $this->assertNull($p);
 
         // Now we deactivate the filter so we test if the entity appears in the result
         $this->em->getFilters()->disable(self::SOFT_DELETEABLE_FILTER_NAME);
         $this->em->clear();
 
-        $p = $megaPageRepo->findOneBy(array('title' => 'Page 1'));
+        $p = $megaPageRepo->findOneBy(['title' => 'Page 1']);
 
         $this->assertIsObject($p);
         $this->assertIsObject($p->getDeletedAt());
@@ -405,8 +406,8 @@ class SoftDeleteableEntityTest extends BaseTestCaseORM
         $otherArt->setDeletedAt(new \DateTimeImmutable());
         $this->em->flush();
 
-        $foundArt = $otherArticleRepo->findOneBy(array('id' => $artId));
-        $foundComment = $otherCommentRepo->findOneBy(array('id' => $commentId));
+        $foundArt = $otherArticleRepo->findOneBy(['id' => $artId]);
+        $foundComment = $otherCommentRepo->findOneBy(['id' => $commentId]);
 
         $this->assertNull($foundArt);
         $this->assertIsObject($foundComment);
@@ -460,45 +461,45 @@ class SoftDeleteableEntityTest extends BaseTestCaseORM
         $this->em->persist($newUser);
         $this->em->flush();
 
-        $user = $repo->findOneBy(array('username' => $username));
+        $user = $repo->findOneBy(['username' => $username]);
 
         $this->assertNull($user->getDeletedAt());
 
         $this->em->remove($user);
         $this->em->flush();
 
-        $user = $repo->findOneBy(array('username' => $username));
+        $user = $repo->findOneBy(['username' => $username]);
         $this->assertNotNull($user->getDeletedAt());
 
         $filter->enableForEntity(self::USER_CLASS);
 
-        $user = $repo->findOneBy(array('username' => $username));
+        $user = $repo->findOneBy(['username' => $username]);
         $this->assertNull($user);
     }
 
     public function testPostSoftDeleteEventIsDispatched()
     {
         $subscriber = $this->getMockBuilder("Doctrine\Common\EventSubscriber")
-            ->setMethods(array(
-                "getSubscribedEvents",
-                "preSoftDelete",
-                "postSoftDelete",
-            ))
+            ->setMethods([
+                'getSubscribedEvents',
+                'preSoftDelete',
+                'postSoftDelete',
+            ])
             ->getMock();
 
         $subscriber->expects($this->once())
-                   ->method("getSubscribedEvents")
-                   ->will($this->returnValue(array(
+                   ->method('getSubscribedEvents')
+                   ->will($this->returnValue([
                        SoftDeleteableListener::PRE_SOFT_DELETE,
-                       SoftDeleteableListener::POST_SOFT_DELETE
-                   )));
+                       SoftDeleteableListener::POST_SOFT_DELETE,
+                   ]));
 
         $subscriber->expects($this->exactly(2))
-                   ->method("preSoftDelete")
+                   ->method('preSoftDelete')
                    ->with($this->anything());
 
         $subscriber->expects($this->exactly(2))
-                   ->method("postSoftDelete")
+                   ->method('postSoftDelete')
                    ->with($this->anything());
 
         $this->em->getEventManager()->addEventSubscriber($subscriber);
@@ -519,7 +520,7 @@ class SoftDeleteableEntityTest extends BaseTestCaseORM
         $this->em->persist($art0);
         $this->em->flush();
 
-        $art = $repo->findOneBy(array($field => $value));
+        $art = $repo->findOneBy([$field => $value]);
 
         $this->assertNull($art->getDeletedAt());
         $this->assertNull($comment->getDeletedAt());
@@ -542,31 +543,31 @@ class SoftDeleteableEntityTest extends BaseTestCaseORM
         $this->em->persist($newUser);
         $this->em->flush();
 
-        $user = $repo->findOneBy(array('username' => $username));
+        $user = $repo->findOneBy(['username' => $username]);
 
         $this->assertNull($user->getDeletedAt());
 
         $this->em->remove($user);
         $this->em->flush();
 
-        $user = $repo->findOneBy(array('username' => $username));
-        $this->assertNull($user, "User should be filtered out");
+        $user = $repo->findOneBy(['username' => $username]);
+        $this->assertNull($user, 'User should be filtered out');
 
         // now deactivate filter and attempt to hard delete
         $this->em->getFilters()->disable(self::SOFT_DELETEABLE_FILTER_NAME);
-        $user = $repo->findOneBy(array('username' => $username));
-        $this->assertNotNull($user, "User should be fetched when filter is disabled");
+        $user = $repo->findOneBy(['username' => $username]);
+        $this->assertNotNull($user, 'User should be fetched when filter is disabled');
 
         $this->em->remove($user);
         $this->em->flush();
 
-        $user = $repo->findOneBy(array('username' => $username));
-        $this->assertNotNull($user, "User is still available, hard delete done");
+        $user = $repo->findOneBy(['username' => $username]);
+        $this->assertNotNull($user, 'User is still available, hard delete done');
     }
 
     protected function getUsedEntityFixtures()
     {
-        return array(
+        return [
             self::ARTICLE_CLASS,
             self::PAGE_CLASS,
             self::MEGA_PAGE_CLASS,
@@ -577,6 +578,6 @@ class SoftDeleteableEntityTest extends BaseTestCaseORM
             self::OTHER_COMMENT_CLASS,
             self::MAPPED_SUPERCLASS_CHILD_CLASS,
             self::USER_NO_HARD_DELETE_CLASS,
-        );
+        ];
     }
 }

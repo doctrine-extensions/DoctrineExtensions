@@ -10,12 +10,14 @@ use Tree\Fixture\RootAssociationCategory;
  * These are tests for Tree behavior
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @link http://www.gediminasm.org
+ *
+ * @see http://www.gediminasm.org
+ *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class NestedTreeRootAssociationTest extends BaseTestCaseORM
 {
-    const CATEGORY = "Tree\\Fixture\\RootAssociationCategory";
+    const CATEGORY = 'Tree\\Fixture\\RootAssociationCategory';
 
     protected function setUp(): void
     {
@@ -55,33 +57,33 @@ class NestedTreeRootAssociationTest extends BaseTestCaseORM
 
     protected function getUsedEntityFixtures()
     {
-        return array(
+        return [
             self::CATEGORY,
-        );
+        ];
     }
 
     private function populate()
     {
         $root = new RootAssociationCategory();
-        $root->setTitle("Food");
+        $root->setTitle('Food');
 
         $root2 = new RootAssociationCategory();
-        $root2->setTitle("Sports");
+        $root2->setTitle('Sports');
 
         $child = new RootAssociationCategory();
-        $child->setTitle("Fruits");
+        $child->setTitle('Fruits');
         $child->setParent($root);
 
         $child2 = new RootAssociationCategory();
-        $child2->setTitle("Vegetables");
+        $child2->setTitle('Vegetables');
         $child2->setParent($root);
 
         $childsChild = new RootAssociationCategory();
-        $childsChild->setTitle("Carrots");
+        $childsChild->setTitle('Carrots');
         $childsChild->setParent($child2);
 
         $potatoes = new RootAssociationCategory();
-        $potatoes->setTitle("Potatoes");
+        $potatoes->setTitle('Potatoes');
         $potatoes->setParent($child2);
 
         $this->em->persist($root);

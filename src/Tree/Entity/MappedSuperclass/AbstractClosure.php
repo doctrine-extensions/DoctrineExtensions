@@ -36,7 +36,7 @@ abstract class AbstractClosure
     /**
      * Get id
      *
-     * @return integer
+     * @return int
      */
     public function getId()
     {
@@ -94,7 +94,7 @@ abstract class AbstractClosure
     /**
      * Set depth
      *
-     * @param integer $depth
+     * @param int $depth
      *
      * @return static
      */
@@ -108,7 +108,7 @@ abstract class AbstractClosure
     /**
      * Get depth
      *
-     * @return integer
+     * @return int
      */
     public function getDepth()
     {

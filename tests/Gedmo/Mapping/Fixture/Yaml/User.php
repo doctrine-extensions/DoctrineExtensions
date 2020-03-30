@@ -13,10 +13,11 @@ class User
     private $company;
 
     private $localeField;
+
     /**
      * Get id
      *
-     * @return integer $id
+     * @return int $id
      */
     public function getId()
     {

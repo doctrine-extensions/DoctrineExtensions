@@ -3,7 +3,6 @@
 namespace Sortable\Fixture\Document;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
-use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ODM\Document(collection="categories")
@@ -17,7 +16,6 @@ class Category
      * @ODM\Field(type="string")
      */
     private $name;
-
 
     public function getId()
     {

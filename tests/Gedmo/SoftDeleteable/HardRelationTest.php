@@ -2,10 +2,10 @@
 
 namespace Gedmo\SoftDeleteable;
 
-use Tool\BaseTestCaseORM;
 use Doctrine\Common\EventManager;
-use SoftDeleteable\Fixture\Entity\Person;
 use SoftDeleteable\Fixture\Entity\Address;
+use SoftDeleteable\Fixture\Entity\Person;
+use Tool\BaseTestCaseORM;
 
 class HardRelationTest extends BaseTestCaseORM
 {
@@ -44,7 +44,7 @@ class HardRelationTest extends BaseTestCaseORM
         $this->em->clear();
 
         $person = $this->em->getRepository('SoftDeleteable\Fixture\Entity\Person')->findOneBy(['id' => $person->getId()]);
-        $this->assertNull($person, "Softdelete should cascade to hard relation entity");
+        $this->assertNull($person, 'Softdelete should cascade to hard relation entity');
     }
 
     /**
@@ -69,7 +69,7 @@ class HardRelationTest extends BaseTestCaseORM
         $this->em->clear();
 
         $address = $this->em->getRepository('SoftDeleteable\Fixture\Entity\Address')->findOneBy(['id' => $address->getId()]);
-        $this->assertNull($address, "Softdelete should cascade to hard relation entity");
+        $this->assertNull($address, 'Softdelete should cascade to hard relation entity');
     }
 
     /**
@@ -91,7 +91,7 @@ class HardRelationTest extends BaseTestCaseORM
         $this->em->clear();
 
         $person = $this->em->getRepository('SoftDeleteable\Fixture\Entity\Person')->findOneBy(['id' => $person->getId()]);
-        $this->assertNotNull($person, "Should not be softdeleted");
+        $this->assertNotNull($person, 'Should not be softdeleted');
 
         $person->setDeletedAt(new \DateTime(date('Y-m-d H:i:s', time() - 15 * 3600))); // in an hour
         $this->em->persist($person);
@@ -99,14 +99,14 @@ class HardRelationTest extends BaseTestCaseORM
         $this->em->clear();
 
         $person = $this->em->getRepository('SoftDeleteable\Fixture\Entity\Person')->findOneBy(['id' => $person->getId()]);
-        $this->assertNull($person, "Should be softdeleted");
+        $this->assertNull($person, 'Should be softdeleted');
     }
 
     protected function getUsedEntityFixtures()
     {
-        return array(
+        return [
             'SoftDeleteable\Fixture\Entity\Person',
             'SoftDeleteable\Fixture\Entity\Address',
-        );
+        ];
     }
 }

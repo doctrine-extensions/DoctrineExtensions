@@ -2,7 +2,6 @@
 
 namespace Gedmo\Mapping\Driver;
 
-use Gedmo\Mapping\Driver;
 use Gedmo\Exception\InvalidMappingException;
 use SimpleXMLElement;
 
@@ -23,6 +22,7 @@ abstract class Xml extends File
 
     /**
      * File extension
+     *
      * @var string
      */
     protected $_extension = '.dcm.xml';
@@ -31,8 +31,7 @@ abstract class Xml extends File
      * Get attribute value.
      * As we are supporting namespaces the only way to get to the attributes under a node is to use attributes function on it
      *
-     * @param SimpleXMLElement $node
-     * @param string           $attributeName
+     * @param string $attributeName
      *
      * @return string
      */
@@ -47,18 +46,17 @@ abstract class Xml extends File
      * Get boolean attribute value.
      * As we are supporting namespaces the only way to get to the attributes under a node is to use attributes function on it
      *
-     * @param SimpleXMLElement $node
-     * @param string           $attributeName
+     * @param string $attributeName
      *
-     * @return boolean
+     * @return bool
      */
     protected function _getBooleanAttribute(SimpleXmlElement $node, $attributeName)
     {
         $rawValue = strtolower($this->_getAttribute($node, $attributeName));
-        if ($rawValue === '1' || $rawValue === 'true') {
+        if ('1' === $rawValue || 'true' === $rawValue) {
             return true;
         }
-        if ($rawValue === '0' || $rawValue === 'false') {
+        if ('0' === $rawValue || 'false' === $rawValue) {
             return false;
         }
         throw new InvalidMappingException(sprintf("Attribute %s must have a valid boolean value, '%s' found", $attributeName, $this->_getAttribute($node, $attributeName)));
@@ -68,8 +66,7 @@ abstract class Xml extends File
      * does attribute exist under a specific node
      * As we are supporting namespaces the only way to get to the attributes under a node is to use attributes function on it
      *
-     * @param SimpleXMLElement $node
-     * @param string           $attributeName
+     * @param string $attributeName
      *
      * @return string
      */
@@ -81,11 +78,11 @@ abstract class Xml extends File
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     protected function _loadMappingFile($file)
     {
-        $result = array();
+        $result = [];
         $xmlElement = simplexml_load_file($file);
         $xmlElement = $xmlElement->children(self::DOCTRINE_NAMESPACE_URI);
 

@@ -2,11 +2,11 @@
 
 namespace Gedmo\Mapping\Event\Adapter;
 
-use Doctrine\ORM\EntityManagerInterface;
-use Gedmo\Mapping\Event\AdapterInterface;
-use Gedmo\Exception\RuntimeException;
 use Doctrine\Common\EventArgs;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Event\LifecycleEventArgs;
+use Gedmo\Exception\RuntimeException;
+use Gedmo\Mapping\Event\AdapterInterface;
 
 /**
  * Doctrine event adapter for ORM specific
@@ -65,17 +65,15 @@ class ORM implements AdapterInterface
     public function __call($method, $args)
     {
         if (is_null($this->args)) {
-            throw new RuntimeException("Event args must be set before calling its methods");
+            throw new RuntimeException('Event args must be set before calling its methods');
         }
         $method = str_replace('Object', $this->getDomainObjectName(), $method);
 
-        return call_user_func_array(array($this->args, $method), $args);
+        return call_user_func_array([$this->args, $method], $args);
     }
 
     /**
      * Set the entity manager
-     *
-     * @param \Doctrine\ORM\EntityManagerInterface $em
      */
     public function setEntityManager(EntityManagerInterface $em)
     {
@@ -91,7 +89,7 @@ class ORM implements AdapterInterface
             return $this->em;
         }
 
-        return $this->__call('getEntityManager', array());
+        return $this->__call('getEntityManager', []);
     }
 
     /**

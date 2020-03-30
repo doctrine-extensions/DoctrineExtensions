@@ -2,9 +2,9 @@
 
 namespace Gedmo\Sluggable\Handler;
 
-use Gedmo\Sluggable\SluggableListener;
-use Gedmo\Sluggable\Mapping\Event\SluggableAdapter;
 use Doctrine\Common\Persistence\Mapping\ClassMetadata;
+use Gedmo\Sluggable\Mapping\Event\SluggableAdapter;
+use Gedmo\Sluggable\SluggableListener;
 
 /**
  * Sluggable handler interface is a common pattern for all
@@ -19,8 +19,6 @@ interface SlugHandlerInterface
 {
     /**
      * Construct the slug handler
-     *
-     * @param SluggableListener $sluggable
      */
     public function __construct(SluggableListener $sluggable);
 
@@ -29,11 +27,9 @@ interface SlugHandlerInterface
      * is made whether or not the slug needs to be
      * recalculated
      *
-     * @param SluggableAdapter $ea
-     * @param array            $config
-     * @param object           $object
-     * @param string           $slug
-     * @param boolean          $needToChangeSlug
+     * @param object $object
+     * @param string $slug
+     * @param bool   $needToChangeSlug
      *
      * @return void
      */
@@ -42,10 +38,8 @@ interface SlugHandlerInterface
     /**
      * Callback on slug handlers right after the slug is built
      *
-     * @param SluggableAdapter $ea
-     * @param array            $config
-     * @param object           $object
-     * @param string           $slug
+     * @param object $object
+     * @param string $slug
      *
      * @return void
      */
@@ -54,25 +48,20 @@ interface SlugHandlerInterface
     /**
      * Callback for slug handlers on slug completion
      *
-     * @param SluggableAdapter $ea
-     * @param array            $config
-     * @param object           $object
-     * @param string           $slug
+     * @param object $object
+     * @param string $slug
      *
      * @return void
      */
     public function onSlugCompletion(SluggableAdapter $ea, array &$config, $object, &$slug);
 
     /**
-     * @return boolean whether or not this handler has already urlized the slug
+     * @return bool whether or not this handler has already urlized the slug
      */
     public function handlesUrlization();
 
     /**
      * Validate handler options
-     *
-     * @param array         $options
-     * @param ClassMetadata $meta
      */
     public static function validate(array $options, ClassMetadata $meta);
 }

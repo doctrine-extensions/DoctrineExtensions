@@ -2,12 +2,12 @@
 
 namespace Gedmo\Sluggable\Handler;
 
-use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\Common\Persistence\Mapping\ClassMetadata;
-use Gedmo\Sluggable\SluggableListener;
-use Gedmo\Sluggable\Mapping\Event\SluggableAdapter;
-use Gedmo\Tool\Wrapper\AbstractWrapper;
+use Doctrine\Common\Persistence\ObjectManager;
 use Gedmo\Exception\InvalidMappingException;
+use Gedmo\Sluggable\Mapping\Event\SluggableAdapter;
+use Gedmo\Sluggable\SluggableListener;
+use Gedmo\Tool\Wrapper\AbstractWrapper;
 
 /**
  * Sluggable handler which slugs all parent nodes
@@ -44,7 +44,7 @@ class TreeSlugHandler implements SlugHandlerWithUniqueCallbackInterface
     /**
      * True if node is being inserted
      *
-     * @var boolean
+     * @var bool
      */
     private $isInsert = false;
 
@@ -63,7 +63,7 @@ class TreeSlugHandler implements SlugHandlerWithUniqueCallbackInterface
     private $usedPathSeparator;
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function __construct(SluggableListener $sluggable)
     {
@@ -71,7 +71,7 @@ class TreeSlugHandler implements SlugHandlerWithUniqueCallbackInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function onChangeDecision(SluggableAdapter $ea, array &$config, $object, &$slug, &$needToChangeSlug)
     {
@@ -92,7 +92,7 @@ class TreeSlugHandler implements SlugHandlerWithUniqueCallbackInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function postSlugBuild(SluggableAdapter $ea, array &$config, $object, &$slug)
     {
@@ -116,7 +116,7 @@ class TreeSlugHandler implements SlugHandlerWithUniqueCallbackInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public static function validate(array $options, ClassMetadata $meta)
     {
@@ -126,7 +126,7 @@ class TreeSlugHandler implements SlugHandlerWithUniqueCallbackInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function beforeMakingUnique(SluggableAdapter $ea, array &$config, $object, &$slug)
     {
@@ -134,7 +134,7 @@ class TreeSlugHandler implements SlugHandlerWithUniqueCallbackInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function onSlugCompletion(SluggableAdapter $ea, array &$config, $object, &$slug)
     {
@@ -179,7 +179,7 @@ class TreeSlugHandler implements SlugHandlerWithUniqueCallbackInterface
      */
     public function transliterate($text, $separator, $object)
     {
-        $slug = $text . $this->suffix;
+        $slug = $text.$this->suffix;
 
         if (strlen($this->parentSlug)) {
             $slug = $this->parentSlug.$this->usedPathSeparator.$slug;
@@ -192,7 +192,7 @@ class TreeSlugHandler implements SlugHandlerWithUniqueCallbackInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function handlesUrlization()
     {

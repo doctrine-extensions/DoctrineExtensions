@@ -4,10 +4,6 @@ namespace Gedmo\Translatable;
 
 use Doctrine\Common\EventManager;
 use Tool\BaseTestCaseORM;
-use Translatable\Fixture\Issue922\Post;
-use Doctrine\ORM\Query;
-use Gedmo\Translatable\Query\TreeWalker\TranslationWalker;
-use Translatable\Fixture\Issue1123\BaseEntity;
 use Translatable\Fixture\Issue1123\ChildEntity;
 
 class Issue1123Test extends BaseTestCaseORM
@@ -58,7 +54,7 @@ class Issue1123Test extends BaseTestCaseORM
         $translations = $repo->findTranslations($childEntity);
         $this->assertCount(1, $translations);
         $this->assertArrayHasKey('de', $translations);
-        $this->assertSame(array('childTitle' => $deTitle), $translations['de']);
+        $this->assertSame(['childTitle' => $deTitle], $translations['de']);
 
         // find using QueryBuilder
         $qb = $this->em->createQueryBuilder()->select('e')->from(self::CHILD_ENTITY, 'e');
@@ -79,10 +75,10 @@ class Issue1123Test extends BaseTestCaseORM
 
     protected function getUsedEntityFixtures()
     {
-        return array(
+        return [
             self::TRANSLATION,
             self::BASE_ENTITY,
             self::CHILD_ENTITY,
-        );
+        ];
     }
 }

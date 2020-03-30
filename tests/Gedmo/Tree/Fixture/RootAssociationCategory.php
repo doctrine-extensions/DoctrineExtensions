@@ -2,8 +2,8 @@
 
 namespace Tree\Fixture;
 
-use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ORM\Entity(repositoryClass="Gedmo\Tree\Entity\Repository\NestedTreeRepository")
@@ -57,7 +57,7 @@ class RootAssociationCategory
      * @Gedmo\TreeLevel
      * @ORM\Column(name="lvl", type="integer")
      */
-     private $level;
+    private $level;
 
     /**
      * @ORM\OneToMany(targetEntity="RootAssociationCategory", mappedBy="parent")

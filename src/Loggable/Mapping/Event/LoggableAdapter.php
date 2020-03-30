@@ -23,7 +23,7 @@ interface LoggableAdapter extends AdapterInterface
     /**
      * Checks whether an id should be generated post insert
      *
-     * @return boolean
+     * @return bool
      */
     public function isPostInsertGenerator($meta);
 
@@ -33,7 +33,7 @@ interface LoggableAdapter extends AdapterInterface
      * @param object $meta
      * @param object $object
      *
-     * @return integer
+     * @return int
      */
     public function getNewVersion($meta, $object);
 }

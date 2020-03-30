@@ -2,8 +2,8 @@
 
 namespace Loggable\Fixture\Entity\Log;
 
-use Gedmo\Loggable\Entity\MappedSuperclass\AbstractLogEntry;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Loggable\Entity\MappedSuperclass\AbstractLogEntry;
 
 /**
  * @ORM\Table(name="test_comment_log_entries")

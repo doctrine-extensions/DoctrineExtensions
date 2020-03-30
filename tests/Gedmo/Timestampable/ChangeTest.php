@@ -2,23 +2,25 @@
 
 namespace Gedmo\Timestampable;
 
+use Doctrine\Common\EventArgs;
 use Doctrine\Common\EventManager;
-use Tool\BaseTestCaseORM;
-use Timestampable\Fixture\TitledArticle;
 use Gedmo\Mapping\Event\Adapter\ORM as BaseAdapterORM;
 use Gedmo\Timestampable\Mapping\Event\TimestampableAdapter;
-use Doctrine\Common\EventArgs;
+use Timestampable\Fixture\TitledArticle;
+use Tool\BaseTestCaseORM;
 
 /**
  * These are tests for Timestampable behavior
  *
  * @author Ivan Borzenkov <ivan.borzenkov@gmail.com>
- * @link http://www.gediminasm.org
+ *
+ * @see http://www.gediminasm.org
+ *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class ChangeTest extends BaseTestCaseORM
 {
-    const FIXTURE = "Timestampable\\Fixture\\TitledArticle";
+    const FIXTURE = 'Timestampable\\Fixture\\TitledArticle';
 
     protected $listener;
 
@@ -98,9 +100,9 @@ class ChangeTest extends BaseTestCaseORM
 
     protected function getUsedEntityFixtures()
     {
-        return array(
+        return [
             self::FIXTURE,
-        );
+        ];
     }
 }
 

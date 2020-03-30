@@ -2,8 +2,8 @@
 
 namespace Translator\Fixture;
 
-use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
@@ -56,7 +56,6 @@ class PersonCustom
     // TRANSLATIONS DEFINITION:
     //
 
-
     /**
      * @ORM\OneToMany(targetEntity="PersonCustomTranslation", mappedBy="translatable", cascade={"persist"})
      */
@@ -75,7 +74,7 @@ class PersonCustom
 
         return new CustomProxy($this,
         /* Locale                            */ $locale,
-        /* List of translatable properties:  */ array('name'),
+        /* List of translatable properties:  */ ['name'],
         /* Translation entity class:         */ 'Translator\Fixture\PersonCustomTranslation',
         /* Translations collection property: */ $this->translations
         );

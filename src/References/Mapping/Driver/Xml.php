@@ -2,8 +2,8 @@
 
 namespace Gedmo\References\Mapping\Driver;
 
-use Gedmo\Mapping\Driver\Xml as BaseXml;
 use Gedmo\Exception\InvalidMappingException;
+use Gedmo\Mapping\Driver\Xml as BaseXml;
 
 /**
  * This is a xml mapping driver for References
@@ -19,37 +19,37 @@ class Xml extends BaseXml
     /**
      * @var array
      */
-    private $validTypes = array(
+    private $validTypes = [
         'document',
-        'entity'
-    );
+        'entity',
+    ];
 
     /**
      * @var array
      */
-    private $validReferences = array(
+    private $validReferences = [
         'referenceOne',
         'referenceMany',
-        'referenceManyEmbed'
-    );
+        'referenceManyEmbed',
+    ];
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function readExtendedMetadata($meta, array &$config)
     {
         /**
-         * @var \SimpleXmlElement $xml
+         * @var \SimpleXmlElement
          */
         $xml = $this->_getMapping($meta->name);
         $xmlDoctrine = $xml;
 
         $xml = $xml->children(self::GEDMO_NAMESPACE_URI);
 
-        if ($xmlDoctrine->getName() === 'entity' || $xmlDoctrine->getName() === 'document' || $xmlDoctrine->getName() === 'mapped-superclass') {
+        if ('entity' === $xmlDoctrine->getName() || 'document' === $xmlDoctrine->getName() || 'mapped-superclass' === $xmlDoctrine->getName()) {
             if (isset($xml->reference)) {
                 /**
-                 * @var \SimpleXMLElement $element
+                 * @var \SimpleXMLElement
                  */
                 foreach ($xml->reference as $element) {
                     if (!$this->_isAttributeSet($element, 'type')) {
@@ -58,20 +58,12 @@ class Xml extends BaseXml
 
                     $type = $this->_getAttribute($element, 'type');
                     if (!in_array($type, $this->validTypes)) {
-                        throw new InvalidMappingException(
-                            $type .
-                            ' is not a valid reference type, valid types are: ' .
-                            implode(', ', $this->validTypes)
-                        );
+                        throw new InvalidMappingException($type.' is not a valid reference type, valid types are: '.implode(', ', $this->validTypes));
                     }
 
                     $reference = $this->_getAttribute($element, 'reference');
                     if (!in_array($reference, $this->validReferences)) {
-                        throw new InvalidMappingException(
-                            $reference .
-                            ' is not a valid reference, valid references are: ' .
-                            implode(', ', $this->validReferences)
-                        );
+                        throw new InvalidMappingException($reference.' is not a valid reference, valid references are: '.implode(', ', $this->validReferences));
                     }
 
                     if (!$this->_isAttributeSet($element, 'field')) {
@@ -89,12 +81,12 @@ class Xml extends BaseXml
                     }
                     $identifier = $this->_getAttribute($element, 'identifier');
 
-                    $config[$reference][$field] = array(
+                    $config[$reference][$field] = [
                         'field' => $field,
                         'type' => $type,
                         'class' => $class,
-                        'identifier' => $identifier
-                    );
+                        'identifier' => $identifier,
+                    ];
 
                     if (!$this->_isAttributeSet($element, 'mappedBy')) {
                         $config[$reference][$field]['mappedBy'] = $this->_getAttribute($element, 'mappedBy');

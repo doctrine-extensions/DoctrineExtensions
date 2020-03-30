@@ -4,22 +4,24 @@ namespace Gedmo\Tree;
 
 use Doctrine\Common\EventManager;
 use Tool\BaseTestCaseORM;
-use Tree\Fixture\Category;
 use Tree\Fixture\Article;
+use Tree\Fixture\Category;
 use Tree\Fixture\Comment;
 
 /**
  * These are tests for Tree behavior
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @link http://www.gediminasm.org
+ *
+ * @see http://www.gediminasm.org
+ *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class ConcurrencyTest extends BaseTestCaseORM
 {
-    const CATEGORY = "Tree\\Fixture\\Category";
-    const ARTICLE = "Tree\\Fixture\\Article";
-    const COMMENT = "Tree\\Fixture\\Comment";
+    const CATEGORY = 'Tree\\Fixture\\Category';
+    const ARTICLE = 'Tree\\Fixture\\Article';
+    const COMMENT = 'Tree\\Fixture\\Comment';
 
     protected function setUp(): void
     {
@@ -116,31 +118,31 @@ class ConcurrencyTest extends BaseTestCaseORM
 
     protected function getUsedEntityFixtures()
     {
-        return array(
+        return [
             self::CATEGORY,
             self::ARTICLE,
             self::COMMENT,
-        );
+        ];
     }
 
     private function populate()
     {
         $root = new Category();
-        $root->setTitle("Root");
+        $root->setTitle('Root');
 
         $root2 = new Category();
-        $root2->setTitle("Root2");
+        $root2->setTitle('Root2');
 
         $child = new Category();
-        $child->setTitle("child");
+        $child->setTitle('child');
         $child->setParent($root);
 
         $child2 = new Category();
-        $child2->setTitle("child2");
+        $child2->setTitle('child2');
         $child2->setParent($root);
 
         $childsChild = new Category();
-        $childsChild->setTitle("childs2_child");
+        $childsChild->setTitle('childs2_child');
         $childsChild->setParent($child2);
 
         $this->em->persist($root);

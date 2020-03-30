@@ -23,11 +23,11 @@ class IpTraceableListener extends AbstractTrackingListener
     /**
      * Get the ipValue value to set on a ip field
      *
-     * @param object $meta
-     * @param string $field
+     * @param object           $meta
+     * @param string           $field
      * @param AdapterInterface $eventAdapter
      *
-     * @return null|string
+     * @return string|null
      */
     public function getFieldValue($meta, $field, $eventAdapter)
     {
@@ -38,11 +38,12 @@ class IpTraceableListener extends AbstractTrackingListener
      * Set a ip value to return
      *
      * @param string $ip
+     *
      * @throws InvalidArgumentException
      */
     public function setIpValue($ip = null)
     {
-        if (isset($ip) && filter_var($ip, FILTER_VALIDATE_IP) === false) {
+        if (isset($ip) && false === filter_var($ip, FILTER_VALIDATE_IP)) {
             throw new InvalidArgumentException("ip address is not valid $ip");
         }
 
@@ -50,7 +51,7 @@ class IpTraceableListener extends AbstractTrackingListener
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     protected function getNamespace()
     {

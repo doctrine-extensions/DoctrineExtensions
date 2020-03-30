@@ -2,16 +2,18 @@
 
 namespace Gedmo\Translatable;
 
-use Tool\BaseTestCaseMongoODM;
-use Gedmo\Sluggable\SluggableListener;
 use Doctrine\Common\EventManager;
+use Gedmo\Sluggable\SluggableListener;
+use Tool\BaseTestCaseMongoODM;
 use Translatable\Fixture\Document\Article;
 
 /**
  * These are tests for Translatable behavior ODM implementation
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @link http://www.gediminasm.org
+ *
+ * @see http://www.gediminasm.org
+ *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class TranslatableDocumentTest extends BaseTestCaseMongoODM

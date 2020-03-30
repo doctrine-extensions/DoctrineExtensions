@@ -29,7 +29,7 @@ class Annotation extends AbstractAnnotationDriver
     const VERSIONED = 'Gedmo\\Mapping\\Annotation\\Versioned';
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function validateFullMetadata(ClassMetadata $meta, array $config)
     {
@@ -42,7 +42,7 @@ class Annotation extends AbstractAnnotationDriver
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function readExtendedMetadata($meta, array &$config)
     {
@@ -92,20 +92,16 @@ class Annotation extends AbstractAnnotationDriver
     }
 
     /**
-     * @param ClassMetadata $meta
-     * @param string        $field
+     * @param string $field
      *
      * @return bool
      */
     protected function isMappingValid(ClassMetadata $meta, $field)
     {
-        return $meta->isCollectionValuedAssociation($field) == false;
+        return false == $meta->isCollectionValuedAssociation($field);
     }
 
     /**
-     * @param ClassMetadata $meta
-     * @param array         $config
-     *
      * @return bool
      */
     protected function isClassAnnotationInValid(ClassMetadata $meta, array &$config)
@@ -117,8 +113,6 @@ class Annotation extends AbstractAnnotationDriver
      * Searches properties of embedded object for versioned fields
      *
      * @param string $field
-     * @param array $config
-     * @param \Doctrine\ORM\Mapping\ClassMetadata $meta
      */
     private function inspectEmbeddedForVersioned($field, array &$config, \Doctrine\ORM\Mapping\ClassMetadata $meta)
     {
@@ -128,7 +122,7 @@ class Annotation extends AbstractAnnotationDriver
         foreach ($сlass->getProperties() as $property) {
             // versioned property
             if ($this->reader->getPropertyAnnotation($property, self::VERSIONED)) {
-                $embeddedField = $field . '.' . $property->getName();
+                $embeddedField = $field.'.'.$property->getName();
                 $config['versioned'][] = $embeddedField;
 
                 if (isset($meta->embeddedClasses[$embeddedField])) {

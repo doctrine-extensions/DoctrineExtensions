@@ -42,20 +42,20 @@ class RepositoryUtils implements RepositoryUtilsInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
-    public function childrenHierarchy($node = null, $direct = false, array $options = array(), $includeNode = false)
+    public function childrenHierarchy($node = null, $direct = false, array $options = [], $includeNode = false)
     {
         $meta = $this->getClassMetadata();
 
-        if ($node !== null) {
+        if (null !== $node) {
             if ($node instanceof $meta->name) {
                 $wrapperClass = $this->om instanceof \Doctrine\ORM\EntityManagerInterface ?
                     '\Gedmo\Tool\Wrapper\EntityWrapper' :
                     '\Gedmo\Tool\Wrapper\MongoDocumentWrapper';
                 $wrapped = new $wrapperClass($node, $this->om);
                 if (!$wrapped->hasValidIdentifier()) {
-                    throw new InvalidArgumentException("Node is not managed by UnitOfWork");
+                    throw new InvalidArgumentException('Node is not managed by UnitOfWork');
                 }
             }
         } else {
@@ -69,14 +69,14 @@ class RepositoryUtils implements RepositoryUtilsInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
-    public function buildTree(array $nodes, array $options = array())
+    public function buildTree(array $nodes, array $options = [])
     {
         $meta = $this->getClassMetadata();
         $nestedTree = $this->repo->buildTreeArray($nodes);
 
-        $default = array(
+        $default = [
             'decorate' => false,
             'rootOpen' => '<ul>',
             'rootClose' => '</ul>',
@@ -89,12 +89,12 @@ class RepositoryUtils implements RepositoryUtilsInterface
                 } elseif ($meta->hasField('name')) {
                     $field = 'name';
                 } else {
-                    throw new InvalidArgumentException("Cannot find any representation field");
+                    throw new InvalidArgumentException('Cannot find any representation field');
                 }
 
                 return $node[$field];
             },
-        );
+        ];
         $options = array_merge($default, $options);
         // If you don't want any html output it will return the nested array
         if (!$options['decorate']) {
@@ -125,30 +125,30 @@ class RepositoryUtils implements RepositoryUtilsInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function buildTreeArray(array $nodes)
     {
         $meta = $this->getClassMetadata();
         $config = $this->listener->getConfiguration($this->om, $meta->name);
-        $nestedTree = array();
+        $nestedTree = [];
         $l = 0;
 
         if (count($nodes) > 0) {
             // Node Stack. Used to help building the hierarchy
-            $stack = array();
+            $stack = [];
             foreach ($nodes as $child) {
                 $item = $child;
-                $item[$this->childrenIndex] = array();
+                $item[$this->childrenIndex] = [];
                 // Number of stack items
                 $l = count($stack);
                 // Check if we're dealing with different levels
                 while ($l > 0 && $stack[$l - 1][$config['level']] >= $item[$config['level']]) {
                     array_pop($stack);
-                    $l--;
+                    --$l;
                 }
                 // Stack is empty (we are inspecting the root)
-                if ($l == 0) {
+                if (0 == $l) {
                     // Assigning the root child
                     $i = count($nestedTree);
                     $nestedTree[$i] = $item;
@@ -166,7 +166,7 @@ class RepositoryUtils implements RepositoryUtilsInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function setChildrenIndex($childrenIndex)
     {
@@ -174,7 +174,7 @@ class RepositoryUtils implements RepositoryUtilsInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getChildrenIndex()
     {

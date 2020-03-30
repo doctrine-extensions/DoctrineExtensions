@@ -1,4 +1,5 @@
 <?php
+
 namespace IpTraceable\Fixture;
 
 use Doctrine\ORM\Mapping as ORM;

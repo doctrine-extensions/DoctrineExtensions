@@ -2,9 +2,9 @@
 
 namespace Sluggable\Fixture\Issue1177;
 
-use Gedmo\Sluggable\Sluggable;
-use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
+use Gedmo\Sluggable\Sluggable;
 
 /**
  * @ORM\Entity

@@ -12,56 +12,56 @@ use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoODM;
 abstract class AbstractLogEntry
 {
     /**
-     * @var integer $id
+     * @var int
      *
      * @MongoODM\Id
      */
     protected $id;
 
     /**
-     * @var string $action
+     * @var string
      *
      * @MongoODM\Field(type="string")
      */
     protected $action;
 
     /**
-     * @var \DateTime $loggedAt
+     * @var \DateTime
      *
      * @MongoODM\Field(type="date")
      */
     protected $loggedAt;
 
     /**
-     * @var string $objectId
+     * @var string
      *
      * @MongoODM\Field(type="string", nullable=true)
      */
     protected $objectId;
 
     /**
-     * @var string $objectClass
+     * @var string
      *
      * @MongoODM\Field(type="string")
      */
     protected $objectClass;
 
     /**
-     * @var integer $version
+     * @var int
      *
      * @MongoODM\Field(type="int")
      */
     protected $version;
 
     /**
-     * @var string $data
+     * @var string
      *
      * @MongoODM\Field(type="hash", nullable=true)
      */
     protected $data;
 
     /**
-     * @var string $data
+     * @var string
      *
      * @MongoODM\Field(type="string", nullable=true)
      */
@@ -70,7 +70,7 @@ abstract class AbstractLogEntry
     /**
      * Get id
      *
-     * @return integer
+     * @return int
      */
     public function getId()
     {
@@ -198,7 +198,7 @@ abstract class AbstractLogEntry
     /**
      * Set current version
      *
-     * @param integer $version
+     * @param int $version
      */
     public function setVersion($version)
     {
@@ -208,7 +208,7 @@ abstract class AbstractLogEntry
     /**
      * Get current version
      *
-     * @return integer
+     * @return int
      */
     public function getVersion()
     {

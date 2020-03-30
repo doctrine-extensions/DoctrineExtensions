@@ -10,13 +10,15 @@ use Tool\BaseTestCaseORM;
  *
  * @author Gustavo Falco <comfortablynumb84@gmail.com>
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @link http://www.gediminasm.org
+ *
+ * @see http://www.gediminasm.org
+ *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
 {
-    const CATEGORY = "Tree\\Fixture\\MPCategory";
-    const CATEGORY_WITH_TRIMMED_SEPARATOR = "Tree\\Fixture\\MPCategoryWithTrimmedSeparator";
+    const CATEGORY = 'Tree\\Fixture\\MPCategory';
+    const CATEGORY_WITH_TRIMMED_SEPARATOR = 'Tree\\Fixture\\MPCategoryWithTrimmedSeparator';
 
     /** @var $this->repo \Gedmo\Tree\Entity\Repository\MaterializedPathRepository */
     protected $repo;
@@ -256,7 +258,7 @@ class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
         $this->assertEquals('Best Whisky', $tree[0]['__children'][0]['title']);
 
         // Tree of one specific root, with the root node
-        $tree = $this->repo->childrenHierarchy($roots[0], false, array(), true);
+        $tree = $this->repo->childrenHierarchy($roots[0], false, [], true);
 
         $this->assertEquals('Drinks', $tree[0]['title']);
         $this->assertEquals('Whisky', $tree[0]['__children'][0]['title']);
@@ -271,7 +273,7 @@ class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
         $this->assertEquals('Vegitables', $tree[1]['title']);
 
         // Tree of one specific root only with direct children, with the root node
-        $tree = $this->repo->childrenHierarchy($roots[1], true, array(), true);
+        $tree = $this->repo->childrenHierarchy($roots[1], true, [], true);
 
         $this->assertEquals(1, count($tree));
         $this->assertEquals(2, count($tree[0]['__children']));
@@ -281,13 +283,13 @@ class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
 
         // HTML Tree of one specific root, without the root node
         $roots = $this->repo->getRootNodes();
-        $tree = $this->repo->childrenHierarchy($roots[0], false, array('decorate' => true), false);
+        $tree = $this->repo->childrenHierarchy($roots[0], false, ['decorate' => true], false);
 
         $this->assertEquals('<ul><li>Whisky<ul><li>Best Whisky</li></ul></li></ul>', $tree);
 
         // HTML Tree of one specific root, with the root node
         $roots = $this->repo->getRootNodes();
-        $tree = $this->repo->childrenHierarchy($roots[0], false, array('decorate' => true), true);
+        $tree = $this->repo->childrenHierarchy($roots[0], false, ['decorate' => true], true);
 
         $this->assertEquals('<ul><li>Drinks<ul><li>Whisky<ul><li>Best Whisky</li></ul></li></ul></li></ul>', $tree);
     }
@@ -360,10 +362,10 @@ class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
 
     protected function getUsedEntityFixtures()
     {
-        return array(
+        return [
             self::CATEGORY,
             self::CATEGORY_WITH_TRIMMED_SEPARATOR,
-        );
+        ];
     }
 
     public function createCategory($class = null)
@@ -378,25 +380,25 @@ class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
     private function populate($class = null)
     {
         $root = $this->createCategory($class);
-        $root->setTitle("Food");
+        $root->setTitle('Food');
 
         $root2 = $this->createCategory($class);
-        $root2->setTitle("Sports");
+        $root2->setTitle('Sports');
 
         $child = $this->createCategory($class);
-        $child->setTitle("Fruits");
+        $child->setTitle('Fruits');
         $child->setParent($root);
 
         $child2 = $this->createCategory($class);
-        $child2->setTitle("Vegitables");
+        $child2->setTitle('Vegitables');
         $child2->setParent($root);
 
         $childsChild = $this->createCategory($class);
-        $childsChild->setTitle("Carrots");
+        $childsChild->setTitle('Carrots');
         $childsChild->setParent($child2);
 
         $potatoes = $this->createCategory($class);
-        $potatoes->setTitle("Potatoes");
+        $potatoes->setTitle('Potatoes');
         $potatoes->setParent($child2);
 
         $drinks = $this->createCategory($class);

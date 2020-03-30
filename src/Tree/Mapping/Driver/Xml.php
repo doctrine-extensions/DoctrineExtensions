@@ -2,8 +2,8 @@
 
 namespace Gedmo\Tree\Mapping\Driver;
 
-use Gedmo\Mapping\Driver\Xml as BaseXml;
 use Gedmo\Exception\InvalidMappingException;
+use Gedmo\Mapping\Driver\Xml as BaseXml;
 use Gedmo\Tree\Mapping\Validator;
 
 /**
@@ -24,19 +24,19 @@ class Xml extends BaseXml
      *
      * @var array
      */
-    private $strategies = array(
+    private $strategies = [
         'nested',
         'closure',
         'materializedPath',
-    );
+    ];
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function readExtendedMetadata($meta, array &$config)
     {
         /**
-         * @var \SimpleXmlElement $xml
+         * @var \SimpleXmlElement
          */
         $xml = $this->_getMapping($meta->name);
         $xmlDoctrine = $xml;
@@ -49,13 +49,13 @@ class Xml extends BaseXml
                 throw new InvalidMappingException("Tree type: $strategy is not available.");
             }
             $config['strategy'] = $strategy;
-            $config['activate_locking'] = $this->_getAttribute($xml->tree, 'activate-locking') === 'true' ? true : false;
+            $config['activate_locking'] = 'true' === $this->_getAttribute($xml->tree, 'activate-locking') ? true : false;
 
             if ($lockingTimeout = $this->_getAttribute($xml->tree, 'locking-timeout')) {
                 $config['locking_timeout'] = (int) $lockingTimeout;
 
                 if ($config['locking_timeout'] < 1) {
-                    throw new InvalidMappingException("Tree Locking Timeout must be at least of 1 second.");
+                    throw new InvalidMappingException('Tree Locking Timeout must be at least of 1 second.');
                 }
             } else {
                 $config['locking_timeout'] = 3;
@@ -110,7 +110,7 @@ class Xml extends BaseXml
                     if (!$appendId) {
                         $appendId = true;
                     } else {
-                        $appendId = strtolower($appendId) == 'false' ? false : true;
+                        $appendId = 'false' == strtolower($appendId) ? false : true;
                     }
 
                     $startsWithSeparator = $this->_getAttribute($mapping->{'tree-path'}, 'starts_with_separator');
@@ -118,7 +118,7 @@ class Xml extends BaseXml
                     if (!$startsWithSeparator) {
                         $startsWithSeparator = false;
                     } else {
-                        $startsWithSeparator = strtolower($startsWithSeparator) == 'false' ? false : true;
+                        $startsWithSeparator = 'false' == strtolower($startsWithSeparator) ? false : true;
                     }
 
                     $endsWithSeparator = $this->_getAttribute($mapping->{'tree-path'}, 'ends_with_separator');
@@ -126,7 +126,7 @@ class Xml extends BaseXml
                     if (!$endsWithSeparator) {
                         $endsWithSeparator = true;
                     } else {
-                        $endsWithSeparator = strtolower($endsWithSeparator) == 'false' ? false : true;
+                        $endsWithSeparator = 'false' == strtolower($endsWithSeparator) ? false : true;
                     }
 
                     $config['path'] = $field;
@@ -149,14 +149,14 @@ class Xml extends BaseXml
         }
 
         if (isset($config['activate_locking']) && $config['activate_locking'] && !isset($config['lock_time'])) {
-            throw new InvalidMappingException("You need to map a date field as the tree lock time field to activate locking support.");
+            throw new InvalidMappingException('You need to map a date field as the tree lock time field to activate locking support.');
         }
 
-        if ($xmlDoctrine->getName() == 'mapped-superclass') {
+        if ('mapped-superclass' == $xmlDoctrine->getName()) {
             if (isset($xmlDoctrine->{'many-to-one'})) {
                 foreach ($xmlDoctrine->{'many-to-one'} as $manyToOneMapping) {
                     /**
-                     * @var \SimpleXMLElement $manyToOneMapping
+                     * @var \SimpleXMLElement
                      */
                     $manyToOneMappingDoctrine = $manyToOneMapping;
                     $manyToOneMapping = $manyToOneMapping->children(self::GEDMO_NAMESPACE_URI);
@@ -180,7 +180,7 @@ class Xml extends BaseXml
             } elseif (isset($xmlDoctrine->{'reference-one'})) {
                 foreach ($xmlDoctrine->{'reference-one'} as $referenceOneMapping) {
                     /**
-                     * @var \SimpleXMLElement $referenceOneMapping
+                     * @var \SimpleXMLElement
                      */
                     $referenceOneMappingDoctrine = $referenceOneMapping;
                     $referenceOneMapping = $referenceOneMapping->children(self::GEDMO_NAMESPACE_URI);
@@ -200,11 +200,11 @@ class Xml extends BaseXml
                     }
                 }
             }
-        } elseif ($xmlDoctrine->getName() == 'entity') {
+        } elseif ('entity' == $xmlDoctrine->getName()) {
             if (isset($xmlDoctrine->{'many-to-one'})) {
                 foreach ($xmlDoctrine->{'many-to-one'} as $manyToOneMapping) {
                     /**
-                     * @var \SimpleXMLElement $manyToOneMapping
+                     * @var \SimpleXMLElement
                      */
                     $manyToOneMappingDoctrine = $manyToOneMapping;
                     $manyToOneMapping = $manyToOneMapping->children(self::GEDMO_NAMESPACE_URI);
@@ -226,11 +226,11 @@ class Xml extends BaseXml
                     }
                 }
             }
-        } elseif ($xmlDoctrine->getName() == 'document') {
+        } elseif ('document' == $xmlDoctrine->getName()) {
             if (isset($xmlDoctrine->{'reference-one'})) {
                 foreach ($xmlDoctrine->{'reference-one'} as $referenceOneMapping) {
                     /**
-                     * @var \SimpleXMLElement $referenceOneMapping
+                     * @var \SimpleXMLElement
                      */
                     $referenceOneMappingDoctrine = $referenceOneMapping;
                     $referenceOneMapping = $referenceOneMapping->children(self::GEDMO_NAMESPACE_URI);

@@ -12,7 +12,9 @@ use Tree\Fixture\Document\Category;
  *
  * @author Gustavo Falco <comfortablynumb84@gmail.com>
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @link http://www.gediminasm.org
+ *
+ * @see http://www.gediminasm.org
+ *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class MaterializedPathODMMongoDBRepositoryTest extends BaseTestCaseMongoODM
@@ -226,7 +228,7 @@ class MaterializedPathODMMongoDBRepositoryTest extends BaseTestCaseMongoODM
         $this->assertEquals('Best Whisky', $tree[0]['__children'][0]['__children'][0]['title']);
 
         // Tree of one specific root, with the root node
-        $tree = $this->repo->childrenHierarchy($drinks, false, array(), true);
+        $tree = $this->repo->childrenHierarchy($drinks, false, [], true);
 
         $this->assertEquals('Drinks', $tree[0]['title']);
         $this->assertEquals('Whisky', $tree[0]['__children'][0]['title']);
@@ -241,7 +243,7 @@ class MaterializedPathODMMongoDBRepositoryTest extends BaseTestCaseMongoODM
         $this->assertEquals('Vegitables', $tree[1]['title']);
 
         // Tree of one specific root only with direct children, with the root node
-        $tree = $this->repo->childrenHierarchy($food, true, array(), true);
+        $tree = $this->repo->childrenHierarchy($food, true, [], true);
 
         $this->assertEquals(1, count($tree));
         $this->assertEquals(2, count($tree[0]['__children']));
@@ -251,13 +253,13 @@ class MaterializedPathODMMongoDBRepositoryTest extends BaseTestCaseMongoODM
 
         // HTML Tree of one specific root, without the root node
         $roots = $this->repo->getRootNodes();
-        $tree = $this->repo->childrenHierarchy($drinks, false, array('decorate' => true), false);
+        $tree = $this->repo->childrenHierarchy($drinks, false, ['decorate' => true], false);
 
         $this->assertEquals('<ul><li>Whisky<ul><li>Best Whisky</li></ul></li></ul>', $tree);
 
         // HTML Tree of one specific root, with the root node
         $roots = $this->repo->getRootNodes();
-        $tree = $this->repo->childrenHierarchy($drinks, false, array('decorate' => true), true);
+        $tree = $this->repo->childrenHierarchy($drinks, false, ['decorate' => true], true);
 
         $this->assertEquals('<ul><li>Drinks<ul><li>Whisky<ul><li>Best Whisky</li></ul></li></ul></li></ul>', $tree);
     }
@@ -310,9 +312,9 @@ class MaterializedPathODMMongoDBRepositoryTest extends BaseTestCaseMongoODM
 
     protected function getUsedEntityFixtures()
     {
-        return array(
+        return [
             self::CATEGORY,
-        );
+        ];
     }
 
     public function createCategory()
@@ -325,25 +327,25 @@ class MaterializedPathODMMongoDBRepositoryTest extends BaseTestCaseMongoODM
     private function populate()
     {
         $root = $this->createCategory();
-        $root->setTitle("Food");
+        $root->setTitle('Food');
 
         $root2 = $this->createCategory();
-        $root2->setTitle("Sports");
+        $root2->setTitle('Sports');
 
         $child = $this->createCategory();
-        $child->setTitle("Fruits");
+        $child->setTitle('Fruits');
         $child->setParent($root);
 
         $child2 = $this->createCategory();
-        $child2->setTitle("Vegitables");
+        $child2->setTitle('Vegitables');
         $child2->setParent($root);
 
         $childsChild = $this->createCategory();
-        $childsChild->setTitle("Carrots");
+        $childsChild->setTitle('Carrots');
         $childsChild->setParent($child2);
 
         $potatoes = $this->createCategory();
-        $potatoes->setTitle("Potatoes");
+        $potatoes->setTitle('Potatoes');
         $potatoes->setParent($child2);
 
         $drinks = $this->createCategory();

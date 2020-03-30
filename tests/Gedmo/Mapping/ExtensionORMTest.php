@@ -3,10 +3,10 @@
 namespace Gedmo\Mapping;
 
 use Doctrine\Common\EventManager;
-use Tool\BaseTestCaseORM;
-use Gedmo\Mapping\Mock\Extension\Encoder\EncoderListener;
 use Doctrine\ORM\Event\LoadClassMetadataEventArgs;
+use Gedmo\Mapping\Mock\Extension\Encoder\EncoderListener;
 use Mapping\Fixture\User;
+use Tool\BaseTestCaseORM;
 
 class ExtensionORMTest extends BaseTestCaseORM
 {
@@ -75,8 +75,8 @@ class ExtensionORMTest extends BaseTestCaseORM
 
     protected function getUsedEntityFixtures()
     {
-        return array(
+        return [
             self::USER,
-        );
+        ];
     }
 }

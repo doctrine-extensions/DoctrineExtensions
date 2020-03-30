@@ -16,7 +16,6 @@ use Gedmo\SoftDeleteable\SoftDeleteableListener;
  * @author Patrik Votoček <patrik@votocek.cz>
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-
 class SoftDeleteableFilter extends SQLFilter
 {
     /**
@@ -32,19 +31,19 @@ class SoftDeleteableFilter extends SQLFilter
     /**
      * @var string[bool]
      */
-    protected $disabled = array();
+    protected $disabled = [];
 
     /**
-     * @param ClassMetadata $targetEntity
-     * @param string        $targetTableAlias
+     * @param string $targetTableAlias
+     *
      * @return string
      */
     public function addFilterConstraint(ClassMetadata $targetEntity, $targetTableAlias)
     {
         $class = $targetEntity->getName();
-        if (array_key_exists($class, $this->disabled) && $this->disabled[$class] === true) {
+        if (array_key_exists($class, $this->disabled) && true === $this->disabled[$class]) {
             return '';
-        } elseif (array_key_exists($targetEntity->rootEntityName, $this->disabled) && $this->disabled[$targetEntity->rootEntityName] === true) {
+        } elseif (array_key_exists($targetEntity->rootEntityName, $this->disabled) && true === $this->disabled[$targetEntity->rootEntityName]) {
             return '';
         }
 
@@ -84,11 +83,12 @@ class SoftDeleteableFilter extends SQLFilter
 
     /**
      * @return SoftDeleteableListener
+     *
      * @throws \RuntimeException
      */
     protected function getListener()
     {
-        if ($this->listener === null) {
+        if (null === $this->listener) {
             $em = $this->getEntityManager();
             $evm = $em->getEventManager();
 
@@ -102,7 +102,7 @@ class SoftDeleteableFilter extends SQLFilter
                 }
             }
 
-            if ($this->listener === null) {
+            if (null === $this->listener) {
                 throw new \RuntimeException('Listener "SoftDeleteableListener" was not added to the EventManager!');
             }
         }
@@ -115,7 +115,7 @@ class SoftDeleteableFilter extends SQLFilter
      */
     protected function getEntityManager()
     {
-        if ($this->entityManager === null) {
+        if (null === $this->entityManager) {
             $refl = new \ReflectionProperty('Doctrine\ORM\Query\Filter\SQLFilter', 'em');
             $refl->setAccessible(true);
             $this->entityManager = $refl->getValue($this);

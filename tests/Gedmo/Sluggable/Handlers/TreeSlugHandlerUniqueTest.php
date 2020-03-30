@@ -9,7 +9,7 @@ use Tool\BaseTestCaseORM;
 
 class TreeSlugHandlerUniqueTest extends BaseTestCaseORM
 {
-    const TARGET = "Sluggable\\Fixture\\Handler\\TreeSlug";
+    const TARGET = 'Sluggable\\Fixture\\Handler\\TreeSlug';
 
     protected function setUp(): void
     {
@@ -64,8 +64,8 @@ class TreeSlugHandlerUniqueTest extends BaseTestCaseORM
 
     protected function getUsedEntityFixtures()
     {
-        return array(
+        return [
             self::TARGET,
-        );
+        ];
     }
 }

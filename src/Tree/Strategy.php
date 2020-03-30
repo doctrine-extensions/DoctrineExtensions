@@ -31,8 +31,6 @@ interface Strategy
 
     /**
      * Initialize strategy with tree listener
-     *
-     * @param TreeListener $listener
      */
     public function __construct(TreeListener $listener);
 

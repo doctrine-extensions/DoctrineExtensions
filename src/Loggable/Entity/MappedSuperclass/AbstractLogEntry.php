@@ -12,7 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
 abstract class AbstractLogEntry
 {
     /**
-     * @var integer $id
+     * @var int
      *
      * @ORM\Column(type="integer")
      * @ORM\Id
@@ -21,49 +21,49 @@ abstract class AbstractLogEntry
     protected $id;
 
     /**
-     * @var string $action
+     * @var string
      *
      * @ORM\Column(type="string", length=8)
      */
     protected $action;
 
     /**
-     * @var \DateTime $loggedAt
+     * @var \DateTime
      *
      * @ORM\Column(name="logged_at", type="datetime")
      */
     protected $loggedAt;
 
     /**
-     * @var string $objectId
+     * @var string
      *
      * @ORM\Column(name="object_id", length=64, nullable=true)
      */
     protected $objectId;
 
     /**
-     * @var string $objectClass
+     * @var string
      *
      * @ORM\Column(name="object_class", type="string", length=191)
      */
     protected $objectClass;
 
     /**
-     * @var integer $version
+     * @var int
      *
      * @ORM\Column(type="integer")
      */
     protected $version;
 
     /**
-     * @var array $data
+     * @var array
      *
      * @ORM\Column(type="array", nullable=true)
      */
     protected $data;
 
     /**
-     * @var string $data
+     * @var string
      *
      * @ORM\Column(length=191, nullable=true)
      */
@@ -72,7 +72,7 @@ abstract class AbstractLogEntry
     /**
      * Get id
      *
-     * @return integer
+     * @return int
      */
     public function getId()
     {
@@ -200,7 +200,7 @@ abstract class AbstractLogEntry
     /**
      * Set current version
      *
-     * @param integer $version
+     * @param int $version
      */
     public function setVersion($version)
     {
@@ -210,7 +210,7 @@ abstract class AbstractLogEntry
     /**
      * Get current version
      *
-     * @return integer
+     * @return int
      */
     public function getVersion()
     {

@@ -15,6 +15,6 @@ use Doctrine\Common\Annotations\Annotation;
  */
 final class Translatable extends Annotation
 {
-    /** @var boolean */
+    /** @var bool */
     public $fallback;
 }

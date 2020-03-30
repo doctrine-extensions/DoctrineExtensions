@@ -9,11 +9,10 @@ namespace Gedmo\Uploadable\FilenameGenerator;
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-
 class FilenameGeneratorSha1 implements FilenameGeneratorInterface
 {
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public static function generate($filename, $extension, $object = null)
     {

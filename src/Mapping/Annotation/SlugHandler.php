@@ -27,5 +27,5 @@ use Doctrine\Common\Annotations\Annotation;
 final class SlugHandler extends Annotation
 {
     public $class = '';
-    public $options = array();
+    public $options = [];
 }

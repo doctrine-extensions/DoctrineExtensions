@@ -2,12 +2,12 @@
 
 namespace Gedmo\SoftDeleteable\Query\TreeWalker;
 
-use Doctrine\ORM\Query\SqlWalker;
-use Doctrine\ORM\Query\AST\DeleteStatement;
 use Doctrine\ORM\Query\AST\DeleteClause;
+use Doctrine\ORM\Query\AST\DeleteStatement;
 use Doctrine\ORM\Query\Exec\SingleTableDeleteUpdateExecutor;
-use Gedmo\SoftDeleteable\SoftDeleteableListener;
+use Doctrine\ORM\Query\SqlWalker;
 use Gedmo\SoftDeleteable\Query\TreeWalker\Exec\MultiTableDeleteExecutor;
+use Gedmo\SoftDeleteable\SoftDeleteableListener;
 
 /**
  * This SqlWalker is needed when you need to use a DELETE DQL query.
@@ -18,7 +18,6 @@ use Gedmo\SoftDeleteable\Query\TreeWalker\Exec\MultiTableDeleteExecutor;
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-
 class SoftDeleteableWalker extends SqlWalker
 {
     protected $conn;
@@ -30,7 +29,7 @@ class SoftDeleteableWalker extends SqlWalker
     protected $meta;
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function __construct($query, $parserResult, array $queryComponents)
     {
@@ -43,12 +42,12 @@ class SoftDeleteableWalker extends SqlWalker
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getExecutor($AST)
     {
         switch (true) {
-            case ($AST instanceof DeleteStatement):
+            case $AST instanceof DeleteStatement:
                 $primaryClass = $this->getEntityManager()->getClassMetadata($AST->deleteClause->abstractSchemaName);
 
                 return ($primaryClass->isInheritanceTypeJoined())
@@ -62,9 +61,7 @@ class SoftDeleteableWalker extends SqlWalker
     /**
      * Change a DELETE clause for an UPDATE clause
      *
-     * @param DeleteClause $deleteClause
-     *
-     * @return string The SQL.
+     * @return string the SQL
      */
     public function walkDeleteClause(DeleteClause $deleteClause)
     {
@@ -114,8 +111,6 @@ class SoftDeleteableWalker extends SqlWalker
 
     /**
      * Search for components in the delete clause
-     *
-     * @param array $queryComponents
      *
      * @return void
      */

@@ -4,24 +4,23 @@ namespace Gedmo\Tree;
 
 use Doctrine\Common\EventManager;
 use Tool\BaseTestCaseORM;
-use Tree\Fixture\Closure\Category;
-use Tree\Fixture\Closure\CategoryWithoutLevel;
-use Tree\Fixture\Closure\CategoryWithoutLevelClosure;
 
 /**
  * These are tests for Tree behavior
  *
  * @author Gustavo Adrian <comfortablynumb84@gmail.com>
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @link http://www.gediminasm.org
+ *
+ * @see http://www.gediminasm.org
+ *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class ClosureTreeRepositoryTest extends BaseTestCaseORM
 {
-    const CATEGORY = "Tree\\Fixture\\Closure\\Category";
-    const CLOSURE = "Tree\\Fixture\\Closure\\CategoryClosure";
-    const CATEGORY_WITHOUT_LEVEL = "Tree\\Fixture\\Closure\\CategoryWithoutLevel";
-    const CATEGORY_WITHOUT_LEVEL_CLOSURE = "Tree\\Fixture\\Closure\\CategoryWithoutLevelClosure";
+    const CATEGORY = 'Tree\\Fixture\\Closure\\Category';
+    const CLOSURE = 'Tree\\Fixture\\Closure\\CategoryClosure';
+    const CATEGORY_WITHOUT_LEVEL = 'Tree\\Fixture\\Closure\\CategoryWithoutLevel';
+    const CATEGORY_WITHOUT_LEVEL_CLOSURE = 'Tree\\Fixture\\Closure\\CategoryWithoutLevelClosure';
 
     protected $listener;
 
@@ -223,10 +222,10 @@ class ClosureTreeRepositoryTest extends BaseTestCaseORM
     protected function buildTreeTests($class)
     {
         $repo = $this->em->getRepository($class);
-        $sortOption =  array('childSort' => array('field' => 'title', 'dir' => 'asc'));
+        $sortOption = ['childSort' => ['field' => 'title', 'dir' => 'asc']];
 
         $testClosure = function (ClosureTreeRepositoryTest $phpUnit, array $tree, $includeNode = false, $whichTree = 'both', $includeNewNode = false) {
-            if ($whichTree === 'both' || $whichTree === 'first') {
+            if ('both' === $whichTree || 'first' === $whichTree) {
                 $boringFood = $includeNewNode ? ($includeNode ? $tree[0]['__children'][0] : $tree[0]) : null;
                 $fruitsIndex = $includeNewNode ? 1 : 0;
                 $milkIndex = $includeNewNode ? 2 : 1;
@@ -254,8 +253,8 @@ class ClosureTreeRepositoryTest extends BaseTestCaseORM
                 $phpUnit->assertEquals('Carrots', $vegitables['__children'][1]['title']);
             }
 
-            if ($whichTree === 'both' || $whichTree === 'second') {
-                $root = $whichTree === 'both' ? $tree[1] : $tree[0];
+            if ('both' === $whichTree || 'second' === $whichTree) {
+                $root = 'both' === $whichTree ? $tree[1] : $tree[0];
                 $soccer = $includeNode ? $root['__children'][0] : $root;
 
                 if ($includeNode) {
@@ -417,7 +416,7 @@ class ClosureTreeRepositoryTest extends BaseTestCaseORM
             return $repo->childrenHierarchy(
                 $roots[0],
                 true,
-                array_merge($sortOption, array('decorate' => true)),
+                array_merge($sortOption, ['decorate' => true]),
                 $includeNode
             );
         };
@@ -436,18 +435,18 @@ class ClosureTreeRepositoryTest extends BaseTestCaseORM
 
     protected function getUsedEntityFixtures()
     {
-        return array(
+        return [
             self::CATEGORY,
             self::CLOSURE,
             self::CATEGORY_WITHOUT_LEVEL,
             self::CATEGORY_WITHOUT_LEVEL_CLOSURE,
-        );
+        ];
     }
 
     private function populate($class = self::CATEGORY)
     {
         $food = new $class();
-        $food->setTitle("Food");
+        $food->setTitle('Food');
         $this->em->persist($food);
 
         $vegitables = new $class();

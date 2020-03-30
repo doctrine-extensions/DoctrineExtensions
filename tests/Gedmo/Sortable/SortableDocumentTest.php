@@ -2,9 +2,9 @@
 
 namespace Gedmo\Sortable;
 
-use Tool\BaseTestCaseMongoODM;
 use Doctrine\Common\EventManager;
 use Sortable\Fixture\Document\Article;
+use Tool\BaseTestCaseMongoODM;
 
 /**
  * These are tests for sortable behavior
@@ -28,7 +28,7 @@ class SortableDocumentTest extends BaseTestCaseMongoODM
 
     private function populate()
     {
-        for ($i = 0; $i <= 4; $i++) {
+        for ($i = 0; $i <= 4; ++$i) {
             $article = new Article();
             $article->setTitle('article'.$i);
             $this->dm->persist($article);
@@ -40,7 +40,7 @@ class SortableDocumentTest extends BaseTestCaseMongoODM
     public function testInitialPositions()
     {
         $repo = $this->dm->getRepository(self::ARTICLE);
-        for ($i = 0; $i <= 4; $i++) {
+        for ($i = 0; $i <= 4; ++$i) {
             $article = $repo->findOneBy(['position' => $i]);
             $this->assertEquals('article'.$i, $article->getTitle());
         }
@@ -54,9 +54,9 @@ class SortableDocumentTest extends BaseTestCaseMongoODM
         $article->setPosition(0);
         $this->dm->flush();
 
-        for ($i = 1; $i <= 4; $i++) {
+        for ($i = 1; $i <= 4; ++$i) {
             $article = $repo->findOneBy(['position' => $i]);
-            $this->assertEquals('article'.($i-1), $article->getTitle());
+            $this->assertEquals('article'.($i - 1), $article->getTitle());
         }
     }
 
@@ -68,9 +68,9 @@ class SortableDocumentTest extends BaseTestCaseMongoODM
         $article->setPosition(-1);
         $this->dm->flush();
 
-        for ($i = 0; $i <= 3; $i++) {
+        for ($i = 0; $i <= 3; ++$i) {
             $article = $repo->findOneBy(['position' => $i]);
-            $this->assertEquals('article'.($i+1), $article->getTitle());
+            $this->assertEquals('article'.($i + 1), $article->getTitle());
         }
         $article = $repo->findOneBy(['position' => 4]);
         $this->assertEquals('article0', $article->getTitle());
@@ -84,9 +84,9 @@ class SortableDocumentTest extends BaseTestCaseMongoODM
         $this->dm->remove($article);
         $this->dm->flush();
 
-        for ($i = 0; $i <= 3; $i++) {
+        for ($i = 0; $i <= 3; ++$i) {
             $article = $repo->findOneBy(['position' => $i]);
-            $this->assertEquals('article'.($i+1), $article->getTitle());
+            $this->assertEquals('article'.($i + 1), $article->getTitle());
         }
     }
 }

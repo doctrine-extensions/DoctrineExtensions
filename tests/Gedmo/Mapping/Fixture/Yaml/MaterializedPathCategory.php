@@ -21,7 +21,7 @@ class MaterializedPathCategory
     /**
      * Get id
      *
-     * @return integer $id
+     * @return int $id
      */
     public function getId()
     {

@@ -2,8 +2,8 @@
 
 namespace Gedmo\Translatable\Mapping\Driver;
 
-use Gedmo\Mapping\Driver\Xml as BaseXml;
 use Gedmo\Exception\InvalidMappingException;
+use Gedmo\Mapping\Driver\Xml as BaseXml;
 
 /**
  * This is a xml mapping driver for Translatable
@@ -18,22 +18,22 @@ use Gedmo\Exception\InvalidMappingException;
 class Xml extends BaseXml
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function readExtendedMetadata($meta, array &$config)
     {
         /**
-         * @var \SimpleXmlElement $xml
+         * @var \SimpleXmlElement
          */
         $xml = $this->_getMapping($meta->name);
         $xmlDoctrine = $xml;
 
         $xml = $xml->children(self::GEDMO_NAMESPACE_URI);
 
-        if (($xmlDoctrine->getName() == 'entity' || $xmlDoctrine->getName() == 'mapped-superclass')) {
+        if (('entity' == $xmlDoctrine->getName() || 'mapped-superclass' == $xmlDoctrine->getName())) {
             if ($xml->count() && isset($xml->translation)) {
                 /**
-                 * @var \SimpleXmlElement $data
+                 * @var \SimpleXmlElement
                  */
                 $data = $xml->translation;
                 if ($this->_isAttributeSet($data, 'locale')) {
@@ -86,8 +86,8 @@ class Xml extends BaseXml
             $mappingDoctrine = $mapping;
 
             $fieldName = $this->_getAttribute($mappingDoctrine, 'name');
-            if ($prefix !== null) {
-                $fieldName = $prefix . '.' . $fieldName;
+            if (null !== $prefix) {
+                $fieldName = $prefix.'.'.$fieldName;
             }
             $this->buildFieldConfiguration($fieldName, $mapping, $config);
         }

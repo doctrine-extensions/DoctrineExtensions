@@ -4,8 +4,8 @@
 
 namespace Gedmo\Mapping\Mock\Extension\Encoder\Mapping\Driver;
 
-use Gedmo\Mapping\Driver;
 use Doctrine\Common\Annotations\AnnotationReader;
+use Gedmo\Mapping\Driver;
 
 class Annotation implements Driver
 {
@@ -37,22 +37,22 @@ class Annotation implements Driver
                 $field = $property->getName();
                 // check if field is mapped
                 if (!$meta->hasField($field)) {
-                    throw new \Exception("Field is not mapped as object property");
+                    throw new \Exception('Field is not mapped as object property');
                 }
                 // allow encoding only strings
-                if (!in_array($encode->type, array('sha1', 'md5'))) {
-                    throw new \Exception("Invalid encoding type supplied");
+                if (!in_array($encode->type, ['sha1', 'md5'])) {
+                    throw new \Exception('Invalid encoding type supplied');
                 }
                 // validate encoding type
                 $mapping = $meta->getFieldMapping($field);
-                if ($mapping['type'] != 'string') {
-                    throw new \Exception("Only strings can be encoded");
+                if ('string' != $mapping['type']) {
+                    throw new \Exception('Only strings can be encoded');
                 }
                 // store the metadata
-                $config['encode'][$field] = array(
+                $config['encode'][$field] = [
                     'type' => $encode->type,
                     'secret' => $encode->secret,
-                );
+                ];
             }
         }
     }
@@ -61,6 +61,7 @@ class Annotation implements Driver
      * Passes in the mapping read by original driver
      *
      * @param $driver
+     *
      * @return void
      */
     public function setOriginalDriver($driver)

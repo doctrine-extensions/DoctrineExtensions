@@ -20,7 +20,7 @@ use Gedmo\References\Mapping\Event\ReferencesAdapter;
 final class ODM extends BaseAdapterODM implements ReferencesAdapter
 {
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function getIdentifier($om, $object, $single = true)
     {
@@ -33,7 +33,7 @@ final class ODM extends BaseAdapterODM implements ReferencesAdapter
                 $id = $om->getUnitOfWork()->getEntityIdentifier($object);
             } else {
                 $meta = $om->getClassMetadata(get_class($object));
-                $id = array();
+                $id = [];
                 foreach ($meta->identifier as $name) {
                     $id[$name] = $meta->getReflectionProperty($name)->getValue($object);
                     // return null if one of identifiers is missing
@@ -52,7 +52,7 @@ final class ODM extends BaseAdapterODM implements ReferencesAdapter
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function getSingleReference($om, $class, $identifier)
     {
@@ -67,7 +67,7 @@ final class ODM extends BaseAdapterODM implements ReferencesAdapter
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function extractIdentifier($om, $object, $single = true)
     {
@@ -81,7 +81,7 @@ final class ODM extends BaseAdapterODM implements ReferencesAdapter
         if ($single || !$id) {
             return $id;
         } else {
-            return array($meta->identifier => $id);
+            return [$meta->identifier => $id];
         }
     }
 

@@ -2,8 +2,8 @@
 
 namespace Gedmo\Blameable\Mapping\Event\Adapter;
 
-use Gedmo\Mapping\Event\Adapter\ORM as BaseAdapterORM;
 use Gedmo\Blameable\Mapping\Event\BlameableAdapter;
+use Gedmo\Mapping\Event\Adapter\ORM as BaseAdapterORM;
 
 /**
  * Doctrine event adapter for ORM adapted

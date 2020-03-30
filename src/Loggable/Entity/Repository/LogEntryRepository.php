@@ -2,12 +2,12 @@
 
 namespace Gedmo\Loggable\Entity\Repository;
 
+use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Query;
 use Gedmo\Loggable\Entity\MappedSuperclass\AbstractLogEntry;
-use Gedmo\Tool\Wrapper\EntityWrapper;
-use Doctrine\ORM\EntityRepository;
 use Gedmo\Loggable\LoggableListener;
+use Gedmo\Tool\Wrapper\EntityWrapper;
 
 /**
  * The LogEntryRepository has some useful functions
@@ -52,9 +52,9 @@ class LogEntryRepository extends EntityRepository
         $objectClass = $wrapped->getMetadata()->name;
         $meta = $this->getClassMetadata();
         $dql = "SELECT log FROM {$meta->name} log";
-        $dql .= " WHERE log.objectId = :objectId";
-        $dql .= " AND log.objectClass = :objectClass";
-        $dql .= " ORDER BY log.version DESC";
+        $dql .= ' WHERE log.objectId = :objectId';
+        $dql .= ' AND log.objectClass = :objectClass';
+        $dql .= ' ORDER BY log.version DESC';
 
         $objectId = (string) $wrapped->getIdentifier();
         $q = $this->_em->createQuery($dql);
@@ -69,8 +69,8 @@ class LogEntryRepository extends EntityRepository
      * After this operation you will need to
      * persist and flush the $entity.
      *
-     * @param object  $entity
-     * @param integer $version
+     * @param object $entity
+     * @param int    $version
      *
      * @throws \Gedmo\Exception\UnexpectedValueException
      *
@@ -83,10 +83,10 @@ class LogEntryRepository extends EntityRepository
         $objectClass = $objectMeta->name;
         $meta = $this->getClassMetadata();
         $dql = "SELECT log FROM {$meta->name} log";
-        $dql .= " WHERE log.objectId = :objectId";
-        $dql .= " AND log.objectClass = :objectClass";
-        $dql .= " AND log.version <= :version";
-        $dql .= " ORDER BY log.version ASC";
+        $dql .= ' WHERE log.objectId = :objectId';
+        $dql .= ' AND log.objectClass = :objectClass';
+        $dql .= ' AND log.version <= :version';
+        $dql .= ' ORDER BY log.version ASC';
 
         $objectId = (string) $wrapped->getIdentifier();
         $q = $this->_em->createQuery($dql);
@@ -107,7 +107,7 @@ class LogEntryRepository extends EntityRepository
                         }
                     }
                 }
-                $filled = count($fields) === 0;
+                $filled = 0 === count($fields);
             }
             /*if (count($fields)) {
                 throw new \Gedmo\Exception\UnexpectedValueException('Could not fully revert the entity to version: '.$version);
@@ -118,18 +118,17 @@ class LogEntryRepository extends EntityRepository
     }
 
     /**
-     * @param ClassMetadata $objectMeta
-     * @param string        $field
-     * @param mixed         $value
+     * @param string $field
+     * @param mixed  $value
      */
     protected function mapValue(ClassMetadata $objectMeta, $field, &$value)
     {
         if (!$objectMeta->isSingleValuedAssociation($field)) {
             return;
         }
-        
+
         $mapping = $objectMeta->getAssociationMapping($field);
-        $value   = $value ? $this->_em->getReference($mapping['targetEntity'], $value) : null;
+        $value = $value ? $this->_em->getReference($mapping['targetEntity'], $value) : null;
     }
 
     /**

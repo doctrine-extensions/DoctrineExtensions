@@ -2,8 +2,6 @@
 
 namespace Gedmo\Exception;
 
-use Gedmo\Exception;
-
 /**
  * TreeLockingException
  *

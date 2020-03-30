@@ -16,9 +16,10 @@ use Gedmo\Timestampable\Mapping\Event\TimestampableAdapter;
 class TimestampableListener extends AbstractTrackingListener
 {
     /**
-     * @param ClassMetadata $meta
-     * @param string $field
+     * @param ClassMetadata        $meta
+     * @param string               $field
      * @param TimestampableAdapter $eventAdapter
+     *
      * @return mixed
      */
     protected function getFieldValue($meta, $field, $eventAdapter)
@@ -27,7 +28,7 @@ class TimestampableListener extends AbstractTrackingListener
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     protected function getNamespace()
     {

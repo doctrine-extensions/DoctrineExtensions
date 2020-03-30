@@ -22,7 +22,7 @@ trait MaterializedPath
      */
     protected $parent;
     /**
-     * @var integer
+     * @var int
      */
     protected $level;
     /**
@@ -75,7 +75,7 @@ trait MaterializedPath
     }
 
     /**
-     * @return integer
+     * @return int
      */
     public function getLevel()
     {

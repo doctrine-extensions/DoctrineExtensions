@@ -109,11 +109,11 @@ class SluggablePrefixSuffixTest extends BaseTestCaseORM
      */
     protected function getUsedEntityFixtures()
     {
-        return array(
+        return [
             self::SUFFIX,
             self::PREFIX,
             self::SUFFIX_TREE,
             self::PREFIX_TREE,
-        );
+        ];
     }
 }

@@ -12,7 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
 abstract class AbstractTranslation
 {
     /**
-     * @var integer $id
+     * @var int
      *
      * @ORM\Column(type="integer")
      * @ORM\Id
@@ -21,35 +21,35 @@ abstract class AbstractTranslation
     protected $id;
 
     /**
-     * @var string $locale
+     * @var string
      *
      * @ORM\Column(type="string", length=8)
      */
     protected $locale;
 
     /**
-     * @var string $objectClass
+     * @var string
      *
      * @ORM\Column(name="object_class", type="string", length=191)
      */
     protected $objectClass;
 
     /**
-     * @var string $field
+     * @var string
      *
      * @ORM\Column(type="string", length=32)
      */
     protected $field;
 
     /**
-     * @var string $foreignKey
+     * @var string
      *
      * @ORM\Column(name="foreign_key", type="string", length=64)
      */
     protected $foreignKey;
 
     /**
-     * @var string $content
+     * @var string
      *
      * @ORM\Column(type="text", nullable=true)
      */
@@ -58,7 +58,7 @@ abstract class AbstractTranslation
     /**
      * Get id
      *
-     * @return integer $id
+     * @return int $id
      */
     public function getId()
     {

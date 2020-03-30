@@ -3,8 +3,8 @@
 namespace Gedmo\Tree;
 
 use Doctrine\Common\EventArgs;
-use Gedmo\Mapping\MappedEventSubscriber;
 use Doctrine\Common\Persistence\ObjectManager;
+use Gedmo\Mapping\MappedEventSubscriber;
 
 /**
  * The tree listener handles the synchronization of
@@ -21,21 +21,21 @@ class TreeListener extends MappedEventSubscriber
      *
      * @var array
      */
-    private $strategies = array();
+    private $strategies = [];
 
     /**
      * List of strategy instances
      *
      * @var array
      */
-    private $strategyInstances = array();
+    private $strategyInstances = [];
 
     /**
      * List of used classes on flush
      *
      * @var array
      */
-    private $usedClassesOnFlush = array();
+    private $usedClassesOnFlush = [];
 
     /**
      * Specifies the list of events to listen
@@ -44,7 +44,7 @@ class TreeListener extends MappedEventSubscriber
      */
     public function getSubscribedEvents()
     {
-        return array(
+        return [
             'prePersist',
             'preRemove',
             'preUpdate',
@@ -53,14 +53,13 @@ class TreeListener extends MappedEventSubscriber
             'postPersist',
             'postUpdate',
             'postRemove',
-        );
+        ];
     }
 
     /**
      * Get the used strategy for tree processing
      *
-     * @param ObjectManager $om
-     * @param string        $class
+     * @param string $class
      *
      * @return Strategy
      */
@@ -94,8 +93,6 @@ class TreeListener extends MappedEventSubscriber
     /**
      * Looks for Tree objects being updated
      * for further processing
-     *
-     * @param EventArgs $args
      */
     public function onFlush(EventArgs $args)
     {
@@ -136,8 +133,6 @@ class TreeListener extends MappedEventSubscriber
 
     /**
      * Updates tree on Node removal
-     *
-     * @param EventArgs $args
      */
     public function preRemove(EventArgs $args)
     {
@@ -153,8 +148,6 @@ class TreeListener extends MappedEventSubscriber
 
     /**
      * Checks for persisted Nodes
-     *
-     * @param EventArgs $args
      */
     public function prePersist(EventArgs $args)
     {
@@ -170,8 +163,6 @@ class TreeListener extends MappedEventSubscriber
 
     /**
      * Checks for updated Nodes
-     *
-     * @param EventArgs $args
      */
     public function preUpdate(EventArgs $args)
     {
@@ -188,8 +179,6 @@ class TreeListener extends MappedEventSubscriber
     /**
      * Checks for pending Nodes to fully synchronize
      * the tree
-     *
-     * @param EventArgs $args
      */
     public function postPersist(EventArgs $args)
     {
@@ -206,8 +195,6 @@ class TreeListener extends MappedEventSubscriber
     /**
      * Checks for pending Nodes to fully synchronize
      * the tree
-     *
-     * @param EventArgs $args
      */
     public function postUpdate(EventArgs $args)
     {
@@ -224,8 +211,6 @@ class TreeListener extends MappedEventSubscriber
     /**
      * Checks for pending Nodes to fully synchronize
      * the tree
-     *
-     * @param EventArgs $args
      */
     public function postRemove(EventArgs $args)
     {
@@ -241,8 +226,6 @@ class TreeListener extends MappedEventSubscriber
 
     /**
      * Mapps additional metadata
-     *
-     * @param EventArgs $eventArgs
      */
     public function loadClassMetadata(EventArgs $eventArgs)
     {
@@ -256,7 +239,7 @@ class TreeListener extends MappedEventSubscriber
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     protected function getNamespace()
     {
@@ -267,13 +250,11 @@ class TreeListener extends MappedEventSubscriber
      * Get the list of strategy instances used for
      * given object classes
      *
-     * @param array $classes
-     *
      * @return Strategy[]
      */
     protected function getStrategiesUsedForObjects(array $classes)
     {
-        $strategies = array();
+        $strategies = [];
         foreach ($classes as $name => $opt) {
             if (isset($this->strategies[$name]) && !isset($strategies[$this->strategies[$name]])) {
                 $strategies[$this->strategies[$name]] = $this->strategyInstances[$this->strategies[$name]];

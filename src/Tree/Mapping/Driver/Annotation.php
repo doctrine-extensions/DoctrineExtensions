@@ -2,8 +2,8 @@
 
 namespace Gedmo\Tree\Mapping\Driver;
 
-use Gedmo\Mapping\Driver\AbstractAnnotationDriver;
 use Gedmo\Exception\InvalidMappingException;
+use Gedmo\Mapping\Driver\AbstractAnnotationDriver;
 use Gedmo\Tree\Mapping\Validator;
 
 /**
@@ -78,14 +78,14 @@ class Annotation extends AbstractAnnotationDriver
      *
      * @var array
      */
-    protected $strategies = array(
+    protected $strategies = [
         'nested',
         'closure',
         'materializedPath',
-    );
+    ];
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function readExtendedMetadata($meta, array &$config)
     {
@@ -101,7 +101,7 @@ class Annotation extends AbstractAnnotationDriver
             $config['locking_timeout'] = (int) $annot->lockingTimeout;
 
             if ($config['locking_timeout'] < 1) {
-                throw new InvalidMappingException("Tree Locking Timeout must be at least of 1 second.");
+                throw new InvalidMappingException('Tree Locking Timeout must be at least of 1 second.');
             }
         }
         if ($annot = $this->reader->getClassAnnotation($class, self::CLOSURE)) {
@@ -158,13 +158,11 @@ class Annotation extends AbstractAnnotationDriver
                     }
 
                     if (!$validator->isValidFieldForRoot($meta, $field)) {
-                        throw new InvalidMappingException(
-                            "Tree root field should be either a literal property ('integer' types or 'string') or a many-to-one association through root field - [{$field}] in class - {$meta->name}"
-                        );
+                        throw new InvalidMappingException("Tree root field should be either a literal property ('integer' types or 'string') or a many-to-one association through root field - [{$field}] in class - {$meta->name}");
                     }
                 }
                 $annotation = $this->reader->getPropertyAnnotation($property, self::ROOT);
-                $config['rootIdentifierMethod'] =  $annotation->identifierMethod;
+                $config['rootIdentifierMethod'] = $annotation->identifierMethod;
                 $config['root'] = $field;
             }
             // level
@@ -208,7 +206,7 @@ class Annotation extends AbstractAnnotationDriver
                 $config['path_source'] = $field;
             }
 
-             // path hash
+            // path hash
             if ($this->reader->getPropertyAnnotation($property, self::PATH_HASH)) {
                 $field = $property->getName();
                 if (!$meta->hasField($field)) {
@@ -234,7 +232,7 @@ class Annotation extends AbstractAnnotationDriver
         }
 
         if (isset($config['activate_locking']) && $config['activate_locking'] && !isset($config['lock_time'])) {
-            throw new InvalidMappingException("You need to map a date field as the tree lock time field to activate locking support.");
+            throw new InvalidMappingException('You need to map a date field as the tree lock time field to activate locking support.');
         }
 
         if (!$meta->isMappedSuperclass && $config) {

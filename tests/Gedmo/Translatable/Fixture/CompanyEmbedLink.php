@@ -36,6 +36,7 @@ class CompanyEmbedLink
 
     /**
      * @param string $website
+     *
      * @return CompanyEmbedLink
      */
     public function setWebsite($website)
@@ -55,6 +56,7 @@ class CompanyEmbedLink
 
     /**
      * @param string $facebook
+     *
      * @return CompanyEmbedLink
      */
     public function setFacebook($facebook)
@@ -63,5 +65,4 @@ class CompanyEmbedLink
 
         return $this;
     }
-
 }

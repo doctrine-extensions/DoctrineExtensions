@@ -17,20 +17,19 @@ use Gedmo\ReferenceIntegrity\Mapping\Validator;
 class ReferenceIntegrityListener extends MappedEventSubscriber
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getSubscribedEvents()
     {
-        return array(
+        return [
             'loadClassMetadata',
             'preRemove',
-        );
+        ];
     }
 
     /**
      * Maps additional metadata for the Document
      *
-     * @param  EventArgs $eventArgs
      * @return void
      */
     public function loadClassMetadata(EventArgs $eventArgs)
@@ -43,7 +42,6 @@ class ReferenceIntegrityListener extends MappedEventSubscriber
      * Looks for referenced objects being removed
      * to nullify the relation or throw an exception
      *
-     * @param  EventArgs $args
      * @return void
      */
     public function preRemove(EventArgs $args)
@@ -63,25 +61,13 @@ class ReferenceIntegrityListener extends MappedEventSubscriber
                 switch ($action) {
                     case Validator::NULLIFY:
                         if (!isset($fieldMapping['mappedBy'])) {
-                            throw new InvalidMappingException(
-                                sprintf(
-                                    "Reference '%s' on '%s' should have 'mappedBy' option defined",
-                                    $property,
-                                    $meta->name
-                                )
-                            );
+                            throw new InvalidMappingException(sprintf("Reference '%s' on '%s' should have 'mappedBy' option defined", $property, $meta->name));
                         }
 
                         $subMeta = $om->getClassMetadata($fieldMapping['targetDocument']);
 
                         if (!$subMeta->hasField($fieldMapping['mappedBy'])) {
-                            throw new InvalidMappingException(
-                                sprintf(
-                                    "Unable to find reference integrity [%s] as mapped property in entity - %s",
-                                    $fieldMapping['mappedBy'],
-                                    $fieldMapping['targetDocument']
-                                )
-                            );
+                            throw new InvalidMappingException(sprintf('Unable to find reference integrity [%s] as mapped property in entity - %s', $fieldMapping['mappedBy'], $fieldMapping['targetDocument']));
                         }
 
                         $refReflProp = $subMeta->getReflectionProperty($fieldMapping['mappedBy']);
@@ -99,37 +85,19 @@ class ReferenceIntegrityListener extends MappedEventSubscriber
                         break;
                     case Validator::PULL:
                         if (!isset($fieldMapping['mappedBy'])) {
-                            throw new InvalidMappingException(
-                                sprintf(
-                                    "Reference '%s' on '%s' should have 'mappedBy' option defined",
-                                    $property,
-                                    $meta->name
-                                )
-                            );
+                            throw new InvalidMappingException(sprintf("Reference '%s' on '%s' should have 'mappedBy' option defined", $property, $meta->name));
                         }
 
                         $subMeta = $om->getClassMetadata($fieldMapping['targetDocument']);
 
                         if (!$subMeta->hasField($fieldMapping['mappedBy'])) {
-                            throw new InvalidMappingException(
-                                sprintf(
-                                    "Unable to find reference integrity [%s] as mapped property in entity - %s",
-                                    $fieldMapping['mappedBy'],
-                                    $fieldMapping['targetDocument']
-                                )
-                            );
+                            throw new InvalidMappingException(sprintf('Unable to find reference integrity [%s] as mapped property in entity - %s', $fieldMapping['mappedBy'], $fieldMapping['targetDocument']));
                         }
 
                         if (!$subMeta->isCollectionValuedReference($fieldMapping['mappedBy'])) {
-                            throw new InvalidMappingException(
-                                sprintf(
-                                    "Reference integrity [%s] mapped property in entity - %s should be a Reference Many",
-                                    $fieldMapping['mappedBy'],
-                                    $fieldMapping['targetDocument']
-                                )
-                            );
+                            throw new InvalidMappingException(sprintf('Reference integrity [%s] mapped property in entity - %s should be a Reference Many', $fieldMapping['mappedBy'], $fieldMapping['targetDocument']));
                         }
-						
+
                         $refReflProp = $subMeta->getReflectionProperty($fieldMapping['mappedBy']);
 
                         if ($meta->isCollectionValuedReference($property)) {
@@ -139,7 +107,7 @@ class ReferenceIntegrityListener extends MappedEventSubscriber
                                 $refReflProp->setValue($refObj, $collection);
                                 $om->persist($refObj);
                             }
-                        } else if (is_object($refDoc)) {
+                        } elseif (is_object($refDoc)) {
                             $collection = $refReflProp->getValue($refDoc);
                             $collection->removeElement($object);
                             $refReflProp->setValue($refDoc, $collection);
@@ -149,20 +117,10 @@ class ReferenceIntegrityListener extends MappedEventSubscriber
                         break;
                     case Validator::RESTRICT:
                         if ($meta->isCollectionValuedReference($property) && $refDoc->count() > 0) {
-                            throw new ReferenceIntegrityStrictException(
-                                sprintf(
-                                    "The reference integrity for the '%s' collection is restricted",
-                                    $fieldMapping['targetDocument']
-                                )
-                            );
+                            throw new ReferenceIntegrityStrictException(sprintf("The reference integrity for the '%s' collection is restricted", $fieldMapping['targetDocument']));
                         }
                         if ($meta->isSingleValuedReference($property) && !is_null($refDoc)) {
-                            throw new ReferenceIntegrityStrictException(
-                                sprintf(
-                                    "The reference integrity for the '%s' document is restricted",
-                                    $fieldMapping['targetDocument']
-                                )
-                            );
+                            throw new ReferenceIntegrityStrictException(sprintf("The reference integrity for the '%s' document is restricted", $fieldMapping['targetDocument']));
                         }
 
                         break;
@@ -172,7 +130,7 @@ class ReferenceIntegrityListener extends MappedEventSubscriber
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     protected function getNamespace()
     {

@@ -30,7 +30,6 @@ trait TimestampableDocument
     /**
      * Sets createdAt.
      *
-     * @param  \DateTime $createdAt
      * @return $this
      */
     public function setCreatedAt(\DateTime $createdAt)
@@ -53,7 +52,6 @@ trait TimestampableDocument
     /**
      * Sets updatedAt.
      *
-     * @param  \DateTime $updatedAt
      * @return $this
      */
     public function setUpdatedAt(\DateTime $updatedAt)

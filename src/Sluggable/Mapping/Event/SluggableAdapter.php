@@ -18,7 +18,6 @@ interface SluggableAdapter extends AdapterInterface
      *
      * @param object $object
      * @param object $meta
-     * @param array  $config
      * @param string $slug
      *
      * @return array
@@ -30,11 +29,10 @@ interface SluggableAdapter extends AdapterInterface
      * matching $target pattern
      *
      * @param object $object
-     * @param array  $config
      * @param string $target
      * @param string $replacement
      *
-     * @return integer
+     * @return int
      */
     public function replaceRelative($object, array $config, $target, $replacement);
 
@@ -44,11 +42,10 @@ interface SluggableAdapter extends AdapterInterface
      * related
      *
      * @param object $object
-     * @param array  $config
      * @param string $target
      * @param string $replacement
      *
-     * @return integer
+     * @return int
      */
     public function replaceInverseRelative($object, array $config, $target, $replacement);
 }

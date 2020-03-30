@@ -2,11 +2,11 @@
 
 namespace Gedmo\Mapping\Event\Adapter;
 
-use Gedmo\Mapping\Event\AdapterInterface;
-use Gedmo\Exception\RuntimeException;
 use Doctrine\Common\EventArgs;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Doctrine\ODM\MongoDB\Event\LifecycleEventArgs;
+use Gedmo\Exception\RuntimeException;
+use Gedmo\Mapping\Event\AdapterInterface;
 
 /**
  * Doctrine event adapter for ODM specific
@@ -61,8 +61,6 @@ class ODM implements AdapterInterface
 
     /**
      * Set the document manager
-     *
-     * @param \Doctrine\ODM\MongoDB\DocumentManager $dm
      */
     public function setDocumentManager(DocumentManager $dm)
     {
@@ -78,7 +76,7 @@ class ODM implements AdapterInterface
             return $this->dm;
         }
 
-        return $this->__call('getDocumentManager', array());
+        return $this->__call('getDocumentManager', []);
     }
 
     /**
@@ -95,11 +93,11 @@ class ODM implements AdapterInterface
     public function __call($method, $args)
     {
         if (is_null($this->args)) {
-            throw new RuntimeException("Event args must be set before calling its methods");
+            throw new RuntimeException('Event args must be set before calling its methods');
         }
         $method = str_replace('Object', $this->getDomainObjectName(), $method);
 
-        return call_user_func_array(array($this->args, $method), $args);
+        return call_user_func_array([$this->args, $method], $args);
     }
 
     /**

@@ -2,11 +2,11 @@
 
 namespace Gedmo\Mapping;
 
-use Tool\BaseTestCaseMongoODM;
 use Doctrine\Common\EventManager;
-use Gedmo\Mapping\Mock\Extension\Encoder\EncoderListener;
 use Doctrine\ODM\MongoDB\Event\LoadClassMetadataEventArgs;
+use Gedmo\Mapping\Mock\Extension\Encoder\EncoderListener;
 use Mapping\Fixture\Document\User;
+use Tool\BaseTestCaseMongoODM;
 
 class ExtensionODMTest extends BaseTestCaseMongoODM
 {

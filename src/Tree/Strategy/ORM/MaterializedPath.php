@@ -2,8 +2,8 @@
 
 namespace Gedmo\Tree\Strategy\ORM;
 
-use Gedmo\Tree\Strategy\AbstractMaterializedPath;
 use Gedmo\Tool\Wrapper\AbstractWrapper;
+use Gedmo\Tree\Strategy\AbstractMaterializedPath;
 
 /**
  * This strategy makes tree using materialized path strategy
@@ -34,7 +34,7 @@ class MaterializedPath extends AbstractMaterializedPath
             $lvlField = $config['level'];
             $lvl = $wrapped->getPropertyValue($lvlField);
             if (!empty($lvl)) {
-                $qb->andWhere($qb->expr()->gt('e.' . $lvlField, $qb->expr()->literal($lvl)));
+                $qb->andWhere($qb->expr()->gt('e.'.$lvlField, $qb->expr()->literal($lvl)));
             }
         }
 

@@ -17,15 +17,11 @@ class MimeTypeGuesser implements MimeTypeGuesserInterface
     public function guess($filePath)
     {
         if (!is_file($filePath)) {
-            throw new UploadableInvalidFileException(sprintf('File "%s" does not exist.',
-                $filePath
-            ));
+            throw new UploadableInvalidFileException(sprintf('File "%s" does not exist.', $filePath));
         }
 
         if (!is_readable($filePath)) {
-            throw new UploadableFileNotReadableException(sprintf('File "%s" is not readable.',
-                $filePath
-            ));
+            throw new UploadableFileNotReadableException(sprintf('File "%s" is not readable.', $filePath));
         }
 
         if (function_exists('finfo_open')) {

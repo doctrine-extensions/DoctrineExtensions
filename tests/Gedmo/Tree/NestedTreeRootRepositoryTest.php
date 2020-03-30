@@ -10,12 +10,14 @@ use Tree\Fixture\RootCategory;
  * These are tests for Tree behavior
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @link http://www.gediminasm.org
+ *
+ * @see http://www.gediminasm.org
+ *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class NestedTreeRootRepositoryTest extends BaseTestCaseORM
 {
-    const CATEGORY = "Tree\\Fixture\\RootCategory";
+    const CATEGORY = 'Tree\\Fixture\\RootCategory';
 
     protected function setUp(): void
     {
@@ -95,7 +97,7 @@ class NestedTreeRootRepositoryTest extends BaseTestCaseORM
         $this->assertEquals('Potatoes', $tree[1]['__children'][1]['title']);
 
         // Tree of one specific root, with the root node
-        $tree = $repo->childrenHierarchy($roots[0], false, array(), true);
+        $tree = $repo->childrenHierarchy($roots[0], false, [], true);
 
         $this->assertEquals(1, count($tree));     // Count roots
         $this->assertEquals('Food', $tree[0]['title']);
@@ -113,7 +115,7 @@ class NestedTreeRootRepositoryTest extends BaseTestCaseORM
         $this->assertEquals('Vegitables', $tree[1]['title']);
 
         // Tree of one specific root only with direct children, with the root node
-        $tree = $repo->childrenHierarchy($roots[0], true, array(), true);
+        $tree = $repo->childrenHierarchy($roots[0], true, [], true);
 
         $this->assertEquals(1, count($tree));
         $this->assertEquals('Food', $tree[0]['title']);
@@ -170,9 +172,9 @@ class NestedTreeRootRepositoryTest extends BaseTestCaseORM
             $decoratedCliTree
         );
 
-        $rootOpen = function () {return '<ul class="group">';};
+        $rootOpen = function () {return '<ul class="group">'; };
         // check support of the closures in rootClose
-        $rootClose = function () {return '</ul><!--rootCloseClosure-->';};
+        $rootClose = function () {return '</ul><!--rootCloseClosure-->'; };
         $childOpen = function (&$node) {
             return '<li class="depth'.$node['level'].'">';
         };
@@ -183,7 +185,7 @@ class NestedTreeRootRepositoryTest extends BaseTestCaseORM
         $decoratedHtmlTree = $repo->childrenHierarchy(
             $food,
             false,
-            compact('decorate', 'rootOpen', 'rootClose','childOpen','childClose')
+            compact('decorate', 'rootOpen', 'rootClose', 'childOpen', 'childClose')
         );
 
         $this->assertEquals(
@@ -209,8 +211,8 @@ class NestedTreeRootRepositoryTest extends BaseTestCaseORM
         $tree = $repo->buildTree($q->getArrayResult());
         $this->assertCount(1, $tree);
         $this->assertCount(2, $tree[0]['__children']);
-        $nodes = array();
-        $options = array('decorate' => true);
+        $nodes = [];
+        $options = ['decorate' => true];
         $this->assertEquals('', $repo->buildTree($nodes, $options), 'should give empty string when there are no nodes given');
     }
 
@@ -442,9 +444,9 @@ class NestedTreeRootRepositoryTest extends BaseTestCaseORM
 
     protected function getUsedEntityFixtures()
     {
-        return array(
+        return [
             self::CATEGORY,
-        );
+        ];
     }
 
     private function populateMore()
@@ -468,25 +470,25 @@ class NestedTreeRootRepositoryTest extends BaseTestCaseORM
     private function populate()
     {
         $root = new RootCategory();
-        $root->setTitle("Food");
+        $root->setTitle('Food');
 
         $root2 = new RootCategory();
-        $root2->setTitle("Sports");
+        $root2->setTitle('Sports');
 
         $child = new RootCategory();
-        $child->setTitle("Fruits");
+        $child->setTitle('Fruits');
         $child->setParent($root);
 
         $child2 = new RootCategory();
-        $child2->setTitle("Vegitables");
+        $child2->setTitle('Vegitables');
         $child2->setParent($root);
 
         $childsChild = new RootCategory();
-        $childsChild->setTitle("Carrots");
+        $childsChild->setTitle('Carrots');
         $childsChild->setParent($child2);
 
         $potatoes = new RootCategory();
-        $potatoes->setTitle("Potatoes");
+        $potatoes->setTitle('Potatoes');
         $potatoes->setParent($child2);
 
         $this->em->persist($root);

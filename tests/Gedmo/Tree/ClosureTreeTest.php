@@ -3,32 +3,31 @@
 namespace Gedmo\Tree;
 
 use Doctrine\Common\EventManager;
-use Gedmo\Tree\TreeListener;
 use Tool\BaseTestCaseORM;
 use Tree\Fixture\Closure\Category;
-use Tree\Fixture\Closure\News;
-use Tree\Fixture\Closure\CategoryClosure;
 use Tree\Fixture\Closure\CategoryWithoutLevel;
-use Tree\Fixture\Closure\CategoryWithoutLevelClosure;
+use Tree\Fixture\Closure\News;
 
 /**
  * These are tests for Tree behavior
  *
  * @author Gustavo Adrian <comfortablynumb84@gmail.com>
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @link http://www.gediminasm.org
+ *
+ * @see http://www.gediminasm.org
+ *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class ClosureTreeTest extends BaseTestCaseORM
 {
-    const CATEGORY = "Tree\\Fixture\\Closure\\Category";
-    const CLOSURE = "Tree\\Fixture\\Closure\\CategoryClosure";
-    const PERSON = "Tree\\Fixture\\Closure\\Person";
-    const USER = "Tree\\Fixture\\Closure\\User";
-    const PERSON_CLOSURE = "Tree\\Fixture\\Closure\\PersonClosure";
-    const NEWS = "Tree\\Fixture\\Closure\\News";
-    const CATEGORY_WITHOUT_LEVEL = "Tree\\Fixture\\Closure\\CategoryWithoutLevel";
-    const CATEGORY_WITHOUT_LEVEL_CLOSURE = "Tree\\Fixture\\Closure\\CategoryWithoutLevelClosure";
+    const CATEGORY = 'Tree\\Fixture\\Closure\\Category';
+    const CLOSURE = 'Tree\\Fixture\\Closure\\CategoryClosure';
+    const PERSON = 'Tree\\Fixture\\Closure\\Person';
+    const USER = 'Tree\\Fixture\\Closure\\User';
+    const PERSON_CLOSURE = 'Tree\\Fixture\\Closure\\PersonClosure';
+    const NEWS = 'Tree\\Fixture\\Closure\\News';
+    const CATEGORY_WITHOUT_LEVEL = 'Tree\\Fixture\\Closure\\CategoryWithoutLevel';
+    const CATEGORY_WITHOUT_LEVEL_CLOSURE = 'Tree\\Fixture\\Closure\\CategoryWithoutLevelClosure';
 
     protected $listener;
 
@@ -220,7 +219,7 @@ class ClosureTreeTest extends BaseTestCaseORM
     {
         $listener = $this->getMockBuilder('Gedmo\Tree\TreeListener')->getMock();
         $strategy = $this->getMockBuilder('Gedmo\Tree\Strategy\ORM\Closure')
-            ->setMethods(array('setLevelFieldOnPendingNodes'))
+            ->setMethods(['setLevelFieldOnPendingNodes'])
             ->setConstructorArgs([$listener])
             ->getMock();
 
@@ -259,7 +258,7 @@ class ClosureTreeTest extends BaseTestCaseORM
 
     protected function getUsedEntityFixtures()
     {
-        return array(
+        return [
             self::CATEGORY,
             self::CLOSURE,
             self::PERSON,
@@ -268,13 +267,13 @@ class ClosureTreeTest extends BaseTestCaseORM
             self::NEWS,
             self::CATEGORY_WITHOUT_LEVEL,
             self::CATEGORY_WITHOUT_LEVEL_CLOSURE,
-        );
+        ];
     }
 
     private function populate()
     {
         $food = new Category();
-        $food->setTitle("Food");
+        $food->setTitle('Food');
         $this->em->persist($food);
 
         $fruits = new Category();

@@ -21,8 +21,6 @@ trait SoftDeleteableEntity
     /**
      * Sets deletedAt.
      *
-     * @param \DateTime|null $deletedAt
-     *
      * @return $this
      */
     public function setDeletedAt(\DateTime $deletedAt = null)

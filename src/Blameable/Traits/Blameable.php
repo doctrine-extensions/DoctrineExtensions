@@ -23,7 +23,8 @@ trait Blameable
     /**
      * Sets createdBy.
      *
-     * @param  string $createdBy
+     * @param string $createdBy
+     *
      * @return $this
      */
     public function setCreatedBy($createdBy)
@@ -46,7 +47,8 @@ trait Blameable
     /**
      * Sets updatedBy.
      *
-     * @param  string $updatedBy
+     * @param string $updatedBy
+     *
      * @return $this
      */
     public function setUpdatedBy($updatedBy)

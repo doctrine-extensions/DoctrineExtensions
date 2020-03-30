@@ -11,13 +11,15 @@ use Tree\Fixture\CategoryUuid;
  * These are tests for Tree behavior
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @link http://www.gediminasm.org
+ *
+ * @see http://www.gediminasm.org
+ *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class RepositoryTest extends BaseTestCaseORM
 {
-    const CATEGORY = "Tree\\Fixture\\Category";
-    const CATEGORY_UUID = "Tree\\Fixture\\CategoryUuid";
+    const CATEGORY = 'Tree\\Fixture\\Category';
+    const CATEGORY_UUID = 'Tree\\Fixture\\CategoryUuid';
 
     protected function setUp(): void
     {
@@ -415,10 +417,10 @@ class RepositoryTest extends BaseTestCaseORM
 
     protected function getUsedEntityFixtures()
     {
-        return array(
+        return [
             self::CATEGORY,
             self::CATEGORY_UUID,
-        );
+        ];
     }
 
     private function populateMore()
@@ -443,25 +445,25 @@ class RepositoryTest extends BaseTestCaseORM
     private function populate()
     {
         $root = new Category();
-        $root->setTitle("Food");
+        $root->setTitle('Food');
 
         $root2 = new Category();
-        $root2->setTitle("Sports");
+        $root2->setTitle('Sports');
 
         $child = new Category();
-        $child->setTitle("Fruits");
+        $child->setTitle('Fruits');
         $child->setParent($root);
 
         $child2 = new Category();
-        $child2->setTitle("Vegitables");
+        $child2->setTitle('Vegitables');
         $child2->setParent($root);
 
         $childsChild = new Category();
-        $childsChild->setTitle("Carrots");
+        $childsChild->setTitle('Carrots');
         $childsChild->setParent($child2);
 
         $potatoes = new Category();
-        $potatoes->setTitle("Potatoes");
+        $potatoes->setTitle('Potatoes');
         $potatoes->setParent($child2);
 
         $this->em->persist($root);
@@ -477,25 +479,25 @@ class RepositoryTest extends BaseTestCaseORM
     private function populateUuid()
     {
         $root = new CategoryUuid();
-        $root->setTitle("Food");
+        $root->setTitle('Food');
 
         $root2 = new CategoryUuid();
-        $root2->setTitle("Sports");
+        $root2->setTitle('Sports');
 
         $child = new CategoryUuid();
-        $child->setTitle("Fruits");
+        $child->setTitle('Fruits');
         $child->setParent($root);
 
         $child2 = new CategoryUuid();
-        $child2->setTitle("Vegitables");
+        $child2->setTitle('Vegitables');
         $child2->setParent($root);
 
         $childsChild = new CategoryUuid();
-        $childsChild->setTitle("Carrots");
+        $childsChild->setTitle('Carrots');
         $childsChild->setParent($child2);
 
         $potatoes = new CategoryUuid();
-        $potatoes->setTitle("Potatoes");
+        $potatoes->setTitle('Potatoes');
         $potatoes->setParent($child2);
 
         $this->em->persist($root);

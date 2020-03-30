@@ -14,13 +14,13 @@ interface Sluggable
 {
     // use now annotations instead of predefined methods, this interface is not necessary
 
-    /**
+    /*
      * @gedmo:Sluggable
      * to mark the field as sluggable use property annotation @gedmo:Sluggable
      * this field value will be included in built slug
      */
 
-    /**
+    /*
      * @gedmo:Slug - to mark property which will hold slug use annotation @gedmo:Slug
      * available options:
      *         updatable (optional, default=true) - true to update the slug on sluggable field changes, false - otherwise

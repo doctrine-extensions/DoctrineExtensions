@@ -11,13 +11,15 @@ use Tree\Fixture\CategoryUuid;
  * These are tests for Tree behavior
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @link http://www.gediminasm.org
+ *
+ * @see http://www.gediminasm.org
+ *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class TreeTest extends BaseTestCaseORM
 {
-    const CATEGORY = "Tree\\Fixture\\Category";
-    const CATEGORY_UUID = "Tree\\Fixture\\CategoryUuid";
+    const CATEGORY = 'Tree\\Fixture\\Category';
+    const CATEGORY_UUID = 'Tree\\Fixture\\CategoryUuid';
 
     protected function setUp(): void
     {
@@ -34,7 +36,7 @@ class TreeTest extends BaseTestCaseORM
         $meta = $this->em->getClassMetadata(self::CATEGORY);
 
         $root = new Category();
-        $root->setTitle("Root");
+        $root->setTitle('Root');
         $this->assertTrue($root instanceof Node);
 
         $this->em->persist($root);
@@ -49,7 +51,7 @@ class TreeTest extends BaseTestCaseORM
         $this->assertEquals(2, $right);
 
         $child = new Category();
-        $child->setTitle("child");
+        $child->setTitle('child');
         $child->setParent($root);
 
         $this->em->persist($child);
@@ -75,7 +77,7 @@ class TreeTest extends BaseTestCaseORM
         $this->assertEquals(1, $level);
 
         $child2 = new Category();
-        $child2->setTitle("child2");
+        $child2->setTitle('child2');
         $child2->setParent($root);
 
         $this->em->persist($child2);
@@ -101,7 +103,7 @@ class TreeTest extends BaseTestCaseORM
         $this->assertEquals(1, $level);
 
         $childsChild = new Category();
-        $childsChild->setTitle("childs2_child");
+        $childsChild->setTitle('childs2_child');
         $childsChild->setParent($child2);
 
         $this->em->persist($childsChild);
@@ -157,7 +159,7 @@ class TreeTest extends BaseTestCaseORM
         // test persisting in any time
         $yetAnotherChild = new Category();
         $this->em->persist($yetAnotherChild);
-        $yetAnotherChild->setTitle("yetanotherchild");
+        $yetAnotherChild->setTitle('yetanotherchild');
         $yetAnotherChild->setParent($root);
         //$this->em->persist($yetAnotherChild);
         $this->em->flush();
@@ -225,7 +227,7 @@ class TreeTest extends BaseTestCaseORM
         $meta = $this->em->getClassMetadata(self::CATEGORY_UUID);
 
         $root = new CategoryUuid();
-        $root->setTitle("Root");
+        $root->setTitle('Root');
         $this->assertTrue($root instanceof Node);
 
         $this->em->persist($root);
@@ -241,7 +243,7 @@ class TreeTest extends BaseTestCaseORM
         $this->assertEquals(2, $right);
 
         $child = new CategoryUuid();
-        $child->setTitle("child");
+        $child->setTitle('child');
         $child->setParent($root);
 
         $this->em->persist($child);
@@ -268,7 +270,7 @@ class TreeTest extends BaseTestCaseORM
         $this->assertEquals(1, $level);
 
         $child2 = new CategoryUuid();
-        $child2->setTitle("child2");
+        $child2->setTitle('child2');
         $child2->setParent($root);
 
         $this->em->persist($child2);
@@ -295,7 +297,7 @@ class TreeTest extends BaseTestCaseORM
         $this->assertEquals(1, $level);
 
         $childsChild = new CategoryUuid();
-        $childsChild->setTitle("childs2_child");
+        $childsChild->setTitle('childs2_child');
         $childsChild->setParent($child2);
 
         $this->em->persist($childsChild);
@@ -352,7 +354,7 @@ class TreeTest extends BaseTestCaseORM
         // test persisting in any time
         $yetAnotherChild = new CategoryUuid();
         $this->em->persist($yetAnotherChild);
-        $yetAnotherChild->setTitle("yetanotherchild");
+        $yetAnotherChild->setTitle('yetanotherchild');
         $yetAnotherChild->setParent($root);
         //$this->em->persist($yetAnotherChild);
         $this->em->flush();
@@ -369,9 +371,9 @@ class TreeTest extends BaseTestCaseORM
 
     protected function getUsedEntityFixtures()
     {
-        return array(
+        return [
             self::CATEGORY,
             self::CATEGORY_UUID,
-        );
+        ];
     }
 }

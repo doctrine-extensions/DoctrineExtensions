@@ -2,14 +2,14 @@
 
 namespace Gedmo\Translatable\Entity\Repository;
 
+use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\EntityManagerInterface;
-use Gedmo\Translatable\TranslatableListener;
 use Doctrine\ORM\EntityRepository;
-use Doctrine\ORM\Query;
 use Doctrine\ORM\Mapping\ClassMetadata;
+use Doctrine\ORM\Query;
 use Gedmo\Tool\Wrapper\EntityWrapper;
 use Gedmo\Translatable\Mapping\Event\Adapter\ORM as TranslatableAdapterORM;
-use Doctrine\DBAL\Types\Type;
+use Gedmo\Translatable\TranslatableListener;
 
 /**
  * The TranslationRepository has some useful functions
@@ -113,7 +113,7 @@ class TranslationRepository extends EntityRepository
      */
     public function findTranslations($entity)
     {
-        $result = array();
+        $result = [];
         $wrapped = new EntityWrapper($entity, $this->_em);
         if ($wrapped->hasValidIdentifier()) {
             $entityId = $wrapped->getIdentifier();
@@ -199,7 +199,7 @@ class TranslationRepository extends EntityRepository
      */
     public function findTranslationsByObjectId($id)
     {
-        $result = array();
+        $result = [];
         if ($id) {
             $translationMeta = $this->getClassMetadata(); // table inheritance support
             $qb = $this->_em->createQueryBuilder();
@@ -209,7 +209,7 @@ class TranslationRepository extends EntityRepository
                 ->orderBy('trans.locale');
             $q = $qb->getQuery();
             $data = $q->execute(
-                array('entityId' => $id),
+                ['entityId' => $id],
                 Query::HYDRATE_ARRAY
             );
 

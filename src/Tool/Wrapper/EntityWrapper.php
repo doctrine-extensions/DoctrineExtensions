@@ -24,15 +24,14 @@ class EntityWrapper extends AbstractWrapper
     /**
      * True if entity or proxy is loaded
      *
-     * @var boolean
+     * @var bool
      */
     private $initialized = false;
 
     /**
      * Wrap entity
      *
-     * @param object                      $entity
-     * @param \Doctrine\ORM\EntityManagerInterface $em
+     * @param object $entity
      */
     public function __construct($entity, EntityManagerInterface $em)
     {
@@ -42,7 +41,7 @@ class EntityWrapper extends AbstractWrapper
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getPropertyValue($property)
     {
@@ -52,7 +51,7 @@ class EntityWrapper extends AbstractWrapper
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function setPropertyValue($property, $value)
     {
@@ -63,15 +62,15 @@ class EntityWrapper extends AbstractWrapper
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function hasValidIdentifier()
     {
-        return (null !== $this->getIdentifier());
+        return null !== $this->getIdentifier();
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getRootObjectName()
     {
@@ -79,7 +78,7 @@ class EntityWrapper extends AbstractWrapper
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getIdentifier($single = true)
     {
@@ -93,7 +92,7 @@ class EntityWrapper extends AbstractWrapper
                 }
             }
             if (null === $this->identifier) {
-                $this->identifier = array();
+                $this->identifier = [];
                 $incomplete = false;
                 foreach ($this->meta->identifier as $name) {
                     $this->identifier[$name] = $this->getPropertyValue($name);
@@ -129,7 +128,7 @@ class EntityWrapper extends AbstractWrapper
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function isEmbeddedAssociation($field)
     {

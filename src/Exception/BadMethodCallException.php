@@ -10,8 +10,6 @@ use Gedmo\Exception;
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class BadMethodCallException
-    extends \BadMethodCallException
-    implements Exception
+class BadMethodCallException extends \BadMethodCallException implements Exception
 {
 }

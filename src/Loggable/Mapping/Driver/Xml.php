@@ -2,8 +2,8 @@
 
 namespace Gedmo\Loggable\Mapping\Driver;
 
-use Gedmo\Mapping\Driver\Xml as BaseXml;
 use Gedmo\Exception\InvalidMappingException;
+use Gedmo\Mapping\Driver\Xml as BaseXml;
 
 /**
  * This is a xml mapping driver for Loggable
@@ -19,22 +19,22 @@ use Gedmo\Exception\InvalidMappingException;
 class Xml extends BaseXml
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function readExtendedMetadata($meta, array &$config)
     {
         /**
-         * @var \SimpleXmlElement $xml
+         * @var \SimpleXmlElement
          */
         $xml = $this->_getMapping($meta->name);
         $xmlDoctrine = $xml;
 
         $xml = $xml->children(self::GEDMO_NAMESPACE_URI);
 
-        if ($xmlDoctrine->getName() == 'entity' || $xmlDoctrine->getName() == 'document' || $xmlDoctrine->getName() == 'mapped-superclass') {
+        if ('entity' == $xmlDoctrine->getName() || 'document' == $xmlDoctrine->getName() || 'mapped-superclass' == $xmlDoctrine->getName()) {
             if (isset($xml->loggable)) {
                 /**
-                 * @var \SimpleXMLElement $data;
+                 * @var \SimpleXMLElement;
                  */
                 $data = $xml->loggable;
                 $config['loggable'] = true;
@@ -77,16 +77,14 @@ class Xml extends BaseXml
     /**
      * Searches mappings on element for versioned fields
      *
-     * @param \SimpleXMLElement $element
-     * @param array             $config
-     * @param object            $meta
+     * @param object $meta
      */
     private function inspectElementForVersioned(\SimpleXMLElement $element, array &$config, $meta)
     {
         foreach ($element as $mapping) {
             $mappingDoctrine = $mapping;
             /**
-             * @var \SimpleXmlElement $mapping
+             * @var \SimpleXmlElement
              */
             $mapping = $mapping->children(self::GEDMO_NAMESPACE_URI);
 

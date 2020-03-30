@@ -2,57 +2,55 @@
 
 namespace Gedmo\SoftDeleteable\Filter\ODM;
 
-use Doctrine\ODM\MongoDB\Query\Filter\BsonFilter;
 use Doctrine\ODM\MongoDB\Mapping\ClassMetadata;
+use Doctrine\ODM\MongoDB\Query\Filter\BsonFilter;
 use Gedmo\SoftDeleteable\SoftDeleteableListener;
 
 class SoftDeleteableFilter extends BsonFilter
 {
     protected $listener;
     protected $documentManager;
-    protected $disabled = array();
+    protected $disabled = [];
 
     /**
      * Gets the criteria part to add to a query.
-     *
-     * @param ClassMetadata $targetEntity
      *
      * @return array The criteria array, if there is available, empty array otherwise
      */
     public function addFilterCriteria(ClassMetadata $targetEntity): array
     {
         $class = $targetEntity->getName();
-        if (array_key_exists($class, $this->disabled) && $this->disabled[$class] === true) {
-            return array();
-        } elseif (array_key_exists($targetEntity->rootDocumentName, $this->disabled) && $this->disabled[$targetEntity->rootDocumentName] === true) {
-            return array();
+        if (array_key_exists($class, $this->disabled) && true === $this->disabled[$class]) {
+            return [];
+        } elseif (array_key_exists($targetEntity->rootDocumentName, $this->disabled) && true === $this->disabled[$targetEntity->rootDocumentName]) {
+            return [];
         }
 
         $config = $this->getListener()->getConfiguration($this->getDocumentManager(), $targetEntity->name);
 
         if (!isset($config['softDeleteable']) || !$config['softDeleteable']) {
-            return array();
+            return [];
         }
 
         $column = $targetEntity->fieldMappings[$config['fieldName']];
 
         if (isset($config['timeAware']) && $config['timeAware']) {
-            return array(
-                '$or' => array(
-                    array($column['fieldName'] => null),
-                    array($column['fieldName'] => array('$gt' => new \DateTime('now'))),
-                ),
-            );
+            return [
+                '$or' => [
+                    [$column['fieldName'] => null],
+                    [$column['fieldName'] => ['$gt' => new \DateTime('now')]],
+                ],
+            ];
         }
 
-        return array(
+        return [
             $column['fieldName'] => null,
-        );
+        ];
     }
 
     protected function getListener()
     {
-        if ($this->listener === null) {
+        if (null === $this->listener) {
             $em = $this->getDocumentManager();
             $evm = $em->getEventManager();
 
@@ -66,7 +64,7 @@ class SoftDeleteableFilter extends BsonFilter
                 }
             }
 
-            if ($this->listener === null) {
+            if (null === $this->listener) {
                 throw new \RuntimeException('Listener "SoftDeleteableListener" was not added to the EventManager!');
             }
         }
@@ -76,7 +74,7 @@ class SoftDeleteableFilter extends BsonFilter
 
     protected function getDocumentManager()
     {
-        if ($this->documentManager === null) {
+        if (null === $this->documentManager) {
             $refl = new \ReflectionProperty('Doctrine\ODM\MongoDB\Query\Filter\BsonFilter', 'dm');
             $refl->setAccessible(true);
             $this->documentManager = $refl->getValue($this);

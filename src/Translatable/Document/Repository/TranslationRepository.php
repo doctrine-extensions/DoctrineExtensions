@@ -2,14 +2,14 @@
 
 namespace Gedmo\Translatable\Document\Repository;
 
-use Doctrine\ODM\MongoDB\Iterator\Iterator;
-use Doctrine\ODM\MongoDB\Repository\DocumentRepository;
-use Gedmo\Translatable\TranslatableListener;
 use Doctrine\ODM\MongoDB\DocumentManager;
-use Doctrine\ODM\MongoDB\UnitOfWork;
+use Doctrine\ODM\MongoDB\Iterator\Iterator;
 use Doctrine\ODM\MongoDB\Mapping\ClassMetadata;
+use Doctrine\ODM\MongoDB\Repository\DocumentRepository;
+use Doctrine\ODM\MongoDB\UnitOfWork;
 use Gedmo\Tool\Wrapper\MongoDocumentWrapper;
 use Gedmo\Translatable\Mapping\Event\Adapter\ODM as TranslatableAdapterODM;
+use Gedmo\Translatable\TranslatableListener;
 
 /**
  * The TranslationRepository has some useful functions
@@ -107,7 +107,7 @@ class TranslationRepository extends DocumentRepository
      */
     public function findTranslations($document)
     {
-        $result = array();
+        $result = [];
         $wrapped = new MongoDocumentWrapper($document, $this->dm);
         if ($wrapped->hasValidIdentifier()) {
             $documentId = $wrapped->getIdentifier();
@@ -197,7 +197,7 @@ class TranslationRepository extends DocumentRepository
      */
     public function findTranslationsByObjectId($id)
     {
-        $result = array();
+        $result = [];
         if ($id) {
             $qb = $this->createQueryBuilder();
             $q = $qb->field('foreignKey')->equals($id)

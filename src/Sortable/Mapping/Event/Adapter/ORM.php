@@ -2,9 +2,9 @@
 
 namespace Gedmo\Sortable\Mapping\Event\Adapter;
 
+use Doctrine\ORM\QueryBuilder;
 use Gedmo\Mapping\Event\Adapter\ORM as BaseAdapterORM;
 use Gedmo\Sortable\Mapping\Event\SortableAdapter;
-use Doctrine\ORM\QueryBuilder;
 
 /**
  * Doctrine event adapter for ORM adapted
@@ -41,13 +41,13 @@ final class ORM extends BaseAdapterORM implements SortableAdapter
                 $qb->andWhere('n.'.$group.' = :group__'.$i);
                 $qb->setParameter('group__'.$i, $value);
             }
-            $i++;
+            ++$i;
         }
     }
 
     public function updatePositions($relocation, $delta, $config)
     {
-        $sign = $delta['delta'] < 0 ? "-" : "+";
+        $sign = $delta['delta'] < 0 ? '-' : '+';
         $absDelta = abs($delta['delta']);
         $dql = "UPDATE {$relocation['name']} n";
         $dql .= " SET n.{$config['position']} = n.{$config['position']} {$sign} {$absDelta}";
@@ -57,7 +57,7 @@ final class ORM extends BaseAdapterORM implements SortableAdapter
             $dql .= " AND n.{$config['position']} < {$delta['stop']}";
         }
         $i = -1;
-        $params = array();
+        $params = [];
         foreach ($relocation['groups'] as $group => $value) {
             if (is_null($value)) {
                 $dql .= " AND n.{$group} IS NULL";
@@ -70,9 +70,9 @@ final class ORM extends BaseAdapterORM implements SortableAdapter
         // add excludes
         if (!empty($delta['exclude'])) {
             $meta = $this->getObjectManager()->getClassMetadata($relocation['name']);
-            if (count($meta->identifier) == 1) {
+            if (1 == count($meta->identifier)) {
                 // if we only have one identifier, we can use IN syntax, for better performance
-                $excludedIds = array();
+                $excludedIds = [];
                 foreach ($delta['exclude'] as $entity) {
                     if ($id = $meta->getFieldValue($entity, $meta->identifier[0])) {
                         $excludedIds[] = $id;
@@ -82,16 +82,16 @@ final class ORM extends BaseAdapterORM implements SortableAdapter
                     $params['excluded'] = $excludedIds;
                     $dql .= " AND n.{$meta->identifier[0]} NOT IN (:excluded)";
                 }
-            } else if (count($meta->identifier) > 1) {
+            } elseif (count($meta->identifier) > 1) {
                 foreach ($delta['exclude'] as $entity) {
                     $j = 0;
-                    $dql .= " AND NOT (";
+                    $dql .= ' AND NOT (';
                     foreach ($meta->getIdentifierValues($entity) as $id => $value) {
-                        $dql .= ($j > 0 ? " AND " : "") . "n.{$id} = :val___".(++$i);
+                        $dql .= ($j > 0 ? ' AND ' : '')."n.{$id} = :val___".(++$i);
                         $params['val___'.$i] = $value;
-                        $j++;
+                        ++$j;
                     }
-                    $dql .=  ")";
+                    $dql .= ')';
                 }
             }
         }

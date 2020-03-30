@@ -2,8 +2,8 @@
 
 namespace Gedmo\ReferenceIntegrity\Mapping\Driver;
 
-use Gedmo\Mapping\Driver\AbstractAnnotationDriver;
 use Gedmo\Exception\InvalidMappingException;
+use Gedmo\Mapping\Driver\AbstractAnnotationDriver;
 use Gedmo\ReferenceIntegrity\Mapping\Validator;
 
 /**
@@ -28,7 +28,7 @@ class Annotation extends AbstractAnnotationDriver
     const ACTION = 'Gedmo\\Mapping\\Annotation\\ReferenceIntegrityAction';
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function readExtendedMetadata($meta, array &$config)
     {
@@ -39,35 +39,16 @@ class Annotation extends AbstractAnnotationDriver
             if ($referenceIntegrity = $this->reader->getPropertyAnnotation($reflProperty, self::REFERENCE_INTEGRITY)) {
                 $property = $reflProperty->getName();
                 if (!$meta->hasField($property)) {
-                    throw new InvalidMappingException(
-                        sprintf(
-                            "Unable to find reference integrity [%s] as mapped property in entity - %s",
-                            $property,
-                            $meta->name
-                        )
-                    );
+                    throw new InvalidMappingException(sprintf('Unable to find reference integrity [%s] as mapped property in entity - %s', $property, $meta->name));
                 }
 
                 $fieldMapping = $meta->getFieldMapping($property);
                 if (!isset($fieldMapping['mappedBy'])) {
-                    throw new InvalidMappingException(
-                        sprintf(
-                            "'mappedBy' should be set on '%s' in '%s'",
-                            $property,
-                            $meta->name
-                        )
-                    );
+                    throw new InvalidMappingException(sprintf("'mappedBy' should be set on '%s' in '%s'", $property, $meta->name));
                 }
 
                 if (!in_array($referenceIntegrity->value, $validator->getIntegrityActions())) {
-                    throw new InvalidMappingException(
-                        sprintf(
-                            "Field - [%s] does not have a valid integrity option, [%s] in class - %s",
-                            $property,
-                            implode(', ', $validator->getIntegrityActions()),
-                            $meta->name
-                        )
-                    );
+                    throw new InvalidMappingException(sprintf('Field - [%s] does not have a valid integrity option, [%s] in class - %s', $property, implode(', ', $validator->getIntegrityActions()), $meta->name));
                 }
 
                 $config['referenceIntegrity'][$property] = $referenceIntegrity->value;

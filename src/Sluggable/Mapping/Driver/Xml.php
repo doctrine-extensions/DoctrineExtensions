@@ -2,8 +2,8 @@
 
 namespace Gedmo\Sluggable\Mapping\Driver;
 
-use Gedmo\Mapping\Driver\Xml as BaseXml;
 use Gedmo\Exception\InvalidMappingException;
+use Gedmo\Mapping\Driver\Xml as BaseXml;
 
 /**
  * This is a xml mapping driver for Sluggable
@@ -22,22 +22,22 @@ class Xml extends BaseXml
      *
      * @var array
      */
-    private $validTypes = array(
+    private $validTypes = [
         'string',
         'text',
         'integer',
         'int',
         'datetime',
         'citext',
-    );
+    ];
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function readExtendedMetadata($meta, array &$config)
     {
         /**
-         * @var \SimpleXmlElement $xml
+         * @var \SimpleXmlElement
          */
         $xml = $this->_getMapping($meta->name);
 
@@ -59,13 +59,13 @@ class Xml extends BaseXml
     private function buildFieldConfiguration($meta, $field, \SimpleXMLElement $mapping, array &$config)
     {
         /**
-         * @var \SimpleXmlElement $mapping
+         * @var \SimpleXmlElement
          */
         $mapping = $mapping->children(self::GEDMO_NAMESPACE_URI);
 
         if (isset($mapping->slug)) {
             /**
-             * @var \SimpleXmlElement $slug
+             * @var \SimpleXmlElement
              */
             $slug = $mapping->slug;
             if (!$this->isValidField($meta, $field)) {
@@ -81,11 +81,11 @@ class Xml extends BaseXml
                 }
             }
 
-            $handlers = array();
+            $handlers = [];
             if (isset($slug->handler)) {
                 foreach ($slug->handler as $handler) {
                     $class = (string) $this->_getAttribute($handler, 'class');
-                    $handlers[$class] = array();
+                    $handlers[$class] = [];
                     foreach ($handler->{'handler-option'} as $option) {
                         $handlers[$class][(string) $this->_getAttribute($option, 'name')]
                             = (string) $this->_getAttribute($option, 'value')
@@ -96,7 +96,7 @@ class Xml extends BaseXml
             }
 
             // set all options
-            $config['slugs'][$field] = array(
+            $config['slugs'][$field] = [
                 'fields' => $fields,
                 'slug' => $field,
                 'style' => $this->_isAttributeSet($slug, 'style') ?
@@ -116,12 +116,12 @@ class Xml extends BaseXml
                 'suffix' => $this->_isAttributeSet($slug, 'suffix') ?
                     $this->_getAttribute($slug, 'suffix') : '',
                 'handlers' => $handlers,
-            );
+            ];
             if (!$meta->isMappedSuperclass && $meta->isIdentifier($field) && !$config['slugs'][$field]['unique']) {
                 throw new InvalidMappingException("Identifier field - [{$field}] slug must be unique in order to maintain primary key in class - {$meta->name}");
             }
             $ubase = $config['slugs'][$field]['unique_base'];
-            if ($config['slugs'][$field]['unique'] === false && $ubase) {
+            if (false === $config['slugs'][$field]['unique'] && $ubase) {
                 throw new InvalidMappingException("Slug annotation [unique_base] can not be set if unique is unset or 'false'");
             }
             if ($ubase && !$meta->hasField($ubase) && !$meta->hasAssociation($ubase)) {
@@ -136,7 +136,7 @@ class Xml extends BaseXml
      * @param object $meta
      * @param string $field
      *
-     * @return boolean
+     * @return bool
      */
     protected function isValidField($meta, $field)
     {

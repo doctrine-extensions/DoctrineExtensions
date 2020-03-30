@@ -2,8 +2,8 @@
 
 namespace Mapping\Fixture\Document;
 
-use Gedmo\Mapping\Mock\Extension\Encoder\Mapping as Ext;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
+use Gedmo\Mapping\Mock\Extension\Encoder\Mapping as Ext;
 
 /**
  * @ODM\Document(collection="test_users")

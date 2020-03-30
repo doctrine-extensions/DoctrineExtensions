@@ -3,25 +3,27 @@
 namespace Gedmo\IpTraceable;
 
 use Doctrine\Common\EventManager;
-use Tool\BaseTestCaseORM;
 use IpTraceable\Fixture\Article;
 use IpTraceable\Fixture\Comment;
 use IpTraceable\Fixture\Type;
+use Tool\BaseTestCaseORM;
 
 /**
  * These are tests for IpTraceable behavior
  *
  * @author Pierre-Charles Bertineau <pc.bertineau@alterphp.com>
- * @link http://www.gediminasm.org
+ *
+ * @see http://www.gediminasm.org
+ *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class IpTraceableTest extends BaseTestCaseORM
 {
     const TEST_IP = '34.234.1.10';
 
-    const ARTICLE = "IpTraceable\\Fixture\\Article";
-    const COMMENT = "IpTraceable\\Fixture\\Comment";
-    const TYPE = "IpTraceable\\Fixture\\Type";
+    const ARTICLE = 'IpTraceable\\Fixture\\Article';
+    const COMMENT = 'IpTraceable\\Fixture\\Comment';
+    const TYPE = 'IpTraceable\\Fixture\\Type';
 
     protected function setUp(): void
     {
@@ -137,10 +139,10 @@ class IpTraceableTest extends BaseTestCaseORM
 
     protected function getUsedEntityFixtures()
     {
-        return array(
+        return [
             self::ARTICLE,
             self::COMMENT,
             self::TYPE,
-        );
+        ];
     }
 }

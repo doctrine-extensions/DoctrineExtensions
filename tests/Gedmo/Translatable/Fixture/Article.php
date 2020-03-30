@@ -2,9 +2,9 @@
 
 namespace Translatable\Fixture;
 
-use Gedmo\Translatable\Translatable;
-use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
+use Gedmo\Translatable\Translatable;
 
 /**
  * @ORM\Entity
@@ -40,6 +40,7 @@ class Article implements Translatable
 
     /**
      * Used locale to override Translation listener`s locale
+     *
      * @Gedmo\Locale
      */
     private $locale;

@@ -2,8 +2,8 @@
 
 namespace Gedmo\IpTraceable\Mapping\Event\Adapter;
 
-use Gedmo\Mapping\Event\Adapter\ORM as BaseAdapterORM;
 use Gedmo\IpTraceable\Mapping\Event\IpTraceableAdapter;
+use Gedmo\Mapping\Event\Adapter\ORM as BaseAdapterORM;
 
 /**
  * Doctrine event adapter for ORM adapted

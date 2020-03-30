@@ -24,15 +24,14 @@ class MongoDocumentWrapper extends AbstractWrapper
     /**
      * True if document or proxy is loaded
      *
-     * @var boolean
+     * @var bool
      */
     private $initialized = false;
 
     /**
      * Wrap document
      *
-     * @param object                                $document
-     * @param \Doctrine\ODM\MongoDB\DocumentManager $dm
+     * @param object $document
      */
     public function __construct($document, DocumentManager $dm)
     {
@@ -42,7 +41,7 @@ class MongoDocumentWrapper extends AbstractWrapper
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getPropertyValue($property)
     {
@@ -52,7 +51,7 @@ class MongoDocumentWrapper extends AbstractWrapper
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getRootObjectName()
     {
@@ -60,7 +59,7 @@ class MongoDocumentWrapper extends AbstractWrapper
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function setPropertyValue($property, $value)
     {
@@ -71,7 +70,7 @@ class MongoDocumentWrapper extends AbstractWrapper
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function hasValidIdentifier()
     {
@@ -79,7 +78,7 @@ class MongoDocumentWrapper extends AbstractWrapper
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getIdentifier($single = true)
     {
@@ -128,7 +127,7 @@ class MongoDocumentWrapper extends AbstractWrapper
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function isEmbeddedAssociation($field)
     {

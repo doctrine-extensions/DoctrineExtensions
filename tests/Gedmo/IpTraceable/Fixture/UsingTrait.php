@@ -1,15 +1,16 @@
 <?php
+
 namespace IpTraceable\Fixture;
 
-use Gedmo\IpTraceable\Traits\IpTraceableEntity;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\IpTraceable\Traits\IpTraceableEntity;
 
 /**
  * @ORM\Entity
  */
 class UsingTrait
 {
-    /**
+    /*
      * Hook ipTraceable behavior
      * updates createdFromIp, updatedFromIp fields
      */

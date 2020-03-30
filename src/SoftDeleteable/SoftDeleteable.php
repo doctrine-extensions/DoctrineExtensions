@@ -15,7 +15,7 @@ interface SoftDeleteable
 {
     // this interface is not necessary to implement
 
-    /**
+    /*
      * @gedmo:SoftDeleteable
      * to mark the class as SoftDeleteable use class annotation @gedmo:SoftDeleteable
      * this object will be able to be soft deleted

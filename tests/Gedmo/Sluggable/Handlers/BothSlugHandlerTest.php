@@ -3,22 +3,24 @@
 namespace Gedmo\Sluggable;
 
 use Doctrine\Common\EventManager;
-use Tool\BaseTestCaseORM;
+use Gedmo\Tree\TreeListener;
 use Sluggable\Fixture\Handler\People\Occupation;
 use Sluggable\Fixture\Handler\People\Person;
-use Gedmo\Tree\TreeListener;
+use Tool\BaseTestCaseORM;
 
 /**
  * These are tests for Sluggable behavior
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @link http://www.gediminasm.org
+ *
+ * @see http://www.gediminasm.org
+ *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class BothSlugHandlerTest extends BaseTestCaseORM
 {
-    const OCCUPATION = "Sluggable\\Fixture\\Handler\\People\\Occupation";
-    const PERSON = "Sluggable\\Fixture\\Handler\\People\\Person";
+    const OCCUPATION = 'Sluggable\\Fixture\\Handler\\People\\Occupation';
+    const PERSON = 'Sluggable\\Fixture\\Handler\\People\\Person';
 
     protected function setUp(): void
     {
@@ -89,11 +91,9 @@ class BothSlugHandlerTest extends BaseTestCaseORM
         $this->em->persist($developer);
         $this->em->flush();
 
-
         // Works (but is not updated in the actual DB)
         $herzult = $personRepo->findOneBy(['name' => 'Herzult']);
         $this->assertEquals('web/enthusiast/php/herzult', $herzult->getSlug());
-
 
         $this->em->clear();
 
@@ -104,10 +104,10 @@ class BothSlugHandlerTest extends BaseTestCaseORM
 
     protected function getUsedEntityFixtures()
     {
-        return array(
+        return [
             self::OCCUPATION,
             self::PERSON,
-        );
+        ];
     }
 
     private function populate()

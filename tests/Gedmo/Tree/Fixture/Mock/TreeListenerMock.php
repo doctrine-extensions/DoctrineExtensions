@@ -5,14 +5,16 @@
  *
  * @author Gustavo Adrian <comfortablynumb84@gmail.com>
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @link http://www.gediminasm.org
+ *
+ * @see http://www.gediminasm.org
+ *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 
 namespace Tree\Fixture\Mock;
 
-use Gedmo\Tree\TreeListener;
 use Doctrine\Common\Persistence\ObjectManager;
+use Gedmo\Tree\TreeListener;
 
 class TreeListenerMock extends TreeListener
 {
@@ -36,7 +38,7 @@ class TreeListenerMock extends TreeListener
             $this->strategy->releaseLock = $this->releaseLocks;
         }
 
-        return array('materializedPath' => $this->strategy);
+        return ['materializedPath' => $this->strategy];
     }
 
     public function setReleaseLocks($bool)

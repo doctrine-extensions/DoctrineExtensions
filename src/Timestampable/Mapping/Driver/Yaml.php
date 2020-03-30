@@ -2,9 +2,9 @@
 
 namespace Gedmo\Timestampable\Mapping\Driver;
 
-use Gedmo\Mapping\Driver\File;
-use Gedmo\Mapping\Driver;
 use Gedmo\Exception\InvalidMappingException;
+use Gedmo\Mapping\Driver;
+use Gedmo\Mapping\Driver\File;
 
 /**
  * This is a yaml mapping driver for Timestampable
@@ -19,6 +19,7 @@ class Yaml extends File implements Driver
 {
     /**
      * File extension
+     *
      * @var string
      */
     protected $_extension = '.dcm.yml';
@@ -28,7 +29,7 @@ class Yaml extends File implements Driver
      *
      * @var array
      */
-    private $validTypes = array(
+    private $validTypes = [
         'date',
         'date_immutable',
         'time',
@@ -41,10 +42,10 @@ class Yaml extends File implements Driver
         'zenddate',
         'vardatetime',
         'integer',
-    );
+    ];
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function readExtendedMetadata($meta, array &$config)
     {
@@ -57,24 +58,24 @@ class Yaml extends File implements Driver
                     if (!$this->isValidField($meta, $field)) {
                         throw new InvalidMappingException("Field - [{$field}] type is not valid and must be 'date', 'datetime' or 'time' in class - {$meta->name}");
                     }
-                    if (!isset($mappingProperty['on']) || !in_array($mappingProperty['on'], array('update', 'create', 'change'))) {
+                    if (!isset($mappingProperty['on']) || !in_array($mappingProperty['on'], ['update', 'create', 'change'])) {
                         throw new InvalidMappingException("Field - [{$field}] trigger 'on' is not one of [update, create, change] in class - {$meta->name}");
                     }
 
-                    if ($mappingProperty['on'] == 'change') {
+                    if ('change' == $mappingProperty['on']) {
                         if (!isset($mappingProperty['field'])) {
                             throw new InvalidMappingException("Missing parameters on property - {$field}, field must be set on [change] trigger in class - {$meta->name}");
                         }
                         $trackedFieldAttribute = $mappingProperty['field'];
                         $valueAttribute = isset($mappingProperty['value']) ? $mappingProperty['value'] : null;
                         if (is_array($trackedFieldAttribute) && null !== $valueAttribute) {
-                            throw new InvalidMappingException("Timestampable extension does not support multiple value changeset detection yet.");
+                            throw new InvalidMappingException('Timestampable extension does not support multiple value changeset detection yet.');
                         }
-                        $field = array(
+                        $field = [
                             'field' => $field,
                             'trackedField' => $trackedFieldAttribute,
                             'value' => $valueAttribute,
-                        );
+                        ];
                     }
                     $config[$mappingProperty['on']][] = $field;
                 }
@@ -83,7 +84,7 @@ class Yaml extends File implements Driver
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     protected function _loadMappingFile($file)
     {
@@ -96,7 +97,7 @@ class Yaml extends File implements Driver
      * @param object $meta
      * @param string $field
      *
-     * @return boolean
+     * @return bool
      */
     protected function isValidField($meta, $field)
     {

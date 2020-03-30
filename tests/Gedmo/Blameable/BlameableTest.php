@@ -2,24 +2,26 @@
 
 namespace Gedmo\Blameable;
 
-use Doctrine\Common\EventManager;
-use Tool\BaseTestCaseORM;
 use Blameable\Fixture\Entity\Article;
 use Blameable\Fixture\Entity\Comment;
 use Blameable\Fixture\Entity\Type;
+use Doctrine\Common\EventManager;
+use Tool\BaseTestCaseORM;
 
 /**
  * These are tests for Blameable behavior
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @link http://www.gediminasm.org
+ *
+ * @see http://www.gediminasm.org
+ *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class BlameableTest extends BaseTestCaseORM
 {
-    const ARTICLE = "Blameable\\Fixture\\Entity\\Article";
-    const COMMENT = "Blameable\\Fixture\\Entity\\Comment";
-    const TYPE = "Blameable\\Fixture\\Entity\\Type";
+    const ARTICLE = 'Blameable\\Fixture\\Entity\\Article';
+    const COMMENT = 'Blameable\\Fixture\\Entity\\Comment';
+    const TYPE = 'Blameable\\Fixture\\Entity\\Type';
 
     protected function setUp(): void
     {
@@ -112,10 +114,10 @@ class BlameableTest extends BaseTestCaseORM
 
     protected function getUsedEntityFixtures()
     {
-        return array(
+        return [
             self::ARTICLE,
             self::COMMENT,
             self::TYPE,
-        );
+        ];
     }
 }

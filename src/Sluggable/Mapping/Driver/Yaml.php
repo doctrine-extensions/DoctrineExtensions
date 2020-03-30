@@ -2,9 +2,9 @@
 
 namespace Gedmo\Sluggable\Mapping\Driver;
 
-use Gedmo\Mapping\Driver\File;
-use Gedmo\Mapping\Driver;
 use Gedmo\Exception\InvalidMappingException;
+use Gedmo\Mapping\Driver;
+use Gedmo\Mapping\Driver\File;
 
 /**
  * This is a yaml mapping driver for Sluggable
@@ -19,6 +19,7 @@ class Yaml extends File implements Driver
 {
     /**
      * File extension
+     *
      * @var string
      */
     protected $_extension = '.dcm.yml';
@@ -28,17 +29,17 @@ class Yaml extends File implements Driver
      *
      * @var array
      */
-    private $validTypes = array(
+    private $validTypes = [
         'string',
         'text',
         'integer',
         'int',
         'datetime',
         'citext',
-    );
+    ];
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function readExtendedMetadata($meta, array &$config)
     {
@@ -58,7 +59,7 @@ class Yaml extends File implements Driver
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     protected function _loadMappingFile($file)
     {
@@ -71,7 +72,7 @@ class Yaml extends File implements Driver
      * @param object $meta
      * @param string $field
      *
-     * @return boolean
+     * @return bool
      */
     protected function isValidField($meta, $field)
     {
@@ -89,7 +90,7 @@ class Yaml extends File implements Driver
                     throw new InvalidMappingException("Cannot use field - [{$field}] for slug storage, type is not valid and must be 'string' or 'text' in class - {$meta->name}");
                 }
                 // process slug handlers
-                $handlers = array();
+                $handlers = [];
                 if (isset($slug['handlers'])) {
                     foreach ($slug['handlers'] as $handlerClass => $options) {
                         if (!strlen($handlerClass)) {
@@ -143,7 +144,7 @@ class Yaml extends File implements Driver
                     throw new InvalidMappingException("Identifier field - [{$field}] slug must be unique in order to maintain primary key in class - {$meta->name}");
                 }
                 $ubase = $config['slugs'][$field]['unique_base'];
-                if ($config['slugs'][$field]['unique'] === false && $ubase) {
+                if (false === $config['slugs'][$field]['unique'] && $ubase) {
                     throw new InvalidMappingException("Slug annotation [unique_base] can not be set if unique is unset or 'false'");
                 }
                 if ($ubase && !$meta->hasField($ubase) && !$meta->hasAssociation($ubase)) {

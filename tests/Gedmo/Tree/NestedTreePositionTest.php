@@ -11,13 +11,15 @@ use Tree\Fixture\RootCategory;
  * These are tests for Tree behavior
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @link http://www.gediminasm.org
+ *
+ * @see http://www.gediminasm.org
+ *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class NestedTreePositionTest extends BaseTestCaseORM
 {
-    const CATEGORY = "Tree\\Fixture\\Category";
-    const ROOT_CATEGORY = "Tree\\Fixture\\RootCategory";
+    const CATEGORY = 'Tree\\Fixture\\Category';
+    const ROOT_CATEGORY = 'Tree\\Fixture\\RootCategory';
 
     protected function setUp(): void
     {
@@ -30,8 +32,8 @@ class NestedTreePositionTest extends BaseTestCaseORM
     }
 
     /**
-    * @test
-    */
+     * @test
+     */
     public function shouldFailToPersistRootSibling()
     {
         $food = new Category();
@@ -496,9 +498,9 @@ class NestedTreePositionTest extends BaseTestCaseORM
 
     protected function getUsedEntityFixtures()
     {
-        return array(
+        return [
             self::CATEGORY,
             self::ROOT_CATEGORY,
-        );
+        ];
     }
 }

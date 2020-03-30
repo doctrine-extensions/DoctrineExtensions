@@ -26,17 +26,15 @@ abstract class AbstractTrackingListener extends MappedEventSubscriber
      */
     public function getSubscribedEvents()
     {
-        return array(
+        return [
             'prePersist',
             'onFlush',
             'loadClassMetadata',
-        );
+        ];
     }
 
     /**
      * Maps additional metadata for the Entity
-     *
-     * @param EventArgs $eventArgs
      *
      * @return void
      */
@@ -49,8 +47,6 @@ abstract class AbstractTrackingListener extends MappedEventSubscriber
     /**
      * Looks for Timestampable objects being updated
      * to update modification date
-     *
-     * @param EventArgs $args
      *
      * @return void
      */
@@ -73,7 +69,7 @@ abstract class AbstractTrackingListener extends MappedEventSubscriber
                 foreach ($config['create'] as $field) {
                     // Field can not exist in change set, when persisting embedded document without parent for example
                     $new = array_key_exists($field, $changeSet) ? $changeSet[$field][1] : false;
-                    if ($new === null) { // let manual values
+                    if (null === $new) { // let manual values
                         $needChanges = true;
                         $this->updateField($object, $ea, $meta, $field);
                     }
@@ -84,7 +80,7 @@ abstract class AbstractTrackingListener extends MappedEventSubscriber
                 foreach ($config['update'] as $field) {
                     $isInsertAndNull = $uow->isScheduledForInsert($object)
                         && array_key_exists($field, $changeSet)
-                        && $changeSet[$field][1] === null;
+                        && null === $changeSet[$field][1];
                     if (!isset($changeSet[$field]) || $isInsertAndNull) { // let manual values
                         $needChanges = true;
                         $this->updateField($object, $ea, $meta, $field);
@@ -100,7 +96,7 @@ abstract class AbstractTrackingListener extends MappedEventSubscriber
 
                     if (!is_array($options['trackedField'])) {
                         $singleField = true;
-                        $trackedFields = array($options['trackedField']);
+                        $trackedFields = [$options['trackedField']];
                     } else {
                         $singleField = false;
                         $trackedFields = $options['trackedField'];
@@ -125,9 +121,7 @@ abstract class AbstractTrackingListener extends MappedEventSubscriber
                             if (isset($trackedChild)) {
                                 $changingObject = $changes[1];
                                 if (!is_object($changingObject)) {
-                                    throw new UnexpectedValueException(
-                                        "Field - [{$tracked}] is expected to be object in class - {$meta->name}"
-                                    );
+                                    throw new UnexpectedValueException("Field - [{$tracked}] is expected to be object in class - {$meta->name}");
                                 }
                                 $objectMeta = $om->getClassMetadata(get_class($changingObject));
                                 $om->initializeObject($changingObject);
@@ -136,7 +130,7 @@ abstract class AbstractTrackingListener extends MappedEventSubscriber
                                 $value = $changes[1];
                             }
 
-                            if (($singleField && in_array($value, (array) $options['value'])) || $options['value'] === null) {
+                            if (($singleField && in_array($value, (array) $options['value'])) || null === $options['value']) {
                                 $needChanges = true;
                                 $this->updateField($object, $ea, $meta, $options['field']);
                             }
@@ -155,8 +149,6 @@ abstract class AbstractTrackingListener extends MappedEventSubscriber
      * Checks for persisted Timestampable objects
      * to update creation and modification dates
      *
-     * @param EventArgs $args
-     *
      * @return void
      */
     public function prePersist(EventArgs $args)
@@ -168,14 +160,14 @@ abstract class AbstractTrackingListener extends MappedEventSubscriber
         if ($config = $this->getConfiguration($om, $meta->getName())) {
             if (isset($config['update'])) {
                 foreach ($config['update'] as $field) {
-                    if ($meta->getReflectionProperty($field)->getValue($object) === null) { // let manual values
+                    if (null === $meta->getReflectionProperty($field)->getValue($object)) { // let manual values
                         $this->updateField($object, $ea, $meta, $field);
                     }
                 }
             }
             if (isset($config['create'])) {
                 foreach ($config['create'] as $field) {
-                    if ($meta->getReflectionProperty($field)->getValue($object) === null) { // let manual values
+                    if (null === $meta->getReflectionProperty($field)->getValue($object)) { // let manual values
                         $this->updateField($object, $ea, $meta, $field);
                     }
                 }
@@ -212,7 +204,7 @@ abstract class AbstractTrackingListener extends MappedEventSubscriber
             $uow = $eventAdapter->getObjectManager()->getUnitOfWork();
 
             // Check to persist only when the entity isn't already managed, persists always for MongoDB
-            if(!($uow instanceof UnitOfWork) || $uow->getEntityState($newValue) !== UnitOfWork::STATE_MANAGED) {
+            if (!($uow instanceof UnitOfWork) || UnitOfWork::STATE_MANAGED !== $uow->getEntityState($newValue)) {
                 $eventAdapter->getObjectManager()->persist($newValue);
             }
         }

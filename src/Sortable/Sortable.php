@@ -14,7 +14,7 @@ interface Sortable
 {
     // use now annotations instead of predefined methods, this interface is not necessary
 
-    /**
+    /*
      * @gedmo:SortablePosition - to mark property which will hold the item position use annotation @gedmo:SortablePosition
      *              This property has to be numeric. The position index can be negative and will be counted from right to left.
      *
@@ -30,7 +30,7 @@ interface Sortable
      *
      */
 
-    /**
+    /*
      * @gedmo:SortableGroup - to group node sorting by a property use annotation @gedmo:SortableGroup on this property
      *
      * example:

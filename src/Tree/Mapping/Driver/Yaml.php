@@ -2,9 +2,9 @@
 
 namespace Gedmo\Tree\Mapping\Driver;
 
-use Gedmo\Mapping\Driver\File;
-use Gedmo\Mapping\Driver;
 use Gedmo\Exception\InvalidMappingException;
+use Gedmo\Mapping\Driver;
+use Gedmo\Mapping\Driver\File;
 use Gedmo\Tree\Mapping\Validator;
 
 /**
@@ -20,6 +20,7 @@ class Yaml extends File implements Driver
 {
     /**
      * File extension
+     *
      * @var string
      */
     protected $_extension = '.dcm.yml';
@@ -29,14 +30,14 @@ class Yaml extends File implements Driver
      *
      * @var array
      */
-    private $strategies = array(
+    private $strategies = [
         'nested',
         'closure',
         'materializedPath',
-    );
+    ];
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function readExtendedMetadata($meta, array &$config)
     {
@@ -57,7 +58,7 @@ class Yaml extends File implements Driver
                     (int) $classMapping['tree']['lockingTimeout'] : 3;
 
                 if ($config['locking_timeout'] < 1) {
-                    throw new InvalidMappingException("Tree Locking Timeout must be at least of 1 second.");
+                    throw new InvalidMappingException('Tree Locking Timeout must be at least of 1 second.');
                 }
             }
             if (isset($classMapping['tree']['closure'])) {
@@ -69,13 +70,11 @@ class Yaml extends File implements Driver
         }
 
         if (isset($mapping['id'])) {
-            foreach($mapping['id'] as $field => $fieldMapping) {
+            foreach ($mapping['id'] as $field => $fieldMapping) {
                 if (isset($fieldMapping['gedmo'])) {
                     if (in_array('treePathSource', $fieldMapping['gedmo'])) {
                         if (!$validator->isValidFieldForPathSource($meta, $field)) {
-                            throw new InvalidMappingException(
-                                "Tree PathSource field - [{$field}] type is not valid. It can be any of the integer variants, double, float or string in class - {$meta->name}"
-                            );
+                            throw new InvalidMappingException("Tree PathSource field - [{$field}] type is not valid. It can be any of the integer variants, double, float or string in class - {$meta->name}");
                         }
                         $config['path_source'] = $field;
                     }
@@ -170,7 +169,7 @@ class Yaml extends File implements Driver
         }
 
         if (isset($config['activate_locking']) && $config['activate_locking'] && !isset($config['lock_time'])) {
-            throw new InvalidMappingException("You need to map a date|datetime|timestamp field as the tree lock time field to activate locking support.");
+            throw new InvalidMappingException('You need to map a date|datetime|timestamp field as the tree lock time field to activate locking support.');
         }
 
         if (isset($mapping['manyToOne'])) {
@@ -206,7 +205,7 @@ class Yaml extends File implements Driver
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     protected function _loadMappingFile($file)
     {

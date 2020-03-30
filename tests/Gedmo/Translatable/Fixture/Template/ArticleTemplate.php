@@ -2,8 +2,8 @@
 
 namespace Translatable\Fixture\Template;
 
-use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ORM\MappedSuperclass
@@ -24,6 +24,7 @@ class ArticleTemplate
 
     /**
      * Used locale to override Translation listener`s locale
+     *
      * @Gedmo\Locale
      */
     protected $locale;

@@ -3,8 +3,8 @@
 namespace Gedmo\Translatable\Document;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations\Document;
-use Doctrine\ODM\MongoDB\Mapping\Annotations\UniqueIndex;
 use Doctrine\ODM\MongoDB\Mapping\Annotations\Index;
+use Doctrine\ODM\MongoDB\Mapping\Annotations\UniqueIndex;
 
 /**
  * Gedmo\Translatable\Document\Translation
@@ -24,7 +24,7 @@ use Doctrine\ODM\MongoDB\Mapping\Annotations\Index;
  */
 class Translation extends MappedSuperclass\AbstractTranslation
 {
-    /**
+    /*
      * All required columns are mapped through inherited superclass
      */
 }
