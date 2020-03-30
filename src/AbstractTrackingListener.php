@@ -194,7 +194,7 @@ abstract class AbstractTrackingListener extends MappedEventSubscriber
      */
     protected function updateField($object, $eventAdapter, $meta, $field)
     {
-        /** @var \Doctrine\Orm\Mapping\ClassMetadata|\Doctrine\ODM\MongoDB\Mapping\ClassMetadata $meta */
+        /** @var \Doctrine\ORM\Mapping\ClassMetadata|\Doctrine\ODM\MongoDB\Mapping\ClassMetadata $meta */
         $property = $meta->getReflectionProperty($field);
         $oldValue = $property->getValue($object);
         $newValue = $this->getFieldValue($meta, $field, $eventAdapter);
