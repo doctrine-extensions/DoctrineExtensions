@@ -2,6 +2,7 @@
 
 namespace Gedmo\SoftDeleteable;
 
+use Doctrine\Common\Cache\ArrayCache;
 use SoftDeleteable\Fixture\Entity\UserNoHardDelete;
 use Tool\BaseTestCaseORM;
 use Doctrine\Common\EventManager;
@@ -474,6 +475,52 @@ class SoftDeleteableEntityTest extends BaseTestCaseORM
 
         $user = $repo->findOneBy(array('username' => $username));
         $this->assertNull($user);
+    }
+
+    /**
+     * @test
+     */
+    public function shouldFilterBeQueryCachedCorrectlyWhenToggledForEntity()
+    {
+        $cache = new ArrayCache();
+        $this->em->getConfiguration()->setQueryCacheImpl($cache);
+
+        $filter = $this->em->getFilters()->enable(self::SOFT_DELETEABLE_FILTER_NAME);
+        $filter->disableForEntity(self::USER_CLASS);
+
+        $repo = $this->em->getRepository(self::USER_CLASS);
+
+        $newUser = new User();
+        $username = 'test_user';
+        $newUser->setUsername($username);
+
+        $this->em->persist($newUser);
+        $this->em->flush();
+
+        $user = $repo->findOneBy(array('username' => $username));
+
+        $this->assertNull($user->getDeletedAt());
+
+        $this->em->remove($user);
+        $this->em->flush();
+
+        $dql = 'SELECT u FROM '.self::USER_CLASS.' u WHERE u.username = :username';
+        $q = $this->em->createQuery($dql)
+                      ->setParameter('username', $username)
+        ;
+        $data = $q->getResult();
+        $this->assertCount(1, $data);
+        $user = $data[0];
+        $this->assertNotNull($user->getDeletedAt());
+
+        $filter->enableForEntity(self::USER_CLASS);
+
+        // The result should be different even with the query cache enabled.
+        $q = $this->em->createQuery($dql)
+                      ->setParameter('username', $username)
+        ;
+        $data = $q->getResult();
+        $this->assertCount(0, $data);
     }
 
     public function testPostSoftDeleteEventIsDispatched()
