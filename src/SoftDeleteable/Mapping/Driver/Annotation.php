@@ -52,6 +52,13 @@ class Annotation extends AbstractAnnotationDriver
                 }
                 $config['hardDelete'] = $annot->hardDelete;
             }
+
+            if (isset($annot->disabled)) {
+                if (!is_bool($annot->disabled)) {
+                    throw new InvalidMappingException("disabled must be boolean. ".gettype($annot->disabled)." provided.");
+                }
+                $config['disabled'] = $annot->hardDelete;
+            }
         }
 
         $this->validateFullMetadata($meta, $config);

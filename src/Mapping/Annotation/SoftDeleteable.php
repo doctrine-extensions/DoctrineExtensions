@@ -23,4 +23,7 @@ final class SoftDeleteable extends Annotation
 
     /** @var bool */
     public $hardDelete = true;
+
+    /** @var bool */
+    public $disabled;
 }

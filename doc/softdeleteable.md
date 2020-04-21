@@ -12,6 +12,7 @@ Features:
 - Annotation, Yaml and Xml mapping support for extensions
 - Support for 'timeAware' option: When creating an entity set a date of deletion in the future and never worry about cleaning up at expiration time.
 - Support for 'hardDelete' option: When deleting a second time it allows to disable hard delete.
+- Support for 'disabled' option: When disabled is defined the filter uses it as the fallback behavior if `enableForEntity` or `disableForEntity` are not applied
 
 Content:
 
@@ -96,7 +97,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
- * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false, hardDelete=true)
+ * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false, hardDelete=true, disabled=true)
  */
 class Article
 {

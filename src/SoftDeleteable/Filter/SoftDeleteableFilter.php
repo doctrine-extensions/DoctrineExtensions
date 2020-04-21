@@ -41,13 +41,17 @@ class SoftDeleteableFilter extends SQLFilter
     public function addFilterConstraint(ClassMetadata $targetEntity, $targetTableAlias)
     {
         $class = $targetEntity->getName();
+        $config = $this->getListener()->getConfiguration($this->getEntityManager(), $class);
+
+        if (!isset($this->disabled[$class]) && isset($config['disabled'])) {
+            $this->disabled[$class] = $config['disabled'];
+        }
+
         if (array_key_exists($class, $this->disabled) && true === $this->disabled[$class]) {
             return '';
         } elseif (array_key_exists($targetEntity->rootEntityName, $this->disabled) && true === $this->disabled[$targetEntity->rootEntityName]) {
             return '';
         }
-
-        $config = $this->getListener()->getConfiguration($this->getEntityManager(), $targetEntity->name);
 
         if (!isset($config['softDeleteable']) || !$config['softDeleteable']) {
             return '';
