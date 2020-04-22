@@ -2,8 +2,9 @@
 
 namespace Gedmo\SoftDeleteable\Mapping\Event\Adapter;
 
-use Gedmo\Mapping\Event\Adapter\ORM as BaseAdapterORM;
+use Gedmo\Mapping\Event\Adapter\ODM as BaseAdapterODM;
 use Gedmo\SoftDeleteable\Mapping\Event\SoftDeleteableAdapter;
+use Gedmo\Timestampable\Mapping\Event\TimestampableAdapter;
 
 /**
  * Doctrine event adapter for ORM adapted
@@ -12,15 +13,15 @@ use Gedmo\SoftDeleteable\Mapping\Event\SoftDeleteableAdapter;
  * @author David Buchmann <mail@davidbu.ch>
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-final class ORM extends BaseAdapterORM implements SoftDeleteableAdapter
+final class ODM extends BaseAdapterODM implements SoftDeleteableAdapter
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getDateValue($meta, $field)
     {
         $mapping = $meta->getFieldMapping($field);
-        if (isset($mapping['type']) && 'integer' === $mapping['type']) {
+        if (isset($mapping['type']) && 'timestamp' === $mapping['type']) {
             return time();
         }
         if (isset($mapping['type']) && 'zenddate' == $mapping['type']) {
