@@ -13,4 +13,13 @@ use Gedmo\Mapping\Event\AdapterInterface;
  */
 interface SoftDeleteableAdapter extends AdapterInterface
 {
+    /**
+     * Get the date value
+     *
+     * @param object $meta
+     * @param string $field
+     *
+     * @return mixed
+     */
+    public function getDateValue($meta, $field);
 }

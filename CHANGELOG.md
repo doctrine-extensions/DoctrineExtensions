@@ -36,3 +36,7 @@ a release.
 ### Tree
 #### Fixed
 - The value of path source property is cast to string type for Materialized Path Tree strategy (#2061)
+
+### SoftDeleteable
+#### Fixed
+- Fixed support for non-\DateTime fields
