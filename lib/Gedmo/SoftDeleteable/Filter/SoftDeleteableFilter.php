@@ -72,6 +72,8 @@ class SoftDeleteableFilter extends SQLFilter
     public function disableForEntity($class)
     {
         $this->disabled[$class] = true;
+        // Make sure the hash (@see SQLFilter::__toString()) for this filter will be changed to invalidate the query cache.
+        $this->setParameter(sprintf('disabled_%s', $class), true);
     }
 
     /**
@@ -80,6 +82,8 @@ class SoftDeleteableFilter extends SQLFilter
     public function enableForEntity($class)
     {
         $this->disabled[$class] = false;
+        // Make sure the hash (@see SQLFilter::__toString()) for this filter will be changed to invalidate the query cache.
+        $this->setParameter(sprintf('disabled_%s', $class), false);
     }
 
     /**
