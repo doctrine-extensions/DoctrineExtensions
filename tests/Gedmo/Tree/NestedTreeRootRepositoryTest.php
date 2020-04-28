@@ -3,6 +3,7 @@
 namespace Gedmo\Tree;
 
 use Doctrine\Common\EventManager;
+use Gedmo\Tree\Entity\Repository\NestedTreeRepository;
 use Tool\BaseTestCaseORM;
 use Tree\Fixture\RootCategory;
 
@@ -159,7 +160,7 @@ class NestedTreeRootRepositoryTest extends BaseTestCaseORM
         $childOpen = '';
         $childClose = '';
         $nodeDecorator = function ($node) {
-            return str_repeat('-', $node['level']).$node['title']."\n";
+            return str_repeat('-', $node['level']-1).$node['title']."\n";
         };
 
         $decoratedCliTree = $repo->childrenHierarchy(
@@ -176,7 +177,7 @@ class NestedTreeRootRepositoryTest extends BaseTestCaseORM
         // check support of the closures in rootClose
         $rootClose = function () {return '</ul><!--rootCloseClosure-->'; };
         $childOpen = function (&$node) {
-            return '<li class="depth'.$node['level'].'">';
+            return '<li class="depth'.($node['level']-1).'">';
         };
         // check support of the closures in childClose
         $childClose = function (&$node) {
@@ -251,6 +252,7 @@ class NestedTreeRootRepositoryTest extends BaseTestCaseORM
      */
     public function shouldHandleBasicRepositoryMethods()
     {
+        /** @var NestedTreeRepository $repo */
         $repo = $this->em->getRepository(self::CATEGORY);
         $carrots = $repo->findOneBy(['title' => 'Carrots']);
 
@@ -259,6 +261,17 @@ class NestedTreeRootRepositoryTest extends BaseTestCaseORM
         $this->assertEquals('Food', $path[0]->getTitle());
         $this->assertEquals('Vegitables', $path[1]->getTitle());
         $this->assertEquals('Carrots', $path[2]->getTitle());
+
+        $path = $repo->getPath($carrots, array('includeNode' => false));
+        $this->assertCount(2, $path);
+        $this->assertEquals('Food', $path[0]->getTitle());
+        $this->assertEquals('Vegitables', $path[1]->getTitle());
+        $path = $repo->getPathAsString($carrots, array(
+            'includeNode' => true,
+            'separator' => '-->',
+            'stringMethod' => 'getTitle',
+        ));
+        $this->assertEquals('Food-->Vegitables-->Carrots', $path);
 
         $vegies = $repo->findOneBy(['title' => 'Vegitables']);
         $childCount = $repo->childCount($vegies);
@@ -276,6 +289,16 @@ class NestedTreeRootRepositoryTest extends BaseTestCaseORM
 
         $childCount = $repo->childCount(null, true);
         $this->assertEquals(2, $childCount);
+
+        // all children of node, including the root, ordered by two fields
+        $food = $repo->findOneByTitle('Food');
+        $children = $repo->children($food, false, array('level', 'title'), array('asc', 'desc'), true);
+        $this->assertCount(5, $children);
+        $this->assertEquals('Food', $children[0]->getTitle());
+        $this->assertEquals('Vegitables', $children[1]->getTitle());
+        $this->assertEquals('Fruits', $children[2]->getTitle());
+        $this->assertEquals('Potatoes', $children[3]->getTitle());
+        $this->assertEquals('Carrots', $children[4]->getTitle());
     }
 
     /**
@@ -284,6 +307,7 @@ class NestedTreeRootRepositoryTest extends BaseTestCaseORM
     public function shouldHandleAdvancedRepositoryFunctions()
     {
         $this->populateMore();
+        /** @var NestedTreeRepository $repo */
         $repo = $this->em->getRepository(self::CATEGORY);
 
         // verification
@@ -300,6 +324,12 @@ class NestedTreeRootRepositoryTest extends BaseTestCaseORM
         $this->assertCount(2, $errors);
         $this->assertEquals('index [4], missing on tree root: 1', $errors[0]);
         $this->assertEquals('index [5], duplicate on tree root: 1', $errors[1]);
+
+        // verification of single tree
+        $errors = $repo->verify(array('treeRootNode' => $repo->find(2)));
+        $this->assertTrue($errors);
+        $errors = $repo->verify(array('treeRootNode' => $repo->find(1)));
+        $this->assertCount(2, $errors);
 
         // test recover functionality
         $repo->recover();
@@ -421,6 +451,43 @@ class NestedTreeRootRepositoryTest extends BaseTestCaseORM
 
         $this->assertEquals(1, $node->getRoot());
         $this->assertEquals(1, $node->getParent()->getId());
+
+
+        // recover with specified order
+
+        $repo->recover([
+            'flush'         => true,
+            'treeRootNode'  => $repo->find(1),
+            'skipVerify'    => true,
+            'sortByField'   => 'title',
+            'sortDirection' => 'DESC',
+        ]);
+        $this->assertTrue($repo->verify());
+
+        $this->em->clear();
+        $potatoes = $repo->findOneByTitle('Potatoes');
+
+        $this->assertEquals(2, $potatoes->getLeft());
+        $this->assertEquals(3, $potatoes->getRight());
+
+        // test fast recover
+
+        $dql = 'UPDATE '.self::CATEGORY.' node';
+        $dql .= ' SET node.lft = 1';
+        $dql .= ' WHERE node.id = 8';
+        $this->em->createQuery($dql)->execute();
+
+        $this->em->clear(); // must clear cached entities
+
+        $this->assertGreaterThan(0, count($repo->verify()));
+
+        $repo->recoverFast([
+            'sortByField'   => 'title',
+            'sortDirection' => 'ASC',
+        ]);
+        $this->em->clear(); // must clear cached entities
+
+        $this->assertTrue($repo->verify());
     }
 
     /**

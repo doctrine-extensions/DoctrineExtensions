@@ -110,42 +110,42 @@ class NestedTreeRootTest extends BaseTestCaseORM
 
         $this->assertEquals(1, $node->getRoot());
         $this->assertEquals(1, $node->getLeft());
-        $this->assertEquals(0, $node->getLevel());
+        $this->assertEquals(1, $node->getLevel());
         $this->assertEquals(10, $node->getRight());
 
         $node = $repo->findOneBy(['title' => 'Sports']);
 
         $this->assertEquals(2, $node->getRoot());
         $this->assertEquals(1, $node->getLeft());
-        $this->assertEquals(0, $node->getLevel());
+        $this->assertEquals(1, $node->getLevel());
         $this->assertEquals(2, $node->getRight());
 
         $node = $repo->findOneBy(['title' => 'Fruits']);
 
         $this->assertEquals(1, $node->getRoot());
         $this->assertEquals(2, $node->getLeft());
-        $this->assertEquals(1, $node->getLevel());
+        $this->assertEquals(2, $node->getLevel());
         $this->assertEquals(3, $node->getRight());
 
         $node = $repo->findOneBy(['title' => 'Vegitables']);
 
         $this->assertEquals(1, $node->getRoot());
         $this->assertEquals(4, $node->getLeft());
-        $this->assertEquals(1, $node->getLevel());
+        $this->assertEquals(2, $node->getLevel());
         $this->assertEquals(9, $node->getRight());
 
         $node = $repo->findOneBy(['title' => 'Carrots']);
 
         $this->assertEquals(1, $node->getRoot());
         $this->assertEquals(5, $node->getLeft());
-        $this->assertEquals(2, $node->getLevel());
+        $this->assertEquals(3, $node->getLevel());
         $this->assertEquals(6, $node->getRight());
 
         $node = $repo->findOneBy(['title' => 'Potatoes']);
 
         $this->assertEquals(1, $node->getRoot());
         $this->assertEquals(7, $node->getLeft());
-        $this->assertEquals(2, $node->getLevel());
+        $this->assertEquals(3, $node->getLevel());
         $this->assertEquals(8, $node->getRight());
     }
 
@@ -163,7 +163,7 @@ class NestedTreeRootTest extends BaseTestCaseORM
         $this->assertEquals(4, $node->getRoot());
         $this->assertEquals(1, $node->getLeft());
         $this->assertEquals(6, $node->getRight());
-        $this->assertEquals(0, $node->getLevel());
+        $this->assertEquals(1, $node->getLevel());
     }
 
     public function testTreeUpdateShiftToNextBranch()
@@ -186,7 +186,7 @@ class NestedTreeRootTest extends BaseTestCaseORM
 
         $this->assertEquals(1, $node->getRoot());
         $this->assertEquals(2, $node->getLeft());
-        $this->assertEquals(1, $node->getLevel());
+        $this->assertEquals(2, $node->getLevel());
         $this->assertEquals(3, $node->getRight());
 
         $node = $repo->findOneBy(['title' => 'Vegitables']);
@@ -214,14 +214,14 @@ class NestedTreeRootTest extends BaseTestCaseORM
 
         $this->assertEquals(4, $node->getRoot());
         $this->assertEquals(1, $node->getLeft());
-        $this->assertEquals(0, $node->getLevel());
+        $this->assertEquals(1, $node->getLevel());
         $this->assertEquals(6, $node->getRight());
 
         $node = $repo->findOneBy(['title' => 'Potatoes']);
 
         $this->assertEquals(4, $node->getRoot());
         $this->assertEquals(4, $node->getLeft());
-        $this->assertEquals(1, $node->getLevel());
+        $this->assertEquals(2, $node->getLevel());
         $this->assertEquals(5, $node->getRight());
     }
 
@@ -245,14 +245,14 @@ class NestedTreeRootTest extends BaseTestCaseORM
 
         $this->assertEquals(1, $node->getRoot());
         $this->assertEquals(2, $node->getLeft());
-        $this->assertEquals(1, $node->getLevel());
+        $this->assertEquals(2, $node->getLevel());
         $this->assertEquals(3, $node->getRight());
 
         $node = $repo->findOneBy(['title' => 'Potatoes']);
 
         $this->assertEquals(1, $node->getRoot());
         $this->assertEquals(7, $node->getLeft());
-        $this->assertEquals(2, $node->getLevel());
+        $this->assertEquals(3, $node->getLevel());
         $this->assertEquals(8, $node->getRight());
     }
 
@@ -289,21 +289,21 @@ class NestedTreeRootTest extends BaseTestCaseORM
 
         $this->assertEquals(4, $node->getRoot());
         $this->assertEquals(2, $node->getLeft());
-        $this->assertEquals(1, $node->getLevel());
+        $this->assertEquals(2, $node->getLevel());
         $this->assertEquals(3, $node->getRight());
 
         $node = $repo->findOneBy(['title' => 'Vegitables']);
 
         $this->assertEquals(4, $node->getRoot());
         $this->assertEquals(1, $node->getLeft());
-        $this->assertEquals(0, $node->getLevel());
+        $this->assertEquals(1, $node->getLevel());
         $this->assertEquals(6, $node->getRight());
 
         $node = $repo->findOneBy(['title' => 'Sports']);
 
         $this->assertEquals(1, $node->getRoot());
         $this->assertEquals(2, $node->getLeft());
-        $this->assertEquals(1, $node->getLevel());
+        $this->assertEquals(2, $node->getLevel());
         $this->assertEquals(3, $node->getRight());
     }
 

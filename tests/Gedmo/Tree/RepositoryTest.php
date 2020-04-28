@@ -294,7 +294,7 @@ class RepositoryTest extends BaseTestCaseORM
         // now lets brake something
 
         $dql = 'UPDATE '.self::CATEGORY.' node';
-        $dql .= ' SET node.lft = 1';
+        $dql .= ' SET node.lft = 1, node.level = 99';
         $dql .= ' WHERE node.id = 8';
         $q = $this->em->createQuery($dql);
         $q->getSingleScalarResult();
@@ -309,14 +309,17 @@ class RepositoryTest extends BaseTestCaseORM
         $this->assertArrayHasKey(0, $result);
         $this->assertArrayHasKey(1, $result);
         $this->assertArrayHasKey(2, $result);
+        $this->assertArrayHasKey(3, $result);
 
         $duplicate = $result[0];
         $missing = $result[1];
         $invalidLeft = $result[2];
+        $invalidLevel = $result[3];
 
         $this->assertEquals('index [1], duplicate', $duplicate);
         $this->assertEquals('index [11], missing', $missing);
         $this->assertEquals('node [8] left is less than parent`s [4] left value', $invalidLeft);
+        $this->assertEquals('node [8] should be on the level right after its parent`s [4] level', $invalidLevel);
 
         // test recover functionality
         $repo->recover();

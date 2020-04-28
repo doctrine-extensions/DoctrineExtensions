@@ -81,7 +81,7 @@ class NestedTreePositionTest extends BaseTestCaseORM
         $oranges = $repo->findOneBy(['title' => 'Oranges']);
         $meat = $repo->findOneBy(['title' => 'Meat']);
 
-        $this->assertEquals(2, $oranges->getLevel());
+        $this->assertEquals(3, $oranges->getLevel());
         $this->assertEquals(7, $oranges->getLeft());
         $this->assertEquals(8, $oranges->getRight());
 
@@ -105,7 +105,7 @@ class NestedTreePositionTest extends BaseTestCaseORM
 
         $this->assertEquals(9, $meat_array[0]['c_lft']);
         $this->assertEquals(10, $meat_array[0]['c_rgt']);
-        $this->assertEquals(2, $meat_array[0]['c_level']);
+        $this->assertEquals(3, $meat_array[0]['c_level']);
     }
 
     public function testTreeChildPositionMove3()
@@ -116,7 +116,7 @@ class NestedTreePositionTest extends BaseTestCaseORM
         $oranges = $repo->findOneBy(['title' => 'Oranges']);
         $milk = $repo->findOneBy(['title' => 'Milk']);
 
-        $this->assertEquals(2, $oranges->getLevel());
+        $this->assertEquals(3, $oranges->getLevel());
         $this->assertEquals(7, $oranges->getLeft());
         $this->assertEquals(8, $oranges->getRight());
 
@@ -136,7 +136,7 @@ class NestedTreePositionTest extends BaseTestCaseORM
         $milk_array = $this->em->createQuery($dql)->getScalarResult();
         $this->assertEquals(9, $milk_array[0]['c_lft']);
         $this->assertEquals(10, $milk_array[0]['c_rgt']);
-        $this->assertEquals(2, $milk_array[0]['c_level']);
+        $this->assertEquals(3, $milk_array[0]['c_level']);
     }
 
     public function testPositionedUpdates()
@@ -177,12 +177,12 @@ class NestedTreePositionTest extends BaseTestCaseORM
         $oranges = $repo->findOneBy(['title' => 'Oranges']);
         $fruits = $repo->findOneBy(['title' => 'Fruits']);
 
-        $this->assertEquals(2, $oranges->getLevel());
+        $this->assertEquals(3, $oranges->getLevel());
 
         $repo->persistAsNextSiblingOf($oranges, $fruits);
         $this->em->flush();
 
-        $this->assertEquals(1, $oranges->getLevel());
+        $this->assertEquals(2, $oranges->getLevel());
         $this->assertCount(1, $repo->children($fruits, true));
 
         $vegies = $repo->findOneBy(['title' => 'Vegitables']);
@@ -230,7 +230,7 @@ class NestedTreePositionTest extends BaseTestCaseORM
 
         $this->em->flush();
         $dql = 'SELECT COUNT(c) FROM '.self::ROOT_CATEGORY.' c';
-        $dql .= ' WHERE c.lft = 1 AND c.rgt = 2 AND c.parent IS NULL AND c.level = 0';
+        $dql .= ' WHERE c.lft = 1 AND c.rgt = 2 AND c.parent IS NULL AND c.level = 1';
         $count = $this->em->createQuery($dql)->getSingleScalarResult();
         $this->assertEquals(6, $count);
 

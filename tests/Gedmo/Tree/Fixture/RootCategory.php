@@ -51,7 +51,7 @@ class RootCategory
     private $root;
 
     /**
-     * @Gedmo\TreeLevel
+     * @Gedmo\TreeLevel(base=1)
      * @ORM\Column(name="lvl", type="integer")
      */
     private $level;
