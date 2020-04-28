@@ -790,7 +790,7 @@ class NestedTreeRepository extends AbstractTreeRepository
      * @param string      $sortByField - field name to sort by
      * @param string      $direction   - sort direction : "ASC" or "DESC"
      * @param bool        $verify      - true to verify tree first
-     * @param boolean     $recursive   - true to also reorder grandchildren recursively
+     * @param bool        $recursive   - true to also reorder grandchildren recursively
      *
      * @return bool|null
      */
