@@ -24,10 +24,10 @@ Thanks for contributions to:
 
 Update **2018-02-26**
 
-- Nodes with no Parent can now be sorted based on a tree root id being an id from another table. Existing behaviour 
-  is unchanged unless you add properties to the `@TreeRoot` annotation. Example: You have two categories with no parent, 
-  horror and comedy, which are actually categories of 'Movie', which is in another table. Usually calling `moveUp()` or 
-  `moveDown()` would be impossible, but now you can add `@TreeRoot(identifierMethod="getRoot")`, where `getRoot` is the 
+- Nodes with no Parent can now be sorted based on a tree root id being an id from another table. Existing behaviour
+  is unchanged unless you add properties to the `@TreeRoot` annotation. Example: You have two categories with no parent,
+  horror and comedy, which are actually categories of 'Movie', which is in another table. Usually calling `moveUp()` or
+  `moveDown()` would be impossible, but now you can add `@TreeRoot(identifierMethod="getRoot")`, where `getRoot` is the
   name of your class method returning the root id/entity.
 
 
@@ -1334,7 +1334,7 @@ There are repository methods that are available for you in all the strategies:
       * nodeDecorator: Closure (null) - uses $node as argument and returns decorated item as string
       * rootOpen: string || Closure ('\<ul\>') - branch start, closure will be given $children as a parameter
       * rootClose: string ('\</ul\>') - branch close
-      * childStart: string || Closure ('\<li\>') - start of node, closure will be given $node as a parameter
+      * childOpen: string || Closure ('\<li\>') - start of node, closure will be given $node as a parameter
       * childClose: string ('\</li\>') - close of node
       * childSort: array || keys allowed: field: field to sort on, dir: direction. 'asc' or 'desc'
   - *includeNode*: Using "true", this argument allows you to include in the result the node you passed as the first argument. Defaults to "false".
