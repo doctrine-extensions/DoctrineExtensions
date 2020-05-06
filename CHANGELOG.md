@@ -19,6 +19,9 @@ a release.
 ---
 
 ## [Unreleased]
+### Sluggable
+#### Fixed
+- Remove PHPDoc samples as they are interpreted by Annotation Reader.
 
 ## [2.4.40] - 2020-04-27
 ### SoftDeleteable
