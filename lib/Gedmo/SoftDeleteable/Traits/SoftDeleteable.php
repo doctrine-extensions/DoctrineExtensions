@@ -2,8 +2,11 @@
 
 namespace Gedmo\SoftDeleteable\Traits;
 
+use DateTime;
+
 /**
- * SoftDeletable Trait, usable with PHP >= 5.4
+ * A generic trait to use on your self-deletable entities.
+ * There is no mapping information defined in this trait.
  *
  * @author Wesley van Opdorp <wesley.van.opdorp@freshheads.com>
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
@@ -11,18 +14,16 @@ namespace Gedmo\SoftDeleteable\Traits;
 trait SoftDeleteable
 {
     /**
-     * @var \DateTime
+     * @var DateTime|null
      */
     protected $deletedAt;
 
     /**
-     * Sets deletedAt.
+     * Set or clear the deleted at timestamp.
      *
-     * @param \DateTime|null $deletedAt
-     *
-     * @return $this
+     * @return self
      */
-    public function setDeletedAt(\DateTime $deletedAt = null)
+    public function setDeletedAt(DateTime $deletedAt = null)
     {
         $this->deletedAt = $deletedAt;
 
@@ -30,9 +31,10 @@ trait SoftDeleteable
     }
 
     /**
-     * Returns deletedAt.
+     * Get the deleted at timestamp value. Will return null if
+     * the entity has not been soft deleted.
      *
-     * @return \DateTime
+     * @return DateTime|null
      */
     public function getDeletedAt()
     {
@@ -40,7 +42,7 @@ trait SoftDeleteable
     }
 
     /**
-     * Is deleted?
+     * Check if the entity has been soft deleted.
      *
      * @return bool
      */
