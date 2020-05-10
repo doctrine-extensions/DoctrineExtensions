@@ -8,6 +8,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ---
 
+## [2.4.41] - 2020-05-10
+### Sluggable
+#### Fixed
+- Remove PHPDoc samples as they are interpreted by Annotation Reader (#2120)
+
 ## [2.4.40] - 2020-04-27
 ### SoftDeleteable
 #### Fixed
