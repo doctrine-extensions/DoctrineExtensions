@@ -170,7 +170,14 @@ services:
             - { name: doctrine.event_subscriber, connection: default }
         calls:
             - [ setAnnotationReader, [ "@annotation_reader" ] ]
-
+            
+    gedmo.listener.softdeleteable:
+        class: Gedmo\SoftDeleteable\SoftDeleteableListener
+        tags:
+            - { name: doctrine.event_subscriber, connection: default }
+        calls:
+            - [ setAnnotationReader, [ "@annotation_reader" ] ]
+            
     Gedmo\Loggable\LoggableListener:
         tags:
             - { name: doctrine.event_subscriber, connection: default }
@@ -282,6 +289,7 @@ use Doctrine\ORM\Mapping as ORM; // doctrine orm annotations
 
 /**
  * @ORM\Entity
+ * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
  */
 class BlogPost
 {
@@ -309,7 +317,12 @@ class BlogPost
      * @Gedmo\Timestampable(on="update")
      */
     private $updated;
-
+    
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $deletedAt;
+    
     public function getId()
     {
         return $this->id;
@@ -333,6 +346,16 @@ class BlogPost
     public function getUpdated()
     {
         return $this->updated;
+    }
+
+    public function getDeletedAt(): ?Datetime
+    {
+        return $this->deletedAt;
+    }
+    
+    public function setDeletedAt(?Datetime $deletedAt): void
+    {
+        $this->deletedAt = $deletedAt;
     }
 }
 ```
