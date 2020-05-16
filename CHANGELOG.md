@@ -24,6 +24,8 @@ a release.
 - Source files moved from `/lib/Gedmo` to `/src`
 - All string column type annotations changed to 191 character length (#1941)
 
+Changes below marked ⚠️ may also be breaking, if you have extended DoctrineExtensions.
+
 ### MongoDB
 - Requires the `ext-mongodb` PHP extension. Usage of `ext-mongo` is deprecated and will be removed in the next major version.
 - Minimum Doctrine MongoDB ODM requirement of 2.0
@@ -38,5 +40,5 @@ a release.
 - The value of path source property is cast to string type for Materialized Path Tree strategy (#2061)
 
 ### SoftDeleteable
-#### Fixed
-- Added support for non-\DateTime fields
+#### Changed
+- ⚠️ Generate different Date values based on column type (#2115)
