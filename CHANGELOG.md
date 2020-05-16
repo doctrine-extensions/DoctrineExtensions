@@ -39,4 +39,4 @@ a release.
 
 ### SoftDeleteable
 #### Fixed
-- Fixed support for non-\DateTime fields
+- Added support for non-\DateTime fields
