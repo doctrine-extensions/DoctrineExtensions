@@ -13,6 +13,7 @@ Content:
 
 - [Symfony 4](#sf4-app) application
 - Extensions metadata [mapping](#ext-mapping)
+- Extensions filters [filtering](#ext-filtering)
 - Extension [listeners](#ext-listeners)
 - Usage [example](#ext-example)
 - Some [tips](#more-tips)
@@ -40,7 +41,7 @@ To add it to your project:
 
 Let's start from the mapping. In case you use the **translatable**, **tree** or **loggable**
 extension you will need to map those abstract mapped superclasses for your ORM to be aware of.
-To do so, add some mapping info to your **doctrine.orm** configuration, edit **app/config/config.yml**:
+To do so, add some mapping info to your **doctrine.orm** configuration, edit **config/doctrine.yaml**:
 
 ```yaml
 doctrine:
@@ -121,18 +122,34 @@ orm:
             prefix: Gedmo\Tree\Entity
             dir: "%kernel.root_dir%/../vendor/gedmo/doctrine-extensions/lib/Gedmo/Tree/Entity"
 ```
+<a name="ext-filtering"></a>
+## Filters
 
+The **softdeleteable** ORM filter also needs to be configured, so that soft deleted records are filtered when querying.
+To do so, add this filter info to your **doctrine.orm** configuration, edit **config/doctrine.yaml**:
+```yaml
+doctrine:
+    dbal:
+# your dbal config here
+    orm:
+        auto_generate_proxy_classes: %kernel.debug%
+        auto_mapping: true
+# only these lines are added additionally
+        filters:
+            softdeleteable:
+                class: Gedmo\SoftDeleteable\Filter\SoftDeleteableFilter
+```     
 <a name="ext-listeners"></a>
 
 ## Doctrine extension listener services
 
 Next, the heart of extensions are behavioral listeners which pours all the sugar. We will
-create a **yml** service file in our config directory. The setup can be different, your config could be located
-in the bundle, it depends on your preferences. Edit **app/config/packages/doctrine_extensions.yml**
+create a **yaml** service file in our config directory. The setup can be different, your config could be located
+in the bundle, it depends on your preferences. Edit **config/packages/doctrine_extensions.yaml**
 
 ```yaml
 # services to handle doctrine extensions
-# import it in config.yml
+# import it in config/packages/doctrine_extensions.yaml
 services:
     # Doctrine Extension listeners to handle behaviors
     gedmo.listener.tree:
@@ -274,7 +291,7 @@ class DoctrineExtensionSubscriber implements EventSubscriberInterface
 ## Example
 
 After that, you have your extensions set up and ready to be used! Too easy right? Well,
-if you do not believe me, let's create a simple entity in our **Acme** project:
+if you do not believe me, let's create a simple entity in our project:
 
 ```php
 
@@ -369,7 +386,7 @@ Everything will work just fine, you can modify the **App\Controller\DemoControll
 and add an action to test how it works:
 
 ```php
-// file: src/Acme/DemoBundle/Controller/DemoController.php
+// file: src/Controller/DemoController.php
 // include this code portion
 
 /**
@@ -377,29 +394,26 @@ and add an action to test how it works:
  */
 public function postsAction()
 {
-    $em = $this->getDoctrine()->getEntityManager();
-    $repository = $em->getRepository('AcmeDemoBundle:BlogPost');
+    $em = $this->getDoctrine()->getManager();
+    $repository = $em->getRepository(App\Entity\BlogPost::class);
     // create some posts in case if there aren't any
-    if (!$repository->findOneById('hello_world')) {
-        $post = new \Acme\DemoBundle\Entity\BlogPost();
+    if (!$repository->find('hello_world')) {
+        $post = new App\Entity\BlogPost();
         $post->setTitle('Hello world');
 
-        $next = new \Acme\DemoBundle\Entity\BlogPost();
+        $next = new App\Entity\BlogPost();
         $next->setTitle('Doctrine extensions');
 
         $em->persist($post);
         $em->persist($next);
         $em->flush();
     }
-    $posts = $em
-        ->createQuery('SELECT p FROM AcmeDemoBundle:BlogPost p')
-        ->getArrayResult()
-    ;
-    die(var_dump($posts));
+    $posts = $repository->findAll();
+    dd($posts);
 }
 ```
 
-Now if you follow the url: **http://your_virtual_host/app_dev.php/demo/posts** you
+Now if you follow the url: **http://your_virtual_host/demo/posts** you
 should see a print of posts, this is only an extension demo, we will not create a template.
 
 <a name="more-tips"></a>
