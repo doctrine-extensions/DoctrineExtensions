@@ -122,6 +122,26 @@ orm:
             dir: "%kernel.root_dir%/../vendor/gedmo/doctrine-extensions/lib/Gedmo/Tree/Entity"
 ```
 
+<a name="ext-filtering"></a>
+## Filters
+
+The **softdeleteable** ORM filter also needs to be configured, so that soft deleted records are filtered when querying.
+To do so, add this filter info to your **doctrine.orm** configuration, edit **app/config/config.yml**:
+
+```yaml
+doctrine:
+    dbal:
+# your dbal config here
+
+    orm:
+        auto_generate_proxy_classes: %kernel.debug%
+        auto_mapping: true
+# only these lines are added additionally
+        filters:
+            softdeleteable:
+                class: Gedmo\SoftDeleteable\Filter\SoftDeleteableFilter
+                enabled: true # enable/disable filter
+```
 <a name="ext-listeners"></a>
 
 ## Doctrine extension listener services
