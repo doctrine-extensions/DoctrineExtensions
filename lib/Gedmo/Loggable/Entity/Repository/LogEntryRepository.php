@@ -2,12 +2,12 @@
 
 namespace Gedmo\Loggable\Entity\Repository;
 
+use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Query;
 use Gedmo\Loggable\Entity\LogEntry;
-use Gedmo\Tool\Wrapper\EntityWrapper;
-use Doctrine\ORM\EntityRepository;
 use Gedmo\Loggable\LoggableListener;
+use Gedmo\Tool\Wrapper\EntityWrapper;
 
 /**
  * The LogEntryRepository has some useful functions
@@ -56,7 +56,7 @@ class LogEntryRepository extends EntityRepository
         $dql .= " AND log.objectClass = :objectClass";
         $dql .= " ORDER BY log.version DESC";
 
-        $objectId = (string) $wrapped->getIdentifier();
+        $objectId = (string) $wrapped->getIdentifier(false, true);
         $q = $this->_em->createQuery($dql);
         $q->setParameters(compact('objectId', 'objectClass'));
 
@@ -88,7 +88,7 @@ class LogEntryRepository extends EntityRepository
         $dql .= " AND log.version <= :version";
         $dql .= " ORDER BY log.version ASC";
 
-        $objectId = (string) $wrapped->getIdentifier();
+        $objectId = (string) $wrapped->getIdentifier(false, true);
         $q = $this->_em->createQuery($dql);
         $q->setParameters(compact('objectId', 'objectClass', 'version'));
         $logs = $q->getResult();
@@ -127,7 +127,7 @@ class LogEntryRepository extends EntityRepository
         if (!$objectMeta->isSingleValuedAssociation($field)) {
             return;
         }
-        
+
         $mapping = $objectMeta->getAssociationMapping($field);
         $value   = $value ? $this->_em->getReference($mapping['targetEntity'], $value) : null;
     }

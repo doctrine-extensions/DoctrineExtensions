@@ -64,10 +64,11 @@ interface WrapperInterface
      * Get the object identifier, single or composite
      *
      * @param boolean $single
+     * @param boolean $flatten
      *
      * @return array|mixed
      */
-    public function getIdentifier($single = true);
+    public function getIdentifier($single = true, $flatten = false);
 
     /**
      * Get root object class name

@@ -3,8 +3,8 @@
 namespace Gedmo\Loggable;
 
 use Doctrine\Common\EventArgs;
-use Gedmo\Mapping\MappedEventSubscriber;
 use Gedmo\Loggable\Mapping\Event\LoggableAdapter;
+use Gedmo\Mapping\MappedEventSubscriber;
 use Gedmo\Tool\Wrapper\AbstractWrapper;
 
 /**
@@ -136,7 +136,7 @@ class LoggableListener extends MappedEventSubscriber
             $logEntry = $this->pendingLogEntryInserts[$oid];
             $logEntryMeta = $om->getClassMetadata(get_class($logEntry));
 
-            $id = $wrapped->getIdentifier();
+            $id = $wrapped->getIdentifier(false, true);
             $logEntryMeta->getReflectionProperty('objectId')->setValue($logEntry, $id);
             $uow->scheduleExtraUpdate($logEntry, array(
                 'objectId' => array(null, $id),
@@ -286,10 +286,10 @@ class LoggableListener extends MappedEventSubscriber
 
             // check for the availability of the primary key
             $uow = $om->getUnitOfWork();
-            if ($action === self::ACTION_CREATE && $ea->isPostInsertGenerator($meta)) {
+            if ($action === self::ACTION_CREATE && ($ea->isPostInsertGenerator($meta) || ($meta instanceof \Doctrine\ORM\Mapping\ClassMetadata && $meta->isIdentifierComposite))) {
                 $this->pendingLogEntryInserts[spl_object_hash($object)] = $logEntry;
             } else {
-                $logEntry->setObjectId($wrapped->getIdentifier());
+                $logEntry->setObjectId($wrapped->getIdentifier(false, true));
             }
             $newValues = array();
             if ($action !== self::ACTION_REMOVE && isset($config['versioned'])) {
