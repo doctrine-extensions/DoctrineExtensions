@@ -9,6 +9,7 @@
 
 namespace Gedmo\Loggable\Mapping\Driver;
 
+use Doctrine\ODM\MongoDB\Mapping\ClassMetadata as ClassMetadataODM;
 use Doctrine\Persistence\Mapping\ClassMetadata;
 use Gedmo\Exception\InvalidMappingException;
 use Gedmo\Mapping\Annotation\Loggable;
@@ -40,7 +41,7 @@ class Annotation extends AbstractAnnotationDriver
 
     public function validateFullMetadata(ClassMetadata $meta, array $config)
     {
-        if ($config && is_array($meta->getIdentifier()) && count($meta->getIdentifier()) > 1) {
+        if ($config && $meta instanceof ClassMetadataODM && is_array($meta->getIdentifier()) && count($meta->getIdentifier()) > 1) {
             throw new InvalidMappingException("Loggable does not support composite identifiers in class - {$meta->getName()}");
         }
         if (isset($config['versioned']) && !isset($config['loggable'])) {
@@ -87,7 +88,7 @@ class Annotation extends AbstractAnnotationDriver
         }
 
         if (!$meta->isMappedSuperclass && $config) {
-            if (is_array($meta->getIdentifier()) && count($meta->getIdentifier()) > 1) {
+            if ($meta instanceof ClassMetadataODM && is_array($meta->getIdentifier()) && count($meta->getIdentifier()) > 1) {
                 throw new InvalidMappingException("Loggable does not support composite identifiers in class - {$meta->getName()}");
             }
             if ($this->isClassAnnotationInValid($meta, $config)) {

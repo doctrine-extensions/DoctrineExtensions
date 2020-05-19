@@ -66,6 +66,11 @@ parameters:
 			path: src/Loggable/LoggableListener.php
 
 		-
+			message: "#^Method Gedmo\\\\Tool\\\\WrapperInterface\\<Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\>\\:\\:getIdentifier\\(\\) invoked with 2 parameters, 0-1 required\\.#"
+			count: 2
+			path: src/Loggable/LoggableListener.php
+
+		-
 			message: "#^Access to an undefined property Doctrine\\\\Persistence\\\\Mapping\\\\ClassMetadata\\:\\:\\$associationMappings\\.$#"
 			count: 1
 			path: src/Loggable/Mapping/Driver/Xml.php
@@ -356,7 +361,22 @@ parameters:
 			path: src/Timestampable/Mapping/Driver/Yaml.php
 
 		-
+			message: "#^PHPDoc tag \\@param references unknown parameter\\: \\$flatten$#"
+			count: 1
+			path: src/Tool/WrapperInterface.php
+
+		-
 			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\ObjectManager\\:\\:getUnitOfWork\\(\\)\\.$#"
+			count: 1
+			path: src/Tool/Wrapper/EntityWrapper.php
+
+		-
+			message: "#^Method Gedmo\\\\Tool\\\\Wrapper\\\\EntityWrapper\\:\\:getIdentifier\\(\\) has parameter \\$flatten with no type specified\\.$#"
+			count: 1
+			path: src/Tool/Wrapper/EntityWrapper.php
+
+		-
+			message: "#^Parameter \\#2 \\$em of class Gedmo\\\\Tool\\\\Wrapper\\\\EntityWrapper constructor expects Doctrine\\\\ORM\\\\EntityManagerInterface, Doctrine\\\\Persistence\\\\ObjectManager given\\.$#"
 			count: 1
 			path: src/Tool/Wrapper/EntityWrapper.php
 
@@ -368,6 +388,11 @@ parameters:
 		-
 			message: "#^Call to an undefined method Doctrine\\\\Persistence\\\\ObjectManager\\:\\:getUnitOfWork\\(\\)\\.$#"
 			count: 2
+			path: src/Tool/Wrapper/MongoDocumentWrapper.php
+
+		-
+			message: "#^Method Gedmo\\\\Tool\\\\Wrapper\\\\MongoDocumentWrapper\\:\\:getIdentifier\\(\\) has parameter \\$flatten with no type specified\\.$#"
+			count: 1
 			path: src/Tool/Wrapper/MongoDocumentWrapper.php
 
 		-
