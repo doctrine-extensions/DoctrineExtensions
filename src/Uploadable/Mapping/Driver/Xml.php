@@ -35,7 +35,7 @@ class Xml extends BaseXml
         $xmlDoctrine = $xml;
         $xml = $xml->children(self::GEDMO_NAMESPACE_URI);
 
-        if ('entity' === $xmlDoctrine->getName() || 'mapped-superclass' === $xmlDoctrine->getName()) {
+        if (in_array($xmlDoctrine->getName(), ['mapped-superclass', 'entity'], true)) {
             if (isset($xml->uploadable)) {
                 $xmlUploadable = $xml->uploadable;
                 $config['uploadable'] = true;

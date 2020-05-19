@@ -21,6 +21,7 @@ a release.
 ### Added
 - Tree: `setSibling()` and `getSibling()` methods in the `Node` interface through the BC `@method` annotation
 - Tree: Support array of fields and directions in the `$sortByField` and `$direction` parameters at `AbstractTreeRepository::recover()`
+- Loggable: Support for composite identifiers.
 
 ### Changed
 - Named arguments have precedence over the values passed in the `$data` array in annotation classes at `Gedmo\Mapping\Annotation\`
@@ -34,6 +35,8 @@ a release.
 
 ### Deprecated
 - Tree: Not implementing `Node` interface in classes that are used as nodes
+- Implementing the `Gedmo\Tool\WrapperInterface::getIdentifier()` method without the second argument (`$flatten`) is deprecated and will
+  be required in version 4.0.
 
 ## [3.11.1] - 2023-02-20
 ### Fixed

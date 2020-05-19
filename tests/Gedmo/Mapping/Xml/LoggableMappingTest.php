@@ -21,6 +21,8 @@ use Gedmo\Loggable\Entity\LogEntry;
 use Gedmo\Loggable\LoggableListener;
 use Gedmo\Tests\Mapping\Fixture\Xml\Embedded;
 use Gedmo\Tests\Mapping\Fixture\Xml\Loggable;
+use Gedmo\Tests\Mapping\Fixture\Xml\LoggableComposite;
+use Gedmo\Tests\Mapping\Fixture\Xml\LoggableCompositeRelation;
 use Gedmo\Tests\Mapping\Fixture\Xml\LoggableWithEmbedded;
 use Gedmo\Tests\Mapping\Fixture\Xml\Status;
 use Gedmo\Tests\Tool\BaseTestCaseOM;
@@ -84,6 +86,36 @@ final class LoggableMappingTest extends BaseTestCaseOM
         static::assertCount(2, $config['versioned']);
         static::assertContains('title', $config['versioned']);
         static::assertContains('status', $config['versioned']);
+    }
+
+    public function testLoggableCompositeMetadata(): void
+    {
+        $meta = $this->em->getClassMetadata(LoggableComposite::class);
+        $config = $this->loggable->getConfiguration($this->em, $meta->name);
+
+        static::assertArrayHasKey('logEntryClass', $config);
+        static::assertSame(LogEntry::class, $config['logEntryClass']);
+        static::assertArrayHasKey('loggable', $config);
+        static::assertTrue($config['loggable']);
+
+        static::assertArrayHasKey('versioned', $config);
+        static::assertCount(1, $config['versioned']);
+        static::assertContains('title', $config['versioned']);
+    }
+
+    public function testLoggableCompositeRelationMetadata(): void
+    {
+        $meta = $this->em->getClassMetadata(LoggableCompositeRelation::class);
+        $config = $this->loggable->getConfiguration($this->em, $meta->name);
+
+        static::assertArrayHasKey('logEntryClass', $config);
+        static::assertSame(LogEntry::class, $config['logEntryClass']);
+        static::assertArrayHasKey('loggable', $config);
+        static::assertTrue($config['loggable']);
+
+        static::assertArrayHasKey('versioned', $config);
+        static::assertCount(1, $config['versioned']);
+        static::assertContains('title', $config['versioned']);
     }
 
     public function testLoggableMetadataWithEmbedded(): void

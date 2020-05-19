@@ -106,10 +106,11 @@ class LogEntryRepository extends DocumentRepository
             throw new UnexpectedValueException('Count not find any log entries under version: '.$version);
         }
 
-        $data = [];
+        $data = [[]];
         while ($log = array_shift($logs)) {
-            $data = array_merge($data, $log->getData());
+            $data[] = $log->getData();
         }
+        $data = array_merge(...$data);
         $this->fillDocument($document, $data);
     }
 
