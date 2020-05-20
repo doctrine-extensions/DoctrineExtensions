@@ -1004,7 +1004,7 @@ class NestedTreeRepository extends AbstractTreeRepository
             $left = $meta->getReflectionProperty($config['left'])->getValue($node);
             $id = $meta->getReflectionProperty($identifier)->getValue($node);
             $parent = $meta->getReflectionProperty($config['parent'])->getValue($node);
-            if (!$right || !$left) {
+            if (!is_int($right) || !is_int($left)) {
                 $errors[] = "node [{$id}] has invalid left or right values";
             } elseif ($right == $left) {
                 $errors[] = "node [{$id}] has identical left and right values";
