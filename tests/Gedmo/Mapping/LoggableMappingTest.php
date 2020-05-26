@@ -83,23 +83,8 @@ class LoggableMappingTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($config['loggable']);
     }
 
-    /**
-     * @expectedException \Gedmo\Exception\InvalidMappingException
-     * @expectedExceptionMessage Loggable does not support composite foreign identifiers with ORM < 2.6
-     */
-    public function testORMBelow26ThrowsExceptionWithLoggableCompositeRelationMapping()
-    {
-        if (1 > \Doctrine\ORM\Version::compare('2.6.0')) {
-            $this->markTestSkipped('ORM < 2.6 version required for this test.');
-        }
-        $this->em->getClassMetadata(self::COMPOSITE_RELATION);
-    }
-
     public function testLoggableCompositeRelationMapping()
     {
-        if (1 === \Doctrine\ORM\Version::compare('2.6.0')) {
-            $this->markTestSkipped('ORM >= 2.6 version required for this test.');
-        }
         $meta = $this->em->getClassMetadata(self::COMPOSITE_RELATION);
 
         $this->assertTrue(is_array($meta->identifier));

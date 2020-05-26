@@ -207,9 +207,6 @@ class LoggableEntityTest extends BaseTestCaseORM
 
     public function testCompositeRelation()
     {
-        if (1 === \Doctrine\ORM\Version::compare('2.6.0')) {
-            $this->markTestSkipped('ORM >= 2.6 version required for this test.');
-        }
         $logRepo = $this->em->getRepository('Gedmo\Loggable\Entity\LogEntry');
         $compositeRepo = $this->em->getRepository(self::COMPOSITE_RELATION);
         $this->assertCount(0, $logRepo->findAll());
@@ -264,21 +261,17 @@ class LoggableEntityTest extends BaseTestCaseORM
 
     protected function getUsedEntityFixtures()
     {
-        $usedEntityFixtures = [
+        return [
             self::ARTICLE,
             self::COMMENT,
             self::COMMENT_LOG,
             self::RELATED_ARTICLE,
             self::COMPOSITE,
+            self::COMPOSITE_RELATION,
             'Gedmo\Loggable\Entity\LogEntry',
             'Loggable\Fixture\Entity\Address',
             'Loggable\Fixture\Entity\Geo',
         ];
-        if (1 > \Doctrine\ORM\Version::compare('2.6.0')) {
-            $usedEntityFixtures[] = self::COMPOSITE_RELATION;
-        }
-
-        return $usedEntityFixtures;
     }
 
     private function populateEmbedded()

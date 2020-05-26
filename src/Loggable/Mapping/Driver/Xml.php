@@ -65,9 +65,6 @@ class Xml extends BaseXml
         }
 
         if (!$meta->isMappedSuperclass && $config) {
-            if ($meta instanceof \Doctrine\ORM\Mapping\ClassMetadata && $meta->containsForeignIdentifier && is_array($meta->identifier) && count($meta->identifier) > 1 && 1 === \Doctrine\ORM\Version::compare('2.6.0')) {
-                throw new InvalidMappingException("Loggable does not support composite foreign identifiers with ORM < 2.6");
-            }
             if ($meta instanceof \Doctrine\ODM\MongoDB\Mapping\ClassMetadata && is_array($meta->identifier) && count($meta->identifier) > 1) {
                 throw new InvalidMappingException("Loggable does not support composite identifiers in class - {$meta->name}");
             }
