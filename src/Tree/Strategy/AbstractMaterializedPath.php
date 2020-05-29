@@ -101,7 +101,10 @@ abstract class AbstractMaterializedPath implements Strategy
         $config = $this->listener->getConfiguration($om, $meta->name);
         $fieldMapping = $meta->getFieldMapping($config['path_source']);
 
-        if ($meta->isIdentifier($config['path_source']) || 'string' === $fieldMapping['type']) {
+        if (true === $config['path_append_id']
+            || $meta->isIdentifier($config['path_source'])
+            || 'string' === $fieldMapping['type']
+        ) {
             $this->scheduledForPathProcess[spl_object_hash($node)] = $node;
         } else {
             $this->updateNode($om, $node, $ea);

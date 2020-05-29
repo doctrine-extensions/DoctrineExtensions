@@ -5,6 +5,7 @@ namespace Gedmo\Tree;
 use Doctrine\Common\EventManager;
 use Tool\BaseTestCaseMongoODM;
 use Tree\Fixture\Document\Category;
+use Tree\Fixture\Document\CategoryWithAppendIdOnIntegerSource;
 
 /**
  * These are tests for Tree behavior
@@ -19,6 +20,7 @@ use Tree\Fixture\Document\Category;
 class MaterializedPathODMMongoDBTest extends BaseTestCaseMongoODM
 {
     private const CATEGORY = Category::class;
+    private const CATEGORY_APPENDID = CategoryWithAppendIdOnIntegerSource::class;
 
     protected $config;
     protected $listener;
@@ -112,6 +114,91 @@ class MaterializedPathODMMongoDBTest extends BaseTestCaseMongoODM
     /**
      * @test
      */
+    public function useAppendIdWhenTreeSourceIsOfTypeInteger()
+    {
+        // Insert
+        $category = $this->createCategoryWithAppendIdAndSourceAsTypeInteger();
+        $category->setTitle('1');
+        $category->setIntegerSort('10');
+        $category2 = $this->createCategoryWithAppendIdAndSourceAsTypeInteger();
+        $category2->setTitle('2');
+        $category2->setIntegerSort('20');
+        $category3 = $this->createCategoryWithAppendIdAndSourceAsTypeInteger();
+        $category3->setTitle('3');
+        $category3->setIntegerSort('30');
+        $category4 = $this->createCategoryWithAppendIdAndSourceAsTypeInteger();
+        $category4->setTitle('4');
+        $category4->setIntegerSort('40');
+
+        $category2->setParent($category);
+        $category3->setParent($category2);
+
+        $this->dm->persist($category4);
+        $this->dm->persist($category3);
+        $this->dm->persist($category2);
+        $this->dm->persist($category);
+        $this->dm->flush();
+
+        $this->dm->refresh($category);
+        $this->dm->refresh($category2);
+        $this->dm->refresh($category3);
+        $this->dm->refresh($category4);
+
+        $this->assertEquals($this->generatePath(['10' => $category->getId()]), $category->getPath());
+        $this->assertEquals(
+            $this->generatePath(['10' => $category->getId(), '20' => $category2->getId()]),
+            $category2->getPath()
+        );
+        $this->assertEquals(
+            $this->generatePath(['10' => $category->getId(), '20' => $category2->getId(), '30' => $category3->getId()]),
+            $category3->getPath()
+        );
+        $this->assertEquals($this->generatePath(['40' => $category4->getId()]), $category4->getPath());
+        $this->assertEquals(1, $category->getLevel());
+        $this->assertEquals(2, $category2->getLevel());
+        $this->assertEquals(3, $category3->getLevel());
+        $this->assertEquals(1, $category4->getLevel());
+
+        // Update
+        $category2->setParent(null);
+
+        $this->dm->persist($category2);
+        $this->dm->flush();
+
+        $this->dm->refresh($category);
+        $this->dm->refresh($category2);
+        $this->dm->refresh($category3);
+
+        $this->assertEquals($this->generatePath(['10' => $category->getId()]), $category->getPath());
+        $this->assertEquals($this->generatePath(['20' => $category2->getId()]), $category2->getPath());
+        $this->assertEquals(
+            $this->generatePath(['20' => $category2->getId(), '30' => $category3->getId()]),
+            $category3->getPath()
+        );
+        $this->assertEquals(1, $category->getLevel());
+        $this->assertEquals(1, $category2->getLevel());
+        $this->assertEquals(2, $category3->getLevel());
+        $this->assertEquals(1, $category4->getLevel());
+
+        // Remove
+        $this->dm->remove($category);
+        $this->dm->remove($category2);
+        $this->dm->flush();
+
+        $result = $this->dm->createQueryBuilder()->find(self::CATEGORY_APPENDID)->getQuery()->execute();
+
+        /** @var CategoryWithAppendIdOnIntegerSource $firstResult */
+        $firstResult = $result->current();
+
+        $this->assertCount(1, $result->toArray());
+        $this->assertEquals('4', $firstResult->getTitle());
+        $this->assertEquals('40', $firstResult->getIntegerSort());
+        $this->assertEquals(1, $firstResult->getLevel());
+    }
+
+    /**
+     * @test
+     */
     public function useOfSeparatorInPathSourceShouldThrowAnException()
     {
         $this->expectException('Gedmo\Exception\RuntimeException');
@@ -126,6 +213,13 @@ class MaterializedPathODMMongoDBTest extends BaseTestCaseMongoODM
     public function createCategory()
     {
         $class = self::CATEGORY;
+
+        return new $class();
+    }
+
+    public function createCategoryWithAppendIdAndSourceAsTypeInteger()
+    {
+        $class  = self::CATEGORY_APPENDID;
 
         return new $class();
     }

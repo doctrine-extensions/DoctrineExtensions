@@ -38,6 +38,7 @@ Changes below marked ⚠️ may also be breaking, if you have extended DoctrineE
 ### Tree
 #### Fixed
 - The value of path source property is cast to string type for Materialized Path Tree strategy (#2061)
+- Fixed Materialized path not appending entity ID if TreeSource is of type integer and setting appendId is true.
 
 ### SoftDeleteable
 #### Changed
