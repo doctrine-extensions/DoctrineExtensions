@@ -179,7 +179,7 @@ class MaterializedPathORMTest extends BaseTestCaseORM
             $this->generatePath([
                 '10' => $category->getId(),
                 '20' => $category2->getId(),
-                '30' => $category3->getId()
+                '30' => $category3->getId(),
             ]),
             $category3->getPath()
         );

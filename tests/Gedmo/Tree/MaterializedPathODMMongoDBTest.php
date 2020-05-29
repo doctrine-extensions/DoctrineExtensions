@@ -219,7 +219,7 @@ class MaterializedPathODMMongoDBTest extends BaseTestCaseMongoODM
 
     public function createCategoryWithAppendIdAndSourceAsTypeInteger()
     {
-        $class  = self::CATEGORY_APPENDID;
+        $class = self::CATEGORY_APPENDID;
 
         return new $class();
     }
