@@ -16,6 +16,9 @@ use Composer\Autoload\ClassLoader;
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 
+// Ignore deprecation warnings that occur in PHPUnit 6 on PHP 7.4
+error_reporting(E_ALL & ~E_DEPRECATED);
+
 define('TESTS_PATH', __DIR__);
 define('TESTS_TEMP_DIR', __DIR__.'/temp');
 define('VENDOR_PATH', realpath(__DIR__.'/../vendor'));

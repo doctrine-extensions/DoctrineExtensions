@@ -1,6 +1,6 @@
-# Install Gedmo Doctrine2 extensions in Symfony2
+# Install Gedmo Doctrine2 extensions in Symfony 4
 
-Configure full featured [Doctrine2 extensions](http://github.com/Atlantic18/DoctrineExtensions) for your symfony2 project.
+Configure full featured [Doctrine2 extensions](http://github.com/Atlantic18/DoctrineExtensions) for your symfony 4 project.
 This post will show you - how to create a simple configuration file to manage extensions with
 ability to use all features it provides.
 Interested? then bear with me! and don't be afraid, we're not diving into security component :)
@@ -11,54 +11,29 @@ over management of extensions.
 
 Content:
 
-- [Symfony2](#sf2-app) application
+- [Symfony 4](#sf4-app) application
 - Extensions metadata [mapping](#ext-mapping)
+- Extensions filters [filtering](#ext-filtering)
 - Extension [listeners](#ext-listeners)
 - Usage [example](#ext-example)
 - Some [tips](#more-tips)
 - [Alternative](#alternative) over configuration
 
-<a name="sf2-app"></a>
+<a name="sf4-app"></a>
 
-## Symfony2 application
+## Symfony 4 application
 
-First of all, we will need a symfony2 startup application, let's say [symfony-standard edition
-with composer](http://github.com/KnpLabs/symfony-with-composer). Follow the standard setup:
+First of all, we will need a symfony 4 startup application, let's say [symfony-standard edition
+with composer](https://symfony.com/doc/current/best_practices/creating-the-project.html)
 
-- `git clone git://github.com/KnpLabs/symfony-with-composer.git example`
-- `cd example && rm -rf .git && php bin/vendors install`
-- ensure your application loads and meets requirements, by following the url: **http://your_virtual_host/app_dev.php**
+- `composer create-project symfony/skeleton [project name]`
 
-Now let's add the **gedmo/doctrine-extensions** into **composer.json**
+Now let's add the **gedmo/doctrine-extensions**
 
-```json
-{
-    "require": {
-        "php":              ">=5.3.2",
-        "symfony/symfony":  ">=2.0.9,<2.1.0-dev",
-        "doctrine/orm":     ">=2.1.0,<2.2.0-dev",
-        "twig/extensions":  "*",
+You can find the doctrine-extensions project on packagist: https://packagist.org/packages/gedmo/doctrine-extensions
 
-        "symfony/assetic-bundle":         "*",
-        "sensio/generator-bundle":        "2.0.*",
-        "sensio/framework-extra-bundle":  "2.0.*",
-        "sensio/distribution-bundle":     "2.0.*",
-        "jms/security-extra-bundle":      "1.0.*",
-        "gedmo/doctrine-extensions":      "dev-master"
-    },
-
-    "autoload": {
-        "psr-0": {
-            "Acme": "src/"
-        }
-    }
-}
-```
-
-Update vendors, run: **php composer.phar update gedmo/doctrine-extensions**
-Initially in this package you have **doctrine2 orm** included, so we will base our setup
-and configuration for this specific connection. Do not forget to configure your database
-connection parameters, edit **app/config/parameters.yml**
+To add it to your project: 
+- `composer require gedmo/doctrine-extensions`
 
 <a name="ext-mapping"></a>
 
@@ -66,7 +41,7 @@ connection parameters, edit **app/config/parameters.yml**
 
 Let's start from the mapping. In case you use the **translatable**, **tree** or **loggable**
 extension you will need to map those abstract mapped superclasses for your ORM to be aware of.
-To do so, add some mapping info to your **doctrine.orm** configuration, edit **app/config/config.yml**:
+To do so, add some mapping info to your **doctrine.orm** configuration, edit **config/doctrine.yaml**:
 
 ```yaml
 doctrine:
@@ -86,7 +61,7 @@ doctrine:
                 dir: "%kernel.root_dir%/../vendor/gedmo/doctrine-extensions/lib/Gedmo/Translatable/Entity"
 ```
 
-After that, running **php app/console doctrine:mapping:info** you should see the output:
+After that, running **php bin/console doctrine:mapping:info** you should see the output:
 
 ```
 Found 3 entities mapped in entity manager default:
@@ -112,7 +87,7 @@ mappings:
 ```
 
 The configuration above, adds a **/MappedSuperclass** into directory depth, after running
-**php app/console doctrine:mapping:info** you should only see now:
+**php bin/console doctrine:mapping:info** you should only see now:
 
 ```
 Found 2 entities mapped in entity manager default:
@@ -147,33 +122,35 @@ orm:
             prefix: Gedmo\Tree\Entity
             dir: "%kernel.root_dir%/../vendor/gedmo/doctrine-extensions/lib/Gedmo/Tree/Entity"
 ```
+<a name="ext-filtering"></a>
+## Filters
 
+The **softdeleteable** ORM filter also needs to be configured, so that soft deleted records are filtered when querying.
+To do so, add this filter info to your **doctrine.orm** configuration, edit **config/doctrine.yaml**:
+```yaml
+doctrine:
+    dbal:
+# your dbal config here
+    orm:
+        auto_generate_proxy_classes: %kernel.debug%
+        auto_mapping: true
+# only these lines are added additionally
+        filters:
+            softdeleteable:
+                class: Gedmo\SoftDeleteable\Filter\SoftDeleteableFilter
+```     
 <a name="ext-listeners"></a>
 
 ## Doctrine extension listener services
 
 Next, the heart of extensions are behavioral listeners which pours all the sugar. We will
-create a **yml** service file in our config directory. The setup can be different, your config could be located
-in the bundle, it depends on your preferences. Edit **app/config/doctrine_extensions.yml**
+create a **yaml** service file in our config directory. The setup can be different, your config could be located
+in the bundle, it depends on your preferences. Edit **config/packages/doctrine_extensions.yaml**
 
 ```yaml
 # services to handle doctrine extensions
-# import it in config.yml
+# import it in config/packages/doctrine_extensions.yaml
 services:
-    # KernelRequest listener
-    extension.listener:
-        class: Acme\DemoBundle\Listener\DoctrineExtensionListener
-        calls:
-            - [ setContainer, [ "@service_container" ] ]
-        tags:
-            # translatable sets locale after router processing
-            - { name: kernel.event_listener, event: kernel.request, method: onLateKernelRequest, priority: -10 }
-            # loggable hooks user username if one is in security context
-            - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
-            # translatable sets locale such as default application locale before command execute
-            - { name: kernel.event_listener, event: console.command, method: onConsoleCommand, priority: -10 }
-
-
     # Doctrine Extension listeners to handle behaviors
     gedmo.listener.tree:
         class: Gedmo\Tree\TreeListener
@@ -182,8 +159,7 @@ services:
         calls:
             - [ setAnnotationReader, [ "@annotation_reader" ] ]
 
-    gedmo.listener.translatable:
-        class: Gedmo\Translatable\TranslatableListener
+    Gedmo\Translatable\TranslatableListener:
         tags:
             - { name: doctrine.event_subscriber, connection: default }
         calls:
@@ -211,16 +187,21 @@ services:
             - { name: doctrine.event_subscriber, connection: default }
         calls:
             - [ setAnnotationReader, [ "@annotation_reader" ] ]
-
-    gedmo.listener.loggable:
-        class: Gedmo\Loggable\LoggableListener
+            
+    gedmo.listener.softdeleteable:
+        class: Gedmo\SoftDeleteable\SoftDeleteableListener
+        tags:
+            - { name: doctrine.event_subscriber, connection: default }
+        calls:
+            - [ setAnnotationReader, [ "@annotation_reader" ] ]
+            
+    Gedmo\Loggable\LoggableListener:
         tags:
             - { name: doctrine.event_subscriber, connection: default }
         calls:
             - [ setAnnotationReader, [ "@annotation_reader" ] ]
 
-    gedmo.listener.blameable:
-        class: Gedmo\Blameable\BlameableListener
+    Gedmo\Blameable\BlameableListener:
         tags:
             - { name: doctrine.event_subscriber, connection: default }
         calls:
@@ -232,87 +213,77 @@ So what does it include in general? Well, it creates services for all extension 
 You can remove some which you do not use, or change them as you need. **Translatable** for instance,
 sets the default locale to the value of your `%locale%` parameter, you can configure it differently.
 
-**Note:** In case you noticed, there is **Acme\DemoBundle\Listener\DoctrineExtensionListener**.
-You will need to create this listener class if you use **loggable** or **translatable**
+**Note:** In case you noticed, there is **EventSubscriber\DoctrineExtensionSubscriber**.
+You will need to create this subscriber class if you use **loggable** , **translatable** or **blameable**
 behaviors. This listener will set the **locale used** from request and **username** to
-loggable. So, to finish the setup create **Acme\DemoBundle\Listener\DoctrineExtensionListener**
+loggable and blameable. So, to finish the setup create **EventSubscriber\DoctrineExtensionSubscriber**
 
 ```php
 <?php
 
-// file: src/Acme/DemoBundle/Listener/DoctrineExtensionListener.php
+namespace App\EventSubscriber;
 
-namespace Acme\DemoBundle\Listener;
+use Gedmo\Blameable\BlameableListener;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpKernel\KernelEvents;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
-use Symfony\Component\HttpKernel\Event\GetResponseEvent;
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\HttpKernel\Kernel;
-
-class DoctrineExtensionListener implements ContainerAwareInterface
+class DoctrineExtensionSubscriber implements EventSubscriberInterface
 {
     /**
-     * @var ContainerInterface
+     * @var BlameableListener
      */
-    protected $container;
+    private $blameableListener;
+    /**
+     * @var TokenStorageInterface
+     */
+    private $tokenStorage;
+    /**
+     * @var TranslatableListener
+     */
+    private $translatableListener;
+    /**
+     * @var LoggableListener
+     */
+    private $loggableListener;
 
-    public function setContainer(ContainerInterface $container = null)
+
+    public function __construct(
+        BlameableListener $blameableListener,
+        TokenStorageInterface $tokenStorage,
+        TranslatableListener $translatableListener,
+        LoggableListener $loggableListener
+    ) {
+        $this->blameableListener = $blameableListener;
+        $this->tokenStorage = $tokenStorage;
+        $this->translatableListener = $translatableListener;
+        $this->loggableListener = $loggableListener;
+    }    
+
+
+    public static function getSubscribedEvents()
     {
-        $this->container = $container;
+        return [
+            KernelEvents::REQUEST => 'onKernelRequest',
+            KernelEvents::FINISH_REQUEST => 'onLateKernelRequest'
+        ];
     }
-
-    public function onLateKernelRequest(GetResponseEvent $event)
+    public function onKernelRequest(): void
     {
-        $translatable = $this->container->get('gedmo.listener.translatable');
-        $translatable->setTranslatableLocale($event->getRequest()->getLocale());
-    }
-
-    public function onConsoleCommand()
-    {
-        $this->container->get('gedmo.listener.translatable')
-            ->setTranslatableLocale($this->container->get('translator')->getLocale());
-    }
-
-    public function onKernelRequest(GetResponseEvent $event)
-    {
-        if (Kernel::MAJOR_VERSION == 2 && Kernel::MINOR_VERSION < 6) {
-            $securityContext = $this->container->get('security.context', ContainerInterface::NULL_ON_INVALID_REFERENCE);
-            if (null !== $securityContext && null !== $securityContext->getToken() && $securityContext->isGranted('IS_AUTHENTICATED_REMEMBERED')) {
-                # for loggable behavior
-                $loggable = $this->container->get('gedmo.listener.loggable');
-                $loggable->setUsername($securityContext->getToken()->getUsername());
-
-                # for blameable behavior
-                $blameable = $this->container->get('gedmo.listener.blameable');
-                $blameable->setUserValue($securityContext->getToken()->getUser());
-            }
-        }
-        else {
-            $tokenStorage = $this->container->get('security.token_storage')->getToken();
-            $authorizationChecker = $this->container->get('security.authorization_checker');
-            if (null !== $tokenStorage && $authorizationChecker->isGranted('IS_AUTHENTICATED_REMEMBERED')) {
-                # for loggable behavior
-                $loggable = $this->container->get('gedmo.listener.loggable');
-                $loggable->setUsername($tokenStorage->getUser());
-
-                # for blameable behavior
-                $blameable = $this->container->get('gedmo.listener.blameable');
-                $blameable->setUserValue($tokenStorage->getUser());
-            }
+        if ($this->tokenStorage !== null &&
+            $this->tokenStorage->getToken() !== null &&
+            $this->tokenStorage->getToken()->isAuthenticated() === true
+        ) {
+            $this->blameableListener->setUserValue($this->tokenStorage->getToken()->getUser());
         }
     }
+    
+    public function onLateKernelRequest(FinishRequestEvent $event): void
+    {
+        $this->translatableListener->setTranslatableLocale($event->getRequest()->getLocale());
+    }
+
 }
-```
-Do not forget to import **doctrine_extensions.yml** in your **app/config/config.yml**:
-
-```yaml
-# file: app/config/config.yml
-imports:
-    - { resource: parameters.yml }
-    - { resource: security.yml }
-    - { resource: doctrine_extensions.yml }
-
-# ... configuration follows
 ```
 
 <a name="ext-example"></a>
@@ -320,20 +291,22 @@ imports:
 ## Example
 
 After that, you have your extensions set up and ready to be used! Too easy right? Well,
-if you do not believe me, let's create a simple entity in our **Acme** project:
+if you do not believe me, let's create a simple entity in our project:
 
 ```php
+
 <?php
 
-// file: src/Acme/DemoBundle/Entity/BlogPost.php
+// file: src/Entity/BlogPost.php
 
-namespace Acme\DemoBundle\Entity;
+namespace App\Entity;
 
 use Gedmo\Mapping\Annotation as Gedmo; // gedmo annotations
 use Doctrine\ORM\Mapping as ORM; // doctrine orm annotations
 
 /**
  * @ORM\Entity
+ * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
  */
 class BlogPost
 {
@@ -361,7 +334,12 @@ class BlogPost
      * @Gedmo\Timestampable(on="update")
      */
     private $updated;
-
+    
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $deletedAt;
+    
     public function getId()
     {
         return $this->id;
@@ -386,19 +364,29 @@ class BlogPost
     {
         return $this->updated;
     }
+
+    public function getDeletedAt(): ?Datetime
+    {
+        return $this->deletedAt;
+    }
+    
+    public function setDeletedAt(?Datetime $deletedAt): void
+    {
+        $this->deletedAt = $deletedAt;
+    }
 }
 ```
 
 Now, let's have some fun:
 
-- if you have not created the database yet, run `php app/console doctrine:database:create`
-- create the schema `php app/console doctrine:schema:create`
+- if you have not created the database yet, run `php bin/console doctrine:database:create`
+- create the schema `php bin/console doctrine:schema:create`
 
-Everything will work just fine, you can modify the **Acme\DemoBundle\Controller\DemoController**
+Everything will work just fine, you can modify the **App\Controller\DemoController**
 and add an action to test how it works:
 
 ```php
-// file: src/Acme/DemoBundle/Controller/DemoController.php
+// file: src/Controller/DemoController.php
 // include this code portion
 
 /**
@@ -406,29 +394,26 @@ and add an action to test how it works:
  */
 public function postsAction()
 {
-    $em = $this->getDoctrine()->getEntityManager();
-    $repository = $em->getRepository('AcmeDemoBundle:BlogPost');
+    $em = $this->getDoctrine()->getManager();
+    $repository = $em->getRepository(App\Entity\BlogPost::class);
     // create some posts in case if there aren't any
-    if (!$repository->findOneById('hello_world')) {
-        $post = new \Acme\DemoBundle\Entity\BlogPost();
+    if (!$repository->find('hello_world')) {
+        $post = new App\Entity\BlogPost();
         $post->setTitle('Hello world');
 
-        $next = new \Acme\DemoBundle\Entity\BlogPost();
+        $next = new App\Entity\BlogPost();
         $next->setTitle('Doctrine extensions');
 
         $em->persist($post);
         $em->persist($next);
         $em->flush();
     }
-    $posts = $em
-        ->createQuery('SELECT p FROM AcmeDemoBundle:BlogPost p')
-        ->getArrayResult()
-    ;
-    die(var_dump($posts));
+    $posts = $repository->findAll();
+    dd($posts);
 }
 ```
 
-Now if you follow the url: **http://your_virtual_host/app_dev.php/demo/posts** you
+Now if you follow the url: **http://your_virtual_host/demo/posts** you
 should see a print of posts, this is only an extension demo, we will not create a template.
 
 <a name="more-tips"></a>
@@ -442,23 +427,9 @@ curtains and allows you to modify the configuration as you require.
 
 ### Multiple entity managers
 
-If you use more than one entity manager, you can simply tag the listener
+If you use more than one entity manager, you can simply tag the subscriber
 with other the manager name:
 
-```yaml
-services:
-    # tree behavior
-    gedmo.listener.tree:
-        class: Gedmo\Tree\TreeListener
-        tags:
-            - { name: doctrine.event_subscriber, connection: default }
-            # additional ORM subscriber
-            - { name: doctrine.event_subscriber, connection: other_connection }
-            # ODM MongoDb subscriber, where **default** is manager name
-            - { name: doctrine_mongodb.odm.event_subscriber }
-        calls:
-            - [ setAnnotationReader, [ @annotation_reader ] ]
-```
 
 Regarding, mapping of ODM mongodb, it's basically the same:
 

@@ -158,7 +158,6 @@ class SortableListener extends MappedEventSubscriber
     protected function processInsert(SortableAdapter $ea, array $config, $meta, $object)
     {
         $em = $ea->getObjectManager();
-        $uow = $em->getUnitOfWork();
 
         $old = $meta->getReflectionProperty($config['position'])->getValue($object);
         $newPosition = $meta->getReflectionProperty($config['position'])->getValue($object);
@@ -414,7 +413,7 @@ class SortableListener extends MappedEventSubscriber
         $ea = $this->getEventAdapter($args);
         $em = $ea->getObjectManager();
 
-        $updatedObjects = [];
+        $updatedObjects = array();
 
         foreach ($this->relocations as $hash => $relocation) {
             $config = $this->getConfiguration($em, $relocation['name']);

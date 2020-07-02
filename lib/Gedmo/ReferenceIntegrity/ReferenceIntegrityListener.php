@@ -54,7 +54,7 @@ class ReferenceIntegrityListener extends MappedEventSubscriber
         $class = get_class($object);
         $meta = $om->getClassMetadata($class);
 
-        if ($config = $this->getConfiguration($om, $class)) {
+        if ($config = $this->getConfiguration($om, $meta->name)) {
             foreach ($config['referenceIntegrity'] as $property => $action) {
                 $reflProp = $meta->getReflectionProperty($property);
                 $refDoc = $reflProp->getValue($object);

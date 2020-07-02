@@ -104,8 +104,10 @@ class TranslationWalker extends SqlWalker
      */
     public function getExecutor($AST)
     {
+        // If it's not a Select, the TreeWalker ought to skip it, and just return the parent.
+        // @see https://github.com/Atlantic18/DoctrineExtensions/issues/2013
         if (!$AST instanceof SelectStatement) {
-            throw new \Gedmo\Exception\UnexpectedValueException('Translation walker should be used only on select statement');
+            return parent::getExecutor($AST);
         }
         $this->prepareTranslatedComponents();
 
