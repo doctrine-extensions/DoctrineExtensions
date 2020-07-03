@@ -400,14 +400,16 @@ class Nested implements Strategy
             $newRoot = $parentRoot;
         } elseif (!isset($config['root']) ||
             ($meta->isSingleValuedAssociation($config['root']) && ($newRoot = $meta->getFieldValue($node, $config['root'])))) {
-            if (!isset($this->treeEdges[$meta->name])) {
-                $this->treeEdges[$meta->name] = $this->max($em, $config['useObjectClass'], $newRoot) + 1;
+            $newRootHash = is_object($newRoot) ? spl_object_hash($newRoot) : $newRoot;
+
+            if (!isset($this->treeEdges[$meta->name][$newRootHash])) {
+                $this->treeEdges[$meta->name][$newRootHash] = $this->max($em, $config['useObjectClass'], $newRoot) + 1;
             }
 
             $level = 0;
             $parentLeft = 0;
-            $parentRight = $this->treeEdges[$meta->name];
-            $this->treeEdges[$meta->name] += 2;
+            $parentRight = $this->treeEdges[$meta->name][$newRootHash];
+            $this->treeEdges[$meta->name][$newRootHash] += 2;
 
             switch ($position) {
                 case self::PREV_SIBLING:
