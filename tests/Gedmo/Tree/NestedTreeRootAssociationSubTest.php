@@ -64,32 +64,69 @@ class NestedTreeRootAssociationSubTest extends BaseTestCaseORM
 
     public function testPositions(): void
     {
+        $expectedTree = [
+            // 'Food'
+            'Fruits' => [
+                'left' => 1,
+                'right' => 4,
+                'children' => [
+                    'Apples' => [
+                        'left' => 2,
+                        'right' => 3,
+                    ],
+                ],
+            ],
+            'Berries' => [
+                'left' => 5,
+                'right' => 10,
+                'children' => [
+                    'Raspberry' => [
+                        'left' => 6,
+                        'right' => 7,
+                    ],
+                    'Blueberries' => [
+                        'left' => 8,
+                        'right' => 9,
+                    ],
+                ],
+            ],
+            // 'Sports'
+            'Summer' => [
+                'left' => 1,
+                'right' => 6,
+                'children' => [
+                    'Basketball' => [
+                        'left' => 2,
+                        'right' => 3,
+                    ],
+                    'Football' => [
+                        'left' => 4,
+                        'right' => 5,
+                    ],
+                ],
+            ],
+        ];
+
+        $this->assertEquals($expectedTree, $this->collectLeafs($expectedTree));
+    }
+
+    private function collectLeafs(array $leafs): array
+    {
         $repo = $this->em->getRepository(self::SUB_CATEGORY);
 
-        /** @var \Tree\Fixture\RootAssociationSubCategory $fruits */
-        $fruits = $repo->findOneBy(['title' => 'Fruits']);
-        $this->assertEquals(1, $fruits->getLeft());
-        $this->assertEquals(4, $fruits->getRight());
+        $collected = [];
 
-        /** @var \Tree\Fixture\RootAssociationSubCategory $apples */
-        $apples = $repo->findOneBy(['title' => 'Apples']);
-        $this->assertEquals(2, $apples->getLeft());
-        $this->assertEquals(3, $apples->getRight());
+        foreach ($leafs as $title => $options) {
+            /** @var \Tree\Fixture\RootAssociationSubCategory $item */
+            $item = $repo->findOneBy(\compact('title'));
+            $collected[$title] = ['left' => $item->getLeft(), 'right' => $item->getRight()];
 
-        /** @var \Tree\Fixture\RootAssociationSubCategory $summer */
-        $summer = $repo->findOneBy(['title' => 'Summer']);
-        $this->assertEquals(1, $summer->getLeft(), 'Another root, so should started from begin');
-        $this->assertEquals(6, $summer->getRight());
+            if (isset($options['children'])) {
+                $collected[$title]['children'] = $this->collectLeafs($options['children']);
+            }
+        }
 
-        /** @var \Tree\Fixture\RootAssociationSubCategory $basketball */
-        $basketball = $repo->findOneBy(['title' => 'Basketball']);
-        $this->assertEquals(2, $basketball->getLeft());
-        $this->assertEquals(3, $basketball->getRight());
-
-        /** @var \Tree\Fixture\RootAssociationSubCategory $football */
-        $football = $repo->findOneBy(['title' => 'Football']);
-        $this->assertEquals(4, $football->getLeft());
-        $this->assertEquals(5, $football->getRight());
+        return $collected;
     }
 
     protected function getUsedEntityFixtures(): array
@@ -121,6 +158,21 @@ class NestedTreeRootAssociationSubTest extends BaseTestCaseORM
         $apples->setTitle('Apples');
         $apples->setParent($fruits);
 
+        // left 5 right 10
+        $berries = new RootAssociationSubCategory();
+        $berries->setTitle('Berries');
+        $berries->setRoot($food);
+
+        // left 6 right 7
+        $raspberry = new RootAssociationSubCategory();
+        $raspberry->setTitle('Raspberry');
+        $raspberry->setParent($berries);
+
+        // left 8 right 9
+        $blueberries = new RootAssociationSubCategory();
+        $blueberries->setTitle('Blueberries');
+        $blueberries->setParent($berries);
+
         // Base category for sports
         $sports = new RootAssociationCategory();
         $sports->setTitle('Sports');
@@ -144,6 +196,9 @@ class NestedTreeRootAssociationSubTest extends BaseTestCaseORM
         $this->em->persist($sports);
         $this->em->persist($fruits);
         $this->em->persist($apples);
+        $this->em->persist($berries);
+        $this->em->persist($raspberry);
+        $this->em->persist($blueberries);
         $this->em->persist($winter);
         $this->em->persist($basketball);
         $this->em->persist($football);

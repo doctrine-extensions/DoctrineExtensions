@@ -398,9 +398,13 @@ class Nested implements Strategy
                 $wrapped->setPropertyValue($config['right'], $right);
             }
             $newRoot = $parentRoot;
+            $newRootHash = $this->calculateNewRootHash($newRoot);
+            if (isset($this->treeEdges[$meta->name][$newRootHash])) {
+                $this->treeEdges[$meta->name][$newRootHash] += 2;
+            }
         } elseif (!isset($config['root']) ||
             ($meta->isSingleValuedAssociation($config['root']) && ($newRoot = $meta->getFieldValue($node, $config['root'])))) {
-            $newRootHash = is_object($newRoot) ? spl_object_hash($newRoot) : $newRoot;
+            $newRootHash = $this->calculateNewRootHash($newRoot);
 
             if (!isset($this->treeEdges[$meta->name][$newRootHash])) {
                 $this->treeEdges[$meta->name][$newRootHash] = $this->max($em, $config['useObjectClass'], $newRoot) + 1;
@@ -709,5 +713,15 @@ class Nested implements Strategy
                 }
             }
         }
+    }
+
+    /**
+     * @param object|mixed $newRoot
+     *
+     * @return string|mixed
+     */
+    protected function calculateNewRootHash($newRoot)
+    {
+        return is_object($newRoot) ? spl_object_hash($newRoot) : $newRoot;
     }
 }
