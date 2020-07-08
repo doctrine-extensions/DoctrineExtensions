@@ -109,6 +109,16 @@ class TranslatableWithEmbeddedTest extends BaseTestCaseORM
         $this->assertSame('facebook-de', $result[0]['link.facebook']);
     }
 
+    public function testTranslationOfNullValuesFallbacksToDefault(): void
+    {
+        $this->markTestIncomplete('TODO');
+    }
+
+    public function testTranslationOfFalseValuesDoesNotFallback(): void
+    {
+        $this->markTestIncomplete('TODO');
+    }
+
     protected function getUsedEntityFixtures()
     {
         return [
