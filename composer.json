@@ -43,7 +43,7 @@
         "doctrine/mongodb-odm": ">=2.0"
     },
     "require-dev": {
-        "doctrine/common": "^2.13 || ^3.0",
+        "doctrine/common": "^2.7 || ^3.0",
         "doctrine/annotations": "^1.0",
         "doctrine/cache": "^1.0",
         "doctrine/event-manager": "^1.0",
