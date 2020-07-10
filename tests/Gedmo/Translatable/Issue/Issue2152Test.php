@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Gedmo\Translatable\Issue;
 
 use Doctrine\Common\EventManager;
@@ -12,15 +10,15 @@ use Translatable\Fixture\Issue2152\EntityWithTranslatableBoolean;
 
 class Issue2152Test extends BaseTestCaseORM
 {
-    private const TRANSLATION = Translation::class;
-    private const ENTITY = EntityWithTranslatableBoolean::class;
+    const TRANSLATION = '\Gedmo\Translatable\Entity\Translation';
+    const ENTITY = '\Translatable\Fixture\Issue2152\EntityWithTranslatableBoolean';
 
     /**
      * @var TranslatableListener
      */
     private $translatableListener;
 
-    protected function setUp(): void
+    protected function setUp()
     {
         parent::setUp();
 
@@ -38,7 +36,7 @@ class Issue2152Test extends BaseTestCaseORM
     /**
      * @test
      */
-    public function shouldFindInheritedClassTranslations(): void
+    public function shouldFindInheritedClassTranslations()
     {
         //Arrange
         //by default we have English
@@ -82,13 +80,22 @@ class Issue2152Test extends BaseTestCaseORM
 
     protected function getUsedEntityFixtures()
     {
-        return [
+        return array(
             self::TRANSLATION,
             self::ENTITY,
-        ];
+        );
     }
 
-    private function findUsingQueryBuilder(string $locale): ?EntityWithTranslatableBoolean
+    /**
+     * @param string $locale
+     *
+     * @return EntityWithTranslatableBoolean|null
+     *
+     * @throws \Doctrine\ORM\NoResultException
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     * @throws \Doctrine\Persistence\Mapping\MappingException
+     */
+    private function findUsingQueryBuilder($locale)
     {
         $this->em->clear();
         $this->translatableListener->setTranslatableLocale($locale);
