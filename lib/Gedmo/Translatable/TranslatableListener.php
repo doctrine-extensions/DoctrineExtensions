@@ -470,17 +470,15 @@ class TranslatableListener extends MappedEventSubscriber
             );
             // translate object's translatable properties
             foreach ($config['fields'] as $field) {
-                $translated = '';
-                $is_translated = false;
+                $translated = null;
                 foreach ((array) $result as $entry) {
                     if ($entry['field'] == $field) {
                         $translated = isset($entry['content']) ? $entry['content'] : null;
-                        $is_translated = true;
                         break;
                     }
                 }
                 // update translation
-                if ($is_translated
+                if ($translated !== null
                     || (!$this->translationFallback && (!isset($config['fallback'][$field]) || !$config['fallback'][$field]))
                     || ($this->translationFallback && isset($config['fallback'][$field]) && !$config['fallback'][$field])
                 ) {
@@ -518,7 +516,7 @@ class TranslatableListener extends MappedEventSubscriber
             throw new \Gedmo\Exception\InvalidArgumentException('Locale or language cannot be empty and must be set through Listener or Entity');
         }
     }
-    
+
     /**
      * Check if the given locale is valid
      *
