@@ -11,7 +11,7 @@ namespace Gedmo\SoftDeleteable\Traits;
 trait SoftDeleteable
 {
     /**
-     * @var \DateTime
+     * @var \DateTime|null
      */
     protected $deletedAt;
 
@@ -32,7 +32,7 @@ trait SoftDeleteable
     /**
      * Returns deletedAt.
      *
-     * @return \DateTime
+     * @return \DateTime|null
      */
     public function getDeletedAt()
     {

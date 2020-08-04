@@ -13,7 +13,7 @@ use Doctrine\ORM\Mapping as ORM;
 trait SoftDeleteableEntity
 {
     /**
-     * @var \DateTime
+     * @var \DateTime|null
      * @ORM\Column(type="datetime", nullable=true)
      */
     protected $deletedAt;
@@ -35,7 +35,7 @@ trait SoftDeleteableEntity
     /**
      * Returns deletedAt.
      *
-     * @return \DateTime
+     * @return \DateTime|null
      */
     public function getDeletedAt()
     {

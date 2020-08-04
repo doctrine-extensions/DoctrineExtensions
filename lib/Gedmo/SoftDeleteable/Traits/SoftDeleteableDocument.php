@@ -13,7 +13,7 @@ use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 trait SoftDeleteableDocument
 {
     /**
-     * @var \DateTime
+     * @var \DateTime|null
      * @ODM\Field(type="date")
      */
     protected $deletedAt;
@@ -35,7 +35,7 @@ trait SoftDeleteableDocument
     /**
      * Returns deletedAt.
      *
-     * @return \DateTime
+     * @return \DateTime|null
      */
     public function getDeletedAt()
     {
