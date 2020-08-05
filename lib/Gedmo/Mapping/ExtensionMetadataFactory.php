@@ -102,7 +102,7 @@ class ExtensionMetadataFactory
         // caching empty metadata will prevent re-parsing non-existent annotations
         $cacheId = self::getCacheId($meta->name, $this->extensionNamespace);
         if ($cacheDriver = $cmf->getCacheDriver()) {
-            $cacheDriver->save($cacheId, $config, null);
+            $cacheDriver->save($cacheId, $config);
         }
 
         return $config;
