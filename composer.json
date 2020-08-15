@@ -43,7 +43,6 @@
     },
     "require-dev": {
         "alcaeus/mongo-php-adapter": "^1.1",
-        "doctrine/mongodb": "^1.6",
         "doctrine/mongodb-odm": "^2.0",
         "doctrine/orm": "^2.6",
         "friendsofphp/php-cs-fixer": "^2.16",
