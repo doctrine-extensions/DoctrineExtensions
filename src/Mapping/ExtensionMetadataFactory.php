@@ -8,7 +8,6 @@ use Doctrine\Common\Persistence\Mapping\Driver\MappingDriver;
 use Doctrine\Common\Persistence\Mapping\Driver\MappingDriverChain;
 use Doctrine\Common\Persistence\Mapping\Driver\SymfonyFileLocator;
 use Doctrine\Common\Persistence\ObjectManager;
-use Doctrine\Common\Version as CommonLibVer;
 use Gedmo\Mapping\Driver\AnnotationDriverInterface;
 use Gedmo\Mapping\Driver\File as FileDriver;
 
@@ -146,7 +145,7 @@ class ExtensionMetadataFactory
             foreach ($omDriver->getDrivers() as $namespace => $nestedOmDriver) {
                 $driver->addDriver($this->getDriver($nestedOmDriver), $namespace);
             }
-            if (version_compare(CommonLibVer::VERSION, '2.3.0', '>=') && null !== $omDriver->getDefaultDriver()) {
+            if (null !== $omDriver->getDefaultDriver()) {
                 $driver->setDefaultDriver($this->getDriver($omDriver->getDefaultDriver()));
             }
         } else {

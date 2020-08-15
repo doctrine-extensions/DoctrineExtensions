@@ -2,6 +2,9 @@
 
 namespace Gedmo\Mapping;
 
+use Doctrine\Common\Annotations\AnnotationReader;
+use Doctrine\Common\Annotations\AnnotationRegistry;
+use Doctrine\Common\Annotations\CachedReader;
 use Doctrine\Common\Annotations\Reader;
 use Doctrine\Common\Cache\ArrayCache;
 use Doctrine\Common\EventArgs;
@@ -219,37 +222,10 @@ abstract class MappedEventSubscriber implements EventSubscriber
     private function getDefaultAnnotationReader()
     {
         if (null === self::$defaultAnnotationReader) {
-            if (version_compare(\Doctrine\Common\Version::VERSION, '2.2.0-DEV', '>=')) {
-                $reader = new \Doctrine\Common\Annotations\AnnotationReader();
-                \Doctrine\Common\Annotations\AnnotationRegistry::registerAutoloadNamespace(
-                    'Gedmo\\Mapping\\Annotation',
-                    __DIR__.'/../../'
-                );
-                $reader = new \Doctrine\Common\Annotations\CachedReader($reader, new ArrayCache());
-            } elseif (version_compare(\Doctrine\Common\Version::VERSION, '2.1.0RC4-DEV', '>=')) {
-                $reader = new \Doctrine\Common\Annotations\AnnotationReader();
-                \Doctrine\Common\Annotations\AnnotationRegistry::registerAutoloadNamespace(
-                    'Gedmo\\Mapping\\Annotation',
-                    __DIR__.'/../../'
-                );
-                $reader->setDefaultAnnotationNamespace('Doctrine\ORM\Mapping\\');
-                $reader = new \Doctrine\Common\Annotations\CachedReader($reader, new ArrayCache());
-            } elseif (version_compare(\Doctrine\Common\Version::VERSION, '2.1.0-BETA3-DEV', '>=')) {
-                $reader = new \Doctrine\Common\Annotations\AnnotationReader();
-                $reader->setDefaultAnnotationNamespace('Doctrine\ORM\Mapping\\');
-                $reader->setIgnoreNotImportedAnnotations(true);
-                $reader->setAnnotationNamespaceAlias('Gedmo\\Mapping\\Annotation\\', 'gedmo');
-                $reader->setEnableParsePhpImports(false);
-                $reader->setAutoloadAnnotations(true);
-                $reader = new \Doctrine\Common\Annotations\CachedReader(
-                    new \Doctrine\Common\Annotations\IndexedReader($reader), new ArrayCache()
-                );
-            } else {
-                $reader = new \Doctrine\Common\Annotations\AnnotationReader();
-                $reader->setAutoloadAnnotations(true);
-                $reader->setAnnotationNamespaceAlias('Gedmo\\Mapping\\Annotation\\', 'gedmo');
-                $reader->setDefaultAnnotationNamespace('Doctrine\ORM\Mapping\\');
-            }
+            AnnotationRegistry::registerAutoloadNamespace('Gedmo\\Mapping\\Annotation', __DIR__.'/../../');
+
+            $reader = new CachedReader(new AnnotationReader(), new ArrayCache());
+
             self::$defaultAnnotationReader = $reader;
         }
 
