@@ -296,7 +296,7 @@ class SoftDeleteableEntityTest extends BaseTestCaseORM
         $this->assertNull($art->getDeletedAt());
         $this->assertNull($comment->getDeletedAt());
 
-        $art->setDeletedAt(new \DateTimeImmutable());
+        $art->setDeletedAt(new \DateTime());
         $this->em->flush();
 
         $art = $repo->findOneBy([$field => $value]);
@@ -404,7 +404,7 @@ class SoftDeleteableEntityTest extends BaseTestCaseORM
         $artId = $otherArt->getId();
         $commentId = $otherComment->getId();
 
-        $otherArt->setDeletedAt(new \DateTimeImmutable());
+        $otherArt->setDeletedAt(new \DateTime());
         $this->em->flush();
 
         $foundArt = $otherArticleRepo->findOneBy(['id' => $artId]);
