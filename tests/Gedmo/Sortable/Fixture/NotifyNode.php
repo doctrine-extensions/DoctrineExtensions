@@ -2,9 +2,9 @@
 
 namespace Sortable\Fixture;
 
-use Doctrine\Common\NotifyPropertyChanged;
-use Doctrine\Common\PropertyChangedListener;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Persistence\NotifyPropertyChanged;
+use Doctrine\Persistence\PropertyChangedListener;
 
 /**
  * @author Charles J. C. Elling, 2017-07-31

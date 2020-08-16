@@ -4,7 +4,7 @@ namespace Gedmo\Uploadable;
 
 use Doctrine\Common\EventArgs;
 use Doctrine\Common\NotifyPropertyChanged;
-use Doctrine\Common\Persistence\Mapping\ClassMetadata;
+use Doctrine\Persistence\Mapping\ClassMetadata;
 use Gedmo\Exception\UploadableCantWriteException;
 use Gedmo\Exception\UploadableCouldntGuessMimeTypeException;
 use Gedmo\Exception\UploadableExtensionException;

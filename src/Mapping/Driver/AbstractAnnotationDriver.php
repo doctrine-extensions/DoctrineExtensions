@@ -2,7 +2,7 @@
 
 namespace Gedmo\Mapping\Driver;
 
-use Doctrine\Common\Persistence\Mapping\ClassMetadata;
+use Doctrine\Persistence\Mapping\ClassMetadata;
 
 /**
  * This is an abstract class to implement common functionality
