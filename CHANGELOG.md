@@ -19,6 +19,9 @@ a release.
 ---
 
 ## [Unreleased]
+### Translatable
+#### Fixed
+- Allow for both falsy and null-fallback translatable values (#2152)
 
 ## [2.4.41] - 2020-05-10
 ### Sluggable
