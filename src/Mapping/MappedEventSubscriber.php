@@ -9,7 +9,7 @@ use Doctrine\Common\Annotations\Reader;
 use Doctrine\Common\Cache\ArrayCache;
 use Doctrine\Common\EventArgs;
 use Doctrine\Common\EventSubscriber;
-use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\Persistence\ObjectManager;
 use Gedmo\Mapping\Event\AdapterInterface;
 
 /**

@@ -3,7 +3,7 @@
 namespace Gedmo\Sluggable;
 
 use Doctrine\Common\EventArgs;
-use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\Persistence\ObjectManager;
 use Gedmo\Mapping\MappedEventSubscriber;
 use Gedmo\Sluggable\Handler\SlugHandlerWithUniqueCallbackInterface;
 use Gedmo\Sluggable\Mapping\Event\SluggableAdapter;

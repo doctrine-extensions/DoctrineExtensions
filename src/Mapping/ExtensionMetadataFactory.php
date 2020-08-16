@@ -3,11 +3,11 @@
 namespace Gedmo\Mapping;
 
 use Doctrine\Common\Cache\Cache;
-use Doctrine\Common\Persistence\Mapping\Driver\DefaultFileLocator;
-use Doctrine\Common\Persistence\Mapping\Driver\MappingDriver;
-use Doctrine\Common\Persistence\Mapping\Driver\MappingDriverChain;
-use Doctrine\Common\Persistence\Mapping\Driver\SymfonyFileLocator;
-use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\Persistence\Mapping\Driver\DefaultFileLocator;
+use Doctrine\Persistence\Mapping\Driver\MappingDriver;
+use Doctrine\Persistence\Mapping\Driver\MappingDriverChain;
+use Doctrine\Persistence\Mapping\Driver\SymfonyFileLocator;
+use Doctrine\Persistence\ObjectManager;
 use Gedmo\Mapping\Driver\AnnotationDriverInterface;
 use Gedmo\Mapping\Driver\File as FileDriver;
 

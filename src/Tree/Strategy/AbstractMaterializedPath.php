@@ -2,8 +2,8 @@
 
 namespace Gedmo\Tree\Strategy;
 
-use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\ODM\MongoDB\UnitOfWork as MongoDBUnitOfWork;
+use Doctrine\Persistence\ObjectManager;
 use Gedmo\Exception\RuntimeException;
 use Gedmo\Exception\TreeLockingException;
 use Gedmo\Mapping\Event\AdapterInterface;

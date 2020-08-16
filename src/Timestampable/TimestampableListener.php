@@ -2,7 +2,7 @@
 
 namespace Gedmo\Timestampable;
 
-use Doctrine\Common\Persistence\Mapping\ClassMetadata;
+use Doctrine\Persistence\Mapping\ClassMetadata;
 use Gedmo\AbstractTrackingListener;
 use Gedmo\Timestampable\Mapping\Event\TimestampableAdapter;
 

@@ -36,7 +36,11 @@
     "require": {
         "php": "^7.2",
         "behat/transliterator": "~1.2",
-        "doctrine/common": "^2.10"
+        "doctrine/annotations": "^1.0",
+        "doctrine/cache": "^1.0",
+        "doctrine/collections": "^1.0",
+        "doctrine/common": "^2.13 || ^3.0",
+        "doctrine/event-manager": "^1.0"
     },
     "provide": {
         "ext-mongo": "1.6.12"

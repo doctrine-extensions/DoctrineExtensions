@@ -2,19 +2,19 @@
 
 namespace Gedmo\Tree;
 
-use Doctrine\Common\Persistence\Mapping\ClassMetadata;
-use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\Persistence\Mapping\ClassMetadata;
+use Doctrine\Persistence\ObjectManager;
 use Gedmo\Exception\InvalidArgumentException;
 
 class RepositoryUtils implements RepositoryUtilsInterface
 {
-    /** @var \Doctrine\Common\Persistence\Mapping\ClassMetadata */
+    /** @var \Doctrine\Persistence\Mapping\ClassMetadata */
     protected $meta;
 
     /** @var \Gedmo\Tree\TreeListener */
     protected $listener;
 
-    /** @var \Doctrine\Common\Persistence\ObjectManager */
+    /** @var \Doctrine\Persistence\ObjectManager */
     protected $om;
 
     /** @var \Gedmo\Tree\RepositoryInterface */
