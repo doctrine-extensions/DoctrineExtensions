@@ -19,6 +19,8 @@ a release.
 ---
 
 ## [Unreleased]
+
+## [2.4.42] - 2020-08-20
 ### Translatable
 #### Fixed
 - Allow for both falsy and null-fallback translatable values (#2152)
