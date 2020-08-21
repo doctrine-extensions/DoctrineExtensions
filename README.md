@@ -9,18 +9,18 @@ flushed in a behavioral way.
 
 ---
 
-##### :warning: The `master` branch is for development on Doctrine Extensions 3.0.
+##### :warning: Doctrine Extension 3.0 is in Beta development.
 
-3.0 will focus on refreshing this package for today's PHP. This includes:
+3.0 focuses on refreshing this package for today's PHP. This includes:
 
 - Bumping minimum version requirements of PHP, Doctrine, and other dependencies
 - Updating the test suite, add code and style standards, and other needed build tools
 - Cleaning up documentation, code, comments, etc.
 
-While major code changes are not expected initially for 3.0, it will be a major release due to changes in
+While major code changes are not implemented in 3.0, it will be a major release due to changes in
 requirements and toolsets. [Read the Upgrade Doc for more info.](/doc/upgrading/upgrade-v2.4-to-v3.0.md)
 
-For the current stable version, see the [v2.4.x branch](https://github.com/Atlantic18/DoctrineExtensions/tree/v2.4.x).
+For the current old-but-stable version, see the [v2.4.x branch](https://github.com/Atlantic18/DoctrineExtensions/tree/v2.4.x).
 
 ---
 
