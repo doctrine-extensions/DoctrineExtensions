@@ -16,6 +16,8 @@ flushed in a behavioral way.
 * [Laravel 5](https://www.laraveldoctrine.org/docs/1.3/extensions)
 * [Zend Framework 2](/doc/zendframework2.md)
 
+:boom: **Check out the [3.0 Beta](https://github.com/Atlantic18/DoctrineExtensions/releases/tag/v3.0.0-beta)!**
+
 ## Extensions
 
 #### ORM & MongoDB ODM
