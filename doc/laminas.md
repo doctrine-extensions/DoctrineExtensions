@@ -1,10 +1,10 @@
-## Using Gedmo Doctrine Extensions in Zend Framework 2
+## Using Gedmo Doctrine Extensions in Laminas
 
 Assuming you are familiar with [DoctrineModule](https://github.com/doctrine/DoctrineModule) (if not, you should definitely start there!), integrating Doctrine Extensions with Laminas application is super-easy.
 
 ### Composer
 
-Add `doctrine/doctrine-module`, `doctrine/doctrine-orm-module` and `gedmo/doctrine-extensions` to composer.json file
+Add `doctrine/doctrine-module`, `doctrine/doctrine-orm-module` or `doctrine/doctrine-mongo-odm-module` to composer.json file
 
 Then run `composer.phar update`.
 
