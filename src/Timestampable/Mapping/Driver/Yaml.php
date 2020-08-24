@@ -39,7 +39,6 @@ class Yaml extends File implements Driver
         'datetimetz',
         'datetimetz_immutable',
         'timestamp',
-        'zenddate',
         'vardatetime',
         'integer',
     ];

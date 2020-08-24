@@ -29,7 +29,6 @@ class Validator
         'datetimetz',
         'datetimetz_immutable',
         'timestamp',
-        'zenddate',
     ];
 
     public static function validateField(ClassMetadata $meta, $field)
