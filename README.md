@@ -31,7 +31,7 @@ For the current old-but-stable version, see the [v2.4.x branch](https://github.c
 * [Symfony 2](/doc/symfony2.md)
 * [Symfony 4](/doc/symfony4.md)
 * [Laravel 5](https://www.laraveldoctrine.org/docs/1.3/extensions)
-* [Zend Framework 2](/doc/zendframework2.md)
+* [Laminas](/doc/laminas.md)
 
 ### Upgrading
 
