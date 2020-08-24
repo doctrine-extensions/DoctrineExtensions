@@ -1,22 +1,10 @@
 ## Using Gedmo Doctrine Extensions in Zend Framework 2
 
-Assuming you are familiar with [DoctrineModule](https://github.com/doctrine/DoctrineModule) (if not, you should definitely start there!), integrating Doctrine Extensions with Zend Framework 2 application is super-easy.
+Assuming you are familiar with [DoctrineModule](https://github.com/doctrine/DoctrineModule) (if not, you should definitely start there!), integrating Doctrine Extensions with Laminas application is super-easy.
 
 ### Composer
 
-Add DoctrineModule, DoctrineORMModule and DoctrineExtensions to composer.json file:
-
-```json
-{
-    "require": {
-        "php": ">=5.3.3",
-        "zendframework/zendframework": "2.1.*",
-        "doctrine/doctrine-module": "0.*",
-        "doctrine/doctrine-orm-module": "0.*",
-        "gedmo/doctrine-extensions": "2.3.*",
-    }
-}
-```
+Add `doctrine/doctrine-module`, `doctrine/doctrine-orm-module` and `gedmo/doctrine-extensions` to composer.json file
 
 Then run `composer.phar update`.
 
@@ -56,7 +44,7 @@ return array(
 );
 ```
 
-That's it! From now on you can use Gedmo annotations, just as it is described in [documentation](https://github.com/mtymek/DoctrineExtensions/blob/master/doc/annotations.md).
+That's it! From now on you can use Gedmo annotations, just as it is described in [documentation](https://github.com/Atlantic18/DoctrineExtensions/blob/master/doc/annotations.md).
 
 #### Note: You may need to provide additional settings for some of the available listeners.
 
