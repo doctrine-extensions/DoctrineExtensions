@@ -113,14 +113,13 @@ class UploadableListener extends MappedEventSubscriber
         $ea = $this->getEventAdapter($args);
         $om = $ea->getObjectManager();
         $uow = $om->getUnitOfWork();
-        $items = reset($this->fileInfoObjects);
-        $first = reset($items);
-        $meta = $om->getClassMetadata(get_class($first['entity']));
-        $configs = $this->getConfiguration($om, $meta->name);
 
         foreach ($this->fileInfoObjects as $items) {
+            $tmp = $items;
+            $tmp = reset($tmp);
+            $meta = $om->getClassMetadata(get_class($tmp['entity']));
+            $configs = $this->getConfiguration($om, $meta->name);
             foreach ($items as $info) {
-
                 $config = $configs[$info['identifier']];
                 $entity = $info['entity'];
 
