@@ -2,9 +2,9 @@
 
 namespace Gedmo\Mapping\Driver;
 
-use Doctrine\Common\Persistence\Mapping\Driver\FileDriver;
-use Doctrine\Common\Persistence\Mapping\Driver\FileLocator;
 use Doctrine\ORM\Mapping\Driver\AbstractFileDriver;
+use Doctrine\Persistence\Mapping\Driver\FileDriver;
+use Doctrine\Persistence\Mapping\Driver\FileLocator;
 use Gedmo\Mapping\Driver;
 
 /**

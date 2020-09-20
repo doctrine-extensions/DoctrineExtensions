@@ -32,7 +32,6 @@ class Xml extends BaseXml
         'datetimetz',
         'datetimetz_immutable',
         'timestamp',
-        'zenddate',
         'vardatetime',
         'integer',
     ];

@@ -22,7 +22,10 @@ a release.
 ### Notable & Breaking Changes
 - Minimum PHP version requirement of 7.2
 - Source files moved from `/lib/Gedmo` to `/src`
+- Added compatibility for `doctrine/common` 3.0 and `doctrine/persistence` 2.0
 - All string column type annotations changed to 191 character length (#1941)
+- Removed support for `\Zend_date` date format [#2163](https://github.com/Atlantic18/DoctrineExtensions/pull/2163)
+- Renamed `Zend Framework` to `Laminas` [#2163](https://github.com/Atlantic18/DoctrineExtensions/pull/2163)
 
 Changes below marked ⚠️ may also be breaking, if you have extended DoctrineExtensions.
 

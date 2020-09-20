@@ -36,7 +36,6 @@ class Annotation extends AbstractAnnotationDriver
         'datetimetz',
         'datetimetz_immutable',
         'timestamp',
-        'zenddate',
         'vardatetime',
         'integer',
     ];

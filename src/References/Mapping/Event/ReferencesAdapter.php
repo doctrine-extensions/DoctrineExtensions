@@ -2,7 +2,7 @@
 
 namespace Gedmo\References\Mapping\Event;
 
-use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\Persistence\ObjectManager;
 use Gedmo\Mapping\Event\AdapterInterface;
 
 /**
