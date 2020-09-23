@@ -457,7 +457,7 @@ This also shows, how to make mappings based on single manager. All what differs 
 instead of **Entity** is used. I haven't tested it with mongo though.
 
 **Note:** [extension repository](http://github.com/Atlantic18/DoctrineExtensions) contains all
-[documentation](http://github.com/Atlantic18/DoctrineExtensions/tree/master/doc) you may need
+[documentation](http://github.com/Atlantic18/DoctrineExtensions/tree/main/doc) you may need
 to understand how you can use it in your projects.
 
 <a name="alternative"></a>
