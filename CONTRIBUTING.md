@@ -4,9 +4,10 @@ Thank you for your interest in contributing to Doctrine Extensions!
 
 ## Which Branch Should I Contribute To?
 
-All pull requests should target the `master` branch, with a planned 3.0 major release. 
+All pull requests (new features and bug fixes) should target the `main` branch.
+Anything that can be back-ported to v2.4.x will be done by maintainers. 
 
-:warning: The `v.2.4.x` branch has been marked as legacy/deprecated.
+:warning: The `v2.4.x` branch has been marked as legacy/deprecated.
 
 ## Pull Request Titles
 
