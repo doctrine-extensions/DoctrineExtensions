@@ -19,6 +19,8 @@ a release.
 ---
 
 ## [Unreleased]
+
+## [3.0.0] - 2020-09-23
 ### Notable & Breaking Changes
 - Minimum PHP version requirement of 7.2
 - Source files moved from `/lib/Gedmo` to `/src`
