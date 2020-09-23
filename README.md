@@ -1,6 +1,6 @@
 # Doctrine Behavioral Extensions
 
-[![Build Status](https://travis-ci.org/Atlantic18/DoctrineExtensions.svg?branch=master)](https://travis-ci.org/Atlantic18/DoctrineExtensions)
+[![Build Status](https://travis-ci.org/Atlantic18/DoctrineExtensions.svg?branch=main)](https://travis-ci.org/Atlantic18/DoctrineExtensions)
 [![Latest Stable Version](https://poser.pugx.org/gedmo/doctrine-extensions/version)](https://packagist.org/packages/gedmo/doctrine-extensions)
 
 This package contains extensions for Doctrine ORM and MongoDB ODM that offer new functionality or tools to use Doctrine
@@ -9,24 +9,22 @@ flushed in a behavioral way.
 
 ---
 
-##### :warning: Doctrine Extension 3.0 is in Beta development.
+## Doctrine Extensions 3.0 Released :tada:
 
 3.0 focuses on refreshing this package for today's PHP. This includes:
 
 - Bumping minimum version requirements of PHP, Doctrine, and other dependencies
+- Implementing support for the latest Doctrine MongoDB & Common packages
 - Updating the test suite, add code and style standards, and other needed build tools
 - Cleaning up documentation, code, comments, etc.
 
-While major code changes are not implemented in 3.0, it will be a major release due to changes in
-requirements and toolsets. [Read the Upgrade Doc for more info.](/doc/upgrading/upgrade-v2.4-to-v3.0.md)
-
-For the current old-but-stable version, see the [v2.4.x branch](https://github.com/Atlantic18/DoctrineExtensions/tree/v2.4.x).
+[Read the Upgrade Doc for more info.](/doc/upgrading/upgrade-v2.4-to-v3.0.md)
 
 ---
 
 ## Installation
 
-    $ composer require gedmo/doctrine-extensions
+    composer require gedmo/doctrine-extensions
 
 * [Symfony 2](/doc/symfony2.md)
 * [Symfony 4](/doc/symfony4.md)
@@ -35,7 +33,7 @@ For the current old-but-stable version, see the [v2.4.x branch](https://github.c
 
 ### Upgrading
 
-* [From v2.4.x to v3.0](/doc/upgrading/upgrade-v2.4-to-v3.0.md)
+* [From 2.4.x to 3.0](/doc/upgrading/upgrade-v2.4-to-v3.0.md)
 
 ## Extensions
 
