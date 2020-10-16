@@ -7,6 +7,8 @@ This package contains extensions for Doctrine ORM and MongoDB ODM that offer new
 more efficiently. These behaviors can be easily attached to the event system of Doctrine and handle the records being
 flushed in a behavioral way.
 
+:boom: **Check out the modernized [3.0 release](https://github.com/Atlantic18/DoctrineExtensions/releases/tag/v3.0.0)!**
+
 ## Installation
 
     $ composer require gedmo/doctrine-extensions
@@ -15,8 +17,6 @@ flushed in a behavioral way.
 * [Symfony 4](/doc/symfony4.md)
 * [Laravel 5](https://www.laraveldoctrine.org/docs/1.3/extensions)
 * [Zend Framework 2](/doc/zendframework2.md)
-
-:boom: **Check out the [3.0 Beta](https://github.com/Atlantic18/DoctrineExtensions/releases/tag/v3.0.0-beta)!**
 
 ## Extensions
 
