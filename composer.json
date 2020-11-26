@@ -34,7 +34,7 @@
         }
     ],
     "require": {
-        "php": "^7.2",
+        "php": "^7.2 || ^8.0",
         "behat/transliterator": "~1.2",
         "doctrine/annotations": "^1.2",
         "doctrine/cache": "^1.0",
@@ -46,7 +46,7 @@
         "ext-mongo": "1.6.12"
     },
     "require-dev": {
-        "alcaeus/mongo-php-adapter": "^1.1",
+        "alcaeus/mongo-php-adapter": "^1.2",
         "doctrine/mongodb-odm": "^2.0",
         "doctrine/orm": "^2.6.3",
         "friendsofphp/php-cs-fixer": "^2.16",
