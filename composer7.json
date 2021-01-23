@@ -46,7 +46,7 @@
         "ext-mongo": "1.6.12"
     },
     "require-dev": {
-        "alcaeus/mongo-php-adapter": "~1.0.4",
+        "alcaeus/mongo-php-adapter": "^1.0.4",
         "doctrine/mongodb-odm": ">=1.0.2 <2.0",
         "doctrine/orm": ">=2.5.0",
         "doctrine/common": ">=2.5.0",
