@@ -34,7 +34,7 @@
         }
     ],
     "require": {
-        "php": "^7.2|^8.0",
+        "php": "^7.2 || ^8.0",
         "behat/transliterator": "~1.2",
         "doctrine/annotations": "^1.2",
         "doctrine/cache": "^1.0",
