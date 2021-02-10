@@ -64,8 +64,8 @@ class Yaml extends File implements Driver
                     $config['hardDelete'] = $classMapping['soft_deleteable']['hard_delete'];
                 }
 
-                $fieldMapping = $meta->getFieldMapping($fieldName);
-                $config['type'] = $fieldMapping['type'];
+//                $fieldMapping = $meta->getFieldMapping($fieldName);
+//                $config['type'] = $fieldMapping['type'];
             }
         }
     }

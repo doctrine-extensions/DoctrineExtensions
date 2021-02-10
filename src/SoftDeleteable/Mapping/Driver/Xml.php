@@ -54,8 +54,8 @@ class Xml extends BaseXml
                     $config['hardDelete'] = $this->_getBooleanAttribute($xml->{'soft-deleteable'}, 'hard-delete');
                 }
 
-                $fieldMapping = $meta->getFieldMapping($field);
-                $config['type'] = $fieldMapping['type'];
+//                $fieldMapping = $meta->getFieldMapping($field);
+//                $config['type'] = $fieldMapping['type'];
             }
         }
     }
