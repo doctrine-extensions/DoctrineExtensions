@@ -612,6 +612,43 @@ class SoftDeleteableEntityTest extends BaseTestCaseORM
         $this->assertNotNull($user, 'User is still available, hard delete done');
     }
 
+    public function testSoftDeleteableWithIdentityMap(): void
+    {
+        $filter = $this->em->getFilters()->enable(self::SOFT_DELETEABLE_FILTER_NAME);
+
+        $repo = $this->em->getRepository(self::USER_CLASS);
+
+        $newUser = new User();
+        $username = 'test_user';
+        $newUser->setUsername($username);
+
+        $this->assertNull($newUser->getId());
+
+        $this->em->persist($newUser);
+        $this->em->flush();
+
+        $userId = $newUser->getId();
+
+        $this->assertNotNull($userId);
+
+        $user = $repo->find($userId);
+
+        $this->assertNull($user->getDeletedAt());
+
+        $this->em->remove($user);
+        $this->em->flush();
+
+        $this->assertNotNull($user->getDeletedAt());
+        $this->assertNull($repo->find($userId));
+
+        $filter->disableForEntity(self::USER_CLASS);
+
+        $user = $repo->find($userId);
+
+        $this->assertNotNull($user);
+        $this->assertNotNull($user->getDeletedAt());
+    }
+
     protected function getUsedEntityFixtures()
     {
         return [
