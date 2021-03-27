@@ -2,6 +2,7 @@
 
 namespace Gedmo\Mapping;
 
+use Doctrine\Bundle\DoctrineBundle\Mapping\MappingDriver as DoctrineBundleMappingDriver;
 use Doctrine\Common\Cache\Cache;
 use Doctrine\Persistence\Mapping\Driver\DefaultFileLocator;
 use Doctrine\Persistence\Mapping\Driver\MappingDriver;
@@ -137,6 +138,12 @@ class ExtensionMetadataFactory
      */
     protected function getDriver($omDriver)
     {
+        if ($omDriver instanceof DoctrineBundleMappingDriver) {
+            $omDriver = (new \ReflectionClass($omDriver))
+                ->getProperty('driver')
+                ->getValue($omDriver);
+        }
+
         $driver = null;
         $className = get_class($omDriver);
         $driverName = substr($className, strrpos($className, '\\') + 1);
