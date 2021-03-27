@@ -19,6 +19,8 @@ a release.
 ---
 
 ## [Unreleased]
+
+## [3.0.4] - 2021-03-27
 ### Fixed
 - Add hacky measure to resolve incompatibility with DoctrineBundle 2.3 [#2211](https://github.com/doctrine-extensions/DoctrineExtensions/pull/2211)
 
