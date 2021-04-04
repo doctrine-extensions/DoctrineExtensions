@@ -41,11 +41,7 @@
         "doctrine/common": "^2.13 || ^3.0",
         "doctrine/event-manager": "^1.0"
     },
-    "provide": {
-        "ext-mongo": "1.6.12"
-    },
     "require-dev": {
-        "alcaeus/mongo-php-adapter": "^1.1",
         "doctrine/cache": "^1.11 || ^2.0",
         "doctrine/doctrine-bundle": "^2.3",
         "doctrine/mongodb-odm": "^2.0",
