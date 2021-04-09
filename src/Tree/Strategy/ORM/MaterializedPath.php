@@ -28,7 +28,7 @@ class MaterializedPath extends AbstractMaterializedPath
         $qb = $om->createQueryBuilder();
         $qb->select('e')
             ->from($config['useObjectClass'], 'e')
-            ->where($qb->expr()->like('e.'.$config['path'], $qb->expr()->literal($path.'%')));
+            ->where($qb->expr()->like('e.'.$config['path'], $qb->expr()->literal($path.$config['path_separator'].'%')));
 
         if (isset($config['level'])) {
             $lvlField = $config['level'];
