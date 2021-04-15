@@ -14,7 +14,7 @@ use Doctrine\ORM\Mapping as ORM;
 abstract class AbstractPersonalTranslation
 {
     /**
-     * @var int
+     * @var int|null
      *
      * @ORM\Column(type="integer")
      * @ORM\Id
@@ -60,7 +60,7 @@ abstract class AbstractPersonalTranslation
     /**
      * Get id
      *
-     * @return int $id
+     * @return int|null $id
      */
     public function getId()
     {
