@@ -2,8 +2,8 @@
 
 namespace Sortable\Fixture;
 
-use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
@@ -31,22 +31,27 @@ class Paper
     {
         $this->authors = new ArrayCollection();
     }
+
     public function getId()
     {
         return $this->id;
     }
+
     public function getName()
     {
         return $this->name;
     }
+
     public function setName($name)
     {
         $this->name = $name;
     }
+
     public function getAuthors()
     {
         return $this->authors;
     }
+
     public function addAuthor($author)
     {
         $this->authors->add($author);

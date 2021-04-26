@@ -1,4 +1,5 @@
 <?php
+
 namespace Mapping\Fixture\Compatibility;
 
 /**
@@ -15,7 +16,7 @@ class Article
     private $title;
 
     /**
-     * @var datetime $created
+     * @var datetime
      *
      * @gedmo:Timestampable(on="create")
      * @Column(name="created", type="date")
@@ -23,7 +24,7 @@ class Article
     private $created;
 
     /**
-     * @var datetime $updated
+     * @var datetime
      *
      * @Column(name="updated", type="datetime")
      * @gedmo:Timestampable

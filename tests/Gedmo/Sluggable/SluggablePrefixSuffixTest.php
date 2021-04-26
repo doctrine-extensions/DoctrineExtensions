@@ -17,7 +17,7 @@ class SluggablePrefixSuffixTest extends BaseTestCaseORM
     const SUFFIX_TREE = 'Sluggable\\Fixture\\SuffixWithTreeHandler';
     const PREFIX_TREE = 'Sluggable\\Fixture\\PrefixWithTreeHandler';
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -109,11 +109,11 @@ class SluggablePrefixSuffixTest extends BaseTestCaseORM
      */
     protected function getUsedEntityFixtures()
     {
-        return array(
+        return [
             self::SUFFIX,
             self::PREFIX,
             self::SUFFIX_TREE,
             self::PREFIX_TREE,
-        );
+        ];
     }
 }

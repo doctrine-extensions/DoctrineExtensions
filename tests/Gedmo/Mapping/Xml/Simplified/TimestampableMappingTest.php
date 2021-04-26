@@ -12,7 +12,9 @@ use Tool\BaseTestCaseORM;
  * These are mapping extension tests
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @link http://www.gediminasm.org
+ *
+ * @see http://www.gediminasm.org
+ *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class TimestampableMappingTest extends BaseTestCaseORM
@@ -22,7 +24,7 @@ class TimestampableMappingTest extends BaseTestCaseORM
      */
     private $timestampable;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -35,9 +37,9 @@ class TimestampableMappingTest extends BaseTestCaseORM
 
     protected function getMetadataDriverImplementation()
     {
-        $xmlDriver = new SimplifiedXmlDriver(array(
+        $xmlDriver = new SimplifiedXmlDriver([
             __DIR__.'/../../Driver/Xml' => 'Mapping\Fixture\Xml',
-        ));
+        ]);
 
         $chain = new DriverChain();
         $chain->addDriver($xmlDriver, 'Mapping\Fixture\Xml');
@@ -47,10 +49,10 @@ class TimestampableMappingTest extends BaseTestCaseORM
 
     protected function getUsedEntityFixtures()
     {
-        return array(
+        return [
             'Mapping\Fixture\Xml\Timestampable',
             'Mapping\Fixture\Xml\Status',
-        );
+        ];
     }
 
     public function testTimestampableMetadata()

@@ -2,9 +2,9 @@
 
 namespace Translatable\Fixture;
 
-use Gedmo\Translatable\Translatable;
-use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
+use Gedmo\Translatable\Translatable;
 
 /**
  * @ORM\Entity
@@ -28,6 +28,7 @@ class Company implements Translatable
 
     /**
      * Used locale to override Translation listener`s locale
+     *
      * @Gedmo\Locale
      */
     private $locale;
@@ -55,6 +56,7 @@ class Company implements Translatable
 
     /**
      * @param mixed $title
+     *
      * @return Company
      */
     public function setTitle($title)
@@ -74,6 +76,7 @@ class Company implements Translatable
 
     /**
      * @param mixed $link
+     *
      * @return Company
      */
     public function setLink(CompanyEmbedLink $link)
@@ -85,6 +88,7 @@ class Company implements Translatable
 
     /**
      * @param mixed $locale
+     *
      * @return Company
      */
     public function setTranslatableLocale($locale)

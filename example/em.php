@@ -5,14 +5,14 @@
  * xml. Because annotation driver fails to read other classes in same namespace
  */
 // connection args, modify at will
-$connection = array(
+$connection = [
     'host' => '127.0.0.1',
     'port' => 3306,
     'user' => 'root',
     'password' => null,
     'dbname' => 'test',
     'driver' => 'pdo_mysql',
-);
+];
 if (!file_exists(__DIR__.'/../vendor/autoload.php')) {
     die('cannot find vendors, read README.md how to use composer');
 }
@@ -52,7 +52,7 @@ Gedmo\DoctrineExtensions::registerAbstractMappingIntoDriverChainORM(
 // for that we need another metadata driver used for Entity namespace
 $annotationDriver = new Doctrine\ORM\Mapping\Driver\AnnotationDriver(
     $cachedAnnotationReader, // our cached annotation reader
-    array(__DIR__.'/app/Entity') // paths to look in
+    [__DIR__.'/app/Entity'] // paths to look in
 );
 // NOTE: driver for application Entity can be different, Yaml, Xml or whatever
 // register annotation driver for our application Entity fully qualified namespace

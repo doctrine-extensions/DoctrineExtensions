@@ -1,4 +1,5 @@
 <?php
+
 namespace Translatable\Fixture\Document\Personal;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoODM;
@@ -10,7 +11,7 @@ use Gedmo\Translatable\Document\MappedSuperclass\AbstractPersonalTranslation;
 class ArticleTranslation extends AbstractPersonalTranslation
 {
     /**
-     * @MongoODM\ReferenceOne(targetDocument="Article", inversedBy="translations")
+     * @MongoODM\ReferenceOne(targetDocument="Translatable\Fixture\Document\Personal\Article", inversedBy="translations")
      */
     protected $object;
 }

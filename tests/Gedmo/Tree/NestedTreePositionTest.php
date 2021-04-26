@@ -11,15 +11,17 @@ use Tree\Fixture\RootCategory;
  * These are tests for Tree behavior
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @link http://www.gediminasm.org
+ *
+ * @see http://www.gediminasm.org
+ *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class NestedTreePositionTest extends BaseTestCaseORM
 {
-    const CATEGORY = "Tree\\Fixture\\Category";
-    const ROOT_CATEGORY = "Tree\\Fixture\\RootCategory";
+    const CATEGORY = 'Tree\\Fixture\\Category';
+    const ROOT_CATEGORY = 'Tree\\Fixture\\RootCategory';
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -30,8 +32,8 @@ class NestedTreePositionTest extends BaseTestCaseORM
     }
 
     /**
-    * @test
-    */
+     * @test
+     */
     public function shouldFailToPersistRootSibling()
     {
         $food = new Category();
@@ -53,10 +55,10 @@ class NestedTreePositionTest extends BaseTestCaseORM
 
     /**
      * @test
-     * @expectedException UnexpectedValueException
      */
     public function shouldFailToPersistRootAsSiblingForRootBasedTree()
     {
+        $this->expectException('UnexpectedValueException');
         $food = new RootCategory();
         $food->setTitle('Food');
 
@@ -76,8 +78,8 @@ class NestedTreePositionTest extends BaseTestCaseORM
         $this->populate();
         $repo = $this->em->getRepository(self::ROOT_CATEGORY);
 
-        $oranges = $repo->findOneByTitle('Oranges');
-        $meat = $repo->findOneByTitle('Meat');
+        $oranges = $repo->findOneBy(['title' => 'Oranges']);
+        $meat = $repo->findOneBy(['title' => 'Meat']);
 
         $this->assertEquals(2, $oranges->getLevel());
         $this->assertEquals(7, $oranges->getLeft());
@@ -86,8 +88,8 @@ class NestedTreePositionTest extends BaseTestCaseORM
         $repo->persistAsNextSiblingOf($meat, $oranges);
         $this->em->flush();
 
-        $oranges = $repo->findOneByTitle('Oranges');
-        $meat = $repo->findOneByTitle('Meat');
+        $oranges = $repo->findOneBy(['title' => 'Oranges']);
+        $meat = $repo->findOneBy(['title' => 'Meat']);
 
         $this->assertEquals(7, $oranges->getLeft());
         $this->assertEquals(8, $oranges->getRight());
@@ -111,8 +113,8 @@ class NestedTreePositionTest extends BaseTestCaseORM
         $this->populate();
         $repo = $this->em->getRepository(self::ROOT_CATEGORY);
 
-        $oranges = $repo->findOneByTitle('Oranges');
-        $milk = $repo->findOneByTitle('Milk');
+        $oranges = $repo->findOneBy(['title' => 'Oranges']);
+        $milk = $repo->findOneBy(['title' => 'Milk']);
 
         $this->assertEquals(2, $oranges->getLevel());
         $this->assertEquals(7, $oranges->getLeft());
@@ -142,8 +144,8 @@ class NestedTreePositionTest extends BaseTestCaseORM
         $this->populate();
         $repo = $this->em->getRepository(self::ROOT_CATEGORY);
 
-        $citrons = $repo->findOneByTitle('Citrons');
-        $vegitables = $repo->findOneByTitle('Vegitables');
+        $citrons = $repo->findOneBy(['title' => 'Citrons']);
+        $vegitables = $repo->findOneBy(['title' => 'Vegitables']);
 
         $repo->persistAsNextSiblingOf($vegitables, $citrons);
         $this->em->flush();
@@ -152,11 +154,11 @@ class NestedTreePositionTest extends BaseTestCaseORM
         $this->assertEquals(6, $vegitables->getRight());
         $this->assertEquals(2, $vegitables->getParent()->getId());
 
-        $fruits = $repo->findOneByTitle('Fruits');
+        $fruits = $repo->findOneBy(['title' => 'Fruits']);
         $this->assertEquals(2, $fruits->getLeft());
         $this->assertEquals(9, $fruits->getRight());
 
-        $milk = $repo->findOneByTitle('Milk');
+        $milk = $repo->findOneBy(['title' => 'Milk']);
         $repo->persistAsFirstChildOf($milk, $fruits);
         $this->em->flush();
 
@@ -172,8 +174,8 @@ class NestedTreePositionTest extends BaseTestCaseORM
         $this->populate();
         $repo = $this->em->getRepository(self::ROOT_CATEGORY);
 
-        $oranges = $repo->findOneByTitle('Oranges');
-        $fruits = $repo->findOneByTitle('Fruits');
+        $oranges = $repo->findOneBy(['title' => 'Oranges']);
+        $fruits = $repo->findOneBy(['title' => 'Fruits']);
 
         $this->assertEquals(2, $oranges->getLevel());
 
@@ -183,7 +185,7 @@ class NestedTreePositionTest extends BaseTestCaseORM
         $this->assertEquals(1, $oranges->getLevel());
         $this->assertCount(1, $repo->children($fruits, true));
 
-        $vegies = $repo->findOneByTitle('Vegitables');
+        $vegies = $repo->findOneBy(['title' => 'Vegitables']);
         $this->assertEquals(2, $vegies->getLeft());
         $repo->persistAsNextSiblingOf($vegies, $fruits);
         $this->em->flush();
@@ -496,9 +498,9 @@ class NestedTreePositionTest extends BaseTestCaseORM
 
     protected function getUsedEntityFixtures()
     {
-        return array(
+        return [
             self::CATEGORY,
             self::ROOT_CATEGORY,
-        );
+        ];
     }
 }

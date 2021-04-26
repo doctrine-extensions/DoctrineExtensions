@@ -12,7 +12,9 @@ use Translatable\Fixture\Sport;
  * These are tests for translatable behavior
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @link http://www.gediminasm.org
+ *
+ * @see http://www.gediminasm.org
+ *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class TranslatableTest extends BaseTestCaseORM
@@ -25,7 +27,7 @@ class TranslatableTest extends BaseTestCaseORM
     private $articleId;
     private $translatableListener;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -62,14 +64,14 @@ class TranslatableTest extends BaseTestCaseORM
         // this will force it to find translation in "en" locale, since listener has "en" set
         // and since default locale is "en" current translation will be "test"
         // setting title to "test" will not even persist entity, since there is no changeset
-        $entity = $repo->findOneById($entity->getId());
+        $entity = $repo->findOneBy(['id' => $entity->getId()]);
         $entity->setTranslatableLocale('de');
         $entity->setTitle('test');
         $this->em->persist($entity);
         $this->em->flush();
 
         $this->em->clear();
-        $entity = $repo->findOneById($entity->getId());
+        $entity = $repo->findOneBy(['id' => $entity->getId()]);
         $repo = $this->em->getRepository(self::TRANSLATION);
 
         $translations = $repo->findTranslations($entity);
@@ -137,7 +139,7 @@ class TranslatableTest extends BaseTestCaseORM
             ->where('art.id = :id');
         $q = $qb->getQuery();
         $result = $q->execute(
-            array('id' => $article->getId()),
+            ['id' => $article->getId()],
             \Doctrine\ORM\Query::HYDRATE_ARRAY
         );
         $this->assertCount(1, $result);
@@ -315,12 +317,12 @@ class TranslatableTest extends BaseTestCaseORM
 
     protected function getUsedEntityFixtures()
     {
-        return array(
+        return [
             self::ARTICLE,
             self::TRANSLATION,
             self::COMMENT,
             self::SPORT,
-        );
+        ];
     }
 
     private function populate()

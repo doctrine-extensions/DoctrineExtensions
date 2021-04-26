@@ -2,8 +2,8 @@
 
 namespace Translatable\Fixture;
 
-use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ORM\Entity
@@ -32,6 +32,7 @@ class Comment
 
     /**
      * Used locale to override Translation listener`s locale
+     *
      * @Gedmo\Language
      */
     private $locale;

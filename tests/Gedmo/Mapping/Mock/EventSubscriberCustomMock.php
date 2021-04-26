@@ -18,6 +18,6 @@ class EventSubscriberCustomMock extends MappedEventSubscriber
 
     public function getSubscribedEvents()
     {
-        return array();
+        return [];
     }
 }

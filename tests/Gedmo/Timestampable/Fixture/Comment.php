@@ -2,9 +2,9 @@
 
 namespace Timestampable\Fixture;
 
-use Gedmo\Timestampable\Timestampable;
-use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
+use Gedmo\Timestampable\Timestampable;
 
 /**
  * @ORM\Entity
@@ -30,7 +30,7 @@ class Comment implements Timestampable
     private $status;
 
     /**
-     * @var datetime $closed
+     * @var datetime
      *
      * @ORM\Column(name="closed", type="datetime", nullable=true)
      * @Gedmo\Timestampable(on="change", field="status", value=1)
@@ -38,7 +38,7 @@ class Comment implements Timestampable
     private $closed;
 
     /**
-     * @var datetime $modified
+     * @var datetime
      *
      * @ORM\Column(name="modified", type="time")
      * @Gedmo\Timestampable(on="update")

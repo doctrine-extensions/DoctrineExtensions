@@ -11,33 +11,22 @@ use Tool\BaseTestCaseMongoODM;
  * These are tests for Timestampable behavior ODM implementation
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @link http://www.gediminasm.org
+ *
+ * @see http://www.gediminasm.org
+ *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class TimestampableEmbeddedDocumentTest extends BaseTestCaseMongoODM
 {
     const BOOK = 'Timestampable\Fixture\Document\Book';
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $evm = new EventManager();
         $evm->addEventSubscriber(new TimestampableListener());
 
         $this->getMockDocumentManager($evm);
-    }
-
-    /**
-     * Test that no php notice is triggered while processing timestampable properties of embedded document
-     */
-    public function testPersistOnlyEmbeddedDocument()
-    {
-        $tag = new Tag();
-        $tag->setName('cats');
-
-        $this->dm->persist($tag);
-        $this->dm->flush();
-        $this->dm->clear();
     }
 
     public function testPersistEmbeddedDocumentWithParent()
@@ -59,7 +48,7 @@ class TimestampableEmbeddedDocumentTest extends BaseTestCaseMongoODM
 
         $repo = $this->dm->getRepository(self::BOOK);
 
-        $bookFromRepo = $repo->findOneByTitle('Cats & Dogs');
+        $bookFromRepo = $repo->findOneBy(['title' => 'Cats & Dogs']);
 
         $this->assertNotNull($bookFromRepo);
 

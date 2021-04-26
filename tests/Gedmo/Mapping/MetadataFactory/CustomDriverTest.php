@@ -1,29 +1,31 @@
 <?php
 
-use Doctrine\Common\Persistence\Mapping\Driver\MappingDriver;
+use Doctrine\Persistence\Mapping\ClassMetadata;
+use Doctrine\Persistence\Mapping\Driver\MappingDriver;
 use Mapping\Fixture\Unmapped\Timestampable;
-use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 
 /**
-* These are mapping tests for tree extension
-*
-* @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
-* @link http://www.gediminasm.org
-* @license MIT License (http://www.opensource.org/licenses/mit-license.php)
-*/
+ * These are mapping tests for tree extension
+ *
+ * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
+ *
+ * @see http://www.gediminasm.org
+ *
+ * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
+ */
 class CustomDriverTest extends \PHPUnit\Framework\TestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
         $config = new \Doctrine\ORM\Configuration();
         $config->setProxyDir(TESTS_TEMP_DIR);
         $config->setProxyNamespace('Gedmo\Mapping\Proxy');
         $config->setMetadataDriverImpl(new CustomDriver());
 
-        $conn = array(
+        $conn = [
             'driver' => 'pdo_sqlite',
             'memory' => true,
-        );
+        ];
 
         $evm = new \Doctrine\Common\EventManager();
         $this->timestampable = new \Gedmo\Timestampable\TimestampableListener();
@@ -32,10 +34,10 @@ class CustomDriverTest extends \PHPUnit\Framework\TestCase
         $this->em = \Doctrine\ORM\EntityManager::create($conn, $config, $evm);
 
         $schemaTool = new \Doctrine\ORM\Tools\SchemaTool($this->em);
-        $schemaTool->dropSchema(array());
-        $schemaTool->createSchema(array(
+        $schemaTool->dropSchema([]);
+        $schemaTool->createSchema([
             $this->em->getClassMetadata('Mapping\Fixture\Unmapped\Timestampable'),
-        ));
+        ]);
     }
 
     /**
@@ -67,13 +69,13 @@ class CustomDriver implements MappingDriver
 {
     public function getAllClassNames()
     {
-        return array('Mapping\Fixture\Unmapped\Timestampable');
+        return ['Mapping\Fixture\Unmapped\Timestampable'];
     }
 
     public function loadMetadataForClass($className, ClassMetadata $metadata)
     {
-        if ($className === 'Mapping\Fixture\Unmapped\Timestampable') {
-            $id = array();
+        if ('Mapping\Fixture\Unmapped\Timestampable' === $className) {
+            $id = [];
             $id['fieldName'] = 'id';
             $id['type'] = 'integer';
             $id['nullable'] = false;
@@ -86,7 +88,7 @@ class CustomDriver implements MappingDriver
 
             $metadata->mapField($id);
 
-            $created = array();
+            $created = [];
             $created['fieldName'] = 'created';
             $created['type'] = 'datetime';
             $created['nullable'] = false;

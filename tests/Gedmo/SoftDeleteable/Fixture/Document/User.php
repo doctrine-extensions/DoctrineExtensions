@@ -2,8 +2,8 @@
 
 namespace SoftDeleteable\Fixture\Document;
 
-use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ODM\Document(collection="users")
@@ -17,7 +17,7 @@ class User
     /** @ODM\Field(type="string") */
     private $username;
 
-    /** @ODM\Date */
+    /** @ODM\Field(type="date") */
     protected $deletedAt;
 
     /**

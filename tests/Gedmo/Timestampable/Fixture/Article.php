@@ -1,9 +1,10 @@
 <?php
+
 namespace Timestampable\Fixture;
 
-use Gedmo\Timestampable\Timestampable;
-use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
+use Gedmo\Timestampable\Timestampable;
 
 /**
  * @ORM\Entity
@@ -34,7 +35,7 @@ class Article implements Timestampable
     private $author;
 
     /**
-     * @var datetime $created
+     * @var datetime
      *
      * @Gedmo\Timestampable(on="create")
      * @ORM\Column(name="created", type="date")
@@ -42,7 +43,7 @@ class Article implements Timestampable
     private $created;
 
     /**
-     * @var datetime $updated
+     * @var datetime
      *
      * @ORM\Column(name="updated", type="datetime")
      * @Gedmo\Timestampable
@@ -50,7 +51,7 @@ class Article implements Timestampable
     private $updated;
 
     /**
-     * @var datetime $published
+     * @var datetime
      *
      * @ORM\Column(name="published", type="datetime", nullable=true)
      * @Gedmo\Timestampable(on="change", field="type.title", value="Published")
@@ -58,14 +59,14 @@ class Article implements Timestampable
     private $published;
 
     /**
-     * @var datetime $contentChanged
+     * @var datetime
      *
      * @ORM\Column(name="content_changed", type="datetime", nullable=true)
      * @Gedmo\Timestampable(on="change", field={"title", "body"})
      */
     private $contentChanged;
     /**
-     * @var datetime $authorChanged
+     * @var datetime
      *
      * @ORM\Column(name="author_changed", type="datetime", nullable=true)
      * @Gedmo\Timestampable(on="change", field={"author.name", "author.email"})

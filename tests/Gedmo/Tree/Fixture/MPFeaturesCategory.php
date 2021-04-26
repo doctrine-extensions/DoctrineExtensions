@@ -2,8 +2,8 @@
 
 namespace Tree\Fixture;
 
-use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ORM\Entity(repositoryClass="Gedmo\Tree\Entity\Repository\MaterializedPathRepository")
@@ -50,7 +50,6 @@ class MPFeaturesCategory
      * @ORM\Column(name="lvl", type="integer", nullable=true)
      */
     private $level;
-
 
     /**
      * @Gedmo\TreeRoot

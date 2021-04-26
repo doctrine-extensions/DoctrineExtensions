@@ -5,8 +5,8 @@ namespace Gedmo\References;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\ODM\MongoDB\Mapping\Driver\AnnotationDriver as MongoDBAnnotationDriver;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver as ORMAnnotationDriver;
-use References\Fixture\ODM\MongoDB\Product;
 use References\Fixture\ODM\MongoDB\Metadata;
+use References\Fixture\ODM\MongoDB\Product;
 use References\Fixture\ORM\Category;
 use References\Fixture\ORM\StockItem;
 use Tool\BaseTestCaseOM;
@@ -16,7 +16,7 @@ class ReferencesListenerTest extends BaseTestCaseOM
     private $em;
     private $dm;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -28,19 +28,19 @@ class ReferencesListenerTest extends BaseTestCaseOM
 
         $this->dm = $this->getMockDocumentManager('test', new MongoDBAnnotationDriver($reader, __DIR__.'/Fixture/ODM/MongoDB'));
 
-        $listener = new ReferencesListener(array(
+        $listener = new ReferencesListener([
             'document' => $this->dm,
-        ));
+        ]);
 
         $this->evm->addEventSubscriber($listener);
 
         $reader = new AnnotationReader();
 
         $this->em = $this->getMockSqliteEntityManager(
-            array(
+            [
                 'References\Fixture\ORM\StockItem',
                 'References\Fixture\ORM\Category',
-            ),
+            ],
             new ORMAnnotationDriver($reader, __DIR__.'/Fixture/ORM')
         );
         $listener->registerManager('entity', $this->em);
@@ -134,11 +134,11 @@ class ReferencesListenerTest extends BaseTestCaseOM
     public function testShouldPopulateReferenceManyEmbedWithLazyCollectionInstance()
     {
         $tvCategory = new Category();
-        $tvCategory->setName("Television");
+        $tvCategory->setName('Television');
         $this->em->persist($tvCategory);
 
         $cellPhoneCategory = new Category();
-        $cellPhoneCategory->setName("CellPhone");
+        $cellPhoneCategory->setName('CellPhone');
         $this->em->persist($cellPhoneCategory);
 
         $this->em->clear();
@@ -152,18 +152,18 @@ class ReferencesListenerTest extends BaseTestCaseOM
 
         $samsungTV = new Product();
         $samsungTV->setName('Samsung TV');
-        $this->dm->persist( $samsungTV );
+        $this->dm->persist($samsungTV);
         $this->dm->flush();
 
         $iPhone = new Product();
         $iPhone->setName('iPhone');
-        $this->dm->persist( $iPhone );
+        $this->dm->persist($iPhone);
         $this->dm->flush();
 
-        $appleTV->addMetadata( $tvMetadata );
-        $samsungTV->addMetadata( $tvMetadata );
-        $this->dm->persist( $samsungTV );
-        $this->dm->persist( $appleTV );
+        $appleTV->addMetadata($tvMetadata);
+        $samsungTV->addMetadata($tvMetadata);
+        $this->dm->persist($samsungTV);
+        $this->dm->persist($appleTV);
         $this->dm->flush();
 
         $this->assertEquals($appleTV->getMetadatas()->first(), $tvMetadata);

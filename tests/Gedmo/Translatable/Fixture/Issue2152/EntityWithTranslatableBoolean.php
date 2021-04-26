@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Translatable\Fixture\Issue2152;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -43,50 +45,34 @@ class EntityWithTranslatableBoolean
      */
     private $locale;
 
-    /**
-     * @param string        $title
-     * @param string|null $isOperating
-     */
-    public function __construct($title, $isOperating = '0')
+    public function __construct(string $title, string $isOperating = '0')
     {
         $this->translateInLocale('en', $title, $isOperating);
     }
 
-    public function translateInLocale($locale, $title, $isOperating)
+    public function translateInLocale(string $locale, ?string $title, ?string $isOperating): void
     {
         $this->title = $title;
         $this->isOperating = $isOperating;
         $this->locale = $locale;
     }
 
-    /**
-     * @return int|null
-     */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    /**
-     * @return string|null
-     */
-    public function getTitle()
+    public function getTitle(): ?string
     {
         return $this->title;
     }
 
-    /**
-     * @return string|null
-     */
-    public function isOperating()
+    public function isOperating(): ?string
     {
         return $this->isOperating;
     }
 
-    /**
-     * @return string
-     */
-    public function getLocale()
+    public function getLocale(): string
     {
         return $this->locale;
     }

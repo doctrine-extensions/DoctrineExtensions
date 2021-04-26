@@ -3,15 +3,17 @@
 namespace Gedmo\Sluggable;
 
 use Doctrine\Common\EventManager;
-use Tool\BaseTestCaseORM;
 use Sluggable\Fixture\Issue1058\Page;
 use Sluggable\Fixture\Issue1058\User;
+use Tool\BaseTestCaseORM;
 
 /**
  * These are tests for sluggable behavior
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @link http://www.gediminasm.org
+ *
+ * @see http://www.gediminasm.org
+ *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class Issue1058Test extends BaseTestCaseORM
@@ -19,12 +21,12 @@ class Issue1058Test extends BaseTestCaseORM
     const ARTICLE = 'Sluggable\\Fixture\\Issue1058\\Page';
     const USER = 'Sluggable\\Fixture\\Issue1058\\User';
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
-        $evm = new EventManager;
-        $evm->addEventSubscriber(new SluggableListener);
+        $evm = new EventManager();
+        $evm->addEventSubscriber(new SluggableListener());
 
         $this->getMockSqliteEntityManager($evm);
     }
@@ -80,9 +82,9 @@ class Issue1058Test extends BaseTestCaseORM
 
     protected function getUsedEntityFixtures()
     {
-        return array(
+        return [
             self::ARTICLE,
-            self::USER
-        );
+            self::USER,
+        ];
     }
 }

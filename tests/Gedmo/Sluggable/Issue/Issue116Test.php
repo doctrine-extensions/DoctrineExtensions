@@ -3,23 +3,25 @@
 namespace Gedmo\Sluggable;
 
 use Doctrine\Common\EventManager;
-use Tool\BaseTestCaseORM;
-use Sluggable\Fixture\Issue116\Country;
-use Doctrine\ORM\Mapping\Driver\YamlDriver;
 use Doctrine\ORM\Mapping\Driver\DriverChain;
+use Doctrine\ORM\Mapping\Driver\YamlDriver;
+use Sluggable\Fixture\Issue116\Country;
+use Tool\BaseTestCaseORM;
 
 /**
  * These are tests for Sluggable behavior
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @link http://www.gediminasm.org
+ *
+ * @see http://www.gediminasm.org
+ *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class Issue116Test extends BaseTestCaseORM
 {
     const TARGET = 'Sluggable\\Fixture\\Issue116\\Country';
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -33,7 +35,7 @@ class Issue116Test extends BaseTestCaseORM
     {
         $chain = new DriverChain();
         $chain->addDriver(
-            new YamlDriver(array(__DIR__.'/../Fixture/Issue116/Mapping')),
+            new YamlDriver([__DIR__.'/../Fixture/Issue116/Mapping']),
             'Sluggable\Fixture\Issue116'
         );
 
@@ -53,8 +55,8 @@ class Issue116Test extends BaseTestCaseORM
 
     protected function getUsedEntityFixtures()
     {
-        return array(
+        return [
             self::TARGET,
-        );
+        ];
     }
 }

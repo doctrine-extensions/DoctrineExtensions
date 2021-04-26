@@ -2,8 +2,8 @@
 
 namespace Translatable\Fixture\Type;
 
-use Doctrine\DBAL\Types\Type;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
+use Doctrine\DBAL\Types\Type;
 
 class Custom extends Type
 {
@@ -21,13 +21,13 @@ class Custom extends Type
 
     public function convertToPHPValue($value, AbstractPlatform $platform)
     {
-        if ($value === null) {
+        if (null === $value) {
             return null;
         }
 
         $value = (is_resource($value)) ? stream_get_contents($value) : $value;
         $val = unserialize($value);
-        if ($val === false && $value !== 'b:0;') {
+        if (false === $val && 'b:0;' !== $value) {
             new \Exception('Conversion failed');
         }
 

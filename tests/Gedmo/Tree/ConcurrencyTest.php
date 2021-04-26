@@ -4,24 +4,26 @@ namespace Gedmo\Tree;
 
 use Doctrine\Common\EventManager;
 use Tool\BaseTestCaseORM;
-use Tree\Fixture\Category;
 use Tree\Fixture\Article;
+use Tree\Fixture\Category;
 use Tree\Fixture\Comment;
 
 /**
  * These are tests for Tree behavior
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @link http://www.gediminasm.org
+ *
+ * @see http://www.gediminasm.org
+ *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class ConcurrencyTest extends BaseTestCaseORM
 {
-    const CATEGORY = "Tree\\Fixture\\Category";
-    const ARTICLE = "Tree\\Fixture\\Article";
-    const COMMENT = "Tree\\Fixture\\Comment";
+    const CATEGORY = 'Tree\\Fixture\\Category';
+    const ARTICLE = 'Tree\\Fixture\\Article';
+    const COMMENT = 'Tree\\Fixture\\Comment';
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -35,7 +37,7 @@ class ConcurrencyTest extends BaseTestCaseORM
     public function testConcurrentEntitiesInOneFlush()
     {
         $repo = $this->em->getRepository(self::CATEGORY);
-        $sport = $repo->findOneByTitle('Root2');
+        $sport = $repo->findOneBy(['title' => 'Root2']);
         $sport->setTitle('Sport');
 
         $skiing = new Category();
@@ -73,14 +75,14 @@ class ConcurrencyTest extends BaseTestCaseORM
         $this->em->clear();
 
         $meta = $this->em->getClassMetadata(self::CATEGORY);
-        $sport = $repo->findOneByTitle('Sport');
+        $sport = $repo->findOneBy(['title' => 'Sport']);
         $left = $meta->getReflectionProperty('lft')->getValue($sport);
         $right = $meta->getReflectionProperty('rgt')->getValue($sport);
 
         $this->assertEquals(9, $left);
         $this->assertEquals(16, $right);
 
-        $skiing = $repo->findOneByTitle('Skiing');
+        $skiing = $repo->findOneBy(['title' => 'Skiing']);
         $left = $meta->getReflectionProperty('lft')->getValue($skiing);
         $right = $meta->getReflectionProperty('rgt')->getValue($skiing);
 
@@ -93,17 +95,17 @@ class ConcurrencyTest extends BaseTestCaseORM
         $repo = $this->em->getRepository(self::CATEGORY);
         $meta = $this->em->getClassMetadata(self::CATEGORY);
 
-        $root = $repo->findOneByTitle('Root');
+        $root = $repo->findOneBy(['title' => 'Root']);
 
         $this->assertEquals(1, $root->getLeft());
         $this->assertEquals(8, $root->getRight());
 
-        $root2 = $repo->findOneByTitle('Root2');
+        $root2 = $repo->findOneBy(['title' => 'Root2']);
 
         $this->assertEquals(9, $root2->getLeft());
         $this->assertEquals(10, $root2->getRight());
 
-        $child2Child = $repo->findOneByTitle('childs2_child');
+        $child2Child = $repo->findOneBy(['title' => 'childs2_child']);
 
         $this->assertEquals(5, $child2Child->getLeft());
         $this->assertEquals(6, $child2Child->getRight());
@@ -116,31 +118,31 @@ class ConcurrencyTest extends BaseTestCaseORM
 
     protected function getUsedEntityFixtures()
     {
-        return array(
+        return [
             self::CATEGORY,
             self::ARTICLE,
             self::COMMENT,
-        );
+        ];
     }
 
     private function populate()
     {
         $root = new Category();
-        $root->setTitle("Root");
+        $root->setTitle('Root');
 
         $root2 = new Category();
-        $root2->setTitle("Root2");
+        $root2->setTitle('Root2');
 
         $child = new Category();
-        $child->setTitle("child");
+        $child->setTitle('child');
         $child->setParent($root);
 
         $child2 = new Category();
-        $child2->setTitle("child2");
+        $child2->setTitle('child2');
         $child2->setParent($root);
 
         $childsChild = new Category();
-        $childsChild->setTitle("childs2_child");
+        $childsChild->setTitle('childs2_child');
         $childsChild->setParent($child2);
 
         $this->em->persist($root);

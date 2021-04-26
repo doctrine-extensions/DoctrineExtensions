@@ -3,8 +3,8 @@
 namespace Gedmo\Mapping;
 
 use Doctrine\Common\Annotations\AnnotationReader;
-use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
 use Doctrine\Common\EventManager;
+use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
 use Doctrine\ORM\Mapping\Driver\DriverChain;
 use Doctrine\ORM\Mapping\Driver\YamlDriver;
 use Gedmo\SoftDeleteable\SoftDeleteableListener;
@@ -15,7 +15,9 @@ use Tool\BaseTestCaseOM;
  *
  * @author Gustavo Falco <comfortablynumb84@gmail.com>
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @link http://www.gediminasm.org
+ *
+ * @see http://www.gediminasm.org
+ *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class SoftDeleteableMappingTest extends BaseTestCaseOM
@@ -30,7 +32,7 @@ class SoftDeleteableMappingTest extends BaseTestCaseOM
      */
     private $softDeleteable;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -47,10 +49,10 @@ class SoftDeleteableMappingTest extends BaseTestCaseOM
         $this->evm = new EventManager();
         $this->evm->addEventSubscriber($this->softDeleteable);
 
-        $this->em = $this->getMockSqliteEntityManager(array(
+        $this->em = $this->getMockSqliteEntityManager([
             'Mapping\Fixture\Yaml\SoftDeleteable',
             'Mapping\Fixture\SoftDeleteable',
-        ), $chain);
+        ], $chain);
     }
 
     public function testYamlMapping()

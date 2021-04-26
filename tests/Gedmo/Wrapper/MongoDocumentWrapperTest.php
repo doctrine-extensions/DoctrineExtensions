@@ -2,24 +2,26 @@
 
 namespace Wrapper;
 
-use Tool\BaseTestCaseMongoODM;
 use Doctrine\Common\EventManager;
-use Wrapper\Fixture\Document\Article;
 use Gedmo\Tool\Wrapper\MongoDocumentWrapper;
+use Tool\BaseTestCaseMongoODM;
+use Wrapper\Fixture\Document\Article;
 
 /**
  * Mongo Document wrapper tests
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @link http://www.gediminasm.org
+ *
+ * @see http://www.gediminasm.org
+ *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class MongoDocumentWrapperTest extends BaseTestCaseMongoODM
 {
-    const ARTICLE = "Wrapper\\Fixture\\Document\\Article";
+    const ARTICLE = 'Wrapper\\Fixture\\Document\\Article';
     private $articleId;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->getMockDocumentManager(new EventManager());
@@ -44,7 +46,8 @@ class MongoDocumentWrapperTest extends BaseTestCaseMongoODM
     {
         $this->dm->clear();
         $test = $this->dm->getReference(self::ARTICLE, $this->articleId);
-        $this->assertInstanceOf('Doctrine\\ODM\\MongoDB\\Proxy\\Proxy', $test);
+        $this->assertStringStartsWith('Proxy', get_class($test));
+        $this->assertInstanceOf(self::ARTICLE, $test);
         $wrapped = new MongoDocumentWrapper($test, $this->dm);
 
         $id = $wrapped->getIdentifier(false);
@@ -78,7 +81,7 @@ class MongoDocumentWrapperTest extends BaseTestCaseMongoODM
         $test = new Article();
         $wrapped = new MongoDocumentWrapper($test, $this->dm);
 
-        $wrapped->populate(array('title' => 'test'));
+        $wrapped->populate(['title' => 'test']);
         $this->assertEquals('test', $wrapped->getPropertyValue('title'));
 
         $this->assertFalse($wrapped->hasValidIdentifier());
@@ -87,7 +90,7 @@ class MongoDocumentWrapperTest extends BaseTestCaseMongoODM
     private function populate()
     {
         $test = new Article();
-        $test->setTitle("test");
+        $test->setTitle('test');
         $this->dm->persist($test);
         $this->dm->flush();
         $this->articleId = $test->getId();

@@ -7,7 +7,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * Class GeoLocation
- * @package Loggable\Fixture
+ *
  * @author Fabian Sabau <fabian.sabau@socialbit.de>
  *
  * @ORM\Embeddable()
@@ -15,7 +15,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 class GeoLocation
 {
     /**
-     * @var string $latitude
+     * @var string
      * @ORM\Column(type="string")
      * @Gedmo\Versioned()
      */
@@ -23,6 +23,7 @@ class GeoLocation
 
     /**
      * Geo constructor.
+     *
      * @param string $location
      */
     public function __construct($location)

@@ -3,8 +3,8 @@
 namespace Gedmo\Translatable;
 
 use Doctrine\Common\EventManager;
-use Tool\BaseTestCaseORM;
 use Gedmo\Translatable\Query\TreeWalker\TranslationWalker;
+use Tool\BaseTestCaseORM;
 use Translatable\Fixture\Issue173\Article;
 use Translatable\Fixture\Issue173\Category;
 use Translatable\Fixture\Issue173\Product;
@@ -14,19 +14,21 @@ use Translatable\Fixture\Issue173\Product;
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  * @contributor Oscar Balladares liebegrube@gmail.com https://github.com/oscarballadares
- * @link http://www.gediminasm.org
+ *
+ * @see http://www.gediminasm.org
+ *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class Issue173Test extends BaseTestCaseORM
 {
-    const CATEGORY =   'Translatable\\Fixture\\Issue173\\Category';
+    const CATEGORY = 'Translatable\\Fixture\\Issue173\\Category';
     const ARTICLE = 'Translatable\\Fixture\\Issue173\\Article';
     const PRODUCT = 'Translatable\\Fixture\\Issue173\\Product';
     const TRANSLATION = 'Gedmo\\Translatable\\Entity\\Translation';
 
     private $translatableListener;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -134,12 +136,11 @@ class Issue173Test extends BaseTestCaseORM
 
     protected function getUsedEntityFixtures()
     {
-        return array(
+        return [
             self::CATEGORY,
             self::ARTICLE,
             self::PRODUCT,
             self::TRANSLATION,
-
-        );
+        ];
     }
 }

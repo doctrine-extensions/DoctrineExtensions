@@ -27,11 +27,12 @@ class Type
     private $identifier;
 
     /**
-     * @ODM\ReferenceMany(targetDocument="Article", mappedBy="types")
+     * @ODM\ReferenceMany(targetDocument="ReferenceIntegrity\Fixture\Document\ManyPull\Article", mappedBy="types")
      * @Gedmo\ReferenceIntegrity("pull")
+     *
      * @var ArrayCollection
      */
-    protected $articles = array();
+    protected $articles = [];
 
     public function __construct()
     {
@@ -80,8 +81,6 @@ class Type
 
     /**
      * Add articles
-     *
-     * @param Article $article
      */
     public function addArticle(Article $article)
     {

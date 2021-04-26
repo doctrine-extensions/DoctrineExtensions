@@ -2,26 +2,28 @@
 
 namespace Gedmo\Blameable;
 
-use Doctrine\Common\EventManager;
-use Tool\BaseTestCaseORM;
 use Blameable\Fixture\Entity\Article;
 use Blameable\Fixture\Entity\Comment;
 use Blameable\Fixture\Entity\Type;
+use Doctrine\Common\EventManager;
+use Tool\BaseTestCaseORM;
 
 /**
  * These are tests for Blameable behavior
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @link http://www.gediminasm.org
+ *
+ * @see http://www.gediminasm.org
+ *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class BlameableTest extends BaseTestCaseORM
 {
-    const ARTICLE = "Blameable\\Fixture\\Entity\\Article";
-    const COMMENT = "Blameable\\Fixture\\Entity\\Comment";
-    const TYPE = "Blameable\\Fixture\\Entity\\Type";
+    const ARTICLE = 'Blameable\\Fixture\\Entity\\Article';
+    const COMMENT = 'Blameable\\Fixture\\Entity\\Comment';
+    const TYPE = 'Blameable\\Fixture\\Entity\\Type';
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -53,12 +55,12 @@ class BlameableTest extends BaseTestCaseORM
         $this->em->flush();
         $this->em->clear();
 
-        $sport = $this->em->getRepository(self::ARTICLE)->findOneByTitle('Sport');
+        $sport = $this->em->getRepository(self::ARTICLE)->findOneBy(['title' => 'Sport']);
         $this->assertEquals('testuser', $sport->getCreated());
         $this->assertEquals('testuser', $sport->getUpdated());
         $this->assertNull($sport->getPublished());
 
-        $sportComment = $this->em->getRepository(self::COMMENT)->findOneByMessage('hello');
+        $sportComment = $this->em->getRepository(self::COMMENT)->findOneBy(['message' => 'hello']);
         $this->assertEquals('testuser', $sportComment->getModified());
         $this->assertNull($sportComment->getClosed());
 
@@ -74,7 +76,7 @@ class BlameableTest extends BaseTestCaseORM
         $this->em->flush();
         $this->em->clear();
 
-        $sportComment = $this->em->getRepository(self::COMMENT)->findOneByMessage('hello');
+        $sportComment = $this->em->getRepository(self::COMMENT)->findOneBy(['message' => 'hello']);
         $this->assertEquals('testuser', $sportComment->getClosed());
 
         $this->assertEquals('testuser', $sport->getPublished());
@@ -92,7 +94,7 @@ class BlameableTest extends BaseTestCaseORM
         $this->em->clear();
 
         $repo = $this->em->getRepository(self::ARTICLE);
-        $sport = $repo->findOneByTitle('sport forced');
+        $sport = $repo->findOneBy(['title' => 'sport forced']);
         $this->assertEquals('myuser', $sport->getCreated());
         $this->assertEquals('myuser', $sport->getUpdated());
 
@@ -106,16 +108,16 @@ class BlameableTest extends BaseTestCaseORM
         $this->em->flush();
         $this->em->clear();
 
-        $sport = $repo->findOneByTitle('sport forced');
+        $sport = $repo->findOneBy(['title' => 'sport forced']);
         $this->assertEquals('myuser', $sport->getPublished());
     }
 
     protected function getUsedEntityFixtures()
     {
-        return array(
+        return [
             self::ARTICLE,
             self::COMMENT,
             self::TYPE,
-        );
+        ];
     }
 }

@@ -2,16 +2,18 @@
 
 namespace Gedmo\Timestampable;
 
-use Tool\BaseTestCaseMongoODM;
 use Doctrine\Common\EventManager;
 use Timestampable\Fixture\Document\Article;
 use Timestampable\Fixture\Document\Type;
+use Tool\BaseTestCaseMongoODM;
 
 /**
  * These are tests for Timestampable behavior ODM implementation
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @link http://www.gediminasm.org
+ *
+ * @see http://www.gediminasm.org
+ *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class TimestampableDocumentTest extends BaseTestCaseMongoODM
@@ -19,7 +21,7 @@ class TimestampableDocumentTest extends BaseTestCaseMongoODM
     const ARTICLE = 'Timestampable\Fixture\Document\Article';
     const TYPE = 'Timestampable\Fixture\Document\Type';
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $evm = new EventManager();
@@ -32,11 +34,11 @@ class TimestampableDocumentTest extends BaseTestCaseMongoODM
     public function testTimestampable()
     {
         $repo = $this->dm->getRepository(self::ARTICLE);
-        $article = $repo->findOneByTitle('Timestampable Article');
+        $article = $repo->findOneBy(['title' => 'Timestampable Article']);
 
         $date = new \DateTime();
         $now = time();
-        $created = intval((string) $article->getCreated());
+        $created = $article->getCreated()->getTimestamp();
         $this->assertTrue($created > $now - 5 && $created < $now + 5); // 5 seconds interval if lag
         $this->assertEquals(
             $date->format('Y-m-d H:i'),
@@ -53,7 +55,7 @@ class TimestampableDocumentTest extends BaseTestCaseMongoODM
         $this->dm->flush();
         $this->dm->clear();
 
-        $article = $repo->findOneByTitle('Timestampable Article');
+        $article = $repo->findOneBy(['title' => 'Timestampable Article']);
         $date = new \DateTime();
         $this->assertEquals(
             $date->format('Y-m-d H:i'),
@@ -74,10 +76,10 @@ class TimestampableDocumentTest extends BaseTestCaseMongoODM
         $this->dm->clear();
 
         $repo = $this->dm->getRepository(self::ARTICLE);
-        $sport = $repo->findOneByTitle('sport forced');
+        $sport = $repo->findOneBy(['title' => 'sport forced']);
         $this->assertEquals(
             $created,
-            (string) $sport->getCreated()
+            $sport->getCreated()->getTimestamp()
         );
         $this->assertEquals(
             '2000-01-01 12:00:00',
@@ -95,7 +97,7 @@ class TimestampableDocumentTest extends BaseTestCaseMongoODM
         $this->dm->flush();
         $this->dm->clear();
 
-        $sport = $repo->findOneByTitle('sport forced');
+        $sport = $repo->findOneBy(['title' => 'sport forced']);
         $this->assertEquals(
             '2000-01-01 12:00:00',
             $sport->getPublished()->format('Y-m-d H:i:s')
@@ -108,7 +110,7 @@ class TimestampableDocumentTest extends BaseTestCaseMongoODM
     public function shouldHandleOnChangeWithBooleanValue()
     {
         $repo = $this->dm->getRepository(self::ARTICLE);
-        $article = $repo->findOneByTitle('Timestampable Article');
+        $article = $repo->findOneBy(['title' => 'Timestampable Article']);
 
         $this->assertNull($article->getReady());
 

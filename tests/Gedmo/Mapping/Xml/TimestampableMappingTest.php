@@ -12,7 +12,9 @@ use Tool\BaseTestCaseOM;
  * These are mapping extension tests
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @link http://www.gediminasm.org
+ *
+ * @see http://www.gediminasm.org
+ *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class TimestampableMappingTest extends BaseTestCaseOM
@@ -27,7 +29,7 @@ class TimestampableMappingTest extends BaseTestCaseOM
      */
     private $timestampable;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -40,10 +42,10 @@ class TimestampableMappingTest extends BaseTestCaseOM
         $this->evm = new EventManager();
         $this->evm->addEventSubscriber($this->timestampable);
 
-        $this->em = $this->getMockSqliteEntityManager(array(
+        $this->em = $this->getMockSqliteEntityManager([
             'Mapping\Fixture\Xml\Timestampable',
             'Mapping\Fixture\Xml\Status',
-        ), $chain);
+        ], $chain);
     }
 
     public function testTimestampableMetadata()

@@ -10,14 +10,16 @@ use Tree\Fixture\Category;
  * These are tests for Tree behavior
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @link http://www.gediminasm.org
+ *
+ * @see http://www.gediminasm.org
+ *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class InMemoryUpdatesTest extends BaseTestCaseORM
 {
-    const CATEGORY = "Tree\\Fixture\\Category";
+    const CATEGORY = 'Tree\\Fixture\\Category';
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -34,15 +36,15 @@ class InMemoryUpdatesTest extends BaseTestCaseORM
 
         $root = new Category();
         $this->em->persist($root);
-        $root->setTitle("Root");
+        $root->setTitle('Root');
 
         $child = new Category();
         $this->em->persist($child);
-        $child->setTitle("child");
+        $child->setTitle('child');
 
         $child2 = new Category();
         $this->em->persist($child2);
-        $child2->setTitle("child2");
+        $child2->setTitle('child2');
 
         $child2->setParent($root);
         $child->setParent($root);
@@ -51,7 +53,7 @@ class InMemoryUpdatesTest extends BaseTestCaseORM
 
         $childsChild = new Category();
         $this->em->persist($childsChild);
-        $childsChild->setTitle("childs_child");
+        $childsChild->setTitle('childs_child');
         $childsChild->setParent($child);
 
         $this->em->flush();
@@ -88,8 +90,8 @@ class InMemoryUpdatesTest extends BaseTestCaseORM
 
     protected function getUsedEntityFixtures()
     {
-        return array(
+        return [
             self::CATEGORY,
-        );
+        ];
     }
 }

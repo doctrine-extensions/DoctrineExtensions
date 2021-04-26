@@ -103,8 +103,6 @@ class Page
     }
 
     /**
-     * @param User $user
-     *
      * @return $this
      */
     public function setUser(User $user)

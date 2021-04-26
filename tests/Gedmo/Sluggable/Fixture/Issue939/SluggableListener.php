@@ -14,11 +14,11 @@ class SluggableListener extends BaseSluggableListener
         $this->originalTransliterator = $this->getTransliterator();
         $this->originalUrlizer = $this->getUrlizer();
 
-        $this->setTransliterator(array($this, 'transliterator'));
-        $this->setUrlizer(array($this, 'urlizer'));
+        $this->setTransliterator([$this, 'transliterator']);
+        $this->setUrlizer([$this, 'urlizer']);
     }
 
-    public function transliterator($slug, $separator = '-', $object)
+    public function transliterator($slug, $separator = '-', $object = null)
     {
         if ($object instanceof Article) {
             // custom transliteration here
@@ -27,11 +27,11 @@ class SluggableListener extends BaseSluggableListener
 
         return call_user_func_array(
             $this->originalTransliterator,
-            array($slug, $separator, $object)
+            [$slug, $separator, $object]
         );
     }
 
-    public function urlizer($slug, $separator = '-', $object)
+    public function urlizer($slug, $separator = '-', $object = null)
     {
         if ($object instanceof Article) {
             // custom urlization here
@@ -40,7 +40,7 @@ class SluggableListener extends BaseSluggableListener
 
         return call_user_func_array(
             $this->originalUrlizer,
-            array($slug, $separator, $object)
+            [$slug, $separator, $object]
         );
     }
 }

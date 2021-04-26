@@ -3,12 +3,12 @@
 namespace Gedmo\Mapping;
 
 use Doctrine\Common\Annotations\AnnotationReader;
-use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
 use Doctrine\Common\EventManager;
+use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
 use Doctrine\ORM\Mapping\Driver\DriverChain;
 use Doctrine\ORM\Mapping\Driver\YamlDriver;
-use Gedmo\Uploadable\UploadableListener;
 use Gedmo\Uploadable\Mapping\Validator;
+use Gedmo\Uploadable\UploadableListener;
 use Tool\BaseTestCaseOM;
 
 /**
@@ -16,7 +16,9 @@ use Tool\BaseTestCaseOM;
  *
  * @author Gustavo Falco <comfortablynumb84@gmail.com>
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @link http://www.gediminasm.org
+ *
+ * @see http://www.gediminasm.org
+ *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class UploadableMappingTest extends BaseTestCaseOM
@@ -31,7 +33,7 @@ class UploadableMappingTest extends BaseTestCaseOM
      */
     private $listener;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -50,9 +52,9 @@ class UploadableMappingTest extends BaseTestCaseOM
         $this->evm = new EventManager();
         $this->evm->addEventSubscriber($this->listener);
 
-        $this->em = $this->getMockSqliteEntityManager(array(
+        $this->em = $this->getMockSqliteEntityManager([
             'Mapping\Fixture\Yaml\Uploadable',
-        ), $chain);
+        ], $chain);
     }
 
     public function testYamlMapping()

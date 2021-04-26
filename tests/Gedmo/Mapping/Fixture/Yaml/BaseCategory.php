@@ -28,14 +28,14 @@ class BaseCategory
     private $rooted;
 
     /**
-     * @var datetime $created
+     * @var datetime
      *
      * @Column(name="created", type="datetime")
      */
     private $created;
 
     /**
-     * @var date $updated
+     * @var date
      *
      * @Column(name="updated", type="date")
      */
@@ -84,6 +84,7 @@ class BaseCategory
     public function setLeft($left)
     {
         $this->left = $left;
+
         return $this;
     }
 
@@ -95,6 +96,7 @@ class BaseCategory
     public function setRight($right)
     {
         $this->right = $right;
+
         return $this;
     }
 
@@ -106,6 +108,7 @@ class BaseCategory
     public function setLevel($level)
     {
         $this->level = $level;
+
         return $this;
     }
 
@@ -117,6 +120,7 @@ class BaseCategory
     public function setRooted($rooted)
     {
         $this->rooted = $rooted;
+
         return $this;
     }
 

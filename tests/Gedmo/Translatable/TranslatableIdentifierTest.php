@@ -10,7 +10,9 @@ use Translatable\Fixture\StringIdentifier;
  * These are tests for translatable behavior
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @link http://www.gediminasm.org
+ *
+ * @see http://www.gediminasm.org
+ *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class TranslatableIdentifierTest extends BaseTestCaseORM
@@ -21,7 +23,7 @@ class TranslatableIdentifierTest extends BaseTestCaseORM
     private $testObjectId;
     private $translatableListener;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -31,13 +33,13 @@ class TranslatableIdentifierTest extends BaseTestCaseORM
         $this->translatableListener->setDefaultLocale('en_us');
         $evm->addEventSubscriber($this->translatableListener);
 
-        $conn = array(
+        $conn = [
                     'driver' => 'pdo_mysql',
                     'host' => '127.0.0.1',
                     'dbname' => 'test',
                     'user' => 'root',
                     'password' => 'nimda',
-        );
+        ];
         //$this->getMockCustomEntityManager($conn, $evm);
         $this->getMockSqliteEntityManager($evm);
     }
@@ -109,9 +111,9 @@ class TranslatableIdentifierTest extends BaseTestCaseORM
 
     protected function getUsedEntityFixtures()
     {
-        return array(
+        return [
             self::FIXTURE,
             self::TRANSLATION,
-        );
+        ];
     }
 }

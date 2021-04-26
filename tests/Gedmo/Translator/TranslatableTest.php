@@ -3,16 +3,18 @@
 namespace Gedmo\Translator;
 
 use Doctrine\Common\EventManager;
+use Doctrine\ORM\Proxy\Proxy;
 use Tool\BaseTestCaseORM;
 use Translator\Fixture\Person;
 use Translator\Fixture\PersonCustom;
-use Doctrine\ORM\Proxy\Proxy;
 
 /**
  * These are tests for translatable behavior
  *
  * @author Konstantin Kudryashov <ever.zet@gmail.com>
- * @link http://www.gediminasm.org
+ *
+ * @see http://www.gediminasm.org
+ *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class TranslatableTest extends BaseTestCaseORM
@@ -20,7 +22,7 @@ class TranslatableTest extends BaseTestCaseORM
     const PERSON = 'Translator\\Fixture\\Person';
     const PERSON_CUSTOM_PROXY = 'Translator\\Fixture\\PersonCustom';
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -46,7 +48,7 @@ class TranslatableTest extends BaseTestCaseORM
         $this->em->clear();
 
         // retrieve record (translations would be fetched later - by demand)
-        $person = $this->em->getRepository(self::PERSON)->findOneByName('Jen');
+        $person = $this->em->getRepository(self::PERSON)->findOneBy(['name' => 'Jen']);
 
         $this->assertSame('Jen', $person->getName());
         $this->assertSame('Женя', $person->translate('ru_RU')->getName());
@@ -110,7 +112,7 @@ class TranslatableTest extends BaseTestCaseORM
         $this->em->flush();
         $this->em->clear();
 
-        $person = $this->em->getRepository(self::PERSON)->findOneByName('Jen');
+        $person = $this->em->getRepository(self::PERSON)->findOneBy(['name' => 'Jen']);
         $this->assertSame('Женя', $person->translate('ru')->getName());
         $parent = $person->getParent();
         $this->assertTrue($parent instanceof Proxy);
@@ -133,7 +135,7 @@ class TranslatableTest extends BaseTestCaseORM
         $this->em->flush();
         $this->em->clear();
 
-        $personProxy = $this->em->getReference(self::PERSON, array('id' => 1));
+        $personProxy = $this->em->getReference(self::PERSON, ['id' => 1]);
         $this->assertTrue($personProxy instanceof Proxy);
         $name = $personProxy->translate('ru_RU')->getName();
         $this->assertSame('Женя', $name);
@@ -153,7 +155,7 @@ class TranslatableTest extends BaseTestCaseORM
         $this->em->flush();
         $this->em->clear();
 
-        $personProxy = $this->em->getReference(self::PERSON, array('id' => 1));
+        $personProxy = $this->em->getReference(self::PERSON, ['id' => 1]);
         $this->assertTrue($personProxy instanceof Proxy);
         $name = $personProxy->translate('ru_RU')->getName();
         $this->assertSame('Женя', $name);
@@ -193,7 +195,7 @@ class TranslatableTest extends BaseTestCaseORM
         $this->em->clear();
 
         // retrieve record (translations would be fetched later - by demand)
-        $person = $this->em->getRepository(self::PERSON_CUSTOM_PROXY)->findOneByName('Jen');
+        $person = $this->em->getRepository(self::PERSON_CUSTOM_PROXY)->findOneBy(['name' => 'Jen']);
 
         $this->assertSame('Jen', $person->getName());
         $this->assertSame('Женя', $person->translate('ru_RU')->getName());
@@ -235,9 +237,9 @@ class TranslatableTest extends BaseTestCaseORM
 
     protected function getUsedEntityFixtures()
     {
-        return array(
+        return [
             self::PERSON, self::PERSON.'Translation',
             self::PERSON_CUSTOM_PROXY, self::PERSON_CUSTOM_PROXY.'Translation',
-        );
+        ];
     }
 }

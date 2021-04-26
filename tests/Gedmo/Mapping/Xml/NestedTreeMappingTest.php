@@ -12,7 +12,9 @@ use Tool\BaseTestCaseOM;
  * These are mapping extension tests
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @link http://www.gediminasm.org
+ *
+ * @see http://www.gediminasm.org
+ *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class NestedTreeMappingTest extends BaseTestCaseOM
@@ -27,7 +29,7 @@ class NestedTreeMappingTest extends BaseTestCaseOM
      */
     private $tree;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -40,9 +42,9 @@ class NestedTreeMappingTest extends BaseTestCaseOM
         $this->evm = new EventManager();
         $this->evm->addEventSubscriber($this->tree);
 
-        $this->em = $this->getMockSqliteEntityManager(array(
+        $this->em = $this->getMockSqliteEntityManager([
             'Mapping\Fixture\Xml\NestedTree',
-        ), $chain);
+        ], $chain);
     }
 
     public function testTreeMetadata()

@@ -2,24 +2,26 @@
 
 namespace Gedmo\Blameable;
 
-use Doctrine\Common\EventManager;
-use Tool\BaseTestCaseORM;
-use Gedmo\Translatable\TranslatableListener;
 use Blameable\Fixture\Entity\SupperClassExtension;
+use Doctrine\Common\EventManager;
+use Gedmo\Translatable\TranslatableListener;
+use Tool\BaseTestCaseORM;
 
 /**
  * These are tests for Blameable behavior
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @link http://www.gediminasm.org
+ *
+ * @see http://www.gediminasm.org
+ *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class ProtectedPropertySupperclassTest extends BaseTestCaseORM
 {
-    const SUPERCLASS = "Blameable\\Fixture\\Entity\\SupperClassExtension";
-    const TRANSLATION = "Gedmo\\Translatable\\Entity\\Translation";
+    const SUPERCLASS = 'Blameable\\Fixture\\Entity\\SupperClassExtension';
+    const TRANSLATION = 'Gedmo\\Translatable\\Entity\\Translation';
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -53,9 +55,9 @@ class ProtectedPropertySupperclassTest extends BaseTestCaseORM
 
     protected function getUsedEntityFixtures()
     {
-        return array(
+        return [
             self::TRANSLATION,
             self::SUPERCLASS,
-        );
+        ];
     }
 }

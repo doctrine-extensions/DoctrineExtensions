@@ -2,10 +2,10 @@
 
 namespace References\Fixture\ODM\MongoDB;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 use Gedmo\Mapping\Annotation as Gedmo;
-use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * @ODM\Document
@@ -74,7 +74,7 @@ class Product
 
     public function removeMetadata($metadata)
     {
-        $this->metadatas->removeElement( $metadata );
+        $this->metadatas->removeElement($metadata);
     }
 
     public function getMetadatas()

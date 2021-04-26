@@ -13,7 +13,9 @@ use Tool\BaseTestCaseOM;
  *
  * @author Jonathan Eskew <jonathan@jeskew.net>
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @link http://www.gediminasm.org
+ *
+ * @see http://www.gediminasm.org
+ *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class ReferenceIntegrityMappingTest extends BaseTestCaseOM
@@ -28,11 +30,9 @@ class ReferenceIntegrityMappingTest extends BaseTestCaseOM
      */
     private $referenceIntegrity;
 
-    public function setUp()
+    public function setUp(): void
     {
-        if (!class_exists('Doctrine\ODM\MongoDB\Mapping\Driver\YamlDriver')) {
-            $this->markTestSkipped('The Mongo ODM is not installed');
-        }
+        $this->markTestSkipped('Intentionally skipping test. Doctrine MongoDB ODM 2.0 removed the YAML mapping driver; skipping test until it can be rewritten using a supported mapper.');
 
         parent::setUp();
 

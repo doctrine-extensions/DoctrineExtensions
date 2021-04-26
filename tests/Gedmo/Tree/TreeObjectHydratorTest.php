@@ -13,15 +13,17 @@ use Tree\Fixture\RootCategory;
  * Tests the tree object hydrator
  *
  * @author Ilija Tovilo <ilija.tovilo@me.com>
- * @link http://www.gediminasm.org
+ *
+ * @see http://www.gediminasm.org
+ *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class TreeObjectHydratorTest extends BaseTestCaseORM
 {
-    const CATEGORY = "Tree\\Fixture\\Category";
-    const ROOT_CATEGORY = "Tree\\Fixture\\RootCategory";
+    const CATEGORY = 'Tree\\Fixture\\Category';
+    const ROOT_CATEGORY = 'Tree\\Fixture\\RootCategory';
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -94,7 +96,7 @@ class TreeObjectHydratorTest extends BaseTestCaseORM
         /** @var NestedTreeRepository $repo */
         $repo = $this->em->getRepository(self::ROOT_CATEGORY);
 
-        $fruits = $repo->findOneBy(array('title' => 'Fruits'));
+        $fruits = $repo->findOneBy(['title' => 'Fruits']);
 
         $result = $repo->getChildrenQuery($fruits, false, null, 'ASC', true)
             ->setHint(Query::HINT_INCLUDE_META_COLUMNS, true)
@@ -128,7 +130,7 @@ class TreeObjectHydratorTest extends BaseTestCaseORM
         /** @var NestedTreeRepository $repo */
         $repo = $this->em->getRepository(self::ROOT_CATEGORY);
 
-        $food = $repo->findOneBy(array('title' => 'Food'));
+        $food = $repo->findOneBy(['title' => 'Food']);
 
         $result = $repo->getChildrenQuery($food)
             ->setHint(Query::HINT_INCLUDE_META_COLUMNS, true)
@@ -202,9 +204,9 @@ class TreeObjectHydratorTest extends BaseTestCaseORM
 
     protected function getUsedEntityFixtures()
     {
-        return array(
+        return [
             self::CATEGORY,
             self::ROOT_CATEGORY,
-        );
+        ];
     }
 }

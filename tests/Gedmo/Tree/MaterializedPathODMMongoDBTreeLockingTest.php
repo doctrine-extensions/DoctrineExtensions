@@ -11,17 +11,19 @@ use Tree\Fixture\Mock\TreeListenerMock;
  *
  * @author Gustavo Falco <comfortablynumb84@gmail.com>
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @link http://www.gediminasm.org
+ *
+ * @see http://www.gediminasm.org
+ *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class MaterializedPathODMMongoDBTreeLockingTest extends BaseTestCaseMongoODM
 {
-    const ARTICLE = "Tree\\Fixture\\Document\\Article";
+    const ARTICLE = 'Tree\\Fixture\\Document\\Article';
 
     protected $config;
     protected $listener;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -67,7 +69,7 @@ class MaterializedPathODMMongoDBTreeLockingTest extends BaseTestCaseMongoODM
      */
     public function modifyingANodeWhileItsTreeIsNotLockedShouldNotThrowException()
     {
-        $this->markTestSkipped("the locking test is failing after removal of scheduleExtraUpdate");
+        $this->markTestSkipped('the locking test is failing after removal of scheduleExtraUpdate');
         $article = $this->createArticle();
         $article->setTitle('1');
         $article2 = $this->createArticle();
@@ -97,7 +99,7 @@ class MaterializedPathODMMongoDBTreeLockingTest extends BaseTestCaseMongoODM
         $this->expectException('Gedmo\Exception\TreeLockingException');
 
         $repo = $this->dm->getRepository(self::ARTICLE);
-        $article2 = $repo->findOneByTitle('2');
+        $article2 = $repo->findOneBy(['title' => '2']);
         $article2->setTitle('New title 2');
 
         $this->dm->flush();

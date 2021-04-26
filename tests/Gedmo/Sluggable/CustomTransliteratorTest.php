@@ -3,14 +3,16 @@
 namespace Gedmo\Sluggable;
 
 use Doctrine\Common\EventManager;
-use Tool\BaseTestCaseORM;
 use Sluggable\Fixture\Article;
+use Tool\BaseTestCaseORM;
 
 /**
  * These are tests for sluggable behavior
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @link http://www.gediminasm.org
+ *
+ * @see http://www.gediminasm.org
+ *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class CustomTransliteratorTest extends BaseTestCaseORM
@@ -27,7 +29,7 @@ class CustomTransliteratorTest extends BaseTestCaseORM
 
         $repo = $this->em->getRepository(self::ARTICLE);
 
-        $chinese = $repo->findOneByCode('zh');
+        $chinese = $repo->findOneBy(['code' => 'zh']);
         $this->assertEquals('bei-jing-zh', $chinese->getSlug());
     }
 
@@ -41,7 +43,7 @@ class CustomTransliteratorTest extends BaseTestCaseORM
 
         $repo = $this->em->getRepository(self::ARTICLE);
 
-        $chinese = $repo->findOneByCode('zh');
+        $chinese = $repo->findOneBy(['code' => 'zh']);
         $this->assertEquals('bei-jing', $chinese->getSlug());
     }
 
@@ -57,9 +59,9 @@ class CustomTransliteratorTest extends BaseTestCaseORM
 
     protected function getUsedEntityFixtures()
     {
-        return array(
+        return [
             self::ARTICLE,
-        );
+        ];
     }
 }
 
@@ -67,7 +69,7 @@ class MySluggableListener extends SluggableListener
 {
     public function __construct()
     {
-        $this->setTransliterator(array('\Gedmo\Sluggable\Transliterator', 'transliterate'));
+        $this->setTransliterator(['\Gedmo\Sluggable\Transliterator', 'transliterate']);
     }
 }
 

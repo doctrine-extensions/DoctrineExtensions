@@ -4,23 +4,26 @@ namespace Gedmo\Tree;
 
 use Doctrine\Common\EventManager;
 use Tool\BaseTestCaseMongoODM;
+use Tree\Fixture\Document\Category;
 
 /**
  * These are tests for Tree behavior
  *
  * @author Gustavo Falco <comfortablynumb84@gmail.com>
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @link http://www.gediminasm.org
+ *
+ * @see http://www.gediminasm.org
+ *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class MaterializedPathODMMongoDBTest extends BaseTestCaseMongoODM
 {
-    const CATEGORY = "Tree\\Fixture\\Document\\Category";
+    private const CATEGORY = Category::class;
 
     protected $config;
     protected $listener;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -64,10 +67,10 @@ class MaterializedPathODMMongoDBTest extends BaseTestCaseMongoODM
         $this->dm->refresh($category3);
         $this->dm->refresh($category4);
 
-        $this->assertEquals($this->generatePath(array('1' => $category->getId())), $category->getPath());
-        $this->assertEquals($this->generatePath(array('1' => $category->getId(), '2' => $category2->getId())), $category2->getPath());
-        $this->assertEquals($this->generatePath(array('1' => $category->getId(), '2' => $category2->getId(), '3' => $category3->getId())), $category3->getPath());
-        $this->assertEquals($this->generatePath(array('4' => $category4->getId())), $category4->getPath());
+        $this->assertEquals($this->generatePath(['1' => $category->getId()]), $category->getPath());
+        $this->assertEquals($this->generatePath(['1' => $category->getId(), '2' => $category2->getId()]), $category2->getPath());
+        $this->assertEquals($this->generatePath(['1' => $category->getId(), '2' => $category2->getId(), '3' => $category3->getId()]), $category3->getPath());
+        $this->assertEquals($this->generatePath(['4' => $category4->getId()]), $category4->getPath());
         $this->assertEquals(1, $category->getLevel());
         $this->assertEquals(2, $category2->getLevel());
         $this->assertEquals(3, $category3->getLevel());
@@ -83,9 +86,9 @@ class MaterializedPathODMMongoDBTest extends BaseTestCaseMongoODM
         $this->dm->refresh($category2);
         $this->dm->refresh($category3);
 
-        $this->assertEquals($this->generatePath(array('1' => $category->getId())), $category->getPath());
-        $this->assertEquals($this->generatePath(array('2' => $category2->getId())), $category2->getPath());
-        $this->assertEquals($this->generatePath(array('2' => $category2->getId(), '3' => $category3->getId())), $category3->getPath());
+        $this->assertEquals($this->generatePath(['1' => $category->getId()]), $category->getPath());
+        $this->assertEquals($this->generatePath(['2' => $category2->getId()]), $category2->getPath());
+        $this->assertEquals($this->generatePath(['2' => $category2->getId(), '3' => $category3->getId()]), $category3->getPath());
         $this->assertEquals(1, $category->getLevel());
         $this->assertEquals(1, $category2->getLevel());
         $this->assertEquals(2, $category3->getLevel());
@@ -98,9 +101,10 @@ class MaterializedPathODMMongoDBTest extends BaseTestCaseMongoODM
 
         $result = $this->dm->createQueryBuilder()->find(self::CATEGORY)->getQuery()->execute();
 
-        $firstResult = $result->getNext();
+        /** @var Category $firstResult */
+        $firstResult = $result->current();
 
-        $this->assertEquals(1, $result->count());
+        $this->assertCount(1, $result->toArray());
         $this->assertEquals('4', $firstResult->getTitle());
         $this->assertEquals(1, $firstResult->getLevel());
     }

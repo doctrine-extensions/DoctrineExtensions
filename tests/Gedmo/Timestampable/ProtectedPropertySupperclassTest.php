@@ -3,24 +3,26 @@
 namespace Gedmo\Tree;
 
 use Doctrine\Common\EventManager;
-use Tool\BaseTestCaseORM;
-use Gedmo\Translatable\TranslatableListener;
 use Gedmo\Timestampable\TimestampableListener;
+use Gedmo\Translatable\TranslatableListener;
 use Timestampable\Fixture\SupperClassExtension;
+use Tool\BaseTestCaseORM;
 
 /**
  * These are tests for Timestampable behavior
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @link http://www.gediminasm.org
+ *
+ * @see http://www.gediminasm.org
+ *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class ProtectedPropertySupperclassTest extends BaseTestCaseORM
 {
-    const SUPERCLASS = "Timestampable\\Fixture\\SupperClassExtension";
-    const TRANSLATION = "Gedmo\\Translatable\\Entity\\Translation";
+    const SUPERCLASS = 'Timestampable\\Fixture\\SupperClassExtension';
+    const TRANSLATION = 'Gedmo\\Translatable\\Entity\\Translation';
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -52,9 +54,9 @@ class ProtectedPropertySupperclassTest extends BaseTestCaseORM
 
     protected function getUsedEntityFixtures()
     {
-        return array(
+        return [
             self::TRANSLATION,
             self::SUPERCLASS,
-        );
+        ];
     }
 }

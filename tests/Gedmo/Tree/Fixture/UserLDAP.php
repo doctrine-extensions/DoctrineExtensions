@@ -1,4 +1,5 @@
 <?php
+
 namespace Tree\Fixture;
 
 use Doctrine\ORM\Mapping as ORM;

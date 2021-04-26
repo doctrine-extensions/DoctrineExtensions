@@ -2,16 +2,17 @@
 
 namespace Gedmo\Timestampable;
 
-use Doctrine\ORM\Mapping\Driver\YamlDriver;
 use Doctrine\ORM\Mapping\Driver\DriverChain;
-use Mapping\Fixture\Yaml\Category;
+use Doctrine\ORM\Mapping\Driver\YamlDriver;
 use Gedmo\Mapping\ExtensionMetadataFactory;
 
 /**
  * These are mapping tests for timestampable extension
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @link http://www.gediminasm.org
+ *
+ * @see http://www.gediminasm.org
+ *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class TimestampableMappingTest extends \PHPUnit\Framework\TestCase
@@ -19,7 +20,7 @@ class TimestampableMappingTest extends \PHPUnit\Framework\TestCase
     const TEST_YAML_ENTITY_CLASS = 'Mapping\Fixture\Yaml\Category';
     private $em;
 
-    public function setUp()
+    public function setUp(): void
     {
         $config = new \Doctrine\ORM\Configuration();
         $config->setMetadataCacheImpl(new \Doctrine\Common\Cache\ArrayCache());
@@ -28,15 +29,15 @@ class TimestampableMappingTest extends \PHPUnit\Framework\TestCase
         $config->setProxyNamespace('Gedmo\Mapping\Proxy');
         $chainDriverImpl = new DriverChain();
         $chainDriverImpl->addDriver(
-            new YamlDriver(array(__DIR__.'/Driver/Yaml')),
+            new YamlDriver([__DIR__.'/Driver/Yaml']),
             'Mapping\Fixture\Yaml'
         );
         $config->setMetadataDriverImpl($chainDriverImpl);
 
-        $conn = array(
+        $conn = [
             'driver' => 'pdo_sqlite',
             'memory' => true,
-        );
+        ];
 
         //$config->setSQLLogger(new \Doctrine\DBAL\Logging\EchoSQLLogger());
 

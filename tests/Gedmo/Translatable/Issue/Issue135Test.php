@@ -3,17 +3,17 @@
 namespace Gedmo\Translatable;
 
 use Doctrine\Common\EventManager;
-use Tool\BaseTestCaseORM;
 use Doctrine\ORM\Query;
-use Gedmo\Translatable\Query\TreeWalker\TranslationWalker;
+use Tool\BaseTestCaseORM;
 use Translatable\Fixture\Article;
-use Translatable\Fixture\Comment;
 
 /**
  * These are tests for translation query walker
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @link http://www.gediminasm.org
+ *
+ * @see http://www.gediminasm.org
+ *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class Issue135Test extends BaseTestCaseORM
@@ -26,7 +26,7 @@ class Issue135Test extends BaseTestCaseORM
 
     private $translatableListener;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -61,11 +61,11 @@ class Issue135Test extends BaseTestCaseORM
 
     protected function getUsedEntityFixtures()
     {
-        return array(
+        return [
             self::ARTICLE,
             self::TRANSLATION,
             self::COMMENT,
-        );
+        ];
     }
 
     public function populate()

@@ -1,4 +1,5 @@
 <?php
+
 namespace Tree\Fixture;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -12,23 +13,24 @@ use Doctrine\ORM\Mapping as ORM;
 class UserGroup extends Role
 {
     /**
-   * @ORM\Column(name="name", type="string", length=255)
-   * @var string
-   */
-  private $name;
+     * @ORM\Column(name="name", type="string", length=191)
+     *
+     * @var string
+     */
+    private $name;
 
     public function __construct($name)
     {
         $this->setName($name);
     }
 
-  /**
-   * @return string
-   */
-  public function getRoleId()
-  {
-      return $this->name;
-  }
+    /**
+     * @return string
+     */
+    public function getRoleId()
+    {
+        return $this->name;
+    }
 
     public function getName()
     {

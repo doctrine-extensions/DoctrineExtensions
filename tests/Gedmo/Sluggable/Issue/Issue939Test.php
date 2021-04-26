@@ -3,16 +3,18 @@
 namespace Gedmo\Sluggable;
 
 use Doctrine\Common\EventManager;
-use Tool\BaseTestCaseORM;
-use Sluggable\Fixture\Issue939\SluggableListener as SluggableListenerIssue939;
 use Sluggable\Fixture\Issue939\Article;
 use Sluggable\Fixture\Issue939\Category;
+use Sluggable\Fixture\Issue939\SluggableListener as SluggableListenerIssue939;
+use Tool\BaseTestCaseORM;
 
 /**
  * These are tests for Sluggable behavior
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @link http://www.gediminasm.org
+ *
+ * @see http://www.gediminasm.org
+ *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class Issue939Test extends BaseTestCaseORM
@@ -20,7 +22,7 @@ class Issue939Test extends BaseTestCaseORM
     const ARTICLE = 'Sluggable\\Fixture\\Issue939\\Article';
     const CATEGORY = 'Sluggable\\Fixture\\Issue939\\Category';
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -49,9 +51,9 @@ class Issue939Test extends BaseTestCaseORM
 
     protected function getUsedEntityFixtures()
     {
-        return array(
+        return [
             self::ARTICLE,
             self::CATEGORY,
-        );
+        ];
     }
 }

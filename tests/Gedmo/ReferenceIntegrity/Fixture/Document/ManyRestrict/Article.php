@@ -20,7 +20,8 @@ class Article
     private $title;
 
     /**
-     * @ODM\ReferenceOne(targetDocument="Type", simple="true", inversedBy="articles")
+     * @ODM\ReferenceOne(targetDocument="ReferenceIntegrity\Fixture\Document\ManyRestrict\Type", inversedBy="articles")
+     *
      * @var Type
      */
     private $type;
@@ -49,9 +50,6 @@ class Article
         return $this->title;
     }
 
-    /**
-     * @param Type $type
-     */
     public function setType(Type $type)
     {
         $this->type = $type;

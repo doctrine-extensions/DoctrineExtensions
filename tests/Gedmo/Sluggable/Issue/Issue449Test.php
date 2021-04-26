@@ -3,15 +3,17 @@
 namespace Gedmo\Sluggable;
 
 use Doctrine\Common\EventManager;
-use Tool\BaseTestCaseORM;
 use Gedmo\SoftDeleteable\SoftDeleteableListener;
 use Sluggable\Fixture\Issue449\Article;
+use Tool\BaseTestCaseORM;
 
 /**
  * These are tests for Sluggable behavior
  *
  * @author Craig Marvelley <craig.marvelley@gmail.com>
- * @link http://marvelley.com
+ *
+ * @see http://marvelley.com
+ *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class Issue449Test extends BaseTestCaseORM
@@ -21,7 +23,7 @@ class Issue449Test extends BaseTestCaseORM
 
     private $softDeleteableListener;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -43,9 +45,9 @@ class Issue449Test extends BaseTestCaseORM
 
     protected function getUsedEntityFixtures()
     {
-        return array(
+        return [
             self::TARGET,
-        );
+        ];
     }
 
     /**

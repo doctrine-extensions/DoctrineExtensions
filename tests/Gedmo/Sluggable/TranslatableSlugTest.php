@@ -3,19 +3,20 @@
 namespace Gedmo\Sluggable;
 
 use Doctrine\Common\EventManager;
-use Tool\BaseTestCaseORM;
 use Gedmo\Translatable\Translatable;
-use Gedmo\Translatable\Entity\Translation;
 use Gedmo\Translatable\TranslatableListener;
-use Sluggable\Fixture\TranslatableArticle;
 use Sluggable\Fixture\Comment;
 use Sluggable\Fixture\Page;
+use Sluggable\Fixture\TranslatableArticle;
+use Tool\BaseTestCaseORM;
 
 /**
  * These are tests for Sluggable behavior
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @link http://www.gediminasm.org
+ *
+ * @see http://www.gediminasm.org
+ *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class TranslatableSlugTest extends BaseTestCaseORM
@@ -28,7 +29,7 @@ class TranslatableSlugTest extends BaseTestCaseORM
     const PAGE = 'Sluggable\\Fixture\\Page';
     const TRANSLATION = 'Gedmo\\Translatable\\Entity\\Translation';
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -129,12 +130,12 @@ class TranslatableSlugTest extends BaseTestCaseORM
 
     protected function getUsedEntityFixtures()
     {
-        return array(
+        return [
             self::ARTICLE,
             self::COMMENT,
             self::PAGE,
             self::TRANSLATION,
-        );
+        ];
     }
 
     private function populate()

@@ -2,22 +2,24 @@
 
 namespace Gedmo\Sluggable;
 
-use Tool\BaseTestCaseMongoODM;
 use Doctrine\Common\EventManager;
 use Sluggable\Fixture\Document\Handler\TreeSlug;
+use Tool\BaseTestCaseMongoODM;
 
 /**
  * These are tests for sluggable behavior
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @link http://www.gediminasm.org
+ *
+ * @see http://www.gediminasm.org
+ *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class TreeSlugHandlerDocumentTest extends BaseTestCaseMongoODM
 {
     const SLUG = 'Sluggable\\Fixture\\Document\\Handler\\TreeSlug';
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $evm = new EventManager();
@@ -31,16 +33,16 @@ class TreeSlugHandlerDocumentTest extends BaseTestCaseMongoODM
         $this->populate();
         $repo = $this->dm->getRepository(self::SLUG);
 
-        $food = $repo->findOneByTitle('Food');
+        $food = $repo->findOneBy(['title' => 'Food']);
         $this->assertEquals('food', $food->getSlug());
 
-        $fruits = $repo->findOneByTitle('Fruits');
+        $fruits = $repo->findOneBy(['title' => 'Fruits']);
         $this->assertEquals('food/fruits', $fruits->getSlug());
 
-        $oranges = $repo->findOneByTitle('Oranges');
+        $oranges = $repo->findOneBy(['title' => 'Oranges']);
         $this->assertEquals('food/fruits/oranges', $oranges->getSlug());
 
-        $citrons = $repo->findOneByTitle('Citrons');
+        $citrons = $repo->findOneBy(['title' => 'Citrons']);
         $this->assertEquals('food/fruits/citrons', $citrons->getSlug());
     }
 
@@ -49,7 +51,7 @@ class TreeSlugHandlerDocumentTest extends BaseTestCaseMongoODM
         $this->populate();
         $repo = $this->dm->getRepository(self::SLUG);
 
-        $fruits = $repo->findOneByTitle('Fruits');
+        $fruits = $repo->findOneBy(['title' => 'Fruits']);
         $fruits->setTitle('Fructis');
 
         $this->dm->persist($fruits);
@@ -57,13 +59,13 @@ class TreeSlugHandlerDocumentTest extends BaseTestCaseMongoODM
 
         $this->assertEquals('food/fructis', $fruits->getSlug());
 
-        $oranges = $repo->findOneByTitle('Oranges');
+        $oranges = $repo->findOneBy(['title' => 'Oranges']);
         $this->assertEquals('food/fructis/oranges', $oranges->getSlug());
 
-        $citrons = $repo->findOneByTitle('Citrons');
+        $citrons = $repo->findOneBy(['title' => 'Citrons']);
         $this->assertEquals('food/fructis/citrons', $citrons->getSlug());
 
-        $food = $repo->findOneByTitle('Food');
+        $food = $repo->findOneBy(['title' => 'Food']);
         $food->setTitle('Foodissimo');
 
         $this->dm->persist($food);

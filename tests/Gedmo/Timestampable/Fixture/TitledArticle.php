@@ -1,9 +1,10 @@
 <?php
+
 namespace Timestampable\Fixture;
 
-use Gedmo\Timestampable\Timestampable;
-use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
+use Gedmo\Timestampable\Timestampable;
 
 /**
  * @ORM\Entity
@@ -33,7 +34,7 @@ class TitledArticle implements Timestampable
     private $state;
 
     /**
-     * @var \DateTime $updated
+     * @var \DateTime
      *
      * @ORM\Column(name="chtext", type="datetime", nullable=true)
      * @Gedmo\Timestampable(on="change", field="text")
@@ -41,7 +42,7 @@ class TitledArticle implements Timestampable
     private $chtext;
 
     /**
-     * @var \DateTime $chtitle
+     * @var \DateTime
      *
      * @ORM\Column(name="chtitle", type="datetime", nullable=true)
      * @Gedmo\Timestampable(on="change", field="title")
@@ -49,7 +50,7 @@ class TitledArticle implements Timestampable
     private $chtitle;
 
     /**
-     * @var \DateTime $closed
+     * @var \DateTime
      *
      * @ORM\Column(name="closed", type="datetime", nullable=true)
      * @Gedmo\Timestampable(on="change", field="state", value={"Published", "Closed"})

@@ -4,16 +4,17 @@ namespace Gedmo\Tree;
 
 use Doctrine\Common\EventManager;
 use Tool\BaseTestCaseORM;
-use Tree\Fixture\Transport\Car;
 use Tree\Fixture\Transport\Bus;
-use Tree\Fixture\Transport\Vehicle;
+use Tree\Fixture\Transport\Car;
 use Tree\Fixture\Transport\Engine;
 
 /**
  * These are tests for Tree behavior
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @link http://www.gediminasm.org
+ *
+ * @see http://www.gediminasm.org
+ *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class MultiInheritanceWithSingleTableTest extends BaseTestCaseORM
@@ -23,7 +24,7 @@ class MultiInheritanceWithSingleTableTest extends BaseTestCaseORM
     const VEHICLE = "Tree\Fixture\Transport\Vehicle";
     const ENGINE = "Tree\Fixture\Transport\Engine";
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -39,7 +40,7 @@ class MultiInheritanceWithSingleTableTest extends BaseTestCaseORM
         $this->em->clear();
 
         $carRepo = $this->em->getRepository(self::CAR);
-        $audi = $carRepo->findOneByTitle('Audi-80');
+        $audi = $carRepo->findOneBy(['title' => 'Audi-80']);
         $this->assertEquals(2, $carRepo->childCount($audi));
         $this->assertEquals(1, $audi->getLeft());
         $this->assertEquals(6, $audi->getRight());
@@ -97,12 +98,12 @@ class MultiInheritanceWithSingleTableTest extends BaseTestCaseORM
 
     protected function getUsedEntityFixtures()
     {
-        return array(
+        return [
             self::VEHICLE,
             self::CAR,
             self::ENGINE,
             self::BUS,
-        );
+        ];
     }
 
     private function populate()

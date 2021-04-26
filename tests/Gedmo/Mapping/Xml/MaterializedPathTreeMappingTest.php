@@ -3,8 +3,8 @@
 namespace Gedmo\Mapping\Xml;
 
 use Doctrine\Common\Annotations\AnnotationReader;
-use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
 use Doctrine\Common\EventManager;
+use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
 use Doctrine\ORM\Mapping\Driver\DriverChain;
 use Doctrine\ORM\Mapping\Driver\XmlDriver;
 use Gedmo\Tree\TreeListener;
@@ -15,7 +15,9 @@ use Tool\BaseTestCaseOM;
  *
  * @author Gustavo Falco <comfortablynumb84@gmail.com>
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @link http://www.gediminasm.org
+ *
+ * @see http://www.gediminasm.org
+ *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class MaterializedPathTreeMappingTest extends BaseTestCaseOM
@@ -30,7 +32,7 @@ class MaterializedPathTreeMappingTest extends BaseTestCaseOM
      */
     private $tree;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -48,9 +50,9 @@ class MaterializedPathTreeMappingTest extends BaseTestCaseOM
         $this->evm = new EventManager();
         $this->evm->addEventSubscriber($this->tree);
 
-        $this->em = $this->getMockSqliteEntityManager(array(
+        $this->em = $this->getMockSqliteEntityManager([
             'Mapping\Fixture\Xml\MaterializedPathTree',
-        ), $chain);
+        ], $chain);
     }
 
     public function testTreeMetadata()

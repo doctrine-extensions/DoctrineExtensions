@@ -3,17 +3,18 @@
 namespace Gedmo\Sluggable;
 
 use Doctrine\Common\EventManager;
-use Tool\BaseTestCaseORM;
 use Gedmo\Translatable\Translatable;
-use Gedmo\Translatable\Entity\Translation;
 use Gedmo\Translatable\TranslatableListener;
 use Sluggable\Fixture\TransArticleManySlug;
+use Tool\BaseTestCaseORM;
 
 /**
  * These are tests for Sluggable behavior
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @link http://www.gediminasm.org
+ *
+ * @see http://www.gediminasm.org
+ *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class TranslatableManySlugTest extends BaseTestCaseORM
@@ -24,7 +25,7 @@ class TranslatableManySlugTest extends BaseTestCaseORM
     const ARTICLE = 'Sluggable\\Fixture\\TransArticleManySlug';
     const TRANSLATION = 'Gedmo\\Translatable\\Entity\\Translation';
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -89,17 +90,17 @@ class TranslatableManySlugTest extends BaseTestCaseORM
 
         $this->assertEquals('title', $a0->getUniqueSlug());
         $this->assertEquals('title-1', $a1->getUniqueSlug());
-       // if its translated maybe should be different
-       $this->assertEquals('the-title-my-code-1', $a0->getSlug());
+        // if its translated maybe should be different
+        $this->assertEquals('the-title-my-code-1', $a0->getSlug());
         $this->assertEquals('the-title-my-code-2', $a1->getSlug());
     }
 
     protected function getUsedEntityFixtures()
     {
-        return array(
+        return [
             self::ARTICLE,
             self::TRANSLATION,
-        );
+        ];
     }
 
     private function populate()

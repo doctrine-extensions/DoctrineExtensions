@@ -2,11 +2,11 @@
 
 namespace Gedmo\Mapping\Xml;
 
-use Doctrine\Common\EventManager;
 use Doctrine\Common\Annotations\AnnotationReader;
+use Doctrine\Common\EventManager;
+use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
 use Doctrine\ORM\Mapping\Driver\DriverChain;
 use Doctrine\ORM\Mapping\Driver\XmlDriver;
-use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
 use Gedmo\Translatable\TranslatableListener;
 use Tool\BaseTestCaseOM;
 
@@ -14,7 +14,9 @@ use Tool\BaseTestCaseOM;
  * These are mapping extension tests
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @link http://www.gediminasm.org
+ *
+ * @see http://www.gediminasm.org
+ *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class TranslatableMappingTest extends BaseTestCaseOM
@@ -29,7 +31,7 @@ class TranslatableMappingTest extends BaseTestCaseOM
      */
     private $translatable;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -46,10 +48,10 @@ class TranslatableMappingTest extends BaseTestCaseOM
         $this->evm = new EventManager();
         $this->evm->addEventSubscriber($this->translatable);
 
-        $this->em = $this->getMockSqliteEntityManager(array(
+        $this->em = $this->getMockSqliteEntityManager([
             'Gedmo\Translatable\Entity\Translation',
             'Mapping\Fixture\Xml\Translatable',
-        ), $chain);
+        ], $chain);
     }
 
     public function testTranslatableMetadata()

@@ -8,7 +8,9 @@ use Tree\Fixture\BehavioralCategory;
  * These are mapping extension tests
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @link http://www.gediminasm.org
+ *
+ * @see http://www.gediminasm.org
+ *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class MappingTest extends \PHPUnit\Framework\TestCase
@@ -19,7 +21,7 @@ class MappingTest extends \PHPUnit\Framework\TestCase
     private $em;
     private $timestampable;
 
-    public function setUp()
+    public function setUp(): void
     {
         $config = new \Doctrine\ORM\Configuration();
         $config->setProxyDir(TESTS_TEMP_DIR);
@@ -27,10 +29,10 @@ class MappingTest extends \PHPUnit\Framework\TestCase
         //$this->markTestSkipped('Skipping according to a bug in annotation reader creation.');
         $config->setMetadataDriverImpl(new \Doctrine\ORM\Mapping\Driver\AnnotationDriver($_ENV['annotation_reader']));
 
-        $conn = array(
+        $conn = [
             'driver' => 'pdo_sqlite',
             'memory' => true,
-        );
+        ];
 
         $evm = new \Doctrine\Common\EventManager();
         $evm->addEventSubscriber(new \Gedmo\Translatable\TranslatableListener());
@@ -41,11 +43,11 @@ class MappingTest extends \PHPUnit\Framework\TestCase
         $this->em = \Doctrine\ORM\EntityManager::create($conn, $config, $evm);
 
         $schemaTool = new \Doctrine\ORM\Tools\SchemaTool($this->em);
-        $schemaTool->dropSchema(array());
-        $schemaTool->createSchema(array(
+        $schemaTool->dropSchema([]);
+        $schemaTool->createSchema([
             $this->em->getClassMetadata(self::TEST_ENTITY_CATEGORY),
             $this->em->getClassMetadata(self::TEST_ENTITY_TRANSLATION),
-        ));
+        ]);
     }
 
     public function testNoCacheImplementationMapping()

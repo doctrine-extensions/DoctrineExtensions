@@ -2,23 +2,25 @@
 
 namespace Wrapper;
 
-use Tool\BaseTestCaseORM;
 use Doctrine\Common\EventManager;
-use Wrapper\Fixture\Entity\Article;
 use Gedmo\Tool\Wrapper\EntityWrapper;
+use Tool\BaseTestCaseORM;
+use Wrapper\Fixture\Entity\Article;
 
 /**
  * Entity wrapper tests
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @link http://www.gediminasm.org
+ *
+ * @see http://www.gediminasm.org
+ *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class EntityWrapperTest extends BaseTestCaseORM
 {
-    const ARTICLE = "Wrapper\\Fixture\\Entity\\Article";
+    const ARTICLE = 'Wrapper\\Fixture\\Entity\\Article';
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->getMockSqliteEntityManager(new EventManager());
@@ -27,7 +29,7 @@ class EntityWrapperTest extends BaseTestCaseORM
 
     public function testManaged()
     {
-        $test = $this->em->find(self::ARTICLE, array('id' => 1));
+        $test = $this->em->find(self::ARTICLE, ['id' => 1]);
         $this->assertInstanceOf(self::ARTICLE, $test);
         $wrapped = new EntityWrapper($test, $this->em);
 
@@ -42,7 +44,7 @@ class EntityWrapperTest extends BaseTestCaseORM
     public function testProxy()
     {
         $this->em->clear();
-        $test = $this->em->getReference(self::ARTICLE, array('id' => 1));
+        $test = $this->em->getReference(self::ARTICLE, ['id' => 1]);
         $this->assertInstanceOf('Doctrine\\ORM\\Proxy\\Proxy', $test);
         $wrapped = new EntityWrapper($test, $this->em);
 
@@ -57,7 +59,7 @@ class EntityWrapperTest extends BaseTestCaseORM
 
     public function testDetachedEntity()
     {
-        $test = $this->em->find(self::ARTICLE, array('id' => 1));
+        $test = $this->em->find(self::ARTICLE, ['id' => 1]);
         $this->em->clear();
         $wrapped = new EntityWrapper($test, $this->em);
 
@@ -67,7 +69,7 @@ class EntityWrapperTest extends BaseTestCaseORM
 
     public function testDetachedProxy()
     {
-        $test = $this->em->getReference(self::ARTICLE, array('id' => 1));
+        $test = $this->em->getReference(self::ARTICLE, ['id' => 1]);
         $this->em->clear();
         $wrapped = new EntityWrapper($test, $this->em);
 
@@ -80,7 +82,7 @@ class EntityWrapperTest extends BaseTestCaseORM
         $test = new Article();
         $wrapped = new EntityWrapper($test, $this->em);
 
-        $wrapped->populate(array('title' => 'test'));
+        $wrapped->populate(['title' => 'test']);
         $this->assertEquals('test', $wrapped->getPropertyValue('title'));
 
         $this->assertFalse($wrapped->hasValidIdentifier());
@@ -88,15 +90,15 @@ class EntityWrapperTest extends BaseTestCaseORM
 
     protected function getUsedEntityFixtures()
     {
-        return array(
+        return [
             self::ARTICLE,
-        );
+        ];
     }
 
     private function populate()
     {
         $test = new Article();
-        $test->setTitle("test");
+        $test->setTitle('test');
         $this->em->persist($test);
         $this->em->flush();
     }

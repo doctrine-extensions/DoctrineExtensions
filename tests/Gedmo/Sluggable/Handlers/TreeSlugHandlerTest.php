@@ -3,22 +3,24 @@
 namespace Gedmo\Sluggable;
 
 use Doctrine\Common\EventManager;
-use Tool\BaseTestCaseORM;
-use Sluggable\Fixture\Handler\TreeSlug;
 use Gedmo\Tree\TreeListener;
+use Sluggable\Fixture\Handler\TreeSlug;
+use Tool\BaseTestCaseORM;
 
 /**
  * These are tests for Sluggable behavior
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @link http://www.gediminasm.org
+ *
+ * @see http://www.gediminasm.org
+ *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class TreeSlugHandlerTest extends BaseTestCaseORM
 {
-    const TARGET = "Sluggable\\Fixture\\Handler\\TreeSlug";
+    const TARGET = 'Sluggable\\Fixture\\Handler\\TreeSlug';
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -34,25 +36,25 @@ class TreeSlugHandlerTest extends BaseTestCaseORM
         $this->populate();
         $repo = $this->em->getRepository(self::TARGET);
 
-        $food = $repo->findOneByTitle('Food');
+        $food = $repo->findOneBy(['title' => 'Food']);
         $this->assertEquals('food', $food->getSlug());
 
-        $fruits = $repo->findOneByTitle('Fruits');
+        $fruits = $repo->findOneBy(['title' => 'Fruits']);
         $this->assertEquals('food/fruits', $fruits->getSlug());
 
-        $oranges = $repo->findOneByTitle('Oranges');
+        $oranges = $repo->findOneBy(['title' => 'Oranges']);
         $this->assertEquals('food/fruits/oranges', $oranges->getSlug());
 
-        $citrons = $repo->findOneByTitle('Citrons');
+        $citrons = $repo->findOneBy(['title' => 'Citrons']);
         $this->assertEquals('food/fruits/citrons', $citrons->getSlug());
 
-        $apple = $repo->findOneByTitle('Apple');
+        $apple = $repo->findOneBy(['title' => 'Apple']);
         $this->assertEquals('food/fruits/apple', $apple->getSlug());
 
-        $kiwi = $repo->findOneByTitle('Kiwi');
+        $kiwi = $repo->findOneBy(['title' => 'Kiwi']);
         $this->assertEquals('food/fruits/kiwi', $kiwi->getSlug());
 
-        $banana = $repo->findOneByTitle('Banana');
+        $banana = $repo->findOneBy(['title' => 'Banana']);
         $this->assertEquals('food/fruits/banana', $banana->getSlug());
     }
 
@@ -61,7 +63,7 @@ class TreeSlugHandlerTest extends BaseTestCaseORM
         $this->populate();
         $repo = $this->em->getRepository(self::TARGET);
 
-        $fruits = $repo->findOneByTitle('Fruits');
+        $fruits = $repo->findOneBy(['title' => 'Fruits']);
         $fruits->setTitle('Fructis');
 
         $this->em->persist($fruits);
@@ -69,13 +71,13 @@ class TreeSlugHandlerTest extends BaseTestCaseORM
 
         $this->assertEquals('food/fructis', $fruits->getSlug());
 
-        $oranges = $repo->findOneByTitle('Oranges');
+        $oranges = $repo->findOneBy(['title' => 'Oranges']);
         $this->assertEquals('food/fructis/oranges', $oranges->getSlug());
 
-        $citrons = $repo->findOneByTitle('Citrons');
+        $citrons = $repo->findOneBy(['title' => 'Citrons']);
         $this->assertEquals('food/fructis/citrons', $citrons->getSlug());
 
-        $food = $repo->findOneByTitle('Food');
+        $food = $repo->findOneBy(['title' => 'Food']);
         $food->setTitle('Foodissimo');
 
         $this->em->persist($food);
@@ -91,21 +93,21 @@ class TreeSlugHandlerTest extends BaseTestCaseORM
         $this->populate();
         $repo = $this->em->getRepository(self::TARGET);
 
-        $fruits = $repo->findOneByTitle('Fruits');
+        $fruits = $repo->findOneBy(['title' => 'Fruits']);
         $fruits->setTitle('Fructis');
-        $milk = $repo->findOneByTitle('Milk');
+        $milk = $repo->findOneBy(['title' => 'Milk']);
         $repo->persistAsFirstChildOf($fruits, $milk);
         $this->em->flush();
 
         $this->assertEquals('food/milk/fructis', $fruits->getSlug());
 
-        $oranges = $repo->findOneByTitle('Oranges');
+        $oranges = $repo->findOneBy(['title' => 'Oranges']);
         $this->assertEquals('food/milk/fructis/oranges', $oranges->getSlug());
 
-        $citrons = $repo->findOneByTitle('Citrons');
+        $citrons = $repo->findOneBy(['title' => 'Citrons']);
         $this->assertEquals('food/milk/fructis/citrons', $citrons->getSlug());
 
-        $food = $repo->findOneByTitle('Food');
+        $food = $repo->findOneBy(['title' => 'Food']);
         $food->setTitle('Foodissimo');
 
         $this->em->persist($food);
@@ -124,9 +126,9 @@ class TreeSlugHandlerTest extends BaseTestCaseORM
 
     protected function getUsedEntityFixtures()
     {
-        return array(
+        return [
             self::TARGET,
-        );
+        ];
     }
 
     private function populate()

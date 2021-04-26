@@ -4,25 +4,25 @@ namespace Tool;
 
 // common
 use Doctrine\Common\EventManager;
-use Doctrine\Common\Persistence\Mapping\Driver\MappingDriver;
 // orm specific
-use Doctrine\ORM\Mapping\DefaultQuoteStrategy;
-use Doctrine\ORM\Mapping\DefaultNamingStrategy;
-use Doctrine\ORM\Mapping\Driver\AnnotationDriver as AnnotationDriverORM;
-use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\Tools\SchemaTool;
-// odm specific
-use Doctrine\ODM\MongoDB\Mapping\Driver\AnnotationDriver as AnnotationDriverODM;
+use Doctrine\ODM\MongoDB\Configuration;
 use Doctrine\ODM\MongoDB\DocumentManager;
-use Doctrine\MongoDB\Connection;
-// listeners
-use Gedmo\Translatable\TranslatableListener;
-use Gedmo\Sluggable\SluggableListener;
-use Gedmo\Tree\TreeListener;
-use Gedmo\Timestampable\TimestampableListener;
-use Gedmo\Loggable\LoggableListener;
+use Doctrine\ODM\MongoDB\Mapping\Driver\AnnotationDriver as AnnotationDriverODM;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\Mapping\DefaultNamingStrategy;
+use Doctrine\ORM\Mapping\DefaultQuoteStrategy;
+// odm specific
+use Doctrine\ORM\Mapping\Driver\AnnotationDriver as AnnotationDriverORM;
 use Doctrine\ORM\Repository\DefaultRepositoryFactory as DefaultRepositoryFactoryORM;
-use Doctrine\ODM\MongoDB\Repository\DefaultRepositoryFactory as DefaultRepositoryFactoryODM;
+// listeners
+use Doctrine\ORM\Tools\SchemaTool;
+use Doctrine\Persistence\Mapping\Driver\MappingDriver;
+use Gedmo\Loggable\LoggableListener;
+use Gedmo\Sluggable\SluggableListener;
+use Gedmo\Timestampable\TimestampableListener;
+use Gedmo\Translatable\TranslatableListener;
+use Gedmo\Tree\TreeListener;
+use MongoDB\Client;
 
 /**
  * Base test case contains common mock objects
@@ -30,7 +30,9 @@ use Doctrine\ODM\MongoDB\Repository\DefaultRepositoryFactory as DefaultRepositor
  * test cases
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @link http://www.gediminasm.org
+ *
+ * @see http://www.gediminasm.org
+ *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 abstract class BaseTestCaseOM extends \PHPUnit\Framework\TestCase
@@ -45,41 +47,23 @@ abstract class BaseTestCaseOM extends \PHPUnit\Framework\TestCase
      *
      * @var DocumentManager[]
      */
-    private $dms = array();
+    private $dms = [];
 
     /**
      * {@inheritdoc}
      */
-    protected function setUp()
+    protected function setUp(): void
     {
     }
 
     /**
      * {@inheritdoc}
      */
-    public function expectException($exception)
+    protected function tearDown(): void
     {
-        if (method_exists('PHPUnit\\Framework\\TestCase', 'setExpectedException')) {
-            return parent::setExpectedException($exception);
-        }
-
-        return parent::expectException($exception);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function tearDown()
-    {
-        foreach ($this->dms as $dm) {
-            if ($dm) {
-                foreach ($dm->getDocumentDatabases() as $db) {
-                    foreach ($db->listCollections() as $collection) {
-                        $collection->drop();
-                    }
-                }
-                $dm->getConnection()->close();
-                $dm = null;
+        foreach ($this->dms as $documentManager) {
+            foreach ($documentManager->getDocumentDatabases() as $documentDatabase) {
+                $documentDatabase->drop();
             }
         }
     }
@@ -98,18 +82,11 @@ abstract class BaseTestCaseOM extends \PHPUnit\Framework\TestCase
         if (!class_exists('Mongo')) {
             $this->markTestSkipped('Missing Mongo extension.');
         }
-        $conn = new Connection();
+
+        $client = new Client($_ENV['MONGODB_SERVER'], [], ['typeMap' => DocumentManager::CLIENT_TYPEMAP]);
         $config = $this->getMockAnnotatedODMMongoDBConfig($dbName, $mappingDriver);
 
-        $dm = null;
-        try {
-            $dm = DocumentManager::create($conn, $config, $this->getEventManager());
-            $dm->getConnection()->connect();
-        } catch (\MongoException $e) {
-            $this->markTestSkipped('Doctrine MongoDB ODM failed to connect');
-        }
-
-        return $dm;
+        return DocumentManager::create($client, $config, $this->getEventManager());
     }
 
     /**
@@ -136,17 +113,16 @@ abstract class BaseTestCaseOM extends \PHPUnit\Framework\TestCase
      * annotation mapping driver and pdo_sqlite
      * database in memory
      *
-     * @param array         $fixtures
      * @param MappingDriver $mappingDriver
      *
      * @return EntityManager
      */
     protected function getMockSqliteEntityManager(array $fixtures, MappingDriver $mappingDriver = null)
     {
-        $conn = array(
+        $conn = [
             'driver' => 'pdo_sqlite',
             'memory' => true,
-        );
+        ];
 
         $config = $this->getMockAnnotatedORMConfig($mappingDriver);
         $em = EntityManager::create($conn, $config, $this->getEventManager());
@@ -156,7 +132,7 @@ abstract class BaseTestCaseOM extends \PHPUnit\Framework\TestCase
         }, $fixtures);
 
         $schemaTool = new SchemaTool($em);
-        $schemaTool->dropSchema(array());
+        $schemaTool->dropSchema([]);
         $schemaTool->createSchema($schema);
 
         return $em;
@@ -178,7 +154,7 @@ abstract class BaseTestCaseOM extends \PHPUnit\Framework\TestCase
             ->will($this->returnValue($this->getMockBuilder('Doctrine\DBAL\Platforms\MySqlPlatform')->getMock()));
 
         $conn = $this->getMockBuilder('Doctrine\DBAL\Connection')
-            ->setConstructorArgs(array(), $driver)
+            ->setConstructorArgs([], $driver)
             ->getMock();
 
         $conn->expects($this->once())
@@ -186,6 +162,7 @@ abstract class BaseTestCaseOM extends \PHPUnit\Framework\TestCase
             ->will($this->returnValue($evm ?: $this->getEventManager()));
 
         $config = $this->getMockAnnotatedConfig();
+
         return EntityManager::create($conn, $config);
     }
 
@@ -231,26 +208,25 @@ abstract class BaseTestCaseOM extends \PHPUnit\Framework\TestCase
     /**
      * Get annotation mapping configuration
      *
-     * @param string                                     $dbName
+     * @param string        $dbName
      * @param MappingDriver $mappingDriver
-     *
-     * @return \Doctrine\ORM\Configuration
      */
-    private function getMockAnnotatedODMMongoDBConfig($dbName, MappingDriver $mappingDriver = null)
+    private function getMockAnnotatedODMMongoDBConfig($dbName, MappingDriver $mappingDriver = null): Configuration
     {
         if (null === $mappingDriver) {
             $mappingDriver = $this->getDefaultMongoODMMetadataDriverImplementation();
         }
-        $config = new \Doctrine\ODM\MongoDB\Configuration();
-        $config->addFilter("softdeleteable", 'Gedmo\\SoftDeleteable\\Filter\\ODM\\SoftDeleteableFilter');
-        $config->setProxyDir(__DIR__."/../../temp");
-        $config->setHydratorDir(__DIR__."/../../temp");
-        $config->setProxyNamespace("Proxy");
-        $config->setHydratorNamespace("Hydrator");
-        $config->setDefaultDB("gedmo_extensions_test");
-        $config->setAutoGenerateProxyClasses(true);
+        $config = new Configuration();
+        $config->addFilter('softdeleteable', 'Gedmo\\SoftDeleteable\\Filter\\ODM\\SoftDeleteableFilter');
+        $config->setProxyDir(__DIR__.'/../../temp');
+        $config->setHydratorDir(__DIR__.'/../../temp');
+        $config->setProxyNamespace('Proxy');
+        $config->setHydratorNamespace('Hydrator');
+        $config->setDefaultDB('gedmo_extensions_test');
+        $config->setAutoGenerateProxyClasses(Configuration::AUTOGENERATE_EVAL);
         $config->setAutoGenerateHydratorClasses(true);
         $config->setMetadataDriverImpl($mappingDriver);
+
         return $config;
     }
 
@@ -274,7 +250,7 @@ abstract class BaseTestCaseOM extends \PHPUnit\Framework\TestCase
 
         $config->expects($this->any())
             ->method('getDefaultQueryHints')
-            ->will($this->returnValue(array()));
+            ->will($this->returnValue([]));
 
         $config->expects($this->once())
             ->method('getAutoGenerateProxyClasses')

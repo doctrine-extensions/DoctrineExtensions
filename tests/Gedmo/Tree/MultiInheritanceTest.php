@@ -8,17 +8,19 @@ use Tool\BaseTestCaseORM;
  * These are tests for Tree behavior
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @link http://www.gediminasm.org
+ *
+ * @see http://www.gediminasm.org
+ *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class MultiInheritanceTest extends BaseTestCaseORM
 {
-    const NODE = "Tree\\Fixture\\Node";
-    const BASE_NODE = "Tree\\Fixture\\BaseNode";
-    const ANODE = "Tree\\Fixture\\ANode";
-    const TRANSLATION = "Gedmo\\Translatable\\Entity\\Translation";
+    const NODE = 'Tree\\Fixture\\Node';
+    const BASE_NODE = 'Tree\\Fixture\\BaseNode';
+    const ANODE = 'Tree\\Fixture\\ANode';
+    const TRANSLATION = 'Gedmo\\Translatable\\Entity\\Translation';
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -31,7 +33,7 @@ class MultiInheritanceTest extends BaseTestCaseORM
         $meta = $this->em->getClassMetadata(self::NODE);
         $repo = $this->em->getRepository(self::NODE);
 
-        $food = $repo->findOneByIdentifier('food');
+        $food = $repo->findOneBy(['identifier' => 'food']);
         $left = $meta->getReflectionProperty('lft')->getValue($food);
         $right = $meta->getReflectionProperty('rgt')->getValue($food);
 
@@ -54,7 +56,7 @@ class MultiInheritanceTest extends BaseTestCaseORM
     public function testCaseGithubIssue7()
     {
         $repo = $this->em->getRepository(self::NODE);
-        $vegies = $repo->findOneByTitle('Vegitables');
+        $vegies = $repo->findOneBy(['title' => 'Vegitables']);
 
         $count = $repo->childCount($vegies, true/*direct*/);
         $this->assertEquals(3, $count);
@@ -64,48 +66,48 @@ class MultiInheritanceTest extends BaseTestCaseORM
 
         // node repository will not find it
         $baseNodeRepo = $this->em->getRepository(self::BASE_NODE);
-        $cabbage = $baseNodeRepo->findOneByIdentifier('cabbage');
+        $cabbage = $baseNodeRepo->findOneBy(['identifier' => 'cabbage']);
         $path = $baseNodeRepo->getPath($cabbage);
         $this->assertCount(3, $path);
     }
 
     protected function getUsedEntityFixtures()
     {
-        return array(
+        return [
             self::NODE,
             self::ANODE,
             self::TRANSLATION,
             self::BASE_NODE,
-        );
+        ];
     }
 
     private function populate()
     {
         $root = new \Tree\Fixture\Node();
-        $root->setTitle("Food");
+        $root->setTitle('Food');
         $root->setIdentifier('food');
 
         $root2 = new \Tree\Fixture\Node();
-        $root2->setTitle("Sports");
+        $root2->setTitle('Sports');
         $root2->setIdentifier('sport');
 
         $child = new \Tree\Fixture\Node();
-        $child->setTitle("Fruits");
+        $child->setTitle('Fruits');
         $child->setParent($root);
         $child->setIdentifier('fruit');
 
         $child2 = new \Tree\Fixture\Node();
-        $child2->setTitle("Vegitables");
+        $child2->setTitle('Vegitables');
         $child2->setParent($root);
         $child2->setIdentifier('vegie');
 
         $childsChild = new \Tree\Fixture\Node();
-        $childsChild->setTitle("Carrots");
+        $childsChild->setTitle('Carrots');
         $childsChild->setParent($child2);
         $childsChild->setIdentifier('carrot');
 
         $potatoes = new \Tree\Fixture\Node();
-        $potatoes->setTitle("Potatoes");
+        $potatoes->setTitle('Potatoes');
         $potatoes->setParent($child2);
         $potatoes->setIdentifier('potatoe');
 

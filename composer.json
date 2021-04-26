@@ -34,20 +34,29 @@
         }
     ],
     "require": {
-        "php": ">=5.3.2",
+        "php": "^7.2 || ^8.0",
         "behat/transliterator": "~1.2",
-        "doctrine/common": "~2.4"
+        "doctrine/annotations": "^1.2",
+        "doctrine/cache": "^1.0",
+        "doctrine/collections": "^1.0",
+        "doctrine/common": "^2.13 || ^3.0",
+        "doctrine/event-manager": "^1.0"
     },
-    "conflict": {
-        "doctrine/annotations": "<1.2",
-        "doctrine/mongodb-odm": ">=2.0"
+    "provide": {
+        "ext-mongo": "1.6.12"
     },
     "require-dev": {
-        "doctrine/common": ">=2.5.0",
-        "doctrine/mongodb-odm": ">=1.0.2 <2.0",
-        "doctrine/orm": ">=2.5.0",
-        "phpunit/phpunit": "^4.8.35 || ^5.7 || ^6.5",
-        "symfony/yaml": "^2.6 || ^3.0 || ^4.0 || ^5.0"
+        "alcaeus/mongo-php-adapter": "^1.1",
+        "doctrine/mongodb-odm": "^2.0",
+        "doctrine/orm": "^2.6.3",
+        "friendsofphp/php-cs-fixer": "^2.16",
+        "phpunit/phpunit": "^8.5",
+        "symfony/yaml": "^4.1"
+    },
+    "conflict": {
+        "doctrine/mongodb": "<1.3",
+        "doctrine/mongodb-odm": "<2.0",
+        "sebastian/comparator": "<2.0"
     },
     "suggest": {
         "doctrine/mongodb-odm": "to use the extensions with the MongoDB ODM",
@@ -59,13 +68,16 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "2.4.x-dev"
+            "dev-master": "3.0-dev"
         }
     },
     "autoload": {
         "psr-4": {
-            "Gedmo\\": "lib/Gedmo"
+            "Gedmo\\": "src/"
         }
+    },
+    "scripts": {
+        "fix-cs": "php bin/php-cs-fixer fix --config=.php_cs.dist"
     },
     "support": {
         "email": "gediminas.morkevicius@gmail.com",

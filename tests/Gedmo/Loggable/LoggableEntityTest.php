@@ -2,20 +2,22 @@
 
 namespace Gedmo\Loggable;
 
-use Loggable\Fixture\Entity\GeoLocation;
-use Tool\BaseTestCaseORM;
 use Doctrine\Common\EventManager;
 use Loggable\Fixture\Entity\Address;
 use Loggable\Fixture\Entity\Article;
-use Loggable\Fixture\Entity\RelatedArticle;
 use Loggable\Fixture\Entity\Comment;
 use Loggable\Fixture\Entity\Geo;
+use Loggable\Fixture\Entity\GeoLocation;
+use Loggable\Fixture\Entity\RelatedArticle;
+use Tool\BaseTestCaseORM;
 
 /**
  * These are tests for loggable behavior
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @link http://www.gediminasm.org
+ *
+ * @see http://www.gediminasm.org
+ *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class LoggableEntityTest extends BaseTestCaseORM
@@ -28,7 +30,7 @@ class LoggableEntityTest extends BaseTestCaseORM
     private $articleId;
     private $LoggableListener;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -76,7 +78,7 @@ class LoggableEntityTest extends BaseTestCaseORM
         $this->em->persist($art0);
         $this->em->flush();
 
-        $log = $logRepo->findOneByObjectId($art0->getId());
+        $log = $logRepo->findOneBy(['objectId' => $art0->getId()]);
 
         $this->assertNotNull($log);
         $this->assertEquals('create', $log->getAction());
@@ -89,23 +91,23 @@ class LoggableEntityTest extends BaseTestCaseORM
         $this->assertEquals($data['title'], 'Title');
 
         // test update
-        $article = $articleRepo->findOneByTitle('Title');
+        $article = $articleRepo->findOneBy(['title' => 'Title']);
 
         $article->setTitle('New');
         $this->em->persist($article);
         $this->em->flush();
         $this->em->clear();
 
-        $log = $logRepo->findOneBy(array('version' => 2, 'objectId' => $article->getId()));
+        $log = $logRepo->findOneBy(['version' => 2, 'objectId' => $article->getId()]);
         $this->assertEquals('update', $log->getAction());
 
         // test delete
-        $article = $articleRepo->findOneByTitle('New');
+        $article = $articleRepo->findOneBy(['title' => 'New']);
         $this->em->remove($article);
         $this->em->flush();
         $this->em->clear();
 
-        $log = $logRepo->findOneBy(array('version' => 3, 'objectId' => 1));
+        $log = $logRepo->findOneBy(['version' => 3, 'objectId' => 1]);
         $this->assertEquals('remove', $log->getAction());
         $this->assertNull($log->getData());
     }
@@ -153,7 +155,7 @@ class LoggableEntityTest extends BaseTestCaseORM
 
     protected function getUsedEntityFixtures()
     {
-        return array(
+        return [
             self::ARTICLE,
             self::COMMENT,
             self::COMMENT_LOG,
@@ -161,7 +163,7 @@ class LoggableEntityTest extends BaseTestCaseORM
             'Gedmo\Loggable\Entity\LogEntry',
             'Loggable\Fixture\Entity\Address',
             'Loggable\Fixture\Entity\Geo',
-        );
+        ];
     }
 
     private function populateEmbedded()

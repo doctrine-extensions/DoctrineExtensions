@@ -17,7 +17,7 @@ class ClosureCategory
     /**
      * Get id
      *
-     * @return integer $id
+     * @return int $id
      */
     public function getId()
     {

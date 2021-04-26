@@ -2,13 +2,12 @@
 
 namespace Gedmo\Loggable;
 
-use Tool\BaseTestCaseMongoODM;
 use Doctrine\Common\EventManager;
 use Loggable\Fixture\Document\Article;
-use Loggable\Fixture\Document\RelatedArticle;
-use Loggable\Fixture\Document\Comment;
 use Loggable\Fixture\Document\Author;
-use Composer\Autoload\ClassLoader;
+use Loggable\Fixture\Document\Comment;
+use Loggable\Fixture\Document\RelatedArticle;
+use Tool\BaseTestCaseMongoODM;
 
 /**
  * These are tests for loggable behavior
@@ -16,7 +15,8 @@ use Composer\Autoload\ClassLoader;
  * @author Boussekeyt Jules <jules.boussekeyt@gmail.com>
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  *
- * @link http://www.gediminasm.org
+ * @see http://www.gediminasm.org
+ *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class LoggableDocumentTest extends BaseTestCaseMongoODM
@@ -26,7 +26,7 @@ class LoggableDocumentTest extends BaseTestCaseMongoODM
     const RELATED_ARTICLE = 'Loggable\\Fixture\\Document\\RelatedArticle';
     const COMMENT_LOG = 'Loggable\\Fixture\\Document\\Log\\Comment';
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $evm = new EventManager();
@@ -55,7 +55,7 @@ class LoggableDocumentTest extends BaseTestCaseMongoODM
         $this->dm->persist($art0);
         $this->dm->flush();
 
-        $log = $logRepo->findOneByObjectId($art0->getId());
+        $log = $logRepo->findOneBy(['objectId' => $art0->getId()]);
 
         $this->assertNotNull($log);
         $this->assertEquals('create', $log->getAction());
@@ -67,25 +67,25 @@ class LoggableDocumentTest extends BaseTestCaseMongoODM
         $this->assertArrayHasKey('title', $data);
         $this->assertEquals($data['title'], 'Title');
         $this->assertArrayHasKey('author', $data);
-        $this->assertEquals($data['author'], array('name' => 'John Doe', 'email' => 'john@doe.com'));
+        $this->assertEquals($data['author'], ['name' => 'John Doe', 'email' => 'john@doe.com']);
 
         // test update
-        $article = $articleRepo->findOneByTitle('Title');
+        $article = $articleRepo->findOneBy(['title' => 'Title']);
         $article->setTitle('New');
         $this->dm->persist($article);
         $this->dm->flush();
         $this->dm->clear();
 
-        $log = $logRepo->findOneBy(array('version' => 2, 'objectId' => $article->getId()));
+        $log = $logRepo->findOneBy(['version' => 2, 'objectId' => $article->getId()]);
         $this->assertEquals('update', $log->getAction());
 
         // test delete
-        $article = $articleRepo->findOneByTitle('New');
+        $article = $articleRepo->findOneBy(['title' => 'New']);
         $this->dm->remove($article);
         $this->dm->flush();
         $this->dm->clear();
 
-        $log = $logRepo->findOneBy(array('version' => 3, 'objectId' => $article->getId()));
+        $log = $logRepo->findOneBy(['version' => 3, 'objectId' => $article->getId()]);
         $this->assertEquals('remove', $log->getAction());
         $this->assertNull($log->getData());
     }
@@ -96,7 +96,7 @@ class LoggableDocumentTest extends BaseTestCaseMongoODM
         $commentLogRepo = $this->dm->getRepository(self::COMMENT_LOG);
         $commentRepo = $this->dm->getRepository(self::COMMENT);
 
-        $comment = $commentRepo->findOneByMessage('m-v5');
+        $comment = $commentRepo->findOneBy(['message' => 'm-v5']);
         $commentId = $comment->getId();
         $this->assertEquals('m-v5', $comment->getMessage());
         $this->assertEquals('s-v3', $comment->getSubject());

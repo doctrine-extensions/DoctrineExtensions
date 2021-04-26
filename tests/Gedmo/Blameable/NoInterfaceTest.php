@@ -2,22 +2,24 @@
 
 namespace Gedmo\Blameable;
 
+use Blameable\Fixture\Entity\WithoutInterface;
 use Doctrine\Common\EventManager;
 use Tool\BaseTestCaseORM;
-use Blameable\Fixture\Entity\WithoutInterface;
 
 /**
  * These are tests for Blameable behavior
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @link http://www.gediminasm.org
+ *
+ * @see http://www.gediminasm.org
+ *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class NoInterfaceTest extends BaseTestCaseORM
 {
-    const FIXTURE = "Blameable\\Fixture\\Entity\\WithoutInterface";
+    const FIXTURE = 'Blameable\\Fixture\\Entity\\WithoutInterface';
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -38,15 +40,15 @@ class NoInterfaceTest extends BaseTestCaseORM
         $this->em->flush();
         $this->em->clear();
 
-        $test = $this->em->getRepository(self::FIXTURE)->findOneByTitle('Test');
+        $test = $this->em->getRepository(self::FIXTURE)->findOneBy(['title' => 'Test']);
         $this->assertEquals('testuser', $test->getCreated());
         $this->assertEquals('testuser', $test->getUpdated());
     }
 
     protected function getUsedEntityFixtures()
     {
-        return array(
+        return [
             self::FIXTURE,
-        );
+        ];
     }
 }

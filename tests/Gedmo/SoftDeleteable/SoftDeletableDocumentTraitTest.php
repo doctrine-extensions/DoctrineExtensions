@@ -8,7 +8,9 @@ use SoftDeleteable\Fixture\Document\UsingTrait;
  * Test for SoftDeletable Entity Trait
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @link http://www.gediminasm.org
+ *
+ * @see http://www.gediminasm.org
+ *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class SoftDeletableDocumentTraitTest extends \PHPUnit\Framework\TestCase
@@ -18,7 +20,7 @@ class SoftDeletableDocumentTraitTest extends \PHPUnit\Framework\TestCase
      */
     protected $entity;
 
-    public function setUp()
+    public function setUp(): void
     {
         if (version_compare(PHP_VERSION, '5.4.0') < 0) {
             $this->markTestSkipped('PHP >= 5.4 version required for this test.');

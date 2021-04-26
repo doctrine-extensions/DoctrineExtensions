@@ -3,22 +3,24 @@
 namespace Gedmo\IpTraceable;
 
 use Doctrine\Common\EventManager;
-use Tool\BaseTestCaseORM;
 use IpTraceable\Fixture\UsingTrait;
+use Tool\BaseTestCaseORM;
 
 /**
  * These are tests for IpTraceable behavior
  *
  * @author Pierre-Charles Bertineau <pc.bertineau@alterphp.com>
- * @link http://www.gediminasm.org
+ *
+ * @see http://www.gediminasm.org
+ *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class TraitUsageTest extends BaseTestCaseORM
 {
     const TEST_IP = '34.234.1.10';
-    const TARGET = "IpTraceable\\Fixture\\UsingTrait";
+    const TARGET = 'IpTraceable\\Fixture\\UsingTrait';
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -61,8 +63,8 @@ class TraitUsageTest extends BaseTestCaseORM
 
     protected function getUsedEntityFixtures()
     {
-        return array(
+        return [
             self::TARGET,
-        );
+        ];
     }
 }

@@ -3,23 +3,30 @@
 namespace Gedmo\Tree;
 
 use Doctrine\Common\EventManager;
+use Doctrine\ODM\MongoDB\Iterator\CachingIterator;
 use Tool\BaseTestCaseMongoODM;
+use Tree\Fixture\Document\Category;
 
 /**
  * These are tests for Tree behavior
  *
  * @author Gustavo Falco <comfortablynumb84@gmail.com>
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @link http://www.gediminasm.org
+ *
+ * @see http://www.gediminasm.org
+ *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class MaterializedPathODMMongoDBRepositoryTest extends BaseTestCaseMongoODM
 {
-    const CATEGORY = "Tree\\Fixture\\Document\\Category";
-    /** @var $this->repo \Gedmo\Tree\Document\MongoDB\Repository\MaterializedPathRepository */
+    private const CATEGORY = Category::class;
+
+    /**
+     * @var Document\MongoDB\Repository\MaterializedPathRepository
+     */
     protected $repo;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -37,12 +44,19 @@ class MaterializedPathODMMongoDBRepositoryTest extends BaseTestCaseMongoODM
      */
     public function getRootNodes()
     {
+        /** @var CachingIterator $result */
         $result = $this->repo->getRootNodes('title');
 
-        $this->assertEquals(3, $result->count());
-        $this->assertEquals('Drinks', $result->getNext()->getTitle());
-        $this->assertEquals('Food', $result->getNext()->getTitle());
-        $this->assertEquals('Sports', $result->getNext()->getTitle());
+        $this->assertEquals(3, \iterator_count($result));
+        $result->rewind();
+
+        $result->rewind();
+
+        $this->assertEquals('Drinks', $result->current()->getTitle());
+        $result->next();
+        $this->assertEquals('Food', $result->current()->getTitle());
+        $result->next();
+        $this->assertEquals('Sports', $result->current()->getTitle());
     }
 
     /**
@@ -50,63 +64,97 @@ class MaterializedPathODMMongoDBRepositoryTest extends BaseTestCaseMongoODM
      */
     public function getChildren()
     {
-        $root = $this->repo->findOneByTitle('Food');
+        $root = $this->repo->findOneBy(['title' => 'Food']);
 
         // Get all children from the root, including it
+        /** @var CachingIterator $result */
         $result = $this->repo->getChildren($root, false, 'title', 'asc', true);
 
-        $this->assertEquals(5, count($result));
-        $this->assertEquals('Carrots', $result->getNext()->getTitle());
-        $this->assertEquals('Food', $result->getNext()->getTitle());
-        $this->assertEquals('Fruits', $result->getNext()->getTitle());
-        $this->assertEquals('Potatoes', $result->getNext()->getTitle());
-        $this->assertEquals('Vegitables', $result->getNext()->getTitle());
+        $this->assertEquals(5, \iterator_count($result));
+        $result->rewind();
+
+        $result->rewind();
+        $this->assertEquals('Carrots', $result->current()->getTitle());
+        $result->next();
+        $this->assertEquals('Food', $result->current()->getTitle());
+        $result->next();
+        $this->assertEquals('Fruits', $result->current()->getTitle());
+        $result->next();
+        $this->assertEquals('Potatoes', $result->current()->getTitle());
+        $result->next();
+        $this->assertEquals('Vegitables', $result->current()->getTitle());
 
         // Get all children from the root, NOT including it
+        /** @var CachingIterator $result */
         $result = $this->repo->getChildren($root, false, 'title', 'asc', false);
 
-        $this->assertEquals(4, count($result));
-        $this->assertEquals('Carrots', $result->getNext()->getTitle());
-        $this->assertEquals('Fruits', $result->getNext()->getTitle());
-        $this->assertEquals('Potatoes', $result->getNext()->getTitle());
-        $this->assertEquals('Vegitables', $result->getNext()->getTitle());
+        $this->assertEquals(4, \iterator_count($result));
+        $result->rewind();
+        $result->rewind();
+        $this->assertEquals('Carrots', $result->current()->getTitle());
+        $result->next();
+        $this->assertEquals('Fruits', $result->current()->getTitle());
+        $result->next();
+        $this->assertEquals('Potatoes', $result->current()->getTitle());
+        $result->next();
+        $this->assertEquals('Vegitables', $result->current()->getTitle());
 
         // Get direct children from the root, including it
+        /** @var CachingIterator $result */
         $result = $this->repo->getChildren($root, true, 'title', 'asc', true);
 
-        $this->assertEquals(3, $result->count());
-        $this->assertEquals('Food', $result->getNext()->getTitle());
-        $this->assertEquals('Fruits', $result->getNext()->getTitle());
-        $this->assertEquals('Vegitables', $result->getNext()->getTitle());
+        $this->assertEquals(3, \iterator_count($result));
+        $result->rewind();
+        $result->rewind();
+        $this->assertEquals('Food', $result->current()->getTitle());
+        $result->next();
+        $this->assertEquals('Fruits', $result->current()->getTitle());
+        $result->next();
+        $this->assertEquals('Vegitables', $result->current()->getTitle());
 
         // Get direct children from the root, NOT including it
+        /** @var CachingIterator $result */
         $result = $this->repo->getChildren($root, true, 'title', 'asc', false);
 
-        $this->assertEquals(2, $result->count());
-        $this->assertEquals('Fruits', $result->getNext()->getTitle());
-        $this->assertEquals('Vegitables', $result->getNext()->getTitle());
+        $this->assertEquals(2, \iterator_count($result));
+        $result->rewind();
+        $this->assertEquals('Fruits', $result->current()->getTitle());
+        $result->next();
+        $this->assertEquals('Vegitables', $result->current()->getTitle());
 
         // Get ALL nodes
         $result = $this->repo->getChildren(null, false, 'title');
 
-        $this->assertEquals(9, $result->count());
-        $this->assertEquals('Best Whisky', $result->getNext()->getTitle());
-        $this->assertEquals('Carrots', $result->getNext()->getTitle());
-        $this->assertEquals('Drinks', $result->getNext()->getTitle());
-        $this->assertEquals('Food', $result->getNext()->getTitle());
-        $this->assertEquals('Fruits', $result->getNext()->getTitle());
-        $this->assertEquals('Potatoes', $result->getNext()->getTitle());
-        $this->assertEquals('Sports', $result->getNext()->getTitle());
-        $this->assertEquals('Vegitables', $result->getNext()->getTitle());
-        $this->assertEquals('Whisky', $result->getNext()->getTitle());
+        $this->assertEquals(9, \iterator_count($result));
+        $result->rewind();
+        $this->assertEquals('Best Whisky', $result->current()->getTitle());
+        $result->next();
+        $this->assertEquals('Carrots', $result->current()->getTitle());
+        $result->next();
+        $this->assertEquals('Drinks', $result->current()->getTitle());
+        $result->next();
+        $this->assertEquals('Food', $result->current()->getTitle());
+        $result->next();
+        $this->assertEquals('Fruits', $result->current()->getTitle());
+        $result->next();
+        $this->assertEquals('Potatoes', $result->current()->getTitle());
+        $result->next();
+        $this->assertEquals('Sports', $result->current()->getTitle());
+        $result->next();
+        $this->assertEquals('Vegitables', $result->current()->getTitle());
+        $result->next();
+        $this->assertEquals('Whisky', $result->current()->getTitle());
 
         // Get ALL root nodes
         $result = $this->repo->getChildren(null, true, 'title');
 
-        $this->assertEquals(3, $result->count());
-        $this->assertEquals('Drinks', $result->getNext()->getTitle());
-        $this->assertEquals('Food', $result->getNext()->getTitle());
-        $this->assertEquals('Sports', $result->getNext()->getTitle());
+        $this->assertEquals(3, \iterator_count($result));
+        $result->rewind();
+        $this->assertEquals('Drinks', $result->current()->getTitle());
+        $result->next();
+        $this->assertEquals('Food', $result->current()->getTitle());
+        $result->next();
+        $this->assertEquals('Sports', $result->current()->getTitle());
     }
 
     /**
@@ -116,25 +164,37 @@ class MaterializedPathODMMongoDBRepositoryTest extends BaseTestCaseMongoODM
     {
         $tree = $this->repo->getTree();
 
-        $this->assertEquals(9, $tree->count());
-        $this->assertEquals('Drinks', $tree->getNext()->getTitle());
-        $this->assertEquals('Whisky', $tree->getNext()->getTitle());
-        $this->assertEquals('Best Whisky', $tree->getNext()->getTitle());
-        $this->assertEquals('Food', $tree->getNext()->getTitle());
-        $this->assertEquals('Fruits', $tree->getNext()->getTitle());
-        $this->assertEquals('Vegitables', $tree->getNext()->getTitle());
-        $this->assertEquals('Carrots', $tree->getNext()->getTitle());
-        $this->assertEquals('Potatoes', $tree->getNext()->getTitle());
-        $this->assertEquals('Sports', $tree->getNext()->getTitle());
+        $this->assertEquals(9, \iterator_count($tree));
+        $tree->rewind();
+        $this->assertEquals('Drinks', $tree->current()->getTitle());
+        $tree->next();
+        $this->assertEquals('Whisky', $tree->current()->getTitle());
+        $tree->next();
+        $this->assertEquals('Best Whisky', $tree->current()->getTitle());
+        $tree->next();
+        $this->assertEquals('Food', $tree->current()->getTitle());
+        $tree->next();
+        $this->assertEquals('Fruits', $tree->current()->getTitle());
+        $tree->next();
+        $this->assertEquals('Vegitables', $tree->current()->getTitle());
+        $tree->next();
+        $this->assertEquals('Carrots', $tree->current()->getTitle());
+        $tree->next();
+        $this->assertEquals('Potatoes', $tree->current()->getTitle());
+        $tree->next();
+        $this->assertEquals('Sports', $tree->current()->getTitle());
 
         // Get a specific tree
         $roots = $this->repo->getRootNodes();
-        $tree = $this->repo->getTree($roots->getNext());
+        $tree = $this->repo->getTree($roots->current());
 
-        $this->assertEquals(3, $tree->count());
-        $this->assertEquals('Drinks', $tree->getNext()->getTitle());
-        $this->assertEquals('Whisky', $tree->getNext()->getTitle());
-        $this->assertEquals('Best Whisky', $tree->getNext()->getTitle());
+        $this->assertEquals(3, \iterator_count($tree));
+        $tree->rewind();
+        $this->assertEquals('Drinks', $tree->current()->getTitle());
+        $tree->next();
+        $this->assertEquals('Whisky', $tree->current()->getTitle());
+        $tree->next();
+        $this->assertEquals('Best Whisky', $tree->current()->getTitle());
     }
 
     /**
@@ -157,8 +217,10 @@ class MaterializedPathODMMongoDBRepositoryTest extends BaseTestCaseMongoODM
 
         // Tree of one specific root
         $roots = $this->repo->getRootNodes();
-        $drinks = $roots->getNext();
-        $food = $roots->getNext();
+        $drinks = $roots->current();
+        $roots->next();
+        $food = $roots->current();
+        $roots->next();
         $tree = $this->repo->childrenHierarchy();
 
         $this->assertEquals('Drinks', $tree[0]['title']);
@@ -166,7 +228,7 @@ class MaterializedPathODMMongoDBRepositoryTest extends BaseTestCaseMongoODM
         $this->assertEquals('Best Whisky', $tree[0]['__children'][0]['__children'][0]['title']);
 
         // Tree of one specific root, with the root node
-        $tree = $this->repo->childrenHierarchy($drinks, false, array(), true);
+        $tree = $this->repo->childrenHierarchy($drinks, false, [], true);
 
         $this->assertEquals('Drinks', $tree[0]['title']);
         $this->assertEquals('Whisky', $tree[0]['__children'][0]['title']);
@@ -181,7 +243,7 @@ class MaterializedPathODMMongoDBRepositoryTest extends BaseTestCaseMongoODM
         $this->assertEquals('Vegitables', $tree[1]['title']);
 
         // Tree of one specific root only with direct children, with the root node
-        $tree = $this->repo->childrenHierarchy($food, true, array(), true);
+        $tree = $this->repo->childrenHierarchy($food, true, [], true);
 
         $this->assertEquals(1, count($tree));
         $this->assertEquals(2, count($tree[0]['__children']));
@@ -191,13 +253,13 @@ class MaterializedPathODMMongoDBRepositoryTest extends BaseTestCaseMongoODM
 
         // HTML Tree of one specific root, without the root node
         $roots = $this->repo->getRootNodes();
-        $tree = $this->repo->childrenHierarchy($drinks, false, array('decorate' => true), false);
+        $tree = $this->repo->childrenHierarchy($drinks, false, ['decorate' => true], false);
 
         $this->assertEquals('<ul><li>Whisky<ul><li>Best Whisky</li></ul></li></ul>', $tree);
 
         // HTML Tree of one specific root, with the root node
         $roots = $this->repo->getRootNodes();
-        $tree = $this->repo->childrenHierarchy($drinks, false, array('decorate' => true), true);
+        $tree = $this->repo->childrenHierarchy($drinks, false, ['decorate' => true], true);
 
         $this->assertEquals('<ul><li>Drinks<ul><li>Whisky<ul><li>Best Whisky</li></ul></li></ul></li></ul>', $tree);
     }
@@ -215,7 +277,7 @@ class MaterializedPathODMMongoDBRepositoryTest extends BaseTestCaseMongoODM
         $this->assertEquals(3, $count);
 
         // Count food children
-        $food = $this->repo->findOneByTitle('Food');
+        $food = $this->repo->findOneBy(['title' => 'Food']);
         $count = $this->repo->childCount($food);
 
         $this->assertEquals(4, $count);
@@ -226,19 +288,15 @@ class MaterializedPathODMMongoDBRepositoryTest extends BaseTestCaseMongoODM
         $this->assertEquals(2, $count);
     }
 
-    /**
-     * @expectedException \Gedmo\Exception\InvalidArgumentException
-     */
     public function testChildCount_ifAnObjectIsPassedWhichIsNotAnInstanceOfTheEntityClassThrowException()
     {
+        $this->expectException('Gedmo\Exception\InvalidArgumentException');
         $this->repo->childCount(new \DateTime());
     }
 
-    /**
-     * @expectedException \Gedmo\Exception\InvalidArgumentException
-     */
     public function testChildCount_ifAnObjectIsPassedIsAnInstanceOfTheEntityClassButIsNotHandledByUnitOfWorkThrowException()
     {
+        $this->expectException('Gedmo\Exception\InvalidArgumentException');
         $this->repo->childCount($this->createCategory());
     }
 
@@ -249,14 +307,14 @@ class MaterializedPathODMMongoDBRepositoryTest extends BaseTestCaseMongoODM
 
         $tree = $this->repo->childrenHierarchy();
 
-        $this->assertInternalType('array', $tree[0][$childrenIndex]);
+        $this->assertIsArray($tree[0][$childrenIndex]);
     }
 
     protected function getUsedEntityFixtures()
     {
-        return array(
+        return [
             self::CATEGORY,
-        );
+        ];
     }
 
     public function createCategory()
@@ -269,25 +327,25 @@ class MaterializedPathODMMongoDBRepositoryTest extends BaseTestCaseMongoODM
     private function populate()
     {
         $root = $this->createCategory();
-        $root->setTitle("Food");
+        $root->setTitle('Food');
 
         $root2 = $this->createCategory();
-        $root2->setTitle("Sports");
+        $root2->setTitle('Sports');
 
         $child = $this->createCategory();
-        $child->setTitle("Fruits");
+        $child->setTitle('Fruits');
         $child->setParent($root);
 
         $child2 = $this->createCategory();
-        $child2->setTitle("Vegitables");
+        $child2->setTitle('Vegitables');
         $child2->setParent($root);
 
         $childsChild = $this->createCategory();
-        $childsChild->setTitle("Carrots");
+        $childsChild->setTitle('Carrots');
         $childsChild->setParent($child2);
 
         $potatoes = $this->createCategory();
-        $potatoes->setTitle("Potatoes");
+        $potatoes->setTitle('Potatoes');
         $potatoes->setParent($child2);
 
         $drinks = $this->createCategory();

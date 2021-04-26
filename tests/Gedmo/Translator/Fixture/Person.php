@@ -2,8 +2,8 @@
 
 namespace Translator\Fixture;
 
-use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
@@ -71,7 +71,6 @@ class Person
     // TRANSLATIONS DEFINITION:
     //
 
-
     /**
      * @ORM\OneToMany(targetEntity="PersonTranslation", mappedBy="translatable", cascade={"persist"})
      */
@@ -105,7 +104,7 @@ class Person
 
         return new \Gedmo\Translator\TranslationProxy($this,
         /* Locale                            */ $locale,
-        /* List of translatable properties:  */ array('name', 'lastName'),
+        /* List of translatable properties:  */ ['name', 'lastName'],
         /* Translation entity class:         */ 'Translator\Fixture\PersonTranslation',
         /* Translations collection property: */ $this->translations
         );

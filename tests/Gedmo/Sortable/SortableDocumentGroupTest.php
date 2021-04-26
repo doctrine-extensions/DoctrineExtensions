@@ -2,11 +2,11 @@
 
 namespace Gedmo\Sortable;
 
-use Tool\BaseTestCaseMongoODM;
 use Doctrine\Common\EventManager;
-use Sortable\Fixture\Document\Post;
 use Sortable\Fixture\Document\Category;
 use Sortable\Fixture\Document\Kid;
+use Sortable\Fixture\Document\Post;
+use Tool\BaseTestCaseMongoODM;
 
 /**
  * These are tests for sortable behavior with SortableGroup
@@ -16,13 +16,13 @@ use Sortable\Fixture\Document\Kid;
  */
 class SortableDocumentGroupTest extends BaseTestCaseMongoODM
 {
-    const POST      = 'Sortable\\Fixture\\Document\\Post';
-    const CATEGORY  = 'Sortable\\Fixture\\Document\\Category';
-    const KID       = 'Sortable\\Fixture\\Document\\Kid';
+    const POST = 'Sortable\\Fixture\\Document\\Post';
+    const CATEGORY = 'Sortable\\Fixture\\Document\\Category';
+    const KID = 'Sortable\\Fixture\\Document\\Kid';
     const KID_DATE1 = '1999-12-31';
     const KID_DATE2 = '2000-01-01';
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $evm = new EventManager();
@@ -39,26 +39,26 @@ class SortableDocumentGroupTest extends BaseTestCaseMongoODM
      */
     private function populate()
     {
-        $categories = array();
-        for ($i = 0; $i < 2; $i++) {
+        $categories = [];
+        for ($i = 0; $i < 2; ++$i) {
             $categories[$i] = new Category();
             $categories[$i]->setName('category'.$i);
             $this->dm->persist($categories[$i]);
         }
 
-        for ($i = 0; $i < 6; $i++) {
+        for ($i = 0; $i < 6; ++$i) {
             $post = new Post();
             $post->setTitle('post'.$i);
             $post->setCategory($categories[($i % 2)]);
             $this->dm->persist($post);
         }
 
-        $birthdates = array(
+        $birthdates = [
             new \DateTime(self::KID_DATE1),
             new \DateTime(self::KID_DATE2),
-            );
-        
-        for ($i = 0; $i < 4; $i++) {
+            ];
+
+        for ($i = 0; $i < 4; ++$i) {
             $kid = new Kid();
             $kid->setLastName('kid'.$i);
             $kid->setBirthdate($birthdates[($i % 2)]);
@@ -75,8 +75,8 @@ class SortableDocumentGroupTest extends BaseTestCaseMongoODM
     {
         $repo = $this->dm->getRepository(self::KID);
 
-        for ($i = 0; $i < 2; $i++) {
-            $kids = $repo->findByPosition($i);
+        for ($i = 0; $i < 2; ++$i) {
+            $kids = $repo->findBy(['position' => $i]);
             $this->assertCount(2, $kids);
         }
     }
@@ -88,17 +88,17 @@ class SortableDocumentGroupTest extends BaseTestCaseMongoODM
     {
         $repo = $this->dm->getRepository(self::KID);
 
-        $kid = $repo->findOneByLastname('kid2');
+        $kid = $repo->findOneBy(['lastname' => 'kid2']);
         $this->assertInstanceOf(self::KID, $kid);
 
         $kid->setPosition(0);
         $this->dm->flush();
 
-        $kids = $repo->findByBirthdate(new \DateTime(self::KID_DATE1));
+        $kids = $repo->findBy(['birthdate' => new \DateTime(self::KID_DATE1)]);
         $this->assertCount(2, $kids);
 
-        for ($i=0; $i < 2; $i++) {
-            $expected = ($i+1 == 1) ? $i+1 : 0;
+        for ($i = 0; $i < 2; ++$i) {
+            $expected = (1 == $i + 1) ? $i + 1 : 0;
             $this->assertEquals($expected, $kids[$i]->getPosition());
         }
     }
@@ -110,8 +110,8 @@ class SortableDocumentGroupTest extends BaseTestCaseMongoODM
     {
         $repo = $this->dm->getRepository(self::POST);
 
-        for ($i = 0; $i < 3; $i++) {
-            $posts = $repo->findByPosition($i);
+        for ($i = 0; $i < 3; ++$i) {
+            $posts = $repo->findBy(['position' => $i]);
             $this->assertCount(2, $posts);
         }
     }
@@ -124,26 +124,26 @@ class SortableDocumentGroupTest extends BaseTestCaseMongoODM
         $repo_category = $this->dm->getRepository(self::CATEGORY);
         $repo_post = $this->dm->getRepository(self::POST);
 
-        $category = $repo_category->findOneByName('category1');
+        $category = $repo_category->findOneBy(['name' => 'category1']);
         $this->assertInstanceOf(self::CATEGORY, $category);
 
-        $post = $repo_post->findOneBy(array(
+        $post = $repo_post->findOneBy([
             'position' => 2,
-            'category.id' => $category->getId()
-        ));
+            'category.id' => $category->getId(),
+        ]);
         $this->assertInstanceOf(self::POST, $post);
 
         $post->setPosition(0);
 
         $this->dm->flush();
 
-        $posts = $repo_post->findBy(array(
-            'category.id' => $category->getId()
-        ));
+        $posts = $repo_post->findBy([
+            'category.id' => $category->getId(),
+        ]);
         $this->assertCount(3, $posts);
-        
-        for ($i=0; $i < 3; $i++) {
-            $expected = ($i+1 < 3) ? $i+1 : 0;
+
+        for ($i = 0; $i < 3; ++$i) {
+            $expected = ($i + 1 < 3) ? $i + 1 : 0;
             $this->assertEquals($expected, $posts[$i]->getPosition());
         }
     }
@@ -156,24 +156,24 @@ class SortableDocumentGroupTest extends BaseTestCaseMongoODM
         $repo_category = $this->dm->getRepository(self::CATEGORY);
         $repo_post = $this->dm->getRepository(self::POST);
 
-        $category = $repo_category->findOneByName('category1');
+        $category = $repo_category->findOneBy(['name' => 'category1']);
         $this->assertInstanceOf(self::CATEGORY, $category);
 
-        $post = $repo_post->findOneBy(array(
+        $post = $repo_post->findOneBy([
             'position' => 1,
-            'category.id' => $category->getId()
-        ));
+            'category.id' => $category->getId(),
+        ]);
         $this->assertInstanceOf(self::POST, $post);
 
         $this->dm->remove($post);
         $this->dm->flush();
 
-        $posts = $repo_post->findBy(array(
-            'category.id' => $category->getId()
-        ));
+        $posts = $repo_post->findBy([
+            'category.id' => $category->getId(),
+        ]);
         $this->assertCount(2, $posts);
-        
-        for ($i=0; $i < 2; $i++) {
+
+        for ($i = 0; $i < 2; ++$i) {
             $this->assertEquals($i, $posts[$i]->getPosition());
         }
     }

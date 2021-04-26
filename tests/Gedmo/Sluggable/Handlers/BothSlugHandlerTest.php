@@ -3,24 +3,26 @@
 namespace Gedmo\Sluggable;
 
 use Doctrine\Common\EventManager;
-use Tool\BaseTestCaseORM;
+use Gedmo\Tree\TreeListener;
 use Sluggable\Fixture\Handler\People\Occupation;
 use Sluggable\Fixture\Handler\People\Person;
-use Gedmo\Tree\TreeListener;
+use Tool\BaseTestCaseORM;
 
 /**
  * These are tests for Sluggable behavior
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @link http://www.gediminasm.org
+ *
+ * @see http://www.gediminasm.org
+ *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class BothSlugHandlerTest extends BaseTestCaseORM
 {
-    const OCCUPATION = "Sluggable\\Fixture\\Handler\\People\\Occupation";
-    const PERSON = "Sluggable\\Fixture\\Handler\\People\\Person";
+    const OCCUPATION = 'Sluggable\\Fixture\\Handler\\People\\Occupation';
+    const PERSON = 'Sluggable\\Fixture\\Handler\\People\\Person';
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -36,13 +38,13 @@ class BothSlugHandlerTest extends BaseTestCaseORM
         $this->populate();
         $repo = $this->em->getRepository(self::PERSON);
 
-        $herzult = $repo->findOneByName('Herzult');
+        $herzult = $repo->findOneBy(['name' => 'Herzult']);
         $this->assertEquals('web/developer/php/herzult', $herzult->getSlug());
 
-        $gedi = $repo->findOneByName('Gedi');
+        $gedi = $repo->findOneBy(['name' => 'Gedi']);
         $this->assertEquals('web/developer/gedi', $gedi->getSlug());
 
-        $hurty = $repo->findOneByName('Hurty');
+        $hurty = $repo->findOneBy(['name' => 'Hurty']);
         $this->assertEquals('singer/hurty', $hurty->getSlug());
     }
 
@@ -51,14 +53,14 @@ class BothSlugHandlerTest extends BaseTestCaseORM
         $this->populate();
         $repo = $this->em->getRepository(self::PERSON);
 
-        $gedi = $repo->findOneByName('Gedi');
+        $gedi = $repo->findOneBy(['name' => 'Gedi']);
         $gedi->setName('Upd Gedi');
         $this->em->persist($gedi);
         $this->em->flush();
 
         $this->assertEquals('web/developer/upd-gedi', $gedi->getSlug());
 
-        $artist = $this->em->getRepository(self::OCCUPATION)->findOneByTitle('Singer');
+        $artist = $this->em->getRepository(self::OCCUPATION)->findOneBy(['title' => 'Singer']);
         $artist->setTitle('Artist');
 
         $this->em->persist($artist);
@@ -70,7 +72,7 @@ class BothSlugHandlerTest extends BaseTestCaseORM
 
         $this->assertEquals('artist/upd-gedi', $gedi->getSlug());
 
-        $hurty = $repo->findOneByName('Hurty');
+        $hurty = $repo->findOneBy(['name' => 'Hurty']);
         $this->assertEquals('artist/hurty', $hurty->getSlug());
     }
 
@@ -80,34 +82,32 @@ class BothSlugHandlerTest extends BaseTestCaseORM
         $personRepo = $this->em->getRepository(self::PERSON);
         $occupationRepo = $this->em->getRepository(self::OCCUPATION);
 
-        $herzult = $personRepo->findOneByName('Herzult');
+        $herzult = $personRepo->findOneBy(['name' => 'Herzult']);
         $this->assertEquals('web/developer/php/herzult', $herzult->getSlug());
 
-        $developer = $occupationRepo->findOneByTitle('Developer');
+        $developer = $occupationRepo->findOneBy(['title' => 'Developer']);
         $developer->setTitle('Enthusiast');
 
         $this->em->persist($developer);
         $this->em->flush();
 
-
         // Works (but is not updated in the actual DB)
-        $herzult = $personRepo->findOneByName('Herzult');
+        $herzult = $personRepo->findOneBy(['name' => 'Herzult']);
         $this->assertEquals('web/enthusiast/php/herzult', $herzult->getSlug());
-
 
         $this->em->clear();
 
         // Does not work.
-        $herzult = $personRepo->findOneByName('Herzult');
+        $herzult = $personRepo->findOneBy(['name' => 'Herzult']);
         $this->assertEquals('web/enthusiast/php/herzult', $herzult->getSlug());
     }
 
     protected function getUsedEntityFixtures()
     {
-        return array(
+        return [
             self::OCCUPATION,
             self::PERSON,
-        );
+        ];
     }
 
     private function populate()

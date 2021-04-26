@@ -5,17 +5,17 @@
 namespace Gedmo\Mapping\Mock\Extension\Encoder;
 
 use Doctrine\Common\EventArgs;
-use Gedmo\Mapping\MappedEventSubscriber;
 use Gedmo\Mapping\Event\AdapterInterface as EventAdapterInterface;
+use Gedmo\Mapping\MappedEventSubscriber;
 
 class EncoderListener extends MappedEventSubscriber
 {
     public function getSubscribedEvents()
     {
-        return array(
+        return [
             'onFlush',
             'loadClassMetadata',
-        );
+        ];
     }
 
     public function loadClassMetadata(EventArgs $args)

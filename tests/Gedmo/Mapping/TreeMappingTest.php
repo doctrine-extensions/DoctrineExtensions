@@ -2,15 +2,17 @@
 
 namespace Gedmo\Tree;
 
-use Doctrine\ORM\Mapping\Driver\YamlDriver;
 use Doctrine\ORM\Mapping\Driver\DriverChain;
+use Doctrine\ORM\Mapping\Driver\YamlDriver;
 use Gedmo\Mapping\ExtensionMetadataFactory;
 
 /**
  * These are mapping tests for tree extension
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @link http://www.gediminasm.org
+ *
+ * @see http://www.gediminasm.org
+ *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class TreeMappingTest extends \PHPUnit\Framework\TestCase
@@ -29,7 +31,7 @@ class TreeMappingTest extends \PHPUnit\Framework\TestCase
      */
     private $listener;
 
-    public function setUp()
+    public function setUp(): void
     {
         $config = new \Doctrine\ORM\Configuration();
         $config->setMetadataCacheImpl(new \Doctrine\Common\Cache\ArrayCache());
@@ -38,23 +40,23 @@ class TreeMappingTest extends \PHPUnit\Framework\TestCase
         $config->setProxyNamespace('Gedmo\Mapping\Proxy');
         $chainDriverImpl = new DriverChain();
         $chainDriverImpl->addDriver(
-            new YamlDriver(array(__DIR__.'/Driver/Yaml')),
+            new YamlDriver([__DIR__.'/Driver/Yaml']),
             'Mapping\Fixture\Yaml'
         );
         $chainDriverImpl->addDriver(
-            $config->newDefaultAnnotationDriver(array(), false),
+            $config->newDefaultAnnotationDriver([], false),
             'Tree\Fixture'
         );
         $chainDriverImpl->addDriver(
-            $config->newDefaultAnnotationDriver(array(), false),
+            $config->newDefaultAnnotationDriver([], false),
             'Gedmo\Tree'
         );
         $config->setMetadataDriverImpl($chainDriverImpl);
 
-        $conn = array(
+        $conn = [
             'driver' => 'pdo_sqlite',
             'memory' => true,
-        );
+        ];
 
         $this->listener = new TreeListener();
         $evm = new \Doctrine\Common\EventManager();
@@ -68,7 +70,7 @@ class TreeMappingTest extends \PHPUnit\Framework\TestCase
         $this->em->getClassMetadata('Tree\Fixture\Closure\CategoryClosure');
 
         $meta = $this->em->getMetadataFactory()->getCacheDriver()->fetch(
-            "Tree\\Fixture\\Closure\\CategoryClosure\$CLASSMETADATA"
+            'Tree\\Fixture\\Closure\\CategoryClosure$CLASSMETADATA'
         );
         $this->assertTrue($meta->hasAssociation('ancestor'));
         $this->assertTrue($meta->hasAssociation('descendant'));

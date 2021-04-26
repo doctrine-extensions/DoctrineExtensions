@@ -3,14 +3,16 @@
 namespace Gedmo\Sluggable;
 
 use Doctrine\Common\EventManager;
-use Tool\BaseTestCaseORM;
 use Sluggable\Fixture\Article;
+use Tool\BaseTestCaseORM;
 
 /**
  * These are tests for sluggable behavior
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @link http://www.gediminasm.org
+ *
+ * @see http://www.gediminasm.org
+ *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class SluggableTest extends BaseTestCaseORM
@@ -18,7 +20,7 @@ class SluggableTest extends BaseTestCaseORM
     const ARTICLE = 'Sluggable\\Fixture\\Article';
     private $articleId;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -45,7 +47,7 @@ class SluggableTest extends BaseTestCaseORM
      */
     public function shouldBuildUniqueSlug()
     {
-        for ($i = 0; $i < 12; $i++) {
+        for ($i = 0; $i < 12; ++$i) {
             $article = new Article();
             $article->setTitle('the title');
             $article->setCode('my code');
@@ -70,7 +72,7 @@ class SluggableTest extends BaseTestCaseORM
         $this->em->persist($article);
         $this->em->flush();
         $this->em->clear();
-        for ($i = 0; $i < 12; $i++) {
+        for ($i = 0; $i < 12; ++$i) {
             $article = new Article();
             $article->setTitle($long);
             $article->setCode('my code');
@@ -82,10 +84,11 @@ class SluggableTest extends BaseTestCaseORM
             $shorten = $article->getSlug();
             $this->assertEquals(64, strlen($shorten));
             $expected = 'the-title-the-title-the-title-the-title-the-title-the-title-the-';
-            $expected = substr($expected, 0, 64 - (strlen($i+1) + 1)).'-'.($i+1);
+            $expected = substr($expected, 0, 64 - (strlen($i + 1) + 1)).'-'.($i + 1);
             $this->assertEquals($shorten, $expected);
         }
     }
+
     /**
      * @test
      */
@@ -103,9 +106,9 @@ class SluggableTest extends BaseTestCaseORM
         $this->em->persist($article2);
         $this->em->flush();
         $this->em->clear();
-        $this->assertEquals("sample-long-title-which-should-be-correctly-slugged-blablabla-my", $article->getSlug());
+        $this->assertEquals('sample-long-title-which-should-be-correctly-slugged-blablabla-my', $article->getSlug());
         // OLD IMPLEMENTATION PRODUCE SLUG sample-long-title-which-should-be-correctly-slugged-blablabla--1
-        $this->assertEquals("sample-long-title-which-should-be-correctly-slugged-blablabla-1", $article2->getSlug());
+        $this->assertEquals('sample-long-title-which-should-be-correctly-slugged-blablabla-1', $article2->getSlug());
     }
 
     /**
@@ -119,7 +122,7 @@ class SluggableTest extends BaseTestCaseORM
 
         $this->em->persist($article);
         $this->em->flush();
-        for ($i = 0; $i < 12; $i++) {
+        for ($i = 0; $i < 12; ++$i) {
             $article = new Article();
             $article->setTitle('the title');
             $article->setCode('my code 123');
@@ -249,9 +252,9 @@ class SluggableTest extends BaseTestCaseORM
 
     protected function getUsedEntityFixtures()
     {
-        return array(
+        return [
             self::ARTICLE,
-        );
+        ];
     }
 
     private function populate()

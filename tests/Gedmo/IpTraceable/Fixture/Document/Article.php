@@ -19,12 +19,12 @@ class Article
     private $title;
 
     /**
-     * @ODM\ReferenceOne(targetDocument="Type")
+     * @ODM\ReferenceOne(targetDocument="IpTraceable\Fixture\Document\Type")
      */
     private $type;
 
     /**
-     * @var string $created
+     * @var string
      *
      * @ODM\Field(type="string")
      * @Gedmo\IpTraceable(on="create")
@@ -32,7 +32,7 @@ class Article
     private $created;
 
     /**
-     * @var string $updated
+     * @var string
      *
      * @ODM\Field(type="string")
      * @Gedmo\IpTraceable
@@ -40,7 +40,7 @@ class Article
     private $updated;
 
     /**
-     * @var string $published
+     * @var string
      *
      * @ODM\Field(type="string")
      * @Gedmo\IpTraceable(on="change", field="type.title", value="Published")
@@ -56,7 +56,7 @@ class Article
 
     /**
      * @var bool
-     * @ODM\Boolean
+     * @ODM\Field(type="boolean")
      */
     private $isReady = false;
 

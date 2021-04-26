@@ -3,14 +3,16 @@
 namespace Gedmo\Sluggable;
 
 use Doctrine\Common\EventManager;
-use Tool\BaseTestCaseORM;
 use Sluggable\Fixture\Article;
+use Tool\BaseTestCaseORM;
 
 /**
  * These are tests for Sluggable behavior
  *
  * @author Florian Vilpoix <florianv@gmail.com>
- * @link http://www.gediminasm.org
+ *
+ * @see http://www.gediminasm.org
+ *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class SluggableFltersTest extends BaseTestCaseORM
@@ -20,7 +22,7 @@ class SluggableFltersTest extends BaseTestCaseORM
     const SOFT_DELETEABLE_FILTER_NAME = 'soft-deleteable';
     const FAKE_FILTER_NAME = 'fake-filter';
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -42,9 +44,9 @@ class SluggableFltersTest extends BaseTestCaseORM
 
     protected function getUsedEntityFixtures()
     {
-        return array(
+        return [
             self::TARGET,
-        );
+        ];
     }
 
     /**

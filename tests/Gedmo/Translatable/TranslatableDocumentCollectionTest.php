@@ -2,15 +2,17 @@
 
 namespace Gedmo\Translatable;
 
-use Tool\BaseTestCaseMongoODM;
 use Doctrine\Common\EventManager;
+use Tool\BaseTestCaseMongoODM;
 use Translatable\Fixture\Document\SimpleArticle as Article;
 
 /**
  * These are tests for translatable behavior
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @link http://www.gediminasm.org
+ *
+ * @see http://www.gediminasm.org
+ *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class TranslatableDocumentCollectionTest extends BaseTestCaseMongoODM
@@ -21,7 +23,7 @@ class TranslatableDocumentCollectionTest extends BaseTestCaseMongoODM
     private $translatableListener;
     private $id;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

@@ -2,16 +2,18 @@
 
 namespace Gedmo\Translatable;
 
-use Tool\BaseTestCaseMongoODM;
-use Gedmo\Sluggable\SluggableListener;
 use Doctrine\Common\EventManager;
+use Gedmo\Sluggable\SluggableListener;
+use Tool\BaseTestCaseMongoODM;
 use Translatable\Fixture\Document\Article;
 
 /**
  * These are tests for Translatable behavior ODM implementation
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @link http://www.gediminasm.org
+ *
+ * @see http://www.gediminasm.org
+ *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class TranslatableDocumentTest extends BaseTestCaseMongoODM
@@ -22,7 +24,7 @@ class TranslatableDocumentTest extends BaseTestCaseMongoODM
     private $translatableListener;
     private $articleId;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $evm = new EventManager();
@@ -40,7 +42,7 @@ class TranslatableDocumentTest extends BaseTestCaseMongoODM
     {
         // test inserted translations
         $repo = $this->dm->getRepository(self::ARTICLE);
-        /*$article = $repo->findOneByTitle('Title EN');
+        /*$article = $repo->findOneBy(['title' => 'Title EN']);
 
         $transRepo = $this->dm->getRepository(self::TRANSLATION);
         $this->assertTrue($transRepo instanceof Document\Repository\TranslationRepository);

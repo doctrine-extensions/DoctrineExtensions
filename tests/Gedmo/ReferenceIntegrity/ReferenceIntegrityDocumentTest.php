@@ -30,8 +30,8 @@ class ReferenceIntegrityDocumentTest extends BaseTestCaseMongoODM
 
     const TYPE_MANY_RESTRICT_CLASS = 'ReferenceIntegrity\Fixture\Document\ManyRestrict\Type';
     const ARTICLE_MANY_RESTRICT_CLASS = 'ReferenceIntegrity\Fixture\Document\ManyRestrict\Article';
-    
-    protected function setUp()
+
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -53,7 +53,7 @@ class ReferenceIntegrityDocumentTest extends BaseTestCaseMongoODM
     public function testOneNullify()
     {
         $type = $this->dm->getRepository(self::TYPE_ONE_NULLIFY_CLASS)
-            ->findOneByTitle('One Nullify Type');
+            ->findOneBy(['title' => 'One Nullify Type']);
 
         $this->assertFalse(is_null($type));
         $this->assertTrue(is_object($type));
@@ -62,11 +62,11 @@ class ReferenceIntegrityDocumentTest extends BaseTestCaseMongoODM
         $this->dm->flush();
 
         $type = $this->dm->getRepository(self::TYPE_ONE_NULLIFY_CLASS)
-            ->findOneByTitle('One Nullify Type');
+            ->findOneBy(['title' => 'One Nullify Type']);
         $this->assertNull($type);
 
         $article = $this->dm->getRepository(self::ARTICLE_ONE_NULLIFY_CLASS)
-            ->findOneByTitle('One Nullify Article');
+            ->findOneBy(['title' => 'One Nullify Article']);
 
         $this->assertNull($article->getType());
 
@@ -76,7 +76,7 @@ class ReferenceIntegrityDocumentTest extends BaseTestCaseMongoODM
     public function testManyNullify()
     {
         $type = $this->dm->getRepository(self::TYPE_MANY_NULLIFY_CLASS)
-            ->findOneByTitle('Many Nullify Type');
+            ->findOneBy(['title' => 'Many Nullify Type']);
 
         $this->assertFalse(is_null($type));
         $this->assertTrue(is_object($type));
@@ -85,11 +85,11 @@ class ReferenceIntegrityDocumentTest extends BaseTestCaseMongoODM
         $this->dm->flush();
 
         $type = $this->dm->getRepository(self::TYPE_MANY_NULLIFY_CLASS)
-            ->findOneByTitle('Many Nullify Type');
+            ->findOneBy(['title' => 'Many Nullify Type']);
         $this->assertNull($type);
 
         $article = $this->dm->getRepository(self::ARTICLE_MANY_NULLIFY_CLASS)
-            ->findOneByTitle('Many Nullify Article');
+            ->findOneBy(['title' => 'Many Nullify Article']);
 
         $this->assertNull($article->getType());
 
@@ -99,9 +99,9 @@ class ReferenceIntegrityDocumentTest extends BaseTestCaseMongoODM
     public function testOnePull()
     {
         $type1 = $this->dm->getRepository(self::TYPE_ONE_PULL_CLASS)
-            ->findOneByTitle('One Pull Type 1');
+            ->findOneBy(['title' => 'One Pull Type 1']);
         $type2 = $this->dm->getRepository(self::TYPE_ONE_PULL_CLASS)
-            ->findOneByTitle('One Pull Type 2');
+            ->findOneBy(['title' => 'One Pull Type 2']);
 
         $this->assertFalse(is_null($type1));
         $this->assertTrue(is_object($type1));
@@ -113,25 +113,25 @@ class ReferenceIntegrityDocumentTest extends BaseTestCaseMongoODM
         $this->dm->flush();
 
         $type2 = $this->dm->getRepository(self::TYPE_ONE_PULL_CLASS)
-            ->findOneByTitle('One Pull Type 2');
+            ->findOneBy(['title' => 'One Pull Type 2']);
         $this->assertNull($type2);
 
         $article = $this->dm->getRepository(self::ARTICLE_ONE_PULL_CLASS)
-            ->findOneByTitle('One Pull Article');
-        
+            ->findOneBy(['title' => 'One Pull Article']);
+
         $types = $article->getTypes();
-        $this->assertTrue(count($types)===1);
-        $this->assertEquals('One Pull Type 1',$types[0]->getTitle());
-    
+        $this->assertTrue(1 === count($types));
+        $this->assertEquals('One Pull Type 1', $types[0]->getTitle());
+
         $this->dm->clear();
     }
 
     public function testManyPull()
     {
         $type1 = $this->dm->getRepository(self::TYPE_ONE_PULL_CLASS)
-            ->findOneByTitle('Many Pull Type 1');
+            ->findOneBy(['title' => 'Many Pull Type 1']);
         $type2 = $this->dm->getRepository(self::TYPE_ONE_PULL_CLASS)
-            ->findOneByTitle('Many Pull Type 2');
+            ->findOneBy(['title' => 'Many Pull Type 2']);
 
         $this->assertFalse(is_null($type1));
         $this->assertTrue(is_object($type1));
@@ -143,27 +143,27 @@ class ReferenceIntegrityDocumentTest extends BaseTestCaseMongoODM
         $this->dm->flush();
 
         $type2 = $this->dm->getRepository(self::TYPE_MANY_PULL_CLASS)
-            ->findOneByTitle('Many Pull Type 2');
+            ->findOneBy(['title' => 'Many Pull Type 2']);
         $this->assertNull($type2);
 
         $article = $this->dm->getRepository(self::ARTICLE_MANY_PULL_CLASS)
-            ->findOneByTitle('Many Pull Article');
-        
+            ->findOneBy(['title' => 'Many Pull Article']);
+
         $types = $article->getTypes();
-        $this->assertTrue(count($types)===1);
-        $this->assertEquals('Many Pull Type 1',$types[0]->getTitle());
+        $this->assertTrue(1 === count($types));
+        $this->assertEquals('Many Pull Type 1', $types[0]->getTitle());
 
         $this->dm->clear();
     }
 
     /**
      * @test
-     * @expectedException Gedmo\Exception\ReferenceIntegrityStrictException
      */
     public function testOneRestrict()
     {
+        $this->expectException('Gedmo\Exception\ReferenceIntegrityStrictException');
         $type = $this->dm->getRepository(self::TYPE_ONE_RESTRICT_CLASS)
-            ->findOneByTitle('One Restrict Type');
+            ->findOneBy(['title' => 'One Restrict Type']);
 
         $this->assertFalse(is_null($type));
         $this->assertTrue(is_object($type));
@@ -174,12 +174,12 @@ class ReferenceIntegrityDocumentTest extends BaseTestCaseMongoODM
 
     /**
      * @test
-     * @expectedException Gedmo\Exception\ReferenceIntegrityStrictException
      */
     public function testManyRestrict()
     {
+        $this->expectException('Gedmo\Exception\ReferenceIntegrityStrictException');
         $type = $this->dm->getRepository(self::TYPE_MANY_RESTRICT_CLASS)
-            ->findOneByTitle('Many Restrict Type');
+            ->findOneBy(['title' => 'Many Restrict Type']);
 
         $this->assertFalse(is_null($type));
         $this->assertTrue(is_object($type));

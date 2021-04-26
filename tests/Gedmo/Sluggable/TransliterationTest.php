@@ -3,21 +3,23 @@
 namespace Gedmo\Sluggable;
 
 use Doctrine\Common\EventManager;
-use Tool\BaseTestCaseORM;
 use Sluggable\Fixture\Article;
+use Tool\BaseTestCaseORM;
 
 /**
  * These are tests for sluggable behavior
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @link http://www.gediminasm.org
+ *
+ * @see http://www.gediminasm.org
+ *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class TransliterationTest extends BaseTestCaseORM
 {
     const ARTICLE = 'Sluggable\\Fixture\\Article';
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -32,16 +34,16 @@ class TransliterationTest extends BaseTestCaseORM
     {
         $repo = $this->em->getRepository(self::ARTICLE);
 
-        $lithuanian = $repo->findOneByCode('lt');
+        $lithuanian = $repo->findOneBy(['code' => 'lt']);
         $this->assertEquals('transliteration-test-usage-uz-lt', $lithuanian->getSlug());
 
-        $bulgarian = $repo->findOneByCode('bg');
+        $bulgarian = $repo->findOneBy(['code' => 'bg']);
         $this->assertEquals('tova-e-testovo-zaglavie-bg', $bulgarian->getSlug());
 
-        $russian = $repo->findOneByCode('ru');
+        $russian = $repo->findOneBy(['code' => 'ru']);
         $this->assertEquals('eto-testovyi-zagolovok-ru', $russian->getSlug());
 
-        $german = $repo->findOneByCode('de');
+        $german = $repo->findOneBy(['code' => 'de']);
         $this->assertEquals('fuhren-aktivitaten-haglofs-de', $german->getSlug());
     }
 
@@ -73,8 +75,8 @@ class TransliterationTest extends BaseTestCaseORM
 
     protected function getUsedEntityFixtures()
     {
-        return array(
+        return [
             self::ARTICLE,
-        );
+        ];
     }
 }

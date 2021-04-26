@@ -3,8 +3,8 @@
 namespace Gedmo\Mapping\Xml;
 
 use Doctrine\Common\Annotations\AnnotationReader;
-use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
 use Doctrine\Common\EventManager;
+use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
 use Doctrine\ORM\Mapping\Driver\DriverChain;
 use Doctrine\ORM\Mapping\Driver\XmlDriver;
 use Gedmo\Sortable\SortableListener;
@@ -14,7 +14,9 @@ use Tool\BaseTestCaseOM;
  * These are mapping extension tests
  *
  * @author Lukas Botsch <lukas.botsch@gmail.com>
- * @link http://www.gediminasm.org
+ *
+ * @see http://www.gediminasm.org
+ *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class SortableMappingTest extends BaseTestCaseOM
@@ -29,7 +31,7 @@ class SortableMappingTest extends BaseTestCaseOM
      */
     private $sortable;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -46,10 +48,10 @@ class SortableMappingTest extends BaseTestCaseOM
         $this->evm = new EventManager();
         $this->evm->addEventSubscriber($this->sortable);
 
-        $this->em = $this->getMockSqliteEntityManager(array(
+        $this->em = $this->getMockSqliteEntityManager([
             'Mapping\Fixture\Xml\Sortable',
             'Mapping\Fixture\SortableGroup',
-        ), $chain);
+        ], $chain);
     }
 
     public function testSluggableMetadata()

@@ -5,7 +5,6 @@ namespace Timestampable\Fixture\Document;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
-use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ODM\Document(collection="books")
@@ -14,18 +13,21 @@ class Book
 {
     /**
      * @ODM\Id()
+     *
      * @var string
      */
     protected $id;
 
     /**
      * @ODM\Field(type="string")
+     *
      * @var string
      */
     protected $title;
 
     /**
-     * @ODM\EmbedMany(targetDocument="Tag")
+     * @ODM\EmbedMany(targetDocument="Timestampable\Fixture\Document\Tag")
+     *
      * @var Tag[]|Collection
      */
     protected $tags;
@@ -59,7 +61,6 @@ class Book
         $this->title = $title;
     }
 
-
     /**
      * @return Tag[]|Collection
      */
@@ -76,9 +77,6 @@ class Book
         $this->tags = $tags;
     }
 
-    /**
-     * @param Tag $tag
-     */
     public function addTag(Tag $tag)
     {
         $this->tags->add($tag);

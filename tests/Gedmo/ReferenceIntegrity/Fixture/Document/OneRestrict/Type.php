@@ -26,8 +26,9 @@ class Type
     private $identifier;
 
     /**
-     * @ODM\ReferenceOne(targetDocument="Article", mappedBy="type")
+     * @ODM\ReferenceOne(targetDocument="ReferenceIntegrity\Fixture\Document\OneRestrict\Article", mappedBy="type")
      * @Gedmo\ReferenceIntegrity("restrict")
+     *
      * @var Article
      */
     protected $article;
@@ -72,9 +73,6 @@ class Type
         return $this->identifier;
     }
 
-    /**
-     * @param Article $article
-     */
     public function setArticle(Article $article)
     {
         $this->article = $article;

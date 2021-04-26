@@ -11,16 +11,18 @@ use Tree\Fixture\Genealogy\Woman;
  * Additional tests for tree inheritance and in-memory updates
  *
  * @author Illya Klymov <xanf@xanf.me>
- * @link http://www.gediminasm.org
+ *
+ * @see http://www.gediminasm.org
+ *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class InMemoryUpdatesWithInheritanceTest extends BaseTestCaseORM
 {
-    const PERSON = "Tree\\Fixture\\Genealogy\\Person";
-    const MAN = "Tree\\Fixture\\Genealogy\\Man";
-    const WOMAN = "Tree\\Fixture\\Genealogy\\Woman";
+    const PERSON = 'Tree\\Fixture\\Genealogy\\Person';
+    const MAN = 'Tree\\Fixture\\Genealogy\\Man';
+    const WOMAN = 'Tree\\Fixture\\Genealogy\\Woman';
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -32,7 +34,7 @@ class InMemoryUpdatesWithInheritanceTest extends BaseTestCaseORM
 
     public function testInMemoryTreeInsertsWithInheritance()
     {
-        $nodes = array();
+        $nodes = [];
 
         $man1 = new Man('Root - Man1');
         $this->em->persist($man1);
@@ -82,10 +84,10 @@ class InMemoryUpdatesWithInheritanceTest extends BaseTestCaseORM
 
     protected function getUsedEntityFixtures()
     {
-        return array(
+        return [
             self::PERSON,
             self::MAN,
             self::WOMAN,
-        );
+        ];
     }
 }

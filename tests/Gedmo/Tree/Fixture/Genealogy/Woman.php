@@ -1,4 +1,5 @@
 <?php
+
 namespace Tree\Fixture\Genealogy;
 
 use Doctrine\ORM\Mapping as ORM;

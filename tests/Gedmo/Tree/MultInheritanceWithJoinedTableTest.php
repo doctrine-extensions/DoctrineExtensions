@@ -11,17 +11,19 @@ use Tool\BaseTestCaseORM;
  * JOINED table inheritance mapping bug on Tree;
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @link http://www.gediminasm.org
+ *
+ * @see http://www.gediminasm.org
+ *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class MultInheritanceWithJoinedTableTest extends BaseTestCaseORM
 {
-    const USER = "Tree\\Fixture\\User";
-    const GROUP = "Tree\\Fixture\\UserGroup";
-    const ROLE = "Tree\\Fixture\\Role";
-    const USERLDAP = "Tree\\Fixture\\UserLDAP";
+    const USER = 'Tree\\Fixture\\User';
+    const GROUP = 'Tree\\Fixture\\UserGroup';
+    const ROLE = 'Tree\\Fixture\\Role';
+    const USERLDAP = 'Tree\\Fixture\\UserLDAP';
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -38,7 +40,7 @@ class MultInheritanceWithJoinedTableTest extends BaseTestCaseORM
      */
     public function shouldHandleMultilevelInheritance()
     {
-        $admins = $this->em->getRepository(self::GROUP)->findOneByName('Admins');
+        $admins = $this->em->getRepository(self::GROUP)->findOneBy(['name' => 'Admins']);
         $adminRight = $admins->getRight();
         $userLdap = new \Tree\Fixture\UserLDAP('testname');
         $userLdap->init();
@@ -47,7 +49,7 @@ class MultInheritanceWithJoinedTableTest extends BaseTestCaseORM
         $this->em->flush();
         $this->em->clear();
 
-        $admins = $this->em->getRepository(self::GROUP)->findOneByName('Admins');
+        $admins = $this->em->getRepository(self::GROUP)->findOneBy(['name' => 'Admins']);
         self::assertNotEquals($adminRight, $admins->getRight());
     }
 
@@ -56,7 +58,7 @@ class MultInheritanceWithJoinedTableTest extends BaseTestCaseORM
      */
     public function shouldBeAbleToPopulateTree()
     {
-        $admins = $this->em->getRepository(self::GROUP)->findOneByName('Admins');
+        $admins = $this->em->getRepository(self::GROUP)->findOneBy(['name' => 'Admins']);
         $user3 = new \Tree\Fixture\User('user3@test.com', 'secret');
         $user3->init();
         $user3->setParent($admins);
@@ -67,37 +69,37 @@ class MultInheritanceWithJoinedTableTest extends BaseTestCaseORM
 
         // run tree consistence checks
 
-        $everyBody = $this->em->getRepository(self::GROUP)->findOneByName('Everybody');
+        $everyBody = $this->em->getRepository(self::GROUP)->findOneBy(['name' => 'Everybody']);
         $this->assertEquals(1, $everyBody->getLeft());
         $this->assertEquals(14, $everyBody->getRight());
         $this->assertEquals(0, $everyBody->getLevel());
 
-        $admins = $this->em->getRepository(self::GROUP)->findOneByName('Admins');
+        $admins = $this->em->getRepository(self::GROUP)->findOneBy(['name' => 'Admins']);
         $this->assertEquals(2, $admins->getLeft());
         $this->assertEquals(7, $admins->getRight());
         $this->assertEquals(1, $admins->getLevel());
 
-        $visitors = $this->em->getRepository(self::GROUP)->findOneByName('Visitors');
+        $visitors = $this->em->getRepository(self::GROUP)->findOneBy(['name' => 'Visitors']);
         $this->assertEquals(8, $visitors->getLeft());
         $this->assertEquals(13, $visitors->getRight());
         $this->assertEquals(1, $visitors->getLevel());
 
-        $user0 = $this->em->getRepository(self::USER)->findOneByEmail('user0@test.com');
+        $user0 = $this->em->getRepository(self::USER)->findOneBy(['email' => 'user0@test.com']);
         $this->assertEquals(3, $user0->getLeft());
         $this->assertEquals(4, $user0->getRight());
         $this->assertEquals(2, $user0->getLevel());
 
-        $user1 = $this->em->getRepository(self::USER)->findOneByEmail('user1@test.com');
+        $user1 = $this->em->getRepository(self::USER)->findOneBy(['email' => 'user1@test.com']);
         $this->assertEquals(9, $user1->getLeft());
         $this->assertEquals(10, $user1->getRight());
         $this->assertEquals(2, $user1->getLevel());
 
-        $user2 = $this->em->getRepository(self::USER)->findOneByEmail('user2@test.com');
+        $user2 = $this->em->getRepository(self::USER)->findOneBy(['email' => 'user2@test.com']);
         $this->assertEquals(11, $user2->getLeft());
         $this->assertEquals(12, $user2->getRight());
         $this->assertEquals(2, $user2->getLevel());
 
-        $user3 = $this->em->getRepository(self::USER)->findOneByEmail('user3@test.com');
+        $user3 = $this->em->getRepository(self::USER)->findOneBy(['email' => 'user3@test.com']);
         $this->assertEquals(5, $user3->getLeft());
         $this->assertEquals(6, $user3->getRight());
         $this->assertEquals(2, $user3->getLevel());
@@ -105,12 +107,12 @@ class MultInheritanceWithJoinedTableTest extends BaseTestCaseORM
 
     protected function getUsedEntityFixtures()
     {
-        return array(
+        return [
             self::USER,
             self::GROUP,
             self::ROLE,
             self::USERLDAP,
-        );
+        ];
     }
 
     private function populate()

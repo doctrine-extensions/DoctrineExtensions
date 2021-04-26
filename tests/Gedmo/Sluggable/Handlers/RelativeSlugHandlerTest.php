@@ -3,23 +3,25 @@
 namespace Gedmo\Sluggable;
 
 use Doctrine\Common\EventManager;
-use Tool\BaseTestCaseORM;
 use Sluggable\Fixture\Handler\Article;
 use Sluggable\Fixture\Handler\ArticleRelativeSlug;
+use Tool\BaseTestCaseORM;
 
 /**
  * These are tests for Sluggable behavior
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @link http://www.gediminasm.org
+ *
+ * @see http://www.gediminasm.org
+ *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class RelativeSlugHandlerTest extends BaseTestCaseORM
 {
-    const SLUG = "Sluggable\\Fixture\\Handler\\ArticleRelativeSlug";
-    const ARTICLE = "Sluggable\\Fixture\\Handler\\Article";
+    const SLUG = 'Sluggable\\Fixture\\Handler\\ArticleRelativeSlug';
+    const ARTICLE = 'Sluggable\\Fixture\\Handler\\Article';
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -34,16 +36,16 @@ class RelativeSlugHandlerTest extends BaseTestCaseORM
         $this->populate();
         $repo = $this->em->getRepository(self::SLUG);
 
-        $thomas = $repo->findOneByTitle('Thomas');
+        $thomas = $repo->findOneBy(['title' => 'Thomas']);
         $this->assertEquals('sport-test/thomas', $thomas->getSlug());
 
-        $jen = $repo->findOneByTitle('Jen');
+        $jen = $repo->findOneBy(['title' => 'Jen']);
         $this->assertEquals('sport-test/jen', $jen->getSlug());
 
-        $john = $repo->findOneByTitle('John');
+        $john = $repo->findOneBy(['title' => 'John']);
         $this->assertEquals('cars-code/john', $john->getSlug());
 
-        $single = $repo->findOneByTitle('Single');
+        $single = $repo->findOneBy(['title' => 'Single']);
         $this->assertEquals('single', $single->getSlug());
     }
 
@@ -52,14 +54,14 @@ class RelativeSlugHandlerTest extends BaseTestCaseORM
         $this->populate();
         $repo = $this->em->getRepository(self::SLUG);
 
-        $thomas = $repo->findOneByTitle('Thomas');
+        $thomas = $repo->findOneBy(['title' => 'Thomas']);
         $thomas->setTitle('Ninja');
         $this->em->persist($thomas);
         $this->em->flush();
 
         $this->assertEquals('sport-test/ninja', $thomas->getSlug());
 
-        $sport = $this->em->getRepository(self::ARTICLE)->findOneByTitle('Sport');
+        $sport = $this->em->getRepository(self::ARTICLE)->findOneBy(['title' => 'Sport']);
         $sport->setTitle('Martial Arts');
 
         $this->em->persist($sport);
@@ -67,10 +69,10 @@ class RelativeSlugHandlerTest extends BaseTestCaseORM
 
         $this->assertEquals('martial-arts-test/ninja', $thomas->getSlug());
 
-        $jen = $repo->findOneByTitle('Jen');
+        $jen = $repo->findOneBy(['title' => 'Jen']);
         $this->assertEquals('martial-arts-test/jen', $jen->getSlug());
 
-        $cars = $this->em->getRepository(self::ARTICLE)->findOneByTitle('Cars');
+        $cars = $this->em->getRepository(self::ARTICLE)->findOneBy(['title' => 'Cars']);
         $jen->setArticle($cars);
 
         $this->em->persist($jen);
@@ -81,10 +83,10 @@ class RelativeSlugHandlerTest extends BaseTestCaseORM
 
     protected function getUsedEntityFixtures()
     {
-        return array(
+        return [
             self::SLUG,
             self::ARTICLE,
-        );
+        ];
     }
 
     private function populate()

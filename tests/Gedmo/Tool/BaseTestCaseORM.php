@@ -2,21 +2,18 @@
 
 namespace Tool;
 
-use Gedmo\Tool\Logging\DBAL\QueryAnalyzer;
-use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
-use Doctrine\ORM\EntityManager;
 use Doctrine\Common\EventManager;
-use Doctrine\ORM\Tools\SchemaTool;
 use Doctrine\ORM\Configuration;
-use Gedmo\Translatable\TranslatableListener;
-use Gedmo\Sluggable\SluggableListener;
-use Gedmo\Tree\TreeListener;
-use Gedmo\Timestampable\TimestampableListener;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
+use Doctrine\ORM\Tools\SchemaTool;
 use Gedmo\Loggable\LoggableListener;
+use Gedmo\Sluggable\SluggableListener;
 use Gedmo\SoftDeleteable\SoftDeleteableListener;
-use Doctrine\ORM\Mapping\DefaultQuoteStrategy;
-use Doctrine\ORM\Mapping\DefaultNamingStrategy;
-use Doctrine\ORM\Repository\DefaultRepositoryFactory;
+use Gedmo\Timestampable\TimestampableListener;
+use Gedmo\Tool\Logging\DBAL\QueryAnalyzer;
+use Gedmo\Translatable\TranslatableListener;
+use Gedmo\Tree\TreeListener;
 
 /**
  * Base test case contains common mock objects
@@ -24,7 +21,9 @@ use Doctrine\ORM\Repository\DefaultRepositoryFactory;
  * ORM object manager
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @link http://www.gediminasm.org
+ *
+ * @see http://www.gediminasm.org
+ *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 abstract class BaseTestCaseORM extends \PHPUnit\Framework\TestCase
@@ -42,20 +41,8 @@ abstract class BaseTestCaseORM extends \PHPUnit\Framework\TestCase
     /**
      * {@inheritdoc}
      */
-    protected function setUp()
+    protected function setUp(): void
     {
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function expectException($exception)
-    {
-        if (method_exists('PHPUnit\\Framework\\TestCase', 'setExpectedException')) {
-            return parent::setExpectedException($exception);
-        }
-
-        return parent::expectException($exception);
     }
 
     /**
@@ -69,10 +56,10 @@ abstract class BaseTestCaseORM extends \PHPUnit\Framework\TestCase
      */
     protected function getMockSqliteEntityManager(EventManager $evm = null, Configuration $config = null)
     {
-        $conn = array(
+        $conn = [
             'driver' => 'pdo_sqlite',
             'memory' => true,
-        );
+        ];
 
         $config = null === $config ? $this->getMockAnnotatedConfig() : $config;
         $em = EntityManager::create($conn, $config, $evm ?: $this->getEventManager());
@@ -82,7 +69,7 @@ abstract class BaseTestCaseORM extends \PHPUnit\Framework\TestCase
         }, (array) $this->getUsedEntityFixtures());
 
         $schemaTool = new SchemaTool($em);
-        $schemaTool->dropSchema(array());
+        $schemaTool->dropSchema([]);
         $schemaTool->createSchema($schema);
 
         return $this->em = $em;
@@ -93,7 +80,6 @@ abstract class BaseTestCaseORM extends \PHPUnit\Framework\TestCase
      * annotation mapping driver and custom
      * connection
      *
-     * @param array        $conn
      * @param EventManager $evm
      *
      * @return EntityManager
@@ -108,7 +94,7 @@ abstract class BaseTestCaseORM extends \PHPUnit\Framework\TestCase
         }, (array) $this->getUsedEntityFixtures());
 
         $schemaTool = new SchemaTool($em);
-        $schemaTool->dropSchema(array());
+        $schemaTool->dropSchema([]);
         $schemaTool->createSchema($schema);
 
         return $this->em = $em;
@@ -130,7 +116,7 @@ abstract class BaseTestCaseORM extends \PHPUnit\Framework\TestCase
             ->will($this->returnValue($this->getMockBuilder('Doctrine\DBAL\Platforms\MySqlPlatform')->getMock()));
 
         $conn = $this->getMockBuilder('Doctrine\DBAL\Connection')
-            ->setConstructorArgs(array(), $driver)
+            ->setConstructorArgs([], $driver)
             ->getMock();
 
         $conn->expects($this->once())
@@ -161,8 +147,8 @@ abstract class BaseTestCaseORM extends \PHPUnit\Framework\TestCase
      * Stops query statistic log and outputs
      * the data to screen or file
      *
-     * @param boolean $dumpOnlySql
-     * @param boolean $writeToLog
+     * @param bool $dumpOnlySql
+     * @param bool $writeToLog
      *
      * @throws \RuntimeException
      */
@@ -172,7 +158,7 @@ abstract class BaseTestCaseORM extends \PHPUnit\Framework\TestCase
             $output = $this->queryAnalyzer->getOutput($dumpOnlySql);
             if ($writeToLog) {
                 $fileName = __DIR__.'/../../temp/query_debug_'.time().'.log';
-                if (($file = fopen($fileName, 'w+')) !== false) {
+                if (false !== ($file = fopen($fileName, 'w+'))) {
                     fwrite($file, $output);
                     fclose($file);
                 } else {
@@ -230,6 +216,7 @@ abstract class BaseTestCaseORM extends \PHPUnit\Framework\TestCase
         $config->setProxyDir(__DIR__.'/../../temp');
         $config->setProxyNamespace('Proxy');
         $config->setMetadataDriverImpl($this->getMetadataDriverImplementation());
+
         return $config;
     }
 }

@@ -7,7 +7,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * Class Address
- * @package Loggable\Fixture\Entity
+ *
  * @author Fabian Sabau <fabian.sabau@socialbit.de>
  *
  * @ORM\Entity()
@@ -16,7 +16,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 class Address
 {
     /**
-     * @var string $id
+     * @var string
      * @ORM\Id()
      * @ORM\Column(type="string", length=36)
      * @ORM\GeneratedValue(strategy="UUID")
@@ -24,21 +24,21 @@ class Address
     protected $id;
 
     /**
-     * @var string $street
-     * @ORM\Column(type="string", length=255)
+     * @var string
+     * @ORM\Column(type="string", length=191)
      * @Gedmo\Versioned()
      */
     protected $street;
 
     /**
-     * @var string $city
-     * @ORM\Column(type="string", length=255)
+     * @var string
+     * @ORM\Column(type="string", length=191)
      * @Gedmo\Versioned()
      */
     protected $city;
 
     /**
-     * @var Geo $geo
+     * @var Geo
      * @ORM\Embedded(class="Loggable\Fixture\Entity\Geo")
      * @Gedmo\Versioned()
      */
@@ -62,6 +62,7 @@ class Address
 
     /**
      * @param string $street
+     *
      * @return $this
      */
     public function setStreet($street)
@@ -81,6 +82,7 @@ class Address
 
     /**
      * @param string $city
+     *
      * @return $this
      */
     public function setCity($city)
@@ -100,6 +102,7 @@ class Address
 
     /**
      * @param Geo $geo
+     *
      * @return $this
      */
     public function setGeo($geo)
@@ -108,5 +111,4 @@ class Address
 
         return $this;
     }
-
 }

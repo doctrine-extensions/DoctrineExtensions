@@ -2,8 +2,8 @@
 
 namespace Mapping\Fixture;
 
-use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ORM\Entity
@@ -49,8 +49,8 @@ class Sluggable
     private $parent;
 
     /**
-    * @ORM\ManyToOne(targetEntity="User")
-    */
+     * @ORM\ManyToOne(targetEntity="User")
+     */
     private $user;
 
     public function getId()

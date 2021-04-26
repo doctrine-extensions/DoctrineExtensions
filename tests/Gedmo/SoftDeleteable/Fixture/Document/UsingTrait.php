@@ -6,8 +6,6 @@ use Gedmo\SoftDeleteable\Traits\SoftDeleteableDocument;
 
 /**
  * Class UsingTrait
- *
- * @package SoftDeleteable\Fixture\Document
  */
 class UsingTrait
 {

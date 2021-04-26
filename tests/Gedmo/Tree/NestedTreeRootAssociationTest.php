@@ -10,14 +10,16 @@ use Tree\Fixture\RootAssociationCategory;
  * These are tests for Tree behavior
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @link http://www.gediminasm.org
+ *
+ * @see http://www.gediminasm.org
+ *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class NestedTreeRootAssociationTest extends BaseTestCaseORM
 {
-    const CATEGORY = "Tree\\Fixture\\RootAssociationCategory";
+    const CATEGORY = 'Tree\\Fixture\\RootAssociationCategory';
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -33,55 +35,55 @@ class NestedTreeRootAssociationTest extends BaseTestCaseORM
         $repo = $this->em->getRepository(self::CATEGORY);
 
         // Foods
-        $food = $repo->findOneByTitle('Food');
+        $food = $repo->findOneBy(['title' => 'Food']);
         $this->assertEquals($food->getId(), $food->getRoot()->getId());
 
-        $fruits = $repo->findOneByTitle('Fruits');
+        $fruits = $repo->findOneBy(['title' => 'Fruits']);
         $this->assertEquals($food->getId(), $fruits->getRoot()->getId());
 
-        $vegetables = $repo->findOneByTitle('Vegetables');
+        $vegetables = $repo->findOneBy(['title' => 'Vegetables']);
         $this->assertEquals($food->getId(), $vegetables->getRoot()->getId());
 
-        $carrots = $repo->findOneByTitle('Carrots');
+        $carrots = $repo->findOneBy(['title' => 'Carrots']);
         $this->assertEquals($food->getId(), $carrots->getRoot()->getId());
 
-        $potatoes = $repo->findOneByTitle('Potatoes');
+        $potatoes = $repo->findOneBy(['title' => 'Potatoes']);
         $this->assertEquals($food->getId(), $potatoes->getRoot()->getId());
 
         // Sports
-        $sports = $repo->findOneByTitle('Sports');
+        $sports = $repo->findOneBy(['title' => 'Sports']);
         $this->assertEquals($sports->getId(), $sports->getRoot()->getId());
     }
 
     protected function getUsedEntityFixtures()
     {
-        return array(
+        return [
             self::CATEGORY,
-        );
+        ];
     }
 
     private function populate()
     {
         $root = new RootAssociationCategory();
-        $root->setTitle("Food");
+        $root->setTitle('Food');
 
         $root2 = new RootAssociationCategory();
-        $root2->setTitle("Sports");
+        $root2->setTitle('Sports');
 
         $child = new RootAssociationCategory();
-        $child->setTitle("Fruits");
+        $child->setTitle('Fruits');
         $child->setParent($root);
 
         $child2 = new RootAssociationCategory();
-        $child2->setTitle("Vegetables");
+        $child2->setTitle('Vegetables');
         $child2->setParent($root);
 
         $childsChild = new RootAssociationCategory();
-        $childsChild->setTitle("Carrots");
+        $childsChild->setTitle('Carrots');
         $childsChild->setParent($child2);
 
         $potatoes = new RootAssociationCategory();
-        $potatoes->setTitle("Potatoes");
+        $potatoes->setTitle('Potatoes');
         $potatoes->setParent($child2);
 
         $this->em->persist($root);

@@ -1,9 +1,10 @@
 <?php
+
 namespace IpTraceable\Fixture;
 
+use Doctrine\ORM\Mapping as ORM;
 use Gedmo\IpTraceable\IpTraceable;
 use Gedmo\Mapping\Annotation as Gedmo;
-use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
@@ -28,7 +29,7 @@ class TitledArticle implements IpTraceable
     private $text;
 
     /**
-     * @var string $updated
+     * @var string
      *
      * @ORM\Column(name="chtext", type="string", length=45, nullable=true)
      * @Gedmo\IpTraceable(on="change", field="text")
@@ -36,7 +37,7 @@ class TitledArticle implements IpTraceable
     private $chtext;
 
     /**
-     * @var string $chtitle
+     * @var string
      *
      * @ORM\Column(name="chtitle", type="string", length=45, nullable=true)
      * @Gedmo\IpTraceable(on="change", field="title")

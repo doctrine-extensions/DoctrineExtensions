@@ -3,26 +3,28 @@
 namespace Gedmo\Timestampable;
 
 use Doctrine\Common\EventManager;
-use Timestampable\Fixture\Author;
-use Tool\BaseTestCaseORM;
 use Timestampable\Fixture\Article;
+use Timestampable\Fixture\Author;
 use Timestampable\Fixture\Comment;
 use Timestampable\Fixture\Type;
+use Tool\BaseTestCaseORM;
 
 /**
  * These are tests for Timestampable behavior
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @link http://www.gediminasm.org
+ *
+ * @see http://www.gediminasm.org
+ *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class TimestampableTest extends BaseTestCaseORM
 {
-    const ARTICLE = "Timestampable\\Fixture\\Article";
-    const COMMENT = "Timestampable\\Fixture\\Comment";
-    const TYPE = "Timestampable\\Fixture\\Type";
+    const ARTICLE = 'Timestampable\\Fixture\\Article';
+    const COMMENT = 'Timestampable\\Fixture\\Comment';
+    const TYPE = 'Timestampable\\Fixture\\Type';
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -34,9 +36,10 @@ class TimestampableTest extends BaseTestCaseORM
 
     /**
      * issue #1255
+     *
      * @test
      */
-    function shouldHandleDetatchedAndMergedBackEntities()
+    public function shouldHandleDetatchedAndMergedBackEntities()
     {
         $sport = new Article();
         $sport->setTitle('Sport');
@@ -53,9 +56,10 @@ class TimestampableTest extends BaseTestCaseORM
 
     /**
      * issue #1255
+     *
      * @test
      */
-    function shouldHandleDetatchedAndMergedBackEntitiesAfterPersist()
+    public function shouldHandleDetatchedAndMergedBackEntitiesAfterPersist()
     {
         $sport = new Article();
         $sport->setTitle('Sport');
@@ -71,19 +75,19 @@ class TimestampableTest extends BaseTestCaseORM
         $this->em->persist($newSport);
         $this->em->flush();
 
-        $this->assertSame($newSport->getUpdated(), $updated, "There was no change, should remain the same");
+        $this->assertSame($newSport->getUpdated(), $updated, 'There was no change, should remain the same');
 
         $newSport->setTitle('updated');
         $this->em->persist($newSport);
         $this->em->flush();
 
-        $this->assertNotSame($newSport->getUpdated(), $updated, "There was a change, should not remain the same");
+        $this->assertNotSame($newSport->getUpdated(), $updated, 'There was a change, should not remain the same');
     }
 
     /**
      * @test
      */
-    function shouldHandleStandardBehavior()
+    public function shouldHandleStandardBehavior()
     {
         $sport = new Article();
         $sport->setTitle('Sport');
@@ -104,7 +108,7 @@ class TimestampableTest extends BaseTestCaseORM
         $this->em->persist($sportComment);
         $this->em->flush();
 
-        $sport = $this->em->getRepository(self::ARTICLE)->findOneByTitle('Sport');
+        $sport = $this->em->getRepository(self::ARTICLE)->findOneBy(['title' => 'Sport']);
         $this->assertNotNull($sc = $sport->getCreated());
         $this->assertNotNull($su = $sport->getUpdated());
         $this->assertNull($sport->getContentChanged());
@@ -115,7 +119,7 @@ class TimestampableTest extends BaseTestCaseORM
         $author->setName('New author');
         $sport->setAuthor($author);
 
-        $sportComment = $this->em->getRepository(self::COMMENT)->findOneByMessage('hello');
+        $sportComment = $this->em->getRepository(self::COMMENT)->findOneBy(['message' => 'hello']);
         $this->assertNotNull($scm = $sportComment->getModified());
         $this->assertNull($sportComment->getClosed());
 
@@ -129,7 +133,7 @@ class TimestampableTest extends BaseTestCaseORM
         $this->em->persist($sportComment);
         $this->em->flush();
 
-        $sportComment = $this->em->getRepository(self::COMMENT)->findOneByMessage('hello');
+        $sportComment = $this->em->getRepository(self::COMMENT)->findOneBy(['message' => 'hello']);
         $this->assertNotNull($scc = $sportComment->getClosed());
         $this->assertNotNull($sp = $sport->getPublished());
         $this->assertNotNull($sa = $sport->getAuthorChanged());
@@ -140,11 +144,11 @@ class TimestampableTest extends BaseTestCaseORM
         $this->em->persist($sportComment);
         $this->em->flush();
 
-        $this->assertSame($sport->getCreated(), $sc, "Date created should remain same after update");
-        $this->assertNotSame($su2 = $sport->getUpdated(), $su, "Date updated should change after update");
-        $this->assertSame($sport->getPublished(), $sp, "Date published should remain the same after update");
-        $this->assertNotSame($scc2 = $sport->getContentChanged(), $scc, "Content must have changed after update");
-        $this->assertSame($sport->getAuthorChanged(), $sa, "Author should remain same after update");
+        $this->assertSame($sport->getCreated(), $sc, 'Date created should remain same after update');
+        $this->assertNotSame($su2 = $sport->getUpdated(), $su, 'Date updated should change after update');
+        $this->assertSame($sport->getPublished(), $sp, 'Date published should remain the same after update');
+        $this->assertNotSame($scc2 = $sport->getContentChanged(), $scc, 'Content must have changed after update');
+        $this->assertSame($sport->getAuthorChanged(), $sa, 'Author should remain same after update');
 
         $author = $sport->getAuthor();
         $author->setName('Third author');
@@ -156,17 +160,17 @@ class TimestampableTest extends BaseTestCaseORM
         $this->em->persist($sportComment);
         $this->em->flush();
 
-        $this->assertSame($sport->getCreated(), $sc, "Date created should remain same after update");
-        $this->assertNotSame($sport->getUpdated(), $su2, "Date updated should change after update");
-        $this->assertSame($sport->getPublished(), $sp, "Date published should remain the same after update");
-        $this->assertNotSame($sport->getContentChanged(), $scc2, "Content must have changed after update");
-        $this->assertNotSame($sport->getAuthorChanged(), $sa, "Author must have changed after update");
+        $this->assertSame($sport->getCreated(), $sc, 'Date created should remain same after update');
+        $this->assertNotSame($sport->getUpdated(), $su2, 'Date updated should change after update');
+        $this->assertSame($sport->getPublished(), $sp, 'Date published should remain the same after update');
+        $this->assertNotSame($sport->getContentChanged(), $scc2, 'Content must have changed after update');
+        $this->assertNotSame($sport->getAuthorChanged(), $sa, 'Author must have changed after update');
     }
 
     /**
      * @test
      */
-    function shouldBeAbleToForceDates()
+    public function shouldBeAbleToForceDates()
     {
         $sport = new Article();
         $sport->setTitle('sport forced');
@@ -179,7 +183,7 @@ class TimestampableTest extends BaseTestCaseORM
         $this->em->flush();
 
         $repo = $this->em->getRepository(self::ARTICLE);
-        $sport = $repo->findOneByTitle('sport forced');
+        $sport = $repo->findOneBy(['title' => 'sport forced']);
         $this->assertEquals(
             '2000-01-01',
             $sport->getCreated()->format('Y-m-d')
@@ -202,7 +206,7 @@ class TimestampableTest extends BaseTestCaseORM
         $this->em->persist($published);
         $this->em->flush();
 
-        $sport = $repo->findOneByTitle('sport forced');
+        $sport = $repo->findOneBy(['title' => 'sport forced']);
         $this->assertEquals(
             '2000-01-01 12:00:00',
             $sport->getPublished()->format('Y-m-d H:i:s')
@@ -214,7 +218,7 @@ class TimestampableTest extends BaseTestCaseORM
     /**
      * @test
      */
-    function shouldSolveIssue767()
+    public function shouldSolveIssue767()
     {
         $type = new Type();
         $type->setTitle('Published');
@@ -241,10 +245,10 @@ class TimestampableTest extends BaseTestCaseORM
 
     protected function getUsedEntityFixtures()
     {
-        return array(
+        return [
             self::ARTICLE,
             self::COMMENT,
             self::TYPE,
-        );
+        ];
     }
 }

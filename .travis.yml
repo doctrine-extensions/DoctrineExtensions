@@ -1,19 +1,14 @@
-dist: trusty
 language: php
 
 sudo: false
 
-matrix:
-    include:
-        - php: '5.4'
-          env: phpunit_exclude_groups=datetimeinterface
-        - php: '5.5'
-        - php: '5.6'
-        - php: '7.0'
-        - php: '7.1'
-        - php: '7.2'
-        - php: '7.3'
-        - php: '7.4'
+php:
+    - 7.2
+    - 7.3
+    - 7.4
+    - 8.0
+
+env: MONGODB_SERVER=mongodb://localhost:27017
 
 cache:
     directories:
@@ -21,23 +16,8 @@ cache:
 
 services: mongodb
 
-before_install:
-    - if [[ "$TRAVIS_PHP_VERSION" = 5.* ]]; then echo 'extension=mongo.so' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini; fi
-    - if [[ "$TRAVIS_PHP_VERSION" != 5.* ]]; then echo 'extension=mongodb.so' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini; fi
-    - if [[ "$TRAVIS_PHP_VERSION" != 5.* ]]; then cp composer7.json composer.json; fi
+before_install: echo 'extension=mongodb.so' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
 
-install:
-    - composer install --prefer-dist
+install: composer install --prefer-dist
 
-script:
-    - |
-        if [[ ! $phpunit_exclude_groups ]]; then
-            bin/phpunit -c tests/
-        else
-            bin/phpunit -c tests/ --exclude-group $phpunit_exclude_groups
-        fi
-
-notifications:
-    email:
-        - gediminas.morkevicius@gmail.com
-        - developers@atlantic18.com
+script: bin/phpunit -c tests/

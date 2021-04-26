@@ -2,11 +2,11 @@
 
 namespace Gedmo\Mapping\Xml;
 
-use Doctrine\Common\EventManager;
 use Doctrine\Common\Annotations\AnnotationReader;
+use Doctrine\Common\EventManager;
+use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
 use Doctrine\ORM\Mapping\Driver\DriverChain;
 use Doctrine\ORM\Mapping\Driver\XmlDriver;
-use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
 use Gedmo\Loggable\LoggableListener;
 use Tool\BaseTestCaseOM;
 
@@ -14,7 +14,9 @@ use Tool\BaseTestCaseOM;
  * These are mapping extension tests
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @link http://www.gediminasm.org
+ *
+ * @see http://www.gediminasm.org
+ *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class LoggableMappingTest extends BaseTestCaseOM
@@ -29,7 +31,7 @@ class LoggableMappingTest extends BaseTestCaseOM
      */
     private $loggable;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -46,13 +48,13 @@ class LoggableMappingTest extends BaseTestCaseOM
         $this->evm = new EventManager();
         $this->evm->addEventSubscriber($this->loggable);
 
-        $this->em = $this->getMockSqliteEntityManager(array(
+        $this->em = $this->getMockSqliteEntityManager([
             'Gedmo\Loggable\Entity\LogEntry',
             'Mapping\Fixture\Xml\Loggable',
             'Mapping\Fixture\Xml\LoggableWithEmbedded',
             'Mapping\Fixture\Xml\Embedded',
             'Mapping\Fixture\Xml\Status',
-        ), $chain);
+        ], $chain);
     }
 
     public function testLoggableMetadata()

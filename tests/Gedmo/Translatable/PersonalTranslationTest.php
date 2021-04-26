@@ -4,7 +4,6 @@ namespace Gedmo\Translatable;
 
 use Doctrine\Common\EventManager;
 use Doctrine\ORM\Query;
-use Gedmo\Translatable\Query\TreeWalker\TranslationWalker;
 use Tool\BaseTestCaseORM;
 use Translatable\Fixture\Personal\Article;
 use Translatable\Fixture\Personal\PersonalArticleTranslation;
@@ -13,7 +12,9 @@ use Translatable\Fixture\Personal\PersonalArticleTranslation;
  * These are tests for translatable behavior
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @link http://www.gediminasm.org
+ *
+ * @see http://www.gediminasm.org
+ *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class PersonalTranslationTest extends BaseTestCaseORM
@@ -24,7 +25,7 @@ class PersonalTranslationTest extends BaseTestCaseORM
 
     private $translatableListener;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -34,13 +35,13 @@ class PersonalTranslationTest extends BaseTestCaseORM
         $this->translatableListener->setDefaultLocale('en');
         $evm->addEventSubscriber($this->translatableListener);
 
-        $conn = array(
+        $conn = [
             'driver' => 'pdo_mysql',
             'host' => '127.0.0.1',
             'dbname' => 'test',
             'user' => 'root',
             'password' => 'nimda',
-        );
+        ];
         //$this->getMockCustomEntityManager($conn, $evm);
         $this->getMockSqliteEntityManager($evm);
     }
@@ -52,7 +53,7 @@ class PersonalTranslationTest extends BaseTestCaseORM
     {
         $this->translatableListener->setPersistDefaultLocaleTranslation(true);
         $this->populate();
-        $article = $this->em->find(self::ARTICLE, array('id' => 1));
+        $article = $this->em->find(self::ARTICLE, ['id' => 1]);
         $translations = $article->getTranslations();
         $this->assertCount(3, $translations);
     }
@@ -63,7 +64,7 @@ class PersonalTranslationTest extends BaseTestCaseORM
     public function shouldCreateTranslations()
     {
         $this->populate();
-        $article = $this->em->find(self::ARTICLE, array('id' => 1));
+        $article = $this->em->find(self::ARTICLE, ['id' => 1]);
         $translations = $article->getTranslations();
         $this->assertCount(2, $translations);
     }
@@ -77,7 +78,7 @@ class PersonalTranslationTest extends BaseTestCaseORM
         $this->translatableListener->setTranslatableLocale('lt');
 
         $this->startQueryLog();
-        $article = $this->em->find(self::ARTICLE, array('id' => 1));
+        $article = $this->em->find(self::ARTICLE, ['id' => 1]);
 
         $sqlQueriesExecuted = $this->queryAnalyzer->getExecutedQueries();
         $this->assertCount(2, $sqlQueriesExecuted);
@@ -90,7 +91,7 @@ class PersonalTranslationTest extends BaseTestCaseORM
      */
     public function shouldCascadeDeletionsByForeignKeyConstraints()
     {
-        if ($this->em->getConnection()->getDatabasePlatform()->getName() == 'sqlite') {
+        if ('sqlite' == $this->em->getConnection()->getDatabasePlatform()->getName()) {
             $this->markTestSkipped('Foreign key constraints does not map in sqlite.');
         }
         $this->populate();
@@ -127,6 +128,7 @@ class PersonalTranslationTest extends BaseTestCaseORM
 
     /**
      * Covers issue #438
+     *
      * @test
      */
     public function shouldPersistDefaultLocaleValue()
@@ -245,9 +247,9 @@ class PersonalTranslationTest extends BaseTestCaseORM
 
     protected function getUsedEntityFixtures()
     {
-        return array(
+        return [
             self::ARTICLE,
             self::TRANSLATION,
-        );
+        ];
     }
 }

@@ -1,15 +1,16 @@
 <?php
+
 namespace Timestampable\Fixture;
 
-use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Timestampable\Traits\TimestampableEntity;
 
 /**
  * @ORM\Entity
  */
 class UsingTrait
 {
-    /**
+    /*
      * Hook timestampable behavior
      * updates createdAt, updatedAt fields
      */

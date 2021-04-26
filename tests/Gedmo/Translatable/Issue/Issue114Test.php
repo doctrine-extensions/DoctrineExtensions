@@ -11,18 +11,20 @@ use Translatable\Fixture\Issue114\Category;
  * These are tests for translatable behavior
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @link http://www.gediminasm.org
+ *
+ * @see http://www.gediminasm.org
+ *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class Issue114Test extends BaseTestCaseORM
 {
-    const CATEGORY =   'Translatable\\Fixture\\Issue114\\Category';
+    const CATEGORY = 'Translatable\\Fixture\\Issue114\\Category';
     const ARTICLE = 'Translatable\\Fixture\\Issue114\\Article';
     const TRANSLATION = 'Gedmo\\Translatable\\Entity\\Translation';
 
     private $translatableListener;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -108,11 +110,10 @@ class Issue114Test extends BaseTestCaseORM
 
     protected function getUsedEntityFixtures()
     {
-        return array(
+        return [
             self::CATEGORY,
             self::ARTICLE,
             self::TRANSLATION,
-
-        );
+        ];
     }
 }

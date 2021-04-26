@@ -13,7 +13,7 @@ class CompanyEmbedLink
     /**
      * @var string
      *
-     * @ORM\Column(name="website", type="string", length=255, nullable=true)
+     * @ORM\Column(name="website", type="string", length=191, nullable=true)
      * @Gedmo\Translatable
      */
     protected $website;
@@ -21,7 +21,7 @@ class CompanyEmbedLink
     /**
      * @var string
      *
-     * @ORM\Column(name="facebook", type="string", length=255, nullable=true)
+     * @ORM\Column(name="facebook", type="string", length=191, nullable=true)
      * @Gedmo\Translatable
      */
     protected $facebook;
@@ -36,6 +36,7 @@ class CompanyEmbedLink
 
     /**
      * @param string $website
+     *
      * @return CompanyEmbedLink
      */
     public function setWebsite($website)
@@ -55,6 +56,7 @@ class CompanyEmbedLink
 
     /**
      * @param string $facebook
+     *
      * @return CompanyEmbedLink
      */
     public function setFacebook($facebook)
@@ -63,5 +65,4 @@ class CompanyEmbedLink
 
         return $this;
     }
-
 }

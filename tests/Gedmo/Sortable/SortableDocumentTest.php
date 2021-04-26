@@ -2,9 +2,9 @@
 
 namespace Gedmo\Sortable;
 
-use Tool\BaseTestCaseMongoODM;
 use Doctrine\Common\EventManager;
 use Sortable\Fixture\Document\Article;
+use Tool\BaseTestCaseMongoODM;
 
 /**
  * These are tests for sortable behavior
@@ -16,7 +16,7 @@ class SortableDocumentTest extends BaseTestCaseMongoODM
 {
     const ARTICLE = 'Sortable\\Fixture\\Document\\Article';
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $evm = new EventManager();
@@ -28,7 +28,7 @@ class SortableDocumentTest extends BaseTestCaseMongoODM
 
     private function populate()
     {
-        for ($i = 0; $i <= 4; $i++) {
+        for ($i = 0; $i <= 4; ++$i) {
             $article = new Article();
             $article->setTitle('article'.$i);
             $this->dm->persist($article);
@@ -40,8 +40,8 @@ class SortableDocumentTest extends BaseTestCaseMongoODM
     public function testInitialPositions()
     {
         $repo = $this->dm->getRepository(self::ARTICLE);
-        for ($i = 0; $i <= 4; $i++) {
-            $article = $repo->findOneByPosition($i);
+        for ($i = 0; $i <= 4; ++$i) {
+            $article = $repo->findOneBy(['position' => $i]);
             $this->assertEquals('article'.$i, $article->getTitle());
         }
     }
@@ -50,13 +50,13 @@ class SortableDocumentTest extends BaseTestCaseMongoODM
     {
         $repo = $this->dm->getRepository(self::ARTICLE);
 
-        $article = $repo->findOneByPosition(4);
+        $article = $repo->findOneBy(['position' => 4]);
         $article->setPosition(0);
         $this->dm->flush();
 
-        for ($i = 1; $i <= 4; $i++) {
-            $article = $repo->findOneByPosition($i);
-            $this->assertEquals('article'.($i-1), $article->getTitle());
+        for ($i = 1; $i <= 4; ++$i) {
+            $article = $repo->findOneBy(['position' => $i]);
+            $this->assertEquals('article'.($i - 1), $article->getTitle());
         }
     }
 
@@ -64,15 +64,15 @@ class SortableDocumentTest extends BaseTestCaseMongoODM
     {
         $repo = $this->dm->getRepository(self::ARTICLE);
 
-        $article = $repo->findOneByPosition(0);
+        $article = $repo->findOneBy(['position' => 0]);
         $article->setPosition(-1);
         $this->dm->flush();
 
-        for ($i = 0; $i <= 3; $i++) {
-            $article = $repo->findOneByPosition($i);
-            $this->assertEquals('article'.($i+1), $article->getTitle());
+        for ($i = 0; $i <= 3; ++$i) {
+            $article = $repo->findOneBy(['position' => $i]);
+            $this->assertEquals('article'.($i + 1), $article->getTitle());
         }
-        $article = $repo->findOneByPosition(4);
+        $article = $repo->findOneBy(['position' => 4]);
         $this->assertEquals('article0', $article->getTitle());
     }
 
@@ -80,13 +80,13 @@ class SortableDocumentTest extends BaseTestCaseMongoODM
     {
         $repo = $this->dm->getRepository(self::ARTICLE);
 
-        $article = $repo->findOneByPosition(0);
+        $article = $repo->findOneBy(['position' => 0]);
         $this->dm->remove($article);
         $this->dm->flush();
 
-        for ($i = 0; $i <= 3; $i++) {
-            $article = $repo->findOneByPosition($i);
-            $this->assertEquals('article'.($i+1), $article->getTitle());
+        for ($i = 0; $i <= 3; ++$i) {
+            $article = $repo->findOneBy(['position' => $i]);
+            $this->assertEquals('article'.($i + 1), $article->getTitle());
         }
     }
 }

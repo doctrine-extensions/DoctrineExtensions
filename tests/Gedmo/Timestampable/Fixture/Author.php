@@ -1,8 +1,7 @@
 <?php
+
 namespace Timestampable\Fixture;
 
-use Gedmo\Timestampable\Timestampable;
-use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -39,6 +38,4 @@ class Author
     {
         $this->email = $email;
     }
-
-
 }

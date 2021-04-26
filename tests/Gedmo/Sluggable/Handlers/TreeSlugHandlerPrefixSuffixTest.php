@@ -9,9 +9,9 @@ use Tool\BaseTestCaseORM;
 
 class TreeSlugHandlerPrefixSuffixTest extends BaseTestCaseORM
 {
-    const TARGET = "Sluggable\\Fixture\\Handler\\TreeSlugPrefixSuffix";
+    const TARGET = 'Sluggable\\Fixture\\Handler\\TreeSlugPrefixSuffix';
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -46,8 +46,8 @@ class TreeSlugHandlerPrefixSuffixTest extends BaseTestCaseORM
 
     protected function getUsedEntityFixtures()
     {
-        return array(
+        return [
             self::TARGET,
-        );
+        ];
     }
 }

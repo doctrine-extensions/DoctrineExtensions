@@ -10,17 +10,19 @@ use Tool\BaseTestCaseORM;
  *
  * @author Gustavo Falco <comfortablynumb84@gmail.com>
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @link http://www.gediminasm.org
+ *
+ * @see http://www.gediminasm.org
+ *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class MaterializedPathORMTest extends BaseTestCaseORM
 {
-    const CATEGORY = "Tree\\Fixture\\MPCategory";
+    const CATEGORY = 'Tree\\Fixture\\MPCategory';
 
     protected $config;
     protected $listener;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -64,10 +66,10 @@ class MaterializedPathORMTest extends BaseTestCaseORM
         $this->em->refresh($category3);
         $this->em->refresh($category4);
 
-        $this->assertEquals($this->generatePath(array('1' => $category->getId())), $category->getPath());
-        $this->assertEquals($this->generatePath(array('1' => $category->getId(), '2' => $category2->getId())), $category2->getPath());
-        $this->assertEquals($this->generatePath(array('1' => $category->getId(), '2' => $category2->getId(), '3' => $category3->getId())), $category3->getPath());
-        $this->assertEquals($this->generatePath(array('4' => $category4->getId())), $category4->getPath());
+        $this->assertEquals($this->generatePath(['1' => $category->getId()]), $category->getPath());
+        $this->assertEquals($this->generatePath(['1' => $category->getId(), '2' => $category2->getId()]), $category2->getPath());
+        $this->assertEquals($this->generatePath(['1' => $category->getId(), '2' => $category2->getId(), '3' => $category3->getId()]), $category3->getPath());
+        $this->assertEquals($this->generatePath(['4' => $category4->getId()]), $category4->getPath());
         $this->assertEquals(1, $category->getLevel());
         $this->assertEquals(2, $category2->getLevel());
         $this->assertEquals(3, $category3->getLevel());
@@ -88,9 +90,9 @@ class MaterializedPathORMTest extends BaseTestCaseORM
         $this->em->refresh($category2);
         $this->em->refresh($category3);
 
-        $this->assertEquals($this->generatePath(array('1' => $category->getId())), $category->getPath());
-        $this->assertEquals($this->generatePath(array('2' => $category2->getId())), $category2->getPath());
-        $this->assertEquals($this->generatePath(array('2' => $category2->getId(), '3' => $category3->getId())), $category3->getPath());
+        $this->assertEquals($this->generatePath(['1' => $category->getId()]), $category->getPath());
+        $this->assertEquals($this->generatePath(['2' => $category2->getId()]), $category2->getPath());
+        $this->assertEquals($this->generatePath(['2' => $category2->getId(), '3' => $category3->getId()]), $category3->getPath());
         $this->assertEquals(1, $category->getLevel());
         $this->assertEquals(1, $category2->getLevel());
         $this->assertEquals(2, $category3->getLevel());
@@ -139,9 +141,9 @@ class MaterializedPathORMTest extends BaseTestCaseORM
 
     protected function getUsedEntityFixtures()
     {
-        return array(
+        return [
             self::CATEGORY,
-        );
+        ];
     }
 
     public function generatePath(array $sources)

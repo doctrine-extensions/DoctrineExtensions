@@ -3,36 +3,35 @@
 namespace Gedmo\Tree;
 
 use Doctrine\Common\EventManager;
-use Gedmo\Tree\TreeListener;
 use Tool\BaseTestCaseORM;
 use Tree\Fixture\Closure\Category;
-use Tree\Fixture\Closure\News;
-use Tree\Fixture\Closure\CategoryClosure;
 use Tree\Fixture\Closure\CategoryWithoutLevel;
-use Tree\Fixture\Closure\CategoryWithoutLevelClosure;
+use Tree\Fixture\Closure\News;
 
 /**
  * These are tests for Tree behavior
  *
  * @author Gustavo Adrian <comfortablynumb84@gmail.com>
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @link http://www.gediminasm.org
+ *
+ * @see http://www.gediminasm.org
+ *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class ClosureTreeTest extends BaseTestCaseORM
 {
-    const CATEGORY = "Tree\\Fixture\\Closure\\Category";
-    const CLOSURE = "Tree\\Fixture\\Closure\\CategoryClosure";
-    const PERSON = "Tree\\Fixture\\Closure\\Person";
-    const USER = "Tree\\Fixture\\Closure\\User";
-    const PERSON_CLOSURE = "Tree\\Fixture\\Closure\\PersonClosure";
-    const NEWS = "Tree\\Fixture\\Closure\\News";
-    const CATEGORY_WITHOUT_LEVEL = "Tree\\Fixture\\Closure\\CategoryWithoutLevel";
-    const CATEGORY_WITHOUT_LEVEL_CLOSURE = "Tree\\Fixture\\Closure\\CategoryWithoutLevelClosure";
+    const CATEGORY = 'Tree\\Fixture\\Closure\\Category';
+    const CLOSURE = 'Tree\\Fixture\\Closure\\CategoryClosure';
+    const PERSON = 'Tree\\Fixture\\Closure\\Person';
+    const USER = 'Tree\\Fixture\\Closure\\User';
+    const PERSON_CLOSURE = 'Tree\\Fixture\\Closure\\PersonClosure';
+    const NEWS = 'Tree\\Fixture\\Closure\\News';
+    const CATEGORY_WITHOUT_LEVEL = 'Tree\\Fixture\\Closure\\CategoryWithoutLevel';
+    const CATEGORY_WITHOUT_LEVEL_CLOSURE = 'Tree\\Fixture\\Closure\\CategoryWithoutLevelClosure';
 
     protected $listener;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -76,12 +75,12 @@ class ClosureTreeTest extends BaseTestCaseORM
         $dumpTime($start, $num.' - inserts took:');
         $start = microtime(true);
         // test moving
-        $target = $repo->findOneByTitle('cat300');
-        $dest = $repo->findOneByTitle('cat2000');
+        $target = $repo->findOneBy(['title' => 'cat300']);
+        $dest = $repo->findOneBy(['title' => 'cat2000']);
         $target->setParent($dest);
 
-        $target2 = $repo->findOneByTitle('cat450');
-        $dest2 = $repo->findOneByTitle('cat2500');
+        $target2 = $repo->findOneBy(['title' => 'cat450']);
+        $dest2 = $repo->findOneBy(['title' => 'cat2500']);
         $target2->setParent($dest2);
 
         $this->em->flush();
@@ -93,7 +92,7 @@ class ClosureTreeTest extends BaseTestCaseORM
         $repo = $this->em->getRepository(self::CATEGORY);
         $closureRepo = $this->em->getRepository(self::CLOSURE);
 
-        $food = $repo->findOneByTitle('Food');
+        $food = $repo->findOneBy(['title' => 'Food']);
         $dql = 'SELECT c FROM '.self::CLOSURE.' c';
         $dql .= ' WHERE c.ancestor = :ancestor';
         $query = $this->em->createQuery($dql);
@@ -146,8 +145,8 @@ class ClosureTreeTest extends BaseTestCaseORM
     public function testUpdateOfParent()
     {
         $repo = $this->em->getRepository(self::CATEGORY);
-        $strawberries = $repo->findOneByTitle('Strawberries');
-        $cheese = $repo->findOneByTitle('Cheese');
+        $strawberries = $repo->findOneBy(['title' => 'Strawberries']);
+        $cheese = $repo->findOneBy(['title' => 'Cheese']);
 
         $strawberries->setParent($cheese);
         $this->em->persist($strawberries);
@@ -169,7 +168,7 @@ class ClosureTreeTest extends BaseTestCaseORM
     public function testAnotherUpdateOfParent()
     {
         $repo = $this->em->getRepository(self::CATEGORY);
-        $strawberries = $repo->findOneByTitle('Strawberries');
+        $strawberries = $repo->findOneBy(['title' => 'Strawberries']);
 
         $strawberries->setParent(null);
         $this->em->persist($strawberries);
@@ -188,7 +187,7 @@ class ClosureTreeTest extends BaseTestCaseORM
     public function testBranchRemoval()
     {
         $repo = $this->em->getRepository(self::CATEGORY);
-        $fruits = $repo->findOneByTitle('Fruits');
+        $fruits = $repo->findOneBy(['title' => 'Fruits']);
 
         $id = $fruits->getId();
         $this->em->remove($fruits);
@@ -205,14 +204,12 @@ class ClosureTreeTest extends BaseTestCaseORM
         // pdo_sqlite will not cascade
     }
 
-    /**
-     * @expectedException Gedmo\Exception\UnexpectedValueException
-     */
     public function testSettingParentToChild()
     {
+        $this->expectException('Gedmo\Exception\UnexpectedValueException');
         $repo = $this->em->getRepository(self::CATEGORY);
-        $fruits = $repo->findOneByTitle('Fruits');
-        $strawberries = $repo->findOneByTitle('Strawberries');
+        $fruits = $repo->findOneBy(['title' => 'Fruits']);
+        $strawberries = $repo->findOneBy(['title' => 'Strawberries']);
 
         $fruits->setParent($strawberries);
         $this->em->flush();
@@ -222,7 +219,7 @@ class ClosureTreeTest extends BaseTestCaseORM
     {
         $listener = $this->getMockBuilder('Gedmo\Tree\TreeListener')->getMock();
         $strategy = $this->getMockBuilder('Gedmo\Tree\Strategy\ORM\Closure')
-            ->setMethods(array('setLevelFieldOnPendingNodes'))
+            ->setMethods(['setLevelFieldOnPendingNodes'])
             ->setConstructorArgs([$listener])
             ->getMock();
 
@@ -261,7 +258,7 @@ class ClosureTreeTest extends BaseTestCaseORM
 
     protected function getUsedEntityFixtures()
     {
-        return array(
+        return [
             self::CATEGORY,
             self::CLOSURE,
             self::PERSON,
@@ -270,13 +267,13 @@ class ClosureTreeTest extends BaseTestCaseORM
             self::NEWS,
             self::CATEGORY_WITHOUT_LEVEL,
             self::CATEGORY_WITHOUT_LEVEL_CLOSURE,
-        );
+        ];
     }
 
     private function populate()
     {
         $food = new Category();
-        $food->setTitle("Food");
+        $food->setTitle('Food');
         $this->em->persist($food);
 
         $fruits = new Category();

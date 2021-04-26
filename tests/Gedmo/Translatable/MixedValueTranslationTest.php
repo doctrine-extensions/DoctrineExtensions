@@ -3,15 +3,17 @@
 namespace Gedmo\Translatable;
 
 use Doctrine\Common\EventManager;
-use Tool\BaseTestCaseORM;
 use Doctrine\DBAL\Types\Type;
+use Tool\BaseTestCaseORM;
 use Translatable\Fixture\MixedValue;
 
 /**
  * These are tests for translatable behavior
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @link http://www.gediminasm.org
+ *
+ * @see http://www.gediminasm.org
+ *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class MixedValueTranslationTest extends BaseTestCaseORM
@@ -21,7 +23,7 @@ class MixedValueTranslationTest extends BaseTestCaseORM
 
     private $translatableListener;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -42,7 +44,7 @@ class MixedValueTranslationTest extends BaseTestCaseORM
     public function testFixtureGeneratedTranslations()
     {
         $repo = $this->em->getRepository(self::MIXED);
-        $mixed = $repo->findOneById(1);
+        $mixed = $repo->findOneBy(['id' => 1]);
 
         $this->assertTrue($mixed->getDate() instanceof \DateTime);
         $this->assertTrue($mixed->getCust() instanceof \stdClass);
@@ -52,7 +54,7 @@ class MixedValueTranslationTest extends BaseTestCaseORM
     public function testOtherTranslation()
     {
         $repo = $this->em->getRepository(self::MIXED);
-        $mixed = $repo->findOneById(1);
+        $mixed = $repo->findOneBy(['id' => 1]);
 
         $this->translatableListener->setTranslatableLocale('de_de');
         $mixed->setDate(new \DateTime('2000-00-00 00:00:00'));
@@ -64,7 +66,7 @@ class MixedValueTranslationTest extends BaseTestCaseORM
         $this->em->flush();
         $this->em->clear();
 
-        $mixed = $repo->findOneById(1);
+        $mixed = $repo->findOneBy(['id' => 1]);
         $transRepo = $this->em->getRepository(self::TRANSLATION);
         $translations = $transRepo->findTranslations($mixed);
 
@@ -78,10 +80,10 @@ class MixedValueTranslationTest extends BaseTestCaseORM
 
     protected function getUsedEntityFixtures()
     {
-        return array(
+        return [
             self::MIXED,
             self::TRANSLATION,
-        );
+        ];
     }
 
     private function populate()

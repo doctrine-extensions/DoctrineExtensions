@@ -6,9 +6,9 @@
 
 namespace Sluggable\Fixture;
 
-use Gedmo\Sluggable\Sluggable;
-use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
+use Gedmo\Sluggable\Sluggable;
 
 /**
  * @ORM\Entity(repositoryClass="Gedmo\Tree\Entity\Repository\NestedTreeRepository")
@@ -98,8 +98,6 @@ class SuffixWithTreeHandler implements Sluggable
     }
 
     /**
-     * @param SuffixWithTreeHandler $parent
-     *
      * @return $this;
      */
     public function setParent(SuffixWithTreeHandler $parent)

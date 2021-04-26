@@ -3,17 +3,19 @@
 namespace Gedmo\Sluggable;
 
 use Doctrine\Common\EventManager;
-use Tool\BaseTestCaseORM;
 use Sluggable\Fixture\Issue827\Article;
 use Sluggable\Fixture\Issue827\Category;
 use Sluggable\Fixture\Issue827\Comment;
 use Sluggable\Fixture\Issue827\Post;
+use Tool\BaseTestCaseORM;
 
 /**
  * These are tests for Sluggable behavior
  *
  * @author Anders S. Øfsdahl <anders@aloof.no>
- * @link http://www.aloof.no
+ *
+ * @see http://www.aloof.no
+ *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class Issue827Test extends BaseTestCaseORM
@@ -23,7 +25,7 @@ class Issue827Test extends BaseTestCaseORM
     const COMMENT = 'Sluggable\\Fixture\\Issue827\\Comment';
     const POST = 'Sluggable\\Fixture\\Issue827\\Post';
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -163,11 +165,11 @@ class Issue827Test extends BaseTestCaseORM
 
         $testPost1 = $this->em->find(
             self::POST,
-            array('title' => $testPost1->getTitle(), 'slug' => $testPost1->getSlug())
+            ['title' => $testPost1->getTitle(), 'slug' => $testPost1->getSlug()]
         );
         $testPost2 = $this->em->find(
             self::POST,
-            array('title' => $testPost2->getTitle(), 'slug' => $testPost2->getSlug())
+            ['title' => $testPost2->getTitle(), 'slug' => $testPost2->getSlug()]
         );
 
         // Creating comments
@@ -269,11 +271,11 @@ class Issue827Test extends BaseTestCaseORM
 
     protected function getUsedEntityFixtures()
     {
-        return array(
+        return [
             self::ARTICLE,
             self::CATEGORY,
             self::COMMENT,
             self::POST,
-        );
+        ];
     }
 }

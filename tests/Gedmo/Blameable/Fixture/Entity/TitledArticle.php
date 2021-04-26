@@ -1,9 +1,10 @@
 <?php
+
 namespace Blameable\Fixture\Entity;
 
+use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Blameable\Blameable;
 use Gedmo\Mapping\Annotation as Gedmo;
-use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
@@ -28,7 +29,7 @@ class TitledArticle implements Blameable
     private $text;
 
     /**
-     * @var string $updated
+     * @var string
      *
      * @ORM\Column(name="chtext", type="string", nullable=true)
      * @Gedmo\Blameable(on="change", field="text")
@@ -36,7 +37,7 @@ class TitledArticle implements Blameable
     private $chtext;
 
     /**
-     * @var string $chtitle
+     * @var string
      *
      * @ORM\Column(name="chtitle", type="string", nullable=true)
      * @Gedmo\Blameable(on="change", field="title")

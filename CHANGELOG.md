@@ -20,50 +20,40 @@ a release.
 
 ## [Unreleased]
 
-## [2.4.42] - 2020-08-20
-### Translatable
-#### Fixed
-- Allow for both falsy and null-fallback translatable values (#2152)
-
-## [2.4.41] - 2020-05-10
-### Sluggable
-#### Fixed
-- Remove PHPDoc samples as they are interpreted by Annotation Reader (#2120)
-
-## [2.4.40] - 2020-04-27
-### SoftDeleteable
-#### Fixed
-- Invalidate query cache when toggling filter on/off for an entity (#2112)
-
-## [2.4.39] - 2020-01-18
-### Tree
+## [3.0.3] - 2021-01-23
 ### Fixed
-- The value of path source property is cast to string type for Materialized Path Tree strategy (#2061)
+- Add PHP 8 compatibility to `composer.json`, resolving minor function parameter deprecations [#2194](https://github.com/Atlantic18/DoctrineExtensions/pull/2194)
 
-## [2.4.38] - 2019-11-08
+## [3.0.2] - 2021-01-23
+- Ignore; tag & version mismatch
+
+## [3.0.1] - 2021-01-23
+- Ignore; wrong branch published
+
+## [3.0.0] - 2020-09-23
+### Notable & Breaking Changes
+- Minimum PHP version requirement of 7.2
+- Source files moved from `/lib/Gedmo` to `/src`
+- Added compatibility for `doctrine/common` 3.0 and `doctrine/persistence` 2.0
+- All string column type annotations changed to 191 character length (#1941)
+- Removed support for `\Zend_date` date format [#2163](https://github.com/Atlantic18/DoctrineExtensions/pull/2163)
+- Renamed `Zend Framework` to `Laminas` [#2163](https://github.com/Atlantic18/DoctrineExtensions/pull/2163)
+
+Changes below marked ⚠️ may also be breaking, if you have extended DoctrineExtensions.
+
+### MongoDB
+- Requires the `ext-mongodb` PHP extension. Usage of `ext-mongo` is deprecated and will be removed in the next major version.
+- Minimum Doctrine MongoDB ODM requirement of 2.0
+- Usages of `\MongoDate` replaced with `MongoDB\BSON\UTCDateTime`
+
 ### Global / Shared
 #### Fixed
-- Add `parent::__construct()` calls to Listeners w/ custom constructors (#2012)
-- Add upcoming Doctrine ODM 2.0 to `composer.json` conflicts (#2027)
-
-### Loggable
-#### Fixed
-- Added missing string casting of `objectId` in `LogEntryRepository::revert()` method (#2009)
-
-### ReferenceIntegrity
-#### Fixed
-- Get class from meta in ReferenceIntegrityListener (#2021)
-
-### Translatable
-#### Fixed
-- Return default AST executor instead of throwing Exception in Walker (#2018)
-- Fix duplicate inherited properties (#2029)
+- Removed `null` parameter from `Doctrine\Common\Cache\Cache::save()` calls (#1996)
 
 ### Tree
 #### Fixed
-- Remove hard-coded parent column name in repository prev/next sibling queries (#2020)
+- The value of path source property is cast to string type for Materialized Path Tree strategy (#2061)
 
-## [2.4.37] - 2019-03-17
-### Translatable
-#### Fixed
-- Bugfix to load null value translations (#1990)
+### SoftDeleteable
+#### Changed
+- ⚠️ Generate different Date values based on column type (#2115)

@@ -3,24 +3,26 @@
 namespace Gedmo\IpTraceable;
 
 use Doctrine\Common\EventManager;
-use Tool\BaseTestCaseORM;
 use IpTraceable\Fixture\TitledArticle;
+use Tool\BaseTestCaseORM;
 
 /**
  * These are tests for IpTraceable behavior
  *
  * @author Pierre-Charles Bertineau <pc.bertineau@alterphp.com>
- * @link http://www.gediminasm.org
+ *
+ * @see http://www.gediminasm.org
+ *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class ChangeTest extends BaseTestCaseORM
 {
     const TEST_IP = '34.234.1.10';
-    const FIXTURE = "IpTraceable\\Fixture\\TitledArticle";
+    const FIXTURE = 'IpTraceable\\Fixture\\TitledArticle';
 
     protected $listener;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -43,7 +45,7 @@ class ChangeTest extends BaseTestCaseORM
         $this->em->flush();
         $this->em->clear();
 
-        $test = $this->em->getRepository(self::FIXTURE)->findOneByTitle('Test');
+        $test = $this->em->getRepository(self::FIXTURE)->findOneBy(['title' => 'Test']);
         $test->setTitle('New Title');
         $this->em->persist($test);
         $this->em->flush();
@@ -53,7 +55,7 @@ class ChangeTest extends BaseTestCaseORM
 
         $this->listener->setIpValue('127.0.0.1');
 
-        $test = $this->em->getRepository(self::FIXTURE)->findOneByTitle('New Title');
+        $test = $this->em->getRepository(self::FIXTURE)->findOneBy(['title' => 'New Title']);
         $test->setText('New Text');
         $this->em->persist($test);
         $this->em->flush();
@@ -64,8 +66,8 @@ class ChangeTest extends BaseTestCaseORM
 
     protected function getUsedEntityFixtures()
     {
-        return array(
+        return [
             self::FIXTURE,
-        );
+        ];
     }
 }

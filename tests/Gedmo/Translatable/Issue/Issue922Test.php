@@ -3,10 +3,10 @@
 namespace Gedmo\Translatable;
 
 use Doctrine\Common\EventManager;
-use Tool\BaseTestCaseORM;
-use Translatable\Fixture\Issue922\Post;
 use Doctrine\ORM\Query;
 use Gedmo\Translatable\Query\TreeWalker\TranslationWalker;
+use Tool\BaseTestCaseORM;
+use Translatable\Fixture\Issue922\Post;
 
 class Issue922Test extends BaseTestCaseORM
 {
@@ -17,7 +17,7 @@ class Issue922Test extends BaseTestCaseORM
 
     private $translatableListener;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -80,9 +80,9 @@ class Issue922Test extends BaseTestCaseORM
 
     protected function getUsedEntityFixtures()
     {
-        return array(
+        return [
             self::POST,
             self::TRANSLATION,
-        );
+        ];
     }
 }

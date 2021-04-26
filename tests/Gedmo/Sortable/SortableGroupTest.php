@@ -5,18 +5,19 @@ namespace Gedmo\Sortable;
 use Doctrine\Common\EventManager;
 use Sortable\Fixture\Category;
 use Sortable\Fixture\Item;
-use Tool\BaseTestCaseORM;
-use Sortable\Fixture\Transport\Car;
 use Sortable\Fixture\Transport\Bus;
-use Sortable\Fixture\Transport\Vehicle;
+use Sortable\Fixture\Transport\Car;
 use Sortable\Fixture\Transport\Engine;
 use Sortable\Fixture\Transport\Reservation;
+use Tool\BaseTestCaseORM;
 
 /**
  * These are tests for sluggable behavior
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @link http://www.gediminasm.org
+ *
+ * @see http://www.gediminasm.org
+ *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class SortableGroupTest extends BaseTestCaseORM
@@ -35,7 +36,7 @@ class SortableGroupTest extends BaseTestCaseORM
     const TODAY = '2013-10-24 12:50';
     const TOMORROW = '2013-10-25 12:50';
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -60,22 +61,22 @@ class SortableGroupTest extends BaseTestCaseORM
         $this->populate();
         $carRepo = $this->em->getRepository(self::CAR);
 
-        $audi80 = $carRepo->findOneByTitle('Audi-80');
+        $audi80 = $carRepo->findOneBy(['title' => 'Audi-80']);
         $this->assertEquals(0, $audi80->getSortByEngine());
 
-        $audi80s = $carRepo->findOneByTitle('Audi-80s');
+        $audi80s = $carRepo->findOneBy(['title' => 'Audi-80s']);
         $this->assertEquals(1, $audi80s->getSortByEngine());
 
-        $icarus = $this->em->getRepository(self::BUS)->findOneByTitle('Icarus');
+        $icarus = $this->em->getRepository(self::BUS)->findOneBy(['title' => 'Icarus']);
         $this->assertEquals(2, $icarus->getSortByEngine());
 
         $this->em->remove($audi80);
         $this->em->flush();
 
-        $audi80s = $carRepo->findOneByTitle('Audi-80s');
+        $audi80s = $carRepo->findOneBy(['title' => 'Audi-80s']);
         $this->assertEquals(0, $audi80s->getSortByEngine());
 
-        $icarus = $this->em->getRepository(self::BUS)->findOneByTitle('Icarus');
+        $icarus = $this->em->getRepository(self::BUS)->findOneBy(['title' => 'Icarus']);
         $this->assertEquals(1, $icarus->getSortByEngine());
     }
 
@@ -89,23 +90,23 @@ class SortableGroupTest extends BaseTestCaseORM
         $carRepo = $this->em->getRepository(self::CAR);
 
         // position 0
-        $audi80 = $carRepo->findOneByTitle('Audi-80');
+        $audi80 = $carRepo->findOneBy(['title' => 'Audi-80']);
         $this->assertEquals(0, $audi80->getSortByEngine());
 
         //position 1
-        $audi80s = $carRepo->findOneByTitle('Audi-80s');
+        $audi80s = $carRepo->findOneBy(['title' => 'Audi-80s']);
         $this->assertEquals(1, $audi80s->getSortByEngine());
 
         //position 2
-        $icarus = $this->em->getRepository(self::BUS)->findOneByTitle('Icarus');
+        $icarus = $this->em->getRepository(self::BUS)->findOneBy(['title' => 'Icarus']);
         $this->assertEquals(2, $icarus->getSortByEngine());
 
         // theres only 1 v6 so this should be position:0
-        $audiJet = $carRepo->findOneByTitle('Audi-jet');
+        $audiJet = $carRepo->findOneBy(['title' => 'Audi-jet']);
         $this->assertEquals(0, $audiJet->getSortByEngine());
 
         // change engines
-        $v6engine = $this->em->getRepository(self::ENGINE)->findOneByType('V6');
+        $v6engine = $this->em->getRepository(self::ENGINE)->findOneBy(['type' => 'V6']);
 
         $audi80s->setEngine($v6engine);
 
@@ -132,32 +133,32 @@ class SortableGroupTest extends BaseTestCaseORM
         $today = \DateTime::createFromFormat(self::TRAVEL_DATE_FORMAT, self::TODAY);
         $tomorrow = \DateTime::createFromFormat(self::TRAVEL_DATE_FORMAT, self::TOMORROW);
 
-        for ($i = 0; $i < self::SEATS; $i++) {
-            $reservation = $repo->findOneByName('Bratislava Today '.$i);
+        for ($i = 0; $i < self::SEATS; ++$i) {
+            $reservation = $repo->findOneBy(['name' => 'Bratislava Today '.$i]);
             $this->assertNotNull($reservation);
             $this->assertEquals($i, $reservation->getSeat());
 
-            $reservation = $repo->findOneByName('Bratislava Tomorrow '.$i);
+            $reservation = $repo->findOneBy(['name' => 'Bratislava Tomorrow '.$i]);
             $this->assertNotNull($reservation);
             $this->assertEquals($i, $reservation->getSeat());
 
-            $reservation = $repo->findOneByName('Prague Today '.$i);
+            $reservation = $repo->findOneBy(['name' => 'Prague Today '.$i]);
             $this->assertNotNull($reservation);
             $this->assertEquals($i, $reservation->getSeat());
         }
 
         // Change date of the travel
-        $reservation = $repo->findOneByName('Bratislava Today 1');
+        $reservation = $repo->findOneBy(['name' => 'Bratislava Today 1']);
         $reservation->setTravelDate($tomorrow);
         $this->em->persist($reservation);
         $this->em->flush();
 
         // Scan all bus lines
         // Bratislava Today should have 2 seats
-        $bratislavaToday = $repo->findBy(array(
+        $bratislavaToday = $repo->findBy([
             'destination' => 'Bratislava',
             'travelDate' => $today,
-        ), array( 'seat' => 'asc' ));
+        ], ['seat' => 'asc']);
         $this->assertCount(self::SEATS - 1, $bratislavaToday);
         // Test seat numbers
         // Should be [ 0, 1 ]
@@ -165,10 +166,10 @@ class SortableGroupTest extends BaseTestCaseORM
         $this->assertEquals(range(0, self::SEATS - 2), $seats, 'Should be seats [ 0, 1 ] to Bratislava Today');
 
         // Bratislava Tomorrow should have 4 seats
-        $bratislavaTomorrow = $repo->findBy(array(
+        $bratislavaTomorrow = $repo->findBy([
             'destination' => 'Bratislava',
             'travelDate' => $tomorrow,
-        ), array( 'seat' => 'asc' ));
+        ], ['seat' => 'asc']);
         $this->assertCount(self::SEATS + 1, $bratislavaTomorrow);
         // Test seat numbers
         // Should be [ 0, 1, 2, 3 ]
@@ -176,10 +177,10 @@ class SortableGroupTest extends BaseTestCaseORM
         $this->assertEquals(range(0, self::SEATS), $seats, 'Should be seats [ 0, 1, 2, 3 ] to Bratislava Tomorrow');
 
         // Prague Today should have 3 seats
-        $pragueToday = $repo->findBy(array(
+        $pragueToday = $repo->findBy([
             'destination' => 'Prague',
             'travelDate' => $today,
-        ), array( 'seat' => 'asc' ));
+        ], ['seat' => 'asc']);
         $this->assertCount(self::SEATS, $pragueToday);
         // Test seat numbers
         $seats = array_map(function ($r) { return $r->getSeat(); }, $pragueToday);
@@ -198,57 +199,57 @@ class SortableGroupTest extends BaseTestCaseORM
         $repo = $this->em->getRepository(self::ITEM);
         $repoCategory = $this->em->getRepository(self::CATEGORY);
 
-        $vehicle = $repoCategory->findOneByName('Vehicle');
+        $vehicle = $repoCategory->findOneBy(['name' => 'Vehicle']);
 
-        $vehicles = $repo->findBy(array('category' => $vehicle), array('position' => 'asc'));
+        $vehicles = $repo->findBy(['category' => $vehicle], ['position' => 'asc']);
         $position = 1;
         foreach ($vehicles as $item) {
             $this->assertEquals($position, $item->getPosition());
-            $position++;
+            ++$position;
         }
         $this->assertEquals(31, $position);
 
-        $accessory = $repoCategory->findOneByName('Accessory');
+        $accessory = $repoCategory->findOneBy(['name' => 'Accessory']);
 
-        $accessories = $repo->findBy(array('category' => $accessory), array('position' => 'asc'));
+        $accessories = $repo->findBy(['category' => $accessory], ['position' => 'asc']);
         $position = 1;
         foreach ($accessories as $item) {
             $this->assertEquals($position, $item->getPosition());
-            $position++;
+            ++$position;
         }
         $this->assertEquals(31, $position);
 
-        $item = $repo->findOneBy(array('category' => $accessory, 'position' => 7));
+        $item = $repo->findOneBy(['category' => $accessory, 'position' => 7]);
         $item->setCategory($vehicle);
         $item->setPosition(4);
         $this->em->persist($item);
         $this->em->flush();
         $this->stopQueryLog(false, true);
 
-        unset ($vehicles, $accessories);
+        unset($vehicles, $accessories);
 
-        $vehicles = $repo->findBy(array('category' => $vehicle), array('position' => 'asc'));
+        $vehicles = $repo->findBy(['category' => $vehicle], ['position' => 'asc']);
         $position = 1;
         foreach ($vehicles as $item) {
             $this->assertEquals($position, $item->getPosition());
-            $position++;
+            ++$position;
         }
         $this->assertEquals(32, $position);
 
-        $accessory = $repoCategory->findOneByName('Accessory');
+        $accessory = $repoCategory->findOneBy(['name' => 'Accessory']);
 
-        $accessories = $repo->findBy(array('category' => $accessory), array('position' => 'asc'));
+        $accessories = $repo->findBy(['category' => $accessory], ['position' => 'asc']);
         $position = 1;
         foreach ($accessories as $item) {
             $this->assertEquals($position, $item->getPosition());
-            $position++;
+            ++$position;
         }
         $this->assertEquals(30, $position);
     }
 
     protected function getUsedEntityFixtures()
     {
-        return array(
+        return [
             self::VEHICLE,
             self::CAR,
             self::ENGINE,
@@ -256,7 +257,7 @@ class SortableGroupTest extends BaseTestCaseORM
             self::RESERVATION,
             self::ITEM,
             self::CATEGORY,
-        );
+        ];
     }
 
     private function populate()
@@ -300,7 +301,7 @@ class SortableGroupTest extends BaseTestCaseORM
         $today = \DateTime::createFromFormat(self::TRAVEL_DATE_FORMAT, self::TODAY);
         $tomorrow = \DateTime::createFromFormat(self::TRAVEL_DATE_FORMAT, self::TOMORROW);
 
-        for ($i = 0; $i < self::SEATS; $i++) {
+        for ($i = 0; $i < self::SEATS; ++$i) {
             $reservationBratislava = new Reservation();
             $reservationBratislava->setBus($icarus);
             $reservationBratislava->setDestination('Bratislava');
@@ -327,14 +328,13 @@ class SortableGroupTest extends BaseTestCaseORM
         $categoryVehicle->setName('Vehicle');
         $this->em->persist($categoryVehicle);
 
-        $categoryAccessory = new Category;
+        $categoryAccessory = new Category();
         $categoryAccessory->setName('Accessory');
         $this->em->persist($categoryAccessory);
 
-        for ($i = 1; $i <= 60; $i++)
-        {
+        for ($i = 1; $i <= 60; ++$i) {
             $item = new Item();
-            $item->setName('Item ' . $i);
+            $item->setName('Item '.$i);
             if ($i <= 30) {
                 $item->setCategory($categoryVehicle);
                 $item->setPosition($i);

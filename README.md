@@ -1,22 +1,39 @@
 # Doctrine Behavioral Extensions
 
-[![Build Status](https://travis-ci.org/Atlantic18/DoctrineExtensions.svg?branch=v2.4.x)](https://travis-ci.org/Atlantic18/DoctrineExtensions)
+[![Build Status](https://travis-ci.org/Atlantic18/DoctrineExtensions.svg?branch=main)](https://travis-ci.org/Atlantic18/DoctrineExtensions)
 [![Latest Stable Version](https://poser.pugx.org/gedmo/doctrine-extensions/version)](https://packagist.org/packages/gedmo/doctrine-extensions)
 
 This package contains extensions for Doctrine ORM and MongoDB ODM that offer new functionality or tools to use Doctrine
 more efficiently. These behaviors can be easily attached to the event system of Doctrine and handle the records being
 flushed in a behavioral way.
 
-:boom: **Check out the modernized [3.0 release](https://github.com/Atlantic18/DoctrineExtensions/releases/tag/v3.0.0)!**
+---
+
+## Doctrine Extensions 3.0 Released :tada:
+
+3.0 focuses on refreshing this package for today's PHP. This includes:
+
+- Bumping minimum version requirements of PHP, Doctrine, and other dependencies
+- Implementing support for the latest Doctrine MongoDB & Common packages
+- Updating the test suite, add code and style standards, and other needed build tools
+- Cleaning up documentation, code, comments, etc.
+
+[Read the Upgrade Doc for more info.](/doc/upgrading/upgrade-v2.4-to-v3.0.md)
+
+---
 
 ## Installation
 
-    $ composer require gedmo/doctrine-extensions
+    composer require gedmo/doctrine-extensions
 
 * [Symfony 2](/doc/symfony2.md)
 * [Symfony 4](/doc/symfony4.md)
 * [Laravel 5](https://www.laraveldoctrine.org/docs/1.3/extensions)
-* [Zend Framework 2](/doc/zendframework2.md)
+* [Laminas](/doc/laminas.md)
+
+### Upgrading
+
+* [From 2.4.x to 3.0](/doc/upgrading/upgrade-v2.4-to-v3.0.md)
 
 ## Extensions
 
@@ -76,15 +93,13 @@ XML mapping xsd schemas are also versioned and can be used by version suffix:
 
 ### Running Tests
 
-**pdo-sqlite** extension is necessary.
-
 To set up and run the tests, follow these steps:
 
-- go to the root directory of extensions
-- download composer: `wget https://getcomposer.org/composer.phar`
-- install dev libraries: `php composer.phar install`
-- run: `bin/phpunit -c tests`
-- optional - run mongodb service if targeting mongo tests
+- Install [Docker](https://www.docker.com/) and ensure you have `docker-compose`
+- From the project root, run `docker-compose up -d` to start containers in daemon mode
+- Enter the container via `docker-compose exec php bash` and navigate to the root directory: `cd /var/www`
+- Install Composer dependencies via `composer install`
+- Run the tests: `bin/phpunit -c tests/`
 
 ### Running the Example
 

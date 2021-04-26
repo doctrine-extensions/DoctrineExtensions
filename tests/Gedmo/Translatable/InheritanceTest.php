@@ -3,18 +3,19 @@
 namespace Gedmo\Translatable;
 
 use Doctrine\Common\EventManager;
-use Tool\BaseTestCaseORM;
 use Doctrine\ORM\Query;
+use Tool\BaseTestCaseORM;
 use Translatable\Fixture\File;
 use Translatable\Fixture\Image;
 use Translatable\Fixture\TemplatedArticle;
-use Gedmo\Translatable\Query\TreeWalker\TranslationWalker;
 
 /**
  * These are tests for translatable behavior
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @link http://www.gediminasm.org
+ *
+ * @see http://www.gediminasm.org
+ *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class InheritanceTest extends BaseTestCaseORM
@@ -28,7 +29,7 @@ class InheritanceTest extends BaseTestCaseORM
 
     private $translatableListener;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -133,11 +134,11 @@ class InheritanceTest extends BaseTestCaseORM
 
     protected function getUsedEntityFixtures()
     {
-        return array(
+        return [
             self::ARTICLE,
             self::TRANSLATION,
             self::FILE,
             self::IMAGE,
-        );
+        ];
     }
 }

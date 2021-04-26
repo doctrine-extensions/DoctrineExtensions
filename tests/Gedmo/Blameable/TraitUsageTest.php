@@ -2,22 +2,24 @@
 
 namespace Gedmo\Blameable;
 
+use Blameable\Fixture\Entity\UsingTrait;
 use Doctrine\Common\EventManager;
 use Tool\BaseTestCaseORM;
-use Blameable\Fixture\Entity\UsingTrait;
 
 /**
  * These are tests for Blameable behavior
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @link http://www.gediminasm.org
+ *
+ * @see http://www.gediminasm.org
+ *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class TraitUsageTest extends BaseTestCaseORM
 {
-    const TARGET = "Blameable\\Fixture\\Entity\\UsingTrait";
+    const TARGET = 'Blameable\\Fixture\\Entity\\UsingTrait';
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -60,8 +62,8 @@ class TraitUsageTest extends BaseTestCaseORM
 
     protected function getUsedEntityFixtures()
     {
-        return array(
+        return [
             self::TARGET,
-        );
+        ];
     }
 }

@@ -2,27 +2,29 @@
 
 namespace Gedmo\Timestampable;
 
+use Doctrine\Common\EventArgs;
 use Doctrine\Common\EventManager;
-use Tool\BaseTestCaseORM;
-use Timestampable\Fixture\TitledArticle;
 use Gedmo\Mapping\Event\Adapter\ORM as BaseAdapterORM;
 use Gedmo\Timestampable\Mapping\Event\TimestampableAdapter;
-use Doctrine\Common\EventArgs;
+use Timestampable\Fixture\TitledArticle;
+use Tool\BaseTestCaseORM;
 
 /**
  * These are tests for Timestampable behavior
  *
  * @author Ivan Borzenkov <ivan.borzenkov@gmail.com>
- * @link http://www.gediminasm.org
+ *
+ * @see http://www.gediminasm.org
+ *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class ChangeTest extends BaseTestCaseORM
 {
-    const FIXTURE = "Timestampable\\Fixture\\TitledArticle";
+    const FIXTURE = 'Timestampable\\Fixture\\TitledArticle';
 
     protected $listener;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -49,7 +51,7 @@ class ChangeTest extends BaseTestCaseORM
         $this->em->flush();
         $this->em->clear();
 
-        $test = $this->em->getRepository(self::FIXTURE)->findOneByTitle('Test');
+        $test = $this->em->getRepository(self::FIXTURE)->findOneBy(['title' => 'Test']);
         $test->setTitle('New Title');
         $test->setState('Closed');
         $this->em->persist($test);
@@ -68,7 +70,7 @@ class ChangeTest extends BaseTestCaseORM
         $anotherDate = \DateTime::createFromFormat('Y-m-d H:i:s', '2000-01-01 00:00:00');
         $this->listener->eventAdapter->setDateValue($anotherDate);
 
-        $test = $this->em->getRepository(self::FIXTURE)->findOneByTitle('New Title');
+        $test = $this->em->getRepository(self::FIXTURE)->findOneBy(['title' => 'New Title']);
         $test->setText('New Text');
         $test->setState('Open');
         $this->em->persist($test);
@@ -84,7 +86,7 @@ class ChangeTest extends BaseTestCaseORM
             $test->getClosed()->format('Y-m-d H:i:s')
         );
 
-        $test = $this->em->getRepository(self::FIXTURE)->findOneByTitle('New Title');
+        $test = $this->em->getRepository(self::FIXTURE)->findOneBy(['title' => 'New Title']);
         $test->setState('Published');
         $this->em->persist($test);
         $this->em->flush();
@@ -98,9 +100,9 @@ class ChangeTest extends BaseTestCaseORM
 
     protected function getUsedEntityFixtures()
     {
-        return array(
+        return [
             self::FIXTURE,
-        );
+        ];
     }
 }
 

@@ -3,21 +3,23 @@
 namespace Gedmo\Sluggable;
 
 use Doctrine\Common\EventManager;
-use Tool\BaseTestCaseORM;
 use Sluggable\Fixture\Issue633\Article;
+use Tool\BaseTestCaseORM;
 
 /**
  * These are tests for Sluggable behavior
  *
  * @author Derek Clapham <derek.clapham@gmail.com>
- * @link http://www.gediminasm.org
+ *
+ * @see http://www.gediminasm.org
+ *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class Issue633Test extends BaseTestCaseORM
 {
     const TARGET = 'Sluggable\\Fixture\\Issue633\\Article';
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -91,8 +93,8 @@ class Issue633Test extends BaseTestCaseORM
 
     protected function getUsedEntityFixtures()
     {
-        return array(
+        return [
             self::TARGET,
-        );
+        ];
     }
 }

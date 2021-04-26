@@ -3,14 +3,16 @@
 namespace Gedmo\Sluggable;
 
 use Doctrine\Common\EventManager;
-use Tool\BaseTestCaseORM;
 use Sluggable\Fixture\ConfigurationArticle;
+use Tool\BaseTestCaseORM;
 
 /**
  * These are tests for Sluggable behavior
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @link http://www.gediminasm.org
+ *
+ * @see http://www.gediminasm.org
+ *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class SluggableConfigurationTest extends BaseTestCaseORM
@@ -19,7 +21,7 @@ class SluggableConfigurationTest extends BaseTestCaseORM
 
     private $articleId;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -40,7 +42,7 @@ class SluggableConfigurationTest extends BaseTestCaseORM
 
     public function testNonUniqueSlugGeneration()
     {
-        for ($i = 0; $i < 5; $i++) {
+        for ($i = 0; $i < 5; ++$i) {
             $article = new ConfigurationArticle();
             $article->setTitle('the title');
             $article->setCode('my code');
@@ -80,9 +82,9 @@ class SluggableConfigurationTest extends BaseTestCaseORM
 
     protected function getUsedEntityFixtures()
     {
-        return array(
+        return [
             self::ARTICLE,
-        );
+        ];
     }
 
     private function populate()

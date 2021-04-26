@@ -12,7 +12,9 @@ use Tool\BaseTestCaseORM;
  * These are mapping extension tests
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @link http://www.gediminasm.org
+ *
+ * @see http://www.gediminasm.org
+ *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class SluggableMappingTest extends BaseTestCaseORM
@@ -22,7 +24,7 @@ class SluggableMappingTest extends BaseTestCaseORM
      */
     private $sluggable;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -35,7 +37,7 @@ class SluggableMappingTest extends BaseTestCaseORM
 
     protected function getUsedEntityFixtures()
     {
-        return array('Mapping\Fixture\Xml\Sluggable');
+        return ['Mapping\Fixture\Xml\Sluggable'];
     }
 
     protected function getMetadataDriverImplementation()

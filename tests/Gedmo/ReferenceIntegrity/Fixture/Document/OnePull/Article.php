@@ -21,11 +21,12 @@ class Article
     private $title;
 
     /**
-     * @ODM\ReferenceMany(targetDocument="Type", simple="true", inversedBy="articles")
+     * @ODM\ReferenceMany(targetDocument="ReferenceIntegrity\Fixture\Document\OnePull\Type", inversedBy="articles")
+     *
      * @var ArrayCollection
      */
     private $types;
-    
+
     public function __construct()
     {
         $this->types = new ArrayCollection();
@@ -57,8 +58,6 @@ class Article
 
     /**
      * Add types
-     *
-     * @param Type $type
      */
     public function addType(Type $type)
     {

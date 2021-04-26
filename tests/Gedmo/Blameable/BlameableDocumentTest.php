@@ -2,17 +2,19 @@
 
 namespace Gedmo\Blameable;
 
-use Tool\BaseTestCaseMongoODM;
-use Doctrine\Common\EventManager;
 use Blameable\Fixture\Document\Article;
 use Blameable\Fixture\Document\Type;
 use Blameable\Fixture\Document\User;
+use Doctrine\Common\EventManager;
+use Tool\BaseTestCaseMongoODM;
 
 /**
  * These are tests for Blameable behavior ODM implementation
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @link http://www.gediminasm.org
+ *
+ * @see http://www.gediminasm.org
+ *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class BlameableDocumentTest extends BaseTestCaseMongoODM
@@ -23,7 +25,7 @@ class BlameableDocumentTest extends BaseTestCaseMongoODM
     const USER = 'Blameable\Fixture\Document\User';
     const ARTICLE = 'Blameable\Fixture\Document\Article';
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -45,7 +47,7 @@ class BlameableDocumentTest extends BaseTestCaseMongoODM
     public function testBlameable()
     {
         $repo = $this->dm->getRepository(self::ARTICLE);
-        $article = $repo->findOneByTitle('Blameable Article');
+        $article = $repo->findOneBy(['title' => 'Blameable Article']);
 
         $this->assertEquals(self::TEST_USERNAME, $article->getCreated());
         $this->assertEquals(self::TEST_USERNAME, $article->getUpdated());
@@ -59,7 +61,7 @@ class BlameableDocumentTest extends BaseTestCaseMongoODM
         $this->dm->persist($published);
         $this->dm->flush();
 
-        $article = $repo->findOneByTitle('Blameable Article');
+        $article = $repo->findOneBy(['title' => 'Blameable Article']);
 
         $this->assertEquals(self::TEST_USERNAME, $article->getPublished());
         $this->assertEquals(self::TEST_USERNAME, $article->getCreator()->getUsername());
@@ -76,7 +78,7 @@ class BlameableDocumentTest extends BaseTestCaseMongoODM
         $this->dm->flush();
 
         $repo = $this->dm->getRepository(self::ARTICLE);
-        $sport = $repo->findOneByTitle('sport forced');
+        $sport = $repo->findOneBy(['title' => 'sport forced']);
         $this->assertEquals(self::TEST_USERNAME, $sport->getCreated());
         $this->assertEquals(self::TEST_USERNAME, $sport->getUpdated());
 
@@ -90,7 +92,7 @@ class BlameableDocumentTest extends BaseTestCaseMongoODM
         $this->dm->persist($published);
         $this->dm->flush();
 
-        $sport = $repo->findOneByTitle('sport forced');
+        $sport = $repo->findOneBy(['title' => 'sport forced']);
         $this->assertEquals(self::TEST_USERNAME, $sport->getPublished());
     }
 

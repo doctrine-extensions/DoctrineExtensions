@@ -4,14 +4,15 @@ namespace Gedmo\Translatable;
 
 use Doctrine\Common\EventManager;
 use Tool\BaseTestCaseORM;
-use Translatable\Fixture\PersonTranslation;
 use Translatable\Fixture\Person;
 
 /**
  * These are tests for translatable behavior
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @link http://www.gediminasm.org
+ *
+ * @see http://www.gediminasm.org
+ *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class EntityTranslationTableTest extends BaseTestCaseORM
@@ -21,7 +22,7 @@ class EntityTranslationTableTest extends BaseTestCaseORM
 
     private $translatableListener;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -72,6 +73,7 @@ class EntityTranslationTableTest extends BaseTestCaseORM
 
     /**
      * Covers issue #438
+     *
      * @test
      */
     public function shouldPersistDefaultLocaleValue()
@@ -101,9 +103,9 @@ class EntityTranslationTableTest extends BaseTestCaseORM
 
     protected function getUsedEntityFixtures()
     {
-        return array(
+        return [
             self::PERSON,
             self::TRANSLATION,
-        );
+        ];
     }
 }

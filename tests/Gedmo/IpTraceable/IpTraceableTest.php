@@ -3,27 +3,29 @@
 namespace Gedmo\IpTraceable;
 
 use Doctrine\Common\EventManager;
-use Tool\BaseTestCaseORM;
 use IpTraceable\Fixture\Article;
 use IpTraceable\Fixture\Comment;
 use IpTraceable\Fixture\Type;
+use Tool\BaseTestCaseORM;
 
 /**
  * These are tests for IpTraceable behavior
  *
  * @author Pierre-Charles Bertineau <pc.bertineau@alterphp.com>
- * @link http://www.gediminasm.org
+ *
+ * @see http://www.gediminasm.org
+ *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class IpTraceableTest extends BaseTestCaseORM
 {
     const TEST_IP = '34.234.1.10';
 
-    const ARTICLE = "IpTraceable\\Fixture\\Article";
-    const COMMENT = "IpTraceable\\Fixture\\Comment";
-    const TYPE = "IpTraceable\\Fixture\\Type";
+    const ARTICLE = 'IpTraceable\\Fixture\\Article';
+    const COMMENT = 'IpTraceable\\Fixture\\Comment';
+    const TYPE = 'IpTraceable\\Fixture\\Type';
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -78,12 +80,12 @@ class IpTraceableTest extends BaseTestCaseORM
         $this->em->flush();
         $this->em->clear();
 
-        $sport = $this->em->getRepository(self::ARTICLE)->findOneByTitle('Sport');
+        $sport = $this->em->getRepository(self::ARTICLE)->findOneBy(['title' => 'Sport']);
         $this->assertEquals(self::TEST_IP, $sport->getCreated());
         $this->assertEquals(self::TEST_IP, $sport->getUpdated());
         $this->assertNull($sport->getPublished());
 
-        $sportComment = $this->em->getRepository(self::COMMENT)->findOneByMessage('hello');
+        $sportComment = $this->em->getRepository(self::COMMENT)->findOneBy(['message' => 'hello']);
         $this->assertEquals(self::TEST_IP, $sportComment->getModified());
         $this->assertNull($sportComment->getClosed());
 
@@ -99,7 +101,7 @@ class IpTraceableTest extends BaseTestCaseORM
         $this->em->flush();
         $this->em->clear();
 
-        $sportComment = $this->em->getRepository(self::COMMENT)->findOneByMessage('hello');
+        $sportComment = $this->em->getRepository(self::COMMENT)->findOneBy(['message' => 'hello']);
         $this->assertEquals(self::TEST_IP, $sportComment->getClosed());
 
         $this->assertEquals(self::TEST_IP, $sport->getPublished());
@@ -117,7 +119,7 @@ class IpTraceableTest extends BaseTestCaseORM
         $this->em->clear();
 
         $repo = $this->em->getRepository(self::ARTICLE);
-        $sport = $repo->findOneByTitle('sport forced');
+        $sport = $repo->findOneBy(['title' => 'sport forced']);
         $this->assertEquals(self::TEST_IP, $sport->getCreated());
         $this->assertEquals(self::TEST_IP, $sport->getUpdated());
 
@@ -131,16 +133,16 @@ class IpTraceableTest extends BaseTestCaseORM
         $this->em->flush();
         $this->em->clear();
 
-        $sport = $repo->findOneByTitle('sport forced');
+        $sport = $repo->findOneBy(['title' => 'sport forced']);
         $this->assertEquals(self::TEST_IP, $sport->getPublished());
     }
 
     protected function getUsedEntityFixtures()
     {
-        return array(
+        return [
             self::ARTICLE,
             self::COMMENT,
             self::TYPE,
-        );
+        ];
     }
 }
