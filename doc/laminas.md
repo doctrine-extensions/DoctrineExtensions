@@ -44,7 +44,7 @@ return array(
 );
 ```
 
-That's it! From now on you can use Gedmo annotations, just as it is described in [documentation](https://github.com/Atlantic18/DoctrineExtensions/blob/master/doc/annotations.md).
+That's it! From now on you can use Gedmo annotations, just as it is described in [documentation](https://github.com/Atlantic18/DoctrineExtensions/tree/main/doc/annotations.md).
 
 #### Note: You may need to provide additional settings for some of the available listeners.
 

@@ -63,7 +63,7 @@ New annotation reader does not depend on any namespaces, for that reason you can
 single reader instance for whole project. The example bellow shows how to setup the
 mapping and listeners:
 
-**Note:** using this repository you can test and check the [example demo configuration](https://github.com/Atlantic18/DoctrineExtensions/blob/master/example/em.php)
+**Note:** using this repository you can test and check the [example demo configuration](https://github.com/Atlantic18/DoctrineExtensions/tree/main/example/em.php)
 
 ``` php
 <?php

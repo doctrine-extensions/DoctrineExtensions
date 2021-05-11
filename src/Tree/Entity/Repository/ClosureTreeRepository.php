@@ -508,7 +508,7 @@ class ClosureTreeRepository extends AbstractTreeRepository
 
         $nodeIdField = $nodeMeta->getSingleIdentifierFieldName();
         $newClosuresCount = $buildClosures("
-          SELECT node.id AS ancestor, node.$nodeIdField AS descendant, 0 AS depth
+          SELECT node.$nodeIdField AS ancestor, node.$nodeIdField AS descendant, 0 AS depth
           FROM {$nodeMeta->name} AS node
           LEFT JOIN {$closureMeta->name} AS c WITH c.ancestor = node AND c.depth = 0
           WHERE c.id IS NULL

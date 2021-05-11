@@ -58,7 +58,7 @@ doctrine:
                 alias: Gedmo
                 prefix: Gedmo\Translatable\Entity
                 # make sure vendor library location is correct
-                dir: "%kernel.root_dir%/../vendor/gedmo/doctrine-extensions/lib/Gedmo/Translatable/Entity"
+                dir: "%kernel.root_dir%/../vendor/gedmo/doctrine-extensions/src/Translatable/Entity"
 ```
 
 After that, running **php bin/console doctrine:mapping:info** you should see the output:
@@ -83,7 +83,7 @@ mappings:
         alias: Gedmo
         prefix: Gedmo\Translatable\Entity
         # make sure vendor library location is correct
-        dir: "%kernel.root_dir%/../vendor/gedmo/doctrine-extensions/lib/Gedmo/Translatable/Entity/MappedSuperclass"
+        dir: "%kernel.root_dir%/../vendor/gedmo/doctrine-extensions/src/Translatable/Entity/MappedSuperclass"
 ```
 
 The configuration above, adds a **/MappedSuperclass** into directory depth, after running
@@ -110,17 +110,17 @@ orm:
             alias: Gedmo
             prefix: Gedmo\Translatable\Entity
             # make sure vendor library location is correct
-            dir: "%kernel.root_dir%/../vendor/gedmo/doctrine-extensions/lib/Gedmo/Translatable/Entity"
+            dir: "%kernel.root_dir%/../vendor/gedmo/doctrine-extensions/src/Translatable/Entity"
         loggable:
             type: annotation
             alias: Gedmo
             prefix: Gedmo\Loggable\Entity
-            dir: "%kernel.root_dir%/../vendor/gedmo/doctrine-extensions/lib/Gedmo/Loggable/Entity"
+            dir: "%kernel.root_dir%/../vendor/gedmo/doctrine-extensions/src/Loggable/Entity"
         tree:
             type: annotation
             alias: Gedmo
             prefix: Gedmo\Tree\Entity
-            dir: "%kernel.root_dir%/../vendor/gedmo/doctrine-extensions/lib/Gedmo/Tree/Entity"
+            dir: "%kernel.root_dir%/../vendor/gedmo/doctrine-extensions/src/Tree/Entity"
 ```
 <a name="ext-filtering"></a>
 ## Filters
@@ -450,14 +450,14 @@ doctrine_mongodb:
                     alias: GedmoDocument
                     prefix: Gedmo\Translatable\Document
                     # make sure vendor library location is correct
-                    dir: "%kernel.root_dir%/../vendor/gedmo/doctrine-extensions/lib/Gedmo/Translatable/Document"
+                    dir: "%kernel.root_dir%/../vendor/gedmo/doctrine-extensions/src/Translatable/Document"
 ```
 
 This also shows, how to make mappings based on single manager. All what differs is that **Document**
 instead of **Entity** is used. I haven't tested it with mongo though.
 
 **Note:** [extension repository](http://github.com/Atlantic18/DoctrineExtensions) contains all
-[documentation](http://github.com/Atlantic18/DoctrineExtensions/tree/master/doc) you may need
+[documentation](http://github.com/Atlantic18/DoctrineExtensions/tree/main/doc) you may need
 to understand how you can use it in your projects.
 
 <a name="alternative"></a>
