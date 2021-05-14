@@ -36,8 +36,8 @@
     "require": {
         "php": "^7.2 || ^8.0",
         "behat/transliterator": "~1.2",
-        "doctrine/annotations": "^1.2",
-        "doctrine/cache": "^1.0",
+        "doctrine/annotations": "^1.13",
+        "doctrine/cache": "^1.11 || ^2.0",
         "doctrine/collections": "^1.0",
         "doctrine/common": "^2.13 || ^3.0",
         "doctrine/event-manager": "^1.0"
@@ -52,6 +52,7 @@
         "doctrine/orm": "^2.6.3",
         "friendsofphp/php-cs-fixer": "^2.16",
         "phpunit/phpunit": "^8.5",
+        "symfony/cache": "^4.4 || ^5.0",
         "symfony/yaml": "^4.1"
     },
     "conflict": {
@@ -61,7 +62,8 @@
     },
     "suggest": {
         "doctrine/mongodb-odm": "to use the extensions with the MongoDB ODM",
-        "doctrine/orm": "to use the extensions with the ORM"
+        "doctrine/orm": "to use the extensions with the ORM",
+        "symfony/cache": "to cache parsed annotations"
     },
     "config": {
         "bin-dir": "bin",
