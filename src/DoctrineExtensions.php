@@ -2,6 +2,7 @@
 
 namespace Gedmo;
 
+use function class_exists;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Annotations\AnnotationRegistry;
 use Doctrine\Common\Annotations\PsrCachedReader;
@@ -12,7 +13,6 @@ use Doctrine\ODM\MongoDB\Mapping\Driver as DriverMongodbODM;
 use Doctrine\ORM\Mapping\Driver as DriverORM;
 use Doctrine\Persistence\Mapping\Driver\MappingDriverChain;
 use Symfony\Component\Cache\Adapter\ArrayAdapter;
-use function class_exists;
 
 /**
  * Version class allows to checking the dependencies required
@@ -26,7 +26,7 @@ final class DoctrineExtensions
     /**
      * Current version of extensions
      */
-    const VERSION = '3.1.0';
+    public const VERSION = '3.1.0';
 
     /**
      * Hooks all extensions metadata mapping drivers
