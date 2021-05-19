@@ -27,6 +27,10 @@ a release.
 - Dropped support for doctrine/mongodb-odm < 2.3.
 - Make doctrine/cache an optional dependency.
 
+## Fixed
+### Loggable
+- Fix `appendNumber` renaming for files without extension (#2228)
+
 ## [3.6.0] - 2022-03-19
 ### Added
 - Translatable: Add defaultTranslationValue option to allow null or string value (#2167). TranslatableListener can hydrate object properties with null value, but it may cause a Type error for non-nullable getter upon a missing translation.

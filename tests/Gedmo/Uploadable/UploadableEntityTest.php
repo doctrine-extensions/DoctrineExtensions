@@ -477,7 +477,24 @@ final class UploadableEntityTest extends BaseTestCaseORM
         static::assertFalse($this->listener->removeFile('non_existent_file'));
     }
 
-    public function testMoveFileUsingAppendNumberOptionAppendsNumberToFilenameIfItAlreadyExists(): void
+    public function dataProvider_testMoveFileUsingAppendNumberOptionAppendsNumberToFilenameIfItAlreadyExists()
+    {
+        return [
+            'With extension' => [
+                'Filename' => 'test.txt',
+                'Expected filename' => 'test-2.txt',
+            ],
+            'Without extension' => [
+                'Filename' => 'test',
+                'Expected filename' => 'test-2',
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider dataProvider_testMoveFileUsingAppendNumberOptionAppendsNumberToFilenameIfItAlreadyExists
+     */
+    public function testMoveFileUsingAppendNumberOptionAppendsNumberToFilenameIfItAlreadyExists(string $filename, string $expectedFilename): void
     {
         $file = new FileAppendNumber();
         $file2 = new FileAppendNumber();
@@ -485,7 +502,7 @@ final class UploadableEntityTest extends BaseTestCaseORM
         $file->setTitle('test');
         $file2->setTitle('test2');
 
-        $fileInfo = $this->generateUploadedFile();
+        $fileInfo = $this->generateUploadedFile(false, $filename);
 
         $this->listener->addEntityFileInfo($file, $fileInfo);
 
@@ -499,9 +516,7 @@ final class UploadableEntityTest extends BaseTestCaseORM
 
         $this->em->refresh($file2);
 
-        $filename = substr($file2->getFilePath(), strrpos($file2->getFilePath(), '/') + 1);
-
-        static::assertSame('test-2.txt', $filename);
+        $this->assertEquals($expectedFilename, basename($file2->getFilePath()));
     }
 
     public function testMoveFileUsingAppendNumberOptionAppendsNumberToFilenameIfItAlreadyExistsRelativePath(): void
