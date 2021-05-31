@@ -68,6 +68,8 @@ class LoggableListener extends MappedEventSubscriber
     {
         if (is_string($username)) {
             $this->username = $username;
+        } elseif (is_object($username) && method_exists($username, 'getUserIdentifier')) {
+            $this->username = (string) $username->getUserIdentifier();
         } elseif (is_object($username) && method_exists($username, 'getUsername')) {
             $this->username = (string) $username->getUsername();
         } else {
