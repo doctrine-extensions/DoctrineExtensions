@@ -32,7 +32,7 @@ final class DoctrineExtensions
     public static function registerMappingIntoDriverChainORM(MappingDriverChain $driverChain, Reader $reader = null)
     {
         self::registerAnnotations();
-        if (!$reader) {
+        if ($reader === null) {
             $reader = new CachedReader(new AnnotationReader(), new ArrayCache());
         }
         $annotationDriver = new DriverORM\AnnotationDriver($reader, [
@@ -50,7 +50,7 @@ final class DoctrineExtensions
     public static function registerAbstractMappingIntoDriverChainORM(MappingDriverChain $driverChain, Reader $reader = null)
     {
         self::registerAnnotations();
-        if (!$reader) {
+        if ($reader === null) {
             $reader = new CachedReader(new AnnotationReader(), new ArrayCache());
         }
         $annotationDriver = new DriverORM\AnnotationDriver($reader, [
@@ -68,7 +68,7 @@ final class DoctrineExtensions
     public static function registerMappingIntoDriverChainMongodbODM(MappingDriverChain $driverChain, Reader $reader = null)
     {
         self::registerAnnotations();
-        if (!$reader) {
+        if ($reader === null) {
             $reader = new CachedReader(new AnnotationReader(), new ArrayCache());
         }
         $annotationDriver = new DriverMongodbODM\AnnotationDriver($reader, [
@@ -85,7 +85,7 @@ final class DoctrineExtensions
     public static function registerAbstractMappingIntoDriverChainMongodbODM(MappingDriverChain $driverChain, Reader $reader = null)
     {
         self::registerAnnotations();
-        if (!$reader) {
+        if ($reader === null) {
             $reader = new CachedReader(new AnnotationReader(), new ArrayCache());
         }
         $annotationDriver = new DriverMongodbODM\AnnotationDriver($reader, [

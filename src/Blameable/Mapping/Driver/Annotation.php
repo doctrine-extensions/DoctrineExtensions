@@ -56,20 +56,17 @@ class Annotation extends AbstractAnnotationDriver
                     if (!$this->isValidField($meta, $field)) {
                         throw new InvalidMappingException("Field - [{$field}] type is not valid and must be 'string' or a one-to-many relation in class - {$meta->name}");
                     }
-                } else {
-                    // association
-                    if (!$meta->isSingleValuedAssociation($field)) {
-                        throw new InvalidMappingException("Association - [{$field}] is not valid, it must be a one-to-many relation or a string field - {$meta->name}");
-                    }
+                } elseif (!$meta->isSingleValuedAssociation($field)) {
+                    throw new InvalidMappingException("Association - [{$field}] is not valid, it must be a one-to-many relation or a string field - {$meta->name}");
                 }
                 if (!in_array($blameable->on, ['update', 'create', 'change'])) {
                     throw new InvalidMappingException("Field - [{$field}] trigger 'on' is not one of [update, create, change] in class - {$meta->name}");
                 }
                 if ('change' == $blameable->on) {
-                    if (!isset($blameable->field)) {
+                    if (!(property_exists($blameable, 'field') && $blameable->field !== null)) {
                         throw new InvalidMappingException("Missing parameters on property - {$field}, field must be set on [change] trigger in class - {$meta->name}");
                     }
-                    if (is_array($blameable->field) && isset($blameable->value)) {
+                    if (is_array($blameable->field) && (property_exists($blameable, 'value') && $blameable->value !== null)) {
                         throw new InvalidMappingException('Blameable extension does not support multiple value changeset detection yet.');
                     }
                     $field = [

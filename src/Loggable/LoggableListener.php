@@ -258,7 +258,7 @@ class LoggableListener extends MappedEventSubscriber
         $meta = $wrapped->getMetadata();
 
         // Filter embedded documents
-        if (isset($meta->isEmbeddedDocument) && $meta->isEmbeddedDocument) {
+        if (property_exists($meta, 'isEmbeddedDocument') && $meta->isEmbeddedDocument !== null && $meta->isEmbeddedDocument) {
             return;
         }
 

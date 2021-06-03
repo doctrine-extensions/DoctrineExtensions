@@ -51,7 +51,7 @@ class Annotation extends AbstractAnnotationDriver
         if ($annot = $this->reader->getClassAnnotation($class, self::LOGGABLE)) {
             $config['loggable'] = true;
             if ($annot->logEntryClass) {
-                if (!$cl = $this->getRelatedClassName($meta, $annot->logEntryClass)) {
+                if (($cl = $this->getRelatedClassName($meta, $annot->logEntryClass)) === '') {
                     throw new InvalidMappingException("LogEntry class: {$annot->logEntryClass} does not exist.");
                 }
                 $config['logEntryClass'] = $cl;
@@ -106,7 +106,7 @@ class Annotation extends AbstractAnnotationDriver
      */
     protected function isClassAnnotationInValid(ClassMetadata $meta, array &$config)
     {
-        return isset($config['versioned']) && !isset($config['loggable']) && (!isset($meta->isEmbeddedClass) || !$meta->isEmbeddedClass);
+        return isset($config['versioned']) && !isset($config['loggable']) && (!(property_exists($meta, 'isEmbeddedClass') && $meta->isEmbeddedClass !== null) || !$meta->isEmbeddedClass);
     }
 
     /**

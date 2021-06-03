@@ -351,7 +351,7 @@ class TranslatableListener extends MappedEventSubscriber
             try {
                 $uow->scheduleForUpdate($entity);
             } catch (ORMInvalidArgumentException $e) {
-                foreach ($fields as $field => $trans) {
+                foreach (array_keys($fields) as $field) {
                     $this->removeTranslationInDefaultLocale($oid, $field);
                 }
             }
@@ -623,14 +623,11 @@ class TranslatableListener extends MappedEventSubscriber
                         // if we do not have the primary key yet available
                         // keep this translation in memory to insert it later with foreign key
                         $this->pendingTranslationInserts[spl_object_hash($object)][] = $translation;
+                    } elseif ($wasPersistedSeparetely) {
+                        $ea->recomputeSingleObjectChangeset($uow, $translationMetadata, $translation);
                     } else {
-                        // persist and compute change set for translation
-                        if ($wasPersistedSeparetely) {
-                            $ea->recomputeSingleObjectChangeset($uow, $translationMetadata, $translation);
-                        } else {
-                            $om->persist($translation);
-                            $uow->computeChangeSet($translationMetadata, $translation);
-                        }
+                        $om->persist($translation);
+                        $uow->computeChangeSet($translationMetadata, $translation);
                     }
                 }
             }
@@ -650,11 +647,9 @@ class TranslatableListener extends MappedEventSubscriber
             $this->validateLocale($this->defaultLocale);
             $modifiedChangeSet = $changeSet;
             foreach ($changeSet as $field => $changes) {
-                if (in_array($field, $translatableFields)) {
-                    if ($locale !== $this->defaultLocale) {
-                        $ea->setOriginalObjectProperty($uow, $oid, $field, $changes[0]);
-                        unset($modifiedChangeSet[$field]);
-                    }
+                if (in_array($field, $translatableFields) && $locale !== $this->defaultLocale) {
+                    $ea->setOriginalObjectProperty($uow, $oid, $field, $changes[0]);
+                    unset($modifiedChangeSet[$field]);
                 }
             }
             $ea->recomputeSingleObjectChangeset($uow, $meta, $object);

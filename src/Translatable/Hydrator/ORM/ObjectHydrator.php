@@ -64,7 +64,7 @@ class ObjectHydrator extends BaseObjectHydrator
                     break;
                 }
             }
-            if ($translatableListener) {
+            if ($translatableListener !== null) {
                 break;
             }
         }

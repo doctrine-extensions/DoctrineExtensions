@@ -38,7 +38,7 @@ abstract class AbstractTreeRepository extends DocumentRepository implements Repo
                     break;
                 }
             }
-            if ($treeListener) {
+            if ($treeListener !== null) {
                 break;
             }
         }

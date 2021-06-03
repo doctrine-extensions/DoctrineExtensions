@@ -272,7 +272,7 @@ class Closure implements Strategy
                 $dql .= ' JOIN c.ancestor a';
                 $dql .= ' WHERE c.descendant = :parent';
                 $q = $em->createQuery($dql);
-                $q->setParameters(compact('parent'));
+                $q->setParameters(['parent' => $parent]);
                 $ancestors = $q->getArrayResult();
 
                 foreach ($ancestors as $ancestor) {
@@ -424,7 +424,7 @@ class Closure implements Strategy
             $dql .= ' WHERE c.ancestor = :node';
             $dql .= ' AND c.descendant = :parent';
             $q = $em->createQuery($dql);
-            $q->setParameters(compact('node', 'parent'));
+            $q->setParameters(['node' => $node, 'parent' => $parent]);
             if ($q->getSingleScalarResult()) {
                 throw new \Gedmo\Exception\UnexpectedValueException("Cannot set child as parent to node: {$nodeId}");
             }
@@ -435,8 +435,8 @@ class Closure implements Strategy
             $subQuery .= " JOIN {$table} c2 ON c1.descendant = c2.descendant";
             $subQuery .= ' WHERE c1.ancestor = :nodeId AND c2.depth > c1.depth';
 
-            $ids = $conn->executeQuery($subQuery, compact('nodeId'))->fetchAll(\PDO::FETCH_COLUMN);
-            if ($ids) {
+            $ids = $conn->executeQuery($subQuery, ['nodeId' => $nodeId])->fetchAll(\PDO::FETCH_COLUMN);
+            if ($ids !== []) {
                 // using subquery directly, sqlite acts unfriendly
                 $query = "DELETE FROM {$table} WHERE id IN (".implode(', ', $ids).')';
                 if (!empty($ids) && !$conn->executeQuery($query)) {
@@ -453,10 +453,10 @@ class Closure implements Strategy
             $query .= ' WHERE c1.descendant = :parentId';
             $query .= ' AND c2.ancestor = :nodeId';
 
-            $closures = $conn->fetchAll($query, compact('nodeId', 'parentId'));
+            $closures = $conn->fetchAll($query, ['nodeId' => $nodeId, 'parentId' => $parentId]);
 
             foreach ($closures as $closure) {
-                if (!$conn->insert($table, $closure)) {
+                if ($conn->insert($table, $closure) === 0) {
                     throw new RuntimeException('Failed to insert new Closure record');
                 }
             }

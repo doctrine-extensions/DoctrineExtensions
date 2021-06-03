@@ -57,10 +57,10 @@ class Annotation extends AbstractAnnotationDriver
                     throw new InvalidMappingException("Field - [{$field}] trigger 'on' is not one of [update, create, change] in class - {$meta->name}");
                 }
                 if ('change' == $ipTraceable->on) {
-                    if (!isset($ipTraceable->field)) {
+                    if (!(property_exists($ipTraceable, 'field') && $ipTraceable->field !== null)) {
                         throw new InvalidMappingException("Missing parameters on property - {$field}, field must be set on [change] trigger in class - {$meta->name}");
                     }
-                    if (is_array($ipTraceable->field) && isset($ipTraceable->value)) {
+                    if (is_array($ipTraceable->field) && (property_exists($ipTraceable, 'value') && $ipTraceable->value !== null)) {
                         throw new InvalidMappingException('IpTraceable extension does not support multiple value changeset detection yet.');
                     }
                     $field = [

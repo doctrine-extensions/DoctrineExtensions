@@ -86,7 +86,7 @@ abstract class Xml extends File
         $xmlElement = simplexml_load_file($file);
         $xmlElement = $xmlElement->children(self::DOCTRINE_NAMESPACE_URI);
 
-        if (isset($xmlElement->entity)) {
+        if ($xmlElement->entity !== null) {
             foreach ($xmlElement->entity as $entityElement) {
                 $entityName = $this->_getAttribute($entityElement, 'name');
                 $result[$entityName] = $entityElement;

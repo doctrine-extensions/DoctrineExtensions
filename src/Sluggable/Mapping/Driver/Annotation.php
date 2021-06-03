@@ -104,7 +104,7 @@ class Annotation extends AbstractAnnotationDriver
                     if (!$handler instanceof SlugHandler) {
                         throw new InvalidMappingException("SlugHandler: {$handler} should be instance of SlugHandler annotation in entity - {$meta->name}");
                     }
-                    if (!strlen($handler->class)) {
+                    if ($handler->class === '') {
                         throw new InvalidMappingException("SlugHandler class: {$handler->class} should be a valid class name in entity - {$meta->name}");
                     }
                     $class = $handler->class;
@@ -113,7 +113,7 @@ class Annotation extends AbstractAnnotationDriver
                         if (!$option instanceof SlugHandlerOption) {
                             throw new InvalidMappingException("SlugHandlerOption: {$option} should be instance of SlugHandlerOption annotation in entity - {$meta->name}");
                         }
-                        if (!strlen($option->name)) {
+                        if ($option->name === '') {
                             throw new InvalidMappingException("SlugHandlerOption name: {$option->name} should be valid name in entity - {$meta->name}");
                         }
                         $handlers[$class][$option->name] = $option->value;
@@ -143,7 +143,7 @@ class Annotation extends AbstractAnnotationDriver
             if (!empty($meta->identifier) && $meta->isIdentifier($fieldName) && !(bool) $slug->unique) {
                 throw new InvalidMappingException("Identifier field - [{$fieldName}] slug must be unique in order to maintain primary key in class - {$meta->name}");
             }
-            if (false === $slug->unique && $slug->unique_base) {
+            if (!$slug->unique && $slug->unique_base) {
                 throw new InvalidMappingException("Slug annotation [unique_base] can not be set if unique is unset or 'false'");
             }
             if ($slug->unique_base && !$meta->hasField($slug->unique_base) && !$meta->hasAssociation($slug->unique_base)) {

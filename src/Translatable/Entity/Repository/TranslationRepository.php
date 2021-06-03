@@ -74,7 +74,7 @@ class TranslationRepository extends EntityRepository
             $foreignKey = $meta->getReflectionProperty($meta->getSingleIdentifierFieldName())->getValue($entity);
             $objectClass = $config['useObjectClass'];
             $transMeta = $this->_em->getClassMetadata($class);
-            $trans = $this->findOneBy(compact('locale', 'objectClass', 'field', 'foreignKey'));
+            $trans = $this->findOneBy(['locale' => $locale, 'objectClass' => $objectClass, 'field' => $field, 'foreignKey' => $foreignKey]);
             if (!$trans) {
                 $trans = $transMeta->newInstance();
                 $transMeta->getReflectionProperty('foreignKey')->setValue($trans, $foreignKey);
@@ -82,7 +82,7 @@ class TranslationRepository extends EntityRepository
                 $transMeta->getReflectionProperty('field')->setValue($trans, $field);
                 $transMeta->getReflectionProperty('locale')->setValue($trans, $locale);
             }
-            if ($listener->getDefaultLocale() != $listener->getTranslatableLocale($entity, $meta, $this->getEntityManager()) &&
+            if ($listener->getDefaultLocale() !== $listener->getTranslatableLocale($entity, $meta, $this->getEntityManager()) &&
                 $locale === $listener->getDefaultLocale()) {
                 $listener->setTranslationInDefaultLocale(spl_object_hash($entity), $field, $trans);
                 $needsPersist = $listener->getPersistDefaultLocaleTranslation();
@@ -121,7 +121,7 @@ class TranslationRepository extends EntityRepository
                 ->getTranslatableListener()
                 ->getConfiguration($this->_em, $wrapped->getMetadata()->name);
 
-            if (!$config) {
+            if ($config === []) {
                 return $result;
             }
 
@@ -137,7 +137,7 @@ class TranslationRepository extends EntityRepository
                 ->orderBy('trans.locale');
             $q = $qb->getQuery();
             $data = $q->execute(
-                compact('entityId', 'entityClass'),
+                ['entityId' => $entityId, 'entityClass' => $entityClass],
                 Query::HYDRATE_ARRAY
             );
 
@@ -174,10 +174,10 @@ class TranslationRepository extends EntityRepository
             $dql .= ' AND trans.field = :field';
             $dql .= ' AND trans.content = :value';
             $q = $this->_em->createQuery($dql);
-            $q->setParameters(compact('class', 'field', 'value'));
+            $q->setParameters(['class' => $class, 'field' => $field, 'value' => $value]);
             $q->setMaxResults(1);
             $result = $q->getArrayResult();
-            $id = count($result) ? $result[0]['foreignKey'] : null;
+            $id = count($result) > 0 ? $result[0]['foreignKey'] : null;
 
             if ($id) {
                 $entity = $this->_em->find($class, $id);

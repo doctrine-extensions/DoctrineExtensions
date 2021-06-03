@@ -43,15 +43,15 @@ class Xml extends BaseXml
         $xml = $xml->children(self::GEDMO_NAMESPACE_URI);
         $validator = new Validator();
 
-        if (isset($xml->tree) && $this->_isAttributeSet($xml->tree, 'type')) {
+        if ($xml->tree !== null && $this->_isAttributeSet($xml->tree, 'type')) {
             $strategy = $this->_getAttribute($xml->tree, 'type');
             if (!in_array($strategy, $this->strategies)) {
                 throw new InvalidMappingException("Tree type: $strategy is not available.");
             }
             $config['strategy'] = $strategy;
-            $config['activate_locking'] = 'true' === $this->_getAttribute($xml->tree, 'activate-locking') ? true : false;
+            $config['activate_locking'] = 'true' === $this->_getAttribute($xml->tree, 'activate-locking');
 
-            if ($lockingTimeout = $this->_getAttribute($xml->tree, 'locking-timeout')) {
+            if (($lockingTimeout = $this->_getAttribute($xml->tree, 'locking-timeout')) !== '') {
                 $config['locking_timeout'] = (int) $lockingTimeout;
 
                 if ($config['locking_timeout'] < 1) {
@@ -63,12 +63,12 @@ class Xml extends BaseXml
         }
         if (isset($xml->{'tree-closure'}) && $this->_isAttributeSet($xml->{'tree-closure'}, 'class')) {
             $class = $this->_getAttribute($xml->{'tree-closure'}, 'class');
-            if (!$cl = $this->getRelatedClassName($meta, $class)) {
+            if (($cl = $this->getRelatedClassName($meta, $class)) === '') {
                 throw new InvalidMappingException("Tree closure class: {$class} does not exist.");
             }
             $config['closure'] = $cl;
         }
-        if (isset($xmlDoctrine->field)) {
+        if ($xmlDoctrine->field !== null) {
             foreach ($xmlDoctrine->field as $mapping) {
                 $mappingDoctrine = $mapping;
                 $mapping = $mapping->children(self::GEDMO_NAMESPACE_URI);
@@ -107,26 +107,26 @@ class Xml extends BaseXml
 
                     $appendId = $this->_getAttribute($mapping->{'tree-path'}, 'append_id');
 
-                    if (!$appendId) {
+                    if ($appendId === '') {
                         $appendId = true;
                     } else {
-                        $appendId = 'false' == strtolower($appendId) ? false : true;
+                        $appendId = 'false' != strtolower($appendId);
                     }
 
                     $startsWithSeparator = $this->_getAttribute($mapping->{'tree-path'}, 'starts_with_separator');
 
-                    if (!$startsWithSeparator) {
+                    if ($startsWithSeparator === '') {
                         $startsWithSeparator = false;
                     } else {
-                        $startsWithSeparator = 'false' == strtolower($startsWithSeparator) ? false : true;
+                        $startsWithSeparator = 'false' != strtolower($startsWithSeparator);
                     }
 
                     $endsWithSeparator = $this->_getAttribute($mapping->{'tree-path'}, 'ends_with_separator');
 
-                    if (!$endsWithSeparator) {
+                    if ($endsWithSeparator === '') {
                         $endsWithSeparator = true;
                     } else {
-                        $endsWithSeparator = 'false' == strtolower($endsWithSeparator) ? false : true;
+                        $endsWithSeparator = 'false' != strtolower($endsWithSeparator);
                     }
 
                     $config['path'] = $field;
@@ -163,7 +163,7 @@ class Xml extends BaseXml
                     if (isset($manyToOneMapping->{'tree-parent'})) {
                         $field = $this->_getAttribute($manyToOneMappingDoctrine, 'field');
                         $targetEntity = $meta->associationMappings[$field]['targetEntity'];
-                        if (!$cl = $this->getRelatedClassName($meta, $targetEntity)) {
+                        if (($cl = $this->getRelatedClassName($meta, $targetEntity)) === '') {
                             throw new InvalidMappingException("Unable to find ancestor/parent child relation through ancestor field - [{$field}] in class - {$meta->name}");
                         }
                         $config['parent'] = $field;
@@ -171,7 +171,7 @@ class Xml extends BaseXml
                     if (isset($manyToOneMapping->{'tree-root'})) {
                         $field = $this->_getAttribute($manyToOneMappingDoctrine, 'field');
                         $targetEntity = $meta->associationMappings[$field]['targetEntity'];
-                        if (!$cl = $this->getRelatedClassName($meta, $targetEntity)) {
+                        if (($cl = $this->getRelatedClassName($meta, $targetEntity)) === '') {
                             throw new InvalidMappingException("Unable to find root descendant relation through root field - [{$field}] in class - {$meta->name}");
                         }
                         $config['root'] = $field;
@@ -186,14 +186,14 @@ class Xml extends BaseXml
                     $referenceOneMapping = $referenceOneMapping->children(self::GEDMO_NAMESPACE_URI);
                     if (isset($referenceOneMapping->{'tree-parent'})) {
                         $field = $this->_getAttribute($referenceOneMappingDoctrine, 'field');
-                        if (!$cl = $this->getRelatedClassName($meta, $this->_getAttribute($referenceOneMappingDoctrine, 'target-document'))) {
+                        if (($cl = $this->getRelatedClassName($meta, $this->_getAttribute($referenceOneMappingDoctrine, 'target-document'))) === '') {
                             throw new InvalidMappingException("Unable to find ancestor/parent child relation through ancestor field - [{$field}] in class - {$meta->name}");
                         }
                         $config['parent'] = $field;
                     }
                     if (isset($referenceOneMapping->{'tree-root'})) {
                         $field = $this->_getAttribute($referenceOneMappingDoctrine, 'field');
-                        if (!$cl = $this->getRelatedClassName($meta, $this->_getAttribute($referenceOneMappingDoctrine, 'target-document'))) {
+                        if (($cl = $this->getRelatedClassName($meta, $this->_getAttribute($referenceOneMappingDoctrine, 'target-document'))) === '') {
                             throw new InvalidMappingException("Unable to find root descendant relation through root field - [{$field}] in class - {$meta->name}");
                         }
                         $config['root'] = $field;
@@ -211,7 +211,7 @@ class Xml extends BaseXml
                     if (isset($manyToOneMapping->{'tree-parent'})) {
                         $field = $this->_getAttribute($manyToOneMappingDoctrine, 'field');
                         $targetEntity = $meta->associationMappings[$field]['targetEntity'];
-                        if (!$cl = $this->getRelatedClassName($meta, $targetEntity)) {
+                        if (($cl = $this->getRelatedClassName($meta, $targetEntity)) === '') {
                             throw new InvalidMappingException("Unable to find ancestor/parent child relation through ancestor field - [{$field}] in class - {$meta->name}");
                         }
                         $config['parent'] = $field;
@@ -219,7 +219,7 @@ class Xml extends BaseXml
                     if (isset($manyToOneMapping->{'tree-root'})) {
                         $field = $this->_getAttribute($manyToOneMappingDoctrine, 'field');
                         $targetEntity = $meta->associationMappings[$field]['targetEntity'];
-                        if (!$cl = $this->getRelatedClassName($meta, $targetEntity)) {
+                        if (($cl = $this->getRelatedClassName($meta, $targetEntity)) === '') {
                             throw new InvalidMappingException("Unable to find root descendant relation through root field - [{$field}] in class - {$meta->name}");
                         }
                         $config['root'] = $field;
@@ -236,14 +236,14 @@ class Xml extends BaseXml
                     $referenceOneMapping = $referenceOneMapping->children(self::GEDMO_NAMESPACE_URI);
                     if (isset($referenceOneMapping->{'tree-parent'})) {
                         $field = $this->_getAttribute($referenceOneMappingDoctrine, 'field');
-                        if (!$cl = $this->getRelatedClassName($meta, $this->_getAttribute($referenceOneMappingDoctrine, 'target-document'))) {
+                        if (($cl = $this->getRelatedClassName($meta, $this->_getAttribute($referenceOneMappingDoctrine, 'target-document'))) === '') {
                             throw new InvalidMappingException("Unable to find ancestor/parent child relation through ancestor field - [{$field}] in class - {$meta->name}");
                         }
                         $config['parent'] = $field;
                     }
                     if (isset($referenceOneMapping->{'tree-root'})) {
                         $field = $this->_getAttribute($referenceOneMappingDoctrine, 'field');
-                        if (!$cl = $this->getRelatedClassName($meta, $this->_getAttribute($referenceOneMappingDoctrine, 'target-document'))) {
+                        if (($cl = $this->getRelatedClassName($meta, $this->_getAttribute($referenceOneMappingDoctrine, 'target-document'))) === '') {
                             throw new InvalidMappingException("Unable to find root descendant relation through root field - [{$field}] in class - {$meta->name}");
                         }
                         $config['root'] = $field;

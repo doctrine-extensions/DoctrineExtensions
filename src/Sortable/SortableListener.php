@@ -198,7 +198,9 @@ class SortableListener extends MappedEventSubscriber
         $newPosition += $applyDelta;
 
         // Add relocations
-        call_user_func_array([$this, 'addRelocation'], $relocation);
+        call_user_func_array(function (string $hash, string $class, array $groups, int $start, int $stop, int $delta, array $exclude) {
+            return $this->addRelocation($hash, $class, $groups, $start, $stop, $delta, $exclude);
+        }, $relocation);
 
         // Set new position
         if ($old < 0 || is_null($old)) {
@@ -289,11 +291,7 @@ class SortableListener extends MappedEventSubscriber
                 $newPosition = 0;
             }
         } elseif ($newPosition > $this->maxPositions[$hash]) {
-            if ($groupHasChanged) {
-                $newPosition = $this->maxPositions[$hash] + 1;
-            } else {
-                $newPosition = $this->maxPositions[$hash];
-            }
+            $newPosition = $groupHasChanged ? $this->maxPositions[$hash] + 1 : $this->maxPositions[$hash];
         } else {
             $newPosition = min([$this->maxPositions[$hash], $newPosition]);
         }
@@ -337,7 +335,9 @@ class SortableListener extends MappedEventSubscriber
 
         if ($relocation) {
             // Add relocation
-            call_user_func_array([$this, 'addRelocation'], $relocation);
+            call_user_func_array(function (string $hash, string $class, array $groups, int $start, int $stop, int $delta, array $exclude) {
+                return $this->addRelocation($hash, $class, $groups, $start, $stop, $delta, $exclude);
+            }, $relocation);
         }
 
         // Set new position
@@ -451,11 +451,7 @@ class SortableListener extends MappedEventSubscriber
                                 // Special case for equal objects but different instances.
                                 // If the object implements Comparable interface we can use its compareTo method
                                 // Otherwise we fallback to normal object comparison
-                                if ($gr instanceof Comparable) {
-                                    $matches = $gr->compareTo($value);
-                                } else {
-                                    $matches = $gr == $value;
-                                }
+                                $matches = $gr instanceof Comparable ? $gr->compareTo($value) : $gr == $value;
                             } else {
                                 $matches = $gr === $value;
                             }
@@ -512,7 +508,7 @@ class SortableListener extends MappedEventSubscriber
         $maxPos = null;
 
         // Get groups
-        if (!sizeof($groups)) {
+        if (count($groups) === 0) {
             $groups = $this->getGroups($meta, $config, $object);
         }
 
@@ -538,7 +534,7 @@ class SortableListener extends MappedEventSubscriber
             $maxPos = -1;
         }
 
-        return intval($maxPos);
+        return (int) $maxPos;
     }
 
     /**

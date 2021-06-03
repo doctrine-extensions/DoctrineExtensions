@@ -64,7 +64,7 @@ class SimpleObjectHydrator extends BaseSimpleObjectHydrator
                     break;
                 }
             }
-            if ($translatableListener) {
+            if ($translatableListener !== null) {
                 break;
             }
         }

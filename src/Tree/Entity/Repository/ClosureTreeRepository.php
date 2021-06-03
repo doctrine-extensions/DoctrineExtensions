@@ -83,7 +83,7 @@ class ClosureTreeRepository extends AbstractTreeRepository
         $dql .= ' WHERE c.descendant = :node';
         $dql .= ' ORDER BY c.depth DESC';
         $q = $this->_em->createQuery($dql);
-        $q->setParameters(compact('node'));
+        $q->setParameters(['node' => $node]);
 
         return $q;
     }
@@ -235,7 +235,7 @@ class ClosureTreeRepository extends AbstractTreeRepository
         $dql = "SELECT node FROM {$config['useObjectClass']} node";
         $dql .= " WHERE node.{$config['parent']} = :node";
         $q = $this->_em->createQuery($dql);
-        $q->setParameters(compact('node'));
+        $q->setParameters(['node' => $node]);
         $nodesToReparent = $q->getResult();
         // process updates in transaction
         $this->_em->getConnection()->beginTransaction();
@@ -249,7 +249,7 @@ class ClosureTreeRepository extends AbstractTreeRepository
                 $dql .= " WHERE node.{$pk} = :id";
 
                 $q = $this->_em->createQuery($dql);
-                $q->setParameters(compact('parent', 'id'));
+                $q->setParameters(['parent' => $parent, 'id' => $id]);
                 $q->getSingleScalarResult();
 
                 $this->listener
@@ -264,7 +264,7 @@ class ClosureTreeRepository extends AbstractTreeRepository
             $dql .= " WHERE node.{$pk} = :nodeId";
 
             $q = $this->_em->createQuery($dql);
-            $q->setParameters(compact('nodeId'));
+            $q->setParameters(['nodeId' => $nodeId]);
             $q->getSingleScalarResult();
             $this->_em->getConnection()->commit();
         } catch (\Exception $e) {
@@ -367,7 +367,7 @@ class ClosureTreeRepository extends AbstractTreeRepository
 
         if (null !== $node) {
             $q->where('c.ancestor = :node');
-            $q->setParameters(compact('node'));
+            $q->setParameters(['node' => $node]);
         } else {
             $q->groupBy('c.descendant');
         }
@@ -413,7 +413,7 @@ class ClosureTreeRepository extends AbstractTreeRepository
           WHERE c.id IS NULL
         ");
 
-        if ($missingSelfRefsCount = intval($q->getSingleScalarResult())) {
+        if (($missingSelfRefsCount = (int) $q->getSingleScalarResult()) !== 0) {
             $errors[] = "Missing $missingSelfRefsCount self referencing closures";
         }
 
@@ -425,7 +425,7 @@ class ClosureTreeRepository extends AbstractTreeRepository
           WHERE c2.id IS NULL AND node.$nodeIdField <> c1.ancestor
         ");
 
-        if ($missingClosuresCount = intval($q->getSingleScalarResult())) {
+        if (($missingClosuresCount = (int) $q->getSingleScalarResult()) !== 0) {
             $errors[] = "Missing $missingClosuresCount closures";
         }
 
@@ -437,7 +437,7 @@ class ClosureTreeRepository extends AbstractTreeRepository
             WHERE c2.id IS NULL AND c1.descendant <> c1.ancestor
         ");
 
-        if ($invalidClosuresCount = intval($q->getSingleScalarResult())) {
+        if (($invalidClosuresCount = (int) $q->getSingleScalarResult()) !== 0) {
             $errors[] = "Found $invalidClosuresCount invalid closures";
         }
 
@@ -452,7 +452,7 @@ class ClosureTreeRepository extends AbstractTreeRepository
                 HAVING node.$levelField IS NULL OR node.$levelField <> MAX(c.depth) + 1
             ")->setMaxResults($maxResults);
 
-            if ($invalidLevelsCount = count($q->getScalarResult())) {
+            if (($invalidLevelsCount = count($q->getScalarResult())) !== 0) {
                 $errors[] = "Found $invalidLevelsCount invalid level values";
             }
         }
@@ -513,15 +513,14 @@ class ClosureTreeRepository extends AbstractTreeRepository
           LEFT JOIN {$closureMeta->name} AS c WITH c.ancestor = node AND c.depth = 0
           WHERE c.id IS NULL
         ");
-        $newClosuresCount += $buildClosures("
+
+        return $newClosuresCount + $buildClosures("
           SELECT IDENTITY(c1.ancestor) AS ancestor, node.$nodeIdField AS descendant, c1.depth + 1 AS depth
           FROM {$nodeMeta->name} AS node
           INNER JOIN {$closureMeta->name} AS c1 WITH c1.descendant = node.{$config['parent']}
           LEFT  JOIN {$closureMeta->name} AS c2 WITH c2.descendant = node.$nodeIdField AND c2.ancestor = c1.ancestor
           WHERE c2.id IS NULL AND node.$nodeIdField <> c1.ancestor
         ");
-
-        return $newClosuresCount;
     }
 
     public function cleanUpClosure()

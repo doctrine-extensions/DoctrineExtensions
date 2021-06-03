@@ -74,7 +74,7 @@ class TranslationRepository extends DocumentRepository
             $foreignKey = $meta->getReflectionProperty($meta->identifier)->getValue($document);
             $objectClass = $config['useObjectClass'];
             $transMeta = $this->dm->getClassMetadata($class);
-            $trans = $this->findOneBy(compact('locale', 'field', 'objectClass', 'foreignKey'));
+            $trans = $this->findOneBy(['locale' => $locale, 'field' => $field, 'objectClass' => $objectClass, 'foreignKey' => $foreignKey]);
             if (!$trans) {
                 $trans = $transMeta->newInstance();
                 $transMeta->getReflectionProperty('foreignKey')->setValue($trans, $foreignKey);
@@ -118,7 +118,7 @@ class TranslationRepository extends DocumentRepository
                 ->getTranslatableListener()
                 ->getConfiguration($this->dm, $wrapped->getMetadata()->name);
 
-            if (!$config) {
+            if ($config === []) {
                 return $result;
             }
 
@@ -176,7 +176,7 @@ class TranslationRepository extends DocumentRepository
             if ($result instanceof Cursor) {
                 $result = $result->toArray();
             }
-            $id = count($result) ? $result[0]['foreignKey'] : null;
+            $id = (is_array($result) || $result instanceof \Countable ? count($result) : 0) > 0 ? $result[0]['foreignKey'] : null;
             if ($id) {
                 $document = $this->dm->find($class, $id);
             }

@@ -58,7 +58,7 @@ class LogEntryRepository extends EntityRepository
 
         $objectId = (string) $wrapped->getIdentifier();
         $q = $this->_em->createQuery($dql);
-        $q->setParameters(compact('objectId', 'objectClass'));
+        $q->setParameters(['objectId' => $objectId, 'objectClass' => $objectClass]);
 
         return $q;
     }
@@ -90,7 +90,7 @@ class LogEntryRepository extends EntityRepository
 
         $objectId = (string) $wrapped->getIdentifier();
         $q = $this->_em->createQuery($dql);
-        $q->setParameters(compact('objectId', 'objectClass', 'version'));
+        $q->setParameters(['objectId' => $objectId, 'objectClass' => $objectClass, 'version' => $version]);
         $logs = $q->getResult();
 
         if ($logs) {

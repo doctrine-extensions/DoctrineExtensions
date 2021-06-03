@@ -40,7 +40,7 @@ abstract class AbstractTreeRepository extends EntityRepository implements Reposi
                     break;
                 }
             }
-            if ($treeListener) {
+            if ($treeListener !== null) {
                 break;
             }
         }

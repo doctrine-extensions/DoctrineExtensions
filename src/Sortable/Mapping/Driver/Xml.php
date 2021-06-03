@@ -38,7 +38,7 @@ class Xml extends BaseXml
          */
         $xml = $this->_getMapping($meta->name);
 
-        if (isset($xml->field)) {
+        if ($xml->field !== null) {
             foreach ($xml->field as $mappingDoctrine) {
                 $mapping = $mappingDoctrine->children(self::GEDMO_NAMESPACE_URI);
 
@@ -63,10 +63,8 @@ class Xml extends BaseXml
             $this->readSortableGroups($xml->{'many-to-many'}, $config);
         }
 
-        if (!$meta->isMappedSuperclass && $config) {
-            if (!isset($config['position'])) {
-                throw new InvalidMappingException("Missing property: 'position' in class - {$meta->name}");
-            }
+        if (!$meta->isMappedSuperclass && $config && !isset($config['position'])) {
+            throw new InvalidMappingException("Missing property: 'position' in class - {$meta->name}");
         }
     }
 

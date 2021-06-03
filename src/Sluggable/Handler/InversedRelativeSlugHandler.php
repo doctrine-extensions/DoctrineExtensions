@@ -87,7 +87,7 @@ class InversedRelativeSlugHandler implements SlugHandlerInterface
                 $this->om,
                 $options['relationClass']
             );
-            if ($mappedByConfig) {
+            if ($mappedByConfig !== []) {
                 $meta = $this->om->getClassMetadata($options['relationClass']);
                 if (!$meta->isSingleValuedAssociation($options['mappedBy'])) {
                     throw new InvalidMappingException('Unable to find '.$wrapped->getMetadata()->name." relation - [{$options['mappedBy']}] in class - {$meta->name}");

@@ -101,7 +101,7 @@ class RepositoryUtils implements RepositoryUtilsInterface
             return $nestedTree;
         }
 
-        if (!count($nestedTree)) {
+        if (count($nestedTree) === 0) {
             return '';
         }
 

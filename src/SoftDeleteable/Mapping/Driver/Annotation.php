@@ -38,7 +38,7 @@ class Annotation extends AbstractAnnotationDriver
             $config['fieldName'] = $annot->fieldName;
 
             $config['timeAware'] = false;
-            if (isset($annot->timeAware)) {
+            if (property_exists($annot, 'timeAware') && $annot->timeAware !== null) {
                 if (!is_bool($annot->timeAware)) {
                     throw new InvalidMappingException('timeAware must be boolean. '.gettype($annot->timeAware).' provided.');
                 }
@@ -46,7 +46,7 @@ class Annotation extends AbstractAnnotationDriver
             }
 
             $config['hardDelete'] = true;
-            if (isset($annot->hardDelete)) {
+            if (property_exists($annot, 'hardDelete') && $annot->hardDelete !== null) {
                 if (!is_bool($annot->hardDelete)) {
                     throw new InvalidMappingException('hardDelete must be boolean. '.gettype($annot->hardDelete).' provided.');
                 }

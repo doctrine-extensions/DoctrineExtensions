@@ -46,7 +46,7 @@ class Annotation extends AbstractAnnotationDriver
         $class = $this->getMetaReflectionClass($meta);
         // class annotations
         if ($annot = $this->reader->getClassAnnotation($class, self::ENTITY_CLASS)) {
-            if (!$cl = $this->getRelatedClassName($meta, $annot->class)) {
+            if (($cl = $this->getRelatedClassName($meta, $annot->class)) === '') {
                 throw new InvalidMappingException("Translation class: {$annot->class} does not exist.");
             }
             $config['translationClass'] = $cl;
@@ -68,7 +68,7 @@ class Annotation extends AbstractAnnotationDriver
                 }
                 // fields cannot be overrided and throws mapping exception
                 $config['fields'][] = $field;
-                if (isset($translatable->fallback)) {
+                if (property_exists($translatable, 'fallback') && $translatable->fallback !== null) {
                     $config['fallback'][$field] = $translatable->fallback;
                 }
             }
@@ -100,7 +100,7 @@ class Annotation extends AbstractAnnotationDriver
                         $field = $propertyName.'.'.$embeddedProperty->getName();
 
                         $config['fields'][] = $field;
-                        if (isset($translatable->fallback)) {
+                        if (property_exists($translatable, 'fallback') && $translatable->fallback !== null) {
                             $config['fallback'][$field] = $translatable->fallback;
                         }
                     }
@@ -108,10 +108,8 @@ class Annotation extends AbstractAnnotationDriver
             }
         }
 
-        if (!$meta->isMappedSuperclass && $config) {
-            if (is_array($meta->identifier) && count($meta->identifier) > 1) {
-                throw new InvalidMappingException("Translatable does not support composite identifiers in class - {$meta->name}");
-            }
+        if (!$meta->isMappedSuperclass && $config && (is_array($meta->identifier) && count($meta->identifier) > 1)) {
+            throw new InvalidMappingException("Translatable does not support composite identifiers in class - {$meta->name}");
         }
     }
 }

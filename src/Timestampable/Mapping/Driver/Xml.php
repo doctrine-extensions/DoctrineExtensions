@@ -46,14 +46,14 @@ class Xml extends BaseXml
          */
         $mapping = $this->_getMapping($meta->name);
 
-        if (isset($mapping->field)) {
+        if ($mapping->field !== null) {
             /**
              * @var \SimpleXmlElement
              */
             foreach ($mapping->field as $fieldMapping) {
                 $fieldMappingDoctrine = $fieldMapping;
                 $fieldMapping = $fieldMapping->children(self::GEDMO_NAMESPACE_URI);
-                if (isset($fieldMapping->timestampable)) {
+                if ($fieldMapping->timestampable !== null) {
                     /**
                      * @var \SimpleXmlElement
                      */
@@ -68,11 +68,11 @@ class Xml extends BaseXml
                     }
 
                     if ('change' == $this->_getAttribute($data, 'on')) {
-                        if (!$this->_isAttributeSet($data, 'field')) {
+                        if ($this->_isAttributeSet($data, 'field') === '') {
                             throw new InvalidMappingException("Missing parameters on property - {$field}, field must be set on [change] trigger in class - {$meta->name}");
                         }
                         $trackedFieldAttribute = $this->_getAttribute($data, 'field');
-                        $valueAttribute = $this->_isAttributeSet($data, 'value') ? $this->_getAttribute($data, 'value') : null;
+                        $valueAttribute = $this->_isAttributeSet($data, 'value') !== '' ? $this->_getAttribute($data, 'value') : null;
                         if (is_array($trackedFieldAttribute) && null !== $valueAttribute) {
                             throw new InvalidMappingException('Timestampable extension does not support multiple value changeset detection yet.');
                         }

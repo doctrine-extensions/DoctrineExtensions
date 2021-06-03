@@ -67,7 +67,7 @@ class TreeListener extends MappedEventSubscriber
     {
         if (!isset($this->strategies[$class])) {
             $config = $this->getConfiguration($om, $class);
-            if (!$config) {
+            if ($config === []) {
                 throw new \Gedmo\Exception\UnexpectedValueException("Tree object class: {$class} must have tree metadata at this point");
             }
             $managerName = 'UnsupportedManager';
@@ -255,7 +255,7 @@ class TreeListener extends MappedEventSubscriber
     protected function getStrategiesUsedForObjects(array $classes)
     {
         $strategies = [];
-        foreach ($classes as $name => $opt) {
+        foreach (array_keys($classes) as $name) {
             if (isset($this->strategies[$name]) && !isset($strategies[$this->strategies[$name]])) {
                 $strategies[$this->strategies[$name]] = $this->strategyInstances[$this->strategies[$name]];
             }

@@ -41,7 +41,7 @@ class Xml extends BaseXml
          */
         $xml = $this->_getMapping($meta->name);
 
-        if (isset($xml->field)) {
+        if ($xml->field !== null) {
             foreach ($xml->field as $mapping) {
                 $field = $this->_getAttribute($mapping, 'name');
                 $this->buildFieldConfiguration($meta, $field, $mapping, $config);
@@ -63,7 +63,7 @@ class Xml extends BaseXml
          */
         $mapping = $mapping->children(self::GEDMO_NAMESPACE_URI);
 
-        if (isset($mapping->slug)) {
+        if ($mapping->slug !== null) {
             /**
              * @var \SimpleXmlElement
              */
@@ -82,7 +82,7 @@ class Xml extends BaseXml
             }
 
             $handlers = [];
-            if (isset($slug->handler)) {
+            if ($slug->handler !== null) {
                 foreach ($slug->handler as $handler) {
                     $class = (string) $this->_getAttribute($handler, 'class');
                     $handlers[$class] = [];
@@ -99,21 +99,21 @@ class Xml extends BaseXml
             $config['slugs'][$field] = [
                 'fields' => $fields,
                 'slug' => $field,
-                'style' => $this->_isAttributeSet($slug, 'style') ?
+                'style' => $this->_isAttributeSet($slug, 'style') !== '' ?
                     $this->_getAttribute($slug, 'style') : 'default',
-                'updatable' => $this->_isAttributeSet($slug, 'updatable') ?
+                'updatable' => $this->_isAttributeSet($slug, 'updatable') !== '' ?
                     $this->_getBooleanAttribute($slug, 'updatable') : true,
-                'dateFormat' => $this->_isAttributeSet($slug, 'dateFormat') ?
+                'dateFormat' => $this->_isAttributeSet($slug, 'dateFormat') !== '' ?
                     $this->_getAttribute($slug, 'dateFormat') : 'Y-m-d-H:i',
-                'unique' => $this->_isAttributeSet($slug, 'unique') ?
+                'unique' => $this->_isAttributeSet($slug, 'unique') !== '' ?
                     $this->_getBooleanAttribute($slug, 'unique') : true,
-                'unique_base' => $this->_isAttributeSet($slug, 'unique-base') ?
+                'unique_base' => $this->_isAttributeSet($slug, 'unique-base') !== '' ?
                     $this->_getAttribute($slug, 'unique-base') : null,
-                'separator' => $this->_isAttributeSet($slug, 'separator') ?
+                'separator' => $this->_isAttributeSet($slug, 'separator') !== '' ?
                     $this->_getAttribute($slug, 'separator') : '-',
-                'prefix' => $this->_isAttributeSet($slug, 'prefix') ?
+                'prefix' => $this->_isAttributeSet($slug, 'prefix') !== '' ?
                     $this->_getAttribute($slug, 'prefix') : '',
-                'suffix' => $this->_isAttributeSet($slug, 'suffix') ?
+                'suffix' => $this->_isAttributeSet($slug, 'suffix') !== '' ?
                     $this->_getAttribute($slug, 'suffix') : '',
                 'handlers' => $handlers,
             ];
@@ -121,7 +121,7 @@ class Xml extends BaseXml
                 throw new InvalidMappingException("Identifier field - [{$field}] slug must be unique in order to maintain primary key in class - {$meta->name}");
             }
             $ubase = $config['slugs'][$field]['unique_base'];
-            if (false === $config['slugs'][$field]['unique'] && $ubase) {
+            if (!$config['slugs'][$field]['unique'] && $ubase) {
                 throw new InvalidMappingException("Slug annotation [unique_base] can not be set if unique is unset or 'false'");
             }
             if ($ubase && !$meta->hasField($ubase) && !$meta->hasAssociation($ubase)) {
