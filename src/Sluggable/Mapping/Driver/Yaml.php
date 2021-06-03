@@ -128,8 +128,7 @@ class Yaml extends File implements Driver
                 $config['slugs'][$field]['unique'] = isset($slug['unique']) ?
                     (bool) $slug['unique'] : true;
 
-                $config['slugs'][$field]['unique_base'] = isset($slug['unique_base']) ?
-                    $slug['unique_base'] : null;
+                $config['slugs'][$field]['unique_base'] = $slug['unique_base'] ?? null;
 
                 $config['slugs'][$field]['separator'] = isset($slug['separator']) ?
                     (string) $slug['separator'] : '-';
