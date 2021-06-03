@@ -46,7 +46,7 @@ class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
      */
     public function getRootNodes()
     {
-        $result = $this->repo->getRootNodes('title');
+        $result = $this->repo->getRootNodes();
 
         $this->assertCount(3, $result);
         $this->assertEquals('Drinks', $result[0]->getTitle());
@@ -61,7 +61,7 @@ class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
     {
         $childNode = $this->repo->findOneBy(['title' => 'Carrots']);
 
-        $result = $this->repo->getPath($childNode);
+        $result = $this->repo->getPath();
 
         $this->assertCount(3, $result);
         $this->assertEquals('Food', $result[0]->getTitle());
@@ -70,7 +70,7 @@ class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
 
         $rootNode = $this->repo->findOneBy(['title' => 'Sports']);
 
-        $result = $this->repo->getPath($rootNode);
+        $result = $this->repo->getPath();
 
         $this->assertCount(1, $result);
         $this->assertEquals('Sports', $result[0]->getTitle());
@@ -84,7 +84,7 @@ class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
         $root = $this->repo->findOneBy(['title' => 'Food']);
 
         // Get all children from the root, NOT including it
-        $result = $this->repo->getChildren($root, false, 'title');
+        $result = $this->repo->getChildren();
 
         $this->assertCount(4, $result);
         $this->assertEquals('Carrots', $result[0]->getTitle());
@@ -93,7 +93,7 @@ class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
         $this->assertEquals('Vegitables', $result[3]->getTitle());
 
         // Get all children from the root, including it
-        $result = $this->repo->getChildren($root, false, 'title', 'asc', true);
+        $result = $this->repo->getChildren();
 
         $this->assertCount(5, $result);
         $this->assertEquals('Carrots', $result[0]->getTitle());
@@ -103,14 +103,14 @@ class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
         $this->assertEquals('Vegitables', $result[4]->getTitle());
 
         // Get direct children from the root, NOT including it
-        $result = $this->repo->getChildren($root, true, 'title', 'asc');
+        $result = $this->repo->getChildren();
 
         $this->assertCount(2, $result);
         $this->assertEquals('Fruits', $result[0]->getTitle());
         $this->assertEquals('Vegitables', $result[1]->getTitle());
 
         // Get direct children from the root, including it
-        $result = $this->repo->getChildren($root, true, 'title', 'asc', true);
+        $result = $this->repo->getChildren();
 
         $this->assertCount(3, $result);
         $this->assertEquals('Food', $result[0]->getTitle());
@@ -118,7 +118,7 @@ class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
         $this->assertEquals('Vegitables', $result[2]->getTitle());
 
         // Get ALL nodes
-        $result = $this->repo->getChildren(null, false, 'title');
+        $result = $this->repo->getChildren();
 
         $this->assertCount(9, $result);
         $this->assertEquals('Best Whisky', $result[0]->getTitle());
@@ -132,7 +132,7 @@ class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
         $this->assertEquals('Whisky', $result[8]->getTitle());
 
         // Get ALL root nodes
-        $result = $this->repo->getChildren(null, true, 'title');
+        $result = $this->repo->getChildren();
 
         $this->assertCount(3, $result);
         $this->assertEquals('Drinks', $result[0]->getTitle());
@@ -161,7 +161,7 @@ class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
         $this->assertEquals('Vegitables', $result[3]->getTitle());
 
         // Get all children from the root, including it
-        $result = $this->repo->getChildren($root, false, 'title', 'asc', true);
+        $result = $this->repo->getChildren();
 
         $this->assertCount(5, $result);
         $this->assertEquals('Carrots', $result[0]->getTitle());
@@ -171,13 +171,13 @@ class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
         $this->assertEquals('Vegitables', $result[4]->getTitle());
 
         // Get direct children from the root, NOT including it
-        $result = $this->repo->getChildren($root, true, 'title', 'asc');
+        $result = $this->repo->getChildren();
         $this->assertCount(2, $result);
         $this->assertEquals('Fruits', $result[0]->getTitle());
         $this->assertEquals('Vegitables', $result[1]->getTitle());
 
         // Get direct children from the root, including it
-        $result = $this->repo->getChildren($root, true, 'title', 'asc', true);
+        $result = $this->repo->getChildren();
 
         $this->assertCount(3, $result);
         $this->assertEquals('Food', $result[0]->getTitle());
@@ -185,7 +185,7 @@ class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
         $this->assertEquals('Vegitables', $result[2]->getTitle());
 
         // Get ALL nodes
-        $result = $this->repo->getChildren(null, false, 'title');
+        $result = $this->repo->getChildren();
 
         $this->assertCount(9, $result);
         $this->assertEquals('Best Whisky', $result[0]->getTitle());
@@ -199,7 +199,7 @@ class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
         $this->assertEquals('Whisky', $result[8]->getTitle());
 
         // Get ALL root nodes
-        $result = $this->repo->getChildren(null, true, 'title');
+        $result = $this->repo->getChildren();
 
         $this->assertCount(3, $result);
         $this->assertEquals('Drinks', $result[0]->getTitle());
@@ -227,7 +227,7 @@ class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
 
         // Get tree from a specific root node
         $roots = $this->repo->getRootNodes();
-        $tree = $this->repo->getTree($roots[0]);
+        $tree = $this->repo->getTree();
 
         $this->assertCount(3, $tree);
         $this->assertEquals('Drinks', $tree[0]->getTitle());
@@ -268,15 +268,15 @@ class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
         $roots = $this->repo->getRootNodes();
         $tree = $this->repo->childrenHierarchy($roots[1], true);
 
-        $this->assertEquals(2, count($tree));
+        $this->assertEquals(2, is_array($tree) || $tree instanceof \Countable ? count($tree) : 0);
         $this->assertEquals('Fruits', $tree[0]['title']);
         $this->assertEquals('Vegitables', $tree[1]['title']);
 
         // Tree of one specific root only with direct children, with the root node
         $tree = $this->repo->childrenHierarchy($roots[1], true, [], true);
 
-        $this->assertEquals(1, count($tree));
-        $this->assertEquals(2, count($tree[0]['__children']));
+        $this->assertEquals(1, is_array($tree) || $tree instanceof \Countable ? count($tree) : 0);
+        $this->assertEquals(2, is_array($tree[0]['__children']) || $tree[0]['__children'] instanceof \Countable ? count($tree[0]['__children']) : 0);
         $this->assertEquals('Food', $tree[0]['title']);
         $this->assertEquals('Fruits', $tree[0]['__children'][0]['title']);
         $this->assertEquals('Vegitables', $tree[0]['__children'][1]['title']);

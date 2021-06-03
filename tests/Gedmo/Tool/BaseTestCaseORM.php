@@ -116,7 +116,7 @@ abstract class BaseTestCaseORM extends \PHPUnit\Framework\TestCase
             ->will($this->returnValue($this->getMockBuilder('Doctrine\DBAL\Platforms\MySqlPlatform')->getMock()));
 
         $conn = $this->getMockBuilder('Doctrine\DBAL\Connection')
-            ->setConstructorArgs([], $driver)
+            ->setConstructorArgs([])
             ->getMock();
 
         $conn->expects($this->once())
