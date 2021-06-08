@@ -17,6 +17,14 @@ use Tool\BaseTestCaseORM;
  */
 class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
 {
+    /**
+     * @var \Gedmo\Tree\TreeListener|mixed
+     */
+    public $listener;
+    /**
+     * @var mixed[]
+     */
+    public $config;
     const CATEGORY = 'Tree\\Fixture\\MPCategory';
     const CATEGORY_WITH_TRIMMED_SEPARATOR = 'Tree\\Fixture\\MPCategoryWithTrimmedSeparator';
 

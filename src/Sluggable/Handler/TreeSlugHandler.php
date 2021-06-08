@@ -181,14 +181,7 @@ class TreeSlugHandler implements SlugHandlerWithUniqueCallbackInterface
     {
         $slug = $text.$this->suffix;
 
-        if (strlen($this->parentSlug)) {
-            $slug = $this->parentSlug.$this->usedPathSeparator.$slug;
-        } else {
-            // if no parentSlug, apply our prefix
-            $slug = $this->prefix.$slug;
-        }
-
-        return $slug;
+        return strlen($this->parentSlug) ? $this->parentSlug.$this->usedPathSeparator.$slug : $this->prefix.$slug;
     }
 
     /**

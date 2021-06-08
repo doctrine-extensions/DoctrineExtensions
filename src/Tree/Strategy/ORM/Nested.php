@@ -554,7 +554,7 @@ class Nested implements Strategy
         $query = $qb->getQuery();
         $right = $query->getSingleScalarResult();
 
-        return intval($right);
+        return (int) $right;
     }
 
     /**

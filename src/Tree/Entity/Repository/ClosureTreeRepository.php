@@ -413,7 +413,7 @@ class ClosureTreeRepository extends AbstractTreeRepository
           WHERE c.id IS NULL
         ");
 
-        if ($missingSelfRefsCount = intval($q->getSingleScalarResult())) {
+        if ($missingSelfRefsCount = (int) $q->getSingleScalarResult()) {
             $errors[] = "Missing $missingSelfRefsCount self referencing closures";
         }
 
@@ -425,7 +425,7 @@ class ClosureTreeRepository extends AbstractTreeRepository
           WHERE c2.id IS NULL AND node.$nodeIdField <> c1.ancestor
         ");
 
-        if ($missingClosuresCount = intval($q->getSingleScalarResult())) {
+        if ($missingClosuresCount = (int) $q->getSingleScalarResult()) {
             $errors[] = "Missing $missingClosuresCount closures";
         }
 
@@ -437,7 +437,7 @@ class ClosureTreeRepository extends AbstractTreeRepository
             WHERE c2.id IS NULL AND c1.descendant <> c1.ancestor
         ");
 
-        if ($invalidClosuresCount = intval($q->getSingleScalarResult())) {
+        if ($invalidClosuresCount = (int) $q->getSingleScalarResult()) {
             $errors[] = "Found $invalidClosuresCount invalid closures";
         }
 
@@ -513,15 +513,14 @@ class ClosureTreeRepository extends AbstractTreeRepository
           LEFT JOIN {$closureMeta->name} AS c WITH c.ancestor = node AND c.depth = 0
           WHERE c.id IS NULL
         ");
-        $newClosuresCount += $buildClosures("
+
+        return $newClosuresCount + $buildClosures("
           SELECT IDENTITY(c1.ancestor) AS ancestor, node.$nodeIdField AS descendant, c1.depth + 1 AS depth
           FROM {$nodeMeta->name} AS node
           INNER JOIN {$closureMeta->name} AS c1 WITH c1.descendant = node.{$config['parent']}
           LEFT  JOIN {$closureMeta->name} AS c2 WITH c2.descendant = node.$nodeIdField AND c2.ancestor = c1.ancestor
           WHERE c2.id IS NULL AND node.$nodeIdField <> c1.ancestor
         ");
-
-        return $newClosuresCount;
     }
 
     public function cleanUpClosure()

@@ -70,13 +70,11 @@ class Yaml extends File implements Driver
 
         if (isset($mapping['id'])) {
             foreach ($mapping['id'] as $field => $fieldMapping) {
-                if (isset($fieldMapping['gedmo'])) {
-                    if (in_array('treePathSource', $fieldMapping['gedmo'])) {
-                        if (!$validator->isValidFieldForPathSource($meta, $field)) {
-                            throw new InvalidMappingException("Tree PathSource field - [{$field}] type is not valid. It can be any of the integer variants, double, float or string in class - {$meta->name}");
-                        }
-                        $config['path_source'] = $field;
+                if (isset($fieldMapping['gedmo']) && in_array('treePathSource', $fieldMapping['gedmo'])) {
+                    if (!$validator->isValidFieldForPathSource($meta, $field)) {
+                        throw new InvalidMappingException("Tree PathSource field - [{$field}] type is not valid. It can be any of the integer variants, double, float or string in class - {$meta->name}");
                     }
+                    $config['path_source'] = $field;
                 }
             }
         }
@@ -111,21 +109,13 @@ class Yaml extends File implements Driver
 
                         $treePathInfo = $fieldMapping['gedmo']['treePath'] ?? $fieldMapping['gedmo'][array_search('treePath', $fieldMapping['gedmo'])];
 
-                        if (is_array($treePathInfo) && isset($treePathInfo['separator'])) {
-                            $separator = $treePathInfo['separator'];
-                        } else {
-                            $separator = '|';
-                        }
+                        $separator = is_array($treePathInfo) && isset($treePathInfo['separator']) ? $treePathInfo['separator'] : '|';
 
                         if (strlen($separator) > 1) {
                             throw new InvalidMappingException("Tree Path field - [{$field}] Separator {$separator} is invalid. It must be only one character long.");
                         }
 
-                        if (is_array($treePathInfo) && isset($treePathInfo['appendId'])) {
-                            $appendId = $treePathInfo['appendId'];
-                        } else {
-                            $appendId = null;
-                        }
+                        $appendId = is_array($treePathInfo) && isset($treePathInfo['appendId']) ? $treePathInfo['appendId'] : null;
 
                         if (is_array($treePathInfo) && isset($treePathInfo['startsWithSeparator'])) {
                             $startsWithSeparator = $treePathInfo['startsWithSeparator'];
