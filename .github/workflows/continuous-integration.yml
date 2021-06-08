@@ -1,0 +1,51 @@
+name: "Continuous Integration"
+
+on:
+  pull_request: null
+
+env:
+  MONGODB_SERVER: mongodb://127.0.0.1:27017
+
+jobs:
+  phpunit:
+    name: "PHPUnit"
+    runs-on: "ubuntu-20.04"
+
+    services:
+      mongo:
+        image: mongo
+        ports:
+          - 27017:27017
+
+    strategy:
+      matrix:
+        php-version:
+          - "7.2"
+          - "7.3"
+          - "7.4"
+          - "8.0"
+        deps:
+          - "highest"
+        include:
+          - deps: "lowest"
+            php-version: "7.2"
+
+    steps:
+      - name: "Checkout"
+        uses: "actions/checkout@v2"
+        with:
+          fetch-depth: 2
+
+      - name: "Install PHP"
+        uses: "shivammathur/setup-php@v2"
+        with:
+          php-version: "${{ matrix.php-version }}"
+          extensions: mongodb
+
+      - name: "Install dependencies with Composer"
+        uses: "ramsey/composer-install@v1"
+        with:
+          dependency-versions: "${{ matrix.deps }}"
+
+      - name: "Run PHPUnit"
+        run: "bin/phpunit -c tests"
