@@ -198,9 +198,7 @@ class TranslatableListener extends MappedEventSubscriber
      */
     public function getTranslationClass(TranslatableAdapter $ea, $class)
     {
-        return isset(self::$configurations[$this->name][$class]['translationClass']) ?
-            self::$configurations[$this->name][$class]['translationClass'] :
-            $ea->getDefaultTranslationClass()
+        return self::$configurations[$this->name][$class]['translationClass'] ?? $ea->getDefaultTranslationClass()
         ;
     }
 
@@ -463,7 +461,7 @@ class TranslatableListener extends MappedEventSubscriber
                 $translated = null;
                 foreach ($result as $entry) {
                     if ($entry['field'] == $field) {
-                        $translated = isset($entry['content']) ? $entry['content'] : null;
+                        $translated = $entry['content'] ?? null;
                         break;
                     }
                 }
