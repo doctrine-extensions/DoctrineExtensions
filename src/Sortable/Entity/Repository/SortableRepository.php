@@ -64,7 +64,7 @@ class SortableRepository extends EntityRepository
             }
             unset($groups[$name]);
         }
-        if (count($groups) > 0) {
+        if ((is_array($groups) || $groups instanceof \Countable ? count($groups) : 0) > 0) {
             throw new \InvalidArgumentException('You need to specify values for the following groups to select by sortable groups: '.implode(', ', array_keys($groups)));
         }
 

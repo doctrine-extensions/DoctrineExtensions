@@ -315,7 +315,7 @@ class ClosureTreeRepository extends AbstractTreeRepository
                     $tmp = &$refs[$n['parent_id']][$childrenIndex];
                 }
 
-                $key = count($tmp);
+                $key = is_array($tmp) || $tmp instanceof \Countable ? count($tmp) : 0;
                 $tmp[$key] = $node;
                 $refs[$node[$idField]] = &$tmp[$key];
             }
@@ -597,7 +597,7 @@ class ClosureTreeRepository extends AbstractTreeRepository
 
     protected function getJoinColumnFieldName($association)
     {
-        if (count($association['joinColumnFieldNames']) > 1) {
+        if ((is_array($association['joinColumnFieldNames']) || $association['joinColumnFieldNames'] instanceof \Countable ? count($association['joinColumnFieldNames']) : 0) > 1) {
             throw new \RuntimeException('More association on field '.$association['fieldName']);
         }
 
