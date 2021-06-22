@@ -3,8 +3,8 @@
 use Composer\Autoload\ClassLoader;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Annotations\AnnotationRegistry;
-use Doctrine\Common\Annotations\CachedReader;
-use Doctrine\Common\Cache\ArrayCache;
+use Doctrine\Common\Annotations\PsrCachedReader;
+use Symfony\Component\Cache\Adapter\ArrayAdapter;
 
 /*
  * This is bootstrap for phpUnit unit tests,
@@ -48,5 +48,5 @@ AnnotationRegistry::registerLoader([$loader, 'loadClass']);
 Gedmo\DoctrineExtensions::registerAnnotations();
 
 $reader = new AnnotationReader();
-$reader = new CachedReader($reader, new ArrayCache());
+$reader = new PsrCachedReader($reader, new ArrayAdapter());
 $_ENV['annotation_reader'] = $reader;

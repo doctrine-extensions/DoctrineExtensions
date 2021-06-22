@@ -14,6 +14,7 @@ use SoftDeleteable\Fixture\Entity\OtherComment;
 use SoftDeleteable\Fixture\Entity\User;
 use SoftDeleteable\Fixture\Entity\UserNoHardDelete;
 use Tool\BaseTestCaseORM;
+use function class_exists;
 
 /**
  * These are tests for SoftDeleteable behavior
@@ -483,6 +484,10 @@ class SoftDeleteableEntityTest extends BaseTestCaseORM
      */
     public function shouldFilterBeQueryCachedCorrectlyWhenToggledForEntity()
     {
+        if (!class_exists(ArrayCache::class)) {
+            $this->markTestSkipped('Test only applies when doctrine/cache 1.x is installed');
+        }
+
         $cache = new ArrayCache();
         $this->em->getConfiguration()->setQueryCacheImpl($cache);
 

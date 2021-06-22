@@ -4,12 +4,15 @@ namespace Gedmo;
 
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Annotations\AnnotationRegistry;
-use Doctrine\Common\Annotations\CachedReader;
+use Doctrine\Common\Annotations\PsrCachedReader;
 use Doctrine\Common\Annotations\Reader;
 use Doctrine\Common\Cache\ArrayCache;
+use Doctrine\Common\Cache\Psr6\CacheAdapter;
 use Doctrine\ODM\MongoDB\Mapping\Driver as DriverMongodbODM;
 use Doctrine\ORM\Mapping\Driver as DriverORM;
 use Doctrine\Persistence\Mapping\Driver\MappingDriverChain;
+use Symfony\Component\Cache\Adapter\ArrayAdapter;
+use function class_exists;
 
 /**
  * Version class allows to checking the dependencies required
@@ -33,7 +36,7 @@ final class DoctrineExtensions
     {
         self::registerAnnotations();
         if (!$reader) {
-            $reader = new CachedReader(new AnnotationReader(), new ArrayCache());
+            $reader = self::createAnnotationReader();
         }
         $annotationDriver = new DriverORM\AnnotationDriver($reader, [
             __DIR__.'/Translatable/Entity',
@@ -51,7 +54,7 @@ final class DoctrineExtensions
     {
         self::registerAnnotations();
         if (!$reader) {
-            $reader = new CachedReader(new AnnotationReader(), new ArrayCache());
+            $reader = self::createAnnotationReader();
         }
         $annotationDriver = new DriverORM\AnnotationDriver($reader, [
             __DIR__.'/Translatable/Entity/MappedSuperclass',
@@ -69,7 +72,7 @@ final class DoctrineExtensions
     {
         self::registerAnnotations();
         if (!$reader) {
-            $reader = new CachedReader(new AnnotationReader(), new ArrayCache());
+            $reader = self::createAnnotationReader();
         }
         $annotationDriver = new DriverMongodbODM\AnnotationDriver($reader, [
             __DIR__.'/Translatable/Document',
@@ -86,7 +89,7 @@ final class DoctrineExtensions
     {
         self::registerAnnotations();
         if (!$reader) {
-            $reader = new CachedReader(new AnnotationReader(), new ArrayCache());
+            $reader = self::createAnnotationReader();
         }
         $annotationDriver = new DriverMongodbODM\AnnotationDriver($reader, [
             __DIR__.'/Translatable/Document/MappedSuperclass',
@@ -101,5 +104,18 @@ final class DoctrineExtensions
     public static function registerAnnotations()
     {
         AnnotationRegistry::registerFile(__DIR__.'/Mapping/Annotation/All.php');
+    }
+
+    private static function createAnnotationReader()
+    {
+        $reader = new AnnotationReader();
+
+        if (class_exists(ArrayAdapter::class)) {
+            $reader = new PsrCachedReader($reader, new ArrayAdapter());
+        } elseif (class_exists(ArrayCache::class)) {
+            $reader = new PsrCachedReader($reader, CacheAdapter::wrap(new ArrayCache()));
+        }
+
+        return $reader;
     }
 }
