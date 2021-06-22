@@ -20,6 +20,15 @@ a release.
 
 ## [Unreleased]
 
+## [3.1.0] - 2021-06-22
+### Fixed
+- Allow installing doctrine/cache 2.0 (thanks @alcaeus!)
+- Make doctrine/cache a dev dependency
+
+## [3.0.5] - 2021-04-23
+### Fixed
+- Use path_separator when removing children (#2217)
+
 ## [3.0.4] - 2021-03-27
 ### Fixed
 - Add hacky measure to resolve incompatibility with DoctrineBundle 2.3 [#2211](https://github.com/doctrine-extensions/DoctrineExtensions/pull/2211)
