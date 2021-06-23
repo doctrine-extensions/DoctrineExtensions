@@ -138,13 +138,6 @@ doctrine:
         filters:
             softdeleteable:
                 class: Gedmo\SoftDeleteable\Filter\SoftDeleteableFilter
-```     
-
-With Doctrine ^2.7 - You MUST add `enabled: true` on the filter, as filters are disabled by default.
-```yaml
-        filters:
-            softdeleteable:
-                class: Gedmo\SoftDeleteable\Filter\SoftDeleteableFilter
                 enabled: true
 ```  
 
