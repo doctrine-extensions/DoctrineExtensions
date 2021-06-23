@@ -141,7 +141,6 @@ doctrine:
                 enabled: true
 ```  
 
-
 <a name="ext-listeners"></a>
 
 ## Doctrine extension listener services
