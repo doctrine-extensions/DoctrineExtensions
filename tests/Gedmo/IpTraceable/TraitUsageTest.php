@@ -24,10 +24,6 @@ class TraitUsageTest extends BaseTestCaseORM
     {
         parent::setUp();
 
-        if (version_compare(PHP_VERSION, '5.4.0') < 0) {
-            $this->markTestSkipped('PHP >= 5.4 version required for this test.');
-        }
-
         $evm = new EventManager();
         $ipTraceableListener = new IpTraceableListener();
         $ipTraceableListener->setIpValue(self::TEST_IP);
