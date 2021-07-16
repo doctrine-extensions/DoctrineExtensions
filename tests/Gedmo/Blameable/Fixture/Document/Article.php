@@ -29,6 +29,7 @@ class Article
      * @ODM\Field(type="string")
      * @Gedmo\Blameable(on="create")
      */
+    #[Gedmo\Blameable(on: 'create')]
     private $created;
 
     /**
@@ -37,12 +38,14 @@ class Article
      * @ODM\Field(type="string")
      * @Gedmo\Blameable
      */
+    #[Gedmo\Blameable]
     private $updated;
 
     /**
      * @ODM\ReferenceOne(targetDocument="User")
      * @Gedmo\Blameable(on="create")
      */
+    #[Gedmo\Blameable(on: 'create')]
     private $creator;
 
     /**
@@ -51,6 +54,7 @@ class Article
      * @ODM\Field(type="string")
      * @Gedmo\Blameable(on="change", field="type.title", value="Published")
      */
+    #[Gedmo\Blameable(on: 'change', field: 'type.title', value: 'Published')]
     private $published;
 
     public function getId()
