@@ -2,9 +2,8 @@
 
 namespace Gedmo\Sortable\Entity\Repository;
 
-use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\EntityRepository;
-use Doctrine\ORM\Mapping\ClassMetadata;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Persistence\ManagerRegistry;
 use Gedmo\Sortable\SortableListener;
 
 /**
@@ -13,7 +12,7 @@ use Gedmo\Sortable\SortableListener;
  * @author Lukas Botsch <lukas.botsch@gmail.com>
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class SortableRepository extends EntityRepository
+class SortableRepository extends ServiceEntityRepository
 {
     /**
      * Sortable listener on event manager
@@ -25,11 +24,12 @@ class SortableRepository extends EntityRepository
     protected $config = null;
     protected $meta = null;
 
-    public function __construct(EntityManagerInterface $em, ClassMetadata $class)
+    public function __construct(ManagerRegistry $registry, string $entityClass)
     {
-        parent::__construct($em, $class);
+        parent::__construct($registry, $entityClass);
+
         $sortableListener = null;
-        foreach ($em->getEventManager()->getListeners() as $event => $listeners) {
+        foreach ($this->_em->getEventManager()->getListeners() as $event => $listeners) {
             foreach ($listeners as $hash => $listener) {
                 if ($listener instanceof SortableListener) {
                     $sortableListener = $listener;

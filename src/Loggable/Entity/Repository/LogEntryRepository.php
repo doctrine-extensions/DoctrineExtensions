@@ -2,7 +2,7 @@
 
 namespace Gedmo\Loggable\Entity\Repository;
 
-use Doctrine\ORM\EntityRepository;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Query;
 use Gedmo\Loggable\Entity\MappedSuperclass\AbstractLogEntry;
@@ -16,7 +16,7 @@ use Gedmo\Tool\Wrapper\EntityWrapper;
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class LogEntryRepository extends EntityRepository
+class LogEntryRepository extends ServiceEntityRepository
 {
     /**
      * Currently used loggable listener

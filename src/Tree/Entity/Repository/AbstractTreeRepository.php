@@ -2,9 +2,8 @@
 
 namespace Gedmo\Tree\Entity\Repository;
 
-use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\EntityRepository;
-use Doctrine\ORM\Mapping\ClassMetadata;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Persistence\ManagerRegistry;
 use Gedmo\Exception\InvalidArgumentException;
 use Gedmo\Tool\Wrapper\EntityWrapper;
 use Gedmo\Tree\RepositoryInterface;
@@ -12,7 +11,7 @@ use Gedmo\Tree\RepositoryUtils;
 use Gedmo\Tree\RepositoryUtilsInterface;
 use Gedmo\Tree\TreeListener;
 
-abstract class AbstractTreeRepository extends EntityRepository implements RepositoryInterface
+abstract class AbstractTreeRepository extends ServiceEntityRepository implements RepositoryInterface
 {
     /**
      * Tree listener on event manager
@@ -29,11 +28,12 @@ abstract class AbstractTreeRepository extends EntityRepository implements Reposi
     /**
      * {@inheritdoc}
      */
-    public function __construct(EntityManagerInterface $em, ClassMetadata $class)
+    public function __construct(ManagerRegistry $registry, string $entityClass)
     {
-        parent::__construct($em, $class);
+        parent::__construct($registry, $entityClass);
+
         $treeListener = null;
-        foreach ($em->getEventManager()->getListeners() as $listeners) {
+        foreach ($this->_em->getEventManager()->getListeners() as $listeners) {
             foreach ($listeners as $listener) {
                 if ($listener instanceof TreeListener) {
                     $treeListener = $listener;

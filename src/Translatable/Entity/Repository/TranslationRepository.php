@@ -2,11 +2,10 @@
 
 namespace Gedmo\Translatable\Entity\Repository;
 
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\DBAL\Types\Type;
-use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\EntityRepository;
-use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Query;
+use Doctrine\Persistence\ManagerRegistry;
 use Gedmo\Tool\Wrapper\EntityWrapper;
 use Gedmo\Translatable\Mapping\Event\Adapter\ORM as TranslatableAdapterORM;
 use Gedmo\Translatable\TranslatableListener;
@@ -18,7 +17,7 @@ use Gedmo\Translatable\TranslatableListener;
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class TranslationRepository extends EntityRepository
+class TranslationRepository extends ServiceEntityRepository
 {
     /**
      * Current TranslatableListener instance used
@@ -31,12 +30,13 @@ class TranslationRepository extends EntityRepository
     /**
      * {@inheritdoc}
      */
-    public function __construct(EntityManagerInterface $em, ClassMetadata $class)
+    public function __construct(ManagerRegistry $registry, string $entityClass)
     {
-        if ($class->getReflectionClass()->isSubclassOf('Gedmo\Translatable\Entity\MappedSuperclass\AbstractPersonalTranslation')) {
+        parent::__construct($registry, $entityClass);
+
+        if ($this->_class->getReflectionClass()->isSubclassOf('Gedmo\Translatable\Entity\MappedSuperclass\AbstractPersonalTranslation')) {
             throw new \Gedmo\Exception\UnexpectedValueException('This repository is useless for personal translations');
         }
-        parent::__construct($em, $class);
     }
 
     /**
