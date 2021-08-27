@@ -9,6 +9,6 @@
 
         <field name="deletedAt" type="datetime" nullable="true"/>
 
-        <gedmo:soft-deleteable field-name="deletedAt"/>
+        <gedmo:soft-deleteable field-name="deletedAt" time-aware="false" hard-delete="true"/>
     </entity>
 </doctrine-mapping>

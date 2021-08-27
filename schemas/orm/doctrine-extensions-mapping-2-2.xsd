@@ -104,6 +104,8 @@
 
   <xs:complexType name="soft-deleteable">
     <xs:attribute name="field-name" type="xs:string" use="required" />
+    <xs:attribute name="hard-delete" type="xs:boolean" use="optional" />
+    <xs:attribute name="time-aware" type="xs:boolean" use="optional" />
   </xs:complexType>
 
   <xs:complexType name="handler">
