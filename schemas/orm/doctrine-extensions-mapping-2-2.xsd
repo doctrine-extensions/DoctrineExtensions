@@ -25,6 +25,7 @@
   <xs:element name="translation" type="gedmo:translation"/>
   <xs:element name="tree" type="gedmo:tree"/>
   <xs:element name="tree-closure" type="gedmo:tree-closure"/>
+  <xs:element name="tree-path" type="gedmo:tree-path"/>
   <xs:element name="loggable" type="gedmo:loggable"/>
   <xs:element name="soft-deleteable" type="gedmo:soft-deleteable"/>
   <xs:element name="uploadable" type="gedmo:uploadable"/>
