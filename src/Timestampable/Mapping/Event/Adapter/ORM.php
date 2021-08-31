@@ -2,6 +2,8 @@
 
 namespace Gedmo\Timestampable\Mapping\Event\Adapter;
 
+use Doctrine\DBAL\Types\Type;
+use Doctrine\DBAL\Types\Types;
 use Gedmo\Mapping\Event\Adapter\ORM as BaseAdapterORM;
 use Gedmo\Timestampable\Mapping\Event\TimestampableAdapter;
 
@@ -20,6 +22,20 @@ final class ORM extends BaseAdapterORM implements TimestampableAdapter
     public function getDateValue($meta, $field)
     {
         $mapping = $meta->getFieldMapping($field);
+        $converter = Type::getType($mapping['type'] ?? Types::DATETIME_MUTABLE);
+        $platform = $this->getObjectManager()->getConnection()->getDriver()->getDatabasePlatform();
+
+        return $converter->convertToPHPValue($this->getRawDateValue($mapping), $platform);
+    }
+
+    /**
+     * Generates current timestamp for the specified mapping
+     *
+     * @param object $mapping
+     * @return mixed
+     */
+    public function getRawDateValue($mapping)
+    {
         if (isset($mapping['type']) && 'integer' === $mapping['type']) {
             return time();
         }
@@ -30,4 +46,5 @@ final class ORM extends BaseAdapterORM implements TimestampableAdapter
         return \DateTime::createFromFormat('U.u', number_format(microtime(true), 6, '.', ''))
             ->setTimeZone(new \DateTimeZone(date_default_timezone_get()));
     }
+
 }
