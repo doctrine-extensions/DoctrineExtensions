@@ -31,10 +31,11 @@ final class ORM extends BaseAdapterORM implements TimestampableAdapter
     /**
      * Generates current timestamp for the specified mapping
      *
-     * @param object $mapping
-     * @return mixed
+     * @param array<string, mixed> $mapping
+     *
+     * @return \DateTimeInterface|int
      */
-    public function getRawDateValue($mapping)
+    private function getRawDateValue(array $mapping)
     {
         if (isset($mapping['type']) && 'integer' === $mapping['type']) {
             return time();
@@ -46,5 +47,4 @@ final class ORM extends BaseAdapterORM implements TimestampableAdapter
         return \DateTime::createFromFormat('U.u', number_format(microtime(true), 6, '.', ''))
             ->setTimeZone(new \DateTimeZone(date_default_timezone_get()));
     }
-
 }
