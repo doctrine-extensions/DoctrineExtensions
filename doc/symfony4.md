@@ -164,7 +164,7 @@ services:
             - { name: doctrine.event_subscriber, connection: default }
         calls:
             - [ setAnnotationReader, [ "@annotation_reader" ] ]
-            - [ setDefaultLocale, [ %locale% ] ]
+            - [ setDefaultLocale, [ "%locale%" ] ]
             - [ setTranslationFallback, [ false ] ]
 
     gedmo.listener.timestampable:
