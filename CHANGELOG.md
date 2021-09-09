@@ -19,6 +19,9 @@ a release.
 ---
 
 ## [Unreleased]
+### Fixed
+- Removed legacy checks targeting older versions of PHP (#2201)
+- Added missing XSD definitions (#2244)
 
 ## [3.1.0] - 2021-06-22
 ### Fixed
