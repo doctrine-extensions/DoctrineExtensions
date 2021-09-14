@@ -4,6 +4,7 @@ namespace Gedmo\Translatable\Mapping\Event\Adapter;
 
 use Doctrine\Common\Proxy\Proxy;
 use Doctrine\DBAL\Types\Type;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Gedmo\Mapping\Event\Adapter\ORM as BaseAdapterORM;
 use Gedmo\Tool\Wrapper\AbstractWrapper;
@@ -111,9 +112,9 @@ final class ORM extends BaseAdapterORM implements TranslatableAdapter
         $meta = $em->getClassMetadata($className);
         $type = Type::getType($meta->getTypeOfField('foreignKey'));
         switch ($type->getName()) {
-        case Type::BIGINT:
-        case Type::INTEGER:
-        case Type::SMALLINT:
+        case Types::BIGINT:
+        case Types::INTEGER:
+        case Types::SMALLINT:
             return intval($key);
         default:
             return (string) $key;

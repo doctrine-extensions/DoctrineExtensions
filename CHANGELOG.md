@@ -25,6 +25,7 @@ a release.
 ### Fixed
 - Removed legacy checks targeting older versions of PHP (#2201)
 - Added missing XSD definitions (#2244)
+- Replaced undefined constants from `Doctrine\DBAL\Types\Type` at `Gedmo\Translatable\Mapping\Event\Adapter\ORM::foreignKey()` (#2250)
 - Add conflict against "doctrine/orm" >=2.10 in order to guarantee the schema extension (see https://github.com/doctrine/orm/pull/8852) (#2255)
 
 ## [3.1.0] - 2021-06-22
