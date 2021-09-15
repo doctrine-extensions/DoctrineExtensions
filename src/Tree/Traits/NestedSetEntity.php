@@ -2,6 +2,7 @@
 
 namespace Gedmo\Tree\Traits;
 
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
@@ -18,6 +19,7 @@ trait NestedSetEntity
      * @Gedmo\TreeRoot
      * @ORM\Column(name="root", type="integer", nullable=true)
      */
+    #[ORM\Column(name: 'root', type: Types::INTEGER, nullable: true)]
     private $root;
 
     /**
@@ -25,6 +27,7 @@ trait NestedSetEntity
      * @Gedmo\TreeLevel
      * @ORM\Column(name="lvl", type="integer")
      */
+    #[ORM\Column(name: 'lvl', type: Types::INTEGER)]
     private $level;
 
     /**
@@ -32,6 +35,7 @@ trait NestedSetEntity
      * @Gedmo\TreeLeft
      * @ORM\Column(name="lft", type="integer")
      */
+    #[ORM\Column(name: 'lft', type: Types::INTEGER)]
     private $left;
 
     /**
@@ -39,5 +43,6 @@ trait NestedSetEntity
      * @Gedmo\TreeRight
      * @ORM\Column(name="rgt", type="integer")
      */
+    #[ORM\Column(name: 'rgt', type: Types::INTEGER)]
     private $right;
 }

@@ -2,6 +2,7 @@
 
 namespace Gedmo\Tree\Traits;
 
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
@@ -20,5 +21,6 @@ trait NestedSetEntityUuid
      * @Gedmo\TreeRoot
      * @ORM\Column(name="root", type="string", nullable=true)
      */
+    #[ORM\Column(name: 'root', type: Types::STRING, nullable: true)]
     private $root;
 }
