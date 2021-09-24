@@ -2,12 +2,14 @@
 
 namespace Gedmo\Tests\Translatable\Fixture;
 
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ORM\Entity
  */
+#[ORM\Entity]
 class MixedValue
 {
     /**
@@ -15,18 +17,25 @@ class MixedValue
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: Types::INTEGER)]
     private $id;
 
     /**
      * @Gedmo\Translatable
      * @ORM\Column(type="datetime")
      */
+    #[Gedmo\Translatable]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private $date;
 
     /**
      * @Gedmo\Translatable
      * @ORM\Column(type="custom")
      */
+    #[Gedmo\Translatable]
+    #[ORM\Column(type: 'custom')]
     private $cust;
 
     public function getId()

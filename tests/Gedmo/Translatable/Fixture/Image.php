@@ -8,12 +8,15 @@ use Gedmo\Mapping\Annotation as Gedmo;
 /**
  * @ORM\Entity
  */
+#[ORM\Entity]
 class Image extends File
 {
     /**
      * @Gedmo\Translatable
      * @ORM\Column(length=128)
      */
+    #[Gedmo\Translatable]
+    #[ORM\Column(length: 128)]
     private $mime;
 
     public function setMime($mime)

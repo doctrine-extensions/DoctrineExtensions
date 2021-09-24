@@ -9,7 +9,9 @@ use Doctrine\DBAL\Platforms\MySqlPlatform;
 use Doctrine\ORM\Configuration;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
+use Doctrine\ORM\Mapping\Driver\AttributeDriver;
 use Doctrine\ORM\Tools\SchemaTool;
+use Doctrine\Persistence\Mapping\Driver\MappingDriver;
 use Gedmo\Loggable\LoggableListener;
 use Gedmo\Sluggable\SluggableListener;
 use Gedmo\SoftDeleteable\SoftDeleteableListener;
@@ -76,6 +78,30 @@ abstract class BaseTestCaseORM extends \PHPUnit\Framework\TestCase
         $schemaTool->createSchema($schema);
 
         return $this->em = $em;
+    }
+
+    protected function getDefaultMockSqliteEntityManager(EventManager $evm = null): EntityManager
+    {
+        return $this->getMockSqliteEntityManager($evm, $this->getDefaultConfiguration());
+    }
+
+    private function getDefaultConfiguration(): Configuration
+    {
+        $config = new Configuration();
+        $config->setProxyDir(__DIR__.'/../../temp');
+        $config->setProxyNamespace('Proxy');
+        $config->setMetadataDriverImpl($this->getMetadataDefaultDriverImplementation());
+
+        return $config;
+    }
+
+    private function getMetadataDefaultDriverImplementation(): MappingDriver
+    {
+        if (PHP_VERSION_ID >= 80000) {
+            return new AttributeDriver([]);
+        }
+
+        return new AnnotationDriver($_ENV['annotation_reader']);
     }
 
     /**

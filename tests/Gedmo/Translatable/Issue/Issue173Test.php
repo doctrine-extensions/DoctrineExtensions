@@ -41,7 +41,7 @@ class Issue173Test extends BaseTestCaseORM
         $this->translatableListener->setDefaultLocale('en');
         $evm->addEventSubscriber($this->translatableListener);
 
-        $this->getMockSqliteEntityManager($evm);
+        $this->getDefaultMockSqliteEntityManager($evm);
 
         $this->populate();
     }

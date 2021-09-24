@@ -2,24 +2,30 @@
 
 namespace Gedmo\Tests\Translatable\Fixture\Template;
 
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ORM\MappedSuperclass
  */
+#[ORM\MappedSuperclass]
 class ArticleTemplate
 {
     /**
      * @Gedmo\Translatable
      * @ORM\Column(name="title", type="string", length=128)
      */
+    #[ORM\Column(name: 'title', type: Types::STRING, length: 128)]
+    #[Gedmo\Translatable]
     private $title;
 
     /**
      * @Gedmo\Translatable
      * @ORM\Column(name="content", type="text")
      */
+    #[ORM\Column(name: 'content', type: Types::TEXT)]
+    #[Gedmo\Translatable]
     private $content;
 
     /**
@@ -27,6 +33,7 @@ class ArticleTemplate
      *
      * @Gedmo\Locale
      */
+    #[Gedmo\Locale]
     protected $locale;
 
     public function setTitle($title)
