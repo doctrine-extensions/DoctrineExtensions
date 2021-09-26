@@ -2,6 +2,7 @@
 
 namespace Gedmo\SoftDeleteable;
 
+use function class_exists;
 use Doctrine\Common\Cache\ArrayCache;
 use Doctrine\Common\EventManager;
 use SoftDeleteable\Fixture\Entity\Article;
@@ -14,7 +15,6 @@ use SoftDeleteable\Fixture\Entity\OtherComment;
 use SoftDeleteable\Fixture\Entity\User;
 use SoftDeleteable\Fixture\Entity\UserNoHardDelete;
 use Tool\BaseTestCaseORM;
-use function class_exists;
 
 /**
  * These are tests for SoftDeleteable behavior
@@ -29,17 +29,17 @@ use function class_exists;
  */
 class SoftDeleteableEntityTest extends BaseTestCaseORM
 {
-    const ARTICLE_CLASS = 'SoftDeleteable\Fixture\Entity\Article';
-    const COMMENT_CLASS = 'SoftDeleteable\Fixture\Entity\Comment';
-    const PAGE_CLASS = 'SoftDeleteable\Fixture\Entity\Page';
-    const MEGA_PAGE_CLASS = 'SoftDeleteable\Fixture\Entity\MegaPage';
-    const MODULE_CLASS = 'SoftDeleteable\Fixture\Entity\Module';
-    const OTHER_ARTICLE_CLASS = 'SoftDeleteable\Fixture\Entity\OtherArticle';
-    const OTHER_COMMENT_CLASS = 'SoftDeleteable\Fixture\Entity\OtherComment';
-    const USER_CLASS = 'SoftDeleteable\Fixture\Entity\User';
-    const MAPPED_SUPERCLASS_CHILD_CLASS = 'SoftDeleteable\Fixture\Entity\Child';
-    const SOFT_DELETEABLE_FILTER_NAME = 'soft-deleteable';
-    const USER_NO_HARD_DELETE_CLASS = 'SoftDeleteable\Fixture\Entity\UserNoHardDelete';
+    public const ARTICLE_CLASS = 'SoftDeleteable\Fixture\Entity\Article';
+    public const COMMENT_CLASS = 'SoftDeleteable\Fixture\Entity\Comment';
+    public const PAGE_CLASS = 'SoftDeleteable\Fixture\Entity\Page';
+    public const MEGA_PAGE_CLASS = 'SoftDeleteable\Fixture\Entity\MegaPage';
+    public const MODULE_CLASS = 'SoftDeleteable\Fixture\Entity\Module';
+    public const OTHER_ARTICLE_CLASS = 'SoftDeleteable\Fixture\Entity\OtherArticle';
+    public const OTHER_COMMENT_CLASS = 'SoftDeleteable\Fixture\Entity\OtherComment';
+    public const USER_CLASS = 'SoftDeleteable\Fixture\Entity\User';
+    public const MAPPED_SUPERCLASS_CHILD_CLASS = 'SoftDeleteable\Fixture\Entity\Child';
+    public const SOFT_DELETEABLE_FILTER_NAME = 'soft-deleteable';
+    public const USER_NO_HARD_DELETE_CLASS = 'SoftDeleteable\Fixture\Entity\UserNoHardDelete';
 
     private $softDeleteableListener;
 
@@ -503,7 +503,7 @@ class SoftDeleteableEntityTest extends BaseTestCaseORM
         $this->em->persist($newUser);
         $this->em->flush();
 
-        $user = $repo->findOneBy(array('username' => $username));
+        $user = $repo->findOneBy(['username' => $username]);
 
         $this->assertNull($user->getDeletedAt());
 

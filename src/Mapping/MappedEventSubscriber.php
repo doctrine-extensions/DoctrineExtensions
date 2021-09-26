@@ -2,6 +2,7 @@
 
 namespace Gedmo\Mapping;
 
+use function class_exists;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Annotations\AnnotationRegistry;
 use Doctrine\Common\Annotations\PsrCachedReader;
@@ -13,7 +14,6 @@ use Doctrine\Common\EventSubscriber;
 use Doctrine\Persistence\ObjectManager;
 use Gedmo\Mapping\Event\AdapterInterface;
 use Symfony\Component\Cache\Adapter\ArrayAdapter;
-use function class_exists;
 
 /**
  * This is extension of event subscriber class and is
@@ -231,7 +231,7 @@ abstract class MappedEventSubscriber implements EventSubscriber
 
             if (class_exists(ArrayAdapter::class)) {
                 $reader = new PsrCachedReader($reader, new ArrayAdapter());
-            } else if (class_exists(ArrayCache::class)) {
+            } elseif (class_exists(ArrayCache::class)) {
                 $reader = new PsrCachedReader($reader, CacheAdapter::wrap(new ArrayCache()));
             }
 
