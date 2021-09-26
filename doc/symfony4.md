@@ -54,7 +54,7 @@ doctrine:
 # only these lines are added additionally
         mappings:
             translatable:
-                type: annotation
+                type: annotation # or attribute
                 alias: Gedmo
                 prefix: Gedmo\Translatable\Entity
                 # make sure vendor library location is correct
@@ -79,7 +79,7 @@ to you also. To skip mapping of these entities, you can map **only superclasses*
 ```yaml
 mappings:
     translatable:
-        type: annotation
+        type: annotation # or attribute
         alias: Gedmo
         prefix: Gedmo\Translatable\Entity
         # make sure vendor library location is correct
@@ -106,18 +106,18 @@ orm:
 # only these lines are added additionally
     mappings:
         translatable:
-            type: annotation
+            type: annotation # or attribute
             alias: Gedmo
             prefix: Gedmo\Translatable\Entity
             # make sure vendor library location is correct
             dir: "%kernel.root_dir%/../vendor/gedmo/doctrine-extensions/src/Translatable/Entity"
         loggable:
-            type: annotation
+            type: annotation # or attribute
             alias: Gedmo
             prefix: Gedmo\Loggable\Entity
             dir: "%kernel.root_dir%/../vendor/gedmo/doctrine-extensions/src/Loggable/Entity"
         tree:
-            type: annotation
+            type: annotation # or attribute
             alias: Gedmo
             prefix: Gedmo\Tree\Entity
             dir: "%kernel.root_dir%/../vendor/gedmo/doctrine-extensions/src/Tree/Entity"
@@ -446,7 +446,7 @@ doctrine_mongodb:
             auto_mapping: true
             mappings:
                 translatable:
-                    type: annotation
+                    type: annotation # or attribute
                     alias: GedmoDocument
                     prefix: Gedmo\Translatable\Document
                     # make sure vendor library location is correct

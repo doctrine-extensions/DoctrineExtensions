@@ -2,6 +2,7 @@
 
 namespace Gedmo\Translatable\Entity\MappedSuperclass;
 
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -9,6 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\MappedSuperclass
  */
+#[ORM\MappedSuperclass]
 abstract class AbstractTranslation
 {
     /**
@@ -18,6 +20,9 @@ abstract class AbstractTranslation
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
+    #[ORM\Column(type: Types::INTEGER)]
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'IDENTITY')]
     protected $id;
 
     /**
@@ -25,6 +30,7 @@ abstract class AbstractTranslation
      *
      * @ORM\Column(type="string", length=8)
      */
+    #[ORM\Column(type: Types::STRING, length: 8)]
     protected $locale;
 
     /**
@@ -32,6 +38,7 @@ abstract class AbstractTranslation
      *
      * @ORM\Column(name="object_class", type="string", length=191)
      */
+    #[ORM\Column(name: 'object_class', type: Types::STRING, length: 191)]
     protected $objectClass;
 
     /**
@@ -39,6 +46,7 @@ abstract class AbstractTranslation
      *
      * @ORM\Column(type="string", length=32)
      */
+    #[ORM\Column(type: Types::STRING, length: 32)]
     protected $field;
 
     /**
@@ -46,6 +54,7 @@ abstract class AbstractTranslation
      *
      * @ORM\Column(name="foreign_key", type="string", length=64)
      */
+    #[ORM\Column(name: 'foreign_key', type: Types::STRING, length: 64)]
     protected $foreignKey;
 
     /**
@@ -53,6 +62,7 @@ abstract class AbstractTranslation
      *
      * @ORM\Column(type="text", nullable=true)
      */
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
     protected $content;
 
     /**
