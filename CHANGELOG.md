@@ -19,6 +19,9 @@ a release.
 ---
 
 ## [Unreleased]
+### Added
+- PHP 8 Attributes for Doctrine ORM to entities & traits (#2251) 
+
 ### Fixed
 - Removed legacy checks targeting older versions of PHP (#2201)
 - Added missing XSD definitions (#2244)
