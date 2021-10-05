@@ -4,6 +4,8 @@ namespace Gedmo\Mapping\Event;
 
 use Doctrine\Common\EventArgs;
 use Doctrine\ORM\UnitOfWork;
+use Doctrine\Persistence\Event\LifecycleEventArgs;
+use Doctrine\Persistence\ObjectManager;
 
 /**
  * Doctrine event adapter interface is used
@@ -12,6 +14,8 @@ use Doctrine\ORM\UnitOfWork;
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
+ *
+ * @method LifecycleEventArgs createLifecycleEventArgsInstance(object $object, ObjectManager $manager)
  */
 interface AdapterInterface
 {
