@@ -10,6 +10,8 @@
 namespace Gedmo\Mapping;
 
 use Doctrine\Bundle\DoctrineBundle\Mapping\MappingDriver as DoctrineBundleMappingDriver;
+use Doctrine\Common\Annotations\Reader;
+use Doctrine\Common\Cache\Cache;
 use Doctrine\Persistence\Mapping\ClassMetadata;
 use Doctrine\Persistence\Mapping\Driver\DefaultFileLocator;
 use Doctrine\Persistence\Mapping\Driver\MappingDriver;
@@ -58,6 +60,7 @@ class ExtensionMetadataFactory
      * Custom annotation reader
      *
      * @var object
+     * @phpstan-var Reader|AttributeReader
      */
     protected $annotationReader;
 
@@ -66,8 +69,22 @@ class ExtensionMetadataFactory
      */
     private $cacheItemPool;
 
+    /**
+     * @param Reader|AttributeReader|object $annotationReader
+     */
     public function __construct(ObjectManager $objectManager, string $extensionNamespace, object $annotationReader, ?CacheItemPoolInterface $cacheItemPool = null)
     {
+        if (!$annotationReader instanceof Reader && !$annotationReader instanceof AttributeReader) {
+            trigger_deprecation(
+                'gedmo/doctrine-extensions',
+                '3.11',
+                'Providing an annotation reader which does not implement %s or is not an instance of %s to %s is deprecated.',
+                Reader::class,
+                AttributeReader::class,
+                static::class
+            );
+        }
+
         $this->objectManager = $objectManager;
         $this->annotationReader = $annotationReader;
         $this->extensionNamespace = $extensionNamespace;

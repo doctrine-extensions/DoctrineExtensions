@@ -29,6 +29,8 @@ a release.
 - In order to close the API, `@final` and `@internal` annotations were added to all non base classes, which means that extending
   these classes is deprecated and can not be inherited in version 4.0.
 - Sortable: Accepting a return type other than "integer" from `Comparable::compareTo()` is deprecated in `SortableListener::postFlush()`. This will not be accepted in version 4.0.
+- Deprecate the annotation reader being allowed to be any object.
+  In 4.0, a `Doctrine\Common\Annotations\Reader` or `Gedmo\Mapping\Driver\AttributeReader` instance will be required.
 
 ## [3.10.0] - 2022-11-14
 ### Changed
