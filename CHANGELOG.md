@@ -19,6 +19,8 @@ a release.
 ---
 
 ## [Unreleased]
+
+## [3.2.0] - 2021-10-05
 ### Added
 - PHP 8 Attributes for Doctrine ORM to entities & traits (#2251) 
 
