@@ -24,6 +24,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\Mapping\AbstractClassMetadataFactory;
 use Doctrine\Persistence\Mapping\ClassMetadata;
 use Doctrine\Persistence\ObjectManager;
+use Gedmo\Mapping\Driver\AttributeReader;
 use Gedmo\Mapping\Event\AdapterInterface;
 use Psr\Cache\CacheItemPoolInterface;
 use Symfony\Component\Cache\Adapter\ArrayAdapter;
@@ -76,7 +77,7 @@ abstract class MappedEventSubscriber implements EventSubscriber
     /**
      * Custom annotation reader
      *
-     * @var object
+     * @var Reader|AttributeReader|object|null
      */
     private $annotationReader;
 
@@ -162,20 +163,36 @@ abstract class MappedEventSubscriber implements EventSubscriber
     }
 
     /**
-     * Set annotation reader class
-     * since older doctrine versions do not provide an interface
-     * it must provide these methods:
+     * Set the annotation reader instance
+     *
+     * When originally implemented, `Doctrine\Common\Annotations\Reader` was not available,
+     * therefore this method may accept any object implementing these methods from the interface:
+     *
      *     getClassAnnotations([reflectionClass])
      *     getClassAnnotation([reflectionClass], [name])
      *     getPropertyAnnotations([reflectionProperty])
      *     getPropertyAnnotation([reflectionProperty], [name])
      *
-     * @param Reader $reader annotation reader class
+     * @param object $reader
+     * @phpstan-param Reader|AttributeReader $reader
      *
      * @return void
+     *
+     * @note Providing any object is deprecated, as of 4.0 a `Doctrine\Common\Annotations\Reader` or `Gedmo\Mapping\Driver\AttributeReader` will be required
      */
     public function setAnnotationReader($reader)
     {
+        if (!$reader instanceof Reader && !$reader instanceof AttributeReader) {
+            trigger_deprecation(
+                'gedmo/doctrine-extensions',
+                '3.11',
+                'Providing an annotation reader which does not implement %s or is not an instance of %s to %s() is deprecated.',
+                Reader::class,
+                AttributeReader::class,
+                __METHOD__
+            );
+        }
+
         $this->annotationReader = $reader;
     }
 
