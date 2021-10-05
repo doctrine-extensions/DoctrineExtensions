@@ -22,8 +22,15 @@ final class TranslationEntity implements GedmoAnnotation
     /** @var string @Required */
     public $class;
 
-    public function __construct(string $class)
+    public function __construct(array $data = [], string $class = '')
     {
-        $this->class = $class;
+        if ([] !== $data) {
+            trigger_error(sprintf(
+                'Passing an array as first argument to "%s" is deprecated. Use named arguments instead.',
+                __METHOD__
+            ), E_USER_DEPRECATED);
+        }
+
+        $this->class = $data['class'] ?? $class;
     }
 }

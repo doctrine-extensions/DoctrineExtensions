@@ -22,8 +22,15 @@ final class Translatable implements GedmoAnnotation
     /** @var bool|null */
     public $fallback;
 
-    public function __construct(?bool $fallback = null)
+    public function __construct(array $data = [], ?bool $fallback = null)
     {
-        $this->fallback = $fallback;
+        if ([] !== $data) {
+            trigger_error(sprintf(
+                'Passing an array as first argument to "%s" is deprecated. Use named arguments instead.',
+                __METHOD__
+            ), E_USER_DEPRECATED);
+        }
+
+        $this->fallback = $data['fallback'] ?? $fallback;
     }
 }
