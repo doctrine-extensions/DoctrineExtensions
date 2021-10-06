@@ -3,9 +3,9 @@
 namespace Gedmo;
 
 use Doctrine\Common\EventArgs;
-use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\ORM\UnitOfWork;
 use Doctrine\Persistence\Mapping\ClassMetadata;
+use Doctrine\Persistence\NotifyPropertyChanged;
 use Gedmo\Exception\UnexpectedValueException;
 use Gedmo\Mapping\Event\AdapterInterface;
 use Gedmo\Mapping\MappedEventSubscriber;
