@@ -24,5 +24,5 @@ jobs:
           dependency-versions: "highest"
 
       - name: "Run PHP-CS-Fixer"
-        run: "bin/php-cs-fixer fix --ansi --verbose --diff --dry-run"
+        run: "bin/php-cs-fixer fix --ansi --verbose --diff --dry-run --allow-risky=yes"
 
