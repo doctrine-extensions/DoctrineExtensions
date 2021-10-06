@@ -70,6 +70,6 @@ class ExtensionODMTest extends BaseTestCaseMongoODM
             $this->encoderListener,
             $loadClassMetadataEventArgs
         );
-        $this->assertEquals('Gedmo\\Mapping\\Mock\\Extension\\Encoder\\Mapping\\Event\\Adapter\\ODM', get_class($eventAdapter));
+        $this->assertInstanceOf(\Gedmo\Mapping\Mock\Extension\Encoder\Mapping\Event\Adapter\ODM::class, $eventAdapter);
     }
 }

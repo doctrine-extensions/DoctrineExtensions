@@ -61,7 +61,7 @@ class Issue109Test extends BaseTestCaseORM
         $query->setHint(Query::HINT_CUSTOM_OUTPUT_WALKER, self::TREE_WALKER_TRANSLATION);
 
         $result = $query->getResult();
-        $this->assertEquals(3, count($result));
+        $this->assertCount(3, $result);
     }
 
     protected function getUsedEntityFixtures()

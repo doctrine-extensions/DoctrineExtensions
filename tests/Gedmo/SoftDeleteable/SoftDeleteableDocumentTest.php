@@ -77,8 +77,6 @@ class SoftDeleteableDocumentTest extends BaseTestCaseMongoODM
     /**
      * Tests the filter by enabling and disabling it between
      * some user persists actions.
-     *
-     * @test
      */
     public function testSoftDeleteableFilter()
     {
@@ -163,7 +161,7 @@ class SoftDeleteableDocumentTest extends BaseTestCaseMongoODM
 
         $subscriber->expects($this->once())
             ->method('getSubscribedEvents')
-            ->will($this->returnValue([SoftDeleteableListener::PRE_SOFT_DELETE, SoftDeleteableListener::POST_SOFT_DELETE]));
+            ->willReturn([SoftDeleteableListener::PRE_SOFT_DELETE, SoftDeleteableListener::POST_SOFT_DELETE]);
 
         $subscriber->expects($this->once())
             ->method('preSoftDelete')

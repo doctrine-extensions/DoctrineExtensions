@@ -91,7 +91,7 @@ class TranslatableSluggableTreeTest extends BaseTestCaseORM
         $this->assertEquals('Vegitables', $vegies->getTitle());
         $food = $vegies->getParent();
         // test if proxy triggers postLoad event
-        $this->assertTrue($food instanceof Proxy);
+        $this->assertInstanceOf(Proxy::class, $food);
         $this->assertEquals('Food', $food->getTitle());
 
         $this->em->clear();
@@ -100,7 +100,7 @@ class TranslatableSluggableTreeTest extends BaseTestCaseORM
         $vegies = $repo->find(4);
         $this->assertEquals('Gemüse', $vegies->getTitle());
         $food = $vegies->getParent();
-        $this->assertTrue($food instanceof Proxy);
+        $this->assertInstanceOf(Proxy::class, $food);
         $this->assertEquals('Lebensmittel', $food->getTitle());
     }
 

@@ -125,7 +125,7 @@ class TranslatableSlugTest extends BaseTestCaseORM
         $this->em->flush();
         $this->em->clear();
 
-        $this->assertEquals($page->getSlug(), 'Cont_Test');
+        $this->assertEquals('Cont_Test', $page->getSlug());
     }
 
     protected function getUsedEntityFixtures()

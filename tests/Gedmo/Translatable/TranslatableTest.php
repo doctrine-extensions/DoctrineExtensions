@@ -108,10 +108,10 @@ class TranslatableTest extends BaseTestCaseORM
     {
         $this->populate();
         $repo = $this->em->getRepository(self::TRANSLATION);
-        $this->assertTrue($repo instanceof Entity\Repository\TranslationRepository);
+        $this->assertInstanceOf(Entity\Repository\TranslationRepository::class, $repo);
 
         $article = $this->em->find(self::ARTICLE, $this->articleId);
-        $this->assertTrue($article instanceof Translatable);
+        $this->assertInstanceOf(Translatable::class, $article);
 
         $translations = $repo->findTranslations($article);
         $this->assertCount(0, $translations);

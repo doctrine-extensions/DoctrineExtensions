@@ -19,7 +19,7 @@ class MappingEventAdapterTest extends \PHPUnit\Framework\TestCase
         $args = new LifecycleEventArgs(new \stdClass(), $emMock);
 
         $adapter = $subscriber->getAdapter($args);
-        $this->assertTrue($adapter instanceof CustomizedORMAdapter);
+        $this->assertInstanceOf(CustomizedORMAdapter::class, $adapter);
     }
 
     public function testCorrectAdapter()
@@ -31,9 +31,9 @@ class MappingEventAdapterTest extends \PHPUnit\Framework\TestCase
         $args = new LifecycleEventArgs(new \stdClass(), $emMock);
 
         $adapter = $subscriber->getAdapter($args);
-        $this->assertTrue($adapter instanceof EventAdapterORM);
-        $this->assertTrue($adapter->getObjectManager() === $emMock);
-        $this->assertTrue($adapter->getObject() instanceof \stdClass);
+        $this->assertInstanceOf(EventAdapterORM::class, $adapter);
+        $this->assertSame($adapter->getObjectManager(), $emMock);
+        $this->assertInstanceOf(\stdClass::class, $adapter->getObject());
     }
 
     public function testAdapterBehavior()

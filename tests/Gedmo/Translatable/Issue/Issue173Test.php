@@ -51,7 +51,7 @@ class Issue173Test extends BaseTestCaseORM
         );
 
         $categories = $this->getCategoriesThatHasNoAssociations();
-        $this->assertEquals(count($categories), 1, '$category3 has no associations');
+        $this->assertCount(1, $categories, '$category3 has no associations');
     }
 
     public function getCategoriesThatHasNoAssociations()

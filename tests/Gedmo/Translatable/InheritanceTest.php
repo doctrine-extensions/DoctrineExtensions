@@ -57,7 +57,7 @@ class InheritanceTest extends BaseTestCaseORM
         $this->em->clear();
 
         $repo = $this->em->getRepository(self::TRANSLATION);
-        $this->assertTrue($repo instanceof Entity\Repository\TranslationRepository);
+        $this->assertInstanceOf(Entity\Repository\TranslationRepository::class, $repo);
 
         $translations = $repo->findTranslations($article);
         $this->assertCount(0, $translations);

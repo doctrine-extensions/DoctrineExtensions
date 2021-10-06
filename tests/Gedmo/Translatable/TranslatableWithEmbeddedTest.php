@@ -54,9 +54,6 @@ class TranslatableWithEmbeddedTest extends BaseTestCaseORM
         $this->em->clear();
     }
 
-    /**
-     * @test
-     */
     public function testTranslate()
     {
         /** @var EntityRepository $repo */
@@ -89,9 +86,6 @@ class TranslatableWithEmbeddedTest extends BaseTestCaseORM
         $this->assertSame('facebook-de', $entity->getLink()->getFacebook());
     }
 
-    /**
-     * @test
-     */
     public function testQueryWalker()
     {
         $dql = 'SELECT f FROM '.self::FIXTURE.' f';

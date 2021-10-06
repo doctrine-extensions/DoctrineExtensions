@@ -64,9 +64,6 @@ class SortableTest extends BaseTestCaseORM
         $this->assertEquals(0, $node->getPosition());
     }
 
-    /**
-     * @test
-     */
     public function testMoveLastPosition()
     {
         for ($i = 2; $i <= 10; ++$i) {
@@ -773,9 +770,6 @@ class SortableTest extends BaseTestCaseORM
         $this->assertEquals(5, $node1->getPosition());
     }
 
-    /**
-     * @test
-     */
     public function testIncrementPositionOfLastObjectByOne()
     {
         $node0 = $this->em->find(self::NODE, $this->nodeId);
@@ -804,9 +798,6 @@ class SortableTest extends BaseTestCaseORM
         $this->assertEquals(4, $nodes[4]->getPosition());
     }
 
-    /**
-     * @test
-     */
     public function testSetOutOfBoundsHighPosition()
     {
         $node0 = $this->em->find(self::NODE, $this->nodeId);

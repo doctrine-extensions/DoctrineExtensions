@@ -65,9 +65,9 @@ class LoggableDocumentTest extends BaseTestCaseMongoODM
         $data = $log->getData();
         $this->assertCount(2, $data);
         $this->assertArrayHasKey('title', $data);
-        $this->assertEquals($data['title'], 'Title');
+        $this->assertEquals('Title', $data['title']);
         $this->assertArrayHasKey('author', $data);
-        $this->assertEquals($data['author'], ['name' => 'John Doe', 'email' => 'john@doe.com']);
+        $this->assertEquals(['name' => 'John Doe', 'email' => 'john@doe.com'], $data['author']);
 
         // test update
         $article = $articleRepo->findOneBy(['title' => 'Title']);
