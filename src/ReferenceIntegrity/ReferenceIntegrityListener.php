@@ -119,7 +119,7 @@ class ReferenceIntegrityListener extends MappedEventSubscriber
                         if ($meta->isCollectionValuedReference($property) && $refDoc->count() > 0) {
                             throw new ReferenceIntegrityStrictException(sprintf("The reference integrity for the '%s' collection is restricted", $fieldMapping['targetDocument']));
                         }
-                        if ($meta->isSingleValuedReference($property) && !is_null($refDoc)) {
+                        if ($meta->isSingleValuedReference($property) && null !== $refDoc) {
                             throw new ReferenceIntegrityStrictException(sprintf("The reference integrity for the '%s' document is restricted", $fieldMapping['targetDocument']));
                         }
 

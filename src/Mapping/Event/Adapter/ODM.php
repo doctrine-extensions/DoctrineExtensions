@@ -72,7 +72,7 @@ class ODM implements AdapterInterface
      */
     public function getObjectManager()
     {
-        if (!is_null($this->dm)) {
+        if (null !== $this->dm) {
             return $this->dm;
         }
 
@@ -92,7 +92,7 @@ class ODM implements AdapterInterface
      */
     public function __call($method, $args)
     {
-        if (is_null($this->args)) {
+        if (null === $this->args) {
             throw new RuntimeException('Event args must be set before calling its methods');
         }
         $method = str_replace('Object', $this->getDomainObjectName(), $method);

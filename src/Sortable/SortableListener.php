@@ -154,7 +154,7 @@ class SortableListener extends MappedEventSubscriber
         $old = $meta->getReflectionProperty($config['position'])->getValue($object);
         $newPosition = $meta->getReflectionProperty($config['position'])->getValue($object);
 
-        if (is_null($newPosition)) {
+        if (null === $newPosition) {
             $newPosition = -1;
         }
 
@@ -201,7 +201,7 @@ class SortableListener extends MappedEventSubscriber
         call_user_func_array([$this, 'addRelocation'], $relocation);
 
         // Set new position
-        if ($old < 0 || is_null($old)) {
+        if ($old < 0 || null === $old) {
             $this->setFieldValue($ea, $object, $config['position'], $old, $newPosition);
         }
     }
@@ -534,7 +534,7 @@ class SortableListener extends MappedEventSubscriber
         }
 
         $maxPos = $ea->getMaxPosition($config, $meta, $groups);
-        if (is_null($maxPos)) {
+        if (null === $maxPos) {
             $maxPos = -1;
         }
 
