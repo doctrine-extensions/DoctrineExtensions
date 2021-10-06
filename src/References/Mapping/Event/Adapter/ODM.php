@@ -80,9 +80,9 @@ final class ODM extends BaseAdapterODM implements ReferencesAdapter
 
         if ($single || !$id) {
             return $id;
-        } else {
-            return [$meta->identifier => $id];
         }
+
+        return [$meta->identifier => $id];
     }
 
     /**
