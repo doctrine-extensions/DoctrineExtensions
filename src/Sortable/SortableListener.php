@@ -6,9 +6,9 @@ use Doctrine\Common\Comparable;
 use Doctrine\Common\EventArgs;
 use Doctrine\Common\Util\ClassUtils;
 use Doctrine\Persistence\Mapping\ClassMetadata;
-use Doctrine\Persistence\Proxy;
 use Gedmo\Mapping\MappedEventSubscriber;
 use Gedmo\Sortable\Mapping\Event\SortableAdapter;
+use ProxyManager\Proxy\GhostObjectInterface;
 
 /**
  * The SortableListener maintains a sort index on your entities
@@ -419,7 +419,7 @@ class SortableListener extends MappedEventSubscriber
                         continue;
                     }
                     foreach ($objects as $object) {
-                        if ($object instanceof Proxy && !$object->__isInitialized__) {
+                        if ($object instanceof GhostObjectInterface && !$object->isProxyInitialized()) {
                             continue;
                         }
 

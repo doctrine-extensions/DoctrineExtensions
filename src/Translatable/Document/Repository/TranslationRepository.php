@@ -6,6 +6,7 @@ use Doctrine\ODM\MongoDB\DocumentManager;
 use Doctrine\ODM\MongoDB\Iterator\Iterator;
 use Doctrine\ODM\MongoDB\Mapping\ClassMetadata;
 use Doctrine\ODM\MongoDB\Repository\DocumentRepository;
+use Doctrine\ODM\MongoDB\Types\Type;
 use Doctrine\ODM\MongoDB\UnitOfWork;
 use Gedmo\Tool\Wrapper\MongoDocumentWrapper;
 use Gedmo\Translatable\Mapping\Event\Adapter\ODM as TranslatableAdapterODM;
@@ -175,7 +176,7 @@ class TranslationRepository extends DocumentRepository
 
             $q->setHydrate(false);
             $result = $q->execute();
-            if ($result instanceof Cursor) {
+            if ($result instanceof Iterator) {
                 $result = $result->toArray();
             }
             $id = count($result) ? $result[0]['foreignKey'] : null;
@@ -208,7 +209,7 @@ class TranslationRepository extends DocumentRepository
             $q->setHydrate(false);
             $data = $q->execute();
 
-            if ($data instanceof Cursor) {
+            if ($data instanceof Iterator) {
                 $data = $data->toArray();
             }
             if ($data && is_array($data) && count($data)) {
@@ -247,8 +248,6 @@ class TranslationRepository extends DocumentRepository
 
     private function getType($type)
     {
-        // due to change in ODM beta 9
-        return class_exists('Doctrine\ODM\MongoDB\Types\Type') ? \Doctrine\ODM\MongoDB\Types\Type::getType($type)
-            : \Doctrine\ODM\MongoDB\Mapping\Types\Type::getType($type);
+        return Type::getType($type);
     }
 }

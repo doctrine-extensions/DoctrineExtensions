@@ -102,11 +102,7 @@ class Validator
 
     public static function validateFileSizeField(ClassMetadata $meta, $field)
     {
-        if ($meta instanceof \Doctrine\ODM\MongoDB\Mapping\ClassMetadataInfo) {
-            self::validateField($meta, $field, self::UPLOADABLE_FILE_SIZE, self::$validFileSizeTypesODM);
-        } else {
-            self::validateField($meta, $field, self::UPLOADABLE_FILE_SIZE, self::$validFileSizeTypes);
-        }
+        self::validateField($meta, $field, self::UPLOADABLE_FILE_SIZE, self::$validFileSizeTypes);
     }
 
     public static function validateField($meta, $field, $uploadableField, $validFieldTypes)
