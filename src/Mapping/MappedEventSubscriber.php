@@ -103,9 +103,8 @@ abstract class MappedEventSubscriber implements EventSubscriber
             $this->adapters[$m[1]]->setEventArgs($args);
 
             return $this->adapters[$m[1]];
-        } else {
-            throw new \Gedmo\Exception\InvalidArgumentException('Event mapper does not support event arg class: '.$class);
         }
+        throw new \Gedmo\Exception\InvalidArgumentException('Event mapper does not support event arg class: '.$class);
     }
 
     /**
