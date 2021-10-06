@@ -45,7 +45,7 @@ abstract class AbstractTreeRepository extends EntityRepository implements Reposi
             }
         }
 
-        if (is_null($treeListener)) {
+        if (null === $treeListener) {
             throw new \Gedmo\Exception\InvalidMappingException('Tree listener was not found on your entity manager, it must be hooked into the event manager');
         }
 

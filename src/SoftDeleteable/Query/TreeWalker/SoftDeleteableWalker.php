@@ -86,7 +86,7 @@ class SoftDeleteableWalker extends SqlWalker
      */
     private function getSoftDeleteableListener()
     {
-        if (is_null($this->listener)) {
+        if (null === $this->listener) {
             $em = $this->getEntityManager();
 
             foreach ($em->getEventManager()->getListeners() as $event => $listeners) {
@@ -101,7 +101,7 @@ class SoftDeleteableWalker extends SqlWalker
                 }
             }
 
-            if (is_null($this->listener)) {
+            if (null === $this->listener) {
                 throw new \Gedmo\Exception\RuntimeException('The SoftDeleteable listener could not be found.');
             }
         }

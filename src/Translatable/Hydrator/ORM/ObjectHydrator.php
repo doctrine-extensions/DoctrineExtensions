@@ -69,7 +69,7 @@ class ObjectHydrator extends BaseObjectHydrator
             }
         }
 
-        if (is_null($translatableListener)) {
+        if (null === $translatableListener) {
             throw new \Gedmo\Exception\RuntimeException('The translation listener could not be found');
         }
 

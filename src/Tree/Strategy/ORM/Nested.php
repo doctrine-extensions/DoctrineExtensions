@@ -126,7 +126,9 @@ class Nested implements Strategy
         }
         if (isset($config['root']) && !$meta->hasAssociation($config['root']) && !isset($config['rootIdentifierMethod'])) {
             $meta->getReflectionProperty($config['root'])->setValue($node, 0);
-        } elseif (isset($config['rootIdentifierMethod']) && is_null($meta->getReflectionProperty($config['root'])->getValue($node))) {
+        } elseif (isset($config['rootIdentifierMethod']) && null === $meta->getReflectionProperty($config['root'])->getValue(
+                $node
+            )) {
             $meta->getReflectionProperty($config['root'])->setValue($node, 0);
         }
     }
@@ -344,9 +346,9 @@ class Nested implements Strategy
                     } else {
                         $newParent = $wrappedParent->getPropertyValue($config['parent']);
 
-                        if (is_null($newParent) && ((isset($config['root']) && $config['root'] == $config['parent']) || $isNewNode)) {
+                        if (null === $newParent && ((isset($config['root']) && $config['root'] == $config['parent']) || $isNewNode)) {
                             throw new UnexpectedValueException('Cannot persist sibling for a root node, tree operation is not possible');
-                        } elseif (is_null($newParent) && (isset($config['root']) || $isNewNode)) {
+                        } elseif (null === $newParent && (isset($config['root']) || $isNewNode)) {
                             // root is a different column from parent (pointing to another table?), do nothing
                         } else {
                             $wrapped->setPropertyValue($config['parent'], $newParent);
@@ -364,9 +366,9 @@ class Nested implements Strategy
                         ++$level;
                     } else {
                         $newParent = $wrappedParent->getPropertyValue($config['parent']);
-                        if (is_null($newParent) && ((isset($config['root']) && $config['root'] == $config['parent']) || $isNewNode)) {
+                        if (null === $newParent && ((isset($config['root']) && $config['root'] == $config['parent']) || $isNewNode)) {
                             throw new UnexpectedValueException('Cannot persist sibling for a root node, tree operation is not possible');
-                        } elseif (is_null($newParent) && (isset($config['root']) || $isNewNode)) {
+                        } elseif (null === $newParent && (isset($config['root']) || $isNewNode)) {
                             // root is a different column from parent (pointing to another table?), do nothing
                         } else {
                             $wrapped->setPropertyValue($config['parent'], $newParent);

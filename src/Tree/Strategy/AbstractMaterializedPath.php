@@ -391,7 +391,7 @@ abstract class AbstractMaterializedPath implements Strategy
             $parentProp->setAccessible(true);
             $parentNode = $node;
 
-            while (!is_null($parent = $parentProp->getValue($parentNode))) {
+            while (($parent = $parentProp->getValue($parentNode)) !== null) {
                 $parentNode = $parent;
             }
 
@@ -407,11 +407,11 @@ abstract class AbstractMaterializedPath implements Strategy
             $lockTimeProp->setAccessible(true);
             $lockTime = $lockTimeProp->getValue($parentNode);
 
-            if (!is_null($lockTime)) {
+            if (null !== $lockTime) {
                 $lockTime = $lockTime instanceof UTCDateTime ? $lockTime->toDateTime()->getTimestamp() : $lockTime->getTimestamp();
             }
 
-            if (!is_null($lockTime) && ($lockTime >= (time() - $config['locking_timeout']))) {
+            if (null !== $lockTime && ($lockTime >= (time() - $config['locking_timeout']))) {
                 $msg = 'Tree with root id "%s" is locked.';
                 $id = $meta->getIdentifierValue($parentNode);
 

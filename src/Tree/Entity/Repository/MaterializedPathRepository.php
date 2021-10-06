@@ -209,7 +209,7 @@ class MaterializedPathRepository extends AbstractTreeRepository
             $qb->orWhere('('.$includeNodeExpr.')');
         }
 
-        $orderByField = is_null($sortByField) ? $alias.'.'.$config['path'] : $alias.'.'.$sortByField;
+        $orderByField = null === $sortByField ? $alias.'.'.$config['path'] : $alias.'.'.$sortByField;
         $orderByDir = 'asc' === $direction ? 'asc' : 'desc';
         $qb->orderBy($orderByField, $orderByDir);
 

@@ -138,7 +138,7 @@ class MaterializedPathRepository extends AbstractTreeRepository
             $qb->field($config['path'])->equals(new Regex($regex));
         }
 
-        $qb->sort(is_null($sortByField) ? $config['path'] : $sortByField, 'asc' === $direction ? 'asc' : 'desc');
+        $qb->sort(null === $sortByField ? $config['path'] : $sortByField, 'asc' === $direction ? 'asc' : 'desc');
 
         return $qb;
     }

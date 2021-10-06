@@ -227,14 +227,14 @@ class QueryAnalyzer implements SQLLogger
             } else {
                 if ($value instanceof \DateTimeInterface) {
                     $value = $value->format($this->platform->getDateTimeFormatString());
-                } elseif (!is_null($value)) {
+                } elseif (null !== $value) {
                     $type = Type::getType(gettype($value));
                     $value = $type->convertToDatabaseValue($value, $this->platform);
                 }
             }
             if (is_string($value)) {
                 $value = "'{$value}'";
-            } elseif (is_null($value)) {
+            } elseif (null === $value) {
                 $value = 'NULL';
             }
             $result[$position] = $value;

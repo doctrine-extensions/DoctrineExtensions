@@ -35,7 +35,7 @@ final class ORM extends BaseAdapterORM implements SortableAdapter
     {
         $i = 1;
         foreach ($groups as $group => $value) {
-            if (is_null($value)) {
+            if (null === $value) {
                 $qb->andWhere($qb->expr()->isNull('n.'.$group));
             } else {
                 $qb->andWhere('n.'.$group.' = :group__'.$i);
@@ -59,7 +59,7 @@ final class ORM extends BaseAdapterORM implements SortableAdapter
         $i = -1;
         $params = [];
         foreach ($relocation['groups'] as $group => $value) {
-            if (is_null($value)) {
+            if (null === $value) {
                 $dql .= " AND n.{$group} IS NULL";
             } else {
                 $dql .= " AND n.{$group} = :val___".(++$i);
