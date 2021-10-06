@@ -538,7 +538,7 @@ class SortableListener extends MappedEventSubscriber
             $maxPos = -1;
         }
 
-        return intval($maxPos);
+        return (int) $maxPos;
     }
 
     /**
