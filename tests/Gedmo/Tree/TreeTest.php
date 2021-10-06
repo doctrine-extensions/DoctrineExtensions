@@ -37,7 +37,7 @@ class TreeTest extends BaseTestCaseORM
 
         $root = new Category();
         $root->setTitle('Root');
-        $this->assertTrue($root instanceof Node);
+        $this->assertInstanceOf(Node::class, $root);
 
         $this->em->persist($root);
         $this->em->flush();
@@ -228,7 +228,7 @@ class TreeTest extends BaseTestCaseORM
 
         $root = new CategoryUuid();
         $root->setTitle('Root');
-        $this->assertTrue($root instanceof Node);
+        $this->assertInstanceOf(Node::class, $root);
 
         $this->em->persist($root);
         $rootId = $root->getId();

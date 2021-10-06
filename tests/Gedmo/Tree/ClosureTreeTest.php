@@ -223,9 +223,9 @@ class ClosureTreeTest extends BaseTestCaseORM
             ->setConstructorArgs([$listener])
             ->getMock();
 
-        $listener->expects($this->any())
+        $listener
             ->method('getStrategy')
-            ->will($this->returnValue($strategy));
+            ->willReturn($strategy);
 
         $strategy->expects($this->never())
             ->method('setLevelFieldOnPendingNodes');

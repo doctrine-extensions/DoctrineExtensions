@@ -45,7 +45,7 @@ class EntityTranslationTableTest extends BaseTestCaseORM
         $this->em->clear();
 
         $repo = $this->em->getRepository(self::TRANSLATION);
-        $this->assertTrue($repo instanceof Entity\Repository\TranslationRepository);
+        $this->assertInstanceOf(Entity\Repository\TranslationRepository::class, $repo);
 
         $translations = $repo->findTranslations($person);
         //As Translate locale and Default locale are the same, no records should be present in translations table

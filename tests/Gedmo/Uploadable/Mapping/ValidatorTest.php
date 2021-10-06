@@ -35,7 +35,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
         $this->expectException('Gedmo\Exception\InvalidMappingException');
         $this->meta->expects($this->once())
             ->method('getFieldMapping')
-            ->will($this->returnValue(['type' => 'someType']));
+            ->willReturn(['type' => 'someType']);
 
         Validator::validateField(
             $this->meta,
@@ -55,7 +55,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
     {
         $dir = sys_get_temp_dir().'/new/directory-12312432423';
         Validator::validatePath($dir);
-        $this->assertTrue(is_dir($dir));
+        $this->assertDirectoryExists($dir);
         rmdir($dir);
         rmdir(dirname($dir));
     }
@@ -73,7 +73,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
         $this->expectException('Gedmo\Exception\InvalidMappingException');
         $this->meta->expects($this->once())
             ->method('getReflectionClass')
-            ->will($this->returnValue(new \ReflectionClass(new FakeEntity())));
+            ->willReturn(new \ReflectionClass(new FakeEntity()));
 
         $config = ['filePathField' => 'someField', 'pathMethod' => 'invalidMethod'];
 
@@ -88,7 +88,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
         $this->expectException('Gedmo\Exception\InvalidMappingException');
         $this->meta->expects($this->once())
             ->method('getReflectionClass')
-            ->will($this->returnValue(new \ReflectionClass(new FakeEntity())));
+            ->willReturn(new \ReflectionClass(new FakeEntity()));
 
         $config = ['filePathField' => 'someField', 'pathMethod' => '', 'callback' => 'invalidMethod'];
 
@@ -103,10 +103,10 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
         $this->expectException('Gedmo\Exception\InvalidMappingException');
         $this->meta->expects($this->once())
             ->method('getReflectionClass')
-            ->will($this->returnValue(new \ReflectionClass(new FakeEntity())));
-        $this->meta->expects($this->any())
+            ->willReturn(new \ReflectionClass(new FakeEntity()));
+        $this->meta
             ->method('getFieldMapping')
-            ->will($this->returnValue(['type' => 'someType']));
+            ->willReturn(['type' => 'someType']);
 
         $config = [
             'fileMimeTypeField' => '',
@@ -132,10 +132,10 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
         $this->expectException('Gedmo\Exception\InvalidMappingException');
         $this->meta->expects($this->once())
             ->method('getReflectionClass')
-            ->will($this->returnValue(new \ReflectionClass(new FakeEntity())));
-        $this->meta->expects($this->any())
+            ->willReturn(new \ReflectionClass(new FakeEntity()));
+        $this->meta
             ->method('getFieldMapping')
-            ->will($this->returnValue(['type' => 'someType']));
+            ->willReturn(['type' => 'someType']);
 
         $config = [
             'fileMimeTypeField' => '',
@@ -160,10 +160,10 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
     {
         $this->meta->expects($this->once())
             ->method('getReflectionClass')
-            ->will($this->returnValue(new \ReflectionClass(new FakeEntity())));
-        $this->meta->expects($this->any())
+            ->willReturn(new \ReflectionClass(new FakeEntity()));
+        $this->meta
             ->method('getFieldMapping')
-            ->will($this->returnValue(['type' => 'string']));
+            ->willReturn(['type' => 'string']);
 
         $config = [
             'fileMimeTypeField' => '',
@@ -188,10 +188,10 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
     {
         $this->meta->expects($this->once())
             ->method('getReflectionClass')
-            ->will($this->returnValue(new \ReflectionClass(new FakeEntity())));
-        $this->meta->expects($this->any())
+            ->willReturn(new \ReflectionClass(new FakeEntity()));
+        $this->meta
             ->method('getFieldMapping')
-            ->will($this->returnValue(['type' => 'string']));
+            ->willReturn(['type' => 'string']);
 
         $config = [
             'fileMimeTypeField' => '',
@@ -217,7 +217,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
         $this->expectException('Gedmo\Exception\InvalidMappingException');
         $this->meta->expects($this->once())
             ->method('getReflectionClass')
-            ->will($this->returnValue(new \ReflectionClass(new FakeEntity())));
+            ->willReturn(new \ReflectionClass(new FakeEntity()));
 
         $config = [
             'fileMimeTypeField' => 'someField',
@@ -241,7 +241,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
         $this->expectException('Gedmo\Exception\InvalidMappingException');
         $this->meta->expects($this->once())
             ->method('getReflectionClass')
-            ->will($this->returnValue(new \ReflectionClass(new FakeEntity())));
+            ->willReturn(new \ReflectionClass(new FakeEntity()));
 
         Validator::$enableMimeTypesConfigException = true;
 

@@ -60,10 +60,10 @@ class LoggableEntityTest extends BaseTestCaseORM
 
         $logRepo = $this->em->getRepository('Gedmo\Loggable\Entity\LogEntry');
         $logs = $logRepo->findAll();
-        $this->assertSame(2, count($logs));
+        $this->assertCount(2, $logs);
         $this->assertSame('create', $logs[0]->getAction());
         $this->assertSame('create', $logs[1]->getAction());
-        $this->assertTrue($logs[0]->getObjectId() !== $logs[1]->getObjectId());
+        $this->assertNotSame($logs[0]->getObjectId(), $logs[1]->getObjectId());
     }
 
     public function testLoggable()
@@ -88,7 +88,7 @@ class LoggableEntityTest extends BaseTestCaseORM
         $data = $log->getData();
         $this->assertCount(1, $data);
         $this->assertArrayHasKey('title', $data);
-        $this->assertEquals($data['title'], 'Title');
+        $this->assertEquals('Title', $data['title']);
 
         // test update
         $article = $articleRepo->findOneBy(['title' => 'Title']);

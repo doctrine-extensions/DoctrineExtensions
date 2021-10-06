@@ -238,15 +238,15 @@ class MaterializedPathODMMongoDBRepositoryTest extends BaseTestCaseMongoODM
         $roots = $this->repo->getRootNodes();
         $tree = $this->repo->childrenHierarchy($food, true);
 
-        $this->assertEquals(2, count($tree));
+        $this->assertCount(2, $tree);
         $this->assertEquals('Fruits', $tree[0]['title']);
         $this->assertEquals('Vegitables', $tree[1]['title']);
 
         // Tree of one specific root only with direct children, with the root node
         $tree = $this->repo->childrenHierarchy($food, true, [], true);
 
-        $this->assertEquals(1, count($tree));
-        $this->assertEquals(2, count($tree[0]['__children']));
+        $this->assertCount(1, $tree);
+        $this->assertCount(2, $tree[0]['__children']);
         $this->assertEquals('Food', $tree[0]['title']);
         $this->assertEquals('Fruits', $tree[0]['__children'][0]['title']);
         $this->assertEquals('Vegitables', $tree[0]['__children'][1]['title']);

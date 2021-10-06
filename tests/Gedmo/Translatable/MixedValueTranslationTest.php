@@ -46,8 +46,8 @@ class MixedValueTranslationTest extends BaseTestCaseORM
         $repo = $this->em->getRepository(self::MIXED);
         $mixed = $repo->findOneBy(['id' => 1]);
 
-        $this->assertTrue($mixed->getDate() instanceof \DateTime);
-        $this->assertTrue($mixed->getCust() instanceof \stdClass);
+        $this->assertInstanceOf(\DateTime::class, $mixed->getDate());
+        $this->assertInstanceOf(\stdClass::class, $mixed->getCust());
         $this->assertEquals('en', $mixed->getCust()->test);
     }
 
@@ -74,7 +74,7 @@ class MixedValueTranslationTest extends BaseTestCaseORM
         $this->assertArrayHasKey('de_de', $translations);
         $cust = unserialize($translations['de_de']['cust']);
 
-        $this->assertTrue($cust instanceof \stdClass);
+        $this->assertInstanceOf(\stdClass::class, $cust);
         $this->assertEquals('de', $cust->test);
     }
 

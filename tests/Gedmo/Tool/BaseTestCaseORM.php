@@ -113,7 +113,7 @@ abstract class BaseTestCaseORM extends \PHPUnit\Framework\TestCase
         $driver = $this->getMockBuilder('Doctrine\DBAL\Driver')->getMock();
         $driver->expects($this->once())
             ->method('getDatabasePlatform')
-            ->will($this->returnValue($this->getMockBuilder('Doctrine\DBAL\Platforms\MySqlPlatform')->getMock()));
+            ->willReturn($this->getMockBuilder('Doctrine\DBAL\Platforms\MySqlPlatform')->getMock());
 
         $conn = $this->getMockBuilder('Doctrine\DBAL\Connection')
             ->setConstructorArgs([], $driver)
@@ -121,7 +121,7 @@ abstract class BaseTestCaseORM extends \PHPUnit\Framework\TestCase
 
         $conn->expects($this->once())
             ->method('getEventManager')
-            ->will($this->returnValue($evm ?: $this->getEventManager()));
+            ->willReturn($evm ?: $this->getEventManager());
 
         $config = $this->getMockAnnotatedConfig();
         $this->em = EntityManager::create($conn, $config);

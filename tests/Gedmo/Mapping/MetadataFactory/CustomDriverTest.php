@@ -61,7 +61,7 @@ class CustomDriverTest extends \PHPUnit\Framework\TestCase
             ->getReflectionProperty('id')
             ->getValue($test)
         ;
-        $this->assertFalse(empty($id));
+        $this->assertNotEmpty($id);
     }
 }
 

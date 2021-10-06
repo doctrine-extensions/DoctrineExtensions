@@ -36,7 +36,7 @@ class SluggableConfigurationTest extends BaseTestCaseORM
     {
         $article = $this->em->find(self::ARTICLE, $this->articleId);
 
-        $this->assertTrue($article instanceof Sluggable);
+        $this->assertInstanceOf(Sluggable::class, $article);
         $this->assertEquals('the-title-my-code', $article->getSlug());
     }
 

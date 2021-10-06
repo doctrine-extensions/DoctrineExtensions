@@ -286,7 +286,7 @@ class RepositoryTest extends BaseTestCaseORM
         // verify again
 
         $result = $repo->verify();
-        $this->assertTrue(is_array($result));
+        $this->assertIsArray($result);
 
         $this->assertArrayHasKey(0, $result);
         $this->assertArrayHasKey(1, $result);

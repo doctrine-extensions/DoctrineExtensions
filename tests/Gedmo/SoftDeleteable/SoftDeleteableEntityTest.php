@@ -150,13 +150,13 @@ class SoftDeleteableEntityTest extends BaseTestCaseORM
         $this->em->getFilters()->disable(self::SOFT_DELETEABLE_FILTER_NAME);
 
         $art = $repo->findOneBy([$field => $value]);
-        $this->assertTrue(is_object($art));
-        $this->assertTrue(is_object($art->getDeletedAt()));
-        $this->assertTrue($art->getDeletedAt() instanceof \DateTime);
+        $this->assertIsObject($art);
+        $this->assertIsObject($art->getDeletedAt());
+        $this->assertInstanceOf(\DateTime::class, $art->getDeletedAt());
         $comment = $commentRepo->findOneBy([$commentField => $commentValue]);
-        $this->assertTrue(is_object($comment));
-        $this->assertTrue(is_object($comment->getDeletedAt()));
-        $this->assertTrue($comment->getDeletedAt() instanceof \DateTime);
+        $this->assertIsObject($comment);
+        $this->assertIsObject($comment->getDeletedAt());
+        $this->assertInstanceOf(\DateTime::class, $comment->getDeletedAt());
 
         $this->em->createQuery('UPDATE '.self::ARTICLE_CLASS.' a SET a.deletedAt = NULL')->execute();
 
@@ -185,9 +185,9 @@ class SoftDeleteableEntityTest extends BaseTestCaseORM
 
         $art = $repo->findOneBy([$field => $value]);
 
-        $this->assertTrue(is_object($art));
-        $this->assertTrue(is_object($art->getDeletedAt()));
-        $this->assertTrue($art->getDeletedAt() instanceof \DateTime);
+        $this->assertIsObject($art);
+        $this->assertIsObject($art->getDeletedAt());
+        $this->assertInstanceOf(\DateTime::class, $art->getDeletedAt());
 
         // Inheritance tree DELETE DQL
         $this->em->getFilters()->enable(self::SOFT_DELETEABLE_FILTER_NAME);
@@ -223,9 +223,9 @@ class SoftDeleteableEntityTest extends BaseTestCaseORM
 
         $p = $megaPageRepo->findOneBy(['title' => 'Page 1']);
 
-        $this->assertTrue(is_object($p));
-        $this->assertTrue(is_object($p->getDeletedAt()));
-        $this->assertTrue($p->getDeletedAt() instanceof \DateTime);
+        $this->assertIsObject($p);
+        $this->assertIsObject($p->getDeletedAt());
+        $this->assertInstanceOf(\DateTime::class, $p->getDeletedAt());
 
         // Test of #301
         $this->em->getFilters()->enable(self::SOFT_DELETEABLE_FILTER_NAME);
@@ -256,7 +256,7 @@ class SoftDeleteableEntityTest extends BaseTestCaseORM
         $foundComment = $otherCommentRepo->findOneBy(['id' => $commentId]);
 
         $this->assertNull($foundArt);
-        $this->assertTrue(is_object($foundComment));
+        $this->assertIsObject($foundComment);
         $this->assertInstanceOf(self::OTHER_COMMENT_CLASS, $foundComment);
 
         $this->em->getFilters()->disable(self::SOFT_DELETEABLE_FILTER_NAME);
@@ -264,10 +264,10 @@ class SoftDeleteableEntityTest extends BaseTestCaseORM
         $foundArt = $otherArticleRepo->findOneBy(['id' => $artId]);
         $foundComment = $otherCommentRepo->findOneBy(['id' => $commentId]);
 
-        $this->assertTrue(is_object($foundArt));
-        $this->assertTrue(is_object($foundArt->getDeletedAt()));
-        $this->assertTrue($foundArt->getDeletedAt() instanceof \DateTime);
-        $this->assertTrue(is_object($foundComment));
+        $this->assertIsObject($foundArt);
+        $this->assertIsObject($foundArt->getDeletedAt());
+        $this->assertInstanceOf(\DateTime::class, $foundArt->getDeletedAt());
+        $this->assertIsObject($foundComment);
         $this->assertInstanceOf(self::OTHER_COMMENT_CLASS, $foundComment);
     }
 
@@ -541,10 +541,10 @@ class SoftDeleteableEntityTest extends BaseTestCaseORM
 
         $subscriber->expects($this->once())
                    ->method('getSubscribedEvents')
-                   ->will($this->returnValue([
+                   ->willReturn([
                        SoftDeleteableListener::PRE_SOFT_DELETE,
                        SoftDeleteableListener::POST_SOFT_DELETE,
-                   ]));
+                   ]);
 
         $subscriber->expects($this->exactly(2))
                    ->method('preSoftDelete')

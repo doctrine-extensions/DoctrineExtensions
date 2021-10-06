@@ -57,7 +57,7 @@ class ReferenceIntegrityMappingTest extends BaseTestCaseOM
 
             foreach ($referenceConfiguration as $inversedPropertyName => $integrityType) {
                 $this->assertArrayHasKey($inversedPropertyName, $referenceeMeta->reflFields);
-                $this->assertTrue(in_array($integrityType, ['nullify', 'restrict']));
+                $this->assertContains($integrityType, ['nullify', 'restrict']);
             }
         }
     }

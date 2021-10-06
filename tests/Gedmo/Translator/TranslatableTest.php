@@ -115,7 +115,7 @@ class TranslatableTest extends BaseTestCaseORM
         $person = $this->em->getRepository(self::PERSON)->findOneBy(['name' => 'Jen']);
         $this->assertSame('Женя', $person->translate('ru')->getName());
         $parent = $person->getParent();
-        $this->assertTrue($parent instanceof Proxy);
+        $this->assertInstanceOf(Proxy::class, $parent);
         $this->assertSame('Женя starshai', $parent->translate('ru')->getName());
         $this->assertSame('zenia', $parent->translate('fr')->getName());
     }
@@ -136,7 +136,7 @@ class TranslatableTest extends BaseTestCaseORM
         $this->em->clear();
 
         $personProxy = $this->em->getReference(self::PERSON, ['id' => 1]);
-        $this->assertTrue($personProxy instanceof Proxy);
+        $this->assertInstanceOf(Proxy::class, $personProxy);
         $name = $personProxy->translate('ru_RU')->getName();
         $this->assertSame('Женя', $name);
     }
@@ -156,7 +156,7 @@ class TranslatableTest extends BaseTestCaseORM
         $this->em->clear();
 
         $personProxy = $this->em->getReference(self::PERSON, ['id' => 1]);
-        $this->assertTrue($personProxy instanceof Proxy);
+        $this->assertInstanceOf(Proxy::class, $personProxy);
         $name = $personProxy->translate('ru_RU')->getName();
         $this->assertSame('Женя', $name);
         $lastName = $personProxy->translate('ru_RU')->getLastName();

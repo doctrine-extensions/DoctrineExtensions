@@ -66,14 +66,14 @@ class IpTraceableTest extends BaseTestCaseORM
         $sport = new Article();
         $sport->setTitle('Sport');
 
-        $this->assertTrue($sport instanceof IpTraceable);
+        $this->assertInstanceOf(IpTraceable::class, $sport);
 
         $sportComment = new Comment();
         $sportComment->setMessage('hello');
         $sportComment->setArticle($sport);
         $sportComment->setStatus(0);
 
-        $this->assertTrue($sportComment instanceof IpTraceable);
+        $this->assertInstanceOf(IpTraceable::class, $sportComment);
 
         $this->em->persist($sport);
         $this->em->persist($sportComment);

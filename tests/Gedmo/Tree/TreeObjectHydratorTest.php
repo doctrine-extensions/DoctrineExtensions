@@ -51,38 +51,38 @@ class TreeObjectHydratorTest extends BaseTestCaseORM
             ->setHint(Query::HINT_INCLUDE_META_COLUMNS, true)
             ->getResult('tree');
 
-        $this->assertEquals(count($result), 1);
+        $this->assertCount(1, $result);
 
         $food = $result[0];
-        $this->assertEquals($food->getTitle(), 'Food');
-        $this->assertEquals(count($food->getChildren()), 4);
+        $this->assertEquals('Food', $food->getTitle());
+        $this->assertCount(4, $food->getChildren());
 
         $fruits = $food->getChildren()->get(0);
-        $this->assertEquals($fruits->getTitle(), 'Fruits');
-        $this->assertEquals(count($fruits->getChildren()), 2);
+        $this->assertEquals('Fruits', $fruits->getTitle());
+        $this->assertCount(2, $fruits->getChildren());
 
         $vegetables = $food->getChildren()->get(1);
-        $this->assertEquals($vegetables->getTitle(), 'Vegetables');
-        $this->assertEquals(count($vegetables->getChildren()), 0);
+        $this->assertEquals('Vegetables', $vegetables->getTitle());
+        $this->assertCount(0, $vegetables->getChildren());
 
         $milk = $food->getChildren()->get(2);
-        $this->assertEquals($milk->getTitle(), 'Milk');
-        $this->assertEquals(count($milk->getChildren()), 0);
+        $this->assertEquals('Milk', $milk->getTitle());
+        $this->assertCount(0, $milk->getChildren());
 
         $meat = $food->getChildren()->get(3);
-        $this->assertEquals($meat->getTitle(), 'Meat');
-        $this->assertEquals(count($meat->getChildren()), 0);
+        $this->assertEquals('Meat', $meat->getTitle());
+        $this->assertCount(0, $meat->getChildren());
 
         $oranges = $fruits->getChildren()->get(0);
-        $this->assertEquals($oranges->getTitle(), 'Oranges');
-        $this->assertEquals(count($oranges->getChildren()), 0);
+        $this->assertEquals('Oranges', $oranges->getTitle());
+        $this->assertCount(0, $oranges->getChildren());
 
         $citrons = $fruits->getChildren()->get(1);
-        $this->assertEquals($citrons->getTitle(), 'Citrons');
-        $this->assertEquals(count($citrons->getChildren()), 0);
+        $this->assertEquals('Citrons', $citrons->getTitle());
+        $this->assertCount(0, $citrons->getChildren());
 
         // Make sure only one query was executed
-        $this->assertEquals(count($stack->queries), 1);
+        $this->assertCount(1, $stack->queries);
     }
 
     public function testPartialTreeHydration()
@@ -102,21 +102,21 @@ class TreeObjectHydratorTest extends BaseTestCaseORM
             ->setHint(Query::HINT_INCLUDE_META_COLUMNS, true)
             ->getResult('tree');
 
-        $this->assertEquals(count($result), 1);
+        $this->assertCount(1, $result);
 
         $fruits = $result[0];
-        $this->assertEquals($fruits->getTitle(), 'Fruits');
-        $this->assertEquals(count($fruits->getChildren()), 2);
+        $this->assertEquals('Fruits', $fruits->getTitle());
+        $this->assertCount(2, $fruits->getChildren());
 
         $oranges = $fruits->getChildren()->get(0);
-        $this->assertEquals($oranges->getTitle(), 'Oranges');
-        $this->assertEquals(count($oranges->getChildren()), 0);
+        $this->assertEquals('Oranges', $oranges->getTitle());
+        $this->assertCount(0, $oranges->getChildren());
 
         $citrons = $fruits->getChildren()->get(1);
-        $this->assertEquals($citrons->getTitle(), 'Citrons');
-        $this->assertEquals(count($citrons->getChildren()), 0);
+        $this->assertEquals('Citrons', $citrons->getTitle());
+        $this->assertCount(0, $citrons->getChildren());
 
-        $this->assertEquals(count($stack->queries), 2);
+        $this->assertCount(2, $stack->queries);
     }
 
     public function testMultipleRootNodesTreeHydration()
@@ -136,33 +136,33 @@ class TreeObjectHydratorTest extends BaseTestCaseORM
             ->setHint(Query::HINT_INCLUDE_META_COLUMNS, true)
             ->getResult('tree');
 
-        $this->assertEquals(count($result), 4);
+        $this->assertCount(4, $result);
 
         $fruits = $result[0];
-        $this->assertEquals($fruits->getTitle(), 'Fruits');
-        $this->assertEquals(count($fruits->getChildren()), 2);
+        $this->assertEquals('Fruits', $fruits->getTitle());
+        $this->assertCount(2, $fruits->getChildren());
 
         $vegetables = $result[1];
-        $this->assertEquals($vegetables->getTitle(), 'Vegetables');
-        $this->assertEquals(count($vegetables->getChildren()), 0);
+        $this->assertEquals('Vegetables', $vegetables->getTitle());
+        $this->assertCount(0, $vegetables->getChildren());
 
         $milk = $result[2];
-        $this->assertEquals($milk->getTitle(), 'Milk');
-        $this->assertEquals(count($milk->getChildren()), 0);
+        $this->assertEquals('Milk', $milk->getTitle());
+        $this->assertCount(0, $milk->getChildren());
 
         $meat = $result[3];
-        $this->assertEquals($meat->getTitle(), 'Meat');
-        $this->assertEquals(count($meat->getChildren()), 0);
+        $this->assertEquals('Meat', $meat->getTitle());
+        $this->assertCount(0, $meat->getChildren());
 
         $oranges = $fruits->getChildren()->get(0);
-        $this->assertEquals($oranges->getTitle(), 'Oranges');
-        $this->assertEquals(count($oranges->getChildren()), 0);
+        $this->assertEquals('Oranges', $oranges->getTitle());
+        $this->assertCount(0, $oranges->getChildren());
 
         $citrons = $fruits->getChildren()->get(1);
-        $this->assertEquals($citrons->getTitle(), 'Citrons');
-        $this->assertEquals(count($citrons->getChildren()), 0);
+        $this->assertEquals('Citrons', $citrons->getTitle());
+        $this->assertCount(0, $citrons->getChildren());
 
-        $this->assertEquals(count($stack->queries), 2);
+        $this->assertCount(2, $stack->queries);
     }
 
     private function populate()

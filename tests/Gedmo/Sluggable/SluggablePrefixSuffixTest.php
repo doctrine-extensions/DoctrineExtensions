@@ -28,9 +28,6 @@ class SluggablePrefixSuffixTest extends BaseTestCaseORM
         $this->getMockSqliteEntityManager($evm);
     }
 
-    /**
-     * @test
-     */
     public function testPrefix()
     {
         $foo = new Prefix();
@@ -41,9 +38,6 @@ class SluggablePrefixSuffixTest extends BaseTestCaseORM
         $this->assertEquals('test-foo', $foo->getSlug());
     }
 
-    /**
-     * @test
-     */
     public function testSuffix()
     {
         $foo = new Suffix();
@@ -54,9 +48,6 @@ class SluggablePrefixSuffixTest extends BaseTestCaseORM
         $this->assertEquals('foo.test', $foo->getSlug());
     }
 
-    /**
-     * @test
-     */
     public function testNoDuplicateSuffixes()
     {
         $foo = new SuffixWithTreeHandler();
@@ -78,9 +69,6 @@ class SluggablePrefixSuffixTest extends BaseTestCaseORM
         $this->assertEquals('foo.test/bar.test/baz.test', $baz->getSlug());
     }
 
-    /**
-     * @test
-     */
     public function testNoDuplicatePrefixes()
     {
         $foo = new PrefixWithTreeHandler();

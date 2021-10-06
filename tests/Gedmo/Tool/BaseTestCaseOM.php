@@ -151,7 +151,7 @@ abstract class BaseTestCaseOM extends \PHPUnit\Framework\TestCase
         $driver = $this->getMockBuilder('Doctrine\DBAL\Driver')->getMock();
         $driver->expects($this->once())
             ->method('getDatabasePlatform')
-            ->will($this->returnValue($this->getMockBuilder('Doctrine\DBAL\Platforms\MySqlPlatform')->getMock()));
+            ->willReturn($this->getMockBuilder('Doctrine\DBAL\Platforms\MySqlPlatform')->getMock());
 
         $conn = $this->getMockBuilder('Doctrine\DBAL\Connection')
             ->setConstructorArgs([], $driver)
@@ -159,7 +159,7 @@ abstract class BaseTestCaseOM extends \PHPUnit\Framework\TestCase
 
         $conn->expects($this->once())
             ->method('getEventManager')
-            ->will($this->returnValue($evm ?: $this->getEventManager()));
+            ->willReturn($evm ?: $this->getEventManager());
 
         $config = $this->getMockAnnotatedConfig();
 
@@ -242,53 +242,50 @@ abstract class BaseTestCaseOM extends \PHPUnit\Framework\TestCase
         $config = $this->getMockBuilder('Doctrine\ORM\Configuration')->getMock();
         $config->expects($this->once())
             ->method('getProxyDir')
-            ->will($this->returnValue(__DIR__.'/../../temp'));
+            ->willReturn(__DIR__.'/../../temp');
 
         $config->expects($this->once())
             ->method('getProxyNamespace')
-            ->will($this->returnValue('Proxy'));
+            ->willReturn('Proxy');
 
-        $config->expects($this->any())
+        $config
             ->method('getDefaultQueryHints')
-            ->will($this->returnValue([]));
+            ->willReturn([]);
 
         $config->expects($this->once())
             ->method('getAutoGenerateProxyClasses')
-            ->will($this->returnValue(true));
+            ->willReturn(true);
 
         $config->expects($this->once())
             ->method('getClassMetadataFactoryName')
-            ->will($this->returnValue('Doctrine\\ORM\\Mapping\\ClassMetadataFactory'));
+            ->willReturn('Doctrine\\ORM\\Mapping\\ClassMetadataFactory');
 
         $config
-            ->expects($this->any())
             ->method('getDefaultRepositoryClassName')
-            ->will($this->returnValue('Doctrine\\ORM\\EntityRepository'))
+            ->willReturn('Doctrine\\ORM\\EntityRepository')
         ;
 
         $config
-            ->expects($this->any())
             ->method('getQuoteStrategy')
-            ->will($this->returnValue(new DefaultQuoteStrategy()))
+            ->willReturn(new DefaultQuoteStrategy())
         ;
 
         $config
-            ->expects($this->any())
             ->method('getNamingStrategy')
-            ->will($this->returnValue(new DefaultNamingStrategy()))
+            ->willReturn(new DefaultNamingStrategy())
         ;
         if (null === $mappingDriver) {
             $mappingDriver = $this->getDefaultORMMetadataDriverImplementation();
         }
 
-        $config->expects($this->any())
+        $config
             ->method('getMetadataDriverImpl')
-            ->will($this->returnValue($mappingDriver));
+            ->willReturn($mappingDriver);
 
         $config
             ->expects($this->once())
             ->method('getRepositoryFactory')
-            ->will($this->returnValue(new DefaultRepositoryFactoryORM()));
+            ->willReturn(new DefaultRepositoryFactoryORM());
 
         return $config;
     }

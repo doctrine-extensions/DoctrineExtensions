@@ -58,7 +58,7 @@ class Issue922Test extends BaseTestCaseORM
         $this->assertInstanceOf('DateTime', $p1->getPublishedAt());
         $this->assertInstanceOf('DateTime', $p1->getTimestampAt());
         $this->assertInstanceOf('DateTime', $p1->getDateAt());
-        $this->assertSame(false, $p1->getBoolean());
+        $this->assertFalse($p1->getBoolean());
 
         // clear and test query hint hydration
         $this->em->clear();
@@ -75,7 +75,7 @@ class Issue922Test extends BaseTestCaseORM
         $this->assertInstanceOf('DateTime', $p1->getPublishedAt());
         $this->assertInstanceOf('DateTime', $p1->getTimestampAt());
         $this->assertInstanceOf('DateTime', $p1->getDateAt());
-        $this->assertSame(false, $p1->getBoolean());
+        $this->assertFalse($p1->getBoolean());
     }
 
     protected function getUsedEntityFixtures()
