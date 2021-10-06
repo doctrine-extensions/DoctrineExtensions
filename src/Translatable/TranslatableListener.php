@@ -198,9 +198,7 @@ class TranslatableListener extends MappedEventSubscriber
      */
     public function getTranslationClass(TranslatableAdapter $ea, $class)
     {
-        return isset(self::$configurations[$this->name][$class]['translationClass']) ?
-            self::$configurations[$this->name][$class]['translationClass'] :
-            $ea->getDefaultTranslationClass()
+        return self::$configurations[$this->name][$class]['translationClass'] ?? $ea->getDefaultTranslationClass()
         ;
     }
 
@@ -316,7 +314,7 @@ class TranslatableListener extends MappedEventSubscriber
                 $locale = $value;
             }
         } elseif ($om instanceof DocumentManager) {
-            list($mapping, $parentObject) = $om->getUnitOfWork()->getParentAssociation($object);
+            [$mapping, $parentObject] = $om->getUnitOfWork()->getParentAssociation($object);
             if (null != $parentObject) {
                 $parentMeta = $om->getClassMetadata(get_class($parentObject));
                 $locale = $this->getTranslatableLocale($parentObject, $parentMeta, $om);
@@ -463,7 +461,7 @@ class TranslatableListener extends MappedEventSubscriber
                 $translated = null;
                 foreach ($result as $entry) {
                     if ($entry['field'] == $field) {
-                        $translated = isset($entry['content']) ? $entry['content'] : null;
+                        $translated = $entry['content'] ?? null;
                         break;
                     }
                 }
@@ -737,11 +735,7 @@ class TranslatableListener extends MappedEventSubscriber
     private function getTranslationInDefaultLocale($oid, $field)
     {
         if (array_key_exists($oid, $this->translationInDefaultLocale)) {
-            if (array_key_exists($field, $this->translationInDefaultLocale[$oid])) {
-                $ret = $this->translationInDefaultLocale[$oid][$field];
-            } else {
-                $ret = null;
-            }
+            $ret = $this->translationInDefaultLocale[$oid][$field] ?? null;
         } else {
             $ret = null;
         }

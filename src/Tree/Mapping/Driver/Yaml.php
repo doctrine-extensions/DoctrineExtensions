@@ -52,8 +52,7 @@ class Yaml extends File implements Driver
                     throw new InvalidMappingException("Tree type: $strategy is not available.");
                 }
                 $config['strategy'] = $strategy;
-                $config['activate_locking'] = isset($classMapping['tree']['activateLocking']) ?
-                    $classMapping['tree']['activateLocking'] : false;
+                $config['activate_locking'] = $classMapping['tree']['activateLocking'] ?? false;
                 $config['locking_timeout'] = isset($classMapping['tree']['lockingTimeout']) ?
                     (int) $classMapping['tree']['lockingTimeout'] : 3;
 
@@ -110,8 +109,10 @@ class Yaml extends File implements Driver
                             throw new InvalidMappingException("Tree Path field - [{$field}] type is not valid. It must be string or text in class - {$meta->name}");
                         }
 
-                        $treePathInfo = isset($fieldMapping['gedmo']['treePath']) ? $fieldMapping['gedmo']['treePath'] :
-                            $fieldMapping['gedmo'][array_search('treePath', $fieldMapping['gedmo'])];
+                        $treePathInfo = $fieldMapping['gedmo']['treePath'] ?? $fieldMapping['gedmo'][array_search(
+                                'treePath',
+                                $fieldMapping['gedmo']
+                            )];
 
                         if (is_array($treePathInfo) && isset($treePathInfo['separator'])) {
                             $separator = $treePathInfo['separator'];
