@@ -925,7 +925,7 @@ class NestedTreeRepository extends AbstractTreeRepository
             $qb->where($qb->expr()->eq('node.'.$config['root'], ':rid'));
             $qb->setParameter('rid', $rootId);
         }
-        $min = intval($qb->getQuery()->getSingleScalarResult());
+        $min = (int) $qb->getQuery()->getSingleScalarResult();
         $edge = $this->listener->getStrategy($this->_em, $meta->name)->max($this->_em, $config['useObjectClass'], $rootId);
         // check duplicate right and left values
         for ($i = $min; $i <= $edge; ++$i) {
@@ -941,7 +941,7 @@ class NestedTreeRepository extends AbstractTreeRepository
                 $qb->andWhere($qb->expr()->eq('node.'.$config['root'], ':rid'));
                 $qb->setParameter('rid', $rootId);
             }
-            $count = intval($qb->getQuery()->getSingleScalarResult());
+            $count = (int) $qb->getQuery()->getSingleScalarResult();
             if (1 !== $count) {
                 if (0 === $count) {
                     $errors[] = "index [{$i}], missing".($root ? ' on tree root: '.$rootId : '');
@@ -1032,7 +1032,7 @@ class NestedTreeRepository extends AbstractTreeRepository
                     $qb->andWhere($qb->expr()->eq('node.'.$config['root'], ':rid'));
                     $qb->setParameter('rid', $rootId);
                 }
-                if ($count = intval($qb->getQuery()->getSingleScalarResult())) {
+                if ($count = (int) $qb->getQuery()->getSingleScalarResult()) {
                     $errors[] = "node [{$id}] parent field is blank, but it has a parent";
                 }
             }

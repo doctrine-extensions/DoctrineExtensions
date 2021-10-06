@@ -413,7 +413,7 @@ class ClosureTreeRepository extends AbstractTreeRepository
           WHERE c.id IS NULL
         ");
 
-        if ($missingSelfRefsCount = intval($q->getSingleScalarResult())) {
+        if ($missingSelfRefsCount = (int) $q->getSingleScalarResult()) {
             $errors[] = "Missing $missingSelfRefsCount self referencing closures";
         }
 
@@ -425,7 +425,7 @@ class ClosureTreeRepository extends AbstractTreeRepository
           WHERE c2.id IS NULL AND node.$nodeIdField <> c1.ancestor
         ");
 
-        if ($missingClosuresCount = intval($q->getSingleScalarResult())) {
+        if ($missingClosuresCount = (int) $q->getSingleScalarResult()) {
             $errors[] = "Missing $missingClosuresCount closures";
         }
 
@@ -437,7 +437,7 @@ class ClosureTreeRepository extends AbstractTreeRepository
             WHERE c2.id IS NULL AND c1.descendant <> c1.ancestor
         ");
 
-        if ($invalidClosuresCount = intval($q->getSingleScalarResult())) {
+        if ($invalidClosuresCount = (int) $q->getSingleScalarResult()) {
             $errors[] = "Found $invalidClosuresCount invalid closures";
         }
 
