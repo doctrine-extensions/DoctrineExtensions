@@ -3,8 +3,8 @@
 namespace Gedmo\Tests\Sluggable;
 
 use Doctrine\Common\EventManager;
-use Doctrine\ORM\Mapping\Driver\DriverChain;
 use Doctrine\ORM\Mapping\Driver\YamlDriver;
+use Doctrine\Persistence\Mapping\Driver\MappingDriverChain;
 use Gedmo\Sluggable\SluggableListener;
 use Gedmo\Tests\Sluggable\Fixture\Issue116\Country;
 use Gedmo\Tests\Tool\BaseTestCaseORM;
@@ -34,7 +34,7 @@ final class Issue116Test extends BaseTestCaseORM
 
     protected function getMetadataDriverImplementation()
     {
-        $chain = new DriverChain();
+        $chain = new MappingDriverChain();
         $chain->addDriver(
             new YamlDriver([__DIR__.'/../Fixture/Issue116/Mapping']),
             'Gedmo\Tests\Sluggable\Fixture\Issue116'

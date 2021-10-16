@@ -5,8 +5,8 @@ namespace Gedmo\Tests\Mapping;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\EventManager;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
-use Doctrine\ORM\Mapping\Driver\DriverChain;
 use Doctrine\ORM\Mapping\Driver\YamlDriver;
+use Doctrine\Persistence\Mapping\Driver\MappingDriverChain;
 use Gedmo\SoftDeleteable\SoftDeleteableListener;
 use Gedmo\Tests\Mapping\Fixture\Yaml\SoftDeleteable;
 use Gedmo\Tests\Tool\BaseTestCaseOM;
@@ -42,7 +42,7 @@ final class SoftDeleteableMappingTest extends BaseTestCaseOM
 
         $yamlDriver = new YamlDriver(__DIR__.'/Driver/Yaml');
 
-        $chain = new DriverChain();
+        $chain = new MappingDriverChain();
         $chain->addDriver($yamlDriver, 'Gedmo\Tests\Mapping\Fixture\Yaml');
         $chain->addDriver($annotationDriver, 'Gedmo\Tests\Mapping\Fixture');
 

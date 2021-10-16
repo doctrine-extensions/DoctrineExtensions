@@ -5,8 +5,8 @@ namespace Gedmo\Tests\Mapping\Yaml;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\EventManager;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
-use Doctrine\ORM\Mapping\Driver\DriverChain;
 use Doctrine\ORM\Mapping\Driver\YamlDriver;
+use Doctrine\Persistence\Mapping\Driver\MappingDriverChain;
 use Gedmo\Loggable\Entity\LogEntry;
 use Gedmo\Loggable\LoggableListener;
 use Gedmo\Tests\Mapping\Fixture\Yaml\Embedded;
@@ -43,7 +43,7 @@ final class LoggableMappingTest extends BaseTestCaseOM
 
         $yamlDriver = new YamlDriver(__DIR__.'/../Driver/Yaml');
 
-        $chain = new DriverChain();
+        $chain = new MappingDriverChain();
         $chain->addDriver($annotationDriver, 'Gedmo\Loggable');
         $chain->addDriver($yamlDriver, 'Gedmo\Tests\Mapping\Fixture\Yaml');
 

@@ -4,8 +4,8 @@ namespace Gedmo\Tests\Mapping;
 
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
-use Doctrine\ORM\Mapping\Driver\DriverChain;
 use Doctrine\ORM\Mapping\Driver\YamlDriver;
+use Doctrine\Persistence\Mapping\Driver\MappingDriverChain;
 use Gedmo\Tests\Mapping\Fixture\Yaml\User;
 use Gedmo\Tests\Sluggable\Fixture\Document\Article;
 use Gedmo\Tests\Tool\BaseTestCaseOM;
@@ -53,7 +53,7 @@ final class MultiManagerMappingTest extends BaseTestCaseOM
 
         $yamlDriver = new YamlDriver(__DIR__.'/Driver/Yaml');
 
-        $chain = new DriverChain();
+        $chain = new MappingDriverChain();
         $chain->addDriver($annotationDriver, 'Gedmo\Tests\Translatable\Fixture');
         $chain->addDriver($yamlDriver, 'Gedmo\Tests\Mapping\Fixture\Yaml');
         $chain->addDriver($annotationDriver2, 'Gedmo\Translatable');

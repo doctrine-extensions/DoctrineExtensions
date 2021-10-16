@@ -96,7 +96,7 @@ final class TranslatableIdentifierTest extends BaseTestCaseORM
         $q = $this->em
             ->createQuery('SELECT si FROM '.self::FIXTURE.' si WHERE si.uid = :id')
             ->setParameter('id', $this->testObjectId)
-            ->useResultCache(false)
+            ->disableResultCache()
         ;
         $data = $q->getResult();
         static::assertCount(1, $data);

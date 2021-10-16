@@ -12,6 +12,7 @@ use Gedmo\Translatable\Hydrator\ORM\ObjectHydrator;
 use Gedmo\Translatable\Hydrator\ORM\SimpleObjectHydrator;
 use Gedmo\Translatable\Query\TreeWalker\TranslationWalker;
 use Gedmo\Translatable\TranslatableListener;
+use Symfony\Component\Cache\Adapter\ArrayAdapter;
 
 /**
  * These are tests for translation query walker
@@ -54,8 +55,7 @@ final class TranslationQueryWalkerTest extends BaseTestCaseORM
      */
     public function shouldHandleQueryCache()
     {
-        $cache = new \Doctrine\Common\Cache\ArrayCache();
-        $this->em->getConfiguration()->setQueryCacheImpl($cache);
+        $this->em->getConfiguration()->setQueryCache(new ArrayAdapter());
         $dql = 'SELECT a FROM '.self::ARTICLE.' a';
         $q = $this->em->createQuery($dql);
         $q->setHint(Query::HINT_CUSTOM_OUTPUT_WALKER, self::TREE_WALKER_TRANSLATION);

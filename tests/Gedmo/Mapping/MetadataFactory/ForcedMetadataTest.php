@@ -4,7 +4,6 @@ namespace Gedmo\Tests\Mapping\MetadataFactory;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\ClassMetadata;
-use Doctrine\ORM\Version;
 use Gedmo\Tests\Mapping\Fixture\Unmapped\Timestampable;
 
 /**
@@ -79,9 +78,7 @@ final class ForcedMetadataTest extends \PHPUnit\Framework\TestCase
         $eventArgs = new \Doctrine\ORM\Event\LoadClassMetadataEventArgs($metadata, $this->em);
         $evm->dispatchEvent(\Doctrine\ORM\Events::loadClassMetadata, $eventArgs);
 
-        if (Version::compare('2.3.0-dev') <= 0) {
-            $metadata->wakeupReflection($cmf->getReflectionService());
-        }
+        $metadata->wakeupReflection($cmf->getReflectionService());
         $schemaTool = new \Doctrine\ORM\Tools\SchemaTool($this->em);
         $schemaTool->dropSchema([]);
         $schemaTool->createSchema([

@@ -3,8 +3,8 @@
 namespace Gedmo\Tests\Mapping\Xml;
 
 use Doctrine\Common\EventManager;
-use Doctrine\ORM\Mapping\Driver\DriverChain;
 use Doctrine\ORM\Mapping\Driver\XmlDriver;
+use Doctrine\Persistence\Mapping\Driver\MappingDriverChain;
 use Gedmo\Tests\Mapping\Fixture\Xml\NestedTree;
 use Gedmo\Tests\Tool\BaseTestCaseOM;
 use Gedmo\Tree\TreeListener;
@@ -36,7 +36,7 @@ final class NestedTreeMappingTest extends BaseTestCaseOM
 
         $xmlDriver = new XmlDriver(__DIR__.'/../Driver/Xml');
 
-        $chain = new DriverChain();
+        $chain = new MappingDriverChain();
         $chain->addDriver($xmlDriver, 'Gedmo\Tests\Mapping\Fixture\Xml');
 
         $this->tree = new TreeListener();

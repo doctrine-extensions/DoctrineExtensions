@@ -4,6 +4,7 @@ namespace Gedmo\Tests\SoftDeleteable;
 
 use function class_exists;
 use Doctrine\Common\Cache\ArrayCache;
+use Doctrine\Common\Cache\Psr6\CacheAdapter;
 use Doctrine\Common\EventManager;
 use Doctrine\Common\EventSubscriber;
 use Gedmo\SoftDeleteable\Filter\SoftDeleteableFilter;
@@ -493,8 +494,7 @@ final class SoftDeleteableEntityTest extends BaseTestCaseORM
             static::markTestSkipped('Test only applies when doctrine/cache 1.x is installed');
         }
 
-        $cache = new ArrayCache();
-        $this->em->getConfiguration()->setQueryCacheImpl($cache);
+        $this->em->getConfiguration()->setQueryCache(CacheAdapter::wrap(new ArrayCache()));
 
         $filter = $this->em->getFilters()->enable(self::SOFT_DELETEABLE_FILTER_NAME);
         $filter->disableForEntity(self::USER_CLASS);

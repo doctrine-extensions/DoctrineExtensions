@@ -3,8 +3,8 @@
 namespace Gedmo\Tests\Mapping\Xml\Simplified;
 
 use Doctrine\Common\EventManager;
-use Doctrine\ORM\Mapping\Driver\DriverChain;
 use Doctrine\ORM\Mapping\Driver\SimplifiedXmlDriver;
+use Doctrine\Persistence\Mapping\Driver\MappingDriverChain;
 use Gedmo\Tests\Mapping\Fixture\Xml\Status;
 use Gedmo\Tests\Mapping\Fixture\Xml\Timestampable;
 use Gedmo\Tests\Tool\BaseTestCaseORM;
@@ -43,7 +43,7 @@ final class TimestampableMappingTest extends BaseTestCaseORM
             __DIR__.'/../../Driver/Xml' => 'Gedmo\Tests\Mapping\Fixture\Xml',
         ]);
 
-        $chain = new DriverChain();
+        $chain = new MappingDriverChain();
         $chain->addDriver($xmlDriver, 'Gedmo\Tests\Mapping\Fixture\Xml');
 
         return $chain;
