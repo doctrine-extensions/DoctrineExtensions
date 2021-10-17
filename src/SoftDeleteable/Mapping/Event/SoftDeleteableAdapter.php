@@ -2,11 +2,11 @@
 
 namespace Gedmo\SoftDeleteable\Mapping\Event;
 
+use Doctrine\Persistence\Mapping\ClassMetadata;
 use Gedmo\Mapping\Event\AdapterInterface;
 
 /**
- * Doctrine event adapter interface
- * for SoftDeleteable behavior
+ * Doctrine event adapter for the SoftDeleteable extension.
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
@@ -14,12 +14,12 @@ use Gedmo\Mapping\Event\AdapterInterface;
 interface SoftDeleteableAdapter extends AdapterInterface
 {
     /**
-     * Get the date value
+     * Get the date value.
      *
-     * @param object $meta
-     * @param string $field
+     * @param ClassMetadata $meta
+     * @param string        $field
      *
-     * @return mixed
+     * @return int|\DateTimeInterface
      */
     public function getDateValue($meta, $field);
 }

@@ -3,9 +3,7 @@
 namespace Gedmo;
 
 /**
- * Common package exception interface to allow
- * users of caching only this package specific
- * exceptions thrown
+ * Marker interface for all exceptions in the Doctrine Extensions package.
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)

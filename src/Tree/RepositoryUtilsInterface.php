@@ -2,28 +2,30 @@
 
 namespace Gedmo\Tree;
 
+use Gedmo\Exception\InvalidArgumentException;
+
 interface RepositoryUtilsInterface
 {
     /**
-     * Retrieves the nested array or the decorated output.
+     * Retrieves the nested array or decorated output.
      *
      * Uses options to handle decorations
      *
-     * @throws \Gedmo\Exception\InvalidArgumentException
-     *
-     * @param object $node        - from which node to start reordering the tree
-     * @param bool   $direct      - true to take only direct children
-     * @param array  $options     :
-     *                            decorate: boolean (false) - retrieves tree as UL->LI tree
-     *                            nodeDecorator: Closure (null) - uses $node as argument and returns decorated item as string
-     *                            rootOpen: string || Closure ('<ul>') - branch start, closure will be given $children as a parameter
-     *                            rootClose: string ('</ul>') - branch close
-     *                            childStart: string || Closure ('<li>') - start of node, closure will be given $node as a parameter
-     *                            childClose: string ('</li>') - close of node
-     *                            childSort: array || keys allowed: field: field to sort on, dir: direction. 'asc' or 'desc'
-     * @param bool   $includeNode - Include node on results?
+     * @param object|null $node        The object to fetch children for; if null, all nodes will be retrieved
+     * @param bool        $direct      Flag indicating whether only direct children should be retrieved
+     * @param array       $options     Options configuring the output, supported keys include:
+     *                                 - decorate: boolean (false) - retrieves the tree as an HTML `<ul>` element
+     *                                 - nodeDecorator: Closure (null) - uses $node as argument and returns the decorated item as a string
+     *                                 - rootOpen: string || Closure ('<ul>') - branch start, Closure will be given $children as a parameter
+     *                                 - rootClose: string ('</ul>') - branch close
+     *                                 - childStart: string || Closure ('<li>') - start of node, Closure will be given $node as a parameter
+     *                                 - childClose: string ('</li>') - close of node
+     *                                 - childSort: array || keys allowed: field: field to sort on, dir: direction. 'asc' or 'desc'
+     * @param bool        $includeNode Flag indicating whether the given node should be included in the results
      *
      * @return array|string
+     *
+     * @throws InvalidArgumentException
      */
     public function childrenHierarchy($node = null, $direct = false, array $options = [], $includeNode = false);
 
@@ -31,30 +33,30 @@ interface RepositoryUtilsInterface
      * Retrieves the nested array or the decorated output.
      *
      * Uses options to handle decorations
+     *
      * NOTE: nodes should be fetched and hydrated as array
      *
-     * @throws \Gedmo\Exception\InvalidArgumentException
-     *
-     * @param array $nodes   - list o nodes to build tree
-     * @param array $options :
-     *                       decorate: boolean (false) - retrieves tree as UL->LI tree
-     *                       nodeDecorator: Closure (null) - uses $node as argument and returns decorated item as string
-     *                       rootOpen: string || Closure ('<ul>') - branch start, closure will be given $children as a parameter
-     *                       rootClose: string ('</ul>') - branch close
-     *                       childStart: string || Closure ('<li>') - start of node, closure will be given $node as a parameter
-     *                       childClose: string ('</li>') - close of node
+     * @param object[] $nodes   The nodes to build the tree from
+     * @param array    $options Options configuring the output, supported keys include:
+     *                          - decorate: boolean (false) - retrieves the tree as an HTML `<ul>` element
+     *                          - nodeDecorator: Closure (null) - uses $node as argument and returns the decorated item as a string
+     *                          - rootOpen: string || Closure ('<ul>') - branch start, Closure will be given $children as a parameter
+     *                          - rootClose: string ('</ul>') - branch close
+     *                          - childStart: string || Closure ('<li>') - start of node, Closure will be given $node as a parameter
+     *                          - childClose: string ('</li>') - close of node
      *
      * @return array|string
+     *
+     * @throws InvalidArgumentException
      */
     public function buildTree(array $nodes, array $options = []);
 
     /**
-     * Process nodes and produce an array with the
-     * structure of the tree
+     * Process a list of nodes and produce an array with the structure of the tree.
      *
-     * @param array $nodes - Array of nodes
+     * @param object[] $nodes The nodes to build the tree from
      *
-     * @return array - Array with tree structure
+     * @return array
      */
     public function buildTreeArray(array $nodes);
 

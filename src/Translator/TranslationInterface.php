@@ -3,7 +3,7 @@
 namespace Gedmo\Translator;
 
 /**
- * Entity/Document translation interface.
+ * Object for managing translations.
  *
  * @author  Konstantin Kudryashov <ever.zet@gmail.com>
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
@@ -11,49 +11,49 @@ namespace Gedmo\Translator;
 interface TranslationInterface
 {
     /**
-     * Set translatable
+     * Set the translatable item.
      *
-     * @param string $translatable
+     * @param object $translatable
      */
     public function setTranslatable($translatable);
 
     /**
-     * Get translatable
+     * Get the translatable item.
      *
-     * @return string
+     * @return object
      */
     public function getTranslatable();
 
     /**
-     * Set locale
+     * Set the translation locale.
      *
      * @param string $locale
      */
     public function setLocale($locale);
 
     /**
-     * Get locale
+     * Get the translation locale.
      *
      * @return string
      */
     public function getLocale();
 
     /**
-     * Set property
+     * Set the translated property.
      *
      * @param string $property
      */
     public function setProperty($property);
 
     /**
-     * Get property
+     * Get the translated property.
      *
      * @return string
      */
     public function getProperty();
 
     /**
-     * Set value
+     * Set the translation value.
      *
      * @param string $value
      *
@@ -62,7 +62,7 @@ interface TranslationInterface
     public function setValue($value);
 
     /**
-     * Get value
+     * Get the translation value.
      *
      * @return string
      */

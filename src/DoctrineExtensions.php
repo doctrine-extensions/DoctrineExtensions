@@ -15,8 +15,8 @@ use Doctrine\Persistence\Mapping\Driver\MappingDriverChain;
 use Symfony\Component\Cache\Adapter\ArrayAdapter;
 
 /**
- * Version class allows to checking the dependencies required
- * and the current version of doctrine extensions
+ * Version class allows checking the required dependencies
+ * and the current version of the Doctrine Extensions library.
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
@@ -29,8 +29,8 @@ final class DoctrineExtensions
     public const VERSION = '3.2.0';
 
     /**
-     * Hooks all extensions metadata mapping drivers
-     * into given $driverChain of drivers for ORM
+     * Hooks all extension metadata mapping drivers into
+     * the given driver chain of drivers for the ORM.
      */
     public static function registerMappingIntoDriverChainORM(MappingDriverChain $driverChain, Reader $reader = null)
     {
@@ -47,8 +47,8 @@ final class DoctrineExtensions
     }
 
     /**
-     * Hooks only superclass metadata mapping drivers
-     * into given $driverChain of drivers for ORM
+     * Hooks only superclass extension metadata mapping drivers into
+     * the given driver chain of drivers for the ORM.
      */
     public static function registerAbstractMappingIntoDriverChainORM(MappingDriverChain $driverChain, Reader $reader = null)
     {
@@ -65,8 +65,8 @@ final class DoctrineExtensions
     }
 
     /**
-     * Hooks all extensions metadata mapping drivers
-     * into given $driverChain of drivers for ODM MongoDB
+     * Hooks all extension metadata mapping drivers into
+     * the given driver chain of drivers for the MongoDB ODM.
      */
     public static function registerMappingIntoDriverChainMongodbODM(MappingDriverChain $driverChain, Reader $reader = null)
     {
@@ -82,8 +82,8 @@ final class DoctrineExtensions
     }
 
     /**
-     * Hooks only superclass metadata mapping drivers
-     * into given $driverChain of drivers for ODM MongoDB
+     * Hooks only superclass extension metadata mapping drivers into
+     * the given driver chain of drivers for the MongoDB ODM.
      */
     public static function registerAbstractMappingIntoDriverChainMongodbODM(MappingDriverChain $driverChain, Reader $reader = null)
     {
@@ -99,14 +99,14 @@ final class DoctrineExtensions
     }
 
     /**
-     * Includes all extension annotations once
+     * Registers all extension annotations.
      */
     public static function registerAnnotations()
     {
         AnnotationRegistry::registerFile(__DIR__.'/Mapping/Annotation/All.php');
     }
 
-    private static function createAnnotationReader()
+    private static function createAnnotationReader(): AnnotationReader
     {
         $reader = new AnnotationReader();
 

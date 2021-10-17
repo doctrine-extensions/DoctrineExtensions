@@ -2,8 +2,10 @@
 
 namespace Gedmo\Tool;
 
+use Doctrine\Persistence\Mapping\ClassMetadata;
+
 /**
- * Object wrapper interface
+ * Interface for a wrapper of a managed object.
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
@@ -11,15 +13,14 @@ namespace Gedmo\Tool;
 interface WrapperInterface
 {
     /**
-     * Get currently wrapped object
-     * etc.: entity, document
+     * Get the currently wrapped object.
      *
      * @return object
      */
     public function getObject();
 
     /**
-     * Extract property value from object
+     * Retrieves a property's value from the wrapped object.
      *
      * @param string $property
      *
@@ -28,54 +29,55 @@ interface WrapperInterface
     public function getPropertyValue($property);
 
     /**
-     * Set the property
+     * Sets a property's value on the wrapped object.
      *
      * @param string $property
      * @param mixed  $value
      *
-     * @return \Gedmo\Tool\WrapperInterface
+     * @return $this
      */
     public function setPropertyValue($property, $value);
 
     /**
-     * Populates the object with given property values
+     * Populates the wrapped object with the given property values.
      *
-     * @return static
+     * @return $this
      */
     public function populate(array $data);
 
     /**
-     * Checks if identifier is valid
+     * Checks if the identifier is valid.
      *
      * @return bool
      */
     public function hasValidIdentifier();
 
     /**
-     * Get metadata
+     * Get the object metadata.
      *
-     * @return object
+     * @return ClassMetadata
      */
     public function getMetadata();
 
     /**
-     * Get the object identifier, single or composite
+     * Get the object identifier, single or composite.
      *
      * @param bool $single
      *
-     * @return array|mixed
+     * @return array|mixed Array if a composite value, otherwise a single scalar
      */
     public function getIdentifier($single = true);
 
     /**
-     * Get root object class name
+     * Get the root object class name.
      *
      * @return string
+     * @phpstan-return class-string
      */
     public function getRootObjectName();
 
     /**
-     * Chechks if association is embedded
+     * Checks if an association is embedded.
      *
      * @param string $field
      *
