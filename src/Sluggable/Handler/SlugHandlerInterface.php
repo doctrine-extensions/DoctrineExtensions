@@ -3,14 +3,14 @@
 namespace Gedmo\Sluggable\Handler;
 
 use Doctrine\Persistence\Mapping\ClassMetadata;
+use Gedmo\Exception\InvalidMappingException;
 use Gedmo\Sluggable\Mapping\Event\SluggableAdapter;
 use Gedmo\Sluggable\SluggableListener;
 
 /**
- * Sluggable handler interface is a common pattern for all
- * slug handlers which can be attached to the sluggable listener.
- * Usage is intended only for internal access of sluggable.
- * Should not be used outside of sluggable extension
+ * Interface defining a handler for the sluggable behavior.
+ * Usage is intended only for internal access of the
+ * Sluggable extension and should not be used elsewhere.
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
@@ -18,14 +18,13 @@ use Gedmo\Sluggable\SluggableListener;
 interface SlugHandlerInterface
 {
     /**
-     * Construct the slug handler
+     * Create a new handler instance
      */
     public function __construct(SluggableListener $sluggable);
 
     /**
-     * Callback on slug handlers before the decision
-     * is made whether or not the slug needs to be
-     * recalculated
+     * Hook on slug handlers before the decision is made whether
+     * the slug needs to be recalculated.
      *
      * @param object $object
      * @param string $slug
@@ -36,7 +35,7 @@ interface SlugHandlerInterface
     public function onChangeDecision(SluggableAdapter $ea, array &$config, $object, &$slug, &$needToChangeSlug);
 
     /**
-     * Callback on slug handlers right after the slug is built
+     * Hook on slug handlers called after the slug is built.
      *
      * @param object $object
      * @param string $slug
@@ -46,7 +45,7 @@ interface SlugHandlerInterface
     public function postSlugBuild(SluggableAdapter $ea, array &$config, $object, &$slug);
 
     /**
-     * Callback for slug handlers on slug completion
+     * Hook for slug handlers called after the slug is completed.
      *
      * @param object $object
      * @param string $slug
@@ -56,12 +55,14 @@ interface SlugHandlerInterface
     public function onSlugCompletion(SluggableAdapter $ea, array &$config, $object, &$slug);
 
     /**
-     * @return bool whether or not this handler has already urlized the slug
+     * @return bool Whether this handler has already urlized the slug
      */
     public function handlesUrlization();
 
     /**
-     * Validate handler options
+     * Validates the options for the handler.
+     *
+     * @throws InvalidMappingException if the configuration is invalid
      */
     public static function validate(array $options, ClassMetadata $meta);
 }
