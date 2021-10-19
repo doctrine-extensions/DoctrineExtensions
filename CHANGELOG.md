@@ -19,6 +19,9 @@ a release.
 ---
 
 ## [Unreleased]
+### Added
+- Translatable: Add defaultTranslationValue option to allow null or string value (#2167). TranslatableListener can hydrate object properties with null value, but it may cause a Type error for non-nullable getter upon a missing translation.
+
 ### Fixed
 - Uploadable: `FileInfoInterface::getSize()` return type declaration (#2413).
 - Tree: Setting a new Tree Root when Tree Parent is `null`.

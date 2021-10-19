@@ -120,6 +120,13 @@ class TranslatableListener extends MappedEventSubscriber
     private $translationInDefaultLocale = [];
 
     /**
+     * Default translation value upon missing translation
+     *
+     * @var string|null
+     */
+    private $defaultTranslationValue;
+
+    /**
      * Specifies the list of events to listen
      *
      * @return string[]
@@ -255,6 +262,17 @@ class TranslatableListener extends MappedEventSubscriber
         $this->locale = $locale;
 
         return $this;
+    }
+
+    /**
+     * Set the default translation value on missing translation
+     *
+     * @deprecated usage of a non nullable value for defaultTranslationValue is deprecated
+     * and will be removed on the next major release which will rely on the expected types
+     */
+    public function setDefaultTranslationValue(?string $defaultTranslationValue): void
+    {
+        $this->defaultTranslationValue = $defaultTranslationValue;
     }
 
     /**
@@ -483,7 +501,8 @@ class TranslatableListener extends MappedEventSubscriber
             );
             // translate object's translatable properties
             foreach ($config['fields'] as $field) {
-                $translated = null;
+                $translated = $this->defaultTranslationValue;
+
                 foreach ($result as $entry) {
                     if ($entry['field'] == $field) {
                         $translated = $entry['content'] ?? null;
@@ -491,8 +510,9 @@ class TranslatableListener extends MappedEventSubscriber
                         break;
                     }
                 }
+
                 // update translation
-                if (null !== $translated
+                if ($this->defaultTranslationValue !== $translated
                     || (!$this->translationFallback && (!isset($config['fallback'][$field]) || !$config['fallback'][$field]))
                     || ($this->translationFallback && isset($config['fallback'][$field]) && !$config['fallback'][$field])
                 ) {
