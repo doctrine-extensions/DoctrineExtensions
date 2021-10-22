@@ -155,12 +155,12 @@ class TreeSlugHandler implements SlugHandlerWithUniqueCallbackInterface
                     if (property_exists($object, '__isInitialized__') && !$object->__isInitialized__) {
                         continue;
                     }
-                    $oid = spl_object_hash($object);
+
                     $objectSlug = $meta->getReflectionProperty($config['slug'])->getValue($object);
                     if (preg_match("@^{$target}{$config['pathSeparator']}@smi", $objectSlug)) {
                         $objectSlug = str_replace($target, $slug, $objectSlug);
                         $meta->getReflectionProperty($config['slug'])->setValue($object, $objectSlug);
-                        $ea->setOriginalObjectProperty($uow, $oid, $config['slug'], $objectSlug);
+                        $ea->setOriginalObjectProperty($uow, $object, $config['slug'], $objectSlug);
                     }
                 }
             }

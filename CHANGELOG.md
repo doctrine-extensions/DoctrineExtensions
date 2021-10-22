@@ -20,6 +20,11 @@ a release.
 
 ## [Unreleased]
 
+### Fixed
+- Restored compatibility with doctrine/orm >= 2.10.2 (#2272).
+  Since doctrine/orm 2.10, `Doctrine\ORM\UnitOfWork` relies on SPL object IDs instead of hashes, thus we need to adapt our codebase in order to be compatible with this change.
+  As `Doctrine\ODM\MongoDB\UnitOfWork` from doctrine/mongodb-odm still uses `spl_object_hash()`, all `spl_object_hash()` calls were replaced by `spl_object_id()` to make it work with both ORM and ODM managers.
+
 ## [3.2.0] - 2021-10-05
 ### Added
 - PHP 8 Attributes for Doctrine ORM to entities & traits (#2251) 

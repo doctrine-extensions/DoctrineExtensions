@@ -256,7 +256,7 @@ class ClosureTreeRepository extends AbstractTreeRepository
                     ->getStrategy($this->_em, $meta->name)
                     ->updateNode($this->_em, $nodeToReparent, $node);
 
-                $oid = spl_object_hash($nodeToReparent);
+                $oid = spl_object_id($nodeToReparent);
                 $this->_em->getUnitOfWork()->setOriginalEntityProperty($oid, $config['parent'], $parent);
             }
 
