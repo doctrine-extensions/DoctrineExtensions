@@ -90,7 +90,7 @@ class TranslationRepository extends DocumentRepository
             if ($this->dm->getUnitOfWork()->isInIdentityMap($document)) {
                 $this->dm->persist($trans);
             } else {
-                $oid = spl_object_hash($document);
+                $oid = spl_object_id($document);
                 $listener->addPendingTranslationInsert($oid, $trans);
             }
         }

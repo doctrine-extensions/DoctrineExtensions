@@ -438,7 +438,7 @@ class SortableListener extends MappedEventSubscriber
                             }
                         }
 
-                        $oid = spl_object_hash($object);
+                        $oid = spl_object_id($object);
                         $pos = $meta->getReflectionProperty($config['position'])->getValue($object);
                         $matches = $pos >= $delta['start'];
                         $matches = $matches && ($delta['stop'] <= 0 || $pos < $delta['stop']);
@@ -497,7 +497,7 @@ class SortableListener extends MappedEventSubscriber
             if ($val instanceof \DateTime) {
                 $val = $val->format('c');
             } elseif (is_object($val)) {
-                $val = spl_object_hash($val);
+                $val = spl_object_id($val);
             }
             $data .= $group.$val;
         }

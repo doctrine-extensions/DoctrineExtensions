@@ -47,7 +47,7 @@
         "doctrine/dbal": "^2.13",
         "doctrine/doctrine-bundle": "^2.3",
         "doctrine/mongodb-odm": "^2.0",
-        "doctrine/orm": "^2.9.6",
+        "doctrine/orm": "^2.10.2",
         "friendsofphp/php-cs-fixer": "^3.0",
         "phpunit/phpunit": "^8.5 || ^9.5",
         "symfony/cache": "^4.4 || ^5.0",
@@ -56,7 +56,7 @@
     "conflict": {
         "doctrine/mongodb": "<1.3",
         "doctrine/mongodb-odm": "<2.0",
-        "doctrine/orm": ">=2.10",
+        "doctrine/orm": "<2.10.2",
         "sebastian/comparator": "<2.0"
     },
     "suggest": {

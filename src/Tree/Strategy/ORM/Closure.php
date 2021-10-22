@@ -174,7 +174,7 @@ class Closure implements Strategy
      */
     public function processPrePersist($em, $node)
     {
-        $this->pendingChildNodeInserts[spl_object_hash($em)][spl_object_hash($node)] = $node;
+        $this->pendingChildNodeInserts[spl_object_id($em)][spl_object_id($node)] = $node;
     }
 
     /**
@@ -241,7 +241,7 @@ class Closure implements Strategy
     public function processPostPersist($em, $entity, AdapterInterface $ea)
     {
         $uow = $em->getUnitOfWork();
-        $emHash = spl_object_hash($em);
+        $emHash = spl_object_id($em);
 
         while ($node = array_shift($this->pendingChildNodeInserts[$emHash])) {
             $meta = $em->getClassMetadata(get_class($node));
@@ -288,7 +288,7 @@ class Closure implements Strategy
                 }
             } elseif (isset($config['level'])) {
                 $uow->scheduleExtraUpdate($node, [$config['level'] => [null, 1]]);
-                $ea->setOriginalObjectProperty($uow, spl_object_hash($node), $config['level'], 1);
+                $ea->setOriginalObjectProperty($uow, $node, $config['level'], 1);
                 $levelProp = $meta->getReflectionProperty($config['level']);
                 $levelProp->setValue($node, 1);
             }
@@ -368,7 +368,7 @@ class Closure implements Strategy
                     ]]
                 );
                 $levelProp->setValue($node, $level);
-                $uow->setOriginalEntityProperty(spl_object_hash($node), $config['level'], $level);
+                $uow->setOriginalEntityProperty(spl_object_id($node), $config['level'], $level);
             }
 
             $this->pendingNodesLevelProcess = [];
@@ -391,7 +391,7 @@ class Closure implements Strategy
             $parent = $changeSet[$config['parent']][1] ? AbstractWrapper::wrap($changeSet[$config['parent']][1], $em) : null;
 
             if ($parent && !$parent->getIdentifier()) {
-                $this->pendingNodeUpdates[spl_object_hash($node)] = [
+                $this->pendingNodeUpdates[spl_object_id($node)] = [
                     'node' => $node,
                     'oldParent' => $changeSet[$config['parent']][0],
                 ];

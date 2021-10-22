@@ -3,6 +3,7 @@
 namespace Gedmo\Mapping\Event;
 
 use Doctrine\Common\EventArgs;
+use Doctrine\ODM\MongoDB\UnitOfWork as MongoDBUnitOfWork;
 use Doctrine\ORM\UnitOfWork;
 use Doctrine\Persistence\Event\LifecycleEventArgs;
 use Doctrine\Persistence\ObjectManager;
@@ -135,20 +136,20 @@ interface AdapterInterface
     /**
      * Sets a property value of the original data array of an object
      *
-     * @param UnitOfWork $uow
-     * @param string     $oid
-     * @param string     $property
-     * @param mixed      $value
+     * @param UnitOfWork|MongoDBUnitOfWork $uow
+     * @param object                       $object
+     * @param string                       $property
+     * @param mixed                        $value
      *
      * @return void
      */
-    public function setOriginalObjectProperty($uow, $oid, $property, $value);
+    public function setOriginalObjectProperty($uow, $object, $property, $value);
 
     /**
      * Clears the property changeset of the object with the given OID.
      *
-     * @param UnitOfWork $uow
-     * @param string     $oid the object's OID
+     * @param UnitOfWork|MongoDBUnitOfWork $uow
+     * @param object                       $object
      */
-    public function clearObjectChangeSet($uow, $oid);
+    public function clearObjectChangeSet($uow, $object);
 }

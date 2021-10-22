@@ -201,7 +201,7 @@ class UploadableListener extends MappedEventSubscriber
      */
     public function processFile(AdapterInterface $ea, $object, $action)
     {
-        $oid = spl_object_hash($object);
+        $oid = spl_object_id($object);
         $om = $ea->getObjectManager();
         $uow = $om->getUnitOfWork();
         $meta = $om->getClassMetadata(get_class($object));
@@ -676,7 +676,7 @@ class UploadableListener extends MappedEventSubscriber
             throw new \RuntimeException(sprintf($msg, get_class($entity)));
         }
 
-        $this->fileInfoObjects[spl_object_hash($entity)] = [
+        $this->fileInfoObjects[spl_object_id($entity)] = [
             'entity' => $entity,
             'fileInfo' => $fileInfo,
         ];
@@ -689,7 +689,7 @@ class UploadableListener extends MappedEventSubscriber
      */
     public function getEntityFileInfo($entity)
     {
-        $oid = spl_object_hash($entity);
+        $oid = spl_object_id($entity);
 
         if (!isset($this->fileInfoObjects[$oid])) {
             throw new \RuntimeException(sprintf('There\'s no FileInfoInterface object for entity of class "%s".', get_class($entity)));
