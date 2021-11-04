@@ -52,7 +52,7 @@
         "doctrine/mongodb-odm": "^2.0",
         "doctrine/orm": "^2.9.6",
         "friendsofphp/php-cs-fixer": "^3.0",
-        "phpunit/phpunit": "^8.5",
+        "phpunit/phpunit": "^8.5 || ^9.5",
         "symfony/cache": "^4.4 || ^5.0",
         "symfony/yaml": "^4.1"
     },
