@@ -10,7 +10,7 @@ class SoftDeleteableFilter extends BsonFilter
 {
     protected $listener;
     /**
-     * @deprecated `BsonFilter::$dm` is a protected property, thus this property is not required.
+     * @deprecated `BsonFilter::$dm` is a protected property, thus this property is not required
      */
     protected $documentManager;
     protected $disabled = [];
