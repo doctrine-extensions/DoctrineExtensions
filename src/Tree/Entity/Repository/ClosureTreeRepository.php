@@ -545,8 +545,8 @@ class ClosureTreeRepository extends AbstractTreeRepository
         $batchSize = 1000;
         $q = $this->_em->createQuery($dql)->setMaxResults($batchSize)->setCacheable(false);
 
-        while (($ids = $q->getScalarResult()) && !empty($ids)) {
-            $ids = array_map(function ($el) {
+        while (($ids = $q->getScalarResult()) && [] !== $ids) {
+            $ids = array_map(static function (array $el) {
                 return $el['id'];
             }, $ids);
             $query = "DELETE FROM {$closureTableName} WHERE id IN (".implode(', ', $ids).')';

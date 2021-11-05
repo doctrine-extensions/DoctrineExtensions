@@ -3,11 +3,11 @@
 namespace Gedmo\References\Mapping\Event\Adapter;
 
 use Doctrine\ODM\MongoDB\DocumentManager;
-use Doctrine\ODM\MongoDB\Proxy\Proxy as MongoDBProxy;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Proxy\Proxy as ORMProxy;
 use Gedmo\Mapping\Event\Adapter\ODM as BaseAdapterODM;
 use Gedmo\References\Mapping\Event\ReferencesAdapter;
+use ProxyManager\Proxy\GhostObjectInterface;
 
 /**
  * Doctrine event adapter for ODM references behavior
@@ -49,6 +49,8 @@ final class ODM extends BaseAdapterODM implements ReferencesAdapter
 
             return $id;
         }
+
+        return null;
     }
 
     /**
@@ -72,7 +74,7 @@ final class ODM extends BaseAdapterODM implements ReferencesAdapter
     public function extractIdentifier($om, $object, $single = true)
     {
         $meta = $om->getClassMetadata(get_class($object));
-        if ($object instanceof MongoDBProxy) {
+        if ($object instanceof GhostObjectInterface) {
             $id = $om->getUnitOfWork()->getDocumentIdentifier($object);
         } else {
             $id = $meta->getReflectionProperty($meta->identifier)->getValue($object);

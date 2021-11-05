@@ -26,6 +26,11 @@ class OtherComment
      */
     private $article;
 
+    /**
+     * @var \DateTimeInterface|null
+     */
+    private $deletedAt;
+
     public function getId()
     {
         return $this->id;

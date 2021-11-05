@@ -69,6 +69,6 @@ class Page
 
     public function addModule(Module $module)
     {
-        $this->module[] = $module;
+        $this->modules[] = $module;
     }
 }

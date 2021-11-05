@@ -488,7 +488,7 @@ class UploadableListener extends MappedEventSubscriber
                 case 4:
                     $msg = 'No file was uploaded!';
 
-                    throw new UploadableNoFileException(sprintf($msg, $fileInfo->getName()));
+                    throw new UploadableNoFileException($msg);
                 case 6:
                     $msg = 'Upload failed. Temp dir is missing.';
 
@@ -500,7 +500,7 @@ class UploadableListener extends MappedEventSubscriber
                 case 8:
                     $msg = 'A PHP Extension stopped the uploaded for some reason.';
 
-                    throw new UploadableExtensionException(sprintf($msg, $fileInfo->getName()));
+                    throw new UploadableExtensionException($msg);
                 default:
                     throw new UploadableUploadException(sprintf('There was an unknown problem while uploading file "%s"', $fileInfo->getName()));
             }

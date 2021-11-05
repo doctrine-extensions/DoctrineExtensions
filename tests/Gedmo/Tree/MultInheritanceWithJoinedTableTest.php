@@ -28,6 +28,11 @@ final class MultInheritanceWithJoinedTableTest extends BaseTestCaseORM
     public const ROLE = Role::class;
     public const USERLDAP = UserLDAP::class;
 
+    /**
+     * @var TreeListener
+     */
+    private $tree;
+
     protected function setUp(): void
     {
         parent::setUp();

@@ -16,6 +16,11 @@ final class Issue1123Test extends BaseTestCaseORM
     public const BASE_ENTITY = BaseEntity::class;
     public const CHILD_ENTITY = ChildEntity::class;
 
+    /**
+     * @var TranslatableListener
+     */
+    private $translatableListener;
+
     protected function setUp(): void
     {
         parent::setUp();

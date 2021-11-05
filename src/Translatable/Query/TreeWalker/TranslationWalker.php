@@ -90,6 +90,11 @@ class TranslationWalker extends SqlWalker
     private $components = [];
 
     /**
+     * @var TranslatableListener
+     */
+    private $listener;
+
+    /**
      * {@inheritdoc}
      */
     public function __construct($query, $parserResult, array $queryComponents)
@@ -284,10 +289,8 @@ class TranslationWalker extends SqlWalker
      * on used query components
      *
      * @todo: make it cleaner
-     *
-     * @return string
      */
-    private function prepareTranslatedComponents()
+    private function prepareTranslatedComponents(): void
     {
         $q = $this->getQuery();
         $locale = $q->getHint(TranslatableListener::HINT_TRANSLATABLE_LOCALE);

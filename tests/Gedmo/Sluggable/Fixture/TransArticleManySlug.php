@@ -2,6 +2,8 @@
 
 namespace Gedmo\Tests\Sluggable\Fixture;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\Sluggable\Sluggable;
@@ -18,6 +20,16 @@ class TransArticleManySlug implements Sluggable, Translatable
      * @ORM\Column(type="integer")
      */
     private $id;
+
+    /**
+     * @var Collection
+     */
+    private $comments;
+
+    /**
+     * @var int|null
+     */
+    private $page;
 
     /**
      * @Gedmo\Translatable
@@ -54,6 +66,11 @@ class TransArticleManySlug implements Sluggable, Translatable
      * Used locale to override Translation listener`s locale
      */
     private $locale;
+
+    public function __construct()
+    {
+        $this->comments = new ArrayCollection();
+    }
 
     public function addComment(Comment $comment)
     {

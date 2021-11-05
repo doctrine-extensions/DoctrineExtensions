@@ -437,6 +437,8 @@ class TranslatableListener extends MappedEventSubscriber
         $object = $ea->getObject();
         $meta = $om->getClassMetadata(get_class($object));
         $config = $this->getConfiguration($om, $meta->name);
+        $locale = $this->defaultLocale;
+        $oid = null;
         if (isset($config['fields'])) {
             $locale = $this->getTranslatableLocale($object, $meta, $om);
             $oid = spl_object_id($object);

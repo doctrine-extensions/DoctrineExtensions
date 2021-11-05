@@ -19,6 +19,21 @@ class SoftDeleteable
     private $id;
 
     /**
+     * @var string|null
+     */
+    private $title;
+
+    /**
+     * @var string|null
+     */
+    private $code;
+
+    /**
+     * @var string|null
+     */
+    private $slug;
+
+    /**
      * @ORM\Column(name="deleted_at", type="datetime", nullable=true)
      */
     private $deletedAt;

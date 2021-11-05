@@ -55,6 +55,7 @@
         "doctrine/mongodb-odm": "^2.0",
         "doctrine/orm": "^2.10.2",
         "friendsofphp/php-cs-fixer": "^3.0",
+        "phpstan/phpstan": "^1.1",
         "phpunit/phpunit": "^8.5 || ^9.5",
         "symfony/cache": "^4.4 || ^5.3",
         "symfony/yaml": "^4.4 || ^5.3"

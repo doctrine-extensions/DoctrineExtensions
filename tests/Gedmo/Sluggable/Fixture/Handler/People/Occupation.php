@@ -2,6 +2,8 @@
 
 namespace Gedmo\Tests\Sluggable\Fixture\Handler\People;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
@@ -47,6 +49,11 @@ class Occupation
     private $parent;
 
     /**
+     * @var Collection<int, self>
+     */
+    private $children;
+
+    /**
      * @Gedmo\TreeLeft
      * @ORM\Column(type="integer")
      */
@@ -70,7 +77,12 @@ class Occupation
      */
     private $level;
 
-    public function setParent(Occupation $parent = null)
+    public function __construct()
+    {
+        $this->children = new ArrayCollection();
+    }
+
+    public function setParent(self $parent = null)
     {
         $this->parent = $parent;
     }

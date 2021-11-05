@@ -9,6 +9,6 @@ class FakeFilter extends SQLFilter
 {
     public function addFilterConstraint(ClassMetadata $targetEntity, $targetTableAlias)
     {
-        // do nothing, it's a fake !
+        throw new \BadMethodCallException('Do nothing, it\'s a fake !');
     }
 }

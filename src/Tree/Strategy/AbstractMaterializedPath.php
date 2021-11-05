@@ -304,6 +304,8 @@ abstract class AbstractMaterializedPath implements Strategy
             $config['path'] => [null, $path],
         ];
 
+        $pathHash = null;
+
         if (isset($config['path_hash'])) {
             $pathHash = md5($path);
             $pathHashProp = $meta->getReflectionProperty($config['path_hash']);

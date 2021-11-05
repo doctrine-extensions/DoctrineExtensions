@@ -141,11 +141,7 @@ class ExtensionMetadataFactory
     protected function getDriver($omDriver)
     {
         if ($omDriver instanceof DoctrineBundleMappingDriver) {
-            $getOmDriver = \Closure::bind(function () {
-                return $this->driver;
-            }, $omDriver, get_class($omDriver));
-
-            $omDriver = $getOmDriver();
+            $omDriver = $omDriver->getDriver();
         }
 
         $driver = null;

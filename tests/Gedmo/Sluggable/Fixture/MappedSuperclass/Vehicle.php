@@ -11,6 +11,11 @@ use Gedmo\Mapping\Annotation as Gedmo;
 class Vehicle
 {
     /**
+     * @var int|null
+     */
+    private $id;
+
+    /**
      * @ORM\Column(length=128)
      */
     private $title;
