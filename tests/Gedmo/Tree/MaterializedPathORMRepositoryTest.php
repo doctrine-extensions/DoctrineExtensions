@@ -346,7 +346,12 @@ class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
         $this->em->persist($newNode);
         $this->em->flush();
 
-        $this->assertRegexp('/Food\-\d+,New\sNode\-\d+/', $newNode->getPath());
+        // @todo: Remove the condition and the `else` block when dropping support for "phpunit/phpunit" < 9.1.
+        if (method_exists($this, 'assertMatchesRegularExpression')) {
+            $this->assertMatchesRegularExpression('/Food\-\d+,New\sNode\-\d+/', $newNode->getPath());
+        } else {
+            $this->assertRegExp('/Food\-\d+,New\sNode\-\d+/', $newNode->getPath());
+        }
         $this->assertEquals(2, $newNode->getLevel());
     }
 

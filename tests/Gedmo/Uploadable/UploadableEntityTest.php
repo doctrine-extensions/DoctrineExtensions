@@ -355,7 +355,12 @@ class UploadableEntityTest extends BaseTestCaseORM
         $sha1String = substr($file->getFilePath(), strrpos($file->getFilePath(), '/') + 1);
         $sha1String = str_replace('.txt', '', $sha1String);
 
-        $this->assertRegExp('/[a-z0-9]{40}/', $sha1String);
+        // @todo: Remove the condition and the `else` block when dropping support for "phpunit/phpunit" < 9.1.
+        if (method_exists($this, 'assertMatchesRegularExpression')) {
+            $this->assertMatchesRegularExpression('/[a-z0-9]{40}/', $sha1String);
+        } else {
+            $this->assertRegExp('/[a-z0-9]{40}/', $sha1String);
+        }
     }
 
     public function testFileWithFilenameAlphanumericGenerator()
