@@ -2,7 +2,6 @@
 
 namespace Gedmo\Loggable\Document\Repository;
 
-use Doctrine\MongoDB\Cursor;
 use Doctrine\ODM\MongoDB\Iterator\Iterator;
 use Doctrine\ODM\MongoDB\Repository\DocumentRepository;
 use Gedmo\Loggable\Document\LogEntry;
@@ -45,7 +44,7 @@ class LogEntryRepository extends DocumentRepository
         $q = $qb->getQuery();
 
         $result = $q->execute();
-        if ($result instanceof Cursor || $result instanceof Iterator) {
+        if ($result instanceof Iterator) {
             $result = $result->toArray();
         }
 
@@ -79,7 +78,7 @@ class LogEntryRepository extends DocumentRepository
         $q = $qb->getQuery();
 
         $logs = $q->execute();
-        if ($logs instanceof Cursor || $logs instanceof Iterator) {
+        if ($logs instanceof Iterator) {
             $logs = $logs->toArray();
         }
         if ($logs) {

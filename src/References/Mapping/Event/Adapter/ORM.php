@@ -3,13 +3,13 @@
 namespace Gedmo\References\Mapping\Event\Adapter;
 
 use Doctrine\ODM\MongoDB\DocumentManager as MongoDocumentManager;
-use Doctrine\ODM\MongoDB\Proxy\Proxy as MongoDBProxy;
 use Doctrine\ODM\PHPCR\DocumentManager as PhpcrDocumentManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Proxy\Proxy as ORMProxy;
 use Gedmo\Exception\InvalidArgumentException;
 use Gedmo\Mapping\Event\Adapter\ORM as BaseAdapterORM;
 use Gedmo\References\Mapping\Event\ReferencesAdapter;
+use ProxyManager\Proxy\GhostObjectInterface;
 
 /**
  * Doctrine event adapter for ORM references behavior
@@ -32,7 +32,7 @@ final class ORM extends BaseAdapterORM implements ReferencesAdapter
 
         if ($om instanceof MongoDocumentManager) {
             $meta = $om->getClassMetadata(get_class($object));
-            if ($object instanceof MongoDBProxy) {
+            if ($object instanceof GhostObjectInterface) {
                 $id = $om->getUnitOfWork()->getDocumentIdentifier($object);
             } else {
                 $id = $meta->getReflectionProperty($meta->identifier)->getValue($object);

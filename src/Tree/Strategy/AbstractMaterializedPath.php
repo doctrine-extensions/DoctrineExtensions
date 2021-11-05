@@ -10,6 +10,7 @@ use Gedmo\Mapping\Event\AdapterInterface;
 use Gedmo\Tree\Strategy;
 use Gedmo\Tree\TreeListener;
 use MongoDB\BSON\UTCDateTime;
+use ProxyManager\Proxy\GhostObjectInterface;
 
 /**
  * This strategy makes tree using materialized path strategy
@@ -397,11 +398,8 @@ abstract class AbstractMaterializedPath implements Strategy
             // In some cases, the parent could be a not initialized proxy. In this case, the
             // "lockTime" field may NOT be loaded yet and have null instead of the date.
             // We need to be sure that this field has its real value
-            if ($parentNode !== $node && $parentNode instanceof \Doctrine\ODM\MongoDB\Proxy\Proxy) {
-                $reflMethod = new \ReflectionMethod(get_class($parentNode), '__load');
-                $reflMethod->setAccessible(true);
-
-                $reflMethod->invoke($parentNode);
+            if ($parentNode !== $node && $parentNode instanceof GhostObjectInterface) {
+                $parentNode->initializeProxy();
             }
 
             // If tree is already locked, we throw an exception
