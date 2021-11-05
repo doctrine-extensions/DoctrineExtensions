@@ -27,6 +27,16 @@ final class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
     /** @var \Gedmo\Tree\Entity\Repository\MaterializedPathRepository */
     protected $repo;
 
+    /**
+     * @var TreeListener
+     */
+    private $listener;
+
+    /**
+     * @var array
+     */
+    private $config = [];
+
     protected function setUp(): void
     {
         parent::setUp();

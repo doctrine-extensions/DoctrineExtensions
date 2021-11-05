@@ -233,6 +233,9 @@ class SortableListener extends MappedEventSubscriber
             }
         }
 
+        $oldPosition = 0;
+        $newPosition = 0;
+
         if ($changed) {
             $oldHash = $this->getHash($oldGroups, $config);
             $this->maxPositions[$oldHash] = $this->getMaxPosition($ea, $meta, $config, $object, $oldGroups);

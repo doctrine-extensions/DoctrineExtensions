@@ -2,7 +2,6 @@
 
 namespace Gedmo\Mapping\Driver;
 
-use Doctrine\ORM\Mapping\Driver\AbstractFileDriver;
 use Doctrine\Persistence\Mapping\Driver\FileDriver;
 use Doctrine\Persistence\Mapping\Driver\FileLocator;
 use Gedmo\Mapping\Driver;
@@ -35,6 +34,13 @@ abstract class File implements Driver
      */
     protected $_originalDriver = null;
 
+    /**
+     * @deprecated since gedmo/doctrine-extensions 3.x, will be removed in version 4.0.
+     *
+     * @var string[]
+     */
+    protected $_paths = [];
+
     public function setLocator(FileLocator $locator)
     {
         $this->locator = $locator;
@@ -43,7 +49,9 @@ abstract class File implements Driver
     /**
      * Set the paths for file lookup
      *
-     * @param array $paths
+     * @deprecated since gedmo/doctrine-extensions 3.x, will be removed in version 4.0.
+     *
+     * @param string[] $paths
      *
      * @return void
      */
@@ -86,7 +94,7 @@ abstract class File implements Driver
         //try loading mapping from original driver first
         $mapping = null;
         if (null !== $this->_originalDriver) {
-            if ($this->_originalDriver instanceof FileDriver || $this->_originalDriver instanceof AbstractFileDriver) {
+            if ($this->_originalDriver instanceof FileDriver) {
                 $mapping = $this->_originalDriver->getElement($className);
             }
         }

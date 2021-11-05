@@ -12,8 +12,8 @@ use Gedmo\Mapping\Annotation as Gedmo;
  * @ORM\InheritanceType("JOINED")
  * @ORM\DiscriminatorColumn(name="discriminator", type="string")
  * @ORM\DiscriminatorMap({
-    "user" = "User"
-    })
+ *   "user" = "User"
+ *   })
  */
 abstract class Person
 {
@@ -41,6 +41,16 @@ abstract class Person
      * @Gedmo\TreeLevel
      */
     private $level;
+
+    /**
+     * @var string|null
+     */
+    private $name;
+
+    /**
+     * @var CategoryClosure[]
+     */
+    private $closures = [];
 
     public function getId()
     {

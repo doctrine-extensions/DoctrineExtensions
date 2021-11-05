@@ -4,6 +4,7 @@ namespace Gedmo\Tool\Wrapper;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Proxy\Proxy;
+use Doctrine\Persistence\Proxy as PersistenceProxy;
 
 /**
  * Wraps entity or proxy for more convenient
@@ -119,8 +120,8 @@ class EntityWrapper extends AbstractWrapper
     protected function initialize()
     {
         if (!$this->initialized) {
-            if ($this->object instanceof Proxy) {
-                if (!$this->object->__isInitialized__) {
+            if ($this->object instanceof PersistenceProxy) {
+                if (!$this->object->__isInitialized()) {
                     $this->object->__load();
                 }
             }

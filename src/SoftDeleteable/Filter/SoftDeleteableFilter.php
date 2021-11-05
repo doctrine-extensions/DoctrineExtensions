@@ -29,7 +29,7 @@ class SoftDeleteableFilter extends SQLFilter
     protected $entityManager;
 
     /**
-     * @var string[bool]
+     * @var array<string, bool>
      */
     protected $disabled = [];
 

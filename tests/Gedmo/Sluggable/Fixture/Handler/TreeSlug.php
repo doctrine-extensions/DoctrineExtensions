@@ -2,6 +2,8 @@
 
 namespace Gedmo\Tests\Sluggable\Fixture\Handler;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
@@ -42,6 +44,11 @@ class TreeSlug
     private $parent;
 
     /**
+     * @var Collection<int, self>
+     */
+    private $children;
+
+    /**
      * @Gedmo\TreeLeft
      * @ORM\Column(type="integer")
      */
@@ -65,7 +72,12 @@ class TreeSlug
      */
     private $level;
 
-    public function setParent(TreeSlug $parent = null)
+    public function __construct()
+    {
+        $this->children = new ArrayCollection();
+    }
+
+    public function setParent(self $parent = null)
     {
         $this->parent = $parent;
     }

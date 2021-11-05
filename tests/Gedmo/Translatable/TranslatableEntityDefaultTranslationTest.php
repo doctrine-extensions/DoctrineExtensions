@@ -3,6 +3,7 @@
 namespace Gedmo\Tests\Translatable;
 
 use Doctrine\Common\EventManager;
+use Doctrine\ORM\EntityRepository;
 use Gedmo\Tests\Tool\BaseTestCaseORM;
 use Gedmo\Tests\Translatable\Fixture\Article;
 use Gedmo\Tests\Translatable\Fixture\Comment;
@@ -24,7 +25,15 @@ final class TranslatableEntityDefaultTranslationTest extends BaseTestCaseORM
     public const COMMENT = Comment::class;
     public const TRANSLATION = Translation::class;
 
+    /**
+     * @var TranslatableListener
+     */
     private $translatableListener;
+
+    /**
+     * @var EntityRepository
+     */
+    private $repo;
 
     protected function setUp(): void
     {

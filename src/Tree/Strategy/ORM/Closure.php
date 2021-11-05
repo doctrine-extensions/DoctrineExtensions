@@ -436,10 +436,10 @@ class Closure implements Strategy
             $subQuery .= ' WHERE c1.ancestor = :nodeId AND c2.depth > c1.depth';
 
             $ids = $conn->executeQuery($subQuery, compact('nodeId'))->fetchFirstColumn();
-            if ($ids) {
+            if ([] !== $ids) {
                 // using subquery directly, sqlite acts unfriendly
                 $query = "DELETE FROM {$table} WHERE id IN (".implode(', ', $ids).')';
-                if (!empty($ids) && !$conn->executeQuery($query)) {
+                if (!$conn->executeQuery($query)) {
                     throw new RuntimeException('Failed to remove old closures');
                 }
             }

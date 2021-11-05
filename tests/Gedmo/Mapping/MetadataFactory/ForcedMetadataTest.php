@@ -1,5 +1,8 @@
 <?php
 
+namespace Gedmo\Tests\Mapping\MetadataFactory;
+
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Version;
 use Gedmo\Tests\Mapping\Fixture\Unmapped\Timestampable;
@@ -15,6 +18,16 @@ use Gedmo\Tests\Mapping\Fixture\Unmapped\Timestampable;
  */
 final class ForcedMetadataTest extends \PHPUnit\Framework\TestCase
 {
+    /**
+     * @var Timestampable
+     */
+    private $timestampable;
+
+    /**
+     * @var EntityManagerInterface
+     */
+    private $em;
+
     protected function setUp(): void
     {
         $config = new \Doctrine\ORM\Configuration();

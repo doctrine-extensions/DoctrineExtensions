@@ -86,7 +86,7 @@ class LogEntryRepository extends DocumentRepository
             while (($log = array_shift($logs))) {
                 $data = array_merge($data, $log->getData());
             }
-            $this->fillDocument($document, $data, $objectMeta);
+            $this->fillDocument($document, $data);
         } else {
             throw new \Gedmo\Exception\UnexpectedValueException('Count not find any log entries under version: '.$version);
         }

@@ -19,14 +19,21 @@ abstract class UploadableBaseEventArgs extends EventArgs
     /**
      * The instance of the Uploadable listener that fired this event
      *
-     * @var \Gedmo\Uploadable\UploadableListener
+     * @var UploadableListener
      */
     private $uploadableListener;
 
     /**
-     * @var \Doctrine\ORM\EntityManagerInterface
+     * @var EntityManagerInterface
      */
     private $em;
+
+    /**
+     * @todo Check if this property must be removed, as it is not used.
+     *
+     * @var array
+     */
+    private $config = [];
 
     /**
      * The Uploadable entity
@@ -43,13 +50,15 @@ abstract class UploadableBaseEventArgs extends EventArgs
     private $extensionConfiguration;
 
     /**
-     * @var \Gedmo\Uploadable\FileInfo\FileInfoInterface
+     * @var FileInfoInterface
      */
     private $fileInfo;
 
     /**
-     * @var string - Is the file being created, updated or removed?
-     *             This value can be: CREATE, UPDATE or DELETE
+     * Is the file being created, updated or removed?
+     * This value can be: CREATE, UPDATE or DELETE
+     *
+     * @var string
      */
     private $action;
 

@@ -27,6 +27,11 @@ class Article
      */
     private $files;
 
+    /**
+     * @var string|null
+     */
+    private $filePath;
+
     public function __construct()
     {
         $this->files = new ArrayCollection();

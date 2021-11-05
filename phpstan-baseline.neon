@@ -1,0 +1,11 @@
+parameters:
+    ignoreErrors:
+        -
+            message: "#^Class Doctrine\\\\ODM\\\\PHPCR\\\\DocumentManager not found\\.$#"
+            count: 2
+            path: src/References/Mapping/Event/Adapter/ORM.php
+
+        -
+            message: "#^Access to an undefined property ProxyManager\\\\Proxy\\\\GhostObjectInterface\\:\\:\\$identifier\\.$#"
+            count: 1
+            path: src/Tool/Wrapper/MongoDocumentWrapper.php

@@ -4,6 +4,7 @@ namespace Gedmo\Tests\Translatable\Fixture\Document\Personal;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoODM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Gedmo\Tests\Translatable\Fixture\Personal\PersonalArticleTranslation;
 
 /**
  * @Gedmo\TranslationEntity(class="Gedmo\Tests\Translatable\Fixture\Document\Personal\ArticleTranslation")
@@ -24,6 +25,16 @@ class Article
      * @MongoODM\ReferenceMany(targetDocument="Gedmo\Tests\Translatable\Fixture\Document\Personal\ArticleTranslation", mappedBy="object")
      */
     private $translations;
+
+    /**
+     * @var string|null
+     */
+    private $code;
+
+    /**
+     * @var string
+     */
+    private $slug;
 
     public function getTranslations()
     {
