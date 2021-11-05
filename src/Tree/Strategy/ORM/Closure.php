@@ -347,7 +347,7 @@ class Closure implements Strategy
             $sql .= 'WHERE c.descendant IN (?) ';
             $sql .= 'GROUP BY c.descendant';
 
-            $levelsAssoc = $em->getConnection()->executeQuery($sql, [array_keys($this->pendingNodesLevelProcess)], [$type])->fetchAll(\PDO::FETCH_NUM);
+            $levelsAssoc = $em->getConnection()->executeQuery($sql, [array_keys($this->pendingNodesLevelProcess)], [$type])->fetchAllNumeric();
 
             //create key pair array with resultset
             $levels = [];
@@ -435,7 +435,7 @@ class Closure implements Strategy
             $subQuery .= " JOIN {$table} c2 ON c1.descendant = c2.descendant";
             $subQuery .= ' WHERE c1.ancestor = :nodeId AND c2.depth > c1.depth';
 
-            $ids = $conn->executeQuery($subQuery, compact('nodeId'))->fetchAll(\PDO::FETCH_COLUMN);
+            $ids = $conn->executeQuery($subQuery, compact('nodeId'))->fetchFirstColumn();
             if ($ids) {
                 // using subquery directly, sqlite acts unfriendly
                 $query = "DELETE FROM {$table} WHERE id IN (".implode(', ', $ids).')';
@@ -453,7 +453,7 @@ class Closure implements Strategy
             $query .= ' WHERE c1.descendant = :parentId';
             $query .= ' AND c2.ancestor = :nodeId';
 
-            $closures = $conn->fetchAll($query, compact('nodeId', 'parentId'));
+            $closures = $conn->executeQuery($query, compact('nodeId', 'parentId'))->fetchAllAssociative();
 
             foreach ($closures as $closure) {
                 if (!$conn->insert($table, $closure)) {
