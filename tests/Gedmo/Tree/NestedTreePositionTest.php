@@ -1,11 +1,12 @@
 <?php
 
-namespace Gedmo\Tree;
+namespace Gedmo\Tests\Tree;
 
 use Doctrine\Common\EventManager;
-use Tool\BaseTestCaseORM;
-use Tree\Fixture\Category;
-use Tree\Fixture\RootCategory;
+use Gedmo\Tests\Tool\BaseTestCaseORM;
+use Gedmo\Tests\Tree\Fixture\Category;
+use Gedmo\Tests\Tree\Fixture\RootCategory;
+use Gedmo\Tree\TreeListener;
 
 /**
  * These are tests for Tree behavior
@@ -18,8 +19,8 @@ use Tree\Fixture\RootCategory;
  */
 class NestedTreePositionTest extends BaseTestCaseORM
 {
-    public const CATEGORY = 'Tree\\Fixture\\Category';
-    public const ROOT_CATEGORY = 'Tree\\Fixture\\RootCategory';
+    public const CATEGORY = 'Gedmo\\Tests\\Tree\\Fixture\\Category';
+    public const ROOT_CATEGORY = 'Gedmo\\Tests\\Tree\\Fixture\\RootCategory';
 
     protected function setUp(): void
     {

@@ -1,10 +1,11 @@
 <?php
 
-namespace Gedmo\Sluggable;
+namespace Gedmo\Tests\Sluggable;
 
 use Doctrine\ORM\Mapping\Driver\DriverChain;
 use Doctrine\ORM\Mapping\Driver\YamlDriver;
 use Gedmo\Mapping\ExtensionMetadataFactory;
+use Gedmo\Sluggable\SluggableListener;
 
 /**
  * These are mapping tests for sluggable extension
@@ -17,8 +18,8 @@ use Gedmo\Mapping\ExtensionMetadataFactory;
  */
 class SluggableMappingTest extends \PHPUnit\Framework\TestCase
 {
-    public const TEST_YAML_ENTITY_CLASS = 'Mapping\Fixture\Yaml\Category';
-    public const SLUGGABLE = 'Mapping\Fixture\Sluggable';
+    public const TEST_YAML_ENTITY_CLASS = 'Gedmo\Tests\Mapping\Fixture\Yaml\Category';
+    public const SLUGGABLE = 'Gedmo\Tests\Mapping\Fixture\Sluggable';
     private $em;
 
     public function setUp(): void
@@ -31,7 +32,7 @@ class SluggableMappingTest extends \PHPUnit\Framework\TestCase
         $chainDriverImpl = new DriverChain();
         $chainDriverImpl->addDriver(
             new YamlDriver([__DIR__.'/Driver/Yaml']),
-            'Mapping\Fixture\Yaml'
+            'Gedmo\Tests\Mapping\Fixture\Yaml'
         );
         $reader = new \Doctrine\Common\Annotations\AnnotationReader();
         \Doctrine\Common\Annotations\AnnotationRegistry::registerAutoloadNamespace(
@@ -40,7 +41,7 @@ class SluggableMappingTest extends \PHPUnit\Framework\TestCase
         );
         $chainDriverImpl->addDriver(
             new \Doctrine\ORM\Mapping\Driver\AnnotationDriver($reader),
-            'Mapping\Fixture'
+            'Gedmo\Tests\Mapping\Fixture'
         );
         $config->setMetadataDriverImpl($chainDriverImpl);
 

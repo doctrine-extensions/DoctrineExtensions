@@ -1,6 +1,6 @@
 <?php
 
-namespace ReferenceIntegrity\Fixture\Document\ManyPull;
+namespace Gedmo\Tests\ReferenceIntegrity\Fixture\Document\ManyPull;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
@@ -21,7 +21,7 @@ class Article
     private $title;
 
     /**
-     * @ODM\ReferenceMany(targetDocument="ReferenceIntegrity\Fixture\Document\ManyPull\Type", inversedBy="articles")
+     * @ODM\ReferenceMany(targetDocument="Gedmo\Tests\ReferenceIntegrity\Fixture\Document\ManyPull\Type", inversedBy="articles")
      *
      * @var ArrayCollection
      */

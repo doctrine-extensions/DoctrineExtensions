@@ -1,12 +1,13 @@
 <?php
 
-namespace Gedmo\Tree;
+namespace Gedmo\Tests\Tree;
 
 use Doctrine\Common\EventManager;
-use Tool\BaseTestCaseORM;
-use Tree\Fixture\Article;
-use Tree\Fixture\Category;
-use Tree\Fixture\Comment;
+use Gedmo\Tests\Tool\BaseTestCaseORM;
+use Gedmo\Tests\Tree\Fixture\Article;
+use Gedmo\Tests\Tree\Fixture\Category;
+use Gedmo\Tests\Tree\Fixture\Comment;
+use Gedmo\Tree\TreeListener;
 
 /**
  * These are tests for Tree behavior
@@ -19,9 +20,9 @@ use Tree\Fixture\Comment;
  */
 class ConcurrencyTest extends BaseTestCaseORM
 {
-    public const CATEGORY = 'Tree\\Fixture\\Category';
-    public const ARTICLE = 'Tree\\Fixture\\Article';
-    public const COMMENT = 'Tree\\Fixture\\Comment';
+    public const CATEGORY = 'Gedmo\\Tests\\Tree\\Fixture\\Category';
+    public const ARTICLE = 'Gedmo\\Tests\\Tree\\Fixture\\Article';
+    public const COMMENT = 'Gedmo\\Tests\\Tree\\Fixture\\Comment';
 
     protected function setUp(): void
     {

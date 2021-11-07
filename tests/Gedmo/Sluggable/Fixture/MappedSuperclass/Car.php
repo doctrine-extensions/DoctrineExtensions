@@ -1,6 +1,6 @@
 <?php
 
-namespace Sluggable\Fixture\MappedSuperclass;
+namespace Gedmo\Tests\Sluggable\Fixture\MappedSuperclass;
 
 use Doctrine\ORM\Mapping as ORM;
 

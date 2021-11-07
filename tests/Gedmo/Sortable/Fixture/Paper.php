@@ -1,6 +1,6 @@
 <?php
 
-namespace Sortable\Fixture;
+namespace Gedmo\Tests\Sortable\Fixture;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;

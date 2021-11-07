@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Gedmo\Translatable\Issue;
+namespace Gedmo\Tests\Translatable\Issue;
 
 use Doctrine\Common\EventManager;
+use Gedmo\Tests\Tool\BaseTestCaseORM;
+use Gedmo\Tests\Translatable\Fixture\Issue2152\EntityWithTranslatableBoolean;
 use Gedmo\Translatable\Entity\Translation;
 use Gedmo\Translatable\TranslatableListener;
-use Tool\BaseTestCaseORM;
-use Translatable\Fixture\Issue2152\EntityWithTranslatableBoolean;
 
 class Issue2152Test extends BaseTestCaseORM
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Gedmo\Mapping;
+namespace Gedmo\Tests\Mapping;
 
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\EventManager;
@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
 use Doctrine\ORM\Mapping\Driver\DriverChain;
 use Doctrine\ORM\Mapping\Driver\YamlDriver;
 use Gedmo\SoftDeleteable\SoftDeleteableListener;
-use Tool\BaseTestCaseOM;
+use Gedmo\Tests\Tool\BaseTestCaseOM;
 
 /**
  * These are mapping tests for SoftDeleteable extension
@@ -42,22 +42,22 @@ class SoftDeleteableMappingTest extends BaseTestCaseOM
         $yamlDriver = new YamlDriver(__DIR__.'/Driver/Yaml');
 
         $chain = new DriverChain();
-        $chain->addDriver($yamlDriver, 'Mapping\Fixture\Yaml');
-        $chain->addDriver($annotationDriver, 'Mapping\Fixture');
+        $chain->addDriver($yamlDriver, 'Gedmo\Tests\Mapping\Fixture\Yaml');
+        $chain->addDriver($annotationDriver, 'Gedmo\Tests\Mapping\Fixture');
 
         $this->softDeleteable = new SoftDeleteableListener();
         $this->evm = new EventManager();
         $this->evm->addEventSubscriber($this->softDeleteable);
 
         $this->em = $this->getMockSqliteEntityManager([
-            'Mapping\Fixture\Yaml\SoftDeleteable',
-            'Mapping\Fixture\SoftDeleteable',
+            'Gedmo\Tests\Mapping\Fixture\Yaml\SoftDeleteable',
+            'Gedmo\Tests\Mapping\Fixture\SoftDeleteable',
         ], $chain);
     }
 
     public function testYamlMapping()
     {
-        $meta = $this->em->getClassMetadata('Mapping\Fixture\Yaml\SoftDeleteable');
+        $meta = $this->em->getClassMetadata('Gedmo\Tests\Mapping\Fixture\Yaml\SoftDeleteable');
         $config = $this->softDeleteable->getConfiguration($this->em, $meta->name);
 
         $this->assertArrayHasKey('softDeleteable', $config);

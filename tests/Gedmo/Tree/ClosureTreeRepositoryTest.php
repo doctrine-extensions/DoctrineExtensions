@@ -1,9 +1,10 @@
 <?php
 
-namespace Gedmo\Tree;
+namespace Gedmo\Tests\Tree;
 
 use Doctrine\Common\EventManager;
-use Tool\BaseTestCaseORM;
+use Gedmo\Tests\Tool\BaseTestCaseORM;
+use Gedmo\Tree\TreeListener;
 
 /**
  * These are tests for Tree behavior
@@ -17,10 +18,10 @@ use Tool\BaseTestCaseORM;
  */
 class ClosureTreeRepositoryTest extends BaseTestCaseORM
 {
-    public const CATEGORY = 'Tree\\Fixture\\Closure\\Category';
-    public const CLOSURE = 'Tree\\Fixture\\Closure\\CategoryClosure';
-    public const CATEGORY_WITHOUT_LEVEL = 'Tree\\Fixture\\Closure\\CategoryWithoutLevel';
-    public const CATEGORY_WITHOUT_LEVEL_CLOSURE = 'Tree\\Fixture\\Closure\\CategoryWithoutLevelClosure';
+    public const CATEGORY = 'Gedmo\\Tests\\Tree\\Fixture\\Closure\\Category';
+    public const CLOSURE = 'Gedmo\\Tests\\Tree\\Fixture\\Closure\\CategoryClosure';
+    public const CATEGORY_WITHOUT_LEVEL = 'Gedmo\\Tests\\Tree\\Fixture\\Closure\\CategoryWithoutLevel';
+    public const CATEGORY_WITHOUT_LEVEL_CLOSURE = 'Gedmo\\Tests\\Tree\\Fixture\\Closure\\CategoryWithoutLevelClosure';
 
     protected $listener;
 

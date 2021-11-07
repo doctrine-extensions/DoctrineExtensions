@@ -1,13 +1,14 @@
 <?php
 
-namespace Gedmo\Timestampable;
+namespace Gedmo\Tests\Timestampable;
 
 use Doctrine\Common\EventManager;
-use Timestampable\Fixture\Article;
-use Timestampable\Fixture\Author;
-use Timestampable\Fixture\Comment;
-use Timestampable\Fixture\Type;
-use Tool\BaseTestCaseORM;
+use Gedmo\Tests\Timestampable\Fixture\Article;
+use Gedmo\Tests\Timestampable\Fixture\Author;
+use Gedmo\Tests\Timestampable\Fixture\Comment;
+use Gedmo\Tests\Timestampable\Fixture\Type;
+use Gedmo\Tests\Tool\BaseTestCaseORM;
+use Gedmo\Timestampable\TimestampableListener;
 
 /**
  * These are tests for Timestampable behavior
@@ -20,9 +21,9 @@ use Tool\BaseTestCaseORM;
  */
 class TimestampableTest extends BaseTestCaseORM
 {
-    public const ARTICLE = 'Timestampable\\Fixture\\Article';
-    public const COMMENT = 'Timestampable\\Fixture\\Comment';
-    public const TYPE = 'Timestampable\\Fixture\\Type';
+    public const ARTICLE = 'Gedmo\\Tests\\Timestampable\\Fixture\\Article';
+    public const COMMENT = 'Gedmo\\Tests\\Timestampable\\Fixture\\Comment';
+    public const TYPE = 'Gedmo\\Tests\\Timestampable\\Fixture\\Type';
 
     protected function setUp(): void
     {

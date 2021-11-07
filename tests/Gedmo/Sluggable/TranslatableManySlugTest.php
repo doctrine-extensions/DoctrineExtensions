@@ -1,12 +1,14 @@
 <?php
 
-namespace Gedmo\Sluggable;
+namespace Gedmo\Tests\Sluggable;
 
 use Doctrine\Common\EventManager;
+use Gedmo\Sluggable\Sluggable;
+use Gedmo\Sluggable\SluggableListener;
+use Gedmo\Tests\Sluggable\Fixture\TransArticleManySlug;
+use Gedmo\Tests\Tool\BaseTestCaseORM;
 use Gedmo\Translatable\Translatable;
 use Gedmo\Translatable\TranslatableListener;
-use Sluggable\Fixture\TransArticleManySlug;
-use Tool\BaseTestCaseORM;
 
 /**
  * These are tests for Sluggable behavior
@@ -22,7 +24,7 @@ class TranslatableManySlugTest extends BaseTestCaseORM
     private $articleId;
     private $translatableListener;
 
-    public const ARTICLE = 'Sluggable\\Fixture\\TransArticleManySlug';
+    public const ARTICLE = 'Gedmo\\Tests\\Sluggable\\Fixture\\TransArticleManySlug';
     public const TRANSLATION = 'Gedmo\\Translatable\\Entity\\Translation';
 
     protected function setUp(): void

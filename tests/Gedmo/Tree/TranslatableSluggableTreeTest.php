@@ -1,14 +1,15 @@
 <?php
 
-namespace Gedmo\Tree;
+namespace Gedmo\Tests\Tree;
 
 use Doctrine\Common\EventManager;
 use Doctrine\ORM\Proxy\Proxy;
 use Gedmo\Sluggable\SluggableListener;
+use Gedmo\Tests\Tool\BaseTestCaseORM;
+use Gedmo\Tests\Tree\Fixture\BehavioralCategory;
 use Gedmo\Translatable\Entity\Translation;
 use Gedmo\Translatable\TranslatableListener;
-use Tool\BaseTestCaseORM;
-use Tree\Fixture\BehavioralCategory;
+use Gedmo\Tree\TreeListener;
 
 /**
  * These are tests for Tree behavior
@@ -21,9 +22,9 @@ use Tree\Fixture\BehavioralCategory;
  */
 class TranslatableSluggableTreeTest extends BaseTestCaseORM
 {
-    public const CATEGORY = 'Tree\\Fixture\\BehavioralCategory';
-    public const ARTICLE = 'Tree\\Fixture\\Article';
-    public const COMMENT = 'Tree\\Fixture\\Comment';
+    public const CATEGORY = 'Gedmo\\Tests\\Tree\\Fixture\\BehavioralCategory';
+    public const ARTICLE = 'Gedmo\\Tests\\Tree\\Fixture\\Article';
+    public const COMMENT = 'Gedmo\\Tests\\Tree\\Fixture\\Comment';
     public const TRANSLATION = 'Gedmo\\Translatable\\Entity\\Translation';
 
     private $translatableListener;

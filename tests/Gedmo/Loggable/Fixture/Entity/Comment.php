@@ -1,13 +1,13 @@
 <?php
 
-namespace Loggable\Fixture\Entity;
+namespace Gedmo\Tests\Loggable\Fixture\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ORM\Entity
- * @Gedmo\Loggable(logEntryClass="Loggable\Fixture\Entity\Log\Comment")
+ * @Gedmo\Loggable(logEntryClass="Gedmo\Tests\Loggable\Fixture\Entity\Log\Comment")
  */
 class Comment
 {

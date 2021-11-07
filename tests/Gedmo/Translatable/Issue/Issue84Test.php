@@ -1,10 +1,11 @@
 <?php
 
-namespace Gedmo\Translatable;
+namespace Gedmo\Tests\Translatable;
 
 use Doctrine\Common\EventManager;
-use Tool\BaseTestCaseORM;
-use Translatable\Fixture\Article;
+use Gedmo\Tests\Tool\BaseTestCaseORM;
+use Gedmo\Tests\Translatable\Fixture\Article;
+use Gedmo\Translatable\TranslatableListener;
 
 /**
  * These are tests for translatable behavior
@@ -17,7 +18,7 @@ use Translatable\Fixture\Article;
  */
 class Issue84Test extends BaseTestCaseORM
 {
-    public const ARTICLE = 'Translatable\\Fixture\\Article';
+    public const ARTICLE = 'Gedmo\\Tests\\Translatable\\Fixture\\Article';
     public const TRANSLATION = 'Gedmo\\Translatable\\Entity\\Translation';
 
     private $translatableListener;

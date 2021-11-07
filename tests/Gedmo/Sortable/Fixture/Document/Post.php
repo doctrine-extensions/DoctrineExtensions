@@ -1,6 +1,6 @@
 <?php
 
-namespace Sortable\Fixture\Document;
+namespace Gedmo\Tests\Sortable\Fixture\Document;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -26,7 +26,7 @@ class Post
 
     /**
      * @Gedmo\SortableGroup
-     * @ODM\ReferenceOne(targetDocument="Sortable\Fixture\Document\Category")
+     * @ODM\ReferenceOne(targetDocument="Gedmo\Tests\Sortable\Fixture\Document\Category")
      */
     protected $category;
 

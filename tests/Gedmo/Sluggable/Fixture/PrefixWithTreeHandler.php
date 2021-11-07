@@ -4,7 +4,7 @@
  * 2013
  */
 
-namespace Sluggable\Fixture;
+namespace Gedmo\Tests\Sluggable\Fixture;
 
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;

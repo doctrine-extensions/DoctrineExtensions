@@ -1,10 +1,11 @@
 <?php
 
-namespace Gedmo\Timestampable;
+namespace Gedmo\Tests\Timestampable;
 
 use Doctrine\Common\EventManager;
-use Timestampable\Fixture\WithoutInterface;
-use Tool\BaseTestCaseORM;
+use Gedmo\Tests\Timestampable\Fixture\WithoutInterface;
+use Gedmo\Tests\Tool\BaseTestCaseORM;
+use Gedmo\Timestampable\TimestampableListener;
 
 /**
  * These are tests for Timestampable behavior
@@ -17,7 +18,7 @@ use Tool\BaseTestCaseORM;
  */
 class NoInterfaceTest extends BaseTestCaseORM
 {
-    public const FIXTURE = 'Timestampable\\Fixture\\WithoutInterface';
+    public const FIXTURE = 'Gedmo\\Tests\\Timestampable\\Fixture\\WithoutInterface';
 
     protected function setUp(): void
     {

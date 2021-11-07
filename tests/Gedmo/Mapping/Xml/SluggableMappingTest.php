@@ -1,12 +1,12 @@
 <?php
 
-namespace Gedmo\Mapping\Xml;
+namespace Gedmo\Tests\Mapping\Xml;
 
 use Doctrine\Common\EventManager;
 use Doctrine\ORM\Mapping\Driver\DriverChain;
 use Doctrine\ORM\Mapping\Driver\XmlDriver;
 use Gedmo\Sluggable\SluggableListener;
-use Tool\BaseTestCaseORM;
+use Gedmo\Tests\Tool\BaseTestCaseORM;
 
 /**
  * These are mapping extension tests
@@ -37,7 +37,7 @@ class SluggableMappingTest extends BaseTestCaseORM
 
     protected function getUsedEntityFixtures()
     {
-        return ['Mapping\Fixture\Xml\Sluggable'];
+        return ['Gedmo\Tests\Mapping\Fixture\Xml\Sluggable'];
     }
 
     protected function getMetadataDriverImplementation()
@@ -45,7 +45,7 @@ class SluggableMappingTest extends BaseTestCaseORM
         $xmlDriver = new XmlDriver(__DIR__.'/../Driver/Xml');
 
         $chain = new DriverChain();
-        $chain->addDriver($xmlDriver, 'Mapping\Fixture\Xml');
+        $chain->addDriver($xmlDriver, 'Gedmo\Tests\Mapping\Fixture\Xml');
 
         return $chain;
     }
@@ -55,7 +55,7 @@ class SluggableMappingTest extends BaseTestCaseORM
      */
     public function shouldBeAbleToMapSluggableMetadata()
     {
-        $meta = $this->em->getClassMetadata('Mapping\Fixture\Xml\Sluggable');
+        $meta = $this->em->getClassMetadata('Gedmo\Tests\Mapping\Fixture\Xml\Sluggable');
         $config = $this->sluggable->getConfiguration($this->em, $meta->name);
 
         $this->assertArrayHasKey('slug', $config['slugs']);

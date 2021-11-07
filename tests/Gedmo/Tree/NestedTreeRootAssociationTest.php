@@ -1,10 +1,11 @@
 <?php
 
-namespace Gedmo\Tree;
+namespace Gedmo\Tests\Tree;
 
 use Doctrine\Common\EventManager;
-use Tool\BaseTestCaseORM;
-use Tree\Fixture\RootAssociationCategory;
+use Gedmo\Tests\Tool\BaseTestCaseORM;
+use Gedmo\Tests\Tree\Fixture\RootAssociationCategory;
+use Gedmo\Tree\TreeListener;
 
 /**
  * These are tests for Tree behavior
@@ -17,7 +18,7 @@ use Tree\Fixture\RootAssociationCategory;
  */
 class NestedTreeRootAssociationTest extends BaseTestCaseORM
 {
-    public const CATEGORY = 'Tree\\Fixture\\RootAssociationCategory';
+    public const CATEGORY = 'Gedmo\\Tests\\Tree\\Fixture\\RootAssociationCategory';
 
     protected function setUp(): void
     {

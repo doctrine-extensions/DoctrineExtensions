@@ -1,15 +1,16 @@
 <?php
 
-namespace Gedmo\Sortable;
+namespace Gedmo\Tests\Sortable;
 
 use Doctrine\Common\EventManager;
-use Sortable\Fixture\Category;
-use Sortable\Fixture\Item;
-use Sortable\Fixture\Transport\Bus;
-use Sortable\Fixture\Transport\Car;
-use Sortable\Fixture\Transport\Engine;
-use Sortable\Fixture\Transport\Reservation;
-use Tool\BaseTestCaseORM;
+use Gedmo\Sortable\SortableListener;
+use Gedmo\Tests\Sortable\Fixture\Category;
+use Gedmo\Tests\Sortable\Fixture\Item;
+use Gedmo\Tests\Sortable\Fixture\Transport\Bus;
+use Gedmo\Tests\Sortable\Fixture\Transport\Car;
+use Gedmo\Tests\Sortable\Fixture\Transport\Engine;
+use Gedmo\Tests\Sortable\Fixture\Transport\Reservation;
+use Gedmo\Tests\Tool\BaseTestCaseORM;
 
 /**
  * These are tests for sluggable behavior
@@ -22,13 +23,13 @@ use Tool\BaseTestCaseORM;
  */
 class SortableGroupTest extends BaseTestCaseORM
 {
-    public const CAR = "Sortable\Fixture\Transport\Car";
-    public const BUS = "Sortable\Fixture\Transport\Bus";
-    public const VEHICLE = "Sortable\Fixture\Transport\Vehicle";
-    public const ENGINE = "Sortable\Fixture\Transport\Engine";
-    public const RESERVATION = "Sortable\Fixture\Transport\Reservation";
-    public const ITEM = "Sortable\Fixture\Item";
-    public const CATEGORY = "Sortable\Fixture\Category";
+    public const CAR = "Gedmo\Tests\Sortable\Fixture\Transport\Car";
+    public const BUS = "Gedmo\Tests\Sortable\Fixture\Transport\Bus";
+    public const VEHICLE = "Gedmo\Tests\Sortable\Fixture\Transport\Vehicle";
+    public const ENGINE = "Gedmo\Tests\Sortable\Fixture\Transport\Engine";
+    public const RESERVATION = "Gedmo\Tests\Sortable\Fixture\Transport\Reservation";
+    public const ITEM = "Gedmo\Tests\Sortable\Fixture\Item";
+    public const CATEGORY = "Gedmo\Tests\Sortable\Fixture\Category";
 
     public const SEATS = 3;
 

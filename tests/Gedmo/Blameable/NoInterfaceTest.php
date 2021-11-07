@@ -1,10 +1,11 @@
 <?php
 
-namespace Gedmo\Blameable;
+namespace Gedmo\Tests\Blameable;
 
-use Blameable\Fixture\Entity\WithoutInterface;
 use Doctrine\Common\EventManager;
-use Tool\BaseTestCaseORM;
+use Gedmo\Blameable\BlameableListener;
+use Gedmo\Tests\Blameable\Fixture\Entity\WithoutInterface;
+use Gedmo\Tests\Tool\BaseTestCaseORM;
 
 /**
  * These are tests for Blameable behavior
@@ -17,7 +18,7 @@ use Tool\BaseTestCaseORM;
  */
 class NoInterfaceTest extends BaseTestCaseORM
 {
-    public const FIXTURE = 'Blameable\\Fixture\\Entity\\WithoutInterface';
+    public const FIXTURE = 'Gedmo\\Tests\\Blameable\\Fixture\\Entity\\WithoutInterface';
 
     protected function setUp(): void
     {

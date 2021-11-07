@@ -1,10 +1,11 @@
 <?php
 
-namespace Gedmo\SoftDeleteable;
+namespace Gedmo\Tests\SoftDeleteable;
 
 use Doctrine\Common\EventManager;
-use SoftDeleteable\Fixture\Document\User;
-use Tool\BaseTestCaseMongoODM;
+use Gedmo\SoftDeleteable\SoftDeleteableListener;
+use Gedmo\Tests\SoftDeleteable\Fixture\Document\User;
+use Gedmo\Tests\Tool\BaseTestCaseMongoODM;
 
 /**
  * These are tests for SoftDeleteable behavior
@@ -19,16 +20,16 @@ use Tool\BaseTestCaseMongoODM;
  */
 class SoftDeleteableDocumentTest extends BaseTestCaseMongoODM
 {
-    public const ARTICLE_CLASS = 'SoftDeleteable\Fixture\Document\Article';
-    public const COMMENT_CLASS = 'SoftDeleteable\Fixture\Document\Comment';
-    public const PAGE_CLASS = 'SoftDeleteable\Fixture\Document\Page';
-    public const MEGA_PAGE_CLASS = 'SoftDeleteable\Fixture\Document\MegaPage';
-    public const MODULE_CLASS = 'SoftDeleteable\Fixture\Document\Module';
-    public const OTHER_ARTICLE_CLASS = 'SoftDeleteable\Fixture\Document\OtherArticle';
-    public const OTHER_COMMENT_CLASS = 'SoftDeleteable\Fixture\Document\OtherComment';
-    public const USER_CLASS = 'SoftDeleteable\Fixture\Document\User';
-    public const USER__TIME_AWARE_CLASS = 'SoftDeleteable\Fixture\Document\UserTimeAware';
-    public const MAPPED_SUPERCLASS_CHILD_CLASS = 'SoftDeleteable\Fixture\Document\Child';
+    public const ARTICLE_CLASS = 'Gedmo\Tests\SoftDeleteable\Fixture\Document\Article';
+    public const COMMENT_CLASS = 'Gedmo\Tests\SoftDeleteable\Fixture\Document\Comment';
+    public const PAGE_CLASS = 'Gedmo\Tests\SoftDeleteable\Fixture\Document\Page';
+    public const MEGA_PAGE_CLASS = 'Gedmo\Tests\SoftDeleteable\Fixture\Document\MegaPage';
+    public const MODULE_CLASS = 'Gedmo\Tests\SoftDeleteable\Fixture\Document\Module';
+    public const OTHER_ARTICLE_CLASS = 'Gedmo\Tests\SoftDeleteable\Fixture\Document\OtherArticle';
+    public const OTHER_COMMENT_CLASS = 'Gedmo\Tests\SoftDeleteable\Fixture\Document\OtherComment';
+    public const USER_CLASS = 'Gedmo\Tests\SoftDeleteable\Fixture\Document\User';
+    public const USER__TIME_AWARE_CLASS = 'Gedmo\Tests\SoftDeleteable\Fixture\Document\UserTimeAware';
+    public const MAPPED_SUPERCLASS_CHILD_CLASS = 'Gedmo\Tests\SoftDeleteable\Fixture\Document\Child';
     public const SOFT_DELETEABLE_FILTER_NAME = 'soft-deleteable';
 
     private $softDeleteableListener;

@@ -1,5 +1,5 @@
 ---
-Mapping\Fixture\Yaml\Referenced:
+Gedmo\Tests\Mapping\Fixture\Yaml\Referenced:
     type: entity
     fields:
         id:

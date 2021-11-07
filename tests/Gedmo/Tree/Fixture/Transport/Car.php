@@ -1,6 +1,6 @@
 <?php
 
-namespace Tree\Fixture\Transport;
+namespace Gedmo\Tests\Tree\Fixture\Transport;
 
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;

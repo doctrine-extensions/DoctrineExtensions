@@ -1,6 +1,6 @@
 <?php
 
-namespace Gedmo\Mapping\Mock;
+namespace Gedmo\Tests\Mapping\Mock;
 
 use Gedmo\Mapping\MappedEventSubscriber;
 

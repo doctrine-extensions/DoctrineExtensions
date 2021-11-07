@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:gedmo="http://gediminasm.org/schemas/orm/doctrine-extensions-mapping">
-    <entity name="Mapping\Fixture\Xml\NestedTree" table="nested_trees">
+    <entity name="Gedmo\Tests\Mapping\Fixture\Xml\NestedTree" table="nested_trees">
         <indexes>
             <index name="name_idx" columns="name"/>
         </indexes>

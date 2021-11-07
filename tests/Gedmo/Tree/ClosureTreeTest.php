@@ -1,12 +1,13 @@
 <?php
 
-namespace Gedmo\Tree;
+namespace Gedmo\Tests\Tree;
 
 use Doctrine\Common\EventManager;
-use Tool\BaseTestCaseORM;
-use Tree\Fixture\Closure\Category;
-use Tree\Fixture\Closure\CategoryWithoutLevel;
-use Tree\Fixture\Closure\News;
+use Gedmo\Tests\Tool\BaseTestCaseORM;
+use Gedmo\Tests\Tree\Fixture\Closure\Category;
+use Gedmo\Tests\Tree\Fixture\Closure\CategoryWithoutLevel;
+use Gedmo\Tests\Tree\Fixture\Closure\News;
+use Gedmo\Tree\TreeListener;
 
 /**
  * These are tests for Tree behavior
@@ -20,14 +21,14 @@ use Tree\Fixture\Closure\News;
  */
 class ClosureTreeTest extends BaseTestCaseORM
 {
-    public const CATEGORY = 'Tree\\Fixture\\Closure\\Category';
-    public const CLOSURE = 'Tree\\Fixture\\Closure\\CategoryClosure';
-    public const PERSON = 'Tree\\Fixture\\Closure\\Person';
-    public const USER = 'Tree\\Fixture\\Closure\\User';
-    public const PERSON_CLOSURE = 'Tree\\Fixture\\Closure\\PersonClosure';
-    public const NEWS = 'Tree\\Fixture\\Closure\\News';
-    public const CATEGORY_WITHOUT_LEVEL = 'Tree\\Fixture\\Closure\\CategoryWithoutLevel';
-    public const CATEGORY_WITHOUT_LEVEL_CLOSURE = 'Tree\\Fixture\\Closure\\CategoryWithoutLevelClosure';
+    public const CATEGORY = 'Gedmo\\Tests\\Tree\\Fixture\\Closure\\Category';
+    public const CLOSURE = 'Gedmo\\Tests\\Tree\\Fixture\\Closure\\CategoryClosure';
+    public const PERSON = 'Gedmo\\Tests\\Tree\\Fixture\\Closure\\Person';
+    public const USER = 'Gedmo\\Tests\\Tree\\Fixture\\Closure\\User';
+    public const PERSON_CLOSURE = 'Gedmo\\Tests\\Tree\\Fixture\\Closure\\PersonClosure';
+    public const NEWS = 'Gedmo\\Tests\\Tree\\Fixture\\Closure\\News';
+    public const CATEGORY_WITHOUT_LEVEL = 'Gedmo\\Tests\\Tree\\Fixture\\Closure\\CategoryWithoutLevel';
+    public const CATEGORY_WITHOUT_LEVEL_CLOSURE = 'Gedmo\\Tests\\Tree\\Fixture\\Closure\\CategoryWithoutLevelClosure';
 
     protected $listener;
 

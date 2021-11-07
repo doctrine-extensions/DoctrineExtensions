@@ -1,15 +1,16 @@
 <?php
 
-namespace Gedmo\Sluggable;
+namespace Gedmo\Tests\Sluggable;
 
 use Doctrine\Common\EventManager;
+use Gedmo\Sluggable\SluggableListener;
+use Gedmo\Tests\Sluggable\Fixture\Handler\TreeSlug;
+use Gedmo\Tests\Tool\BaseTestCaseORM;
 use Gedmo\Tree\TreeListener;
-use Sluggable\Fixture\Handler\TreeSlug;
-use Tool\BaseTestCaseORM;
 
 class TreeSlugHandlerUniqueTest extends BaseTestCaseORM
 {
-    public const TARGET = 'Sluggable\\Fixture\\Handler\\TreeSlug';
+    public const TARGET = 'Gedmo\\Tests\\Sluggable\\Fixture\\Handler\\TreeSlug';
 
     protected function setUp(): void
     {

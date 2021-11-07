@@ -1,12 +1,12 @@
 <?php
 
-namespace Gedmo\Translator;
+namespace Gedmo\Tests\Translator;
 
 use Doctrine\Common\EventManager;
 use Doctrine\ORM\Proxy\Proxy;
-use Tool\BaseTestCaseORM;
-use Translator\Fixture\Person;
-use Translator\Fixture\PersonCustom;
+use Gedmo\Tests\Tool\BaseTestCaseORM;
+use Gedmo\Tests\Translator\Fixture\Person;
+use Gedmo\Tests\Translator\Fixture\PersonCustom;
 
 /**
  * These are tests for translatable behavior
@@ -19,8 +19,8 @@ use Translator\Fixture\PersonCustom;
  */
 class TranslatableTest extends BaseTestCaseORM
 {
-    public const PERSON = 'Translator\\Fixture\\Person';
-    public const PERSON_CUSTOM_PROXY = 'Translator\\Fixture\\PersonCustom';
+    public const PERSON = 'Gedmo\Tests\Translator\\Fixture\\Person';
+    public const PERSON_CUSTOM_PROXY = 'Gedmo\Tests\Translator\\Fixture\\PersonCustom';
 
     protected function setUp(): void
     {

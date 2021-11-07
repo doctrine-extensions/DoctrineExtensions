@@ -1,6 +1,6 @@
 <?php
 
-namespace Gedmo\Mapping\Xml;
+namespace Gedmo\Tests\Mapping\Xml;
 
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\EventManager;
@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
 use Doctrine\ORM\Mapping\Driver\DriverChain;
 use Doctrine\ORM\Mapping\Driver\XmlDriver;
 use Gedmo\Loggable\LoggableListener;
-use Tool\BaseTestCaseOM;
+use Gedmo\Tests\Tool\BaseTestCaseOM;
 
 /**
  * These are mapping extension tests
@@ -42,7 +42,7 @@ class LoggableMappingTest extends BaseTestCaseOM
 
         $chain = new DriverChain();
         $chain->addDriver($annotationDriver, 'Gedmo\Loggable');
-        $chain->addDriver($xmlDriver, 'Mapping\Fixture\Xml');
+        $chain->addDriver($xmlDriver, 'Gedmo\Tests\Mapping\Fixture\Xml');
 
         $this->loggable = new LoggableListener();
         $this->evm = new EventManager();
@@ -50,16 +50,16 @@ class LoggableMappingTest extends BaseTestCaseOM
 
         $this->em = $this->getMockSqliteEntityManager([
             'Gedmo\Loggable\Entity\LogEntry',
-            'Mapping\Fixture\Xml\Loggable',
-            'Mapping\Fixture\Xml\LoggableWithEmbedded',
-            'Mapping\Fixture\Xml\Embedded',
-            'Mapping\Fixture\Xml\Status',
+            'Gedmo\Tests\Mapping\Fixture\Xml\Loggable',
+            'Gedmo\Tests\Mapping\Fixture\Xml\LoggableWithEmbedded',
+            'Gedmo\Tests\Mapping\Fixture\Xml\Embedded',
+            'Gedmo\Tests\Mapping\Fixture\Xml\Status',
         ], $chain);
     }
 
     public function testLoggableMetadata()
     {
-        $meta = $this->em->getClassMetadata('Mapping\Fixture\Xml\Loggable');
+        $meta = $this->em->getClassMetadata('Gedmo\Tests\Mapping\Fixture\Xml\Loggable');
         $config = $this->loggable->getConfiguration($this->em, $meta->name);
 
         $this->assertArrayHasKey('logEntryClass', $config);
@@ -75,7 +75,7 @@ class LoggableMappingTest extends BaseTestCaseOM
 
     public function testLoggableMetadataWithEmbedded()
     {
-        $meta = $this->em->getClassMetadata('Mapping\Fixture\Xml\LoggableWithEmbedded');
+        $meta = $this->em->getClassMetadata('Gedmo\Tests\Mapping\Fixture\Xml\LoggableWithEmbedded');
         $config = $this->loggable->getConfiguration($this->em, $meta->name);
 
         $this->assertArrayHasKey('logEntryClass', $config);

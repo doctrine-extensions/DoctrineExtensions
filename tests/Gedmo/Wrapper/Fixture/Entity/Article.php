@@ -1,6 +1,6 @@
 <?php
 
-namespace Wrapper\Fixture\Entity;
+namespace Gedmo\Tests\Wrapper\Fixture\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 

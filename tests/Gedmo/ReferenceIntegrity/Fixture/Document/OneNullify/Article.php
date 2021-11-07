@@ -1,6 +1,6 @@
 <?php
 
-namespace ReferenceIntegrity\Fixture\Document\OneNullify;
+namespace Gedmo\Tests\ReferenceIntegrity\Fixture\Document\OneNullify;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 
@@ -20,7 +20,7 @@ class Article
     private $title;
 
     /**
-     * @ODM\ReferenceOne(targetDocument="ReferenceIntegrity\Fixture\Document\OneNullify\Type", inversedBy="articles")
+     * @ODM\ReferenceOne(targetDocument="Gedmo\Tests\ReferenceIntegrity\Fixture\Document\OneNullify\Type", inversedBy="articles")
      *
      * @var Type
      */

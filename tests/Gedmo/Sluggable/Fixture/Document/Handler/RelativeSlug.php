@@ -1,6 +1,6 @@
 <?php
 
-namespace Sluggable\Fixture\Document\Handler;
+namespace Gedmo\Tests\Sluggable\Fixture\Document\Handler;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -33,7 +33,7 @@ class RelativeSlug
     private $alias;
 
     /**
-     * @ODM\ReferenceOne(targetDocument="Sluggable\Fixture\Document\Handler\Article")
+     * @ODM\ReferenceOne(targetDocument="Gedmo\Tests\Sluggable\Fixture\Document\Handler\Article")
      */
     private $article;
 

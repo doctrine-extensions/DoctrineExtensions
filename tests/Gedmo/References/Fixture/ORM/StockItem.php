@@ -1,10 +1,10 @@
 <?php
 
-namespace References\Fixture\ORM;
+namespace Gedmo\Tests\References\Fixture\ORM;
 
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
-use References\Fixture\ODM\MongoDB\Product;
+use Gedmo\Tests\References\Fixture\ODM\MongoDB\Product;
 
 /**
  * @ORM\Entity
@@ -34,7 +34,7 @@ class StockItem
     private $quantity;
 
     /**
-     * @Gedmo\ReferenceOne(type="document", class="References\Fixture\ODM\MongoDB\Product", inversedBy="stockItems", identifier="productId")
+     * @Gedmo\ReferenceOne(type="document", class="Gedmo\Tests\References\Fixture\ODM\MongoDB\Product", inversedBy="stockItems", identifier="productId")
      */
     private $product;
 

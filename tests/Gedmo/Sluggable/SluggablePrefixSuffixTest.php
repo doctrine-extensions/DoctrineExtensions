@@ -1,21 +1,22 @@
 <?php
 
-namespace Gedmo\Sluggable;
+namespace Gedmo\Tests\Sluggable;
 
 use Doctrine\Common\EventManager;
+use Gedmo\Sluggable\SluggableListener;
+use Gedmo\Tests\Sluggable\Fixture\Prefix;
+use Gedmo\Tests\Sluggable\Fixture\PrefixWithTreeHandler;
+use Gedmo\Tests\Sluggable\Fixture\Suffix;
+use Gedmo\Tests\Sluggable\Fixture\SuffixWithTreeHandler;
+use Gedmo\Tests\Tool\BaseTestCaseORM;
 use Gedmo\Tree\TreeListener;
-use Sluggable\Fixture\Prefix;
-use Sluggable\Fixture\PrefixWithTreeHandler;
-use Sluggable\Fixture\Suffix;
-use Sluggable\Fixture\SuffixWithTreeHandler;
-use Tool\BaseTestCaseORM;
 
 class SluggablePrefixSuffixTest extends BaseTestCaseORM
 {
-    public const PREFIX = 'Sluggable\\Fixture\\Prefix';
-    public const SUFFIX = 'Sluggable\\Fixture\\Suffix';
-    public const SUFFIX_TREE = 'Sluggable\\Fixture\\SuffixWithTreeHandler';
-    public const PREFIX_TREE = 'Sluggable\\Fixture\\PrefixWithTreeHandler';
+    public const PREFIX = 'Gedmo\\Tests\\Sluggable\\Fixture\\Prefix';
+    public const SUFFIX = 'Gedmo\\Tests\\Sluggable\\Fixture\\Suffix';
+    public const SUFFIX_TREE = 'Gedmo\\Tests\\Sluggable\\Fixture\\SuffixWithTreeHandler';
+    public const PREFIX_TREE = 'Gedmo\\Tests\\Sluggable\\Fixture\\PrefixWithTreeHandler';
 
     protected function setUp(): void
     {

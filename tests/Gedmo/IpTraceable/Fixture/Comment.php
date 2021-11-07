@@ -1,6 +1,6 @@
 <?php
 
-namespace IpTraceable\Fixture;
+namespace Gedmo\Tests\IpTraceable\Fixture;
 
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\IpTraceable\IpTraceable;
@@ -20,7 +20,7 @@ class Comment implements IpTraceable
     private $message;
 
     /**
-     * @ORM\ManyToOne(targetEntity="IpTraceable\Fixture\Article", inversedBy="comments")
+     * @ORM\ManyToOne(targetEntity="Gedmo\Tests\IpTraceable\Fixture\Article", inversedBy="comments")
      */
     private $article;
 

@@ -1,11 +1,12 @@
 <?php
 
-namespace Gedmo\Blameable;
+namespace Gedmo\Tests\Blameable;
 
-use Blameable\Fixture\Entity\SupperClassExtension;
 use Doctrine\Common\EventManager;
+use Gedmo\Blameable\BlameableListener;
+use Gedmo\Tests\Blameable\Fixture\Entity\SupperClassExtension;
+use Gedmo\Tests\Tool\BaseTestCaseORM;
 use Gedmo\Translatable\TranslatableListener;
-use Tool\BaseTestCaseORM;
 
 /**
  * These are tests for Blameable behavior
@@ -18,7 +19,7 @@ use Tool\BaseTestCaseORM;
  */
 class ProtectedPropertySupperclassTest extends BaseTestCaseORM
 {
-    public const SUPERCLASS = 'Blameable\\Fixture\\Entity\\SupperClassExtension';
+    public const SUPERCLASS = 'Gedmo\\Tests\\Blameable\\Fixture\\Entity\\SupperClassExtension';
     public const TRANSLATION = 'Gedmo\\Translatable\\Entity\\Translation';
 
     protected function setUp(): void

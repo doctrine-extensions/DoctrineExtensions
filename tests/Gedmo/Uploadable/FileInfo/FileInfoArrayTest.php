@@ -1,6 +1,8 @@
 <?php
 
-namespace Gedmo\Uploadable\FileInfo;
+namespace Gedmo\Tests\Uploadable\FileInfo;
+
+use Gedmo\Uploadable\FileInfo\FileInfoArray;
 
 /**
  * These are tests for the FileInfoArray class of the Uploadable behavior

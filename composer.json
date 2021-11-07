@@ -78,6 +78,11 @@
             "Gedmo\\": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Gedmo\\Tests\\": "tests/Gedmo/"
+        }
+    },
     "scripts": {
         "fix-cs": "php bin/php-cs-fixer fix --config=.php_cs.dist"
     },

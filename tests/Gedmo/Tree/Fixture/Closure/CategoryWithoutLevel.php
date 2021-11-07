@@ -1,13 +1,13 @@
 <?php
 
-namespace Tree\Fixture\Closure;
+namespace Gedmo\Tests\Tree\Fixture\Closure;
 
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @Gedmo\Tree(type="closure")
- * @Gedmo\TreeClosure(class="Tree\Fixture\Closure\CategoryWithoutLevelClosure")
+ * @Gedmo\TreeClosure(class="Gedmo\Tests\Tree\Fixture\Closure\CategoryWithoutLevelClosure")
  * @ORM\Entity(repositoryClass="Gedmo\Tree\Entity\Repository\ClosureTreeRepository")
  */
 class CategoryWithoutLevel

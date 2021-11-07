@@ -1,6 +1,6 @@
 <?php
 
-namespace Timestampable\Fixture\Document;
+namespace Gedmo\Tests\Timestampable\Fixture\Document;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 use Gedmo\Mapping\Annotation as Gedmo;

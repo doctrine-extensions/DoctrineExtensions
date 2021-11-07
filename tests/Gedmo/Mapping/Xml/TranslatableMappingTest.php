@@ -1,14 +1,14 @@
 <?php
 
-namespace Gedmo\Mapping\Xml;
+namespace Gedmo\Tests\Mapping\Xml;
 
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\EventManager;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
 use Doctrine\ORM\Mapping\Driver\DriverChain;
 use Doctrine\ORM\Mapping\Driver\XmlDriver;
+use Gedmo\Tests\Tool\BaseTestCaseOM;
 use Gedmo\Translatable\TranslatableListener;
-use Tool\BaseTestCaseOM;
 
 /**
  * These are mapping extension tests
@@ -42,7 +42,7 @@ class TranslatableMappingTest extends BaseTestCaseOM
 
         $chain = new DriverChain();
         $chain->addDriver($annotationDriver, 'Gedmo\Translatable');
-        $chain->addDriver($xmlDriver, 'Mapping\Fixture\Xml');
+        $chain->addDriver($xmlDriver, 'Gedmo\Tests\Mapping\Fixture\Xml');
 
         $this->translatable = new TranslatableListener();
         $this->evm = new EventManager();
@@ -50,13 +50,13 @@ class TranslatableMappingTest extends BaseTestCaseOM
 
         $this->em = $this->getMockSqliteEntityManager([
             'Gedmo\Translatable\Entity\Translation',
-            'Mapping\Fixture\Xml\Translatable',
+            'Gedmo\Tests\Mapping\Fixture\Xml\Translatable',
         ], $chain);
     }
 
     public function testTranslatableMetadata()
     {
-        $meta = $this->em->getClassMetadata('Mapping\Fixture\Xml\Translatable');
+        $meta = $this->em->getClassMetadata('Gedmo\Tests\Mapping\Fixture\Xml\Translatable');
         $config = $this->translatable->getConfiguration($this->em, $meta->name);
 
         $this->assertArrayHasKey('translationClass', $config);
@@ -76,7 +76,7 @@ class TranslatableMappingTest extends BaseTestCaseOM
 
     public function testTranslatableMetadataWithEmbedded()
     {
-        $meta = $this->em->getClassMetadata('Mapping\Fixture\Xml\TranslatableWithEmbedded');
+        $meta = $this->em->getClassMetadata('Gedmo\Tests\Mapping\Fixture\Xml\TranslatableWithEmbedded');
         $config = $this->translatable->getConfiguration($this->em, $meta->name);
 
         $this->assertContains('embedded.subtitle', $config['fields']);

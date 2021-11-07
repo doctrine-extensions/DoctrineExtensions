@@ -1,6 +1,6 @@
 <?php
 
-namespace Blameable\Fixture\Entity;
+namespace Gedmo\Tests\Blameable\Fixture\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Blameable\Traits\BlameableEntity;

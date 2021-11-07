@@ -2,7 +2,7 @@
 
 use Doctrine\Persistence\Mapping\ClassMetadata;
 use Doctrine\Persistence\Mapping\Driver\MappingDriver;
-use Mapping\Fixture\Unmapped\Timestampable;
+use Gedmo\Tests\Mapping\Fixture\Unmapped\Timestampable;
 
 /**
  * These are mapping tests for tree extension
@@ -36,7 +36,7 @@ class CustomDriverTest extends \PHPUnit\Framework\TestCase
         $schemaTool = new \Doctrine\ORM\Tools\SchemaTool($this->em);
         $schemaTool->dropSchema([]);
         $schemaTool->createSchema([
-            $this->em->getClassMetadata('Mapping\Fixture\Unmapped\Timestampable'),
+            $this->em->getClassMetadata('Gedmo\Tests\Mapping\Fixture\Unmapped\Timestampable'),
         ]);
     }
 
@@ -48,7 +48,7 @@ class CustomDriverTest extends \PHPUnit\Framework\TestCase
         // driver falls back to annotation driver
         $conf = $this->timestampable->getConfiguration(
             $this->em,
-            'Mapping\Fixture\Unmapped\Timestampable'
+            'Gedmo\Tests\Mapping\Fixture\Unmapped\Timestampable'
         );
         $this->assertTrue(isset($conf['create']));
 
@@ -57,7 +57,7 @@ class CustomDriverTest extends \PHPUnit\Framework\TestCase
         $this->em->flush();
 
         $id = $this->em
-            ->getClassMetadata('Mapping\Fixture\Unmapped\Timestampable')
+            ->getClassMetadata('Gedmo\Tests\Mapping\Fixture\Unmapped\Timestampable')
             ->getReflectionProperty('id')
             ->getValue($test)
         ;
@@ -69,12 +69,12 @@ class CustomDriver implements MappingDriver
 {
     public function getAllClassNames()
     {
-        return ['Mapping\Fixture\Unmapped\Timestampable'];
+        return ['Gedmo\Tests\Mapping\Fixture\Unmapped\Timestampable'];
     }
 
     public function loadMetadataForClass($className, ClassMetadata $metadata)
     {
-        if ('Mapping\Fixture\Unmapped\Timestampable' === $className) {
+        if ('Gedmo\Tests\Mapping\Fixture\Unmapped\Timestampable' === $className) {
             $id = [];
             $id['fieldName'] = 'id';
             $id['type'] = 'integer';

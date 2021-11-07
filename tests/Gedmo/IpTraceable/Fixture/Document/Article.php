@@ -1,6 +1,6 @@
 <?php
 
-namespace IpTraceable\Fixture\Document;
+namespace Gedmo\Tests\IpTraceable\Fixture\Document;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -19,7 +19,7 @@ class Article
     private $title;
 
     /**
-     * @ODM\ReferenceOne(targetDocument="IpTraceable\Fixture\Document\Type")
+     * @ODM\ReferenceOne(targetDocument="Gedmo\Tests\IpTraceable\Fixture\Document\Type")
      */
     private $type;
 

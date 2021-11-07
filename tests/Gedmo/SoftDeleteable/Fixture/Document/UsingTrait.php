@@ -1,6 +1,6 @@
 <?php
 
-namespace SoftDeleteable\Fixture\Document;
+namespace Gedmo\Tests\SoftDeleteable\Fixture\Document;
 
 use Gedmo\SoftDeleteable\Traits\SoftDeleteableDocument;
 

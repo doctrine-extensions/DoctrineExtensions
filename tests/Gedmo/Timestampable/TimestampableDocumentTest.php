@@ -1,11 +1,12 @@
 <?php
 
-namespace Gedmo\Timestampable;
+namespace Gedmo\Tests\Timestampable;
 
 use Doctrine\Common\EventManager;
-use Timestampable\Fixture\Document\Article;
-use Timestampable\Fixture\Document\Type;
-use Tool\BaseTestCaseMongoODM;
+use Gedmo\Tests\Timestampable\Fixture\Document\Article;
+use Gedmo\Tests\Timestampable\Fixture\Document\Type;
+use Gedmo\Tests\Tool\BaseTestCaseMongoODM;
+use Gedmo\Timestampable\TimestampableListener;
 
 /**
  * These are tests for Timestampable behavior ODM implementation
@@ -18,8 +19,8 @@ use Tool\BaseTestCaseMongoODM;
  */
 class TimestampableDocumentTest extends BaseTestCaseMongoODM
 {
-    public const ARTICLE = 'Timestampable\Fixture\Document\Article';
-    public const TYPE = 'Timestampable\Fixture\Document\Type';
+    public const ARTICLE = 'Gedmo\Tests\Timestampable\Fixture\Document\Article';
+    public const TYPE = 'Gedmo\Tests\Timestampable\Fixture\Document\Type';
 
     protected function setUp(): void
     {

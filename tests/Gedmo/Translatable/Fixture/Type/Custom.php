@@ -1,6 +1,6 @@
 <?php
 
-namespace Translatable\Fixture\Type;
+namespace Gedmo\Tests\Translatable\Fixture\Type;
 
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Types\Type;

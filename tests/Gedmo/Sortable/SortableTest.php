@@ -1,19 +1,20 @@
 <?php
 
-namespace Gedmo\Sortable;
+namespace Gedmo\Tests\Sortable;
 
 use Doctrine\Common\EventManager;
 use Doctrine\DBAL\Exception\ForeignKeyConstraintViolationException;
-use Sortable\Fixture\Author;
-use Sortable\Fixture\Category;
-use Sortable\Fixture\Customer;
-use Sortable\Fixture\CustomerType;
-use Sortable\Fixture\Event;
-use Sortable\Fixture\Item;
-use Sortable\Fixture\Node;
-use Sortable\Fixture\NotifyNode;
-use Sortable\Fixture\Paper;
-use Tool\BaseTestCaseORM;
+use Gedmo\Sortable\SortableListener;
+use Gedmo\Tests\Sortable\Fixture\Author;
+use Gedmo\Tests\Sortable\Fixture\Category;
+use Gedmo\Tests\Sortable\Fixture\Customer;
+use Gedmo\Tests\Sortable\Fixture\CustomerType;
+use Gedmo\Tests\Sortable\Fixture\Event;
+use Gedmo\Tests\Sortable\Fixture\Item;
+use Gedmo\Tests\Sortable\Fixture\Node;
+use Gedmo\Tests\Sortable\Fixture\NotifyNode;
+use Gedmo\Tests\Sortable\Fixture\Paper;
+use Gedmo\Tests\Tool\BaseTestCaseORM;
 
 /**
  * These are tests for sortable behavior
@@ -26,16 +27,16 @@ use Tool\BaseTestCaseORM;
  */
 class SortableTest extends BaseTestCaseORM
 {
-    public const NODE = 'Sortable\\Fixture\\Node';
-    public const NOTIFY_NODE = 'Sortable\\Fixture\\NotifyNode';
-    public const ITEM = 'Sortable\\Fixture\\Item';
-    public const CATEGORY = 'Sortable\\Fixture\\Category';
-    public const SIMPLE_LIST_ITEM = 'Sortable\\Fixture\\SimpleListItem';
-    public const AUTHOR = 'Sortable\\Fixture\\Author';
-    public const PAPER = 'Sortable\\Fixture\\Paper';
-    public const EVENT = 'Sortable\\Fixture\\Event';
-    public const CUSTOMER = 'Sortable\\Fixture\\Customer';
-    public const CUSTOMER_TYPE = 'Sortable\\Fixture\\CustomerType';
+    public const NODE = 'Gedmo\\Tests\\Sortable\\Fixture\\Node';
+    public const NOTIFY_NODE = 'Gedmo\\Tests\\Sortable\\Fixture\\NotifyNode';
+    public const ITEM = 'Gedmo\\Tests\\Sortable\\Fixture\\Item';
+    public const CATEGORY = 'Gedmo\\Tests\\Sortable\\Fixture\\Category';
+    public const SIMPLE_LIST_ITEM = 'Gedmo\\Tests\\Sortable\\Fixture\\SimpleListItem';
+    public const AUTHOR = 'Gedmo\\Tests\\Sortable\\Fixture\\Author';
+    public const PAPER = 'Gedmo\\Tests\\Sortable\\Fixture\\Paper';
+    public const EVENT = 'Gedmo\\Tests\\Sortable\\Fixture\\Event';
+    public const CUSTOMER = 'Gedmo\\Tests\\Sortable\\Fixture\\Customer';
+    public const CUSTOMER_TYPE = 'Gedmo\\Tests\\Sortable\\Fixture\\CustomerType';
 
     private $nodeId;
 

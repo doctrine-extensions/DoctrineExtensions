@@ -1,6 +1,6 @@
 <?php
 
-namespace IpTraceable\Fixture\Document;
+namespace Gedmo\Tests\IpTraceable\Fixture\Document;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 

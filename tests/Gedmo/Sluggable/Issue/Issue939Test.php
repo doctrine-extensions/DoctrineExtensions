@@ -1,12 +1,12 @@
 <?php
 
-namespace Gedmo\Sluggable;
+namespace Gedmo\Tests\Sluggable;
 
 use Doctrine\Common\EventManager;
-use Sluggable\Fixture\Issue939\Article;
-use Sluggable\Fixture\Issue939\Category;
-use Sluggable\Fixture\Issue939\SluggableListener as SluggableListenerIssue939;
-use Tool\BaseTestCaseORM;
+use Gedmo\Tests\Sluggable\Fixture\Issue939\Article;
+use Gedmo\Tests\Sluggable\Fixture\Issue939\Category;
+use Gedmo\Tests\Sluggable\Fixture\Issue939\SluggableListener as SluggableListenerIssue939;
+use Gedmo\Tests\Tool\BaseTestCaseORM;
 
 /**
  * These are tests for Sluggable behavior
@@ -19,8 +19,8 @@ use Tool\BaseTestCaseORM;
  */
 class Issue939Test extends BaseTestCaseORM
 {
-    public const ARTICLE = 'Sluggable\\Fixture\\Issue939\\Article';
-    public const CATEGORY = 'Sluggable\\Fixture\\Issue939\\Category';
+    public const ARTICLE = 'Gedmo\\Tests\\Sluggable\\Fixture\\Issue939\\Article';
+    public const CATEGORY = 'Gedmo\\Tests\\Sluggable\\Fixture\\Issue939\\Category';
 
     protected function setUp(): void
     {

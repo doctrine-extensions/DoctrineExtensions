@@ -1,14 +1,14 @@
 <?php
 
-namespace Gedmo\Mapping\Xml;
+namespace Gedmo\Tests\Mapping\Xml;
 
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\EventManager;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
 use Doctrine\ORM\Mapping\Driver\DriverChain;
 use Doctrine\ORM\Mapping\Driver\XmlDriver;
+use Gedmo\Tests\Tool\BaseTestCaseOM;
 use Gedmo\Tree\TreeListener;
-use Tool\BaseTestCaseOM;
 
 /**
  * These are mapping extension tests
@@ -41,8 +41,8 @@ class ClosureTreeMappingTest extends BaseTestCaseOM
         $xmlDriver = new XmlDriver(__DIR__.'/../Driver/Xml');
 
         $chain = new DriverChain();
-        $chain->addDriver($xmlDriver, 'Mapping\Fixture\Xml');
-        $chain->addDriver($annotationDriver, 'Mapping\Fixture');
+        $chain->addDriver($xmlDriver, 'Gedmo\Tests\Mapping\Fixture\Xml');
+        $chain->addDriver($annotationDriver, 'Gedmo\Tests\Mapping\Fixture');
         $chain->addDriver($annotationDriver, 'Gedmo\Tree');
 
         $this->tree = new TreeListener();
@@ -50,20 +50,20 @@ class ClosureTreeMappingTest extends BaseTestCaseOM
         $this->evm->addEventSubscriber($this->tree);
 
         $this->em = $this->getMockSqliteEntityManager([
-            'Mapping\Fixture\Xml\ClosureTree',
-            'Mapping\Fixture\ClosureTreeClosure',
+            'Gedmo\Tests\Mapping\Fixture\Xml\ClosureTree',
+            'Gedmo\Tests\Mapping\Fixture\ClosureTreeClosure',
         ], $chain);
     }
 
     public function testTreeMetadata()
     {
-        $meta = $this->em->getClassMetadata('Mapping\Fixture\Xml\ClosureTree');
+        $meta = $this->em->getClassMetadata('Gedmo\Tests\Mapping\Fixture\Xml\ClosureTree');
         $config = $this->tree->getConfiguration($this->em, $meta->name);
 
         $this->assertArrayHasKey('strategy', $config);
         $this->assertEquals('closure', $config['strategy']);
         $this->assertArrayHasKey('closure', $config);
-        $this->assertEquals('Mapping\Fixture\ClosureTreeClosure', $config['closure']);
+        $this->assertEquals('Gedmo\Tests\Mapping\Fixture\ClosureTreeClosure', $config['closure']);
         $this->assertArrayHasKey('parent', $config);
         $this->assertEquals('parent', $config['parent']);
     }

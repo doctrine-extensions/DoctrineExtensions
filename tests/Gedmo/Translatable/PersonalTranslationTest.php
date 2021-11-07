@@ -1,12 +1,13 @@
 <?php
 
-namespace Gedmo\Translatable;
+namespace Gedmo\Tests\Translatable;
 
 use Doctrine\Common\EventManager;
 use Doctrine\ORM\Query;
-use Tool\BaseTestCaseORM;
-use Translatable\Fixture\Personal\Article;
-use Translatable\Fixture\Personal\PersonalArticleTranslation;
+use Gedmo\Tests\Tool\BaseTestCaseORM;
+use Gedmo\Tests\Translatable\Fixture\Personal\Article;
+use Gedmo\Tests\Translatable\Fixture\Personal\PersonalArticleTranslation;
+use Gedmo\Translatable\TranslatableListener;
 
 /**
  * These are tests for translatable behavior
@@ -19,8 +20,8 @@ use Translatable\Fixture\Personal\PersonalArticleTranslation;
  */
 class PersonalTranslationTest extends BaseTestCaseORM
 {
-    public const ARTICLE = 'Translatable\Fixture\Personal\Article';
-    public const TRANSLATION = 'Translatable\Fixture\Personal\PersonalArticleTranslation';
+    public const ARTICLE = 'Gedmo\Tests\Translatable\Fixture\Personal\Article';
+    public const TRANSLATION = 'Gedmo\Tests\Translatable\Fixture\Personal\PersonalArticleTranslation';
     public const TREE_WALKER_TRANSLATION = 'Gedmo\\Translatable\\Query\\TreeWalker\\TranslationWalker';
 
     private $translatableListener;

@@ -1,6 +1,6 @@
 <?php
 
-namespace Sluggable\Fixture\Handler\People;
+namespace Gedmo\Tests\Sluggable\Fixture\Handler\People;
 
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -30,7 +30,7 @@ class Occupation
      *          @Gedmo\SlugHandlerOption(name="separator", value="/")
      *      }),
      *      @Gedmo\SlugHandler(class="Gedmo\Sluggable\Handler\InversedRelativeSlugHandler", options={
-     *          @Gedmo\SlugHandlerOption(name="relationClass", value="Sluggable\Fixture\Handler\People\Person"),
+     *          @Gedmo\SlugHandlerOption(name="relationClass", value="Gedmo\Tests\Sluggable\Fixture\Handler\People\Person"),
      *          @Gedmo\SlugHandlerOption(name="mappedBy", value="occupation"),
      *          @Gedmo\SlugHandlerOption(name="inverseSlugField", value="slug")
      *      })

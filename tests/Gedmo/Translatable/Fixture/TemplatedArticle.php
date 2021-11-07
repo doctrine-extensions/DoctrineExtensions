@@ -1,10 +1,10 @@
 <?php
 
-namespace Translatable\Fixture;
+namespace Gedmo\Tests\Translatable\Fixture;
 
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
-use Translatable\Fixture\Template\ArticleTemplate;
+use Gedmo\Tests\Translatable\Fixture\Template\ArticleTemplate;
 
 /**
  * @ORM\Entity

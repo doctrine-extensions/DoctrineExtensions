@@ -1,10 +1,11 @@
 <?php
 
-namespace Gedmo\Sluggable;
+namespace Gedmo\Tests\Sluggable;
 
 use Doctrine\Common\EventManager;
-use Sluggable\Fixture\Article;
-use Tool\BaseTestCaseORM;
+use Gedmo\Sluggable\SluggableListener;
+use Gedmo\Tests\Sluggable\Fixture\Article;
+use Gedmo\Tests\Tool\BaseTestCaseORM;
 
 /**
  * These are tests for Sluggable behavior
@@ -17,7 +18,7 @@ use Tool\BaseTestCaseORM;
  */
 class SluggableFltersTest extends BaseTestCaseORM
 {
-    public const TARGET = 'Sluggable\\Fixture\\Article';
+    public const TARGET = 'Gedmo\\Tests\\Sluggable\\Fixture\\Article';
 
     public const SOFT_DELETEABLE_FILTER_NAME = 'soft-deleteable';
     public const FAKE_FILTER_NAME = 'fake-filter';
@@ -34,7 +35,7 @@ class SluggableFltersTest extends BaseTestCaseORM
 
         $config = $this->getMockAnnotatedConfig();
         $config->addFilter(self::SOFT_DELETEABLE_FILTER_NAME, 'Gedmo\SoftDeleteable\Filter\SoftDeleteableFilter');
-        $config->addFilter(self::FAKE_FILTER_NAME, 'Sluggable\Fixture\Doctrine\FakeFilter');
+        $config->addFilter(self::FAKE_FILTER_NAME, 'Gedmo\Tests\Sluggable\Fixture\Doctrine\FakeFilter');
 
         $this->em = $this->getMockSqliteEntityManager($evm, $config);
 

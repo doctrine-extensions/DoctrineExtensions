@@ -1,6 +1,6 @@
 <?php
 
-namespace ReferenceIntegrity\Fixture\Document\OneNullify;
+namespace Gedmo\Tests\ReferenceIntegrity\Fixture\Document\OneNullify;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -26,7 +26,7 @@ class Type
     private $identifier;
 
     /**
-     * @ODM\ReferenceOne(targetDocument="ReferenceIntegrity\Fixture\Document\OneNullify\Article", mappedBy="type")
+     * @ODM\ReferenceOne(targetDocument="Gedmo\Tests\ReferenceIntegrity\Fixture\Document\OneNullify\Article", mappedBy="type")
      * @Gedmo\ReferenceIntegrity("nullify")
      *
      * @var Article

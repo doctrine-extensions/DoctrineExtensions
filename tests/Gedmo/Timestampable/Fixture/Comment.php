@@ -1,6 +1,6 @@
 <?php
 
-namespace Timestampable\Fixture;
+namespace Gedmo\Tests\Timestampable\Fixture;
 
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -20,7 +20,7 @@ class Comment implements Timestampable
     private $message;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Timestampable\Fixture\Article", inversedBy="comments")
+     * @ORM\ManyToOne(targetEntity="Gedmo\Tests\Timestampable\Fixture\Article", inversedBy="comments")
      */
     private $article;
 

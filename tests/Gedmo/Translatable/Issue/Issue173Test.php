@@ -1,13 +1,14 @@
 <?php
 
-namespace Gedmo\Translatable;
+namespace Gedmo\Tests\Translatable;
 
 use Doctrine\Common\EventManager;
+use Gedmo\Tests\Tool\BaseTestCaseORM;
+use Gedmo\Tests\Translatable\Fixture\Issue173\Article;
+use Gedmo\Tests\Translatable\Fixture\Issue173\Category;
+use Gedmo\Tests\Translatable\Fixture\Issue173\Product;
 use Gedmo\Translatable\Query\TreeWalker\TranslationWalker;
-use Tool\BaseTestCaseORM;
-use Translatable\Fixture\Issue173\Article;
-use Translatable\Fixture\Issue173\Category;
-use Translatable\Fixture\Issue173\Product;
+use Gedmo\Translatable\TranslatableListener;
 
 /**
  * These are tests for translatable behavior
@@ -21,9 +22,9 @@ use Translatable\Fixture\Issue173\Product;
  */
 class Issue173Test extends BaseTestCaseORM
 {
-    public const CATEGORY = 'Translatable\\Fixture\\Issue173\\Category';
-    public const ARTICLE = 'Translatable\\Fixture\\Issue173\\Article';
-    public const PRODUCT = 'Translatable\\Fixture\\Issue173\\Product';
+    public const CATEGORY = 'Gedmo\\Tests\\Translatable\\Fixture\\Issue173\\Category';
+    public const ARTICLE = 'Gedmo\\Tests\\Translatable\\Fixture\\Issue173\\Article';
+    public const PRODUCT = 'Gedmo\\Tests\\Translatable\\Fixture\\Issue173\\Product';
     public const TRANSLATION = 'Gedmo\\Translatable\\Entity\\Translation';
 
     private $translatableListener;

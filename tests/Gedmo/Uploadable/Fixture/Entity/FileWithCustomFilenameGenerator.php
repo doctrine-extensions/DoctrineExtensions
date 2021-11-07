@@ -1,13 +1,13 @@
 <?php
 
-namespace Uploadable\Fixture\Entity;
+namespace Gedmo\Tests\Uploadable\Fixture\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ORM\Entity
- * @Gedmo\Uploadable(pathMethod="getPath", filenameGenerator="Gedmo\Uploadable\FakeFilenameGenerator")
+ * @Gedmo\Uploadable(pathMethod="getPath", filenameGenerator="Gedmo\Tests\Uploadable\FakeFilenameGenerator")
  */
 class FileWithCustomFilenameGenerator
 {

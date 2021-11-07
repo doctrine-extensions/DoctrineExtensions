@@ -1,11 +1,12 @@
 <?php
 
-namespace Gedmo\Sluggable;
+namespace Gedmo\Tests\Sluggable;
 
 use Doctrine\Common\EventManager;
-use Sluggable\Fixture\Issue1058\Page;
-use Sluggable\Fixture\Issue1058\User;
-use Tool\BaseTestCaseORM;
+use Gedmo\Sluggable\SluggableListener;
+use Gedmo\Tests\Sluggable\Fixture\Issue1058\Page;
+use Gedmo\Tests\Sluggable\Fixture\Issue1058\User;
+use Gedmo\Tests\Tool\BaseTestCaseORM;
 
 /**
  * These are tests for sluggable behavior
@@ -18,8 +19,8 @@ use Tool\BaseTestCaseORM;
  */
 class Issue1058Test extends BaseTestCaseORM
 {
-    public const ARTICLE = 'Sluggable\\Fixture\\Issue1058\\Page';
-    public const USER = 'Sluggable\\Fixture\\Issue1058\\User';
+    public const ARTICLE = 'Gedmo\\Tests\\Sluggable\\Fixture\\Issue1058\\Page';
+    public const USER = 'Gedmo\\Tests\\Sluggable\\Fixture\\Issue1058\\User';
 
     protected function setUp(): void
     {

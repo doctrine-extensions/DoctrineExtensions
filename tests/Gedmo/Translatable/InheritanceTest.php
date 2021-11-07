@@ -1,13 +1,15 @@
 <?php
 
-namespace Gedmo\Translatable;
+namespace Gedmo\Tests\Translatable;
 
 use Doctrine\Common\EventManager;
 use Doctrine\ORM\Query;
-use Tool\BaseTestCaseORM;
-use Translatable\Fixture\File;
-use Translatable\Fixture\Image;
-use Translatable\Fixture\TemplatedArticle;
+use Gedmo\Tests\Tool\BaseTestCaseORM;
+use Gedmo\Tests\Translatable\Fixture\File;
+use Gedmo\Tests\Translatable\Fixture\Image;
+use Gedmo\Tests\Translatable\Fixture\TemplatedArticle;
+use Gedmo\Translatable\Entity\Repository\TranslationRepository;
+use Gedmo\Translatable\TranslatableListener;
 
 /**
  * These are tests for translatable behavior
@@ -20,10 +22,10 @@ use Translatable\Fixture\TemplatedArticle;
  */
 class InheritanceTest extends BaseTestCaseORM
 {
-    public const ARTICLE = 'Translatable\\Fixture\\TemplatedArticle';
+    public const ARTICLE = 'Gedmo\\Tests\\Translatable\\Fixture\\TemplatedArticle';
     public const TRANSLATION = 'Gedmo\\Translatable\\Entity\\Translation';
-    public const FILE = 'Translatable\\Fixture\\File';
-    public const IMAGE = 'Translatable\\Fixture\\Image';
+    public const FILE = 'Gedmo\\Tests\\Translatable\\Fixture\\File';
+    public const IMAGE = 'Gedmo\\Tests\\Translatable\\Fixture\\Image';
 
     public const TREE_WALKER_TRANSLATION = 'Gedmo\\Translatable\\Query\\TreeWalker\\TranslationWalker';
 
@@ -57,7 +59,7 @@ class InheritanceTest extends BaseTestCaseORM
         $this->em->clear();
 
         $repo = $this->em->getRepository(self::TRANSLATION);
-        $this->assertInstanceOf(Entity\Repository\TranslationRepository::class, $repo);
+        $this->assertInstanceOf(TranslationRepository::class, $repo);
 
         $translations = $repo->findTranslations($article);
         $this->assertCount(0, $translations);

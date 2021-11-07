@@ -2,7 +2,7 @@
 
 // file: vendor/Extension/Encoder/Mapping/Driver/Annotation.php
 
-namespace Gedmo\Mapping\Mock\Extension\Encoder\Mapping\Driver;
+namespace Gedmo\Tests\Mapping\Mock\Extension\Encoder\Mapping\Driver;
 
 use Doctrine\Common\Annotations\AnnotationReader;
 use Gedmo\Mapping\Driver;
@@ -20,7 +20,7 @@ class Annotation implements Driver
         require_once __DIR__.'/../Annotations.php';
         $reader = new AnnotationReader();
         // set annotation namespace and alias
-        //$reader->setAnnotationNamespaceAlias('Gedmo\Mapping\Mock\Extension\Encoder\Mapping\\', 'ext');
+        //$reader->setAnnotationNamespaceAlias('Gedmo\Tests\Mapping\Mock\Extension\Encoder\Mapping\\', 'ext');
 
         $class = $meta->getReflectionClass();
         // check only property annotations
@@ -33,7 +33,7 @@ class Annotation implements Driver
                 continue;
             }
             // now lets check if property has our annotation
-            if ($encode = $reader->getPropertyAnnotation($property, 'Gedmo\Mapping\Mock\Extension\Encoder\Mapping\Encode')) {
+            if ($encode = $reader->getPropertyAnnotation($property, 'Gedmo\Tests\Mapping\Mock\Extension\Encoder\Mapping\Encode')) {
                 $field = $property->getName();
                 // check if field is mapped
                 if (!$meta->hasField($field)) {

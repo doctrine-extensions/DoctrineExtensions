@@ -1,6 +1,6 @@
 <?php
 
-namespace Timestampable\Fixture;
+namespace Gedmo\Tests\Timestampable\Fixture;
 
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;

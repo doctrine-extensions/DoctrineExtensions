@@ -1,11 +1,12 @@
 <?php
 
-namespace Gedmo\Translatable;
+namespace Gedmo\Tests\Translatable;
 
 use Doctrine\Common\EventManager;
 use Doctrine\DBAL\Types\Type;
-use Tool\BaseTestCaseORM;
-use Translatable\Fixture\MixedValue;
+use Gedmo\Tests\Tool\BaseTestCaseORM;
+use Gedmo\Tests\Translatable\Fixture\MixedValue;
+use Gedmo\Translatable\TranslatableListener;
 
 /**
  * These are tests for translatable behavior
@@ -18,7 +19,7 @@ use Translatable\Fixture\MixedValue;
  */
 class MixedValueTranslationTest extends BaseTestCaseORM
 {
-    public const MIXED = 'Translatable\\Fixture\\MixedValue';
+    public const MIXED = 'Gedmo\\Tests\\Translatable\\Fixture\\MixedValue';
     public const TRANSLATION = 'Gedmo\\Translatable\\Entity\\Translation';
 
     private $translatableListener;
@@ -28,7 +29,7 @@ class MixedValueTranslationTest extends BaseTestCaseORM
         parent::setUp();
 
         if (!Type::hasType('custom')) {
-            Type::addType('custom', 'Translatable\Fixture\Type\Custom');
+            Type::addType('custom', 'Gedmo\Tests\Translatable\Fixture\Type\Custom');
         }
 
         $evm = new EventManager();

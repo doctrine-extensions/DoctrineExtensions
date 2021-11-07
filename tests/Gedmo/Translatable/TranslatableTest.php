@@ -1,12 +1,15 @@
 <?php
 
-namespace Gedmo\Translatable;
+namespace Gedmo\Tests\Translatable;
 
 use Doctrine\Common\EventManager;
-use Tool\BaseTestCaseORM;
-use Translatable\Fixture\Article;
-use Translatable\Fixture\Comment;
-use Translatable\Fixture\Sport;
+use Gedmo\Tests\Tool\BaseTestCaseORM;
+use Gedmo\Tests\Translatable\Fixture\Article;
+use Gedmo\Tests\Translatable\Fixture\Comment;
+use Gedmo\Tests\Translatable\Fixture\Sport;
+use Gedmo\Translatable\Entity\Repository\TranslationRepository;
+use Gedmo\Translatable\Translatable;
+use Gedmo\Translatable\TranslatableListener;
 
 /**
  * These are tests for translatable behavior
@@ -19,9 +22,9 @@ use Translatable\Fixture\Sport;
  */
 class TranslatableTest extends BaseTestCaseORM
 {
-    public const ARTICLE = 'Translatable\\Fixture\\Article';
-    public const SPORT = 'Translatable\\Fixture\\Sport';
-    public const COMMENT = 'Translatable\\Fixture\\Comment';
+    public const ARTICLE = 'Gedmo\\Tests\\Translatable\\Fixture\\Article';
+    public const SPORT = 'Gedmo\\Tests\\Translatable\\Fixture\\Sport';
+    public const COMMENT = 'Gedmo\\Tests\\Translatable\\Fixture\\Comment';
     public const TRANSLATION = 'Gedmo\\Translatable\\Entity\\Translation';
 
     private $articleId;
@@ -108,7 +111,7 @@ class TranslatableTest extends BaseTestCaseORM
     {
         $this->populate();
         $repo = $this->em->getRepository(self::TRANSLATION);
-        $this->assertInstanceOf(Entity\Repository\TranslationRepository::class, $repo);
+        $this->assertInstanceOf(TranslationRepository::class, $repo);
 
         $article = $this->em->find(self::ARTICLE, $this->articleId);
         $this->assertInstanceOf(Translatable::class, $article);

@@ -1,6 +1,6 @@
 <?php
 
-namespace Sluggable\Fixture\Document\Handler;
+namespace Gedmo\Tests\Sluggable\Fixture\Document\Handler;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -26,7 +26,7 @@ class Article
     /**
      * @Gedmo\Slug(handlers={
      *      @Gedmo\SlugHandler(class="Gedmo\Sluggable\Handler\InversedRelativeSlugHandler", options={
-     *          @Gedmo\SlugHandlerOption(name="relationClass", value="Sluggable\Fixture\Document\Handler\RelativeSlug"),
+     *          @Gedmo\SlugHandlerOption(name="relationClass", value="Gedmo\Tests\Sluggable\Fixture\Document\Handler\RelativeSlug"),
      *          @Gedmo\SlugHandlerOption(name="mappedBy", value="article"),
      *          @Gedmo\SlugHandlerOption(name="inverseSlugField", value="alias")
      *      })

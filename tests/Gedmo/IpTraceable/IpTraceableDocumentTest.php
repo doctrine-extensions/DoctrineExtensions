@@ -1,11 +1,12 @@
 <?php
 
-namespace Gedmo\IpTraceable;
+namespace Gedmo\Tests\IpTraceable;
 
 use Doctrine\Common\EventManager;
-use IpTraceable\Fixture\Document\Article;
-use IpTraceable\Fixture\Document\Type;
-use Tool\BaseTestCaseMongoODM;
+use Gedmo\IpTraceable\IpTraceableListener;
+use Gedmo\Tests\IpTraceable\Fixture\Document\Article;
+use Gedmo\Tests\IpTraceable\Fixture\Document\Type;
+use Gedmo\Tests\Tool\BaseTestCaseMongoODM;
 
 /**
  * These are tests for IpTraceable behavior ODM implementation
@@ -20,8 +21,8 @@ class IpTraceableDocumentTest extends BaseTestCaseMongoODM
 {
     public const TEST_IP = '34.234.1.10';
 
-    public const ARTICLE = 'IpTraceable\Fixture\Document\Article';
-    public const TYPE = 'IpTraceable\Fixture\Document\Type';
+    public const ARTICLE = 'Gedmo\Tests\IpTraceable\Fixture\Document\Article';
+    public const TYPE = 'Gedmo\Tests\IpTraceable\Fixture\Document\Type';
 
     protected function setUp(): void
     {

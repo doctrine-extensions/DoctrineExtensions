@@ -1,20 +1,21 @@
 <?php
 
-namespace Gedmo\SoftDeleteable;
+namespace Gedmo\Tests\SoftDeleteable;
 
 use function class_exists;
 use Doctrine\Common\Cache\ArrayCache;
 use Doctrine\Common\EventManager;
-use SoftDeleteable\Fixture\Entity\Article;
-use SoftDeleteable\Fixture\Entity\Child;
-use SoftDeleteable\Fixture\Entity\Comment;
-use SoftDeleteable\Fixture\Entity\MegaPage;
-use SoftDeleteable\Fixture\Entity\Module;
-use SoftDeleteable\Fixture\Entity\OtherArticle;
-use SoftDeleteable\Fixture\Entity\OtherComment;
-use SoftDeleteable\Fixture\Entity\User;
-use SoftDeleteable\Fixture\Entity\UserNoHardDelete;
-use Tool\BaseTestCaseORM;
+use Gedmo\SoftDeleteable\SoftDeleteableListener;
+use Gedmo\Tests\SoftDeleteable\Fixture\Entity\Article;
+use Gedmo\Tests\SoftDeleteable\Fixture\Entity\Child;
+use Gedmo\Tests\SoftDeleteable\Fixture\Entity\Comment;
+use Gedmo\Tests\SoftDeleteable\Fixture\Entity\MegaPage;
+use Gedmo\Tests\SoftDeleteable\Fixture\Entity\Module;
+use Gedmo\Tests\SoftDeleteable\Fixture\Entity\OtherArticle;
+use Gedmo\Tests\SoftDeleteable\Fixture\Entity\OtherComment;
+use Gedmo\Tests\SoftDeleteable\Fixture\Entity\User;
+use Gedmo\Tests\SoftDeleteable\Fixture\Entity\UserNoHardDelete;
+use Gedmo\Tests\Tool\BaseTestCaseORM;
 
 /**
  * These are tests for SoftDeleteable behavior
@@ -29,17 +30,17 @@ use Tool\BaseTestCaseORM;
  */
 class SoftDeleteableEntityTest extends BaseTestCaseORM
 {
-    public const ARTICLE_CLASS = 'SoftDeleteable\Fixture\Entity\Article';
-    public const COMMENT_CLASS = 'SoftDeleteable\Fixture\Entity\Comment';
-    public const PAGE_CLASS = 'SoftDeleteable\Fixture\Entity\Page';
-    public const MEGA_PAGE_CLASS = 'SoftDeleteable\Fixture\Entity\MegaPage';
-    public const MODULE_CLASS = 'SoftDeleteable\Fixture\Entity\Module';
-    public const OTHER_ARTICLE_CLASS = 'SoftDeleteable\Fixture\Entity\OtherArticle';
-    public const OTHER_COMMENT_CLASS = 'SoftDeleteable\Fixture\Entity\OtherComment';
-    public const USER_CLASS = 'SoftDeleteable\Fixture\Entity\User';
-    public const MAPPED_SUPERCLASS_CHILD_CLASS = 'SoftDeleteable\Fixture\Entity\Child';
+    public const ARTICLE_CLASS = 'Gedmo\Tests\SoftDeleteable\Fixture\Entity\Article';
+    public const COMMENT_CLASS = 'Gedmo\Tests\SoftDeleteable\Fixture\Entity\Comment';
+    public const PAGE_CLASS = 'Gedmo\Tests\SoftDeleteable\Fixture\Entity\Page';
+    public const MEGA_PAGE_CLASS = 'Gedmo\Tests\SoftDeleteable\Fixture\Entity\MegaPage';
+    public const MODULE_CLASS = 'Gedmo\Tests\SoftDeleteable\Fixture\Entity\Module';
+    public const OTHER_ARTICLE_CLASS = 'Gedmo\Tests\SoftDeleteable\Fixture\Entity\OtherArticle';
+    public const OTHER_COMMENT_CLASS = 'Gedmo\Tests\SoftDeleteable\Fixture\Entity\OtherComment';
+    public const USER_CLASS = 'Gedmo\Tests\SoftDeleteable\Fixture\Entity\User';
+    public const MAPPED_SUPERCLASS_CHILD_CLASS = 'Gedmo\Tests\SoftDeleteable\Fixture\Entity\Child';
     public const SOFT_DELETEABLE_FILTER_NAME = 'soft-deleteable';
-    public const USER_NO_HARD_DELETE_CLASS = 'SoftDeleteable\Fixture\Entity\UserNoHardDelete';
+    public const USER_NO_HARD_DELETE_CLASS = 'Gedmo\Tests\SoftDeleteable\Fixture\Entity\UserNoHardDelete';
 
     private $softDeleteableListener;
 

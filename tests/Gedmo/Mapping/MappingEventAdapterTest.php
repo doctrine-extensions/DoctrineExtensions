@@ -1,12 +1,12 @@
 <?php
 
-namespace Gedmo\Mapping;
+namespace Gedmo\Tests\Mapping;
 
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Gedmo\Mapping\Event\Adapter\ORM as EventAdapterORM;
-use Gedmo\Mapping\Mock\EventSubscriberCustomMock;
-use Gedmo\Mapping\Mock\EventSubscriberMock;
-use Gedmo\Mapping\Mock\Mapping\Event\Adapter\ORM as CustomizedORMAdapter;
+use Gedmo\Tests\Mapping\Mock\EventSubscriberCustomMock;
+use Gedmo\Tests\Mapping\Mock\EventSubscriberMock;
+use Gedmo\Tests\Mapping\Mock\Mapping\Event\Adapter\ORM as CustomizedORMAdapter;
 
 class MappingEventAdapterTest extends \PHPUnit\Framework\TestCase
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Tree\Fixture\Document;
+namespace Gedmo\Tests\Tree\Fixture\Document;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as MONGO;
 use Gedmo\Mapping\Annotation as Gedmo;

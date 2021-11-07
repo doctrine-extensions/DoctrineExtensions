@@ -1,6 +1,6 @@
 <?php
 
-namespace Gedmo\Mapping\Mock\Mapping\Event\Adapter;
+namespace Gedmo\Tests\Mapping\Mock\Mapping\Event\Adapter;
 
 use Gedmo\Mapping\Event\Adapter\ORM as EventAdapterORM;
 

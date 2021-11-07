@@ -1,6 +1,6 @@
 <?php
 
-namespace Loggable\Fixture\Entity;
+namespace Gedmo\Tests\Loggable\Fixture\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;

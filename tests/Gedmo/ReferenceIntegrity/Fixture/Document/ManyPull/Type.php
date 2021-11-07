@@ -1,6 +1,6 @@
 <?php
 
-namespace ReferenceIntegrity\Fixture\Document\ManyPull;
+namespace Gedmo\Tests\ReferenceIntegrity\Fixture\Document\ManyPull;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
@@ -27,7 +27,7 @@ class Type
     private $identifier;
 
     /**
-     * @ODM\ReferenceMany(targetDocument="ReferenceIntegrity\Fixture\Document\ManyPull\Article", mappedBy="types")
+     * @ODM\ReferenceMany(targetDocument="Gedmo\Tests\ReferenceIntegrity\Fixture\Document\ManyPull\Article", mappedBy="types")
      * @Gedmo\ReferenceIntegrity("pull")
      *
      * @var ArrayCollection

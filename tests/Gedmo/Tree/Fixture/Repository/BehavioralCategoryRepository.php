@@ -1,6 +1,6 @@
 <?php
 
-namespace Tree\Fixture\Repository;
+namespace Gedmo\Tests\Tree\Fixture\Repository;
 
 use Gedmo\Tree\Entity\Repository\NestedTreeRepository;
 

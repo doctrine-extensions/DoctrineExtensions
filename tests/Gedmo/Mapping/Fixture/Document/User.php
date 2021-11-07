@@ -1,9 +1,9 @@
 <?php
 
-namespace Mapping\Fixture\Document;
+namespace Gedmo\Tests\Mapping\Fixture\Document;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
-use Gedmo\Mapping\Mock\Extension\Encoder\Mapping as Ext;
+use Gedmo\Tests\Mapping\Mock\Extension\Encoder\Mapping as Ext;
 
 /**
  * @ODM\Document(collection="test_users")

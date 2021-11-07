@@ -1,9 +1,9 @@
 <?php
 
-namespace Mapping\Fixture;
+namespace Gedmo\Tests\Mapping\Fixture;
 
 use Doctrine\ORM\Mapping as ORM;
-use Gedmo\Mapping\Mock\Extension\Encoder\Mapping as Ext;
+use Gedmo\Tests\Mapping\Mock\Extension\Encoder\Mapping as Ext;
 
 /**
  * @ORM\Table(name="test_users")

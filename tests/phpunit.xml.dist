@@ -62,7 +62,7 @@
 
     <filter>
         <whitelist>
-            <directory>../lib</directory>
+            <directory>../src</directory>
         </whitelist>
     </filter>
 

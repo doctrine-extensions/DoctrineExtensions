@@ -1,6 +1,6 @@
 <?php
 
-namespace Sluggable\Fixture\Issue633;
+namespace Gedmo\Tests\Sluggable\Fixture\Issue633;
 
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;

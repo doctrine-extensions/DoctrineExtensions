@@ -1,12 +1,12 @@
 <?php
 
-namespace Gedmo\Mapping;
+namespace Gedmo\Tests\Mapping;
 
 use Doctrine\Common\EventManager;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Doctrine\ODM\MongoDB\Mapping\Driver\YamlDriver;
 use Gedmo\ReferenceIntegrity\ReferenceIntegrityListener;
-use Tool\BaseTestCaseOM;
+use Gedmo\Tests\Tool\BaseTestCaseOM;
 
 /**
  * These are mapping tests for ReferenceIntegrity extension
@@ -47,8 +47,8 @@ class ReferenceIntegrityMappingTest extends BaseTestCaseOM
 
     public function testYamlMapping()
     {
-        $referencerMeta = $this->dm->getClassMetadata('Mapping\Fixture\Yaml\Referencer');
-        $referenceeMeta = $this->dm->getClassMetadata('Mapping\Fixture\Yaml\Referenced');
+        $referencerMeta = $this->dm->getClassMetadata('Gedmo\Tests\Mapping\Fixture\Yaml\Referencer');
+        $referenceeMeta = $this->dm->getClassMetadata('Gedmo\Tests\Mapping\Fixture\Yaml\Referenced');
         $config = $this->referenceIntegrity->getConfiguration($this->dm, $referencerMeta->name);
 
         $this->assertNotEmpty($config['referenceIntegrity']);

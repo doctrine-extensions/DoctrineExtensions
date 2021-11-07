@@ -1,9 +1,10 @@
 <?php
 
-namespace Gedmo\ReferenceIntegrity;
+namespace Gedmo\Tests\ReferenceIntegrity;
 
 use Doctrine\Common\EventManager;
-use Tool\BaseTestCaseMongoODM;
+use Gedmo\ReferenceIntegrity\ReferenceIntegrityListener;
+use Gedmo\Tests\Tool\BaseTestCaseMongoODM;
 
 /**
  * These are tests for the ReferenceIntegrity extension
@@ -13,23 +14,23 @@ use Tool\BaseTestCaseMongoODM;
  */
 class ReferenceIntegrityDocumentTest extends BaseTestCaseMongoODM
 {
-    public const TYPE_ONE_NULLIFY_CLASS = 'ReferenceIntegrity\Fixture\Document\OneNullify\Type';
-    public const ARTICLE_ONE_NULLIFY_CLASS = 'ReferenceIntegrity\Fixture\Document\OneNullify\Article';
+    public const TYPE_ONE_NULLIFY_CLASS = 'Gedmo\Tests\ReferenceIntegrity\Fixture\Document\OneNullify\Type';
+    public const ARTICLE_ONE_NULLIFY_CLASS = 'Gedmo\Tests\ReferenceIntegrity\Fixture\Document\OneNullify\Article';
 
-    public const TYPE_MANY_NULLIFY_CLASS = 'ReferenceIntegrity\Fixture\Document\ManyNullify\Type';
-    public const ARTICLE_MANY_NULLIFY_CLASS = 'ReferenceIntegrity\Fixture\Document\ManyNullify\Article';
+    public const TYPE_MANY_NULLIFY_CLASS = 'Gedmo\Tests\ReferenceIntegrity\Fixture\Document\ManyNullify\Type';
+    public const ARTICLE_MANY_NULLIFY_CLASS = 'Gedmo\Tests\ReferenceIntegrity\Fixture\Document\ManyNullify\Article';
 
-    public const TYPE_ONE_PULL_CLASS = 'ReferenceIntegrity\Fixture\Document\OnePull\Type';
-    public const ARTICLE_ONE_PULL_CLASS = 'ReferenceIntegrity\Fixture\Document\OnePull\Article';
+    public const TYPE_ONE_PULL_CLASS = 'Gedmo\Tests\ReferenceIntegrity\Fixture\Document\OnePull\Type';
+    public const ARTICLE_ONE_PULL_CLASS = 'Gedmo\Tests\ReferenceIntegrity\Fixture\Document\OnePull\Article';
 
-    public const TYPE_MANY_PULL_CLASS = 'ReferenceIntegrity\Fixture\Document\ManyPull\Type';
-    public const ARTICLE_MANY_PULL_CLASS = 'ReferenceIntegrity\Fixture\Document\ManyPull\Article';
+    public const TYPE_MANY_PULL_CLASS = 'Gedmo\Tests\ReferenceIntegrity\Fixture\Document\ManyPull\Type';
+    public const ARTICLE_MANY_PULL_CLASS = 'Gedmo\Tests\ReferenceIntegrity\Fixture\Document\ManyPull\Article';
 
-    public const TYPE_ONE_RESTRICT_CLASS = 'ReferenceIntegrity\Fixture\Document\OneRestrict\Type';
-    public const ARTICLE_ONE_RESTRICT_CLASS = 'ReferenceIntegrity\Fixture\Document\OneRestrict\Article';
+    public const TYPE_ONE_RESTRICT_CLASS = 'Gedmo\Tests\ReferenceIntegrity\Fixture\Document\OneRestrict\Type';
+    public const ARTICLE_ONE_RESTRICT_CLASS = 'Gedmo\Tests\ReferenceIntegrity\Fixture\Document\OneRestrict\Article';
 
-    public const TYPE_MANY_RESTRICT_CLASS = 'ReferenceIntegrity\Fixture\Document\ManyRestrict\Type';
-    public const ARTICLE_MANY_RESTRICT_CLASS = 'ReferenceIntegrity\Fixture\Document\ManyRestrict\Article';
+    public const TYPE_MANY_RESTRICT_CLASS = 'Gedmo\Tests\ReferenceIntegrity\Fixture\Document\ManyRestrict\Type';
+    public const ARTICLE_MANY_RESTRICT_CLASS = 'Gedmo\Tests\ReferenceIntegrity\Fixture\Document\ManyRestrict\Article';
 
     protected function setUp(): void
     {

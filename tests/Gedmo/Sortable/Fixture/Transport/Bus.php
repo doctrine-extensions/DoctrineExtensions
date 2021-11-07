@@ -1,6 +1,6 @@
 <?php
 
-namespace Sortable\Fixture\Transport;
+namespace Gedmo\Tests\Sortable\Fixture\Transport;
 
 use Doctrine\ORM\Mapping as ORM;
 

@@ -1,10 +1,11 @@
 <?php
 
-namespace Gedmo\Translatable;
+namespace Gedmo\Tests\Translatable;
 
 use Doctrine\Common\EventManager;
-use Tool\BaseTestCaseMongoODM;
-use Translatable\Fixture\Document\SimpleArticle as Article;
+use Gedmo\Tests\Tool\BaseTestCaseMongoODM;
+use Gedmo\Tests\Translatable\Fixture\Document\SimpleArticle as Article;
+use Gedmo\Translatable\TranslatableListener;
 
 /**
  * These are tests for translatable behavior
@@ -17,7 +18,7 @@ use Translatable\Fixture\Document\SimpleArticle as Article;
  */
 class TranslatableDocumentCollectionTest extends BaseTestCaseMongoODM
 {
-    public const ARTICLE = 'Translatable\\Fixture\\Document\\SimpleArticle';
+    public const ARTICLE = 'Gedmo\\Tests\\Translatable\\Fixture\\Document\\SimpleArticle';
     public const TRANSLATION = 'Gedmo\\Translatable\\Document\\Translation';
 
     private $translatableListener;

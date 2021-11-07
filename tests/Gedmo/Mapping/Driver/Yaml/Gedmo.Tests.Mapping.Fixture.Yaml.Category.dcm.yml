@@ -1,5 +1,5 @@
 ---
-Mapping\Fixture\Yaml\Category:
+Gedmo\Tests\Mapping\Fixture\Yaml\Category:
   type: entity
   table: categories
   id:
@@ -9,7 +9,7 @@ Mapping\Fixture\Yaml\Category:
         strategy: AUTO
   gedmo:
     translation:
-      entity: Translatable\Fixture\CategoryTranslation
+      entity: Gedmo\Tests\Translatable\Fixture\CategoryTranslation
       locale: localeField
     tree:
       type: nested
@@ -47,13 +47,13 @@ Mapping\Fixture\Yaml\Category:
           value: Test
   manyToOne:
     parent:
-      targetEntity: Mapping\Fixture\Yaml\Category
+      targetEntity: Gedmo\Tests\Mapping\Fixture\Yaml\Category
       inversedBy: children
       gedmo:
         - treeParent
   oneToMany:
     children:
-      targetEntity: Mapping\Fixture\Yaml\Category
+      targetEntity: Gedmo\Tests\Mapping\Fixture\Yaml\Category
       mappedBy: parent
   indexes:
     search_idx:

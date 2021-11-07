@@ -1,10 +1,11 @@
 <?php
 
-namespace Gedmo\Sluggable;
+namespace Gedmo\Tests\Sluggable;
 
 use Doctrine\Common\EventManager;
-use Sluggable\Fixture\Validate;
-use Tool\BaseTestCaseORM;
+use Gedmo\Sluggable\SluggableListener;
+use Gedmo\Tests\Sluggable\Fixture\Validate;
+use Gedmo\Tests\Tool\BaseTestCaseORM;
 
 /**
  * These are tests for Sluggable behavior
@@ -17,7 +18,7 @@ use Tool\BaseTestCaseORM;
  */
 class AnnotationValidationTest extends BaseTestCaseORM
 {
-    public const TARGET = 'Sluggable\\Fixture\\Validate';
+    public const TARGET = 'Gedmo\\Tests\\Sluggable\\Fixture\\Validate';
 
     /**
      * @test

@@ -1,11 +1,12 @@
 <?php
 
-namespace Gedmo\Sluggable;
+namespace Gedmo\Tests\Sluggable;
 
 use Doctrine\Common\EventManager;
+use Gedmo\Sluggable\SluggableListener;
 use Gedmo\SoftDeleteable\SoftDeleteableListener;
-use Sluggable\Fixture\Issue449\Article;
-use Tool\BaseTestCaseORM;
+use Gedmo\Tests\Sluggable\Fixture\Issue449\Article;
+use Gedmo\Tests\Tool\BaseTestCaseORM;
 
 /**
  * These are tests for Sluggable behavior
@@ -18,7 +19,7 @@ use Tool\BaseTestCaseORM;
  */
 class Issue449Test extends BaseTestCaseORM
 {
-    public const TARGET = 'Sluggable\\Fixture\\Issue449\\Article';
+    public const TARGET = 'Gedmo\\Tests\\Sluggable\\Fixture\\Issue449\\Article';
     public const SOFT_DELETEABLE_FILTER_NAME = 'soft-deleteable';
 
     private $softDeleteableListener;

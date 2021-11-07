@@ -1,9 +1,9 @@
 ---
-Mapping\Fixture\Yaml\User:
+Gedmo\Tests\Mapping\Fixture\Yaml\User:
   type: entity
   gedmo:
     translation:
-      entity: Translatable\Fixture\PersonTranslation
+      entity: Gedmo\Tests\Translatable\Fixture\PersonTranslation
       locale: localeField
   table: users
   id:

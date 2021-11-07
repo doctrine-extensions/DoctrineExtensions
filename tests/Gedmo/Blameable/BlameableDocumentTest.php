@@ -1,12 +1,13 @@
 <?php
 
-namespace Gedmo\Blameable;
+namespace Gedmo\Tests\Blameable;
 
-use Blameable\Fixture\Document\Article;
-use Blameable\Fixture\Document\Type;
-use Blameable\Fixture\Document\User;
 use Doctrine\Common\EventManager;
-use Tool\BaseTestCaseMongoODM;
+use Gedmo\Blameable\BlameableListener;
+use Gedmo\Tests\Blameable\Fixture\Document\Article;
+use Gedmo\Tests\Blameable\Fixture\Document\Type;
+use Gedmo\Tests\Blameable\Fixture\Document\User;
+use Gedmo\Tests\Tool\BaseTestCaseMongoODM;
 
 /**
  * These are tests for Blameable behavior ODM implementation
@@ -21,9 +22,9 @@ class BlameableDocumentTest extends BaseTestCaseMongoODM
 {
     public const TEST_USERNAME = 'testuser';
 
-    public const TYPE = 'Blameable\Fixture\Document\Type';
-    public const USER = 'Blameable\Fixture\Document\User';
-    public const ARTICLE = 'Blameable\Fixture\Document\Article';
+    public const TYPE = 'Gedmo\Tests\Blameable\Fixture\Document\Type';
+    public const USER = 'Gedmo\Tests\Blameable\Fixture\Document\User';
+    public const ARTICLE = 'Gedmo\Tests\Blameable\Fixture\Document\Article';
 
     protected function setUp(): void
     {

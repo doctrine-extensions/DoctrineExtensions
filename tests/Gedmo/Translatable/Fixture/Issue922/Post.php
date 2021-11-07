@@ -1,6 +1,6 @@
 <?php
 
-namespace Translatable\Fixture\Issue922;
+namespace Gedmo\Tests\Translatable\Fixture\Issue922;
 
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;

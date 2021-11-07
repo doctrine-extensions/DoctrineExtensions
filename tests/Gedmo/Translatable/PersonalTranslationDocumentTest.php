@@ -1,11 +1,12 @@
 <?php
 
-namespace Gedmo\Translatable;
+namespace Gedmo\Tests\Translatable;
 
 use Doctrine\Common\EventManager;
-use Tool\BaseTestCaseMongoODM;
-use Translatable\Fixture\Document\Personal\Article;
-use Translatable\Fixture\Document\Personal\ArticleTranslation;
+use Gedmo\Tests\Tool\BaseTestCaseMongoODM;
+use Gedmo\Tests\Translatable\Fixture\Document\Personal\Article;
+use Gedmo\Tests\Translatable\Fixture\Document\Personal\ArticleTranslation;
+use Gedmo\Translatable\TranslatableListener;
 
 /**
  * These are tests for translatable behavior
@@ -18,8 +19,8 @@ use Translatable\Fixture\Document\Personal\ArticleTranslation;
  */
 class PersonalTranslationDocumentTest extends BaseTestCaseMongoODM
 {
-    public const ARTICLE = 'Translatable\Fixture\Document\Personal\Article';
-    public const TRANSLATION = 'Translatable\Fixture\Document\Personal\ArticleTranslation';
+    public const ARTICLE = 'Gedmo\Tests\Translatable\Fixture\Document\Personal\Article';
+    public const TRANSLATION = 'Gedmo\Tests\Translatable\Fixture\Document\Personal\ArticleTranslation';
 
     private $translatableListener;
     private $id;

@@ -1,6 +1,6 @@
 <?php
 
-namespace Gedmo\Uploadable\Stub;
+namespace Gedmo\Tests\Uploadable\Stub;
 
 use Gedmo\Uploadable\UploadableListener;
 

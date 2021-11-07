@@ -1,6 +1,6 @@
 <?php
 
-namespace Tree\Fixture\Genealogy;
+namespace Gedmo\Tests\Tree\Fixture\Genealogy;
 
 use Doctrine\ORM\Mapping as ORM;
 

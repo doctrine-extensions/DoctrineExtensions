@@ -1,10 +1,11 @@
 <?php
 
-namespace Gedmo\Sortable;
+namespace Gedmo\Tests\Sortable;
 
 use Doctrine\Common\EventManager;
-use Sortable\Fixture\Document\Article;
-use Tool\BaseTestCaseMongoODM;
+use Gedmo\Sortable\SortableListener;
+use Gedmo\Tests\Sortable\Fixture\Document\Article;
+use Gedmo\Tests\Tool\BaseTestCaseMongoODM;
 
 /**
  * These are tests for sortable behavior
@@ -14,7 +15,7 @@ use Tool\BaseTestCaseMongoODM;
  */
 class SortableDocumentTest extends BaseTestCaseMongoODM
 {
-    public const ARTICLE = 'Sortable\\Fixture\\Document\\Article';
+    public const ARTICLE = 'Gedmo\\Tests\\Sortable\\Fixture\\Document\\Article';
 
     protected function setUp(): void
     {

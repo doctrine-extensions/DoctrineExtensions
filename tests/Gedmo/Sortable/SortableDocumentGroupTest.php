@@ -1,12 +1,13 @@
 <?php
 
-namespace Gedmo\Sortable;
+namespace Gedmo\Tests\Sortable;
 
 use Doctrine\Common\EventManager;
-use Sortable\Fixture\Document\Category;
-use Sortable\Fixture\Document\Kid;
-use Sortable\Fixture\Document\Post;
-use Tool\BaseTestCaseMongoODM;
+use Gedmo\Sortable\SortableListener;
+use Gedmo\Tests\Sortable\Fixture\Document\Category;
+use Gedmo\Tests\Sortable\Fixture\Document\Kid;
+use Gedmo\Tests\Sortable\Fixture\Document\Post;
+use Gedmo\Tests\Tool\BaseTestCaseMongoODM;
 
 /**
  * These are tests for sortable behavior with SortableGroup
@@ -16,9 +17,9 @@ use Tool\BaseTestCaseMongoODM;
  */
 class SortableDocumentGroupTest extends BaseTestCaseMongoODM
 {
-    public const POST = 'Sortable\\Fixture\\Document\\Post';
-    public const CATEGORY = 'Sortable\\Fixture\\Document\\Category';
-    public const KID = 'Sortable\\Fixture\\Document\\Kid';
+    public const POST = 'Gedmo\\Tests\\Sortable\\Fixture\\Document\\Post';
+    public const CATEGORY = 'Gedmo\\Tests\\Sortable\\Fixture\\Document\\Category';
+    public const KID = 'Gedmo\\Tests\\Sortable\\Fixture\\Document\\Kid';
     public const KID_DATE1 = '1999-12-31';
     public const KID_DATE2 = '2000-01-01';
 
