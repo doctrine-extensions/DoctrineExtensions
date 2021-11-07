@@ -1,6 +1,6 @@
 <?php
 
-namespace ReferenceIntegrity\Fixture\Document\ManyRestrict;
+namespace Gedmo\Tests\ReferenceIntegrity\Fixture\Document\ManyRestrict;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 
@@ -20,7 +20,7 @@ class Article
     private $title;
 
     /**
-     * @ODM\ReferenceOne(targetDocument="ReferenceIntegrity\Fixture\Document\ManyRestrict\Type", inversedBy="articles")
+     * @ODM\ReferenceOne(targetDocument="Gedmo\Tests\ReferenceIntegrity\Fixture\Document\ManyRestrict\Type", inversedBy="articles")
      *
      * @var Type
      */

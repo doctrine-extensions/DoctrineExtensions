@@ -1,5 +1,5 @@
 ---
-Mapping\Fixture\Yaml\ClosureCategory:
+Gedmo\Tests\Mapping\Fixture\Yaml\ClosureCategory:
   type: entity
   table: closure_categories
   id:
@@ -10,7 +10,7 @@ Mapping\Fixture\Yaml\ClosureCategory:
   gedmo:
     tree:
       type: closure
-      closure: Tree\Fixture\Closure\CategoryClosure
+      closure: Gedmo\Tests\Tree\Fixture\Closure\CategoryClosure
   fields:
     title:
       type: string
@@ -21,13 +21,13 @@ Mapping\Fixture\Yaml\ClosureCategory:
         - treeLevel
   manyToOne:
     parent:
-      targetEntity: Mapping\Fixture\Yaml\ClosureCategory
+      targetEntity: Gedmo\Tests\Mapping\Fixture\Yaml\ClosureCategory
       inversedBy: children
       gedmo:
         - treeParent
   oneToMany:
     children:
-      targetEntity: Mapping\Fixture\Yaml\ClosureCategory
+      targetEntity: Gedmo\Tests\Mapping\Fixture\Yaml\ClosureCategory
       mappedBy: parent
   indexes:
     search_idx:

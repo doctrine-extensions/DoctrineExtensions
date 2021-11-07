@@ -1,6 +1,6 @@
 <?php
 
-namespace Gedmo\Uploadable;
+namespace Gedmo\Tests\Uploadable;
 
 use Gedmo\Uploadable\FilenameGenerator\FilenameGeneratorAlphanumeric;
 

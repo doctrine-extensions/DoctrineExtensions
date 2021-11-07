@@ -1,6 +1,6 @@
 <?php
 
-namespace Mapping\Fixture\Yaml;
+namespace Gedmo\Tests\Mapping\Fixture\Yaml;
 
 class SoftDeleteable
 {

@@ -1,11 +1,12 @@
 <?php
 
-namespace Gedmo\Tree;
+namespace Gedmo\Tests\Tree;
 
 use Doctrine\Common\EventManager;
 use Doctrine\ODM\MongoDB\Iterator\CachingIterator;
-use Tool\BaseTestCaseMongoODM;
-use Tree\Fixture\Document\Category;
+use Gedmo\Tests\Tool\BaseTestCaseMongoODM;
+use Gedmo\Tests\Tree\Fixture\Document\Category;
+use Gedmo\Tree\TreeListener;
 
 /**
  * These are tests for Tree behavior

@@ -1,6 +1,6 @@
 <?php
 
-namespace Translator\Fixture;
+namespace Gedmo\Tests\Translator\Fixture;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
@@ -105,7 +105,7 @@ class Person
         return new \Gedmo\Translator\TranslationProxy($this,
         /* Locale                            */ $locale,
         /* List of translatable properties:  */ ['name', 'lastName'],
-        /* Translation entity class:         */ 'Translator\Fixture\PersonTranslation',
+        /* Translation entity class:         */ 'Gedmo\Tests\Translator\Fixture\PersonTranslation',
         /* Translations collection property: */ $this->translations
         );
     }

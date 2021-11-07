@@ -1,6 +1,6 @@
 <?php
 
-namespace Loggable\Fixture\Document;
+namespace Gedmo\Tests\Loggable\Fixture\Document;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 use Gedmo\Mapping\Annotation as Gedmo;

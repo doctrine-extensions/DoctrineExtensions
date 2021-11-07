@@ -1,13 +1,14 @@
 <?php
 
-namespace Gedmo\Translatable;
+namespace Gedmo\Tests\Translatable;
 
 use Doctrine\Common\EventManager;
 use Doctrine\ORM\Query;
+use Gedmo\Tests\Tool\BaseTestCaseORM;
+use Gedmo\Tests\Translatable\Fixture\Article;
+use Gedmo\Tests\Translatable\Fixture\Comment;
 use Gedmo\Translatable\Query\TreeWalker\TranslationWalker;
-use Tool\BaseTestCaseORM;
-use Translatable\Fixture\Article;
-use Translatable\Fixture\Comment;
+use Gedmo\Translatable\TranslatableListener;
 
 /**
  * These are tests for translation query walker
@@ -20,8 +21,8 @@ use Translatable\Fixture\Comment;
  */
 class TranslationQueryWalkerTest extends BaseTestCaseORM
 {
-    public const ARTICLE = 'Translatable\\Fixture\\Article';
-    public const COMMENT = 'Translatable\\Fixture\\Comment';
+    public const ARTICLE = 'Gedmo\\Tests\\Translatable\\Fixture\\Article';
+    public const COMMENT = 'Gedmo\\Tests\\Translatable\\Fixture\\Comment';
     public const TRANSLATION = 'Gedmo\\Translatable\\Entity\\Translation';
 
     public const TREE_WALKER_TRANSLATION = 'Gedmo\\Translatable\\Query\\TreeWalker\\TranslationWalker';

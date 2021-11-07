@@ -1,6 +1,6 @@
 <?php
 
-namespace Tree\Fixture\Closure;
+namespace Gedmo\Tests\Tree\Fixture\Closure;
 
 use Doctrine\ORM\Mapping as ORM;
 

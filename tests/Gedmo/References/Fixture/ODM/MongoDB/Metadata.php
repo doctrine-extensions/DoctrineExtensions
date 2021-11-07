@@ -1,10 +1,10 @@
 <?php
 
-namespace References\Fixture\ODM\MongoDB;
+namespace Gedmo\Tests\References\Fixture\ODM\MongoDB;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 use Gedmo\Mapping\Annotation as Gedmo;
-use References\Fixture\ORM\Category;
+use Gedmo\Tests\References\Fixture\ORM\Category;
 
 /**
  * @ODM\EmbeddedDocument
@@ -16,7 +16,7 @@ class Metadata
     private $name;
 
     /**
-     * @Gedmo\ReferenceOne(type="entity", class="References\Fixture\ORM\Category", identifier="categoryId")
+     * @Gedmo\ReferenceOne(type="entity", class="Gedmo\Tests\References\Fixture\ORM\Category", identifier="categoryId")
      */
     private $category;
 

@@ -2,7 +2,7 @@
 
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Version;
-use Mapping\Fixture\Unmapped\Timestampable;
+use Gedmo\Tests\Mapping\Fixture\Unmapped\Timestampable;
 
 /**
  * These are mapping tests for tree extension
@@ -39,7 +39,7 @@ class ForcedMetadataTest extends \PHPUnit\Framework\TestCase
     private function prepare()
     {
         $cmf = $this->em->getMetadataFactory();
-        $metadata = new ClassMetadata('Mapping\Fixture\Unmapped\Timestampable');
+        $metadata = new ClassMetadata('Gedmo\Tests\Mapping\Fixture\Unmapped\Timestampable');
         $id = [];
         $id['fieldName'] = 'id';
         $id['type'] = 'integer';
@@ -59,7 +59,7 @@ class ForcedMetadataTest extends \PHPUnit\Framework\TestCase
         $metadata->setIdGeneratorType(ClassMetadata::GENERATOR_TYPE_IDENTITY);
         $metadata->setIdGenerator(new \Doctrine\ORM\Id\IdentityGenerator(null));
         $metadata->setPrimaryTable(['name' => 'temp_test']);
-        $cmf->setMetadataFor('Mapping\Fixture\Unmapped\Timestampable', $metadata);
+        $cmf->setMetadataFor('Gedmo\Tests\Mapping\Fixture\Unmapped\Timestampable', $metadata);
 
         // trigger loadClassMetadata event
         $evm = $this->em->getEventManager();
@@ -72,7 +72,7 @@ class ForcedMetadataTest extends \PHPUnit\Framework\TestCase
         $schemaTool = new \Doctrine\ORM\Tools\SchemaTool($this->em);
         $schemaTool->dropSchema([]);
         $schemaTool->createSchema([
-            $this->em->getClassMetadata('Mapping\Fixture\Unmapped\Timestampable'),
+            $this->em->getClassMetadata('Gedmo\Tests\Mapping\Fixture\Unmapped\Timestampable'),
         ]);
     }
 
@@ -83,11 +83,11 @@ class ForcedMetadataTest extends \PHPUnit\Framework\TestCase
     {
         $this->prepare();
 
-        $meta = $this->em->getClassMetadata('Mapping\Fixture\Unmapped\Timestampable');
+        $meta = $this->em->getClassMetadata('Gedmo\Tests\Mapping\Fixture\Unmapped\Timestampable');
         // driver falls back to annotation driver
         $conf = $this->timestampable->getConfiguration(
             $this->em,
-            'Mapping\Fixture\Unmapped\Timestampable'
+            'Gedmo\Tests\Mapping\Fixture\Unmapped\Timestampable'
         );
         $this->assertTrue(isset($conf['create']));
 
@@ -96,7 +96,7 @@ class ForcedMetadataTest extends \PHPUnit\Framework\TestCase
         $this->em->flush();
 
         $id = $this->em
-            ->getClassMetadata('Mapping\Fixture\Unmapped\Timestampable')
+            ->getClassMetadata('Gedmo\Tests\Mapping\Fixture\Unmapped\Timestampable')
             ->getReflectionProperty('id')
             ->getValue($test)
         ;

@@ -1,10 +1,14 @@
 <?php
 
-namespace Gedmo\Tree;
+namespace Gedmo\Tests\Tree;
 
 use Doctrine\ORM\Mapping\Driver\DriverChain;
 use Doctrine\ORM\Mapping\Driver\YamlDriver;
 use Gedmo\Mapping\ExtensionMetadataFactory;
+use Gedmo\Tests\Mapping\Fixture\Yaml\Category;
+use Gedmo\Tests\Mapping\Fixture\Yaml\ClosureCategory;
+use Gedmo\Tests\Mapping\Fixture\Yaml\MaterializedPathCategory;
+use Gedmo\Tree\TreeListener;
 
 /**
  * These are mapping tests for tree extension
@@ -17,9 +21,9 @@ use Gedmo\Mapping\ExtensionMetadataFactory;
  */
 class TreeMappingTest extends \PHPUnit\Framework\TestCase
 {
-    public const TEST_YAML_ENTITY_CLASS = 'Mapping\Fixture\Yaml\Category';
-    public const YAML_CLOSURE_CATEGORY = 'Mapping\Fixture\Yaml\ClosureCategory';
-    public const YAML_MATERIALIZED_PATH_CATEGORY = 'Mapping\Fixture\Yaml\MaterializedPathCategory';
+    public const TEST_YAML_ENTITY_CLASS = Category::class;
+    public const YAML_CLOSURE_CATEGORY = ClosureCategory::class;
+    public const YAML_MATERIALIZED_PATH_CATEGORY = MaterializedPathCategory::class;
 
     /**
      * @var \Doctrine\ORM\EntityManager
@@ -41,11 +45,11 @@ class TreeMappingTest extends \PHPUnit\Framework\TestCase
         $chainDriverImpl = new DriverChain();
         $chainDriverImpl->addDriver(
             new YamlDriver([__DIR__.'/Driver/Yaml']),
-            'Mapping\Fixture\Yaml'
+            'Gedmo\Tests\Mapping\Fixture\Yaml'
         );
         $chainDriverImpl->addDriver(
             $config->newDefaultAnnotationDriver([], false),
-            'Tree\Fixture'
+            'Gedmo\Tests\Tree\Fixture'
         );
         $chainDriverImpl->addDriver(
             $config->newDefaultAnnotationDriver([], false),
@@ -67,10 +71,10 @@ class TreeMappingTest extends \PHPUnit\Framework\TestCase
     public function testApcCached()
     {
         $this->em->getClassMetadata(self::YAML_CLOSURE_CATEGORY);
-        $this->em->getClassMetadata('Tree\Fixture\Closure\CategoryClosure');
+        $this->em->getClassMetadata('Gedmo\Tests\Tree\Fixture\Closure\CategoryClosure');
 
         $meta = $this->em->getMetadataFactory()->getCacheDriver()->fetch(
-            'Tree\\Fixture\\Closure\\CategoryClosure$CLASSMETADATA'
+            'Gedmo\\Tests\\Tree\\Fixture\\Closure\\CategoryClosure$CLASSMETADATA'
         );
         $this->assertTrue($meta->hasAssociation('ancestor'));
         $this->assertTrue($meta->hasAssociation('descendant'));
@@ -109,7 +113,7 @@ class TreeMappingTest extends \PHPUnit\Framework\TestCase
         $this->assertArrayHasKey('strategy', $config);
         $this->assertEquals('closure', $config['strategy']);
         $this->assertArrayHasKey('closure', $config);
-        $this->assertEquals('Tree\\Fixture\\Closure\\CategoryClosure', $config['closure']);
+        $this->assertEquals('Gedmo\\Tests\\Tree\\Fixture\\Closure\\CategoryClosure', $config['closure']);
     }
 
     public function testYamlMaterializedPathMapping()

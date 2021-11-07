@@ -1,6 +1,6 @@
 <?php
 
-namespace Translatable\Fixture\Personal;
+namespace Gedmo\Tests\Translatable\Fixture\Personal;
 
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Translatable\Entity\MappedSuperclass\AbstractPersonalTranslation;

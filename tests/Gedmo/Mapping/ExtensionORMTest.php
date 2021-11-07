@@ -1,16 +1,16 @@
 <?php
 
-namespace Gedmo\Mapping;
+namespace Gedmo\Tests\Mapping;
 
 use Doctrine\Common\EventManager;
 use Doctrine\ORM\Event\LoadClassMetadataEventArgs;
-use Gedmo\Mapping\Mock\Extension\Encoder\EncoderListener;
-use Mapping\Fixture\User;
-use Tool\BaseTestCaseORM;
+use Gedmo\Tests\Mapping\Fixture\User;
+use Gedmo\Tests\Mapping\Mock\Extension\Encoder\EncoderListener;
+use Gedmo\Tests\Tool\BaseTestCaseORM;
 
 class ExtensionORMTest extends BaseTestCaseORM
 {
-    public const USER = 'Mapping\\Fixture\\User';
+    public const USER = 'Gedmo\\Tests\\Mapping\\Fixture\\User';
 
     private $encoderListener;
 
@@ -70,7 +70,7 @@ class ExtensionORMTest extends BaseTestCaseORM
             $this->encoderListener,
             $loadClassMetadataEventArgs
         );
-        $this->assertInstanceOf(\Gedmo\Mapping\Mock\Extension\Encoder\Mapping\Event\Adapter\ORM::class, $eventAdapter);
+        $this->assertInstanceOf(\Gedmo\Tests\Mapping\Mock\Extension\Encoder\Mapping\Event\Adapter\ORM::class, $eventAdapter);
     }
 
     protected function getUsedEntityFixtures()

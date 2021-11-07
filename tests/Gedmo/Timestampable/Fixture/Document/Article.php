@@ -1,6 +1,6 @@
 <?php
 
-namespace Timestampable\Fixture\Document;
+namespace Gedmo\Tests\Timestampable\Fixture\Document;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -19,7 +19,7 @@ class Article
     private $title;
 
     /**
-     * @ODM\ReferenceOne(targetDocument="Timestampable\Fixture\Document\Type")
+     * @ODM\ReferenceOne(targetDocument="Gedmo\Tests\Timestampable\Fixture\Document\Type")
      */
     private $type;
 

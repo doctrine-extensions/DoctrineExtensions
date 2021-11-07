@@ -1,6 +1,6 @@
 <?php
 
-namespace Sluggable\Fixture\Doctrine;
+namespace Gedmo\Tests\Sluggable\Fixture\Doctrine;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Query\Filter\SQLFilter;

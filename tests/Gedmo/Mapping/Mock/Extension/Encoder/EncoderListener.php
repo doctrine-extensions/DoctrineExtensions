@@ -2,7 +2,7 @@
 
 // file: vendor/Extension/Encoder/EncoderListener.php
 
-namespace Gedmo\Mapping\Mock\Extension\Encoder;
+namespace Gedmo\Tests\Mapping\Mock\Extension\Encoder;
 
 use Doctrine\Common\EventArgs;
 use Gedmo\Mapping\Event\AdapterInterface as EventAdapterInterface;

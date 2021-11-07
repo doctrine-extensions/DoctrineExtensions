@@ -1,6 +1,6 @@
 <?php
 
-namespace Loggable\Fixture\Entity;
+namespace Gedmo\Tests\Loggable\Fixture\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -39,7 +39,7 @@ class Address
 
     /**
      * @var Geo
-     * @ORM\Embedded(class="Loggable\Fixture\Entity\Geo")
+     * @ORM\Embedded(class="Gedmo\Tests\Loggable\Fixture\Entity\Geo")
      * @Gedmo\Versioned()
      */
     protected $geo;

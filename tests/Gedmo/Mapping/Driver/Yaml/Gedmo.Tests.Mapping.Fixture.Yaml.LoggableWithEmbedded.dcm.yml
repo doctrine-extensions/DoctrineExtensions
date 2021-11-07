@@ -1,5 +1,5 @@
 ---
-Mapping\Fixture\Yaml\LoggableWithEmbedded:
+Gedmo\Tests\Mapping\Fixture\Yaml\LoggableWithEmbedded:
   type: entity
   table: loggable_with_embedded
   gedmo:
@@ -17,6 +17,6 @@ Mapping\Fixture\Yaml\LoggableWithEmbedded:
         - versioned
   embedded:
     embedded:
-      class: Mapping\Fixture\Yaml\Embedded
+      class: Gedmo\Tests\Mapping\Fixture\Yaml\Embedded
       gedmo:
         - versioned

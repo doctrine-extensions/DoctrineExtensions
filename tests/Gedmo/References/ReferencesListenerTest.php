@@ -1,15 +1,16 @@
 <?php
 
-namespace Gedmo\References;
+namespace Gedmo\Tests\References;
 
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\ODM\MongoDB\Mapping\Driver\AnnotationDriver as MongoDBAnnotationDriver;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver as ORMAnnotationDriver;
-use References\Fixture\ODM\MongoDB\Metadata;
-use References\Fixture\ODM\MongoDB\Product;
-use References\Fixture\ORM\Category;
-use References\Fixture\ORM\StockItem;
-use Tool\BaseTestCaseOM;
+use Gedmo\References\ReferencesListener;
+use Gedmo\Tests\References\Fixture\ODM\MongoDB\Metadata;
+use Gedmo\Tests\References\Fixture\ODM\MongoDB\Product;
+use Gedmo\Tests\References\Fixture\ORM\Category;
+use Gedmo\Tests\References\Fixture\ORM\StockItem;
+use Gedmo\Tests\Tool\BaseTestCaseOM;
 
 class ReferencesListenerTest extends BaseTestCaseOM
 {
@@ -38,8 +39,8 @@ class ReferencesListenerTest extends BaseTestCaseOM
 
         $this->em = $this->getMockSqliteEntityManager(
             [
-                'References\Fixture\ORM\StockItem',
-                'References\Fixture\ORM\Category',
+                'Gedmo\Tests\References\Fixture\ORM\StockItem',
+                'Gedmo\Tests\References\Fixture\ORM\Category',
             ],
             new ORMAnnotationDriver($reader, __DIR__.'/Fixture/ORM')
         );

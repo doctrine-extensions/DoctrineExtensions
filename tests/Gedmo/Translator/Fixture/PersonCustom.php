@@ -1,6 +1,6 @@
 <?php
 
-namespace Translator\Fixture;
+namespace Gedmo\Tests\Translator\Fixture;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
@@ -75,7 +75,7 @@ class PersonCustom
         return new CustomProxy($this,
         /* Locale                            */ $locale,
         /* List of translatable properties:  */ ['name'],
-        /* Translation entity class:         */ 'Translator\Fixture\PersonCustomTranslation',
+        /* Translation entity class:         */ 'Gedmo\Tests\Translator\Fixture\PersonCustomTranslation',
         /* Translations collection property: */ $this->translations
         );
     }

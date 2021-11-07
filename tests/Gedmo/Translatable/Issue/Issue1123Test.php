@@ -1,16 +1,17 @@
 <?php
 
-namespace Gedmo\Translatable;
+namespace Gedmo\Tests\Translatable;
 
 use Doctrine\Common\EventManager;
-use Tool\BaseTestCaseORM;
-use Translatable\Fixture\Issue1123\ChildEntity;
+use Gedmo\Tests\Tool\BaseTestCaseORM;
+use Gedmo\Tests\Translatable\Fixture\Issue1123\ChildEntity;
+use Gedmo\Translatable\TranslatableListener;
 
 class Issue1123Test extends BaseTestCaseORM
 {
     public const TRANSLATION = 'Gedmo\\Translatable\\Entity\\Translation';
-    public const BASE_ENTITY = 'Translatable\\Fixture\\Issue1123\\BaseEntity';
-    public const CHILD_ENTITY = 'Translatable\\Fixture\\Issue1123\\ChildEntity';
+    public const BASE_ENTITY = 'Gedmo\\Tests\\Translatable\\Fixture\\Issue1123\\BaseEntity';
+    public const CHILD_ENTITY = 'Gedmo\\Tests\\Translatable\\Fixture\\Issue1123\\ChildEntity';
 
     protected function setUp(): void
     {

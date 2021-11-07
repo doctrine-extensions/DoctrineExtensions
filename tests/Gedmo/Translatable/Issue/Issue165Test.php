@@ -1,10 +1,11 @@
 <?php
 
-namespace Gedmo\Translatable;
+namespace Gedmo\Tests\Translatable;
 
 use Doctrine\Common\EventManager;
-use Tool\BaseTestCaseMongoODM;
-use Translatable\Fixture\Issue165\SimpleArticle;
+use Gedmo\Tests\Tool\BaseTestCaseMongoODM;
+use Gedmo\Tests\Translatable\Fixture\Issue165\SimpleArticle;
+use Gedmo\Translatable\TranslatableListener;
 
 /**
  * These are tests for Translatable behavior ODM implementation
@@ -17,7 +18,7 @@ use Translatable\Fixture\Issue165\SimpleArticle;
  */
 class Issue165Test extends BaseTestCaseMongoODM
 {
-    public const ARTICLE = 'Translatable\Fixture\Issue165\SimpleArticle';
+    public const ARTICLE = 'Gedmo\Tests\Translatable\Fixture\Issue165\SimpleArticle';
     public const TRANSLATION = 'Gedmo\\Translatable\\Document\\Translation';
 
     private $translatableListener;
@@ -77,7 +78,7 @@ class Issue165Test extends BaseTestCaseMongoODM
         $this->translatableListener->setTranslatableLocale('en');
 
         $id = $newarticle->getId();
-        $newarticle = $this->dm->getRepository('Translatable\Fixture\Issue165\SimpleArticle')->find($id);
+        $newarticle = $this->dm->getRepository('Gedmo\Tests\Translatable\Fixture\Issue165\SimpleArticle')->find($id);
 
         $newarticle->setTitle('en');
         $newarticle->setContent('en');
@@ -98,7 +99,7 @@ class Issue165Test extends BaseTestCaseMongoODM
         $this->dm->flush();
 
         $id = $newarticle->getId();
-        $newarticle = $this->dm->getRepository('Translatable\Fixture\Issue165\SimpleArticle')->find($id);
+        $newarticle = $this->dm->getRepository('Gedmo\Tests\Translatable\Fixture\Issue165\SimpleArticle')->find($id);
 
         $this->assertEquals('de2', $newarticle->getUntranslated());
     }

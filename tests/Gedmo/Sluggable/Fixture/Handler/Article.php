@@ -1,6 +1,6 @@
 <?php
 
-namespace Sluggable\Fixture\Handler;
+namespace Gedmo\Tests\Sluggable\Fixture\Handler;
 
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -27,7 +27,7 @@ class Article implements Sluggable
     /**
      * @Gedmo\Slug(handlers={
      *      @Gedmo\SlugHandler(class="Gedmo\Sluggable\Handler\InversedRelativeSlugHandler", options={
-     *          @Gedmo\SlugHandlerOption(name="relationClass", value="Sluggable\Fixture\Handler\ArticleRelativeSlug"),
+     *          @Gedmo\SlugHandlerOption(name="relationClass", value="Gedmo\Tests\Sluggable\Fixture\Handler\ArticleRelativeSlug"),
      *          @Gedmo\SlugHandlerOption(name="mappedBy", value="article"),
      *          @Gedmo\SlugHandlerOption(name="inverseSlugField", value="slug")
      *      })

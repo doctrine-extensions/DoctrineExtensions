@@ -1,10 +1,11 @@
 <?php
 
-namespace Gedmo\Blameable;
+namespace Gedmo\Tests\Blameable;
 
-use Blameable\Fixture\Document\Article;
 use Doctrine\Common\EventManager;
-use Tool\BaseTestCaseMongoODM;
+use Gedmo\Blameable\BlameableListener;
+use Gedmo\Tests\Blameable\Fixture\Document\Article;
+use Gedmo\Tests\Tool\BaseTestCaseMongoODM;
 
 /**
  * These are tests for Blameable behavior, when no user is available
@@ -14,7 +15,7 @@ use Tool\BaseTestCaseMongoODM;
  */
 class NoUserTest extends BaseTestCaseMongoODM
 {
-    public const ARTICLE = 'Blameable\Fixture\Document\Article';
+    public const ARTICLE = 'Gedmo\Tests\Blameable\Fixture\Document\Article';
 
     protected function setUp(): void
     {

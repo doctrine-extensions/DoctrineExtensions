@@ -1,16 +1,17 @@
 <?php
 
-namespace Gedmo\Translatable;
+namespace Gedmo\Tests\Translatable;
 
 use Doctrine\Common\EventManager;
 use Doctrine\ORM\Query;
+use Gedmo\Tests\Tool\BaseTestCaseORM;
+use Gedmo\Tests\Translatable\Fixture\Issue922\Post;
 use Gedmo\Translatable\Query\TreeWalker\TranslationWalker;
-use Tool\BaseTestCaseORM;
-use Translatable\Fixture\Issue922\Post;
+use Gedmo\Translatable\TranslatableListener;
 
 class Issue922Test extends BaseTestCaseORM
 {
-    public const POST = 'Translatable\Fixture\Issue922\Post';
+    public const POST = 'Gedmo\Tests\Translatable\Fixture\Issue922\Post';
     public const TRANSLATION = 'Gedmo\Translatable\Entity\Translation';
 
     public const TREE_WALKER_TRANSLATION = 'Gedmo\\Translatable\\Query\\TreeWalker\\TranslationWalker';

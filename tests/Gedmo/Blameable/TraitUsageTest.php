@@ -1,10 +1,11 @@
 <?php
 
-namespace Gedmo\Blameable;
+namespace Gedmo\Tests\Blameable;
 
-use Blameable\Fixture\Entity\UsingTrait;
 use Doctrine\Common\EventManager;
-use Tool\BaseTestCaseORM;
+use Gedmo\Blameable\BlameableListener;
+use Gedmo\Tests\Blameable\Fixture\Entity\UsingTrait;
+use Gedmo\Tests\Tool\BaseTestCaseORM;
 
 /**
  * These are tests for Blameable behavior
@@ -17,7 +18,7 @@ use Tool\BaseTestCaseORM;
  */
 class TraitUsageTest extends BaseTestCaseORM
 {
-    public const TARGET = 'Blameable\\Fixture\\Entity\\UsingTrait';
+    public const TARGET = 'Gedmo\\Tests\\Blameable\\Fixture\\Entity\\UsingTrait';
 
     protected function setUp(): void
     {

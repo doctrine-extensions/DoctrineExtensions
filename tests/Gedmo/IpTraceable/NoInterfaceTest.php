@@ -1,10 +1,11 @@
 <?php
 
-namespace Gedmo\IpTraceable;
+namespace Gedmo\Tests\IpTraceable;
 
 use Doctrine\Common\EventManager;
-use IpTraceable\Fixture\WithoutInterface;
-use Tool\BaseTestCaseORM;
+use Gedmo\IpTraceable\IpTraceableListener;
+use Gedmo\Tests\IpTraceable\Fixture\WithoutInterface;
+use Gedmo\Tests\Tool\BaseTestCaseORM;
 
 /**
  * These are tests for IpTraceable behavior
@@ -18,7 +19,7 @@ use Tool\BaseTestCaseORM;
 class NoInterfaceTest extends BaseTestCaseORM
 {
     public const TEST_IP = '34.234.1.10';
-    public const FIXTURE = 'IpTraceable\\Fixture\\WithoutInterface';
+    public const FIXTURE = 'Gedmo\\Tests\\IpTraceable\\Fixture\\WithoutInterface';
 
     protected function setUp(): void
     {

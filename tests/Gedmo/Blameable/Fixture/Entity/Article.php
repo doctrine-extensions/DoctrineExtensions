@@ -1,6 +1,6 @@
 <?php
 
-namespace Blameable\Fixture\Entity;
+namespace Gedmo\Tests\Blameable\Fixture\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Blameable\Blameable;
@@ -20,7 +20,7 @@ class Article implements Blameable
     private $title;
 
     /**
-     * @ORM\OneToMany(targetEntity="Blameable\Fixture\Entity\Comment", mappedBy="article")
+     * @ORM\OneToMany(targetEntity="Gedmo\Tests\Blameable\Fixture\Entity\Comment", mappedBy="article")
      */
     private $comments;
 

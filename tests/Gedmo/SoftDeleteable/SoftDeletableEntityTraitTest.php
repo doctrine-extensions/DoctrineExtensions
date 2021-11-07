@@ -1,8 +1,8 @@
 <?php
 
-namespace Gedmo\SoftDeleteable;
+namespace Gedmo\Tests\SoftDeleteable;
 
-use SoftDeleteable\Fixture\Entity\UsingTrait;
+use Gedmo\Tests\SoftDeleteable\Fixture\Entity\UsingTrait;
 
 /**
  * Test for SoftDeletable Entity Trait

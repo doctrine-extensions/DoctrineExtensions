@@ -1,6 +1,6 @@
 <?php
 
-namespace References\Fixture\ODM\MongoDB;
+namespace Gedmo\Tests\References\Fixture\ODM\MongoDB;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -23,12 +23,12 @@ class Product
     private $name;
 
     /**
-     * @Gedmo\ReferenceMany(type="entity", class="References\Fixture\ORM\StockItem", mappedBy="product")
+     * @Gedmo\ReferenceMany(type="entity", class="Gedmo\Tests\References\Fixture\ORM\StockItem", mappedBy="product")
      */
     private $stockItems;
 
     /**
-     * @ODM\EmbedMany(targetDocument="References\Fixture\ODM\MongoDB\Metadata")
+     * @ODM\EmbedMany(targetDocument="Gedmo\Tests\References\Fixture\ODM\MongoDB\Metadata")
      */
     private $metadatas;
 

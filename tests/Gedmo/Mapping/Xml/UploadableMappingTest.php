@@ -1,15 +1,15 @@
 <?php
 
-namespace Gedmo\Mapping\Xml;
+namespace Gedmo\Tests\Mapping\Xml;
 
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\EventManager;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
 use Doctrine\ORM\Mapping\Driver\DriverChain;
 use Doctrine\ORM\Mapping\Driver\XmlDriver;
+use Gedmo\Tests\Tool\BaseTestCaseOM;
 use Gedmo\Uploadable\Mapping\Validator;
 use Gedmo\Uploadable\UploadableListener;
-use Tool\BaseTestCaseOM;
 
 /**
  * These are mapping tests for Uploadable extension
@@ -45,21 +45,21 @@ class UploadableMappingTest extends BaseTestCaseOM
         $xmlDriver = new XmlDriver(__DIR__.'/../Driver/Xml');
 
         $chain = new DriverChain();
-        $chain->addDriver($xmlDriver, 'Mapping\Fixture\Xml');
-        $chain->addDriver($annotationDriver, 'Mapping\Fixture');
+        $chain->addDriver($xmlDriver, 'Gedmo\Tests\Mapping\Fixture\Xml');
+        $chain->addDriver($annotationDriver, 'Gedmo\Tests\Mapping\Fixture');
 
         $this->listener = new UploadableListener();
         $this->evm = new EventManager();
         $this->evm->addEventSubscriber($this->listener);
 
         $this->em = $this->getMockSqliteEntityManager([
-            'Mapping\Fixture\Xml\Uploadable',
+            'Gedmo\Tests\Mapping\Fixture\Xml\Uploadable',
         ], $chain);
     }
 
     public function testMetadata()
     {
-        $meta = $this->em->getClassMetadata('Mapping\Fixture\Xml\Uploadable');
+        $meta = $this->em->getClassMetadata('Gedmo\Tests\Mapping\Fixture\Xml\Uploadable');
         $config = $this->listener->getConfiguration($this->em, $meta->name);
 
         $this->assertTrue($config['uploadable']);

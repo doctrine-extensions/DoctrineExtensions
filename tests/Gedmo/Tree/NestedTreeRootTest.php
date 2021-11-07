@@ -1,12 +1,13 @@
 <?php
 
-namespace Gedmo\Tree;
+namespace Gedmo\Tests\Tree;
 
 use Doctrine\Common\EventManager;
+use Gedmo\Tests\Tool\BaseTestCaseORM;
+use Gedmo\Tests\Tree\Fixture\ForeignRootCategory;
+use Gedmo\Tests\Tree\Fixture\RootCategory;
 use Gedmo\Tree\Entity\Repository\NestedTreeRepository;
-use Tool\BaseTestCaseORM;
-use Tree\Fixture\ForeignRootCategory;
-use Tree\Fixture\RootCategory;
+use Gedmo\Tree\TreeListener;
 
 /**
  * These are tests for Tree behavior
@@ -19,7 +20,7 @@ use Tree\Fixture\RootCategory;
  */
 class NestedTreeRootTest extends BaseTestCaseORM
 {
-    public const CATEGORY = 'Tree\\Fixture\\RootCategory';
+    public const CATEGORY = 'Gedmo\\Tests\\Tree\\Fixture\\RootCategory';
 
     protected function setUp(): void
     {
@@ -329,7 +330,7 @@ class NestedTreeRootTest extends BaseTestCaseORM
     {
         // depopulate, i don't want the other stuff in db
         /** @var NestedTreeRepository $repo */
-        $repo = $this->em->getRepository('Tree\\Fixture\\ForeignRootCategory');
+        $repo = $this->em->getRepository('Gedmo\\Tests\\Tree\\Fixture\\ForeignRootCategory');
         $all = $repo->findAll();
         foreach ($all as $one) {
             $this->em->remove($one);
@@ -494,7 +495,7 @@ class NestedTreeRootTest extends BaseTestCaseORM
     {
         return [
             self::CATEGORY,
-            'Tree\\Fixture\\ForeignRootCategory',
+            'Gedmo\\Tests\\Tree\\Fixture\\ForeignRootCategory',
         ];
     }
 

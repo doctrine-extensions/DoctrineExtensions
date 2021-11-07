@@ -1,6 +1,6 @@
 <?php
 
-namespace Gedmo\Mapping\Xml;
+namespace Gedmo\Tests\Mapping\Xml;
 
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\EventManager;
@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
 use Doctrine\ORM\Mapping\Driver\DriverChain;
 use Doctrine\ORM\Mapping\Driver\XmlDriver;
 use Gedmo\Sortable\SortableListener;
-use Tool\BaseTestCaseOM;
+use Gedmo\Tests\Tool\BaseTestCaseOM;
 
 /**
  * These are mapping extension tests
@@ -41,22 +41,22 @@ class SortableMappingTest extends BaseTestCaseOM
         $xmlDriver = new XmlDriver(__DIR__.'/../Driver/Xml');
 
         $chain = new DriverChain();
-        $chain->addDriver($xmlDriver, 'Mapping\Fixture\Xml');
-        $chain->addDriver($annotationDriver, 'Mapping\Fixture');
+        $chain->addDriver($xmlDriver, 'Gedmo\Tests\Mapping\Fixture\Xml');
+        $chain->addDriver($annotationDriver, 'Gedmo\Tests\Mapping\Fixture');
 
         $this->sortable = new SortableListener();
         $this->evm = new EventManager();
         $this->evm->addEventSubscriber($this->sortable);
 
         $this->em = $this->getMockSqliteEntityManager([
-            'Mapping\Fixture\Xml\Sortable',
-            'Mapping\Fixture\SortableGroup',
+            'Gedmo\Tests\Mapping\Fixture\Xml\Sortable',
+            'Gedmo\Tests\Mapping\Fixture\SortableGroup',
         ], $chain);
     }
 
     public function testSluggableMetadata()
     {
-        $meta = $this->em->getClassMetadata('Mapping\Fixture\Xml\Sortable');
+        $meta = $this->em->getClassMetadata('Gedmo\Tests\Mapping\Fixture\Xml\Sortable');
         $config = $this->sortable->getConfiguration($this->em, $meta->name);
 
         $this->assertArrayHasKey('position', $config);

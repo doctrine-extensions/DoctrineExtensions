@@ -1,15 +1,15 @@
 <?php
 
-namespace Gedmo\Mapping;
+namespace Gedmo\Tests\Mapping;
 
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\EventManager;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
 use Doctrine\ORM\Mapping\Driver\DriverChain;
 use Doctrine\ORM\Mapping\Driver\YamlDriver;
+use Gedmo\Tests\Tool\BaseTestCaseOM;
 use Gedmo\Uploadable\Mapping\Validator;
 use Gedmo\Uploadable\UploadableListener;
-use Tool\BaseTestCaseOM;
 
 /**
  * These are mapping tests for Uploadable extension
@@ -45,21 +45,21 @@ class UploadableMappingTest extends BaseTestCaseOM
         $yamlDriver = new YamlDriver(__DIR__.'/Driver/Yaml');
 
         $chain = new DriverChain();
-        $chain->addDriver($yamlDriver, 'Mapping\Fixture\Yaml');
-        $chain->addDriver($annotationDriver, 'Mapping\Fixture');
+        $chain->addDriver($yamlDriver, 'Gedmo\Tests\Mapping\Fixture\Yaml');
+        $chain->addDriver($annotationDriver, 'Gedmo\Tests\Mapping\Fixture');
 
         $this->listener = new UploadableListener();
         $this->evm = new EventManager();
         $this->evm->addEventSubscriber($this->listener);
 
         $this->em = $this->getMockSqliteEntityManager([
-            'Mapping\Fixture\Yaml\Uploadable',
+            'Gedmo\Tests\Mapping\Fixture\Yaml\Uploadable',
         ], $chain);
     }
 
     public function testYamlMapping()
     {
-        $meta = $this->em->getClassMetadata('Mapping\Fixture\Yaml\Uploadable');
+        $meta = $this->em->getClassMetadata('Gedmo\Tests\Mapping\Fixture\Yaml\Uploadable');
         $config = $this->listener->getConfiguration($this->em, $meta->name);
 
         $this->assertTrue($config['uploadable']);

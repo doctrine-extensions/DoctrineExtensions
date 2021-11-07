@@ -1,6 +1,6 @@
 <?php
 
-namespace ReferenceIntegrity\Fixture\Document\ManyNullify;
+namespace Gedmo\Tests\ReferenceIntegrity\Fixture\Document\ManyNullify;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
@@ -27,7 +27,7 @@ class Type
     private $identifier;
 
     /**
-     * @ODM\ReferenceMany(targetDocument="ReferenceIntegrity\Fixture\Document\ManyNullify\Article", mappedBy="type")
+     * @ODM\ReferenceMany(targetDocument="Gedmo\Tests\ReferenceIntegrity\Fixture\Document\ManyNullify\Article", mappedBy="type")
      * @Gedmo\ReferenceIntegrity("nullify")
      *
      * @var ArrayCollection

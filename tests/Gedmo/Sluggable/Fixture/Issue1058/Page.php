@@ -1,6 +1,6 @@
 <?php
 
-namespace Sluggable\Fixture\Issue1058;
+namespace Gedmo\Tests\Sluggable\Fixture\Issue1058;
 
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -25,7 +25,7 @@ class Page
     /**
      * @var User
      *
-     * @ORM\ManyToOne(targetEntity="Sluggable\Fixture\Issue1058\User")
+     * @ORM\ManyToOne(targetEntity="Gedmo\Tests\Sluggable\Fixture\Issue1058\User")
      * @ORM\JoinColumn(nullable=false)
      */
     protected $user;

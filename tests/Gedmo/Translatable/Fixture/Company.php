@@ -1,6 +1,6 @@
 <?php
 
-namespace Translatable\Fixture;
+namespace Gedmo\Tests\Translatable\Fixture;
 
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -22,7 +22,7 @@ class Company implements Translatable
 
     /**
      * @var CompanyEmbedLink
-     * @ORM\Embedded(class="Translatable\Fixture\CompanyEmbedLink")
+     * @ORM\Embedded(class="Gedmo\Tests\Translatable\Fixture\CompanyEmbedLink")
      */
     private $link;
 

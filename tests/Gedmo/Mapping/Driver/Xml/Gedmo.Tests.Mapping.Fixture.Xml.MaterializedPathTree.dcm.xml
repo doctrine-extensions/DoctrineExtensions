@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:gedmo="http://gediminasm.org/schemas/orm/doctrine-extensions-mapping">
-    <entity name="Mapping\Fixture\Xml\MaterializedPathTree" table="materialized_path_trees">
+    <entity name="Gedmo\Tests\Mapping\Fixture\Xml\MaterializedPathTree" table="materialized_path_trees">
         <indexes>
             <index name="title_idx" columns="title"/>
         </indexes>

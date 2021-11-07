@@ -1,10 +1,12 @@
 <?php
 
-namespace Gedmo\Translatable;
+namespace Gedmo\Tests\Translatable;
 
 use Doctrine\Common\EventManager;
-use Tool\BaseTestCaseORM;
-use Translatable\Fixture\Person;
+use Gedmo\Tests\Tool\BaseTestCaseORM;
+use Gedmo\Tests\Translatable\Fixture\Person;
+use Gedmo\Translatable\Entity\Repository\TranslationRepository;
+use Gedmo\Translatable\TranslatableListener;
 
 /**
  * These are tests for translatable behavior
@@ -17,8 +19,8 @@ use Translatable\Fixture\Person;
  */
 class EntityTranslationTableTest extends BaseTestCaseORM
 {
-    public const PERSON = 'Translatable\\Fixture\\Person';
-    public const TRANSLATION = 'Translatable\\Fixture\\PersonTranslation';
+    public const PERSON = 'Gedmo\\Tests\\Translatable\\Fixture\\Person';
+    public const TRANSLATION = 'Gedmo\\Tests\\Translatable\\Fixture\\PersonTranslation';
 
     private $translatableListener;
 
@@ -45,7 +47,7 @@ class EntityTranslationTableTest extends BaseTestCaseORM
         $this->em->clear();
 
         $repo = $this->em->getRepository(self::TRANSLATION);
-        $this->assertInstanceOf(Entity\Repository\TranslationRepository::class, $repo);
+        $this->assertInstanceOf(TranslationRepository::class, $repo);
 
         $translations = $repo->findTranslations($person);
         //As Translate locale and Default locale are the same, no records should be present in translations table

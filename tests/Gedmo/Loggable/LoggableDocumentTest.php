@@ -1,13 +1,14 @@
 <?php
 
-namespace Gedmo\Loggable;
+namespace Gedmo\Tests\Loggable;
 
 use Doctrine\Common\EventManager;
-use Loggable\Fixture\Document\Article;
-use Loggable\Fixture\Document\Author;
-use Loggable\Fixture\Document\Comment;
-use Loggable\Fixture\Document\RelatedArticle;
-use Tool\BaseTestCaseMongoODM;
+use Gedmo\Loggable\LoggableListener;
+use Gedmo\Tests\Loggable\Fixture\Document\Article;
+use Gedmo\Tests\Loggable\Fixture\Document\Author;
+use Gedmo\Tests\Loggable\Fixture\Document\Comment;
+use Gedmo\Tests\Loggable\Fixture\Document\RelatedArticle;
+use Gedmo\Tests\Tool\BaseTestCaseMongoODM;
 
 /**
  * These are tests for loggable behavior
@@ -21,10 +22,10 @@ use Tool\BaseTestCaseMongoODM;
  */
 class LoggableDocumentTest extends BaseTestCaseMongoODM
 {
-    public const ARTICLE = 'Loggable\\Fixture\\Document\\Article';
-    public const COMMENT = 'Loggable\\Fixture\\Document\\Comment';
-    public const RELATED_ARTICLE = 'Loggable\\Fixture\\Document\\RelatedArticle';
-    public const COMMENT_LOG = 'Loggable\\Fixture\\Document\\Log\\Comment';
+    public const ARTICLE = 'Gedmo\\Tests\\Loggable\\Fixture\\Document\\Article';
+    public const COMMENT = 'Gedmo\\Tests\\Loggable\\Fixture\\Document\\Comment';
+    public const RELATED_ARTICLE = 'Gedmo\\Tests\\Loggable\\Fixture\\Document\\RelatedArticle';
+    public const COMMENT_LOG = 'Gedmo\\Tests\\Loggable\\Fixture\\Document\\Log\\Comment';
 
     protected function setUp(): void
     {

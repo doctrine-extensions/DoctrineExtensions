@@ -1,11 +1,11 @@
 <?php
 
-namespace Wrapper;
+namespace Gedmo\Tests\Wrapper;
 
 use Doctrine\Common\EventManager;
+use Gedmo\Tests\Tool\BaseTestCaseMongoODM;
+use Gedmo\Tests\Wrapper\Fixture\Document\Article;
 use Gedmo\Tool\Wrapper\MongoDocumentWrapper;
-use Tool\BaseTestCaseMongoODM;
-use Wrapper\Fixture\Document\Article;
 
 /**
  * Mongo Document wrapper tests
@@ -18,7 +18,7 @@ use Wrapper\Fixture\Document\Article;
  */
 class MongoDocumentWrapperTest extends BaseTestCaseMongoODM
 {
-    public const ARTICLE = 'Wrapper\\Fixture\\Document\\Article';
+    public const ARTICLE = 'Gedmo\\Tests\\Wrapper\\Fixture\\Document\\Article';
     private $articleId;
 
     protected function setUp(): void

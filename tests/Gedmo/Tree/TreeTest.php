@@ -1,11 +1,13 @@
 <?php
 
-namespace Gedmo\Tree;
+namespace Gedmo\Tests\Tree;
 
 use Doctrine\Common\EventManager;
-use Tool\BaseTestCaseORM;
-use Tree\Fixture\Category;
-use Tree\Fixture\CategoryUuid;
+use Gedmo\Tests\Tool\BaseTestCaseORM;
+use Gedmo\Tests\Tree\Fixture\Category;
+use Gedmo\Tests\Tree\Fixture\CategoryUuid;
+use Gedmo\Tree\Node;
+use Gedmo\Tree\TreeListener;
 
 /**
  * These are tests for Tree behavior
@@ -18,8 +20,8 @@ use Tree\Fixture\CategoryUuid;
  */
 class TreeTest extends BaseTestCaseORM
 {
-    public const CATEGORY = 'Tree\\Fixture\\Category';
-    public const CATEGORY_UUID = 'Tree\\Fixture\\CategoryUuid';
+    public const CATEGORY = 'Gedmo\\Tests\\Tree\\Fixture\\Category';
+    public const CATEGORY_UUID = 'Gedmo\\Tests\\Tree\\Fixture\\CategoryUuid';
 
     protected function setUp(): void
     {

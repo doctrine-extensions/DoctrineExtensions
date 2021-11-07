@@ -5,7 +5,7 @@
  * @author Anatoly Marinescu <tolean@zingan.com>
  */
 
-namespace Tree\Fixture\Closure;
+namespace Gedmo\Tests\Tree\Fixture\Closure;
 
 use Doctrine\ORM\Mapping as ORM;
 
@@ -27,7 +27,7 @@ class News
     private $title;
 
     /**
-     * @ORM\OneToOne(targetEntity="Tree\Fixture\Closure\Category", cascade={"persist"})
+     * @ORM\OneToOne(targetEntity="Gedmo\Tests\Tree\Fixture\Closure\Category", cascade={"persist"})
      * @ORM\JoinColumn(name="category_id", referencedColumnName="id")
      */
     private $category;

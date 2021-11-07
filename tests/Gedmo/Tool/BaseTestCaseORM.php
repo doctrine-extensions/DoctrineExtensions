@@ -1,6 +1,6 @@
 <?php
 
-namespace Tool;
+namespace Gedmo\Tests\Tool;
 
 use Doctrine\Common\EventManager;
 use Doctrine\ORM\Configuration;

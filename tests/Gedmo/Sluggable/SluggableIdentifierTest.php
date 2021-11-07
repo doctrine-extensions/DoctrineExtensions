@@ -1,10 +1,11 @@
 <?php
 
-namespace Gedmo\Sluggable;
+namespace Gedmo\Tests\Sluggable;
 
 use Doctrine\Common\EventManager;
-use Sluggable\Fixture\Identifier;
-use Tool\BaseTestCaseORM;
+use Gedmo\Sluggable\SluggableListener;
+use Gedmo\Tests\Sluggable\Fixture\Identifier;
+use Gedmo\Tests\Tool\BaseTestCaseORM;
 
 /**
  * These are tests for Sluggable behavior
@@ -17,7 +18,7 @@ use Tool\BaseTestCaseORM;
  */
 class SluggableIdentifierTest extends BaseTestCaseORM
 {
-    public const TARGET = 'Sluggable\\Fixture\\Identifier';
+    public const TARGET = 'Gedmo\\Tests\\Sluggable\\Fixture\\Identifier';
 
     protected function setUp(): void
     {

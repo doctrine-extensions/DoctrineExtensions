@@ -1,10 +1,11 @@
 <?php
 
-namespace Gedmo\Timestampable;
+namespace Gedmo\Tests\Timestampable;
 
 use Doctrine\Common\EventManager;
-use Timestampable\Fixture\UsingTrait;
-use Tool\BaseTestCaseORM;
+use Gedmo\Tests\Timestampable\Fixture\UsingTrait;
+use Gedmo\Tests\Tool\BaseTestCaseORM;
+use Gedmo\Timestampable\TimestampableListener;
 
 /**
  * These are tests for Timestampable behavior
@@ -17,7 +18,7 @@ use Tool\BaseTestCaseORM;
  */
 class TraitUsageTest extends BaseTestCaseORM
 {
-    public const TARGET = 'Timestampable\\Fixture\\UsingTrait';
+    public const TARGET = 'Gedmo\\Tests\\Timestampable\\Fixture\\UsingTrait';
 
     protected function setUp(): void
     {
@@ -50,8 +51,8 @@ class TraitUsageTest extends BaseTestCaseORM
     public function traitMethodthShouldReturnObject()
     {
         $sport = new UsingTrait();
-        $this->assertInstanceOf('Timestampable\Fixture\UsingTrait', $sport->setCreatedAt(new \DateTime()));
-        $this->assertInstanceOf('Timestampable\Fixture\UsingTrait', $sport->setUpdatedAt(new \DateTime()));
+        $this->assertInstanceOf('Gedmo\Tests\Timestampable\Fixture\UsingTrait', $sport->setCreatedAt(new \DateTime()));
+        $this->assertInstanceOf('Gedmo\Tests\Timestampable\Fixture\UsingTrait', $sport->setUpdatedAt(new \DateTime()));
     }
 
     protected function getUsedEntityFixtures()

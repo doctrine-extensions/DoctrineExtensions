@@ -1,6 +1,6 @@
 <?php
 
-namespace Gedmo\Sluggable;
+namespace Gedmo\Tests\Sluggable;
 
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\EventManager;
@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
 use Doctrine\ORM\Mapping\Driver\DriverChain;
 use Doctrine\ORM\Mapping\Driver\YamlDriver;
 use Gedmo\Sortable\SortableListener;
-use Tool\BaseTestCaseOM;
+use Gedmo\Tests\Tool\BaseTestCaseOM;
 
 /**
  * These are mapping tests for sortable extension
@@ -41,22 +41,22 @@ class SortableMappingTest extends BaseTestCaseOM
         $yamlDriver = new YamlDriver(__DIR__.'/Driver/Yaml');
 
         $chain = new DriverChain();
-        $chain->addDriver($yamlDriver, 'Mapping\Fixture\Yaml');
-        $chain->addDriver($annotationDriver, 'Mapping\Fixture');
+        $chain->addDriver($yamlDriver, 'Gedmo\Tests\Mapping\Fixture\Yaml');
+        $chain->addDriver($annotationDriver, 'Gedmo\Tests\Mapping\Fixture');
 
         $this->sortable = new SortableListener();
         $this->evm = new EventManager();
         $this->evm->addEventSubscriber($this->sortable);
 
         $this->em = $this->getMockSqliteEntityManager([
-            'Mapping\Fixture\Yaml\Sortable',
-            'Mapping\Fixture\SortableGroup',
+            'Gedmo\Tests\Mapping\Fixture\Yaml\Sortable',
+            'Gedmo\Tests\Mapping\Fixture\SortableGroup',
         ], $chain);
     }
 
     public function testYamlMapping()
     {
-        $meta = $this->em->getClassMetadata('Mapping\Fixture\Yaml\Sortable');
+        $meta = $this->em->getClassMetadata('Gedmo\Tests\Mapping\Fixture\Yaml\Sortable');
         $config = $this->sortable->getConfiguration($this->em, $meta->name);
 
         $this->assertArrayHasKey('position', $config);

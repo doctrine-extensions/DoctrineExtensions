@@ -1,6 +1,6 @@
 <?php
 
-namespace Loggable\Fixture\Document;
+namespace Gedmo\Tests\Loggable\Fixture\Document;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -21,7 +21,7 @@ class Article
     private $title;
 
     /**
-     * @ODM\EmbedOne(targetDocument="Loggable\Fixture\Document\Author")
+     * @ODM\EmbedOne(targetDocument="Gedmo\Tests\Loggable\Fixture\Document\Author")
      * @Gedmo\Versioned
      */
     private $author;

@@ -1,10 +1,10 @@
 <?php
 
-namespace Gedmo\Tree;
+namespace Gedmo\Tests\Tree;
 
 use Doctrine\Common\EventManager;
-use Tool\BaseTestCaseMongoODM;
-use Tree\Fixture\Mock\TreeListenerMock;
+use Gedmo\Tests\Tool\BaseTestCaseMongoODM;
+use Gedmo\Tests\Tree\Fixture\Mock\TreeListenerMock;
 
 /**
  * These are tests for Tree behavior
@@ -18,7 +18,7 @@ use Tree\Fixture\Mock\TreeListenerMock;
  */
 class MaterializedPathODMMongoDBTreeLockingTest extends BaseTestCaseMongoODM
 {
-    public const ARTICLE = 'Tree\\Fixture\\Document\\Article';
+    public const ARTICLE = 'Gedmo\\Tests\\Tree\\Fixture\\Document\\Article';
 
     protected $config;
     protected $listener;

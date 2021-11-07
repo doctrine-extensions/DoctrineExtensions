@@ -1,10 +1,11 @@
 <?php
 
-namespace Gedmo\Sluggable;
+namespace Gedmo\Tests\Sluggable;
 
 use Doctrine\Common\EventManager;
-use Sluggable\Fixture\Position;
-use Tool\BaseTestCaseORM;
+use Gedmo\Sluggable\SluggableListener;
+use Gedmo\Tests\Sluggable\Fixture\Position;
+use Gedmo\Tests\Tool\BaseTestCaseORM;
 
 /**
  * These are tests for Sluggable behavior
@@ -17,7 +18,7 @@ use Tool\BaseTestCaseORM;
  */
 class SluggablePositionTest extends BaseTestCaseORM
 {
-    public const POSITION = 'Sluggable\\Fixture\\Position';
+    public const POSITION = 'Gedmo\\Tests\\Sluggable\\Fixture\\Position';
 
     protected function setUp(): void
     {

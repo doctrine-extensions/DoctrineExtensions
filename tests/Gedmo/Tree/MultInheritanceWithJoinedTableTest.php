@@ -1,9 +1,10 @@
 <?php
 
-namespace Gedmo\Tree;
+namespace Gedmo\Tests\Tree;
 
 use Doctrine\Common\EventManager;
-use Tool\BaseTestCaseORM;
+use Gedmo\Tests\Tool\BaseTestCaseORM;
+use Gedmo\Tree\TreeListener;
 
 /**
  * These are tests for Tree behavior
@@ -18,10 +19,10 @@ use Tool\BaseTestCaseORM;
  */
 class MultInheritanceWithJoinedTableTest extends BaseTestCaseORM
 {
-    public const USER = 'Tree\\Fixture\\User';
-    public const GROUP = 'Tree\\Fixture\\UserGroup';
-    public const ROLE = 'Tree\\Fixture\\Role';
-    public const USERLDAP = 'Tree\\Fixture\\UserLDAP';
+    public const USER = 'Gedmo\\Tests\\Tree\\Fixture\\User';
+    public const GROUP = 'Gedmo\\Tests\\Tree\\Fixture\\UserGroup';
+    public const ROLE = 'Gedmo\\Tests\\Tree\\Fixture\\Role';
+    public const USERLDAP = 'Gedmo\\Tests\\Tree\\Fixture\\UserLDAP';
 
     protected function setUp(): void
     {
@@ -42,7 +43,7 @@ class MultInheritanceWithJoinedTableTest extends BaseTestCaseORM
     {
         $admins = $this->em->getRepository(self::GROUP)->findOneBy(['name' => 'Admins']);
         $adminRight = $admins->getRight();
-        $userLdap = new \Tree\Fixture\UserLDAP('testname');
+        $userLdap = new \Gedmo\Tests\Tree\Fixture\UserLDAP('testname');
         $userLdap->init();
         $userLdap->setParent($admins);
         $this->em->persist($userLdap);
@@ -59,7 +60,7 @@ class MultInheritanceWithJoinedTableTest extends BaseTestCaseORM
     public function shouldBeAbleToPopulateTree()
     {
         $admins = $this->em->getRepository(self::GROUP)->findOneBy(['name' => 'Admins']);
-        $user3 = new \Tree\Fixture\User('user3@test.com', 'secret');
+        $user3 = new \Gedmo\Tests\Tree\Fixture\User('user3@test.com', 'secret');
         $user3->init();
         $user3->setParent($admins);
 
@@ -117,19 +118,19 @@ class MultInheritanceWithJoinedTableTest extends BaseTestCaseORM
 
     private function populate()
     {
-        $everyBody = new \Tree\Fixture\UserGroup('Everybody');
-        $admins = new \Tree\Fixture\UserGroup('Admins');
+        $everyBody = new \Gedmo\Tests\Tree\Fixture\UserGroup('Everybody');
+        $admins = new \Gedmo\Tests\Tree\Fixture\UserGroup('Admins');
         $admins->setParent($everyBody);
-        $visitors = new \Tree\Fixture\UserGroup('Visitors');
+        $visitors = new \Gedmo\Tests\Tree\Fixture\UserGroup('Visitors');
         $visitors->setParent($everyBody);
 
-        $user0 = new \Tree\Fixture\User('user0@test.com', 'secret');
+        $user0 = new \Gedmo\Tests\Tree\Fixture\User('user0@test.com', 'secret');
         $user0->init();
         $user0->setParent($admins);
-        $user1 = new \Tree\Fixture\User('user1@test.com', 'secret');
+        $user1 = new \Gedmo\Tests\Tree\Fixture\User('user1@test.com', 'secret');
         $user1->init();
         $user1->setParent($visitors);
-        $user2 = new \Tree\Fixture\User('user2@test.com', 'secret');
+        $user2 = new \Gedmo\Tests\Tree\Fixture\User('user2@test.com', 'secret');
         $user2->init();
         $user2->setParent($visitors);
 

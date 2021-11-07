@@ -1,24 +1,26 @@
 <?php
 
-namespace Gedmo\Uploadable;
+namespace Gedmo\Tests\Uploadable;
 
 use Doctrine\Common\EventManager;
+use Gedmo\Tests\Tool\BaseTestCaseORM;
+use Gedmo\Tests\Uploadable\Fixture\Entity\Article;
+use Gedmo\Tests\Uploadable\Fixture\Entity\File;
+use Gedmo\Tests\Uploadable\Fixture\Entity\FileAppendNumber;
+use Gedmo\Tests\Uploadable\Fixture\Entity\FileAppendNumberRelative;
+use Gedmo\Tests\Uploadable\Fixture\Entity\FileWithAllowedTypes;
+use Gedmo\Tests\Uploadable\Fixture\Entity\FileWithAlphanumericName;
+use Gedmo\Tests\Uploadable\Fixture\Entity\FileWithCustomFilenameGenerator;
+use Gedmo\Tests\Uploadable\Fixture\Entity\FileWithDisallowedTypes;
+use Gedmo\Tests\Uploadable\Fixture\Entity\FileWithMaxSize;
+use Gedmo\Tests\Uploadable\Fixture\Entity\FileWithoutPath;
+use Gedmo\Tests\Uploadable\Fixture\Entity\FileWithSha1Name;
+use Gedmo\Tests\Uploadable\Fixture\Entity\Image;
+use Gedmo\Tests\Uploadable\Stub\FileInfoStub;
+use Gedmo\Tests\Uploadable\Stub\MimeTypeGuesserStub;
+use Gedmo\Tests\Uploadable\Stub\UploadableListenerStub;
 use Gedmo\Uploadable\FileInfo\FileInfoArray;
-use Gedmo\Uploadable\Stub\MimeTypeGuesserStub;
-use Gedmo\Uploadable\Stub\UploadableListenerStub;
-use Tool\BaseTestCaseORM;
-use Uploadable\Fixture\Entity\Article;
-use Uploadable\Fixture\Entity\File;
-use Uploadable\Fixture\Entity\FileAppendNumber;
-use Uploadable\Fixture\Entity\FileAppendNumberRelative;
-use Uploadable\Fixture\Entity\FileWithAllowedTypes;
-use Uploadable\Fixture\Entity\FileWithAlphanumericName;
-use Uploadable\Fixture\Entity\FileWithCustomFilenameGenerator;
-use Uploadable\Fixture\Entity\FileWithDisallowedTypes;
-use Uploadable\Fixture\Entity\FileWithMaxSize;
-use Uploadable\Fixture\Entity\FileWithoutPath;
-use Uploadable\Fixture\Entity\FileWithSha1Name;
-use Uploadable\Fixture\Entity\Image;
+use Gedmo\Uploadable\UploadableListener;
 
 /**
  * These are tests for Uploadable behavior
@@ -32,18 +34,18 @@ use Uploadable\Fixture\Entity\Image;
  */
 class UploadableEntityTest extends BaseTestCaseORM
 {
-    public const IMAGE_CLASS = 'Uploadable\Fixture\Entity\Image';
-    public const ARTICLE_CLASS = 'Uploadable\Fixture\Entity\Article';
-    public const FILE_CLASS = 'Uploadable\Fixture\Entity\File';
-    public const FILE_APPEND_NUMBER_CLASS = 'Uploadable\Fixture\Entity\FileAppendNumber';
-    public const FILE_APPEND_NUMBER__RELATIVE_PATH_CLASS = 'Uploadable\Fixture\Entity\FileAppendNumberRelative';
-    public const FILE_WITHOUT_PATH_CLASS = 'Uploadable\Fixture\Entity\FileWithoutPath';
-    public const FILE_WITH_SHA1_NAME_CLASS = 'Uploadable\Fixture\Entity\FileWithSha1Name';
-    public const FILE_WITH_ALPHANUMERIC_NAME_CLASS = 'Uploadable\Fixture\Entity\FileWithAlphanumericName';
-    public const FILE_WITH_CUSTOM_FILENAME_GENERATOR_CLASS = 'Uploadable\Fixture\Entity\FileWithCustomFilenameGenerator';
-    public const FILE_WITH_MAX_SIZE_CLASS = 'Uploadable\Fixture\Entity\FileWithMaxSize';
-    public const FILE_WITH_ALLOWED_TYPES_CLASS = 'Uploadable\Fixture\Entity\FileWithAllowedTypes';
-    public const FILE_WITH_DISALLOWED_TYPES_CLASS = 'Uploadable\Fixture\Entity\FileWithDisallowedTypes';
+    public const IMAGE_CLASS = 'Gedmo\Tests\Uploadable\Fixture\Entity\Image';
+    public const ARTICLE_CLASS = 'Gedmo\Tests\Uploadable\Fixture\Entity\Article';
+    public const FILE_CLASS = 'Gedmo\Tests\Uploadable\Fixture\Entity\File';
+    public const FILE_APPEND_NUMBER_CLASS = 'Gedmo\Tests\Uploadable\Fixture\Entity\FileAppendNumber';
+    public const FILE_APPEND_NUMBER__RELATIVE_PATH_CLASS = 'Gedmo\Tests\Uploadable\Fixture\Entity\FileAppendNumberRelative';
+    public const FILE_WITHOUT_PATH_CLASS = 'Gedmo\Tests\Uploadable\Fixture\Entity\FileWithoutPath';
+    public const FILE_WITH_SHA1_NAME_CLASS = 'Gedmo\Tests\Uploadable\Fixture\Entity\FileWithSha1Name';
+    public const FILE_WITH_ALPHANUMERIC_NAME_CLASS = 'Gedmo\Tests\Uploadable\Fixture\Entity\FileWithAlphanumericName';
+    public const FILE_WITH_CUSTOM_FILENAME_GENERATOR_CLASS = 'Gedmo\Tests\Uploadable\Fixture\Entity\FileWithCustomFilenameGenerator';
+    public const FILE_WITH_MAX_SIZE_CLASS = 'Gedmo\Tests\Uploadable\Fixture\Entity\FileWithMaxSize';
+    public const FILE_WITH_ALLOWED_TYPES_CLASS = 'Gedmo\Tests\Uploadable\Fixture\Entity\FileWithAllowedTypes';
+    public const FILE_WITH_DISALLOWED_TYPES_CLASS = 'Gedmo\Tests\Uploadable\Fixture\Entity\FileWithDisallowedTypes';
 
     /**
      * @var UploadableListener
@@ -327,7 +329,7 @@ class UploadableEntityTest extends BaseTestCaseORM
 
     public function testSettingAnotherDefaultFileInfoClass()
     {
-        $fileInfoStubClass = 'Gedmo\Uploadable\Stub\FileInfoStub';
+        $fileInfoStubClass = FileInfoStub::class;
 
         $this->listener->setDefaultFileInfoClass($fileInfoStubClass);
 

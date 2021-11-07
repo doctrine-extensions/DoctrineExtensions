@@ -1,12 +1,14 @@
 <?php
 
-namespace Gedmo\IpTraceable;
+namespace Gedmo\Tests\IpTraceable;
 
 use Doctrine\Common\EventManager;
-use IpTraceable\Fixture\Article;
-use IpTraceable\Fixture\Comment;
-use IpTraceable\Fixture\Type;
-use Tool\BaseTestCaseORM;
+use Gedmo\IpTraceable\IpTraceable;
+use Gedmo\IpTraceable\IpTraceableListener;
+use Gedmo\Tests\IpTraceable\Fixture\Article;
+use Gedmo\Tests\IpTraceable\Fixture\Comment;
+use Gedmo\Tests\IpTraceable\Fixture\Type;
+use Gedmo\Tests\Tool\BaseTestCaseORM;
 
 /**
  * These are tests for IpTraceable behavior
@@ -21,9 +23,9 @@ class IpTraceableTest extends BaseTestCaseORM
 {
     public const TEST_IP = '34.234.1.10';
 
-    public const ARTICLE = 'IpTraceable\\Fixture\\Article';
-    public const COMMENT = 'IpTraceable\\Fixture\\Comment';
-    public const TYPE = 'IpTraceable\\Fixture\\Type';
+    public const ARTICLE = 'Gedmo\\Tests\\IpTraceable\\Fixture\\Article';
+    public const COMMENT = 'Gedmo\\Tests\\IpTraceable\\Fixture\\Comment';
+    public const TYPE = 'Gedmo\\Tests\\IpTraceable\\Fixture\\Type';
 
     protected function setUp(): void
     {

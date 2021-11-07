@@ -1,12 +1,12 @@
 <?php
 
-namespace Sluggable\Fixture\Issue1151;
+namespace Gedmo\Tests\Sluggable\Fixture\Issue1151;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
- * Sluggable\Fixture\Issue1151\Article
+ * Gedmo\Tests\Sluggable\Fixture\Issue1151\Article
  *
  * @ODM\Document
  */

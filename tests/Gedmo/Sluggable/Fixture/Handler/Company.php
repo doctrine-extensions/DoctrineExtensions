@@ -1,6 +1,6 @@
 <?php
 
-namespace Sluggable\Fixture\Handler;
+namespace Gedmo\Tests\Sluggable\Fixture\Handler;
 
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -25,7 +25,7 @@ class Company
     /**
      * @Gedmo\Slug(handlers={
      *      @Gedmo\SlugHandler(class="Gedmo\Sluggable\Handler\InversedRelativeSlugHandler", options={
-     *          @Gedmo\SlugHandlerOption(name="relationClass", value="Sluggable\Fixture\Handler\User"),
+     *          @Gedmo\SlugHandlerOption(name="relationClass", value="Gedmo\Tests\Sluggable\Fixture\Handler\User"),
      *          @Gedmo\SlugHandlerOption(name="mappedBy", value="company"),
      *          @Gedmo\SlugHandlerOption(name="inverseSlugField", value="slug")
      *      })

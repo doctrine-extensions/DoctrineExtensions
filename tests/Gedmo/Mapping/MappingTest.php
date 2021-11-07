@@ -1,8 +1,8 @@
 <?php
 
-namespace Gedmo\Mapping;
+namespace Gedmo\Tests\Mapping;
 
-use Tree\Fixture\BehavioralCategory;
+use Gedmo\Tests\Tree\Fixture\BehavioralCategory;
 
 /**
  * These are mapping extension tests
@@ -15,7 +15,7 @@ use Tree\Fixture\BehavioralCategory;
  */
 class MappingTest extends \PHPUnit\Framework\TestCase
 {
-    public const TEST_ENTITY_CATEGORY = "Tree\Fixture\BehavioralCategory";
+    public const TEST_ENTITY_CATEGORY = "Gedmo\Tests\Tree\Fixture\BehavioralCategory";
     public const TEST_ENTITY_TRANSLATION = "Gedmo\Translatable\Entity\Translation";
 
     private $em;

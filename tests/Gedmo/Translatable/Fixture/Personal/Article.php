@@ -1,12 +1,12 @@
 <?php
 
-namespace Translatable\Fixture\Personal;
+namespace Gedmo\Tests\Translatable\Fixture\Personal;
 
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
- * @Gedmo\TranslationEntity(class="Translatable\Fixture\Personal\PersonalArticleTranslation")
+ * @Gedmo\TranslationEntity(class="Gedmo\Tests\Translatable\Fixture\Personal\PersonalArticleTranslation")
  * @ORM\Entity
  */
 class Article

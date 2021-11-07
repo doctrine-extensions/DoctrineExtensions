@@ -1,6 +1,6 @@
 <?php
 
-namespace Wrapper\Fixture\Document;
+namespace Gedmo\Tests\Wrapper\Fixture\Document;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoODM;
 

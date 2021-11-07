@@ -1,5 +1,5 @@
 ---
-Mapping\Fixture\Yaml\Sortable:
+Gedmo\Tests\Mapping\Fixture\Yaml\Sortable:
   type: entity
   table: sortables
   id:
@@ -22,11 +22,11 @@ Mapping\Fixture\Yaml\Sortable:
         - sortableGroup
   manyToOne:
     sortable_group:
-      targetEntity: Mapping\Fixture\SortableGroup
+      targetEntity: Gedmo\Tests\Mapping\Fixture\SortableGroup
       gedmo:
         - sortableGroup
   manyToMany:
     sortable_groups:
-      targetEntity: Mapping\Fixture\SortableGroup
+      targetEntity: Gedmo\Tests\Mapping\Fixture\SortableGroup
       gedmo:
         - sortableGroup

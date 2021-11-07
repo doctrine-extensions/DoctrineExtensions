@@ -1,4 +1,4 @@
-Sluggable\Fixture\Issue116\Country:
+Gedmo\Tests\Sluggable\Fixture\Issue116\Country:
   type: entity
   table: sta_country
   fields:

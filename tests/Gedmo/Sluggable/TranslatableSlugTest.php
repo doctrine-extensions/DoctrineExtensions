@@ -1,14 +1,16 @@
 <?php
 
-namespace Gedmo\Sluggable;
+namespace Gedmo\Tests\Sluggable;
 
 use Doctrine\Common\EventManager;
+use Gedmo\Sluggable\Sluggable;
+use Gedmo\Sluggable\SluggableListener;
+use Gedmo\Tests\Sluggable\Fixture\Comment;
+use Gedmo\Tests\Sluggable\Fixture\Page;
+use Gedmo\Tests\Sluggable\Fixture\TranslatableArticle;
+use Gedmo\Tests\Tool\BaseTestCaseORM;
 use Gedmo\Translatable\Translatable;
 use Gedmo\Translatable\TranslatableListener;
-use Sluggable\Fixture\Comment;
-use Sluggable\Fixture\Page;
-use Sluggable\Fixture\TranslatableArticle;
-use Tool\BaseTestCaseORM;
 
 /**
  * These are tests for Sluggable behavior
@@ -24,9 +26,9 @@ class TranslatableSlugTest extends BaseTestCaseORM
     private $articleId;
     private $translatableListener;
 
-    public const ARTICLE = 'Sluggable\\Fixture\\TranslatableArticle';
-    public const COMMENT = 'Sluggable\\Fixture\\Comment';
-    public const PAGE = 'Sluggable\\Fixture\\Page';
+    public const ARTICLE = 'Gedmo\\Tests\\Sluggable\\Fixture\\TranslatableArticle';
+    public const COMMENT = 'Gedmo\\Tests\\Sluggable\\Fixture\\Comment';
+    public const PAGE = 'Gedmo\\Tests\\Sluggable\\Fixture\\Page';
     public const TRANSLATION = 'Gedmo\\Translatable\\Entity\\Translation';
 
     protected function setUp(): void

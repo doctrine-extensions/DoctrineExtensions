@@ -1,6 +1,6 @@
 <?php
 
-namespace Sortable\Fixture\Document;
+namespace Gedmo\Tests\Sortable\Fixture\Document;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 use Gedmo\Mapping\Annotation as Gedmo;

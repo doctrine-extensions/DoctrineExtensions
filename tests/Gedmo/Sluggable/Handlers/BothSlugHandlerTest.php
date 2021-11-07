@@ -1,12 +1,13 @@
 <?php
 
-namespace Gedmo\Sluggable;
+namespace Gedmo\Tests\Sluggable;
 
 use Doctrine\Common\EventManager;
+use Gedmo\Sluggable\SluggableListener;
+use Gedmo\Tests\Sluggable\Fixture\Handler\People\Occupation;
+use Gedmo\Tests\Sluggable\Fixture\Handler\People\Person;
+use Gedmo\Tests\Tool\BaseTestCaseORM;
 use Gedmo\Tree\TreeListener;
-use Sluggable\Fixture\Handler\People\Occupation;
-use Sluggable\Fixture\Handler\People\Person;
-use Tool\BaseTestCaseORM;
 
 /**
  * These are tests for Sluggable behavior
@@ -19,8 +20,8 @@ use Tool\BaseTestCaseORM;
  */
 class BothSlugHandlerTest extends BaseTestCaseORM
 {
-    public const OCCUPATION = 'Sluggable\\Fixture\\Handler\\People\\Occupation';
-    public const PERSON = 'Sluggable\\Fixture\\Handler\\People\\Person';
+    public const OCCUPATION = 'Gedmo\\Tests\\Sluggable\\Fixture\\Handler\\People\\Occupation';
+    public const PERSON = 'Gedmo\\Tests\\Sluggable\\Fixture\\Handler\\People\\Person';
 
     protected function setUp(): void
     {

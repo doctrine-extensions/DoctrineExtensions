@@ -11,7 +11,7 @@
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 
-namespace Tree\Fixture\Mock;
+namespace Gedmo\Tests\Tree\Fixture\Mock;
 
 use Doctrine\Persistence\ObjectManager;
 use Gedmo\Mapping\Event\AdapterInterface;

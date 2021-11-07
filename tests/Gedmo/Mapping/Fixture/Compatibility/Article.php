@@ -1,6 +1,6 @@
 <?php
 
-namespace Mapping\Fixture\Compatibility;
+namespace Gedmo\Tests\Mapping\Fixture\Compatibility;
 
 /**
  * @Entity

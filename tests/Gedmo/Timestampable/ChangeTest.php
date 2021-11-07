@@ -1,13 +1,14 @@
 <?php
 
-namespace Gedmo\Timestampable;
+namespace Gedmo\Tests\Timestampable;
 
 use Doctrine\Common\EventArgs;
 use Doctrine\Common\EventManager;
 use Gedmo\Mapping\Event\Adapter\ORM as BaseAdapterORM;
+use Gedmo\Tests\Timestampable\Fixture\TitledArticle;
+use Gedmo\Tests\Tool\BaseTestCaseORM;
 use Gedmo\Timestampable\Mapping\Event\TimestampableAdapter;
-use Timestampable\Fixture\TitledArticle;
-use Tool\BaseTestCaseORM;
+use Gedmo\Timestampable\TimestampableListener;
 
 /**
  * These are tests for Timestampable behavior
@@ -20,7 +21,7 @@ use Tool\BaseTestCaseORM;
  */
 class ChangeTest extends BaseTestCaseORM
 {
-    public const FIXTURE = 'Timestampable\\Fixture\\TitledArticle';
+    public const FIXTURE = 'Gedmo\\Tests\\Timestampable\\Fixture\\TitledArticle';
 
     protected $listener;
 

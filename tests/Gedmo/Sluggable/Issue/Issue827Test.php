@@ -1,13 +1,14 @@
 <?php
 
-namespace Gedmo\Sluggable;
+namespace Gedmo\Tests\Sluggable;
 
 use Doctrine\Common\EventManager;
-use Sluggable\Fixture\Issue827\Article;
-use Sluggable\Fixture\Issue827\Category;
-use Sluggable\Fixture\Issue827\Comment;
-use Sluggable\Fixture\Issue827\Post;
-use Tool\BaseTestCaseORM;
+use Gedmo\Sluggable\SluggableListener;
+use Gedmo\Tests\Sluggable\Fixture\Issue827\Article;
+use Gedmo\Tests\Sluggable\Fixture\Issue827\Category;
+use Gedmo\Tests\Sluggable\Fixture\Issue827\Comment;
+use Gedmo\Tests\Sluggable\Fixture\Issue827\Post;
+use Gedmo\Tests\Tool\BaseTestCaseORM;
 
 /**
  * These are tests for Sluggable behavior
@@ -20,10 +21,10 @@ use Tool\BaseTestCaseORM;
  */
 class Issue827Test extends BaseTestCaseORM
 {
-    public const ARTICLE = 'Sluggable\\Fixture\\Issue827\\Article';
-    public const CATEGORY = 'Sluggable\\Fixture\\Issue827\\Category';
-    public const COMMENT = 'Sluggable\\Fixture\\Issue827\\Comment';
-    public const POST = 'Sluggable\\Fixture\\Issue827\\Post';
+    public const ARTICLE = 'Gedmo\\Tests\\Sluggable\\Fixture\\Issue827\\Article';
+    public const CATEGORY = 'Gedmo\\Tests\\Sluggable\\Fixture\\Issue827\\Category';
+    public const COMMENT = 'Gedmo\\Tests\\Sluggable\\Fixture\\Issue827\\Comment';
+    public const POST = 'Gedmo\\Tests\\Sluggable\\Fixture\\Issue827\\Post';
 
     protected function setUp(): void
     {

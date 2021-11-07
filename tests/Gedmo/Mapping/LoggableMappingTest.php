@@ -1,9 +1,10 @@
 <?php
 
-namespace Gedmo\Loggable;
+namespace Gedmo\Tests\Loggable;
 
 use Doctrine\ORM\Mapping\Driver\DriverChain;
 use Doctrine\ORM\Mapping\Driver\YamlDriver;
+use Gedmo\Loggable\LoggableListener;
 use Gedmo\Mapping\ExtensionMetadataFactory;
 
 /**
@@ -17,7 +18,7 @@ use Gedmo\Mapping\ExtensionMetadataFactory;
  */
 class LoggableMappingTest extends \PHPUnit\Framework\TestCase
 {
-    public const YAML_CATEGORY = 'Mapping\Fixture\Yaml\Category';
+    public const YAML_CATEGORY = 'Gedmo\Tests\Mapping\Fixture\Yaml\Category';
     private $em;
 
     public function setUp(): void
@@ -30,7 +31,7 @@ class LoggableMappingTest extends \PHPUnit\Framework\TestCase
         $chainDriverImpl = new DriverChain();
         $chainDriverImpl->addDriver(
             new YamlDriver([__DIR__.'/Driver/Yaml']),
-            'Mapping\Fixture\Yaml'
+            'Gedmo\Tests\Mapping\Fixture\Yaml'
         );
         $config->setMetadataDriverImpl($chainDriverImpl);
 

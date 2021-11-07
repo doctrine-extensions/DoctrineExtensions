@@ -1,9 +1,10 @@
 <?php
 
-namespace Gedmo\Tree;
+namespace Gedmo\Tests\Tree;
 
 use Doctrine\Common\EventManager;
-use Tool\BaseTestCaseORM;
+use Gedmo\Tests\Tool\BaseTestCaseORM;
+use Gedmo\Tree\TreeListener;
 
 /**
  * These are tests for Tree behavior
@@ -17,7 +18,7 @@ use Tool\BaseTestCaseORM;
  */
 class MaterializedPathORMFeaturesTest extends BaseTestCaseORM
 {
-    public const CATEGORY = 'Tree\\Fixture\\MPFeaturesCategory';
+    public const CATEGORY = 'Gedmo\\Tests\\Tree\\Fixture\\MPFeaturesCategory';
 
     protected $config;
     protected $listener;

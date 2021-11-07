@@ -1,6 +1,6 @@
 <?php
 
-namespace References\Fixture\ORM;
+namespace Gedmo\Tests\References\Fixture\ORM;
 
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -23,7 +23,7 @@ class Category
     private $name;
 
     /**
-     * @Gedmo\ReferenceManyEmbed(class="References\Fixture\ODM\MongoDB\Product", identifier="metadatas.categoryId")
+     * @Gedmo\ReferenceManyEmbed(class="Gedmo\Tests\References\Fixture\ODM\MongoDB\Product", identifier="metadatas.categoryId")
      */
     private $products;
 

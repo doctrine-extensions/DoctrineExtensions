@@ -1,11 +1,11 @@
 <?php
 
-namespace Wrapper;
+namespace Gedmo\Tests\Wrapper;
 
 use Doctrine\Common\EventManager;
+use Gedmo\Tests\Tool\BaseTestCaseORM;
+use Gedmo\Tests\Wrapper\Fixture\Entity\Article;
 use Gedmo\Tool\Wrapper\EntityWrapper;
-use Tool\BaseTestCaseORM;
-use Wrapper\Fixture\Entity\Article;
 
 /**
  * Entity wrapper tests
@@ -18,7 +18,7 @@ use Wrapper\Fixture\Entity\Article;
  */
 class EntityWrapperTest extends BaseTestCaseORM
 {
-    public const ARTICLE = 'Wrapper\\Fixture\\Entity\\Article';
+    public const ARTICLE = 'Gedmo\\Tests\\Wrapper\\Fixture\\Entity\\Article';
 
     protected function setUp(): void
     {

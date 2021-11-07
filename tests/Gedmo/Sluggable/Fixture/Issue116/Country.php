@@ -1,6 +1,6 @@
 <?php
 
-namespace Sluggable\Fixture\Issue116;
+namespace Gedmo\Tests\Sluggable\Fixture\Issue116;
 
 class Country
 {

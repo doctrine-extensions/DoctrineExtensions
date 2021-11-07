@@ -2,7 +2,7 @@
 
 // file: vendor/Extension/Encoder/Mapping/Annotations.php
 
-namespace Gedmo\Mapping\Mock\Extension\Encoder\Mapping;
+namespace Gedmo\Tests\Mapping\Mock\Extension\Encoder\Mapping;
 
 use Doctrine\Common\Annotations\Annotation;
 

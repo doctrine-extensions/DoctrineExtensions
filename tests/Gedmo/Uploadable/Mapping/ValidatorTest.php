@@ -1,6 +1,8 @@
 <?php
 
-namespace Gedmo\Uploadable\Mapping;
+namespace Gedmo\Tests\Uploadable\Mapping;
+
+use Gedmo\Uploadable\Mapping\Validator;
 
 /**
  * These are tests for the Mapping Validator of the Uploadable behavior

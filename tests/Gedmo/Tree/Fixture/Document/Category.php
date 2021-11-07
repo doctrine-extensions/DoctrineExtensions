@@ -1,6 +1,6 @@
 <?php
 
-namespace Tree\Fixture\Document;
+namespace Gedmo\Tests\Tree\Fixture\Document;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as MONGO;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -30,7 +30,7 @@ class Category
 
     /**
      * @Gedmo\TreeParent
-     * @MONGO\ReferenceOne(targetDocument="Tree\Fixture\Document\Category")
+     * @MONGO\ReferenceOne(targetDocument="Gedmo\Tests\Tree\Fixture\Document\Category")
      */
     private $parent;
 

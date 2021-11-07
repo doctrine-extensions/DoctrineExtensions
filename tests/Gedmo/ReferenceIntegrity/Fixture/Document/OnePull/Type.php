@@ -1,6 +1,6 @@
 <?php
 
-namespace ReferenceIntegrity\Fixture\Document\OnePull;
+namespace Gedmo\Tests\ReferenceIntegrity\Fixture\Document\OnePull;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -26,7 +26,7 @@ class Type
     private $identifier;
 
     /**
-     * @ODM\ReferenceOne(targetDocument="ReferenceIntegrity\Fixture\Document\OnePull\Article", mappedBy="types")
+     * @ODM\ReferenceOne(targetDocument="Gedmo\Tests\ReferenceIntegrity\Fixture\Document\OnePull\Article", mappedBy="types")
      * @Gedmo\ReferenceIntegrity("pull")
      *
      * @var Article

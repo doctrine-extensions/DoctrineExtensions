@@ -1,15 +1,16 @@
 <?php
 
-namespace Gedmo\Sluggable;
+namespace Gedmo\Tests\Sluggable;
 
 use Doctrine\Common\EventManager;
+use Gedmo\Sluggable\SluggableListener;
+use Gedmo\Tests\Sluggable\Fixture\Handler\TreeSlugPrefixSuffix;
+use Gedmo\Tests\Tool\BaseTestCaseORM;
 use Gedmo\Tree\TreeListener;
-use Sluggable\Fixture\Handler\TreeSlugPrefixSuffix;
-use Tool\BaseTestCaseORM;
 
 class TreeSlugHandlerPrefixSuffixTest extends BaseTestCaseORM
 {
-    public const TARGET = 'Sluggable\\Fixture\\Handler\\TreeSlugPrefixSuffix';
+    public const TARGET = 'Gedmo\\Tests\\Sluggable\\Fixture\\Handler\\TreeSlugPrefixSuffix';
 
     protected function setUp(): void
     {

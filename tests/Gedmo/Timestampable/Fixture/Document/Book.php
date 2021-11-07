@@ -1,6 +1,6 @@
 <?php
 
-namespace Timestampable\Fixture\Document;
+namespace Gedmo\Tests\Timestampable\Fixture\Document;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -26,7 +26,7 @@ class Book
     protected $title;
 
     /**
-     * @ODM\EmbedMany(targetDocument="Timestampable\Fixture\Document\Tag")
+     * @ODM\EmbedMany(targetDocument="Gedmo\Tests\Timestampable\Fixture\Document\Tag")
      *
      * @var Tag[]|Collection
      */

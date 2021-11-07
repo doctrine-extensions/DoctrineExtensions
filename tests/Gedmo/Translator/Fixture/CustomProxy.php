@@ -1,6 +1,6 @@
 <?php
 
-namespace Translator\Fixture;
+namespace Gedmo\Tests\Translator\Fixture;
 
 use Gedmo\Translator\TranslationProxy;
 

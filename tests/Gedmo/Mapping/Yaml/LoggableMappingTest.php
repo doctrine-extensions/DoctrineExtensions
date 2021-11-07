@@ -1,6 +1,6 @@
 <?php
 
-namespace Gedmo\Mapping\Yaml;
+namespace Gedmo\Tests\Mapping\Yaml;
 
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\EventManager;
@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
 use Doctrine\ORM\Mapping\Driver\DriverChain;
 use Doctrine\ORM\Mapping\Driver\YamlDriver;
 use Gedmo\Loggable\LoggableListener;
-use Tool\BaseTestCaseOM;
+use Gedmo\Tests\Tool\BaseTestCaseOM;
 
 /**
  * These are mapping extension tests
@@ -42,7 +42,7 @@ class LoggableMappingTest extends BaseTestCaseOM
 
         $chain = new DriverChain();
         $chain->addDriver($annotationDriver, 'Gedmo\Loggable');
-        $chain->addDriver($yamlDriver, 'Mapping\Fixture\Yaml');
+        $chain->addDriver($yamlDriver, 'Gedmo\Tests\Mapping\Fixture\Yaml');
 
         $this->loggable = new LoggableListener();
         $this->evm = new EventManager();
@@ -50,14 +50,14 @@ class LoggableMappingTest extends BaseTestCaseOM
 
         $this->em = $this->getMockSqliteEntityManager([
             'Gedmo\Loggable\Entity\LogEntry',
-            'Mapping\Fixture\Yaml\LoggableWithEmbedded',
-            'Mapping\Fixture\Yaml\Embedded',
+            'Gedmo\Tests\Mapping\Fixture\Yaml\LoggableWithEmbedded',
+            'Gedmo\Tests\Mapping\Fixture\Yaml\Embedded',
         ], $chain);
     }
 
     public function testLoggableMetadataWithEmbedded()
     {
-        $meta = $this->em->getClassMetadata('Mapping\Fixture\Yaml\LoggableWithEmbedded');
+        $meta = $this->em->getClassMetadata('Gedmo\Tests\Mapping\Fixture\Yaml\LoggableWithEmbedded');
         $config = $this->loggable->getConfiguration($this->em, $meta->name);
 
         $this->assertArrayHasKey('logEntryClass', $config);

@@ -1,15 +1,16 @@
 <?php
 
-namespace Gedmo\Loggable;
+namespace Gedmo\Tests\Loggable;
 
 use Doctrine\Common\EventManager;
-use Loggable\Fixture\Entity\Address;
-use Loggable\Fixture\Entity\Article;
-use Loggable\Fixture\Entity\Comment;
-use Loggable\Fixture\Entity\Geo;
-use Loggable\Fixture\Entity\GeoLocation;
-use Loggable\Fixture\Entity\RelatedArticle;
-use Tool\BaseTestCaseORM;
+use Gedmo\Loggable\LoggableListener;
+use Gedmo\Tests\Loggable\Fixture\Entity\Address;
+use Gedmo\Tests\Loggable\Fixture\Entity\Article;
+use Gedmo\Tests\Loggable\Fixture\Entity\Comment;
+use Gedmo\Tests\Loggable\Fixture\Entity\Geo;
+use Gedmo\Tests\Loggable\Fixture\Entity\GeoLocation;
+use Gedmo\Tests\Loggable\Fixture\Entity\RelatedArticle;
+use Gedmo\Tests\Tool\BaseTestCaseORM;
 
 /**
  * These are tests for loggable behavior
@@ -22,10 +23,10 @@ use Tool\BaseTestCaseORM;
  */
 class LoggableEntityTest extends BaseTestCaseORM
 {
-    public const ARTICLE = 'Loggable\Fixture\Entity\Article';
-    public const COMMENT = 'Loggable\Fixture\Entity\Comment';
-    public const RELATED_ARTICLE = 'Loggable\Fixture\Entity\RelatedArticle';
-    public const COMMENT_LOG = 'Loggable\Fixture\Entity\Log\Comment';
+    public const ARTICLE = 'Gedmo\Tests\Loggable\Fixture\Entity\Article';
+    public const COMMENT = 'Gedmo\Tests\Loggable\Fixture\Entity\Comment';
+    public const RELATED_ARTICLE = 'Gedmo\Tests\Loggable\Fixture\Entity\RelatedArticle';
+    public const COMMENT_LOG = 'Gedmo\Tests\Loggable\Fixture\Entity\Log\Comment';
 
     private $articleId;
     private $LoggableListener;
@@ -161,8 +162,8 @@ class LoggableEntityTest extends BaseTestCaseORM
             self::COMMENT_LOG,
             self::RELATED_ARTICLE,
             'Gedmo\Loggable\Entity\LogEntry',
-            'Loggable\Fixture\Entity\Address',
-            'Loggable\Fixture\Entity\Geo',
+            'Gedmo\Tests\Loggable\Fixture\Entity\Address',
+            'Gedmo\Tests\Loggable\Fixture\Entity\Geo',
         ];
     }
 

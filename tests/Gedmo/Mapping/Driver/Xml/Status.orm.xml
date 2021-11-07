@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:gedmo="http://gediminasm.org/schemas/orm/doctrine-extensions-mapping">
-    <entity name="Mapping\Fixture\Xml\Status" table="statuses">
+    <entity name="Gedmo\Tests\Mapping\Fixture\Xml\Status" table="statuses">
         <id name="id" type="integer" column="id">
             <generator strategy="AUTO"/>
         </id>

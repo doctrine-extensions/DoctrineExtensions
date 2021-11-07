@@ -1,16 +1,16 @@
 <?php
 
-namespace Gedmo\Mapping;
+namespace Gedmo\Tests\Mapping;
 
 use Doctrine\Common\EventManager;
 use Doctrine\ODM\MongoDB\Event\LoadClassMetadataEventArgs;
-use Gedmo\Mapping\Mock\Extension\Encoder\EncoderListener;
-use Mapping\Fixture\Document\User;
-use Tool\BaseTestCaseMongoODM;
+use Gedmo\Tests\Mapping\Fixture\Document\User;
+use Gedmo\Tests\Mapping\Mock\Extension\Encoder\EncoderListener;
+use Gedmo\Tests\Tool\BaseTestCaseMongoODM;
 
 class ExtensionODMTest extends BaseTestCaseMongoODM
 {
-    public const USER = 'Mapping\\Fixture\\Document\\User';
+    public const USER = 'Gedmo\\Tests\\Mapping\\Fixture\\Document\\User';
 
     private $encoderListener;
 
@@ -70,6 +70,6 @@ class ExtensionODMTest extends BaseTestCaseMongoODM
             $this->encoderListener,
             $loadClassMetadataEventArgs
         );
-        $this->assertInstanceOf(\Gedmo\Mapping\Mock\Extension\Encoder\Mapping\Event\Adapter\ODM::class, $eventAdapter);
+        $this->assertInstanceOf(\Gedmo\Tests\Mapping\Mock\Extension\Encoder\Mapping\Event\Adapter\ODM::class, $eventAdapter);
     }
 }

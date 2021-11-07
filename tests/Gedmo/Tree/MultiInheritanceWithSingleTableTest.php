@@ -1,12 +1,13 @@
 <?php
 
-namespace Gedmo\Tree;
+namespace Gedmo\Tests\Tree;
 
 use Doctrine\Common\EventManager;
-use Tool\BaseTestCaseORM;
-use Tree\Fixture\Transport\Bus;
-use Tree\Fixture\Transport\Car;
-use Tree\Fixture\Transport\Engine;
+use Gedmo\Tests\Tool\BaseTestCaseORM;
+use Gedmo\Tests\Tree\Fixture\Transport\Bus;
+use Gedmo\Tests\Tree\Fixture\Transport\Car;
+use Gedmo\Tests\Tree\Fixture\Transport\Engine;
+use Gedmo\Tree\TreeListener;
 
 /**
  * These are tests for Tree behavior
@@ -19,10 +20,10 @@ use Tree\Fixture\Transport\Engine;
  */
 class MultiInheritanceWithSingleTableTest extends BaseTestCaseORM
 {
-    public const CAR = "Tree\Fixture\Transport\Car";
-    public const BUS = "Tree\Fixture\Transport\Bus";
-    public const VEHICLE = "Tree\Fixture\Transport\Vehicle";
-    public const ENGINE = "Tree\Fixture\Transport\Engine";
+    public const CAR = "Gedmo\Tests\Tree\Fixture\Transport\Car";
+    public const BUS = "Gedmo\Tests\Tree\Fixture\Transport\Bus";
+    public const VEHICLE = "Gedmo\Tests\Tree\Fixture\Transport\Vehicle";
+    public const ENGINE = "Gedmo\Tests\Tree\Fixture\Transport\Engine";
 
     protected function setUp(): void
     {

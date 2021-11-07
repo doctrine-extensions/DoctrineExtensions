@@ -1,16 +1,17 @@
 <?php
 
-namespace Gedmo\Translatable;
+namespace Gedmo\Tests\Translatable;
 
 use Doctrine\Common\EventManager;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query;
-use Tool\BaseTestCaseORM;
-use Translatable\Fixture\Company;
+use Gedmo\Tests\Tool\BaseTestCaseORM;
+use Gedmo\Tests\Translatable\Fixture\Company;
+use Gedmo\Translatable\TranslatableListener;
 
 class TranslatableWithEmbeddedTest extends BaseTestCaseORM
 {
-    public const FIXTURE = 'Translatable\\Fixture\\Company';
+    public const FIXTURE = 'Gedmo\\Tests\\Translatable\\Fixture\\Company';
     public const TRANSLATION = 'Gedmo\\Translatable\\Entity\\Translation';
 
     public const TREE_WALKER_TRANSLATION = 'Gedmo\\Translatable\\Query\\TreeWalker\\TranslationWalker';

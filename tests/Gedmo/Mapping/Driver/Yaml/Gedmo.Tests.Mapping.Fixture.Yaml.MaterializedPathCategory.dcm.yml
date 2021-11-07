@@ -1,5 +1,5 @@
 ---
-Mapping\Fixture\Yaml\MaterializedPathCategory:
+Gedmo\Tests\Mapping\Fixture\Yaml\MaterializedPathCategory:
   type: entity
   table: materialized_path_categories
   id:
@@ -33,7 +33,7 @@ Mapping\Fixture\Yaml\MaterializedPathCategory:
         - treeLockTime
   manyToOne:
     parent:
-      targetEntity: Mapping\Fixture\Yaml\MaterializedPathCategory
+      targetEntity: Gedmo\Tests\Mapping\Fixture\Yaml\MaterializedPathCategory
       inversedBy: children
       gedmo:
         - treeParent

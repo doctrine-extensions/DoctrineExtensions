@@ -1,12 +1,12 @@
 <?php
 
-namespace Gedmo\Mapping\Xml\Simplified;
+namespace Gedmo\Tests\Mapping\Xml\Simplified;
 
 use Doctrine\Common\EventManager;
 use Doctrine\ORM\Mapping\Driver\DriverChain;
 use Doctrine\ORM\Mapping\Driver\SimplifiedXmlDriver;
+use Gedmo\Tests\Tool\BaseTestCaseORM;
 use Gedmo\Timestampable\TimestampableListener;
-use Tool\BaseTestCaseORM;
 
 /**
  * These are mapping extension tests
@@ -38,11 +38,11 @@ class TimestampableMappingTest extends BaseTestCaseORM
     protected function getMetadataDriverImplementation()
     {
         $xmlDriver = new SimplifiedXmlDriver([
-            __DIR__.'/../../Driver/Xml' => 'Mapping\Fixture\Xml',
+            __DIR__.'/../../Driver/Xml' => 'Gedmo\Tests\Mapping\Fixture\Xml',
         ]);
 
         $chain = new DriverChain();
-        $chain->addDriver($xmlDriver, 'Mapping\Fixture\Xml');
+        $chain->addDriver($xmlDriver, 'Gedmo\Tests\Mapping\Fixture\Xml');
 
         return $chain;
     }
@@ -50,14 +50,14 @@ class TimestampableMappingTest extends BaseTestCaseORM
     protected function getUsedEntityFixtures()
     {
         return [
-            'Mapping\Fixture\Xml\Timestampable',
-            'Mapping\Fixture\Xml\Status',
+            'Gedmo\Tests\Mapping\Fixture\Xml\Timestampable',
+            'Gedmo\Tests\Mapping\Fixture\Xml\Status',
         ];
     }
 
     public function testTimestampableMetadata()
     {
-        $meta = $this->em->getClassMetadata('Mapping\Fixture\Xml\Timestampable');
+        $meta = $this->em->getClassMetadata('Gedmo\Tests\Mapping\Fixture\Xml\Timestampable');
         $config = $this->timestampable->getConfiguration($this->em, $meta->name);
 
         $this->assertArrayHasKey('create', $config);

@@ -1,6 +1,6 @@
 <?php
 
-namespace Mapping\Fixture\Xml;
+namespace Gedmo\Tests\Mapping\Fixture\Xml;
 
 class Sortable
 {

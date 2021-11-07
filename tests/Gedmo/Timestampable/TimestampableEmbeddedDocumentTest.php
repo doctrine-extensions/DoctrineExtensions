@@ -1,11 +1,12 @@
 <?php
 
-namespace Gedmo\Timestampable;
+namespace Gedmo\Tests\Timestampable;
 
 use Doctrine\Common\EventManager;
-use Timestampable\Fixture\Document\Book;
-use Timestampable\Fixture\Document\Tag;
-use Tool\BaseTestCaseMongoODM;
+use Gedmo\Tests\Timestampable\Fixture\Document\Book;
+use Gedmo\Tests\Timestampable\Fixture\Document\Tag;
+use Gedmo\Tests\Tool\BaseTestCaseMongoODM;
+use Gedmo\Timestampable\TimestampableListener;
 
 /**
  * These are tests for Timestampable behavior ODM implementation
@@ -18,7 +19,7 @@ use Tool\BaseTestCaseMongoODM;
  */
 class TimestampableEmbeddedDocumentTest extends BaseTestCaseMongoODM
 {
-    public const BOOK = 'Timestampable\Fixture\Document\Book';
+    public const BOOK = 'Gedmo\Tests\Timestampable\Fixture\Document\Book';
 
     protected function setUp(): void
     {

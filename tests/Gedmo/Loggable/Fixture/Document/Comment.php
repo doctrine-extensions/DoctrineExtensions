@@ -1,13 +1,13 @@
 <?php
 
-namespace Loggable\Fixture\Document;
+namespace Gedmo\Tests\Loggable\Fixture\Document;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ODM\Document
- * @Gedmo\Loggable(logEntryClass="Loggable\Fixture\Document\Log\Comment")
+ * @Gedmo\Loggable(logEntryClass="Gedmo\Tests\Loggable\Fixture\Document\Log\Comment")
  */
 class Comment
 {
@@ -30,12 +30,12 @@ class Comment
 
     /**
      * @Gedmo\Versioned
-     * @ODM\ReferenceOne(targetDocument="Loggable\Fixture\Document\RelatedArticle", inversedBy="comments")
+     * @ODM\ReferenceOne(targetDocument="Gedmo\Tests\Loggable\Fixture\Document\RelatedArticle", inversedBy="comments")
      */
     private $article;
 
     /**
-     * @ODM\EmbedOne(targetDocument="Loggable\Fixture\Document\Author")
+     * @ODM\EmbedOne(targetDocument="Gedmo\Tests\Loggable\Fixture\Document\Author")
      * @Gedmo\Versioned
      */
     private $author;

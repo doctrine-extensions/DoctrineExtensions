@@ -1,5 +1,5 @@
 ---
-Mapping\Fixture\Yaml\Uploadable:
+Gedmo\Tests\Mapping\Fixture\Yaml\Uploadable:
   type: entity
   table: uploadables
   gedmo:

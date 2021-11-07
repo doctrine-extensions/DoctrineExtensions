@@ -1,11 +1,12 @@
 <?php
 
-namespace Gedmo\Sluggable;
+namespace Gedmo\Tests\Sluggable;
 
 use Doctrine\Common\EventManager;
-use Sluggable\Fixture\Document\Handler\Article;
-use Sluggable\Fixture\Document\Handler\RelativeSlug;
-use Tool\BaseTestCaseMongoODM;
+use Gedmo\Sluggable\SluggableListener;
+use Gedmo\Tests\Sluggable\Fixture\Document\Handler\Article;
+use Gedmo\Tests\Sluggable\Fixture\Document\Handler\RelativeSlug;
+use Gedmo\Tests\Tool\BaseTestCaseMongoODM;
 
 /**
  * These are tests for sluggable behavior
@@ -18,8 +19,8 @@ use Tool\BaseTestCaseMongoODM;
  */
 class RelativeSlugHandlerDocumentTest extends BaseTestCaseMongoODM
 {
-    public const ARTICLE = 'Sluggable\\Fixture\\Document\\Handler\\Article';
-    public const SLUG = 'Sluggable\\Fixture\\Document\\Handler\\RelativeSlug';
+    public const ARTICLE = 'Gedmo\\Tests\\Sluggable\\Fixture\\Document\\Handler\\Article';
+    public const SLUG = 'Gedmo\\Tests\\Sluggable\\Fixture\\Document\\Handler\\RelativeSlug';
 
     protected function setUp(): void
     {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Tool;
+namespace Gedmo\Tests\Tool;
 
 // common
 use Doctrine\Common\EventManager;

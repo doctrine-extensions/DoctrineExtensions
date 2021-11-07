@@ -1,6 +1,6 @@
 <?php
 
-namespace ReferenceIntegrity\Fixture\Document\ManyRestrict;
+namespace Gedmo\Tests\ReferenceIntegrity\Fixture\Document\ManyRestrict;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
@@ -27,7 +27,7 @@ class Type
     private $identifier;
 
     /**
-     * @ODM\ReferenceMany(targetDocument="ReferenceIntegrity\Fixture\Document\ManyRestrict\Article", mappedBy="type")
+     * @ODM\ReferenceMany(targetDocument="Gedmo\Tests\ReferenceIntegrity\Fixture\Document\ManyRestrict\Article", mappedBy="type")
      * @Gedmo\ReferenceIntegrity("restrict")
      *
      * @var ArrayCollection

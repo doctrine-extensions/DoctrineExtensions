@@ -1,6 +1,6 @@
 <?php
 
-namespace Mapping\Fixture\Unmapped;
+namespace Gedmo\Tests\Mapping\Fixture\Unmapped;
 
 use Gedmo\Mapping\Annotation\Timestampable as Tmsp;
 
