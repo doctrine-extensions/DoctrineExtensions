@@ -22,7 +22,7 @@ class ReferencesListenerTest extends BaseTestCaseOM
     {
         parent::setUp();
 
-        if (!class_exists('Mongo')) {
+        if (!extension_loaded('mongodb')) {
             static::markTestSkipped('Missing Mongo extension.');
         }
 
