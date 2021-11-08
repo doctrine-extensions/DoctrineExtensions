@@ -27,8 +27,8 @@ Gedmo\Tests\Mapping\Fixture\Yaml\User:
       length: 128
       nullable: true
       gedmo:
-          translatable:
-              fallback: true
+        translatable:
+          fallback: true
   indexes:
     search_idx:
       columns: username

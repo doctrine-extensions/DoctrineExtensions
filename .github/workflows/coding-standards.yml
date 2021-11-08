@@ -4,8 +4,8 @@ on:
   pull_request: null
 
 jobs:
-  coding-standards:
-    name: "Coding Standards"
+  php-coding-standards:
+    name: "PHP-CS-Fixer"
     runs-on: "ubuntu-20.04"
 
     steps:
@@ -16,7 +16,7 @@ jobs:
         uses: "shivammathur/setup-php@v2"
         with:
           coverage: "none"
-          php-version: "7.4"
+          php-version: "8.0"
 
       - name: "Install dependencies with Composer"
         uses: "ramsey/composer-install@v1"
@@ -24,5 +24,60 @@ jobs:
           dependency-versions: "highest"
 
       - name: "Run PHP-CS-Fixer"
-        run: "bin/php-cs-fixer fix --ansi --verbose --diff --dry-run --allow-risky=yes"
+        run: "bin/php-cs-fixer fix --ansi --verbose --diff --dry-run"
 
+  composer:
+    name: Composer
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Install PHP with extensions
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.0'
+          coverage: none
+          tools: composer:v2, composer-normalize:2
+        env:
+          COMPOSER_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Lint Composer
+        run: make lint-composer
+
+  lint-xml-files:
+    name: Lint XML files
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Install required dependencies
+        run: sudo apt-get update && sudo apt-get install libxml2-utils
+
+      - name: Lint XML files
+        run: make lint-xml
+
+  lint-yaml-files:
+    name: Lint YAML files
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Install Ruby 2.6
+        uses: actions/setup-ruby@v1
+        with:
+          ruby-version: '2.6'
+
+      - name: Install required gem
+        run: gem install yaml-lint
+
+      - name: Lint YAML files
+        run: make lint-yaml
