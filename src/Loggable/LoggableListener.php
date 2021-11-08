@@ -123,7 +123,7 @@ class LoggableListener extends MappedEventSubscriber
         $ea = $this->getEventAdapter($args);
         $object = $ea->getObject();
         $om = $ea->getObjectManager();
-        $oid = spl_object_hash($object);
+        $oid = spl_object_id($object);
         $uow = $om->getUnitOfWork();
         if ($this->pendingLogEntryInserts && array_key_exists($oid, $this->pendingLogEntryInserts)) {
             $wrapped = AbstractWrapper::wrap($object, $om);
@@ -136,7 +136,7 @@ class LoggableListener extends MappedEventSubscriber
             $uow->scheduleExtraUpdate($logEntry, [
                 'objectId' => [null, $id],
             ]);
-            $ea->setOriginalObjectProperty($uow, spl_object_hash($logEntry), 'objectId', $id);
+            $ea->setOriginalObjectProperty($uow, $logEntry, 'objectId', $id);
             unset($this->pendingLogEntryInserts[$oid]);
         }
         if ($this->pendingRelatedObjects && array_key_exists($oid, $this->pendingRelatedObjects)) {
@@ -153,7 +153,7 @@ class LoggableListener extends MappedEventSubscriber
                 $uow->scheduleExtraUpdate($logEntry, [
                     'data' => [$oldData, $data],
                 ]);
-                $ea->setOriginalObjectProperty($uow, spl_object_hash($logEntry), 'data', $data);
+                $ea->setOriginalObjectProperty($uow, $logEntry, 'data', $data);
             }
             unset($this->pendingRelatedObjects[$oid]);
         }
@@ -228,7 +228,7 @@ class LoggableListener extends MappedEventSubscriber
                 if ($wrapped->isEmbeddedAssociation($field)) {
                     $value = $this->getObjectChangeSetData($ea, $value, $logEntry);
                 } else {
-                    $oid = spl_object_hash($value);
+                    $oid = spl_object_id($value);
                     $wrappedAssoc = AbstractWrapper::wrap($value, $om);
                     $value = $wrappedAssoc->getIdentifier(false);
                     if (!is_array($value) && !$value) {
@@ -278,7 +278,7 @@ class LoggableListener extends MappedEventSubscriber
             // check for the availability of the primary key
             $uow = $om->getUnitOfWork();
             if (self::ACTION_CREATE === $action && $ea->isPostInsertGenerator($meta)) {
-                $this->pendingLogEntryInserts[spl_object_hash($object)] = $logEntry;
+                $this->pendingLogEntryInserts[spl_object_id($object)] = $logEntry;
             } else {
                 $logEntry->setObjectId($wrapped->getIdentifier());
             }

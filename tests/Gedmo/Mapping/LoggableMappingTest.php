@@ -21,7 +21,7 @@ class LoggableMappingTest extends \PHPUnit\Framework\TestCase
     public const YAML_CATEGORY = 'Gedmo\Tests\Mapping\Fixture\Yaml\Category';
     private $em;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $config = new \Doctrine\ORM\Configuration();
         $config->setMetadataCacheImpl(new \Doctrine\Common\Cache\ArrayCache());
@@ -53,9 +53,9 @@ class LoggableMappingTest extends \PHPUnit\Framework\TestCase
         $cacheId = ExtensionMetadataFactory::getCacheId(self::YAML_CATEGORY, 'Gedmo\Loggable');
         $config = $this->em->getMetadataFactory()->getCacheDriver()->fetch($cacheId);
 
-        $this->assertArrayHasKey('loggable', $config);
-        $this->assertTrue($config['loggable']);
-        $this->assertArrayHasKey('logEntryClass', $config);
-        $this->assertEquals('Gedmo\\Loggable\\Entity\\LogEntry', $config['logEntryClass']);
+        static::assertArrayHasKey('loggable', $config);
+        static::assertTrue($config['loggable']);
+        static::assertArrayHasKey('logEntryClass', $config);
+        static::assertEquals('Gedmo\\Loggable\\Entity\\LogEntry', $config['logEntryClass']);
     }
 }

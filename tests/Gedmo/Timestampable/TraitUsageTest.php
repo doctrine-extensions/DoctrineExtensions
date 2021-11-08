@@ -41,8 +41,8 @@ class TraitUsageTest extends BaseTestCaseORM
         $this->em->persist($sport);
         $this->em->flush();
 
-        $this->assertNotNull($sport->getCreatedAt());
-        $this->assertNotNull($sport->getUpdatedAt());
+        static::assertNotNull($sport->getCreatedAt());
+        static::assertNotNull($sport->getUpdatedAt());
     }
 
     /**
@@ -51,8 +51,8 @@ class TraitUsageTest extends BaseTestCaseORM
     public function traitMethodthShouldReturnObject()
     {
         $sport = new UsingTrait();
-        $this->assertInstanceOf('Gedmo\Tests\Timestampable\Fixture\UsingTrait', $sport->setCreatedAt(new \DateTime()));
-        $this->assertInstanceOf('Gedmo\Tests\Timestampable\Fixture\UsingTrait', $sport->setUpdatedAt(new \DateTime()));
+        static::assertInstanceOf('Gedmo\Tests\Timestampable\Fixture\UsingTrait', $sport->setCreatedAt(new \DateTime()));
+        static::assertInstanceOf('Gedmo\Tests\Timestampable\Fixture\UsingTrait', $sport->setUpdatedAt(new \DateTime()));
     }
 
     protected function getUsedEntityFixtures()

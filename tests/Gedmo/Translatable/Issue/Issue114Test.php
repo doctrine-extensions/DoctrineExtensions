@@ -100,13 +100,13 @@ class Issue114Test extends BaseTestCaseORM
         $this->em->flush();
 
         $trans = $repo->findTranslations($article2);
-        $this->assertCount(1, $trans);
+        static::assertCount(1, $trans);
 
         $trans = $repo->findTranslations($article3);
-        $this->assertCount(1, $trans);
+        static::assertCount(1, $trans);
 
         $trans = $repo->findTranslations($article1);
-        $this->assertCount(1, $trans);
+        static::assertCount(1, $trans);
     }
 
     protected function getUsedEntityFixtures()

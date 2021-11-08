@@ -45,7 +45,7 @@ class HardRelationTest extends BaseTestCaseORM
         $this->em->clear();
 
         $person = $this->em->getRepository('Gedmo\Tests\SoftDeleteable\Fixture\Entity\Person')->findOneBy(['id' => $person->getId()]);
-        $this->assertNull($person, 'Softdelete should cascade to hard relation entity');
+        static::assertNull($person, 'Softdelete should cascade to hard relation entity');
     }
 
     /**
@@ -70,7 +70,7 @@ class HardRelationTest extends BaseTestCaseORM
         $this->em->clear();
 
         $address = $this->em->getRepository('Gedmo\Tests\SoftDeleteable\Fixture\Entity\Address')->findOneBy(['id' => $address->getId()]);
-        $this->assertNull($address, 'Softdelete should cascade to hard relation entity');
+        static::assertNull($address, 'Softdelete should cascade to hard relation entity');
     }
 
     /**
@@ -92,7 +92,7 @@ class HardRelationTest extends BaseTestCaseORM
         $this->em->clear();
 
         $person = $this->em->getRepository('Gedmo\Tests\SoftDeleteable\Fixture\Entity\Person')->findOneBy(['id' => $person->getId()]);
-        $this->assertNotNull($person, 'Should not be softdeleted');
+        static::assertNotNull($person, 'Should not be softdeleted');
 
         $person->setDeletedAt(new \DateTime(date('Y-m-d H:i:s', time() - 15 * 3600))); // in an hour
         $this->em->persist($person);
@@ -100,7 +100,7 @@ class HardRelationTest extends BaseTestCaseORM
         $this->em->clear();
 
         $person = $this->em->getRepository('Gedmo\Tests\SoftDeleteable\Fixture\Entity\Person')->findOneBy(['id' => $person->getId()]);
-        $this->assertNull($person, 'Should be softdeleted');
+        static::assertNull($person, 'Should be softdeleted');
     }
 
     protected function getUsedEntityFixtures()

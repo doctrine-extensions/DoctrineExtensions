@@ -19,7 +19,7 @@ class MappingEventAdapterTest extends \PHPUnit\Framework\TestCase
         $args = new LifecycleEventArgs(new \stdClass(), $emMock);
 
         $adapter = $subscriber->getAdapter($args);
-        $this->assertInstanceOf(CustomizedORMAdapter::class, $adapter);
+        static::assertInstanceOf(CustomizedORMAdapter::class, $adapter);
     }
 
     public function testCorrectAdapter()
@@ -31,9 +31,9 @@ class MappingEventAdapterTest extends \PHPUnit\Framework\TestCase
         $args = new LifecycleEventArgs(new \stdClass(), $emMock);
 
         $adapter = $subscriber->getAdapter($args);
-        $this->assertInstanceOf(EventAdapterORM::class, $adapter);
-        $this->assertSame($adapter->getObjectManager(), $emMock);
-        $this->assertInstanceOf(\stdClass::class, $adapter->getObject());
+        static::assertInstanceOf(EventAdapterORM::class, $adapter);
+        static::assertSame($adapter->getObjectManager(), $emMock);
+        static::assertInstanceOf(\stdClass::class, $adapter->getObject());
     }
 
     public function testAdapterBehavior()
@@ -41,10 +41,10 @@ class MappingEventAdapterTest extends \PHPUnit\Framework\TestCase
         $eventArgsMock = $this->getMockBuilder('Doctrine\\ORM\\Event\\LifecycleEventArgs')
             ->disableOriginalConstructor()
             ->getMock();
-        $eventArgsMock->expects($this->once())
+        $eventArgsMock->expects(static::once())
             ->method('getEntityManager');
 
-        $eventArgsMock->expects($this->once())
+        $eventArgsMock->expects(static::once())
             ->method('getEntity');
 
         $eventAdapter = new EventAdapterORM();

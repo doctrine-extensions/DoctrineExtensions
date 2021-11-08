@@ -38,16 +38,16 @@ class RelativeSlugHandlerTest extends BaseTestCaseORM
         $repo = $this->em->getRepository(self::SLUG);
 
         $thomas = $repo->findOneBy(['title' => 'Thomas']);
-        $this->assertEquals('sport-test/thomas', $thomas->getSlug());
+        static::assertEquals('sport-test/thomas', $thomas->getSlug());
 
         $jen = $repo->findOneBy(['title' => 'Jen']);
-        $this->assertEquals('sport-test/jen', $jen->getSlug());
+        static::assertEquals('sport-test/jen', $jen->getSlug());
 
         $john = $repo->findOneBy(['title' => 'John']);
-        $this->assertEquals('cars-code/john', $john->getSlug());
+        static::assertEquals('cars-code/john', $john->getSlug());
 
         $single = $repo->findOneBy(['title' => 'Single']);
-        $this->assertEquals('single', $single->getSlug());
+        static::assertEquals('single', $single->getSlug());
     }
 
     public function testUpdateOperations()
@@ -60,7 +60,7 @@ class RelativeSlugHandlerTest extends BaseTestCaseORM
         $this->em->persist($thomas);
         $this->em->flush();
 
-        $this->assertEquals('sport-test/ninja', $thomas->getSlug());
+        static::assertEquals('sport-test/ninja', $thomas->getSlug());
 
         $sport = $this->em->getRepository(self::ARTICLE)->findOneBy(['title' => 'Sport']);
         $sport->setTitle('Martial Arts');
@@ -68,10 +68,10 @@ class RelativeSlugHandlerTest extends BaseTestCaseORM
         $this->em->persist($sport);
         $this->em->flush();
 
-        $this->assertEquals('martial-arts-test/ninja', $thomas->getSlug());
+        static::assertEquals('martial-arts-test/ninja', $thomas->getSlug());
 
         $jen = $repo->findOneBy(['title' => 'Jen']);
-        $this->assertEquals('martial-arts-test/jen', $jen->getSlug());
+        static::assertEquals('martial-arts-test/jen', $jen->getSlug());
 
         $cars = $this->em->getRepository(self::ARTICLE)->findOneBy(['title' => 'Cars']);
         $jen->setArticle($cars);
@@ -79,7 +79,7 @@ class RelativeSlugHandlerTest extends BaseTestCaseORM
         $this->em->persist($jen);
         $this->em->flush();
 
-        $this->assertEquals('cars-code/jen', $jen->getSlug());
+        static::assertEquals('cars-code/jen', $jen->getSlug());
     }
 
     protected function getUsedEntityFixtures()

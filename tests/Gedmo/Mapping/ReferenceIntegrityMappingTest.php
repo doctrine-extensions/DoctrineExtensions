@@ -30,9 +30,9 @@ class ReferenceIntegrityMappingTest extends BaseTestCaseOM
      */
     private $referenceIntegrity;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
-        $this->markTestSkipped('Intentionally skipping test. Doctrine MongoDB ODM 2.0 removed the YAML mapping driver; skipping test until it can be rewritten using a supported mapper.');
+        static::markTestSkipped('Intentionally skipping test. Doctrine MongoDB ODM 2.0 removed the YAML mapping driver; skipping test until it can be rewritten using a supported mapper.');
 
         parent::setUp();
 
@@ -51,13 +51,13 @@ class ReferenceIntegrityMappingTest extends BaseTestCaseOM
         $referenceeMeta = $this->dm->getClassMetadata('Gedmo\Tests\Mapping\Fixture\Yaml\Referenced');
         $config = $this->referenceIntegrity->getConfiguration($this->dm, $referencerMeta->name);
 
-        $this->assertNotEmpty($config['referenceIntegrity']);
+        static::assertNotEmpty($config['referenceIntegrity']);
         foreach ($config['referenceIntegrity'] as $propertyName => $referenceConfiguration) {
-            $this->assertArrayHasKey($propertyName, $referencerMeta->reflFields);
+            static::assertArrayHasKey($propertyName, $referencerMeta->reflFields);
 
             foreach ($referenceConfiguration as $inversedPropertyName => $integrityType) {
-                $this->assertArrayHasKey($inversedPropertyName, $referenceeMeta->reflFields);
-                $this->assertContains($integrityType, ['nullify', 'restrict']);
+                static::assertArrayHasKey($inversedPropertyName, $referenceeMeta->reflFields);
+                static::assertContains($integrityType, ['nullify', 'restrict']);
             }
         }
     }

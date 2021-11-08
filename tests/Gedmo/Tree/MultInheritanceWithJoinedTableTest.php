@@ -51,7 +51,7 @@ class MultInheritanceWithJoinedTableTest extends BaseTestCaseORM
         $this->em->clear();
 
         $admins = $this->em->getRepository(self::GROUP)->findOneBy(['name' => 'Admins']);
-        self::assertNotEquals($adminRight, $admins->getRight());
+        static::assertNotEquals($adminRight, $admins->getRight());
     }
 
     /**
@@ -71,39 +71,39 @@ class MultInheritanceWithJoinedTableTest extends BaseTestCaseORM
         // run tree consistence checks
 
         $everyBody = $this->em->getRepository(self::GROUP)->findOneBy(['name' => 'Everybody']);
-        $this->assertEquals(1, $everyBody->getLeft());
-        $this->assertEquals(14, $everyBody->getRight());
-        $this->assertEquals(0, $everyBody->getLevel());
+        static::assertEquals(1, $everyBody->getLeft());
+        static::assertEquals(14, $everyBody->getRight());
+        static::assertEquals(0, $everyBody->getLevel());
 
         $admins = $this->em->getRepository(self::GROUP)->findOneBy(['name' => 'Admins']);
-        $this->assertEquals(2, $admins->getLeft());
-        $this->assertEquals(7, $admins->getRight());
-        $this->assertEquals(1, $admins->getLevel());
+        static::assertEquals(2, $admins->getLeft());
+        static::assertEquals(7, $admins->getRight());
+        static::assertEquals(1, $admins->getLevel());
 
         $visitors = $this->em->getRepository(self::GROUP)->findOneBy(['name' => 'Visitors']);
-        $this->assertEquals(8, $visitors->getLeft());
-        $this->assertEquals(13, $visitors->getRight());
-        $this->assertEquals(1, $visitors->getLevel());
+        static::assertEquals(8, $visitors->getLeft());
+        static::assertEquals(13, $visitors->getRight());
+        static::assertEquals(1, $visitors->getLevel());
 
         $user0 = $this->em->getRepository(self::USER)->findOneBy(['email' => 'user0@test.com']);
-        $this->assertEquals(3, $user0->getLeft());
-        $this->assertEquals(4, $user0->getRight());
-        $this->assertEquals(2, $user0->getLevel());
+        static::assertEquals(3, $user0->getLeft());
+        static::assertEquals(4, $user0->getRight());
+        static::assertEquals(2, $user0->getLevel());
 
         $user1 = $this->em->getRepository(self::USER)->findOneBy(['email' => 'user1@test.com']);
-        $this->assertEquals(9, $user1->getLeft());
-        $this->assertEquals(10, $user1->getRight());
-        $this->assertEquals(2, $user1->getLevel());
+        static::assertEquals(9, $user1->getLeft());
+        static::assertEquals(10, $user1->getRight());
+        static::assertEquals(2, $user1->getLevel());
 
         $user2 = $this->em->getRepository(self::USER)->findOneBy(['email' => 'user2@test.com']);
-        $this->assertEquals(11, $user2->getLeft());
-        $this->assertEquals(12, $user2->getRight());
-        $this->assertEquals(2, $user2->getLevel());
+        static::assertEquals(11, $user2->getLeft());
+        static::assertEquals(12, $user2->getRight());
+        static::assertEquals(2, $user2->getLevel());
 
         $user3 = $this->em->getRepository(self::USER)->findOneBy(['email' => 'user3@test.com']);
-        $this->assertEquals(5, $user3->getLeft());
-        $this->assertEquals(6, $user3->getRight());
-        $this->assertEquals(2, $user3->getLevel());
+        static::assertEquals(5, $user3->getLeft());
+        static::assertEquals(6, $user3->getRight());
+        static::assertEquals(2, $user3->getLevel());
     }
 
     protected function getUsedEntityFixtures()

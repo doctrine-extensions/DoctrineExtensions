@@ -84,7 +84,7 @@ class TranslationRepository extends EntityRepository
             }
             if ($listener->getDefaultLocale() != $listener->getTranslatableLocale($entity, $meta, $this->getEntityManager()) &&
                 $locale === $listener->getDefaultLocale()) {
-                $listener->setTranslationInDefaultLocale(spl_object_hash($entity), $field, $trans);
+                $listener->setTranslationInDefaultLocale(spl_object_id($entity), $field, $trans);
                 $needsPersist = $listener->getPersistDefaultLocaleTranslation();
             }
             $type = Type::getType($meta->getTypeOfField($field));
@@ -94,7 +94,7 @@ class TranslationRepository extends EntityRepository
                 if ($this->_em->getUnitOfWork()->isInIdentityMap($entity)) {
                     $this->_em->persist($trans);
                 } else {
-                    $oid = spl_object_hash($entity);
+                    $oid = spl_object_id($entity);
                     $listener->addPendingTranslationInsert($oid, $trans);
                 }
             }

@@ -37,15 +37,15 @@ class MultiInheritanceTest extends BaseTestCaseORM
         $left = $meta->getReflectionProperty('lft')->getValue($food);
         $right = $meta->getReflectionProperty('rgt')->getValue($food);
 
-        $this->assertEquals(1, $left);
-        $this->assertNotNull($food->getCreated());
-        $this->assertNotNull($food->getUpdated());
+        static::assertEquals(1, $left);
+        static::assertNotNull($food->getCreated());
+        static::assertNotNull($food->getUpdated());
 
         $translationRepo = $this->em->getRepository(self::TRANSLATION);
         $translations = $translationRepo->findTranslations($food);
 
-        $this->assertCount(0, $translations);
-        $this->assertEquals('food', $food->getSlug());
+        static::assertCount(0, $translations);
+        static::assertEquals('food', $food->getSlug());
     }
 
     /**
@@ -59,16 +59,16 @@ class MultiInheritanceTest extends BaseTestCaseORM
         $vegies = $repo->findOneBy(['title' => 'Vegitables']);
 
         $count = $repo->childCount($vegies, true/*direct*/);
-        $this->assertEquals(3, $count);
+        static::assertEquals(3, $count);
 
         $children = $repo->children($vegies, true);
-        $this->assertCount(3, $children);
+        static::assertCount(3, $children);
 
         // node repository will not find it
         $baseNodeRepo = $this->em->getRepository(self::BASE_NODE);
         $cabbage = $baseNodeRepo->findOneBy(['identifier' => 'cabbage']);
         $path = $baseNodeRepo->getPath($cabbage);
-        $this->assertCount(3, $path);
+        static::assertCount(3, $path);
     }
 
     protected function getUsedEntityFixtures()

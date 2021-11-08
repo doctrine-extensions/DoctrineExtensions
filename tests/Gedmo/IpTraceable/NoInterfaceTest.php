@@ -43,8 +43,8 @@ class NoInterfaceTest extends BaseTestCaseORM
         $this->em->clear();
 
         $test = $this->em->getRepository(self::FIXTURE)->findOneBy(['title' => 'Test']);
-        $this->assertEquals(self::TEST_IP, $test->getCreated());
-        $this->assertEquals(self::TEST_IP, $test->getUpdated());
+        static::assertEquals(self::TEST_IP, $test->getCreated());
+        static::assertEquals(self::TEST_IP, $test->getUpdated());
     }
 
     protected function getUsedEntityFixtures()

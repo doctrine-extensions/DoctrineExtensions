@@ -10,8 +10,7 @@ $finder = PhpCsFixer\Finder::create()
         __DIR__ . '/tests/temp',
     ]);
 
-$config = new PhpCsFixer\Config();
-return $config
+return (new PhpCsFixer\Config())
     ->setRules([
         '@PSR2' => true,
         '@Symfony' => true,
@@ -23,6 +22,12 @@ return $config
         'ordered_imports' => ['sort_algorithm' => 'alpha'],
         'phpdoc_summary' => false,
         'phpdoc_to_comment' => false,
+        'php_unit_method_casing' => false,
+        'php_unit_set_up_tear_down_visibility' => true,
+        'php_unit_test_annotation' => false,
+        'php_unit_test_case_static_method_calls' => true,
         'ternary_to_null_coalescing' => true,
     ])
-    ->setFinder($finder);
+    ->setFinder($finder)
+    ->setRiskyAllowed(true)
+    ->setUsingCache(true);

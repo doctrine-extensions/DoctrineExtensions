@@ -107,7 +107,7 @@ class UploadableEntityTest extends BaseTestCaseORM
         }
     }
 
-    public function tearDown(): void
+    protected function tearDown(): void
     {
         $this->clearFilesAndDirectories();
     }
@@ -123,7 +123,7 @@ class UploadableEntityTest extends BaseTestCaseORM
         $this->em->persist($image);
         $this->em->flush();
 
-        $this->assertNull($image->getFilePath());
+        static::assertNull($image->getFilePath());
 
         // If there is an uploaded file, we process it
         $fileInfo = $this->generateUploadedFile();
@@ -141,9 +141,9 @@ class UploadableEntityTest extends BaseTestCaseORM
         $firstFile = $image2->getFilePath();
 
         $this->assertPathEquals($image2->getPath().'/'.$fileInfo['name'], $image2->getFilePath());
-        $this->assertTrue(is_file($firstFile));
-        $this->assertEquals($fileInfo['size'], $image2->getSize());
-        $this->assertEquals($fileInfo['type'], $image2->getMime());
+        static::assertTrue(is_file($firstFile));
+        static::assertEquals($fileInfo['size'], $image2->getSize());
+        static::assertEquals($fileInfo['type'], $image2->getMime());
 
         // UPDATE of an Uploadable Entity
 
@@ -161,16 +161,16 @@ class UploadableEntityTest extends BaseTestCaseORM
         $lastFile = $image2->getFilePath();
 
         $this->assertPathEquals($image2->getPath().'/'.$fileInfo['name'], $image2->getFilePath());
-        $this->assertTrue(is_file($lastFile));
+        static::assertTrue(is_file($lastFile));
 
         // First file should be removed on update
-        $this->assertFalse(is_file($firstFile));
+        static::assertFalse(is_file($firstFile));
 
         // REMOVAL of an Uploadable Entity
         $this->em->remove($image2);
         $this->em->flush();
 
-        $this->assertFalse(is_file($lastFile));
+        static::assertFalse(is_file($lastFile));
     }
 
     public function testUploadableEntityWithCompositePath()
@@ -195,9 +195,9 @@ class UploadableEntityTest extends BaseTestCaseORM
         $firstFile = $image2->getFilePath();
 
         $this->assertPathEquals($image2->getPath($this->destinationTestDir).'/'.$fileInfo['name'], $image2->getFilePath());
-        $this->assertTrue(is_file($firstFile));
-        $this->assertEquals($fileInfo['size'], $image2->getSize());
-        $this->assertEquals($fileInfo['type'], $image2->getMime());
+        static::assertTrue(is_file($firstFile));
+        static::assertEquals($fileInfo['size'], $image2->getSize());
+        static::assertEquals($fileInfo['type'], $image2->getMime());
 
         // UPDATE of an Uploadable Entity
 
@@ -215,16 +215,16 @@ class UploadableEntityTest extends BaseTestCaseORM
         $lastFile = $image2->getFilePath();
 
         $this->assertPathEquals($image2->getPath($this->destinationTestDir).'/'.$fileInfo['name'], $image2->getFilePath());
-        $this->assertTrue(is_file($lastFile));
+        static::assertTrue(is_file($lastFile));
 
         // First file should be removed on update
-        $this->assertFalse(is_file($firstFile));
+        static::assertFalse(is_file($firstFile));
 
         // REMOVAL of an Uploadable Entity
         $this->em->remove($image2);
         $this->em->flush();
 
-        $this->assertFalse(is_file($lastFile));
+        static::assertFalse(is_file($lastFile));
     }
 
     public function testEntityWithUploadableEntities()
@@ -307,7 +307,7 @@ class UploadableEntityTest extends BaseTestCaseORM
         $this->em->persist($file);
         $this->em->flush();
 
-        $this->assertTrue($file->callbackWasCalled);
+        static::assertTrue($file->callbackWasCalled);
     }
 
     /**
@@ -339,7 +339,7 @@ class UploadableEntityTest extends BaseTestCaseORM
         $this->listener->addEntityFileInfo($file, $fileInfo);
         $fileInfo = $this->listener->getEntityFileInfo($file);
 
-        $this->assertInstanceOf($fileInfoStubClass, $fileInfo);
+        static::assertInstanceOf($fileInfoStubClass, $fileInfo);
     }
 
     public function testFileWithFilenameSha1Generator()
@@ -359,9 +359,9 @@ class UploadableEntityTest extends BaseTestCaseORM
 
         // @todo: Remove the condition and the `else` block when dropping support for "phpunit/phpunit" < 9.1.
         if (method_exists($this, 'assertMatchesRegularExpression')) {
-            $this->assertMatchesRegularExpression('/[a-z0-9]{40}/', $sha1String);
+            static::assertMatchesRegularExpression('/[a-z0-9]{40}/', $sha1String);
         } else {
-            $this->assertRegExp('/[a-z0-9]{40}/', $sha1String);
+            static::assertRegExp('/[a-z0-9]{40}/', $sha1String);
         }
     }
 
@@ -379,7 +379,7 @@ class UploadableEntityTest extends BaseTestCaseORM
 
         $filename = substr($file->getFilePath(), strrpos($file->getFilePath(), '/') + 1);
 
-        $this->assertEquals('test-3.txt', $filename);
+        static::assertEquals('test-3.txt', $filename);
     }
 
     public function testFileWithCustomFilenameGenerator()
@@ -396,7 +396,7 @@ class UploadableEntityTest extends BaseTestCaseORM
 
         $filename = substr($file->getFilePath(), strrpos($file->getFilePath(), '/') + 1);
 
-        $this->assertEquals('123.txt', $filename);
+        static::assertEquals('123.txt', $filename);
     }
 
     public function testUploadFileWithoutExtension()
@@ -435,7 +435,7 @@ class UploadableEntityTest extends BaseTestCaseORM
 
     public function testRemoveFileIfItsNotAFileThenReturnFalse()
     {
-        $this->assertFalse($this->listener->removeFile('non_existent_file'));
+        static::assertFalse($this->listener->removeFile('non_existent_file'));
     }
 
     public function testMoveFileUsingAppendNumberOptionAppendsNumberToFilenameIfItAlreadyExists()
@@ -462,7 +462,7 @@ class UploadableEntityTest extends BaseTestCaseORM
 
         $filename = substr($file2->getFilePath(), strrpos($file2->getFilePath(), '/') + 1);
 
-        $this->assertEquals('test-2.txt', $filename);
+        static::assertEquals('test-2.txt', $filename);
     }
 
     public function testMoveFileUsingAppendNumberOptionAppendsNumberToFilenameIfItAlreadyExistsRelativePath()
@@ -488,7 +488,7 @@ class UploadableEntityTest extends BaseTestCaseORM
 
         $this->em->refresh($file2);
 
-        $this->assertEquals('./test-2', $file2->getFilePath());
+        static::assertEquals('./test-2', $file2->getFilePath());
 
         chdir($currDir);
     }
@@ -551,7 +551,7 @@ class UploadableEntityTest extends BaseTestCaseORM
 
         $this->em->refresh($file);
 
-        $this->assertEquals($size, $file->getFileSize());
+        static::assertEquals($size, $file->getFileSize());
     }
 
     public function testIfMimeTypeGuesserCantResolveTypeThrowException()
@@ -617,7 +617,7 @@ class UploadableEntityTest extends BaseTestCaseORM
 
         $this->listener->setDefaultFileInfoClass($validClass);
 
-        $this->assertEquals($validClass, $this->listener->getDefaultFileInfoClass());
+        static::assertEquals($validClass, $this->listener->getDefaultFileInfoClass());
     }
 
     public function testUseGeneratedFilenameWhenAppendingNumbers()
@@ -726,7 +726,7 @@ class UploadableEntityTest extends BaseTestCaseORM
 
     protected function assertPathEquals($expected, $path, $message = '')
     {
-        $this->assertEquals($expected, $path, $message);
+        static::assertEquals($expected, $path, $message);
     }
 }
 

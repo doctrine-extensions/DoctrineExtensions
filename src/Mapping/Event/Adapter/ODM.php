@@ -154,17 +154,17 @@ class ODM implements AdapterInterface
     /**
      * {@inheritdoc}
      */
-    public function setOriginalObjectProperty($uow, $oid, $property, $value)
+    public function setOriginalObjectProperty($uow, $object, $property, $value)
     {
-        $uow->setOriginalDocumentProperty($oid, $property, $value);
+        $uow->setOriginalDocumentProperty(spl_object_hash($object), $property, $value);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function clearObjectChangeSet($uow, $oid)
+    public function clearObjectChangeSet($uow, $object)
     {
-        $uow->clearDocumentChangeSet($oid);
+        $uow->clearDocumentChangeSet(spl_object_hash($object));
     }
 
     /**

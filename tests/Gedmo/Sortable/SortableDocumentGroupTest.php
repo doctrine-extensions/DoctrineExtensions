@@ -78,7 +78,7 @@ class SortableDocumentGroupTest extends BaseTestCaseMongoODM
 
         for ($i = 0; $i < 2; ++$i) {
             $kids = $repo->findBy(['position' => $i]);
-            $this->assertCount(2, $kids);
+            static::assertCount(2, $kids);
         }
     }
 
@@ -90,17 +90,17 @@ class SortableDocumentGroupTest extends BaseTestCaseMongoODM
         $repo = $this->dm->getRepository(self::KID);
 
         $kid = $repo->findOneBy(['lastname' => 'kid2']);
-        $this->assertInstanceOf(self::KID, $kid);
+        static::assertInstanceOf(self::KID, $kid);
 
         $kid->setPosition(0);
         $this->dm->flush();
 
         $kids = $repo->findBy(['birthdate' => new \DateTime(self::KID_DATE1)]);
-        $this->assertCount(2, $kids);
+        static::assertCount(2, $kids);
 
         for ($i = 0; $i < 2; ++$i) {
             $expected = (1 == $i + 1) ? $i + 1 : 0;
-            $this->assertEquals($expected, $kids[$i]->getPosition());
+            static::assertEquals($expected, $kids[$i]->getPosition());
         }
     }
 
@@ -113,7 +113,7 @@ class SortableDocumentGroupTest extends BaseTestCaseMongoODM
 
         for ($i = 0; $i < 3; ++$i) {
             $posts = $repo->findBy(['position' => $i]);
-            $this->assertCount(2, $posts);
+            static::assertCount(2, $posts);
         }
     }
 
@@ -126,13 +126,13 @@ class SortableDocumentGroupTest extends BaseTestCaseMongoODM
         $repo_post = $this->dm->getRepository(self::POST);
 
         $category = $repo_category->findOneBy(['name' => 'category1']);
-        $this->assertInstanceOf(self::CATEGORY, $category);
+        static::assertInstanceOf(self::CATEGORY, $category);
 
         $post = $repo_post->findOneBy([
             'position' => 2,
             'category.id' => $category->getId(),
         ]);
-        $this->assertInstanceOf(self::POST, $post);
+        static::assertInstanceOf(self::POST, $post);
 
         $post->setPosition(0);
 
@@ -141,11 +141,11 @@ class SortableDocumentGroupTest extends BaseTestCaseMongoODM
         $posts = $repo_post->findBy([
             'category.id' => $category->getId(),
         ]);
-        $this->assertCount(3, $posts);
+        static::assertCount(3, $posts);
 
         for ($i = 0; $i < 3; ++$i) {
             $expected = ($i + 1 < 3) ? $i + 1 : 0;
-            $this->assertEquals($expected, $posts[$i]->getPosition());
+            static::assertEquals($expected, $posts[$i]->getPosition());
         }
     }
 
@@ -158,13 +158,13 @@ class SortableDocumentGroupTest extends BaseTestCaseMongoODM
         $repo_post = $this->dm->getRepository(self::POST);
 
         $category = $repo_category->findOneBy(['name' => 'category1']);
-        $this->assertInstanceOf(self::CATEGORY, $category);
+        static::assertInstanceOf(self::CATEGORY, $category);
 
         $post = $repo_post->findOneBy([
             'position' => 1,
             'category.id' => $category->getId(),
         ]);
-        $this->assertInstanceOf(self::POST, $post);
+        static::assertInstanceOf(self::POST, $post);
 
         $this->dm->remove($post);
         $this->dm->flush();
@@ -172,10 +172,10 @@ class SortableDocumentGroupTest extends BaseTestCaseMongoODM
         $posts = $repo_post->findBy([
             'category.id' => $category->getId(),
         ]);
-        $this->assertCount(2, $posts);
+        static::assertCount(2, $posts);
 
         for ($i = 0; $i < 2; ++$i) {
-            $this->assertEquals($i, $posts[$i]->getPosition());
+            static::assertEquals($i, $posts[$i]->getPosition());
         }
     }
 }

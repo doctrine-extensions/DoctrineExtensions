@@ -63,7 +63,7 @@ class TranslatableIdentifierTest extends BaseTestCaseORM
         $object = $this->em->find(self::FIXTURE, $this->testObjectId);
 
         $translations = $repo->findTranslations($object);
-        $this->assertCount(0, $translations);
+        static::assertCount(0, $translations);
 
         $object = $this->em->find(self::FIXTURE, $this->testObjectId);
         $object->setTitle('title in de');
@@ -82,14 +82,14 @@ class TranslatableIdentifierTest extends BaseTestCaseORM
             self::FIXTURE
         );
 
-        $this->assertEquals($this->testObjectId, $object->getUid());
+        static::assertEquals($this->testObjectId, $object->getUid());
 
         $translations = $repo->findTranslations($object);
-        $this->assertCount(1, $translations);
-        $this->assertArrayHasKey('de_de', $translations);
+        static::assertCount(1, $translations);
+        static::assertArrayHasKey('de_de', $translations);
 
-        $this->assertArrayHasKey('title', $translations['de_de']);
-        $this->assertEquals('title in de', $translations['de_de']['title']);
+        static::assertArrayHasKey('title', $translations['de_de']);
+        static::assertEquals('title in de', $translations['de_de']['title']);
 
         // dql test object hydration
         $q = $this->em
@@ -98,16 +98,16 @@ class TranslatableIdentifierTest extends BaseTestCaseORM
             ->useResultCache(false)
         ;
         $data = $q->getResult();
-        $this->assertCount(1, $data);
+        static::assertCount(1, $data);
         $object = $data[0];
-        $this->assertEquals('title in en', $object->getTitle());
+        static::assertEquals('title in en', $object->getTitle());
 
         $this->em->clear(); // based on 2.3.0 it caches in identity map
         $this->translatableListener->setTranslatableLocale('de_de');
         $data = $q->getResult();
-        $this->assertCount(1, $data);
+        static::assertCount(1, $data);
         $object = $data[0];
-        $this->assertEquals('title in de', $object->getTitle());
+        static::assertEquals('title in de', $object->getTitle());
     }
 
     protected function getUsedEntityFixtures()

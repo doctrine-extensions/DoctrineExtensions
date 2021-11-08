@@ -59,10 +59,10 @@ class InheritanceTest extends BaseTestCaseORM
         $this->em->clear();
 
         $repo = $this->em->getRepository(self::TRANSLATION);
-        $this->assertInstanceOf(TranslationRepository::class, $repo);
+        static::assertInstanceOf(TranslationRepository::class, $repo);
 
         $translations = $repo->findTranslations($article);
-        $this->assertCount(0, $translations);
+        static::assertCount(0, $translations);
 
         // test second translations
         $article = $this->em->getRepository(self::ARTICLE)->find(1);
@@ -76,17 +76,17 @@ class InheritanceTest extends BaseTestCaseORM
         $this->em->clear();
 
         $translations = $repo->findTranslations($article);
-        $this->assertCount(1, $translations);
-        $this->assertArrayHasKey('de', $translations);
+        static::assertCount(1, $translations);
+        static::assertArrayHasKey('de', $translations);
 
-        $this->assertArrayHasKey('name', $translations['de']);
-        $this->assertEquals('name in de', $translations['de']['name']);
+        static::assertArrayHasKey('name', $translations['de']);
+        static::assertEquals('name in de', $translations['de']['name']);
 
-        $this->assertArrayHasKey('title', $translations['de']);
-        $this->assertEquals('title in de', $translations['de']['title']);
+        static::assertArrayHasKey('title', $translations['de']);
+        static::assertEquals('title in de', $translations['de']['title']);
 
-        $this->assertArrayHasKey('content', $translations['de']);
-        $this->assertEquals('content in de', $translations['de']['content']);
+        static::assertArrayHasKey('content', $translations['de']);
+        static::assertEquals('content in de', $translations['de']['content']);
     }
 
     /**
@@ -123,15 +123,15 @@ class InheritanceTest extends BaseTestCaseORM
         $q->setHint(Query::HINT_CUSTOM_OUTPUT_WALKER, self::TREE_WALKER_TRANSLATION);
 
         $files = $q->getArrayResult();
-        $this->assertCount(2, $files);
-        $this->assertEquals('image de', $files[0]['name']);
-        $this->assertEquals('file de', $files[1]['name']);
+        static::assertCount(2, $files);
+        static::assertEquals('image de', $files[0]['name']);
+        static::assertEquals('file de', $files[1]['name']);
 
         // test loading in locale
         $images = $this->em->getRepository(self::IMAGE)->findAll();
-        $this->assertCount(1, $images);
-        $this->assertEquals('image de', $images[0]->getName());
-        $this->assertEquals('mime de', $images[0]->getMime());
+        static::assertCount(1, $images);
+        static::assertEquals('image de', $images[0]->getName());
+        static::assertEquals('mime de', $images[0]->getMime());
     }
 
     protected function getUsedEntityFixtures()

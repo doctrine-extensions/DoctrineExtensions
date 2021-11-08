@@ -407,7 +407,7 @@ class TranslatableListener extends MappedEventSubscriber
         $meta = $om->getClassMetadata(get_class($object));
         // check if entity is tracked by translatable and without foreign key
         if ($this->getConfiguration($om, $meta->name) && count($this->pendingTranslationInserts)) {
-            $oid = spl_object_hash($object);
+            $oid = spl_object_id($object);
             if (array_key_exists($oid, $this->pendingTranslationInserts)) {
                 // load the pending translations without key
                 $wrapped = AbstractWrapper::wrap($object, $om);
@@ -439,7 +439,7 @@ class TranslatableListener extends MappedEventSubscriber
         $config = $this->getConfiguration($om, $meta->name);
         if (isset($config['fields'])) {
             $locale = $this->getTranslatableLocale($object, $meta, $om);
-            $oid = spl_object_hash($object);
+            $oid = spl_object_id($object);
             $this->translatedInLocale[$oid] = $locale;
         }
 
@@ -474,7 +474,7 @@ class TranslatableListener extends MappedEventSubscriber
                     // ensure clean changeset
                     $ea->setOriginalObjectProperty(
                         $om->getUnitOfWork(),
-                        $oid,
+                        $object,
                         $field,
                         $meta->getReflectionProperty($field)->getValue($object)
                     );
@@ -542,7 +542,7 @@ class TranslatableListener extends MappedEventSubscriber
         $locale = $this->getTranslatableLocale($object, $meta, $om);
 
         $uow = $om->getUnitOfWork();
-        $oid = spl_object_hash($object);
+        $oid = spl_object_id($object);
         $changeSet = $ea->getObjectChangeSet($uow, $object);
         $translatableFields = $config['fields'];
         foreach ($translatableFields as $field) {
@@ -622,7 +622,7 @@ class TranslatableListener extends MappedEventSubscriber
                     if ($isInsert && !$objectId && !$ea->usesPersonalTranslation($translationClass)) {
                         // if we do not have the primary key yet available
                         // keep this translation in memory to insert it later with foreign key
-                        $this->pendingTranslationInserts[spl_object_hash($object)][] = $translation;
+                        $this->pendingTranslationInserts[spl_object_id($object)][] = $translation;
                     } else {
                         // persist and compute change set for translation
                         if ($wasPersistedSeparetely) {
@@ -652,7 +652,7 @@ class TranslatableListener extends MappedEventSubscriber
             foreach ($changeSet as $field => $changes) {
                 if (in_array($field, $translatableFields)) {
                     if ($locale !== $this->defaultLocale) {
-                        $ea->setOriginalObjectProperty($uow, $oid, $field, $changes[0]);
+                        $ea->setOriginalObjectProperty($uow, $object, $field, $changes[0]);
                         unset($modifiedChangeSet[$field]);
                     }
                 }
@@ -660,11 +660,11 @@ class TranslatableListener extends MappedEventSubscriber
             $ea->recomputeSingleObjectChangeset($uow, $meta, $object);
             // cleanup current changeset only if working in a another locale different than de default one, otherwise the changeset will always be reverted
             if ($locale !== $this->defaultLocale) {
-                $ea->clearObjectChangeSet($uow, $oid);
+                $ea->clearObjectChangeSet($uow, $object);
                 // recompute changeset only if there are changes other than reverted translations
                 if ($modifiedChangeSet || $this->hasTranslationsInDefaultLocale($oid)) {
                     foreach ($modifiedChangeSet as $field => $changes) {
-                        $ea->setOriginalObjectProperty($uow, $oid, $field, $changes[0]);
+                        $ea->setOriginalObjectProperty($uow, $object, $field, $changes[0]);
                     }
                     foreach ($translatableFields as $field) {
                         if (null !== $this->getTranslationInDefaultLocale($oid, $field)) {

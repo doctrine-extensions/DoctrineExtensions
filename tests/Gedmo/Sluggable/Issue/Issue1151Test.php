@@ -25,7 +25,7 @@ class Issue1151Test extends BaseTestCaseMongoODM
         $this->dm->persist($article);
 
         $this->dm->flush();
-        $this->assertEquals('test', $article->getSlug());
+        static::assertEquals('test', $article->getSlug());
     }
 
     /**

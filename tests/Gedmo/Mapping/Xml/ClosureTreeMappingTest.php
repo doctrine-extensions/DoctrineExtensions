@@ -31,7 +31,7 @@ class ClosureTreeMappingTest extends BaseTestCaseOM
      */
     private $tree;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -60,11 +60,11 @@ class ClosureTreeMappingTest extends BaseTestCaseOM
         $meta = $this->em->getClassMetadata('Gedmo\Tests\Mapping\Fixture\Xml\ClosureTree');
         $config = $this->tree->getConfiguration($this->em, $meta->name);
 
-        $this->assertArrayHasKey('strategy', $config);
-        $this->assertEquals('closure', $config['strategy']);
-        $this->assertArrayHasKey('closure', $config);
-        $this->assertEquals('Gedmo\Tests\Mapping\Fixture\ClosureTreeClosure', $config['closure']);
-        $this->assertArrayHasKey('parent', $config);
-        $this->assertEquals('parent', $config['parent']);
+        static::assertArrayHasKey('strategy', $config);
+        static::assertEquals('closure', $config['strategy']);
+        static::assertArrayHasKey('closure', $config);
+        static::assertEquals('Gedmo\Tests\Mapping\Fixture\ClosureTreeClosure', $config['closure']);
+        static::assertArrayHasKey('parent', $config);
+        static::assertEquals('parent', $config['parent']);
     }
 }

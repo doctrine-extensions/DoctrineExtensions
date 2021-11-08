@@ -36,7 +36,7 @@ class SluggableDocumentTest extends BaseTestCaseMongoODM
         $repo = $this->dm->getRepository(self::ARTICLE);
         $article = $repo->findOneBy(['title' => 'My Title']);
 
-        $this->assertEquals('my-title-the-code', $article->getSlug());
+        static::assertEquals('my-title-the-code', $article->getSlug());
 
         // test update
         $article->setTitle('New Title');
@@ -46,7 +46,7 @@ class SluggableDocumentTest extends BaseTestCaseMongoODM
         $this->dm->clear();
 
         $article = $repo->findOneBy(['title' => 'New Title']);
-        $this->assertEquals('new-title-the-code', $article->getSlug());
+        static::assertEquals('new-title-the-code', $article->getSlug());
     }
 
     public function testUniqueSlugGeneration()
@@ -59,7 +59,7 @@ class SluggableDocumentTest extends BaseTestCaseMongoODM
             $this->dm->persist($article);
             $this->dm->flush();
             $this->dm->clear();
-            $this->assertEquals('my-title-the-code-'.($i + 1), $article->getSlug());
+            static::assertEquals('my-title-the-code-'.($i + 1), $article->getSlug());
         }
     }
 
@@ -77,7 +77,7 @@ class SluggableDocumentTest extends BaseTestCaseMongoODM
         $this->dm->persist($article2);
 
         $this->dm->flush();
-        $this->assertEquals('my-s', $article2->getSlug());
+        static::assertEquals('my-s', $article2->getSlug());
     }
 
     private function populate()

@@ -151,17 +151,17 @@ class ORM implements AdapterInterface
     /**
      * {@inheritdoc}
      */
-    public function setOriginalObjectProperty($uow, $oid, $property, $value)
+    public function setOriginalObjectProperty($uow, $object, $property, $value)
     {
-        $uow->setOriginalEntityProperty($oid, $property, $value);
+        $uow->setOriginalEntityProperty(spl_object_id($object), $property, $value);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function clearObjectChangeSet($uow, $oid)
+    public function clearObjectChangeSet($uow, $object)
     {
-        $uow->clearEntityChangeSet($oid);
+        $uow->clearEntityChangeSet(spl_object_id($object));
     }
 
     /**

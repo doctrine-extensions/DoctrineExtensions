@@ -40,13 +40,13 @@ class BothSlugHandlerTest extends BaseTestCaseORM
         $repo = $this->em->getRepository(self::PERSON);
 
         $herzult = $repo->findOneBy(['name' => 'Herzult']);
-        $this->assertEquals('web/developer/php/herzult', $herzult->getSlug());
+        static::assertEquals('web/developer/php/herzult', $herzult->getSlug());
 
         $gedi = $repo->findOneBy(['name' => 'Gedi']);
-        $this->assertEquals('web/developer/gedi', $gedi->getSlug());
+        static::assertEquals('web/developer/gedi', $gedi->getSlug());
 
         $hurty = $repo->findOneBy(['name' => 'Hurty']);
-        $this->assertEquals('singer/hurty', $hurty->getSlug());
+        static::assertEquals('singer/hurty', $hurty->getSlug());
     }
 
     public function testSlugUpdates()
@@ -59,7 +59,7 @@ class BothSlugHandlerTest extends BaseTestCaseORM
         $this->em->persist($gedi);
         $this->em->flush();
 
-        $this->assertEquals('web/developer/upd-gedi', $gedi->getSlug());
+        static::assertEquals('web/developer/upd-gedi', $gedi->getSlug());
 
         $artist = $this->em->getRepository(self::OCCUPATION)->findOneBy(['title' => 'Singer']);
         $artist->setTitle('Artist');
@@ -71,10 +71,10 @@ class BothSlugHandlerTest extends BaseTestCaseORM
         $this->em->persist($gedi);
         $this->em->flush();
 
-        $this->assertEquals('artist/upd-gedi', $gedi->getSlug());
+        static::assertEquals('artist/upd-gedi', $gedi->getSlug());
 
         $hurty = $repo->findOneBy(['name' => 'Hurty']);
-        $this->assertEquals('artist/hurty', $hurty->getSlug());
+        static::assertEquals('artist/hurty', $hurty->getSlug());
     }
 
     public function test1093()
@@ -84,7 +84,7 @@ class BothSlugHandlerTest extends BaseTestCaseORM
         $occupationRepo = $this->em->getRepository(self::OCCUPATION);
 
         $herzult = $personRepo->findOneBy(['name' => 'Herzult']);
-        $this->assertEquals('web/developer/php/herzult', $herzult->getSlug());
+        static::assertEquals('web/developer/php/herzult', $herzult->getSlug());
 
         $developer = $occupationRepo->findOneBy(['title' => 'Developer']);
         $developer->setTitle('Enthusiast');
@@ -94,13 +94,13 @@ class BothSlugHandlerTest extends BaseTestCaseORM
 
         // Works (but is not updated in the actual DB)
         $herzult = $personRepo->findOneBy(['name' => 'Herzult']);
-        $this->assertEquals('web/enthusiast/php/herzult', $herzult->getSlug());
+        static::assertEquals('web/enthusiast/php/herzult', $herzult->getSlug());
 
         $this->em->clear();
 
         // Does not work.
         $herzult = $personRepo->findOneBy(['name' => 'Herzult']);
-        $this->assertEquals('web/enthusiast/php/herzult', $herzult->getSlug());
+        static::assertEquals('web/enthusiast/php/herzult', $herzult->getSlug());
     }
 
     protected function getUsedEntityFixtures()

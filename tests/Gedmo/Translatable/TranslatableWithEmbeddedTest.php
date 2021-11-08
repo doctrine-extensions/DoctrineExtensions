@@ -67,15 +67,15 @@ class TranslatableWithEmbeddedTest extends BaseTestCaseORM
 
         $translations = $repo->findTranslations($entity);
 
-        $this->assertArrayHasKey('de', $translations);
-        $this->assertSame('test-de', $translations['de']['title']);
-        $this->assertSame('test', $entity->getTitle());
+        static::assertArrayHasKey('de', $translations);
+        static::assertSame('test-de', $translations['de']['title']);
+        static::assertSame('test', $entity->getTitle());
 
-        $this->assertSame('website-de', $translations['de']['link.website']);
-        $this->assertSame('website', $entity->getLink()->getWebsite());
+        static::assertSame('website-de', $translations['de']['link.website']);
+        static::assertSame('website', $entity->getLink()->getWebsite());
 
-        $this->assertSame('facebook-de', $translations['de']['link.facebook']);
-        $this->assertSame('facebook', $entity->getLink()->getFacebook());
+        static::assertSame('facebook-de', $translations['de']['link.facebook']);
+        static::assertSame('facebook', $entity->getLink()->getFacebook());
 
         $this->em->clear();
 
@@ -83,8 +83,8 @@ class TranslatableWithEmbeddedTest extends BaseTestCaseORM
         $repo = $this->em->getRepository(self::FIXTURE);
         $entity = $repo->findOneBy(['id' => $entity->getId()]);
 
-        $this->assertSame('website-de', $entity->getLink()->getWebsite());
-        $this->assertSame('facebook-de', $entity->getLink()->getFacebook());
+        static::assertSame('website-de', $entity->getLink()->getWebsite());
+        static::assertSame('facebook-de', $entity->getLink()->getFacebook());
     }
 
     public function testQueryWalker()
@@ -98,10 +98,10 @@ class TranslatableWithEmbeddedTest extends BaseTestCaseORM
 
         $result = $q->getArrayResult();
 
-        $this->assertCount(1, $result);
-        $this->assertSame('test-de', $result[0]['title']);
-        $this->assertSame('website-de', $result[0]['link.website']);
-        $this->assertSame('facebook-de', $result[0]['link.facebook']);
+        static::assertCount(1, $result);
+        static::assertSame('test-de', $result[0]['title']);
+        static::assertSame('website-de', $result[0]['link.website']);
+        static::assertSame('facebook-de', $result[0]['link.facebook']);
     }
 
     protected function getUsedEntityFixtures()

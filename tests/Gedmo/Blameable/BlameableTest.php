@@ -43,14 +43,14 @@ class BlameableTest extends BaseTestCaseORM
         $sport = new Article();
         $sport->setTitle('Sport');
 
-        $this->assertInstanceOf(Blameable::class, $sport);
+        static::assertInstanceOf(Blameable::class, $sport);
 
         $sportComment = new Comment();
         $sportComment->setMessage('hello');
         $sportComment->setArticle($sport);
         $sportComment->setStatus(0);
 
-        $this->assertInstanceOf(Blameable::class, $sportComment);
+        static::assertInstanceOf(Blameable::class, $sportComment);
 
         $this->em->persist($sport);
         $this->em->persist($sportComment);
@@ -58,13 +58,13 @@ class BlameableTest extends BaseTestCaseORM
         $this->em->clear();
 
         $sport = $this->em->getRepository(self::ARTICLE)->findOneBy(['title' => 'Sport']);
-        $this->assertEquals('testuser', $sport->getCreated());
-        $this->assertEquals('testuser', $sport->getUpdated());
-        $this->assertNull($sport->getPublished());
+        static::assertEquals('testuser', $sport->getCreated());
+        static::assertEquals('testuser', $sport->getUpdated());
+        static::assertNull($sport->getPublished());
 
         $sportComment = $this->em->getRepository(self::COMMENT)->findOneBy(['message' => 'hello']);
-        $this->assertEquals('testuser', $sportComment->getModified());
-        $this->assertNull($sportComment->getClosed());
+        static::assertEquals('testuser', $sportComment->getModified());
+        static::assertNull($sportComment->getClosed());
 
         $sportComment->setStatus(1);
         $published = new Type();
@@ -79,9 +79,9 @@ class BlameableTest extends BaseTestCaseORM
         $this->em->clear();
 
         $sportComment = $this->em->getRepository(self::COMMENT)->findOneBy(['message' => 'hello']);
-        $this->assertEquals('testuser', $sportComment->getClosed());
+        static::assertEquals('testuser', $sportComment->getClosed());
 
-        $this->assertEquals('testuser', $sport->getPublished());
+        static::assertEquals('testuser', $sport->getPublished());
     }
 
     public function testForcedValues()
@@ -97,8 +97,8 @@ class BlameableTest extends BaseTestCaseORM
 
         $repo = $this->em->getRepository(self::ARTICLE);
         $sport = $repo->findOneBy(['title' => 'sport forced']);
-        $this->assertEquals('myuser', $sport->getCreated());
-        $this->assertEquals('myuser', $sport->getUpdated());
+        static::assertEquals('myuser', $sport->getCreated());
+        static::assertEquals('myuser', $sport->getUpdated());
 
         $published = new Type();
         $published->setTitle('Published');
@@ -111,7 +111,7 @@ class BlameableTest extends BaseTestCaseORM
         $this->em->clear();
 
         $sport = $repo->findOneBy(['title' => 'sport forced']);
-        $this->assertEquals('myuser', $sport->getPublished());
+        static::assertEquals('myuser', $sport->getPublished());
     }
 
     protected function getUsedEntityFixtures()

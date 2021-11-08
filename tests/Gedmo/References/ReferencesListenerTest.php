@@ -22,7 +22,7 @@ class ReferencesListenerTest extends BaseTestCaseOM
         parent::setUp();
 
         if (!class_exists('Mongo')) {
-            $this->markTestSkipped('Missing Mongo extension.');
+            static::markTestSkipped('Missing Mongo extension.');
         }
 
         $reader = new AnnotationReader();
@@ -64,7 +64,7 @@ class ReferencesListenerTest extends BaseTestCaseOM
 
         $this->em->persist($stockItem);
 
-        $this->assertEquals($product->getId(), $stockItem->getProductId());
+        static::assertEquals($product->getId(), $stockItem->getProductId());
     }
 
     public function testShouldPopulateReferenceOneWithProxyFromIdentifierField()
@@ -87,7 +87,7 @@ class ReferencesListenerTest extends BaseTestCaseOM
 
         $stockItem = $this->em->find(get_class($stockItem), $stockItem->getId());
 
-        $this->assertSame($product, $stockItem->getProduct());
+        static::assertSame($product, $stockItem->getProduct());
     }
 
     public function testShouldPopulateReferenceManyWithLazyCollectionInstance()
@@ -118,18 +118,18 @@ class ReferencesListenerTest extends BaseTestCaseOM
 
         $product = $this->dm->find(get_class($product), $product->getId());
 
-        $this->assertInstanceOf('Doctrine\Common\Collections\Collection', $product->getStockItems());
-        $this->assertEquals(2, $product->getStockItems()->count());
+        static::assertInstanceOf('Doctrine\Common\Collections\Collection', $product->getStockItems());
+        static::assertEquals(2, $product->getStockItems()->count());
 
         $first = $product->getStockItems()->first();
 
-        $this->assertInstanceOf(get_class($stockItem), $first);
-        $this->assertEquals('APP-TV', $first->getSku());
+        static::assertInstanceOf(get_class($stockItem), $first);
+        static::assertEquals('APP-TV', $first->getSku());
 
         $last = $product->getStockItems()->last();
 
-        $this->assertInstanceOf(get_class($stockItem), $last);
-        $this->assertEquals('AMZN-APP-TV', $last->getSku());
+        static::assertInstanceOf(get_class($stockItem), $last);
+        static::assertEquals('AMZN-APP-TV', $last->getSku());
     }
 
     public function testShouldPopulateReferenceManyEmbedWithLazyCollectionInstance()
@@ -167,10 +167,10 @@ class ReferencesListenerTest extends BaseTestCaseOM
         $this->dm->persist($appleTV);
         $this->dm->flush();
 
-        $this->assertEquals($appleTV->getMetadatas()->first(), $tvMetadata);
-        $this->assertEquals($samsungTV->getMetadatas()->first(), $tvMetadata);
+        static::assertEquals($appleTV->getMetadatas()->first(), $tvMetadata);
+        static::assertEquals($samsungTV->getMetadatas()->first(), $tvMetadata);
 
         $tvs = $tvCategory->getProducts();
-        $this->assertNotNull($tvs);
+        static::assertNotNull($tvs);
     }
 }

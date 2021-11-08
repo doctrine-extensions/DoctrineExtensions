@@ -111,7 +111,7 @@ abstract class BaseTestCaseORM extends \PHPUnit\Framework\TestCase
     protected function getMockMappedEntityManager(EventManager $evm = null)
     {
         $driver = $this->getMockBuilder('Doctrine\DBAL\Driver')->getMock();
-        $driver->expects($this->once())
+        $driver->expects(static::once())
             ->method('getDatabasePlatform')
             ->willReturn($this->getMockBuilder('Doctrine\DBAL\Platforms\MySqlPlatform')->getMock());
 
@@ -119,7 +119,7 @@ abstract class BaseTestCaseORM extends \PHPUnit\Framework\TestCase
             ->setConstructorArgs([], $driver)
             ->getMock();
 
-        $conn->expects($this->once())
+        $conn->expects(static::once())
             ->method('getEventManager')
             ->willReturn($evm ?: $this->getEventManager());
 

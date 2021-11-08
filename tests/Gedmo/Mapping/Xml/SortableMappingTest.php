@@ -31,7 +31,7 @@ class SortableMappingTest extends BaseTestCaseOM
      */
     private $sortable;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -59,12 +59,12 @@ class SortableMappingTest extends BaseTestCaseOM
         $meta = $this->em->getClassMetadata('Gedmo\Tests\Mapping\Fixture\Xml\Sortable');
         $config = $this->sortable->getConfiguration($this->em, $meta->name);
 
-        $this->assertArrayHasKey('position', $config);
-        $this->assertEquals('position', $config['position']);
-        $this->assertArrayHasKey('groups', $config);
-        $this->assertCount(3, $config['groups']);
-        $this->assertEquals('grouping', $config['groups'][0]);
-        $this->assertEquals('sortable_group', $config['groups'][1]);
-        $this->assertEquals('sortable_groups', $config['groups'][2]);
+        static::assertArrayHasKey('position', $config);
+        static::assertEquals('position', $config['position']);
+        static::assertArrayHasKey('groups', $config);
+        static::assertCount(3, $config['groups']);
+        static::assertEquals('grouping', $config['groups'][0]);
+        static::assertEquals('sortable_group', $config['groups'][1]);
+        static::assertEquals('sortable_groups', $config['groups'][2]);
     }
 }

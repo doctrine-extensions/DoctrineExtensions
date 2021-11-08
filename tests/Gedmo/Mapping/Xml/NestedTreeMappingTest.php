@@ -29,7 +29,7 @@ class NestedTreeMappingTest extends BaseTestCaseOM
      */
     private $tree;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -52,17 +52,17 @@ class NestedTreeMappingTest extends BaseTestCaseOM
         $meta = $this->em->getClassMetadata('Gedmo\Tests\Mapping\Fixture\Xml\NestedTree');
         $config = $this->tree->getConfiguration($this->em, $meta->name);
 
-        $this->assertArrayHasKey('strategy', $config);
-        $this->assertEquals('nested', $config['strategy']);
-        $this->assertArrayHasKey('left', $config);
-        $this->assertEquals('left', $config['left']);
-        $this->assertArrayHasKey('right', $config);
-        $this->assertEquals('right', $config['right']);
-        $this->assertArrayHasKey('level', $config);
-        $this->assertEquals('level', $config['level']);
-        $this->assertArrayHasKey('root', $config);
-        $this->assertEquals('root', $config['root']);
-        $this->assertArrayHasKey('parent', $config);
-        $this->assertEquals('parent', $config['parent']);
+        static::assertArrayHasKey('strategy', $config);
+        static::assertEquals('nested', $config['strategy']);
+        static::assertArrayHasKey('left', $config);
+        static::assertEquals('left', $config['left']);
+        static::assertArrayHasKey('right', $config);
+        static::assertEquals('right', $config['right']);
+        static::assertArrayHasKey('level', $config);
+        static::assertEquals('level', $config['level']);
+        static::assertArrayHasKey('root', $config);
+        static::assertEquals('root', $config['root']);
+        static::assertArrayHasKey('parent', $config);
+        static::assertEquals('parent', $config['parent']);
     }
 }

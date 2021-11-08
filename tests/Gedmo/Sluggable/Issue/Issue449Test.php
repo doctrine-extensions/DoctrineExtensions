@@ -76,6 +76,6 @@ class Issue449Test extends BaseTestCaseORM
         $this->em->flush();
         $this->em->clear();
 
-        $this->assertNotEquals($slug, $article->getSlug());
+        static::assertNotEquals($slug, $article->getSlug());
     }
 }
