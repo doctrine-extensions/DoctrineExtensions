@@ -1,9 +1,6 @@
-.idea
+.php-cs-fixer.cache
 bin
 vendor
-
-.php-cs-fixer.cache
 composer.lock
+tests/.phpunit.result.cache
 tests/phpunit.xml
-tests/temp/*.php
-tests/temp/*.log

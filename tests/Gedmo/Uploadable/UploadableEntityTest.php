@@ -95,12 +95,12 @@ final class UploadableEntityTest extends BaseTestCaseORM
         $evm->addEventSubscriber($this->listener);
         $config = $this->getMockAnnotatedConfig();
         $this->em = $this->getMockSqliteEntityManager($evm, $config);
-        $this->testFile = __DIR__.'/../../data/test.txt';
-        $this->testFile2 = __DIR__.'/../../data/test2.txt';
-        $this->testFile3 = __DIR__.'/../../data/test_3.txt';
-        $this->testFileWithoutExt = __DIR__.'/../../data/test4';
-        $this->testFileWithSpaces = __DIR__.'/../../data/test with spaces.txt';
-        $this->destinationTestDir = __DIR__.'/../../temp/uploadable';
+        $this->testFile = TESTS_PATH.'/data/test.txt';
+        $this->testFile2 = TESTS_PATH.'/data/test2.txt';
+        $this->testFile3 = TESTS_PATH.'/data/test_3.txt';
+        $this->testFileWithoutExt = TESTS_PATH.'/data/test4';
+        $this->testFileWithSpaces = TESTS_PATH.'/data/test with spaces.txt';
+        $this->destinationTestDir = TESTS_TEMP_DIR.'/uploadable';
         $this->destinationTestFile = $this->destinationTestDir.'/test.txt';
         $this->destinationTestFile2 = $this->destinationTestDir.'/test2.txt';
         $this->destinationTestFile3 = $this->destinationTestDir.'/test_3.txt';
@@ -482,7 +482,7 @@ final class UploadableEntityTest extends BaseTestCaseORM
     public function testMoveFileUsingAppendNumberOptionAppendsNumberToFilenameIfItAlreadyExistsRelativePath()
     {
         $currDir = __DIR__;
-        chdir(realpath(__DIR__.'/../../temp/uploadable'));
+        chdir(realpath(TESTS_TEMP_DIR.'/uploadable'));
         $file = new FileAppendNumber();
         $file2 = new FileAppendNumberRelative();
 

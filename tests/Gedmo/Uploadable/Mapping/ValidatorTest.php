@@ -59,7 +59,7 @@ final class ValidatorTest extends \PHPUnit\Framework\TestCase
 
     public function testValidatePathCreatesNewDirectoryWhenItNotExists()
     {
-        $dir = sys_get_temp_dir().'/new/directory-12312432423';
+        $dir = TESTS_TEMP_DIR.'/new/directory-12312432423';
         Validator::validatePath($dir);
         static::assertDirectoryExists($dir);
         rmdir($dir);

@@ -41,7 +41,7 @@ final class SluggableMappingTest extends \PHPUnit\Framework\TestCase
         $reader = new \Doctrine\Common\Annotations\AnnotationReader();
         \Doctrine\Common\Annotations\AnnotationRegistry::registerAutoloadNamespace(
             'Gedmo\\Mapping\\Annotation',
-            VENDOR_PATH.'/../lib'
+            dirname(VENDOR_PATH).'/src'
         );
         $chainDriverImpl->addDriver(
             new \Doctrine\ORM\Mapping\Driver\AnnotationDriver($reader),

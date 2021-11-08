@@ -7,7 +7,7 @@ $finder = PhpCsFixer\Finder::create()
         __DIR__ . '/tests',
     ])
     ->exclude([
-        __DIR__ . '/tests/temp',
+        __DIR__ . '/tests/data',
     ]);
 
 return (new PhpCsFixer\Config())
