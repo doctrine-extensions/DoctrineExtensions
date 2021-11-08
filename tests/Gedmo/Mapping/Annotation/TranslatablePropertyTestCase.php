@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Gedmo\Mapping\Annotation;
+namespace Gedmo\Tests\Mapping\Annotation;
 
-use Mapping\Fixture\Annotation\TranslatableModel as AnnotationTranslatableModel;
-use Mapping\Fixture\Attribute\TranslatableModel as AttributeTranslatableModel;
-use Tool\BaseTestAnnotation;
+use Gedmo\Mapping\Annotation\Translatable;
+use Gedmo\Tests\Mapping\Fixture\Annotation\TranslatableModel as AnnotationTranslatableModel;
+use Gedmo\Tests\Mapping\Fixture\Attribute\TranslatableModel as AttributeTranslatableModel;
 
-class TranslatableTest extends BaseTestAnnotation
+final class TranslatablePropertyTestCase extends BasePropertyAnnotationTestCase
 {
     public function getValidParameters(): iterable
     {

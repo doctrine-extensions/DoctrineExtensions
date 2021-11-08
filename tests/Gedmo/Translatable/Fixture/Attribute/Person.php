@@ -1,6 +1,6 @@
 <?php
 
-namespace Translatable\Fixture\Attribute;
+namespace Gedmo\Tests\Translatable\Fixture\Attribute;
 
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;

@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Gedmo\Mapping\Annotation;
+namespace Gedmo\Tests\Mapping\Annotation;
 
-use Mapping\Fixture\Annotation\TranslationEntityModel as AnnotationTranslationEntityModel;
-use Mapping\Fixture\Attribute\TranslationEntityModel as AttributeTranslationEntityModel;
-use Tool\BaseTestClassAnnotation;
+use Gedmo\Mapping\Annotation\TranslationEntity;
+use Gedmo\Tests\Mapping\Fixture\Annotation\TranslationEntityModel as AnnotationTranslationEntityModel;
+use Gedmo\Tests\Mapping\Fixture\Attribute\TranslationEntityModel as AttributeTranslationEntityModel;
 
-class TranslationEntityTest extends BaseTestClassAnnotation
+final class TranslationEntityTestCase extends BaseClassAnnotationTestCase
 {
     public function getValidParameters(): iterable
     {

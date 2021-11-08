@@ -1,11 +1,13 @@
 <?php
 
-namespace Gedmo\Translatable;
+namespace Gedmo\Tests\Translatable;
 
 use Doctrine\Common\EventManager;
-use Tool\BaseTestCaseORM;
-use Translatable\Fixture\Attribute\Person;
-use Translatable\Fixture\Attribute\PersonTranslation;
+use Gedmo\Tests\Tool\BaseTestCaseORM;
+use Gedmo\Tests\Translatable\Fixture\Attribute\Person;
+use Gedmo\Tests\Translatable\Fixture\Attribute\PersonTranslation;
+use Gedmo\Translatable\Entity\Repository\TranslationRepository;
+use Gedmo\Translatable\TranslatableListener;
 
 /**
  * These are tests for translatable behavior
@@ -18,7 +20,7 @@ use Translatable\Fixture\Attribute\PersonTranslation;
  *
  * @requires PHP >= 8.0
  */
-class AttributeEntityTranslationTableTest extends BaseTestCaseORM
+final class AttributeEntityTranslationTableTest extends BaseTestCaseORM
 {
     public const PERSON = Person::class;
     public const TRANSLATION = PersonTranslation::class;
@@ -38,7 +40,7 @@ class AttributeEntityTranslationTableTest extends BaseTestCaseORM
         $this->getDefaultMockSqliteEntityManager($evm);
     }
 
-    public function testFixtureGeneratedTranslations()
+    public function testFixtureGeneratedTranslations(): void
     {
         $person = new Person();
         $person->setName('name in en');
@@ -48,10 +50,10 @@ class AttributeEntityTranslationTableTest extends BaseTestCaseORM
         $this->em->clear();
 
         $repo = $this->em->getRepository(self::TRANSLATION);
-        static::assertTrue($repo instanceof Entity\Repository\TranslationRepository);
+        static::assertTrue($repo instanceof TranslationRepository);
 
         $translations = $repo->findTranslations($person);
-        //As Translate locale and Default locale are the same, no records should be present in translations table
+        // As Translate locale and Default locale are the same, no records should be present in translations table
         static::assertCount(0, $translations);
 
         // test second translations
@@ -64,7 +66,7 @@ class AttributeEntityTranslationTableTest extends BaseTestCaseORM
         $this->em->clear();
 
         $translations = $repo->findTranslations($person);
-        //Only one translation should be present
+        // Only one translation should be present
         static::assertCount(1, $translations);
         static::assertArrayHasKey('de_de', $translations);
 

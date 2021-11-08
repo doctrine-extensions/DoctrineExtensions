@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Mapping\Fixture\Attribute;
+namespace Gedmo\Tests\Mapping\Fixture\Attribute;
 
 use Gedmo\Mapping\Annotation as Gedmo;
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace Translatable\Fixture\Attribute;
+namespace Gedmo\Tests\Translatable\Fixture\Attribute;
 
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Translatable\Entity\MappedSuperclass\AbstractTranslation;

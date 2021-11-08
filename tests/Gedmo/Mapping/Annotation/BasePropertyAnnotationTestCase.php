@@ -1,29 +1,29 @@
 <?php
 
-namespace Tool;
+namespace Gedmo\Tests\Mapping\Annotation;
 
 use Doctrine\Common\Annotations\AnnotationReader;
 use Gedmo\Mapping\Annotation\Annotation;
 use PHPUnit\Framework\TestCase;
 
-abstract class BaseTestClassAnnotation extends TestCase
+abstract class BasePropertyAnnotationTestCase extends TestCase
 {
     /**
      * @requires PHP 8
      * @dataProvider getValidParameters
      */
-    public function testLoadFromAttribute(string $annotationProperty, $expectedReturn)
+    public function testLoadFromAttribute(string $annotationProperty, string $classProperty, $expectedReturn): void
     {
-        $annotation = $this->getClassAnnotation(true);
+        $annotation = $this->getMethodAnnotation($classProperty, true);
         static::assertEquals($annotation->$annotationProperty, $expectedReturn);
     }
 
     /**
      * @dataProvider getValidParameters
      */
-    public function testLoadFromDoctrineAnnotation(string $annotationProperty, $expectedReturn)
+    public function testLoadFromDoctrineAnnotation(string $annotationProperty, string $classProperty, $expectedReturn): void
     {
-        $annotation = $this->getClassAnnotation(false);
+        $annotation = $this->getMethodAnnotation($classProperty, false);
         static::assertEquals($annotation->$annotationProperty, $expectedReturn);
     }
 
@@ -35,10 +35,10 @@ abstract class BaseTestClassAnnotation extends TestCase
 
     abstract protected function getAnnotationModelClass(): string;
 
-    private function getClassAnnotation(bool $attributes): Annotation
+    private function getMethodAnnotation(string $property, bool $attributes): Annotation
     {
         $class = $attributes ? $this->getAttributeModelClass() : $this->getAnnotationModelClass();
-        $reflection = new \ReflectionClass($class);
+        $reflection = new \ReflectionProperty($class, $property);
         $annotationClass = $this->getAnnotationClass();
 
         if ($attributes) {
@@ -46,11 +46,11 @@ abstract class BaseTestClassAnnotation extends TestCase
             $annotation = $attributes[0]->newInstance();
         } else {
             $reader = new AnnotationReader();
-            $annotation = $reader->getClassAnnotation($reflection, $annotationClass);
+            $annotation = $reader->getPropertyAnnotation($reflection, $annotationClass);
         }
 
         if (!$annotation instanceof $annotationClass) {
-            throw new \Exception('Can\'t parse annotation');
+            throw new \LogicException('Can\'t parse annotation.');
         }
 
         return $annotation;
