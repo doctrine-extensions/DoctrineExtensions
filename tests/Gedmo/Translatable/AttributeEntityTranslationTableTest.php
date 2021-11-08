@@ -48,11 +48,11 @@ class AttributeEntityTranslationTableTest extends BaseTestCaseORM
         $this->em->clear();
 
         $repo = $this->em->getRepository(self::TRANSLATION);
-        $this->assertTrue($repo instanceof Entity\Repository\TranslationRepository);
+        static::assertTrue($repo instanceof Entity\Repository\TranslationRepository);
 
         $translations = $repo->findTranslations($person);
         //As Translate locale and Default locale are the same, no records should be present in translations table
-        $this->assertCount(0, $translations);
+        static::assertCount(0, $translations);
 
         // test second translations
         $person = $this->em->find(self::PERSON, $person->getId());
@@ -65,11 +65,11 @@ class AttributeEntityTranslationTableTest extends BaseTestCaseORM
 
         $translations = $repo->findTranslations($person);
         //Only one translation should be present
-        $this->assertCount(1, $translations);
-        $this->assertArrayHasKey('de_de', $translations);
+        static::assertCount(1, $translations);
+        static::assertArrayHasKey('de_de', $translations);
 
-        $this->assertArrayHasKey('name', $translations['de_de']);
-        $this->assertEquals('name in de', $translations['de_de']['name']);
+        static::assertArrayHasKey('name', $translations['de_de']);
+        static::assertEquals('name in de', $translations['de_de']['name']);
 
         $this->translatableListener->setTranslatableLocale('en_us');
     }
