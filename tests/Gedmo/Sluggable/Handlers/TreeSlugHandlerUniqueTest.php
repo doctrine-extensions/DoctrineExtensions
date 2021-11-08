@@ -8,7 +8,7 @@ use Gedmo\Tests\Sluggable\Fixture\Handler\TreeSlug;
 use Gedmo\Tests\Tool\BaseTestCaseORM;
 use Gedmo\Tree\TreeListener;
 
-class TreeSlugHandlerUniqueTest extends BaseTestCaseORM
+final class TreeSlugHandlerUniqueTest extends BaseTestCaseORM
 {
     public const TARGET = TreeSlug::class;
 

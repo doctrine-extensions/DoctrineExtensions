@@ -16,7 +16,7 @@ use Gedmo\Timestampable\TimestampableListener;
  *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class NoInterfaceTest extends BaseTestCaseORM
+final class NoInterfaceTest extends BaseTestCaseORM
 {
     public const FIXTURE = WithoutInterface::class;
 

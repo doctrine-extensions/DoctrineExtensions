@@ -17,7 +17,7 @@ use Gedmo\Tree\TreeListener;
  *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class MaterializedPathORMFeaturesTest extends BaseTestCaseORM
+final class MaterializedPathORMFeaturesTest extends BaseTestCaseORM
 {
     public const CATEGORY = MPFeaturesCategory::class;
 

@@ -19,7 +19,7 @@ use Gedmo\Tree\TreeListener;
  *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
+final class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
 {
     public const CATEGORY = MPCategory::class;
     public const CATEGORY_WITH_TRIMMED_SEPARATOR = MPCategoryWithTrimmedSeparator::class;

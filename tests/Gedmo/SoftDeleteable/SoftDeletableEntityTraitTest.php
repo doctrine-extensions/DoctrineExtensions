@@ -13,7 +13,7 @@ use Gedmo\Tests\SoftDeleteable\Fixture\Entity\UsingTrait;
  *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class SoftDeletableEntityTraitTest extends \PHPUnit\Framework\TestCase
+final class SoftDeletableEntityTraitTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var UsingTrait

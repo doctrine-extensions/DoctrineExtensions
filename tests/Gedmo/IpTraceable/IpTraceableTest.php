@@ -20,7 +20,7 @@ use Gedmo\Tests\Tool\BaseTestCaseORM;
  *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class IpTraceableTest extends BaseTestCaseORM
+final class IpTraceableTest extends BaseTestCaseORM
 {
     public const TEST_IP = '34.234.1.10';
 

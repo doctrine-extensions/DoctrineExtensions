@@ -20,7 +20,7 @@ use Gedmo\Tests\Translatable\Fixture\PersonTranslation;
  *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class MultiManagerMappingTest extends BaseTestCaseOM
+final class MultiManagerMappingTest extends BaseTestCaseOM
 {
     /**
      * @var Doctrine\ORM\EntityManager

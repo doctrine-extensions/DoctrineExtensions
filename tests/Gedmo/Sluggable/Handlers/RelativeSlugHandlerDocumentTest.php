@@ -17,7 +17,7 @@ use Gedmo\Tests\Tool\BaseTestCaseMongoODM;
  *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class RelativeSlugHandlerDocumentTest extends BaseTestCaseMongoODM
+final class RelativeSlugHandlerDocumentTest extends BaseTestCaseMongoODM
 {
     public const ARTICLE = Article::class;
     public const SLUG = RelativeSlug::class;

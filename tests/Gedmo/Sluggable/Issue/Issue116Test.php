@@ -18,7 +18,7 @@ use Gedmo\Tests\Tool\BaseTestCaseORM;
  *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class Issue116Test extends BaseTestCaseORM
+final class Issue116Test extends BaseTestCaseORM
 {
     public const TARGET = Country::class;
 

@@ -20,7 +20,7 @@ use Gedmo\Translatable\TranslatableListener;
  *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class Issue135Test extends BaseTestCaseORM
+final class Issue135Test extends BaseTestCaseORM
 {
     public const ARTICLE = Article::class;
     public const COMMENT = Comment::class;

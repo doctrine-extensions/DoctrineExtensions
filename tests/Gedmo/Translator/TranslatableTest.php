@@ -17,7 +17,7 @@ use Gedmo\Tests\Translator\Fixture\PersonCustom;
  *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class TranslatableTest extends BaseTestCaseORM
+final class TranslatableTest extends BaseTestCaseORM
 {
     public const PERSON = Person::class;
     public const PERSON_CUSTOM_PROXY = PersonCustom::class;

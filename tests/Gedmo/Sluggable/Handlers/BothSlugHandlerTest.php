@@ -18,7 +18,7 @@ use Gedmo\Tree\TreeListener;
  *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class BothSlugHandlerTest extends BaseTestCaseORM
+final class BothSlugHandlerTest extends BaseTestCaseORM
 {
     public const OCCUPATION = Occupation::class;
     public const PERSON = Person::class;

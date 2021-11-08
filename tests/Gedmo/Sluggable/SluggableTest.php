@@ -17,7 +17,7 @@ use Gedmo\Tests\Tool\BaseTestCaseORM;
  *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class SluggableTest extends BaseTestCaseORM
+final class SluggableTest extends BaseTestCaseORM
 {
     public const ARTICLE = Article::class;
     private $articleId;

@@ -17,7 +17,7 @@ use Gedmo\Translatable\TranslatableListener;
  *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class TranslatableIdentifierTest extends BaseTestCaseORM
+final class TranslatableIdentifierTest extends BaseTestCaseORM
 {
     public const FIXTURE = StringIdentifier::class;
     public const TRANSLATION = Translation::class;

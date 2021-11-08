@@ -9,7 +9,7 @@ use Gedmo\Tests\Mapping\Fixture\User;
 use Gedmo\Tests\Mapping\Mock\Extension\Encoder\EncoderListener;
 use Gedmo\Tests\Tool\BaseTestCaseORM;
 
-class ExtensionORMTest extends BaseTestCaseORM
+final class ExtensionORMTest extends BaseTestCaseORM
 {
     public const USER = User::class;
 

@@ -17,7 +17,7 @@ use Gedmo\Translatable\TranslatableListener;
  *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class Issue165Test extends BaseTestCaseMongoODM
+final class Issue165Test extends BaseTestCaseMongoODM
 {
     public const ARTICLE = SimpleArticle::class;
     public const TRANSLATION = Translation::class;

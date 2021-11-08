@@ -21,7 +21,7 @@ use Gedmo\Tests\Tool\BaseTestCaseOM;
  *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class SoftDeleteableMappingTest extends BaseTestCaseOM
+final class SoftDeleteableMappingTest extends BaseTestCaseOM
 {
     /**
      * @var Doctrine\ORM\EntityManager

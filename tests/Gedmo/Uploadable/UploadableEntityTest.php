@@ -46,7 +46,7 @@ use Gedmo\Uploadable\UploadableListener;
  *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class UploadableEntityTest extends BaseTestCaseORM
+final class UploadableEntityTest extends BaseTestCaseORM
 {
     public const IMAGE_CLASS = Image::class;
     public const ARTICLE_CLASS = Article::class;

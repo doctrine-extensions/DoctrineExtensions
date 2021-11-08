@@ -17,7 +17,7 @@ use Gedmo\Translatable\Entity\Translation;
  *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class MultiInheritanceTest extends BaseTestCaseORM
+final class MultiInheritanceTest extends BaseTestCaseORM
 {
     public const NODE = Node::class;
     public const BASE_NODE = BaseNode::class;

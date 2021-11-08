@@ -32,7 +32,7 @@ use Gedmo\Tests\Tool\BaseTestCaseORM;
  *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class SoftDeleteableEntityTest extends BaseTestCaseORM
+final class SoftDeleteableEntityTest extends BaseTestCaseORM
 {
     public const ARTICLE_CLASS = Article::class;
     public const COMMENT_CLASS = Comment::class;

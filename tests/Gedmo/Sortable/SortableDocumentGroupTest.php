@@ -15,7 +15,7 @@ use Gedmo\Tests\Tool\BaseTestCaseMongoODM;
  * @author http://github.com/vetalt
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class SortableDocumentGroupTest extends BaseTestCaseMongoODM
+final class SortableDocumentGroupTest extends BaseTestCaseMongoODM
 {
     public const POST = Post::class;
     public const CATEGORY = Category::class;

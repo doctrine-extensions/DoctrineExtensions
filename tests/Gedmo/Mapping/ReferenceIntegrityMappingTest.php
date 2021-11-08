@@ -20,7 +20,7 @@ use Gedmo\Tests\Tool\BaseTestCaseOM;
  *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class ReferenceIntegrityMappingTest extends BaseTestCaseOM
+final class ReferenceIntegrityMappingTest extends BaseTestCaseOM
 {
     /**
      * @var DocumentManager

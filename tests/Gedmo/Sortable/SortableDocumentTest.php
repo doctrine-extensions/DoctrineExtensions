@@ -13,7 +13,7 @@ use Gedmo\Tests\Tool\BaseTestCaseMongoODM;
  * @author http://github.com/vetalt
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class SortableDocumentTest extends BaseTestCaseMongoODM
+final class SortableDocumentTest extends BaseTestCaseMongoODM
 {
     public const ARTICLE = Article::class;
 

@@ -9,7 +9,7 @@ use Gedmo\Tests\SoftDeleteable\Fixture\Entity\Address;
 use Gedmo\Tests\SoftDeleteable\Fixture\Entity\Person;
 use Gedmo\Tests\Tool\BaseTestCaseORM;
 
-class HardRelationTest extends BaseTestCaseORM
+final class HardRelationTest extends BaseTestCaseORM
 {
     private $softDeleteableListener;
 

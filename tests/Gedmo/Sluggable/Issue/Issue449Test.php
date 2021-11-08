@@ -18,7 +18,7 @@ use Gedmo\Tests\Tool\BaseTestCaseORM;
  *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class Issue449Test extends BaseTestCaseORM
+final class Issue449Test extends BaseTestCaseORM
 {
     public const TARGET = Article::class;
     public const SOFT_DELETEABLE_FILTER_NAME = 'soft-deleteable';

@@ -8,7 +8,7 @@ use Gedmo\Tests\Sluggable\Fixture\Handler\TreeSlugPrefixSuffix;
 use Gedmo\Tests\Tool\BaseTestCaseORM;
 use Gedmo\Tree\TreeListener;
 
-class TreeSlugHandlerPrefixSuffixTest extends BaseTestCaseORM
+final class TreeSlugHandlerPrefixSuffixTest extends BaseTestCaseORM
 {
     public const TARGET = TreeSlugPrefixSuffix::class;
 

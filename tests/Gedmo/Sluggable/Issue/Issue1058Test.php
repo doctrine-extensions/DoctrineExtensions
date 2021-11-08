@@ -17,7 +17,7 @@ use Gedmo\Tests\Tool\BaseTestCaseORM;
  *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class Issue1058Test extends BaseTestCaseORM
+final class Issue1058Test extends BaseTestCaseORM
 {
     public const ARTICLE = Page::class;
     public const USER = User::class;

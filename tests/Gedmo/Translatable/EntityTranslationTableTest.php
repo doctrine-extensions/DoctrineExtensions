@@ -18,7 +18,7 @@ use Gedmo\Translatable\TranslatableListener;
  *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class EntityTranslationTableTest extends BaseTestCaseORM
+final class EntityTranslationTableTest extends BaseTestCaseORM
 {
     public const PERSON = Person::class;
     public const TRANSLATION = PersonTranslation::class;

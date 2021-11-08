@@ -17,7 +17,7 @@ use Gedmo\Tests\Tool\BaseTestCaseORM;
  *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class SluggableConfigurationTest extends BaseTestCaseORM
+final class SluggableConfigurationTest extends BaseTestCaseORM
 {
     public const ARTICLE = ConfigurationArticle::class;
 

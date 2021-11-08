@@ -16,7 +16,7 @@ use Gedmo\Tree\TreeListener;
  *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class NestedTreeRootRepositoryTest extends BaseTestCaseORM
+final class NestedTreeRootRepositoryTest extends BaseTestCaseORM
 {
     public const CATEGORY = RootCategory::class;
 

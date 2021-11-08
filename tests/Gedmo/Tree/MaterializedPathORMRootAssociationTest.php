@@ -17,7 +17,7 @@ use Gedmo\Tree\TreeListener;
  *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class MaterializedPathORMRootAssociationTest extends BaseTestCaseORM
+final class MaterializedPathORMRootAssociationTest extends BaseTestCaseORM
 {
     public const CATEGORY = MPCategoryWithRootAssociation::class;
 

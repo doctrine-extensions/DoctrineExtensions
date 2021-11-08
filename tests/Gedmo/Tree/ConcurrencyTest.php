@@ -18,7 +18,7 @@ use Gedmo\Tree\TreeListener;
  *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class ConcurrencyTest extends BaseTestCaseORM
+final class ConcurrencyTest extends BaseTestCaseORM
 {
     public const CATEGORY = Category::class;
     public const ARTICLE = Article::class;

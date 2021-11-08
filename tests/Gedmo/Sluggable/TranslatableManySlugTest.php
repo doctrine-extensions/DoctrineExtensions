@@ -20,7 +20,7 @@ use Gedmo\Translatable\TranslatableListener;
  *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class TranslatableManySlugTest extends BaseTestCaseORM
+final class TranslatableManySlugTest extends BaseTestCaseORM
 {
     private $articleId;
     private $translatableListener;

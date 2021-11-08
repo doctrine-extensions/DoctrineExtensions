@@ -14,7 +14,7 @@ use Gedmo\Translatable\Entity\Translation;
  *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class MappingTest extends \PHPUnit\Framework\TestCase
+final class MappingTest extends \PHPUnit\Framework\TestCase
 {
     public const TEST_ENTITY_CATEGORY = BehavioralCategory::class;
     public const TEST_ENTITY_TRANSLATION = Translation::class;

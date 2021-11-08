@@ -19,7 +19,7 @@ use Gedmo\Tree\TreeListener;
  *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class MultiInheritanceWithSingleTableTest extends BaseTestCaseORM
+final class MultiInheritanceWithSingleTableTest extends BaseTestCaseORM
 {
     public const CAR = Car::class;
     public const BUS = Bus::class;

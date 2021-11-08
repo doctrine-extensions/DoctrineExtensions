@@ -18,7 +18,7 @@ use Gedmo\Tree\TreeListener;
  *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class InMemoryUpdatesWithInheritanceTest extends BaseTestCaseORM
+final class InMemoryUpdatesWithInheritanceTest extends BaseTestCaseORM
 {
     public const PERSON = Person::class;
     public const MAN = Man::class;

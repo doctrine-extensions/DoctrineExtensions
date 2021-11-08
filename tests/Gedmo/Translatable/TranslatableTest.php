@@ -21,7 +21,7 @@ use Gedmo\Translatable\TranslatableListener;
  *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class TranslatableTest extends BaseTestCaseORM
+final class TranslatableTest extends BaseTestCaseORM
 {
     public const ARTICLE = Article::class;
     public const SPORT = Sport::class;

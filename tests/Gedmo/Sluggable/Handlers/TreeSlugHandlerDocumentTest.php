@@ -16,7 +16,7 @@ use Gedmo\Tests\Tool\BaseTestCaseMongoODM;
  *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class TreeSlugHandlerDocumentTest extends BaseTestCaseMongoODM
+final class TreeSlugHandlerDocumentTest extends BaseTestCaseMongoODM
 {
     public const SLUG = TreeSlug::class;
 

@@ -16,7 +16,7 @@ use Gedmo\Tree\TreeListener;
  *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class NestedTreeRootAssociationTest extends BaseTestCaseORM
+final class NestedTreeRootAssociationTest extends BaseTestCaseORM
 {
     public const CATEGORY = RootAssociationCategory::class;
 

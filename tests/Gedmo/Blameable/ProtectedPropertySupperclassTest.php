@@ -18,7 +18,7 @@ use Gedmo\Translatable\TranslatableListener;
  *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class ProtectedPropertySupperclassTest extends BaseTestCaseORM
+final class ProtectedPropertySupperclassTest extends BaseTestCaseORM
 {
     public const SUPERCLASS = SupperClassExtension::class;
     public const TRANSLATION = Translation::class;

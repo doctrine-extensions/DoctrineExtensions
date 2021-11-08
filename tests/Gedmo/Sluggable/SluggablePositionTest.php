@@ -16,7 +16,7 @@ use Gedmo\Tests\Tool\BaseTestCaseORM;
  *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class SluggablePositionTest extends BaseTestCaseORM
+final class SluggablePositionTest extends BaseTestCaseORM
 {
     public const POSITION = Position::class;
 

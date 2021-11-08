@@ -20,7 +20,7 @@ use Gedmo\Tests\Tool\BaseTestCaseORM;
  *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class SluggableMappingTest extends BaseTestCaseORM
+final class SluggableMappingTest extends BaseTestCaseORM
 {
     /**
      * @var Gedmo\Sluggable\SluggableListener
