@@ -18,7 +18,7 @@ use Gedmo\Translatable\TranslatableListener;
  *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class TranslatableMappingTest extends \PHPUnit\Framework\TestCase
+final class TranslatableMappingTest extends \PHPUnit\Framework\TestCase
 {
     public const TEST_YAML_ENTITY_CLASS = User::class;
     private $em;

@@ -20,7 +20,7 @@ use Gedmo\Tree\TreeListener;
  *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class TreeMappingTest extends \PHPUnit\Framework\TestCase
+final class TreeMappingTest extends \PHPUnit\Framework\TestCase
 {
     public const TEST_YAML_ENTITY_CLASS = Category::class;
     public const YAML_CLOSURE_CATEGORY = ClosureCategory::class;

@@ -26,7 +26,7 @@ use Gedmo\Tests\Tool\BaseTestCaseORM;
  *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class SortableTest extends BaseTestCaseORM
+final class SortableTest extends BaseTestCaseORM
 {
     public const NODE = Node::class;
     public const NOTIFY_NODE = NotifyNode::class;

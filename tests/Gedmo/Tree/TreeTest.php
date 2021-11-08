@@ -18,7 +18,7 @@ use Gedmo\Tree\TreeListener;
  *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class TreeTest extends BaseTestCaseORM
+final class TreeTest extends BaseTestCaseORM
 {
     public const CATEGORY = Category::class;
     public const CATEGORY_UUID = CategoryUuid::class;

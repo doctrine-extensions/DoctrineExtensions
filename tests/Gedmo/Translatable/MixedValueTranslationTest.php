@@ -19,7 +19,7 @@ use Gedmo\Translatable\TranslatableListener;
  *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class MixedValueTranslationTest extends BaseTestCaseORM
+final class MixedValueTranslationTest extends BaseTestCaseORM
 {
     public const MIXED = MixedValue::class;
     public const TRANSLATION = Translation::class;

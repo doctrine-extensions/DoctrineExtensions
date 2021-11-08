@@ -16,7 +16,7 @@ use Gedmo\Tests\Tool\BaseTestCaseMongoODM;
  *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class SluggableDocumentTest extends BaseTestCaseMongoODM
+final class SluggableDocumentTest extends BaseTestCaseMongoODM
 {
     public const ARTICLE = Article::class;
 

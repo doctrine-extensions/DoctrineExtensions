@@ -26,7 +26,7 @@ use Gedmo\Tree\TreeListener;
  *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class ClosureTreeTest extends BaseTestCaseORM
+final class ClosureTreeTest extends BaseTestCaseORM
 {
     public const CATEGORY = Category::class;
     public const CLOSURE = CategoryClosure::class;

@@ -18,7 +18,7 @@ use Gedmo\Tests\Tool\BaseTestCaseMongoODM;
  *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class BlameableDocumentTest extends BaseTestCaseMongoODM
+final class BlameableDocumentTest extends BaseTestCaseMongoODM
 {
     public const TEST_USERNAME = 'testuser';
 

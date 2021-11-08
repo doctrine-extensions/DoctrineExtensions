@@ -16,7 +16,7 @@ use Gedmo\Tool\Wrapper\MongoDocumentWrapper;
  *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class MongoDocumentWrapperTest extends BaseTestCaseMongoODM
+final class MongoDocumentWrapperTest extends BaseTestCaseMongoODM
 {
     public const ARTICLE = Article::class;
     private $articleId;

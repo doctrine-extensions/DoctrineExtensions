@@ -17,7 +17,7 @@ use Gedmo\Timestampable\TimestampableListener;
  *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class TimestampableDocumentTest extends BaseTestCaseMongoODM
+final class TimestampableDocumentTest extends BaseTestCaseMongoODM
 {
     public const ARTICLE = Article::class;
     public const TYPE = Type::class;

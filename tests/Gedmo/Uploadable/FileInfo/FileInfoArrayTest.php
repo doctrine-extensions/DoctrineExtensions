@@ -14,7 +14,7 @@ use Gedmo\Uploadable\FileInfo\FileInfoArray;
  *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class FileInfoArrayTest extends \PHPUnit\Framework\TestCase
+final class FileInfoArrayTest extends \PHPUnit\Framework\TestCase
 {
     public function testConstructorIfKeysAreNotValidOrSomeAreMissingThrowException()
     {

@@ -21,7 +21,7 @@ use Gedmo\Tree\TreeListener;
  *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class MultInheritanceWithJoinedTableTest extends BaseTestCaseORM
+final class MultInheritanceWithJoinedTableTest extends BaseTestCaseORM
 {
     public const USER = User::class;
     public const GROUP = UserGroup::class;

@@ -11,7 +11,7 @@ use Gedmo\Translatable\Entity\Translation;
 use Gedmo\Translatable\Query\TreeWalker\TranslationWalker;
 use Gedmo\Translatable\TranslatableListener;
 
-class TranslatableWithEmbeddedTest extends BaseTestCaseORM
+final class TranslatableWithEmbeddedTest extends BaseTestCaseORM
 {
     public const FIXTURE = Company::class;
     public const TRANSLATION = Translation::class;

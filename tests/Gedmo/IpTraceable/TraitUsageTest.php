@@ -16,7 +16,7 @@ use Gedmo\Tests\Tool\BaseTestCaseORM;
  *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class TraitUsageTest extends BaseTestCaseORM
+final class TraitUsageTest extends BaseTestCaseORM
 {
     public const TEST_IP = '34.234.1.10';
     public const TARGET = UsingTrait::class;

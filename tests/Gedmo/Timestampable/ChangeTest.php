@@ -19,7 +19,7 @@ use Gedmo\Timestampable\TimestampableListener;
  *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class ChangeTest extends BaseTestCaseORM
+final class ChangeTest extends BaseTestCaseORM
 {
     public const FIXTURE = TitledArticle::class;
 

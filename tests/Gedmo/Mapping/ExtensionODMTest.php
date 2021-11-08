@@ -9,7 +9,7 @@ use Gedmo\Tests\Mapping\Fixture\Document\User;
 use Gedmo\Tests\Mapping\Mock\Extension\Encoder\EncoderListener;
 use Gedmo\Tests\Tool\BaseTestCaseMongoODM;
 
-class ExtensionODMTest extends BaseTestCaseMongoODM
+final class ExtensionODMTest extends BaseTestCaseMongoODM
 {
     public const USER = User::class;
 

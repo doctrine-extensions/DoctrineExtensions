@@ -17,7 +17,7 @@ use Gedmo\Tests\Tool\BaseTestCaseMongoODM;
  *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class IpTraceableDocumentTest extends BaseTestCaseMongoODM
+final class IpTraceableDocumentTest extends BaseTestCaseMongoODM
 {
     public const TEST_IP = '34.234.1.10';
 

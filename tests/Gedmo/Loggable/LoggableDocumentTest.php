@@ -21,7 +21,7 @@ use Gedmo\Tests\Tool\BaseTestCaseMongoODM;
  *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class LoggableDocumentTest extends BaseTestCaseMongoODM
+final class LoggableDocumentTest extends BaseTestCaseMongoODM
 {
     public const ARTICLE = Article::class;
     public const COMMENT = Comment::class;

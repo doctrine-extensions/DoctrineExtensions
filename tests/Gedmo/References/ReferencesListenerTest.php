@@ -13,7 +13,7 @@ use Gedmo\Tests\References\Fixture\ORM\Category;
 use Gedmo\Tests\References\Fixture\ORM\StockItem;
 use Gedmo\Tests\Tool\BaseTestCaseOM;
 
-class ReferencesListenerTest extends BaseTestCaseOM
+final class ReferencesListenerTest extends BaseTestCaseOM
 {
     private $em;
     private $dm;

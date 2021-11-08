@@ -15,7 +15,7 @@ use Gedmo\Tests\Tool\BaseTestCaseMongoODM;
  * @author Evert Harmeling <evert.harmeling@freshheads.com>
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class ReferenceIntegrityDocumentTest extends BaseTestCaseMongoODM
+final class ReferenceIntegrityDocumentTest extends BaseTestCaseMongoODM
 {
     public const TYPE_ONE_NULLIFY_CLASS = \Gedmo\Tests\ReferenceIntegrity\Fixture\Document\OneNullify\Type::class;
     public const ARTICLE_ONE_NULLIFY_CLASS = \Gedmo\Tests\ReferenceIntegrity\Fixture\Document\OneNullify\Article::class;

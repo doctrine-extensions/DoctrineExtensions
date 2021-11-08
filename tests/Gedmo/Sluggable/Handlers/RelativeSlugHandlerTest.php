@@ -17,7 +17,7 @@ use Gedmo\Tests\Tool\BaseTestCaseORM;
  *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class RelativeSlugHandlerTest extends BaseTestCaseORM
+final class RelativeSlugHandlerTest extends BaseTestCaseORM
 {
     public const SLUG = ArticleRelativeSlug::class;
     public const ARTICLE = Article::class;

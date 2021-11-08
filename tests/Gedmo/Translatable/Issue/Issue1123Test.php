@@ -10,7 +10,7 @@ use Gedmo\Translatable\Entity\Translation;
 use Gedmo\Translatable\Query\TreeWalker\TranslationWalker;
 use Gedmo\Translatable\TranslatableListener;
 
-class Issue1123Test extends BaseTestCaseORM
+final class Issue1123Test extends BaseTestCaseORM
 {
     public const TRANSLATION = Translation::class;
     public const BASE_ENTITY = BaseEntity::class;

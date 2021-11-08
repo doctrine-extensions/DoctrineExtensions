@@ -20,7 +20,7 @@ use Gedmo\Timestampable\TimestampableListener;
  *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class TimestampableTest extends BaseTestCaseORM
+final class TimestampableTest extends BaseTestCaseORM
 {
     public const ARTICLE = Article::class;
     public const COMMENT = Comment::class;

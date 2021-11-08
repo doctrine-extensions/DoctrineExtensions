@@ -14,7 +14,7 @@ use Gedmo\Uploadable\FilenameGenerator\FilenameGeneratorAlphanumeric;
  *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class FilenameGeneratorAlphanumericTest extends \PHPUnit\Framework\TestCase
+final class FilenameGeneratorAlphanumericTest extends \PHPUnit\Framework\TestCase
 {
     public function testGenerator()
     {

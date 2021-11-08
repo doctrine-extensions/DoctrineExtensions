@@ -16,7 +16,7 @@ use Gedmo\Tests\Tool\BaseTestCaseORM;
  *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class NoInterfaceTest extends BaseTestCaseORM
+final class NoInterfaceTest extends BaseTestCaseORM
 {
     public const TEST_IP = '34.234.1.10';
     public const FIXTURE = WithoutInterface::class;

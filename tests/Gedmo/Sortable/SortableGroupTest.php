@@ -22,7 +22,7 @@ use Gedmo\Tests\Tool\BaseTestCaseORM;
  *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class SortableGroupTest extends BaseTestCaseORM
+final class SortableGroupTest extends BaseTestCaseORM
 {
     public const CAR = Car::class;
     public const BUS = Bus::class;

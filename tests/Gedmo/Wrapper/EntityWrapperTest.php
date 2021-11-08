@@ -17,7 +17,7 @@ use Gedmo\Tool\Wrapper\EntityWrapper;
  *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class EntityWrapperTest extends BaseTestCaseORM
+final class EntityWrapperTest extends BaseTestCaseORM
 {
     public const ARTICLE = Article::class;
 

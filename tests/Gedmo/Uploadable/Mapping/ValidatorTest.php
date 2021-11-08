@@ -18,7 +18,7 @@ use Gedmo\Uploadable\Mapping\Validator;
  *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class ValidatorTest extends \PHPUnit\Framework\TestCase
+final class ValidatorTest extends \PHPUnit\Framework\TestCase
 {
     protected $meta;
 

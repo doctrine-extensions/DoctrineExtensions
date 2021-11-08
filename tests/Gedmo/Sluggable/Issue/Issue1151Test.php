@@ -12,7 +12,7 @@ use Gedmo\Tests\Tool\BaseTestCaseMongoODM;
  *
  * @author Vaidas Lažauskas <vaidas@notrix.lt>
  */
-class Issue1151Test extends BaseTestCaseMongoODM
+final class Issue1151Test extends BaseTestCaseMongoODM
 {
     /**
      * Test if new object with predefined id will be processed by sluggable listener

@@ -13,7 +13,7 @@ use Gedmo\Tests\Mapping\Fixture\Unmapped\Timestampable;
  *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class CustomDriverTest extends \PHPUnit\Framework\TestCase
+final class CustomDriverTest extends \PHPUnit\Framework\TestCase
 {
     protected function setUp(): void
     {

@@ -9,7 +9,7 @@ use Gedmo\Tests\Mapping\Mock\EventSubscriberCustomMock;
 use Gedmo\Tests\Mapping\Mock\EventSubscriberMock;
 use Gedmo\Tests\Mapping\Mock\Mapping\Event\Adapter\ORM as CustomizedORMAdapter;
 
-class MappingEventAdapterTest extends \PHPUnit\Framework\TestCase
+final class MappingEventAdapterTest extends \PHPUnit\Framework\TestCase
 {
     public function testCustomizedAdapter()
     {

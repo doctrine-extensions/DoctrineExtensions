@@ -18,7 +18,7 @@ use Gedmo\Tests\Tool\BaseTestCaseORM;
  *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class SluggableFltersTest extends BaseTestCaseORM
+final class SluggableFltersTest extends BaseTestCaseORM
 {
     public const TARGET = Article::class;
 

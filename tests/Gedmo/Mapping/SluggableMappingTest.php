@@ -20,7 +20,7 @@ use Gedmo\Tests\Mapping\Fixture\Yaml\Category;
  *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class SluggableMappingTest extends \PHPUnit\Framework\TestCase
+final class SluggableMappingTest extends \PHPUnit\Framework\TestCase
 {
     public const TEST_YAML_ENTITY_CLASS = Category::class;
     public const SLUGGABLE = Sluggable::class;

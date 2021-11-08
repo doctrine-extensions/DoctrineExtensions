@@ -16,7 +16,7 @@ use Gedmo\Tree\TreeListener;
  *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class InMemoryUpdatesTest extends BaseTestCaseORM
+final class InMemoryUpdatesTest extends BaseTestCaseORM
 {
     public const CATEGORY = Category::class;
 

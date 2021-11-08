@@ -11,7 +11,7 @@ use Gedmo\Tests\Sluggable\Fixture\SuffixWithTreeHandler;
 use Gedmo\Tests\Tool\BaseTestCaseORM;
 use Gedmo\Tree\TreeListener;
 
-class SluggablePrefixSuffixTest extends BaseTestCaseORM
+final class SluggablePrefixSuffixTest extends BaseTestCaseORM
 {
     public const PREFIX = Prefix::class;
     public const SUFFIX = Suffix::class;

@@ -11,7 +11,7 @@ use Gedmo\Translatable\Hydrator\ORM\ObjectHydrator;
 use Gedmo\Translatable\Query\TreeWalker\TranslationWalker;
 use Gedmo\Translatable\TranslatableListener;
 
-class Issue922Test extends BaseTestCaseORM
+final class Issue922Test extends BaseTestCaseORM
 {
     public const POST = Post::class;
     public const TRANSLATION = Translation::class;

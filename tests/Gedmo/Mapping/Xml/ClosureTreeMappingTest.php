@@ -21,7 +21,7 @@ use Gedmo\Tree\TreeListener;
  *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class ClosureTreeMappingTest extends BaseTestCaseOM
+final class ClosureTreeMappingTest extends BaseTestCaseOM
 {
     /**
      * @var Doctrine\ORM\EntityManager

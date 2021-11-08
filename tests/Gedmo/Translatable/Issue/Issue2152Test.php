@@ -10,7 +10,7 @@ use Gedmo\Tests\Translatable\Fixture\Issue2152\EntityWithTranslatableBoolean;
 use Gedmo\Translatable\Entity\Translation;
 use Gedmo\Translatable\TranslatableListener;
 
-class Issue2152Test extends BaseTestCaseORM
+final class Issue2152Test extends BaseTestCaseORM
 {
     private const TRANSLATION = Translation::class;
     private const ENTITY = EntityWithTranslatableBoolean::class;

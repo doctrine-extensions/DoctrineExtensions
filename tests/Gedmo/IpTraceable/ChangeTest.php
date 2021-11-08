@@ -16,7 +16,7 @@ use Gedmo\Tests\Tool\BaseTestCaseORM;
  *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class ChangeTest extends BaseTestCaseORM
+final class ChangeTest extends BaseTestCaseORM
 {
     public const TEST_IP = '34.234.1.10';
     public const FIXTURE = TitledArticle::class;

@@ -22,7 +22,7 @@ use Gedmo\Tree\TreeListener;
  *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class TranslatableSluggableTreeTest extends BaseTestCaseORM
+final class TranslatableSluggableTreeTest extends BaseTestCaseORM
 {
     public const CATEGORY = BehavioralCategory::class;
     public const ARTICLE = Article::class;

@@ -16,7 +16,7 @@ use Gedmo\Tests\Tool\BaseTestCaseORM;
  *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class TransliterationTest extends BaseTestCaseORM
+final class TransliterationTest extends BaseTestCaseORM
 {
     public const ARTICLE = Article::class;
 

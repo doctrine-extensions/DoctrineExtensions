@@ -22,7 +22,7 @@ use Gedmo\Tests\Tool\BaseTestCaseOM;
  *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class LoggableMappingTest extends BaseTestCaseOM
+final class LoggableMappingTest extends BaseTestCaseOM
 {
     /**
      * @var Doctrine\ORM\EntityManager

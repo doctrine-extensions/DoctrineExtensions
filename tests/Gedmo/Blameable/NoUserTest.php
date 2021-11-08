@@ -13,7 +13,7 @@ use Gedmo\Tests\Tool\BaseTestCaseMongoODM;
  * @author Kévin Gomez <contact@kevingomez.fr>
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class NoUserTest extends BaseTestCaseMongoODM
+final class NoUserTest extends BaseTestCaseMongoODM
 {
     public const ARTICLE = Article::class;
 

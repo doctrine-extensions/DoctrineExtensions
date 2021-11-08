@@ -18,7 +18,7 @@ use Gedmo\Tests\Tree\Fixture\Mock\TreeListenerMock;
  *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class MaterializedPathODMMongoDBTreeLockingTest extends BaseTestCaseMongoODM
+final class MaterializedPathODMMongoDBTreeLockingTest extends BaseTestCaseMongoODM
 {
     public const ARTICLE = Article::class;
 

@@ -22,7 +22,7 @@ use Gedmo\Uploadable\UploadableListener;
  *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class UploadableMappingTest extends BaseTestCaseOM
+final class UploadableMappingTest extends BaseTestCaseOM
 {
     /**
      * @var Doctrine\ORM\EntityManager

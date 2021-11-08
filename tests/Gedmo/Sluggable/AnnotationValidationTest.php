@@ -17,7 +17,7 @@ use Gedmo\Tests\Tool\BaseTestCaseORM;
  *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-class AnnotationValidationTest extends BaseTestCaseORM
+final class AnnotationValidationTest extends BaseTestCaseORM
 {
     public const TARGET = Validate::class;
 
