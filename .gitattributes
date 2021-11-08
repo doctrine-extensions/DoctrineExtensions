@@ -4,8 +4,9 @@
 /doc export-ignore
 /example export-ignore
 /tests export-ignore
-.gitattributes export-ignore
-.gitignore export-ignore
+/.gitattributes export-ignore
+/.gitignore export-ignore
 /.php-cs-fixer.dist.php export-ignore
+/.yamllint
 CONTRIBUTING.md export-ignore
 /docker-compose.yml export-ignore

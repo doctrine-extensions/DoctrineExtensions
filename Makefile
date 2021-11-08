@@ -1,3 +1,15 @@
+all:
+	@echo "Please choose a task."
+.PHONY: all
+
+lint: lint-composer lint-yaml lint-xml
+.PHONY: lint
+
+lint-composer:
+	composer-normalize --dry-run
+	composer validate
+.PHONY: lint-composer
+
 lint-xml:
 	find './tests/.' \( -name '*.xml' \) \
 		| while read xmlFile; \
@@ -25,3 +37,8 @@ cs-fix-doctrine-xml:
 		XMLLINT_INDENT='    ' xmllint --encode UTF-8 --format "$$xmlFile" --output "$$xmlFile"; \
 	done
 .PHONY: cs-fix-doctrine-xml
+
+lint-yaml:
+	yamllint .
+
+.PHONY: lint-yaml

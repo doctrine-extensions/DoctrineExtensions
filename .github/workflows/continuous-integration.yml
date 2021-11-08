@@ -50,21 +50,6 @@ jobs:
       - name: "Run PHPUnit"
         run: "bin/phpunit -c tests"
 
-  lint-xml-files:
-    name: Lint XML files
-
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-
-      - name: Install required dependencies
-        run: sudo apt-get update && sudo apt-get install libxml2-utils
-
-      - name: Lint xml files
-        run: make lint-xml
-
   lint-doctrine-xml-schema:
     name: Lint Doctrine XML schemas
 

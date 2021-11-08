@@ -28,4 +28,4 @@ Gedmo\Tests\Sluggable\Fixture\Issue116\Country:
       fixed: false
       nullable: false
       column: original_name
-  lifecycleCallbacks: {  }
+  lifecycleCallbacks: {}
