@@ -3,7 +3,10 @@
 namespace Gedmo\Tests\ReferenceIntegrity;
 
 use Doctrine\Common\EventManager;
+use Gedmo\Exception\ReferenceIntegrityStrictException;
 use Gedmo\ReferenceIntegrity\ReferenceIntegrityListener;
+use Gedmo\Tests\ReferenceIntegrity\Fixture\Document\ManyRestrict\Article;
+use Gedmo\Tests\ReferenceIntegrity\Fixture\Document\ManyRestrict\Type;
 use Gedmo\Tests\Tool\BaseTestCaseMongoODM;
 
 /**
@@ -14,23 +17,23 @@ use Gedmo\Tests\Tool\BaseTestCaseMongoODM;
  */
 class ReferenceIntegrityDocumentTest extends BaseTestCaseMongoODM
 {
-    public const TYPE_ONE_NULLIFY_CLASS = 'Gedmo\Tests\ReferenceIntegrity\Fixture\Document\OneNullify\Type';
-    public const ARTICLE_ONE_NULLIFY_CLASS = 'Gedmo\Tests\ReferenceIntegrity\Fixture\Document\OneNullify\Article';
+    public const TYPE_ONE_NULLIFY_CLASS = \Gedmo\Tests\ReferenceIntegrity\Fixture\Document\OneNullify\Type::class;
+    public const ARTICLE_ONE_NULLIFY_CLASS = \Gedmo\Tests\ReferenceIntegrity\Fixture\Document\OneNullify\Article::class;
 
-    public const TYPE_MANY_NULLIFY_CLASS = 'Gedmo\Tests\ReferenceIntegrity\Fixture\Document\ManyNullify\Type';
-    public const ARTICLE_MANY_NULLIFY_CLASS = 'Gedmo\Tests\ReferenceIntegrity\Fixture\Document\ManyNullify\Article';
+    public const TYPE_MANY_NULLIFY_CLASS = \Gedmo\Tests\ReferenceIntegrity\Fixture\Document\ManyNullify\Type::class;
+    public const ARTICLE_MANY_NULLIFY_CLASS = \Gedmo\Tests\ReferenceIntegrity\Fixture\Document\ManyNullify\Article::class;
 
-    public const TYPE_ONE_PULL_CLASS = 'Gedmo\Tests\ReferenceIntegrity\Fixture\Document\OnePull\Type';
-    public const ARTICLE_ONE_PULL_CLASS = 'Gedmo\Tests\ReferenceIntegrity\Fixture\Document\OnePull\Article';
+    public const TYPE_ONE_PULL_CLASS = \Gedmo\Tests\ReferenceIntegrity\Fixture\Document\OnePull\Type::class;
+    public const ARTICLE_ONE_PULL_CLASS = \Gedmo\Tests\ReferenceIntegrity\Fixture\Document\OnePull\Article::class;
 
-    public const TYPE_MANY_PULL_CLASS = 'Gedmo\Tests\ReferenceIntegrity\Fixture\Document\ManyPull\Type';
-    public const ARTICLE_MANY_PULL_CLASS = 'Gedmo\Tests\ReferenceIntegrity\Fixture\Document\ManyPull\Article';
+    public const TYPE_MANY_PULL_CLASS = \Gedmo\Tests\ReferenceIntegrity\Fixture\Document\ManyPull\Type::class;
+    public const ARTICLE_MANY_PULL_CLASS = \Gedmo\Tests\ReferenceIntegrity\Fixture\Document\ManyPull\Article::class;
 
-    public const TYPE_ONE_RESTRICT_CLASS = 'Gedmo\Tests\ReferenceIntegrity\Fixture\Document\OneRestrict\Type';
-    public const ARTICLE_ONE_RESTRICT_CLASS = 'Gedmo\Tests\ReferenceIntegrity\Fixture\Document\OneRestrict\Article';
+    public const TYPE_ONE_RESTRICT_CLASS = \Gedmo\Tests\ReferenceIntegrity\Fixture\Document\OneRestrict\Type::class;
+    public const ARTICLE_ONE_RESTRICT_CLASS = \Gedmo\Tests\ReferenceIntegrity\Fixture\Document\OneRestrict\Article::class;
 
-    public const TYPE_MANY_RESTRICT_CLASS = 'Gedmo\Tests\ReferenceIntegrity\Fixture\Document\ManyRestrict\Type';
-    public const ARTICLE_MANY_RESTRICT_CLASS = 'Gedmo\Tests\ReferenceIntegrity\Fixture\Document\ManyRestrict\Article';
+    public const TYPE_MANY_RESTRICT_CLASS = Type::class;
+    public const ARTICLE_MANY_RESTRICT_CLASS = Article::class;
 
     protected function setUp(): void
     {
@@ -159,7 +162,7 @@ class ReferenceIntegrityDocumentTest extends BaseTestCaseMongoODM
 
     public function testOneRestrict()
     {
-        $this->expectException('Gedmo\Exception\ReferenceIntegrityStrictException');
+        $this->expectException(ReferenceIntegrityStrictException::class);
         $type = $this->dm->getRepository(self::TYPE_ONE_RESTRICT_CLASS)
             ->findOneBy(['title' => 'One Restrict Type']);
 
@@ -172,7 +175,7 @@ class ReferenceIntegrityDocumentTest extends BaseTestCaseMongoODM
 
     public function testManyRestrict()
     {
-        $this->expectException('Gedmo\Exception\ReferenceIntegrityStrictException');
+        $this->expectException(ReferenceIntegrityStrictException::class);
         $type = $this->dm->getRepository(self::TYPE_MANY_RESTRICT_CLASS)
             ->findOneBy(['title' => 'Many Restrict Type']);
 

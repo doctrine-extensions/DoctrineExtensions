@@ -3,6 +3,7 @@
 namespace Gedmo\Tests\Tree;
 
 use Doctrine\Common\EventManager;
+use Gedmo\Exception\RuntimeException;
 use Gedmo\Tests\Tool\BaseTestCaseMongoODM;
 use Gedmo\Tests\Tree\Fixture\Document\Category;
 use Gedmo\Tree\TreeListener;
@@ -115,7 +116,7 @@ class MaterializedPathODMMongoDBTest extends BaseTestCaseMongoODM
      */
     public function useOfSeparatorInPathSourceShouldThrowAnException()
     {
-        $this->expectException('Gedmo\Exception\RuntimeException');
+        $this->expectException(RuntimeException::class);
 
         $category = $this->createCategory();
         $category->setTitle('1'.$this->config['path_separator']);

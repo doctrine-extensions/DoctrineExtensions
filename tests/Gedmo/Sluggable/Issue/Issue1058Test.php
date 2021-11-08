@@ -19,8 +19,8 @@ use Gedmo\Tests\Tool\BaseTestCaseORM;
  */
 class Issue1058Test extends BaseTestCaseORM
 {
-    public const ARTICLE = 'Gedmo\\Tests\\Sluggable\\Fixture\\Issue1058\\Page';
-    public const USER = 'Gedmo\\Tests\\Sluggable\\Fixture\\Issue1058\\User';
+    public const ARTICLE = Page::class;
+    public const USER = User::class;
 
     protected function setUp(): void
     {

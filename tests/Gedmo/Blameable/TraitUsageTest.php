@@ -18,7 +18,7 @@ use Gedmo\Tests\Tool\BaseTestCaseORM;
  */
 class TraitUsageTest extends BaseTestCaseORM
 {
-    public const TARGET = 'Gedmo\\Tests\\Blameable\\Fixture\\Entity\\UsingTrait';
+    public const TARGET = UsingTrait::class;
 
     protected function setUp(): void
     {

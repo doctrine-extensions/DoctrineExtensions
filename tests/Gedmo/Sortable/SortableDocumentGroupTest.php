@@ -17,9 +17,9 @@ use Gedmo\Tests\Tool\BaseTestCaseMongoODM;
  */
 class SortableDocumentGroupTest extends BaseTestCaseMongoODM
 {
-    public const POST = 'Gedmo\\Tests\\Sortable\\Fixture\\Document\\Post';
-    public const CATEGORY = 'Gedmo\\Tests\\Sortable\\Fixture\\Document\\Category';
-    public const KID = 'Gedmo\\Tests\\Sortable\\Fixture\\Document\\Kid';
+    public const POST = Post::class;
+    public const CATEGORY = Category::class;
+    public const KID = Kid::class;
     public const KID_DATE1 = '1999-12-31';
     public const KID_DATE2 = '2000-01-01';
 

@@ -5,6 +5,7 @@ namespace Gedmo\Tests\Timestampable;
 use Doctrine\ORM\Mapping\Driver\DriverChain;
 use Doctrine\ORM\Mapping\Driver\YamlDriver;
 use Gedmo\Mapping\ExtensionMetadataFactory;
+use Gedmo\Tests\Mapping\Fixture\Yaml\Category;
 use Gedmo\Timestampable\TimestampableListener;
 
 /**
@@ -18,7 +19,7 @@ use Gedmo\Timestampable\TimestampableListener;
  */
 class TimestampableMappingTest extends \PHPUnit\Framework\TestCase
 {
-    public const TEST_YAML_ENTITY_CLASS = 'Gedmo\Tests\Mapping\Fixture\Yaml\Category';
+    public const TEST_YAML_ENTITY_CLASS = Category::class;
     private $em;
 
     protected function setUp(): void

@@ -19,7 +19,7 @@ use Gedmo\Tests\Tool\BaseTestCaseORM;
  */
 class SluggableTest extends BaseTestCaseORM
 {
-    public const ARTICLE = 'Gedmo\\Tests\\Sluggable\\Fixture\\Article';
+    public const ARTICLE = Article::class;
     private $articleId;
 
     protected function setUp(): void

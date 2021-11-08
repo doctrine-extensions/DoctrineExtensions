@@ -3,6 +3,7 @@
 namespace Gedmo\ReferenceIntegrity\Mapping\Driver;
 
 use Gedmo\Exception\InvalidMappingException;
+use Gedmo\Mapping\Annotation\ReferenceIntegrity;
 use Gedmo\Mapping\Driver\AbstractAnnotationDriver;
 use Gedmo\ReferenceIntegrity\Mapping\Validator;
 
@@ -20,7 +21,7 @@ class Annotation extends AbstractAnnotationDriver
     /**
      * Annotation to identify the fields which manages the reference integrity
      */
-    public const REFERENCE_INTEGRITY = 'Gedmo\\Mapping\\Annotation\\ReferenceIntegrity';
+    public const REFERENCE_INTEGRITY = ReferenceIntegrity::class;
 
     /**
      * ReferenceIntegrityAction extension annotation

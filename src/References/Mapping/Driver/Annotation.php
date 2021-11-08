@@ -2,6 +2,9 @@
 
 namespace Gedmo\References\Mapping\Driver;
 
+use Gedmo\Mapping\Annotation\ReferenceMany;
+use Gedmo\Mapping\Annotation\ReferenceManyEmbed;
+use Gedmo\Mapping\Annotation\ReferenceOne;
 use Gedmo\Mapping\Driver\AnnotationDriverInterface;
 
 /**
@@ -18,17 +21,17 @@ class Annotation implements AnnotationDriverInterface
     /**
      * Annotation to mark field as reference to one
      */
-    public const REFERENCE_ONE = 'Gedmo\\Mapping\\Annotation\\ReferenceOne';
+    public const REFERENCE_ONE = ReferenceOne::class;
 
     /**
      * Annotation to mark field as reference to many
      */
-    public const REFERENCE_MANY = 'Gedmo\\Mapping\\Annotation\\ReferenceMany';
+    public const REFERENCE_MANY = ReferenceMany::class;
 
     /**
      * Annotation to mark field as reference to many
      */
-    public const REFERENCE_MANY_EMBED = 'Gedmo\\Mapping\\Annotation\\ReferenceManyEmbed';
+    public const REFERENCE_MANY_EMBED = ReferenceManyEmbed::class;
 
     private $annotations = [
         'referenceOne' => self::REFERENCE_ONE,

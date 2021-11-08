@@ -3,8 +3,10 @@
 namespace Gedmo\Tests\Translatable;
 
 use Doctrine\Common\EventManager;
+use Doctrine\ORM\Proxy\Proxy;
 use Gedmo\Tests\Tool\BaseTestCaseORM;
 use Gedmo\Tests\Translatable\Fixture\Article;
+use Gedmo\Translatable\Entity\Translation;
 use Gedmo\Translatable\TranslatableListener;
 
 /**
@@ -18,8 +20,8 @@ use Gedmo\Translatable\TranslatableListener;
  */
 class Issue84Test extends BaseTestCaseORM
 {
-    public const ARTICLE = 'Gedmo\\Tests\\Translatable\\Fixture\\Article';
-    public const TRANSLATION = 'Gedmo\\Translatable\\Entity\\Translation';
+    public const ARTICLE = Article::class;
+    public const TRANSLATION = Translation::class;
 
     private $translatableListener;
 
@@ -47,7 +49,7 @@ class Issue84Test extends BaseTestCaseORM
         $this->em->clear();
 
         $article = $this->em->getReference(self::ARTICLE, 1);
-        static::assertInstanceOf('Doctrine\ORM\Proxy\Proxy', $article);
+        static::assertInstanceOf(Proxy::class, $article);
 
         $trans = $repo->findTranslations($article);
         static::assertCount(1, $trans);

@@ -12,6 +12,8 @@ use Doctrine\ORM\Query\AST\RangeVariableDeclaration;
 use Doctrine\ORM\Query\AST\SelectStatement;
 use Doctrine\ORM\Query\Exec\SingleSelectExecutor;
 use Doctrine\ORM\Query\SqlWalker;
+use Gedmo\Translatable\Hydrator\ORM\ObjectHydrator;
+use Gedmo\Translatable\Hydrator\ORM\SimpleObjectHydrator;
 use Gedmo\Translatable\Mapping\Event\Adapter\ORM as TranslatableEventAdapter;
 use Gedmo\Translatable\TranslatableListener;
 
@@ -129,14 +131,14 @@ class TranslationWalker extends SqlWalker
             $this->getQuery()->setHydrationMode(self::HYDRATE_OBJECT_TRANSLATION);
             $this->getEntityManager()->getConfiguration()->addCustomHydrationMode(
                 self::HYDRATE_OBJECT_TRANSLATION,
-                'Gedmo\\Translatable\\Hydrator\\ORM\\ObjectHydrator'
+                ObjectHydrator::class
             );
             $this->getQuery()->setHint(Query::HINT_REFRESH, true);
         } elseif (Query::HYDRATE_SIMPLEOBJECT === $hydrationMode) {
             $this->getQuery()->setHydrationMode(self::HYDRATE_SIMPLE_OBJECT_TRANSLATION);
             $this->getEntityManager()->getConfiguration()->addCustomHydrationMode(
                 self::HYDRATE_SIMPLE_OBJECT_TRANSLATION,
-                'Gedmo\\Translatable\\Hydrator\\ORM\\SimpleObjectHydrator'
+                SimpleObjectHydrator::class
             );
             $this->getQuery()->setHint(Query::HINT_REFRESH, true);
         }

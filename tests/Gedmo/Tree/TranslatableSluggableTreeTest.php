@@ -6,7 +6,9 @@ use Doctrine\Common\EventManager;
 use Doctrine\ORM\Proxy\Proxy;
 use Gedmo\Sluggable\SluggableListener;
 use Gedmo\Tests\Tool\BaseTestCaseORM;
+use Gedmo\Tests\Tree\Fixture\Article;
 use Gedmo\Tests\Tree\Fixture\BehavioralCategory;
+use Gedmo\Tests\Tree\Fixture\Comment;
 use Gedmo\Translatable\Entity\Translation;
 use Gedmo\Translatable\TranslatableListener;
 use Gedmo\Tree\TreeListener;
@@ -22,10 +24,10 @@ use Gedmo\Tree\TreeListener;
  */
 class TranslatableSluggableTreeTest extends BaseTestCaseORM
 {
-    public const CATEGORY = 'Gedmo\\Tests\\Tree\\Fixture\\BehavioralCategory';
-    public const ARTICLE = 'Gedmo\\Tests\\Tree\\Fixture\\Article';
-    public const COMMENT = 'Gedmo\\Tests\\Tree\\Fixture\\Comment';
-    public const TRANSLATION = 'Gedmo\\Translatable\\Entity\\Translation';
+    public const CATEGORY = BehavioralCategory::class;
+    public const ARTICLE = Article::class;
+    public const COMMENT = Comment::class;
+    public const TRANSLATION = Translation::class;
 
     private $translatableListener;
 

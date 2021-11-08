@@ -7,6 +7,7 @@ use Doctrine\Common\EventManager;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
 use Doctrine\ORM\Mapping\Driver\DriverChain;
 use Doctrine\ORM\Mapping\Driver\XmlDriver;
+use Gedmo\Tests\Mapping\Fixture\Xml\MaterializedPathTree;
 use Gedmo\Tests\Tool\BaseTestCaseOM;
 use Gedmo\Tree\TreeListener;
 
@@ -51,13 +52,13 @@ class MaterializedPathTreeMappingTest extends BaseTestCaseOM
         $this->evm->addEventSubscriber($this->tree);
 
         $this->em = $this->getMockSqliteEntityManager([
-            'Gedmo\Tests\Mapping\Fixture\Xml\MaterializedPathTree',
+            MaterializedPathTree::class,
         ], $chain);
     }
 
     public function testTreeMetadata()
     {
-        $meta = $this->em->getClassMetadata('Gedmo\Tests\Mapping\Fixture\Xml\MaterializedPathTree');
+        $meta = $this->em->getClassMetadata(MaterializedPathTree::class);
         $config = $this->tree->getConfiguration($this->em, $meta->name);
 
         static::assertArrayHasKey('strategy', $config);

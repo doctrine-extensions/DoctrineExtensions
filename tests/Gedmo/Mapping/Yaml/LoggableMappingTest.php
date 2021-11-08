@@ -7,7 +7,10 @@ use Doctrine\Common\EventManager;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
 use Doctrine\ORM\Mapping\Driver\DriverChain;
 use Doctrine\ORM\Mapping\Driver\YamlDriver;
+use Gedmo\Loggable\Entity\LogEntry;
 use Gedmo\Loggable\LoggableListener;
+use Gedmo\Tests\Mapping\Fixture\Yaml\Embedded;
+use Gedmo\Tests\Mapping\Fixture\Yaml\LoggableWithEmbedded;
 use Gedmo\Tests\Tool\BaseTestCaseOM;
 
 /**
@@ -49,19 +52,19 @@ class LoggableMappingTest extends BaseTestCaseOM
         $this->evm->addEventSubscriber($this->loggable);
 
         $this->em = $this->getMockSqliteEntityManager([
-            'Gedmo\Loggable\Entity\LogEntry',
-            'Gedmo\Tests\Mapping\Fixture\Yaml\LoggableWithEmbedded',
-            'Gedmo\Tests\Mapping\Fixture\Yaml\Embedded',
+            LogEntry::class,
+            LoggableWithEmbedded::class,
+            Embedded::class,
         ], $chain);
     }
 
     public function testLoggableMetadataWithEmbedded()
     {
-        $meta = $this->em->getClassMetadata('Gedmo\Tests\Mapping\Fixture\Yaml\LoggableWithEmbedded');
+        $meta = $this->em->getClassMetadata(LoggableWithEmbedded::class);
         $config = $this->loggable->getConfiguration($this->em, $meta->name);
 
         static::assertArrayHasKey('logEntryClass', $config);
-        static::assertEquals('Gedmo\Loggable\Entity\LogEntry', $config['logEntryClass']);
+        static::assertEquals(LogEntry::class, $config['logEntryClass']);
         static::assertArrayHasKey('loggable', $config);
         static::assertTrue($config['loggable']);
 

@@ -6,6 +6,7 @@ use Doctrine\Common\EventManager;
 use Gedmo\Tests\Timestampable\Fixture\SupperClassExtension;
 use Gedmo\Tests\Tool\BaseTestCaseORM;
 use Gedmo\Timestampable\TimestampableListener;
+use Gedmo\Translatable\Entity\Translation;
 use Gedmo\Translatable\TranslatableListener;
 
 /**
@@ -19,8 +20,8 @@ use Gedmo\Translatable\TranslatableListener;
  */
 class ProtectedPropertySupperclassTest extends BaseTestCaseORM
 {
-    public const SUPERCLASS = 'Gedmo\\Tests\\Timestampable\\Fixture\\SupperClassExtension';
-    public const TRANSLATION = 'Gedmo\\Translatable\\Entity\\Translation';
+    public const SUPERCLASS = SupperClassExtension::class;
+    public const TRANSLATION = Translation::class;
 
     protected function setUp(): void
     {

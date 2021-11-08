@@ -6,6 +6,8 @@ use Doctrine\Common\EventManager;
 use Doctrine\DBAL\Types\Type;
 use Gedmo\Tests\Tool\BaseTestCaseORM;
 use Gedmo\Tests\Translatable\Fixture\MixedValue;
+use Gedmo\Tests\Translatable\Fixture\Type\Custom;
+use Gedmo\Translatable\Entity\Translation;
 use Gedmo\Translatable\TranslatableListener;
 
 /**
@@ -19,8 +21,8 @@ use Gedmo\Translatable\TranslatableListener;
  */
 class MixedValueTranslationTest extends BaseTestCaseORM
 {
-    public const MIXED = 'Gedmo\\Tests\\Translatable\\Fixture\\MixedValue';
-    public const TRANSLATION = 'Gedmo\\Translatable\\Entity\\Translation';
+    public const MIXED = MixedValue::class;
+    public const TRANSLATION = Translation::class;
 
     private $translatableListener;
 
@@ -29,7 +31,7 @@ class MixedValueTranslationTest extends BaseTestCaseORM
         parent::setUp();
 
         if (!Type::hasType('custom')) {
-            Type::addType('custom', 'Gedmo\Tests\Translatable\Fixture\Type\Custom');
+            Type::addType('custom', Custom::class);
         }
 
         $evm = new EventManager();

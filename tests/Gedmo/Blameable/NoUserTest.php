@@ -15,7 +15,7 @@ use Gedmo\Tests\Tool\BaseTestCaseMongoODM;
  */
 class NoUserTest extends BaseTestCaseMongoODM
 {
-    public const ARTICLE = 'Gedmo\Tests\Blameable\Fixture\Document\Article';
+    public const ARTICLE = Article::class;
 
     protected function setUp(): void
     {

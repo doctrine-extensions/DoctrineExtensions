@@ -18,7 +18,7 @@ use Gedmo\Tests\Tool\BaseTestCaseORM;
  */
 class Issue131Test extends BaseTestCaseORM
 {
-    public const TARGET = 'Gedmo\\Tests\\Sluggable\\Fixture\\Issue131\\Article';
+    public const TARGET = Article::class;
 
     protected function setUp(): void
     {

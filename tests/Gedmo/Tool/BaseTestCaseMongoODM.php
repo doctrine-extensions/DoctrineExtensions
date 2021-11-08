@@ -9,6 +9,7 @@ use Doctrine\ODM\MongoDB\Mapping\Driver\AnnotationDriver;
 use Doctrine\Persistence\Mapping\Driver\MappingDriver;
 use Gedmo\Loggable\LoggableListener;
 use Gedmo\Sluggable\SluggableListener;
+use Gedmo\SoftDeleteable\Filter\ODM\SoftDeleteableFilter;
 use Gedmo\SoftDeleteable\SoftDeleteableListener;
 use Gedmo\Timestampable\TimestampableListener;
 use Gedmo\Translatable\TranslatableListener;
@@ -123,7 +124,7 @@ abstract class BaseTestCaseMongoODM extends \PHPUnit\Framework\TestCase
     protected function getMockAnnotatedConfig(): Configuration
     {
         $config = new Configuration();
-        $config->addFilter('softdeleteable', 'Gedmo\\SoftDeleteable\\Filter\\ODM\\SoftDeleteableFilter');
+        $config->addFilter('softdeleteable', SoftDeleteableFilter::class);
         $config->setProxyDir(__DIR__.'/../../temp');
         $config->setHydratorDir(__DIR__.'/../../temp');
         $config->setProxyNamespace('Proxy');

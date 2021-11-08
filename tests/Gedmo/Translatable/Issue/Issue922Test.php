@@ -6,15 +6,17 @@ use Doctrine\Common\EventManager;
 use Doctrine\ORM\Query;
 use Gedmo\Tests\Tool\BaseTestCaseORM;
 use Gedmo\Tests\Translatable\Fixture\Issue922\Post;
+use Gedmo\Translatable\Entity\Translation;
+use Gedmo\Translatable\Hydrator\ORM\ObjectHydrator;
 use Gedmo\Translatable\Query\TreeWalker\TranslationWalker;
 use Gedmo\Translatable\TranslatableListener;
 
 class Issue922Test extends BaseTestCaseORM
 {
-    public const POST = 'Gedmo\Tests\Translatable\Fixture\Issue922\Post';
-    public const TRANSLATION = 'Gedmo\Translatable\Entity\Translation';
+    public const POST = Post::class;
+    public const TRANSLATION = Translation::class;
 
-    public const TREE_WALKER_TRANSLATION = 'Gedmo\\Translatable\\Query\\TreeWalker\\TranslationWalker';
+    public const TREE_WALKER_TRANSLATION = TranslationWalker::class;
 
     private $translatableListener;
 
@@ -65,7 +67,7 @@ class Issue922Test extends BaseTestCaseORM
         $this->em->clear();
         $this->em->getConfiguration()->addCustomHydrationMode(
             TranslationWalker::HYDRATE_OBJECT_TRANSLATION,
-            'Gedmo\\Translatable\\Hydrator\\ORM\\ObjectHydrator'
+            ObjectHydrator::class
         );
 
         $q = $this->em->createQuery('SELECT p FROM '.self::POST.' p');

@@ -3,6 +3,10 @@
 namespace Gedmo\Tests\Tree;
 
 use Gedmo\Tests\Tool\BaseTestCaseORM;
+use Gedmo\Tests\Tree\Fixture\ANode;
+use Gedmo\Tests\Tree\Fixture\BaseNode;
+use Gedmo\Tests\Tree\Fixture\Node;
+use Gedmo\Translatable\Entity\Translation;
 
 /**
  * These are tests for Tree behavior
@@ -15,10 +19,10 @@ use Gedmo\Tests\Tool\BaseTestCaseORM;
  */
 class MultiInheritanceTest extends BaseTestCaseORM
 {
-    public const NODE = 'Gedmo\\Tests\\Tree\\Fixture\\Node';
-    public const BASE_NODE = 'Gedmo\\Tests\\Tree\\Fixture\\BaseNode';
-    public const ANODE = 'Gedmo\\Tests\\Tree\\Fixture\\ANode';
-    public const TRANSLATION = 'Gedmo\\Translatable\\Entity\\Translation';
+    public const NODE = Node::class;
+    public const BASE_NODE = BaseNode::class;
+    public const ANODE = ANode::class;
+    public const TRANSLATION = Translation::class;
 
     protected function setUp(): void
     {

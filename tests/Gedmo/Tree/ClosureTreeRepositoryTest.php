@@ -4,6 +4,10 @@ namespace Gedmo\Tests\Tree;
 
 use Doctrine\Common\EventManager;
 use Gedmo\Tests\Tool\BaseTestCaseORM;
+use Gedmo\Tests\Tree\Fixture\Closure\Category;
+use Gedmo\Tests\Tree\Fixture\Closure\CategoryClosure;
+use Gedmo\Tests\Tree\Fixture\Closure\CategoryWithoutLevel;
+use Gedmo\Tests\Tree\Fixture\Closure\CategoryWithoutLevelClosure;
 use Gedmo\Tree\TreeListener;
 
 /**
@@ -18,10 +22,10 @@ use Gedmo\Tree\TreeListener;
  */
 class ClosureTreeRepositoryTest extends BaseTestCaseORM
 {
-    public const CATEGORY = 'Gedmo\\Tests\\Tree\\Fixture\\Closure\\Category';
-    public const CLOSURE = 'Gedmo\\Tests\\Tree\\Fixture\\Closure\\CategoryClosure';
-    public const CATEGORY_WITHOUT_LEVEL = 'Gedmo\\Tests\\Tree\\Fixture\\Closure\\CategoryWithoutLevel';
-    public const CATEGORY_WITHOUT_LEVEL_CLOSURE = 'Gedmo\\Tests\\Tree\\Fixture\\Closure\\CategoryWithoutLevelClosure';
+    public const CATEGORY = Category::class;
+    public const CLOSURE = CategoryClosure::class;
+    public const CATEGORY_WITHOUT_LEVEL = CategoryWithoutLevel::class;
+    public const CATEGORY_WITHOUT_LEVEL_CLOSURE = CategoryWithoutLevelClosure::class;
 
     protected $listener;
 

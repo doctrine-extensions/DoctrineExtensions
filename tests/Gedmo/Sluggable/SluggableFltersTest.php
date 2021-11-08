@@ -4,7 +4,9 @@ namespace Gedmo\Tests\Sluggable;
 
 use Doctrine\Common\EventManager;
 use Gedmo\Sluggable\SluggableListener;
+use Gedmo\SoftDeleteable\Filter\SoftDeleteableFilter;
 use Gedmo\Tests\Sluggable\Fixture\Article;
+use Gedmo\Tests\Sluggable\Fixture\Doctrine\FakeFilter;
 use Gedmo\Tests\Tool\BaseTestCaseORM;
 
 /**
@@ -18,7 +20,7 @@ use Gedmo\Tests\Tool\BaseTestCaseORM;
  */
 class SluggableFltersTest extends BaseTestCaseORM
 {
-    public const TARGET = 'Gedmo\\Tests\\Sluggable\\Fixture\\Article';
+    public const TARGET = Article::class;
 
     public const SOFT_DELETEABLE_FILTER_NAME = 'soft-deleteable';
     public const FAKE_FILTER_NAME = 'fake-filter';
@@ -34,8 +36,8 @@ class SluggableFltersTest extends BaseTestCaseORM
         $evm->addEventSubscriber($sluggableListener);
 
         $config = $this->getMockAnnotatedConfig();
-        $config->addFilter(self::SOFT_DELETEABLE_FILTER_NAME, 'Gedmo\SoftDeleteable\Filter\SoftDeleteableFilter');
-        $config->addFilter(self::FAKE_FILTER_NAME, 'Gedmo\Tests\Sluggable\Fixture\Doctrine\FakeFilter');
+        $config->addFilter(self::SOFT_DELETEABLE_FILTER_NAME, SoftDeleteableFilter::class);
+        $config->addFilter(self::FAKE_FILTER_NAME, FakeFilter::class);
 
         $this->em = $this->getMockSqliteEntityManager($evm, $config);
 

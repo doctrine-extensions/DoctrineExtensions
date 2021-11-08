@@ -3,8 +3,11 @@
 namespace Gedmo\Tests\SoftDeleteable;
 
 use Doctrine\Common\EventManager;
+use Doctrine\Common\EventSubscriber;
+use Gedmo\SoftDeleteable\Filter\ODM\SoftDeleteableFilter;
 use Gedmo\SoftDeleteable\SoftDeleteableListener;
 use Gedmo\Tests\SoftDeleteable\Fixture\Document\User;
+use Gedmo\Tests\SoftDeleteable\Fixture\Document\UserTimeAware;
 use Gedmo\Tests\Tool\BaseTestCaseMongoODM;
 
 /**
@@ -27,8 +30,8 @@ class SoftDeleteableDocumentTest extends BaseTestCaseMongoODM
     public const MODULE_CLASS = 'Gedmo\Tests\SoftDeleteable\Fixture\Document\Module';
     public const OTHER_ARTICLE_CLASS = 'Gedmo\Tests\SoftDeleteable\Fixture\Document\OtherArticle';
     public const OTHER_COMMENT_CLASS = 'Gedmo\Tests\SoftDeleteable\Fixture\Document\OtherComment';
-    public const USER_CLASS = 'Gedmo\Tests\SoftDeleteable\Fixture\Document\User';
-    public const USER__TIME_AWARE_CLASS = 'Gedmo\Tests\SoftDeleteable\Fixture\Document\UserTimeAware';
+    public const USER_CLASS = User::class;
+    public const USER__TIME_AWARE_CLASS = UserTimeAware::class;
     public const MAPPED_SUPERCLASS_CHILD_CLASS = 'Gedmo\Tests\SoftDeleteable\Fixture\Document\Child';
     public const SOFT_DELETEABLE_FILTER_NAME = 'soft-deleteable';
 
@@ -42,7 +45,7 @@ class SoftDeleteableDocumentTest extends BaseTestCaseMongoODM
         $this->softDeleteableListener = new SoftDeleteableListener();
         $evm->addEventSubscriber($this->softDeleteableListener);
         $config = $this->getMockAnnotatedConfig();
-        $config->addFilter(self::SOFT_DELETEABLE_FILTER_NAME, 'Gedmo\SoftDeleteable\Filter\ODM\SoftDeleteableFilter');
+        $config->addFilter(self::SOFT_DELETEABLE_FILTER_NAME, SoftDeleteableFilter::class);
 
         $this->dm = $this->getMockDocumentManager($evm, $config);
         $this->dm->getFilterCollection()->enable(self::SOFT_DELETEABLE_FILTER_NAME);
@@ -152,7 +155,7 @@ class SoftDeleteableDocumentTest extends BaseTestCaseMongoODM
 
     public function testPostSoftDeleteEventIsDispatched()
     {
-        $subscriber = $this->getMockBuilder("Doctrine\Common\EventSubscriber")
+        $subscriber = $this->getMockBuilder(EventSubscriber::class)
             ->setMethods([
                 'getSubscribedEvents',
                 'preSoftDelete',

@@ -3,7 +3,9 @@
 namespace Gedmo\Tests\Tree;
 
 use Doctrine\Common\EventManager;
+use Gedmo\Exception\RuntimeException;
 use Gedmo\Tests\Tool\BaseTestCaseORM;
+use Gedmo\Tests\Tree\Fixture\MPCategory;
 use Gedmo\Tree\TreeListener;
 
 /**
@@ -18,7 +20,7 @@ use Gedmo\Tree\TreeListener;
  */
 class MaterializedPathORMTest extends BaseTestCaseORM
 {
-    public const CATEGORY = 'Gedmo\\Tests\\Tree\\Fixture\\MPCategory';
+    public const CATEGORY = MPCategory::class;
 
     protected $config;
     protected $listener;
@@ -124,7 +126,7 @@ class MaterializedPathORMTest extends BaseTestCaseORM
      */
     public function useOfSeparatorInPathSourceShouldThrowAnException()
     {
-        $this->expectException('Gedmo\Exception\RuntimeException');
+        $this->expectException(RuntimeException::class);
 
         $category = $this->createCategory();
         $category->setTitle('1'.$this->config['path_separator']);

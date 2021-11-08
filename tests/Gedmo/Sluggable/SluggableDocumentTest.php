@@ -18,7 +18,7 @@ use Gedmo\Tests\Tool\BaseTestCaseMongoODM;
  */
 class SluggableDocumentTest extends BaseTestCaseMongoODM
 {
-    public const ARTICLE = 'Gedmo\\Tests\\Sluggable\\Fixture\\Document\\Article';
+    public const ARTICLE = Article::class;
 
     protected function setUp(): void
     {

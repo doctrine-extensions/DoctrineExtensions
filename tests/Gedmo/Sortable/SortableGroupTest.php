@@ -10,6 +10,7 @@ use Gedmo\Tests\Sortable\Fixture\Transport\Bus;
 use Gedmo\Tests\Sortable\Fixture\Transport\Car;
 use Gedmo\Tests\Sortable\Fixture\Transport\Engine;
 use Gedmo\Tests\Sortable\Fixture\Transport\Reservation;
+use Gedmo\Tests\Sortable\Fixture\Transport\Vehicle;
 use Gedmo\Tests\Tool\BaseTestCaseORM;
 
 /**
@@ -23,13 +24,13 @@ use Gedmo\Tests\Tool\BaseTestCaseORM;
  */
 class SortableGroupTest extends BaseTestCaseORM
 {
-    public const CAR = "Gedmo\Tests\Sortable\Fixture\Transport\Car";
-    public const BUS = "Gedmo\Tests\Sortable\Fixture\Transport\Bus";
-    public const VEHICLE = "Gedmo\Tests\Sortable\Fixture\Transport\Vehicle";
-    public const ENGINE = "Gedmo\Tests\Sortable\Fixture\Transport\Engine";
-    public const RESERVATION = "Gedmo\Tests\Sortable\Fixture\Transport\Reservation";
-    public const ITEM = "Gedmo\Tests\Sortable\Fixture\Item";
-    public const CATEGORY = "Gedmo\Tests\Sortable\Fixture\Category";
+    public const CAR = Car::class;
+    public const BUS = Bus::class;
+    public const VEHICLE = Vehicle::class;
+    public const ENGINE = Engine::class;
+    public const RESERVATION = Reservation::class;
+    public const ITEM = Item::class;
+    public const CATEGORY = Category::class;
 
     public const SEATS = 3;
 

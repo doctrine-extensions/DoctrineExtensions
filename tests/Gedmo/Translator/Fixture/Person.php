@@ -105,7 +105,7 @@ class Person
         return new \Gedmo\Translator\TranslationProxy($this,
         /* Locale                            */ $locale,
         /* List of translatable properties:  */ ['name', 'lastName'],
-        /* Translation entity class:         */ 'Gedmo\Tests\Translator\Fixture\PersonTranslation',
+        /* Translation entity class:         */ PersonTranslation::class,
         /* Translations collection property: */ $this->translations
         );
     }

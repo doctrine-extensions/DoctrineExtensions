@@ -18,7 +18,7 @@ use Gedmo\Tree\TreeListener;
  */
 class NestedTreeRootAssociationTest extends BaseTestCaseORM
 {
-    public const CATEGORY = 'Gedmo\\Tests\\Tree\\Fixture\\RootAssociationCategory';
+    public const CATEGORY = RootAssociationCategory::class;
 
     protected function setUp(): void
     {

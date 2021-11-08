@@ -3,6 +3,7 @@
 namespace Gedmo\IpTraceable\Mapping\Driver;
 
 use Gedmo\Exception\InvalidMappingException;
+use Gedmo\Mapping\Annotation\IpTraceable;
 use Gedmo\Mapping\Driver\AbstractAnnotationDriver;
 
 /**
@@ -19,7 +20,7 @@ class Annotation extends AbstractAnnotationDriver
     /**
      * Annotation field is ipTraceable
      */
-    public const IP_TRACEABLE = 'Gedmo\\Mapping\\Annotation\\IpTraceable';
+    public const IP_TRACEABLE = IpTraceable::class;
 
     /**
      * List of types which are valid for IP

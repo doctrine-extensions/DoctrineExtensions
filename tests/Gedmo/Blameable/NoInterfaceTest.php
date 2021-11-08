@@ -18,7 +18,7 @@ use Gedmo\Tests\Tool\BaseTestCaseORM;
  */
 class NoInterfaceTest extends BaseTestCaseORM
 {
-    public const FIXTURE = 'Gedmo\\Tests\\Blameable\\Fixture\\Entity\\WithoutInterface';
+    public const FIXTURE = WithoutInterface::class;
 
     protected function setUp(): void
     {

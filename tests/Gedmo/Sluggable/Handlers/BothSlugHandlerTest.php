@@ -20,8 +20,8 @@ use Gedmo\Tree\TreeListener;
  */
 class BothSlugHandlerTest extends BaseTestCaseORM
 {
-    public const OCCUPATION = 'Gedmo\\Tests\\Sluggable\\Fixture\\Handler\\People\\Occupation';
-    public const PERSON = 'Gedmo\\Tests\\Sluggable\\Fixture\\Handler\\People\\Person';
+    public const OCCUPATION = Occupation::class;
+    public const PERSON = Person::class;
 
     protected function setUp(): void
     {

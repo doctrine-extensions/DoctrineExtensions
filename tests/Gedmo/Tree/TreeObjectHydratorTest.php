@@ -6,8 +6,10 @@ use Doctrine\Common\EventManager;
 use Doctrine\DBAL\Logging\DebugStack;
 use Doctrine\ORM\Query;
 use Gedmo\Tests\Tool\BaseTestCaseORM;
+use Gedmo\Tests\Tree\Fixture\Category;
 use Gedmo\Tests\Tree\Fixture\RootCategory;
 use Gedmo\Tree\Entity\Repository\NestedTreeRepository;
+use Gedmo\Tree\Hydrator\ORM\TreeObjectHydrator;
 use Gedmo\Tree\TreeListener;
 
 /**
@@ -21,8 +23,8 @@ use Gedmo\Tree\TreeListener;
  */
 class TreeObjectHydratorTest extends BaseTestCaseORM
 {
-    public const CATEGORY = 'Gedmo\\Tests\\Tree\\Fixture\\Category';
-    public const ROOT_CATEGORY = 'Gedmo\\Tests\\Tree\\Fixture\\RootCategory';
+    public const CATEGORY = Category::class;
+    public const ROOT_CATEGORY = RootCategory::class;
 
     protected function setUp(): void
     {
@@ -33,7 +35,7 @@ class TreeObjectHydratorTest extends BaseTestCaseORM
 
         $this->getMockSqliteEntityManager($evm);
 
-        $this->em->getConfiguration()->addCustomHydrationMode('tree', 'Gedmo\Tree\Hydrator\ORM\TreeObjectHydrator');
+        $this->em->getConfiguration()->addCustomHydrationMode('tree', TreeObjectHydrator::class);
     }
 
     public function testFullTreeHydration()

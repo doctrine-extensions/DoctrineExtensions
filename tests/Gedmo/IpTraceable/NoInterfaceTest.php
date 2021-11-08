@@ -19,7 +19,7 @@ use Gedmo\Tests\Tool\BaseTestCaseORM;
 class NoInterfaceTest extends BaseTestCaseORM
 {
     public const TEST_IP = '34.234.1.10';
-    public const FIXTURE = 'Gedmo\\Tests\\IpTraceable\\Fixture\\WithoutInterface';
+    public const FIXTURE = WithoutInterface::class;
 
     protected function setUp(): void
     {

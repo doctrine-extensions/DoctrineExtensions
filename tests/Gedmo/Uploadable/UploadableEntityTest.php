@@ -3,6 +3,20 @@
 namespace Gedmo\Tests\Uploadable;
 
 use Doctrine\Common\EventManager;
+use Gedmo\Exception\InvalidArgumentException;
+use Gedmo\Exception\UploadableCantWriteException;
+use Gedmo\Exception\UploadableCouldntGuessMimeTypeException;
+use Gedmo\Exception\UploadableExtensionException;
+use Gedmo\Exception\UploadableFileAlreadyExistsException;
+use Gedmo\Exception\UploadableFormSizeException;
+use Gedmo\Exception\UploadableIniSizeException;
+use Gedmo\Exception\UploadableInvalidMimeTypeException;
+use Gedmo\Exception\UploadableMaxSizeException;
+use Gedmo\Exception\UploadableNoFileException;
+use Gedmo\Exception\UploadableNoPathDefinedException;
+use Gedmo\Exception\UploadableNoTmpDirException;
+use Gedmo\Exception\UploadablePartialException;
+use Gedmo\Exception\UploadableUploadException;
 use Gedmo\Tests\Tool\BaseTestCaseORM;
 use Gedmo\Tests\Uploadable\Fixture\Entity\Article;
 use Gedmo\Tests\Uploadable\Fixture\Entity\File;
@@ -34,18 +48,18 @@ use Gedmo\Uploadable\UploadableListener;
  */
 class UploadableEntityTest extends BaseTestCaseORM
 {
-    public const IMAGE_CLASS = 'Gedmo\Tests\Uploadable\Fixture\Entity\Image';
-    public const ARTICLE_CLASS = 'Gedmo\Tests\Uploadable\Fixture\Entity\Article';
-    public const FILE_CLASS = 'Gedmo\Tests\Uploadable\Fixture\Entity\File';
-    public const FILE_APPEND_NUMBER_CLASS = 'Gedmo\Tests\Uploadable\Fixture\Entity\FileAppendNumber';
-    public const FILE_APPEND_NUMBER__RELATIVE_PATH_CLASS = 'Gedmo\Tests\Uploadable\Fixture\Entity\FileAppendNumberRelative';
-    public const FILE_WITHOUT_PATH_CLASS = 'Gedmo\Tests\Uploadable\Fixture\Entity\FileWithoutPath';
-    public const FILE_WITH_SHA1_NAME_CLASS = 'Gedmo\Tests\Uploadable\Fixture\Entity\FileWithSha1Name';
-    public const FILE_WITH_ALPHANUMERIC_NAME_CLASS = 'Gedmo\Tests\Uploadable\Fixture\Entity\FileWithAlphanumericName';
-    public const FILE_WITH_CUSTOM_FILENAME_GENERATOR_CLASS = 'Gedmo\Tests\Uploadable\Fixture\Entity\FileWithCustomFilenameGenerator';
-    public const FILE_WITH_MAX_SIZE_CLASS = 'Gedmo\Tests\Uploadable\Fixture\Entity\FileWithMaxSize';
-    public const FILE_WITH_ALLOWED_TYPES_CLASS = 'Gedmo\Tests\Uploadable\Fixture\Entity\FileWithAllowedTypes';
-    public const FILE_WITH_DISALLOWED_TYPES_CLASS = 'Gedmo\Tests\Uploadable\Fixture\Entity\FileWithDisallowedTypes';
+    public const IMAGE_CLASS = Image::class;
+    public const ARTICLE_CLASS = Article::class;
+    public const FILE_CLASS = File::class;
+    public const FILE_APPEND_NUMBER_CLASS = FileAppendNumber::class;
+    public const FILE_APPEND_NUMBER__RELATIVE_PATH_CLASS = FileAppendNumberRelative::class;
+    public const FILE_WITHOUT_PATH_CLASS = FileWithoutPath::class;
+    public const FILE_WITH_SHA1_NAME_CLASS = FileWithSha1Name::class;
+    public const FILE_WITH_ALPHANUMERIC_NAME_CLASS = FileWithAlphanumericName::class;
+    public const FILE_WITH_CUSTOM_FILENAME_GENERATOR_CLASS = FileWithCustomFilenameGenerator::class;
+    public const FILE_WITH_MAX_SIZE_CLASS = FileWithMaxSize::class;
+    public const FILE_WITH_ALLOWED_TYPES_CLASS = FileWithAllowedTypes::class;
+    public const FILE_WITH_DISALLOWED_TYPES_CLASS = FileWithDisallowedTypes::class;
 
     /**
      * @var UploadableListener
@@ -268,7 +282,7 @@ class UploadableEntityTest extends BaseTestCaseORM
 
     public function testNoPathDefinedOnEntityOrListenerThrowsException()
     {
-        $this->expectException('Gedmo\Exception\UploadableNoPathDefinedException');
+        $this->expectException(UploadableNoPathDefinedException::class);
         $file = new FileWithoutPath();
 
         $fileInfo = $this->generateUploadedFile();
@@ -418,7 +432,7 @@ class UploadableEntityTest extends BaseTestCaseORM
 
     public function testFileAlreadyExistsException()
     {
-        $this->expectException('Gedmo\Exception\UploadableFileAlreadyExistsException');
+        $this->expectException(UploadableFileAlreadyExistsException::class);
         $file = new Image();
         $file->setTitle('test');
         $fileInfo = $this->generateUploadedFile('image', $this->testFileWithoutExt, $this->testFilenameWithoutExt);
@@ -495,7 +509,7 @@ class UploadableEntityTest extends BaseTestCaseORM
 
     public function testMoveFileIfUploadedFileCantBeMovedThrowException()
     {
-        $this->expectException('Gedmo\Exception\UploadableUploadException');
+        $this->expectException(UploadableUploadException::class);
         $this->listener->returnFalseOnMoveUploadedFile = true;
 
         $file = new Image();
@@ -522,7 +536,7 @@ class UploadableEntityTest extends BaseTestCaseORM
 
     public function testFileExceedingMaximumAllowedSizeThrowsException()
     {
-        $this->expectException('Gedmo\Exception\UploadableMaxSizeException');
+        $this->expectException(UploadableMaxSizeException::class);
         // We set the default path on the listener
         $this->listener->setDefaultPath($this->destinationTestDir);
 
@@ -556,7 +570,7 @@ class UploadableEntityTest extends BaseTestCaseORM
 
     public function testIfMimeTypeGuesserCantResolveTypeThrowException()
     {
-        $this->expectException('Gedmo\Exception\UploadableCouldntGuessMimeTypeException');
+        $this->expectException(UploadableCouldntGuessMimeTypeException::class);
         // We set the default path on the listener
         $this->listener->setDefaultPath($this->destinationTestDir);
         $this->listener->setMimeTypeGuesser(new MimeTypeGuesserStub(null));
@@ -572,7 +586,7 @@ class UploadableEntityTest extends BaseTestCaseORM
 
     public function testAllowedTypesOptionIfMimeTypeIsInvalidThrowException()
     {
-        $this->expectException('Gedmo\Exception\UploadableInvalidMimeTypeException');
+        $this->expectException(UploadableInvalidMimeTypeException::class);
         // We set the default path on the listener
         $this->listener->setDefaultPath($this->destinationTestDir);
         $this->listener->setMimeTypeGuesser(new MimeTypeGuesserStub('text/css'));
@@ -588,7 +602,7 @@ class UploadableEntityTest extends BaseTestCaseORM
 
     public function testDisallowedTypesOptionIfMimeTypeIsInvalidThrowException()
     {
-        $this->expectException('Gedmo\Exception\UploadableInvalidMimeTypeException');
+        $this->expectException(UploadableInvalidMimeTypeException::class);
         // We set the default path on the listener
         $this->listener->setDefaultPath($this->destinationTestDir);
         $this->listener->setMimeTypeGuesser(new MimeTypeGuesserStub('text/css'));
@@ -607,13 +621,13 @@ class UploadableEntityTest extends BaseTestCaseORM
      */
     public function testSetDefaultFileInfoClassThrowExceptionIfInvalidClassArePassed($class)
     {
-        $this->expectException('Gedmo\Exception\InvalidArgumentException');
+        $this->expectException(InvalidArgumentException::class);
         $this->listener->setDefaultFileInfoClass($class);
     }
 
     public function testSetDefaultFileInfoClassSetClassIfClassIsValid()
     {
-        $validClass = 'Gedmo\\Uploadable\\FileInfo\\FileInfoArray';
+        $validClass = FileInfoArray::class;
 
         $this->listener->setDefaultFileInfoClass($validClass);
 
@@ -665,14 +679,14 @@ class UploadableEntityTest extends BaseTestCaseORM
     public function uploadExceptionsProvider()
     {
         return [
-            [1, 'Gedmo\Exception\UploadableIniSizeException'],
-            [2, 'Gedmo\Exception\UploadableFormSizeException'],
-            [3, 'Gedmo\Exception\UploadablePartialException'],
-            [4, 'Gedmo\Exception\UploadableNoFileException'],
-            [6, 'Gedmo\Exception\UploadableNoTmpDirException'],
-            [7, 'Gedmo\Exception\UploadableCantWriteException'],
-            [8, 'Gedmo\Exception\UploadableExtensionException'],
-            [999, 'Gedmo\Exception\UploadableUploadException'],
+            [1, UploadableIniSizeException::class],
+            [2, UploadableFormSizeException::class],
+            [3, UploadablePartialException::class],
+            [4, UploadableNoFileException::class],
+            [6, UploadableNoTmpDirException::class],
+            [7, UploadableCantWriteException::class],
+            [8, UploadableExtensionException::class],
+            [999, UploadableUploadException::class],
         ];
     }
 

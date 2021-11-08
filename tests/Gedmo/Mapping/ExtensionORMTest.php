@@ -4,13 +4,14 @@ namespace Gedmo\Tests\Mapping;
 
 use Doctrine\Common\EventManager;
 use Doctrine\ORM\Event\LoadClassMetadataEventArgs;
+use Gedmo\Mapping\MappedEventSubscriber;
 use Gedmo\Tests\Mapping\Fixture\User;
 use Gedmo\Tests\Mapping\Mock\Extension\Encoder\EncoderListener;
 use Gedmo\Tests\Tool\BaseTestCaseORM;
 
 class ExtensionORMTest extends BaseTestCaseORM
 {
-    public const USER = 'Gedmo\\Tests\\Mapping\\Fixture\\User';
+    public const USER = User::class;
 
     private $encoderListener;
 
@@ -58,7 +59,7 @@ class ExtensionORMTest extends BaseTestCaseORM
 
     public function testEventAdapterUsed()
     {
-        $mappedSubscriberClass = new \ReflectionClass('Gedmo\\Mapping\\MappedEventSubscriber');
+        $mappedSubscriberClass = new \ReflectionClass(MappedEventSubscriber::class);
         $getEventAdapterMethod = $mappedSubscriberClass->getMethod('getEventAdapter');
         $getEventAdapterMethod->setAccessible(true);
 

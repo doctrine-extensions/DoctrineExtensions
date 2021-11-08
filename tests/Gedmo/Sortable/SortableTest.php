@@ -14,6 +14,7 @@ use Gedmo\Tests\Sortable\Fixture\Item;
 use Gedmo\Tests\Sortable\Fixture\Node;
 use Gedmo\Tests\Sortable\Fixture\NotifyNode;
 use Gedmo\Tests\Sortable\Fixture\Paper;
+use Gedmo\Tests\Sortable\Fixture\SimpleListItem;
 use Gedmo\Tests\Tool\BaseTestCaseORM;
 
 /**
@@ -27,16 +28,16 @@ use Gedmo\Tests\Tool\BaseTestCaseORM;
  */
 class SortableTest extends BaseTestCaseORM
 {
-    public const NODE = 'Gedmo\\Tests\\Sortable\\Fixture\\Node';
-    public const NOTIFY_NODE = 'Gedmo\\Tests\\Sortable\\Fixture\\NotifyNode';
-    public const ITEM = 'Gedmo\\Tests\\Sortable\\Fixture\\Item';
-    public const CATEGORY = 'Gedmo\\Tests\\Sortable\\Fixture\\Category';
-    public const SIMPLE_LIST_ITEM = 'Gedmo\\Tests\\Sortable\\Fixture\\SimpleListItem';
-    public const AUTHOR = 'Gedmo\\Tests\\Sortable\\Fixture\\Author';
-    public const PAPER = 'Gedmo\\Tests\\Sortable\\Fixture\\Paper';
-    public const EVENT = 'Gedmo\\Tests\\Sortable\\Fixture\\Event';
-    public const CUSTOMER = 'Gedmo\\Tests\\Sortable\\Fixture\\Customer';
-    public const CUSTOMER_TYPE = 'Gedmo\\Tests\\Sortable\\Fixture\\CustomerType';
+    public const NODE = Node::class;
+    public const NOTIFY_NODE = NotifyNode::class;
+    public const ITEM = Item::class;
+    public const CATEGORY = Category::class;
+    public const SIMPLE_LIST_ITEM = SimpleListItem::class;
+    public const AUTHOR = Author::class;
+    public const PAPER = Paper::class;
+    public const EVENT = Event::class;
+    public const CUSTOMER = Customer::class;
+    public const CUSTOMER_TYPE = CustomerType::class;
 
     private $nodeId;
 

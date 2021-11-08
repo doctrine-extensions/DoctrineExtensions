@@ -19,7 +19,7 @@ use Gedmo\Tests\Tool\BaseTestCaseORM;
 class TraitUsageTest extends BaseTestCaseORM
 {
     public const TEST_IP = '34.234.1.10';
-    public const TARGET = 'Gedmo\\Tests\\IpTraceable\\Fixture\\UsingTrait';
+    public const TARGET = UsingTrait::class;
 
     protected function setUp(): void
     {
@@ -54,8 +54,8 @@ class TraitUsageTest extends BaseTestCaseORM
     public function traitMethodShouldReturnObject()
     {
         $sport = new UsingTrait();
-        static::assertInstanceOf('Gedmo\Tests\IpTraceable\Fixture\UsingTrait', $sport->setCreatedFromIp('<192 class="158 3 43"></192>'));
-        static::assertInstanceOf('Gedmo\Tests\IpTraceable\Fixture\UsingTrait', $sport->setUpdatedFromIp('<192 class="158 3 43"></192>'));
+        static::assertInstanceOf(UsingTrait::class, $sport->setCreatedFromIp('<192 class="158 3 43"></192>'));
+        static::assertInstanceOf(UsingTrait::class, $sport->setUpdatedFromIp('<192 class="158 3 43"></192>'));
     }
 
     protected function getUsedEntityFixtures()

@@ -4,6 +4,8 @@ namespace Gedmo\Loggable\Mapping\Driver;
 
 use Doctrine\Persistence\Mapping\ClassMetadata;
 use Gedmo\Exception\InvalidMappingException;
+use Gedmo\Mapping\Annotation\Loggable;
+use Gedmo\Mapping\Annotation\Versioned;
 use Gedmo\Mapping\Driver\AbstractAnnotationDriver;
 
 /**
@@ -21,12 +23,12 @@ class Annotation extends AbstractAnnotationDriver
     /**
      * Annotation to define that this object is loggable
      */
-    public const LOGGABLE = 'Gedmo\\Mapping\\Annotation\\Loggable';
+    public const LOGGABLE = Loggable::class;
 
     /**
      * Annotation to define that this property is versioned
      */
-    public const VERSIONED = 'Gedmo\\Mapping\\Annotation\\Versioned';
+    public const VERSIONED = Versioned::class;
 
     /**
      * {@inheritdoc}

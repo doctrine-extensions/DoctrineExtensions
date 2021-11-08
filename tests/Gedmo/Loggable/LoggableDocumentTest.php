@@ -3,6 +3,7 @@
 namespace Gedmo\Tests\Loggable;
 
 use Doctrine\Common\EventManager;
+use Gedmo\Loggable\Document\LogEntry;
 use Gedmo\Loggable\LoggableListener;
 use Gedmo\Tests\Loggable\Fixture\Document\Article;
 use Gedmo\Tests\Loggable\Fixture\Document\Author;
@@ -22,10 +23,10 @@ use Gedmo\Tests\Tool\BaseTestCaseMongoODM;
  */
 class LoggableDocumentTest extends BaseTestCaseMongoODM
 {
-    public const ARTICLE = 'Gedmo\\Tests\\Loggable\\Fixture\\Document\\Article';
-    public const COMMENT = 'Gedmo\\Tests\\Loggable\\Fixture\\Document\\Comment';
-    public const RELATED_ARTICLE = 'Gedmo\\Tests\\Loggable\\Fixture\\Document\\RelatedArticle';
-    public const COMMENT_LOG = 'Gedmo\\Tests\\Loggable\\Fixture\\Document\\Log\\Comment';
+    public const ARTICLE = Article::class;
+    public const COMMENT = Comment::class;
+    public const RELATED_ARTICLE = RelatedArticle::class;
+    public const COMMENT_LOG = \Gedmo\Tests\Loggable\Fixture\Document\Log\Comment::class;
 
     protected function setUp(): void
     {
@@ -40,7 +41,7 @@ class LoggableDocumentTest extends BaseTestCaseMongoODM
 
     public function testLogGeneration()
     {
-        $logRepo = $this->dm->getRepository('Gedmo\\Loggable\\Document\\LogEntry');
+        $logRepo = $this->dm->getRepository(LogEntry::class);
         $articleRepo = $this->dm->getRepository(self::ARTICLE);
         static::assertCount(0, $logRepo->findAll());
 

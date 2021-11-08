@@ -7,6 +7,9 @@ use Doctrine\ORM\Query;
 use Gedmo\Tests\Tool\BaseTestCaseORM;
 use Gedmo\Tests\Translatable\Fixture\Article;
 use Gedmo\Tests\Translatable\Fixture\Comment;
+use Gedmo\Translatable\Entity\Translation;
+use Gedmo\Translatable\Hydrator\ORM\ObjectHydrator;
+use Gedmo\Translatable\Hydrator\ORM\SimpleObjectHydrator;
 use Gedmo\Translatable\Query\TreeWalker\TranslationWalker;
 use Gedmo\Translatable\TranslatableListener;
 
@@ -21,11 +24,11 @@ use Gedmo\Translatable\TranslatableListener;
  */
 class TranslationQueryWalkerTest extends BaseTestCaseORM
 {
-    public const ARTICLE = 'Gedmo\\Tests\\Translatable\\Fixture\\Article';
-    public const COMMENT = 'Gedmo\\Tests\\Translatable\\Fixture\\Comment';
-    public const TRANSLATION = 'Gedmo\\Translatable\\Entity\\Translation';
+    public const ARTICLE = Article::class;
+    public const COMMENT = Comment::class;
+    public const TRANSLATION = Translation::class;
 
-    public const TREE_WALKER_TRANSLATION = 'Gedmo\\Translatable\\Query\\TreeWalker\\TranslationWalker';
+    public const TREE_WALKER_TRANSLATION = TranslationWalker::class;
 
     /**
      * @var TranslatableListener
@@ -145,7 +148,7 @@ class TranslationQueryWalkerTest extends BaseTestCaseORM
     {
         $this->em->getConfiguration()->addCustomHydrationMode(
             TranslationWalker::HYDRATE_SIMPLE_OBJECT_TRANSLATION,
-            'Gedmo\\Translatable\\Hydrator\\ORM\\SimpleObjectHydrator'
+            SimpleObjectHydrator::class
         );
 
         $dql = 'SELECT a FROM '.self::ARTICLE.' a';
@@ -207,7 +210,7 @@ class TranslationQueryWalkerTest extends BaseTestCaseORM
     {
         $this->em->getConfiguration()->addCustomHydrationMode(
             TranslationWalker::HYDRATE_SIMPLE_OBJECT_TRANSLATION,
-            'Gedmo\\Translatable\\Hydrator\\ORM\\SimpleObjectHydrator'
+            SimpleObjectHydrator::class
         );
 
         $dql = 'SELECT a FROM '.self::ARTICLE.' a';
@@ -309,7 +312,7 @@ class TranslationQueryWalkerTest extends BaseTestCaseORM
     {
         $this->em->getConfiguration()->addCustomHydrationMode(
             TranslationWalker::HYDRATE_OBJECT_TRANSLATION,
-            'Gedmo\\Translatable\\Hydrator\\ORM\\ObjectHydrator'
+            ObjectHydrator::class
         );
 
         $dql = 'SELECT a FROM '.self::ARTICLE.' a';
@@ -386,7 +389,7 @@ class TranslationQueryWalkerTest extends BaseTestCaseORM
     {
         $this->em->getConfiguration()->addCustomHydrationMode(
             TranslationWalker::HYDRATE_OBJECT_TRANSLATION,
-            'Gedmo\\Translatable\\Hydrator\\ORM\\ObjectHydrator'
+            ObjectHydrator::class
         );
 
         $this->populateMore();
@@ -474,7 +477,7 @@ class TranslationQueryWalkerTest extends BaseTestCaseORM
     {
         $this->em->getConfiguration()->addCustomHydrationMode(
             TranslationWalker::HYDRATE_OBJECT_TRANSLATION,
-            'Gedmo\\Translatable\\Hydrator\\ORM\\ObjectHydrator'
+            ObjectHydrator::class
         );
 
         $dql = 'SELECT a, c FROM '.self::ARTICLE.' a';
@@ -559,7 +562,7 @@ class TranslationQueryWalkerTest extends BaseTestCaseORM
     {
         $this->em->getConfiguration()->addCustomHydrationMode(
             TranslationWalker::HYDRATE_OBJECT_TRANSLATION,
-            'Gedmo\\Translatable\\Hydrator\\ORM\\ObjectHydrator'
+            ObjectHydrator::class
         );
 
         $dql = 'SELECT a.title FROM '.self::ARTICLE.' a';
@@ -602,7 +605,7 @@ class TranslationQueryWalkerTest extends BaseTestCaseORM
     {
         $this->em->getConfiguration()->addCustomHydrationMode(
             TranslationWalker::HYDRATE_OBJECT_TRANSLATION,
-            'Gedmo\\Translatable\\Hydrator\\ORM\\ObjectHydrator'
+            ObjectHydrator::class
         );
 
         $dql = 'SELECT a FROM '.self::ARTICLE.' a';
@@ -668,7 +671,7 @@ class TranslationQueryWalkerTest extends BaseTestCaseORM
     {
         $this->em->getConfiguration()->addCustomHydrationMode(
             TranslationWalker::HYDRATE_SIMPLE_OBJECT_TRANSLATION,
-            'Gedmo\\Translatable\\Hydrator\\ORM\\SimpleObjectHydrator'
+            SimpleObjectHydrator::class
         );
         $dql = 'SELECT a FROM '.self::ARTICLE.' a';
         $dql .= ' ORDER BY a.title';
@@ -690,7 +693,7 @@ class TranslationQueryWalkerTest extends BaseTestCaseORM
     {
         $this->em->getConfiguration()->addCustomHydrationMode(
             TranslationWalker::HYDRATE_OBJECT_TRANSLATION,
-            'Gedmo\\Translatable\\Hydrator\\ORM\\ObjectHydrator'
+            ObjectHydrator::class
         );
         $dql = 'SELECT a FROM '.self::ARTICLE.' a';
         $dql .= ' ORDER BY a.title';

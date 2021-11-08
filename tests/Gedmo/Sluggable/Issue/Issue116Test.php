@@ -20,7 +20,7 @@ use Gedmo\Tests\Tool\BaseTestCaseORM;
  */
 class Issue116Test extends BaseTestCaseORM
 {
-    public const TARGET = 'Gedmo\\Tests\\Sluggable\\Fixture\\Issue116\\Country';
+    public const TARGET = Country::class;
 
     protected function setUp(): void
     {

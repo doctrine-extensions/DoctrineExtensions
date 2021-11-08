@@ -4,6 +4,7 @@ namespace Gedmo\Tests\Tree;
 
 use Doctrine\Common\EventManager;
 use Gedmo\Tests\Tool\BaseTestCaseORM;
+use Gedmo\Tests\Tree\Fixture\MPCategoryWithRootAssociation;
 use Gedmo\Tree\TreeListener;
 
 /**
@@ -18,7 +19,7 @@ use Gedmo\Tree\TreeListener;
  */
 class MaterializedPathORMRootAssociationTest extends BaseTestCaseORM
 {
-    public const CATEGORY = 'Gedmo\\Tests\\Tree\\Fixture\\MPCategoryWithRootAssociation';
+    public const CATEGORY = MPCategoryWithRootAssociation::class;
 
     protected $config;
     protected $listener;

@@ -6,6 +6,7 @@ use Doctrine\Persistence\Mapping\ClassMetadata;
 use Gedmo\Exception\InvalidMappingException;
 use Gedmo\Exception\UploadableCantWriteException;
 use Gedmo\Exception\UploadableInvalidPathException;
+use Gedmo\Uploadable\FilenameGenerator\FilenameGeneratorInterface;
 
 /**
  * This class is used to validate mapping information
@@ -199,7 +200,7 @@ class Validator
                 if (class_exists($config['filenameGenerator'])) {
                     $refl = new \ReflectionClass($config['filenameGenerator']);
 
-                    if ($refl->implementsInterface('Gedmo\Uploadable\FilenameGenerator\FilenameGeneratorInterface')) {
+                    if ($refl->implementsInterface(FilenameGeneratorInterface::class)) {
                         $ok = true;
                     }
                 }

@@ -5,6 +5,8 @@ namespace Gedmo\Tests\Mapping\Xml;
 use Doctrine\Common\EventManager;
 use Doctrine\ORM\Mapping\Driver\DriverChain;
 use Doctrine\ORM\Mapping\Driver\XmlDriver;
+use Gedmo\Tests\Mapping\Fixture\Xml\Status;
+use Gedmo\Tests\Mapping\Fixture\Xml\Timestampable;
 use Gedmo\Tests\Tool\BaseTestCaseOM;
 use Gedmo\Timestampable\TimestampableListener;
 
@@ -43,14 +45,14 @@ class TimestampableMappingTest extends BaseTestCaseOM
         $this->evm->addEventSubscriber($this->timestampable);
 
         $this->em = $this->getMockSqliteEntityManager([
-            'Gedmo\Tests\Mapping\Fixture\Xml\Timestampable',
-            'Gedmo\Tests\Mapping\Fixture\Xml\Status',
+            Timestampable::class,
+            Status::class,
         ], $chain);
     }
 
     public function testTimestampableMetadata()
     {
-        $meta = $this->em->getClassMetadata('Gedmo\Tests\Mapping\Fixture\Xml\Timestampable');
+        $meta = $this->em->getClassMetadata(Timestampable::class);
         $config = $this->timestampable->getConfiguration($this->em, $meta->name);
 
         static::assertArrayHasKey('create', $config);

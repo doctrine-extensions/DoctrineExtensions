@@ -22,9 +22,9 @@ class BlameableDocumentTest extends BaseTestCaseMongoODM
 {
     public const TEST_USERNAME = 'testuser';
 
-    public const TYPE = 'Gedmo\Tests\Blameable\Fixture\Document\Type';
-    public const USER = 'Gedmo\Tests\Blameable\Fixture\Document\User';
-    public const ARTICLE = 'Gedmo\Tests\Blameable\Fixture\Document\Article';
+    public const TYPE = Type::class;
+    public const USER = User::class;
+    public const ARTICLE = Article::class;
 
     protected function setUp(): void
     {

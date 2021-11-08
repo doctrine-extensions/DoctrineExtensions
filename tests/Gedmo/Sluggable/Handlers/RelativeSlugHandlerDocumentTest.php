@@ -19,8 +19,8 @@ use Gedmo\Tests\Tool\BaseTestCaseMongoODM;
  */
 class RelativeSlugHandlerDocumentTest extends BaseTestCaseMongoODM
 {
-    public const ARTICLE = 'Gedmo\\Tests\\Sluggable\\Fixture\\Document\\Handler\\Article';
-    public const SLUG = 'Gedmo\\Tests\\Sluggable\\Fixture\\Document\\Handler\\RelativeSlug';
+    public const ARTICLE = Article::class;
+    public const SLUG = RelativeSlug::class;
 
     protected function setUp(): void
     {

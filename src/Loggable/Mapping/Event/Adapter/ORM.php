@@ -2,6 +2,7 @@
 
 namespace Gedmo\Loggable\Mapping\Event\Adapter;
 
+use Gedmo\Loggable\Entity\LogEntry;
 use Gedmo\Loggable\Mapping\Event\LoggableAdapter;
 use Gedmo\Mapping\Event\Adapter\ORM as BaseAdapterORM;
 
@@ -19,7 +20,7 @@ final class ORM extends BaseAdapterORM implements LoggableAdapter
      */
     public function getDefaultLogEntryClass()
     {
-        return 'Gedmo\\Loggable\\Entity\\LogEntry';
+        return LogEntry::class;
     }
 
     /**

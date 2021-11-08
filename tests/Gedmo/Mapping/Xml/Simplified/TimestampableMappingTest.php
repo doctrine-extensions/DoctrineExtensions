@@ -5,6 +5,8 @@ namespace Gedmo\Tests\Mapping\Xml\Simplified;
 use Doctrine\Common\EventManager;
 use Doctrine\ORM\Mapping\Driver\DriverChain;
 use Doctrine\ORM\Mapping\Driver\SimplifiedXmlDriver;
+use Gedmo\Tests\Mapping\Fixture\Xml\Status;
+use Gedmo\Tests\Mapping\Fixture\Xml\Timestampable;
 use Gedmo\Tests\Tool\BaseTestCaseORM;
 use Gedmo\Timestampable\TimestampableListener;
 
@@ -50,14 +52,14 @@ class TimestampableMappingTest extends BaseTestCaseORM
     protected function getUsedEntityFixtures()
     {
         return [
-            'Gedmo\Tests\Mapping\Fixture\Xml\Timestampable',
-            'Gedmo\Tests\Mapping\Fixture\Xml\Status',
+            Timestampable::class,
+            Status::class,
         ];
     }
 
     public function testTimestampableMetadata()
     {
-        $meta = $this->em->getClassMetadata('Gedmo\Tests\Mapping\Fixture\Xml\Timestampable');
+        $meta = $this->em->getClassMetadata(Timestampable::class);
         $config = $this->timestampable->getConfiguration($this->em, $meta->name);
 
         static::assertArrayHasKey('create', $config);

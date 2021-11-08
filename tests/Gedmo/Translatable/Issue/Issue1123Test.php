@@ -4,14 +4,17 @@ namespace Gedmo\Tests\Translatable;
 
 use Doctrine\Common\EventManager;
 use Gedmo\Tests\Tool\BaseTestCaseORM;
+use Gedmo\Tests\Translatable\Fixture\Issue1123\BaseEntity;
 use Gedmo\Tests\Translatable\Fixture\Issue1123\ChildEntity;
+use Gedmo\Translatable\Entity\Translation;
+use Gedmo\Translatable\Query\TreeWalker\TranslationWalker;
 use Gedmo\Translatable\TranslatableListener;
 
 class Issue1123Test extends BaseTestCaseORM
 {
-    public const TRANSLATION = 'Gedmo\\Translatable\\Entity\\Translation';
-    public const BASE_ENTITY = 'Gedmo\\Tests\\Translatable\\Fixture\\Issue1123\\BaseEntity';
-    public const CHILD_ENTITY = 'Gedmo\\Tests\\Translatable\\Fixture\\Issue1123\\ChildEntity';
+    public const TRANSLATION = Translation::class;
+    public const BASE_ENTITY = BaseEntity::class;
+    public const CHILD_ENTITY = ChildEntity::class;
 
     protected function setUp(): void
     {
@@ -61,7 +64,7 @@ class Issue1123Test extends BaseTestCaseORM
         $qb = $this->em->createQueryBuilder()->select('e')->from(self::CHILD_ENTITY, 'e');
 
         $query = $qb->getQuery();
-        $query->setHint(\Doctrine\ORM\Query::HINT_CUSTOM_OUTPUT_WALKER, 'Gedmo\Translatable\Query\TreeWalker\TranslationWalker');
+        $query->setHint(\Doctrine\ORM\Query::HINT_CUSTOM_OUTPUT_WALKER, TranslationWalker::class);
         $query->setHint(\Gedmo\Translatable\TranslatableListener::HINT_TRANSLATABLE_LOCALE, 'de');
         $query->setHint(\Gedmo\Translatable\TranslatableListener::HINT_FALLBACK, 1);
 

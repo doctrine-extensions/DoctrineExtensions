@@ -18,7 +18,7 @@ use Gedmo\Timestampable\TimestampableListener;
  */
 class TraitUsageTest extends BaseTestCaseORM
 {
-    public const TARGET = 'Gedmo\\Tests\\Timestampable\\Fixture\\UsingTrait';
+    public const TARGET = UsingTrait::class;
 
     protected function setUp(): void
     {
@@ -51,8 +51,8 @@ class TraitUsageTest extends BaseTestCaseORM
     public function traitMethodthShouldReturnObject()
     {
         $sport = new UsingTrait();
-        static::assertInstanceOf('Gedmo\Tests\Timestampable\Fixture\UsingTrait', $sport->setCreatedAt(new \DateTime()));
-        static::assertInstanceOf('Gedmo\Tests\Timestampable\Fixture\UsingTrait', $sport->setUpdatedAt(new \DateTime()));
+        static::assertInstanceOf(UsingTrait::class, $sport->setCreatedAt(new \DateTime()));
+        static::assertInstanceOf(UsingTrait::class, $sport->setUpdatedAt(new \DateTime()));
     }
 
     protected function getUsedEntityFixtures()

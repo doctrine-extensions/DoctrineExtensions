@@ -20,7 +20,7 @@ use Gedmo\Tree\TreeListener;
  */
 class NestedTreeRootTest extends BaseTestCaseORM
 {
-    public const CATEGORY = 'Gedmo\\Tests\\Tree\\Fixture\\RootCategory';
+    public const CATEGORY = RootCategory::class;
 
     protected function setUp(): void
     {
@@ -330,7 +330,7 @@ class NestedTreeRootTest extends BaseTestCaseORM
     {
         // depopulate, i don't want the other stuff in db
         /** @var NestedTreeRepository $repo */
-        $repo = $this->em->getRepository('Gedmo\\Tests\\Tree\\Fixture\\ForeignRootCategory');
+        $repo = $this->em->getRepository(ForeignRootCategory::class);
         $all = $repo->findAll();
         foreach ($all as $one) {
             $this->em->remove($one);
@@ -495,7 +495,7 @@ class NestedTreeRootTest extends BaseTestCaseORM
     {
         return [
             self::CATEGORY,
-            'Gedmo\\Tests\\Tree\\Fixture\\ForeignRootCategory',
+            ForeignRootCategory::class,
         ];
     }
 

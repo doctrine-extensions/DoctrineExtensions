@@ -3,6 +3,10 @@
 namespace Gedmo\Translatable\Mapping\Driver;
 
 use Gedmo\Exception\InvalidMappingException;
+use Gedmo\Mapping\Annotation\Language;
+use Gedmo\Mapping\Annotation\Locale;
+use Gedmo\Mapping\Annotation\Translatable;
+use Gedmo\Mapping\Annotation\TranslationEntity;
 use Gedmo\Mapping\Driver\AbstractAnnotationDriver;
 
 /**
@@ -19,24 +23,24 @@ class Annotation extends AbstractAnnotationDriver
     /**
      * Annotation to identity translation entity to be used for translation storage
      */
-    public const ENTITY_CLASS = 'Gedmo\\Mapping\\Annotation\\TranslationEntity';
+    public const ENTITY_CLASS = TranslationEntity::class;
 
     /**
      * Annotation to identify field as translatable
      */
-    public const TRANSLATABLE = 'Gedmo\\Mapping\\Annotation\\Translatable';
+    public const TRANSLATABLE = Translatable::class;
 
     /**
      * Annotation to identify field which can store used locale or language
      * alias is LANGUAGE
      */
-    public const LOCALE = 'Gedmo\\Mapping\\Annotation\\Locale';
+    public const LOCALE = Locale::class;
 
     /**
      * Annotation to identify field which can store used locale or language
      * alias is LOCALE
      */
-    public const LANGUAGE = 'Gedmo\\Mapping\\Annotation\\Language';
+    public const LANGUAGE = Language::class;
 
     /**
      * {@inheritdoc}

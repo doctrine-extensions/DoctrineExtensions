@@ -6,7 +6,10 @@ use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
 use Doctrine\ORM\Mapping\Driver\DriverChain;
 use Doctrine\ORM\Mapping\Driver\YamlDriver;
+use Gedmo\Tests\Mapping\Fixture\Yaml\User;
+use Gedmo\Tests\Sluggable\Fixture\Document\Article;
 use Gedmo\Tests\Tool\BaseTestCaseOM;
+use Gedmo\Tests\Translatable\Fixture\PersonTranslation;
 
 /**
  * These are mapping extension tests
@@ -39,7 +42,7 @@ class MultiManagerMappingTest extends BaseTestCaseOM
         parent::setUp();
         // EM with standard annotation mapping
         $this->em1 = $this->getMockSqliteEntityManager([
-            'Gedmo\Tests\Sluggable\Fixture\Article',
+            \Gedmo\Tests\Sluggable\Fixture\Article::class,
         ]);
         // EM with yaml and annotation mapping
         $reader = new AnnotationReader();
@@ -56,8 +59,8 @@ class MultiManagerMappingTest extends BaseTestCaseOM
         $chain->addDriver($annotationDriver2, 'Gedmo\Translatable');
 
         $this->em2 = $this->getMockSqliteEntityManager([
-            'Gedmo\Tests\Translatable\Fixture\PersonTranslation',
-            'Gedmo\Tests\Mapping\Fixture\Yaml\User',
+            PersonTranslation::class,
+            User::class,
         ], $chain);
         // DM with standard annotation mapping
         $this->dm1 = $this->getMockDocumentManager('gedmo_extensions_test');
@@ -65,7 +68,7 @@ class MultiManagerMappingTest extends BaseTestCaseOM
 
     public function testTwoDiferentManager()
     {
-        $meta = $this->dm1->getClassMetadata('Gedmo\Tests\Sluggable\Fixture\Document\Article');
+        $meta = $this->dm1->getClassMetadata(Article::class);
         $dmArticle = new \Gedmo\Tests\Sluggable\Fixture\Document\Article();
         $dmArticle->setCode('code');
         $dmArticle->setTitle('title');

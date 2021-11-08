@@ -8,6 +8,7 @@ use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Query;
 use Gedmo\Tool\Wrapper\EntityWrapper;
+use Gedmo\Translatable\Entity\MappedSuperclass\AbstractPersonalTranslation;
 use Gedmo\Translatable\Mapping\Event\Adapter\ORM as TranslatableAdapterORM;
 use Gedmo\Translatable\TranslatableListener;
 
@@ -33,7 +34,7 @@ class TranslationRepository extends EntityRepository
      */
     public function __construct(EntityManagerInterface $em, ClassMetadata $class)
     {
-        if ($class->getReflectionClass()->isSubclassOf('Gedmo\Translatable\Entity\MappedSuperclass\AbstractPersonalTranslation')) {
+        if ($class->getReflectionClass()->isSubclassOf(AbstractPersonalTranslation::class)) {
             throw new \Gedmo\Exception\UnexpectedValueException('This repository is useless for personal translations');
         }
         parent::__construct($em, $class);

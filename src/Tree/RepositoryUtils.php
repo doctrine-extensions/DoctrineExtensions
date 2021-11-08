@@ -5,6 +5,8 @@ namespace Gedmo\Tree;
 use Doctrine\Persistence\Mapping\ClassMetadata;
 use Doctrine\Persistence\ObjectManager;
 use Gedmo\Exception\InvalidArgumentException;
+use Gedmo\Tool\Wrapper\EntityWrapper;
+use Gedmo\Tool\Wrapper\MongoDocumentWrapper;
 
 class RepositoryUtils implements RepositoryUtilsInterface
 {
@@ -51,8 +53,8 @@ class RepositoryUtils implements RepositoryUtilsInterface
         if (null !== $node) {
             if ($node instanceof $meta->name) {
                 $wrapperClass = $this->om instanceof \Doctrine\ORM\EntityManagerInterface ?
-                    '\Gedmo\Tool\Wrapper\EntityWrapper' :
-                    '\Gedmo\Tool\Wrapper\MongoDocumentWrapper';
+                    EntityWrapper::class :
+                    MongoDocumentWrapper::class;
                 $wrapped = new $wrapperClass($node, $this->om);
                 if (!$wrapped->hasValidIdentifier()) {
                     throw new InvalidArgumentException('Node is not managed by UnitOfWork');

@@ -3,6 +3,7 @@
 namespace Gedmo\Tests\Loggable;
 
 use Doctrine\Common\EventManager;
+use Gedmo\Loggable\Entity\LogEntry;
 use Gedmo\Loggable\LoggableListener;
 use Gedmo\Tests\Loggable\Fixture\Entity\Address;
 use Gedmo\Tests\Loggable\Fixture\Entity\Article;
@@ -23,10 +24,10 @@ use Gedmo\Tests\Tool\BaseTestCaseORM;
  */
 class LoggableEntityTest extends BaseTestCaseORM
 {
-    public const ARTICLE = 'Gedmo\Tests\Loggable\Fixture\Entity\Article';
-    public const COMMENT = 'Gedmo\Tests\Loggable\Fixture\Entity\Comment';
-    public const RELATED_ARTICLE = 'Gedmo\Tests\Loggable\Fixture\Entity\RelatedArticle';
-    public const COMMENT_LOG = 'Gedmo\Tests\Loggable\Fixture\Entity\Log\Comment';
+    public const ARTICLE = Article::class;
+    public const COMMENT = Comment::class;
+    public const RELATED_ARTICLE = RelatedArticle::class;
+    public const COMMENT_LOG = \Gedmo\Tests\Loggable\Fixture\Entity\Log\Comment::class;
 
     private $articleId;
     private $LoggableListener;
@@ -59,7 +60,7 @@ class LoggableEntityTest extends BaseTestCaseORM
         $this->em->persist($art1);
         $this->em->flush();
 
-        $logRepo = $this->em->getRepository('Gedmo\Loggable\Entity\LogEntry');
+        $logRepo = $this->em->getRepository(LogEntry::class);
         $logs = $logRepo->findAll();
         static::assertCount(2, $logs);
         static::assertSame('create', $logs[0]->getAction());
@@ -69,7 +70,7 @@ class LoggableEntityTest extends BaseTestCaseORM
 
     public function testLoggable()
     {
-        $logRepo = $this->em->getRepository('Gedmo\Loggable\Entity\LogEntry');
+        $logRepo = $this->em->getRepository(LogEntry::class);
         $articleRepo = $this->em->getRepository(self::ARTICLE);
         static::assertCount(0, $logRepo->findAll());
 
@@ -143,7 +144,7 @@ class LoggableEntityTest extends BaseTestCaseORM
     {
         $address = $this->populateEmbedded();
 
-        $logRepo = $this->em->getRepository('Gedmo\Loggable\Entity\LogEntry');
+        $logRepo = $this->em->getRepository(LogEntry::class);
 
         $logEntries = $logRepo->getLogEntries($address);
 
@@ -161,9 +162,9 @@ class LoggableEntityTest extends BaseTestCaseORM
             self::COMMENT,
             self::COMMENT_LOG,
             self::RELATED_ARTICLE,
-            'Gedmo\Loggable\Entity\LogEntry',
-            'Gedmo\Tests\Loggable\Fixture\Entity\Address',
-            'Gedmo\Tests\Loggable\Fixture\Entity\Geo',
+            LogEntry::class,
+            Address::class,
+            Geo::class,
         ];
     }
 

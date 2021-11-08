@@ -8,6 +8,7 @@ use Gedmo\Tests\Translatable\Fixture\Article;
 use Gedmo\Tests\Translatable\Fixture\Comment;
 use Gedmo\Tests\Translatable\Fixture\Sport;
 use Gedmo\Translatable\Entity\Repository\TranslationRepository;
+use Gedmo\Translatable\Entity\Translation;
 use Gedmo\Translatable\Translatable;
 use Gedmo\Translatable\TranslatableListener;
 
@@ -22,10 +23,10 @@ use Gedmo\Translatable\TranslatableListener;
  */
 class TranslatableTest extends BaseTestCaseORM
 {
-    public const ARTICLE = 'Gedmo\\Tests\\Translatable\\Fixture\\Article';
-    public const SPORT = 'Gedmo\\Tests\\Translatable\\Fixture\\Sport';
-    public const COMMENT = 'Gedmo\\Tests\\Translatable\\Fixture\\Comment';
-    public const TRANSLATION = 'Gedmo\\Translatable\\Entity\\Translation';
+    public const ARTICLE = Article::class;
+    public const SPORT = Sport::class;
+    public const COMMENT = Comment::class;
+    public const TRANSLATION = Translation::class;
 
     private $articleId;
     private $translatableListener;

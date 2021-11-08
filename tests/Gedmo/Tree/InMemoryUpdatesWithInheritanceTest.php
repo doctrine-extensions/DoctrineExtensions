@@ -5,6 +5,7 @@ namespace Gedmo\Tests\Tree;
 use Doctrine\Common\EventManager;
 use Gedmo\Tests\Tool\BaseTestCaseORM;
 use Gedmo\Tests\Tree\Fixture\Genealogy\Man;
+use Gedmo\Tests\Tree\Fixture\Genealogy\Person;
 use Gedmo\Tests\Tree\Fixture\Genealogy\Woman;
 use Gedmo\Tree\TreeListener;
 
@@ -19,9 +20,9 @@ use Gedmo\Tree\TreeListener;
  */
 class InMemoryUpdatesWithInheritanceTest extends BaseTestCaseORM
 {
-    public const PERSON = 'Gedmo\\Tests\\Tree\\Fixture\\Genealogy\\Person';
-    public const MAN = 'Gedmo\\Tests\\Tree\\Fixture\\Genealogy\\Man';
-    public const WOMAN = 'Gedmo\\Tests\\Tree\\Fixture\\Genealogy\\Woman';
+    public const PERSON = Person::class;
+    public const MAN = Man::class;
+    public const WOMAN = Woman::class;
 
     protected function setUp(): void
     {

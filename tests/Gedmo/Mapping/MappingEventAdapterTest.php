@@ -2,6 +2,7 @@
 
 namespace Gedmo\Tests\Mapping;
 
+use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Gedmo\Mapping\Event\Adapter\ORM as EventAdapterORM;
 use Gedmo\Tests\Mapping\Mock\EventSubscriberCustomMock;
@@ -12,7 +13,7 @@ class MappingEventAdapterTest extends \PHPUnit\Framework\TestCase
 {
     public function testCustomizedAdapter()
     {
-        $emMock = $this->getMockBuilder('Doctrine\\ORM\\EntityManager')
+        $emMock = $this->getMockBuilder(EntityManager::class)
             ->disableOriginalConstructor()
             ->getMock();
         $subscriber = new EventSubscriberCustomMock();
@@ -24,7 +25,7 @@ class MappingEventAdapterTest extends \PHPUnit\Framework\TestCase
 
     public function testCorrectAdapter()
     {
-        $emMock = $this->getMockBuilder('Doctrine\\ORM\\EntityManager')
+        $emMock = $this->getMockBuilder(EntityManager::class)
             ->disableOriginalConstructor()
             ->getMock();
         $subscriber = new EventSubscriberMock();
@@ -38,7 +39,7 @@ class MappingEventAdapterTest extends \PHPUnit\Framework\TestCase
 
     public function testAdapterBehavior()
     {
-        $eventArgsMock = $this->getMockBuilder('Doctrine\\ORM\\Event\\LifecycleEventArgs')
+        $eventArgsMock = $this->getMockBuilder(LifecycleEventArgs::class)
             ->disableOriginalConstructor()
             ->getMock();
         $eventArgsMock->expects(static::once())

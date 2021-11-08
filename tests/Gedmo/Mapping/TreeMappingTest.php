@@ -8,6 +8,7 @@ use Gedmo\Mapping\ExtensionMetadataFactory;
 use Gedmo\Tests\Mapping\Fixture\Yaml\Category;
 use Gedmo\Tests\Mapping\Fixture\Yaml\ClosureCategory;
 use Gedmo\Tests\Mapping\Fixture\Yaml\MaterializedPathCategory;
+use Gedmo\Tests\Tree\Fixture\Closure\CategoryClosure;
 use Gedmo\Tree\TreeListener;
 
 /**
@@ -71,7 +72,7 @@ class TreeMappingTest extends \PHPUnit\Framework\TestCase
     public function testApcCached()
     {
         $this->em->getClassMetadata(self::YAML_CLOSURE_CATEGORY);
-        $this->em->getClassMetadata('Gedmo\Tests\Tree\Fixture\Closure\CategoryClosure');
+        $this->em->getClassMetadata(CategoryClosure::class);
 
         $meta = $this->em->getMetadataFactory()->getCacheDriver()->fetch(
             'Gedmo\\Tests\\Tree\\Fixture\\Closure\\CategoryClosure$CLASSMETADATA'
@@ -113,7 +114,7 @@ class TreeMappingTest extends \PHPUnit\Framework\TestCase
         static::assertArrayHasKey('strategy', $config);
         static::assertEquals('closure', $config['strategy']);
         static::assertArrayHasKey('closure', $config);
-        static::assertEquals('Gedmo\\Tests\\Tree\\Fixture\\Closure\\CategoryClosure', $config['closure']);
+        static::assertEquals(CategoryClosure::class, $config['closure']);
     }
 
     public function testYamlMaterializedPathMapping()

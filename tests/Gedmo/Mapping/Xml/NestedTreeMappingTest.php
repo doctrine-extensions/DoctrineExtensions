@@ -5,6 +5,7 @@ namespace Gedmo\Tests\Mapping\Xml;
 use Doctrine\Common\EventManager;
 use Doctrine\ORM\Mapping\Driver\DriverChain;
 use Doctrine\ORM\Mapping\Driver\XmlDriver;
+use Gedmo\Tests\Mapping\Fixture\Xml\NestedTree;
 use Gedmo\Tests\Tool\BaseTestCaseOM;
 use Gedmo\Tree\TreeListener;
 
@@ -43,13 +44,13 @@ class NestedTreeMappingTest extends BaseTestCaseOM
         $this->evm->addEventSubscriber($this->tree);
 
         $this->em = $this->getMockSqliteEntityManager([
-            'Gedmo\Tests\Mapping\Fixture\Xml\NestedTree',
+            NestedTree::class,
         ], $chain);
     }
 
     public function testTreeMetadata()
     {
-        $meta = $this->em->getClassMetadata('Gedmo\Tests\Mapping\Fixture\Xml\NestedTree');
+        $meta = $this->em->getClassMetadata(NestedTree::class);
         $config = $this->tree->getConfiguration($this->em, $meta->name);
 
         static::assertArrayHasKey('strategy', $config);
