@@ -195,21 +195,8 @@ class Validator
             case self::FILENAME_GENERATOR_NONE:
                 break;
             default:
-                $ok = false;
-
-                if (class_exists($config['filenameGenerator'])) {
-                    $refl = new \ReflectionClass($config['filenameGenerator']);
-
-                    if ($refl->implementsInterface(FilenameGeneratorInterface::class)) {
-                        $ok = true;
-                    }
-                }
-
-                if (!$ok) {
-                    $msg = 'Class "%s" needs a valid value for filenameGenerator. It can be: SHA1, ALPHANUMERIC, NONE or ';
-                    $msg .= 'a class implementing FileGeneratorInterface.';
-
-                    throw new InvalidMappingException(sprintf($msg, $meta->name));
+                if (!class_exists($config['filenameGenerator']) || !is_subclass_of($config['filenameGenerator'], FilenameGeneratorInterface::class)) {
+                    throw new InvalidMappingException(sprintf('Class "%s" needs a valid value for filenameGenerator. It can be: SHA1, ALPHANUMERIC, NONE or a class implementing %s.', $meta->name, FilenameGeneratorInterface::class));
                 }
         }
     }
