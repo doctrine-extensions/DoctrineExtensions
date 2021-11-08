@@ -40,9 +40,8 @@ class TranslationProxy
         $this->class = $class;
         $this->coll = $coll;
 
-        $translationClass = new \ReflectionClass($class);
-        if (!$translationClass->implementsInterface(TranslationInterface::class)) {
-            throw new \InvalidArgumentException(sprintf('Translation class should implement Gedmo\Translator\TranslationInterface, "%s" given', $class));
+        if (!is_subclass_of($class, TranslationInterface::class)) {
+            throw new \InvalidArgumentException(sprintf('Translation class should implement %s, "%s" given', TranslationInterface::class, $class));
         }
     }
 
