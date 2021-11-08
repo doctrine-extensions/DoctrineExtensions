@@ -21,6 +21,8 @@ a release.
 ## [Unreleased]
 
 ### Fixed
+- Return value for `replaceRelative()` and `replaceInverseRelative()` at `Gedmo\Sluggable\Mapping\Event\Adapter\ODM` if the
+  query result does not implement `Doctrine\ODM\MongoDB\Iterator\Iterator`.
 - Restored compatibility with doctrine/orm >= 2.10.2 (#2272).
   Since doctrine/orm 2.10, `Doctrine\ORM\UnitOfWork` relies on SPL object IDs instead of hashes, thus we need to adapt our codebase in order to be compatible with this change.
   As `Doctrine\ODM\MongoDB\UnitOfWork` from doctrine/mongodb-odm still uses `spl_object_hash()`, all `spl_object_hash()` calls were replaced by `spl_object_id()` to make it work with both ORM and ODM managers.
