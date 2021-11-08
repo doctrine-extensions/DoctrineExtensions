@@ -224,8 +224,8 @@ abstract class BaseTestCaseOM extends \PHPUnit\Framework\TestCase
         }
         $config = new Configuration();
         $config->addFilter('softdeleteable', SoftDeleteableFilter::class);
-        $config->setProxyDir(__DIR__.'/../../temp');
-        $config->setHydratorDir(__DIR__.'/../../temp');
+        $config->setProxyDir(TESTS_TEMP_DIR);
+        $config->setHydratorDir(TESTS_TEMP_DIR);
         $config->setProxyNamespace('Proxy');
         $config->setHydratorNamespace('Hydrator');
         $config->setDefaultDB('gedmo_extensions_test');
@@ -248,7 +248,7 @@ abstract class BaseTestCaseOM extends \PHPUnit\Framework\TestCase
         $config = $this->getMockBuilder(\Doctrine\ORM\Configuration::class)->getMock();
         $config->expects(static::once())
             ->method('getProxyDir')
-            ->willReturn(__DIR__.'/../../temp');
+            ->willReturn(TESTS_TEMP_DIR);
 
         $config->expects(static::once())
             ->method('getProxyNamespace')

@@ -160,7 +160,7 @@ abstract class BaseTestCaseORM extends \PHPUnit\Framework\TestCase
         if ($this->queryAnalyzer) {
             $output = $this->queryAnalyzer->getOutput($dumpOnlySql);
             if ($writeToLog) {
-                $fileName = __DIR__.'/../../temp/query_debug_'.time().'.log';
+                $fileName = TESTS_TEMP_DIR.'/query_debug_'.time().'.log';
                 if (false !== ($file = fopen($fileName, 'w+'))) {
                     fwrite($file, $output);
                     fclose($file);
@@ -216,7 +216,7 @@ abstract class BaseTestCaseORM extends \PHPUnit\Framework\TestCase
     protected function getMockAnnotatedConfig()
     {
         $config = new Configuration();
-        $config->setProxyDir(__DIR__.'/../../temp');
+        $config->setProxyDir(TESTS_TEMP_DIR);
         $config->setProxyNamespace('Proxy');
         $config->setMetadataDriverImpl($this->getMetadataDriverImplementation());
 

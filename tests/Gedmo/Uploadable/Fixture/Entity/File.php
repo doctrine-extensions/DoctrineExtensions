@@ -79,6 +79,6 @@ class File
 
     public function getPath()
     {
-        return __DIR__.'/../../../../temp/uploadable';
+        return TESTS_TEMP_DIR.'/uploadable';
     }
 }

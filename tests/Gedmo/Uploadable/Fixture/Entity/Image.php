@@ -74,7 +74,7 @@ class Image
             return $basePath.'/abc/def';
         }
 
-        return __DIR__.'/../../../../temp/uploadable';
+        return TESTS_TEMP_DIR.'/uploadable';
     }
 
     public function setMime($mime)

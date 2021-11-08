@@ -125,8 +125,8 @@ abstract class BaseTestCaseMongoODM extends \PHPUnit\Framework\TestCase
     {
         $config = new Configuration();
         $config->addFilter('softdeleteable', SoftDeleteableFilter::class);
-        $config->setProxyDir(__DIR__.'/../../temp');
-        $config->setHydratorDir(__DIR__.'/../../temp');
+        $config->setProxyDir(TESTS_TEMP_DIR);
+        $config->setHydratorDir(TESTS_TEMP_DIR);
         $config->setProxyNamespace('Proxy');
         $config->setHydratorNamespace('Hydrator');
         $config->setDefaultDB('gedmo_extensions_test');
