@@ -85,7 +85,7 @@ abstract class BaseTestCaseOM extends \PHPUnit\Framework\TestCase
      */
     protected function getMockDocumentManager($dbName, MappingDriver $mappingDriver = null)
     {
-        if (!class_exists('Mongo')) {
+        if (!extension_loaded('mongodb')) {
             static::markTestSkipped('Missing Mongo extension.');
         }
 
