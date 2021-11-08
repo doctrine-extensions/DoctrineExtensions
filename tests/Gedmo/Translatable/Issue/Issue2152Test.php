@@ -73,11 +73,11 @@ class Issue2152Test extends BaseTestCaseORM
 
         //Assert
 
-        $this->assertSame($deTitle, $entityInDe->getTitle());
-        $this->assertEquals($isOperatingInGermany, $entityInDe->isOperating());
+        static::assertSame($deTitle, $entityInDe->getTitle());
+        static::assertEquals($isOperatingInGermany, $entityInDe->isOperating());
 
-        $this->assertSame($title, $entityInUa->getTitle(), 'should fallback to default title if null');
-        $this->assertEquals($isOperating, $entityInUa->isOperating(), ' should fallback to default operating if null');
+        static::assertSame($title, $entityInUa->getTitle(), 'should fallback to default title if null');
+        static::assertEquals($isOperating, $entityInUa->isOperating(), ' should fallback to default operating if null');
     }
 
     protected function getUsedEntityFixtures()

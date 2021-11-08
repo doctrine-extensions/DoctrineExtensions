@@ -21,7 +21,7 @@ class TranslatableMappingTest extends \PHPUnit\Framework\TestCase
     public const TEST_YAML_ENTITY_CLASS = 'Gedmo\Tests\Mapping\Fixture\Yaml\User';
     private $em;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $config = new \Doctrine\ORM\Configuration();
         $config->setMetadataCacheImpl(new \Doctrine\Common\Cache\ArrayCache());
@@ -57,15 +57,15 @@ class TranslatableMappingTest extends \PHPUnit\Framework\TestCase
             'Gedmo\Translatable'
         );
         $config = $this->em->getMetadataFactory()->getCacheDriver()->fetch($cacheId);
-        $this->assertArrayHasKey('translationClass', $config);
-        $this->assertEquals('Gedmo\Tests\Translatable\Fixture\PersonTranslation', $config['translationClass']);
-        $this->assertArrayHasKey('fields', $config);
-        $this->assertCount(3, $config['fields']);
-        $this->assertEquals('password', $config['fields'][0]);
-        $this->assertEquals('username', $config['fields'][1]);
-        $this->assertArrayHasKey('locale', $config);
-        $this->assertEquals('localeField', $config['locale']);
-        $this->assertCount(1, $config['fallback']);
-        $this->assertTrue($config['fallback']['company']);
+        static::assertArrayHasKey('translationClass', $config);
+        static::assertEquals('Gedmo\Tests\Translatable\Fixture\PersonTranslation', $config['translationClass']);
+        static::assertArrayHasKey('fields', $config);
+        static::assertCount(3, $config['fields']);
+        static::assertEquals('password', $config['fields'][0]);
+        static::assertEquals('username', $config['fields'][1]);
+        static::assertArrayHasKey('locale', $config);
+        static::assertEquals('localeField', $config['locale']);
+        static::assertCount(1, $config['fallback']);
+        static::assertTrue($config['fallback']['company']);
     }
 }

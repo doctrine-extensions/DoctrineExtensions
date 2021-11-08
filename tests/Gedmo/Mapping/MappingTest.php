@@ -21,7 +21,7 @@ class MappingTest extends \PHPUnit\Framework\TestCase
     private $em;
     private $timestampable;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $config = new \Doctrine\ORM\Configuration();
         $config->setProxyDir(TESTS_TEMP_DIR);
@@ -61,6 +61,6 @@ class MappingTest extends \PHPUnit\Framework\TestCase
             $this->em,
             self::TEST_ENTITY_CATEGORY
         );
-        $this->assertCount(0, $conf);
+        static::assertCount(0, $conf);
     }
 }

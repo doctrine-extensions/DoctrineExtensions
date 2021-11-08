@@ -63,22 +63,22 @@ class SortableGroupTest extends BaseTestCaseORM
         $carRepo = $this->em->getRepository(self::CAR);
 
         $audi80 = $carRepo->findOneBy(['title' => 'Audi-80']);
-        $this->assertEquals(0, $audi80->getSortByEngine());
+        static::assertEquals(0, $audi80->getSortByEngine());
 
         $audi80s = $carRepo->findOneBy(['title' => 'Audi-80s']);
-        $this->assertEquals(1, $audi80s->getSortByEngine());
+        static::assertEquals(1, $audi80s->getSortByEngine());
 
         $icarus = $this->em->getRepository(self::BUS)->findOneBy(['title' => 'Icarus']);
-        $this->assertEquals(2, $icarus->getSortByEngine());
+        static::assertEquals(2, $icarus->getSortByEngine());
 
         $this->em->remove($audi80);
         $this->em->flush();
 
         $audi80s = $carRepo->findOneBy(['title' => 'Audi-80s']);
-        $this->assertEquals(0, $audi80s->getSortByEngine());
+        static::assertEquals(0, $audi80s->getSortByEngine());
 
         $icarus = $this->em->getRepository(self::BUS)->findOneBy(['title' => 'Icarus']);
-        $this->assertEquals(1, $icarus->getSortByEngine());
+        static::assertEquals(1, $icarus->getSortByEngine());
     }
 
     /**
@@ -92,19 +92,19 @@ class SortableGroupTest extends BaseTestCaseORM
 
         // position 0
         $audi80 = $carRepo->findOneBy(['title' => 'Audi-80']);
-        $this->assertEquals(0, $audi80->getSortByEngine());
+        static::assertEquals(0, $audi80->getSortByEngine());
 
         //position 1
         $audi80s = $carRepo->findOneBy(['title' => 'Audi-80s']);
-        $this->assertEquals(1, $audi80s->getSortByEngine());
+        static::assertEquals(1, $audi80s->getSortByEngine());
 
         //position 2
         $icarus = $this->em->getRepository(self::BUS)->findOneBy(['title' => 'Icarus']);
-        $this->assertEquals(2, $icarus->getSortByEngine());
+        static::assertEquals(2, $icarus->getSortByEngine());
 
         // theres only 1 v6 so this should be position:0
         $audiJet = $carRepo->findOneBy(['title' => 'Audi-jet']);
-        $this->assertEquals(0, $audiJet->getSortByEngine());
+        static::assertEquals(0, $audiJet->getSortByEngine());
 
         // change engines
         $v6engine = $this->em->getRepository(self::ENGINE)->findOneBy(['type' => 'V6']);
@@ -114,12 +114,12 @@ class SortableGroupTest extends BaseTestCaseORM
         $this->em->flush();
 
         // v6
-        $this->assertEquals(0, $audiJet->getSortByEngine());
-        $this->assertEquals(1, $audi80s->getSortByEngine());
+        static::assertEquals(0, $audiJet->getSortByEngine());
+        static::assertEquals(1, $audi80s->getSortByEngine());
 
         // v8
-        $this->assertEquals(0, $audi80->getSortByEngine());
-        $this->assertEquals(1, $icarus->getSortByEngine());
+        static::assertEquals(0, $audi80->getSortByEngine());
+        static::assertEquals(1, $icarus->getSortByEngine());
     }
 
     /**
@@ -136,16 +136,16 @@ class SortableGroupTest extends BaseTestCaseORM
 
         for ($i = 0; $i < self::SEATS; ++$i) {
             $reservation = $repo->findOneBy(['name' => 'Bratislava Today '.$i]);
-            $this->assertNotNull($reservation);
-            $this->assertEquals($i, $reservation->getSeat());
+            static::assertNotNull($reservation);
+            static::assertEquals($i, $reservation->getSeat());
 
             $reservation = $repo->findOneBy(['name' => 'Bratislava Tomorrow '.$i]);
-            $this->assertNotNull($reservation);
-            $this->assertEquals($i, $reservation->getSeat());
+            static::assertNotNull($reservation);
+            static::assertEquals($i, $reservation->getSeat());
 
             $reservation = $repo->findOneBy(['name' => 'Prague Today '.$i]);
-            $this->assertNotNull($reservation);
-            $this->assertEquals($i, $reservation->getSeat());
+            static::assertNotNull($reservation);
+            static::assertEquals($i, $reservation->getSeat());
         }
 
         // Change date of the travel
@@ -160,32 +160,32 @@ class SortableGroupTest extends BaseTestCaseORM
             'destination' => 'Bratislava',
             'travelDate' => $today,
         ], ['seat' => 'asc']);
-        $this->assertCount(self::SEATS - 1, $bratislavaToday);
+        static::assertCount(self::SEATS - 1, $bratislavaToday);
         // Test seat numbers
         // Should be [ 0, 1 ]
         $seats = array_map(function ($r) { return $r->getSeat(); }, $bratislavaToday);
-        $this->assertEquals(range(0, self::SEATS - 2), $seats, 'Should be seats [ 0, 1 ] to Bratislava Today');
+        static::assertEquals(range(0, self::SEATS - 2), $seats, 'Should be seats [ 0, 1 ] to Bratislava Today');
 
         // Bratislava Tomorrow should have 4 seats
         $bratislavaTomorrow = $repo->findBy([
             'destination' => 'Bratislava',
             'travelDate' => $tomorrow,
         ], ['seat' => 'asc']);
-        $this->assertCount(self::SEATS + 1, $bratislavaTomorrow);
+        static::assertCount(self::SEATS + 1, $bratislavaTomorrow);
         // Test seat numbers
         // Should be [ 0, 1, 2, 3 ]
         $seats = array_map(function ($r) { return $r->getSeat(); }, $bratislavaTomorrow);
-        $this->assertEquals(range(0, self::SEATS), $seats, 'Should be seats [ 0, 1, 2, 3 ] to Bratislava Tomorrow');
+        static::assertEquals(range(0, self::SEATS), $seats, 'Should be seats [ 0, 1, 2, 3 ] to Bratislava Tomorrow');
 
         // Prague Today should have 3 seats
         $pragueToday = $repo->findBy([
             'destination' => 'Prague',
             'travelDate' => $today,
         ], ['seat' => 'asc']);
-        $this->assertCount(self::SEATS, $pragueToday);
+        static::assertCount(self::SEATS, $pragueToday);
         // Test seat numbers
         $seats = array_map(function ($r) { return $r->getSeat(); }, $pragueToday);
-        $this->assertEquals(range(0, self::SEATS - 1), $seats, 'Should be seats [ 0, 1, 2 ] to Prague Today');
+        static::assertEquals(range(0, self::SEATS - 1), $seats, 'Should be seats [ 0, 1, 2 ] to Prague Today');
     }
 
     /**
@@ -205,20 +205,20 @@ class SortableGroupTest extends BaseTestCaseORM
         $vehicles = $repo->findBy(['category' => $vehicle], ['position' => 'asc']);
         $position = 1;
         foreach ($vehicles as $item) {
-            $this->assertEquals($position, $item->getPosition());
+            static::assertEquals($position, $item->getPosition());
             ++$position;
         }
-        $this->assertEquals(31, $position);
+        static::assertEquals(31, $position);
 
         $accessory = $repoCategory->findOneBy(['name' => 'Accessory']);
 
         $accessories = $repo->findBy(['category' => $accessory], ['position' => 'asc']);
         $position = 1;
         foreach ($accessories as $item) {
-            $this->assertEquals($position, $item->getPosition());
+            static::assertEquals($position, $item->getPosition());
             ++$position;
         }
-        $this->assertEquals(31, $position);
+        static::assertEquals(31, $position);
 
         $item = $repo->findOneBy(['category' => $accessory, 'position' => 7]);
         $item->setCategory($vehicle);
@@ -232,20 +232,20 @@ class SortableGroupTest extends BaseTestCaseORM
         $vehicles = $repo->findBy(['category' => $vehicle], ['position' => 'asc']);
         $position = 1;
         foreach ($vehicles as $item) {
-            $this->assertEquals($position, $item->getPosition());
+            static::assertEquals($position, $item->getPosition());
             ++$position;
         }
-        $this->assertEquals(32, $position);
+        static::assertEquals(32, $position);
 
         $accessory = $repoCategory->findOneBy(['name' => 'Accessory']);
 
         $accessories = $repo->findBy(['category' => $accessory], ['position' => 'asc']);
         $position = 1;
         foreach ($accessories as $item) {
-            $this->assertEquals($position, $item->getPosition());
+            static::assertEquals($position, $item->getPosition());
             ++$position;
         }
-        $this->assertEquals(30, $position);
+        static::assertEquals(30, $position);
     }
 
     protected function getUsedEntityFixtures()

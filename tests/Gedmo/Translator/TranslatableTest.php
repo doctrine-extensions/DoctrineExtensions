@@ -38,10 +38,10 @@ class TranslatableTest extends BaseTestCaseORM
         $person->setDescription('description');
         $person->translate('ru_RU')->setDescription('multilingual description');
 
-        $this->assertSame('Jen', $person->getName());
-        $this->assertSame('Женя', $person->translate('ru_RU')->getName());
-        $this->assertSame('multilingual description', $person->translate('ru_RU')->getDescription());
-        $this->assertSame('multilingual description', $person->getDescription());
+        static::assertSame('Jen', $person->getName());
+        static::assertSame('Женя', $person->translate('ru_RU')->getName());
+        static::assertSame('multilingual description', $person->translate('ru_RU')->getDescription());
+        static::assertSame('multilingual description', $person->getDescription());
 
         $this->em->persist($person);
         $this->em->flush();
@@ -50,10 +50,10 @@ class TranslatableTest extends BaseTestCaseORM
         // retrieve record (translations would be fetched later - by demand)
         $person = $this->em->getRepository(self::PERSON)->findOneBy(['name' => 'Jen']);
 
-        $this->assertSame('Jen', $person->getName());
-        $this->assertSame('Женя', $person->translate('ru_RU')->getName());
-        $this->assertSame('multilingual description', $person->translate('ru_RU')->getDescription());
-        $this->assertSame('multilingual description', $person->getDescription());
+        static::assertSame('Jen', $person->getName());
+        static::assertSame('Женя', $person->translate('ru_RU')->getName());
+        static::assertSame('multilingual description', $person->translate('ru_RU')->getDescription());
+        static::assertSame('multilingual description', $person->getDescription());
 
         // retrieve record with all translations in one query
         $persons = $this->em->getRepository(self::PERSON)
@@ -64,10 +64,10 @@ class TranslatableTest extends BaseTestCaseORM
             ->execute();
         $person = $persons[0];
 
-        $this->assertSame('Jen', $person->getName());
-        $this->assertSame('Женя', $person->translate('ru_RU')->getName());
-        $this->assertSame('multilingual description', $person->translate('ru_RU')->getDescription());
-        $this->assertSame('multilingual description', $person->getDescription());
+        static::assertSame('Jen', $person->getName());
+        static::assertSame('Женя', $person->translate('ru_RU')->getName());
+        static::assertSame('multilingual description', $person->translate('ru_RU')->getDescription());
+        static::assertSame('multilingual description', $person->getDescription());
 
         $person->translate('es_ES')->setName('Amigo');
 
@@ -82,10 +82,10 @@ class TranslatableTest extends BaseTestCaseORM
             ->execute();
         $person = $persons[0];
 
-        $this->assertSame('Jen', $person->getName());
-        $this->assertSame('Женя', $person->translate('ru_RU')->getName());
-        $this->assertSame('Amigo', $person->translate('es_ES')->getName());
-        $this->assertSame('multilingual description', $person->translate('ru_RU')->getDescription());
+        static::assertSame('Jen', $person->getName());
+        static::assertSame('Женя', $person->translate('ru_RU')->getName());
+        static::assertSame('Amigo', $person->translate('es_ES')->getName());
+        static::assertSame('multilingual description', $person->translate('ru_RU')->getDescription());
     }
 
     /**
@@ -113,11 +113,11 @@ class TranslatableTest extends BaseTestCaseORM
         $this->em->clear();
 
         $person = $this->em->getRepository(self::PERSON)->findOneBy(['name' => 'Jen']);
-        $this->assertSame('Женя', $person->translate('ru')->getName());
+        static::assertSame('Женя', $person->translate('ru')->getName());
         $parent = $person->getParent();
-        $this->assertInstanceOf(Proxy::class, $parent);
-        $this->assertSame('Женя starshai', $parent->translate('ru')->getName());
-        $this->assertSame('zenia', $parent->translate('fr')->getName());
+        static::assertInstanceOf(Proxy::class, $parent);
+        static::assertSame('Женя starshai', $parent->translate('ru')->getName());
+        static::assertSame('zenia', $parent->translate('fr')->getName());
     }
 
     /**
@@ -136,9 +136,9 @@ class TranslatableTest extends BaseTestCaseORM
         $this->em->clear();
 
         $personProxy = $this->em->getReference(self::PERSON, ['id' => 1]);
-        $this->assertInstanceOf(Proxy::class, $personProxy);
+        static::assertInstanceOf(Proxy::class, $personProxy);
         $name = $personProxy->translate('ru_RU')->getName();
-        $this->assertSame('Женя', $name);
+        static::assertSame('Женя', $name);
     }
 
     public function testTranslatableProxyWithUpperCaseProperty()
@@ -156,11 +156,11 @@ class TranslatableTest extends BaseTestCaseORM
         $this->em->clear();
 
         $personProxy = $this->em->getReference(self::PERSON, ['id' => 1]);
-        $this->assertInstanceOf(Proxy::class, $personProxy);
+        static::assertInstanceOf(Proxy::class, $personProxy);
         $name = $personProxy->translate('ru_RU')->getName();
-        $this->assertSame('Женя', $name);
+        static::assertSame('Женя', $name);
         $lastName = $personProxy->translate('ru_RU')->getLastName();
-        $this->assertSame('Абрамович', $lastName);
+        static::assertSame('Абрамович', $lastName);
     }
 
     public function testTranslatableWithMagicProperties()
@@ -170,11 +170,11 @@ class TranslatableTest extends BaseTestCaseORM
         $person->translate('ru_RU')->name = 'Женя';
         $person->translate('ru_RU')->description = 'multilingual description';
 
-        $this->assertSame('Jen', $person->name);
-        $this->assertSame('Jen', $person->translate()->name);
-        $this->assertSame('Женя', $person->translate('ru_RU')->name);
-        $this->assertSame('multilingual description', $person->translate('ru_RU')->description);
-        $this->assertSame('multilingual description', $person->description);
+        static::assertSame('Jen', $person->name);
+        static::assertSame('Jen', $person->translate()->name);
+        static::assertSame('Женя', $person->translate('ru_RU')->name);
+        static::assertSame('multilingual description', $person->translate('ru_RU')->description);
+        static::assertSame('multilingual description', $person->description);
     }
 
     public function testTranslatableWithCustomProxy()
@@ -185,10 +185,10 @@ class TranslatableTest extends BaseTestCaseORM
         $person->setDescription('description');
         $person->translate('ru_RU')->setDescription('multilingual description');
 
-        $this->assertSame('Jen', $person->getName());
-        $this->assertSame('Женя', $person->translate('ru_RU')->getName());
-        $this->assertSame('multilingual description', $person->translate('ru_RU')->getDescription());
-        $this->assertSame('multilingual description', $person->getDescription());
+        static::assertSame('Jen', $person->getName());
+        static::assertSame('Женя', $person->translate('ru_RU')->getName());
+        static::assertSame('multilingual description', $person->translate('ru_RU')->getDescription());
+        static::assertSame('multilingual description', $person->getDescription());
 
         $this->em->persist($person);
         $this->em->flush();
@@ -197,10 +197,10 @@ class TranslatableTest extends BaseTestCaseORM
         // retrieve record (translations would be fetched later - by demand)
         $person = $this->em->getRepository(self::PERSON_CUSTOM_PROXY)->findOneBy(['name' => 'Jen']);
 
-        $this->assertSame('Jen', $person->getName());
-        $this->assertSame('Женя', $person->translate('ru_RU')->getName());
-        $this->assertSame('multilingual description', $person->translate('ru_RU')->getDescription());
-        $this->assertSame('multilingual description', $person->getDescription());
+        static::assertSame('Jen', $person->getName());
+        static::assertSame('Женя', $person->translate('ru_RU')->getName());
+        static::assertSame('multilingual description', $person->translate('ru_RU')->getDescription());
+        static::assertSame('multilingual description', $person->getDescription());
 
         // retrieve record with all translations in one query
         $persons = $this->em->getRepository(self::PERSON_CUSTOM_PROXY)
@@ -211,10 +211,10 @@ class TranslatableTest extends BaseTestCaseORM
             ->execute();
         $person = $persons[0];
 
-        $this->assertSame('Jen', $person->getName());
-        $this->assertSame('Женя', $person->translate('ru_RU')->getName());
-        $this->assertSame('multilingual description', $person->translate('ru_RU')->getDescription());
-        $this->assertSame('multilingual description', $person->getDescription());
+        static::assertSame('Jen', $person->getName());
+        static::assertSame('Женя', $person->translate('ru_RU')->getName());
+        static::assertSame('multilingual description', $person->translate('ru_RU')->getDescription());
+        static::assertSame('multilingual description', $person->getDescription());
 
         $person->translate('es_ES')->setName('Amigo');
 
@@ -229,10 +229,10 @@ class TranslatableTest extends BaseTestCaseORM
             ->execute();
         $person = $persons[0];
 
-        $this->assertSame('Jen', $person->getName());
-        $this->assertSame('Женя', $person->translate('ru_RU')->getName());
-        $this->assertSame('Amigo', $person->translate('es_ES')->getName());
-        $this->assertSame('multilingual description', $person->translate('ru_RU')->getDescription());
+        static::assertSame('Jen', $person->getName());
+        static::assertSame('Женя', $person->translate('ru_RU')->getName());
+        static::assertSame('Amigo', $person->translate('es_ES')->getName());
+        static::assertSame('multilingual description', $person->translate('ru_RU')->getDescription());
     }
 
     protected function getUsedEntityFixtures()

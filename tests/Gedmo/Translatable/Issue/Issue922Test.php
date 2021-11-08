@@ -56,10 +56,10 @@ class Issue922Test extends BaseTestCaseORM
         $this->em->clear();
 
         $p1 = $this->em->find(self::POST, $p1->getId());
-        $this->assertInstanceOf('DateTime', $p1->getPublishedAt());
-        $this->assertInstanceOf('DateTime', $p1->getTimestampAt());
-        $this->assertInstanceOf('DateTime', $p1->getDateAt());
-        $this->assertFalse($p1->getBoolean());
+        static::assertInstanceOf('DateTime', $p1->getPublishedAt());
+        static::assertInstanceOf('DateTime', $p1->getTimestampAt());
+        static::assertInstanceOf('DateTime', $p1->getDateAt());
+        static::assertFalse($p1->getBoolean());
 
         // clear and test query hint hydration
         $this->em->clear();
@@ -73,10 +73,10 @@ class Issue922Test extends BaseTestCaseORM
         $q->setHint(TranslatableListener::HINT_TRANSLATABLE_LOCALE, 'de');
 
         $p1 = $q->getSingleResult();
-        $this->assertInstanceOf('DateTime', $p1->getPublishedAt());
-        $this->assertInstanceOf('DateTime', $p1->getTimestampAt());
-        $this->assertInstanceOf('DateTime', $p1->getDateAt());
-        $this->assertFalse($p1->getBoolean());
+        static::assertInstanceOf('DateTime', $p1->getPublishedAt());
+        static::assertInstanceOf('DateTime', $p1->getTimestampAt());
+        static::assertInstanceOf('DateTime', $p1->getDateAt());
+        static::assertFalse($p1->getBoolean());
     }
 
     protected function getUsedEntityFixtures()

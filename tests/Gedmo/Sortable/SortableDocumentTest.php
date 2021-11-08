@@ -43,7 +43,7 @@ class SortableDocumentTest extends BaseTestCaseMongoODM
         $repo = $this->dm->getRepository(self::ARTICLE);
         for ($i = 0; $i <= 4; ++$i) {
             $article = $repo->findOneBy(['position' => $i]);
-            $this->assertEquals('article'.$i, $article->getTitle());
+            static::assertEquals('article'.$i, $article->getTitle());
         }
     }
 
@@ -57,7 +57,7 @@ class SortableDocumentTest extends BaseTestCaseMongoODM
 
         for ($i = 1; $i <= 4; ++$i) {
             $article = $repo->findOneBy(['position' => $i]);
-            $this->assertEquals('article'.($i - 1), $article->getTitle());
+            static::assertEquals('article'.($i - 1), $article->getTitle());
         }
     }
 
@@ -71,10 +71,10 @@ class SortableDocumentTest extends BaseTestCaseMongoODM
 
         for ($i = 0; $i <= 3; ++$i) {
             $article = $repo->findOneBy(['position' => $i]);
-            $this->assertEquals('article'.($i + 1), $article->getTitle());
+            static::assertEquals('article'.($i + 1), $article->getTitle());
         }
         $article = $repo->findOneBy(['position' => 4]);
-        $this->assertEquals('article0', $article->getTitle());
+        static::assertEquals('article0', $article->getTitle());
     }
 
     public function testDeletePositions()
@@ -87,7 +87,7 @@ class SortableDocumentTest extends BaseTestCaseMongoODM
 
         for ($i = 0; $i <= 3; ++$i) {
             $article = $repo->findOneBy(['position' => $i]);
-            $this->assertEquals('article'.($i + 1), $article->getTitle());
+            static::assertEquals('article'.($i + 1), $article->getTitle());
         }
     }
 }

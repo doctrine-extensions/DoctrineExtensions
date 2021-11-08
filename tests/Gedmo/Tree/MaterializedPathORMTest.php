@@ -67,19 +67,19 @@ class MaterializedPathORMTest extends BaseTestCaseORM
         $this->em->refresh($category3);
         $this->em->refresh($category4);
 
-        $this->assertEquals($this->generatePath(['1' => $category->getId()]), $category->getPath());
-        $this->assertEquals($this->generatePath(['1' => $category->getId(), '2' => $category2->getId()]), $category2->getPath());
-        $this->assertEquals($this->generatePath(['1' => $category->getId(), '2' => $category2->getId(), '3' => $category3->getId()]), $category3->getPath());
-        $this->assertEquals($this->generatePath(['4' => $category4->getId()]), $category4->getPath());
-        $this->assertEquals(1, $category->getLevel());
-        $this->assertEquals(2, $category2->getLevel());
-        $this->assertEquals(3, $category3->getLevel());
-        $this->assertEquals(1, $category4->getLevel());
+        static::assertEquals($this->generatePath(['1' => $category->getId()]), $category->getPath());
+        static::assertEquals($this->generatePath(['1' => $category->getId(), '2' => $category2->getId()]), $category2->getPath());
+        static::assertEquals($this->generatePath(['1' => $category->getId(), '2' => $category2->getId(), '3' => $category3->getId()]), $category3->getPath());
+        static::assertEquals($this->generatePath(['4' => $category4->getId()]), $category4->getPath());
+        static::assertEquals(1, $category->getLevel());
+        static::assertEquals(2, $category2->getLevel());
+        static::assertEquals(3, $category3->getLevel());
+        static::assertEquals(1, $category4->getLevel());
 
-        $this->assertEquals('1-4', $category->getTreeRootValue());
-        $this->assertEquals('1-4', $category2->getTreeRootValue());
-        $this->assertEquals('1-4', $category3->getTreeRootValue());
-        $this->assertEquals('4-1', $category4->getTreeRootValue());
+        static::assertEquals('1-4', $category->getTreeRootValue());
+        static::assertEquals('1-4', $category2->getTreeRootValue());
+        static::assertEquals('1-4', $category3->getTreeRootValue());
+        static::assertEquals('4-1', $category4->getTreeRootValue());
 
         // Update
         $category2->setParent(null);
@@ -91,18 +91,18 @@ class MaterializedPathORMTest extends BaseTestCaseORM
         $this->em->refresh($category2);
         $this->em->refresh($category3);
 
-        $this->assertEquals($this->generatePath(['1' => $category->getId()]), $category->getPath());
-        $this->assertEquals($this->generatePath(['2' => $category2->getId()]), $category2->getPath());
-        $this->assertEquals($this->generatePath(['2' => $category2->getId(), '3' => $category3->getId()]), $category3->getPath());
-        $this->assertEquals(1, $category->getLevel());
-        $this->assertEquals(1, $category2->getLevel());
-        $this->assertEquals(2, $category3->getLevel());
-        $this->assertEquals(1, $category4->getLevel());
+        static::assertEquals($this->generatePath(['1' => $category->getId()]), $category->getPath());
+        static::assertEquals($this->generatePath(['2' => $category2->getId()]), $category2->getPath());
+        static::assertEquals($this->generatePath(['2' => $category2->getId(), '3' => $category3->getId()]), $category3->getPath());
+        static::assertEquals(1, $category->getLevel());
+        static::assertEquals(1, $category2->getLevel());
+        static::assertEquals(2, $category3->getLevel());
+        static::assertEquals(1, $category4->getLevel());
 
-        $this->assertEquals('1-4', $category->getTreeRootValue());
-        $this->assertEquals('2-3', $category2->getTreeRootValue());
-        $this->assertEquals('2-3', $category3->getTreeRootValue());
-        $this->assertEquals('4-1', $category4->getTreeRootValue());
+        static::assertEquals('1-4', $category->getTreeRootValue());
+        static::assertEquals('2-3', $category2->getTreeRootValue());
+        static::assertEquals('2-3', $category3->getTreeRootValue());
+        static::assertEquals('4-1', $category4->getTreeRootValue());
 
         // Remove
         $this->em->remove($category);
@@ -113,10 +113,10 @@ class MaterializedPathORMTest extends BaseTestCaseORM
 
         $firstResult = $result[0];
 
-        $this->assertCount(1, $result);
-        $this->assertEquals('4', $firstResult->getTitle());
-        $this->assertEquals(1, $firstResult->getLevel());
-        $this->assertEquals('4-1', $firstResult->getTreeRootValue());
+        static::assertCount(1, $result);
+        static::assertEquals('4', $firstResult->getTitle());
+        static::assertEquals(1, $firstResult->getLevel());
+        static::assertEquals('4-1', $firstResult->getTreeRootValue());
     }
 
     /**

@@ -32,7 +32,7 @@ class MaterializedPathTreeMappingTest extends BaseTestCaseOM
      */
     private $tree;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -60,21 +60,21 @@ class MaterializedPathTreeMappingTest extends BaseTestCaseOM
         $meta = $this->em->getClassMetadata('Gedmo\Tests\Mapping\Fixture\Xml\MaterializedPathTree');
         $config = $this->tree->getConfiguration($this->em, $meta->name);
 
-        $this->assertArrayHasKey('strategy', $config);
-        $this->assertEquals('materializedPath', $config['strategy']);
-        $this->assertArrayHasKey('activate_locking', $config);
-        $this->assertTrue($config['activate_locking']);
-        $this->assertArrayHasKey('locking_timeout', $config);
-        $this->assertEquals(10, $config['locking_timeout']);
-        $this->assertArrayHasKey('level', $config);
-        $this->assertEquals('level', $config['level']);
-        $this->assertArrayHasKey('parent', $config);
-        $this->assertEquals('parent', $config['parent']);
-        $this->assertArrayHasKey('path_source', $config);
-        $this->assertEquals('title', $config['path_source']);
-        $this->assertArrayHasKey('path', $config);
-        $this->assertEquals('path', $config['path']);
-        $this->assertArrayHasKey('lock_time', $config);
-        $this->assertEquals('lockTime', $config['lock_time']);
+        static::assertArrayHasKey('strategy', $config);
+        static::assertEquals('materializedPath', $config['strategy']);
+        static::assertArrayHasKey('activate_locking', $config);
+        static::assertTrue($config['activate_locking']);
+        static::assertArrayHasKey('locking_timeout', $config);
+        static::assertEquals(10, $config['locking_timeout']);
+        static::assertArrayHasKey('level', $config);
+        static::assertEquals('level', $config['level']);
+        static::assertArrayHasKey('parent', $config);
+        static::assertEquals('parent', $config['parent']);
+        static::assertArrayHasKey('path_source', $config);
+        static::assertEquals('title', $config['path_source']);
+        static::assertArrayHasKey('path', $config);
+        static::assertEquals('path', $config['path']);
+        static::assertArrayHasKey('lock_time', $config);
+        static::assertEquals('lockTime', $config['lock_time']);
     }
 }

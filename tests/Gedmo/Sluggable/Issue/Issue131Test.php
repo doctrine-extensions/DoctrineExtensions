@@ -38,7 +38,7 @@ class Issue131Test extends BaseTestCaseORM
         $this->em->persist($test);
         $this->em->flush();
 
-        $this->assertNull($test->getSlug());
+        static::assertNull($test->getSlug());
 
         $test2 = new Article();
         $test2->setTitle('');
@@ -46,7 +46,7 @@ class Issue131Test extends BaseTestCaseORM
         $this->em->persist($test2);
         $this->em->flush();
 
-        $this->assertNull($test2->getSlug());
+        static::assertNull($test2->getSlug());
     }
 
     /**
@@ -60,7 +60,7 @@ class Issue131Test extends BaseTestCaseORM
         $this->em->persist($article);
         $this->em->flush();
 
-        $this->assertEquals('0', $article->getSlug());
+        static::assertEquals('0', $article->getSlug());
     }
 
     protected function getUsedEntityFixtures()

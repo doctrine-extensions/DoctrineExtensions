@@ -80,15 +80,15 @@ class ConcurrencyTest extends BaseTestCaseORM
         $left = $meta->getReflectionProperty('lft')->getValue($sport);
         $right = $meta->getReflectionProperty('rgt')->getValue($sport);
 
-        $this->assertEquals(9, $left);
-        $this->assertEquals(16, $right);
+        static::assertEquals(9, $left);
+        static::assertEquals(16, $right);
 
         $skiing = $repo->findOneBy(['title' => 'Skiing']);
         $left = $meta->getReflectionProperty('lft')->getValue($skiing);
         $right = $meta->getReflectionProperty('rgt')->getValue($skiing);
 
-        $this->assertEquals(10, $left);
-        $this->assertEquals(13, $right);
+        static::assertEquals(10, $left);
+        static::assertEquals(13, $right);
     }
 
     public function testConcurrentTree()
@@ -98,23 +98,23 @@ class ConcurrencyTest extends BaseTestCaseORM
 
         $root = $repo->findOneBy(['title' => 'Root']);
 
-        $this->assertEquals(1, $root->getLeft());
-        $this->assertEquals(8, $root->getRight());
+        static::assertEquals(1, $root->getLeft());
+        static::assertEquals(8, $root->getRight());
 
         $root2 = $repo->findOneBy(['title' => 'Root2']);
 
-        $this->assertEquals(9, $root2->getLeft());
-        $this->assertEquals(10, $root2->getRight());
+        static::assertEquals(9, $root2->getLeft());
+        static::assertEquals(10, $root2->getRight());
 
         $child2Child = $repo->findOneBy(['title' => 'childs2_child']);
 
-        $this->assertEquals(5, $child2Child->getLeft());
-        $this->assertEquals(6, $child2Child->getRight());
+        static::assertEquals(5, $child2Child->getLeft());
+        static::assertEquals(6, $child2Child->getRight());
 
         $child2Parent = $child2Child->getParent();
 
-        $this->assertEquals(4, $child2Parent->getLeft());
-        $this->assertEquals(7, $child2Parent->getRight());
+        static::assertEquals(4, $child2Parent->getLeft());
+        static::assertEquals(7, $child2Parent->getRight());
     }
 
     protected function getUsedEntityFixtures()

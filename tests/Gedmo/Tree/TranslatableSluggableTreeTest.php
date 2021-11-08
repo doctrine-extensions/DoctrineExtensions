@@ -51,11 +51,11 @@ class TranslatableSluggableTreeTest extends BaseTestCaseORM
 
         $childCount = $this->em->getRepository(self::CATEGORY)
             ->childCount($vegies);
-        $this->assertEquals(2, $childCount);
+        static::assertEquals(2, $childCount);
 
         // test slug
 
-        $this->assertEquals('vegitables', $vegies->getSlug());
+        static::assertEquals('vegitables', $vegies->getSlug());
 
         // run second translation test
 
@@ -73,14 +73,14 @@ class TranslatableSluggableTreeTest extends BaseTestCaseORM
         $translations = $this->em->getRepository(self::TRANSLATION)
             ->findTranslations($vegies);
 
-        $this->assertCount(1, $translations);
-        $this->assertArrayHasKey('de_DE', $translations);
+        static::assertCount(1, $translations);
+        static::assertArrayHasKey('de_DE', $translations);
 
-        $this->assertArrayHasKey('title', $translations['de_DE']);
-        $this->assertEquals('Deutschebles', $translations['de_DE']['title']);
+        static::assertArrayHasKey('title', $translations['de_DE']);
+        static::assertEquals('Deutschebles', $translations['de_DE']['title']);
 
-        $this->assertArrayHasKey('slug', $translations['de_DE']);
-        $this->assertEquals('deutschebles', $translations['de_DE']['slug']);
+        static::assertArrayHasKey('slug', $translations['de_DE']);
+        static::assertEquals('deutschebles', $translations['de_DE']['slug']);
     }
 
     public function testTranslations()
@@ -89,20 +89,20 @@ class TranslatableSluggableTreeTest extends BaseTestCaseORM
         $repo = $this->em->getRepository(self::CATEGORY);
         $vegies = $repo->find(4);
 
-        $this->assertEquals('Vegitables', $vegies->getTitle());
+        static::assertEquals('Vegitables', $vegies->getTitle());
         $food = $vegies->getParent();
         // test if proxy triggers postLoad event
-        $this->assertInstanceOf(Proxy::class, $food);
-        $this->assertEquals('Food', $food->getTitle());
+        static::assertInstanceOf(Proxy::class, $food);
+        static::assertEquals('Food', $food->getTitle());
 
         $this->em->clear();
         $this->translatableListener->setTranslatableLocale('de_DE');
 
         $vegies = $repo->find(4);
-        $this->assertEquals('Gemüse', $vegies->getTitle());
+        static::assertEquals('Gemüse', $vegies->getTitle());
         $food = $vegies->getParent();
-        $this->assertInstanceOf(Proxy::class, $food);
-        $this->assertEquals('Lebensmittel', $food->getTitle());
+        static::assertInstanceOf(Proxy::class, $food);
+        static::assertEquals('Lebensmittel', $food->getTitle());
     }
 
     protected function getUsedEntityFixtures()

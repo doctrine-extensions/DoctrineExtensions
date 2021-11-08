@@ -48,12 +48,12 @@ class TranslatableSlugTest extends BaseTestCaseORM
     public function testSlugAndTranslation()
     {
         $article = $this->em->find(self::ARTICLE, $this->articleId);
-        $this->assertTrue($article instanceof Translatable && $article instanceof Sluggable);
-        $this->assertEquals('the-title-my-code', $article->getSlug());
+        static::assertTrue($article instanceof Translatable && $article instanceof Sluggable);
+        static::assertEquals('the-title-my-code', $article->getSlug());
         $repo = $this->em->getRepository(self::TRANSLATION);
 
         $translations = $repo->findTranslations($article);
-        $this->assertCount(0, $translations);
+        static::assertCount(0, $translations);
 
         $article = $this->em->find(self::ARTICLE, $this->articleId);
         $article->setTranslatableLocale('de_DE');
@@ -66,18 +66,18 @@ class TranslatableSlugTest extends BaseTestCaseORM
 
         $repo = $this->em->getRepository(self::TRANSLATION);
         $translations = $repo->findTranslations($article);
-        $this->assertCount(1, $translations);
-        $this->assertArrayHasKey('de_DE', $translations);
-        $this->assertCount(3, $translations['de_DE']);
+        static::assertCount(1, $translations);
+        static::assertArrayHasKey('de_DE', $translations);
+        static::assertCount(3, $translations['de_DE']);
 
-        $this->assertArrayHasKey('code', $translations['de_DE']);
-        $this->assertEquals('code in de', $translations['de_DE']['code']);
+        static::assertArrayHasKey('code', $translations['de_DE']);
+        static::assertEquals('code in de', $translations['de_DE']['code']);
 
-        $this->assertArrayHasKey('title', $translations['de_DE']);
-        $this->assertEquals('title in de', $translations['de_DE']['title']);
+        static::assertArrayHasKey('title', $translations['de_DE']);
+        static::assertEquals('title in de', $translations['de_DE']['title']);
 
-        $this->assertArrayHasKey('slug', $translations['de_DE']);
-        $this->assertEquals('title-in-de-code-in-de', $translations['de_DE']['slug']);
+        static::assertArrayHasKey('slug', $translations['de_DE']);
+        static::assertEquals('title-in-de-code-in-de', $translations['de_DE']['slug']);
     }
 
     public function testConcurrentChanges()
@@ -127,7 +127,7 @@ class TranslatableSlugTest extends BaseTestCaseORM
         $this->em->flush();
         $this->em->clear();
 
-        $this->assertEquals('Cont_Test', $page->getSlug());
+        static::assertEquals('Cont_Test', $page->getSlug());
     }
 
     protected function getUsedEntityFixtures()

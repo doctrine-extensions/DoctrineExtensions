@@ -63,20 +63,20 @@ class InMemoryUpdatesTest extends BaseTestCaseORM
         $node = $repo->find(2);
         $left = $meta->getReflectionProperty('lft')->getValue($node);
         $right = $meta->getReflectionProperty('rgt')->getValue($node);
-        $this->assertEquals(2, $left);
-        $this->assertEquals(5, $right);
+        static::assertEquals(2, $left);
+        static::assertEquals(5, $right);
 
         $node = $repo->find(3);
         $left = $meta->getReflectionProperty('lft')->getValue($node);
         $right = $meta->getReflectionProperty('rgt')->getValue($node);
-        $this->assertEquals(6, $left);
-        $this->assertEquals(7, $right);
+        static::assertEquals(6, $left);
+        static::assertEquals(7, $right);
 
         $node = $repo->find(4);
         $left = $meta->getReflectionProperty('lft')->getValue($node);
         $right = $meta->getReflectionProperty('rgt')->getValue($node);
-        $this->assertEquals(3, $left);
-        $this->assertEquals(4, $right);
+        static::assertEquals(3, $left);
+        static::assertEquals(4, $right);
 
         /*print "Tree:\n";
         for ($i=1; $i < 5; $i++) {

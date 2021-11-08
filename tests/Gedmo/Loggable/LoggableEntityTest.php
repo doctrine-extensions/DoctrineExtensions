@@ -61,17 +61,17 @@ class LoggableEntityTest extends BaseTestCaseORM
 
         $logRepo = $this->em->getRepository('Gedmo\Loggable\Entity\LogEntry');
         $logs = $logRepo->findAll();
-        $this->assertCount(2, $logs);
-        $this->assertSame('create', $logs[0]->getAction());
-        $this->assertSame('create', $logs[1]->getAction());
-        $this->assertNotSame($logs[0]->getObjectId(), $logs[1]->getObjectId());
+        static::assertCount(2, $logs);
+        static::assertSame('create', $logs[0]->getAction());
+        static::assertSame('create', $logs[1]->getAction());
+        static::assertNotSame($logs[0]->getObjectId(), $logs[1]->getObjectId());
     }
 
     public function testLoggable()
     {
         $logRepo = $this->em->getRepository('Gedmo\Loggable\Entity\LogEntry');
         $articleRepo = $this->em->getRepository(self::ARTICLE);
-        $this->assertCount(0, $logRepo->findAll());
+        static::assertCount(0, $logRepo->findAll());
 
         $art0 = new Article();
         $art0->setTitle('Title');
@@ -81,15 +81,15 @@ class LoggableEntityTest extends BaseTestCaseORM
 
         $log = $logRepo->findOneBy(['objectId' => $art0->getId()]);
 
-        $this->assertNotNull($log);
-        $this->assertEquals('create', $log->getAction());
-        $this->assertEquals(get_class($art0), $log->getObjectClass());
-        $this->assertEquals('jules', $log->getUsername());
-        $this->assertEquals(1, $log->getVersion());
+        static::assertNotNull($log);
+        static::assertEquals('create', $log->getAction());
+        static::assertEquals(get_class($art0), $log->getObjectClass());
+        static::assertEquals('jules', $log->getUsername());
+        static::assertEquals(1, $log->getVersion());
         $data = $log->getData();
-        $this->assertCount(1, $data);
-        $this->assertArrayHasKey('title', $data);
-        $this->assertEquals('Title', $data['title']);
+        static::assertCount(1, $data);
+        static::assertArrayHasKey('title', $data);
+        static::assertEquals('Title', $data['title']);
 
         // test update
         $article = $articleRepo->findOneBy(['title' => 'Title']);
@@ -100,7 +100,7 @@ class LoggableEntityTest extends BaseTestCaseORM
         $this->em->clear();
 
         $log = $logRepo->findOneBy(['version' => 2, 'objectId' => $article->getId()]);
-        $this->assertEquals('update', $log->getAction());
+        static::assertEquals('update', $log->getAction());
 
         // test delete
         $article = $articleRepo->findOneBy(['title' => 'New']);
@@ -109,8 +109,8 @@ class LoggableEntityTest extends BaseTestCaseORM
         $this->em->clear();
 
         $log = $logRepo->findOneBy(['version' => 3, 'objectId' => 1]);
-        $this->assertEquals('remove', $log->getAction());
-        $this->assertNull($log->getData());
+        static::assertEquals('remove', $log->getAction());
+        static::assertNull($log->getData());
     }
 
     public function testVersionControl()
@@ -120,23 +120,23 @@ class LoggableEntityTest extends BaseTestCaseORM
         $commentRepo = $this->em->getRepository(self::COMMENT);
 
         $comment = $commentRepo->find(1);
-        $this->assertEquals('m-v5', $comment->getMessage());
-        $this->assertEquals('s-v3', $comment->getSubject());
-        $this->assertEquals(2, $comment->getArticle()->getId());
+        static::assertEquals('m-v5', $comment->getMessage());
+        static::assertEquals('s-v3', $comment->getSubject());
+        static::assertEquals(2, $comment->getArticle()->getId());
 
         // test revert
         $commentLogRepo->revert($comment, 3);
-        $this->assertEquals('s-v3', $comment->getSubject());
-        $this->assertEquals('m-v2', $comment->getMessage());
-        $this->assertEquals(1, $comment->getArticle()->getId());
+        static::assertEquals('s-v3', $comment->getSubject());
+        static::assertEquals('m-v2', $comment->getMessage());
+        static::assertEquals(1, $comment->getArticle()->getId());
         $this->em->persist($comment);
         $this->em->flush();
 
         // test get log entries
         $logEntries = $commentLogRepo->getLogEntries($comment);
-        $this->assertCount(6, $logEntries);
+        static::assertCount(6, $logEntries);
         $latest = $logEntries[0];
-        $this->assertEquals('update', $latest->getAction());
+        static::assertEquals('update', $latest->getAction());
     }
 
     public function testLogEmbedded()
@@ -147,11 +147,11 @@ class LoggableEntityTest extends BaseTestCaseORM
 
         $logEntries = $logRepo->getLogEntries($address);
 
-        $this->assertCount(4, $logEntries);
-        $this->assertCount(1, $logEntries[0]->getData());
-        $this->assertCount(2, $logEntries[1]->getData());
-        $this->assertCount(3, $logEntries[2]->getData());
-        $this->assertCount(5, $logEntries[3]->getData());
+        static::assertCount(4, $logEntries);
+        static::assertCount(1, $logEntries[0]->getData());
+        static::assertCount(2, $logEntries[1]->getData());
+        static::assertCount(3, $logEntries[2]->getData());
+        static::assertCount(5, $logEntries[3]->getData());
     }
 
     protected function getUsedEntityFixtures()

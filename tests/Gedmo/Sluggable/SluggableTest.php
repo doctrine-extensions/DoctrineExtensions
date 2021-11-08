@@ -40,8 +40,8 @@ class SluggableTest extends BaseTestCaseORM
     {
         $article = $this->em->find(self::ARTICLE, $this->articleId);
 
-        $this->assertInstanceOf(Sluggable::class, $article);
-        $this->assertEquals('the-title-my-code', $article->getSlug());
+        static::assertInstanceOf(Sluggable::class, $article);
+        static::assertEquals('the-title-my-code', $article->getSlug());
     }
 
     /**
@@ -57,7 +57,7 @@ class SluggableTest extends BaseTestCaseORM
             $this->em->persist($article);
             $this->em->flush();
             $this->em->clear();
-            $this->assertEquals($article->getSlug(), 'the-title-my-code-'.($i + 1));
+            static::assertEquals($article->getSlug(), 'the-title-my-code-'.($i + 1));
         }
     }
 
@@ -84,10 +84,10 @@ class SluggableTest extends BaseTestCaseORM
             $this->em->clear();
 
             $shorten = $article->getSlug();
-            $this->assertEquals(64, strlen($shorten));
+            static::assertEquals(64, strlen($shorten));
             $expected = 'the-title-the-title-the-title-the-title-the-title-the-title-the-';
             $expected = substr($expected, 0, 64 - (strlen($i + 1) + 1)).'-'.($i + 1);
-            $this->assertEquals($shorten, $expected);
+            static::assertEquals($shorten, $expected);
         }
     }
 
@@ -108,9 +108,9 @@ class SluggableTest extends BaseTestCaseORM
         $this->em->persist($article2);
         $this->em->flush();
         $this->em->clear();
-        $this->assertEquals('sample-long-title-which-should-be-correctly-slugged-blablabla-my', $article->getSlug());
+        static::assertEquals('sample-long-title-which-should-be-correctly-slugged-blablabla-my', $article->getSlug());
         // OLD IMPLEMENTATION PRODUCE SLUG sample-long-title-which-should-be-correctly-slugged-blablabla--1
-        $this->assertEquals('sample-long-title-which-should-be-correctly-slugged-blablabla-1', $article2->getSlug());
+        static::assertEquals('sample-long-title-which-should-be-correctly-slugged-blablabla-1', $article2->getSlug());
     }
 
     /**
@@ -132,7 +132,7 @@ class SluggableTest extends BaseTestCaseORM
             $this->em->persist($article);
             $this->em->flush();
             $this->em->clear();
-            $this->assertEquals($article->getSlug(), 'the-title-my-code-123-'.($i + 1));
+            static::assertEquals($article->getSlug(), 'the-title-my-code-123-'.($i + 1));
         }
     }
 
@@ -146,7 +146,7 @@ class SluggableTest extends BaseTestCaseORM
         $this->em->persist($article);
         $this->em->flush();
 
-        $this->assertSame('the-title-updated-my-code', $article->getSlug());
+        static::assertSame('the-title-updated-my-code', $article->getSlug());
     }
 
     /**
@@ -159,7 +159,7 @@ class SluggableTest extends BaseTestCaseORM
         $this->em->persist($article);
         $this->em->flush();
 
-        $this->assertSame('the-title-my-code', $article->getSlug());
+        static::assertSame('the-title-my-code', $article->getSlug());
     }
 
     /**
@@ -178,8 +178,8 @@ class SluggableTest extends BaseTestCaseORM
         $this->em->persist($new);
 
         $this->em->flush();
-        $this->assertSame('my-forced-slug', $article->getSlug());
-        $this->assertSame('forced', $new->getSlug());
+        static::assertSame('my-forced-slug', $article->getSlug());
+        static::assertSame('forced', $new->getSlug());
     }
 
     /**
@@ -199,8 +199,8 @@ class SluggableTest extends BaseTestCaseORM
         $this->em->persist($article2);
 
         $this->em->flush();
-        $this->assertEquals('test-code', $article->getSlug());
-        $this->assertEquals('test-code-1', $article2->getSlug());
+        static::assertEquals('test-code', $article->getSlug());
+        static::assertEquals('test-code-1', $article2->getSlug());
     }
 
     /**
@@ -220,7 +220,7 @@ class SluggableTest extends BaseTestCaseORM
         $this->em->persist($article2);
 
         $this->em->flush();
-        $this->assertEquals('my-s', $article2->getSlug());
+        static::assertEquals('my-s', $article2->getSlug());
     }
 
     /**
@@ -234,13 +234,13 @@ class SluggableTest extends BaseTestCaseORM
         $this->em->persist($article);
         $this->em->flush();
 
-        $this->assertSame('', $article->getSlug());
+        static::assertSame('', $article->getSlug());
         $article->setSlug(null);
 
         $this->em->persist($article);
         $this->em->flush();
 
-        $this->assertSame('the-title-my-code', $article->getSlug());
+        static::assertSame('the-title-my-code', $article->getSlug());
 
         $same = new Article();
         $same->setTitle('any');
@@ -249,7 +249,7 @@ class SluggableTest extends BaseTestCaseORM
         $this->em->persist($same);
         $this->em->flush();
 
-        $this->assertSame('the-title-my-code-1', $same->getSlug());
+        static::assertSame('the-title-my-code-1', $same->getSlug());
     }
 
     protected function getUsedEntityFixtures()

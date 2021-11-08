@@ -62,7 +62,7 @@ class SortableTest extends BaseTestCaseORM
     public function shouldSetSortPositionToInsertedNode()
     {
         $node = $this->em->find(self::NODE, $this->nodeId);
-        $this->assertEquals(0, $node->getPosition());
+        static::assertEquals(0, $node->getPosition());
     }
 
     public function testMoveLastPosition()
@@ -83,13 +83,13 @@ class SortableTest extends BaseTestCaseORM
 
         for ($i = 0; $i <= 8; ++$i) {
             $node = $repo->findOneBy(['position' => $i]);
-            $this->assertNotNull($node);
-            $this->assertEquals('Node'.($i + 2), $node->getName());
+            static::assertNotNull($node);
+            static::assertEquals('Node'.($i + 2), $node->getName());
         }
 
         $node = $repo->findOneBy(['position' => 9]);
-        $this->assertNotNull($node);
-        $this->assertEquals('Node1', $node->getName());
+        static::assertNotNull($node);
+        static::assertEquals('Node1', $node->getName());
     }
 
     /**
@@ -113,9 +113,9 @@ class SortableTest extends BaseTestCaseORM
             ->getResult()
         ;
 
-        $this->assertCount(10, $nodes);
-        $this->assertEquals('Node1', $nodes[0]->getName());
-        $this->assertEquals(2, $nodes[2]->getPosition());
+        static::assertCount(10, $nodes);
+        static::assertEquals('Node1', $nodes[0]->getName());
+        static::assertEquals(2, $nodes[2]->getPosition());
     }
 
     /**
@@ -145,7 +145,7 @@ class SortableTest extends BaseTestCaseORM
 
         $this->em->flush();
 
-        $this->assertEquals(1, $node2->getPosition());
+        static::assertEquals(1, $node2->getPosition());
         $node2->setPosition(3);
         $this->em->persist($node2);
         $this->em->flush();
@@ -153,14 +153,14 @@ class SortableTest extends BaseTestCaseORM
         $repo = $this->em->getRepository(self::NODE);
         $nodes = $repo->getBySortableGroups(['path' => '/']);
 
-        $this->assertEquals('Node1', $nodes[0]->getName());
-        $this->assertEquals('Node3', $nodes[1]->getName());
-        $this->assertEquals('Node4', $nodes[2]->getName());
-        $this->assertEquals('Node2', $nodes[3]->getName());
-        $this->assertEquals('Node5', $nodes[4]->getName());
+        static::assertEquals('Node1', $nodes[0]->getName());
+        static::assertEquals('Node3', $nodes[1]->getName());
+        static::assertEquals('Node4', $nodes[2]->getName());
+        static::assertEquals('Node2', $nodes[3]->getName());
+        static::assertEquals('Node5', $nodes[4]->getName());
 
         for ($i = 0; $i < count($nodes); ++$i) {
-            $this->assertSame($i, $nodes[$i]->getPosition());
+            static::assertSame($i, $nodes[$i]->getPosition());
         }
     }
 
@@ -190,7 +190,7 @@ class SortableTest extends BaseTestCaseORM
         $this->em->persist($node);
 
         $this->em->flush();
-        $this->assertEquals(3, $node2->getPosition());
+        static::assertEquals(3, $node2->getPosition());
 
         $node2->setPosition(1);
         $this->em->persist($node2);
@@ -200,14 +200,14 @@ class SortableTest extends BaseTestCaseORM
         $repo = $this->em->getRepository(self::NODE);
         $nodes = $repo->getBySortableGroups(['path' => '/']);
 
-        $this->assertEquals('Node1', $nodes[0]->getName());
-        $this->assertEquals('Node4', $nodes[1]->getName());
-        $this->assertEquals('Node2', $nodes[2]->getName());
-        $this->assertEquals('Node3', $nodes[3]->getName());
-        $this->assertEquals('Node5', $nodes[4]->getName());
+        static::assertEquals('Node1', $nodes[0]->getName());
+        static::assertEquals('Node4', $nodes[1]->getName());
+        static::assertEquals('Node2', $nodes[2]->getName());
+        static::assertEquals('Node3', $nodes[3]->getName());
+        static::assertEquals('Node5', $nodes[4]->getName());
 
         for ($i = 0; $i < count($nodes); ++$i) {
-            $this->assertSame($i, $nodes[$i]->getPosition());
+            static::assertSame($i, $nodes[$i]->getPosition());
         }
     }
 
@@ -235,15 +235,15 @@ class SortableTest extends BaseTestCaseORM
         $this->em->flush();
 
         // test if synced on objects in memory correctly
-        $this->assertEquals(0, $node1->getPosition());
-        $this->assertEquals(1, $node3->getPosition());
+        static::assertEquals(0, $node1->getPosition());
+        static::assertEquals(1, $node3->getPosition());
 
         // test if persisted correctly
         $this->em->clear();
         $nodes = $repo->findAll();
-        $this->assertCount(2, $nodes);
-        $this->assertEquals(0, $nodes[0]->getPosition());
-        $this->assertEquals(1, $nodes[1]->getPosition());
+        static::assertCount(2, $nodes);
+        static::assertEquals(0, $nodes[0]->getPosition());
+        static::assertEquals(1, $nodes[1]->getPosition());
     }
 
     /**
@@ -285,15 +285,15 @@ class SortableTest extends BaseTestCaseORM
         $this->em->flush();
 
         // test if synced on objects in memory correctly
-        $this->assertEquals(0, $node1->getPosition());
-        $this->assertEquals(1, $node4->getPosition());
+        static::assertEquals(0, $node1->getPosition());
+        static::assertEquals(1, $node4->getPosition());
 
         // test if persisted correctly
         $this->em->clear();
         $nodes = $repo->findAll();
-        $this->assertCount(2, $nodes);
-        $this->assertEquals(0, $nodes[0]->getPosition());
-        $this->assertEquals(1, $nodes[1]->getPosition());
+        static::assertCount(2, $nodes);
+        static::assertEquals(0, $nodes[0]->getPosition());
+        static::assertEquals(1, $nodes[1]->getPosition());
     }
 
     /**
@@ -350,23 +350,23 @@ class SortableTest extends BaseTestCaseORM
         $this->em->flush();
 
         // test if synced on objects in memory correctly
-        $this->assertEquals(0, $node1->getPosition());
-        $this->assertEquals(1, $node4->getPosition());
-        $this->assertEquals(2, $node5->getPosition());
-        $this->assertEquals(3, $node6->getPosition());
+        static::assertEquals(0, $node1->getPosition());
+        static::assertEquals(1, $node4->getPosition());
+        static::assertEquals(2, $node5->getPosition());
+        static::assertEquals(3, $node6->getPosition());
 
         // test if persisted correctly
         $this->em->clear();
         $nodes = $repo->findAll();
-        $this->assertCount(4, $nodes);
-        $this->assertEquals(0, $nodes[0]->getPosition());
-        $this->assertEquals('Node1', $nodes[0]->getName());
-        $this->assertEquals(1, $nodes[1]->getPosition());
-        $this->assertEquals('Node4', $nodes[1]->getName());
-        $this->assertEquals(2, $nodes[2]->getPosition());
-        $this->assertEquals('Node5', $nodes[2]->getName());
-        $this->assertEquals(3, $nodes[3]->getPosition());
-        $this->assertEquals('Node6', $nodes[3]->getName());
+        static::assertCount(4, $nodes);
+        static::assertEquals(0, $nodes[0]->getPosition());
+        static::assertEquals('Node1', $nodes[0]->getName());
+        static::assertEquals(1, $nodes[1]->getPosition());
+        static::assertEquals('Node4', $nodes[1]->getName());
+        static::assertEquals(2, $nodes[2]->getPosition());
+        static::assertEquals('Node5', $nodes[2]->getName());
+        static::assertEquals(3, $nodes[3]->getPosition());
+        static::assertEquals('Node6', $nodes[3]->getName());
     }
 
     /**
@@ -403,15 +403,15 @@ class SortableTest extends BaseTestCaseORM
             $this->em->remove($customerType2);
             $this->em->flush();
 
-            $this->fail('Foreign key constraint violation exception not thrown.');
+            static::fail('Foreign key constraint violation exception not thrown.');
         } catch (ForeignKeyConstraintViolationException $e) {
             $customerTypes = $repo->findAll();
 
-            $this->assertCount(3, $customerTypes);
+            static::assertCount(3, $customerTypes);
 
-            $this->assertEquals(0, $customerTypes[0]->getPosition(), 'The sorting position has not been rolled back.');
-            $this->assertEquals(1, $customerTypes[1]->getPosition(), 'The sorting position has not been rolled back.');
-            $this->assertEquals(2, $customerTypes[2]->getPosition(), 'The sorting position has not been rolled back.');
+            static::assertEquals(0, $customerTypes[0]->getPosition(), 'The sorting position has not been rolled back.');
+            static::assertEquals(1, $customerTypes[1]->getPosition(), 'The sorting position has not been rolled back.');
+            static::assertEquals(2, $customerTypes[2]->getPosition(), 'The sorting position has not been rolled back.');
         }
     }
 
@@ -474,25 +474,25 @@ class SortableTest extends BaseTestCaseORM
 
         $items = $repo->getBySortableGroups(['category' => $category1]);
 
-        $this->assertEquals('Item1', $items[0]->getName());
-        $this->assertEquals('Category1', $items[0]->getCategory()->getName());
+        static::assertEquals('Item1', $items[0]->getName());
+        static::assertEquals('Category1', $items[0]->getCategory()->getName());
 
-        $this->assertEquals('Item2', $items[1]->getName());
-        $this->assertEquals('Category1', $items[1]->getCategory()->getName());
+        static::assertEquals('Item2', $items[1]->getName());
+        static::assertEquals('Category1', $items[1]->getCategory()->getName());
 
-        $this->assertEquals('Item3', $items[2]->getName());
-        $this->assertEquals('Category1', $items[2]->getCategory()->getName());
+        static::assertEquals('Item3', $items[2]->getName());
+        static::assertEquals('Category1', $items[2]->getCategory()->getName());
 
-        $this->assertEquals('Item4', $items[3]->getName());
-        $this->assertEquals('Category1', $items[3]->getCategory()->getName());
+        static::assertEquals('Item4', $items[3]->getName());
+        static::assertEquals('Category1', $items[3]->getCategory()->getName());
 
         $items = $repo->getBySortableGroups(['category' => $category2]);
 
-        $this->assertEquals('Item1_2', $items[0]->getName());
-        $this->assertEquals('Category2', $items[0]->getCategory()->getName());
+        static::assertEquals('Item1_2', $items[0]->getName());
+        static::assertEquals('Category2', $items[0]->getCategory()->getName());
 
-        $this->assertEquals('Item2_2', $items[1]->getName());
-        $this->assertEquals('Category2', $items[1]->getCategory()->getName());
+        static::assertEquals('Item2_2', $items[1]->getName());
+        static::assertEquals('Category2', $items[1]->getCategory()->getName());
     }
 
     /**
@@ -518,8 +518,8 @@ class SortableTest extends BaseTestCaseORM
 
         $items = $repo->getBySortableGroups(['category' => $category1]);
 
-        $this->assertEquals('Item1', $items[0]->getName());
-        $this->assertEquals('Category1', $items[0]->getCategory()->getName());
+        static::assertEquals('Item1', $items[0]->getName());
+        static::assertEquals('Category1', $items[0]->getCategory()->getName());
     }
 
     /**
@@ -554,11 +554,11 @@ class SortableTest extends BaseTestCaseORM
 
         $this->em->flush();
 
-        $this->assertEquals(0, $event1->getPosition());
-        $this->assertEquals(1, $event2->getPosition());
-        $this->assertEquals(0, $event3->getPosition());
-        $this->assertEquals(2, $event4->getPosition());
-        $this->assertEquals(1, $event5->getPosition());
+        static::assertEquals(0, $event1->getPosition());
+        static::assertEquals(1, $event2->getPosition());
+        static::assertEquals(0, $event3->getPosition());
+        static::assertEquals(2, $event4->getPosition());
+        static::assertEquals(1, $event5->getPosition());
     }
 
     /**
@@ -591,9 +591,9 @@ class SortableTest extends BaseTestCaseORM
         $this->em->persist($author3);
         $this->em->flush();
 
-        $this->assertEquals(0, $author1->getPosition());
-        $this->assertEquals(1, $author2->getPosition());
-        $this->assertEquals(0, $author3->getPosition());
+        static::assertEquals(0, $author1->getPosition());
+        static::assertEquals(1, $author2->getPosition());
+        static::assertEquals(0, $author3->getPosition());
 
         //update position
         $author3->setPaper($paper1);
@@ -601,9 +601,9 @@ class SortableTest extends BaseTestCaseORM
         $this->em->persist($author3);
         $this->em->flush();
 
-        $this->assertEquals(1, $author1->getPosition());
-        $this->assertEquals(2, $author2->getPosition());
-        $this->assertEquals(0, $author3->getPosition());
+        static::assertEquals(1, $author1->getPosition());
+        static::assertEquals(2, $author2->getPosition());
+        static::assertEquals(0, $author3->getPosition());
 
         // this is failing for whatever reasons
         $author3->setPosition(0);
@@ -616,9 +616,9 @@ class SortableTest extends BaseTestCaseORM
         $author2 = $this->em->find(self::AUTHOR, $author2->getId());
         $author3 = $this->em->find(self::AUTHOR, $author3->getId());
 
-        $this->assertEquals(1, $author1->getPosition());
-        $this->assertEquals(2, $author2->getPosition());
-        $this->assertEquals(0, $author3->getPosition());
+        static::assertEquals(1, $author1->getPosition());
+        static::assertEquals(2, $author2->getPosition());
+        static::assertEquals(0, $author3->getPosition());
     }
 
     /**
@@ -646,8 +646,8 @@ class SortableTest extends BaseTestCaseORM
         $this->em->persist($author2);
         $this->em->flush();
 
-        $this->assertEquals(0, $author1->getPosition());
-        $this->assertEquals(1, $author2->getPosition());
+        static::assertEquals(0, $author1->getPosition());
+        static::assertEquals(1, $author2->getPosition());
 
         //update position
         $author2->setPaper($paper2);
@@ -655,8 +655,8 @@ class SortableTest extends BaseTestCaseORM
         $this->em->persist($author2);
         $this->em->flush();
 
-        $this->assertEquals(0, $author1->getPosition());
-        $this->assertEquals(0, $author2->getPosition());
+        static::assertEquals(0, $author1->getPosition());
+        static::assertEquals(0, $author2->getPosition());
 
         $this->em->clear(); // @TODO: this should not be required
 
@@ -664,8 +664,8 @@ class SortableTest extends BaseTestCaseORM
         $author1 = $repo->findOneBy(['id' => $author1->getId()]);
         $author2 = $repo->findOneBy(['id' => $author2->getId()]);
 
-        $this->assertEquals(0, $author1->getPosition());
-        $this->assertEquals(0, $author2->getPosition());
+        static::assertEquals(0, $author1->getPosition());
+        static::assertEquals(0, $author2->getPosition());
     }
 
     /**
@@ -708,24 +708,24 @@ class SortableTest extends BaseTestCaseORM
         $this->em->persist($author5);
         $this->em->flush();
 
-        $this->assertEquals(0, $author1->getPosition());
-        $this->assertEquals(1, $author2->getPosition());
-        $this->assertEquals(2, $author5->getPosition());
+        static::assertEquals(0, $author1->getPosition());
+        static::assertEquals(1, $author2->getPosition());
+        static::assertEquals(2, $author5->getPosition());
 
-        $this->assertEquals(0, $author3->getPosition());
-        $this->assertEquals(1, $author4->getPosition());
+        static::assertEquals(0, $author3->getPosition());
+        static::assertEquals(1, $author4->getPosition());
 
         // update paper: the position is still 1.
         $author4->setPaper($paper1);
         $this->em->persist($author4);
         $this->em->flush();
 
-        $this->assertEquals(0, $author1->getPosition());
-        $this->assertEquals(1, $author4->getPosition());
-        $this->assertEquals(2, $author2->getPosition());
-        $this->assertEquals(3, $author5->getPosition());
+        static::assertEquals(0, $author1->getPosition());
+        static::assertEquals(1, $author4->getPosition());
+        static::assertEquals(2, $author2->getPosition());
+        static::assertEquals(3, $author5->getPosition());
 
-        $this->assertEquals(0, $author3->getPosition());
+        static::assertEquals(0, $author3->getPosition());
 
         $this->em->clear(); // @TODO: this should not be required
 
@@ -736,12 +736,12 @@ class SortableTest extends BaseTestCaseORM
         $author4 = $repo->findOneBy(['id' => $author4->getId()]);
         $author5 = $repo->findOneBy(['id' => $author5->getId()]);
 
-        $this->assertEquals(0, $author1->getPosition());
-        $this->assertEquals(1, $author4->getPosition());
-        $this->assertEquals(2, $author2->getPosition());
-        $this->assertEquals(3, $author5->getPosition());
+        static::assertEquals(0, $author1->getPosition());
+        static::assertEquals(1, $author4->getPosition());
+        static::assertEquals(2, $author2->getPosition());
+        static::assertEquals(3, $author5->getPosition());
 
-        $this->assertEquals(0, $author3->getPosition());
+        static::assertEquals(0, $author3->getPosition());
     }
 
     /**
@@ -764,11 +764,11 @@ class SortableTest extends BaseTestCaseORM
 
         $this->em->flush();
 
-        $this->assertEquals(5, $node1->getPosition());
+        static::assertEquals(5, $node1->getPosition());
 
         $this->em->detach($node1);
         $node1 = $this->em->find(self::NODE, $this->nodeId);
-        $this->assertEquals(5, $node1->getPosition());
+        static::assertEquals(5, $node1->getPosition());
     }
 
     public function testIncrementPositionOfLastObjectByOne()
@@ -786,7 +786,7 @@ class SortableTest extends BaseTestCaseORM
         }
         $this->em->flush();
 
-        $this->assertEquals(4, $nodes[4]->getPosition());
+        static::assertEquals(4, $nodes[4]->getPosition());
 
         $node4NewPosition = $nodes[4]->getPosition();
         ++$node4NewPosition;
@@ -796,7 +796,7 @@ class SortableTest extends BaseTestCaseORM
         $this->em->persist($nodes[4]);
         $this->em->flush();
 
-        $this->assertEquals(4, $nodes[4]->getPosition());
+        static::assertEquals(4, $nodes[4]->getPosition());
     }
 
     public function testSetOutOfBoundsHighPosition()
@@ -814,14 +814,14 @@ class SortableTest extends BaseTestCaseORM
         }
         $this->em->flush();
 
-        $this->assertEquals(4, $nodes[4]->getPosition());
+        static::assertEquals(4, $nodes[4]->getPosition());
 
         $nodes[4]->setPosition(100);
 
         $this->em->persist($nodes[4]);
         $this->em->flush();
 
-        $this->assertEquals(4, $nodes[4]->getPosition());
+        static::assertEquals(4, $nodes[4]->getPosition());
     }
 
     /**
@@ -841,7 +841,7 @@ class SortableTest extends BaseTestCaseORM
         }
         foreach ($nodes as $i => $node) {
             $position = $node->getPosition();
-            $this->assertEquals($i, $position);
+            static::assertEquals($i, $position);
         }
     }
 

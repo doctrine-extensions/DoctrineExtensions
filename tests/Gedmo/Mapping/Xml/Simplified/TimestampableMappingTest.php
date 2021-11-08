@@ -24,7 +24,7 @@ class TimestampableMappingTest extends BaseTestCaseORM
      */
     private $timestampable;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -60,15 +60,15 @@ class TimestampableMappingTest extends BaseTestCaseORM
         $meta = $this->em->getClassMetadata('Gedmo\Tests\Mapping\Fixture\Xml\Timestampable');
         $config = $this->timestampable->getConfiguration($this->em, $meta->name);
 
-        $this->assertArrayHasKey('create', $config);
-        $this->assertEquals('created', $config['create'][0]);
-        $this->assertArrayHasKey('update', $config);
-        $this->assertEquals('updated', $config['update'][0]);
-        $this->assertArrayHasKey('change', $config);
+        static::assertArrayHasKey('create', $config);
+        static::assertEquals('created', $config['create'][0]);
+        static::assertArrayHasKey('update', $config);
+        static::assertEquals('updated', $config['update'][0]);
+        static::assertArrayHasKey('change', $config);
         $onChange = $config['change'][0];
 
-        $this->assertEquals('published', $onChange['field']);
-        $this->assertEquals('status.title', $onChange['trackedField']);
-        $this->assertEquals('Published', $onChange['value']);
+        static::assertEquals('published', $onChange['field']);
+        static::assertEquals('status.title', $onChange['trackedField']);
+        static::assertEquals('Published', $onChange['value']);
     }
 }

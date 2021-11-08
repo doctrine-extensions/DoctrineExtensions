@@ -44,13 +44,13 @@ class TranslatableManySlugTest extends BaseTestCaseORM
     public function testSlugAndTranslation()
     {
         $article = $this->em->find(self::ARTICLE, $this->articleId);
-        $this->assertTrue($article instanceof Translatable && $article instanceof Sluggable);
-        $this->assertEquals('the-title-my-code', $article->getSlug());
-        $this->assertEquals('the-unique-title', $article->getUniqueSlug());
+        static::assertTrue($article instanceof Translatable && $article instanceof Sluggable);
+        static::assertEquals('the-title-my-code', $article->getSlug());
+        static::assertEquals('the-unique-title', $article->getUniqueSlug());
         $repo = $this->em->getRepository(self::TRANSLATION);
 
         $translations = $repo->findTranslations($article);
-        $this->assertCount(0, $translations);
+        static::assertCount(0, $translations);
 
         $article = $this->em->find(self::ARTICLE, $this->articleId);
         $article->setTranslatableLocale('de_DE');
@@ -63,14 +63,14 @@ class TranslatableManySlugTest extends BaseTestCaseORM
 
         $repo = $this->em->getRepository(self::TRANSLATION);
         $translations = $repo->findTranslations($article);
-        $this->assertCount(1, $translations);
-        $this->assertArrayHasKey('de_DE', $translations);
-        $this->assertCount(3, $translations['de_DE']);
+        static::assertCount(1, $translations);
+        static::assertArrayHasKey('de_DE', $translations);
+        static::assertCount(3, $translations['de_DE']);
 
-        $this->assertEquals('title in de', $translations['de_DE']['title']);
+        static::assertEquals('title in de', $translations['de_DE']['title']);
 
-        $this->assertArrayHasKey('slug', $translations['de_DE']);
-        $this->assertEquals('title-in-de-code-in-de', $translations['de_DE']['slug']);
+        static::assertArrayHasKey('slug', $translations['de_DE']);
+        static::assertEquals('title-in-de-code-in-de', $translations['de_DE']['slug']);
     }
 
     public function testUniqueness()
@@ -90,11 +90,11 @@ class TranslatableManySlugTest extends BaseTestCaseORM
         $this->em->persist($a1);
         $this->em->flush();
 
-        $this->assertEquals('title', $a0->getUniqueSlug());
-        $this->assertEquals('title-1', $a1->getUniqueSlug());
+        static::assertEquals('title', $a0->getUniqueSlug());
+        static::assertEquals('title-1', $a1->getUniqueSlug());
         // if its translated maybe should be different
-        $this->assertEquals('the-title-my-code-1', $a0->getSlug());
-        $this->assertEquals('the-title-my-code-2', $a1->getSlug());
+        static::assertEquals('the-title-my-code-1', $a0->getSlug());
+        static::assertEquals('the-title-my-code-2', $a1->getSlug());
     }
 
     protected function getUsedEntityFixtures()

@@ -67,19 +67,19 @@ class MaterializedPathORMRootAssociationTest extends BaseTestCaseORM
         $this->em->refresh($category3);
         $this->em->refresh($category4);
 
-        $this->assertEquals($this->generatePath([$category->getId()]), $category->getPath());
-        $this->assertEquals($this->generatePath([$category->getId(), $category2->getId()]), $category2->getPath());
-        $this->assertEquals($this->generatePath([$category->getId(), $category2->getId(), $category3->getId()]), $category3->getPath());
-        $this->assertEquals($this->generatePath([$category4->getId()]), $category4->getPath());
-        $this->assertEquals(1, $category->getLevel());
-        $this->assertEquals(2, $category2->getLevel());
-        $this->assertEquals(3, $category3->getLevel());
-        $this->assertEquals(1, $category4->getLevel());
+        static::assertEquals($this->generatePath([$category->getId()]), $category->getPath());
+        static::assertEquals($this->generatePath([$category->getId(), $category2->getId()]), $category2->getPath());
+        static::assertEquals($this->generatePath([$category->getId(), $category2->getId(), $category3->getId()]), $category3->getPath());
+        static::assertEquals($this->generatePath([$category4->getId()]), $category4->getPath());
+        static::assertEquals(1, $category->getLevel());
+        static::assertEquals(2, $category2->getLevel());
+        static::assertEquals(3, $category3->getLevel());
+        static::assertEquals(1, $category4->getLevel());
 
-        $this->assertEquals($category, $category->getTreeRootEntity());
-        $this->assertEquals($category, $category2->getTreeRootEntity());
-        $this->assertEquals($category, $category3->getTreeRootEntity());
-        $this->assertEquals($category4, $category4->getTreeRootEntity());
+        static::assertEquals($category, $category->getTreeRootEntity());
+        static::assertEquals($category, $category2->getTreeRootEntity());
+        static::assertEquals($category, $category3->getTreeRootEntity());
+        static::assertEquals($category4, $category4->getTreeRootEntity());
 
         // Update
         $category2->setParent(null);
@@ -91,18 +91,18 @@ class MaterializedPathORMRootAssociationTest extends BaseTestCaseORM
         $this->em->refresh($category2);
         $this->em->refresh($category3);
 
-        $this->assertEquals($this->generatePath([$category->getId()]), $category->getPath());
-        $this->assertEquals($this->generatePath([$category2->getId()]), $category2->getPath());
-        $this->assertEquals($this->generatePath([$category2->getId(), $category3->getId()]), $category3->getPath());
-        $this->assertEquals(1, $category->getLevel());
-        $this->assertEquals(1, $category2->getLevel());
-        $this->assertEquals(2, $category3->getLevel());
-        $this->assertEquals(1, $category4->getLevel());
+        static::assertEquals($this->generatePath([$category->getId()]), $category->getPath());
+        static::assertEquals($this->generatePath([$category2->getId()]), $category2->getPath());
+        static::assertEquals($this->generatePath([$category2->getId(), $category3->getId()]), $category3->getPath());
+        static::assertEquals(1, $category->getLevel());
+        static::assertEquals(1, $category2->getLevel());
+        static::assertEquals(2, $category3->getLevel());
+        static::assertEquals(1, $category4->getLevel());
 
-        $this->assertEquals($category, $category->getTreeRootEntity());
-        $this->assertEquals($category2, $category2->getTreeRootEntity());
-        $this->assertEquals($category2, $category3->getTreeRootEntity());
-        $this->assertEquals($category4, $category4->getTreeRootEntity());
+        static::assertEquals($category, $category->getTreeRootEntity());
+        static::assertEquals($category2, $category2->getTreeRootEntity());
+        static::assertEquals($category2, $category3->getTreeRootEntity());
+        static::assertEquals($category4, $category4->getTreeRootEntity());
 
         // Remove
         $this->em->remove($category);
@@ -113,10 +113,10 @@ class MaterializedPathORMRootAssociationTest extends BaseTestCaseORM
 
         $firstResult = $result[0];
 
-        $this->assertCount(1, $result);
-        $this->assertEquals('4', $firstResult->getTitle());
-        $this->assertEquals(1, $firstResult->getLevel());
-        $this->assertEquals($category4, $firstResult->getTreeRootEntity());
+        static::assertCount(1, $result);
+        static::assertEquals('4', $firstResult->getTitle());
+        static::assertEquals(1, $firstResult->getLevel());
+        static::assertEquals($category4, $firstResult->getTreeRootEntity());
     }
 
     public function createCategory()

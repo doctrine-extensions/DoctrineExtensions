@@ -38,7 +38,7 @@ abstract class BaseTestCaseMongoODM extends \PHPUnit\Framework\TestCase
     protected function setUp(): void
     {
         if (!class_exists('Mongo')) {
-            $this->markTestSkipped('Missing Mongo extension.');
+            static::markTestSkipped('Missing Mongo extension.');
         }
     }
 

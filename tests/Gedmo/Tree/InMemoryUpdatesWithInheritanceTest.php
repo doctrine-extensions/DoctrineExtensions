@@ -57,30 +57,30 @@ class InMemoryUpdatesWithInheritanceTest extends BaseTestCaseORM
         $left = $man1->getLeft();
         $right = $man1->getRight();
         $level = $man1->getLevel();
-        $this->assertEquals(1, $left);
-        $this->assertEquals(8, $right);
-        $this->assertEquals(0, $level);
+        static::assertEquals(1, $left);
+        static::assertEquals(8, $right);
+        static::assertEquals(0, $level);
 
         $left = $woman1->getLeft();
         $right = $woman1->getRight();
         $level = $woman1->getLevel();
-        $this->assertEquals(2, $left);
-        $this->assertEquals(7, $right);
-        $this->assertEquals(1, $level);
+        static::assertEquals(2, $left);
+        static::assertEquals(7, $right);
+        static::assertEquals(1, $level);
 
         $left = $man2->getLeft();
         $right = $man2->getRight();
         $level = $man2->getLevel();
-        $this->assertEquals(3, $left);
-        $this->assertEquals(6, $right);
-        $this->assertEquals(2, $level);
+        static::assertEquals(3, $left);
+        static::assertEquals(6, $right);
+        static::assertEquals(2, $level);
 
         $left = $woman2->getLeft();
         $right = $woman2->getRight();
         $level = $woman2->getLevel();
-        $this->assertEquals(4, $left);
-        $this->assertEquals(5, $right);
-        $this->assertEquals(3, $level);
+        static::assertEquals(4, $left);
+        static::assertEquals(5, $right);
+        static::assertEquals(3, $level);
     }
 
     protected function getUsedEntityFixtures()

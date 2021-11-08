@@ -31,7 +31,7 @@ class TranslatableMappingTest extends BaseTestCaseOM
      */
     private $translatable;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -59,19 +59,19 @@ class TranslatableMappingTest extends BaseTestCaseOM
         $meta = $this->em->getClassMetadata('Gedmo\Tests\Mapping\Fixture\Xml\Translatable');
         $config = $this->translatable->getConfiguration($this->em, $meta->name);
 
-        $this->assertArrayHasKey('translationClass', $config);
-        $this->assertEquals('Gedmo\Translatable\Entity\Translation', $config['translationClass']);
-        $this->assertArrayHasKey('locale', $config);
-        $this->assertEquals('locale', $config['locale']);
+        static::assertArrayHasKey('translationClass', $config);
+        static::assertEquals('Gedmo\Translatable\Entity\Translation', $config['translationClass']);
+        static::assertArrayHasKey('locale', $config);
+        static::assertEquals('locale', $config['locale']);
 
-        $this->assertArrayHasKey('fields', $config);
-        $this->assertCount(4, $config['fields']);
-        $this->assertContains('title', $config['fields']);
-        $this->assertContains('content', $config['fields']);
-        $this->assertContains('author', $config['fields']);
-        $this->assertContains('views', $config['fields']);
-        $this->assertTrue($config['fallback']['author']);
-        $this->assertFalse($config['fallback']['views']);
+        static::assertArrayHasKey('fields', $config);
+        static::assertCount(4, $config['fields']);
+        static::assertContains('title', $config['fields']);
+        static::assertContains('content', $config['fields']);
+        static::assertContains('author', $config['fields']);
+        static::assertContains('views', $config['fields']);
+        static::assertTrue($config['fallback']['author']);
+        static::assertFalse($config['fallback']['views']);
     }
 
     public function testTranslatableMetadataWithEmbedded()
@@ -79,6 +79,6 @@ class TranslatableMappingTest extends BaseTestCaseOM
         $meta = $this->em->getClassMetadata('Gedmo\Tests\Mapping\Fixture\Xml\TranslatableWithEmbedded');
         $config = $this->translatable->getConfiguration($this->em, $meta->name);
 
-        $this->assertContains('embedded.subtitle', $config['fields']);
+        static::assertContains('embedded.subtitle', $config['fields']);
     }
 }

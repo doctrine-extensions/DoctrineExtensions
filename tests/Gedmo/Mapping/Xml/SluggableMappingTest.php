@@ -24,7 +24,7 @@ class SluggableMappingTest extends BaseTestCaseORM
      */
     private $sluggable;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -58,49 +58,49 @@ class SluggableMappingTest extends BaseTestCaseORM
         $meta = $this->em->getClassMetadata('Gedmo\Tests\Mapping\Fixture\Xml\Sluggable');
         $config = $this->sluggable->getConfiguration($this->em, $meta->name);
 
-        $this->assertArrayHasKey('slug', $config['slugs']);
-        $this->assertCount(1, $config['slugs']);
+        static::assertArrayHasKey('slug', $config['slugs']);
+        static::assertCount(1, $config['slugs']);
         $config = $config['slugs']['slug'];
 
-        $this->assertEquals('slug', $config['slug']);
-        $this->assertArrayHasKey('style', $config);
-        $this->assertEquals('camel', $config['style']);
-        $this->assertArrayHasKey('updatable', $config);
-        $this->assertFalse($config['updatable']);
-        $this->assertArrayHasKey('unique', $config);
-        $this->assertTrue($config['unique']);
-        $this->assertArrayHasKey('separator', $config);
-        $this->assertEquals('_', $config['separator']);
+        static::assertEquals('slug', $config['slug']);
+        static::assertArrayHasKey('style', $config);
+        static::assertEquals('camel', $config['style']);
+        static::assertArrayHasKey('updatable', $config);
+        static::assertFalse($config['updatable']);
+        static::assertArrayHasKey('unique', $config);
+        static::assertTrue($config['unique']);
+        static::assertArrayHasKey('separator', $config);
+        static::assertEquals('_', $config['separator']);
 
-        $this->assertArrayHasKey('fields', $config);
-        $this->assertCount(3, $config['fields']);
+        static::assertArrayHasKey('fields', $config);
+        static::assertCount(3, $config['fields']);
         $fields = $config['fields'];
 
-        $this->assertEquals('title', $fields[0]);
-        $this->assertEquals('ean', $fields[1]);
-        $this->assertEquals('code', $fields[2]);
+        static::assertEquals('title', $fields[0]);
+        static::assertEquals('ean', $fields[1]);
+        static::assertEquals('code', $fields[2]);
 
-        $this->assertArrayHasKey('handlers', $config);
-        $this->assertCount(2, $config['handlers']);
+        static::assertArrayHasKey('handlers', $config);
+        static::assertCount(2, $config['handlers']);
         $handlers = $config['handlers'];
 
-        $this->assertArrayHasKey('Gedmo\Sluggable\Handler\TreeSlugHandler', $handlers);
-        $this->assertArrayHasKey('Gedmo\Sluggable\Handler\RelativeSlugHandler', $handlers);
+        static::assertArrayHasKey('Gedmo\Sluggable\Handler\TreeSlugHandler', $handlers);
+        static::assertArrayHasKey('Gedmo\Sluggable\Handler\RelativeSlugHandler', $handlers);
 
         $first = $handlers['Gedmo\Sluggable\Handler\TreeSlugHandler'];
-        $this->assertCount(2, $first);
-        $this->assertArrayHasKey('parentRelationField', $first);
-        $this->assertArrayHasKey('separator', $first);
-        $this->assertEquals('parent', $first['parentRelationField']);
-        $this->assertEquals('/', $first['separator']);
+        static::assertCount(2, $first);
+        static::assertArrayHasKey('parentRelationField', $first);
+        static::assertArrayHasKey('separator', $first);
+        static::assertEquals('parent', $first['parentRelationField']);
+        static::assertEquals('/', $first['separator']);
 
         $second = $handlers['Gedmo\Sluggable\Handler\RelativeSlugHandler'];
-        $this->assertCount(3, $second);
-        $this->assertArrayHasKey('relationField', $second);
-        $this->assertArrayHasKey('relationSlugField', $second);
-        $this->assertArrayHasKey('separator', $second);
-        $this->assertEquals('parent', $second['relationField']);
-        $this->assertEquals('test', $second['relationSlugField']);
-        $this->assertEquals('-', $second['separator']);
+        static::assertCount(3, $second);
+        static::assertArrayHasKey('relationField', $second);
+        static::assertArrayHasKey('relationSlugField', $second);
+        static::assertArrayHasKey('separator', $second);
+        static::assertEquals('parent', $second['relationField']);
+        static::assertEquals('test', $second['relationSlugField']);
+        static::assertEquals('-', $second['separator']);
     }
 }

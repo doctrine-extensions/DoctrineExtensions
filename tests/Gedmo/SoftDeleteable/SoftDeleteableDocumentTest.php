@@ -65,14 +65,14 @@ class SoftDeleteableDocumentTest extends BaseTestCaseMongoODM
 
         $user = $repo->findOneBy(['username' => $username]);
 
-        $this->assertNull($user->getDeletedAt());
+        static::assertNull($user->getDeletedAt());
 
         $this->dm->remove($user);
         $this->dm->flush();
 
         $user = $repo->findOneBy(['username' => $username]);
 
-        $this->assertNull($user);
+        static::assertNull($user);
     }
 
     /**
@@ -94,18 +94,18 @@ class SoftDeleteableDocumentTest extends BaseTestCaseMongoODM
 
         $user = $repo->findOneBy(['username' => $username]);
 
-        $this->assertNull($user->getDeletedAt());
+        static::assertNull($user->getDeletedAt());
         $this->dm->remove($user);
         $this->dm->flush();
 
         $user = $repo->findOneBy(['username' => $username]);
 
-        $this->assertNotNull($user->getDeletedAt());
+        static::assertNotNull($user->getDeletedAt());
 
         $filter->enableForDocument(self::USER_CLASS);
 
         $user = $repo->findOneBy(['username' => $username]);
-        $this->assertNull($user);
+        static::assertNull($user);
     }
 
     /**
@@ -145,7 +145,7 @@ class SoftDeleteableDocumentTest extends BaseTestCaseMongoODM
 
         $user = $repo->findOneBy(['username' => $username]);
 
-        $this->assertNull($user);
+        static::assertNull($user);
         $this->dm->remove($user);
         $this->dm->flush();
     }
@@ -160,17 +160,17 @@ class SoftDeleteableDocumentTest extends BaseTestCaseMongoODM
             ])
             ->getMock();
 
-        $subscriber->expects($this->once())
+        $subscriber->expects(static::once())
             ->method('getSubscribedEvents')
             ->willReturn([SoftDeleteableListener::PRE_SOFT_DELETE, SoftDeleteableListener::POST_SOFT_DELETE]);
 
-        $subscriber->expects($this->once())
+        $subscriber->expects(static::once())
             ->method('preSoftDelete')
-            ->with($this->anything());
+            ->with(static::anything());
 
-        $subscriber->expects($this->once())
+        $subscriber->expects(static::once())
             ->method('postSoftDelete')
-            ->with($this->anything());
+            ->with(static::anything());
 
         $this->dm->getEventManager()->addEventSubscriber($subscriber);
 
@@ -185,7 +185,7 @@ class SoftDeleteableDocumentTest extends BaseTestCaseMongoODM
 
         $user = $repo->findOneBy(['username' => 'test_user']);
 
-        $this->assertNull($user->getDeletedAt());
+        static::assertNull($user->getDeletedAt());
 
         $this->dm->remove($user);
         $this->dm->flush();

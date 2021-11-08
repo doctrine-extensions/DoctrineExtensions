@@ -80,7 +80,7 @@ abstract class BaseTestCaseOM extends \PHPUnit\Framework\TestCase
     protected function getMockDocumentManager($dbName, MappingDriver $mappingDriver = null)
     {
         if (!class_exists('Mongo')) {
-            $this->markTestSkipped('Missing Mongo extension.');
+            static::markTestSkipped('Missing Mongo extension.');
         }
 
         $client = new Client($_ENV['MONGODB_SERVER'], [], ['typeMap' => DocumentManager::CLIENT_TYPEMAP]);
@@ -149,7 +149,7 @@ abstract class BaseTestCaseOM extends \PHPUnit\Framework\TestCase
     protected function getMockMappedEntityManager(MappingDriver $mappingDriver = null)
     {
         $driver = $this->getMockBuilder('Doctrine\DBAL\Driver')->getMock();
-        $driver->expects($this->once())
+        $driver->expects(static::once())
             ->method('getDatabasePlatform')
             ->willReturn($this->getMockBuilder('Doctrine\DBAL\Platforms\MySqlPlatform')->getMock());
 
@@ -157,7 +157,7 @@ abstract class BaseTestCaseOM extends \PHPUnit\Framework\TestCase
             ->setConstructorArgs([], $driver)
             ->getMock();
 
-        $conn->expects($this->once())
+        $conn->expects(static::once())
             ->method('getEventManager')
             ->willReturn($evm ?: $this->getEventManager());
 
@@ -240,11 +240,11 @@ abstract class BaseTestCaseOM extends \PHPUnit\Framework\TestCase
     private function getMockAnnotatedORMConfig(MappingDriver $mappingDriver = null)
     {
         $config = $this->getMockBuilder('Doctrine\ORM\Configuration')->getMock();
-        $config->expects($this->once())
+        $config->expects(static::once())
             ->method('getProxyDir')
             ->willReturn(__DIR__.'/../../temp');
 
-        $config->expects($this->once())
+        $config->expects(static::once())
             ->method('getProxyNamespace')
             ->willReturn('Proxy');
 
@@ -252,11 +252,11 @@ abstract class BaseTestCaseOM extends \PHPUnit\Framework\TestCase
             ->method('getDefaultQueryHints')
             ->willReturn([]);
 
-        $config->expects($this->once())
+        $config->expects(static::once())
             ->method('getAutoGenerateProxyClasses')
             ->willReturn(true);
 
-        $config->expects($this->once())
+        $config->expects(static::once())
             ->method('getClassMetadataFactoryName')
             ->willReturn('Doctrine\\ORM\\Mapping\\ClassMetadataFactory');
 
@@ -283,7 +283,7 @@ abstract class BaseTestCaseOM extends \PHPUnit\Framework\TestCase
             ->willReturn($mappingDriver);
 
         $config
-            ->expects($this->once())
+            ->expects(static::once())
             ->method('getRepositoryFactory')
             ->willReturn(new DefaultRepositoryFactoryORM());
 

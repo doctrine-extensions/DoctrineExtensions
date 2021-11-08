@@ -79,9 +79,9 @@ class TranslatableDocumentTest extends BaseTestCaseMongoODM
         $this->translatableListener->setTranslatableLocale('en_us');
         $article = $repo->find($this->articleId);
 
-        $this->assertEquals('Title EN', $article->getTitle());
-        $this->assertEquals('Code EN', $article->getCode());
-        $this->assertEquals('title-en-code-en', $article->getSlug());
+        static::assertEquals('Title EN', $article->getTitle());
+        static::assertEquals('Code EN', $article->getCode());
+        static::assertEquals('title-en-code-en', $article->getSlug());
 
         // test translation update
         /*$article->setTitle('Title EN Updated');
