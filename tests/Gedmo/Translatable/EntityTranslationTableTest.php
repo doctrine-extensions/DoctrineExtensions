@@ -47,11 +47,11 @@ class EntityTranslationTableTest extends BaseTestCaseORM
         $this->em->clear();
 
         $repo = $this->em->getRepository(self::TRANSLATION);
-        $this->assertInstanceOf(TranslationRepository::class, $repo);
+        static::assertInstanceOf(TranslationRepository::class, $repo);
 
         $translations = $repo->findTranslations($person);
         //As Translate locale and Default locale are the same, no records should be present in translations table
-        $this->assertCount(0, $translations);
+        static::assertCount(0, $translations);
 
         // test second translations
         $person = $this->em->find(self::PERSON, $person->getId());
@@ -64,11 +64,11 @@ class EntityTranslationTableTest extends BaseTestCaseORM
 
         $translations = $repo->findTranslations($person);
         //Only one translation should be present
-        $this->assertCount(1, $translations);
-        $this->assertArrayHasKey('de_de', $translations);
+        static::assertCount(1, $translations);
+        static::assertArrayHasKey('de_de', $translations);
 
-        $this->assertArrayHasKey('name', $translations['de_de']);
-        $this->assertEquals('name in de', $translations['de_de']['name']);
+        static::assertArrayHasKey('name', $translations['de_de']);
+        static::assertEquals('name in de', $translations['de_de']['name']);
 
         $this->translatableListener->setTranslatableLocale('en_us');
     }
@@ -95,11 +95,11 @@ class EntityTranslationTableTest extends BaseTestCaseORM
 
         $this->translatableListener->setTranslatableLocale('en_us');
         $articles = $this->em->createQuery('SELECT p FROM '.self::PERSON.' p')->getArrayResult();
-        $this->assertEquals('en_us', $articles[0]['name']);
+        static::assertEquals('en_us', $articles[0]['name']);
         $trans = $this->em->createQuery('SELECT t FROM '.self::TRANSLATION.' t')->getArrayResult();
-        $this->assertCount(2, $trans);
+        static::assertCount(2, $trans);
         foreach ($trans as $item) {
-            $this->assertEquals($item['locale'], $item['content']);
+            static::assertEquals($item['locale'], $item['content']);
         }
     }
 

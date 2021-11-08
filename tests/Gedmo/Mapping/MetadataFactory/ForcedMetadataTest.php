@@ -15,7 +15,7 @@ use Gedmo\Tests\Mapping\Fixture\Unmapped\Timestampable;
  */
 class ForcedMetadataTest extends \PHPUnit\Framework\TestCase
 {
-    public function setUp(): void
+    protected function setUp(): void
     {
         $config = new \Doctrine\ORM\Configuration();
         $config->setProxyDir(TESTS_TEMP_DIR);
@@ -89,7 +89,7 @@ class ForcedMetadataTest extends \PHPUnit\Framework\TestCase
             $this->em,
             'Gedmo\Tests\Mapping\Fixture\Unmapped\Timestampable'
         );
-        $this->assertTrue(isset($conf['create']));
+        static::assertTrue(isset($conf['create']));
 
         $test = new Timestampable();
         $this->em->persist($test);
@@ -100,6 +100,6 @@ class ForcedMetadataTest extends \PHPUnit\Framework\TestCase
             ->getReflectionProperty('id')
             ->getValue($test)
         ;
-        $this->assertNotEmpty($id);
+        static::assertNotEmpty($id);
     }
 }

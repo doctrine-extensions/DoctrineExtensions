@@ -33,7 +33,7 @@ class UploadableMappingTest extends BaseTestCaseOM
      */
     private $listener;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -62,20 +62,20 @@ class UploadableMappingTest extends BaseTestCaseOM
         $meta = $this->em->getClassMetadata('Gedmo\Tests\Mapping\Fixture\Xml\Uploadable');
         $config = $this->listener->getConfiguration($this->em, $meta->name);
 
-        $this->assertTrue($config['uploadable']);
-        $this->assertTrue($config['allowOverwrite']);
-        $this->assertTrue($config['appendNumber']);
-        $this->assertEquals('/my/path', $config['path']);
-        $this->assertEquals('getPath', $config['pathMethod']);
-        $this->assertEquals('mimeType', $config['fileMimeTypeField']);
-        $this->assertEquals('path', $config['filePathField']);
-        $this->assertEquals('size', $config['fileSizeField']);
-        $this->assertEquals('callbackMethod', $config['callback']);
-        $this->assertEquals('SHA1', $config['filenameGenerator']);
-        $this->assertEquals(1500, $config['maxSize']);
-        $this->assertContains('text/plain', $config['allowedTypes']);
-        $this->assertContains('text/css', $config['allowedTypes']);
-        $this->assertContains('video/jpeg', $config['disallowedTypes']);
-        $this->assertContains('text/html', $config['disallowedTypes']);
+        static::assertTrue($config['uploadable']);
+        static::assertTrue($config['allowOverwrite']);
+        static::assertTrue($config['appendNumber']);
+        static::assertEquals('/my/path', $config['path']);
+        static::assertEquals('getPath', $config['pathMethod']);
+        static::assertEquals('mimeType', $config['fileMimeTypeField']);
+        static::assertEquals('path', $config['filePathField']);
+        static::assertEquals('size', $config['fileSizeField']);
+        static::assertEquals('callbackMethod', $config['callback']);
+        static::assertEquals('SHA1', $config['filenameGenerator']);
+        static::assertEquals(1500, $config['maxSize']);
+        static::assertContains('text/plain', $config['allowedTypes']);
+        static::assertContains('text/css', $config['allowedTypes']);
+        static::assertContains('video/jpeg', $config['disallowedTypes']);
+        static::assertContains('text/html', $config['disallowedTypes']);
     }
 }

@@ -56,20 +56,20 @@ class ReferenceIntegrityDocumentTest extends BaseTestCaseMongoODM
         $type = $this->dm->getRepository(self::TYPE_ONE_NULLIFY_CLASS)
             ->findOneBy(['title' => 'One Nullify Type']);
 
-        $this->assertNotNull($type);
-        $this->assertIsObject($type);
+        static::assertNotNull($type);
+        static::assertIsObject($type);
 
         $this->dm->remove($type);
         $this->dm->flush();
 
         $type = $this->dm->getRepository(self::TYPE_ONE_NULLIFY_CLASS)
             ->findOneBy(['title' => 'One Nullify Type']);
-        $this->assertNull($type);
+        static::assertNull($type);
 
         $article = $this->dm->getRepository(self::ARTICLE_ONE_NULLIFY_CLASS)
             ->findOneBy(['title' => 'One Nullify Article']);
 
-        $this->assertNull($article->getType());
+        static::assertNull($article->getType());
 
         $this->dm->clear();
     }
@@ -79,20 +79,20 @@ class ReferenceIntegrityDocumentTest extends BaseTestCaseMongoODM
         $type = $this->dm->getRepository(self::TYPE_MANY_NULLIFY_CLASS)
             ->findOneBy(['title' => 'Many Nullify Type']);
 
-        $this->assertNotNull($type);
-        $this->assertIsObject($type);
+        static::assertNotNull($type);
+        static::assertIsObject($type);
 
         $this->dm->remove($type);
         $this->dm->flush();
 
         $type = $this->dm->getRepository(self::TYPE_MANY_NULLIFY_CLASS)
             ->findOneBy(['title' => 'Many Nullify Type']);
-        $this->assertNull($type);
+        static::assertNull($type);
 
         $article = $this->dm->getRepository(self::ARTICLE_MANY_NULLIFY_CLASS)
             ->findOneBy(['title' => 'Many Nullify Article']);
 
-        $this->assertNull($article->getType());
+        static::assertNull($article->getType());
 
         $this->dm->clear();
     }
@@ -104,25 +104,25 @@ class ReferenceIntegrityDocumentTest extends BaseTestCaseMongoODM
         $type2 = $this->dm->getRepository(self::TYPE_ONE_PULL_CLASS)
             ->findOneBy(['title' => 'One Pull Type 2']);
 
-        $this->assertNotNull($type1);
-        $this->assertIsObject($type1);
+        static::assertNotNull($type1);
+        static::assertIsObject($type1);
 
-        $this->assertNotNull($type2);
-        $this->assertIsObject($type2);
+        static::assertNotNull($type2);
+        static::assertIsObject($type2);
 
         $this->dm->remove($type2);
         $this->dm->flush();
 
         $type2 = $this->dm->getRepository(self::TYPE_ONE_PULL_CLASS)
             ->findOneBy(['title' => 'One Pull Type 2']);
-        $this->assertNull($type2);
+        static::assertNull($type2);
 
         $article = $this->dm->getRepository(self::ARTICLE_ONE_PULL_CLASS)
             ->findOneBy(['title' => 'One Pull Article']);
 
         $types = $article->getTypes();
-        $this->assertCount(1, $types);
-        $this->assertEquals('One Pull Type 1', $types[0]->getTitle());
+        static::assertCount(1, $types);
+        static::assertEquals('One Pull Type 1', $types[0]->getTitle());
 
         $this->dm->clear();
     }
@@ -134,25 +134,25 @@ class ReferenceIntegrityDocumentTest extends BaseTestCaseMongoODM
         $type2 = $this->dm->getRepository(self::TYPE_ONE_PULL_CLASS)
             ->findOneBy(['title' => 'Many Pull Type 2']);
 
-        $this->assertNotNull($type1);
-        $this->assertIsObject($type1);
+        static::assertNotNull($type1);
+        static::assertIsObject($type1);
 
-        $this->assertNotNull($type2);
-        $this->assertIsObject($type2);
+        static::assertNotNull($type2);
+        static::assertIsObject($type2);
 
         $this->dm->remove($type2);
         $this->dm->flush();
 
         $type2 = $this->dm->getRepository(self::TYPE_MANY_PULL_CLASS)
             ->findOneBy(['title' => 'Many Pull Type 2']);
-        $this->assertNull($type2);
+        static::assertNull($type2);
 
         $article = $this->dm->getRepository(self::ARTICLE_MANY_PULL_CLASS)
             ->findOneBy(['title' => 'Many Pull Article']);
 
         $types = $article->getTypes();
-        $this->assertCount(1, $types);
-        $this->assertEquals('Many Pull Type 1', $types[0]->getTitle());
+        static::assertCount(1, $types);
+        static::assertEquals('Many Pull Type 1', $types[0]->getTitle());
 
         $this->dm->clear();
     }
@@ -163,8 +163,8 @@ class ReferenceIntegrityDocumentTest extends BaseTestCaseMongoODM
         $type = $this->dm->getRepository(self::TYPE_ONE_RESTRICT_CLASS)
             ->findOneBy(['title' => 'One Restrict Type']);
 
-        $this->assertNotNull($type);
-        $this->assertIsObject($type);
+        static::assertNotNull($type);
+        static::assertIsObject($type);
 
         $this->dm->remove($type);
         $this->dm->flush();
@@ -176,8 +176,8 @@ class ReferenceIntegrityDocumentTest extends BaseTestCaseMongoODM
         $type = $this->dm->getRepository(self::TYPE_MANY_RESTRICT_CLASS)
             ->findOneBy(['title' => 'Many Restrict Type']);
 
-        $this->assertNotNull($type);
-        $this->assertIsObject($type);
+        static::assertNotNull($type);
+        static::assertIsObject($type);
 
         $this->dm->remove($type);
         $this->dm->flush();

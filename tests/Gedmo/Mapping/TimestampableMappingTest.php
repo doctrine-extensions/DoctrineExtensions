@@ -21,7 +21,7 @@ class TimestampableMappingTest extends \PHPUnit\Framework\TestCase
     public const TEST_YAML_ENTITY_CLASS = 'Gedmo\Tests\Mapping\Fixture\Yaml\Category';
     private $em;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $config = new \Doctrine\ORM\Configuration();
         $config->setMetadataCacheImpl(new \Doctrine\Common\Cache\ArrayCache());
@@ -55,15 +55,15 @@ class TimestampableMappingTest extends \PHPUnit\Framework\TestCase
             'Gedmo\Timestampable'
         );
         $config = $this->em->getMetadataFactory()->getCacheDriver()->fetch($cacheId);
-        $this->assertArrayHasKey('create', $config);
-        $this->assertEquals('created', $config['create'][0]);
-        $this->assertArrayHasKey('update', $config);
-        $this->assertEquals('updated', $config['update'][0]);
-        $this->assertArrayHasKey('change', $config);
+        static::assertArrayHasKey('create', $config);
+        static::assertEquals('created', $config['create'][0]);
+        static::assertArrayHasKey('update', $config);
+        static::assertEquals('updated', $config['update'][0]);
+        static::assertArrayHasKey('change', $config);
         $onChange = $config['change'][0];
 
-        $this->assertEquals('changed', $onChange['field']);
-        $this->assertEquals('title', $onChange['trackedField']);
-        $this->assertEquals('Test', $onChange['value']);
+        static::assertEquals('changed', $onChange['field']);
+        static::assertEquals('title', $onChange['trackedField']);
+        static::assertEquals('Test', $onChange['value']);
     }
 }

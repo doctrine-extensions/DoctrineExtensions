@@ -42,7 +42,7 @@ class LoggableDocumentTest extends BaseTestCaseMongoODM
     {
         $logRepo = $this->dm->getRepository('Gedmo\\Loggable\\Document\\LogEntry');
         $articleRepo = $this->dm->getRepository(self::ARTICLE);
-        $this->assertCount(0, $logRepo->findAll());
+        static::assertCount(0, $logRepo->findAll());
 
         $art0 = new Article();
         $art0->setTitle('Title');
@@ -58,17 +58,17 @@ class LoggableDocumentTest extends BaseTestCaseMongoODM
 
         $log = $logRepo->findOneBy(['objectId' => $art0->getId()]);
 
-        $this->assertNotNull($log);
-        $this->assertEquals('create', $log->getAction());
-        $this->assertEquals(get_class($art0), $log->getObjectClass());
-        $this->assertEquals('jules', $log->getUsername());
-        $this->assertEquals(1, $log->getVersion());
+        static::assertNotNull($log);
+        static::assertEquals('create', $log->getAction());
+        static::assertEquals(get_class($art0), $log->getObjectClass());
+        static::assertEquals('jules', $log->getUsername());
+        static::assertEquals(1, $log->getVersion());
         $data = $log->getData();
-        $this->assertCount(2, $data);
-        $this->assertArrayHasKey('title', $data);
-        $this->assertEquals('Title', $data['title']);
-        $this->assertArrayHasKey('author', $data);
-        $this->assertEquals(['name' => 'John Doe', 'email' => 'john@doe.com'], $data['author']);
+        static::assertCount(2, $data);
+        static::assertArrayHasKey('title', $data);
+        static::assertEquals('Title', $data['title']);
+        static::assertArrayHasKey('author', $data);
+        static::assertEquals(['name' => 'John Doe', 'email' => 'john@doe.com'], $data['author']);
 
         // test update
         $article = $articleRepo->findOneBy(['title' => 'Title']);
@@ -78,7 +78,7 @@ class LoggableDocumentTest extends BaseTestCaseMongoODM
         $this->dm->clear();
 
         $log = $logRepo->findOneBy(['version' => 2, 'objectId' => $article->getId()]);
-        $this->assertEquals('update', $log->getAction());
+        static::assertEquals('update', $log->getAction());
 
         // test delete
         $article = $articleRepo->findOneBy(['title' => 'New']);
@@ -87,8 +87,8 @@ class LoggableDocumentTest extends BaseTestCaseMongoODM
         $this->dm->clear();
 
         $log = $logRepo->findOneBy(['version' => 3, 'objectId' => $article->getId()]);
-        $this->assertEquals('remove', $log->getAction());
-        $this->assertNull($log->getData());
+        static::assertEquals('remove', $log->getAction());
+        static::assertNull($log->getData());
     }
 
     public function testVersionControl()
@@ -99,27 +99,27 @@ class LoggableDocumentTest extends BaseTestCaseMongoODM
 
         $comment = $commentRepo->findOneBy(['message' => 'm-v5']);
         $commentId = $comment->getId();
-        $this->assertEquals('m-v5', $comment->getMessage());
-        $this->assertEquals('s-v3', $comment->getSubject());
-        $this->assertEquals('a2-t-v1', $comment->getArticle()->getTitle());
-        $this->assertEquals('Jane Doe', $comment->getAuthor()->getName());
-        $this->assertEquals('jane@doe.com', $comment->getAuthor()->getEmail());
+        static::assertEquals('m-v5', $comment->getMessage());
+        static::assertEquals('s-v3', $comment->getSubject());
+        static::assertEquals('a2-t-v1', $comment->getArticle()->getTitle());
+        static::assertEquals('Jane Doe', $comment->getAuthor()->getName());
+        static::assertEquals('jane@doe.com', $comment->getAuthor()->getEmail());
 
         // test revert
         $commentLogRepo->revert($comment, 3);
-        $this->assertEquals('s-v3', $comment->getSubject());
-        $this->assertEquals('m-v2', $comment->getMessage());
-        $this->assertEquals('a1-t-v1', $comment->getArticle()->getTitle());
-        $this->assertEquals('John Doe', $comment->getAuthor()->getName());
-        $this->assertEquals('john@doe.com', $comment->getAuthor()->getEmail());
+        static::assertEquals('s-v3', $comment->getSubject());
+        static::assertEquals('m-v2', $comment->getMessage());
+        static::assertEquals('a1-t-v1', $comment->getArticle()->getTitle());
+        static::assertEquals('John Doe', $comment->getAuthor()->getName());
+        static::assertEquals('john@doe.com', $comment->getAuthor()->getEmail());
         $this->dm->persist($comment);
         $this->dm->flush();
 
         // test get log entries
         $logEntries = $commentLogRepo->getLogEntries($comment);
-        $this->assertCount(6, $logEntries);
+        static::assertCount(6, $logEntries);
         $latest = array_shift($logEntries);
-        $this->assertEquals('update', $latest->getAction());
+        static::assertEquals('update', $latest->getAction());
     }
 
     private function populate()

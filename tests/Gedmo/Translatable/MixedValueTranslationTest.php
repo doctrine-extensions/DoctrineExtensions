@@ -47,9 +47,9 @@ class MixedValueTranslationTest extends BaseTestCaseORM
         $repo = $this->em->getRepository(self::MIXED);
         $mixed = $repo->findOneBy(['id' => 1]);
 
-        $this->assertInstanceOf(\DateTime::class, $mixed->getDate());
-        $this->assertInstanceOf(\stdClass::class, $mixed->getCust());
-        $this->assertEquals('en', $mixed->getCust()->test);
+        static::assertInstanceOf(\DateTime::class, $mixed->getDate());
+        static::assertInstanceOf(\stdClass::class, $mixed->getCust());
+        static::assertEquals('en', $mixed->getCust()->test);
     }
 
     public function testOtherTranslation()
@@ -71,12 +71,12 @@ class MixedValueTranslationTest extends BaseTestCaseORM
         $transRepo = $this->em->getRepository(self::TRANSLATION);
         $translations = $transRepo->findTranslations($mixed);
 
-        $this->assertCount(1, $translations);
-        $this->assertArrayHasKey('de_de', $translations);
+        static::assertCount(1, $translations);
+        static::assertArrayHasKey('de_de', $translations);
         $cust = unserialize($translations['de_de']['cust']);
 
-        $this->assertInstanceOf(\stdClass::class, $cust);
-        $this->assertEquals('de', $cust->test);
+        static::assertInstanceOf(\stdClass::class, $cust);
+        static::assertEquals('de', $cust->test);
     }
 
     protected function getUsedEntityFixtures()

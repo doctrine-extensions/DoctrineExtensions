@@ -45,13 +45,13 @@ class UserRelativeSlugHandlerTest extends BaseTestCaseORM
 
         $this->em->flush();
 
-        $this->assertEquals('knplabs/gedi', $gedi->getSlug(), 'relative slug is invalid');
+        static::assertEquals('knplabs/gedi', $gedi->getSlug(), 'relative slug is invalid');
 
         $company->setTitle('KnpLabs Nantes');
         $this->em->persist($company);
         $this->em->flush();
 
-        $this->assertEquals('knplabs-nantes/gedi', $gedi->getSlug(), 'relative slug is invalid');
+        static::assertEquals('knplabs-nantes/gedi', $gedi->getSlug(), 'relative slug is invalid');
     }
 
     protected function getUsedEntityFixtures()

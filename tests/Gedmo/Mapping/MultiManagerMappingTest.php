@@ -34,7 +34,7 @@ class MultiManagerMappingTest extends BaseTestCaseOM
      */
     private $dm1;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         // EM with standard annotation mapping
@@ -72,14 +72,14 @@ class MultiManagerMappingTest extends BaseTestCaseOM
         $this->dm1->persist($dmArticle);
         $this->dm1->flush();
 
-        $this->assertEquals('title-code', $dmArticle->getSlug());
+        static::assertEquals('title-code', $dmArticle->getSlug());
         $em1Article = new \Gedmo\Tests\Sluggable\Fixture\Article();
         $em1Article->setCode('code');
         $em1Article->setTitle('title');
         $this->em1->persist($em1Article);
         $this->em1->flush();
 
-        $this->assertEquals('title-code', $em1Article->getSlug());
+        static::assertEquals('title-code', $em1Article->getSlug());
     }
 
     public function testTwoSameManagers()
@@ -90,7 +90,7 @@ class MultiManagerMappingTest extends BaseTestCaseOM
         $this->em1->persist($em1Article);
         $this->em1->flush();
 
-        $this->assertEquals('title-code', $em1Article->getSlug());
+        static::assertEquals('title-code', $em1Article->getSlug());
 
         $user = new \Gedmo\Tests\Mapping\Fixture\Yaml\User();
         $user->setUsername('user');
@@ -98,6 +98,6 @@ class MultiManagerMappingTest extends BaseTestCaseOM
         $this->em2->persist($user);
         $this->em2->flush();
 
-        $this->assertEquals(1, $user->getId());
+        static::assertEquals(1, $user->getId());
     }
 }

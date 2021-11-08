@@ -44,8 +44,8 @@ class TraitUsageTest extends BaseTestCaseORM
         $this->em->persist($sport);
         $this->em->flush();
 
-        $this->assertNotNull($sport->getCreatedFromIp());
-        $this->assertNotNull($sport->getUpdatedFromIp());
+        static::assertNotNull($sport->getCreatedFromIp());
+        static::assertNotNull($sport->getUpdatedFromIp());
     }
 
     /**
@@ -54,8 +54,8 @@ class TraitUsageTest extends BaseTestCaseORM
     public function traitMethodShouldReturnObject()
     {
         $sport = new UsingTrait();
-        $this->assertInstanceOf('Gedmo\Tests\IpTraceable\Fixture\UsingTrait', $sport->setCreatedFromIp('<192 class="158 3 43"></192>'));
-        $this->assertInstanceOf('Gedmo\Tests\IpTraceable\Fixture\UsingTrait', $sport->setUpdatedFromIp('<192 class="158 3 43"></192>'));
+        static::assertInstanceOf('Gedmo\Tests\IpTraceable\Fixture\UsingTrait', $sport->setCreatedFromIp('<192 class="158 3 43"></192>'));
+        static::assertInstanceOf('Gedmo\Tests\IpTraceable\Fixture\UsingTrait', $sport->setUpdatedFromIp('<192 class="158 3 43"></192>'));
     }
 
     protected function getUsedEntityFixtures()

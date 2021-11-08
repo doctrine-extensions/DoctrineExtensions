@@ -31,7 +31,7 @@ class LoggableMappingTest extends BaseTestCaseOM
      */
     private $loggable;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -60,14 +60,14 @@ class LoggableMappingTest extends BaseTestCaseOM
         $meta = $this->em->getClassMetadata('Gedmo\Tests\Mapping\Fixture\Yaml\LoggableWithEmbedded');
         $config = $this->loggable->getConfiguration($this->em, $meta->name);
 
-        $this->assertArrayHasKey('logEntryClass', $config);
-        $this->assertEquals('Gedmo\Loggable\Entity\LogEntry', $config['logEntryClass']);
-        $this->assertArrayHasKey('loggable', $config);
-        $this->assertTrue($config['loggable']);
+        static::assertArrayHasKey('logEntryClass', $config);
+        static::assertEquals('Gedmo\Loggable\Entity\LogEntry', $config['logEntryClass']);
+        static::assertArrayHasKey('loggable', $config);
+        static::assertTrue($config['loggable']);
 
-        $this->assertArrayHasKey('versioned', $config);
-        $this->assertCount(2, $config['versioned']);
-        $this->assertContains('title', $config['versioned']);
-        $this->assertContains('embedded.subtitle', $config['versioned']);
+        static::assertArrayHasKey('versioned', $config);
+        static::assertCount(2, $config['versioned']);
+        static::assertContains('title', $config['versioned']);
+        static::assertContains('embedded.subtitle', $config['versioned']);
     }
 }

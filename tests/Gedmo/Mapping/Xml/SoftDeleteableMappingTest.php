@@ -32,7 +32,7 @@ class SoftDeleteableMappingTest extends BaseTestCaseOM
      */
     private $softDeleteable;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -60,11 +60,11 @@ class SoftDeleteableMappingTest extends BaseTestCaseOM
         $meta = $this->em->getClassMetadata('Gedmo\Tests\Mapping\Fixture\Xml\SoftDeleteable');
         $config = $this->softDeleteable->getConfiguration($this->em, $meta->name);
 
-        $this->assertArrayHasKey('softDeleteable', $config);
-        $this->assertTrue($config['softDeleteable']);
-        $this->assertArrayHasKey('timeAware', $config);
-        $this->assertFalse($config['timeAware']);
-        $this->assertArrayHasKey('fieldName', $config);
-        $this->assertEquals('deletedAt', $config['fieldName']);
+        static::assertArrayHasKey('softDeleteable', $config);
+        static::assertTrue($config['softDeleteable']);
+        static::assertArrayHasKey('timeAware', $config);
+        static::assertFalse($config['timeAware']);
+        static::assertArrayHasKey('fieldName', $config);
+        static::assertEquals('deletedAt', $config['fieldName']);
     }
 }

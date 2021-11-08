@@ -40,8 +40,8 @@ class TimestampableDocumentTest extends BaseTestCaseMongoODM
         $date = new \DateTime();
         $now = time();
         $created = $article->getCreated()->getTimestamp();
-        $this->assertTrue($created > $now - 5 && $created < $now + 5); // 5 seconds interval if lag
-        $this->assertEquals(
+        static::assertTrue($created > $now - 5 && $created < $now + 5); // 5 seconds interval if lag
+        static::assertEquals(
             $date->format('Y-m-d H:i'),
             $article->getUpdated()->format('Y-m-d H:i')
         );
@@ -58,7 +58,7 @@ class TimestampableDocumentTest extends BaseTestCaseMongoODM
 
         $article = $repo->findOneBy(['title' => 'Timestampable Article']);
         $date = new \DateTime();
-        $this->assertEquals(
+        static::assertEquals(
             $date->format('Y-m-d H:i'),
             $article->getPublished()->format('Y-m-d H:i')
         );
@@ -78,11 +78,11 @@ class TimestampableDocumentTest extends BaseTestCaseMongoODM
 
         $repo = $this->dm->getRepository(self::ARTICLE);
         $sport = $repo->findOneBy(['title' => 'sport forced']);
-        $this->assertEquals(
+        static::assertEquals(
             $created,
             $sport->getCreated()->getTimestamp()
         );
-        $this->assertEquals(
+        static::assertEquals(
             '2000-01-01 12:00:00',
             $sport->getUpdated()->format('Y-m-d H:i:s')
         );
@@ -99,7 +99,7 @@ class TimestampableDocumentTest extends BaseTestCaseMongoODM
         $this->dm->clear();
 
         $sport = $repo->findOneBy(['title' => 'sport forced']);
-        $this->assertEquals(
+        static::assertEquals(
             '2000-01-01 12:00:00',
             $sport->getPublished()->format('Y-m-d H:i:s')
         );
@@ -113,13 +113,13 @@ class TimestampableDocumentTest extends BaseTestCaseMongoODM
         $repo = $this->dm->getRepository(self::ARTICLE);
         $article = $repo->findOneBy(['title' => 'Timestampable Article']);
 
-        $this->assertNull($article->getReady());
+        static::assertNull($article->getReady());
 
         $article->setIsReady(true);
         $this->dm->persist($article);
         $this->dm->flush();
 
-        $this->assertNotNull($article->getReady());
+        static::assertNotNull($article->getReady());
     }
 
     private function populate()

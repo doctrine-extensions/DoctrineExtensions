@@ -43,8 +43,8 @@ class TraitUsageTest extends BaseTestCaseORM
         $this->em->persist($sport);
         $this->em->flush();
 
-        $this->assertNotNull($sport->getCreatedBy());
-        $this->assertNotNull($sport->getUpdatedBy());
+        static::assertNotNull($sport->getCreatedBy());
+        static::assertNotNull($sport->getUpdatedBy());
     }
 
     /**
@@ -53,8 +53,8 @@ class TraitUsageTest extends BaseTestCaseORM
     public function traitMethodthShouldReturnObject()
     {
         $sport = new UsingTrait();
-        $this->assertInstanceOf(self::TARGET, $sport->setCreatedBy('myuser'));
-        $this->assertInstanceOf(self::TARGET, $sport->setUpdatedBy('myuser'));
+        static::assertInstanceOf(self::TARGET, $sport->setCreatedBy('myuser'));
+        static::assertInstanceOf(self::TARGET, $sport->setUpdatedBy('myuser'));
     }
 
     protected function getUsedEntityFixtures()

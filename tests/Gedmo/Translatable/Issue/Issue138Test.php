@@ -51,8 +51,8 @@ class Issue138Test extends BaseTestCaseORM
         $this->translatableListener->setTranslatableLocale('en_us');
         //die($q->getSQL());
         $result = $q->getArrayResult();
-        $this->assertCount(1, $result);
-        $this->assertEquals('Food', $result[0]['title']);
+        static::assertCount(1, $result);
+        static::assertEquals('Food', $result[0]['title']);
     }
 
     protected function getUsedEntityFixtures()

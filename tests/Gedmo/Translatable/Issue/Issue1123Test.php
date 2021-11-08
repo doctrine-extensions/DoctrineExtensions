@@ -53,9 +53,9 @@ class Issue1123Test extends BaseTestCaseORM
 
         // Find using the repository
         $translations = $repo->findTranslations($childEntity);
-        $this->assertCount(1, $translations);
-        $this->assertArrayHasKey('de', $translations);
-        $this->assertSame(['childTitle' => $deTitle], $translations['de']);
+        static::assertCount(1, $translations);
+        static::assertArrayHasKey('de', $translations);
+        static::assertSame(['childTitle' => $deTitle], $translations['de']);
 
         // find using QueryBuilder
         $qb = $this->em->createQueryBuilder()->select('e')->from(self::CHILD_ENTITY, 'e');
@@ -66,12 +66,12 @@ class Issue1123Test extends BaseTestCaseORM
         $query->setHint(\Gedmo\Translatable\TranslatableListener::HINT_FALLBACK, 1);
 
         $res = $query->getArrayResult();
-        $this->assertArrayHasKey('id', $res[0]);
-        $this->assertArrayHasKey('childTitle', $res[0]);
-        $this->assertArrayHasKey('discr', $res[0]);
-        $this->assertSame(1, $res[0]['id']);
-        $this->assertSame($deTitle, $res[0]['childTitle']);
-        $this->assertSame('child', $res[0]['discr']);
+        static::assertArrayHasKey('id', $res[0]);
+        static::assertArrayHasKey('childTitle', $res[0]);
+        static::assertArrayHasKey('discr', $res[0]);
+        static::assertSame(1, $res[0]['id']);
+        static::assertSame($deTitle, $res[0]['childTitle']);
+        static::assertSame('child', $res[0]['discr']);
     }
 
     protected function getUsedEntityFixtures()

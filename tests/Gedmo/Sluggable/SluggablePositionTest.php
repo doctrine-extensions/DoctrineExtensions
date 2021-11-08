@@ -38,7 +38,7 @@ class SluggablePositionTest extends BaseTestCaseORM
 
         $object = $repo->find(1);
         $slug = $meta->getReflectionProperty('slug')->getValue($object);
-        $this->assertEquals('code-other-title-prop', $slug);
+        static::assertEquals('code-other-title-prop', $slug);
     }
 
     protected function getUsedEntityFixtures()

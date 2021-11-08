@@ -42,21 +42,21 @@ class MultiInheritanceWithSingleTableTest extends BaseTestCaseORM
 
         $carRepo = $this->em->getRepository(self::CAR);
         $audi = $carRepo->findOneBy(['title' => 'Audi-80']);
-        $this->assertEquals(2, $carRepo->childCount($audi));
-        $this->assertEquals(1, $audi->getLeft());
-        $this->assertEquals(6, $audi->getRight());
+        static::assertEquals(2, $carRepo->childCount($audi));
+        static::assertEquals(1, $audi->getLeft());
+        static::assertEquals(6, $audi->getRight());
 
         $children = $carRepo->children($audi);
-        $this->assertCount(2, $children);
+        static::assertCount(2, $children);
 
         $path = $carRepo->getPath($children[0]);
-        $this->assertCount(2, $path);
+        static::assertCount(2, $path);
 
         $carRepo->moveDown($children[0]);
-        $this->assertEquals(4, $children[0]->getLeft());
-        $this->assertEquals(5, $children[0]->getRight());
+        static::assertEquals(4, $children[0]->getLeft());
+        static::assertEquals(5, $children[0]->getRight());
 
-        $this->assertTrue($carRepo->verify());
+        static::assertTrue($carRepo->verify());
     }
 
     /*public function testHeavyLoad()

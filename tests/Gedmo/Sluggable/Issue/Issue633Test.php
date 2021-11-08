@@ -42,7 +42,7 @@ class Issue633Test extends BaseTestCaseORM
         $this->em->persist($test);
         $this->em->flush();
 
-        $this->assertEquals('unique-to-code', $test->getSlug());
+        static::assertEquals('unique-to-code', $test->getSlug());
 
         $test2 = new Article();
         $test2->setTitle('Unique to code');
@@ -51,7 +51,7 @@ class Issue633Test extends BaseTestCaseORM
         $this->em->persist($test2);
         $this->em->flush();
 
-        $this->assertEquals('unique-to-code', $test2->getSlug());
+        static::assertEquals('unique-to-code', $test2->getSlug());
 
         $test3 = new Article();
         $test3->setTitle('Unique to code');
@@ -60,7 +60,7 @@ class Issue633Test extends BaseTestCaseORM
         $this->em->persist($test3);
         $this->em->flush();
 
-        $this->assertEquals('unique-to-code-1', $test3->getSlug());
+        static::assertEquals('unique-to-code-1', $test3->getSlug());
     }
 
     /**
@@ -87,9 +87,9 @@ class Issue633Test extends BaseTestCaseORM
         $this->em->persist($test3);
         $this->em->flush();
 
-        $this->assertEquals('unique-to-code', $test->getSlug());
-        $this->assertEquals('unique-to-code', $test2->getSlug());
-        $this->assertEquals('unique-to-code-1', $test3->getSlug());
+        static::assertEquals('unique-to-code', $test->getSlug());
+        static::assertEquals('unique-to-code', $test2->getSlug());
+        static::assertEquals('unique-to-code-1', $test3->getSlug());
     }
 
     protected function getUsedEntityFixtures()

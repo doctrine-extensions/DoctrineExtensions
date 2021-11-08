@@ -51,7 +51,7 @@ class Issue116Test extends BaseTestCaseORM
         $this->em->persist($country);
         $this->em->flush();
 
-        $this->assertEquals('new-zealand', $country->getAlias());
+        static::assertEquals('new-zealand', $country->getAlias());
     }
 
     protected function getUsedEntityFixtures()

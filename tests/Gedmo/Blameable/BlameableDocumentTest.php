@@ -50,8 +50,8 @@ class BlameableDocumentTest extends BaseTestCaseMongoODM
         $repo = $this->dm->getRepository(self::ARTICLE);
         $article = $repo->findOneBy(['title' => 'Blameable Article']);
 
-        $this->assertEquals(self::TEST_USERNAME, $article->getCreated());
-        $this->assertEquals(self::TEST_USERNAME, $article->getUpdated());
+        static::assertEquals(self::TEST_USERNAME, $article->getCreated());
+        static::assertEquals(self::TEST_USERNAME, $article->getUpdated());
 
         $published = new Type();
         $published->setIdentifier('published');
@@ -64,8 +64,8 @@ class BlameableDocumentTest extends BaseTestCaseMongoODM
 
         $article = $repo->findOneBy(['title' => 'Blameable Article']);
 
-        $this->assertEquals(self::TEST_USERNAME, $article->getPublished());
-        $this->assertEquals(self::TEST_USERNAME, $article->getCreator()->getUsername());
+        static::assertEquals(self::TEST_USERNAME, $article->getPublished());
+        static::assertEquals(self::TEST_USERNAME, $article->getCreator()->getUsername());
     }
 
     public function testForcedValues()
@@ -80,8 +80,8 @@ class BlameableDocumentTest extends BaseTestCaseMongoODM
 
         $repo = $this->dm->getRepository(self::ARTICLE);
         $sport = $repo->findOneBy(['title' => 'sport forced']);
-        $this->assertEquals(self::TEST_USERNAME, $sport->getCreated());
-        $this->assertEquals(self::TEST_USERNAME, $sport->getUpdated());
+        static::assertEquals(self::TEST_USERNAME, $sport->getCreated());
+        static::assertEquals(self::TEST_USERNAME, $sport->getUpdated());
 
         $published = new Type();
         $published->setIdentifier('published');
@@ -94,7 +94,7 @@ class BlameableDocumentTest extends BaseTestCaseMongoODM
         $this->dm->flush();
 
         $sport = $repo->findOneBy(['title' => 'sport forced']);
-        $this->assertEquals(self::TEST_USERNAME, $sport->getPublished());
+        static::assertEquals(self::TEST_USERNAME, $sport->getPublished());
     }
 
     private function populate()

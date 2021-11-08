@@ -41,7 +41,7 @@ class NoUserTest extends BaseTestCaseMongoODM
 
         $repo = $this->dm->getRepository(self::ARTICLE);
         $sport = $repo->findOneBy(['title' => 'sport no user']);
-        $this->assertEmpty($sport->getCreated());
-        $this->assertEmpty($sport->getUpdated());
+        static::assertEmpty($sport->getCreated());
+        static::assertEmpty($sport->getUpdated());
     }
 }

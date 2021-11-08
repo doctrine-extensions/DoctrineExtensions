@@ -51,26 +51,26 @@ class TimestampableEmbeddedDocumentTest extends BaseTestCaseMongoODM
 
         $bookFromRepo = $repo->findOneBy(['title' => 'Cats & Dogs']);
 
-        $this->assertNotNull($bookFromRepo);
+        static::assertNotNull($bookFromRepo);
 
         $date = new \DateTime();
 
-        $this->assertEquals(
+        static::assertEquals(
             $date->format('Y-m-d H:i'),
             $book->getTags()->get(0)->getCreated()->format('Y-m-d H:i')
         );
 
-        $this->assertEquals(
+        static::assertEquals(
             $date->format('Y-m-d H:i'),
             $book->getTags()->get(1)->getCreated()->format('Y-m-d H:i')
         );
 
-        $this->assertEquals(
+        static::assertEquals(
             $date->format('Y-m-d H:i'),
             $book->getTags()->get(0)->getUpdated()->format('Y-m-d H:i')
         );
 
-        $this->assertEquals(
+        static::assertEquals(
             $date->format('Y-m-d H:i'),
             $book->getTags()->get(1)->getUpdated()->format('Y-m-d H:i')
         );

@@ -46,19 +46,19 @@ class NestedTreeRootTest extends BaseTestCaseORM
 
         $food = $repo->findOneBy(['title' => 'Food']);
 
-        $this->assertEquals(1, $food->getLeft());
-        $this->assertEquals(4, $food->getRight());
+        static::assertEquals(1, $food->getLeft());
+        static::assertEquals(4, $food->getRight());
 
         $vegies = new RootCategory();
         $vegies->setTitle('Vegies');
         $repo->persistAsFirstChildOf($vegies, $food);
 
         $this->em->flush();
-        $this->assertEquals(1, $food->getLeft());
-        $this->assertEquals(6, $food->getRight());
+        static::assertEquals(1, $food->getLeft());
+        static::assertEquals(6, $food->getRight());
 
-        $this->assertEquals(2, $vegies->getLeft());
-        $this->assertEquals(3, $vegies->getRight());
+        static::assertEquals(2, $vegies->getLeft());
+        static::assertEquals(3, $vegies->getRight());
     }
 
     /*public function testHeavyLoad()
@@ -109,45 +109,45 @@ class NestedTreeRootTest extends BaseTestCaseORM
         $repo = $this->em->getRepository(self::CATEGORY);
         $node = $repo->findOneBy(['title' => 'Food']);
 
-        $this->assertEquals(1, $node->getRoot());
-        $this->assertEquals(1, $node->getLeft());
-        $this->assertEquals(0, $node->getLevel());
-        $this->assertEquals(10, $node->getRight());
+        static::assertEquals(1, $node->getRoot());
+        static::assertEquals(1, $node->getLeft());
+        static::assertEquals(0, $node->getLevel());
+        static::assertEquals(10, $node->getRight());
 
         $node = $repo->findOneBy(['title' => 'Sports']);
 
-        $this->assertEquals(2, $node->getRoot());
-        $this->assertEquals(1, $node->getLeft());
-        $this->assertEquals(0, $node->getLevel());
-        $this->assertEquals(2, $node->getRight());
+        static::assertEquals(2, $node->getRoot());
+        static::assertEquals(1, $node->getLeft());
+        static::assertEquals(0, $node->getLevel());
+        static::assertEquals(2, $node->getRight());
 
         $node = $repo->findOneBy(['title' => 'Fruits']);
 
-        $this->assertEquals(1, $node->getRoot());
-        $this->assertEquals(2, $node->getLeft());
-        $this->assertEquals(1, $node->getLevel());
-        $this->assertEquals(3, $node->getRight());
+        static::assertEquals(1, $node->getRoot());
+        static::assertEquals(2, $node->getLeft());
+        static::assertEquals(1, $node->getLevel());
+        static::assertEquals(3, $node->getRight());
 
         $node = $repo->findOneBy(['title' => 'Vegitables']);
 
-        $this->assertEquals(1, $node->getRoot());
-        $this->assertEquals(4, $node->getLeft());
-        $this->assertEquals(1, $node->getLevel());
-        $this->assertEquals(9, $node->getRight());
+        static::assertEquals(1, $node->getRoot());
+        static::assertEquals(4, $node->getLeft());
+        static::assertEquals(1, $node->getLevel());
+        static::assertEquals(9, $node->getRight());
 
         $node = $repo->findOneBy(['title' => 'Carrots']);
 
-        $this->assertEquals(1, $node->getRoot());
-        $this->assertEquals(5, $node->getLeft());
-        $this->assertEquals(2, $node->getLevel());
-        $this->assertEquals(6, $node->getRight());
+        static::assertEquals(1, $node->getRoot());
+        static::assertEquals(5, $node->getLeft());
+        static::assertEquals(2, $node->getLevel());
+        static::assertEquals(6, $node->getRight());
 
         $node = $repo->findOneBy(['title' => 'Potatoes']);
 
-        $this->assertEquals(1, $node->getRoot());
-        $this->assertEquals(7, $node->getLeft());
-        $this->assertEquals(2, $node->getLevel());
-        $this->assertEquals(8, $node->getRight());
+        static::assertEquals(1, $node->getRoot());
+        static::assertEquals(7, $node->getLeft());
+        static::assertEquals(2, $node->getLevel());
+        static::assertEquals(8, $node->getRight());
     }
 
     public function testSetParentToNull()
@@ -161,10 +161,10 @@ class NestedTreeRootTest extends BaseTestCaseORM
         $this->em->clear();
 
         $node = $repo->findOneBy(['title' => 'Vegitables']);
-        $this->assertEquals(4, $node->getRoot());
-        $this->assertEquals(1, $node->getLeft());
-        $this->assertEquals(6, $node->getRight());
-        $this->assertEquals(0, $node->getLevel());
+        static::assertEquals(4, $node->getRoot());
+        static::assertEquals(1, $node->getLeft());
+        static::assertEquals(6, $node->getRight());
+        static::assertEquals(0, $node->getLevel());
     }
 
     public function testTreeUpdateShiftToNextBranch()
@@ -180,20 +180,20 @@ class NestedTreeRootTest extends BaseTestCaseORM
 
         $node = $repo->findOneBy(['title' => 'Food']);
 
-        $this->assertEquals(1, $node->getLeft());
-        $this->assertEquals(12, $node->getRight());
+        static::assertEquals(1, $node->getLeft());
+        static::assertEquals(12, $node->getRight());
 
         $node = $repo->findOneBy(['title' => 'Sports']);
 
-        $this->assertEquals(1, $node->getRoot());
-        $this->assertEquals(2, $node->getLeft());
-        $this->assertEquals(1, $node->getLevel());
-        $this->assertEquals(3, $node->getRight());
+        static::assertEquals(1, $node->getRoot());
+        static::assertEquals(2, $node->getLeft());
+        static::assertEquals(1, $node->getLevel());
+        static::assertEquals(3, $node->getRight());
 
         $node = $repo->findOneBy(['title' => 'Vegitables']);
 
-        $this->assertEquals(6, $node->getLeft());
-        $this->assertEquals(11, $node->getRight());
+        static::assertEquals(6, $node->getLeft());
+        static::assertEquals(11, $node->getRight());
     }
 
     public function testTreeUpdateShiftToRoot()
@@ -208,22 +208,22 @@ class NestedTreeRootTest extends BaseTestCaseORM
 
         $node = $repo->findOneBy(['title' => 'Food']);
 
-        $this->assertEquals(1, $node->getLeft());
-        $this->assertEquals(4, $node->getRight());
+        static::assertEquals(1, $node->getLeft());
+        static::assertEquals(4, $node->getRight());
 
         $node = $repo->findOneBy(['title' => 'Vegitables']);
 
-        $this->assertEquals(4, $node->getRoot());
-        $this->assertEquals(1, $node->getLeft());
-        $this->assertEquals(0, $node->getLevel());
-        $this->assertEquals(6, $node->getRight());
+        static::assertEquals(4, $node->getRoot());
+        static::assertEquals(1, $node->getLeft());
+        static::assertEquals(0, $node->getLevel());
+        static::assertEquals(6, $node->getRight());
 
         $node = $repo->findOneBy(['title' => 'Potatoes']);
 
-        $this->assertEquals(4, $node->getRoot());
-        $this->assertEquals(4, $node->getLeft());
-        $this->assertEquals(1, $node->getLevel());
-        $this->assertEquals(5, $node->getRight());
+        static::assertEquals(4, $node->getRoot());
+        static::assertEquals(4, $node->getLeft());
+        static::assertEquals(1, $node->getLevel());
+        static::assertEquals(5, $node->getRight());
     }
 
     public function testTreeUpdateShiftToOtherParent()
@@ -239,22 +239,22 @@ class NestedTreeRootTest extends BaseTestCaseORM
 
         $node = $repo->findOneBy(['title' => 'Food']);
 
-        $this->assertEquals(1, $node->getLeft());
-        $this->assertEquals(10, $node->getRight());
+        static::assertEquals(1, $node->getLeft());
+        static::assertEquals(10, $node->getRight());
 
         $node = $repo->findOneBy(['title' => 'Carrots']);
 
-        $this->assertEquals(1, $node->getRoot());
-        $this->assertEquals(2, $node->getLeft());
-        $this->assertEquals(1, $node->getLevel());
-        $this->assertEquals(3, $node->getRight());
+        static::assertEquals(1, $node->getRoot());
+        static::assertEquals(2, $node->getLeft());
+        static::assertEquals(1, $node->getLevel());
+        static::assertEquals(3, $node->getRight());
 
         $node = $repo->findOneBy(['title' => 'Potatoes']);
 
-        $this->assertEquals(1, $node->getRoot());
-        $this->assertEquals(7, $node->getLeft());
-        $this->assertEquals(2, $node->getLevel());
-        $this->assertEquals(8, $node->getRight());
+        static::assertEquals(1, $node->getRoot());
+        static::assertEquals(7, $node->getLeft());
+        static::assertEquals(2, $node->getLevel());
+        static::assertEquals(8, $node->getRight());
     }
 
     public function testTreeUpdateShiftToChildParent()
@@ -288,24 +288,24 @@ class NestedTreeRootTest extends BaseTestCaseORM
 
         $node = $repo->findOneBy(['title' => 'Carrots']);
 
-        $this->assertEquals(4, $node->getRoot());
-        $this->assertEquals(2, $node->getLeft());
-        $this->assertEquals(1, $node->getLevel());
-        $this->assertEquals(3, $node->getRight());
+        static::assertEquals(4, $node->getRoot());
+        static::assertEquals(2, $node->getLeft());
+        static::assertEquals(1, $node->getLevel());
+        static::assertEquals(3, $node->getRight());
 
         $node = $repo->findOneBy(['title' => 'Vegitables']);
 
-        $this->assertEquals(4, $node->getRoot());
-        $this->assertEquals(1, $node->getLeft());
-        $this->assertEquals(0, $node->getLevel());
-        $this->assertEquals(6, $node->getRight());
+        static::assertEquals(4, $node->getRoot());
+        static::assertEquals(1, $node->getLeft());
+        static::assertEquals(0, $node->getLevel());
+        static::assertEquals(6, $node->getRight());
 
         $node = $repo->findOneBy(['title' => 'Sports']);
 
-        $this->assertEquals(1, $node->getRoot());
-        $this->assertEquals(2, $node->getLeft());
-        $this->assertEquals(1, $node->getLevel());
-        $this->assertEquals(3, $node->getRight());
+        static::assertEquals(1, $node->getRoot());
+        static::assertEquals(2, $node->getLeft());
+        static::assertEquals(1, $node->getLevel());
+        static::assertEquals(3, $node->getRight());
     }
 
     public function testRemoval()
@@ -319,8 +319,8 @@ class NestedTreeRootTest extends BaseTestCaseORM
 
         $node = $repo->findOneBy(['title' => 'Food']);
 
-        $this->assertEquals(1, $node->getLeft());
-        $this->assertEquals(4, $node->getRight());
+        static::assertEquals(1, $node->getLeft());
+        static::assertEquals(4, $node->getRight());
     }
 
     /**
@@ -395,98 +395,98 @@ class NestedTreeRootTest extends BaseTestCaseORM
         $this->em->persist($frankenstein);
         $this->em->flush();
 
-        $this->assertEquals(1, $fact->getLeft());
-        $this->assertEquals(4, $fact->getRight());
-        $this->assertEquals(0, $fact->getLevel());
-        $this->assertEquals(1, $fact->getRoot());
-        $this->assertNull($fact->getParent());
+        static::assertEquals(1, $fact->getLeft());
+        static::assertEquals(4, $fact->getRight());
+        static::assertEquals(0, $fact->getLevel());
+        static::assertEquals(1, $fact->getRoot());
+        static::assertNull($fact->getParent());
 
-        $this->assertEquals(5, $fiction->getLeft());
-        $this->assertEquals(10, $fiction->getRight());
-        $this->assertEquals(0, $fiction->getLevel());
-        $this->assertEquals(1, $fiction->getRoot());
-        $this->assertNull($fiction->getParent());
+        static::assertEquals(5, $fiction->getLeft());
+        static::assertEquals(10, $fiction->getRight());
+        static::assertEquals(0, $fiction->getLevel());
+        static::assertEquals(1, $fiction->getRoot());
+        static::assertNull($fiction->getParent());
 
-        $this->assertEquals(6, $lotr->getLeft());
-        $this->assertEquals(7, $lotr->getRight());
-        $this->assertEquals(1, $lotr->getLevel());
-        $this->assertEquals(1, $lotr->getRoot());
-        $this->assertEquals($fiction, $lotr->getParent());
+        static::assertEquals(6, $lotr->getLeft());
+        static::assertEquals(7, $lotr->getRight());
+        static::assertEquals(1, $lotr->getLevel());
+        static::assertEquals(1, $lotr->getRoot());
+        static::assertEquals($fiction, $lotr->getParent());
 
-        $this->assertEquals(8, $warlock->getLeft());
-        $this->assertEquals(9, $warlock->getRight());
-        $this->assertEquals(1, $warlock->getLevel());
-        $this->assertEquals(1, $warlock->getRoot());
-        $this->assertEquals($fiction, $warlock->getParent());
+        static::assertEquals(8, $warlock->getLeft());
+        static::assertEquals(9, $warlock->getRight());
+        static::assertEquals(1, $warlock->getLevel());
+        static::assertEquals(1, $warlock->getRoot());
+        static::assertEquals($fiction, $warlock->getParent());
 
-        $this->assertEquals(2, $php->getLeft());
-        $this->assertEquals(3, $php->getRight());
-        $this->assertEquals(1, $php->getLevel());
-        $this->assertEquals(1, $php->getRoot());
-        $this->assertEquals($fact, $php->getParent());
+        static::assertEquals(2, $php->getLeft());
+        static::assertEquals(3, $php->getRight());
+        static::assertEquals(1, $php->getLevel());
+        static::assertEquals(1, $php->getRoot());
+        static::assertEquals($fact, $php->getParent());
 
-        $this->assertEquals(1, $comedy->getLeft());
-        $this->assertEquals(2, $comedy->getRight());
-        $this->assertEquals(0, $comedy->getLevel());
-        $this->assertEquals(2, $comedy->getRoot());
-        $this->assertNull($comedy->getParent());
+        static::assertEquals(1, $comedy->getLeft());
+        static::assertEquals(2, $comedy->getRight());
+        static::assertEquals(0, $comedy->getLevel());
+        static::assertEquals(2, $comedy->getRoot());
+        static::assertNull($comedy->getParent());
 
-        $this->assertEquals(3, $horror->getLeft());
-        $this->assertEquals(8, $horror->getRight());
-        $this->assertEquals(0, $horror->getLevel());
-        $this->assertEquals(2, $horror->getRoot());
-        $this->assertNull($horror->getParent());
+        static::assertEquals(3, $horror->getLeft());
+        static::assertEquals(8, $horror->getRight());
+        static::assertEquals(0, $horror->getLevel());
+        static::assertEquals(2, $horror->getRoot());
+        static::assertNull($horror->getParent());
 
-        $this->assertEquals(9, $action->getLeft());
-        $this->assertEquals(10, $action->getRight());
-        $this->assertEquals(0, $action->getLevel());
-        $this->assertEquals(2, $action->getRoot());
-        $this->assertNull($action->getParent());
+        static::assertEquals(9, $action->getLeft());
+        static::assertEquals(10, $action->getRight());
+        static::assertEquals(0, $action->getLevel());
+        static::assertEquals(2, $action->getRoot());
+        static::assertNull($action->getParent());
 
-        $this->assertEquals(4, $dracula->getLeft());
-        $this->assertEquals(5, $dracula->getRight());
-        $this->assertEquals(1, $dracula->getLevel());
-        $this->assertEquals(2, $dracula->getRoot());
-        $this->assertEquals($horror, $dracula->getParent());
+        static::assertEquals(4, $dracula->getLeft());
+        static::assertEquals(5, $dracula->getRight());
+        static::assertEquals(1, $dracula->getLevel());
+        static::assertEquals(2, $dracula->getRoot());
+        static::assertEquals($horror, $dracula->getParent());
 
-        $this->assertEquals(6, $frankenstein->getLeft());
-        $this->assertEquals(7, $frankenstein->getRight());
-        $this->assertEquals(1, $frankenstein->getLevel());
-        $this->assertEquals(2, $frankenstein->getRoot());
-        $this->assertEquals($horror, $frankenstein->getParent());
+        static::assertEquals(6, $frankenstein->getLeft());
+        static::assertEquals(7, $frankenstein->getRight());
+        static::assertEquals(1, $frankenstein->getLevel());
+        static::assertEquals(2, $frankenstein->getRoot());
+        static::assertEquals($horror, $frankenstein->getParent());
 
         // Now move the action movie category up
         $repo->moveUp($action);
 
-        $this->assertEquals(1, $comedy->getLeft());
-        $this->assertEquals(2, $comedy->getRight());
-        $this->assertEquals(0, $comedy->getLevel());
-        $this->assertEquals(2, $comedy->getRoot());
-        $this->assertNull($comedy->getParent());
+        static::assertEquals(1, $comedy->getLeft());
+        static::assertEquals(2, $comedy->getRight());
+        static::assertEquals(0, $comedy->getLevel());
+        static::assertEquals(2, $comedy->getRoot());
+        static::assertNull($comedy->getParent());
 
-        $this->assertEquals(3, $action->getLeft());
-        $this->assertEquals(4, $action->getRight());
-        $this->assertEquals(0, $action->getLevel());
-        $this->assertEquals(2, $action->getRoot());
-        $this->assertNull($action->getParent());
+        static::assertEquals(3, $action->getLeft());
+        static::assertEquals(4, $action->getRight());
+        static::assertEquals(0, $action->getLevel());
+        static::assertEquals(2, $action->getRoot());
+        static::assertNull($action->getParent());
 
-        $this->assertEquals(5, $horror->getLeft());
-        $this->assertEquals(10, $horror->getRight());
-        $this->assertEquals(0, $horror->getLevel());
-        $this->assertEquals(2, $horror->getRoot());
-        $this->assertNull($horror->getParent());
+        static::assertEquals(5, $horror->getLeft());
+        static::assertEquals(10, $horror->getRight());
+        static::assertEquals(0, $horror->getLevel());
+        static::assertEquals(2, $horror->getRoot());
+        static::assertNull($horror->getParent());
 
-        $this->assertEquals(6, $dracula->getLeft());
-        $this->assertEquals(7, $dracula->getRight());
-        $this->assertEquals(1, $dracula->getLevel());
-        $this->assertEquals(2, $dracula->getRoot());
-        $this->assertEquals($horror, $dracula->getParent());
+        static::assertEquals(6, $dracula->getLeft());
+        static::assertEquals(7, $dracula->getRight());
+        static::assertEquals(1, $dracula->getLevel());
+        static::assertEquals(2, $dracula->getRoot());
+        static::assertEquals($horror, $dracula->getParent());
 
-        $this->assertEquals(8, $frankenstein->getLeft());
-        $this->assertEquals(9, $frankenstein->getRight());
-        $this->assertEquals(1, $frankenstein->getLevel());
-        $this->assertEquals(2, $frankenstein->getRoot());
-        $this->assertEquals($horror, $frankenstein->getParent());
+        static::assertEquals(8, $frankenstein->getLeft());
+        static::assertEquals(9, $frankenstein->getRight());
+        static::assertEquals(1, $frankenstein->getLevel());
+        static::assertEquals(2, $frankenstein->getRoot());
+        static::assertEquals($horror, $frankenstein->getParent());
 
         $this->em->clear();
     }

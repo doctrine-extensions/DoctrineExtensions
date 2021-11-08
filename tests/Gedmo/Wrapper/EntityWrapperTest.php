@@ -30,31 +30,31 @@ class EntityWrapperTest extends BaseTestCaseORM
     public function testManaged()
     {
         $test = $this->em->find(self::ARTICLE, ['id' => 1]);
-        $this->assertInstanceOf(self::ARTICLE, $test);
+        static::assertInstanceOf(self::ARTICLE, $test);
         $wrapped = new EntityWrapper($test, $this->em);
 
-        $this->assertEquals(1, $wrapped->getIdentifier());
-        $this->assertEquals('test', $wrapped->getPropertyValue('title'));
+        static::assertEquals(1, $wrapped->getIdentifier());
+        static::assertEquals('test', $wrapped->getPropertyValue('title'));
         $wrapped->setPropertyValue('title', 'changed');
-        $this->assertEquals('changed', $wrapped->getPropertyValue('title'));
+        static::assertEquals('changed', $wrapped->getPropertyValue('title'));
 
-        $this->assertTrue($wrapped->hasValidIdentifier());
+        static::assertTrue($wrapped->hasValidIdentifier());
     }
 
     public function testProxy()
     {
         $this->em->clear();
         $test = $this->em->getReference(self::ARTICLE, ['id' => 1]);
-        $this->assertInstanceOf('Doctrine\\ORM\\Proxy\\Proxy', $test);
+        static::assertInstanceOf('Doctrine\\ORM\\Proxy\\Proxy', $test);
         $wrapped = new EntityWrapper($test, $this->em);
 
         $id = $wrapped->getIdentifier(false);
-        $this->assertIsArray($id);
-        $this->assertCount(1, $id);
-        $this->assertArrayHasKey('id', $id);
-        $this->assertEquals(1, $id['id']);
+        static::assertIsArray($id);
+        static::assertCount(1, $id);
+        static::assertArrayHasKey('id', $id);
+        static::assertEquals(1, $id['id']);
 
-        $this->assertEquals('test', $wrapped->getPropertyValue('title'));
+        static::assertEquals('test', $wrapped->getPropertyValue('title'));
     }
 
     public function testDetachedEntity()
@@ -63,8 +63,8 @@ class EntityWrapperTest extends BaseTestCaseORM
         $this->em->clear();
         $wrapped = new EntityWrapper($test, $this->em);
 
-        $this->assertEquals(1, $wrapped->getIdentifier());
-        $this->assertEquals('test', $wrapped->getPropertyValue('title'));
+        static::assertEquals(1, $wrapped->getIdentifier());
+        static::assertEquals('test', $wrapped->getPropertyValue('title'));
     }
 
     public function testDetachedProxy()
@@ -73,8 +73,8 @@ class EntityWrapperTest extends BaseTestCaseORM
         $this->em->clear();
         $wrapped = new EntityWrapper($test, $this->em);
 
-        $this->assertEquals(1, $wrapped->getIdentifier());
-        $this->assertEquals('test', $wrapped->getPropertyValue('title'));
+        static::assertEquals(1, $wrapped->getIdentifier());
+        static::assertEquals('test', $wrapped->getPropertyValue('title'));
     }
 
     public function testSomeFunctions()
@@ -83,9 +83,9 @@ class EntityWrapperTest extends BaseTestCaseORM
         $wrapped = new EntityWrapper($test, $this->em);
 
         $wrapped->populate(['title' => 'test']);
-        $this->assertEquals('test', $wrapped->getPropertyValue('title'));
+        static::assertEquals('test', $wrapped->getPropertyValue('title'));
 
-        $this->assertFalse($wrapped->hasValidIdentifier());
+        static::assertFalse($wrapped->hasValidIdentifier());
     }
 
     protected function getUsedEntityFixtures()
