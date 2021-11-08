@@ -21,7 +21,7 @@ use Gedmo\Timestampable\TimestampableListener;
  */
 class ChangeTest extends BaseTestCaseORM
 {
-    public const FIXTURE = 'Gedmo\\Tests\\Timestampable\\Fixture\\TitledArticle';
+    public const FIXTURE = TitledArticle::class;
 
     protected $listener;
 

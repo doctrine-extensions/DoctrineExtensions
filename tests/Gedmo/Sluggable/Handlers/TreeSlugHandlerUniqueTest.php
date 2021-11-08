@@ -10,7 +10,7 @@ use Gedmo\Tree\TreeListener;
 
 class TreeSlugHandlerUniqueTest extends BaseTestCaseORM
 {
-    public const TARGET = 'Gedmo\\Tests\\Sluggable\\Fixture\\Handler\\TreeSlug';
+    public const TARGET = TreeSlug::class;
 
     protected function setUp(): void
     {

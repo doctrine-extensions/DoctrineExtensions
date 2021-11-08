@@ -4,6 +4,7 @@ namespace Gedmo\Tests\Sluggable;
 
 use Doctrine\Common\EventManager;
 use Gedmo\Sluggable\SluggableListener;
+use Gedmo\SoftDeleteable\Filter\SoftDeleteableFilter;
 use Gedmo\SoftDeleteable\SoftDeleteableListener;
 use Gedmo\Tests\Sluggable\Fixture\Issue449\Article;
 use Gedmo\Tests\Tool\BaseTestCaseORM;
@@ -19,7 +20,7 @@ use Gedmo\Tests\Tool\BaseTestCaseORM;
  */
 class Issue449Test extends BaseTestCaseORM
 {
-    public const TARGET = 'Gedmo\\Tests\\Sluggable\\Fixture\\Issue449\\Article';
+    public const TARGET = Article::class;
     public const SOFT_DELETEABLE_FILTER_NAME = 'soft-deleteable';
 
     private $softDeleteableListener;
@@ -37,7 +38,7 @@ class Issue449Test extends BaseTestCaseORM
         $evm->addEventSubscriber($this->softDeleteableListener);
 
         $config = $this->getMockAnnotatedConfig();
-        $config->addFilter(self::SOFT_DELETEABLE_FILTER_NAME, 'Gedmo\SoftDeleteable\Filter\SoftDeleteableFilter');
+        $config->addFilter(self::SOFT_DELETEABLE_FILTER_NAME, SoftDeleteableFilter::class);
 
         $this->em = $this->getMockSqliteEntityManager($evm, $config);
 

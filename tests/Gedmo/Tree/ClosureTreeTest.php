@@ -3,10 +3,17 @@
 namespace Gedmo\Tests\Tree;
 
 use Doctrine\Common\EventManager;
+use Gedmo\Exception\UnexpectedValueException;
 use Gedmo\Tests\Tool\BaseTestCaseORM;
 use Gedmo\Tests\Tree\Fixture\Closure\Category;
+use Gedmo\Tests\Tree\Fixture\Closure\CategoryClosure;
 use Gedmo\Tests\Tree\Fixture\Closure\CategoryWithoutLevel;
+use Gedmo\Tests\Tree\Fixture\Closure\CategoryWithoutLevelClosure;
 use Gedmo\Tests\Tree\Fixture\Closure\News;
+use Gedmo\Tests\Tree\Fixture\Closure\Person;
+use Gedmo\Tests\Tree\Fixture\Closure\PersonClosure;
+use Gedmo\Tests\Tree\Fixture\Closure\User;
+use Gedmo\Tree\Strategy\ORM\Closure;
 use Gedmo\Tree\TreeListener;
 
 /**
@@ -21,14 +28,14 @@ use Gedmo\Tree\TreeListener;
  */
 class ClosureTreeTest extends BaseTestCaseORM
 {
-    public const CATEGORY = 'Gedmo\\Tests\\Tree\\Fixture\\Closure\\Category';
-    public const CLOSURE = 'Gedmo\\Tests\\Tree\\Fixture\\Closure\\CategoryClosure';
-    public const PERSON = 'Gedmo\\Tests\\Tree\\Fixture\\Closure\\Person';
-    public const USER = 'Gedmo\\Tests\\Tree\\Fixture\\Closure\\User';
-    public const PERSON_CLOSURE = 'Gedmo\\Tests\\Tree\\Fixture\\Closure\\PersonClosure';
-    public const NEWS = 'Gedmo\\Tests\\Tree\\Fixture\\Closure\\News';
-    public const CATEGORY_WITHOUT_LEVEL = 'Gedmo\\Tests\\Tree\\Fixture\\Closure\\CategoryWithoutLevel';
-    public const CATEGORY_WITHOUT_LEVEL_CLOSURE = 'Gedmo\\Tests\\Tree\\Fixture\\Closure\\CategoryWithoutLevelClosure';
+    public const CATEGORY = Category::class;
+    public const CLOSURE = CategoryClosure::class;
+    public const PERSON = Person::class;
+    public const USER = User::class;
+    public const PERSON_CLOSURE = PersonClosure::class;
+    public const NEWS = News::class;
+    public const CATEGORY_WITHOUT_LEVEL = CategoryWithoutLevel::class;
+    public const CATEGORY_WITHOUT_LEVEL_CLOSURE = CategoryWithoutLevelClosure::class;
 
     protected $listener;
 
@@ -207,7 +214,7 @@ class ClosureTreeTest extends BaseTestCaseORM
 
     public function testSettingParentToChild()
     {
-        $this->expectException('Gedmo\Exception\UnexpectedValueException');
+        $this->expectException(UnexpectedValueException::class);
         $repo = $this->em->getRepository(self::CATEGORY);
         $fruits = $repo->findOneBy(['title' => 'Fruits']);
         $strawberries = $repo->findOneBy(['title' => 'Strawberries']);
@@ -218,8 +225,8 @@ class ClosureTreeTest extends BaseTestCaseORM
 
     public function testIfEntityHasNotIncludedTreeLevelFieldThenDontProcessIt()
     {
-        $listener = $this->getMockBuilder('Gedmo\Tree\TreeListener')->getMock();
-        $strategy = $this->getMockBuilder('Gedmo\Tree\Strategy\ORM\Closure')
+        $listener = $this->getMockBuilder(TreeListener::class)->getMock();
+        $strategy = $this->getMockBuilder(Closure::class)
             ->setMethods(['setLevelFieldOnPendingNodes'])
             ->setConstructorArgs([$listener])
             ->getMock();

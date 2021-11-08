@@ -3,6 +3,8 @@
 namespace Gedmo\Sortable\Mapping\Driver;
 
 use Gedmo\Exception\InvalidMappingException;
+use Gedmo\Mapping\Annotation\SortableGroup;
+use Gedmo\Mapping\Annotation\SortablePosition;
 use Gedmo\Mapping\Driver\AbstractAnnotationDriver;
 
 /**
@@ -19,12 +21,12 @@ class Annotation extends AbstractAnnotationDriver
     /**
      * Annotation to mark field as one which will store node position
      */
-    public const POSITION = 'Gedmo\\Mapping\\Annotation\\SortablePosition';
+    public const POSITION = SortablePosition::class;
 
     /**
      * Annotation to mark field as sorting group
      */
-    public const GROUP = 'Gedmo\\Mapping\\Annotation\\SortableGroup';
+    public const GROUP = SortableGroup::class;
 
     /**
      * List of types which are valid for position fields

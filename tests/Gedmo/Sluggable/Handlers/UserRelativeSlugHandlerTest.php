@@ -19,8 +19,8 @@ use Gedmo\Tests\Tool\BaseTestCaseORM;
  */
 class UserRelativeSlugHandlerTest extends BaseTestCaseORM
 {
-    public const USER = 'Gedmo\\Tests\\Sluggable\\Fixture\\Handler\\User';
-    public const COMPANY = 'Gedmo\\Tests\\Sluggable\\Fixture\\Handler\\Company';
+    public const USER = User::class;
+    public const COMPANY = Company::class;
 
     protected function setUp(): void
     {

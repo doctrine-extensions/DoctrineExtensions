@@ -4,6 +4,7 @@ namespace Gedmo\Tests\Tree;
 
 use Doctrine\Common\EventManager;
 use Doctrine\ODM\MongoDB\Iterator\CachingIterator;
+use Gedmo\Exception\InvalidArgumentException;
 use Gedmo\Tests\Tool\BaseTestCaseMongoODM;
 use Gedmo\Tests\Tree\Fixture\Document\Category;
 use Gedmo\Tree\TreeListener;
@@ -291,13 +292,13 @@ class MaterializedPathODMMongoDBRepositoryTest extends BaseTestCaseMongoODM
 
     public function testChildCountIfAnObjectIsPassedWhichIsNotAnInstanceOfTheEntityClassThrowException()
     {
-        $this->expectException('Gedmo\Exception\InvalidArgumentException');
+        $this->expectException(InvalidArgumentException::class);
         $this->repo->childCount(new \DateTime());
     }
 
     public function testChildCountIfAnObjectIsPassedIsAnInstanceOfTheEntityClassButIsNotHandledByUnitOfWorkThrowException()
     {
-        $this->expectException('Gedmo\Exception\InvalidArgumentException');
+        $this->expectException(InvalidArgumentException::class);
         $this->repo->childCount($this->createCategory());
     }
 

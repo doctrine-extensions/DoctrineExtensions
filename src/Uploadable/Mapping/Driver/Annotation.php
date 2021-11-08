@@ -2,6 +2,11 @@
 
 namespace Gedmo\Uploadable\Mapping\Driver;
 
+use Gedmo\Mapping\Annotation\Uploadable;
+use Gedmo\Mapping\Annotation\UploadableFileMimeType;
+use Gedmo\Mapping\Annotation\UploadableFileName;
+use Gedmo\Mapping\Annotation\UploadableFilePath;
+use Gedmo\Mapping\Annotation\UploadableFileSize;
 use Gedmo\Mapping\Driver\AbstractAnnotationDriver;
 use Gedmo\Uploadable\Mapping\Validator;
 
@@ -20,11 +25,11 @@ class Annotation extends AbstractAnnotationDriver
     /**
      * Annotation to define that this object is loggable
      */
-    public const UPLOADABLE = 'Gedmo\\Mapping\\Annotation\\Uploadable';
-    public const UPLOADABLE_FILE_MIME_TYPE = 'Gedmo\\Mapping\\Annotation\\UploadableFileMimeType';
-    public const UPLOADABLE_FILE_NAME = 'Gedmo\\Mapping\\Annotation\\UploadableFileName';
-    public const UPLOADABLE_FILE_PATH = 'Gedmo\\Mapping\\Annotation\\UploadableFilePath';
-    public const UPLOADABLE_FILE_SIZE = 'Gedmo\\Mapping\\Annotation\\UploadableFileSize';
+    public const UPLOADABLE = Uploadable::class;
+    public const UPLOADABLE_FILE_MIME_TYPE = UploadableFileMimeType::class;
+    public const UPLOADABLE_FILE_NAME = UploadableFileName::class;
+    public const UPLOADABLE_FILE_PATH = UploadableFilePath::class;
+    public const UPLOADABLE_FILE_SIZE = UploadableFileSize::class;
 
     /**
      * {@inheritdoc}

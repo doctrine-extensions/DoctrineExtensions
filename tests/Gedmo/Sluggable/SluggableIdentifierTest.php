@@ -18,7 +18,7 @@ use Gedmo\Tests\Tool\BaseTestCaseORM;
  */
 class SluggableIdentifierTest extends BaseTestCaseORM
 {
-    public const TARGET = 'Gedmo\\Tests\\Sluggable\\Fixture\\Identifier';
+    public const TARGET = Identifier::class;
 
     protected function setUp(): void
     {

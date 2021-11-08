@@ -3,6 +3,7 @@
 namespace Gedmo\Timestampable\Mapping\Driver;
 
 use Gedmo\Exception\InvalidMappingException;
+use Gedmo\Mapping\Annotation\Timestampable;
 use Gedmo\Mapping\Driver\AbstractAnnotationDriver;
 
 /**
@@ -19,7 +20,7 @@ class Annotation extends AbstractAnnotationDriver
     /**
      * Annotation field is timestampable
      */
-    public const TIMESTAMPABLE = 'Gedmo\\Mapping\\Annotation\\Timestampable';
+    public const TIMESTAMPABLE = Timestampable::class;
 
     /**
      * List of types which are valid for timestamp

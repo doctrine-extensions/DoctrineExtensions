@@ -18,7 +18,7 @@ use Gedmo\Tests\Tool\BaseTestCaseORM;
  */
 class ChangeTest extends BaseTestCaseORM
 {
-    public const FIXTURE = 'Gedmo\\Tests\\Blameable\\Fixture\\Entity\\TitledArticle';
+    public const FIXTURE = TitledArticle::class;
 
     private $listener;
 

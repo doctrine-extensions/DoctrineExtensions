@@ -3,7 +3,9 @@
 namespace Gedmo\Tests\Tree;
 
 use Doctrine\Common\EventManager;
+use Gedmo\Exception\TreeLockingException;
 use Gedmo\Tests\Tool\BaseTestCaseMongoODM;
+use Gedmo\Tests\Tree\Fixture\Document\Article;
 use Gedmo\Tests\Tree\Fixture\Mock\TreeListenerMock;
 
 /**
@@ -18,7 +20,7 @@ use Gedmo\Tests\Tree\Fixture\Mock\TreeListenerMock;
  */
 class MaterializedPathODMMongoDBTreeLockingTest extends BaseTestCaseMongoODM
 {
-    public const ARTICLE = 'Gedmo\\Tests\\Tree\\Fixture\\Document\\Article';
+    public const ARTICLE = Article::class;
 
     protected $config;
     protected $listener;
@@ -45,7 +47,7 @@ class MaterializedPathODMMongoDBTreeLockingTest extends BaseTestCaseMongoODM
     {
         // By default, TreeListenerMock disables the release of the locks
         // for testing purposes
-        $this->expectException('Gedmo\Exception\TreeLockingException');
+        $this->expectException(TreeLockingException::class);
 
         $article = $this->createArticle();
         $article->setTitle('1');
@@ -96,7 +98,7 @@ class MaterializedPathODMMongoDBTreeLockingTest extends BaseTestCaseMongoODM
         $this->dm->flush();
 
         // But this should throw it, because the root of its tree ($article) is still locked
-        $this->expectException('Gedmo\Exception\TreeLockingException');
+        $this->expectException(TreeLockingException::class);
 
         $repo = $this->dm->getRepository(self::ARTICLE);
         $article2 = $repo->findOneBy(['title' => '2']);

@@ -8,6 +8,7 @@ use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
 use Doctrine\ORM\Mapping\Driver\DriverChain;
 use Doctrine\ORM\Mapping\Driver\XmlDriver;
 use Gedmo\SoftDeleteable\SoftDeleteableListener;
+use Gedmo\Tests\Mapping\Fixture\Xml\SoftDeleteable;
 use Gedmo\Tests\Tool\BaseTestCaseOM;
 
 /**
@@ -50,14 +51,14 @@ class SoftDeleteableMappingTest extends BaseTestCaseOM
         $this->evm->addEventSubscriber($this->softDeleteable);
 
         $this->em = $this->getMockSqliteEntityManager([
-            'Gedmo\Tests\Mapping\Fixture\Xml\SoftDeleteable',
-            'Gedmo\Tests\Mapping\Fixture\SoftDeleteable',
+            SoftDeleteable::class,
+            \Gedmo\Tests\Mapping\Fixture\SoftDeleteable::class,
         ], $chain);
     }
 
     public function testMetadata()
     {
-        $meta = $this->em->getClassMetadata('Gedmo\Tests\Mapping\Fixture\Xml\SoftDeleteable');
+        $meta = $this->em->getClassMetadata(SoftDeleteable::class);
         $config = $this->softDeleteable->getConfiguration($this->em, $meta->name);
 
         static::assertArrayHasKey('softDeleteable', $config);

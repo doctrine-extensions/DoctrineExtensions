@@ -7,6 +7,7 @@ use Gedmo\Tests\Tool\BaseTestCaseORM;
 use Gedmo\Tests\Tree\Fixture\Transport\Bus;
 use Gedmo\Tests\Tree\Fixture\Transport\Car;
 use Gedmo\Tests\Tree\Fixture\Transport\Engine;
+use Gedmo\Tests\Tree\Fixture\Transport\Vehicle;
 use Gedmo\Tree\TreeListener;
 
 /**
@@ -20,10 +21,10 @@ use Gedmo\Tree\TreeListener;
  */
 class MultiInheritanceWithSingleTableTest extends BaseTestCaseORM
 {
-    public const CAR = "Gedmo\Tests\Tree\Fixture\Transport\Car";
-    public const BUS = "Gedmo\Tests\Tree\Fixture\Transport\Bus";
-    public const VEHICLE = "Gedmo\Tests\Tree\Fixture\Transport\Vehicle";
-    public const ENGINE = "Gedmo\Tests\Tree\Fixture\Transport\Engine";
+    public const CAR = Car::class;
+    public const BUS = Bus::class;
+    public const VEHICLE = Vehicle::class;
+    public const ENGINE = Engine::class;
 
     protected function setUp(): void
     {

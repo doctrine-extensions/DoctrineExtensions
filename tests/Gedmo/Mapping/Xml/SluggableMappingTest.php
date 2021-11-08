@@ -5,7 +5,10 @@ namespace Gedmo\Tests\Mapping\Xml;
 use Doctrine\Common\EventManager;
 use Doctrine\ORM\Mapping\Driver\DriverChain;
 use Doctrine\ORM\Mapping\Driver\XmlDriver;
+use Gedmo\Sluggable\Handler\RelativeSlugHandler;
+use Gedmo\Sluggable\Handler\TreeSlugHandler;
 use Gedmo\Sluggable\SluggableListener;
+use Gedmo\Tests\Mapping\Fixture\Xml\Sluggable;
 use Gedmo\Tests\Tool\BaseTestCaseORM;
 
 /**
@@ -37,7 +40,7 @@ class SluggableMappingTest extends BaseTestCaseORM
 
     protected function getUsedEntityFixtures()
     {
-        return ['Gedmo\Tests\Mapping\Fixture\Xml\Sluggable'];
+        return [Sluggable::class];
     }
 
     protected function getMetadataDriverImplementation()
@@ -55,7 +58,7 @@ class SluggableMappingTest extends BaseTestCaseORM
      */
     public function shouldBeAbleToMapSluggableMetadata()
     {
-        $meta = $this->em->getClassMetadata('Gedmo\Tests\Mapping\Fixture\Xml\Sluggable');
+        $meta = $this->em->getClassMetadata(Sluggable::class);
         $config = $this->sluggable->getConfiguration($this->em, $meta->name);
 
         static::assertArrayHasKey('slug', $config['slugs']);
@@ -84,17 +87,17 @@ class SluggableMappingTest extends BaseTestCaseORM
         static::assertCount(2, $config['handlers']);
         $handlers = $config['handlers'];
 
-        static::assertArrayHasKey('Gedmo\Sluggable\Handler\TreeSlugHandler', $handlers);
-        static::assertArrayHasKey('Gedmo\Sluggable\Handler\RelativeSlugHandler', $handlers);
+        static::assertArrayHasKey(TreeSlugHandler::class, $handlers);
+        static::assertArrayHasKey(RelativeSlugHandler::class, $handlers);
 
-        $first = $handlers['Gedmo\Sluggable\Handler\TreeSlugHandler'];
+        $first = $handlers[TreeSlugHandler::class];
         static::assertCount(2, $first);
         static::assertArrayHasKey('parentRelationField', $first);
         static::assertArrayHasKey('separator', $first);
         static::assertEquals('parent', $first['parentRelationField']);
         static::assertEquals('/', $first['separator']);
 
-        $second = $handlers['Gedmo\Sluggable\Handler\RelativeSlugHandler'];
+        $second = $handlers[RelativeSlugHandler::class];
         static::assertCount(3, $second);
         static::assertArrayHasKey('relationField', $second);
         static::assertArrayHasKey('relationSlugField', $second);

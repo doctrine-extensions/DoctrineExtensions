@@ -5,20 +5,26 @@ namespace Gedmo\Tests\Tool;
 // common
 use Doctrine\Common\EventManager;
 // orm specific
+use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Driver;
+use Doctrine\DBAL\Platforms\MySqlPlatform;
 use Doctrine\ODM\MongoDB\Configuration;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Doctrine\ODM\MongoDB\Mapping\Driver\AnnotationDriver as AnnotationDriverODM;
+// odm specific
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityRepository;
+// listeners
+use Doctrine\ORM\Mapping\ClassMetadataFactory;
 use Doctrine\ORM\Mapping\DefaultNamingStrategy;
 use Doctrine\ORM\Mapping\DefaultQuoteStrategy;
-// odm specific
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver as AnnotationDriverORM;
 use Doctrine\ORM\Repository\DefaultRepositoryFactory as DefaultRepositoryFactoryORM;
-// listeners
 use Doctrine\ORM\Tools\SchemaTool;
 use Doctrine\Persistence\Mapping\Driver\MappingDriver;
 use Gedmo\Loggable\LoggableListener;
 use Gedmo\Sluggable\SluggableListener;
+use Gedmo\SoftDeleteable\Filter\ODM\SoftDeleteableFilter;
 use Gedmo\Timestampable\TimestampableListener;
 use Gedmo\Translatable\TranslatableListener;
 use Gedmo\Tree\TreeListener;
@@ -148,12 +154,12 @@ abstract class BaseTestCaseOM extends \PHPUnit\Framework\TestCase
      */
     protected function getMockMappedEntityManager(MappingDriver $mappingDriver = null)
     {
-        $driver = $this->getMockBuilder('Doctrine\DBAL\Driver')->getMock();
+        $driver = $this->getMockBuilder(Driver::class)->getMock();
         $driver->expects(static::once())
             ->method('getDatabasePlatform')
-            ->willReturn($this->getMockBuilder('Doctrine\DBAL\Platforms\MySqlPlatform')->getMock());
+            ->willReturn($this->getMockBuilder(MySqlPlatform::class)->getMock());
 
-        $conn = $this->getMockBuilder('Doctrine\DBAL\Connection')
+        $conn = $this->getMockBuilder(Connection::class)
             ->setConstructorArgs([], $driver)
             ->getMock();
 
@@ -217,7 +223,7 @@ abstract class BaseTestCaseOM extends \PHPUnit\Framework\TestCase
             $mappingDriver = $this->getDefaultMongoODMMetadataDriverImplementation();
         }
         $config = new Configuration();
-        $config->addFilter('softdeleteable', 'Gedmo\\SoftDeleteable\\Filter\\ODM\\SoftDeleteableFilter');
+        $config->addFilter('softdeleteable', SoftDeleteableFilter::class);
         $config->setProxyDir(__DIR__.'/../../temp');
         $config->setHydratorDir(__DIR__.'/../../temp');
         $config->setProxyNamespace('Proxy');
@@ -239,7 +245,7 @@ abstract class BaseTestCaseOM extends \PHPUnit\Framework\TestCase
      */
     private function getMockAnnotatedORMConfig(MappingDriver $mappingDriver = null)
     {
-        $config = $this->getMockBuilder('Doctrine\ORM\Configuration')->getMock();
+        $config = $this->getMockBuilder(\Doctrine\ORM\Configuration::class)->getMock();
         $config->expects(static::once())
             ->method('getProxyDir')
             ->willReturn(__DIR__.'/../../temp');
@@ -258,11 +264,11 @@ abstract class BaseTestCaseOM extends \PHPUnit\Framework\TestCase
 
         $config->expects(static::once())
             ->method('getClassMetadataFactoryName')
-            ->willReturn('Doctrine\\ORM\\Mapping\\ClassMetadataFactory');
+            ->willReturn(ClassMetadataFactory::class);
 
         $config
             ->method('getDefaultRepositoryClassName')
-            ->willReturn('Doctrine\\ORM\\EntityRepository')
+            ->willReturn(EntityRepository::class)
         ;
 
         $config

@@ -13,10 +13,10 @@ use Gedmo\Tree\TreeListener;
 
 class SluggablePrefixSuffixTest extends BaseTestCaseORM
 {
-    public const PREFIX = 'Gedmo\\Tests\\Sluggable\\Fixture\\Prefix';
-    public const SUFFIX = 'Gedmo\\Tests\\Sluggable\\Fixture\\Suffix';
-    public const SUFFIX_TREE = 'Gedmo\\Tests\\Sluggable\\Fixture\\SuffixWithTreeHandler';
-    public const PREFIX_TREE = 'Gedmo\\Tests\\Sluggable\\Fixture\\PrefixWithTreeHandler';
+    public const PREFIX = Prefix::class;
+    public const SUFFIX = Suffix::class;
+    public const SUFFIX_TREE = SuffixWithTreeHandler::class;
+    public const PREFIX_TREE = PrefixWithTreeHandler::class;
 
     protected function setUp(): void
     {

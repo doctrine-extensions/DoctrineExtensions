@@ -19,8 +19,8 @@ use Gedmo\Timestampable\TimestampableListener;
  */
 class TimestampableDocumentTest extends BaseTestCaseMongoODM
 {
-    public const ARTICLE = 'Gedmo\Tests\Timestampable\Fixture\Document\Article';
-    public const TYPE = 'Gedmo\Tests\Timestampable\Fixture\Document\Type';
+    public const ARTICLE = Article::class;
+    public const TYPE = Type::class;
 
     protected function setUp(): void
     {

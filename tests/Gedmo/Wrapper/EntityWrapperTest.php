@@ -3,6 +3,7 @@
 namespace Gedmo\Tests\Wrapper;
 
 use Doctrine\Common\EventManager;
+use Doctrine\ORM\Proxy\Proxy;
 use Gedmo\Tests\Tool\BaseTestCaseORM;
 use Gedmo\Tests\Wrapper\Fixture\Entity\Article;
 use Gedmo\Tool\Wrapper\EntityWrapper;
@@ -18,7 +19,7 @@ use Gedmo\Tool\Wrapper\EntityWrapper;
  */
 class EntityWrapperTest extends BaseTestCaseORM
 {
-    public const ARTICLE = 'Gedmo\\Tests\\Wrapper\\Fixture\\Entity\\Article';
+    public const ARTICLE = Article::class;
 
     protected function setUp(): void
     {
@@ -45,7 +46,7 @@ class EntityWrapperTest extends BaseTestCaseORM
     {
         $this->em->clear();
         $test = $this->em->getReference(self::ARTICLE, ['id' => 1]);
-        static::assertInstanceOf('Doctrine\\ORM\\Proxy\\Proxy', $test);
+        static::assertInstanceOf(Proxy::class, $test);
         $wrapped = new EntityWrapper($test, $this->em);
 
         $id = $wrapped->getIdentifier(false);

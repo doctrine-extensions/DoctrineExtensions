@@ -7,6 +7,7 @@ use Doctrine\ORM\Query;
 use Gedmo\Tests\Tool\BaseTestCaseORM;
 use Gedmo\Tests\Translatable\Fixture\Personal\Article;
 use Gedmo\Tests\Translatable\Fixture\Personal\PersonalArticleTranslation;
+use Gedmo\Translatable\Query\TreeWalker\TranslationWalker;
 use Gedmo\Translatable\TranslatableListener;
 
 /**
@@ -20,9 +21,9 @@ use Gedmo\Translatable\TranslatableListener;
  */
 class PersonalTranslationTest extends BaseTestCaseORM
 {
-    public const ARTICLE = 'Gedmo\Tests\Translatable\Fixture\Personal\Article';
-    public const TRANSLATION = 'Gedmo\Tests\Translatable\Fixture\Personal\PersonalArticleTranslation';
-    public const TREE_WALKER_TRANSLATION = 'Gedmo\\Translatable\\Query\\TreeWalker\\TranslationWalker';
+    public const ARTICLE = Article::class;
+    public const TRANSLATION = PersonalArticleTranslation::class;
+    public const TREE_WALKER_TRANSLATION = TranslationWalker::class;
 
     private $translatableListener;
 

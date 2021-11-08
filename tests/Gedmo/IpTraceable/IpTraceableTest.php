@@ -3,6 +3,7 @@
 namespace Gedmo\Tests\IpTraceable;
 
 use Doctrine\Common\EventManager;
+use Gedmo\Exception\InvalidArgumentException;
 use Gedmo\IpTraceable\IpTraceable;
 use Gedmo\IpTraceable\IpTraceableListener;
 use Gedmo\Tests\IpTraceable\Fixture\Article;
@@ -23,9 +24,9 @@ class IpTraceableTest extends BaseTestCaseORM
 {
     public const TEST_IP = '34.234.1.10';
 
-    public const ARTICLE = 'Gedmo\\Tests\\IpTraceable\\Fixture\\Article';
-    public const COMMENT = 'Gedmo\\Tests\\IpTraceable\\Fixture\\Comment';
-    public const TYPE = 'Gedmo\\Tests\\IpTraceable\\Fixture\\Type';
+    public const ARTICLE = Article::class;
+    public const COMMENT = Comment::class;
+    public const TYPE = Type::class;
 
     protected function setUp(): void
     {
@@ -44,7 +45,7 @@ class IpTraceableTest extends BaseTestCaseORM
     {
         $listener = new IpTraceableListener();
 
-        $this->expectException('Gedmo\Exception\InvalidArgumentException');
+        $this->expectException(InvalidArgumentException::class);
 
         $listener->setIpValue('xx.xxx.xx.xxx');
     }

@@ -18,7 +18,7 @@ use Gedmo\Tests\Tool\BaseTestCaseMongoODM;
  */
 class TreeSlugHandlerDocumentTest extends BaseTestCaseMongoODM
 {
-    public const SLUG = 'Gedmo\\Tests\\Sluggable\\Fixture\\Document\\Handler\\TreeSlug';
+    public const SLUG = TreeSlug::class;
 
     protected function setUp(): void
     {

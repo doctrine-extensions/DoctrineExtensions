@@ -18,7 +18,7 @@ use Gedmo\Tests\Tool\BaseTestCaseORM;
  */
 class SluggablePositionTest extends BaseTestCaseORM
 {
-    public const POSITION = 'Gedmo\\Tests\\Sluggable\\Fixture\\Position';
+    public const POSITION = Position::class;
 
     protected function setUp(): void
     {

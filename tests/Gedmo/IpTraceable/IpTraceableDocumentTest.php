@@ -21,8 +21,8 @@ class IpTraceableDocumentTest extends BaseTestCaseMongoODM
 {
     public const TEST_IP = '34.234.1.10';
 
-    public const ARTICLE = 'Gedmo\Tests\IpTraceable\Fixture\Document\Article';
-    public const TYPE = 'Gedmo\Tests\IpTraceable\Fixture\Document\Type';
+    public const ARTICLE = Article::class;
+    public const TYPE = Type::class;
 
     protected function setUp(): void
     {

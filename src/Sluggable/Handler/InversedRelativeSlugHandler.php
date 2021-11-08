@@ -80,7 +80,7 @@ class InversedRelativeSlugHandler implements SlugHandlerInterface
         $this->om = $ea->getObjectManager();
         $isInsert = $this->om->getUnitOfWork()->isScheduledForInsert($object);
         if (!$isInsert) {
-            $options = $config['handlers'][get_called_class()];
+            $options = $config['handlers'][static::class];
             $wrapped = AbstractWrapper::wrap($object, $this->om);
             $oldSlug = $wrapped->getPropertyValue($config['slug']);
             $mappedByConfig = $this->sluggable->getConfiguration(

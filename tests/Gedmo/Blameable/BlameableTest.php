@@ -21,9 +21,9 @@ use Gedmo\Tests\Tool\BaseTestCaseORM;
  */
 class BlameableTest extends BaseTestCaseORM
 {
-    public const ARTICLE = 'Gedmo\\Tests\\Blameable\\Fixture\\Entity\\Article';
-    public const COMMENT = 'Gedmo\\Tests\\Blameable\\Fixture\\Entity\\Comment';
-    public const TYPE = 'Gedmo\\Tests\\Blameable\\Fixture\\Entity\\Type';
+    public const ARTICLE = Article::class;
+    public const COMMENT = Comment::class;
+    public const TYPE = Type::class;
 
     protected function setUp(): void
     {

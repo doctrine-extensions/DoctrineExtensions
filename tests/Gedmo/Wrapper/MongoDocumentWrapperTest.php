@@ -18,7 +18,7 @@ use Gedmo\Tool\Wrapper\MongoDocumentWrapper;
  */
 class MongoDocumentWrapperTest extends BaseTestCaseMongoODM
 {
-    public const ARTICLE = 'Gedmo\\Tests\\Wrapper\\Fixture\\Document\\Article';
+    public const ARTICLE = Article::class;
     private $articleId;
 
     protected function setUp(): void

@@ -3,6 +3,7 @@
 namespace Gedmo\Tests\Sluggable;
 
 use Doctrine\Common\EventManager;
+use Gedmo\Exception\InvalidMappingException;
 use Gedmo\Sluggable\SluggableListener;
 use Gedmo\Tests\Sluggable\Fixture\Issue104\Car;
 use Gedmo\Tests\Tool\BaseTestCaseORM;
@@ -18,7 +19,7 @@ use Gedmo\Tests\Tool\BaseTestCaseORM;
  */
 class Issue104Test extends BaseTestCaseORM
 {
-    public const CAR = 'Gedmo\\Tests\\Sluggable\\Fixture\\Issue104\\Car';
+    public const CAR = Car::class;
 
     protected function setUp(): void
     {
@@ -30,7 +31,7 @@ class Issue104Test extends BaseTestCaseORM
      */
     public function shouldThrowAnExceptionWhenMappedSuperclassProtectedProperty()
     {
-        $this->expectException('Gedmo\Exception\InvalidMappingException');
+        $this->expectException(InvalidMappingException::class);
         $evm = new EventManager();
         $evm->addEventSubscriber(new SluggableListener());
         $this->getMockSqliteEntityManager($evm);

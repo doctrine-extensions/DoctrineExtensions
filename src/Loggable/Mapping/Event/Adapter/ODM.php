@@ -2,6 +2,7 @@
 
 namespace Gedmo\Loggable\Mapping\Event\Adapter;
 
+use Gedmo\Loggable\Document\LogEntry;
 use Gedmo\Loggable\Mapping\Event\LoggableAdapter;
 use Gedmo\Mapping\Event\Adapter\ODM as BaseAdapterODM;
 
@@ -19,7 +20,7 @@ final class ODM extends BaseAdapterODM implements LoggableAdapter
      */
     public function getDefaultLogEntryClass()
     {
-        return 'Gedmo\\Loggable\\Document\\LogEntry';
+        return LogEntry::class;
     }
 
     /**

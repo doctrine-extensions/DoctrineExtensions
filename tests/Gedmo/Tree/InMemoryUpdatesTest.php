@@ -18,7 +18,7 @@ use Gedmo\Tree\TreeListener;
  */
 class InMemoryUpdatesTest extends BaseTestCaseORM
 {
-    public const CATEGORY = 'Gedmo\\Tests\\Tree\\Fixture\\Category';
+    public const CATEGORY = Category::class;
 
     protected function setUp(): void
     {

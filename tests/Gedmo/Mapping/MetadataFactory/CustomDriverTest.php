@@ -36,7 +36,7 @@ class CustomDriverTest extends \PHPUnit\Framework\TestCase
         $schemaTool = new \Doctrine\ORM\Tools\SchemaTool($this->em);
         $schemaTool->dropSchema([]);
         $schemaTool->createSchema([
-            $this->em->getClassMetadata('Gedmo\Tests\Mapping\Fixture\Unmapped\Timestampable'),
+            $this->em->getClassMetadata(Timestampable::class),
         ]);
     }
 
@@ -48,7 +48,7 @@ class CustomDriverTest extends \PHPUnit\Framework\TestCase
         // driver falls back to annotation driver
         $conf = $this->timestampable->getConfiguration(
             $this->em,
-            'Gedmo\Tests\Mapping\Fixture\Unmapped\Timestampable'
+            Timestampable::class
         );
         static::assertTrue(isset($conf['create']));
 
@@ -57,7 +57,7 @@ class CustomDriverTest extends \PHPUnit\Framework\TestCase
         $this->em->flush();
 
         $id = $this->em
-            ->getClassMetadata('Gedmo\Tests\Mapping\Fixture\Unmapped\Timestampable')
+            ->getClassMetadata(Timestampable::class)
             ->getReflectionProperty('id')
             ->getValue($test)
         ;
@@ -69,7 +69,7 @@ class CustomDriver implements MappingDriver
 {
     public function getAllClassNames()
     {
-        return ['Gedmo\Tests\Mapping\Fixture\Unmapped\Timestampable'];
+        return [Timestampable::class];
     }
 
     public function loadMetadataForClass($className, ClassMetadata $metadata)

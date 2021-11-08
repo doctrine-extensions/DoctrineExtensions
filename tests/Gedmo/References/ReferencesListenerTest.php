@@ -3,6 +3,7 @@
 namespace Gedmo\Tests\References;
 
 use Doctrine\Common\Annotations\AnnotationReader;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ODM\MongoDB\Mapping\Driver\AnnotationDriver as MongoDBAnnotationDriver;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver as ORMAnnotationDriver;
 use Gedmo\References\ReferencesListener;
@@ -39,8 +40,8 @@ class ReferencesListenerTest extends BaseTestCaseOM
 
         $this->em = $this->getMockSqliteEntityManager(
             [
-                'Gedmo\Tests\References\Fixture\ORM\StockItem',
-                'Gedmo\Tests\References\Fixture\ORM\Category',
+                StockItem::class,
+                Category::class,
             ],
             new ORMAnnotationDriver($reader, __DIR__.'/Fixture/ORM')
         );
@@ -118,7 +119,7 @@ class ReferencesListenerTest extends BaseTestCaseOM
 
         $product = $this->dm->find(get_class($product), $product->getId());
 
-        static::assertInstanceOf('Doctrine\Common\Collections\Collection', $product->getStockItems());
+        static::assertInstanceOf(Collection::class, $product->getStockItems());
         static::assertEquals(2, $product->getStockItems()->count());
 
         $first = $product->getStockItems()->first();

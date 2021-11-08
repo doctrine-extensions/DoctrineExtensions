@@ -7,6 +7,7 @@ use Doctrine\Common\EventManager;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
 use Doctrine\ORM\Mapping\Driver\DriverChain;
 use Doctrine\ORM\Mapping\Driver\YamlDriver;
+use Gedmo\Tests\Mapping\Fixture\Yaml\Uploadable;
 use Gedmo\Tests\Tool\BaseTestCaseOM;
 use Gedmo\Uploadable\Mapping\Validator;
 use Gedmo\Uploadable\UploadableListener;
@@ -53,13 +54,13 @@ class UploadableMappingTest extends BaseTestCaseOM
         $this->evm->addEventSubscriber($this->listener);
 
         $this->em = $this->getMockSqliteEntityManager([
-            'Gedmo\Tests\Mapping\Fixture\Yaml\Uploadable',
+            Uploadable::class,
         ], $chain);
     }
 
     public function testYamlMapping()
     {
-        $meta = $this->em->getClassMetadata('Gedmo\Tests\Mapping\Fixture\Yaml\Uploadable');
+        $meta = $this->em->getClassMetadata(Uploadable::class);
         $config = $this->listener->getConfiguration($this->em, $meta->name);
 
         static::assertTrue($config['uploadable']);

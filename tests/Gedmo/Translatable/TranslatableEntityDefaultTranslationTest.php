@@ -5,6 +5,8 @@ namespace Gedmo\Tests\Translatable;
 use Doctrine\Common\EventManager;
 use Gedmo\Tests\Tool\BaseTestCaseORM;
 use Gedmo\Tests\Translatable\Fixture\Article;
+use Gedmo\Tests\Translatable\Fixture\Comment;
+use Gedmo\Translatable\Entity\Translation;
 use Gedmo\Translatable\TranslatableListener;
 
 /**
@@ -18,9 +20,9 @@ use Gedmo\Translatable\TranslatableListener;
  */
 class TranslatableEntityDefaultTranslationTest extends BaseTestCaseORM
 {
-    public const ARTICLE = 'Gedmo\\Tests\\Translatable\\Fixture\\Article';
-    public const COMMENT = 'Gedmo\\Tests\\Translatable\\Fixture\\Comment';
-    public const TRANSLATION = 'Gedmo\\Translatable\\Entity\\Translation';
+    public const ARTICLE = Article::class;
+    public const COMMENT = Comment::class;
+    public const TRANSLATION = Translation::class;
 
     private $translatableListener;
 

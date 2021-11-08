@@ -3,6 +3,7 @@
 namespace Gedmo\Tests\Timestampable;
 
 use Doctrine\Common\EventManager;
+use Doctrine\ORM\Proxy\Proxy;
 use Gedmo\Tests\Timestampable\Fixture\Article;
 use Gedmo\Tests\Timestampable\Fixture\Author;
 use Gedmo\Tests\Timestampable\Fixture\Comment;
@@ -21,9 +22,9 @@ use Gedmo\Timestampable\TimestampableListener;
  */
 class TimestampableTest extends BaseTestCaseORM
 {
-    public const ARTICLE = 'Gedmo\\Tests\\Timestampable\\Fixture\\Article';
-    public const COMMENT = 'Gedmo\\Tests\\Timestampable\\Fixture\\Comment';
-    public const TYPE = 'Gedmo\\Tests\\Timestampable\\Fixture\\Type';
+    public const ARTICLE = Article::class;
+    public const COMMENT = Comment::class;
+    public const TYPE = Type::class;
 
     protected function setUp(): void
     {
@@ -229,7 +230,7 @@ class TimestampableTest extends BaseTestCaseORM
         $this->em->clear();
 
         $type = $this->em->getReference(self::TYPE, $type->getId());
-        static::assertInstanceOf('Doctrine\ORM\Proxy\Proxy', $type);
+        static::assertInstanceOf(Proxy::class, $type);
 
         $art = new Article();
         $art->setTitle('Art');

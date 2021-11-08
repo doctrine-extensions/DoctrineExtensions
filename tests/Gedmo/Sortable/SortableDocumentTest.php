@@ -15,7 +15,7 @@ use Gedmo\Tests\Tool\BaseTestCaseMongoODM;
  */
 class SortableDocumentTest extends BaseTestCaseMongoODM
 {
-    public const ARTICLE = 'Gedmo\\Tests\\Sortable\\Fixture\\Document\\Article';
+    public const ARTICLE = Article::class;
 
     protected function setUp(): void
     {

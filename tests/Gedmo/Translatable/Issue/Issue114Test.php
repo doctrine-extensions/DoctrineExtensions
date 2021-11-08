@@ -6,6 +6,7 @@ use Doctrine\Common\EventManager;
 use Gedmo\Tests\Tool\BaseTestCaseORM;
 use Gedmo\Tests\Translatable\Fixture\Issue114\Article;
 use Gedmo\Tests\Translatable\Fixture\Issue114\Category;
+use Gedmo\Translatable\Entity\Translation;
 use Gedmo\Translatable\TranslatableListener;
 
 /**
@@ -19,9 +20,9 @@ use Gedmo\Translatable\TranslatableListener;
  */
 class Issue114Test extends BaseTestCaseORM
 {
-    public const CATEGORY = 'Gedmo\\Tests\\Translatable\\Fixture\\Issue114\\Category';
-    public const ARTICLE = 'Gedmo\\Tests\\Translatable\\Fixture\\Issue114\\Article';
-    public const TRANSLATION = 'Gedmo\\Translatable\\Entity\\Translation';
+    public const CATEGORY = Category::class;
+    public const ARTICLE = Article::class;
+    public const TRANSLATION = Translation::class;
 
     private $translatableListener;
 

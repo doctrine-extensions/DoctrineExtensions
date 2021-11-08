@@ -9,6 +9,7 @@ use Doctrine\ODM\MongoDB\Repository\DocumentRepository;
 use Doctrine\ODM\MongoDB\Types\Type;
 use Doctrine\ODM\MongoDB\UnitOfWork;
 use Gedmo\Tool\Wrapper\MongoDocumentWrapper;
+use Gedmo\Translatable\Document\MappedSuperclass\AbstractPersonalTranslation;
 use Gedmo\Translatable\Mapping\Event\Adapter\ODM as TranslatableAdapterODM;
 use Gedmo\Translatable\TranslatableListener;
 
@@ -34,7 +35,7 @@ class TranslationRepository extends DocumentRepository
      */
     public function __construct(DocumentManager $dm, UnitOfWork $uow, ClassMetadata $class)
     {
-        if ($class->getReflectionClass()->isSubclassOf('Gedmo\Translatable\Document\MappedSuperclass\AbstractPersonalTranslation')) {
+        if ($class->getReflectionClass()->isSubclassOf(AbstractPersonalTranslation::class)) {
             throw new \Gedmo\Exception\UnexpectedValueException('This repository is useless for personal translations');
         }
         parent::__construct($dm, $uow, $class);

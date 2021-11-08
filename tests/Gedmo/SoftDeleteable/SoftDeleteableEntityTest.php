@@ -5,6 +5,9 @@ namespace Gedmo\Tests\SoftDeleteable;
 use function class_exists;
 use Doctrine\Common\Cache\ArrayCache;
 use Doctrine\Common\EventManager;
+use Doctrine\Common\EventSubscriber;
+use Gedmo\SoftDeleteable\Filter\SoftDeleteableFilter;
+use Gedmo\SoftDeleteable\Query\TreeWalker\SoftDeleteableWalker;
 use Gedmo\SoftDeleteable\SoftDeleteableListener;
 use Gedmo\Tests\SoftDeleteable\Fixture\Entity\Article;
 use Gedmo\Tests\SoftDeleteable\Fixture\Entity\Child;
@@ -13,6 +16,7 @@ use Gedmo\Tests\SoftDeleteable\Fixture\Entity\MegaPage;
 use Gedmo\Tests\SoftDeleteable\Fixture\Entity\Module;
 use Gedmo\Tests\SoftDeleteable\Fixture\Entity\OtherArticle;
 use Gedmo\Tests\SoftDeleteable\Fixture\Entity\OtherComment;
+use Gedmo\Tests\SoftDeleteable\Fixture\Entity\Page;
 use Gedmo\Tests\SoftDeleteable\Fixture\Entity\User;
 use Gedmo\Tests\SoftDeleteable\Fixture\Entity\UserNoHardDelete;
 use Gedmo\Tests\Tool\BaseTestCaseORM;
@@ -30,17 +34,17 @@ use Gedmo\Tests\Tool\BaseTestCaseORM;
  */
 class SoftDeleteableEntityTest extends BaseTestCaseORM
 {
-    public const ARTICLE_CLASS = 'Gedmo\Tests\SoftDeleteable\Fixture\Entity\Article';
-    public const COMMENT_CLASS = 'Gedmo\Tests\SoftDeleteable\Fixture\Entity\Comment';
-    public const PAGE_CLASS = 'Gedmo\Tests\SoftDeleteable\Fixture\Entity\Page';
-    public const MEGA_PAGE_CLASS = 'Gedmo\Tests\SoftDeleteable\Fixture\Entity\MegaPage';
-    public const MODULE_CLASS = 'Gedmo\Tests\SoftDeleteable\Fixture\Entity\Module';
-    public const OTHER_ARTICLE_CLASS = 'Gedmo\Tests\SoftDeleteable\Fixture\Entity\OtherArticle';
-    public const OTHER_COMMENT_CLASS = 'Gedmo\Tests\SoftDeleteable\Fixture\Entity\OtherComment';
-    public const USER_CLASS = 'Gedmo\Tests\SoftDeleteable\Fixture\Entity\User';
-    public const MAPPED_SUPERCLASS_CHILD_CLASS = 'Gedmo\Tests\SoftDeleteable\Fixture\Entity\Child';
+    public const ARTICLE_CLASS = Article::class;
+    public const COMMENT_CLASS = Comment::class;
+    public const PAGE_CLASS = Page::class;
+    public const MEGA_PAGE_CLASS = MegaPage::class;
+    public const MODULE_CLASS = Module::class;
+    public const OTHER_ARTICLE_CLASS = OtherArticle::class;
+    public const OTHER_COMMENT_CLASS = OtherComment::class;
+    public const USER_CLASS = User::class;
+    public const MAPPED_SUPERCLASS_CHILD_CLASS = Child::class;
     public const SOFT_DELETEABLE_FILTER_NAME = 'soft-deleteable';
-    public const USER_NO_HARD_DELETE_CLASS = 'Gedmo\Tests\SoftDeleteable\Fixture\Entity\UserNoHardDelete';
+    public const USER_NO_HARD_DELETE_CLASS = UserNoHardDelete::class;
 
     private $softDeleteableListener;
 
@@ -52,7 +56,7 @@ class SoftDeleteableEntityTest extends BaseTestCaseORM
         $this->softDeleteableListener = new SoftDeleteableListener();
         $evm->addEventSubscriber($this->softDeleteableListener);
         $config = $this->getMockAnnotatedConfig();
-        $config->addFilter(self::SOFT_DELETEABLE_FILTER_NAME, 'Gedmo\SoftDeleteable\Filter\SoftDeleteableFilter');
+        $config->addFilter(self::SOFT_DELETEABLE_FILTER_NAME, SoftDeleteableFilter::class);
         $this->em = $this->getMockSqliteEntityManager($evm, $config);
         $this->em->getFilters()->enable(self::SOFT_DELETEABLE_FILTER_NAME);
     }
@@ -172,7 +176,7 @@ class SoftDeleteableEntityTest extends BaseTestCaseORM
         $query->setParameter($field, $value);
         $query->setHint(
             \Doctrine\ORM\Query::HINT_CUSTOM_OUTPUT_WALKER,
-            'Gedmo\SoftDeleteable\Query\TreeWalker\SoftDeleteableWalker'
+            SoftDeleteableWalker::class
         );
 
         $query->execute();
@@ -210,7 +214,7 @@ class SoftDeleteableEntityTest extends BaseTestCaseORM
         $query = $this->em->createQuery($dql);
         $query->setHint(
             \Doctrine\ORM\Query::HINT_CUSTOM_OUTPUT_WALKER,
-            'Gedmo\SoftDeleteable\Query\TreeWalker\SoftDeleteableWalker'
+            SoftDeleteableWalker::class
         );
 
         $query->execute();
@@ -328,7 +332,7 @@ class SoftDeleteableEntityTest extends BaseTestCaseORM
         $query->setParameter($field, $value);
         $query->setHint(
             \Doctrine\ORM\Query::HINT_CUSTOM_OUTPUT_WALKER,
-            'Gedmo\SoftDeleteable\Query\TreeWalker\SoftDeleteableWalker'
+            SoftDeleteableWalker::class
         );
 
         $query->execute();
@@ -366,7 +370,7 @@ class SoftDeleteableEntityTest extends BaseTestCaseORM
         $query = $this->em->createQuery($dql);
         $query->setHint(
             \Doctrine\ORM\Query::HINT_CUSTOM_OUTPUT_WALKER,
-            'Gedmo\SoftDeleteable\Query\TreeWalker\SoftDeleteableWalker'
+            SoftDeleteableWalker::class
         );
 
         $query->execute();
@@ -532,7 +536,7 @@ class SoftDeleteableEntityTest extends BaseTestCaseORM
 
     public function testPostSoftDeleteEventIsDispatched()
     {
-        $subscriber = $this->getMockBuilder("Doctrine\Common\EventSubscriber")
+        $subscriber = $this->getMockBuilder(EventSubscriber::class)
             ->setMethods([
                 'getSubscribedEvents',
                 'preSoftDelete',

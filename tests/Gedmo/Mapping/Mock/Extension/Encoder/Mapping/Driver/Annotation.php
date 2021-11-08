@@ -6,6 +6,7 @@ namespace Gedmo\Tests\Mapping\Mock\Extension\Encoder\Mapping\Driver;
 
 use Doctrine\Common\Annotations\AnnotationReader;
 use Gedmo\Mapping\Driver;
+use Gedmo\Tests\Mapping\Mock\Extension\Encoder\Mapping\Encode;
 
 class Annotation implements Driver
 {
@@ -33,7 +34,7 @@ class Annotation implements Driver
                 continue;
             }
             // now lets check if property has our annotation
-            if ($encode = $reader->getPropertyAnnotation($property, 'Gedmo\Tests\Mapping\Mock\Extension\Encoder\Mapping\Encode')) {
+            if ($encode = $reader->getPropertyAnnotation($property, Encode::class)) {
                 $field = $property->getName();
                 // check if field is mapped
                 if (!$meta->hasField($field)) {

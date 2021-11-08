@@ -7,6 +7,8 @@ use Doctrine\Common\EventManager;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
 use Doctrine\ORM\Mapping\Driver\DriverChain;
 use Doctrine\ORM\Mapping\Driver\XmlDriver;
+use Gedmo\Tests\Mapping\Fixture\ClosureTreeClosure;
+use Gedmo\Tests\Mapping\Fixture\Xml\ClosureTree;
 use Gedmo\Tests\Tool\BaseTestCaseOM;
 use Gedmo\Tree\TreeListener;
 
@@ -50,20 +52,20 @@ class ClosureTreeMappingTest extends BaseTestCaseOM
         $this->evm->addEventSubscriber($this->tree);
 
         $this->em = $this->getMockSqliteEntityManager([
-            'Gedmo\Tests\Mapping\Fixture\Xml\ClosureTree',
-            'Gedmo\Tests\Mapping\Fixture\ClosureTreeClosure',
+            ClosureTree::class,
+            ClosureTreeClosure::class,
         ], $chain);
     }
 
     public function testTreeMetadata()
     {
-        $meta = $this->em->getClassMetadata('Gedmo\Tests\Mapping\Fixture\Xml\ClosureTree');
+        $meta = $this->em->getClassMetadata(ClosureTree::class);
         $config = $this->tree->getConfiguration($this->em, $meta->name);
 
         static::assertArrayHasKey('strategy', $config);
         static::assertEquals('closure', $config['strategy']);
         static::assertArrayHasKey('closure', $config);
-        static::assertEquals('Gedmo\Tests\Mapping\Fixture\ClosureTreeClosure', $config['closure']);
+        static::assertEquals(ClosureTreeClosure::class, $config['closure']);
         static::assertArrayHasKey('parent', $config);
         static::assertEquals('parent', $config['parent']);
     }

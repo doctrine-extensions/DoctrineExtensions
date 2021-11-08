@@ -3,7 +3,10 @@
 namespace Gedmo\Tests\Tree;
 
 use Doctrine\Common\EventManager;
+use Gedmo\Exception\InvalidArgumentException;
 use Gedmo\Tests\Tool\BaseTestCaseORM;
+use Gedmo\Tests\Tree\Fixture\MPCategory;
+use Gedmo\Tests\Tree\Fixture\MPCategoryWithTrimmedSeparator;
 use Gedmo\Tree\TreeListener;
 
 /**
@@ -18,8 +21,8 @@ use Gedmo\Tree\TreeListener;
  */
 class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
 {
-    public const CATEGORY = 'Gedmo\\Tests\\Tree\\Fixture\\MPCategory';
-    public const CATEGORY_WITH_TRIMMED_SEPARATOR = 'Gedmo\\Tests\\Tree\\Fixture\\MPCategoryWithTrimmedSeparator';
+    public const CATEGORY = MPCategory::class;
+    public const CATEGORY_WITH_TRIMMED_SEPARATOR = MPCategoryWithTrimmedSeparator::class;
 
     /** @var \Gedmo\Tree\Entity\Repository\MaterializedPathRepository */
     protected $repo;
@@ -321,13 +324,13 @@ class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
 
     public function testChildCountIfAnObjectIsPassedWhichIsNotAnInstanceOfTheEntityClassThrowException()
     {
-        $this->expectException('Gedmo\Exception\InvalidArgumentException');
+        $this->expectException(InvalidArgumentException::class);
         $this->repo->childCount(new \DateTime());
     }
 
     public function testChildCountIfAnObjectIsPassedIsAnInstanceOfTheEntityClassButIsNotHandledByUnitOfWorkThrowException()
     {
-        $this->expectException('Gedmo\Exception\InvalidArgumentException');
+        $this->expectException(InvalidArgumentException::class);
         $this->repo->childCount($this->createCategory());
     }
 

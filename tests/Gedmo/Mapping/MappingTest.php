@@ -3,6 +3,7 @@
 namespace Gedmo\Tests\Mapping;
 
 use Gedmo\Tests\Tree\Fixture\BehavioralCategory;
+use Gedmo\Translatable\Entity\Translation;
 
 /**
  * These are mapping extension tests
@@ -15,8 +16,8 @@ use Gedmo\Tests\Tree\Fixture\BehavioralCategory;
  */
 class MappingTest extends \PHPUnit\Framework\TestCase
 {
-    public const TEST_ENTITY_CATEGORY = "Gedmo\Tests\Tree\Fixture\BehavioralCategory";
-    public const TEST_ENTITY_TRANSLATION = "Gedmo\Translatable\Entity\Translation";
+    public const TEST_ENTITY_CATEGORY = BehavioralCategory::class;
+    public const TEST_ENTITY_TRANSLATION = Translation::class;
 
     private $em;
     private $timestampable;

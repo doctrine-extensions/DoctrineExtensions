@@ -20,9 +20,9 @@ use Gedmo\Tree\TreeListener;
  */
 class ConcurrencyTest extends BaseTestCaseORM
 {
-    public const CATEGORY = 'Gedmo\\Tests\\Tree\\Fixture\\Category';
-    public const ARTICLE = 'Gedmo\\Tests\\Tree\\Fixture\\Article';
-    public const COMMENT = 'Gedmo\\Tests\\Tree\\Fixture\\Comment';
+    public const CATEGORY = Category::class;
+    public const ARTICLE = Article::class;
+    public const COMMENT = Comment::class;
 
     protected function setUp(): void
     {

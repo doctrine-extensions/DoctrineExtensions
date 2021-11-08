@@ -4,13 +4,14 @@ namespace Gedmo\Tests\Mapping;
 
 use Doctrine\Common\EventManager;
 use Doctrine\ODM\MongoDB\Event\LoadClassMetadataEventArgs;
+use Gedmo\Mapping\MappedEventSubscriber;
 use Gedmo\Tests\Mapping\Fixture\Document\User;
 use Gedmo\Tests\Mapping\Mock\Extension\Encoder\EncoderListener;
 use Gedmo\Tests\Tool\BaseTestCaseMongoODM;
 
 class ExtensionODMTest extends BaseTestCaseMongoODM
 {
-    public const USER = 'Gedmo\\Tests\\Mapping\\Fixture\\Document\\User';
+    public const USER = User::class;
 
     private $encoderListener;
 
@@ -58,7 +59,7 @@ class ExtensionODMTest extends BaseTestCaseMongoODM
 
     public function testEventAdapterUsed()
     {
-        $mappedSubscriberClass = new \ReflectionClass('Gedmo\\Mapping\\MappedEventSubscriber');
+        $mappedSubscriberClass = new \ReflectionClass(MappedEventSubscriber::class);
         $getEventAdapterMethod = $mappedSubscriberClass->getMethod('getEventAdapter');
         $getEventAdapterMethod->setAccessible(true);
 

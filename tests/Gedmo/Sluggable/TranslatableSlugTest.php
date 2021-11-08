@@ -9,6 +9,7 @@ use Gedmo\Tests\Sluggable\Fixture\Comment;
 use Gedmo\Tests\Sluggable\Fixture\Page;
 use Gedmo\Tests\Sluggable\Fixture\TranslatableArticle;
 use Gedmo\Tests\Tool\BaseTestCaseORM;
+use Gedmo\Translatable\Entity\Translation;
 use Gedmo\Translatable\Translatable;
 use Gedmo\Translatable\TranslatableListener;
 
@@ -26,10 +27,10 @@ class TranslatableSlugTest extends BaseTestCaseORM
     private $articleId;
     private $translatableListener;
 
-    public const ARTICLE = 'Gedmo\\Tests\\Sluggable\\Fixture\\TranslatableArticle';
-    public const COMMENT = 'Gedmo\\Tests\\Sluggable\\Fixture\\Comment';
-    public const PAGE = 'Gedmo\\Tests\\Sluggable\\Fixture\\Page';
-    public const TRANSLATION = 'Gedmo\\Translatable\\Entity\\Translation';
+    public const ARTICLE = TranslatableArticle::class;
+    public const COMMENT = Comment::class;
+    public const PAGE = Page::class;
+    public const TRANSLATION = Translation::class;
 
     protected function setUp(): void
     {

@@ -19,7 +19,7 @@ use Gedmo\Timestampable\TimestampableListener;
  */
 class TimestampableEmbeddedDocumentTest extends BaseTestCaseMongoODM
 {
-    public const BOOK = 'Gedmo\Tests\Timestampable\Fixture\Document\Book';
+    public const BOOK = Book::class;
 
     protected function setUp(): void
     {

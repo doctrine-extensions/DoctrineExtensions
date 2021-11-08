@@ -4,8 +4,10 @@ namespace Gedmo\Tests\Loggable;
 
 use Doctrine\ORM\Mapping\Driver\DriverChain;
 use Doctrine\ORM\Mapping\Driver\YamlDriver;
+use Gedmo\Loggable\Entity\LogEntry;
 use Gedmo\Loggable\LoggableListener;
 use Gedmo\Mapping\ExtensionMetadataFactory;
+use Gedmo\Tests\Mapping\Fixture\Yaml\Category;
 
 /**
  * These are mapping tests for tree extension
@@ -18,7 +20,7 @@ use Gedmo\Mapping\ExtensionMetadataFactory;
  */
 class LoggableMappingTest extends \PHPUnit\Framework\TestCase
 {
-    public const YAML_CATEGORY = 'Gedmo\Tests\Mapping\Fixture\Yaml\Category';
+    public const YAML_CATEGORY = Category::class;
     private $em;
 
     protected function setUp(): void
@@ -56,6 +58,6 @@ class LoggableMappingTest extends \PHPUnit\Framework\TestCase
         static::assertArrayHasKey('loggable', $config);
         static::assertTrue($config['loggable']);
         static::assertArrayHasKey('logEntryClass', $config);
-        static::assertEquals('Gedmo\\Loggable\\Entity\\LogEntry', $config['logEntryClass']);
+        static::assertEquals(LogEntry::class, $config['logEntryClass']);
     }
 }

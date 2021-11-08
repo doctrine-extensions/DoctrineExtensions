@@ -77,7 +77,7 @@ class TreeSlugHandler implements SlugHandlerWithUniqueCallbackInterface
     {
         $this->om = $ea->getObjectManager();
         $this->isInsert = $this->om->getUnitOfWork()->isScheduledForInsert($object);
-        $options = $config['handlers'][get_called_class()];
+        $options = $config['handlers'][static::class];
 
         $this->usedPathSeparator = $options['separator'] ?? self::SEPARATOR;
         $this->prefix = $options['prefix'] ?? '';
@@ -96,7 +96,7 @@ class TreeSlugHandler implements SlugHandlerWithUniqueCallbackInterface
      */
     public function postSlugBuild(SluggableAdapter $ea, array &$config, $object, &$slug)
     {
-        $options = $config['handlers'][get_called_class()];
+        $options = $config['handlers'][static::class];
         $this->parentSlug = '';
 
         $wrapped = AbstractWrapper::wrap($object, $this->om);

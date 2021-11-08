@@ -3,6 +3,7 @@
 namespace Gedmo\Tests\Sluggable;
 
 use Doctrine\Common\EventManager;
+use Gedmo\Exception\InvalidMappingException;
 use Gedmo\Sluggable\SluggableListener;
 use Gedmo\Tests\Sluggable\Fixture\Validate;
 use Gedmo\Tests\Tool\BaseTestCaseORM;
@@ -18,14 +19,14 @@ use Gedmo\Tests\Tool\BaseTestCaseORM;
  */
 class AnnotationValidationTest extends BaseTestCaseORM
 {
-    public const TARGET = 'Gedmo\\Tests\\Sluggable\\Fixture\\Validate';
+    public const TARGET = Validate::class;
 
     /**
      * @test
      */
     public function shouldFailValidationOnInvalidAnnotation()
     {
-        $this->expectException('Gedmo\Exception\InvalidMappingException');
+        $this->expectException(InvalidMappingException::class);
         $evm = new EventManager();
         $evm->addEventSubscriber(new SluggableListener());
         $this->getMockSqliteEntityManager($evm);

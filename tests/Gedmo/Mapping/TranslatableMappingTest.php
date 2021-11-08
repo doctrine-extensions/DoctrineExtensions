@@ -5,6 +5,8 @@ namespace Gedmo\Tests\Translatable;
 use Doctrine\ORM\Mapping\Driver\DriverChain;
 use Doctrine\ORM\Mapping\Driver\YamlDriver;
 use Gedmo\Mapping\ExtensionMetadataFactory;
+use Gedmo\Tests\Mapping\Fixture\Yaml\User;
+use Gedmo\Tests\Translatable\Fixture\PersonTranslation;
 use Gedmo\Translatable\TranslatableListener;
 
 /**
@@ -18,7 +20,7 @@ use Gedmo\Translatable\TranslatableListener;
  */
 class TranslatableMappingTest extends \PHPUnit\Framework\TestCase
 {
-    public const TEST_YAML_ENTITY_CLASS = 'Gedmo\Tests\Mapping\Fixture\Yaml\User';
+    public const TEST_YAML_ENTITY_CLASS = User::class;
     private $em;
 
     protected function setUp(): void
@@ -58,7 +60,7 @@ class TranslatableMappingTest extends \PHPUnit\Framework\TestCase
         );
         $config = $this->em->getMetadataFactory()->getCacheDriver()->fetch($cacheId);
         static::assertArrayHasKey('translationClass', $config);
-        static::assertEquals('Gedmo\Tests\Translatable\Fixture\PersonTranslation', $config['translationClass']);
+        static::assertEquals(PersonTranslation::class, $config['translationClass']);
         static::assertArrayHasKey('fields', $config);
         static::assertCount(3, $config['fields']);
         static::assertEquals('password', $config['fields'][0]);

@@ -7,7 +7,10 @@ use Doctrine\Common\EventManager;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
 use Doctrine\ORM\Mapping\Driver\DriverChain;
 use Doctrine\ORM\Mapping\Driver\XmlDriver;
+use Gedmo\Tests\Mapping\Fixture\Xml\Translatable;
+use Gedmo\Tests\Mapping\Fixture\Xml\TranslatableWithEmbedded;
 use Gedmo\Tests\Tool\BaseTestCaseOM;
+use Gedmo\Translatable\Entity\Translation;
 use Gedmo\Translatable\TranslatableListener;
 
 /**
@@ -49,18 +52,18 @@ class TranslatableMappingTest extends BaseTestCaseOM
         $this->evm->addEventSubscriber($this->translatable);
 
         $this->em = $this->getMockSqliteEntityManager([
-            'Gedmo\Translatable\Entity\Translation',
-            'Gedmo\Tests\Mapping\Fixture\Xml\Translatable',
+            Translation::class,
+            Translatable::class,
         ], $chain);
     }
 
     public function testTranslatableMetadata()
     {
-        $meta = $this->em->getClassMetadata('Gedmo\Tests\Mapping\Fixture\Xml\Translatable');
+        $meta = $this->em->getClassMetadata(Translatable::class);
         $config = $this->translatable->getConfiguration($this->em, $meta->name);
 
         static::assertArrayHasKey('translationClass', $config);
-        static::assertEquals('Gedmo\Translatable\Entity\Translation', $config['translationClass']);
+        static::assertEquals(Translation::class, $config['translationClass']);
         static::assertArrayHasKey('locale', $config);
         static::assertEquals('locale', $config['locale']);
 
@@ -76,7 +79,7 @@ class TranslatableMappingTest extends BaseTestCaseOM
 
     public function testTranslatableMetadataWithEmbedded()
     {
-        $meta = $this->em->getClassMetadata('Gedmo\Tests\Mapping\Fixture\Xml\TranslatableWithEmbedded');
+        $meta = $this->em->getClassMetadata(TranslatableWithEmbedded::class);
         $config = $this->translatable->getConfiguration($this->em, $meta->name);
 
         static::assertContains('embedded.subtitle', $config['fields']);

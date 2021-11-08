@@ -9,6 +9,8 @@ use Gedmo\Tests\Translatable\Fixture\File;
 use Gedmo\Tests\Translatable\Fixture\Image;
 use Gedmo\Tests\Translatable\Fixture\TemplatedArticle;
 use Gedmo\Translatable\Entity\Repository\TranslationRepository;
+use Gedmo\Translatable\Entity\Translation;
+use Gedmo\Translatable\Query\TreeWalker\TranslationWalker;
 use Gedmo\Translatable\TranslatableListener;
 
 /**
@@ -22,12 +24,12 @@ use Gedmo\Translatable\TranslatableListener;
  */
 class InheritanceTest extends BaseTestCaseORM
 {
-    public const ARTICLE = 'Gedmo\\Tests\\Translatable\\Fixture\\TemplatedArticle';
-    public const TRANSLATION = 'Gedmo\\Translatable\\Entity\\Translation';
-    public const FILE = 'Gedmo\\Tests\\Translatable\\Fixture\\File';
-    public const IMAGE = 'Gedmo\\Tests\\Translatable\\Fixture\\Image';
+    public const ARTICLE = TemplatedArticle::class;
+    public const TRANSLATION = Translation::class;
+    public const FILE = File::class;
+    public const IMAGE = Image::class;
 
-    public const TREE_WALKER_TRANSLATION = 'Gedmo\\Translatable\\Query\\TreeWalker\\TranslationWalker';
+    public const TREE_WALKER_TRANSLATION = TranslationWalker::class;
 
     private $translatableListener;
 

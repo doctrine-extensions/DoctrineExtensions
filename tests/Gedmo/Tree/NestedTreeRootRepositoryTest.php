@@ -18,7 +18,7 @@ use Gedmo\Tree\TreeListener;
  */
 class NestedTreeRootRepositoryTest extends BaseTestCaseORM
 {
-    public const CATEGORY = 'Gedmo\\Tests\\Tree\\Fixture\\RootCategory';
+    public const CATEGORY = RootCategory::class;
 
     protected function setUp(): void
     {

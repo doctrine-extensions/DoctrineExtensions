@@ -6,6 +6,7 @@ use Doctrine\Common\EventManager;
 use Gedmo\Sluggable\SluggableListener;
 use Gedmo\Tests\Tool\BaseTestCaseMongoODM;
 use Gedmo\Tests\Translatable\Fixture\Document\Article;
+use Gedmo\Translatable\Document\Translation;
 use Gedmo\Translatable\TranslatableListener;
 
 /**
@@ -19,8 +20,8 @@ use Gedmo\Translatable\TranslatableListener;
  */
 class TranslatableDocumentTest extends BaseTestCaseMongoODM
 {
-    public const ARTICLE = 'Gedmo\\Tests\\Translatable\\Fixture\\Document\\Article';
-    public const TRANSLATION = 'Gedmo\\Translatable\\Document\\Translation';
+    public const ARTICLE = Article::class;
+    public const TRANSLATION = Translation::class;
 
     private $translatableListener;
     private $articleId;

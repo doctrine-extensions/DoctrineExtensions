@@ -21,10 +21,10 @@ use Gedmo\Tests\Tool\BaseTestCaseORM;
  */
 class Issue827Test extends BaseTestCaseORM
 {
-    public const ARTICLE = 'Gedmo\\Tests\\Sluggable\\Fixture\\Issue827\\Article';
-    public const CATEGORY = 'Gedmo\\Tests\\Sluggable\\Fixture\\Issue827\\Category';
-    public const COMMENT = 'Gedmo\\Tests\\Sluggable\\Fixture\\Issue827\\Comment';
-    public const POST = 'Gedmo\\Tests\\Sluggable\\Fixture\\Issue827\\Post';
+    public const ARTICLE = Article::class;
+    public const CATEGORY = Category::class;
+    public const COMMENT = Comment::class;
+    public const POST = Post::class;
 
     protected function setUp(): void
     {

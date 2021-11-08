@@ -4,6 +4,10 @@ namespace Gedmo\Tests\Tree;
 
 use Doctrine\Common\EventManager;
 use Gedmo\Tests\Tool\BaseTestCaseORM;
+use Gedmo\Tests\Tree\Fixture\Role;
+use Gedmo\Tests\Tree\Fixture\User;
+use Gedmo\Tests\Tree\Fixture\UserGroup;
+use Gedmo\Tests\Tree\Fixture\UserLDAP;
 use Gedmo\Tree\TreeListener;
 
 /**
@@ -19,10 +23,10 @@ use Gedmo\Tree\TreeListener;
  */
 class MultInheritanceWithJoinedTableTest extends BaseTestCaseORM
 {
-    public const USER = 'Gedmo\\Tests\\Tree\\Fixture\\User';
-    public const GROUP = 'Gedmo\\Tests\\Tree\\Fixture\\UserGroup';
-    public const ROLE = 'Gedmo\\Tests\\Tree\\Fixture\\Role';
-    public const USERLDAP = 'Gedmo\\Tests\\Tree\\Fixture\\UserLDAP';
+    public const USER = User::class;
+    public const GROUP = UserGroup::class;
+    public const ROLE = Role::class;
+    public const USERLDAP = UserLDAP::class;
 
     protected function setUp(): void
     {

@@ -5,7 +5,11 @@ namespace Gedmo\Tests\Sluggable;
 use Doctrine\ORM\Mapping\Driver\DriverChain;
 use Doctrine\ORM\Mapping\Driver\YamlDriver;
 use Gedmo\Mapping\ExtensionMetadataFactory;
+use Gedmo\Sluggable\Handler\RelativeSlugHandler;
+use Gedmo\Sluggable\Handler\TreeSlugHandler;
 use Gedmo\Sluggable\SluggableListener;
+use Gedmo\Tests\Mapping\Fixture\Sluggable;
+use Gedmo\Tests\Mapping\Fixture\Yaml\Category;
 
 /**
  * These are mapping tests for sluggable extension
@@ -18,8 +22,8 @@ use Gedmo\Sluggable\SluggableListener;
  */
 class SluggableMappingTest extends \PHPUnit\Framework\TestCase
 {
-    public const TEST_YAML_ENTITY_CLASS = 'Gedmo\Tests\Mapping\Fixture\Yaml\Category';
-    public const SLUGGABLE = 'Gedmo\Tests\Mapping\Fixture\Sluggable';
+    public const TEST_YAML_ENTITY_CLASS = Category::class;
+    public const SLUGGABLE = Sluggable::class;
     private $em;
 
     protected function setUp(): void
@@ -86,17 +90,17 @@ class SluggableMappingTest extends \PHPUnit\Framework\TestCase
         static::assertArrayHasKey('handlers', $config['slugs']['slug']);
         $handlers = $config['slugs']['slug']['handlers'];
         static::assertCount(2, $handlers);
-        static::assertArrayHasKey('Gedmo\Sluggable\Handler\TreeSlugHandler', $handlers);
-        static::assertArrayHasKey('Gedmo\Sluggable\Handler\RelativeSlugHandler', $handlers);
+        static::assertArrayHasKey(TreeSlugHandler::class, $handlers);
+        static::assertArrayHasKey(RelativeSlugHandler::class, $handlers);
 
-        $first = $handlers['Gedmo\Sluggable\Handler\TreeSlugHandler'];
+        $first = $handlers[TreeSlugHandler::class];
         static::assertCount(2, $first);
         static::assertArrayHasKey('parentRelationField', $first);
         static::assertArrayHasKey('separator', $first);
         static::assertEquals('parent', $first['parentRelationField']);
         static::assertEquals('/', $first['separator']);
 
-        $second = $handlers['Gedmo\Sluggable\Handler\RelativeSlugHandler'];
+        $second = $handlers[RelativeSlugHandler::class];
         static::assertCount(3, $second);
         static::assertArrayHasKey('relationField', $second);
         static::assertArrayHasKey('relationSlugField', $second);
@@ -121,17 +125,17 @@ class SluggableMappingTest extends \PHPUnit\Framework\TestCase
         static::assertArrayHasKey('handlers', $config['slugs']['slug']);
         $handlers = $config['slugs']['slug']['handlers'];
         static::assertCount(2, $handlers);
-        static::assertArrayHasKey('Gedmo\Sluggable\Handler\TreeSlugHandler', $handlers);
-        static::assertArrayHasKey('Gedmo\Sluggable\Handler\RelativeSlugHandler', $handlers);
+        static::assertArrayHasKey(TreeSlugHandler::class, $handlers);
+        static::assertArrayHasKey(RelativeSlugHandler::class, $handlers);
 
-        $first = $handlers['Gedmo\Sluggable\Handler\TreeSlugHandler'];
+        $first = $handlers[TreeSlugHandler::class];
         static::assertCount(2, $first);
         static::assertArrayHasKey('parentRelationField', $first);
         static::assertArrayHasKey('separator', $first);
         static::assertEquals('parent', $first['parentRelationField']);
         static::assertEquals('/', $first['separator']);
 
-        $second = $handlers['Gedmo\Sluggable\Handler\RelativeSlugHandler'];
+        $second = $handlers[RelativeSlugHandler::class];
         static::assertCount(3, $second);
         static::assertArrayHasKey('relationField', $second);
         static::assertArrayHasKey('relationSlugField', $second);

@@ -3,6 +3,7 @@
 namespace Gedmo\Sluggable\Mapping\Driver;
 
 use Gedmo\Exception\InvalidMappingException;
+use Gedmo\Mapping\Annotation\Slug;
 use Gedmo\Mapping\Annotation\SlugHandler;
 use Gedmo\Mapping\Annotation\SlugHandlerOption;
 use Gedmo\Mapping\Driver\AbstractAnnotationDriver;
@@ -22,17 +23,17 @@ class Annotation extends AbstractAnnotationDriver
      * Annotation to identify field as one which holds the slug
      * together with slug options
      */
-    public const SLUG = 'Gedmo\\Mapping\\Annotation\\Slug';
+    public const SLUG = Slug::class;
 
     /**
      * SlugHandler extension annotation
      */
-    public const HANDLER = 'Gedmo\\Mapping\\Annotation\\SlugHandler';
+    public const HANDLER = SlugHandler::class;
 
     /**
      * SlugHandler option annotation
      */
-    public const HANDLER_OPTION = 'Gedmo\\Mapping\\Annotation\\SlugHandlerOption';
+    public const HANDLER_OPTION = SlugHandlerOption::class;
 
     /**
      * List of types which are valid for slug and sluggable fields
