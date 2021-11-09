@@ -21,6 +21,7 @@ a release.
 ## [Unreleased]
 
 ### Fixed
+- Value passed in the `--config` option to `fix-cs` Composer script.
 - Return value for `replaceRelative()` and `replaceInverseRelative()` at `Gedmo\Sluggable\Mapping\Event\Adapter\ODM` if the
   query result does not implement `Doctrine\ODM\MongoDB\Iterator\Iterator`.
 - Restored compatibility with doctrine/orm >= 2.10.2 (#2272).
