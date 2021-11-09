@@ -84,7 +84,7 @@
         }
     },
     "scripts": {
-        "fix-cs": "php bin/php-cs-fixer fix --config=.php_cs.dist"
+        "fix-cs": "php-cs-fixer fix --config=.php-cs-fixer.dist.php"
     },
     "support": {
         "email": "gediminas.morkevicius@gmail.com",
