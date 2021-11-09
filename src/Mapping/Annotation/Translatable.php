@@ -26,7 +26,7 @@ final class Translatable implements GedmoAnnotation
     {
         if ([] !== $data) {
             trigger_error(sprintf(
-                'Passing an array as first argument to "%s" is deprecated. Use named arguments instead.',
+                'Passing an array as first argument to "%s()" is deprecated. Use named arguments instead.',
                 __METHOD__
             ), E_USER_DEPRECATED);
         }
