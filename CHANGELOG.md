@@ -23,6 +23,7 @@ a release.
 - `Gedmo\Mapping\Driver\File::$_paths` property and `Gedmo\Mapping\Driver\File::setPaths()` method are deprecated and will
   be removed in version 4.0, as they are not used.
 
+## [3.3.0] - 2021-11-15
 ### Added
 - Support to use Translatable annotations as attributes on PHP >= 8.0.
 
