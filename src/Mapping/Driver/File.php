@@ -35,7 +35,7 @@ abstract class File implements Driver
     protected $_originalDriver = null;
 
     /**
-     * @deprecated since gedmo/doctrine-extensions 3.x, will be removed in version 4.0.
+     * @deprecated since gedmo/doctrine-extensions 3.3, will be removed in version 4.0.
      *
      * @var string[]
      */
@@ -49,7 +49,7 @@ abstract class File implements Driver
     /**
      * Set the paths for file lookup
      *
-     * @deprecated since gedmo/doctrine-extensions 3.x, will be removed in version 4.0.
+     * @deprecated since gedmo/doctrine-extensions 3.3, will be removed in version 4.0.
      *
      * @param string[] $paths
      *
