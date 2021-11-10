@@ -44,7 +44,7 @@ final class TranslatableEntityDefaultTranslationTest extends BaseTestCaseORM
             'password' => 'nimda',
         ];
         //$this->getMockCustomEntityManager($conn, $evm);
-        $this->getMockSqliteEntityManager($evm);
+        $this->getDefaultMockSqliteEntityManager($evm);
 
         $this->repo = $this->em->getRepository(self::TRANSLATION);
     }

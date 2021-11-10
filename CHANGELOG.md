@@ -20,6 +20,9 @@ a release.
 
 ## [Unreleased]
 
+### Added
+- Support to use Translatable annotations as attributes on PHP >= 8.0.
+
 ### Fixed
 - Value passed in the `--config` option to `fix-cs` Composer script.
 - Return value for `replaceRelative()` and `replaceInverseRelative()` at `Gedmo\Sluggable\Mapping\Event\Adapter\ODM` if the

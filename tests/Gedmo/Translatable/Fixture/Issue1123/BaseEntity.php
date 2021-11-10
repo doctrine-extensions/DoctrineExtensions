@@ -2,6 +2,7 @@
 
 namespace Gedmo\Tests\Translatable\Fixture\Issue1123;
 
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -15,6 +16,11 @@ use Doctrine\ORM\Mapping as ORM;
  * "child" = "ChildEntity"
  * })
  */
+#[ORM\Entity]
+#[ORM\Table(name: 'base_entity')]
+#[ORM\InheritanceType('JOINED')]
+#[ORM\DiscriminatorColumn(name: 'discr', type: Types::STRING)]
+#[ORM\DiscriminatorMap(['base' => BaseEntity::class, 'child' => ChildEntity::class])]
 abstract class BaseEntity
 {
     /**
@@ -22,5 +28,8 @@ abstract class BaseEntity
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: Types::INTEGER)]
     protected $id;
 }

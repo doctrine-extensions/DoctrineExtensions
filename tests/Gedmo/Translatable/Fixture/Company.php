@@ -2,6 +2,7 @@
 
 namespace Gedmo\Tests\Translatable\Fixture;
 
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\Translatable\Translatable;
@@ -9,21 +10,32 @@ use Gedmo\Translatable\Translatable;
 /**
  * @ORM\Entity
  */
+#[ORM\Entity]
 class Company implements Translatable
 {
-    /** @ORM\Id @ORM\GeneratedValue @ORM\Column(type="integer") */
+    /**
+     * @ORM\Id
+     * @ORM\GeneratedValue
+     * @ORM\Column(type="integer")
+     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: Types::INTEGER)]
     private $id;
 
     /**
      * @ORM\Column(name="title", type="string", length=128)
      * @Gedmo\Translatable
      */
+    #[Gedmo\Translatable]
+    #[ORM\Column(name: 'title', type: Types::STRING, length: 128)]
     private $title;
 
     /**
      * @var CompanyEmbedLink
      * @ORM\Embedded(class="Gedmo\Tests\Translatable\Fixture\CompanyEmbedLink")
      */
+    #[ORM\Embedded(class: CompanyEmbedLink::class)]
     private $link;
 
     /**
@@ -31,6 +43,7 @@ class Company implements Translatable
      *
      * @Gedmo\Locale
      */
+    #[Gedmo\Locale]
     private $locale;
 
     public function __construct()
