@@ -8,7 +8,7 @@ env:
 
 jobs:
   phpunit:
-    name: "PHPUnit"
+    name: "PHPUnit ${{ matrix.php-version }} (${{ matrix.deps }})${{ matrix.dbal-version && format(' - DBAL {0}', matrix.dbal-version) || '' }}"
     runs-on: "ubuntu-20.04"
 
     services:
@@ -26,9 +26,17 @@ jobs:
           - "8.0"
         deps:
           - "highest"
+        dbal-version:
+          - ""
         include:
           - deps: "lowest"
             php-version: "7.2"
+          - deps: "highest"
+            php-version: "8.0"
+            dbal-version: "^2.13.1"
+          - deps: "highest"
+            php-version: "8.0"
+            dbal-version: "^3.1"
 
     steps:
       - name: "Checkout"
@@ -41,6 +49,10 @@ jobs:
         with:
           php-version: "${{ matrix.php-version }}"
           extensions: mongodb
+
+      - name: "Restrict DBAL version"
+        if: "${{ matrix.dbal-version }}"
+        run: "composer require --dev --no-update doctrine/dbal:${{ matrix.dbal-version }}"
 
       - name: "Install dependencies with Composer"
         uses: "ramsey/composer-install@v1"

@@ -27,7 +27,7 @@ class SoftDeleteableWalker extends SqlWalker
     /**
      * @var Connection
      *
-     * @deprecated to be removed in 4.0, use the getConnection method instead
+     * @deprecated to be removed in 4.0, use the `getConnection()` method instead.
      */
     protected $conn;
 
