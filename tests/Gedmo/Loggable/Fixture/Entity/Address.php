@@ -16,7 +16,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 class Address
 {
     /**
-     * @var int
+     * @var int|null
      * @ORM\Id()
      * @ORM\Column(name="id", type="integer")
      * @ORM\GeneratedValue(strategy="AUTO")
@@ -45,7 +45,7 @@ class Address
     protected $geo;
 
     /**
-     * @return int
+     * @return int|null
      */
     public function getId()
     {
