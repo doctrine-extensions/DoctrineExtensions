@@ -18,6 +18,7 @@ return (new PhpCsFixer\Config())
         'is_null' => false,
         'list_syntax' => ['syntax' => 'short'],
         'modernize_types_casting' => true,
+        'no_homoglyph_names' => true,
         'no_useless_else' => true,
         'ordered_imports' => ['sort_algorithm' => 'alpha'],
         'phpdoc_summary' => false,

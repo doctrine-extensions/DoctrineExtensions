@@ -118,10 +118,10 @@ class Annotation extends AbstractAnnotationDriver
      */
     private function inspectEmbeddedForVersioned($field, array &$config, \Doctrine\ORM\Mapping\ClassMetadata $meta)
     {
-        $сlass = new \ReflectionClass($meta->embeddedClasses[$field]['class']);
+        $class = new \ReflectionClass($meta->embeddedClasses[$field]['class']);
 
         // property annotations
-        foreach ($сlass->getProperties() as $property) {
+        foreach ($class->getProperties() as $property) {
             // versioned property
             if ($this->reader->getPropertyAnnotation($property, self::VERSIONED)) {
                 $embeddedField = $field.'.'.$property->getName();
