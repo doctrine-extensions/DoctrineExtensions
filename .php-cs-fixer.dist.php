@@ -22,6 +22,7 @@ return (new PhpCsFixer\Config())
         'list_syntax' => ['syntax' => 'short'],
         'modernize_types_casting' => true,
         'no_homoglyph_names' => true,
+        'no_unset_on_property' => true,
         'no_useless_else' => true,
         'ordered_imports' => ['sort_algorithm' => 'alpha'],
         'phpdoc_summary' => false,
