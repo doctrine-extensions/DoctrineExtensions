@@ -1,5 +1,12 @@
 <?php
 
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Gedmo\Sluggable\Handler;
 
 use Doctrine\Persistence\Mapping\ClassMetadata;
@@ -16,7 +23,6 @@ use Gedmo\Tool\Wrapper\AbstractWrapper;
  * where path separator separates the relative slug
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 class RelativeSlugHandler implements SlugHandlerInterface
 {

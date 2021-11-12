@@ -1,5 +1,12 @@
 <?php
 
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Annotations\AnnotationRegistry;
 use Doctrine\Common\Annotations\PsrCachedReader;
@@ -12,7 +19,6 @@ use Symfony\Component\Cache\Adapter\ArrayAdapter;
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  * @author Christoph Krämer <cevou@gmx.de>
  * @link http://www.gediminasm.org
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 
 define('TESTS_PATH', __DIR__);

@@ -1,5 +1,12 @@
 <?php
 
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Gedmo\Translatable\Mapping\Event;
 
 use Gedmo\Mapping\Event\AdapterInterface;
@@ -9,7 +16,6 @@ use Gedmo\Tool\Wrapper\AbstractWrapper;
  * Doctrine event adapter for the Translatable extension.
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 interface TranslatableAdapter extends AdapterInterface
 {
