@@ -31,7 +31,7 @@ class Yaml extends File implements Driver
     {
         $mapping = $this->_getMapping($meta->name);
 
-        if (isset($mapping['gedmo']) && isset($mapping['gedmo']['reference'])) {
+        if (isset($mapping['gedmo'], $mapping['gedmo']['reference'])) {
             foreach ($mapping['gedmo']['reference'] as $field => $fieldMapping) {
                 $reference = $fieldMapping['reference'];
 

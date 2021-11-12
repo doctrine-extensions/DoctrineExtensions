@@ -143,12 +143,12 @@ class Nested implements Strategy
         $uow = $em->getUnitOfWork();
 
         $changeSet = $uow->getEntityChangeSet($node);
-        if (isset($config['root']) && isset($changeSet[$config['root']])) {
+        if (isset($config['root'], $changeSet[$config['root']])) {
             throw new \Gedmo\Exception\UnexpectedValueException('Root cannot be changed manually, change parent instead');
         }
 
         $oid = spl_object_id($node);
-        if (isset($changeSet[$config['left']]) && isset($this->nodePositions[$oid])) {
+        if (isset($changeSet[$config['left']], $this->nodePositions[$oid])) {
             $wrapped = AbstractWrapper::wrap($node, $em);
             $parent = $wrapped->getPropertyValue($config['parent']);
             // revert simulated changeset
