@@ -56,7 +56,7 @@ abstract class BaseTestCaseMongoODM extends \PHPUnit\Framework\TestCase
             $documentDatabase->drop();
         }
 
-        unset($this->dm);
+        $this->dm = null;
     }
 
     /**
