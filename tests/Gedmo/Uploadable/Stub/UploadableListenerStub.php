@@ -13,7 +13,7 @@ namespace Gedmo\Tests\Uploadable\Stub;
 
 use Gedmo\Uploadable\UploadableListener;
 
-class UploadableListenerStub extends UploadableListener
+final class UploadableListenerStub extends UploadableListener
 {
     /**
      * @var bool

@@ -14,6 +14,8 @@ use Attribute;
 /**
  * @NamedArgumentConstructor
  * @Annotation
+ *
+ * @final since gedmo/doctrine-extensions 3.x
  */
 #[Attribute(Attribute::TARGET_PROPERTY)]
 class ReferenceManyEmbed extends Reference

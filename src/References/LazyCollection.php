@@ -19,6 +19,8 @@ use Doctrine\Common\Collections\Collection;
  * @author Jonathan H. Wage <jonwage@gmail.com>
  *
  * @template-implements Collection<array-key, mixed>
+ *
+ * @final since gedmo/doctrine-extensions 3.x
  */
 class LazyCollection implements Collection
 {

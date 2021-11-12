@@ -19,6 +19,8 @@ use Gedmo\Mapping\Driver\Xml as BaseXml;
  * extension.
  *
  * @author Aram Alipoor <aram.alipoor@gmail.com>
+ *
+ * @internal
  */
 class Xml extends BaseXml
 {

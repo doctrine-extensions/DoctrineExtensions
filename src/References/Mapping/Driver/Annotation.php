@@ -22,6 +22,8 @@ use Gedmo\Mapping\Driver\AnnotationDriverInterface;
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  * @author Bulat Shakirzyanov <mallluhuct@gmail.com>
  * @author Jonathan H. Wage <jonwage@gmail.com>
+ *
+ * @internal
  */
 class Annotation implements AnnotationDriverInterface
 {

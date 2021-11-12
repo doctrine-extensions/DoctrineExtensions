@@ -20,6 +20,8 @@ use Gedmo\Mapping\Driver\AbstractAnnotationDriver;
  * extension.
  *
  * @author David Buchmann <mail@davidbu.ch>
+ *
+ * @internal
  */
 class Annotation extends AbstractAnnotationDriver
 {

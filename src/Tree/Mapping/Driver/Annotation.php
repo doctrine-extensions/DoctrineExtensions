@@ -32,6 +32,8 @@ use Gedmo\Tree\Mapping\Validator;
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  * @author <rocco@roccosportal.com>
+ *
+ * @internal
  */
 class Annotation extends AbstractAnnotationDriver
 {

@@ -13,6 +13,8 @@ namespace Gedmo\ReferenceIntegrity\Mapping;
  * This class is used to validate mapping information
  *
  * @author Evert Harmeling <evert.harmeling@freshheads.com>
+ *
+ * @final since gedmo/doctrine-extensions 3.x
  */
 class Validator
 {

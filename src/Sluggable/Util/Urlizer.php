@@ -13,6 +13,8 @@ use Behat\Transliterator\Transliterator;
 
 /**
  * Transliteration utility
+ *
+ * @final since gedmo/doctrine-extensions 3.x
  */
 class Urlizer extends Transliterator
 {

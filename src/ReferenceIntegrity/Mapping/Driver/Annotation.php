@@ -21,6 +21,8 @@ use Gedmo\ReferenceIntegrity\Mapping\Validator;
  * extension.
  *
  * @author Evert Harmeling <evert.harmeling@freshheads.com>
+ *
+ * @internal
  */
 class Annotation extends AbstractAnnotationDriver
 {

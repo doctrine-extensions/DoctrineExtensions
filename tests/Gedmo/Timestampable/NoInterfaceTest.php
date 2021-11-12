@@ -40,7 +40,7 @@ final class NoInterfaceTest extends BaseTestCaseORM
         $test = new WithoutInterface();
         $test->setTitle('Test');
 
-        $date = new \DateTime('now');
+        $date = new \DateTime();
         $this->em->persist($test);
         $this->em->flush();
         $this->em->clear();

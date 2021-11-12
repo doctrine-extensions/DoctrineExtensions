@@ -20,6 +20,8 @@ use Gedmo\ReferenceIntegrity\Mapping\Validator;
  * The ReferenceIntegrity listener handles the reference integrity on related documents
  *
  * @author Evert Harmeling <evert.harmeling@freshheads.com>
+ *
+ * @final since gedmo/doctrine-extensions 3.x
  */
 class ReferenceIntegrityListener extends MappedEventSubscriber
 {

@@ -21,6 +21,8 @@ use Gedmo\Tool\Wrapper\EntityWrapper;
  * to interact with log entries.
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
+ *
+ * @final since gedmo/doctrine-extensions 3.x
  */
 class LogEntryRepository extends EntityRepository
 {

@@ -15,7 +15,7 @@ use Doctrine\Common\EventArgs;
 use Gedmo\Mapping\Event\AdapterInterface;
 use Gedmo\Mapping\MappedEventSubscriber;
 
-class EventSubscriberCustomMock extends MappedEventSubscriber
+final class EventSubscriberCustomMock extends MappedEventSubscriber
 {
     public function getAdapter(EventArgs $args): AdapterInterface
     {

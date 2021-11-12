@@ -19,6 +19,8 @@ use Gedmo\Tree\TreeListener;
  * Automatically maps the parent and children properties of Tree nodes
  *
  * @author Ilija Tovilo <ilija.tovilo@me.com>
+ *
+ * @final since gedmo/doctrine-extensions 3.x
  */
 class TreeObjectHydrator extends ObjectHydrator
 {

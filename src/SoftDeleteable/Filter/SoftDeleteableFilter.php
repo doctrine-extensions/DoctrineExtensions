@@ -21,6 +21,8 @@ use Gedmo\SoftDeleteable\SoftDeleteableListener;
  * @author Gustavo Falco <comfortablynumb84@gmail.com>
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  * @author Patrik Votoček <patrik@votocek.cz>
+ *
+ * @final since gedmo/doctrine-extensions 3.x
  */
 class SoftDeleteableFilter extends SQLFilter
 {

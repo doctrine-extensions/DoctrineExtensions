@@ -11,8 +11,37 @@ declare(strict_types=1);
 
 namespace Gedmo\Tests\Uploadable\Stub;
 
-use Gedmo\Uploadable\FileInfo\FileInfoArray;
+use Gedmo\Uploadable\FileInfo\FileInfoInterface;
 
-class FileInfoStub extends FileInfoArray
+final class FileInfoStub implements FileInfoInterface
 {
+    public function getTmpName()
+    {
+        throw new \BadMethodCallException('Not implemented.');
+    }
+
+    public function getName()
+    {
+        throw new \BadMethodCallException('Not implemented.');
+    }
+
+    public function getSize()
+    {
+        throw new \BadMethodCallException('Not implemented.');
+    }
+
+    public function getType()
+    {
+        throw new \BadMethodCallException('Not implemented.');
+    }
+
+    public function getError()
+    {
+        throw new \BadMethodCallException('Not implemented.');
+    }
+
+    public function isUploadedFile()
+    {
+        throw new \BadMethodCallException('Not implemented.');
+    }
 }

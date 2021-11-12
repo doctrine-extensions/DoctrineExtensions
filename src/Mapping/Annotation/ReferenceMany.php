@@ -18,6 +18,8 @@ use Attribute;
  * @author Bulat Shakirzyanov <mallluhuct@gmail.com>
  * @NamedArgumentConstructor
  * @Annotation
+ *
+ * @final since gedmo/doctrine-extensions 3.x
  */
 #[Attribute(Attribute::TARGET_PROPERTY)]
 class ReferenceMany extends Reference

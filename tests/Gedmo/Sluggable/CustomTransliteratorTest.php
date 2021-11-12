@@ -42,7 +42,9 @@ final class CustomTransliteratorTest extends BaseTestCaseORM
     public function testCanUseCustomTransliterator(): void
     {
         $evm = new EventManager();
-        $evm->addEventSubscriber(new MySluggableListener());
+        $sluggableListener = new SluggableListener();
+        $sluggableListener->setTransliterator([Transliterator::class, 'transliterate']);
+        $evm->addEventSubscriber($sluggableListener);
 
         $this->getDefaultMockSqliteEntityManager($evm);
         $this->populate();
@@ -71,17 +73,7 @@ final class CustomTransliteratorTest extends BaseTestCaseORM
     }
 }
 
-class MySluggableListener extends SluggableListener
-{
-    public function __construct()
-    {
-        parent::__construct();
-
-        $this->setTransliterator([Transliterator::class, 'transliterate']);
-    }
-}
-
-class Transliterator
+final class Transliterator
 {
     public static function transliterate(string $text, string $separator, object $object): string
     {
