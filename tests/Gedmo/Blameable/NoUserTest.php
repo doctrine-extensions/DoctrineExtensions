@@ -1,5 +1,12 @@
 <?php
 
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Gedmo\Tests\Blameable;
 
 use Doctrine\Common\EventManager;
@@ -11,7 +18,6 @@ use Gedmo\Tests\Tool\BaseTestCaseMongoODM;
  * These are tests for Blameable behavior, when no user is available
  *
  * @author Kévin Gomez <contact@kevingomez.fr>
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 final class NoUserTest extends BaseTestCaseMongoODM
 {

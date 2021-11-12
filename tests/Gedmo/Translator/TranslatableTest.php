@@ -1,5 +1,12 @@
 <?php
 
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Gedmo\Tests\Translator;
 
 use Doctrine\Common\EventManager;
@@ -12,10 +19,6 @@ use Gedmo\Tests\Translator\Fixture\PersonCustom;
  * These are tests for translatable behavior
  *
  * @author Konstantin Kudryashov <ever.zet@gmail.com>
- *
- * @see http://www.gediminasm.org
- *
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 final class TranslatableTest extends BaseTestCaseORM
 {

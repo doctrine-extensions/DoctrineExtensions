@@ -1,5 +1,12 @@
 <?php
 
+/*
+ * This file is part of the Doctrine Behavioral Extensions package.
+ * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Gedmo\Mapping\Driver;
 
 use Doctrine\Persistence\Mapping\ClassMetadata;
@@ -8,8 +15,7 @@ use Doctrine\Persistence\Mapping\ClassMetadata;
  * This is an abstract class to implement common functionality
  * for extension annotation mapping drivers.
  *
- * @author     Derek J. Lambert <dlambert@dereklambert.com>
- * @license    MIT License (http://www.opensource.org/licenses/mit-license.php)
+ * @author Derek J. Lambert <dlambert@dereklambert.com>
  */
 abstract class AbstractAnnotationDriver implements AnnotationDriverInterface
 {
