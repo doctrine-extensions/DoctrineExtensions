@@ -16,6 +16,8 @@ use Gedmo\Mapping\Driver;
  * extension mapping driver support
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
+ *
+ * @final since gedmo/doctrine-extensions 3.x
  */
 class Chain implements Driver
 {

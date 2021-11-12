@@ -20,6 +20,8 @@ use Gedmo\Mapping\Driver\Xml as BaseXml;
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  * @author Miha Vrhovnik <miha.vrhovnik@gmail.com>
+ *
+ * @internal
  */
 class Xml extends BaseXml
 {

@@ -15,6 +15,9 @@ use Gedmo\Exception\InvalidArgumentException;
 use Gedmo\Tool\Wrapper\EntityWrapper;
 use Gedmo\Tool\Wrapper\MongoDocumentWrapper;
 
+/**
+ * @final since gedmo/doctrine-extensions 3.x
+ */
 class RepositoryUtils implements RepositoryUtilsInterface
 {
     /** @var ClassMetadata */

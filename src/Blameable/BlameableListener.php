@@ -18,6 +18,8 @@ use Gedmo\Exception\InvalidArgumentException;
  * dates on creation and update.
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
+ *
+ * @final since gedmo/doctrine-extensions 3.x
  */
 class BlameableListener extends AbstractTrackingListener
 {

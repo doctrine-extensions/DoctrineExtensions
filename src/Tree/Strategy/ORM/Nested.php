@@ -26,6 +26,8 @@ use Gedmo\Tree\TreeListener;
  * since nested set trees are slow on inserts and updates.
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
+ *
+ * @final since gedmo/doctrine-extensions 3.x
  */
 class Nested implements Strategy
 {

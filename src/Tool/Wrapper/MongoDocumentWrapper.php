@@ -17,6 +17,8 @@ use ProxyManager\Proxy\GhostObjectInterface;
  * manipulation
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
+ *
+ * @final since gedmo/doctrine-extensions 3.x
  */
 class MongoDocumentWrapper extends AbstractWrapper
 {

@@ -15,6 +15,8 @@ use Gedmo\Exception;
  * UnsupportedObjectManager
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
+ *
+ * @final since gedmo/doctrine-extensions 3.x
  */
 class UnsupportedObjectManagerException extends InvalidArgumentException implements Exception
 {

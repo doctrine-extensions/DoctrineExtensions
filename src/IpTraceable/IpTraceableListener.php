@@ -19,6 +19,8 @@ use Gedmo\Mapping\Event\AdapterInterface;
  * IPs on creation and update.
  *
  * @author Pierre-Charles Bertineau <pc.bertineau@alterphp.com>
+ *
+ * @final since gedmo/doctrine-extensions 3.x
  */
 class IpTraceableListener extends AbstractTrackingListener
 {

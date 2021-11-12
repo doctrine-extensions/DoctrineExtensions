@@ -23,6 +23,8 @@ a release.
 - Sortable: Fix return value check of Comparable interface (#2541)
 
 ### Deprecated
+- In order to close the API, `@final` and `@internal` annotations were added to all non base classes, which means that extending
+  these classes is deprecated and can not be inherited in version 4.0.
 - Sortable: Accepting a return type other than "integer" from `Comparable::compareTo()` is deprecated in `SortableListener::postFlush()`. This will not be accepted in version 4.0.
 
 ## [3.10.0] - 2022-11-14

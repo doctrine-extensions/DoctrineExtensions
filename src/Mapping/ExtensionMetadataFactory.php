@@ -28,6 +28,8 @@ use Psr\Cache\CacheItemPoolInterface;
  * initialization and fully reading the extension metadata
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
+ *
+ * @final since gedmo/doctrine-extensions 3.x
  */
 class ExtensionMetadataFactory
 {

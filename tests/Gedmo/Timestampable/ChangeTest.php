@@ -13,11 +13,11 @@ namespace Gedmo\Tests\Timestampable;
 
 use Doctrine\Common\EventArgs;
 use Doctrine\Common\EventManager;
+use Gedmo\AbstractTrackingListener;
 use Gedmo\Mapping\Event\Adapter\ORM as BaseAdapterORM;
 use Gedmo\Tests\Timestampable\Fixture\TitledArticle;
 use Gedmo\Tests\Tool\BaseTestCaseORM;
 use Gedmo\Timestampable\Mapping\Event\TimestampableAdapter;
-use Gedmo\Timestampable\TimestampableListener;
 
 /**
  * These are tests for Timestampable behavior
@@ -53,7 +53,7 @@ final class ChangeTest extends BaseTestCaseORM
         $test->setText('Test');
         $test->setState('Open');
 
-        $currentDate = new \DateTime('now');
+        $currentDate = new \DateTime();
         $this->listener->eventAdapter->setDateValue($currentDate);
 
         $this->em->persist($test);
@@ -115,25 +115,25 @@ final class ChangeTest extends BaseTestCaseORM
     }
 }
 
-class EventAdapterORMStub extends BaseAdapterORM implements TimestampableAdapter
+final class EventAdapterORMStub extends BaseAdapterORM implements TimestampableAdapter
 {
     /**
-     * @var \DateTime
+     * @var \DateTime|null
      */
-    protected $dateTime;
+    private $dateTime;
 
     public function setDateValue(\DateTime $dateTime): void
     {
         $this->dateTime = $dateTime;
     }
 
-    public function getDateValue($meta, $field)
+    public function getDateValue($meta, $field): ?\DateTime
     {
         return $this->dateTime;
     }
 }
 
-class TimestampableListenerStub extends TimestampableListener
+final class TimestampableListenerStub extends AbstractTrackingListener
 {
     /**
      * @var EventAdapterORMStub
@@ -145,5 +145,18 @@ class TimestampableListenerStub extends TimestampableListener
         $this->eventAdapter->setEventArgs($args);
 
         return $this->eventAdapter;
+    }
+
+    /**
+     * @param EventAdapterORMStub $eventAdapter
+     */
+    protected function getFieldValue($meta, $field, $eventAdapter)
+    {
+        return $eventAdapter->getDateValue($meta, $field);
+    }
+
+    protected function getNamespace()
+    {
+        return 'Gedmo\Timestampable';
     }
 }

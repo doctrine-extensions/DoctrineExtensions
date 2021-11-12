@@ -17,6 +17,8 @@ use Doctrine\DBAL\Types\Type;
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  *
  * @deprecated since gedmo/doctrine-extensions 3.5.
+ *
+ * @final since gedmo/doctrine-extensions 3.x
  */
 class QueryAnalyzer implements SQLLogger
 {

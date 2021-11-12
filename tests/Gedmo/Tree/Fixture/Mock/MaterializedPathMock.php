@@ -21,7 +21,7 @@ use Gedmo\Tree\Strategy\ODM\MongoDB\MaterializedPath;
  * @author Gustavo Adrian <comfortablynumb84@gmail.com>
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  */
-class MaterializedPathMock extends MaterializedPath
+final class MaterializedPathMock extends MaterializedPath
 {
     /**
      * @var bool

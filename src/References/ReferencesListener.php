@@ -39,6 +39,8 @@ use Gedmo\Mapping\MappedEventSubscriber;
  * }
  *
  * @phpstan-method ReferencesConfiguration getConfiguration(ObjectManager $objectManager, $class)
+ *
+ * @final since gedmo/doctrine-extensions 3.x
  */
 class ReferencesListener extends MappedEventSubscriber
 {

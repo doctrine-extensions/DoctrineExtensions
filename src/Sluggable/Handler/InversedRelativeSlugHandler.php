@@ -23,6 +23,8 @@ use Gedmo\Tool\Wrapper\AbstractWrapper;
  * relation changes
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
+ *
+ * @final since gedmo/doctrine-extensions 3.x
  */
 class InversedRelativeSlugHandler implements SlugHandlerInterface
 {

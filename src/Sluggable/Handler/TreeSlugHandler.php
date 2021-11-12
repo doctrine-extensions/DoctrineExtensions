@@ -23,6 +23,8 @@ use Gedmo\Tool\Wrapper\AbstractWrapper;
  * category tree slug could look like "food/fruits/apples"
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
+ *
+ * @final since gedmo/doctrine-extensions 3.x
  */
 class TreeSlugHandler implements SlugHandlerWithUniqueCallbackInterface
 {

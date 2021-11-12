@@ -22,6 +22,8 @@ use Gedmo\Mapping\Driver\Xml as BaseXml;
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  * @author Miha Vrhovnik <miha.vrhovnik@gmail.com>
  * @author Pierre-Charles Bertineau <pc.bertineau@alterphp.com>
+ *
+ * @internal
  */
 class Xml extends BaseXml
 {

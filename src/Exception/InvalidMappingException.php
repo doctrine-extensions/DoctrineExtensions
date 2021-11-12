@@ -18,6 +18,8 @@ use Gedmo\Exception;
  * valid or incomplete.
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
+ *
+ * @final since gedmo/doctrine-extensions 3.x
  */
 class InvalidMappingException extends InvalidArgumentException implements Exception
 {

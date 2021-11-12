@@ -20,6 +20,8 @@ use Gedmo\Tool\Wrapper\AbstractWrapper;
  * for sluggable behavior
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
+ *
+ * @final since gedmo/doctrine-extensions 3.x
  */
 class ORM extends BaseAdapterORM implements SluggableAdapter
 {
