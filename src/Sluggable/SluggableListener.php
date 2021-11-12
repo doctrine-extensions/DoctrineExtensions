@@ -347,6 +347,7 @@ class SluggableListener extends MappedEventSubscriber
                         $slug = preg_replace_callback('/^[a-z]|'.$quotedSeparator.'[a-z]/smi', static function ($m) {
                             return strtoupper($m[0]);
                         }, $slug);
+
                         break;
 
                     case 'lower':
@@ -355,6 +356,7 @@ class SluggableListener extends MappedEventSubscriber
                         } else {
                             $slug = strtolower($slug);
                         }
+
                         break;
 
                     case 'upper':
@@ -363,6 +365,7 @@ class SluggableListener extends MappedEventSubscriber
                         } else {
                             $slug = strtoupper($slug);
                         }
+
                         break;
 
                     default:

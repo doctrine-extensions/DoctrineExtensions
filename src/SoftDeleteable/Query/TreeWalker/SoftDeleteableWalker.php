@@ -93,6 +93,7 @@ class SoftDeleteableWalker extends SqlWalker
                 foreach ($listeners as $hash => $listener) {
                     if ($listener instanceof SoftDeleteableListener) {
                         $this->listener = $listener;
+
                         break;
                     }
                 }

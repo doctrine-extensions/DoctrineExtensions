@@ -641,6 +641,7 @@ class NestedTreeRepository extends AbstractTreeRepository
             }
             // process updates in transaction
             $this->_em->getConnection()->beginTransaction();
+
             try {
                 $parent = $wrapped->getPropertyValue($config['parent']);
                 $parentId = null;
@@ -721,6 +722,7 @@ class NestedTreeRepository extends AbstractTreeRepository
             } catch (\Exception $e) {
                 $this->_em->close();
                 $this->_em->getConnection()->rollback();
+
                 throw new \Gedmo\Exception\RuntimeException('Transaction failed', null, $e);
             }
         } else {

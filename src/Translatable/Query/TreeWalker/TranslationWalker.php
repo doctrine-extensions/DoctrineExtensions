@@ -467,6 +467,7 @@ class TranslationWalker extends SqlWalker
             case 'guid':
                 // need to cast to VARCHAR
                 $component = $component.'::VARCHAR';
+
                 break;
             }
         }

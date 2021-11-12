@@ -42,6 +42,7 @@ class BlameableListener extends AbstractTrackingListener
             if (method_exists($this->user, '__toString')) {
                 return $this->user->__toString();
             }
+
             throw new InvalidArgumentException('Field expects string, user must be a string, or object should have method getUsername or __toString');
         }
 

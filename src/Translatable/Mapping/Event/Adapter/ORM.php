@@ -69,6 +69,7 @@ final class ORM extends BaseAdapterORM implements TranslatableAdapter
                         }
                     }
                     $found = true;
+
                     break;
                 }
             }
