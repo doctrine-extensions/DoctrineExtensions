@@ -239,6 +239,7 @@ class ClosureTreeRepository extends AbstractTreeRepository
         $nodesToReparent = $q->getResult();
         // process updates in transaction
         $this->_em->getConnection()->beginTransaction();
+
         try {
             foreach ($nodesToReparent as $nodeToReparent) {
                 $id = $meta->getReflectionProperty($pk)->getValue($nodeToReparent);
@@ -270,6 +271,7 @@ class ClosureTreeRepository extends AbstractTreeRepository
         } catch (\Exception $e) {
             $this->_em->close();
             $this->_em->getConnection()->rollback();
+
             throw new \Gedmo\Exception\RuntimeException('Transaction failed: '.$e->getMessage(), null, $e);
         }
         // remove from identity map

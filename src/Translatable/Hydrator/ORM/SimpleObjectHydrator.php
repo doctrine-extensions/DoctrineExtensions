@@ -61,6 +61,7 @@ class SimpleObjectHydrator extends BaseSimpleObjectHydrator
             foreach ($listeners as $hash => $listener) {
                 if ($listener instanceof TranslatableListener) {
                     $translatableListener = $listener;
+
                     break;
                 }
             }

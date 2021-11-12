@@ -91,6 +91,7 @@ class CustomerType
             // we imitate an foreign key constraint exception, because doctrine
             // does not support sqlite constraints, which must be tested, too.
             $pdoException = new \PDOException('SQLSTATE[23000]: Integrity constraint violation: 1451 Cannot delete or update a parent row: a foreign key constraint fails', '23000');
+
             throw new ForeignKeyConstraintViolationException(sprintf('An exception occurred while deleting the customer type with id %s.', $this->getId()), new PDOException($pdoException));
         }
     }

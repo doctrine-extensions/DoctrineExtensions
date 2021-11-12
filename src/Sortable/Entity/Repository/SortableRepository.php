@@ -33,6 +33,7 @@ class SortableRepository extends EntityRepository
             foreach ($listeners as $hash => $listener) {
                 if ($listener instanceof SortableListener) {
                     $sortableListener = $listener;
+
                     break;
                 }
             }

@@ -61,6 +61,7 @@ abstract class AbstractWrapper implements WrapperInterface
         } elseif ($om instanceof DocumentManager) {
             return new MongoDocumentWrapper($object, $om);
         }
+
         throw new UnsupportedObjectManagerException('Given object manager is not managed by wrapper');
     }
 

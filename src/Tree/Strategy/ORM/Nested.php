@@ -357,6 +357,7 @@ class Nested implements Strategy
                         $em->getUnitOfWork()->recomputeSingleEntityChangeSet($meta, $node);
                         $start = $parentLeft;
                     }
+
                     break;
 
                 case self::NEXT_SIBLING:
@@ -377,17 +378,20 @@ class Nested implements Strategy
                         $em->getUnitOfWork()->recomputeSingleEntityChangeSet($meta, $node);
                         $start = $parentRight + 1;
                     }
+
                     break;
 
                 case self::LAST_CHILD:
                     $start = $parentRight;
                     ++$level;
+
                     break;
 
                 case self::FIRST_CHILD:
                 default:
                     $start = $parentLeft + 1;
                     ++$level;
+
                     break;
             }
             $this->shiftRL($em, $config['useObjectClass'], $start, $treeSize, $parentRoot);
@@ -421,6 +425,7 @@ class Nested implements Strategy
                         $em->getUnitOfWork()->recomputeSingleEntityChangeSet($meta, $node);
                         $start = $parentLeft + 1;
                     }
+
                     break;
 
                 case self::NEXT_SIBLING:
@@ -432,15 +437,18 @@ class Nested implements Strategy
                         $em->getUnitOfWork()->recomputeSingleEntityChangeSet($meta, $node);
                         $start = $parentRight;
                     }
+
                     break;
 
                 case self::LAST_CHILD:
                     $start = $parentRight;
+
                     break;
 
                 case self::FIRST_CHILD:
                 default:
                     $start = $parentLeft + 1;
+
                     break;
             }
 

@@ -35,6 +35,7 @@ abstract class AbstractTreeRepository extends DocumentRepository implements Repo
             foreach ($listeners as $listener) {
                 if ($listener instanceof \Gedmo\Tree\TreeListener) {
                     $treeListener = $listener;
+
                     break;
                 }
             }

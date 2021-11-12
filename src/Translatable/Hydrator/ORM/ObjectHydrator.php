@@ -61,6 +61,7 @@ class ObjectHydrator extends BaseObjectHydrator
             foreach ($listeners as $hash => $listener) {
                 if ($listener instanceof TranslatableListener) {
                     $translatableListener = $listener;
+
                     break;
                 }
             }

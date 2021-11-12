@@ -144,6 +144,7 @@ class LogEntryRepository extends DocumentRepository
                 foreach ($listeners as $hash => $listener) {
                     if ($listener instanceof LoggableListener) {
                         $this->listener = $listener;
+
                         break;
                     }
                 }

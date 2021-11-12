@@ -74,6 +74,7 @@ class Annotation extends AbstractAnnotationDriver
                 }
                 if (isset($meta->embeddedClasses[$field])) {
                     $this->inspectEmbeddedForVersioned($field, $config, $meta);
+
                     continue;
                 }
                 // fields cannot be overrided and throws mapping exception

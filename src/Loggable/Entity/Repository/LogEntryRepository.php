@@ -145,6 +145,7 @@ class LogEntryRepository extends EntityRepository
                 foreach ($listeners as $hash => $listener) {
                     if ($listener instanceof LoggableListener) {
                         $this->listener = $listener;
+
                         break;
                     }
                 }

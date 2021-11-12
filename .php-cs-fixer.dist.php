@@ -15,6 +15,7 @@ return (new PhpCsFixer\Config())
         '@PSR2' => true,
         '@Symfony' => true,
         'array_syntax' => ['syntax' => 'short'],
+        'blank_line_before_statement' => true,
         'is_null' => false,
         'list_syntax' => ['syntax' => 'short'],
         'modernize_types_casting' => true,

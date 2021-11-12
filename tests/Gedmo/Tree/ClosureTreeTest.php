@@ -112,6 +112,7 @@ final class ClosureTreeTest extends BaseTestCaseORM
             $descendant = $closure->getDescendant();
             if ($descendant === $food) {
                 static::assertEquals(0, $closure->getDepth());
+
                 continue;
             }
             $descendantTitle = $descendant->getTitle();
@@ -121,30 +122,37 @@ final class ClosureTreeTest extends BaseTestCaseORM
                 case 'Fruits':
                     static::assertCount(5, $descendantClosures);
                     static::assertEquals(1, $closure->getDepth());
+
                     break;
                 case 'Oranges':
                     static::assertCount(1, $descendantClosures);
                     static::assertEquals(2, $closure->getDepth());
+
                     break;
                 case 'Berries':
                     static::assertCount(2, $descendantClosures);
                     static::assertEquals(2, $closure->getDepth());
+
                     break;
                 case 'Vegitables':
                     static::assertCount(3, $descendantClosures);
                     static::assertEquals(1, $closure->getDepth());
+
                     break;
                 case 'Milk':
                     static::assertCount(3, $descendantClosures);
                     static::assertEquals(1, $closure->getDepth());
+
                     break;
                 case 'Cheese':
                     static::assertCount(2, $descendantClosures);
                     static::assertEquals(2, $closure->getDepth());
+
                     break;
                 case 'Strawberries':
                     static::assertCount(1, $descendantClosures);
                     static::assertEquals(3, $closure->getDepth());
+
                     break;
             }
         }
@@ -257,6 +265,7 @@ final class ClosureTreeTest extends BaseTestCaseORM
             $ancestor = $closure->getAncestor();
             if ($ancestor->getTitle() === $name) {
                 $result = true;
+
                 break;
             }
         }

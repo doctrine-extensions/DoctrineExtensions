@@ -104,6 +104,7 @@ abstract class MappedEventSubscriber implements EventSubscriber
 
             return $this->adapters[$m[1]];
         }
+
         throw new \Gedmo\Exception\InvalidArgumentException('Event mapper does not support event arg class: '.$class);
     }
 
@@ -196,6 +197,7 @@ abstract class MappedEventSubscriber implements EventSubscriber
     public function loadMetadataForObjectClass(ObjectManager $objectManager, $metadata)
     {
         $factory = $this->getExtensionMetadataFactory($objectManager);
+
         try {
             $config = $factory->getExtensionMetadata($metadata);
         } catch (\ReflectionException $e) {
