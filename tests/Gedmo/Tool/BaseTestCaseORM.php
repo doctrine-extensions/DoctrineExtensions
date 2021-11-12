@@ -5,7 +5,7 @@ namespace Gedmo\Tests\Tool;
 use Doctrine\Common\EventManager;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Driver;
-use Doctrine\DBAL\Platforms\MySqlPlatform;
+use Doctrine\DBAL\Platforms\MySQLPlatform;
 use Doctrine\ORM\Configuration;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
@@ -142,7 +142,7 @@ abstract class BaseTestCaseORM extends \PHPUnit\Framework\TestCase
         $driver = $this->getMockBuilder(Driver::class)->getMock();
         $driver->expects(static::once())
             ->method('getDatabasePlatform')
-            ->willReturn($this->getMockBuilder(MySqlPlatform::class)->getMock());
+            ->willReturn($this->getMockBuilder(MySQLPlatform::class)->getMock());
 
         $conn = $this->getMockBuilder(Connection::class)
             ->setConstructorArgs([], $driver)

@@ -2,7 +2,7 @@
 
 namespace Gedmo\Translatable\Query\TreeWalker;
 
-use Doctrine\DBAL\Platforms\MySqlPlatform;
+use Doctrine\DBAL\Platforms\MySQLPlatform;
 use Doctrine\DBAL\Platforms\PostgreSQL94Platform;
 use Doctrine\DBAL\Platforms\PostgreSQLPlatform;
 use Doctrine\DBAL\Types\Type;
@@ -347,9 +347,9 @@ class TranslationWalker extends SqlWalker
 
                 // Treat translation as original field type
                 $fieldMapping = $meta->getFieldMapping($field);
-                if ((($this->platform instanceof MySqlPlatform) &&
+                if ((($this->platform instanceof MySQLPlatform) &&
                     in_array($fieldMapping['type'], ['decimal'])) ||
-                    (!($this->platform instanceof MySqlPlatform) &&
+                    (!($this->platform instanceof MySQLPlatform) &&
                     !in_array($fieldMapping['type'], ['datetime', 'datetimetz', 'date', 'time']))) {
                     $type = Type::getType($fieldMapping['type']);
                     $substituteField = 'CAST('.$substituteField.' AS '.$type->getSQLDeclaration($fieldMapping, $this->platform).')';
