@@ -164,7 +164,7 @@ final class SortableGroupTest extends BaseTestCaseORM
         static::assertCount(self::SEATS - 1, $bratislavaToday);
         // Test seat numbers
         // Should be [ 0, 1 ]
-        $seats = array_map(function ($r) { return $r->getSeat(); }, $bratislavaToday);
+        $seats = array_map(static function ($r) { return $r->getSeat(); }, $bratislavaToday);
         static::assertEquals(range(0, self::SEATS - 2), $seats, 'Should be seats [ 0, 1 ] to Bratislava Today');
 
         // Bratislava Tomorrow should have 4 seats
@@ -175,7 +175,7 @@ final class SortableGroupTest extends BaseTestCaseORM
         static::assertCount(self::SEATS + 1, $bratislavaTomorrow);
         // Test seat numbers
         // Should be [ 0, 1, 2, 3 ]
-        $seats = array_map(function ($r) { return $r->getSeat(); }, $bratislavaTomorrow);
+        $seats = array_map(static function ($r) { return $r->getSeat(); }, $bratislavaTomorrow);
         static::assertEquals(range(0, self::SEATS), $seats, 'Should be seats [ 0, 1, 2, 3 ] to Bratislava Tomorrow');
 
         // Prague Today should have 3 seats
@@ -185,7 +185,7 @@ final class SortableGroupTest extends BaseTestCaseORM
         ], ['seat' => 'asc']);
         static::assertCount(self::SEATS, $pragueToday);
         // Test seat numbers
-        $seats = array_map(function ($r) { return $r->getSeat(); }, $pragueToday);
+        $seats = array_map(static function ($r) { return $r->getSeat(); }, $pragueToday);
         static::assertEquals(range(0, self::SEATS - 1), $seats, 'Should be seats [ 0, 1, 2 ] to Prague Today');
     }
 

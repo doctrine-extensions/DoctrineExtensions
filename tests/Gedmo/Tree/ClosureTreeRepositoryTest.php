@@ -229,7 +229,7 @@ final class ClosureTreeRepositoryTest extends BaseTestCaseORM
         $repo = $this->em->getRepository($class);
         $sortOption = ['childSort' => ['field' => 'title', 'dir' => 'asc']];
 
-        $testClosure = function (ClosureTreeRepositoryTest $phpUnit, array $tree, $includeNode = false, $whichTree = 'both', $includeNewNode = false) {
+        $testClosure = static function (ClosureTreeRepositoryTest $phpUnit, array $tree, $includeNode = false, $whichTree = 'both', $includeNewNode = false) {
             if ('both' === $whichTree || 'first' === $whichTree) {
                 $boringFood = $includeNewNode ? ($includeNode ? $tree[0]['__children'][0] : $tree[0]) : null;
                 $fruitsIndex = $includeNewNode ? 1 : 0;
@@ -417,7 +417,7 @@ final class ClosureTreeRepositoryTest extends BaseTestCaseORM
         static::assertEquals('Milk', $tree[2]['title']);
 
         // Helper Closures
-        $getTree = function ($includeNode) use ($repo, $roots, $sortOption) {
+        $getTree = static function ($includeNode) use ($repo, $roots, $sortOption) {
             return $repo->childrenHierarchy(
                 $roots[0],
                 true,
@@ -425,7 +425,7 @@ final class ClosureTreeRepositoryTest extends BaseTestCaseORM
                 $includeNode
             );
         };
-        $getTreeHtml = function ($includeNode) {
+        $getTreeHtml = static function ($includeNode) {
             $baseHtml = '<li>Boring Food<ul><li>Vegitables<ul><li>Cabbages</li><li>Carrots</li></ul></li></ul></li><li>Fruits<ul><li>Berries<ul><li>Strawberries</li></ul></li><li>Lemons</li><li>Oranges</li></ul></li><li>Milk<ul><li>Cheese<ul><li>Mould cheese</li></ul></li></ul></li></ul>';
 
             return $includeNode ? '<ul><li>Food<ul>'.$baseHtml.'</li></ul>' : '<ul>'.$baseHtml;

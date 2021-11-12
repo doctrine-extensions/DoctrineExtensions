@@ -449,7 +449,7 @@ final class TranslationQueryWalkerTest extends BaseTestCaseORM
         // Test original
         $this->translatableListener->setTranslatableLocale('en_us');
         $result = $q->getArrayResult();
-        array_walk($result, function ($value, $key) use (&$result) {
+        array_walk($result, static function ($value, $key) use (&$result) {
             // Make each record be a "Title - Views" string
             $result[$key] = implode(' - ', $value);
         });
@@ -460,7 +460,7 @@ final class TranslationQueryWalkerTest extends BaseTestCaseORM
 
         $this->translatableListener->setTranslatableLocale('lt_lt');
         $result = $q->getArrayResult();
-        array_walk($result, function ($value, $key) use (&$result) {
+        array_walk($result, static function ($value, $key) use (&$result) {
             // Make each record be a "Title - Views" string
             $result[$key] = implode(' - ', $value);
         });

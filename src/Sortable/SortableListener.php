@@ -563,7 +563,7 @@ class SortableListener extends MappedEventSubscriber
 
         try {
             $newDelta = ['start' => $start, 'stop' => $stop, 'delta' => $delta, 'exclude' => $exclude];
-            array_walk($this->relocations[$hash]['deltas'], function (&$val, $idx, $needle) {
+            array_walk($this->relocations[$hash]['deltas'], static function (&$val, $idx, $needle) {
                 if ($val['start'] == $needle['start'] && $val['stop'] == $needle['stop']) {
                     $val['delta'] += $needle['delta'];
                     $val['exclude'] = array_merge($val['exclude'], $needle['exclude']);
