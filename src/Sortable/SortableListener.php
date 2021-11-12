@@ -488,8 +488,8 @@ class SortableListener extends MappedEventSubscriber
             }
 
             // Clear relocations
-            unset($this->relocations[$hash]);
-            unset($this->maxPositions[$hash]); // unset only if relocations has been processed
+            // unset only if relocations has been processed
+            unset($this->relocations[$hash], $this->maxPositions[$hash]);
         }
     }
 
