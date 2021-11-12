@@ -62,7 +62,7 @@ $treeDecorationOptions = [
     'rootClose' => '',
     'childOpen' => '',
     'childClose' => '',
-    'nodeDecorator' => function ($node) {
+    'nodeDecorator' => static function ($node) {
         return str_repeat('-', $node['level']).$node['title'].PHP_EOL;
     },
 ];

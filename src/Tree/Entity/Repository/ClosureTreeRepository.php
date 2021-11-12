@@ -97,7 +97,7 @@ class ClosureTreeRepository extends AbstractTreeRepository
      */
     public function getPath($node)
     {
-        return array_map(function (AbstractClosure $closure) {
+        return array_map(static function (AbstractClosure $closure) {
             return $closure->getAncestor();
         }, $this->getPathQuery($node)->getResult());
     }
@@ -175,7 +175,7 @@ class ClosureTreeRepository extends AbstractTreeRepository
     {
         $result = $this->childrenQuery($node, $direct, $sortByField, $direction, $includeNode)->getResult();
         if ($node) {
-            $result = array_map(function (AbstractClosure $closure) {
+            $result = array_map(static function (AbstractClosure $closure) {
                 return $closure->getDescendant();
             }, $result);
         }

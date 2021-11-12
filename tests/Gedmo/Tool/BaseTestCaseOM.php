@@ -133,7 +133,7 @@ abstract class BaseTestCaseOM extends \PHPUnit\Framework\TestCase
         $config = $this->getMockAnnotatedORMConfig($mappingDriver);
         $em = EntityManager::create($conn, $config, $this->getEventManager());
 
-        $schema = array_map(function ($class) use ($em) {
+        $schema = array_map(static function ($class) use ($em) {
             return $em->getClassMetadata($class);
         }, $fixtures);
 

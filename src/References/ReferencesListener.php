@@ -78,7 +78,7 @@ class ReferencesListener extends MappedEventSubscriber
                         $property->setValue(
                             $object,
                             new LazyCollection(
-                                function () use ($id, &$manager, $class, $identifier) {
+                                static function () use ($id, &$manager, $class, $identifier) {
                                     $results = $manager
                                         ->getRepository($class)
                                         ->findBy([
@@ -194,7 +194,7 @@ class ReferencesListener extends MappedEventSubscriber
                 $property->setValue(
                     $object,
                     new LazyCollection(
-                        function () use ($id, &$manager, $class, $identifier) {
+                        static function () use ($id, &$manager, $class, $identifier) {
                             $results = $manager
                                 ->getRepository($class)
                                 ->findBy([
