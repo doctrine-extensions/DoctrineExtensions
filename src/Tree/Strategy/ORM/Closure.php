@@ -439,7 +439,7 @@ class Closure implements Strategy
             if ([] !== $ids) {
                 // using subquery directly, sqlite acts unfriendly
                 $query = "DELETE FROM {$table} WHERE id IN (".implode(', ', $ids).')';
-                if (!$conn->executeQuery($query)) {
+                if (0 === $conn->executeStatement($query)) {
                     throw new RuntimeException('Failed to remove old closures');
                 }
             }

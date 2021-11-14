@@ -552,7 +552,7 @@ class ClosureTreeRepository extends AbstractTreeRepository
                 return $el['id'];
             }, $ids);
             $query = "DELETE FROM {$closureTableName} WHERE id IN (".implode(', ', $ids).')';
-            if (!$conn->executeQuery($query)) {
+            if (0 === $conn->executeStatement($query)) {
                 throw new \RuntimeException('Failed to remove incorrect closures');
             }
             $deletedClosuresCount += count($ids);
