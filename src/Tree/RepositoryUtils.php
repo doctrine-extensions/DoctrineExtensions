@@ -51,7 +51,7 @@ class RepositoryUtils implements RepositoryUtilsInterface
         $meta = $this->getClassMetadata();
 
         if (null !== $node) {
-            if ($node instanceof $meta->name) {
+            if (is_a($node, $meta->getName())) {
                 $wrapperClass = $this->om instanceof \Doctrine\ORM\EntityManagerInterface ?
                     EntityWrapper::class :
                     MongoDocumentWrapper::class;

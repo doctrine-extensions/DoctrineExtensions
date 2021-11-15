@@ -162,7 +162,7 @@ class MaterializedPathRepository extends AbstractTreeRepository
         $expr = '';
         $includeNodeExpr = '';
 
-        if (is_object($node) && $node instanceof $meta->name) {
+        if (is_a($node, $meta->getName())) {
             $node = new EntityWrapper($node, $this->_em);
             $nodePath = $node->getPropertyValue($path);
             $expr = $qb->expr()->andx()->add(

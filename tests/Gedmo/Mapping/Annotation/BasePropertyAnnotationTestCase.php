@@ -49,7 +49,7 @@ abstract class BasePropertyAnnotationTestCase extends TestCase
             $annotation = $reader->getPropertyAnnotation($reflection, $annotationClass);
         }
 
-        if (!$annotation instanceof $annotationClass) {
+        if (!is_a($annotation, $annotationClass)) {
             throw new \LogicException('Can\'t parse annotation.');
         }
 
