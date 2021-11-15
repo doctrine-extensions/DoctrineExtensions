@@ -49,7 +49,7 @@ class SoftDeleteableListener extends MappedEventSubscriber
     public function onFlush(EventArgs $args)
     {
         $ea = $this->getEventAdapter($args);
-        /** @var \Doctrine\ORM\EntityManagerInterface $om */
+        /** @var \Doctrine\ORM\EntityManagerInterface|\Doctrine\ODM\MongoDB\DocumentManager $om */
         $om = $ea->getObjectManager();
         $uow = $om->getUnitOfWork();
         $evm = $om->getEventManager();

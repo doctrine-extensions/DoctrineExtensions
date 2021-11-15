@@ -38,7 +38,7 @@ class SoftDeleteableFilter extends SQLFilter
      *
      * @return string
      *
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws \Doctrine\DBAL\Exception
      */
     public function addFilterConstraint(ClassMetadata $targetEntity, $targetTableAlias)
     {
