@@ -14,9 +14,9 @@ interface FilenameGeneratorInterface
     /**
      * Generates a new filename
      *
-     * @param string - Filename without extension
-     * @param string - Extension with dot: .jpg, .gif, etc
-     * @param $object
+     * @param string      $filename  Filename without extension
+     * @param string      $extension Extension with dot: .jpg, .gif, etc
+     * @param object|null $object
      *
      * @return string
      */

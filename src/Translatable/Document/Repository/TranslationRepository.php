@@ -160,7 +160,7 @@ class TranslationRepository extends DocumentRepository
      * @param string $value
      * @param string $class
      *
-     * @return object - instance of $class or null if not found
+     * @return object instance of $class or null if not found
      */
     public function findObjectByTranslatedField($field, $value, $class)
     {
@@ -191,7 +191,7 @@ class TranslationRepository extends DocumentRepository
      * Loads all translations with all translatable
      * fields by a given document primary key
      *
-     * @param mixed $id - primary key value of document
+     * @param mixed $id primary key value of document
      *
      * @return array
      */
@@ -224,7 +224,7 @@ class TranslationRepository extends DocumentRepository
     /**
      * Get the currently used TranslatableListener
      *
-     * @throws \Gedmo\Exception\RuntimeException - if listener is not found
+     * @throws \Gedmo\Exception\RuntimeException if listener is not found
      *
      * @return TranslatableListener
      */

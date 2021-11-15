@@ -423,7 +423,7 @@ class SluggableListener extends MappedEventSubscriber
      * @param bool   $recursing
      * @param array  $config[$slugField]
      *
-     * @return string - unique slug
+     * @return string unique slug
      */
     private function makeUniqueSlug(SluggableAdapter $ea, $object, $preferredSlug, $recursing = false, $config = [])
     {

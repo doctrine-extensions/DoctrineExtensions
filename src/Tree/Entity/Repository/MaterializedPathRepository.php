@@ -139,7 +139,7 @@ class MaterializedPathRepository extends AbstractTreeRepository
      *
      * @param object $node
      *
-     * @return array - list of Nodes in path
+     * @return array list of Nodes in path
      */
     public function getPath($node)
     {

@@ -67,7 +67,7 @@ class User
     /**
      * Set company
      *
-     * @param $company
+     * @param string $company
      */
     public function setCompany($company)
     {

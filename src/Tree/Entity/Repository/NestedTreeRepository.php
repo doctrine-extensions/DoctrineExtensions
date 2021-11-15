@@ -83,11 +83,11 @@ class NestedTreeRepository extends AbstractTreeRepository
      *
      * @see \Doctrine\ORM\EntityRepository
      *
-     * @throws InvalidArgumentException - If arguments are invalid
-     * @throws \BadMethodCallException  - If the method called is an invalid find* or persistAs* method
+     * @throws InvalidArgumentException If arguments are invalid
+     * @throws \BadMethodCallException  If the method called is an invalid find* or persistAs* method
      *                                  or no find* either persistAs* method at all and therefore an invalid method call
      *
-     * @return mixed - TreeNestedRepository if persistAs* is called
+     * @return mixed TreeNestedRepository if persistAs* is called
      */
     public function __call($method, $args)
     {
@@ -137,7 +137,7 @@ class NestedTreeRepository extends AbstractTreeRepository
      *
      * @param object $node
      *
-     * @throws InvalidArgumentException - if input is not valid
+     * @throws InvalidArgumentException if input is not valid
      *
      * @return \Doctrine\ORM\QueryBuilder
      */
@@ -187,7 +187,7 @@ class NestedTreeRepository extends AbstractTreeRepository
      *
      * @param object $node
      *
-     * @return array - list of Nodes in path
+     * @return array list of Nodes in path
      */
     public function getPath($node)
     {
@@ -305,11 +305,11 @@ class NestedTreeRepository extends AbstractTreeRepository
     /**
      * Get tree leafs query builder
      *
-     * @param object $root        - root node in case of root tree is required
-     * @param string $sortByField - field name to sort by
-     * @param string $direction   - sort direction : "ASC" or "DESC"
+     * @param object $root        root node in case of root tree is required
+     * @param string $sortByField field name to sort by
+     * @param string $direction   sort direction : "ASC" or "DESC"
      *
-     * @throws InvalidArgumentException - if input is not valid
+     * @throws InvalidArgumentException if input is not valid
      *
      * @return \Doctrine\ORM\QueryBuilder
      */
@@ -361,9 +361,9 @@ class NestedTreeRepository extends AbstractTreeRepository
     /**
      * Get tree leafs query
      *
-     * @param object $root        - root node in case of root tree is required
-     * @param string $sortByField - field name to sort by
-     * @param string $direction   - sort direction : "ASC" or "DESC"
+     * @param object $root        root node in case of root tree is required
+     * @param string $sortByField field name to sort by
+     * @param string $direction   sort direction : "ASC" or "DESC"
      *
      * @return \Doctrine\ORM\Query
      */
@@ -375,9 +375,9 @@ class NestedTreeRepository extends AbstractTreeRepository
     /**
      * Get list of leaf nodes of the tree
      *
-     * @param object $root        - root node in case of root tree is required
-     * @param string $sortByField - field name to sort by
-     * @param string $direction   - sort direction : "ASC" or "DESC"
+     * @param object $root        root node in case of root tree is required
+     * @param string $sortByField field name to sort by
+     * @param string $direction   sort direction : "ASC" or "DESC"
      *
      * @return array
      */
@@ -390,9 +390,9 @@ class NestedTreeRepository extends AbstractTreeRepository
      * Get the query builder for next siblings of the given $node
      *
      * @param object $node
-     * @param bool   $includeSelf - include the node itself
+     * @param bool   $includeSelf include the node itself
      *
-     * @throws \Gedmo\Exception\InvalidArgumentException - if input is invalid
+     * @throws \Gedmo\Exception\InvalidArgumentException if input is invalid
      *
      * @return \Doctrine\ORM\QueryBuilder
      */
@@ -441,7 +441,7 @@ class NestedTreeRepository extends AbstractTreeRepository
      * Get the query for next siblings of the given $node
      *
      * @param object $node
-     * @param bool   $includeSelf - include the node itself
+     * @param bool   $includeSelf include the node itself
      *
      * @return \Doctrine\ORM\Query
      */
@@ -454,7 +454,7 @@ class NestedTreeRepository extends AbstractTreeRepository
      * Find the next siblings of the given $node
      *
      * @param object $node
-     * @param bool   $includeSelf - include the node itself
+     * @param bool   $includeSelf include the node itself
      *
      * @return array
      */
@@ -467,9 +467,9 @@ class NestedTreeRepository extends AbstractTreeRepository
      * Get query builder for previous siblings of the given $node
      *
      * @param object $node
-     * @param bool   $includeSelf - include the node itself
+     * @param bool   $includeSelf include the node itself
      *
-     * @throws \Gedmo\Exception\InvalidArgumentException - if input is invalid
+     * @throws \Gedmo\Exception\InvalidArgumentException if input is invalid
      *
      * @return \Doctrine\ORM\QueryBuilder
      */
@@ -518,9 +518,9 @@ class NestedTreeRepository extends AbstractTreeRepository
      * Get query for previous siblings of the given $node
      *
      * @param object $node
-     * @param bool   $includeSelf - include the node itself
+     * @param bool   $includeSelf include the node itself
      *
-     * @throws \Gedmo\Exception\InvalidArgumentException - if input is invalid
+     * @throws \Gedmo\Exception\InvalidArgumentException if input is invalid
      *
      * @return \Doctrine\ORM\Query
      */
@@ -533,7 +533,7 @@ class NestedTreeRepository extends AbstractTreeRepository
      * Find the previous siblings of the given $node
      *
      * @param object $node
-     * @param bool   $includeSelf - include the node itself
+     * @param bool   $includeSelf include the node itself
      *
      * @return array
      */
@@ -549,9 +549,9 @@ class NestedTreeRepository extends AbstractTreeRepository
      * @param int|bool $number integer - number of positions to shift
      *                         boolean - if "true" - shift till last position
      *
-     * @throws \RuntimeException - if something fails in transaction
+     * @throws \RuntimeException if something fails in transaction
      *
-     * @return bool - true if shifted
+     * @return bool true if shifted
      */
     public function moveDown($node, $number = 1)
     {
@@ -584,9 +584,9 @@ class NestedTreeRepository extends AbstractTreeRepository
      * @param int|bool $number integer - number of positions to shift
      *                         boolean - true shift till first position
      *
-     * @throws \RuntimeException - if something fails in transaction
+     * @throws \RuntimeException if something fails in transaction
      *
-     * @return bool - true if shifted
+     * @return bool true if shifted
      */
     public function moveUp($node, $number = 1)
     {
@@ -619,7 +619,7 @@ class NestedTreeRepository extends AbstractTreeRepository
      *
      * @param object $node
      *
-     * @throws \RuntimeException - if something fails in transaction
+     * @throws \RuntimeException if something fails in transaction
      */
     public function removeFromTree($node)
     {
@@ -734,10 +734,10 @@ class NestedTreeRepository extends AbstractTreeRepository
      * Reorders $node's sibling nodes and child nodes,
      * according to the $sortByField and $direction specified
      *
-     * @param object|null $node        - node from which to start reordering the tree; null will reorder everything
-     * @param string      $sortByField - field name to sort by
-     * @param string      $direction   - sort direction : "ASC" or "DESC"
-     * @param bool        $verify      - true to verify tree first
+     * @param object|null $node        node from which to start reordering the tree; null will reorder everything
+     * @param string      $sortByField field name to sort by
+     * @param string      $direction   sort direction : "ASC" or "DESC"
+     * @param bool        $verify      true to verify tree first
      *
      * @return bool|null
      */
@@ -768,9 +768,9 @@ class NestedTreeRepository extends AbstractTreeRepository
     /**
      * Reorders all nodes in the tree according to the $sortByField and $direction specified.
      *
-     * @param string $sortByField - field name to sort by
-     * @param string $direction   - sort direction : "ASC" or "DESC"
-     * @param bool   $verify      - true to verify tree first
+     * @param string $sortByField field name to sort by
+     * @param string $direction   sort direction : "ASC" or "DESC"
+     * @param bool   $verify      true to verify tree first
      */
     public function reorderAll($sortByField = null, $direction = 'ASC', $verify = true)
     {
@@ -782,7 +782,7 @@ class NestedTreeRepository extends AbstractTreeRepository
      * If any error is detected it will return an array
      * with a list of errors found on tree
      *
-     * @return array|bool - true on success,error list on failure
+     * @return array|bool true on success,error list on failure
      */
     public function verify()
     {

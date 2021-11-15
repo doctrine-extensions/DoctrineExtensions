@@ -85,7 +85,7 @@ abstract class MappedEventSubscriber implements EventSubscriber
      * Get an event adapter to handle event specific
      * methods
      *
-     * @throws \Gedmo\Exception\InvalidArgumentException - if event is not recognized
+     * @throws \Gedmo\Exception\InvalidArgumentException if event is not recognized
      *
      * @return \Gedmo\Mapping\Event\AdapterInterface
      */
@@ -179,7 +179,7 @@ abstract class MappedEventSubscriber implements EventSubscriber
      *     getPropertyAnnotations([reflectionProperty])
      *     getPropertyAnnotation([reflectionProperty], [name])
      *
-     * @param Reader $reader - annotation reader class
+     * @param Reader $reader annotation reader class
      */
     public function setAnnotationReader($reader)
     {

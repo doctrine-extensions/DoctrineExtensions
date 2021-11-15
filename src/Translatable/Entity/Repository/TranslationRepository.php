@@ -162,7 +162,7 @@ class TranslationRepository extends EntityRepository
      * @param string $value
      * @param string $class
      *
-     * @return object - instance of $class or null if not found
+     * @return object instance of $class or null if not found
      */
     public function findObjectByTranslatedField($field, $value, $class)
     {
@@ -192,7 +192,7 @@ class TranslationRepository extends EntityRepository
      * Loads all translations with all translatable
      * fields by a given entity primary key
      *
-     * @param mixed $id - primary key value of an entity
+     * @param mixed $id primary key value of an entity
      *
      * @return array
      */
@@ -225,7 +225,7 @@ class TranslationRepository extends EntityRepository
     /**
      * Get the currently used TranslatableListener
      *
-     * @throws \Gedmo\Exception\RuntimeException - if listener is not found
+     * @throws \Gedmo\Exception\RuntimeException if listener is not found
      *
      * @return TranslatableListener
      */

@@ -62,7 +62,7 @@ class ClosureTreeRepository extends AbstractTreeRepository
      *
      * @param object $node
      *
-     * @throws InvalidArgumentException - if input is not valid
+     * @throws InvalidArgumentException if input is not valid
      *
      * @return Query
      */
@@ -93,7 +93,7 @@ class ClosureTreeRepository extends AbstractTreeRepository
      *
      * @param object $node
      *
-     * @return array - list of Nodes in path
+     * @return array list of Nodes in path
      */
     public function getPath($node)
     {
@@ -215,7 +215,7 @@ class ClosureTreeRepository extends AbstractTreeRepository
      * @param object $node
      *
      * @throws \Gedmo\Exception\InvalidArgumentException
-     * @throws \Gedmo\Exception\RuntimeException         - if something fails in transaction
+     * @throws \Gedmo\Exception\RuntimeException         if something fails in transaction
      */
     public function removeFromTree($node)
     {
@@ -283,9 +283,9 @@ class ClosureTreeRepository extends AbstractTreeRepository
      * Process nodes and produce an array with the
      * structure of the tree
      *
-     * @param array - Array of nodes
+     * @param array $nodes Array of nodes
      *
-     * @return array - Array with tree structure
+     * @return array Array with tree structure
      */
     public function buildTreeArray(array $nodes)
     {

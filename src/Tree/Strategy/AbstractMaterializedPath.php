@@ -226,8 +226,8 @@ abstract class AbstractMaterializedPath implements Strategy
     /**
      * Update the $node
      *
-     * @param object           $node - target node
-     * @param AdapterInterface $ea   - event adapter
+     * @param object           $node target node
+     * @param AdapterInterface $ea   event adapter
      *
      * @return void
      */
@@ -504,9 +504,9 @@ abstract class AbstractMaterializedPath implements Strategy
      * Remove node and its children
      *
      * @param ObjectManager $om
-     * @param object        $meta   - Metadata
-     * @param object        $config - config
-     * @param object        $node   - node to remove
+     * @param object        $meta   Metadata
+     * @param object        $config config
+     * @param object        $node   node to remove
      *
      * @return void
      */
@@ -516,9 +516,9 @@ abstract class AbstractMaterializedPath implements Strategy
      * Returns children of the node with its original path
      *
      * @param ObjectManager $om
-     * @param object        $meta         - Metadata
-     * @param object        $config       - config
-     * @param string        $originalPath - original path of object
+     * @param object        $meta         Metadata
+     * @param object        $config       config
+     * @param string        $originalPath original path of object
      *
      * @return array|\Traversable
      */

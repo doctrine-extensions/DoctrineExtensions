@@ -80,7 +80,7 @@ class SoftDeleteableWalker extends SqlWalker
     /**
      * Get the currently used SoftDeleteableListener
      *
-     * @throws \Gedmo\Exception\RuntimeException - if listener is not found
+     * @throws \Gedmo\Exception\RuntimeException if listener is not found
      *
      * @return SoftDeleteableListener
      */
