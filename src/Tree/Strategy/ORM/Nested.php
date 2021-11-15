@@ -280,8 +280,8 @@ class Nested implements Strategy
      * Update the $node with a diferent $parent
      * destination
      *
-     * @param object $node     - target node
-     * @param object $parent   - destination node
+     * @param object $node     target node
+     * @param object $parent   destination node
      * @param string $position
      *
      * @throws \Gedmo\Exception\UnexpectedValueException

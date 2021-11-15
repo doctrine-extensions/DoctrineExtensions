@@ -405,7 +405,7 @@ class TranslationWalker extends SqlWalker
     /**
      * Get the currently used TranslatableListener
      *
-     * @throws \Gedmo\Exception\RuntimeException - if listener is not found
+     * @throws \Gedmo\Exception\RuntimeException if listener is not found
      *
      * @return TranslatableListener
      */
@@ -447,13 +447,13 @@ class TranslationWalker extends SqlWalker
      *
      * @NOTE: personal translations manages that for themselves.
      *
-     * @param $component - a column with an alias to cast
-     * @param $typeFK - translation table foreign key type
-     * @param $typePK - primary key type which references translation table
+     * @param string $component a column with an alias to cast
+     * @param string $typeFK    translation table foreign key type
+     * @param string $typePK    primary key type which references translation table
      *
-     * @return string - modified $component if needed
+     * @return string modified $component if needed
      */
-    private function getCastedForeignKey($component, $typeFK, $typePK)
+    private function getCastedForeignKey(string $component, string $typeFK, string $typePK): string
     {
         // the keys are of same type
         if ($typeFK === $typePK) {
@@ -463,12 +463,12 @@ class TranslationWalker extends SqlWalker
         // try to look at postgres casting
         if ($this->platform instanceof PostgreSqlPlatform) {
             switch ($typeFK) {
-            case 'string':
-            case 'guid':
-                // need to cast to VARCHAR
-                $component = $component.'::VARCHAR';
+                case 'string':
+                case 'guid':
+                    // need to cast to VARCHAR
+                    $component = $component.'::VARCHAR';
 
-                break;
+                    break;
             }
         }
 

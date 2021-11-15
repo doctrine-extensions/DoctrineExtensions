@@ -90,10 +90,6 @@ class Chain implements Driver
 
     /**
      * Passes in the mapping read by original driver
-     *
-     * @param $driver
-     *
-     * @return void
      */
     public function setOriginalDriver($driver)
     {

@@ -71,7 +71,7 @@ class ExtensionMetadataFactory
      *
      * @param object $meta
      *
-     * @return array - the metatada configuration
+     * @return array the metatada configuration
      */
     public function getExtensionMetadata($meta)
     {

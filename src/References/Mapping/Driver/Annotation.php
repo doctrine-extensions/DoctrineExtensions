@@ -91,10 +91,6 @@ class Annotation implements AnnotationDriverInterface
 
     /**
      * Passes in the mapping read by original driver
-     *
-     * @param $driver
-     *
-     * @return void
      */
     public function setOriginalDriver($driver)
     {

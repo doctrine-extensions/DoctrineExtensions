@@ -90,10 +90,10 @@ abstract class AbstractAnnotationDriver implements AnnotationDriverInterface
     /**
      * Try to find out related class name out of mapping
      *
-     * @param ClassMetadata $metadata - the mapped class metadata
-     * @param $name - the related object class name
+     * @param ClassMetadata $metadata the mapped class metadata
+     * @param string        $name     the related object class name
      *
-     * @return string - related class name or empty string if does not exist
+     * @return string related class name or empty string if does not exist
      */
     protected function getRelatedClassName($metadata, $name)
     {

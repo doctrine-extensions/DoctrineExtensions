@@ -50,7 +50,7 @@ class ObjectHydrator extends BaseObjectHydrator
     /**
      * Get the currently used TranslatableListener
      *
-     * @throws \Gedmo\Exception\RuntimeException - if listener is not found
+     * @throws \Gedmo\Exception\RuntimeException if listener is not found
      *
      * @return TranslatableListener
      */

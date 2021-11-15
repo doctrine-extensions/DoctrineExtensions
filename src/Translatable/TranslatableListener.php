@@ -289,7 +289,7 @@ class TranslatableListener extends MappedEventSubscriber
      * @param object $meta
      * @param object $om
      *
-     * @throws \Gedmo\Exception\RuntimeException - if language or locale property is not
+     * @throws \Gedmo\Exception\RuntimeException if language or locale property is not
      *                                           found in entity
      *
      * @return string
@@ -498,7 +498,7 @@ class TranslatableListener extends MappedEventSubscriber
     /**
      * Validates the given locale
      *
-     * @param string $locale - locale to validate
+     * @param string $locale locale to validate
      *
      * @throws \Gedmo\Exception\InvalidArgumentException if locale is not valid
      */
@@ -512,7 +512,7 @@ class TranslatableListener extends MappedEventSubscriber
     /**
      * Check if the given locale is valid
      *
-     * @param string $locale - locale to check
+     * @param string $locale locale to check
      *
      * @return bool
      */
@@ -527,7 +527,7 @@ class TranslatableListener extends MappedEventSubscriber
      * @param object $object
      * @param bool   $isInsert
      *
-     * @throws \UnexpectedValueException - if locale is not valid, or
+     * @throws \UnexpectedValueException if locale is not valid, or
      *                                   primary key is composite, missing or invalid
      */
     private function handleTranslatableObjectUpdate(TranslatableAdapter $ea, $object, $isInsert)
