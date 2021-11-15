@@ -144,7 +144,7 @@ class NestedTreeRepository extends AbstractTreeRepository
     public function getPathQueryBuilder($node)
     {
         $meta = $this->getClassMetadata();
-        if (!$node instanceof $meta->name) {
+        if (!is_a($node, $meta->getName())) {
             throw new InvalidArgumentException('Node is not related to this repository');
         }
         $config = $this->listener->getConfiguration($this->_em, $meta->name);
@@ -207,7 +207,7 @@ class NestedTreeRepository extends AbstractTreeRepository
             ->from($config['useObjectClass'], 'node')
         ;
         if (null !== $node) {
-            if ($node instanceof $meta->name) {
+            if (is_a($node, $meta->getName())) {
                 $wrapped = new EntityWrapper($node, $this->_em);
                 if (!$wrapped->hasValidIdentifier()) {
                     throw new InvalidArgumentException('Node is not managed by UnitOfWork');
@@ -330,7 +330,7 @@ class NestedTreeRepository extends AbstractTreeRepository
             ->where($qb->expr()->eq('node.'.$config['right'], '1 + node.'.$config['left']))
         ;
         if (isset($config['root'])) {
-            if ($root instanceof $meta->name) {
+            if (is_a($root, $meta->getName())) {
                 $wrapped = new EntityWrapper($root, $this->_em);
                 $rootId = $wrapped->getPropertyValue($config['root']);
                 if (!$rootId) {
@@ -399,7 +399,7 @@ class NestedTreeRepository extends AbstractTreeRepository
     public function getNextSiblingsQueryBuilder($node, $includeSelf = false)
     {
         $meta = $this->getClassMetadata();
-        if (!$node instanceof $meta->name) {
+        if (!is_a($node, $meta->getName())) {
             throw new InvalidArgumentException('Node is not related to this repository');
         }
         $wrapped = new EntityWrapper($node, $this->_em);
@@ -476,7 +476,7 @@ class NestedTreeRepository extends AbstractTreeRepository
     public function getPrevSiblingsQueryBuilder($node, $includeSelf = false)
     {
         $meta = $this->getClassMetadata();
-        if (!$node instanceof $meta->name) {
+        if (!is_a($node, $meta->getName())) {
             throw new InvalidArgumentException('Node is not related to this repository');
         }
         $wrapped = new EntityWrapper($node, $this->_em);
@@ -557,7 +557,7 @@ class NestedTreeRepository extends AbstractTreeRepository
     {
         $result = false;
         $meta = $this->getClassMetadata();
-        if ($node instanceof $meta->name) {
+        if (is_a($node, $meta->getName())) {
             $nextSiblings = $this->getNextSiblings($node);
             if ($numSiblings = count($nextSiblings)) {
                 $result = true;
@@ -592,7 +592,7 @@ class NestedTreeRepository extends AbstractTreeRepository
     {
         $result = false;
         $meta = $this->getClassMetadata();
-        if ($node instanceof $meta->name) {
+        if (is_a($node, $meta->getName())) {
             $prevSiblings = array_reverse($this->getPrevSiblings($node));
             if ($numSiblings = count($prevSiblings)) {
                 $result = true;
@@ -624,7 +624,7 @@ class NestedTreeRepository extends AbstractTreeRepository
     public function removeFromTree($node)
     {
         $meta = $this->getClassMetadata();
-        if ($node instanceof $meta->name) {
+        if (is_a($node, $meta->getName())) {
             $wrapped = new EntityWrapper($node, $this->_em);
             $config = $this->listener->getConfiguration($this->_em, $meta->name);
             $right = $wrapped->getPropertyValue($config['right']);
@@ -744,7 +744,7 @@ class NestedTreeRepository extends AbstractTreeRepository
     public function reorder($node, $sortByField = null, $direction = 'ASC', $verify = true)
     {
         $meta = $this->getClassMetadata();
-        if ($node instanceof $meta->name || null === $node) {
+        if (null === $node || is_a($node, $meta->getName())) {
             $config = $this->listener->getConfiguration($this->_em, $meta->name);
             if ($verify && is_array($this->verify())) {
                 return false;

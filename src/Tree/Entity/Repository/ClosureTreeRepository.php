@@ -69,7 +69,7 @@ class ClosureTreeRepository extends AbstractTreeRepository
     public function getPathQuery($node)
     {
         $meta = $this->getClassMetadata();
-        if (!$node instanceof $meta->name) {
+        if (!is_a($node, $meta->getName())) {
             throw new InvalidArgumentException('Node is not related to this repository');
         }
         if (!$this->_em->getUnitOfWork()->isInIdentityMap($node)) {
@@ -112,7 +112,7 @@ class ClosureTreeRepository extends AbstractTreeRepository
 
         $qb = $this->getQueryBuilder();
         if (null !== $node) {
-            if ($node instanceof $meta->name) {
+            if (is_a($node, $meta->getName())) {
                 if (!$this->_em->getUnitOfWork()->isInIdentityMap($node)) {
                     throw new InvalidArgumentException('Node is not managed by UnitOfWork');
                 }
@@ -220,7 +220,7 @@ class ClosureTreeRepository extends AbstractTreeRepository
     public function removeFromTree($node)
     {
         $meta = $this->getClassMetadata();
-        if (!$node instanceof $meta->name) {
+        if (!is_a($node, $meta->getName())) {
             throw new InvalidArgumentException('Node is not related to this repository');
         }
         $wrapped = new EntityWrapper($node, $this->_em);

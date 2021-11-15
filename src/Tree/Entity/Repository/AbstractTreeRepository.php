@@ -96,7 +96,7 @@ abstract class AbstractTreeRepository extends EntityRepository implements Reposi
         $meta = $this->getClassMetadata();
 
         if (is_object($node)) {
-            if (!($node instanceof $meta->name)) {
+            if (!is_a($node, $meta->getName())) {
                 throw new InvalidArgumentException('Node is not related to this repository');
             }
 
