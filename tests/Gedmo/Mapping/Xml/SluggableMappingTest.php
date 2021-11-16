@@ -59,7 +59,7 @@ final class SluggableMappingTest extends BaseTestCaseORM
     public function shouldBeAbleToMapSluggableMetadata()
     {
         $meta = $this->em->getClassMetadata(Sluggable::class);
-        $config = $this->sluggable->getConfiguration($this->em, $meta->name);
+        $config = $this->sluggable->getConfiguration($this->em, $meta->getName());
 
         static::assertArrayHasKey('slug', $config['slugs']);
         static::assertCount(1, $config['slugs']);

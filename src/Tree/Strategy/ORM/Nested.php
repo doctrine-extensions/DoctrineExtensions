@@ -117,7 +117,7 @@ class Nested implements Strategy
     {
         /** @var ClassMetadata $meta */
         $meta = $em->getClassMetadata(get_class($node));
-        $config = $this->listener->getConfiguration($em, $meta->name);
+        $config = $this->listener->getConfiguration($em, $meta->getName());
 
         $meta->getReflectionProperty($config['left'])->setValue($node, 0);
         $meta->getReflectionProperty($config['right'])->setValue($node, 0);
@@ -139,7 +139,7 @@ class Nested implements Strategy
     public function processScheduledUpdate($em, $node, AdapterInterface $ea)
     {
         $meta = $em->getClassMetadata(get_class($node));
-        $config = $this->listener->getConfiguration($em, $meta->name);
+        $config = $this->listener->getConfiguration($em, $meta->getName());
         $uow = $em->getUnitOfWork();
 
         $changeSet = $uow->getEntityChangeSet($node);
@@ -181,7 +181,7 @@ class Nested implements Strategy
     {
         $meta = $em->getClassMetadata(get_class($node));
 
-        $config = $this->listener->getConfiguration($em, $meta->name);
+        $config = $this->listener->getConfiguration($em, $meta->getName());
         $parent = $meta->getReflectionProperty($config['parent'])->getValue($node);
         $this->updateNode($em, $node, $parent, self::LAST_CHILD);
     }
@@ -192,7 +192,7 @@ class Nested implements Strategy
     public function processScheduledDelete($em, $node)
     {
         $meta = $em->getClassMetadata(get_class($node));
-        $config = $this->listener->getConfiguration($em, $meta->name);
+        $config = $this->listener->getConfiguration($em, $meta->getName());
         $uow = $em->getUnitOfWork();
 
         $wrapped = AbstractWrapper::wrap($node, $em);
@@ -292,7 +292,7 @@ class Nested implements Strategy
 
         /** @var ClassMetadata $meta */
         $meta = $wrapped->getMetadata();
-        $config = $this->listener->getConfiguration($em, $meta->name);
+        $config = $this->listener->getConfiguration($em, $meta->getName());
 
         $root = isset($config['root']) ? $wrapped->getPropertyValue($config['root']) : null;
         $identifierField = $meta->getSingleIdentifierFieldName();
@@ -406,14 +406,14 @@ class Nested implements Strategy
             $newRoot = $parentRoot;
         } elseif (!isset($config['root']) ||
             ($meta->isSingleValuedAssociation($config['root']) && ($newRoot = $meta->getFieldValue($node, $config['root'])))) {
-            if (!isset($this->treeEdges[$meta->name])) {
-                $this->treeEdges[$meta->name] = $this->max($em, $config['useObjectClass'], $newRoot) + 1;
+            if (!isset($this->treeEdges[$meta->getName()])) {
+                $this->treeEdges[$meta->getName()] = $this->max($em, $config['useObjectClass'], $newRoot) + 1;
             }
 
             $level = 0;
             $parentLeft = 0;
-            $parentRight = $this->treeEdges[$meta->name];
-            $this->treeEdges[$meta->name] += 2;
+            $parentRight = $this->treeEdges[$meta->getName()];
+            $this->treeEdges[$meta->getName()] += 2;
 
             switch ($position) {
                 case self::PREV_SIBLING:
@@ -552,7 +552,7 @@ class Nested implements Strategy
     public function max(EntityManagerInterface $em, $class, $rootId = 0)
     {
         $meta = $em->getClassMetadata($class);
-        $config = $this->listener->getConfiguration($em, $meta->name);
+        $config = $this->listener->getConfiguration($em, $meta->getName());
         $qb = $em->createQueryBuilder();
         $qb->select($qb->expr()->max('node.'.$config['right']))
             ->from($config['useObjectClass'], 'node');

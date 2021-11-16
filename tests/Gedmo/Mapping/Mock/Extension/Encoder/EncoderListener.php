@@ -38,7 +38,7 @@ class EncoderListener extends MappedEventSubscriber
         foreach ($ea->getScheduledObjectUpdates($uow) as $object) {
             $meta = $om->getClassMetadata(get_class($object));
             // if it has our metadata lets encode the properties
-            if ($config = $this->getConfiguration($om, $meta->name)) {
+            if ($config = $this->getConfiguration($om, $meta->getName())) {
                 $this->encode($ea, $object, $config);
             }
         }
@@ -46,7 +46,7 @@ class EncoderListener extends MappedEventSubscriber
         foreach ($ea->getScheduledObjectInsertions($uow) as $object) {
             $meta = $om->getClassMetadata(get_class($object));
             // if it has our metadata lets encode the properties
-            if ($config = $this->getConfiguration($om, $meta->name)) {
+            if ($config = $this->getConfiguration($om, $meta->getName())) {
                 $this->encode($ea, $object, $config);
             }
         }

@@ -26,7 +26,7 @@ class Xml extends BaseXml
         /**
          * @var \SimpleXmlElement
          */
-        $xml = $this->_getMapping($meta->name);
+        $xml = $this->_getMapping($meta->getName());
         $xmlDoctrine = $xml;
 
         $xml = $xml->children(self::GEDMO_NAMESPACE_URI);
@@ -68,11 +68,11 @@ class Xml extends BaseXml
         }
 
         if (!$meta->isMappedSuperclass && $config) {
-            if (is_array($meta->identifier) && count($meta->identifier) > 1) {
-                throw new InvalidMappingException("Loggable does not support composite identifiers in class - {$meta->name}");
+            if (is_array($meta->getIdentifier()) && count($meta->getIdentifier()) > 1) {
+                throw new InvalidMappingException("Loggable does not support composite identifiers in class - {$meta->getName()}");
             }
             if (isset($config['versioned']) && !isset($config['loggable'])) {
-                throw new InvalidMappingException("Class must be annotated with Loggable annotation in order to track versioned fields in class - {$meta->name}");
+                throw new InvalidMappingException("Class must be annotated with Loggable annotation in order to track versioned fields in class - {$meta->getName()}");
             }
         }
     }
@@ -96,7 +96,7 @@ class Xml extends BaseXml
 
             if (isset($mapping->versioned)) {
                 if ($isAssoc && !$meta->associationMappings[$field]['isOwningSide']) {
-                    throw new InvalidMappingException("Cannot version [{$field}] as it is not the owning side in object - {$meta->name}");
+                    throw new InvalidMappingException("Cannot version [{$field}] as it is not the owning side in object - {$meta->getName()}");
                 }
                 $config['versioned'][] = $field;
             }

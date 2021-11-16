@@ -61,7 +61,7 @@ final class LoggableMappingTest extends BaseTestCaseOM
     public function testLoggableMetadataWithEmbedded()
     {
         $meta = $this->em->getClassMetadata(LoggableWithEmbedded::class);
-        $config = $this->loggable->getConfiguration($this->em, $meta->name);
+        $config = $this->loggable->getConfiguration($this->em, $meta->getName());
 
         static::assertArrayHasKey('logEntryClass', $config);
         static::assertSame(LogEntry::class, $config['logEntryClass']);

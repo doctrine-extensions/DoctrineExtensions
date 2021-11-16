@@ -41,7 +41,7 @@ final class ORM extends BaseAdapterORM implements LoggableAdapter
         $identifierField = $this->getSingleIdentifierFieldName($objectMeta);
         $objectId = (string) $objectMeta->getReflectionProperty($identifierField)->getValue($object);
 
-        $dql = "SELECT MAX(log.version) FROM {$meta->name} log";
+        $dql = "SELECT MAX(log.version) FROM {$meta->getName()} log";
         $dql .= ' WHERE log.objectId = :objectId';
         $dql .= ' AND log.objectClass = :objectClass';
 

@@ -62,7 +62,7 @@ abstract class AbstractAnnotationDriver implements AnnotationDriverInterface
             // based on recent doctrine 2.3.0-DEV maybe will be fixed in some way
             // this happens when running annotation driver in combination with
             // static reflection services. This is not the nicest fix
-            $class = new \ReflectionClass($meta->name);
+            $class = new \ReflectionClass($meta->getName());
         }
 
         return $class;

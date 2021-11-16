@@ -51,7 +51,7 @@ final class NestedTreeMappingTest extends BaseTestCaseOM
     public function testTreeMetadata()
     {
         $meta = $this->em->getClassMetadata(NestedTree::class);
-        $config = $this->tree->getConfiguration($this->em, $meta->name);
+        $config = $this->tree->getConfiguration($this->em, $meta->getName());
 
         static::assertArrayHasKey('strategy', $config);
         static::assertSame('nested', $config['strategy']);

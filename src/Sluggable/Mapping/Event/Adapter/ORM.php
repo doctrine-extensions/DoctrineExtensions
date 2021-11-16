@@ -48,9 +48,11 @@ class ORM extends BaseAdapterORM implements SluggableAdapter
             } elseif ($ubase && $mapping && in_array($mapping['type'], [ClassMetadataInfo::ONE_TO_ONE, ClassMetadataInfo::MANY_TO_ONE])) {
                 $mappedAlias = 'mapped_'.$config['unique_base'];
                 $wrappedUbase = AbstractWrapper::wrap($ubase, $em);
+                $metadata = $wrappedUbase->getMetadata();
+                assert($metadata instanceof ClassMetadataInfo);
                 $qb->innerJoin('rec.'.$config['unique_base'], $mappedAlias);
                 foreach (array_keys($mapping['targetToSourceKeyColumns']) as $i => $mappedKey) {
-                    $mappedProp = $wrappedUbase->getMetadata()->fieldNames[$mappedKey];
+                    $mappedProp = $metadata->getFieldName($mappedKey);
                     $qb->andWhere($qb->expr()->eq($mappedAlias.'.'.$mappedProp, ':assoc'.$i));
                     $qb->setParameter(':assoc'.$i, $wrappedUbase->getPropertyValue($mappedProp));
                 }

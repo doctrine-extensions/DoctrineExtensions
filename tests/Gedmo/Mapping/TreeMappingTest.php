@@ -120,7 +120,7 @@ final class TreeMappingTest extends \PHPUnit\Framework\TestCase
     public function testYamlMaterializedPathMapping()
     {
         $meta = $this->em->getClassMetadata(self::YAML_MATERIALIZED_PATH_CATEGORY);
-        $config = $this->listener->getConfiguration($this->em, $meta->name);
+        $config = $this->listener->getConfiguration($this->em, $meta->getName());
 
         static::assertArrayHasKey('strategy', $config);
         static::assertSame('materializedPath', $config['strategy']);

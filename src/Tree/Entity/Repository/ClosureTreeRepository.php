@@ -28,7 +28,7 @@ class ClosureTreeRepository extends AbstractTreeRepository
     public function getRootNodesQueryBuilder($sortByField = null, $direction = 'asc')
     {
         $meta = $this->getClassMetadata();
-        $config = $this->listener->getConfiguration($this->_em, $meta->name);
+        $config = $this->listener->getConfiguration($this->_em, $meta->getName());
         $qb = $this->getQueryBuilder();
         $qb->select('node')
             ->from($config['useObjectClass'], 'node')
@@ -75,7 +75,7 @@ class ClosureTreeRepository extends AbstractTreeRepository
         if (!$this->_em->getUnitOfWork()->isInIdentityMap($node)) {
             throw new InvalidArgumentException('Node is not managed by UnitOfWork');
         }
-        $config = $this->listener->getConfiguration($this->_em, $meta->name);
+        $config = $this->listener->getConfiguration($this->_em, $meta->getName());
         $closureMeta = $this->_em->getClassMetadata($config['closure']);
 
         $dql = "SELECT c, node FROM {$closureMeta->name} c";
@@ -108,7 +108,7 @@ class ClosureTreeRepository extends AbstractTreeRepository
     public function childrenQueryBuilder($node = null, $direct = false, $sortByField = null, $direction = 'ASC', $includeNode = false)
     {
         $meta = $this->getClassMetadata();
-        $config = $this->listener->getConfiguration($this->_em, $meta->name);
+        $config = $this->listener->getConfiguration($this->_em, $meta->getName());
 
         $qb = $this->getQueryBuilder();
         if (null !== $node) {
@@ -227,7 +227,7 @@ class ClosureTreeRepository extends AbstractTreeRepository
         if (!$wrapped->hasValidIdentifier()) {
             throw new InvalidArgumentException('Node is not managed by UnitOfWork');
         }
-        $config = $this->listener->getConfiguration($this->_em, $meta->name);
+        $config = $this->listener->getConfiguration($this->_em, $meta->getName());
         $pk = $meta->getSingleIdentifierFieldName();
         $nodeId = $wrapped->getIdentifier();
         $parent = $wrapped->getPropertyValue($config['parent']);
@@ -254,7 +254,7 @@ class ClosureTreeRepository extends AbstractTreeRepository
                 $q->getSingleScalarResult();
 
                 $this->listener
-                    ->getStrategy($this->_em, $meta->name)
+                    ->getStrategy($this->_em, $meta->getName())
                     ->updateNode($this->_em, $nodeToReparent, $node);
 
                 $oid = spl_object_id($nodeToReparent);
@@ -290,7 +290,7 @@ class ClosureTreeRepository extends AbstractTreeRepository
     public function buildTreeArray(array $nodes)
     {
         $meta = $this->getClassMetadata();
-        $config = $this->listener->getConfiguration($this->_em, $meta->name);
+        $config = $this->listener->getConfiguration($this->_em, $meta->getName());
         $nestedTree = [];
         $idField = $meta->getSingleIdentifierFieldName();
         $hasLevelProp = !empty($config['level']);
@@ -350,7 +350,7 @@ class ClosureTreeRepository extends AbstractTreeRepository
     public function getNodesHierarchyQueryBuilder($node = null, $direct = false, array $options = [], $includeNode = false)
     {
         $meta = $this->getClassMetadata();
-        $config = $this->listener->getConfiguration($this->_em, $meta->name);
+        $config = $this->listener->getConfiguration($this->_em, $meta->getName());
         $idField = $meta->getSingleIdentifierFieldName();
         $subQuery = '';
         $hasLevelProp = isset($config['level']) && $config['level'];

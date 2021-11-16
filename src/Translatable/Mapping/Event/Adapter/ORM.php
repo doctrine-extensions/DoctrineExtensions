@@ -53,7 +53,9 @@ final class ORM extends BaseAdapterORM implements TranslatableAdapter
         if ($this->usesPersonalTranslation($translationClass)) {
             // first try to load it using collection
             $found = false;
-            foreach ($wrapped->getMetadata()->associationMappings as $assoc) {
+            $metadata = $wrapped->getMetadata();
+            assert($metadata instanceof ClassMetadataInfo);
+            foreach ($metadata->getAssociationMappings() as $assoc) {
                 $isRightCollection = $assoc['targetEntity'] === $translationClass
                     && 'object' === $assoc['mappedBy']
                     && ClassMetadataInfo::ONE_TO_MANY === $assoc['type']
@@ -144,7 +146,7 @@ final class ORM extends BaseAdapterORM implements TranslatableAdapter
                         } else {
                             $objectId = $this->foreignKey($wrapped->getIdentifier(), $translationClass);
                             $isRequestedTranslation = $trans->getForeignKey() === $objectId
-                                && $trans->getObjectClass() === $wrapped->getMetadata()->name
+                                && $trans->getObjectClass() === $wrapped->getMetadata()->getName()
                             ;
                         }
                     }

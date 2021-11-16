@@ -29,7 +29,7 @@ class Yaml extends File implements Driver
      */
     public function readExtendedMetadata($meta, array &$config)
     {
-        $mapping = $this->_getMapping($meta->name);
+        $mapping = $this->_getMapping($meta->getName());
 
         if (isset($mapping['gedmo'])) {
             $classMapping = $mapping['gedmo'];
@@ -60,8 +60,8 @@ class Yaml extends File implements Driver
         }
 
         if (!$meta->isMappedSuperclass && $config) {
-            if (is_array($meta->identifier) && count($meta->identifier) > 1) {
-                throw new InvalidMappingException("Translatable does not support composite identifiers in class - {$meta->name}");
+            if (is_array($meta->getIdentifier()) && count($meta->getIdentifier()) > 1) {
+                throw new InvalidMappingException("Translatable does not support composite identifiers in class - {$meta->getName()}");
             }
         }
     }

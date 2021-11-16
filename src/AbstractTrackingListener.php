@@ -60,7 +60,7 @@ abstract class AbstractTrackingListener extends MappedEventSubscriber
         $all = array_merge($ea->getScheduledObjectInsertions($uow), $ea->getScheduledObjectUpdates($uow));
         foreach ($all as $object) {
             $meta = $om->getClassMetadata(get_class($object));
-            if (!$config = $this->getConfiguration($om, $meta->name)) {
+            if (!$config = $this->getConfiguration($om, $meta->getName())) {
                 continue;
             }
             $changeSet = $ea->getObjectChangeSet($uow, $object);
@@ -122,7 +122,7 @@ abstract class AbstractTrackingListener extends MappedEventSubscriber
                             if (isset($trackedChild)) {
                                 $changingObject = $changes[1];
                                 if (!is_object($changingObject)) {
-                                    throw new UnexpectedValueException("Field - [{$tracked}] is expected to be object in class - {$meta->name}");
+                                    throw new UnexpectedValueException("Field - [{$tracked}] is expected to be object in class - {$meta->getName()}");
                                 }
                                 $objectMeta = $om->getClassMetadata(get_class($changingObject));
                                 $om->initializeObject($changingObject);

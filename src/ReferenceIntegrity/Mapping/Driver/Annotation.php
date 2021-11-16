@@ -40,16 +40,16 @@ class Annotation extends AbstractAnnotationDriver
             if ($referenceIntegrity = $this->reader->getPropertyAnnotation($reflProperty, self::REFERENCE_INTEGRITY)) {
                 $property = $reflProperty->getName();
                 if (!$meta->hasField($property)) {
-                    throw new InvalidMappingException(sprintf('Unable to find reference integrity [%s] as mapped property in entity - %s', $property, $meta->name));
+                    throw new InvalidMappingException(sprintf('Unable to find reference integrity [%s] as mapped property in entity - %s', $property, $meta->getName()));
                 }
 
                 $fieldMapping = $meta->getFieldMapping($property);
                 if (!isset($fieldMapping['mappedBy'])) {
-                    throw new InvalidMappingException(sprintf("'mappedBy' should be set on '%s' in '%s'", $property, $meta->name));
+                    throw new InvalidMappingException(sprintf("'mappedBy' should be set on '%s' in '%s'", $property, $meta->getName()));
                 }
 
                 if (!in_array($referenceIntegrity->value, $validator->getIntegrityActions())) {
-                    throw new InvalidMappingException(sprintf('Field - [%s] does not have a valid integrity option, [%s] in class - %s', $property, implode(', ', $validator->getIntegrityActions()), $meta->name));
+                    throw new InvalidMappingException(sprintf('Field - [%s] does not have a valid integrity option, [%s] in class - %s', $property, implode(', ', $validator->getIntegrityActions()), $meta->getName()));
                 }
 
                 $config['referenceIntegrity'][$property] = $referenceIntegrity->value;

@@ -37,7 +37,7 @@ final class MaterializedPathODMMongoDBTreeLockingTest extends BaseTestCaseMongoO
         $this->getMockDocumentManager($evm);
 
         $meta = $this->dm->getClassMetadata(self::ARTICLE);
-        $this->config = $this->listener->getConfiguration($this->dm, $meta->name);
+        $this->config = $this->listener->getConfiguration($this->dm, $meta->getName());
     }
 
     /**

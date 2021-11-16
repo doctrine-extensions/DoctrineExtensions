@@ -26,7 +26,7 @@ final class ODM extends BaseAdapterODM implements SluggableAdapter
         $wrapped = AbstractWrapper::wrap($object, $dm);
         $qb = $dm->createQueryBuilder($config['useObjectClass']);
         if (($identifier = $wrapped->getIdentifier()) && !$meta->isIdentifier($config['slug'])) {
-            $qb->field($meta->identifier)->notEqual($identifier);
+            $qb->field($meta->getIdentifier()[0])->notEqual($identifier);
         }
         $qb->field($config['slug'])->equals(new Regex('^'.preg_quote($slug, '/')));
 
@@ -84,7 +84,7 @@ final class ODM extends BaseAdapterODM implements SluggableAdapter
                 ->createQueryBuilder()
                 ->updateMany($config['useObjectClass'])
                 ->field($config['slug'])->set($slug)
-                ->field($meta->identifier)->equals($targetObject['_id'])
+                ->field($meta->getIdentifier()[0])->equals($targetObject['_id'])
                 ->getQuery()
                 ->execute()
             ;
@@ -106,7 +106,7 @@ final class ODM extends BaseAdapterODM implements SluggableAdapter
         $meta = $dm->getClassMetadata($config['useObjectClass']);
         $q = $dm
             ->createQueryBuilder($config['useObjectClass'])
-            ->field($config['mappedBy'].'.'.$meta->identifier)->equals($wrapped->getIdentifier())
+            ->field($config['mappedBy'].'.'.$meta->getIdentifier()[0])->equals($wrapped->getIdentifier())
             ->getQuery()
         ;
         $q->setHydrate(false);
@@ -123,7 +123,7 @@ final class ODM extends BaseAdapterODM implements SluggableAdapter
                 ->createQueryBuilder()
                 ->updateMany($config['useObjectClass'])
                 ->field($config['slug'])->set($slug)
-                ->field($meta->identifier)->equals($targetObject['_id'])
+                ->field($meta->getIdentifier()[0])->equals($targetObject['_id'])
                 ->getQuery()
                 ->execute()
             ;

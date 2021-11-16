@@ -114,7 +114,7 @@ class UploadableListener extends MappedEventSubscriber
         $uow = $om->getUnitOfWork();
         $first = reset($this->fileInfoObjects);
         $meta = $om->getClassMetadata(get_class($first['entity']));
-        $config = $this->getConfiguration($om, $meta->name);
+        $config = $this->getConfiguration($om, $meta->getName());
 
         foreach ($this->fileInfoObjects as $info) {
             $entity = $info['entity'];
@@ -164,7 +164,7 @@ class UploadableListener extends MappedEventSubscriber
         foreach ($ea->getScheduledObjectDeletions($uow) as $object) {
             $meta = $om->getClassMetadata(get_class($object));
 
-            if ($config = $this->getConfiguration($om, $meta->name)) {
+            if ($config = $this->getConfiguration($om, $meta->getName())) {
                 if (isset($config['uploadable']) && $config['uploadable']) {
                     $this->addFileRemoval($meta, $config, $object);
                 }
@@ -206,7 +206,7 @@ class UploadableListener extends MappedEventSubscriber
         $om = $ea->getObjectManager();
         $uow = $om->getUnitOfWork();
         $meta = $om->getClassMetadata(get_class($object));
-        $config = $this->getConfiguration($om, $meta->name);
+        $config = $this->getConfiguration($om, $meta->getName());
 
         if (!$config || !isset($config['uploadable']) || !$config['uploadable']) {
             // Nothing to do
@@ -353,7 +353,7 @@ class UploadableListener extends MappedEventSubscriber
             } else {
                 $msg = 'You have to define the path to save files either in the listener, or in the class "%s"';
 
-                throw new UploadableNoPathDefinedException(sprintf($msg, $meta->name));
+                throw new UploadableNoPathDefinedException(sprintf($msg, $meta->getName()));
             }
         }
 

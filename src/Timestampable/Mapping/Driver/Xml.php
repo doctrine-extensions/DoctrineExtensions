@@ -44,7 +44,7 @@ class Xml extends BaseXml
         /**
          * @var \SimpleXmlElement
          */
-        $mapping = $this->_getMapping($meta->name);
+        $mapping = $this->_getMapping($meta->getName());
 
         if (isset($mapping->field)) {
             /**
@@ -61,15 +61,15 @@ class Xml extends BaseXml
 
                     $field = $this->_getAttribute($fieldMappingDoctrine, 'name');
                     if (!$this->isValidField($meta, $field)) {
-                        throw new InvalidMappingException("Field - [{$field}] type is not valid and must be 'date', 'datetime' or 'time' in class - {$meta->name}");
+                        throw new InvalidMappingException("Field - [{$field}] type is not valid and must be 'date', 'datetime' or 'time' in class - {$meta->getName()}");
                     }
                     if (!$this->_isAttributeSet($data, 'on') || !in_array($this->_getAttribute($data, 'on'), ['update', 'create', 'change'])) {
-                        throw new InvalidMappingException("Field - [{$field}] trigger 'on' is not one of [update, create, change] in class - {$meta->name}");
+                        throw new InvalidMappingException("Field - [{$field}] trigger 'on' is not one of [update, create, change] in class - {$meta->getName()}");
                     }
 
                     if ('change' == $this->_getAttribute($data, 'on')) {
                         if (!$this->_isAttributeSet($data, 'field')) {
-                            throw new InvalidMappingException("Missing parameters on property - {$field}, field must be set on [change] trigger in class - {$meta->name}");
+                            throw new InvalidMappingException("Missing parameters on property - {$field}, field must be set on [change] trigger in class - {$meta->getName()}");
                         }
                         $trackedFieldAttribute = $this->_getAttribute($data, 'field');
                         $valueAttribute = $this->_isAttributeSet($data, 'value') ? $this->_getAttribute($data, 'value') : null;

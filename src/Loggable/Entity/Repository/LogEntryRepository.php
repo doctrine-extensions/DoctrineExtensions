@@ -49,9 +49,9 @@ class LogEntryRepository extends EntityRepository
     public function getLogEntriesQuery($entity)
     {
         $wrapped = new EntityWrapper($entity, $this->_em);
-        $objectClass = $wrapped->getMetadata()->name;
+        $objectClass = $wrapped->getMetadata()->getName();
         $meta = $this->getClassMetadata();
-        $dql = "SELECT log FROM {$meta->name} log";
+        $dql = "SELECT log FROM {$meta->getName()} log";
         $dql .= ' WHERE log.objectId = :objectId';
         $dql .= ' AND log.objectClass = :objectClass';
         $dql .= ' ORDER BY log.version DESC';
@@ -82,7 +82,7 @@ class LogEntryRepository extends EntityRepository
         $objectMeta = $wrapped->getMetadata();
         $objectClass = $objectMeta->name;
         $meta = $this->getClassMetadata();
-        $dql = "SELECT log FROM {$meta->name} log";
+        $dql = "SELECT log FROM {$meta->getName()} log";
         $dql .= ' WHERE log.objectId = :objectId';
         $dql .= ' AND log.objectClass = :objectClass';
         $dql .= ' AND log.version <= :version';

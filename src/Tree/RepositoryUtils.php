@@ -132,7 +132,7 @@ class RepositoryUtils implements RepositoryUtilsInterface
     public function buildTreeArray(array $nodes)
     {
         $meta = $this->getClassMetadata();
-        $config = $this->listener->getConfiguration($this->om, $meta->name);
+        $config = $this->listener->getConfiguration($this->om, $meta->getName());
         $nestedTree = [];
         $l = 0;
 

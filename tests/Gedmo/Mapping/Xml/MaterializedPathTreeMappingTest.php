@@ -59,7 +59,7 @@ final class MaterializedPathTreeMappingTest extends BaseTestCaseOM
     public function testTreeMetadata()
     {
         $meta = $this->em->getClassMetadata(MaterializedPathTree::class);
-        $config = $this->tree->getConfiguration($this->em, $meta->name);
+        $config = $this->tree->getConfiguration($this->em, $meta->getName());
 
         static::assertArrayHasKey('strategy', $config);
         static::assertSame('materializedPath', $config['strategy']);

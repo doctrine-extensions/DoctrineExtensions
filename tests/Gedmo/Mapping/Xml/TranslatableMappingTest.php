@@ -60,7 +60,7 @@ final class TranslatableMappingTest extends BaseTestCaseOM
     public function testTranslatableMetadata()
     {
         $meta = $this->em->getClassMetadata(Translatable::class);
-        $config = $this->translatable->getConfiguration($this->em, $meta->name);
+        $config = $this->translatable->getConfiguration($this->em, $meta->getName());
 
         static::assertArrayHasKey('translationClass', $config);
         static::assertSame(Translation::class, $config['translationClass']);
@@ -80,7 +80,7 @@ final class TranslatableMappingTest extends BaseTestCaseOM
     public function testTranslatableMetadataWithEmbedded()
     {
         $meta = $this->em->getClassMetadata(TranslatableWithEmbedded::class);
-        $config = $this->translatable->getConfiguration($this->em, $meta->name);
+        $config = $this->translatable->getConfiguration($this->em, $meta->getName());
 
         static::assertContains('embedded.subtitle', $config['fields']);
     }

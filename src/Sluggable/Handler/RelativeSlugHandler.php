@@ -94,7 +94,7 @@ class RelativeSlugHandler implements SlugHandlerInterface
     public static function validate(array $options, ClassMetadata $meta)
     {
         if (!$meta->isSingleValuedAssociation($options['relationField'])) {
-            throw new InvalidMappingException("Unable to find slug relation through field - [{$options['relationField']}] in class - {$meta->name}");
+            throw new InvalidMappingException("Unable to find slug relation through field - [{$options['relationField']}] in class - {$meta->getName()}");
         }
     }
 

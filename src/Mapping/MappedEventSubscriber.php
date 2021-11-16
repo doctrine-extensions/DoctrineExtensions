@@ -205,7 +205,7 @@ abstract class MappedEventSubscriber implements EventSubscriber
             $config = false; // will not store a cached version, to remap later
         }
         if ($config) {
-            self::$configurations[$this->name][$metadata->name] = $config;
+            self::$configurations[$this->name][$metadata->getName()] = $config;
         }
     }
 

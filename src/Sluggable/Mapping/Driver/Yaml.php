@@ -43,7 +43,7 @@ class Yaml extends File implements Driver
      */
     public function readExtendedMetadata($meta, array &$config)
     {
-        $mapping = $this->_getMapping($meta->name);
+        $mapping = $this->_getMapping($meta->getName());
 
         if (isset($mapping['fields'])) {
             foreach ($mapping['fields'] as $field => $fieldMapping) {
@@ -87,14 +87,14 @@ class Yaml extends File implements Driver
             if (isset($fieldMapping['gedmo']['slug'])) {
                 $slug = $fieldMapping['gedmo']['slug'];
                 if (!$this->isValidField($meta, $field)) {
-                    throw new InvalidMappingException("Cannot use field - [{$field}] for slug storage, type is not valid and must be 'string' or 'text' in class - {$meta->name}");
+                    throw new InvalidMappingException("Cannot use field - [{$field}] for slug storage, type is not valid and must be 'string' or 'text' in class - {$meta->getName()}");
                 }
                 // process slug handlers
                 $handlers = [];
                 if (isset($slug['handlers'])) {
                     foreach ($slug['handlers'] as $handlerClass => $options) {
                         if (!strlen($handlerClass)) {
-                            throw new InvalidMappingException("SlugHandler class: {$handlerClass} should be a valid class name in entity - {$meta->name}");
+                            throw new InvalidMappingException("SlugHandler class: {$handlerClass} should be a valid class name in entity - {$meta->getName()}");
                         }
                         $handlers[$handlerClass] = $options;
                         $handlerClass::validate($handlers[$handlerClass], $meta);
@@ -102,14 +102,14 @@ class Yaml extends File implements Driver
                 }
                 // process slug fields
                 if (empty($slug['fields']) || !is_array($slug['fields'])) {
-                    throw new InvalidMappingException("Slug must contain at least one field for slug generation in class - {$meta->name}");
+                    throw new InvalidMappingException("Slug must contain at least one field for slug generation in class - {$meta->getName()}");
                 }
                 foreach ($slug['fields'] as $slugField) {
                     if (!$meta->hasField($slugField)) {
-                        throw new InvalidMappingException("Unable to find slug [{$slugField}] as mapped property in entity - {$meta->name}");
+                        throw new InvalidMappingException("Unable to find slug [{$slugField}] as mapped property in entity - {$meta->getName()}");
                     }
                     if (!$this->isValidField($meta, $slugField)) {
-                        throw new InvalidMappingException("Cannot use field - [{$slugField}] for slug storage, type is not valid and must be 'string' or 'text' in class - {$meta->name}");
+                        throw new InvalidMappingException("Cannot use field - [{$slugField}] for slug storage, type is not valid and must be 'string' or 'text' in class - {$meta->getName()}");
                     }
                 }
 
@@ -140,14 +140,14 @@ class Yaml extends File implements Driver
                     (string) $slug['suffix'] : '';
 
                 if (!$meta->isMappedSuperclass && $meta->isIdentifier($field) && !$config['slugs'][$field]['unique']) {
-                    throw new InvalidMappingException("Identifier field - [{$field}] slug must be unique in order to maintain primary key in class - {$meta->name}");
+                    throw new InvalidMappingException("Identifier field - [{$field}] slug must be unique in order to maintain primary key in class - {$meta->getName()}");
                 }
                 $ubase = $config['slugs'][$field]['unique_base'];
                 if (false === $config['slugs'][$field]['unique'] && $ubase) {
                     throw new InvalidMappingException("Slug annotation [unique_base] can not be set if unique is unset or 'false'");
                 }
                 if ($ubase && !$meta->hasField($ubase) && !$meta->hasAssociation($ubase)) {
-                    throw new InvalidMappingException("Unable to find [{$ubase}] as mapped property in entity - {$meta->name}");
+                    throw new InvalidMappingException("Unable to find [{$ubase}] as mapped property in entity - {$meta->getName()}");
                 }
             }
         }

@@ -78,7 +78,7 @@ class Closure implements Strategy
      */
     public function processMetadataLoad($em, $meta)
     {
-        $config = $this->listener->getConfiguration($em, $meta->name);
+        $config = $this->listener->getConfiguration($em, $meta->getName());
         $closureMetadata = $em->getClassMetadata($config['closure']);
         $cmf = $em->getMetadataFactory();
 
@@ -99,7 +99,7 @@ class Closure implements Strategy
                     ],
                 ],
                 'inversedBy' => null,
-                'targetEntity' => $meta->name,
+                'targetEntity' => $meta->getName(),
                 'cascade' => null,
                 'fetch' => ClassMetadataInfo::FETCH_LAZY,
             ];
@@ -129,7 +129,7 @@ class Closure implements Strategy
                     ],
                 ],
                 'inversedBy' => null,
-                'targetEntity' => $meta->name,
+                'targetEntity' => $meta->getName(),
                 'cascade' => null,
                 'fetch' => ClassMetadataInfo::FETCH_LAZY,
             ];
@@ -150,7 +150,7 @@ class Closure implements Strategy
             ],
         ];
         // this one may not be very useful
-        $indexName = substr(strtoupper('IDX_'.md5($meta->name.'depth')), 0, 20);
+        $indexName = substr(strtoupper('IDX_'.md5($meta->getName().'depth')), 0, 20);
         $closureMetadata->table['indexes'][$indexName] = [
             'columns' => ['depth'],
         ];
@@ -220,7 +220,7 @@ class Closure implements Strategy
     public function processPostUpdate($em, $entity, AdapterInterface $ea)
     {
         $meta = $em->getClassMetadata(get_class($entity));
-        $config = $this->listener->getConfiguration($em, $meta->name);
+        $config = $this->listener->getConfiguration($em, $meta->getName());
 
         // Process TreeLevel field value
         if (!empty($config)) {
@@ -245,7 +245,7 @@ class Closure implements Strategy
 
         while ($node = array_shift($this->pendingChildNodeInserts[$emHash])) {
             $meta = $em->getClassMetadata(get_class($node));
-            $config = $this->listener->getConfiguration($em, $meta->name);
+            $config = $this->listener->getConfiguration($em, $meta->getName());
 
             $identifier = $meta->getSingleIdentifierFieldName();
             $nodeId = $meta->getReflectionProperty($identifier)->getValue($node);
@@ -325,13 +325,13 @@ class Closure implements Strategy
             unset($first);
             $identifier = $meta->getIdentifier();
             $mapping = $meta->getFieldMapping($identifier[0]);
-            $config = $this->listener->getConfiguration($em, $meta->name);
+            $config = $this->listener->getConfiguration($em, $meta->getName());
             $closureClass = $config['closure'];
             $closureMeta = $em->getClassMetadata($closureClass);
             $uow = $em->getUnitOfWork();
 
             foreach ($this->pendingNodesLevelProcess as $node) {
-                $children = $em->getRepository($meta->name)->children($node);
+                $children = $em->getRepository($meta->getName())->children($node);
 
                 foreach ($children as $child) {
                     $this->pendingNodesLevelProcess[AbstractWrapper::wrap($child, $em)->getIdentifier()] = $child;
@@ -381,7 +381,7 @@ class Closure implements Strategy
     public function processScheduledUpdate($em, $node, AdapterInterface $ea)
     {
         $meta = $em->getClassMetadata(get_class($node));
-        $config = $this->listener->getConfiguration($em, $meta->name);
+        $config = $this->listener->getConfiguration($em, $meta->getName());
         $uow = $em->getUnitOfWork();
         $changeSet = $uow->getEntityChangeSet($node);
 
@@ -411,7 +411,7 @@ class Closure implements Strategy
     {
         $wrapped = AbstractWrapper::wrap($node, $em);
         $meta = $wrapped->getMetadata();
-        $config = $this->listener->getConfiguration($em, $meta->name);
+        $config = $this->listener->getConfiguration($em, $meta->getName());
         $closureMeta = $em->getClassMetadata($config['closure']);
 
         $nodeId = $wrapped->getIdentifier();

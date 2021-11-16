@@ -121,7 +121,7 @@ class SoftDeleteableWalker extends SqlWalker
                 continue;
             }
             $meta = $comp['metadata'];
-            $config = $this->listener->getConfiguration($em, $meta->name);
+            $config = $this->listener->getConfiguration($em, $meta->getName());
             if ($config && isset($config['softDeleteable']) && $config['softDeleteable']) {
                 $this->configuration = $config;
                 $this->deletedAtField = $config['fieldName'];

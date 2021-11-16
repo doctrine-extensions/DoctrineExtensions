@@ -297,14 +297,14 @@ class TranslatableListener extends MappedEventSubscriber
     public function getTranslatableLocale($object, $meta, $om = null)
     {
         $locale = $this->locale;
-        if (isset(self::$configurations[$this->name][$meta->name]['locale'])) {
+        if (isset(self::$configurations[$this->name][$meta->getName()]['locale'])) {
             /** @var \ReflectionClass $class */
             $class = $meta->getReflectionClass();
-            $reflectionProperty = $class->getProperty(self::$configurations[$this->name][$meta->name]['locale']);
+            $reflectionProperty = $class->getProperty(self::$configurations[$this->name][$meta->getName()]['locale']);
             if (!$reflectionProperty) {
-                $column = self::$configurations[$this->name][$meta->name]['locale'];
+                $column = self::$configurations[$this->name][$meta->getName()]['locale'];
 
-                throw new \Gedmo\Exception\RuntimeException("There is no locale or language property ({$column}) found on object: {$meta->name}");
+                throw new \Gedmo\Exception\RuntimeException("There is no locale or language property ({$column}) found on object: {$meta->getName()}");
             }
             $reflectionProperty->setAccessible(true);
             $value = $reflectionProperty->getValue($object);
@@ -371,7 +371,7 @@ class TranslatableListener extends MappedEventSubscriber
         // check all scheduled inserts for Translatable objects
         foreach ($ea->getScheduledObjectInsertions($uow) as $object) {
             $meta = $om->getClassMetadata(get_class($object));
-            $config = $this->getConfiguration($om, $meta->name);
+            $config = $this->getConfiguration($om, $meta->getName());
             if (isset($config['fields'])) {
                 $this->handleTranslatableObjectUpdate($ea, $object, true);
             }
@@ -379,7 +379,7 @@ class TranslatableListener extends MappedEventSubscriber
         // check all scheduled updates for Translatable entities
         foreach ($ea->getScheduledObjectUpdates($uow) as $object) {
             $meta = $om->getClassMetadata(get_class($object));
-            $config = $this->getConfiguration($om, $meta->name);
+            $config = $this->getConfiguration($om, $meta->getName());
             if (isset($config['fields'])) {
                 $this->handleTranslatableObjectUpdate($ea, $object, false);
             }
@@ -387,10 +387,10 @@ class TranslatableListener extends MappedEventSubscriber
         // check scheduled deletions for Translatable entities
         foreach ($ea->getScheduledObjectDeletions($uow) as $object) {
             $meta = $om->getClassMetadata(get_class($object));
-            $config = $this->getConfiguration($om, $meta->name);
+            $config = $this->getConfiguration($om, $meta->getName());
             if (isset($config['fields'])) {
                 $wrapped = AbstractWrapper::wrap($object, $om);
-                $transClass = $this->getTranslationClass($ea, $meta->name);
+                $transClass = $this->getTranslationClass($ea, $meta->getName());
                 $ea->removeAssociatedTranslations($wrapped, $transClass, $config['useObjectClass']);
             }
         }
@@ -407,7 +407,7 @@ class TranslatableListener extends MappedEventSubscriber
         $object = $ea->getObject();
         $meta = $om->getClassMetadata(get_class($object));
         // check if entity is tracked by translatable and without foreign key
-        if ($this->getConfiguration($om, $meta->name) && count($this->pendingTranslationInserts)) {
+        if ($this->getConfiguration($om, $meta->getName()) && count($this->pendingTranslationInserts)) {
             $oid = spl_object_id($object);
             if (array_key_exists($oid, $this->pendingTranslationInserts)) {
                 // load the pending translations without key
@@ -437,7 +437,7 @@ class TranslatableListener extends MappedEventSubscriber
         $om = $ea->getObjectManager();
         $object = $ea->getObject();
         $meta = $om->getClassMetadata(get_class($object));
-        $config = $this->getConfiguration($om, $meta->name);
+        $config = $this->getConfiguration($om, $meta->getName());
         $locale = $this->defaultLocale;
         $oid = null;
         if (isset($config['fields'])) {
@@ -535,7 +535,7 @@ class TranslatableListener extends MappedEventSubscriber
         $om = $ea->getObjectManager();
         $wrapped = AbstractWrapper::wrap($object, $om);
         $meta = $wrapped->getMetadata();
-        $config = $this->getConfiguration($om, $meta->name);
+        $config = $this->getConfiguration($om, $meta->getName());
         // no need cache, metadata is loaded only once in MetadataFactoryClass
         $translationClass = $this->getTranslationClass($ea, $config['useObjectClass']);
         $translationMetadata = $om->getClassMetadata($translationClass);

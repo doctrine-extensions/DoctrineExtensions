@@ -149,7 +149,7 @@ final class ODM extends BaseAdapterODM implements TranslatableAdapter
     {
         $dm = $this->getObjectManager();
         $meta = $dm->getClassMetadata(get_class($translation));
-        $collection = $dm->getDocumentCollection($meta->name);
+        $collection = $dm->getDocumentCollection($meta->getName());
         $data = [];
 
         foreach ($meta->getReflectionProperties() as $fieldName => $reflProp) {

@@ -40,7 +40,7 @@ class ReferencesListener extends MappedEventSubscriber
         $om = $ea->getObjectManager();
         $object = $ea->getObject();
         $meta = $om->getClassMetadata(get_class($object));
-        $config = $this->getConfiguration($om, $meta->name);
+        $config = $this->getConfiguration($om, $meta->getName());
 
         if (isset($config['referenceOne'])) {
             foreach ($config['referenceOne'] as $mapping) {
@@ -143,7 +143,7 @@ class ReferencesListener extends MappedEventSubscriber
         $om = $ea->getObjectManager();
         $object = $ea->getObject();
         $meta = $om->getClassMetadata(get_class($object));
-        $config = $this->getConfiguration($om, $meta->name);
+        $config = $this->getConfiguration($om, $meta->getName());
 
         if (isset($config['referenceOne'])) {
             foreach ($config['referenceOne'] as $mapping) {
@@ -175,7 +175,7 @@ class ReferencesListener extends MappedEventSubscriber
         $om = $ea->getObjectManager();
         $object = $ea->getObject();
         $meta = $om->getClassMetadata(get_class($object));
-        $config = $this->getConfiguration($om, $meta->name);
+        $config = $this->getConfiguration($om, $meta->getName());
 
         if (isset($config['referenceManyEmbed'])) {
             foreach ($config['referenceManyEmbed'] as $mapping) {
