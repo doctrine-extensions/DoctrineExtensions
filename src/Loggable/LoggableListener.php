@@ -215,7 +215,7 @@ class LoggableListener extends MappedEventSubscriber
         $om = $ea->getObjectManager();
         $wrapped = AbstractWrapper::wrap($object, $om);
         $meta = $wrapped->getMetadata();
-        $config = $this->getConfiguration($om, $meta->name);
+        $config = $this->getConfiguration($om, $meta->getName());
         $uow = $om->getUnitOfWork();
         $newValues = [];
 
@@ -264,15 +264,15 @@ class LoggableListener extends MappedEventSubscriber
             return;
         }
 
-        if ($config = $this->getConfiguration($om, $meta->name)) {
-            $logEntryClass = $this->getLogEntryClass($ea, $meta->name);
+        if ($config = $this->getConfiguration($om, $meta->getName())) {
+            $logEntryClass = $this->getLogEntryClass($ea, $meta->getName());
             $logEntryMeta = $om->getClassMetadata($logEntryClass);
             /** @var \Gedmo\Loggable\Entity\LogEntry $logEntry */
             $logEntry = $logEntryMeta->newInstance();
 
             $logEntry->setAction($action);
             $logEntry->setUsername($this->username);
-            $logEntry->setObjectClass($meta->name);
+            $logEntry->setObjectClass($meta->getName());
             $logEntry->setLoggedAt();
 
             // check for the availability of the primary key

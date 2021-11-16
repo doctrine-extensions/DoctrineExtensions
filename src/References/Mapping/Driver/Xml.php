@@ -41,7 +41,7 @@ class Xml extends BaseXml
         /**
          * @var \SimpleXmlElement
          */
-        $xml = $this->_getMapping($meta->name);
+        $xml = $this->_getMapping($meta->getName());
         $xmlDoctrine = $xml;
 
         $xml = $xml->children(self::GEDMO_NAMESPACE_URI);
@@ -53,7 +53,7 @@ class Xml extends BaseXml
                  */
                 foreach ($xml->reference as $element) {
                     if (!$this->_isAttributeSet($element, 'type')) {
-                        throw new InvalidMappingException("Reference type (document or entity) is not set in class - {$meta->name}");
+                        throw new InvalidMappingException("Reference type (document or entity) is not set in class - {$meta->getName()}");
                     }
 
                     $type = $this->_getAttribute($element, 'type');
@@ -67,17 +67,17 @@ class Xml extends BaseXml
                     }
 
                     if (!$this->_isAttributeSet($element, 'field')) {
-                        throw new InvalidMappingException("Reference field is not set in class - {$meta->name}");
+                        throw new InvalidMappingException("Reference field is not set in class - {$meta->getName()}");
                     }
                     $field = $this->_getAttribute($element, 'field');
 
                     if (!$this->_isAttributeSet($element, 'class')) {
-                        throw new InvalidMappingException("Reference field is not set in class - {$meta->name}");
+                        throw new InvalidMappingException("Reference field is not set in class - {$meta->getName()}");
                     }
                     $class = $this->_getAttribute($element, 'class');
 
                     if (!$this->_isAttributeSet($element, 'identifier')) {
-                        throw new InvalidMappingException("Reference identifier is not set in class - {$meta->name}");
+                        throw new InvalidMappingException("Reference identifier is not set in class - {$meta->getName()}");
                     }
                     $identifier = $this->_getAttribute($element, 'identifier');
 

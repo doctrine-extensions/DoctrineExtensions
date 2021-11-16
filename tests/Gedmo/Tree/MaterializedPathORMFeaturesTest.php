@@ -36,7 +36,7 @@ final class MaterializedPathORMFeaturesTest extends BaseTestCaseORM
         $this->getMockSqliteEntityManager($evm);
 
         $meta = $this->em->getClassMetadata(self::CATEGORY);
-        $this->config = $this->listener->getConfiguration($this->em, $meta->name);
+        $this->config = $this->listener->getConfiguration($this->em, $meta->getName());
     }
 
     /**

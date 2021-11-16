@@ -36,7 +36,7 @@ class Xml extends BaseXml
         /**
          * @var \SimpleXmlElement
          */
-        $xml = $this->_getMapping($meta->name);
+        $xml = $this->_getMapping($meta->getName());
 
         if (isset($xml->field)) {
             foreach ($xml->field as $mappingDoctrine) {
@@ -45,7 +45,7 @@ class Xml extends BaseXml
                 $field = $this->_getAttribute($mappingDoctrine, 'name');
                 if (isset($mapping->{'sortable-position'})) {
                     if (!$this->isValidField($meta, $field)) {
-                        throw new InvalidMappingException("Sortable position field - [{$field}] type is not valid and must be 'integer' in class - {$meta->name}");
+                        throw new InvalidMappingException("Sortable position field - [{$field}] type is not valid and must be 'integer' in class - {$meta->getName()}");
                     }
                     $config['position'] = $field;
                 }
@@ -65,7 +65,7 @@ class Xml extends BaseXml
 
         if (!$meta->isMappedSuperclass && $config) {
             if (!isset($config['position'])) {
-                throw new InvalidMappingException("Missing property: 'position' in class - {$meta->name}");
+                throw new InvalidMappingException("Missing property: 'position' in class - {$meta->getName()}");
             }
         }
     }

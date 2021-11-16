@@ -56,9 +56,9 @@ class TranslationRepository extends DocumentRepository
     {
         $meta = $this->dm->getClassMetadata(get_class($document));
         $listener = $this->getTranslatableListener();
-        $config = $listener->getConfiguration($this->dm, $meta->name);
+        $config = $listener->getConfiguration($this->dm, $meta->getName());
         if (!isset($config['fields']) || !in_array($field, $config['fields'])) {
-            throw new \Gedmo\Exception\InvalidArgumentException("Document: {$meta->name} does not translate field - {$field}");
+            throw new \Gedmo\Exception\InvalidArgumentException("Document: {$meta->getName()} does not translate field - {$field}");
         }
         $modRecordValue = (!$listener->getPersistDefaultLocaleTranslation() && $locale === $listener->getDefaultLocale())
             || $listener->getTranslatableLocale($document, $meta, $this->getDocumentManager()) === $locale
@@ -73,7 +73,7 @@ class TranslationRepository extends DocumentRepository
                 $ea = new TranslatableAdapterODM();
                 $class = $listener->getTranslationClass($ea, $config['useObjectClass']);
             }
-            $foreignKey = $meta->getReflectionProperty($meta->identifier)->getValue($document);
+            $foreignKey = $meta->getReflectionProperty($meta->getIdentifier()[0])->getValue($document);
             $objectClass = $config['useObjectClass'];
             $transMeta = $this->dm->getClassMetadata($class);
             $trans = $this->findOneBy(compact('locale', 'field', 'objectClass', 'foreignKey'));
@@ -118,7 +118,7 @@ class TranslationRepository extends DocumentRepository
 
             $config = $this
                 ->getTranslatableListener()
-                ->getConfiguration($this->dm, $wrapped->getMetadata()->name);
+                ->getConfiguration($this->dm, $wrapped->getMetadata()->getName());
 
             if (!$config) {
                 return $result;

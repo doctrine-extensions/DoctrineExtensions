@@ -60,10 +60,10 @@ class Annotation extends AbstractAnnotationDriver
             if ($this->reader->getPropertyAnnotation($property, self::POSITION)) {
                 $field = $property->getName();
                 if (!$meta->hasField($field)) {
-                    throw new InvalidMappingException("Unable to find 'position' - [{$field}] as mapped property in entity - {$meta->name}");
+                    throw new InvalidMappingException("Unable to find 'position' - [{$field}] as mapped property in entity - {$meta->getName()}");
                 }
                 if (!$this->isValidField($meta, $field)) {
-                    throw new InvalidMappingException("Sortable position field - [{$field}] type is not valid and must be 'integer' in class - {$meta->name}");
+                    throw new InvalidMappingException("Sortable position field - [{$field}] type is not valid and must be 'integer' in class - {$meta->getName()}");
                 }
                 $config['position'] = $field;
             }
@@ -72,7 +72,7 @@ class Annotation extends AbstractAnnotationDriver
             if ($this->reader->getPropertyAnnotation($property, self::GROUP)) {
                 $field = $property->getName();
                 if (!$meta->hasField($field) && !$meta->hasAssociation($field)) {
-                    throw new InvalidMappingException("Unable to find 'group' - [{$field}] as mapped property in entity - {$meta->name}");
+                    throw new InvalidMappingException("Unable to find 'group' - [{$field}] as mapped property in entity - {$meta->getName()}");
                 }
                 if (!isset($config['groups'])) {
                     $config['groups'] = [];
@@ -83,7 +83,7 @@ class Annotation extends AbstractAnnotationDriver
 
         if (!$meta->isMappedSuperclass && $config) {
             if (!isset($config['position'])) {
-                throw new InvalidMappingException("Missing property: 'position' in class - {$meta->name}");
+                throw new InvalidMappingException("Missing property: 'position' in class - {$meta->getName()}");
             }
         }
     }

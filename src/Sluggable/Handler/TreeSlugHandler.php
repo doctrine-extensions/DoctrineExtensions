@@ -121,7 +121,7 @@ class TreeSlugHandler implements SlugHandlerWithUniqueCallbackInterface
     public static function validate(array $options, ClassMetadata $meta)
     {
         if (!$meta->isSingleValuedAssociation($options['parentRelationField'])) {
-            throw new InvalidMappingException("Unable to find tree parent slug relation through field - [{$options['parentRelationField']}] in class - {$meta->name}");
+            throw new InvalidMappingException("Unable to find tree parent slug relation through field - [{$options['parentRelationField']}] in class - {$meta->getName()}");
         }
     }
 

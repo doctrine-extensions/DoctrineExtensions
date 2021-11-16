@@ -312,8 +312,8 @@ class TranslationWalker extends SqlWalker
         foreach ($this->translatedComponents as $dqlAlias => $comp) {
             /** @var ClassMetadata $meta */
             $meta = $comp['metadata'];
-            $config = $this->listener->getConfiguration($em, $meta->name);
-            $transClass = $this->listener->getTranslationClass($ea, $meta->name);
+            $config = $this->listener->getConfiguration($em, $meta->getName());
+            $transClass = $this->listener->getTranslationClass($ea, $meta->getName());
             $transMeta = $em->getClassMetadata($transClass);
             $transTable = $quoteStrategy->getTableName($transMeta, $this->platform);
             foreach ($config['fields'] as $field) {
@@ -395,7 +395,7 @@ class TranslationWalker extends SqlWalker
                 continue;
             }
             $meta = $comp['metadata'];
-            $config = $this->listener->getConfiguration($em, $meta->name);
+            $config = $this->listener->getConfiguration($em, $meta->getName());
             if ($config && isset($config['fields'])) {
                 $this->translatedComponents[$alias] = $comp;
             }

@@ -167,7 +167,7 @@ class Xml extends BaseXml
                     $manyToOneMapping = $manyToOneMapping->children(self::GEDMO_NAMESPACE_URI);
                     if (isset($manyToOneMapping->{'tree-parent'})) {
                         $field = $this->_getAttribute($manyToOneMappingDoctrine, 'field');
-                        $targetEntity = $meta->associationMappings[$field]['targetEntity'];
+                        $targetEntity = $meta->getAssociationTargetClass($field);
                         if (!$cl = $this->getRelatedClassName($meta, $targetEntity)) {
                             throw new InvalidMappingException("Unable to find ancestor/parent child relation through ancestor field - [{$field}] in class - {$meta->name}");
                         }
@@ -175,7 +175,7 @@ class Xml extends BaseXml
                     }
                     if (isset($manyToOneMapping->{'tree-root'})) {
                         $field = $this->_getAttribute($manyToOneMappingDoctrine, 'field');
-                        $targetEntity = $meta->associationMappings[$field]['targetEntity'];
+                        $targetEntity = $meta->getAssociationTargetClass($field);
                         if (!$cl = $this->getRelatedClassName($meta, $targetEntity)) {
                             throw new InvalidMappingException("Unable to find root descendant relation through root field - [{$field}] in class - {$meta->name}");
                         }
@@ -215,7 +215,7 @@ class Xml extends BaseXml
                     $manyToOneMapping = $manyToOneMapping->children(self::GEDMO_NAMESPACE_URI);
                     if (isset($manyToOneMapping->{'tree-parent'})) {
                         $field = $this->_getAttribute($manyToOneMappingDoctrine, 'field');
-                        $targetEntity = $meta->associationMappings[$field]['targetEntity'];
+                        $targetEntity = $meta->getAssociationTargetClass($field);
                         if (!$cl = $this->getRelatedClassName($meta, $targetEntity)) {
                             throw new InvalidMappingException("Unable to find ancestor/parent child relation through ancestor field - [{$field}] in class - {$meta->name}");
                         }
@@ -223,7 +223,7 @@ class Xml extends BaseXml
                     }
                     if (isset($manyToOneMapping->{'tree-root'})) {
                         $field = $this->_getAttribute($manyToOneMappingDoctrine, 'field');
-                        $targetEntity = $meta->associationMappings[$field]['targetEntity'];
+                        $targetEntity = $meta->getAssociationTargetClass($field);
                         if (!$cl = $this->getRelatedClassName($meta, $targetEntity)) {
                             throw new InvalidMappingException("Unable to find root descendant relation through root field - [{$field}] in class - {$meta->name}");
                         }

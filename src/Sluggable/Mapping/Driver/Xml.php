@@ -39,7 +39,7 @@ class Xml extends BaseXml
         /**
          * @var \SimpleXmlElement
          */
-        $xml = $this->_getMapping($meta->name);
+        $xml = $this->_getMapping($meta->getName());
 
         if (isset($xml->field)) {
             foreach ($xml->field as $mapping) {
@@ -69,15 +69,15 @@ class Xml extends BaseXml
              */
             $slug = $mapping->slug;
             if (!$this->isValidField($meta, $field)) {
-                throw new InvalidMappingException("Cannot use field - [{$field}] for slug storage, type is not valid and must be 'string' in class - {$meta->name}");
+                throw new InvalidMappingException("Cannot use field - [{$field}] for slug storage, type is not valid and must be 'string' in class - {$meta->getName()}");
             }
             $fields = array_map('trim', explode(',', (string) $this->_getAttribute($slug, 'fields')));
             foreach ($fields as $slugField) {
                 if (!$meta->hasField($slugField)) {
-                    throw new InvalidMappingException("Unable to find slug [{$slugField}] as mapped property in entity - {$meta->name}");
+                    throw new InvalidMappingException("Unable to find slug [{$slugField}] as mapped property in entity - {$meta->getName()}");
                 }
                 if (!$this->isValidField($meta, $slugField)) {
-                    throw new InvalidMappingException("Cannot use field - [{$slugField}] for slug storage, type is not valid and must be 'string' or 'text' in class - {$meta->name}");
+                    throw new InvalidMappingException("Cannot use field - [{$slugField}] for slug storage, type is not valid and must be 'string' or 'text' in class - {$meta->getName()}");
                 }
             }
 
@@ -118,14 +118,14 @@ class Xml extends BaseXml
                 'handlers' => $handlers,
             ];
             if (!$meta->isMappedSuperclass && $meta->isIdentifier($field) && !$config['slugs'][$field]['unique']) {
-                throw new InvalidMappingException("Identifier field - [{$field}] slug must be unique in order to maintain primary key in class - {$meta->name}");
+                throw new InvalidMappingException("Identifier field - [{$field}] slug must be unique in order to maintain primary key in class - {$meta->getName()}");
             }
             $ubase = $config['slugs'][$field]['unique_base'];
             if (false === $config['slugs'][$field]['unique'] && $ubase) {
                 throw new InvalidMappingException("Slug annotation [unique_base] can not be set if unique is unset or 'false'");
             }
             if ($ubase && !$meta->hasField($ubase) && !$meta->hasAssociation($ubase)) {
-                throw new InvalidMappingException("Unable to find [{$ubase}] as mapped property in entity - {$meta->name}");
+                throw new InvalidMappingException("Unable to find [{$ubase}] as mapped property in entity - {$meta->getName()}");
             }
         }
     }

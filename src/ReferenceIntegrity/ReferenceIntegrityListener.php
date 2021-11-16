@@ -52,7 +52,7 @@ class ReferenceIntegrityListener extends MappedEventSubscriber
         $class = get_class($object);
         $meta = $om->getClassMetadata($class);
 
-        if ($config = $this->getConfiguration($om, $meta->name)) {
+        if ($config = $this->getConfiguration($om, $meta->getName())) {
             foreach ($config['referenceIntegrity'] as $property => $action) {
                 $reflProp = $meta->getReflectionProperty($property);
                 $refDoc = $reflProp->getValue($object);
@@ -61,7 +61,7 @@ class ReferenceIntegrityListener extends MappedEventSubscriber
                 switch ($action) {
                     case Validator::NULLIFY:
                         if (!isset($fieldMapping['mappedBy'])) {
-                            throw new InvalidMappingException(sprintf("Reference '%s' on '%s' should have 'mappedBy' option defined", $property, $meta->name));
+                            throw new InvalidMappingException(sprintf("Reference '%s' on '%s' should have 'mappedBy' option defined", $property, $meta->getName()));
                         }
 
                         $subMeta = $om->getClassMetadata($fieldMapping['targetDocument']);
@@ -85,7 +85,7 @@ class ReferenceIntegrityListener extends MappedEventSubscriber
                         break;
                     case Validator::PULL:
                         if (!isset($fieldMapping['mappedBy'])) {
-                            throw new InvalidMappingException(sprintf("Reference '%s' on '%s' should have 'mappedBy' option defined", $property, $meta->name));
+                            throw new InvalidMappingException(sprintf("Reference '%s' on '%s' should have 'mappedBy' option defined", $property, $meta->getName()));
                         }
 
                         $subMeta = $om->getClassMetadata($fieldMapping['targetDocument']);

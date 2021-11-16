@@ -60,7 +60,7 @@ final class ClosureTreeMappingTest extends BaseTestCaseOM
     public function testTreeMetadata()
     {
         $meta = $this->em->getClassMetadata(ClosureTree::class);
-        $config = $this->tree->getConfiguration($this->em, $meta->name);
+        $config = $this->tree->getConfiguration($this->em, $meta->getName());
 
         static::assertArrayHasKey('strategy', $config);
         static::assertSame('closure', $config['strategy']);

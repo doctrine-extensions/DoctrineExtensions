@@ -28,7 +28,7 @@ class MaterializedPath extends AbstractMaterializedPath
 
         // Remove node's children
         $results = $om->createQueryBuilder()
-            ->find($meta->name)
+            ->find($meta->getName())
             ->field($config['path'])->equals(new Regex('^'.preg_quote($wrapped->getPropertyValue($config['path'])).'.?+'))
             ->getQuery()
             ->execute();
@@ -44,7 +44,7 @@ class MaterializedPath extends AbstractMaterializedPath
     public function getChildren($om, $meta, $config, $originalPath)
     {
         return $om->createQueryBuilder()
-            ->find($meta->name)
+            ->find($meta->getName())
             ->field($config['path'])->equals(new Regex('^'.preg_quote($originalPath).'.+'))
             ->sort($config['path'], 'asc')      // This may save some calls to updateNode
             ->getQuery()
@@ -60,7 +60,7 @@ class MaterializedPath extends AbstractMaterializedPath
 
         foreach ($this->rootsOfTreesWhichNeedsLocking as $oid => $root) {
             $meta = $om->getClassMetadata(get_class($root));
-            $config = $this->listener->getConfiguration($om, $meta->name);
+            $config = $this->listener->getConfiguration($om, $meta->getName());
             $lockTimeProp = $meta->getReflectionProperty($config['lock_time']);
             $lockTimeProp->setAccessible(true);
             $lockTimeValue = new UTCDateTime();
@@ -82,7 +82,7 @@ class MaterializedPath extends AbstractMaterializedPath
 
         foreach ($this->rootsOfTreesWhichNeedsLocking as $oid => $root) {
             $meta = $om->getClassMetadata(get_class($root));
-            $config = $this->listener->getConfiguration($om, $meta->name);
+            $config = $this->listener->getConfiguration($om, $meta->getName());
             $lockTimeProp = $meta->getReflectionProperty($config['lock_time']);
             $lockTimeProp->setAccessible(true);
             $lockTimeValue = null;

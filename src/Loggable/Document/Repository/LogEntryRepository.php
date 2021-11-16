@@ -39,7 +39,7 @@ class LogEntryRepository extends DocumentRepository
 
         $qb = $this->createQueryBuilder();
         $qb->field('objectId')->equals($objectId);
-        $qb->field('objectClass')->equals($wrapped->getMetadata()->name);
+        $qb->field('objectClass')->equals($wrapped->getMetadata()->getName());
         $qb->sort('version', 'DESC');
         $q = $qb->getQuery();
 

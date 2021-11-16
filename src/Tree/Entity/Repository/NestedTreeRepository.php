@@ -35,7 +35,7 @@ class NestedTreeRepository extends AbstractTreeRepository
     public function getRootNodesQueryBuilder($sortByField = null, $direction = 'asc')
     {
         $meta = $this->getClassMetadata();
-        $config = $this->listener->getConfiguration($this->_em, $meta->name);
+        $config = $this->listener->getConfiguration($this->_em, $meta->getName());
         $qb = $this->getQueryBuilder();
         $qb
             ->select('node')
@@ -98,7 +98,7 @@ class NestedTreeRepository extends AbstractTreeRepository
             $node = $args[0];
             $wrapped = new EntityWrapper($node, $this->_em);
             $meta = $this->getClassMetadata();
-            $config = $this->listener->getConfiguration($this->_em, $meta->name);
+            $config = $this->listener->getConfiguration($this->_em, $meta->getName());
             $position = substr($method, 9);
             if ('Of' === substr($method, -2)) {
                 if (!isset($args[1])) {
@@ -120,7 +120,7 @@ class NestedTreeRepository extends AbstractTreeRepository
             $wrapped->setPropertyValue($config['left'], 0); // simulate changeset
             $oid = spl_object_id($node);
             $this->listener
-                ->getStrategy($this->_em, $meta->name)
+                ->getStrategy($this->_em, $meta->getName())
                 ->setNodePosition($oid, $position)
             ;
 
@@ -147,7 +147,7 @@ class NestedTreeRepository extends AbstractTreeRepository
         if (!is_a($node, $meta->getName())) {
             throw new InvalidArgumentException('Node is not related to this repository');
         }
-        $config = $this->listener->getConfiguration($this->_em, $meta->name);
+        $config = $this->listener->getConfiguration($this->_em, $meta->getName());
         $wrapped = new EntityWrapper($node, $this->_em);
         if (!$wrapped->hasValidIdentifier()) {
             throw new InvalidArgumentException('Node is not managed by UnitOfWork');
@@ -200,7 +200,7 @@ class NestedTreeRepository extends AbstractTreeRepository
     public function childrenQueryBuilder($node = null, $direct = false, $sortByField = null, $direction = 'ASC', $includeNode = false)
     {
         $meta = $this->getClassMetadata();
-        $config = $this->listener->getConfiguration($this->_em, $meta->name);
+        $config = $this->listener->getConfiguration($this->_em, $meta->getName());
 
         $qb = $this->getQueryBuilder();
         $qb->select('node')
@@ -316,7 +316,7 @@ class NestedTreeRepository extends AbstractTreeRepository
     public function getLeafsQueryBuilder($root = null, $sortByField = null, $direction = 'ASC')
     {
         $meta = $this->getClassMetadata();
-        $config = $this->listener->getConfiguration($this->_em, $meta->name);
+        $config = $this->listener->getConfiguration($this->_em, $meta->getName());
 
         if (isset($config['root']) && null === $root) {
             if (null === $root) {
@@ -407,7 +407,7 @@ class NestedTreeRepository extends AbstractTreeRepository
             throw new InvalidArgumentException('Node is not managed by UnitOfWork');
         }
 
-        $config = $this->listener->getConfiguration($this->_em, $meta->name);
+        $config = $this->listener->getConfiguration($this->_em, $meta->getName());
         $parent = $wrapped->getPropertyValue($config['parent']);
 
         $left = $wrapped->getPropertyValue($config['left']);
@@ -484,7 +484,7 @@ class NestedTreeRepository extends AbstractTreeRepository
             throw new InvalidArgumentException('Node is not managed by UnitOfWork');
         }
 
-        $config = $this->listener->getConfiguration($this->_em, $meta->name);
+        $config = $this->listener->getConfiguration($this->_em, $meta->getName());
         $parent = $wrapped->getPropertyValue($config['parent']);
 
         $left = $wrapped->getPropertyValue($config['left']);
@@ -567,7 +567,7 @@ class NestedTreeRepository extends AbstractTreeRepository
                     $number = $numSiblings;
                 }
                 $this->listener
-                    ->getStrategy($this->_em, $meta->name)
+                    ->getStrategy($this->_em, $meta->getName())
                     ->updateNode($this->_em, $node, $nextSiblings[$number - 1], Nested::NEXT_SIBLING);
             }
         } else {
@@ -602,7 +602,7 @@ class NestedTreeRepository extends AbstractTreeRepository
                     $number = $numSiblings;
                 }
                 $this->listener
-                    ->getStrategy($this->_em, $meta->name)
+                    ->getStrategy($this->_em, $meta->getName())
                     ->updateNode($this->_em, $node, $prevSiblings[$number - 1], Nested::PREV_SIBLING);
             }
         } else {
@@ -626,7 +626,7 @@ class NestedTreeRepository extends AbstractTreeRepository
         $meta = $this->getClassMetadata();
         if (is_a($node, $meta->getName())) {
             $wrapped = new EntityWrapper($node, $this->_em);
-            $config = $this->listener->getConfiguration($this->_em, $meta->name);
+            $config = $this->listener->getConfiguration($this->_em, $meta->getName());
             $right = $wrapped->getPropertyValue($config['right']);
             $left = $wrapped->getPropertyValue($config['left']);
             $rootId = isset($config['root']) ? $wrapped->getPropertyValue($config['root']) : null;
@@ -634,7 +634,7 @@ class NestedTreeRepository extends AbstractTreeRepository
             if ($right == $left + 1) {
                 $this->removeSingle($wrapped);
                 $this->listener
-                    ->getStrategy($this->_em, $meta->name)
+                    ->getStrategy($this->_em, $meta->getName())
                     ->shiftRL($this->_em, $config['useObjectClass'], $right, -2, $rootId);
 
                 return; // node was a leaf
@@ -690,10 +690,10 @@ class NestedTreeRepository extends AbstractTreeRepository
                         $qb->getQuery()->getSingleScalarResult();
 
                         $this->listener
-                            ->getStrategy($this->_em, $meta->name)
+                            ->getStrategy($this->_em, $meta->getName())
                             ->shiftRangeRL($this->_em, $config['useObjectClass'], $left, $right, $shift, $rootId, $rootId, -1);
                         $this->listener
-                            ->getStrategy($this->_em, $meta->name)
+                            ->getStrategy($this->_em, $meta->getName())
                             ->shiftRL($this->_em, $config['useObjectClass'], $right, -2, $rootId);
                     }
                 } else {
@@ -710,11 +710,11 @@ class NestedTreeRepository extends AbstractTreeRepository
                     $qb->getQuery()->getSingleScalarResult();
 
                     $this->listener
-                        ->getStrategy($this->_em, $meta->name)
+                        ->getStrategy($this->_em, $meta->getName())
                         ->shiftRangeRL($this->_em, $config['useObjectClass'], $left, $right, $shift, $rootId, $rootId, -1);
 
                     $this->listener
-                        ->getStrategy($this->_em, $meta->name)
+                        ->getStrategy($this->_em, $meta->getName())
                         ->shiftRL($this->_em, $config['useObjectClass'], $right, -2, $rootId);
                 }
                 $this->removeSingle($wrapped);
@@ -792,7 +792,7 @@ class NestedTreeRepository extends AbstractTreeRepository
 
         $errors = [];
         $meta = $this->getClassMetadata();
-        $config = $this->listener->getConfiguration($this->_em, $meta->name);
+        $config = $this->listener->getConfiguration($this->_em, $meta->getName());
         if (isset($config['root'])) {
             $trees = $this->getRootNodes();
             foreach ($trees as $tree) {
@@ -818,7 +818,7 @@ class NestedTreeRepository extends AbstractTreeRepository
             return;
         }
         $meta = $this->getClassMetadata();
-        $config = $this->listener->getConfiguration($this->_em, $meta->name);
+        $config = $this->listener->getConfiguration($this->_em, $meta->getName());
         $self = $this;
         $em = $this->_em;
 
@@ -858,7 +858,7 @@ class NestedTreeRepository extends AbstractTreeRepository
     public function getNodesHierarchyQueryBuilder($node = null, $direct = false, array $options = [], $includeNode = false)
     {
         $meta = $this->getClassMetadata();
-        $config = $this->listener->getConfiguration($this->_em, $meta->name);
+        $config = $this->listener->getConfiguration($this->_em, $meta->getName());
 
         return $this->childrenQueryBuilder(
             $node,
@@ -903,7 +903,7 @@ class NestedTreeRepository extends AbstractTreeRepository
     private function verifyTree(&$errors, $root = null)
     {
         $meta = $this->getClassMetadata();
-        $config = $this->listener->getConfiguration($this->_em, $meta->name);
+        $config = $this->listener->getConfiguration($this->_em, $meta->getName());
 
         $identifier = $meta->getSingleIdentifierFieldName();
         if (isset($config['root'])) {
@@ -928,7 +928,7 @@ class NestedTreeRepository extends AbstractTreeRepository
             $qb->setParameter('rid', $rootId);
         }
         $min = (int) $qb->getQuery()->getSingleScalarResult();
-        $edge = $this->listener->getStrategy($this->_em, $meta->name)->max($this->_em, $config['useObjectClass'], $rootId);
+        $edge = $this->listener->getStrategy($this->_em, $meta->getName())->max($this->_em, $config['useObjectClass'], $rootId);
         // check duplicate right and left values
         for ($i = $min; $i <= $edge; ++$i) {
             $qb = $this->getQueryBuilder();
@@ -1049,7 +1049,7 @@ class NestedTreeRepository extends AbstractTreeRepository
     private function removeSingle(EntityWrapper $wrapped)
     {
         $meta = $this->getClassMetadata();
-        $config = $this->listener->getConfiguration($this->_em, $meta->name);
+        $config = $this->listener->getConfiguration($this->_em, $meta->getName());
 
         $pk = $meta->getSingleIdentifierFieldName();
         $nodeId = $wrapped->getIdentifier();

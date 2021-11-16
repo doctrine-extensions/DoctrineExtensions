@@ -71,7 +71,7 @@ class Chain implements Driver
     public function readExtendedMetadata($meta, array &$config)
     {
         foreach ($this->_drivers as $namespace => $driver) {
-            if (0 === strpos($meta->name, $namespace)) {
+            if (0 === strpos($meta->getName(), $namespace)) {
                 $driver->readExtendedMetadata($meta, $config);
 
                 return;
@@ -85,7 +85,7 @@ class Chain implements Driver
         }
 
         // commenting it for customized mapping support, debugging of such cases might get harder
-        //throw new \Gedmo\Exception\UnexpectedValueException('Class ' . $meta->name . ' is not a valid entity or mapped super class.');
+        //throw new \Gedmo\Exception\UnexpectedValueException('Class ' . $meta->getName() . ' is not a valid entity or mapped super class.');
     }
 
     /**

@@ -57,9 +57,9 @@ class TranslationRepository extends EntityRepository
     {
         $meta = $this->_em->getClassMetadata(get_class($entity));
         $listener = $this->getTranslatableListener();
-        $config = $listener->getConfiguration($this->_em, $meta->name);
+        $config = $listener->getConfiguration($this->_em, $meta->getName());
         if (!isset($config['fields']) || !in_array($field, $config['fields'])) {
-            throw new \Gedmo\Exception\InvalidArgumentException("Entity: {$meta->name} does not translate field - {$field}");
+            throw new \Gedmo\Exception\InvalidArgumentException("Entity: {$meta->getName()} does not translate field - {$field}");
         }
         $needsPersist = true;
         if ($locale === $listener->getTranslatableLocale($entity, $meta, $this->getEntityManager())) {
@@ -120,7 +120,7 @@ class TranslationRepository extends EntityRepository
             $entityId = $wrapped->getIdentifier();
             $config = $this
                 ->getTranslatableListener()
-                ->getConfiguration($this->_em, $wrapped->getMetadata()->name);
+                ->getConfiguration($this->_em, $wrapped->getMetadata()->getName());
 
             if (!$config) {
                 return $result;

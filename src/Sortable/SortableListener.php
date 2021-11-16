@@ -74,7 +74,7 @@ class SortableListener extends MappedEventSubscriber
         // process all objects being deleted
         foreach ($ea->getScheduledObjectDeletions($uow) as $object) {
             $meta = $om->getClassMetadata(get_class($object));
-            if ($config = $this->getConfiguration($om, $meta->name)) {
+            if ($config = $this->getConfiguration($om, $meta->getName())) {
                 $this->processDeletion($ea, $config, $meta, $object);
             }
         }
@@ -82,7 +82,7 @@ class SortableListener extends MappedEventSubscriber
         // process all objects being updated
         foreach ($ea->getScheduledObjectUpdates($uow) as $object) {
             $meta = $om->getClassMetadata(get_class($object));
-            if ($config = $this->getConfiguration($om, $meta->name)) {
+            if ($config = $this->getConfiguration($om, $meta->getName())) {
                 $this->processUpdate($ea, $config, $meta, $object);
             }
         }
@@ -90,7 +90,7 @@ class SortableListener extends MappedEventSubscriber
         // process all objects being inserted
         foreach ($ea->getScheduledObjectInsertions($uow) as $object) {
             $meta = $om->getClassMetadata(get_class($object));
-            if ($config = $this->getConfiguration($om, $meta->name)) {
+            if ($config = $this->getConfiguration($om, $meta->getName())) {
                 $this->processInsert($ea, $config, $meta, $object);
             }
         }
@@ -106,7 +106,7 @@ class SortableListener extends MappedEventSubscriber
         $object = $ea->getObject();
         $meta = $om->getClassMetadata(get_class($object));
 
-        if ($config = $this->getConfiguration($om, $meta->name)) {
+        if ($config = $this->getConfiguration($om, $meta->getName())) {
             // Get groups
             $groups = $this->getGroups($meta, $config, $object);
 

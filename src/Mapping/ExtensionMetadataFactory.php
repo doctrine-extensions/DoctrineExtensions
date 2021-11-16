@@ -81,10 +81,10 @@ class ExtensionMetadataFactory
         }
         $config = [];
         $cmf = $this->objectManager->getMetadataFactory();
-        $useObjectName = $meta->name;
+        $useObjectName = $meta->getName();
         // collect metadata from inherited classes
         if (null !== $meta->reflClass) {
-            foreach (array_reverse(class_parents($meta->name)) as $parentClass) {
+            foreach (array_reverse(class_parents($meta->getName())) as $parentClass) {
                 // read only inherited mapped classes
                 if ($cmf->hasMetadataFor($parentClass)) {
                     $class = $this->objectManager->getClassMetadata($parentClass);
@@ -94,7 +94,7 @@ class ExtensionMetadataFactory
                         && $config
                     ;
                     if ($isBaseInheritanceLevel) {
-                        $useObjectName = $class->name;
+                        $useObjectName = $class->getName();
                     }
                 }
             }
@@ -108,7 +108,7 @@ class ExtensionMetadataFactory
 
         if ($cacheDriver instanceof Cache) {
             // Cache the result, even if it's empty, to prevent re-parsing non-existent annotations.
-            $cacheId = self::getCacheId($meta->name, $this->extensionNamespace);
+            $cacheId = self::getCacheId($meta->getName(), $this->extensionNamespace);
 
             $cacheDriver->save($cacheId, $config);
         }

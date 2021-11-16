@@ -109,10 +109,10 @@ class MaterializedPathRepository extends AbstractTreeRepository
     public function getChildrenQueryBuilder($node = null, $direct = false, $sortByField = null, $direction = 'asc', $includeNode = false)
     {
         $meta = $this->getClassMetadata();
-        $config = $this->listener->getConfiguration($this->dm, $meta->name);
+        $config = $this->listener->getConfiguration($this->dm, $meta->getName());
         $separator = preg_quote($config['path_separator']);
         $qb = $this->dm->createQueryBuilder()
-            ->find($meta->name);
+            ->find($meta->getName());
         $regex = false;
 
         if (is_a($node, $meta->getName())) {

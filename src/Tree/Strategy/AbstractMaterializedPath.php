@@ -99,7 +99,7 @@ abstract class AbstractMaterializedPath implements Strategy
     public function processScheduledInsertion($om, $node, AdapterInterface $ea)
     {
         $meta = $om->getClassMetadata(get_class($node));
-        $config = $this->listener->getConfiguration($om, $meta->name);
+        $config = $this->listener->getConfiguration($om, $meta->getName());
         $fieldMapping = $meta->getFieldMapping($config['path_source']);
 
         if ($meta->isIdentifier($config['path_source']) || 'string' === $fieldMapping['type']) {
@@ -115,7 +115,7 @@ abstract class AbstractMaterializedPath implements Strategy
     public function processScheduledUpdate($om, $node, AdapterInterface $ea)
     {
         $meta = $om->getClassMetadata(get_class($node));
-        $config = $this->listener->getConfiguration($om, $meta->name);
+        $config = $this->listener->getConfiguration($om, $meta->getName());
         $uow = $om->getUnitOfWork();
         $changeSet = $ea->getObjectChangeSet($uow, $node);
 
@@ -218,7 +218,7 @@ abstract class AbstractMaterializedPath implements Strategy
     public function processScheduledDelete($om, $node)
     {
         $meta = $om->getClassMetadata(get_class($node));
-        $config = $this->listener->getConfiguration($om, $meta->name);
+        $config = $this->listener->getConfiguration($om, $meta->getName());
 
         $this->removeNode($om, $meta, $config, $node);
     }
@@ -234,7 +234,7 @@ abstract class AbstractMaterializedPath implements Strategy
     public function updateNode(ObjectManager $om, $node, AdapterInterface $ea)
     {
         $meta = $om->getClassMetadata(get_class($node));
-        $config = $this->listener->getConfiguration($om, $meta->name);
+        $config = $this->listener->getConfiguration($om, $meta->getName());
         $uow = $om->getUnitOfWork();
         $parentProp = $meta->getReflectionProperty($config['parent']);
         $parentProp->setAccessible(true);
@@ -365,7 +365,7 @@ abstract class AbstractMaterializedPath implements Strategy
     public function updateChildren(ObjectManager $om, $node, AdapterInterface $ea, $originalPath)
     {
         $meta = $om->getClassMetadata(get_class($node));
-        $config = $this->listener->getConfiguration($om, $meta->name);
+        $config = $this->listener->getConfiguration($om, $meta->getName());
         $children = $this->getChildren($om, $meta, $config, $originalPath);
 
         foreach ($children as $child) {
@@ -385,7 +385,7 @@ abstract class AbstractMaterializedPath implements Strategy
     public function processPreLockingActions($om, $node, $action)
     {
         $meta = $om->getClassMetadata(get_class($node));
-        $config = $this->listener->getConfiguration($om, $meta->name);
+        $config = $this->listener->getConfiguration($om, $meta->getName());
 
         if ($config['activate_locking']) {
             $parentProp = $meta->getReflectionProperty($config['parent']);
@@ -453,7 +453,7 @@ abstract class AbstractMaterializedPath implements Strategy
     public function processPostEventsActions(ObjectManager $om, AdapterInterface $ea, $node, $action)
     {
         $meta = $om->getClassMetadata(get_class($node));
-        $config = $this->listener->getConfiguration($om, $meta->name);
+        $config = $this->listener->getConfiguration($om, $meta->getName());
 
         if ($config['activate_locking']) {
             switch ($action) {

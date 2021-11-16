@@ -53,7 +53,7 @@ final class TimestampableMappingTest extends BaseTestCaseOM
     public function testTimestampableMetadata()
     {
         $meta = $this->em->getClassMetadata(Timestampable::class);
-        $config = $this->timestampable->getConfiguration($this->em, $meta->name);
+        $config = $this->timestampable->getConfiguration($this->em, $meta->getName());
 
         static::assertArrayHasKey('create', $config);
         static::assertSame('created', $config['create'][0]);

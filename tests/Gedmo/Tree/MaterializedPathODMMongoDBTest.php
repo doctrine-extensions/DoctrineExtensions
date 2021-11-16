@@ -37,7 +37,7 @@ final class MaterializedPathODMMongoDBTest extends BaseTestCaseMongoODM
         $this->getMockDocumentManager($evm);
 
         $meta = $this->dm->getClassMetadata(self::CATEGORY);
-        $this->config = $this->listener->getConfiguration($this->dm, $meta->name);
+        $this->config = $this->listener->getConfiguration($this->dm, $meta->getName());
     }
 
     /**

@@ -59,7 +59,7 @@ final class SoftDeleteableMappingTest extends BaseTestCaseOM
     public function testYamlMapping()
     {
         $meta = $this->em->getClassMetadata(SoftDeleteable::class);
-        $config = $this->softDeleteable->getConfiguration($this->em, $meta->name);
+        $config = $this->softDeleteable->getConfiguration($this->em, $meta->getName());
 
         static::assertArrayHasKey('softDeleteable', $config);
         static::assertTrue($config['softDeleteable']);

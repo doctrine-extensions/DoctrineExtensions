@@ -58,17 +58,17 @@ class Annotation extends AbstractAnnotationDriver
             if ($timestampable = $this->reader->getPropertyAnnotation($property, self::TIMESTAMPABLE)) {
                 $field = $property->getName();
                 if (!$meta->hasField($field)) {
-                    throw new InvalidMappingException("Unable to find timestampable [{$field}] as mapped property in entity - {$meta->name}");
+                    throw new InvalidMappingException("Unable to find timestampable [{$field}] as mapped property in entity - {$meta->getName()}");
                 }
                 if (!$this->isValidField($meta, $field)) {
-                    throw new InvalidMappingException("Field - [{$field}] type is not valid and must be 'date', 'datetime' or 'time' in class - {$meta->name}");
+                    throw new InvalidMappingException("Field - [{$field}] type is not valid and must be 'date', 'datetime' or 'time' in class - {$meta->getName()}");
                 }
                 if (!in_array($timestampable->on, ['update', 'create', 'change'])) {
-                    throw new InvalidMappingException("Field - [{$field}] trigger 'on' is not one of [update, create, change] in class - {$meta->name}");
+                    throw new InvalidMappingException("Field - [{$field}] trigger 'on' is not one of [update, create, change] in class - {$meta->getName()}");
                 }
                 if ('change' == $timestampable->on) {
                     if (!isset($timestampable->field)) {
-                        throw new InvalidMappingException("Missing parameters on property - {$field}, field must be set on [change] trigger in class - {$meta->name}");
+                        throw new InvalidMappingException("Missing parameters on property - {$field}, field must be set on [change] trigger in class - {$meta->getName()}");
                     }
                     if (is_array($timestampable->field) && isset($timestampable->value)) {
                         throw new InvalidMappingException('Timestampable extension does not support multiple value changeset detection yet.');

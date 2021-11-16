@@ -62,13 +62,13 @@ class InversedRelativeSlugHandler implements SlugHandlerInterface
     public static function validate(array $options, ClassMetadata $meta)
     {
         if (!isset($options['relationClass']) || !strlen($options['relationClass'])) {
-            throw new InvalidMappingException("'relationClass' option must be specified for object slug mapping - {$meta->name}");
+            throw new InvalidMappingException("'relationClass' option must be specified for object slug mapping - {$meta->getName()}");
         }
         if (!isset($options['mappedBy']) || !strlen($options['mappedBy'])) {
-            throw new InvalidMappingException("'mappedBy' option must be specified for object slug mapping - {$meta->name}");
+            throw new InvalidMappingException("'mappedBy' option must be specified for object slug mapping - {$meta->getName()}");
         }
         if (!isset($options['inverseSlugField']) || !strlen($options['inverseSlugField'])) {
-            throw new InvalidMappingException("'inverseSlugField' option must be specified for object slug mapping - {$meta->name}");
+            throw new InvalidMappingException("'inverseSlugField' option must be specified for object slug mapping - {$meta->getName()}");
         }
     }
 
@@ -90,10 +90,10 @@ class InversedRelativeSlugHandler implements SlugHandlerInterface
             if ($mappedByConfig) {
                 $meta = $this->om->getClassMetadata($options['relationClass']);
                 if (!$meta->isSingleValuedAssociation($options['mappedBy'])) {
-                    throw new InvalidMappingException('Unable to find '.$wrapped->getMetadata()->name." relation - [{$options['mappedBy']}] in class - {$meta->name}");
+                    throw new InvalidMappingException('Unable to find '.$wrapped->getMetadata()->getName()." relation - [{$options['mappedBy']}] in class - {$meta->getName()}");
                 }
                 if (!isset($mappedByConfig['slugs'][$options['inverseSlugField']])) {
-                    throw new InvalidMappingException("Unable to find slug field - [{$options['inverseSlugField']}] in class - {$meta->name}");
+                    throw new InvalidMappingException("Unable to find slug field - [{$options['inverseSlugField']}] in class - {$meta->getName()}");
                 }
                 $mappedByConfig['slug'] = $mappedByConfig['slugs'][$options['inverseSlugField']]['slug'];
                 $mappedByConfig['mappedBy'] = $options['mappedBy'];

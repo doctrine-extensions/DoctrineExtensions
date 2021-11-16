@@ -61,7 +61,7 @@ final class UploadableMappingTest extends BaseTestCaseOM
     public function testYamlMapping()
     {
         $meta = $this->em->getClassMetadata(Uploadable::class);
-        $config = $this->listener->getConfiguration($this->em, $meta->name);
+        $config = $this->listener->getConfiguration($this->em, $meta->getName());
 
         static::assertTrue($config['uploadable']);
         static::assertTrue($config['allowOverwrite']);

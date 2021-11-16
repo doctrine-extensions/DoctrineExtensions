@@ -59,7 +59,7 @@ final class SortableMappingTest extends BaseTestCaseOM
     public function testYamlMapping()
     {
         $meta = $this->em->getClassMetadata(Sortable::class);
-        $config = $this->sortable->getConfiguration($this->em, $meta->name);
+        $config = $this->sortable->getConfiguration($this->em, $meta->getName());
 
         static::assertArrayHasKey('position', $config);
         static::assertSame('position', $config['position']);

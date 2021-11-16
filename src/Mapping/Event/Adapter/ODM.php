@@ -113,7 +113,7 @@ class ODM implements AdapterInterface
      */
     public function getSingleIdentifierFieldName($meta)
     {
-        return $meta->identifier;
+        return $meta->getIdentifier()[0];
     }
 
     /**

@@ -186,7 +186,7 @@ class Validator
             $missingFields[] = 'right';
         }
         if ($missingFields) {
-            throw new InvalidMappingException('Missing properties: '.implode(', ', $missingFields)." in class - {$meta->name}");
+            throw new InvalidMappingException('Missing properties: '.implode(', ', $missingFields)." in class - {$meta->getName()}");
         }
     }
 
@@ -207,7 +207,7 @@ class Validator
             $missingFields[] = 'closure class';
         }
         if ($missingFields) {
-            throw new InvalidMappingException('Missing properties: '.implode(', ', $missingFields)." in class - {$meta->name}");
+            throw new InvalidMappingException('Missing properties: '.implode(', ', $missingFields)." in class - {$meta->getName()}");
         }
     }
 
@@ -231,7 +231,7 @@ class Validator
             $missingFields[] = 'path_source';
         }
         if ($missingFields) {
-            throw new InvalidMappingException('Missing properties: '.implode(', ', $missingFields)." in class - {$meta->name}");
+            throw new InvalidMappingException('Missing properties: '.implode(', ', $missingFields)." in class - {$meta->getName()}");
         }
     }
 }

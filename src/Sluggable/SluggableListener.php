@@ -179,7 +179,7 @@ class SluggableListener extends MappedEventSubscriber
         $object = $ea->getObject();
         $meta = $om->getClassMetadata(get_class($object));
 
-        if ($config = $this->getConfiguration($om, $meta->name)) {
+        if ($config = $this->getConfiguration($om, $meta->getName())) {
             foreach ($config['slugs'] as $slugField => $options) {
                 if ($meta->isIdentifier($slugField)) {
                     $meta->getReflectionProperty($slugField)->setValue($object, '__id__');
@@ -208,7 +208,7 @@ class SluggableListener extends MappedEventSubscriber
         // ensure correct result. No additional overhead is encountered
         foreach ($ea->getScheduledObjectInsertions($uow) as $object) {
             $meta = $om->getClassMetadata(get_class($object));
-            if ($this->getConfiguration($om, $meta->name)) {
+            if ($this->getConfiguration($om, $meta->getName())) {
                 // generate first to exclude this object from similar persisted slugs result
                 $this->generateSlug($ea, $object);
                 $this->persisted[$ea->getRootObjectClass($meta)][] = $object;
@@ -218,7 +218,7 @@ class SluggableListener extends MappedEventSubscriber
         // event listeners be nested together
         foreach ($ea->getScheduledObjectUpdates($uow) as $object) {
             $meta = $om->getClassMetadata(get_class($object));
-            if ($this->getConfiguration($om, $meta->name) && !$uow->isScheduledForInsert($object)) {
+            if ($this->getConfiguration($om, $meta->getName()) && !$uow->isScheduledForInsert($object)) {
                 $this->generateSlug($ea, $object);
                 $this->persisted[$ea->getRootObjectClass($meta)][] = $object;
             }
@@ -267,7 +267,7 @@ class SluggableListener extends MappedEventSubscriber
         $uow = $om->getUnitOfWork();
         $changeSet = $ea->getObjectChangeSet($uow, $object);
         $isInsert = $uow->isScheduledForInsert($object);
-        $config = $this->getConfiguration($om, $meta->name);
+        $config = $this->getConfiguration($om, $meta->getName());
 
         foreach ($config['slugs'] as $slugField => $options) {
             $hasHandlers = count($options['handlers']);

@@ -143,29 +143,29 @@ class Validator
     public static function validateConfiguration(ClassMetadata $meta, array &$config)
     {
         if (!$config['filePathField'] && !$config['fileNameField']) {
-            throw new InvalidMappingException(sprintf('Class "%s" must have an UploadableFilePath or UploadableFileName field.', $meta->name));
+            throw new InvalidMappingException(sprintf('Class "%s" must have an UploadableFilePath or UploadableFileName field.', $meta->getName()));
         }
 
         $refl = $meta->getReflectionClass();
 
         if ('' !== $config['pathMethod'] && !$refl->hasMethod($config['pathMethod'])) {
-            throw new InvalidMappingException(sprintf('Class "%s" doesn\'t have method "%s"!', $meta->name, $config['pathMethod']));
+            throw new InvalidMappingException(sprintf('Class "%s" doesn\'t have method "%s"!', $meta->getName(), $config['pathMethod']));
         }
 
         if ('' !== $config['callback'] && !$refl->hasMethod($config['callback'])) {
-            throw new InvalidMappingException(sprintf('Class "%s" doesn\'t have method "%s"!', $meta->name, $config['callback']));
+            throw new InvalidMappingException(sprintf('Class "%s" doesn\'t have method "%s"!', $meta->getName(), $config['callback']));
         }
 
         $config['maxSize'] = (float) $config['maxSize'];
 
         if ($config['maxSize'] < 0) {
-            throw new InvalidMappingException(sprintf('Option "maxSize" must be a number >= 0 for class "%s".', $meta->name));
+            throw new InvalidMappingException(sprintf('Option "maxSize" must be a number >= 0 for class "%s".', $meta->getName()));
         }
 
         if (self::$enableMimeTypesConfigException && ('' !== $config['allowedTypes'] && '' !== $config['disallowedTypes'])) {
             $msg = 'You\'ve set "allowedTypes" and "disallowedTypes" options. You must set only one in class "%s".';
 
-            throw new InvalidMappingException(sprintf($msg, $meta->name));
+            throw new InvalidMappingException(sprintf($msg, $meta->getName()));
         }
 
         $config['allowedTypes'] = $config['allowedTypes'] ? (false !== strpos($config['allowedTypes'], ',') ?
@@ -196,7 +196,7 @@ class Validator
                 break;
             default:
                 if (!class_exists($config['filenameGenerator']) || !is_subclass_of($config['filenameGenerator'], FilenameGeneratorInterface::class)) {
-                    throw new InvalidMappingException(sprintf('Class "%s" needs a valid value for filenameGenerator. It can be: SHA1, ALPHANUMERIC, NONE or a class implementing %s.', $meta->name, FilenameGeneratorInterface::class));
+                    throw new InvalidMappingException(sprintf('Class "%s" needs a valid value for filenameGenerator. It can be: SHA1, ALPHANUMERIC, NONE or a class implementing %s.', $meta->getName(), FilenameGeneratorInterface::class));
                 }
         }
     }
