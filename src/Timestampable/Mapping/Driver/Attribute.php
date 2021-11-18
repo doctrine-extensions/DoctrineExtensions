@@ -7,7 +7,7 @@ use Gedmo\Mapping\Driver\AttributeDriverInterface;
 /**
  * This is an attribute mapping driver for Timestampable
  * behavioral extension. Used for extraction of extended
- * metadata from Annotations specifically for Timestampable
+ * metadata from attributes specifically for Timestampable
  * extension.
  *
  * @author Kevin Mian Kraiker <kevin.mian@gmail.com>
