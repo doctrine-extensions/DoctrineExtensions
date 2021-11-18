@@ -92,7 +92,7 @@ abstract class MappedEventSubscriber implements EventSubscriber
     protected function getEventAdapter(EventArgs $args)
     {
         $class = get_class($args);
-        if (preg_match('@Doctrine\\\([^\\\]+)@', $class, $m) && in_array($m[1], ['ODM', 'ORM'])) {
+        if (preg_match('@Doctrine\\\([^\\\]+)@', $class, $m) && in_array($m[1], ['ODM', 'ORM'], true)) {
             if (!isset($this->adapters[$m[1]])) {
                 $adapterClass = $this->getNamespace().'\\Mapping\\Event\\Adapter\\'.$m[1];
                 if (!class_exists($adapterClass)) {

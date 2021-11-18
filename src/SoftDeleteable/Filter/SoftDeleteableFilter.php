@@ -37,13 +37,16 @@ class SoftDeleteableFilter extends SQLFilter
      * @param string $targetTableAlias
      *
      * @return string
+     *
+     * @throws \Doctrine\DBAL\Exception
      */
     public function addFilterConstraint(ClassMetadata $targetEntity, $targetTableAlias)
     {
         $class = $targetEntity->getName();
-        if (array_key_exists($class, $this->disabled) && true === $this->disabled[$class]) {
+        if (true === ($this->disabled[$class] ?? false)) {
             return '';
-        } elseif (array_key_exists($targetEntity->rootEntityName, $this->disabled) && true === $this->disabled[$targetEntity->rootEntityName]) {
+        }
+        if (true === ($this->disabled[$targetEntity->rootEntityName] ?? false)) {
             return '';
         }
 
@@ -53,8 +56,7 @@ class SoftDeleteableFilter extends SQLFilter
             return '';
         }
 
-        $conn = $this->getEntityManager()->getConnection();
-        $platform = $conn->getDatabasePlatform();
+        $platform = $this->getConnection()->getDatabasePlatform();
         $column = $targetEntity->getQuotedColumnName($config['fieldName'], $platform);
 
         $addCondSql = $platform->getIsNullExpression($targetTableAlias.'.'.$column);
