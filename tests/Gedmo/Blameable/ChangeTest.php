@@ -50,7 +50,7 @@ final class ChangeTest extends BaseTestCaseORM
         $this->em->flush();
         $this->em->clear();
         //Changed
-        static::assertEquals('testuser', $test->getChtitle());
+        static::assertSame('testuser', $test->getChtitle());
 
         $this->listener->setUserValue('otheruser');
 
@@ -60,7 +60,7 @@ final class ChangeTest extends BaseTestCaseORM
         $this->em->flush();
         $this->em->clear();
         //Not Changed
-        static::assertEquals('testuser', $test->getChtitle());
+        static::assertSame('testuser', $test->getChtitle());
     }
 
     protected function getUsedEntityFixtures()

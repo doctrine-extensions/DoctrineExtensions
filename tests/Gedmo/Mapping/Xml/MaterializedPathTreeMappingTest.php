@@ -62,22 +62,22 @@ final class MaterializedPathTreeMappingTest extends BaseTestCaseOM
         $config = $this->tree->getConfiguration($this->em, $meta->name);
 
         static::assertArrayHasKey('strategy', $config);
-        static::assertEquals('materializedPath', $config['strategy']);
+        static::assertSame('materializedPath', $config['strategy']);
         static::assertArrayHasKey('activate_locking', $config);
         static::assertTrue($config['activate_locking']);
         static::assertArrayHasKey('locking_timeout', $config);
-        static::assertEquals(10, $config['locking_timeout']);
+        static::assertSame(10, $config['locking_timeout']);
         static::assertArrayHasKey('level', $config);
-        static::assertEquals('level', $config['level']);
+        static::assertSame('level', $config['level']);
         static::assertArrayHasKey('parent', $config);
-        static::assertEquals('parent', $config['parent']);
+        static::assertSame('parent', $config['parent']);
         static::assertArrayHasKey('path_source', $config);
-        static::assertEquals('title', $config['path_source']);
+        static::assertSame('title', $config['path_source']);
         static::assertArrayHasKey('path', $config);
-        static::assertEquals('path', $config['path']);
+        static::assertSame('path', $config['path']);
         static::assertArrayHasKey('lock_time', $config);
-        static::assertEquals('lockTime', $config['lock_time']);
+        static::assertSame('lockTime', $config['lock_time']);
         static::assertArrayHasKey('path_hash', $config);
-        static::assertEquals('pathHash', $config['path_hash']);
+        static::assertSame('pathHash', $config['path_hash']);
     }
 }

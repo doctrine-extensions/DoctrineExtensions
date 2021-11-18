@@ -69,7 +69,7 @@ final class EntityTranslationTableTest extends BaseTestCaseORM
         static::assertArrayHasKey('de_de', $translations);
 
         static::assertArrayHasKey('name', $translations['de_de']);
-        static::assertEquals('name in de', $translations['de_de']['name']);
+        static::assertSame('name in de', $translations['de_de']['name']);
 
         $this->translatableListener->setTranslatableLocale('en_us');
     }
@@ -96,11 +96,11 @@ final class EntityTranslationTableTest extends BaseTestCaseORM
 
         $this->translatableListener->setTranslatableLocale('en_us');
         $articles = $this->em->createQuery('SELECT p FROM '.self::PERSON.' p')->getArrayResult();
-        static::assertEquals('en_us', $articles[0]['name']);
+        static::assertSame('en_us', $articles[0]['name']);
         $trans = $this->em->createQuery('SELECT t FROM '.self::TRANSLATION.' t')->getArrayResult();
         static::assertCount(2, $trans);
         foreach ($trans as $item) {
-            static::assertEquals($item['locale'], $item['content']);
+            static::assertSame($item['locale'], $item['content']);
         }
     }
 

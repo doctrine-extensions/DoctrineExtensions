@@ -36,12 +36,12 @@ final class ExtensionORMTest extends BaseTestCaseORM
 
         static::assertArrayHasKey('name', $config['encode']);
         $options = $config['encode']['name'];
-        static::assertEquals('sha1', $options['type']);
-        static::assertEquals('xxx', $options['secret']);
+        static::assertSame('sha1', $options['type']);
+        static::assertSame('xxx', $options['secret']);
 
         static::assertArrayHasKey('password', $config['encode']);
         $options = $config['encode']['password'];
-        static::assertEquals('md5', $options['type']);
+        static::assertSame('md5', $options['type']);
         static::assertEmpty($options['secret']);
     }
 
@@ -53,8 +53,8 @@ final class ExtensionORMTest extends BaseTestCaseORM
         $this->em->persist($user);
         $this->em->flush();
 
-        static::assertEquals('c12fead75b49a41d43804e8229cb049d3b91bf42', $user->getName());
-        static::assertEquals('5ebe2294ecd0e0f08eab7690d2a6ee69', $user->getPassword());
+        static::assertSame('c12fead75b49a41d43804e8229cb049d3b91bf42', $user->getName());
+        static::assertSame('5ebe2294ecd0e0f08eab7690d2a6ee69', $user->getPassword());
     }
 
     public function testEventAdapterUsed()

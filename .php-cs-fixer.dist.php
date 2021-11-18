@@ -30,6 +30,7 @@ return (new PhpCsFixer\Config())
         'php_unit_construct' => true,
         'php_unit_method_casing' => false,
         'php_unit_set_up_tear_down_visibility' => true,
+        'php_unit_strict' => true,
         'php_unit_test_annotation' => false,
         'php_unit_test_case_static_method_calls' => true,
         'random_api_migration' => true,

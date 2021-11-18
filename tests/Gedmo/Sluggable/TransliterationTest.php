@@ -36,16 +36,16 @@ final class TransliterationTest extends BaseTestCaseORM
         $repo = $this->em->getRepository(self::ARTICLE);
 
         $lithuanian = $repo->findOneBy(['code' => 'lt']);
-        static::assertEquals('transliteration-test-usage-uz-lt', $lithuanian->getSlug());
+        static::assertSame('transliteration-test-usage-uz-lt', $lithuanian->getSlug());
 
         $bulgarian = $repo->findOneBy(['code' => 'bg']);
-        static::assertEquals('tova-e-testovo-zaglavie-bg', $bulgarian->getSlug());
+        static::assertSame('tova-e-testovo-zaglavie-bg', $bulgarian->getSlug());
 
         $russian = $repo->findOneBy(['code' => 'ru']);
-        static::assertEquals('eto-testovyi-zagolovok-ru', $russian->getSlug());
+        static::assertSame('eto-testovyi-zagolovok-ru', $russian->getSlug());
 
         $german = $repo->findOneBy(['code' => 'de']);
-        static::assertEquals('fuhren-aktivitaten-haglofs-de', $german->getSlug());
+        static::assertSame('fuhren-aktivitaten-haglofs-de', $german->getSlug());
     }
 
     private function populate()

@@ -57,14 +57,14 @@ final class TimestampableMappingTest extends \PHPUnit\Framework\TestCase
         );
         $config = $this->em->getMetadataFactory()->getCacheDriver()->fetch($cacheId);
         static::assertArrayHasKey('create', $config);
-        static::assertEquals('created', $config['create'][0]);
+        static::assertSame('created', $config['create'][0]);
         static::assertArrayHasKey('update', $config);
-        static::assertEquals('updated', $config['update'][0]);
+        static::assertSame('updated', $config['update'][0]);
         static::assertArrayHasKey('change', $config);
         $onChange = $config['change'][0];
 
-        static::assertEquals('changed', $onChange['field']);
-        static::assertEquals('title', $onChange['trackedField']);
-        static::assertEquals('Test', $onChange['value']);
+        static::assertSame('changed', $onChange['field']);
+        static::assertSame('title', $onChange['trackedField']);
+        static::assertSame('Test', $onChange['value']);
     }
 }

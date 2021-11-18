@@ -67,20 +67,20 @@ final class MaterializedPathORMFeaturesTest extends BaseTestCaseORM
         $this->em->refresh($category3);
         $this->em->refresh($category4);
 
-        static::assertEquals($this->generatePath(['1' => $category->getId()]), $category->getPath());
-        static::assertEquals($this->generatePath(['1' => $category->getId(), '2' => $category2->getId()]), $category2->getPath());
-        static::assertEquals($this->generatePath(['1' => $category->getId(), '2' => $category2->getId(), '3' => $category3->getId()]), $category3->getPath());
-        static::assertEquals($this->generatePath(['4' => $category4->getId()]), $category4->getPath());
+        static::assertSame($this->generatePath(['1' => $category->getId()]), $category->getPath());
+        static::assertSame($this->generatePath(['1' => $category->getId(), '2' => $category2->getId()]), $category2->getPath());
+        static::assertSame($this->generatePath(['1' => $category->getId(), '2' => $category2->getId(), '3' => $category3->getId()]), $category3->getPath());
+        static::assertSame($this->generatePath(['4' => $category4->getId()]), $category4->getPath());
 
-        static::assertEquals($this->generatePathHash(['1' => $category->getId()]), $category->getPathHash());
-        static::assertEquals($this->generatePathHash(['1' => $category->getId(), '2' => $category2->getId()]), $category2->getPathHash());
-        static::assertEquals($this->generatePathHash(['1' => $category->getId(), '2' => $category2->getId(), '3' => $category3->getId()]), $category3->getPathHash());
-        static::assertEquals($this->generatePathHash(['4' => $category4->getId()]), $category4->getPathHash());
+        static::assertSame($this->generatePathHash(['1' => $category->getId()]), $category->getPathHash());
+        static::assertSame($this->generatePathHash(['1' => $category->getId(), '2' => $category2->getId()]), $category2->getPathHash());
+        static::assertSame($this->generatePathHash(['1' => $category->getId(), '2' => $category2->getId(), '3' => $category3->getId()]), $category3->getPathHash());
+        static::assertSame($this->generatePathHash(['4' => $category4->getId()]), $category4->getPathHash());
 
-        static::assertEquals($category->getTitle(), $category->getTreeRootValue());
-        static::assertEquals($category->getTitle(), $category2->getTreeRootValue());
-        static::assertEquals($category->getTitle(), $category3->getTreeRootValue());
-        static::assertEquals($category4->getTitle(), $category4->getTreeRootValue());
+        static::assertSame($category->getTitle(), $category->getTreeRootValue());
+        static::assertSame($category->getTitle(), $category2->getTreeRootValue());
+        static::assertSame($category->getTitle(), $category3->getTreeRootValue());
+        static::assertSame($category4->getTitle(), $category4->getTreeRootValue());
     }
 
     public function createCategory()

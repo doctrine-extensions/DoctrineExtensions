@@ -45,19 +45,19 @@ final class RepositoryTest extends BaseTestCaseORM
 
         $childCount = $this->em->getRepository(self::CATEGORY)
             ->childCount($vegies);
-        static::assertEquals(2, $childCount);
+        static::assertSame(2, $childCount);
 
         $childCount = $this->em->getRepository(self::CATEGORY)
             ->childCount($food);
-        static::assertEquals(4, $childCount);
+        static::assertSame(4, $childCount);
 
         $childCount = $this->em->getRepository(self::CATEGORY)
             ->childCount($food, true);
-        static::assertEquals(2, $childCount);
+        static::assertSame(2, $childCount);
 
         $childCount = $this->em->getRepository(self::CATEGORY)
             ->childCount();
-        static::assertEquals(6, $childCount);
+        static::assertSame(6, $childCount);
 
         // test children
 
@@ -65,24 +65,24 @@ final class RepositoryTest extends BaseTestCaseORM
             ->children($vegies);
 
         static::assertCount(2, $children);
-        static::assertEquals('Carrots', $children[0]->getTitle());
-        static::assertEquals('Potatoes', $children[1]->getTitle());
+        static::assertSame('Carrots', $children[0]->getTitle());
+        static::assertSame('Potatoes', $children[1]->getTitle());
 
         $children = $this->em->getRepository(self::CATEGORY)
             ->children($food);
 
         static::assertCount(4, $children);
-        static::assertEquals('Fruits', $children[0]->getTitle());
-        static::assertEquals('Vegitables', $children[1]->getTitle());
-        static::assertEquals('Carrots', $children[2]->getTitle());
-        static::assertEquals('Potatoes', $children[3]->getTitle());
+        static::assertSame('Fruits', $children[0]->getTitle());
+        static::assertSame('Vegitables', $children[1]->getTitle());
+        static::assertSame('Carrots', $children[2]->getTitle());
+        static::assertSame('Potatoes', $children[3]->getTitle());
 
         $children = $this->em->getRepository(self::CATEGORY)
             ->children($food, true);
 
         static::assertCount(2, $children);
-        static::assertEquals('Fruits', $children[0]->getTitle());
-        static::assertEquals('Vegitables', $children[1]->getTitle());
+        static::assertSame('Fruits', $children[0]->getTitle());
+        static::assertSame('Vegitables', $children[1]->getTitle());
 
         $children = $this->em->getRepository(self::CATEGORY)
             ->children();
@@ -95,8 +95,8 @@ final class RepositoryTest extends BaseTestCaseORM
             ->getPath($vegies);
 
         static::assertCount(2, $path);
-        static::assertEquals('Food', $path[0]->getTitle());
-        static::assertEquals('Vegitables', $path[1]->getTitle());
+        static::assertSame('Food', $path[0]->getTitle());
+        static::assertSame('Vegitables', $path[1]->getTitle());
 
         $carrots = $this->em->getRepository(self::CATEGORY)
             ->findOneBy(['title' => 'Carrots']);
@@ -105,9 +105,9 @@ final class RepositoryTest extends BaseTestCaseORM
             ->getPath($carrots);
 
         static::assertCount(3, $path);
-        static::assertEquals('Food', $path[0]->getTitle());
-        static::assertEquals('Vegitables', $path[1]->getTitle());
-        static::assertEquals('Carrots', $path[2]->getTitle());
+        static::assertSame('Food', $path[0]->getTitle());
+        static::assertSame('Vegitables', $path[1]->getTitle());
+        static::assertSame('Carrots', $path[2]->getTitle());
 
         // leafs
 
@@ -115,10 +115,10 @@ final class RepositoryTest extends BaseTestCaseORM
             ->getLeafs();
 
         static::assertCount(4, $leafs);
-        static::assertEquals('Fruits', $leafs[0]->getTitle());
-        static::assertEquals('Carrots', $leafs[1]->getTitle());
-        static::assertEquals('Potatoes', $leafs[2]->getTitle());
-        static::assertEquals('Sports', $leafs[3]->getTitle());
+        static::assertSame('Fruits', $leafs[0]->getTitle());
+        static::assertSame('Carrots', $leafs[1]->getTitle());
+        static::assertSame('Potatoes', $leafs[2]->getTitle());
+        static::assertSame('Sports', $leafs[3]->getTitle());
     }
 
     public function testAdvancedFunctions()
@@ -132,8 +132,8 @@ final class RepositoryTest extends BaseTestCaseORM
         $left = $meta->getReflectionProperty('lft')->getValue($onions);
         $right = $meta->getReflectionProperty('rgt')->getValue($onions);
 
-        static::assertEquals(11, $left);
-        static::assertEquals(12, $right);
+        static::assertSame(11, $left);
+        static::assertSame(12, $right);
 
         // move up onions by one position
 
@@ -142,8 +142,8 @@ final class RepositoryTest extends BaseTestCaseORM
         $left = $meta->getReflectionProperty('lft')->getValue($onions);
         $right = $meta->getReflectionProperty('rgt')->getValue($onions);
 
-        static::assertEquals(9, $left);
-        static::assertEquals(10, $right);
+        static::assertSame(9, $left);
+        static::assertSame(10, $right);
 
         // move down onions by one position
         $repo->moveDown($onions, 1);
@@ -151,8 +151,8 @@ final class RepositoryTest extends BaseTestCaseORM
         $left = $meta->getReflectionProperty('lft')->getValue($onions);
         $right = $meta->getReflectionProperty('rgt')->getValue($onions);
 
-        static::assertEquals(11, $left);
-        static::assertEquals(12, $right);
+        static::assertSame(11, $left);
+        static::assertSame(12, $right);
 
         // move to the up onions on this level
 
@@ -161,8 +161,8 @@ final class RepositoryTest extends BaseTestCaseORM
         $left = $meta->getReflectionProperty('lft')->getValue($onions);
         $right = $meta->getReflectionProperty('rgt')->getValue($onions);
 
-        static::assertEquals(5, $left);
-        static::assertEquals(6, $right);
+        static::assertSame(5, $left);
+        static::assertSame(6, $right);
 
         // test tree reordering
         // reorder tree by title
@@ -175,32 +175,32 @@ final class RepositoryTest extends BaseTestCaseORM
         $left = $meta->getReflectionProperty('lft')->getValue($node);
         $right = $meta->getReflectionProperty('rgt')->getValue($node);
 
-        static::assertEquals(5, $left);
-        static::assertEquals(6, $right);
+        static::assertSame(5, $left);
+        static::assertSame(6, $right);
 
         $node = $this->em->getRepository(self::CATEGORY)
             ->findOneBy(['title' => 'Carrots']);
         $left = $meta->getReflectionProperty('lft')->getValue($node);
         $right = $meta->getReflectionProperty('rgt')->getValue($node);
 
-        static::assertEquals(7, $left);
-        static::assertEquals(8, $right);
+        static::assertSame(7, $left);
+        static::assertSame(8, $right);
 
         $node = $this->em->getRepository(self::CATEGORY)
             ->findOneBy(['title' => 'Onions']);
         $left = $meta->getReflectionProperty('lft')->getValue($node);
         $right = $meta->getReflectionProperty('rgt')->getValue($node);
 
-        static::assertEquals(9, $left);
-        static::assertEquals(10, $right);
+        static::assertSame(9, $left);
+        static::assertSame(10, $right);
 
         $node = $this->em->getRepository(self::CATEGORY)
             ->findOneBy(['title' => 'Potatoes']);
         $left = $meta->getReflectionProperty('lft')->getValue($node);
         $right = $meta->getReflectionProperty('rgt')->getValue($node);
 
-        static::assertEquals(11, $left);
-        static::assertEquals(12, $right);
+        static::assertSame(11, $left);
+        static::assertSame(12, $right);
 
         // test removal with reparenting
 
@@ -221,18 +221,18 @@ final class RepositoryTest extends BaseTestCaseORM
         $left = $meta->getReflectionProperty('lft')->getValue($node);
         $right = $meta->getReflectionProperty('rgt')->getValue($node);
 
-        static::assertEquals(2, $left);
-        static::assertEquals(3, $right);
-        static::assertEquals('Food', $node->getParent()->getTitle());
+        static::assertSame(2, $left);
+        static::assertSame(3, $right);
+        static::assertSame('Food', $node->getParent()->getTitle());
 
         $node = $this->em->getRepository(self::CATEGORY)
             ->findOneBy(['title' => 'Cabbages']);
         $left = $meta->getReflectionProperty('lft')->getValue($node);
         $right = $meta->getReflectionProperty('rgt')->getValue($node);
 
-        static::assertEquals(4, $left);
-        static::assertEquals(5, $right);
-        static::assertEquals('Food', $node->getParent()->getTitle());
+        static::assertSame(4, $left);
+        static::assertSame(5, $right);
+        static::assertSame('Food', $node->getParent()->getTitle());
     }
 
     public function testRootRemoval()
@@ -252,16 +252,16 @@ final class RepositoryTest extends BaseTestCaseORM
         $left = $meta->getReflectionProperty('lft')->getValue($node);
         $right = $meta->getReflectionProperty('rgt')->getValue($node);
 
-        static::assertEquals(1, $left);
-        static::assertEquals(2, $right);
+        static::assertSame(1, $left);
+        static::assertSame(2, $right);
         static::assertNull($node->getParent());
 
         $node = $repo->findOneBy(['title' => 'Vegitables']);
         $left = $meta->getReflectionProperty('lft')->getValue($node);
         $right = $meta->getReflectionProperty('rgt')->getValue($node);
 
-        static::assertEquals(3, $left);
-        static::assertEquals(12, $right);
+        static::assertSame(3, $left);
+        static::assertSame(12, $right);
         static::assertNull($node->getParent());
     }
 
@@ -297,9 +297,9 @@ final class RepositoryTest extends BaseTestCaseORM
         $missing = $result[1];
         $invalidLeft = $result[2];
 
-        static::assertEquals('index [1], duplicate', $duplicate);
-        static::assertEquals('index [11], missing', $missing);
-        static::assertEquals('node [8] left is less than parent`s [4] left value', $invalidLeft);
+        static::assertSame('index [1], duplicate', $duplicate);
+        static::assertSame('index [11], missing', $missing);
+        static::assertSame('node [8] left is less than parent`s [4] left value', $invalidLeft);
 
         // test recover functionality
         $repo->recover();
@@ -320,8 +320,8 @@ final class RepositoryTest extends BaseTestCaseORM
         $left = $meta->getReflectionProperty('lft')->getValue($food);
         $right = $meta->getReflectionProperty('rgt')->getValue($food);
 
-        static::assertEquals(3, $left);
-        static::assertEquals(12, $right);
+        static::assertSame(3, $left);
+        static::assertSame(12, $right);
         static::assertNull($food->getParent());
 
         static::assertTrue($repo->verify());
@@ -341,19 +341,19 @@ final class RepositoryTest extends BaseTestCaseORM
 
         $childCount = $this->em->getRepository(self::CATEGORY_UUID)
             ->childCount($vegies);
-        static::assertEquals(2, $childCount);
+        static::assertSame(2, $childCount);
 
         $childCount = $this->em->getRepository(self::CATEGORY_UUID)
             ->childCount($food);
-        static::assertEquals(4, $childCount);
+        static::assertSame(4, $childCount);
 
         $childCount = $this->em->getRepository(self::CATEGORY_UUID)
             ->childCount($food, true);
-        static::assertEquals(2, $childCount);
+        static::assertSame(2, $childCount);
 
         $childCount = $this->em->getRepository(self::CATEGORY_UUID)
             ->childCount();
-        static::assertEquals(6, $childCount);
+        static::assertSame(6, $childCount);
 
         // test children
 
@@ -361,24 +361,24 @@ final class RepositoryTest extends BaseTestCaseORM
             ->children($vegies);
 
         static::assertCount(2, $children);
-        static::assertEquals('Carrots', $children[0]->getTitle());
-        static::assertEquals('Potatoes', $children[1]->getTitle());
+        static::assertSame('Carrots', $children[0]->getTitle());
+        static::assertSame('Potatoes', $children[1]->getTitle());
 
         $children = $this->em->getRepository(self::CATEGORY_UUID)
             ->children($food);
 
         static::assertCount(4, $children);
-        static::assertEquals('Fruits', $children[0]->getTitle());
-        static::assertEquals('Vegitables', $children[1]->getTitle());
-        static::assertEquals('Carrots', $children[2]->getTitle());
-        static::assertEquals('Potatoes', $children[3]->getTitle());
+        static::assertSame('Fruits', $children[0]->getTitle());
+        static::assertSame('Vegitables', $children[1]->getTitle());
+        static::assertSame('Carrots', $children[2]->getTitle());
+        static::assertSame('Potatoes', $children[3]->getTitle());
 
         $children = $this->em->getRepository(self::CATEGORY_UUID)
             ->children($food, true);
 
         static::assertCount(2, $children);
-        static::assertEquals('Fruits', $children[0]->getTitle());
-        static::assertEquals('Vegitables', $children[1]->getTitle());
+        static::assertSame('Fruits', $children[0]->getTitle());
+        static::assertSame('Vegitables', $children[1]->getTitle());
 
         $children = $this->em->getRepository(self::CATEGORY_UUID)
             ->children();
@@ -391,8 +391,8 @@ final class RepositoryTest extends BaseTestCaseORM
             ->getPath($vegies);
 
         static::assertCount(2, $path);
-        static::assertEquals('Food', $path[0]->getTitle());
-        static::assertEquals('Vegitables', $path[1]->getTitle());
+        static::assertSame('Food', $path[0]->getTitle());
+        static::assertSame('Vegitables', $path[1]->getTitle());
 
         $carrots = $this->em->getRepository(self::CATEGORY_UUID)
             ->findOneBy(['title' => 'Carrots']);
@@ -401,9 +401,9 @@ final class RepositoryTest extends BaseTestCaseORM
             ->getPath($carrots);
 
         static::assertCount(3, $path);
-        static::assertEquals('Food', $path[0]->getTitle());
-        static::assertEquals('Vegitables', $path[1]->getTitle());
-        static::assertEquals('Carrots', $path[2]->getTitle());
+        static::assertSame('Food', $path[0]->getTitle());
+        static::assertSame('Vegitables', $path[1]->getTitle());
+        static::assertSame('Carrots', $path[2]->getTitle());
 
         // leafs
 
@@ -411,9 +411,9 @@ final class RepositoryTest extends BaseTestCaseORM
             ->getLeafs($path[0]);
 
         static::assertCount(3, $leafs);
-        static::assertEquals('Fruits', $leafs[0]->getTitle());
-        static::assertEquals('Carrots', $leafs[1]->getTitle());
-        static::assertEquals('Potatoes', $leafs[2]->getTitle());
+        static::assertSame('Fruits', $leafs[0]->getTitle());
+        static::assertSame('Carrots', $leafs[1]->getTitle());
+        static::assertSame('Potatoes', $leafs[2]->getTitle());
     }
 
     protected function getUsedEntityFixtures()

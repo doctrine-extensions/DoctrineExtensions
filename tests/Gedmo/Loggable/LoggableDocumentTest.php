@@ -60,16 +60,16 @@ final class LoggableDocumentTest extends BaseTestCaseMongoODM
         $log = $logRepo->findOneBy(['objectId' => $art0->getId()]);
 
         static::assertNotNull($log);
-        static::assertEquals('create', $log->getAction());
-        static::assertEquals(get_class($art0), $log->getObjectClass());
-        static::assertEquals('jules', $log->getUsername());
-        static::assertEquals(1, $log->getVersion());
+        static::assertSame('create', $log->getAction());
+        static::assertSame(get_class($art0), $log->getObjectClass());
+        static::assertSame('jules', $log->getUsername());
+        static::assertSame(1, $log->getVersion());
         $data = $log->getData();
         static::assertCount(2, $data);
         static::assertArrayHasKey('title', $data);
-        static::assertEquals('Title', $data['title']);
+        static::assertSame('Title', $data['title']);
         static::assertArrayHasKey('author', $data);
-        static::assertEquals(['name' => 'John Doe', 'email' => 'john@doe.com'], $data['author']);
+        static::assertSame(['name' => 'John Doe', 'email' => 'john@doe.com'], $data['author']);
 
         // test update
         $article = $articleRepo->findOneBy(['title' => 'Title']);
@@ -79,7 +79,7 @@ final class LoggableDocumentTest extends BaseTestCaseMongoODM
         $this->dm->clear();
 
         $log = $logRepo->findOneBy(['version' => 2, 'objectId' => $article->getId()]);
-        static::assertEquals('update', $log->getAction());
+        static::assertSame('update', $log->getAction());
 
         // test delete
         $article = $articleRepo->findOneBy(['title' => 'New']);
@@ -88,7 +88,7 @@ final class LoggableDocumentTest extends BaseTestCaseMongoODM
         $this->dm->clear();
 
         $log = $logRepo->findOneBy(['version' => 3, 'objectId' => $article->getId()]);
-        static::assertEquals('remove', $log->getAction());
+        static::assertSame('remove', $log->getAction());
         static::assertNull($log->getData());
     }
 
@@ -100,19 +100,19 @@ final class LoggableDocumentTest extends BaseTestCaseMongoODM
 
         $comment = $commentRepo->findOneBy(['message' => 'm-v5']);
         $commentId = $comment->getId();
-        static::assertEquals('m-v5', $comment->getMessage());
-        static::assertEquals('s-v3', $comment->getSubject());
-        static::assertEquals('a2-t-v1', $comment->getArticle()->getTitle());
-        static::assertEquals('Jane Doe', $comment->getAuthor()->getName());
-        static::assertEquals('jane@doe.com', $comment->getAuthor()->getEmail());
+        static::assertSame('m-v5', $comment->getMessage());
+        static::assertSame('s-v3', $comment->getSubject());
+        static::assertSame('a2-t-v1', $comment->getArticle()->getTitle());
+        static::assertSame('Jane Doe', $comment->getAuthor()->getName());
+        static::assertSame('jane@doe.com', $comment->getAuthor()->getEmail());
 
         // test revert
         $commentLogRepo->revert($comment, 3);
-        static::assertEquals('s-v3', $comment->getSubject());
-        static::assertEquals('m-v2', $comment->getMessage());
-        static::assertEquals('a1-t-v1', $comment->getArticle()->getTitle());
-        static::assertEquals('John Doe', $comment->getAuthor()->getName());
-        static::assertEquals('john@doe.com', $comment->getAuthor()->getEmail());
+        static::assertSame('s-v3', $comment->getSubject());
+        static::assertSame('m-v2', $comment->getMessage());
+        static::assertSame('a1-t-v1', $comment->getArticle()->getTitle());
+        static::assertSame('John Doe', $comment->getAuthor()->getName());
+        static::assertSame('john@doe.com', $comment->getAuthor()->getEmail());
         $this->dm->persist($comment);
         $this->dm->flush();
 
@@ -120,7 +120,7 @@ final class LoggableDocumentTest extends BaseTestCaseMongoODM
         $logEntries = $commentLogRepo->getLogEntries($comment);
         static::assertCount(6, $logEntries);
         $latest = array_shift($logEntries);
-        static::assertEquals('update', $latest->getAction());
+        static::assertSame('update', $latest->getAction());
     }
 
     private function populate()

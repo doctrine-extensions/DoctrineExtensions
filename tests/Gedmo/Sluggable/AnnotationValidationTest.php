@@ -41,7 +41,7 @@ final class AnnotationValidationTest extends BaseTestCaseORM
         $this->em->persist($slug2);
         $this->em->flush();
 
-        static::assertEquals('my-slug', $slug2->getSlug());
+        static::assertSame('my-slug', $slug2->getSlug());
     }
 
     protected function getUsedEntityFixtures()

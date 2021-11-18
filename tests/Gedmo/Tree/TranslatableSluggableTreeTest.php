@@ -53,11 +53,11 @@ final class TranslatableSluggableTreeTest extends BaseTestCaseORM
 
         $childCount = $this->em->getRepository(self::CATEGORY)
             ->childCount($vegies);
-        static::assertEquals(2, $childCount);
+        static::assertSame(2, $childCount);
 
         // test slug
 
-        static::assertEquals('vegitables', $vegies->getSlug());
+        static::assertSame('vegitables', $vegies->getSlug());
 
         // run second translation test
 
@@ -79,10 +79,10 @@ final class TranslatableSluggableTreeTest extends BaseTestCaseORM
         static::assertArrayHasKey('de_DE', $translations);
 
         static::assertArrayHasKey('title', $translations['de_DE']);
-        static::assertEquals('Deutschebles', $translations['de_DE']['title']);
+        static::assertSame('Deutschebles', $translations['de_DE']['title']);
 
         static::assertArrayHasKey('slug', $translations['de_DE']);
-        static::assertEquals('deutschebles', $translations['de_DE']['slug']);
+        static::assertSame('deutschebles', $translations['de_DE']['slug']);
     }
 
     public function testTranslations()
@@ -91,20 +91,20 @@ final class TranslatableSluggableTreeTest extends BaseTestCaseORM
         $repo = $this->em->getRepository(self::CATEGORY);
         $vegies = $repo->find(4);
 
-        static::assertEquals('Vegitables', $vegies->getTitle());
+        static::assertSame('Vegitables', $vegies->getTitle());
         $food = $vegies->getParent();
         // test if proxy triggers postLoad event
         static::assertInstanceOf(Proxy::class, $food);
-        static::assertEquals('Food', $food->getTitle());
+        static::assertSame('Food', $food->getTitle());
 
         $this->em->clear();
         $this->translatableListener->setTranslatableLocale('de_DE');
 
         $vegies = $repo->find(4);
-        static::assertEquals('Gemüse', $vegies->getTitle());
+        static::assertSame('Gemüse', $vegies->getTitle());
         $food = $vegies->getParent();
         static::assertInstanceOf(Proxy::class, $food);
-        static::assertEquals('Lebensmittel', $food->getTitle());
+        static::assertSame('Lebensmittel', $food->getTitle());
     }
 
     protected function getUsedEntityFixtures()

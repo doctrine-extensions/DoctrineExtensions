@@ -40,7 +40,7 @@ final class SluggableIdentifierTest extends BaseTestCaseORM
         $this->em->persist($sport);
         $this->em->flush();
 
-        static::assertEquals('sport', $sport->getId());
+        static::assertSame('sport', $sport->getId());
     }
 
     /**
@@ -57,8 +57,8 @@ final class SluggableIdentifierTest extends BaseTestCaseORM
         $this->em->persist($sport2);
         $this->em->flush();
 
-        static::assertEquals('sport', $sport->getId());
-        static::assertEquals('sport_1', $sport2->getId());
+        static::assertSame('sport', $sport->getId());
+        static::assertSame('sport_1', $sport2->getId());
     }
 
     protected function getUsedEntityFixtures()

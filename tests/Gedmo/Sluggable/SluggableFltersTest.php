@@ -67,6 +67,6 @@ final class SluggableFltersTest extends BaseTestCaseORM
         $this->em->persist($slug);
         $this->em->flush();
 
-        static::assertEquals('my-title-my-code', $slug->getSlug());
+        static::assertSame('my-title-my-code', $slug->getSlug());
     }
 }

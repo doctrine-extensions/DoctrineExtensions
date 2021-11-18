@@ -100,7 +100,7 @@ final class SortableDocumentGroupTest extends BaseTestCaseMongoODM
 
         for ($i = 0; $i < 2; ++$i) {
             $expected = (1 == $i + 1) ? $i + 1 : 0;
-            static::assertEquals($expected, $kids[$i]->getPosition());
+            static::assertSame($expected, $kids[$i]->getPosition());
         }
     }
 
@@ -145,7 +145,7 @@ final class SortableDocumentGroupTest extends BaseTestCaseMongoODM
 
         for ($i = 0; $i < 3; ++$i) {
             $expected = ($i + 1 < 3) ? $i + 1 : 0;
-            static::assertEquals($expected, $posts[$i]->getPosition());
+            static::assertSame($expected, $posts[$i]->getPosition());
         }
     }
 
@@ -175,7 +175,7 @@ final class SortableDocumentGroupTest extends BaseTestCaseMongoODM
         static::assertCount(2, $posts);
 
         for ($i = 0; $i < 2; ++$i) {
-            static::assertEquals($i, $posts[$i]->getPosition());
+            static::assertSame($i, $posts[$i]->getPosition());
         }
     }
 }

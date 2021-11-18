@@ -80,48 +80,48 @@ final class NestedTreeRootRepositoryTest extends BaseTestCaseORM
         $tree = $repo->childrenHierarchy();
 
         static::assertCount(2, $tree);     // Count roots
-        static::assertEquals('Food', $tree[0]['title']);
-        static::assertEquals('Sports', $tree[1]['title']);
-        static::assertEquals('Fruits', $tree[0]['__children'][0]['title']);
-        static::assertEquals('Vegitables', $tree[0]['__children'][1]['title']);
-        static::assertEquals('Carrots', $tree[0]['__children'][1]['__children'][0]['title']);
-        static::assertEquals('Potatoes', $tree[0]['__children'][1]['__children'][1]['title']);
+        static::assertSame('Food', $tree[0]['title']);
+        static::assertSame('Sports', $tree[1]['title']);
+        static::assertSame('Fruits', $tree[0]['__children'][0]['title']);
+        static::assertSame('Vegitables', $tree[0]['__children'][1]['title']);
+        static::assertSame('Carrots', $tree[0]['__children'][1]['__children'][0]['title']);
+        static::assertSame('Potatoes', $tree[0]['__children'][1]['__children'][1]['title']);
 
         // Tree of one specific root, without the root node
         $roots = $repo->getRootNodes();
         $tree = $repo->childrenHierarchy($roots[0]);
 
         static::assertCount(2, $tree);     // Count roots
-        static::assertEquals('Fruits', $tree[0]['title']);
-        static::assertEquals('Vegitables', $tree[1]['title']);
-        static::assertEquals('Carrots', $tree[1]['__children'][0]['title']);
-        static::assertEquals('Potatoes', $tree[1]['__children'][1]['title']);
+        static::assertSame('Fruits', $tree[0]['title']);
+        static::assertSame('Vegitables', $tree[1]['title']);
+        static::assertSame('Carrots', $tree[1]['__children'][0]['title']);
+        static::assertSame('Potatoes', $tree[1]['__children'][1]['title']);
 
         // Tree of one specific root, with the root node
         $tree = $repo->childrenHierarchy($roots[0], false, [], true);
 
         static::assertCount(1, $tree);     // Count roots
-        static::assertEquals('Food', $tree[0]['title']);
-        static::assertEquals('Fruits', $tree[0]['__children'][0]['title']);
-        static::assertEquals('Vegitables', $tree[0]['__children'][1]['title']);
-        static::assertEquals('Carrots', $tree[0]['__children'][1]['__children'][0]['title']);
-        static::assertEquals('Potatoes', $tree[0]['__children'][1]['__children'][1]['title']);
+        static::assertSame('Food', $tree[0]['title']);
+        static::assertSame('Fruits', $tree[0]['__children'][0]['title']);
+        static::assertSame('Vegitables', $tree[0]['__children'][1]['title']);
+        static::assertSame('Carrots', $tree[0]['__children'][1]['__children'][0]['title']);
+        static::assertSame('Potatoes', $tree[0]['__children'][1]['__children'][1]['title']);
 
         // Tree of one specific root only with direct children, without the root node
         $roots = $repo->getRootNodes();
         $tree = $repo->childrenHierarchy($roots[0], true);
 
         static::assertCount(2, $tree);
-        static::assertEquals('Fruits', $tree[0]['title']);
-        static::assertEquals('Vegitables', $tree[1]['title']);
+        static::assertSame('Fruits', $tree[0]['title']);
+        static::assertSame('Vegitables', $tree[1]['title']);
 
         // Tree of one specific root only with direct children, with the root node
         $tree = $repo->childrenHierarchy($roots[0], true, [], true);
 
         static::assertCount(1, $tree);
-        static::assertEquals('Food', $tree[0]['title']);
-        static::assertEquals('Fruits', $tree[0]['__children'][0]['title']);
-        static::assertEquals('Vegitables', $tree[0]['__children'][1]['title']);
+        static::assertSame('Food', $tree[0]['title']);
+        static::assertSame('Fruits', $tree[0]['__children'][0]['title']);
+        static::assertSame('Vegitables', $tree[0]['__children'][1]['title']);
     }
 
     /**
@@ -134,7 +134,7 @@ final class NestedTreeRootRepositoryTest extends BaseTestCaseORM
         $decorate = true;
         $defaultHtmlTree = $repo->childrenHierarchy($food, false, compact('decorate'));
 
-        static::assertEquals(
+        static::assertSame(
             '<ul><li>Fruits</li><li>Vegitables<ul><li>Carrots</li><li>Potatoes</li></ul></li></ul>',
             $defaultHtmlTree
         );
@@ -150,7 +150,7 @@ final class NestedTreeRootRepositoryTest extends BaseTestCaseORM
             compact('decorate', 'nodeDecorator')
         );
 
-        static::assertEquals(
+        static::assertSame(
             '<ul><li><span>Fruits</span></li><li><span>Vegitables</span><ul><li><span>Carrots</span></li><li><span>Potatoes</span></li></ul></li></ul>',
             $decoratedHtmlTree
         );
@@ -168,7 +168,7 @@ final class NestedTreeRootRepositoryTest extends BaseTestCaseORM
             false,
             compact('decorate', 'nodeDecorator', 'rootOpen', 'rootClose', 'childOpen', 'childClose')
         );
-        static::assertEquals(
+        static::assertSame(
             "-Fruits\n-Vegitables\n--Carrots\n--Potatoes\n",
             $decoratedCliTree
         );
@@ -189,7 +189,7 @@ final class NestedTreeRootRepositoryTest extends BaseTestCaseORM
             compact('decorate', 'rootOpen', 'rootClose', 'childOpen', 'childClose')
         );
 
-        static::assertEquals(
+        static::assertSame(
             '<ul class="group"><li class="depth1">Fruits</li><!--childCloseClosure--><li class="depth1">Vegitables<ul class="group"><li class="depth2">Carrots</li><!--childCloseClosure--><li class="depth2">Potatoes</li><!--childCloseClosure--></ul><!--rootCloseClosure--></li><!--childCloseClosure--></ul><!--rootCloseClosure-->',
             $decoratedHtmlTree
         );
@@ -214,7 +214,7 @@ final class NestedTreeRootRepositoryTest extends BaseTestCaseORM
         static::assertCount(2, $tree[0]['__children']);
         $nodes = [];
         $options = ['decorate' => true];
-        static::assertEquals('', $repo->buildTree($nodes, $options), 'should give empty string when there are no nodes given');
+        static::assertSame('', $repo->buildTree($nodes, $options), 'should give empty string when there are no nodes given');
     }
 
     /**
@@ -234,16 +234,16 @@ final class NestedTreeRootRepositoryTest extends BaseTestCaseORM
 
         $node = $repo->findOneBy(['title' => 'Fruits']);
 
-        static::assertEquals(1, $node->getLeft());
-        static::assertEquals(2, $node->getRight());
-        static::assertEquals(3, $node->getRoot());
+        static::assertSame(1, $node->getLeft());
+        static::assertSame(2, $node->getRight());
+        static::assertSame(3, $node->getRoot());
         static::assertNull($node->getParent());
 
         $node = $repo->findOneBy(['title' => 'Vegitables']);
 
-        static::assertEquals(1, $node->getLeft());
-        static::assertEquals(10, $node->getRight());
-        static::assertEquals(4, $node->getRoot());
+        static::assertSame(1, $node->getLeft());
+        static::assertSame(10, $node->getRight());
+        static::assertSame(4, $node->getRoot());
         static::assertNull($node->getParent());
     }
 
@@ -257,26 +257,26 @@ final class NestedTreeRootRepositoryTest extends BaseTestCaseORM
 
         $path = $repo->getPath($carrots);
         static::assertCount(3, $path);
-        static::assertEquals('Food', $path[0]->getTitle());
-        static::assertEquals('Vegitables', $path[1]->getTitle());
-        static::assertEquals('Carrots', $path[2]->getTitle());
+        static::assertSame('Food', $path[0]->getTitle());
+        static::assertSame('Vegitables', $path[1]->getTitle());
+        static::assertSame('Carrots', $path[2]->getTitle());
 
         $vegies = $repo->findOneBy(['title' => 'Vegitables']);
         $childCount = $repo->childCount($vegies);
-        static::assertEquals(2, $childCount);
+        static::assertSame(2, $childCount);
 
         $food = $repo->findOneBy(['title' => 'Food']);
         $childCount = $repo->childCount($food, true);
-        static::assertEquals(2, $childCount);
+        static::assertSame(2, $childCount);
 
         $childCount = $repo->childCount($food);
-        static::assertEquals(4, $childCount);
+        static::assertSame(4, $childCount);
 
         $childCount = $repo->childCount();
-        static::assertEquals(6, $childCount);
+        static::assertSame(6, $childCount);
 
         $childCount = $repo->childCount(null, true);
-        static::assertEquals(2, $childCount);
+        static::assertSame(2, $childCount);
     }
 
     /**
@@ -299,8 +299,8 @@ final class NestedTreeRootRepositoryTest extends BaseTestCaseORM
         $this->em->clear(); // must clear cached entities
         $errors = $repo->verify();
         static::assertCount(2, $errors);
-        static::assertEquals('index [4], missing on tree root: 1', $errors[0]);
-        static::assertEquals('index [5], duplicate on tree root: 1', $errors[1]);
+        static::assertSame('index [4], missing on tree root: 1', $errors[0]);
+        static::assertSame('index [5], duplicate on tree root: 1', $errors[1]);
 
         // test recover functionality
         $repo->recover();
@@ -311,27 +311,27 @@ final class NestedTreeRootRepositoryTest extends BaseTestCaseORM
         $this->em->clear();
         $onions = $repo->findOneBy(['title' => 'Onions']);
 
-        static::assertEquals(11, $onions->getLeft());
-        static::assertEquals(12, $onions->getRight());
+        static::assertSame(11, $onions->getLeft());
+        static::assertSame(12, $onions->getRight());
 
         // move up
 
         $repo->moveUp($onions);
 
-        static::assertEquals(9, $onions->getLeft());
-        static::assertEquals(10, $onions->getRight());
+        static::assertSame(9, $onions->getLeft());
+        static::assertSame(10, $onions->getRight());
 
         $repo->moveUp($onions, true);
 
-        static::assertEquals(5, $onions->getLeft());
-        static::assertEquals(6, $onions->getRight());
+        static::assertSame(5, $onions->getLeft());
+        static::assertSame(6, $onions->getRight());
 
         // move down
 
         $repo->moveDown($onions, 2);
 
-        static::assertEquals(9, $onions->getLeft());
-        static::assertEquals(10, $onions->getRight());
+        static::assertSame(9, $onions->getLeft());
+        static::assertSame(10, $onions->getRight());
 
         // reorder
 
@@ -340,33 +340,33 @@ final class NestedTreeRootRepositoryTest extends BaseTestCaseORM
 
         $node = $repo->findOneBy(['title' => 'Cabbages']);
 
-        static::assertEquals(5, $node->getLeft());
-        static::assertEquals(6, $node->getRight());
+        static::assertSame(5, $node->getLeft());
+        static::assertSame(6, $node->getRight());
 
         $node = $repo->findOneBy(['title' => 'Carrots']);
 
-        static::assertEquals(7, $node->getLeft());
-        static::assertEquals(8, $node->getRight());
+        static::assertSame(7, $node->getLeft());
+        static::assertSame(8, $node->getRight());
 
         $node = $repo->findOneBy(['title' => 'Onions']);
 
-        static::assertEquals(9, $node->getLeft());
-        static::assertEquals(10, $node->getRight());
+        static::assertSame(9, $node->getLeft());
+        static::assertSame(10, $node->getRight());
 
         $node = $repo->findOneBy(['title' => 'Potatoes']);
 
-        static::assertEquals(11, $node->getLeft());
-        static::assertEquals(12, $node->getRight());
+        static::assertSame(11, $node->getLeft());
+        static::assertSame(12, $node->getRight());
 
         // leafs
 
         $leafs = $repo->getLeafs($node);
         static::assertCount(5, $leafs);
-        static::assertEquals('Fruits', $leafs[0]->getTitle());
-        static::assertEquals('Cabbages', $leafs[1]->getTitle());
-        static::assertEquals('Carrots', $leafs[2]->getTitle());
-        static::assertEquals('Onions', $leafs[3]->getTitle());
-        static::assertEquals('Potatoes', $leafs[4]->getTitle());
+        static::assertSame('Fruits', $leafs[0]->getTitle());
+        static::assertSame('Cabbages', $leafs[1]->getTitle());
+        static::assertSame('Carrots', $leafs[2]->getTitle());
+        static::assertSame('Onions', $leafs[3]->getTitle());
+        static::assertSame('Potatoes', $leafs[4]->getTitle());
 
         // remove
 
@@ -385,8 +385,8 @@ final class NestedTreeRootRepositoryTest extends BaseTestCaseORM
 
         $node = $repo->findOneBy(['title' => 'Cabbages']);
 
-        static::assertEquals(1, $node->getRoot());
-        static::assertEquals(1, $node->getParent()->getId());
+        static::assertSame(1, $node->getRoot());
+        static::assertSame(1, $node->getParent()->getId());
     }
 
     /**
@@ -418,15 +418,15 @@ final class NestedTreeRootRepositoryTest extends BaseTestCaseORM
         $roots = $repo->getRootNodes();
 
         static::assertCount(2, $roots);
-        static::assertEquals('Food', $roots[0]->getTitle());
-        static::assertEquals('Sports', $roots[1]->getTitle());
+        static::assertSame('Food', $roots[0]->getTitle());
+        static::assertSame('Sports', $roots[1]->getTitle());
 
         // Test getRootNodes with custom ordering
         $roots = $repo->getRootNodes('title', 'desc');
 
         static::assertCount(2, $roots);
-        static::assertEquals('Sports', $roots[0]->getTitle());
-        static::assertEquals('Food', $roots[1]->getTitle());
+        static::assertSame('Sports', $roots[0]->getTitle());
+        static::assertSame('Food', $roots[1]->getTitle());
     }
 
     /**

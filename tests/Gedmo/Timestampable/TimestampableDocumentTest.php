@@ -41,7 +41,7 @@ final class TimestampableDocumentTest extends BaseTestCaseMongoODM
         $now = time();
         $created = $article->getCreated()->getTimestamp();
         static::assertTrue($created > $now - 5 && $created < $now + 5); // 5 seconds interval if lag
-        static::assertEquals(
+        static::assertSame(
             $date->format('Y-m-d H:i'),
             $article->getUpdated()->format('Y-m-d H:i')
         );
@@ -58,7 +58,7 @@ final class TimestampableDocumentTest extends BaseTestCaseMongoODM
 
         $article = $repo->findOneBy(['title' => 'Timestampable Article']);
         $date = new \DateTime();
-        static::assertEquals(
+        static::assertSame(
             $date->format('Y-m-d H:i'),
             $article->getPublished()->format('Y-m-d H:i')
         );
@@ -78,11 +78,11 @@ final class TimestampableDocumentTest extends BaseTestCaseMongoODM
 
         $repo = $this->dm->getRepository(self::ARTICLE);
         $sport = $repo->findOneBy(['title' => 'sport forced']);
-        static::assertEquals(
+        static::assertSame(
             $created,
             $sport->getCreated()->getTimestamp()
         );
-        static::assertEquals(
+        static::assertSame(
             '2000-01-01 12:00:00',
             $sport->getUpdated()->format('Y-m-d H:i:s')
         );
@@ -99,7 +99,7 @@ final class TimestampableDocumentTest extends BaseTestCaseMongoODM
         $this->dm->clear();
 
         $sport = $repo->findOneBy(['title' => 'sport forced']);
-        static::assertEquals(
+        static::assertSame(
             '2000-01-01 12:00:00',
             $sport->getPublished()->format('Y-m-d H:i:s')
         );

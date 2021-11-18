@@ -66,6 +66,6 @@ final class SoftDeleteableMappingTest extends BaseTestCaseOM
         static::assertArrayHasKey('timeAware', $config);
         static::assertFalse($config['timeAware']);
         static::assertArrayHasKey('fieldName', $config);
-        static::assertEquals('deletedAt', $config['fieldName']);
+        static::assertSame('deletedAt', $config['fieldName']);
     }
 }

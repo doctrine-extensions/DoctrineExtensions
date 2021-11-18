@@ -111,7 +111,7 @@ final class ClosureTreeTest extends BaseTestCaseORM
         foreach ($foodClosures as $closure) {
             $descendant = $closure->getDescendant();
             if ($descendant === $food) {
-                static::assertEquals(0, $closure->getDepth());
+                static::assertSame(0, $closure->getDepth());
 
                 continue;
             }
@@ -121,37 +121,37 @@ final class ClosureTreeTest extends BaseTestCaseORM
             switch ($descendantTitle) {
                 case 'Fruits':
                     static::assertCount(5, $descendantClosures);
-                    static::assertEquals(1, $closure->getDepth());
+                    static::assertSame(1, $closure->getDepth());
 
                     break;
                 case 'Oranges':
                     static::assertCount(1, $descendantClosures);
-                    static::assertEquals(2, $closure->getDepth());
+                    static::assertSame(2, $closure->getDepth());
 
                     break;
                 case 'Berries':
                     static::assertCount(2, $descendantClosures);
-                    static::assertEquals(2, $closure->getDepth());
+                    static::assertSame(2, $closure->getDepth());
 
                     break;
                 case 'Vegitables':
                     static::assertCount(3, $descendantClosures);
-                    static::assertEquals(1, $closure->getDepth());
+                    static::assertSame(1, $closure->getDepth());
 
                     break;
                 case 'Milk':
                     static::assertCount(3, $descendantClosures);
-                    static::assertEquals(1, $closure->getDepth());
+                    static::assertSame(1, $closure->getDepth());
 
                     break;
                 case 'Cheese':
                     static::assertCount(2, $descendantClosures);
-                    static::assertEquals(2, $closure->getDepth());
+                    static::assertSame(2, $closure->getDepth());
 
                     break;
                 case 'Strawberries':
                     static::assertCount(1, $descendantClosures);
-                    static::assertEquals(3, $closure->getDepth());
+                    static::assertSame(3, $closure->getDepth());
 
                     break;
             }
@@ -216,7 +216,7 @@ final class ClosureTreeTest extends BaseTestCaseORM
         $query = $this->em->createQuery($dql);
         $query->setParameter('id', $id);
 
-        static::assertEquals(0, $query->getSingleScalarResult());
+        static::assertSame('0', $query->getSingleScalarResult());
         // pdo_sqlite will not cascade
     }
 

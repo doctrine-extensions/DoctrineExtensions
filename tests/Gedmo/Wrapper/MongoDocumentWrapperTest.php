@@ -34,10 +34,10 @@ final class MongoDocumentWrapperTest extends BaseTestCaseMongoODM
         static::assertInstanceOf(self::ARTICLE, $test);
         $wrapped = new MongoDocumentWrapper($test, $this->dm);
 
-        static::assertEquals($this->articleId, $wrapped->getIdentifier());
-        static::assertEquals('test', $wrapped->getPropertyValue('title'));
+        static::assertSame($this->articleId, $wrapped->getIdentifier());
+        static::assertSame('test', $wrapped->getPropertyValue('title'));
         $wrapped->setPropertyValue('title', 'changed');
-        static::assertEquals('changed', $wrapped->getPropertyValue('title'));
+        static::assertSame('changed', $wrapped->getPropertyValue('title'));
 
         static::assertTrue($wrapped->hasValidIdentifier());
     }
@@ -51,9 +51,9 @@ final class MongoDocumentWrapperTest extends BaseTestCaseMongoODM
         $wrapped = new MongoDocumentWrapper($test, $this->dm);
 
         $id = $wrapped->getIdentifier(false);
-        static::assertEquals($this->articleId, $id);
+        static::assertSame($this->articleId, $id);
 
-        static::assertEquals('test', $wrapped->getPropertyValue('title'));
+        static::assertSame('test', $wrapped->getPropertyValue('title'));
     }
 
     public function testDetachedEntity()
@@ -62,8 +62,8 @@ final class MongoDocumentWrapperTest extends BaseTestCaseMongoODM
         $this->dm->clear();
         $wrapped = new MongoDocumentWrapper($test, $this->dm);
 
-        static::assertEquals($this->articleId, $wrapped->getIdentifier());
-        static::assertEquals('test', $wrapped->getPropertyValue('title'));
+        static::assertSame($this->articleId, $wrapped->getIdentifier());
+        static::assertSame('test', $wrapped->getPropertyValue('title'));
     }
 
     public function testDetachedProxy()
@@ -72,8 +72,8 @@ final class MongoDocumentWrapperTest extends BaseTestCaseMongoODM
         $this->dm->clear();
         $wrapped = new MongoDocumentWrapper($test, $this->dm);
 
-        static::assertEquals($this->articleId, $wrapped->getIdentifier());
-        static::assertEquals('test', $wrapped->getPropertyValue('title'));
+        static::assertSame($this->articleId, $wrapped->getIdentifier());
+        static::assertSame('test', $wrapped->getPropertyValue('title'));
     }
 
     public function testSomeFunctions()
@@ -82,7 +82,7 @@ final class MongoDocumentWrapperTest extends BaseTestCaseMongoODM
         $wrapped = new MongoDocumentWrapper($test, $this->dm);
 
         $wrapped->populate(['title' => 'test']);
-        static::assertEquals('test', $wrapped->getPropertyValue('title'));
+        static::assertSame('test', $wrapped->getPropertyValue('title'));
 
         static::assertFalse($wrapped->hasValidIdentifier());
     }

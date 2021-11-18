@@ -36,8 +36,8 @@ final class TreeSlugHandlerUniqueTest extends BaseTestCaseORM
 
         $this->em->flush();
 
-        static::assertEquals('foo', $foo1->getSlug());
-        static::assertEquals('foo-1', $foo2->getSlug());
+        static::assertSame('foo', $foo1->getSlug());
+        static::assertSame('foo-1', $foo2->getSlug());
     }
 
     public function testUniqueLeaf()
@@ -59,8 +59,8 @@ final class TreeSlugHandlerUniqueTest extends BaseTestCaseORM
 
         $this->em->flush();
 
-        static::assertEquals('root/foo', $foo1->getSlug());
-        static::assertEquals('root/foo-1', $foo2->getSlug());
+        static::assertSame('root/foo', $foo1->getSlug());
+        static::assertSame('root/foo-1', $foo2->getSlug());
     }
 
     protected function getUsedEntityFixtures()

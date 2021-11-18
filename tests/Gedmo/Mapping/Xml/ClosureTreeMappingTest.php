@@ -63,10 +63,10 @@ final class ClosureTreeMappingTest extends BaseTestCaseOM
         $config = $this->tree->getConfiguration($this->em, $meta->name);
 
         static::assertArrayHasKey('strategy', $config);
-        static::assertEquals('closure', $config['strategy']);
+        static::assertSame('closure', $config['strategy']);
         static::assertArrayHasKey('closure', $config);
-        static::assertEquals(ClosureTreeClosure::class, $config['closure']);
+        static::assertSame(ClosureTreeClosure::class, $config['closure']);
         static::assertArrayHasKey('parent', $config);
-        static::assertEquals('parent', $config['parent']);
+        static::assertSame('parent', $config['parent']);
     }
 }

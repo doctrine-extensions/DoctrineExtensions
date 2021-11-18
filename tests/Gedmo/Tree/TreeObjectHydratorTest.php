@@ -57,31 +57,31 @@ final class TreeObjectHydratorTest extends BaseTestCaseORM
         static::assertCount(1, $result);
 
         $food = $result[0];
-        static::assertEquals('Food', $food->getTitle());
+        static::assertSame('Food', $food->getTitle());
         static::assertCount(4, $food->getChildren());
 
         $fruits = $food->getChildren()->get(0);
-        static::assertEquals('Fruits', $fruits->getTitle());
+        static::assertSame('Fruits', $fruits->getTitle());
         static::assertCount(2, $fruits->getChildren());
 
         $vegetables = $food->getChildren()->get(1);
-        static::assertEquals('Vegetables', $vegetables->getTitle());
+        static::assertSame('Vegetables', $vegetables->getTitle());
         static::assertCount(0, $vegetables->getChildren());
 
         $milk = $food->getChildren()->get(2);
-        static::assertEquals('Milk', $milk->getTitle());
+        static::assertSame('Milk', $milk->getTitle());
         static::assertCount(0, $milk->getChildren());
 
         $meat = $food->getChildren()->get(3);
-        static::assertEquals('Meat', $meat->getTitle());
+        static::assertSame('Meat', $meat->getTitle());
         static::assertCount(0, $meat->getChildren());
 
         $oranges = $fruits->getChildren()->get(0);
-        static::assertEquals('Oranges', $oranges->getTitle());
+        static::assertSame('Oranges', $oranges->getTitle());
         static::assertCount(0, $oranges->getChildren());
 
         $citrons = $fruits->getChildren()->get(1);
-        static::assertEquals('Citrons', $citrons->getTitle());
+        static::assertSame('Citrons', $citrons->getTitle());
         static::assertCount(0, $citrons->getChildren());
 
         // Make sure only one query was executed
@@ -108,15 +108,15 @@ final class TreeObjectHydratorTest extends BaseTestCaseORM
         static::assertCount(1, $result);
 
         $fruits = $result[0];
-        static::assertEquals('Fruits', $fruits->getTitle());
+        static::assertSame('Fruits', $fruits->getTitle());
         static::assertCount(2, $fruits->getChildren());
 
         $oranges = $fruits->getChildren()->get(0);
-        static::assertEquals('Oranges', $oranges->getTitle());
+        static::assertSame('Oranges', $oranges->getTitle());
         static::assertCount(0, $oranges->getChildren());
 
         $citrons = $fruits->getChildren()->get(1);
-        static::assertEquals('Citrons', $citrons->getTitle());
+        static::assertSame('Citrons', $citrons->getTitle());
         static::assertCount(0, $citrons->getChildren());
 
         static::assertCount(2, $stack->queries);
@@ -142,27 +142,27 @@ final class TreeObjectHydratorTest extends BaseTestCaseORM
         static::assertCount(4, $result);
 
         $fruits = $result[0];
-        static::assertEquals('Fruits', $fruits->getTitle());
+        static::assertSame('Fruits', $fruits->getTitle());
         static::assertCount(2, $fruits->getChildren());
 
         $vegetables = $result[1];
-        static::assertEquals('Vegetables', $vegetables->getTitle());
+        static::assertSame('Vegetables', $vegetables->getTitle());
         static::assertCount(0, $vegetables->getChildren());
 
         $milk = $result[2];
-        static::assertEquals('Milk', $milk->getTitle());
+        static::assertSame('Milk', $milk->getTitle());
         static::assertCount(0, $milk->getChildren());
 
         $meat = $result[3];
-        static::assertEquals('Meat', $meat->getTitle());
+        static::assertSame('Meat', $meat->getTitle());
         static::assertCount(0, $meat->getChildren());
 
         $oranges = $fruits->getChildren()->get(0);
-        static::assertEquals('Oranges', $oranges->getTitle());
+        static::assertSame('Oranges', $oranges->getTitle());
         static::assertCount(0, $oranges->getChildren());
 
         $citrons = $fruits->getChildren()->get(1);
-        static::assertEquals('Citrons', $citrons->getTitle());
+        static::assertSame('Citrons', $citrons->getTitle());
         static::assertCount(0, $citrons->getChildren());
 
         static::assertCount(2, $stack->queries);

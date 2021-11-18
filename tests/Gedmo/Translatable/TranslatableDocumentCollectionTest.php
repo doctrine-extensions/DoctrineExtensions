@@ -51,14 +51,14 @@ final class TranslatableDocumentCollectionTest extends BaseTestCaseMongoODM
         static::assertArrayHasKey('de_de', $translations);
         static::assertArrayHasKey('title', $translations['de_de']);
         static::assertArrayHasKey('content', $translations['de_de']);
-        static::assertEquals('sport de', $translations['de_de']['title']);
-        static::assertEquals('content de', $translations['de_de']['content']);
+        static::assertSame('sport de', $translations['de_de']['title']);
+        static::assertSame('content de', $translations['de_de']['content']);
 
         static::assertArrayHasKey('ru_ru', $translations);
         static::assertArrayHasKey('title', $translations['ru_ru']);
         static::assertArrayHasKey('content', $translations['ru_ru']);
-        static::assertEquals('sport ru', $translations['ru_ru']['title']);
-        static::assertEquals('content ru', $translations['ru_ru']['content']);
+        static::assertSame('sport ru', $translations['ru_ru']['title']);
+        static::assertSame('content ru', $translations['ru_ru']['content']);
     }
 
     /**
@@ -80,8 +80,8 @@ final class TranslatableDocumentCollectionTest extends BaseTestCaseMongoODM
         static::assertArrayHasKey('ru_ru', $translations);
         static::assertArrayHasKey('title', $translations['ru_ru']);
         static::assertArrayHasKey('content', $translations['ru_ru']);
-        static::assertEquals('sport ru change', $translations['ru_ru']['title']);
-        static::assertEquals('content ru change', $translations['ru_ru']['content']);
+        static::assertSame('sport ru change', $translations['ru_ru']['title']);
+        static::assertSame('content ru change', $translations['ru_ru']['content']);
     }
 
     /**
@@ -103,28 +103,28 @@ final class TranslatableDocumentCollectionTest extends BaseTestCaseMongoODM
 
         $this->dm->flush();
 
-        static::assertEquals('sport en update', $sport->getTitle());
-        static::assertEquals('content en update', $sport->getContent());
+        static::assertSame('sport en update', $sport->getTitle());
+        static::assertSame('content en update', $sport->getContent());
 
         $translations = $repo->findTranslations($sport);
 
         static::assertArrayHasKey('de_de', $translations);
         static::assertArrayHasKey('title', $translations['de_de']);
         static::assertArrayHasKey('content', $translations['de_de']);
-        static::assertEquals('sport de', $translations['de_de']['title']);
-        static::assertEquals('content de', $translations['de_de']['content']);
+        static::assertSame('sport de', $translations['de_de']['title']);
+        static::assertSame('content de', $translations['de_de']['content']);
 
         static::assertArrayHasKey('ru_ru', $translations);
         static::assertArrayHasKey('title', $translations['ru_ru']);
         static::assertArrayHasKey('content', $translations['ru_ru']);
-        static::assertEquals('sport ru change', $translations['ru_ru']['title']);
-        static::assertEquals('content ru change', $translations['ru_ru']['content']);
+        static::assertSame('sport ru change', $translations['ru_ru']['title']);
+        static::assertSame('content ru change', $translations['ru_ru']['content']);
 
         static::assertArrayHasKey('lt_lt', $translations);
         static::assertArrayHasKey('title', $translations['lt_lt']);
         static::assertArrayHasKey('content', $translations['lt_lt']);
-        static::assertEquals('sport lt', $translations['lt_lt']['title']);
-        static::assertEquals('content lt', $translations['lt_lt']['content']);
+        static::assertSame('sport lt', $translations['lt_lt']['title']);
+        static::assertSame('content lt', $translations['lt_lt']['content']);
     }
 
     private function populate()

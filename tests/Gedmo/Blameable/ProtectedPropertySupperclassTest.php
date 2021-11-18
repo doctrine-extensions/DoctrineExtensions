@@ -52,7 +52,7 @@ final class ProtectedPropertySupperclassTest extends BaseTestCaseORM
         $translations = $repo->findTranslations($test);
         static::assertCount(0, $translations);
 
-        static::assertEquals('testuser', $test->getCreatedBy());
+        static::assertSame('testuser', $test->getCreatedBy());
     }
 
     protected function getUsedEntityFixtures()

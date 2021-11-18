@@ -52,7 +52,7 @@ final class Issue1058Test extends BaseTestCaseORM
 
         $this->em->persist($page);
         $this->em->flush();
-        static::assertEquals('the-title', $page->getSlug());
+        static::assertSame('the-title', $page->getSlug());
 
         $page = new Page();
         $page->setTitle('the title');
@@ -60,7 +60,7 @@ final class Issue1058Test extends BaseTestCaseORM
 
         $this->em->persist($page);
         $this->em->flush();
-        static::assertEquals('the-title', $page->getSlug());
+        static::assertSame('the-title', $page->getSlug());
 
         $page = new Page();
         $page->setTitle('the title');
@@ -68,7 +68,7 @@ final class Issue1058Test extends BaseTestCaseORM
 
         $this->em->persist($page);
         $this->em->flush();
-        static::assertEquals('the-title-1', $page->getSlug());
+        static::assertSame('the-title-1', $page->getSlug());
 
         $page = new Page();
         $page->setTitle('the title');
@@ -78,7 +78,7 @@ final class Issue1058Test extends BaseTestCaseORM
         $this->em->flush();
         $this->em->clear();
 
-        static::assertEquals('the-title-1', $page->getSlug());
+        static::assertSame('the-title-1', $page->getSlug());
     }
 
     protected function getUsedEntityFixtures()

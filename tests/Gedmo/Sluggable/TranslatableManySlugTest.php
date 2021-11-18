@@ -46,8 +46,8 @@ final class TranslatableManySlugTest extends BaseTestCaseORM
     {
         $article = $this->em->find(self::ARTICLE, $this->articleId);
         static::assertTrue($article instanceof Translatable && $article instanceof Sluggable);
-        static::assertEquals('the-title-my-code', $article->getSlug());
-        static::assertEquals('the-unique-title', $article->getUniqueSlug());
+        static::assertSame('the-title-my-code', $article->getSlug());
+        static::assertSame('the-unique-title', $article->getUniqueSlug());
         $repo = $this->em->getRepository(self::TRANSLATION);
 
         $translations = $repo->findTranslations($article);
@@ -68,10 +68,10 @@ final class TranslatableManySlugTest extends BaseTestCaseORM
         static::assertArrayHasKey('de_DE', $translations);
         static::assertCount(3, $translations['de_DE']);
 
-        static::assertEquals('title in de', $translations['de_DE']['title']);
+        static::assertSame('title in de', $translations['de_DE']['title']);
 
         static::assertArrayHasKey('slug', $translations['de_DE']);
-        static::assertEquals('title-in-de-code-in-de', $translations['de_DE']['slug']);
+        static::assertSame('title-in-de-code-in-de', $translations['de_DE']['slug']);
     }
 
     public function testUniqueness()
@@ -91,11 +91,11 @@ final class TranslatableManySlugTest extends BaseTestCaseORM
         $this->em->persist($a1);
         $this->em->flush();
 
-        static::assertEquals('title', $a0->getUniqueSlug());
-        static::assertEquals('title-1', $a1->getUniqueSlug());
+        static::assertSame('title', $a0->getUniqueSlug());
+        static::assertSame('title-1', $a1->getUniqueSlug());
         // if its translated maybe should be different
-        static::assertEquals('the-title-my-code-1', $a0->getSlug());
-        static::assertEquals('the-title-my-code-2', $a1->getSlug());
+        static::assertSame('the-title-my-code-1', $a0->getSlug());
+        static::assertSame('the-title-my-code-2', $a1->getSlug());
     }
 
     protected function getUsedEntityFixtures()

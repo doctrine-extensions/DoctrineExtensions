@@ -50,7 +50,7 @@ final class TranslatableSlugTest extends BaseTestCaseORM
     {
         $article = $this->em->find(self::ARTICLE, $this->articleId);
         static::assertTrue($article instanceof Translatable && $article instanceof Sluggable);
-        static::assertEquals('the-title-my-code', $article->getSlug());
+        static::assertSame('the-title-my-code', $article->getSlug());
         $repo = $this->em->getRepository(self::TRANSLATION);
 
         $translations = $repo->findTranslations($article);
@@ -72,13 +72,13 @@ final class TranslatableSlugTest extends BaseTestCaseORM
         static::assertCount(3, $translations['de_DE']);
 
         static::assertArrayHasKey('code', $translations['de_DE']);
-        static::assertEquals('code in de', $translations['de_DE']['code']);
+        static::assertSame('code in de', $translations['de_DE']['code']);
 
         static::assertArrayHasKey('title', $translations['de_DE']);
-        static::assertEquals('title in de', $translations['de_DE']['title']);
+        static::assertSame('title in de', $translations['de_DE']['title']);
 
         static::assertArrayHasKey('slug', $translations['de_DE']);
-        static::assertEquals('title-in-de-code-in-de', $translations['de_DE']['slug']);
+        static::assertSame('title-in-de-code-in-de', $translations['de_DE']['slug']);
     }
 
     public function testConcurrentChanges()
@@ -128,7 +128,7 @@ final class TranslatableSlugTest extends BaseTestCaseORM
         $this->em->flush();
         $this->em->clear();
 
-        static::assertEquals('Cont_Test', $page->getSlug());
+        static::assertSame('Cont_Test', $page->getSlug());
     }
 
     protected function getUsedEntityFixtures()

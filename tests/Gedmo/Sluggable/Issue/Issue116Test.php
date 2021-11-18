@@ -51,7 +51,7 @@ final class Issue116Test extends BaseTestCaseORM
         $this->em->persist($country);
         $this->em->flush();
 
-        static::assertEquals('new-zealand', $country->getAlias());
+        static::assertSame('new-zealand', $country->getAlias());
     }
 
     protected function getUsedEntityFixtures()

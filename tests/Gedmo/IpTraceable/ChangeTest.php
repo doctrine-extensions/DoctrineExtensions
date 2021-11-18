@@ -52,7 +52,7 @@ final class ChangeTest extends BaseTestCaseORM
         $this->em->flush();
         $this->em->clear();
         //Changed
-        static::assertEquals(self::TEST_IP, $test->getChtitle());
+        static::assertSame(self::TEST_IP, $test->getChtitle());
 
         $this->listener->setIpValue('127.0.0.1');
 
@@ -62,7 +62,7 @@ final class ChangeTest extends BaseTestCaseORM
         $this->em->flush();
         $this->em->clear();
         //Not Changed
-        static::assertEquals(self::TEST_IP, $test->getChtitle());
+        static::assertSame(self::TEST_IP, $test->getChtitle());
     }
 
     protected function getUsedEntityFixtures()

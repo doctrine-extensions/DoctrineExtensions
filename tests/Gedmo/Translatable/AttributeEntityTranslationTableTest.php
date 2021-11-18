@@ -73,7 +73,7 @@ final class AttributeEntityTranslationTableTest extends BaseTestCaseORM
         static::assertArrayHasKey('de_de', $translations);
 
         static::assertArrayHasKey('name', $translations['de_de']);
-        static::assertEquals('name in de', $translations['de_de']['name']);
+        static::assertSame('name in de', $translations['de_de']['name']);
 
         $this->translatableListener->setTranslatableLocale('en_us');
     }
@@ -97,10 +97,10 @@ final class AttributeEntityTranslationTableTest extends BaseTestCaseORM
 
         $file = $this->em->find(self::FILE, $file->getId());
 
-        static::assertEquals('title in en', $file->getTitle());
+        static::assertSame('title in en', $file->getTitle());
         $file->locale = 'de';
         $this->em->refresh($file);
-        static::assertEquals('title in de', $file->getTitle());
+        static::assertSame('title in de', $file->getTitle());
     }
 
     protected function getUsedEntityFixtures()

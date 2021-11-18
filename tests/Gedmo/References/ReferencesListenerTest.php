@@ -65,7 +65,7 @@ final class ReferencesListenerTest extends BaseTestCaseOM
 
         $this->em->persist($stockItem);
 
-        static::assertEquals($product->getId(), $stockItem->getProductId());
+        static::assertSame($product->getId(), $stockItem->getProductId());
     }
 
     public function testShouldPopulateReferenceOneWithProxyFromIdentifierField()
@@ -120,17 +120,17 @@ final class ReferencesListenerTest extends BaseTestCaseOM
         $product = $this->dm->find(get_class($product), $product->getId());
 
         static::assertInstanceOf(Collection::class, $product->getStockItems());
-        static::assertEquals(2, $product->getStockItems()->count());
+        static::assertSame(2, $product->getStockItems()->count());
 
         $first = $product->getStockItems()->first();
 
         static::assertInstanceOf(get_class($stockItem), $first);
-        static::assertEquals('APP-TV', $first->getSku());
+        static::assertSame('APP-TV', $first->getSku());
 
         $last = $product->getStockItems()->last();
 
         static::assertInstanceOf(get_class($stockItem), $last);
-        static::assertEquals('AMZN-APP-TV', $last->getSku());
+        static::assertSame('AMZN-APP-TV', $last->getSku());
     }
 
     public function testShouldPopulateReferenceManyEmbedWithLazyCollectionInstance()
@@ -168,10 +168,13 @@ final class ReferencesListenerTest extends BaseTestCaseOM
         $this->dm->persist($appleTV);
         $this->dm->flush();
 
-        static::assertEquals($appleTV->getMetadatas()->first(), $tvMetadata);
-        static::assertEquals($samsungTV->getMetadatas()->first(), $tvMetadata);
+        static::assertSame($appleTV->getMetadatas()->first()->getCategoryId(), $tvMetadata->getCategoryId());
+        static::assertSame($appleTV->getMetadatas()->first()->getCategory()->getName(), $tvMetadata->getCategory()->getName());
+        static::assertSame($samsungTV->getMetadatas()->first()->getCategoryId(), $tvMetadata->getCategoryId());
+        static::assertSame($samsungTV->getMetadatas()->first()->getCategory()->getName(), $tvMetadata->getCategory()->getName());
 
         $tvs = $tvCategory->getProducts();
         static::assertNotNull($tvs);
+        static::assertContainsOnlyInstancesOf(Product::class, $tvs);
     }
 }

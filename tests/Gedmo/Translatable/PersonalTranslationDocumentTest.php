@@ -59,7 +59,7 @@ final class PersonalTranslationDocumentTest extends BaseTestCaseMongoODM
         $this->translatableListener->setTranslatableLocale('lt');
 
         $article = $this->dm->getRepository(self::ARTICLE)->find($this->id);
-        static::assertEquals('lt', $article->getTitle());
+        static::assertSame('lt', $article->getTitle());
     }
 
     private function populate()

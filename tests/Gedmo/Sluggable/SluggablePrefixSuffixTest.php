@@ -36,7 +36,7 @@ final class SluggablePrefixSuffixTest extends BaseTestCaseORM
         $this->em->persist($foo);
         $this->em->flush();
 
-        static::assertEquals('test-foo', $foo->getSlug());
+        static::assertSame('test-foo', $foo->getSlug());
     }
 
     public function testSuffix()
@@ -46,7 +46,7 @@ final class SluggablePrefixSuffixTest extends BaseTestCaseORM
         $this->em->persist($foo);
         $this->em->flush();
 
-        static::assertEquals('foo.test', $foo->getSlug());
+        static::assertSame('foo.test', $foo->getSlug());
     }
 
     public function testNoDuplicateSuffixes()
@@ -67,7 +67,7 @@ final class SluggablePrefixSuffixTest extends BaseTestCaseORM
         $this->em->persist($baz);
         $this->em->flush();
 
-        static::assertEquals('foo.test/bar.test/baz.test', $baz->getSlug());
+        static::assertSame('foo.test/bar.test/baz.test', $baz->getSlug());
     }
 
     public function testNoDuplicatePrefixes()
@@ -88,7 +88,7 @@ final class SluggablePrefixSuffixTest extends BaseTestCaseORM
         $this->em->persist($baz);
         $this->em->flush();
 
-        static::assertEquals('test.foo/test.bar/test.baz', $baz->getSlug());
+        static::assertSame('test.foo/test.bar/test.baz', $baz->getSlug());
     }
 
     /**

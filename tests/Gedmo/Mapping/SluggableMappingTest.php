@@ -73,15 +73,15 @@ final class SluggableMappingTest extends \PHPUnit\Framework\TestCase
 
         static::assertArrayHasKey('slugs', $config);
         static::assertArrayHasKey('slug', $config['slugs']);
-        static::assertEquals('slug', $config['slugs']['slug']['slug']);
+        static::assertSame('slug', $config['slugs']['slug']['slug']);
         static::assertArrayHasKey('fields', $config['slugs']['slug']);
         static::assertCount(1, $config['slugs']['slug']['fields']);
-        static::assertEquals('title', $config['slugs']['slug']['fields'][0]);
+        static::assertSame('title', $config['slugs']['slug']['fields'][0]);
 
         static::assertArrayHasKey('style', $config['slugs']['slug']);
-        static::assertEquals('camel', $config['slugs']['slug']['style']);
+        static::assertSame('camel', $config['slugs']['slug']['style']);
         static::assertArrayHasKey('separator', $config['slugs']['slug']);
-        static::assertEquals('_', $config['slugs']['slug']['separator']);
+        static::assertSame('_', $config['slugs']['slug']['separator']);
         static::assertArrayHasKey('unique', $config['slugs']['slug']);
         static::assertTrue($config['slugs']['slug']['unique']);
         static::assertArrayHasKey('updatable', $config['slugs']['slug']);
@@ -97,17 +97,17 @@ final class SluggableMappingTest extends \PHPUnit\Framework\TestCase
         static::assertCount(2, $first);
         static::assertArrayHasKey('parentRelationField', $first);
         static::assertArrayHasKey('separator', $first);
-        static::assertEquals('parent', $first['parentRelationField']);
-        static::assertEquals('/', $first['separator']);
+        static::assertSame('parent', $first['parentRelationField']);
+        static::assertSame('/', $first['separator']);
 
         $second = $handlers[RelativeSlugHandler::class];
         static::assertCount(3, $second);
         static::assertArrayHasKey('relationField', $second);
         static::assertArrayHasKey('relationSlugField', $second);
         static::assertArrayHasKey('separator', $second);
-        static::assertEquals('parent', $second['relationField']);
-        static::assertEquals('slug', $second['relationSlugField']);
-        static::assertEquals('/', $second['separator']);
+        static::assertSame('parent', $second['relationField']);
+        static::assertSame('slug', $second['relationSlugField']);
+        static::assertSame('/', $second['separator']);
     }
 
     /**
@@ -132,16 +132,16 @@ final class SluggableMappingTest extends \PHPUnit\Framework\TestCase
         static::assertCount(2, $first);
         static::assertArrayHasKey('parentRelationField', $first);
         static::assertArrayHasKey('separator', $first);
-        static::assertEquals('parent', $first['parentRelationField']);
-        static::assertEquals('/', $first['separator']);
+        static::assertSame('parent', $first['parentRelationField']);
+        static::assertSame('/', $first['separator']);
 
         $second = $handlers[RelativeSlugHandler::class];
         static::assertCount(3, $second);
         static::assertArrayHasKey('relationField', $second);
         static::assertArrayHasKey('relationSlugField', $second);
         static::assertArrayHasKey('separator', $second);
-        static::assertEquals('user', $second['relationField']);
-        static::assertEquals('slug', $second['relationSlugField']);
-        static::assertEquals('/', $second['separator']);
+        static::assertSame('user', $second['relationField']);
+        static::assertSame('slug', $second['relationSlugField']);
+        static::assertSame('/', $second['separator']);
     }
 }

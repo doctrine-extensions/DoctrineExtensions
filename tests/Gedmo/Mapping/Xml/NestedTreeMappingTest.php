@@ -54,16 +54,16 @@ final class NestedTreeMappingTest extends BaseTestCaseOM
         $config = $this->tree->getConfiguration($this->em, $meta->name);
 
         static::assertArrayHasKey('strategy', $config);
-        static::assertEquals('nested', $config['strategy']);
+        static::assertSame('nested', $config['strategy']);
         static::assertArrayHasKey('left', $config);
-        static::assertEquals('left', $config['left']);
+        static::assertSame('left', $config['left']);
         static::assertArrayHasKey('right', $config);
-        static::assertEquals('right', $config['right']);
+        static::assertSame('right', $config['right']);
         static::assertArrayHasKey('level', $config);
-        static::assertEquals('level', $config['level']);
+        static::assertSame('level', $config['level']);
         static::assertArrayHasKey('root', $config);
-        static::assertEquals('root', $config['root']);
+        static::assertSame('root', $config['root']);
         static::assertArrayHasKey('parent', $config);
-        static::assertEquals('parent', $config['parent']);
+        static::assertSame('parent', $config['parent']);
     }
 }

@@ -60,7 +60,7 @@ final class Issue135Test extends BaseTestCaseORM
 
         $count = 0;
         str_replace("locale = 'en'", '', $query->getSql(), $count);
-        static::assertEquals(0, $count);
+        static::assertSame(0, $count);
     }
 
     protected function getUsedEntityFixtures()

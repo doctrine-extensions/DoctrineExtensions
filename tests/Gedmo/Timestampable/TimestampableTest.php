@@ -186,15 +186,15 @@ final class TimestampableTest extends BaseTestCaseORM
 
         $repo = $this->em->getRepository(self::ARTICLE);
         $sport = $repo->findOneBy(['title' => 'sport forced']);
-        static::assertEquals(
+        static::assertSame(
             '2000-01-01',
             $sport->getCreated()->format('Y-m-d')
         );
-        static::assertEquals(
+        static::assertSame(
             '2000-01-01 12:00:00',
             $sport->getUpdated()->format('Y-m-d H:i:s')
         );
-        static::assertEquals(
+        static::assertSame(
             '2000-01-01 12:00:00',
             $sport->getContentChanged()->format('Y-m-d H:i:s')
         );
@@ -209,7 +209,7 @@ final class TimestampableTest extends BaseTestCaseORM
         $this->em->flush();
 
         $sport = $repo->findOneBy(['title' => 'sport forced']);
-        static::assertEquals(
+        static::assertSame(
             '2000-01-01 12:00:00',
             $sport->getPublished()->format('Y-m-d H:i:s')
         );
