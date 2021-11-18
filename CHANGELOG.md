@@ -19,6 +19,8 @@ a release.
 ---
 
 ## [Unreleased]
+
+## [3.3.1] - 2021-11-18
 ### Fixed
 - Translatable: Using ORM/ODM attribute mapping and translatable annotations.
 - Tree: Missing support for `tree-path-hash` fields in XML mapping.
