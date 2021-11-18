@@ -18,6 +18,7 @@ return (new PhpCsFixer\Config())
         'blank_line_before_statement' => true,
         'combine_consecutive_issets' => true,
         'combine_consecutive_unsets' => true,
+        'error_suppression' => true,
         'is_null' => false,
         'list_syntax' => ['syntax' => 'short'],
         'modernize_types_casting' => true,
