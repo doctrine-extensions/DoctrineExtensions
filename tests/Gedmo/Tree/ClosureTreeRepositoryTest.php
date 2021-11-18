@@ -239,23 +239,23 @@ final class ClosureTreeRepositoryTest extends BaseTestCaseORM
                 $vegitables = $includeNewNode ? $boringFood['__children'][0] : ($includeNode ? $tree[0]['__children'][2] : $tree[2]);
 
                 if ($includeNode) {
-                    static::assertEquals('Food', $tree[0]['title']);
+                    static::assertSame('Food', $tree[0]['title']);
                 }
 
-                static::assertEquals('Fruits', $fruits['title']);
-                static::assertEquals('Berries', $fruits['__children'][0]['title']);
-                static::assertEquals('Strawberries', $fruits['__children'][0]['__children'][0]['title']);
-                static::assertEquals('Milk', $milk['title']);
-                static::assertEquals('Cheese', $milk['__children'][0]['title']);
-                static::assertEquals('Mould cheese', $milk['__children'][0]['__children'][0]['title']);
+                static::assertSame('Fruits', $fruits['title']);
+                static::assertSame('Berries', $fruits['__children'][0]['title']);
+                static::assertSame('Strawberries', $fruits['__children'][0]['__children'][0]['title']);
+                static::assertSame('Milk', $milk['title']);
+                static::assertSame('Cheese', $milk['__children'][0]['title']);
+                static::assertSame('Mould cheese', $milk['__children'][0]['__children'][0]['title']);
 
                 if ($boringFood) {
-                    static::assertEquals('Boring Food', $boringFood['title']);
+                    static::assertSame('Boring Food', $boringFood['title']);
                 }
 
-                static::assertEquals('Vegitables', $vegitables['title']);
-                static::assertEquals('Cabbages', $vegitables['__children'][0]['title']);
-                static::assertEquals('Carrots', $vegitables['__children'][1]['title']);
+                static::assertSame('Vegitables', $vegitables['title']);
+                static::assertSame('Cabbages', $vegitables['__children'][0]['title']);
+                static::assertSame('Carrots', $vegitables['__children'][1]['title']);
             }
 
             if ('both' === $whichTree || 'second' === $whichTree) {
@@ -263,11 +263,11 @@ final class ClosureTreeRepositoryTest extends BaseTestCaseORM
                 $soccer = $includeNode ? $root['__children'][0] : $root;
 
                 if ($includeNode) {
-                    static::assertEquals('Sports', $root['title']);
+                    static::assertSame('Sports', $root['title']);
                 }
 
-                static::assertEquals('Soccer', $soccer['title']);
-                static::assertEquals('Indoor Soccer', $soccer['__children'][0]['title']);
+                static::assertSame('Soccer', $soccer['title']);
+                static::assertSame('Indoor Soccer', $soccer['__children'][0]['title']);
             }
         };
 
