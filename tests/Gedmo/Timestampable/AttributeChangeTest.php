@@ -90,7 +90,7 @@ final class AttributeChangeTest extends BaseTestCaseORM
         $this->em->persist($test);
         $this->em->flush();
         $this->em->clear();
-        //Changed
+        // Changed.
         static::assertEquals(
             $anotherDate->format('Y-m-d H:i:s'),
             $test->getClosed()->format('Y-m-d H:i:s')
