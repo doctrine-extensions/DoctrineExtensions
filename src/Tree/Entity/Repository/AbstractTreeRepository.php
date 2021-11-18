@@ -38,11 +38,8 @@ abstract class AbstractTreeRepository extends EntityRepository implements Reposi
                 if ($listener instanceof TreeListener) {
                     $treeListener = $listener;
 
-                    break;
+                    break 2;
                 }
-            }
-            if ($treeListener) {
-                break;
             }
         }
 

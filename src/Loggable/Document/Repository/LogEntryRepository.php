@@ -145,11 +145,8 @@ class LogEntryRepository extends DocumentRepository
                     if ($listener instanceof LoggableListener) {
                         $this->listener = $listener;
 
-                        break;
+                        break 2;
                     }
-                }
-                if ($this->listener) {
-                    break;
                 }
             }
 
