@@ -36,7 +36,7 @@ class TitledArticle implements Timestampable
      */
     #[ORM\Column(name: 'chtitle', type: Types::DATETIME_MUTABLE, nullable: true)]
     #[Gedmo\Timestampable(on: 'change', field: 'title')]
-    private $chtitle;
+    private $chTitle;
 
     /**
      * @var \DateTime
