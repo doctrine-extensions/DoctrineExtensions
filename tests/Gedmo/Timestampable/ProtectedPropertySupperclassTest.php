@@ -1,6 +1,6 @@
 <?php
 
-namespace Gedmo\Tests\Tree;
+namespace Gedmo\Tests\Timestampable;
 
 use Doctrine\Common\EventManager;
 use Gedmo\Tests\Timestampable\Fixture\SupperClassExtension;
@@ -33,7 +33,7 @@ final class ProtectedPropertySupperclassTest extends BaseTestCaseORM
         $evm->addEventSubscriber($translatableListener);
         $evm->addEventSubscriber(new TimestampableListener());
 
-        $this->getMockSqliteEntityManager($evm);
+        $this->getDefaultMockSqliteEntityManager($evm);
     }
 
     public function testProtectedProperty()

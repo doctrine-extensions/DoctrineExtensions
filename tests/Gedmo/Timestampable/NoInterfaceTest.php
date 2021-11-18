@@ -30,7 +30,7 @@ final class NoInterfaceTest extends BaseTestCaseORM
         $this->getMockSqliteEntityManager($evm);
     }
 
-    public function testTimestampableNoInterface()
+    public function testTimestampableNoInterface(): void
     {
         $test = new WithoutInterface();
         $test->setTitle('Test');
@@ -51,7 +51,7 @@ final class NoInterfaceTest extends BaseTestCaseORM
         );
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::FIXTURE,

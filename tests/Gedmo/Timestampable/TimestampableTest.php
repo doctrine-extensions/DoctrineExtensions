@@ -33,7 +33,7 @@ final class TimestampableTest extends BaseTestCaseORM
         $evm = new EventManager();
         $evm->addEventSubscriber(new TimestampableListener());
 
-        $this->getMockSqliteEntityManager($evm);
+        $this->getDefaultMockSqliteEntityManager($evm);
     }
 
     /**

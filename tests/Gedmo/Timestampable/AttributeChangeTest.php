@@ -2,13 +2,9 @@
 
 namespace Gedmo\Tests\Timestampable;
 
-use Doctrine\Common\EventArgs;
 use Doctrine\Common\EventManager;
-use Gedmo\Mapping\Event\Adapter\ORM as BaseAdapterORM;
-use Gedmo\Tests\Timestampable\Fixture\TitledArticle;
+use Gedmo\Tests\Timestampable\Fixture\Attribute\TitledArticle;
 use Gedmo\Tests\Tool\BaseTestCaseORM;
-use Gedmo\Timestampable\Mapping\Event\TimestampableAdapter;
-use Gedmo\Timestampable\TimestampableListener;
 
 /**
  * These are tests for Timestampable behavior
@@ -18,8 +14,10 @@ use Gedmo\Timestampable\TimestampableListener;
  * @see http://www.gediminasm.org
  *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
+ *
+ * @requires PHP >= 8.0
  */
-final class ChangeTest extends BaseTestCaseORM
+final class AttributeChangeTest extends BaseTestCaseORM
 {
     public const FIXTURE = TitledArticle::class;
 
@@ -38,7 +36,7 @@ final class ChangeTest extends BaseTestCaseORM
         $this->getDefaultMockSqliteEntityManager($evm);
     }
 
-    public function testChange()
+    public function testChange(): void
     {
         $test = new TitledArticle();
         $test->setTitle('Test');
@@ -58,7 +56,7 @@ final class ChangeTest extends BaseTestCaseORM
         $this->em->persist($test);
         $this->em->flush();
         $this->em->clear();
-        //Changed
+        // Changed.
         static::assertEquals(
             $currentDate->format('Y-m-d H:i:s'),
             $test->getChtitle()->format('Y-m-d H:i:s')
@@ -77,7 +75,7 @@ final class ChangeTest extends BaseTestCaseORM
         $this->em->persist($test);
         $this->em->flush();
         $this->em->clear();
-        //Not Changed
+        // Not Changed.
         static::assertEquals(
             $currentDate->format('Y-m-d H:i:s'),
             $test->getChtitle()->format('Y-m-d H:i:s')
@@ -92,44 +90,17 @@ final class ChangeTest extends BaseTestCaseORM
         $this->em->persist($test);
         $this->em->flush();
         $this->em->clear();
-        //Changed
+        // Changed.
         static::assertEquals(
             $anotherDate->format('Y-m-d H:i:s'),
             $test->getClosed()->format('Y-m-d H:i:s')
         );
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::FIXTURE,
         ];
-    }
-}
-
-class EventAdapterORMStub extends BaseAdapterORM implements TimestampableAdapter
-{
-    protected $dateTime;
-
-    public function setDateValue(\DateTime $dateTime)
-    {
-        $this->dateTime = $dateTime;
-    }
-
-    public function getDateValue($meta, $field)
-    {
-        return $this->dateTime;
-    }
-}
-
-class TimestampableListenerStub extends TimestampableListener
-{
-    public $eventAdapter;
-
-    protected function getEventAdapter(EventArgs $args)
-    {
-        $this->eventAdapter->setEventArgs($args);
-
-        return $this->eventAdapter;
     }
 }

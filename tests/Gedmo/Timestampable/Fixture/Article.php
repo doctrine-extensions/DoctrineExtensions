@@ -2,6 +2,7 @@
 
 namespace Gedmo\Tests\Timestampable\Fixture;
 
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\Timestampable\Timestampable;
@@ -9,29 +10,41 @@ use Gedmo\Timestampable\Timestampable;
 /**
  * @ORM\Entity
  */
+#[ORM\Entity]
 class Article implements Timestampable
 {
-    /** @ORM\Id @ORM\GeneratedValue @ORM\Column(type="integer") */
+    /**
+     * @ORM\Id
+     * @ORM\GeneratedValue
+     * @ORM\Column(type="integer")
+     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: Types::INTEGER)]
     private $id;
 
     /**
      * @ORM\Column(name="title", type="string", length=128)
      */
+    #[ORM\Column(name: 'title', type: Types::STRING, length: 128)]
     private $title;
 
     /**
      * @ORM\Column(name="body", type="string")
      */
+    #[ORM\Column(name: 'body', type: Types::STRING)]
     private $body;
 
     /**
      * @ORM\OneToMany(targetEntity="Gedmo\Tests\Timestampable\Fixture\Comment", mappedBy="article")
      */
+    #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: 'article')]
     private $comments;
 
     /**
      * @ORM\Embedded(class="Gedmo\Tests\Timestampable\Fixture\Author")
      */
+    #[ORM\Embedded(class: Author::class)]
     private $author;
 
     /**
@@ -40,6 +53,8 @@ class Article implements Timestampable
      * @Gedmo\Timestampable(on="create")
      * @ORM\Column(name="created", type="date")
      */
+    #[Gedmo\Timestampable(on: 'create')]
+    #[ORM\Column(name: 'created', type: Types::DATE_MUTABLE)]
     private $created;
 
     /**
@@ -48,6 +63,8 @@ class Article implements Timestampable
      * @ORM\Column(name="updated", type="datetime")
      * @Gedmo\Timestampable
      */
+    #[ORM\Column(name: 'updated', type: Types::DATETIME_MUTABLE)]
+    #[Gedmo\Timestampable]
     private $updated;
 
     /**
@@ -56,6 +73,8 @@ class Article implements Timestampable
      * @ORM\Column(name="published", type="datetime", nullable=true)
      * @Gedmo\Timestampable(on="change", field="type.title", value="Published")
      */
+    #[ORM\Column(name: 'published', type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[Gedmo\Timestampable(on: 'change', field: 'type.title', value: 'Published')]
     private $published;
 
     /**
@@ -64,6 +83,8 @@ class Article implements Timestampable
      * @ORM\Column(name="content_changed", type="datetime", nullable=true)
      * @Gedmo\Timestampable(on="change", field={"title", "body"})
      */
+    #[ORM\Column(name: 'content_changed', type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[Gedmo\Timestampable(on: 'change', field: ['title', 'body'])]
     private $contentChanged;
     /**
      * @var \DateTime
@@ -71,11 +92,14 @@ class Article implements Timestampable
      * @ORM\Column(name="author_changed", type="datetime", nullable=true)
      * @Gedmo\Timestampable(on="change", field={"author.name", "author.email"})
      */
+    #[ORM\Column(name: 'author_changed', type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[Gedmo\Timestampable(on: 'change', field: ['author.name', 'author.email'])]
     private $authorChanged;
 
     /**
      * @ORM\ManyToOne(targetEntity="Type", inversedBy="articles")
      */
+    #[ORM\ManyToOne(targetEntity: Type::class, inversedBy: 'articles')]
     private $type;
 
     public function setType($type)
@@ -132,7 +156,7 @@ class Article implements Timestampable
     /**
      * Get created
      *
-     * @return datetime $created
+     * @return \DateTime $created
      */
     public function getCreated()
     {
@@ -157,7 +181,7 @@ class Article implements Timestampable
     /**
      * Get updated
      *
-     * @return datetime $updated
+     * @return \DateTime $updated
      */
     public function getUpdated()
     {
