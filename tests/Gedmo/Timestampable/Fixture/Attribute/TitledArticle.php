@@ -36,7 +36,7 @@ class TitledArticle implements Timestampable
     #[Gedmo\Timestampable(on: 'change', field: 'state', value: ['Published', 'Closed'])]
     private ?\DateTime $closed;
 
-    public function setChText(?\DateTime $chText): void
+    public function setChText(\DateTime $chText): void
     {
         $this->chText = $chText;
     }
@@ -46,7 +46,7 @@ class TitledArticle implements Timestampable
         return $this->chText;
     }
 
-    public function setChTitle(?\DateTime $chTitle): void
+    public function setChTitle(\DateTime $chTitle): void
     {
         $this->chTitle = $chTitle;
     }
@@ -56,7 +56,7 @@ class TitledArticle implements Timestampable
         return $this->chTitle;
     }
 
-    public function setClosed(?\DateTime $closed): void
+    public function setClosed(\DateTime $closed): void
     {
         $this->closed = $closed;
     }
