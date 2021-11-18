@@ -2,13 +2,9 @@
 
 namespace Gedmo\Tests\Timestampable;
 
-use Doctrine\Common\EventArgs;
 use Doctrine\Common\EventManager;
-use Gedmo\Mapping\Event\Adapter\ORM as BaseAdapterORM;
 use Gedmo\Tests\Timestampable\Fixture\Attribute\TitledArticle;
 use Gedmo\Tests\Tool\BaseTestCaseORM;
-use Gedmo\Timestampable\Mapping\Event\TimestampableAdapter;
-use Gedmo\Timestampable\TimestampableListener;
 
 /**
  * These are tests for Timestampable behavior

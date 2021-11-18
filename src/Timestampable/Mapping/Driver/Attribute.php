@@ -2,7 +2,6 @@
 
 namespace Gedmo\Timestampable\Mapping\Driver;
 
-use Gedmo\Mapping\Annotation\Translatable;
 use Gedmo\Mapping\Driver\AttributeDriverInterface;
 
 /**
