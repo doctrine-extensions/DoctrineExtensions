@@ -27,6 +27,7 @@ return (new PhpCsFixer\Config())
         'ordered_imports' => ['sort_algorithm' => 'alpha'],
         'phpdoc_summary' => false,
         'phpdoc_to_comment' => false,
+        'php_unit_construct' => true,
         'php_unit_method_casing' => false,
         'php_unit_set_up_tear_down_visibility' => true,
         'php_unit_test_annotation' => false,
