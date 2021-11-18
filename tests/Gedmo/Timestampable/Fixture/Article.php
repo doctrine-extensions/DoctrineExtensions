@@ -35,7 +35,7 @@ class Article implements Timestampable
     private $author;
 
     /**
-     * @var datetime
+     * @var \DateTime
      *
      * @Gedmo\Timestampable(on="create")
      * @ORM\Column(name="created", type="date")
@@ -43,7 +43,7 @@ class Article implements Timestampable
     private $created;
 
     /**
-     * @var datetime
+     * @var \DateTime
      *
      * @ORM\Column(name="updated", type="datetime")
      * @Gedmo\Timestampable
@@ -51,7 +51,7 @@ class Article implements Timestampable
     private $updated;
 
     /**
-     * @var datetime
+     * @var \DateTime
      *
      * @ORM\Column(name="published", type="datetime", nullable=true)
      * @Gedmo\Timestampable(on="change", field="type.title", value="Published")
@@ -59,14 +59,14 @@ class Article implements Timestampable
     private $published;
 
     /**
-     * @var datetime
+     * @var \DateTime
      *
      * @ORM\Column(name="content_changed", type="datetime", nullable=true)
      * @Gedmo\Timestampable(on="change", field={"title", "body"})
      */
     private $contentChanged;
     /**
-     * @var datetime
+     * @var \DateTime
      *
      * @ORM\Column(name="author_changed", type="datetime", nullable=true)
      * @Gedmo\Timestampable(on="change", field={"author.name", "author.email"})
