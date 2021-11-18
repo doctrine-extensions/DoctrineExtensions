@@ -1,7 +1,5 @@
 <?php
 
-// file: vendor/Extension/Encoder/EncoderListener.php
-
 namespace Gedmo\Tests\Mapping\Mock\Extension\Encoder;
 
 use Doctrine\Common\EventArgs;

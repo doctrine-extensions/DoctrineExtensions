@@ -19,7 +19,6 @@ final class ExtensionORMTest extends BaseTestCaseORM
     {
         parent::setUp();
 
-        require_once __DIR__.'/Mock/Extension/Encoder/Mapping/Annotations.php';
         $evm = new EventManager();
         $this->encoderListener = new EncoderListener();
         $evm->addEventSubscriber($this->encoderListener);

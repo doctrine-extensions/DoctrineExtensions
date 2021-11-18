@@ -1,7 +1,5 @@
 <?php
 
-// file: vendor/Extension/Encoder/Mapping/Annotations.php
-
 namespace Gedmo\Tests\Mapping\Mock\Extension\Encoder\Mapping;
 
 use Doctrine\Common\Annotations\Annotation;

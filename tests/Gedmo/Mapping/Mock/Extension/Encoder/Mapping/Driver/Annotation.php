@@ -1,7 +1,5 @@
 <?php
 
-// file: vendor/Extension/Encoder/Mapping/Driver/Annotation.php
-
 namespace Gedmo\Tests\Mapping\Mock\Extension\Encoder\Mapping\Driver;
 
 use Doctrine\Common\Annotations\AnnotationReader;
@@ -17,8 +15,6 @@ class Annotation implements Driver
 
     public function readExtendedMetadata($meta, array &$config)
     {
-        // load our available annotations
-        require_once __DIR__.'/../Annotations.php';
         $reader = new AnnotationReader();
         // set annotation namespace and alias
         //$reader->setAnnotationNamespaceAlias('Gedmo\Tests\Mapping\Mock\Extension\Encoder\Mapping\\', 'ext');
