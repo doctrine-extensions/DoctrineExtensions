@@ -3,10 +3,10 @@
 namespace Gedmo\Tests\Translatable;
 
 use Doctrine\Common\EventManager;
-use Doctrine\ORM\EntityRepository;
 use Gedmo\Tests\Tool\BaseTestCaseORM;
 use Gedmo\Tests\Translatable\Fixture\Article;
 use Gedmo\Tests\Translatable\Fixture\Comment;
+use Gedmo\Translatable\Entity\Repository\TranslationRepository;
 use Gedmo\Translatable\Entity\Translation;
 use Gedmo\Translatable\TranslatableListener;
 
@@ -31,7 +31,7 @@ final class TranslatableEntityDefaultTranslationTest extends BaseTestCaseORM
     private $translatableListener;
 
     /**
-     * @var EntityRepository
+     * @var TranslationRepository
      */
     private $repo;
 

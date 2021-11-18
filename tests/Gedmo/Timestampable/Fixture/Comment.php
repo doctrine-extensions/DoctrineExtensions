@@ -30,7 +30,7 @@ class Comment implements Timestampable
     private $status;
 
     /**
-     * @var datetime
+     * @var \DateTime
      *
      * @ORM\Column(name="closed", type="datetime", nullable=true)
      * @Gedmo\Timestampable(on="change", field="status", value=1)
@@ -38,7 +38,7 @@ class Comment implements Timestampable
     private $closed;
 
     /**
-     * @var datetime
+     * @var \DateTime
      *
      * @ORM\Column(name="modified", type="time")
      * @Gedmo\Timestampable(on="update")

@@ -16,7 +16,7 @@ class Article
     private $title;
 
     /**
-     * @var datetime
+     * @var \DateTime
      *
      * @gedmo:Timestampable(on="create")
      * @Column(name="created", type="date")
@@ -24,7 +24,7 @@ class Article
     private $created;
 
     /**
-     * @var datetime
+     * @var \DateTime
      *
      * @Column(name="updated", type="datetime")
      * @gedmo:Timestampable

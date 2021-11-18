@@ -109,7 +109,7 @@ class Article
     private $updatedFromIp;
 
     /**
-     * @var datetime $contentChangedFromIp
+     * @var \DateTime $contentChangedFromIp
      *
      * @ORM\Column(name="content_changed_by", type="string", nullable=true, length=45)
      * @Gedmo\IpTraceable(on="change", field={"title", "body"})

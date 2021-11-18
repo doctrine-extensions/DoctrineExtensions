@@ -36,7 +36,7 @@ abstract class Person
     /**
      * @ORM\OneToMany(targetEntity="Person", mappedBy="parent")
      *
-     * @var Doctrine\Common\Collections\ArrayCollection
+     * @var \Doctrine\Common\Collections\ArrayCollection
      */
     protected $children;
 

@@ -24,7 +24,7 @@ final class MaterializedPathODMMongoDBRepositoryTest extends BaseTestCaseMongoOD
     private const CATEGORY = Category::class;
 
     /**
-     * @var Document\MongoDB\Repository\MaterializedPathRepository
+     * @var \Gedmo\Tree\Document\MongoDB\Repository\MaterializedPathRepository
      */
     protected $repo;
 
