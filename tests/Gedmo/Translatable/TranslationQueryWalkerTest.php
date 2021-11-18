@@ -283,7 +283,7 @@ final class TranslationQueryWalkerTest extends BaseTestCaseORM
         // array hydration
         $result = $q->getArrayResult();
         static::assertCount(1, $result);
-        static::assertEquals(null, $result[0]['title']);
+        static::assertNull($result[0]['title']);
     }
 
     /**
