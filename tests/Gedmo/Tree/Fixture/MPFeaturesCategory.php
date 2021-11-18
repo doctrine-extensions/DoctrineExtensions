@@ -82,7 +82,7 @@ class MPFeaturesCategory
         return $this->title;
     }
 
-    public function setParent(MPFeaturesCategory $parent = null)
+    public function setParent(self $parent = null)
     {
         $this->parentId = $parent;
     }

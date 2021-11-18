@@ -100,7 +100,7 @@ class PrefixWithTreeHandler implements Sluggable
     /**
      * @return $this;
      */
-    public function setParent(PrefixWithTreeHandler $parent)
+    public function setParent(self $parent)
     {
         $this->parent = $parent;
 

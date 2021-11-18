@@ -105,7 +105,7 @@ class Category extends BaseCategory
      *
      * @param Entity\Category $children
      */
-    public function addChildren(Category $children)
+    public function addChildren(self $children)
     {
         $this->children[] = $children;
     }

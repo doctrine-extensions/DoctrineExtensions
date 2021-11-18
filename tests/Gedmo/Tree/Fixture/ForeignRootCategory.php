@@ -76,7 +76,7 @@ class ForeignRootCategory
         return $this->title;
     }
 
-    public function setParent(ForeignRootCategory $parent = null)
+    public function setParent(self $parent = null)
     {
         $this->parent = $parent;
     }

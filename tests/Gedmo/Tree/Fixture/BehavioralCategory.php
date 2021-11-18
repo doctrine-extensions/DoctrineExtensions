@@ -77,7 +77,7 @@ class BehavioralCategory
         return $this->title;
     }
 
-    public function setParent(BehavioralCategory $parent)
+    public function setParent(self $parent)
     {
         $this->parent = $parent;
     }

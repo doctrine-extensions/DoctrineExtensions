@@ -79,7 +79,7 @@ class RootAssociationCategory
         return $this->title;
     }
 
-    public function setParent(RootAssociationCategory $parent = null)
+    public function setParent(self $parent = null)
     {
         $this->parent = $parent;
     }

@@ -79,7 +79,7 @@ class MPCategoryWithRootAssociation
         return $this->title;
     }
 
-    public function setParent(MPCategoryWithRootAssociation $parent = null)
+    public function setParent(self $parent = null)
     {
         $this->parentId = $parent;
     }

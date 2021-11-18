@@ -94,7 +94,7 @@ class CategoryUuid implements NodeInterface
         return $this->title;
     }
 
-    public function setParent(CategoryUuid $parent)
+    public function setParent(self $parent)
     {
         $this->parentId = $parent;
     }
