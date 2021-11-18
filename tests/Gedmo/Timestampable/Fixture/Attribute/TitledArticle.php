@@ -2,10 +2,10 @@
 
 namespace Gedmo\Tests\Timestampable\Fixture\Attribute;
 
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\Timestampable\Timestampable;
-use Doctrine\DBAL\Types\Types;
 
 #[ORM\Entity]
 class TitledArticle implements Timestampable

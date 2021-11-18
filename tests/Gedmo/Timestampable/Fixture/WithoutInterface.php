@@ -8,26 +8,39 @@ use Gedmo\Mapping\Annotation as Gedmo;
 /**
  * @ORM\Entity
  */
+#[ORM\Entity]
 class WithoutInterface
 {
-    /** @ORM\Id @ORM\GeneratedValue @ORM\Column(type="integer") */
+    /**
+     * @ORM\Id
+     * @ORM\GeneratedValue
+     * @ORM\Column(type="integer")
+     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
     /**
      * @ORM\Column(type="string", length=128)
      */
+    #[ORM\Column(type: 'string', length: 128)]
     private $title;
 
     /**
      * @Gedmo\Timestampable(on="create")
      * @ORM\Column(type="date")
      */
+    #[Gedmo\Timestampable(on: 'create')]
+    #[ORM\Column(type: 'date')]
     private $created;
 
     /**
      * @ORM\Column(type="datetime")
      * @Gedmo\Timestampable(on="update")
      */
+    #[ORM\Column(type: 'datetime')]
+    #[Gedmo\Timestampable(on: 'update')]
     private $updated;
 
     public function getId()

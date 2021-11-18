@@ -35,7 +35,7 @@ final class ChangeTest extends BaseTestCaseORM
         $evm = new EventManager();
         $evm->addEventSubscriber($this->listener);
 
-        $this->getMockSqliteEntityManager($evm);
+        $this->getDefaultMockSqliteEntityManager($evm);
     }
 
     public function testChange()
