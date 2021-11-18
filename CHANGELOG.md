@@ -20,7 +20,7 @@ a release.
 
 ## [Unreleased]
 ### Added
-- Support to use Timestampable annotations as attributes on PHP >= 8.0.
+- Timestampable: Support to use annotations as attributes on PHP >= 8.0.
 
 ## [3.3.1] - 2021-11-18
 ### Fixed
