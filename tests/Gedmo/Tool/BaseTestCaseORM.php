@@ -88,7 +88,7 @@ abstract class BaseTestCaseORM extends \PHPUnit\Framework\TestCase
     private function getDefaultConfiguration(): Configuration
     {
         $config = new Configuration();
-        $config->setProxyDir(__DIR__.'/../../temp');
+        $config->setProxyDir(TESTS_TEMP_DIR);
         $config->setProxyNamespace('Proxy');
         $config->setMetadataDriverImpl($this->getMetadataDefaultDriverImplementation());
 
