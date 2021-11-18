@@ -10,6 +10,7 @@ use Doctrine\Persistence\Mapping\Driver\MappingDriverChain;
 use Doctrine\Persistence\Mapping\Driver\SymfonyFileLocator;
 use Doctrine\Persistence\ObjectManager;
 use Gedmo\Mapping\Driver\AnnotationDriverInterface;
+use Gedmo\Mapping\Driver\AttributeAnnotationReader;
 use Gedmo\Mapping\Driver\AttributeDriverInterface;
 use Gedmo\Mapping\Driver\AttributeReader;
 use Gedmo\Mapping\Driver\File as FileDriver;
@@ -186,7 +187,7 @@ class ExtensionMetadataFactory
             }
 
             if ($driver instanceof AttributeDriverInterface) {
-                $driver->setAnnotationReader(new AttributeReader());
+                $driver->setAnnotationReader(new AttributeAnnotationReader(new AttributeReader(), $this->annotationReader));
             } elseif ($driver instanceof AnnotationDriverInterface) {
                 $driver->setAnnotationReader($this->annotationReader);
             }

@@ -13,7 +13,9 @@ use ReflectionClass;
  */
 final class AttributeReader
 {
-    /** @return array<Annotation> */
+    /**
+     * @return Annotation[]
+     */
     public function getClassAnnotations(ReflectionClass $class): array
     {
         return $this->convertToAttributeInstances($class->getAttributes());
@@ -24,7 +26,9 @@ final class AttributeReader
         return $this->getClassAnnotations($class)[$annotationName] ?? null;
     }
 
-    /** @return array<Annotation> */
+    /**
+     * @return Annotation[]
+     */
     public function getPropertyAnnotations(\ReflectionProperty $property): array
     {
         return $this->convertToAttributeInstances($property->getAttributes());
@@ -38,7 +42,7 @@ final class AttributeReader
     /**
      * @param array<\ReflectionAttribute> $attributes
      *
-     * @return array<Annotation>
+     * @return Annotation[]
      */
     private function convertToAttributeInstances(array $attributes): array
     {

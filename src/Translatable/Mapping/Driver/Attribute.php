@@ -8,7 +8,7 @@ use Gedmo\Mapping\Driver\AttributeDriverInterface;
 /**
  * This is an attribute mapping driver for Translatable
  * behavioral extension. Used for extraction of extended
- * metadata from Annotations specifically for Translatable
+ * metadata from attributes specifically for Translatable
  * extension.
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
