@@ -62,11 +62,8 @@ class SimpleObjectHydrator extends BaseSimpleObjectHydrator
                 if ($listener instanceof TranslatableListener) {
                     $translatableListener = $listener;
 
-                    break;
+                    break 2;
                 }
-            }
-            if ($translatableListener) {
-                break;
             }
         }
 

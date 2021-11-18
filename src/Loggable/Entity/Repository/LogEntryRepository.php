@@ -146,11 +146,8 @@ class LogEntryRepository extends EntityRepository
                     if ($listener instanceof LoggableListener) {
                         $this->listener = $listener;
 
-                        break;
+                        break 2;
                     }
-                }
-                if ($this->listener) {
-                    break;
                 }
             }
 

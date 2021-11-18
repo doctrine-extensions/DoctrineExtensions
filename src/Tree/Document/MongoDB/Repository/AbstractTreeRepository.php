@@ -36,11 +36,8 @@ abstract class AbstractTreeRepository extends DocumentRepository implements Repo
                 if ($listener instanceof \Gedmo\Tree\TreeListener) {
                     $treeListener = $listener;
 
-                    break;
+                    break 2;
                 }
-            }
-            if ($treeListener) {
-                break;
             }
         }
 

@@ -94,11 +94,8 @@ class SoftDeleteableWalker extends SqlWalker
                     if ($listener instanceof SoftDeleteableListener) {
                         $this->listener = $listener;
 
-                        break;
+                        break 2;
                     }
-                }
-                if ($this->listener) {
-                    break;
                 }
             }
 

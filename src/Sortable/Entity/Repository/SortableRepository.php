@@ -34,11 +34,8 @@ class SortableRepository extends EntityRepository
                 if ($listener instanceof SortableListener) {
                     $sortableListener = $listener;
 
-                    break;
+                    break 2;
                 }
-            }
-            if ($sortableListener) {
-                break;
             }
         }
 
