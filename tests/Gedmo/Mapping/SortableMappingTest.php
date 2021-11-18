@@ -62,11 +62,11 @@ final class SortableMappingTest extends BaseTestCaseOM
         $config = $this->sortable->getConfiguration($this->em, $meta->name);
 
         static::assertArrayHasKey('position', $config);
-        static::assertEquals('position', $config['position']);
+        static::assertSame('position', $config['position']);
         static::assertArrayHasKey('groups', $config);
         static::assertCount(3, $config['groups']);
-        static::assertEquals('grouping', $config['groups'][0]);
-        static::assertEquals('sortable_group', $config['groups'][1]);
-        static::assertEquals('sortable_groups', $config['groups'][2]);
+        static::assertSame('grouping', $config['groups'][0]);
+        static::assertSame('sortable_group', $config['groups'][1]);
+        static::assertSame('sortable_groups', $config['groups'][2]);
     }
 }

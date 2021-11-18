@@ -147,8 +147,8 @@ final class TranslatableTest extends BaseTestCaseORM
             \Doctrine\ORM\Query::HYDRATE_ARRAY
         );
         static::assertCount(1, $result);
-        static::assertEquals('title in en', $result[0]['title']);
-        static::assertEquals('content in en', $result[0]['content']);
+        static::assertSame('title in en', $result[0]['title']);
+        static::assertSame('content in en', $result[0]['content']);
 
         $repo = $this->em->getRepository(self::TRANSLATION);
         $translations = $repo->findTranslations($article);
@@ -156,10 +156,10 @@ final class TranslatableTest extends BaseTestCaseORM
         static::assertArrayHasKey('de_de', $translations);
 
         static::assertArrayHasKey('content', $translations['de_de']);
-        static::assertEquals('content in de', $translations['de_de']['content']);
+        static::assertSame('content in de', $translations['de_de']['content']);
 
         static::assertArrayHasKey('title', $translations['de_de']);
-        static::assertEquals('title in de', $translations['de_de']['title']);
+        static::assertSame('title in de', $translations['de_de']['title']);
 
         // test second translations
         $article = $this->em->find(self::ARTICLE, $this->articleId);
@@ -185,10 +185,10 @@ final class TranslatableTest extends BaseTestCaseORM
         static::assertArrayHasKey('de_de', $translations);
 
         static::assertArrayHasKey('content', $translations['de_de']);
-        static::assertEquals('content in de', $translations['de_de']['content']);
+        static::assertSame('content in de', $translations['de_de']['content']);
 
         static::assertArrayHasKey('title', $translations['de_de']);
-        static::assertEquals('title in de', $translations['de_de']['title']);
+        static::assertSame('title in de', $translations['de_de']['title']);
 
         $comments = $article->getComments();
         static::assertCount(2, $comments);
@@ -201,23 +201,23 @@ final class TranslatableTest extends BaseTestCaseORM
             $number = preg_replace("@[^\d]+@", '', $comment->getSubject());
             static::assertArrayHasKey('subject', $translations['de_de']);
             $expected = "subject{$number} in de";
-            static::assertEquals($expected, $translations['de_de']['subject']);
+            static::assertSame($expected, $translations['de_de']['subject']);
 
             static::assertArrayHasKey('message', $translations['de_de']);
             $expected = "message{$number} in de";
-            static::assertEquals($expected, $translations['de_de']['message']);
+            static::assertSame($expected, $translations['de_de']['message']);
         }
 
         $article = $this->em->find(self::ARTICLE, $this->articleId);
-        static::assertEquals('title in en', $article->getTitle());
-        static::assertEquals('content in en', $article->getContent());
+        static::assertSame('title in en', $article->getTitle());
+        static::assertSame('content in en', $article->getContent());
 
         $comments = $article->getComments();
         foreach ($comments as $comment) {
             $number = preg_replace("@[^\d]+@", '', $comment->getSubject());
 
-            static::assertEquals("subject{$number} in en", $comment->getSubject());
-            static::assertEquals("message{$number} in en", $comment->getMessage());
+            static::assertSame("subject{$number} in en", $comment->getSubject());
+            static::assertSame("message{$number} in en", $comment->getMessage());
         }
         // test deletion
         $article = $this->em->find(self::ARTICLE, $this->articleId);
@@ -249,8 +249,8 @@ final class TranslatableTest extends BaseTestCaseORM
         $this->translatableListener->setTranslationFallback(true);
         $article = $this->em->find(self::ARTICLE, $this->articleId);
 
-        static::assertEquals('title in en', $article->getTitle());
-        static::assertEquals('content in en', $article->getContent());
+        static::assertSame('title in en', $article->getTitle());
+        static::assertSame('content in en', $article->getContent());
     }
 
     /**
@@ -307,15 +307,15 @@ final class TranslatableTest extends BaseTestCaseORM
         $this->translatableListener->setTranslationFallback(true);
         $article = $this->em->find(self::ARTICLE, $article->getId());
 
-        static::assertEquals('Euro2012', $article->getTitle());
-        static::assertEquals('Shevchenko', $article->getAuthor());
+        static::assertSame('Euro2012', $article->getTitle());
+        static::assertSame('Shevchenko', $article->getAuthor());
         static::assertEmpty($article->getViews());
 
         $this->em->clear();
         $this->translatableListener->setTranslationFallback(false);
         $article = $this->em->find(self::ARTICLE, $article->getId());
         static::assertEmpty($article->getTitle());
-        static::assertEquals('Shevchenko', $article->getAuthor());
+        static::assertSame('Shevchenko', $article->getAuthor());
         static::assertEmpty($article->getViews());
     }
 

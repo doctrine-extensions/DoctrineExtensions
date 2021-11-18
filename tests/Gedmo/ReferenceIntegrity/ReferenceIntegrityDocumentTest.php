@@ -125,7 +125,7 @@ final class ReferenceIntegrityDocumentTest extends BaseTestCaseMongoODM
 
         $types = $article->getTypes();
         static::assertCount(1, $types);
-        static::assertEquals('One Pull Type 1', $types[0]->getTitle());
+        static::assertSame('One Pull Type 1', $types[0]->getTitle());
 
         $this->dm->clear();
     }
@@ -155,7 +155,7 @@ final class ReferenceIntegrityDocumentTest extends BaseTestCaseMongoODM
 
         $types = $article->getTypes();
         static::assertCount(1, $types);
-        static::assertEquals('Many Pull Type 1', $types[0]->getTitle());
+        static::assertSame('Many Pull Type 1', $types[0]->getTitle());
 
         $this->dm->clear();
     }

@@ -50,7 +50,7 @@ final class Issue165Test extends BaseTestCaseMongoODM
         $this->dm->persist($article);
         $this->dm->flush();
 
-        static::assertEquals('en', $article->getUntranslated());
+        static::assertSame('en', $article->getUntranslated());
 
         $this->translatableListener->setTranslatableLocale('ru');
 
@@ -61,7 +61,7 @@ final class Issue165Test extends BaseTestCaseMongoODM
         $this->dm->persist($article);
         $this->dm->flush();
 
-        static::assertEquals('ru', $article->getUntranslated());
+        static::assertSame('ru', $article->getUntranslated());
 
         $this->translatableListener->setTranslatableLocale('de');
 
@@ -74,7 +74,7 @@ final class Issue165Test extends BaseTestCaseMongoODM
         $this->dm->flush();
         $this->dm->refresh($article);
 
-        static::assertEquals('de', $newarticle->getUntranslated());
+        static::assertSame('de', $newarticle->getUntranslated());
 
         $this->translatableListener->setTranslatableLocale('en');
 
@@ -89,7 +89,7 @@ final class Issue165Test extends BaseTestCaseMongoODM
         $this->dm->flush();
         $this->dm->refresh($newarticle);
 
-        static::assertEquals('en', $newarticle->getUntranslated());
+        static::assertSame('en', $newarticle->getUntranslated());
 
         $this->translatableListener->setTranslatableLocale('de');
         $newarticle->setTitle('de2');
@@ -102,6 +102,6 @@ final class Issue165Test extends BaseTestCaseMongoODM
         $id = $newarticle->getId();
         $newarticle = $this->dm->getRepository(SimpleArticle::class)->find($id);
 
-        static::assertEquals('de2', $newarticle->getUntranslated());
+        static::assertSame('de2', $newarticle->getUntranslated());
     }
 }

@@ -37,16 +37,16 @@ final class RelativeSlugHandlerDocumentTest extends BaseTestCaseMongoODM
         $repo = $this->dm->getRepository(self::SLUG);
 
         $thomas = $repo->findOneBy(['title' => 'Thomas']);
-        static::assertEquals('sport-test/thomas', $thomas->getSlug());
+        static::assertSame('sport-test/thomas', $thomas->getSlug());
 
         $jen = $repo->findOneBy(['title' => 'Jen']);
-        static::assertEquals('sport-test/jen', $jen->getSlug());
+        static::assertSame('sport-test/jen', $jen->getSlug());
 
         $john = $repo->findOneBy(['title' => 'John']);
-        static::assertEquals('cars-code/john', $john->getSlug());
+        static::assertSame('cars-code/john', $john->getSlug());
 
         $single = $repo->findOneBy(['title' => 'Single']);
-        static::assertEquals('single', $single->getSlug());
+        static::assertSame('single', $single->getSlug());
     }
 
     public function testUpdateOperations()
@@ -59,7 +59,7 @@ final class RelativeSlugHandlerDocumentTest extends BaseTestCaseMongoODM
         $this->dm->persist($thomas);
         $this->dm->flush();
 
-        static::assertEquals('sport-test/ninja', $thomas->getSlug());
+        static::assertSame('sport-test/ninja', $thomas->getSlug());
 
         $sport = $this->dm->getRepository(self::ARTICLE)->findOneBy(['title' => 'Sport']);
         $sport->setTitle('Martial Arts');
@@ -67,12 +67,12 @@ final class RelativeSlugHandlerDocumentTest extends BaseTestCaseMongoODM
         $this->dm->persist($sport);
         $this->dm->flush();
 
-        static::assertEquals('martial-arts-test', $sport->getSlug());
+        static::assertSame('martial-arts-test', $sport->getSlug());
 
-        static::assertEquals('martial-arts-test/ninja', $thomas->getSlug());
+        static::assertSame('martial-arts-test/ninja', $thomas->getSlug());
 
         $jen = $repo->findOneBy(['title' => 'Jen']);
-        static::assertEquals('martial-arts-test/jen', $jen->getSlug());
+        static::assertSame('martial-arts-test/jen', $jen->getSlug());
 
         $cars = $this->dm->getRepository(self::ARTICLE)->findOneBy(['title' => 'Cars']);
         $jen->setArticle($cars);
@@ -80,7 +80,7 @@ final class RelativeSlugHandlerDocumentTest extends BaseTestCaseMongoODM
         $this->dm->persist($jen);
         $this->dm->flush();
 
-        static::assertEquals('cars-code/jen', $jen->getSlug());
+        static::assertSame('cars-code/jen', $jen->getSlug());
     }
 
     private function populate()

@@ -41,11 +41,11 @@ final class NoInterfaceTest extends BaseTestCaseORM
         $this->em->clear();
 
         $test = $this->em->getRepository(self::FIXTURE)->findOneBy(['title' => 'Test']);
-        static::assertEquals(
+        static::assertSame(
             $date->format('Y-m-d 00:00:00'),
             $test->getCreated()->format('Y-m-d H:i:s')
         );
-        static::assertEquals(
+        static::assertSame(
             $date->format('Y-m-d H:i'),
             $test->getUpdated()->format('Y-m-d H:i')
         );

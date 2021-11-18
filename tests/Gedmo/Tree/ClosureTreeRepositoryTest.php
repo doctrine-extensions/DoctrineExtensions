@@ -50,21 +50,21 @@ final class ClosureTreeRepositoryTest extends BaseTestCaseORM
 
         // Count all
         $count = $repo->childCount();
-        static::assertEquals(15, $count);
+        static::assertSame(15, $count);
 
         // Count all, but only direct ones
         $count = $repo->childCount(null, true);
-        static::assertEquals(2, $count);
+        static::assertSame(2, $count);
 
         // Count food children
         $food = $repo->findOneBy(['title' => 'Food']);
         $count = $repo->childCount($food);
-        static::assertEquals(11, $count);
+        static::assertSame(11, $count);
 
         // Count food children, but only direct ones
         $food = $repo->findOneBy(['title' => 'Food']);
         $count = $repo->childCount($food, true);
-        static::assertEquals(3, $count);
+        static::assertSame(3, $count);
     }
 
     public function testPath()
@@ -76,16 +76,16 @@ final class ClosureTreeRepositoryTest extends BaseTestCaseORM
 
         $path = $repo->getPath($fruits);
         static::assertCount(2, $path);
-        static::assertEquals('Food', $path[0]->getTitle());
-        static::assertEquals('Fruits', $path[1]->getTitle());
+        static::assertSame('Food', $path[0]->getTitle());
+        static::assertSame('Fruits', $path[1]->getTitle());
 
         $strawberries = $repo->findOneBy(['title' => 'Strawberries']);
         $path = $repo->getPath($strawberries);
         static::assertCount(4, $path);
-        static::assertEquals('Food', $path[0]->getTitle());
-        static::assertEquals('Fruits', $path[1]->getTitle());
-        static::assertEquals('Berries', $path[2]->getTitle());
-        static::assertEquals('Strawberries', $path[3]->getTitle());
+        static::assertSame('Food', $path[0]->getTitle());
+        static::assertSame('Fruits', $path[1]->getTitle());
+        static::assertSame('Berries', $path[2]->getTitle());
+        static::assertSame('Strawberries', $path[3]->getTitle());
     }
 
     public function testChildren()
@@ -98,40 +98,40 @@ final class ClosureTreeRepositoryTest extends BaseTestCaseORM
         // direct children of node, sorted by title ascending order. NOT including the root node
         $children = $repo->children($fruits, true, 'title');
         static::assertCount(3, $children);
-        static::assertEquals('Berries', $children[0]->getTitle());
-        static::assertEquals('Lemons', $children[1]->getTitle());
-        static::assertEquals('Oranges', $children[2]->getTitle());
+        static::assertSame('Berries', $children[0]->getTitle());
+        static::assertSame('Lemons', $children[1]->getTitle());
+        static::assertSame('Oranges', $children[2]->getTitle());
 
         // direct children of node, sorted by title ascending order. including the root node
         $children = $repo->children($fruits, true, 'title', 'asc', true);
         static::assertCount(4, $children);
-        static::assertEquals('Berries', $children[0]->getTitle());
-        static::assertEquals('Fruits', $children[1]->getTitle());
-        static::assertEquals('Lemons', $children[2]->getTitle());
-        static::assertEquals('Oranges', $children[3]->getTitle());
+        static::assertSame('Berries', $children[0]->getTitle());
+        static::assertSame('Fruits', $children[1]->getTitle());
+        static::assertSame('Lemons', $children[2]->getTitle());
+        static::assertSame('Oranges', $children[3]->getTitle());
 
         // all children of node, NOT including the root
         $children = $repo->children($fruits);
         static::assertCount(4, $children);
-        static::assertEquals('Oranges', $children[0]->getTitle());
-        static::assertEquals('Lemons', $children[1]->getTitle());
-        static::assertEquals('Berries', $children[2]->getTitle());
-        static::assertEquals('Strawberries', $children[3]->getTitle());
+        static::assertSame('Oranges', $children[0]->getTitle());
+        static::assertSame('Lemons', $children[1]->getTitle());
+        static::assertSame('Berries', $children[2]->getTitle());
+        static::assertSame('Strawberries', $children[3]->getTitle());
 
         // all children of node, including the root
         $children = $repo->children($fruits, false, 'title', 'asc', true);
         static::assertCount(5, $children);
-        static::assertEquals('Berries', $children[0]->getTitle());
-        static::assertEquals('Fruits', $children[1]->getTitle());
-        static::assertEquals('Lemons', $children[2]->getTitle());
-        static::assertEquals('Oranges', $children[3]->getTitle());
-        static::assertEquals('Strawberries', $children[4]->getTitle());
+        static::assertSame('Berries', $children[0]->getTitle());
+        static::assertSame('Fruits', $children[1]->getTitle());
+        static::assertSame('Lemons', $children[2]->getTitle());
+        static::assertSame('Oranges', $children[3]->getTitle());
+        static::assertSame('Strawberries', $children[4]->getTitle());
 
         // direct root nodes
         $children = $repo->children(null, true, 'title');
         static::assertCount(2, $children);
-        static::assertEquals('Food', $children[0]->getTitle());
-        static::assertEquals('Sports', $children[1]->getTitle());
+        static::assertSame('Food', $children[0]->getTitle());
+        static::assertSame('Sports', $children[1]->getTitle());
 
         // all tree
         $children = $repo->children();
@@ -154,15 +154,15 @@ final class ClosureTreeRepositoryTest extends BaseTestCaseORM
         static::assertCount(5, $children);
 
         $berries = $repo->findOneBy(['title' => 'Berries']);
-        static::assertEquals(1, $repo->childCount($berries, true));
+        static::assertSame(1, $repo->childCount($berries, true));
 
         $lemons = $repo->findOneBy(['title' => 'Lemons']);
-        static::assertEquals(0, $repo->childCount($lemons, true));
+        static::assertSame(0, $repo->childCount($lemons, true));
 
         $repo->removeFromTree($food);
 
         $vegitables = $repo->findOneBy(['title' => 'Vegitables']);
-        static::assertEquals(2, $repo->childCount($vegitables, true));
+        static::assertSame(2, $repo->childCount($vegitables, true));
         static::assertNull($vegitables->getParent());
 
         $repo->removeFromTree($lemons);
@@ -375,9 +375,9 @@ final class ClosureTreeRepositoryTest extends BaseTestCaseORM
             true
         );
 
-        static::assertEquals('Fruits', $tree[0]['title']);
-        static::assertEquals('Berries', $tree[0]['__children'][0]['title']);
-        static::assertEquals('Strawberries', $tree[0]['__children'][0]['__children'][0]['title']);
+        static::assertSame('Fruits', $tree[0]['title']);
+        static::assertSame('Berries', $tree[0]['__children'][0]['title']);
+        static::assertSame('Strawberries', $tree[0]['__children'][0]['__children'][0]['title']);
 
         $node = $repo->findOneBy(['title' => 'Fruits']);
         $tree = $repo->childrenHierarchy(
@@ -386,8 +386,8 @@ final class ClosureTreeRepositoryTest extends BaseTestCaseORM
             $sortOption
         );
 
-        static::assertEquals('Berries', $tree[0]['title']);
-        static::assertEquals('Strawberries', $tree[0]['__children'][0]['title']);
+        static::assertSame('Berries', $tree[0]['title']);
+        static::assertSame('Strawberries', $tree[0]['__children'][0]['title']);
 
         // First Tree Direct Nodes, including root node
         $tree = $repo->childrenHierarchy(
@@ -398,11 +398,11 @@ final class ClosureTreeRepositoryTest extends BaseTestCaseORM
         );
 
         $food = $tree[0];
-        static::assertEquals('Food', $food['title']);
+        static::assertSame('Food', $food['title']);
         static::assertCount(3, $food['__children']);
-        static::assertEquals('Boring Food', $food['__children'][0]['title']);
-        static::assertEquals('Fruits', $food['__children'][1]['title']);
-        static::assertEquals('Milk', $food['__children'][2]['title']);
+        static::assertSame('Boring Food', $food['__children'][0]['title']);
+        static::assertSame('Fruits', $food['__children'][1]['title']);
+        static::assertSame('Milk', $food['__children'][2]['title']);
 
         // First Tree Direct Nodes, not including root node
         $tree = $repo->childrenHierarchy(
@@ -412,9 +412,9 @@ final class ClosureTreeRepositoryTest extends BaseTestCaseORM
         );
 
         static::assertCount(3, $tree);
-        static::assertEquals('Boring Food', $tree[0]['title']);
-        static::assertEquals('Fruits', $tree[1]['title']);
-        static::assertEquals('Milk', $tree[2]['title']);
+        static::assertSame('Boring Food', $tree[0]['title']);
+        static::assertSame('Fruits', $tree[1]['title']);
+        static::assertSame('Milk', $tree[2]['title']);
 
         // Helper Closures
         $getTree = static function ($includeNode) use ($repo, $roots, $sortOption) {
@@ -432,10 +432,10 @@ final class ClosureTreeRepositoryTest extends BaseTestCaseORM
         };
 
         // First Tree - Including Root Node - Html test
-        static::assertEquals($getTreeHtml(true), $getTree(true));
+        static::assertSame($getTreeHtml(true), $getTree(true));
 
         // First Tree - Not including Root Node - Html test
-        static::assertEquals($getTreeHtml(false), $getTree(false));
+        static::assertSame($getTreeHtml(false), $getTree(false));
     }
 
     protected function getUsedEntityFixtures()

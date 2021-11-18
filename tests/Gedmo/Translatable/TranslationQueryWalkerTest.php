@@ -89,8 +89,8 @@ final class TranslationQueryWalkerTest extends BaseTestCaseORM
         $this->translatableListener->setTranslatableLocale('en_us');
         $result = $q->getArrayResult();
         static::assertCount(2, $result);
-        static::assertEquals('Alfabet', $result[0]['title']);
-        static::assertEquals('Cabbages', $result[1]['title']);
+        static::assertSame('Alfabet', $result[0]['title']);
+        static::assertSame('Cabbages', $result[1]['title']);
     }
 
     /**
@@ -111,8 +111,8 @@ final class TranslationQueryWalkerTest extends BaseTestCaseORM
         $this->translatableListener->setTranslatableLocale('en_us');
         $result = $q->getArrayResult();
         static::assertCount(2, $result);
-        static::assertEquals('Alfabet', $result[0]['title']);
-        static::assertEquals('Cabbages', $result[1]['title']);
+        static::assertSame('Alfabet', $result[0]['title']);
+        static::assertSame('Cabbages', $result[1]['title']);
     }
 
     /**
@@ -135,10 +135,10 @@ final class TranslationQueryWalkerTest extends BaseTestCaseORM
         $result = $q->getArrayResult();
 
         static::assertCount(1, $result);
-        static::assertEquals('Food', $result[0]['title']);
+        static::assertSame('Food', $result[0]['title']);
         $comments = $result[0]['comments'];
         static::assertCount(1, $comments);
-        static::assertEquals('good', $comments[0]['subject']);
+        static::assertSame('good', $comments[0]['subject']);
     }
 
     /**
@@ -161,17 +161,17 @@ final class TranslationQueryWalkerTest extends BaseTestCaseORM
         // simple object hydration
         $this->startQueryLog();
         $result = $q->getResult(Query::HYDRATE_SIMPLEOBJECT);
-        static::assertEquals(1, $this->queryAnalyzer->getNumExecutedQueries());
-        static::assertEquals('', $result[0]->getTitle());
-        static::assertEquals('', $result[0]->getContent());
+        static::assertSame(1, $this->queryAnalyzer->getNumExecutedQueries());
+        static::assertNull($result[0]->getTitle());
+        static::assertNull($result[0]->getContent());
 
         $this->translatableListener->setTranslationFallback(true);
         $this->queryAnalyzer->cleanUp();
         $result = $q->getResult(Query::HYDRATE_SIMPLEOBJECT);
-        static::assertEquals(1, $this->queryAnalyzer->getNumExecutedQueries());
+        static::assertSame(1, $this->queryAnalyzer->getNumExecutedQueries());
         //Default translation is en_us, so we expect the results in that locale
-        static::assertEquals('Food', $result[0]->getTitle());
-        static::assertEquals('about food', $result[0]->getContent());
+        static::assertSame('Food', $result[0]->getTitle());
+        static::assertSame('about food', $result[0]->getContent());
     }
 
     /**
@@ -190,17 +190,17 @@ final class TranslationQueryWalkerTest extends BaseTestCaseORM
         // array hydration
         $this->startQueryLog();
         $result = $q->getArrayResult();
-        static::assertEquals(1, $this->queryAnalyzer->getNumExecutedQueries());
-        static::assertEquals('', $result[0]['title']);
-        static::assertEquals('', $result[0]['content']);
+        static::assertSame(1, $this->queryAnalyzer->getNumExecutedQueries());
+        static::assertNull($result[0]['title']);
+        static::assertNull($result[0]['content']);
 
         $this->translatableListener->setTranslationFallback(true);
         $this->queryAnalyzer->cleanUp();
         $result = $q->getArrayResult();
-        static::assertEquals(1, $this->queryAnalyzer->getNumExecutedQueries());
+        static::assertSame(1, $this->queryAnalyzer->getNumExecutedQueries());
         //Default translation is en_us, so we expect the results in that locale
-        static::assertEquals('Food', $result[0]['title']);
-        static::assertEquals('about food', $result[0]['content']);
+        static::assertSame('Food', $result[0]['title']);
+        static::assertSame('about food', $result[0]['content']);
     }
 
     /**
@@ -223,19 +223,19 @@ final class TranslationQueryWalkerTest extends BaseTestCaseORM
         // simple object hydration
         $this->startQueryLog();
         $result = $q->getResult(Query::HYDRATE_SIMPLEOBJECT);
-        static::assertEquals(1, $this->queryAnalyzer->getNumExecutedQueries());
-        static::assertEquals('', $result[0]->getTitle());
-        static::assertEquals('John Doe', $result[0]->getAuthor()); // optional fallback is true,  force fallback
-        static::assertEquals(0, $result[0]->getViews());
+        static::assertSame(1, $this->queryAnalyzer->getNumExecutedQueries());
+        static::assertNull($result[0]->getTitle());
+        static::assertSame('John Doe', $result[0]->getAuthor()); // optional fallback is true,  force fallback
+        static::assertNull($result[0]->getViews());
 
         $this->translatableListener->setTranslationFallback(true);
         $this->queryAnalyzer->cleanUp();
         $result = $q->getResult(Query::HYDRATE_SIMPLEOBJECT);
-        static::assertEquals(1, $this->queryAnalyzer->getNumExecutedQueries());
+        static::assertSame(1, $this->queryAnalyzer->getNumExecutedQueries());
         //Default translation is en_us, so we expect the results in that locale
-        static::assertEquals('Food', $result[0]->getTitle());
-        static::assertEquals('John Doe', $result[0]->getAuthor());
-        static::assertEquals(0, $result[0]->getViews()); // optional fallback is false,  thus no translation required
+        static::assertSame('Food', $result[0]->getTitle());
+        static::assertSame('John Doe', $result[0]->getAuthor());
+        static::assertNull($result[0]->getViews()); // optional fallback is false,  thus no translation required
     }
 
     /**
@@ -275,7 +275,7 @@ final class TranslationQueryWalkerTest extends BaseTestCaseORM
         // array hydration
         $result = $q->getArrayResult();
         static::assertCount(1, $result);
-        static::assertEquals('Food', $result[0]['title']);
+        static::assertSame('Food', $result[0]['title']);
 
         // fallback false hint
         $q->setHint(TranslatableListener::HINT_FALLBACK, false);
@@ -302,7 +302,7 @@ final class TranslationQueryWalkerTest extends BaseTestCaseORM
         // array hydration
         $result = $q->getArrayResult();
         static::assertCount(1, $result);
-        static::assertEquals('Maistas', $result[0]['title']);
+        static::assertSame('Maistas', $result[0]['title']);
     }
 
     /**
@@ -325,17 +325,17 @@ final class TranslationQueryWalkerTest extends BaseTestCaseORM
         // object hydration
         $this->startQueryLog();
         $result = $q->getResult();
-        static::assertEquals(1, $this->queryAnalyzer->getNumExecutedQueries());
-        static::assertEquals('', $result[0]->getTitle());
-        static::assertEquals('', $result[0]->getContent());
+        static::assertSame(1, $this->queryAnalyzer->getNumExecutedQueries());
+        static::assertNull($result[0]->getTitle());
+        static::assertNull($result[0]->getContent());
 
         $this->translatableListener->setTranslationFallback(true);
         $this->queryAnalyzer->cleanUp();
         $result = $q->getResult();
-        static::assertEquals(1, $this->queryAnalyzer->getNumExecutedQueries());
+        static::assertSame(1, $this->queryAnalyzer->getNumExecutedQueries());
         //Default translation is en_us, so we expect the results in that locale
-        static::assertEquals('Food', $result[0]->getTitle());
-        static::assertEquals('about food', $result[0]->getContent());
+        static::assertSame('Food', $result[0]->getTitle());
+        static::assertSame('about food', $result[0]->getContent());
 
         // test fallback hint
         $this->translatableListener->setTranslationFallback(false);
@@ -343,8 +343,8 @@ final class TranslationQueryWalkerTest extends BaseTestCaseORM
 
         $result = $q->getResult();
         //Default translation is en_us, so we expect the results in that locale
-        static::assertEquals('Food', $result[0]->getTitle());
-        static::assertEquals('about food', $result[0]->getContent());
+        static::assertSame('Food', $result[0]->getTitle());
+        static::assertSame('about food', $result[0]->getContent());
 
         // test fallback hint
         $this->translatableListener->setTranslationFallback(true);
@@ -352,8 +352,8 @@ final class TranslationQueryWalkerTest extends BaseTestCaseORM
 
         $result = $q->getResult();
         //Default translation is en_us, so we expect the results in that locale
-        static::assertEquals('', $result[0]->getTitle());
-        static::assertEquals('', $result[0]->getContent());
+        static::assertNull($result[0]->getTitle());
+        static::assertNull($result[0]->getContent());
     }
 
     /**
@@ -369,17 +369,17 @@ final class TranslationQueryWalkerTest extends BaseTestCaseORM
         $this->translatableListener->setTranslatableLocale('en_us');
         $q->setParameter('title', 'Foo%');
         $result = $q->getSingleScalarResult();
-        static::assertEquals(1, $result);
+        static::assertSame('1', $result);
 
         $this->translatableListener->setTranslatableLocale('lt_lt');
         $q->setParameter('title', 'Mai%');
         $result = $q->getSingleScalarResult();
-        static::assertEquals(1, $result);
+        static::assertSame('1', $result);
 
         $this->translatableListener->setTranslatableLocale('en_us');
         $q->setParameter('title', 'Mai%');
         $result = $q->getSingleScalarResult();
-        static::assertEquals(0, $result);
+        static::assertSame('0', $result);
     }
 
     /**
@@ -403,35 +403,35 @@ final class TranslationQueryWalkerTest extends BaseTestCaseORM
         $this->translatableListener->setTranslatableLocale('en_us');
         $result = $q->getArrayResult();
         static::assertCount(4, $result);
-        static::assertEquals('Alfabet', $result[0]['title']);
-        static::assertEquals('Cabbages', $result[1]['title']);
-        static::assertEquals('Food', $result[2]['title']);
-        static::assertEquals('Woman', $result[3]['title']);
+        static::assertSame('Alfabet', $result[0]['title']);
+        static::assertSame('Cabbages', $result[1]['title']);
+        static::assertSame('Food', $result[2]['title']);
+        static::assertSame('Woman', $result[3]['title']);
 
         $this->translatableListener->setTranslatableLocale('lt_lt');
         $result = $q->getArrayResult();
         static::assertCount(4, $result);
-        static::assertEquals('Alfabetas', $result[0]['title']);
-        static::assertEquals('Kopustai', $result[1]['title']);
-        static::assertEquals('Maistas', $result[2]['title']);
-        static::assertEquals('Moteris', $result[3]['title']);
+        static::assertSame('Alfabetas', $result[0]['title']);
+        static::assertSame('Kopustai', $result[1]['title']);
+        static::assertSame('Maistas', $result[2]['title']);
+        static::assertSame('Moteris', $result[3]['title']);
 
         // object hydration
         $this->translatableListener->setTranslatableLocale('en_us');
         $result = $q->getResult();
         static::assertCount(4, $result);
-        static::assertEquals('Alfabet', $result[0]->getTitle());
-        static::assertEquals('Cabbages', $result[1]->getTitle());
-        static::assertEquals('Food', $result[2]->getTitle());
-        static::assertEquals('Woman', $result[3]->getTitle());
+        static::assertSame('Alfabet', $result[0]->getTitle());
+        static::assertSame('Cabbages', $result[1]->getTitle());
+        static::assertSame('Food', $result[2]->getTitle());
+        static::assertSame('Woman', $result[3]->getTitle());
 
         $this->translatableListener->setTranslatableLocale('lt_lt');
         $result = $q->getResult();
         static::assertCount(4, $result);
-        static::assertEquals('Alfabetas', $result[0]->getTitle());
-        static::assertEquals('Kopustai', $result[1]->getTitle());
-        static::assertEquals('Maistas', $result[2]->getTitle());
-        static::assertEquals('Moteris', $result[3]->getTitle());
+        static::assertSame('Alfabetas', $result[0]->getTitle());
+        static::assertSame('Kopustai', $result[1]->getTitle());
+        static::assertSame('Maistas', $result[2]->getTitle());
+        static::assertSame('Moteris', $result[3]->getTitle());
     }
 
     /**
@@ -453,7 +453,7 @@ final class TranslationQueryWalkerTest extends BaseTestCaseORM
             // Make each record be a "Title - Views" string
             $result[$key] = implode(' - ', $value);
         });
-        static::assertEquals(
+        static::assertSame(
             ['Alfabet - 1', 'Food - 99', 'Cabbages - 2222', 'Woman - 3333'], $result,
             'Original of localizible integers should be sorted numerically'
         );
@@ -464,7 +464,7 @@ final class TranslationQueryWalkerTest extends BaseTestCaseORM
             // Make each record be a "Title - Views" string
             $result[$key] = implode(' - ', $value);
         });
-        static::assertEquals(
+        static::assertSame(
             ['Moteris - 33', 'Alfabetas - 111', 'Maistas - 999', 'Kopustai - 22222'], $result,
             'Localized integers should be sorted numerically'
         );
@@ -491,68 +491,68 @@ final class TranslationQueryWalkerTest extends BaseTestCaseORM
         static::assertCount(1, $result);
         $food = $result[0];
         static::assertCount(6, $food);
-        static::assertEquals('Food', $food['title']);
-        static::assertEquals('about food', $food['content']);
+        static::assertSame('Food', $food['title']);
+        static::assertSame('about food', $food['content']);
         $comments = $food['comments'];
         static::assertCount(2, $comments);
         $good = $comments[0];
         static::assertCount(3, $good);
-        static::assertEquals('good', $good['subject']);
-        static::assertEquals('food is good', $good['message']);
+        static::assertSame('good', $good['subject']);
+        static::assertSame('food is good', $good['message']);
         $bad = $comments[1];
         static::assertCount(3, $bad);
-        static::assertEquals('bad', $bad['subject']);
-        static::assertEquals('food is bad', $bad['message']);
+        static::assertSame('bad', $bad['subject']);
+        static::assertSame('food is bad', $bad['message']);
 
         $this->translatableListener->setTranslatableLocale('lt_lt');
         $result = $q->getArrayResult();
         static::assertCount(1, $result);
         $food = $result[0];
         static::assertCount(6, $food);
-        static::assertEquals('Maistas', $food['title']);
-        static::assertEquals('apie maista', $food['content']);
+        static::assertSame('Maistas', $food['title']);
+        static::assertSame('apie maista', $food['content']);
         $comments = $food['comments'];
         static::assertCount(2, $comments);
         $good = $comments[0];
         static::assertCount(3, $good);
-        static::assertEquals('geras', $good['subject']);
-        static::assertEquals('maistas yra geras', $good['message']);
+        static::assertSame('geras', $good['subject']);
+        static::assertSame('maistas yra geras', $good['message']);
         $bad = $comments[1];
         static::assertCount(3, $bad);
-        static::assertEquals('blogas', $bad['subject']);
-        static::assertEquals('maistas yra blogas', $bad['message']);
+        static::assertSame('blogas', $bad['subject']);
+        static::assertSame('maistas yra blogas', $bad['message']);
 
         // object hydration
         $this->translatableListener->setTranslatableLocale('en_us');
         $result = $q->getResult();
         static::assertCount(1, $result);
         $food = $result[0];
-        static::assertEquals('Food', $food->getTitle());
-        static::assertEquals('about food', $food->getContent());
+        static::assertSame('Food', $food->getTitle());
+        static::assertSame('about food', $food->getContent());
         $comments = $food->getComments();
         static::assertCount(2, $comments);
         $good = $comments[0];
-        static::assertEquals('good', $good->getSubject());
-        static::assertEquals('food is good', $good->getMessage());
+        static::assertSame('good', $good->getSubject());
+        static::assertSame('food is good', $good->getMessage());
         $bad = $comments[1];
-        static::assertEquals('bad', $bad->getSubject());
-        static::assertEquals('food is bad', $bad->getMessage());
+        static::assertSame('bad', $bad->getSubject());
+        static::assertSame('food is bad', $bad->getMessage());
 
         $this->translatableListener->setTranslatableLocale('lt_lt');
         $result = $q->getResult();
         static::assertCount(1, $result);
         $food = $result[0];
-        static::assertEquals('Maistas', $food->getTitle());
-        static::assertEquals('apie maista', $food->getContent());
+        static::assertSame('Maistas', $food->getTitle());
+        static::assertSame('apie maista', $food->getContent());
         $comments = $food->getComments();
         static::assertCount(2, $comments);
         $good = $comments[0];
         static::assertInstanceOf(self::COMMENT, $good);
-        static::assertEquals('geras', $good->getSubject());
-        static::assertEquals('maistas yra geras', $good->getMessage());
+        static::assertSame('geras', $good->getSubject());
+        static::assertSame('maistas yra geras', $good->getMessage());
         $bad = $comments[1];
-        static::assertEquals('blogas', $bad->getSubject());
-        static::assertEquals('maistas yra blogas', $bad->getMessage());
+        static::assertSame('blogas', $bad->getSubject());
+        static::assertSame('maistas yra blogas', $bad->getMessage());
     }
 
     /**
@@ -575,13 +575,13 @@ final class TranslationQueryWalkerTest extends BaseTestCaseORM
         static::assertCount(1, $result);
         $food = $result[0];
         static::assertCount(1, $food);
-        static::assertEquals('Food', $food['title']);
+        static::assertSame('Food', $food['title']);
         $this->translatableListener->setTranslatableLocale('lt_lt');
         $result = $q->getArrayResult();
         static::assertCount(1, $result);
         $food = $result[0];
         static::assertCount(1, $food);
-        static::assertEquals('Maistas', $food['title']);
+        static::assertSame('Maistas', $food['title']);
 
         // object hydration
         $this->translatableListener->setTranslatableLocale('en_us');
@@ -589,13 +589,13 @@ final class TranslationQueryWalkerTest extends BaseTestCaseORM
         static::assertCount(1, $result);
         $food = $result[0];
         static::assertCount(1, $food);
-        static::assertEquals('Food', $food['title']);
+        static::assertSame('Food', $food['title']);
         $this->translatableListener->setTranslatableLocale('lt_lt');
         $result = $q->getResult();
         static::assertCount(1, $result);
         $food = $result[0];
         static::assertCount(1, $food);
-        static::assertEquals('Maistas', $food['title']);
+        static::assertSame('Maistas', $food['title']);
     }
 
     /**
@@ -618,15 +618,15 @@ final class TranslationQueryWalkerTest extends BaseTestCaseORM
         static::assertCount(1, $result);
         $food = $result[0];
         static::assertCount(5, $food);
-        static::assertEquals('Food', $food['title']);
-        static::assertEquals('about food', $food['content']);
+        static::assertSame('Food', $food['title']);
+        static::assertSame('about food', $food['content']);
         $this->translatableListener->setTranslatableLocale('lt_lt');
         $result = $q->getArrayResult();
         static::assertCount(1, $result);
         $food = $result[0];
         static::assertCount(5, $food);
-        static::assertEquals('Maistas', $food['title']);
-        static::assertEquals('apie maista', $food['content']);
+        static::assertSame('Maistas', $food['title']);
+        static::assertSame('apie maista', $food['content']);
 
         // object hydration
         $this->translatableListener->setTranslatableLocale('en_us');
@@ -634,15 +634,15 @@ final class TranslationQueryWalkerTest extends BaseTestCaseORM
         static::assertCount(1, $result);
         $food = $result[0];
         static::assertInstanceOf(self::ARTICLE, $food);
-        static::assertEquals('Food', $food->getTitle());
-        static::assertEquals('about food', $food->getContent());
+        static::assertSame('Food', $food->getTitle());
+        static::assertSame('about food', $food->getContent());
 
         $this->translatableListener->setTranslatableLocale('lt_lt');
         $result = $q->getResult();
         static::assertCount(1, $result);
         $food = $result[0];
-        static::assertEquals('Maistas', $food->getTitle());
-        static::assertEquals('apie maista', $food->getContent());
+        static::assertSame('Maistas', $food->getTitle());
+        static::assertSame('apie maista', $food->getContent());
     }
 
     /**
@@ -660,8 +660,8 @@ final class TranslationQueryWalkerTest extends BaseTestCaseORM
         $this->translatableListener->setTranslatableLocale('en_us');
         $result = $q->getArrayResult();
         static::assertCount(1, $result);
-        static::assertEquals('Food', $result[0]['title']);
-        static::assertEquals(1, $result[0]['num']);
+        static::assertSame('Food', $result[0]['title']);
+        static::assertSame(1, $result[0]['num']);
     }
 
     /**

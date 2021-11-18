@@ -63,9 +63,9 @@ final class TranslatableMappingTest extends BaseTestCaseOM
         $config = $this->translatable->getConfiguration($this->em, $meta->name);
 
         static::assertArrayHasKey('translationClass', $config);
-        static::assertEquals(Translation::class, $config['translationClass']);
+        static::assertSame(Translation::class, $config['translationClass']);
         static::assertArrayHasKey('locale', $config);
-        static::assertEquals('locale', $config['locale']);
+        static::assertSame('locale', $config['locale']);
 
         static::assertArrayHasKey('fields', $config);
         static::assertCount(4, $config['fields']);

@@ -58,12 +58,12 @@ final class BlameableTest extends BaseTestCaseORM
         $this->em->clear();
 
         $sport = $this->em->getRepository(self::ARTICLE)->findOneBy(['title' => 'Sport']);
-        static::assertEquals('testuser', $sport->getCreated());
-        static::assertEquals('testuser', $sport->getUpdated());
+        static::assertSame('testuser', $sport->getCreated());
+        static::assertSame('testuser', $sport->getUpdated());
         static::assertNull($sport->getPublished());
 
         $sportComment = $this->em->getRepository(self::COMMENT)->findOneBy(['message' => 'hello']);
-        static::assertEquals('testuser', $sportComment->getModified());
+        static::assertSame('testuser', $sportComment->getModified());
         static::assertNull($sportComment->getClosed());
 
         $sportComment->setStatus(1);
@@ -79,9 +79,9 @@ final class BlameableTest extends BaseTestCaseORM
         $this->em->clear();
 
         $sportComment = $this->em->getRepository(self::COMMENT)->findOneBy(['message' => 'hello']);
-        static::assertEquals('testuser', $sportComment->getClosed());
+        static::assertSame('testuser', $sportComment->getClosed());
 
-        static::assertEquals('testuser', $sport->getPublished());
+        static::assertSame('testuser', $sport->getPublished());
     }
 
     public function testForcedValues()
@@ -97,8 +97,8 @@ final class BlameableTest extends BaseTestCaseORM
 
         $repo = $this->em->getRepository(self::ARTICLE);
         $sport = $repo->findOneBy(['title' => 'sport forced']);
-        static::assertEquals('myuser', $sport->getCreated());
-        static::assertEquals('myuser', $sport->getUpdated());
+        static::assertSame('myuser', $sport->getCreated());
+        static::assertSame('myuser', $sport->getUpdated());
 
         $published = new Type();
         $published->setTitle('Published');
@@ -111,7 +111,7 @@ final class BlameableTest extends BaseTestCaseORM
         $this->em->clear();
 
         $sport = $repo->findOneBy(['title' => 'sport forced']);
-        static::assertEquals('myuser', $sport->getPublished());
+        static::assertSame('myuser', $sport->getPublished());
     }
 
     protected function getUsedEntityFixtures()

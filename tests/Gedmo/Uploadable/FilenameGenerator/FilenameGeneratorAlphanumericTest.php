@@ -23,6 +23,6 @@ final class FilenameGeneratorAlphanumericTest extends \PHPUnit\Framework\TestCas
         $filename = 'MegaName_For_A_###$$$File$$$###';
         $extension = '.exe';
 
-        static::assertEquals('meganame-for-a-file-.exe', $generator->generate($filename, $extension));
+        static::assertSame('meganame-for-a-file-.exe', $generator->generate($filename, $extension));
     }
 }

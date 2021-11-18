@@ -83,14 +83,14 @@ final class TranslatableIdentifierTest extends BaseTestCaseORM
             self::FIXTURE
         );
 
-        static::assertEquals($this->testObjectId, $object->getUid());
+        static::assertSame($this->testObjectId, $object->getUid());
 
         $translations = $repo->findTranslations($object);
         static::assertCount(1, $translations);
         static::assertArrayHasKey('de_de', $translations);
 
         static::assertArrayHasKey('title', $translations['de_de']);
-        static::assertEquals('title in de', $translations['de_de']['title']);
+        static::assertSame('title in de', $translations['de_de']['title']);
 
         // dql test object hydration
         $q = $this->em
@@ -101,14 +101,14 @@ final class TranslatableIdentifierTest extends BaseTestCaseORM
         $data = $q->getResult();
         static::assertCount(1, $data);
         $object = $data[0];
-        static::assertEquals('title in en', $object->getTitle());
+        static::assertSame('title in en', $object->getTitle());
 
         $this->em->clear(); // based on 2.3.0 it caches in identity map
         $this->translatableListener->setTranslatableLocale('de_de');
         $data = $q->getResult();
         static::assertCount(1, $data);
         $object = $data[0];
-        static::assertEquals('title in de', $object->getTitle());
+        static::assertSame('title in de', $object->getTitle());
     }
 
     protected function getUsedEntityFixtures()

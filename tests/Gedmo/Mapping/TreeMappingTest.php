@@ -90,17 +90,17 @@ final class TreeMappingTest extends \PHPUnit\Framework\TestCase
         );
         $config = $this->em->getMetadataFactory()->getCacheDriver()->fetch($cacheId);
         static::assertArrayHasKey('left', $config);
-        static::assertEquals('left', $config['left']);
+        static::assertSame('left', $config['left']);
         static::assertArrayHasKey('right', $config);
-        static::assertEquals('right', $config['right']);
+        static::assertSame('right', $config['right']);
         static::assertArrayHasKey('parent', $config);
-        static::assertEquals('parent', $config['parent']);
+        static::assertSame('parent', $config['parent']);
         static::assertArrayHasKey('level', $config);
-        static::assertEquals('level', $config['level']);
+        static::assertSame('level', $config['level']);
         static::assertArrayHasKey('root', $config);
-        static::assertEquals('rooted', $config['root']);
+        static::assertSame('rooted', $config['root']);
         static::assertArrayHasKey('strategy', $config);
-        static::assertEquals('nested', $config['strategy']);
+        static::assertSame('nested', $config['strategy']);
     }
 
     public function testYamlClosureMapping()
@@ -110,11 +110,11 @@ final class TreeMappingTest extends \PHPUnit\Framework\TestCase
         $config = $this->em->getMetadataFactory()->getCacheDriver()->fetch($cacheId);
 
         static::assertArrayHasKey('parent', $config);
-        static::assertEquals('parent', $config['parent']);
+        static::assertSame('parent', $config['parent']);
         static::assertArrayHasKey('strategy', $config);
-        static::assertEquals('closure', $config['strategy']);
+        static::assertSame('closure', $config['strategy']);
         static::assertArrayHasKey('closure', $config);
-        static::assertEquals(CategoryClosure::class, $config['closure']);
+        static::assertSame(CategoryClosure::class, $config['closure']);
     }
 
     public function testYamlMaterializedPathMapping()
@@ -123,18 +123,18 @@ final class TreeMappingTest extends \PHPUnit\Framework\TestCase
         $config = $this->listener->getConfiguration($this->em, $meta->name);
 
         static::assertArrayHasKey('strategy', $config);
-        static::assertEquals('materializedPath', $config['strategy']);
+        static::assertSame('materializedPath', $config['strategy']);
         static::assertArrayHasKey('parent', $config);
-        static::assertEquals('parent', $config['parent']);
+        static::assertSame('parent', $config['parent']);
         static::assertArrayHasKey('activate_locking', $config);
         static::assertTrue($config['activate_locking']);
         static::assertArrayHasKey('locking_timeout', $config);
-        static::assertEquals(3, $config['locking_timeout']);
+        static::assertSame(3, $config['locking_timeout']);
         static::assertArrayHasKey('level', $config);
-        static::assertEquals('level', $config['level']);
+        static::assertSame('level', $config['level']);
         static::assertArrayHasKey('path', $config);
-        static::assertEquals('path', $config['path']);
+        static::assertSame('path', $config['path']);
         static::assertArrayHasKey('path_separator', $config);
-        static::assertEquals(',', $config['path_separator']);
+        static::assertSame(',', $config['path_separator']);
     }
 }

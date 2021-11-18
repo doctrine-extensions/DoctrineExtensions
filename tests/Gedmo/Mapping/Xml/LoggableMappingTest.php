@@ -68,7 +68,7 @@ final class LoggableMappingTest extends BaseTestCaseOM
         $config = $this->loggable->getConfiguration($this->em, $meta->name);
 
         static::assertArrayHasKey('logEntryClass', $config);
-        static::assertEquals(LogEntry::class, $config['logEntryClass']);
+        static::assertSame(LogEntry::class, $config['logEntryClass']);
         static::assertArrayHasKey('loggable', $config);
         static::assertTrue($config['loggable']);
 
@@ -84,7 +84,7 @@ final class LoggableMappingTest extends BaseTestCaseOM
         $config = $this->loggable->getConfiguration($this->em, $meta->name);
 
         static::assertArrayHasKey('logEntryClass', $config);
-        static::assertEquals(LogEntry::class, $config['logEntryClass']);
+        static::assertSame(LogEntry::class, $config['logEntryClass']);
         static::assertArrayHasKey('loggable', $config);
         static::assertTrue($config['loggable']);
 

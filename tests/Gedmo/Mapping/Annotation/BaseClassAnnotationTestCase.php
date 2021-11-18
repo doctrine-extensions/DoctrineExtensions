@@ -15,7 +15,7 @@ abstract class BaseClassAnnotationTestCase extends TestCase
     public function testLoadFromAttribute(string $annotationProperty, $expectedReturn): void
     {
         $annotation = $this->getClassAnnotation(true);
-        static::assertEquals($annotation->$annotationProperty, $expectedReturn);
+        static::assertSame($annotation->$annotationProperty, $expectedReturn);
     }
 
     /**
@@ -24,7 +24,7 @@ abstract class BaseClassAnnotationTestCase extends TestCase
     public function testLoadFromDoctrineAnnotation(string $annotationProperty, $expectedReturn): void
     {
         $annotation = $this->getClassAnnotation(false);
-        static::assertEquals($annotation->$annotationProperty, $expectedReturn);
+        static::assertSame($annotation->$annotationProperty, $expectedReturn);
     }
 
     abstract public function getValidParameters(): iterable;

@@ -57,11 +57,11 @@ final class AttributeChangeTest extends BaseTestCaseORM
         $this->em->flush();
         $this->em->clear();
         // Changed.
-        static::assertEquals(
+        static::assertSame(
             $currentDate->format('Y-m-d H:i:s'),
             $test->getChtitle()->format('Y-m-d H:i:s')
         );
-        static::assertEquals(
+        static::assertSame(
             $currentDate->format('Y-m-d H:i:s'),
             $test->getClosed()->format('Y-m-d H:i:s')
         );
@@ -76,11 +76,11 @@ final class AttributeChangeTest extends BaseTestCaseORM
         $this->em->flush();
         $this->em->clear();
         // Not Changed.
-        static::assertEquals(
+        static::assertSame(
             $currentDate->format('Y-m-d H:i:s'),
             $test->getChtitle()->format('Y-m-d H:i:s')
         );
-        static::assertEquals(
+        static::assertSame(
             $currentDate->format('Y-m-d H:i:s'),
             $test->getClosed()->format('Y-m-d H:i:s')
         );
@@ -91,7 +91,7 @@ final class AttributeChangeTest extends BaseTestCaseORM
         $this->em->flush();
         $this->em->clear();
         // Changed.
-        static::assertEquals(
+        static::assertSame(
             $anotherDate->format('Y-m-d H:i:s'),
             $test->getClosed()->format('Y-m-d H:i:s')
         );

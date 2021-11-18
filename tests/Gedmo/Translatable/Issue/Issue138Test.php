@@ -54,7 +54,7 @@ final class Issue138Test extends BaseTestCaseORM
         //die($q->getSQL());
         $result = $q->getArrayResult();
         static::assertCount(1, $result);
-        static::assertEquals('Food', $result[0]['title']);
+        static::assertSame('Food', $result[0]['title']);
     }
 
     protected function getUsedEntityFixtures()

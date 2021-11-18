@@ -43,8 +43,8 @@ final class IpTraceableDocumentTest extends BaseTestCaseMongoODM
         $repo = $this->dm->getRepository(self::ARTICLE);
         $article = $repo->findOneBy(['title' => 'IpTraceable Article']);
 
-        static::assertEquals(self::TEST_IP, $article->getCreated());
-        static::assertEquals(self::TEST_IP, $article->getUpdated());
+        static::assertSame(self::TEST_IP, $article->getCreated());
+        static::assertSame(self::TEST_IP, $article->getUpdated());
 
         $published = new Type();
         $published->setIdentifier('published');
@@ -58,8 +58,8 @@ final class IpTraceableDocumentTest extends BaseTestCaseMongoODM
 
         $article = $repo->findOneBy(['title' => 'IpTraceable Article']);
 
-        static::assertEquals(self::TEST_IP, $article->getPublished());
-        static::assertEquals(self::TEST_IP, $article->getCreated());
+        static::assertSame(self::TEST_IP, $article->getPublished());
+        static::assertSame(self::TEST_IP, $article->getCreated());
     }
 
     public function testForcedValues()
@@ -75,8 +75,8 @@ final class IpTraceableDocumentTest extends BaseTestCaseMongoODM
 
         $repo = $this->dm->getRepository(self::ARTICLE);
         $sport = $repo->findOneBy(['title' => 'sport forced']);
-        static::assertEquals(self::TEST_IP, (string) $sport->getCreated());
-        static::assertEquals(self::TEST_IP, $sport->getUpdated());
+        static::assertSame(self::TEST_IP, (string) $sport->getCreated());
+        static::assertSame(self::TEST_IP, $sport->getUpdated());
 
         $published = new Type();
         $published->setIdentifier('published');
@@ -90,7 +90,7 @@ final class IpTraceableDocumentTest extends BaseTestCaseMongoODM
         $this->dm->clear();
 
         $sport = $repo->findOneBy(['title' => 'sport forced']);
-        static::assertEquals(self::TEST_IP, $sport->getPublished());
+        static::assertSame(self::TEST_IP, $sport->getPublished());
     }
 
     private function populate()

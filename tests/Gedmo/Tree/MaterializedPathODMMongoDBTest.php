@@ -69,14 +69,14 @@ final class MaterializedPathODMMongoDBTest extends BaseTestCaseMongoODM
         $this->dm->refresh($category3);
         $this->dm->refresh($category4);
 
-        static::assertEquals($this->generatePath(['1' => $category->getId()]), $category->getPath());
-        static::assertEquals($this->generatePath(['1' => $category->getId(), '2' => $category2->getId()]), $category2->getPath());
-        static::assertEquals($this->generatePath(['1' => $category->getId(), '2' => $category2->getId(), '3' => $category3->getId()]), $category3->getPath());
-        static::assertEquals($this->generatePath(['4' => $category4->getId()]), $category4->getPath());
-        static::assertEquals(1, $category->getLevel());
-        static::assertEquals(2, $category2->getLevel());
-        static::assertEquals(3, $category3->getLevel());
-        static::assertEquals(1, $category4->getLevel());
+        static::assertSame($this->generatePath(['1' => $category->getId()]), $category->getPath());
+        static::assertSame($this->generatePath(['1' => $category->getId(), '2' => $category2->getId()]), $category2->getPath());
+        static::assertSame($this->generatePath(['1' => $category->getId(), '2' => $category2->getId(), '3' => $category3->getId()]), $category3->getPath());
+        static::assertSame($this->generatePath(['4' => $category4->getId()]), $category4->getPath());
+        static::assertSame(1, $category->getLevel());
+        static::assertSame(2, $category2->getLevel());
+        static::assertSame(3, $category3->getLevel());
+        static::assertSame(1, $category4->getLevel());
 
         // Update
         $category2->setParent(null);
@@ -88,13 +88,13 @@ final class MaterializedPathODMMongoDBTest extends BaseTestCaseMongoODM
         $this->dm->refresh($category2);
         $this->dm->refresh($category3);
 
-        static::assertEquals($this->generatePath(['1' => $category->getId()]), $category->getPath());
-        static::assertEquals($this->generatePath(['2' => $category2->getId()]), $category2->getPath());
-        static::assertEquals($this->generatePath(['2' => $category2->getId(), '3' => $category3->getId()]), $category3->getPath());
-        static::assertEquals(1, $category->getLevel());
-        static::assertEquals(1, $category2->getLevel());
-        static::assertEquals(2, $category3->getLevel());
-        static::assertEquals(1, $category4->getLevel());
+        static::assertSame($this->generatePath(['1' => $category->getId()]), $category->getPath());
+        static::assertSame($this->generatePath(['2' => $category2->getId()]), $category2->getPath());
+        static::assertSame($this->generatePath(['2' => $category2->getId(), '3' => $category3->getId()]), $category3->getPath());
+        static::assertSame(1, $category->getLevel());
+        static::assertSame(1, $category2->getLevel());
+        static::assertSame(2, $category3->getLevel());
+        static::assertSame(1, $category4->getLevel());
 
         // Remove
         $this->dm->remove($category);
@@ -107,8 +107,8 @@ final class MaterializedPathODMMongoDBTest extends BaseTestCaseMongoODM
         $firstResult = $result->current();
 
         static::assertCount(1, $result->toArray());
-        static::assertEquals('4', $firstResult->getTitle());
-        static::assertEquals(1, $firstResult->getLevel());
+        static::assertSame('4', $firstResult->getTitle());
+        static::assertSame(1, $firstResult->getLevel());
     }
 
     /**

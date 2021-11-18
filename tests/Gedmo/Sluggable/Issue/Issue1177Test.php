@@ -41,7 +41,7 @@ final class Issue1177Test extends BaseTestCaseORM
         $this->em->persist($article);
         $this->em->flush();
         $this->em->clear();
-        static::assertEquals('the-title-with-number-1', $article->getSlug());
+        static::assertSame('the-title-with-number-1', $article->getSlug());
 
         $article = new Article();
         $article->setTitle('the title with number');
@@ -51,7 +51,7 @@ final class Issue1177Test extends BaseTestCaseORM
         $this->em->clear();
         // the slug was 'the-title-with-number-2' before the fix here
         // despite the fact that there is no entity with slug 'the-title-with-number'
-        static::assertEquals('the-title-with-number', $article->getSlug());
+        static::assertSame('the-title-with-number', $article->getSlug());
 
         $article = new Article();
         $article->setTitle('the title with number');
@@ -59,7 +59,7 @@ final class Issue1177Test extends BaseTestCaseORM
         $this->em->persist($article);
         $this->em->flush();
         $this->em->clear();
-        static::assertEquals('the-title-with-number-2', $article->getSlug());
+        static::assertSame('the-title-with-number-2', $article->getSlug());
     }
 
     protected function getUsedEntityFixtures()

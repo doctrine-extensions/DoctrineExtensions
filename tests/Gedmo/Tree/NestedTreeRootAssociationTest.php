@@ -37,23 +37,23 @@ final class NestedTreeRootAssociationTest extends BaseTestCaseORM
 
         // Foods
         $food = $repo->findOneBy(['title' => 'Food']);
-        static::assertEquals($food->getId(), $food->getRoot()->getId());
+        static::assertSame($food->getId(), $food->getRoot()->getId());
 
         $fruits = $repo->findOneBy(['title' => 'Fruits']);
-        static::assertEquals($food->getId(), $fruits->getRoot()->getId());
+        static::assertSame($food->getId(), $fruits->getRoot()->getId());
 
         $vegetables = $repo->findOneBy(['title' => 'Vegetables']);
-        static::assertEquals($food->getId(), $vegetables->getRoot()->getId());
+        static::assertSame($food->getId(), $vegetables->getRoot()->getId());
 
         $carrots = $repo->findOneBy(['title' => 'Carrots']);
-        static::assertEquals($food->getId(), $carrots->getRoot()->getId());
+        static::assertSame($food->getId(), $carrots->getRoot()->getId());
 
         $potatoes = $repo->findOneBy(['title' => 'Potatoes']);
-        static::assertEquals($food->getId(), $potatoes->getRoot()->getId());
+        static::assertSame($food->getId(), $potatoes->getRoot()->getId());
 
         // Sports
         $sports = $repo->findOneBy(['title' => 'Sports']);
-        static::assertEquals($sports->getId(), $sports->getRoot()->getId());
+        static::assertSame($sports->getId(), $sports->getRoot()->getId());
     }
 
     protected function getUsedEntityFixtures()

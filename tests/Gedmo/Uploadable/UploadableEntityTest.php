@@ -111,7 +111,7 @@ final class UploadableEntityTest extends BaseTestCaseORM
         $this->testFilename3 = substr($this->testFile3, strrpos($this->testFile3, '/') + 1);
         $this->testFilenameWithoutExt = substr($this->testFileWithoutExt, strrpos($this->testFileWithoutExt, '/') + 1);
         $this->testFilenameWithSpaces = substr($this->testFileWithSpaces, strrpos($this->testFileWithSpaces, '/') + 1);
-        $this->testFileSize = 4;
+        $this->testFileSize = '4';
         $this->testFileMimeType = 'text/plain';
 
         $this->clearFilesAndDirectories();
@@ -156,8 +156,8 @@ final class UploadableEntityTest extends BaseTestCaseORM
 
         $this->assertPathEquals($image2->getPath().'/'.$fileInfo['name'], $image2->getFilePath());
         static::assertTrue(is_file($firstFile));
-        static::assertEquals($fileInfo['size'], $image2->getSize());
-        static::assertEquals($fileInfo['type'], $image2->getMime());
+        static::assertSame($fileInfo['size'], $image2->getSize());
+        static::assertSame($fileInfo['type'], $image2->getMime());
 
         // UPDATE of an Uploadable Entity
 
@@ -210,8 +210,8 @@ final class UploadableEntityTest extends BaseTestCaseORM
 
         $this->assertPathEquals($image2->getPath($this->destinationTestDir).'/'.$fileInfo['name'], $image2->getFilePath());
         static::assertTrue(is_file($firstFile));
-        static::assertEquals($fileInfo['size'], $image2->getSize());
-        static::assertEquals($fileInfo['type'], $image2->getMime());
+        static::assertSame($fileInfo['size'], $image2->getSize());
+        static::assertSame($fileInfo['type'], $image2->getMime());
 
         // UPDATE of an Uploadable Entity
 
@@ -393,7 +393,7 @@ final class UploadableEntityTest extends BaseTestCaseORM
 
         $filename = substr($file->getFilePath(), strrpos($file->getFilePath(), '/') + 1);
 
-        static::assertEquals('test-3.txt', $filename);
+        static::assertSame('test-3.txt', $filename);
     }
 
     public function testFileWithCustomFilenameGenerator()
@@ -410,7 +410,7 @@ final class UploadableEntityTest extends BaseTestCaseORM
 
         $filename = substr($file->getFilePath(), strrpos($file->getFilePath(), '/') + 1);
 
-        static::assertEquals('123.txt', $filename);
+        static::assertSame('123.txt', $filename);
     }
 
     public function testUploadFileWithoutExtension()
@@ -476,7 +476,7 @@ final class UploadableEntityTest extends BaseTestCaseORM
 
         $filename = substr($file2->getFilePath(), strrpos($file2->getFilePath(), '/') + 1);
 
-        static::assertEquals('test-2.txt', $filename);
+        static::assertSame('test-2.txt', $filename);
     }
 
     public function testMoveFileUsingAppendNumberOptionAppendsNumberToFilenameIfItAlreadyExistsRelativePath()
@@ -502,7 +502,7 @@ final class UploadableEntityTest extends BaseTestCaseORM
 
         $this->em->refresh($file2);
 
-        static::assertEquals('./test-2', $file2->getFilePath());
+        static::assertSame('./test-2', $file2->getFilePath());
 
         chdir($currDir);
     }
@@ -555,7 +555,7 @@ final class UploadableEntityTest extends BaseTestCaseORM
         $this->listener->setDefaultPath($this->destinationTestDir);
 
         $file = new FileWithMaxSize();
-        $size = 0.0001;
+        $size = '0.0001';
         $fileInfo = $this->generateUploadedFile('image', false, false, ['size' => $size]);
 
         $this->listener->addEntityFileInfo($file, $fileInfo);
@@ -565,7 +565,7 @@ final class UploadableEntityTest extends BaseTestCaseORM
 
         $this->em->refresh($file);
 
-        static::assertEquals($size, $file->getFileSize());
+        static::assertSame($size, $file->getFileSize());
     }
 
     public function testIfMimeTypeGuesserCantResolveTypeThrowException()
@@ -631,7 +631,7 @@ final class UploadableEntityTest extends BaseTestCaseORM
 
         $this->listener->setDefaultFileInfoClass($validClass);
 
-        static::assertEquals($validClass, $this->listener->getDefaultFileInfoClass());
+        static::assertSame($validClass, $this->listener->getDefaultFileInfoClass());
     }
 
     public function testUseGeneratedFilenameWhenAppendingNumbers()
@@ -740,7 +740,7 @@ final class UploadableEntityTest extends BaseTestCaseORM
 
     protected function assertPathEquals($expected, $path, $message = '')
     {
-        static::assertEquals($expected, $path, $message);
+        static::assertSame($expected, $path, $message);
     }
 }
 

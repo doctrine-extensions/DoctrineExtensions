@@ -45,8 +45,8 @@ final class Issue939Test extends BaseTestCaseORM
         $this->em->persist($article);
         $this->em->flush();
 
-        static::assertEquals('Is there water on the moon?', $article->getSlug());
-        static::assertEquals('misc-articles', $category->getSlug());
+        static::assertSame('Is there water on the moon?', $article->getSlug());
+        static::assertSame('misc-articles', $category->getSlug());
     }
 
     protected function getUsedEntityFixtures()

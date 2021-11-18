@@ -34,10 +34,10 @@ final class EntityWrapperTest extends BaseTestCaseORM
         static::assertInstanceOf(self::ARTICLE, $test);
         $wrapped = new EntityWrapper($test, $this->em);
 
-        static::assertEquals(1, $wrapped->getIdentifier());
-        static::assertEquals('test', $wrapped->getPropertyValue('title'));
+        static::assertSame(1, $wrapped->getIdentifier());
+        static::assertSame('test', $wrapped->getPropertyValue('title'));
         $wrapped->setPropertyValue('title', 'changed');
-        static::assertEquals('changed', $wrapped->getPropertyValue('title'));
+        static::assertSame('changed', $wrapped->getPropertyValue('title'));
 
         static::assertTrue($wrapped->hasValidIdentifier());
     }
@@ -53,9 +53,9 @@ final class EntityWrapperTest extends BaseTestCaseORM
         static::assertIsArray($id);
         static::assertCount(1, $id);
         static::assertArrayHasKey('id', $id);
-        static::assertEquals(1, $id['id']);
+        static::assertSame(1, $id['id']);
 
-        static::assertEquals('test', $wrapped->getPropertyValue('title'));
+        static::assertSame('test', $wrapped->getPropertyValue('title'));
     }
 
     public function testDetachedEntity()
@@ -64,8 +64,8 @@ final class EntityWrapperTest extends BaseTestCaseORM
         $this->em->clear();
         $wrapped = new EntityWrapper($test, $this->em);
 
-        static::assertEquals(1, $wrapped->getIdentifier());
-        static::assertEquals('test', $wrapped->getPropertyValue('title'));
+        static::assertSame(1, $wrapped->getIdentifier());
+        static::assertSame('test', $wrapped->getPropertyValue('title'));
     }
 
     public function testDetachedProxy()
@@ -74,8 +74,8 @@ final class EntityWrapperTest extends BaseTestCaseORM
         $this->em->clear();
         $wrapped = new EntityWrapper($test, $this->em);
 
-        static::assertEquals(1, $wrapped->getIdentifier());
-        static::assertEquals('test', $wrapped->getPropertyValue('title'));
+        static::assertSame(1, $wrapped->getIdentifier());
+        static::assertSame('test', $wrapped->getPropertyValue('title'));
     }
 
     public function testSomeFunctions()
@@ -84,7 +84,7 @@ final class EntityWrapperTest extends BaseTestCaseORM
         $wrapped = new EntityWrapper($test, $this->em);
 
         $wrapped->populate(['title' => 'test']);
-        static::assertEquals('test', $wrapped->getPropertyValue('title'));
+        static::assertSame('test', $wrapped->getPropertyValue('title'));
 
         static::assertFalse($wrapped->hasValidIdentifier());
     }

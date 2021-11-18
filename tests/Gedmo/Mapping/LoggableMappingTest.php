@@ -58,6 +58,6 @@ final class LoggableMappingTest extends \PHPUnit\Framework\TestCase
         static::assertArrayHasKey('loggable', $config);
         static::assertTrue($config['loggable']);
         static::assertArrayHasKey('logEntryClass', $config);
-        static::assertEquals(LogEntry::class, $config['logEntryClass']);
+        static::assertSame(LogEntry::class, $config['logEntryClass']);
     }
 }

@@ -70,13 +70,13 @@ final class TranslatableMappingTest extends \PHPUnit\Framework\TestCase
         );
         $config = $this->em->getMetadataFactory()->getCacheDriver()->fetch($cacheId);
         static::assertArrayHasKey('translationClass', $config);
-        static::assertEquals(PersonTranslation::class, $config['translationClass']);
+        static::assertSame(PersonTranslation::class, $config['translationClass']);
         static::assertArrayHasKey('fields', $config);
         static::assertCount(3, $config['fields']);
-        static::assertEquals('password', $config['fields'][0]);
-        static::assertEquals('username', $config['fields'][1]);
+        static::assertSame('password', $config['fields'][0]);
+        static::assertSame('username', $config['fields'][1]);
         static::assertArrayHasKey('locale', $config);
-        static::assertEquals('localeField', $config['locale']);
+        static::assertSame('localeField', $config['locale']);
         static::assertCount(1, $config['fallback']);
         static::assertTrue($config['fallback']['company']);
     }

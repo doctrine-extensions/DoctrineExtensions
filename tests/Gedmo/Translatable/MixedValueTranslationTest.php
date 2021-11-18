@@ -51,7 +51,7 @@ final class MixedValueTranslationTest extends BaseTestCaseORM
 
         static::assertInstanceOf(\DateTime::class, $mixed->getDate());
         static::assertInstanceOf(\stdClass::class, $mixed->getCust());
-        static::assertEquals('en', $mixed->getCust()->test);
+        static::assertSame('en', $mixed->getCust()->test);
     }
 
     public function testOtherTranslation()
@@ -78,7 +78,7 @@ final class MixedValueTranslationTest extends BaseTestCaseORM
         $cust = unserialize($translations['de_de']['cust']);
 
         static::assertInstanceOf(\stdClass::class, $cust);
-        static::assertEquals('de', $cust->test);
+        static::assertSame('de', $cust->test);
     }
 
     protected function getUsedEntityFixtures()

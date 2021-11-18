@@ -60,7 +60,7 @@ final class Issue131Test extends BaseTestCaseORM
         $this->em->persist($article);
         $this->em->flush();
 
-        static::assertEquals('0', $article->getSlug());
+        static::assertSame('0', $article->getSlug());
     }
 
     protected function getUsedEntityFixtures()

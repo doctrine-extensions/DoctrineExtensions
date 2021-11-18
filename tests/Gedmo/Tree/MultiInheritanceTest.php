@@ -41,7 +41,7 @@ final class MultiInheritanceTest extends BaseTestCaseORM
         $left = $meta->getReflectionProperty('lft')->getValue($food);
         $right = $meta->getReflectionProperty('rgt')->getValue($food);
 
-        static::assertEquals(1, $left);
+        static::assertSame(1, $left);
         static::assertNotNull($food->getCreated());
         static::assertNotNull($food->getUpdated());
 
@@ -49,7 +49,7 @@ final class MultiInheritanceTest extends BaseTestCaseORM
         $translations = $translationRepo->findTranslations($food);
 
         static::assertCount(0, $translations);
-        static::assertEquals('food', $food->getSlug());
+        static::assertSame('food', $food->getSlug());
     }
 
     /**
@@ -63,7 +63,7 @@ final class MultiInheritanceTest extends BaseTestCaseORM
         $vegies = $repo->findOneBy(['title' => 'Vegitables']);
 
         $count = $repo->childCount($vegies, true/*direct*/);
-        static::assertEquals(3, $count);
+        static::assertSame(3, $count);
 
         $children = $repo->children($vegies, true);
         static::assertCount(3, $children);

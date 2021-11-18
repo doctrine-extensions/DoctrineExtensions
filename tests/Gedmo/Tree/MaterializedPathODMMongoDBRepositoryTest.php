@@ -49,16 +49,16 @@ final class MaterializedPathODMMongoDBRepositoryTest extends BaseTestCaseMongoOD
         /** @var CachingIterator $result */
         $result = $this->repo->getRootNodes('title');
 
-        static::assertEquals(3, \iterator_count($result));
+        static::assertSame(3, \iterator_count($result));
         $result->rewind();
 
         $result->rewind();
 
-        static::assertEquals('Drinks', $result->current()->getTitle());
+        static::assertSame('Drinks', $result->current()->getTitle());
         $result->next();
-        static::assertEquals('Food', $result->current()->getTitle());
+        static::assertSame('Food', $result->current()->getTitle());
         $result->next();
-        static::assertEquals('Sports', $result->current()->getTitle());
+        static::assertSame('Sports', $result->current()->getTitle());
     }
 
     /**
@@ -72,91 +72,91 @@ final class MaterializedPathODMMongoDBRepositoryTest extends BaseTestCaseMongoOD
         /** @var CachingIterator $result */
         $result = $this->repo->getChildren($root, false, 'title', 'asc', true);
 
-        static::assertEquals(5, \iterator_count($result));
+        static::assertSame(5, \iterator_count($result));
         $result->rewind();
 
         $result->rewind();
-        static::assertEquals('Carrots', $result->current()->getTitle());
+        static::assertSame('Carrots', $result->current()->getTitle());
         $result->next();
-        static::assertEquals('Food', $result->current()->getTitle());
+        static::assertSame('Food', $result->current()->getTitle());
         $result->next();
-        static::assertEquals('Fruits', $result->current()->getTitle());
+        static::assertSame('Fruits', $result->current()->getTitle());
         $result->next();
-        static::assertEquals('Potatoes', $result->current()->getTitle());
+        static::assertSame('Potatoes', $result->current()->getTitle());
         $result->next();
-        static::assertEquals('Vegitables', $result->current()->getTitle());
+        static::assertSame('Vegitables', $result->current()->getTitle());
 
         // Get all children from the root, NOT including it
         /** @var CachingIterator $result */
         $result = $this->repo->getChildren($root, false, 'title', 'asc', false);
 
-        static::assertEquals(4, \iterator_count($result));
+        static::assertSame(4, \iterator_count($result));
         $result->rewind();
         $result->rewind();
-        static::assertEquals('Carrots', $result->current()->getTitle());
+        static::assertSame('Carrots', $result->current()->getTitle());
         $result->next();
-        static::assertEquals('Fruits', $result->current()->getTitle());
+        static::assertSame('Fruits', $result->current()->getTitle());
         $result->next();
-        static::assertEquals('Potatoes', $result->current()->getTitle());
+        static::assertSame('Potatoes', $result->current()->getTitle());
         $result->next();
-        static::assertEquals('Vegitables', $result->current()->getTitle());
+        static::assertSame('Vegitables', $result->current()->getTitle());
 
         // Get direct children from the root, including it
         /** @var CachingIterator $result */
         $result = $this->repo->getChildren($root, true, 'title', 'asc', true);
 
-        static::assertEquals(3, \iterator_count($result));
+        static::assertSame(3, \iterator_count($result));
         $result->rewind();
         $result->rewind();
-        static::assertEquals('Food', $result->current()->getTitle());
+        static::assertSame('Food', $result->current()->getTitle());
         $result->next();
-        static::assertEquals('Fruits', $result->current()->getTitle());
+        static::assertSame('Fruits', $result->current()->getTitle());
         $result->next();
-        static::assertEquals('Vegitables', $result->current()->getTitle());
+        static::assertSame('Vegitables', $result->current()->getTitle());
 
         // Get direct children from the root, NOT including it
         /** @var CachingIterator $result */
         $result = $this->repo->getChildren($root, true, 'title', 'asc', false);
 
-        static::assertEquals(2, \iterator_count($result));
+        static::assertSame(2, \iterator_count($result));
         $result->rewind();
-        static::assertEquals('Fruits', $result->current()->getTitle());
+        static::assertSame('Fruits', $result->current()->getTitle());
         $result->next();
-        static::assertEquals('Vegitables', $result->current()->getTitle());
+        static::assertSame('Vegitables', $result->current()->getTitle());
 
         // Get ALL nodes
         $result = $this->repo->getChildren(null, false, 'title');
 
-        static::assertEquals(9, \iterator_count($result));
+        static::assertSame(9, \iterator_count($result));
         $result->rewind();
-        static::assertEquals('Best Whisky', $result->current()->getTitle());
+        static::assertSame('Best Whisky', $result->current()->getTitle());
         $result->next();
-        static::assertEquals('Carrots', $result->current()->getTitle());
+        static::assertSame('Carrots', $result->current()->getTitle());
         $result->next();
-        static::assertEquals('Drinks', $result->current()->getTitle());
+        static::assertSame('Drinks', $result->current()->getTitle());
         $result->next();
-        static::assertEquals('Food', $result->current()->getTitle());
+        static::assertSame('Food', $result->current()->getTitle());
         $result->next();
-        static::assertEquals('Fruits', $result->current()->getTitle());
+        static::assertSame('Fruits', $result->current()->getTitle());
         $result->next();
-        static::assertEquals('Potatoes', $result->current()->getTitle());
+        static::assertSame('Potatoes', $result->current()->getTitle());
         $result->next();
-        static::assertEquals('Sports', $result->current()->getTitle());
+        static::assertSame('Sports', $result->current()->getTitle());
         $result->next();
-        static::assertEquals('Vegitables', $result->current()->getTitle());
+        static::assertSame('Vegitables', $result->current()->getTitle());
         $result->next();
-        static::assertEquals('Whisky', $result->current()->getTitle());
+        static::assertSame('Whisky', $result->current()->getTitle());
 
         // Get ALL root nodes
         $result = $this->repo->getChildren(null, true, 'title');
 
-        static::assertEquals(3, \iterator_count($result));
+        static::assertSame(3, \iterator_count($result));
         $result->rewind();
-        static::assertEquals('Drinks', $result->current()->getTitle());
+        static::assertSame('Drinks', $result->current()->getTitle());
         $result->next();
-        static::assertEquals('Food', $result->current()->getTitle());
+        static::assertSame('Food', $result->current()->getTitle());
         $result->next();
-        static::assertEquals('Sports', $result->current()->getTitle());
+        static::assertSame('Sports', $result->current()->getTitle());
     }
 
     /**
@@ -166,37 +166,37 @@ final class MaterializedPathODMMongoDBRepositoryTest extends BaseTestCaseMongoOD
     {
         $tree = $this->repo->getTree();
 
-        static::assertEquals(9, \iterator_count($tree));
+        static::assertSame(9, \iterator_count($tree));
         $tree->rewind();
-        static::assertEquals('Drinks', $tree->current()->getTitle());
+        static::assertSame('Drinks', $tree->current()->getTitle());
         $tree->next();
-        static::assertEquals('Whisky', $tree->current()->getTitle());
+        static::assertSame('Whisky', $tree->current()->getTitle());
         $tree->next();
-        static::assertEquals('Best Whisky', $tree->current()->getTitle());
+        static::assertSame('Best Whisky', $tree->current()->getTitle());
         $tree->next();
-        static::assertEquals('Food', $tree->current()->getTitle());
+        static::assertSame('Food', $tree->current()->getTitle());
         $tree->next();
-        static::assertEquals('Fruits', $tree->current()->getTitle());
+        static::assertSame('Fruits', $tree->current()->getTitle());
         $tree->next();
-        static::assertEquals('Vegitables', $tree->current()->getTitle());
+        static::assertSame('Vegitables', $tree->current()->getTitle());
         $tree->next();
-        static::assertEquals('Carrots', $tree->current()->getTitle());
+        static::assertSame('Carrots', $tree->current()->getTitle());
         $tree->next();
-        static::assertEquals('Potatoes', $tree->current()->getTitle());
+        static::assertSame('Potatoes', $tree->current()->getTitle());
         $tree->next();
-        static::assertEquals('Sports', $tree->current()->getTitle());
+        static::assertSame('Sports', $tree->current()->getTitle());
 
         // Get a specific tree
         $roots = $this->repo->getRootNodes();
         $tree = $this->repo->getTree($roots->current());
 
-        static::assertEquals(3, \iterator_count($tree));
+        static::assertSame(3, \iterator_count($tree));
         $tree->rewind();
-        static::assertEquals('Drinks', $tree->current()->getTitle());
+        static::assertSame('Drinks', $tree->current()->getTitle());
         $tree->next();
-        static::assertEquals('Whisky', $tree->current()->getTitle());
+        static::assertSame('Whisky', $tree->current()->getTitle());
         $tree->next();
-        static::assertEquals('Best Whisky', $tree->current()->getTitle());
+        static::assertSame('Best Whisky', $tree->current()->getTitle());
     }
 
     /**
@@ -206,16 +206,16 @@ final class MaterializedPathODMMongoDBRepositoryTest extends BaseTestCaseMongoOD
     {
         $tree = $this->repo->childrenHierarchy();
 
-        static::assertEquals('Drinks', $tree[0]['title']);
-        static::assertEquals('Whisky', $tree[0]['__children'][0]['title']);
-        static::assertEquals('Best Whisky', $tree[0]['__children'][0]['__children'][0]['title']);
+        static::assertSame('Drinks', $tree[0]['title']);
+        static::assertSame('Whisky', $tree[0]['__children'][0]['title']);
+        static::assertSame('Best Whisky', $tree[0]['__children'][0]['__children'][0]['title']);
         $vegitablesChildren = $tree[1]['__children'][1]['__children'];
-        static::assertEquals('Food', $tree[1]['title']);
-        static::assertEquals('Fruits', $tree[1]['__children'][0]['title']);
-        static::assertEquals('Vegitables', $tree[1]['__children'][1]['title']);
-        static::assertEquals('Carrots', $vegitablesChildren[0]['title']);
-        static::assertEquals('Potatoes', $vegitablesChildren[1]['title']);
-        static::assertEquals('Sports', $tree[2]['title']);
+        static::assertSame('Food', $tree[1]['title']);
+        static::assertSame('Fruits', $tree[1]['__children'][0]['title']);
+        static::assertSame('Vegitables', $tree[1]['__children'][1]['title']);
+        static::assertSame('Carrots', $vegitablesChildren[0]['title']);
+        static::assertSame('Potatoes', $vegitablesChildren[1]['title']);
+        static::assertSame('Sports', $tree[2]['title']);
 
         // Tree of one specific root
         $roots = $this->repo->getRootNodes();
@@ -225,45 +225,45 @@ final class MaterializedPathODMMongoDBRepositoryTest extends BaseTestCaseMongoOD
         $roots->next();
         $tree = $this->repo->childrenHierarchy();
 
-        static::assertEquals('Drinks', $tree[0]['title']);
-        static::assertEquals('Whisky', $tree[0]['__children'][0]['title']);
-        static::assertEquals('Best Whisky', $tree[0]['__children'][0]['__children'][0]['title']);
+        static::assertSame('Drinks', $tree[0]['title']);
+        static::assertSame('Whisky', $tree[0]['__children'][0]['title']);
+        static::assertSame('Best Whisky', $tree[0]['__children'][0]['__children'][0]['title']);
 
         // Tree of one specific root, with the root node
         $tree = $this->repo->childrenHierarchy($drinks, false, [], true);
 
-        static::assertEquals('Drinks', $tree[0]['title']);
-        static::assertEquals('Whisky', $tree[0]['__children'][0]['title']);
-        static::assertEquals('Best Whisky', $tree[0]['__children'][0]['__children'][0]['title']);
+        static::assertSame('Drinks', $tree[0]['title']);
+        static::assertSame('Whisky', $tree[0]['__children'][0]['title']);
+        static::assertSame('Best Whisky', $tree[0]['__children'][0]['__children'][0]['title']);
 
         // Tree of one specific root only with direct children, without the root node
         $roots = $this->repo->getRootNodes();
         $tree = $this->repo->childrenHierarchy($food, true);
 
         static::assertCount(2, $tree);
-        static::assertEquals('Fruits', $tree[0]['title']);
-        static::assertEquals('Vegitables', $tree[1]['title']);
+        static::assertSame('Fruits', $tree[0]['title']);
+        static::assertSame('Vegitables', $tree[1]['title']);
 
         // Tree of one specific root only with direct children, with the root node
         $tree = $this->repo->childrenHierarchy($food, true, [], true);
 
         static::assertCount(1, $tree);
         static::assertCount(2, $tree[0]['__children']);
-        static::assertEquals('Food', $tree[0]['title']);
-        static::assertEquals('Fruits', $tree[0]['__children'][0]['title']);
-        static::assertEquals('Vegitables', $tree[0]['__children'][1]['title']);
+        static::assertSame('Food', $tree[0]['title']);
+        static::assertSame('Fruits', $tree[0]['__children'][0]['title']);
+        static::assertSame('Vegitables', $tree[0]['__children'][1]['title']);
 
         // HTML Tree of one specific root, without the root node
         $roots = $this->repo->getRootNodes();
         $tree = $this->repo->childrenHierarchy($drinks, false, ['decorate' => true], false);
 
-        static::assertEquals('<ul><li>Whisky<ul><li>Best Whisky</li></ul></li></ul>', $tree);
+        static::assertSame('<ul><li>Whisky<ul><li>Best Whisky</li></ul></li></ul>', $tree);
 
         // HTML Tree of one specific root, with the root node
         $roots = $this->repo->getRootNodes();
         $tree = $this->repo->childrenHierarchy($drinks, false, ['decorate' => true], true);
 
-        static::assertEquals('<ul><li>Drinks<ul><li>Whisky<ul><li>Best Whisky</li></ul></li></ul></li></ul>', $tree);
+        static::assertSame('<ul><li>Drinks<ul><li>Whisky<ul><li>Best Whisky</li></ul></li></ul></li></ul>', $tree);
     }
 
     public function testChildCount()
@@ -271,23 +271,23 @@ final class MaterializedPathODMMongoDBRepositoryTest extends BaseTestCaseMongoOD
         // Count all
         $count = $this->repo->childCount();
 
-        static::assertEquals(9, $count);
+        static::assertSame(9, $count);
 
         // Count all, but only direct ones
         $count = $this->repo->childCount(null, true);
 
-        static::assertEquals(3, $count);
+        static::assertSame(3, $count);
 
         // Count food children
         $food = $this->repo->findOneBy(['title' => 'Food']);
         $count = $this->repo->childCount($food);
 
-        static::assertEquals(4, $count);
+        static::assertSame(4, $count);
 
         // Count food children, but only direct ones
         $count = $this->repo->childCount($food, true);
 
-        static::assertEquals(2, $count);
+        static::assertSame(2, $count);
     }
 
     public function testChildCountIfAnObjectIsPassedWhichIsNotAnInstanceOfTheEntityClassThrowException()

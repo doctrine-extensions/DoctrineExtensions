@@ -82,13 +82,13 @@ final class InheritanceTest extends BaseTestCaseORM
         static::assertArrayHasKey('de', $translations);
 
         static::assertArrayHasKey('name', $translations['de']);
-        static::assertEquals('name in de', $translations['de']['name']);
+        static::assertSame('name in de', $translations['de']['name']);
 
         static::assertArrayHasKey('title', $translations['de']);
-        static::assertEquals('title in de', $translations['de']['title']);
+        static::assertSame('title in de', $translations['de']['title']);
 
         static::assertArrayHasKey('content', $translations['de']);
-        static::assertEquals('content in de', $translations['de']['content']);
+        static::assertSame('content in de', $translations['de']['content']);
     }
 
     /**
@@ -126,14 +126,14 @@ final class InheritanceTest extends BaseTestCaseORM
 
         $files = $q->getArrayResult();
         static::assertCount(2, $files);
-        static::assertEquals('image de', $files[0]['name']);
-        static::assertEquals('file de', $files[1]['name']);
+        static::assertSame('image de', $files[0]['name']);
+        static::assertSame('file de', $files[1]['name']);
 
         // test loading in locale
         $images = $this->em->getRepository(self::IMAGE)->findAll();
         static::assertCount(1, $images);
-        static::assertEquals('image de', $images[0]->getName());
-        static::assertEquals('mime de', $images[0]->getMime());
+        static::assertSame('image de', $images[0]->getName());
+        static::assertSame('mime de', $images[0]->getMime());
     }
 
     protected function getUsedEntityFixtures()
