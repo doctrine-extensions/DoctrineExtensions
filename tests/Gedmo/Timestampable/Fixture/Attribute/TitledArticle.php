@@ -48,7 +48,7 @@ class TitledArticle implements Timestampable
     /**
      * @param \DateTime $chtext
      */
-    public function setChtext($chtext)
+    public function setChtext($chtext): void
     {
         $this->chtext = $chtext;
     }
