@@ -229,7 +229,7 @@ final class ClosureTreeRepositoryTest extends BaseTestCaseORM
         $repo = $this->em->getRepository($class);
         $sortOption = ['childSort' => ['field' => 'title', 'dir' => 'asc']];
 
-        $testClosure = static function (ClosureTreeRepositoryTest $phpUnit, array $tree, $includeNode = false, $whichTree = 'both', $includeNewNode = false) {
+        $testClosure = static function (array $tree, $includeNode = false, $whichTree = 'both', $includeNewNode = false): void {
             if ('both' === $whichTree || 'first' === $whichTree) {
                 $boringFood = $includeNewNode ? ($includeNode ? $tree[0]['__children'][0] : $tree[0]) : null;
                 $fruitsIndex = $includeNewNode ? 1 : 0;
@@ -239,23 +239,23 @@ final class ClosureTreeRepositoryTest extends BaseTestCaseORM
                 $vegitables = $includeNewNode ? $boringFood['__children'][0] : ($includeNode ? $tree[0]['__children'][2] : $tree[2]);
 
                 if ($includeNode) {
-                    $phpUnit->assertEquals('Food', $tree[0]['title']);
+                    static::assertEquals('Food', $tree[0]['title']);
                 }
 
-                $phpUnit->assertEquals('Fruits', $fruits['title']);
-                $phpUnit->assertEquals('Berries', $fruits['__children'][0]['title']);
-                $phpUnit->assertEquals('Strawberries', $fruits['__children'][0]['__children'][0]['title']);
-                $phpUnit->assertEquals('Milk', $milk['title']);
-                $phpUnit->assertEquals('Cheese', $milk['__children'][0]['title']);
-                $phpUnit->assertEquals('Mould cheese', $milk['__children'][0]['__children'][0]['title']);
+                static::assertEquals('Fruits', $fruits['title']);
+                static::assertEquals('Berries', $fruits['__children'][0]['title']);
+                static::assertEquals('Strawberries', $fruits['__children'][0]['__children'][0]['title']);
+                static::assertEquals('Milk', $milk['title']);
+                static::assertEquals('Cheese', $milk['__children'][0]['title']);
+                static::assertEquals('Mould cheese', $milk['__children'][0]['__children'][0]['title']);
 
                 if ($boringFood) {
-                    $phpUnit->assertEquals('Boring Food', $boringFood['title']);
+                    static::assertEquals('Boring Food', $boringFood['title']);
                 }
 
-                $phpUnit->assertEquals('Vegitables', $vegitables['title']);
-                $phpUnit->assertEquals('Cabbages', $vegitables['__children'][0]['title']);
-                $phpUnit->assertEquals('Carrots', $vegitables['__children'][1]['title']);
+                static::assertEquals('Vegitables', $vegitables['title']);
+                static::assertEquals('Cabbages', $vegitables['__children'][0]['title']);
+                static::assertEquals('Carrots', $vegitables['__children'][1]['title']);
             }
 
             if ('both' === $whichTree || 'second' === $whichTree) {
@@ -263,18 +263,18 @@ final class ClosureTreeRepositoryTest extends BaseTestCaseORM
                 $soccer = $includeNode ? $root['__children'][0] : $root;
 
                 if ($includeNode) {
-                    $phpUnit->assertEquals('Sports', $root['title']);
+                    static::assertEquals('Sports', $root['title']);
                 }
 
-                $phpUnit->assertEquals('Soccer', $soccer['title']);
-                $phpUnit->assertEquals('Indoor Soccer', $soccer['__children'][0]['title']);
+                static::assertEquals('Soccer', $soccer['title']);
+                static::assertEquals('Indoor Soccer', $soccer['__children'][0]['title']);
             }
         };
 
         // All trees
         $tree = $repo->childrenHierarchy(null, false, $sortOption);
 
-        $testClosure($this, $tree, true, 'both');
+        $testClosure($tree, true, 'both');
 
         $roots = $repo->getRootNodes();
 
@@ -286,7 +286,7 @@ final class ClosureTreeRepositoryTest extends BaseTestCaseORM
             true
         );
 
-        $testClosure($this, $tree, true, 'first');
+        $testClosure($tree, true, 'first');
 
         // First root tree, not including root node
         $tree = $repo->childrenHierarchy(
@@ -295,7 +295,7 @@ final class ClosureTreeRepositoryTest extends BaseTestCaseORM
             $sortOption
         );
 
-        $testClosure($this, $tree, false, 'first');
+        $testClosure($tree, false, 'first');
 
         // Second root tree, including root node
         $tree = $repo->childrenHierarchy(
@@ -305,7 +305,7 @@ final class ClosureTreeRepositoryTest extends BaseTestCaseORM
             true
         );
 
-        $testClosure($this, $tree, true, 'second');
+        $testClosure($tree, true, 'second');
 
         // Second root tree, not including root node
         $tree = $repo->childrenHierarchy(
@@ -314,7 +314,7 @@ final class ClosureTreeRepositoryTest extends BaseTestCaseORM
             $sortOption
         );
 
-        $testClosure($this, $tree, false, 'second');
+        $testClosure($tree, false, 'second');
 
         $food = $repo->findOneBy(['title' => 'Food']);
         $vegitables = $repo->findOneBy(['title' => 'Vegitables']);
@@ -336,7 +336,7 @@ final class ClosureTreeRepositoryTest extends BaseTestCaseORM
             true
         );
 
-        $testClosure($this, $tree, true, 'first', true);
+        $testClosure($tree, true, 'first', true);
 
         // First root tree, after inserting a new node in the middle. This not includes the root node
         $tree = $repo->childrenHierarchy(
@@ -345,7 +345,7 @@ final class ClosureTreeRepositoryTest extends BaseTestCaseORM
             $sortOption
         );
 
-        $testClosure($this, $tree, false, 'first', true);
+        $testClosure($tree, false, 'first', true);
 
         // Second root tree, after inserting a new node in the middle. This includes the root node
         $tree = $repo->childrenHierarchy(
@@ -355,7 +355,7 @@ final class ClosureTreeRepositoryTest extends BaseTestCaseORM
             true
         );
 
-        $testClosure($this, $tree, true, 'second', true);
+        $testClosure($tree, true, 'second', true);
 
         // Second root tree, after inserting a new node in the middle. This not includes the root node
         $tree = $repo->childrenHierarchy(
@@ -364,7 +364,7 @@ final class ClosureTreeRepositoryTest extends BaseTestCaseORM
             $sortOption
         );
 
-        $testClosure($this, $tree, false, 'second', false);
+        $testClosure($tree, false, 'second', false);
 
         // Test a subtree, including node
         $node = $repo->findOneBy(['title' => 'Fruits']);

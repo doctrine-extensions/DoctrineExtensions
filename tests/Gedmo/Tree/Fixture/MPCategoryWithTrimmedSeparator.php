@@ -65,7 +65,7 @@ class MPCategoryWithTrimmedSeparator
         return $this->title;
     }
 
-    public function setParent(MPCategoryWithTrimmedSeparator $parent = null)
+    public function setParent(self $parent = null)
     {
         $this->parentId = $parent;
     }

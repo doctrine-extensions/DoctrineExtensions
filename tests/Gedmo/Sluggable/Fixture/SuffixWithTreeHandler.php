@@ -100,7 +100,7 @@ class SuffixWithTreeHandler implements Sluggable
     /**
      * @return $this;
      */
-    public function setParent(SuffixWithTreeHandler $parent)
+    public function setParent(self $parent)
     {
         $this->parent = $parent;
 

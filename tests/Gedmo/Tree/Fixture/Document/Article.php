@@ -61,7 +61,7 @@ class Article
         return $this->title;
     }
 
-    public function setParent(Article $parent = null)
+    public function setParent(self $parent = null)
     {
         $this->parent = $parent;
     }

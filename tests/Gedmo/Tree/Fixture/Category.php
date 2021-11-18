@@ -76,7 +76,7 @@ class Category implements NodeInterface
         return $this->title;
     }
 
-    public function setParent(Category $parent)
+    public function setParent(self $parent)
     {
         $this->parentId = $parent;
     }

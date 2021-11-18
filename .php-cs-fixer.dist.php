@@ -34,6 +34,7 @@ return (new PhpCsFixer\Config())
         'php_unit_test_annotation' => false,
         'php_unit_test_case_static_method_calls' => true,
         'random_api_migration' => true,
+        'self_accessor' => true,
         'static_lambda' => true,
         'ternary_to_null_coalescing' => true,
     ])

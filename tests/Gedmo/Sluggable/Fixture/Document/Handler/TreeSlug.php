@@ -36,7 +36,7 @@ class TreeSlug
      */
     private $parent;
 
-    public function setParent(TreeSlug $parent = null)
+    public function setParent(self $parent = null)
     {
         $this->parent = $parent;
     }

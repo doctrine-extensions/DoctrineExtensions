@@ -76,7 +76,7 @@ class RootCategory
         return $this->title;
     }
 
-    public function setParent(RootCategory $parent = null)
+    public function setParent(self $parent = null)
     {
         $this->parent = $parent;
     }

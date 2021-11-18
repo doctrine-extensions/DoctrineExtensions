@@ -76,7 +76,7 @@ class MPCategory
         return $this->title;
     }
 
-    public function setParent(MPCategory $parent = null)
+    public function setParent(self $parent = null)
     {
         $this->parentId = $parent;
     }

@@ -81,7 +81,7 @@ class Person
      */
     private $parent;
 
-    public function setParent(Person $parent)
+    public function setParent(self $parent)
     {
         $this->parent = $parent;
     }

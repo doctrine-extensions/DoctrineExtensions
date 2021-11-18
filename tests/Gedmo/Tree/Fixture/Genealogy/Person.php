@@ -77,7 +77,7 @@ abstract class Person
     /**
      * @return Person
      */
-    public function setParent(Person $parent)
+    public function setParent(self $parent)
     {
         $this->parent = $parent;
 
