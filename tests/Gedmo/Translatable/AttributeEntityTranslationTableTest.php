@@ -4,6 +4,7 @@ namespace Gedmo\Tests\Translatable;
 
 use Doctrine\Common\EventManager;
 use Gedmo\Tests\Tool\BaseTestCaseORM;
+use Gedmo\Tests\Translatable\Fixture\Attribute\File;
 use Gedmo\Tests\Translatable\Fixture\Attribute\Person;
 use Gedmo\Tests\Translatable\Fixture\Attribute\PersonTranslation;
 use Gedmo\Translatable\Entity\Repository\TranslationRepository;
@@ -24,6 +25,7 @@ final class AttributeEntityTranslationTableTest extends BaseTestCaseORM
 {
     public const PERSON = Person::class;
     public const TRANSLATION = PersonTranslation::class;
+    public const FILE = File::class;
 
     private $translatableListener;
 
@@ -76,11 +78,37 @@ final class AttributeEntityTranslationTableTest extends BaseTestCaseORM
         $this->translatableListener->setTranslatableLocale('en_us');
     }
 
+    public function testFixtureWithAttributeMappingAndAnnotations(): void
+    {
+        $file = new File();
+        $file->setTitle('title in en');
+
+        $this->em->persist($file);
+        $this->em->flush();
+        $this->em->clear();
+
+        $file = $this->em->find(self::FILE, $file->getId());
+
+        $file->locale = 'de';
+        $file->setTitle('title in de');
+
+        $this->em->flush();
+        $this->em->clear();
+
+        $file = $this->em->find(self::FILE, $file->getId());
+
+        static::assertEquals('title in en', $file->getTitle());
+        $file->locale = 'de';
+        $this->em->refresh($file);
+        static::assertEquals('title in de', $file->getTitle());
+    }
+
     protected function getUsedEntityFixtures()
     {
         return [
             self::PERSON,
             self::TRANSLATION,
+            self::FILE,
         ];
     }
 }
