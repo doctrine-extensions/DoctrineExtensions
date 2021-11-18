@@ -49,7 +49,7 @@ class TitledArticle implements Timestampable
      */
     #[ORM\Column(name: 'chtext', type: Types::DATETIME_MUTABLE, nullable: true)]
     #[Gedmo\Timestampable(on: 'change', field: 'text')]
-    private $chtext;
+    private $chText;
 
     /**
      * @var \DateTime
@@ -59,7 +59,7 @@ class TitledArticle implements Timestampable
      */
     #[ORM\Column(name: 'chtitle', type: Types::DATETIME_MUTABLE, nullable: true)]
     #[Gedmo\Timestampable(on: 'change', field: 'title')]
-    private $chtitle;
+    private $chTitle;
 
     /**
      * @var \DateTime
@@ -72,35 +72,35 @@ class TitledArticle implements Timestampable
     private $closed;
 
     /**
-     * @param \DateTime $chtext
+     * @param \DateTime $chText
      */
-    public function setChtext($chtext)
+    public function setChText($chText)
     {
-        $this->chtext = $chtext;
+        $this->chText = $chText;
     }
 
     /**
      * @return \DateTime
      */
-    public function getChtext()
+    public function getChText()
     {
-        return $this->chtext;
+        return $this->chText;
     }
 
     /**
-     * @param \DateTime $chtitle
+     * @param \DateTime $chTitle
      */
-    public function setChtitle($chtitle)
+    public function setChTitle($chTitle)
     {
-        $this->chtitle = $chtitle;
+        $this->chTitle = $chTitle;
     }
 
     /**
      * @return \DateTime
      */
-    public function getChtitle()
+    public function getChTitle()
     {
-        return $this->chtitle;
+        return $this->chTitle;
     }
 
     /**

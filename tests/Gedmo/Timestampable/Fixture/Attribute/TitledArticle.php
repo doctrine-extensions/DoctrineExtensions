@@ -46,35 +46,35 @@ class TitledArticle implements Timestampable
     private $closed;
 
     /**
-     * @param \DateTime $chtext
+     * @param \DateTime $chText
      */
-    public function setChtext($chtext): void
+    public function setChText($chText): void
     {
-        $this->chtext = $chtext;
+        $this->chText = $chText;
     }
 
     /**
      * @return \DateTime
      */
-    public function getChtext()
+    public function getChText()
     {
-        return $this->chtext;
+        return $this->chText;
     }
 
     /**
-     * @param \DateTime $chtitle
+     * @param \DateTime $chTitle
      */
-    public function setChtitle($chtitle)
+    public function setChTitle($chTitle)
     {
-        $this->chtitle = $chtitle;
+        $this->chTitle = $chTitle;
     }
 
     /**
      * @return \DateTime
      */
-    public function getChtitle()
+    public function getChTitle()
     {
-        return $this->chtitle;
+        return $this->chTitle;
     }
 
     /**
