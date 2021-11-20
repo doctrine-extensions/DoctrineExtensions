@@ -15,7 +15,8 @@
         "sortable",
         "timestampable",
         "blameable",
-        "uploadable"
+        "uploadable",
+        "aggregate-versioning"
     ],
     "homepage": "http://gediminasm.org/",
     "license": "MIT",

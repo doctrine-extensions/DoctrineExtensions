@@ -65,6 +65,9 @@
         <testsuite name="References Extension">
             <directory suffix="Test.php">./Gedmo/References/</directory>
         </testsuite>
+        <testsuite name="Aggregate Versioning Extension">
+            <directory suffix="Test.php">./Gedmo/AggregateVersioning/</directory>
+        </testsuite>
     </testsuites>
     <php>
         <env name="MONGODB_SERVER" value="mongodb://mongodb:27017"/>
