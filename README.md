@@ -49,6 +49,8 @@ flushed in a behavioral way.
 - [**Tree**](/doc/tree.md) - automates the tree handling process and adds some tree-specific functions on repository.
 (**closure**, **nested set** or **materialized path**)
   _(MongoDB ODM only supports materialized path)_
+- [**AggregateVersioning**](/doc/aggregate_versioning.md) - automated control the aggregate version of Aggregate Root or reference Aggregate
+  entity on your Entities.
 
 #### ORM Only
 
