@@ -572,14 +572,13 @@ class Nested implements Strategy
     /**
      * Shift tree left and right values by delta
      *
-     * @param EntityManager $em
-     * @param string        $class
-     * @param int           $first
-     * @param int           $delta
-     * @param string        $class
-     * @param int           $first
-     * @param int           $delta
-     * @param int|string    $root
+     * @param string     $class
+     * @param int        $first
+     * @param int        $delta
+     * @param string     $class
+     * @param int        $first
+     * @param int        $delta
+     * @param int|string $root
      */
     public function shiftRL(EntityManagerInterface $em, $class, $first, $delta, $root = null)
     {
