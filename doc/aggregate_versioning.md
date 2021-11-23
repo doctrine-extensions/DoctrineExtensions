@@ -264,7 +264,7 @@ class Order implements AggregateRoot
      */
     private $status;
     /**
-     * @var OrderLine[]|Collection
+     * @var Collection<int, OrderLine>
      * @ORM\OneToMany(targetEntity="OrderLine", mappedBy="order", orphanRemoval=true, cascade={"persist"})
      */
     private $items;
@@ -307,7 +307,7 @@ class Order implements AggregateRoot
     }
 
     /**
-     * @return OrderLine[]
+     * @return Collection<int, OrderLine>
      */
     public function getItems(): array
     {
