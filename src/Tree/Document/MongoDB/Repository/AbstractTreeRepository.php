@@ -4,18 +4,21 @@ namespace Gedmo\Tree\Document\MongoDB\Repository;
 
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Doctrine\ODM\MongoDB\Mapping\ClassMetadata;
+use Doctrine\ODM\MongoDB\Query\Builder;
+use Doctrine\ODM\MongoDB\Query\Query;
 use Doctrine\ODM\MongoDB\Repository\DocumentRepository;
 use Doctrine\ODM\MongoDB\UnitOfWork;
 use Gedmo\Tree\RepositoryInterface;
 use Gedmo\Tree\RepositoryUtils;
 use Gedmo\Tree\RepositoryUtilsInterface;
+use Gedmo\Tree\TreeListener;
 
 abstract class AbstractTreeRepository extends DocumentRepository implements RepositoryInterface
 {
     /**
      * Tree listener on event manager
      *
-     * @var AbstractTreeListener
+     * @var TreeListener
      */
     protected $listener = null;
 
@@ -129,7 +132,7 @@ abstract class AbstractTreeRepository extends DocumentRepository implements Repo
      * @param string|null $sortByField Sort by field
      * @param string      $direction   Sort direction ("asc" or "desc")
      *
-     * @return \Doctrine\MongoDB\Query\Builder QueryBuilder object
+     * @return Builder
      */
     abstract public function getRootNodesQueryBuilder($sortByField = null, $direction = 'asc');
 
@@ -139,7 +142,7 @@ abstract class AbstractTreeRepository extends DocumentRepository implements Repo
      * @param string|null $sortByField Sort by field
      * @param string      $direction   Sort direction ("asc" or "desc")
      *
-     * @return \Doctrine\MongoDB\Query\Query Query object
+     * @return Query
      */
     abstract public function getRootNodesQuery($sortByField = null, $direction = 'asc');
 
@@ -151,7 +154,7 @@ abstract class AbstractTreeRepository extends DocumentRepository implements Repo
      * @param array  $options     Options
      * @param bool   $includeNode Include node in results?
      *
-     * @return \Doctrine\MongoDB\Query\Builder QueryBuilder object
+     * @return Builder
      */
     abstract public function getNodesHierarchyQueryBuilder($node = null, $direct = false, array $options = [], $includeNode = false);
 
@@ -163,7 +166,7 @@ abstract class AbstractTreeRepository extends DocumentRepository implements Repo
      * @param array  $options     Options
      * @param bool   $includeNode Include node in results?
      *
-     * @return \Doctrine\MongoDB\Query\Query Query object
+     * @return Query
      */
     abstract public function getNodesHierarchyQuery($node = null, $direct = false, array $options = [], $includeNode = false);
 
@@ -176,7 +179,7 @@ abstract class AbstractTreeRepository extends DocumentRepository implements Repo
      * @param string $direction   sort direction : "ASC" or "DESC"
      * @param bool   $includeNode Include the root node in results?
      *
-     * @return \Doctrine\MongoDB\Query\Builder QueryBuilder object
+     * @return Builder
      */
     abstract public function getChildrenQueryBuilder($node = null, $direct = false, $sortByField = null, $direction = 'ASC', $includeNode = false);
 
@@ -189,7 +192,7 @@ abstract class AbstractTreeRepository extends DocumentRepository implements Repo
      * @param string $direction   sort direction : "ASC" or "DESC"
      * @param bool   $includeNode Include the root node in results?
      *
-     * @return \Doctrine\MongoDB\Query\Query Query object
+     * @return Query
      */
     abstract public function getChildrenQuery($node = null, $direct = false, $sortByField = null, $direction = 'ASC', $includeNode = false);
 }
