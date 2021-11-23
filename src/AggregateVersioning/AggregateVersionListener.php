@@ -86,7 +86,7 @@ final class AggregateVersionListener extends MappedEventSubscriber
         $reader = new AnnotationReader();
 
         if (!$annotation = $reader->getClassAnnotation($reflectionClass, AggregateVersioning::class)) {
-            throw new LogicException(sprintf('Aggregate "%s" must have AggregateVersioning!', get_class($entity)));
+            throw new LogicException(sprintf('Aggregate "%s" must have %s.', get_class($entity), AggregateVersioning::class));
         }
 
         return $annotation;
