@@ -5,8 +5,8 @@ namespace Gedmo\Tests\Mapping\Xml;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\EventManager;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
-use Doctrine\ORM\Mapping\Driver\DriverChain;
 use Doctrine\ORM\Mapping\Driver\XmlDriver;
+use Doctrine\Persistence\Mapping\Driver\MappingDriverChain;
 use Gedmo\Tests\Mapping\Fixture\Xml\Translatable;
 use Gedmo\Tests\Mapping\Fixture\Xml\TranslatableWithEmbedded;
 use Gedmo\Tests\Tool\BaseTestCaseOM;
@@ -43,7 +43,7 @@ final class TranslatableMappingTest extends BaseTestCaseOM
 
         $xmlDriver = new XmlDriver(__DIR__.'/../Driver/Xml');
 
-        $chain = new DriverChain();
+        $chain = new MappingDriverChain();
         $chain->addDriver($annotationDriver, 'Gedmo\Translatable');
         $chain->addDriver($xmlDriver, 'Gedmo\Tests\Mapping\Fixture\Xml');
 

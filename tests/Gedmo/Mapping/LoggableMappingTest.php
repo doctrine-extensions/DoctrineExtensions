@@ -2,12 +2,13 @@
 
 namespace Gedmo\Tests\Loggable;
 
-use Doctrine\ORM\Mapping\Driver\DriverChain;
 use Doctrine\ORM\Mapping\Driver\YamlDriver;
+use Doctrine\Persistence\Mapping\Driver\MappingDriverChain;
 use Gedmo\Loggable\Entity\LogEntry;
 use Gedmo\Loggable\LoggableListener;
 use Gedmo\Mapping\ExtensionMetadataFactory;
 use Gedmo\Tests\Mapping\Fixture\Yaml\Category;
+use Symfony\Component\Cache\Adapter\ArrayAdapter;
 
 /**
  * These are mapping tests for tree extension
@@ -26,11 +27,11 @@ final class LoggableMappingTest extends \PHPUnit\Framework\TestCase
     protected function setUp(): void
     {
         $config = new \Doctrine\ORM\Configuration();
-        $config->setMetadataCacheImpl(new \Doctrine\Common\Cache\ArrayCache());
-        $config->setQueryCacheImpl(new \Doctrine\Common\Cache\ArrayCache());
+        $config->setMetadataCache(new ArrayAdapter());
+        $config->setQueryCache(new ArrayAdapter());
         $config->setProxyDir(TESTS_TEMP_DIR);
         $config->setProxyNamespace('Gedmo\Mapping\Proxy');
-        $chainDriverImpl = new DriverChain();
+        $chainDriverImpl = new MappingDriverChain();
         $chainDriverImpl->addDriver(
             new YamlDriver([__DIR__.'/Driver/Yaml']),
             'Gedmo\Tests\Mapping\Fixture\Yaml'

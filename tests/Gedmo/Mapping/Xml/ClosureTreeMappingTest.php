@@ -5,8 +5,8 @@ namespace Gedmo\Tests\Mapping\Xml;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\EventManager;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
-use Doctrine\ORM\Mapping\Driver\DriverChain;
 use Doctrine\ORM\Mapping\Driver\XmlDriver;
+use Doctrine\Persistence\Mapping\Driver\MappingDriverChain;
 use Gedmo\Tests\Mapping\Fixture\ClosureTreeClosure;
 use Gedmo\Tests\Mapping\Fixture\Xml\ClosureTree;
 use Gedmo\Tests\Tool\BaseTestCaseOM;
@@ -42,7 +42,7 @@ final class ClosureTreeMappingTest extends BaseTestCaseOM
 
         $xmlDriver = new XmlDriver(__DIR__.'/../Driver/Xml');
 
-        $chain = new DriverChain();
+        $chain = new MappingDriverChain();
         $chain->addDriver($xmlDriver, 'Gedmo\Tests\Mapping\Fixture\Xml');
         $chain->addDriver($annotationDriver, 'Gedmo\Tests\Mapping\Fixture');
         $chain->addDriver($annotationDriver, 'Gedmo\Tree');

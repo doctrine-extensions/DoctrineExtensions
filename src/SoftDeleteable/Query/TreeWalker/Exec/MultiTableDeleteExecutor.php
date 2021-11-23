@@ -3,7 +3,7 @@
 namespace Gedmo\SoftDeleteable\Query\TreeWalker\Exec;
 
 use Doctrine\DBAL\Platforms\AbstractPlatform;
-use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Query\AST\Node;
 use Doctrine\ORM\Query\Exec\MultiTableDeleteExecutor as BaseMultiTableDeleteExecutor;
 
@@ -20,17 +20,19 @@ class MultiTableDeleteExecutor extends BaseMultiTableDeleteExecutor
     /**
      * {@inheritdoc}
      */
-    public function __construct(Node $AST, $sqlWalker, ClassMetadataInfo $meta, AbstractPlatform $platform, array $config)
+    public function __construct(Node $AST, $sqlWalker, ClassMetadata $meta, AbstractPlatform $platform, array $config)
     {
         parent::__construct($AST, $sqlWalker);
 
         $sqlStatements = $this->_sqlStatements;
 
+        $quoteStrategy = $sqlWalker->getEntityManager()->getConfiguration()->getQuoteStrategy();
+
         foreach ($sqlStatements as $index => $stmt) {
             $matches = [];
             preg_match('/DELETE FROM (\w+) .+/', $stmt, $matches);
 
-            if (isset($matches[1]) && $meta->getQuotedTableName($platform) === $matches[1]) {
+            if (isset($matches[1]) && $quoteStrategy->getTableName($meta, $platform) === $matches[1]) {
                 $sqlStatements[$index] = str_replace('DELETE FROM', 'UPDATE', $stmt);
                 $sqlStatements[$index] = str_replace(
                     'WHERE',

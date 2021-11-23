@@ -25,7 +25,7 @@ final class ORM extends BaseAdapterORM implements SortableAdapter
         $this->addGroupWhere($qb, $groups);
         $query = $qb->getQuery();
         $query->useQueryCache(false);
-        $query->useResultCache(false);
+        $query->disableResultCache();
         $res = $query->getResult();
 
         return $res[0][1];

@@ -7,7 +7,7 @@ use Doctrine\Common\EventManager;
 // orm specific
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Driver;
-use Doctrine\DBAL\Platforms\MySqlPlatform;
+use Doctrine\DBAL\Platforms\MySQLPlatform;
 use Doctrine\ODM\MongoDB\Configuration;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Doctrine\ODM\MongoDB\Mapping\Driver\AnnotationDriver as AnnotationDriverODM;
@@ -157,7 +157,7 @@ abstract class BaseTestCaseOM extends \PHPUnit\Framework\TestCase
         $driver = $this->getMockBuilder(Driver::class)->getMock();
         $driver->expects(static::once())
             ->method('getDatabasePlatform')
-            ->willReturn($this->getMockBuilder(MySqlPlatform::class)->getMock());
+            ->willReturn($this->getMockBuilder(MySQLPlatform::class)->getMock());
 
         $conn = $this->getMockBuilder(Connection::class)
             ->setConstructorArgs([], $driver)

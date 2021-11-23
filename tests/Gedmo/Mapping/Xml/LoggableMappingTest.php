@@ -5,8 +5,8 @@ namespace Gedmo\Tests\Mapping\Xml;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\EventManager;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
-use Doctrine\ORM\Mapping\Driver\DriverChain;
 use Doctrine\ORM\Mapping\Driver\XmlDriver;
+use Doctrine\Persistence\Mapping\Driver\MappingDriverChain;
 use Gedmo\Loggable\Entity\LogEntry;
 use Gedmo\Loggable\LoggableListener;
 use Gedmo\Tests\Mapping\Fixture\Xml\Embedded;
@@ -45,7 +45,7 @@ final class LoggableMappingTest extends BaseTestCaseOM
 
         $xmlDriver = new XmlDriver(__DIR__.'/../Driver/Xml');
 
-        $chain = new DriverChain();
+        $chain = new MappingDriverChain();
         $chain->addDriver($annotationDriver, 'Gedmo\Loggable');
         $chain->addDriver($xmlDriver, 'Gedmo\Tests\Mapping\Fixture\Xml');
 

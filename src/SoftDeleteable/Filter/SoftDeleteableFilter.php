@@ -30,6 +30,7 @@ class SoftDeleteableFilter extends SQLFilter
 
     /**
      * @var array<string, bool>
+     * @phpstan-var array<class-string, bool>
      */
     protected $disabled = [];
 
@@ -57,7 +58,9 @@ class SoftDeleteableFilter extends SQLFilter
         }
 
         $platform = $this->getConnection()->getDatabasePlatform();
-        $column = $targetEntity->getQuotedColumnName($config['fieldName'], $platform);
+        $quoteStrategy = $this->getEntityManager()->getConfiguration()->getQuoteStrategy();
+
+        $column = $quoteStrategy->getColumnName($config['fieldName'], $targetEntity, $platform);
 
         $addCondSql = $platform->getIsNullExpression($targetTableAlias.'.'.$column);
         if (isset($config['timeAware']) && $config['timeAware']) {

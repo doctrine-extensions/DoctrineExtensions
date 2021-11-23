@@ -6,7 +6,6 @@ use Doctrine\Common\Cache\Cache;
 use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
-use Doctrine\ORM\Version;
 use Doctrine\Persistence\ObjectManager;
 use Gedmo\Exception\RuntimeException;
 use Gedmo\Mapping\Event\AdapterInterface;
@@ -104,12 +103,10 @@ class Closure implements Strategy
                 'fetch' => ClassMetadataInfo::FETCH_LAZY,
             ];
             $closureMetadata->mapManyToOne($ancestorMapping);
-            if (Version::compare('2.3.0-dev') <= 0) {
-                $closureMetadata->reflFields['ancestor'] = $cmf
-                    ->getReflectionService()
-                    ->getAccessibleProperty($closureMetadata->name, 'ancestor')
-                ;
-            }
+            $closureMetadata->reflFields['ancestor'] = $cmf
+                ->getReflectionService()
+                ->getAccessibleProperty($closureMetadata->name, 'ancestor')
+            ;
         }
 
         if (!$closureMetadata->hasAssociation('descendant')) {
@@ -134,12 +131,10 @@ class Closure implements Strategy
                 'fetch' => ClassMetadataInfo::FETCH_LAZY,
             ];
             $closureMetadata->mapManyToOne($descendantMapping);
-            if (Version::compare('2.3.0-dev') <= 0) {
-                $closureMetadata->reflFields['descendant'] = $cmf
-                    ->getReflectionService()
-                    ->getAccessibleProperty($closureMetadata->name, 'descendant')
-                ;
-            }
+            $closureMetadata->reflFields['descendant'] = $cmf
+                ->getReflectionService()
+                ->getAccessibleProperty($closureMetadata->name, 'descendant')
+            ;
         }
         // create unique index on ancestor and descendant
         $indexName = substr(strtoupper('IDX_'.md5($closureMetadata->name)), 0, 20);

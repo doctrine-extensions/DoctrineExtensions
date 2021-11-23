@@ -20,7 +20,12 @@ a release.
 
 ## [Unreleased]
 ### Added
+- Support for doctrine/dbal 3.x
 - Timestampable: Support to use annotations as attributes on PHP >= 8.0.
+
+### Changes
+- Dropped support for doctrine/dbal < 2.13.1
+- The third argument of `Gedmo\SoftDeleteable\Query\TreeWalker\Exec\MultiTableDeleteExecutor::__construct()` requires a `Doctrine\ORM\Mapping\ClassMetadata` instance.
 
 ## [3.3.1] - 2021-11-18
 ### Fixed

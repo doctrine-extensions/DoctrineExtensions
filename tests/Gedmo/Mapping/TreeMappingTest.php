@@ -2,14 +2,15 @@
 
 namespace Gedmo\Tests\Tree;
 
-use Doctrine\ORM\Mapping\Driver\DriverChain;
 use Doctrine\ORM\Mapping\Driver\YamlDriver;
+use Doctrine\Persistence\Mapping\Driver\MappingDriverChain;
 use Gedmo\Mapping\ExtensionMetadataFactory;
 use Gedmo\Tests\Mapping\Fixture\Yaml\Category;
 use Gedmo\Tests\Mapping\Fixture\Yaml\ClosureCategory;
 use Gedmo\Tests\Mapping\Fixture\Yaml\MaterializedPathCategory;
 use Gedmo\Tests\Tree\Fixture\Closure\CategoryClosure;
 use Gedmo\Tree\TreeListener;
+use Symfony\Component\Cache\Adapter\ArrayAdapter;
 
 /**
  * These are mapping tests for tree extension
@@ -39,11 +40,11 @@ final class TreeMappingTest extends \PHPUnit\Framework\TestCase
     protected function setUp(): void
     {
         $config = new \Doctrine\ORM\Configuration();
-        $config->setMetadataCacheImpl(new \Doctrine\Common\Cache\ArrayCache());
-        $config->setQueryCacheImpl(new \Doctrine\Common\Cache\ArrayCache());
+        $config->setMetadataCache(new ArrayAdapter());
+        $config->setQueryCache(new ArrayAdapter());
         $config->setProxyDir(TESTS_TEMP_DIR);
         $config->setProxyNamespace('Gedmo\Mapping\Proxy');
-        $chainDriverImpl = new DriverChain();
+        $chainDriverImpl = new MappingDriverChain();
         $chainDriverImpl->addDriver(
             new YamlDriver([__DIR__.'/Driver/Yaml']),
             'Gedmo\Tests\Mapping\Fixture\Yaml'
