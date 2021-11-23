@@ -80,7 +80,7 @@ class LogEntryRepository extends EntityRepository
     {
         $wrapped = new EntityWrapper($entity, $this->_em);
         $objectMeta = $wrapped->getMetadata();
-        $objectClass = $objectMeta->name;
+        $objectClass = $objectMeta->getName();
         $meta = $this->getClassMetadata();
         $dql = "SELECT log FROM {$meta->getName()} log";
         $dql .= ' WHERE log.objectId = :objectId';
@@ -94,7 +94,7 @@ class LogEntryRepository extends EntityRepository
         $logs = $q->getResult();
 
         if ($logs) {
-            $config = $this->getLoggableListener()->getConfiguration($this->_em, $objectMeta->name);
+            $config = $this->getLoggableListener()->getConfiguration($this->_em, $objectMeta->getName());
             $fields = $config['versioned'];
             $filled = false;
             while (($log = array_pop($logs)) && !$filled) {

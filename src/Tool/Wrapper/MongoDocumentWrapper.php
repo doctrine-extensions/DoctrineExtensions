@@ -117,7 +117,7 @@ class MongoDocumentWrapper extends AbstractWrapper
             if ($this->object instanceof GhostObjectInterface) {
                 $uow = $this->om->getUnitOfWork();
                 if (!$this->object->isProxyInitialized()) {
-                    $persister = $uow->getDocumentPersister($this->meta->name);
+                    $persister = $uow->getDocumentPersister($this->meta->getName());
                     $identifier = null;
                     if ($uow->isInIdentityMap($this->object)) {
                         $identifier = $this->getIdentifier();

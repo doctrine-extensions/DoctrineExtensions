@@ -71,7 +71,7 @@ class ReferencesListener extends MappedEventSubscriber
                     $manager = $this->getManager($mapping['type']);
                     $class = $mapping['class'];
                     $refMeta = $manager->getClassMetadata($class);
-                    $refConfig = $this->getConfiguration($manager, $refMeta->name);
+                    $refConfig = $this->getConfiguration($manager, $refMeta->getName());
                     if (isset($refConfig['referenceOne'][$mapping['mappedBy']])) {
                         $refMapping = $refConfig['referenceOne'][$mapping['mappedBy']];
                         $identifier = $refMapping['identifier'];
@@ -151,7 +151,7 @@ class ReferencesListener extends MappedEventSubscriber
                 $class = $mapping['class'];
                 $refMeta = $manager->getClassMetadata($class);
                 // Trigger the loading of the configuration to validate the mapping
-                $this->getConfiguration($manager, $refMeta->name);
+                $this->getConfiguration($manager, $refMeta->getName());
 
                 $identifier = $mapping['identifier'];
                 $property->setValue(
