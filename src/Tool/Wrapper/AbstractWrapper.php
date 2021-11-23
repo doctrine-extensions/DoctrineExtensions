@@ -58,7 +58,8 @@ abstract class AbstractWrapper implements WrapperInterface
     {
         if ($om instanceof EntityManagerInterface) {
             return new EntityWrapper($object, $om);
-        } elseif ($om instanceof DocumentManager) {
+        }
+        if ($om instanceof DocumentManager) {
             return new MongoDocumentWrapper($object, $om);
         }
 

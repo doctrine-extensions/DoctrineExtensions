@@ -547,7 +547,8 @@ class SluggableListener extends MappedEventSubscriber
     {
         if (is_callable([$om, 'getFilters'])) {
             return $om->getFilters();
-        } elseif (is_callable([$om, 'getFilterCollection'])) {
+        }
+        if (is_callable([$om, 'getFilterCollection'])) {
             return $om->getFilterCollection();
         }
 
