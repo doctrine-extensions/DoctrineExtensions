@@ -117,7 +117,7 @@ final class AggregateVersioningTest extends BaseTestCaseORM
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
      */
-    private function getOrder(): ?Order
+    private function getOrder(): Order
     {
         $id = '09597988-aa74-4bb3-9fb9-0e154dd7cdec';
 
