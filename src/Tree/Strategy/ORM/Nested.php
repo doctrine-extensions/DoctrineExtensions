@@ -348,7 +348,8 @@ class Nested implements Strategy
 
                         if (null === $newParent && ((isset($config['root']) && $config['root'] == $config['parent']) || $isNewNode)) {
                             throw new UnexpectedValueException('Cannot persist sibling for a root node, tree operation is not possible');
-                        } elseif (null === $newParent && (isset($config['root']) || $isNewNode)) {
+                        }
+                        if (null === $newParent && (isset($config['root']) || $isNewNode)) {
                             // root is a different column from parent (pointing to another table?), do nothing
                         } else {
                             $wrapped->setPropertyValue($config['parent'], $newParent);
@@ -369,7 +370,8 @@ class Nested implements Strategy
                         $newParent = $wrappedParent->getPropertyValue($config['parent']);
                         if (null === $newParent && ((isset($config['root']) && $config['root'] == $config['parent']) || $isNewNode)) {
                             throw new UnexpectedValueException('Cannot persist sibling for a root node, tree operation is not possible');
-                        } elseif (null === $newParent && (isset($config['root']) || $isNewNode)) {
+                        }
+                        if (null === $newParent && (isset($config['root']) || $isNewNode)) {
                             // root is a different column from parent (pointing to another table?), do nothing
                         } else {
                             $wrapped->setPropertyValue($config['parent'], $newParent);
