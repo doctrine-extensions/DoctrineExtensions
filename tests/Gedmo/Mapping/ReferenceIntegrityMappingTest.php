@@ -51,7 +51,7 @@ final class ReferenceIntegrityMappingTest extends BaseTestCaseOM
     {
         $referencerMeta = $this->dm->getClassMetadata(Referencer::class);
         $referenceeMeta = $this->dm->getClassMetadata(Referenced::class);
-        $config = $this->referenceIntegrity->getConfiguration($this->dm, $referencerMeta->name);
+        $config = $this->referenceIntegrity->getConfiguration($this->dm, $referencerMeta->getName());
 
         static::assertNotEmpty($config['referenceIntegrity']);
         foreach ($config['referenceIntegrity'] as $propertyName => $referenceConfiguration) {

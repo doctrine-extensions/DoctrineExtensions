@@ -105,7 +105,7 @@ class Closure implements Strategy
             $closureMetadata->mapManyToOne($ancestorMapping);
             $closureMetadata->reflFields['ancestor'] = $cmf
                 ->getReflectionService()
-                ->getAccessibleProperty($closureMetadata->name, 'ancestor')
+                ->getAccessibleProperty($closureMetadata->getName(), 'ancestor')
             ;
         }
 
@@ -133,11 +133,11 @@ class Closure implements Strategy
             $closureMetadata->mapManyToOne($descendantMapping);
             $closureMetadata->reflFields['descendant'] = $cmf
                 ->getReflectionService()
-                ->getAccessibleProperty($closureMetadata->name, 'descendant')
+                ->getAccessibleProperty($closureMetadata->getName(), 'descendant')
             ;
         }
         // create unique index on ancestor and descendant
-        $indexName = substr(strtoupper('IDX_'.md5($closureMetadata->name)), 0, 20);
+        $indexName = substr(strtoupper('IDX_'.md5($closureMetadata->getName())), 0, 20);
         $closureMetadata->table['uniqueConstraints'][$indexName] = [
             'columns' => [
                 $this->getJoinColumnFieldName($em->getClassMetadata($config['closure'])->getAssociationMapping('ancestor')),
@@ -153,7 +153,7 @@ class Closure implements Strategy
         $cacheDriver = $cmf->getCacheDriver();
 
         if ($cacheDriver instanceof Cache) {
-            $cacheDriver->save($closureMetadata->name.'$CLASSMETADATA', $closureMetadata);
+            $cacheDriver->save($closureMetadata->getName().'$CLASSMETADATA', $closureMetadata);
         }
     }
 
@@ -344,7 +344,7 @@ class Closure implements Strategy
         $conn = $em->getConnection();
         // ensure integrity
         if ($parent) {
-            $dql = "SELECT COUNT(c) FROM {$closureMeta->name} c";
+            $dql = "SELECT COUNT(c) FROM {$closureMeta->getName()} c";
             $dql .= ' WHERE c.ancestor = :node';
             $dql .= ' AND c.descendant = :parent';
             $q = $em->createQuery($dql);

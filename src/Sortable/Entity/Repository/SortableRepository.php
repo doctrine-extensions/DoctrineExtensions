@@ -45,7 +45,7 @@ class SortableRepository extends EntityRepository
 
         $this->listener = $sortableListener;
         $this->meta = $this->getClassMetadata();
-        $this->config = $this->listener->getConfiguration($this->_em, $this->meta->name);
+        $this->config = $this->listener->getConfiguration($this->_em, $this->meta->getName());
     }
 
     public function getBySortableGroupsQuery(array $groupValues = [])
@@ -58,7 +58,7 @@ class SortableRepository extends EntityRepository
         $groups = isset($this->config['groups']) ? array_combine(array_values($this->config['groups']), array_keys($this->config['groups'])) : [];
         foreach ($groupValues as $name => $value) {
             if (!in_array($name, $this->config['groups'])) {
-                throw new \InvalidArgumentException('Sortable group "'.$name.'" is not defined in Entity '.$this->meta->name);
+                throw new \InvalidArgumentException('Sortable group "'.$name.'" is not defined in Entity '.$this->meta->getName());
             }
             unset($groups[$name]);
         }

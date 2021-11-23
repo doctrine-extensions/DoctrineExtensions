@@ -72,7 +72,7 @@ class LogEntryRepository extends DocumentRepository
 
         $qb = $this->createQueryBuilder();
         $qb->field('objectId')->equals($objectId);
-        $qb->field('objectClass')->equals($objectMeta->name);
+        $qb->field('objectClass')->equals($objectMeta->getName());
         $qb->field('version')->lte((int) $version);
         $qb->sort('version', 'ASC');
         $q = $qb->getQuery();
@@ -101,7 +101,7 @@ class LogEntryRepository extends DocumentRepository
     {
         $wrapped = new MongoDocumentWrapper($document, $this->dm);
         $objectMeta = $wrapped->getMetadata();
-        $config = $this->getLoggableListener()->getConfiguration($this->dm, $objectMeta->name);
+        $config = $this->getLoggableListener()->getConfiguration($this->dm, $objectMeta->getName());
         $fields = $config['versioned'];
         foreach ($data as $field => $value) {
             if (!in_array($field, $fields)) {

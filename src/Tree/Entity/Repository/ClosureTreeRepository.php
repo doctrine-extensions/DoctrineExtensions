@@ -78,7 +78,7 @@ class ClosureTreeRepository extends AbstractTreeRepository
         $config = $this->listener->getConfiguration($this->_em, $meta->getName());
         $closureMeta = $this->_em->getClassMetadata($config['closure']);
 
-        $dql = "SELECT c, node FROM {$closureMeta->name} c";
+        $dql = "SELECT c, node FROM {$closureMeta->getName()} c";
         $dql .= ' INNER JOIN c.ancestor node';
         $dql .= ' WHERE c.descendant = :node';
         $dql .= ' ORDER BY c.depth DESC';
@@ -396,14 +396,14 @@ class ClosureTreeRepository extends AbstractTreeRepository
     {
         $nodeMeta = $this->getClassMetadata();
         $nodeIdField = $nodeMeta->getSingleIdentifierFieldName();
-        $config = $this->listener->getConfiguration($this->_em, $nodeMeta->name);
+        $config = $this->listener->getConfiguration($this->_em, $nodeMeta->getName());
         $closureMeta = $this->_em->getClassMetadata($config['closure']);
         $errors = [];
 
         $q = $this->_em->createQuery("
           SELECT COUNT(node)
-          FROM {$nodeMeta->name} AS node
-          LEFT JOIN {$closureMeta->name} AS c WITH c.ancestor = node AND c.depth = 0
+          FROM {$nodeMeta->getName()} AS node
+          LEFT JOIN {$closureMeta->getName()} AS c WITH c.ancestor = node AND c.depth = 0
           WHERE c.id IS NULL
         ");
 
@@ -413,9 +413,9 @@ class ClosureTreeRepository extends AbstractTreeRepository
 
         $q = $this->_em->createQuery("
           SELECT COUNT(node)
-          FROM {$nodeMeta->name} AS node
-          INNER JOIN {$closureMeta->name} AS c1 WITH c1.descendant = node.{$config['parent']}
-          LEFT  JOIN {$closureMeta->name} AS c2 WITH c2.descendant = node.$nodeIdField AND c2.ancestor = c1.ancestor
+          FROM {$nodeMeta->getName()} AS node
+          INNER JOIN {$closureMeta->getName()} AS c1 WITH c1.descendant = node.{$config['parent']}
+          LEFT  JOIN {$closureMeta->getName()} AS c2 WITH c2.descendant = node.$nodeIdField AND c2.ancestor = c1.ancestor
           WHERE c2.id IS NULL AND node.$nodeIdField <> c1.ancestor
         ");
 
@@ -425,9 +425,9 @@ class ClosureTreeRepository extends AbstractTreeRepository
 
         $q = $this->_em->createQuery("
             SELECT COUNT(c1.id)
-            FROM {$closureMeta->name} AS c1
-            LEFT JOIN {$nodeMeta->name} AS node WITH c1.descendant = node.$nodeIdField
-            LEFT JOIN {$closureMeta->name} AS c2 WITH c2.descendant = node.{$config['parent']} AND c2.ancestor = c1.ancestor
+            FROM {$closureMeta->getName()} AS c1
+            LEFT JOIN {$nodeMeta->getName()} AS node WITH c1.descendant = node.$nodeIdField
+            LEFT JOIN {$closureMeta->getName()} AS c2 WITH c2.descendant = node.{$config['parent']} AND c2.ancestor = c1.ancestor
             WHERE c2.id IS NULL AND c1.descendant <> c1.ancestor
         ");
 
@@ -440,8 +440,8 @@ class ClosureTreeRepository extends AbstractTreeRepository
             $maxResults = 1000;
             $q = $this->_em->createQuery("
                 SELECT node.$nodeIdField AS id, node.$levelField AS node_level, MAX(c.depth) AS closure_level
-                FROM {$nodeMeta->name} AS node
-                INNER JOIN {$closureMeta->name} AS c WITH c.descendant = node.$nodeIdField
+                FROM {$nodeMeta->getName()} AS node
+                INNER JOIN {$closureMeta->getName()} AS c WITH c.descendant = node.$nodeIdField
                 GROUP BY node.$nodeIdField, node.$levelField
                 HAVING node.$levelField IS NULL OR node.$levelField <> MAX(c.depth) + 1
             ")->setMaxResults($maxResults);
@@ -467,7 +467,7 @@ class ClosureTreeRepository extends AbstractTreeRepository
     public function rebuildClosure()
     {
         $nodeMeta = $this->getClassMetadata();
-        $config = $this->listener->getConfiguration($this->_em, $nodeMeta->name);
+        $config = $this->listener->getConfiguration($this->_em, $nodeMeta->getName());
         $closureMeta = $this->_em->getClassMetadata($config['closure']);
 
         $insertClosures = function ($entries) use ($closureMeta) {
@@ -503,15 +503,15 @@ class ClosureTreeRepository extends AbstractTreeRepository
         $nodeIdField = $nodeMeta->getSingleIdentifierFieldName();
         $newClosuresCount = $buildClosures("
           SELECT node.$nodeIdField AS ancestor, node.$nodeIdField AS descendant, 0 AS depth
-          FROM {$nodeMeta->name} AS node
-          LEFT JOIN {$closureMeta->name} AS c WITH c.ancestor = node AND c.depth = 0
+          FROM {$nodeMeta->getName()} AS node
+          LEFT JOIN {$closureMeta->getName()} AS c WITH c.ancestor = node AND c.depth = 0
           WHERE c.id IS NULL
         ");
         $newClosuresCount += $buildClosures("
           SELECT IDENTITY(c1.ancestor) AS ancestor, node.$nodeIdField AS descendant, c1.depth + 1 AS depth
-          FROM {$nodeMeta->name} AS node
-          INNER JOIN {$closureMeta->name} AS c1 WITH c1.descendant = node.{$config['parent']}
-          LEFT  JOIN {$closureMeta->name} AS c2 WITH c2.descendant = node.$nodeIdField AND c2.ancestor = c1.ancestor
+          FROM {$nodeMeta->getName()} AS node
+          INNER JOIN {$closureMeta->getName()} AS c1 WITH c1.descendant = node.{$config['parent']}
+          LEFT  JOIN {$closureMeta->getName()} AS c2 WITH c2.descendant = node.$nodeIdField AND c2.ancestor = c1.ancestor
           WHERE c2.id IS NULL AND node.$nodeIdField <> c1.ancestor
         ");
 
@@ -523,15 +523,15 @@ class ClosureTreeRepository extends AbstractTreeRepository
         $conn = $this->_em->getConnection();
         $nodeMeta = $this->getClassMetadata();
         $nodeIdField = $nodeMeta->getSingleIdentifierFieldName();
-        $config = $this->listener->getConfiguration($this->_em, $nodeMeta->name);
+        $config = $this->listener->getConfiguration($this->_em, $nodeMeta->getName());
         $closureMeta = $this->_em->getClassMetadata($config['closure']);
         $closureTableName = $closureMeta->getTableName();
 
         $dql = "
             SELECT c1.id AS id
-            FROM {$closureMeta->name} AS c1
-            LEFT JOIN {$nodeMeta->name} AS node WITH c1.descendant = node.$nodeIdField
-            LEFT JOIN {$closureMeta->name} AS c2 WITH c2.descendant = node.{$config['parent']} AND c2.ancestor = c1.ancestor
+            FROM {$closureMeta->getName()} AS c1
+            LEFT JOIN {$nodeMeta->getName()} AS node WITH c1.descendant = node.$nodeIdField
+            LEFT JOIN {$closureMeta->getName()} AS c2 WITH c2.descendant = node.{$config['parent']} AND c2.ancestor = c1.ancestor
             WHERE c2.id IS NULL AND c1.descendant <> c1.ancestor
         ";
 
@@ -556,7 +556,7 @@ class ClosureTreeRepository extends AbstractTreeRepository
     public function updateLevelValues()
     {
         $nodeMeta = $this->getClassMetadata();
-        $config = $this->listener->getConfiguration($this->_em, $nodeMeta->name);
+        $config = $this->listener->getConfiguration($this->_em, $nodeMeta->getName());
         $levelUpdatesCount = 0;
 
         if (!empty($config['level'])) {
@@ -567,8 +567,8 @@ class ClosureTreeRepository extends AbstractTreeRepository
             $batchSize = 1000;
             $q = $this->_em->createQuery("
                 SELECT node.$nodeIdField AS id, node.$levelField AS node_level, MAX(c.depth) AS closure_level
-                FROM {$nodeMeta->name} AS node
-                INNER JOIN {$closureMeta->name} AS c WITH c.descendant = node.$nodeIdField
+                FROM {$nodeMeta->getName()} AS node
+                INNER JOIN {$closureMeta->getName()} AS c WITH c.descendant = node.$nodeIdField
                 GROUP BY node.$nodeIdField, node.$levelField
                 HAVING node.$levelField IS NULL OR node.$levelField <> MAX(c.depth) + 1
             ")->setMaxResults($batchSize)->setCacheable(false);
@@ -578,7 +578,7 @@ class ClosureTreeRepository extends AbstractTreeRepository
                 foreach ($entries as $entry) {
                     unset($entry['node_level']);
                     $this->_em->createQuery("
-                      UPDATE {$nodeMeta->name} AS node SET node.$levelField = (:closure_level + 1) WHERE node.$nodeIdField = :id
+                      UPDATE {$nodeMeta->getName()} AS node SET node.$levelField = (:closure_level + 1) WHERE node.$nodeIdField = :id
                     ")->execute($entry);
                 }
                 $this->_em->getConnection()->commit();
