@@ -59,6 +59,11 @@ final class AggregateVersionListener extends MappedEventSubscriber
         $uow->recomputeSingleEntityChangeSet($meta, $aggregateRoot);
     }
 
+    protected function getNamespace(): string
+    {
+        return __NAMESPACE__;
+    }
+
     private function getAggregateRoot(array $entities): AggregateRoot
     {
         foreach ($entities as $entity) {
@@ -74,9 +79,7 @@ final class AggregateVersionListener extends MappedEventSubscriber
             throw new LogicException(sprintf('Method "%s" not exists in class "%s".', $annotation->aggregateRootMethod, get_class($entity)));
         }
 
-        $aggregateRoot = $entity->{$annotation->aggregateRootMethod}();
-
-        return $aggregateRoot;
+        return $entity->{$annotation->aggregateRootMethod}();
     }
 
     private function getAggregateEntityAnnotation(AggregateEntity $entity): AggregateVersioning
@@ -90,10 +93,5 @@ final class AggregateVersionListener extends MappedEventSubscriber
         }
 
         return $annotation;
-    }
-
-    protected function getNamespace(): string
-    {
-        return __NAMESPACE__;
     }
 }
