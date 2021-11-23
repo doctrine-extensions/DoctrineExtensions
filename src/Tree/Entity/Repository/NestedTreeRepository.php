@@ -1012,7 +1012,7 @@ class NestedTreeRepository extends AbstractTreeRepository
             } elseif ($right == $left) {
                 $errors[] = "node [{$id}] has identical left and right values";
             } elseif ($parent) {
-                if ($parent instanceof Proxy && !$parent->__isInitialized__) {
+                if ($parent instanceof Proxy && !$parent->__isInitialized()) {
                     $this->_em->refresh($parent);
                 }
                 $parentRight = $meta->getReflectionProperty($config['right'])->getValue($parent);

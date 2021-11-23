@@ -4,6 +4,7 @@ namespace Gedmo\Sluggable\Handler;
 
 use Doctrine\Persistence\Mapping\ClassMetadata;
 use Doctrine\Persistence\ObjectManager;
+use Doctrine\Persistence\Proxy;
 use Gedmo\Exception\InvalidMappingException;
 use Gedmo\Sluggable\Mapping\Event\SluggableAdapter;
 use Gedmo\Sluggable\SluggableListener;
@@ -106,7 +107,8 @@ class InversedRelativeSlugHandler implements SlugHandlerInterface
                         continue;
                     }
                     foreach ($objects as $object) {
-                        if (property_exists($object, '__isInitialized__') && !$object->__isInitialized__) {
+                        // @todo: Remove the check against `method_exists()` in the next major release.
+                        if (($object instanceof Proxy || method_exists($object, '__isInitialized')) && !$object->__isInitialized()) {
                             continue;
                         }
 

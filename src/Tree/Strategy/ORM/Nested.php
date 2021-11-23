@@ -615,7 +615,7 @@ class Nested implements Strategy
                 continue;
             }
             foreach ($nodes as $node) {
-                if ($node instanceof Proxy && !$node->__isInitialized__) {
+                if ($node instanceof Proxy && !$node->__isInitialized()) {
                     continue;
                 }
 
@@ -686,7 +686,7 @@ class Nested implements Strategy
                 continue;
             }
             foreach ($nodes as $node) {
-                if ($node instanceof Proxy && !$node->__isInitialized__) {
+                if ($node instanceof Proxy && !$node->__isInitialized()) {
                     continue;
                 }
 
