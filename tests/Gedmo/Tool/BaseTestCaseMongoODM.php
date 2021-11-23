@@ -102,23 +102,6 @@ abstract class BaseTestCaseMongoODM extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * Build event manager
-     *
-     * @return EventManager
-     */
-    private function getEventManager()
-    {
-        $evm = new EventManager();
-        $evm->addEventSubscriber(new SluggableListener());
-        $evm->addEventSubscriber(new LoggableListener());
-        $evm->addEventSubscriber(new TranslatableListener());
-        $evm->addEventSubscriber(new TimestampableListener());
-        $evm->addEventSubscriber(new SoftDeleteableListener());
-
-        return $evm;
-    }
-
-    /**
      * Get annotation mapping configuration
      */
     protected function getMockAnnotatedConfig(): Configuration
@@ -135,5 +118,22 @@ abstract class BaseTestCaseMongoODM extends \PHPUnit\Framework\TestCase
         $config->setMetadataDriverImpl($this->getMetadataDriverImplementation());
 
         return $config;
+    }
+
+    /**
+     * Build event manager
+     *
+     * @return EventManager
+     */
+    private function getEventManager()
+    {
+        $evm = new EventManager();
+        $evm->addEventSubscriber(new SluggableListener());
+        $evm->addEventSubscriber(new LoggableListener());
+        $evm->addEventSubscriber(new TranslatableListener());
+        $evm->addEventSubscriber(new TimestampableListener());
+        $evm->addEventSubscriber(new SoftDeleteableListener());
+
+        return $evm;
     }
 }

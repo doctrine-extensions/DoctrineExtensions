@@ -90,13 +90,6 @@ final class MaterializedPathORMFeaturesTest extends BaseTestCaseORM
         return new $class();
     }
 
-    protected function getUsedEntityFixtures()
-    {
-        return [
-            self::CATEGORY,
-        ];
-    }
-
     public function generatePath(array $sources)
     {
         $path = '';
@@ -110,5 +103,12 @@ final class MaterializedPathORMFeaturesTest extends BaseTestCaseORM
     public function generatePathHash(array $sources)
     {
         return md5($this->generatePath($sources));
+    }
+
+    protected function getUsedEntityFixtures()
+    {
+        return [
+            self::CATEGORY,
+        ];
     }
 }

@@ -56,14 +56,6 @@ abstract class AbstractTreeRepository extends EntityRepository implements Reposi
     }
 
     /**
-     * @return \Doctrine\ORM\QueryBuilder
-     */
-    protected function getQueryBuilder()
-    {
-        return $this->getEntityManager()->createQueryBuilder();
-    }
-
-    /**
      * Sets the RepositoryUtilsInterface instance
      *
      * @return static
@@ -165,14 +157,6 @@ abstract class AbstractTreeRepository extends EntityRepository implements Reposi
     }
 
     /**
-     * Checks if current repository is right
-     * for currently used tree strategy
-     *
-     * @return bool
-     */
-    abstract protected function validate();
-
-    /**
      * Get all root nodes query builder
      *
      * @param string|null $sortByField Sort by field
@@ -241,4 +225,20 @@ abstract class AbstractTreeRepository extends EntityRepository implements Reposi
      * @return \Doctrine\ORM\Query Query object
      */
     abstract public function getChildrenQuery($node = null, $direct = false, $sortByField = null, $direction = 'ASC', $includeNode = false);
+
+    /**
+     * @return \Doctrine\ORM\QueryBuilder
+     */
+    protected function getQueryBuilder()
+    {
+        return $this->getEntityManager()->createQueryBuilder();
+    }
+
+    /**
+     * Checks if current repository is right
+     * for currently used tree strategy
+     *
+     * @return bool
+     */
+    abstract protected function validate();
 }

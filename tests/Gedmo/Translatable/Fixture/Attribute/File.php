@@ -9,6 +9,10 @@ use Gedmo\Mapping\Annotation as Gedmo;
 #[ORM\Entity]
 class File
 {
+    /**
+     * @Gedmo\Locale
+     */
+    public $locale;
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
@@ -19,11 +23,6 @@ class File
      */
     #[ORM\Column(name: 'title', type: Types::STRING, length: 128)]
     private $title;
-
-    /**
-     * @Gedmo\Locale
-     */
-    public $locale;
 
     public function getId()
     {

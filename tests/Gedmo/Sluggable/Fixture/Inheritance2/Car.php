@@ -11,14 +11,13 @@ use Gedmo\Mapping\Annotation as Gedmo;
 class Car extends Vehicle
 {
     /**
-     * @ORM\Column(length=128, nullable=true)
-     */
-    private $description;
-
-    /**
      * @ORM\Column(length=128)
      */
     protected $title;
+    /**
+     * @ORM\Column(length=128, nullable=true)
+     */
+    private $description;
 
     /**
      * @Gedmo\Slug(fields={"title"})

@@ -460,6 +460,14 @@ final class NestedTreePositionTest extends BaseTestCaseORM
         static::assertTrue($repo->verify());
     }
 
+    protected function getUsedEntityFixtures()
+    {
+        return [
+            self::CATEGORY,
+            self::ROOT_CATEGORY,
+        ];
+    }
+
     private function populate()
     {
         $repo = $this->em->getRepository(self::ROOT_CATEGORY);
@@ -495,13 +503,5 @@ final class NestedTreePositionTest extends BaseTestCaseORM
             ->persistAsFirstChildOf($citrons, $fruits);
 
         $this->em->flush();
-    }
-
-    protected function getUsedEntityFixtures()
-    {
-        return [
-            self::CATEGORY,
-            self::ROOT_CATEGORY,
-        ];
     }
 }

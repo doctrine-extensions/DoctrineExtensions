@@ -48,6 +48,13 @@ final class CustomTransliteratorTest extends BaseTestCaseORM
         static::assertSame('bei-jing', $chinese->getSlug());
     }
 
+    protected function getUsedEntityFixtures()
+    {
+        return [
+            self::ARTICLE,
+        ];
+    }
+
     private function populate()
     {
         $chinese = new Article();
@@ -56,13 +63,6 @@ final class CustomTransliteratorTest extends BaseTestCaseORM
         $this->em->persist($chinese);
         $this->em->flush();
         $this->em->clear();
-    }
-
-    protected function getUsedEntityFixtures()
-    {
-        return [
-            self::ARTICLE,
-        ];
     }
 }
 

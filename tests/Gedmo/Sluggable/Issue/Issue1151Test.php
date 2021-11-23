@@ -15,6 +15,18 @@ use Gedmo\Tests\Tool\BaseTestCaseMongoODM;
 final class Issue1151Test extends BaseTestCaseMongoODM
 {
     /**
+     * Set up test
+     */
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $evm = new EventManager();
+        $evm->addEventSubscriber(new SluggableListener());
+
+        $this->getMockDocumentManager($evm);
+    }
+
+    /**
      * Test if new object with predefined id will be processed by sluggable listener
      */
     public function testSlugCreateOnNewArticle()
@@ -26,17 +38,5 @@ final class Issue1151Test extends BaseTestCaseMongoODM
 
         $this->dm->flush();
         static::assertSame('test', $article->getSlug());
-    }
-
-    /**
-     * Set up test
-     */
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $evm = new EventManager();
-        $evm->addEventSubscriber(new SluggableListener());
-
-        $this->getMockDocumentManager($evm);
     }
 }

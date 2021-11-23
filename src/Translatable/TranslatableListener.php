@@ -488,6 +488,42 @@ class TranslatableListener extends MappedEventSubscriber
     }
 
     /**
+     * Sets translation object which represents translation in default language.
+     *
+     * @param string $oid   hash of basic entity
+     * @param string $field field of basic entity
+     * @param mixed  $trans Translation object
+     */
+    public function setTranslationInDefaultLocale($oid, $field, $trans)
+    {
+        if (!isset($this->translationInDefaultLocale[$oid])) {
+            $this->translationInDefaultLocale[$oid] = [];
+        }
+        $this->translationInDefaultLocale[$oid][$field] = $trans;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isSkipOnLoad()
+    {
+        return $this->skipOnLoad;
+    }
+
+    /**
+     * Check if object has any translation object which represents translation in default language.
+     * This is for internal use only.
+     *
+     * @param string $oid hash of the basic entity
+     *
+     * @return bool
+     */
+    public function hasTranslationsInDefaultLocale($oid)
+    {
+        return array_key_exists($oid, $this->translationInDefaultLocale);
+    }
+
+    /**
      * {@inheritdoc}
      */
     protected function getNamespace()
@@ -685,29 +721,6 @@ class TranslatableListener extends MappedEventSubscriber
     }
 
     /**
-     * Sets translation object which represents translation in default language.
-     *
-     * @param string $oid   hash of basic entity
-     * @param string $field field of basic entity
-     * @param mixed  $trans Translation object
-     */
-    public function setTranslationInDefaultLocale($oid, $field, $trans)
-    {
-        if (!isset($this->translationInDefaultLocale[$oid])) {
-            $this->translationInDefaultLocale[$oid] = [];
-        }
-        $this->translationInDefaultLocale[$oid][$field] = $trans;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isSkipOnLoad()
-    {
-        return $this->skipOnLoad;
-    }
-
-    /**
      * Removes translation object which represents translation in default language.
      * This is for internal use only.
      *
@@ -747,19 +760,6 @@ class TranslatableListener extends MappedEventSubscriber
         }
 
         return $ret;
-    }
-
-    /**
-     * Check if object has any translation object which represents translation in default language.
-     * This is for internal use only.
-     *
-     * @param string $oid hash of the basic entity
-     *
-     * @return bool
-     */
-    public function hasTranslationsInDefaultLocale($oid)
-    {
-        return array_key_exists($oid, $this->translationInDefaultLocale);
     }
 
     /**

@@ -87,6 +87,16 @@ final class Issue173Test extends BaseTestCaseORM
         )->getResult();
     }
 
+    protected function getUsedEntityFixtures()
+    {
+        return [
+            self::CATEGORY,
+            self::ARTICLE,
+            self::PRODUCT,
+            self::TRANSLATION,
+        ];
+    }
+
     private function populate()
     {
         //Categories
@@ -135,15 +145,5 @@ final class Issue173Test extends BaseTestCaseORM
         $this->em->persist($product1);
 
         $this->em->flush();
-    }
-
-    protected function getUsedEntityFixtures()
-    {
-        return [
-            self::CATEGORY,
-            self::ARTICLE,
-            self::PRODUCT,
-            self::TRANSLATION,
-        ];
     }
 }

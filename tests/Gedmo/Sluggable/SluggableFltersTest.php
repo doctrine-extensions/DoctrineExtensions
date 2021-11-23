@@ -45,13 +45,6 @@ final class SluggableFltersTest extends BaseTestCaseORM
         $this->em->getFilters()->enable(self::FAKE_FILTER_NAME);
     }
 
-    protected function getUsedEntityFixtures()
-    {
-        return [
-            self::TARGET,
-        ];
-    }
-
     /**
      * @test
      */
@@ -68,5 +61,12 @@ final class SluggableFltersTest extends BaseTestCaseORM
         $this->em->flush();
 
         static::assertSame('my-title-my-code', $slug->getSlug());
+    }
+
+    protected function getUsedEntityFixtures()
+    {
+        return [
+            self::TARGET,
+        ];
     }
 }

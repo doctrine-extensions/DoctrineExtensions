@@ -37,6 +37,23 @@ final class TimestampableMappingTest extends BaseTestCaseORM
         $this->getMockSqliteEntityManager($evm);
     }
 
+    public function testTimestampableMetadata()
+    {
+        $meta = $this->em->getClassMetadata(Timestampable::class);
+        $config = $this->timestampable->getConfiguration($this->em, $meta->getName());
+
+        static::assertArrayHasKey('create', $config);
+        static::assertSame('created', $config['create'][0]);
+        static::assertArrayHasKey('update', $config);
+        static::assertSame('updated', $config['update'][0]);
+        static::assertArrayHasKey('change', $config);
+        $onChange = $config['change'][0];
+
+        static::assertSame('published', $onChange['field']);
+        static::assertSame('status.title', $onChange['trackedField']);
+        static::assertSame('Published', $onChange['value']);
+    }
+
     protected function getMetadataDriverImplementation()
     {
         $xmlDriver = new SimplifiedXmlDriver([
@@ -55,22 +72,5 @@ final class TimestampableMappingTest extends BaseTestCaseORM
             Timestampable::class,
             Status::class,
         ];
-    }
-
-    public function testTimestampableMetadata()
-    {
-        $meta = $this->em->getClassMetadata(Timestampable::class);
-        $config = $this->timestampable->getConfiguration($this->em, $meta->getName());
-
-        static::assertArrayHasKey('create', $config);
-        static::assertSame('created', $config['create'][0]);
-        static::assertArrayHasKey('update', $config);
-        static::assertSame('updated', $config['update'][0]);
-        static::assertArrayHasKey('change', $config);
-        $onChange = $config['change'][0];
-
-        static::assertSame('published', $onChange['field']);
-        static::assertSame('status.title', $onChange['trackedField']);
-        static::assertSame('Published', $onChange['value']);
     }
 }

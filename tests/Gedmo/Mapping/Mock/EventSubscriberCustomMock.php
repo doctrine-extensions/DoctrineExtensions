@@ -6,11 +6,6 @@ use Gedmo\Mapping\MappedEventSubscriber;
 
 class EventSubscriberCustomMock extends MappedEventSubscriber
 {
-    protected function getNamespace()
-    {
-        return __NAMESPACE__;
-    }
-
     public function getAdapter($args)
     {
         return $this->getEventAdapter($args);
@@ -19,5 +14,10 @@ class EventSubscriberCustomMock extends MappedEventSubscriber
     public function getSubscribedEvents()
     {
         return [];
+    }
+
+    protected function getNamespace()
+    {
+        return __NAMESPACE__;
     }
 }

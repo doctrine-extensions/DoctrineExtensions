@@ -30,6 +30,19 @@ class ODM implements AdapterInterface
     /**
      * {@inheritdoc}
      */
+    public function __call($method, $args)
+    {
+        if (null === $this->args) {
+            throw new RuntimeException('Event args must be set before calling its methods');
+        }
+        $method = str_replace('Object', $this->getDomainObjectName(), $method);
+
+        return call_user_func_array([$this->args, $method], $args);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function setEventArgs(EventArgs $args)
     {
         $this->args = $args;
@@ -85,19 +98,6 @@ class ODM implements AdapterInterface
     public function getObjectState($uow, $object)
     {
         return $uow->getDocumentState($object);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function __call($method, $args)
-    {
-        if (null === $this->args) {
-            throw new RuntimeException('Event args must be set before calling its methods');
-        }
-        $method = str_replace('Object', $this->getDomainObjectName(), $method);
-
-        return call_user_func_array([$this->args, $method], $args);
     }
 
     /**

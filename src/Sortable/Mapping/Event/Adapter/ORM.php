@@ -31,20 +31,6 @@ final class ORM extends BaseAdapterORM implements SortableAdapter
         return $res[0][1];
     }
 
-    private function addGroupWhere(QueryBuilder $qb, $groups)
-    {
-        $i = 1;
-        foreach ($groups as $group => $value) {
-            if (null === $value) {
-                $qb->andWhere($qb->expr()->isNull('n.'.$group));
-            } else {
-                $qb->andWhere('n.'.$group.' = :group__'.$i);
-                $qb->setParameter('group__'.$i, $value);
-            }
-            ++$i;
-        }
-    }
-
     public function updatePositions($relocation, $delta, $config)
     {
         $sign = $delta['delta'] < 0 ? '-' : '+';
@@ -100,5 +86,19 @@ final class ORM extends BaseAdapterORM implements SortableAdapter
         $q = $em->createQuery($dql);
         $q->setParameters($params);
         $q->getSingleScalarResult();
+    }
+
+    private function addGroupWhere(QueryBuilder $qb, $groups)
+    {
+        $i = 1;
+        foreach ($groups as $group => $value) {
+            if (null === $value) {
+                $qb->andWhere($qb->expr()->isNull('n.'.$group));
+            } else {
+                $qb->andWhere('n.'.$group.' = :group__'.$i);
+                $qb->setParameter('group__'.$i, $value);
+            }
+            ++$i;
+        }
     }
 }

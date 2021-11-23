@@ -169,6 +169,15 @@ final class TranslatableEntityCollectionTest extends BaseTestCaseORM
         static::assertSame('content lt', $translations['lt_lt']['content']);
     }
 
+    protected function getUsedEntityFixtures()
+    {
+        return [
+            self::ARTICLE,
+            self::TRANSLATION,
+            self::COMMENT,
+        ];
+    }
+
     private function populate()
     {
         $repo = $this->em->getRepository(self::TRANSLATION);
@@ -185,14 +194,5 @@ final class TranslatableEntityCollectionTest extends BaseTestCaseORM
 
         $this->em->persist($sport);
         $this->em->flush();
-    }
-
-    protected function getUsedEntityFixtures()
-    {
-        return [
-            self::ARTICLE,
-            self::TRANSLATION,
-            self::COMMENT,
-        ];
     }
 }

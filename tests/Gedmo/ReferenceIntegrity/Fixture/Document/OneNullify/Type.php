@@ -11,6 +11,13 @@ use Gedmo\Mapping\Annotation as Gedmo;
 class Type
 {
     /**
+     * @ODM\ReferenceOne(targetDocument="Gedmo\Tests\ReferenceIntegrity\Fixture\Document\OneNullify\Article", mappedBy="type")
+     * @Gedmo\ReferenceIntegrity("nullify")
+     *
+     * @var Article
+     */
+    protected $article;
+    /**
      * @ODM\Id
      */
     private $id;
@@ -24,14 +31,6 @@ class Type
      * @ODM\Field(type="string")
      */
     private $identifier;
-
-    /**
-     * @ODM\ReferenceOne(targetDocument="Gedmo\Tests\ReferenceIntegrity\Fixture\Document\OneNullify\Article", mappedBy="type")
-     * @Gedmo\ReferenceIntegrity("nullify")
-     *
-     * @var Article
-     */
-    protected $article;
 
     /**
      * @return mixed

@@ -82,33 +82,6 @@ abstract class MappedEventSubscriber implements EventSubscriber
     }
 
     /**
-     * Get an event adapter to handle event specific
-     * methods
-     *
-     * @throws \Gedmo\Exception\InvalidArgumentException if event is not recognized
-     *
-     * @return \Gedmo\Mapping\Event\AdapterInterface
-     */
-    protected function getEventAdapter(EventArgs $args)
-    {
-        $class = get_class($args);
-        if (preg_match('@Doctrine\\\([^\\\]+)@', $class, $m) && in_array($m[1], ['ODM', 'ORM'], true)) {
-            if (!isset($this->adapters[$m[1]])) {
-                $adapterClass = $this->getNamespace().'\\Mapping\\Event\\Adapter\\'.$m[1];
-                if (!class_exists($adapterClass)) {
-                    $adapterClass = 'Gedmo\\Mapping\\Event\\Adapter\\'.$m[1];
-                }
-                $this->adapters[$m[1]] = new $adapterClass();
-            }
-            $this->adapters[$m[1]]->setEventArgs($args);
-
-            return $this->adapters[$m[1]];
-        }
-
-        throw new \Gedmo\Exception\InvalidArgumentException('Event mapper does not support event arg class: '.$class);
-    }
-
-    /**
      * Get the configuration for specific object class
      * if cache driver is present it scans it also
      *
@@ -210,6 +183,33 @@ abstract class MappedEventSubscriber implements EventSubscriber
     }
 
     /**
+     * Get an event adapter to handle event specific
+     * methods
+     *
+     * @throws \Gedmo\Exception\InvalidArgumentException if event is not recognized
+     *
+     * @return \Gedmo\Mapping\Event\AdapterInterface
+     */
+    protected function getEventAdapter(EventArgs $args)
+    {
+        $class = get_class($args);
+        if (preg_match('@Doctrine\\\([^\\\]+)@', $class, $m) && in_array($m[1], ['ODM', 'ORM'], true)) {
+            if (!isset($this->adapters[$m[1]])) {
+                $adapterClass = $this->getNamespace().'\\Mapping\\Event\\Adapter\\'.$m[1];
+                if (!class_exists($adapterClass)) {
+                    $adapterClass = 'Gedmo\\Mapping\\Event\\Adapter\\'.$m[1];
+                }
+                $this->adapters[$m[1]] = new $adapterClass();
+            }
+            $this->adapters[$m[1]]->setEventArgs($args);
+
+            return $this->adapters[$m[1]];
+        }
+
+        throw new \Gedmo\Exception\InvalidArgumentException('Event mapper does not support event arg class: '.$class);
+    }
+
+    /**
      * Get the namespace of extension event subscriber.
      * used for cache id of extensions also to know where
      * to find Mapping drivers and event adapters
@@ -217,6 +217,25 @@ abstract class MappedEventSubscriber implements EventSubscriber
      * @return string
      */
     abstract protected function getNamespace();
+
+    /**
+     * Sets the value for a mapped field
+     *
+     * @param object $object
+     * @param string $field
+     * @param mixed  $oldValue
+     * @param mixed  $newValue
+     */
+    protected function setFieldValue(AdapterInterface $adapter, $object, $field, $oldValue, $newValue)
+    {
+        $manager = $adapter->getObjectManager();
+        $meta = $manager->getClassMetadata(get_class($object));
+        $uow = $manager->getUnitOfWork();
+
+        $meta->getReflectionProperty($field)->setValue($object, $newValue);
+        $uow->propertyChanged($object, $field, $oldValue, $newValue);
+        $adapter->recomputeSingleObjectChangeSet($uow, $meta, $object);
+    }
 
     /**
      * Create default annotation reader for extensions
@@ -240,24 +259,5 @@ abstract class MappedEventSubscriber implements EventSubscriber
         }
 
         return self::$defaultAnnotationReader;
-    }
-
-    /**
-     * Sets the value for a mapped field
-     *
-     * @param object $object
-     * @param string $field
-     * @param mixed  $oldValue
-     * @param mixed  $newValue
-     */
-    protected function setFieldValue(AdapterInterface $adapter, $object, $field, $oldValue, $newValue)
-    {
-        $manager = $adapter->getObjectManager();
-        $meta = $manager->getClassMetadata(get_class($object));
-        $uow = $manager->getUnitOfWork();
-
-        $meta->getReflectionProperty($field)->setValue($object, $newValue);
-        $uow->propertyChanged($object, $field, $oldValue, $newValue);
-        $adapter->recomputeSingleObjectChangeSet($uow, $meta, $object);
     }
 }

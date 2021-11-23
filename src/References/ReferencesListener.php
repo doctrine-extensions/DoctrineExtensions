@@ -132,43 +132,6 @@ class ReferencesListener extends MappedEventSubscriber
         return $this->managers[$type];
     }
 
-    protected function getNamespace()
-    {
-        return __NAMESPACE__;
-    }
-
-    private function updateReferences(EventArgs $eventArgs)
-    {
-        $ea = $this->getEventAdapter($eventArgs);
-        $om = $ea->getObjectManager();
-        $object = $ea->getObject();
-        $meta = $om->getClassMetadata(get_class($object));
-        $config = $this->getConfiguration($om, $meta->getName());
-
-        if (isset($config['referenceOne'])) {
-            foreach ($config['referenceOne'] as $mapping) {
-                if (isset($mapping['identifier'])) {
-                    $property = $meta->reflClass->getProperty($mapping['field']);
-                    $property->setAccessible(true);
-                    $referencedObject = $property->getValue($object);
-
-                    if (is_object($referencedObject)) {
-                        $manager = $this->getManager($mapping['type']);
-                        $identifier = $ea->getIdentifier($manager, $referencedObject);
-
-                        $meta->setFieldValue(
-                            $object,
-                            $mapping['identifier'],
-                            $identifier
-                        );
-                    }
-                }
-            }
-        }
-
-        $this->updateManyEmbedReferences($eventArgs);
-    }
-
     public function updateManyEmbedReferences(EventArgs $eventArgs)
     {
         $ea = $this->getEventAdapter($eventArgs);
@@ -207,5 +170,42 @@ class ReferencesListener extends MappedEventSubscriber
                 );
             }
         }
+    }
+
+    protected function getNamespace()
+    {
+        return __NAMESPACE__;
+    }
+
+    private function updateReferences(EventArgs $eventArgs)
+    {
+        $ea = $this->getEventAdapter($eventArgs);
+        $om = $ea->getObjectManager();
+        $object = $ea->getObject();
+        $meta = $om->getClassMetadata(get_class($object));
+        $config = $this->getConfiguration($om, $meta->getName());
+
+        if (isset($config['referenceOne'])) {
+            foreach ($config['referenceOne'] as $mapping) {
+                if (isset($mapping['identifier'])) {
+                    $property = $meta->reflClass->getProperty($mapping['field']);
+                    $property->setAccessible(true);
+                    $referencedObject = $property->getValue($object);
+
+                    if (is_object($referencedObject)) {
+                        $manager = $this->getManager($mapping['type']);
+                        $identifier = $ea->getIdentifier($manager, $referencedObject);
+
+                        $meta->setFieldValue(
+                            $object,
+                            $mapping['identifier'],
+                            $identifier
+                        );
+                    }
+                }
+            }
+        }
+
+        $this->updateManyEmbedReferences($eventArgs);
     }
 }

@@ -63,15 +63,6 @@ final class Issue135Test extends BaseTestCaseORM
         static::assertSame(0, $count);
     }
 
-    protected function getUsedEntityFixtures()
-    {
-        return [
-            self::ARTICLE,
-            self::TRANSLATION,
-            self::COMMENT,
-        ];
-    }
-
     public function populate()
     {
         $this->translatableListener->setTranslatableLocale('en');
@@ -103,5 +94,14 @@ final class Issue135Test extends BaseTestCaseORM
         $this->em->persist($text1);
         $this->em->persist($text0);
         $this->em->flush();
+    }
+
+    protected function getUsedEntityFixtures()
+    {
+        return [
+            self::ARTICLE,
+            self::TRANSLATION,
+            self::COMMENT,
+        ];
     }
 }

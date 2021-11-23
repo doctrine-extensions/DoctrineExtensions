@@ -34,42 +34,6 @@ final class SortableDocumentGroupTest extends BaseTestCaseMongoODM
     }
 
     /**
-     * Insert 2 categories, 6 posts and 4 kids
-     * 3 posts are linked to a category, and 3 to the other one
-     * 2 kids have one date, 2 another one
-     */
-    private function populate()
-    {
-        $categories = [];
-        for ($i = 0; $i < 2; ++$i) {
-            $categories[$i] = new Category();
-            $categories[$i]->setName('category'.$i);
-            $this->dm->persist($categories[$i]);
-        }
-
-        for ($i = 0; $i < 6; ++$i) {
-            $post = new Post();
-            $post->setTitle('post'.$i);
-            $post->setCategory($categories[($i % 2)]);
-            $this->dm->persist($post);
-        }
-
-        $birthdates = [
-            new \DateTime(self::KID_DATE1),
-            new \DateTime(self::KID_DATE2),
-            ];
-
-        for ($i = 0; $i < 4; ++$i) {
-            $kid = new Kid();
-            $kid->setLastName('kid'.$i);
-            $kid->setBirthdate($birthdates[($i % 2)]);
-            $this->dm->persist($kid);
-        }
-        $this->dm->flush();
-        $this->dm->clear();
-    }
-
-    /**
      * There should be 2 kids by position
      */
     public function testKidInitialPositions()
@@ -177,5 +141,41 @@ final class SortableDocumentGroupTest extends BaseTestCaseMongoODM
         for ($i = 0; $i < 2; ++$i) {
             static::assertSame($i, $posts[$i]->getPosition());
         }
+    }
+
+    /**
+     * Insert 2 categories, 6 posts and 4 kids
+     * 3 posts are linked to a category, and 3 to the other one
+     * 2 kids have one date, 2 another one
+     */
+    private function populate()
+    {
+        $categories = [];
+        for ($i = 0; $i < 2; ++$i) {
+            $categories[$i] = new Category();
+            $categories[$i]->setName('category'.$i);
+            $this->dm->persist($categories[$i]);
+        }
+
+        for ($i = 0; $i < 6; ++$i) {
+            $post = new Post();
+            $post->setTitle('post'.$i);
+            $post->setCategory($categories[($i % 2)]);
+            $this->dm->persist($post);
+        }
+
+        $birthdates = [
+            new \DateTime(self::KID_DATE1),
+            new \DateTime(self::KID_DATE2),
+            ];
+
+        for ($i = 0; $i < 4; ++$i) {
+            $kid = new Kid();
+            $kid->setLastName('kid'.$i);
+            $kid->setBirthdate($birthdates[($i % 2)]);
+            $this->dm->persist($kid);
+        }
+        $this->dm->flush();
+        $this->dm->clear();
     }
 }

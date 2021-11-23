@@ -258,19 +258,50 @@ final class ClosureTreeTest extends BaseTestCaseORM
         $this->em->flush();
     }
 
-    private function hasAncestor($closures, $name)
+    public function testCascadePersistTree()
     {
-        $result = false;
-        foreach ($closures as $closure) {
-            $ancestor = $closure->getAncestor();
-            if ($ancestor->getTitle() === $name) {
-                $result = true;
+        $politics = new Category();
+        $politics->setTitle('Politics');
 
-                break;
-            }
-        }
+        $news = new News('Lorem ipsum', $politics);
+        $this->em->persist($news);
+        $this->em->flush();
 
-        return $result;
+        $closure = $this->em->createQueryBuilder()
+                    ->select('c')
+                    ->from(self::CLOSURE, 'c')
+                    ->where('c.ancestor = :ancestor')
+                    ->setParameter('ancestor', $politics->getId())
+                    ->getQuery()
+                    ->getResult();
+
+        static::assertCount(1, $closure);
+    }
+
+    public function testPersistOnRightEmInstance()
+    {
+        $evm = new EventManager();
+        $evm->addEventSubscriber(new TreeListener());
+
+        $emOne = $this->getMockSqliteEntityManager($evm);
+        $emTwo = $this->getMockSqliteEntityManager($evm);
+
+        $categoryOne = new Category();
+        $categoryOne->setTitle('Politics');
+
+        $categoryTwo = new Category();
+        $categoryTwo->setTitle('Politics');
+
+        // Persist and Flush on different times !
+        $emOne->persist($categoryOne);
+
+        $emTwo->persist($categoryTwo);
+        $emTwo->flush();
+
+        $emOne->flush();
+
+        static::assertNotNull($categoryOne->getId());
+        static::assertNotNull($categoryTwo->getId());
     }
 
     protected function getUsedEntityFixtures()
@@ -285,6 +316,21 @@ final class ClosureTreeTest extends BaseTestCaseORM
             self::CATEGORY_WITHOUT_LEVEL,
             self::CATEGORY_WITHOUT_LEVEL_CLOSURE,
         ];
+    }
+
+    private function hasAncestor($closures, $name)
+    {
+        $result = false;
+        foreach ($closures as $closure) {
+            $ancestor = $closure->getAncestor();
+            if ($ancestor->getTitle() === $name) {
+                $result = true;
+
+                break;
+            }
+        }
+
+        return $result;
     }
 
     private function populate()
@@ -349,51 +395,5 @@ final class ClosureTreeTest extends BaseTestCaseORM
         $this->em->persist($mouldCheese);
 
         $this->em->flush();
-    }
-
-    public function testCascadePersistTree()
-    {
-        $politics = new Category();
-        $politics->setTitle('Politics');
-
-        $news = new News('Lorem ipsum', $politics);
-        $this->em->persist($news);
-        $this->em->flush();
-
-        $closure = $this->em->createQueryBuilder()
-                    ->select('c')
-                    ->from(self::CLOSURE, 'c')
-                    ->where('c.ancestor = :ancestor')
-                    ->setParameter('ancestor', $politics->getId())
-                    ->getQuery()
-                    ->getResult();
-
-        static::assertCount(1, $closure);
-    }
-
-    public function testPersistOnRightEmInstance()
-    {
-        $evm = new EventManager();
-        $evm->addEventSubscriber(new TreeListener());
-
-        $emOne = $this->getMockSqliteEntityManager($evm);
-        $emTwo = $this->getMockSqliteEntityManager($evm);
-
-        $categoryOne = new Category();
-        $categoryOne->setTitle('Politics');
-
-        $categoryTwo = new Category();
-        $categoryTwo->setTitle('Politics');
-
-        // Persist and Flush on different times !
-        $emOne->persist($categoryOne);
-
-        $emTwo->persist($categoryTwo);
-        $emTwo->flush();
-
-        $emOne->flush();
-
-        static::assertNotNull($categoryOne->getId());
-        static::assertNotNull($categoryTwo->getId());
     }
 }

@@ -10,6 +10,11 @@ use Gedmo\Mapping\Annotation as Gedmo;
  */
 class Article
 {
+    /**
+     * @Gedmo\SortablePosition
+     * @ODM\Field(type="int")
+     */
+    protected $position;
     /** @ODM\Id */
     private $id;
 
@@ -17,12 +22,6 @@ class Article
      * @ODM\Field(type="string")
      */
     private $title;
-
-    /**
-     * @Gedmo\SortablePosition
-     * @ODM\Field(type="int")
-     */
-    protected $position;
 
     public function getId()
     {

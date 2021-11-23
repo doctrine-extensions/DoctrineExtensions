@@ -13,6 +13,13 @@ use Gedmo\Mapping\Annotation as Gedmo;
 class ArticleTemplate
 {
     /**
+     * Used locale to override Translation listener`s locale
+     *
+     * @Gedmo\Locale
+     */
+    #[Gedmo\Locale]
+    protected $locale;
+    /**
      * @Gedmo\Translatable
      * @ORM\Column(name="title", type="string", length=128)
      */
@@ -27,14 +34,6 @@ class ArticleTemplate
     #[ORM\Column(name: 'content', type: Types::TEXT)]
     #[Gedmo\Translatable]
     private $content;
-
-    /**
-     * Used locale to override Translation listener`s locale
-     *
-     * @Gedmo\Locale
-     */
-    #[Gedmo\Locale]
-    protected $locale;
 
     public function setTitle($title)
     {

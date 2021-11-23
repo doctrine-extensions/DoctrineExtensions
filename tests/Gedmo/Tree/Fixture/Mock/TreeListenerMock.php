@@ -31,6 +31,11 @@ class TreeListenerMock extends TreeListener
         return $this->strategy;
     }
 
+    public function setReleaseLocks($bool)
+    {
+        $this->strategy->releaseLocks = $bool;
+    }
+
     protected function getStrategiesUsedForObjects(array $classes)
     {
         if (null === $this->strategy) {
@@ -39,10 +44,5 @@ class TreeListenerMock extends TreeListener
         }
 
         return ['materializedPath' => $this->strategy];
-    }
-
-    public function setReleaseLocks($bool)
-    {
-        $this->strategy->releaseLocks = $bool;
     }
 }

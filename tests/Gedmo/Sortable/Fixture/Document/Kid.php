@@ -10,14 +10,6 @@ use Gedmo\Mapping\Annotation as Gedmo;
  */
 class Kid
 {
-    /** @ODM\Id */
-    private $id;
-
-    /**
-     * @ODM\Field(type="string")
-     */
-    private $lastname;
-
     /**
      * @Gedmo\SortablePosition
      * @ODM\Field(type="int")
@@ -29,6 +21,13 @@ class Kid
      * @ODM\Field(type="date")
      */
     protected $birthdate;
+    /** @ODM\Id */
+    private $id;
+
+    /**
+     * @ODM\Field(type="string")
+     */
+    private $lastname;
 
     public function getId()
     {

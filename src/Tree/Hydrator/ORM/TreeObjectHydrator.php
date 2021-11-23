@@ -39,6 +39,12 @@ class TreeObjectHydrator extends ObjectHydrator
      */
     private $childrenField;
 
+    public function setPropertyValue($object, $property, $value)
+    {
+        $meta = $this->_em->getClassMetadata(get_class($object));
+        $meta->getReflectionProperty($property)->setValue($object, $value);
+    }
+
     /**
      * We hook into the `hydrateAllData` to map the children collection of the entity
      *
@@ -257,11 +263,5 @@ class TreeObjectHydrator extends ObjectHydrator
         $meta = $this->_em->getClassMetadata(get_class($object));
 
         return $meta->getReflectionProperty($property)->getValue($object);
-    }
-
-    public function setPropertyValue($object, $property, $value)
-    {
-        $meta = $this->_em->getClassMetadata(get_class($object));
-        $meta->getReflectionProperty($property)->setValue($object, $value);
     }
 }

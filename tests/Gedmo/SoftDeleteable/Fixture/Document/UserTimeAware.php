@@ -11,14 +11,13 @@ use Gedmo\Mapping\Annotation as Gedmo;
  */
 class UserTimeAware
 {
+    /** @ODM\Field(type="date") */
+    protected $deletedAt;
     /** @ODM\Id */
     private $id;
 
     /** @ODM\Field(type="string") */
     private $username;
-
-    /** @ODM\Field(type="date") */
-    protected $deletedAt;
 
     /**
      * Sets deletedAt.

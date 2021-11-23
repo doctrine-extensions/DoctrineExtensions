@@ -30,6 +30,19 @@ class ORM implements AdapterInterface
     /**
      * {@inheritdoc}
      */
+    public function __call($method, $args)
+    {
+        if (null === $this->args) {
+            throw new RuntimeException('Event args must be set before calling its methods');
+        }
+        $method = str_replace('Object', $this->getDomainObjectName(), $method);
+
+        return call_user_func_array([$this->args, $method], $args);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function setEventArgs(EventArgs $args)
     {
         $this->args = $args;
@@ -57,19 +70,6 @@ class ORM implements AdapterInterface
     public function getRootObjectClass($meta)
     {
         return $meta->rootEntityName;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function __call($method, $args)
-    {
-        if (null === $this->args) {
-            throw new RuntimeException('Event args must be set before calling its methods');
-        }
-        $method = str_replace('Object', $this->getDomainObjectName(), $method);
-
-        return call_user_func_array([$this->args, $method], $args);
     }
 
     /**

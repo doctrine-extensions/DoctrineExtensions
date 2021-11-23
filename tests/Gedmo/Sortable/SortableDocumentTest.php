@@ -27,17 +27,6 @@ final class SortableDocumentTest extends BaseTestCaseMongoODM
         $this->populate();
     }
 
-    private function populate()
-    {
-        for ($i = 0; $i <= 4; ++$i) {
-            $article = new Article();
-            $article->setTitle('article'.$i);
-            $this->dm->persist($article);
-        }
-        $this->dm->flush();
-        $this->dm->clear();
-    }
-
     public function testInitialPositions()
     {
         $repo = $this->dm->getRepository(self::ARTICLE);
@@ -89,5 +78,16 @@ final class SortableDocumentTest extends BaseTestCaseMongoODM
             $article = $repo->findOneBy(['position' => $i]);
             static::assertSame('article'.($i + 1), $article->getTitle());
         }
+    }
+
+    private function populate()
+    {
+        for ($i = 0; $i <= 4; ++$i) {
+            $article = new Article();
+            $article->setTitle('article'.$i);
+            $this->dm->persist($article);
+        }
+        $this->dm->flush();
+        $this->dm->clear();
     }
 }

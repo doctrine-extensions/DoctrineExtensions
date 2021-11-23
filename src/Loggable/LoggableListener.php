@@ -90,18 +90,6 @@ class LoggableListener extends MappedEventSubscriber
     }
 
     /**
-     * Get the LogEntry class
-     *
-     * @param string $class
-     *
-     * @return string
-     */
-    protected function getLogEntryClass(LoggableAdapter $ea, $class)
-    {
-        return self::$configurations[$this->name][$class]['logEntryClass'] ?? $ea->getDefaultLogEntryClass();
-    }
-
-    /**
      * Maps additional metadata
      *
      * @return void
@@ -160,17 +148,6 @@ class LoggableListener extends MappedEventSubscriber
     }
 
     /**
-     * Handle any custom LogEntry functionality that needs to be performed
-     * before persisting it
-     *
-     * @param object $logEntry The LogEntry being persisted
-     * @param object $object   The object being Logged
-     */
-    protected function prePersistLogEntry($logEntry, $object)
-    {
-    }
-
-    /**
      * Looks for loggable objects being inserted or updated
      * for further processing
      *
@@ -191,6 +168,29 @@ class LoggableListener extends MappedEventSubscriber
         foreach ($ea->getScheduledObjectDeletions($uow) as $object) {
             $this->createLogEntry(self::ACTION_REMOVE, $object, $ea);
         }
+    }
+
+    /**
+     * Get the LogEntry class
+     *
+     * @param string $class
+     *
+     * @return string
+     */
+    protected function getLogEntryClass(LoggableAdapter $ea, $class)
+    {
+        return self::$configurations[$this->name][$class]['logEntryClass'] ?? $ea->getDefaultLogEntryClass();
+    }
+
+    /**
+     * Handle any custom LogEntry functionality that needs to be performed
+     * before persisting it
+     *
+     * @param object $logEntry The LogEntry being persisted
+     * @param object $object   The object being Logged
+     */
+    protected function prePersistLogEntry($logEntry, $object)
+    {
     }
 
     /**

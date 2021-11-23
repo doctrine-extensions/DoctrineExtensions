@@ -11,6 +11,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
  */
 class FileWithMaxSize
 {
+    public $callbackWasCalled = false;
     /**
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
@@ -40,8 +41,6 @@ class FileWithMaxSize
      * @ORM\JoinColumn(name="article_id", referencedColumnName="id")
      */
     private $article;
-
-    public $callbackWasCalled = false;
 
     public function getId()
     {

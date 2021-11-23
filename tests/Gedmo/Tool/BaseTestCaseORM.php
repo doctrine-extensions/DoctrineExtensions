@@ -85,25 +85,6 @@ abstract class BaseTestCaseORM extends \PHPUnit\Framework\TestCase
         return $this->getMockSqliteEntityManager($evm, $this->getDefaultConfiguration());
     }
 
-    private function getDefaultConfiguration(): Configuration
-    {
-        $config = new Configuration();
-        $config->setProxyDir(TESTS_TEMP_DIR);
-        $config->setProxyNamespace('Proxy');
-        $config->setMetadataDriverImpl($this->getMetadataDefaultDriverImplementation());
-
-        return $config;
-    }
-
-    private function getMetadataDefaultDriverImplementation(): MappingDriver
-    {
-        if (PHP_VERSION_ID >= 80000) {
-            return new AttributeDriver([]);
-        }
-
-        return new AnnotationDriver($_ENV['annotation_reader']);
-    }
-
     /**
      * EntityManager mock object together with
      * annotation mapping driver and custom
@@ -217,6 +198,40 @@ abstract class BaseTestCaseORM extends \PHPUnit\Framework\TestCase
     abstract protected function getUsedEntityFixtures();
 
     /**
+     * Get annotation mapping configuration
+     *
+     * @return \Doctrine\ORM\Configuration
+     */
+    protected function getMockAnnotatedConfig()
+    {
+        $config = new Configuration();
+        $config->setProxyDir(TESTS_TEMP_DIR);
+        $config->setProxyNamespace('Proxy');
+        $config->setMetadataDriverImpl($this->getMetadataDriverImplementation());
+
+        return $config;
+    }
+
+    private function getDefaultConfiguration(): Configuration
+    {
+        $config = new Configuration();
+        $config->setProxyDir(TESTS_TEMP_DIR);
+        $config->setProxyNamespace('Proxy');
+        $config->setMetadataDriverImpl($this->getMetadataDefaultDriverImplementation());
+
+        return $config;
+    }
+
+    private function getMetadataDefaultDriverImplementation(): MappingDriver
+    {
+        if (PHP_VERSION_ID >= 80000) {
+            return new AttributeDriver([]);
+        }
+
+        return new AnnotationDriver($_ENV['annotation_reader']);
+    }
+
+    /**
      * Build event manager
      *
      * @return EventManager
@@ -232,20 +247,5 @@ abstract class BaseTestCaseORM extends \PHPUnit\Framework\TestCase
         $evm->addEventSubscriber(new SoftDeleteableListener());
 
         return $evm;
-    }
-
-    /**
-     * Get annotation mapping configuration
-     *
-     * @return \Doctrine\ORM\Configuration
-     */
-    protected function getMockAnnotatedConfig()
-    {
-        $config = new Configuration();
-        $config->setProxyDir(TESTS_TEMP_DIR);
-        $config->setProxyNamespace('Proxy');
-        $config->setMetadataDriverImpl($this->getMetadataDriverImplementation());
-
-        return $config;
     }
 }

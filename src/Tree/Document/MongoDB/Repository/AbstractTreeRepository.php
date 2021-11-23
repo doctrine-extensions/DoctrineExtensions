@@ -119,14 +119,6 @@ abstract class AbstractTreeRepository extends DocumentRepository implements Repo
     }
 
     /**
-     * Checks if current repository is right
-     * for currently used tree strategy
-     *
-     * @return bool
-     */
-    abstract protected function validate();
-
-    /**
      * Get all root nodes query builder
      *
      * @param string|null $sortByField Sort by field
@@ -195,4 +187,12 @@ abstract class AbstractTreeRepository extends DocumentRepository implements Repo
      * @return Query
      */
     abstract public function getChildrenQuery($node = null, $direct = false, $sortByField = null, $direction = 'ASC', $includeNode = false);
+
+    /**
+     * Checks if current repository is right
+     * for currently used tree strategy
+     *
+     * @return bool
+     */
+    abstract protected function validate();
 }

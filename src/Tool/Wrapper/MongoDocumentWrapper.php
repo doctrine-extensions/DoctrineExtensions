@@ -100,6 +100,14 @@ class MongoDocumentWrapper extends AbstractWrapper
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function isEmbeddedAssociation($field)
+    {
+        return $this->getMetadata()->isSingleValuedEmbed($field);
+    }
+
+    /**
      * Initialize the document if it is proxy
      * required when is detached or not initialized
      */
@@ -126,13 +134,5 @@ class MongoDocumentWrapper extends AbstractWrapper
                 }
             }
         }
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function isEmbeddedAssociation($field)
-    {
-        return $this->getMetadata()->isSingleValuedEmbed($field);
     }
 }

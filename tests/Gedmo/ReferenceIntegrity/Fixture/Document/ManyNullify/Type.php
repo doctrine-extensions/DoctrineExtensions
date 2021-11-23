@@ -12,6 +12,13 @@ use Gedmo\Mapping\Annotation as Gedmo;
 class Type
 {
     /**
+     * @ODM\ReferenceMany(targetDocument="Gedmo\Tests\ReferenceIntegrity\Fixture\Document\ManyNullify\Article", mappedBy="type")
+     * @Gedmo\ReferenceIntegrity("nullify")
+     *
+     * @var ArrayCollection
+     */
+    protected $articles = [];
+    /**
      * @ODM\Id
      */
     private $id;
@@ -25,14 +32,6 @@ class Type
      * @ODM\Field(type="string")
      */
     private $identifier;
-
-    /**
-     * @ODM\ReferenceMany(targetDocument="Gedmo\Tests\ReferenceIntegrity\Fixture\Document\ManyNullify\Article", mappedBy="type")
-     * @Gedmo\ReferenceIntegrity("nullify")
-     *
-     * @var ArrayCollection
-     */
-    protected $articles = [];
 
     public function __construct()
     {
