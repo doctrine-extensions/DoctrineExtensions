@@ -472,7 +472,7 @@ class Nested implements Strategy
                 $repo = $em->getRepository($config['useObjectClass']);
 
                 $criteria = new Criteria();
-                $criteria->andWhere(Criteria::expr()->notIn($wrapped->getMetadata()->identifier[0], [$wrapped->getIdentifier()]));
+                $criteria->andWhere(Criteria::expr()->notIn($wrapped->getMetadata()->getIdentifier()[0], [$wrapped->getIdentifier()]));
                 $criteria->andWhere(Criteria::expr()->eq($config['root'], $node->$method()));
                 $criteria->andWhere(Criteria::expr()->isNull($config['parent']));
                 $criteria->andWhere(Criteria::expr()->eq($config['level'], 0));

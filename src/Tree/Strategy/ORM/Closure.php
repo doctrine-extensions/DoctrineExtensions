@@ -263,7 +263,7 @@ class Closure implements Strategy
             ];
 
             if ($parent) {
-                $dql = "SELECT c, a FROM {$closureMeta->name} c";
+                $dql = "SELECT c, a FROM {$closureMeta->getName()} c";
                 $dql .= ' JOIN c.ancestor a';
                 $dql .= ' WHERE c.descendant = :parent';
                 $q = $em->createQuery($dql);
