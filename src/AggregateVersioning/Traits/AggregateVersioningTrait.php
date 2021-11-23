@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Gedmo\AggregateVersioning\Traits;
 
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -19,6 +20,7 @@ trait AggregateVersioningTrait
      *
      * @ORM\Column(type="integer")
      */
+    #[ORM\Column(type: Types::INTEGER)]
     protected $aggregateVersion;
     /**
      * @var int
@@ -26,6 +28,8 @@ trait AggregateVersioningTrait
      * @ORM\Version
      * @ORM\Column(type="integer")
      */
+    #[Version]
+    #[ORM\Column(type: Types::INTEGER)]
     protected $version;
 
     public function updateAggregateVersion(): void
