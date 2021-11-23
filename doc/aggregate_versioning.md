@@ -223,9 +223,6 @@ class Order implements AggregateRoot
 You can use aggregate versioning traits for quick **aggregateVersion** string definitions
 when using annotation mapping.
 
-**Note:** this feature is only available since php **5.4.0**. And you are not required
-to use the Traits provided by extensions.
-
 ```php
 <?php
 
