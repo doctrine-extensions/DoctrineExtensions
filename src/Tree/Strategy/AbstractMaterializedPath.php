@@ -27,9 +27,7 @@ abstract class AbstractMaterializedPath implements Strategy
     public const ACTION_REMOVE = 'remove';
 
     /**
-     * TreeListener
-     *
-     * @var AbstractTreeListener
+     * @var TreeListener
      */
     protected $listener = null;
 
