@@ -121,7 +121,7 @@ final class AggregateVersioningTest extends BaseTestCaseORM
     {
         $id = '09597988-aa74-4bb3-9fb9-0e154dd7cdec';
 
-        if (!$order = $this->em->getRepository(self::ORDER)->find($id)) {
+        if (null === $order = $this->em->getRepository(self::ORDER)->find($id)) {
             $order = new Order($id);
             $this->em->persist($order);
             $this->em->flush();
