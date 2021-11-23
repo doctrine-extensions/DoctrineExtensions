@@ -48,7 +48,7 @@ final class AggregateVersionListener extends MappedEventSubscriber
             }
         }
 
-        if (empty($entities)) {
+        if ([] === $entities) {
             return;
         }
 
@@ -76,7 +76,7 @@ final class AggregateVersionListener extends MappedEventSubscriber
         $annotation = $this->getAggregateEntityAnnotation($entity);
 
         if (!method_exists($entity, $annotation->aggregateRootMethod)) {
-            throw new LogicException(sprintf('Method "%s" not exists in class "%s".', $annotation->aggregateRootMethod, get_class($entity)));
+            throw new LogicException(sprintf('Method "%s()" does not exist in class "%s".', $annotation->aggregateRootMethod, get_class($entity)));
         }
 
         return $entity->{$annotation->aggregateRootMethod}();
