@@ -38,21 +38,6 @@ final class SluggableMappingTest extends BaseTestCaseORM
         $this->getMockSqliteEntityManager($evm);
     }
 
-    protected function getUsedEntityFixtures()
-    {
-        return [Sluggable::class];
-    }
-
-    protected function getMetadataDriverImplementation()
-    {
-        $xmlDriver = new XmlDriver(__DIR__.'/../Driver/Xml');
-
-        $chain = new MappingDriverChain();
-        $chain->addDriver($xmlDriver, 'Gedmo\Tests\Mapping\Fixture\Xml');
-
-        return $chain;
-    }
-
     /**
      * @test
      */
@@ -105,5 +90,20 @@ final class SluggableMappingTest extends BaseTestCaseORM
         static::assertSame('parent', $second['relationField']);
         static::assertSame('test', $second['relationSlugField']);
         static::assertSame('-', $second['separator']);
+    }
+
+    protected function getUsedEntityFixtures()
+    {
+        return [Sluggable::class];
+    }
+
+    protected function getMetadataDriverImplementation()
+    {
+        $xmlDriver = new XmlDriver(__DIR__.'/../Driver/Xml');
+
+        $chain = new MappingDriverChain();
+        $chain->addDriver($xmlDriver, 'Gedmo\Tests\Mapping\Fixture\Xml');
+
+        return $chain;
     }
 }

@@ -481,26 +481,6 @@ abstract class AbstractMaterializedPath implements Strategy
     }
 
     /**
-     * Locks all needed trees
-     *
-     * @return void
-     */
-    protected function lockTrees(ObjectManager $om, AdapterInterface $ea)
-    {
-        // Do nothing by default
-    }
-
-    /**
-     * Releases all trees which are locked
-     *
-     * @return void
-     */
-    protected function releaseTreeLocks(ObjectManager $om, AdapterInterface $ea)
-    {
-        // Do nothing by default
-    }
-
-    /**
      * Remove node and its children
      *
      * @param ObjectManager $om
@@ -523,4 +503,24 @@ abstract class AbstractMaterializedPath implements Strategy
      * @return array|\Traversable
      */
     abstract public function getChildren($om, $meta, $config, $originalPath);
+
+    /**
+     * Locks all needed trees
+     *
+     * @return void
+     */
+    protected function lockTrees(ObjectManager $om, AdapterInterface $ea)
+    {
+        // Do nothing by default
+    }
+
+    /**
+     * Releases all trees which are locked
+     *
+     * @return void
+     */
+    protected function releaseTreeLocks(ObjectManager $om, AdapterInterface $ea)
+    {
+        // Do nothing by default
+    }
 }

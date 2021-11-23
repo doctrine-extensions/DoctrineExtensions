@@ -379,14 +379,6 @@ final class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
         static::assertIsArray($tree[0][$childrenIndex]);
     }
 
-    protected function getUsedEntityFixtures()
-    {
-        return [
-            self::CATEGORY,
-            self::CATEGORY_WITH_TRIMMED_SEPARATOR,
-        ];
-    }
-
     public function createCategory($class = null)
     {
         if (!$class) {
@@ -394,6 +386,14 @@ final class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
         }
 
         return new $class();
+    }
+
+    protected function getUsedEntityFixtures()
+    {
+        return [
+            self::CATEGORY,
+            self::CATEGORY_WITH_TRIMMED_SEPARATOR,
+        ];
     }
 
     private function populate($class = null)

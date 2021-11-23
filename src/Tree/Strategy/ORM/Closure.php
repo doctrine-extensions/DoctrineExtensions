@@ -200,15 +200,6 @@ class Closure implements Strategy
     {
     }
 
-    protected function getJoinColumnFieldName($association)
-    {
-        if (count($association['joinColumnFieldNames']) > 1) {
-            throw new RuntimeException('More association on field '.$association['fieldName']);
-        }
-
-        return array_shift($association['joinColumnFieldNames']);
-    }
-
     /**
      * {@inheritdoc}
      */
@@ -309,68 +300,6 @@ class Closure implements Strategy
     }
 
     /**
-     * Process pending entities to set their "level" value
-     */
-    protected function setLevelFieldOnPendingNodes(ObjectManager $em)
-    {
-        if (!empty($this->pendingNodesLevelProcess)) {
-            $first = array_slice($this->pendingNodesLevelProcess, 0, 1);
-            $first = array_shift($first);
-            $meta = $em->getClassMetadata(get_class($first));
-            unset($first);
-            $identifier = $meta->getIdentifier();
-            $mapping = $meta->getFieldMapping($identifier[0]);
-            $config = $this->listener->getConfiguration($em, $meta->getName());
-            $closureClass = $config['closure'];
-            $closureMeta = $em->getClassMetadata($closureClass);
-            $uow = $em->getUnitOfWork();
-
-            foreach ($this->pendingNodesLevelProcess as $node) {
-                $children = $em->getRepository($meta->getName())->children($node);
-
-                foreach ($children as $child) {
-                    $this->pendingNodesLevelProcess[AbstractWrapper::wrap($child, $em)->getIdentifier()] = $child;
-                }
-            }
-
-            // Avoid type conversion performance penalty
-            $type = 'integer' === $mapping['type'] ? Connection::PARAM_INT_ARRAY : Connection::PARAM_STR_ARRAY;
-
-            // We calculate levels for all nodes
-            $sql = 'SELECT c.descendant, MAX(c.depth) + 1 AS levelNum ';
-            $sql .= 'FROM '.$closureMeta->getTableName().' c ';
-            $sql .= 'WHERE c.descendant IN (?) ';
-            $sql .= 'GROUP BY c.descendant';
-
-            $levelsAssoc = $em->getConnection()->executeQuery($sql, [array_keys($this->pendingNodesLevelProcess)], [$type])->fetchAllNumeric();
-
-            //create key pair array with resultset
-            $levels = [];
-            foreach ($levelsAssoc as $level) {
-                $levels[$level[0]] = $level[1];
-            }
-            $levelsAssoc = null;
-
-            // Now we update levels
-            foreach ($this->pendingNodesLevelProcess as $nodeId => $node) {
-                // Update new level
-                $level = $levels[$nodeId];
-                $levelProp = $meta->getReflectionProperty($config['level']);
-                $uow->scheduleExtraUpdate(
-                    $node,
-                    [$config['level'] => [
-                        $levelProp->getValue($node), $level,
-                    ]]
-                );
-                $levelProp->setValue($node, $level);
-                $uow->setOriginalEntityProperty(spl_object_id($node), $config['level'], $level);
-            }
-
-            $this->pendingNodesLevelProcess = [];
-        }
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function processScheduledUpdate($em, $node, AdapterInterface $ea)
@@ -459,6 +388,77 @@ class Closure implements Strategy
 
         if (isset($config['level'])) {
             $this->pendingNodesLevelProcess[$nodeId] = $node;
+        }
+    }
+
+    protected function getJoinColumnFieldName($association)
+    {
+        if (count($association['joinColumnFieldNames']) > 1) {
+            throw new RuntimeException('More association on field '.$association['fieldName']);
+        }
+
+        return array_shift($association['joinColumnFieldNames']);
+    }
+
+    /**
+     * Process pending entities to set their "level" value
+     */
+    protected function setLevelFieldOnPendingNodes(ObjectManager $em)
+    {
+        if (!empty($this->pendingNodesLevelProcess)) {
+            $first = array_slice($this->pendingNodesLevelProcess, 0, 1);
+            $first = array_shift($first);
+            $meta = $em->getClassMetadata(get_class($first));
+            unset($first);
+            $identifier = $meta->getIdentifier();
+            $mapping = $meta->getFieldMapping($identifier[0]);
+            $config = $this->listener->getConfiguration($em, $meta->getName());
+            $closureClass = $config['closure'];
+            $closureMeta = $em->getClassMetadata($closureClass);
+            $uow = $em->getUnitOfWork();
+
+            foreach ($this->pendingNodesLevelProcess as $node) {
+                $children = $em->getRepository($meta->getName())->children($node);
+
+                foreach ($children as $child) {
+                    $this->pendingNodesLevelProcess[AbstractWrapper::wrap($child, $em)->getIdentifier()] = $child;
+                }
+            }
+
+            // Avoid type conversion performance penalty
+            $type = 'integer' === $mapping['type'] ? Connection::PARAM_INT_ARRAY : Connection::PARAM_STR_ARRAY;
+
+            // We calculate levels for all nodes
+            $sql = 'SELECT c.descendant, MAX(c.depth) + 1 AS levelNum ';
+            $sql .= 'FROM '.$closureMeta->getTableName().' c ';
+            $sql .= 'WHERE c.descendant IN (?) ';
+            $sql .= 'GROUP BY c.descendant';
+
+            $levelsAssoc = $em->getConnection()->executeQuery($sql, [array_keys($this->pendingNodesLevelProcess)], [$type])->fetchAllNumeric();
+
+            //create key pair array with resultset
+            $levels = [];
+            foreach ($levelsAssoc as $level) {
+                $levels[$level[0]] = $level[1];
+            }
+            $levelsAssoc = null;
+
+            // Now we update levels
+            foreach ($this->pendingNodesLevelProcess as $nodeId => $node) {
+                // Update new level
+                $level = $levels[$nodeId];
+                $levelProp = $meta->getReflectionProperty($config['level']);
+                $uow->scheduleExtraUpdate(
+                    $node,
+                    [$config['level'] => [
+                        $levelProp->getValue($node), $level,
+                    ]]
+                );
+                $levelProp->setValue($node, $level);
+                $uow->setOriginalEntityProperty(spl_object_id($node), $config['level'], $level);
+            }
+
+            $this->pendingNodesLevelProcess = [];
         }
     }
 }

@@ -11,10 +11,6 @@ namespace Gedmo\Uploadable;
  */
 final class Events
 {
-    private function __construct()
-    {
-    }
-
     /**
      * The uploadablePreFileProcess event occurs before a file is processed inside
      * the Uploadable listener. This means it happens before the file is validated and moved
@@ -31,4 +27,8 @@ final class Events
      * @var string
      */
     public const uploadablePostFileProcess = 'uploadablePostFileProcess';
+
+    private function __construct()
+    {
+    }
 }

@@ -115,6 +115,11 @@ class Category
         $this->translations = new ArrayCollection();
     }
 
+    public function __toString()
+    {
+        return $this->getTitle();
+    }
+
     public function getTranslations()
     {
         return $this->translations;
@@ -211,10 +216,5 @@ class Category
     public function getUpdatedBy()
     {
         return $this->updatedBy;
-    }
-
-    public function __toString()
-    {
-        return $this->getTitle();
     }
 }

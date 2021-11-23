@@ -32,17 +32,6 @@ final class Issue116Test extends BaseTestCaseORM
         $this->getMockSqliteEntityManager($evm);
     }
 
-    protected function getMetadataDriverImplementation()
-    {
-        $chain = new MappingDriverChain();
-        $chain->addDriver(
-            new YamlDriver([__DIR__.'/../Fixture/Issue116/Mapping']),
-            'Gedmo\Tests\Sluggable\Fixture\Issue116'
-        );
-
-        return $chain;
-    }
-
     public function testSlugGeneration()
     {
         $country = new Country();
@@ -52,6 +41,17 @@ final class Issue116Test extends BaseTestCaseORM
         $this->em->flush();
 
         static::assertSame('new-zealand', $country->getAlias());
+    }
+
+    protected function getMetadataDriverImplementation()
+    {
+        $chain = new MappingDriverChain();
+        $chain->addDriver(
+            new YamlDriver([__DIR__.'/../Fixture/Issue116/Mapping']),
+            'Gedmo\Tests\Sluggable\Fixture\Issue116'
+        );
+
+        return $chain;
     }
 
     protected function getUsedEntityFixtures()

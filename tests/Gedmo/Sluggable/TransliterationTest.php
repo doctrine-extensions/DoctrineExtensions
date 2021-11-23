@@ -48,6 +48,13 @@ final class TransliterationTest extends BaseTestCaseORM
         static::assertSame('fuhren-aktivitaten-haglofs-de', $german->getSlug());
     }
 
+    protected function getUsedEntityFixtures()
+    {
+        return [
+            self::ARTICLE,
+        ];
+    }
+
     private function populate()
     {
         $lithuanian = new Article();
@@ -72,12 +79,5 @@ final class TransliterationTest extends BaseTestCaseORM
         $this->em->persist($german);
         $this->em->flush();
         $this->em->clear();
-    }
-
-    protected function getUsedEntityFixtures()
-    {
-        return [
-            self::ARTICLE,
-        ];
     }
 }

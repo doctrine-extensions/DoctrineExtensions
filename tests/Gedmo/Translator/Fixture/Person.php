@@ -11,13 +11,6 @@ use Doctrine\ORM\Mapping as ORM;
 class Person
 {
     /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
-    private $id;
-
-    /**
      * @ORM\Column(name="name", type="string", length=128)
      */
     public $name;
@@ -31,6 +24,31 @@ class Person
      * @ORM\Column(name="last_name", type="string", length=128, nullable=true)
      */
     public $lastName;
+    /**
+     * @ORM\Id
+     * @ORM\GeneratedValue
+     * @ORM\Column(type="integer")
+     */
+    private $id;
+
+    //
+    // TRANSLATIONS DEFINITION:
+    //
+
+    /**
+     * @ORM\OneToMany(targetEntity="PersonTranslation", mappedBy="translatable", cascade={"persist"})
+     */
+    private $translations;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Person")
+     */
+    private $parent;
+
+    public function __construct()
+    {
+        $this->translations = new ArrayCollection();
+    }
 
     public function getId()
     {
@@ -67,20 +85,6 @@ class Person
         $this->lastName = $name;
     }
 
-    //
-    // TRANSLATIONS DEFINITION:
-    //
-
-    /**
-     * @ORM\OneToMany(targetEntity="PersonTranslation", mappedBy="translatable", cascade={"persist"})
-     */
-    private $translations;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="Person")
-     */
-    private $parent;
-
     public function setParent(self $parent)
     {
         $this->parent = $parent;
@@ -89,11 +93,6 @@ class Person
     public function getParent()
     {
         return $this->parent;
-    }
-
-    public function __construct()
-    {
-        $this->translations = new ArrayCollection();
     }
 
     public function translate($locale = 'en')

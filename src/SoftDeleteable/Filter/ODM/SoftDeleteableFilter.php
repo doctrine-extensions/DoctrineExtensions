@@ -52,6 +52,16 @@ class SoftDeleteableFilter extends BsonFilter
         ];
     }
 
+    public function disableForDocument($class)
+    {
+        $this->disabled[$class] = true;
+    }
+
+    public function enableForDocument($class)
+    {
+        $this->disabled[$class] = false;
+    }
+
     protected function getListener()
     {
         if (null === $this->listener) {
@@ -82,15 +92,5 @@ class SoftDeleteableFilter extends BsonFilter
         $this->documentManager = $this->dm;
 
         return $this->dm;
-    }
-
-    public function disableForDocument($class)
-    {
-        $this->disabled[$class] = true;
-    }
-
-    public function enableForDocument($class)
-    {
-        $this->disabled[$class] = false;
     }
 }

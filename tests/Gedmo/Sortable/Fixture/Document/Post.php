@@ -10,14 +10,6 @@ use Gedmo\Mapping\Annotation as Gedmo;
  */
 class Post
 {
-    /** @ODM\Id */
-    private $id;
-
-    /**
-     * @ODM\Field(type="string")
-     */
-    private $title;
-
     /**
      * @Gedmo\SortablePosition
      * @ODM\Field(type="int")
@@ -29,6 +21,13 @@ class Post
      * @ODM\ReferenceOne(targetDocument="Gedmo\Tests\Sortable\Fixture\Document\Category")
      */
     protected $category;
+    /** @ODM\Id */
+    private $id;
+
+    /**
+     * @ODM\Field(type="string")
+     */
+    private $title;
 
     public function getId()
     {

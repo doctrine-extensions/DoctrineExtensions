@@ -24,13 +24,12 @@ use Gedmo\Translatable\TranslatableListener;
  */
 final class TranslatableSlugTest extends BaseTestCaseORM
 {
-    private $articleId;
-    private $translatableListener;
-
     public const ARTICLE = TranslatableArticle::class;
     public const COMMENT = Comment::class;
     public const PAGE = Page::class;
     public const TRANSLATION = Translation::class;
+    private $articleId;
+    private $translatableListener;
 
     protected function setUp(): void
     {

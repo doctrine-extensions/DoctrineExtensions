@@ -114,6 +114,14 @@ class EntityWrapper extends AbstractWrapper
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function isEmbeddedAssociation($field)
+    {
+        return false;
+    }
+
+    /**
      * Initialize the entity if it is proxy
      * required when is detached or not initialized
      */
@@ -126,13 +134,5 @@ class EntityWrapper extends AbstractWrapper
                 }
             }
         }
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function isEmbeddedAssociation($field)
-    {
-        return false;
     }
 }

@@ -103,30 +103,6 @@ final class ORM extends BaseAdapterORM implements TranslatableAdapter
     }
 
     /**
-     * Transforms foreing key of translation to appropriate PHP value
-     * to prevent database level cast
-     *
-     * @param mixed  $key       foreign key value
-     * @param string $className translation class name
-     *
-     * @return int|string transformed foreign key
-     */
-    private function foreignKey($key, string $className)
-    {
-        $em = $this->getObjectManager();
-        $meta = $em->getClassMetadata($className);
-        $type = Type::getType($meta->getTypeOfField('foreignKey'));
-        switch ($type->getName()) {
-            case Types::BIGINT:
-            case Types::INTEGER:
-            case Types::SMALLINT:
-                return (int) $key;
-            default:
-                return (string) $key;
-        }
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function findTranslation(AbstractWrapper $wrapped, $locale, $field, $translationClass, $objectClass)
@@ -263,5 +239,29 @@ final class ORM extends BaseAdapterORM implements TranslatableAdapter
         $type = Type::getType($meta->getTypeOfField($field));
         $value = $type->convertToPHPValue($value, $em->getConnection()->getDatabasePlatform());
         $wrapped->setPropertyValue($field, $value);
+    }
+
+    /**
+     * Transforms foreing key of translation to appropriate PHP value
+     * to prevent database level cast
+     *
+     * @param mixed  $key       foreign key value
+     * @param string $className translation class name
+     *
+     * @return int|string transformed foreign key
+     */
+    private function foreignKey($key, string $className)
+    {
+        $em = $this->getObjectManager();
+        $meta = $em->getClassMetadata($className);
+        $type = Type::getType($meta->getTypeOfField('foreignKey'));
+        switch ($type->getName()) {
+            case Types::BIGINT:
+            case Types::INTEGER:
+            case Types::SMALLINT:
+                return (int) $key;
+            default:
+                return (string) $key;
+        }
     }
 }

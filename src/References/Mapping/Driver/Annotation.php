@@ -33,6 +33,11 @@ class Annotation implements AnnotationDriverInterface
      */
     public const REFERENCE_MANY_EMBED = ReferenceManyEmbed::class;
 
+    /**
+     * original driver if it is available
+     */
+    protected $_originalDriver = null;
+
     private $annotations = [
         'referenceOne' => self::REFERENCE_ONE,
         'referenceMany' => self::REFERENCE_MANY,
@@ -45,11 +50,6 @@ class Annotation implements AnnotationDriverInterface
      * @var object
      */
     private $reader;
-
-    /**
-     * original driver if it is available
-     */
-    protected $_originalDriver = null;
 
     /**
      * {@inheritdoc}

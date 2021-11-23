@@ -17,6 +17,12 @@ use Gedmo\Mapping\Annotation as Gedmo;
 abstract class Person
 {
     /**
+     * @ORM\OneToMany(targetEntity="Person", mappedBy="parent")
+     *
+     * @var \Doctrine\Common\Collections\ArrayCollection
+     */
+    protected $children;
+    /**
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -32,13 +38,6 @@ abstract class Person
      * @var Person
      */
     private $parent;
-
-    /**
-     * @ORM\OneToMany(targetEntity="Person", mappedBy="parent")
-     *
-     * @var \Doctrine\Common\Collections\ArrayCollection
-     */
-    protected $children;
 
     /**
      * @Gedmo\TreeLeft

@@ -27,6 +27,20 @@ class PersonCustom
      */
     private $description;
 
+    //
+    // TRANSLATIONS DEFINITION:
+    //
+
+    /**
+     * @ORM\OneToMany(targetEntity="PersonCustomTranslation", mappedBy="translatable", cascade={"persist"})
+     */
+    private $translations;
+
+    public function __construct()
+    {
+        $this->translations = new ArrayCollection();
+    }
+
     public function getId()
     {
         return $this->id;
@@ -50,20 +64,6 @@ class PersonCustom
     public function getDescription()
     {
         return $this->description;
-    }
-
-    //
-    // TRANSLATIONS DEFINITION:
-    //
-
-    /**
-     * @ORM\OneToMany(targetEntity="PersonCustomTranslation", mappedBy="translatable", cascade={"persist"})
-     */
-    private $translations;
-
-    public function __construct()
-    {
-        $this->translations = new ArrayCollection();
     }
 
     public function translate($locale = null)

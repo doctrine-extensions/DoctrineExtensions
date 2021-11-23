@@ -11,6 +11,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
  */
 class File
 {
+    public $callbackWasCalled = false;
     /**
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
@@ -34,8 +35,6 @@ class File
      * @ORM\JoinColumn(name="article_id", referencedColumnName="id")
      */
     private $article;
-
-    public $callbackWasCalled = false;
 
     public function getId()
     {

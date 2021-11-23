@@ -17,6 +17,12 @@ use Gedmo\Mapping\Annotation as Gedmo;
 abstract class Role
 {
     /**
+     * @ORM\OneToMany(targetEntity="Role", mappedBy="parent")
+     *
+     * @var ArrayCollection
+     */
+    protected $children;
+    /**
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -32,13 +38,6 @@ abstract class Role
      * @var UserGroup
      */
     private $parent;
-
-    /**
-     * @ORM\OneToMany(targetEntity="Role", mappedBy="parent")
-     *
-     * @var ArrayCollection
-     */
-    protected $children;
 
     /**
      * @Gedmo\TreeLeft
@@ -70,6 +69,11 @@ abstract class Role
         $this->children = new ArrayCollection();
     }
 
+    public function __toString()
+    {
+        return $this->getRoleId();
+    }
+
     /**
      * @return UserGroup
      */
@@ -93,18 +97,6 @@ abstract class Role
         return $this->role;
     }
 
-    protected function setRoleId($roleId)
-    {
-        $this->role = (string) $roleId;
-
-        return $this;
-    }
-
-    public function __toString()
-    {
-        return $this->getRoleId();
-    }
-
     public function getId()
     {
         return $this->id;
@@ -123,5 +115,12 @@ abstract class Role
     public function getLevel()
     {
         return $this->lvl;
+    }
+
+    protected function setRoleId($roleId)
+    {
+        $this->role = (string) $roleId;
+
+        return $this;
     }
 }

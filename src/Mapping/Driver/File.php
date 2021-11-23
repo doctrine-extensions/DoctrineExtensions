@@ -74,6 +74,18 @@ abstract class File implements Driver
     }
 
     /**
+     * Passes in the mapping read by original driver
+     *
+     * @param object $driver
+     *
+     * @return void
+     */
+    public function setOriginalDriver($driver)
+    {
+        $this->_originalDriver = $driver;
+    }
+
+    /**
      * Loads a mapping file with the given name and returns a map
      * from class/entity names to their corresponding elements.
      *
@@ -107,18 +119,6 @@ abstract class File implements Driver
         }
 
         return $mapping;
-    }
-
-    /**
-     * Passes in the mapping read by original driver
-     *
-     * @param object $driver
-     *
-     * @return void
-     */
-    public function setOriginalDriver($driver)
-    {
-        $this->_originalDriver = $driver;
     }
 
     /**

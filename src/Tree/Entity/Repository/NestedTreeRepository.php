@@ -30,45 +30,6 @@ use Gedmo\Tree\Strategy\ORM\Nested;
 class NestedTreeRepository extends AbstractTreeRepository
 {
     /**
-     * {@inheritdoc}
-     */
-    public function getRootNodesQueryBuilder($sortByField = null, $direction = 'asc')
-    {
-        $meta = $this->getClassMetadata();
-        $config = $this->listener->getConfiguration($this->_em, $meta->getName());
-        $qb = $this->getQueryBuilder();
-        $qb
-            ->select('node')
-            ->from($config['useObjectClass'], 'node')
-            ->where($qb->expr()->isNull('node.'.$config['parent']))
-        ;
-
-        if (null !== $sortByField) {
-            $qb->orderBy('node.'.$sortByField, 'asc' === strtolower($direction) ? 'asc' : 'desc');
-        } else {
-            $qb->orderBy('node.'.$config['left'], 'ASC');
-        }
-
-        return $qb;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getRootNodesQuery($sortByField = null, $direction = 'asc')
-    {
-        return $this->getRootNodesQueryBuilder($sortByField, $direction)->getQuery();
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getRootNodes($sortByField = null, $direction = 'asc')
-    {
-        return $this->getRootNodesQuery($sortByField, $direction)->getResult();
-    }
-
-    /**
      * Allows the following 'virtual' methods:
      * - persistAsFirstChild($node)
      * - persistAsFirstChildOf($node, $parent)
@@ -130,6 +91,45 @@ class NestedTreeRepository extends AbstractTreeRepository
         }
 
         return parent::__call($method, $args);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getRootNodesQueryBuilder($sortByField = null, $direction = 'asc')
+    {
+        $meta = $this->getClassMetadata();
+        $config = $this->listener->getConfiguration($this->_em, $meta->getName());
+        $qb = $this->getQueryBuilder();
+        $qb
+            ->select('node')
+            ->from($config['useObjectClass'], 'node')
+            ->where($qb->expr()->isNull('node.'.$config['parent']))
+        ;
+
+        if (null !== $sortByField) {
+            $qb->orderBy('node.'.$sortByField, 'asc' === strtolower($direction) ? 'asc' : 'desc');
+        } else {
+            $qb->orderBy('node.'.$config['left'], 'ASC');
+        }
+
+        return $qb;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getRootNodesQuery($sortByField = null, $direction = 'asc')
+    {
+        return $this->getRootNodesQueryBuilder($sortByField, $direction)->getQuery();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getRootNodes($sortByField = null, $direction = 'asc')
+    {
+        return $this->getRootNodesQuery($sortByField, $direction)->getResult();
     }
 
     /**

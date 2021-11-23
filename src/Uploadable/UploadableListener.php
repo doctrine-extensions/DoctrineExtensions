@@ -330,109 +330,6 @@ class UploadableListener extends MappedEventSubscriber
     }
 
     /**
-     * @param object $object Entity
-     *
-     * @return string
-     *
-     * @throws UploadableNoPathDefinedException
-     */
-    protected function getPath(ClassMetadata $meta, array $config, $object)
-    {
-        $path = $config['path'];
-
-        if ('' === $path) {
-            $defaultPath = $this->getDefaultPath();
-            if ('' !== $config['pathMethod']) {
-                $getPathMethod = \Closure::bind(function (string $pathMethod, ?string $defaultPath): string {
-                    return $this->{$pathMethod}($defaultPath);
-                }, $object, $meta->getReflectionClass()->getName());
-
-                $path = $getPathMethod($config['pathMethod'], $defaultPath);
-            } elseif (null !== $defaultPath) {
-                $path = $defaultPath;
-            } else {
-                $msg = 'You have to define the path to save files either in the listener, or in the class "%s"';
-
-                throw new UploadableNoPathDefinedException(sprintf($msg, $meta->getName()));
-            }
-        }
-
-        Validator::validatePath($path);
-        $path = rtrim($path, '\/');
-
-        return $path;
-    }
-
-    /**
-     * @param ClassMetadata $meta
-     * @param array         $config
-     * @param object        $object Entity
-     */
-    protected function addFileRemoval($meta, $config, $object)
-    {
-        if ($config['filePathField']) {
-            $this->pendingFileRemovals[] = $this->getFilePathFieldValue($meta, $config, $object);
-        } else {
-            $path = $this->getPath($meta, $config, $object);
-            $fileName = $this->getFileNameFieldValue($meta, $config, $object);
-            $this->pendingFileRemovals[] = $path.DIRECTORY_SEPARATOR.$fileName;
-        }
-    }
-
-    /**
-     * @param string $filePath
-     */
-    protected function cancelFileRemoval($filePath)
-    {
-        $k = array_search($filePath, $this->pendingFileRemovals, true);
-
-        if (false !== $k) {
-            unset($this->pendingFileRemovals[$k]);
-        }
-    }
-
-    /**
-     * Returns value of the entity's property
-     *
-     * @param string $propertyName
-     * @param object $object
-     *
-     * @return mixed
-     */
-    protected function getPropertyValueFromObject(ClassMetadata $meta, $propertyName, $object)
-    {
-        $getFilePath = \Closure::bind(function (string $propertyName) {
-            return $this->{$propertyName};
-        }, $object, $meta->getReflectionClass()->getName());
-
-        return $getFilePath($propertyName);
-    }
-
-    /**
-     * Returns the path of the entity's file
-     *
-     * @param object $object
-     *
-     * @return string
-     */
-    protected function getFilePathFieldValue(ClassMetadata $meta, array $config, $object)
-    {
-        return $this->getPropertyValueFromObject($meta, $config['filePathField'], $object);
-    }
-
-    /**
-     * Returns the name of the entity's file
-     *
-     * @param object $object
-     *
-     * @return string
-     */
-    protected function getFileNameFieldValue(ClassMetadata $meta, array $config, $object)
-    {
-        return $this->getPropertyValueFromObject($meta, $config['fileNameField'], $object);
-    }
-
-    /**
      * Simple wrapper for the function "unlink" to ease testing
      *
      * @param string $filePath
@@ -692,14 +589,6 @@ class UploadableListener extends MappedEventSubscriber
         return $this->fileInfoObjects[$oid]['fileInfo'];
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    protected function getNamespace()
-    {
-        return __NAMESPACE__;
-    }
-
     public function setMimeTypeGuesser(MimeTypeGuesserInterface $mimeTypeGuesser)
     {
         $this->mimeTypeGuesser = $mimeTypeGuesser;
@@ -711,6 +600,117 @@ class UploadableListener extends MappedEventSubscriber
     public function getMimeTypeGuesser()
     {
         return $this->mimeTypeGuesser;
+    }
+
+    /**
+     * @param object $object Entity
+     *
+     * @return string
+     *
+     * @throws UploadableNoPathDefinedException
+     */
+    protected function getPath(ClassMetadata $meta, array $config, $object)
+    {
+        $path = $config['path'];
+
+        if ('' === $path) {
+            $defaultPath = $this->getDefaultPath();
+            if ('' !== $config['pathMethod']) {
+                $getPathMethod = \Closure::bind(function (string $pathMethod, ?string $defaultPath): string {
+                    return $this->{$pathMethod}($defaultPath);
+                }, $object, $meta->getReflectionClass()->getName());
+
+                $path = $getPathMethod($config['pathMethod'], $defaultPath);
+            } elseif (null !== $defaultPath) {
+                $path = $defaultPath;
+            } else {
+                $msg = 'You have to define the path to save files either in the listener, or in the class "%s"';
+
+                throw new UploadableNoPathDefinedException(sprintf($msg, $meta->getName()));
+            }
+        }
+
+        Validator::validatePath($path);
+        $path = rtrim($path, '\/');
+
+        return $path;
+    }
+
+    /**
+     * @param ClassMetadata $meta
+     * @param array         $config
+     * @param object        $object Entity
+     */
+    protected function addFileRemoval($meta, $config, $object)
+    {
+        if ($config['filePathField']) {
+            $this->pendingFileRemovals[] = $this->getFilePathFieldValue($meta, $config, $object);
+        } else {
+            $path = $this->getPath($meta, $config, $object);
+            $fileName = $this->getFileNameFieldValue($meta, $config, $object);
+            $this->pendingFileRemovals[] = $path.DIRECTORY_SEPARATOR.$fileName;
+        }
+    }
+
+    /**
+     * @param string $filePath
+     */
+    protected function cancelFileRemoval($filePath)
+    {
+        $k = array_search($filePath, $this->pendingFileRemovals, true);
+
+        if (false !== $k) {
+            unset($this->pendingFileRemovals[$k]);
+        }
+    }
+
+    /**
+     * Returns value of the entity's property
+     *
+     * @param string $propertyName
+     * @param object $object
+     *
+     * @return mixed
+     */
+    protected function getPropertyValueFromObject(ClassMetadata $meta, $propertyName, $object)
+    {
+        $getFilePath = \Closure::bind(function (string $propertyName) {
+            return $this->{$propertyName};
+        }, $object, $meta->getReflectionClass()->getName());
+
+        return $getFilePath($propertyName);
+    }
+
+    /**
+     * Returns the path of the entity's file
+     *
+     * @param object $object
+     *
+     * @return string
+     */
+    protected function getFilePathFieldValue(ClassMetadata $meta, array $config, $object)
+    {
+        return $this->getPropertyValueFromObject($meta, $config['filePathField'], $object);
+    }
+
+    /**
+     * Returns the name of the entity's file
+     *
+     * @param object $object
+     *
+     * @return string
+     */
+    protected function getFileNameFieldValue(ClassMetadata $meta, array $config, $object)
+    {
+        return $this->getPropertyValueFromObject($meta, $config['fileNameField'], $object);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getNamespace()
+    {
+        return __NAMESPACE__;
     }
 
     /**

@@ -70,20 +70,6 @@ class Yaml extends File implements Driver
         }
     }
 
-    private function readSortableGroups($mapping, array &$config)
-    {
-        foreach ($mapping as $field => $fieldMapping) {
-            if (isset($fieldMapping['gedmo'])) {
-                if (in_array('sortableGroup', $fieldMapping['gedmo'])) {
-                    if (!isset($config['groups'])) {
-                        $config['groups'] = [];
-                    }
-                    $config['groups'][] = $field;
-                }
-            }
-        }
-    }
-
     /**
      * {@inheritdoc}
      */
@@ -105,5 +91,19 @@ class Yaml extends File implements Driver
         $mapping = $meta->getFieldMapping($field);
 
         return $mapping && in_array($mapping['type'], $this->validTypes);
+    }
+
+    private function readSortableGroups($mapping, array &$config)
+    {
+        foreach ($mapping as $field => $fieldMapping) {
+            if (isset($fieldMapping['gedmo'])) {
+                if (in_array('sortableGroup', $fieldMapping['gedmo'])) {
+                    if (!isset($config['groups'])) {
+                        $config['groups'] = [];
+                    }
+                    $config['groups'][] = $field;
+                }
+            }
+        }
     }
 }

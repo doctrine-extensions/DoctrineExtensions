@@ -392,14 +392,6 @@ class ClosureTreeRepository extends AbstractTreeRepository
         return $q;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    protected function validate()
-    {
-        return Strategy::CLOSURE === $this->listener->getStrategy($this->_em, $this->getClassMetadata()->name)->getName();
-    }
-
     public function verify()
     {
         $nodeMeta = $this->getClassMetadata();
@@ -595,6 +587,14 @@ class ClosureTreeRepository extends AbstractTreeRepository
         }
 
         return $levelUpdatesCount;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function validate()
+    {
+        return Strategy::CLOSURE === $this->listener->getStrategy($this->_em, $this->getClassMetadata()->name)->getName();
     }
 
     protected function getJoinColumnFieldName($association)

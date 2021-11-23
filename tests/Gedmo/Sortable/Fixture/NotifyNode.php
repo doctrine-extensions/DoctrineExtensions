@@ -31,6 +31,21 @@ class NotifyNode extends AbstractNode implements NotifyPropertyChanged
         $this->_propertyChangedListeners[] = $listener;
     }
 
+    public function setName($name)
+    {
+        $this->setProperty('name', $name);
+    }
+
+    public function setPath($path)
+    {
+        $this->setProperty('path', $path);
+    }
+
+    public function setPosition($position)
+    {
+        $this->setProperty('position', $position);
+    }
+
     /**
      * Notify property change event to listeners
      *
@@ -52,20 +67,5 @@ class NotifyNode extends AbstractNode implements NotifyPropertyChanged
             $this->triggerPropertyChanged($property, $oldValue, $newValue);
             $this->{$property} = $newValue;
         }
-    }
-
-    public function setName($name)
-    {
-        $this->setProperty('name', $name);
-    }
-
-    public function setPath($path)
-    {
-        $this->setProperty('path', $path);
-    }
-
-    public function setPosition($position)
-    {
-        $this->setProperty('position', $position);
     }
 }

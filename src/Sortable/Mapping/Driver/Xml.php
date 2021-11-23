@@ -71,6 +71,21 @@ class Xml extends BaseXml
     }
 
     /**
+     * Checks if $field type is valid as Sortable Position field
+     *
+     * @param object $meta
+     * @param string $field
+     *
+     * @return bool
+     */
+    protected function isValidField($meta, $field)
+    {
+        $mapping = $meta->getFieldMapping($field);
+
+        return $mapping && in_array($mapping['type'], $this->validTypes);
+    }
+
+    /**
      * @param \SimpleXMLElement[] $mapping
      * @param string              $fieldAttr
      */
@@ -87,20 +102,5 @@ class Xml extends BaseXml
                 $config['groups'][] = $field;
             }
         }
-    }
-
-    /**
-     * Checks if $field type is valid as Sortable Position field
-     *
-     * @param object $meta
-     * @param string $field
-     *
-     * @return bool
-     */
-    protected function isValidField($meta, $field)
-    {
-        $mapping = $meta->getFieldMapping($field);
-
-        return $mapping && in_array($mapping['type'], $this->validTypes);
     }
 }

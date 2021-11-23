@@ -20,11 +20,6 @@ use Doctrine\Persistence\ObjectManager;
 interface AdapterInterface
 {
     /**
-     * Set the event args object.
-     */
-    public function setEventArgs(EventArgs $args);
-
-    /**
      * Calls a method on the event args object.
      *
      * @param string $method
@@ -33,6 +28,11 @@ interface AdapterInterface
      * @return mixed
      */
     public function __call($method, $args);
+
+    /**
+     * Set the event args object.
+     */
+    public function setEventArgs(EventArgs $args);
 
     /**
      * Get the name of the domain object.

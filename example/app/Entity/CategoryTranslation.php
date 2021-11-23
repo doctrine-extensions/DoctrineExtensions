@@ -16,6 +16,12 @@ use Gedmo\Translatable\Entity\MappedSuperclass\AbstractPersonalTranslation;
 class CategoryTranslation extends AbstractPersonalTranslation
 {
     /**
+     * @ORM\ManyToOne(targetEntity="Category", inversedBy="translations")
+     * @ORM\JoinColumn(name="object_id", referencedColumnName="id", onDelete="CASCADE")
+     */
+    protected $object;
+
+    /**
      * Convinient constructor
      *
      * @param string $locale
@@ -28,10 +34,4 @@ class CategoryTranslation extends AbstractPersonalTranslation
         $this->setField($field);
         $this->setContent($value);
     }
-
-    /**
-     * @ORM\ManyToOne(targetEntity="Category", inversedBy="translations")
-     * @ORM\JoinColumn(name="object_id", referencedColumnName="id", onDelete="CASCADE")
-     */
-    protected $object;
 }

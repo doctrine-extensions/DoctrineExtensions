@@ -56,6 +56,21 @@ class Xml extends BaseXml
         }
     }
 
+    /**
+     * Checks if $field type is valid as Sluggable field
+     *
+     * @param object $meta
+     * @param string $field
+     *
+     * @return bool
+     */
+    protected function isValidField($meta, $field)
+    {
+        $mapping = $meta->getFieldMapping($field);
+
+        return $mapping && in_array($mapping['type'], $this->validTypes);
+    }
+
     private function buildFieldConfiguration($meta, $field, \SimpleXMLElement $mapping, array &$config)
     {
         /**
@@ -128,20 +143,5 @@ class Xml extends BaseXml
                 throw new InvalidMappingException("Unable to find [{$ubase}] as mapped property in entity - {$meta->getName()}");
             }
         }
-    }
-
-    /**
-     * Checks if $field type is valid as Sluggable field
-     *
-     * @param object $meta
-     * @param string $field
-     *
-     * @return bool
-     */
-    protected function isValidField($meta, $field)
-    {
-        $mapping = $meta->getFieldMapping($field);
-
-        return $mapping && in_array($mapping['type'], $this->validTypes);
     }
 }

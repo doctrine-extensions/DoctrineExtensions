@@ -50,6 +50,33 @@ final class ForcedMetadataTest extends TestCase
         $this->em = \Doctrine\ORM\EntityManager::create($conn, $config, $evm);
     }
 
+    /**
+     * @test
+     */
+    public function shouldWork()
+    {
+        $this->prepare();
+
+        $meta = $this->em->getClassMetadata(Timestampable::class);
+        // driver falls back to annotation driver
+        $conf = $this->timestampable->getConfiguration(
+            $this->em,
+            Timestampable::class
+        );
+        static::assertTrue(isset($conf['create']));
+
+        $test = new Timestampable();
+        $this->em->persist($test);
+        $this->em->flush();
+
+        $id = $this->em
+            ->getClassMetadata(Timestampable::class)
+            ->getReflectionProperty('id')
+            ->getValue($test)
+        ;
+        static::assertNotEmpty($id);
+    }
+
     private function prepare()
     {
         $cmf = $this->em->getMetadataFactory();
@@ -86,32 +113,5 @@ final class ForcedMetadataTest extends TestCase
         $schemaTool->createSchema([
             $this->em->getClassMetadata(Timestampable::class),
         ]);
-    }
-
-    /**
-     * @test
-     */
-    public function shouldWork()
-    {
-        $this->prepare();
-
-        $meta = $this->em->getClassMetadata(Timestampable::class);
-        // driver falls back to annotation driver
-        $conf = $this->timestampable->getConfiguration(
-            $this->em,
-            Timestampable::class
-        );
-        static::assertTrue(isset($conf['create']));
-
-        $test = new Timestampable();
-        $this->em->persist($test);
-        $this->em->flush();
-
-        $id = $this->em
-            ->getClassMetadata(Timestampable::class)
-            ->getReflectionProperty('id')
-            ->getValue($test)
-        ;
-        static::assertNotEmpty($id);
     }
 }

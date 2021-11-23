@@ -22,11 +22,10 @@ use Gedmo\Translatable\TranslatableListener;
  */
 final class TranslatableManySlugTest extends BaseTestCaseORM
 {
-    private $articleId;
-    private $translatableListener;
-
     public const ARTICLE = TransArticleManySlug::class;
     public const TRANSLATION = Translation::class;
+    private $articleId;
+    private $translatableListener;
 
     protected function setUp(): void
     {

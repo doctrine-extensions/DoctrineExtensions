@@ -142,6 +142,104 @@ class SortableListener extends MappedEventSubscriber
     }
 
     /**
+     * Sync objects in memory
+     */
+    public function postFlush(EventArgs $args)
+    {
+        $ea = $this->getEventAdapter($args);
+        $em = $ea->getObjectManager();
+
+        $updatedObjects = [];
+
+        foreach ($this->relocations as $hash => $relocation) {
+            $config = $this->getConfiguration($em, $relocation['name']);
+            foreach ($relocation['deltas'] as $delta) {
+                if ($delta['start'] > $this->maxPositions[$hash] || 0 == $delta['delta']) {
+                    continue;
+                }
+
+                $meta = $em->getClassMetadata($relocation['name']);
+
+                // now walk through the unit of work in memory objects and sync those
+                $uow = $em->getUnitOfWork();
+                foreach ($uow->getIdentityMap() as $className => $objects) {
+                    // for inheritance mapped classes, only root is always in the identity map
+                    if ($className !== $ea->getRootObjectClass($meta) || !$this->getConfiguration($em, $className)) {
+                        continue;
+                    }
+                    foreach ($objects as $object) {
+                        if ($object instanceof GhostObjectInterface && !$object->isProxyInitialized()) {
+                            continue;
+                        }
+
+                        $changeSet = $ea->getObjectChangeSet($uow, $object);
+
+                        // if the entity's position is already changed, stop now
+                        if (array_key_exists($config['position'], $changeSet)) {
+                            continue;
+                        }
+
+                        // if the entity's group has changed, we stop now
+                        $groups = $this->getGroups($meta, $config, $object);
+                        foreach (array_keys($groups) as $group) {
+                            if (array_key_exists($group, $changeSet)) {
+                                continue 2;
+                            }
+                        }
+
+                        $oid = spl_object_id($object);
+                        $pos = $meta->getReflectionProperty($config['position'])->getValue($object);
+                        $matches = $pos >= $delta['start'];
+                        $matches = $matches && ($delta['stop'] <= 0 || $pos < $delta['stop']);
+                        $value = reset($relocation['groups']);
+                        while ($matches && ($group = key($relocation['groups']))) {
+                            $gr = $meta->getReflectionProperty($group)->getValue($object);
+                            if (null === $value) {
+                                $matches = null === $gr;
+                            } elseif (is_object($gr) && is_object($value) && $gr !== $value) {
+                                // Special case for equal objects but different instances.
+                                // If the object implements Comparable interface we can use its compareTo method
+                                // Otherwise we fallback to normal object comparison
+                                if ($gr instanceof Comparable) {
+                                    $matches = $gr->compareTo($value);
+                                } else {
+                                    $matches = $gr == $value;
+                                }
+                            } else {
+                                $matches = $gr === $value;
+                            }
+                            $value = next($relocation['groups']);
+                        }
+                        if ($matches) {
+                            // We cannot use `$this->setFieldValue()` here, because it will create a change set, that will
+                            // prevent from other relocations being executed on this object.
+                            // We just update the object value and will create the change set later.
+                            if (!isset($updatedObjects[$oid])) {
+                                $updatedObjects[$oid] = [
+                                    'object' => $object,
+                                    'field' => $config['position'],
+                                    'oldValue' => $pos,
+                                ];
+                            }
+                            $updatedObjects[$oid]['newValue'] = $pos + $delta['delta'];
+
+                            $meta->getReflectionProperty($config['position'])->setValue($object, $updatedObjects[$oid]['newValue']);
+                        }
+                    }
+                }
+            }
+
+            foreach ($updatedObjects as $updateData) {
+                $this->setFieldValue($ea, $updateData['object'], $updateData['field'], $updateData['oldValue'], $updateData['newValue']);
+            }
+
+            // Clear relocations
+            // unset only if relocations has been processed
+            unset($this->relocations[$hash], $this->maxPositions[$hash]);
+        }
+    }
+
+    /**
      * Computes node positions and updates the sort field in memory and in the db
      *
      * @param ClassMetadata $meta
@@ -393,104 +491,6 @@ class SortableListener extends MappedEventSubscriber
         }
 
         $this->persistenceNeeded = false;
-    }
-
-    /**
-     * Sync objects in memory
-     */
-    public function postFlush(EventArgs $args)
-    {
-        $ea = $this->getEventAdapter($args);
-        $em = $ea->getObjectManager();
-
-        $updatedObjects = [];
-
-        foreach ($this->relocations as $hash => $relocation) {
-            $config = $this->getConfiguration($em, $relocation['name']);
-            foreach ($relocation['deltas'] as $delta) {
-                if ($delta['start'] > $this->maxPositions[$hash] || 0 == $delta['delta']) {
-                    continue;
-                }
-
-                $meta = $em->getClassMetadata($relocation['name']);
-
-                // now walk through the unit of work in memory objects and sync those
-                $uow = $em->getUnitOfWork();
-                foreach ($uow->getIdentityMap() as $className => $objects) {
-                    // for inheritance mapped classes, only root is always in the identity map
-                    if ($className !== $ea->getRootObjectClass($meta) || !$this->getConfiguration($em, $className)) {
-                        continue;
-                    }
-                    foreach ($objects as $object) {
-                        if ($object instanceof GhostObjectInterface && !$object->isProxyInitialized()) {
-                            continue;
-                        }
-
-                        $changeSet = $ea->getObjectChangeSet($uow, $object);
-
-                        // if the entity's position is already changed, stop now
-                        if (array_key_exists($config['position'], $changeSet)) {
-                            continue;
-                        }
-
-                        // if the entity's group has changed, we stop now
-                        $groups = $this->getGroups($meta, $config, $object);
-                        foreach (array_keys($groups) as $group) {
-                            if (array_key_exists($group, $changeSet)) {
-                                continue 2;
-                            }
-                        }
-
-                        $oid = spl_object_id($object);
-                        $pos = $meta->getReflectionProperty($config['position'])->getValue($object);
-                        $matches = $pos >= $delta['start'];
-                        $matches = $matches && ($delta['stop'] <= 0 || $pos < $delta['stop']);
-                        $value = reset($relocation['groups']);
-                        while ($matches && ($group = key($relocation['groups']))) {
-                            $gr = $meta->getReflectionProperty($group)->getValue($object);
-                            if (null === $value) {
-                                $matches = null === $gr;
-                            } elseif (is_object($gr) && is_object($value) && $gr !== $value) {
-                                // Special case for equal objects but different instances.
-                                // If the object implements Comparable interface we can use its compareTo method
-                                // Otherwise we fallback to normal object comparison
-                                if ($gr instanceof Comparable) {
-                                    $matches = $gr->compareTo($value);
-                                } else {
-                                    $matches = $gr == $value;
-                                }
-                            } else {
-                                $matches = $gr === $value;
-                            }
-                            $value = next($relocation['groups']);
-                        }
-                        if ($matches) {
-                            // We cannot use `$this->setFieldValue()` here, because it will create a change set, that will
-                            // prevent from other relocations being executed on this object.
-                            // We just update the object value and will create the change set later.
-                            if (!isset($updatedObjects[$oid])) {
-                                $updatedObjects[$oid] = [
-                                    'object' => $object,
-                                    'field' => $config['position'],
-                                    'oldValue' => $pos,
-                                ];
-                            }
-                            $updatedObjects[$oid]['newValue'] = $pos + $delta['delta'];
-
-                            $meta->getReflectionProperty($config['position'])->setValue($object, $updatedObjects[$oid]['newValue']);
-                        }
-                    }
-                }
-            }
-
-            foreach ($updatedObjects as $updateData) {
-                $this->setFieldValue($ea, $updateData['object'], $updateData['field'], $updateData['oldValue'], $updateData['newValue']);
-            }
-
-            // Clear relocations
-            // unset only if relocations has been processed
-            unset($this->relocations[$hash], $this->maxPositions[$hash]);
-        }
     }
 
     protected function getHash($groups, array $config)

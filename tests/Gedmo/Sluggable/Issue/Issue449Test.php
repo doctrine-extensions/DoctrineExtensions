@@ -45,13 +45,6 @@ final class Issue449Test extends BaseTestCaseORM
         $this->em->getFilters()->enable(self::SOFT_DELETEABLE_FILTER_NAME);
     }
 
-    protected function getUsedEntityFixtures()
-    {
-        return [
-            self::TARGET,
-        ];
-    }
-
     /**
      * @test
      */
@@ -78,5 +71,12 @@ final class Issue449Test extends BaseTestCaseORM
         $this->em->clear();
 
         static::assertNotSame($slug, $article->getSlug());
+    }
+
+    protected function getUsedEntityFixtures()
+    {
+        return [
+            self::TARGET,
+        ];
     }
 }

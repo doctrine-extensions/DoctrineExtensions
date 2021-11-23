@@ -689,23 +689,6 @@ final class UploadableEntityTest extends BaseTestCaseORM
         ];
     }
 
-    // Util
-
-    private function generateUploadedFile($index = 'image', $filePath = false, $filename = false, array $info = [])
-    {
-        $defaultInfo = [
-            'tmp_name' => !$filePath ? $this->testFile : $filePath,
-            'name' => !$filename ? $this->testFilename : $filename,
-            'size' => $this->testFileSize,
-            'type' => $this->testFileMimeType,
-            'error' => 0,
-        ];
-
-        $info = array_merge($defaultInfo, $info);
-
-        return $info;
-    }
-
     protected function getUsedEntityFixtures()
     {
         return [
@@ -724,6 +707,28 @@ final class UploadableEntityTest extends BaseTestCaseORM
         ];
     }
 
+    protected function assertPathEquals($expected, $path, $message = '')
+    {
+        static::assertSame($expected, $path, $message);
+    }
+
+    // Util
+
+    private function generateUploadedFile($index = 'image', $filePath = false, $filename = false, array $info = [])
+    {
+        $defaultInfo = [
+            'tmp_name' => !$filePath ? $this->testFile : $filePath,
+            'name' => !$filename ? $this->testFilename : $filename,
+            'size' => $this->testFileSize,
+            'type' => $this->testFileMimeType,
+            'error' => 0,
+        ];
+
+        $info = array_merge($defaultInfo, $info);
+
+        return $info;
+    }
+
     private function clearFilesAndDirectories()
     {
         if (is_dir($this->destinationTestDir)) {
@@ -735,11 +740,6 @@ final class UploadableEntityTest extends BaseTestCaseORM
                 }
             }
         }
-    }
-
-    protected function assertPathEquals($expected, $path, $message = '')
-    {
-        static::assertSame($expected, $path, $message);
     }
 }
 

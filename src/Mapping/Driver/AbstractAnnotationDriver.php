@@ -68,6 +68,10 @@ abstract class AbstractAnnotationDriver implements AnnotationDriverInterface
         return $class;
     }
 
+    public function validateFullMetadata(ClassMetadata $meta, array $config)
+    {
+    }
+
     /**
      * Checks if $field type is valid
      *
@@ -81,10 +85,6 @@ abstract class AbstractAnnotationDriver implements AnnotationDriverInterface
         $mapping = $meta->getFieldMapping($field);
 
         return $mapping && in_array($mapping['type'], $this->validTypes);
-    }
-
-    public function validateFullMetadata(ClassMetadata $meta, array $config)
-    {
     }
 
     /**

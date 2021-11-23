@@ -68,15 +68,6 @@ final class Issue109Test extends BaseTestCaseORM
         static::assertCount(3, $result);
     }
 
-    protected function getUsedEntityFixtures()
-    {
-        return [
-            self::ARTICLE,
-            self::TRANSLATION,
-            self::COMMENT,
-        ];
-    }
-
     public function populate()
     {
         $text0 = new Article();
@@ -106,5 +97,14 @@ final class Issue109Test extends BaseTestCaseORM
         $this->em->persist($text1);
         $this->em->persist($text0);
         $this->em->flush();
+    }
+
+    protected function getUsedEntityFixtures()
+    {
+        return [
+            self::ARTICLE,
+            self::TRANSLATION,
+            self::COMMENT,
+        ];
     }
 }

@@ -319,18 +319,18 @@ final class MaterializedPathODMMongoDBRepositoryTest extends BaseTestCaseMongoOD
         static::assertIsArray($tree[0][$childrenIndex]);
     }
 
-    protected function getUsedEntityFixtures()
-    {
-        return [
-            self::CATEGORY,
-        ];
-    }
-
     public function createCategory()
     {
         $class = self::CATEGORY;
 
         return new $class();
+    }
+
+    protected function getUsedEntityFixtures()
+    {
+        return [
+            self::CATEGORY,
+        ];
     }
 
     private function populate()
