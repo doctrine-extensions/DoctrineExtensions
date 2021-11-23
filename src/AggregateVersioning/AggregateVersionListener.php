@@ -8,6 +8,7 @@ use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\ORM\Event\OnFlushEventArgs;
 use Gedmo\Mapping\Annotation\AggregateVersioning;
 use Gedmo\Mapping\MappedEventSubscriber;
+use InvalidArgumentException;
 use LogicException;
 use ReflectionClass;
 
@@ -66,6 +67,10 @@ final class AggregateVersionListener extends MappedEventSubscriber
 
     private function getAggregateRoot(array $entities): AggregateRoot
     {
+        if ([] === $entities) {
+            throw new InvalidArgumentException('Expected a non-empty entities.');
+        }
+
         foreach ($entities as $entity) {
             if ($entity instanceof AggregateRoot) {
                 return $entity;
