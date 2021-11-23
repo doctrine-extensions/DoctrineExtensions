@@ -34,7 +34,6 @@ use Gedmo\Tests\Uploadable\Stub\FileInfoStub;
 use Gedmo\Tests\Uploadable\Stub\MimeTypeGuesserStub;
 use Gedmo\Tests\Uploadable\Stub\UploadableListenerStub;
 use Gedmo\Uploadable\FileInfo\FileInfoArray;
-use Gedmo\Uploadable\UploadableListener;
 
 /**
  * These are tests for Uploadable behavior
@@ -62,7 +61,7 @@ final class UploadableEntityTest extends BaseTestCaseORM
     public const FILE_WITH_DISALLOWED_TYPES_CLASS = FileWithDisallowedTypes::class;
 
     /**
-     * @var UploadableListener
+     * @var UploadableListenerStub
      */
     private $listener;
     private $testFile;

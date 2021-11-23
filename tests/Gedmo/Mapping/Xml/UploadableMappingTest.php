@@ -25,12 +25,12 @@ use Gedmo\Uploadable\UploadableListener;
 final class UploadableMappingTest extends BaseTestCaseOM
 {
     /**
-     * @var Doctrine\ORM\EntityManager
+     * @var \Doctrine\ORM\EntityManager
      */
     private $em;
 
     /**
-     * @var Gedmo\SoftDeleteable\UploadableListener
+     * @var UploadableListener
      */
     private $listener;
 

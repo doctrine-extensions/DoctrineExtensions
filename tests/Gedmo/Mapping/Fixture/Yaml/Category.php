@@ -2,57 +2,44 @@
 
 namespace Gedmo\Tests\Mapping\Fixture\Yaml;
 
-/**
- * @Table(name="categories")
- * @Entity
- */
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+
 class Category extends BaseCategory
 {
     /**
      * @var int
-     *
-     * @Column(name="id", type="integer")
-     * @Id
-     * @GeneratedValue(strategy="IDENTITY")
      */
     private $id;
 
     /**
      * @var string
-     *
-     * @Column(name="title", type="string", length=64)
      */
     private $title;
 
     /**
      * @var string
-     *
-     * @Column(name="slug", type="string", length=64)
      */
     private $slug;
 
     /**
-     * @var Entity\Category
-     *
-     * @OneToMany(targetEntity="Category", mappedBy="parent")
+     * @var Collection<int, Category>
      */
     private $children;
 
     /**
-     * @var Entity\Category
-     *
-     * @ManyToOne(targetEntity="Category", inversedBy="children")
-     * @JoinColumns({
-     *   @JoinColumn(name="parent_id", referencedColumnName="id")
-     * })
+     * @var Category
      */
     private $parent;
 
     private $changed;
 
+    public function __construct()
+    {
+        $this->children = new ArrayCollection();
+    }
+
     /**
-     * Get id
-     *
      * @return int $id
      */
     public function getId()
@@ -61,8 +48,6 @@ class Category extends BaseCategory
     }
 
     /**
-     * Set title
-     *
      * @param string $title
      */
     public function setTitle($title)
@@ -71,8 +56,6 @@ class Category extends BaseCategory
     }
 
     /**
-     * Get title
-     *
      * @return string $title
      */
     public function getTitle()
@@ -81,8 +64,6 @@ class Category extends BaseCategory
     }
 
     /**
-     * Set slug
-     *
      * @param string $slug
      */
     public function setSlug($slug)
@@ -91,8 +72,6 @@ class Category extends BaseCategory
     }
 
     /**
-     * Get slug
-     *
      * @return string $slug
      */
     public function getSlug()
@@ -101,9 +80,7 @@ class Category extends BaseCategory
     }
 
     /**
-     * Add children
-     *
-     * @param Entity\Category $children
+     * @param Category $children
      */
     public function addChildren(self $children)
     {
@@ -111,9 +88,7 @@ class Category extends BaseCategory
     }
 
     /**
-     * Get children
-     *
-     * @return Doctrine\Common\Collections\Collection $children
+     * @return Collection $children
      */
     public function getChildren()
     {
@@ -121,9 +96,7 @@ class Category extends BaseCategory
     }
 
     /**
-     * Set parent
-     *
-     * @param Entity\Category $parent
+     * @param Category $parent
      */
     public function setParent($parent)
     {
@@ -131,9 +104,7 @@ class Category extends BaseCategory
     }
 
     /**
-     * Get parent
-     *
-     * @return Entity\Category $parent
+     * @return Category $parent
      */
     public function getParent()
     {

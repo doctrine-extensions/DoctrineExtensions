@@ -25,12 +25,12 @@ use Gedmo\Translatable\TranslatableListener;
 final class TranslatableMappingTest extends BaseTestCaseOM
 {
     /**
-     * @var Doctrine\ORM\EntityManager
+     * @var \Doctrine\ORM\EntityManager
      */
     private $em;
 
     /**
-     * @var Gedmo\Translatable\TranslatableListener
+     * @var TranslatableListener
      */
     private $translatable;
 

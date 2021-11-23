@@ -22,7 +22,7 @@ use Gedmo\Timestampable\TimestampableListener;
 final class TimestampableMappingTest extends BaseTestCaseORM
 {
     /**
-     * @var Gedmo\Timestampable\TimestampableListener
+     * @var TimestampableListener
      */
     private $timestampable;
 

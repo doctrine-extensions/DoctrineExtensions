@@ -25,7 +25,7 @@ class TreeListenerMock extends TreeListener
     {
         if (null === $this->strategy) {
             $this->strategy = new MaterializedPathMock($this);
-            $this->strategy->releaseLock = $this->releaseLocks;
+            $this->strategy->releaseLocks = $this->releaseLocks;
         }
 
         return $this->strategy;
@@ -35,7 +35,7 @@ class TreeListenerMock extends TreeListener
     {
         if (null === $this->strategy) {
             $this->strategy = new MaterializedPathMock($this);
-            $this->strategy->releaseLock = $this->releaseLocks;
+            $this->strategy->releaseLocks = $this->releaseLocks;
         }
 
         return ['materializedPath' => $this->strategy];

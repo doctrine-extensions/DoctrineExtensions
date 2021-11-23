@@ -85,6 +85,7 @@ final class SoftDeleteableDocumentTest extends BaseTestCaseMongoODM
     public function testSoftDeleteableFilter()
     {
         $filter = $this->dm->getFilterCollection()->getFilter(self::SOFT_DELETEABLE_FILTER_NAME);
+        static::assertInstanceOf(SoftDeleteableFilter::class, $filter);
         $filter->disableForDocument(self::USER_CLASS);
 
         $repo = $this->dm->getRepository(self::USER_CLASS);
@@ -121,6 +122,7 @@ final class SoftDeleteableDocumentTest extends BaseTestCaseMongoODM
     public function shouldSupportSoftDeleteableFilterTimeAware()
     {
         $filter = $this->dm->getFilterCollection()->getFilter(self::SOFT_DELETEABLE_FILTER_NAME);
+        static::assertInstanceOf(SoftDeleteableFilter::class, $filter);
         $filter->disableForDocument(self::USER__TIME_AWARE_CLASS);
 
         $repo = $this->dm->getRepository(self::USER__TIME_AWARE_CLASS);

@@ -24,12 +24,12 @@ use Gedmo\Tests\Tool\BaseTestCaseOM;
 final class SoftDeleteableMappingTest extends BaseTestCaseOM
 {
     /**
-     * @var Doctrine\ORM\EntityManager
+     * @var \Doctrine\ORM\EntityManager
      */
     private $em;
 
     /**
-     * @var Gedmo\SoftDeleteable\SoftDeleteableListener
+     * @var SoftDeleteableListener
      */
     private $softDeleteable;
 

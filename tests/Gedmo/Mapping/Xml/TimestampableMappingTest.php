@@ -22,12 +22,12 @@ use Gedmo\Timestampable\TimestampableListener;
 final class TimestampableMappingTest extends BaseTestCaseOM
 {
     /**
-     * @var Doctrine\ORM\EntityManager
+     * @var \Doctrine\ORM\EntityManager
      */
     private $em;
 
     /**
-     * @var Gedmo\Timestampable\TimestampableListener
+     * @var TimestampableListener
      */
     private $timestampable;
 

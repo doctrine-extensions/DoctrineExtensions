@@ -170,7 +170,7 @@ final class TranslatableEntityDefaultTranslationTest extends BaseTestCaseORM
 
         $this->em->flush();
 
-        $qb = $this->em->createQueryBuilder('a');
+        $qb = $this->em->createQueryBuilder();
         $qb->select('a')
            ->from(self::ARTICLE, 'a')
            ->where('a.id = 1');
@@ -201,7 +201,7 @@ final class TranslatableEntityDefaultTranslationTest extends BaseTestCaseORM
 
         $this->em->flush();
 
-        $qb = $this->em->createQueryBuilder('a');
+        $qb = $this->em->createQueryBuilder();
         $qb->select('a')
            ->from(self::ARTICLE, 'a')
            ->where('a.id = 1');

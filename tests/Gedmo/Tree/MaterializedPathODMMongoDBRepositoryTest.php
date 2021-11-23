@@ -4,9 +4,11 @@ namespace Gedmo\Tests\Tree;
 
 use Doctrine\Common\EventManager;
 use Doctrine\ODM\MongoDB\Iterator\CachingIterator;
+use Doctrine\ODM\MongoDB\Iterator\Iterator;
 use Gedmo\Exception\InvalidArgumentException;
 use Gedmo\Tests\Tool\BaseTestCaseMongoODM;
 use Gedmo\Tests\Tree\Fixture\Document\Category;
+use Gedmo\Tree\Document\MongoDB\Repository\MaterializedPathRepository;
 use Gedmo\Tree\TreeListener;
 
 /**
@@ -24,7 +26,7 @@ final class MaterializedPathODMMongoDBRepositoryTest extends BaseTestCaseMongoOD
     private const CATEGORY = Category::class;
 
     /**
-     * @var \Gedmo\Tree\Document\MongoDB\Repository\MaterializedPathRepository
+     * @var MaterializedPathRepository
      */
     protected $repo;
 
@@ -117,6 +119,7 @@ final class MaterializedPathODMMongoDBRepositoryTest extends BaseTestCaseMongoOD
         // Get direct children from the root, NOT including it
         /** @var CachingIterator $result */
         $result = $this->repo->getChildren($root, true, 'title', 'asc', false);
+        static::assertInstanceOf(Iterator::class, $result);
 
         static::assertSame(2, \iterator_count($result));
         $result->rewind();
@@ -126,6 +129,7 @@ final class MaterializedPathODMMongoDBRepositoryTest extends BaseTestCaseMongoOD
 
         // Get ALL nodes
         $result = $this->repo->getChildren(null, false, 'title');
+        static::assertInstanceOf(Iterator::class, $result);
 
         static::assertSame(9, \iterator_count($result));
         $result->rewind();
@@ -149,6 +153,7 @@ final class MaterializedPathODMMongoDBRepositoryTest extends BaseTestCaseMongoOD
 
         // Get ALL root nodes
         $result = $this->repo->getChildren(null, true, 'title');
+        static::assertInstanceOf(Iterator::class, $result);
 
         static::assertSame(3, \iterator_count($result));
         $result->rewind();
@@ -188,6 +193,7 @@ final class MaterializedPathODMMongoDBRepositoryTest extends BaseTestCaseMongoOD
 
         // Get a specific tree
         $roots = $this->repo->getRootNodes();
+        static::assertInstanceOf(Iterator::class, $roots);
         $tree = $this->repo->getTree($roots->current());
 
         static::assertSame(3, \iterator_count($tree));
@@ -219,6 +225,7 @@ final class MaterializedPathODMMongoDBRepositoryTest extends BaseTestCaseMongoOD
 
         // Tree of one specific root
         $roots = $this->repo->getRootNodes();
+        static::assertInstanceOf(Iterator::class, $roots);
         $drinks = $roots->current();
         $roots->next();
         $food = $roots->current();

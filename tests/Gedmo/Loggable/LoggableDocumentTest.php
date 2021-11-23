@@ -4,6 +4,7 @@ namespace Gedmo\Tests\Loggable;
 
 use Doctrine\Common\EventManager;
 use Gedmo\Loggable\Document\LogEntry;
+use Gedmo\Loggable\Document\Repository\LogEntryRepository;
 use Gedmo\Loggable\LoggableListener;
 use Gedmo\Tests\Loggable\Fixture\Document\Article;
 use Gedmo\Tests\Loggable\Fixture\Document\Author;
@@ -97,6 +98,7 @@ final class LoggableDocumentTest extends BaseTestCaseMongoODM
         $this->populate();
         $commentLogRepo = $this->dm->getRepository(self::COMMENT_LOG);
         $commentRepo = $this->dm->getRepository(self::COMMENT);
+        static::assertInstanceOf(LogEntryRepository::class, $commentLogRepo);
 
         $comment = $commentRepo->findOneBy(['message' => 'm-v5']);
         $commentId = $comment->getId();

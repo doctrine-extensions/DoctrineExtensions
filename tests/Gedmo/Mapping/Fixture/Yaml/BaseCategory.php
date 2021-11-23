@@ -2,59 +2,45 @@
 
 namespace Gedmo\Tests\Mapping\Fixture\Yaml;
 
-/**
- * @MappedSupperClass
- */
 class BaseCategory
 {
     /**
-     * @Column(type="integer")
+     * @var int
      */
     private $left;
 
     /**
-     * @Column(type="integer")
+     * @var int
      */
     private $right;
 
     /**
-     * @Column(type="integer")
+     * @var int
      */
     private $level;
 
     /**
-     * @Column(type="integer")
+     * @var int
      */
     private $rooted;
 
     /**
-     * @var \DateTime
-     *
-     * @Column(name="created", type="datetime")
+     * @var \DateTime|null
      */
     private $created;
 
     /**
-     * @var date
-     *
-     * @Column(name="updated", type="date")
+     * @var \DateTime|null
      */
     private $updated;
 
-    /**
-     * Set created
-     *
-     * @param dateTime $created
-     */
-    public function setCreated(\dateTime $created)
+    public function setCreated(\DateTime $created)
     {
         $this->created = $created;
     }
 
     /**
-     * Get created
-     *
-     * @return dateTime $created
+     * @return \DateTime $created
      */
     public function getCreated()
     {
@@ -62,9 +48,7 @@ class BaseCategory
     }
 
     /**
-     * Set updated
-     *
-     * @param date $updated
+     * @param \DateTime $updated
      */
     public function setUpdated($updated)
     {
@@ -72,9 +56,7 @@ class BaseCategory
     }
 
     /**
-     * Get updated
-     *
-     * @return date $updated
+     * @return \DateTime $updated
      */
     public function getUpdated()
     {

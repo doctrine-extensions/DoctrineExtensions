@@ -36,7 +36,7 @@ abstract class Role
     /**
      * @ORM\OneToMany(targetEntity="Role", mappedBy="parent")
      *
-     * @var Doctrine\Common\Collections\ArrayCollection
+     * @var ArrayCollection
      */
     protected $children;
 

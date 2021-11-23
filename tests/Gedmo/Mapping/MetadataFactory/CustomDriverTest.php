@@ -6,6 +6,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\Mapping\ClassMetadata;
 use Doctrine\Persistence\Mapping\Driver\MappingDriver;
 use Gedmo\Tests\Mapping\Fixture\Unmapped\Timestampable;
+use Gedmo\Timestampable\TimestampableListener;
 
 /**
  * These are mapping tests for tree extension
@@ -19,7 +20,7 @@ use Gedmo\Tests\Mapping\Fixture\Unmapped\Timestampable;
 final class CustomDriverTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @var Timestampable
+     * @var TimestampableListener
      */
     private $timestampable;
 
@@ -41,7 +42,7 @@ final class CustomDriverTest extends \PHPUnit\Framework\TestCase
         ];
 
         $evm = new \Doctrine\Common\EventManager();
-        $this->timestampable = new \Gedmo\Timestampable\TimestampableListener();
+        $this->timestampable = new TimestampableListener();
         $this->timestampable->setAnnotationReader($_ENV['annotation_reader']);
         $evm->addEventSubscriber($this->timestampable);
         $this->em = \Doctrine\ORM\EntityManager::create($conn, $config, $evm);

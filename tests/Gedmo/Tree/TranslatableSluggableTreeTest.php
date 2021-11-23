@@ -3,7 +3,7 @@
 namespace Gedmo\Tests\Tree;
 
 use Doctrine\Common\EventManager;
-use Doctrine\ORM\Proxy\Proxy;
+use Doctrine\Persistence\Proxy;
 use Gedmo\Sluggable\SluggableListener;
 use Gedmo\Tests\Tool\BaseTestCaseORM;
 use Gedmo\Tests\Tree\Fixture\Article;
@@ -95,6 +95,7 @@ final class TranslatableSluggableTreeTest extends BaseTestCaseORM
         $food = $vegies->getParent();
         // test if proxy triggers postLoad event
         static::assertInstanceOf(Proxy::class, $food);
+        static::assertInstanceOf(BehavioralCategory::class, $food);
         static::assertSame('Food', $food->getTitle());
 
         $this->em->clear();
@@ -104,6 +105,7 @@ final class TranslatableSluggableTreeTest extends BaseTestCaseORM
         static::assertSame('Gemüse', $vegies->getTitle());
         $food = $vegies->getParent();
         static::assertInstanceOf(Proxy::class, $food);
+        static::assertInstanceOf(BehavioralCategory::class, $food);
         static::assertSame('Lebensmittel', $food->getTitle());
     }
 
