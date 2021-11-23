@@ -61,24 +61,20 @@ final class AggregateVersionListener extends MappedEventSubscriber
 
     private function getAggregateRoot(array $entities): AggregateRoot
     {
-        $aggregateRoot = null;
-
         foreach ($entities as $entity) {
             if ($entity instanceof AggregateRoot) {
-                $aggregateRoot = $entity;
+                return $entity;
             }
         }
 
-        if (null === $aggregateRoot) {
-            $entity = end($entities);
-            $annotation = $this->getAggregateEntityAnnotation($entity);
+        $entity = end($entities);
+        $annotation = $this->getAggregateEntityAnnotation($entity);
 
-            if (!method_exists($entity, $annotation->aggregateRootMethod)) {
-                throw new LogicException(sprintf('Method "%s" not exists in class "%s".', $annotation->aggregateRootMethod, get_class($entity)));
-            }
-
-            $aggregateRoot = $entity->{$annotation->aggregateRootMethod}();
+        if (!method_exists($entity, $annotation->aggregateRootMethod)) {
+            throw new LogicException(sprintf('Method "%s" not exists in class "%s".', $annotation->aggregateRootMethod, get_class($entity)));
         }
+
+        $aggregateRoot = $entity->{$annotation->aggregateRootMethod}();
 
         return $aggregateRoot;
     }
