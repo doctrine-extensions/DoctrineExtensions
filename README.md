@@ -49,8 +49,6 @@ flushed in a behavioral way.
 - [**Tree**](/doc/tree.md) - automates the tree handling process and adds some tree-specific functions on repository.
 (**closure**, **nested set** or **materialized path**)
   _(MongoDB ODM only supports materialized path)_
-- [**AggregateVersioning**](/doc/aggregate_versioning.md) - automated control the aggregate version of Aggregate Root or reference Aggregate
-  entity on your Entities.
 
 #### ORM Only
 
@@ -58,6 +56,8 @@ flushed in a behavioral way.
 - [**SoftDeleteable**](/doc/softdeleteable.md) - allows to implicitly remove records
 - [**Sortable**](/doc/sortable.md) - makes any document or entity sortable
 - [**Uploadable**](/doc/uploadable.md) - provides file upload handling in entity fields
+- [**AggregateVersioning**](/doc/aggregate_versioning.md) - automated control the aggregate version of Aggregate Root or reference Aggregate
+  entity on your Entities.
 
 #### MongoDB ODM Only
 
