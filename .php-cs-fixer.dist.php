@@ -2,12 +2,13 @@
 
 $finder = PhpCsFixer\Finder::create()
     ->in([
-        __DIR__ . '/example',
-        __DIR__ . '/src',
-        __DIR__ . '/tests',
+        __DIR__.'/example',
+        __DIR__.'/src',
+        __DIR__.'/tests',
     ])
+    ->append([__FILE__])
     ->exclude([
-        __DIR__ . '/tests/data',
+        __DIR__.'/tests/data',
     ]);
 
 return (new PhpCsFixer\Config())
