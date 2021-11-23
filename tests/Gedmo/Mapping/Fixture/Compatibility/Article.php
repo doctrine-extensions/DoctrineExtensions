@@ -49,7 +49,7 @@ class Article
     /**
      * Get created
      *
-     * @return datetime $created
+     * @return \DateTime $created
      */
     public function getCreated()
     {
@@ -64,7 +64,7 @@ class Article
     /**
      * Get updated
      *
-     * @return datetime $updated
+     * @return \DateTime $updated
      */
     public function getUpdated()
     {

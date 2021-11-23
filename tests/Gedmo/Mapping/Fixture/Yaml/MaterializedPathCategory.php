@@ -2,6 +2,8 @@
 
 namespace Gedmo\Tests\Mapping\Fixture\Yaml;
 
+use Doctrine\Common\Collections\Collection;
+
 class MaterializedPathCategory
 {
     private $id;
@@ -50,8 +52,6 @@ class MaterializedPathCategory
 
     /**
      * Add children
-     *
-     * @param Entity\Category $children
      */
     public function addChildren(Category $children)
     {
@@ -61,7 +61,7 @@ class MaterializedPathCategory
     /**
      * Get children
      *
-     * @return Doctrine\Common\Collections\Collection $children
+     * @return Collection $children
      */
     public function getChildren()
     {
@@ -71,7 +71,7 @@ class MaterializedPathCategory
     /**
      * Set parent
      *
-     * @param Entity\Category $parent
+     * @param Category $parent
      */
     public function setParent($parent)
     {
@@ -81,7 +81,7 @@ class MaterializedPathCategory
     /**
      * Get parent
      *
-     * @return Entity\Category $parent
+     * @return Category $parent
      */
     public function getParent()
     {

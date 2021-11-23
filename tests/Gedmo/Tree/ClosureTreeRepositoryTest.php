@@ -8,6 +8,7 @@ use Gedmo\Tests\Tree\Fixture\Closure\Category;
 use Gedmo\Tests\Tree\Fixture\Closure\CategoryClosure;
 use Gedmo\Tests\Tree\Fixture\Closure\CategoryWithoutLevel;
 use Gedmo\Tests\Tree\Fixture\Closure\CategoryWithoutLevelClosure;
+use Gedmo\Tree\Entity\Repository\AbstractTreeRepository;
 use Gedmo\Tree\TreeListener;
 
 /**
@@ -227,6 +228,7 @@ final class ClosureTreeRepositoryTest extends BaseTestCaseORM
     protected function buildTreeTests($class)
     {
         $repo = $this->em->getRepository($class);
+        static::assertInstanceOf(AbstractTreeRepository::class, $repo);
         $sortOption = ['childSort' => ['field' => 'title', 'dir' => 'asc']];
 
         $testClosure = static function (array $tree, $includeNode = false, $whichTree = 'both', $includeNewNode = false): void {

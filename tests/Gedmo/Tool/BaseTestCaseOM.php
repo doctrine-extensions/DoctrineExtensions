@@ -160,7 +160,7 @@ abstract class BaseTestCaseOM extends \PHPUnit\Framework\TestCase
             ->willReturn($this->getMockBuilder(MySQLPlatform::class)->getMock());
 
         $conn = $this->getMockBuilder(Connection::class)
-            ->setConstructorArgs([], $driver)
+            ->setConstructorArgs([[], $driver])
             ->getMock();
 
         $conn->expects(static::once())

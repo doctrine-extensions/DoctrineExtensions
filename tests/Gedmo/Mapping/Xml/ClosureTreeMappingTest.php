@@ -24,12 +24,12 @@ use Gedmo\Tree\TreeListener;
 final class ClosureTreeMappingTest extends BaseTestCaseOM
 {
     /**
-     * @var Doctrine\ORM\EntityManager
+     * @var \Doctrine\ORM\EntityManager
      */
     private $em;
 
     /**
-     * @var Gedmo\Tree\TreeListener
+     * @var TreeListener
      */
     private $tree;
 

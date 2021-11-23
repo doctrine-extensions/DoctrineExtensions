@@ -58,6 +58,7 @@
         "friendsofphp/php-cs-fixer": "^3.0",
         "phpstan/phpstan": "^1.1",
         "phpstan/phpstan-doctrine": "^1.0",
+        "phpstan/phpstan-phpunit": "^1.0",
         "phpunit/phpunit": "^8.5 || ^9.5",
         "symfony/cache": "^4.4 || ^5.3",
         "symfony/yaml": "^4.4 || ^5.3"

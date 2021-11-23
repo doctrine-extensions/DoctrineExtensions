@@ -88,8 +88,6 @@ class Company implements Translatable
     }
 
     /**
-     * @param mixed $link
-     *
      * @return Company
      */
     public function setLink(CompanyEmbedLink $link)

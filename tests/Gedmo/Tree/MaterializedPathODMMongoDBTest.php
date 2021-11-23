@@ -3,6 +3,7 @@
 namespace Gedmo\Tests\Tree;
 
 use Doctrine\Common\EventManager;
+use Doctrine\ODM\MongoDB\Iterator\Iterator;
 use Gedmo\Exception\RuntimeException;
 use Gedmo\Tests\Tool\BaseTestCaseMongoODM;
 use Gedmo\Tests\Tree\Fixture\Document\Category;
@@ -102,6 +103,8 @@ final class MaterializedPathODMMongoDBTest extends BaseTestCaseMongoODM
         $this->dm->flush();
 
         $result = $this->dm->createQueryBuilder()->find(self::CATEGORY)->getQuery()->execute();
+
+        static::assertInstanceOf(Iterator::class, $result);
 
         /** @var Category $firstResult */
         $firstResult = $result->current();

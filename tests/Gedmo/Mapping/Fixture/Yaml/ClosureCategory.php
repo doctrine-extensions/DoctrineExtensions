@@ -2,6 +2,8 @@
 
 namespace Gedmo\Tests\Mapping\Fixture\Yaml;
 
+use Doctrine\Common\Collections\Collection;
+
 class ClosureCategory
 {
     private $id;
@@ -46,8 +48,6 @@ class ClosureCategory
 
     /**
      * Add children
-     *
-     * @param Entity\Category $children
      */
     public function addChildren(Category $children)
     {
@@ -57,7 +57,7 @@ class ClosureCategory
     /**
      * Get children
      *
-     * @return Doctrine\Common\Collections\Collection $children
+     * @return Collection $children
      */
     public function getChildren()
     {
@@ -67,7 +67,7 @@ class ClosureCategory
     /**
      * Set parent
      *
-     * @param Entity\Category $parent
+     * @param Category $parent
      */
     public function setParent($parent)
     {
@@ -77,7 +77,7 @@ class ClosureCategory
     /**
      * Get parent
      *
-     * @return Entity\Category $parent
+     * @return Category $parent
      */
     public function getParent()
     {

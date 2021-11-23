@@ -145,7 +145,7 @@ abstract class BaseTestCaseORM extends \PHPUnit\Framework\TestCase
             ->willReturn($this->getMockBuilder(MySQLPlatform::class)->getMock());
 
         $conn = $this->getMockBuilder(Connection::class)
-            ->setConstructorArgs([], $driver)
+            ->setConstructorArgs([[], $driver])
             ->getMock();
 
         $conn->expects(static::once())
@@ -202,7 +202,7 @@ abstract class BaseTestCaseORM extends \PHPUnit\Framework\TestCase
     /**
      * Creates default mapping driver
      *
-     * @return \Doctrine\ORM\Mapping\Driver\Driver
+     * @return MappingDriver
      */
     protected function getMetadataDriverImplementation()
     {

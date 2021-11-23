@@ -35,7 +35,7 @@ class UserTimeAware
     /**
      * Returns deletedAt.
      *
-     * @return DateTime
+     * @return \DateTime
      */
     public function getDeletedAt()
     {

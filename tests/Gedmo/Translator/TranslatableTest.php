@@ -3,7 +3,7 @@
 namespace Gedmo\Tests\Translator;
 
 use Doctrine\Common\EventManager;
-use Doctrine\ORM\Proxy\Proxy;
+use Doctrine\Persistence\Proxy;
 use Gedmo\Tests\Tool\BaseTestCaseORM;
 use Gedmo\Tests\Translator\Fixture\Person;
 use Gedmo\Tests\Translator\Fixture\PersonCustom;
@@ -116,6 +116,7 @@ final class TranslatableTest extends BaseTestCaseORM
         static::assertSame('Женя', $person->translate('ru')->getName());
         $parent = $person->getParent();
         static::assertInstanceOf(Proxy::class, $parent);
+        static::assertInstanceOf(Person::class, $parent);
         static::assertSame('Женя starshai', $parent->translate('ru')->getName());
         static::assertSame('zenia', $parent->translate('fr')->getName());
     }

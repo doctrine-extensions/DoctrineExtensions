@@ -5,6 +5,8 @@ namespace Gedmo\Tests\Mapping\MetadataFactory;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Gedmo\Tests\Mapping\Fixture\Unmapped\Timestampable;
+use Gedmo\Timestampable\TimestampableListener;
+use PHPUnit\Framework\TestCase;
 
 /**
  * These are mapping tests for tree extension
@@ -15,10 +17,10 @@ use Gedmo\Tests\Mapping\Fixture\Unmapped\Timestampable;
  *
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-final class ForcedMetadataTest extends \PHPUnit\Framework\TestCase
+final class ForcedMetadataTest extends TestCase
 {
     /**
-     * @var Timestampable
+     * @var TimestampableListener
      */
     private $timestampable;
 

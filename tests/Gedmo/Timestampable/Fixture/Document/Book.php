@@ -28,7 +28,7 @@ class Book
     /**
      * @ODM\EmbedMany(targetDocument="Gedmo\Tests\Timestampable\Fixture\Document\Tag")
      *
-     * @var Tag[]|Collection
+     * @var Collection<int, Tag>
      */
     protected $tags;
 
@@ -62,7 +62,7 @@ class Book
     }
 
     /**
-     * @return Tag[]|Collection
+     * @return Collection<int, Tag>
      */
     public function getTags()
     {
@@ -70,7 +70,7 @@ class Book
     }
 
     /**
-     * @param Tag[] $tags
+     * @param Collection<int, Tag> $tags
      */
     public function setTags(Collection $tags)
     {

@@ -5,6 +5,7 @@ namespace Gedmo\Tests\Translatable;
 use Doctrine\Common\EventManager;
 use Gedmo\Tests\Tool\BaseTestCaseMongoODM;
 use Gedmo\Tests\Translatable\Fixture\Document\SimpleArticle as Article;
+use Gedmo\Translatable\Document\Repository\TranslationRepository;
 use Gedmo\Translatable\Document\Translation;
 use Gedmo\Translatable\TranslatableListener;
 
@@ -45,6 +46,7 @@ final class TranslatableDocumentCollectionTest extends BaseTestCaseMongoODM
     public function shouldPersistMultipleTranslations()
     {
         $repo = $this->dm->getRepository(self::TRANSLATION);
+        static::assertInstanceOf(TranslationRepository::class, $repo);
         $sport = $this->dm->getRepository(self::ARTICLE)->find($this->id);
         $translations = $repo->findTranslations($sport);
 
@@ -67,6 +69,7 @@ final class TranslatableDocumentCollectionTest extends BaseTestCaseMongoODM
     public function shouldUpdateTranslation()
     {
         $repo = $this->dm->getRepository(self::TRANSLATION);
+        static::assertInstanceOf(TranslationRepository::class, $repo);
         $sport = $this->dm->getRepository(self::ARTICLE)->find($this->id);
         $repo
             ->translate($sport, 'title', 'ru_ru', 'sport ru change')
@@ -90,6 +93,7 @@ final class TranslatableDocumentCollectionTest extends BaseTestCaseMongoODM
     public function shouldUpdateMultipleTranslations()
     {
         $repo = $this->dm->getRepository(self::TRANSLATION);
+        static::assertInstanceOf(TranslationRepository::class, $repo);
         $sport = $this->dm->getRepository(self::ARTICLE)->find($this->id);
         $sport->setTitle('Changed');
         $repo
@@ -130,6 +134,7 @@ final class TranslatableDocumentCollectionTest extends BaseTestCaseMongoODM
     private function populate()
     {
         $repo = $this->dm->getRepository(self::TRANSLATION);
+        static::assertInstanceOf(TranslationRepository::class, $repo);
         $sport = new Article();
         $sport->setTitle('Sport');
         $sport->setContent('about sport');

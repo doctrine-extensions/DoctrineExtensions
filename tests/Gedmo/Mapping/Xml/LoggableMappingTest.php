@@ -27,12 +27,12 @@ use Gedmo\Tests\Tool\BaseTestCaseOM;
 final class LoggableMappingTest extends BaseTestCaseOM
 {
     /**
-     * @var Doctrine\ORM\EntityManager
+     * @var \Doctrine\ORM\EntityManager
      */
     private $em;
 
     /**
-     * @var Gedmo\Loggable\LoggableListener
+     * @var \Gedmo\Loggable\LoggableListener
      */
     private $loggable;
 

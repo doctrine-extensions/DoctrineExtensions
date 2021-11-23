@@ -458,6 +458,7 @@ final class SoftDeleteableEntityTest extends BaseTestCaseORM
     public function testSoftDeleteableFilter()
     {
         $filter = $this->em->getFilters()->enable(self::SOFT_DELETEABLE_FILTER_NAME);
+        static::assertInstanceOf(SoftDeleteableFilter::class, $filter);
         $filter->disableForEntity(self::USER_CLASS);
 
         $repo = $this->em->getRepository(self::USER_CLASS);
@@ -497,6 +498,7 @@ final class SoftDeleteableEntityTest extends BaseTestCaseORM
         $this->em->getConfiguration()->setQueryCache(CacheAdapter::wrap(new ArrayCache()));
 
         $filter = $this->em->getFilters()->enable(self::SOFT_DELETEABLE_FILTER_NAME);
+        static::assertInstanceOf(SoftDeleteableFilter::class, $filter);
         $filter->disableForEntity(self::USER_CLASS);
 
         $repo = $this->em->getRepository(self::USER_CLASS);
