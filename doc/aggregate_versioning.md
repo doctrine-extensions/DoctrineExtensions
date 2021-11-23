@@ -3,14 +3,14 @@
 **Aggregate versioning** behavior will automate control the aggregate version of Aggregate Root or reference Aggregate
 entity on your Entities. It works through annotations and can update aggregate version on creation, update,
 aggregate root or entity subset update. Similar the [aggregate fields](https://www.doctrine-project.org/projects/doctrine-orm/en/2.9/cookbook/aggregate-fields.html#using-an-aggregate-field) 
-in doctrine docs.
+in Doctrine docs.
 
 Features:
 
-- Automatic aggregate version field update on creation, update, property subset update, and even on record property changes
-- Annotation mapping support for extensions
+- Automatic aggregate version field update on creation, update, property subset update, and even on record property changes.
+- Annotation mapping support for extensions.
 
-This article will cover the basic installation and functionality of **Aggregate versioning** behavior
+This article will cover the basic setup and functionality of **Aggregate versioning** behavior.
 
 Content:
 
@@ -22,7 +22,8 @@ Content:
 ## Aggregate versioning Entity example:
 
 ### Aggregate versioning annotations:
-- **Gedmo\Mapping\Annotation\Aggregate Versioning** this annotation tells how getting the aggregate root from method . If method is not a exists it will trigger an exception.
+- **Gedmo\Mapping\Annotation\Aggregate Versioning** this annotation tells how getting the aggregate root from method.
+  If method does not exist, it throws an exception.
 
 Available configuration options:
 
@@ -318,4 +319,4 @@ class Order implements AggregateRoot
 ```
 
 The Traits are very simplistic - if you use different field names it is recommended to simply create your
-own Traits specific to your project. The ones provided by this bundle can be used as example.
+own Traits specific to your project. The ones provided by this package can be used as example.
