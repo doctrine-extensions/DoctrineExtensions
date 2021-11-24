@@ -2,10 +2,10 @@
 
 namespace Gedmo\Tree\Hydrator\ORM;
 
-use Doctrine\Common\Collections\AbstractLazyCollection;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Internal\Hydration\ObjectHydrator;
+use Doctrine\ORM\PersistentCollection;
 use Gedmo\Tree\TreeListener;
 
 /**
@@ -117,8 +117,8 @@ class TreeObjectHydrator extends ObjectHydrator
                 $this->setPropertyValue($node, $this->childrenField, $childrenCollection);
             }
 
-            // Mark all children collections as initialized to avoid select queries
-            if ($childrenCollection instanceof AbstractLazyCollection) {
+            // Initialize all the children collections in order to avoid "SELECT" queries.
+            if ($childrenCollection instanceof PersistentCollection && !$childrenCollection->isInitialized()) {
                 $childrenCollection->setInitialized(true);
             }
 
