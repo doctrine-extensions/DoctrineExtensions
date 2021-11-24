@@ -72,7 +72,7 @@ class Annotation extends AbstractAnnotationDriver
                 if (!in_array($timestampable->on, ['update', 'create', 'change'], true)) {
                     throw new InvalidMappingException("Field - [{$field}] trigger 'on' is not one of [update, create, change] in class - {$meta->getName()}");
                 }
-                if ('change' == $timestampable->on) {
+                if ('change' === $timestampable->on) {
                     if (!isset($timestampable->field)) {
                         throw new InvalidMappingException("Missing parameters on property - {$field}, field must be set on [change] trigger in class - {$meta->getName()}");
                     }

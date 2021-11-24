@@ -98,7 +98,7 @@ final class PersonalTranslationTest extends BaseTestCaseORM
      */
     public function shouldCascadeDeletionsByForeignKeyConstraints()
     {
-        if ('sqlite' == $this->em->getConnection()->getDatabasePlatform()->getName()) {
+        if ('sqlite' === $this->em->getConnection()->getDatabasePlatform()->getName()) {
             static::markTestSkipped('Foreign key constraints does not map in sqlite.');
         }
         $this->populate();
