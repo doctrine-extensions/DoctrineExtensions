@@ -110,7 +110,7 @@ class LogEntryRepository extends DocumentRepository
         $config = $this->getLoggableListener()->getConfiguration($this->dm, $objectMeta->getName());
         $fields = $config['versioned'];
         foreach ($data as $field => $value) {
-            if (!in_array($field, $fields)) {
+            if (!in_array($field, $fields, true)) {
                 continue;
             }
             $mapping = $objectMeta->getFieldMapping($field);

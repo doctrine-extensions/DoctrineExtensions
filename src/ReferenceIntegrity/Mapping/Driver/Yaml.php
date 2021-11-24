@@ -50,7 +50,7 @@ class Yaml extends File implements Driver
                         throw new InvalidMappingException(sprintf("'mappedBy' should be set on '%s' in '%s'", $property, $meta->getName()));
                     }
 
-                    if (!in_array($fieldMapping['gedmo']['referenceIntegrity'], $validator->getIntegrityActions())) {
+                    if (!in_array($fieldMapping['gedmo']['referenceIntegrity'], $validator->getIntegrityActions(), true)) {
                         throw new InvalidMappingException(sprintf('Field - [%s] does not have a valid integrity option, [%s] in class - %s', $property, implode(', ', $validator->getIntegrityActions()), $meta->getName()));
                     }
 

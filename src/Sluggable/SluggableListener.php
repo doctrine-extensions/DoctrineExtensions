@@ -471,11 +471,11 @@ class SluggableListener extends MappedEventSubscriber
 
             $i = pow(10, $this->exponent);
             $uniqueSuffix = (string) $i;
-            if ($recursing || in_array($generatedSlug, $sameSlugs)) {
+            if ($recursing || in_array($generatedSlug, $sameSlugs, true)) {
                 do {
                     $generatedSlug = $preferredSlug.$config['separator'].$uniqueSuffix;
                     $uniqueSuffix = (string) ++$i;
-                } while (in_array($generatedSlug, $sameSlugs));
+                } while (in_array($generatedSlug, $sameSlugs, true));
             }
 
             $mapping = $meta->getFieldMapping($config['slug']);
@@ -505,7 +505,7 @@ class SluggableListener extends MappedEventSubscriber
 
         // set each managed filter to desired status
         foreach ($this->managedFilters as $name => &$config) {
-            $enabled = in_array($name, $enabledFilters);
+            $enabled = in_array($name, $enabledFilters, true);
             $config['previouslyEnabled'] = $enabled;
 
             if ($config['disabled']) {

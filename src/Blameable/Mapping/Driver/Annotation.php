@@ -69,7 +69,7 @@ class Annotation extends AbstractAnnotationDriver
                         throw new InvalidMappingException("Association - [{$field}] is not valid, it must be a one-to-many relation or a string field - {$meta->getName()}");
                     }
                 }
-                if (!in_array($blameable->on, ['update', 'create', 'change'])) {
+                if (!in_array($blameable->on, ['update', 'create', 'change'], true)) {
                     throw new InvalidMappingException("Field - [{$field}] trigger 'on' is not one of [update, create, change] in class - {$meta->getName()}");
                 }
                 if ('change' == $blameable->on) {

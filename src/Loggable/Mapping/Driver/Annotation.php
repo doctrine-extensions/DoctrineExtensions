@@ -84,7 +84,7 @@ class Annotation extends AbstractAnnotationDriver
                     continue;
                 }
                 // fields cannot be overrided and throws mapping exception
-                if (!(isset($config['versioned']) && in_array($field, $config['versioned']))) {
+                if (!in_array($field, $config['versioned'] ?? [], true)) {
                     $config['versioned'][] = $field;
                 }
             }

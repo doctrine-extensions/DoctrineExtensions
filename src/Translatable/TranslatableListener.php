@@ -691,7 +691,7 @@ class TranslatableListener extends MappedEventSubscriber
             $this->validateLocale($this->defaultLocale);
             $modifiedChangeSet = $changeSet;
             foreach ($changeSet as $field => $changes) {
-                if (in_array($field, $translatableFields)) {
+                if (in_array($field, $translatableFields, true)) {
                     if ($locale !== $this->defaultLocale) {
                         $ea->setOriginalObjectProperty($uow, $object, $field, $changes[0]);
                         unset($modifiedChangeSet[$field]);

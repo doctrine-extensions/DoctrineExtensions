@@ -52,7 +52,7 @@ class Yaml extends File implements Driver
         if (isset($mapping['fields'])) {
             foreach ($mapping['fields'] as $field => $fieldMapping) {
                 if (isset($fieldMapping['gedmo'])) {
-                    if (in_array('sortablePosition', $fieldMapping['gedmo'])) {
+                    if (in_array('sortablePosition', $fieldMapping['gedmo'], true)) {
                         if (!$this->isValidField($meta, $field)) {
                             throw new InvalidMappingException("Sortable position field - [{$field}] type is not valid and must be 'integer' in class - {$meta->getName()}");
                         }
@@ -96,14 +96,14 @@ class Yaml extends File implements Driver
     {
         $mapping = $meta->getFieldMapping($field);
 
-        return $mapping && in_array($mapping['type'], $this->validTypes);
+        return $mapping && in_array($mapping['type'], $this->validTypes, true);
     }
 
     private function readSortableGroups(iterable $mapping, array &$config): void
     {
         foreach ($mapping as $field => $fieldMapping) {
             if (isset($fieldMapping['gedmo'])) {
-                if (in_array('sortableGroup', $fieldMapping['gedmo'])) {
+                if (in_array('sortableGroup', $fieldMapping['gedmo'], true)) {
                     if (!isset($config['groups'])) {
                         $config['groups'] = [];
                     }

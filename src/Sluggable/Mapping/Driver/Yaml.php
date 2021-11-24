@@ -85,7 +85,7 @@ class Yaml extends File implements Driver
     {
         $mapping = $meta->getFieldMapping($field);
 
-        return $mapping && in_array($mapping['type'], $this->validTypes);
+        return $mapping && in_array($mapping['type'], $this->validTypes, true);
     }
 
     private function buildFieldConfiguration(string $field, array $fieldMapping, ClassMetadata $meta, array &$config): void

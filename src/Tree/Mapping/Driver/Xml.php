@@ -51,7 +51,7 @@ class Xml extends BaseXml
 
         if (isset($xml->tree) && $this->_isAttributeSet($xml->tree, 'type')) {
             $strategy = $this->_getAttribute($xml->tree, 'type');
-            if (!in_array($strategy, $this->strategies)) {
+            if (!in_array($strategy, $this->strategies, true)) {
                 throw new InvalidMappingException("Tree type: $strategy is not available.");
             }
             $config['strategy'] = $strategy;

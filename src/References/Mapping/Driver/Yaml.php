@@ -42,7 +42,7 @@ class Yaml extends File implements Driver
             foreach ($mapping['gedmo']['reference'] as $field => $fieldMapping) {
                 $reference = $fieldMapping['reference'];
 
-                if (!in_array($reference, array_keys($this->validReferences))) {
+                if (!in_array($reference, array_keys($this->validReferences), true)) {
                     throw new InvalidMappingException($reference.' is not a valid reference, valid references are: '.implode(', ', array_keys($this->validReferences)));
                 }
 

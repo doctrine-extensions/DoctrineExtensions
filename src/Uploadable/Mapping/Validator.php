@@ -120,7 +120,7 @@ class Validator
 
         $fieldMapping = $meta->getFieldMapping($field);
 
-        if (!in_array($fieldMapping['type'], $validFieldTypes)) {
+        if (!in_array($fieldMapping['type'], $validFieldTypes, true)) {
             $msg = 'Field "%s" to work as an "%s" field must be of one of the following types: "%s".';
 
             throw new InvalidMappingException(sprintf($msg, $field, $uploadableField, implode(', ', $validFieldTypes)));

@@ -73,7 +73,7 @@ class TranslationProxy
         if (preg_match('/^(set|get)(.*)$/', $method, $matches)) {
             $property = lcfirst($matches[2]);
 
-            if (in_array($property, $this->properties)) {
+            if (in_array($property, $this->properties, true)) {
                 switch ($matches[1]) {
                     case 'get':
                         return $this->getTranslatedValue($property);
@@ -98,7 +98,7 @@ class TranslationProxy
 
     public function __get($property)
     {
-        if (in_array($property, $this->properties)) {
+        if (in_array($property, $this->properties, true)) {
             if (method_exists($this, $getter = 'get'.ucfirst($property))) {
                 return $this->$getter;
             }
@@ -111,7 +111,7 @@ class TranslationProxy
 
     public function __set($property, $value)
     {
-        if (in_array($property, $this->properties)) {
+        if (in_array($property, $this->properties, true)) {
             if (method_exists($this, $setter = 'set'.ucfirst($property))) {
                 return $this->$setter($value);
             }
@@ -124,7 +124,7 @@ class TranslationProxy
 
     public function __isset($property)
     {
-        return in_array($property, $this->properties);
+        return in_array($property, $this->properties, true);
     }
 
     /**

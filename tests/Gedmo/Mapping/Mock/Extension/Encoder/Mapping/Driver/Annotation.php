@@ -46,7 +46,7 @@ class Annotation implements Driver
                     throw new \Exception('Field is not mapped as object property');
                 }
                 // allow encoding only strings
-                if (!in_array($encode->type, ['sha1', 'md5'])) {
+                if (!in_array($encode->type, ['sha1', 'md5'], true)) {
                     throw new \Exception('Invalid encoding type supplied');
                 }
                 // validate encoding type

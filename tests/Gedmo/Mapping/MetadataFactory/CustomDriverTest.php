@@ -119,6 +119,6 @@ class CustomDriver implements MappingDriver
 
     public function isTransient($className)
     {
-        return !in_array($className, $this->getAllClassNames());
+        return !in_array($className, $this->getAllClassNames(), true);
     }
 }

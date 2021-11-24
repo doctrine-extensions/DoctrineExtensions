@@ -63,12 +63,12 @@ class Xml extends BaseXml
                     }
 
                     $type = $this->_getAttribute($element, 'type');
-                    if (!in_array($type, $this->validTypes)) {
+                    if (!in_array($type, $this->validTypes, true)) {
                         throw new InvalidMappingException($type.' is not a valid reference type, valid types are: '.implode(', ', $this->validTypes));
                     }
 
                     $reference = $this->_getAttribute($element, 'reference');
-                    if (!in_array($reference, $this->validReferences)) {
+                    if (!in_array($reference, $this->validReferences, true)) {
                         throw new InvalidMappingException($reference.' is not a valid reference, valid references are: '.implode(', ', $this->validReferences));
                     }
 

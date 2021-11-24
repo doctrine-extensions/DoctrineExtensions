@@ -64,6 +64,7 @@ return (new PhpCsFixer\Config())
         'random_api_migration' => true,
         'self_accessor' => true,
         'static_lambda' => true,
+        'strict_param' => true,
         'ternary_to_null_coalescing' => true,
     ])
     ->setFinder($finder)

@@ -94,7 +94,7 @@ class Validator
     {
         $mapping = $meta->getFieldMapping($field);
 
-        return $mapping && in_array($mapping['type'], $this->validTypes);
+        return $mapping && in_array($mapping['type'], $this->validTypes, true);
     }
 
     /**
@@ -109,7 +109,7 @@ class Validator
     {
         $mapping = $meta->getFieldMapping($field);
 
-        return $mapping && in_array($mapping['type'], $this->validPathTypes);
+        return $mapping && in_array($mapping['type'], $this->validPathTypes, true);
     }
 
     /**
@@ -124,7 +124,7 @@ class Validator
     {
         $mapping = $meta->getFieldMapping($field);
 
-        return $mapping && in_array($mapping['type'], $this->validPathSourceTypes);
+        return $mapping && in_array($mapping['type'], $this->validPathSourceTypes, true);
     }
 
     /**
@@ -139,7 +139,7 @@ class Validator
     {
         $mapping = $meta->getFieldMapping($field);
 
-        return $mapping && in_array($mapping['type'], $this->validPathHashTypes);
+        return $mapping && in_array($mapping['type'], $this->validPathHashTypes, true);
     }
 
     /**
@@ -169,7 +169,7 @@ class Validator
     {
         $mapping = $meta->getFieldMapping($field);
 
-        return $mapping && in_array($mapping['type'], $this->validRootTypes);
+        return $mapping && in_array($mapping['type'], $this->validRootTypes, true);
     }
 
     /**
