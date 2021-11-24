@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the Doctrine Behavioral Extensions package.
  * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
@@ -117,7 +119,7 @@ abstract class BaseTestCaseMongoODM extends \PHPUnit\Framework\TestCase
         $config->setHydratorNamespace('Hydrator');
         $config->setDefaultDB('gedmo_extensions_test');
         $config->setAutoGenerateProxyClasses(Configuration::AUTOGENERATE_EVAL);
-        $config->setAutoGenerateHydratorClasses(true);
+        $config->setAutoGenerateHydratorClasses(Configuration::AUTOGENERATE_EVAL);
         $config->setMetadataDriverImpl($this->getMetadataDriverImplementation());
 
         return $config;
