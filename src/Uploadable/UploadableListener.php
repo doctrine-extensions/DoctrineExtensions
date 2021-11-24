@@ -348,11 +348,11 @@ class UploadableListener extends MappedEventSubscriber
     /**
      * Moves the file to the specified path
      *
-     * @param string $path
-     * @param bool   $filenameGeneratorClass
-     * @param bool   $overwrite
-     * @param bool   $appendNumber
-     * @param object $object
+     * @param string      $path
+     * @param string|bool $filenameGeneratorClass
+     * @param bool        $overwrite
+     * @param bool        $appendNumber
+     * @param object      $object
      *
      * @return array
      *
@@ -365,6 +365,8 @@ class UploadableListener extends MappedEventSubscriber
      * @throws \Gedmo\Exception\UploadablePartialException
      * @throws \Gedmo\Exception\UploadableNoTmpDirException
      * @throws \Gedmo\Exception\UploadableCantWriteException
+     *
+     * @phpstan-param class-string|false $filenameGeneratorClass
      */
     public function moveFile(FileInfoInterface $fileInfo, $path, $filenameGeneratorClass = false, $overwrite = false, $appendNumber = false, $object = null)
     {
@@ -429,7 +431,7 @@ class UploadableListener extends MappedEventSubscriber
         $info['origFileName'] = $info['fileName'];
 
         // Now we generate the filename using the configured class
-        if ($filenameGeneratorClass) {
+        if (false !== $filenameGeneratorClass) {
             $filename = $filenameGeneratorClass::generate(
                 str_replace($path.'/', '', $info['fileWithoutExt']),
                 $info['fileExtension'],
