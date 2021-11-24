@@ -739,7 +739,7 @@ class NestedTreeRepository extends AbstractTreeRepository
      * @param string      $direction   sort direction : "ASC" or "DESC"
      * @param bool        $verify      true to verify tree first
      *
-     * @return bool|null
+     * @return void
      */
     public function reorder($node, $sortByField = null, $direction = 'ASC', $verify = true)
     {
