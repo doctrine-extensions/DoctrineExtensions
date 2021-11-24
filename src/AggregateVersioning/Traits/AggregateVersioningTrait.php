@@ -28,7 +28,7 @@ trait AggregateVersioningTrait
      * @ORM\Version
      * @ORM\Column(type="integer")
      */
-    #[Version]
+    #[ORM\Version]
     #[ORM\Column(type: Types::INTEGER)]
     protected $version;
 
