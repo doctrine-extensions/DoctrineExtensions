@@ -81,7 +81,7 @@ class ODM implements AdapterInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @return DocumentManager
      */
     public function getObjectManager()
     {
