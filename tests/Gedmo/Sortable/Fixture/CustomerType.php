@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the Doctrine Behavioral Extensions package.
  * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
@@ -99,7 +101,7 @@ class CustomerType
             // we imitate a foreign key constraint exception because Doctrine
             // does not support SQLite constraints, which must be tested, too.
 
-            $pdoException = new \PDOException('SQLSTATE[23000]: Integrity constraint violation: 1451 Cannot delete or update a parent row: a foreign key constraint fails', '23000');
+            $pdoException = new \PDOException('SQLSTATE[23000]: Integrity constraint violation: 1451 Cannot delete or update a parent row: a foreign key constraint fails', 23000);
 
             // @todo: This check can be removed when dropping support for doctrine/dbal 2.x.
             if (class_exists(LegacyPDOException::class)) {

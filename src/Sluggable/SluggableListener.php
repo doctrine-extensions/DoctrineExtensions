@@ -482,9 +482,11 @@ class SluggableListener extends MappedEventSubscriber
             }
 
             $i = pow(10, $this->exponent);
+            $uniqueSuffix = (string) $i;
             if ($recursing || in_array($generatedSlug, $sameSlugs)) {
                 do {
-                    $generatedSlug = $preferredSlug.$config['separator'].$i++;
+                    $generatedSlug = $preferredSlug.$config['separator'].$uniqueSuffix;
+                    $uniqueSuffix = (string) ++$i;
                 } while (in_array($generatedSlug, $sameSlugs));
             }
 
@@ -493,9 +495,9 @@ class SluggableListener extends MappedEventSubscriber
                 $generatedSlug = substr(
                     $generatedSlug,
                     0,
-                    $mapping['length'] - (strlen($i) + strlen($config['separator']))
+                    $mapping['length'] - (strlen($uniqueSuffix) + strlen($config['separator']))
                 );
-                $this->exponent = strlen($i) - 1;
+                $this->exponent = strlen($uniqueSuffix) - 1;
                 if (substr($generatedSlug, -strlen($config['separator'])) == $config['separator']) {
                     $generatedSlug = substr($generatedSlug, 0, strlen($generatedSlug) - strlen($config['separator']));
                 }

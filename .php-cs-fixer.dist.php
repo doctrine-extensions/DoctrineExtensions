@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the Doctrine Behavioral Extensions package.
  * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
@@ -33,6 +35,8 @@ return (new PhpCsFixer\Config())
         'blank_line_before_statement' => true,
         'combine_consecutive_issets' => true,
         'combine_consecutive_unsets' => true,
+        // @todo: Uncomment the follwing rule in the next major release.
+        // 'declare_strict_types' => true,
         'error_suppression' => true,
         'header_comment' => ['header' => $header],
         'is_null' => false,

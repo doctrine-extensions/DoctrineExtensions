@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the Doctrine Behavioral Extensions package.
  * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
@@ -77,7 +79,9 @@ final class SluggableTest extends BaseTestCaseORM
         $this->em->persist($article);
         $this->em->flush();
         $this->em->clear();
-        for ($i = 0; $i < 12; ++$i) {
+        for ($i = 1; $i <= 12; ++$i) {
+            $uniqueSuffix = (string) $i;
+
             $article = new Article();
             $article->setTitle($long);
             $article->setCode('my code');
@@ -89,7 +93,7 @@ final class SluggableTest extends BaseTestCaseORM
             $shorten = $article->getSlug();
             static::assertSame(64, strlen($shorten));
             $expected = 'the-title-the-title-the-title-the-title-the-title-the-title-the-';
-            $expected = substr($expected, 0, 64 - (strlen($i + 1) + 1)).'-'.($i + 1);
+            $expected = substr($expected, 0, 64 - (strlen($uniqueSuffix) + 1)).'-'.$uniqueSuffix;
             static::assertSame($shorten, $expected);
         }
     }
