@@ -75,7 +75,7 @@ abstract class Xml extends File
      *
      * @param string $attributeName
      *
-     * @return string
+     * @return bool
      */
     protected function _isAttributeSet(SimpleXmlElement $node, $attributeName)
     {

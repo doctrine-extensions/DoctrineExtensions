@@ -20,12 +20,17 @@ a release.
 
 ## [Unreleased]
 ### Added
-- PHP 8 Attributes support for Doctrine MongoDB to document & traits
-- Support for doctrine/dbal >=3.2
+- PHP 8 Attributes support for Doctrine MongoDB to document & traits.
+- Support for doctrine/dbal >=3.2.
 - Timestampable: Support to use annotations as attributes on PHP >= 8.0.
 
 ### Changes
-- Dropped support for doctrine/dbal < 2.13.1
+- Translatable: Dropped support for other values than "true", "false", "1" and "0" in the `fallback` attribute of the XML mapping.
+- Tree: Dropped support for other values than "true", "false", "1" and "0" in the `activate-locking` attribute of the `tree`
+  element in the XML mapping.
+  Tree: Dropped support for other values than "true", "false", "1" and "0" in the `append_id`, `starts_with_separator` and
+  `ends_with_separator` attributes of the `tree-path` element in the XML mapping.
+- Dropped support for doctrine/dbal < 2.13.1.
 - The third argument of `Gedmo\SoftDeleteable\Query\TreeWalker\Exec\MultiTableDeleteExecutor::__construct()` requires a `Doctrine\ORM\Mapping\ClassMetadata` instance.
 
 ## [3.3.1] - 2021-11-18

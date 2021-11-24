@@ -64,7 +64,7 @@ class Xml extends BaseXml
                         throw new InvalidMappingException("Field - [{$field}] trigger 'on' is not one of [update, create, change] in class - {$meta->getName()}");
                     }
 
-                    if ('change' == $this->_getAttribute($data, 'on')) {
+                    if ('change' === $this->_getAttribute($data, 'on')) {
                         if (!$this->_isAttributeSet($data, 'field')) {
                             throw new InvalidMappingException("Missing parameters on property - {$field}, field must be set on [change] trigger in class - {$meta->getName()}");
                         }
@@ -97,7 +97,7 @@ class Xml extends BaseXml
                         throw new InvalidMappingException("Field - [{$field}] trigger 'on' is not one of [update, create, change] in class - {$meta->getName()}");
                     }
 
-                    if ('change' == $this->_getAttribute($data, 'on')) {
+                    if ('change' === $this->_getAttribute($data, 'on')) {
                         if (!$this->_isAttributeSet($data, 'field')) {
                             throw new InvalidMappingException("Missing parameters on property - {$field}, field must be set on [change] trigger in class - {$meta->getName()}");
                         }
