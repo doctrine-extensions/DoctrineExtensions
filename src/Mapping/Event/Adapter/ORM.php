@@ -81,7 +81,7 @@ class ORM implements AdapterInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @return EntityManagerInterface
      */
     public function getObjectManager()
     {
