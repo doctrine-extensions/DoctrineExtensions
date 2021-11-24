@@ -119,7 +119,7 @@ final class AggregateVersioningTest extends BaseTestCaseORM
      */
     private function getOrder(): Order
     {
-        $id = '09597988-aa74-4bb3-9fb9-0e154dd7cdec';
+        $id = 1;
 
         if (null === $order = $this->em->getRepository(self::ORDER)->find($id)) {
             $order = new Order($id);

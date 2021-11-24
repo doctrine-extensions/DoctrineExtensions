@@ -18,11 +18,11 @@ use Gedmo\Mapping\Annotation\AggregateVersioning;
 class OrderLine implements AggregateEntity
 {
     /**
-     * @var string
+     * @var int
      *
      * @ORM\Id
-     * @ORM\Column(type="guid")
-     * @ORM\GeneratedValue(strategy="UUID")
+     * @ORM\Column(type="integer")
+     * @ORM\GeneratedValue
      */
     private $id;
     /**
@@ -50,7 +50,7 @@ class OrderLine implements AggregateEntity
         $this->line = $line;
     }
 
-    public function getId(): string
+    public function getId(): int
     {
         return $this->id;
     }
