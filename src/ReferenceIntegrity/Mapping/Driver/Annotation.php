@@ -54,7 +54,7 @@ class Annotation extends AbstractAnnotationDriver
                     throw new InvalidMappingException(sprintf("'mappedBy' should be set on '%s' in '%s'", $property, $meta->getName()));
                 }
 
-                if (!in_array($referenceIntegrity->value, $validator->getIntegrityActions())) {
+                if (!in_array($referenceIntegrity->value, $validator->getIntegrityActions(), true)) {
                     throw new InvalidMappingException(sprintf('Field - [%s] does not have a valid integrity option, [%s] in class - %s', $property, implode(', ', $validator->getIntegrityActions()), $meta->getName()));
                 }
 

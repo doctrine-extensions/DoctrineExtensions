@@ -60,7 +60,7 @@ class Annotation extends AbstractAnnotationDriver
                 if ($meta->hasField($field) && !$this->isValidField($meta, $field)) {
                     throw new InvalidMappingException("Field - [{$field}] type is not valid and must be 'string' - {$meta->getName()}");
                 }
-                if (!in_array($ipTraceable->on, ['update', 'create', 'change'])) {
+                if (!in_array($ipTraceable->on, ['update', 'create', 'change'], true)) {
                     throw new InvalidMappingException("Field - [{$field}] trigger 'on' is not one of [update, create, change] in class - {$meta->getName()}");
                 }
                 if ('change' == $ipTraceable->on) {

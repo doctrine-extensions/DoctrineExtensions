@@ -106,10 +106,10 @@ class LogEntryRepository extends EntityRepository
             while (($log = array_pop($logs)) && !$filled) {
                 if ($data = $log->getData()) {
                     foreach ($data as $field => $value) {
-                        if (in_array($field, $fields)) {
+                        if (in_array($field, $fields, true)) {
                             $this->mapValue($objectMeta, $field, $value);
                             $wrapped->setPropertyValue($field, $value);
-                            unset($fields[array_search($field, $fields)]);
+                            unset($fields[array_search($field, $fields, true)]);
                         }
                     }
                 }

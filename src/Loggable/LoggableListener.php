@@ -226,7 +226,7 @@ class LoggableListener extends MappedEventSubscriber
         $newValues = [];
 
         foreach ($ea->getObjectChangeSet($uow, $object) as $field => $changes) {
-            if (empty($config['versioned']) || !in_array($field, $config['versioned'])) {
+            if (empty($config['versioned']) || !in_array($field, $config['versioned'], true)) {
                 continue;
             }
             $value = $changes[1];

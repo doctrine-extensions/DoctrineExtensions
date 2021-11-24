@@ -110,7 +110,7 @@ class Annotation extends AbstractAnnotationDriver
         $class = $this->getMetaReflectionClass($meta);
         // class annotations
         if ($annot = $this->reader->getClassAnnotation($class, self::TREE)) {
-            if (!in_array($annot->type, $this->strategies)) {
+            if (!in_array($annot->type, $this->strategies, true)) {
                 throw new InvalidMappingException("Tree type: {$annot->type} is not available.");
             }
             $config['strategy'] = $annot->type;

@@ -137,7 +137,7 @@ abstract class AbstractTrackingListener extends MappedEventSubscriber
                                 $value = $changes[1];
                             }
 
-                            if (($singleField && in_array($value, (array) $options['value'])) || null === $options['value']) {
+                            if (null === $options['value'] || ($singleField && in_array($value, (array) $options['value'], true))) {
                                 $needChanges = true;
                                 $this->updateField($object, $ea, $meta, $options['field']);
                             }

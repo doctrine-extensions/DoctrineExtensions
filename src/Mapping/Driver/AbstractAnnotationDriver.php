@@ -90,7 +90,7 @@ abstract class AbstractAnnotationDriver implements AnnotationDriverInterface
     {
         $mapping = $meta->getFieldMapping($field);
 
-        return $mapping && in_array($mapping['type'], $this->validTypes);
+        return $mapping && in_array($mapping['type'], $this->validTypes, true);
     }
 
     /**

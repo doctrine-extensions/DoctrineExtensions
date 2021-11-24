@@ -54,7 +54,7 @@ class Yaml extends File implements Driver
         if (isset($mapping['fields'])) {
             foreach ($mapping['fields'] as $field => $fieldMapping) {
                 if (isset($fieldMapping['gedmo'])) {
-                    if (in_array('versioned', $fieldMapping['gedmo'])) {
+                    if (in_array('versioned', $fieldMapping['gedmo'], true)) {
                         if ($meta->isCollectionValuedAssociation($field)) {
                             throw new InvalidMappingException("Cannot apply versioning to field [{$field}] as it is collection in object - {$meta->getName()}");
                         }
@@ -68,7 +68,7 @@ class Yaml extends File implements Driver
         if (isset($mapping['attributeOverride'])) {
             foreach ($mapping['attributeOverride'] as $field => $fieldMapping) {
                 if (isset($fieldMapping['gedmo'])) {
-                    if (in_array('versioned', $fieldMapping['gedmo'])) {
+                    if (in_array('versioned', $fieldMapping['gedmo'], true)) {
                         if ($meta->isCollectionValuedAssociation($field)) {
                             throw new InvalidMappingException("Cannot apply versioning to field [{$field}] as it is collection in object - {$meta->getName()}");
                         }
@@ -82,7 +82,7 @@ class Yaml extends File implements Driver
         if (isset($mapping['manyToOne'])) {
             foreach ($mapping['manyToOne'] as $field => $fieldMapping) {
                 if (isset($fieldMapping['gedmo'])) {
-                    if (in_array('versioned', $fieldMapping['gedmo'])) {
+                    if (in_array('versioned', $fieldMapping['gedmo'], true)) {
                         if ($meta->isCollectionValuedAssociation($field)) {
                             throw new InvalidMappingException("Cannot apply versioning to field [{$field}] as it is collection in object - {$meta->getName()}");
                         }
@@ -96,7 +96,7 @@ class Yaml extends File implements Driver
         if (isset($mapping['oneToOne'])) {
             foreach ($mapping['oneToOne'] as $field => $fieldMapping) {
                 if (isset($fieldMapping['gedmo'])) {
-                    if (in_array('versioned', $fieldMapping['gedmo'])) {
+                    if (in_array('versioned', $fieldMapping['gedmo'], true)) {
                         if ($meta->isCollectionValuedAssociation($field)) {
                             throw new InvalidMappingException("Cannot apply versioning to field [{$field}] as it is collection in object - {$meta->getName()}");
                         }
@@ -110,7 +110,7 @@ class Yaml extends File implements Driver
         if (isset($mapping['embedded'])) {
             foreach ($mapping['embedded'] as $field => $fieldMapping) {
                 if (isset($fieldMapping['gedmo'])) {
-                    if (in_array('versioned', $fieldMapping['gedmo'])) {
+                    if (in_array('versioned', $fieldMapping['gedmo'], true)) {
                         if ($meta->isCollectionValuedAssociation($field)) {
                             throw new InvalidMappingException("Cannot apply versioning to field [{$field}] as it is collection in object - {$meta->getName()}");
                         }
