@@ -24,11 +24,11 @@ class Order implements AggregateRoot
     private const STATUS_NEW = 'new';
     private const STATUS_CLOSED = 'closed';
     /**
-     * @var string
+     * @var int
      *
      * @ORM\Id
-     * @ORM\Column(type="guid")
-     * @ORM\GeneratedValue(strategy="UUID")
+     * @ORM\Column(type="integer")
+     * @ORM\GeneratedValue
      */
     private $id;
     /**
@@ -43,7 +43,7 @@ class Order implements AggregateRoot
      */
     private $items;
 
-    public function __construct(string $id)
+    public function __construct(int $id)
     {
         $this->id = $id;
         $this->status = self::STATUS_NEW;
@@ -60,7 +60,7 @@ class Order implements AggregateRoot
         $this->items->add(new OrderLine($this, $line));
     }
 
-    public function editLine(string $id, Line $line): void
+    public function editLine(int $id, Line $line): void
     {
         foreach ($this->items as $item) {
             if ($item->getId() === $id) {
@@ -73,7 +73,7 @@ class Order implements AggregateRoot
         throw new DomainException('Order line not found.');
     }
 
-    public function removeLine(string $id): void
+    public function removeLine(int $id): void
     {
         foreach ($this->items as $item) {
             if ($item->getId() === $id) {
@@ -86,7 +86,7 @@ class Order implements AggregateRoot
         throw new DomainException('Order line not found.');
     }
 
-    public function getId(): string
+    public function getId(): int
     {
         return $this->id;
     }
