@@ -15,6 +15,7 @@ use Gedmo\Mapping\Annotation\AggregateVersioning;
  *
  * @author Maksim Vorozhtsov <myks1992@mail.ru>
  */
+#[AggregateVersioning(aggregateRootMethod: 'getOrder')]
 class OrderLine implements AggregateEntity
 {
     /**
