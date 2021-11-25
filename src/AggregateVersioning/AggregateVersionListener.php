@@ -78,25 +78,36 @@ final class AggregateVersionListener extends MappedEventSubscriber
         }
 
         $entity = end($entities);
-        $annotation = $this->getAggregateEntityAnnotation($entity);
+        $method = $this->getAggregateRootMethod($entity);
 
-        if (!method_exists($entity, $annotation->aggregateRootMethod)) {
-            throw new LogicException(sprintf('Method "%s()" does not exist in class "%s".', $annotation->aggregateRootMethod, get_class($entity)));
+        if (!method_exists($entity, $method)) {
+            throw new LogicException(sprintf('Method "%s()" does not exist in class "%s".', $method, get_class($entity)));
         }
 
-        return $entity->{$annotation->aggregateRootMethod}();
+        return $entity->{$method}();
     }
 
-    private function getAggregateEntityAnnotation(AggregateEntity $entity): AggregateVersioning
+    private function getAggregateRootMethod(AggregateEntity $entity): string
     {
-        $reflectionClass = new ReflectionClass($entity);
+        $reflection = new ReflectionClass($entity);
 
-        $reader = new AnnotationReader();
+        if (\PHP_VERSION_ID >= 80000) {
+            $attributes = $reflection->getAttributes(AggregateVersioning::class);
+            if (!empty($attributes)) {
+                $arguments = $attributes[0]->getArguments();
+                if (!isset($arguments['aggregateRootMethod'])) {
+                    throw new LogicException(sprintf('Attribute "%s" in entity "%s" must have argument "%s".', AggregateVersioning::class, get_class($entity), 'aggregateRootMethod'));
+                }
 
-        if (!$annotation = $reader->getClassAnnotation($reflectionClass, AggregateVersioning::class)) {
-            throw new LogicException(sprintf('Aggregate "%s" must have %s.', get_class($entity), AggregateVersioning::class));
+                return $arguments['aggregateRootMethod'];
+            }
         }
 
-        return $annotation;
+        $reader = new AnnotationReader();
+        if ($annotation = $reader->getClassAnnotation($reflection, AggregateVersioning::class)) {
+            return $annotation->aggregateRootMethod;
+        }
+
+        throw new LogicException(sprintf('Aggregate "%s" must have %s.', get_class($entity), AggregateVersioning::class));
     }
 }
