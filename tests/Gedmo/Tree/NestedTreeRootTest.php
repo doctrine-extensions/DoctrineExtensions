@@ -507,7 +507,7 @@ final class NestedTreeRootTest extends BaseTestCaseORM
     /**
      * @throws \Doctrine\ORM\OptimisticLockException
      */
-    private function populate()
+    private function populate(): void
     {
         $root = new RootCategory();
         $root->setTitle('Food');

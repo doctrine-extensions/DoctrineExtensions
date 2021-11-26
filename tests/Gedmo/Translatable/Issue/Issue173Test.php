@@ -102,7 +102,7 @@ final class Issue173Test extends BaseTestCaseORM
         ];
     }
 
-    private function populate()
+    private function populate(): void
     {
         //Categories
         $category1 = new Category();

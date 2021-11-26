@@ -131,7 +131,7 @@ final class ConcurrencyTest extends BaseTestCaseORM
         ];
     }
 
-    private function populate()
+    private function populate(): void
     {
         $root = new Category();
         $root->setTitle('Root');

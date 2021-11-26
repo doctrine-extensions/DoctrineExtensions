@@ -102,7 +102,7 @@ final class BlameableDocumentTest extends BaseTestCaseMongoODM
         static::assertSame(self::TEST_USERNAME, $sport->getPublished());
     }
 
-    private function populate()
+    private function populate(): void
     {
         $art0 = new Article();
         $art0->setTitle('Blameable Article');

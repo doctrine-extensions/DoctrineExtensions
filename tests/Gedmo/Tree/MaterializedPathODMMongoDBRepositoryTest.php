@@ -338,7 +338,7 @@ final class MaterializedPathODMMongoDBRepositoryTest extends BaseTestCaseMongoOD
         ];
     }
 
-    private function populate()
+    private function populate(): void
     {
         $root = $this->createCategory();
         $root->setTitle('Food');

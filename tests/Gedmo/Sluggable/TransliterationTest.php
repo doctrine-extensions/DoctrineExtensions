@@ -60,7 +60,7 @@ final class TransliterationTest extends BaseTestCaseORM
         ];
     }
 
-    private function populate()
+    private function populate(): void
     {
         $lithuanian = new Article();
         $lithuanian->setTitle('trąnslįteration tėst ųsąge ūž');

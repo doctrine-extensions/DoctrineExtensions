@@ -95,7 +95,7 @@ final class RelativeSlugHandlerTest extends BaseTestCaseORM
         ];
     }
 
-    private function populate()
+    private function populate(): void
     {
         $sport = new Article();
         $sport->setTitle('Sport');

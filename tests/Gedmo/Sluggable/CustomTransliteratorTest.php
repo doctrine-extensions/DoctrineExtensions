@@ -60,7 +60,7 @@ final class CustomTransliteratorTest extends BaseTestCaseORM
         ];
     }
 
-    private function populate()
+    private function populate(): void
     {
         $chinese = new Article();
         $chinese->setTitle('北京');

@@ -74,7 +74,7 @@ abstract class MappedEventSubscriber implements EventSubscriber
     private $annotationReader;
 
     /**
-     * @var \Doctrine\Common\Annotations\AnnotationReader
+     * @var AnnotationReader
      */
     private static $defaultAnnotationReader;
 
@@ -245,10 +245,8 @@ abstract class MappedEventSubscriber implements EventSubscriber
 
     /**
      * Create default annotation reader for extensions
-     *
-     * @return \Doctrine\Common\Annotations\AnnotationReader
      */
-    private function getDefaultAnnotationReader()
+    private function getDefaultAnnotationReader(): Reader
     {
         if (null === self::$defaultAnnotationReader) {
             AnnotationRegistry::registerAutoloadNamespace('Gedmo\\Mapping\\Annotation', __DIR__.'/../../');

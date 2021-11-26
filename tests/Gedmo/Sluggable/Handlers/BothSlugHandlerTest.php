@@ -116,7 +116,7 @@ final class BothSlugHandlerTest extends BaseTestCaseORM
         ];
     }
 
-    private function populate()
+    private function populate(): void
     {
         $repo = $this->em->getRepository(self::OCCUPATION);
 

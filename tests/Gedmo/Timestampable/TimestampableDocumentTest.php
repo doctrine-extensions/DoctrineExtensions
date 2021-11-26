@@ -127,7 +127,7 @@ final class TimestampableDocumentTest extends BaseTestCaseMongoODM
         static::assertNotNull($article->getReady());
     }
 
-    private function populate()
+    private function populate(): void
     {
         $art0 = new Article();
         $art0->setTitle('Timestampable Article');

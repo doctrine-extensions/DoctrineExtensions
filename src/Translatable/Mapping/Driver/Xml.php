@@ -82,7 +82,7 @@ class Xml extends BaseXml
         }
     }
 
-    private function inspectElementsForTranslatableFields(\SimpleXMLElement $xml, array &$config, $prefix = null)
+    private function inspectElementsForTranslatableFields(\SimpleXMLElement $xml, array &$config, ?string $prefix = null): void
     {
         if (!isset($xml->field)) {
             return;
@@ -99,7 +99,7 @@ class Xml extends BaseXml
         }
     }
 
-    private function buildFieldConfiguration($fieldName, \SimpleXMLElement $mapping, array &$config)
+    private function buildFieldConfiguration(string $fieldName, \SimpleXMLElement $mapping, array &$config): void
     {
         $mapping = $mapping->children(self::GEDMO_NAMESPACE_URI);
         if ($mapping->count() > 0 && isset($mapping->translatable)) {

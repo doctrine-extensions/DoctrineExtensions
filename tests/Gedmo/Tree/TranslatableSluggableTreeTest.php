@@ -124,7 +124,7 @@ final class TranslatableSluggableTreeTest extends BaseTestCaseORM
         ];
     }
 
-    private function populateDeTranslations()
+    private function populateDeTranslations(): void
     {
         $this->translatableListener->setTranslatableLocale('de_DE');
         $repo = $this->em->getRepository(self::CATEGORY);
@@ -141,7 +141,7 @@ final class TranslatableSluggableTreeTest extends BaseTestCaseORM
         $this->translatableListener->setTranslatableLocale('en_US');
     }
 
-    private function populate()
+    private function populate(): void
     {
         $root = new BehavioralCategory();
         $root->setTitle('Food');

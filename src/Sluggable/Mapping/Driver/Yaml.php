@@ -9,6 +9,7 @@
 
 namespace Gedmo\Sluggable\Mapping\Driver;
 
+use Doctrine\Persistence\Mapping\ClassMetadata;
 use Gedmo\Exception\InvalidMappingException;
 use Gedmo\Mapping\Driver;
 use Gedmo\Mapping\Driver\File;
@@ -87,7 +88,7 @@ class Yaml extends File implements Driver
         return $mapping && in_array($mapping['type'], $this->validTypes);
     }
 
-    private function buildFieldConfiguration($field, array $fieldMapping, $meta, array &$config)
+    private function buildFieldConfiguration(string $field, array $fieldMapping, ClassMetadata $meta, array &$config): void
     {
         if (isset($fieldMapping['gedmo'])) {
             if (isset($fieldMapping['gedmo']['slug'])) {

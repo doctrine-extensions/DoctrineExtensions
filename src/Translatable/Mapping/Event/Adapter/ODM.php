@@ -203,7 +203,7 @@ final class ODM extends BaseAdapterODM implements TranslatableAdapter
         $wrapped->setPropertyValue($field, $value);
     }
 
-    private function getType($type)
+    private function getType(string $type): Type
     {
         return Type::getType($type);
     }

@@ -141,10 +141,8 @@ class LogEntryRepository extends EntityRepository
      * Get the currently used LoggableListener
      *
      * @throws \Gedmo\Exception\RuntimeException if listener is not found
-     *
-     * @return LoggableListener
      */
-    private function getLoggableListener()
+    private function getLoggableListener(): LoggableListener
     {
         if (null === $this->listener) {
             foreach ($this->_em->getEventManager()->getListeners() as $event => $listeners) {

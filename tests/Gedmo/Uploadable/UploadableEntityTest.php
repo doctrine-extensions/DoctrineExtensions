@@ -261,9 +261,9 @@ final class UploadableEntityTest extends BaseTestCaseORM
 
         $filesArrayIndex = 'file';
 
-        $fileInfo = $this->generateUploadedFile($filesArrayIndex);
-        $fileInfo2 = $this->generateUploadedFile($filesArrayIndex);
-        $fileInfo3 = $this->generateUploadedFile($filesArrayIndex);
+        $fileInfo = $this->generateUploadedFile();
+        $fileInfo2 = $this->generateUploadedFile();
+        $fileInfo3 = $this->generateUploadedFile();
 
         $this->listener->addEntityFileInfo($file1, $fileInfo);
         $this->listener->addEntityFileInfo($file2, $fileInfo2);
@@ -386,7 +386,7 @@ final class UploadableEntityTest extends BaseTestCaseORM
     public function testFileWithFilenameAlphanumericGenerator()
     {
         $file = new FileWithAlphanumericName();
-        $fileInfo = $this->generateUploadedFile('image', $this->testFile3, $this->testFilename3);
+        $fileInfo = $this->generateUploadedFile($this->testFile3, $this->testFilename3);
 
         $this->listener->addEntityFileInfo($file, $fileInfo);
 
@@ -420,7 +420,7 @@ final class UploadableEntityTest extends BaseTestCaseORM
     public function testUploadFileWithoutExtension()
     {
         $file = new File();
-        $fileInfo = $this->generateUploadedFile('image', $this->testFileWithoutExt, $this->testFilenameWithoutExt);
+        $fileInfo = $this->generateUploadedFile($this->testFileWithoutExt, $this->testFilenameWithoutExt);
 
         $this->listener->addEntityFileInfo($file, $fileInfo);
 
@@ -439,7 +439,7 @@ final class UploadableEntityTest extends BaseTestCaseORM
         $this->expectException(UploadableFileAlreadyExistsException::class);
         $file = new Image();
         $file->setTitle('test');
-        $fileInfo = $this->generateUploadedFile('image', $this->testFileWithoutExt, $this->testFilenameWithoutExt);
+        $fileInfo = $this->generateUploadedFile($this->testFileWithoutExt, $this->testFilenameWithoutExt);
 
         $this->listener->addEntityFileInfo($file, $fileInfo);
 
@@ -493,7 +493,7 @@ final class UploadableEntityTest extends BaseTestCaseORM
         $file->setTitle('test');
         $file2->setTitle('test2');
 
-        $fileInfo = $this->generateUploadedFile('image', realpath(__DIR__.'/../../../tests/data/test'), 'test');
+        $fileInfo = $this->generateUploadedFile(realpath(TESTS_PATH.'/data/test'), 'test');
 
         $this->listener->addEntityFileInfo($file, $fileInfo);
         $this->em->persist($file);
@@ -560,7 +560,7 @@ final class UploadableEntityTest extends BaseTestCaseORM
 
         $file = new FileWithMaxSize();
         $size = '0.0001';
-        $fileInfo = $this->generateUploadedFile('image', false, false, ['size' => $size]);
+        $fileInfo = $this->generateUploadedFile(false, false, ['size' => $size]);
 
         $this->listener->addEntityFileInfo($file, $fileInfo);
 
@@ -644,7 +644,7 @@ final class UploadableEntityTest extends BaseTestCaseORM
         $this->listener->setDefaultPath($this->destinationTestDir);
 
         $file = new FileWithAlphanumericName();
-        $fileInfo = $this->generateUploadedFile('file', $this->testFileWithSpaces, $this->testFilenameWithSpaces);
+        $fileInfo = $this->generateUploadedFile($this->testFileWithSpaces, $this->testFilenameWithSpaces);
 
         $this->listener->addEntityFileInfo($file, $fileInfo);
 
@@ -719,7 +719,7 @@ final class UploadableEntityTest extends BaseTestCaseORM
 
     // Util
 
-    private function generateUploadedFile($index = 'image', $filePath = false, $filename = false, array $info = [])
+    private function generateUploadedFile($filePath = false, $filename = false, array $info = []): array
     {
         $defaultInfo = [
             'tmp_name' => !$filePath ? $this->testFile : $filePath,
@@ -729,12 +729,10 @@ final class UploadableEntityTest extends BaseTestCaseORM
             'error' => 0,
         ];
 
-        $info = array_merge($defaultInfo, $info);
-
-        return $info;
+        return array_merge($defaultInfo, $info);
     }
 
-    private function clearFilesAndDirectories()
+    private function clearFilesAndDirectories(): void
     {
         if (is_dir($this->destinationTestDir)) {
             $iter = new \DirectoryIterator($this->destinationTestDir);

@@ -120,10 +120,8 @@ class Annotation extends AbstractAnnotationDriver
 
     /**
      * Searches properties of embedded object for versioned fields
-     *
-     * @param string $field
      */
-    private function inspectEmbeddedForVersioned($field, array &$config, \Doctrine\ORM\Mapping\ClassMetadata $meta)
+    private function inspectEmbeddedForVersioned(string $field, array &$config, \Doctrine\ORM\Mapping\ClassMetadata $meta): void
     {
         $class = new \ReflectionClass($meta->embeddedClasses[$field]['class']);
 

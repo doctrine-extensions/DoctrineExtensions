@@ -98,7 +98,7 @@ final class IpTraceableDocumentTest extends BaseTestCaseMongoODM
         static::assertSame(self::TEST_IP, $sport->getPublished());
     }
 
-    private function populate()
+    private function populate(): void
     {
         $art0 = new Article();
         $art0->setTitle('IpTraceable Article');

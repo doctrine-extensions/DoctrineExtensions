@@ -323,22 +323,19 @@ final class ClosureTreeTest extends BaseTestCaseORM
         ];
     }
 
-    private function hasAncestor($closures, $name)
+    private function hasAncestor(iterable $closures, string $name): bool
     {
-        $result = false;
         foreach ($closures as $closure) {
             $ancestor = $closure->getAncestor();
             if ($ancestor->getTitle() === $name) {
-                $result = true;
-
-                break;
+                return true;
             }
         }
 
-        return $result;
+        return false;
     }
 
-    private function populate()
+    private function populate(): void
     {
         $food = new Category();
         $food->setTitle('Food');

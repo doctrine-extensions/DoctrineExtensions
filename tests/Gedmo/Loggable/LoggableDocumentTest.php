@@ -130,7 +130,7 @@ final class LoggableDocumentTest extends BaseTestCaseMongoODM
         static::assertSame('update', $latest->getAction());
     }
 
-    private function populate()
+    private function populate(): void
     {
         $article = new RelatedArticle();
         $article->setTitle('a1-t-v1');

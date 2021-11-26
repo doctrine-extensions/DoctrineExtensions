@@ -88,7 +88,7 @@ final class SortableDocumentTest extends BaseTestCaseMongoODM
         }
     }
 
-    private function populate()
+    private function populate(): void
     {
         for ($i = 0; $i <= 4; ++$i) {
             $article = new Article();

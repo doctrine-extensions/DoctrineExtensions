@@ -130,10 +130,8 @@ class SoftDeleteableWalker extends SqlWalker
      * Get the currently used SoftDeleteableListener
      *
      * @throws \Gedmo\Exception\RuntimeException if listener is not found
-     *
-     * @return SoftDeleteableListener
      */
-    private function getSoftDeleteableListener()
+    private function getSoftDeleteableListener(): SoftDeleteableListener
     {
         if (null === $this->listener) {
             $em = $this->getEntityManager();
@@ -158,10 +156,8 @@ class SoftDeleteableWalker extends SqlWalker
 
     /**
      * Search for components in the delete clause
-     *
-     * @return void
      */
-    private function extractComponents(array $queryComponents)
+    private function extractComponents(array $queryComponents): void
     {
         $em = $this->getEntityManager();
 

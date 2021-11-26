@@ -110,7 +110,7 @@ final class ORM extends BaseAdapterORM implements ReferencesAdapter
     /**
      * Override so we don't get an exception. We want to allow this.
      */
-    private function throwIfNotDocumentManager($dm)
+    private function throwIfNotDocumentManager($dm): void
     {
         if (!($dm instanceof MongoDocumentManager) && !($dm instanceof PhpcrDocumentManager)) {
             throw new InvalidArgumentException(sprintf('Expected a %s or %s instance but got "%s"', MongoDocumentManager::class, 'Doctrine\ODM\PHPCR\DocumentManager', is_object($dm) ? get_class($dm) : gettype($dm)));

@@ -173,7 +173,7 @@ final class LoggableEntityTest extends BaseTestCaseORM
         ];
     }
 
-    private function populateEmbedded()
+    private function populateEmbedded(): Address
     {
         $address = new Address();
         $address->setCity('city-v1');
@@ -206,7 +206,7 @@ final class LoggableEntityTest extends BaseTestCaseORM
         return $address;
     }
 
-    private function populate()
+    private function populate(): void
     {
         $article = new RelatedArticle();
         $article->setTitle('a1-t-v1');

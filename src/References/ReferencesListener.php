@@ -183,7 +183,7 @@ class ReferencesListener extends MappedEventSubscriber
         return __NAMESPACE__;
     }
 
-    private function updateReferences(EventArgs $eventArgs)
+    private function updateReferences(EventArgs $eventArgs): void
     {
         $ea = $this->getEventAdapter($eventArgs);
         $om = $ea->getObjectManager();

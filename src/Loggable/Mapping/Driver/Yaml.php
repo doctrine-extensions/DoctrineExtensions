@@ -140,10 +140,7 @@ class Yaml extends File implements Driver
         return \Symfony\Component\Yaml\Yaml::parse(file_get_contents($file));
     }
 
-    /**
-     * @param string $field
-     */
-    private function inspectEmbeddedForVersioned($field, array $mapping, array &$config)
+    private function inspectEmbeddedForVersioned(string $field, array $mapping, array &$config): void
     {
         if (isset($mapping['fields'])) {
             foreach ($mapping['fields'] as $property => $fieldMapping) {

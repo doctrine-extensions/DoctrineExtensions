@@ -236,7 +236,7 @@ final class PersonalTranslationTest extends BaseTestCaseORM
         ];
     }
 
-    private function populate()
+    private function populate(): void
     {
         $article = new Article();
         $article->setTitle('en');

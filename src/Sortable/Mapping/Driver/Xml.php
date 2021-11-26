@@ -91,11 +91,7 @@ class Xml extends BaseXml
         return $mapping && in_array($mapping['type'], $this->validTypes);
     }
 
-    /**
-     * @param \SimpleXMLElement[] $mapping
-     * @param string              $fieldAttr
-     */
-    private function readSortableGroups($mapping, array &$config, $fieldAttr = 'field')
+    private function readSortableGroups(\SimpleXMLElement $mapping, array &$config, string $fieldAttr = 'field'): void
     {
         foreach ($mapping as $mappingDoctrine) {
             $map = $mappingDoctrine->children(self::GEDMO_NAMESPACE_URI);

@@ -110,7 +110,7 @@ final class TranslatableManySlugTest extends BaseTestCaseORM
         ];
     }
 
-    private function populate()
+    private function populate(): void
     {
         $article = new TransArticleManySlug();
         $article->setTitle('the title');

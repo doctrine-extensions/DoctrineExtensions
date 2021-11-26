@@ -96,7 +96,7 @@ final class ODM extends BaseAdapterODM implements ReferencesAdapter
     /**
      * Override so we don't get an exception. We want to allow this.
      */
-    private function throwIfNotEntityManager(EntityManagerInterface $em)
+    private function throwIfNotEntityManager(EntityManagerInterface $em): void
     {
     }
 }
