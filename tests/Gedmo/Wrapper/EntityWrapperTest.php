@@ -101,7 +101,7 @@ final class EntityWrapperTest extends BaseTestCaseORM
         ];
     }
 
-    private function populate()
+    private function populate(): void
     {
         $test = new Article();
         $test->setTitle('test');

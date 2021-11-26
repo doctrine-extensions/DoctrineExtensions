@@ -553,12 +553,8 @@ class TranslatableListener extends MappedEventSubscriber
 
     /**
      * Check if the given locale is valid
-     *
-     * @param string $locale locale to check
-     *
-     * @return bool
      */
-    private function isValidlocale($locale)
+    private function isValidlocale(?string $locale): bool
     {
         return is_string($locale) && strlen($locale);
     }
@@ -566,13 +562,10 @@ class TranslatableListener extends MappedEventSubscriber
     /**
      * Creates the translation for object being flushed
      *
-     * @param object $object
-     * @param bool   $isInsert
-     *
      * @throws \UnexpectedValueException if locale is not valid, or
      *                                   primary key is composite, missing or invalid
      */
-    private function handleTranslatableObjectUpdate(TranslatableAdapter $ea, $object, $isInsert)
+    private function handleTranslatableObjectUpdate(TranslatableAdapter $ea, object $object, bool $isInsert): void
     {
         $om = $ea->getObjectManager();
         $wrapped = AbstractWrapper::wrap($object, $om);
@@ -733,7 +726,7 @@ class TranslatableListener extends MappedEventSubscriber
      * @param string $oid   hash of the basic entity
      * @param string $field field of basic entity
      */
-    private function removeTranslationInDefaultLocale($oid, $field)
+    private function removeTranslationInDefaultLocale(string $oid, string $field): void
     {
         if (isset($this->translationInDefaultLocale[$oid])) {
             if (isset($this->translationInDefaultLocale[$oid][$field])) {
@@ -757,7 +750,7 @@ class TranslatableListener extends MappedEventSubscriber
      *
      * @return mixed Returns translation object if it exists or NULL otherwise
      */
-    private function getTranslationInDefaultLocale($oid, $field)
+    private function getTranslationInDefaultLocale(string $oid, string $field)
     {
         if (array_key_exists($oid, $this->translationInDefaultLocale)) {
             $ret = $this->translationInDefaultLocale[$oid][$field] ?? null;
@@ -770,13 +763,8 @@ class TranslatableListener extends MappedEventSubscriber
 
     /**
      * Checks if the translation entity belongs to the object in question
-     *
-     * @param object $trans
-     * @param object $object
-     *
-     * @return bool
      */
-    private function belongsToObject(TranslatableAdapter $ea, $trans, $object)
+    private function belongsToObject(TranslatableAdapter $ea, object $trans, object $object): bool
     {
         if ($ea->usesPersonalTranslation(get_class($trans))) {
             return $trans->getObject() === $object;

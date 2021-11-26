@@ -88,7 +88,7 @@ final class RelativeSlugHandlerDocumentTest extends BaseTestCaseMongoODM
         static::assertSame('cars-code/jen', $jen->getSlug());
     }
 
-    private function populate()
+    private function populate(): void
     {
         $sport = new Article();
         $sport->setTitle('Sport');

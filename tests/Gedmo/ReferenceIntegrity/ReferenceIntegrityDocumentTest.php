@@ -194,7 +194,7 @@ final class ReferenceIntegrityDocumentTest extends BaseTestCaseMongoODM
         $this->dm->flush();
     }
 
-    private function populateOneNullify()
+    private function populateOneNullify(): void
     {
         $typeClass = self::TYPE_ONE_NULLIFY_CLASS;
         $type = new $typeClass();
@@ -212,7 +212,7 @@ final class ReferenceIntegrityDocumentTest extends BaseTestCaseMongoODM
         $this->dm->clear();
     }
 
-    private function populateManyNullify()
+    private function populateManyNullify(): void
     {
         $typeClass = self::TYPE_MANY_NULLIFY_CLASS;
         $type = new $typeClass();
@@ -230,7 +230,7 @@ final class ReferenceIntegrityDocumentTest extends BaseTestCaseMongoODM
         $this->dm->clear();
     }
 
-    private function populateOnePull()
+    private function populateOnePull(): void
     {
         $typeClass = self::TYPE_ONE_PULL_CLASS;
         $type1 = new $typeClass();
@@ -253,7 +253,7 @@ final class ReferenceIntegrityDocumentTest extends BaseTestCaseMongoODM
         $this->dm->clear();
     }
 
-    private function populateManyPull()
+    private function populateManyPull(): void
     {
         $typeClass = self::TYPE_MANY_PULL_CLASS;
         $type1 = new $typeClass();
@@ -276,7 +276,7 @@ final class ReferenceIntegrityDocumentTest extends BaseTestCaseMongoODM
         $this->dm->clear();
     }
 
-    private function populateOneRestrict()
+    private function populateOneRestrict(): void
     {
         $typeClass = self::TYPE_ONE_RESTRICT_CLASS;
         $type = new $typeClass();
@@ -294,7 +294,7 @@ final class ReferenceIntegrityDocumentTest extends BaseTestCaseMongoODM
         $this->dm->clear();
     }
 
-    private function populateManyRestrict()
+    private function populateManyRestrict(): void
     {
         $typeClass = self::TYPE_MANY_RESTRICT_CLASS;
         $type = new $typeClass();

@@ -231,10 +231,8 @@ class TranslationRepository extends DocumentRepository
      * Get the currently used TranslatableListener
      *
      * @throws \Gedmo\Exception\RuntimeException if listener is not found
-     *
-     * @return TranslatableListener
      */
-    private function getTranslatableListener()
+    private function getTranslatableListener(): TranslatableListener
     {
         if (!$this->listener) {
             foreach ($this->dm->getEventManager()->getListeners() as $event => $listeners) {
@@ -251,7 +249,7 @@ class TranslationRepository extends DocumentRepository
         return $this->listener;
     }
 
-    private function getType($type)
+    private function getType(string $type): Type
     {
         return Type::getType($type);
     }

@@ -94,7 +94,7 @@ final class MixedValueTranslationTest extends BaseTestCaseORM
         ];
     }
 
-    private function populate()
+    private function populate(): void
     {
         $mixedEn = new MixedValue();
         $mixedEn->setDate(new \DateTime());

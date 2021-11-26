@@ -92,7 +92,7 @@ final class MongoDocumentWrapperTest extends BaseTestCaseMongoODM
         static::assertFalse($wrapped->hasValidIdentifier());
     }
 
-    private function populate()
+    private function populate(): void
     {
         $test = new Article();
         $test->setTitle('test');

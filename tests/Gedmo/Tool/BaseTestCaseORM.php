@@ -238,10 +238,8 @@ abstract class BaseTestCaseORM extends \PHPUnit\Framework\TestCase
 
     /**
      * Build event manager
-     *
-     * @return EventManager
      */
-    private function getEventManager()
+    private function getEventManager(): EventManager
     {
         $evm = new EventManager();
         $evm->addEventSubscriber(new TreeListener());

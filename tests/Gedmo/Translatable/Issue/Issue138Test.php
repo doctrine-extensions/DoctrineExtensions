@@ -70,7 +70,7 @@ final class Issue138Test extends BaseTestCaseORM
         ];
     }
 
-    private function populate()
+    private function populate(): void
     {
         $repo = $this->em->getRepository(self::ARTICLE);
 

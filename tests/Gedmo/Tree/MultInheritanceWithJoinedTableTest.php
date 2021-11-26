@@ -130,7 +130,7 @@ final class MultInheritanceWithJoinedTableTest extends BaseTestCaseORM
         ];
     }
 
-    private function populate()
+    private function populate(): void
     {
         $everyBody = new \Gedmo\Tests\Tree\Fixture\UserGroup('Everybody');
         $admins = new \Gedmo\Tests\Tree\Fixture\UserGroup('Admins');

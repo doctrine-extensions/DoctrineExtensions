@@ -429,7 +429,7 @@ final class RepositoryTest extends BaseTestCaseORM
         ];
     }
 
-    private function populateMore()
+    private function populateMore(): void
     {
         $vegies = $this->em->getRepository(self::CATEGORY)
             ->findOneBy(['title' => 'Vegitables']);
@@ -448,7 +448,7 @@ final class RepositoryTest extends BaseTestCaseORM
         $this->em->clear();
     }
 
-    private function populate()
+    private function populate(): void
     {
         $root = new Category();
         $root->setTitle('Food');
@@ -482,7 +482,7 @@ final class RepositoryTest extends BaseTestCaseORM
         $this->em->clear();
     }
 
-    private function populateUuid()
+    private function populateUuid(): void
     {
         $root = new CategoryUuid();
         $root->setTitle('Food');

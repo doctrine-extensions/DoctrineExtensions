@@ -145,7 +145,7 @@ final class TranslatableSlugTest extends BaseTestCaseORM
         ];
     }
 
-    private function populate()
+    private function populate(): void
     {
         $article = new TranslatableArticle();
         $article->setTitle('the title');

@@ -181,7 +181,7 @@ final class TreeObjectHydratorTest extends BaseTestCaseORM
         ];
     }
 
-    private function populate()
+    private function populate(): void
     {
         $repo = $this->em->getRepository(self::ROOT_CATEGORY);
 

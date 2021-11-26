@@ -112,7 +112,7 @@ final class TranslatableDocumentTest extends BaseTestCaseMongoODM
         $this->assertCount(0, $translations);*/
     }
 
-    private function populate()
+    private function populate(): void
     {
         $art0 = new Article();
         $art0->setTitle('Title EN');

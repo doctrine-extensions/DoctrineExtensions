@@ -18,25 +18,41 @@ use Doctrine\Common\Collections\Collection;
  */
 class TranslationProxy
 {
+    /**
+     * @var string
+     */
     protected $locale;
+    /**
+     * @var object
+     */
     protected $translatable;
+    /**
+     * @var string[]
+     */
     protected $properties = [];
+    /**
+     * @var string
+     *
+     * @phpstan-var class-string<TranslationInterface>
+     */
     protected $class;
     /**
-     * @var Collection|TranslationInterface[]
+     * @var Collection<int, TranslationInterface>
      */
     protected $coll;
 
     /**
      * Initializes translations collection
      *
-     * @param object     $translatable object to translate
-     * @param string     $locale       translation name
-     * @param array      $properties   object properties to translate
-     * @param string     $class        translation entity|document class
-     * @param Collection $coll         translations collection
+     * @param object $translatable object to translate
+     * @param string $locale       translation name
+     * @param array  $properties   object properties to translate
+     * @param string $class        translation entity|document class
      *
      * @throws \InvalidArgumentException Translation class doesn't implement TranslationInterface
+     *
+     * @phpstan-param class-string<TranslationInterface> $class
+     * @phpstan-param Collection<int, TranslationInterface> $coll
      */
     public function __construct($translatable, $locale, array $properties, $class, Collection $coll)
     {
@@ -150,13 +166,8 @@ class TranslationProxy
 
     /**
      * Finds existing or creates new translation for specified property
-     *
-     * @param string $property object property name
-     * @param string $locale   locale name
-     *
-     * @return Translation
      */
-    private function findOrCreateTranslationForProperty($property, $locale)
+    private function findOrCreateTranslationForProperty(string $property, string $locale): TranslationInterface
     {
         foreach ($this->coll as $translation) {
             if ($locale === $translation->getLocale() && $property === $translation->getProperty()) {

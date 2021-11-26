@@ -455,7 +455,7 @@ final class NestedTreeRootRepositoryTest extends BaseTestCaseORM
         ];
     }
 
-    private function populateMore()
+    private function populateMore(): void
     {
         $vegies = $this->em->getRepository(self::CATEGORY)
             ->findOneBy(['title' => 'Vegitables']);
@@ -473,7 +473,7 @@ final class NestedTreeRootRepositoryTest extends BaseTestCaseORM
         $this->em->flush();
     }
 
-    private function populate()
+    private function populate(): void
     {
         $root = new RootCategory();
         $root->setTitle('Food');

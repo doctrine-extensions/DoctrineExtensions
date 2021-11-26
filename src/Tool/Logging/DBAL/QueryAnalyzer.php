@@ -183,16 +183,10 @@ class QueryAnalyzer implements SQLLogger
 
     /**
      * Create the SQL with mapped parameters
-     *
-     * @param string     $sql
-     * @param array|null $params
-     * @param array|null $types
-     *
-     * @return string
      */
-    private function generateSql($sql, $params, $types)
+    private function generateSql(string $sql, ?array $params, ?array $types): string
     {
-        if (null === $params || !count($params)) {
+        if (null === $params || [] === $params) {
             return $sql;
         }
         $converted = $this->getConvertedParams($params, $types);
@@ -212,13 +206,8 @@ class QueryAnalyzer implements SQLLogger
 
     /**
      * Get the converted parameter list
-     *
-     * @param array $params
-     * @param array $types
-     *
-     * @return array
      */
-    private function getConvertedParams($params, $types)
+    private function getConvertedParams(array $params, array $types): array
     {
         $result = [];
         foreach ($params as $position => $value) {

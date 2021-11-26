@@ -94,7 +94,7 @@ final class SluggableConfigurationTest extends BaseTestCaseORM
         ];
     }
 
-    private function populate()
+    private function populate(): void
     {
         $article = new ConfigurationArticle();
         $article->setTitle('the title');

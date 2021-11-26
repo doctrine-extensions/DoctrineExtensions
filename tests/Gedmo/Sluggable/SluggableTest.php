@@ -266,7 +266,7 @@ final class SluggableTest extends BaseTestCaseORM
         ];
     }
 
-    private function populate()
+    private function populate(): void
     {
         $article = new Article();
         $article->setTitle('the title');

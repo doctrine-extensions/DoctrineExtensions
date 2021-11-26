@@ -247,8 +247,6 @@ abstract class BaseTestCaseOM extends \PHPUnit\Framework\TestCase
     /**
      * Get annotation mapping configuration for ORM
      *
-     * @param MappingDriver $mappingDriver
-     *
      * @return \Doctrine\ORM\Configuration
      */
     private function getMockAnnotatedORMConfig(MappingDriver $mappingDriver = null)

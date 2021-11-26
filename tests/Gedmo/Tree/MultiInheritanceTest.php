@@ -90,7 +90,7 @@ final class MultiInheritanceTest extends BaseTestCaseORM
         ];
     }
 
-    private function populate()
+    private function populate(): void
     {
         $root = new \Gedmo\Tests\Tree\Fixture\Node();
         $root->setTitle('Food');

@@ -85,7 +85,7 @@ final class SluggableDocumentTest extends BaseTestCaseMongoODM
         static::assertSame('my-s', $article2->getSlug());
     }
 
-    private function populate()
+    private function populate(): void
     {
         $art0 = new Article();
         $art0->setTitle('My Title');

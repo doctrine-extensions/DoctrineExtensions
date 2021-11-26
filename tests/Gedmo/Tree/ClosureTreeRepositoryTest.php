@@ -459,7 +459,7 @@ final class ClosureTreeRepositoryTest extends BaseTestCaseORM
         ];
     }
 
-    private function populate($class = self::CATEGORY)
+    private function populate($class = self::CATEGORY): void
     {
         $food = new $class();
         $food->setTitle('Food');

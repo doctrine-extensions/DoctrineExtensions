@@ -67,7 +67,7 @@ final class PersonalTranslationDocumentTest extends BaseTestCaseMongoODM
         static::assertSame('lt', $article->getTitle());
     }
 
-    private function populate()
+    private function populate(): void
     {
         $article = new Article();
         $article->setTitle('en');

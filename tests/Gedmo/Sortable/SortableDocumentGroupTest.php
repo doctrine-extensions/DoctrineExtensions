@@ -156,7 +156,7 @@ final class SortableDocumentGroupTest extends BaseTestCaseMongoODM
      * 3 posts are linked to a category, and 3 to the other one
      * 2 kids have one date, 2 another one
      */
-    private function populate()
+    private function populate(): void
     {
         $categories = [];
         for ($i = 0; $i < 2; ++$i) {

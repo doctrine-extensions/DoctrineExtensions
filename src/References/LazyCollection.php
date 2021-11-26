@@ -238,7 +238,7 @@ class LazyCollection implements Collection
         return $this->results->count();
     }
 
-    private function initialize()
+    private function initialize(): void
     {
         if (null === $this->results) {
             $this->results = call_user_func($this->callback);

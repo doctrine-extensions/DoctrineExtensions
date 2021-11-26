@@ -99,7 +99,7 @@ class Yaml extends File implements Driver
         return $mapping && in_array($mapping['type'], $this->validTypes);
     }
 
-    private function readSortableGroups($mapping, array &$config)
+    private function readSortableGroups(iterable $mapping, array &$config): void
     {
         foreach ($mapping as $field => $fieldMapping) {
             if (isset($fieldMapping['gedmo'])) {

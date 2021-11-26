@@ -232,10 +232,8 @@ class TranslationRepository extends EntityRepository
      * Get the currently used TranslatableListener
      *
      * @throws \Gedmo\Exception\RuntimeException if listener is not found
-     *
-     * @return TranslatableListener
      */
-    private function getTranslatableListener()
+    private function getTranslatableListener(): TranslatableListener
     {
         if (!$this->listener) {
             foreach ($this->_em->getEventManager()->getListeners() as $event => $listeners) {

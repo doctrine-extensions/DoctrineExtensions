@@ -82,7 +82,7 @@ final class ForcedMetadataTest extends TestCase
         static::assertNotEmpty($id);
     }
 
-    private function prepare()
+    private function prepare(): void
     {
         $cmf = $this->em->getMetadataFactory();
         $metadata = new ClassMetadata(Timestampable::class);

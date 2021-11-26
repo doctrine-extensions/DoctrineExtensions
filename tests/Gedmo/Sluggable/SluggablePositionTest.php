@@ -53,7 +53,7 @@ final class SluggablePositionTest extends BaseTestCaseORM
         ];
     }
 
-    private function populate()
+    private function populate(): void
     {
         $meta = $this->em->getClassMetadata(self::POSITION);
         $object = new Position();

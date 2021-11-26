@@ -902,11 +902,8 @@ class NestedTreeRepository extends AbstractTreeRepository
     /**
      * Collect errors on given tree if
      * where are any
-     *
-     * @param array  $errors
-     * @param object $root
      */
-    private function verifyTree(&$errors, $root = null)
+    private function verifyTree(array &$errors, ?object $root = null): void
     {
         $meta = $this->getClassMetadata();
         $config = $this->listener->getConfiguration($this->_em, $meta->getName());
@@ -1052,7 +1049,7 @@ class NestedTreeRepository extends AbstractTreeRepository
      *
      * @internal
      */
-    private function removeSingle(EntityWrapper $wrapped)
+    private function removeSingle(EntityWrapper $wrapped): void
     {
         $meta = $this->getClassMetadata();
         $config = $this->listener->getConfiguration($this->_em, $meta->getName());

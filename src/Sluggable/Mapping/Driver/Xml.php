@@ -9,6 +9,7 @@
 
 namespace Gedmo\Sluggable\Mapping\Driver;
 
+use Doctrine\Persistence\Mapping\ClassMetadata;
 use Gedmo\Exception\InvalidMappingException;
 use Gedmo\Mapping\Driver\Xml as BaseXml;
 
@@ -77,7 +78,7 @@ class Xml extends BaseXml
         return $mapping && in_array($mapping['type'], $this->validTypes);
     }
 
-    private function buildFieldConfiguration($meta, $field, \SimpleXMLElement $mapping, array &$config)
+    private function buildFieldConfiguration(ClassMetadata $meta, string $field, \SimpleXMLElement $mapping, array &$config): void
     {
         /**
          * @var \SimpleXmlElement

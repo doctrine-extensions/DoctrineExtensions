@@ -401,7 +401,7 @@ final class MaterializedPathORMRepositoryTest extends BaseTestCaseORM
         ];
     }
 
-    private function populate($class = null)
+    private function populate($class = null): void
     {
         $root = $this->createCategory($class);
         $root->setTitle('Food');

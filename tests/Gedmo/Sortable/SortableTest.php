@@ -867,7 +867,7 @@ final class SortableTest extends BaseTestCaseORM
         ];
     }
 
-    private function populate()
+    private function populate(): void
     {
         $node = new Node();
         $node->setName('Node1');

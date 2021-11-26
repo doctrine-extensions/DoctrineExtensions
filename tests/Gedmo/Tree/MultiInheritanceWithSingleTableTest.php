@@ -113,7 +113,7 @@ final class MultiInheritanceWithSingleTableTest extends BaseTestCaseORM
         ];
     }
 
-    private function populate()
+    private function populate(): void
     {
         // engines
         $v8 = new Engine();

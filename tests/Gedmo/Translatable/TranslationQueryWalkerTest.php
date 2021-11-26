@@ -722,7 +722,7 @@ final class TranslationQueryWalkerTest extends BaseTestCaseORM
         ];
     }
 
-    private function populateMore()
+    private function populateMore(): void
     {
         $repo = $this->em->getRepository(self::ARTICLE);
         $commentRepo = $this->em->getRepository(self::COMMENT);
@@ -772,7 +772,7 @@ final class TranslationQueryWalkerTest extends BaseTestCaseORM
         $this->em->clear();
     }
 
-    private function populate()
+    private function populate(): void
     {
         $repo = $this->em->getRepository(self::ARTICLE);
         $commentRepo = $this->em->getRepository(self::COMMENT);

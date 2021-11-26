@@ -136,7 +136,7 @@ final class TranslatableDocumentCollectionTest extends BaseTestCaseMongoODM
         static::assertSame('content lt', $translations['lt_lt']['content']);
     }
 
-    private function populate()
+    private function populate(): void
     {
         $repo = $this->dm->getRepository(self::TRANSLATION);
         static::assertInstanceOf(TranslationRepository::class, $repo);

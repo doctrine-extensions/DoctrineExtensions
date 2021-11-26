@@ -15,6 +15,7 @@ use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\Query\AST\Join;
+use Doctrine\ORM\Query\AST\Node;
 use Doctrine\ORM\Query\AST\RangeVariableDeclaration;
 use Doctrine\ORM\Query\AST\SelectStatement;
 use Doctrine\ORM\Query\Exec\SingleSelectExecutor;
@@ -254,11 +255,9 @@ class TranslationWalker extends SqlWalker
      * Walks from clause, and creates translation joins
      * for the translated components
      *
-     * @param \Doctrine\ORM\Query\AST\FromClause $from
-     *
-     * @return string
+     * @param \Doctrine\ORM\Query\AST\FromClause|\Doctrine\ORM\Query\AST\SubselectFromClause $from
      */
-    private function joinTranslations($from)
+    private function joinTranslations(Node $from): string
     {
         $result = '';
         foreach ($from->identificationVariableDeclarations as $decl) {
@@ -374,10 +373,8 @@ class TranslationWalker extends SqlWalker
 
     /**
      * Checks if translation fallbacks are needed
-     *
-     * @return bool
      */
-    private function needsFallback()
+    private function needsFallback(): bool
     {
         $q = $this->getQuery();
         $fallback = $q->getHint(TranslatableListener::HINT_FALLBACK);
@@ -393,7 +390,7 @@ class TranslationWalker extends SqlWalker
     /**
      * Search for translated components in the select clause
      */
-    private function extractTranslatedComponents(array $queryComponents)
+    private function extractTranslatedComponents(array $queryComponents): void
     {
         $em = $this->getEntityManager();
         foreach ($queryComponents as $alias => $comp) {
@@ -412,10 +409,8 @@ class TranslationWalker extends SqlWalker
      * Get the currently used TranslatableListener
      *
      * @throws \Gedmo\Exception\RuntimeException if listener is not found
-     *
-     * @return TranslatableListener
      */
-    private function getTranslatableListener()
+    private function getTranslatableListener(): TranslatableListener
     {
         $em = $this->getEntityManager();
         foreach ($em->getEventManager()->getListeners() as $event => $listeners) {
@@ -432,15 +427,11 @@ class TranslationWalker extends SqlWalker
     /**
      * Replaces given sql $str with required
      * results
-     *
-     * @param string $str
-     *
-     * @return string
      */
-    private function replace(array $repl, $str)
+    private function replace(array $repl, string $str): string
     {
         foreach ($repl as $target => $result) {
-            $str = preg_replace_callback('/(\s|\()('.$target.')(,?)(\s|\)|$)/smi', static function ($m) use ($result) {
+            $str = preg_replace_callback('/(\s|\()('.$target.')(,?)(\s|\)|$)/smi', static function (array $m) use ($result): string {
                 return $m[1].$result.$m[3].$m[4];
             }, $str);
         }

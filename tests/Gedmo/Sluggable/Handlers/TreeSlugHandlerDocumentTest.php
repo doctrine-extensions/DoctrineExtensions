@@ -82,7 +82,7 @@ final class TreeSlugHandlerDocumentTest extends BaseTestCaseMongoODM
         static::assertSame('foodissimo/fructis/citrons', $citrons->getSlug());
     }
 
-    private function populate()
+    private function populate(): void
     {
         $food = new TreeSlug();
         $food->setTitle('Food');
