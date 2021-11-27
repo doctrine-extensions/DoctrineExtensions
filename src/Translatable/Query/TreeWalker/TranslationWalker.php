@@ -10,7 +10,6 @@
 namespace Gedmo\Translatable\Query\TreeWalker;
 
 use Doctrine\DBAL\Platforms\MySQLPlatform;
-use Doctrine\DBAL\Platforms\PostgreSQL94Platform;
 use Doctrine\DBAL\Platforms\PostgreSQLPlatform;
 use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -467,12 +466,8 @@ class TranslationWalker extends SqlWalker
             return $component;
         }
 
-        // @todo: remove the `PostgreSQL94Platform` check when dropping doctrine/dbal 3.1.x support
-        // the below check prefers the `PostgreSQLPlatform` class for doctrine/dbal 2.13.x or 3.2
-        // and later and falls back to the `PostgreSQL94Platform` class for compatibility with 3.1
-        // where `PostgreSQLPlatform` does not exist
         // try to look at postgres casting
-        if ($this->platform instanceof PostgreSQLPlatform || $this->platform instanceof PostgreSQL94Platform) {
+        if ($this->platform instanceof PostgreSQLPlatform) {
             switch ($typeFK) {
                 case 'string':
                 case 'guid':

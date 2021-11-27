@@ -10,8 +10,3 @@ parameters:
 			count: 1
 			path: src/Tool/Wrapper/MongoDocumentWrapper.php
 
-		-
-			message: "#^Class Doctrine\\\\DBAL\\\\Platforms\\\\PostgreSQLPlatform not found\\.$#"
-			count: 1
-			path: src/Translatable/Query/TreeWalker/TranslationWalker.php
-
