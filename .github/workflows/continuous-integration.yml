@@ -49,6 +49,7 @@ jobs:
         with:
           php-version: "${{ matrix.php-version }}"
           extensions: mongodb
+          coverage: "pcov"
 
       - name: "Restrict DBAL version"
         if: "${{ matrix.dbal-version }}"
@@ -60,7 +61,12 @@ jobs:
           dependency-versions: "${{ matrix.deps }}"
 
       - name: "Run PHPUnit"
-        run: "bin/phpunit -c tests"
+        run: "bin/phpunit -c tests --coverage-clover=coverage.xml"
+
+      - name: "Send coverage to Codecov"
+        uses: "codecov/codecov-action@v2"
+        with:
+          file: "coverage.xml"
 
   lint-doctrine-xml-schema:
     name: Lint Doctrine XML schemas
