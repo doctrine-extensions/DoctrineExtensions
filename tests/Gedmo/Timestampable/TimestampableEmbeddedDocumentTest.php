@@ -32,7 +32,7 @@ final class TimestampableEmbeddedDocumentTest extends BaseTestCaseMongoODM
         $evm = new EventManager();
         $evm->addEventSubscriber(new TimestampableListener());
 
-        $this->getMockDocumentManager($evm);
+        $this->getDefaultDocumentManager($evm);
     }
 
     public function testPersistEmbeddedDocumentWithParent()

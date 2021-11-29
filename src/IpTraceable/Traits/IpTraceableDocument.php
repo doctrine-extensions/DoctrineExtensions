@@ -10,6 +10,7 @@
 namespace Gedmo\IpTraceable\Traits;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
+use Doctrine\ODM\MongoDB\Types\Type;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
@@ -24,6 +25,7 @@ trait IpTraceableDocument
      * @Gedmo\IpTraceable(on="create")
      * @ODM\Field(type="string")
      */
+    #[ODM\Field(type: Type::STRING)]
     protected $createdFromIp;
 
     /**
@@ -31,6 +33,7 @@ trait IpTraceableDocument
      * @Gedmo\IpTraceable(on="update")
      * @ODM\Field(type="string")
      */
+    #[ODM\Field(type: Type::STRING)]
     protected $updatedFromIp;
 
     /**

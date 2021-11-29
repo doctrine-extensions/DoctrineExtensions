@@ -14,10 +14,12 @@ namespace Gedmo\Tests\Timestampable\Fixture\Document;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
+use Doctrine\ODM\MongoDB\Types\Type as MongoDBType;
 
 /**
  * @ODM\Document(collection="books")
  */
+#[ODM\Document(collection: 'books')]
 class Book
 {
     /**
@@ -25,6 +27,7 @@ class Book
      *
      * @var string
      */
+    #[ODM\Id]
     protected $id;
 
     /**
@@ -32,6 +35,7 @@ class Book
      *
      * @var string
      */
+    #[ODM\Field(type: MongoDBType::STRING)]
     protected $title;
 
     /**
@@ -39,6 +43,7 @@ class Book
      *
      * @var Collection<int, Tag>
      */
+    #[ODM\EmbedMany(targetDocument: Tag::class)]
     protected $tags;
 
     public function __construct()

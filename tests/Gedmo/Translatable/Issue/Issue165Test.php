@@ -39,7 +39,7 @@ final class Issue165Test extends BaseTestCaseMongoODM
         $this->translatableListener->setTranslatableLocale('en');
         $evm->addEventSubscriber($this->translatableListener);
 
-        $this->getMockDocumentManager($evm);
+        $this->getDefaultDocumentManager($evm);
     }
 
     /**

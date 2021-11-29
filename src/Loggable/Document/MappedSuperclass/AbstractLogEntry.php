@@ -10,12 +10,14 @@
 namespace Gedmo\Loggable\Document\MappedSuperclass;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoODM;
+use Doctrine\ODM\MongoDB\Types\Type;
 
 /**
  * Gedmo\Loggable\Document\MappedSuperclass\AbstractLogEntry
  *
  * @MongoODM\MappedSuperclass
  */
+#[MongoODM\MappedSuperclass]
 abstract class AbstractLogEntry
 {
     /**
@@ -23,6 +25,7 @@ abstract class AbstractLogEntry
      *
      * @MongoODM\Id
      */
+    #[MongoODM\Id]
     protected $id;
 
     /**
@@ -30,6 +33,7 @@ abstract class AbstractLogEntry
      *
      * @MongoODM\Field(type="string")
      */
+    #[MongoODM\Field(type: Type::STRING)]
     protected $action;
 
     /**
@@ -37,6 +41,7 @@ abstract class AbstractLogEntry
      *
      * @MongoODM\Field(type="date")
      */
+    #[MongoODM\Field(type: Type::DATE)]
     protected $loggedAt;
 
     /**
@@ -44,6 +49,7 @@ abstract class AbstractLogEntry
      *
      * @MongoODM\Field(type="string", nullable=true)
      */
+    #[MongoODM\Field(type: Type::STRING, nullable: true)]
     protected $objectId;
 
     /**
@@ -51,6 +57,7 @@ abstract class AbstractLogEntry
      *
      * @MongoODM\Field(type="string")
      */
+    #[MongoODM\Field(type: Type::STRING)]
     protected $objectClass;
 
     /**
@@ -58,6 +65,7 @@ abstract class AbstractLogEntry
      *
      * @MongoODM\Field(type="int")
      */
+    #[MongoODM\Field(type: Type::INT)]
     protected $version;
 
     /**
@@ -65,6 +73,7 @@ abstract class AbstractLogEntry
      *
      * @MongoODM\Field(type="hash", nullable=true)
      */
+    #[MongoODM\Field(type: Type::HASH, nullable: true)]
     protected $data;
 
     /**
@@ -72,6 +81,7 @@ abstract class AbstractLogEntry
      *
      * @MongoODM\Field(type="string", nullable=true)
      */
+    #[MongoODM\Field(type: Type::STRING, nullable: true)]
     protected $username;
 
     /**

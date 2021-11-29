@@ -41,7 +41,7 @@ final class TranslatableDocumentCollectionTest extends BaseTestCaseMongoODM
         $this->translatableListener->setTranslatableLocale('en_us');
         $evm->addEventSubscriber($this->translatableListener);
 
-        $this->getMockDocumentManager($evm);
+        $this->getDefaultDocumentManager($evm);
         $this->populate();
     }
 

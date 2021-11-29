@@ -17,10 +17,12 @@ use Gedmo\Translatable\Document\MappedSuperclass\AbstractPersonalTranslation;
 /**
  * @MongoODM\Document(collection="article_translations")
  */
+#[MongoODM\Document(collection: 'article_translations')]
 class ArticleTranslation extends AbstractPersonalTranslation
 {
     /**
      * @MongoODM\ReferenceOne(targetDocument="Gedmo\Tests\Translatable\Fixture\Document\Personal\Article", inversedBy="translations")
      */
+    #[MongoODM\ReferenceOne(targetDocument: Article::class, inversedBy: 'translations')]
     protected $object;
 }

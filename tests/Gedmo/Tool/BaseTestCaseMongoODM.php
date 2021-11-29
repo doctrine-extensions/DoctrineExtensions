@@ -15,6 +15,7 @@ use Doctrine\Common\EventManager;
 use Doctrine\ODM\MongoDB\Configuration;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Doctrine\ODM\MongoDB\Mapping\Driver\AnnotationDriver;
+use Doctrine\ODM\MongoDB\Mapping\Driver\AttributeDriver;
 use Doctrine\Persistence\Mapping\Driver\MappingDriver;
 use Gedmo\Loggable\LoggableListener;
 use Gedmo\Sluggable\SluggableListener;
@@ -79,6 +80,11 @@ abstract class BaseTestCaseMongoODM extends \PHPUnit\Framework\TestCase
         return $this->dm = DocumentManager::create($client, $config, $evm);
     }
 
+    protected function getDefaultDocumentManager(EventManager $evm = null): DocumentManager
+    {
+        return $this->getMockDocumentManager($evm, $this->getDefaultConfiguration());
+    }
+
     /**
      * DocumentManager mock object with
      * annotation mapping driver
@@ -123,6 +129,31 @@ abstract class BaseTestCaseMongoODM extends \PHPUnit\Framework\TestCase
         $config->setMetadataDriverImpl($this->getMetadataDriverImplementation());
 
         return $config;
+    }
+
+    private function getDefaultConfiguration(): Configuration
+    {
+        $config = new Configuration();
+        $config->addFilter('softdeleteable', SoftDeleteableFilter::class);
+        $config->setProxyDir(TESTS_TEMP_DIR);
+        $config->setHydratorDir(TESTS_TEMP_DIR);
+        $config->setProxyNamespace('Proxy');
+        $config->setHydratorNamespace('Hydrator');
+        $config->setDefaultDB('gedmo_extensions_test');
+        $config->setAutoGenerateProxyClasses(Configuration::AUTOGENERATE_EVAL);
+        $config->setAutoGenerateHydratorClasses(Configuration::AUTOGENERATE_EVAL);
+        $config->setMetadataDriverImpl($this->getMetadataDefaultDriverImplementation());
+
+        return $config;
+    }
+
+    private function getMetadataDefaultDriverImplementation(): MappingDriver
+    {
+        if (PHP_VERSION_ID >= 80000 && class_exists(AttributeDriver::class)) {
+            return new AttributeDriver([]);
+        }
+
+        return new AnnotationDriver($_ENV['annotation_reader']);
     }
 
     /**
