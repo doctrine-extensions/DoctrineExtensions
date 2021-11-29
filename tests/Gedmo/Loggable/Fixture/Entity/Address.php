@@ -11,17 +11,18 @@ declare(strict_types=1);
 
 namespace Gedmo\Tests\Loggable\Fixture\Entity;
 
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
- * Class Address
- *
  * @author Fabian Sabau <fabian.sabau@socialbit.de>
  *
  * @ORM\Entity()
  * @Gedmo\Loggable()
  */
+#[ORM\Entity]
+#[Gedmo\Loggable]
 class Address
 {
     /**
@@ -30,91 +31,73 @@ class Address
      * @ORM\Column(name="id", type="integer")
      * @ORM\GeneratedValue(strategy="AUTO")
      */
+    #[ORM\Id]
+    #[ORM\Column(name: 'id', type: Types::INTEGER)]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
     protected $id;
 
     /**
-     * @var string
+     * @var string|null
      * @ORM\Column(type="string", length=191)
      * @Gedmo\Versioned()
      */
+    #[ORM\Column(type: Types::STRING, length: 191)]
+    #[Gedmo\Versioned]
     protected $street;
 
     /**
-     * @var string
+     * @var string|null
      * @ORM\Column(type="string", length=191)
      * @Gedmo\Versioned()
      */
+    #[ORM\Column(type: Types::STRING, length: 191)]
+    #[Gedmo\Versioned]
     protected $city;
 
     /**
-     * @var Geo
+     * @var Geo|null
      * @ORM\Embedded(class="Gedmo\Tests\Loggable\Fixture\Entity\Geo")
      * @Gedmo\Versioned()
      */
+    #[ORM\Embedded(class: Geo::class)]
+    #[Gedmo\Versioned]
     protected $geo;
 
-    /**
-     * @return int|null
-     */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    /**
-     * @return string
-     */
-    public function getStreet()
+    public function getStreet(): string
     {
         return $this->street;
     }
 
-    /**
-     * @param string $street
-     *
-     * @return $this
-     */
-    public function setStreet($street)
+    public function setStreet(?string $street): self
     {
         $this->street = $street;
 
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getCity()
+    public function getCity(): ?string
     {
         return $this->city;
     }
 
-    /**
-     * @param string $city
-     *
-     * @return $this
-     */
-    public function setCity($city)
+    public function setCity(string $city): self
     {
         $this->city = $city;
 
         return $this;
     }
 
-    /**
-     * @return Geo
-     */
-    public function getGeo()
+    public function getGeo(): ?Geo
     {
         return $this->geo;
     }
 
-    /**
-     * @param Geo $geo
-     *
-     * @return $this
-     */
-    public function setGeo($geo)
+    public function setGeo(?Geo $geo): self
     {
         $this->geo = $geo;
 

@@ -12,7 +12,7 @@ Features:
 - Automatic translation of Entity or Document fields when loaded
 - ORM query can use **hint** to translate all records without issuing additional queries
 - Can be nested with other behaviors
-- Annotation, Yaml and Xml mapping support for extensions
+- Attribute, Annotation, Yaml and Xml mapping support for extensions
 
 **2012-01-28**
 

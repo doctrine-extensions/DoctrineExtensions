@@ -13,6 +13,7 @@ namespace Gedmo\Tests\Loggable\Fixture\Document\Log;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 use Gedmo\Loggable\Document\MappedSuperclass\AbstractLogEntry;
+use Gedmo\Loggable\Document\Repository\LogEntryRepository;
 
 /**
  * @ODM\Document(
@@ -20,6 +21,7 @@ use Gedmo\Loggable\Document\MappedSuperclass\AbstractLogEntry;
  *     repositoryClass="Gedmo\Loggable\Document\Repository\LogEntryRepository"
  * )
  */
+#[ODM\Document(collection: 'test_comment_log_entries', repositoryClass: LogEntryRepository::class)]
 class Comment extends AbstractLogEntry
 {
 }
