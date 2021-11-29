@@ -238,7 +238,7 @@ final class NestedTreePositionTest extends BaseTestCaseORM
         $dql = 'SELECT COUNT(c) FROM '.self::ROOT_CATEGORY.' c';
         $dql .= ' WHERE c.lft = 1 AND c.rgt = 2 AND c.parent IS NULL AND c.level = 0';
         $count = $this->em->createQuery($dql)->getSingleScalarResult();
-        static::assertSame('6', $count);
+        static::assertSame(6, (int) $count);
 
         $repo = $this->em->getRepository(self::CATEGORY);
 
@@ -275,7 +275,7 @@ final class NestedTreePositionTest extends BaseTestCaseORM
         $dql .= ' WHERE c.parentId IS NULL AND c.level = 0';
         $dql .= ' AND c.lft BETWEEN 1 AND 11';
         $count = $this->em->createQuery($dql)->getSingleScalarResult();
-        static::assertSame('6', $count);
+        static::assertSame(6, (int) $count);
     }
 
     public function testRootTreePositionedInserts()
