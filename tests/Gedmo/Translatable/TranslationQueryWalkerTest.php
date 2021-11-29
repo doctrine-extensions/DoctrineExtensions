@@ -374,17 +374,17 @@ final class TranslationQueryWalkerTest extends BaseTestCaseORM
         $this->translatableListener->setTranslatableLocale('en_us');
         $q->setParameter('title', 'Foo%');
         $result = $q->getSingleScalarResult();
-        static::assertSame('1', $result);
+        static::assertSame(1, (int) $result);
 
         $this->translatableListener->setTranslatableLocale('lt_lt');
         $q->setParameter('title', 'Mai%');
         $result = $q->getSingleScalarResult();
-        static::assertSame('1', $result);
+        static::assertSame(1, (int) $result);
 
         $this->translatableListener->setTranslatableLocale('en_us');
         $q->setParameter('title', 'Mai%');
         $result = $q->getSingleScalarResult();
-        static::assertSame('0', $result);
+        static::assertSame(0, (int) $result);
     }
 
     /**

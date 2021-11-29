@@ -221,7 +221,7 @@ final class ClosureTreeTest extends BaseTestCaseORM
         $query = $this->em->createQuery($dql);
         $query->setParameter('id', $id);
 
-        static::assertSame('0', $query->getSingleScalarResult());
+        static::assertSame(0, (int) $query->getSingleScalarResult());
         // pdo_sqlite will not cascade
     }
 
