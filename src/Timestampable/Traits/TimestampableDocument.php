@@ -10,6 +10,7 @@
 namespace Gedmo\Timestampable\Traits;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
+use Doctrine\ODM\MongoDB\Types\Type;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
@@ -24,6 +25,8 @@ trait TimestampableDocument
      * @Gedmo\Timestampable(on="create")
      * @ODM\Field(type="date")
      */
+    #[Gedmo\Timestampable(on: 'create')]
+    #[ODM\Field(type: Type::DATE)]
     protected $createdAt;
 
     /**
@@ -31,6 +34,8 @@ trait TimestampableDocument
      * @Gedmo\Timestampable(on="update")
      * @ODM\Field(type="date")
      */
+    #[Gedmo\Timestampable(on: 'update')]
+    #[ODM\Field(type: Type::DATE)]
     protected $updatedAt;
 
     /**

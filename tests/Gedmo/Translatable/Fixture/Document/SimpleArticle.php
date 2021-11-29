@@ -12,26 +12,33 @@ declare(strict_types=1);
 namespace Gedmo\Tests\Translatable\Fixture\Document;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoODM;
+use Doctrine\ODM\MongoDB\Types\Type;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @MongoODM\Document(collection="articles")
  */
+#[MongoODM\Document(collection: 'articles')]
 class SimpleArticle
 {
     /** @MongoODM\Id */
+    #[MongoODM\Id]
     private $id;
 
     /**
      * @Gedmo\Translatable
      * @MongoODM\Field(type="string")
      */
+    #[Gedmo\Translatable]
+    #[MongoODM\Field(type: Type::STRING)]
     private $title;
 
     /**
      * @Gedmo\Translatable
      * @MongoODM\Field(type="string")
      */
+    #[Gedmo\Translatable]
+    #[MongoODM\Field(type: Type::STRING)]
     private $content;
 
     public function getId()

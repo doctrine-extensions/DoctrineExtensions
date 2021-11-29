@@ -20,6 +20,7 @@ a release.
 
 ## [Unreleased]
 ### Added
+- PHP 8 Attributes support for Doctrine MongoDB to document & traits
 - Support for doctrine/dbal >=3.2
 - Timestampable: Support to use annotations as attributes on PHP >= 8.0.
 

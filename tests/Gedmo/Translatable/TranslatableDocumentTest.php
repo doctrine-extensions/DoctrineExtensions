@@ -15,6 +15,7 @@ use Doctrine\Common\EventManager;
 use Gedmo\Sluggable\SluggableListener;
 use Gedmo\Tests\Tool\BaseTestCaseMongoODM;
 use Gedmo\Tests\Translatable\Fixture\Document\Article;
+use Gedmo\Translatable\Document\Repository\TranslationRepository;
 use Gedmo\Translatable\Document\Translation;
 use Gedmo\Translatable\TranslatableListener;
 
@@ -41,7 +42,7 @@ final class TranslatableDocumentTest extends BaseTestCaseMongoODM
         $evm->addEventSubscriber(new SluggableListener());
         $evm->addEventSubscriber($this->translatableListener);
 
-        $this->getMockDocumentManager($evm);
+        $this->getDefaultDocumentManager($evm);
         $this->populate();
     }
 
@@ -49,13 +50,13 @@ final class TranslatableDocumentTest extends BaseTestCaseMongoODM
     {
         // test inserted translations
         $repo = $this->dm->getRepository(self::ARTICLE);
-        /*$article = $repo->findOneBy(['title' => 'Title EN']);
+        $article = $repo->findOneBy(['title' => 'Title EN']);
 
         $transRepo = $this->dm->getRepository(self::TRANSLATION);
-        $this->assertTrue($transRepo instanceof Document\Repository\TranslationRepository);
+        static::assertInstanceOf(TranslationRepository::class, $transRepo);
 
         $translations = $transRepo->findTranslations($article);
-        $this->assertCount(0, $translations);
+        static::assertCount(0, $translations);
 
         // test second translations
         $this->translatableListener->setTranslatableLocale('de_de');
@@ -68,20 +69,20 @@ final class TranslatableDocumentTest extends BaseTestCaseMongoODM
 
         $article = $repo->find($this->articleId);
         $translations = $transRepo->findTranslations($article);
-        $this->assertCount(1, $translations);
+        static::assertCount(1, $translations);
 
-        $this->assertArrayHasKey('de_de', $translations);
-        $this->assertArrayHasKey('title', $translations['de_de']);
-        $this->assertEquals('Title DE', $translations['de_de']['title']);
+        static::assertArrayHasKey('de_de', $translations);
+        static::assertArrayHasKey('title', $translations['de_de']);
+        static::assertSame('Title DE', $translations['de_de']['title']);
 
-        $this->assertArrayHasKey('code', $translations['de_de']);
-        $this->assertEquals('Code DE', $translations['de_de']['code']);
+        static::assertArrayHasKey('code', $translations['de_de']);
+        static::assertSame('Code DE', $translations['de_de']['code']);
 
-        $this->assertArrayHasKey('slug', $translations['de_de']);
-        $this->assertEquals('title-de-code-de', $translations['de_de']['slug']);
+        static::assertArrayHasKey('slug', $translations['de_de']);
+        static::assertSame('title-de-code-de', $translations['de_de']['slug']);
 
         // test value update
-        $this->dm->clear();*/
+        $this->dm->clear();
         $this->translatableListener->setTranslatableLocale('en_us');
         $article = $repo->find($this->articleId);
 
@@ -90,15 +91,15 @@ final class TranslatableDocumentTest extends BaseTestCaseMongoODM
         static::assertSame('title-en-code-en', $article->getSlug());
 
         // test translation update
-        /*$article->setTitle('Title EN Updated');
+        $article->setTitle('Title EN Updated');
         $article->setCode('Code EN Updated');
         $this->dm->persist($article);
         $this->dm->flush();
         $this->dm->clear();
 
         $article = $repo->find($this->articleId);
-        $this->assertEquals('Title EN Updated', $article->getTitle());
-        $this->assertEquals('Code EN Updated', $article->getCode());
+        static::assertSame('Title EN Updated', $article->getTitle());
+        static::assertSame('Code EN Updated', $article->getCode());
 
         // test removal of translations
         $this->dm->remove($article);
@@ -106,10 +107,10 @@ final class TranslatableDocumentTest extends BaseTestCaseMongoODM
         $this->dm->clear();
 
         $article = $repo->find($this->articleId);
-        $this->assertNull($article);
+        static::assertNull($article);
 
         $translations = $transRepo->findTranslationsByObjectId($this->articleId);
-        $this->assertCount(0, $translations);*/
+        static::assertCount(0, $translations);
     }
 
     private function populate(): void

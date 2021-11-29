@@ -9,26 +9,28 @@
 
 namespace Gedmo\Translatable\Document;
 
-use Doctrine\ODM\MongoDB\Mapping\Annotations\Document;
-use Doctrine\ODM\MongoDB\Mapping\Annotations\Index;
-use Doctrine\ODM\MongoDB\Mapping\Annotations\UniqueIndex;
+use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
+use Gedmo\Translatable\Document\Repository\TranslationRepository;
 
 /**
  * Gedmo\Translatable\Document\Translation
  *
- * @Document(repositoryClass="Gedmo\Translatable\Document\Repository\TranslationRepository")
- * @UniqueIndex(name="lookup_unique_idx", keys={
+ * @ODM\Document(repositoryClass="Gedmo\Translatable\Document\Repository\TranslationRepository")
+ * @ODM\UniqueIndex(name="lookup_unique_idx", keys={
  *         "locale" = "asc",
  *         "object_class" = "asc",
  *         "foreign_key" = "asc",
  *         "field" = "asc"
  * })
- * @Index(name="translations_lookup_idx", keys={
+ * @ODM\Index(name="translations_lookup_idx", keys={
  *      "locale" = "asc",
  *      "object_class" = "asc",
  *      "foreign_key" = "asc"
  * })
  */
+#[ODM\Document(repositoryClass: TranslationRepository::class)]
+#[ODM\UniqueIndex(name: 'lookup_unique_idx', keys: ['locale' => 'asc', 'object_class' => 'asc', 'foreign_key' => 'asc', 'field' => 'asc'])]
+#[ODM\Index(name: 'translations_lookup_idx', keys: ['locale' => 'asc', 'object_class' => 'asc', 'foreign_key' => 'asc'])]
 class Translation extends MappedSuperclass\AbstractTranslation
 {
     /*
