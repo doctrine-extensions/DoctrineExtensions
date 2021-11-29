@@ -12,47 +12,56 @@ declare(strict_types=1);
 namespace Gedmo\Tests\Loggable\Fixture\Document;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
+use Doctrine\ODM\MongoDB\Types\Type;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ODM\EmbeddedDocument
  * @Gedmo\Loggable
  */
+#[ODM\EmbeddedDocument]
+#[Gedmo\Loggable]
 class Author
 {
     /**
+     * @var string|null
      * @Gedmo\Versioned
      * @ODM\Field(type="string")
      */
+    #[ODM\Field(type: Type::STRING)]
+    #[Gedmo\Versioned]
     private $name;
 
     /**
+     * @var string|null
      * @Gedmo\Versioned
      * @ODM\Field(type="string")
      */
+    #[ODM\Field(type: Type::STRING)]
+    #[Gedmo\Versioned]
     private $email;
 
     public function __toString()
     {
-        return $this->getName();
+        return (string) $this->getName();
     }
 
-    public function setName($name)
+    public function setName(?string $name): void
     {
         $this->name = $name;
     }
 
-    public function getName()
+    public function getName(): ?string
     {
         return $this->name;
     }
 
-    public function setEmail($email)
+    public function setEmail(?string $email): void
     {
         $this->email = $email;
     }
 
-    public function getEmail()
+    public function getEmail(): ?string
     {
         return $this->email;
     }
