@@ -1,7 +1,10 @@
 name: "Coding Standards"
 
 on:
-  pull_request: null
+  push:
+    branches:
+      - main
+  pull_request:
 
 jobs:
   php-coding-standards:
