@@ -29,7 +29,7 @@ abstract class AbstractAnnotationDriver implements AnnotationDriverInterface
     /**
      * Original driver if it is available
      */
-    protected $_originalDriver = null;
+    protected $_originalDriver;
 
     /**
      * List of types which are valid for extension

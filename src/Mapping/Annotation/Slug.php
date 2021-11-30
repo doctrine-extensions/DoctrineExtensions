@@ -30,7 +30,7 @@ final class Slug extends Annotation
     /** @var bool */
     public $unique = true;
     /** @var string */
-    public $unique_base = null;
+    public $unique_base;
     /** @var string */
     public $separator = '-';
     /** @var string */

@@ -34,7 +34,7 @@ class Closure implements Strategy
      *
      * @var TreeListener
      */
-    protected $listener = null;
+    protected $listener;
 
     /**
      * List of pending Nodes, which needs to
