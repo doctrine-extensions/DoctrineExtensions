@@ -35,7 +35,7 @@ abstract class AbstractMaterializedPath implements Strategy
     /**
      * @var TreeListener
      */
-    protected $listener = null;
+    protected $listener;
 
     /**
      * Array of objects which were scheduled for path processes

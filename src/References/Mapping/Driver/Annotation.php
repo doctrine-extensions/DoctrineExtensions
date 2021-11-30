@@ -42,7 +42,7 @@ class Annotation implements AnnotationDriverInterface
     /**
      * original driver if it is available
      */
-    protected $_originalDriver = null;
+    protected $_originalDriver;
 
     private $annotations = [
         'referenceOne' => self::REFERENCE_ONE,

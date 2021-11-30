@@ -20,7 +20,7 @@ class Annotation implements Driver
     /**
      * original driver if it is available
      */
-    protected $_originalDriver = null;
+    protected $_originalDriver;
 
     public function readExtendedMetadata($meta, array &$config)
     {

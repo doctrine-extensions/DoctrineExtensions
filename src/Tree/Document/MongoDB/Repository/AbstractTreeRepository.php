@@ -27,12 +27,12 @@ abstract class AbstractTreeRepository extends DocumentRepository implements Repo
      *
      * @var TreeListener
      */
-    protected $listener = null;
+    protected $listener;
 
     /**
      * Repository utils
      */
-    protected $repoUtils = null;
+    protected $repoUtils;
 
     /**
      * {@inheritdoc}

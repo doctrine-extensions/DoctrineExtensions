@@ -25,7 +25,7 @@ final class TreePath extends Annotation
 {
     public $separator = ',';
 
-    public $appendId = null;
+    public $appendId;
 
     public $startsWithSeparator = false;
 

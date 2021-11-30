@@ -26,12 +26,12 @@ abstract class AbstractTreeRepository extends EntityRepository implements Reposi
      *
      * @var TreeListener
      */
-    protected $listener = null;
+    protected $listener;
 
     /**
      * Repository utils
      */
-    protected $repoUtils = null;
+    protected $repoUtils;
 
     /**
      * {@inheritdoc}

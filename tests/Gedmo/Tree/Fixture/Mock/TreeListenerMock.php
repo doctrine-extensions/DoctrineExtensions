@@ -23,7 +23,7 @@ use Gedmo\Tree\TreeListener;
 class TreeListenerMock extends TreeListener
 {
     public $releaseLocks = false;
-    protected $strategy = null;
+    protected $strategy;
 
     public function getStrategy(ObjectManager $om, $class)
     {
