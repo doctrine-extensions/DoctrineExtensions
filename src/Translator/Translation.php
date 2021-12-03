@@ -16,15 +16,30 @@ namespace Gedmo\Translator;
  */
 abstract class Translation implements TranslationInterface
 {
+    /**
+     * @var object|null
+     */
     protected $translatable;
+
+    /**
+     * @var string|null
+     */
     protected $locale;
+
+    /**
+     * @var string|null
+     */
     protected $property;
+
+    /**
+     * @var string|null
+     */
     protected $value;
 
     /**
      * Set translatable
      *
-     * @param string $translatable
+     * @param object $translatable
      */
     public function setTranslatable($translatable)
     {
@@ -34,7 +49,7 @@ abstract class Translation implements TranslationInterface
     /**
      * Get translatable
      *
-     * @return string
+     * @return object|null
      */
     public function getTranslatable()
     {
@@ -54,7 +69,7 @@ abstract class Translation implements TranslationInterface
     /**
      * Get locale
      *
-     * @return string
+     * @return string|null
      */
     public function getLocale()
     {
@@ -74,7 +89,7 @@ abstract class Translation implements TranslationInterface
     /**
      * Get property
      *
-     * @return string
+     * @return string|null
      */
     public function getProperty()
     {
@@ -98,7 +113,7 @@ abstract class Translation implements TranslationInterface
     /**
      * Get value
      *
-     * @return string
+     * @return string|null
      */
     public function getValue()
     {

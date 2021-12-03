@@ -62,6 +62,8 @@ final class ORM extends BaseAdapterORM implements ReferencesAdapter
 
             return [$meta->getIdentifier()[0] => $id];
         }
+
+        return null;
     }
 
     /**

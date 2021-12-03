@@ -23,30 +23,48 @@ use Gedmo\Uploadable\Mapping\Validator;
  */
 final class Uploadable extends Annotation
 {
-    /** @var bool */
+    /**
+     * @var bool
+     */
     public $allowOverwrite = false;
 
-    /** @var bool */
+    /**
+     * @var bool
+     */
     public $appendNumber = false;
 
-    /** @var string */
+    /**
+     * @var string
+     */
     public $path = '';
 
-    /** @var string */
+    /**
+     * @var string
+     */
     public $pathMethod = '';
 
-    /** @var string */
+    /**
+     * @var string
+     */
     public $callback = '';
 
-    /** @var string */
+    /**
+     * @var string
+     */
     public $filenameGenerator = Validator::FILENAME_GENERATOR_NONE;
 
-    /** @var float */
+    /**
+     * @var float
+     */
     public $maxSize = 0;
 
-    /** @var array */
+    /**
+     * @var string A list of comma separate values of allowed types, like "text/plain,text/css"
+     */
     public $allowedTypes = '';
 
-    /** @var array */
+    /**
+     * @var string A list of comma separate values of disallowed types, like "video/jpeg,text/html"
+     */
     public $disallowedTypes = '';
 }

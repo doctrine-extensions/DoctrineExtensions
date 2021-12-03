@@ -83,7 +83,7 @@ class ExtensionMetadataFactory
     public function getExtensionMetadata($meta)
     {
         if ($meta->isMappedSuperclass) {
-            return; // ignore mappedSuperclasses for now
+            return []; // ignore mappedSuperclasses for now
         }
         $config = [];
         $cmf = $this->objectManager->getMetadataFactory();

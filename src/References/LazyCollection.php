@@ -39,7 +39,7 @@ class LazyCollection implements Collection
     {
         $this->initialize();
 
-        return $this->results->clear();
+        $this->results->clear();
     }
 
     public function contains($element)
@@ -179,7 +179,7 @@ class LazyCollection implements Collection
     {
         $this->initialize();
 
-        return $this->results->set($key, $value);
+        $this->results->set($key, $value);
     }
 
     public function slice($offset, $length = null)
@@ -214,14 +214,14 @@ class LazyCollection implements Collection
     {
         $this->initialize();
 
-        return $this->results->offsetSet($offset, $value);
+        $this->results->offsetSet($offset, $value);
     }
 
     public function offsetUnset($offset)
     {
         $this->initialize();
 
-        return $this->results->offsetUnset($offset);
+        $this->results->offsetUnset($offset);
     }
 
     public function getIterator()

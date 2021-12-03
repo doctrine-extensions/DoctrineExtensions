@@ -753,7 +753,7 @@ class NestedTreeRepository extends AbstractTreeRepository
         if (null === $node || is_a($node, $meta->getName())) {
             $config = $this->listener->getConfiguration($this->_em, $meta->getName());
             if ($verify && is_array($this->verify())) {
-                return false;
+                return;
             }
 
             $nodes = $this->children($node, true, $sortByField, $direction);

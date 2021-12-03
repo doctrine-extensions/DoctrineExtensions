@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Gedmo\Tests\ReferenceIntegrity\Fixture\Document\ManyNullify;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
@@ -24,9 +25,9 @@ class Type
      * @ODM\ReferenceMany(targetDocument="Gedmo\Tests\ReferenceIntegrity\Fixture\Document\ManyNullify\Article", mappedBy="type")
      * @Gedmo\ReferenceIntegrity("nullify")
      *
-     * @var ArrayCollection
+     * @var Collection<int, Article>
      */
-    protected $articles = [];
+    protected $articles;
     /**
      * @ODM\Id
      */
@@ -87,20 +88,15 @@ class Type
         return $this->identifier;
     }
 
-    /**
-     * Add articles
-     */
-    public function addArticle(Article $article)
+    public function addArticle(Article $article): void
     {
         $this->articles[] = $article;
     }
 
     /**
-     * Get posts
-     *
-     * @return ArrayCollection $articles
+     * @return Collection<int, Article> $articles
      */
-    public function getArticles()
+    public function getArticles(): Collection
     {
         return $this->articles;
     }

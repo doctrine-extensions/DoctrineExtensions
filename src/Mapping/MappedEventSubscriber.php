@@ -55,14 +55,14 @@ abstract class MappedEventSubscriber implements EventSubscriber
      * ExtensionMetadataFactory used to read the extension
      * metadata through the extension drivers
      *
-     * @var ExtensionMetadataFactory
+     * @var array<int, ExtensionMetadataFactory>
      */
     private $extensionMetadataFactory = [];
 
     /**
      * List of event adapters used for this listener
      *
-     * @var array
+     * @var array<string, AdapterInterface>
      */
     private $adapters = [];
 
@@ -181,9 +181,9 @@ abstract class MappedEventSubscriber implements EventSubscriber
             $config = $factory->getExtensionMetadata($metadata);
         } catch (\ReflectionException $e) {
             // entity\document generator is running
-            $config = false; // will not store a cached version, to remap later
+            $config = []; // will not store a cached version, to remap later
         }
-        if ($config) {
+        if ([] !== $config) {
             self::$configurations[$this->name][$metadata->getName()] = $config;
         }
     }
