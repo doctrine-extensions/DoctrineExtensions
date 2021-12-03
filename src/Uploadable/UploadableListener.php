@@ -56,7 +56,7 @@ class UploadableListener extends MappedEventSubscriber
     /**
      * Mime type guesser
      *
-     * @var \Gedmo\Uploadable\MimeType\MimeTypeGuesserInterface
+     * @var MimeTypeGuesserInterface
      */
     private $mimeTypeGuesser;
 
@@ -90,7 +90,7 @@ class UploadableListener extends MappedEventSubscriber
     }
 
     /**
-     * {@inheritdoc}
+     * @return string[]
      */
     public function getSubscribedEvents()
     {

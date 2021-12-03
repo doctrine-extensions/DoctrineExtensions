@@ -113,6 +113,9 @@ class ReferencesListener extends MappedEventSubscriber
         $this->updateReferences($eventArgs);
     }
 
+    /**
+     * @return string[]
+     */
     public function getSubscribedEvents()
     {
         return [
