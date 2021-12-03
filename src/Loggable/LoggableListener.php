@@ -84,7 +84,7 @@ class LoggableListener extends MappedEventSubscriber
     }
 
     /**
-     * {@inheritdoc}
+     * @return string[]
      */
     public function getSubscribedEvents()
     {
