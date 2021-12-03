@@ -303,6 +303,7 @@ final class NestedTreeRootRepositoryTest extends BaseTestCaseORM
 
         $this->em->clear(); // must clear cached entities
         $errors = $repo->verify();
+        static::assertIsArray($errors);
         static::assertCount(2, $errors);
         static::assertSame('index [4], missing on tree root: 1', $errors[0]);
         static::assertSame('index [5], duplicate on tree root: 1', $errors[1]);

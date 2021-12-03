@@ -24,7 +24,7 @@ final class Tree extends Annotation
     /** @var string */
     public $type = 'nested';
 
-    /** @var string */
+    /** @var bool */
     public $activateLocking = false;
 
     /** @var int */

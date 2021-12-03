@@ -69,7 +69,7 @@ abstract class AbstractLogEntry
     protected $version;
 
     /**
-     * @var string
+     * @var array<string, mixed>|null
      *
      * @MongoODM\Field(type="hash", nullable=true)
      */
@@ -195,7 +195,7 @@ abstract class AbstractLogEntry
     /**
      * Get data
      *
-     * @return array or null
+     * @return array<string, mixed>|null
      */
     public function getData()
     {
@@ -205,7 +205,7 @@ abstract class AbstractLogEntry
     /**
      * Set data
      *
-     * @param array $data
+     * @param array<string, mixed> $data
      */
     public function setData($data)
     {

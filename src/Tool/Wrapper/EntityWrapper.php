@@ -24,7 +24,7 @@ class EntityWrapper extends AbstractWrapper
     /**
      * Entity identifier
      *
-     * @var array
+     * @var array|null
      */
     private $identifier;
 

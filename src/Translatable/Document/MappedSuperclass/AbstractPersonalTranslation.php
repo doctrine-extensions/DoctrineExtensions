@@ -29,7 +29,7 @@ abstract class AbstractPersonalTranslation
     protected $id;
 
     /**
-     * @var string
+     * @var string|null
      *
      * @MongoODM\Field(type="string")
      */
@@ -40,12 +40,12 @@ abstract class AbstractPersonalTranslation
      * Related document with ManyToOne relation
      * must be mapped by user
      *
-     * @var object
+     * @var object|null
      */
     protected $object;
 
     /**
-     * @var string
+     * @var string|null
      *
      * @MongoODM\Field(type="string")
      */
@@ -53,7 +53,7 @@ abstract class AbstractPersonalTranslation
     protected $field;
 
     /**
-     * @var string
+     * @var string|null
      *
      * @MongoODM\Field(type="string")
      */
@@ -135,7 +135,7 @@ abstract class AbstractPersonalTranslation
     /**
      * Get object related
      *
-     * @return string
+     * @return object
      */
     public function getObject()
     {

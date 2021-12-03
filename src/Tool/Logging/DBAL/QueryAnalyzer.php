@@ -28,21 +28,21 @@ class QueryAnalyzer implements SQLLogger
     /**
      * Start time of currently executed query
      *
-     * @var int
+     * @var float
      */
     private $queryStartTime;
 
     /**
      * Total execution time of all queries
      *
-     * @var int
+     * @var float
      */
     private $totalExecutionTime = 0;
 
     /**
      * List of queries executed
      *
-     * @var array
+     * @var string[]
      */
     private $queries = [];
 
@@ -50,7 +50,7 @@ class QueryAnalyzer implements SQLLogger
      * Query execution times indexed
      * in same order as queries
      *
-     * @var array
+     * @var float[]
      */
     private $queryExecutionTimes = [];
 
@@ -144,7 +144,7 @@ class QueryAnalyzer implements SQLLogger
     /**
      * Get total execution time of queries
      *
-     * @return int
+     * @return float
      */
     public function getTotalExecutionTime()
     {
@@ -154,7 +154,7 @@ class QueryAnalyzer implements SQLLogger
     /**
      * Get all queries
      *
-     * @return array
+     * @return string[]
      */
     public function getExecutedQueries()
     {
@@ -174,7 +174,7 @@ class QueryAnalyzer implements SQLLogger
     /**
      * Get all query execution times
      *
-     * @return array
+     * @return float[]
      */
     public function getExecutionTimes()
     {

@@ -50,7 +50,7 @@ interface ReferencesAdapter extends AdapterInterface
      * @param object        $object
      * @param bool          $single
      *
-     * @return array|string|int array or single identifier
+     * @return array|string|int|null array or single identifier
      */
     public function extractIdentifier($om, $object, $single = true);
 }
