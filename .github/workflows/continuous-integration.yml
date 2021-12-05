@@ -23,8 +23,6 @@ jobs:
     strategy:
       matrix:
         php-version:
-          - "7.2"
-          - "7.3"
           - "7.4"
           - "8.0"
         deps:
@@ -33,7 +31,7 @@ jobs:
           - ""
         include:
           - deps: "lowest"
-            php-version: "7.2"
+            php-version: "7.4"
           - deps: "highest"
             php-version: "8.0"
             dbal-version: "^2.13.1"

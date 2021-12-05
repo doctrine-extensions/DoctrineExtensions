@@ -38,7 +38,7 @@
         "wiki": "https://github.com/Atlantic18/DoctrineExtensions/tree/main/doc"
     },
     "require": {
-        "php": "^7.2 || ^8.0",
+        "php": "^7.4 || ^8.0",
         "behat/transliterator": "~1.2",
         "doctrine/annotations": "^1.13",
         "doctrine/collections": "^1.0",
