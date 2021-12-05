@@ -55,10 +55,10 @@ no more exceptions during concurrent flushes.
 
 **Note:**
 
-- There is a reported [issue](https://github.com/Atlantic18/DoctrineExtensions/issues/254) that sluggable transliterator
+- There is a reported [issue](https://github.com/doctrine-extensions/DoctrineExtensions/issues/254) that sluggable transliterator
 does not work on OSX 10.6 its ok starting again from 10.7 version. To overcome the problem
 you can use your [custom transliterator](#transliterator)
-- Public [Sluggable repository](http://github.com/Atlantic18/DoctrineExtensions "Sluggable extension on Github") is available on github
+- Public [Sluggable repository](https://github.com/doctrine-extensions/DoctrineExtensions "Sluggable extension on Github") is available on github
 - Last update date: **2012-02-26**
 - For usage together with **SoftDeleteable** in order to take into account softdeleted entities while generating unique
 slug, you must explicitly call **addManagedFilter** with a name of softdeleteable filter, so it can be disabled during
@@ -66,7 +66,7 @@ slug updates. The best place to do it, is when initializing sluggable listener. 
 
 **Portability:**
 
-- **Sluggable** is now available as [Bundle](http://github.com/stof/StofDoctrineExtensionsBundle)
+- **Sluggable** is now available as [Bundle](https://github.com/stof/StofDoctrineExtensionsBundle)
 ported to **Symfony2** by **Christophe Coevoet**, together with all other extensions
 
 This article will cover the basic installation and functionality of **Sluggable**
@@ -88,8 +88,8 @@ Content:
 
 ## Setup and autoloading
 
-Read the [documentation](http://github.com/Atlantic18/DoctrineExtensions/tree/main/doc/annotations.md#em-setup)
-or check the [example code](http://github.com/Atlantic18/DoctrineExtensions/tree/main/example)
+Read the [documentation](./annotations.md#em-setup)
+or check the [example code](../example)
 on how to setup and use the extensions in most optimized way.
 
 <a name="entity-mapping"></a>
@@ -640,7 +640,7 @@ Now the generated slug will be translated by Translatable behavior
 There are built-in slug handlers like described in configuration options of slug, but there
 can be also customized slug handlers depending on use cases. Usually the most logic use case
 is for related slug. For instance if user has a **ManyToOne relation to a **Company** we
-would like to have a url like **http://example.com/knplabs/gedi where **KnpLabs**
+would like to have a url like `http://example.com/knplabs/gedi` where **KnpLabs**
 is a company and user name is **Gedi**. In this case relation has a path separator **/**
 
 User entity example:
@@ -779,7 +779,7 @@ class Company
 ```
 
 For other mapping drivers see
-[xml](https://github.com/Atlantic18/DoctrineExtensions/tree/main/tests/Gedmo/Mapping/Driver/Xml/Mapping.Fixture.Xml.Sluggable.dcm.xml) or [yaml](https://github.com/Atlantic18/DoctrineExtensions/tree/main/tests/Gedmo/Mapping/Driver/Yaml/Mapping.Fixture.Yaml.Category.dcm.yml) examples from tests
+[xml](../tests/Gedmo/Mapping/Driver/Xml/Gedmo.Tests.Mapping.Fixture.Xml.Sluggable.dcm.xml) or [yaml](../tests/Gedmo/Mapping/Driver/Yaml/Gedmo.Tests.Mapping.Fixture.Yaml.Category.dcm.yml) examples from tests
 
 And the example usage:
 

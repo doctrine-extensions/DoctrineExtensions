@@ -12,12 +12,12 @@ Features:
 
 **Note:**
 
-- Public [Sortable repository](http://github.com/Atlantic18/DoctrineExtensions "Sortable extension on Github") is available on github
+- Public [Sortable repository](https://github.com/doctrine-extensions/DoctrineExtensions "Sortable extension on Github") is available on github
 - Last update date: **2012-01-02**
 
 **Portability:**
 
-- **Sortable** is now available as [Bundle](http://github.com/stof/StofDoctrineExtensionsBundle)
+- **Sortable** is now available as [Bundle](https://github.com/stof/StofDoctrineExtensionsBundle)
 ported to **Symfony2** by **Christophe Coevoet**, together with all other extensions
 
 This article will cover the basic installation and functionality of **Sortable**
@@ -37,8 +37,8 @@ Content:
 
 ## Setup and autoloading
 
-Read the [documentation](http://github.com/Atlantic18/DoctrineExtensions/tree/main/doc/annotations.md#em-setup)
-or check the [example code](http://github.com/Atlantic18/DoctrineExtensions/tree/main/example)
+Read the [documentation](./annotations.md#em-setup)
+or check the [example code](../example)
 on how to setup and use the extensions in most optimized way.
 
 <a name="entity-mapping"></a>

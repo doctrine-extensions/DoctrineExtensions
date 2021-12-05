@@ -22,7 +22,7 @@ Features:
 
 **Symfony:**
 
-- **IpTraceable** is not yet available as [Bundle](http://github.com/stof/StofDoctrineExtensionsBundle)
+- **IpTraceable** is not yet available as [Bundle](https://github.com/stof/StofDoctrineExtensionsBundle)
 for **Symfony2**, together with all other extensions
 
 This article will cover the basic installation and functionality of **IpTraceable** behavior
@@ -41,8 +41,8 @@ Content:
 
 ## Setup and autoloading
 
-Read the [documentation](http://github.com/Atlantic18/DoctrineExtensions/tree/main/doc/annotations.md#em-setup)
-or check the [example code](http://github.com/Atlantic18/DoctrineExtensions/tree/main/example)
+Read the [documentation](./annotations.md#em-setup)
+or check the [example code](../example)
 on how to setup and use the extensions in most optimized way.
 
 <a name="entity-mapping"></a>

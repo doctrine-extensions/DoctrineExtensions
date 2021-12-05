@@ -18,9 +18,9 @@ Features:
 
 Thanks for contributions to:
 
-- **[comfortablynumb](http://github.com/comfortablynumb) Gustavo Falco** for Closure and Materialized Path strategy
-- **[everzet](http://github.com/everzet) Kudryashov Konstantin** for TreeLevel implementation
-- **[stof](http://github.com/stof) Christophe Coevoet** for getTreeLeafs function
+- **[comfortablynumb](https://github.com/comfortablynumb) Gustavo Falco** for Closure and Materialized Path strategy
+- **[everzet](https://github.com/everzet) Kudryashov Konstantin** for TreeLevel implementation
+- **[stof](https://github.com/stof) Christophe Coevoet** for getTreeLeafs function
 
 Update **2018-02-26**
 
@@ -71,12 +71,12 @@ Update **2011-02-02**
 - After using a NestedTreeRepository functions: **verify, recover, removeFromTree** it is recommended to clear the EntityManager cache
 because nodes may have changed values in database but not in memory. Flushing dirty nodes can lead to unexpected behaviour.
 - Closure tree implementation is experimental and not fully functional, so far not documented either
-- Public [Tree repository](http://github.com/Atlantic18/DoctrineExtensions "Tree extension on Github") is available on github
+- Public [Tree repository](https://github.com/doctrine-extensions/DoctrineExtensions "Tree extension on Github") is available on github
 - Last update date: **2012-02-23**
 
 **Portability:**
 
-- **Tree** is now available as [Bundle](http://github.com/stof/StofDoctrineExtensionsBundle)
+- **Tree** is now available as [Bundle](https://github.com/stof/StofDoctrineExtensionsBundle)
 ported to **Symfony2** by **Christophe Coevoet**, together with all other extensions
 
 This article will cover the basic installation and functionality of **Tree** behavior
@@ -99,8 +99,8 @@ Content:
 
 ## Setup and autoloading
 
-Read the [documentation](http://github.com/Atlantic18/DoctrineExtensions/tree/main/doc/annotations.md#em-setup)
-or check the [example code](http://github.com/Atlantic18/DoctrineExtensions/tree/main/example)
+Read the [documentation](./annotations.md#em-setup)
+or check the [example code](../example)
 on how to setup and use the extensions in the most optimized way.
 
 <a name="entity-mapping"></a>
