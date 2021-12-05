@@ -25,8 +25,8 @@ Content:
 
 ## Setup and autoloading
 
-Read the [documentation](http://github.com/Atlantic18/DoctrineExtensions/tree/main/doc/annotations.md#em-setup)
-or check the [example code](http://github.com/Atlantic18/DoctrineExtensions/tree/main/example)
+Read the [documentation](./annotations.md#em-setup)
+or check the [example code](../example)
 on how to setup and use the extensions in most optimized way.
 
 

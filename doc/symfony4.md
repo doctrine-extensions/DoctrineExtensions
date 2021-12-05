@@ -1,6 +1,6 @@
 # Install Gedmo Doctrine2 extensions in Symfony 4
 
-Configure full featured [Doctrine2 extensions](http://github.com/Atlantic18/DoctrineExtensions) for your symfony 4 project.
+Configure full featured [Doctrine2 extensions](https://github.com/doctrine-extensions/DoctrineExtensions) for your symfony 4 project.
 This post will show you - how to create a simple configuration file to manage extensions with
 ability to use all features it provides.
 Interested? then bear with me! and don't be afraid, we're not diving into security component :)
@@ -456,15 +456,15 @@ doctrine_mongodb:
 This also shows, how to make mappings based on single manager. All what differs is that **Document**
 instead of **Entity** is used. I haven't tested it with mongo though.
 
-**Note:** [extension repository](http://github.com/Atlantic18/DoctrineExtensions) contains all
-[documentation](http://github.com/Atlantic18/DoctrineExtensions/tree/main/doc) you may need
+**Note:** [extension repository](https://github.com/doctrine-extensions/DoctrineExtensions) contains all
+[documentation](../doc) you may need
 to understand how you can use it in your projects.
 
 <a name="alternative"></a>
 
 ## Alternative over configuration
 
-You can use [StofDoctrineExtensionsBundle](http://github.com/stof/StofDoctrineExtensionsBundle) which is a wrapper of these extensions
+You can use [StofDoctrineExtensionsBundle](https://github.com/stof/StofDoctrineExtensionsBundle) which is a wrapper of these extensions
 
 ## Troubleshooting
 
