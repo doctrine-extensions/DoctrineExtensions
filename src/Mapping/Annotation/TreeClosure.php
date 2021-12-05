@@ -10,6 +10,7 @@
 namespace Gedmo\Mapping\Annotation;
 
 use Doctrine\Common\Annotations\Annotation;
+use Gedmo\Tree\Entity\MappedSuperclass\AbstractClosure;
 
 /**
  * TreeClosure annotation for Tree behavioral extension
@@ -21,6 +22,9 @@ use Doctrine\Common\Annotations\Annotation;
  */
 final class TreeClosure extends Annotation
 {
-    /** @var string @Required */
+    /**
+     * @var string
+     * @phpstan-var class-string<AbstractClosure>
+     */
     public $class;
 }

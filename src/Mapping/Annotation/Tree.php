@@ -21,15 +21,25 @@ use Doctrine\Common\Annotations\Annotation;
  */
 final class Tree extends Annotation
 {
-    /** @var string */
+    /**
+     * @var string
+     * @phpstan-var 'closure'|'materializedPath'|'nested'
+     */
     public $type = 'nested';
 
     /** @var bool */
     public $activateLocking = false;
 
-    /** @var int */
+    /**
+     * @var int
+     * @phpstan-var positive-int
+     */
     public $lockingTimeout = 3;
 
-    /** @var string */
+    /**
+     * @var string
+     *
+     * @deprecated to be removed in 4.0, unused, configure the property on the TreeRoot annotation instead
+     */
     public $identifierMethod;
 }
