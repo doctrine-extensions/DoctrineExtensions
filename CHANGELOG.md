@@ -21,7 +21,7 @@ a release.
 ## [Unreleased]
 
 ### Changed
-- Dropped support for PHP 7.2 and 7.2, which are End of Life (EOL)
+- Dropped support for PHP 7.2 and 7.3, which are End of Life (EOL)
 
 ## [3.4.0] - 2021-12-05
 ### Added
