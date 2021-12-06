@@ -61,6 +61,7 @@
         "phpstan/phpstan-phpunit": "^1.0",
         "phpunit/phpunit": "^8.5 || ^9.5",
         "symfony/console": "^4.4 || ^5.3 || ^6.0",
+        "symfony/phpunit-bridge": "^6.0",
         "symfony/yaml": "^4.4 || ^5.3 || ^6.0"
     },
     "conflict": {
