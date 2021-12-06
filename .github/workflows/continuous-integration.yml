@@ -59,11 +59,6 @@ jobs:
         if: "${{ matrix.dbal-version }}"
         run: "composer require --dev --no-update doctrine/dbal:${{ matrix.dbal-version }}"
 
-      # Remove this when laminas/laminas-code 4.5 is released
-      - name: "Use dev stability"
-        if: "${{ matrix.php-version == '8.1' }}"
-        run: composer config minimum-stability dev
-
       - name: "Install dependencies with Composer"
         uses: "ramsey/composer-install@v1"
         with:

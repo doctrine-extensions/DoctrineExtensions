@@ -37,6 +37,8 @@ class NotifyNode extends AbstractNode implements NotifyPropertyChanged
      * Adds a listener that wants to be notified about property changes.
      *
      * @see \Doctrine\Common\NotifyPropertyChanged::addPropertyChangedListener()
+     *
+     * @return void
      */
     public function addPropertyChangedListener(PropertyChangedListener $listener)
     {

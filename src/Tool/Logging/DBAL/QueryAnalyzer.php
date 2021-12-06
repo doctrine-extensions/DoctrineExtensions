@@ -67,7 +67,7 @@ class QueryAnalyzer implements SQLLogger
     }
 
     /**
-     * {@inheritdoc}
+     * @return void
      */
     public function startQuery($sql, array $params = null, array $types = null)
     {
@@ -76,7 +76,7 @@ class QueryAnalyzer implements SQLLogger
     }
 
     /**
-     * {@inheritdoc}
+     * @return void
      */
     public function stopQuery()
     {

@@ -101,9 +101,6 @@ class TranslationWalker extends SqlWalker
      */
     private $listener;
 
-    /**
-     * {@inheritdoc}
-     */
     public function __construct($query, $parserResult, array $queryComponents)
     {
         parent::__construct($query, $parserResult, $queryComponents);
@@ -114,7 +111,7 @@ class TranslationWalker extends SqlWalker
     }
 
     /**
-     * {@inheritdoc}
+     * @return Query\Exec\AbstractSqlExecutor
      */
     public function getExecutor($AST)
     {
@@ -129,7 +126,7 @@ class TranslationWalker extends SqlWalker
     }
 
     /**
-     * {@inheritdoc}
+     * @return string
      */
     public function walkSelectStatement(SelectStatement $AST)
     {
@@ -159,7 +156,7 @@ class TranslationWalker extends SqlWalker
     }
 
     /**
-     * {@inheritdoc}
+     * @return string
      */
     public function walkSelectClause($selectClause)
     {
@@ -170,7 +167,7 @@ class TranslationWalker extends SqlWalker
     }
 
     /**
-     * {@inheritdoc}
+     * @return string
      */
     public function walkFromClause($fromClause)
     {
@@ -181,7 +178,7 @@ class TranslationWalker extends SqlWalker
     }
 
     /**
-     * {@inheritdoc}
+     * @return string
      */
     public function walkWhereClause($whereClause)
     {
@@ -191,7 +188,7 @@ class TranslationWalker extends SqlWalker
     }
 
     /**
-     * {@inheritdoc}
+     * @return string
      */
     public function walkHavingClause($havingClause)
     {
@@ -201,7 +198,7 @@ class TranslationWalker extends SqlWalker
     }
 
     /**
-     * {@inheritdoc}
+     * @return string
      */
     public function walkOrderByClause($orderByClause)
     {
@@ -211,7 +208,7 @@ class TranslationWalker extends SqlWalker
     }
 
     /**
-     * {@inheritdoc}
+     * @return string
      */
     public function walkSubselect($subselect)
     {
@@ -221,7 +218,7 @@ class TranslationWalker extends SqlWalker
     }
 
     /**
-     * {@inheritdoc}
+     * @return string
      */
     public function walkSubselectFromClause($subselectFromClause)
     {
@@ -232,7 +229,7 @@ class TranslationWalker extends SqlWalker
     }
 
     /**
-     * {@inheritdoc}
+     * @return string
      */
     public function walkSimpleSelectClause($simpleSelectClause)
     {
@@ -242,7 +239,7 @@ class TranslationWalker extends SqlWalker
     }
 
     /**
-     * {@inheritdoc}
+     * @return string
      */
     public function walkGroupByClause($groupByClause)
     {

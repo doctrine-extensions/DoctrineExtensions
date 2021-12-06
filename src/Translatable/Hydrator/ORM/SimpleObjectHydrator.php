@@ -33,7 +33,7 @@ class SimpleObjectHydrator extends BaseSimpleObjectHydrator
     private $savedSkipOnLoad;
 
     /**
-     * {@inheritdoc}
+     * @return void
      */
     protected function prepare()
     {
@@ -44,7 +44,7 @@ class SimpleObjectHydrator extends BaseSimpleObjectHydrator
     }
 
     /**
-     * {@inheritdoc}
+     * @return void
      */
     protected function cleanup()
     {

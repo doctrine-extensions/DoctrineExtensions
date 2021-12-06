@@ -58,7 +58,7 @@ class TreeObjectHydrator extends ObjectHydrator
     /**
      * We hook into the `hydrateAllData` to map the children collection of the entity
      *
-     * {@inheritdoc}
+     * @return mixed[]
      */
     protected function hydrateAllData()
     {

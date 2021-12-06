@@ -67,8 +67,8 @@
         </testsuite>
     </testsuites>
     <php>
+        <env name="SYMFONY_DEPRECATIONS_HELPER" value="max[self]=0" />
         <env name="MONGODB_SERVER" value="mongodb://mongodb:27017"/>
-        <env name="SYMFONY_DEPRECATIONS_HELPER" value="max[direct]=1"/>
     </php>
     <listeners>
         <listener class="Symfony\Bridge\PhpUnit\SymfonyTestsListener"/>
