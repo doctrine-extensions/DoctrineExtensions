@@ -10,6 +10,8 @@
 namespace Gedmo\Mapping\Annotation;
 
 use Doctrine\Common\Annotations\Annotation;
+use Gedmo\Mapping\Annotation\Annotation as GedmoAnnotation;
+use Attribute;
 
 /**
  * TreeRoot annotation for Tree behavioral extension
@@ -19,7 +21,8 @@ use Doctrine\Common\Annotations\Annotation;
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  */
-final class TreeRoot extends Annotation
+#[Attribute(Attribute::TARGET_PROPERTY)]
+final class TreeRoot implements GedmoAnnotation
 {
     /** @var string */
     public $identifierMethod;

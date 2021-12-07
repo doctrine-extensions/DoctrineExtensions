@@ -10,6 +10,9 @@
 namespace Gedmo\Mapping\Annotation;
 
 use Doctrine\Common\Annotations\Annotation;
+use Attribute;
+use Gedmo\Mapping\Annotation\Annotation as GedmoAnnotation;
+
 
 /**
  * TreeLevel annotation for Tree behavioral extension
@@ -19,6 +22,7 @@ use Doctrine\Common\Annotations\Annotation;
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  */
-final class TreeLevel extends Annotation
+#[Attribute(Attribute::TARGET_PROPERTY)]
+final class TreeLevel implements GedmoAnnotation
 {
 }

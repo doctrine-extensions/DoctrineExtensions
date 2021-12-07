@@ -10,6 +10,8 @@
 namespace Gedmo\Mapping\Annotation;
 
 use Doctrine\Common\Annotations\Annotation;
+use Gedmo\Mapping\Annotation\Annotation as GedmoAnnotation;
+use Attribute;
 
 /**
  * Tree annotation for Tree behavioral extension
@@ -19,7 +21,8 @@ use Doctrine\Common\Annotations\Annotation;
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  */
-final class Tree extends Annotation
+#[Attribute(Attribute::TARGET_CLASS)]
+final class Tree implements GedmoAnnotation
 {
     /**
      * @var string
@@ -42,4 +45,21 @@ final class Tree extends Annotation
      * @deprecated to be removed in 4.0, unused, configure the property on the TreeRoot annotation instead
      */
     public $identifierMethod;
+
+    /**
+     * @phpstan-param class-string|null $type
+     */
+    public function __construct(array $data = [], ?string $type = null)
+    {
+        if ([] !== $data) {
+            @trigger_error(sprintf(
+                'Passing an array as first argument to "%s()" is deprecated. Use named arguments instead.',
+                __METHOD__
+            ), E_USER_DEPRECATED);
+        }
+
+        $this->type = $data['type'] ?? $type;
+    }
+
 }
+
