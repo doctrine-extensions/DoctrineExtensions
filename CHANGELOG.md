@@ -20,6 +20,9 @@ a release.
 
 ## [Unreleased]
 
+### Fixed
+- Loggable: Using only PHP 8 attributes.
+
 ## [3.4.0] - 2021-12-05
 ### Added
 - PHP 8 Attributes support for Doctrine MongoDB to document & traits.
