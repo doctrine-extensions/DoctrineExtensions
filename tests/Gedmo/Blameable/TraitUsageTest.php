@@ -34,13 +34,13 @@ final class TraitUsageTest extends BaseTestCaseORM
         $evm = new EventManager();
         $evm->addEventSubscriber($listener);
 
-        $this->getMockSqliteEntityManager($evm);
+        $this->getDefaultMockSqliteEntityManager($evm);
     }
 
     /**
      * @test
      */
-    public function shouldTimestampUsingTrait()
+    public function shouldTimestampUsingTrait(): void
     {
         $sport = new UsingTrait();
         $sport->setTitle('Sport');
@@ -55,14 +55,14 @@ final class TraitUsageTest extends BaseTestCaseORM
     /**
      * @test
      */
-    public function traitMethodthShouldReturnObject()
+    public function traitMethodthShouldReturnObject(): void
     {
         $sport = new UsingTrait();
         static::assertInstanceOf(self::TARGET, $sport->setCreatedBy('myuser'));
         static::assertInstanceOf(self::TARGET, $sport->setUpdatedBy('myuser'));
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::TARGET,

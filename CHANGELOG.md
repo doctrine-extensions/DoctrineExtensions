@@ -20,6 +20,9 @@ a release.
 
 ## [Unreleased]
 
+### Added
+- Blameable: Support to use annotations as attributes on PHP >= 8.0.
+
 ### Fixed
 - Loggable: Using only PHP 8 attributes.
 

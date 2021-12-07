@@ -44,13 +44,13 @@ final class BlameableDocumentTest extends BaseTestCaseMongoODM
         $evm = new EventManager();
         $evm->addEventSubscriber($listener);
 
-        $manager = $this->getMockDocumentManager($evm);
+        $manager = $this->getDefaultDocumentManager($evm);
         $manager->persist($user);
         $this->populate();
         $manager->flush();
     }
 
-    public function testBlameable()
+    public function testBlameable(): void
     {
         $repo = $this->dm->getRepository(self::ARTICLE);
         $article = $repo->findOneBy(['title' => 'Blameable Article']);
@@ -73,7 +73,7 @@ final class BlameableDocumentTest extends BaseTestCaseMongoODM
         static::assertSame(self::TEST_USERNAME, $article->getCreator()->getUsername());
     }
 
-    public function testForcedValues()
+    public function testForcedValues(): void
     {
         $sport = new Article();
         $sport->setTitle('sport forced');

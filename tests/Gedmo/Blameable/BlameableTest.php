@@ -40,10 +40,10 @@ final class BlameableTest extends BaseTestCaseORM
         $evm = new EventManager();
         $evm->addEventSubscriber($listener);
 
-        $this->getMockSqliteEntityManager($evm);
+        $this->getDefaultMockSqliteEntityManager($evm);
     }
 
-    public function testBlameable()
+    public function testBlameable(): void
     {
         $sport = new Article();
         $sport->setTitle('Sport');
@@ -89,7 +89,7 @@ final class BlameableTest extends BaseTestCaseORM
         static::assertSame('testuser', $sport->getPublished());
     }
 
-    public function testForcedValues()
+    public function testForcedValues(): void
     {
         $sport = new Article();
         $sport->setTitle('sport forced');
@@ -119,7 +119,7 @@ final class BlameableTest extends BaseTestCaseORM
         static::assertSame('myuser', $sport->getPublished());
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::ARTICLE,

@@ -40,10 +40,10 @@ final class ProtectedPropertySupperclassTest extends BaseTestCaseORM
         $blameableListener->setUserValue('testuser');
         $evm->addEventSubscriber($blameableListener);
 
-        $this->getMockSqliteEntityManager($evm);
+        $this->getDefaultMockSqliteEntityManager($evm);
     }
 
-    public function testProtectedProperty()
+    public function testProtectedProperty(): void
     {
         $test = new SupperClassExtension();
         $test->setName('name');
@@ -60,7 +60,7 @@ final class ProtectedPropertySupperclassTest extends BaseTestCaseORM
         static::assertSame('testuser', $test->getCreatedBy());
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::TRANSLATION,

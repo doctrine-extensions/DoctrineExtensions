@@ -9,17 +9,21 @@
 
 namespace Gedmo\Mapping\Annotation;
 
+use Attribute;
 use Doctrine\Common\Annotations\Annotation;
+use Gedmo\Mapping\Annotation\Annotation as GedmoAnnotation;
 
 /**
  * Blameable annotation for Blameable behavioral extension
  *
  * @Annotation
+ * @NamedArgumentConstructor
  * @Target("PROPERTY")
  *
  * @author David Buchmann <mail@davidbu.ch>
  */
-final class Blameable extends Annotation
+#[Attribute(Attribute::TARGET_PROPERTY)]
+final class Blameable implements GedmoAnnotation
 {
     /** @var string */
     public $on = 'update';
@@ -27,4 +31,18 @@ final class Blameable extends Annotation
     public $field;
     /** @var mixed */
     public $value;
+
+    public function __construct(array $data = [], string $on = 'update', $field = null, $value = null)
+    {
+        if ([] !== $data) {
+            @trigger_error(sprintf(
+                'Passing an array as first argument to "%s()" is deprecated. Use named arguments instead.',
+                __METHOD__
+            ), E_USER_DEPRECATED);
+        }
+
+        $this->on = $data['on'] ?? $on;
+        $this->field = $data['field'] ?? $field;
+        $this->value = $data['value'] ?? $value;
+    }
 }
