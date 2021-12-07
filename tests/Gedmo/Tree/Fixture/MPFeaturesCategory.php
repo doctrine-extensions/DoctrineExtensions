@@ -23,6 +23,7 @@ use Gedmo\Tree\Entity\Repository\MaterializedPathRepository;
  * @Gedmo\Tree(type="materializedPath")
  */
 #[ORM\Entity(repositoryClass: MaterializedPathRepository::class)]
+#[Gedmo\Tree(type: 'materializedPath')]
 class MPFeaturesCategory
 {
     /**
@@ -44,6 +45,7 @@ class MPFeaturesCategory
      * @ORM\Column(name="path", type="string", length=3000, nullable=true)
      */
     #[ORM\Column(name: 'path', type: Types::STRING, length: 3000, nullable: true)]
+    #[Gedmo\TreePath(appendId: false, startsWithSeparator: true, endsWithSeparator: false)]
     private $path;
 
     /**
@@ -53,6 +55,7 @@ class MPFeaturesCategory
      * @ORM\Column(name="pathhash", type="string", length=32, nullable=true)
      */
     #[ORM\Column(name: 'pathhash', type: Types::STRING, length: 32, nullable: true)]
+    #[Gedmo\TreePathHash]
     private $pathHash;
 
     /**
@@ -62,6 +65,7 @@ class MPFeaturesCategory
      * @ORM\Column(name="title", type="string", length=64)
      */
     #[ORM\Column(name: 'title', type: Types::STRING, length: 64)]
+    #[Gedmo\TreePathSource]
     private $title;
 
     /**
@@ -75,6 +79,7 @@ class MPFeaturesCategory
      */
     #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'children')]
     #[ORM\JoinColumn(name: 'parent_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    #[Gedmo\TreeParent]
     private $parentId;
 
     /**
@@ -84,6 +89,7 @@ class MPFeaturesCategory
      * @ORM\Column(name="lvl", type="integer", nullable=true)
      */
     #[ORM\Column(name: 'lvl', type: Types::INTEGER, nullable: true)]
+    #[Gedmo\TreeLevel]
     private $level;
 
     /**
@@ -93,6 +99,7 @@ class MPFeaturesCategory
      * @ORM\Column(name="tree_root_value", type="string", nullable=true)
      */
     #[ORM\Column(name: 'tree_root_value', type: Types::STRING, nullable: true)]
+    #[Gedmo\TreeRoot]
     private $treeRootValue;
 
     /**

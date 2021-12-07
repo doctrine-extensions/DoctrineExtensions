@@ -21,6 +21,7 @@ use Gedmo\Tree\Document\MongoDB\Repository\MaterializedPathRepository;
  * @Gedmo\Tree(type="materializedPath", activateLocking=true)
  */
 #[Mongo\Document(repositoryClass: MaterializedPathRepository::class)]
+#[Gedmo\Tree(type: 'materializedPath', activateLocking: true)]
 class Article
 {
     /**
@@ -38,6 +39,7 @@ class Article
      * @Gedmo\TreePathSource
      */
     #[Mongo\Field(type: Type::STRING)]
+    #[Gedmo\TreePathSource]
     private $title;
 
     /**
@@ -47,6 +49,7 @@ class Article
      * @Gedmo\TreePath(separator="|")
      */
     #[Mongo\Field(type: Type::STRING)]
+    #[Gedmo\TreePath(separator: '|')]
     private $path;
 
     /**
@@ -56,6 +59,7 @@ class Article
      * @Mongo\ReferenceOne(targetDocument="Article")
      */
     #[Mongo\ReferenceOne(targetDocument: self::class)]
+    #[Gedmo\TreeParent]
     private $parent;
 
     /**
@@ -65,6 +69,7 @@ class Article
      * @Mongo\Field(type="int")
      */
     #[Mongo\Field(type: Type::INT)]
+    #[Gedmo\TreeLevel]
     private $level;
 
     /**
@@ -74,6 +79,7 @@ class Article
      * @Mongo\Field(type="date")
      */
     #[Mongo\Field(type: Type::DATE)]
+    #[Gedmo\TreeLockTime]
     private $lockTime;
 
     public function getId(): ?string

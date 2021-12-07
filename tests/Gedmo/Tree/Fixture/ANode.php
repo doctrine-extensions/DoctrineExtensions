@@ -40,6 +40,7 @@ class ANode
      * @ORM\Column(type="integer", nullable=true)
      */
     #[ORM\Column(type: Types::INTEGER, nullable: true)]
+    #[Gedmo\TreeLeft]
     private $lft;
 
     /**
@@ -49,6 +50,7 @@ class ANode
      * @ORM\Column(type="integer", nullable=true)
      */
     #[ORM\Column(type: Types::INTEGER, nullable: true)]
+    #[Gedmo\TreeRight]
     private $rgt;
 
     /**
@@ -60,6 +62,7 @@ class ANode
      */
     #[ORM\ManyToOne(targetEntity: BaseNode::class, inversedBy: 'children')]
     #[ORM\JoinColumn(name: 'parent_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    #[Gedmo\TreeParent]
     private $parent;
 
     public function getId(): ?int

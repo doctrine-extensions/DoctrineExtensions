@@ -26,6 +26,7 @@ trait NestedSetEntity
      * @ORM\Column(name="root", type="integer", nullable=true)
      */
     #[ORM\Column(name: 'root', type: Types::INTEGER, nullable: true)]
+    #[Gedmo\TreeRoot]
     private $root;
 
     /**
@@ -34,6 +35,7 @@ trait NestedSetEntity
      * @ORM\Column(name="lvl", type="integer")
      */
     #[ORM\Column(name: 'lvl', type: Types::INTEGER)]
+    #[Gedmo\TreeLevel]
     private $level;
 
     /**
@@ -42,6 +44,7 @@ trait NestedSetEntity
      * @ORM\Column(name="lft", type="integer")
      */
     #[ORM\Column(name: 'lft', type: Types::INTEGER)]
+    #[Gedmo\TreeLeft]
     private $left;
 
     /**
@@ -50,5 +53,6 @@ trait NestedSetEntity
      * @ORM\Column(name="rgt", type="integer")
      */
     #[ORM\Column(name: 'rgt', type: Types::INTEGER)]
+    #[Gedmo\TreeRight]
     private $right;
 }

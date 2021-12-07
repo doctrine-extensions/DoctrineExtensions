@@ -25,6 +25,7 @@ use Gedmo\Tree\Entity\Repository\NestedTreeRepository;
  * @author Dirk Luijk <dirk@luijkwebcreations.nl>
  */
 #[ORM\Entity(repositoryClass: NestedTreeRepository::class)]
+#[Gedmo\Tree(type: 'nested')]
 class SuffixWithTreeHandler implements Sluggable
 {
     /**
@@ -72,6 +73,7 @@ class SuffixWithTreeHandler implements Sluggable
      */
     #[ORM\ManyToOne(targetEntity: self::class)]
     #[ORM\JoinColumn(name: 'parent_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    #[Gedmo\TreeParent]
     private $parent;
 
     /**
@@ -81,6 +83,7 @@ class SuffixWithTreeHandler implements Sluggable
      * @ORM\Column(name="lft", type="integer")
      */
     #[ORM\Column(name: 'lft', type: Types::INTEGER)]
+    #[Gedmo\TreeLeft]
     private $lft;
 
     /**
@@ -90,6 +93,7 @@ class SuffixWithTreeHandler implements Sluggable
      * @ORM\Column(name="lvl", type="integer")
      */
     #[ORM\Column(name: 'lvl', type: Types::INTEGER)]
+    #[Gedmo\TreeLevel]
     private $lvl;
 
     /**
@@ -99,6 +103,7 @@ class SuffixWithTreeHandler implements Sluggable
      * @ORM\Column(name="rgt", type="integer")
      */
     #[ORM\Column(name: 'rgt', type: Types::INTEGER)]
+    #[Gedmo\TreeRight]
     private $rgt;
 
     /**
@@ -108,6 +113,7 @@ class SuffixWithTreeHandler implements Sluggable
      * @ORM\Column(name="root", type="integer", nullable=true)
      */
     #[ORM\Column(name: 'root', type: Types::INTEGER, nullable: true)]
+    #[Gedmo\TreeRoot]
     private $root;
 
     public function getId(): ?int

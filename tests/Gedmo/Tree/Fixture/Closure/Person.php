@@ -26,6 +26,8 @@ use Gedmo\Tree\Entity\Repository\ClosureTreeRepository;
  *   "user" = "User"
  *   })
  */
+#[Gedmo\Tree(type: 'closure')]
+#[Gedmo\TreeClosure(class: PersonClosure::class)]
 #[ORM\Entity(repositoryClass: ClosureTreeRepository::class)]
 #[ORM\InheritanceType('JOINED')]
 #[ORM\DiscriminatorColumn(name: 'discriminator', type: Types::STRING)]
@@ -61,6 +63,7 @@ abstract class Person
      */
     #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'children', cascade: ['persist'])]
     #[ORM\JoinColumn(name: 'parent_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    #[Gedmo\TreeParent]
     private $parent;
 
     /**
@@ -70,6 +73,7 @@ abstract class Person
      * @Gedmo\TreeLevel
      */
     #[ORM\Column(name: 'level', type: Types::INTEGER)]
+    #[Gedmo\TreeLevel]
     private $level;
 
     /**
