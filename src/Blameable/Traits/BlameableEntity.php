@@ -25,6 +25,7 @@ trait BlameableEntity
      * @ORM\Column(nullable=true)
      */
     #[ORM\Column(nullable: true)]
+    #[Gedmo\Blameable(on: 'create')]
     protected $createdBy;
 
     /**
@@ -33,6 +34,7 @@ trait BlameableEntity
      * @ORM\Column(nullable=true)
      */
     #[ORM\Column(nullable: true)]
+    #[Gedmo\Blameable(on: 'update')]
     protected $updatedBy;
 
     /**

@@ -34,10 +34,10 @@ final class NoInterfaceTest extends BaseTestCaseORM
         $blameableListener->setUserValue('testuser');
         $evm->addEventSubscriber($blameableListener);
 
-        $this->getMockSqliteEntityManager($evm);
+        $this->getDefaultMockSqliteEntityManager($evm);
     }
 
-    public function testBlameableNoInterface()
+    public function testBlameableNoInterface(): void
     {
         $test = new WithoutInterface();
         $test->setTitle('Test');
@@ -51,7 +51,7 @@ final class NoInterfaceTest extends BaseTestCaseORM
         static::assertSame('testuser', $test->getUpdated());
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::FIXTURE,
