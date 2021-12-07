@@ -29,6 +29,7 @@ use Gedmo\Tree\Entity\Repository\NestedTreeRepository;
 #[ORM\InheritanceType('SINGLE_TABLE')]
 #[ORM\DiscriminatorColumn(name: 'discriminator', type: Types::STRING)]
 #[ORM\DiscriminatorMap(['base' => BaseNode::class, 'node' => Node::class])]
+#[Gedmo\Tree(type: 'nested')]
 class BaseNode extends ANode
 {
     /**

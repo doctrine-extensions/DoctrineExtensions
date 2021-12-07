@@ -23,6 +23,7 @@ use Gedmo\Tree\Entity\Repository\NestedTreeRepository;
  * @Gedmo\Tree(type="nested")
  */
 #[ORM\Entity(repositoryClass: NestedTreeRepository::class)]
+#[Gedmo\Tree(type: 'nested')]
 class ForeignRootCategory
 {
     /**
@@ -52,6 +53,7 @@ class ForeignRootCategory
      * @ORM\Column(name="lft", type="integer")
      */
     #[ORM\Column(name: 'lft', type: Types::INTEGER)]
+    #[Gedmo\TreeLeft]
     private $lft;
 
     /**
@@ -61,6 +63,7 @@ class ForeignRootCategory
      * @ORM\Column(name="rgt", type="integer")
      */
     #[ORM\Column(name: 'rgt', type: Types::INTEGER)]
+    #[Gedmo\TreeRight]
     private $rgt;
 
     /**
@@ -74,6 +77,7 @@ class ForeignRootCategory
      */
     #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'children')]
     #[ORM\JoinColumn(name: 'parent_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    #[Gedmo\TreeParent]
     private $parent;
 
     /**
@@ -83,6 +87,7 @@ class ForeignRootCategory
      * @ORM\Column(type="integer")
      */
     #[ORM\Column(type: Types::INTEGER)]
+    #[Gedmo\TreeRoot(identifierMethod: 'getRoot')]
     private $root;
 
     /**
@@ -92,6 +97,7 @@ class ForeignRootCategory
      * @ORM\Column(name="lvl", type="integer")
      */
     #[ORM\Column(name: 'lvl', type: Types::INTEGER)]
+    #[Gedmo\TreeLevel]
     private $level;
 
     /**

@@ -23,6 +23,7 @@ use Gedmo\Tests\Tree\Fixture\Repository\BehavioralCategoryRepository;
  * @Gedmo\Tree(type="nested")
  */
 #[ORM\Entity(repositoryClass: BehavioralCategoryRepository::class)]
+#[Gedmo\Tree(type: 'nested')]
 class BehavioralCategory
 {
     /**
@@ -54,6 +55,7 @@ class BehavioralCategory
      * @ORM\Column(name="lft", type="integer", nullable=true)
      */
     #[ORM\Column(name: 'lft', type: Types::INTEGER, nullable: true)]
+    #[Gedmo\TreeLeft]
     private $lft;
 
     /**
@@ -63,6 +65,7 @@ class BehavioralCategory
      * @ORM\Column(name="rgt", type="integer", nullable=true)
      */
     #[ORM\Column(name: 'rgt', type: Types::INTEGER, nullable: true)]
+    #[Gedmo\TreeRight]
     private $rgt;
 
     /**
@@ -76,6 +79,7 @@ class BehavioralCategory
      */
     #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'children')]
     #[ORM\JoinColumn(name: 'parent_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    #[Gedmo\TreeParent]
     private $parent;
 
     /**
@@ -95,6 +99,7 @@ class BehavioralCategory
      */
     #[ORM\Column(name: 'slug', type: Types::STRING, length: 128, unique: true)]
     #[Gedmo\Translatable]
+    #[Gedmo\Slug(fields: ['title'])]
     private $slug;
 
     public function __construct()
