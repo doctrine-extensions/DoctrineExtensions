@@ -32,7 +32,7 @@ final class Slug implements GedmoAnnotation
     public $style = 'default'; // or "camel"
     /** @var bool */
     public $unique = true;
-    /** @var string */
+    /** @var string|null */
     public $unique_base;
     /** @var string */
     public $separator = '-';
@@ -53,7 +53,7 @@ final class Slug implements GedmoAnnotation
                                 bool $updatable = true,
                                 string $style = 'default', // or "camel"
                                 bool $unique = true,
-                                string $unique_base = '',
+                                ?string $unique_base = null,
                                 string $separator = '-',
                                 string $prefix = '',
                                 string $suffix = '',
