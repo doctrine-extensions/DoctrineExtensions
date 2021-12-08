@@ -1,5 +1,4 @@
 <?php
-
 /*
  * This file is part of the Doctrine Behavioral Extensions package.
  * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
@@ -9,9 +8,9 @@
 
 namespace Gedmo\Mapping\Annotation;
 
+use Attribute;
 use Doctrine\Common\Annotations\Annotation;
 use Gedmo\Mapping\Annotation\Annotation as GedmoAnnotation;
-use Attribute;
 
 /**
  * Tree annotation for Tree behavioral extension
@@ -64,6 +63,4 @@ final class Tree implements GedmoAnnotation
         $this->lockingTimeout = $data['lockingTimeout'] ?? $lockingTimeout;
         $this->identifierMethod = $data['identifierMethod'] ?? $identifierMethod;
     }
-
 }
-

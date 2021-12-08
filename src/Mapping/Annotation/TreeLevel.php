@@ -13,7 +13,6 @@ use Doctrine\Common\Annotations\Annotation;
 use Attribute;
 use Gedmo\Mapping\Annotation\Annotation as GedmoAnnotation;
 
-
 /**
  * TreeLevel annotation for Tree behavioral extension
  *
