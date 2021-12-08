@@ -49,7 +49,7 @@ final class Tree implements GedmoAnnotation
     /**
      * @phpstan-param class-string|null $type
      */
-    public function __construct(array $data = [], ?string $type = null, bool $activateLocking = false, int $lockingTimeout = 3, string $identifierMethod)
+    public function __construct(array $data = [], ?string $type = null, bool $activateLocking = false, int $lockingTimeout = 3, ?string $identifierMethod=null)
     {
         if ([] !== $data) {
             @trigger_error(sprintf(
