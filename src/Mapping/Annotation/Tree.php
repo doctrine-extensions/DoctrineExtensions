@@ -44,12 +44,13 @@ final class Tree implements GedmoAnnotation
      *
      * @deprecated to be removed in 4.0, unused, configure the property on the TreeRoot annotation instead
      */
+
     public $identifierMethod;
 
     /**
      * @phpstan-param class-string|null $type
      */
-    public function __construct(array $data = [], ?string $type = null)
+    public function __construct(array $data = [], ?string $type = null, bool $activateLocking = false, int $lockingTimeout = 3, string $identifierMethod)
     {
         if ([] !== $data) {
             @trigger_error(sprintf(
@@ -59,6 +60,9 @@ final class Tree implements GedmoAnnotation
         }
 
         $this->type = $data['type'] ?? $type;
+        $this->activateLocking = $data['activateLocking'] ?? $activateLocking;
+        $this->lockingTimeout = $data['lockingTimeout'] ?? $lockingTimeout;
+        $this->identifierMethod = $data['identifierMethod'] ?? $identifierMethod;
     }
 
 }
