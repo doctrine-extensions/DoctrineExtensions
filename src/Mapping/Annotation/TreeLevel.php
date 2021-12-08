@@ -9,8 +9,8 @@
 
 namespace Gedmo\Mapping\Annotation;
 
-use Doctrine\Common\Annotations\Annotation;
 use Attribute;
+use Doctrine\Common\Annotations\Annotation;
 use Gedmo\Mapping\Annotation\Annotation as GedmoAnnotation;
 
 /**

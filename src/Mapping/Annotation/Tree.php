@@ -1,4 +1,5 @@
 <?php
+
 /*
  * This file is part of the Doctrine Behavioral Extensions package.
  * (c) Gediminas Morkevicius <gediminas.morkevicius@gmail.com> http://www.gediminasm.org
@@ -43,13 +44,12 @@ final class Tree implements GedmoAnnotation
      *
      * @deprecated to be removed in 4.0, unused, configure the property on the TreeRoot annotation instead
      */
-
     public $identifierMethod;
 
     /**
      * @phpstan-param class-string|null $type
      */
-    public function __construct(array $data = [], ?string $type = null, bool $activateLocking = false, int $lockingTimeout = 3, ?string $identifierMethod=null)
+    public function __construct(array $data = [], ?string $type = null, bool $activateLocking = false, int $lockingTimeout = 3, ?string $identifierMethod = null)
     {
         if ([] !== $data) {
             @trigger_error(sprintf(

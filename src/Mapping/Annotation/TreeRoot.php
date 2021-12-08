@@ -9,9 +9,9 @@
 
 namespace Gedmo\Mapping\Annotation;
 
+use Attribute;
 use Doctrine\Common\Annotations\Annotation;
 use Gedmo\Mapping\Annotation\Annotation as GedmoAnnotation;
-use Attribute;
 
 /**
  * TreeRoot annotation for Tree behavioral extension
