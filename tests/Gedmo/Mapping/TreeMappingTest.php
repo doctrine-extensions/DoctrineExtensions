@@ -9,7 +9,7 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Gedmo\Tests\Tree;
+namespace Gedmo\Tests\Mapping;
 
 use Doctrine\ORM\Mapping\Driver\YamlDriver;
 use Doctrine\Persistence\Mapping\Driver\MappingDriverChain;
@@ -73,18 +73,6 @@ final class TreeMappingTest extends \PHPUnit\Framework\TestCase
         $evm = new \Doctrine\Common\EventManager();
         $evm->addEventSubscriber(new TreeListener());
         $this->em = \Doctrine\ORM\EntityManager::create($conn, $config, $evm);
-    }
-
-    public function testApcCached()
-    {
-        $this->em->getClassMetadata(self::YAML_CLOSURE_CATEGORY);
-        $this->em->getClassMetadata(CategoryClosure::class);
-
-        $meta = $this->em->getMetadataFactory()->getCacheDriver()->fetch(
-            'Gedmo\\Tests\\Tree\\Fixture\\Closure\\CategoryClosure$CLASSMETADATA'
-        );
-        static::assertTrue($meta->hasAssociation('ancestor'));
-        static::assertTrue($meta->hasAssociation('descendant'));
     }
 
     public function testYamlNestedMapping()
