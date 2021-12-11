@@ -25,6 +25,7 @@ a release.
 - IpTraceable: Support to use annotations as attributes on PHP >= 8.0.
 
 ### Fixed
+- Blameable, IpTraceable, Timestampable: Type handling for the tracked field values configured in the origin field.
 - Loggable: Using only PHP 8 attributes.
 
 ## [3.4.0] - 2021-12-05
