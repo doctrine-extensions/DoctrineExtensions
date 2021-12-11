@@ -111,6 +111,24 @@ class Article implements Timestampable
     #[ORM\ManyToOne(targetEntity: Type::class, inversedBy: 'articles')]
     private $type;
 
+    /**
+     * @ORM\Column(name="level", type="integer")
+     */
+    #[ORM\Column(name: 'level', type: Types::INTEGER)]
+    private $level = 0;
+
+    /**
+     * We use the value "10" as string here in order to check the behavior of `AbstractTrackingListener`
+     *
+     * @var \DateTimeInterface
+     *
+     * @ORM\Column(name="reached_relevant_level", type="datetime", nullable=true)
+     * @Gedmo\Timestampable(on="change", field="level", value="10")
+     */
+    #[ORM\Column(name: 'reached_relevant_level', type: Types::DATE_MUTABLE, nullable: true)]
+    #[Gedmo\Timestampable(on: 'change', field: 'level', value: '10')]
+    private $reachedRelevantLevel;
+
     public function setType($type)
     {
         $this->type = $type;
@@ -215,5 +233,20 @@ class Article implements Timestampable
     public function getAuthorChanged()
     {
         return $this->authorChanged;
+    }
+
+    public function setLevel(int $level): void
+    {
+        $this->level = $level;
+    }
+
+    public function getLevel(): int
+    {
+        return $this->level;
+    }
+
+    public function getReachedRelevantLevel(): ?\DateTimeInterface
+    {
+        return $this->reachedRelevantLevel;
     }
 }

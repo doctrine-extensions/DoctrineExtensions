@@ -13,6 +13,7 @@ namespace Gedmo\Tests\Timestampable;
 
 use Doctrine\Common\EventManager;
 use Doctrine\ORM\Proxy\Proxy;
+use Gedmo\Tests\Mapping\Fixture\Xml\Timestampable;
 use Gedmo\Tests\Timestampable\Fixture\Article;
 use Gedmo\Tests\Timestampable\Fixture\Author;
 use Gedmo\Tests\Timestampable\Fixture\Comment;
@@ -248,6 +249,45 @@ final class TimestampableTest extends BaseTestCaseORM
         $this->em->flush(); // in v2.4.x will work on insert too
 
         static::assertNotNull($art->getPublished());
+    }
+
+    /**
+     * @see https://github.com/doctrine-extensions/DoctrineExtensions/issues/2367.
+     */
+    public function testHandledTypes(): void
+    {
+        $timespampable = new Article();
+        $timespampable->setTitle('My article');
+        $timespampable->setBody('My article body.');
+
+        static::assertNull($timespampable->getReachedRelevantLevel());
+        $timespampable->setLevel(8);
+
+        $this->em->persist($timespampable);
+        $this->em->flush();
+
+        $repo = $this->em->getRepository(self::ARTICLE);
+        $found = $repo->findOneBy(['body' => 'My article body.']);
+
+        static::assertNull($found->getReachedRelevantLevel());
+
+        $timespampable->setLevel(9);
+
+        $this->em->persist($timespampable);
+        $this->em->flush();
+
+        $found = $repo->findOneBy(['body' => 'My article body.']);
+
+        static::assertNull($found->getReachedRelevantLevel());
+
+        $timespampable->setLevel(10);
+
+        $this->em->persist($timespampable);
+        $this->em->flush();
+
+        $found = $repo->findOneBy(['body' => 'My article body.']);
+
+        static::assertInstanceOf(\DateTime::class, $found->getReachedRelevantLevel());
     }
 
     protected function getUsedEntityFixtures()
