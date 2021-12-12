@@ -27,6 +27,8 @@ final class SluggableListener extends BaseSluggableListener
 
     public function __construct()
     {
+        parent::__construct();
+
         $this->originalTransliterator = $this->getTransliterator();
         $this->originalUrlizer = $this->getUrlizer();
 
