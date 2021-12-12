@@ -25,7 +25,7 @@ final class SoftDeletableDocumentTraitTest extends \PHPUnit\Framework\TestCase
      */
     protected $entity;
 
-    public function testGetSetDeletedAt()
+    public function testGetSetDeletedAt(): void
     {
         $time = new \DateTime();
         $entity = new UsingTrait();

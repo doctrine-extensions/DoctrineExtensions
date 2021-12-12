@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Gedmo\Tests\SoftDeleteable\Fixture\Entity;
 
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
@@ -18,31 +19,41 @@ use Gedmo\Mapping\Annotation as Gedmo;
  * @ORM\MappedSuperclass
  * @Gedmo\SoftDeleteable(fieldName="deletedAt")
  */
+#[ORM\MappedSuperclass]
+#[Gedmo\SoftDeleteable(fieldName: 'deletedAt')]
 class MappedSuperclass
 {
     /**
-     * @ORM\Column(name="id", type="integer")
+     * @var int|null
+     *
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
+     * @ORM\Column(type="integer")
      */
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'IDENTITY')]
+    #[ORM\Column(type: Types::INTEGER)]
     private $id;
 
     /**
+     * @var \DateTime|null
+     *
      * @ORM\Column(name="deletedAt", type="datetime", nullable=true)
      */
+    #[ORM\Column(name: 'deletedAt', type: Types::DATETIME_MUTABLE, nullable: true)]
     private $deletedAt;
 
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function setDeletedAt($deletedAt)
+    public function setDeletedAt(?\DateTime $deletedAt): void
     {
         $this->deletedAt = $deletedAt;
     }
 
-    public function getDeletedAt()
+    public function getDeletedAt(): ?\DateTime
     {
         return $this->deletedAt;
     }

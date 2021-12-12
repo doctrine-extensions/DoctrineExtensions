@@ -131,7 +131,7 @@ abstract class BaseTestCaseMongoODM extends \PHPUnit\Framework\TestCase
         return $config;
     }
 
-    private function getDefaultConfiguration(): Configuration
+    protected function getDefaultConfiguration(): Configuration
     {
         $config = new Configuration();
         $config->addFilter('softdeleteable', SoftDeleteableFilter::class);

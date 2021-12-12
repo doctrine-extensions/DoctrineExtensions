@@ -20,6 +20,9 @@ use Gedmo\Tests\Tool\BaseTestCaseORM;
 
 final class HardRelationTest extends BaseTestCaseORM
 {
+    /**
+     * @var SoftDeleteableListener
+     */
     private $softDeleteableListener;
 
     protected function setUp(): void
@@ -28,7 +31,7 @@ final class HardRelationTest extends BaseTestCaseORM
 
         $evm = new EventManager();
         $evm->addEventSubscriber($this->softDeleteableListener = new SoftDeleteableListener());
-        $this->getMockSqliteEntityManager($evm);
+        $this->getDefaultMockSqliteEntityManager($evm);
         $this->em->getConfiguration()->addFilter('softdelete', SoftDeleteableFilter::class);
         $this->em->getFilters()->enable('softdelete');
     }
@@ -36,7 +39,7 @@ final class HardRelationTest extends BaseTestCaseORM
     /**
      * @test
      */
-    public function shouldCascadeSoftdeleteForHardRelations()
+    public function shouldCascadeSoftdeleteForHardRelations(): void
     {
         $address = new Address();
         $address->setStreet('13 Boulangerie, 404');
@@ -61,7 +64,7 @@ final class HardRelationTest extends BaseTestCaseORM
     /**
      * @test
      */
-    public function shouldCascadeToInversedRelationAsWell()
+    public function shouldCascadeToInversedRelationAsWell(): void
     {
         $address = new Address();
         $address->setStreet('13 Boulangerie, 404');
@@ -86,7 +89,7 @@ final class HardRelationTest extends BaseTestCaseORM
     /**
      * @test
      */
-    public function shouldHandleTimeAwareSoftDeleteable()
+    public function shouldHandleTimeAwareSoftDeleteable(): void
     {
         $address = new Address();
         $address->setStreet('13 Boulangerie, 404');
@@ -113,7 +116,7 @@ final class HardRelationTest extends BaseTestCaseORM
         static::assertNull($person, 'Should be softdeleted');
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             Person::class,
