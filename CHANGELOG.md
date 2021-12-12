@@ -38,9 +38,14 @@ a release.
 - References: Avoid deprecations using LazyCollection with PHP 8.1
 - Tree: Association mapping problems using Closure tree strategy (by manually defining mapping on the closure entity).
 - Wrong PHPDoc type declarations.
+- Avoid calling deprecated `AbstractClassMetadataFactory::getCacheDriver()` method.
 
 ### Deprecated
 - Tree: When using Closure tree strategy, it is deprecated not defining the mapping associations of the closure entity.
+
+### Changed
+- In order to use a custom cache for storing configuration of an extension, the user has to call `setCacheItemPool()`
+  on the extension listener passing an instance of `Psr\Cache\CacheItemPoolInterface`.
 
 ## [3.4.0] - 2021-12-05
 ### Added
