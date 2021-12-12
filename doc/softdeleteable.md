@@ -9,7 +9,7 @@ Features:
 - All SELECT queries will be filtered, not matter from where they are executed (Repositories, DQL SELECT queries, etc).
 - For now, it works only with the ORM
 - Can be nested with other behaviors
-- Annotation, Yaml and Xml mapping support for extensions
+- Attribute, Annotation, Yaml and Xml mapping support for extensions
 - Support for 'timeAware' option: When creating an entity set a date of deletion in the future and never worry about cleaning up at expiration time.
 - Support for 'hardDelete' option: When deleting a second time it allows to disable hard delete.
 
@@ -32,7 +32,7 @@ on how to setup and use the extensions in most optimized way.
 
 With SoftDeleteable there's one more step you need to do. You need to add the filter to your configuration:
 
-``` php
+```php
 
 $config = new Doctrine\ORM\Configuration;
 
@@ -43,7 +43,7 @@ $config->addFilter('soft-deleteable', 'Gedmo\SoftDeleteable\Filter\SoftDeleteabl
 
 And then you can access the filter from your EntityManager to enable or disable it with the following code:
 
-``` php
+```php
 // This will enable the SoftDeleteable filter, so entities which were "soft-deleted" will not appear
 // in results
 // You should adapt the filter name to your configuration (ex: softdeleteable)
@@ -55,7 +55,7 @@ $em->getFilters()->disable('soft-deleteable');
 
 Or from your DocumentManager (ODM):
 
-``` php
+```php
 // This will enable the SoftDeleteable filter, so entities which were "soft-deleted" will not appear
 // in results
 // You should adapt the filter name to your configuration (ex: softdeleteable)
@@ -77,6 +77,11 @@ or whenever you need it.
 mandatory parameter "fieldName", which is the name of the field to be used to hold the known "deletedAt" field. It
 must be of any of the date types.
 
+### SoftDeleteable attributes:
+- **\#[Gedmo\Mapping\Annotation\SoftDeleteable]** this class attribute tells if a class is SoftDeleteable. It has a
+mandatory parameter "fieldName", which is the name of the field to be used to hold the known "deletedAt" field. It
+must be of any of the date types.
+
 Available configuration options:
 - **fieldName** - The name of the field that will be used to determine if the object is removed or not (NULL means
 it's not removed. A date value means it was removed). NOTE: The field MUST be nullable.
@@ -87,57 +92,74 @@ it's not removed. A date value means it was removed). NOTE: The field MUST be nu
 you need to identify entity as being SoftDeleteable. The metadata is loaded only once then
 cache is activated.
 
-``` php
+**Note:** this example is using annotations and attributes for mapping, you should use
+one of them, not both.
+
+```php
 <?php
 namespace Entity;
 
 use Gedmo\Mapping\Annotation as Gedmo;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
  * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false, hardDelete=true)
  */
+#[ORM\Entity]
+#[Gedmo\SoftDeleteable(fieldName: 'deletedAt', timeAware: false, hardDelete: true)]
 class Article
 {
     /**
+     * @var int|null
+     *
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'IDENTIFY')]
+    #[ORM\Column(type: Types::INTEGER)]
     private $id;
 
     /**
+     * @var string|null
+     *
      * @ORM\Column(name="title", type="string")
      */
+    #[ORM\Column(name: 'title', type: Types::STRING)]
     private $title;
 
     /**
+     * @var \DateTime|null
+     *
      * @ORM\Column(name="deletedAt", type="datetime", nullable=true)
      */
+    #[ORM\Column(name: 'deletedAt', type: Types::DATETIME_MUTABLE, nullable: true)]
     private $deletedAt;
 
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function setTitle($title)
+    public function setTitle(?string $title): void
     {
         $this->title = $title;
     }
 
-    public function getTitle()
+    public function getTitle(): ?string
     {
         return $this->title;
     }
 
-    public function getDeletedAt()
+    public function getDeletedAt(): ?\DateTime
     {
         return $this->deletedAt;
     }
 
-    public function setDeletedAt($deletedAt)
+    public function setDeletedAt(?\DateTime $deletedAt): void
     {
         $this->deletedAt = $deletedAt;
     }
@@ -201,7 +223,7 @@ Entity\Article:
 
 ## Usage:
 
-``` php
+```php
 <?php
 $article = new Article;
 $article->setTitle('My Article');
@@ -248,7 +270,10 @@ There is also a trait without annotations for easy integration purposes.
 **Note:** this feature is only available since php **5.4.0**. And you are not required
 to use the Traits provided by extensions.
 
-``` php
+**Note:** this example is using annotations and attributes for mapping, you should use
+one of them, not both.
+
+```php
 <?php
 namespace SoftDeleteable\Fixture;
 
@@ -260,6 +285,8 @@ use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
  * @ORM\Entity
  * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false, hardDelete=true)
  */
+#[ORM\Entity]
+#[Gedmo\SoftDeleteable(fieldName: 'deletedAt', timeAware: false, hardDelete: true)]
 class UsingTrait
 {
     /**
@@ -273,11 +300,15 @@ class UsingTrait
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: Types::INTEGER)]
     private $id;
 
     /**
      * @ORM\Column(length=128)
      */
+    #[ORM\Column(length: 128)]
     private $title;
 }
 ```

@@ -217,7 +217,7 @@ abstract class BaseTestCaseORM extends \PHPUnit\Framework\TestCase
         return $config;
     }
 
-    private function getDefaultConfiguration(): Configuration
+    protected function getDefaultConfiguration(): Configuration
     {
         $config = new Configuration();
         $config->setProxyDir(TESTS_TEMP_DIR);
