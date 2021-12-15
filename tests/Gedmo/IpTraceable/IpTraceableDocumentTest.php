@@ -39,11 +39,11 @@ final class IpTraceableDocumentTest extends BaseTestCaseMongoODM
         $evm = new EventManager();
         $evm->addEventSubscriber($listener);
 
-        $this->getMockDocumentManager($evm);
+        $this->getDefaultDocumentManager($evm);
         $this->populate();
     }
 
-    public function testIpTraceable()
+    public function testIpTraceable(): void
     {
         $repo = $this->dm->getRepository(self::ARTICLE);
         $article = $repo->findOneBy(['title' => 'IpTraceable Article']);
@@ -67,7 +67,7 @@ final class IpTraceableDocumentTest extends BaseTestCaseMongoODM
         static::assertSame(self::TEST_IP, $article->getCreated());
     }
 
-    public function testForcedValues()
+    public function testForcedValues(): void
     {
         $sport = new Article();
         $sport->setTitle('sport forced');

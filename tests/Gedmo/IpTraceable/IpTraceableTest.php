@@ -43,10 +43,10 @@ final class IpTraceableTest extends BaseTestCaseORM
         $evm = new EventManager();
         $evm->addEventSubscriber($listener);
 
-        $this->getMockSqliteEntityManager($evm);
+        $this->getDefaultMockSqliteEntityManager($evm);
     }
 
-    public function testInvalidIpShouldThrowInvalidArgumentException()
+    public function testInvalidIpShouldThrowInvalidArgumentException(): void
     {
         $listener = new IpTraceableListener();
 
@@ -55,21 +55,21 @@ final class IpTraceableTest extends BaseTestCaseORM
         $listener->setIpValue('xx.xxx.xx.xxx');
     }
 
-    public function testIpV4()
+    public function testIpV4(): void
     {
         $listener = new IpTraceableListener();
         $listener->setIpValue('123.218.45.39');
         static::assertSame('123.218.45.39', $listener->getFieldValue(null, null, null));
     }
 
-    public function testIpV6()
+    public function testIpV6(): void
     {
         $listener = new IpTraceableListener();
         $listener->setIpValue('2001:0db8:0000:85a3:0000:0000:ac1f:8001');
         static::assertSame('2001:0db8:0000:85a3:0000:0000:ac1f:8001', $listener->getFieldValue(null, null, null));
     }
 
-    public function testIpTraceable()
+    public function testIpTraceable(): void
     {
         $sport = new Article();
         $sport->setTitle('Sport');
@@ -115,7 +115,7 @@ final class IpTraceableTest extends BaseTestCaseORM
         static::assertSame(self::TEST_IP, $sport->getPublished());
     }
 
-    public function testForcedValues()
+    public function testForcedValues(): void
     {
         $sport = new Article();
         $sport->setTitle('sport forced');
@@ -145,7 +145,7 @@ final class IpTraceableTest extends BaseTestCaseORM
         static::assertSame(self::TEST_IP, $sport->getPublished());
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::ARTICLE,

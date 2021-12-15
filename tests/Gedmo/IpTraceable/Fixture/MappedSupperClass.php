@@ -11,83 +11,75 @@ declare(strict_types=1);
 
 namespace Gedmo\Tests\IpTraceable\Fixture;
 
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ORM\MappedSuperclass
  */
+#[ORM\MappedSuperclass]
 class MappedSupperClass
 {
     /**
-     * @var int
+     * @var int|null
      *
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
+    #[ORM\Column(name: 'id', type: Types::INTEGER)]
     protected $id;
 
     /**
-     * @var string
+     * @var string|null
      *
      * @Gedmo\Locale
      */
+    #[Gedmo\Locale]
     protected $locale;
 
     /**
-     * @var string
+     * @var string|null
      *
      * @Gedmo\Translatable
      * @ORM\Column(name="name", type="string", length=191)
      */
+    #[Gedmo\Translatable]
+    #[ORM\Column(name: 'name', type: Types::STRING, length: 191)]
     protected $name;
 
     /**
-     * @var string
+     * @var string|null
      *
      * @ORM\Column(name="created_at", type="string", length=45)
      * @Gedmo\IpTraceable(on="create")
      */
+    #[ORM\Column(name: 'created_at', type: Types::STRING, length: 45)]
+    #[Gedmo\IpTraceable(on: 'create')]
     protected $createdFromIp;
 
     /**
-     * Get id
-     *
-     * @return int $id
      * @codeCoverageIgnore
      */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    /**
-     * Set name
-     *
-     * @param string $name
-     */
-    public function setName($name)
+    public function setName(?string $name): void
     {
         $this->name = $name;
     }
 
-    /**
-     * Get name
-     *
-     * @return string $name
-     */
-    public function getName()
+    public function getName(): ?string
     {
         return $this->name;
     }
 
-    /**
-     * Get createdFromIp
-     *
-     * @return string $createdFromIp
-     */
-    public function getCreatedFromIp()
+    public function getCreatedFromIp(): ?string
     {
         return $this->createdFromIp;
     }
