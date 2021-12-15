@@ -33,7 +33,15 @@ final class TranslatableSlugTest extends BaseTestCaseORM
     public const COMMENT = Comment::class;
     public const PAGE = Page::class;
     public const TRANSLATION = Translation::class;
+
+    /**
+     * @var int|null
+     */
     private $articleId;
+
+    /**
+     * @var TranslatableListener
+     */
     private $translatableListener;
 
     protected function setUp(): void
@@ -50,7 +58,7 @@ final class TranslatableSlugTest extends BaseTestCaseORM
         $this->populate();
     }
 
-    public function testSlugAndTranslation()
+    public function testSlugAndTranslation(): void
     {
         $article = $this->em->find(self::ARTICLE, $this->articleId);
         static::assertTrue($article instanceof Translatable && $article instanceof Sluggable);
@@ -85,7 +93,7 @@ final class TranslatableSlugTest extends BaseTestCaseORM
         static::assertSame('title-in-de-code-in-de', $translations['de_DE']['slug']);
     }
 
-    public function testConcurrentChanges()
+    public function testConcurrentChanges(): void
     {
         $page = new Page();
         $page->setContent('cont test');
@@ -135,7 +143,7 @@ final class TranslatableSlugTest extends BaseTestCaseORM
         static::assertSame('Cont_Test', $page->getSlug());
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::ARTICLE,

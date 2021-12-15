@@ -16,24 +16,31 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity
  */
+#[ORM\Entity]
 class Car extends Vehicle
 {
     /**
+     * @var string|null
+     *
      * @ORM\Column(length=128)
      */
+    #[ORM\Column(length: 128)]
     protected $title;
 
     /**
+     * @var string|null
+     *
      * @ORM\Column(length=128)
      */
+    #[ORM\Column(length: 128)]
     private $description;
 
-    public function setDescription($description)
+    public function setDescription(?string $description): void
     {
         $this->description = $description;
     }
 
-    public function getDescription()
+    public function getDescription(): ?string
     {
         return $this->description;
     }

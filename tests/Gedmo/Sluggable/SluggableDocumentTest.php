@@ -31,11 +31,11 @@ final class SluggableDocumentTest extends BaseTestCaseMongoODM
         $evm = new EventManager();
         $evm->addEventSubscriber(new SluggableListener());
 
-        $this->getMockDocumentManager($evm);
+        $this->getDefaultDocumentManager($evm);
         $this->populate();
     }
 
-    public function testSlugGeneration()
+    public function testSlugGeneration(): void
     {
         // test insert
         $repo = $this->dm->getRepository(self::ARTICLE);
@@ -54,7 +54,7 @@ final class SluggableDocumentTest extends BaseTestCaseMongoODM
         static::assertSame('new-title-the-code', $article->getSlug());
     }
 
-    public function testUniqueSlugGeneration()
+    public function testUniqueSlugGeneration(): void
     {
         for ($i = 0; $i < 12; ++$i) {
             $article = new Article();
@@ -68,7 +68,7 @@ final class SluggableDocumentTest extends BaseTestCaseMongoODM
         }
     }
 
-    public function testGithubIssue57()
+    public function testGithubIssue57(): void
     {
         // slug matched by prefix
         $article = new Article();

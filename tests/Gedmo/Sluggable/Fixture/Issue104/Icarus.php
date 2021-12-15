@@ -17,30 +17,37 @@ use Gedmo\Mapping\Annotation as Gedmo;
 /**
  * @ORM\Entity
  */
+#[ORM\Entity]
 class Icarus extends Bus
 {
     /**
+     * @var string|null
+     *
      * @ORM\Column(length=128)
      */
+    #[ORM\Column(length: 128)]
     private $description;
 
     /**
+     * @var string|null
+     *
      * @Gedmo\Slug(fields={"title"})
      * @ORM\Column(length=128, unique=true)
      */
+    #[ORM\Column(length: 128, unique: true)]
     private $slug;
 
-    public function setDescription($description)
+    public function setDescription(?string $description): void
     {
         $this->description = $description;
     }
 
-    public function getDescription()
+    public function getDescription(): ?string
     {
         return $this->description;
     }
 
-    public function getSlug()
+    public function getSlug(): ?string
     {
         return $this->slug;
     }

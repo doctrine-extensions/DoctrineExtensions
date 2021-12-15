@@ -32,11 +32,11 @@ final class TransliterationTest extends BaseTestCaseORM
         $evm = new EventManager();
         $evm->addEventSubscriber(new SluggableListener());
 
-        $this->getMockSqliteEntityManager($evm);
+        $this->getDefaultMockSqliteEntityManager($evm);
         $this->populate();
     }
 
-    public function testInsertedNewSlug()
+    public function testInsertedNewSlug(): void
     {
         $repo = $this->em->getRepository(self::ARTICLE);
 
@@ -53,7 +53,7 @@ final class TransliterationTest extends BaseTestCaseORM
         static::assertSame('fuhren-aktivitaten-haglofs-de', $german->getSlug());
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::ARTICLE,

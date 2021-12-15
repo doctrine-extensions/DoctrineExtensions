@@ -11,44 +11,66 @@ declare(strict_types=1);
 
 namespace Gedmo\Tests\Sluggable\Fixture;
 
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ORM\Entity
  */
+#[ORM\Entity]
 class Position
 {
     /**
+     * @var int|null
+     *
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: Types::INTEGER)]
     private $id;
 
     /**
+     * @var string|null
+     *
      * @ORM\Column(length=16)
      */
+    #[ORM\Column(length: 16)]
     private $prop;
 
     /**
+     * @var string|null
+     *
      * @ORM\Column(length=64)
      */
+    #[ORM\Column(length: 64)]
     private $title;
 
     /**
+     * @var string|null
+     *
      * @ORM\Column(length=16)
      */
+    #[ORM\Column(length: 16)]
     private $code;
 
     /**
+     * @var string|null
+     *
      * @ORM\Column(length=16)
      */
+    #[ORM\Column(length: 16)]
     private $other;
 
     /**
+     * @var string|null
+     *
      * @Gedmo\Slug(fields={"code", "other", "title", "prop"})
      * @ORM\Column(length=64, unique=true)
      */
+    #[ORM\Column(length: 64, unique: true)]
     private $slug;
 }
