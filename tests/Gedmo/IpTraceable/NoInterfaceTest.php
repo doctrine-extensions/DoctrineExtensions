@@ -35,10 +35,10 @@ final class NoInterfaceTest extends BaseTestCaseORM
         $ipTraceableListener->setIpValue(self::TEST_IP);
         $evm->addEventSubscriber($ipTraceableListener);
 
-        $this->getMockSqliteEntityManager($evm);
+        $this->getDefaultMockSqliteEntityManager($evm);
     }
 
-    public function testIpTraceableNoInterface()
+    public function testIpTraceableNoInterface(): void
     {
         $test = new WithoutInterface();
         $test->setTitle('Test');
@@ -52,7 +52,7 @@ final class NoInterfaceTest extends BaseTestCaseORM
         static::assertSame(self::TEST_IP, $test->getUpdated());
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::FIXTURE,

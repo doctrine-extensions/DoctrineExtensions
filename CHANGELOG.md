@@ -21,9 +21,8 @@ a release.
 ## [Unreleased]
 ### Added
 - SoftDeleteable: Support to use annotations as attributes on PHP >= 8.0.
-
-### Added
 - Blameable: Support to use annotations as attributes on PHP >= 8.0.
+- IpTraceable: Support to use annotations as attributes on PHP >= 8.0.
 
 ### Fixed
 - Loggable: Using only PHP 8 attributes.

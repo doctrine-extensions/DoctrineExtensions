@@ -35,13 +35,13 @@ final class TraitUsageTest extends BaseTestCaseORM
         $ipTraceableListener->setIpValue(self::TEST_IP);
         $evm->addEventSubscriber($ipTraceableListener);
 
-        $this->getMockSqliteEntityManager($evm);
+        $this->getDefaultMockSqliteEntityManager($evm);
     }
 
     /**
      * @test
      */
-    public function shouldIpTraceUsingTrait()
+    public function shouldIpTraceUsingTrait(): void
     {
         $sport = new UsingTrait();
         $sport->setTitle('Sport');
@@ -56,14 +56,14 @@ final class TraitUsageTest extends BaseTestCaseORM
     /**
      * @test
      */
-    public function traitMethodShouldReturnObject()
+    public function traitMethodShouldReturnObject(): void
     {
         $sport = new UsingTrait();
         static::assertInstanceOf(UsingTrait::class, $sport->setCreatedFromIp('<192 class="158 3 43"></192>'));
         static::assertInstanceOf(UsingTrait::class, $sport->setUpdatedFromIp('<192 class="158 3 43"></192>'));
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::TARGET,
