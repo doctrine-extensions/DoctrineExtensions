@@ -40,7 +40,7 @@ final class SluggableFltersTest extends BaseTestCaseORM
         $sluggableListener->addManagedFilter(self::FAKE_FILTER_NAME, true);
         $evm->addEventSubscriber($sluggableListener);
 
-        $config = $this->getMockAnnotatedConfig();
+        $config = $this->getDefaultConfiguration();
         $config->addFilter(self::SOFT_DELETEABLE_FILTER_NAME, SoftDeleteableFilter::class);
         $config->addFilter(self::FAKE_FILTER_NAME, FakeFilter::class);
 
@@ -53,7 +53,7 @@ final class SluggableFltersTest extends BaseTestCaseORM
     /**
      * @test
      */
-    public function shouldSuccessWhenManagedFilterHasAlreadyBeenDisabled()
+    public function shouldSuccessWhenManagedFilterHasAlreadyBeenDisabled(): void
     {
         // disable one managed doctrine filter
         $this->em->getFilters()->disable(self::FAKE_FILTER_NAME);
@@ -68,7 +68,7 @@ final class SluggableFltersTest extends BaseTestCaseORM
         static::assertSame('my-title-my-code', $slug->getSlug());
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::TARGET,

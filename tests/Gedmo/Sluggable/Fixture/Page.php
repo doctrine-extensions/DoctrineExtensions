@@ -11,64 +11,84 @@ declare(strict_types=1);
 
 namespace Gedmo\Tests\Sluggable\Fixture;
 
+use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ORM\Entity
  */
+#[ORM\Entity]
 class Page
 {
     /**
+     * @var int|null
+     *
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: Types::INTEGER)]
     private $id;
 
     /**
+     * @var string|null
+     *
      * @ORM\Column(type="string", length=191)
      */
+    #[ORM\Column(type: Types::STRING, length: 191)]
     private $content;
 
     /**
+     * @var string|null
+     *
      * @Gedmo\Slug(style="camel", separator="_", fields={"content"})
      * @ORM\Column(type="string", length=128)
      */
+    #[ORM\Column(type: Types::STRING, length: 128)]
     private $slug;
 
     /**
+     * @var Collection<int, TranslatableArticle>
+     *
      * @ORM\OneToMany(targetEntity="TranslatableArticle", mappedBy="page")
      */
+    #[ORM\OneToMany(targetEntity: TranslatableArticle::class, mappedBy: 'page')]
     private $articles;
 
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function addArticle(TranslatableArticle $article)
+    public function addArticle(TranslatableArticle $article): void
     {
         $article->setPage($this);
         $this->articles[] = $article;
     }
 
-    public function getArticles()
+    /**
+     * @return Collection<int, TranslatableArticle>
+     */
+    public function getArticles(): Collection
     {
         return $this->articles;
     }
 
-    public function setContent($content)
+    public function setContent(?string $content): void
     {
         $this->content = $content;
     }
 
-    public function getContent()
+    public function getContent(): ?string
     {
         return $this->content;
     }
 
-    public function getSlug()
+    public function getSlug(): ?string
     {
         return $this->slug;
     }

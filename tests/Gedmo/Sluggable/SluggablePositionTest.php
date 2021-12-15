@@ -32,11 +32,11 @@ final class SluggablePositionTest extends BaseTestCaseORM
         $evm = new EventManager();
         $evm->addEventSubscriber(new SluggableListener());
 
-        $this->getMockSqliteEntityManager($evm);
+        $this->getDefaultMockSqliteEntityManager($evm);
         $this->populate();
     }
 
-    public function testPositionedSlugOrder()
+    public function testPositionedSlugOrder(): void
     {
         $meta = $this->em->getClassMetadata(self::POSITION);
         $repo = $this->em->getRepository(self::POSITION);
@@ -46,7 +46,7 @@ final class SluggablePositionTest extends BaseTestCaseORM
         static::assertSame('code-other-title-prop', $slug);
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::POSITION,

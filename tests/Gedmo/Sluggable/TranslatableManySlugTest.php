@@ -29,7 +29,15 @@ final class TranslatableManySlugTest extends BaseTestCaseORM
 {
     public const ARTICLE = TransArticleManySlug::class;
     public const TRANSLATION = Translation::class;
+
+    /**
+     * @var int|null
+     */
     private $articleId;
+
+    /**
+     * @var TranslatableListener
+     */
     private $translatableListener;
 
     protected function setUp(): void
@@ -42,11 +50,11 @@ final class TranslatableManySlugTest extends BaseTestCaseORM
         $evm->addEventSubscriber(new SluggableListener());
         $evm->addEventSubscriber($this->translatableListener);
 
-        $this->getMockSqliteEntityManager($evm);
+        $this->getDefaultMockSqliteEntityManager($evm);
         $this->populate();
     }
 
-    public function testSlugAndTranslation()
+    public function testSlugAndTranslation(): void
     {
         $article = $this->em->find(self::ARTICLE, $this->articleId);
         static::assertTrue($article instanceof Translatable && $article instanceof Sluggable);
@@ -78,7 +86,7 @@ final class TranslatableManySlugTest extends BaseTestCaseORM
         static::assertSame('title-in-de-code-in-de', $translations['de_DE']['slug']);
     }
 
-    public function testUniqueness()
+    public function testUniqueness(): void
     {
         $a0 = new TransArticleManySlug();
         $a0->setTitle('the title');
@@ -102,7 +110,7 @@ final class TranslatableManySlugTest extends BaseTestCaseORM
         static::assertSame('the-title-my-code-2', $a1->getSlug());
     }
 
-    protected function getUsedEntityFixtures()
+    protected function getUsedEntityFixtures(): array
     {
         return [
             self::ARTICLE,
